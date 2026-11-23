@@ -10,214 +10,6 @@ type AffineTransformType = {
   unit?: 'UNIT_UNSPECIFIED' | 'EMU' | 'PT'
 }
 
-const PageElementSchema: z.ZodType<PageElementType> = z
-  .lazy(() =>
-    z
-      .object({
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The description of the page element. Combined with title to display alt text. The field is not supported for Group elements.',
-          }),
-        elementGroup: GroupSchema.exactOptional().openapi({
-          description: 'A collection of page elements joined as a single unit.',
-        }),
-        image: ImageSchema.exactOptional().openapi({ description: 'An image page element.' }),
-        line: LineSchema.exactOptional().openapi({ description: 'A line page element.' }),
-        objectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The object ID for this page element. Object IDs used by google.apps.slides.v1.Page and google.apps.slides.v1.PageElement share the same namespace.',
-          }),
-        shape: ShapeSchema.exactOptional().openapi({ description: 'A generic shape.' }),
-        sheetsChart: SheetsChartSchema.exactOptional().openapi({
-          description:
-            'A linked chart embedded from Google Sheets. Unlinked charts are represented as images.',
-        }),
-        size: SizeSchema.exactOptional().openapi({ description: 'The size of the page element.' }),
-        table: TableSchema.exactOptional().openapi({ description: 'A table page element.' }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The title of the page element. Combined with description to display alt text. The field is not supported for Group elements.',
-          }),
-        transform: AffineTransformSchema.exactOptional().openapi({
-          description:
-            "The transform of the page element. The visual appearance of the page element is determined by its absolute transform. To compute the absolute transform, preconcatenate a page element's transform with the transforms of all of its parent groups. If the page element is not in a group, its absolute transform is the same as the value in this field. The initial transform for the newly created Group is always the identity transform.",
-        }),
-        video: VideoSchema.exactOptional().openapi({ description: 'A video page element.' }),
-        wordArt: WordArtSchema.exactOptional().openapi({ description: 'A word art page element.' }),
-      })
-      .openapi({ description: 'A visual element rendered on a page.', required: [] }),
-  )
-  .openapi('PageElement')
-
-type GroupType = { children?: z.infer<typeof PageElementSchema>[] }
-
-const CropPropertiesSchema = z
-  .object({
-    angle: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rotation angle of the crop window around its center, in radians. Rotation angle is applied after the offset.',
-      }),
-    bottomOffset: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The offset specifies the bottom edge of the crop rectangle that is located above the original bounding rectangle bottom edge, relative to the object's original height.",
-      }),
-    leftOffset: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The offset specifies the left edge of the crop rectangle that is located to the right of the original bounding rectangle left edge, relative to the object's original width.",
-      }),
-    rightOffset: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The offset specifies the right edge of the crop rectangle that is located to the left of the original bounding rectangle right edge, relative to the object's original width.",
-      }),
-    topOffset: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The offset specifies the top edge of the crop rectangle that is located below the original bounding rectangle top edge, relative to the object's original height.",
-      }),
-  })
-  .openapi({
-    description:
-      "The crop properties of an object enclosed in a container. For example, an Image. The crop properties is represented by the offsets of four edges which define a crop rectangle. The offsets are measured in percentage from the corresponding edges of the object's original bounding rectangle towards inside, relative to the object's original dimensions. - If the offset is in the interval (0, 1), the corresponding edge of crop rectangle is positioned inside of the object's original bounding rectangle. - If the offset is negative or greater than 1, the corresponding edge of crop rectangle is positioned outside of the object's original bounding rectangle. - If the left edge of the crop rectangle is on the right side of its right edge, the object will be flipped horizontally. - If the top edge of the crop rectangle is below its bottom edge, the object will be flipped vertically. - If all offsets and rotation angle is 0, the object is not cropped. After cropping, the content in the crop rectangle will be stretched to fit its container.",
-    required: [],
-  })
-  .openapi('CropProperties')
-
-const LinkSchema = z
-  .object({
-    pageObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, indicates this is a link to the specific page in this presentation with this ID. A page with this ID may not exist.',
-      }),
-    relativeLink: z
-      .enum([
-        'RELATIVE_SLIDE_LINK_UNSPECIFIED',
-        'NEXT_SLIDE',
-        'PREVIOUS_SLIDE',
-        'FIRST_SLIDE',
-        'LAST_SLIDE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, indicates this is a link to a slide in this presentation, addressed by its position.',
-      }),
-    slideIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'If set, indicates this is a link to the slide at this zero-based index in the presentation. There may not be a slide at this index.',
-      }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'If set, indicates this is a link to the external web page at this URL.',
-      }),
-  })
-  .openapi({ description: 'A hypertext link.', required: [] })
-  .openapi('Link')
-
-const RgbColorSchema = z
-  .object({
-    blue: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The blue component of the color, from 0.0 to 1.0.' }),
-    green: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The green component of the color, from 0.0 to 1.0.' }),
-    red: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The red component of the color, from 0.0 to 1.0.' }),
-  })
-  .openapi({ description: 'An RGB color.', required: [] })
-  .openapi('RgbColor')
-
-const OpaqueColorSchema = z
-  .object({
-    rgbColor: RgbColorSchema.exactOptional().openapi({ description: 'An opaque RGB color.' }),
-    themeColor: z
-      .enum([
-        'THEME_COLOR_TYPE_UNSPECIFIED',
-        'DARK1',
-        'LIGHT1',
-        'DARK2',
-        'LIGHT2',
-        'ACCENT1',
-        'ACCENT2',
-        'ACCENT3',
-        'ACCENT4',
-        'ACCENT5',
-        'ACCENT6',
-        'HYPERLINK',
-        'FOLLOWED_HYPERLINK',
-        'TEXT1',
-        'BACKGROUND1',
-        'TEXT2',
-        'BACKGROUND2',
-      ])
-      .exactOptional()
-      .openapi({ description: 'An opaque theme color.' }),
-  })
-  .openapi({ description: 'A themeable solid color value.', required: [] })
-  .openapi('OpaqueColor')
-
-const SolidFillSchema = z
-  .object({
-    alpha: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fraction of this `color` that should be applied to the pixel. That is, the final pixel color is defined by the equation: pixel color = alpha * (color) + (1.0 - alpha) * (background color) This means that a value of 1.0 corresponds to a solid color, whereas a value of 0.0 corresponds to a completely transparent color.',
-      }),
-    color: OpaqueColorSchema.exactOptional().openapi({
-      description: 'The color value of the solid fill.',
-    }),
-  })
-  .openapi({
-    description:
-      'A solid color fill. The page or page element is filled entirely with the specified color value. If any field is unset, its value may be inherited from a parent placeholder if it exists.',
-    required: [],
-  })
-  .openapi('SolidFill')
-
-const OutlineFillSchema = z
-  .object({
-    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
-  })
-  .openapi({ description: 'The fill of the outline.', required: [] })
-  .openapi('OutlineFill')
-
 const DimensionSchema = z
   .object({
     magnitude: z.float64().exactOptional().openapi({ description: 'The magnitude.' }),
@@ -232,109 +24,18 @@ const DimensionSchema = z
   })
   .openapi('Dimension')
 
-const OutlineSchema = z
-  .object({
-    dashStyle: z
-      .enum([
-        'DASH_STYLE_UNSPECIFIED',
-        'SOLID',
-        'DOT',
-        'DASH',
-        'DASH_DOT',
-        'LONG_DASH',
-        'LONG_DASH_DOT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The dash style of the outline.' }),
-    outlineFill: OutlineFillSchema.exactOptional().openapi({
-      description: 'The fill of the outline.',
-    }),
-    propertyState: z
-      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The outline property state. Updating the outline on a page element will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no outline on a page element, set this field to `NOT_RENDERED`. In this case, any other outline fields set in the same request will be ignored.',
-      }),
-    weight: DimensionSchema.exactOptional().openapi({
-      description: 'The thickness of the outline.',
-    }),
-  })
-  .openapi({
-    description:
-      'The outline of a PageElement. If these fields are unset, they may be inherited from a parent placeholder if it exists. If there is no parent, the fields will default to the value used for new page elements created in the Slides editor, which may depend on the page element kind.',
-    required: [],
-  })
-  .openapi('Outline')
+type SizeType = {
+  height?: z.infer<typeof DimensionSchema>
+  width?: z.infer<typeof DimensionSchema>
+}
 
-const ColorStopSchema = z
+const SizeSchema: z.ZodType<SizeType> = z
   .object({
-    alpha: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The alpha value of this color in the gradient band. Defaults to 1.0, fully opaque.',
-      }),
-    color: OpaqueColorSchema.exactOptional().openapi({
-      description: 'The color of the gradient stop.',
-    }),
-    position: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The relative position of the color stop in the gradient band measured in percentage. The value should be in the interval [0.0, 1.0].',
-      }),
+    height: DimensionSchema.exactOptional().openapi({ description: 'The height of the object.' }),
+    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the object.' }),
   })
-  .openapi({ description: 'A color and position in a gradient band.', required: [] })
-  .openapi('ColorStop')
-
-const RecolorSchema = z
-  .object({
-    name: z
-      .enum([
-        'NONE',
-        'LIGHT1',
-        'LIGHT2',
-        'LIGHT3',
-        'LIGHT4',
-        'LIGHT5',
-        'LIGHT6',
-        'LIGHT7',
-        'LIGHT8',
-        'LIGHT9',
-        'LIGHT10',
-        'DARK1',
-        'DARK2',
-        'DARK3',
-        'DARK4',
-        'DARK5',
-        'DARK6',
-        'DARK7',
-        'DARK8',
-        'DARK9',
-        'DARK10',
-        'GRAYSCALE',
-        'NEGATIVE',
-        'SEPIA',
-        'CUSTOM',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "The name of the recolor effect. The name is determined from the `recolor_stops` by matching the gradient against the colors in the page's current color scheme. This property is read-only.",
-      }),
-    recolorStops: z
-      .array(ColorStopSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The recolor effect is represented by a gradient, which is a list of color stops. The colors in the gradient will replace the corresponding colors at the same position in the color palette and apply to the image. This property is read-only.',
-      }),
-  })
-  .openapi({ description: 'A recolor effect applied on an image.', required: [] })
-  .openapi('Recolor')
+  .openapi({ description: 'A width and height.', required: [] })
+  .openapi('Size')
 
 const AffineTransformSchema: z.ZodType<AffineTransformType> = z
   .object({
@@ -373,1619 +74,6 @@ const AffineTransformSchema: z.ZodType<AffineTransformType> = z
     required: [],
   })
   .openapi('AffineTransform')
-
-const ShadowSchema = z
-  .object({
-    alignment: z
-      .enum([
-        'RECTANGLE_POSITION_UNSPECIFIED',
-        'TOP_LEFT',
-        'TOP_CENTER',
-        'TOP_RIGHT',
-        'LEFT_CENTER',
-        'CENTER',
-        'RIGHT_CENTER',
-        'BOTTOM_LEFT',
-        'BOTTOM_CENTER',
-        'BOTTOM_RIGHT',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The alignment point of the shadow, that sets the origin for translate, scale and skew of the shadow. This property is read-only.',
-      }),
-    alpha: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: "The alpha of the shadow's color, from 0.0 to 1.0." }),
-    blurRadius: DimensionSchema.exactOptional().openapi({
-      description:
-        'The radius of the shadow blur. The larger the radius, the more diffuse the shadow becomes.',
-    }),
-    color: OpaqueColorSchema.exactOptional().openapi({ description: 'The shadow color value.' }),
-    propertyState: z
-      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The shadow property state. Updating the shadow on a page element will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no shadow on a page element, set this field to `NOT_RENDERED`. In this case, any other shadow fields set in the same request will be ignored.',
-      }),
-    rotateWithShape: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether the shadow should rotate with the shape. This property is read-only.',
-      }),
-    transform: AffineTransformSchema.exactOptional().openapi({
-      description:
-        'Transform that encodes the translate, scale, and skew of the shadow, relative to the alignment position.',
-    }),
-    type: z
-      .enum(['SHADOW_TYPE_UNSPECIFIED', 'OUTER'])
-      .exactOptional()
-      .openapi({ description: 'The type of the shadow. This property is read-only.' }),
-  })
-  .openapi({
-    description:
-      'The shadow properties of a page element. If these fields are unset, they may be inherited from a parent placeholder if it exists. If there is no parent, the fields will default to the value used for new page elements created in the Slides editor, which may depend on the page element kind.',
-    required: [],
-  })
-  .openapi('Shadow')
-
-const ImagePropertiesSchema = z
-  .object({
-    brightness: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The brightness effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect. This property is read-only.',
-      }),
-    contrast: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The contrast effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect. This property is read-only.',
-      }),
-    cropProperties: CropPropertiesSchema.exactOptional().openapi({
-      description:
-        'The crop properties of the image. If not set, the image is not cropped. This property is read-only.',
-    }),
-    link: LinkSchema.exactOptional().openapi({
-      description: 'The hyperlink destination of the image. If unset, there is no link.',
-    }),
-    outline: OutlineSchema.exactOptional().openapi({
-      description: 'The outline of the image. If not set, the image has no outline.',
-    }),
-    recolor: RecolorSchema.exactOptional().openapi({
-      description:
-        'The recolor effect of the image. If not set, the image is not recolored. This property is read-only.',
-    }),
-    shadow: ShadowSchema.exactOptional().openapi({
-      description:
-        'The shadow of the image. If not set, the image has no shadow. This property is read-only.',
-    }),
-    transparency: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The transparency effect of the image. The value should be in the interval [0.0, 1.0], where 0 means no effect and 1 means completely transparent. This property is read-only.',
-      }),
-  })
-  .openapi({ description: 'The properties of the Image.', required: [] })
-  .openapi('ImageProperties')
-
-const PlaceholderSchema = z
-  .object({
-    index: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The index of the placeholder. If the same placeholder types are present in the same page, they would have different index values.',
-      }),
-    parentObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The object ID of this shape's parent placeholder. If unset, the parent placeholder shape does not exist, so the shape does not inherit properties from any other shape.",
-      }),
-    type: z
-      .enum([
-        'NONE',
-        'BODY',
-        'CHART',
-        'CLIP_ART',
-        'CENTERED_TITLE',
-        'DIAGRAM',
-        'DATE_AND_TIME',
-        'FOOTER',
-        'HEADER',
-        'MEDIA',
-        'OBJECT',
-        'PICTURE',
-        'SLIDE_NUMBER',
-        'SUBTITLE',
-        'TABLE',
-        'TITLE',
-        'SLIDE_IMAGE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the placeholder.' }),
-  })
-  .openapi({
-    description: 'The placeholder information that uniquely identifies a placeholder shape.',
-    required: [],
-  })
-  .openapi('Placeholder')
-
-type ImageType = {
-  contentUrl?: string
-  imageProperties?: z.infer<typeof ImagePropertiesSchema>
-  placeholder?: z.infer<typeof PlaceholderSchema>
-  sourceUrl?: string
-}
-
-type LayoutPropertiesType = { displayName?: string; masterObjectId?: string; name?: string }
-
-const LineConnectionSchema = z
-  .object({
-    connectedObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The object ID of the connected page element. Some page elements, such as groups, tables, and lines do not have connection sites and therefore cannot be connected to a connector line.',
-      }),
-    connectionSiteIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The index of the connection site on the connected page element. In most cases, it corresponds to the predefined connection site index from the ECMA-376 standard. More information on those connection sites can be found in the description of the "cnx" attribute in section 20.1.9.9 and Annex H. "Predefined DrawingML Shape and Text Geometries" of "Office Open XML File Formats-Fundamentals and Markup Language Reference", part 1 of [ECMA-376 5th edition] (http://www.ecma-international.org/publications/standards/Ecma-376.htm). The position of each connection site can also be viewed from Slides editor.',
-      }),
-  })
-  .openapi({ description: 'The properties for one end of a Line connection.', required: [] })
-  .openapi('LineConnection')
-
-const LineFillSchema = z
-  .object({
-    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
-  })
-  .openapi({ description: 'The fill of the line.', required: [] })
-  .openapi('LineFill')
-
-const LinePropertiesSchema = z
-  .object({
-    dashStyle: z
-      .enum([
-        'DASH_STYLE_UNSPECIFIED',
-        'SOLID',
-        'DOT',
-        'DASH',
-        'DASH_DOT',
-        'LONG_DASH',
-        'LONG_DASH_DOT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The dash style of the line.' }),
-    endArrow: z
-      .enum([
-        'ARROW_STYLE_UNSPECIFIED',
-        'NONE',
-        'STEALTH_ARROW',
-        'FILL_ARROW',
-        'FILL_CIRCLE',
-        'FILL_SQUARE',
-        'FILL_DIAMOND',
-        'OPEN_ARROW',
-        'OPEN_CIRCLE',
-        'OPEN_SQUARE',
-        'OPEN_DIAMOND',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The style of the arrow at the end of the line.' }),
-    endConnection: LineConnectionSchema.exactOptional().openapi({
-      description:
-        'The connection at the end of the line. If unset, there is no connection. Only lines with a Type indicating it is a "connector" can have an `end_connection`.',
-    }),
-    lineFill: LineFillSchema.exactOptional().openapi({
-      description:
-        'The fill of the line. The default line fill matches the defaults for new lines created in the Slides editor.',
-    }),
-    link: LinkSchema.exactOptional().openapi({
-      description: 'The hyperlink destination of the line. If unset, there is no link.',
-    }),
-    startArrow: z
-      .enum([
-        'ARROW_STYLE_UNSPECIFIED',
-        'NONE',
-        'STEALTH_ARROW',
-        'FILL_ARROW',
-        'FILL_CIRCLE',
-        'FILL_SQUARE',
-        'FILL_DIAMOND',
-        'OPEN_ARROW',
-        'OPEN_CIRCLE',
-        'OPEN_SQUARE',
-        'OPEN_DIAMOND',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The style of the arrow at the beginning of the line.' }),
-    startConnection: LineConnectionSchema.exactOptional().openapi({
-      description:
-        'The connection at the beginning of the line. If unset, there is no connection. Only lines with a Type indicating it is a "connector" can have a `start_connection`.',
-    }),
-    weight: DimensionSchema.exactOptional().openapi({ description: 'The thickness of the line.' }),
-  })
-  .openapi({
-    description:
-      'The properties of the Line. When unset, these fields default to values that match the appearance of new lines created in the Slides editor.',
-    required: [],
-  })
-  .openapi('LineProperties')
-
-type LineType = {
-  lineCategory?: 'LINE_CATEGORY_UNSPECIFIED' | 'STRAIGHT' | 'BENT' | 'CURVED'
-  lineProperties?: z.infer<typeof LinePropertiesSchema>
-  lineType?:
-    | 'TYPE_UNSPECIFIED'
-    | 'STRAIGHT_CONNECTOR_1'
-    | 'BENT_CONNECTOR_2'
-    | 'BENT_CONNECTOR_3'
-    | 'BENT_CONNECTOR_4'
-    | 'BENT_CONNECTOR_5'
-    | 'CURVED_CONNECTOR_2'
-    | 'CURVED_CONNECTOR_3'
-    | 'CURVED_CONNECTOR_4'
-    | 'CURVED_CONNECTOR_5'
-    | 'STRAIGHT_LINE'
-}
-
-type MasterPropertiesType = { displayName?: string }
-
-type NotesPropertiesType = { speakerNotesObjectId?: string }
-
-const LayoutPropertiesSchema: z.ZodType<LayoutPropertiesType> = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The human-readable name of the layout.' }),
-    masterObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The object ID of the master that this layout is based on.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the layout.' }),
-  })
-  .openapi({
-    description: 'The properties of Page are only relevant for pages with page_type LAYOUT.',
-    required: [],
-  })
-  .openapi('LayoutProperties')
-
-const MasterPropertiesSchema: z.ZodType<MasterPropertiesType> = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The human-readable name of the master.' }),
-  })
-  .openapi({
-    description: 'The properties of Page that are only relevant for pages with page_type MASTER.',
-    required: [],
-  })
-  .openapi('MasterProperties')
-
-const NotesPropertiesSchema: z.ZodType<NotesPropertiesType> = z
-  .object({
-    speakerNotesObjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The object ID of the shape on this notes page that contains the speaker notes for the corresponding slide. The actual shape may not always exist on the notes page. Inserting text using this object ID will automatically create the shape. In this case, the actual shape may have different object ID. The `GetPresentation` or `GetPage` action will always return the latest object ID.',
-      }),
-  })
-  .openapi({
-    description: 'The properties of Page that are only relevant for pages with page_type NOTES.',
-    required: [],
-  })
-  .openapi('NotesProperties')
-
-const ThemeColorPairSchema = z
-  .object({
-    color: RgbColorSchema.exactOptional().openapi({
-      description: 'The concrete color corresponding to the theme color type above.',
-    }),
-    type: z
-      .enum([
-        'THEME_COLOR_TYPE_UNSPECIFIED',
-        'DARK1',
-        'LIGHT1',
-        'DARK2',
-        'LIGHT2',
-        'ACCENT1',
-        'ACCENT2',
-        'ACCENT3',
-        'ACCENT4',
-        'ACCENT5',
-        'ACCENT6',
-        'HYPERLINK',
-        'FOLLOWED_HYPERLINK',
-        'TEXT1',
-        'BACKGROUND1',
-        'TEXT2',
-        'BACKGROUND2',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the theme color.' }),
-  })
-  .openapi({
-    description: 'A pair mapping a theme color type to the concrete color it represents.',
-    required: [],
-  })
-  .openapi('ThemeColorPair')
-
-const ColorSchemeSchema = z
-  .object({
-    colors: z
-      .array(ThemeColorPairSchema)
-      .exactOptional()
-      .openapi({ description: 'The ThemeColorType and corresponding concrete color pairs.' }),
-  })
-  .openapi({ description: 'The palette of predefined colors for a page.', required: [] })
-  .openapi('ColorScheme')
-
-type SizeType = {
-  height?: z.infer<typeof DimensionSchema>
-  width?: z.infer<typeof DimensionSchema>
-}
-
-const SizeSchema: z.ZodType<SizeType> = z
-  .object({
-    height: DimensionSchema.exactOptional().openapi({ description: 'The height of the object.' }),
-    width: DimensionSchema.exactOptional().openapi({ description: 'The width of the object.' }),
-  })
-  .openapi({ description: 'A width and height.', required: [] })
-  .openapi('Size')
-
-const StretchedPictureFillSchema = z
-  .object({
-    contentUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Reading the content_url: An URL to a picture with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the picture as the original requester. Access to the picture may be lost if the presentation's sharing settings change. Writing the content_url: The picture is fetched once at insertion time and a copy is stored for display inside the presentation. Pictures must be less than 50MB in size, cannot exceed 25 megapixels, and must be in one of PNG, JPEG, or GIF format. The provided URL can be at most 2 kB in length.",
-      }),
-    size: SizeSchema.exactOptional().openapi({
-      description: 'The original size of the picture fill. This field is read-only.',
-    }),
-  })
-  .openapi({
-    description:
-      'The stretched picture fill. The page or page element is filled entirely with the specified picture. The picture is stretched to fit its container.',
-    required: [],
-  })
-  .openapi('StretchedPictureFill')
-
-const PageBackgroundFillSchema = z
-  .object({
-    propertyState: z
-      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The background fill property state. Updating the fill on a page will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a page, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
-      }),
-    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
-    stretchedPictureFill: StretchedPictureFillSchema.exactOptional().openapi({
-      description: 'Stretched picture fill.',
-    }),
-  })
-  .openapi({ description: 'The page background fill.', required: [] })
-  .openapi('PageBackgroundFill')
-
-type PagePropertiesType = {
-  colorScheme?: z.infer<typeof ColorSchemeSchema>
-  pageBackgroundFill?: z.infer<typeof PageBackgroundFillSchema>
-}
-
-const PagePropertiesSchema: z.ZodType<PagePropertiesType> = z
-  .object({
-    colorScheme: ColorSchemeSchema.exactOptional().openapi({
-      description:
-        'The color scheme of the page. If unset, the color scheme is inherited from a parent page. If the page has no parent, the color scheme uses a default Slides color scheme, matching the defaults in the Slides editor. Only the concrete colors of the first 12 ThemeColorTypes are editable. In addition, only the color scheme on `Master` pages can be updated. To update the field, a color scheme containing mappings from all the first 12 ThemeColorTypes to their concrete colors must be provided. Colors for the remaining ThemeColorTypes will be ignored.',
-    }),
-    pageBackgroundFill: PageBackgroundFillSchema.exactOptional().openapi({
-      description:
-        'The background fill of the page. If unset, the background fill is inherited from a parent page if it exists. If the page has no parent, then the background fill defaults to the corresponding fill in the Slides editor.',
-    }),
-  })
-  .openapi({
-    description:
-      'The properties of the Page. The page will inherit properties from the parent page. Depending on the page type the hierarchy is defined in either SlideProperties or LayoutProperties.',
-    required: [],
-  })
-  .openapi('PageProperties')
-
-const SlidePropertiesSchema: z.ZodType<SlidePropertiesType> = z
-  .lazy(() =>
-    z
-      .object({
-        isSkipped: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the slide is skipped in the presentation mode. Defaults to false.',
-          }),
-        layoutObjectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The object ID of the layout that this slide is based on. This property is read-only.',
-          }),
-        masterObjectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The object ID of the master that this slide is based on. This property is read-only.',
-          }),
-        notesPage: PageSchema.exactOptional().openapi({
-          description:
-            'The notes page that this slide is associated with. It defines the visual appearance of a notes page when printing or exporting slides with speaker notes. A notes page inherits properties from the notes master. The placeholder shape with type BODY on the notes page contains the speaker notes for this slide. The ID of this shape is identified by the speakerNotesObjectId field. The notes page is read-only except for the text content and styles of the speaker notes shape. This property is read-only.',
-        }),
-      })
-      .openapi({
-        description:
-          'The properties of Page that are only relevant for pages with page_type SLIDE.',
-        required: [],
-      }),
-  )
-  .openapi('SlideProperties')
-
-type PageType = {
-  layoutProperties?: z.infer<typeof LayoutPropertiesSchema>
-  masterProperties?: z.infer<typeof MasterPropertiesSchema>
-  notesProperties?: z.infer<typeof NotesPropertiesSchema>
-  objectId?: string
-  pageElements?: z.infer<typeof PageElementSchema>[]
-  pageProperties?: z.infer<typeof PagePropertiesSchema>
-  pageType?: 'SLIDE' | 'MASTER' | 'LAYOUT' | 'NOTES' | 'NOTES_MASTER'
-  revisionId?: string
-  slideProperties?: z.infer<typeof SlidePropertiesSchema>
-}
-
-const GroupSchema: z.ZodType<GroupType> = z
-  .lazy(() =>
-    z
-      .object({
-        children: z
-          .array(PageElementSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The collection of elements in the group. The minimum size of a group is 2.',
-          }),
-      })
-      .openapi({
-        description: 'A PageElement kind representing a joined collection of PageElements.',
-        required: [],
-      }),
-  )
-  .openapi('Group')
-
-const ImageSchema: z.ZodType<ImageType> = z
-  .object({
-    contentUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "An URL to an image with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the image as the original requester. Access to the image may be lost if the presentation's sharing settings change.",
-      }),
-    imageProperties: ImagePropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the image.',
-    }),
-    placeholder: PlaceholderSchema.exactOptional().openapi({
-      description:
-        'Placeholders are page elements that inherit from corresponding placeholders on layouts and masters. If set, the image is a placeholder image and any inherited properties can be resolved by looking at the parent placeholder identified by the Placeholder.parent_object_id field.',
-    }),
-    sourceUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The source URL is the URL used to insert the image. The source URL can be empty.',
-      }),
-  })
-  .openapi({ description: 'A PageElement kind representing an image.', required: [] })
-  .openapi('Image')
-
-const LineSchema: z.ZodType<LineType> = z
-  .object({
-    lineCategory: z
-      .enum(['LINE_CATEGORY_UNSPECIFIED', 'STRAIGHT', 'BENT', 'CURVED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The category of the line. It matches the `category` specified in CreateLineRequest, and can be updated with UpdateLineCategoryRequest.',
-      }),
-    lineProperties: LinePropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the line.',
-    }),
-    lineType: z
-      .enum([
-        'TYPE_UNSPECIFIED',
-        'STRAIGHT_CONNECTOR_1',
-        'BENT_CONNECTOR_2',
-        'BENT_CONNECTOR_3',
-        'BENT_CONNECTOR_4',
-        'BENT_CONNECTOR_5',
-        'CURVED_CONNECTOR_2',
-        'CURVED_CONNECTOR_3',
-        'CURVED_CONNECTOR_4',
-        'CURVED_CONNECTOR_5',
-        'STRAIGHT_LINE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the line.' }),
-  })
-  .openapi({
-    description:
-      'A PageElement kind representing a non-connector line, straight connector, curved connector, or bent connector.',
-    required: [],
-  })
-  .openapi('Line')
-
-const AutofitSchema = z
-  .object({
-    autofitType: z
-      .enum(['AUTOFIT_TYPE_UNSPECIFIED', 'NONE', 'TEXT_AUTOFIT', 'SHAPE_AUTOFIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The autofit type of the shape. If the autofit type is AUTOFIT_TYPE_UNSPECIFIED, the autofit type is inherited from a parent placeholder if it exists. The field is automatically set to NONE if a request is made that might affect text fitting within its bounding text box. In this case the font_scale is applied to the font_size and the line_spacing_reduction is applied to the line_spacing. Both properties are also reset to default values.',
-      }),
-    fontScale: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The font scale applied to the shape. For shapes with autofit_type NONE or SHAPE_AUTOFIT, this value is the default value of 1. For TEXT_AUTOFIT, this value multiplied by the font_size gives the font size that is rendered in the editor. This property is read-only.',
-      }),
-    lineSpacingReduction: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The line spacing reduction applied to the shape. For shapes with autofit_type NONE or SHAPE_AUTOFIT, this value is the default value of 0. For TEXT_AUTOFIT, this value subtracted from the line_spacing gives the line spacing that is rendered in the editor. This property is read-only.',
-      }),
-  })
-  .openapi({ description: 'The autofit properties of a Shape.', required: [] })
-  .openapi('Autofit')
-
-const ShapeBackgroundFillSchema = z
-  .object({
-    propertyState: z
-      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The background fill property state. Updating the fill on a shape will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a shape, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
-      }),
-    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
-  })
-  .openapi({ description: 'The shape background fill.', required: [] })
-  .openapi('ShapeBackgroundFill')
-
-const ShapePropertiesSchema = z
-  .object({
-    autofit: AutofitSchema.exactOptional().openapi({
-      description:
-        'The autofit properties of the shape. This property is only set for shapes that allow text.',
-    }),
-    contentAlignment: z
-      .enum([
-        'CONTENT_ALIGNMENT_UNSPECIFIED',
-        'CONTENT_ALIGNMENT_UNSUPPORTED',
-        'TOP',
-        'MIDDLE',
-        'BOTTOM',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The alignment of the content in the shape. If unspecified, the alignment is inherited from a parent placeholder if it exists. If the shape has no parent, the default alignment matches the alignment for new shapes created in the Slides editor.',
-      }),
-    link: LinkSchema.exactOptional().openapi({
-      description:
-        'The hyperlink destination of the shape. If unset, there is no link. Links are not inherited from parent placeholders.',
-    }),
-    outline: OutlineSchema.exactOptional().openapi({
-      description:
-        'The outline of the shape. If unset, the outline is inherited from a parent placeholder if it exists. If the shape has no parent, then the default outline depends on the shape type, matching the defaults for new shapes created in the Slides editor.',
-    }),
-    shadow: ShadowSchema.exactOptional().openapi({
-      description:
-        'The shadow properties of the shape. If unset, the shadow is inherited from a parent placeholder if it exists. If the shape has no parent, then the default shadow matches the defaults for new shapes created in the Slides editor. This property is read-only.',
-    }),
-    shapeBackgroundFill: ShapeBackgroundFillSchema.exactOptional().openapi({
-      description:
-        'The background fill of the shape. If unset, the background fill is inherited from a parent placeholder if it exists. If the shape has no parent, then the default background fill depends on the shape type, matching the defaults for new shapes created in the Slides editor.',
-    }),
-  })
-  .openapi({
-    description:
-      'The properties of a Shape. If the shape is a placeholder shape as determined by the placeholder field, then these properties may be inherited from a parent placeholder shape. Determining the rendered value of the property depends on the corresponding property_state field value. Any text autofit settings on the shape are automatically deactivated by requests that can impact how text fits in the shape.',
-    required: [],
-  })
-  .openapi('ShapeProperties')
-
-const OptionalColorSchema = z
-  .object({
-    opaqueColor: OpaqueColorSchema.exactOptional().openapi({
-      description:
-        'If set, this will be used as an opaque color. If unset, this represents a transparent color.',
-    }),
-  })
-  .openapi({
-    description: 'A color that can either be fully opaque or fully transparent.',
-    required: [],
-  })
-  .openapi('OptionalColor')
-
-const WeightedFontFamilySchema = z
-  .object({
-    fontFamily: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The font family of the text. The font family can be any font from the Font menu in Slides or from [Google Fonts] (https://fonts.google.com/). If the font name is unrecognized, the text is rendered in `Arial`.',
-      }),
-    weight: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rendered weight of the text. This field can have any value that is a multiple of `100` between `100` and `900`, inclusive. This range corresponds to the numerical values described in the CSS 2.1 Specification, [section 15.6](https://www.w3.org/TR/CSS21/fonts.html#font-boldness), with non-numerical values disallowed. Weights greater than or equal to `700` are considered bold, and weights less than `700`are not bold. The default value is `400` ("normal").',
-      }),
-  })
-  .openapi({
-    description: 'Represents a font family and weight used to style a TextRun.',
-    required: [],
-  })
-  .openapi('WeightedFontFamily')
-
-const TextStyleSchema = z
-  .object({
-    backgroundColor: OptionalColorSchema.exactOptional().openapi({
-      description:
-        'The background color of the text. If set, the color is either opaque or transparent, depending on if the `opaque_color` field in it is set.',
-    }),
-    baselineOffset: z
-      .enum(['BASELINE_OFFSET_UNSPECIFIED', 'NONE', 'SUPERSCRIPT', 'SUBSCRIPT'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The text's vertical offset from its normal position. Text with `SUPERSCRIPT` or `SUBSCRIPT` baseline offsets is automatically rendered in a smaller font size, computed based on the `font_size` field. The `font_size` itself is not affected by changes in this field.",
-      }),
-    bold: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the text is rendered as bold.' }),
-    fontFamily: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The font family of the text. The font family can be any font from the Font menu in Slides or from [Google Fonts] (https://fonts.google.com/). If the font name is unrecognized, the text is rendered in `Arial`. Some fonts can affect the weight of the text. If an update request specifies values for both `font_family` and `bold`, the explicitly-set `bold` value is used.',
-      }),
-    fontSize: DimensionSchema.exactOptional().openapi({
-      description:
-        "The size of the text's font. When read, the `font_size` will specified in points.",
-    }),
-    foregroundColor: OptionalColorSchema.exactOptional().openapi({
-      description:
-        'The color of the text itself. If set, the color is either opaque or transparent, depending on if the `opaque_color` field in it is set.',
-    }),
-    italic: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the text is italicized.' }),
-    link: LinkSchema.exactOptional().openapi({
-      description:
-        'The hyperlink destination of the text. If unset, there is no link. Links are not inherited from parent text. Changing the link in an update request causes some other changes to the text style of the range: * When setting a link, the text foreground color will be set to ThemeColorType.HYPERLINK and the text will be underlined. If these fields are modified in the same request, those values will be used instead of the link defaults. * Setting a link on a text range that overlaps with an existing link will also update the existing link to point to the new URL. * Links are not settable on newline characters. As a result, setting a link on a text range that crosses a paragraph boundary, such as `"ABC\\n123"`, will separate the newline character(s) into their own text runs. The link will be applied separately to the runs before and after the newline. * Removing a link will update the text style of the range to match the style of the preceding text (or the default text styles if the preceding text is another link) unless different styles are being set in the same request.',
-    }),
-    smallCaps: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the text is in small capital letters.' }),
-    strikethrough: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the text is struck through.' }),
-    underline: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the text is underlined.' }),
-    weightedFontFamily: WeightedFontFamilySchema.exactOptional().openapi({
-      description:
-        'The font family and rendered weight of the text. This field is an extension of `font_family` meant to support explicit font weights without breaking backwards compatibility. As such, when reading the style of a range of text, the value of `weighted_font_family#font_family` will always be equal to that of `font_family`. However, when writing, if both fields are included in the field mask (either explicitly or through the wildcard `"*"`), their values are reconciled as follows: * If `font_family` is set and `weighted_font_family` is not, the value of `font_family` is applied with weight `400` ("normal"). * If both fields are set, the value of `font_family` must match that of `weighted_font_family#font_family`. If so, the font family and weight of `weighted_font_family` is applied. Otherwise, a 400 bad request error is returned. * If `weighted_font_family` is set and `font_family` is not, the font family and weight of `weighted_font_family` is applied. * If neither field is set, the font family and weight of the text inherit from the parent. Note that these properties cannot inherit separately from each other. If an update request specifies values for both `weighted_font_family` and `bold`, the `weighted_font_family` is applied first, then `bold`. If `weighted_font_family#weight` is not set, it defaults to `400`. If `weighted_font_family` is set, then `weighted_font_family#font_family` must also be set with a non-empty value. Otherwise, a 400 bad request error is returned.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents the styling that can be applied to a TextRun. If this text is contained in a shape with a parent placeholder, then these text styles may be inherited from the parent. Which text styles are inherited depend on the nesting level of lists: * A text run in a paragraph that is not in a list will inherit its text style from the the newline character in the paragraph at the 0 nesting level of the list inside the parent placeholder. * A text run in a paragraph that is in a list will inherit its text style from the newline character in the paragraph at its corresponding nesting level of the list inside the parent placeholder. Inherited text styles are represented as unset fields in this message. If text is contained in a shape without a parent placeholder, unsetting these fields will revert the style to a value matching the defaults in the Slides editor.',
-    required: [],
-  })
-  .openapi('TextStyle')
-
-const NestingLevelSchema = z
-  .object({
-    bulletStyle: TextStyleSchema.exactOptional().openapi({
-      description: 'The style of a bullet at this level of nesting.',
-    }),
-  })
-  .openapi({
-    description:
-      'Contains properties describing the look and feel of a list bullet at a given level of nesting.',
-    required: [],
-  })
-  .openapi('NestingLevel')
-
-const ListSchema = z
-  .object({
-    listId: z.string().exactOptional().openapi({ description: 'The ID of the list.' }),
-    nestingLevel: z
-      .record(z.string(), NestingLevelSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A map of nesting levels to the properties of bullets at the associated level. A list has at most nine levels of nesting, so the possible values for the keys of this map are 0 through 8, inclusive.',
-      }),
-  })
-  .openapi({
-    description:
-      "A List describes the look and feel of bullets belonging to paragraphs associated with a list. A paragraph that is part of a list has an implicit reference to that list's ID.",
-    required: [],
-  })
-  .openapi('List')
-
-const AutoTextSchema = z
-  .object({
-    content: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The rendered content of this auto text, if available.' }),
-    style: TextStyleSchema.exactOptional().openapi({
-      description: 'The styling applied to this auto text.',
-    }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'SLIDE_NUMBER'])
-      .exactOptional()
-      .openapi({ description: 'The type of this auto text.' }),
-  })
-  .openapi({ description: 'A TextElement kind that represents auto text.', required: [] })
-  .openapi('AutoText')
-
-const BulletSchema = z
-  .object({
-    bulletStyle: TextStyleSchema.exactOptional().openapi({
-      description: 'The paragraph specific text style applied to this bullet.',
-    }),
-    glyph: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The rendered bullet glyph for this paragraph.' }),
-    listId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The ID of the list this paragraph belongs to.' }),
-    nestingLevel: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The nesting level of this paragraph in the list.' }),
-  })
-  .openapi({ description: 'Describes the bullet of a paragraph.', required: [] })
-  .openapi('Bullet')
-
-const ParagraphStyleSchema = z
-  .object({
-    alignment: z
-      .enum(['ALIGNMENT_UNSPECIFIED', 'START', 'CENTER', 'END', 'JUSTIFIED'])
-      .exactOptional()
-      .openapi({ description: 'The text alignment for this paragraph.' }),
-    direction: z
-      .enum(['TEXT_DIRECTION_UNSPECIFIED', 'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The text direction of this paragraph. If unset, the value defaults to LEFT_TO_RIGHT since text direction is not inherited.',
-      }),
-    indentEnd: DimensionSchema.exactOptional().openapi({
-      description:
-        'The amount indentation for the paragraph on the side that corresponds to the end of the text, based on the current text direction. If unset, the value is inherited from the parent.',
-    }),
-    indentFirstLine: DimensionSchema.exactOptional().openapi({
-      description:
-        'The amount of indentation for the start of the first line of the paragraph. If unset, the value is inherited from the parent.',
-    }),
-    indentStart: DimensionSchema.exactOptional().openapi({
-      description:
-        'The amount indentation for the paragraph on the side that corresponds to the start of the text, based on the current text direction. If unset, the value is inherited from the parent.',
-    }),
-    lineSpacing: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of space between lines, as a percentage of normal, where normal is represented as 100.0. If unset, the value is inherited from the parent.',
-      }),
-    spaceAbove: DimensionSchema.exactOptional().openapi({
-      description:
-        'The amount of extra space above the paragraph. If unset, the value is inherited from the parent.',
-    }),
-    spaceBelow: DimensionSchema.exactOptional().openapi({
-      description:
-        'The amount of extra space below the paragraph. If unset, the value is inherited from the parent.',
-    }),
-    spacingMode: z
-      .enum(['SPACING_MODE_UNSPECIFIED', 'NEVER_COLLAPSE', 'COLLAPSE_LISTS'])
-      .exactOptional()
-      .openapi({ description: 'The spacing mode for the paragraph.' }),
-  })
-  .openapi({
-    description:
-      'Styles that apply to a whole paragraph. If this text is contained in a shape with a parent placeholder, then these paragraph styles may be inherited from the parent. Which paragraph styles are inherited depend on the nesting level of lists: * A paragraph not in a list will inherit its paragraph style from the paragraph at the 0 nesting level of the list inside the parent placeholder. * A paragraph in a list will inherit its paragraph style from the paragraph at its corresponding nesting level of the list inside the parent placeholder. Inherited paragraph styles are represented as unset fields in this message.',
-    required: [],
-  })
-  .openapi('ParagraphStyle')
-
-const ParagraphMarkerSchema = z
-  .object({
-    bullet: BulletSchema.exactOptional().openapi({
-      description:
-        'The bullet for this paragraph. If not present, the paragraph does not belong to a list.',
-    }),
-    style: ParagraphStyleSchema.exactOptional().openapi({ description: "The paragraph's style" }),
-  })
-  .openapi({
-    description: 'A TextElement kind that represents the beginning of a new paragraph.',
-    required: [],
-  })
-  .openapi('ParagraphMarker')
-
-const TextRunSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'The text of this run.' }),
-    style: TextStyleSchema.exactOptional().openapi({
-      description: 'The styling applied to this run.',
-    }),
-  })
-  .openapi({
-    description: 'A TextElement kind that represents a run of text that all has the same styling.',
-    required: [],
-  })
-  .openapi('TextRun')
-
-const TextElementSchema = z
-  .object({
-    autoText: AutoTextSchema.exactOptional().openapi({
-      description:
-        'A TextElement representing a spot in the text that is dynamically replaced with content that can change over time.',
-    }),
-    endIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The zero-based end index of this text element, exclusive, in Unicode code units.',
-      }),
-    paragraphMarker: ParagraphMarkerSchema.exactOptional().openapi({
-      description:
-        "A marker representing the beginning of a new paragraph. The `start_index` and `end_index` of this TextElement represent the range of the paragraph. Other TextElements with an index range contained inside this paragraph's range are considered to be part of this paragraph. The range of indices of two separate paragraphs will never overlap.",
-    }),
-    startIndex: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The zero-based start index of this text element, in Unicode code units.',
-      }),
-    textRun: TextRunSchema.exactOptional().openapi({
-      description:
-        'A TextElement representing a run of text where all of the characters in the run have the same TextStyle. The `start_index` and `end_index` of TextRuns will always be fully contained in the index range of a single `paragraph_marker` TextElement. In other words, a TextRun will never span multiple paragraphs.',
-    }),
-  })
-  .openapi({
-    description:
-      'A TextElement describes the content of a range of indices in the text content of a Shape or TableCell.',
-    required: [],
-  })
-  .openapi('TextElement')
-
-const TextContentSchema = z
-  .object({
-    lists: z
-      .record(z.string(), ListSchema)
-      .exactOptional()
-      .openapi({ description: 'The bulleted lists contained in this text, keyed by list ID.' }),
-    textElements: z
-      .array(TextElementSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The text contents broken down into its component parts, including styling information. This property is read-only.',
-      }),
-  })
-  .openapi({
-    description:
-      'The general text content. The text must reside in a compatible shape (e.g. text box or rectangle) or a table cell in a page.',
-    required: [],
-  })
-  .openapi('TextContent')
-
-type ShapeType = {
-  placeholder?: z.infer<typeof PlaceholderSchema>
-  shapeProperties?: z.infer<typeof ShapePropertiesSchema>
-  shapeType?:
-    | 'TYPE_UNSPECIFIED'
-    | 'TEXT_BOX'
-    | 'RECTANGLE'
-    | 'ROUND_RECTANGLE'
-    | 'ELLIPSE'
-    | 'ARC'
-    | 'BENT_ARROW'
-    | 'BENT_UP_ARROW'
-    | 'BEVEL'
-    | 'BLOCK_ARC'
-    | 'BRACE_PAIR'
-    | 'BRACKET_PAIR'
-    | 'CAN'
-    | 'CHEVRON'
-    | 'CHORD'
-    | 'CLOUD'
-    | 'CORNER'
-    | 'CUBE'
-    | 'CURVED_DOWN_ARROW'
-    | 'CURVED_LEFT_ARROW'
-    | 'CURVED_RIGHT_ARROW'
-    | 'CURVED_UP_ARROW'
-    | 'DECAGON'
-    | 'DIAGONAL_STRIPE'
-    | 'DIAMOND'
-    | 'DODECAGON'
-    | 'DONUT'
-    | 'DOUBLE_WAVE'
-    | 'DOWN_ARROW'
-    | 'DOWN_ARROW_CALLOUT'
-    | 'FOLDED_CORNER'
-    | 'FRAME'
-    | 'HALF_FRAME'
-    | 'HEART'
-    | 'HEPTAGON'
-    | 'HEXAGON'
-    | 'HOME_PLATE'
-    | 'HORIZONTAL_SCROLL'
-    | 'IRREGULAR_SEAL_1'
-    | 'IRREGULAR_SEAL_2'
-    | 'LEFT_ARROW'
-    | 'LEFT_ARROW_CALLOUT'
-    | 'LEFT_BRACE'
-    | 'LEFT_BRACKET'
-    | 'LEFT_RIGHT_ARROW'
-    | 'LEFT_RIGHT_ARROW_CALLOUT'
-    | 'LEFT_RIGHT_UP_ARROW'
-    | 'LEFT_UP_ARROW'
-    | 'LIGHTNING_BOLT'
-    | 'MATH_DIVIDE'
-    | 'MATH_EQUAL'
-    | 'MATH_MINUS'
-    | 'MATH_MULTIPLY'
-    | 'MATH_NOT_EQUAL'
-    | 'MATH_PLUS'
-    | 'MOON'
-    | 'NO_SMOKING'
-    | 'NOTCHED_RIGHT_ARROW'
-    | 'OCTAGON'
-    | 'PARALLELOGRAM'
-    | 'PENTAGON'
-    | 'PIE'
-    | 'PLAQUE'
-    | 'PLUS'
-    | 'QUAD_ARROW'
-    | 'QUAD_ARROW_CALLOUT'
-    | 'RIBBON'
-    | 'RIBBON_2'
-    | 'RIGHT_ARROW'
-    | 'RIGHT_ARROW_CALLOUT'
-    | 'RIGHT_BRACE'
-    | 'RIGHT_BRACKET'
-    | 'ROUND_1_RECTANGLE'
-    | 'ROUND_2_DIAGONAL_RECTANGLE'
-    | 'ROUND_2_SAME_RECTANGLE'
-    | 'RIGHT_TRIANGLE'
-    | 'SMILEY_FACE'
-    | 'SNIP_1_RECTANGLE'
-    | 'SNIP_2_DIAGONAL_RECTANGLE'
-    | 'SNIP_2_SAME_RECTANGLE'
-    | 'SNIP_ROUND_RECTANGLE'
-    | 'STAR_10'
-    | 'STAR_12'
-    | 'STAR_16'
-    | 'STAR_24'
-    | 'STAR_32'
-    | 'STAR_4'
-    | 'STAR_5'
-    | 'STAR_6'
-    | 'STAR_7'
-    | 'STAR_8'
-    | 'STRIPED_RIGHT_ARROW'
-    | 'SUN'
-    | 'TRAPEZOID'
-    | 'TRIANGLE'
-    | 'UP_ARROW'
-    | 'UP_ARROW_CALLOUT'
-    | 'UP_DOWN_ARROW'
-    | 'UTURN_ARROW'
-    | 'VERTICAL_SCROLL'
-    | 'WAVE'
-    | 'WEDGE_ELLIPSE_CALLOUT'
-    | 'WEDGE_RECTANGLE_CALLOUT'
-    | 'WEDGE_ROUND_RECTANGLE_CALLOUT'
-    | 'FLOW_CHART_ALTERNATE_PROCESS'
-    | 'FLOW_CHART_COLLATE'
-    | 'FLOW_CHART_CONNECTOR'
-    | 'FLOW_CHART_DECISION'
-    | 'FLOW_CHART_DELAY'
-    | 'FLOW_CHART_DISPLAY'
-    | 'FLOW_CHART_DOCUMENT'
-    | 'FLOW_CHART_EXTRACT'
-    | 'FLOW_CHART_INPUT_OUTPUT'
-    | 'FLOW_CHART_INTERNAL_STORAGE'
-    | 'FLOW_CHART_MAGNETIC_DISK'
-    | 'FLOW_CHART_MAGNETIC_DRUM'
-    | 'FLOW_CHART_MAGNETIC_TAPE'
-    | 'FLOW_CHART_MANUAL_INPUT'
-    | 'FLOW_CHART_MANUAL_OPERATION'
-    | 'FLOW_CHART_MERGE'
-    | 'FLOW_CHART_MULTIDOCUMENT'
-    | 'FLOW_CHART_OFFLINE_STORAGE'
-    | 'FLOW_CHART_OFFPAGE_CONNECTOR'
-    | 'FLOW_CHART_ONLINE_STORAGE'
-    | 'FLOW_CHART_OR'
-    | 'FLOW_CHART_PREDEFINED_PROCESS'
-    | 'FLOW_CHART_PREPARATION'
-    | 'FLOW_CHART_PROCESS'
-    | 'FLOW_CHART_PUNCHED_CARD'
-    | 'FLOW_CHART_PUNCHED_TAPE'
-    | 'FLOW_CHART_SORT'
-    | 'FLOW_CHART_SUMMING_JUNCTION'
-    | 'FLOW_CHART_TERMINATOR'
-    | 'ARROW_EAST'
-    | 'ARROW_NORTH_EAST'
-    | 'ARROW_NORTH'
-    | 'SPEECH'
-    | 'STARBURST'
-    | 'TEARDROP'
-    | 'ELLIPSE_RIBBON'
-    | 'ELLIPSE_RIBBON_2'
-    | 'CLOUD_CALLOUT'
-    | 'CUSTOM'
-  text?: z.infer<typeof TextContentSchema>
-}
-
-const ShapeSchema: z.ZodType<ShapeType> = z
-  .object({
-    placeholder: PlaceholderSchema.exactOptional().openapi({
-      description:
-        'Placeholders are page elements that inherit from corresponding placeholders on layouts and masters. If set, the shape is a placeholder shape and any inherited properties can be resolved by looking at the parent placeholder identified by the Placeholder.parent_object_id field.',
-    }),
-    shapeProperties: ShapePropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the shape.',
-    }),
-    shapeType: z
-      .enum([
-        'TYPE_UNSPECIFIED',
-        'TEXT_BOX',
-        'RECTANGLE',
-        'ROUND_RECTANGLE',
-        'ELLIPSE',
-        'ARC',
-        'BENT_ARROW',
-        'BENT_UP_ARROW',
-        'BEVEL',
-        'BLOCK_ARC',
-        'BRACE_PAIR',
-        'BRACKET_PAIR',
-        'CAN',
-        'CHEVRON',
-        'CHORD',
-        'CLOUD',
-        'CORNER',
-        'CUBE',
-        'CURVED_DOWN_ARROW',
-        'CURVED_LEFT_ARROW',
-        'CURVED_RIGHT_ARROW',
-        'CURVED_UP_ARROW',
-        'DECAGON',
-        'DIAGONAL_STRIPE',
-        'DIAMOND',
-        'DODECAGON',
-        'DONUT',
-        'DOUBLE_WAVE',
-        'DOWN_ARROW',
-        'DOWN_ARROW_CALLOUT',
-        'FOLDED_CORNER',
-        'FRAME',
-        'HALF_FRAME',
-        'HEART',
-        'HEPTAGON',
-        'HEXAGON',
-        'HOME_PLATE',
-        'HORIZONTAL_SCROLL',
-        'IRREGULAR_SEAL_1',
-        'IRREGULAR_SEAL_2',
-        'LEFT_ARROW',
-        'LEFT_ARROW_CALLOUT',
-        'LEFT_BRACE',
-        'LEFT_BRACKET',
-        'LEFT_RIGHT_ARROW',
-        'LEFT_RIGHT_ARROW_CALLOUT',
-        'LEFT_RIGHT_UP_ARROW',
-        'LEFT_UP_ARROW',
-        'LIGHTNING_BOLT',
-        'MATH_DIVIDE',
-        'MATH_EQUAL',
-        'MATH_MINUS',
-        'MATH_MULTIPLY',
-        'MATH_NOT_EQUAL',
-        'MATH_PLUS',
-        'MOON',
-        'NO_SMOKING',
-        'NOTCHED_RIGHT_ARROW',
-        'OCTAGON',
-        'PARALLELOGRAM',
-        'PENTAGON',
-        'PIE',
-        'PLAQUE',
-        'PLUS',
-        'QUAD_ARROW',
-        'QUAD_ARROW_CALLOUT',
-        'RIBBON',
-        'RIBBON_2',
-        'RIGHT_ARROW',
-        'RIGHT_ARROW_CALLOUT',
-        'RIGHT_BRACE',
-        'RIGHT_BRACKET',
-        'ROUND_1_RECTANGLE',
-        'ROUND_2_DIAGONAL_RECTANGLE',
-        'ROUND_2_SAME_RECTANGLE',
-        'RIGHT_TRIANGLE',
-        'SMILEY_FACE',
-        'SNIP_1_RECTANGLE',
-        'SNIP_2_DIAGONAL_RECTANGLE',
-        'SNIP_2_SAME_RECTANGLE',
-        'SNIP_ROUND_RECTANGLE',
-        'STAR_10',
-        'STAR_12',
-        'STAR_16',
-        'STAR_24',
-        'STAR_32',
-        'STAR_4',
-        'STAR_5',
-        'STAR_6',
-        'STAR_7',
-        'STAR_8',
-        'STRIPED_RIGHT_ARROW',
-        'SUN',
-        'TRAPEZOID',
-        'TRIANGLE',
-        'UP_ARROW',
-        'UP_ARROW_CALLOUT',
-        'UP_DOWN_ARROW',
-        'UTURN_ARROW',
-        'VERTICAL_SCROLL',
-        'WAVE',
-        'WEDGE_ELLIPSE_CALLOUT',
-        'WEDGE_RECTANGLE_CALLOUT',
-        'WEDGE_ROUND_RECTANGLE_CALLOUT',
-        'FLOW_CHART_ALTERNATE_PROCESS',
-        'FLOW_CHART_COLLATE',
-        'FLOW_CHART_CONNECTOR',
-        'FLOW_CHART_DECISION',
-        'FLOW_CHART_DELAY',
-        'FLOW_CHART_DISPLAY',
-        'FLOW_CHART_DOCUMENT',
-        'FLOW_CHART_EXTRACT',
-        'FLOW_CHART_INPUT_OUTPUT',
-        'FLOW_CHART_INTERNAL_STORAGE',
-        'FLOW_CHART_MAGNETIC_DISK',
-        'FLOW_CHART_MAGNETIC_DRUM',
-        'FLOW_CHART_MAGNETIC_TAPE',
-        'FLOW_CHART_MANUAL_INPUT',
-        'FLOW_CHART_MANUAL_OPERATION',
-        'FLOW_CHART_MERGE',
-        'FLOW_CHART_MULTIDOCUMENT',
-        'FLOW_CHART_OFFLINE_STORAGE',
-        'FLOW_CHART_OFFPAGE_CONNECTOR',
-        'FLOW_CHART_ONLINE_STORAGE',
-        'FLOW_CHART_OR',
-        'FLOW_CHART_PREDEFINED_PROCESS',
-        'FLOW_CHART_PREPARATION',
-        'FLOW_CHART_PROCESS',
-        'FLOW_CHART_PUNCHED_CARD',
-        'FLOW_CHART_PUNCHED_TAPE',
-        'FLOW_CHART_SORT',
-        'FLOW_CHART_SUMMING_JUNCTION',
-        'FLOW_CHART_TERMINATOR',
-        'ARROW_EAST',
-        'ARROW_NORTH_EAST',
-        'ARROW_NORTH',
-        'SPEECH',
-        'STARBURST',
-        'TEARDROP',
-        'ELLIPSE_RIBBON',
-        'ELLIPSE_RIBBON_2',
-        'CLOUD_CALLOUT',
-        'CUSTOM',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of the shape.' }),
-    text: TextContentSchema.exactOptional().openapi({
-      description: 'The text content of the shape.',
-    }),
-  })
-  .openapi({
-    description:
-      'A PageElement kind representing a generic shape that does not have a more specific classification.',
-    required: [],
-  })
-  .openapi('Shape')
-
-const SheetsChartPropertiesSchema = z
-  .object({
-    chartImageProperties: ImagePropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the embedded chart image.',
-    }),
-  })
-  .openapi({ description: 'The properties of the SheetsChart.', required: [] })
-  .openapi('SheetsChartProperties')
-
-type SheetsChartType = {
-  chartId?: number
-  contentUrl?: string
-  sheetsChartProperties?: z.infer<typeof SheetsChartPropertiesSchema>
-  spreadsheetId?: string
-}
-
-const SheetsChartSchema: z.ZodType<SheetsChartType> = z
-  .object({
-    chartId: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the specific chart in the Google Sheets spreadsheet that is embedded.',
-      }),
-    contentUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL of an image of the embedded chart, with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the image as the original requester. Access to the image may be lost if the presentation's sharing settings change.",
-      }),
-    sheetsChartProperties: SheetsChartPropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the Sheets chart.',
-    }),
-    spreadsheetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID of the Google Sheets spreadsheet that contains the source chart.',
-      }),
-  })
-  .openapi({
-    description: 'A PageElement kind representing a linked chart embedded from Google Sheets.',
-    required: [],
-  })
-  .openapi('SheetsChart')
-
-const TableCellLocationSchema = z
-  .object({
-    columnIndex: z.int32().exactOptional().openapi({ description: 'The 0-based column index.' }),
-    rowIndex: z.int32().exactOptional().openapi({ description: 'The 0-based row index.' }),
-  })
-  .openapi({ description: 'A location of a single table cell within a table.', required: [] })
-  .openapi('TableCellLocation')
-
-const TableBorderFillSchema = z
-  .object({ solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid fill.' }) })
-  .openapi({ description: 'The fill of the border.', required: [] })
-  .openapi('TableBorderFill')
-
-const TableBorderPropertiesSchema = z
-  .object({
-    dashStyle: z
-      .enum([
-        'DASH_STYLE_UNSPECIFIED',
-        'SOLID',
-        'DOT',
-        'DASH',
-        'DASH_DOT',
-        'LONG_DASH',
-        'LONG_DASH_DOT',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The dash style of the border.' }),
-    tableBorderFill: TableBorderFillSchema.exactOptional().openapi({
-      description: 'The fill of the table border.',
-    }),
-    weight: DimensionSchema.exactOptional().openapi({
-      description: 'The thickness of the border.',
-    }),
-  })
-  .openapi({ description: 'The border styling properties of the TableBorderCell.', required: [] })
-  .openapi('TableBorderProperties')
-
-const TableBorderCellSchema = z
-  .object({
-    location: TableCellLocationSchema.exactOptional().openapi({
-      description: 'The location of the border within the border table.',
-    }),
-    tableBorderProperties: TableBorderPropertiesSchema.exactOptional().openapi({
-      description: 'The border properties.',
-    }),
-  })
-  .openapi({ description: 'The properties of each border cell.', required: [] })
-  .openapi('TableBorderCell')
-
-const TableBorderRowSchema = z
-  .object({
-    tableBorderCells: z
-      .array(TableBorderCellSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Properties of each border cell. When a border's adjacent table cells are merged, it is not included in the response.",
-      }),
-  })
-  .openapi({ description: 'Contents of each border row in a table.', required: [] })
-  .openapi('TableBorderRow')
-
-const TableColumnPropertiesSchema = z
-  .object({
-    columnWidth: DimensionSchema.exactOptional().openapi({ description: 'Width of a column.' }),
-  })
-  .openapi({ description: 'Properties of each column in a table.', required: [] })
-  .openapi('TableColumnProperties')
-
-const TableCellBackgroundFillSchema = z
-  .object({
-    propertyState: z
-      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The background fill property state. Updating the fill on a table cell will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a table cell, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
-      }),
-    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
-  })
-  .openapi({ description: 'The table cell background fill.', required: [] })
-  .openapi('TableCellBackgroundFill')
-
-const TableCellPropertiesSchema = z
-  .object({
-    contentAlignment: z
-      .enum([
-        'CONTENT_ALIGNMENT_UNSPECIFIED',
-        'CONTENT_ALIGNMENT_UNSUPPORTED',
-        'TOP',
-        'MIDDLE',
-        'BOTTOM',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The alignment of the content in the table cell. The default alignment matches the alignment for newly created table cells in the Slides editor.',
-      }),
-    tableCellBackgroundFill: TableCellBackgroundFillSchema.exactOptional().openapi({
-      description:
-        'The background fill of the table cell. The default fill matches the fill for newly created table cells in the Slides editor.',
-    }),
-  })
-  .openapi({ description: 'The properties of the TableCell.', required: [] })
-  .openapi('TableCellProperties')
-
-const TableCellSchema = z
-  .object({
-    columnSpan: z.int32().exactOptional().openapi({ description: 'Column span of the cell.' }),
-    location: TableCellLocationSchema.exactOptional().openapi({
-      description: 'The location of the cell within the table.',
-    }),
-    rowSpan: z.int32().exactOptional().openapi({ description: 'Row span of the cell.' }),
-    tableCellProperties: TableCellPropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the table cell.',
-    }),
-    text: TextContentSchema.exactOptional().openapi({
-      description: 'The text content of the cell.',
-    }),
-  })
-  .openapi({ description: 'Properties and contents of each table cell.', required: [] })
-  .openapi('TableCell')
-
-const TableRowPropertiesSchema = z
-  .object({
-    minRowHeight: DimensionSchema.exactOptional().openapi({
-      description:
-        "Minimum height of the row. The row will be rendered in the Slides editor at a height equal to or greater than this value in order to show all the text in the row's cell(s).",
-    }),
-  })
-  .openapi({ description: 'Properties of each row in a table.', required: [] })
-  .openapi('TableRowProperties')
-
-const TableRowSchema = z
-  .object({
-    rowHeight: DimensionSchema.exactOptional().openapi({ description: 'Height of a row.' }),
-    tableCells: z
-      .array(TableCellSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Properties and contents of each cell. Cells that span multiple columns are represented only once with a column_span greater than 1. As a result, the length of this collection does not always match the number of columns of the entire table.',
-      }),
-    tableRowProperties: TableRowPropertiesSchema.exactOptional().openapi({
-      description: 'Properties of the row.',
-    }),
-  })
-  .openapi({ description: 'Properties and contents of each row in a table.', required: [] })
-  .openapi('TableRow')
-
-type TableType = {
-  columns?: number
-  horizontalBorderRows?: z.infer<typeof TableBorderRowSchema>[]
-  rows?: number
-  tableColumns?: z.infer<typeof TableColumnPropertiesSchema>[]
-  tableRows?: z.infer<typeof TableRowSchema>[]
-  verticalBorderRows?: z.infer<typeof TableBorderRowSchema>[]
-}
-
-const TableSchema: z.ZodType<TableType> = z
-  .object({
-    columns: z.int32().exactOptional().openapi({ description: 'Number of columns in the table.' }),
-    horizontalBorderRows: z
-      .array(TableBorderRowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Properties of horizontal cell borders. A table's horizontal cell borders are represented as a grid. The grid has one more row than the number of rows in the table and the same number of columns as the table. For example, if the table is 3 x 3, its horizontal borders will be represented as a grid with 4 rows and 3 columns.",
-      }),
-    rows: z.int32().exactOptional().openapi({ description: 'Number of rows in the table.' }),
-    tableColumns: z
-      .array(TableColumnPropertiesSchema)
-      .exactOptional()
-      .openapi({ description: 'Properties of each column.' }),
-    tableRows: z
-      .array(TableRowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Properties and contents of each row. Cells that span multiple rows are contained in only one of these rows and have a row_span greater than 1.',
-      }),
-    verticalBorderRows: z
-      .array(TableBorderRowSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Properties of vertical cell borders. A table's vertical cell borders are represented as a grid. The grid has the same number of rows as the table and one more column than the number of columns in the table. For example, if the table is 3 x 3, its vertical borders will be represented as a grid with 3 rows and 4 columns.",
-      }),
-  })
-  .openapi({ description: 'A PageElement kind representing a table.', required: [] })
-  .openapi('Table')
-
-const VideoPropertiesSchema = z
-  .object({
-    autoPlay: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether to enable video autoplay when the page is displayed in present mode. Defaults to false.',
-      }),
-    end: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time at which to end playback, measured in seconds from the beginning of the video. If set, the end time should be after the start time. If not set or if you set this to a value that exceeds the video's length, the video will be played until its end.",
-      }),
-    mute: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Whether to mute the audio during video playback. Defaults to false.',
-      }),
-    outline: OutlineSchema.exactOptional().openapi({
-      description:
-        'The outline of the video. The default outline matches the defaults for new videos created in the Slides editor.',
-    }),
-    start: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time at which to start playback, measured in seconds from the beginning of the video. If set, the start time should be before the end time. If you set this to a value that exceeds the video's length in seconds, the video will be played from the last second. If not set, the video will be played from the beginning.",
-      }),
-  })
-  .openapi({ description: 'The properties of the Video.', required: [] })
-  .openapi('VideoProperties')
-
-type VideoType = {
-  id?: string
-  source?: 'SOURCE_UNSPECIFIED' | 'YOUTUBE' | 'DRIVE'
-  url?: string
-  videoProperties?: z.infer<typeof VideoPropertiesSchema>
-}
-
-const VideoSchema: z.ZodType<VideoType> = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The video source's unique identifier for this video." }),
-    source: z
-      .enum(['SOURCE_UNSPECIFIED', 'YOUTUBE', 'DRIVE'])
-      .exactOptional()
-      .openapi({ description: 'The video source.' }),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'An URL to a video. The URL is valid as long as the source video exists and sharing settings do not change.',
-      }),
-    videoProperties: VideoPropertiesSchema.exactOptional().openapi({
-      description: 'The properties of the video.',
-    }),
-  })
-  .openapi({ description: 'A PageElement kind representing a video.', required: [] })
-  .openapi('Video')
-
-type WordArtType = { renderedText?: string }
-
-const WordArtSchema: z.ZodType<WordArtType> = z
-  .object({
-    renderedText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The text rendered as word art.' }),
-  })
-  .openapi({ description: 'A PageElement kind representing word art.', required: [] })
-  .openapi('WordArt')
-
-type PageElementType = {
-  description?: string
-  elementGroup?: z.infer<typeof GroupSchema>
-  image?: z.infer<typeof ImageSchema>
-  line?: z.infer<typeof LineSchema>
-  objectId?: string
-  shape?: z.infer<typeof ShapeSchema>
-  sheetsChart?: z.infer<typeof SheetsChartSchema>
-  size?: z.infer<typeof SizeSchema>
-  table?: z.infer<typeof TableSchema>
-  title?: string
-  transform?: z.infer<typeof AffineTransformSchema>
-  video?: z.infer<typeof VideoSchema>
-  wordArt?: z.infer<typeof WordArtSchema>
-}
 
 const PageElementPropertiesSchema = z
   .object({
@@ -2059,6 +147,14 @@ const CreateLineRequestSchema = z
   })
   .openapi({ description: 'Creates a line.', required: [] })
   .openapi('CreateLineRequest')
+
+const TableCellLocationSchema = z
+  .object({
+    columnIndex: z.int32().exactOptional().openapi({ description: 'The 0-based column index.' }),
+    rowIndex: z.int32().exactOptional().openapi({ description: 'The 0-based row index.' }),
+  })
+  .openapi({ description: 'A location of a single table cell within a table.', required: [] })
+  .openapi('TableCellLocation')
 
 const RangeSchema = z
   .object({
@@ -2337,6 +433,51 @@ const CreateSheetsChartRequestSchema = z
     required: [],
   })
   .openapi('CreateSheetsChartRequest')
+
+const PlaceholderSchema = z
+  .object({
+    index: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the placeholder. If the same placeholder types are present in the same page, they would have different index values.',
+      }),
+    parentObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The object ID of this shape's parent placeholder. If unset, the parent placeholder shape does not exist, so the shape does not inherit properties from any other shape.",
+      }),
+    type: z
+      .enum([
+        'NONE',
+        'BODY',
+        'CHART',
+        'CLIP_ART',
+        'CENTERED_TITLE',
+        'DIAGRAM',
+        'DATE_AND_TIME',
+        'FOOTER',
+        'HEADER',
+        'MEDIA',
+        'OBJECT',
+        'PICTURE',
+        'SLIDE_NUMBER',
+        'SUBTITLE',
+        'TABLE',
+        'TITLE',
+        'SLIDE_IMAGE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the placeholder.' }),
+  })
+  .openapi({
+    description: 'The placeholder information that uniquely identifies a placeholder shape.',
+    required: [],
+  })
+  .openapi('Placeholder')
 
 const LayoutPlaceholderIdMappingSchema = z
   .object({
@@ -2932,6 +1073,371 @@ const UnmergeTableCellsRequestSchema = z
   .openapi({ description: 'Unmerges cells in a Table.', required: [] })
   .openapi('UnmergeTableCellsRequest')
 
+const CropPropertiesSchema = z
+  .object({
+    angle: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rotation angle of the crop window around its center, in radians. Rotation angle is applied after the offset.',
+      }),
+    bottomOffset: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies the bottom edge of the crop rectangle that is located above the original bounding rectangle bottom edge, relative to the object's original height.",
+      }),
+    leftOffset: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies the left edge of the crop rectangle that is located to the right of the original bounding rectangle left edge, relative to the object's original width.",
+      }),
+    rightOffset: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies the right edge of the crop rectangle that is located to the left of the original bounding rectangle right edge, relative to the object's original width.",
+      }),
+    topOffset: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The offset specifies the top edge of the crop rectangle that is located below the original bounding rectangle top edge, relative to the object's original height.",
+      }),
+  })
+  .openapi({
+    description:
+      "The crop properties of an object enclosed in a container. For example, an Image. The crop properties is represented by the offsets of four edges which define a crop rectangle. The offsets are measured in percentage from the corresponding edges of the object's original bounding rectangle towards inside, relative to the object's original dimensions. - If the offset is in the interval (0, 1), the corresponding edge of crop rectangle is positioned inside of the object's original bounding rectangle. - If the offset is negative or greater than 1, the corresponding edge of crop rectangle is positioned outside of the object's original bounding rectangle. - If the left edge of the crop rectangle is on the right side of its right edge, the object will be flipped horizontally. - If the top edge of the crop rectangle is below its bottom edge, the object will be flipped vertically. - If all offsets and rotation angle is 0, the object is not cropped. After cropping, the content in the crop rectangle will be stretched to fit its container.",
+    required: [],
+  })
+  .openapi('CropProperties')
+
+const LinkSchema = z
+  .object({
+    pageObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, indicates this is a link to the specific page in this presentation with this ID. A page with this ID may not exist.',
+      }),
+    relativeLink: z
+      .enum([
+        'RELATIVE_SLIDE_LINK_UNSPECIFIED',
+        'NEXT_SLIDE',
+        'PREVIOUS_SLIDE',
+        'FIRST_SLIDE',
+        'LAST_SLIDE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, indicates this is a link to a slide in this presentation, addressed by its position.',
+      }),
+    slideIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'If set, indicates this is a link to the slide at this zero-based index in the presentation. There may not be a slide at this index.',
+      }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'If set, indicates this is a link to the external web page at this URL.',
+      }),
+  })
+  .openapi({ description: 'A hypertext link.', required: [] })
+  .openapi('Link')
+
+const RgbColorSchema = z
+  .object({
+    blue: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The blue component of the color, from 0.0 to 1.0.' }),
+    green: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The green component of the color, from 0.0 to 1.0.' }),
+    red: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The red component of the color, from 0.0 to 1.0.' }),
+  })
+  .openapi({ description: 'An RGB color.', required: [] })
+  .openapi('RgbColor')
+
+const OpaqueColorSchema = z
+  .object({
+    rgbColor: RgbColorSchema.exactOptional().openapi({ description: 'An opaque RGB color.' }),
+    themeColor: z
+      .enum([
+        'THEME_COLOR_TYPE_UNSPECIFIED',
+        'DARK1',
+        'LIGHT1',
+        'DARK2',
+        'LIGHT2',
+        'ACCENT1',
+        'ACCENT2',
+        'ACCENT3',
+        'ACCENT4',
+        'ACCENT5',
+        'ACCENT6',
+        'HYPERLINK',
+        'FOLLOWED_HYPERLINK',
+        'TEXT1',
+        'BACKGROUND1',
+        'TEXT2',
+        'BACKGROUND2',
+      ])
+      .exactOptional()
+      .openapi({ description: 'An opaque theme color.' }),
+  })
+  .openapi({ description: 'A themeable solid color value.', required: [] })
+  .openapi('OpaqueColor')
+
+const SolidFillSchema = z
+  .object({
+    alpha: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fraction of this `color` that should be applied to the pixel. That is, the final pixel color is defined by the equation: pixel color = alpha * (color) + (1.0 - alpha) * (background color) This means that a value of 1.0 corresponds to a solid color, whereas a value of 0.0 corresponds to a completely transparent color.',
+      }),
+    color: OpaqueColorSchema.exactOptional().openapi({
+      description: 'The color value of the solid fill.',
+    }),
+  })
+  .openapi({
+    description:
+      'A solid color fill. The page or page element is filled entirely with the specified color value. If any field is unset, its value may be inherited from a parent placeholder if it exists.',
+    required: [],
+  })
+  .openapi('SolidFill')
+
+const OutlineFillSchema = z
+  .object({
+    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
+  })
+  .openapi({ description: 'The fill of the outline.', required: [] })
+  .openapi('OutlineFill')
+
+const OutlineSchema = z
+  .object({
+    dashStyle: z
+      .enum([
+        'DASH_STYLE_UNSPECIFIED',
+        'SOLID',
+        'DOT',
+        'DASH',
+        'DASH_DOT',
+        'LONG_DASH',
+        'LONG_DASH_DOT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the outline.' }),
+    outlineFill: OutlineFillSchema.exactOptional().openapi({
+      description: 'The fill of the outline.',
+    }),
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The outline property state. Updating the outline on a page element will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no outline on a page element, set this field to `NOT_RENDERED`. In this case, any other outline fields set in the same request will be ignored.',
+      }),
+    weight: DimensionSchema.exactOptional().openapi({
+      description: 'The thickness of the outline.',
+    }),
+  })
+  .openapi({
+    description:
+      'The outline of a PageElement. If these fields are unset, they may be inherited from a parent placeholder if it exists. If there is no parent, the fields will default to the value used for new page elements created in the Slides editor, which may depend on the page element kind.',
+    required: [],
+  })
+  .openapi('Outline')
+
+const ColorStopSchema = z
+  .object({
+    alpha: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The alpha value of this color in the gradient band. Defaults to 1.0, fully opaque.',
+      }),
+    color: OpaqueColorSchema.exactOptional().openapi({
+      description: 'The color of the gradient stop.',
+    }),
+    position: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The relative position of the color stop in the gradient band measured in percentage. The value should be in the interval [0.0, 1.0].',
+      }),
+  })
+  .openapi({ description: 'A color and position in a gradient band.', required: [] })
+  .openapi('ColorStop')
+
+const RecolorSchema = z
+  .object({
+    name: z
+      .enum([
+        'NONE',
+        'LIGHT1',
+        'LIGHT2',
+        'LIGHT3',
+        'LIGHT4',
+        'LIGHT5',
+        'LIGHT6',
+        'LIGHT7',
+        'LIGHT8',
+        'LIGHT9',
+        'LIGHT10',
+        'DARK1',
+        'DARK2',
+        'DARK3',
+        'DARK4',
+        'DARK5',
+        'DARK6',
+        'DARK7',
+        'DARK8',
+        'DARK9',
+        'DARK10',
+        'GRAYSCALE',
+        'NEGATIVE',
+        'SEPIA',
+        'CUSTOM',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          "The name of the recolor effect. The name is determined from the `recolor_stops` by matching the gradient against the colors in the page's current color scheme. This property is read-only.",
+      }),
+    recolorStops: z
+      .array(ColorStopSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The recolor effect is represented by a gradient, which is a list of color stops. The colors in the gradient will replace the corresponding colors at the same position in the color palette and apply to the image. This property is read-only.',
+      }),
+  })
+  .openapi({ description: 'A recolor effect applied on an image.', required: [] })
+  .openapi('Recolor')
+
+const ShadowSchema = z
+  .object({
+    alignment: z
+      .enum([
+        'RECTANGLE_POSITION_UNSPECIFIED',
+        'TOP_LEFT',
+        'TOP_CENTER',
+        'TOP_RIGHT',
+        'LEFT_CENTER',
+        'CENTER',
+        'RIGHT_CENTER',
+        'BOTTOM_LEFT',
+        'BOTTOM_CENTER',
+        'BOTTOM_RIGHT',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The alignment point of the shadow, that sets the origin for translate, scale and skew of the shadow. This property is read-only.',
+      }),
+    alpha: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: "The alpha of the shadow's color, from 0.0 to 1.0." }),
+    blurRadius: DimensionSchema.exactOptional().openapi({
+      description:
+        'The radius of the shadow blur. The larger the radius, the more diffuse the shadow becomes.',
+    }),
+    color: OpaqueColorSchema.exactOptional().openapi({ description: 'The shadow color value.' }),
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The shadow property state. Updating the shadow on a page element will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no shadow on a page element, set this field to `NOT_RENDERED`. In this case, any other shadow fields set in the same request will be ignored.',
+      }),
+    rotateWithShape: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether the shadow should rotate with the shape. This property is read-only.',
+      }),
+    transform: AffineTransformSchema.exactOptional().openapi({
+      description:
+        'Transform that encodes the translate, scale, and skew of the shadow, relative to the alignment position.',
+    }),
+    type: z
+      .enum(['SHADOW_TYPE_UNSPECIFIED', 'OUTER'])
+      .exactOptional()
+      .openapi({ description: 'The type of the shadow. This property is read-only.' }),
+  })
+  .openapi({
+    description:
+      'The shadow properties of a page element. If these fields are unset, they may be inherited from a parent placeholder if it exists. If there is no parent, the fields will default to the value used for new page elements created in the Slides editor, which may depend on the page element kind.',
+    required: [],
+  })
+  .openapi('Shadow')
+
+const ImagePropertiesSchema = z
+  .object({
+    brightness: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The brightness effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect. This property is read-only.',
+      }),
+    contrast: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The contrast effect of the image. The value should be in the interval [-1.0, 1.0], where 0 means no effect. This property is read-only.',
+      }),
+    cropProperties: CropPropertiesSchema.exactOptional().openapi({
+      description:
+        'The crop properties of the image. If not set, the image is not cropped. This property is read-only.',
+    }),
+    link: LinkSchema.exactOptional().openapi({
+      description: 'The hyperlink destination of the image. If unset, there is no link.',
+    }),
+    outline: OutlineSchema.exactOptional().openapi({
+      description: 'The outline of the image. If not set, the image has no outline.',
+    }),
+    recolor: RecolorSchema.exactOptional().openapi({
+      description:
+        'The recolor effect of the image. If not set, the image is not recolored. This property is read-only.',
+    }),
+    shadow: ShadowSchema.exactOptional().openapi({
+      description:
+        'The shadow of the image. If not set, the image has no shadow. This property is read-only.',
+    }),
+    transparency: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The transparency effect of the image. The value should be in the interval [0.0, 1.0], where 0 means no effect and 1 means completely transparent. This property is read-only.',
+      }),
+  })
+  .openapi({ description: 'The properties of the Image.', required: [] })
+  .openapi('ImageProperties')
+
 const UpdateImagePropertiesRequestSchema = z
   .object({
     fields: z
@@ -2971,6 +1477,103 @@ const UpdateLineCategoryRequestSchema = z
   })
   .openapi({ description: 'Updates the category of a line.', required: [] })
   .openapi('UpdateLineCategoryRequest')
+
+const LineConnectionSchema = z
+  .object({
+    connectedObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object ID of the connected page element. Some page elements, such as groups, tables, and lines do not have connection sites and therefore cannot be connected to a connector line.',
+      }),
+    connectionSiteIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The index of the connection site on the connected page element. In most cases, it corresponds to the predefined connection site index from the ECMA-376 standard. More information on those connection sites can be found in the description of the "cnx" attribute in section 20.1.9.9 and Annex H. "Predefined DrawingML Shape and Text Geometries" of "Office Open XML File Formats-Fundamentals and Markup Language Reference", part 1 of [ECMA-376 5th edition] (http://www.ecma-international.org/publications/standards/Ecma-376.htm). The position of each connection site can also be viewed from Slides editor.',
+      }),
+  })
+  .openapi({ description: 'The properties for one end of a Line connection.', required: [] })
+  .openapi('LineConnection')
+
+const LineFillSchema = z
+  .object({
+    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
+  })
+  .openapi({ description: 'The fill of the line.', required: [] })
+  .openapi('LineFill')
+
+const LinePropertiesSchema = z
+  .object({
+    dashStyle: z
+      .enum([
+        'DASH_STYLE_UNSPECIFIED',
+        'SOLID',
+        'DOT',
+        'DASH',
+        'DASH_DOT',
+        'LONG_DASH',
+        'LONG_DASH_DOT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the line.' }),
+    endArrow: z
+      .enum([
+        'ARROW_STYLE_UNSPECIFIED',
+        'NONE',
+        'STEALTH_ARROW',
+        'FILL_ARROW',
+        'FILL_CIRCLE',
+        'FILL_SQUARE',
+        'FILL_DIAMOND',
+        'OPEN_ARROW',
+        'OPEN_CIRCLE',
+        'OPEN_SQUARE',
+        'OPEN_DIAMOND',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The style of the arrow at the end of the line.' }),
+    endConnection: LineConnectionSchema.exactOptional().openapi({
+      description:
+        'The connection at the end of the line. If unset, there is no connection. Only lines with a Type indicating it is a "connector" can have an `end_connection`.',
+    }),
+    lineFill: LineFillSchema.exactOptional().openapi({
+      description:
+        'The fill of the line. The default line fill matches the defaults for new lines created in the Slides editor.',
+    }),
+    link: LinkSchema.exactOptional().openapi({
+      description: 'The hyperlink destination of the line. If unset, there is no link.',
+    }),
+    startArrow: z
+      .enum([
+        'ARROW_STYLE_UNSPECIFIED',
+        'NONE',
+        'STEALTH_ARROW',
+        'FILL_ARROW',
+        'FILL_CIRCLE',
+        'FILL_SQUARE',
+        'FILL_DIAMOND',
+        'OPEN_ARROW',
+        'OPEN_CIRCLE',
+        'OPEN_SQUARE',
+        'OPEN_DIAMOND',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The style of the arrow at the beginning of the line.' }),
+    startConnection: LineConnectionSchema.exactOptional().openapi({
+      description:
+        'The connection at the beginning of the line. If unset, there is no connection. Only lines with a Type indicating it is a "connector" can have a `start_connection`.',
+    }),
+    weight: DimensionSchema.exactOptional().openapi({ description: 'The thickness of the line.' }),
+  })
+  .openapi({
+    description:
+      'The properties of the Line. When unset, these fields default to values that match the appearance of new lines created in the Slides editor.',
+    required: [],
+  })
+  .openapi('LineProperties')
 
 const UpdateLinePropertiesRequestSchema = z
   .object({
@@ -3070,6 +1673,110 @@ const UpdatePageElementsZOrderRequestSchema = z
   })
   .openapi('UpdatePageElementsZOrderRequest')
 
+const ThemeColorPairSchema = z
+  .object({
+    color: RgbColorSchema.exactOptional().openapi({
+      description: 'The concrete color corresponding to the theme color type above.',
+    }),
+    type: z
+      .enum([
+        'THEME_COLOR_TYPE_UNSPECIFIED',
+        'DARK1',
+        'LIGHT1',
+        'DARK2',
+        'LIGHT2',
+        'ACCENT1',
+        'ACCENT2',
+        'ACCENT3',
+        'ACCENT4',
+        'ACCENT5',
+        'ACCENT6',
+        'HYPERLINK',
+        'FOLLOWED_HYPERLINK',
+        'TEXT1',
+        'BACKGROUND1',
+        'TEXT2',
+        'BACKGROUND2',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the theme color.' }),
+  })
+  .openapi({
+    description: 'A pair mapping a theme color type to the concrete color it represents.',
+    required: [],
+  })
+  .openapi('ThemeColorPair')
+
+const ColorSchemeSchema = z
+  .object({
+    colors: z
+      .array(ThemeColorPairSchema)
+      .exactOptional()
+      .openapi({ description: 'The ThemeColorType and corresponding concrete color pairs.' }),
+  })
+  .openapi({ description: 'The palette of predefined colors for a page.', required: [] })
+  .openapi('ColorScheme')
+
+const StretchedPictureFillSchema = z
+  .object({
+    contentUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Reading the content_url: An URL to a picture with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the picture as the original requester. Access to the picture may be lost if the presentation's sharing settings change. Writing the content_url: The picture is fetched once at insertion time and a copy is stored for display inside the presentation. Pictures must be less than 50MB in size, cannot exceed 25 megapixels, and must be in one of PNG, JPEG, or GIF format. The provided URL can be at most 2 kB in length.",
+      }),
+    size: SizeSchema.exactOptional().openapi({
+      description: 'The original size of the picture fill. This field is read-only.',
+    }),
+  })
+  .openapi({
+    description:
+      'The stretched picture fill. The page or page element is filled entirely with the specified picture. The picture is stretched to fit its container.',
+    required: [],
+  })
+  .openapi('StretchedPictureFill')
+
+const PageBackgroundFillSchema = z
+  .object({
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The background fill property state. Updating the fill on a page will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a page, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
+      }),
+    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
+    stretchedPictureFill: StretchedPictureFillSchema.exactOptional().openapi({
+      description: 'Stretched picture fill.',
+    }),
+  })
+  .openapi({ description: 'The page background fill.', required: [] })
+  .openapi('PageBackgroundFill')
+
+type PagePropertiesType = {
+  colorScheme?: z.infer<typeof ColorSchemeSchema>
+  pageBackgroundFill?: z.infer<typeof PageBackgroundFillSchema>
+}
+
+const PagePropertiesSchema: z.ZodType<PagePropertiesType> = z
+  .object({
+    colorScheme: ColorSchemeSchema.exactOptional().openapi({
+      description:
+        'The color scheme of the page. If unset, the color scheme is inherited from a parent page. If the page has no parent, the color scheme uses a default Slides color scheme, matching the defaults in the Slides editor. Only the concrete colors of the first 12 ThemeColorTypes are editable. In addition, only the color scheme on `Master` pages can be updated. To update the field, a color scheme containing mappings from all the first 12 ThemeColorTypes to their concrete colors must be provided. Colors for the remaining ThemeColorTypes will be ignored.',
+    }),
+    pageBackgroundFill: PageBackgroundFillSchema.exactOptional().openapi({
+      description:
+        'The background fill of the page. If unset, the background fill is inherited from a parent page if it exists. If the page has no parent, then the background fill defaults to the corresponding fill in the Slides editor.',
+    }),
+  })
+  .openapi({
+    description:
+      'The properties of the Page. The page will inherit properties from the parent page. Depending on the page type the hierarchy is defined in either SlideProperties or LayoutProperties.',
+    required: [],
+  })
+  .openapi('PageProperties')
+
 const UpdatePagePropertiesRequestSchema = z
   .object({
     fields: z
@@ -3089,6 +1796,58 @@ const UpdatePagePropertiesRequestSchema = z
   })
   .openapi({ description: 'Updates the properties of a Page.', required: [] })
   .openapi('UpdatePagePropertiesRequest')
+
+const ParagraphStyleSchema = z
+  .object({
+    alignment: z
+      .enum(['ALIGNMENT_UNSPECIFIED', 'START', 'CENTER', 'END', 'JUSTIFIED'])
+      .exactOptional()
+      .openapi({ description: 'The text alignment for this paragraph.' }),
+    direction: z
+      .enum(['TEXT_DIRECTION_UNSPECIFIED', 'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The text direction of this paragraph. If unset, the value defaults to LEFT_TO_RIGHT since text direction is not inherited.',
+      }),
+    indentEnd: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount indentation for the paragraph on the side that corresponds to the end of the text, based on the current text direction. If unset, the value is inherited from the parent.',
+    }),
+    indentFirstLine: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of indentation for the start of the first line of the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    indentStart: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount indentation for the paragraph on the side that corresponds to the start of the text, based on the current text direction. If unset, the value is inherited from the parent.',
+    }),
+    lineSpacing: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of space between lines, as a percentage of normal, where normal is represented as 100.0. If unset, the value is inherited from the parent.',
+      }),
+    spaceAbove: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of extra space above the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    spaceBelow: DimensionSchema.exactOptional().openapi({
+      description:
+        'The amount of extra space below the paragraph. If unset, the value is inherited from the parent.',
+    }),
+    spacingMode: z
+      .enum(['SPACING_MODE_UNSPECIFIED', 'NEVER_COLLAPSE', 'COLLAPSE_LISTS'])
+      .exactOptional()
+      .openapi({ description: 'The spacing mode for the paragraph.' }),
+  })
+  .openapi({
+    description:
+      'Styles that apply to a whole paragraph. If this text is contained in a shape with a parent placeholder, then these paragraph styles may be inherited from the parent. Which paragraph styles are inherited depend on the nesting level of lists: * A paragraph not in a list will inherit its paragraph style from the paragraph at the 0 nesting level of the list inside the parent placeholder. * A paragraph in a list will inherit its paragraph style from the paragraph at its corresponding nesting level of the list inside the parent placeholder. Inherited paragraph styles are represented as unset fields in this message.',
+    required: [],
+  })
+  .openapi('ParagraphStyle')
 
 const UpdateParagraphStyleRequestSchema = z
   .object({
@@ -3119,6 +1878,90 @@ const UpdateParagraphStyleRequestSchema = z
   })
   .openapi('UpdateParagraphStyleRequest')
 
+const AutofitSchema = z
+  .object({
+    autofitType: z
+      .enum(['AUTOFIT_TYPE_UNSPECIFIED', 'NONE', 'TEXT_AUTOFIT', 'SHAPE_AUTOFIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The autofit type of the shape. If the autofit type is AUTOFIT_TYPE_UNSPECIFIED, the autofit type is inherited from a parent placeholder if it exists. The field is automatically set to NONE if a request is made that might affect text fitting within its bounding text box. In this case the font_scale is applied to the font_size and the line_spacing_reduction is applied to the line_spacing. Both properties are also reset to default values.',
+      }),
+    fontScale: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The font scale applied to the shape. For shapes with autofit_type NONE or SHAPE_AUTOFIT, this value is the default value of 1. For TEXT_AUTOFIT, this value multiplied by the font_size gives the font size that is rendered in the editor. This property is read-only.',
+      }),
+    lineSpacingReduction: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The line spacing reduction applied to the shape. For shapes with autofit_type NONE or SHAPE_AUTOFIT, this value is the default value of 0. For TEXT_AUTOFIT, this value subtracted from the line_spacing gives the line spacing that is rendered in the editor. This property is read-only.',
+      }),
+  })
+  .openapi({ description: 'The autofit properties of a Shape.', required: [] })
+  .openapi('Autofit')
+
+const ShapeBackgroundFillSchema = z
+  .object({
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The background fill property state. Updating the fill on a shape will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a shape, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
+      }),
+    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
+  })
+  .openapi({ description: 'The shape background fill.', required: [] })
+  .openapi('ShapeBackgroundFill')
+
+const ShapePropertiesSchema = z
+  .object({
+    autofit: AutofitSchema.exactOptional().openapi({
+      description:
+        'The autofit properties of the shape. This property is only set for shapes that allow text.',
+    }),
+    contentAlignment: z
+      .enum([
+        'CONTENT_ALIGNMENT_UNSPECIFIED',
+        'CONTENT_ALIGNMENT_UNSUPPORTED',
+        'TOP',
+        'MIDDLE',
+        'BOTTOM',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The alignment of the content in the shape. If unspecified, the alignment is inherited from a parent placeholder if it exists. If the shape has no parent, the default alignment matches the alignment for new shapes created in the Slides editor.',
+      }),
+    link: LinkSchema.exactOptional().openapi({
+      description:
+        'The hyperlink destination of the shape. If unset, there is no link. Links are not inherited from parent placeholders.',
+    }),
+    outline: OutlineSchema.exactOptional().openapi({
+      description:
+        'The outline of the shape. If unset, the outline is inherited from a parent placeholder if it exists. If the shape has no parent, then the default outline depends on the shape type, matching the defaults for new shapes created in the Slides editor.',
+    }),
+    shadow: ShadowSchema.exactOptional().openapi({
+      description:
+        'The shadow properties of the shape. If unset, the shadow is inherited from a parent placeholder if it exists. If the shape has no parent, then the default shadow matches the defaults for new shapes created in the Slides editor. This property is read-only.',
+    }),
+    shapeBackgroundFill: ShapeBackgroundFillSchema.exactOptional().openapi({
+      description:
+        'The background fill of the shape. If unset, the background fill is inherited from a parent placeholder if it exists. If the shape has no parent, then the default background fill depends on the shape type, matching the defaults for new shapes created in the Slides editor.',
+    }),
+  })
+  .openapi({
+    description:
+      'The properties of a Shape. If the shape is a placeholder shape as determined by the placeholder field, then these properties may be inherited from a parent placeholder shape. Determining the rendered value of the property depends on the corresponding property_state field value. Any text autofit settings on the shape are automatically deactivated by requests that can impact how text fits in the shape.',
+    required: [],
+  })
+  .openapi('ShapeProperties')
+
 const UpdateShapePropertiesRequestSchema = z
   .object({
     fields: z
@@ -3139,7 +1982,51 @@ const UpdateShapePropertiesRequestSchema = z
   .openapi({ description: 'Update the properties of a Shape.', required: [] })
   .openapi('UpdateShapePropertiesRequest')
 
-const UpdateSlidePropertiesRequestSchema = z
+const SlidePropertiesSchema: z.ZodType<SlidePropertiesType> = z
+  .lazy(() =>
+    z
+      .object({
+        isSkipped: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the slide is skipped in the presentation mode. Defaults to false.',
+          }),
+        layoutObjectId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The object ID of the layout that this slide is based on. This property is read-only.',
+          }),
+        masterObjectId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The object ID of the master that this slide is based on. This property is read-only.',
+          }),
+        notesPage: PageSchema.exactOptional().openapi({
+          description:
+            'The notes page that this slide is associated with. It defines the visual appearance of a notes page when printing or exporting slides with speaker notes. A notes page inherits properties from the notes master. The placeholder shape with type BODY on the notes page contains the speaker notes for this slide. The ID of this shape is identified by the speakerNotesObjectId field. The notes page is read-only except for the text content and styles of the speaker notes shape. This property is read-only.',
+        }),
+      })
+      .openapi({
+        description:
+          'The properties of Page that are only relevant for pages with page_type SLIDE.',
+        required: [],
+      }),
+  )
+  .openapi('SlideProperties')
+
+type UpdateSlidePropertiesRequestType = {
+  fields?: string
+  objectId?: string
+  slideProperties?: z.infer<typeof SlidePropertiesSchema>
+}
+
+const UpdateSlidePropertiesRequestSchema: z.ZodType<UpdateSlidePropertiesRequestType> = z
   .object({
     fields: z
       .string()
@@ -3179,6 +2066,35 @@ const UpdateSlidesPositionRequestSchema = z
   .openapi({ description: 'Updates the position of slides in the presentation.', required: [] })
   .openapi('UpdateSlidesPositionRequest')
 
+const TableBorderFillSchema = z
+  .object({ solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid fill.' }) })
+  .openapi({ description: 'The fill of the border.', required: [] })
+  .openapi('TableBorderFill')
+
+const TableBorderPropertiesSchema = z
+  .object({
+    dashStyle: z
+      .enum([
+        'DASH_STYLE_UNSPECIFIED',
+        'SOLID',
+        'DOT',
+        'DASH',
+        'DASH_DOT',
+        'LONG_DASH',
+        'LONG_DASH_DOT',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The dash style of the border.' }),
+    tableBorderFill: TableBorderFillSchema.exactOptional().openapi({
+      description: 'The fill of the table border.',
+    }),
+    weight: DimensionSchema.exactOptional().openapi({
+      description: 'The thickness of the border.',
+    }),
+  })
+  .openapi({ description: 'The border styling properties of the TableBorderCell.', required: [] })
+  .openapi('TableBorderProperties')
+
 const UpdateTableBorderPropertiesRequestSchema = z
   .object({
     borderPosition: z
@@ -3217,6 +2133,43 @@ const UpdateTableBorderPropertiesRequestSchema = z
   .openapi({ description: 'Updates the properties of the table borders in a Table.', required: [] })
   .openapi('UpdateTableBorderPropertiesRequest')
 
+const TableCellBackgroundFillSchema = z
+  .object({
+    propertyState: z
+      .enum(['RENDERED', 'NOT_RENDERED', 'INHERIT'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The background fill property state. Updating the fill on a table cell will implicitly update this field to `RENDERED`, unless another value is specified in the same request. To have no fill on a table cell, set this field to `NOT_RENDERED`. In this case, any other fill fields set in the same request will be ignored.',
+      }),
+    solidFill: SolidFillSchema.exactOptional().openapi({ description: 'Solid color fill.' }),
+  })
+  .openapi({ description: 'The table cell background fill.', required: [] })
+  .openapi('TableCellBackgroundFill')
+
+const TableCellPropertiesSchema = z
+  .object({
+    contentAlignment: z
+      .enum([
+        'CONTENT_ALIGNMENT_UNSPECIFIED',
+        'CONTENT_ALIGNMENT_UNSUPPORTED',
+        'TOP',
+        'MIDDLE',
+        'BOTTOM',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The alignment of the content in the table cell. The default alignment matches the alignment for newly created table cells in the Slides editor.',
+      }),
+    tableCellBackgroundFill: TableCellBackgroundFillSchema.exactOptional().openapi({
+      description:
+        'The background fill of the table cell. The default fill matches the fill for newly created table cells in the Slides editor.',
+    }),
+  })
+  .openapi({ description: 'The properties of the TableCell.', required: [] })
+  .openapi('TableCellProperties')
+
 const UpdateTableCellPropertiesRequestSchema = z
   .object({
     fields: z
@@ -3237,6 +2190,13 @@ const UpdateTableCellPropertiesRequestSchema = z
   })
   .openapi({ description: 'Update the properties of a TableCell.', required: [] })
   .openapi('UpdateTableCellPropertiesRequest')
+
+const TableColumnPropertiesSchema = z
+  .object({
+    columnWidth: DimensionSchema.exactOptional().openapi({ description: 'Width of a column.' }),
+  })
+  .openapi({ description: 'Properties of each column in a table.', required: [] })
+  .openapi('TableColumnProperties')
 
 const UpdateTableColumnPropertiesRequestSchema = z
   .object({
@@ -3263,6 +2223,16 @@ const UpdateTableColumnPropertiesRequestSchema = z
   .openapi({ description: 'Updates the properties of a Table column.', required: [] })
   .openapi('UpdateTableColumnPropertiesRequest')
 
+const TableRowPropertiesSchema = z
+  .object({
+    minRowHeight: DimensionSchema.exactOptional().openapi({
+      description:
+        "Minimum height of the row. The row will be rendered in the Slides editor at a height equal to or greater than this value in order to show all the text in the row's cell(s).",
+    }),
+  })
+  .openapi({ description: 'Properties of each row in a table.', required: [] })
+  .openapi('TableRowProperties')
+
 const UpdateTableRowPropertiesRequestSchema = z
   .object({
     fields: z
@@ -3286,6 +2256,106 @@ const UpdateTableRowPropertiesRequestSchema = z
   })
   .openapi({ description: 'Updates the properties of a Table row.', required: [] })
   .openapi('UpdateTableRowPropertiesRequest')
+
+const OptionalColorSchema = z
+  .object({
+    opaqueColor: OpaqueColorSchema.exactOptional().openapi({
+      description:
+        'If set, this will be used as an opaque color. If unset, this represents a transparent color.',
+    }),
+  })
+  .openapi({
+    description: 'A color that can either be fully opaque or fully transparent.',
+    required: [],
+  })
+  .openapi('OptionalColor')
+
+const WeightedFontFamilySchema = z
+  .object({
+    fontFamily: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The font family of the text. The font family can be any font from the Font menu in Slides or from [Google Fonts] (https://fonts.google.com/). If the font name is unrecognized, the text is rendered in `Arial`.',
+      }),
+    weight: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rendered weight of the text. This field can have any value that is a multiple of `100` between `100` and `900`, inclusive. This range corresponds to the numerical values described in the CSS 2.1 Specification, [section 15.6](https://www.w3.org/TR/CSS21/fonts.html#font-boldness), with non-numerical values disallowed. Weights greater than or equal to `700` are considered bold, and weights less than `700`are not bold. The default value is `400` ("normal").',
+      }),
+  })
+  .openapi({
+    description: 'Represents a font family and weight used to style a TextRun.',
+    required: [],
+  })
+  .openapi('WeightedFontFamily')
+
+const TextStyleSchema = z
+  .object({
+    backgroundColor: OptionalColorSchema.exactOptional().openapi({
+      description:
+        'The background color of the text. If set, the color is either opaque or transparent, depending on if the `opaque_color` field in it is set.',
+    }),
+    baselineOffset: z
+      .enum(['BASELINE_OFFSET_UNSPECIFIED', 'NONE', 'SUPERSCRIPT', 'SUBSCRIPT'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The text's vertical offset from its normal position. Text with `SUPERSCRIPT` or `SUBSCRIPT` baseline offsets is automatically rendered in a smaller font size, computed based on the `font_size` field. The `font_size` itself is not affected by changes in this field.",
+      }),
+    bold: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is rendered as bold.' }),
+    fontFamily: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The font family of the text. The font family can be any font from the Font menu in Slides or from [Google Fonts] (https://fonts.google.com/). If the font name is unrecognized, the text is rendered in `Arial`. Some fonts can affect the weight of the text. If an update request specifies values for both `font_family` and `bold`, the explicitly-set `bold` value is used.',
+      }),
+    fontSize: DimensionSchema.exactOptional().openapi({
+      description:
+        "The size of the text's font. When read, the `font_size` will specified in points.",
+    }),
+    foregroundColor: OptionalColorSchema.exactOptional().openapi({
+      description:
+        'The color of the text itself. If set, the color is either opaque or transparent, depending on if the `opaque_color` field in it is set.',
+    }),
+    italic: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is italicized.' }),
+    link: LinkSchema.exactOptional().openapi({
+      description:
+        'The hyperlink destination of the text. If unset, there is no link. Links are not inherited from parent text. Changing the link in an update request causes some other changes to the text style of the range: * When setting a link, the text foreground color will be set to ThemeColorType.HYPERLINK and the text will be underlined. If these fields are modified in the same request, those values will be used instead of the link defaults. * Setting a link on a text range that overlaps with an existing link will also update the existing link to point to the new URL. * Links are not settable on newline characters. As a result, setting a link on a text range that crosses a paragraph boundary, such as `"ABC\\n123"`, will separate the newline character(s) into their own text runs. The link will be applied separately to the runs before and after the newline. * Removing a link will update the text style of the range to match the style of the preceding text (or the default text styles if the preceding text is another link) unless different styles are being set in the same request.',
+    }),
+    smallCaps: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is in small capital letters.' }),
+    strikethrough: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is struck through.' }),
+    underline: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the text is underlined.' }),
+    weightedFontFamily: WeightedFontFamilySchema.exactOptional().openapi({
+      description:
+        'The font family and rendered weight of the text. This field is an extension of `font_family` meant to support explicit font weights without breaking backwards compatibility. As such, when reading the style of a range of text, the value of `weighted_font_family#font_family` will always be equal to that of `font_family`. However, when writing, if both fields are included in the field mask (either explicitly or through the wildcard `"*"`), their values are reconciled as follows: * If `font_family` is set and `weighted_font_family` is not, the value of `font_family` is applied with weight `400` ("normal"). * If both fields are set, the value of `font_family` must match that of `weighted_font_family#font_family`. If so, the font family and weight of `weighted_font_family` is applied. Otherwise, a 400 bad request error is returned. * If `weighted_font_family` is set and `font_family` is not, the font family and weight of `weighted_font_family` is applied. * If neither field is set, the font family and weight of the text inherit from the parent. Note that these properties cannot inherit separately from each other. If an update request specifies values for both `weighted_font_family` and `bold`, the `weighted_font_family` is applied first, then `bold`. If `weighted_font_family#weight` is not set, it defaults to `400`. If `weighted_font_family` is set, then `weighted_font_family#font_family` must also be set with a non-empty value. Otherwise, a 400 bad request error is returned.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the styling that can be applied to a TextRun. If this text is contained in a shape with a parent placeholder, then these text styles may be inherited from the parent. Which text styles are inherited depend on the nesting level of lists: * A text run in a paragraph that is not in a list will inherit its text style from the the newline character in the paragraph at the 0 nesting level of the list inside the parent placeholder. * A text run in a paragraph that is in a list will inherit its text style from the newline character in the paragraph at its corresponding nesting level of the list inside the parent placeholder. Inherited text styles are represented as unset fields in this message. If text is contained in a shape without a parent placeholder, unsetting these fields will revert the style to a value matching the defaults in the Slides editor.',
+    required: [],
+  })
+  .openapi('TextStyle')
 
 const UpdateTextStyleRequestSchema = z
   .object({
@@ -3315,6 +2385,43 @@ const UpdateTextStyleRequestSchema = z
   })
   .openapi({ description: 'Update the styling of text in a Shape or Table.', required: [] })
   .openapi('UpdateTextStyleRequest')
+
+const VideoPropertiesSchema = z
+  .object({
+    autoPlay: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to enable video autoplay when the page is displayed in present mode. Defaults to false.',
+      }),
+    end: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time at which to end playback, measured in seconds from the beginning of the video. If set, the end time should be after the start time. If not set or if you set this to a value that exceeds the video's length, the video will be played until its end.",
+      }),
+    mute: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Whether to mute the audio during video playback. Defaults to false.',
+      }),
+    outline: OutlineSchema.exactOptional().openapi({
+      description:
+        'The outline of the video. The default outline matches the defaults for new videos created in the Slides editor.',
+    }),
+    start: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          "The time at which to start playback, measured in seconds from the beginning of the video. If set, the start time should be before the end time. If you set this to a value that exceeds the video's length in seconds, the video will be played from the last second. If not set, the video will be played from the beginning.",
+      }),
+  })
+  .openapi({ description: 'The properties of the Video.', required: [] })
+  .openapi('VideoProperties')
 
 const UpdateVideoPropertiesRequestSchema = z
   .object({
@@ -3382,6 +2489,1163 @@ type RequestType = {
   updateTextStyle?: z.infer<typeof UpdateTextStyleRequestSchema>
   updateVideoProperties?: z.infer<typeof UpdateVideoPropertiesRequestSchema>
 }
+
+const RequestSchema: z.ZodType<RequestType> = z
+  .object({
+    createImage: CreateImageRequestSchema.exactOptional().openapi({
+      description: 'Creates an image.',
+    }),
+    createLine: CreateLineRequestSchema.exactOptional().openapi({ description: 'Creates a line.' }),
+    createParagraphBullets: CreateParagraphBulletsRequestSchema.exactOptional().openapi({
+      description: 'Creates bullets for paragraphs.',
+    }),
+    createShape: CreateShapeRequestSchema.exactOptional().openapi({
+      description: 'Creates a new shape.',
+    }),
+    createSheetsChart: CreateSheetsChartRequestSchema.exactOptional().openapi({
+      description: 'Creates an embedded Google Sheets chart.',
+    }),
+    createSlide: CreateSlideRequestSchema.exactOptional().openapi({
+      description: 'Creates a new slide.',
+    }),
+    createTable: CreateTableRequestSchema.exactOptional().openapi({
+      description: 'Creates a new table.',
+    }),
+    createVideo: CreateVideoRequestSchema.exactOptional().openapi({
+      description: 'Creates a video.',
+    }),
+    deleteObject: DeleteObjectRequestSchema.exactOptional().openapi({
+      description: 'Deletes a page or page element from the presentation.',
+    }),
+    deleteParagraphBullets: DeleteParagraphBulletsRequestSchema.exactOptional().openapi({
+      description: 'Deletes bullets from paragraphs.',
+    }),
+    deleteTableColumn: DeleteTableColumnRequestSchema.exactOptional().openapi({
+      description: 'Deletes a column from a table.',
+    }),
+    deleteTableRow: DeleteTableRowRequestSchema.exactOptional().openapi({
+      description: 'Deletes a row from a table.',
+    }),
+    deleteText: DeleteTextRequestSchema.exactOptional().openapi({
+      description: 'Deletes text from a shape or a table cell.',
+    }),
+    duplicateObject: DuplicateObjectRequestSchema.exactOptional().openapi({
+      description: 'Duplicates a slide or page element.',
+    }),
+    groupObjects: GroupObjectsRequestSchema.exactOptional().openapi({
+      description: 'Groups objects, such as page elements.',
+    }),
+    insertTableColumns: InsertTableColumnsRequestSchema.exactOptional().openapi({
+      description: 'Inserts columns into a table.',
+    }),
+    insertTableRows: InsertTableRowsRequestSchema.exactOptional().openapi({
+      description: 'Inserts rows into a table.',
+    }),
+    insertText: InsertTextRequestSchema.exactOptional().openapi({
+      description: 'Inserts text into a shape or table cell.',
+    }),
+    mergeTableCells: MergeTableCellsRequestSchema.exactOptional().openapi({
+      description: 'Merges cells in a Table.',
+    }),
+    refreshSheetsChart: RefreshSheetsChartRequestSchema.exactOptional().openapi({
+      description: 'Refreshes a Google Sheets chart.',
+    }),
+    replaceAllShapesWithImage: ReplaceAllShapesWithImageRequestSchema.exactOptional().openapi({
+      description: 'Replaces all shapes matching some criteria with an image.',
+    }),
+    replaceAllShapesWithSheetsChart:
+      ReplaceAllShapesWithSheetsChartRequestSchema.exactOptional().openapi({
+        description: 'Replaces all shapes matching some criteria with a Google Sheets chart.',
+      }),
+    replaceAllText: ReplaceAllTextRequestSchema.exactOptional().openapi({
+      description: 'Replaces all instances of specified text.',
+    }),
+    replaceImage: ReplaceImageRequestSchema.exactOptional().openapi({
+      description: 'Replaces an existing image with a new image.',
+    }),
+    rerouteLine: RerouteLineRequestSchema.exactOptional().openapi({
+      description:
+        "Reroutes a line such that it's connected at the two closest connection sites on the connected page elements.",
+    }),
+    ungroupObjects: UngroupObjectsRequestSchema.exactOptional().openapi({
+      description: 'Ungroups objects, such as groups.',
+    }),
+    unmergeTableCells: UnmergeTableCellsRequestSchema.exactOptional().openapi({
+      description: 'Unmerges cells in a Table.',
+    }),
+    updateImageProperties: UpdateImagePropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of an Image.',
+    }),
+    updateLineCategory: UpdateLineCategoryRequestSchema.exactOptional().openapi({
+      description: 'Updates the category of a line.',
+    }),
+    updateLineProperties: UpdateLinePropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Line.',
+    }),
+    updatePageElementAltText: UpdatePageElementAltTextRequestSchema.exactOptional().openapi({
+      description: 'Updates the alt text title and/or description of a page element.',
+    }),
+    updatePageElementTransform: UpdatePageElementTransformRequestSchema.exactOptional().openapi({
+      description: 'Updates the transform of a page element.',
+    }),
+    updatePageElementsZOrder: UpdatePageElementsZOrderRequestSchema.exactOptional().openapi({
+      description: 'Updates the Z-order of page elements.',
+    }),
+    updatePageProperties: UpdatePagePropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Page.',
+    }),
+    updateParagraphStyle: UpdateParagraphStyleRequestSchema.exactOptional().openapi({
+      description: 'Updates the styling of paragraphs within a Shape or Table.',
+    }),
+    updateShapeProperties: UpdateShapePropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Shape.',
+    }),
+    updateSlideProperties: UpdateSlidePropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Slide',
+    }),
+    updateSlidesPosition: UpdateSlidesPositionRequestSchema.exactOptional().openapi({
+      description: 'Updates the position of a set of slides in the presentation.',
+    }),
+    updateTableBorderProperties: UpdateTableBorderPropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of the table borders in a Table.',
+    }),
+    updateTableCellProperties: UpdateTableCellPropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a TableCell.',
+    }),
+    updateTableColumnProperties: UpdateTableColumnPropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Table column.',
+    }),
+    updateTableRowProperties: UpdateTableRowPropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Table row.',
+    }),
+    updateTextStyle: UpdateTextStyleRequestSchema.exactOptional().openapi({
+      description: 'Updates the styling of text within a Shape or Table.',
+    }),
+    updateVideoProperties: UpdateVideoPropertiesRequestSchema.exactOptional().openapi({
+      description: 'Updates the properties of a Video.',
+    }),
+  })
+  .openapi({ description: 'A single kind of update to apply to a presentation.', required: [] })
+  .openapi('Request')
+
+const WriteControlSchema = z
+  .object({
+    requiredRevisionId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The revision ID of the presentation required for the write request. If specified and the required revision ID doesn't match the presentation's current revision ID, the request is not processed and returns a 400 bad request error. When a required revision ID is returned in a response, it indicates the revision ID of the document after the request was applied.",
+      }),
+  })
+  .openapi({ description: 'Provides control over how write requests are executed.', required: [] })
+  .openapi('WriteControl')
+
+type BatchUpdatePresentationRequestType = {
+  requests?: z.infer<typeof RequestSchema>[]
+  writeControl?: z.infer<typeof WriteControlSchema>
+}
+
+const PageElementSchema: z.ZodType<PageElementType> = z
+  .lazy(() =>
+    z
+      .object({
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The description of the page element. Combined with title to display alt text. The field is not supported for Group elements.',
+          }),
+        elementGroup: GroupSchema.exactOptional().openapi({
+          description: 'A collection of page elements joined as a single unit.',
+        }),
+        image: ImageSchema.exactOptional().openapi({ description: 'An image page element.' }),
+        line: LineSchema.exactOptional().openapi({ description: 'A line page element.' }),
+        objectId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The object ID for this page element. Object IDs used by google.apps.slides.v1.Page and google.apps.slides.v1.PageElement share the same namespace.',
+          }),
+        shape: ShapeSchema.exactOptional().openapi({ description: 'A generic shape.' }),
+        sheetsChart: SheetsChartSchema.exactOptional().openapi({
+          description:
+            'A linked chart embedded from Google Sheets. Unlinked charts are represented as images.',
+        }),
+        size: SizeSchema.exactOptional().openapi({ description: 'The size of the page element.' }),
+        table: TableSchema.exactOptional().openapi({ description: 'A table page element.' }),
+        title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The title of the page element. Combined with description to display alt text. The field is not supported for Group elements.',
+          }),
+        transform: AffineTransformSchema.exactOptional().openapi({
+          description:
+            "The transform of the page element. The visual appearance of the page element is determined by its absolute transform. To compute the absolute transform, preconcatenate a page element's transform with the transforms of all of its parent groups. If the page element is not in a group, its absolute transform is the same as the value in this field. The initial transform for the newly created Group is always the identity transform.",
+        }),
+        video: VideoSchema.exactOptional().openapi({ description: 'A video page element.' }),
+        wordArt: WordArtSchema.exactOptional().openapi({ description: 'A word art page element.' }),
+      })
+      .openapi({ description: 'A visual element rendered on a page.', required: [] }),
+  )
+  .openapi('PageElement')
+
+type GroupType = { children?: z.infer<typeof PageElementSchema>[] }
+
+type ImageType = {
+  contentUrl?: string
+  imageProperties?: z.infer<typeof ImagePropertiesSchema>
+  placeholder?: z.infer<typeof PlaceholderSchema>
+  sourceUrl?: string
+}
+
+type LayoutPropertiesType = { displayName?: string; masterObjectId?: string; name?: string }
+
+type LineType = {
+  lineCategory?: 'LINE_CATEGORY_UNSPECIFIED' | 'STRAIGHT' | 'BENT' | 'CURVED'
+  lineProperties?: z.infer<typeof LinePropertiesSchema>
+  lineType?:
+    | 'TYPE_UNSPECIFIED'
+    | 'STRAIGHT_CONNECTOR_1'
+    | 'BENT_CONNECTOR_2'
+    | 'BENT_CONNECTOR_3'
+    | 'BENT_CONNECTOR_4'
+    | 'BENT_CONNECTOR_5'
+    | 'CURVED_CONNECTOR_2'
+    | 'CURVED_CONNECTOR_3'
+    | 'CURVED_CONNECTOR_4'
+    | 'CURVED_CONNECTOR_5'
+    | 'STRAIGHT_LINE'
+}
+
+type MasterPropertiesType = { displayName?: string }
+
+type NotesPropertiesType = { speakerNotesObjectId?: string }
+
+const LayoutPropertiesSchema: z.ZodType<LayoutPropertiesType> = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human-readable name of the layout.' }),
+    masterObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The object ID of the master that this layout is based on.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the layout.' }),
+  })
+  .openapi({
+    description: 'The properties of Page are only relevant for pages with page_type LAYOUT.',
+    required: [],
+  })
+  .openapi('LayoutProperties')
+
+const MasterPropertiesSchema: z.ZodType<MasterPropertiesType> = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The human-readable name of the master.' }),
+  })
+  .openapi({
+    description: 'The properties of Page that are only relevant for pages with page_type MASTER.',
+    required: [],
+  })
+  .openapi('MasterProperties')
+
+const NotesPropertiesSchema: z.ZodType<NotesPropertiesType> = z
+  .object({
+    speakerNotesObjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The object ID of the shape on this notes page that contains the speaker notes for the corresponding slide. The actual shape may not always exist on the notes page. Inserting text using this object ID will automatically create the shape. In this case, the actual shape may have different object ID. The `GetPresentation` or `GetPage` action will always return the latest object ID.',
+      }),
+  })
+  .openapi({
+    description: 'The properties of Page that are only relevant for pages with page_type NOTES.',
+    required: [],
+  })
+  .openapi('NotesProperties')
+
+type PageType = {
+  layoutProperties?: z.infer<typeof LayoutPropertiesSchema>
+  masterProperties?: z.infer<typeof MasterPropertiesSchema>
+  notesProperties?: z.infer<typeof NotesPropertiesSchema>
+  objectId?: string
+  pageElements?: z.infer<typeof PageElementSchema>[]
+  pageProperties?: z.infer<typeof PagePropertiesSchema>
+  pageType?: 'SLIDE' | 'MASTER' | 'LAYOUT' | 'NOTES' | 'NOTES_MASTER'
+  revisionId?: string
+  slideProperties?: z.infer<typeof SlidePropertiesSchema>
+}
+
+const GroupSchema: z.ZodType<GroupType> = z
+  .lazy(() =>
+    z
+      .object({
+        children: z
+          .array(PageElementSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The collection of elements in the group. The minimum size of a group is 2.',
+          }),
+      })
+      .openapi({
+        description: 'A PageElement kind representing a joined collection of PageElements.',
+        required: [],
+      }),
+  )
+  .openapi('Group')
+
+const ImageSchema: z.ZodType<ImageType> = z
+  .object({
+    contentUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "An URL to an image with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the image as the original requester. Access to the image may be lost if the presentation's sharing settings change.",
+      }),
+    imageProperties: ImagePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the image.',
+    }),
+    placeholder: PlaceholderSchema.exactOptional().openapi({
+      description:
+        'Placeholders are page elements that inherit from corresponding placeholders on layouts and masters. If set, the image is a placeholder image and any inherited properties can be resolved by looking at the parent placeholder identified by the Placeholder.parent_object_id field.',
+    }),
+    sourceUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The source URL is the URL used to insert the image. The source URL can be empty.',
+      }),
+  })
+  .openapi({ description: 'A PageElement kind representing an image.', required: [] })
+  .openapi('Image')
+
+const LineSchema: z.ZodType<LineType> = z
+  .object({
+    lineCategory: z
+      .enum(['LINE_CATEGORY_UNSPECIFIED', 'STRAIGHT', 'BENT', 'CURVED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The category of the line. It matches the `category` specified in CreateLineRequest, and can be updated with UpdateLineCategoryRequest.',
+      }),
+    lineProperties: LinePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the line.',
+    }),
+    lineType: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'STRAIGHT_CONNECTOR_1',
+        'BENT_CONNECTOR_2',
+        'BENT_CONNECTOR_3',
+        'BENT_CONNECTOR_4',
+        'BENT_CONNECTOR_5',
+        'CURVED_CONNECTOR_2',
+        'CURVED_CONNECTOR_3',
+        'CURVED_CONNECTOR_4',
+        'CURVED_CONNECTOR_5',
+        'STRAIGHT_LINE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the line.' }),
+  })
+  .openapi({
+    description:
+      'A PageElement kind representing a non-connector line, straight connector, curved connector, or bent connector.',
+    required: [],
+  })
+  .openapi('Line')
+
+const NestingLevelSchema = z
+  .object({
+    bulletStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The style of a bullet at this level of nesting.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains properties describing the look and feel of a list bullet at a given level of nesting.',
+    required: [],
+  })
+  .openapi('NestingLevel')
+
+const ListSchema = z
+  .object({
+    listId: z.string().exactOptional().openapi({ description: 'The ID of the list.' }),
+    nestingLevel: z
+      .record(z.string(), NestingLevelSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A map of nesting levels to the properties of bullets at the associated level. A list has at most nine levels of nesting, so the possible values for the keys of this map are 0 through 8, inclusive.',
+      }),
+  })
+  .openapi({
+    description:
+      "A List describes the look and feel of bullets belonging to paragraphs associated with a list. A paragraph that is part of a list has an implicit reference to that list's ID.",
+    required: [],
+  })
+  .openapi('List')
+
+const AutoTextSchema = z
+  .object({
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rendered content of this auto text, if available.' }),
+    style: TextStyleSchema.exactOptional().openapi({
+      description: 'The styling applied to this auto text.',
+    }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'SLIDE_NUMBER'])
+      .exactOptional()
+      .openapi({ description: 'The type of this auto text.' }),
+  })
+  .openapi({ description: 'A TextElement kind that represents auto text.', required: [] })
+  .openapi('AutoText')
+
+const BulletSchema = z
+  .object({
+    bulletStyle: TextStyleSchema.exactOptional().openapi({
+      description: 'The paragraph specific text style applied to this bullet.',
+    }),
+    glyph: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The rendered bullet glyph for this paragraph.' }),
+    listId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the list this paragraph belongs to.' }),
+    nestingLevel: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The nesting level of this paragraph in the list.' }),
+  })
+  .openapi({ description: 'Describes the bullet of a paragraph.', required: [] })
+  .openapi('Bullet')
+
+const ParagraphMarkerSchema = z
+  .object({
+    bullet: BulletSchema.exactOptional().openapi({
+      description:
+        'The bullet for this paragraph. If not present, the paragraph does not belong to a list.',
+    }),
+    style: ParagraphStyleSchema.exactOptional().openapi({ description: "The paragraph's style" }),
+  })
+  .openapi({
+    description: 'A TextElement kind that represents the beginning of a new paragraph.',
+    required: [],
+  })
+  .openapi('ParagraphMarker')
+
+const TextRunSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'The text of this run.' }),
+    style: TextStyleSchema.exactOptional().openapi({
+      description: 'The styling applied to this run.',
+    }),
+  })
+  .openapi({
+    description: 'A TextElement kind that represents a run of text that all has the same styling.',
+    required: [],
+  })
+  .openapi('TextRun')
+
+const TextElementSchema = z
+  .object({
+    autoText: AutoTextSchema.exactOptional().openapi({
+      description:
+        'A TextElement representing a spot in the text that is dynamically replaced with content that can change over time.',
+    }),
+    endIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The zero-based end index of this text element, exclusive, in Unicode code units.',
+      }),
+    paragraphMarker: ParagraphMarkerSchema.exactOptional().openapi({
+      description:
+        "A marker representing the beginning of a new paragraph. The `start_index` and `end_index` of this TextElement represent the range of the paragraph. Other TextElements with an index range contained inside this paragraph's range are considered to be part of this paragraph. The range of indices of two separate paragraphs will never overlap.",
+    }),
+    startIndex: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The zero-based start index of this text element, in Unicode code units.',
+      }),
+    textRun: TextRunSchema.exactOptional().openapi({
+      description:
+        'A TextElement representing a run of text where all of the characters in the run have the same TextStyle. The `start_index` and `end_index` of TextRuns will always be fully contained in the index range of a single `paragraph_marker` TextElement. In other words, a TextRun will never span multiple paragraphs.',
+    }),
+  })
+  .openapi({
+    description:
+      'A TextElement describes the content of a range of indices in the text content of a Shape or TableCell.',
+    required: [],
+  })
+  .openapi('TextElement')
+
+type TextContentType = {
+  lists?: { [key: string]: z.infer<typeof ListSchema> }
+  textElements?: z.infer<typeof TextElementSchema>[]
+}
+
+const TextContentSchema: z.ZodType<TextContentType> = z
+  .object({
+    lists: z
+      .record(z.string(), ListSchema)
+      .exactOptional()
+      .openapi({ description: 'The bulleted lists contained in this text, keyed by list ID.' }),
+    textElements: z
+      .array(TextElementSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The text contents broken down into its component parts, including styling information. This property is read-only.',
+      }),
+  })
+  .openapi({
+    description:
+      'The general text content. The text must reside in a compatible shape (e.g. text box or rectangle) or a table cell in a page.',
+    required: [],
+  })
+  .openapi('TextContent')
+
+type ShapeType = {
+  placeholder?: z.infer<typeof PlaceholderSchema>
+  shapeProperties?: z.infer<typeof ShapePropertiesSchema>
+  shapeType?:
+    | 'TYPE_UNSPECIFIED'
+    | 'TEXT_BOX'
+    | 'RECTANGLE'
+    | 'ROUND_RECTANGLE'
+    | 'ELLIPSE'
+    | 'ARC'
+    | 'BENT_ARROW'
+    | 'BENT_UP_ARROW'
+    | 'BEVEL'
+    | 'BLOCK_ARC'
+    | 'BRACE_PAIR'
+    | 'BRACKET_PAIR'
+    | 'CAN'
+    | 'CHEVRON'
+    | 'CHORD'
+    | 'CLOUD'
+    | 'CORNER'
+    | 'CUBE'
+    | 'CURVED_DOWN_ARROW'
+    | 'CURVED_LEFT_ARROW'
+    | 'CURVED_RIGHT_ARROW'
+    | 'CURVED_UP_ARROW'
+    | 'DECAGON'
+    | 'DIAGONAL_STRIPE'
+    | 'DIAMOND'
+    | 'DODECAGON'
+    | 'DONUT'
+    | 'DOUBLE_WAVE'
+    | 'DOWN_ARROW'
+    | 'DOWN_ARROW_CALLOUT'
+    | 'FOLDED_CORNER'
+    | 'FRAME'
+    | 'HALF_FRAME'
+    | 'HEART'
+    | 'HEPTAGON'
+    | 'HEXAGON'
+    | 'HOME_PLATE'
+    | 'HORIZONTAL_SCROLL'
+    | 'IRREGULAR_SEAL_1'
+    | 'IRREGULAR_SEAL_2'
+    | 'LEFT_ARROW'
+    | 'LEFT_ARROW_CALLOUT'
+    | 'LEFT_BRACE'
+    | 'LEFT_BRACKET'
+    | 'LEFT_RIGHT_ARROW'
+    | 'LEFT_RIGHT_ARROW_CALLOUT'
+    | 'LEFT_RIGHT_UP_ARROW'
+    | 'LEFT_UP_ARROW'
+    | 'LIGHTNING_BOLT'
+    | 'MATH_DIVIDE'
+    | 'MATH_EQUAL'
+    | 'MATH_MINUS'
+    | 'MATH_MULTIPLY'
+    | 'MATH_NOT_EQUAL'
+    | 'MATH_PLUS'
+    | 'MOON'
+    | 'NO_SMOKING'
+    | 'NOTCHED_RIGHT_ARROW'
+    | 'OCTAGON'
+    | 'PARALLELOGRAM'
+    | 'PENTAGON'
+    | 'PIE'
+    | 'PLAQUE'
+    | 'PLUS'
+    | 'QUAD_ARROW'
+    | 'QUAD_ARROW_CALLOUT'
+    | 'RIBBON'
+    | 'RIBBON_2'
+    | 'RIGHT_ARROW'
+    | 'RIGHT_ARROW_CALLOUT'
+    | 'RIGHT_BRACE'
+    | 'RIGHT_BRACKET'
+    | 'ROUND_1_RECTANGLE'
+    | 'ROUND_2_DIAGONAL_RECTANGLE'
+    | 'ROUND_2_SAME_RECTANGLE'
+    | 'RIGHT_TRIANGLE'
+    | 'SMILEY_FACE'
+    | 'SNIP_1_RECTANGLE'
+    | 'SNIP_2_DIAGONAL_RECTANGLE'
+    | 'SNIP_2_SAME_RECTANGLE'
+    | 'SNIP_ROUND_RECTANGLE'
+    | 'STAR_10'
+    | 'STAR_12'
+    | 'STAR_16'
+    | 'STAR_24'
+    | 'STAR_32'
+    | 'STAR_4'
+    | 'STAR_5'
+    | 'STAR_6'
+    | 'STAR_7'
+    | 'STAR_8'
+    | 'STRIPED_RIGHT_ARROW'
+    | 'SUN'
+    | 'TRAPEZOID'
+    | 'TRIANGLE'
+    | 'UP_ARROW'
+    | 'UP_ARROW_CALLOUT'
+    | 'UP_DOWN_ARROW'
+    | 'UTURN_ARROW'
+    | 'VERTICAL_SCROLL'
+    | 'WAVE'
+    | 'WEDGE_ELLIPSE_CALLOUT'
+    | 'WEDGE_RECTANGLE_CALLOUT'
+    | 'WEDGE_ROUND_RECTANGLE_CALLOUT'
+    | 'FLOW_CHART_ALTERNATE_PROCESS'
+    | 'FLOW_CHART_COLLATE'
+    | 'FLOW_CHART_CONNECTOR'
+    | 'FLOW_CHART_DECISION'
+    | 'FLOW_CHART_DELAY'
+    | 'FLOW_CHART_DISPLAY'
+    | 'FLOW_CHART_DOCUMENT'
+    | 'FLOW_CHART_EXTRACT'
+    | 'FLOW_CHART_INPUT_OUTPUT'
+    | 'FLOW_CHART_INTERNAL_STORAGE'
+    | 'FLOW_CHART_MAGNETIC_DISK'
+    | 'FLOW_CHART_MAGNETIC_DRUM'
+    | 'FLOW_CHART_MAGNETIC_TAPE'
+    | 'FLOW_CHART_MANUAL_INPUT'
+    | 'FLOW_CHART_MANUAL_OPERATION'
+    | 'FLOW_CHART_MERGE'
+    | 'FLOW_CHART_MULTIDOCUMENT'
+    | 'FLOW_CHART_OFFLINE_STORAGE'
+    | 'FLOW_CHART_OFFPAGE_CONNECTOR'
+    | 'FLOW_CHART_ONLINE_STORAGE'
+    | 'FLOW_CHART_OR'
+    | 'FLOW_CHART_PREDEFINED_PROCESS'
+    | 'FLOW_CHART_PREPARATION'
+    | 'FLOW_CHART_PROCESS'
+    | 'FLOW_CHART_PUNCHED_CARD'
+    | 'FLOW_CHART_PUNCHED_TAPE'
+    | 'FLOW_CHART_SORT'
+    | 'FLOW_CHART_SUMMING_JUNCTION'
+    | 'FLOW_CHART_TERMINATOR'
+    | 'ARROW_EAST'
+    | 'ARROW_NORTH_EAST'
+    | 'ARROW_NORTH'
+    | 'SPEECH'
+    | 'STARBURST'
+    | 'TEARDROP'
+    | 'ELLIPSE_RIBBON'
+    | 'ELLIPSE_RIBBON_2'
+    | 'CLOUD_CALLOUT'
+    | 'CUSTOM'
+  text?: z.infer<typeof TextContentSchema>
+}
+
+const ShapeSchema: z.ZodType<ShapeType> = z
+  .object({
+    placeholder: PlaceholderSchema.exactOptional().openapi({
+      description:
+        'Placeholders are page elements that inherit from corresponding placeholders on layouts and masters. If set, the shape is a placeholder shape and any inherited properties can be resolved by looking at the parent placeholder identified by the Placeholder.parent_object_id field.',
+    }),
+    shapeProperties: ShapePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the shape.',
+    }),
+    shapeType: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'TEXT_BOX',
+        'RECTANGLE',
+        'ROUND_RECTANGLE',
+        'ELLIPSE',
+        'ARC',
+        'BENT_ARROW',
+        'BENT_UP_ARROW',
+        'BEVEL',
+        'BLOCK_ARC',
+        'BRACE_PAIR',
+        'BRACKET_PAIR',
+        'CAN',
+        'CHEVRON',
+        'CHORD',
+        'CLOUD',
+        'CORNER',
+        'CUBE',
+        'CURVED_DOWN_ARROW',
+        'CURVED_LEFT_ARROW',
+        'CURVED_RIGHT_ARROW',
+        'CURVED_UP_ARROW',
+        'DECAGON',
+        'DIAGONAL_STRIPE',
+        'DIAMOND',
+        'DODECAGON',
+        'DONUT',
+        'DOUBLE_WAVE',
+        'DOWN_ARROW',
+        'DOWN_ARROW_CALLOUT',
+        'FOLDED_CORNER',
+        'FRAME',
+        'HALF_FRAME',
+        'HEART',
+        'HEPTAGON',
+        'HEXAGON',
+        'HOME_PLATE',
+        'HORIZONTAL_SCROLL',
+        'IRREGULAR_SEAL_1',
+        'IRREGULAR_SEAL_2',
+        'LEFT_ARROW',
+        'LEFT_ARROW_CALLOUT',
+        'LEFT_BRACE',
+        'LEFT_BRACKET',
+        'LEFT_RIGHT_ARROW',
+        'LEFT_RIGHT_ARROW_CALLOUT',
+        'LEFT_RIGHT_UP_ARROW',
+        'LEFT_UP_ARROW',
+        'LIGHTNING_BOLT',
+        'MATH_DIVIDE',
+        'MATH_EQUAL',
+        'MATH_MINUS',
+        'MATH_MULTIPLY',
+        'MATH_NOT_EQUAL',
+        'MATH_PLUS',
+        'MOON',
+        'NO_SMOKING',
+        'NOTCHED_RIGHT_ARROW',
+        'OCTAGON',
+        'PARALLELOGRAM',
+        'PENTAGON',
+        'PIE',
+        'PLAQUE',
+        'PLUS',
+        'QUAD_ARROW',
+        'QUAD_ARROW_CALLOUT',
+        'RIBBON',
+        'RIBBON_2',
+        'RIGHT_ARROW',
+        'RIGHT_ARROW_CALLOUT',
+        'RIGHT_BRACE',
+        'RIGHT_BRACKET',
+        'ROUND_1_RECTANGLE',
+        'ROUND_2_DIAGONAL_RECTANGLE',
+        'ROUND_2_SAME_RECTANGLE',
+        'RIGHT_TRIANGLE',
+        'SMILEY_FACE',
+        'SNIP_1_RECTANGLE',
+        'SNIP_2_DIAGONAL_RECTANGLE',
+        'SNIP_2_SAME_RECTANGLE',
+        'SNIP_ROUND_RECTANGLE',
+        'STAR_10',
+        'STAR_12',
+        'STAR_16',
+        'STAR_24',
+        'STAR_32',
+        'STAR_4',
+        'STAR_5',
+        'STAR_6',
+        'STAR_7',
+        'STAR_8',
+        'STRIPED_RIGHT_ARROW',
+        'SUN',
+        'TRAPEZOID',
+        'TRIANGLE',
+        'UP_ARROW',
+        'UP_ARROW_CALLOUT',
+        'UP_DOWN_ARROW',
+        'UTURN_ARROW',
+        'VERTICAL_SCROLL',
+        'WAVE',
+        'WEDGE_ELLIPSE_CALLOUT',
+        'WEDGE_RECTANGLE_CALLOUT',
+        'WEDGE_ROUND_RECTANGLE_CALLOUT',
+        'FLOW_CHART_ALTERNATE_PROCESS',
+        'FLOW_CHART_COLLATE',
+        'FLOW_CHART_CONNECTOR',
+        'FLOW_CHART_DECISION',
+        'FLOW_CHART_DELAY',
+        'FLOW_CHART_DISPLAY',
+        'FLOW_CHART_DOCUMENT',
+        'FLOW_CHART_EXTRACT',
+        'FLOW_CHART_INPUT_OUTPUT',
+        'FLOW_CHART_INTERNAL_STORAGE',
+        'FLOW_CHART_MAGNETIC_DISK',
+        'FLOW_CHART_MAGNETIC_DRUM',
+        'FLOW_CHART_MAGNETIC_TAPE',
+        'FLOW_CHART_MANUAL_INPUT',
+        'FLOW_CHART_MANUAL_OPERATION',
+        'FLOW_CHART_MERGE',
+        'FLOW_CHART_MULTIDOCUMENT',
+        'FLOW_CHART_OFFLINE_STORAGE',
+        'FLOW_CHART_OFFPAGE_CONNECTOR',
+        'FLOW_CHART_ONLINE_STORAGE',
+        'FLOW_CHART_OR',
+        'FLOW_CHART_PREDEFINED_PROCESS',
+        'FLOW_CHART_PREPARATION',
+        'FLOW_CHART_PROCESS',
+        'FLOW_CHART_PUNCHED_CARD',
+        'FLOW_CHART_PUNCHED_TAPE',
+        'FLOW_CHART_SORT',
+        'FLOW_CHART_SUMMING_JUNCTION',
+        'FLOW_CHART_TERMINATOR',
+        'ARROW_EAST',
+        'ARROW_NORTH_EAST',
+        'ARROW_NORTH',
+        'SPEECH',
+        'STARBURST',
+        'TEARDROP',
+        'ELLIPSE_RIBBON',
+        'ELLIPSE_RIBBON_2',
+        'CLOUD_CALLOUT',
+        'CUSTOM',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of the shape.' }),
+    text: TextContentSchema.exactOptional().openapi({
+      description: 'The text content of the shape.',
+    }),
+  })
+  .openapi({
+    description:
+      'A PageElement kind representing a generic shape that does not have a more specific classification.',
+    required: [],
+  })
+  .openapi('Shape')
+
+const SheetsChartPropertiesSchema = z
+  .object({
+    chartImageProperties: ImagePropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the embedded chart image.',
+    }),
+  })
+  .openapi({ description: 'The properties of the SheetsChart.', required: [] })
+  .openapi('SheetsChartProperties')
+
+type SheetsChartType = {
+  chartId?: number
+  contentUrl?: string
+  sheetsChartProperties?: z.infer<typeof SheetsChartPropertiesSchema>
+  spreadsheetId?: string
+}
+
+const SheetsChartSchema: z.ZodType<SheetsChartType> = z
+  .object({
+    chartId: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the specific chart in the Google Sheets spreadsheet that is embedded.',
+      }),
+    contentUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of an image of the embedded chart, with a default lifetime of 30 minutes. This URL is tagged with the account of the requester. Anyone with the URL effectively accesses the image as the original requester. Access to the image may be lost if the presentation's sharing settings change.",
+      }),
+    sheetsChartProperties: SheetsChartPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the Sheets chart.',
+    }),
+    spreadsheetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID of the Google Sheets spreadsheet that contains the source chart.',
+      }),
+  })
+  .openapi({
+    description: 'A PageElement kind representing a linked chart embedded from Google Sheets.',
+    required: [],
+  })
+  .openapi('SheetsChart')
+
+const TableBorderCellSchema = z
+  .object({
+    location: TableCellLocationSchema.exactOptional().openapi({
+      description: 'The location of the border within the border table.',
+    }),
+    tableBorderProperties: TableBorderPropertiesSchema.exactOptional().openapi({
+      description: 'The border properties.',
+    }),
+  })
+  .openapi({ description: 'The properties of each border cell.', required: [] })
+  .openapi('TableBorderCell')
+
+type TableBorderRowType = { tableBorderCells?: z.infer<typeof TableBorderCellSchema>[] }
+
+const TableBorderRowSchema: z.ZodType<TableBorderRowType> = z
+  .object({
+    tableBorderCells: z
+      .array(TableBorderCellSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Properties of each border cell. When a border's adjacent table cells are merged, it is not included in the response.",
+      }),
+  })
+  .openapi({ description: 'Contents of each border row in a table.', required: [] })
+  .openapi('TableBorderRow')
+
+type TableCellType = {
+  columnSpan?: number
+  location?: z.infer<typeof TableCellLocationSchema>
+  rowSpan?: number
+  tableCellProperties?: z.infer<typeof TableCellPropertiesSchema>
+  text?: z.infer<typeof TextContentSchema>
+}
+
+const TableCellSchema: z.ZodType<TableCellType> = z
+  .object({
+    columnSpan: z.int32().exactOptional().openapi({ description: 'Column span of the cell.' }),
+    location: TableCellLocationSchema.exactOptional().openapi({
+      description: 'The location of the cell within the table.',
+    }),
+    rowSpan: z.int32().exactOptional().openapi({ description: 'Row span of the cell.' }),
+    tableCellProperties: TableCellPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the table cell.',
+    }),
+    text: TextContentSchema.exactOptional().openapi({
+      description: 'The text content of the cell.',
+    }),
+  })
+  .openapi({ description: 'Properties and contents of each table cell.', required: [] })
+  .openapi('TableCell')
+
+type TableRowType = {
+  rowHeight?: z.infer<typeof DimensionSchema>
+  tableCells?: z.infer<typeof TableCellSchema>[]
+  tableRowProperties?: z.infer<typeof TableRowPropertiesSchema>
+}
+
+const TableRowSchema: z.ZodType<TableRowType> = z
+  .object({
+    rowHeight: DimensionSchema.exactOptional().openapi({ description: 'Height of a row.' }),
+    tableCells: z
+      .array(TableCellSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Properties and contents of each cell. Cells that span multiple columns are represented only once with a column_span greater than 1. As a result, the length of this collection does not always match the number of columns of the entire table.',
+      }),
+    tableRowProperties: TableRowPropertiesSchema.exactOptional().openapi({
+      description: 'Properties of the row.',
+    }),
+  })
+  .openapi({ description: 'Properties and contents of each row in a table.', required: [] })
+  .openapi('TableRow')
+
+type TableType = {
+  columns?: number
+  horizontalBorderRows?: z.infer<typeof TableBorderRowSchema>[]
+  rows?: number
+  tableColumns?: z.infer<typeof TableColumnPropertiesSchema>[]
+  tableRows?: z.infer<typeof TableRowSchema>[]
+  verticalBorderRows?: z.infer<typeof TableBorderRowSchema>[]
+}
+
+const TableSchema: z.ZodType<TableType> = z
+  .object({
+    columns: z.int32().exactOptional().openapi({ description: 'Number of columns in the table.' }),
+    horizontalBorderRows: z
+      .array(TableBorderRowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Properties of horizontal cell borders. A table's horizontal cell borders are represented as a grid. The grid has one more row than the number of rows in the table and the same number of columns as the table. For example, if the table is 3 x 3, its horizontal borders will be represented as a grid with 4 rows and 3 columns.",
+      }),
+    rows: z.int32().exactOptional().openapi({ description: 'Number of rows in the table.' }),
+    tableColumns: z
+      .array(TableColumnPropertiesSchema)
+      .exactOptional()
+      .openapi({ description: 'Properties of each column.' }),
+    tableRows: z
+      .array(TableRowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Properties and contents of each row. Cells that span multiple rows are contained in only one of these rows and have a row_span greater than 1.',
+      }),
+    verticalBorderRows: z
+      .array(TableBorderRowSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          "Properties of vertical cell borders. A table's vertical cell borders are represented as a grid. The grid has the same number of rows as the table and one more column than the number of columns in the table. For example, if the table is 3 x 3, its vertical borders will be represented as a grid with 3 rows and 4 columns.",
+      }),
+  })
+  .openapi({ description: 'A PageElement kind representing a table.', required: [] })
+  .openapi('Table')
+
+type VideoType = {
+  id?: string
+  source?: 'SOURCE_UNSPECIFIED' | 'YOUTUBE' | 'DRIVE'
+  url?: string
+  videoProperties?: z.infer<typeof VideoPropertiesSchema>
+}
+
+const VideoSchema: z.ZodType<VideoType> = z
+  .object({
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The video source's unique identifier for this video." }),
+    source: z
+      .enum(['SOURCE_UNSPECIFIED', 'YOUTUBE', 'DRIVE'])
+      .exactOptional()
+      .openapi({ description: 'The video source.' }),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'An URL to a video. The URL is valid as long as the source video exists and sharing settings do not change.',
+      }),
+    videoProperties: VideoPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the video.',
+    }),
+  })
+  .openapi({ description: 'A PageElement kind representing a video.', required: [] })
+  .openapi('Video')
+
+type WordArtType = { renderedText?: string }
+
+const WordArtSchema: z.ZodType<WordArtType> = z
+  .object({
+    renderedText: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The text rendered as word art.' }),
+  })
+  .openapi({ description: 'A PageElement kind representing word art.', required: [] })
+  .openapi('WordArt')
+
+type PageElementType = {
+  description?: string
+  elementGroup?: z.infer<typeof GroupSchema>
+  image?: z.infer<typeof ImageSchema>
+  line?: z.infer<typeof LineSchema>
+  objectId?: string
+  shape?: z.infer<typeof ShapeSchema>
+  sheetsChart?: z.infer<typeof SheetsChartSchema>
+  size?: z.infer<typeof SizeSchema>
+  table?: z.infer<typeof TableSchema>
+  title?: string
+  transform?: z.infer<typeof AffineTransformSchema>
+  video?: z.infer<typeof VideoSchema>
+  wordArt?: z.infer<typeof WordArtSchema>
+}
+
+const PageSchema: z.ZodType<PageType> = z
+  .lazy(() =>
+    z
+      .object({
+        layoutProperties: LayoutPropertiesSchema.exactOptional().openapi({
+          description: 'Layout specific properties. Only set if page_type = LAYOUT.',
+        }),
+        masterProperties: MasterPropertiesSchema.exactOptional().openapi({
+          description: 'Master specific properties. Only set if page_type = MASTER.',
+        }),
+        notesProperties: NotesPropertiesSchema.exactOptional().openapi({
+          description: 'Notes specific properties. Only set if page_type = NOTES.',
+        }),
+        objectId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The object ID for this page. Object IDs used by Page and PageElement share the same namespace.',
+          }),
+        pageElements: z
+          .array(PageElementSchema)
+          .exactOptional()
+          .openapi({ description: 'The page elements rendered on the page.' }),
+        pageProperties: PagePropertiesSchema.exactOptional().openapi({
+          description: 'The properties of the page.',
+        }),
+        pageType: z
+          .enum(['SLIDE', 'MASTER', 'LAYOUT', 'NOTES', 'NOTES_MASTER'])
+          .exactOptional()
+          .openapi({ description: 'The type of the page.' }),
+        revisionId: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "Output only. The revision ID of the presentation. Can be used in update requests to assert the presentation revision hasn't changed since the last read operation. Only populated if the user has edit access to the presentation. The revision ID is not a sequential number but an opaque string. The format of the revision ID might change over time. A returned revision ID is only guaranteed to be valid for 24 hours after it has been returned and cannot be shared across users. If the revision ID is unchanged between calls, then the presentation has not changed. Conversely, a changed ID (for the same presentation and user) usually means the presentation has been updated. However, a changed ID can also be due to internal factors such as ID format changes.",
+          }),
+        slideProperties: SlidePropertiesSchema.exactOptional().openapi({
+          description: 'Slide specific properties. Only set if page_type = SLIDE.',
+        }),
+      })
+      .openapi({ description: 'A page in a presentation.', required: [] }),
+  )
+  .openapi('Page')
+
+type PresentationType = {
+  layouts?: z.infer<typeof PageSchema>[]
+  locale?: string
+  masters?: z.infer<typeof PageSchema>[]
+  notesMaster?: z.infer<typeof PageSchema>
+  pageSize?: z.infer<typeof SizeSchema>
+  presentationId?: string
+  revisionId?: string
+  slides?: z.infer<typeof PageSchema>[]
+  title?: string
+}
+
+type SlidePropertiesType = {
+  isSkipped?: boolean
+  layoutObjectId?: string
+  masterObjectId?: string
+  notesPage?: z.infer<typeof PageSchema>
+}
+
+const BatchUpdatePresentationRequestSchema: z.ZodType<BatchUpdatePresentationRequestType> = z
+  .object({
+    requests: z
+      .array(RequestSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of updates to apply to the presentation.' }),
+    writeControl: WriteControlSchema.exactOptional().openapi({
+      description: 'Provides control over how write requests are executed.',
+    }),
+  })
+  .openapi({
+    description: 'Request message for PresentationsService.BatchUpdatePresentation.',
+    required: [],
+  })
+  .openapi('BatchUpdatePresentationRequest')
 
 const CreateImageResponseSchema = z
   .object({
@@ -3506,296 +3770,48 @@ const ReplaceAllTextResponseSchema = z
   .openapi({ description: 'The result of replacing text.', required: [] })
   .openapi('ReplaceAllTextResponse')
 
-type ResponseType = {
-  createImage?: z.infer<typeof CreateImageResponseSchema>
-  createLine?: z.infer<typeof CreateLineResponseSchema>
-  createShape?: z.infer<typeof CreateShapeResponseSchema>
-  createSheetsChart?: z.infer<typeof CreateSheetsChartResponseSchema>
-  createSlide?: z.infer<typeof CreateSlideResponseSchema>
-  createTable?: z.infer<typeof CreateTableResponseSchema>
-  createVideo?: z.infer<typeof CreateVideoResponseSchema>
-  duplicateObject?: z.infer<typeof DuplicateObjectResponseSchema>
-  groupObjects?: z.infer<typeof GroupObjectsResponseSchema>
-  replaceAllShapesWithImage?: z.infer<typeof ReplaceAllShapesWithImageResponseSchema>
-  replaceAllShapesWithSheetsChart?: z.infer<typeof ReplaceAllShapesWithSheetsChartResponseSchema>
-  replaceAllText?: z.infer<typeof ReplaceAllTextResponseSchema>
-}
-
-const PageSchema: z.ZodType<PageType> = z
-  .lazy(() =>
-    z
-      .object({
-        layoutProperties: LayoutPropertiesSchema.exactOptional().openapi({
-          description: 'Layout specific properties. Only set if page_type = LAYOUT.',
-        }),
-        masterProperties: MasterPropertiesSchema.exactOptional().openapi({
-          description: 'Master specific properties. Only set if page_type = MASTER.',
-        }),
-        notesProperties: NotesPropertiesSchema.exactOptional().openapi({
-          description: 'Notes specific properties. Only set if page_type = NOTES.',
-        }),
-        objectId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The object ID for this page. Object IDs used by Page and PageElement share the same namespace.',
-          }),
-        pageElements: z
-          .array(PageElementSchema)
-          .exactOptional()
-          .openapi({ description: 'The page elements rendered on the page.' }),
-        pageProperties: PagePropertiesSchema.exactOptional().openapi({
-          description: 'The properties of the page.',
-        }),
-        pageType: z
-          .enum(['SLIDE', 'MASTER', 'LAYOUT', 'NOTES', 'NOTES_MASTER'])
-          .exactOptional()
-          .openapi({ description: 'The type of the page.' }),
-        revisionId: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "Output only. The revision ID of the presentation. Can be used in update requests to assert the presentation revision hasn't changed since the last read operation. Only populated if the user has edit access to the presentation. The revision ID is not a sequential number but an opaque string. The format of the revision ID might change over time. A returned revision ID is only guaranteed to be valid for 24 hours after it has been returned and cannot be shared across users. If the revision ID is unchanged between calls, then the presentation has not changed. Conversely, a changed ID (for the same presentation and user) usually means the presentation has been updated. However, a changed ID can also be due to internal factors such as ID format changes.",
-          }),
-        slideProperties: SlidePropertiesSchema.exactOptional().openapi({
-          description: 'Slide specific properties. Only set if page_type = SLIDE.',
-        }),
-      })
-      .openapi({ description: 'A page in a presentation.', required: [] }),
-  )
-  .openapi('Page')
-
-type SlidePropertiesType = {
-  isSkipped?: boolean
-  layoutObjectId?: string
-  masterObjectId?: string
-  notesPage?: z.infer<typeof PageSchema>
-}
-
-const RequestSchema: z.ZodType<RequestType> = z
-  .lazy(() =>
-    z
-      .object({
-        createImage: CreateImageRequestSchema.exactOptional().openapi({
-          description: 'Creates an image.',
-        }),
-        createLine: CreateLineRequestSchema.exactOptional().openapi({
-          description: 'Creates a line.',
-        }),
-        createParagraphBullets: CreateParagraphBulletsRequestSchema.exactOptional().openapi({
-          description: 'Creates bullets for paragraphs.',
-        }),
-        createShape: CreateShapeRequestSchema.exactOptional().openapi({
-          description: 'Creates a new shape.',
-        }),
-        createSheetsChart: CreateSheetsChartRequestSchema.exactOptional().openapi({
-          description: 'Creates an embedded Google Sheets chart.',
-        }),
-        createSlide: CreateSlideRequestSchema.exactOptional().openapi({
-          description: 'Creates a new slide.',
-        }),
-        createTable: CreateTableRequestSchema.exactOptional().openapi({
-          description: 'Creates a new table.',
-        }),
-        createVideo: CreateVideoRequestSchema.exactOptional().openapi({
-          description: 'Creates a video.',
-        }),
-        deleteObject: DeleteObjectRequestSchema.exactOptional().openapi({
-          description: 'Deletes a page or page element from the presentation.',
-        }),
-        deleteParagraphBullets: DeleteParagraphBulletsRequestSchema.exactOptional().openapi({
-          description: 'Deletes bullets from paragraphs.',
-        }),
-        deleteTableColumn: DeleteTableColumnRequestSchema.exactOptional().openapi({
-          description: 'Deletes a column from a table.',
-        }),
-        deleteTableRow: DeleteTableRowRequestSchema.exactOptional().openapi({
-          description: 'Deletes a row from a table.',
-        }),
-        deleteText: DeleteTextRequestSchema.exactOptional().openapi({
-          description: 'Deletes text from a shape or a table cell.',
-        }),
-        duplicateObject: DuplicateObjectRequestSchema.exactOptional().openapi({
-          description: 'Duplicates a slide or page element.',
-        }),
-        groupObjects: GroupObjectsRequestSchema.exactOptional().openapi({
-          description: 'Groups objects, such as page elements.',
-        }),
-        insertTableColumns: InsertTableColumnsRequestSchema.exactOptional().openapi({
-          description: 'Inserts columns into a table.',
-        }),
-        insertTableRows: InsertTableRowsRequestSchema.exactOptional().openapi({
-          description: 'Inserts rows into a table.',
-        }),
-        insertText: InsertTextRequestSchema.exactOptional().openapi({
-          description: 'Inserts text into a shape or table cell.',
-        }),
-        mergeTableCells: MergeTableCellsRequestSchema.exactOptional().openapi({
-          description: 'Merges cells in a Table.',
-        }),
-        refreshSheetsChart: RefreshSheetsChartRequestSchema.exactOptional().openapi({
-          description: 'Refreshes a Google Sheets chart.',
-        }),
-        replaceAllShapesWithImage: ReplaceAllShapesWithImageRequestSchema.exactOptional().openapi({
-          description: 'Replaces all shapes matching some criteria with an image.',
-        }),
-        replaceAllShapesWithSheetsChart:
-          ReplaceAllShapesWithSheetsChartRequestSchema.exactOptional().openapi({
-            description: 'Replaces all shapes matching some criteria with a Google Sheets chart.',
-          }),
-        replaceAllText: ReplaceAllTextRequestSchema.exactOptional().openapi({
-          description: 'Replaces all instances of specified text.',
-        }),
-        replaceImage: ReplaceImageRequestSchema.exactOptional().openapi({
-          description: 'Replaces an existing image with a new image.',
-        }),
-        rerouteLine: RerouteLineRequestSchema.exactOptional().openapi({
-          description:
-            "Reroutes a line such that it's connected at the two closest connection sites on the connected page elements.",
-        }),
-        ungroupObjects: UngroupObjectsRequestSchema.exactOptional().openapi({
-          description: 'Ungroups objects, such as groups.',
-        }),
-        unmergeTableCells: UnmergeTableCellsRequestSchema.exactOptional().openapi({
-          description: 'Unmerges cells in a Table.',
-        }),
-        updateImageProperties: UpdateImagePropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of an Image.',
-        }),
-        updateLineCategory: UpdateLineCategoryRequestSchema.exactOptional().openapi({
-          description: 'Updates the category of a line.',
-        }),
-        updateLineProperties: UpdateLinePropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Line.',
-        }),
-        updatePageElementAltText: UpdatePageElementAltTextRequestSchema.exactOptional().openapi({
-          description: 'Updates the alt text title and/or description of a page element.',
-        }),
-        updatePageElementTransform: UpdatePageElementTransformRequestSchema.exactOptional().openapi(
-          { description: 'Updates the transform of a page element.' },
-        ),
-        updatePageElementsZOrder: UpdatePageElementsZOrderRequestSchema.exactOptional().openapi({
-          description: 'Updates the Z-order of page elements.',
-        }),
-        updatePageProperties: UpdatePagePropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Page.',
-        }),
-        updateParagraphStyle: UpdateParagraphStyleRequestSchema.exactOptional().openapi({
-          description: 'Updates the styling of paragraphs within a Shape or Table.',
-        }),
-        updateShapeProperties: UpdateShapePropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Shape.',
-        }),
-        updateSlideProperties: UpdateSlidePropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Slide',
-        }),
-        updateSlidesPosition: UpdateSlidesPositionRequestSchema.exactOptional().openapi({
-          description: 'Updates the position of a set of slides in the presentation.',
-        }),
-        updateTableBorderProperties:
-          UpdateTableBorderPropertiesRequestSchema.exactOptional().openapi({
-            description: 'Updates the properties of the table borders in a Table.',
-          }),
-        updateTableCellProperties: UpdateTableCellPropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a TableCell.',
-        }),
-        updateTableColumnProperties:
-          UpdateTableColumnPropertiesRequestSchema.exactOptional().openapi({
-            description: 'Updates the properties of a Table column.',
-          }),
-        updateTableRowProperties: UpdateTableRowPropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Table row.',
-        }),
-        updateTextStyle: UpdateTextStyleRequestSchema.exactOptional().openapi({
-          description: 'Updates the styling of text within a Shape or Table.',
-        }),
-        updateVideoProperties: UpdateVideoPropertiesRequestSchema.exactOptional().openapi({
-          description: 'Updates the properties of a Video.',
-        }),
-      })
-      .openapi({
-        description: 'A single kind of update to apply to a presentation.',
-        required: [],
-      }),
-  )
-  .openapi('Request')
-
-const WriteControlSchema = z
+const ResponseSchema = z
   .object({
-    requiredRevisionId: z
-      .string()
-      .exactOptional()
-      .openapi({
+    createImage: CreateImageResponseSchema.exactOptional().openapi({
+      description: 'The result of creating an image.',
+    }),
+    createLine: CreateLineResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a line.',
+    }),
+    createShape: CreateShapeResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a shape.',
+    }),
+    createSheetsChart: CreateSheetsChartResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a Google Sheets chart.',
+    }),
+    createSlide: CreateSlideResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a slide.',
+    }),
+    createTable: CreateTableResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a table.',
+    }),
+    createVideo: CreateVideoResponseSchema.exactOptional().openapi({
+      description: 'The result of creating a video.',
+    }),
+    duplicateObject: DuplicateObjectResponseSchema.exactOptional().openapi({
+      description: 'The result of duplicating an object.',
+    }),
+    groupObjects: GroupObjectsResponseSchema.exactOptional().openapi({
+      description: 'The result of grouping objects.',
+    }),
+    replaceAllShapesWithImage: ReplaceAllShapesWithImageResponseSchema.exactOptional().openapi({
+      description: 'The result of replacing all shapes matching some criteria with an image.',
+    }),
+    replaceAllShapesWithSheetsChart:
+      ReplaceAllShapesWithSheetsChartResponseSchema.exactOptional().openapi({
         description:
-          "The revision ID of the presentation required for the write request. If specified and the required revision ID doesn't match the presentation's current revision ID, the request is not processed and returns a 400 bad request error. When a required revision ID is returned in a response, it indicates the revision ID of the document after the request was applied.",
+          'The result of replacing all shapes matching some criteria with a Google Sheets chart.',
       }),
-  })
-  .openapi({ description: 'Provides control over how write requests are executed.', required: [] })
-  .openapi('WriteControl')
-
-const BatchUpdatePresentationRequestSchema = z
-  .object({
-    requests: z
-      .array(RequestSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of updates to apply to the presentation.' }),
-    writeControl: WriteControlSchema.exactOptional().openapi({
-      description: 'Provides control over how write requests are executed.',
+    replaceAllText: ReplaceAllTextResponseSchema.exactOptional().openapi({
+      description: 'The result of replacing text.',
     }),
   })
-  .openapi({
-    description: 'Request message for PresentationsService.BatchUpdatePresentation.',
-    required: [],
-  })
-  .openapi('BatchUpdatePresentationRequest')
-
-const ResponseSchema: z.ZodType<ResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        createImage: CreateImageResponseSchema.exactOptional().openapi({
-          description: 'The result of creating an image.',
-        }),
-        createLine: CreateLineResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a line.',
-        }),
-        createShape: CreateShapeResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a shape.',
-        }),
-        createSheetsChart: CreateSheetsChartResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a Google Sheets chart.',
-        }),
-        createSlide: CreateSlideResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a slide.',
-        }),
-        createTable: CreateTableResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a table.',
-        }),
-        createVideo: CreateVideoResponseSchema.exactOptional().openapi({
-          description: 'The result of creating a video.',
-        }),
-        duplicateObject: DuplicateObjectResponseSchema.exactOptional().openapi({
-          description: 'The result of duplicating an object.',
-        }),
-        groupObjects: GroupObjectsResponseSchema.exactOptional().openapi({
-          description: 'The result of grouping objects.',
-        }),
-        replaceAllShapesWithImage: ReplaceAllShapesWithImageResponseSchema.exactOptional().openapi({
-          description: 'The result of replacing all shapes matching some criteria with an image.',
-        }),
-        replaceAllShapesWithSheetsChart:
-          ReplaceAllShapesWithSheetsChartResponseSchema.exactOptional().openapi({
-            description:
-              'The result of replacing all shapes matching some criteria with a Google Sheets chart.',
-          }),
-        replaceAllText: ReplaceAllTextResponseSchema.exactOptional().openapi({
-          description: 'The result of replacing text.',
-        }),
-      })
-      .openapi({ description: 'A single response from an update.', required: [] }),
-  )
+  .openapi({ description: 'A single response from an update.', required: [] })
   .openapi('Response')
 
 const BatchUpdatePresentationResponseSchema = z
@@ -3818,7 +3834,7 @@ const BatchUpdatePresentationResponseSchema = z
   .openapi({ description: 'Response message from a batch update.', required: [] })
   .openapi('BatchUpdatePresentationResponse')
 
-const PresentationSchema = z
+const PresentationSchema: z.ZodType<PresentationType> = z
   .object({
     layouts: z
       .array(PageSchema)

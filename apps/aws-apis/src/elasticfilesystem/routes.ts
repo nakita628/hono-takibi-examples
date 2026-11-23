@@ -19,14 +19,10 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The tag key (String). The key can't start with <code>aws:</code>.",
-        }),
-    ),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag key.' })),
+    Key: TagKeySchema.openapi({
+      description: "The tag key (String). The key can't start with <code>aws:</code>.",
+    }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag key.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -67,30 +63,17 @@ const SecondaryGidsSchema = z.array(GidSchema).min(0).max(16).openapi('Secondary
 
 const PosixUserSchema = z
   .object({
-    Uid: UidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The POSIX user ID used for all file system operations using this access point.',
-        }),
-    ),
-    Gid: GidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The POSIX group ID used for all file system operations using this access point.',
-        }),
-    ),
-    SecondaryGids: SecondaryGidsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Secondary POSIX group IDs used for all file system operations using this access point.',
-        }),
-    ).exactOptional(),
+    Uid: UidSchema.openapi({
+      description: 'The POSIX user ID used for all file system operations using this access point.',
+    }),
+    Gid: GidSchema.openapi({
+      description:
+        'The POSIX group ID used for all file system operations using this access point.',
+    }),
+    SecondaryGids: SecondaryGidsSchema.exactOptional().openapi({
+      description:
+        'Secondary POSIX group IDs used for all file system operations using this access point.',
+    }),
   })
   .openapi({
     required: ['Uid', 'Gid'],
@@ -119,30 +102,18 @@ const PermissionsSchema = z
 
 const CreationInfoSchema = z
   .object({
-    OwnerUid: OwnerUidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the POSIX user ID to apply to the <code>RootDirectory</code>. Accepts values from 0 to 2^32 (4294967295).',
-        }),
-    ),
-    OwnerGid: OwnerGidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the POSIX group ID to apply to the <code>RootDirectory</code>. Accepts values from 0 to 2^32 (4294967295).',
-        }),
-    ),
-    Permissions: PermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the POSIX permissions to apply to the <code>RootDirectory</code>, in the format of an octal number representing the file's mode bits.",
-        }),
-    ),
+    OwnerUid: OwnerUidSchema.openapi({
+      description:
+        'Specifies the POSIX user ID to apply to the <code>RootDirectory</code>. Accepts values from 0 to 2^32 (4294967295).',
+    }),
+    OwnerGid: OwnerGidSchema.openapi({
+      description:
+        'Specifies the POSIX group ID to apply to the <code>RootDirectory</code>. Accepts values from 0 to 2^32 (4294967295).',
+    }),
+    Permissions: PermissionsSchema.openapi({
+      description:
+        "Specifies the POSIX permissions to apply to the <code>RootDirectory</code>, in the format of an octal number representing the file's mode bits.",
+    }),
   })
   .openapi({
     required: ['OwnerUid', 'OwnerGid', 'Permissions'],
@@ -153,22 +124,14 @@ const CreationInfoSchema = z
 
 const RootDirectorySchema = z
   .object({
-    Path: PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the path on the EFS file system to expose as the root directory to NFS clients using the access point to access the EFS file system. A path can have up to four subdirectories. If the specified path does not exist, you are required to provide the <code>CreationInfo</code>.',
-        }),
-    ).exactOptional(),
-    CreationInfo: CreationInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>(Optional) Specifies the POSIX IDs and permissions to apply to the access point's <code>RootDirectory</code>. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates the root directory using the <code>CreationInfo</code> settings when a client connects to an access point. When specifying the <code>CreationInfo</code>, you must provide values for all properties. </p> <important> <p>If you do not provide <code>CreationInfo</code> and the specified <code>RootDirectory</code> &gt; <code>Path</code> does not exist, attempts to mount the file system using the access point will fail.</p> </important>",
-        }),
-    ).exactOptional(),
+    Path: PathSchema.exactOptional().openapi({
+      description:
+        'Specifies the path on the EFS file system to expose as the root directory to NFS clients using the access point to access the EFS file system. A path can have up to four subdirectories. If the specified path does not exist, you are required to provide the <code>CreationInfo</code>.',
+    }),
+    CreationInfo: CreationInfoSchema.exactOptional().openapi({
+      description:
+        "<p>(Optional) Specifies the POSIX IDs and permissions to apply to the access point's <code>RootDirectory</code>. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates the root directory using the <code>CreationInfo</code> settings when a client connects to an access point. When specifying the <code>CreationInfo</code>, you must provide values for all properties. </p> <important> <p>If you do not provide <code>CreationInfo</code> and the specified <code>RootDirectory</code> &gt; <code>Path</code> does not exist, attempts to mount the file system using the access point will fail.</p> </important>",
+    }),
   })
   .openapi({
     description:
@@ -189,73 +152,40 @@ const LifeCycleStateSchema = z
 
 const AccessPointDescriptionSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The opaque string specified in the request to ensure idempotent creation.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the access point. This is the value of the <code>Name</code> tag.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags associated with the access point, presented as an array of Tag objects.',
-        }),
-    ).exactOptional(),
-    AccessPointId: AccessPointIdSchema.and(
-      z.any().openapi({ description: 'The ID of the access point, assigned by Amazon EFS.' }),
-    ).exactOptional(),
-    AccessPointArn: AccessPointArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique Amazon Resource Name (ARN) associated with the access point.',
-        }),
-    ).exactOptional(),
-    FileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the EFS file system that the access point applies to.',
-        }),
-    ).exactOptional(),
-    PosixUser: PosixUserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full POSIX identity, including the user ID, group ID, and secondary group IDs on the access point that is used for all file operations by NFS clients using the access point.',
-        }),
-    ).exactOptional(),
-    RootDirectory: RootDirectorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The directory on the Amazon EFS file system that the access point exposes as the root directory to NFS clients using the access point.',
-        }),
-    ).exactOptional(),
-    OwnerId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the Amazon Web Services account that owns the access point resource.',
-        }),
-    ).exactOptional(),
-    LifeCycleState: LifeCycleStateSchema.and(
-      z.any().openapi({ description: 'Identifies the lifecycle phase of the access point.' }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The opaque string specified in the request to ensure idempotent creation.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the access point. This is the value of the <code>Name</code> tag.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'The tags associated with the access point, presented as an array of Tag objects.',
+    }),
+    AccessPointId: AccessPointIdSchema.exactOptional().openapi({
+      description: 'The ID of the access point, assigned by Amazon EFS.',
+    }),
+    AccessPointArn: AccessPointArnSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) associated with the access point.',
+    }),
+    FileSystemId: FileSystemIdSchema.exactOptional().openapi({
+      description: 'The ID of the EFS file system that the access point applies to.',
+    }),
+    PosixUser: PosixUserSchema.exactOptional().openapi({
+      description:
+        'The full POSIX identity, including the user ID, group ID, and secondary group IDs on the access point that is used for all file operations by NFS clients using the access point.',
+    }),
+    RootDirectory: RootDirectorySchema.exactOptional().openapi({
+      description:
+        'The directory on the Amazon EFS file system that the access point exposes as the root directory to NFS clients using the access point.',
+    }),
+    OwnerId: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        'Identifies the Amazon Web Services account that owns the access point resource.',
+    }),
+    LifeCycleState: LifeCycleStateSchema.exactOptional().openapi({
+      description: 'Identifies the lifecycle phase of the access point.',
+    }),
   })
   .openapi({
     description: 'Provides a description of an EFS file system access point.',
@@ -291,38 +221,21 @@ const FileSystemNullableSizeValueSchema = z.int().min(0).openapi('FileSystemNull
 
 const FileSystemSizeSchema = z
   .object({
-    Value: FileSystemSizeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest known metered size (in bytes) of data stored in the file system.',
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the size of data, returned in the <code>Value</code> field, was determined. The value is the integer number of seconds since 1970-01-01T00:00:00Z.',
-        }),
-    ).exactOptional(),
-    ValueInIA: FileSystemNullableSizeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest known metered size (in bytes) of data stored in the Infrequent Access storage class.',
-        }),
-    ).exactOptional(),
-    ValueInStandard: FileSystemNullableSizeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest known metered size (in bytes) of data stored in the Standard storage class.',
-        }),
-    ).exactOptional(),
+    Value: FileSystemSizeValueSchema.openapi({
+      description: 'The latest known metered size (in bytes) of data stored in the file system.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which the size of data, returned in the <code>Value</code> field, was determined. The value is the integer number of seconds since 1970-01-01T00:00:00Z.',
+    }),
+    ValueInIA: FileSystemNullableSizeValueSchema.exactOptional().openapi({
+      description:
+        'The latest known metered size (in bytes) of data stored in the Infrequent Access storage class.',
+    }),
+    ValueInStandard: FileSystemNullableSizeValueSchema.exactOptional().openapi({
+      description:
+        'The latest known metered size (in bytes) of data stored in the Standard storage class.',
+    }),
   })
   .openapi({
     required: ['Value'],
@@ -363,118 +276,67 @@ const AvailabilityZoneIdSchema = z.string().openapi('AvailabilityZoneId')
 
 const FileSystemDescriptionSchema = z
   .object({
-    OwnerId: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account that created the file system.' }),
-    ),
-    CreationToken: CreationTokenSchema.and(
-      z.any().openapi({ description: 'The opaque string specified in the request.' }),
-    ),
-    FileSystemId: FileSystemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the file system, assigned by Amazon EFS.' }),
-    ),
-    FileSystemArn: FileSystemArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the EFS file system, in the format <code>arn:aws:elasticfilesystem:<i>region</i>:<i>account-id</i>:file-system/<i>file-system-id</i> </code>. Example with sample data: <code>arn:aws:elasticfilesystem:us-west-2:1111333322228888:file-system/fs-01234567</code> ',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the file system was created, in seconds (since 1970-01-01T00:00:00Z).',
-        }),
-    ),
-    LifeCycleState: LifeCycleStateSchema.and(
-      z.any().openapi({ description: 'The lifecycle phase of the file system.' }),
-    ),
-    Name: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can add tags to a file system, including a <code>Name</code> tag. For more information, see <a>CreateFileSystem</a>. If the file system has a <code>Name</code> tag, Amazon EFS returns the value in this field. ',
-        }),
-    ).exactOptional(),
-    NumberOfMountTargets: MountTargetCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current number of mount targets that the file system has. For more information, see <a>CreateMountTarget</a>.',
-        }),
-    ),
-    SizeInBytes: FileSystemSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The latest known metered size (in bytes) of data stored in the file system, in its <code>Value</code> field, and the time at which that size was determined in its <code>Timestamp</code> field. The <code>Timestamp</code> value is the integer number of seconds since 1970-01-01T00:00:00Z. The <code>SizeInBytes</code> value doesn't represent the size of a consistent snapshot of the file system, but it is eventually consistent when there are no writes to the file system. That is, <code>SizeInBytes</code> represents actual size only if the file system is not modified for a period longer than a couple of hours. Otherwise, the value is not the exact size that the file system was at any point in time. ",
-        }),
-    ),
-    PerformanceMode: PerformanceModeSchema.and(
-      z.any().openapi({ description: 'The performance mode of the file system.' }),
-    ),
-    Encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that, if true, indicates that the file system is encrypted.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an KMS key used to protect the encrypted file system.',
-        }),
-    ).exactOptional(),
-    ThroughputMode: ThroughputModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays the file system\'s throughput mode. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes">Throughput modes</a> in the <i>Amazon EFS User Guide</i>. ',
-        }),
-    ).exactOptional(),
-    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of provisioned throughput, measured in MiB/s, for the file system. Valid for file systems using <code>ThroughputMode</code> set to <code>provisioned</code>.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneName: AvailabilityZoneNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the Amazon Web Services Availability Zone in which the file system is located, and is valid only for file systems using One Zone storage classes. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html">Using EFS storage classes</a> in the <i>Amazon EFS User Guide</i>.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneId: AvailabilityZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The unique and consistent identifier of the Availability Zone in which the file system's One Zone storage classes exist. For example, <code>use1-az1</code> is an Availability Zone ID for the us-east-1 Amazon Web Services Region, and it has the same location in every Amazon Web Services account.",
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags associated with the file system, presented as an array of <code>Tag</code> objects.',
-        }),
-    ),
+    OwnerId: AwsAccountIdSchema.openapi({
+      description: 'The Amazon Web Services account that created the file system.',
+    }),
+    CreationToken: CreationTokenSchema.openapi({
+      description: 'The opaque string specified in the request.',
+    }),
+    FileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the file system, assigned by Amazon EFS.',
+    }),
+    FileSystemArn: FileSystemArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the EFS file system, in the format <code>arn:aws:elasticfilesystem:<i>region</i>:<i>account-id</i>:file-system/<i>file-system-id</i> </code>. Example with sample data: <code>arn:aws:elasticfilesystem:us-west-2:1111333322228888:file-system/fs-01234567</code> ',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description:
+        'The time that the file system was created, in seconds (since 1970-01-01T00:00:00Z).',
+    }),
+    LifeCycleState: LifeCycleStateSchema.openapi({
+      description: 'The lifecycle phase of the file system.',
+    }),
+    Name: TagValueSchema.exactOptional().openapi({
+      description:
+        'You can add tags to a file system, including a <code>Name</code> tag. For more information, see <a>CreateFileSystem</a>. If the file system has a <code>Name</code> tag, Amazon EFS returns the value in this field. ',
+    }),
+    NumberOfMountTargets: MountTargetCountSchema.openapi({
+      description:
+        'The current number of mount targets that the file system has. For more information, see <a>CreateMountTarget</a>.',
+    }),
+    SizeInBytes: FileSystemSizeSchema.openapi({
+      description:
+        "The latest known metered size (in bytes) of data stored in the file system, in its <code>Value</code> field, and the time at which that size was determined in its <code>Timestamp</code> field. The <code>Timestamp</code> value is the integer number of seconds since 1970-01-01T00:00:00Z. The <code>SizeInBytes</code> value doesn't represent the size of a consistent snapshot of the file system, but it is eventually consistent when there are no writes to the file system. That is, <code>SizeInBytes</code> represents actual size only if the file system is not modified for a period longer than a couple of hours. Otherwise, the value is not the exact size that the file system was at any point in time. ",
+    }),
+    PerformanceMode: PerformanceModeSchema.openapi({
+      description: 'The performance mode of the file system.',
+    }),
+    Encrypted: EncryptedSchema.exactOptional().openapi({
+      description: 'A Boolean value that, if true, indicates that the file system is encrypted.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'The ID of an KMS key used to protect the encrypted file system.',
+    }),
+    ThroughputMode: ThroughputModeSchema.exactOptional().openapi({
+      description:
+        'Displays the file system\'s throughput mode. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes">Throughput modes</a> in the <i>Amazon EFS User Guide</i>. ',
+    }),
+    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.exactOptional().openapi({
+      description:
+        'The amount of provisioned throughput, measured in MiB/s, for the file system. Valid for file systems using <code>ThroughputMode</code> set to <code>provisioned</code>.',
+    }),
+    AvailabilityZoneName: AvailabilityZoneNameSchema.exactOptional().openapi({
+      description:
+        'Describes the Amazon Web Services Availability Zone in which the file system is located, and is valid only for file systems using One Zone storage classes. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html">Using EFS storage classes</a> in the <i>Amazon EFS User Guide</i>.',
+    }),
+    AvailabilityZoneId: AvailabilityZoneIdSchema.exactOptional().openapi({
+      description:
+        "The unique and consistent identifier of the Availability Zone in which the file system's One Zone storage classes exist. For example, <code>use1-az1</code> is an Availability Zone ID for the us-east-1 Amazon Web Services Region, and it has the same location in every Amazon Web Services account.",
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        'The tags associated with the file system, presented as an array of <code>Tag</code> objects.',
+    }),
   })
   .openapi({
     required: [
@@ -541,63 +403,35 @@ const VpcIdSchema = z.string().openapi('VpcId')
 
 const MountTargetDescriptionSchema = z
   .object({
-    OwnerId: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'Amazon Web Services account ID that owns the resource.' }),
-    ).exactOptional(),
-    MountTargetId: MountTargetIdSchema.and(
-      z.any().openapi({ description: 'System-assigned mount target ID.' }),
-    ),
-    FileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the file system for which the mount target is intended.',
-        }),
-    ),
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: "The ID of the mount target's subnet." }),
-    ),
-    LifeCycleState: LifeCycleStateSchema.and(
-      z.any().openapi({ description: 'Lifecycle state of the mount target.' }),
-    ),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Address at which the file system can be mounted by using the mount target.',
-        }),
-    ).exactOptional(),
-    NetworkInterfaceId: NetworkInterfaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the network interface that Amazon EFS created when it created the mount target.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneId: AvailabilityZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique and consistent identifier of the Availability Zone that the mount target resides in. For example, <code>use1-az1</code> is an AZ ID for the us-east-1 Region and it has the same location in every Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneName: AvailabilityZoneNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Availability Zone in which the mount target is located. Availability Zones are independently mapped to names for each Amazon Web Services account. For example, the Availability Zone <code>us-east-1a</code> for your Amazon Web Services account might not be the same location as <code>us-east-1a</code> for another Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The virtual private cloud (VPC) ID that the mount target is configured in.',
-        }),
-    ).exactOptional(),
+    OwnerId: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'Amazon Web Services account ID that owns the resource.',
+    }),
+    MountTargetId: MountTargetIdSchema.openapi({ description: 'System-assigned mount target ID.' }),
+    FileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the file system for which the mount target is intended.',
+    }),
+    SubnetId: SubnetIdSchema.openapi({ description: "The ID of the mount target's subnet." }),
+    LifeCycleState: LifeCycleStateSchema.openapi({
+      description: 'Lifecycle state of the mount target.',
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'Address at which the file system can be mounted by using the mount target.',
+    }),
+    NetworkInterfaceId: NetworkInterfaceIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the network interface that Amazon EFS created when it created the mount target.',
+    }),
+    AvailabilityZoneId: AvailabilityZoneIdSchema.exactOptional().openapi({
+      description:
+        'The unique and consistent identifier of the Availability Zone that the mount target resides in. For example, <code>use1-az1</code> is an AZ ID for the us-east-1 Region and it has the same location in every Amazon Web Services account.',
+    }),
+    AvailabilityZoneName: AvailabilityZoneNameSchema.exactOptional().openapi({
+      description:
+        'The name of the Availability Zone in which the mount target is located. Availability Zones are independently mapped to names for each Amazon Web Services account. For example, the Availability Zone <code>us-east-1a</code> for your Amazon Web Services account might not be the same location as <code>us-east-1a</code> for another Amazon Web Services account.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The virtual private cloud (VPC) ID that the mount target is configured in.',
+    }),
   })
   .openapi({
     required: ['MountTargetId', 'FileSystemId', 'SubnetId', 'LifeCycleState'],
@@ -650,33 +484,21 @@ const ReplicationStatusSchema = z
 
 const DestinationSchema = z
   .object({
-    Status: ReplicationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the status of the destination Amazon EFS file system. If the status is <code>ERROR</code>, the destination file system in the replication configuration is in a failed state and is unrecoverable. To access the file system data, restore a backup of the failed file system to a new file system.',
-        }),
-    ),
-    FileSystemId: FileSystemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the destination Amazon EFS file system.' }),
-    ),
-    Region: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region in which the destination file system is located.',
-        }),
-    ),
-    LastReplicatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the most recent sync was successfully completed on the destination file system. Any changes to data on the source file system that occurred before this time have been successfully replicated to the destination file system. Any changes that occurred after this time might not be fully replicated.',
-        }),
-    ).exactOptional(),
+    Status: ReplicationStatusSchema.openapi({
+      description:
+        'Describes the status of the destination Amazon EFS file system. If the status is <code>ERROR</code>, the destination file system in the replication configuration is in a failed state and is unrecoverable. To access the file system data, restore a backup of the failed file system to a new file system.',
+    }),
+    FileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the destination Amazon EFS file system.',
+    }),
+    Region: RegionNameSchema.openapi({
+      description:
+        'The Amazon Web Services Region in which the destination file system is located.',
+    }),
+    LastReplicatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the most recent sync was successfully completed on the destination file system. Any changes to data on the source file system that occurred before this time have been successfully replicated to the destination file system. Any changes that occurred after this time might not be fully replicated.',
+    }),
   })
   .openapi({
     required: ['Status', 'FileSystemId', 'Region'],
@@ -688,47 +510,27 @@ const DestinationsSchema = z.array(DestinationSchema).openapi('Destinations')
 
 const ReplicationConfigurationDescriptionSchema = z
   .object({
-    SourceFileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the source Amazon EFS file system that is being replicated.',
-        }),
-    ),
-    SourceFileSystemRegion: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Region in which the source Amazon EFS file system is located.',
-        }),
-    ),
-    SourceFileSystemArn: FileSystemArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the current source file system in the replication configuration.',
-        }),
-    ),
-    OriginalSourceFileSystemArn: FileSystemArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the original source Amazon EFS file system in the replication configuration.',
-        }),
-    ),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Describes when the replication configuration was created.' }),
-    ),
-    Destinations: DestinationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of destination objects. Only one destination object is supported.',
-        }),
-    ),
+    SourceFileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the source Amazon EFS file system that is being replicated.',
+    }),
+    SourceFileSystemRegion: RegionNameSchema.openapi({
+      description:
+        'The Amazon Web Services Region in which the source Amazon EFS file system is located.',
+    }),
+    SourceFileSystemArn: FileSystemArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the current source file system in the replication configuration.',
+    }),
+    OriginalSourceFileSystemArn: FileSystemArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the original source Amazon EFS file system in the replication configuration.',
+    }),
+    CreationTime: TimestampSchema.openapi({
+      description: 'Describes when the replication configuration was created.',
+    }),
+    Destinations: DestinationsSchema.openapi({
+      description: 'An array of destination objects. Only one destination object is supported.',
+    }),
   })
   .openapi({
     required: [
@@ -744,30 +546,18 @@ const ReplicationConfigurationDescriptionSchema = z
 
 const DestinationToCreateSchema = z
   .object({
-    Region: RegionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create a file system that uses Regional storage, specify the Amazon Web Services Region in which to create the destination file system.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneName: AvailabilityZoneNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create a file system that uses EFS One Zone storage, specify the name of the Availability Zone in which to create the destination file system.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the Key Management Service (KMS) key that you want to use to encrypt the destination file system. If you do not specify a KMS key, Amazon EFS uses your default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>. This ID can be in one of the following formats:</p> <ul> <li> <p>Key ID - The unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - The Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - The ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Region: RegionNameSchema.exactOptional().openapi({
+      description:
+        'To create a file system that uses Regional storage, specify the Amazon Web Services Region in which to create the destination file system.',
+    }),
+    AvailabilityZoneName: AvailabilityZoneNameSchema.exactOptional().openapi({
+      description:
+        'To create a file system that uses EFS One Zone storage, specify the name of the Availability Zone in which to create the destination file system.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the Key Management Service (KMS) key that you want to use to encrypt the destination file system. If you do not specify a KMS key, Amazon EFS uses your default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>. This ID can be in one of the following formats:</p> <ul> <li> <p>Key ID - The unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - The Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - The ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -802,17 +592,13 @@ const TokenSchema = z
 
 const DescribeAccessPointsResponseSchema = z
   .object({
-    AccessPoints: AccessPointDescriptionsSchema.and(
-      z.any().openapi({ description: 'An array of access point descriptions.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Present if there are more access points than returned in the response. You can use the NextMarker in the subsequent request to fetch the additional descriptions.',
-        }),
-    ).exactOptional(),
+    AccessPoints: AccessPointDescriptionsSchema.exactOptional().openapi({
+      description: 'An array of access point descriptions.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Present if there are more access points than returned in the response. You can use the NextMarker in the subsequent request to fetch the additional descriptions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccessPointsResponse')
@@ -837,22 +623,14 @@ const ResourcesSchema = z
 
 const ResourceIdPreferenceSchema = z
   .object({
-    ResourceIdType: ResourceIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the EFS resource ID preference, either <code>LONG_ID</code> (17 characters) or <code>SHORT_ID</code> (8 characters).',
-        }),
-    ).exactOptional(),
-    Resources: ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the Amazon EFS resources to which the ID preference setting applies, <code>FILE_SYSTEM</code> and <code>MOUNT_TARGET</code>.',
-        }),
-    ).exactOptional(),
+    ResourceIdType: ResourceIdTypeSchema.exactOptional().openapi({
+      description:
+        'Identifies the EFS resource ID preference, either <code>LONG_ID</code> (17 characters) or <code>SHORT_ID</code> (8 characters).',
+    }),
+    Resources: ResourcesSchema.exactOptional().openapi({
+      description:
+        'Identifies the Amazon EFS resources to which the ID preference setting applies, <code>FILE_SYSTEM</code> and <code>MOUNT_TARGET</code>.',
+    }),
   })
   .openapi({
     description:
@@ -863,22 +641,14 @@ const ResourceIdPreferenceSchema = z
 
 const DescribeAccountPreferencesResponseSchema = z
   .object({
-    ResourceIdPreference: ResourceIdPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the resource ID preference setting for the Amazon Web Services account associated with the user making the request, in the current Amazon Web Services Region.',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Present if there are more records than returned in the response. You can use the <code>NextToken</code> in the subsequent request to fetch the additional descriptions.',
-        }),
-    ).exactOptional(),
+    ResourceIdPreference: ResourceIdPreferenceSchema.exactOptional().openapi({
+      description:
+        'Describes the resource ID preference setting for the Amazon Web Services account associated with the user making the request, in the current Amazon Web Services Region.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'Present if there are more records than returned in the response. You can use the <code>NextToken</code> in the subsequent request to fetch the additional descriptions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountPreferencesResponse')
@@ -887,14 +657,10 @@ const StatusSchema = z.enum(['ENABLED', 'ENABLING', 'DISABLED', 'DISABLING']).op
 
 const BackupPolicySchema = z
   .object({
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Describes the status of the file system's backup policy.</p> <ul> <li> <p> <b> <code>ENABLED</code> </b> - EFS is automatically backing up the file system.</p> </li> <li> <p> <b> <code>ENABLING</code> </b> - EFS is turning on automatic backups for the file system.</p> </li> <li> <p> <b> <code>DISABLED</code> </b> - Automatic back ups are turned off for the file system.</p> </li> <li> <p> <b> <code>DISABLING</code> </b> - EFS is turning off automatic backups for the file system.</p> </li> </ul>",
-        }),
-    ),
+    Status: StatusSchema.openapi({
+      description:
+        "<p>Describes the status of the file system's backup policy.</p> <ul> <li> <p> <b> <code>ENABLED</code> </b> - EFS is automatically backing up the file system.</p> </li> <li> <p> <b> <code>ENABLING</code> </b> - EFS is turning on automatic backups for the file system.</p> </li> <li> <p> <b> <code>DISABLED</code> </b> - Automatic back ups are turned off for the file system.</p> </li> <li> <p> <b> <code>DISABLING</code> </b> - EFS is turning off automatic backups for the file system.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['Status'],
@@ -905,14 +671,10 @@ const BackupPolicySchema = z
 
 const BackupPolicyDescriptionSchema = z
   .object({
-    BackupPolicy: BackupPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes the file system's backup policy, indicating whether automatic backups are turned on or off.",
-        }),
-    ).exactOptional(),
+    BackupPolicy: BackupPolicySchema.exactOptional().openapi({
+      description:
+        "Describes the file system's backup policy, indicating whether automatic backups are turned on or off.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('BackupPolicyDescription')
@@ -928,21 +690,13 @@ const PolicySchema = z
 
 const FileSystemPolicyDescriptionSchema = z
   .object({
-    FileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the EFS file system to which the <code>FileSystemPolicy</code> applies.',
-        }),
-    ).exactOptional(),
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON formatted <code>FileSystemPolicy</code> for the EFS file system.',
-        }),
-    ).exactOptional(),
+    FileSystemId: FileSystemIdSchema.exactOptional().openapi({
+      description:
+        'Specifies the EFS file system to which the <code>FileSystemPolicy</code> applies.',
+    }),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'The JSON formatted <code>FileSystemPolicy</code> for the EFS file system.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('FileSystemPolicyDescription')
@@ -955,20 +709,16 @@ const FileSystemDescriptionsSchema = z
 
 const DescribeFileSystemsResponseSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z.any().openapi({ description: 'Present if provided by caller in the request (String).' }),
-    ).exactOptional(),
-    FileSystems: FileSystemDescriptionsSchema.and(
-      z.any().openapi({ description: 'An array of file system descriptions.' }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Present if there are more file systems than returned in the response (String). You can use the <code>NextMarker</code> in the subsequent request to fetch the descriptions.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description: 'Present if provided by caller in the request (String).',
+    }),
+    FileSystems: FileSystemDescriptionsSchema.exactOptional().openapi({
+      description: 'An array of file system descriptions.',
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'Present if there are more file systems than returned in the response (String). You can use the <code>NextMarker</code> in the subsequent request to fetch the descriptions.',
+    }),
   })
   .openapi({
     example: {
@@ -1008,22 +758,15 @@ const TransitionToPrimaryStorageClassRulesSchema = z
 
 const LifecyclePolicySchema = z
   .object({
-    TransitionToIA: TransitionToIARulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Describes the period of time that a file is not accessed, after which it transitions to IA storage. Metadata operations such as listing the contents of a directory don't count as file access events.",
-        }),
-    ).exactOptional(),
-    TransitionToPrimaryStorageClass: TransitionToPrimaryStorageClassRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes when to transition a file from IA storage to primary storage. Metadata operations such as listing the contents of a directory don't count as file access events.",
-        }),
-    ).exactOptional(),
+    TransitionToIA: TransitionToIARulesSchema.exactOptional().openapi({
+      description:
+        " Describes the period of time that a file is not accessed, after which it transitions to IA storage. Metadata operations such as listing the contents of a directory don't count as file access events.",
+    }),
+    TransitionToPrimaryStorageClass:
+      TransitionToPrimaryStorageClassRulesSchema.exactOptional().openapi({
+        description:
+          "Describes when to transition a file from IA storage to primary storage. Metadata operations such as listing the contents of a directory don't count as file access events.",
+      }),
   })
   .openapi({
     description:
@@ -1036,14 +779,10 @@ const LifecyclePoliciesSchema = z.array(LifecyclePolicySchema).max(2).openapi('L
 
 const LifecycleConfigurationDescriptionSchema = z
   .object({
-    LifecyclePolicies: LifecyclePoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of lifecycle management policies. EFS supports a maximum of one policy per file system.',
-        }),
-    ).exactOptional(),
+    LifecyclePolicies: LifecyclePoliciesSchema.exactOptional().openapi({
+      description:
+        'An array of lifecycle management policies. EFS supports a maximum of one policy per file system.',
+    }),
   })
   .openapi({ example: { LifecyclePolicies: [{ TransitionToIA: 'AFTER_30_DAYS' }] }, required: [] })
   .openapi('LifecycleConfigurationDescription')
@@ -1052,9 +791,7 @@ const SecurityGroupsSchema = z.array(SecurityGroupSchema).max(100).openapi('Secu
 
 const DescribeMountTargetSecurityGroupsResponseSchema = z
   .object({
-    SecurityGroups: SecurityGroupsSchema.and(
-      z.any().openapi({ description: 'An array of security groups.' }),
-    ),
+    SecurityGroups: SecurityGroupsSchema.openapi({ description: 'An array of security groups.' }),
   })
   .openapi({ required: ['SecurityGroups'], example: { SecurityGroups: ['sg-4567abcd'] } })
   .openapi('DescribeMountTargetSecurityGroupsResponse')
@@ -1067,30 +804,18 @@ const MountTargetDescriptionsSchema = z
 
 const DescribeMountTargetsResponseSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the request included the <code>Marker</code>, the response returns that value in this field.',
-        }),
-    ).exactOptional(),
-    MountTargets: MountTargetDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Returns the file system's mount targets as an array of <code>MountTargetDescription</code> objects.",
-        }),
-    ).exactOptional(),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a value is present, there are more mount targets to return. In a subsequent request, you can provide <code>Marker</code> in your request with this value to retrieve the next set of mount targets.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If the request included the <code>Marker</code>, the response returns that value in this field.',
+    }),
+    MountTargets: MountTargetDescriptionsSchema.exactOptional().openapi({
+      description:
+        "Returns the file system's mount targets as an array of <code>MountTargetDescription</code> objects.",
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If a value is present, there are more mount targets to return. In a subsequent request, you can provide <code>Marker</code> in your request with this value to retrieve the next set of mount targets.',
+    }),
   })
   .openapi({
     example: {
@@ -1117,49 +842,31 @@ const ReplicationConfigurationDescriptionsSchema = z
 
 const DescribeReplicationConfigurationsResponseSchema = z
   .object({
-    Replications: ReplicationConfigurationDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The collection of replication configurations that is returned.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can use the <code>NextToken</code> from the previous response in a subsequent request to fetch the additional descriptions.',
-        }),
-    ).exactOptional(),
+    Replications: ReplicationConfigurationDescriptionsSchema.exactOptional().openapi({
+      description: 'The collection of replication configurations that is returned.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'You can use the <code>NextToken</code> from the previous response in a subsequent request to fetch the additional descriptions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReplicationConfigurationsResponse')
 
 const DescribeTagsResponseSchema = z
   .object({
-    Marker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the request included a <code>Marker</code>, the response returns that value in this field.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns tags associated with the file system as an array of <code>Tag</code> objects. ',
-        }),
-    ),
-    NextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a value is present, there are more tags to return. In a subsequent request, you can provide the value of <code>NextMarker</code> as the value of the <code>Marker</code> parameter in your next request to retrieve the next set of tags.',
-        }),
-    ).exactOptional(),
+    Marker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If the request included a <code>Marker</code>, the response returns that value in this field.',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        'Returns tags associated with the file system as an array of <code>Tag</code> objects. ',
+    }),
+    NextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'If a value is present, there are more tags to return. In a subsequent request, you can provide the value of <code>NextMarker</code> as the value of the <code>Marker</code> parameter in your next request to retrieve the next set of tags.',
+    }),
   })
   .openapi({
     required: ['Tags'],
@@ -1170,17 +877,13 @@ const DescribeTagsResponseSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'An array of the tags for the specified EFS resource.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>NextToken</code> is present if the response payload is paginated. You can use <code>NextToken</code> in a subsequent request to fetch the next page of access point descriptions.',
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'An array of the tags for the specified EFS resource.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        ' <code>NextToken</code> is present if the response payload is paginated. You can use <code>NextToken</code> in a subsequent request to fetch the next page of access point descriptions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -1200,159 +903,87 @@ const BypassPolicyLockoutSafetyCheckSchema = z.boolean().openapi('BypassPolicyLo
 
 const CreateAccessPointRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Creates tags associated with the access point. Each tag is a key-value pair, each key must be unique. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.',
-        }),
-    ).exactOptional(),
-    FileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the EFS file system that the access point provides access to.',
-        }),
-    ),
-    PosixUser: PosixUserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The operating system user and group applied to all file system requests made using the access point.',
-        }),
-    ).exactOptional(),
-    RootDirectory: RootDirectorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the directory on the Amazon EFS file system that the access point exposes as the root directory of your file system to NFS clients using the access point. The clients using the access point can only access the root directory and below. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates it and applies the <code>CreationInfo</code> settings when a client connects to an access point. When specifying a <code>RootDirectory</code>, you must provide the <code>Path</code>, and the <code>CreationInfo</code>.</p> <p>Amazon EFS creates a root directory only if you have provided the CreationInfo: OwnUid, OwnGID, and permissions for the directory. If you do not provide this information, Amazon EFS does not create the root directory. If the root directory does not exist, attempts to mount using the access point will fail.</p>',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'Creates tags associated with the access point. Each tag is a key-value pair, each key must be unique. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.',
+    }),
+    FileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the EFS file system that the access point provides access to.',
+    }),
+    PosixUser: PosixUserSchema.exactOptional().openapi({
+      description:
+        'The operating system user and group applied to all file system requests made using the access point.',
+    }),
+    RootDirectory: RootDirectorySchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the directory on the Amazon EFS file system that the access point exposes as the root directory of your file system to NFS clients using the access point. The clients using the access point can only access the root directory and below. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates it and applies the <code>CreationInfo</code> settings when a client connects to an access point. When specifying a <code>RootDirectory</code>, you must provide the <code>Path</code>, and the <code>CreationInfo</code>.</p> <p>Amazon EFS creates a root directory only if you have provided the CreationInfo: OwnUid, OwnGID, and permissions for the directory. If you do not provide this information, Amazon EFS does not create the root directory. If the root directory does not exist, attempts to mount using the access point will fail.</p>',
+    }),
   })
   .openapi({ required: ['ClientToken', 'FileSystemId'], title: 'CreateAccessPointRequest' })
   .openapi('CreateAccessPointRequest')
 
 const CreateFileSystemRequestSchema = z
   .object({
-    CreationToken: CreationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string of up to 64 ASCII characters. Amazon EFS uses this to ensure idempotent creation.',
-        }),
-    ),
-    PerformanceMode: PerformanceModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The performance mode of the file system. We recommend <code>generalPurpose</code> performance mode for most file systems. File systems using the <code>maxIO</code> performance mode can scale to higher levels of aggregate throughput and operations per second with a tradeoff of slightly higher latencies for most file operations. The performance mode can't be changed after the file system has been created.</p> <note> <p>The <code>maxIO</code> mode is not supported on file systems using One Zone storage classes.</p> </note>",
-        }),
-    ).exactOptional(),
-    Encrypted: EncryptedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A Boolean value that, if true, creates an encrypted file system. When creating an encrypted file system, you have the option of specifying an existing Key Management Service key (KMS key). If you don't specify a KMS key, then the default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>, is used to protect the encrypted file system. ",
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the KMS key that you want to use to protect the encrypted file system. This parameter is required only if you want to use a non-default KMS key. If this parameter is not specified, the default KMS key for Amazon EFS is used. You can specify a KMS key ID using the following formats:</p> <ul> <li> <p>Key ID - A unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - An Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - An ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul> <p>If you use <code>KmsKeyId</code>, you must set the <a>CreateFileSystemRequest$Encrypted</a> parameter to true.</p> <important> <p>EFS accepts only symmetric KMS keys. You cannot use asymmetric KMS keys with Amazon EFS file systems.</p> </important>',
-        }),
-    ).exactOptional(),
-    ThroughputMode: ThroughputModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the throughput mode for the file system. The mode can be <code>bursting</code>, <code>provisioned</code>, or <code>elastic</code>. If you set <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>. After you create the file system, you can decrease your file system\'s throughput in Provisioned Throughput mode or change between the throughput modes, with certain time restrictions. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html#provisioned-throughput">Specifying throughput with provisioned mode</a> in the <i>Amazon EFS User Guide</i>. </p> <p>Default is <code>bursting</code>.</p>',
-        }),
-    ).exactOptional(),
-    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The throughput, measured in MiB/s, that you want to provision for a file system that you\'re creating. Valid values are 1-1024. Required if <code>ThroughputMode</code> is set to <code>provisioned</code>. The upper limit for throughput is 1024 MiB/s. To increase this limit, contact Amazon Web Services Support. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/limits.html#soft-limits">Amazon EFS quotas that you can increase</a> in the <i>Amazon EFS User Guide</i>.',
-        }),
-    ).exactOptional(),
-    AvailabilityZoneName: AvailabilityZoneNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Used to create a file system that uses One Zone storage classes. It specifies the Amazon Web Services Availability Zone in which to create the file system. Use the format <code>us-east-1a</code> to specify the Availability Zone. For more information about One Zone storage classes, see <a href="https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html">Using EFS storage classes</a> in the <i>Amazon EFS User Guide</i>.</p> <note> <p>One Zone storage classes are not available in all Availability Zones in Amazon Web Services Regions where Amazon EFS is available.</p> </note>',
-        }),
-    ).exactOptional(),
-    Backup: BackupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether automatic backups are enabled on the file system that you are creating. Set the value to <code>true</code> to enable automatic backups. If you are creating a file system that uses One Zone storage classes, automatic backups are enabled by default. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html#automatic-backups">Automatic backups</a> in the <i>Amazon EFS User Guide</i>.</p> <p>Default is <code>false</code>. However, if you specify an <code>AvailabilityZoneName</code>, the default is <code>true</code>.</p> <note> <p>Backup is not available in all Amazon Web Services Regions where Amazon EFS is available.</p> </note>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use to create one or more tags associated with the file system. Each tag is a user-defined key-value pair. Name your file system on creation by including a <code>"Key":"Name","Value":"{value}"</code> key-value pair. Each key must be unique. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.',
-        }),
-    ).exactOptional(),
+    CreationToken: CreationTokenSchema.openapi({
+      description:
+        'A string of up to 64 ASCII characters. Amazon EFS uses this to ensure idempotent creation.',
+    }),
+    PerformanceMode: PerformanceModeSchema.exactOptional().openapi({
+      description:
+        "<p>The performance mode of the file system. We recommend <code>generalPurpose</code> performance mode for most file systems. File systems using the <code>maxIO</code> performance mode can scale to higher levels of aggregate throughput and operations per second with a tradeoff of slightly higher latencies for most file operations. The performance mode can't be changed after the file system has been created.</p> <note> <p>The <code>maxIO</code> mode is not supported on file systems using One Zone storage classes.</p> </note>",
+    }),
+    Encrypted: EncryptedSchema.exactOptional().openapi({
+      description:
+        "A Boolean value that, if true, creates an encrypted file system. When creating an encrypted file system, you have the option of specifying an existing Key Management Service key (KMS key). If you don't specify a KMS key, then the default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>, is used to protect the encrypted file system. ",
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the KMS key that you want to use to protect the encrypted file system. This parameter is required only if you want to use a non-default KMS key. If this parameter is not specified, the default KMS key for Amazon EFS is used. You can specify a KMS key ID using the following formats:</p> <ul> <li> <p>Key ID - A unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - An Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - An ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul> <p>If you use <code>KmsKeyId</code>, you must set the <a>CreateFileSystemRequest$Encrypted</a> parameter to true.</p> <important> <p>EFS accepts only symmetric KMS keys. You cannot use asymmetric KMS keys with Amazon EFS file systems.</p> </important>',
+    }),
+    ThroughputMode: ThroughputModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the throughput mode for the file system. The mode can be <code>bursting</code>, <code>provisioned</code>, or <code>elastic</code>. If you set <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>. After you create the file system, you can decrease your file system\'s throughput in Provisioned Throughput mode or change between the throughput modes, with certain time restrictions. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/performance.html#provisioned-throughput">Specifying throughput with provisioned mode</a> in the <i>Amazon EFS User Guide</i>. </p> <p>Default is <code>bursting</code>.</p>',
+    }),
+    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.exactOptional().openapi({
+      description:
+        'The throughput, measured in MiB/s, that you want to provision for a file system that you\'re creating. Valid values are 1-1024. Required if <code>ThroughputMode</code> is set to <code>provisioned</code>. The upper limit for throughput is 1024 MiB/s. To increase this limit, contact Amazon Web Services Support. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/limits.html#soft-limits">Amazon EFS quotas that you can increase</a> in the <i>Amazon EFS User Guide</i>.',
+    }),
+    AvailabilityZoneName: AvailabilityZoneNameSchema.exactOptional().openapi({
+      description:
+        '<p>Used to create a file system that uses One Zone storage classes. It specifies the Amazon Web Services Availability Zone in which to create the file system. Use the format <code>us-east-1a</code> to specify the Availability Zone. For more information about One Zone storage classes, see <a href="https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html">Using EFS storage classes</a> in the <i>Amazon EFS User Guide</i>.</p> <note> <p>One Zone storage classes are not available in all Availability Zones in Amazon Web Services Regions where Amazon EFS is available.</p> </note>',
+    }),
+    Backup: BackupSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether automatic backups are enabled on the file system that you are creating. Set the value to <code>true</code> to enable automatic backups. If you are creating a file system that uses One Zone storage classes, automatic backups are enabled by default. For more information, see <a href="https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html#automatic-backups">Automatic backups</a> in the <i>Amazon EFS User Guide</i>.</p> <p>Default is <code>false</code>. However, if you specify an <code>AvailabilityZoneName</code>, the default is <code>true</code>.</p> <note> <p>Backup is not available in all Amazon Web Services Regions where Amazon EFS is available.</p> </note>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'Use to create one or more tags associated with the file system. Each tag is a user-defined key-value pair. Name your file system on creation by including a <code>"Key":"Name","Value":"{value}"</code> key-value pair. Each key must be unique. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.',
+    }),
   })
   .openapi({ required: ['CreationToken'], title: 'CreateFileSystemRequest' })
   .openapi('CreateFileSystemRequest')
 
 const CreateMountTargetRequestSchema = z
   .object({
-    FileSystemId: FileSystemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the file system for which to create the mount target.',
-        }),
-    ),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the subnet to add the mount target in. For file systems that use One Zone storage classes, use the subnet that is associated with the file system's Availability Zone.",
-        }),
-    ),
-    IpAddress: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Valid IPv4 address within the address range of the specified subnet.',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Up to five VPC security group IDs, of the form <code>sg-xxxxxxxx</code>. These must be for the same VPC as subnet specified.',
-        }),
-    ).exactOptional(),
+    FileSystemId: FileSystemIdSchema.openapi({
+      description: 'The ID of the file system for which to create the mount target.',
+    }),
+    SubnetId: SubnetIdSchema.openapi({
+      description:
+        "The ID of the subnet to add the mount target in. For file systems that use One Zone storage classes, use the subnet that is associated with the file system's Availability Zone.",
+    }),
+    IpAddress: IpAddressSchema.exactOptional().openapi({
+      description: 'Valid IPv4 address within the address range of the specified subnet.',
+    }),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      description:
+        'Up to five VPC security group IDs, of the form <code>sg-xxxxxxxx</code>. These must be for the same VPC as subnet specified.',
+    }),
   })
   .openapi({
     required: ['FileSystemId', 'SubnetId'],
@@ -1367,63 +998,53 @@ const DestinationsToCreateSchema = z
 
 const CreateReplicationConfigurationRequestSchema = z
   .object({
-    Destinations: DestinationsToCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of destination configuration objects. Only one destination configuration object is supported.',
-        }),
-    ),
+    Destinations: DestinationsToCreateSchema.openapi({
+      description:
+        'An array of destination configuration objects. Only one destination configuration object is supported.',
+    }),
   })
   .openapi({ required: ['Destinations'], title: 'CreateReplicationConfigurationRequest' })
   .openapi('CreateReplicationConfigurationRequest')
 
 const CreateTagsRequestSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Tag</code> objects to add. Each <code>Tag</code> object is a key-value pair. ',
-        }),
-    ),
+    Tags: TagsSchema.openapi({
+      description:
+        'An array of <code>Tag</code> objects to add. Each <code>Tag</code> object is a key-value pair. ',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'CreateTagsRequest', description: '<p/>' })
   .openapi('CreateTagsRequest')
 
 const DeleteAccessPointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAccessPointRequest' })
   .openapi('DeleteAccessPointRequest')
 
 const DeleteFileSystemPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFileSystemPolicyRequest' })
   .openapi('DeleteFileSystemPolicyRequest')
 
 const DeleteFileSystemRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFileSystemRequest', description: '<p/>' })
   .openapi('DeleteFileSystemRequest')
 
 const DeleteMountTargetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMountTargetRequest', description: '<p/>' })
   .openapi('DeleteMountTargetRequest')
 
 const DeleteReplicationConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteReplicationConfigurationRequest' })
   .openapi('DeleteReplicationConfigurationRequest')
 
 const TagKeysSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeys')
 
 const DeleteTagsRequestSchema = z
-  .object({
-    TagKeys: TagKeysSchema.and(z.any().openapi({ description: 'A list of tag keys to delete.' })),
-  })
+  .object({ TagKeys: TagKeysSchema.openapi({ description: 'A list of tag keys to delete.' }) })
   .openapi({ required: ['TagKeys'], title: 'DeleteTagsRequest', description: '<p/>' })
   .openapi('DeleteTagsRequest')
 
@@ -1434,71 +1055,63 @@ const MaxResultsSchema = z
   .openapi('MaxResults')
 
 const DescribeAccessPointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAccessPointsRequest' })
   .openapi('DescribeAccessPointsRequest')
 
 const DescribeAccountPreferencesRequestSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) You can use <code>NextToken</code> in a subsequent request to fetch the next page of Amazon Web Services account preferences if the response payload was paginated.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) When retrieving account preferences, you can optionally specify the <code>MaxItems</code> parameter to limit the number of objects returned in a response. The default value is 100. ',
-        }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '(Optional) You can use <code>NextToken</code> in a subsequent request to fetch the next page of Amazon Web Services account preferences if the response payload was paginated.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '(Optional) When retrieving account preferences, you can optionally specify the <code>MaxItems</code> parameter to limit the number of objects returned in a response. The default value is 100. ',
+    }),
   })
   .openapi({ title: 'DescribeAccountPreferencesRequest', required: [] })
   .openapi('DescribeAccountPreferencesRequest')
 
 const DescribeBackupPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBackupPolicyRequest' })
   .openapi('DescribeBackupPolicyRequest')
 
 const DescribeFileSystemPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFileSystemPolicyRequest' })
   .openapi('DescribeFileSystemPolicyRequest')
 
 const MaxItemsSchema = z.int().min(1).openapi('MaxItems')
 
 const DescribeFileSystemsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFileSystemsRequest', description: '<p/>' })
   .openapi('DescribeFileSystemsRequest')
 
 const DescribeLifecycleConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeLifecycleConfigurationRequest' })
   .openapi('DescribeLifecycleConfigurationRequest')
 
 const DescribeMountTargetSecurityGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeMountTargetSecurityGroupsRequest', description: '<p/>' })
   .openapi('DescribeMountTargetSecurityGroupsRequest')
 
 const DescribeMountTargetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeMountTargetsRequest', description: '<p/>' })
   .openapi('DescribeMountTargetsRequest')
 
 const DescribeReplicationConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeReplicationConfigurationsRequest' })
   .openapi('DescribeReplicationConfigurationsRequest')
 
 const DescribeTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeTagsRequest', description: '<p/>' })
   .openapi('DescribeTagsRequest')
 
@@ -1511,119 +1124,87 @@ const ResourceIdSchema = z
   .openapi('ResourceId')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ModifyMountTargetSecurityGroupsRequestSchema = z
   .object({
-    SecurityGroups: SecurityGroupsSchema.and(
-      z.any().openapi({ description: 'An array of up to five VPC security group IDs.' }),
-    ).exactOptional(),
+    SecurityGroups: SecurityGroupsSchema.exactOptional().openapi({
+      description: 'An array of up to five VPC security group IDs.',
+    }),
   })
   .openapi({ title: 'ModifyMountTargetSecurityGroupsRequest', description: '<p/>', required: [] })
   .openapi('ModifyMountTargetSecurityGroupsRequest')
 
 const PutAccountPreferencesRequestSchema = z
   .object({
-    ResourceIdType: ResourceIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the EFS resource ID preference to set for the user's Amazon Web Services account, in the current Amazon Web Services Region, either <code>LONG_ID</code> (17 characters), or <code>SHORT_ID</code> (8 characters).</p> <note> <p>Starting in October, 2021, you will receive an error when setting the account preference to <code>SHORT_ID</code>. Contact Amazon Web Services support if you receive an error and must use short IDs for file system and mount target resources.</p> </note>",
-        }),
-    ),
+    ResourceIdType: ResourceIdTypeSchema.openapi({
+      description:
+        "<p>Specifies the EFS resource ID preference to set for the user's Amazon Web Services account, in the current Amazon Web Services Region, either <code>LONG_ID</code> (17 characters), or <code>SHORT_ID</code> (8 characters).</p> <note> <p>Starting in October, 2021, you will receive an error when setting the account preference to <code>SHORT_ID</code>. Contact Amazon Web Services support if you receive an error and must use short IDs for file system and mount target resources.</p> </note>",
+    }),
   })
   .openapi({ required: ['ResourceIdType'], title: 'PutAccountPreferencesRequest' })
   .openapi('PutAccountPreferencesRequest')
 
 const PutBackupPolicyRequestSchema = z
   .object({
-    BackupPolicy: BackupPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The backup policy included in the <code>PutBackupPolicy</code> request.',
-        }),
-    ),
+    BackupPolicy: BackupPolicySchema.openapi({
+      description: 'The backup policy included in the <code>PutBackupPolicy</code> request.',
+    }),
   })
   .openapi({ required: ['BackupPolicy'], title: 'PutBackupPolicyRequest' })
   .openapi('PutBackupPolicyRequest')
 
 const PutFileSystemPolicyRequestSchema = z
   .object({
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>FileSystemPolicy</code> that you\'re creating. Accepts a JSON formatted policy definition. EFS file system policies have a 20,000 character limit. To find out more about the elements that make up a file system policy, see <a href="https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies">EFS Resource-based Policies</a>. ',
-        }),
-    ),
-    BypassPolicyLockoutSafetyCheck: BypassPolicyLockoutSafetyCheckSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) A boolean that specifies whether or not to bypass the <code>FileSystemPolicy</code> lockout safety check. The lockout safety check determines whether the policy in the request will lock out, or prevent, the IAM principal that is making the request from making future <code>PutFileSystemPolicy</code> requests on this file system. Set <code>BypassPolicyLockoutSafetyCheck</code> to <code>True</code> only when you intend to prevent the IAM principal that is making the request from making subsequent <code>PutFileSystemPolicy</code> requests on this file system. The default value is <code>False</code>. ',
-        }),
-    ).exactOptional(),
+    Policy: PolicySchema.openapi({
+      description:
+        'The <code>FileSystemPolicy</code> that you\'re creating. Accepts a JSON formatted policy definition. EFS file system policies have a 20,000 character limit. To find out more about the elements that make up a file system policy, see <a href="https://docs.aws.amazon.com/efs/latest/ug/access-control-overview.html#access-control-manage-access-intro-resource-policies">EFS Resource-based Policies</a>. ',
+    }),
+    BypassPolicyLockoutSafetyCheck: BypassPolicyLockoutSafetyCheckSchema.exactOptional().openapi({
+      description:
+        '(Optional) A boolean that specifies whether or not to bypass the <code>FileSystemPolicy</code> lockout safety check. The lockout safety check determines whether the policy in the request will lock out, or prevent, the IAM principal that is making the request from making future <code>PutFileSystemPolicy</code> requests on this file system. Set <code>BypassPolicyLockoutSafetyCheck</code> to <code>True</code> only when you intend to prevent the IAM principal that is making the request from making subsequent <code>PutFileSystemPolicy</code> requests on this file system. The default value is <code>False</code>. ',
+    }),
   })
   .openapi({ required: ['Policy'], title: 'PutFileSystemPolicyRequest' })
   .openapi('PutFileSystemPolicyRequest')
 
 const PutLifecycleConfigurationRequestSchema = z
   .object({
-    LifecyclePolicies: LifecyclePoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of <code>LifecyclePolicy</code> objects that define the file system's <code>LifecycleConfiguration</code> object. A <code>LifecycleConfiguration</code> object informs EFS lifecycle management and EFS Intelligent-Tiering of the following:</p> <ul> <li> <p>When to move files in the file system from primary storage to the IA storage class.</p> </li> <li> <p>When to move files that are in IA storage to primary storage.</p> </li> </ul> <note> <p>When using the <code>put-lifecycle-configuration</code> CLI command or the <code>PutLifecycleConfiguration</code> API action, Amazon EFS requires that each <code>LifecyclePolicy</code> object have only a single transition. This means that in a request body, <code>LifecyclePolicies</code> must be structured as an array of <code>LifecyclePolicy</code> objects, one object for each transition, <code>TransitionToIA</code>, <code>TransitionToPrimaryStorageClass</code>. See the example requests in the following section for more information.</p> </note>",
-        }),
-    ),
+    LifecyclePolicies: LifecyclePoliciesSchema.openapi({
+      description:
+        "<p>An array of <code>LifecyclePolicy</code> objects that define the file system's <code>LifecycleConfiguration</code> object. A <code>LifecycleConfiguration</code> object informs EFS lifecycle management and EFS Intelligent-Tiering of the following:</p> <ul> <li> <p>When to move files in the file system from primary storage to the IA storage class.</p> </li> <li> <p>When to move files that are in IA storage to primary storage.</p> </li> </ul> <note> <p>When using the <code>put-lifecycle-configuration</code> CLI command or the <code>PutLifecycleConfiguration</code> API action, Amazon EFS requires that each <code>LifecyclePolicy</code> object have only a single transition. This means that in a request body, <code>LifecyclePolicies</code> must be structured as an array of <code>LifecyclePolicy</code> objects, one object for each transition, <code>TransitionToIA</code>, <code>TransitionToPrimaryStorageClass</code>. See the example requests in the following section for more information.</p> </note>",
+    }),
   })
   .openapi({ required: ['LifecyclePolicies'], title: 'PutLifecycleConfigurationRequest' })
   .openapi('PutLifecycleConfigurationRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Tag</code> objects to add. Each <code>Tag</code> object is a key-value pair.',
-        }),
-    ),
+    Tags: TagsSchema.openapi({
+      description:
+        'An array of <code>Tag</code> objects to add. Each <code>Tag</code> object is a key-value pair.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateFileSystemRequestSchema = z
   .object({
-    ThroughputMode: ThroughputModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Optional) Updates the file system's throughput mode. If you're not updating your throughput mode, you don't need to provide this value in your request. If you are changing the <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>.",
-        }),
-    ).exactOptional(),
-    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) Sets the amount of provisioned throughput, in MiB/s, for the file system. Valid values are 1-1024. If you are changing the throughput mode to provisioned, you must also provide the amount of provisioned throughput. Required if <code>ThroughputMode</code> is changed to <code>provisioned</code> on update.',
-        }),
-    ).exactOptional(),
+    ThroughputMode: ThroughputModeSchema.exactOptional().openapi({
+      description:
+        "(Optional) Updates the file system's throughput mode. If you're not updating your throughput mode, you don't need to provide this value in your request. If you are changing the <code>ThroughputMode</code> to <code>provisioned</code>, you must also set a value for <code>ProvisionedThroughputInMibps</code>.",
+    }),
+    ProvisionedThroughputInMibps: ProvisionedThroughputInMibpsSchema.exactOptional().openapi({
+      description:
+        '(Optional) Sets the amount of provisioned throughput, in MiB/s, for the file system. Valid values are 1-1024. If you are changing the throughput mode to provisioned, you must also provide the amount of provisioned throughput. Required if <code>ThroughputMode</code> is changed to <code>provisioned</code> on update.',
+    }),
   })
   .openapi({ title: 'UpdateFileSystemRequest', required: [] })
   .openapi('UpdateFileSystemRequest')
@@ -1885,30 +1466,18 @@ export const post20150201AccessPointsRoute = createRoute({
                 }),
               PosixUser: z
                 .object({
-                  Uid: UidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The POSIX user ID used for all file system operations using this access point.',
-                      }),
-                  ).exactOptional(),
-                  Gid: GidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The POSIX group ID used for all file system operations using this access point.',
-                      }),
-                  ).exactOptional(),
-                  SecondaryGids: SecondaryGidsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Secondary POSIX group IDs used for all file system operations using this access point.',
-                      }),
-                  ).exactOptional(),
+                  Uid: UidSchema.exactOptional().openapi({
+                    description:
+                      'The POSIX user ID used for all file system operations using this access point.',
+                  }),
+                  Gid: GidSchema.exactOptional().openapi({
+                    description:
+                      'The POSIX group ID used for all file system operations using this access point.',
+                  }),
+                  SecondaryGids: SecondaryGidsSchema.exactOptional().openapi({
+                    description:
+                      'Secondary POSIX group IDs used for all file system operations using this access point.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1918,22 +1487,14 @@ export const post20150201AccessPointsRoute = createRoute({
                 }),
               RootDirectory: z
                 .object({
-                  Path: PathSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the path on the EFS file system to expose as the root directory to NFS clients using the access point to access the EFS file system. A path can have up to four subdirectories. If the specified path does not exist, you are required to provide the <code>CreationInfo</code>.',
-                      }),
-                  ).exactOptional(),
-                  CreationInfo: CreationInfoSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>(Optional) Specifies the POSIX IDs and permissions to apply to the access point's <code>RootDirectory</code>. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates the root directory using the <code>CreationInfo</code> settings when a client connects to an access point. When specifying the <code>CreationInfo</code>, you must provide values for all properties. </p> <important> <p>If you do not provide <code>CreationInfo</code> and the specified <code>RootDirectory</code> &gt; <code>Path</code> does not exist, attempts to mount the file system using the access point will fail.</p> </important>",
-                      }),
-                  ).exactOptional(),
+                  Path: PathSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the path on the EFS file system to expose as the root directory to NFS clients using the access point to access the EFS file system. A path can have up to four subdirectories. If the specified path does not exist, you are required to provide the <code>CreationInfo</code>.',
+                  }),
+                  CreationInfo: CreationInfoSchema.exactOptional().openapi({
+                    description:
+                      "<p>(Optional) Specifies the POSIX IDs and permissions to apply to the access point's <code>RootDirectory</code>. If the <code>RootDirectory</code> &gt; <code>Path</code> specified does not exist, EFS creates the root directory using the <code>CreationInfo</code> settings when a client connects to an access point. When specifying the <code>CreationInfo</code>, you must provide values for all properties. </p> <important> <p>If you do not provide <code>CreationInfo</code> and the specified <code>RootDirectory</code> &gt; <code>Path</code> does not exist, attempts to mount the file system using the access point will fail.</p> </important>",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3533,14 +3094,10 @@ export const put20150201FileSystemsFileSystemIdBackupPolicyRoute = createRoute({
             .object({
               BackupPolicy: z
                 .object({
-                  Status: StatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Describes the status of the file system's backup policy.</p> <ul> <li> <p> <b> <code>ENABLED</code> </b> - EFS is automatically backing up the file system.</p> </li> <li> <p> <b> <code>ENABLING</code> </b> - EFS is turning on automatic backups for the file system.</p> </li> <li> <p> <b> <code>DISABLED</code> </b> - Automatic back ups are turned off for the file system.</p> </li> <li> <p> <b> <code>DISABLING</code> </b> - EFS is turning off automatic backups for the file system.</p> </li> </ul>",
-                      }),
-                  ).exactOptional(),
+                  Status: StatusSchema.exactOptional().openapi({
+                    description:
+                      "<p>Describes the status of the file system's backup policy.</p> <ul> <li> <p> <b> <code>ENABLED</code> </b> - EFS is automatically backing up the file system.</p> </li> <li> <p> <b> <code>ENABLING</code> </b> - EFS is turning on automatic backups for the file system.</p> </li> <li> <p> <b> <code>DISABLED</code> </b> - Automatic back ups are turned off for the file system.</p> </li> <li> <p> <b> <code>DISABLING</code> </b> - EFS is turning off automatic backups for the file system.</p> </li> </ul>",
+                  }),
                 })
                 .openapi({
                   description:

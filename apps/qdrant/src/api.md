@@ -402,6 +402,7 @@ Get detailed information about specified existing collection
         "max_timeout": 0,
         "unindexed_filtering_retrieve": true,
         "unindexed_filtering_update": true,
+        "require_tenant_filter": true,
         "search_max_hnsw_ef": 0,
         "search_allow_exact": true,
         "search_max_oversampling": 0,
@@ -626,6 +627,7 @@ curl http://localhost:6333/collections/string \
       "max_timeout": 1,
       "unindexed_filtering_retrieve": true,
       "unindexed_filtering_update": true,
+      "require_tenant_filter": true,
       "search_max_hnsw_ef": 0,
       "search_allow_exact": true,
       "search_max_oversampling": 0,
@@ -760,6 +762,7 @@ Create new collection with given parameters
     "max_timeout": 1,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -1117,6 +1120,7 @@ curl http://localhost:6333/collections/string \
       "max_timeout": 1,
       "unindexed_filtering_retrieve": true,
       "unindexed_filtering_update": true,
+      "require_tenant_filter": true,
       "search_max_hnsw_ef": 0,
       "search_allow_exact": true,
       "search_max_oversampling": 0,
@@ -1270,6 +1274,7 @@ Update parameters of the existing collection
     "max_timeout": 1,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -8108,6 +8113,8 @@ Collect telemetry data including app info, system info, collections info, cluste
         "transfer_raw_payloads": true,
         "persist_proxy_segments": false,
         "combined_vector_storage": true,
+        "versioned_deletes": false,
+        "pipnn_graph_building": false,
         "serverless_compatible": false
       },
       "low_memory_mode": "disabled",
@@ -8248,6 +8255,7 @@ Collect telemetry data including app info, system info, collections info, cluste
               "max_timeout": 0,
               "unindexed_filtering_retrieve": true,
               "unindexed_filtering_update": true,
+              "require_tenant_filter": true,
               "search_max_hnsw_ef": 0,
               "search_allow_exact": true,
               "search_max_oversampling": 0,
@@ -8929,7 +8937,11 @@ Collect telemetry data including app info, system info, collections info, cluste
           "payload_index_io_read": 0,
           "payload_index_io_write": 0,
           "vector_io_read": 0,
-          "vector_io_write": 0
+          "vector_io_write": 0,
+          "remote_io_cached_read": 0,
+          "remote_io_non_cached_read": 0,
+          "updated_bytes": 0,
+          "updated_indexed_bytes": 0
         },
         "property2": {
           "cpu": 0,
@@ -8938,7 +8950,11 @@ Collect telemetry data including app info, system info, collections info, cluste
           "payload_index_io_read": 0,
           "payload_index_io_write": 0,
           "vector_io_read": 0,
-          "vector_io_write": 0
+          "vector_io_write": 0,
+          "remote_io_cached_read": 0,
+          "remote_io_non_cached_read": 0,
+          "updated_bytes": 0,
+          "updated_indexed_bytes": 0
         }
       }
     },
@@ -9662,6 +9678,7 @@ api-key, bearerAuth
       "max_timeout": 0,
       "unindexed_filtering_retrieve": true,
       "unindexed_filtering_update": true,
+      "require_tenant_filter": true,
       "search_max_hnsw_ef": 0,
       "search_allow_exact": true,
       "search_max_oversampling": 0,
@@ -9924,6 +9941,7 @@ Current state of the collection
     "max_timeout": 0,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -10813,6 +10831,7 @@ Config of HNSW index
   "max_timeout": 0,
   "unindexed_filtering_retrieve": true,
   "unindexed_filtering_update": true,
+  "require_tenant_filter": true,
   "search_max_hnsw_ef": 0,
   "search_allow_exact": true,
   "search_max_oversampling": 0,
@@ -10855,6 +10874,7 @@ Config of HNSW index
 |max_timeout|integer(uint) \| null|false|none|Max allowed `timeout` parameter.|
 |unindexed_filtering_retrieve|boolean \| null|false|none|Allow usage of unindexed fields in retrieval based (e.g. search) filters.|
 |unindexed_filtering_update|boolean \| null|false|none|Allow usage of unindexed fields in filtered updates (e.g. delete by payload).|
+|require_tenant_filter|boolean \| null|false|none|Require filter-based reads (e.g. search, scroll, count, facet) to restrict results to tenants. Applies only when the collection has a payload index with `is_tenant: true`: the top-level `must` of the request filter must then contain a `match` (`value` or `any`) condition on one of the tenant keys. Reads by point id are not affected.|
 |search_max_hnsw_ef|integer(uint) \| null|false|none|Max HNSW value allowed in search parameters.|
 |search_allow_exact|boolean \| null|false|none|Whether exact search is allowed or not.|
 |search_max_oversampling|number(double) \| null|false|none|Max oversampling value allowed in search.|
@@ -13634,6 +13654,7 @@ Result of the points read request
     "max_timeout": 1,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -13801,6 +13822,7 @@ Operation for creating new collection and (optionally) specify index params
   "max_timeout": 1,
   "unindexed_filtering_retrieve": true,
   "unindexed_filtering_update": true,
+  "require_tenant_filter": true,
   "search_max_hnsw_ef": 0,
   "search_allow_exact": true,
   "search_max_oversampling": 0,
@@ -13843,6 +13865,7 @@ Operation for creating new collection and (optionally) specify index params
 |max_timeout|integer(uint) \| null|false|none|Max allowed `timeout` parameter.|
 |unindexed_filtering_retrieve|boolean \| null|false|none|Allow usage of unindexed fields in retrieval based (e.g. search) filters.|
 |unindexed_filtering_update|boolean \| null|false|none|Allow usage of unindexed fields in filtered updates (e.g. delete by payload).|
+|require_tenant_filter|boolean \| null|false|none|Require filter-based reads (e.g. search, scroll, count, facet) to restrict results to tenants. Applies only when the collection has a payload index with `is_tenant: true`: the top-level `must` of the request filter must then contain a `match` (`value` or `any`) condition on one of the tenant keys. Reads by point id are not affected.|
 |search_max_hnsw_ef|integer(uint) \| null|false|none|Max HNSW ef value allowed in search parameters.|
 |search_allow_exact|boolean \| null|false|none|Whether exact search is allowed.|
 |search_max_oversampling|number(double) \| null|false|none|Max oversampling value allowed in search.|
@@ -14062,6 +14085,7 @@ Operation for creating new collection and (optionally) specify index params
     "max_timeout": 1,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -15706,6 +15730,8 @@ Resharding direction, scale up or down in number of shards
       "transfer_raw_payloads": true,
       "persist_proxy_segments": false,
       "combined_vector_storage": true,
+      "versioned_deletes": false,
+      "pipnn_graph_building": false,
       "serverless_compatible": false
     },
     "low_memory_mode": "disabled",
@@ -15846,6 +15872,7 @@ Resharding direction, scale up or down in number of shards
             "max_timeout": 0,
             "unindexed_filtering_retrieve": true,
             "unindexed_filtering_update": true,
+            "require_tenant_filter": true,
             "search_max_hnsw_ef": 0,
             "search_allow_exact": true,
             "search_max_oversampling": 0,
@@ -16527,7 +16554,11 @@ Resharding direction, scale up or down in number of shards
         "payload_index_io_read": 0,
         "payload_index_io_write": 0,
         "vector_io_read": 0,
-        "vector_io_write": 0
+        "vector_io_write": 0,
+        "remote_io_cached_read": 0,
+        "remote_io_non_cached_read": 0,
+        "updated_bytes": 0,
+        "updated_indexed_bytes": 0
       },
       "property2": {
         "cpu": 0,
@@ -16536,7 +16567,11 @@ Resharding direction, scale up or down in number of shards
         "payload_index_io_read": 0,
         "payload_index_io_write": 0,
         "vector_io_read": 0,
-        "vector_io_write": 0
+        "vector_io_write": 0,
+        "remote_io_cached_read": 0,
+        "remote_io_non_cached_read": 0,
+        "updated_bytes": 0,
+        "updated_indexed_bytes": 0
       }
     }
   },
@@ -16609,6 +16644,8 @@ Resharding direction, scale up or down in number of shards
     "transfer_raw_payloads": true,
     "persist_proxy_segments": false,
     "combined_vector_storage": true,
+    "versioned_deletes": false,
+    "pipnn_graph_building": false,
     "serverless_compatible": false
   },
   "low_memory_mode": "disabled",
@@ -16716,6 +16753,8 @@ Resharding direction, scale up or down in number of shards
   "transfer_raw_payloads": true,
   "persist_proxy_segments": false,
   "combined_vector_storage": true,
+  "versioned_deletes": false,
+  "pipnn_graph_building": false,
   "serverless_compatible": false
 }
 ```
@@ -16739,7 +16778,9 @@ Resharding direction, scale up or down in number of shards
 |transfer_raw_payloads|boolean|false|none|Send the payload of a raw point as the byte blob it is stored as, so the sending node does not parse it and neither node builds a protobuf value tree for it. The receiving node still parses the blob, once, when the operation is applied. Only has an effect on points transferred raw, see [`Self::transfer_raw_points`].<br><br>Read on the sending side only: nodes accept raw payloads regardless.|
 |persist_proxy_segments|boolean|false|none|Persist proxy segment changes on disk. Prevents pinning the WAL while proxy segments are open. Replays the persisted changes on startup to guarantee data consistency. Required for serverless deployments where storage and compute is separated.|
 |combined_vector_storage|boolean|false|none|When `hnsw_config.inline_storage` enabled, use the `GraphInline` vector storage (aka inline-storage without standalone vector storage) for new segments.<br><br>Existing `GraphInline` segments are always readable, regardless of this flag.|
-|serverless_compatible|boolean|false|none|Serverless-compatible deployment mode. Implies [`Self::write_segment_manifest`], [`Self::append_only_mutations`], [`Self::compact_bitmask`], [`Self::append_only_storages`], [`Self::compact_logstore_tracker`] and [`Self::persist_proxy_segments`].<br><br>Note that this will only be applied when passed into [`init_feature_flags`].|
+|versioned_deletes|boolean|false|none|Record the version of every delete, in formats older readers cannot parse: versioned delete entries in appendable mappings logs, and a delete log next to the deleted mask of immutable segments, which takes their deletes in place of the mask. Followers use the versions to never apply the delete of a moved point before they see its new copy. Gates writing only: both formats are always read, and the deletes of an immutable segment are the union of its mask and its log.|
+|pipnn_graph_building|boolean|false|none|Build the main HNSW graph of large segments with PiPNN instead of inserting point by point. When disabled, PiPNN is *never* used and graphs are built with HNSW. When enabled, PiPNN is used where it applies: segments that are large enough, have no older graph to build from, and whose vectors support it. Only changes how graphs are built: the resulting graph has the same format either way.<br><br>Disabled by default: PiPNN ignores `ef_construct`, so with it the graph quality of large segments can only be tuned through `m`.|
+|serverless_compatible|boolean|false|none|Serverless-compatible deployment mode. Implies [`Self::write_segment_manifest`], [`Self::append_only_mutations`], [`Self::compact_bitmask`], [`Self::append_only_storages`], [`Self::compact_logstore_tracker`], [`Self::persist_proxy_segments`] and [`Self::versioned_deletes`].<br><br>Note that this will only be applied when passed into [`init_feature_flags`].|
 
 <h2 id="tocS_LowMemoryMode">LowMemoryMode</h2>
 <!-- backwards compatibility -->
@@ -17031,6 +17072,7 @@ Container runtime Qdrant is running under (`none` if bare metal).
           "max_timeout": 0,
           "unindexed_filtering_retrieve": true,
           "unindexed_filtering_update": true,
+          "require_tenant_filter": true,
           "search_max_hnsw_ef": 0,
           "search_allow_exact": true,
           "search_max_oversampling": 0,
@@ -17508,6 +17550,7 @@ Container runtime Qdrant is running under (`none` if bare metal).
       "max_timeout": 0,
       "unindexed_filtering_retrieve": true,
       "unindexed_filtering_update": true,
+      "require_tenant_filter": true,
       "search_max_hnsw_ef": 0,
       "search_allow_exact": true,
       "search_max_oversampling": 0,
@@ -17973,6 +18016,7 @@ Container runtime Qdrant is running under (`none` if bare metal).
       "max_timeout": 0,
       "unindexed_filtering_retrieve": true,
       "unindexed_filtering_update": true,
+      "require_tenant_filter": true,
       "search_max_hnsw_ef": 0,
       "search_allow_exact": true,
       "search_max_oversampling": 0,
@@ -18440,6 +18484,7 @@ Container runtime Qdrant is running under (`none` if bare metal).
     "max_timeout": 0,
     "unindexed_filtering_retrieve": true,
     "unindexed_filtering_update": true,
+    "require_tenant_filter": true,
     "search_max_hnsw_ef": 0,
     "search_allow_exact": true,
     "search_max_oversampling": 0,
@@ -21199,7 +21244,11 @@ Metadata describing extra properties for each peer
       "payload_index_io_read": 0,
       "payload_index_io_write": 0,
       "vector_io_read": 0,
-      "vector_io_write": 0
+      "vector_io_write": 0,
+      "remote_io_cached_read": 0,
+      "remote_io_non_cached_read": 0,
+      "updated_bytes": 0,
+      "updated_indexed_bytes": 0
     },
     "property2": {
       "cpu": 0,
@@ -21208,7 +21257,11 @@ Metadata describing extra properties for each peer
       "payload_index_io_read": 0,
       "payload_index_io_write": 0,
       "vector_io_read": 0,
-      "vector_io_write": 0
+      "vector_io_write": 0,
+      "remote_io_cached_read": 0,
+      "remote_io_non_cached_read": 0,
+      "updated_bytes": 0,
+      "updated_indexed_bytes": 0
     }
   }
 }
@@ -21235,7 +21288,11 @@ Metadata describing extra properties for each peer
   "payload_index_io_read": 0,
   "payload_index_io_write": 0,
   "vector_io_read": 0,
-  "vector_io_write": 0
+  "vector_io_write": 0,
+  "remote_io_cached_read": 0,
+  "remote_io_non_cached_read": 0,
+  "updated_bytes": 0,
+  "updated_indexed_bytes": 0
 }
 ```
 
@@ -21245,13 +21302,17 @@ Usage of the hardware resources, spent to process the request
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|cpu|integer(uint)|true|none|none|
-|payload_io_read|integer(uint)|true|none|none|
-|payload_io_write|integer(uint)|true|none|none|
-|payload_index_io_read|integer(uint)|true|none|none|
-|payload_index_io_write|integer(uint)|true|none|none|
-|vector_io_read|integer(uint)|true|none|none|
-|vector_io_write|integer(uint)|true|none|none|
+|cpu|integer(uint) \| null|false|none|none|
+|payload_io_read|integer(uint) \| null|false|none|none|
+|payload_io_write|integer(uint) \| null|false|none|none|
+|payload_index_io_read|integer(uint) \| null|false|none|none|
+|payload_index_io_write|integer(uint) \| null|false|none|none|
+|vector_io_read|integer(uint) \| null|false|none|none|
+|vector_io_write|integer(uint) \| null|false|none|none|
+|remote_io_cached_read|integer(uint) \| null|false|none|none|
+|remote_io_non_cached_read|integer(uint) \| null|false|none|none|
+|updated_bytes|integer(uint) \| null|false|none|none|
+|updated_indexed_bytes|integer(uint) \| null|false|none|none|
 
 <h2 id="tocS_SearchThreadPoolTelemetry">SearchThreadPoolTelemetry</h2>
 <!-- backwards compatibility -->
@@ -23402,7 +23463,7 @@ Parameters for Reciprocal Rank Fusion
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |origin|[GeoPoint](#schemageopoint)|true|none|Geo point payload schema|
-|to|string|true|none|Payload field with the destination geo point|
+|to|string|true|none|Payload field with the destination geo point. If the field holds several geo points, the distance to the nearest one is used|
 
 <h2 id="tocS_DatetimeExpression">DatetimeExpression</h2>
 <!-- backwards compatibility -->
@@ -24790,7 +24851,11 @@ Pair of points (a, b) with score
     "payload_index_io_read": 0,
     "payload_index_io_write": 0,
     "vector_io_read": 0,
-    "vector_io_write": 0
+    "vector_io_write": 0,
+    "remote_io_cached_read": 0,
+    "remote_io_non_cached_read": 0,
+    "updated_bytes": 0,
+    "updated_indexed_bytes": 0
   },
   "inference": {
     "models": {

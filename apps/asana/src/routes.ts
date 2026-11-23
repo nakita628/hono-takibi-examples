@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MemberCompactSchema = z
+const AgentCompactSchema = z
   .object({
     gid: z
       .string()
@@ -14,14 +14,192 @@ const MemberCompactSchema = z
     resource_type: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The type of the member (team or user)', example: 'user' }),
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'agent',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .literal('asana_teammate')
+      .exactOptional()
+      .openapi({
+        description: 'The subtype of the agent. `asana_teammate` is an Asana-built teammate.',
+        readOnly: true,
+        example: 'asana_teammate',
+      }),
     name: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The name of the member', example: 'Greg Sanchez' }),
+      .openapi({
+        description: 'The display name of the agent.',
+        readOnly: true,
+        example: 'Developer Blog Writer',
+      }),
   })
-  .openapi({ description: 'A *member* object represents either a team or user.', required: [] })
-  .openapi('MemberCompact')
+  .openapi({
+    description: 'A generic Asana Resource, containing a globally unique identifier.',
+    required: [],
+  })
+  .openapi('AgentCompact')
+
+const WorkspaceCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'workspace',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the workspace.', example: 'My Company Workspace' }),
+  })
+  .openapi({
+    description:
+      'A *workspace* is the highest-level organizational unit in Asana. All projects and tasks have an associated workspace.',
+    required: [],
+  })
+  .openapi('WorkspaceCompact')
+
+const AgentResponseSchema = AgentCompactSchema.and(
+  z
+    .object({
+      description: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'A brief description of what the agent does.', readOnly: true }),
+      behavior_guidance: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: "A description of the agent's behavior.", readOnly: true }),
+      workspace: WorkspaceCompactSchema.and(z.looseObject({})).openapi({
+        description: 'The workspace this agent is instantiated within.',
+        readOnly: true,
+      }),
+      photo: z
+        .object({
+          image_21x21: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'PNG image at 21x21 pixels.' }),
+          image_27x27: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'PNG image at 27x27 pixels.' }),
+          image_36x36: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'PNG image at 36x36 pixels.' }),
+          image_60x60: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'PNG image at 60x60 pixels.' }),
+          image_128x128: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'PNG image at 128x128 pixels.' }),
+          image_1024x1024: z
+            .url()
+            .exactOptional()
+            .openapi({ description: 'JPEG image at 1024x1024 pixels.' }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            "A map of the agent's avatar image in various sizes, or null if no photo is set.",
+          example: {
+            image_21x21: 'https://...',
+            image_27x27: 'https://...',
+            image_36x36: 'https://...',
+            image_60x60: 'https://...',
+            image_128x128: 'https://...',
+            image_1024x1024: 'https://...',
+          },
+          required: [],
+        }),
+    })
+    .openapi({ required: ['workspace'] }),
+).openapi('AgentResponse')
+
+const AllocationBaseSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'allocation',
+        'x-insert-after': 'gid',
+      }),
+    start_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The localized day on which the allocation starts.',
+        example: '2024-02-28',
+      }),
+    end_date: z.iso
+      .date()
+      .exactOptional()
+      .openapi({
+        description: 'The localized day on which the allocation ends.',
+        example: '2024-02-28',
+      }),
+    effort: z
+      .object({
+        type: z
+          .enum(['hours', 'percent'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The units used for tracking effort on an allocation, either "hours" or "percent".',
+          }),
+        value: z
+          .number()
+          .exactOptional()
+          .openapi({ description: 'The numeric effort value on the allocation.', example: 50 }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The amount of time associated with the allocation, represented as a percentage or number of hours.',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'A generic Asana Resource, containing a globally unique identifier.',
+    required: [],
+  })
+  .openapi('AllocationBase')
 
 const UserCompactSchema = z
   .object({
@@ -57,120 +235,6 @@ const UserCompactSchema = z
     required: [],
   })
   .openapi('UserCompact')
-
-const GoalCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'goal',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the goal.', example: 'Grow web traffic by 30%' }),
-    owner: UserCompactSchema.and(z.object({}).nullable()).exactOptional(),
-  })
-  .openapi({
-    description: 'A generic Asana Resource, containing a globally unique identifier.',
-    required: [],
-  })
-  .openapi('GoalCompact')
-
-const GoalMembershipBaseSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The base type of this resource.', example: 'membership' }),
-    resource_subtype: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'The type of membership.',
-        example: 'goal_membership',
-      }),
-    member: MemberCompactSchema.exactOptional(),
-    parent: GoalCompactSchema.and(z.object({}).openapi({ readOnly: true })).exactOptional(),
-    role: z
-      .enum(['commenter', 'editor'])
-      .exactOptional()
-      .openapi({
-        description: '*Deprecated: Describes if the member is a commenter or editor in goal.*',
-        deprecated: true,
-        example: 'editor',
-      }),
-    access_level: z
-      .enum(['viewer', 'commenter', 'editor', 'admin'])
-      .exactOptional()
-      .openapi({
-        description:
-          '"Describes the membership access level for the goal. This is preferred over role."',
-        example: 'editor',
-      }),
-    goal: GoalCompactSchema.and(
-      z
-        .object({})
-        .openapi({
-          readOnly: true,
-          deprecated: true,
-          description:
-            '*Deprecated: new integrations should prefer the `parent` field.* A *Goal* is an object in the goal-tracking system that helps your organization drive measurable results.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: "This object represents a user's connection to a goal.", required: [] })
-  .openapi('GoalMembershipBase')
-
-const GoalMembershipCompactSchema = GoalMembershipBaseSchema.and(
-  z
-    .object({
-      is_commenter: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          deprecated: true,
-          readOnly: true,
-          description:
-            '*Deprecated: new integrations should prefer the `access_level` field.* Describes if the member is comment only in goal. This field is deprecated and will always be null.',
-          example: false,
-        }),
-      is_editor: z
-        .boolean()
-        .exactOptional()
-        .openapi({
-          deprecated: true,
-          readOnly: true,
-          description:
-            '*Deprecated: new integrations should prefer the `access_level` field.* Describes if the member is editor in goal. This field is deprecated and will always be null.',
-          example: false,
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('GoalMembershipCompact')
 
 const ProjectCompactSchema = z
   .object({
@@ -216,160 +280,58 @@ const ProjectCompactSchema = z
   })
   .openapi('ProjectCompact')
 
-const ProjectMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'project_membership',
-        'x-insert-after': 'gid',
-      }),
-    parent: ProjectCompactSchema.exactOptional().openapi({
-      description: '[Opt In](/docs/inputoutput-options). The project the user is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'commenter', 'viewer'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the member has admin, editor, commenter, or viewer access to the project.',
-        readOnly: true,
-        example: 'admin',
-      }),
-  })
-  .openapi({
-    description:
-      "This object describes a team or a user's membership to a project including their level of access (Admin, Editor, Commenter, or Viewer).",
-    required: [],
-  })
-  .openapi('ProjectMembershipCompact')
-
-const ProjectMembershipCompactResponseSchema = ProjectMembershipCompactSchema.and(
+const AllocationResponseSchema = AllocationBaseSchema.and(
   z
     .object({
-      resource_type: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The base type of this resource.', example: 'membership' }),
+      assignee: UserCompactSchema.and(
+        z
+          .object({
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'The name of allocation resource.',
+                example: 'Greg Sanchez',
+              }),
+          })
+          .openapi({
+            description: 'The user or placeholder assigned to the allocation.',
+            required: [],
+          }),
+      ).exactOptional(),
+      created_by: UserCompactSchema.exactOptional().openapi({
+        description: 'The user who created the allocation.',
+      }),
+      parent: ProjectCompactSchema.exactOptional().openapi({
+        description: 'The project the allocation is on.',
+      }),
       resource_subtype: z
         .string()
         .exactOptional()
-        .openapi({ description: 'Type of the membership.', example: 'project_membership' }),
+        .openapi({ description: 'The subtype of the allocation.', example: 'project_allocation' }),
     })
     .openapi({ required: [] }),
-).openapi('ProjectMembershipCompactResponse')
+).openapi('AllocationResponse')
 
-const PortfolioCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'portfolio',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the portfolio.', example: 'Bug Portfolio' }),
-    resource_subtype: z
-      .enum(['default_portfolio', 'custom'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The subtype of this resource. Different subtypes retain many of the same fields and behavior, but may render differently in Asana or represent resources with different semantic meaning.',
-        example: 'default_portfolio',
-      }),
-  })
-  .openapi({
-    description:
-      'A *portfolio* gives a high-level overview of the status of multiple initiatives in Asana. Portfolios provide a dashboard overview of the state of multiple projects, including a progress report and the most recent [project status](/reference/project-statuses) update.\nPortfolios have some restrictions on size. Each portfolio has a max of 1500 items and, like projects, a max of 20 custom fields.',
-    required: [],
-  })
-  .openapi('PortfolioCompact')
-
-const PortfolioMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'portfolio_membership',
-        'x-insert-after': 'gid',
-      }),
-    parent: PortfolioCompactSchema.exactOptional().openapi({
-      description: 'The portfolio the user is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'viewer'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the member has admin, editor, or viewer access to the portfolio. Portfolios do not support commenter access yet.',
-        readOnly: true,
-        example: 'admin',
-      }),
-  })
-  .openapi({
-    description: 'This object determines if a user is a member of a portfolio.',
-    required: [],
-  })
-  .openapi('PortfolioMembershipCompact')
-
-const PortfolioMembershipCompactResponseSchema = PortfolioMembershipCompactSchema.and(
+const AllocationRequestSchema = AllocationBaseSchema.and(
   z
     .object({
-      resource_type: z
+      assignee: z
         .string()
         .exactOptional()
-        .openapi({ description: 'The base type of this resource.', example: 'membership' }),
-      resource_subtype: z
+        .openapi({
+          description:
+            'Globally unique identifier for the user or placeholder assigned to the allocation.',
+        }),
+      parent: z
         .string()
         .exactOptional()
-        .openapi({ description: 'Type of the membership.', example: 'portfolio_membership' }),
+        .openapi({
+          description: 'Globally unique identifier for the project the allocation is on.',
+        }),
     })
     .openapi({ required: [] }),
-).openapi('PortfolioMembershipCompactResponse')
+).openapi('AllocationRequest')
 
 const EnumOptionSchema = z
   .object({
@@ -494,7 +456,7 @@ const CustomFieldCompactSchema = z
     input_restrictions: z
       .array(
         z
-          .enum(['task', 'project', 'portfolio', 'goal'])
+          .enum(['task', 'project', 'portfolio', 'goal', 'team', 'record'])
           .openapi({
             description:
               '*Conditional*. Only relevant for custom fields of type `reference`. This array of strings reflects the allowed types of objects that can be written to a `reference` custom field value.',
@@ -545,7 +507,7 @@ const CustomFieldCompactSchema = z
       }),
     enum_value: EnumOptionSchema.and(
       z
-        .object({})
+        .looseObject({})
         .nullable()
         .openapi({
           description:
@@ -592,595 +554,6 @@ const CustomFieldCompactSchema = z
     required: [],
   })
   .openapi('CustomFieldCompact')
-
-const CustomFieldMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'custom_field_membership',
-        'x-insert-after': 'gid',
-      }),
-    resource_subtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of the membership.', example: 'custom_field_membership' }),
-    parent: CustomFieldCompactSchema.exactOptional().openapi({
-      description: 'The custom field the user or team is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'user'])
-      .exactOptional()
-      .openapi({
-        description: 'Whether the member has admin, editor, or user access to the custom field.',
-        readOnly: true,
-        example: 'admin',
-      }),
-  })
-  .openapi({
-    description:
-      "This object describes a user or team's membership to a custom field including their level of access (Admin, Editor, or User).",
-    required: [],
-  })
-  .openapi('CustomFieldMembershipCompact')
-
-const CustomTypeCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'custom_type',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the custom type.', example: 'Bug ticket' }),
-    asana_created_type_identifier: z
-      .enum([
-        'COMMAND_TICKET',
-        'COMMAND_RELEASE',
-        'COMMAND_TEAMSPACE',
-        'SERVICE_TICKET',
-        'SERVICE_CONVERSATION',
-        'SERVICE_QUEUE',
-      ])
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          '*Read-only*. A stable identifier present when this custom type was created by Asana as part of an Asana product (for example, a Command ticket type or a Service queue type). `null` for custom types created by users, and for Asana-created types that do not have a public identifier yet. New values may be added over time as Asana products introduce new types; integrations should tolerate unrecognized values.',
-        readOnly: true,
-        example: 'COMMAND_TICKET',
-      }),
-  })
-  .openapi({
-    description:
-      '<p><strong style={{ color: "#4573D2" }}>Full object requires scope: </strong><code>custom_types:read</code></p>\n\nCustom Types extend the types of Asana Objects.',
-    required: [],
-  })
-  .openapi('CustomTypeCompact')
-
-const CustomTypeMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'custom_type_membership',
-        'x-insert-after': 'gid',
-      }),
-    resource_subtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of the membership.', example: 'custom_type_membership' }),
-    parent: CustomTypeCompactSchema.exactOptional().openapi({
-      description: 'The custom type the user or team is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'user', 'viewer'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the member has admin, editor, user, or viewer access to the custom type.',
-        readOnly: true,
-        example: 'admin',
-      }),
-  })
-  .openapi({
-    description:
-      "This object describes a user or team's membership to a custom type including their level of access (Admin, Editor, User, or Viewer).",
-    required: [],
-  })
-  .openapi('CustomTypeMembershipCompact')
-
-const TableCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'table',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the table.', example: 'Vendor contracts' }),
-  })
-  .openapi({
-    description:
-      'A *table* is a container for structured records (rows), with columns defined by custom field settings.',
-    required: [],
-  })
-  .openapi('TableCompact')
-
-const TableMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'membership',
-        'x-insert-after': 'gid',
-      }),
-    resource_subtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of the membership.', example: 'table_membership' }),
-    parent: TableCompactSchema.exactOptional().openapi({
-      description: 'The table the user or team is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'commenter', 'viewer'])
-      .exactOptional()
-      .openapi({
-        description: "The member's access level in the table.",
-        readOnly: true,
-        example: 'viewer',
-      }),
-  })
-  .openapi({ description: "A user or team's membership in a table.", required: [] })
-  .openapi('TableMembershipCompact')
-
-const RecordItemCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'record',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the record.', example: 'Q3 renewal' }),
-  })
-  .openapi({
-    description:
-      "A *record* is a single row in a table. Fields on a record are backed by the table's custom field settings.",
-    required: [],
-  })
-  .openapi('RecordItemCompact')
-
-const RecordMembershipCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'membership',
-        'x-insert-after': 'gid',
-      }),
-    resource_subtype: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Type of the membership.', example: 'record_membership' }),
-    parent: RecordItemCompactSchema.exactOptional().openapi({
-      description: 'The record the user or team is a member of.',
-    }),
-    member: MemberCompactSchema.exactOptional().openapi({
-      description: 'Member can be a user or a team.',
-    }),
-    access_level: z
-      .enum(['admin', 'editor', 'commenter', 'viewer'])
-      .exactOptional()
-      .openapi({
-        description: "The member's access level in the record.",
-        readOnly: true,
-        example: 'viewer',
-      }),
-  })
-  .openapi({ description: "A user or team's membership in a record.", required: [] })
-  .openapi('RecordMembershipCompact')
-
-type MembershipCompactType =
-  | z.infer<typeof GoalMembershipCompactSchema>
-  | z.infer<typeof ProjectMembershipCompactResponseSchema>
-  | z.infer<typeof PortfolioMembershipCompactResponseSchema>
-  | z.infer<typeof CustomFieldMembershipCompactSchema>
-  | z.infer<typeof CustomTypeMembershipCompactSchema>
-  | z.infer<typeof TableMembershipCompactSchema>
-  | z.infer<typeof RecordMembershipCompactSchema>
-
-const WorkspaceCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'workspace',
-        'x-insert-after': 'gid',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the workspace.', example: 'My Company Workspace' }),
-  })
-  .openapi({
-    description:
-      'A *workspace* is the highest-level organizational unit in Asana. All projects and tasks have an associated workspace.',
-    required: [],
-  })
-  .openapi('WorkspaceCompact')
-
-const GoalMembershipResponseSchema = GoalMembershipBaseSchema.and(
-  z
-    .object({
-      user: UserCompactSchema.and(
-        z
-          .object({})
-          .openapi({
-            deprecated: true,
-            readOnly: true,
-            description:
-              '*Deprecated: new integrations should prefer the `member` field.* A *user* object represents an account in Asana that can be given access to various workspaces, projects, and tasks.',
-          }),
-      ).exactOptional(),
-      workspace: WorkspaceCompactSchema.and(
-        z
-          .object({})
-          .openapi({
-            deprecated: true,
-            readOnly: true,
-            description:
-              '*Deprecated:* A *workspace* is the highest-level organizational unit in Asana. All projects and tasks have an associated workspace.',
-          }),
-      ).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('GoalMembershipResponse')
-
-type MembershipResponseType =
-  | z.infer<typeof GoalMembershipResponseSchema>
-  | z.infer<typeof ProjectMembershipCompactResponseSchema>
-  | z.infer<typeof PortfolioMembershipCompactSchema>
-  | z.infer<typeof CustomFieldMembershipCompactSchema>
-  | z.infer<typeof CustomTypeMembershipCompactSchema>
-  | z.infer<typeof TableMembershipCompactSchema>
-  | z.infer<typeof RecordMembershipCompactSchema>
-
-const AgentCompactSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'agent',
-        'x-insert-after': 'gid',
-      }),
-    resource_subtype: z
-      .literal('asana_teammate')
-      .exactOptional()
-      .openapi({
-        description: 'The subtype of the agent. `asana_teammate` is an Asana-built teammate.',
-        readOnly: true,
-        example: 'asana_teammate',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The display name of the agent.',
-        readOnly: true,
-        example: 'Developer Blog Writer',
-      }),
-  })
-  .openapi({
-    description: 'A generic Asana Resource, containing a globally unique identifier.',
-    required: [],
-  })
-  .openapi('AgentCompact')
-
-const AgentResponseSchema = AgentCompactSchema.and(
-  z
-    .object({
-      description: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'A brief description of what the agent does.', readOnly: true }),
-      behavior_guidance: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: "A description of the agent's behavior.", readOnly: true }),
-      workspace: WorkspaceCompactSchema.and(z.object({})).openapi({
-        description: 'The workspace this agent is instantiated within.',
-        readOnly: true,
-      }),
-      photo: z
-        .object({
-          image_21x21: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'PNG image at 21x21 pixels.' }),
-          image_27x27: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'PNG image at 27x27 pixels.' }),
-          image_36x36: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'PNG image at 36x36 pixels.' }),
-          image_60x60: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'PNG image at 60x60 pixels.' }),
-          image_128x128: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'PNG image at 128x128 pixels.' }),
-          image_1024x1024: z
-            .url()
-            .exactOptional()
-            .openapi({ description: 'JPEG image at 1024x1024 pixels.' }),
-        })
-        .nullable()
-        .exactOptional()
-        .openapi({
-          readOnly: true,
-          description:
-            "A map of the agent's avatar image in various sizes, or null if no photo is set.",
-          example: {
-            image_21x21: 'https://...',
-            image_27x27: 'https://...',
-            image_36x36: 'https://...',
-            image_60x60: 'https://...',
-            image_128x128: 'https://...',
-            image_1024x1024: 'https://...',
-          },
-          required: [],
-        }),
-    })
-    .openapi({ required: ['workspace'] }),
-).openapi('AgentResponse')
-
-const AllocationBaseSchema = z
-  .object({
-    gid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Globally unique identifier of the resource, as a string.',
-        readOnly: true,
-        example: '12345',
-        'x-insert-after': false,
-      }),
-    resource_type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The base type of this resource.',
-        readOnly: true,
-        example: 'allocation',
-        'x-insert-after': 'gid',
-      }),
-    start_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The localized day on which the allocation starts.',
-        example: '2024-02-28',
-      }),
-    end_date: z.iso
-      .date()
-      .exactOptional()
-      .openapi({
-        description: 'The localized day on which the allocation ends.',
-        example: '2024-02-28',
-      }),
-    effort: z
-      .object({
-        type: z
-          .enum(['hours', 'percent'])
-          .exactOptional()
-          .openapi({
-            description:
-              'The units used for tracking effort on an allocation, either "hours" or "percent".',
-          }),
-        value: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'The numeric effort value on the allocation.', example: 50 }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'The amount of time associated with the allocation, represented as a percentage or number of hours.',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'A generic Asana Resource, containing a globally unique identifier.',
-    required: [],
-  })
-  .openapi('AllocationBase')
-
-const AllocationResponseSchema = AllocationBaseSchema.and(
-  z
-    .object({
-      assignee: UserCompactSchema.and(
-        z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'The name of allocation resource.',
-                example: 'Greg Sanchez',
-              }),
-          })
-          .openapi({
-            description: 'The user or placeholder assigned to the allocation.',
-            required: [],
-          }),
-      ).exactOptional(),
-      created_by: UserCompactSchema.exactOptional().openapi({
-        description: 'The user who created the allocation.',
-      }),
-      parent: ProjectCompactSchema.exactOptional().openapi({
-        description: 'The project the allocation is on.',
-      }),
-      resource_subtype: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The subtype of the allocation.', example: 'project_allocation' }),
-    })
-    .openapi({ required: [] }),
-).openapi('AllocationResponse')
-
-const AllocationRequestSchema = AllocationBaseSchema.and(
-  z
-    .object({
-      assignee: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Globally unique identifier for the user or placeholder assigned to the allocation.',
-        }),
-      parent: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'Globally unique identifier for the project the allocation is on.',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('AllocationRequest')
 
 const CustomFieldBaseSchema = CustomFieldCompactSchema.and(
   z
@@ -2047,7 +1420,7 @@ const BatchRequestActionSchema = z
         example: 'get',
       }),
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2104,7 +1477,7 @@ const BatchResponseSchema = z
         example: 200,
       }),
     headers: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2112,7 +1485,7 @@ const BatchResponseSchema = z
         example: { location: '/tasks/1234' },
       }),
     body: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The JSON body that the invoked endpoint returned.',
@@ -2324,7 +1697,7 @@ const BudgetResponseSchema = BudgetCompactSchema.and(
       estimate: BudgetEstimateResponseSchema.exactOptional(),
       actual: BudgetActualResponseSchema.exactOptional(),
       total: BudgetTotalResponseSchema.exactOptional(),
-      parent: ProjectCompactSchema.and(z.object({})).exactOptional(),
+      parent: ProjectCompactSchema.and(z.looseObject({})).exactOptional(),
     })
     .openapi({ required: [] }),
 ).openapi('BudgetResponse')
@@ -2379,7 +1752,7 @@ const CustomFieldResponseSchema = CustomFieldBaseSchema.and(
       input_restrictions: z
         .array(
           z
-            .enum(['task', 'project', 'portfolio', 'goal'])
+            .enum(['task', 'project', 'portfolio', 'goal', 'team', 'record'])
             .openapi({
               description:
                 '*Conditional*. Only relevant for custom fields of type `reference`. This array of strings reflects the allowed types of objects that can be written to a `reference` custom field value.',
@@ -2499,7 +1872,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
     .object({
       project: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Deprecated: new integrations should prefer the `parent` field.* The id of the project that this custom field settings refers to.',
@@ -2517,7 +1890,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
         }),
       parent: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The parent to which the custom field is applied. This can be a project or portfolio and indicates that the tasks or projects that the parent contains may be given custom field values for this custom field.',
@@ -2526,7 +1899,7 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
       ).exactOptional(),
       custom_field: CustomFieldResponseSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The custom field that is applied to the `parent`.',
             readOnly: true,
@@ -2535,6 +1908,55 @@ const CustomFieldSettingResponseSchema = CustomFieldSettingCompactSchema.and(
     })
     .openapi({ required: [] }),
 ).openapi('CustomFieldSettingResponse')
+
+const CustomTypeCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'custom_type',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the custom type.', example: 'Bug ticket' }),
+    asana_created_type_identifier: z
+      .enum([
+        'COMMAND_TICKET',
+        'COMMAND_RELEASE',
+        'COMMAND_TEAMSPACE',
+        'SERVICE_TICKET',
+        'SERVICE_CONVERSATION',
+        'SERVICE_QUEUE',
+      ])
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          '*Read-only*. A stable identifier present when this custom type was created by Asana as part of an Asana product (for example, a Command ticket type or a Service queue type). `null` for custom types created by users, and for Asana-created types that do not have a public identifier yet. New values may be added over time as Asana products introduce new types; integrations should tolerate unrecognized values.',
+        readOnly: true,
+        example: 'COMMAND_TICKET',
+      }),
+  })
+  .openapi({
+    description:
+      '<p><strong style={{ color: "#4573D2" }}>Full object requires scope: </strong><code>custom_types:read</code></p>\n\nCustom Types extend the types of Asana Objects.',
+    required: [],
+  })
+  .openapi('CustomTypeCompact')
 
 const CustomTypeBaseSchema = CustomTypeCompactSchema.openapi('CustomTypeBase')
 
@@ -2687,7 +2109,7 @@ const EffectiveTaskMembershipSchema = TaskMembershipSchema.and(
   .openapi('EffectiveTaskMembership')
 
 const EmptyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'An empty object. Some endpoints do not return an object on success. The success is conveyed through a 2-- status code and returning an empty object.',
@@ -2788,16 +2210,12 @@ const ErrorResponseSchema = z
 
 const EventResponseSchema = z
   .object({
-    user: UserCompactSchema.and(
-      z.any().openapi({ description: 'The user who triggered the event.' }),
-    ).exactOptional(),
-    resource: AsanaNamedResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource which has triggered the event by being modified in some way.',
-        }),
-    ).exactOptional(),
+    user: UserCompactSchema.exactOptional().openapi({
+      description: 'The user who triggered the event.',
+    }),
+    resource: AsanaNamedResourceSchema.exactOptional().openapi({
+      description: 'The resource which has triggered the event by being modified in some way.',
+    }),
     type: z
       .string()
       .exactOptional()
@@ -2816,14 +2234,10 @@ const EventResponseSchema = z
         readOnly: true,
         example: 'changed',
       }),
-    parent: AsanaNamedResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For added/removed events, the parent object that resource was added to or removed from. The parent will be `null` for other event types.',
-        }),
-    ).exactOptional(),
+    parent: AsanaNamedResourceSchema.exactOptional().openapi({
+      description:
+        'For added/removed events, the parent object that resource was added to or removed from. The parent will be `null` for other event types.',
+    }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -3007,6 +2421,38 @@ const GoalBaseSchema = z
     required: [],
   })
   .openapi('GoalBase')
+
+const GoalCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'goal',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the goal.', example: 'Grow web traffic by 30%' }),
+    owner: UserCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
+  })
+  .openapi({
+    description: 'A generic Asana Resource, containing a globally unique identifier.',
+    required: [],
+  })
+  .openapi('GoalCompact')
 
 const GoalMetricBaseSchema = z
   .object({
@@ -3473,19 +2919,19 @@ const GoalResponseSchema = GoalBaseSchema.and(
         }),
       team: TeamCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
               '*Conditional*. This property is only present when the `workspace` provided is an organization.',
           }),
       ).exactOptional(),
-      workspace: WorkspaceCompactSchema.and(z.object({})).exactOptional(),
+      workspace: WorkspaceCompactSchema.and(z.looseObject({})).exactOptional(),
       followers: z
         .array(UserCompactSchema)
         .exactOptional()
         .openapi({ description: 'Array of users who are members of this goal.' }),
-      time_period: TimePeriodCompactSchema.and(z.object({}).nullable()).exactOptional(),
+      time_period: TimePeriodCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
       metric: GoalMetricBaseSchema.and(
         z
           .object({
@@ -3502,13 +2948,10 @@ const GoalResponseSchema = GoalBaseSchema.and(
           .nullable()
           .openapi({ required: [] }),
       ).exactOptional(),
-      owner: UserCompactSchema.and(z.object({}).nullable()).exactOptional(),
-      current_status_update: StatusUpdateCompactSchema.and(
-        z
-          .any()
-          .nullable()
-          .openapi({ description: 'The latest `status_update` posted to this goal.' }),
-      ).exactOptional(),
+      owner: UserCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
+      current_status_update: StatusUpdateCompactSchema.nullable()
+        .exactOptional()
+        .openapi({ description: 'The latest `status_update` posted to this goal.' }),
       status: z
         .string()
         .nullable()
@@ -3582,7 +3025,7 @@ const GoalRelationshipCompactSchema = z
       }),
     supporting_resource: ProjectCompactSchema.and(
       z
-        .object({})
+        .looseObject({})
         .openapi({
           readOnly: true,
           description:
@@ -3610,7 +3053,7 @@ const GoalRelationshipBaseSchema = GoalRelationshipCompactSchema.and(
     .object({
       supported_goal: GoalCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             readOnly: true,
             description: 'The goal that the supporting resource supports.',
@@ -3620,13 +3063,53 @@ const GoalRelationshipBaseSchema = GoalRelationshipCompactSchema.and(
     .openapi({ required: [] }),
 ).openapi('GoalRelationshipBase')
 
-const GoalRelationshipRequestSchema = GoalRelationshipBaseSchema.and(z.object({})).openapi(
+const GoalRelationshipRequestSchema = GoalRelationshipBaseSchema.and(z.looseObject({})).openapi(
   'GoalRelationshipRequest',
 )
 
-const GoalRelationshipResponseSchema = GoalRelationshipBaseSchema.and(z.object({})).openapi(
+const GoalRelationshipResponseSchema = GoalRelationshipBaseSchema.and(z.looseObject({})).openapi(
   'GoalRelationshipResponse',
 )
+
+const PortfolioCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'portfolio',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the portfolio.', example: 'Bug Portfolio' }),
+    resource_subtype: z
+      .enum(['default_portfolio', 'custom'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The subtype of this resource. Different subtypes retain many of the same fields and behavior, but may render differently in Asana or represent resources with different semantic meaning.',
+        example: 'default_portfolio',
+      }),
+  })
+  .openapi({
+    description:
+      'A *portfolio* gives a high-level overview of the status of multiple initiatives in Asana. Portfolios provide a dashboard overview of the state of multiple projects, including a progress report and the most recent [project status](/reference/project-statuses) update.\nPortfolios have some restrictions on size. Each portfolio has a max of 1500 items and, like projects, a max of 20 custom fields.',
+    required: [],
+  })
+  .openapi('PortfolioCompact')
 
 const ProjectTemplateCompactSchema = z
   .object({
@@ -3839,7 +3322,7 @@ const JobCompactSchema = z
       }),
     new_portfolio: PortfolioCompactSchema.exactOptional(),
     new_project: ProjectCompactSchema.exactOptional(),
-    new_task: TaskCompactSchema.and(z.object({}).nullable()).exactOptional(),
+    new_task: TaskCompactSchema.and(z.looseObject({}).nullable()).exactOptional(),
     new_project_template: ProjectTemplateCompactSchema.exactOptional(),
     new_graph_export: GraphExportCompactSchema.exactOptional(),
     new_resource_export: ResourceExportCompactSchema.exactOptional(),
@@ -3891,18 +3374,477 @@ const MarkNotificationsResponseSchema = z
   .openapi({ required: [] })
   .openapi('MarkNotificationsResponse')
 
-const MembershipCompactSchema: z.ZodType<MembershipCompactType> = z
-  .lazy(() =>
-    z.union([
-      GoalMembershipCompactSchema,
-      ProjectMembershipCompactResponseSchema,
-      PortfolioMembershipCompactResponseSchema,
-      CustomFieldMembershipCompactSchema,
-      CustomTypeMembershipCompactSchema,
-      TableMembershipCompactSchema,
-      RecordMembershipCompactSchema,
-    ]),
-  )
+const MemberCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The type of the member (team or user)', example: 'user' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the member', example: 'Greg Sanchez' }),
+  })
+  .openapi({ description: 'A *member* object represents either a team or user.', required: [] })
+  .openapi('MemberCompact')
+
+const GoalMembershipBaseSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The base type of this resource.', example: 'membership' }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'The type of membership.',
+        example: 'goal_membership',
+      }),
+    member: MemberCompactSchema.exactOptional(),
+    parent: GoalCompactSchema.and(z.looseObject({}).openapi({ readOnly: true })).exactOptional(),
+    role: z
+      .enum(['commenter', 'editor'])
+      .exactOptional()
+      .openapi({
+        description: '*Deprecated: Describes if the member is a commenter or editor in goal.*',
+        deprecated: true,
+        example: 'editor',
+      }),
+    access_level: z
+      .enum(['viewer', 'commenter', 'editor', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          '"Describes the membership access level for the goal. This is preferred over role."',
+        example: 'editor',
+      }),
+    goal: GoalCompactSchema.and(
+      z
+        .looseObject({})
+        .openapi({
+          readOnly: true,
+          deprecated: true,
+          description:
+            '*Deprecated: new integrations should prefer the `parent` field.* A *Goal* is an object in the goal-tracking system that helps your organization drive measurable results.',
+        }),
+    ).exactOptional(),
+  })
+  .openapi({ description: "This object represents a user's connection to a goal.", required: [] })
+  .openapi('GoalMembershipBase')
+
+const GoalMembershipCompactSchema = GoalMembershipBaseSchema.and(
+  z
+    .object({
+      is_commenter: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          readOnly: true,
+          description:
+            '*Deprecated: new integrations should prefer the `access_level` field.* Describes if the member is comment only in goal. This field is deprecated and will always be null.',
+          example: false,
+        }),
+      is_editor: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          readOnly: true,
+          description:
+            '*Deprecated: new integrations should prefer the `access_level` field.* Describes if the member is editor in goal. This field is deprecated and will always be null.',
+          example: false,
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('GoalMembershipCompact')
+
+const ProjectMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'project_membership',
+        'x-insert-after': 'gid',
+      }),
+    parent: ProjectCompactSchema.exactOptional().openapi({
+      description: '[Opt In](/docs/inputoutput-options). The project the user is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the member has admin, editor, commenter, or viewer access to the project.',
+        readOnly: true,
+        example: 'admin',
+      }),
+  })
+  .openapi({
+    description:
+      "This object describes a team or a user's membership to a project including their level of access (Admin, Editor, Commenter, or Viewer).",
+    required: [],
+  })
+  .openapi('ProjectMembershipCompact')
+
+const ProjectMembershipCompactResponseSchema = ProjectMembershipCompactSchema.and(
+  z
+    .object({
+      resource_type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The base type of this resource.', example: 'membership' }),
+      resource_subtype: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Type of the membership.', example: 'project_membership' }),
+    })
+    .openapi({ required: [] }),
+).openapi('ProjectMembershipCompactResponse')
+
+const PortfolioMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'portfolio_membership',
+        'x-insert-after': 'gid',
+      }),
+    parent: PortfolioCompactSchema.exactOptional().openapi({
+      description: 'The portfolio the user is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the member has admin, editor, or viewer access to the portfolio. Portfolios do not support commenter access yet.',
+        readOnly: true,
+        example: 'admin',
+      }),
+  })
+  .openapi({
+    description: 'This object determines if a user is a member of a portfolio.',
+    required: [],
+  })
+  .openapi('PortfolioMembershipCompact')
+
+const PortfolioMembershipCompactResponseSchema = PortfolioMembershipCompactSchema.and(
+  z
+    .object({
+      resource_type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The base type of this resource.', example: 'membership' }),
+      resource_subtype: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Type of the membership.', example: 'portfolio_membership' }),
+    })
+    .openapi({ required: [] }),
+).openapi('PortfolioMembershipCompactResponse')
+
+const CustomFieldMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'custom_field_membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'custom_field_membership' }),
+    parent: CustomFieldCompactSchema.exactOptional().openapi({
+      description: 'The custom field the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'user'])
+      .exactOptional()
+      .openapi({
+        description: 'Whether the member has admin, editor, or user access to the custom field.',
+        readOnly: true,
+        example: 'admin',
+      }),
+  })
+  .openapi({
+    description:
+      "This object describes a user or team's membership to a custom field including their level of access (Admin, Editor, or User).",
+    required: [],
+  })
+  .openapi('CustomFieldMembershipCompact')
+
+const CustomTypeMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'custom_type_membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'custom_type_membership' }),
+    parent: CustomTypeCompactSchema.exactOptional().openapi({
+      description: 'The custom type the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'user', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the member has admin, editor, user, or viewer access to the custom type.',
+        readOnly: true,
+        example: 'admin',
+      }),
+  })
+  .openapi({
+    description:
+      "This object describes a user or team's membership to a custom type including their level of access (Admin, Editor, User, or Viewer).",
+    required: [],
+  })
+  .openapi('CustomTypeMembershipCompact')
+
+const TableCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'table',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the table.', example: 'Vendor contracts' }),
+  })
+  .openapi({
+    description:
+      'A *table* is a container for structured records (rows), with columns defined by custom field settings.',
+    required: [],
+  })
+  .openapi('TableCompact')
+
+const TableMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'table_membership' }),
+    parent: TableCompactSchema.exactOptional().openapi({
+      description: 'The table the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description: "The member's access level in the table.",
+        readOnly: true,
+        example: 'viewer',
+      }),
+  })
+  .openapi({ description: "A user or team's membership in a table.", required: [] })
+  .openapi('TableMembershipCompact')
+
+const RecordItemCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'record',
+        'x-insert-after': 'gid',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the record.', example: 'Q3 renewal' }),
+  })
+  .openapi({
+    description:
+      "A *record* is a single row in a table. Fields on a record are backed by the table's custom field settings.",
+    required: [],
+  })
+  .openapi('RecordItemCompact')
+
+const RecordMembershipCompactSchema = z
+  .object({
+    gid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Globally unique identifier of the resource, as a string.',
+        readOnly: true,
+        example: '12345',
+        'x-insert-after': false,
+      }),
+    resource_type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The base type of this resource.',
+        readOnly: true,
+        example: 'membership',
+        'x-insert-after': 'gid',
+      }),
+    resource_subtype: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Type of the membership.', example: 'record_membership' }),
+    parent: RecordItemCompactSchema.exactOptional().openapi({
+      description: 'The record the user or team is a member of.',
+    }),
+    member: MemberCompactSchema.exactOptional().openapi({
+      description: 'Member can be a user or a team.',
+    }),
+    access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description: "The member's access level in the record.",
+        readOnly: true,
+        example: 'viewer',
+      }),
+  })
+  .openapi({ description: "A user or team's membership in a record.", required: [] })
+  .openapi('RecordMembershipCompact')
+
+const MembershipCompactSchema = z
+  .union([
+    GoalMembershipCompactSchema,
+    ProjectMembershipCompactResponseSchema,
+    PortfolioMembershipCompactResponseSchema,
+    CustomFieldMembershipCompactSchema,
+    CustomTypeMembershipCompactSchema,
+    TableMembershipCompactSchema,
+    RecordMembershipCompactSchema,
+  ])
   .openapi('MembershipCompact')
 
 const ModifyDependenciesRequestSchema = z
@@ -4097,7 +4039,7 @@ const NotificationResponseSchema = NotificationBaseSchema.and(
       }),
       created_by: AsanaNamedResourceSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             readOnly: true,
@@ -4536,12 +4478,9 @@ const PortfolioResponseSchema = PortfolioBaseSchema.and(
           description:
             'Array of custom field definitions that are enabled for the portfolio. These represent which custom fields are available to be used on items within the portfolio, but do not include any values.',
         }),
-      current_status_update: StatusUpdateCompactSchema.and(
-        z
-          .any()
-          .nullable()
-          .openapi({ description: 'The latest `status_update` posted to this portfolio.' }),
-      ).exactOptional(),
+      current_status_update: StatusUpdateCompactSchema.nullable()
+        .exactOptional()
+        .openapi({ description: 'The latest `status_update` posted to this portfolio.' }),
       custom_fields: z
         .array(CustomFieldCompactSchema)
         .exactOptional()
@@ -4553,7 +4492,7 @@ const PortfolioResponseSchema = PortfolioBaseSchema.and(
       owner: UserCompactSchema.exactOptional(),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Create-only*. The workspace or organization that the portfolio belongs to.',
@@ -4824,7 +4763,7 @@ const ProjectBaseSchema = ProjectCompactSchema.and(
         }),
       current_status: ProjectStatusResponseSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -4833,7 +4772,7 @@ const ProjectBaseSchema = ProjectCompactSchema.and(
       ).exactOptional(),
       current_status_update: StatusUpdateCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({ description: 'The latest `status_update` posted to this project.' }),
       ).exactOptional(),
@@ -5039,7 +4978,7 @@ const ProjectBriefResponseSchema = ProjectBriefBaseSchema.and(
         }),
       project: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({ description: 'The project with which this project brief is associated.' }),
       ).exactOptional(),
     })
@@ -5187,10 +5126,10 @@ const ProjectPortfolioSettingCompactSchema = z
         example: 'project_portfolio_setting',
         'x-insert-after': 'gid',
       }),
-    project: ProjectCompactSchema.and(z.object({}))
+    project: ProjectCompactSchema.and(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The project associated with this setting.' }),
-    portfolio: PortfolioCompactSchema.and(z.object({}))
+    portfolio: PortfolioCompactSchema.and(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'The portfolio associated with this setting.' }),
     is_access_control_inherited: z
@@ -5425,16 +5364,13 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
           readOnly: true,
           example: '2012-02-22T02:06:58.147Z',
         }),
-      completed_by: UserCompactSchema.and(
-        z
-          .any()
-          .nullable()
-          .openapi({
-            description:
-              'The user that marked this project complete, or null if the project is not completed.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      completed_by: UserCompactSchema.nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The user that marked this project complete, or null if the project is not completed.',
+          readOnly: true,
+        }),
       followers: z
         .array(UserCompactSchema)
         .exactOptional()
@@ -5443,11 +5379,11 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
             'Array of users following this project. Followers are a subset of members who have opted in to receive "tasks added" notifications for a project.',
           readOnly: true,
         }),
-      owner: UserCompactSchema.and(z.object({}).nullable())
+      owner: UserCompactSchema.and(z.looseObject({}).nullable())
         .exactOptional()
         .openapi({ description: 'The current owner of the project, may be null.' }),
       team: TeamCompactSchema.and(
-        z.object({}).openapi({ description: 'The team that this project is shared with.' }),
+        z.looseObject({}).openapi({ description: 'The team that this project is shared with.' }),
       ).exactOptional(),
       permalink_url: z
         .string()
@@ -5459,7 +5395,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
         }),
       project_brief: ProjectBriefCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -5468,7 +5404,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
       ).exactOptional(),
       created_from_template: ProjectTemplateCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -5477,7 +5413,7 @@ const ProjectResponseSchema = ProjectBaseSchema.and(
       ).exactOptional(),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             readOnly: true,
             description:
@@ -5513,7 +5449,7 @@ const ProjectSectionInsertRequestSchema = z
   .openapi('ProjectSectionInsertRequest')
 
 const ProjectStatusRequestSchema = ProjectStatusBaseSchema.and(
-  z.object({}).openapi({ required: ['color'] }),
+  z.looseObject({}).openapi({ required: ['color'] }),
 ).openapi('ProjectStatusRequest')
 
 const DateVariableCompactSchema = z
@@ -5604,7 +5540,7 @@ const ProjectTemplateBaseSchema = ProjectTemplateCompactSchema.and(
           description: 'True if the project template is public to its team.',
           example: false,
         }),
-      owner: UserCompactSchema.and(z.object({}).nullable())
+      owner: UserCompactSchema.and(z.looseObject({}).nullable())
         .exactOptional()
         .openapi({ description: 'The current owner of the project template, may be null.' }),
       team: TeamCompactSchema.exactOptional(),
@@ -6198,7 +6134,7 @@ const RateUpdateRequestSchema = z
   })
   .openapi('RateUpdateRequest')
 
-const RateResponseSchema = RateCompactSchema.and(z.object({})).openapi('RateResponse')
+const RateResponseSchema = RateCompactSchema.and(z.looseObject({})).openapi('RateResponse')
 
 const PlaceholderCompactSchema = z
   .object({
@@ -6471,7 +6407,7 @@ const StatusUpdateResponseSchema = StatusUpdateBaseSchema.and(
         }),
       parent: ProjectCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               'The parent of the status update. This can be a project, goal or portfolio, and indicates that this status was sent on that object.',
@@ -6865,20 +6801,14 @@ const StoryResponseSchema = StoryBaseSchema.and(
         description: '*Conditional*',
         readOnly: true,
       }),
-      old_date_value: StoryResponseDatesSchema.and(
-        z
-          .any()
-          .openapi({ description: '*Conditional*. The old value of a date custom field story.' }),
-      )
-        .exactOptional()
-        .openapi({ readOnly: true }),
-      new_date_value: StoryResponseDatesSchema.and(
-        z
-          .any()
-          .openapi({ description: '*Conditional* The new value of a date custom field story.' }),
-      )
-        .exactOptional()
-        .openapi({ readOnly: true }),
+      old_date_value: StoryResponseDatesSchema.exactOptional().openapi({
+        description: '*Conditional*. The old value of a date custom field story.',
+        readOnly: true,
+      }),
+      new_date_value: StoryResponseDatesSchema.exactOptional().openapi({
+        description: '*Conditional* The new value of a date custom field story.',
+        readOnly: true,
+      }),
       old_people_value: z
         .array(UserCompactSchema)
         .exactOptional()
@@ -6945,7 +6875,7 @@ const StoryResponseSchema = StoryBaseSchema.and(
         }),
       target: TaskCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             readOnly: true,
             description: 'The object this story is associated with. Currently may only be a task.',
@@ -6990,6 +6920,14 @@ const RecordItemRequestSchema = RecordItemCompactSchema.and(
             'An optional client-provided identifier used to deduplicate record creation within a table. If a record already exists in the table with the same `unique_fingerprint`, the request fails with a `409 Conflict` error rather than creating a duplicate.',
           example: 'sfdc-opportunity-0061',
         }),
+      default_access_level: z
+        .enum(['admin', 'editor', 'commenter', 'viewer'])
+        .exactOptional()
+        .openapi({
+          description:
+            "The default access level for users who join or are added as members of the record. This isn't applied when the record is private.",
+          example: 'viewer',
+        }),
     })
     .openapi({ required: ['name', 'table'] }),
 ).openapi('RecordItemRequest')
@@ -7000,6 +6938,14 @@ const RecordItemUpdateRequestSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The name of the record.', example: 'Q3 renewal' }),
+    default_access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The default access level for users who join or are added as members of the record. This isn't applied when the record is private.",
+        example: 'viewer',
+      }),
     custom_fields: z
       .record(
         z.string(),
@@ -7022,19 +6968,16 @@ const RecordItemUpdateRequestSchema = z
 const RecordItemResponseSchema = RecordItemCompactSchema.and(
   z
     .object({
-      table: TableCompactSchema.and(
-        z
-          .any()
-          .nullable()
-          .openapi({
-            readOnly: true,
-            description:
-              "The table that this record belongs to. Omitted if you don't have access to the table, or null if the record has no associated table.",
-          }),
-      ).exactOptional(),
+      table: TableCompactSchema.nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            "The table that this record belongs to. Omitted if you don't have access to the table, or null if the record has no associated table.",
+        }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({ readOnly: true, description: 'The workspace this record belongs to.' }),
       ).exactOptional(),
       custom_fields: z
@@ -7091,6 +7034,14 @@ const RecordItemResponseSchema = RecordItemCompactSchema.and(
           readOnly: true,
           example: false,
         }),
+      default_access_level: z
+        .enum(['admin', 'editor', 'commenter', 'viewer'])
+        .exactOptional()
+        .openapi({
+          description:
+            "The default access level for users who join or are added as members of the record. This isn't applied when the record is private.",
+          example: 'viewer',
+        }),
     })
     .openapi({ required: [] }),
 ).openapi('RecordItemResponse')
@@ -7117,6 +7068,14 @@ const TableUpdateRequestSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The name of the table.', example: 'Vendor contracts' }),
+    default_access_level: z
+      .enum(['admin', 'editor', 'commenter', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The default access level for users who join or are added as members of the table.',
+        example: 'viewer',
+      }),
   })
   .openapi({ required: [] })
   .openapi('TableUpdateRequest')
@@ -7158,7 +7117,7 @@ const CustomFieldTableSettingResponseSchema = CustomFieldTableSettingCompactSche
     .object({
       custom_field: CustomFieldCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description: 'The custom field that is applied to the table.',
             readOnly: true,
@@ -7197,7 +7156,7 @@ const TableResponseSchema = TableCompactSchema.and(
         }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             readOnly: true,
             description:
@@ -7211,6 +7170,14 @@ const TableResponseSchema = TableCompactSchema.and(
           description:
             'Array of custom field definitions that are enabled for the table. These represent which custom fields are available to records in the table, but do not include any values.',
           readOnly: true,
+        }),
+      default_access_level: z
+        .enum(['admin', 'editor', 'commenter', 'viewer'])
+        .exactOptional()
+        .openapi({
+          description:
+            'The default access level for users who join or are added as members of the table.',
+          example: 'viewer',
         }),
     })
     .openapi({ required: [] }),
@@ -7397,16 +7364,13 @@ const TaskBaseSchema = TaskCompactSchema.and(
             '*Deprecated* Scheduling status of this task for the user it is assigned to. This field can only be set if the assignee is non-null. Setting this field to "inbox" or "upcoming" inserts it at the top of the section, while the other options will insert at the bottom.',
           example: 'upcoming',
         }),
-      assigned_by: UserCompactSchema.and(
-        z
-          .any()
-          .nullable()
-          .openapi({
-            readOnly: true,
-            description:
-              'The user who assigned the task. This field is only returned when requesting it via opt_fields, and will be null if the task has no specific assigner (e.g., tasks created without an explicit assigner).',
-          }),
-      ).exactOptional(),
+      assigned_by: UserCompactSchema.nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'The user who assigned the task. This field is only returned when requesting it via opt_fields, and will be null if the task has no specific assigner (e.g., tasks created without an explicit assigner).',
+        }),
       completed: z
         .boolean()
         .exactOptional()
@@ -7424,9 +7388,7 @@ const TaskBaseSchema = TaskCompactSchema.and(
           readOnly: true,
           example: '2012-02-22T02:06:58.147Z',
         }),
-      completed_by: UserCompactSchema.and(
-        z.any().nullable().openapi({ readOnly: true }),
-      ).exactOptional(),
+      completed_by: UserCompactSchema.nullable().exactOptional().openapi({ readOnly: true }),
       created_at: z.iso
         .datetime({ offset: true })
         .exactOptional()
@@ -8057,7 +8019,7 @@ const TaskResponseSchema = TaskBaseSchema.and(
       assignee: UserCompactSchema.nullable().exactOptional(),
       assignee_section: SectionCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             description:
@@ -8080,7 +8042,7 @@ const TaskResponseSchema = TaskBaseSchema.and(
         .openapi({ description: 'Array of users following this task.', readOnly: true }),
       parent: TaskCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             readOnly: true,
@@ -8115,7 +8077,7 @@ const TaskResponseSchema = TaskBaseSchema.and(
         }),
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             readOnly: true,
             description:
@@ -8338,7 +8300,9 @@ const TeamResponseSchema = TeamCompactSchema.and(
           example: '<body><em>All</em> developers should be members of this team.</body>',
         }),
       organization: WorkspaceCompactSchema.and(
-        z.object({}).openapi({ description: 'The organization/workspace the team belongs to.\n' }),
+        z
+          .looseObject({})
+          .openapi({ description: 'The organization/workspace the team belongs to.\n' }),
       ).exactOptional(),
       permalink_url: z
         .string()
@@ -8686,14 +8650,10 @@ const WebhookRequestSchema = z
       }),
     filters: z
       .array(
-        WebhookFilterSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A set of filters to specify a whitelist for what types of events will be delivered.',
-            }),
-        ).and(z.object({})),
+        WebhookFilterSchema.and(z.looseObject({})).openapi({
+          description:
+            'A set of filters to specify a whitelist for what types of events will be delivered.',
+        }),
       )
       .exactOptional()
       .openapi({
@@ -8771,14 +8731,10 @@ const WebhookResponseSchema = WebhookCompactSchema.and(
         }),
       filters: z
         .array(
-          WebhookFilterSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'A set of filters to specify a whitelist for what types of events will be delivered.',
-              }),
-          ).and(z.object({})),
+          WebhookFilterSchema.and(z.looseObject({})).openapi({
+            description:
+              'A set of filters to specify a whitelist for what types of events will be delivered.',
+          }),
         )
         .exactOptional()
         .openapi({
@@ -8793,14 +8749,10 @@ const WebhookUpdateRequestSchema = z
   .object({
     filters: z
       .array(
-        WebhookFilterSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A set of filters to specify a whitelist for what types of events will be delivered.',
-            }),
-        ).and(z.object({})),
+        WebhookFilterSchema.and(z.looseObject({})).openapi({
+          description:
+            'A set of filters to specify a whitelist for what types of events will be delivered.',
+        }),
       )
       .exactOptional()
       .openapi({
@@ -8984,6 +8936,33 @@ const WorkspaceResponseSchema = WorkspaceCompactSchema.and(
     .openapi({ required: [] }),
 ).openapi('WorkspaceResponse')
 
+const GoalMembershipResponseSchema = GoalMembershipBaseSchema.and(
+  z
+    .object({
+      user: UserCompactSchema.and(
+        z
+          .looseObject({})
+          .openapi({
+            deprecated: true,
+            readOnly: true,
+            description:
+              '*Deprecated: new integrations should prefer the `member` field.* A *user* object represents an account in Asana that can be given access to various workspaces, projects, and tasks.',
+          }),
+      ).exactOptional(),
+      workspace: WorkspaceCompactSchema.and(
+        z
+          .looseObject({})
+          .openapi({
+            deprecated: true,
+            readOnly: true,
+            description:
+              '*Deprecated:* A *workspace* is the highest-level organizational unit in Asana. All projects and tasks have an associated workspace.',
+          }),
+      ).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('GoalMembershipResponse')
+
 const MembershipUpdateRequestSchema = z
   .object({
     access_level: z
@@ -9040,18 +9019,16 @@ const CreateMembershipRequestSchema = MembershipRequestSchema.and(
     .openapi({ required: [] }),
 ).openapi('CreateMembershipRequest')
 
-const MembershipResponseSchema: z.ZodType<MembershipResponseType> = z
-  .lazy(() =>
-    z.union([
-      GoalMembershipResponseSchema,
-      ProjectMembershipCompactResponseSchema,
-      PortfolioMembershipCompactSchema,
-      CustomFieldMembershipCompactSchema,
-      CustomTypeMembershipCompactSchema,
-      TableMembershipCompactSchema,
-      RecordMembershipCompactSchema,
-    ]),
-  )
+const MembershipResponseSchema = z
+  .union([
+    GoalMembershipResponseSchema,
+    ProjectMembershipCompactResponseSchema,
+    PortfolioMembershipCompactSchema,
+    CustomFieldMembershipCompactSchema,
+    CustomTypeMembershipCompactSchema,
+    TableMembershipCompactSchema,
+    RecordMembershipCompactSchema,
+  ])
   .openapi('MembershipResponse')
 
 const UpdateTimeTrackingEntryRequestSchema = z
@@ -9256,18 +9233,20 @@ const TimeTrackingEntryCompactSchema = z
       .openapi({ description: 'The day that this entry is logged on.', example: '2015-03-14' }),
     attributable_to: ProjectCompactSchema.and(
       z
-        .object({})
+        .looseObject({})
         .openapi({
           description:
             "The attributable to project specifies which project's budget a time entry should be counted toward, if the task belongs to more than one project. If it only belongs to one project, it should be that project.",
         }),
     ).exactOptional(),
     assignee: UserCompactSchema.and(
-      z.object({}).openapi({ description: "The user this entry's logged time is attributed to." }),
+      z
+        .looseObject({})
+        .openapi({ description: "The user this entry's logged time is attributed to." }),
     ).exactOptional(),
     created_by: UserCompactSchema.and(
       z
-        .object({})
+        .looseObject({})
         .openapi({ description: 'User that created a time tracking entry.', readOnly: true }),
     ).exactOptional(),
     categories: z
@@ -9530,7 +9509,7 @@ const TimesheetApprovalStatusCompactSchema = z
 
 const TimesheetApprovalStatusResponseSchema = TimesheetApprovalStatusCompactSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({
       description: 'A full *timesheet approval status* object with all available fields.',
     }),
@@ -9743,7 +9722,7 @@ const RbacRoleBaseSchema = RbacRoleCompactSchema.and(
           example: '2012-02-22T02:06:58.147Z',
         }),
       base_role_type: z
-        .enum(['guest', 'member', 'admin', 'super_admin'])
+        .enum(['guest', 'member', 'admin', 'super_admin', 'csm'])
         .exactOptional()
         .openapi({ description: 'The base role type of the role.' }),
       permissions: z
@@ -9958,7 +9937,7 @@ const RbacRoleResponseSchema = RbacRoleBaseSchema.and(
     .object({
       workspace: WorkspaceCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             description:
               '*Create-only*. The workspace this role is associated with. Once created, roles cannot be moved to a different workspace. This attribute can only be specified at creation time.',
@@ -10239,7 +10218,7 @@ const AiStudioSeatResponseSchema = AiStudioSeatCompactSchema.and(
         }),
       assigned_by: UserCompactSchema.and(
         z
-          .object({})
+          .looseObject({})
           .nullable()
           .openapi({
             readOnly: true,
@@ -10933,6 +10912,76 @@ const TeamMembershipPathGidParamsSchema = z
     },
   })
 
+const ReleasePathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'release_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command release.',
+      required: true,
+      schema: { type: 'string' },
+      example: '987654',
+      'x-env-variable': 'release',
+    },
+  })
+
+const TeamspacePathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'teamspace_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command teamspace.',
+      required: true,
+      schema: { type: 'string' },
+      example: '67890',
+      'x-env-variable': 'teamspace',
+    },
+  })
+
+const CodingAgentSessionPathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'session_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command coding agent session.',
+      required: true,
+      schema: { type: 'string' },
+      example: '321654',
+      'x-env-variable': 'session',
+    },
+  })
+
+const LabelPathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'label_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command label.',
+      required: true,
+      schema: { type: 'string' },
+      example: '13579',
+      'x-env-variable': 'label',
+    },
+  })
+
+const TicketPathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'ticket_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command ticket.',
+      required: true,
+      schema: { type: 'string' },
+      example: '321654',
+      'x-env-variable': 'ticket',
+    },
+  })
+
 const TimePeriodPathGidParamsSchema = z
   .string()
   .openapi({
@@ -10986,6 +11035,20 @@ const TimesheetApprovalStatusPathGidParamsSchema = z
       schema: { type: 'string' },
       example: '917392',
       'x-env-variable': 'timesheet_approval_status',
+    },
+  })
+
+const TodoPathGidParamsSchema = z
+  .string()
+  .openapi({
+    param: {
+      name: 'todo_gid',
+      in: 'path',
+      description: 'Globally unique identifier for the Command to-do.',
+      required: true,
+      schema: { type: 'string' },
+      example: '321654',
+      'x-env-variable': 'todo',
     },
   })
 
@@ -11414,6 +11477,18 @@ const Oauth2SecurityScheme = {
         'attachments:read': 'View access to attachments',
         'attachments:write': 'Create and modify access to attachments',
         'attachments:delete': 'Delete access to attachments',
+        'command_coding_agent_sessions:read': 'View access to Command coding agent sessions',
+        'command_coding_agent_sessions:write': 'Start Command coding agent sessions',
+        'command_coding_agents:read': 'View access to Command coding agents',
+        'command_releases:read': 'View access to Command releases',
+        'command_releases:write': 'Create and modify access to Command releases',
+        'command_releases:delete': 'Delete access to Command releases',
+        'command_teamspaces:read': 'View access to Command teamspaces',
+        'command_teamspaces:write': 'Create and modify access to Command teamspaces',
+        'command_teamspaces:delete': 'Delete access to Command teamspaces',
+        'command_tickets:read': 'View access to Command tickets and their to-dos',
+        'command_tickets:write': 'Create and modify access to Command tickets and their to-dos',
+        'command_tickets:delete': 'Delete access to Command tickets and their to-dos',
         'custom_fields:read': 'View access to custom fields',
         'custom_fields:write': 'Create and modify access to custom fields',
         'custom_types:read': 'View access to custom types',
@@ -12444,7 +12519,7 @@ export const postAllocationsRoute = createRoute({
             .object({
               data: AllocationRequestSchema.and(
                 z
-                  .object({})
+                  .looseObject({})
                   .openapi({ required: ['assignee', 'end_date', 'parent', 'start_date'] }),
               ).exactOptional(),
             })
@@ -21780,7 +21855,9 @@ export const postOooEntriesRoute = createRoute({
           schema: z
             .object({
               data: OooEntryCreateRequestSchema.and(
-                z.object({}).openapi({ required: ['user', 'workspace', 'start_date', 'end_date'] }),
+                z
+                  .looseObject({})
+                  .openapi({ required: ['user', 'workspace', 'start_date', 'end_date'] }),
               ).exactOptional(),
             })
             .openapi({ required: [] }),
@@ -35447,6 +35524,7 @@ export const getTablesTableGidRecordsRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -35522,6 +35600,7 @@ export const getTablesTableGidRecordsRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -35591,6 +35670,7 @@ export const getTablesTableGidRecordsRoute = createRoute({
                   'custom_fields.resource_subtype',
                   'custom_fields.text_value',
                   'custom_fields.type',
+                  'default_access_level',
                   'deleted_at',
                   'is_in_archived_table',
                   'modified_at',
@@ -35898,6 +35978,7 @@ export const getWorkspacesWorkspaceGidRecordsSearchRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -35970,6 +36051,7 @@ export const getWorkspacesWorkspaceGidRecordsSearchRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36036,6 +36118,7 @@ export const getWorkspacesWorkspaceGidRecordsSearchRoute = createRoute({
                   'custom_fields.resource_subtype',
                   'custom_fields.text_value',
                   'custom_fields.type',
+                  'default_access_level',
                   'deleted_at',
                   'is_in_archived_table',
                   'modified_at',
@@ -36147,6 +36230,7 @@ export const postRecordsRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36219,6 +36303,7 @@ export const postRecordsRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36285,6 +36370,7 @@ export const postRecordsRoute = createRoute({
                   'custom_fields.resource_subtype',
                   'custom_fields.text_value',
                   'custom_fields.type',
+                  'default_access_level',
                   'deleted_at',
                   'is_in_archived_table',
                   'modified_at',
@@ -36409,6 +36495,7 @@ export const getRecordsRecordGidRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36481,6 +36568,7 @@ export const getRecordsRecordGidRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36547,6 +36635,7 @@ export const getRecordsRecordGidRoute = createRoute({
                   'custom_fields.resource_subtype',
                   'custom_fields.text_value',
                   'custom_fields.type',
+                  'default_access_level',
                   'deleted_at',
                   'is_in_archived_table',
                   'modified_at',
@@ -36659,6 +36748,7 @@ export const putRecordsRecordGidRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36731,6 +36821,7 @@ export const putRecordsRecordGidRoute = createRoute({
               'custom_fields.resource_subtype',
               'custom_fields.text_value',
               'custom_fields.type',
+              'default_access_level',
               'deleted_at',
               'is_in_archived_table',
               'modified_at',
@@ -36797,6 +36888,7 @@ export const putRecordsRecordGidRoute = createRoute({
                   'custom_fields.resource_subtype',
                   'custom_fields.text_value',
                   'custom_fields.type',
+                  'default_access_level',
                   'deleted_at',
                   'is_in_archived_table',
                   'modified_at',
@@ -37710,7 +37802,8 @@ export const getSectionsSectionGidRoute = createRoute({
   path: '/sections/{section_gid}',
   tags: ['Sections'],
   summary: 'Get a section',
-  description: 'Returns the complete record for a single section.',
+  description:
+    '<b>Required scope: </b><code>projects:read</code>\n\nReturns the complete record for a single section.',
   operationId: 'getSection',
   request: {
     params: z.object({ section_gid: SectionPathGidParamsSchema }),
@@ -37794,7 +37887,7 @@ export const getSectionsSectionGidRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:read'] }],
 })
 
 export const putSectionsSectionGidRoute = createRoute({
@@ -37803,7 +37896,7 @@ export const putSectionsSectionGidRoute = createRoute({
   tags: ['Sections'],
   summary: 'Update a section',
   description:
-    'A specific, existing section can be updated by making a PUT request on\nthe URL for that project. Only the fields provided in the `data` block\nwill be updated; any unspecified fields will remain unchanged. (note that\nat this time, the only field that can be updated is the `name` field.)\n\nWhen using this method, it is best to specify only those fields you wish\nto change, or else you may overwrite changes made by another user since\nyou last retrieved the task.\n\nReturns the complete updated section record.',
+    '<b>Required scope: </b><code>projects:write</code>\n\nA specific, existing section can be updated by making a PUT request on\nthe URL for that project. Only the fields provided in the `data` block\nwill be updated; any unspecified fields will remain unchanged. (note that\nat this time, the only field that can be updated is the `name` field.)\n\nWhen using this method, it is best to specify only those fields you wish\nto change, or else you may overwrite changes made by another user since\nyou last retrieved the task.\n\nReturns the complete updated section record.',
   operationId: 'updateSection',
   request: {
     params: z.object({ section_gid: SectionPathGidParamsSchema }),
@@ -37897,7 +37990,7 @@ export const putSectionsSectionGidRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:write'] }],
 })
 
 export const deleteSectionsSectionGidRoute = createRoute({
@@ -37906,7 +37999,7 @@ export const deleteSectionsSectionGidRoute = createRoute({
   tags: ['Sections'],
   summary: 'Delete a section',
   description:
-    'A specific, existing section can be deleted by making a DELETE request on\nthe URL for that section.\n\nNote that sections must be empty to be deleted.\n\nThe last remaining section cannot be deleted.\n\nReturns an empty data block.',
+    '<b>Required scope: </b><code>projects:write</code>\n\nA specific, existing section can be deleted by making a DELETE request on\nthe URL for that section.\n\nNote that sections must be empty to be deleted.\n\nThe last remaining section cannot be deleted.\n\nReturns an empty data block.',
   operationId: 'deleteSection',
   request: {
     params: z.object({ section_gid: SectionPathGidParamsSchema }),
@@ -37927,7 +38020,7 @@ export const deleteSectionsSectionGidRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:write'] }],
 })
 
 export const getProjectsProjectGidSectionsRoute = createRoute({
@@ -37935,7 +38028,8 @@ export const getProjectsProjectGidSectionsRoute = createRoute({
   path: '/projects/{project_gid}/sections',
   tags: ['Sections'],
   summary: 'Get sections in a project',
-  description: 'Returns the compact records for all sections in the specified project.',
+  description:
+    '<b>Required scope: </b><code>projects:read</code>\n\nReturns the compact records for all sections in the specified project.',
   operationId: 'getSectionsForProject',
   request: {
     params: z.object({ project_gid: ProjectPathGidParamsSchema }),
@@ -38033,7 +38127,7 @@ export const getProjectsProjectGidSectionsRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:read'] }],
 })
 
 export const postProjectsProjectGidSectionsRoute = createRoute({
@@ -38042,7 +38136,7 @@ export const postProjectsProjectGidSectionsRoute = createRoute({
   tags: ['Sections'],
   summary: 'Create a section in a project',
   description:
-    'Creates a new section in a project.\nReturns the full record of the newly created section.',
+    '<b>Required scope: </b><code>projects:write</code>\n\nCreates a new section in a project.\nReturns the full record of the newly created section.',
   operationId: 'createSectionForProject',
   request: {
     params: z.object({ project_gid: ProjectPathGidParamsSchema }),
@@ -38136,7 +38230,7 @@ export const postProjectsProjectGidSectionsRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:write'] }],
 })
 
 export const postSectionsSectionGidAddTaskRoute = createRoute({
@@ -38185,7 +38279,7 @@ export const postProjectsProjectGidSectionsInsertRoute = createRoute({
   tags: ['Sections'],
   summary: 'Move or Insert sections',
   description:
-    'Move sections relative to each other. One of\n`before_section` or `after_section` is required.\n\nSections cannot be moved between projects.\n\nReturns an empty data block.',
+    '<b>Required scope: </b><code>projects:write</code>\n\nMove sections relative to each other. One of\n`before_section` or `after_section` is required.\n\nSections cannot be moved between projects.\n\nReturns an empty data block.',
   operationId: 'insertSectionForProject',
   request: {
     params: z.object({ project_gid: ProjectPathGidParamsSchema }),
@@ -38216,7 +38310,7 @@ export const postProjectsProjectGidSectionsInsertRoute = createRoute({
     404: NotFoundResponse,
     500: InternalServerErrorResponse,
   },
-  security: [{ personalAccessToken: [] }, { oauth2: [] }],
+  security: [{ personalAccessToken: [] }, { oauth2: ['projects:write'] }],
 })
 
 export const getStatusUpdatesStatusUpdateGidRoute = createRoute({
@@ -42982,6 +43076,7 @@ export const getWorkspacesWorkspaceGidTablesRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'offset',
@@ -43031,6 +43126,7 @@ export const getWorkspacesWorkspaceGidTablesRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'offset',
@@ -43074,6 +43170,7 @@ export const getWorkspacesWorkspaceGidTablesRoute = createRoute({
                   'custom_field_settings.custom_field.text_value',
                   'custom_field_settings.custom_field.type',
                   'custom_field_settings.is_important',
+                  'default_access_level',
                   'modified_at',
                   'name',
                   'offset',
@@ -43165,6 +43262,7 @@ export const postTablesRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43211,6 +43309,7 @@ export const postTablesRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43251,6 +43350,7 @@ export const postTablesRoute = createRoute({
                   'custom_field_settings.custom_field.text_value',
                   'custom_field_settings.custom_field.type',
                   'custom_field_settings.is_important',
+                  'default_access_level',
                   'modified_at',
                   'name',
                   'workspace',
@@ -43344,6 +43444,7 @@ export const getTablesTableGidRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43390,6 +43491,7 @@ export const getTablesTableGidRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43430,6 +43532,7 @@ export const getTablesTableGidRoute = createRoute({
                   'custom_field_settings.custom_field.text_value',
                   'custom_field_settings.custom_field.type',
                   'custom_field_settings.is_important',
+                  'default_access_level',
                   'modified_at',
                   'name',
                   'workspace',
@@ -43514,6 +43617,7 @@ export const putTablesTableGidRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43560,6 +43664,7 @@ export const putTablesTableGidRoute = createRoute({
               'custom_field_settings.custom_field.text_value',
               'custom_field_settings.custom_field.type',
               'custom_field_settings.is_important',
+              'default_access_level',
               'modified_at',
               'name',
               'workspace',
@@ -43600,6 +43705,7 @@ export const putTablesTableGidRoute = createRoute({
                   'custom_field_settings.custom_field.text_value',
                   'custom_field_settings.custom_field.type',
                   'custom_field_settings.is_important',
+                  'default_access_level',
                   'modified_at',
                   'name',
                   'workspace',

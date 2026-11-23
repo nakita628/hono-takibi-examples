@@ -2932,17 +2932,15 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/ip-restrictions/ \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "string",
-    "type": 1,
+    "type": {},
+    "description": "string",
     "rule_set_enabled": true,
+    "cidrs": [],
     "account_id": 0,
-    "cidrs": [
-      {
-        "state": 1,
-        "cidr": "string",
-        "id": 0
-      }
-    ],
-    "description": "string"
+    "ip_restriction_rule_set_id": 0,
+    "state": 0,
+    "created_by_id": 0,
+    "enabled_for_service_tokens": true
   }'
 ```
 
@@ -2958,17 +2956,15 @@ Check the `extra` key within the response for a list of cidrs that failed to sav
 ```json
 {
   "name": "string",
-  "type": 1,
+  "type": {},
+  "description": "string",
   "rule_set_enabled": true,
+  "cidrs": [],
   "account_id": 0,
-  "cidrs": [
-    {
-      "state": 1,
-      "cidr": "string",
-      "id": 0
-    }
-  ],
-  "description": "string"
+  "ip_restriction_rule_set_id": 0,
+  "state": 0,
+  "created_by_id": 0,
+  "enabled_for_service_tokens": true
 }
 ```
 
@@ -2977,20 +2973,17 @@ Check the `extra` key within the response for a list of cidrs that failed to sav
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|integer(int64)|true|none|
-|body|body|[IPRestrictionRequestRequest](#schemaiprestrictionrequestrequest)|true|none|
+|body|body|[CreateIPRestrictionBodyRequest](#schemacreateiprestrictionbodyrequest)|true|none|
 |» name|body|string|true|none|
-|» type|body|[TypeEdaEnum](#schematypeedaenum)|true|* `1` - ALLOW<br>* `2` - DENY|
-|» rule_set_enabled|body|boolean|true|none|
-|» account_id|body|integer(int64)|true|none|
-|» cidrs|body|[[IPRestrictionCidrRequestRequest](#schemaiprestrictioncidrrequestrequest)]|true|none|
+|» type|body|object|true|1 allows the ranges, 2 denies them.|
 |» description|body|string|false|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» type|1|
-|» type|2|
+|» rule_set_enabled|body|boolean|false|none|
+|» cidrs|body|[[IPRestrictionCidrBody](#schemaiprestrictioncidrbody)]|false|none|
+|» account_id|body|integer(int64)|false|Read-only, ignored.|
+|» ip_restriction_rule_set_id|body|integer(int64)|false|Read-only, ignored.|
+|» state|body|integer|false|Read-only, ignored.|
+|» created_by_id|body|integer(int64)|false|Read-only, ignored.|
+|» enabled_for_service_tokens|body|boolean|false|Read-only, ignored.|
 
 > Example responses
 
@@ -3055,7 +3048,9 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/ip-restrictions-set/ \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "enabled": true
+    "enabled": true,
+    "account_id": 0,
+    "state": 0
   }'
 ```
 
@@ -3067,7 +3062,9 @@ Toggle the enablement of the IP restriction feature.
 
 ```json
 {
-  "enabled": true
+  "enabled": true,
+  "account_id": 0,
+  "state": 0
 }
 ```
 
@@ -3076,8 +3073,10 @@ Toggle the enablement of the IP restriction feature.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|integer(int64)|true|none|
-|body|body|[IPRestrictionSetRequestRequest](#schemaiprestrictionsetrequestrequest)|true|none|
+|body|body|[EnableIPRestrictionsBodyRequest](#schemaenableiprestrictionsbodyrequest)|true|none|
 |» enabled|body|boolean|true|none|
+|» account_id|body|integer(int64)|false|Read-only, ignored.|
+|» state|body|integer|false|Read-only, ignored.|
 
 > Example responses
 
@@ -3294,17 +3293,15 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/ip-restrictions/0 \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "string",
-    "type": 1,
-    "rule_set_enabled": true,
-    "account_id": 0,
-    "cidrs": [
-      {
-        "state": 1,
-        "cidr": "string",
-        "id": 0
-      }
-    ],
+    "type": {},
     "description": "string",
+    "rule_set_enabled": true,
+    "cidrs": [],
+    "account_id": 0,
+    "ip_restriction_rule_set_id": 0,
+    "state": 0,
+    "created_by_id": 0,
+    "enabled_for_service_tokens": true,
     "id": 0
   }'
 ```
@@ -3321,17 +3318,15 @@ Check the `extra` key within the response for a list of cidrs that failed to sav
 ```json
 {
   "name": "string",
-  "type": 1,
-  "rule_set_enabled": true,
-  "account_id": 0,
-  "cidrs": [
-    {
-      "state": 1,
-      "cidr": "string",
-      "id": 0
-    }
-  ],
+  "type": {},
   "description": "string",
+  "rule_set_enabled": true,
+  "cidrs": [],
+  "account_id": 0,
+  "ip_restriction_rule_set_id": 0,
+  "state": 0,
+  "created_by_id": 0,
+  "enabled_for_service_tokens": true,
   "id": 0
 }
 ```
@@ -3342,21 +3337,18 @@ Check the `extra` key within the response for a list of cidrs that failed to sav
 |---|---|---|---|---|
 |account_id|path|integer(int64)|true|none|
 |id|path|integer(int64)|true|none|
-|body|body|[UpdateIPRestrictionRequestRequest](#schemaupdateiprestrictionrequestrequest)|true|none|
+|body|body|[UpdateIPRestrictionBodyRequest](#schemaupdateiprestrictionbodyrequest)|true|none|
 |» name|body|string|true|none|
-|» type|body|[TypeEdaEnum](#schematypeedaenum)|true|* `1` - ALLOW<br>* `2` - DENY|
-|» rule_set_enabled|body|boolean|true|none|
-|» account_id|body|integer(int64)|true|none|
-|» cidrs|body|[[IPRestrictionCidrRequestRequest](#schemaiprestrictioncidrrequestrequest)]|true|none|
+|» type|body|object|true|1 allows the ranges, 2 denies them.|
 |» description|body|string|false|none|
-|» id|body|integer(int64)|true|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» type|1|
-|» type|2|
+|» rule_set_enabled|body|boolean|false|none|
+|» cidrs|body|[[IPRestrictionCidrBody](#schemaiprestrictioncidrbody)]|false|none|
+|» account_id|body|integer(int64)|false|Read-only, ignored.|
+|» ip_restriction_rule_set_id|body|integer(int64)|false|Read-only, ignored.|
+|» state|body|integer|false|Read-only, ignored.|
+|» created_by_id|body|integer(int64)|false|Read-only, ignored.|
+|» enabled_for_service_tokens|body|boolean|false|Read-only, ignored.|
+|» id|body|integer(int64)|false|Read-only, ignored.|
 
 > Example responses
 
@@ -3780,6 +3772,715 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/license-maps/0/ \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |204|No Content|No response body|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+<h1 id="dbt-cloud-api-v3-mantle-migration">Mantle Migration</h1>
+
+## Retrieve Wizard Migration Eligibility
+
+<a id="opIdRetrieve Wizard Migration Eligibility"></a>
+
+> Code samples
+
+```bash
+curl 'https://cloud.getdbt.com/api/v3/accounts/0/mantle-migration/status/?project_ids=1' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v3/accounts/{account_id}/mantle-migration/status/`
+
+Return ordered eligibility results for 1-100 projects. Unavailable projects have no status.
+
+<h3 id="retrieve-wizard-migration-eligibility-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|project_ids|query|[integer(int64)]|true|Comma-separated distinct project IDs. One result per ID, in request order.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": [
+    {
+      "project_id": 0,
+      "eligible": true,
+      "blocked_reason": {},
+      "status": {
+        "account_id": 0,
+        "project_id": 0,
+        "is_legacy": true,
+        "oldest_legacy_version": "string",
+        "legacy_job_count": 0,
+        "target_dbt_version": "string"
+      }
+    }
+  ],
+  "extra": {},
+  "error_code": 0
+}
+```
+
+<h3 id="retrieve-wizard-migration-eligibility-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[MantleEligibilityResponse](#schemamantleeligibilityresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+<h1 id="dbt-cloud-api-v3-migration-inventory">Migration Inventory</h1>
+
+## Disable Environment Overrides
+
+<a id="opIdDisable Environment Overrides"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.getdbt.com/api/v3/accounts/0/migration-inventory/environment-overrides/disable/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "all": false,
+    "environment_ids": [
+      0
+    ],
+    "view": {},
+    "project_id": 0,
+    "excluded_environment_ids": [
+      0
+    ],
+    "cursor": "string"
+  }'
+```
+
+`POST /api/v3/accounts/{account_id}/migration-inventory/environment-overrides/disable/`
+
+Revert environments to their configured versions without changing version pins. Each actual revert records a new migration change; already reverted or never upgraded environments are unchanged. Explicit 1-100 IDs are atomic. all:true with view applies to the next slice of up to 1000 matching environments in one transaction and returns a cursor when more remain. 408 means a slice timed out and nothing in it changed. For explicit IDs, 404 hides unavailable resources; 403 indicates insufficient token scopes. Invalid selections return 400.
+
+> Body parameter
+
+```json
+{
+  "all": false,
+  "environment_ids": [
+    0
+  ],
+  "view": {},
+  "project_id": 0,
+  "excluded_environment_ids": [
+    0
+  ],
+  "cursor": "string"
+}
+```
+
+<h3 id="disable-environment-overrides-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|body|body|[DisableEnvironmentOverridesBodyRequest](#schemadisableenvironmentoverridesbodyrequest)|false|none|
+|» environment_ids|body|[integer(int64)]|false|none|
+|» all|body|boolean|false|none|
+|» view|body|object|false|none|
+|» project_id|body|integer(int64)|false|none|
+|» excluded_environment_ids|body|[integer(int64)]|false|none|
+|» cursor|body|string|false|none|
+|» *oneOf*|body|object|false|none|
+|» all|body|[All597Enum](#schemaall597enum)|false|none|
+|» *oneOf*|body|object|false|none|
+|» all|body|[All61dEnum](#schemaall61denum)|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» all|false|
+|» all|true|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "results": [
+      {
+        "migration_target": "string",
+        "migration_enabled": true,
+        "migration_change_id": 0,
+        "migration_changed_at": "1970-01-01T00:00:00Z",
+        "environment_id": 0,
+        "changed": true
+      }
+    ],
+    "changed_environment_count": 0
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+<h3 id="disable-environment-overrides-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[EnvironmentOverridesResponse](#schemaenvironmentoverridesresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+## Enable Environment Overrides
+
+<a id="opIdEnable Environment Overrides"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.getdbt.com/api/v3/accounts/0/migration-inventory/environment-overrides/enable/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "all": false,
+    "environment_ids": [
+      0
+    ],
+    "view": {},
+    "project_id": 0,
+    "excluded_environment_ids": [
+      0
+    ],
+    "cursor": "string",
+    "target_dbt_version": {}
+  }'
+```
+
+`POST /api/v3/accounts/{account_id}/migration-inventory/environment-overrides/enable/`
+
+Upgrade environments to latest. Each actual change records a new migration change; environments already on latest keep their current change. Explicit 1-100 IDs are atomic. all:true with view applies to the next slice of up to 1000 matching environments in one transaction, skips environments the actor cannot change, and returns a cursor when more remain. 408 means a slice timed out and nothing in it changed. For explicit IDs, 404 hides unavailable resources; 403 indicates insufficient token scopes; 409 means an environment no longer has legacy workloads. Invalid selections or unsupported targets return 400.
+
+> Body parameter
+
+```json
+{
+  "all": false,
+  "environment_ids": [
+    0
+  ],
+  "view": {},
+  "project_id": 0,
+  "excluded_environment_ids": [
+    0
+  ],
+  "cursor": "string",
+  "target_dbt_version": {}
+}
+```
+
+<h3 id="enable-environment-overrides-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|body|body|[EnableEnvironmentOverridesBodyRequest](#schemaenableenvironmentoverridesbodyrequest)|true|none|
+|» environment_ids|body|[integer(int64)]|false|none|
+|» all|body|boolean|false|none|
+|» view|body|object|false|none|
+|» project_id|body|integer(int64)|false|none|
+|» excluded_environment_ids|body|[integer(int64)]|false|none|
+|» cursor|body|string|false|none|
+|» target_dbt_version|body|object|true|Explicit migration target; only latest is supported.|
+|» *oneOf*|body|object|false|none|
+|» all|body|[All597Enum](#schemaall597enum)|false|none|
+|» *oneOf*|body|object|false|none|
+|» all|body|[All61dEnum](#schemaall61denum)|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» all|false|
+|» all|true|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "results": [
+      {
+        "migration_target": "string",
+        "migration_enabled": true,
+        "migration_change_id": 0,
+        "migration_changed_at": "1970-01-01T00:00:00Z",
+        "environment_id": 0,
+        "changed": true
+      }
+    ],
+    "changed_environment_count": 0
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+<h3 id="enable-environment-overrides-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[EnvironmentOverridesResponse](#schemaenvironmentoverridesresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+## List Inventory Environments
+
+<a id="opIdList Inventory Environments"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.getdbt.com/api/v3/accounts/0/migration-inventory/environments/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v3/accounts/{account_id}/migration-inventory/environments/`
+
+List readable environments with legacy workloads or a saved migration override, in ascending ID order. include_summary adds the same scoped summary as GET /summary/ under extra.migration_summary, using the same read permissions. Returns 400 for invalid pagination or ordering and 404 for an unavailable account or project. Write capabilities are advisory: insufficient_permissions blocks changes, and no_legacy_workloads blocks enabling an environment without legacy workloads.
+
+<h3 id="list-inventory-environments-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|include_run_summary|query|boolean|false|Include environment run history and migration outcomes.|
+|include_summary|query|boolean|false|Include the same scoped summary as GET /summary/ in extra.|
+|limit|query|integer|false|none|
+|offset|query|integer|false|none|
+|project_id|query|integer(int64)|false|Restrict inventory to a readable project.|
+|view|query|string|false|Filter the worklist count; compliance always covers every readable resource in scope.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|view|all|
+|view|enabled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": [
+    {
+      "migration_target": "string",
+      "migration_enabled": true,
+      "migration_change_id": 0,
+      "migration_changed_at": "1970-01-01T00:00:00Z",
+      "environment_id": 0,
+      "environment_name": "string",
+      "project_id": 0,
+      "project_name": "string",
+      "environment_type": "string",
+      "deployment_type": "string",
+      "configured_dbt_version": "string",
+      "baseline_dbt_version": "string",
+      "effective_dbt_version": "string",
+      "is_legacy": true,
+      "job_count": 0,
+      "legacy_job_count": 0,
+      "effective_legacy_job_count": 0,
+      "overridden_job_count": 0,
+      "can_enable": true,
+      "can_disable": true,
+      "enable_blocked_reason": "string",
+      "disable_blocked_reason": "string",
+      "can_read_runs": false,
+      "last_run_at": "1970-01-01T00:00:00Z",
+      "resolved_execution_version": "string",
+      "execution_blocked_reason": "string",
+      "target_capabilities": [
+        {
+          "target": "string",
+          "display_name": "string",
+          "can_enable": true,
+          "blocked_reason": "string"
+        }
+      ],
+      "migration_run_summary": {
+        "cohort": {},
+        "job_count": 0,
+        "change_id": 0,
+        "window_started_at": "1970-01-01T00:00:00Z",
+        "availability": {},
+        "unavailable_reason": "runs_read_denied",
+        "counts": {
+          "succeeded": 0,
+          "failed": 0,
+          "queued": 0,
+          "starting": 0,
+          "running": 0,
+          "cancelled": 0,
+          "unknown": 0,
+          "no_qualifying_run": 0
+        }
+      }
+    }
+  ],
+  "extra": {
+    "filters": {},
+    "order_by": "string",
+    "pagination": {
+      "count": 0,
+      "total_count": 0
+    },
+    "migration_summary": {
+      "account_id": 0,
+      "compliance": {
+        "basis": {},
+        "scope": {},
+        "projects": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        },
+        "environments": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        },
+        "jobs": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        }
+      },
+      "environment_count": 0,
+      "supported_targets": [
+        "string"
+      ],
+      "actions": {
+        "enable_latest": {
+          "eligible_environment_count": 0,
+          "legacy_job_count": 0,
+          "excluded_environment_count": 0
+        },
+        "disable": {
+          "eligible_environment_count": 0,
+          "legacy_job_count": 0,
+          "excluded_environment_count": 0
+        }
+      }
+    }
+  },
+  "error_code": 0
+}
+```
+
+<h3 id="list-inventory-environments-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[InventoryEnvironmentResponse](#schemainventoryenvironmentresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+## Retrieve Inventory Job Groups
+
+<a id="opIdRetrieve Inventory Job Groups"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.getdbt.com/api/v3/accounts/0/migration-inventory/environments/0/job-groups/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v3/accounts/{account_id}/migration-inventory/environments/{environment_id}/job-groups/`
+
+Return independently paginated compliant and legacy jobs with all-history last runs and runs attributed to the current migration change.
+
+<h3 id="retrieve-inventory-job-groups-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|compliant_limit|query|integer|false|none|
+|compliant_offset|query|integer|false|none|
+|environment_id|path|integer(int64)|true|none|
+|include_related|query|string|false|Comma-separated list of related objects to include in the response.|
+|legacy_limit|query|integer|false|none|
+|legacy_offset|query|integer|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "environment_id": 0,
+    "compliant": {
+      "jobs": [
+        {
+          "migration_target": "string",
+          "migration_enabled": true,
+          "migration_change_id": 0,
+          "migration_changed_at": "1970-01-01T00:00:00Z",
+          "job_id": 0,
+          "job_name": "string",
+          "environment_id": 0,
+          "configured_dbt_version": "string",
+          "baseline_dbt_version": "string",
+          "effective_dbt_version": "string",
+          "version_source": "string",
+          "is_legacy": true,
+          "is_effectively_legacy": true,
+          "is_overridden": true,
+          "is_deactivated": true,
+          "version_group": {},
+          "can_read_runs": true,
+          "latest_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string"
+          },
+          "last_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string",
+            "created_at": "1970-01-01T00:00:00Z",
+            "dbt_version": "string"
+          },
+          "resolved_execution_version": "string",
+          "execution_blocked_reason": "string"
+        }
+      ],
+      "pagination": {
+        "count": 0,
+        "total_count": 0,
+        "limit": 0,
+        "offset": 0
+      }
+    },
+    "legacy": {
+      "jobs": [
+        {
+          "migration_target": "string",
+          "migration_enabled": true,
+          "migration_change_id": 0,
+          "migration_changed_at": "1970-01-01T00:00:00Z",
+          "job_id": 0,
+          "job_name": "string",
+          "environment_id": 0,
+          "configured_dbt_version": "string",
+          "baseline_dbt_version": "string",
+          "effective_dbt_version": "string",
+          "version_source": "string",
+          "is_legacy": true,
+          "is_effectively_legacy": true,
+          "is_overridden": true,
+          "is_deactivated": true,
+          "version_group": {},
+          "can_read_runs": true,
+          "latest_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string"
+          },
+          "last_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string",
+            "created_at": "1970-01-01T00:00:00Z",
+            "dbt_version": "string"
+          },
+          "resolved_execution_version": "string",
+          "execution_blocked_reason": "string"
+        }
+      ],
+      "pagination": {
+        "count": 0,
+        "total_count": 0,
+        "limit": 0,
+        "offset": 0
+      }
+    }
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+<h3 id="retrieve-inventory-job-groups-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[InventoryJobGroupsResponse](#schemainventoryjobgroupsresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerAuthentication
+</aside>
+
+## Retrieve Inventory Summary
+
+<a id="opIdRetrieve Inventory Summary"></a>
+
+> Code samples
+
+```bash
+curl https://cloud.getdbt.com/api/v3/accounts/0/migration-inventory/summary/ \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /api/v3/accounts/{account_id}/migration-inventory/summary/`
+
+Summarize readable inventory for an account or project. The view filters environment_count; compliance covers all readable resources in scope. Pagination and ordering parameters are rejected. include_action_counts adds advisory counts for all matching environments after optional deselections. Returns 404 for an unavailable account or project.
+
+<h3 id="retrieve-inventory-summary-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|path|integer(int64)|true|none|
+|excluded_environment_ids|query|[integer(int64)]|false|Comma-separated deselections for action counts only.|
+|include_action_counts|query|boolean|false|Include advisory counts for applying overrides to all matching environments.|
+|project_id|query|integer(int64)|false|Restrict inventory to a readable project.|
+|view|query|string|false|Filter the worklist count; compliance always covers every readable resource in scope.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|view|all|
+|view|enabled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "account_id": 0,
+    "compliance": {
+      "basis": {},
+      "scope": {},
+      "projects": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "environments": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "jobs": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      }
+    },
+    "environment_count": 0,
+    "supported_targets": [
+      "string"
+    ],
+    "actions": {
+      "enable_latest": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      },
+      "disable": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      }
+    }
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+<h3 id="retrieve-inventory-summary-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[InventorySummaryResponse](#schemainventorysummaryresponse)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -8082,7 +8783,7 @@ Create a new repository for the given project
 |body|body|[RepositoryV3Request](#schemarepositoryv3request)|true|none|
 |» account_id|body|integer(int64)|true|The account the repo is associated with|
 |» project_id|body|integer(int64)|false|The project the repo is associated with|
-|» full_name|body|string|false|The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.|
+|» full_name|body|string|false|(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.|
 |» remote_backend|body|object|false|The associated git provider⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.<br><br>* `ado` - ado<br>* `github` - github<br>* `managed` - managed<br>* `gitlab` - gitlab<br>* `manual_config` - manual_config|
 |» git_clone_strategy|body|object|false|The strategy to use when cloning the repo<br><br>* `azure_active_directory_app` - azure_active_directory_app<br>* `deploy_key` - deploy_key<br>* `deploy_token` - deploy_token<br>* `github_app` - github_app<br>* `git_token` - git_token|
 |» deploy_key_id|body|integer(int64)|false|none|
@@ -8301,7 +9002,7 @@ Update a repository
 |body|body|[RepositoryV3Request](#schemarepositoryv3request)|true|none|
 |» account_id|body|integer(int64)|true|The account the repo is associated with|
 |» project_id|body|integer(int64)|false|The project the repo is associated with|
-|» full_name|body|string|false|The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.|
+|» full_name|body|string|false|(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.|
 |» remote_backend|body|object|false|The associated git provider⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.<br><br>* `ado` - ado<br>* `github` - github<br>* `managed` - managed<br>* `gitlab` - gitlab<br>* `manual_config` - manual_config|
 |» git_clone_strategy|body|object|false|The strategy to use when cloning the repo<br><br>* `azure_active_directory_app` - azure_active_directory_app<br>* `deploy_key` - deploy_key<br>* `deploy_token` - deploy_token<br>* `github_app` - github_app<br>* `git_token` - git_token|
 |» deploy_key_id|body|integer(int64)|false|none|
@@ -8792,8 +9493,8 @@ Profiles are the set of connection, credentials, and attributes used to connect 
 |» account_id|body|integer(int64)|true|The ID of the account|
 |» project_id|body|integer(int64)|true|The ID of the project|
 |» key|body|string|false|Unique name for the profile. The profile key must be unique per project and can only contain letters, numbers, dashes, and underscores. It must begin with a letter and end with a letter or number. It cannot contain consecutive dashes or underscores.|
-|» connection_id|body|integer(int64)|false|The ID of the connection|
-|» credentials_id|body|integer(int64)|false|The ID of the credentials|
+|» connection_id|body|integer(int64)|false|The ID of the connection. Null is only accepted for a profile that has no connection; a profile's connection cannot be removed once set.|
+|» credentials_id|body|integer(int64)|false|The ID of the credentials. Null is only accepted for a profile that has no credentials; credentials cannot be removed once set.|
 |» extended_attributes_id|body|integer(int64)|false|The ID of the extended attributes. Set to null to unset.|
 
 > Example responses
@@ -11255,7 +11956,7 @@ List users for a given account.
 |omit_permissions|query|string|false|When set to "1" (recommended), group permissions and permission statements are omitted from the response.|
 |order_by|query|string|false|none|
 |pk|query|integer(int64)|false|Filter by primary key (id).|
-|pk__in|query|string|false|Filter by primary keys (ids), as serialized JSON, e.g., [1,2,3]. Overrides "pk".|
+|pk__in|query|string|false|Filter by primary keys (ids), as serialized JSON, e.g., [1,2,3]. Combined with "pk", only ids in both match.|
 |search|query|string|false|Case insensitive substring search in email, first_name, last_name, or full name.|
 
 #### Enumerated Values
@@ -11533,6 +12234,7 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/users/0/account-apikeys/ \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "name": "string",
+    "type": {},
     "expires_at": "1970-01-01T00:00:00Z"
   }'
 ```
@@ -11544,6 +12246,7 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/users/0/account-apikeys/ \
 ```json
 {
   "name": "string",
+  "type": {},
   "expires_at": "1970-01-01T00:00:00Z"
 }
 ```
@@ -11554,9 +12257,10 @@ curl https://cloud.getdbt.com/api/v3/accounts/0/users/0/account-apikeys/ \
 |---|---|---|---|---|
 |account_id|path|integer(int64)|true|none|
 |user_id|path|integer(int64)|true|none|
-|body|body|[AccountScopedPATRequestRequest](#schemaaccountscopedpatrequestrequest)|true|none|
+|body|body|[CreateAccountScopedPATBodyRequest](#schemacreateaccountscopedpatbodyrequest)|true|none|
 |» name|body|string|true|none|
-|» expires_at|body|string(date-time)|false|none|
+|» type|body|object|false|none|
+|» expires_at|body|string(date-time)|false|When the token stops authenticating, ISO 8601 with a timezone offset. Omit for no expiry.|
 
 > Example responses
 
@@ -13845,7 +14549,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |---|---|---|---|---|
 |id|integer(int64)|true|read-only|none|
 |name|string|false|none|The name of the account|
-|plan|object|true|read-only|The active plan type for the account<br><br>* `cancelled` - CANCELLED<br>* `cancelled_2022` - CANCELLED_2022<br>* `cancelled_2025` - CANCELLED_2025<br>* `developer` - DEVELOPER<br>* `developer_2022` - DEVELOPER_2022<br>* `enterprise` - ENTERPRISE<br>* `enterprise_2025` - ENTERPRISE_2025<br>* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025<br>* `free` - FREE<br>* `starter_2025` - STARTER_2025<br>* `team` - TEAM<br>* `team_2022` - TEAM_2022<br>* `team_annual` - TEAM_ANNUAL<br>* `trial` - TRIAL<br>* `trial_2022` - TRIAL_2022<br>* `trial_2025` - TRIAL_2025<br>* `usage_2026` - USAGE_2026<br>* `usage_managed_2026` - USAGE_MANAGED_2026|
+|plan|object|true|read-only|The active plan type for the account<br><br>* `bc_2027` - BC_2027<br>* `cancelled` - CANCELLED<br>* `cancelled_2022` - CANCELLED_2022<br>* `cancelled_2025` - CANCELLED_2025<br>* `developer` - DEVELOPER<br>* `developer_2022` - DEVELOPER_2022<br>* `enterprise` - ENTERPRISE<br>* `enterprise_2025` - ENTERPRISE_2025<br>* `enterprise_plus_2025` - ENTERPRISE_PLUS_2025<br>* `free` - FREE<br>* `starter_2025` - STARTER_2025<br>* `team` - TEAM<br>* `team_2022` - TEAM_2022<br>* `team_annual` - TEAM_ANNUAL<br>* `trial` - TRIAL<br>* `trial_2022` - TRIAL_2022<br>* `trial_2025` - TRIAL_2025<br>* `usage_2026` - USAGE_2026<br>* `usage_managed_2026` - USAGE_MANAGED_2026|
 |run_slots|integer|true|read-only|The total number of run slots the account may use|
 |developer_seats|integer|true|read-only|The total number of developer seats the account may use|
 |it_seats|integer|true|read-only|The total number of IT seats the account may use|
@@ -13864,7 +14568,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |queue_limit|integer|true|read-only|The maximum number of runs that may be queued at once|
 |enterprise_login_slug|string|true|read-only|The enterprise login URL, if available|
 |business_critical|boolean|true|read-only|Whether this account is on a Business Critical plan|
-|default_license_type|object|false|none|The license type assigned to new users provisioned onto this account when no other license type is determined (e.g. no SSO group mapping, SCIM payload, or existing invite). Writes are ignored unless the account-wide default license flag is enabled for this account.<br><br>* `developer` - DEVELOPER<br>* `read_only` - READ_ONLY<br>* `analyst` - ANALYST<br>* `it` - IT|
+|default_license_type|object|false|none|The license type assigned to new users provisioned onto this account when no other license type is determined (e.g. no SSO group mapping, SCIM payload, or existing invite). Analyst and IT can only be set when the account's plan includes that license type.<br><br>* `developer` - DEVELOPER<br>* `read_only` - READ_ONLY<br>* `analyst` - ANALYST<br>* `it` - IT|
 |starter_repo_url|string|true|read-only|If defined, the URL used to initialize new dbt projects|
 |git_auth_level|string|true|read-only|none|
 |identifier|string|true|read-only|A globally unique (cross-cell) identifier|
@@ -13881,27 +14585,6 @@ It is expected that each endpoint extends this class to define its own payload f
 |groups|[[Group](#schemagroup)]|true|read-only|The user groups in the account|
 |created_at|string(date-time)|true|read-only|none|
 |updated_at|string(date-time)|true|read-only|none|
-
-<h2 id="tocS_AccountScopedPATRequestRequest">AccountScopedPATRequestRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaaccountscopedpatrequestrequest"></a>
-<a id="schema_AccountScopedPATRequestRequest"></a>
-<a id="tocSaccountscopedpatrequestrequest"></a>
-<a id="tocsaccountscopedpatrequestrequest"></a>
-
-```json
-{
-  "name": "string",
-  "expires_at": "1970-01-01T00:00:00Z"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|expires_at|string(date-time)|false|none|none|
 
 <h2 id="tocS_AccountScopedPATResponse">AccountScopedPATResponse</h2>
 <!-- backwards compatibility -->
@@ -14525,6 +15208,63 @@ It is expected that each endpoint extends this class to define its own payload f
 * `teradata_v0` - teradata_v0
 * `clickhouse_v0` - clickhouse_v0
 
+<h2 id="tocS_All597Enum">All597Enum</h2>
+<!-- backwards compatibility -->
+<a id="schemaall597enum"></a>
+<a id="schema_All597Enum"></a>
+<a id="tocSall597enum"></a>
+<a id="tocsall597enum"></a>
+
+```json
+false
+```
+
+<h2 id="tocS_All61dEnum">All61dEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaall61denum"></a>
+<a id="schema_All61dEnum"></a>
+<a id="tocSall61denum"></a>
+<a id="tocsall61denum"></a>
+
+```json
+true
+```
+
+<h2 id="tocS_AllEnvironmentOverridesResource">AllEnvironmentOverridesResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaallenvironmentoverridesresource"></a>
+<a id="schema_AllEnvironmentOverridesResource"></a>
+<a id="tocSallenvironmentoverridesresource"></a>
+<a id="tocsallenvironmentoverridesresource"></a>
+
+```json
+{
+  "selection": {},
+  "status": {},
+  "processed_environment_count": 0,
+  "changed_environment_count": 0,
+  "unchanged_environment_count": 0,
+  "skipped_environment_count": 0,
+  "remaining_environment_count": 0,
+  "stop_reason": {},
+  "next_cursor": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|selection|object|true|none|none|
+|status|object|true|none|none|
+|processed_environment_count|integer|true|none|none|
+|changed_environment_count|integer|true|none|none|
+|unchanged_environment_count|integer|true|none|none|
+|skipped_environment_count|integer|true|none|none|
+|remaining_environment_count|integer|true|none|Matching environments still after this request's slice when it committed.|
+|stop_reason|object \| null|true|none|request_limit when more environments remain; null when complete.|
+|next_cursor|string \| null|true|none|Resume with the identical all-mode selection and action.|
+
 <h2 id="tocS_ApacheSparkConnection">ApacheSparkConnection</h2>
 <!-- backwards compatibility -->
 <a id="schemaapachesparkconnection"></a>
@@ -14778,6 +15518,17 @@ It is expected that each endpoint extends this class to define its own payload f
 |---|---|---|---|---|
 |data|[AuditLogStartBulkExportResponse](#schemaauditlogstartbulkexportresponse)|true|none|none|
 |status|[ResponseStatus](#schemaresponsestatus)|true|none|none|
+
+<h2 id="tocS_AvailabilityEnum">AvailabilityEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaavailabilityenum"></a>
+<a id="schema_AvailabilityEnum"></a>
+<a id="tocSavailabilityenum"></a>
+<a id="tocsavailabilityenum"></a>
+
+```json
+"available"
+```
 
 <h2 id="tocS_BaseConnectionV3">BaseConnectionV3</h2>
 <!-- backwards compatibility -->
@@ -15069,6 +15820,17 @@ It is expected that each endpoint extends this class to define its own payload f
 |adapter_version|teradata_v0|
 |adapter_version|clickhouse_v0|
 
+<h2 id="tocS_BasisEnum">BasisEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemabasisenum"></a>
+<a id="schema_BasisEnum"></a>
+<a id="tocSbasisenum"></a>
+<a id="tocsbasisenum"></a>
+
+```json
+"effective"
+```
+
 <h2 id="tocS_BigqueryConnection">BigqueryConnection</h2>
 <!-- backwards compatibility -->
 <a id="schemabigqueryconnection"></a>
@@ -15315,6 +16077,17 @@ It is expected that each endpoint extends this class to define its own payload f
 |type|bigquery|
 |type|adapter|
 
+<h2 id="tocS_BlockedReasonEnum">BlockedReasonEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemablockedreasonenum"></a>
+<a id="schema_BlockedReasonEnum"></a>
+<a id="tocSblockedreasonenum"></a>
+<a id="tocsblockedreasonenum"></a>
+
+```json
+"not_legacy"
+```
+
 <h2 id="tocS_BulkPutErrorResponse">BulkPutErrorResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemabulkputerrorresponse"></a>
@@ -15451,6 +16224,79 @@ It is expected that each endpoint extends this class to define its own payload f
 |database|string|false|none|none|
 |adapter_id|integer(int64)|false|none|Deprecated, use credentials.adapter_version|
 
+<h2 id="tocS_CohortEnum">CohortEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemacohortenum"></a>
+<a id="schema_CohortEnum"></a>
+<a id="tocScohortenum"></a>
+<a id="tocscohortenum"></a>
+
+```json
+"baseline_legacy"
+```
+
+<h2 id="tocS_ComplianceCountsResource">ComplianceCountsResource</h2>
+<!-- backwards compatibility -->
+<a id="schemacompliancecountsresource"></a>
+<a id="schema_ComplianceCountsResource"></a>
+<a id="tocScompliancecountsresource"></a>
+<a id="tocscompliancecountsresource"></a>
+
+```json
+{
+  "total": 0,
+  "compliant": 0,
+  "non_compliant": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|total|integer|true|none|none|
+|compliant|integer|true|none|none|
+|non_compliant|integer|true|none|none|
+
+<h2 id="tocS_ComplianceSummaryResource">ComplianceSummaryResource</h2>
+<!-- backwards compatibility -->
+<a id="schemacompliancesummaryresource"></a>
+<a id="schema_ComplianceSummaryResource"></a>
+<a id="tocScompliancesummaryresource"></a>
+<a id="tocscompliancesummaryresource"></a>
+
+```json
+{
+  "basis": {},
+  "scope": {},
+  "projects": {
+    "total": 0,
+    "compliant": 0,
+    "non_compliant": 0
+  },
+  "environments": {
+    "total": 0,
+    "compliant": 0,
+    "non_compliant": 0
+  },
+  "jobs": {
+    "total": 0,
+    "compliant": 0,
+    "non_compliant": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|basis|object|true|none|Compliance uses effective execution versions after overrides.|
+|scope|object|true|none|Scope of readable resources included in these counts.|
+|projects|[ComplianceCountsResource](#schemacompliancecountsresource)|true|none|none|
+|environments|[ComplianceCountsResource](#schemacompliancecountsresource)|true|none|none|
+|jobs|[ComplianceCountsResource](#schemacompliancecountsresource)|true|none|none|
+
 <h2 id="tocS_ConnectionMethod">ConnectionMethod</h2>
 <!-- backwards compatibility -->
 <a id="schemaconnectionmethod"></a>
@@ -15548,6 +16394,81 @@ An enumeration.
 |type|2|
 |type|3|
 |type|4|
+
+<h2 id="tocS_CreateAccountScopedPATBodyRequest">CreateAccountScopedPATBodyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateaccountscopedpatbodyrequest"></a>
+<a id="schema_CreateAccountScopedPATBodyRequest"></a>
+<a id="tocScreateaccountscopedpatbodyrequest"></a>
+<a id="tocscreateaccountscopedpatbodyrequest"></a>
+
+```json
+{
+  "name": "string",
+  "type": {},
+  "expires_at": "1970-01-01T00:00:00Z"
+}
+```
+
+Request body for creating an account-scoped personal access token.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|object|false|none|none|
+|expires_at|string(date-time)|false|none|When the token stops authenticating, ISO 8601 with a timezone offset. Omit for no expiry.|
+
+<h2 id="tocS_CreateAccountScopedPATBodyTypeEnum">CreateAccountScopedPATBodyTypeEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateaccountscopedpatbodytypeenum"></a>
+<a id="schema_CreateAccountScopedPATBodyTypeEnum"></a>
+<a id="tocScreateaccountscopedpatbodytypeenum"></a>
+<a id="tocscreateaccountscopedpatbodytypeenum"></a>
+
+```json
+1
+```
+
+<h2 id="tocS_CreateIPRestrictionBodyRequest">CreateIPRestrictionBodyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateiprestrictionbodyrequest"></a>
+<a id="schema_CreateIPRestrictionBodyRequest"></a>
+<a id="tocScreateiprestrictionbodyrequest"></a>
+<a id="tocscreateiprestrictionbodyrequest"></a>
+
+```json
+{
+  "name": "string",
+  "type": {},
+  "description": "string",
+  "rule_set_enabled": true,
+  "cidrs": [],
+  "account_id": 0,
+  "ip_restriction_rule_set_id": 0,
+  "state": 0,
+  "created_by_id": 0,
+  "enabled_for_service_tokens": true
+}
+```
+
+An IP restriction rule and its CIDR ranges.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|none|
+|type|object|true|none|1 allows the ranges, 2 denies them.|
+|description|string|false|none|none|
+|rule_set_enabled|boolean|false|none|none|
+|cidrs|[[IPRestrictionCidrBody](#schemaiprestrictioncidrbody)]|false|none|none|
+|account_id|integer(int64)|false|none|Read-only, ignored.|
+|ip_restriction_rule_set_id|integer(int64)|false|none|Read-only, ignored.|
+|state|integer|false|none|Read-only, ignored.|
+|created_by_id|integer(int64)|false|none|Read-only, ignored.|
+|enabled_for_service_tokens|boolean|false|none|Read-only, ignored.|
 
 <h2 id="tocS_CreateManagedRepositoryRequestRequest">CreateManagedRepositoryRequestRequest</h2>
 <!-- backwards compatibility -->
@@ -17524,6 +18445,127 @@ An enumeration.
 |extra|object|false|none|none|
 |error_code|integer|false|none|none|
 
+<h2 id="tocS_DisableEnvironmentOverridesBodyRequest">DisableEnvironmentOverridesBodyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadisableenvironmentoverridesbodyrequest"></a>
+<a id="schema_DisableEnvironmentOverridesBodyRequest"></a>
+<a id="tocSdisableenvironmentoverridesbodyrequest"></a>
+<a id="tocsdisableenvironmentoverridesbodyrequest"></a>
+
+```json
+{
+  "all": false,
+  "environment_ids": [
+    0
+  ],
+  "view": {},
+  "project_id": 0,
+  "excluded_environment_ids": [
+    0
+  ],
+  "cursor": "string"
+}
+```
+
+Base class for all request payloads.
+It is expected that each endpoint extends this class to define its own payload format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|environment_ids|[integer(int64)]|false|none|none|
+|all|boolean|false|none|none|
+|view|object|false|none|none|
+|project_id|integer(int64)|false|none|none|
+|excluded_environment_ids|[integer(int64)]|false|none|none|
+|cursor|string|false|none|none|
+|*oneOf*|object|false|none|none|
+|all|[All597Enum](#schemaall597enum)|false|none|none|
+|*oneOf*|object|false|none|none|
+|all|[All61dEnum](#schemaall61denum)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|all|false|
+|all|true|
+
+<h2 id="tocS_EnableEnvironmentOverridesBodyRequest">EnableEnvironmentOverridesBodyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaenableenvironmentoverridesbodyrequest"></a>
+<a id="schema_EnableEnvironmentOverridesBodyRequest"></a>
+<a id="tocSenableenvironmentoverridesbodyrequest"></a>
+<a id="tocsenableenvironmentoverridesbodyrequest"></a>
+
+```json
+{
+  "all": false,
+  "environment_ids": [
+    0
+  ],
+  "view": {},
+  "project_id": 0,
+  "excluded_environment_ids": [
+    0
+  ],
+  "cursor": "string",
+  "target_dbt_version": {}
+}
+```
+
+Base class for all request payloads.
+It is expected that each endpoint extends this class to define its own payload format
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|environment_ids|[integer(int64)]|false|none|none|
+|all|boolean|false|none|none|
+|view|object|false|none|none|
+|project_id|integer(int64)|false|none|none|
+|excluded_environment_ids|[integer(int64)]|false|none|none|
+|cursor|string|false|none|none|
+|target_dbt_version|object|true|none|Explicit migration target; only latest is supported.|
+|*oneOf*|object|false|none|none|
+|all|[All597Enum](#schemaall597enum)|false|none|none|
+|*oneOf*|object|false|none|none|
+|all|[All61dEnum](#schemaall61denum)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|all|false|
+|all|true|
+
+<h2 id="tocS_EnableIPRestrictionsBodyRequest">EnableIPRestrictionsBodyRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaenableiprestrictionsbodyrequest"></a>
+<a id="schema_EnableIPRestrictionsBodyRequest"></a>
+<a id="tocSenableiprestrictionsbodyrequest"></a>
+<a id="tocsenableiprestrictionsbodyrequest"></a>
+
+```json
+{
+  "enabled": true,
+  "account_id": 0,
+  "state": 0
+}
+```
+
+Turns IP restrictions on or off for the account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enabled|boolean|true|none|none|
+|account_id|integer(int64)|false|none|Read-only, ignored.|
+|state|integer|false|none|Read-only, ignored.|
+
 <h2 id="tocS_EncryptedJSONValue">EncryptedJSONValue</h2>
 <!-- backwards compatibility -->
 <a id="schemaencryptedjsonvalue"></a>
@@ -17924,6 +18966,107 @@ A single environment variable override: its database ID and display value.
 |---|---|---|---|---|
 |id|integer(int64)|true|none|none|
 |value|string|false|none|none|
+
+<h2 id="tocS_EnvironmentOverrideResultResource">EnvironmentOverrideResultResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentoverrideresultresource"></a>
+<a id="schema_EnvironmentOverrideResultResource"></a>
+<a id="tocSenvironmentoverrideresultresource"></a>
+<a id="tocsenvironmentoverrideresultresource"></a>
+
+```json
+{
+  "migration_target": "string",
+  "migration_enabled": true,
+  "migration_change_id": 0,
+  "migration_changed_at": "1970-01-01T00:00:00Z",
+  "environment_id": 0,
+  "changed": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|migration_target|string \| null|false|none|Current override target; null when disabled.|
+|migration_enabled|boolean|true|none|Whether an override target is set.|
+|migration_change_id|integer(int64) \| null|false|none|ID of the current upgrade or revert. Trial results only count runs attributed to this change. Null when the environment has never been upgraded.|
+|migration_changed_at|string(date-time) \| null|false|none|When the current change was made; null when the environment has never been upgraded.|
+|environment_id|integer(int64)|true|none|none|
+|changed|boolean|true|none|none|
+
+<h2 id="tocS_EnvironmentOverridesResource">EnvironmentOverridesResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentoverridesresource"></a>
+<a id="schema_EnvironmentOverridesResource"></a>
+<a id="tocSenvironmentoverridesresource"></a>
+<a id="tocsenvironmentoverridesresource"></a>
+
+```json
+{
+  "results": [
+    {
+      "migration_target": "string",
+      "migration_enabled": true,
+      "migration_change_id": 0,
+      "migration_changed_at": "1970-01-01T00:00:00Z",
+      "environment_id": 0,
+      "changed": true
+    }
+  ],
+  "changed_environment_count": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|results|[[EnvironmentOverrideResultResource](#schemaenvironmentoverrideresultresource)]|true|none|none|
+|changed_environment_count|integer|true|none|none|
+
+<h2 id="tocS_EnvironmentOverridesResponse">EnvironmentOverridesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaenvironmentoverridesresponse"></a>
+<a id="schema_EnvironmentOverridesResponse"></a>
+<a id="tocSenvironmentoverridesresponse"></a>
+<a id="tocsenvironmentoverridesresponse"></a>
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "results": [
+      {
+        "migration_target": "string",
+        "migration_enabled": true,
+        "migration_change_id": 0,
+        "migration_changed_at": "1970-01-01T00:00:00Z",
+        "environment_id": 0,
+        "changed": true
+      }
+    ],
+    "changed_environment_count": 0
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[Status](#schemastatus)|false|none|none|
+|data|[EnvironmentOverridesResource](#schemaenvironmentoverridesresource) \| [AllEnvironmentOverridesResource](#schemaallenvironmentoverridesresource)|true|none|none|
+|extra|object|false|none|none|
+|error_code|integer|false|none|none|
 
 <h2 id="tocS_EnvironmentV3">EnvironmentV3</h2>
 <!-- backwards compatibility -->
@@ -19308,70 +20451,40 @@ It is expected that each endpoint extends this class to define its own payload f
 |cidr|string|true|none|none|
 |cidr_ipv6|string|false|none|none|
 
-<h2 id="tocS_IPRestrictionCidrRequestRequest">IPRestrictionCidrRequestRequest</h2>
+<h2 id="tocS_IPRestrictionCidrBody">IPRestrictionCidrBody</h2>
 <!-- backwards compatibility -->
-<a id="schemaiprestrictioncidrrequestrequest"></a>
-<a id="schema_IPRestrictionCidrRequestRequest"></a>
-<a id="tocSiprestrictioncidrrequestrequest"></a>
-<a id="tocsiprestrictioncidrrequestrequest"></a>
+<a id="schemaiprestrictioncidrbody"></a>
+<a id="schema_IPRestrictionCidrBody"></a>
+<a id="tocSiprestrictioncidrbody"></a>
+<a id="tocsiprestrictioncidrbody"></a>
 
 ```json
 {
-  "state": 1,
+  "id": 0,
   "cidr": "string",
-  "id": 0
+  "enabled": true,
+  "state": 0,
+  "ip_restriction_rule_id": 0,
+  "cidr_ipv6": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z"
 }
 ```
+
+A CIDR range in an IP restriction rule. Include `id` to update an existing range.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|state|integer|false|none|A value of 1 means this entity is active and a value of 2 means this entity is deleted|
-|cidr|string|true|none|none|
 |id|integer(int64)|false|none|none|
-
-<h2 id="tocS_IPRestrictionRequestRequest">IPRestrictionRequestRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaiprestrictionrequestrequest"></a>
-<a id="schema_IPRestrictionRequestRequest"></a>
-<a id="tocSiprestrictionrequestrequest"></a>
-<a id="tocsiprestrictionrequestrequest"></a>
-
-```json
-{
-  "name": "string",
-  "type": 1,
-  "rule_set_enabled": true,
-  "account_id": 0,
-  "cidrs": [
-    {
-      "state": 1,
-      "cidr": "string",
-      "id": 0
-    }
-  ],
-  "description": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|type|[TypeEdaEnum](#schematypeedaenum)|true|none|* `1` - ALLOW<br>* `2` - DENY|
-|rule_set_enabled|boolean|true|none|none|
-|account_id|integer(int64)|true|none|none|
-|cidrs|[[IPRestrictionCidrRequestRequest](#schemaiprestrictioncidrrequestrequest)]|true|none|none|
-|description|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|1|
-|type|2|
+|cidr|string|true|none|none|
+|enabled|boolean|false|none|none|
+|state|integer|false|none|1 keeps the range, 2 deletes it.|
+|ip_restriction_rule_id|integer(int64)|false|none|Read-only, ignored.|
+|cidr_ipv6|string|false|none|Read-only, ignored.|
+|created_at|string(date-time)|false|none|Read-only, ignored.|
+|updated_at|string(date-time)|false|none|Read-only, ignored.|
 
 <h2 id="tocS_IPRestrictionRule">IPRestrictionRule</h2>
 <!-- backwards compatibility -->
@@ -19648,25 +20761,6 @@ It is expected that each endpoint extends this class to define its own payload f
 |created_at|string(date-time)|true|read-only|none|
 |updated_at|string(date-time)|true|read-only|none|
 
-<h2 id="tocS_IPRestrictionSetRequestRequest">IPRestrictionSetRequestRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaiprestrictionsetrequestrequest"></a>
-<a id="schema_IPRestrictionSetRequestRequest"></a>
-<a id="tocSiprestrictionsetrequestrequest"></a>
-<a id="tocsiprestrictionsetrequestrequest"></a>
-
-```json
-{
-  "enabled": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|enabled|boolean|true|none|none|
-
 <h2 id="tocS_IPRestrictionSetValidate">IPRestrictionSetValidate</h2>
 <!-- backwards compatibility -->
 <a id="schemaiprestrictionsetvalidate"></a>
@@ -19685,6 +20779,885 @@ It is expected that each endpoint extends this class to define its own payload f
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |is_valid_for_admin|boolean|true|none|none|
+
+<h2 id="tocS_IPRestrictionType">IPRestrictionType</h2>
+<!-- backwards compatibility -->
+<a id="schemaiprestrictiontype"></a>
+<a id="schema_IPRestrictionType"></a>
+<a id="tocSiprestrictiontype"></a>
+<a id="tocsiprestrictiontype"></a>
+
+```json
+1
+```
+
+An enumeration.
+
+<h2 id="tocS_InventoryEnvironment">InventoryEnvironment</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryenvironment"></a>
+<a id="schema_InventoryEnvironment"></a>
+<a id="tocSinventoryenvironment"></a>
+<a id="tocsinventoryenvironment"></a>
+
+```json
+{
+  "migration_target": "string",
+  "migration_enabled": true,
+  "migration_change_id": 0,
+  "migration_changed_at": "1970-01-01T00:00:00Z",
+  "environment_id": 0,
+  "environment_name": "string",
+  "project_id": 0,
+  "project_name": "string",
+  "environment_type": "string",
+  "deployment_type": "string",
+  "configured_dbt_version": "string",
+  "baseline_dbt_version": "string",
+  "effective_dbt_version": "string",
+  "is_legacy": true,
+  "job_count": 0,
+  "legacy_job_count": 0,
+  "effective_legacy_job_count": 0,
+  "overridden_job_count": 0,
+  "can_enable": true,
+  "can_disable": true,
+  "enable_blocked_reason": "string",
+  "disable_blocked_reason": "string",
+  "can_read_runs": false,
+  "last_run_at": "1970-01-01T00:00:00Z",
+  "resolved_execution_version": "string",
+  "execution_blocked_reason": "string",
+  "target_capabilities": [
+    {
+      "target": "string",
+      "display_name": "string",
+      "can_enable": true,
+      "blocked_reason": "string"
+    }
+  ],
+  "migration_run_summary": {
+    "cohort": {},
+    "job_count": 0,
+    "change_id": 0,
+    "window_started_at": "1970-01-01T00:00:00Z",
+    "availability": {},
+    "unavailable_reason": "runs_read_denied",
+    "counts": {
+      "succeeded": 0,
+      "failed": 0,
+      "queued": 0,
+      "starting": 0,
+      "running": 0,
+      "cancelled": 0,
+      "unknown": 0,
+      "no_qualifying_run": 0
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|migration_target|string \| null|false|none|Current override target; null when disabled.|
+|migration_enabled|boolean|true|none|Whether an override target is set.|
+|migration_change_id|integer(int64) \| null|false|none|ID of the current upgrade or revert. Trial results only count runs attributed to this change. Null when the environment has never been upgraded.|
+|migration_changed_at|string(date-time) \| null|false|none|When the current change was made; null when the environment has never been upgraded.|
+|environment_id|integer(int64)|true|none|none|
+|environment_name|string|true|none|none|
+|project_id|integer(int64)|true|none|none|
+|project_name|string|true|none|none|
+|environment_type|string|true|none|none|
+|deployment_type|string|false|none|none|
+|configured_dbt_version|string|false|none|none|
+|baseline_dbt_version|string|true|none|Resolved version before applying the migration override.|
+|effective_dbt_version|string|true|none|Resolved version after applying a supported migration override.|
+|is_legacy|boolean|true|none|none|
+|job_count|integer|true|none|none|
+|legacy_job_count|integer|true|none|none|
+|effective_legacy_job_count|integer|true|none|none|
+|overridden_job_count|integer|true|none|none|
+|can_enable|boolean|true|none|Whether this actor may enable or replace the override.|
+|can_disable|boolean|true|none|Whether this actor may disable the override.|
+|enable_blocked_reason|string \| null|false|none|insufficient_permissions or no_legacy_workloads; null when enabling is allowed.|
+|disable_blocked_reason|string \| null|false|none|insufficient_permissions when the actor cannot disable; null otherwise.|
+|can_read_runs|boolean|false|none|Omitted when include_run_summary is false.|
+|last_run_at|string(date-time) \| null|false|none|Creation time of the most recent readable run across all current inventory jobs. Omitted when include_run_summary is false.|
+|resolved_execution_version|string \| null|false|none|Execution version; currently always equal to effective_dbt_version.|
+|execution_blocked_reason|string \| null|false|none|Currently always null.|
+|target_capabilities|[[TargetCapabilityResource](#schematargetcapabilityresource)]|true|none|none|
+|migration_run_summary|object \| null|true|none|Outcomes of each baseline legacy job's newest run attributed to the current migration change; null unless include_run_summary is true.|
+
+<h2 id="tocS_InventoryEnvironmentExtraData">InventoryEnvironmentExtraData</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryenvironmentextradata"></a>
+<a id="schema_InventoryEnvironmentExtraData"></a>
+<a id="tocSinventoryenvironmentextradata"></a>
+<a id="tocsinventoryenvironmentextradata"></a>
+
+```json
+{
+  "filters": {},
+  "order_by": "string",
+  "pagination": {
+    "count": 0,
+    "total_count": 0
+  },
+  "migration_summary": {
+    "account_id": 0,
+    "compliance": {
+      "basis": {},
+      "scope": {},
+      "projects": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "environments": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "jobs": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      }
+    },
+    "environment_count": 0,
+    "supported_targets": [
+      "string"
+    ],
+    "actions": {
+      "enable_latest": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      },
+      "disable": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      }
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|filters|[V3RequestParams](#schemav3requestparams)|false|none|Base class for all URL request parameters.<br>It is expected that each endpoint extends this class to define its own parameters format|
+|order_by|string \| [string]|false|none|none|
+|pagination|[V3ResponsePagination](#schemav3responsepagination)|true|none|none|
+|migration_summary|object \| null|false|none|Scoped inventory summary when include_summary=true; null otherwise.|
+
+<h2 id="tocS_InventoryEnvironmentResponse">InventoryEnvironmentResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryenvironmentresponse"></a>
+<a id="schema_InventoryEnvironmentResponse"></a>
+<a id="tocSinventoryenvironmentresponse"></a>
+<a id="tocsinventoryenvironmentresponse"></a>
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": [
+    {
+      "migration_target": "string",
+      "migration_enabled": true,
+      "migration_change_id": 0,
+      "migration_changed_at": "1970-01-01T00:00:00Z",
+      "environment_id": 0,
+      "environment_name": "string",
+      "project_id": 0,
+      "project_name": "string",
+      "environment_type": "string",
+      "deployment_type": "string",
+      "configured_dbt_version": "string",
+      "baseline_dbt_version": "string",
+      "effective_dbt_version": "string",
+      "is_legacy": true,
+      "job_count": 0,
+      "legacy_job_count": 0,
+      "effective_legacy_job_count": 0,
+      "overridden_job_count": 0,
+      "can_enable": true,
+      "can_disable": true,
+      "enable_blocked_reason": "string",
+      "disable_blocked_reason": "string",
+      "can_read_runs": false,
+      "last_run_at": "1970-01-01T00:00:00Z",
+      "resolved_execution_version": "string",
+      "execution_blocked_reason": "string",
+      "target_capabilities": [
+        {
+          "target": "string",
+          "display_name": "string",
+          "can_enable": true,
+          "blocked_reason": "string"
+        }
+      ],
+      "migration_run_summary": {
+        "cohort": {},
+        "job_count": 0,
+        "change_id": 0,
+        "window_started_at": "1970-01-01T00:00:00Z",
+        "availability": {},
+        "unavailable_reason": "runs_read_denied",
+        "counts": {
+          "succeeded": 0,
+          "failed": 0,
+          "queued": 0,
+          "starting": 0,
+          "running": 0,
+          "cancelled": 0,
+          "unknown": 0,
+          "no_qualifying_run": 0
+        }
+      }
+    }
+  ],
+  "extra": {
+    "filters": {},
+    "order_by": "string",
+    "pagination": {
+      "count": 0,
+      "total_count": 0
+    },
+    "migration_summary": {
+      "account_id": 0,
+      "compliance": {
+        "basis": {},
+        "scope": {},
+        "projects": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        },
+        "environments": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        },
+        "jobs": {
+          "total": 0,
+          "compliant": 0,
+          "non_compliant": 0
+        }
+      },
+      "environment_count": 0,
+      "supported_targets": [
+        "string"
+      ],
+      "actions": {
+        "enable_latest": {
+          "eligible_environment_count": 0,
+          "legacy_job_count": 0,
+          "excluded_environment_count": 0
+        },
+        "disable": {
+          "eligible_environment_count": 0,
+          "legacy_job_count": 0,
+          "excluded_environment_count": 0
+        }
+      }
+    }
+  },
+  "error_code": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[Status](#schemastatus)|false|none|none|
+|data|[[InventoryEnvironment](#schemainventoryenvironment)]|true|none|none|
+|extra|[InventoryEnvironmentExtraData](#schemainventoryenvironmentextradata)|true|none|none|
+|error_code|integer|false|none|none|
+
+<h2 id="tocS_InventoryJobGroupPageResource">InventoryJobGroupPageResource</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryjobgrouppageresource"></a>
+<a id="schema_InventoryJobGroupPageResource"></a>
+<a id="tocSinventoryjobgrouppageresource"></a>
+<a id="tocsinventoryjobgrouppageresource"></a>
+
+```json
+{
+  "jobs": [
+    {
+      "migration_target": "string",
+      "migration_enabled": true,
+      "migration_change_id": 0,
+      "migration_changed_at": "1970-01-01T00:00:00Z",
+      "job_id": 0,
+      "job_name": "string",
+      "environment_id": 0,
+      "configured_dbt_version": "string",
+      "baseline_dbt_version": "string",
+      "effective_dbt_version": "string",
+      "version_source": "string",
+      "is_legacy": true,
+      "is_effectively_legacy": true,
+      "is_overridden": true,
+      "is_deactivated": true,
+      "version_group": {},
+      "can_read_runs": true,
+      "latest_run": {
+        "id": 0,
+        "status": 0,
+        "status_humanized": "string",
+        "status_message": "string"
+      },
+      "last_run": {
+        "id": 0,
+        "status": 0,
+        "status_humanized": "string",
+        "status_message": "string",
+        "created_at": "1970-01-01T00:00:00Z",
+        "dbt_version": "string"
+      },
+      "resolved_execution_version": "string",
+      "execution_blocked_reason": "string"
+    }
+  ],
+  "pagination": {
+    "count": 0,
+    "total_count": 0,
+    "limit": 0,
+    "offset": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|jobs|[[InventoryJobResource](#schemainventoryjobresource)]|true|none|none|
+|pagination|[InventoryJobPaginationResource](#schemainventoryjobpaginationresource)|true|none|none|
+
+<h2 id="tocS_InventoryJobGroups">InventoryJobGroups</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryjobgroups"></a>
+<a id="schema_InventoryJobGroups"></a>
+<a id="tocSinventoryjobgroups"></a>
+<a id="tocsinventoryjobgroups"></a>
+
+```json
+{
+  "environment_id": 0,
+  "compliant": {
+    "jobs": [
+      {
+        "migration_target": "string",
+        "migration_enabled": true,
+        "migration_change_id": 0,
+        "migration_changed_at": "1970-01-01T00:00:00Z",
+        "job_id": 0,
+        "job_name": "string",
+        "environment_id": 0,
+        "configured_dbt_version": "string",
+        "baseline_dbt_version": "string",
+        "effective_dbt_version": "string",
+        "version_source": "string",
+        "is_legacy": true,
+        "is_effectively_legacy": true,
+        "is_overridden": true,
+        "is_deactivated": true,
+        "version_group": {},
+        "can_read_runs": true,
+        "latest_run": {
+          "id": 0,
+          "status": 0,
+          "status_humanized": "string",
+          "status_message": "string"
+        },
+        "last_run": {
+          "id": 0,
+          "status": 0,
+          "status_humanized": "string",
+          "status_message": "string",
+          "created_at": "1970-01-01T00:00:00Z",
+          "dbt_version": "string"
+        },
+        "resolved_execution_version": "string",
+        "execution_blocked_reason": "string"
+      }
+    ],
+    "pagination": {
+      "count": 0,
+      "total_count": 0,
+      "limit": 0,
+      "offset": 0
+    }
+  },
+  "legacy": {
+    "jobs": [
+      {
+        "migration_target": "string",
+        "migration_enabled": true,
+        "migration_change_id": 0,
+        "migration_changed_at": "1970-01-01T00:00:00Z",
+        "job_id": 0,
+        "job_name": "string",
+        "environment_id": 0,
+        "configured_dbt_version": "string",
+        "baseline_dbt_version": "string",
+        "effective_dbt_version": "string",
+        "version_source": "string",
+        "is_legacy": true,
+        "is_effectively_legacy": true,
+        "is_overridden": true,
+        "is_deactivated": true,
+        "version_group": {},
+        "can_read_runs": true,
+        "latest_run": {
+          "id": 0,
+          "status": 0,
+          "status_humanized": "string",
+          "status_message": "string"
+        },
+        "last_run": {
+          "id": 0,
+          "status": 0,
+          "status_humanized": "string",
+          "status_message": "string",
+          "created_at": "1970-01-01T00:00:00Z",
+          "dbt_version": "string"
+        },
+        "resolved_execution_version": "string",
+        "execution_blocked_reason": "string"
+      }
+    ],
+    "pagination": {
+      "count": 0,
+      "total_count": 0,
+      "limit": 0,
+      "offset": 0
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|environment_id|integer(int64)|true|none|none|
+|compliant|[InventoryJobGroupPageResource](#schemainventoryjobgrouppageresource)|true|none|none|
+|legacy|[InventoryJobGroupPageResource](#schemainventoryjobgrouppageresource)|true|none|none|
+
+<h2 id="tocS_InventoryJobGroupsResponse">InventoryJobGroupsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryjobgroupsresponse"></a>
+<a id="schema_InventoryJobGroupsResponse"></a>
+<a id="tocSinventoryjobgroupsresponse"></a>
+<a id="tocsinventoryjobgroupsresponse"></a>
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "environment_id": 0,
+    "compliant": {
+      "jobs": [
+        {
+          "migration_target": "string",
+          "migration_enabled": true,
+          "migration_change_id": 0,
+          "migration_changed_at": "1970-01-01T00:00:00Z",
+          "job_id": 0,
+          "job_name": "string",
+          "environment_id": 0,
+          "configured_dbt_version": "string",
+          "baseline_dbt_version": "string",
+          "effective_dbt_version": "string",
+          "version_source": "string",
+          "is_legacy": true,
+          "is_effectively_legacy": true,
+          "is_overridden": true,
+          "is_deactivated": true,
+          "version_group": {},
+          "can_read_runs": true,
+          "latest_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string"
+          },
+          "last_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string",
+            "created_at": "1970-01-01T00:00:00Z",
+            "dbt_version": "string"
+          },
+          "resolved_execution_version": "string",
+          "execution_blocked_reason": "string"
+        }
+      ],
+      "pagination": {
+        "count": 0,
+        "total_count": 0,
+        "limit": 0,
+        "offset": 0
+      }
+    },
+    "legacy": {
+      "jobs": [
+        {
+          "migration_target": "string",
+          "migration_enabled": true,
+          "migration_change_id": 0,
+          "migration_changed_at": "1970-01-01T00:00:00Z",
+          "job_id": 0,
+          "job_name": "string",
+          "environment_id": 0,
+          "configured_dbt_version": "string",
+          "baseline_dbt_version": "string",
+          "effective_dbt_version": "string",
+          "version_source": "string",
+          "is_legacy": true,
+          "is_effectively_legacy": true,
+          "is_overridden": true,
+          "is_deactivated": true,
+          "version_group": {},
+          "can_read_runs": true,
+          "latest_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string"
+          },
+          "last_run": {
+            "id": 0,
+            "status": 0,
+            "status_humanized": "string",
+            "status_message": "string",
+            "created_at": "1970-01-01T00:00:00Z",
+            "dbt_version": "string"
+          },
+          "resolved_execution_version": "string",
+          "execution_blocked_reason": "string"
+        }
+      ],
+      "pagination": {
+        "count": 0,
+        "total_count": 0,
+        "limit": 0,
+        "offset": 0
+      }
+    }
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[Status](#schemastatus)|false|none|none|
+|data|[InventoryJobGroups](#schemainventoryjobgroups)|true|none|none|
+|extra|object|false|none|none|
+|error_code|integer|false|none|none|
+
+<h2 id="tocS_InventoryJobPaginationResource">InventoryJobPaginationResource</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryjobpaginationresource"></a>
+<a id="schema_InventoryJobPaginationResource"></a>
+<a id="tocSinventoryjobpaginationresource"></a>
+<a id="tocsinventoryjobpaginationresource"></a>
+
+```json
+{
+  "count": 0,
+  "total_count": 0,
+  "limit": 0,
+  "offset": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|count|integer|true|none|none|
+|total_count|integer|true|none|none|
+|limit|integer|true|none|none|
+|offset|integer|true|none|none|
+
+<h2 id="tocS_InventoryJobResource">InventoryJobResource</h2>
+<!-- backwards compatibility -->
+<a id="schemainventoryjobresource"></a>
+<a id="schema_InventoryJobResource"></a>
+<a id="tocSinventoryjobresource"></a>
+<a id="tocsinventoryjobresource"></a>
+
+```json
+{
+  "migration_target": "string",
+  "migration_enabled": true,
+  "migration_change_id": 0,
+  "migration_changed_at": "1970-01-01T00:00:00Z",
+  "job_id": 0,
+  "job_name": "string",
+  "environment_id": 0,
+  "configured_dbt_version": "string",
+  "baseline_dbt_version": "string",
+  "effective_dbt_version": "string",
+  "version_source": "string",
+  "is_legacy": true,
+  "is_effectively_legacy": true,
+  "is_overridden": true,
+  "is_deactivated": true,
+  "version_group": {},
+  "can_read_runs": true,
+  "latest_run": {
+    "id": 0,
+    "status": 0,
+    "status_humanized": "string",
+    "status_message": "string"
+  },
+  "last_run": {
+    "id": 0,
+    "status": 0,
+    "status_humanized": "string",
+    "status_message": "string",
+    "created_at": "1970-01-01T00:00:00Z",
+    "dbt_version": "string"
+  },
+  "resolved_execution_version": "string",
+  "execution_blocked_reason": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|migration_target|string \| null|true|none|none|
+|migration_enabled|boolean|true|none|Whether an override target is set.|
+|migration_change_id|integer(int64) \| null|true|none|none|
+|migration_changed_at|string(date-time) \| null|true|none|none|
+|job_id|integer(int64)|true|none|none|
+|job_name|string|true|none|none|
+|environment_id|integer(int64)|true|none|none|
+|configured_dbt_version|string \| null|true|none|none|
+|baseline_dbt_version|string|true|none|none|
+|effective_dbt_version|string|true|none|none|
+|version_source|string|true|none|none|
+|is_legacy|boolean|true|none|none|
+|is_effectively_legacy|boolean|true|none|none|
+|is_overridden|boolean|true|none|none|
+|is_deactivated|boolean|true|none|none|
+|version_group|object|true|none|none|
+|can_read_runs|boolean|true|none|none|
+|latest_run|object \| null|true|none|Newest run attributed to the current migration change; null when there is none.|
+|last_run|object \| null|true|none|Most recently finished run of any kind, including explicit-version runs and runs before the trial.|
+|resolved_execution_version|string \| null|true|none|none|
+|execution_blocked_reason|string \| null|true|none|none|
+
+<h2 id="tocS_InventorySummary">InventorySummary</h2>
+<!-- backwards compatibility -->
+<a id="schemainventorysummary"></a>
+<a id="schema_InventorySummary"></a>
+<a id="tocSinventorysummary"></a>
+<a id="tocsinventorysummary"></a>
+
+```json
+{
+  "account_id": 0,
+  "compliance": {
+    "basis": {},
+    "scope": {},
+    "projects": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    },
+    "environments": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    },
+    "jobs": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    }
+  },
+  "environment_count": 0,
+  "supported_targets": [
+    "string"
+  ],
+  "actions": {
+    "enable_latest": {
+      "eligible_environment_count": 0,
+      "legacy_job_count": 0,
+      "excluded_environment_count": 0
+    },
+    "disable": {
+      "eligible_environment_count": 0,
+      "legacy_job_count": 0,
+      "excluded_environment_count": 0
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|integer(int64)|true|none|none|
+|compliance|[ComplianceSummaryResource](#schemacompliancesummaryresource)|true|none|none|
+|environment_count|integer|true|none|Environment count in the selected worklist, before pagination.|
+|supported_targets|[string]|true|none|Targets offered for new overrides; currently only latest.|
+|actions|object \| null|false|none|Action preview when include_action_counts=true; null otherwise.|
+
+<h2 id="tocS_InventorySummaryResource">InventorySummaryResource</h2>
+<!-- backwards compatibility -->
+<a id="schemainventorysummaryresource"></a>
+<a id="schema_InventorySummaryResource"></a>
+<a id="tocSinventorysummaryresource"></a>
+<a id="tocsinventorysummaryresource"></a>
+
+```json
+{
+  "account_id": 0,
+  "compliance": {
+    "basis": {},
+    "scope": {},
+    "projects": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    },
+    "environments": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    },
+    "jobs": {
+      "total": 0,
+      "compliant": 0,
+      "non_compliant": 0
+    }
+  },
+  "environment_count": 0,
+  "supported_targets": [
+    "string"
+  ],
+  "actions": {
+    "enable_latest": {
+      "eligible_environment_count": 0,
+      "legacy_job_count": 0,
+      "excluded_environment_count": 0
+    },
+    "disable": {
+      "eligible_environment_count": 0,
+      "legacy_job_count": 0,
+      "excluded_environment_count": 0
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|integer(int64)|true|none|none|
+|compliance|[ComplianceSummaryResource](#schemacompliancesummaryresource)|true|none|none|
+|environment_count|integer|true|none|Environment count in the selected worklist, before pagination.|
+|supported_targets|[string]|true|none|Targets offered for new overrides; currently only latest.|
+|actions|object \| null|false|none|Action preview when include_action_counts=true; null otherwise.|
+
+<h2 id="tocS_InventorySummaryResponse">InventorySummaryResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemainventorysummaryresponse"></a>
+<a id="schema_InventorySummaryResponse"></a>
+<a id="tocSinventorysummaryresponse"></a>
+<a id="tocsinventorysummaryresponse"></a>
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": {
+    "account_id": 0,
+    "compliance": {
+      "basis": {},
+      "scope": {},
+      "projects": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "environments": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      },
+      "jobs": {
+        "total": 0,
+        "compliant": 0,
+        "non_compliant": 0
+      }
+    },
+    "environment_count": 0,
+    "supported_targets": [
+      "string"
+    ],
+    "actions": {
+      "enable_latest": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      },
+      "disable": {
+        "eligible_environment_count": 0,
+        "legacy_job_count": 0,
+        "excluded_environment_count": 0
+      }
+    }
+  },
+  "extra": {},
+  "error_code": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[Status](#schemastatus)|false|none|none|
+|data|[InventorySummary](#schemainventorysummary)|true|none|none|
+|extra|object|false|none|none|
+|error_code|integer|false|none|none|
 
 <h2 id="tocS_InviteUsersRequestRequest">InviteUsersRequestRequest</h2>
 <!-- backwards compatibility -->
@@ -19988,6 +21961,60 @@ It is expected that each endpoint extends this class to define its own payload f
 * `exposure_sync` - exposure_sync
 * `adaptive` - adaptive
 * `hybrid` - hybrid
+
+<h2 id="tocS_LastJobRunResource">LastJobRunResource</h2>
+<!-- backwards compatibility -->
+<a id="schemalastjobrunresource"></a>
+<a id="schema_LastJobRunResource"></a>
+<a id="tocSlastjobrunresource"></a>
+<a id="tocslastjobrunresource"></a>
+
+```json
+{
+  "id": 0,
+  "status": 0,
+  "status_humanized": "string",
+  "status_message": "string",
+  "created_at": "1970-01-01T00:00:00Z",
+  "dbt_version": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|true|none|none|
+|status|integer|true|none|none|
+|status_humanized|string|true|none|none|
+|status_message|string \| null|true|none|none|
+|created_at|string(date-time)|true|none|none|
+|dbt_version|string \| null|true|none|Version saved on this run; null when execution has not started or the version is unknown.|
+
+<h2 id="tocS_LatestJobRunResource">LatestJobRunResource</h2>
+<!-- backwards compatibility -->
+<a id="schemalatestjobrunresource"></a>
+<a id="schema_LatestJobRunResource"></a>
+<a id="tocSlatestjobrunresource"></a>
+<a id="tocslatestjobrunresource"></a>
+
+```json
+{
+  "id": 0,
+  "status": 0,
+  "status_humanized": "string",
+  "status_message": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|true|none|none|
+|status|integer|true|none|none|
+|status_humanized|string|true|none|none|
+|status_message|string \| null|true|none|none|
 
 <h2 id="tocS_LicenseMapEnveloped">LicenseMapEnveloped</h2>
 <!-- backwards compatibility -->
@@ -20648,6 +22675,111 @@ An enumeration.
 * `migrated` - MIGRATED
 * `workshop` - WORKSHOP
 
+<h2 id="tocS_MantleEligibility">MantleEligibility</h2>
+<!-- backwards compatibility -->
+<a id="schemamantleeligibility"></a>
+<a id="schema_MantleEligibility"></a>
+<a id="tocSmantleeligibility"></a>
+<a id="tocsmantleeligibility"></a>
+
+```json
+{
+  "project_id": 0,
+  "eligible": true,
+  "blocked_reason": {},
+  "status": {
+    "account_id": 0,
+    "project_id": 0,
+    "is_legacy": true,
+    "oldest_legacy_version": "string",
+    "legacy_job_count": 0,
+    "target_dbt_version": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|project_id|integer(int64)|true|none|none|
+|eligible|boolean|true|none|none|
+|blocked_reason|object \| null|true|none|none|
+|status|object \| null|true|none|none|
+
+<h2 id="tocS_MantleEligibilityResponse">MantleEligibilityResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemamantleeligibilityresponse"></a>
+<a id="schema_MantleEligibilityResponse"></a>
+<a id="tocSmantleeligibilityresponse"></a>
+<a id="tocsmantleeligibilityresponse"></a>
+
+```json
+{
+  "status": {
+    "code": 0,
+    "is_success": true,
+    "user_message": "string",
+    "developer_message": ""
+  },
+  "data": [
+    {
+      "project_id": 0,
+      "eligible": true,
+      "blocked_reason": {},
+      "status": {
+        "account_id": 0,
+        "project_id": 0,
+        "is_legacy": true,
+        "oldest_legacy_version": "string",
+        "legacy_job_count": 0,
+        "target_dbt_version": "string"
+      }
+    }
+  ],
+  "extra": {},
+  "error_code": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|status|[Status](#schemastatus)|false|none|none|
+|data|[[MantleEligibility](#schemamantleeligibility)]|true|none|none|
+|extra|object|false|none|none|
+|error_code|integer|false|none|none|
+
+<h2 id="tocS_MantleStatusResource">MantleStatusResource</h2>
+<!-- backwards compatibility -->
+<a id="schemamantlestatusresource"></a>
+<a id="schema_MantleStatusResource"></a>
+<a id="tocSmantlestatusresource"></a>
+<a id="tocsmantlestatusresource"></a>
+
+```json
+{
+  "account_id": 0,
+  "project_id": 0,
+  "is_legacy": true,
+  "oldest_legacy_version": "string",
+  "legacy_job_count": 0,
+  "target_dbt_version": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|integer(int64)|true|none|none|
+|project_id|integer(int64)|true|none|none|
+|is_legacy|boolean|true|none|Whether any environment or job resolves to a pre-1.8 dbt Core version|
+|oldest_legacy_version|string \| null|true|none|Oldest legacy version as "major.minor"|
+|legacy_job_count|integer|true|none|Jobs with an effective legacy version, pinned or inherited|
+|target_dbt_version|string|true|none|Migration target release track, currently "latest"|
+
 <h2 id="tocS_MetaComponent">MetaComponent</h2>
 <!-- backwards compatibility -->
 <a id="schemametacomponent"></a>
@@ -20688,6 +22820,79 @@ It is expected that each endpoint extends this class to define its own payload f
 ```
 
 An enumeration.
+
+<h2 id="tocS_MigrationRunCountsResource">MigrationRunCountsResource</h2>
+<!-- backwards compatibility -->
+<a id="schemamigrationruncountsresource"></a>
+<a id="schema_MigrationRunCountsResource"></a>
+<a id="tocSmigrationruncountsresource"></a>
+<a id="tocsmigrationruncountsresource"></a>
+
+```json
+{
+  "succeeded": 0,
+  "failed": 0,
+  "queued": 0,
+  "starting": 0,
+  "running": 0,
+  "cancelled": 0,
+  "unknown": 0,
+  "no_qualifying_run": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|succeeded|integer|true|none|none|
+|failed|integer|true|none|none|
+|queued|integer|true|none|none|
+|starting|integer|true|none|none|
+|running|integer|true|none|none|
+|cancelled|integer|true|none|none|
+|unknown|integer|true|none|none|
+|no_qualifying_run|integer|true|none|none|
+
+<h2 id="tocS_MigrationRunSummaryResource">MigrationRunSummaryResource</h2>
+<!-- backwards compatibility -->
+<a id="schemamigrationrunsummaryresource"></a>
+<a id="schema_MigrationRunSummaryResource"></a>
+<a id="tocSmigrationrunsummaryresource"></a>
+<a id="tocsmigrationrunsummaryresource"></a>
+
+```json
+{
+  "cohort": {},
+  "job_count": 0,
+  "change_id": 0,
+  "window_started_at": "1970-01-01T00:00:00Z",
+  "availability": {},
+  "unavailable_reason": "runs_read_denied",
+  "counts": {
+    "succeeded": 0,
+    "failed": 0,
+    "queued": 0,
+    "starting": 0,
+    "running": 0,
+    "cancelled": 0,
+    "unknown": 0,
+    "no_qualifying_run": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cohort|object|true|none|none|
+|job_count|integer|true|none|none|
+|change_id|integer(int64) \| null|false|none|Migration change whose attributed runs are counted; null when there is none.|
+|window_started_at|string(date-time) \| null|false|none|When that change was made. Display only: runs are selected by change, not by time.|
+|availability|object|true|none|none|
+|unavailable_reason|[UnavailableReasonEnum](#schemaunavailablereasonenum) \| [NullEnum](#schemanullenum) \| null|false|none|no_change when the environment has never been upgraded.|
+|counts|object \| null|false|none|none|
 
 <h2 id="tocS_NotFound">NotFound</h2>
 <!-- backwards compatibility -->
@@ -20742,6 +22947,17 @@ An enumeration.
 |is_success|boolean|true|none|Whether the request was successful or not|
 |user_message|string|true|none|End-user friendly success or error message|
 |developer_message|string|true|none|Developer friendly success or error message|
+
+<h2 id="tocS_NullEnum">NullEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemanullenum"></a>
+<a id="schema_NullEnum"></a>
+<a id="tocSnullenum"></a>
+<a id="tocsnullenum"></a>
+
+```json
+null
+```
 
 <h2 id="tocS_OAuthConfigurationEnveloped">OAuthConfigurationEnveloped</h2>
 <!-- backwards compatibility -->
@@ -21508,6 +23724,58 @@ An enumeration.
 |port|integer|false|none|none|
 |adapter_id|integer(int64)|false|none|none|
 
+<h2 id="tocS_OverrideActionCountsResource">OverrideActionCountsResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaoverrideactioncountsresource"></a>
+<a id="schema_OverrideActionCountsResource"></a>
+<a id="tocSoverrideactioncountsresource"></a>
+<a id="tocsoverrideactioncountsresource"></a>
+
+```json
+{
+  "eligible_environment_count": 0,
+  "legacy_job_count": 0,
+  "excluded_environment_count": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|eligible_environment_count|integer|true|none|none|
+|legacy_job_count|integer|true|none|none|
+|excluded_environment_count|integer|true|none|none|
+
+<h2 id="tocS_OverrideActionPreviewsResource">OverrideActionPreviewsResource</h2>
+<!-- backwards compatibility -->
+<a id="schemaoverrideactionpreviewsresource"></a>
+<a id="schema_OverrideActionPreviewsResource"></a>
+<a id="tocSoverrideactionpreviewsresource"></a>
+<a id="tocsoverrideactionpreviewsresource"></a>
+
+```json
+{
+  "enable_latest": {
+    "eligible_environment_count": 0,
+    "legacy_job_count": 0,
+    "excluded_environment_count": 0
+  },
+  "disable": {
+    "eligible_environment_count": 0,
+    "legacy_job_count": 0,
+    "excluded_environment_count": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|enable_latest|[OverrideActionCountsResource](#schemaoverrideactioncountsresource)|true|none|none|
+|disable|[OverrideActionCountsResource](#schemaoverrideactioncountsresource)|true|none|none|
+
 <h2 id="tocS_PaginatedWebhooksEvents">PaginatedWebhooksEvents</h2>
 <!-- backwards compatibility -->
 <a id="schemapaginatedwebhooksevents"></a>
@@ -21801,9 +24069,10 @@ An enumeration.
 <a id="tocsplanenum"></a>
 
 ```json
-"cancelled"
+"bc_2027"
 ```
 
+* `bc_2027` - BC_2027
 * `cancelled` - CANCELLED
 * `cancelled_2022` - CANCELLED_2022
 * `cancelled_2025` - CANCELLED_2025
@@ -22281,7 +24550,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |project_id|integer(int64)|true|none|The ID of the project|
 |key|string|true|none|Unique name for the profile. The profile key must be unique per project and can only contain letters, numbers, dashes, and underscores. It must begin with a letter and end with a letter or number. It cannot contain consecutive dashes or underscores.|
 |connection_id|integer(int64)|false|none|The ID of the connection. Null for profiles that have not been assigned a connection.|
-|credentials_id|integer(int64)|true|none|The ID of the credentials|
+|credentials_id|integer(int64)|false|none|The ID of the credentials. Null for profiles that have not been assigned credentials.|
 |extended_attributes_id|integer(int64)|false|none|The ID of the extended attributes|
 |primary_bindings|[[ProfileEnvironmentBinding](#schemaprofileenvironmentbinding)]|true|none|The primary bindings for the profile|
 |catalog_bindings|[[ProfileEnvironmentBinding](#schemaprofileenvironmentbinding)]|false|none|The catalog bindings for the profile (deprecated)|
@@ -22395,7 +24664,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |project_id|integer(int64)|true|none|The ID of the project|
 |key|string|true|none|Unique name for the profile. The profile key must be unique per project and can only contain letters, numbers, dashes, and underscores. It must begin with a letter and end with a letter or number. It cannot contain consecutive dashes or underscores.|
 |connection_id|integer(int64)|false|none|The ID of the connection. Null for profiles that have not been assigned a connection.|
-|credentials_id|integer(int64)|true|none|The ID of the credentials|
+|credentials_id|integer(int64)|false|none|The ID of the credentials. Null for profiles that have not been assigned credentials.|
 |extended_attributes_id|integer(int64)|false|none|The ID of the extended attributes|
 |primary_bindings|[[ProfileEnvironmentBinding](#schemaprofileenvironmentbinding)]|true|none|The primary bindings for the profile|
 |catalog_bindings|[[ProfileEnvironmentBinding](#schemaprofileenvironmentbinding)]|false|none|The catalog bindings for the profile (deprecated)|
@@ -22477,8 +24746,8 @@ It is expected that each endpoint extends this class to define its own payload f
 |account_id|integer(int64)|true|none|The ID of the account|
 |project_id|integer(int64)|true|none|The ID of the project|
 |key|string|false|none|Unique name for the profile. The profile key must be unique per project and can only contain letters, numbers, dashes, and underscores. It must begin with a letter and end with a letter or number. It cannot contain consecutive dashes or underscores.|
-|connection_id|integer(int64)|false|none|The ID of the connection|
-|credentials_id|integer(int64)|false|none|The ID of the credentials|
+|connection_id|integer(int64)|false|none|The ID of the connection. Null is only accepted for a profile that has no connection; a profile's connection cannot be removed once set.|
+|credentials_id|integer(int64)|false|none|The ID of the credentials. Null is only accepted for a profile that has no credentials; credentials cannot be removed once set.|
 |extended_attributes_id|integer(int64)|false|none|The ID of the extended attributes. Set to null to unset.|
 
 <h2 id="tocS_Project">Project</h2>
@@ -23542,7 +25811,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |---|---|---|---|---|
 |account_id|integer(int64)|true|none|The account the repo is associated with|
 |project_id|integer(int64)|false|none|The project the repo is associated with|
-|full_name|string|false|none|The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.|
+|full_name|string|false|none|(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.|
 |remote_backend|object|false|none|The associated git provider⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.<br><br>* `ado` - ado<br>* `github` - github<br>* `managed` - managed<br>* `gitlab` - gitlab<br>* `manual_config` - manual_config|
 |git_clone_strategy|object|false|none|The strategy to use when cloning the repo<br><br>* `azure_active_directory_app` - azure_active_directory_app<br>* `deploy_key` - deploy_key<br>* `deploy_token` - deploy_token<br>* `github_app` - github_app<br>* `git_token` - git_token|
 |deploy_key_id|integer(int64)|false|none|none|
@@ -23717,7 +25986,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |---|---|---|---|---|
 |account_id|integer(int64)|true|none|The account the repo is associated with|
 |project_id|integer(int64)|false|none|The project the repo is associated with|
-|full_name|string|false|none|The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.|
+|full_name|string|false|none|(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.|
 |remote_backend|object|false|none|The associated git provider⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.<br><br>* `ado` - ado<br>* `github` - github<br>* `managed` - managed<br>* `gitlab` - gitlab<br>* `manual_config` - manual_config|
 |git_clone_strategy|object|false|none|The strategy to use when cloning the repo<br><br>* `azure_active_directory_app` - azure_active_directory_app<br>* `deploy_key` - deploy_key<br>* `deploy_token` - deploy_token<br>* `github_app` - github_app<br>* `git_token` - git_token|
 |deploy_key_id|integer(int64)|false|none|none|
@@ -23780,7 +26049,7 @@ It is expected that each endpoint extends this class to define its own payload f
 |id|integer(int64)|true|read-only|none|
 |account_id|integer(int64)|false|none|The account the repo is associated with|
 |project_id|integer(int64)|false|none|The project the repo is associated with|
-|full_name|string|false|none|The name of the repo⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.For example, if the remote URL is 'git://github.com/your_org/your_repo_name.git',the correct full_name is 'your_org/your_repo_name'.|
+|full_name|string|false|none|(Deprecated) The name of the repo. The returned value is computed from the remote URL, for example 'your_org/your_repo_name' for 'git://github.com/your_org/your_repo_name.git'.|
 |remote_backend|object|false|none|The associated git provider⚠️ If not set to the correct values, CI jobs may not trigger and the branch link from the dbt Cloud IDE may not work.<br><br>* `ado` - ado<br>* `github` - github<br>* `managed` - managed<br>* `gitlab` - gitlab<br>* `manual_config` - manual_config|
 |git_clone_strategy|object|false|none|The strategy to use when cloning the repo<br><br>* `azure_active_directory_app` - azure_active_directory_app<br>* `deploy_key` - deploy_key<br>* `deploy_token` - deploy_token<br>* `github_app` - github_app<br>* `git_token` - git_token|
 |deploy_key_id|integer(int64)|false|none|none|
@@ -24064,6 +26333,28 @@ It is expected that each endpoint extends this class to define its own payload f
 ```
 
 * `semantic_layer_credentials` - semantic_layer_credentials
+
+<h2 id="tocS_ScopeEnum">ScopeEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemascopeenum"></a>
+<a id="schema_ScopeEnum"></a>
+<a id="tocSscopeenum"></a>
+<a id="tocsscopeenum"></a>
+
+```json
+"account"
+```
+
+<h2 id="tocS_SelectionEnum">SelectionEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaselectionenum"></a>
+<a id="schema_SelectionEnum"></a>
+<a id="tocSselectionenum"></a>
+<a id="tocsselectionenum"></a>
+
+```json
+"all"
+```
 
 <h2 id="tocS_SemanticLayerCredentialsListEnveloped">SemanticLayerCredentialsListEnveloped</h2>
 <!-- backwards compatibility -->
@@ -24840,6 +27131,28 @@ An enumeration.
 |user_message|string|false|none|none|
 |developer_message|string|false|none|none|
 
+<h2 id="tocS_StatusEnum">StatusEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemastatusenum"></a>
+<a id="schema_StatusEnum"></a>
+<a id="tocSstatusenum"></a>
+<a id="tocsstatusenum"></a>
+
+```json
+"complete"
+```
+
+<h2 id="tocS_StopReasonEnum">StopReasonEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemastopreasonenum"></a>
+<a id="schema_StopReasonEnum"></a>
+<a id="tocSstopreasonenum"></a>
+<a id="tocsstopreasonenum"></a>
+
+```json
+"request_limit"
+```
+
 <h2 id="tocS_Subscription">Subscription</h2>
 <!-- backwards compatibility -->
 <a id="schemasubscription"></a>
@@ -25003,6 +27316,42 @@ An enumeration.
 |query_timeout|integer|false|none|none|
 |adapter_id|integer(int64)|false|none|Deprecated, use connection_details.adapter_version|
 
+<h2 id="tocS_TargetCapabilityResource">TargetCapabilityResource</h2>
+<!-- backwards compatibility -->
+<a id="schematargetcapabilityresource"></a>
+<a id="schema_TargetCapabilityResource"></a>
+<a id="tocStargetcapabilityresource"></a>
+<a id="tocstargetcapabilityresource"></a>
+
+```json
+{
+  "target": "string",
+  "display_name": "string",
+  "can_enable": true,
+  "blocked_reason": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|target|string|true|none|Supported migration target. Currently only latest is offered.|
+|display_name|string|true|none|none|
+|can_enable|boolean|true|none|none|
+|blocked_reason|string \| null|false|none|Why enabling is blocked: insufficient_permissions or no_legacy_workloads.|
+
+<h2 id="tocS_TargetDbtVersionEnum">TargetDbtVersionEnum</h2>
+<!-- backwards compatibility -->
+<a id="schematargetdbtversionenum"></a>
+<a id="schema_TargetDbtVersionEnum"></a>
+<a id="tocStargetdbtversionenum"></a>
+<a id="tocstargetdbtversionenum"></a>
+
+```json
+"latest"
+```
+
 <h2 id="tocS_TeradataConnection">TeradataConnection</h2>
 <!-- backwards compatibility -->
 <a id="schemateradataconnection"></a>
@@ -25145,63 +27494,57 @@ An enumeration.
 * `development` - DEVELOPMENT
 * `deployment` - DEPLOYMENT
 
-<h2 id="tocS_TypeEdaEnum">TypeEdaEnum</h2>
+<h2 id="tocS_UnavailableReasonEnum">UnavailableReasonEnum</h2>
 <!-- backwards compatibility -->
-<a id="schematypeedaenum"></a>
-<a id="schema_TypeEdaEnum"></a>
-<a id="tocStypeedaenum"></a>
-<a id="tocstypeedaenum"></a>
+<a id="schemaunavailablereasonenum"></a>
+<a id="schema_UnavailableReasonEnum"></a>
+<a id="tocSunavailablereasonenum"></a>
+<a id="tocsunavailablereasonenum"></a>
 
 ```json
-1
+"runs_read_denied"
 ```
 
-* `1` - ALLOW
-* `2` - DENY
-
-<h2 id="tocS_UpdateIPRestrictionRequestRequest">UpdateIPRestrictionRequestRequest</h2>
+<h2 id="tocS_UpdateIPRestrictionBodyRequest">UpdateIPRestrictionBodyRequest</h2>
 <!-- backwards compatibility -->
-<a id="schemaupdateiprestrictionrequestrequest"></a>
-<a id="schema_UpdateIPRestrictionRequestRequest"></a>
-<a id="tocSupdateiprestrictionrequestrequest"></a>
-<a id="tocsupdateiprestrictionrequestrequest"></a>
+<a id="schemaupdateiprestrictionbodyrequest"></a>
+<a id="schema_UpdateIPRestrictionBodyRequest"></a>
+<a id="tocSupdateiprestrictionbodyrequest"></a>
+<a id="tocsupdateiprestrictionbodyrequest"></a>
 
 ```json
 {
   "name": "string",
-  "type": 1,
-  "rule_set_enabled": true,
-  "account_id": 0,
-  "cidrs": [
-    {
-      "state": 1,
-      "cidr": "string",
-      "id": 0
-    }
-  ],
+  "type": {},
   "description": "string",
+  "rule_set_enabled": true,
+  "cidrs": [],
+  "account_id": 0,
+  "ip_restriction_rule_set_id": 0,
+  "state": 0,
+  "created_by_id": 0,
+  "enabled_for_service_tokens": true,
   "id": 0
 }
 ```
+
+New values for an IP restriction rule and its CIDR ranges.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|none|
-|type|[TypeEdaEnum](#schematypeedaenum)|true|none|* `1` - ALLOW<br>* `2` - DENY|
-|rule_set_enabled|boolean|true|none|none|
-|account_id|integer(int64)|true|none|none|
-|cidrs|[[IPRestrictionCidrRequestRequest](#schemaiprestrictioncidrrequestrequest)]|true|none|none|
+|type|object|true|none|1 allows the ranges, 2 denies them.|
 |description|string|false|none|none|
-|id|integer(int64)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|1|
-|type|2|
+|rule_set_enabled|boolean|false|none|none|
+|cidrs|[[IPRestrictionCidrBody](#schemaiprestrictioncidrbody)]|false|none|none|
+|account_id|integer(int64)|false|none|Read-only, ignored.|
+|ip_restriction_rule_set_id|integer(int64)|false|none|Read-only, ignored.|
+|state|integer|false|none|Read-only, ignored.|
+|created_by_id|integer(int64)|false|none|Read-only, ignored.|
+|enabled_for_service_tokens|boolean|false|none|Read-only, ignored.|
+|id|integer(int64)|false|none|Read-only, ignored.|
 
 <h2 id="tocS_UpdateServiceTokenRequestRequest">UpdateServiceTokenRequestRequest</h2>
 <!-- backwards compatibility -->
@@ -25973,6 +28316,28 @@ It is expected that each endpoint extends this class to define its own parameter
 |---|---|---|---|---|
 |count|integer|true|none|none|
 |total_count|integer|true|none|none|
+
+<h2 id="tocS_VersionGroupEnum">VersionGroupEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaversiongroupenum"></a>
+<a id="schema_VersionGroupEnum"></a>
+<a id="tocSversiongroupenum"></a>
+<a id="tocsversiongroupenum"></a>
+
+```json
+"compliant"
+```
+
+<h2 id="tocS_ViewEnum">ViewEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemaviewenum"></a>
+<a id="schema_ViewEnum"></a>
+<a id="tocSviewenum"></a>
+<a id="tocsviewenum"></a>
+
+```json
+"all"
+```
 
 <h2 id="tocS_WatchSelectionItem">WatchSelectionItem</h2>
 <!-- backwards compatibility -->

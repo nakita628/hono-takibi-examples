@@ -307,181 +307,149 @@ const AssignmentTypeSchema = z
   .openapi({ description: 'Type of the assignment' })
   .openapi('AssignmentType')
 
-type AssignmentType = {
-  attachments?: z.infer<typeof MediaAttachmentSchema>[]
-  canvas?: { alternateLink?: string; id?: string }
-  classroom?: string
-  cover?: string
-  coverFile?: string
-  creationDate?: string
-  creator?: string
-  description?: string
-  dueDate?: string
-  googleClassroom?: z.infer<typeof GoogleClassroomCourseworkSchema>
-  lti?: { id?: string }
-  maxPoints?: number
-  mfc?: { alternateLink?: string; id?: string }
-  microsoftGraph?: z.infer<typeof MicrosoftGraphAssignmentSchema>
-  scheduledDate?: string
-  state?: 'draft' | 'active' | 'archived'
-  submissions?: z.infer<typeof AssignmentSubmissionSchema>[]
-  title?: string
-  type?: z.infer<typeof AssignmentTypeSchema>
-}
-
-const AssignmentSchema: z.ZodType<AssignmentType> = z
-  .lazy(() =>
-    z
+const AssignmentSchema = z
+  .object({
+    attachments: z.array(MediaAttachmentSchema).exactOptional(),
+    canvas: z
       .object({
-        attachments: z.array(MediaAttachmentSchema).exactOptional(),
-        canvas: z
-          .object({
-            alternateLink: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Link to Canvas assignment' }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Unique identifier of the course on Canvas assignment' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'A Canvas LMS assignment', required: [] }),
-        classroom: z
+        alternateLink: z
           .string()
           .exactOptional()
-          .openapi({
-            description: 'The unique identifier of the class where this assignment was posted',
-          }),
-        cover: z
+          .openapi({ description: 'Link to Canvas assignment' }),
+        id: z
           .string()
           .exactOptional()
-          .openapi({ description: 'The URL of the cover to display' }),
-        coverFile: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The id of the cover to display' }),
-        creationDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The creation date of this assignment' }),
-        creator: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The User unique identifier of the creator of this assignment\n',
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Description and content of the assignment' }),
-        dueDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The due date of this assignment, late submissions will be marked as\npaste due.\n',
-          }),
-        googleClassroom: GoogleClassroomCourseworkSchema.exactOptional(),
-        lti: z
-          .object({
-            id: z.string().exactOptional().openapi({ description: 'Resource ID in the LMS' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'An LTI assignment', required: [] }),
-        maxPoints: z
-          .number()
-          .exactOptional()
-          .openapi({ description: 'If set, the grading will be enabled for the assignement\n' }),
-        mfc: z
-          .object({
-            alternateLink: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Link to MusicFirst Classroom task' }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Unique identifier of the course on MusicFirst Task' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'A MusicFirst Classroom assignment', required: [] }),
-        microsoftGraph: MicrosoftGraphAssignmentSchema.exactOptional(),
-        scheduledDate: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The publication (scheduled) date of the assignment.\nIf this one is specified, the assignment will only be listed to the teachers of the class.\n',
-          }),
-        state: z
-          .enum(['draft', 'active', 'archived'])
-          .exactOptional()
-          .openapi({ description: 'State of the assignment' }),
-        submissions: z.array(AssignmentSubmissionSchema).exactOptional(),
-        title: z.string().exactOptional().openapi({ description: 'Title of the assignment' }),
-        type: AssignmentTypeSchema.exactOptional(),
+          .openapi({ description: 'Unique identifier of the course on Canvas assignment' }),
       })
+      .exactOptional()
+      .openapi({ description: 'A Canvas LMS assignment', required: [] }),
+    classroom: z
+      .string()
+      .exactOptional()
       .openapi({
-        description: 'Assignment details',
-        example: {
-          attachments: [
-            { score: '0000000000000000', type: 'flat' },
-            { type: 'link', url: 'https://flat.io/developers' },
-            {
-              authorName: 'Flat',
-              authorUrl: 'https://www.youtube.com/channel/UCEUIbEP9Rba_g0r4eeGhmXw',
-              description: 'Discover Flat on https://flat.io',
-              html: '<iframe width="560" height="315" src="https://www.youtube.com/embed/SNbRUiBZ4Uw" frameborder="0" allowfullscreen></iframe>',
-              thumbnailHeight: 1052,
-              thumbnailUrl: 'https://i.ytimg.com/vi/SNbRUiBZ4Uw/maxresdefault.jpg',
-              thumbnailWidth: 1868,
-              title: 'Flat - The online collaborative music notation software',
-              type: 'video',
-              url: 'https://www.youtube.com/watch?v=SNbRUiBZ4Uw',
-            },
-          ],
-          canvas: {
-            alternateLink: 'https://canvas.instructure.com/courses/00000/assignments/12345',
-            id: '12345',
-          },
-          classroom: '58c4725345cd836264f0b29e',
-          creationDate: '2017-06-12T13:56:19.613000Z',
-          creator: '5832bf149995c4024bd6de7d',
-          description: 'Get started with Flat',
-          dueDate: '2017-07-12T13:56:19.613000Z',
-          googleClassroom: {
-            alternateLink: 'http://classroom.google.com/c/music-theory/a/first-assignment/detail',
-            id: '1235665432',
-          },
-          lti: { id: '12345' },
-          maxPoints: 100,
-          scheduledDate: '2017-06-18T13:56:19.613000Z',
-          state: 'active',
-          submissions: [
-            {
-              assignment: '58c49068524c03ec576ca43c',
-              attachments: [
-                { score: '58c4955a226ffff257211a8d', title: 'Hello - Student', type: 'flat' },
-              ],
-              classroom: '58c4725345cd836264f0b29e',
-              creationDate: '2017-03-12T00:25:00.748000Z',
-              creator: '559eb5c7f0d4d5e46d03781d',
-              googleClassroom: {
-                alternateLink:
-                  'http://classroom.google.com/c/music-theory/a/first-assignment/submissions/student/my-submission',
-                id: 'CgsI-00000000000',
-                state: 'turned_in',
-              },
-              id: '58c4955c226ffff257211a90',
-              submissionDate: '2017-03-12T00:25:22.748000Z',
-            },
-          ],
-          title: 'My first assignment',
-        },
-        required: [],
+        description: 'The unique identifier of the class where this assignment was posted',
       }),
-  )
+    cover: z.string().exactOptional().openapi({ description: 'The URL of the cover to display' }),
+    coverFile: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The id of the cover to display' }),
+    creationDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The creation date of this assignment' }),
+    creator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The User unique identifier of the creator of this assignment\n' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description and content of the assignment' }),
+    dueDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The due date of this assignment, late submissions will be marked as\npaste due.\n',
+      }),
+    googleClassroom: GoogleClassroomCourseworkSchema.exactOptional(),
+    lti: z
+      .object({ id: z.string().exactOptional().openapi({ description: 'Resource ID in the LMS' }) })
+      .exactOptional()
+      .openapi({ description: 'An LTI assignment', required: [] }),
+    maxPoints: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'If set, the grading will be enabled for the assignement\n' }),
+    mfc: z
+      .object({
+        alternateLink: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Link to MusicFirst Classroom task' }),
+        id: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the course on MusicFirst Task' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'A MusicFirst Classroom assignment', required: [] }),
+    microsoftGraph: MicrosoftGraphAssignmentSchema.exactOptional(),
+    scheduledDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The publication (scheduled) date of the assignment.\nIf this one is specified, the assignment will only be listed to the teachers of the class.\n',
+      }),
+    state: z
+      .enum(['draft', 'active', 'archived'])
+      .exactOptional()
+      .openapi({ description: 'State of the assignment' }),
+    submissions: z.array(AssignmentSubmissionSchema).exactOptional(),
+    title: z.string().exactOptional().openapi({ description: 'Title of the assignment' }),
+    type: AssignmentTypeSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Assignment details',
+    example: {
+      attachments: [
+        { score: '0000000000000000', type: 'flat' },
+        { type: 'link', url: 'https://flat.io/developers' },
+        {
+          authorName: 'Flat',
+          authorUrl: 'https://www.youtube.com/channel/UCEUIbEP9Rba_g0r4eeGhmXw',
+          description: 'Discover Flat on https://flat.io',
+          html: '<iframe width="560" height="315" src="https://www.youtube.com/embed/SNbRUiBZ4Uw" frameborder="0" allowfullscreen></iframe>',
+          thumbnailHeight: 1052,
+          thumbnailUrl: 'https://i.ytimg.com/vi/SNbRUiBZ4Uw/maxresdefault.jpg',
+          thumbnailWidth: 1868,
+          title: 'Flat - The online collaborative music notation software',
+          type: 'video',
+          url: 'https://www.youtube.com/watch?v=SNbRUiBZ4Uw',
+        },
+      ],
+      canvas: {
+        alternateLink: 'https://canvas.instructure.com/courses/00000/assignments/12345',
+        id: '12345',
+      },
+      classroom: '58c4725345cd836264f0b29e',
+      creationDate: '2017-06-12T13:56:19.613000Z',
+      creator: '5832bf149995c4024bd6de7d',
+      description: 'Get started with Flat',
+      dueDate: '2017-07-12T13:56:19.613000Z',
+      googleClassroom: {
+        alternateLink: 'http://classroom.google.com/c/music-theory/a/first-assignment/detail',
+        id: '1235665432',
+      },
+      lti: { id: '12345' },
+      maxPoints: 100,
+      scheduledDate: '2017-06-18T13:56:19.613000Z',
+      state: 'active',
+      submissions: [
+        {
+          assignment: '58c49068524c03ec576ca43c',
+          attachments: [
+            { score: '58c4955a226ffff257211a8d', title: 'Hello - Student', type: 'flat' },
+          ],
+          classroom: '58c4725345cd836264f0b29e',
+          creationDate: '2017-03-12T00:25:00.748000Z',
+          creator: '559eb5c7f0d4d5e46d03781d',
+          googleClassroom: {
+            alternateLink:
+              'http://classroom.google.com/c/music-theory/a/first-assignment/submissions/student/my-submission',
+            id: 'CgsI-00000000000',
+            state: 'turned_in',
+          },
+          id: '58c4955c226ffff257211a90',
+          submissionDate: '2017-03-12T00:25:22.748000Z',
+        },
+      ],
+      title: 'My first assignment',
+    },
+    required: [],
+  })
   .openapi('Assignment')
 
 const AssignmentCopySchema = z

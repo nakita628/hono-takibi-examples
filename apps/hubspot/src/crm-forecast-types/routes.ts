@@ -343,14 +343,22 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: { 'crm.objects.forecasts.read': '', 'crm.schemas.forecasts.read': '' },
+    },
+  },
+  'x-hubspot-app-availability': {
+    'crm.objects.forecasts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.forecasts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
     },
   },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getForecastSettings202609ForecastTypesRoute = createRoute({
   method: 'get',
@@ -372,7 +380,10 @@ export const getForecastSettings202609ForecastTypesRoute = createRoute({
     403: { description: 'Forbidden - insufficient permissions', content: {} },
     default: ErrorResponse,
   },
-  security: [],
+  security: [
+    { oauth2: ['crm.schemas.forecasts.read'] },
+    { oauth2: ['crm.objects.forecasts.read'] },
+  ],
 })
 
 export const getForecastSettings202609ForecastTypesForecastTypeIdRoute = createRoute({
@@ -420,5 +431,8 @@ export const getForecastSettings202609ForecastTypesForecastTypeIdRoute = createR
     404: { description: 'Forecast type not found', content: {} },
     default: ErrorResponse,
   },
-  security: [],
+  security: [
+    { oauth2: ['crm.schemas.forecasts.read'] },
+    { oauth2: ['crm.objects.forecasts.read'] },
+  ],
 })

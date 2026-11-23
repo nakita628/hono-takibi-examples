@@ -570,7 +570,7 @@ const GoogleFirebaseAppcheckV1ExchangeSafetyNetTokenRequestSchema = z
   .openapi('GoogleFirebaseAppcheckV1ExchangeSafetyNetTokenRequest')
 
 const GoogleFirebaseAppcheckV1GenerateAppAttestChallengeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for the GenerateAppAttestChallenge method.' })
   .openapi('GoogleFirebaseAppcheckV1GenerateAppAttestChallengeRequest')
 
@@ -597,7 +597,7 @@ const GoogleFirebaseAppcheckV1GenerateAppAttestChallengeResponseSchema = z
   .openapi('GoogleFirebaseAppcheckV1GenerateAppAttestChallengeResponse')
 
 const GoogleFirebaseAppcheckV1GeneratePlayIntegrityChallengeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for the GeneratePlayIntegrityChallenge method.' })
   .openapi('GoogleFirebaseAppcheckV1GeneratePlayIntegrityChallengeRequest')
 
@@ -728,7 +728,7 @@ const GoogleFirebaseAppcheckV1PublicJwkSetSchema = z
   .openapi('GoogleFirebaseAppcheckV1PublicJwkSet')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

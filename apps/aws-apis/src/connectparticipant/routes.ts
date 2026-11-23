@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const CompleteAttachmentUploadResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CompleteAttachmentUploadResponse')
 
 const ArtifactIdSchema = z.string().min(1).max(256).openapi('ArtifactId')
@@ -24,17 +24,13 @@ const ISO8601DatetimeSchema = z.string().openapi('ISO8601Datetime')
 
 const WebsocketSchema = z
   .object({
-    Url: PreSignedConnectionUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the websocket.' }),
-    ).exactOptional(),
-    ConnectionExpiry: ISO8601DatetimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The URL expiration timestamp in ISO date format.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
+    Url: PreSignedConnectionUrlSchema.exactOptional().openapi({
+      description: 'The URL of the websocket.',
+    }),
+    ConnectionExpiry: ISO8601DatetimeSchema.exactOptional().openapi({
+      description:
+        "<p>The URL expiration timestamp in ISO date format.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
   })
   .openapi({ description: "The websocket for the participant's connection.", required: [] })
   .openapi('Websocket')
@@ -43,34 +39,26 @@ const ParticipantTokenSchema = z.string().min(1).max(1000).openapi('ParticipantT
 
 const ConnectionCredentialsSchema = z
   .object({
-    ConnectionToken: ParticipantTokenSchema.and(
-      z.any().openapi({ description: 'The connection token.' }),
-    ).exactOptional(),
-    Expiry: ISO8601DatetimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The expiration of the token.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
+    ConnectionToken: ParticipantTokenSchema.exactOptional().openapi({
+      description: 'The connection token.',
+    }),
+    Expiry: ISO8601DatetimeSchema.exactOptional().openapi({
+      description:
+        "<p>The expiration of the token.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
   })
   .openapi({ description: 'Connection credentials. ', required: [] })
   .openapi('ConnectionCredentials')
 
 const CreateParticipantConnectionResponseSchema = z
   .object({
-    Websocket: WebsocketSchema.and(
-      z.any().openapi({ description: "Creates the participant's websocket connection." }),
-    ).exactOptional(),
-    ConnectionCredentials: ConnectionCredentialsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Creates the participant's connection credentials. The authentication token associated with the participant's connection.",
-        }),
-    ).exactOptional(),
+    Websocket: WebsocketSchema.exactOptional().openapi({
+      description: "Creates the participant's websocket connection.",
+    }),
+    ConnectionCredentials: ConnectionCredentialsSchema.exactOptional().openapi({
+      description:
+        "Creates the participant's connection credentials. The authentication token associated with the participant's connection.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateParticipantConnectionResponse')
@@ -79,28 +67,22 @@ const ConnectionTypeSchema = z
   .enum(['WEBSOCKET', 'CONNECTION_CREDENTIALS'])
   .openapi('ConnectionType')
 
-const DisconnectParticipantResponseSchema = z.object({}).openapi('DisconnectParticipantResponse')
+const DisconnectParticipantResponseSchema = z
+  .looseObject({})
+  .openapi('DisconnectParticipantResponse')
 
 const PreSignedAttachmentUrlSchema = z.string().min(1).max(2000).openapi('PreSignedAttachmentUrl')
 
 const GetAttachmentResponseSchema = z
   .object({
-    Url: PreSignedAttachmentUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html">StartAttachmentUpload</a>.',
-        }),
-    ).exactOptional(),
-    UrlExpiry: ISO8601DatetimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
-        }),
-    ).exactOptional(),
+    Url: PreSignedAttachmentUrlSchema.exactOptional().openapi({
+      description:
+        'This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html">StartAttachmentUpload</a>.',
+    }),
+    UrlExpiry: ISO8601DatetimeSchema.exactOptional().openapi({
+      description:
+        "The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAttachmentResponse')
@@ -148,23 +130,19 @@ const ArtifactStatusSchema = z
 
 const AttachmentItemSchema = z
   .object({
-    ContentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the MIME file type of the attachment. For a list of supported file types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ).exactOptional(),
-    AttachmentId: ArtifactIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the attachment.' }),
-    ).exactOptional(),
-    AttachmentName: AttachmentNameSchema.and(
-      z.any().openapi({ description: 'A case-sensitive name of the attachment being uploaded.' }),
-    ).exactOptional(),
-    Status: ArtifactStatusSchema.and(
-      z.any().openapi({ description: 'Status of the attachment.' }),
-    ).exactOptional(),
+    ContentType: ContentTypeSchema.exactOptional().openapi({
+      description:
+        'Describes the MIME file type of the attachment. For a list of supported file types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
+    AttachmentId: ArtifactIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the attachment.',
+    }),
+    AttachmentName: AttachmentNameSchema.exactOptional().openapi({
+      description: 'A case-sensitive name of the attachment being uploaded.',
+    }),
+    Status: ArtifactStatusSchema.exactOptional().openapi({
+      description: 'Status of the attachment.',
+    }),
   })
   .openapi({
     description:
@@ -177,15 +155,15 @@ const AttachmentsSchema = z.array(AttachmentItemSchema).openapi('Attachments')
 
 const ReceiptSchema = z
   .object({
-    DeliveredTimestamp: InstantSchema.and(
-      z.any().openapi({ description: 'The time when the message was delivered to the recipient.' }),
-    ).exactOptional(),
-    ReadTimestamp: InstantSchema.and(
-      z.any().openapi({ description: 'The time when the message was read by the recipient.' }),
-    ).exactOptional(),
-    RecipientParticipantId: ParticipantIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the recipient of the message. ' }),
-    ).exactOptional(),
+    DeliveredTimestamp: InstantSchema.exactOptional().openapi({
+      description: 'The time when the message was delivered to the recipient.',
+    }),
+    ReadTimestamp: InstantSchema.exactOptional().openapi({
+      description: 'The time when the message was read by the recipient.',
+    }),
+    RecipientParticipantId: ParticipantIdSchema.exactOptional().openapi({
+      description: 'The identifier of the recipient of the message. ',
+    }),
   })
   .openapi({ description: 'The receipt for the message delivered to the recipient.', required: [] })
   .openapi('Receipt')
@@ -194,86 +172,56 @@ const ReceiptsSchema = z.array(ReceiptSchema).openapi('Receipts')
 
 const MessageMetadataSchema = z
   .object({
-    MessageId: ChatItemIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the message that contains the metadata information. ',
-        }),
-    ).exactOptional(),
-    Receipts: ReceiptsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of receipt information for a message for different recipients.',
-        }),
-    ).exactOptional(),
+    MessageId: ChatItemIdSchema.exactOptional().openapi({
+      description: 'The identifier of the message that contains the metadata information. ',
+    }),
+    Receipts: ReceiptsSchema.exactOptional().openapi({
+      description: 'The list of receipt information for a message for different recipients.',
+    }),
   })
   .openapi({ description: 'Contains metadata related to a message.', required: [] })
   .openapi('MessageMetadata')
 
 const ItemSchema = z
   .object({
-    AbsoluteTime: InstantSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the message or event was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
-    Content: ChatContentSchema.and(
-      z.any().openapi({ description: 'The content of the message or event.' }),
-    ).exactOptional(),
-    ContentType: ChatContentTypeSchema.and(
-      z.any().openapi({ description: 'The type of content of the item.' }),
-    ).exactOptional(),
-    Id: ChatItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the item.' }),
-    ).exactOptional(),
-    Type: ChatItemTypeSchema.and(
-      z.any().openapi({ description: 'Type of the item: message or event. ' }),
-    ).exactOptional(),
-    ParticipantId: ParticipantIdSchema.and(
-      z.any().openapi({ description: 'The ID of the sender in the session.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The chat display name of the sender.' }),
-    ).exactOptional(),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The role of the sender. For example, is it a customer, agent, or system.',
-        }),
-    ).exactOptional(),
-    Attachments: AttachmentsSchema.and(
-      z.any().openapi({ description: 'Provides information about the attachments.' }),
-    ).exactOptional(),
-    MessageMetadata: MessageMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata related to the message. Currently this supports only information related to message receipts.',
-        }),
-    ).exactOptional(),
-    RelatedContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId on which the transcript item was originally sent. This field is only populated for persistent chats when the transcript item is from the past chat session. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html">Enable persistent chat</a>.',
-        }),
-    ).exactOptional(),
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId on which the transcript item was originally sent. This field is populated only when the transcript item is from the current chat session.',
-        }),
-    ).exactOptional(),
+    AbsoluteTime: InstantSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the message or event was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
+    Content: ChatContentSchema.exactOptional().openapi({
+      description: 'The content of the message or event.',
+    }),
+    ContentType: ChatContentTypeSchema.exactOptional().openapi({
+      description: 'The type of content of the item.',
+    }),
+    Id: ChatItemIdSchema.exactOptional().openapi({ description: 'The ID of the item.' }),
+    Type: ChatItemTypeSchema.exactOptional().openapi({
+      description: 'Type of the item: message or event. ',
+    }),
+    ParticipantId: ParticipantIdSchema.exactOptional().openapi({
+      description: 'The ID of the sender in the session.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The chat display name of the sender.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.exactOptional().openapi({
+      description: 'The role of the sender. For example, is it a customer, agent, or system.',
+    }),
+    Attachments: AttachmentsSchema.exactOptional().openapi({
+      description: 'Provides information about the attachments.',
+    }),
+    MessageMetadata: MessageMetadataSchema.exactOptional().openapi({
+      description:
+        'The metadata related to the message. Currently this supports only information related to message receipts.',
+    }),
+    RelatedContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'The contactId on which the transcript item was originally sent. This field is only populated for persistent chats when the transcript item is from the past chat session. For more information, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html">Enable persistent chat</a>.',
+    }),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description:
+        'The contactId on which the transcript item was originally sent. This field is populated only when the transcript item is from the current chat session.',
+    }),
   })
   .openapi({ description: 'An item - message or event - that has been sent. ', required: [] })
   .openapi('Item')
@@ -284,20 +232,16 @@ const NextTokenSchema = z.string().min(1).max(1000).openapi('NextToken')
 
 const GetTranscriptResponseSchema = z
   .object({
-    InitialContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The initial contact ID for the contact. ' }),
-    ).exactOptional(),
-    Transcript: TranscriptSchema.and(
-      z.any().openapi({ description: 'The list of messages in the session.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token. Use the value returned previously in the next subsequent request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    InitialContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The initial contact ID for the contact. ',
+    }),
+    Transcript: TranscriptSchema.exactOptional().openapi({
+      description: 'The list of messages in the session.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token. Use the value returned previously in the next subsequent request to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTranscriptResponse')
@@ -306,34 +250,22 @@ const MostRecentSchema = z.int().min(0).max(100).openapi('MostRecent')
 
 const SendEventResponseSchema = z
   .object({
-    Id: ChatItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the response.' }),
-    ).exactOptional(),
-    AbsoluteTime: InstantSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the event was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
+    Id: ChatItemIdSchema.exactOptional().openapi({ description: 'The ID of the response.' }),
+    AbsoluteTime: InstantSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the event was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendEventResponse')
 
 const SendMessageResponseSchema = z
   .object({
-    Id: ChatItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the message.' }),
-    ).exactOptional(),
-    AbsoluteTime: InstantSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time when the message was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
+    Id: ChatItemIdSchema.exactOptional().openapi({ description: 'The ID of the message.' }),
+    AbsoluteTime: InstantSchema.exactOptional().openapi({
+      description:
+        "<p>The time when the message was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendMessageResponse')
@@ -352,41 +284,29 @@ const UploadMetadataSignedHeadersSchema = z
 
 const UploadMetadataSchema = z
   .object({
-    Url: UploadMetadataUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html">StartAttachmentUpload</a>.',
-        }),
-    ).exactOptional(),
-    UrlExpiry: ISO8601DatetimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
-        }),
-    ).exactOptional(),
-    HeadersToInclude: UploadMetadataSignedHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The headers to be provided while uploading the file to the URL.',
-        }),
-    ).exactOptional(),
+    Url: UploadMetadataUrlSchema.exactOptional().openapi({
+      description:
+        'This is the pre-signed URL that can be used for uploading the file to Amazon S3 when used in response to <a href="https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_StartAttachmentUpload.html">StartAttachmentUpload</a>.',
+    }),
+    UrlExpiry: ISO8601DatetimeSchema.exactOptional().openapi({
+      description:
+        "The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.",
+    }),
+    HeadersToInclude: UploadMetadataSignedHeadersSchema.exactOptional().openapi({
+      description: 'The headers to be provided while uploading the file to the URL.',
+    }),
   })
   .openapi({ description: 'Fields to be used while uploading the attachment.', required: [] })
   .openapi('UploadMetadata')
 
 const StartAttachmentUploadResponseSchema = z
   .object({
-    AttachmentId: ArtifactIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the attachment.' }),
-    ).exactOptional(),
-    UploadMetadata: UploadMetadataSchema.and(
-      z.any().openapi({ description: 'Fields to be used while uploading the attachment.' }),
-    ).exactOptional(),
+    AttachmentId: ArtifactIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the attachment.',
+    }),
+    UploadMetadata: UploadMetadataSchema.exactOptional().openapi({
+      description: 'Fields to be used while uploading the attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartAttachmentUploadResponse')
@@ -403,17 +323,13 @@ const NonEmptyClientTokenSchema = z.string().min(1).max(500).openapi('NonEmptyCl
 
 const CompleteAttachmentUploadRequestSchema = z
   .object({
-    AttachmentIds: AttachmentIdListSchema.and(
-      z.any().openapi({ description: 'A list of unique identifiers for the attachments.' }),
-    ),
-    ClientToken: NonEmptyClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ),
+    AttachmentIds: AttachmentIdListSchema.openapi({
+      description: 'A list of unique identifiers for the attachments.',
+    }),
+    ClientToken: NonEmptyClientTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['AttachmentIds', 'ClientToken'], title: 'CompleteAttachmentUploadRequest' })
   .openapi('CompleteAttachmentUploadRequest')
@@ -422,45 +338,33 @@ const ConnectionTypeListSchema = z.array(ConnectionTypeSchema).min(1).openapi('C
 
 const CreateParticipantConnectionRequestSchema = z
   .object({
-    Type: ConnectionTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of connection information required. This can be omitted if <code>ConnectParticipant</code> is <code>true</code>.',
-        }),
-    ).exactOptional(),
-    ConnectParticipant: BoolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Connect Participant is used to mark the participant as connected for customer participant in message streaming, as well as for agent or manager participant in non-streaming chats.',
-        }),
-    ).exactOptional(),
+    Type: ConnectionTypeListSchema.exactOptional().openapi({
+      description:
+        'Type of connection information required. This can be omitted if <code>ConnectParticipant</code> is <code>true</code>.',
+    }),
+    ConnectParticipant: BoolSchema.exactOptional().openapi({
+      description:
+        'Amazon Connect Participant is used to mark the participant as connected for customer participant in message streaming, as well as for agent or manager participant in non-streaming chats.',
+    }),
   })
   .openapi({ title: 'CreateParticipantConnectionRequest', required: [] })
   .openapi('CreateParticipantConnectionRequest')
 
 const DisconnectParticipantRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ title: 'DisconnectParticipantRequest', required: [] })
   .openapi('DisconnectParticipantRequest')
 
 const GetAttachmentRequestSchema = z
   .object({
-    AttachmentId: ArtifactIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the attachment.' }),
-    ),
+    AttachmentId: ArtifactIdSchema.openapi({
+      description: 'A unique identifier for the attachment.',
+    }),
   })
   .openapi({ required: ['AttachmentId'], title: 'GetAttachmentRequest' })
   .openapi('GetAttachmentRequest')
@@ -473,24 +377,16 @@ const SortKeySchema = z.enum(['DESCENDING', 'ASCENDING']).openapi('SortKey')
 
 const StartPositionSchema = z
   .object({
-    Id: ChatItemIdSchema.and(
-      z.any().openapi({ description: 'The ID of the message or event where to start. ' }),
-    ).exactOptional(),
-    AbsoluteTime: InstantSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The time in ISO format where to start.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-        }),
-    ).exactOptional(),
-    MostRecent: MostRecentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The start position of the most recent message where you want to start. ',
-        }),
-    ).exactOptional(),
+    Id: ChatItemIdSchema.exactOptional().openapi({
+      description: 'The ID of the message or event where to start. ',
+    }),
+    AbsoluteTime: InstantSchema.exactOptional().openapi({
+      description:
+        "<p>The time in ISO format where to start.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+    }),
+    MostRecent: MostRecentSchema.exactOptional().openapi({
+      description: 'The start position of the most recent message where you want to start. ',
+    }),
   })
   .openapi({
     description:
@@ -501,131 +397,82 @@ const StartPositionSchema = z
 
 const GetTranscriptRequestSchema = z
   .object({
-    ContactId: ContactIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contactId from the current contact chain for which transcript is needed.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return in the page. Default: 10. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token. Use the value returned previously in the next subsequent request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    ScanDirection: ScanDirectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The direction from StartPosition from which to retrieve message. Default: BACKWARD when no StartPosition is provided, FORWARD with StartPosition. ',
-        }),
-    ).exactOptional(),
-    SortOrder: SortKeySchema.and(
-      z.any().openapi({ description: 'The sort order for the records. Default: DESCENDING.' }),
-    ).exactOptional(),
-    StartPosition: StartPositionSchema.and(
-      z.any().openapi({ description: 'A filtering option for where to start.' }),
-    ).exactOptional(),
+    ContactId: ContactIdSchema.exactOptional().openapi({
+      description: 'The contactId from the current contact chain for which transcript is needed.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return in the page. Default: 10. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token. Use the value returned previously in the next subsequent request to retrieve the next set of results.',
+    }),
+    ScanDirection: ScanDirectionSchema.exactOptional().openapi({
+      description:
+        'The direction from StartPosition from which to retrieve message. Default: BACKWARD when no StartPosition is provided, FORWARD with StartPosition. ',
+    }),
+    SortOrder: SortKeySchema.exactOptional().openapi({
+      description: 'The sort order for the records. Default: DESCENDING.',
+    }),
+    StartPosition: StartPositionSchema.exactOptional().openapi({
+      description: 'A filtering option for where to start.',
+    }),
   })
   .openapi({ title: 'GetTranscriptRequest', required: [] })
   .openapi('GetTranscriptRequest')
 
 const SendEventRequestSchema = z
   .object({
-    ContentType: ChatContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content type of the request. Supported types are:</p> <ul> <li> <p>application/vnd.amazonaws.connect.event.typing</p> </li> <li> <p>application/vnd.amazonaws.connect.event.connection.acknowledged</p> </li> <li> <p>application/vnd.amazonaws.connect.event.message.delivered</p> </li> <li> <p>application/vnd.amazonaws.connect.event.message.read</p> </li> </ul>',
-        }),
-    ),
-    Content: ChatContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the event to be sent (for example, message text). For content related to message receipts, this is supported in the form of a JSON string.</p> <p>Sample Content: "{\\"messageId\\":\\"11111111-aaaa-bbbb-cccc-EXAMPLE01234\\"}"</p>',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    ContentType: ChatContentTypeSchema.openapi({
+      description:
+        '<p>The content type of the request. Supported types are:</p> <ul> <li> <p>application/vnd.amazonaws.connect.event.typing</p> </li> <li> <p>application/vnd.amazonaws.connect.event.connection.acknowledged</p> </li> <li> <p>application/vnd.amazonaws.connect.event.message.delivered</p> </li> <li> <p>application/vnd.amazonaws.connect.event.message.read</p> </li> </ul>',
+    }),
+    Content: ChatContentSchema.exactOptional().openapi({
+      description:
+        '<p>The content of the event to be sent (for example, message text). For content related to message receipts, this is supported in the form of a JSON string.</p> <p>Sample Content: "{\\"messageId\\":\\"11111111-aaaa-bbbb-cccc-EXAMPLE01234\\"}"</p>',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['ContentType'], title: 'SendEventRequest' })
   .openapi('SendEventRequest')
 
 const SendMessageRequestSchema = z
   .object({
-    ContentType: ChatContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
-        }),
-    ),
-    Content: ChatContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
+    ContentType: ChatContentTypeSchema.openapi({
+      description:
+        'The type of the content. Supported types are <code>text/plain</code>, <code>text/markdown</code>, <code>application/json</code>, and <code>application/vnd.amazonaws.connect.message.interactive.response</code>.',
+    }),
+    Content: ChatContentSchema.openapi({
+      description:
+        '<p>The content of the message. </p> <ul> <li> <p>For <code>text/plain</code> and <code>text/markdown</code>, the Length Constraints are Minimum of 1, Maximum of 1024. </p> </li> <li> <p>For <code>application/json</code>, the Length Constraints are Minimum of 1, Maximum of 12000. </p> </li> <li> <p>For <code>application/vnd.amazonaws.connect.message.interactive.response</code>, the Length Constraints are Minimum of 1, Maximum of 12288.</p> </li> </ul>',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({ required: ['ContentType', 'Content'], title: 'SendMessageRequest' })
   .openapi('SendMessageRequest')
 
 const StartAttachmentUploadRequestSchema = z
   .object({
-    ContentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the MIME file type of the attachment. For a list of supported file types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>.',
-        }),
-    ),
-    AttachmentSizeInBytes: AttachmentSizeInBytesSchema.and(
-      z.any().openapi({ description: 'The size of the attachment in bytes.' }),
-    ),
-    AttachmentName: AttachmentNameSchema.and(
-      z.any().openapi({ description: 'A case-sensitive name of the attachment being uploaded.' }),
-    ),
-    ClientToken: NonEmptyClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ),
+    ContentType: ContentTypeSchema.openapi({
+      description:
+        'Describes the MIME file type of the attachment. For a list of supported file types, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>.',
+    }),
+    AttachmentSizeInBytes: AttachmentSizeInBytesSchema.openapi({
+      description: 'The size of the attachment in bytes.',
+    }),
+    AttachmentName: AttachmentNameSchema.openapi({
+      description: 'A case-sensitive name of the attachment being uploaded.',
+    }),
+    ClientToken: NonEmptyClientTokenSchema.openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
   })
   .openapi({
     required: ['ContentType', 'AttachmentSizeInBytes', 'AttachmentName', 'ClientToken'],
@@ -1119,27 +966,17 @@ export const postParticipantTranscriptXAmzBearerRoute = createRoute({
                 .openapi({ description: 'The sort order for the records. Default: DESCENDING.' }),
               StartPosition: z
                 .object({
-                  Id: ChatItemIdSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ID of the message or event where to start. ' }),
-                  ).exactOptional(),
-                  AbsoluteTime: InstantSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>The time in ISO format where to start.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
-                      }),
-                  ).exactOptional(),
-                  MostRecent: MostRecentSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The start position of the most recent message where you want to start. ',
-                      }),
-                  ).exactOptional(),
+                  Id: ChatItemIdSchema.exactOptional().openapi({
+                    description: 'The ID of the message or event where to start. ',
+                  }),
+                  AbsoluteTime: InstantSchema.exactOptional().openapi({
+                    description:
+                      "<p>The time in ISO format where to start.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>",
+                  }),
+                  MostRecent: MostRecentSchema.exactOptional().openapi({
+                    description:
+                      'The start position of the most recent message where you want to start. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

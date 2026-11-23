@@ -4530,7 +4530,7 @@ export const getDevicesSerialApplianceUplinksSettingsRoute = createRoute({
                     }),
                 )
                 .exactOptional()
-                .openapi({ description: 'Interface settings.' }),
+                .openapi({ description: 'Interface settings.', required: [] }),
             })
             .openapi({ required: [] }),
           example: {
@@ -5531,7 +5531,7 @@ export const putDevicesSerialApplianceUplinksSettingsRoute = createRoute({
                       required: [],
                     }),
                 )
-                .openapi({ description: 'Interface settings.' }),
+                .openapi({ description: 'Interface settings.', required: [] }),
             })
             .openapi({
               example: {
@@ -6484,7 +6484,7 @@ export const putDevicesSerialApplianceUplinksSettingsRoute = createRoute({
                     }),
                 )
                 .exactOptional()
-                .openapi({ description: 'Interface settings.' }),
+                .openapi({ description: 'Interface settings.', required: [] }),
             })
             .openapi({ required: [] }),
           example: {

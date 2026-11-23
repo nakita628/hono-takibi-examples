@@ -61,7 +61,7 @@ export const getPublicHistoryRoute = createRoute({
       description: 'OK',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           example: {
             address: '52.4676201,13.5280284',
             days: [
@@ -5721,183 +5721,111 @@ export const getPublicHistoryRoute = createRoute({
         },
       },
       headers: z.object({
-        'CF-Cache-Status': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'DYNAMIC' }),
-        },
-        'CF-RAY': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '762d75aefb04bb37-FRA' }),
-        },
-        Connection: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Encoding': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'br' }),
-        },
-        'Content-Type': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'application/json; charset=utf-8' }),
-        },
-        Date: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Mon, 31 Oct 2022 15:35:18 GMT' }),
-        },
-        NEL: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}',
-            }),
-        },
-        'Report-To': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=a5Kj9Nifmat%2BlvMrXcm8h9iy8lbOIsAQztfSu%2FdqtmjwqCBADemFckT1a6NNWCa5kTJjJcy9Ll7lQFTO8WiljDriyKIx9LtEsYaKeARwg59VvO9dWmvjOiPH6LXHXeUAhHyY"}],"group":"cf-nel","max_age":604800}',
-            }),
-        },
-        Server: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cloudflare' }),
-        },
-        'Transfer-Encoding': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'chunked' }),
-        },
-        'access-control-allow-origin': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '*' }),
-        },
-        'alt-svc': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'h3=":443"; ma=86400, h3-29=":443"; ma=86400',
-            }),
-        },
-        etag: {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'W/"189d5-ylcxFXjyp0NCWP1zSbtLs+qfmqk"',
-            }),
-        },
-        'x-rate-limit-limit': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 30 }),
-        },
-        'x-rate-limit-remaining': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 29 }),
-        },
-        'x-rate-limit-reset': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 1667230528442 }),
-        },
-        'x-request-compute': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 755 }),
-        },
-        'x-request-id': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '3b1db867-aa4e-473f-86d6-0e7bf2e557bd',
-            }),
-        },
-        'x-request-transfer': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 100821 }),
-        },
-        'x-served-by': {
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'api.ecowetter.de' }),
-        },
-        'x-sessioncredit-compute': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 89999985209 }),
-        },
-        'x-sessioncredit-start': {
-          style: 'simple',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 1667226989324 }),
-        },
-        'x-sessioncredit-transfer': {
-          style: 'simple',
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: -111417539 }),
-        },
+        'CF-Cache-Status': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'DYNAMIC' }),
+        'CF-RAY': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '762d75aefb04bb37-FRA' }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'br' }),
+        'Content-Type': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'application/json; charset=utf-8' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Mon, 31 Oct 2022 15:35:18 GMT' }),
+        NEL: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}',
+          }),
+        'Report-To': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v3?s=a5Kj9Nifmat%2BlvMrXcm8h9iy8lbOIsAQztfSu%2FdqtmjwqCBADemFckT1a6NNWCa5kTJjJcy9Ll7lQFTO8WiljDriyKIx9LtEsYaKeARwg59VvO9dWmvjOiPH6LXHXeUAhHyY"}],"group":"cf-nel","max_age":604800}',
+          }),
+        Server: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cloudflare' }),
+        'Transfer-Encoding': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'chunked' }),
+        'access-control-allow-origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '*' }),
+        'alt-svc': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'h3=":443"; ma=86400, h3-29=":443"; ma=86400',
+          }),
+        etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'W/"189d5-ylcxFXjyp0NCWP1zSbtLs+qfmqk"',
+          }),
+        'x-rate-limit-limit': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 30 }),
+        'x-rate-limit-remaining': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 29 }),
+        'x-rate-limit-reset': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 1667230528442 }),
+        'x-request-compute': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 755 }),
+        'x-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '3b1db867-aa4e-473f-86d6-0e7bf2e557bd' }),
+        'x-request-transfer': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 100821 }),
+        'x-served-by': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'api.ecowetter.de' }),
+        'x-sessioncredit-compute': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 89999985209 }),
+        'x-sessioncredit-start': z
+          .int()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 1667226989324 }),
+        'x-sessioncredit-transfer': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: -111417539 }),
       }),
     },
   },

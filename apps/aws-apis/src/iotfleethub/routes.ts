@@ -15,12 +15,8 @@ const ArnSchema = z
 
 const CreateApplicationResponseSchema = z
   .object({
-    applicationId: IdSchema.and(
-      z.any().openapi({ description: 'The unique Id of the web application.' }),
-    ),
-    applicationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the web application.' }),
-    ),
+    applicationId: IdSchema.openapi({ description: 'The unique Id of the web application.' }),
+    applicationArn: ArnSchema.openapi({ description: 'The ARN of the web application.' }),
   })
   .openapi({ required: ['applicationId', 'applicationArn'] })
   .openapi('CreateApplicationResponse')
@@ -35,7 +31,7 @@ const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
-const DeleteApplicationResponseSchema = z.object({}).openapi('DeleteApplicationResponse')
+const DeleteApplicationResponseSchema = z.looseObject({}).openapi('DeleteApplicationResponse')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
@@ -78,69 +74,37 @@ const TagMapSchema = z
 
 const DescribeApplicationResponseSchema = z
   .object({
-    applicationId: IdSchema.and(
-      z.any().openapi({ description: 'The unique Id of the web application.' }),
-    ),
-    applicationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the web application.' }),
-    ),
-    applicationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the web application.' }),
-    ),
-    applicationDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the web application.' }),
-    ).exactOptional(),
-    applicationUrl: UrlSchema.and(
-      z.any().openapi({ description: 'The URL of the web application.' }),
-    ),
-    applicationState: ApplicationStateSchema.and(
-      z.any().openapi({ description: 'The current state of the web application.' }),
-    ),
-    applicationCreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in Unix epoch time) when the application was created.',
-        }),
-    ),
-    applicationLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in Unix epoch time) when the application was last updated.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that the web application assumes when it interacts with AWS IoT Core.',
-        }),
-    ),
-    ssoClientId: SsoClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Id of the single sign-on client that you use to authenticate and authorize users on the web application.',
-        }),
-    ).exactOptional(),
-    errorMessage: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message indicating why the <code>DescribeApplication</code> API failed.',
-        }),
-    ).exactOptional(),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of key/value pairs that you can use to manage the web application resource.',
-        }),
-    ).exactOptional(),
+    applicationId: IdSchema.openapi({ description: 'The unique Id of the web application.' }),
+    applicationArn: ArnSchema.openapi({ description: 'The ARN of the web application.' }),
+    applicationName: NameSchema.openapi({ description: 'The name of the web application.' }),
+    applicationDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the web application.',
+    }),
+    applicationUrl: UrlSchema.openapi({ description: 'The URL of the web application.' }),
+    applicationState: ApplicationStateSchema.openapi({
+      description: 'The current state of the web application.',
+    }),
+    applicationCreationDate: TimestampSchema.openapi({
+      description: 'The date (in Unix epoch time) when the application was created.',
+    }),
+    applicationLastUpdateDate: TimestampSchema.openapi({
+      description: 'The date (in Unix epoch time) when the application was last updated.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        'The ARN of the role that the web application assumes when it interacts with AWS IoT Core.',
+    }),
+    ssoClientId: SsoClientIdSchema.exactOptional().openapi({
+      description:
+        'The Id of the single sign-on client that you use to authenticate and authorize users on the web application.',
+    }),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'A message indicating why the <code>DescribeApplication</code> API failed.',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A set of key/value pairs that you can use to manage the web application resource.',
+    }),
   })
   .openapi({
     required: [
@@ -158,35 +122,21 @@ const DescribeApplicationResponseSchema = z
 
 const ApplicationSummarySchema = z
   .object({
-    applicationId: IdSchema.and(
-      z.any().openapi({ description: 'The unique Id of the web application.' }),
-    ),
-    applicationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the web application.' }),
-    ),
-    applicationDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the web application.' }),
-    ).exactOptional(),
-    applicationUrl: UrlSchema.and(
-      z.any().openapi({ description: 'The URL of the web application.' }),
-    ),
-    applicationCreationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in Unix epoch time) when the web application was created.',
-        }),
-    ).exactOptional(),
-    applicationLastUpdateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date (in Unix epoch time) when the web application was last updated.',
-        }),
-    ).exactOptional(),
-    applicationState: ApplicationStateSchema.and(
-      z.any().openapi({ description: 'The current state of the web application.' }),
-    ).exactOptional(),
+    applicationId: IdSchema.openapi({ description: 'The unique Id of the web application.' }),
+    applicationName: NameSchema.openapi({ description: 'The name of the web application.' }),
+    applicationDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the web application.',
+    }),
+    applicationUrl: UrlSchema.openapi({ description: 'The URL of the web application.' }),
+    applicationCreationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date (in Unix epoch time) when the web application was created.',
+    }),
+    applicationLastUpdateDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date (in Unix epoch time) when the web application was last updated.',
+    }),
+    applicationState: ApplicationStateSchema.exactOptional().openapi({
+      description: 'The current state of the web application.',
+    }),
   })
   .openapi({
     required: ['applicationId', 'applicationName', 'applicationUrl'],
@@ -206,33 +156,29 @@ const NextTokenSchema = z
 
 const ListApplicationsResponseSchema = z
   .object({
-    applicationSummaries: ApplicationSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that provide summaries of information about the web applications in the list.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token used to get the next set of results.' }),
-    ).exactOptional(),
+    applicationSummaries: ApplicationSummariesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that provide summaries of information about the web applications in the list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The list of tags assigned to the resource.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The list of tags assigned to the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -241,7 +187,7 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateApplicationResponseSchema = z.object({}).openapi('UpdateApplicationResponse')
+const UpdateApplicationResponseSchema = z.looseObject({}).openapi('UpdateApplicationResponse')
 
 const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
@@ -254,59 +200,45 @@ const ClientRequestTokenSchema = z
 
 const CreateApplicationRequestSchema = z
   .object({
-    applicationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the web application.' }),
-    ),
-    applicationDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the web application.' }),
-    ).exactOptional(),
-    clientToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the role that the web application assumes when it interacts with AWS IoT Core.</p> <note> <p>The name of the role must be in the form <code>AWSIotFleetHub_<i>random_string</i> </code>.</p> </note>',
-        }),
-    ),
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of key/value pairs that you can use to manage the web application resource.',
-        }),
-    ).exactOptional(),
+    applicationName: NameSchema.openapi({ description: 'The name of the web application.' }),
+    applicationDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the web application.',
+    }),
+    clientToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        '<p>The ARN of the role that the web application assumes when it interacts with AWS IoT Core.</p> <note> <p>The name of the role must be in the form <code>AWSIotFleetHub_<i>random_string</i> </code>.</p> </note>',
+    }),
+    tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'A set of key/value pairs that you can use to manage the web application resource.',
+    }),
   })
   .openapi({ required: ['applicationName', 'roleArn'], title: 'CreateApplicationRequest' })
   .openapi('CreateApplicationRequest')
 
 const DeleteApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const DescribeApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeApplicationRequest' })
   .openapi('DescribeApplicationRequest')
 
 const ListApplicationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationsRequest' })
   .openapi('ListApplicationsRequest')
 
 const ResourceArnSchema = z.string().openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -314,34 +246,28 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The new or modified tags for the resource.' }),
-    ),
+    tags: TagMapSchema.openapi({ description: 'The new or modified tags for the resource.' }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    applicationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the web application.' }),
-    ).exactOptional(),
-    applicationDescription: DescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the web application.' }),
-    ).exactOptional(),
-    clientToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
-        }),
-    ).exactOptional(),
+    applicationName: NameSchema.exactOptional().openapi({
+      description: 'The name of the web application.',
+    }),
+    applicationDescription: DescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the web application.',
+    }),
+    clientToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.",
+    }),
   })
   .openapi({ title: 'UpdateApplicationRequest', required: [] })
   .openapi('UpdateApplicationRequest')

@@ -451,7 +451,9 @@ curl https://example.com/requestBody \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{
-    "$ref": "#/components/examples/user/value"
+    "id": 12343354,
+    "email": "test@example.com",
+    "name": "Test user name"
   }'
 ```
 
@@ -469,7 +471,9 @@ This operation has a `requestBody` with separately maintained example within a `
 
 ```json
 {
-  "$ref": "#/components/examples/user/value"
+  "id": 12343354,
+  "email": "test@example.com",
+  "name": "Test user name"
 }
 ```
 
@@ -488,7 +492,9 @@ This operation has a `requestBody` with separately maintained example within a `
 
 ```json
 {
-  "$ref": "#/components/examples/user/value"
+  "id": 12343354,
+  "email": "test@example.com",
+  "name": "Test user name"
 }
 ```
 

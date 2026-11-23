@@ -948,100 +948,71 @@ export const postRemovebgRoute = createRoute({
         },
       },
       headers: z.object({
-        'X-Credits-Charged': {
-          description: 'Amount of credits charged for this call',
-          schema: z
-            .float32()
-            .exactOptional()
-            .openapi({
-              description: 'Amount of credits charged for this call',
-              param: { required: false },
-            }),
-        },
-        'X-Foreground-Height': {
-          description:
-            'Height of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Height of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-              param: { required: false },
-            }),
-        },
-        'X-Foreground-Left': {
-          description:
-            'Left position of the foreground image along the horizontal axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Left position of the foreground image along the horizontal axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-              param: { required: false },
-            }),
-        },
-        'X-Foreground-Top': {
-          description:
-            'Top position of the foreground image along the vertical axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Top position of the foreground image along the vertical axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-              param: { required: false },
-            }),
-        },
-        'X-Foreground-Width': {
-          description:
-            'Width of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description:
-                'Width of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
-              param: { required: false },
-            }),
-        },
-        'X-Height': {
-          description: 'Height of the result image',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Height of the result image', param: { required: false } }),
-        },
-        'X-Type': {
-          description:
-            'Detected foreground type (How specific this classification is depends on the type_level parameter sent in the request)',
-          schema: z
-            .enum([
-              'person',
-              'product',
-              'animal',
-              'car',
-              'car_interior',
-              'car_part',
-              'transportation',
-              'graphics',
-              'other',
-            ])
-            .exactOptional()
-            .openapi({
-              description:
-                'Detected foreground type (How specific this classification is depends on the type_level parameter sent in the request)',
-              param: { required: false },
-            }),
-        },
-        'X-Width': {
-          description: 'Width of the result image',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({ description: 'Width of the result image', param: { required: false } }),
-        },
+        'X-Credits-Charged': z
+          .float32()
+          .exactOptional()
+          .openapi({
+            description: 'Amount of credits charged for this call',
+            param: { required: false },
+          }),
+        'X-Foreground-Height': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Height of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
+            param: { required: false },
+          }),
+        'X-Foreground-Left': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Left position of the foreground image along the horizontal axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
+            param: { required: false },
+          }),
+        'X-Foreground-Top': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Top position of the foreground image along the vertical axis. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
+            param: { required: false },
+          }),
+        'X-Foreground-Width': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'Width of the foreground image. In case the input image resolution is higher than the limit (> 25 megapixels) this value is expressed with respect to the input image resolution.',
+            param: { required: false },
+          }),
+        'X-Height': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Height of the result image', param: { required: false } }),
+        'X-Type': z
+          .enum([
+            'person',
+            'product',
+            'animal',
+            'car',
+            'car_interior',
+            'car_part',
+            'transportation',
+            'graphics',
+            'other',
+          ])
+          .exactOptional()
+          .openapi({
+            description:
+              'Detected foreground type (How specific this classification is depends on the type_level parameter sent in the request)',
+            param: { required: false },
+          }),
+        'X-Width': z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Width of the result image', param: { required: false } }),
       }),
     },
     400: {

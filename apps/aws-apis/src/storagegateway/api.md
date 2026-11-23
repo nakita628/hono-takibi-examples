@@ -13877,12 +13877,12 @@ An automatic tape creation policy consists of automatic tape creation rules wher
 "string"
 ```
 
-<h2 id="tocS_Boolean">Boolean</h2>
+<h2 id="tocS_Boolean2">Boolean2</h2>
 <!-- backwards compatibility -->
-<a id="schemaboolean-1"></a>
-<a id="schema_Boolean"></a>
-<a id="tocSboolean-1"></a>
-<a id="tocsboolean-1"></a>
+<a id="schemaboolean2"></a>
+<a id="schema_Boolean2"></a>
+<a id="tocSboolean2"></a>
+<a id="tocsboolean2"></a>
 
 ```json
 true

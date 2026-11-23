@@ -1,12 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const InAppStreamNameSchema = z
-  .string()
-  .regex(/[^-\s<>&]*/)
-  .min(1)
-  .max(32)
-  .openapi('InAppStreamName')
-
 const ResourceARNSchema = z
   .string()
   .regex(/arn:.*/)
@@ -14,132 +7,164 @@ const ResourceARNSchema = z
   .max(2048)
   .openapi('ResourceARN')
 
-const InputLambdaProcessorSchema = z
+const ApplicationDescriptionSchema = z.string().min(0).max(1024).openapi('ApplicationDescription')
+
+const ApplicationNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(128)
+  .openapi('ApplicationName')
+
+const RuntimeEnvironmentSchema = z
+  .enum([
+    'SQL-1_0',
+    'FLINK-1_6',
+    'FLINK-1_8',
+    'ZEPPELIN-FLINK-1_0',
+    'FLINK-1_11',
+    'FLINK-1_13',
+    'ZEPPELIN-FLINK-2_0',
+    'FLINK-1_15',
+  ])
+  .openapi('RuntimeEnvironment')
+
+const RoleARNSchema = z
+  .string()
+  .regex(/arn:.*/)
+  .min(1)
+  .max(2048)
+  .openapi('RoleARN')
+
+const ApplicationStatusSchema = z
+  .enum([
+    'DELETING',
+    'STARTING',
+    'STOPPING',
+    'READY',
+    'RUNNING',
+    'UPDATING',
+    'AUTOSCALING',
+    'FORCE_STOPPING',
+    'ROLLING_BACK',
+    'MAINTENANCE',
+    'ROLLED_BACK',
+  ])
+  .openapi('ApplicationStatus')
+
+const ApplicationVersionIdSchema = z.int().min(1).max(999999999).openapi('ApplicationVersionId')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const IdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(50)
+  .openapi('Id')
+
+const InAppStreamNameSchema = z
+  .string()
+  .regex(/[^-\s<>&]*/)
+  .min(1)
+  .max(32)
+  .openapi('InAppStreamName')
+
+const InAppStreamNamesSchema = z.array(InAppStreamNameSchema).openapi('InAppStreamNames')
+
+const InputLambdaProcessorDescriptionSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the Amazon Lambda function that operates on records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
-        }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        '<p>The ARN of the Amazon Lambda function that is used to preprocess the records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that is used to access the Amazon Lambda function.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      'An object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream in a SQL-based Kinesis Data Analytics application. ',
+      'For a SQL-based Kinesis Data Analytics application, an object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream.',
   })
-  .openapi('InputLambdaProcessor')
+  .openapi('InputLambdaProcessorDescription')
 
-const InputProcessingConfigurationSchema = z
+const InputProcessingConfigurationDescriptionSchema = z
   .object({
-    InputLambdaProcessor: InputLambdaProcessorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>InputLambdaProcessor</a> that is used to preprocess the records in the stream before being processed by your application code.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['InputLambdaProcessor'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, describes a processor that is used to preprocess the records in the stream before being processed by your application code. Currently, the only input processor available is <a href="https://docs.aws.amazon.com/lambda/">Amazon Lambda</a>.',
-  })
-  .openapi('InputProcessingConfiguration')
-
-const KinesisStreamsInputSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the input Kinesis data stream to read.' }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARN'],
-    description:
-      " Identifies a Kinesis data stream as the streaming source. You provide the stream's Amazon Resource Name (ARN).",
-  })
-  .openapi('KinesisStreamsInput')
-
-const KinesisFirehoseInputSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the delivery stream.' }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARN'],
-    description:
-      "For a SQL-based Kinesis Data Analytics application, identifies a Kinesis Data Firehose delivery stream as the streaming source. You provide the delivery stream's Amazon Resource Name (ARN).",
-  })
-  .openapi('KinesisFirehoseInput')
-
-const InputParallelismCountSchema = z.int().min(1).max(64).openapi('InputParallelismCount')
-
-const InputParallelismSchema = z
-  .object({
-    Count: InputParallelismCountSchema.and(
-      z.any().openapi({ description: 'The number of in-application streams to create.' }),
-    ).exactOptional(),
+    InputLambdaProcessorDescription: InputLambdaProcessorDescriptionSchema.exactOptional().openapi({
+      description:
+        'Provides configuration information about the associated <a>InputLambdaProcessorDescription</a> ',
+    }),
   })
   .openapi({
     description:
-      'For a SQL-based Kinesis Data Analytics application, describes the number of in-application streams to create for a given streaming source. ',
+      'For a SQL-based Kinesis Data Analytics application, provides the configuration information about an input processor. Currently, the only input processor available is <a href="https://docs.aws.amazon.com/lambda/">Amazon Lambda</a>.',
     required: [],
   })
-  .openapi('InputParallelism')
+  .openapi('InputProcessingConfigurationDescription')
+
+const KinesisStreamsInputDescriptionSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Kinesis data stream.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARN'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes the Kinesis data stream that is configured as the streaming source in the application input configuration. ',
+  })
+  .openapi('KinesisStreamsInputDescription')
+
+const KinesisFirehoseInputDescriptionSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the delivery stream.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics assumes to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARN'],
+    description:
+      'Describes the Amazon Kinesis Data Firehose delivery stream that is configured as the streaming source in the application input configuration. ',
+  })
+  .openapi('KinesisFirehoseInputDescription')
 
 const InputSchema: z.ZodType<InputType> = z
   .lazy(() =>
     z
       .object({
-        NamePrefix: InAppStreamNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name prefix to use when creating an in-application stream. Suppose that you specify a prefix "<code>MyInApplicationStream</code>." Kinesis Data Analytics then creates one or more (as per the <code>InputParallelism</code> count you specified) in-application streams with the names "<code>MyInApplicationStream_001</code>," "<code>MyInApplicationStream_002</code>," and so on. ',
-            }),
-        ),
-        InputProcessingConfiguration: InputProcessingConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The <a>InputProcessingConfiguration</a> for the input. An input processor transforms records as they are received from the stream, before the application's SQL code executes. Currently, the only input processing configuration available is <a>InputLambdaProcessor</a>. ",
-            }),
-        ).exactOptional(),
-        KinesisStreamsInput: KinesisStreamsInputSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "If the streaming source is an Amazon Kinesis data stream, identifies the stream's Amazon Resource Name (ARN). ",
-            }),
-        ).exactOptional(),
-        KinesisFirehoseInput: KinesisFirehoseInputSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "If the streaming source is an Amazon Kinesis Data Firehose delivery stream, identifies the delivery stream's ARN.",
-            }),
-        ).exactOptional(),
-        InputParallelism: InputParallelismSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Describes the number of in-application streams to create. ' }),
-        ).exactOptional(),
-        InputSchema: SourceSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Describes the format of the data in the streaming source, and how each data element maps to corresponding columns in the in-application stream that is being created.</p> <p>Also used to describe the format of the reference data source.</p>',
-            }),
-        ),
+        NamePrefix: InAppStreamNameSchema.openapi({
+          description:
+            'The name prefix to use when creating an in-application stream. Suppose that you specify a prefix "<code>MyInApplicationStream</code>." Kinesis Data Analytics then creates one or more (as per the <code>InputParallelism</code> count you specified) in-application streams with the names "<code>MyInApplicationStream_001</code>," "<code>MyInApplicationStream_002</code>," and so on. ',
+        }),
+        InputProcessingConfiguration: InputProcessingConfigurationSchema.exactOptional().openapi({
+          description:
+            "The <a>InputProcessingConfiguration</a> for the input. An input processor transforms records as they are received from the stream, before the application's SQL code executes. Currently, the only input processing configuration available is <a>InputLambdaProcessor</a>. ",
+        }),
+        KinesisStreamsInput: KinesisStreamsInputSchema.exactOptional().openapi({
+          description:
+            "If the streaming source is an Amazon Kinesis data stream, identifies the stream's Amazon Resource Name (ARN). ",
+        }),
+        KinesisFirehoseInput: KinesisFirehoseInputSchema.exactOptional().openapi({
+          description:
+            "If the streaming source is an Amazon Kinesis Data Firehose delivery stream, identifies the delivery stream's ARN.",
+        }),
+        InputParallelism: InputParallelismSchema.exactOptional().openapi({
+          description: 'Describes the number of in-application streams to create. ',
+        }),
+        InputSchema: SourceSchemaSchema.openapi({
+          description:
+            '<p>Describes the format of the data in the streaming source, and how each data element maps to corresponding columns in the in-application stream that is being created.</p> <p>Also used to describe the format of the reference data source.</p>',
+        }),
       })
       .openapi({
         required: ['NamePrefix', 'InputSchema'],
@@ -151,48 +176,73 @@ const InputSchema: z.ZodType<InputType> = z
 
 const RecordFormatTypeSchema = z.enum(['JSON', 'CSV']).openapi('RecordFormatType')
 
-const MappingParametersSchema: z.ZodType<MappingParametersType> = z
-  .lazy(() =>
-    z
-      .object({
-        JSONMappingParameters: JSONMappingParametersSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Provides additional mapping information when JSON is the record format on the streaming source.',
-            }),
-        ).exactOptional(),
-        CSVMappingParameters: CSVMappingParametersSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Provides additional mapping information when the record format uses delimiters (for example, CSV).',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          "When you configure a SQL-based Kinesis Data Analytics application's input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.",
-        required: [],
-      }),
-  )
+const RecordRowPathSchema = z
+  .string()
+  .regex(/^(?=^\$)(?=^\S+$).*$/)
+  .min(1)
+  .max(65535)
+  .openapi('RecordRowPath')
+
+const JSONMappingParametersSchema = z
+  .object({
+    RecordRowPath: RecordRowPathSchema.openapi({
+      description: 'The path to the top-level parent that contains the records.',
+    }),
+  })
+  .openapi({
+    required: ['RecordRowPath'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, provides additional mapping information when JSON is the record format on the streaming source.',
+  })
+  .openapi('JSONMappingParameters')
+
+const RecordRowDelimiterSchema = z.string().min(1).max(1024).openapi('RecordRowDelimiter')
+
+const RecordColumnDelimiterSchema = z.string().min(1).max(1024).openapi('RecordColumnDelimiter')
+
+const CSVMappingParametersSchema = z
+  .object({
+    RecordRowDelimiter: RecordRowDelimiterSchema.openapi({
+      description:
+        "The row delimiter. For example, in a CSV format, <i>'\\n'</i> is the typical row delimiter.",
+    }),
+    RecordColumnDelimiter: RecordColumnDelimiterSchema.openapi({
+      description:
+        'The column delimiter. For example, in a CSV format, a comma (",") is the typical column delimiter.',
+    }),
+  })
+  .openapi({
+    required: ['RecordRowDelimiter', 'RecordColumnDelimiter'],
+    description:
+      '<p>For a SQL-based Kinesis Data Analytics application, provides additional mapping information when the record format uses delimiters, such as CSV. For example, the following sample records use CSV format, where the records use the <i>\'\\n\'</i> as the row delimiter and a comma (",") as the column delimiter: </p> <p> <code>"name1", "address1"</code> </p> <p> <code>"name2", "address2"</code> </p>',
+  })
+  .openapi('CSVMappingParameters')
+
+const MappingParametersSchema = z
+  .object({
+    JSONMappingParameters: JSONMappingParametersSchema.exactOptional().openapi({
+      description:
+        'Provides additional mapping information when JSON is the record format on the streaming source.',
+    }),
+    CSVMappingParameters: CSVMappingParametersSchema.exactOptional().openapi({
+      description:
+        'Provides additional mapping information when the record format uses delimiters (for example, CSV).',
+    }),
+  })
+  .openapi({
+    description:
+      "When you configure a SQL-based Kinesis Data Analytics application's input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.",
+    required: [],
+  })
   .openapi('MappingParameters')
 
 const RecordFormatSchema = z
   .object({
-    RecordFormatType: RecordFormatTypeSchema.and(
-      z.any().openapi({ description: 'The type of record format.' }),
-    ),
-    MappingParameters: MappingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you configure application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.',
-        }),
-    ).exactOptional(),
+    RecordFormatType: RecordFormatTypeSchema.openapi({ description: 'The type of record format.' }),
+    MappingParameters: MappingParametersSchema.exactOptional().openapi({
+      description:
+        'When you configure application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.',
+    }),
   })
   .openapi({
     required: ['RecordFormatType'],
@@ -216,30 +266,18 @@ const RecordColumnSqlTypeSchema = z.string().min(1).max(100).openapi('RecordColu
 
 const RecordColumnSchema = z
   .object({
-    Name: RecordColumnNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the column that is created in the in-application input stream or reference table.',
-        }),
-    ),
-    Mapping: RecordColumnMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A reference to the data element in the streaming input or the reference data source.',
-        }),
-    ).exactOptional(),
-    SqlType: RecordColumnSqlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of column created in the in-application input stream or reference table.',
-        }),
-    ),
+    Name: RecordColumnNameSchema.openapi({
+      description:
+        'The name of the column that is created in the in-application input stream or reference table.',
+    }),
+    Mapping: RecordColumnMappingSchema.exactOptional().openapi({
+      description:
+        'A reference to the data element in the streaming input or the reference data source.',
+    }),
+    SqlType: RecordColumnSqlTypeSchema.openapi({
+      description:
+        'The type of column created in the in-application input stream or reference table.',
+    }),
   })
   .openapi({
     required: ['Name', 'SqlType'],
@@ -252,22 +290,16 @@ const RecordColumnsSchema = z.array(RecordColumnSchema).min(1).max(1000).openapi
 
 const SourceSchemaSchema = z
   .object({
-    RecordFormat: RecordFormatSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the format of the records on the streaming source.' }),
-    ),
-    RecordEncoding: RecordEncodingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the encoding of the records in the streaming source. For example, UTF-8.',
-        }),
-    ).exactOptional(),
-    RecordColumns: RecordColumnsSchema.and(
-      z.any().openapi({ description: 'A list of <code>RecordColumn</code> objects. ' }),
-    ),
+    RecordFormat: RecordFormatSchema.openapi({
+      description: 'Specifies the format of the records on the streaming source.',
+    }),
+    RecordEncoding: RecordEncodingSchema.exactOptional().openapi({
+      description:
+        'Specifies the encoding of the records in the streaming source. For example, UTF-8.',
+    }),
+    RecordColumns: RecordColumnsSchema.openapi({
+      description: 'A list of <code>RecordColumn</code> objects. ',
+    }),
   })
   .openapi({
     required: ['RecordFormat', 'RecordColumns'],
@@ -276,68 +308,142 @@ const SourceSchemaSchema = z
   })
   .openapi('SourceSchema')
 
-type InputType = {
-  NamePrefix: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema> & { [key: string]: unknown }
-  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema> & { [key: string]: unknown }
-  InputParallelism?: z.infer<typeof InputParallelismSchema> & { [key: string]: unknown }
-  InputSchema: z.infer<typeof SourceSchemaSchema> & { [key: string]: unknown }
-}
+const InputParallelismCountSchema = z.int().min(1).max(64).openapi('InputParallelismCount')
 
-const KinesisStreamsOutputSchema = z
+const InputParallelismSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the destination Kinesis data stream to write to.' }),
-    ),
+    Count: InputParallelismCountSchema.exactOptional().openapi({
+      description: 'The number of in-application streams to create.',
+    }),
+  })
+  .openapi({
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes the number of in-application streams to create for a given streaming source. ',
+    required: [],
+  })
+  .openapi('InputParallelism')
+
+const InputStartingPositionSchema = z
+  .enum(['NOW', 'TRIM_HORIZON', 'LAST_STOPPED_POINT'])
+  .openapi('InputStartingPosition')
+
+const InputStartingPositionConfigurationSchema = z
+  .object({
+    InputStartingPosition: InputStartingPositionSchema.exactOptional().openapi({
+      description:
+        '<p>The starting position on the stream.</p> <ul> <li> <p> <code>NOW</code> - Start reading just after the most recent record in the stream, and start at the request timestamp that the customer issued.</p> </li> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last untrimmed record in the stream, which is the oldest record available in the stream. This option is not available for an Amazon Kinesis Data Firehose delivery stream.</p> </li> <li> <p> <code>LAST_STOPPED_POINT</code> - Resume reading from where the application last stopped reading.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description: 'Describes the point at which the application reads from the streaming source.',
+    required: [],
+  })
+  .openapi('InputStartingPositionConfiguration')
+
+const InputDescriptionSchema = z
+  .object({
+    InputId: IdSchema.exactOptional().openapi({
+      description:
+        'The input ID that is associated with the application input. This is the ID that Kinesis Data Analytics assigns to each input configuration that you add to your application. ',
+    }),
+    NamePrefix: InAppStreamNameSchema.exactOptional().openapi({
+      description: 'The in-application name prefix.',
+    }),
+    InAppStreamNames: InAppStreamNamesSchema.exactOptional().openapi({
+      description: 'Returns the in-application stream names that are mapped to the stream source. ',
+    }),
+    InputProcessingConfigurationDescription:
+      InputProcessingConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          "The description of the preprocessor that executes on records in this input before the application's code is run. ",
+      }),
+    KinesisStreamsInputDescription: KinesisStreamsInputDescriptionSchema.exactOptional().openapi({
+      description:
+        "If a Kinesis data stream is configured as a streaming source, provides the Kinesis data stream's Amazon Resource Name (ARN). ",
+    }),
+    KinesisFirehoseInputDescription: KinesisFirehoseInputDescriptionSchema.exactOptional().openapi({
+      description:
+        "If a Kinesis Data Firehose delivery stream is configured as a streaming source, provides the delivery stream's ARN. ",
+    }),
+    InputSchema: SourceSchemaSchema.exactOptional().openapi({
+      description:
+        'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns in the in-application stream that is being created. ',
+    }),
+    InputParallelism: InputParallelismSchema.exactOptional().openapi({
+      description:
+        'Describes the configured parallelism (number of in-application streams mapped to the streaming source). ',
+    }),
+    InputStartingPositionConfiguration:
+      InputStartingPositionConfigurationSchema.exactOptional().openapi({
+        description:
+          'The point at which the application is configured to read from the input stream.',
+      }),
+  })
+  .openapi({
+    description:
+      'Describes the application input configuration for a SQL-based Kinesis Data Analytics application. ',
+    required: [],
+  })
+  .openapi('InputDescription')
+
+const InputDescriptionsSchema = z.array(InputDescriptionSchema).openapi('InputDescriptions')
+
+const KinesisStreamsOutputDescriptionSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Kinesis data stream.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      "When you configure a SQL-based Kinesis Data Analytics application's output, identifies a Kinesis data stream as the destination. You provide the stream Amazon Resource Name (ARN). ",
+      "For an SQL-based Kinesis Data Analytics application's output, describes the Kinesis data stream that is configured as its destination. ",
   })
-  .openapi('KinesisStreamsOutput')
+  .openapi('KinesisStreamsOutputDescription')
 
-const KinesisFirehoseOutputSchema = z
+const KinesisFirehoseOutputDescriptionSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the destination delivery stream to write to.' }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the delivery stream.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      'For a SQL-based Kinesis Data Analytics application, when configuring application output, identifies a Kinesis Data Firehose delivery stream as the destination. You provide the stream Amazon Resource Name (ARN) of the delivery stream. ',
+      "For a SQL-based Kinesis Data Analytics application's output, describes the Kinesis Data Firehose delivery stream that is configured as its destination.",
   })
-  .openapi('KinesisFirehoseOutput')
+  .openapi('KinesisFirehoseOutputDescription')
 
-const LambdaOutputSchema = z
+const LambdaOutputDescriptionSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the destination Lambda function to write to.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
-        }),
-    ),
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the destination Lambda function.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to write to the destination function.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      "When you configure a SQL-based Kinesis Data Analytics application's output, identifies an Amazon Lambda function as the destination. You provide the function Amazon Resource Name (ARN) of the Lambda function. ",
+      "For a SQL-based Kinesis Data Analytics application's output, describes the Amazon Lambda function that is configured as its destination. ",
   })
-  .openapi('LambdaOutput')
+  .openapi('LambdaOutputDescription')
 
 const DestinationSchemaSchema = z
   .object({
-    RecordFormatType: RecordFormatTypeSchema.and(
-      z.any().openapi({ description: 'Specifies the format of the records on the output stream.' }),
-    ),
+    RecordFormatType: RecordFormatTypeSchema.openapi({
+      description: 'Specifies the format of the records on the output stream.',
+    }),
   })
   .openapi({
     required: ['RecordFormatType'],
@@ -346,13 +452,39 @@ const DestinationSchemaSchema = z
   })
   .openapi('DestinationSchema')
 
-type OutputType = {
-  Name: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  KinesisStreamsOutput?: z.infer<typeof KinesisStreamsOutputSchema> & { [key: string]: unknown }
-  KinesisFirehoseOutput?: z.infer<typeof KinesisFirehoseOutputSchema> & { [key: string]: unknown }
-  LambdaOutput?: z.infer<typeof LambdaOutputSchema> & { [key: string]: unknown }
-  DestinationSchema: z.infer<typeof DestinationSchemaSchema> & { [key: string]: unknown }
-}
+const OutputDescriptionSchema = z
+  .object({
+    OutputId: IdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the output configuration.',
+    }),
+    Name: InAppStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the in-application stream that is configured as output.',
+    }),
+    KinesisStreamsOutputDescription: KinesisStreamsOutputDescriptionSchema.exactOptional().openapi({
+      description:
+        'Describes the Kinesis data stream that is configured as the destination where output is written.',
+    }),
+    KinesisFirehoseOutputDescription:
+      KinesisFirehoseOutputDescriptionSchema.exactOptional().openapi({
+        description:
+          'Describes the Kinesis Data Firehose delivery stream that is configured as the destination where output is written.',
+      }),
+    LambdaOutputDescription: LambdaOutputDescriptionSchema.exactOptional().openapi({
+      description:
+        'Describes the Lambda function that is configured as the destination where output is written.',
+    }),
+    DestinationSchema: DestinationSchemaSchema.exactOptional().openapi({
+      description: 'The data format used for writing data to the destination.',
+    }),
+  })
+  .openapi({
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes the application output configuration, which includes the in-application stream name and the destination where the stream data is written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream. ',
+    required: [],
+  })
+  .openapi('OutputDescription')
+
+const OutputDescriptionsSchema = z.array(OutputDescriptionSchema).openapi('OutputDescriptions')
 
 const InAppTableNameSchema = z.string().min(1).max(32).openapi('InAppTableName')
 
@@ -365,887 +497,48 @@ const BucketARNSchema = z
 
 const FileKeySchema = z.string().min(1).max(1024).openapi('FileKey')
 
-const S3ReferenceDataSourceSchema = z
+const S3ReferenceDataSourceDescriptionSchema = z
   .object({
-    BucketARN: BucketARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ).exactOptional(),
-    FileKey: FileKeySchema.and(
-      z.any().openapi({ description: 'The object key name containing the reference data.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>For a SQL-based Kinesis Data Analytics application, identifies the Amazon S3 bucket and object that contains the reference data.</p> <p>A Kinesis Data Analytics application loads reference data only once. If the data changes, you call the <a>UpdateApplication</a> operation to trigger reloading of data into your application. </p>',
-    required: [],
-  })
-  .openapi('S3ReferenceDataSource')
-
-type ReferenceDataSourceType = {
-  TableName: z.infer<typeof InAppTableNameSchema> & { [key: string]: unknown }
-  S3ReferenceDataSource?: z.infer<typeof S3ReferenceDataSourceSchema> & { [key: string]: unknown }
-  ReferenceSchema: z.infer<typeof SourceSchemaSchema> & { [key: string]: unknown }
-}
-
-const InputsSchema = z.array(InputSchema).openapi('Inputs')
-
-const OutputSchema: z.ZodType<OutputType> = z
-  .lazy(() =>
-    z
-      .object({
-        Name: InAppStreamNameSchema.and(
-          z.any().openapi({ description: 'The name of the in-application stream.' }),
-        ),
-        KinesisStreamsOutput: KinesisStreamsOutputSchema.and(
-          z.any().openapi({ description: 'Identifies a Kinesis data stream as the destination.' }),
-        ).exactOptional(),
-        KinesisFirehoseOutput: KinesisFirehoseOutputSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Identifies a Kinesis Data Firehose delivery stream as the destination.',
-            }),
-        ).exactOptional(),
-        LambdaOutput: LambdaOutputSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Identifies an Amazon Lambda function as the destination.' }),
-        ).exactOptional(),
-        DestinationSchema: DestinationSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the data format when records are written to the destination. ',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['Name', 'DestinationSchema'],
-        description:
-          "<p> Describes a SQL-based Kinesis Data Analytics application's output configuration, in which you identify an in-application stream and a destination where you want the in-application stream data to be written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream. </p> <p/>",
-      }),
-  )
-  .openapi('Output')
-
-const OutputsSchema = z.array(OutputSchema).openapi('Outputs')
-
-const ReferenceDataSourceSchema: z.ZodType<ReferenceDataSourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        TableName: InAppTableNameSchema.and(
-          z.any().openapi({ description: 'The name of the in-application table to create.' }),
-        ),
-        S3ReferenceDataSource: S3ReferenceDataSourceSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Identifies the S3 bucket and object that contains the reference data. A Kinesis Data Analytics application loads reference data only once. If the data changes, you call the <a>UpdateApplication</a> operation to trigger reloading of data into your application. ',
-            }),
-        ).exactOptional(),
-        ReferenceSchema: SourceSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['TableName', 'ReferenceSchema'],
-        description:
-          'For a SQL-based Kinesis Data Analytics application, describes the reference data source by providing the source information (Amazon S3 bucket name and object key name), the resulting in-application table name that is created, and the necessary schema to map the data elements in the Amazon S3 object to the in-application table.',
-      }),
-  )
-  .openapi('ReferenceDataSource')
-
-const ReferenceDataSourcesSchema = z
-  .array(ReferenceDataSourceSchema)
-  .openapi('ReferenceDataSources')
-
-const SqlApplicationConfigurationSchema = z
-  .object({
-    Inputs: InputsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>Input</a> objects describing the input streams used by the application.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>Output</a> objects describing the destination streams used by the application.',
-        }),
-    ).exactOptional(),
-    ReferenceDataSources: ReferenceDataSourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>ReferenceDataSource</a> objects describing the reference data sources used by the application.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.',
-    required: [],
-  })
-  .openapi('SqlApplicationConfiguration')
-
-const ConfigurationTypeSchema = z.enum(['DEFAULT', 'CUSTOM']).openapi('ConfigurationType')
-
-const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
-
-const CheckpointIntervalSchema = z.int().min(1).openapi('CheckpointInterval')
-
-const MinPauseBetweenCheckpointsSchema = z.int().min(0).openapi('MinPauseBetweenCheckpoints')
-
-const CheckpointConfigurationSchema = z
-  .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Describes whether the application uses Kinesis Data Analytics' default checkpointing behavior. You must set this property to <code>CUSTOM</code> in order to set the <code>CheckpointingEnabled</code>, <code>CheckpointInterval</code>, or <code>MinPauseBetweenCheckpoints</code> parameters.</p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>",
-        }),
-    ),
-    CheckpointingEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes whether checkpointing is enabled for a Flink-based Kinesis Data Analytics application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    CheckpointInterval: CheckpointIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the interval in milliseconds between checkpoint operations. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    MinPauseBetweenCheckpoints: MinPauseBetweenCheckpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. If a checkpoint operation takes longer than the <code>CheckpointInterval</code>, the application otherwise performs continual checkpoint operations. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/ops/state/large_state_tuning.html#tuning-checkpointing"> Tuning Checkpointing</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConfigurationType'],
-    description:
-      'Describes an application\'s checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/concepts/programming-model.html#checkpoints-for-fault-tolerance"> Checkpoints for Fault Tolerance</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.',
-  })
-  .openapi('CheckpointConfiguration')
-
-const MetricsLevelSchema = z
-  .enum(['APPLICATION', 'TASK', 'OPERATOR', 'PARALLELISM'])
-  .openapi('MetricsLevel')
-
-const LogLevelSchema = z.enum(['INFO', 'WARN', 'ERROR', 'DEBUG']).openapi('LogLevel')
-
-const MonitoringConfigurationSchema = z
-  .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether to use the default CloudWatch logging configuration for an application. You must set this property to <code>CUSTOM</code> in order to set the <code>LogLevel</code> or <code>MetricsLevel</code> parameters.',
-        }),
-    ),
-    MetricsLevel: MetricsLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the granularity of the CloudWatch Logs for an application. The <code>Parallelism</code> level is not recommended for applications with a Parallelism over 64 due to excessive costs.',
-        }),
-    ).exactOptional(),
-    LogLevel: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the verbosity of the CloudWatch Logs for an application.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConfigurationType'],
-    description:
-      'Describes configuration parameters for Amazon CloudWatch logging for an application. For more information about CloudWatch logging, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html">Monitoring</a>.',
-  })
-  .openapi('MonitoringConfiguration')
-
-const ParallelismSchema = z.int().min(1).openapi('Parallelism')
-
-const ParallelismPerKPUSchema = z.int().min(1).openapi('ParallelismPerKPU')
-
-const ParallelismConfigurationSchema = z
-  .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. You must set this property to <code>CUSTOM</code> in order to change your application's <code>AutoScalingEnabled</code>, <code>Parallelism</code>, or <code>ParallelismPerKPU</code> properties.",
-        }),
-    ),
-    Parallelism: ParallelismSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the initial number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, Kinesis Data Analytics increases the <code>CurrentParallelism</code> value in response to application load. The service can increase the <code>CurrentParallelism</code> value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
-        }),
-    ).exactOptional(),
-    ParallelismPerKPU: ParallelismPerKPUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform per Kinesis Processing Unit (KPU) used by the application. For more information about KPUs, see <a href="http://aws.amazon.com/kinesis/data-analytics/pricing/">Amazon Kinesis Data Analytics Pricing</a>.',
-        }),
-    ).exactOptional(),
-    AutoScalingEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether the Kinesis Data Analytics service can increase the parallelism of the application in response to increased throughput.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConfigurationType'],
-    description:
-      'Describes parameters for how a Flink-based Kinesis Data Analytics application executes multiple tasks simultaneously. For more information about parallelism, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/parallel.html">Parallel Execution</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.',
-  })
-  .openapi('ParallelismConfiguration')
-
-const FlinkApplicationConfigurationSchema = z
-  .object({
-    CheckpointConfiguration: CheckpointConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes an application\'s checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/concepts/programming-model.html#checkpoints-for-fault-tolerance"> Checkpoints for Fault Tolerance</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>. ',
-        }),
-    ).exactOptional(),
-    MonitoringConfiguration: MonitoringConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes configuration parameters for Amazon CloudWatch logging for an application.',
-        }),
-    ).exactOptional(),
-    ParallelismConfiguration: ParallelismConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes parameters for how an application executes multiple tasks simultaneously.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes configuration parameters for a Flink-based Kinesis Data Analytics application or a Studio notebook.',
-    required: [],
-  })
-  .openapi('FlinkApplicationConfiguration')
-
-const IdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(50)
-  .openapi('Id')
-
-const PropertyValueSchema = z.string().min(1).max(2048).openapi('PropertyValue')
-
-const PropertyMapSchema = z
-  .record(z.string(), PropertyValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('PropertyMap')
-
-const PropertyGroupSchema = z
-  .object({
-    PropertyGroupId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the key of an application execution property key-value pair.',
-        }),
-    ),
-    PropertyMap: PropertyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the value of an application execution property key-value pair.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['PropertyGroupId', 'PropertyMap'],
-    description: 'Property key-value pairs passed into an application.',
-  })
-  .openapi('PropertyGroup')
-
-const PropertyGroupsSchema = z.array(PropertyGroupSchema).max(50).openapi('PropertyGroups')
-
-const EnvironmentPropertiesSchema = z
-  .object({
-    PropertyGroups: PropertyGroupsSchema.and(
-      z.any().openapi({ description: 'Describes the execution property groups.' }),
-    ),
-  })
-  .openapi({
-    required: ['PropertyGroups'],
-    description:
-      'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
-  })
-  .openapi('EnvironmentProperties')
-
-const TextContentSchema = z.string().min(0).max(102400).openapi('TextContent')
-
-const ZipFileContentSchema = z.string().min(0).max(52428800).openapi('ZipFileContent')
-
-const ObjectVersionSchema = z.string().min(0).max(1024).openapi('ObjectVersion')
-
-const S3ContentLocationSchema = z
-  .object({
-    BucketARN: BucketARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
-        }),
-    ),
-    FileKey: FileKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The file key for the object containing the application code.' }),
-    ),
-    ObjectVersion: ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the object containing the application code.' }),
-    ).exactOptional(),
+    BucketARN: BucketARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    FileKey: FileKeySchema.openapi({ description: 'Amazon S3 object key name.' }),
+    ReferenceRoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to read the Amazon S3 object on your behalf to populate the in-application reference table. </p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
   })
   .openapi({
     required: ['BucketARN', 'FileKey'],
     description:
-      'For a Kinesis Data Analytics application provides a description of an Amazon S3 object, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data. ',
+      'For a SQL-based Kinesis Data Analytics application, provides the bucket name and object key name that stores the reference data.',
   })
-  .openapi('S3ContentLocation')
+  .openapi('S3ReferenceDataSourceDescription')
 
-const CodeContentSchema = z
+const ReferenceDataSourceDescriptionSchema = z
   .object({
-    TextContent: TextContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The text-format code for a Flink-based Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
-    ZipFileContent: ZipFileContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The zip-format code for a Flink-based Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
-    S3ContentLocation: S3ContentLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the Amazon S3 bucket that contains the application code.',
-        }),
-    ).exactOptional(),
+    ReferenceId: IdSchema.openapi({
+      description:
+        'The ID of the reference data source. This is the ID that Kinesis Data Analytics assigns when you add the reference data source to your application using the <a>CreateApplication</a> or <a>UpdateApplication</a> operation.',
+    }),
+    TableName: InAppTableNameSchema.openapi({
+      description:
+        'The in-application table name created by the specific reference data source configuration.',
+    }),
+    S3ReferenceDataSourceDescription: S3ReferenceDataSourceDescriptionSchema.openapi({
+      description:
+        'Provides the Amazon S3 bucket name, the object key name that contains the reference data. ',
+    }),
+    ReferenceSchema: SourceSchemaSchema.exactOptional().openapi({
+      description:
+        'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.',
+    }),
   })
   .openapi({
+    required: ['ReferenceId', 'TableName', 'S3ReferenceDataSourceDescription'],
     description:
-      'Specifies either the application code, or the location of the application code, for a Flink-based Kinesis Data Analytics application. ',
-    required: [],
+      'For a SQL-based Kinesis Data Analytics application, describes the reference data source configured for an application.',
   })
-  .openapi('CodeContent')
-
-const CodeContentTypeSchema = z.enum(['PLAINTEXT', 'ZIPFILE']).openapi('CodeContentType')
-
-const ApplicationCodeConfigurationSchema = z
-  .object({
-    CodeContent: CodeContentSchema.and(
-      z.any().openapi({ description: 'The location and type of the application code.' }),
-    ).exactOptional(),
-    CodeContentType: CodeContentTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether the code content is in text or zip format.' }),
-    ),
-  })
-  .openapi({
-    required: ['CodeContentType'],
-    description: 'Describes code configuration for an application.',
-  })
-  .openapi('ApplicationCodeConfiguration')
-
-const ApplicationSnapshotConfigurationSchema = z
-  .object({
-    SnapshotsEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['SnapshotsEnabled'],
-    description:
-      'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-  })
-  .openapi('ApplicationSnapshotConfiguration')
-
-const SubnetIdSchema = z.string().openapi('SubnetId')
-
-const SubnetIdsSchema = z.array(SubnetIdSchema).min(1).max(16).openapi('SubnetIds')
-
-const SecurityGroupIdSchema = z.string().openapi('SecurityGroupId')
-
-const SecurityGroupIdsSchema = z
-  .array(SecurityGroupIdSchema)
-  .min(1)
-  .max(5)
-  .openapi('SecurityGroupIds')
-
-const VpcConfigurationSchema = z
-  .object({
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
-        }),
-    ),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['SubnetIds', 'SecurityGroupIds'],
-    description: 'Describes the parameters of a VPC used by the application.',
-  })
-  .openapi('VpcConfiguration')
-
-const VpcConfigurationsSchema = z.array(VpcConfigurationSchema).openapi('VpcConfigurations')
-
-const ZeppelinMonitoringConfigurationSchema = z
-  .object({
-    LogLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The verbosity of the CloudWatch Logs for an application.' }),
-    ),
-  })
-  .openapi({
-    required: ['LogLevel'],
-    description:
-      'Describes configuration parameters for Amazon CloudWatch logging for a Kinesis Data Analytics Studio notebook. For more information about CloudWatch logging, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html">Monitoring</a>.',
-  })
-  .openapi('ZeppelinMonitoringConfiguration')
-
-const CatalogConfigurationSchema: z.ZodType<CatalogConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        GlueDataCatalogConfiguration: GlueDataCatalogConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Kinesis Data Analytics Studio notebook.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['GlueDataCatalogConfiguration'],
-        description:
-          'The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
-      }),
-  )
-  .openapi('CatalogConfiguration')
-
-const BasePathSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9\/!-_.*'()]+/)
-  .min(1)
-  .max(1024)
-  .openapi('BasePath')
-
-const S3ContentBaseLocationSchema = z
-  .object({
-    BucketARN: BucketARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ),
-    BasePath: BasePathSchema.and(
-      z.any().openapi({ description: 'The base path for the S3 bucket.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['BucketARN'],
-    description: 'The S3 bucket that holds the application information.',
-  })
-  .openapi('S3ContentBaseLocation')
-
-const DeployAsApplicationConfigurationSchema = z
-  .object({
-    S3ContentLocation: S3ContentBaseLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of an Amazon S3 object that contains the Amazon Data Analytics application, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['S3ContentLocation'],
-    description:
-      'The information required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
-  })
-  .openapi('DeployAsApplicationConfiguration')
-
-const ArtifactTypeSchema = z.enum(['UDF', 'DEPENDENCY_JAR']).openapi('ArtifactType')
-
-const MavenGroupIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(256)
-  .openapi('MavenGroupId')
-
-const MavenArtifactIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(256)
-  .openapi('MavenArtifactId')
-
-const MavenVersionSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(256)
-  .openapi('MavenVersion')
-
-const MavenReferenceSchema = z
-  .object({
-    GroupId: MavenGroupIdSchema.and(
-      z.any().openapi({ description: 'The group ID of the Maven reference.' }),
-    ),
-    ArtifactId: MavenArtifactIdSchema.and(
-      z.any().openapi({ description: 'The artifact ID of the Maven reference.' }),
-    ),
-    Version: MavenVersionSchema.and(
-      z.any().openapi({ description: 'The version of the Maven reference.' }),
-    ),
-  })
-  .openapi({
-    required: ['GroupId', 'ArtifactId', 'Version'],
-    description:
-      'The information required to specify a Maven reference. You can use Maven references to specify dependency JAR files.',
-  })
-  .openapi('MavenReference')
-
-const CustomArtifactConfigurationSchema = z
-  .object({
-    ArtifactType: ArtifactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>UDF</code> stands for user-defined functions. This type of artifact must be in an S3 bucket. A <code>DEPENDENCY_JAR</code> can be in either Maven or an S3 bucket.',
-        }),
-    ),
-    S3ContentLocation: S3ContentLocationSchema.exactOptional(),
-    MavenReference: MavenReferenceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The parameters required to fully specify a Maven reference.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ArtifactType'],
-    description:
-      'Specifies dependency JARs, as well as JAR files that contain user-defined functions (UDF).',
-  })
-  .openapi('CustomArtifactConfiguration')
-
-const CustomArtifactsConfigurationListSchema = z
-  .array(CustomArtifactConfigurationSchema)
-  .max(50)
-  .openapi('CustomArtifactsConfigurationList')
-
-const ZeppelinApplicationConfigurationSchema = z
-  .object({
-    MonitoringConfiguration: ZeppelinMonitoringConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The monitoring configuration of a Kinesis Data Analytics Studio notebook.',
-        }),
-    ).exactOptional(),
-    CatalogConfiguration: CatalogConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Glue Data Catalog that you use in queries in a Kinesis Data Analytics Studio notebook.',
-        }),
-    ).exactOptional(),
-    DeployAsApplicationConfiguration: DeployAsApplicationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The information required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
-        }),
-    ).exactOptional(),
-    CustomArtifactsConfiguration: CustomArtifactsConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Custom artifacts are dependency JARs and user-defined functions (UDF).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The configuration of a Kinesis Data Analytics Studio notebook.',
-    required: [],
-  })
-  .openapi('ZeppelinApplicationConfiguration')
-
-type ApplicationConfigurationType = {
-  SqlApplicationConfiguration?: z.infer<typeof SqlApplicationConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  FlinkApplicationConfiguration?: z.infer<typeof FlinkApplicationConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  EnvironmentProperties?: z.infer<typeof EnvironmentPropertiesSchema> & { [key: string]: unknown }
-  ApplicationCodeConfiguration?: z.infer<typeof ApplicationCodeConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  ApplicationSnapshotConfiguration?: z.infer<typeof ApplicationSnapshotConfigurationSchema> & {
-    [key: string]: unknown
-  }
-  VpcConfigurations?: z.infer<typeof VpcConfigurationsSchema> & { [key: string]: unknown }
-  ZeppelinApplicationConfiguration?: z.infer<typeof ZeppelinApplicationConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const InputDescriptionSchema: z.ZodType<InputDescriptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        InputId: IdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The input ID that is associated with the application input. This is the ID that Kinesis Data Analytics assigns to each input configuration that you add to your application. ',
-            }),
-        ).exactOptional(),
-        NamePrefix: InAppStreamNameSchema.and(
-          z.any().openapi({ description: 'The in-application name prefix.' }),
-        ).exactOptional(),
-        InAppStreamNames: InAppStreamNamesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Returns the in-application stream names that are mapped to the stream source. ',
-            }),
-        ).exactOptional(),
-        InputProcessingConfigurationDescription: InputProcessingConfigurationDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The description of the preprocessor that executes on records in this input before the application's code is run. ",
-            }),
-        ).exactOptional(),
-        KinesisStreamsInputDescription: KinesisStreamsInputDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "If a Kinesis data stream is configured as a streaming source, provides the Kinesis data stream's Amazon Resource Name (ARN). ",
-            }),
-        ).exactOptional(),
-        KinesisFirehoseInputDescription: KinesisFirehoseInputDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "If a Kinesis Data Firehose delivery stream is configured as a streaming source, provides the delivery stream's ARN. ",
-            }),
-        ).exactOptional(),
-        InputSchema: SourceSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns in the in-application stream that is being created. ',
-            }),
-        ).exactOptional(),
-        InputParallelism: InputParallelismSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the configured parallelism (number of in-application streams mapped to the streaming source). ',
-            }),
-        ).exactOptional(),
-        InputStartingPositionConfiguration: InputStartingPositionConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The point at which the application is configured to read from the input stream.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Describes the application input configuration for a SQL-based Kinesis Data Analytics application. ',
-        required: [],
-      }),
-  )
-  .openapi('InputDescription')
-
-const InputDescriptionsSchema = z.array(InputDescriptionSchema).openapi('InputDescriptions')
-
-const OutputDescriptionSchema: z.ZodType<OutputDescriptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        OutputId: IdSchema.and(
-          z.any().openapi({ description: 'A unique identifier for the output configuration.' }),
-        ).exactOptional(),
-        Name: InAppStreamNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The name of the in-application stream that is configured as output.',
-            }),
-        ).exactOptional(),
-        KinesisStreamsOutputDescription: KinesisStreamsOutputDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the Kinesis data stream that is configured as the destination where output is written.',
-            }),
-        ).exactOptional(),
-        KinesisFirehoseOutputDescription: KinesisFirehoseOutputDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the Kinesis Data Firehose delivery stream that is configured as the destination where output is written.',
-            }),
-        ).exactOptional(),
-        LambdaOutputDescription: LambdaOutputDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the Lambda function that is configured as the destination where output is written.',
-            }),
-        ).exactOptional(),
-        DestinationSchema: DestinationSchemaSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The data format used for writing data to the destination.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'For a SQL-based Kinesis Data Analytics application, describes the application output configuration, which includes the in-application stream name and the destination where the stream data is written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream. ',
-        required: [],
-      }),
-  )
-  .openapi('OutputDescription')
-
-const OutputDescriptionsSchema = z.array(OutputDescriptionSchema).openapi('OutputDescriptions')
-
-const ReferenceDataSourceDescriptionSchema: z.ZodType<ReferenceDataSourceDescriptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        ReferenceId: IdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The ID of the reference data source. This is the ID that Kinesis Data Analytics assigns when you add the reference data source to your application using the <a>CreateApplication</a> or <a>UpdateApplication</a> operation.',
-            }),
-        ),
-        TableName: InAppTableNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The in-application table name created by the specific reference data source configuration.',
-            }),
-        ),
-        S3ReferenceDataSourceDescription: S3ReferenceDataSourceDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Provides the Amazon S3 bucket name, the object key name that contains the reference data. ',
-            }),
-        ),
-        ReferenceSchema: SourceSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['ReferenceId', 'TableName', 'S3ReferenceDataSourceDescription'],
-        description:
-          'For a SQL-based Kinesis Data Analytics application, describes the reference data source configured for an application.',
-      }),
-  )
   .openapi('ReferenceDataSourceDescription')
 
 const ReferenceDataSourceDescriptionsSchema = z
@@ -1254,30 +547,18 @@ const ReferenceDataSourceDescriptionsSchema = z
 
 const SqlApplicationConfigurationDescriptionSchema = z
   .object({
-    InputDescriptions: InputDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>InputDescription</a> objects describing the input streams used by the application.',
-        }),
-    ).exactOptional(),
-    OutputDescriptions: OutputDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>OutputDescription</a> objects describing the destination streams used by the application.',
-        }),
-    ).exactOptional(),
-    ReferenceDataSourceDescriptions: ReferenceDataSourceDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>ReferenceDataSourceDescription</a> objects describing the reference data sources used by the application.',
-        }),
-    ).exactOptional(),
+    InputDescriptions: InputDescriptionsSchema.exactOptional().openapi({
+      description:
+        'The array of <a>InputDescription</a> objects describing the input streams used by the application.',
+    }),
+    OutputDescriptions: OutputDescriptionsSchema.exactOptional().openapi({
+      description:
+        'The array of <a>OutputDescription</a> objects describing the destination streams used by the application.',
+    }),
+    ReferenceDataSourceDescriptions: ReferenceDataSourceDescriptionsSchema.exactOptional().openapi({
+      description:
+        'The array of <a>ReferenceDataSourceDescription</a> objects describing the reference data sources used by the application.',
+    }),
   })
   .openapi({
     description:
@@ -1286,30 +567,28 @@ const SqlApplicationConfigurationDescriptionSchema = z
   })
   .openapi('SqlApplicationConfigurationDescription')
 
+const CodeContentTypeSchema = z.enum(['PLAINTEXT', 'ZIPFILE']).openapi('CodeContentType')
+
+const TextContentSchema = z.string().min(0).max(102400).openapi('TextContent')
+
 const CodeMD5Schema = z.string().length(128).openapi('CodeMD5')
 
 const CodeSizeSchema = z.int().min(0).max(52428800).openapi('CodeSize')
 
+const ObjectVersionSchema = z.string().min(0).max(1024).openapi('ObjectVersion')
+
 const S3ApplicationCodeLocationDescriptionSchema = z
   .object({
-    BucketARN: BucketARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
-        }),
-    ),
-    FileKey: FileKeySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The file key for the object containing the application code.' }),
-    ),
-    ObjectVersion: ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the object containing the application code.' }),
-    ).exactOptional(),
+    BucketARN: BucketARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
+    }),
+    FileKey: FileKeySchema.openapi({
+      description: 'The file key for the object containing the application code.',
+    }),
+    ObjectVersion: ObjectVersionSchema.exactOptional().openapi({
+      description: 'The version of the object containing the application code.',
+    }),
   })
   .openapi({
     required: ['BucketARN', 'FileKey'],
@@ -1319,30 +598,19 @@ const S3ApplicationCodeLocationDescriptionSchema = z
 
 const CodeContentDescriptionSchema = z
   .object({
-    TextContent: TextContentSchema.and(
-      z.any().openapi({ description: 'The text-format code' }),
-    ).exactOptional(),
-    CodeMD5: CodeMD5Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The checksum that can be used to validate zip-format code.' }),
-    ).exactOptional(),
-    CodeSize: CodeSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size in bytes of the application code. Can be used to validate zip-format code.',
-        }),
-    ).exactOptional(),
-    S3ApplicationCodeLocationDescription: S3ApplicationCodeLocationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket Amazon Resource Name (ARN), file key, and object version of the application code stored in Amazon S3.',
-        }),
-    ).exactOptional(),
+    TextContent: TextContentSchema.exactOptional().openapi({ description: 'The text-format code' }),
+    CodeMD5: CodeMD5Schema.exactOptional().openapi({
+      description: 'The checksum that can be used to validate zip-format code.',
+    }),
+    CodeSize: CodeSizeSchema.exactOptional().openapi({
+      description:
+        'The size in bytes of the application code. Can be used to validate zip-format code.',
+    }),
+    S3ApplicationCodeLocationDescription:
+      S3ApplicationCodeLocationDescriptionSchema.exactOptional().openapi({
+        description:
+          'The S3 bucket Amazon Resource Name (ARN), file key, and object version of the application code stored in Amazon S3.',
+      }),
   })
   .openapi({
     description: 'Describes details about the code of a Kinesis Data Analytics application.',
@@ -1352,18 +620,12 @@ const CodeContentDescriptionSchema = z
 
 const ApplicationCodeConfigurationDescriptionSchema = z
   .object({
-    CodeContentType: CodeContentTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether the code content is in text or zip format.' }),
-    ),
-    CodeContentDescription: CodeContentDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes details about the location and format of the application code.',
-        }),
-    ).exactOptional(),
+    CodeContentType: CodeContentTypeSchema.openapi({
+      description: 'Specifies whether the code content is in text or zip format.',
+    }),
+    CodeContentDescription: CodeContentDescriptionSchema.exactOptional().openapi({
+      description: 'Describes details about the location and format of the application code.',
+    }),
   })
   .openapi({
     required: ['CodeContentType'],
@@ -1388,17 +650,13 @@ const SnapshotNameSchema = z
 
 const ApplicationRestoreConfigurationSchema = z
   .object({
-    ApplicationRestoreType: ApplicationRestoreTypeSchema.and(
-      z.any().openapi({ description: 'Specifies how the application should be restored.' }),
-    ),
-    SnapshotName: SnapshotNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an existing snapshot of application state to use to restart an application. The application uses this value if <code>RESTORE_FROM_CUSTOM_SNAPSHOT</code> is specified for the <code>ApplicationRestoreType</code>.',
-        }),
-    ).exactOptional(),
+    ApplicationRestoreType: ApplicationRestoreTypeSchema.openapi({
+      description: 'Specifies how the application should be restored.',
+    }),
+    SnapshotName: SnapshotNameSchema.exactOptional().openapi({
+      description:
+        'The identifier of an existing snapshot of application state to use to restart an application. The application uses this value if <code>RESTORE_FROM_CUSTOM_SNAPSHOT</code> is specified for the <code>ApplicationRestoreType</code>.',
+    }),
   })
   .openapi({
     required: ['ApplicationRestoreType'],
@@ -1407,16 +665,14 @@ const ApplicationRestoreConfigurationSchema = z
   })
   .openapi('ApplicationRestoreConfiguration')
 
+const BooleanObjectSchema = z.boolean().openapi('BooleanObject')
+
 const FlinkRunConfigurationSchema = z
   .object({
-    AllowNonRestoredState: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When restoring from a snapshot, specifies whether the runtime is allowed to skip a state that cannot be mapped to the new program. This will happen if the program is updated between snapshots to remove stateful parameters, and state data in the snapshot no longer corresponds to valid application data. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/ops/state/savepoints.html#allowing-non-restored-state"> Allowing Non-Restored State</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink documentation</a>.</p> <note> <p>This value defaults to <code>false</code>. If you update your application without specifying this parameter, <code>AllowNonRestoredState</code> will be set to <code>false</code>, even if it was previously set to <code>true</code>.</p> </note>',
-        }),
-    ).exactOptional(),
+    AllowNonRestoredState: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        '<p>When restoring from a snapshot, specifies whether the runtime is allowed to skip a state that cannot be mapped to the new program. This will happen if the program is updated between snapshots to remove stateful parameters, and state data in the snapshot no longer corresponds to valid application data. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/ops/state/savepoints.html#allowing-non-restored-state"> Allowing Non-Restored State</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink documentation</a>.</p> <note> <p>This value defaults to <code>false</code>. If you update your application without specifying this parameter, <code>AllowNonRestoredState</code> will be set to <code>false</code>, even if it was previously set to <code>true</code>.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -1427,11 +683,10 @@ const FlinkRunConfigurationSchema = z
 
 const RunConfigurationDescriptionSchema = z
   .object({
-    ApplicationRestoreConfigurationDescription: ApplicationRestoreConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the restore behavior of a restarting application.' }),
-    ).exactOptional(),
+    ApplicationRestoreConfigurationDescription:
+      ApplicationRestoreConfigurationSchema.exactOptional().openapi({
+        description: 'Describes the restore behavior of a restarting application.',
+      }),
     FlinkRunConfigurationDescription: FlinkRunConfigurationSchema.exactOptional(),
   })
   .openapi({
@@ -1440,40 +695,30 @@ const RunConfigurationDescriptionSchema = z
   })
   .openapi('RunConfigurationDescription')
 
+const ConfigurationTypeSchema = z.enum(['DEFAULT', 'CUSTOM']).openapi('ConfigurationType')
+
+const CheckpointIntervalSchema = z.int().min(1).openapi('CheckpointInterval')
+
+const MinPauseBetweenCheckpointsSchema = z.int().min(0).openapi('MinPauseBetweenCheckpoints')
+
 const CheckpointConfigurationDescriptionSchema = z
   .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes whether the application uses the default checkpointing behavior in Kinesis Data Analytics. </p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>',
-        }),
-    ).exactOptional(),
-    CheckpointingEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes whether checkpointing is enabled for a Flink-based Kinesis Data Analytics application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    CheckpointInterval: CheckpointIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the interval in milliseconds between checkpoint operations. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    MinPauseBetweenCheckpoints: MinPauseBetweenCheckpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
+    ConfigurationType: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Describes whether the application uses the default checkpointing behavior in Kinesis Data Analytics. </p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>',
+    }),
+    CheckpointingEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        '<p>Describes whether checkpointing is enabled for a Flink-based Kinesis Data Analytics application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    CheckpointInterval: CheckpointIntervalSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the interval in milliseconds between checkpoint operations. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    MinPauseBetweenCheckpoints: MinPauseBetweenCheckpointsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -1482,30 +727,24 @@ const CheckpointConfigurationDescriptionSchema = z
   })
   .openapi('CheckpointConfigurationDescription')
 
+const MetricsLevelSchema = z
+  .enum(['APPLICATION', 'TASK', 'OPERATOR', 'PARALLELISM'])
+  .openapi('MetricsLevel')
+
+const LogLevelSchema = z.enum(['INFO', 'WARN', 'ERROR', 'DEBUG']).openapi('LogLevel')
+
 const MonitoringConfigurationDescriptionSchema = z
   .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether to use the default CloudWatch logging configuration for an application.',
-        }),
-    ).exactOptional(),
-    MetricsLevel: MetricsLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the granularity of the CloudWatch Logs for an application.',
-        }),
-    ).exactOptional(),
-    LogLevel: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the verbosity of the CloudWatch Logs for an application.',
-        }),
-    ).exactOptional(),
+    ConfigurationType: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'Describes whether to use the default CloudWatch logging configuration for an application.',
+    }),
+    MetricsLevel: MetricsLevelSchema.exactOptional().openapi({
+      description: 'Describes the granularity of the CloudWatch Logs for an application.',
+    }),
+    LogLevel: LogLevelSchema.exactOptional().openapi({
+      description: 'Describes the verbosity of the CloudWatch Logs for an application.',
+    }),
   })
   .openapi({
     description: 'Describes configuration parameters for CloudWatch logging for an application.',
@@ -1513,48 +752,32 @@ const MonitoringConfigurationDescriptionSchema = z
   })
   .openapi('MonitoringConfigurationDescription')
 
+const ParallelismSchema = z.int().min(1).openapi('Parallelism')
+
+const ParallelismPerKPUSchema = z.int().min(1).openapi('ParallelismPerKPU')
+
 const ParallelismConfigurationDescriptionSchema = z
   .object({
-    ConfigurationType: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. ',
-        }),
-    ).exactOptional(),
-    Parallelism: ParallelismSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the initial number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, then Kinesis Data Analytics can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
-        }),
-    ).exactOptional(),
-    ParallelismPerKPU: ParallelismPerKPUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform per Kinesis Processing Unit (KPU) used by the application.',
-        }),
-    ).exactOptional(),
-    CurrentParallelism: ParallelismSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the current number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, Kinesis Data Analytics can increase this value in response to application load. The service can increase this value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
-        }),
-    ).exactOptional(),
-    AutoScalingEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether the Kinesis Data Analytics service can increase the parallelism of the application in response to increased throughput.',
-        }),
-    ).exactOptional(),
+    ConfigurationType: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. ',
+    }),
+    Parallelism: ParallelismSchema.exactOptional().openapi({
+      description:
+        'Describes the initial number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, then Kinesis Data Analytics can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
+    }),
+    ParallelismPerKPU: ParallelismPerKPUSchema.exactOptional().openapi({
+      description:
+        'Describes the number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform per Kinesis Processing Unit (KPU) used by the application.',
+    }),
+    CurrentParallelism: ParallelismSchema.exactOptional().openapi({
+      description:
+        'Describes the current number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, Kinesis Data Analytics can increase this value in response to application load. The service can increase this value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
+    }),
+    AutoScalingEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Describes whether the Kinesis Data Analytics service can increase the parallelism of the application in response to increased throughput.',
+    }),
   })
   .openapi({
     description:
@@ -1567,38 +790,25 @@ const JobPlanDescriptionSchema = z.string().openapi('JobPlanDescription')
 
 const FlinkApplicationConfigurationDescriptionSchema = z
   .object({
-    CheckpointConfigurationDescription: CheckpointConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.",
-        }),
-    ).exactOptional(),
-    MonitoringConfigurationDescription: MonitoringConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes configuration parameters for Amazon CloudWatch logging for an application.',
-        }),
-    ).exactOptional(),
-    ParallelismConfigurationDescription: ParallelismConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes parameters for how an application executes multiple tasks simultaneously.',
-        }),
-    ).exactOptional(),
-    JobPlanDescription: JobPlanDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job plan for an application. For more information about the job plan, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/internals/job_scheduling.html">Jobs and Scheduling</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>. To retrieve the job plan for the application, use the <a>DescribeApplicationRequest$IncludeAdditionalDetails</a> parameter of the <a>DescribeApplication</a> operation.',
-        }),
-    ).exactOptional(),
+    CheckpointConfigurationDescription:
+      CheckpointConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          "Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.",
+      }),
+    MonitoringConfigurationDescription:
+      MonitoringConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          'Describes configuration parameters for Amazon CloudWatch logging for an application.',
+      }),
+    ParallelismConfigurationDescription:
+      ParallelismConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          'Describes parameters for how an application executes multiple tasks simultaneously.',
+      }),
+    JobPlanDescription: JobPlanDescriptionSchema.exactOptional().openapi({
+      description:
+        'The job plan for an application. For more information about the job plan, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/internals/job_scheduling.html">Jobs and Scheduling</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>. To retrieve the job plan for the application, use the <a>DescribeApplicationRequest$IncludeAdditionalDetails</a> parameter of the <a>DescribeApplication</a> operation.',
+    }),
   })
   .openapi({
     description:
@@ -1607,11 +817,36 @@ const FlinkApplicationConfigurationDescriptionSchema = z
   })
   .openapi('FlinkApplicationConfigurationDescription')
 
+const PropertyValueSchema = z.string().min(1).max(2048).openapi('PropertyValue')
+
+const PropertyMapSchema = z
+  .record(z.string(), PropertyValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('PropertyMap')
+
+const PropertyGroupSchema = z
+  .object({
+    PropertyGroupId: IdSchema.openapi({
+      description: 'Describes the key of an application execution property key-value pair.',
+    }),
+    PropertyMap: PropertyMapSchema.openapi({
+      description: 'Describes the value of an application execution property key-value pair.',
+    }),
+  })
+  .openapi({
+    required: ['PropertyGroupId', 'PropertyMap'],
+    description: 'Property key-value pairs passed into an application.',
+  })
+  .openapi('PropertyGroup')
+
+const PropertyGroupsSchema = z.array(PropertyGroupSchema).max(50).openapi('PropertyGroups')
+
 const EnvironmentPropertyDescriptionsSchema = z
   .object({
-    PropertyGroupDescriptions: PropertyGroupsSchema.and(
-      z.any().openapi({ description: 'Describes the execution property groups.' }),
-    ).exactOptional(),
+    PropertyGroupDescriptions: PropertyGroupsSchema.exactOptional().openapi({
+      description: 'Describes the execution property groups.',
+    }),
   })
   .openapi({
     description: 'Describes the execution properties for an Apache Flink runtime.',
@@ -1621,14 +856,10 @@ const EnvironmentPropertyDescriptionsSchema = z
 
 const ApplicationSnapshotConfigurationDescriptionSchema = z
   .object({
-    SnapshotsEnabled: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-        }),
-    ),
+    SnapshotsEnabled: BooleanObjectSchema.openapi({
+      description:
+        'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+    }),
   })
   .openapi({
     required: ['SnapshotsEnabled'],
@@ -1639,28 +870,30 @@ const ApplicationSnapshotConfigurationDescriptionSchema = z
 
 const VpcIdSchema = z.string().openapi('VpcId')
 
+const SubnetIdSchema = z.string().openapi('SubnetId')
+
+const SubnetIdsSchema = z.array(SubnetIdSchema).min(1).max(16).openapi('SubnetIds')
+
+const SecurityGroupIdSchema = z.string().openapi('SecurityGroupId')
+
+const SecurityGroupIdsSchema = z
+  .array(SecurityGroupIdSchema)
+  .min(1)
+  .max(5)
+  .openapi('SecurityGroupIds')
+
 const VpcConfigurationDescriptionSchema = z
   .object({
-    VpcConfigurationId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC configuration.' }),
-    ),
-    VpcId: VpcIdSchema.and(z.any().openapi({ description: 'The ID of the associated VPC.' })),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
-        }),
-    ),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
-        }),
-    ),
+    VpcConfigurationId: IdSchema.openapi({ description: 'The ID of the VPC configuration.' }),
+    VpcId: VpcIdSchema.openapi({ description: 'The ID of the associated VPC.' }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description:
+        'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
+    }),
   })
   .openapi({
     required: ['VpcConfigurationId', 'VpcId', 'SubnetIds', 'SecurityGroupIds'],
@@ -1674,13 +907,9 @@ const VpcConfigurationDescriptionsSchema = z
 
 const ZeppelinMonitoringConfigurationDescriptionSchema = z
   .object({
-    LogLevel: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes the verbosity of the CloudWatch Logs for an application.',
-        }),
-    ).exactOptional(),
+    LogLevel: LogLevelSchema.exactOptional().openapi({
+      description: 'Describes the verbosity of the CloudWatch Logs for an application.',
+    }),
   })
   .openapi({
     description:
@@ -1689,35 +918,55 @@ const ZeppelinMonitoringConfigurationDescriptionSchema = z
   })
   .openapi('ZeppelinMonitoringConfigurationDescription')
 
-const CatalogConfigurationDescriptionSchema: z.ZodType<CatalogConfigurationDescriptionType> = z
-  .lazy(() =>
-    z
-      .object({
-        GlueDataCatalogConfigurationDescription: GlueDataCatalogConfigurationDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['GlueDataCatalogConfigurationDescription'],
-        description:
-          'The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Kinesis Data Analytics Studio notebook.',
-      }),
-  )
+const DatabaseARNSchema = z
+  .string()
+  .regex(/arn:.*/)
+  .min(1)
+  .max(2048)
+  .openapi('DatabaseARN')
+
+const GlueDataCatalogConfigurationDescriptionSchema = z
+  .object({
+    DatabaseARN: DatabaseARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the database.',
+    }),
+  })
+  .openapi({
+    required: ['DatabaseARN'],
+    description:
+      'The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.',
+  })
+  .openapi('GlueDataCatalogConfigurationDescription')
+
+const CatalogConfigurationDescriptionSchema = z
+  .object({
+    GlueDataCatalogConfigurationDescription: GlueDataCatalogConfigurationDescriptionSchema.openapi({
+      description:
+        'The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
+    }),
+  })
+  .openapi({
+    required: ['GlueDataCatalogConfigurationDescription'],
+    description:
+      'The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Kinesis Data Analytics Studio notebook.',
+  })
   .openapi('CatalogConfigurationDescription')
+
+const BasePathSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9\/!-_.*'()]+/)
+  .min(1)
+  .max(1024)
+  .openapi('BasePath')
 
 const S3ContentBaseLocationDescriptionSchema = z
   .object({
-    BucketARN: BucketARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ),
-    BasePath: BasePathSchema.and(
-      z.any().openapi({ description: 'The base path for the S3 bucket.' }),
-    ).exactOptional(),
+    BucketARN: BucketARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    BasePath: BasePathSchema.exactOptional().openapi({
+      description: 'The base path for the S3 bucket.',
+    }),
   })
   .openapi({
     required: ['BucketARN'],
@@ -1727,14 +976,10 @@ const S3ContentBaseLocationDescriptionSchema = z
 
 const DeployAsApplicationConfigurationDescriptionSchema = z
   .object({
-    S3ContentLocationDescription: S3ContentBaseLocationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location that holds the data required to specify an Amazon Data Analytics application.',
-        }),
-    ),
+    S3ContentLocationDescription: S3ContentBaseLocationDescriptionSchema.openapi({
+      description:
+        'The location that holds the data required to specify an Amazon Data Analytics application.',
+    }),
   })
   .openapi({
     required: ['S3ContentLocationDescription'],
@@ -1743,24 +988,74 @@ const DeployAsApplicationConfigurationDescriptionSchema = z
   })
   .openapi('DeployAsApplicationConfigurationDescription')
 
+const ArtifactTypeSchema = z.enum(['UDF', 'DEPENDENCY_JAR']).openapi('ArtifactType')
+
+const S3ContentLocationSchema = z
+  .object({
+    BucketARN: BucketARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
+    }),
+    FileKey: FileKeySchema.openapi({
+      description: 'The file key for the object containing the application code.',
+    }),
+    ObjectVersion: ObjectVersionSchema.exactOptional().openapi({
+      description: 'The version of the object containing the application code.',
+    }),
+  })
+  .openapi({
+    required: ['BucketARN', 'FileKey'],
+    description:
+      'For a Kinesis Data Analytics application provides a description of an Amazon S3 object, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data. ',
+  })
+  .openapi('S3ContentLocation')
+
+const MavenGroupIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(256)
+  .openapi('MavenGroupId')
+
+const MavenArtifactIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(256)
+  .openapi('MavenArtifactId')
+
+const MavenVersionSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.-]+/)
+  .min(1)
+  .max(256)
+  .openapi('MavenVersion')
+
+const MavenReferenceSchema = z
+  .object({
+    GroupId: MavenGroupIdSchema.openapi({ description: 'The group ID of the Maven reference.' }),
+    ArtifactId: MavenArtifactIdSchema.openapi({
+      description: 'The artifact ID of the Maven reference.',
+    }),
+    Version: MavenVersionSchema.openapi({ description: 'The version of the Maven reference.' }),
+  })
+  .openapi({
+    required: ['GroupId', 'ArtifactId', 'Version'],
+    description:
+      'The information required to specify a Maven reference. You can use Maven references to specify dependency JAR files.',
+  })
+  .openapi('MavenReference')
+
 const CustomArtifactConfigurationDescriptionSchema = z
   .object({
-    ArtifactType: ArtifactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>UDF</code> stands for user-defined functions. This type of artifact must be in an S3 bucket. A <code>DEPENDENCY_JAR</code> can be in either Maven or an S3 bucket.',
-        }),
-    ).exactOptional(),
+    ArtifactType: ArtifactTypeSchema.exactOptional().openapi({
+      description:
+        ' <code>UDF</code> stands for user-defined functions. This type of artifact must be in an S3 bucket. A <code>DEPENDENCY_JAR</code> can be in either Maven or an S3 bucket.',
+    }),
     S3ContentLocationDescription: S3ContentLocationSchema.exactOptional(),
-    MavenReferenceDescription: MavenReferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parameters that are required to specify a Maven dependency.',
-        }),
-    ).exactOptional(),
+    MavenReferenceDescription: MavenReferenceSchema.exactOptional().openapi({
+      description: 'The parameters that are required to specify a Maven dependency.',
+    }),
   })
   .openapi({
     description: 'Specifies a dependency JAR or a JAR of user-defined functions.',
@@ -1775,37 +1070,22 @@ const CustomArtifactsConfigurationDescriptionListSchema = z
 
 const ZeppelinApplicationConfigurationDescriptionSchema = z
   .object({
-    MonitoringConfigurationDescription: ZeppelinMonitoringConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The monitoring configuration of a Kinesis Data Analytics Studio notebook.',
-        }),
-    ),
-    CatalogConfigurationDescription: CatalogConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Glue Data Catalog that is associated with the Kinesis Data Analytics Studio notebook.',
-        }),
-    ).exactOptional(),
+    MonitoringConfigurationDescription: ZeppelinMonitoringConfigurationDescriptionSchema.openapi({
+      description: 'The monitoring configuration of a Kinesis Data Analytics Studio notebook.',
+    }),
+    CatalogConfigurationDescription: CatalogConfigurationDescriptionSchema.exactOptional().openapi({
+      description:
+        'The Amazon Glue Data Catalog that is associated with the Kinesis Data Analytics Studio notebook.',
+    }),
     DeployAsApplicationConfigurationDescription:
-      DeployAsApplicationConfigurationDescriptionSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The parameters required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
-          }),
-      ).exactOptional(),
-    CustomArtifactsConfigurationDescription: CustomArtifactsConfigurationDescriptionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Custom artifacts are dependency JARs and user-defined functions (UDF).',
-        }),
-    ).exactOptional(),
+      DeployAsApplicationConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          'The parameters required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
+      }),
+    CustomArtifactsConfigurationDescription:
+      CustomArtifactsConfigurationDescriptionListSchema.exactOptional().openapi({
+        description: 'Custom artifacts are dependency JARs and user-defined functions (UDF).',
+      }),
   })
   .openapi({
     required: ['MonitoringConfigurationDescription'],
@@ -1816,197 +1096,1016 @@ const ZeppelinApplicationConfigurationDescriptionSchema = z
 type ApplicationConfigurationDescriptionType = {
   SqlApplicationConfigurationDescription?: z.infer<
     typeof SqlApplicationConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
+  > &
+    unknown
   ApplicationCodeConfigurationDescription?: z.infer<
     typeof ApplicationCodeConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
-  RunConfigurationDescription?: z.infer<typeof RunConfigurationDescriptionSchema> & {
-    [key: string]: unknown
-  }
+  > &
+    unknown
+  RunConfigurationDescription?: z.infer<typeof RunConfigurationDescriptionSchema> & unknown
   FlinkApplicationConfigurationDescription?: z.infer<
     typeof FlinkApplicationConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
-  EnvironmentPropertyDescriptions?: z.infer<typeof EnvironmentPropertyDescriptionsSchema> & {
-    [key: string]: unknown
-  }
+  > &
+    unknown
+  EnvironmentPropertyDescriptions?: z.infer<typeof EnvironmentPropertyDescriptionsSchema> & unknown
   ApplicationSnapshotConfigurationDescription?: z.infer<
     typeof ApplicationSnapshotConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
-  VpcConfigurationDescriptions?: z.infer<typeof VpcConfigurationDescriptionsSchema> & {
-    [key: string]: unknown
-  }
+  > &
+    unknown
+  VpcConfigurationDescriptions?: z.infer<typeof VpcConfigurationDescriptionsSchema> & unknown
   ZeppelinApplicationConfigurationDescription?: z.infer<
     typeof ZeppelinApplicationConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
+  > &
+    unknown
 }
 
-const InputUpdateSchema: z.ZodType<InputUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        InputId: IdSchema.and(
-          z.any().openapi({ description: 'The input ID of the application input to be updated.' }),
-        ),
-        NamePrefixUpdate: InAppStreamNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name prefix for in-application streams that Kinesis Data Analytics creates for the specific streaming source.',
-            }),
-        ).exactOptional(),
-        InputProcessingConfigurationUpdate: InputProcessingConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes updates to an <a>InputProcessingConfiguration</a>.',
-            }),
-        ).exactOptional(),
-        KinesisStreamsInputUpdate: KinesisStreamsInputUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'If a Kinesis data stream is the streaming source to be updated, provides an updated stream Amazon Resource Name (ARN).',
-            }),
-        ).exactOptional(),
-        KinesisFirehoseInputUpdate: KinesisFirehoseInputUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'If a Kinesis Data Firehose delivery stream is the streaming source to be updated, provides an updated stream ARN.',
-            }),
-        ).exactOptional(),
-        InputSchemaUpdate: InputSchemaUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the data format on the streaming source, and how record elements on the streaming source map to columns of the in-application stream that is created.',
-            }),
-        ).exactOptional(),
-        InputParallelismUpdate: InputParallelismUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the parallelism updates (the number of in-application streams Kinesis Data Analytics creates for the specific streaming source).',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['InputId'],
+const ApplicationConfigurationDescriptionSchema: z.ZodType<ApplicationConfigurationDescriptionType> =
+  z
+    .object({
+      SqlApplicationConfigurationDescription:
+        SqlApplicationConfigurationDescriptionSchema.exactOptional().openapi({
+          description:
+            'The details about inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.',
+        }),
+      ApplicationCodeConfigurationDescription:
+        ApplicationCodeConfigurationDescriptionSchema.exactOptional().openapi({
+          description:
+            'The details about the application code for a Flink-based Kinesis Data Analytics application.',
+        }),
+      RunConfigurationDescription: RunConfigurationDescriptionSchema.exactOptional().openapi({
         description:
-          'For a SQL-based Kinesis Data Analytics application, describes updates to a specific input configuration (identified by the <code>InputId</code> of an application). ',
+          'The details about the starting properties for a Kinesis Data Analytics application.',
       }),
-  )
+      FlinkApplicationConfigurationDescription:
+        FlinkApplicationConfigurationDescriptionSchema.exactOptional().openapi({
+          description: 'The details about a Flink-based Kinesis Data Analytics application.',
+        }),
+      EnvironmentPropertyDescriptions:
+        EnvironmentPropertyDescriptionsSchema.exactOptional().openapi({
+          description:
+            'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
+        }),
+      ApplicationSnapshotConfigurationDescription:
+        ApplicationSnapshotConfigurationDescriptionSchema.exactOptional().openapi({
+          description:
+            'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+        }),
+      VpcConfigurationDescriptions: VpcConfigurationDescriptionsSchema.exactOptional().openapi({
+        description:
+          'The array of descriptions of VPC configurations available to the application.',
+      }),
+      ZeppelinApplicationConfigurationDescription:
+        ZeppelinApplicationConfigurationDescriptionSchema.exactOptional().openapi({
+          description: 'The configuration parameters for a Kinesis Data Analytics Studio notebook.',
+        }),
+    })
+    .openapi({
+      description:
+        'Describes details about the application code and starting parameters for a Kinesis Data Analytics application.',
+      required: [],
+    })
+    .openapi('ApplicationConfigurationDescription')
+
+const LogStreamARNSchema = z
+  .string()
+  .regex(/arn:.*/)
+  .min(1)
+  .max(2048)
+  .openapi('LogStreamARN')
+
+const CloudWatchLoggingOptionDescriptionSchema = z
+  .object({
+    CloudWatchLoggingOptionId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the CloudWatch logging option description.',
+    }),
+    LogStreamARN: LogStreamARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch log to receive application messages.',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The IAM ARN of the role to use to send application messages. </p> <note> <p>Provided for backward compatibility. Applications created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['LogStreamARN'],
+    description: 'Describes the Amazon CloudWatch logging option.',
+  })
+  .openapi('CloudWatchLoggingOptionDescription')
+
+const CloudWatchLoggingOptionDescriptionsSchema = z
+  .array(CloudWatchLoggingOptionDescriptionSchema)
+  .openapi('CloudWatchLoggingOptionDescriptions')
+
+const ApplicationMaintenanceWindowStartTimeSchema = z
+  .string()
+  .regex(/([01][0-9]|2[0-3]):[0-5][0-9]/)
+  .length(5)
+  .openapi('ApplicationMaintenanceWindowStartTime')
+
+const ApplicationMaintenanceWindowEndTimeSchema = z
+  .string()
+  .regex(/([01][0-9]|2[0-3]):[0-5][0-9]/)
+  .length(5)
+  .openapi('ApplicationMaintenanceWindowEndTime')
+
+const ApplicationMaintenanceConfigurationDescriptionSchema = z
+  .object({
+    ApplicationMaintenanceWindowStartTime: ApplicationMaintenanceWindowStartTimeSchema.openapi({
+      description: 'The start time for the maintenance window.',
+    }),
+    ApplicationMaintenanceWindowEndTime: ApplicationMaintenanceWindowEndTimeSchema.openapi({
+      description: 'The end time for the maintenance window.',
+    }),
+  })
+  .openapi({
+    required: ['ApplicationMaintenanceWindowStartTime', 'ApplicationMaintenanceWindowEndTime'],
+    description: 'The details of the maintenance configuration for the application.',
+  })
+  .openapi('ApplicationMaintenanceConfigurationDescription')
+
+const ConditionalTokenSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9-_+\/=]+/)
+  .min(1)
+  .max(512)
+  .openapi('ConditionalToken')
+
+const ApplicationModeSchema = z.enum(['STREAMING', 'INTERACTIVE']).openapi('ApplicationMode')
+
+type ApplicationDetailType = {
+  ApplicationARN: z.infer<typeof ResourceARNSchema> & unknown
+  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema> & unknown
+  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
+  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema> & unknown
+  ServiceExecutionRole?: z.infer<typeof RoleARNSchema> & unknown
+  ApplicationStatus: z.infer<typeof ApplicationStatusSchema> & unknown
+  ApplicationVersionId: z.infer<typeof ApplicationVersionIdSchema> & unknown
+  CreateTimestamp?: z.infer<typeof TimestampSchema> & unknown
+  LastUpdateTimestamp?: z.infer<typeof TimestampSchema> & unknown
+  ApplicationConfigurationDescription?: z.infer<typeof ApplicationConfigurationDescriptionSchema> &
+    unknown
+  CloudWatchLoggingOptionDescriptions?: z.infer<typeof CloudWatchLoggingOptionDescriptionsSchema> &
+    unknown
+  ApplicationMaintenanceConfigurationDescription?: z.infer<
+    typeof ApplicationMaintenanceConfigurationDescriptionSchema
+  > &
+    unknown
+  ApplicationVersionUpdatedFrom?: z.infer<typeof ApplicationVersionIdSchema> & unknown
+  ApplicationVersionRolledBackFrom?: z.infer<typeof ApplicationVersionIdSchema> & unknown
+  ConditionalToken?: z.infer<typeof ConditionalTokenSchema> & unknown
+  ApplicationVersionRolledBackTo?: z.infer<typeof ApplicationVersionIdSchema> & unknown
+  ApplicationMode?: z.infer<typeof ApplicationModeSchema> & unknown
+}
+
+const ApplicationDetailSchema: z.ZodType<ApplicationDetailType> = z
+  .object({
+    ApplicationARN: ResourceARNSchema.openapi({ description: 'The ARN of the application.' }),
+    ApplicationDescription: ApplicationDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    RuntimeEnvironment: RuntimeEnvironmentSchema.openapi({
+      description: 'The runtime environment for the application.',
+    }),
+    ServiceExecutionRole: RoleARNSchema.exactOptional().openapi({
+      description: 'Specifies the IAM role that the application uses to access external resources.',
+    }),
+    ApplicationStatus: ApplicationStatusSchema.openapi({
+      description: 'The status of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'Provides the current application version. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you update the application.',
+    }),
+    CreateTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The current timestamp when the application was created.',
+    }),
+    LastUpdateTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The current timestamp when the application was last updated.',
+    }),
+    ApplicationConfigurationDescription:
+      ApplicationConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          'Describes details about the application code and starting parameters for a Kinesis Data Analytics application.',
+      }),
+    CloudWatchLoggingOptionDescriptions:
+      CloudWatchLoggingOptionDescriptionsSchema.exactOptional().openapi({
+        description: 'Describes the application Amazon CloudWatch logging options.',
+      }),
+    ApplicationMaintenanceConfigurationDescription:
+      ApplicationMaintenanceConfigurationDescriptionSchema.exactOptional().openapi({
+        description: 'The details of the maintenance configuration for the application.',
+      }),
+    ApplicationVersionUpdatedFrom: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The previous application version before the latest application update. <a>RollbackApplication</a> reverts the application to this version.',
+    }),
+    ApplicationVersionRolledBackFrom: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'If you reverted the application using <a>RollbackApplication</a>, the application version when <code>RollbackApplication</code> was called.',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description: 'A value you use to implement strong concurrency for application updates.',
+    }),
+    ApplicationVersionRolledBackTo: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'The version to which you want to roll back the application.',
+    }),
+    ApplicationMode: ApplicationModeSchema.exactOptional().openapi({
+      description:
+        'To create a Kinesis Data Analytics Studio notebook, you must set the mode to <code>INTERACTIVE</code>. However, for a Kinesis Data Analytics for Apache Flink application, the mode is optional.',
+    }),
+  })
+  .openapi({
+    required: [
+      'ApplicationARN',
+      'ApplicationName',
+      'RuntimeEnvironment',
+      'ApplicationStatus',
+      'ApplicationVersionId',
+    ],
+    description:
+      'Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.',
+  })
+  .openapi('ApplicationDetail')
+
+type CreateApplicationResponseType = {
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
+}
+
+const InputsSchema = z.array(InputSchema).openapi('Inputs')
+
+const KinesisStreamsOutputSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The ARN of the destination Kinesis data stream to write to.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARN'],
+    description:
+      "When you configure a SQL-based Kinesis Data Analytics application's output, identifies a Kinesis data stream as the destination. You provide the stream Amazon Resource Name (ARN). ",
+  })
+  .openapi('KinesisStreamsOutput')
+
+const KinesisFirehoseOutputSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The ARN of the destination delivery stream to write to.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARN'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, when configuring application output, identifies a Kinesis Data Firehose delivery stream as the destination. You provide the stream Amazon Resource Name (ARN) of the delivery stream. ',
+  })
+  .openapi('KinesisFirehoseOutput')
+
+const LambdaOutputSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the destination Lambda function to write to.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARN'],
+    description:
+      "When you configure a SQL-based Kinesis Data Analytics application's output, identifies an Amazon Lambda function as the destination. You provide the function Amazon Resource Name (ARN) of the Lambda function. ",
+  })
+  .openapi('LambdaOutput')
+
+const OutputSchema = z
+  .object({
+    Name: InAppStreamNameSchema.openapi({ description: 'The name of the in-application stream.' }),
+    KinesisStreamsOutput: KinesisStreamsOutputSchema.exactOptional().openapi({
+      description: 'Identifies a Kinesis data stream as the destination.',
+    }),
+    KinesisFirehoseOutput: KinesisFirehoseOutputSchema.exactOptional().openapi({
+      description: 'Identifies a Kinesis Data Firehose delivery stream as the destination.',
+    }),
+    LambdaOutput: LambdaOutputSchema.exactOptional().openapi({
+      description: 'Identifies an Amazon Lambda function as the destination.',
+    }),
+    DestinationSchema: DestinationSchemaSchema.openapi({
+      description: 'Describes the data format when records are written to the destination. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'DestinationSchema'],
+    description:
+      "<p> Describes a SQL-based Kinesis Data Analytics application's output configuration, in which you identify an in-application stream and a destination where you want the in-application stream data to be written. The destination can be a Kinesis data stream or a Kinesis Data Firehose delivery stream. </p> <p/>",
+  })
+  .openapi('Output')
+
+const OutputsSchema = z.array(OutputSchema).openapi('Outputs')
+
+const S3ReferenceDataSourceSchema = z
+  .object({
+    BucketARN: BucketARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    FileKey: FileKeySchema.exactOptional().openapi({
+      description: 'The object key name containing the reference data.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>For a SQL-based Kinesis Data Analytics application, identifies the Amazon S3 bucket and object that contains the reference data.</p> <p>A Kinesis Data Analytics application loads reference data only once. If the data changes, you call the <a>UpdateApplication</a> operation to trigger reloading of data into your application. </p>',
+    required: [],
+  })
+  .openapi('S3ReferenceDataSource')
+
+const ReferenceDataSourceSchema = z
+  .object({
+    TableName: InAppTableNameSchema.openapi({
+      description: 'The name of the in-application table to create.',
+    }),
+    S3ReferenceDataSource: S3ReferenceDataSourceSchema.exactOptional().openapi({
+      description:
+        'Identifies the S3 bucket and object that contains the reference data. A Kinesis Data Analytics application loads reference data only once. If the data changes, you call the <a>UpdateApplication</a> operation to trigger reloading of data into your application. ',
+    }),
+    ReferenceSchema: SourceSchemaSchema.openapi({
+      description:
+        'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream.',
+    }),
+  })
+  .openapi({
+    required: ['TableName', 'ReferenceSchema'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes the reference data source by providing the source information (Amazon S3 bucket name and object key name), the resulting in-application table name that is created, and the necessary schema to map the data elements in the Amazon S3 object to the in-application table.',
+  })
+  .openapi('ReferenceDataSource')
+
+const ReferenceDataSourcesSchema = z
+  .array(ReferenceDataSourceSchema)
+  .openapi('ReferenceDataSources')
+
+const SqlApplicationConfigurationSchema = z
+  .object({
+    Inputs: InputsSchema.exactOptional().openapi({
+      description:
+        'The array of <a>Input</a> objects describing the input streams used by the application.',
+    }),
+    Outputs: OutputsSchema.exactOptional().openapi({
+      description:
+        'The array of <a>Output</a> objects describing the destination streams used by the application.',
+    }),
+    ReferenceDataSources: ReferenceDataSourcesSchema.exactOptional().openapi({
+      description:
+        'The array of <a>ReferenceDataSource</a> objects describing the reference data sources used by the application.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes the inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.',
+    required: [],
+  })
+  .openapi('SqlApplicationConfiguration')
+
+const CheckpointConfigurationSchema = z
+  .object({
+    ConfigurationType: ConfigurationTypeSchema.openapi({
+      description:
+        "<p>Describes whether the application uses Kinesis Data Analytics' default checkpointing behavior. You must set this property to <code>CUSTOM</code> in order to set the <code>CheckpointingEnabled</code>, <code>CheckpointInterval</code>, or <code>MinPauseBetweenCheckpoints</code> parameters.</p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>",
+    }),
+    CheckpointingEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        '<p>Describes whether checkpointing is enabled for a Flink-based Kinesis Data Analytics application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    CheckpointInterval: CheckpointIntervalSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the interval in milliseconds between checkpoint operations. </p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    MinPauseBetweenCheckpoints: MinPauseBetweenCheckpointsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. If a checkpoint operation takes longer than the <code>CheckpointInterval</code>, the application otherwise performs continual checkpoint operations. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/ops/state/large_state_tuning.html#tuning-checkpointing"> Tuning Checkpointing</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ConfigurationType'],
+    description:
+      'Describes an application\'s checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/concepts/programming-model.html#checkpoints-for-fault-tolerance"> Checkpoints for Fault Tolerance</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.',
+  })
+  .openapi('CheckpointConfiguration')
+
+const MonitoringConfigurationSchema = z
+  .object({
+    ConfigurationType: ConfigurationTypeSchema.openapi({
+      description:
+        'Describes whether to use the default CloudWatch logging configuration for an application. You must set this property to <code>CUSTOM</code> in order to set the <code>LogLevel</code> or <code>MetricsLevel</code> parameters.',
+    }),
+    MetricsLevel: MetricsLevelSchema.exactOptional().openapi({
+      description:
+        'Describes the granularity of the CloudWatch Logs for an application. The <code>Parallelism</code> level is not recommended for applications with a Parallelism over 64 due to excessive costs.',
+    }),
+    LogLevel: LogLevelSchema.exactOptional().openapi({
+      description: 'Describes the verbosity of the CloudWatch Logs for an application.',
+    }),
+  })
+  .openapi({
+    required: ['ConfigurationType'],
+    description:
+      'Describes configuration parameters for Amazon CloudWatch logging for an application. For more information about CloudWatch logging, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html">Monitoring</a>.',
+  })
+  .openapi('MonitoringConfiguration')
+
+const ParallelismConfigurationSchema = z
+  .object({
+    ConfigurationType: ConfigurationTypeSchema.openapi({
+      description:
+        "Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. You must set this property to <code>CUSTOM</code> in order to change your application's <code>AutoScalingEnabled</code>, <code>Parallelism</code>, or <code>ParallelismPerKPU</code> properties.",
+    }),
+    Parallelism: ParallelismSchema.exactOptional().openapi({
+      description:
+        'Describes the initial number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform. If <code>AutoScalingEnabled</code> is set to True, Kinesis Data Analytics increases the <code>CurrentParallelism</code> value in response to application load. The service can increase the <code>CurrentParallelism</code> value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.',
+    }),
+    ParallelismPerKPU: ParallelismPerKPUSchema.exactOptional().openapi({
+      description:
+        'Describes the number of parallel tasks that a Flink-based Kinesis Data Analytics application can perform per Kinesis Processing Unit (KPU) used by the application. For more information about KPUs, see <a href="http://aws.amazon.com/kinesis/data-analytics/pricing/">Amazon Kinesis Data Analytics Pricing</a>.',
+    }),
+    AutoScalingEnabled: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Describes whether the Kinesis Data Analytics service can increase the parallelism of the application in response to increased throughput.',
+    }),
+  })
+  .openapi({
+    required: ['ConfigurationType'],
+    description:
+      'Describes parameters for how a Flink-based Kinesis Data Analytics application executes multiple tasks simultaneously. For more information about parallelism, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/dev/parallel.html">Parallel Execution</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>.',
+  })
+  .openapi('ParallelismConfiguration')
+
+const FlinkApplicationConfigurationSchema = z
+  .object({
+    CheckpointConfiguration: CheckpointConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes an application\'s checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/concepts/programming-model.html#checkpoints-for-fault-tolerance"> Checkpoints for Fault Tolerance</a> in the <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.8/">Apache Flink Documentation</a>. ',
+    }),
+    MonitoringConfiguration: MonitoringConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes configuration parameters for Amazon CloudWatch logging for an application.',
+    }),
+    ParallelismConfiguration: ParallelismConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes parameters for how an application executes multiple tasks simultaneously.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes configuration parameters for a Flink-based Kinesis Data Analytics application or a Studio notebook.',
+    required: [],
+  })
+  .openapi('FlinkApplicationConfiguration')
+
+const EnvironmentPropertiesSchema = z
+  .object({
+    PropertyGroups: PropertyGroupsSchema.openapi({
+      description: 'Describes the execution property groups.',
+    }),
+  })
+  .openapi({
+    required: ['PropertyGroups'],
+    description:
+      'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
+  })
+  .openapi('EnvironmentProperties')
+
+const ZipFileContentSchema = z.string().min(0).max(52428800).openapi('ZipFileContent')
+
+const CodeContentSchema = z
+  .object({
+    TextContent: TextContentSchema.exactOptional().openapi({
+      description: 'The text-format code for a Flink-based Kinesis Data Analytics application.',
+    }),
+    ZipFileContent: ZipFileContentSchema.exactOptional().openapi({
+      description: 'The zip-format code for a Flink-based Kinesis Data Analytics application.',
+    }),
+    S3ContentLocation: S3ContentLocationSchema.exactOptional().openapi({
+      description: 'Information about the Amazon S3 bucket that contains the application code.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies either the application code, or the location of the application code, for a Flink-based Kinesis Data Analytics application. ',
+    required: [],
+  })
+  .openapi('CodeContent')
+
+const ApplicationCodeConfigurationSchema = z
+  .object({
+    CodeContent: CodeContentSchema.exactOptional().openapi({
+      description: 'The location and type of the application code.',
+    }),
+    CodeContentType: CodeContentTypeSchema.openapi({
+      description: 'Specifies whether the code content is in text or zip format.',
+    }),
+  })
+  .openapi({
+    required: ['CodeContentType'],
+    description: 'Describes code configuration for an application.',
+  })
+  .openapi('ApplicationCodeConfiguration')
+
+const ApplicationSnapshotConfigurationSchema = z
+  .object({
+    SnapshotsEnabled: BooleanObjectSchema.openapi({
+      description:
+        'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+    }),
+  })
+  .openapi({
+    required: ['SnapshotsEnabled'],
+    description:
+      'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+  })
+  .openapi('ApplicationSnapshotConfiguration')
+
+const VpcConfigurationSchema = z
+  .object({
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description:
+        'The array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
+    }),
+  })
+  .openapi({
+    required: ['SubnetIds', 'SecurityGroupIds'],
+    description: 'Describes the parameters of a VPC used by the application.',
+  })
+  .openapi('VpcConfiguration')
+
+const VpcConfigurationsSchema = z.array(VpcConfigurationSchema).openapi('VpcConfigurations')
+
+const ZeppelinMonitoringConfigurationSchema = z
+  .object({
+    LogLevel: LogLevelSchema.openapi({
+      description: 'The verbosity of the CloudWatch Logs for an application.',
+    }),
+  })
+  .openapi({
+    required: ['LogLevel'],
+    description:
+      'Describes configuration parameters for Amazon CloudWatch logging for a Kinesis Data Analytics Studio notebook. For more information about CloudWatch logging, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/monitoring-overview.html">Monitoring</a>.',
+  })
+  .openapi('ZeppelinMonitoringConfiguration')
+
+const GlueDataCatalogConfigurationSchema = z
+  .object({
+    DatabaseARN: DatabaseARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the database.',
+    }),
+  })
+  .openapi({
+    required: ['DatabaseARN'],
+    description:
+      'The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.',
+  })
+  .openapi('GlueDataCatalogConfiguration')
+
+const CatalogConfigurationSchema = z
+  .object({
+    GlueDataCatalogConfiguration: GlueDataCatalogConfigurationSchema.openapi({
+      description:
+        'The configuration parameters for the default Amazon Glue database. You use this database for Apache Flink SQL queries and table API transforms that you write in a Kinesis Data Analytics Studio notebook.',
+    }),
+  })
+  .openapi({
+    required: ['GlueDataCatalogConfiguration'],
+    description:
+      'The configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
+  })
+  .openapi('CatalogConfiguration')
+
+const S3ContentBaseLocationSchema = z
+  .object({
+    BucketARN: BucketARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    BasePath: BasePathSchema.exactOptional().openapi({
+      description: 'The base path for the S3 bucket.',
+    }),
+  })
+  .openapi({
+    required: ['BucketARN'],
+    description: 'The S3 bucket that holds the application information.',
+  })
+  .openapi('S3ContentBaseLocation')
+
+const DeployAsApplicationConfigurationSchema = z
+  .object({
+    S3ContentLocation: S3ContentBaseLocationSchema.openapi({
+      description:
+        'The description of an Amazon S3 object that contains the Amazon Data Analytics application, including the Amazon Resource Name (ARN) of the S3 bucket, the name of the Amazon S3 object that contains the data, and the version number of the Amazon S3 object that contains the data. ',
+    }),
+  })
+  .openapi({
+    required: ['S3ContentLocation'],
+    description:
+      'The information required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
+  })
+  .openapi('DeployAsApplicationConfiguration')
+
+const CustomArtifactConfigurationSchema = z
+  .object({
+    ArtifactType: ArtifactTypeSchema.openapi({
+      description:
+        ' <code>UDF</code> stands for user-defined functions. This type of artifact must be in an S3 bucket. A <code>DEPENDENCY_JAR</code> can be in either Maven or an S3 bucket.',
+    }),
+    S3ContentLocation: S3ContentLocationSchema.exactOptional(),
+    MavenReference: MavenReferenceSchema.exactOptional().openapi({
+      description: 'The parameters required to fully specify a Maven reference.',
+    }),
+  })
+  .openapi({
+    required: ['ArtifactType'],
+    description:
+      'Specifies dependency JARs, as well as JAR files that contain user-defined functions (UDF).',
+  })
+  .openapi('CustomArtifactConfiguration')
+
+const CustomArtifactsConfigurationListSchema = z
+  .array(CustomArtifactConfigurationSchema)
+  .max(50)
+  .openapi('CustomArtifactsConfigurationList')
+
+const ZeppelinApplicationConfigurationSchema = z
+  .object({
+    MonitoringConfiguration: ZeppelinMonitoringConfigurationSchema.exactOptional().openapi({
+      description: 'The monitoring configuration of a Kinesis Data Analytics Studio notebook.',
+    }),
+    CatalogConfiguration: CatalogConfigurationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Glue Data Catalog that you use in queries in a Kinesis Data Analytics Studio notebook.',
+    }),
+    DeployAsApplicationConfiguration:
+      DeployAsApplicationConfigurationSchema.exactOptional().openapi({
+        description:
+          'The information required to deploy a Kinesis Data Analytics Studio notebook as an application with durable state.',
+      }),
+    CustomArtifactsConfiguration: CustomArtifactsConfigurationListSchema.exactOptional().openapi({
+      description: 'Custom artifacts are dependency JARs and user-defined functions (UDF).',
+    }),
+  })
+  .openapi({
+    description: 'The configuration of a Kinesis Data Analytics Studio notebook.',
+    required: [],
+  })
+  .openapi('ZeppelinApplicationConfiguration')
+
+type ApplicationConfigurationType = {
+  SqlApplicationConfiguration?: z.infer<typeof SqlApplicationConfigurationSchema> & unknown
+  FlinkApplicationConfiguration?: z.infer<typeof FlinkApplicationConfigurationSchema> & unknown
+  EnvironmentProperties?: z.infer<typeof EnvironmentPropertiesSchema> & unknown
+  ApplicationCodeConfiguration?: z.infer<typeof ApplicationCodeConfigurationSchema> & unknown
+  ApplicationSnapshotConfiguration?: z.infer<typeof ApplicationSnapshotConfigurationSchema> &
+    unknown
+  VpcConfigurations?: z.infer<typeof VpcConfigurationsSchema> & unknown
+  ZeppelinApplicationConfiguration?: z.infer<typeof ZeppelinApplicationConfigurationSchema> &
+    unknown
+}
+
+const ApplicationConfigurationSchema: z.ZodType<ApplicationConfigurationType> = z
+  .object({
+    SqlApplicationConfiguration: SqlApplicationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The creation and update parameters for a SQL-based Kinesis Data Analytics application.',
+    }),
+    FlinkApplicationConfiguration: FlinkApplicationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The creation and update parameters for a Flink-based Kinesis Data Analytics application.',
+    }),
+    EnvironmentProperties: EnvironmentPropertiesSchema.exactOptional().openapi({
+      description:
+        'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
+    }),
+    ApplicationCodeConfiguration: ApplicationCodeConfigurationSchema.exactOptional().openapi({
+      description:
+        'The code location and type parameters for a Flink-based Kinesis Data Analytics application.',
+    }),
+    ApplicationSnapshotConfiguration:
+      ApplicationSnapshotConfigurationSchema.exactOptional().openapi({
+        description:
+          'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+      }),
+    VpcConfigurations: VpcConfigurationsSchema.exactOptional().openapi({
+      description: 'The array of descriptions of VPC configurations available to the application.',
+    }),
+    ZeppelinApplicationConfiguration:
+      ZeppelinApplicationConfigurationSchema.exactOptional().openapi({
+        description: 'The configuration parameters for a Kinesis Data Analytics Studio notebook.',
+      }),
+  })
+  .openapi({
+    description: 'Specifies the creation parameters for a Kinesis Data Analytics application.',
+    required: [],
+  })
+  .openapi('ApplicationConfiguration')
+
+const CloudWatchLoggingOptionSchema = z
+  .object({
+    LogStreamARN: LogStreamARNSchema.openapi({
+      description: 'The ARN of the CloudWatch log to receive application messages.',
+    }),
+  })
+  .openapi({
+    required: ['LogStreamARN'],
+    description:
+      'Provides a description of Amazon CloudWatch logging options, including the log stream Amazon Resource Name (ARN). ',
+  })
+  .openapi('CloudWatchLoggingOption')
+
+const CloudWatchLoggingOptionsSchema = z
+  .array(CloudWatchLoggingOptionSchema)
+  .openapi('CloudWatchLoggingOptions')
+
+const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
+
+const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    Key: TagKeySchema.openapi({ description: 'The key of the key-value tag.' }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description: 'The value of the key-value tag. The value is optional.',
+    }),
+  })
+  .openapi({
+    required: ['Key'],
+    description:
+      'A key-value pair (the value is optional) that you can define and assign to Amazon resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html">Using Tagging</a>.',
+  })
+  .openapi('Tag')
+
+const TagsSchema = z.array(TagSchema).min(1).max(200).openapi('Tags')
+
+type CreateApplicationRequestType = {
+  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
+  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema> & unknown
+  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema> & unknown
+  ServiceExecutionRole: z.infer<typeof RoleARNSchema> & unknown
+  ApplicationConfiguration?: z.infer<typeof ApplicationConfigurationSchema> & unknown
+  CloudWatchLoggingOptions?: z.infer<typeof CloudWatchLoggingOptionsSchema> & unknown
+  Tags?: z.infer<typeof TagsSchema> & unknown
+  ApplicationMode?: z.infer<typeof ApplicationModeSchema> & unknown
+}
+
+type DescribeApplicationResponseType = {
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
+}
+
+type DescribeApplicationVersionResponseType = {
+  ApplicationVersionDetail?: z.infer<typeof ApplicationDetailSchema>
+}
+
+type RollbackApplicationResponseType = {
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema>
+}
+
+type UpdateApplicationResponseType = {
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
+}
+
+const InputLambdaProcessorUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the new Amazon Lambda function that is used to preprocess the records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, represents an update to the <a>InputLambdaProcessor</a> that is used to preprocess the records in the stream.',
+  })
+  .openapi('InputLambdaProcessorUpdate')
+
+const InputProcessingConfigurationUpdateSchema = z
+  .object({
+    InputLambdaProcessorUpdate: InputLambdaProcessorUpdateSchema.openapi({
+      description: 'Provides update information for an <a>InputLambdaProcessor</a>.',
+    }),
+  })
+  .openapi({
+    required: ['InputLambdaProcessorUpdate'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes updates to an <a>InputProcessingConfiguration</a>.',
+  })
+  .openapi('InputProcessingConfigurationUpdate')
+
+const KinesisStreamsInputUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the input Kinesis data stream to read.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      'When you update the input configuration for a SQL-based Kinesis Data Analytics application, provides information about a Kinesis stream as the streaming source.',
+  })
+  .openapi('KinesisStreamsInputUpdate')
+
+const KinesisFirehoseInputUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the input delivery stream to read.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, when updating application input configuration, provides information about a Kinesis Data Firehose delivery stream as the streaming source.',
+  })
+  .openapi('KinesisFirehoseInputUpdate')
+
+const InputSchemaUpdateSchema = z
+  .object({
+    RecordFormatUpdate: RecordFormatSchema.exactOptional().openapi({
+      description: 'Specifies the format of the records on the streaming source.',
+    }),
+    RecordEncodingUpdate: RecordEncodingSchema.exactOptional().openapi({
+      description:
+        'Specifies the encoding of the records in the streaming source; for example, UTF-8.',
+    }),
+    RecordColumnUpdates: RecordColumnsSchema.exactOptional().openapi({
+      description:
+        'A list of <code>RecordColumn</code> objects. Each object describes the mapping of the streaming source element to the corresponding column in the in-application stream.',
+    }),
+  })
+  .openapi({
+    description:
+      "Describes updates for an SQL-based Kinesis Data Analytics application's input schema.",
+    required: [],
+  })
+  .openapi('InputSchemaUpdate')
+
+const InputParallelismUpdateSchema = z
+  .object({
+    CountUpdate: InputParallelismCountSchema.openapi({
+      description:
+        'The number of in-application streams to create for the specified streaming source.',
+    }),
+  })
+  .openapi({
+    required: ['CountUpdate'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, provides updates to the parallelism count.',
+  })
+  .openapi('InputParallelismUpdate')
+
+const InputUpdateSchema = z
+  .object({
+    InputId: IdSchema.openapi({
+      description: 'The input ID of the application input to be updated.',
+    }),
+    NamePrefixUpdate: InAppStreamNameSchema.exactOptional().openapi({
+      description:
+        'The name prefix for in-application streams that Kinesis Data Analytics creates for the specific streaming source.',
+    }),
+    InputProcessingConfigurationUpdate:
+      InputProcessingConfigurationUpdateSchema.exactOptional().openapi({
+        description: 'Describes updates to an <a>InputProcessingConfiguration</a>.',
+      }),
+    KinesisStreamsInputUpdate: KinesisStreamsInputUpdateSchema.exactOptional().openapi({
+      description:
+        'If a Kinesis data stream is the streaming source to be updated, provides an updated stream Amazon Resource Name (ARN).',
+    }),
+    KinesisFirehoseInputUpdate: KinesisFirehoseInputUpdateSchema.exactOptional().openapi({
+      description:
+        'If a Kinesis Data Firehose delivery stream is the streaming source to be updated, provides an updated stream ARN.',
+    }),
+    InputSchemaUpdate: InputSchemaUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes the data format on the streaming source, and how record elements on the streaming source map to columns of the in-application stream that is created.',
+    }),
+    InputParallelismUpdate: InputParallelismUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes the parallelism updates (the number of in-application streams Kinesis Data Analytics creates for the specific streaming source).',
+    }),
+  })
+  .openapi({
+    required: ['InputId'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes updates to a specific input configuration (identified by the <code>InputId</code> of an application). ',
+  })
   .openapi('InputUpdate')
 
 const InputUpdatesSchema = z.array(InputUpdateSchema).openapi('InputUpdates')
 
-const OutputUpdateSchema: z.ZodType<OutputUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        OutputId: IdSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Identifies the specific output configuration that you want to update.',
-            }),
-        ),
-        NameUpdate: InAppStreamNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'If you want to specify a different in-application stream for this output configuration, use this field to specify the new in-application stream name.',
-            }),
-        ).exactOptional(),
-        KinesisStreamsOutputUpdate: KinesisStreamsOutputUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes a Kinesis data stream as the destination for the output.',
-            }),
-        ).exactOptional(),
-        KinesisFirehoseOutputUpdate: KinesisFirehoseOutputUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes a Kinesis Data Firehose delivery stream as the destination for the output.',
-            }),
-        ).exactOptional(),
-        LambdaOutputUpdate: LambdaOutputUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes an Amazon Lambda function as the destination for the output.',
-            }),
-        ).exactOptional(),
-        DestinationSchemaUpdate: DestinationSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the data format when records are written to the destination. ',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['OutputId'],
-        description:
-          ' For a SQL-based Kinesis Data Analytics application, describes updates to the output configuration identified by the <code>OutputId</code>. ',
-      }),
-  )
+const KinesisStreamsOutputUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Kinesis data stream where you want to write the output.',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      "When you update a SQL-based Kinesis Data Analytics application's output configuration using the <a>UpdateApplication</a> operation, provides information about a Kinesis data stream that is configured as the destination.",
+  })
+  .openapi('KinesisStreamsOutputUpdate')
+
+const KinesisFirehoseOutputUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the delivery stream to write to. ',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, when updating an output configuration using the <a>UpdateApplication</a> operation, provides information about a Kinesis Data Firehose delivery stream that is configured as the destination.',
+  })
+  .openapi('KinesisFirehoseOutputUpdate')
+
+const LambdaOutputUpdateSchema = z
+  .object({
+    ResourceARNUpdate: ResourceARNSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the destination Amazon Lambda function.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceARNUpdate'],
+    description:
+      "When you update an SQL-based Kinesis Data Analytics application's output configuration using the <a>UpdateApplication</a> operation, provides information about an Amazon Lambda function that is configured as the destination.",
+  })
+  .openapi('LambdaOutputUpdate')
+
+const OutputUpdateSchema = z
+  .object({
+    OutputId: IdSchema.openapi({
+      description: 'Identifies the specific output configuration that you want to update.',
+    }),
+    NameUpdate: InAppStreamNameSchema.exactOptional().openapi({
+      description:
+        'If you want to specify a different in-application stream for this output configuration, use this field to specify the new in-application stream name.',
+    }),
+    KinesisStreamsOutputUpdate: KinesisStreamsOutputUpdateSchema.exactOptional().openapi({
+      description: 'Describes a Kinesis data stream as the destination for the output.',
+    }),
+    KinesisFirehoseOutputUpdate: KinesisFirehoseOutputUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes a Kinesis Data Firehose delivery stream as the destination for the output.',
+    }),
+    LambdaOutputUpdate: LambdaOutputUpdateSchema.exactOptional().openapi({
+      description: 'Describes an Amazon Lambda function as the destination for the output.',
+    }),
+    DestinationSchemaUpdate: DestinationSchemaSchema.exactOptional().openapi({
+      description: 'Describes the data format when records are written to the destination. ',
+    }),
+  })
+  .openapi({
+    required: ['OutputId'],
+    description:
+      ' For a SQL-based Kinesis Data Analytics application, describes updates to the output configuration identified by the <code>OutputId</code>. ',
+  })
   .openapi('OutputUpdate')
 
 const OutputUpdatesSchema = z.array(OutputUpdateSchema).openapi('OutputUpdates')
 
-const ReferenceDataSourceUpdateSchema: z.ZodType<ReferenceDataSourceUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        ReferenceId: IdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The ID of the reference data source that is being updated. You can use the <a>DescribeApplication</a> operation to get this value.',
-            }),
-        ),
-        TableNameUpdate: InAppTableNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The in-application table name that is created by this update.',
-            }),
-        ).exactOptional(),
-        S3ReferenceDataSourceUpdate: S3ReferenceDataSourceUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the S3 bucket name, object key name, and IAM role that Kinesis Data Analytics can assume to read the Amazon S3 object on your behalf and populate the in-application reference table.',
-            }),
-        ).exactOptional(),
-        ReferenceSchemaUpdate: SourceSchemaSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream. ',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['ReferenceId'],
-        description:
-          'When you update a reference data source configuration for a SQL-based Kinesis Data Analytics application, this object provides all the updated values (such as the source bucket name and object key name), the in-application table name that is created, and updated mapping information that maps the data in the Amazon S3 object to the in-application reference table that is created.',
-      }),
-  )
+const S3ReferenceDataSourceUpdateSchema = z
+  .object({
+    BucketARNUpdate: BucketARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    FileKeyUpdate: FileKeySchema.exactOptional().openapi({ description: 'The object key name.' }),
+  })
+  .openapi({
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes the Amazon S3 bucket name and object key name for an in-application reference table. ',
+    required: [],
+  })
+  .openapi('S3ReferenceDataSourceUpdate')
+
+const ReferenceDataSourceUpdateSchema = z
+  .object({
+    ReferenceId: IdSchema.openapi({
+      description:
+        'The ID of the reference data source that is being updated. You can use the <a>DescribeApplication</a> operation to get this value.',
+    }),
+    TableNameUpdate: InAppTableNameSchema.exactOptional().openapi({
+      description: 'The in-application table name that is created by this update.',
+    }),
+    S3ReferenceDataSourceUpdate: S3ReferenceDataSourceUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes the S3 bucket name, object key name, and IAM role that Kinesis Data Analytics can assume to read the Amazon S3 object on your behalf and populate the in-application reference table.',
+    }),
+    ReferenceSchemaUpdate: SourceSchemaSchema.exactOptional().openapi({
+      description:
+        'Describes the format of the data in the streaming source, and how each data element maps to corresponding columns created in the in-application stream. ',
+    }),
+  })
+  .openapi({
+    required: ['ReferenceId'],
+    description:
+      'When you update a reference data source configuration for a SQL-based Kinesis Data Analytics application, this object provides all the updated values (such as the source bucket name and object key name), the in-application table name that is created, and updated mapping information that maps the data in the Amazon S3 object to the in-application reference table that is created.',
+  })
   .openapi('ReferenceDataSourceUpdate')
 
 const ReferenceDataSourceUpdatesSchema = z
@@ -2015,30 +2114,18 @@ const ReferenceDataSourceUpdatesSchema = z
 
 const SqlApplicationConfigurationUpdateSchema = z
   .object({
-    InputUpdates: InputUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>InputUpdate</a> objects describing the new input streams used by the application.',
-        }),
-    ).exactOptional(),
-    OutputUpdates: OutputUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>OutputUpdate</a> objects describing the new destination streams used by the application.',
-        }),
-    ).exactOptional(),
-    ReferenceDataSourceUpdates: ReferenceDataSourceUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of <a>ReferenceDataSourceUpdate</a> objects describing the new reference data sources used by the application.',
-        }),
-    ).exactOptional(),
+    InputUpdates: InputUpdatesSchema.exactOptional().openapi({
+      description:
+        'The array of <a>InputUpdate</a> objects describing the new input streams used by the application.',
+    }),
+    OutputUpdates: OutputUpdatesSchema.exactOptional().openapi({
+      description:
+        'The array of <a>OutputUpdate</a> objects describing the new destination streams used by the application.',
+    }),
+    ReferenceDataSourceUpdates: ReferenceDataSourceUpdatesSchema.exactOptional().openapi({
+      description:
+        'The array of <a>ReferenceDataSourceUpdate</a> objects describing the new reference data sources used by the application.',
+    }),
   })
   .openapi({
     description:
@@ -2049,26 +2136,16 @@ const SqlApplicationConfigurationUpdateSchema = z
 
 const S3ContentLocationUpdateSchema = z
   .object({
-    BucketARNUpdate: BucketARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
-        }),
-    ).exactOptional(),
-    FileKeyUpdate: FileKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new file key for the object containing the application code.',
-        }),
-    ).exactOptional(),
-    ObjectVersionUpdate: ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The new version of the object containing the application code.' }),
-    ).exactOptional(),
+    BucketARNUpdate: BucketARNSchema.exactOptional().openapi({
+      description:
+        'The new Amazon Resource Name (ARN) for the S3 bucket containing the application code.',
+    }),
+    FileKeyUpdate: FileKeySchema.exactOptional().openapi({
+      description: 'The new file key for the object containing the application code.',
+    }),
+    ObjectVersionUpdate: ObjectVersionSchema.exactOptional().openapi({
+      description: 'The new version of the object containing the application code.',
+    }),
   })
   .openapi({
     description: 'Describes an update for the Amazon S3 code content location for an application.',
@@ -2078,21 +2155,15 @@ const S3ContentLocationUpdateSchema = z
 
 const CodeContentUpdateSchema = z
   .object({
-    TextContentUpdate: TextContentSchema.and(
-      z.any().openapi({ description: 'Describes an update to the text code for an application.' }),
-    ).exactOptional(),
-    ZipFileContentUpdate: ZipFileContentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes an update to the zipped code for an application.' }),
-    ).exactOptional(),
-    S3ContentLocationUpdate: S3ContentLocationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes an update to the location of code for an application.',
-        }),
-    ).exactOptional(),
+    TextContentUpdate: TextContentSchema.exactOptional().openapi({
+      description: 'Describes an update to the text code for an application.',
+    }),
+    ZipFileContentUpdate: ZipFileContentSchema.exactOptional().openapi({
+      description: 'Describes an update to the zipped code for an application.',
+    }),
+    S3ContentLocationUpdate: S3ContentLocationUpdateSchema.exactOptional().openapi({
+      description: 'Describes an update to the location of code for an application.',
+    }),
   })
   .openapi({
     description:
@@ -2103,12 +2174,12 @@ const CodeContentUpdateSchema = z
 
 const ApplicationCodeConfigurationUpdateSchema = z
   .object({
-    CodeContentTypeUpdate: CodeContentTypeSchema.and(
-      z.any().openapi({ description: 'Describes updates to the code content type.' }),
-    ).exactOptional(),
-    CodeContentUpdate: CodeContentUpdateSchema.and(
-      z.any().openapi({ description: 'Describes updates to the code content of an application.' }),
-    ).exactOptional(),
+    CodeContentTypeUpdate: CodeContentTypeSchema.exactOptional().openapi({
+      description: 'Describes updates to the code content type.',
+    }),
+    CodeContentUpdate: CodeContentUpdateSchema.exactOptional().openapi({
+      description: 'Describes updates to the code content of an application.',
+    }),
   })
   .openapi({
     description:
@@ -2119,38 +2190,22 @@ const ApplicationCodeConfigurationUpdateSchema = z
 
 const CheckpointConfigurationUpdateSchema = z
   .object({
-    ConfigurationTypeUpdate: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes updates to whether the application uses the default checkpointing behavior of Kinesis Data Analytics. You must set this property to <code>CUSTOM</code> in order to set the <code>CheckpointingEnabled</code>, <code>CheckpointInterval</code>, or <code>MinPauseBetweenCheckpoints</code> parameters. </p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>',
-        }),
-    ).exactOptional(),
-    CheckpointingEnabledUpdate: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes updates to whether checkpointing is enabled for an application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    CheckpointIntervalUpdate: CheckpointIntervalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes updates to the interval in milliseconds between checkpoint operations.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
-    MinPauseBetweenCheckpointsUpdate: MinPauseBetweenCheckpointsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes updates to the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
-        }),
-    ).exactOptional(),
+    ConfigurationTypeUpdate: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Describes updates to whether the application uses the default checkpointing behavior of Kinesis Data Analytics. You must set this property to <code>CUSTOM</code> in order to set the <code>CheckpointingEnabled</code>, <code>CheckpointInterval</code>, or <code>MinPauseBetweenCheckpoints</code> parameters. </p> <note> <p>If this value is set to <code>DEFAULT</code>, the application will use the following values, even if they are set to other values using APIs or application code:</p> <ul> <li> <p> <b>CheckpointingEnabled:</b> true</p> </li> <li> <p> <b>CheckpointInterval:</b> 60000</p> </li> <li> <p> <b>MinPauseBetweenCheckpoints:</b> 5000</p> </li> </ul> </note>',
+    }),
+    CheckpointingEnabledUpdate: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        '<p>Describes updates to whether checkpointing is enabled for an application.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointingEnabled</code> value of <code>true</code>, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    CheckpointIntervalUpdate: CheckpointIntervalSchema.exactOptional().openapi({
+      description:
+        '<p>Describes updates to the interval in milliseconds between checkpoint operations.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>CheckpointInterval</code> value of 60000, even if this value is set to another value using this API or in application code.</p> </note>',
+    }),
+    MinPauseBetweenCheckpointsUpdate: MinPauseBetweenCheckpointsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes updates to the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -2161,30 +2216,17 @@ const CheckpointConfigurationUpdateSchema = z
 
 const MonitoringConfigurationUpdateSchema = z
   .object({
-    ConfigurationTypeUpdate: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to whether to use the default CloudWatch logging configuration for an application. You must set this property to <code>CUSTOM</code> in order to set the <code>LogLevel</code> or <code>MetricsLevel</code> parameters.',
-        }),
-    ).exactOptional(),
-    MetricsLevelUpdate: MetricsLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the granularity of the CloudWatch Logs for an application. The <code>Parallelism</code> level is not recommended for applications with a Parallelism over 64 due to excessive costs.',
-        }),
-    ).exactOptional(),
-    LogLevelUpdate: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the verbosity of the CloudWatch Logs for an application.',
-        }),
-    ).exactOptional(),
+    ConfigurationTypeUpdate: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        'Describes updates to whether to use the default CloudWatch logging configuration for an application. You must set this property to <code>CUSTOM</code> in order to set the <code>LogLevel</code> or <code>MetricsLevel</code> parameters.',
+    }),
+    MetricsLevelUpdate: MetricsLevelSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the granularity of the CloudWatch Logs for an application. The <code>Parallelism</code> level is not recommended for applications with a Parallelism over 64 due to excessive costs.',
+    }),
+    LogLevelUpdate: LogLevelSchema.exactOptional().openapi({
+      description: 'Describes updates to the verbosity of the CloudWatch Logs for an application.',
+    }),
   })
   .openapi({
     description:
@@ -2195,38 +2237,22 @@ const MonitoringConfigurationUpdateSchema = z
 
 const ParallelismConfigurationUpdateSchema = z
   .object({
-    ConfigurationTypeUpdate: ConfigurationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes updates to whether the application uses the default parallelism for the Kinesis Data Analytics service, or if a custom parallelism is used. You must set this property to <code>CUSTOM</code> in order to change your application's <code>AutoScalingEnabled</code>, <code>Parallelism</code>, or <code>ParallelismPerKPU</code> properties.",
-        }),
-    ).exactOptional(),
-    ParallelismUpdate: ParallelismSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the initial number of parallel tasks an application can perform. If <code>AutoScalingEnabled</code> is set to True, then Kinesis Data Analytics can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service will reduce <code>CurrentParallelism</code> down to the <code>Parallelism</code> setting.',
-        }),
-    ).exactOptional(),
-    ParallelismPerKPUUpdate: ParallelismPerKPUSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the number of parallel tasks an application can perform per Kinesis Processing Unit (KPU) used by the application.',
-        }),
-    ).exactOptional(),
-    AutoScalingEnabledUpdate: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to whether the Kinesis Data Analytics service can increase the parallelism of a Flink-based Kinesis Data Analytics application in response to increased throughput.',
-        }),
-    ).exactOptional(),
+    ConfigurationTypeUpdate: ConfigurationTypeSchema.exactOptional().openapi({
+      description:
+        "Describes updates to whether the application uses the default parallelism for the Kinesis Data Analytics service, or if a custom parallelism is used. You must set this property to <code>CUSTOM</code> in order to change your application's <code>AutoScalingEnabled</code>, <code>Parallelism</code>, or <code>ParallelismPerKPU</code> properties.",
+    }),
+    ParallelismUpdate: ParallelismSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the initial number of parallel tasks an application can perform. If <code>AutoScalingEnabled</code> is set to True, then Kinesis Data Analytics can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service will reduce <code>CurrentParallelism</code> down to the <code>Parallelism</code> setting.',
+    }),
+    ParallelismPerKPUUpdate: ParallelismPerKPUSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the number of parallel tasks an application can perform per Kinesis Processing Unit (KPU) used by the application.',
+    }),
+    AutoScalingEnabledUpdate: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        'Describes updates to whether the Kinesis Data Analytics service can increase the parallelism of a Flink-based Kinesis Data Analytics application in response to increased throughput.',
+    }),
   })
   .openapi({
     description:
@@ -2237,30 +2263,18 @@ const ParallelismConfigurationUpdateSchema = z
 
 const FlinkApplicationConfigurationUpdateSchema = z
   .object({
-    CheckpointConfigurationUpdate: CheckpointConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Describes updates to an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.",
-        }),
-    ).exactOptional(),
-    MonitoringConfigurationUpdate: MonitoringConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the configuration parameters for Amazon CloudWatch logging for an application.',
-        }),
-    ).exactOptional(),
-    ParallelismConfigurationUpdate: ParallelismConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the parameters for how an application executes multiple tasks simultaneously.',
-        }),
-    ).exactOptional(),
+    CheckpointConfigurationUpdate: CheckpointConfigurationUpdateSchema.exactOptional().openapi({
+      description:
+        "Describes updates to an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance.",
+    }),
+    MonitoringConfigurationUpdate: MonitoringConfigurationUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the configuration parameters for Amazon CloudWatch logging for an application.',
+    }),
+    ParallelismConfigurationUpdate: ParallelismConfigurationUpdateSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the parameters for how an application executes multiple tasks simultaneously.',
+    }),
   })
   .openapi({
     description:
@@ -2271,9 +2285,9 @@ const FlinkApplicationConfigurationUpdateSchema = z
 
 const EnvironmentPropertyUpdatesSchema = z
   .object({
-    PropertyGroups: PropertyGroupsSchema.and(
-      z.any().openapi({ description: 'Describes updates to the execution property groups.' }),
-    ),
+    PropertyGroups: PropertyGroupsSchema.openapi({
+      description: 'Describes updates to the execution property groups.',
+    }),
   })
   .openapi({
     required: ['PropertyGroups'],
@@ -2284,13 +2298,9 @@ const EnvironmentPropertyUpdatesSchema = z
 
 const ApplicationSnapshotConfigurationUpdateSchema = z
   .object({
-    SnapshotsEnabledUpdate: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes updates to whether snapshots are enabled for an application.',
-        }),
-    ),
+    SnapshotsEnabledUpdate: BooleanObjectSchema.openapi({
+      description: 'Describes updates to whether snapshots are enabled for an application.',
+    }),
   })
   .openapi({
     required: ['SnapshotsEnabledUpdate'],
@@ -2301,25 +2311,17 @@ const ApplicationSnapshotConfigurationUpdateSchema = z
 
 const VpcConfigurationUpdateSchema = z
   .object({
-    VpcConfigurationId: IdSchema.and(
-      z.any().openapi({ description: 'Describes an update to the ID of the VPC configuration.' }),
-    ),
-    SubnetIdUpdates: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIdUpdates: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes updates to the array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
-        }),
-    ).exactOptional(),
+    VpcConfigurationId: IdSchema.openapi({
+      description: 'Describes an update to the ID of the VPC configuration.',
+    }),
+    SubnetIdUpdates: SubnetIdsSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Subnet.html">Subnet</a> IDs used by the VPC configuration.',
+    }),
+    SecurityGroupIdUpdates: SecurityGroupIdsSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the array of <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SecurityGroup.html">SecurityGroup</a> IDs used by the VPC configuration.',
+    }),
   })
   .openapi({
     required: ['VpcConfigurationId'],
@@ -2333,14 +2335,10 @@ const VpcConfigurationUpdatesSchema = z
 
 const ZeppelinMonitoringConfigurationUpdateSchema = z
   .object({
-    LogLevelUpdate: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates to the logging level for Apache Zeppelin within a Kinesis Data Analytics Studio notebook.',
-        }),
-    ),
+    LogLevelUpdate: LogLevelSchema.openapi({
+      description:
+        'Updates to the logging level for Apache Zeppelin within a Kinesis Data Analytics Studio notebook.',
+    }),
   })
   .openapi({
     required: ['LogLevelUpdate'],
@@ -2349,35 +2347,41 @@ const ZeppelinMonitoringConfigurationUpdateSchema = z
   })
   .openapi('ZeppelinMonitoringConfigurationUpdate')
 
-const CatalogConfigurationUpdateSchema: z.ZodType<CatalogConfigurationUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        GlueDataCatalogConfigurationUpdate: GlueDataCatalogConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['GlueDataCatalogConfigurationUpdate'],
-        description:
-          'Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
-      }),
-  )
+const GlueDataCatalogConfigurationUpdateSchema = z
+  .object({
+    DatabaseARNUpdate: DatabaseARNSchema.openapi({
+      description: 'The updated Amazon Resource Name (ARN) of the database.',
+    }),
+  })
+  .openapi({
+    required: ['DatabaseARNUpdate'],
+    description:
+      'Updates to the configuration of the Glue Data Catalog that you use for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
+  })
+  .openapi('GlueDataCatalogConfigurationUpdate')
+
+const CatalogConfigurationUpdateSchema = z
+  .object({
+    GlueDataCatalogConfigurationUpdate: GlueDataCatalogConfigurationUpdateSchema.openapi({
+      description:
+        'Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
+    }),
+  })
+  .openapi({
+    required: ['GlueDataCatalogConfigurationUpdate'],
+    description:
+      'Updates to the configuration parameters for the default Amazon Glue database. You use this database for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
+  })
   .openapi('CatalogConfigurationUpdate')
 
 const S3ContentBaseLocationUpdateSchema = z
   .object({
-    BucketARNUpdate: BucketARNSchema.and(
-      z.any().openapi({ description: 'The updated Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ).exactOptional(),
-    BasePathUpdate: BasePathSchema.and(
-      z.any().openapi({ description: 'The updated S3 bucket path.' }),
-    ).exactOptional(),
+    BucketARNUpdate: BucketARNSchema.exactOptional().openapi({
+      description: 'The updated Amazon Resource Name (ARN) of the S3 bucket.',
+    }),
+    BasePathUpdate: BasePathSchema.exactOptional().openapi({
+      description: 'The updated S3 bucket path.',
+    }),
   })
   .openapi({
     description:
@@ -2388,14 +2392,10 @@ const S3ContentBaseLocationUpdateSchema = z
 
 const DeployAsApplicationConfigurationUpdateSchema = z
   .object({
-    S3ContentLocationUpdate: S3ContentBaseLocationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates to the location that holds the data required to specify an Amazon Data Analytics application.',
-        }),
-    ).exactOptional(),
+    S3ContentLocationUpdate: S3ContentBaseLocationUpdateSchema.exactOptional().openapi({
+      description:
+        'Updates to the location that holds the data required to specify an Amazon Data Analytics application.',
+    }),
   })
   .openapi({
     description:
@@ -2406,32 +2406,22 @@ const DeployAsApplicationConfigurationUpdateSchema = z
 
 const ZeppelinApplicationConfigurationUpdateSchema = z
   .object({
-    MonitoringConfigurationUpdate: ZeppelinMonitoringConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates to the monitoring configuration of a Kinesis Data Analytics Studio notebook.',
-        }),
-    ).exactOptional(),
-    CatalogConfigurationUpdate: CatalogConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates to the configuration of the Amazon Glue Data Catalog that is associated with the Kinesis Data Analytics Studio notebook.',
-        }),
-    ).exactOptional(),
+    MonitoringConfigurationUpdate:
+      ZeppelinMonitoringConfigurationUpdateSchema.exactOptional().openapi({
+        description:
+          'Updates to the monitoring configuration of a Kinesis Data Analytics Studio notebook.',
+      }),
+    CatalogConfigurationUpdate: CatalogConfigurationUpdateSchema.exactOptional().openapi({
+      description:
+        'Updates to the configuration of the Amazon Glue Data Catalog that is associated with the Kinesis Data Analytics Studio notebook.',
+    }),
     DeployAsApplicationConfigurationUpdate:
       DeployAsApplicationConfigurationUpdateSchema.exactOptional(),
-    CustomArtifactsConfigurationUpdate: CustomArtifactsConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates to the customer artifacts. Custom artifacts are dependency JAR files and user-defined functions (UDF).',
-        }),
-    ).exactOptional(),
+    CustomArtifactsConfigurationUpdate:
+      CustomArtifactsConfigurationListSchema.exactOptional().openapi({
+        description:
+          'Updates to the customer artifacts. Custom artifacts are dependency JAR files and user-defined functions (UDF).',
+      }),
   })
   .openapi({
     description: 'Updates to the configuration of Kinesis Data Analytics Studio notebook.',
@@ -2440,789 +2430,205 @@ const ZeppelinApplicationConfigurationUpdateSchema = z
   .openapi('ZeppelinApplicationConfigurationUpdate')
 
 type ApplicationConfigurationUpdateType = {
-  SqlApplicationConfigurationUpdate?: z.infer<typeof SqlApplicationConfigurationUpdateSchema> & {
-    [key: string]: unknown
-  }
-  ApplicationCodeConfigurationUpdate?: z.infer<typeof ApplicationCodeConfigurationUpdateSchema> & {
-    [key: string]: unknown
-  }
-  FlinkApplicationConfigurationUpdate?: z.infer<
-    typeof FlinkApplicationConfigurationUpdateSchema
-  > & { [key: string]: unknown }
-  EnvironmentPropertyUpdates?: z.infer<typeof EnvironmentPropertyUpdatesSchema> & {
-    [key: string]: unknown
-  }
+  SqlApplicationConfigurationUpdate?: z.infer<typeof SqlApplicationConfigurationUpdateSchema> &
+    unknown
+  ApplicationCodeConfigurationUpdate?: z.infer<typeof ApplicationCodeConfigurationUpdateSchema> &
+    unknown
+  FlinkApplicationConfigurationUpdate?: z.infer<typeof FlinkApplicationConfigurationUpdateSchema> &
+    unknown
+  EnvironmentPropertyUpdates?: z.infer<typeof EnvironmentPropertyUpdatesSchema> & unknown
   ApplicationSnapshotConfigurationUpdate?: z.infer<
     typeof ApplicationSnapshotConfigurationUpdateSchema
-  > & { [key: string]: unknown }
-  VpcConfigurationUpdates?: z.infer<typeof VpcConfigurationUpdatesSchema> & {
-    [key: string]: unknown
-  }
+  > &
+    unknown
+  VpcConfigurationUpdates?: z.infer<typeof VpcConfigurationUpdatesSchema> & unknown
   ZeppelinApplicationConfigurationUpdate?: z.infer<
     typeof ZeppelinApplicationConfigurationUpdateSchema
-  > & { [key: string]: unknown }
+  > &
+    unknown
 }
 
-const DatabaseARNSchema = z
-  .string()
-  .regex(/arn:.*/)
-  .min(1)
-  .max(2048)
-  .openapi('DatabaseARN')
-
-const GlueDataCatalogConfigurationSchema = z
+const ApplicationConfigurationUpdateSchema: z.ZodType<ApplicationConfigurationUpdateType> = z
   .object({
-    DatabaseARN: DatabaseARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the database.' }),
-    ),
+    SqlApplicationConfigurationUpdate:
+      SqlApplicationConfigurationUpdateSchema.exactOptional().openapi({
+        description:
+          "Describes updates to a SQL-based Kinesis Data Analytics application's configuration.",
+      }),
+    ApplicationCodeConfigurationUpdate:
+      ApplicationCodeConfigurationUpdateSchema.exactOptional().openapi({
+        description: "Describes updates to an application's code configuration.",
+      }),
+    FlinkApplicationConfigurationUpdate:
+      FlinkApplicationConfigurationUpdateSchema.exactOptional().openapi({
+        description:
+          "Describes updates to a Flink-based Kinesis Data Analytics application's configuration.",
+      }),
+    EnvironmentPropertyUpdates: EnvironmentPropertyUpdatesSchema.exactOptional().openapi({
+      description:
+        'Describes updates to the environment properties for a Flink-based Kinesis Data Analytics application.',
+    }),
+    ApplicationSnapshotConfigurationUpdate:
+      ApplicationSnapshotConfigurationUpdateSchema.exactOptional().openapi({
+        description:
+          'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
+      }),
+    VpcConfigurationUpdates: VpcConfigurationUpdatesSchema.exactOptional().openapi({
+      description:
+        'Updates to the array of descriptions of VPC configurations available to the application.',
+    }),
+    ZeppelinApplicationConfigurationUpdate:
+      ZeppelinApplicationConfigurationUpdateSchema.exactOptional().openapi({
+        description: 'Updates to the configuration of a Kinesis Data Analytics Studio notebook.',
+      }),
   })
-  .openapi({
-    required: ['DatabaseARN'],
-    description:
-      'The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.',
-  })
-  .openapi('GlueDataCatalogConfiguration')
+  .openapi({ description: "Describes updates to an application's configuration.", required: [] })
+  .openapi('ApplicationConfigurationUpdate')
 
-type CatalogConfigurationType = {
-  GlueDataCatalogConfiguration: z.infer<typeof GlueDataCatalogConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const GlueDataCatalogConfigurationDescriptionSchema = z
+const RunConfigurationUpdateSchema = z
   .object({
-    DatabaseARN: DatabaseARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the database.' }),
-    ),
-  })
-  .openapi({
-    required: ['DatabaseARN'],
-    description:
-      'The configuration of the Glue Data Catalog that you use for Apache Flink SQL queries and table API transforms that you write in an application.',
-  })
-  .openapi('GlueDataCatalogConfigurationDescription')
-
-type CatalogConfigurationDescriptionType = {
-  GlueDataCatalogConfigurationDescription: z.infer<
-    typeof GlueDataCatalogConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
-}
-
-const GlueDataCatalogConfigurationUpdateSchema = z
-  .object({
-    DatabaseARNUpdate: DatabaseARNSchema.and(
-      z.any().openapi({ description: 'The updated Amazon Resource Name (ARN) of the database.' }),
-    ),
-  })
-  .openapi({
-    required: ['DatabaseARNUpdate'],
-    description:
-      'Updates to the configuration of the Glue Data Catalog that you use for SQL queries that you write in a Kinesis Data Analytics Studio notebook.',
-  })
-  .openapi('GlueDataCatalogConfigurationUpdate')
-
-type CatalogConfigurationUpdateType = {
-  GlueDataCatalogConfigurationUpdate: z.infer<typeof GlueDataCatalogConfigurationUpdateSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const InAppStreamNamesSchema = z.array(InAppStreamNameSchema).openapi('InAppStreamNames')
-
-const RoleARNSchema = z
-  .string()
-  .regex(/arn:.*/)
-  .min(1)
-  .max(2048)
-  .openapi('RoleARN')
-
-const InputLambdaProcessorDescriptionSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the Amazon Lambda function that is used to preprocess the records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that is used to access the Amazon Lambda function.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ResourceARN'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, an object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream.',
-  })
-  .openapi('InputLambdaProcessorDescription')
-
-const InputProcessingConfigurationDescriptionSchema = z
-  .object({
-    InputLambdaProcessorDescription: InputLambdaProcessorDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides configuration information about the associated <a>InputLambdaProcessorDescription</a> ',
-        }),
-    ).exactOptional(),
+    FlinkRunConfiguration: FlinkRunConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes the starting parameters for a Flink-based Kinesis Data Analytics application.',
+    }),
+    ApplicationRestoreConfiguration: ApplicationRestoreConfigurationSchema.exactOptional().openapi({
+      description: 'Describes updates to the restore behavior of a restarting application.',
+    }),
   })
   .openapi({
     description:
-      'For a SQL-based Kinesis Data Analytics application, provides the configuration information about an input processor. Currently, the only input processor available is <a href="https://docs.aws.amazon.com/lambda/">Amazon Lambda</a>.',
+      'Describes the updates to the starting parameters for a Kinesis Data Analytics application.',
     required: [],
   })
-  .openapi('InputProcessingConfigurationDescription')
+  .openapi('RunConfigurationUpdate')
 
-const KinesisStreamsInputDescriptionSchema = z
+const CloudWatchLoggingOptionUpdateSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Kinesis data stream.' }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
+    CloudWatchLoggingOptionId: IdSchema.openapi({
+      description: 'The ID of the CloudWatch logging option to update',
+    }),
+    LogStreamARNUpdate: LogStreamARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the CloudWatch log to receive application messages.',
+    }),
+  })
+  .openapi({
+    required: ['CloudWatchLoggingOptionId'],
+    description: 'Describes the Amazon CloudWatch logging option updates.',
+  })
+  .openapi('CloudWatchLoggingOptionUpdate')
+
+const CloudWatchLoggingOptionUpdatesSchema = z
+  .array(CloudWatchLoggingOptionUpdateSchema)
+  .openapi('CloudWatchLoggingOptionUpdates')
+
+type UpdateApplicationRequestType = {
+  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
+  CurrentApplicationVersionId?: z.infer<typeof ApplicationVersionIdSchema> & unknown
+  ApplicationConfigurationUpdate?: z.infer<typeof ApplicationConfigurationUpdateSchema> & unknown
+  ServiceExecutionRoleUpdate?: z.infer<typeof RoleARNSchema> & unknown
+  RunConfigurationUpdate?: z.infer<typeof RunConfigurationUpdateSchema> & unknown
+  CloudWatchLoggingOptionUpdates?: z.infer<typeof CloudWatchLoggingOptionUpdatesSchema> & unknown
+  ConditionalToken?: z.infer<typeof ConditionalTokenSchema> & unknown
+}
+
+const InputLambdaProcessorSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description:
+        '<p>The ARN of the Amazon Lambda function that operates on records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      'For a SQL-based Kinesis Data Analytics application, describes the Kinesis data stream that is configured as the streaming source in the application input configuration. ',
+      'An object that contains the Amazon Resource Name (ARN) of the Amazon Lambda function that is used to preprocess records in the stream in a SQL-based Kinesis Data Analytics application. ',
   })
-  .openapi('KinesisStreamsInputDescription')
+  .openapi('InputLambdaProcessor')
 
-const KinesisFirehoseInputDescriptionSchema = z
+const InputProcessingConfigurationSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the delivery stream.' }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics assumes to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
+    InputLambdaProcessor: InputLambdaProcessorSchema.openapi({
+      description:
+        'The <a>InputLambdaProcessor</a> that is used to preprocess the records in the stream before being processed by your application code.',
+    }),
+  })
+  .openapi({
+    required: ['InputLambdaProcessor'],
+    description:
+      'For a SQL-based Kinesis Data Analytics application, describes a processor that is used to preprocess the records in the stream before being processed by your application code. Currently, the only input processor available is <a href="https://docs.aws.amazon.com/lambda/">Amazon Lambda</a>.',
+  })
+  .openapi('InputProcessingConfiguration')
+
+const KinesisStreamsInputSchema = z
+  .object({
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The ARN of the input Kinesis data stream to read.',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      'Describes the Amazon Kinesis Data Firehose delivery stream that is configured as the streaming source in the application input configuration. ',
+      " Identifies a Kinesis data stream as the streaming source. You provide the stream's Amazon Resource Name (ARN).",
   })
-  .openapi('KinesisFirehoseInputDescription')
+  .openapi('KinesisStreamsInput')
 
-const InputStartingPositionSchema = z
-  .enum(['NOW', 'TRIM_HORIZON', 'LAST_STOPPED_POINT'])
-  .openapi('InputStartingPosition')
-
-const InputStartingPositionConfigurationSchema = z
+const KinesisFirehoseInputSchema = z
   .object({
-    InputStartingPosition: InputStartingPositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The starting position on the stream.</p> <ul> <li> <p> <code>NOW</code> - Start reading just after the most recent record in the stream, and start at the request timestamp that the customer issued.</p> </li> <li> <p> <code>TRIM_HORIZON</code> - Start reading at the last untrimmed record in the stream, which is the oldest record available in the stream. This option is not available for an Amazon Kinesis Data Firehose delivery stream.</p> </li> <li> <p> <code>LAST_STOPPED_POINT</code> - Resume reading from where the application last stopped reading.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes the point at which the application reads from the streaming source.',
-    required: [],
-  })
-  .openapi('InputStartingPositionConfiguration')
-
-type InputDescriptionType = {
-  InputId?: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  NamePrefix?: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  InAppStreamNames?: z.infer<typeof InAppStreamNamesSchema> & { [key: string]: unknown }
-  InputProcessingConfigurationDescription?: z.infer<
-    typeof InputProcessingConfigurationDescriptionSchema
-  > & { [key: string]: unknown }
-  KinesisStreamsInputDescription?: z.infer<typeof KinesisStreamsInputDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  KinesisFirehoseInputDescription?: z.infer<typeof KinesisFirehoseInputDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  InputSchema?: z.infer<typeof SourceSchemaSchema> & { [key: string]: unknown }
-  InputParallelism?: z.infer<typeof InputParallelismSchema> & { [key: string]: unknown }
-  InputStartingPositionConfiguration?: z.infer<typeof InputStartingPositionConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const InputLambdaProcessorUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the new Amazon Lambda function that is used to preprocess the records in the stream.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, represents an update to the <a>InputLambdaProcessor</a> that is used to preprocess the records in the stream.',
-  })
-  .openapi('InputLambdaProcessorUpdate')
-
-const InputProcessingConfigurationUpdateSchema = z
-  .object({
-    InputLambdaProcessorUpdate: InputLambdaProcessorUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides update information for an <a>InputLambdaProcessor</a>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['InputLambdaProcessorUpdate'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, describes updates to an <a>InputProcessingConfiguration</a>.',
-  })
-  .openapi('InputProcessingConfigurationUpdate')
-
-const KinesisStreamsInputUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the input Kinesis data stream to read.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      'When you update the input configuration for a SQL-based Kinesis Data Analytics application, provides information about a Kinesis stream as the streaming source.',
-  })
-  .openapi('KinesisStreamsInputUpdate')
-
-const KinesisFirehoseInputUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the input delivery stream to read.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, when updating application input configuration, provides information about a Kinesis Data Firehose delivery stream as the streaming source.',
-  })
-  .openapi('KinesisFirehoseInputUpdate')
-
-const InputSchemaUpdateSchema = z
-  .object({
-    RecordFormatUpdate: RecordFormatSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the format of the records on the streaming source.' }),
-    ).exactOptional(),
-    RecordEncodingUpdate: RecordEncodingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the encoding of the records in the streaming source; for example, UTF-8.',
-        }),
-    ).exactOptional(),
-    RecordColumnUpdates: RecordColumnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>RecordColumn</code> objects. Each object describes the mapping of the streaming source element to the corresponding column in the in-application stream.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "Describes updates for an SQL-based Kinesis Data Analytics application's input schema.",
-    required: [],
-  })
-  .openapi('InputSchemaUpdate')
-
-const InputParallelismUpdateSchema = z
-  .object({
-    CountUpdate: InputParallelismCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of in-application streams to create for the specified streaming source.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['CountUpdate'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, provides updates to the parallelism count.',
-  })
-  .openapi('InputParallelismUpdate')
-
-type InputUpdateType = {
-  InputId: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  NamePrefixUpdate?: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  InputProcessingConfigurationUpdate?: z.infer<typeof InputProcessingConfigurationUpdateSchema> & {
-    [key: string]: unknown
-  }
-  KinesisStreamsInputUpdate?: z.infer<typeof KinesisStreamsInputUpdateSchema> & {
-    [key: string]: unknown
-  }
-  KinesisFirehoseInputUpdate?: z.infer<typeof KinesisFirehoseInputUpdateSchema> & {
-    [key: string]: unknown
-  }
-  InputSchemaUpdate?: z.infer<typeof InputSchemaUpdateSchema> & { [key: string]: unknown }
-  InputParallelismUpdate?: z.infer<typeof InputParallelismUpdateSchema> & { [key: string]: unknown }
-}
-
-const RecordRowPathSchema = z
-  .string()
-  .regex(/^(?=^\$)(?=^\S+$).*$/)
-  .min(1)
-  .max(65535)
-  .openapi('RecordRowPath')
-
-const JSONMappingParametersSchema = z
-  .object({
-    RecordRowPath: RecordRowPathSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The path to the top-level parent that contains the records.' }),
-    ),
-  })
-  .openapi({
-    required: ['RecordRowPath'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, provides additional mapping information when JSON is the record format on the streaming source.',
-  })
-  .openapi('JSONMappingParameters')
-
-const RecordRowDelimiterSchema = z.string().min(1).max(1024).openapi('RecordRowDelimiter')
-
-const RecordColumnDelimiterSchema = z.string().min(1).max(1024).openapi('RecordColumnDelimiter')
-
-const CSVMappingParametersSchema = z
-  .object({
-    RecordRowDelimiter: RecordRowDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The row delimiter. For example, in a CSV format, <i>'\\n'</i> is the typical row delimiter.",
-        }),
-    ),
-    RecordColumnDelimiter: RecordColumnDelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The column delimiter. For example, in a CSV format, a comma (",") is the typical column delimiter.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['RecordRowDelimiter', 'RecordColumnDelimiter'],
-    description:
-      '<p>For a SQL-based Kinesis Data Analytics application, provides additional mapping information when the record format uses delimiters, such as CSV. For example, the following sample records use CSV format, where the records use the <i>\'\\n\'</i> as the row delimiter and a comma (",") as the column delimiter: </p> <p> <code>"name1", "address1"</code> </p> <p> <code>"name2", "address2"</code> </p>',
-  })
-  .openapi('CSVMappingParameters')
-
-type MappingParametersType = {
-  JSONMappingParameters?: z.infer<typeof JSONMappingParametersSchema> & { [key: string]: unknown }
-  CSVMappingParameters?: z.infer<typeof CSVMappingParametersSchema> & { [key: string]: unknown }
-}
-
-const KinesisStreamsOutputDescriptionSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Kinesis data stream.' }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the delivery stream.',
+    }),
   })
   .openapi({
     required: ['ResourceARN'],
     description:
-      "For an SQL-based Kinesis Data Analytics application's output, describes the Kinesis data stream that is configured as its destination. ",
+      "For a SQL-based Kinesis Data Analytics application, identifies a Kinesis Data Firehose delivery stream as the streaming source. You provide the delivery stream's Amazon Resource Name (ARN).",
   })
-  .openapi('KinesisStreamsOutputDescription')
+  .openapi('KinesisFirehoseInput')
 
-const KinesisFirehoseOutputDescriptionSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the delivery stream.' }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to access the stream.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ResourceARN'],
-    description:
-      "For a SQL-based Kinesis Data Analytics application's output, describes the Kinesis Data Firehose delivery stream that is configured as its destination.",
-  })
-  .openapi('KinesisFirehoseOutputDescription')
-
-const LambdaOutputDescriptionSchema = z
-  .object({
-    ResourceARN: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the destination Lambda function.',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to write to the destination function.</p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ResourceARN'],
-    description:
-      "For a SQL-based Kinesis Data Analytics application's output, describes the Amazon Lambda function that is configured as its destination. ",
-  })
-  .openapi('LambdaOutputDescription')
-
-type OutputDescriptionType = {
-  OutputId?: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  Name?: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  KinesisStreamsOutputDescription?: z.infer<typeof KinesisStreamsOutputDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  KinesisFirehoseOutputDescription?: z.infer<typeof KinesisFirehoseOutputDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  LambdaOutputDescription?: z.infer<typeof LambdaOutputDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  DestinationSchema?: z.infer<typeof DestinationSchemaSchema> & { [key: string]: unknown }
+type InputType = {
+  NamePrefix: z.infer<typeof InAppStreamNameSchema> & unknown
+  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema> & unknown
+  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema> & unknown
+  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema> & unknown
+  InputParallelism?: z.infer<typeof InputParallelismSchema> & unknown
+  InputSchema: z.infer<typeof SourceSchemaSchema> & unknown
 }
-
-const KinesisStreamsOutputUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Kinesis data stream where you want to write the output.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      "When you update a SQL-based Kinesis Data Analytics application's output configuration using the <a>UpdateApplication</a> operation, provides information about a Kinesis data stream that is configured as the destination.",
-  })
-  .openapi('KinesisStreamsOutputUpdate')
-
-const KinesisFirehoseOutputUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the delivery stream to write to. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, when updating an output configuration using the <a>UpdateApplication</a> operation, provides information about a Kinesis Data Firehose delivery stream that is configured as the destination.',
-  })
-  .openapi('KinesisFirehoseOutputUpdate')
-
-const LambdaOutputUpdateSchema = z
-  .object({
-    ResourceARNUpdate: ResourceARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the destination Amazon Lambda function.</p> <note> <p>To specify an earlier version of the Lambda function than the latest, include the Lambda function version in the Lambda function ARN. For more information about Lambda ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-lambda">Example ARNs: Amazon Lambda</a> </p> </note>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceARNUpdate'],
-    description:
-      "When you update an SQL-based Kinesis Data Analytics application's output configuration using the <a>UpdateApplication</a> operation, provides information about an Amazon Lambda function that is configured as the destination.",
-  })
-  .openapi('LambdaOutputUpdate')
-
-type OutputUpdateType = {
-  OutputId: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  NameUpdate?: z.infer<typeof InAppStreamNameSchema> & { [key: string]: unknown }
-  KinesisStreamsOutputUpdate?: z.infer<typeof KinesisStreamsOutputUpdateSchema> & {
-    [key: string]: unknown
-  }
-  KinesisFirehoseOutputUpdate?: z.infer<typeof KinesisFirehoseOutputUpdateSchema> & {
-    [key: string]: unknown
-  }
-  LambdaOutputUpdate?: z.infer<typeof LambdaOutputUpdateSchema> & { [key: string]: unknown }
-  DestinationSchemaUpdate?: z.infer<typeof DestinationSchemaSchema> & { [key: string]: unknown }
-}
-
-const S3ReferenceDataSourceDescriptionSchema = z
-  .object({
-    BucketARN: BucketARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ),
-    FileKey: FileKeySchema.and(z.any().openapi({ description: 'Amazon S3 object key name.' })),
-    ReferenceRoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the IAM role that Kinesis Data Analytics can assume to read the Amazon S3 object on your behalf to populate the in-application reference table. </p> <note> <p>Provided for backward compatibility. Applications that are created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['BucketARN', 'FileKey'],
-    description:
-      'For a SQL-based Kinesis Data Analytics application, provides the bucket name and object key name that stores the reference data.',
-  })
-  .openapi('S3ReferenceDataSourceDescription')
-
-type ReferenceDataSourceDescriptionType = {
-  ReferenceId: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  TableName: z.infer<typeof InAppTableNameSchema> & { [key: string]: unknown }
-  S3ReferenceDataSourceDescription: z.infer<typeof S3ReferenceDataSourceDescriptionSchema> & {
-    [key: string]: unknown
-  }
-  ReferenceSchema?: z.infer<typeof SourceSchemaSchema> & { [key: string]: unknown }
-}
-
-const S3ReferenceDataSourceUpdateSchema = z
-  .object({
-    BucketARNUpdate: BucketARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the S3 bucket.' }),
-    ).exactOptional(),
-    FileKeyUpdate: FileKeySchema.and(
-      z.any().openapi({ description: 'The object key name.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'For a SQL-based Kinesis Data Analytics application, describes the Amazon S3 bucket name and object key name for an in-application reference table. ',
-    required: [],
-  })
-  .openapi('S3ReferenceDataSourceUpdate')
-
-type ReferenceDataSourceUpdateType = {
-  ReferenceId: z.infer<typeof IdSchema> & { [key: string]: unknown }
-  TableNameUpdate?: z.infer<typeof InAppTableNameSchema> & { [key: string]: unknown }
-  S3ReferenceDataSourceUpdate?: z.infer<typeof S3ReferenceDataSourceUpdateSchema> & {
-    [key: string]: unknown
-  }
-  ReferenceSchemaUpdate?: z.infer<typeof SourceSchemaSchema> & { [key: string]: unknown }
-}
-
-const SqlRunConfigurationSchema = z
-  .object({
-    InputId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input source ID. You can get this ID by calling the <a>DescribeApplication</a> operation. ',
-        }),
-    ),
-    InputStartingPositionConfiguration: InputStartingPositionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The point at which you want the application to start processing records from the streaming source. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['InputId', 'InputStartingPositionConfiguration'],
-    description:
-      'Describes the starting parameters for a SQL-based Kinesis Data Analytics application.',
-  })
-  .openapi('SqlRunConfiguration')
-
-const SqlRunConfigurationsSchema = z
-  .array(SqlRunConfigurationSchema)
-  .openapi('SqlRunConfigurations')
-
-type RunConfigurationType = {
-  FlinkRunConfiguration?: z.infer<typeof FlinkRunConfigurationSchema> & { [key: string]: unknown }
-  SqlRunConfigurations?: z.infer<typeof SqlRunConfigurationsSchema> & { [key: string]: unknown }
-  ApplicationRestoreConfiguration?: z.infer<typeof ApplicationRestoreConfigurationSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const ApplicationVersionIdSchema = z.int().min(1).max(999999999).openapi('ApplicationVersionId')
-
-const LogStreamARNSchema = z
-  .string()
-  .regex(/arn:.*/)
-  .min(1)
-  .max(2048)
-  .openapi('LogStreamARN')
-
-const CloudWatchLoggingOptionDescriptionSchema = z
-  .object({
-    CloudWatchLoggingOptionId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the CloudWatch logging option description.' }),
-    ).exactOptional(),
-    LogStreamARN: LogStreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch log to receive application messages.',
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IAM ARN of the role to use to send application messages. </p> <note> <p>Provided for backward compatibility. Applications created with the current API version have an application-level service execution role rather than a resource-level role.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['LogStreamARN'],
-    description: 'Describes the Amazon CloudWatch logging option.',
-  })
-  .openapi('CloudWatchLoggingOptionDescription')
-
-const CloudWatchLoggingOptionDescriptionsSchema = z
-  .array(CloudWatchLoggingOptionDescriptionSchema)
-  .openapi('CloudWatchLoggingOptionDescriptions')
 
 const AddApplicationCloudWatchLoggingOptionResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: "The application's ARN." }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new version ID of the Kinesis Data Analytics application. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you change the CloudWatch logging options. ',
-        }),
-    ).exactOptional(),
-    CloudWatchLoggingOptionDescriptions: CloudWatchLoggingOptionDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The descriptions of the current CloudWatch logging options for the Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: "The application's ARN.",
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The new version ID of the Kinesis Data Analytics application. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you change the CloudWatch logging options. ',
+    }),
+    CloudWatchLoggingOptionDescriptions:
+      CloudWatchLoggingOptionDescriptionsSchema.exactOptional().openapi({
+        description:
+          'The descriptions of the current CloudWatch logging options for the Kinesis Data Analytics application.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationCloudWatchLoggingOptionResponse')
 
-const ApplicationNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.-]+/)
-  .min(1)
-  .max(128)
-  .openapi('ApplicationName')
-
-const CloudWatchLoggingOptionSchema = z
-  .object({
-    LogStreamARN: LogStreamARNSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the CloudWatch log to receive application messages.' }),
-    ),
-  })
-  .openapi({
-    required: ['LogStreamARN'],
-    description:
-      'Provides a description of Amazon CloudWatch logging options, including the log stream Amazon Resource Name (ARN). ',
-  })
-  .openapi('CloudWatchLoggingOption')
-
-const ConditionalTokenSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9-_+\/=]+/)
-  .min(1)
-  .max(512)
-  .openapi('ConditionalToken')
-
 const AddApplicationCloudWatchLoggingOptionRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The Kinesis Data Analytics application name.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the Kinesis Data Analytics application. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>.You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
-        }),
-    ).exactOptional(),
-    CloudWatchLoggingOption: CloudWatchLoggingOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides the Amazon CloudWatch log stream Amazon Resource Name (ARN). ',
-        }),
-    ),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The Kinesis Data Analytics application name.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The version ID of the Kinesis Data Analytics application. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>.You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
+    }),
+    CloudWatchLoggingOption: CloudWatchLoggingOptionSchema.openapi({
+      description: 'Provides the Amazon CloudWatch log stream Amazon Resource Name (ARN). ',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description:
+        "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CloudWatchLoggingOption'],
@@ -3246,38 +2652,30 @@ const InvalidApplicationConfigurationExceptionSchema = z
 
 const AddApplicationInputResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the application.' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'Provides the current application version.' }),
-    ).exactOptional(),
-    InputDescriptions: InputDescriptionsSchema.and(
-      z.any().openapi({ description: 'Describes the application input configuration. ' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'Provides the current application version.',
+    }),
+    InputDescriptions: InputDescriptionsSchema.exactOptional().openapi({
+      description: 'Describes the application input configuration. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationInputResponse')
 
 const AddApplicationInputRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of your existing application to which you want to add the streaming source.',
-        }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current version of your application. You must provide the <code>ApplicationVersionID</code> or the <code>ConditionalToken</code>.You can use the <a>DescribeApplication</a> operation to find the current application version.',
-        }),
-    ),
-    Input: InputSchema.and(z.any().openapi({ description: 'The <a>Input</a> to add.' })),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of your existing application to which you want to add the streaming source.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The current version of your application. You must provide the <code>ApplicationVersionID</code> or the <code>ConditionalToken</code>.You can use the <a>DescribeApplication</a> operation to find the current application version.',
+    }),
+    Input: InputSchema.openapi({ description: 'The <a>Input</a> to add.' }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'Input'],
@@ -3289,65 +2687,42 @@ const CodeValidationExceptionSchema = z.any().openapi('CodeValidationException')
 
 const AddApplicationInputProcessingConfigurationResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the application.' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'Provides the current application version. ' }),
-    ).exactOptional(),
-    InputId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input ID that is associated with the application input. This is the ID that Kinesis Data Analytics assigns to each input configuration that you add to your application.',
-        }),
-    ).exactOptional(),
-    InputProcessingConfigurationDescription: InputProcessingConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The description of the preprocessor that executes on records in this input before the application's code is run.",
-        }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'Provides the current application version. ',
+    }),
+    InputId: IdSchema.exactOptional().openapi({
+      description:
+        'The input ID that is associated with the application input. This is the ID that Kinesis Data Analytics assigns to each input configuration that you add to your application.',
+    }),
+    InputProcessingConfigurationDescription:
+      InputProcessingConfigurationDescriptionSchema.exactOptional().openapi({
+        description:
+          "The description of the preprocessor that executes on records in this input before the application's code is run.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationInputProcessingConfigurationResponse')
 
 const AddApplicationInputProcessingConfigurationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application to which you want to add the input processing configuration.',
-        }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the application to which you want to add the input processing configuration. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
-        }),
-    ),
-    InputId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the input configuration to add the input processing configuration to. You can get a list of the input IDs for an application using the <a>DescribeApplication</a> operation.',
-        }),
-    ),
-    InputProcessingConfiguration: InputProcessingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>InputProcessingConfiguration</a> to add to the application.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the application to which you want to add the input processing configuration.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The version of the application to which you want to add the input processing configuration. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
+    }),
+    InputId: IdSchema.openapi({
+      description:
+        'The ID of the input configuration to add the input processing configuration to. You can get a list of the input IDs for an application using the <a>DescribeApplication</a> operation.',
+    }),
+    InputProcessingConfiguration: InputProcessingConfigurationSchema.openapi({
+      description: 'The <a>InputProcessingConfiguration</a> to add to the application.',
+    }),
   })
   .openapi({
     required: [
@@ -3362,55 +2737,34 @@ const AddApplicationInputProcessingConfigurationRequestSchema = z
 
 const AddApplicationOutputResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The application Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.',
-        }),
-    ).exactOptional(),
-    OutputDescriptions: OutputDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the application output configuration. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-output.html">Configuring Application Output</a>. ',
-        }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.',
+    }),
+    OutputDescriptions: OutputDescriptionsSchema.exactOptional().openapi({
+      description:
+        'Describes the application output configuration. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/dev/how-it-works-output.html">Configuring Application Output</a>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationOutputResponse')
 
 const AddApplicationOutputRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application to which you want to add the output configuration.',
-        }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the application to which you want to add the output configuration. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
-        }),
-    ),
-    Output: OutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects, each describing one output configuration. In the output configuration, you specify the name of an in-application stream, a destination (that is, a Kinesis data stream, a Kinesis Data Firehose delivery stream, or an Amazon Lambda function), and record the formation to use when writing to the destination.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to which you want to add the output configuration.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The version of the application to which you want to add the output configuration. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
+    }),
+    Output: OutputSchema.openapi({
+      description:
+        'An array of objects, each describing one output configuration. In the output configuration, you specify the name of an in-application stream, a destination (that is, a Kinesis data stream, a Kinesis Data Firehose delivery stream, or an Amazon Lambda function), and record the formation to use when writing to the destination.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'Output'],
@@ -3420,49 +2774,33 @@ const AddApplicationOutputRequestSchema = z
 
 const AddApplicationReferenceDataSourceResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The application Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.',
-        }),
-    ).exactOptional(),
-    ReferenceDataSourceDescriptions: ReferenceDataSourceDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes reference data sources configured for the application. ',
-        }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The updated application version ID. Kinesis Data Analytics increments this ID when the application is updated.',
+    }),
+    ReferenceDataSourceDescriptions: ReferenceDataSourceDescriptionsSchema.exactOptional().openapi({
+      description: 'Describes reference data sources configured for the application. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationReferenceDataSourceResponse')
 
 const AddApplicationReferenceDataSourceRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the application for which you are adding the reference data source. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
-        }),
-    ),
-    ReferenceDataSource: ReferenceDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reference data source can be an object in your Amazon S3 bucket. Kinesis Data Analytics reads the object and copies the data into the in-application table that is created. You provide an S3 bucket, object key name, and the resulting in-application table that is created. ',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The version of the application for which you are adding the reference data source. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
+    }),
+    ReferenceDataSource: ReferenceDataSourceSchema.openapi({
+      description:
+        'The reference data source can be an object in your Amazon S3 bucket. Kinesis Data Analytics reads the object and copies the data into the in-application table that is created. You provide an S3 bucket, object key name, and the resulting in-application table that is created. ',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'ReferenceDataSource'],
@@ -3472,48 +2810,36 @@ const AddApplicationReferenceDataSourceRequestSchema = z
 
 const AddApplicationVpcConfigurationResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the application.' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the current application version. Kinesis Data Analytics updates the ApplicationVersionId each time you update the application.',
-        }),
-    ).exactOptional(),
-    VpcConfigurationDescription: VpcConfigurationDescriptionSchema.and(
-      z.any().openapi({ description: 'The parameters of the new VPC configuration.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'Provides the current application version. Kinesis Data Analytics updates the ApplicationVersionId each time you update the application.',
+    }),
+    VpcConfigurationDescription: VpcConfigurationDescriptionSchema.exactOptional().openapi({
+      description: 'The parameters of the new VPC configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddApplicationVpcConfigurationResponse')
 
 const AddApplicationVpcConfigurationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the application to which you want to add the VPC configuration. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
-        }),
-    ).exactOptional(),
-    VpcConfiguration: VpcConfigurationSchema.and(
-      z.any().openapi({ description: 'Description of the VPC to add to the application.' }),
-    ),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value you use to implement strong concurrency for application updates. You must provide the <code>ApplicationVersionID</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The version of the application to which you want to add the VPC configuration. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
+    }),
+    VpcConfiguration: VpcConfigurationSchema.openapi({
+      description: 'Description of the VPC to add to the application.',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description:
+        "A value you use to implement strong concurrency for application updates. You must provide the <code>ApplicationVersionID</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'VpcConfiguration'],
@@ -3521,418 +2847,46 @@ const AddApplicationVpcConfigurationRequestSchema = z
   })
   .openapi('AddApplicationVpcConfigurationRequest')
 
-const ApplicationDescriptionSchema = z.string().min(0).max(1024).openapi('ApplicationDescription')
-
-const RuntimeEnvironmentSchema = z
-  .enum([
-    'SQL-1_0',
-    'FLINK-1_6',
-    'FLINK-1_8',
-    'ZEPPELIN-FLINK-1_0',
-    'FLINK-1_11',
-    'FLINK-1_13',
-    'ZEPPELIN-FLINK-2_0',
-    'FLINK-1_15',
-  ])
-  .openapi('RuntimeEnvironment')
-
-const ApplicationStatusSchema = z
-  .enum([
-    'DELETING',
-    'STARTING',
-    'STOPPING',
-    'READY',
-    'RUNNING',
-    'UPDATING',
-    'AUTOSCALING',
-    'FORCE_STOPPING',
-    'ROLLING_BACK',
-    'MAINTENANCE',
-    'ROLLED_BACK',
-  ])
-  .openapi('ApplicationStatus')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const ApplicationConfigurationDescriptionSchema: z.ZodType<ApplicationConfigurationDescriptionType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          SqlApplicationConfigurationDescription: SqlApplicationConfigurationDescriptionSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The details about inputs, outputs, and reference data sources for a SQL-based Kinesis Data Analytics application.',
-              }),
-          ).exactOptional(),
-          ApplicationCodeConfigurationDescription:
-            ApplicationCodeConfigurationDescriptionSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The details about the application code for a Flink-based Kinesis Data Analytics application.',
-                }),
-            ).exactOptional(),
-          RunConfigurationDescription: RunConfigurationDescriptionSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The details about the starting properties for a Kinesis Data Analytics application.',
-              }),
-          ).exactOptional(),
-          FlinkApplicationConfigurationDescription:
-            FlinkApplicationConfigurationDescriptionSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The details about a Flink-based Kinesis Data Analytics application.',
-                }),
-            ).exactOptional(),
-          EnvironmentPropertyDescriptions: EnvironmentPropertyDescriptionsSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
-              }),
-          ).exactOptional(),
-          ApplicationSnapshotConfigurationDescription:
-            ApplicationSnapshotConfigurationDescriptionSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-                }),
-            ).exactOptional(),
-          VpcConfigurationDescriptions: VpcConfigurationDescriptionsSchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The array of descriptions of VPC configurations available to the application.',
-              }),
-          ).exactOptional(),
-          ZeppelinApplicationConfigurationDescription:
-            ZeppelinApplicationConfigurationDescriptionSchema.and(
-              z
-                .any()
-                .openapi({
-                  description:
-                    'The configuration parameters for a Kinesis Data Analytics Studio notebook.',
-                }),
-            ).exactOptional(),
-        })
-        .openapi({
-          description:
-            'Describes details about the application code and starting parameters for a Kinesis Data Analytics application.',
-          required: [],
-        }),
-    )
-    .openapi('ApplicationConfigurationDescription')
-
-const ApplicationMaintenanceWindowStartTimeSchema = z
-  .string()
-  .regex(/([01][0-9]|2[0-3]):[0-5][0-9]/)
-  .length(5)
-  .openapi('ApplicationMaintenanceWindowStartTime')
-
-const ApplicationMaintenanceWindowEndTimeSchema = z
-  .string()
-  .regex(/([01][0-9]|2[0-3]):[0-5][0-9]/)
-  .length(5)
-  .openapi('ApplicationMaintenanceWindowEndTime')
-
-const ApplicationMaintenanceConfigurationDescriptionSchema = z
+const CreateApplicationResponseSchema: z.ZodType<CreateApplicationResponseType> = z
   .object({
-    ApplicationMaintenanceWindowStartTime: ApplicationMaintenanceWindowStartTimeSchema.and(
-      z.any().openapi({ description: 'The start time for the maintenance window.' }),
-    ),
-    ApplicationMaintenanceWindowEndTime: ApplicationMaintenanceWindowEndTimeSchema.and(
-      z.any().openapi({ description: 'The end time for the maintenance window.' }),
-    ),
-  })
-  .openapi({
-    required: ['ApplicationMaintenanceWindowStartTime', 'ApplicationMaintenanceWindowEndTime'],
-    description: 'The details of the maintenance configuration for the application.',
-  })
-  .openapi('ApplicationMaintenanceConfigurationDescription')
-
-const ApplicationModeSchema = z.enum(['STREAMING', 'INTERACTIVE']).openapi('ApplicationMode')
-
-const ApplicationDetailSchema = z
-  .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the application.' }),
-    ),
-    ApplicationDescription: ApplicationDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    RuntimeEnvironment: RuntimeEnvironmentSchema.and(
-      z.any().openapi({ description: 'The runtime environment for the application.' }),
-    ),
-    ServiceExecutionRole: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the IAM role that the application uses to access external resources.',
-        }),
-    ).exactOptional(),
-    ApplicationStatus: ApplicationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the application.' }),
-    ),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides the current application version. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you update the application.',
-        }),
-    ),
-    CreateTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The current timestamp when the application was created.' }),
-    ).exactOptional(),
-    LastUpdateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current timestamp when the application was last updated.' }),
-    ).exactOptional(),
-    ApplicationConfigurationDescription: ApplicationConfigurationDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes details about the application code and starting parameters for a Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
-    CloudWatchLoggingOptionDescriptions: CloudWatchLoggingOptionDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the application Amazon CloudWatch logging options.' }),
-    ).exactOptional(),
-    ApplicationMaintenanceConfigurationDescription:
-      ApplicationMaintenanceConfigurationDescriptionSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The details of the maintenance configuration for the application.',
-          }),
-      ).exactOptional(),
-    ApplicationVersionUpdatedFrom: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The previous application version before the latest application update. <a>RollbackApplication</a> reverts the application to this version.',
-        }),
-    ).exactOptional(),
-    ApplicationVersionRolledBackFrom: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you reverted the application using <a>RollbackApplication</a>, the application version when <code>RollbackApplication</code> was called.',
-        }),
-    ).exactOptional(),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value you use to implement strong concurrency for application updates.',
-        }),
-    ).exactOptional(),
-    ApplicationVersionRolledBackTo: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version to which you want to roll back the application.' }),
-    ).exactOptional(),
-    ApplicationMode: ApplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create a Kinesis Data Analytics Studio notebook, you must set the mode to <code>INTERACTIVE</code>. However, for a Kinesis Data Analytics for Apache Flink application, the mode is optional.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: [
-      'ApplicationARN',
-      'ApplicationName',
-      'RuntimeEnvironment',
-      'ApplicationStatus',
-      'ApplicationVersionId',
-    ],
-    description:
-      'Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.',
-  })
-  .openapi('ApplicationDetail')
-
-const CreateApplicationResponseSchema = z
-  .object({
-    ApplicationDetail: ApplicationDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'In response to your <code>CreateApplication</code> request, Kinesis Data Analytics returns a response with details of the application it created.',
-        }),
-    ),
+    ApplicationDetail: ApplicationDetailSchema.openapi({
+      description:
+        'In response to your <code>CreateApplication</code> request, Kinesis Data Analytics returns a response with details of the application it created.',
+    }),
   })
   .openapi({ required: ['ApplicationDetail'] })
   .openapi('CreateApplicationResponse')
 
-const ApplicationConfigurationSchema: z.ZodType<ApplicationConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        SqlApplicationConfiguration: SqlApplicationConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The creation and update parameters for a SQL-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        FlinkApplicationConfiguration: FlinkApplicationConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The creation and update parameters for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        EnvironmentProperties: EnvironmentPropertiesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes execution properties for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        ApplicationCodeConfiguration: ApplicationCodeConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The code location and type parameters for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        ApplicationSnapshotConfiguration: ApplicationSnapshotConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        VpcConfigurations: VpcConfigurationsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The array of descriptions of VPC configurations available to the application.',
-            }),
-        ).exactOptional(),
-        ZeppelinApplicationConfiguration: ZeppelinApplicationConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The configuration parameters for a Kinesis Data Analytics Studio notebook.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Specifies the creation parameters for a Kinesis Data Analytics application.',
-        required: [],
-      }),
-  )
-  .openapi('ApplicationConfiguration')
-
-const CloudWatchLoggingOptionsSchema = z
-  .array(CloudWatchLoggingOptionSchema)
-  .openapi('CloudWatchLoggingOptions')
-
-const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
-
-const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
-
-const TagSchema = z
+const CreateApplicationRequestSchema: z.ZodType<CreateApplicationRequestType> = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the key-value tag.' })),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of the key-value tag. The value is optional.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Key'],
-    description:
-      'A key-value pair (the value is optional) that you can define and assign to Amazon resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html">Using Tagging</a>.',
-  })
-  .openapi('Tag')
-
-const TagsSchema = z.array(TagSchema).min(1).max(200).openapi('Tags')
-
-const CreateApplicationRequestSchema = z
-  .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of your application (for example, <code>sample-app</code>).',
-        }),
-    ),
-    ApplicationDescription: ApplicationDescriptionSchema.and(
-      z.any().openapi({ description: 'A summary description of the application.' }),
-    ).exactOptional(),
-    RuntimeEnvironment: RuntimeEnvironmentSchema.and(
-      z.any().openapi({ description: 'The runtime environment for the application.' }),
-    ),
-    ServiceExecutionRole: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role used by the application to access Kinesis data streams, Kinesis Data Firehose delivery streams, Amazon S3 objects, and other external resources.',
-        }),
-    ),
-    ApplicationConfiguration: ApplicationConfigurationSchema.and(
-      z.any().openapi({ description: 'Use this parameter to configure the application.' }),
-    ).exactOptional(),
-    CloudWatchLoggingOptions: CloudWatchLoggingOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to configure an Amazon CloudWatch log stream to monitor application configuration errors. ',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of one or more tags to assign to the application. A tag is a key-value pair that identifies an application. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html">Using Tagging</a>.',
-        }),
-    ).exactOptional(),
-    ApplicationMode: ApplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use the <code>STREAMING</code> mode to create a Kinesis Data Analytics For Flink application. To create a Kinesis Data Analytics Studio notebook, use the <code>INTERACTIVE</code> mode.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of your application (for example, <code>sample-app</code>).',
+    }),
+    ApplicationDescription: ApplicationDescriptionSchema.exactOptional().openapi({
+      description: 'A summary description of the application.',
+    }),
+    RuntimeEnvironment: RuntimeEnvironmentSchema.openapi({
+      description: 'The runtime environment for the application.',
+    }),
+    ServiceExecutionRole: RoleARNSchema.openapi({
+      description:
+        'The IAM role used by the application to access Kinesis data streams, Kinesis Data Firehose delivery streams, Amazon S3 objects, and other external resources.',
+    }),
+    ApplicationConfiguration: ApplicationConfigurationSchema.exactOptional().openapi({
+      description: 'Use this parameter to configure the application.',
+    }),
+    CloudWatchLoggingOptions: CloudWatchLoggingOptionsSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to configure an Amazon CloudWatch log stream to monitor application configuration errors. ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of one or more tags to assign to the application. A tag is a key-value pair that identifies an application. Note that the maximum number of application tags includes system tags. The maximum number of user-defined application tags is 50. For more information, see <a href="https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-tagging.html">Using Tagging</a>.',
+    }),
+    ApplicationMode: ApplicationModeSchema.exactOptional().openapi({
+      description:
+        'Use the <code>STREAMING</code> mode to create a Kinesis Data Analytics For Flink application. To create a Kinesis Data Analytics Studio notebook, use the <code>INTERACTIVE</code> mode.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'RuntimeEnvironment', 'ServiceExecutionRole'],
@@ -3950,9 +2904,9 @@ const AuthorizedUrlSchema = z.string().min(1).max(2048).openapi('AuthorizedUrl')
 
 const CreateApplicationPresignedUrlResponseSchema = z
   .object({
-    AuthorizedUrl: AuthorizedUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the extension.' }),
-    ).exactOptional(),
+    AuthorizedUrl: AuthorizedUrlSchema.exactOptional().openapi({
+      description: 'The URL of the extension.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApplicationPresignedUrlResponse')
@@ -3967,24 +2921,15 @@ const SessionExpirationDurationInSecondsSchema = z
 
 const CreateApplicationPresignedUrlRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    UrlType: UrlTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the extension for which to create and return a URL. Currently, the only valid extension URL type is <code>FLINK_DASHBOARD_URL</code>. ',
-        }),
-    ),
-    SessionExpirationDurationInSeconds: SessionExpirationDurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration in seconds for which the returned URL will be valid.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    UrlType: UrlTypeSchema.openapi({
+      description:
+        'The type of the extension for which to create and return a URL. Currently, the only valid extension URL type is <code>FLINK_DASHBOARD_URL</code>. ',
+    }),
+    SessionExpirationDurationInSeconds:
+      SessionExpirationDurationInSecondsSchema.exactOptional().openapi({
+        description: 'The duration in seconds for which the returned URL will be valid.',
+      }),
   })
   .openapi({
     required: ['ApplicationName', 'UrlType'],
@@ -3993,17 +2938,17 @@ const CreateApplicationPresignedUrlRequestSchema = z
   .openapi('CreateApplicationPresignedUrlRequest')
 
 const CreateApplicationSnapshotResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CreateApplicationSnapshotResponse')
 
 const CreateApplicationSnapshotRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application' }),
-    ),
-    SnapshotName: SnapshotNameSchema.and(
-      z.any().openapi({ description: 'An identifier for the application snapshot.' }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application',
+    }),
+    SnapshotName: SnapshotNameSchema.openapi({
+      description: 'An identifier for the application snapshot.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'SnapshotName'],
@@ -4011,78 +2956,53 @@ const CreateApplicationSnapshotRequestSchema = z
   })
   .openapi('CreateApplicationSnapshotRequest')
 
-const DeleteApplicationResponseSchema = z.object({}).openapi('DeleteApplicationResponse')
+const DeleteApplicationResponseSchema = z.looseObject({}).openapi('DeleteApplicationResponse')
 
 const DeleteApplicationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application to delete.' }),
-    ),
-    CreateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Use the <code>DescribeApplication</code> operation to get this value.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to delete.',
+    }),
+    CreateTimestamp: TimestampSchema.openapi({
+      description: 'Use the <code>DescribeApplication</code> operation to get this value.',
+    }),
   })
   .openapi({ required: ['ApplicationName', 'CreateTimestamp'], title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const DeleteApplicationCloudWatchLoggingOptionResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: "The application's Amazon Resource Name (ARN)." }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the application. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you change the CloudWatch logging options.',
-        }),
-    ).exactOptional(),
-    CloudWatchLoggingOptionDescriptions: CloudWatchLoggingOptionDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The descriptions of the remaining CloudWatch logging options for the application.',
-        }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: "The application's Amazon Resource Name (ARN).",
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The version ID of the application. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you change the CloudWatch logging options.',
+    }),
+    CloudWatchLoggingOptionDescriptions:
+      CloudWatchLoggingOptionDescriptionsSchema.exactOptional().openapi({
+        description:
+          'The descriptions of the remaining CloudWatch logging options for the application.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationCloudWatchLoggingOptionResponse')
 
 const DeleteApplicationCloudWatchLoggingOptionRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the application. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
-        }),
-    ).exactOptional(),
-    CloudWatchLoggingOptionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>CloudWatchLoggingOptionId</code> of the Amazon CloudWatch logging option to delete. You can get the <code>CloudWatchLoggingOptionId</code> by using the <a>DescribeApplication</a> operation. ',
-        }),
-    ),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The application name.' }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The version ID of the application. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
+    }),
+    CloudWatchLoggingOptionId: IdSchema.openapi({
+      description:
+        'The <code>CloudWatchLoggingOptionId</code> of the Amazon CloudWatch logging option to delete. You can get the <code>CloudWatchLoggingOptionId</code> by using the <a>DescribeApplication</a> operation. ',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description:
+        "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CloudWatchLoggingOptionId'],
@@ -4092,37 +3012,27 @@ const DeleteApplicationCloudWatchLoggingOptionRequestSchema = z
 
 const DeleteApplicationInputProcessingConfigurationResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the application.' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'The current application version ID.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'The current application version ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationInputProcessingConfigurationResponse')
 
 const DeleteApplicationInputProcessingConfigurationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
-        }),
-    ),
-    InputId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the input configuration from which to delete the input processing configuration. You can get a list of the input IDs for an application by using the <a>DescribeApplication</a> operation.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
+    }),
+    InputId: IdSchema.openapi({
+      description:
+        'The ID of the input configuration from which to delete the input processing configuration. You can get a list of the input IDs for an application by using the <a>DescribeApplication</a> operation.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'InputId'],
@@ -4132,37 +3042,27 @@ const DeleteApplicationInputProcessingConfigurationRequestSchema = z
 
 const DeleteApplicationOutputResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The application Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'The current application version ID.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'The current application version ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationOutputResponse')
 
 const DeleteApplicationOutputRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The application name.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
-        }),
-    ),
-    OutputId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the configuration to delete. Each output configuration that is added to the application (either when the application is created or later) using the <a>AddApplicationOutput</a> operation has a unique ID. You need to provide the ID to uniquely identify the output configuration that you want to delete from the application configuration. You can use the <a>DescribeApplication</a> operation to get the specific <code>OutputId</code>. ',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The application name.' }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned. ',
+    }),
+    OutputId: IdSchema.openapi({
+      description:
+        'The ID of the configuration to delete. Each output configuration that is added to the application (either when the application is created or later) using the <a>AddApplicationOutput</a> operation has a unique ID. You need to provide the ID to uniquely identify the output configuration that you want to delete from the application configuration. You can use the <a>DescribeApplication</a> operation to get the specific <code>OutputId</code>. ',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'OutputId'],
@@ -4172,37 +3072,29 @@ const DeleteApplicationOutputRequestSchema = z
 
 const DeleteApplicationReferenceDataSourceResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The application Amazon Resource Name (ARN).' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'The updated version ID of the application.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The application Amazon Resource Name (ARN).',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'The updated version ID of the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationReferenceDataSourceResponse')
 
 const DeleteApplicationReferenceDataSourceRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
-        }),
-    ),
-    ReferenceId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the reference data source. When you add a reference data source to your application using the <a>AddApplicationReferenceDataSource</a>, Kinesis Data Analytics assigns an ID. You can use the <a>DescribeApplication</a> operation to get the reference ID. ',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The current application version. You can use the <a>DescribeApplication</a> operation to get the current application version. If the version specified is not the current version, the <code>ConcurrentModificationException</code> is returned.',
+    }),
+    ReferenceId: IdSchema.openapi({
+      description:
+        'The ID of the reference data source. When you add a reference data source to your application using the <a>AddApplicationReferenceDataSource</a>, Kinesis Data Analytics assigns an ID. You can use the <a>DescribeApplication</a> operation to get the reference ID. ',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId', 'ReferenceId'],
@@ -4211,25 +3103,21 @@ const DeleteApplicationReferenceDataSourceRequestSchema = z
   .openapi('DeleteApplicationReferenceDataSourceRequest')
 
 const DeleteApplicationSnapshotResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteApplicationSnapshotResponse')
 
 const DeleteApplicationSnapshotRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    SnapshotName: SnapshotNameSchema.and(
-      z.any().openapi({ description: 'The identifier for the snapshot delete.' }),
-    ),
-    SnapshotCreationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation timestamp of the application snapshot to delete. You can retrieve this value using or .',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    SnapshotName: SnapshotNameSchema.openapi({
+      description: 'The identifier for the snapshot delete.',
+    }),
+    SnapshotCreationTimestamp: TimestampSchema.openapi({
+      description:
+        'The creation timestamp of the application snapshot to delete. You can retrieve this value using or .',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'SnapshotName', 'SnapshotCreationTimestamp'],
@@ -4239,40 +3127,32 @@ const DeleteApplicationSnapshotRequestSchema = z
 
 const DeleteApplicationVpcConfigurationResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the Kinesis Data Analytics application.' }),
-    ).exactOptional(),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'The updated version ID of the application.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the Kinesis Data Analytics application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description: 'The updated version ID of the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteApplicationVpcConfigurationResponse')
 
 const DeleteApplicationVpcConfigurationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current application version ID. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
-        }),
-    ).exactOptional(),
-    VpcConfigurationId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the VPC configuration to delete.' }),
-    ),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The current application version ID. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
+    }),
+    VpcConfigurationId: IdSchema.openapi({
+      description: 'The ID of the VPC configuration to delete.',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description:
+        "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'VpcConfigurationId'],
@@ -4280,33 +3160,23 @@ const DeleteApplicationVpcConfigurationRequestSchema = z
   })
   .openapi('DeleteApplicationVpcConfigurationRequest')
 
-const DescribeApplicationResponseSchema = z
+const DescribeApplicationResponseSchema: z.ZodType<DescribeApplicationResponseType> = z
   .object({
-    ApplicationDetail: ApplicationDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides a description of the application, such as the application's Amazon Resource Name (ARN), status, and latest version.",
-        }),
-    ),
+    ApplicationDetail: ApplicationDetailSchema.openapi({
+      description:
+        "Provides a description of the application, such as the application's Amazon Resource Name (ARN), status, and latest version.",
+    }),
   })
   .openapi({ required: ['ApplicationDetail'] })
   .openapi('DescribeApplicationResponse')
 
 const DescribeApplicationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    IncludeAdditionalDetails: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Displays verbose information about a Kinesis Data Analytics application, including the application's job plan.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    IncludeAdditionalDetails: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        "Displays verbose information about a Kinesis Data Analytics application, including the application's job plan.",
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'DescribeApplicationRequest' })
   .openapi('DescribeApplicationRequest')
@@ -4317,22 +3187,18 @@ const SnapshotStatusSchema = z
 
 const SnapshotDetailsSchema = z
   .object({
-    SnapshotName: SnapshotNameSchema.and(
-      z.any().openapi({ description: 'The identifier for the application snapshot.' }),
-    ),
-    SnapshotStatus: SnapshotStatusSchema.and(
-      z.any().openapi({ description: 'The status of the application snapshot.' }),
-    ),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current application version ID when the snapshot was created.',
-        }),
-    ),
-    SnapshotCreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the application snapshot.' }),
-    ).exactOptional(),
+    SnapshotName: SnapshotNameSchema.openapi({
+      description: 'The identifier for the application snapshot.',
+    }),
+    SnapshotStatus: SnapshotStatusSchema.openapi({
+      description: 'The status of the application snapshot.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description: 'The current application version ID when the snapshot was created.',
+    }),
+    SnapshotCreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the application snapshot.',
+    }),
   })
   .openapi({
     required: ['SnapshotName', 'SnapshotStatus', 'ApplicationVersionId'],
@@ -4342,30 +3208,21 @@ const SnapshotDetailsSchema = z
 
 const DescribeApplicationSnapshotResponseSchema = z
   .object({
-    SnapshotDetails: SnapshotDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing information about the application snapshot.',
-        }),
-    ),
+    SnapshotDetails: SnapshotDetailsSchema.openapi({
+      description: 'An object containing information about the application snapshot.',
+    }),
   })
   .openapi({ required: ['SnapshotDetails'] })
   .openapi('DescribeApplicationSnapshotResponse')
 
 const DescribeApplicationSnapshotRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    SnapshotName: SnapshotNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an application snapshot. You can retrieve this value using .',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    SnapshotName: SnapshotNameSchema.openapi({
+      description: 'The identifier of an application snapshot. You can retrieve this value using .',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'SnapshotName'],
@@ -4373,29 +3230,20 @@ const DescribeApplicationSnapshotRequestSchema = z
   })
   .openapi('DescribeApplicationSnapshotRequest')
 
-const DescribeApplicationVersionResponseSchema = z
-  .object({ ApplicationVersionDetail: ApplicationDetailSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('DescribeApplicationVersionResponse')
+const DescribeApplicationVersionResponseSchema: z.ZodType<DescribeApplicationVersionResponseType> =
+  z
+    .object({ ApplicationVersionDetail: ApplicationDetailSchema.exactOptional() })
+    .openapi({ required: [] })
+    .openapi('DescribeApplicationVersionResponse')
 
 const DescribeApplicationVersionRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application for which you want to get the version description.',
-        }),
-    ),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the application version for which you want to get the description.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application for which you want to get the version description.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description: 'The ID of the application version for which you want to get the description.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'ApplicationVersionId'],
@@ -4421,45 +3269,33 @@ const RawInputRecordsSchema = z.array(RawInputRecordSchema).openapi('RawInputRec
 
 const DiscoverInputSchemaResponseSchema = z
   .object({
-    InputSchema: SourceSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schema inferred from the streaming source. It identifies the format of the data in the streaming source and how each data element maps to corresponding columns in the in-application stream that you can create.',
-        }),
-    ).exactOptional(),
-    ParsedInputRecords: ParsedInputRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of elements, where each element corresponds to a row in a stream record (a stream record can have more than one row).',
-        }),
-    ).exactOptional(),
-    ProcessedInputRecords: ProcessedInputRecordsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stream data that was modified by the processor specified in the <code>InputProcessingConfiguration</code> parameter.',
-        }),
-    ).exactOptional(),
-    RawInputRecords: RawInputRecordsSchema.and(
-      z.any().openapi({ description: 'The raw stream data that was sampled to infer the schema.' }),
-    ).exactOptional(),
+    InputSchema: SourceSchemaSchema.exactOptional().openapi({
+      description:
+        'The schema inferred from the streaming source. It identifies the format of the data in the streaming source and how each data element maps to corresponding columns in the in-application stream that you can create.',
+    }),
+    ParsedInputRecords: ParsedInputRecordsSchema.exactOptional().openapi({
+      description:
+        'An array of elements, where each element corresponds to a row in a stream record (a stream record can have more than one row).',
+    }),
+    ProcessedInputRecords: ProcessedInputRecordsSchema.exactOptional().openapi({
+      description:
+        'The stream data that was modified by the processor specified in the <code>InputProcessingConfiguration</code> parameter.',
+    }),
+    RawInputRecords: RawInputRecordsSchema.exactOptional().openapi({
+      description: 'The raw stream data that was sampled to infer the schema.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DiscoverInputSchemaResponse')
 
 const S3ConfigurationSchema = z
   .object({
-    BucketARN: BucketARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the S3 bucket that contains the data.' }),
-    ),
-    FileKey: FileKeySchema.and(
-      z.any().openapi({ description: 'The name of the object that contains the data.' }),
-    ),
+    BucketARN: BucketARNSchema.openapi({
+      description: 'The ARN of the S3 bucket that contains the data.',
+    }),
+    FileKey: FileKeySchema.openapi({
+      description: 'The name of the object that contains the data.',
+    }),
   })
   .openapi({
     required: ['BucketARN', 'FileKey'],
@@ -4470,40 +3306,24 @@ const S3ConfigurationSchema = z
 
 const DiscoverInputSchemaRequestSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the streaming source.' }),
-    ).exactOptional(),
-    ServiceExecutionRole: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role that is used to access the streaming source.',
-        }),
-    ),
-    InputStartingPositionConfiguration: InputStartingPositionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The point at which you want Kinesis Data Analytics to start reading records from the specified streaming source discovery purposes.',
-        }),
-    ).exactOptional(),
-    S3Configuration: S3ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify this parameter to discover a schema from data in an Amazon S3 object.',
-        }),
-    ).exactOptional(),
-    InputProcessingConfiguration: InputProcessingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>InputProcessingConfiguration</a> to use to preprocess the records before discovering the schema of the records.',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the streaming source.',
+    }),
+    ServiceExecutionRole: RoleARNSchema.openapi({
+      description: 'The ARN of the role that is used to access the streaming source.',
+    }),
+    InputStartingPositionConfiguration:
+      InputStartingPositionConfigurationSchema.exactOptional().openapi({
+        description:
+          'The point at which you want Kinesis Data Analytics to start reading records from the specified streaming source discovery purposes.',
+      }),
+    S3Configuration: S3ConfigurationSchema.exactOptional().openapi({
+      description: 'Specify this parameter to discover a schema from data in an Amazon S3 object.',
+    }),
+    InputProcessingConfiguration: InputProcessingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The <a>InputProcessingConfiguration</a> to use to preprocess the records before discovering the schema of the records.',
+    }),
   })
   .openapi({ required: ['ServiceExecutionRole'], title: 'DiscoverInputSchemaRequest' })
   .openapi('DiscoverInputSchemaRequest')
@@ -4522,22 +3342,14 @@ const NextTokenSchema = z.string().min(1).max(512).openapi('NextToken')
 
 const ListApplicationSnapshotsResponseSchema = z
   .object({
-    SnapshotSummaries: SnapshotSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of objects containing information about the application snapshots.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    SnapshotSummaries: SnapshotSummariesSchema.exactOptional().openapi({
+      description:
+        'A collection of objects containing information about the application snapshots.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationSnapshotsResponse')
@@ -4546,37 +3358,29 @@ const ListSnapshotsInputLimitSchema = z.int().min(1).max(50).openapi('ListSnapsh
 
 const ListApplicationSnapshotsRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of an existing application.' }),
-    ),
-    Limit: ListSnapshotsInputLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of application snapshots to list.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Use this parameter if you receive a <code>NextToken</code> response in a previous request that indicates that there is more output available. Set it to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. ",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of an existing application.',
+    }),
+    Limit: ListSnapshotsInputLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of application snapshots to list.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "Use this parameter if you receive a <code>NextToken</code> response in a previous request that indicates that there is more output available. Set it to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. ",
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'ListApplicationSnapshotsRequest' })
   .openapi('ListApplicationSnapshotsRequest')
 
 const ApplicationVersionSummarySchema = z
   .object({
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the application version. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you update the application.',
-        }),
-    ),
-    ApplicationStatus: ApplicationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the application.' }),
-    ),
+    ApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The ID of the application version. Kinesis Data Analytics updates the <code>ApplicationVersionId</code> each time you update the application.',
+    }),
+    ApplicationStatus: ApplicationStatusSchema.openapi({
+      description: 'The status of the application.',
+    }),
   })
   .openapi({
     required: ['ApplicationVersionId', 'ApplicationStatus'],
@@ -4590,22 +3394,14 @@ const ApplicationVersionSummariesSchema = z
 
 const ListApplicationVersionsResponseSchema = z
   .object({
-    ApplicationVersionSummaries: ApplicationVersionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the application versions and the associated configuration summaries. The list includes application versions that were rolled back.</p> <p>To get the complete description of a specific application version, invoke the <a>DescribeApplicationVersion</a> operation.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the next set of results, or <code>null</code> if there are no additional results. To retrieve the next set of items, pass this token into a subsequent invocation of this operation. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
-        }),
-    ).exactOptional(),
+    ApplicationVersionSummaries: ApplicationVersionSummariesSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the application versions and the associated configuration summaries. The list includes application versions that were rolled back.</p> <p>To get the complete description of a specific application version, invoke the <a>DescribeApplicationVersion</a> operation.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the next set of results, or <code>null</code> if there are no additional results. To retrieve the next set of items, pass this token into a subsequent invocation of this operation. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListApplicationVersionsResponse')
@@ -4618,58 +3414,37 @@ const ListApplicationVersionsInputLimitSchema = z
 
 const ListApplicationVersionsRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the application for which you want to list all versions.',
-        }),
-    ),
-    Limit: ListApplicationVersionsInputLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of versions to list in this invocation of the operation.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a previous invocation of this operation returned a pagination token, pass it into this value to retrieve the next set of results. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application for which you want to list all versions.',
+    }),
+    Limit: ListApplicationVersionsInputLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of versions to list in this invocation of the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If a previous invocation of this operation returned a pagination token, pass it into this value to retrieve the next set of results. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'ListApplicationVersionsRequest' })
   .openapi('ListApplicationVersionsRequest')
 
 const ApplicationSummarySchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the application.' }),
-    ),
-    ApplicationStatus: ApplicationStatusSchema.and(
-      z.any().openapi({ description: 'The status of the application.' }),
-    ),
-    ApplicationVersionId: ApplicationVersionIdSchema.and(
-      z.any().openapi({ description: 'Provides the current application version.' }),
-    ),
-    RuntimeEnvironment: RuntimeEnvironmentSchema.and(
-      z.any().openapi({ description: 'The runtime environment for the application.' }),
-    ),
-    ApplicationMode: ApplicationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For a Kinesis Data Analytics for Apache Flink application, the mode is <code>STREAMING</code>. For a Kinesis Data Analytics Studio notebook, it is <code>INTERACTIVE</code>.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    ApplicationARN: ResourceARNSchema.openapi({ description: 'The ARN of the application.' }),
+    ApplicationStatus: ApplicationStatusSchema.openapi({
+      description: 'The status of the application.',
+    }),
+    ApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description: 'Provides the current application version.',
+    }),
+    RuntimeEnvironment: RuntimeEnvironmentSchema.openapi({
+      description: 'The runtime environment for the application.',
+    }),
+    ApplicationMode: ApplicationModeSchema.exactOptional().openapi({
+      description:
+        'For a Kinesis Data Analytics for Apache Flink application, the mode is <code>STREAMING</code>. For a Kinesis Data Analytics Studio notebook, it is <code>INTERACTIVE</code>.',
+    }),
   })
   .openapi({
     required: [
@@ -4688,17 +3463,13 @@ const ApplicationSummariesSchema = z.array(ApplicationSummarySchema).openapi('Ap
 
 const ListApplicationsResponseSchema = z
   .object({
-    ApplicationSummaries: ApplicationSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>ApplicationSummary</code> objects.' }),
-    ),
-    NextToken: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token for the next set of results, or <code>null</code> if there are no additional results. Pass this token into a subsequent command to retrieve the next set of items For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
-        }),
-    ).exactOptional(),
+    ApplicationSummaries: ApplicationSummariesSchema.openapi({
+      description: 'A list of <code>ApplicationSummary</code> objects.',
+    }),
+    NextToken: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'The pagination token for the next set of results, or <code>null</code> if there are no additional results. Pass this token into a subsequent command to retrieve the next set of items For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
+    }),
   })
   .openapi({ required: ['ApplicationSummaries'] })
   .openapi('ListApplicationsResponse')
@@ -4711,26 +3482,22 @@ const ListApplicationsInputLimitSchema = z
 
 const ListApplicationsRequestSchema = z
   .object({
-    Limit: ListApplicationsInputLimitSchema.and(
-      z.any().openapi({ description: 'The maximum number of applications to list.' }),
-    ).exactOptional(),
-    NextToken: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a previous command returned a pagination token, pass it into this value to retrieve the next set of results. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
-        }),
-    ).exactOptional(),
+    Limit: ListApplicationsInputLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of applications to list.',
+    }),
+    NextToken: ApplicationNameSchema.exactOptional().openapi({
+      description:
+        'If a previous command returned a pagination token, pass it into this value to retrieve the next set of results. For more information about pagination, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/pagination.html">Using the Amazon Command Line Interface\'s Pagination Options</a>.',
+    }),
   })
   .openapi({ title: 'ListApplicationsRequest', required: [] })
   .openapi('ListApplicationsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The key-value tags assigned to the application.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The key-value tags assigned to the application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -4744,31 +3511,25 @@ const KinesisAnalyticsARNSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: KinesisAnalyticsARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the application for which to retrieve tags.' }),
-    ),
+    ResourceARN: KinesisAnalyticsARNSchema.openapi({
+      description: 'The ARN of the application for which to retrieve tags.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const RollbackApplicationResponseSchema = z
+const RollbackApplicationResponseSchema: z.ZodType<RollbackApplicationResponseType> = z
   .object({ ApplicationDetail: ApplicationDetailSchema })
   .openapi({ required: ['ApplicationDetail'] })
   .openapi('RollbackApplicationResponse')
 
 const RollbackApplicationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current application version ID. You can retrieve the application version ID using <a>DescribeApplication</a>.',
-        }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.openapi({
+      description:
+        'The current application version ID. You can retrieve the application version ID using <a>DescribeApplication</a>.',
+    }),
   })
   .openapi({
     required: ['ApplicationName', 'CurrentApplicationVersionId'],
@@ -4776,307 +3537,163 @@ const RollbackApplicationRequestSchema = z
   })
   .openapi('RollbackApplicationRequest')
 
-const StartApplicationResponseSchema = z.object({}).openapi('StartApplicationResponse')
+const StartApplicationResponseSchema = z.looseObject({}).openapi('StartApplicationResponse')
 
-const RunConfigurationSchema: z.ZodType<RunConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        FlinkRunConfiguration: FlinkRunConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the starting parameters for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        SqlRunConfigurations: SqlRunConfigurationsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes the starting parameters for a SQL-based Kinesis Data Analytics application application.',
-            }),
-        ).exactOptional(),
-        ApplicationRestoreConfiguration: ApplicationRestoreConfigurationSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Describes the restore behavior of a restarting application.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Describes the starting parameters for an Kinesis Data Analytics application.',
-        required: [],
-      }),
-  )
+const SqlRunConfigurationSchema = z
+  .object({
+    InputId: IdSchema.openapi({
+      description:
+        'The input source ID. You can get this ID by calling the <a>DescribeApplication</a> operation. ',
+    }),
+    InputStartingPositionConfiguration: InputStartingPositionConfigurationSchema.openapi({
+      description:
+        'The point at which you want the application to start processing records from the streaming source. ',
+    }),
+  })
+  .openapi({
+    required: ['InputId', 'InputStartingPositionConfiguration'],
+    description:
+      'Describes the starting parameters for a SQL-based Kinesis Data Analytics application.',
+  })
+  .openapi('SqlRunConfiguration')
+
+const SqlRunConfigurationsSchema = z
+  .array(SqlRunConfigurationSchema)
+  .openapi('SqlRunConfigurations')
+
+const RunConfigurationSchema = z
+  .object({
+    FlinkRunConfiguration: FlinkRunConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes the starting parameters for a Flink-based Kinesis Data Analytics application.',
+    }),
+    SqlRunConfigurations: SqlRunConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Describes the starting parameters for a SQL-based Kinesis Data Analytics application application.',
+    }),
+    ApplicationRestoreConfiguration: ApplicationRestoreConfigurationSchema.exactOptional().openapi({
+      description: 'Describes the restore behavior of a restarting application.',
+    }),
+  })
+  .openapi({
+    description: 'Describes the starting parameters for an Kinesis Data Analytics application.',
+    required: [],
+  })
   .openapi('RunConfiguration')
 
 const StartApplicationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ),
-    RunConfiguration: RunConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the run configuration (start parameters) of a Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({ description: 'The name of the application.' }),
+    RunConfiguration: RunConfigurationSchema.exactOptional().openapi({
+      description:
+        'Identifies the run configuration (start parameters) of a Kinesis Data Analytics application.',
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'StartApplicationRequest' })
   .openapi('StartApplicationRequest')
 
-const StopApplicationResponseSchema = z.object({}).openapi('StopApplicationResponse')
+const StopApplicationResponseSchema = z.looseObject({}).openapi('StopApplicationResponse')
 
 const StopApplicationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the running application to stop.' }),
-    ),
-    Force: BooleanObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Set to <code>true</code> to force the application to stop. If you set <code>Force</code> to <code>true</code>, Kinesis Data Analytics stops the application without taking a snapshot. </p> <note> <p>Force-stopping your application may lead to data loss or duplication. To prevent data loss or duplicate processing of data during application restarts, we recommend you to take frequent snapshots of your application.</p> </note> <p>You can only force stop a Flink-based Kinesis Data Analytics application. You can't force stop a SQL-based Kinesis Data Analytics application.</p> <p>The application must be in the <code>STARTING</code>, <code>UPDATING</code>, <code>STOPPING</code>, <code>AUTOSCALING</code>, or <code>RUNNING</code> status. </p>",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the running application to stop.',
+    }),
+    Force: BooleanObjectSchema.exactOptional().openapi({
+      description:
+        "<p>Set to <code>true</code> to force the application to stop. If you set <code>Force</code> to <code>true</code>, Kinesis Data Analytics stops the application without taking a snapshot. </p> <note> <p>Force-stopping your application may lead to data loss or duplication. To prevent data loss or duplicate processing of data during application restarts, we recommend you to take frequent snapshots of your application.</p> </note> <p>You can only force stop a Flink-based Kinesis Data Analytics application. You can't force stop a SQL-based Kinesis Data Analytics application.</p> <p>The application must be in the <code>STARTING</code>, <code>UPDATING</code>, <code>STOPPING</code>, <code>AUTOSCALING</code>, or <code>RUNNING</code> status. </p>",
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'StopApplicationRequest' })
   .openapi('StopApplicationRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: KinesisAnalyticsARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the application to assign the tags.' }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The key-value tags to assign to the application.' }),
-    ),
+    ResourceARN: KinesisAnalyticsARNSchema.openapi({
+      description: 'The ARN of the application to assign the tags.',
+    }),
+    Tags: TagsSchema.openapi({ description: 'The key-value tags to assign to the application.' }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: KinesisAnalyticsARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Kinesis Data Analytics application from which to remove the tags.',
-        }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of keys of tags to remove from the specified application.',
-        }),
-    ),
+    ResourceARN: KinesisAnalyticsARNSchema.openapi({
+      description:
+        'The ARN of the Kinesis Data Analytics application from which to remove the tags.',
+    }),
+    TagKeys: TagKeysSchema.openapi({
+      description: 'A list of keys of tags to remove from the specified application.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateApplicationResponseSchema = z
+const UpdateApplicationResponseSchema: z.ZodType<UpdateApplicationResponseType> = z
   .object({
-    ApplicationDetail: ApplicationDetailSchema.and(
-      z.any().openapi({ description: 'Describes application updates.' }),
-    ),
+    ApplicationDetail: ApplicationDetailSchema.openapi({
+      description: 'Describes application updates.',
+    }),
   })
   .openapi({ required: ['ApplicationDetail'] })
   .openapi('UpdateApplicationResponse')
 
-const ApplicationConfigurationUpdateSchema: z.ZodType<ApplicationConfigurationUpdateType> = z
-  .lazy(() =>
-    z
-      .object({
-        SqlApplicationConfigurationUpdate: SqlApplicationConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "Describes updates to a SQL-based Kinesis Data Analytics application's configuration.",
-            }),
-        ).exactOptional(),
-        ApplicationCodeConfigurationUpdate: ApplicationCodeConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({ description: "Describes updates to an application's code configuration." }),
-        ).exactOptional(),
-        FlinkApplicationConfigurationUpdate: FlinkApplicationConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "Describes updates to a Flink-based Kinesis Data Analytics application's configuration.",
-            }),
-        ).exactOptional(),
-        EnvironmentPropertyUpdates: EnvironmentPropertyUpdatesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes updates to the environment properties for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        ApplicationSnapshotConfigurationUpdate: ApplicationSnapshotConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.',
-            }),
-        ).exactOptional(),
-        VpcConfigurationUpdates: VpcConfigurationUpdatesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Updates to the array of descriptions of VPC configurations available to the application.',
-            }),
-        ).exactOptional(),
-        ZeppelinApplicationConfigurationUpdate: ZeppelinApplicationConfigurationUpdateSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Updates to the configuration of a Kinesis Data Analytics Studio notebook.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: "Describes updates to an application's configuration.",
-        required: [],
-      }),
-  )
-  .openapi('ApplicationConfigurationUpdate')
-
-const RunConfigurationUpdateSchema = z
+const UpdateApplicationRequestSchema: z.ZodType<UpdateApplicationRequestType> = z
   .object({
-    FlinkRunConfiguration: FlinkRunConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the starting parameters for a Flink-based Kinesis Data Analytics application.',
-        }),
-    ).exactOptional(),
-    ApplicationRestoreConfiguration: ApplicationRestoreConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Describes updates to the restore behavior of a restarting application.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes the updates to the starting parameters for a Kinesis Data Analytics application.',
-    required: [],
-  })
-  .openapi('RunConfigurationUpdate')
-
-const CloudWatchLoggingOptionUpdateSchema = z
-  .object({
-    CloudWatchLoggingOptionId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the CloudWatch logging option to update' }),
-    ),
-    LogStreamARNUpdate: LogStreamARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the CloudWatch log to receive application messages.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['CloudWatchLoggingOptionId'],
-    description: 'Describes the Amazon CloudWatch logging option updates.',
-  })
-  .openapi('CloudWatchLoggingOptionUpdate')
-
-const CloudWatchLoggingOptionUpdatesSchema = z
-  .array(CloudWatchLoggingOptionUpdateSchema)
-  .openapi('CloudWatchLoggingOptionUpdates')
-
-const UpdateApplicationRequestSchema = z
-  .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the application to update.' }),
-    ),
-    CurrentApplicationVersionId: ApplicationVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current application version ID. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>.You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
-        }),
-    ).exactOptional(),
-    ApplicationConfigurationUpdate: ApplicationConfigurationUpdateSchema.and(
-      z.any().openapi({ description: 'Describes application configuration updates.' }),
-    ).exactOptional(),
-    ServiceExecutionRoleUpdate: RoleARNSchema.and(
-      z.any().openapi({ description: 'Describes updates to the service execution role.' }),
-    ).exactOptional(),
-    RunConfigurationUpdate: RunConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({ description: "Describes updates to the application's starting parameters." }),
-    ).exactOptional(),
-    CloudWatchLoggingOptionUpdates: CloudWatchLoggingOptionUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes application Amazon CloudWatch logging option updates. You can only update existing CloudWatch logging options with this action. To add a new CloudWatch logging option, use <a>AddApplicationCloudWatchLoggingOption</a>.',
-        }),
-    ).exactOptional(),
-    ConditionalToken: ConditionalTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
-        }),
-    ).exactOptional(),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description: 'The name of the application to update.',
+    }),
+    CurrentApplicationVersionId: ApplicationVersionIdSchema.exactOptional().openapi({
+      description:
+        'The current application version ID. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>.You can retrieve the application version ID using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.',
+    }),
+    ApplicationConfigurationUpdate: ApplicationConfigurationUpdateSchema.exactOptional().openapi({
+      description: 'Describes application configuration updates.',
+    }),
+    ServiceExecutionRoleUpdate: RoleARNSchema.exactOptional().openapi({
+      description: 'Describes updates to the service execution role.',
+    }),
+    RunConfigurationUpdate: RunConfigurationUpdateSchema.exactOptional().openapi({
+      description: "Describes updates to the application's starting parameters.",
+    }),
+    CloudWatchLoggingOptionUpdates: CloudWatchLoggingOptionUpdatesSchema.exactOptional().openapi({
+      description:
+        'Describes application Amazon CloudWatch logging option updates. You can only update existing CloudWatch logging options with this action. To add a new CloudWatch logging option, use <a>AddApplicationCloudWatchLoggingOption</a>.',
+    }),
+    ConditionalToken: ConditionalTokenSchema.exactOptional().openapi({
+      description:
+        "A value you use to implement strong concurrency for application updates. You must provide the <code>CurrentApplicationVersionId</code> or the <code>ConditionalToken</code>. You get the application's current <code>ConditionalToken</code> using <a>DescribeApplication</a>. For better concurrency support, use the <code>ConditionalToken</code> parameter instead of <code>CurrentApplicationVersionId</code>.",
+    }),
   })
   .openapi({ required: ['ApplicationName'], title: 'UpdateApplicationRequest' })
   .openapi('UpdateApplicationRequest')
 
 const UpdateApplicationMaintenanceConfigurationResponseSchema = z
   .object({
-    ApplicationARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the application.' }),
-    ).exactOptional(),
+    ApplicationARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the application.',
+    }),
     ApplicationMaintenanceConfigurationDescription:
-      ApplicationMaintenanceConfigurationDescriptionSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The application maintenance configuration description after the update.',
-          }),
-      ).exactOptional(),
+      ApplicationMaintenanceConfigurationDescriptionSchema.exactOptional().openapi({
+        description: 'The application maintenance configuration description after the update.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApplicationMaintenanceConfigurationResponse')
 
 const ApplicationMaintenanceConfigurationUpdateSchema = z
   .object({
-    ApplicationMaintenanceWindowStartTimeUpdate: ApplicationMaintenanceWindowStartTimeSchema.and(
-      z.any().openapi({ description: 'The updated start time for the maintenance window.' }),
-    ),
+    ApplicationMaintenanceWindowStartTimeUpdate:
+      ApplicationMaintenanceWindowStartTimeSchema.openapi({
+        description: 'The updated start time for the maintenance window.',
+      }),
   })
   .openapi({
     required: ['ApplicationMaintenanceWindowStartTimeUpdate'],
@@ -5086,19 +3703,14 @@ const ApplicationMaintenanceConfigurationUpdateSchema = z
 
 const UpdateApplicationMaintenanceConfigurationRequestSchema = z
   .object({
-    ApplicationName: ApplicationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the application for which you want to update the maintenance configuration.',
-        }),
-    ),
-    ApplicationMaintenanceConfigurationUpdate: ApplicationMaintenanceConfigurationUpdateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Describes the application maintenance configuration update.' }),
-    ),
+    ApplicationName: ApplicationNameSchema.openapi({
+      description:
+        'The name of the application for which you want to update the maintenance configuration.',
+    }),
+    ApplicationMaintenanceConfigurationUpdate:
+      ApplicationMaintenanceConfigurationUpdateSchema.openapi({
+        description: 'Describes the application maintenance configuration update.',
+      }),
   })
   .openapi({
     required: ['ApplicationName', 'ApplicationMaintenanceConfigurationUpdate'],

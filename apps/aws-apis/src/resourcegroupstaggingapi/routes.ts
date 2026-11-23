@@ -8,30 +8,22 @@ const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 const DescribeReportCreationOutputSchema = z
   .object({
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Reports the status of the operation.</p> <p>The operation status can be one of the following:</p> <ul> <li> <p> <code>RUNNING</code> - Report creation is in progress.</p> </li> <li> <p> <code>SUCCEEDED</code> - Report creation is complete. You can open the report from the Amazon S3 bucket that you specified when you ran <code>StartReportCreation</code>.</p> </li> <li> <p> <code>FAILED</code> - Report creation timed out or the Amazon S3 bucket is not accessible. </p> </li> <li> <p> <code>NO REPORT</code> - No report was generated in the last 90 days.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    S3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The path to the Amazon S3 bucket where the report was stored on creation.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'Details of the common errors that all operations return.' }),
-    ).exactOptional(),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>Reports the status of the operation.</p> <p>The operation status can be one of the following:</p> <ul> <li> <p> <code>RUNNING</code> - Report creation is in progress.</p> </li> <li> <p> <code>SUCCEEDED</code> - Report creation is complete. You can open the report from the Amazon S3 bucket that you specified when you ran <code>StartReportCreation</code>.</p> </li> <li> <p> <code>FAILED</code> - Report creation timed out or the Amazon S3 bucket is not accessible. </p> </li> <li> <p> <code>NO REPORT</code> - No report was generated in the last 90 days.</p> </li> </ul>',
+    }),
+    S3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The path to the Amazon S3 bucket where the report was stored on creation.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'Details of the common errors that all operations return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeReportCreationOutput')
 
 const DescribeReportCreationInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeReportCreationInput' })
   .openapi('DescribeReportCreationInput')
 
@@ -72,39 +64,25 @@ const NonCompliantResourcesSchema = z.int().openapi('NonCompliantResources')
 
 const SummarySchema = z
   .object({
-    LastUpdated: LastUpdatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that shows when this summary was generated in this Region. ',
-        }),
-    ).exactOptional(),
-    TargetId: TargetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The account identifier or the root identifier of the organization. If you don\'t know the root ID, you can call the Organizations <a href="https://docs.aws.amazon.com/organizations/latest/APIReference/API_ListRoots.html">ListRoots</a> API.',
-        }),
-    ).exactOptional(),
-    TargetIdType: TargetIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the target is an account, an OU, or the organization root.',
-        }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services Region that the summary applies to.' }),
-    ).exactOptional(),
-    ResourceType: AmazonResourceTypeSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services resource type.' }),
-    ).exactOptional(),
-    NonCompliantResources: NonCompliantResourcesSchema.and(
-      z.any().openapi({ description: 'The count of noncompliant resources.' }),
-    ).exactOptional(),
+    LastUpdated: LastUpdatedSchema.exactOptional().openapi({
+      description: 'The timestamp that shows when this summary was generated in this Region. ',
+    }),
+    TargetId: TargetIdSchema.exactOptional().openapi({
+      description:
+        'The account identifier or the root identifier of the organization. If you don\'t know the root ID, you can call the Organizations <a href="https://docs.aws.amazon.com/organizations/latest/APIReference/API_ListRoots.html">ListRoots</a> API.',
+    }),
+    TargetIdType: TargetIdTypeSchema.exactOptional().openapi({
+      description: 'Whether the target is an account, an OU, or the organization root.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region that the summary applies to.',
+    }),
+    ResourceType: AmazonResourceTypeSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services resource type.',
+    }),
+    NonCompliantResources: NonCompliantResourcesSchema.exactOptional().openapi({
+      description: 'The count of noncompliant resources.',
+    }),
   })
   .openapi({ description: 'A count of noncompliant resources.', required: [] })
   .openapi('Summary')
@@ -120,17 +98,13 @@ const PaginationTokenSchema = z
 
 const GetComplianceSummaryOutputSchema = z
   .object({
-    SummaryList: SummaryListSchema.and(
-      z.any().openapi({ description: 'A table that shows counts of noncompliant resources.' }),
-    ).exactOptional(),
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
-        }),
-    ).exactOptional(),
+    SummaryList: SummaryListSchema.exactOptional().openapi({
+      description: 'A table that shows counts of noncompliant resources.',
+    }),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetComplianceSummaryOutput')
@@ -170,62 +144,34 @@ const MaxResultsGetComplianceSummarySchema = z
 
 const GetComplianceSummaryInputSchema = z
   .object({
-    TargetIdFilters: TargetIdFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies target identifiers (usually, specific account IDs) to limit the output by. If you use this parameter, the count of returned noncompliant resources includes only resources with the specified target IDs.',
-        }),
-    ).exactOptional(),
-    RegionFilters: RegionFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a list of Amazon Web Services Regions to limit the output to. If you use this parameter, the count of returned noncompliant resources includes only resources in the specified Regions.',
-        }),
-    ).exactOptional(),
-    ResourceTypeFilters: ResourceTypeFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies that you want the response to include information for only resources of the specified types. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances.</p> <p>The string for each service name and resource type is the same as that embedded in a resource\'s Amazon Resource Name (ARN). Consult the <i> <a href="https://docs.aws.amazon.com/general/latest/gr/">Amazon Web Services General Reference</a> </i> for the following:</p> <ul> <li> <p>For a list of service name strings, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services Service Namespaces</a>.</p> </li> <li> <p>For resource type strings, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arns-syntax">Example ARNs</a>.</p> </li> <li> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p> </li> </ul> <p>You can specify multiple resource types by using a comma separated array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. </p>',
-        }),
-    ).exactOptional(),
-    TagKeyFilters: TagKeyFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies that you want the response to include information for only resources that have tags with the specified tag keys. If you use this parameter, the count of returned noncompliant resources includes only resources that have the specified tag keys.',
-        }),
-    ).exactOptional(),
-    GroupBy: GroupBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a list of attributes to group the counts of noncompliant resources by. If supplied, the counts are sorted by those attributes.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsGetComplianceSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the maximum number of results to be returned in each page. A query can return fewer than this maximum, even if there are more results still to return. You should always check the <code>PaginationToken</code> response value to see if there are more results. You can specify a minimum of 1 and a maximum value of 100.',
-        }),
-    ).exactOptional(),
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
-        }),
-    ).exactOptional(),
+    TargetIdFilters: TargetIdFilterListSchema.exactOptional().openapi({
+      description:
+        'Specifies target identifiers (usually, specific account IDs) to limit the output by. If you use this parameter, the count of returned noncompliant resources includes only resources with the specified target IDs.',
+    }),
+    RegionFilters: RegionFilterListSchema.exactOptional().openapi({
+      description:
+        'Specifies a list of Amazon Web Services Regions to limit the output to. If you use this parameter, the count of returned noncompliant resources includes only resources in the specified Regions.',
+    }),
+    ResourceTypeFilters: ResourceTypeFilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies that you want the response to include information for only resources of the specified types. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances.</p> <p>The string for each service name and resource type is the same as that embedded in a resource\'s Amazon Resource Name (ARN). Consult the <i> <a href="https://docs.aws.amazon.com/general/latest/gr/">Amazon Web Services General Reference</a> </i> for the following:</p> <ul> <li> <p>For a list of service name strings, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces">Amazon Web Services Service Namespaces</a>.</p> </li> <li> <p>For resource type strings, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arns-syntax">Example ARNs</a>.</p> </li> <li> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p> </li> </ul> <p>You can specify multiple resource types by using a comma separated array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. </p>',
+    }),
+    TagKeyFilters: TagKeyFilterListSchema.exactOptional().openapi({
+      description:
+        'Specifies that you want the response to include information for only resources that have tags with the specified tag keys. If you use this parameter, the count of returned noncompliant resources includes only resources that have the specified tag keys.',
+    }),
+    GroupBy: GroupBySchema.exactOptional().openapi({
+      description:
+        'Specifies a list of attributes to group the counts of noncompliant resources by. If supplied, the counts are sorted by those attributes.',
+    }),
+    MaxResults: MaxResultsGetComplianceSummarySchema.exactOptional().openapi({
+      description:
+        'Specifies the maximum number of results to be returned in each page. A query can return fewer than this maximum, even if there are more results still to return. You should always check the <code>PaginationToken</code> response value to see if there are more results. You can specify a minimum of 1 and a maximum value of 100.',
+    }),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
+    }),
   })
   .openapi({ title: 'GetComplianceSummaryInput', required: [] })
   .openapi('GetComplianceSummaryInput')
@@ -246,22 +192,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -278,27 +216,16 @@ const ComplianceStatusSchema = z.boolean().openapi('ComplianceStatus')
 
 const ComplianceDetailsSchema = z
   .object({
-    NoncompliantKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'These tag keys on the resource are noncompliant with the effective tag policy.',
-        }),
-    ).exactOptional(),
-    KeysWithNoncompliantValues: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'These are keys defined in the effective policy that are on the resource with either incorrect case treatment or noncompliant values. ',
-        }),
-    ).exactOptional(),
-    ComplianceStatus: ComplianceStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Whether a resource is compliant with the effective tag policy.' }),
-    ).exactOptional(),
+    NoncompliantKeys: TagKeyListSchema.exactOptional().openapi({
+      description: 'These tag keys on the resource are noncompliant with the effective tag policy.',
+    }),
+    KeysWithNoncompliantValues: TagKeyListSchema.exactOptional().openapi({
+      description:
+        'These are keys defined in the effective policy that are on the resource with either incorrect case treatment or noncompliant values. ',
+    }),
+    ComplianceStatus: ComplianceStatusSchema.exactOptional().openapi({
+      description: 'Whether a resource is compliant with the effective tag policy.',
+    }),
   })
   .openapi({
     description:
@@ -309,25 +236,16 @@ const ComplianceDetailsSchema = z
 
 const ResourceTagMappingSchema = z
   .object({
-    ResourceARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags that have been applied to one or more Amazon Web Services resources.',
-        }),
-    ).exactOptional(),
-    ComplianceDetails: ComplianceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information that shows whether a resource is compliant with the effective tag policy, including details on any noncompliant tag keys.',
-        }),
-    ).exactOptional(),
+    ResourceARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags that have been applied to one or more Amazon Web Services resources.',
+    }),
+    ComplianceDetails: ComplianceDetailsSchema.exactOptional().openapi({
+      description:
+        'Information that shows whether a resource is compliant with the effective tag policy, including details on any noncompliant tag keys.',
+    }),
   })
   .openapi({
     description:
@@ -342,22 +260,13 @@ const ResourceTagMappingListSchema = z
 
 const GetResourcesOutputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
-        }),
-    ).exactOptional(),
-    ResourceTagMappingList: ResourceTagMappingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource ARNs and the tags (keys and values) associated with each.',
-        }),
-    ).exactOptional(),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
+    }),
+    ResourceTagMappingList: ResourceTagMappingListSchema.exactOptional().openapi({
+      description: 'A list of resource ARNs and the tags (keys and values) associated with each.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourcesOutput')
@@ -366,22 +275,14 @@ const TagValueListSchema = z.array(TagValueSchema).min(0).max(20).openapi('TagVa
 
 const TagFilterSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
-        }),
-    ).exactOptional(),
-    Values: TagValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null.',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that makes up a tag. A key is a general label that acts like a category for more specific tag values.',
+    }),
+    Values: TagValueListSchema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A value acts as a descriptor within a tag category (key). The value can be empty or null.',
+    }),
   })
   .openapi({
     description:
@@ -408,70 +309,38 @@ const ResourceARNListForGetSchema = z
 
 const GetResourcesInputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
-        }),
-    ).exactOptional(),
-    TagFilters: TagFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies a list of TagFilters (keys and values) to restrict the output to only those resources that have tags with the specified keys and, if included, the specified values. Each <code>TagFilter</code> must contain a key with values optional. A request can include up to 50 keys, and each key can include up to 20 values. </p> <p>Note the following when deciding how to use TagFilters:</p> <ul> <li> <p>If you <i>don't</i> specify a <code>TagFilter</code>, the response includes all resources that are currently tagged or ever had a tag. Resources that currently don't have tags are shown with an empty tag set, like this: <code>\"Tags\": []</code>.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns only those resources that satisfy all filters.</p> </li> <li> <p>If you specify a filter that contains more than one value for a key, the response returns resources that match <i>any</i> of the specified values for that key.</p> </li> <li> <p>If you don't specify a value for a key, the response returns all resources that are tagged with that key, with any or no value.</p> <p>For example, for the following filters: <code>filter1= {keyA,{value1}}</code>, <code>filter2={keyB,{value2,value3,value4}}</code>, <code>filter3= {keyC}</code>:</p> <ul> <li> <p> <code>GetResources({filter1})</code> returns resources tagged with <code>key1=value1</code> </p> </li> <li> <p> <code>GetResources({filter2})</code> returns resources tagged with <code>key2=value2</code> or <code>key2=value3</code> or <code>key2=value4</code> </p> </li> <li> <p> <code>GetResources({filter3})</code> returns resources tagged with any tag with the key <code>key3</code>, and with any or no value</p> </li> <li> <p> <code>GetResources({filter1,filter2,filter3})</code> returns resources tagged with <code>(key1=value1) and (key2=value2 or key2=value3 or key2=value4) and (key3, any or no value)</code> </p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ResourcesPerPage: ResourcesPerPageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the maximum number of results to be returned in each page. A query can return fewer than this maximum, even if there are more results still to return. You should always check the <code>PaginationToken</code> response value to see if there are more results. You can specify a minimum of 1 and a maximum value of 100.',
-        }),
-    ).exactOptional(),
-    TagsPerPage: TagsPerPageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Amazon Web Services recommends using <code>ResourcesPerPage</code> instead of this parameter.</p> <p>A limit that restricts the number of tags (key and value pairs) returned by <code>GetResources</code> in paginated output. A resource with no tags is counted as having one tag (one key and value pair).</p> <p> <code>GetResources</code> does not split a resource and its associated tags across pages. If the specified <code>TagsPerPage</code> would cause such a break, a <code>PaginationToken</code> is returned in place of the affected resource and its tags. Use that token in another request to get the remaining data. For example, if you specify a <code>TagsPerPage</code> of <code>100</code> and the account has 22 resources with 10 tags each (meaning that each resource has 10 key and value pairs), the output will consist of three pages. The first page displays the first 10 resources, each with its 10 tags. The second page displays the next 10 resources, each with its 10 tags. The third page displays the remaining 2 resources, each with its 10 tags.</p> <p>You can set <code>TagsPerPage</code> to a minimum of 100 items up to a maximum of 500 items.</p>',
-        }),
-    ).exactOptional(),
-    ResourceTypeFilters: ResourceTypeFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the resource types that you want included in the response. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances. </p> <p>The string for each service name and resource type is the same as that embedded in a resource\'s Amazon Resource Name (ARN). For the list of services whose resources you can use in this parameter, see <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html">Services that support the Resource Groups Tagging API</a>.</p> <p>You can specify multiple resource types by using an array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. For example, the following string would limit the response to only Amazon EC2 instances, Amazon S3 buckets, or any Audit Manager resource:</p> <p> <code>ec2:instance,s3:bucket,auditmanager</code> </p>',
-        }),
-    ).exactOptional(),
-    IncludeComplianceDetails: IncludeComplianceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to include details regarding the compliance with the effective tag policy. Set this to <code>true</code> to determine whether resources are compliant with the tag policy and to get details.',
-        }),
-    ).exactOptional(),
-    ExcludeCompliantResources: ExcludeCompliantResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether to exclude resources that are compliant with the tag policy. Set this to <code>true</code> if you are interested in retrieving information on noncompliant resources only.</p> <p>You can use this parameter only if the <code>IncludeComplianceDetails</code> parameter is also set to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    ResourceARNList: ResourceARNListForGetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies a list of ARNs of resources for which you want to retrieve tag data. You can't specify both this parameter and any of the pagination parameters (<code>ResourcesPerPage</code>, <code>TagsPerPage</code>, <code>PaginationToken</code>) in the same request. If you specify both, you get an <code>Invalid Parameter</code> exception.</p> <p>If a resource specified by this parameter doesn't exist, it doesn't generate an error; it simply isn't included in the response.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>",
-        }),
-    ).exactOptional(),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
+    }),
+    TagFilters: TagFilterListSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies a list of TagFilters (keys and values) to restrict the output to only those resources that have tags with the specified keys and, if included, the specified values. Each <code>TagFilter</code> must contain a key with values optional. A request can include up to 50 keys, and each key can include up to 20 values. </p> <p>Note the following when deciding how to use TagFilters:</p> <ul> <li> <p>If you <i>don't</i> specify a <code>TagFilter</code>, the response includes all resources that are currently tagged or ever had a tag. Resources that currently don't have tags are shown with an empty tag set, like this: <code>\"Tags\": []</code>.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns only those resources that satisfy all filters.</p> </li> <li> <p>If you specify a filter that contains more than one value for a key, the response returns resources that match <i>any</i> of the specified values for that key.</p> </li> <li> <p>If you don't specify a value for a key, the response returns all resources that are tagged with that key, with any or no value.</p> <p>For example, for the following filters: <code>filter1= {keyA,{value1}}</code>, <code>filter2={keyB,{value2,value3,value4}}</code>, <code>filter3= {keyC}</code>:</p> <ul> <li> <p> <code>GetResources({filter1})</code> returns resources tagged with <code>key1=value1</code> </p> </li> <li> <p> <code>GetResources({filter2})</code> returns resources tagged with <code>key2=value2</code> or <code>key2=value3</code> or <code>key2=value4</code> </p> </li> <li> <p> <code>GetResources({filter3})</code> returns resources tagged with any tag with the key <code>key3</code>, and with any or no value</p> </li> <li> <p> <code>GetResources({filter1,filter2,filter3})</code> returns resources tagged with <code>(key1=value1) and (key2=value2 or key2=value3 or key2=value4) and (key3, any or no value)</code> </p> </li> </ul> </li> </ul>",
+    }),
+    ResourcesPerPage: ResourcesPerPageSchema.exactOptional().openapi({
+      description:
+        'Specifies the maximum number of results to be returned in each page. A query can return fewer than this maximum, even if there are more results still to return. You should always check the <code>PaginationToken</code> response value to see if there are more results. You can specify a minimum of 1 and a maximum value of 100.',
+    }),
+    TagsPerPage: TagsPerPageSchema.exactOptional().openapi({
+      description:
+        '<p>Amazon Web Services recommends using <code>ResourcesPerPage</code> instead of this parameter.</p> <p>A limit that restricts the number of tags (key and value pairs) returned by <code>GetResources</code> in paginated output. A resource with no tags is counted as having one tag (one key and value pair).</p> <p> <code>GetResources</code> does not split a resource and its associated tags across pages. If the specified <code>TagsPerPage</code> would cause such a break, a <code>PaginationToken</code> is returned in place of the affected resource and its tags. Use that token in another request to get the remaining data. For example, if you specify a <code>TagsPerPage</code> of <code>100</code> and the account has 22 resources with 10 tags each (meaning that each resource has 10 key and value pairs), the output will consist of three pages. The first page displays the first 10 resources, each with its 10 tags. The second page displays the next 10 resources, each with its 10 tags. The third page displays the remaining 2 resources, each with its 10 tags.</p> <p>You can set <code>TagsPerPage</code> to a minimum of 100 items up to a maximum of 500 items.</p>',
+    }),
+    ResourceTypeFilters: ResourceTypeFilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the resource types that you want included in the response. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances. </p> <p>The string for each service name and resource type is the same as that embedded in a resource\'s Amazon Resource Name (ARN). For the list of services whose resources you can use in this parameter, see <a href="https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html">Services that support the Resource Groups Tagging API</a>.</p> <p>You can specify multiple resource types by using an array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. For example, the following string would limit the response to only Amazon EC2 instances, Amazon S3 buckets, or any Audit Manager resource:</p> <p> <code>ec2:instance,s3:bucket,auditmanager</code> </p>',
+    }),
+    IncludeComplianceDetails: IncludeComplianceDetailsSchema.exactOptional().openapi({
+      description:
+        'Specifies whether to include details regarding the compliance with the effective tag policy. Set this to <code>true</code> to determine whether resources are compliant with the tag policy and to get details.',
+    }),
+    ExcludeCompliantResources: ExcludeCompliantResourcesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether to exclude resources that are compliant with the tag policy. Set this to <code>true</code> if you are interested in retrieving information on noncompliant resources only.</p> <p>You can use this parameter only if the <code>IncludeComplianceDetails</code> parameter is also set to <code>true</code>.</p>',
+    }),
+    ResourceARNList: ResourceARNListForGetSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies a list of ARNs of resources for which you want to retrieve tag data. You can't specify both this parameter and any of the pagination parameters (<code>ResourcesPerPage</code>, <code>TagsPerPage</code>, <code>PaginationToken</code>) in the same request. If you specify both, you get an <code>Invalid Parameter</code> exception.</p> <p>If a resource specified by this parameter doesn't exist, it doesn't generate an error; it simply isn't included in the response.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>",
+    }),
   })
   .openapi({ title: 'GetResourcesInput', required: [] })
   .openapi('GetResourcesInput')
@@ -480,33 +349,23 @@ const PaginationTokenExpiredExceptionSchema = z.any().openapi('PaginationTokenEx
 
 const GetTagKeysOutputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
-        }),
-    ).exactOptional(),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of all tag keys in the Amazon Web Services account.' }),
-    ).exactOptional(),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
+    }),
+    TagKeys: TagKeyListSchema.exactOptional().openapi({
+      description: 'A list of all tag keys in the Amazon Web Services account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTagKeysOutput')
 
 const GetTagKeysInputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
-        }),
-    ).exactOptional(),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
+    }),
   })
   .openapi({ title: 'GetTagKeysInput', required: [] })
   .openapi('GetTagKeysInput')
@@ -515,49 +374,33 @@ const TagValuesOutputListSchema = z.array(TagValueSchema).openapi('TagValuesOutp
 
 const GetTagValuesOutputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
-        }),
-    ).exactOptional(),
-    TagValues: TagValuesOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of all tag values for the specified key currently used in the specified Amazon Web Services Region for the calling account.',
-        }),
-    ).exactOptional(),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A string that indicates that there is more data available than this response contains. To receive the next part of the response, specify this response value as the <code>PaginationToken</code> value in the request for the next page.',
+    }),
+    TagValues: TagValuesOutputListSchema.exactOptional().openapi({
+      description:
+        'A list of all tag values for the specified key currently used in the specified Amazon Web Services Region for the calling account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTagValuesOutput')
 
 const GetTagValuesInputSchema = z
   .object({
-    PaginationToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
-        }),
-    ).exactOptional(),
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the tag key for which you want to list all existing values that are currently used in the specified Amazon Web Services Region for the calling account.',
-        }),
-    ),
+    PaginationToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'Specifies a <code>PaginationToken</code> response value from a previous request to indicate that you want the next page of results. Leave this parameter empty in your initial request.',
+    }),
+    Key: TagKeySchema.openapi({
+      description:
+        'Specifies the tag key for which you want to list all existing values that are currently used in the specified Amazon Web Services Region for the calling account.',
+    }),
   })
   .openapi({ required: ['Key'], title: 'GetTagValuesInput' })
   .openapi('GetTagValuesInput')
 
-const StartReportCreationOutputSchema = z.object({}).openapi('StartReportCreationOutput')
+const StartReportCreationOutputSchema = z.looseObject({}).openapi('StartReportCreationOutput')
 
 const S3BucketSchema = z
   .string()
@@ -568,14 +411,10 @@ const S3BucketSchema = z
 
 const StartReportCreationInputSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket where the report will be stored; for example:</p> <p> <code>awsexamplebucket</code> </p> <p>For more information on S3 bucket requirements, including an example bucket policy, see the example S3 bucket policy on this page.</p>',
-        }),
-    ),
+    S3Bucket: S3BucketSchema.openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket where the report will be stored; for example:</p> <p> <code>awsexamplebucket</code> </p> <p>For more information on S3 bucket requirements, including an example bucket policy, see the example S3 bucket policy on this page.</p>',
+    }),
   })
   .openapi({ required: ['S3Bucket'], title: 'StartReportCreationInput' })
   .openapi('StartReportCreationInput')
@@ -590,20 +429,16 @@ const ErrorCodeSchema = z
 
 const FailureInfoSchema = z
   .object({
-    StatusCode: StatusCodeSchema.and(
-      z.any().openapi({ description: 'The HTTP status code of the common error.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code of the common error. Valid values include <code>InternalServiceException</code>, <code>InvalidParameterException</code>, and any valid error code returned by the Amazon Web Services service that hosts the resource that you want to tag.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The message of the common error.' }),
-    ).exactOptional(),
+    StatusCode: StatusCodeSchema.exactOptional().openapi({
+      description: 'The HTTP status code of the common error.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The code of the common error. Valid values include <code>InternalServiceException</code>, <code>InvalidParameterException</code>, and any valid error code returned by the Amazon Web Services service that hosts the resource that you want to tag.',
+    }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The message of the common error.',
+    }),
   })
   .openapi({
     description:
@@ -618,14 +453,10 @@ const FailedResourcesMapSchema = z
 
 const TagResourcesOutputSchema = z
   .object({
-    FailedResourcesMap: FailedResourcesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A map containing a key-value pair for each failed item that couldn't be tagged. The key is the ARN of the failed resource. The value is a <code>FailureInfo</code> object that contains an error code, a status code, and an error message. If there are no errors, the <code>FailedResourcesMap</code> is empty.",
-        }),
-    ).exactOptional(),
+    FailedResourcesMap: FailedResourcesMapSchema.exactOptional().openapi({
+      description:
+        "A map containing a key-value pair for each failed item that couldn't be tagged. The key is the ARN of the failed resource. The value is a <code>FailureInfo</code> object that contains an error code, a status code, and an error message. If there are no errors, the <code>FailedResourcesMap</code> is empty.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('TagResourcesOutput')
@@ -644,36 +475,24 @@ const TagMapSchema = z
 
 const TagResourcesInputSchema = z
   .object({
-    ResourceARNList: ResourceARNListForTagUntagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the list of ARNs of the resources that you want to apply tags to.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a list of tags that you want to add to the specified resources. A tag consists of a key and a value that you define.',
-        }),
-    ),
+    ResourceARNList: ResourceARNListForTagUntagSchema.openapi({
+      description:
+        '<p>Specifies the list of ARNs of the resources that you want to apply tags to.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    Tags: TagMapSchema.openapi({
+      description:
+        'Specifies a list of tags that you want to add to the specified resources. A tag consists of a key and a value that you define.',
+    }),
   })
   .openapi({ required: ['ResourceARNList', 'Tags'], title: 'TagResourcesInput' })
   .openapi('TagResourcesInput')
 
 const UntagResourcesOutputSchema = z
   .object({
-    FailedResourcesMap: FailedResourcesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A map containing a key-value pair for each failed item that couldn't be untagged. The key is the ARN of the failed resource. The value is a <code>FailureInfo</code> object that contains an error code, a status code, and an error message. If there are no errors, the <code>FailedResourcesMap</code> is empty.",
-        }),
-    ).exactOptional(),
+    FailedResourcesMap: FailedResourcesMapSchema.exactOptional().openapi({
+      description:
+        "A map containing a key-value pair for each failed item that couldn't be untagged. The key is the ARN of the failed resource. The value is a <code>FailureInfo</code> object that contains an error code, a status code, and an error message. If there are no errors, the <code>FailedResourcesMap</code> is empty.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UntagResourcesOutput')
@@ -682,22 +501,14 @@ const TagKeyListForUntagSchema = z.array(TagKeySchema).min(1).max(50).openapi('T
 
 const UntagResourcesInputSchema = z
   .object({
-    ResourceARNList: ResourceARNListForTagUntagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies a list of ARNs of the resources that you want to remove tags from.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
-        }),
-    ),
-    TagKeys: TagKeyListForUntagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a list of tag keys that you want to remove from the specified resources.',
-        }),
-    ),
+    ResourceARNList: ResourceARNListForTagUntagSchema.openapi({
+      description:
+        '<p>Specifies a list of ARNs of the resources that you want to remove tags from.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>',
+    }),
+    TagKeys: TagKeyListForUntagSchema.openapi({
+      description:
+        'Specifies a list of tag keys that you want to remove from the specified resources.',
+    }),
   })
   .openapi({ required: ['ResourceARNList', 'TagKeys'], title: 'UntagResourcesInput' })
   .openapi('UntagResourcesInput')

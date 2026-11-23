@@ -40257,12 +40257,12 @@ The types of credentials the Accounts system supports. This is the external faci
 0
 ```
 
-<h2 id="tocS_BungieMembershipType[]">BungieMembershipType[]</h2>
+<h2 id="tocS_BungieMembershipType[]2">BungieMembershipType[]2</h2>
 <!-- backwards compatibility -->
-<a id="schemabungiemembershiptype[]"></a>
-<a id="schema_BungieMembershipType[]"></a>
-<a id="tocSbungiemembershiptype[]"></a>
-<a id="tocsbungiemembershiptype[]"></a>
+<a id="schemabungiemembershiptype[]2"></a>
+<a id="schema_BungieMembershipType[]2"></a>
+<a id="tocSbungiemembershiptype[]2"></a>
+<a id="tocsbungiemembershiptype[]2"></a>
 
 ```json
 [
@@ -86063,12 +86063,12 @@ If the enum value is > 100, it is a "special" group that cannot be queried for d
 ]
 ```
 
-<h2 id="tocS_Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]">Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]</h2>
+<h2 id="tocS_Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]2">Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]2</h2>
 <!-- backwards compatibility -->
-<a id="schemadestiny.historicalstats.definitions.destinyactivitymodetype[]"></a>
-<a id="schema_Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]"></a>
-<a id="tocSdestiny.historicalstats.definitions.destinyactivitymodetype[]"></a>
-<a id="tocsdestiny.historicalstats.definitions.destinyactivitymodetype[]"></a>
+<a id="schemadestiny.historicalstats.definitions.destinyactivitymodetype[]2"></a>
+<a id="schema_Destiny.HistoricalStats.Definitions.DestinyActivityModeType[]2"></a>
+<a id="tocSdestiny.historicalstats.definitions.destinyactivitymodetype[]2"></a>
+<a id="tocsdestiny.historicalstats.definitions.destinyactivitymodetype[]2"></a>
 
 ```json
 [
@@ -86770,12 +86770,12 @@ An individual Destiny Entity returned from the entity search.
 |replacementContinuationToken|string|false|none|none|
 |useTotalResults|boolean|false|none|If useTotalResults is true, then totalResults represents an accurate count.<br>If False, it does not, and may be estimated/only the size of the current page.<br>Either way, you should probably always only trust hasMore.<br>This is a long-held historical throwback to when we used to do paging with known total results. Those queries toasted our database, and we were left to hastily alter our endpoints and create backward- compatible shims, of which useTotalResults is one.|
 
-<h2 id="tocS_Destiny.HistoricalStats.Definitions.PeriodType">Destiny.HistoricalStats.Definitions.PeriodType</h2>
+<h2 id="tocS_Destiny.HistoricalStats.Definitions.PeriodType2">Destiny.HistoricalStats.Definitions.PeriodType2</h2>
 <!-- backwards compatibility -->
-<a id="schemadestiny.historicalstats.definitions.periodtype"></a>
-<a id="schema_Destiny.HistoricalStats.Definitions.PeriodType"></a>
-<a id="tocSdestiny.historicalstats.definitions.periodtype"></a>
-<a id="tocsdestiny.historicalstats.definitions.periodtype"></a>
+<a id="schemadestiny.historicalstats.definitions.periodtype2"></a>
+<a id="schema_Destiny.HistoricalStats.Definitions.PeriodType2"></a>
+<a id="tocSdestiny.historicalstats.definitions.periodtype2"></a>
+<a id="tocsdestiny.historicalstats.definitions.periodtype2"></a>
 
 ```json
 0

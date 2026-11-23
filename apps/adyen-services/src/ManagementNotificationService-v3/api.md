@@ -1331,15 +1331,15 @@ BasicAuth
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allowed|boolean|false|none|Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.|
-|enabled|boolean|false|none|Indicates whether the payment method is enabled (**true**) or disabled (**false**).|
+|allowed|boolean|false|none|Indicates whether receiving payments is allowed. This value is set to **true** by Adyen after screening your merchant account.<br><br>Only returned in webhooks that include the screening results for your merchant account.|
+|enabled|boolean|false|none|Indicates whether the payment method is enabled (**true**) or disabled (**false**).<br><br>Only reliable in webhooks that include the screening results for your merchant account.|
 |id|string|true|none|The unique identifier of the resource.|
 |merchantId|string|true|none|The unique identifier of the merchant account.|
 |reference|string|false|none|Your reference for the payment method.|
-|status|string|true|none|The status of the request to add a payment method. Possible values:<br><br>* **success**: the payment method was added.<br>* **failure**: the request failed.<br>* **capabilityPending**: the **receivePayments** capability is not allowed.<br>|
+|status|string|true|none|The status of the request to add a payment method. Possible values:<br><br>* **success**: the payment method was added.<br>* **failure**: the request failed.<br>* **capabilityPending**: the **receivePayments** capability is not allowed.<br><br>A webhook with `status` **success** is the last webhook for that payment method.|
 |storeId|string|false|none|The unique identifier of the [store](https://docs.adyen.com/api-explorer/#/ManagementService/latest/post/merchants/{id}/paymentMethodSettings__reqParam_storeId), if any.|
 |type|string|true|none|Payment method [variant](https://docs.adyen.com/development-resources/paymentmethodvariant#management-api).<br><br>For payment method variant **cartebancaire**, method-specific details are returned in the [`cartesBancaires`](https://docs.adyen.com/api-explorer/Management/latest/post/merchants/(merchantId)/paymentMethodSettings#responses-200-cartesBancaires) object of the response.|
-|verificationStatus|string|false|none|Payment method status. Possible values:<br>* **valid**<br>* **pending**<br>* **invalid**<br>* **rejected**|
+|verificationStatus|string|false|none|Payment method status. Possible values:<br>* **valid**<br>* **pending**<br>* **invalid**<br>* **rejected**<br><br>Only returned in webhooks that include the screening results for your merchant account.|
 
 #### Enumerated Values
 

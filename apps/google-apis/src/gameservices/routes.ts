@@ -43,19 +43,6 @@ const AuditConfigSchema = z
   })
   .openapi('AuditConfig')
 
-const AuthorizationLoggingOptionsSchema = z
-  .object({
-    permissionType: z
-      .enum(['PERMISSION_TYPE_UNSPECIFIED', 'ADMIN_READ', 'ADMIN_WRITE', 'DATA_READ', 'DATA_WRITE'])
-      .exactOptional()
-      .openapi({ description: 'The type of the permission that was checked.' }),
-  })
-  .openapi({
-    description: 'Authorization-related information used by Cloud Audit Logging.',
-    required: [],
-  })
-  .openapi('AuthorizationLoggingOptions')
-
 const ExprSchema = z
   .object({
     description: z
@@ -119,24 +106,6 @@ const BindingSchema = z
   .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
   .openapi('Binding')
 
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const CloudAuditOptionsSchema = z
-  .object({
-    authorizationLoggingOptions: AuthorizationLoggingOptionsSchema.exactOptional().openapi({
-      description: 'Information used by the Cloud Audit Logging pipeline.',
-    }),
-    logName: z
-      .enum(['UNSPECIFIED_LOG_NAME', 'ADMIN_ACTIVITY', 'DATA_ACCESS'])
-      .exactOptional()
-      .openapi({ description: 'The log_name to populate in the Cloud Audit Record.' }),
-  })
-  .openapi({ description: 'Write a Cloud Audit log', required: [] })
-  .openapi('CloudAuditOptions')
-
 const ConditionSchema = z
   .object({
     iam: z
@@ -174,6 +143,32 @@ const ConditionSchema = z
   })
   .openapi({ description: 'A condition to be met.', required: [] })
   .openapi('Condition')
+
+const AuthorizationLoggingOptionsSchema = z
+  .object({
+    permissionType: z
+      .enum(['PERMISSION_TYPE_UNSPECIFIED', 'ADMIN_READ', 'ADMIN_WRITE', 'DATA_READ', 'DATA_WRITE'])
+      .exactOptional()
+      .openapi({ description: 'The type of the permission that was checked.' }),
+  })
+  .openapi({
+    description: 'Authorization-related information used by Cloud Audit Logging.',
+    required: [],
+  })
+  .openapi('AuthorizationLoggingOptions')
+
+const CloudAuditOptionsSchema = z
+  .object({
+    authorizationLoggingOptions: AuthorizationLoggingOptionsSchema.exactOptional().openapi({
+      description: 'Information used by the Cloud Audit Logging pipeline.',
+    }),
+    logName: z
+      .enum(['UNSPECIFIED_LOG_NAME', 'ADMIN_ACTIVITY', 'DATA_ACCESS'])
+      .exactOptional()
+      .openapi({ description: 'The log_name to populate in the Cloud Audit Record.' }),
+  })
+  .openapi({ description: 'Write a Cloud Audit log', required: [] })
+  .openapi('CloudAuditOptions')
 
 const CustomFieldSchema = z
   .object({
@@ -214,8 +209,127 @@ const DataAccessOptionsSchema = z
   .openapi({ description: 'Write a Data Access (Gin) log', required: [] })
   .openapi('DataAccessOptions')
 
+const LogConfigSchema = z
+  .object({
+    cloudAudit: CloudAuditOptionsSchema.exactOptional().openapi({
+      description: 'Cloud audit options.',
+    }),
+    counter: CounterOptionsSchema.exactOptional().openapi({ description: 'Counter options.' }),
+    dataAccess: DataAccessOptionsSchema.exactOptional().openapi({
+      description: 'Data access options.',
+    }),
+  })
+  .openapi({ description: 'Specifies what kind of log the caller must write', required: [] })
+  .openapi('LogConfig')
+
+const RuleSchema = z
+  .object({
+    action: z
+      .enum(['NO_ACTION', 'ALLOW', 'ALLOW_WITH_LOG', 'DENY', 'DENY_WITH_LOG', 'LOG'])
+      .exactOptional()
+      .openapi({ description: 'Required' }),
+    conditions: z
+      .array(ConditionSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Additional restrictions that must be met. All conditions must pass for the rule to match.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Human-readable description of the rule.' }),
+    in: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "If one or more 'in' clauses are specified, the rule matches if the PRINCIPAL/AUTHORITY_SELECTOR is in at least one of these entries.",
+      }),
+    logConfig: z
+      .array(LogConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The config returned to callers of CheckPolicy for any entries that match the LOG action.',
+      }),
+    notIn: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "If one or more 'not_in' clauses are specified, the rule matches if the PRINCIPAL/AUTHORITY_SELECTOR is in none of the entries. The format for in and not_in entries can be found at in the Local IAM documentation (see go/local-iam#features).",
+      }),
+    permissions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "A permission is a string of form '..' (e.g., 'storage.buckets.list'). A value of '*' matches all permissions, and a verb part of '*' (e.g., 'storage.buckets.*') matches all verbs.",
+      }),
+  })
+  .openapi({ description: 'A rule to be applied in a Policy.', required: [] })
+  .openapi('Rule')
+
+type PolicyType = {
+  auditConfigs?: z.infer<typeof AuditConfigSchema>[]
+  bindings?: z.infer<typeof BindingSchema>[]
+  etag?: string
+  rules?: z.infer<typeof RuleSchema>[]
+  version?: number
+}
+
+const PolicySchema: z.ZodType<PolicyType> = z
+  .object({
+    auditConfigs: z
+      .array(AuditConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Specifies cloud audit logging configuration for this policy.' }),
+    bindings: z
+      .array(BindingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Associates a list of `members`, or principals, with a `role`. Optionally, may specify a `condition` that determines how and when the `bindings` are applied. Each of the `bindings` must contain at least one principal. The `bindings` in a `Policy` can refer to up to 1,500 principals; up to 250 of these principals can be Google groups. Each occurrence of a principal counts towards these limits. For example, if the `bindings` grant 50 different roles to `user:alice@example.com`, and not to any other principal, then you can add another 1,450 principals to the `bindings` in the `Policy`.',
+      }),
+    etag: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '`etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform policy updates in order to avoid race conditions: An `etag` is returned in the response to `getIamPolicy`, and systems are expected to put that etag in the request to `setIamPolicy` to ensure that their change will be applied to the same version of the policy. **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost.',
+      }),
+    rules: z
+      .array(RuleSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'If more than one rule is specified, the rules are applied in the following manner: - All matching LOG rules are always applied. - If any DENY/DENY_WITH_LOG rule matches, permission is denied. Logging will be applied if one or more matching rule requires logging. - Otherwise, if any ALLOW/ALLOW_WITH_LOG rule matches, permission is granted. Logging will be applied if one or more matching rule requires logging. - Otherwise, if no rule applies, permission is denied.',
+      }),
+    version: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the format of the policy. Valid values are `0`, `1`, and `3`. Requests that specify an invalid value are rejected. Any operation that affects conditional role bindings must specify version `3`. This requirement applies to the following operations: * Getting a policy that includes a conditional role binding * Adding a conditional role binding to a policy * Changing a conditional role binding in a policy * Removing any role binding, with or without a condition, from a policy that includes conditions **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost. If a policy does not include any conditions, operations on that policy may specify any valid version or leave the field unset. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+      }),
+  })
+  .openapi({
+    description:
+      'An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies). **JSON example:** { "bindings": [ { "role": "roles/resourcemanager.organizationAdmin", "members": [ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" ] }, { "role": "roles/resourcemanager.organizationViewer", "members": [ "user:eve@example.com" ], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp(\'2020-10-01T00:00:00.000Z\')", } } ], "etag": "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp(\'2020-10-01T00:00:00.000Z\') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the [IAM documentation](https://cloud.google.com/iam/docs/).',
+    required: [],
+  })
+  .openapi('Policy')
+
+type SetIamPolicyRequestType = { policy?: z.infer<typeof PolicySchema>; updateMask?: string }
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -396,111 +510,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const LogConfigSchema = z
-  .object({
-    cloudAudit: CloudAuditOptionsSchema.exactOptional().openapi({
-      description: 'Cloud audit options.',
-    }),
-    counter: CounterOptionsSchema.exactOptional().openapi({ description: 'Counter options.' }),
-    dataAccess: DataAccessOptionsSchema.exactOptional().openapi({
-      description: 'Data access options.',
-    }),
-  })
-  .openapi({ description: 'Specifies what kind of log the caller must write', required: [] })
-  .openapi('LogConfig')
-
-const RuleSchema = z
-  .object({
-    action: z
-      .enum(['NO_ACTION', 'ALLOW', 'ALLOW_WITH_LOG', 'DENY', 'DENY_WITH_LOG', 'LOG'])
-      .exactOptional()
-      .openapi({ description: 'Required' }),
-    conditions: z
-      .array(ConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Additional restrictions that must be met. All conditions must pass for the rule to match.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Human-readable description of the rule.' }),
-    in: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "If one or more 'in' clauses are specified, the rule matches if the PRINCIPAL/AUTHORITY_SELECTOR is in at least one of these entries.",
-      }),
-    logConfig: z
-      .array(LogConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The config returned to callers of CheckPolicy for any entries that match the LOG action.',
-      }),
-    notIn: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "If one or more 'not_in' clauses are specified, the rule matches if the PRINCIPAL/AUTHORITY_SELECTOR is in none of the entries. The format for in and not_in entries can be found at in the Local IAM documentation (see go/local-iam#features).",
-      }),
-    permissions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "A permission is a string of form '..' (e.g., 'storage.buckets.list'). A value of '*' matches all permissions, and a verb part of '*' (e.g., 'storage.buckets.*') matches all verbs.",
-      }),
-  })
-  .openapi({ description: 'A rule to be applied in a Policy.', required: [] })
-  .openapi('Rule')
-
-const PolicySchema = z
-  .object({
-    auditConfigs: z
-      .array(AuditConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Specifies cloud audit logging configuration for this policy.' }),
-    bindings: z
-      .array(BindingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Associates a list of `members`, or principals, with a `role`. Optionally, may specify a `condition` that determines how and when the `bindings` are applied. Each of the `bindings` must contain at least one principal. The `bindings` in a `Policy` can refer to up to 1,500 principals; up to 250 of these principals can be Google groups. Each occurrence of a principal counts towards these limits. For example, if the `bindings` grant 50 different roles to `user:alice@example.com`, and not to any other principal, then you can add another 1,450 principals to the `bindings` in the `Policy`.',
-      }),
-    etag: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '`etag` is used for optimistic concurrency control as a way to help prevent simultaneous updates of a policy from overwriting each other. It is strongly suggested that systems make use of the `etag` in the read-modify-write cycle to perform policy updates in order to avoid race conditions: An `etag` is returned in the response to `getIamPolicy`, and systems are expected to put that etag in the request to `setIamPolicy` to ensure that their change will be applied to the same version of the policy. **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost.',
-      }),
-    rules: z
-      .array(RuleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If more than one rule is specified, the rules are applied in the following manner: - All matching LOG rules are always applied. - If any DENY/DENY_WITH_LOG rule matches, permission is denied. Logging will be applied if one or more matching rule requires logging. - Otherwise, if any ALLOW/ALLOW_WITH_LOG rule matches, permission is granted. Logging will be applied if one or more matching rule requires logging. - Otherwise, if no rule applies, permission is denied.',
-      }),
-    version: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the format of the policy. Valid values are `0`, `1`, and `3`. Requests that specify an invalid value are rejected. Any operation that affects conditional role bindings must specify version `3`. This requirement applies to the following operations: * Getting a policy that includes a conditional role binding * Adding a conditional role binding to a policy * Changing a conditional role binding in a policy * Removing any role binding, with or without a condition, from a policy that includes conditions **Important:** If you use IAM Conditions, you must include the `etag` field whenever you call `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a version `3` policy with a version `1` policy, and all of the conditions in the version `3` policy are lost. If a policy does not include any conditions, operations on that policy may specify any valid version or leave the field unset. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-      }),
-  })
-  .openapi({
-    description:
-      'An Identity and Access Management (IAM) policy, which specifies access controls for Google Cloud resources. A `Policy` is a collection of `bindings`. A `binding` binds one or more `members`, or principals, to a single `role`. Principals can be user accounts, service accounts, Google groups, and domains (such as G Suite). A `role` is a named list of permissions; each `role` can be an IAM predefined role or a user-created custom role. For some types of Google Cloud resources, a `binding` can also specify a `condition`, which is a logical expression that allows access to a resource only if the expression evaluates to `true`. A condition can add constraints based on attributes of the request, the resource, or both. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies). **JSON example:** { "bindings": [ { "role": "roles/resourcemanager.organizationAdmin", "members": [ "user:mike@example.com", "group:admins@example.com", "domain:google.com", "serviceAccount:my-project-id@appspot.gserviceaccount.com" ] }, { "role": "roles/resourcemanager.organizationViewer", "members": [ "user:eve@example.com" ], "condition": { "title": "expirable access", "description": "Does not grant access after Sep 2020", "expression": "request.time < timestamp(\'2020-10-01T00:00:00.000Z\')", } } ], "etag": "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: - user:mike@example.com - group:admins@example.com - domain:google.com - serviceAccount:my-project-id@appspot.gserviceaccount.com role: roles/resourcemanager.organizationAdmin - members: - user:eve@example.com role: roles/resourcemanager.organizationViewer condition: title: expirable access description: Does not grant access after Sep 2020 expression: request.time < timestamp(\'2020-10-01T00:00:00.000Z\') etag: BwWWja0YfJA= version: 3 For a description of IAM and its features, see the [IAM documentation](https://cloud.google.com/iam/docs/).',
-    required: [],
-  })
-  .openapi('Policy')
-
-const SetIamPolicyRequestSchema = z
+const SetIamPolicyRequestSchema: z.ZodType<SetIamPolicyRequestType> = z
   .object({
     policy: PolicySchema.exactOptional().openapi({
       description:

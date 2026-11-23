@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateWebACLResponseSchema = z.object({}).openapi('AssociateWebACLResponse')
+const AssociateWebACLResponseSchema = z.looseObject({}).openapi('AssociateWebACLResponse')
 
 const ResourceIdSchema = z
   .string()
@@ -18,17 +18,13 @@ const ResourceArnSchema = z
 
 const AssociateWebACLRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier (ID) for the web ACL. ' }),
-    ),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN (Amazon Resource Name) of the resource to be protected, either an application load balancer or Amazon API Gateway stage. </p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    WebACLId: ResourceIdSchema.openapi({
+      description: 'A unique identifier (ID) for the web ACL. ',
+    }),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The ARN (Amazon Resource Name) of the resource to be protected, either an application load balancer or Amazon API Gateway stage. </p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['WebACLId', 'ResourceArn'], title: 'AssociateWebACLRequest' })
   .openapi('AssociateWebACLRequest')
@@ -63,22 +59,14 @@ const MatchFieldDataSchema = z
 
 const FieldToMatchSchema = z
   .object({
-    Type: MatchFieldTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The part of the web request that you want AWS WAF to search for a specified string. Parts of a request that you can search include the following:</p> <ul> <li> <p> <code>HEADER</code>: A specified request header, for example, the value of the <code>User-Agent</code> or <code>Referer</code> header. If you choose <code>HEADER</code> for the type, specify the name of the header in <code>Data</code>.</p> </li> <li> <p> <code>METHOD</code>: The HTTP method, which indicated the type of operation that the request is asking the origin to perform. Amazon CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>.</p> </li> <li> <p> <code>QUERY_STRING</code>: A query string, which is the part of a URL that appears after a <code>?</code> character, if any.</p> </li> <li> <p> <code>URI</code>: The part of a web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p> </li> <li> <p> <code>BODY</code>: The part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. The request body immediately follows the request headers. Note that only the first <code>8192</code> bytes of the request body are forwarded to AWS WAF for inspection. To allow or block requests based on the length of the body, you can create a size constraint set. For more information, see <a>CreateSizeConstraintSet</a>. </p> </li> <li> <p> <code>SINGLE_QUERY_ARG</code>: The parameter in the query string that you will inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The maximum length for <code>SINGLE_QUERY_ARG</code> is 30 characters.</p> </li> <li> <p> <code>ALL_QUERY_ARGS</code>: Similar to <code>SINGLE_QUERY_ARG</code>, but rather than inspecting a single parameter, AWS WAF will inspect all parameters within the query for the value or regex pattern that you specify in <code>TargetString</code>.</p> </li> </ul>',
-        }),
-    ),
-    Data: MatchFieldDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the value of <code>Type</code> is <code>HEADER</code>, enter the name of the header that you want AWS WAF to search, for example, <code>User-Agent</code> or <code>Referer</code>. The name of the header is not case sensitive.</p> <p>When the value of <code>Type</code> is <code>SINGLE_QUERY_ARG</code>, enter the name of the parameter that you want AWS WAF to search, for example, <code>UserName</code> or <code>SalesRegion</code>. The parameter name is not case sensitive.</p> <p>If the value of <code>Type</code> is any other value, omit <code>Data</code>.</p>',
-        }),
-    ).exactOptional(),
+    Type: MatchFieldTypeSchema.openapi({
+      description:
+        '<p>The part of the web request that you want AWS WAF to search for a specified string. Parts of a request that you can search include the following:</p> <ul> <li> <p> <code>HEADER</code>: A specified request header, for example, the value of the <code>User-Agent</code> or <code>Referer</code> header. If you choose <code>HEADER</code> for the type, specify the name of the header in <code>Data</code>.</p> </li> <li> <p> <code>METHOD</code>: The HTTP method, which indicated the type of operation that the request is asking the origin to perform. Amazon CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>.</p> </li> <li> <p> <code>QUERY_STRING</code>: A query string, which is the part of a URL that appears after a <code>?</code> character, if any.</p> </li> <li> <p> <code>URI</code>: The part of a web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p> </li> <li> <p> <code>BODY</code>: The part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. The request body immediately follows the request headers. Note that only the first <code>8192</code> bytes of the request body are forwarded to AWS WAF for inspection. To allow or block requests based on the length of the body, you can create a size constraint set. For more information, see <a>CreateSizeConstraintSet</a>. </p> </li> <li> <p> <code>SINGLE_QUERY_ARG</code>: The parameter in the query string that you will inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The maximum length for <code>SINGLE_QUERY_ARG</code> is 30 characters.</p> </li> <li> <p> <code>ALL_QUERY_ARGS</code>: Similar to <code>SINGLE_QUERY_ARG</code>, but rather than inspecting a single parameter, AWS WAF will inspect all parameters within the query for the value or regex pattern that you specify in <code>TargetString</code>.</p> </li> </ul>',
+    }),
+    Data: MatchFieldDataSchema.exactOptional().openapi({
+      description:
+        '<p>When the value of <code>Type</code> is <code>HEADER</code>, enter the name of the header that you want AWS WAF to search, for example, <code>User-Agent</code> or <code>Referer</code>. The name of the header is not case sensitive.</p> <p>When the value of <code>Type</code> is <code>SINGLE_QUERY_ARG</code>, enter the name of the parameter that you want AWS WAF to search, for example, <code>UserName</code> or <code>SalesRegion</code>. The parameter name is not case sensitive.</p> <p>If the value of <code>Type</code> is any other value, omit <code>Data</code>.</p>',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -106,38 +94,22 @@ const PositionalConstraintSchema = z
 
 const ByteMatchTupleSchema = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The part of a web request that you want AWS WAF to search, such as a specified header or a query string. For more information, see <a>FieldToMatch</a>.',
-        }),
-    ),
-    TargetString: ByteMatchTargetStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value that you want AWS WAF to search for. AWS WAF searches for the specified string in the part of web requests that you specified in <code>FieldToMatch</code>. The maximum length of the value is 50 bytes.</p> <p>Valid values depend on the values that you specified for <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>HEADER</code>: The value that you want AWS WAF to search for in the request header that you specified in <a>FieldToMatch</a>, for example, the value of the <code>User-Agent</code> or <code>Referer</code> header.</p> </li> <li> <p> <code>METHOD</code>: The HTTP method, which indicates the type of operation specified in the request. CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>.</p> </li> <li> <p> <code>QUERY_STRING</code>: The value that you want AWS WAF to search for in the query string, which is the part of a URL that appears after a <code>?</code> character.</p> </li> <li> <p> <code>URI</code>: The value that you want AWS WAF to search for in the part of a URL that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p> </li> <li> <p> <code>BODY</code>: The part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. The request body immediately follows the request headers. Note that only the first <code>8192</code> bytes of the request body are forwarded to AWS WAF for inspection. To allow or block requests based on the length of the body, you can create a size constraint set. For more information, see <a>CreateSizeConstraintSet</a>. </p> </li> <li> <p> <code>SINGLE_QUERY_ARG</code>: The parameter in the query string that you will inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The maximum length for <code>SINGLE_QUERY_ARG</code> is 30 characters.</p> </li> <li> <p> <code>ALL_QUERY_ARGS</code>: Similar to <code>SINGLE_QUERY_ARG</code>, but instead of inspecting a single parameter, AWS WAF inspects all parameters within the query string for the value or regex pattern that you specify in <code>TargetString</code>.</p> </li> </ul> <p>If <code>TargetString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the AWS WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 50 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>TargetString</code>.</p> <p> <b>If you're using the AWS CLI or one of the AWS SDKs</b> </p> <p>The value that you want AWS WAF to search for. The SDK automatically base64 encodes the value.</p>",
-        }),
-    ),
-    TextTransformation: TextTransformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
-        }),
-    ),
-    PositionalConstraint: PositionalConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Within the portion of a web request that you want to search (for example, in the query string, if any), specify where you want AWS WAF to search. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>TargetString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>TargetString</code>, and <code>TargetString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>TargetString</code> must be a word, which means one of the following:</p> <ul> <li> <p> <code>TargetString</code> exactly matches the value of the specified part of the web request, such as the value of a header.</p> </li> <li> <p> <code>TargetString</code> is at the beginning of the specified part of the web request and is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code>.</p> </li> <li> <p> <code>TargetString</code> is at the end of the specified part of the web request and is preceded by a character other than an alphanumeric character or underscore (_), for example, <code>;BadBot</code>.</p> </li> <li> <p> <code>TargetString</code> is in the middle of the specified part of the web request and is preceded and followed by characters other than alphanumeric characters or underscore (_), for example, <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>TargetString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>TargetString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>TargetString</code> must appear at the end of the specified part of the web request.</p>",
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description:
+        'The part of a web request that you want AWS WAF to search, such as a specified header or a query string. For more information, see <a>FieldToMatch</a>.',
+    }),
+    TargetString: ByteMatchTargetStringSchema.openapi({
+      description:
+        "<p>The value that you want AWS WAF to search for. AWS WAF searches for the specified string in the part of web requests that you specified in <code>FieldToMatch</code>. The maximum length of the value is 50 bytes.</p> <p>Valid values depend on the values that you specified for <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>HEADER</code>: The value that you want AWS WAF to search for in the request header that you specified in <a>FieldToMatch</a>, for example, the value of the <code>User-Agent</code> or <code>Referer</code> header.</p> </li> <li> <p> <code>METHOD</code>: The HTTP method, which indicates the type of operation specified in the request. CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>.</p> </li> <li> <p> <code>QUERY_STRING</code>: The value that you want AWS WAF to search for in the query string, which is the part of a URL that appears after a <code>?</code> character.</p> </li> <li> <p> <code>URI</code>: The value that you want AWS WAF to search for in the part of a URL that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.</p> </li> <li> <p> <code>BODY</code>: The part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. The request body immediately follows the request headers. Note that only the first <code>8192</code> bytes of the request body are forwarded to AWS WAF for inspection. To allow or block requests based on the length of the body, you can create a size constraint set. For more information, see <a>CreateSizeConstraintSet</a>. </p> </li> <li> <p> <code>SINGLE_QUERY_ARG</code>: The parameter in the query string that you will inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The maximum length for <code>SINGLE_QUERY_ARG</code> is 30 characters.</p> </li> <li> <p> <code>ALL_QUERY_ARGS</code>: Similar to <code>SINGLE_QUERY_ARG</code>, but instead of inspecting a single parameter, AWS WAF inspects all parameters within the query string for the value or regex pattern that you specify in <code>TargetString</code>.</p> </li> </ul> <p>If <code>TargetString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the AWS WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 50 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>TargetString</code>.</p> <p> <b>If you're using the AWS CLI or one of the AWS SDKs</b> </p> <p>The value that you want AWS WAF to search for. The SDK automatically base64 encodes the value.</p>",
+    }),
+    TextTransformation: TextTransformationSchema.openapi({
+      description:
+        '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
+    }),
+    PositionalConstraint: PositionalConstraintSchema.openapi({
+      description:
+        "<p>Within the portion of a web request that you want to search (for example, in the query string, if any), specify where you want AWS WAF to search. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>TargetString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>TargetString</code>, and <code>TargetString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>TargetString</code> must be a word, which means one of the following:</p> <ul> <li> <p> <code>TargetString</code> exactly matches the value of the specified part of the web request, such as the value of a header.</p> </li> <li> <p> <code>TargetString</code> is at the beginning of the specified part of the web request and is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code>.</p> </li> <li> <p> <code>TargetString</code> is at the end of the specified part of the web request and is preceded by a character other than an alphanumeric character or underscore (_), for example, <code>;BadBot</code>.</p> </li> <li> <p> <code>TargetString</code> is in the middle of the specified part of the web request and is preceded and followed by characters other than alphanumeric characters or underscore (_), for example, <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>TargetString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>TargetString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>TargetString</code> must appear at the end of the specified part of the web request.</p>",
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TargetString', 'TextTransformation', 'PositionalConstraint'],
@@ -150,30 +122,18 @@ const ByteMatchTuplesSchema = z.array(ByteMatchTupleSchema).openapi('ByteMatchTu
 
 const ByteMatchSetSchema = z
   .object({
-    ByteMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>ByteMatchSetId</code> for a <code>ByteMatchSet</code>. You use <code>ByteMatchSetId</code> to get information about a <code>ByteMatchSet</code> (see <a>GetByteMatchSet</a>), update a <code>ByteMatchSet</code> (see <a>UpdateByteMatchSet</a>), insert a <code>ByteMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>ByteMatchSet</code> from AWS WAF (see <a>DeleteByteMatchSet</a>).</p> <p> <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
-        }),
-    ).exactOptional(),
-    ByteMatchTuples: ByteMatchTuplesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the bytes (typically a string that corresponds with ASCII characters) that you want AWS WAF to search for in web requests, the location in requests that you want AWS WAF to search, and other settings.',
-        }),
-    ),
+    ByteMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>ByteMatchSetId</code> for a <code>ByteMatchSet</code>. You use <code>ByteMatchSetId</code> to get information about a <code>ByteMatchSet</code> (see <a>GetByteMatchSet</a>), update a <code>ByteMatchSet</code> (see <a>UpdateByteMatchSet</a>), insert a <code>ByteMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>ByteMatchSet</code> from AWS WAF (see <a>DeleteByteMatchSet</a>).</p> <p> <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
+    }),
+    ByteMatchTuples: ByteMatchTuplesSchema.openapi({
+      description:
+        'Specifies the bytes (typically a string that corresponds with ASCII characters) that you want AWS WAF to search for in web requests, the location in requests that you want AWS WAF to search, and other settings.',
+    }),
   })
   .openapi({
     required: ['ByteMatchSetId', 'ByteMatchTuples'],
@@ -191,43 +151,26 @@ const ChangeTokenSchema = z
 
 const CreateByteMatchSetResponseSchema = z
   .object({
-    ByteMatchSet: ByteMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>ByteMatchSet</a> that contains no <code>ByteMatchTuple</code> objects.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ByteMatchSet: ByteMatchSetSchema.exactOptional().openapi({
+      description: 'A <a>ByteMatchSet</a> that contains no <code>ByteMatchTuple</code> objects.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateByteMatchSetResponse')
 
 const CreateByteMatchSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateByteMatchSetRequest' })
   .openapi('CreateByteMatchSetRequest')
@@ -496,17 +439,13 @@ const GeoMatchConstraintValueSchema = z
 
 const GeoMatchConstraintSchema = z
   .object({
-    Type: GeoMatchConstraintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of geographical area you want AWS WAF to search for. Currently <code>Country</code> is the only valid value.',
-        }),
-    ),
-    Value: GeoMatchConstraintValueSchema.and(
-      z.any().openapi({ description: 'The country that you want AWS WAF to search for.' }),
-    ),
+    Type: GeoMatchConstraintTypeSchema.openapi({
+      description:
+        'The type of geographical area you want AWS WAF to search for. Currently <code>Country</code> is the only valid value.',
+    }),
+    Value: GeoMatchConstraintValueSchema.openapi({
+      description: 'The country that you want AWS WAF to search for.',
+    }),
   })
   .openapi({
     required: ['Type', 'Value'],
@@ -519,30 +458,18 @@ const GeoMatchConstraintsSchema = z.array(GeoMatchConstraintSchema).openapi('Geo
 
 const GeoMatchSetSchema = z
   .object({
-    GeoMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>GeoMatchSetId</code> for an <code>GeoMatchSet</code>. You use <code>GeoMatchSetId</code> to get information about a <code>GeoMatchSet</code> (see <a>GeoMatchSet</a>), update a <code>GeoMatchSet</code> (see <a>UpdateGeoMatchSet</a>), insert a <code>GeoMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>GeoMatchSet</code> from AWS WAF (see <a>DeleteGeoMatchSet</a>).</p> <p> <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>GeoMatchSet</a>. You can't change the name of an <code>GeoMatchSet</code> after you create it.",
-        }),
-    ).exactOptional(),
-    GeoMatchConstraints: GeoMatchConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <a>GeoMatchConstraint</a> objects, which contain the country that you want AWS WAF to search for.',
-        }),
-    ),
+    GeoMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>GeoMatchSetId</code> for an <code>GeoMatchSet</code>. You use <code>GeoMatchSetId</code> to get information about a <code>GeoMatchSet</code> (see <a>GeoMatchSet</a>), update a <code>GeoMatchSet</code> (see <a>UpdateGeoMatchSet</a>), insert a <code>GeoMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>GeoMatchSet</code> from AWS WAF (see <a>DeleteGeoMatchSet</a>).</p> <p> <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <a>GeoMatchSet</a>. You can't change the name of an <code>GeoMatchSet</code> after you create it.",
+    }),
+    GeoMatchConstraints: GeoMatchConstraintsSchema.openapi({
+      description:
+        'An array of <a>GeoMatchConstraint</a> objects, which contain the country that you want AWS WAF to search for.',
+    }),
   })
   .openapi({
     required: ['GeoMatchSetId', 'GeoMatchConstraints'],
@@ -553,43 +480,27 @@ const GeoMatchSetSchema = z
 
 const CreateGeoMatchSetResponseSchema = z
   .object({
-    GeoMatchSet: GeoMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>GeoMatchSet</a> returned in the <code>CreateGeoMatchSet</code> response. The <code>GeoMatchSet</code> contains no <code>GeoMatchConstraints</code>.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    GeoMatchSet: GeoMatchSetSchema.exactOptional().openapi({
+      description:
+        'The <a>GeoMatchSet</a> returned in the <code>CreateGeoMatchSet</code> response. The <code>GeoMatchSet</code> contains no <code>GeoMatchConstraints</code>.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGeoMatchSetResponse')
 
 const CreateGeoMatchSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>GeoMatchSet</a>. You can't change <code>Name</code> after you create the <code>GeoMatchSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>GeoMatchSet</a>. You can't change <code>Name</code> after you create the <code>GeoMatchSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateGeoMatchSetRequest' })
   .openapi('CreateGeoMatchSetRequest')
@@ -605,17 +516,13 @@ const IPSetDescriptorValueSchema = z
 
 const IPSetDescriptorSchema = z
   .object({
-    Type: IPSetDescriptorTypeSchema.and(
-      z.any().openapi({ description: 'Specify <code>IPV4</code> or <code>IPV6</code>.' }),
-    ),
-    Value: IPSetDescriptorValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify an IPv4 address by using CIDR notation. For example:</p> <ul> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Specify an IPv6 address by using CIDR notation. For example:</p> <ul> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul>',
-        }),
-    ),
+    Type: IPSetDescriptorTypeSchema.openapi({
+      description: 'Specify <code>IPV4</code> or <code>IPV6</code>.',
+    }),
+    Value: IPSetDescriptorValueSchema.openapi({
+      description:
+        '<p>Specify an IPv4 address by using CIDR notation. For example:</p> <ul> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Specify an IPv6 address by using CIDR notation. For example:</p> <ul> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure AWS WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Type', 'Value'],
@@ -628,30 +535,18 @@ const IPSetDescriptorsSchema = z.array(IPSetDescriptorSchema).openapi('IPSetDesc
 
 const IPSetSchema = z
   .object({
-    IPSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>IPSetId</code> for an <code>IPSet</code>. You use <code>IPSetId</code> to get information about an <code>IPSet</code> (see <a>GetIPSet</a>), update an <code>IPSet</code> (see <a>UpdateIPSet</a>), insert an <code>IPSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>IPSet</code> from AWS WAF (see <a>DeleteIPSet</a>).</p> <p> <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>IPSet</a>. You can't change the name of an <code>IPSet</code> after you create it.",
-        }),
-    ).exactOptional(),
-    IPSetDescriptors: IPSetDescriptorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type (<code>IPV4</code> or <code>IPV6</code>) and the IP address range (in CIDR notation) that web requests originate from. If the <code>WebACL</code> is associated with a CloudFront distribution and the viewer did not use an HTTP proxy or a load balancer to send the request, this is the value of the c-ip field in the CloudFront access logs.',
-        }),
-    ),
+    IPSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>IPSetId</code> for an <code>IPSet</code>. You use <code>IPSetId</code> to get information about an <code>IPSet</code> (see <a>GetIPSet</a>), update an <code>IPSet</code> (see <a>UpdateIPSet</a>), insert an <code>IPSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>IPSet</code> from AWS WAF (see <a>DeleteIPSet</a>).</p> <p> <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <a>IPSet</a>. You can't change the name of an <code>IPSet</code> after you create it.",
+    }),
+    IPSetDescriptors: IPSetDescriptorsSchema.openapi({
+      description:
+        'The IP address type (<code>IPV4</code> or <code>IPV6</code>) and the IP address range (in CIDR notation) that web requests originate from. If the <code>WebACL</code> is associated with a CloudFront distribution and the viewer did not use an HTTP proxy or a load balancer to send the request, this is the value of the c-ip field in the CloudFront access logs.',
+    }),
   })
   .openapi({
     required: ['IPSetId', 'IPSetDescriptors'],
@@ -662,21 +557,13 @@ const IPSetSchema = z
 
 const CreateIPSetResponseSchema = z
   .object({
-    IPSet: IPSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>IPSet</a> returned in the <code>CreateIPSet</code> response.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    IPSet: IPSetSchema.exactOptional().openapi({
+      description: 'The <a>IPSet</a> returned in the <code>CreateIPSet</code> response.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -693,21 +580,13 @@ const CreateIPSetResponseSchema = z
 
 const CreateIPSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>IPSet</a>. You can't change <code>Name</code> after you create the <code>IPSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>IPSet</a>. You can't change <code>Name</code> after you create the <code>IPSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateIPSetRequest' })
   .openapi('CreateIPSetRequest')
@@ -735,30 +614,18 @@ const PredicateTypeSchema = z
 
 const PredicateSchema = z
   .object({
-    Negated: NegatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set <code>Negated</code> to <code>False</code> if you want AWS WAF to allow, block, or count requests based on the settings in the specified <a>ByteMatchSet</a>, <a>IPSet</a>, <a>SqlInjectionMatchSet</a>, <a>XssMatchSet</a>, <a>RegexMatchSet</a>, <a>GeoMatchSet</a>, or <a>SizeConstraintSet</a>. For example, if an <code>IPSet</code> includes the IP address <code>192.0.2.44</code>, AWS WAF will allow or block requests based on that IP address.</p> <p>Set <code>Negated</code> to <code>True</code> if you want AWS WAF to allow or block a request based on the negation of the settings in the <a>ByteMatchSet</a>, <a>IPSet</a>, <a>SqlInjectionMatchSet</a>, <a>XssMatchSet</a>, <a>RegexMatchSet</a>, <a>GeoMatchSet</a>, or <a>SizeConstraintSet</a>. For example, if an <code>IPSet</code> includes the IP address <code>192.0.2.44</code>, AWS WAF will allow, block, or count requests based on all IP addresses <i>except</i> <code>192.0.2.44</code>.</p>',
-        }),
-    ),
-    Type: PredicateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of predicate in a <code>Rule</code>, such as <code>ByteMatch</code> or <code>IPSet</code>.',
-        }),
-    ),
-    DataId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a predicate in a <code>Rule</code>, such as <code>ByteMatchSetId</code> or <code>IPSetId</code>. The ID is returned by the corresponding <code>Create</code> or <code>List</code> command.',
-        }),
-    ),
+    Negated: NegatedSchema.openapi({
+      description:
+        '<p>Set <code>Negated</code> to <code>False</code> if you want AWS WAF to allow, block, or count requests based on the settings in the specified <a>ByteMatchSet</a>, <a>IPSet</a>, <a>SqlInjectionMatchSet</a>, <a>XssMatchSet</a>, <a>RegexMatchSet</a>, <a>GeoMatchSet</a>, or <a>SizeConstraintSet</a>. For example, if an <code>IPSet</code> includes the IP address <code>192.0.2.44</code>, AWS WAF will allow or block requests based on that IP address.</p> <p>Set <code>Negated</code> to <code>True</code> if you want AWS WAF to allow or block a request based on the negation of the settings in the <a>ByteMatchSet</a>, <a>IPSet</a>, <a>SqlInjectionMatchSet</a>, <a>XssMatchSet</a>, <a>RegexMatchSet</a>, <a>GeoMatchSet</a>, or <a>SizeConstraintSet</a>. For example, if an <code>IPSet</code> includes the IP address <code>192.0.2.44</code>, AWS WAF will allow, block, or count requests based on all IP addresses <i>except</i> <code>192.0.2.44</code>.</p>',
+    }),
+    Type: PredicateTypeSchema.openapi({
+      description:
+        'The type of predicate in a <code>Rule</code>, such as <code>ByteMatch</code> or <code>IPSet</code>.',
+    }),
+    DataId: ResourceIdSchema.openapi({
+      description:
+        'A unique identifier for a predicate in a <code>Rule</code>, such as <code>ByteMatchSetId</code> or <code>IPSetId</code>. The ID is returned by the corresponding <code>Create</code> or <code>List</code> command.',
+    }),
   })
   .openapi({
     required: ['Negated', 'Type', 'DataId'],
@@ -775,54 +642,30 @@ const RateLimitSchema = z.int().min(100).max(2000000000).openapi('RateLimit')
 
 const RateBasedRuleSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for a <code>RateBasedRule</code>. You use <code>RuleId</code> to get more information about a <code>RateBasedRule</code> (see <a>GetRateBasedRule</a>), update a <code>RateBasedRule</code> (see <a>UpdateRateBasedRule</a>), insert a <code>RateBasedRule</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RateBasedRule</code> from AWS WAF (see <a>DeleteRateBasedRule</a>).',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description for a <code>RateBasedRule</code>. You can't change the name of a <code>RateBasedRule</code> after you create it.",
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for a <code>RateBasedRule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RateBasedRule</code>.',
-        }),
-    ).exactOptional(),
-    MatchPredicates: PredicatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Predicates</code> object contains one <code>Predicate</code> element for each <a>ByteMatchSet</a>, <a>IPSet</a>, or <a>SqlInjectionMatchSet</a> object that you want to include in a <code>RateBasedRule</code>.',
-        }),
-    ),
-    RateKey: RateKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The field that AWS WAF uses to determine if requests are likely arriving from single source and thus subject to rate monitoring. The only valid value for <code>RateKey</code> is <code>IP</code>. <code>IP</code> indicates that requests arriving from the same IP address are subject to the <code>RateLimit</code> that is specified in the <code>RateBasedRule</code>.',
-        }),
-    ),
-    RateLimit: RateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of requests, which have an identical value in the field specified by the <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'A unique identifier for a <code>RateBasedRule</code>. You use <code>RuleId</code> to get more information about a <code>RateBasedRule</code> (see <a>GetRateBasedRule</a>), update a <code>RateBasedRule</code> (see <a>UpdateRateBasedRule</a>), insert a <code>RateBasedRule</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RateBasedRule</code> from AWS WAF (see <a>DeleteRateBasedRule</a>).',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description for a <code>RateBasedRule</code>. You can't change the name of a <code>RateBasedRule</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'A friendly name or description for the metrics for a <code>RateBasedRule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RateBasedRule</code>.',
+    }),
+    MatchPredicates: PredicatesSchema.openapi({
+      description:
+        'The <code>Predicates</code> object contains one <code>Predicate</code> element for each <a>ByteMatchSet</a>, <a>IPSet</a>, or <a>SqlInjectionMatchSet</a> object that you want to include in a <code>RateBasedRule</code>.',
+    }),
+    RateKey: RateKeySchema.openapi({
+      description:
+        'The field that AWS WAF uses to determine if requests are likely arriving from single source and thus subject to rate monitoring. The only valid value for <code>RateKey</code> is <code>IP</code>. <code>IP</code> indicates that requests arriving from the same IP address are subject to the <code>RateLimit</code> that is specified in the <code>RateBasedRule</code>.',
+    }),
+    RateLimit: RateLimitSchema.openapi({
+      description:
+        'The maximum number of requests, which have an identical value in the field specified by the <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
+    }),
   })
   .openapi({
     required: ['RuleId', 'MatchPredicates', 'RateKey', 'RateLimit'],
@@ -833,22 +676,14 @@ const RateBasedRuleSchema = z
 
 const CreateRateBasedRuleResponseSchema = z
   .object({
-    Rule: RateBasedRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>RateBasedRule</a> that is returned in the <code>CreateRateBasedRule</code> response.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    Rule: RateBasedRuleSchema.exactOptional().openapi({
+      description:
+        'The <a>RateBasedRule</a> that is returned in the <code>CreateRateBasedRule</code> response.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRateBasedRuleResponse')
@@ -864,8 +699,8 @@ const TagValueSchema = z.string().regex(/.*/).min(0).max(256).openapi('TagValue'
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: '<p/>' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: '<p/>' })),
+    Key: TagKeySchema.openapi({ description: '<p/>' }),
+    Value: TagValueSchema.openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -878,47 +713,27 @@ const TagListSchema = z.array(TagSchema).min(1).openapi('TagList')
 
 const CreateRateBasedRuleRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RateBasedRule</a>. You can't change the name of a <code>RateBasedRule</code> after you create it.",
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>RateBasedRule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RateBasedRule</code>.',
-        }),
-    ),
-    RateKey: RateKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The field that AWS WAF uses to determine if requests are likely arriving from a single source and thus subject to rate monitoring. The only valid value for <code>RateKey</code> is <code>IP</code>. <code>IP</code> indicates that requests that arrive from the same IP address are subject to the <code>RateLimit</code> that is specified in the <code>RateBasedRule</code>.',
-        }),
-    ),
-    RateLimit: RateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of requests, which have an identical value in the field that is specified by <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RateBasedRule</a>. You can't change the name of a <code>RateBasedRule</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>RateBasedRule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RateBasedRule</code>.',
+    }),
+    RateKey: RateKeySchema.openapi({
+      description:
+        'The field that AWS WAF uses to determine if requests are likely arriving from a single source and thus subject to rate monitoring. The only valid value for <code>RateKey</code> is <code>IP</code>. <code>IP</code> indicates that requests that arrive from the same IP address are subject to the <code>RateLimit</code> that is specified in the <code>RateBasedRule</code>.',
+    }),
+    RateLimit: RateLimitSchema.openapi({
+      description:
+        'The maximum number of requests, which have an identical value in the field that is specified by <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['Name', 'MetricName', 'RateKey', 'RateLimit', 'ChangeToken'],
@@ -936,30 +751,17 @@ const WAFBadRequestExceptionSchema = z.any().openapi('WAFBadRequestException')
 
 const RegexMatchTupleSchema = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies where in a web request to look for the <code>RegexPatternSet</code>.',
-        }),
-    ),
-    TextTransformation: TextTransformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>RegexPatternSet</code> before inspecting a request for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system commandline command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
-        }),
-    ),
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>RegexPatternSetId</code> for a <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code> (see <a>GetRegexPatternSet</a>), update a <code>RegexPatternSet</code> (see <a>UpdateRegexPatternSet</a>), insert a <code>RegexPatternSet</code> into a <code>RegexMatchSet</code> or delete one from a <code>RegexMatchSet</code> (see <a>UpdateRegexMatchSet</a>), and delete an <code>RegexPatternSet</code> from AWS WAF (see <a>DeleteRegexPatternSet</a>).</p> <p> <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'Specifies where in a web request to look for the <code>RegexPatternSet</code>.',
+    }),
+    TextTransformation: TextTransformationSchema.openapi({
+      description:
+        '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>RegexPatternSet</code> before inspecting a request for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system commandline command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
+    }),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>RegexPatternSetId</code> for a <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code> (see <a>GetRegexPatternSet</a>), update a <code>RegexPatternSet</code> (see <a>UpdateRegexPatternSet</a>), insert a <code>RegexPatternSet</code> into a <code>RegexMatchSet</code> or delete one from a <code>RegexMatchSet</code> (see <a>UpdateRegexMatchSet</a>), and delete an <code>RegexPatternSet</code> from AWS WAF (see <a>DeleteRegexPatternSet</a>).</p> <p> <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformation', 'RegexPatternSetId'],
@@ -972,30 +774,18 @@ const RegexMatchTuplesSchema = z.array(RegexMatchTupleSchema).openapi('RegexMatc
 
 const RegexMatchSetSchema = z
   .object({
-    RegexMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>RegexMatchSetId</code> for a <code>RegexMatchSet</code>. You use <code>RegexMatchSetId</code> to get information about a <code>RegexMatchSet</code> (see <a>GetRegexMatchSet</a>), update a <code>RegexMatchSet</code> (see <a>UpdateRegexMatchSet</a>), insert a <code>RegexMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>RegexMatchSet</code> from AWS WAF (see <a>DeleteRegexMatchSet</a>).</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.</p>',
-        }),
-    ).exactOptional(),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
-        }),
-    ).exactOptional(),
-    RegexMatchTuples: RegexMatchTuplesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains an array of <a>RegexMatchTuple</a> objects. Each <code>RegexMatchTuple</code> object contains: </p> <ul> <li> <p>The part of a web request that you want AWS WAF to inspect, such as a query string or the value of the <code>User-Agent</code> header. </p> </li> <li> <p>The identifier of the pattern (a regular expression) that you want AWS WAF to look for. For more information, see <a>RegexPatternSet</a>.</p> </li> <li> <p>Whether to perform any conversions on the request, such as converting it to lowercase, before inspecting it for the specified string.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    RegexMatchSetId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>RegexMatchSetId</code> for a <code>RegexMatchSet</code>. You use <code>RegexMatchSetId</code> to get information about a <code>RegexMatchSet</code> (see <a>GetRegexMatchSet</a>), update a <code>RegexMatchSet</code> (see <a>UpdateRegexMatchSet</a>), insert a <code>RegexMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>RegexMatchSet</code> from AWS WAF (see <a>DeleteRegexMatchSet</a>).</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
+    }),
+    RegexMatchTuples: RegexMatchTuplesSchema.exactOptional().openapi({
+      description:
+        '<p>Contains an array of <a>RegexMatchTuple</a> objects. Each <code>RegexMatchTuple</code> object contains: </p> <ul> <li> <p>The part of a web request that you want AWS WAF to inspect, such as a query string or the value of the <code>User-Agent</code> header. </p> </li> <li> <p>The identifier of the pattern (a regular expression) that you want AWS WAF to look for. For more information, see <a>RegexPatternSet</a>.</p> </li> <li> <p>Whether to perform any conversions on the request, such as converting it to lowercase, before inspecting it for the specified string.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -1006,43 +796,26 @@ const RegexMatchSetSchema = z
 
 const CreateRegexMatchSetResponseSchema = z
   .object({
-    RegexMatchSet: RegexMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>RegexMatchSet</a> that contains no <code>RegexMatchTuple</code> objects.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    RegexMatchSet: RegexMatchSetSchema.exactOptional().openapi({
+      description: 'A <a>RegexMatchSet</a> that contains no <code>RegexMatchTuple</code> objects.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRegexMatchSetResponse')
 
 const CreateRegexMatchSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateRegexMatchSetRequest' })
   .openapi('CreateRegexMatchSetRequest')
@@ -1061,30 +834,18 @@ const RegexPatternStringsSchema = z
 
 const RegexPatternSetSchema = z
   .object({
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code>, update a <code>RegexPatternSet</code>, remove a <code>RegexPatternSet</code> from a <code>RegexMatchSet</code>, and delete a <code>RegexPatternSet</code> from AWS WAF.</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
-        }),
-    ).exactOptional(),
-    RegexPatternStrings: RegexPatternStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the regular expression (regex) patterns that you want AWS WAF to search for, such as <code>B[a@]dB[o0]t</code>.',
-        }),
-    ),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The identifier for the <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code>, update a <code>RegexPatternSet</code>, remove a <code>RegexPatternSet</code> from a <code>RegexMatchSet</code>, and delete a <code>RegexPatternSet</code> from AWS WAF.</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
+    }),
+    RegexPatternStrings: RegexPatternStringsSchema.openapi({
+      description:
+        'Specifies the regular expression (regex) patterns that you want AWS WAF to search for, such as <code>B[a@]dB[o0]t</code>.',
+    }),
   })
   .openapi({
     required: ['RegexPatternSetId', 'RegexPatternStrings'],
@@ -1095,76 +856,48 @@ const RegexPatternSetSchema = z
 
 const CreateRegexPatternSetResponseSchema = z
   .object({
-    RegexPatternSet: RegexPatternSetSchema.and(
-      z.any().openapi({ description: 'A <a>RegexPatternSet</a> that contains no objects.' }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    RegexPatternSet: RegexPatternSetSchema.exactOptional().openapi({
+      description: 'A <a>RegexPatternSet</a> that contains no objects.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRegexPatternSetResponse')
 
 const CreateRegexPatternSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateRegexPatternSetRequest' })
   .openapi('CreateRegexPatternSetRequest')
 
 const RuleSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The friendly name or description for the <code>Rule</code>. You can't change the name of a <code>Rule</code> after you create it.",
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>Rule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>Rule</code>.',
-        }),
-    ).exactOptional(),
-    Predicates: PredicatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>Predicates</code> object contains one <code>Predicate</code> element for each <a>ByteMatchSet</a>, <a>IPSet</a>, or <a>SqlInjectionMatchSet</a> object that you want to include in a <code>Rule</code>.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The friendly name or description for the <code>Rule</code>. You can't change the name of a <code>Rule</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>Rule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>Rule</code>.',
+    }),
+    Predicates: PredicatesSchema.openapi({
+      description:
+        'The <code>Predicates</code> object contains one <code>Predicate</code> element for each <a>ByteMatchSet</a>, <a>IPSet</a>, or <a>SqlInjectionMatchSet</a> object that you want to include in a <code>Rule</code>.',
+    }),
   })
   .openapi({
     required: ['RuleId', 'Predicates'],
@@ -1175,21 +908,13 @@ const RuleSchema = z
 
 const CreateRuleResponseSchema = z
   .object({
-    Rule: RuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>Rule</a> returned in the <code>CreateRule</code> response.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    Rule: RuleSchema.exactOptional().openapi({
+      description: 'The <a>Rule</a> returned in the <code>CreateRule</code> response.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1207,60 +932,36 @@ const CreateRuleResponseSchema = z
 
 const CreateRuleRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>Rule</a>. You can't change the name of a <code>Rule</code> after you create it.",
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>Rule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>Rule</code>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>Rule</a>. You can't change the name of a <code>Rule</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>Rule</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>Rule</code>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['Name', 'MetricName', 'ChangeToken'], title: 'CreateRuleRequest' })
   .openapi('CreateRuleRequest')
 
 const RuleGroupSchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>RuleGroup</code>. You use <code>RuleGroupId</code> to get more information about a <code>RuleGroup</code> (see <a>GetRuleGroup</a>), update a <code>RuleGroup</code> (see <a>UpdateRuleGroup</a>), insert a <code>RuleGroup</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RuleGroup</code> from AWS WAF (see <a>DeleteRuleGroup</a>).</p> <p> <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The friendly name or description for the <code>RuleGroup</code>. You can't change the name of a <code>RuleGroup</code> after you create it.",
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
-        }),
-    ).exactOptional(),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>RuleGroup</code>. You use <code>RuleGroupId</code> to get more information about a <code>RuleGroup</code> (see <a>GetRuleGroup</a>), update a <code>RuleGroup</code> (see <a>UpdateRuleGroup</a>), insert a <code>RuleGroup</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RuleGroup</code> from AWS WAF (see <a>DeleteRuleGroup</a>).</p> <p> <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "The friendly name or description for the <code>RuleGroup</code>. You can't change the name of a <code>RuleGroup</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
+    }),
   })
   .openapi({
     required: ['RuleGroupId'],
@@ -1271,47 +972,31 @@ const RuleGroupSchema = z
 
 const CreateRuleGroupResponseSchema = z
   .object({
-    RuleGroup: RuleGroupSchema.and(
-      z.any().openapi({ description: 'An empty <a>RuleGroup</a>.' }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    RuleGroup: RuleGroupSchema.exactOptional().openapi({
+      description: 'An empty <a>RuleGroup</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRuleGroupResponse')
 
 const CreateRuleGroupRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RuleGroup</a>. You can't change <code>Name</code> after you create a <code>RuleGroup</code>.",
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RuleGroup</a>. You can't change <code>Name</code> after you create a <code>RuleGroup</code>.",
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['Name', 'MetricName', 'ChangeToken'], title: 'CreateRuleGroupRequest' })
   .openapi('CreateRuleGroupRequest')
@@ -1324,37 +1009,21 @@ const SizeSchema = z.int().min(0).max(21474836480).openapi('Size')
 
 const SizeConstraintSchema = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies where in a web request to look for the size constraint.',
-        }),
-    ),
-    TextTransformation: TextTransformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p>Note that if you choose <code>BODY</code> for the value of <code>Type</code>, you must choose <code>NONE</code> for <code>TextTransformation</code> because CloudFront forwards only the first 8192 bytes for inspection. </p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p>',
-        }),
-    ),
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of comparison you want AWS WAF to perform. AWS WAF uses this in combination with the provided <code>Size</code> and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.</p> <p> <b>EQ</b>: Used to test if the <code>Size</code> is equal to the size of the <code>FieldToMatch</code> </p> <p> <b>NE</b>: Used to test if the <code>Size</code> is not equal to the size of the <code>FieldToMatch</code> </p> <p> <b>LE</b>: Used to test if the <code>Size</code> is less than or equal to the size of the <code>FieldToMatch</code> </p> <p> <b>LT</b>: Used to test if the <code>Size</code> is strictly less than the size of the <code>FieldToMatch</code> </p> <p> <b>GE</b>: Used to test if the <code>Size</code> is greater than or equal to the size of the <code>FieldToMatch</code> </p> <p> <b>GT</b>: Used to test if the <code>Size</code> is strictly greater than the size of the <code>FieldToMatch</code> </p>',
-        }),
-    ),
-    Size: SizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size in bytes that you want AWS WAF to compare against the size of the specified <code>FieldToMatch</code>. AWS WAF uses this in combination with <code>ComparisonOperator</code> and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.</p> <p>Valid values for size are 0 - 21474836480 bytes (0 - 20 GB).</p> <p>If you specify <code>URI</code> for the value of <code>Type</code>, the / in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'Specifies where in a web request to look for the size constraint.',
+    }),
+    TextTransformation: TextTransformationSchema.openapi({
+      description:
+        '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p>Note that if you choose <code>BODY</code> for the value of <code>Type</code>, you must choose <code>NONE</code> for <code>TextTransformation</code> because CloudFront forwards only the first 8192 bytes for inspection. </p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p>',
+    }),
+    ComparisonOperator: ComparisonOperatorSchema.openapi({
+      description:
+        '<p>The type of comparison you want AWS WAF to perform. AWS WAF uses this in combination with the provided <code>Size</code> and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.</p> <p> <b>EQ</b>: Used to test if the <code>Size</code> is equal to the size of the <code>FieldToMatch</code> </p> <p> <b>NE</b>: Used to test if the <code>Size</code> is not equal to the size of the <code>FieldToMatch</code> </p> <p> <b>LE</b>: Used to test if the <code>Size</code> is less than or equal to the size of the <code>FieldToMatch</code> </p> <p> <b>LT</b>: Used to test if the <code>Size</code> is strictly less than the size of the <code>FieldToMatch</code> </p> <p> <b>GE</b>: Used to test if the <code>Size</code> is greater than or equal to the size of the <code>FieldToMatch</code> </p> <p> <b>GT</b>: Used to test if the <code>Size</code> is strictly greater than the size of the <code>FieldToMatch</code> </p>',
+    }),
+    Size: SizeSchema.openapi({
+      description:
+        '<p>The size in bytes that you want AWS WAF to compare against the size of the specified <code>FieldToMatch</code>. AWS WAF uses this in combination with <code>ComparisonOperator</code> and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.</p> <p>Valid values for size are 0 - 21474836480 bytes (0 - 20 GB).</p> <p>If you specify <code>URI</code> for the value of <code>Type</code>, the / in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformation', 'ComparisonOperator', 'Size'],
@@ -1367,24 +1036,16 @@ const SizeConstraintsSchema = z.array(SizeConstraintSchema).openapi('SizeConstra
 
 const SizeConstraintSetSchema = z
   .object({
-    SizeConstraintSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>SizeConstraintSet</code>. You use <code>SizeConstraintSetId</code> to get information about a <code>SizeConstraintSet</code> (see <a>GetSizeConstraintSet</a>), update a <code>SizeConstraintSet</code> (see <a>UpdateSizeConstraintSet</a>), insert a <code>SizeConstraintSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SizeConstraintSet</code> from AWS WAF (see <a>DeleteSizeConstraintSet</a>).</p> <p> <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name, if any, of the <code>SizeConstraintSet</code>.' }),
-    ).exactOptional(),
-    SizeConstraints: SizeConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the parts of web requests that you want to inspect the size of.',
-        }),
-    ),
+    SizeConstraintSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>SizeConstraintSet</code>. You use <code>SizeConstraintSetId</code> to get information about a <code>SizeConstraintSet</code> (see <a>GetSizeConstraintSet</a>), update a <code>SizeConstraintSet</code> (see <a>UpdateSizeConstraintSet</a>), insert a <code>SizeConstraintSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SizeConstraintSet</code> from AWS WAF (see <a>DeleteSizeConstraintSet</a>).</p> <p> <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name, if any, of the <code>SizeConstraintSet</code>.',
+    }),
+    SizeConstraints: SizeConstraintsSchema.openapi({
+      description: 'Specifies the parts of web requests that you want to inspect the size of.',
+    }),
   })
   .openapi({
     required: ['SizeConstraintSetId', 'SizeConstraints'],
@@ -1395,22 +1056,14 @@ const SizeConstraintSetSchema = z
 
 const CreateSizeConstraintSetResponseSchema = z
   .object({
-    SizeConstraintSet: SizeConstraintSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a>SizeConstraintSet</a> that contains no <code>SizeConstraint</code> objects.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    SizeConstraintSet: SizeConstraintSetSchema.exactOptional().openapi({
+      description:
+        'A <a>SizeConstraintSet</a> that contains no <code>SizeConstraint</code> objects.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1434,43 +1087,26 @@ const CreateSizeConstraintSetResponseSchema = z
 
 const CreateSizeConstraintSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>SizeConstraintSet</a>. You can't change <code>Name</code> after you create a <code>SizeConstraintSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>SizeConstraintSet</a>. You can't change <code>Name</code> after you create a <code>SizeConstraintSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['Name', 'ChangeToken'], title: 'CreateSizeConstraintSetRequest' })
   .openapi('CreateSizeConstraintSetRequest')
 
 const SqlInjectionMatchTupleSchema = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies where in a web request to look for snippets of malicious SQL code.',
-        }),
-    ),
-    TextTransformation: TextTransformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'Specifies where in a web request to look for snippets of malicious SQL code.',
+    }),
+    TextTransformation: TextTransformationSchema.openapi({
+      description:
+        '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformation'],
@@ -1485,27 +1121,17 @@ const SqlInjectionMatchTuplesSchema = z
 
 const SqlInjectionMatchSetSchema = z
   .object({
-    SqlInjectionMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>SqlInjectionMatchSet</code>. You use <code>SqlInjectionMatchSetId</code> to get information about a <code>SqlInjectionMatchSet</code> (see <a>GetSqlInjectionMatchSet</a>), update a <code>SqlInjectionMatchSet</code> (see <a>UpdateSqlInjectionMatchSet</a>), insert a <code>SqlInjectionMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SqlInjectionMatchSet</code> from AWS WAF (see <a>DeleteSqlInjectionMatchSet</a>).</p> <p> <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name, if any, of the <code>SqlInjectionMatchSet</code>.' }),
-    ).exactOptional(),
-    SqlInjectionMatchTuples: SqlInjectionMatchTuplesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the parts of web requests that you want to inspect for snippets of malicious SQL code.',
-        }),
-    ),
+    SqlInjectionMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>SqlInjectionMatchSet</code>. You use <code>SqlInjectionMatchSetId</code> to get information about a <code>SqlInjectionMatchSet</code> (see <a>GetSqlInjectionMatchSet</a>), update a <code>SqlInjectionMatchSet</code> (see <a>UpdateSqlInjectionMatchSet</a>), insert a <code>SqlInjectionMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SqlInjectionMatchSet</code> from AWS WAF (see <a>DeleteSqlInjectionMatchSet</a>).</p> <p> <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name, if any, of the <code>SqlInjectionMatchSet</code>.',
+    }),
+    SqlInjectionMatchTuples: SqlInjectionMatchTuplesSchema.openapi({
+      description:
+        'Specifies the parts of web requests that you want to inspect for snippets of malicious SQL code.',
+    }),
   })
   .openapi({
     required: ['SqlInjectionMatchSetId', 'SqlInjectionMatchTuples'],
@@ -1516,17 +1142,13 @@ const SqlInjectionMatchSetSchema = z
 
 const CreateSqlInjectionMatchSetResponseSchema = z
   .object({
-    SqlInjectionMatchSet: SqlInjectionMatchSetSchema.and(
-      z.any().openapi({ description: 'A <a>SqlInjectionMatchSet</a>.' }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    SqlInjectionMatchSet: SqlInjectionMatchSetSchema.exactOptional().openapi({
+      description: 'A <a>SqlInjectionMatchSet</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1546,21 +1168,13 @@ const CreateSqlInjectionMatchSetResponseSchema = z
 
 const CreateSqlInjectionMatchSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description for the <a>SqlInjectionMatchSet</a> that you're creating. You can't change <code>Name</code> after you create the <code>SqlInjectionMatchSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description for the <a>SqlInjectionMatchSet</a> that you're creating. You can't change <code>Name</code> after you create the <code>SqlInjectionMatchSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'ChangeToken'],
@@ -1573,14 +1187,10 @@ const WafActionTypeSchema = z.enum(['BLOCK', 'ALLOW', 'COUNT']).openapi('WafActi
 
 const WafActionSchema = z
   .object({
-    Type: WafActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies how you want AWS WAF to respond to requests that match the settings in a <code>Rule</code>. Valid settings include the following:</p> <ul> <li> <p> <code>ALLOW</code>: AWS WAF allows requests</p> </li> <li> <p> <code>BLOCK</code>: AWS WAF blocks requests</p> </li> <li> <p> <code>COUNT</code>: AWS WAF increments a counter of the requests that match all of the conditions in the rule. AWS WAF then continues to inspect the web request based on the remaining rules in the web ACL. You can't specify <code>COUNT</code> for the default action for a <code>WebACL</code>.</p> </li> </ul>",
-        }),
-    ),
+    Type: WafActionTypeSchema.openapi({
+      description:
+        "<p>Specifies how you want AWS WAF to respond to requests that match the settings in a <code>Rule</code>. Valid settings include the following:</p> <ul> <li> <p> <code>ALLOW</code>: AWS WAF allows requests</p> </li> <li> <p> <code>BLOCK</code>: AWS WAF blocks requests</p> </li> <li> <p> <code>COUNT</code>: AWS WAF increments a counter of the requests that match all of the conditions in the rule. AWS WAF then continues to inspect the web request based on the remaining rules in the web ACL. You can't specify <code>COUNT</code> for the default action for a <code>WebACL</code>.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -1595,14 +1205,10 @@ const WafOverrideActionTypeSchema = z.enum(['NONE', 'COUNT']).openapi('WafOverri
 
 const WafOverrideActionSchema = z
   .object({
-    Type: WafOverrideActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " <code>COUNT</code> overrides the action specified by the individual rule within a <code>RuleGroup</code> . If set to <code>NONE</code>, the rule's action will take place.",
-        }),
-    ),
+    Type: WafOverrideActionTypeSchema.openapi({
+      description:
+        " <code>COUNT</code> overrides the action specified by the individual rule within a <code>RuleGroup</code> . If set to <code>NONE</code>, the rule's action will take place.",
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -1615,13 +1221,9 @@ const WafRuleTypeSchema = z.enum(['REGULAR', 'RATE_BASED', 'GROUP']).openapi('Wa
 
 const ExcludedRuleSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier for the rule to exclude from the rule group.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description: 'The unique identifier for the rule to exclude from the rule group.',
+    }),
   })
   .openapi({
     required: ['RuleId'],
@@ -1634,54 +1236,30 @@ const ExcludedRulesSchema = z.array(ExcludedRuleSchema).openapi('ExcludedRules')
 
 const ActivatedRuleSchema = z
   .object({
-    Priority: RulePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the order in which the <code>Rules</code> in a <code>WebACL</code> are evaluated. Rules with a lower value for <code>Priority</code> are evaluated before <code>Rules</code> with a higher value. The value must be a unique integer. If you add multiple <code>Rules</code> to a <code>WebACL</code>, the values don't need to be consecutive.",
-        }),
-    ),
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>RuleId</code> for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
-        }),
-    ),
-    Action: WafActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the action that CloudFront or AWS WAF takes when a web request matches the conditions in the <code>Rule</code>. Valid values for <code>Action</code> include the following:</p> <ul> <li> <p> <code>ALLOW</code>: CloudFront responds with the requested object.</p> </li> <li> <p> <code>BLOCK</code>: CloudFront responds with an HTTP 403 (Forbidden) status code.</p> </li> <li> <p> <code>COUNT</code>: AWS WAF increments a counter of requests that match the conditions in the rule and then continues to inspect the web request based on the remaining rules in the web ACL. </p> </li> </ul> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case, you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
-        }),
-    ).exactOptional(),
-    OverrideAction: WafOverrideActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use the <code>OverrideAction</code> to test your <code>RuleGroup</code>.</p> <p>Any rule in a <code>RuleGroup</code> can potentially block a request. If you set the <code>OverrideAction</code> to <code>None</code>, the <code>RuleGroup</code> will block a request if any individual rule in the <code>RuleGroup</code> matches the request and is configured to block that request. However if you first want to test the <code>RuleGroup</code>, set the <code>OverrideAction</code> to <code>Count</code>. The <code>RuleGroup</code> will then override any block action specified by individual rules contained within the group. Instead of blocking matching requests, those requests will be counted. You can view a record of counted requests using <a>GetSampledRequests</a>. </p> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: WafRuleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rule type, either <code>REGULAR</code>, as defined by <a>Rule</a>, <code>RATE_BASED</code>, as defined by <a>RateBasedRule</a>, or <code>GROUP</code>, as defined by <a>RuleGroup</a>. The default is REGULAR. Although this field is optional, be aware that if you try to add a RATE_BASED rule to a web ACL without setting the type, the <a>UpdateWebACL</a> request will fail because the request tries to add a REGULAR rule with the specified ID, which does not exist. ',
-        }),
-    ).exactOptional(),
-    ExcludedRules: ExcludedRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of rules to exclude from a rule group. This is applicable only when the <code>ActivatedRule</code> refers to a <code>RuleGroup</code>.</p> <p>Sometimes it is necessary to troubleshoot rule groups that are blocking traffic unexpectedly (false positives). One troubleshooting technique is to identify the specific rule within the rule group that is blocking the legitimate traffic and then disable (exclude) that particular rule. You can exclude rules from both your own rule groups and AWS Marketplace rule groups that have been associated with a web ACL.</p> <p>Specifying <code>ExcludedRules</code> does not remove those rules from the rule group. Rather, it changes the action for the rules to <code>COUNT</code>. Therefore, requests that match an <code>ExcludedRule</code> are counted but not blocked. The <code>RuleGroup</code> owner will receive COUNT metrics for each <code>ExcludedRule</code>.</p> <p>If you want to exclude rules from a rule group that is already associated with a web ACL, perform the following steps:</p> <ol> <li> <p>Use the AWS WAF logs to identify the IDs of the rules that you want to exclude. For more information about the logs, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging Web ACL Traffic Information</a>.</p> </li> <li> <p>Submit an <a>UpdateWebACL</a> request that has two actions:</p> <ul> <li> <p>The first action deletes the existing rule group from the web ACL. That is, in the <a>UpdateWebACL</a> request, the first <code>Updates:Action</code> should be <code>DELETE</code> and <code>Updates:ActivatedRule:RuleId</code> should be the rule group that contains the rules that you want to exclude.</p> </li> <li> <p>The second action inserts the same rule group back in, but specifying the rules to exclude. That is, the second <code>Updates:Action</code> should be <code>INSERT</code>, <code>Updates:ActivatedRule:RuleId</code> should be the rule group that you just removed, and <code>ExcludedRules</code> should contain the rules that you want to exclude.</p> </li> </ul> </li> </ol>',
-        }),
-    ).exactOptional(),
+    Priority: RulePrioritySchema.openapi({
+      description:
+        "Specifies the order in which the <code>Rules</code> in a <code>WebACL</code> are evaluated. Rules with a lower value for <code>Priority</code> are evaluated before <code>Rules</code> with a higher value. The value must be a unique integer. If you add multiple <code>Rules</code> to a <code>WebACL</code>, the values don't need to be consecutive.",
+    }),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>RuleId</code> for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete a one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
+    }),
+    Action: WafActionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the action that CloudFront or AWS WAF takes when a web request matches the conditions in the <code>Rule</code>. Valid values for <code>Action</code> include the following:</p> <ul> <li> <p> <code>ALLOW</code>: CloudFront responds with the requested object.</p> </li> <li> <p> <code>BLOCK</code>: CloudFront responds with an HTTP 403 (Forbidden) status code.</p> </li> <li> <p> <code>COUNT</code>: AWS WAF increments a counter of requests that match the conditions in the rule and then continues to inspect the web request based on the remaining rules in the web ACL. </p> </li> </ul> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case, you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
+    }),
+    OverrideAction: WafOverrideActionSchema.exactOptional().openapi({
+      description:
+        '<p>Use the <code>OverrideAction</code> to test your <code>RuleGroup</code>.</p> <p>Any rule in a <code>RuleGroup</code> can potentially block a request. If you set the <code>OverrideAction</code> to <code>None</code>, the <code>RuleGroup</code> will block a request if any individual rule in the <code>RuleGroup</code> matches the request and is configured to block that request. However if you first want to test the <code>RuleGroup</code>, set the <code>OverrideAction</code> to <code>Count</code>. The <code>RuleGroup</code> will then override any block action specified by individual rules contained within the group. Instead of blocking matching requests, those requests will be counted. You can view a record of counted requests using <a>GetSampledRequests</a>. </p> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
+    }),
+    Type: WafRuleTypeSchema.exactOptional().openapi({
+      description:
+        'The rule type, either <code>REGULAR</code>, as defined by <a>Rule</a>, <code>RATE_BASED</code>, as defined by <a>RateBasedRule</a>, or <code>GROUP</code>, as defined by <a>RuleGroup</a>. The default is REGULAR. Although this field is optional, be aware that if you try to add a RATE_BASED rule to a web ACL without setting the type, the <a>UpdateWebACL</a> request will fail because the request tries to add a REGULAR rule with the specified ID, which does not exist. ',
+    }),
+    ExcludedRules: ExcludedRulesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of rules to exclude from a rule group. This is applicable only when the <code>ActivatedRule</code> refers to a <code>RuleGroup</code>.</p> <p>Sometimes it is necessary to troubleshoot rule groups that are blocking traffic unexpectedly (false positives). One troubleshooting technique is to identify the specific rule within the rule group that is blocking the legitimate traffic and then disable (exclude) that particular rule. You can exclude rules from both your own rule groups and AWS Marketplace rule groups that have been associated with a web ACL.</p> <p>Specifying <code>ExcludedRules</code> does not remove those rules from the rule group. Rather, it changes the action for the rules to <code>COUNT</code>. Therefore, requests that match an <code>ExcludedRule</code> are counted but not blocked. The <code>RuleGroup</code> owner will receive COUNT metrics for each <code>ExcludedRule</code>.</p> <p>If you want to exclude rules from a rule group that is already associated with a web ACL, perform the following steps:</p> <ol> <li> <p>Use the AWS WAF logs to identify the IDs of the rules that you want to exclude. For more information about the logs, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging Web ACL Traffic Information</a>.</p> </li> <li> <p>Submit an <a>UpdateWebACL</a> request that has two actions:</p> <ul> <li> <p>The first action deletes the existing rule group from the web ACL. That is, in the <a>UpdateWebACL</a> request, the first <code>Updates:Action</code> should be <code>DELETE</code> and <code>Updates:ActivatedRule:RuleId</code> should be the rule group that contains the rules that you want to exclude.</p> </li> <li> <p>The second action inserts the same rule group back in, but specifying the rules to exclude. That is, the second <code>Updates:Action</code> should be <code>INSERT</code>, <code>Updates:ActivatedRule:RuleId</code> should be the rule group that you just removed, and <code>ExcludedRules</code> should contain the rules that you want to exclude.</p> </li> </ul> </li> </ol>',
+    }),
   })
   .openapi({
     required: ['Priority', 'RuleId'],
@@ -1694,49 +1272,29 @@ const ActivatedRulesSchema = z.array(ActivatedRuleSchema).openapi('ActivatedRule
 
 const WebACLSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>WebACL</code>. You use <code>WebACLId</code> to get information about a <code>WebACL</code> (see <a>GetWebACL</a>), update a <code>WebACL</code> (see <a>UpdateWebACL</a>), and delete a <code>WebACL</code> from AWS WAF (see <a>DeleteWebACL</a>).</p> <p> <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <code>WebACL</code>. You can't change the name of a <code>WebACL</code> after you create it.",
-        }),
-    ).exactOptional(),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>WebACL</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>WebACL</code>.',
-        }),
-    ).exactOptional(),
-    DefaultAction: WafActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. The action is specified by the <a>WafAction</a> object.',
-        }),
-    ),
-    Rules: ActivatedRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that contains the action for each <code>Rule</code> in a <code>WebACL</code>, the priority of the <code>Rule</code>, and the ID of the <code>Rule</code>.',
-        }),
-    ),
-    WebACLArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'Tha Amazon Resource Name (ARN) of the web ACL.' }),
-    ).exactOptional(),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>WebACL</code>. You use <code>WebACLId</code> to get information about a <code>WebACL</code> (see <a>GetWebACL</a>), update a <code>WebACL</code> (see <a>UpdateWebACL</a>), and delete a <code>WebACL</code> from AWS WAF (see <a>DeleteWebACL</a>).</p> <p> <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description:
+        "A friendly name or description of the <code>WebACL</code>. You can't change the name of a <code>WebACL</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>WebACL</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>WebACL</code>.',
+    }),
+    DefaultAction: WafActionSchema.openapi({
+      description:
+        'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. The action is specified by the <a>WafAction</a> object.',
+    }),
+    Rules: ActivatedRulesSchema.openapi({
+      description:
+        'An array that contains the action for each <code>Rule</code> in a <code>WebACL</code>, the priority of the <code>Rule</code>, and the ID of the <code>Rule</code>.',
+    }),
+    WebACLArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'Tha Amazon Resource Name (ARN) of the web ACL.',
+    }),
   })
   .openapi({
     required: ['WebACLId', 'DefaultAction', 'Rules'],
@@ -1747,21 +1305,13 @@ const WebACLSchema = z
 
 const CreateWebACLResponseSchema = z
   .object({
-    WebACL: WebACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>WebACL</a> returned in the <code>CreateWebACL</code> response.',
-        }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    WebACL: WebACLSchema.exactOptional().openapi({
+      description: 'The <a>WebACL</a> returned in the <code>CreateWebACL</code> response.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1780,38 +1330,22 @@ const CreateWebACLResponseSchema = z
 
 const CreateWebACLRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>WebACL</a>. You can't change <code>Name</code> after you create the <code>WebACL</code>.",
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>WebACL</code>.The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>WebACL</code>.',
-        }),
-    ),
-    DefaultAction: WafActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The action that you want AWS WAF to take when a request doesn't match the criteria specified in any of the <code>Rule</code> objects that are associated with the <code>WebACL</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>WebACL</a>. You can't change <code>Name</code> after you create the <code>WebACL</code>.",
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>WebACL</code>.The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change <code>MetricName</code> after you create the <code>WebACL</code>.',
+    }),
+    DefaultAction: WafActionSchema.openapi({
+      description:
+        "The action that you want AWS WAF to take when a request doesn't match the criteria specified in any of the <code>Rule</code> objects that are associated with the <code>WebACL</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     required: ['Name', 'MetricName', 'DefaultAction', 'ChangeToken'],
@@ -1823,9 +1357,9 @@ const S3ObjectUrlSchema = z.string().min(1).openapi('S3ObjectUrl')
 
 const CreateWebACLMigrationStackResponseSchema = z
   .object({
-    S3ObjectUrl: S3ObjectUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the template created in Amazon S3. ' }),
-    ),
+    S3ObjectUrl: S3ObjectUrlSchema.openapi({
+      description: 'The URL of the template created in Amazon S3. ',
+    }),
   })
   .openapi({ required: ['S3ObjectUrl'] })
   .openapi('CreateWebACLMigrationStackResponse')
@@ -1841,29 +1375,17 @@ const IgnoreUnsupportedTypeSchema = z.boolean().openapi('IgnoreUnsupportedType')
 
 const CreateWebACLMigrationStackRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The UUID of the WAF Classic web ACL that you want to migrate to WAF v2.',
-        }),
-    ),
-    S3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the Amazon S3 bucket to store the CloudFormation template in. The S3 bucket must be configured as follows for the migration: </p> <ul> <li> <p>The bucket name must start with <code>aws-waf-migration-</code>. For example, <code>aws-waf-migration-my-web-acl</code>.</p> </li> <li> <p>The bucket must be in the Region where you are deploying the template. For example, for a web ACL in us-west-2, you must use an Amazon S3 bucket in us-west-2 and you must deploy the template stack to us-west-2. </p> </li> <li> <p>The bucket policies must permit the migration process to write data. For listings of the bucket policies, see the Examples section. </p> </li> </ul>',
-        }),
-    ),
-    IgnoreUnsupportedType: IgnoreUnsupportedTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates whether to exclude entities that can't be migrated or to stop the migration. Set this to true to ignore unsupported entities in the web ACL during the migration. Otherwise, if AWS WAF encounters unsupported entities, it stops the process and throws an exception. ",
-        }),
-    ),
+    WebACLId: ResourceIdSchema.openapi({
+      description: 'The UUID of the WAF Classic web ACL that you want to migrate to WAF v2.',
+    }),
+    S3BucketName: S3BucketNameSchema.openapi({
+      description:
+        '<p>The name of the Amazon S3 bucket to store the CloudFormation template in. The S3 bucket must be configured as follows for the migration: </p> <ul> <li> <p>The bucket name must start with <code>aws-waf-migration-</code>. For example, <code>aws-waf-migration-my-web-acl</code>.</p> </li> <li> <p>The bucket must be in the Region where you are deploying the template. For example, for a web ACL in us-west-2, you must use an Amazon S3 bucket in us-west-2 and you must deploy the template stack to us-west-2. </p> </li> <li> <p>The bucket policies must permit the migration process to write data. For listings of the bucket policies, see the Examples section. </p> </li> </ul>',
+    }),
+    IgnoreUnsupportedType: IgnoreUnsupportedTypeSchema.openapi({
+      description:
+        "Indicates whether to exclude entities that can't be migrated or to stop the migration. Set this to true to ignore unsupported entities in the web ACL during the migration. Otherwise, if AWS WAF encounters unsupported entities, it stops the process and throws an exception. ",
+    }),
   })
   .openapi({
     required: ['WebACLId', 'S3BucketName', 'IgnoreUnsupportedType'],
@@ -1877,21 +1399,13 @@ const WAFEntityMigrationExceptionSchema = z.any().openapi('WAFEntityMigrationExc
 
 const XssMatchTupleSchema = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies where in a web request to look for cross-site scripting attacks.',
-        }),
-    ),
-    TextTransformation: TextTransformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'Specifies where in a web request to look for cross-site scripting attacks.',
+    }),
+    TextTransformation: TextTransformationSchema.openapi({
+      description:
+        '<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass AWS WAF. If you specify a transformation, AWS WAF performs the transformation on <code>FieldToMatch</code> before inspecting it for a match.</p> <p>You can only specify a single type of TextTransformation.</p> <p> <b>CMD_LINE</b> </p> <p>When you\'re concerned that attackers are injecting an operating system command line command and using unusual formatting to disguise some or all of the command, use this option to perform the following transformations:</p> <ul> <li> <p>Delete the following characters: \\ " \' ^</p> </li> <li> <p>Delete spaces before the following characters: / (</p> </li> <li> <p>Replace the following characters with a space: , ;</p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> </p> <p>Use this option to replace the following characters with a space character (decimal 32):</p> <ul> <li> <p>\\f, formfeed, decimal 12</p> </li> <li> <p>\\t, tab, decimal 9</p> </li> <li> <p>\\n, newline, decimal 10</p> </li> <li> <p>\\r, carriage return, decimal 13</p> </li> <li> <p>\\v, vertical tab, decimal 11</p> </li> <li> <p>non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>HTML_ENTITY_DECODE</b> </p> <p>Use this option to replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs the following operations:</p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a "less than" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>LOWERCASE</b> </p> <p>Use this option to convert uppercase letters (A-Z) to lowercase (a-z).</p> <p> <b>URL_DECODE</b> </p> <p>Use this option to decode a URL-encoded value.</p> <p> <b>NONE</b> </p> <p>Specify <code>NONE</code> if you don\'t want to perform any text transformations.</p>',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformation'],
@@ -1904,25 +1418,17 @@ const XssMatchTuplesSchema = z.array(XssMatchTupleSchema).openapi('XssMatchTuple
 
 const XssMatchSetSchema = z
   .object({
-    XssMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for an <code>XssMatchSet</code>. You use <code>XssMatchSetId</code> to get information about an <code>XssMatchSet</code> (see <a>GetXssMatchSet</a>), update an <code>XssMatchSet</code> (see <a>UpdateXssMatchSet</a>), insert an <code>XssMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>XssMatchSet</code> from AWS WAF (see <a>DeleteXssMatchSet</a>).</p> <p> <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name, if any, of the <code>XssMatchSet</code>.' }),
-    ).exactOptional(),
-    XssMatchTuples: XssMatchTuplesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the parts of web requests that you want to inspect for cross-site scripting attacks.',
-        }),
-    ),
+    XssMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for an <code>XssMatchSet</code>. You use <code>XssMatchSetId</code> to get information about an <code>XssMatchSet</code> (see <a>GetXssMatchSet</a>), update an <code>XssMatchSet</code> (see <a>UpdateXssMatchSet</a>), insert an <code>XssMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>XssMatchSet</code> from AWS WAF (see <a>DeleteXssMatchSet</a>).</p> <p> <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.exactOptional().openapi({
+      description: 'The name, if any, of the <code>XssMatchSet</code>.',
+    }),
+    XssMatchTuples: XssMatchTuplesSchema.openapi({
+      description:
+        'Specifies the parts of web requests that you want to inspect for cross-site scripting attacks.',
+    }),
   })
   .openapi({
     required: ['XssMatchSetId', 'XssMatchTuples'],
@@ -1933,17 +1439,13 @@ const XssMatchSetSchema = z
 
 const CreateXssMatchSetResponseSchema = z
   .object({
-    XssMatchSet: XssMatchSetSchema.and(
-      z.any().openapi({ description: 'An <a>XssMatchSet</a>.' }),
-    ).exactOptional(),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>CreateXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    XssMatchSet: XssMatchSetSchema.exactOptional().openapi({
+      description: 'An <a>XssMatchSet</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>CreateXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: {
@@ -1963,21 +1465,13 @@ const CreateXssMatchSetResponseSchema = z
 
 const CreateXssMatchSetRequestSchema = z
   .object({
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description for the <a>XssMatchSet</a> that you're creating. You can't change <code>Name</code> after you create the <code>XssMatchSet</code>.",
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description for the <a>XssMatchSet</a> that you're creating. You can't change <code>Name</code> after you create the <code>XssMatchSet</code>.",
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['Name', 'ChangeToken'],
@@ -1988,35 +1482,23 @@ const CreateXssMatchSetRequestSchema = z
 
 const DeleteByteMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('DeleteByteMatchSetResponse')
 
 const DeleteByteMatchSetRequestSchema = z
   .object({
-    ByteMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to delete. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    ByteMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to delete. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['ByteMatchSetId', 'ChangeToken'], title: 'DeleteByteMatchSetRequest' })
   .openapi('DeleteByteMatchSetRequest')
@@ -2027,209 +1509,143 @@ const WAFNonEmptyEntityExceptionSchema = z.any().openapi('WAFNonEmptyEntityExcep
 
 const DeleteGeoMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGeoMatchSetResponse')
 
 const DeleteGeoMatchSetRequestSchema = z
   .object({
-    GeoMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>GeoMatchSetID</code> of the <a>GeoMatchSet</a> that you want to delete. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    GeoMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>GeoMatchSetID</code> of the <a>GeoMatchSet</a> that you want to delete. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['GeoMatchSetId', 'ChangeToken'], title: 'DeleteGeoMatchSetRequest' })
   .openapi('DeleteGeoMatchSetRequest')
 
 const DeleteIPSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('DeleteIPSetResponse')
 
 const DeleteIPSetRequestSchema = z
   .object({
-    IPSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>IPSetId</code> of the <a>IPSet</a> that you want to delete. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    IPSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>IPSetId</code> of the <a>IPSet</a> that you want to delete. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['IPSetId', 'ChangeToken'], title: 'DeleteIPSetRequest' })
   .openapi('DeleteIPSetRequest')
 
 const DeleteLoggingConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteLoggingConfigurationResponse')
 
 const DeleteLoggingConfigurationRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL from which you want to delete the <a>LoggingConfiguration</a>.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL from which you want to delete the <a>LoggingConfiguration</a>.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeleteLoggingConfigurationRequest' })
   .openapi('DeleteLoggingConfigurationRequest')
 
-const DeletePermissionPolicyResponseSchema = z.object({}).openapi('DeletePermissionPolicyResponse')
+const DeletePermissionPolicyResponseSchema = z
+  .looseObject({})
+  .openapi('DeletePermissionPolicyResponse')
 
 const DeletePermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the RuleGroup from which you want to delete the policy.</p> <p>The user making the request must be the owner of the RuleGroup.</p>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the RuleGroup from which you want to delete the policy.</p> <p>The user making the request must be the owner of the RuleGroup.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeletePermissionPolicyRequest' })
   .openapi('DeletePermissionPolicyRequest')
 
 const DeleteRateBasedRuleResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRateBasedRuleResponse')
 
 const DeleteRateBasedRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <a>RateBasedRule</a> that you want to delete. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <a>RateBasedRule</a> that you want to delete. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['RuleId', 'ChangeToken'], title: 'DeleteRateBasedRuleRequest' })
   .openapi('DeleteRateBasedRuleRequest')
 
 const DeleteRegexMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRegexMatchSetResponse')
 
 const DeleteRegexMatchSetRequestSchema = z
   .object({
-    RegexMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to delete. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RegexMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to delete. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['RegexMatchSetId', 'ChangeToken'], title: 'DeleteRegexMatchSetRequest' })
   .openapi('DeleteRegexMatchSetRequest')
 
 const DeleteRegexPatternSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRegexPatternSetResponse')
 
 const DeleteRegexPatternSetRequestSchema = z
   .object({
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to delete. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to delete. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['RegexPatternSetId', 'ChangeToken'],
@@ -2239,105 +1655,69 @@ const DeleteRegexPatternSetRequestSchema = z
 
 const DeleteRuleResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('DeleteRuleResponse')
 
 const DeleteRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <a>Rule</a> that you want to delete. <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <a>Rule</a> that you want to delete. <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['RuleId', 'ChangeToken'], title: 'DeleteRuleRequest' })
   .openapi('DeleteRuleRequest')
 
 const DeleteRuleGroupResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteRuleGroupResponse')
 
 const DeleteRuleGroupRequestSchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to delete. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to delete. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['RuleGroupId', 'ChangeToken'], title: 'DeleteRuleGroupRequest' })
   .openapi('DeleteRuleGroupRequest')
 
 const DeleteSizeConstraintSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('DeleteSizeConstraintSetResponse')
 
 const DeleteSizeConstraintSetRequestSchema = z
   .object({
-    SizeConstraintSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to delete. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    SizeConstraintSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to delete. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['SizeConstraintSetId', 'ChangeToken'],
@@ -2347,14 +1727,10 @@ const DeleteSizeConstraintSetRequestSchema = z
 
 const DeleteSqlInjectionMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' },
@@ -2365,21 +1741,13 @@ const DeleteSqlInjectionMatchSetResponseSchema = z
 
 const DeleteSqlInjectionMatchSetRequestSchema = z
   .object({
-    SqlInjectionMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SqlInjectionMatchSetId</code> of the <a>SqlInjectionMatchSet</a> that you want to delete. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    SqlInjectionMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SqlInjectionMatchSetId</code> of the <a>SqlInjectionMatchSet</a> that you want to delete. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['SqlInjectionMatchSetId', 'ChangeToken'],
@@ -2390,49 +1758,33 @@ const DeleteSqlInjectionMatchSetRequestSchema = z
 
 const DeleteWebACLResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('DeleteWebACLResponse')
 
 const DeleteWebACLRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>WebACLId</code> of the <a>WebACL</a> that you want to delete. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        'The <code>WebACLId</code> of the <a>WebACL</a> that you want to delete. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['WebACLId', 'ChangeToken'], title: 'DeleteWebACLRequest' })
   .openapi('DeleteWebACLRequest')
 
 const DeleteXssMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>DeleteXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>DeleteXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' },
@@ -2443,21 +1795,13 @@ const DeleteXssMatchSetResponseSchema = z
 
 const DeleteXssMatchSetRequestSchema = z
   .object({
-    XssMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>XssMatchSetId</code> of the <a>XssMatchSet</a> that you want to delete. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    XssMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>XssMatchSetId</code> of the <a>XssMatchSet</a> that you want to delete. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['XssMatchSetId', 'ChangeToken'],
@@ -2466,32 +1810,24 @@ const DeleteXssMatchSetRequestSchema = z
   })
   .openapi('DeleteXssMatchSetRequest')
 
-const DisassociateWebACLResponseSchema = z.object({}).openapi('DisassociateWebACLResponse')
+const DisassociateWebACLResponseSchema = z.looseObject({}).openapi('DisassociateWebACLResponse')
 
 const DisassociateWebACLRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN (Amazon Resource Name) of the resource from which the web ACL is being removed, either an application load balancer or Amazon API Gateway stage.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The ARN (Amazon Resource Name) of the resource from which the web ACL is being removed, either an application load balancer or Amazon API Gateway stage.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DisassociateWebACLRequest' })
   .openapi('DisassociateWebACLRequest')
 
 const GetByteMatchSetResponseSchema = z
   .object({
-    ByteMatchSet: ByteMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>ByteMatchSet</a> that you specified in the <code>GetByteMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>ByteMatchSet</a>: Contains <code>ByteMatchSetId</code>, <code>ByteMatchTuples</code>, and <code>Name</code> </p> </li> <li> <p> <code>ByteMatchTuples</code>: Contains an array of <a>ByteMatchTuple</a> objects. Each <code>ByteMatchTuple</code> object contains <a>FieldToMatch</a>, <code>PositionalConstraint</code>, <code>TargetString</code>, and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ByteMatchSet: ByteMatchSetSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>ByteMatchSet</a> that you specified in the <code>GetByteMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>ByteMatchSet</a>: Contains <code>ByteMatchSetId</code>, <code>ByteMatchTuples</code>, and <code>Name</code> </p> </li> <li> <p> <code>ByteMatchTuples</code>: Contains an array of <a>ByteMatchTuple</a> objects. Each <code>ByteMatchTuple</code> object contains <a>FieldToMatch</a>, <code>PositionalConstraint</code>, <code>TargetString</code>, and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -2514,34 +1850,26 @@ const GetByteMatchSetResponseSchema = z
 
 const GetByteMatchSetRequestSchema = z
   .object({
-    ByteMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to get. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
-        }),
-    ),
+    ByteMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to get. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
+    }),
   })
   .openapi({ required: ['ByteMatchSetId'], title: 'GetByteMatchSetRequest' })
   .openapi('GetByteMatchSetRequest')
 
 const GetChangeTokenResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used in the request. Use this value in a <code>GetChangeTokenStatus</code> request to get the current status of the request. ',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used in the request. Use this value in a <code>GetChangeTokenStatus</code> request to get the current status of the request. ',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('GetChangeTokenResponse')
 
 const GetChangeTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChangeTokenRequest' })
   .openapi('GetChangeTokenRequest')
 
@@ -2551,65 +1879,49 @@ const ChangeTokenStatusSchema = z
 
 const GetChangeTokenStatusResponseSchema = z
   .object({
-    ChangeTokenStatus: ChangeTokenStatusSchema.and(
-      z.any().openapi({ description: 'The status of the change token.' }),
-    ).exactOptional(),
+    ChangeTokenStatus: ChangeTokenStatusSchema.exactOptional().openapi({
+      description: 'The status of the change token.',
+    }),
   })
   .openapi({ example: { ChangeTokenStatus: 'PENDING' }, required: [] })
   .openapi('GetChangeTokenStatusResponse')
 
 const GetChangeTokenStatusRequestSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The change token for which you want to get the status. This change token was previously returned in the <code>GetChangeToken</code> response.',
-        }),
-    ),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description:
+        'The change token for which you want to get the status. This change token was previously returned in the <code>GetChangeToken</code> response.',
+    }),
   })
   .openapi({ required: ['ChangeToken'], title: 'GetChangeTokenStatusRequest' })
   .openapi('GetChangeTokenStatusRequest')
 
 const GetGeoMatchSetResponseSchema = z
   .object({
-    GeoMatchSet: GeoMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <a>GeoMatchSet</a> that you specified in the <code>GetGeoMatchSet</code> request. This includes the <code>Type</code>, which for a <code>GeoMatchContraint</code> is always <code>Country</code>, as well as the <code>Value</code>, which is the identifier for a specific country.',
-        }),
-    ).exactOptional(),
+    GeoMatchSet: GeoMatchSetSchema.exactOptional().openapi({
+      description:
+        'Information about the <a>GeoMatchSet</a> that you specified in the <code>GetGeoMatchSet</code> request. This includes the <code>Type</code>, which for a <code>GeoMatchContraint</code> is always <code>Country</code>, as well as the <code>Value</code>, which is the identifier for a specific country.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGeoMatchSetResponse')
 
 const GetGeoMatchSetRequestSchema = z
   .object({
-    GeoMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>GeoMatchSetId</code> of the <a>GeoMatchSet</a> that you want to get. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
-        }),
-    ),
+    GeoMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>GeoMatchSetId</code> of the <a>GeoMatchSet</a> that you want to get. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
+    }),
   })
   .openapi({ required: ['GeoMatchSetId'], title: 'GetGeoMatchSetRequest' })
   .openapi('GetGeoMatchSetRequest')
 
 const GetIPSetResponseSchema = z
   .object({
-    IPSet: IPSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>IPSet</a> that you specified in the <code>GetIPSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>IPSet</a>: Contains <code>IPSetDescriptors</code>, <code>IPSetId</code>, and <code>Name</code> </p> </li> <li> <p> <code>IPSetDescriptors</code>: Contains an array of <a>IPSetDescriptor</a> objects. Each <code>IPSetDescriptor</code> object contains <code>Type</code> and <code>Value</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    IPSet: IPSetSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>IPSet</a> that you specified in the <code>GetIPSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>IPSet</a>: Contains <code>IPSetDescriptors</code>, <code>IPSetId</code>, and <code>Name</code> </p> </li> <li> <p> <code>IPSetDescriptors</code>: Contains an array of <a>IPSetDescriptor</a> objects. Each <code>IPSetDescriptor</code> object contains <code>Type</code> and <code>Value</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -2625,14 +1937,10 @@ const GetIPSetResponseSchema = z
 
 const GetIPSetRequestSchema = z
   .object({
-    IPSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>IPSetId</code> of the <a>IPSet</a> that you want to get. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
-        }),
-    ),
+    IPSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>IPSetId</code> of the <a>IPSet</a> that you want to get. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
+    }),
   })
   .openapi({ required: ['IPSetId'], title: 'GetIPSetRequest' })
   .openapi('GetIPSetRequest')
@@ -2646,25 +1954,17 @@ const RedactedFieldsSchema = z.array(FieldToMatchSchema).openapi('RedactedFields
 
 const LoggingConfigurationSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL that you want to associate with <code>LogDestinationConfigs</code>.',
-        }),
-    ),
-    LogDestinationConfigs: LogDestinationConfigsSchema.and(
-      z.any().openapi({ description: 'An array of Amazon Kinesis Data Firehose ARNs.' }),
-    ),
-    RedactedFields: RedactedFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parts of the request that you want redacted from the logs. For example, if you redact the cookie field, the cookie field in the firehose will be <code>xxx</code>. ',
-        }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL that you want to associate with <code>LogDestinationConfigs</code>.',
+    }),
+    LogDestinationConfigs: LogDestinationConfigsSchema.openapi({
+      description: 'An array of Amazon Kinesis Data Firehose ARNs.',
+    }),
+    RedactedFields: RedactedFieldsSchema.exactOptional().openapi({
+      description:
+        'The parts of the request that you want redacted from the logs. For example, if you redact the cookie field, the cookie field in the firehose will be <code>xxx</code>. ',
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'LogDestinationConfigs'],
@@ -2675,25 +1975,19 @@ const LoggingConfigurationSchema = z
 
 const GetLoggingConfigurationResponseSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <a>LoggingConfiguration</a> for the specified web ACL.' }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: 'The <a>LoggingConfiguration</a> for the specified web ACL.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoggingConfigurationResponse')
 
 const GetLoggingConfigurationRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL for which you want to get the <a>LoggingConfiguration</a>.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL for which you want to get the <a>LoggingConfiguration</a>.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetLoggingConfigurationRequest' })
   .openapi('GetLoggingConfigurationRequest')
@@ -2707,51 +2001,39 @@ const PolicyStringSchema = z
 
 const GetPermissionPolicyResponseSchema = z
   .object({
-    Policy: PolicyStringSchema.and(
-      z.any().openapi({ description: 'The IAM policy attached to the specified RuleGroup.' }),
-    ).exactOptional(),
+    Policy: PolicyStringSchema.exactOptional().openapi({
+      description: 'The IAM policy attached to the specified RuleGroup.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPermissionPolicyResponse')
 
 const GetPermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the RuleGroup for which you want to get the policy.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the RuleGroup for which you want to get the policy.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetPermissionPolicyRequest' })
   .openapi('GetPermissionPolicyRequest')
 
 const GetRateBasedRuleResponseSchema = z
   .object({
-    Rule: RateBasedRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <a>RateBasedRule</a> that you specified in the <code>GetRateBasedRule</code> request.',
-        }),
-    ).exactOptional(),
+    Rule: RateBasedRuleSchema.exactOptional().openapi({
+      description:
+        'Information about the <a>RateBasedRule</a> that you specified in the <code>GetRateBasedRule</code> request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRateBasedRuleResponse')
 
 const GetRateBasedRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <a>RateBasedRule</a> that you want to get. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <a>RateBasedRule</a> that you want to get. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
+    }),
   })
   .openapi({ required: ['RuleId'], title: 'GetRateBasedRuleRequest' })
   .openapi('GetRateBasedRuleRequest')
@@ -2769,108 +2051,76 @@ const NextMarkerSchema = z
 
 const GetRateBasedRuleManagedKeysResponseSchema = z
   .object({
-    ManagedKeys: ManagedKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IP addresses that currently are blocked by the specified <a>RateBasedRule</a>. ',
-        }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z.any().openapi({ description: 'A null value and not currently used.' }),
-    ).exactOptional(),
+    ManagedKeys: ManagedKeysSchema.exactOptional().openapi({
+      description:
+        'An array of IP addresses that currently are blocked by the specified <a>RateBasedRule</a>. ',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description: 'A null value and not currently used.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRateBasedRuleManagedKeysResponse')
 
 const GetRateBasedRuleManagedKeysRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <a>RateBasedRule</a> for which you want to get a list of <code>ManagedKeys</code>. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A null value and not currently used. Do not include this in your request.',
-        }),
-    ).exactOptional(),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <a>RateBasedRule</a> for which you want to get a list of <code>ManagedKeys</code>. <code>RuleId</code> is returned by <a>CreateRateBasedRule</a> and by <a>ListRateBasedRules</a>.',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description: 'A null value and not currently used. Do not include this in your request.',
+    }),
   })
   .openapi({ required: ['RuleId'], title: 'GetRateBasedRuleManagedKeysRequest' })
   .openapi('GetRateBasedRuleManagedKeysRequest')
 
 const GetRegexMatchSetResponseSchema = z
   .object({
-    RegexMatchSet: RegexMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <a>RegexMatchSet</a> that you specified in the <code>GetRegexMatchSet</code> request. For more information, see <a>RegexMatchTuple</a>.',
-        }),
-    ).exactOptional(),
+    RegexMatchSet: RegexMatchSetSchema.exactOptional().openapi({
+      description:
+        'Information about the <a>RegexMatchSet</a> that you specified in the <code>GetRegexMatchSet</code> request. For more information, see <a>RegexMatchTuple</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegexMatchSetResponse')
 
 const GetRegexMatchSetRequestSchema = z
   .object({
-    RegexMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to get. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
-        }),
-    ),
+    RegexMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to get. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
+    }),
   })
   .openapi({ required: ['RegexMatchSetId'], title: 'GetRegexMatchSetRequest' })
   .openapi('GetRegexMatchSetRequest')
 
 const GetRegexPatternSetResponseSchema = z
   .object({
-    RegexPatternSet: RegexPatternSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <a>RegexPatternSet</a> that you specified in the <code>GetRegexPatternSet</code> request, including the identifier of the pattern set and the regular expression patterns you want AWS WAF to search for. ',
-        }),
-    ).exactOptional(),
+    RegexPatternSet: RegexPatternSetSchema.exactOptional().openapi({
+      description:
+        'Information about the <a>RegexPatternSet</a> that you specified in the <code>GetRegexPatternSet</code> request, including the identifier of the pattern set and the regular expression patterns you want AWS WAF to search for. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegexPatternSetResponse')
 
 const GetRegexPatternSetRequestSchema = z
   .object({
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to get. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
-        }),
-    ),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to get. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
+    }),
   })
   .openapi({ required: ['RegexPatternSetId'], title: 'GetRegexPatternSetRequest' })
   .openapi('GetRegexPatternSetRequest')
 
 const GetRuleResponseSchema = z
   .object({
-    Rule: RuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>Rule</a> that you specified in the <code>GetRule</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>Rule</a>: Contains <code>MetricName</code>, <code>Name</code>, an array of <code>Predicate</code> objects, and <code>RuleId</code> </p> </li> <li> <p> <a>Predicate</a>: Each <code>Predicate</code> object contains <code>DataId</code>, <code>Negated</code>, and <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Rule: RuleSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>Rule</a> that you specified in the <code>GetRule</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>Rule</a>: Contains <code>MetricName</code>, <code>Name</code>, an array of <code>Predicate</code> objects, and <code>RuleId</code> </p> </li> <li> <p> <a>Predicate</a>: Each <code>Predicate</code> object contains <code>DataId</code>, <code>Negated</code>, and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -2887,42 +2137,30 @@ const GetRuleResponseSchema = z
 
 const GetRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <a>Rule</a> that you want to get. <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <a>Rule</a> that you want to get. <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.',
+    }),
   })
   .openapi({ required: ['RuleId'], title: 'GetRuleRequest' })
   .openapi('GetRuleRequest')
 
 const GetRuleGroupResponseSchema = z
   .object({
-    RuleGroup: RuleGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the <a>RuleGroup</a> that you specified in the <code>GetRuleGroup</code> request. ',
-        }),
-    ).exactOptional(),
+    RuleGroup: RuleGroupSchema.exactOptional().openapi({
+      description:
+        'Information about the <a>RuleGroup</a> that you specified in the <code>GetRuleGroup</code> request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRuleGroupResponse')
 
 const GetRuleGroupRequestSchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to get. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
-        }),
-    ),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to get. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
+    }),
   })
   .openapi({ required: ['RuleGroupId'], title: 'GetRuleGroupRequest' })
   .openapi('GetRuleGroupRequest')
@@ -2943,16 +2181,12 @@ const HeaderValueSchema = z.string().openapi('HeaderValue')
 
 const HTTPHeaderSchema = z
   .object({
-    Name: HeaderNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of one of the headers in the sampled web request.' }),
-    ).exactOptional(),
-    Value: HeaderValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The value of one of the headers in the sampled web request.' }),
-    ).exactOptional(),
+    Name: HeaderNameSchema.exactOptional().openapi({
+      description: 'The name of one of the headers in the sampled web request.',
+    }),
+    Value: HeaderValueSchema.exactOptional().openapi({
+      description: 'The value of one of the headers in the sampled web request.',
+    }),
   })
   .openapi({
     description:
@@ -2965,54 +2199,30 @@ const HTTPHeadersSchema = z.array(HTTPHeaderSchema).openapi('HTTPHeaders')
 
 const HTTPRequestSchema = z
   .object({
-    ClientIP: IPStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address that the request originated from. If the <code>WebACL</code> is associated with a CloudFront distribution, this is the value of one of the following fields in CloudFront access logs:</p> <ul> <li> <p> <code>c-ip</code>, if the viewer did not use an HTTP proxy or a load balancer to send the request</p> </li> <li> <p> <code>x-forwarded-for</code>, if the viewer did use an HTTP proxy or a load balancer to send the request</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Country: CountrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The two-letter country code for the country that the request originated from. For a current list of country codes, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>.',
-        }),
-    ).exactOptional(),
-    URI: URIStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The part of a web request that identifies the resource, for example, <code>/images/daily-ad.jpg</code>.',
-        }),
-    ).exactOptional(),
-    Method: HTTPMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP method specified in the sampled web request. CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>. ',
-        }),
-    ).exactOptional(),
-    HTTPVersion: HTTPVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP version specified in the sampled web request, for example, <code>HTTP/1.1</code>.',
-        }),
-    ).exactOptional(),
-    Headers: HTTPHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains two values for each header in the sampled web request: the name of the header and the value of the header.',
-        }),
-    ).exactOptional(),
+    ClientIP: IPStringSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address that the request originated from. If the <code>WebACL</code> is associated with a CloudFront distribution, this is the value of one of the following fields in CloudFront access logs:</p> <ul> <li> <p> <code>c-ip</code>, if the viewer did not use an HTTP proxy or a load balancer to send the request</p> </li> <li> <p> <code>x-forwarded-for</code>, if the viewer did use an HTTP proxy or a load balancer to send the request</p> </li> </ul>',
+    }),
+    Country: CountrySchema.exactOptional().openapi({
+      description:
+        'The two-letter country code for the country that the request originated from. For a current list of country codes, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>.',
+    }),
+    URI: URIStringSchema.exactOptional().openapi({
+      description:
+        'The part of a web request that identifies the resource, for example, <code>/images/daily-ad.jpg</code>.',
+    }),
+    Method: HTTPMethodSchema.exactOptional().openapi({
+      description:
+        'The HTTP method specified in the sampled web request. CloudFront supports the following methods: <code>DELETE</code>, <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code>, <code>PATCH</code>, <code>POST</code>, and <code>PUT</code>. ',
+    }),
+    HTTPVersion: HTTPVersionSchema.exactOptional().openapi({
+      description:
+        'The HTTP version specified in the sampled web request, for example, <code>HTTP/1.1</code>.',
+    }),
+    Headers: HTTPHeadersSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains two values for each header in the sampled web request: the name of the header and the value of the header.',
+    }),
   })
   .openapi({
     description:
@@ -3029,45 +2239,25 @@ const ActionSchema = z.string().openapi('Action')
 
 const SampledHTTPRequestSchema = z
   .object({
-    Request: HTTPRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A complex type that contains detailed information about the request.',
-        }),
-    ),
-    Weight: SampleWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates how one result in the response relates proportionally to other results in the response. A result that has a weight of <code>2</code> represents roughly twice as many CloudFront web requests as a result that has a weight of <code>1</code>.',
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which AWS WAF received the request from your AWS resource, in Unix time format (in seconds).',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action for the <code>Rule</code> that the request matched: <code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>.',
-        }),
-    ).exactOptional(),
-    RuleWithinRuleGroup: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This value is returned if the <code>GetSampledRequests</code> request specifies the ID of a <code>RuleGroup</code> rather than the ID of an individual rule. <code>RuleWithinRuleGroup</code> is the rule within the specified <code>RuleGroup</code> that matched the request listed in the response.',
-        }),
-    ).exactOptional(),
+    Request: HTTPRequestSchema.openapi({
+      description: 'A complex type that contains detailed information about the request.',
+    }),
+    Weight: SampleWeightSchema.openapi({
+      description:
+        'A value that indicates how one result in the response relates proportionally to other results in the response. A result that has a weight of <code>2</code> represents roughly twice as many CloudFront web requests as a result that has a weight of <code>1</code>.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which AWS WAF received the request from your AWS resource, in Unix time format (in seconds).',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description:
+        'The action for the <code>Rule</code> that the request matched: <code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>.',
+    }),
+    RuleWithinRuleGroup: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'This value is returned if the <code>GetSampledRequests</code> request specifies the ID of a <code>RuleGroup</code> rather than the ID of an individual rule. <code>RuleWithinRuleGroup</code> is the rule within the specified <code>RuleGroup</code> that matched the request listed in the response.',
+    }),
   })
   .openapi({
     required: ['Request', 'Weight'],
@@ -3082,22 +2272,14 @@ const PopulationSizeSchema = z.int().openapi('PopulationSize')
 
 const TimeWindowSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The beginning of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your AWS resource received. You must specify the date and time in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your AWS resource received. You must specify the date and time in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
-        }),
-    ),
+    StartTime: TimestampSchema.openapi({
+      description:
+        'The beginning of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your AWS resource received. You must specify the date and time in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        'The end of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your AWS resource received. You must specify the date and time in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
+    }),
   })
   .openapi({
     required: ['StartTime', 'EndTime'],
@@ -3108,30 +2290,18 @@ const TimeWindowSchema = z
 
 const GetSampledRequestsResponseSchema = z
   .object({
-    SampledRequests: SampledHTTPRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains detailed information about each of the requests in the sample.',
-        }),
-    ).exactOptional(),
-    PopulationSize: PopulationSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of requests from which <code>GetSampledRequests</code> got a sample of <code>MaxItems</code> requests. If <code>PopulationSize</code> is less than <code>MaxItems</code>, the sample includes every request that your AWS resource received during the specified time range.',
-        }),
-    ).exactOptional(),
-    TimeWindow: TimeWindowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Usually, <code>TimeWindow</code> is the time range that you specified in the <code>GetSampledRequests</code> request. However, if your AWS resource received more than 5,000 requests during the time range that you specified in the request, <code>GetSampledRequests</code> returns the time range for the first 5,000 requests. Times are in Coordinated Universal Time (UTC) format.',
-        }),
-    ).exactOptional(),
+    SampledRequests: SampledHTTPRequestsSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains detailed information about each of the requests in the sample.',
+    }),
+    PopulationSize: PopulationSizeSchema.exactOptional().openapi({
+      description:
+        'The total number of requests from which <code>GetSampledRequests</code> got a sample of <code>MaxItems</code> requests. If <code>PopulationSize</code> is less than <code>MaxItems</code>, the sample includes every request that your AWS resource received during the specified time range.',
+    }),
+    TimeWindow: TimeWindowSchema.exactOptional().openapi({
+      description:
+        'Usually, <code>TimeWindow</code> is the time range that you specified in the <code>GetSampledRequests</code> request. However, if your AWS resource received more than 5,000 requests during the time range that you specified in the request, <code>GetSampledRequests</code> returns the time range for the first 5,000 requests. Times are in Coordinated Universal Time (UTC) format.',
+    }),
   })
   .openapi({
     example: {
@@ -3164,38 +2334,22 @@ const GetSampledRequestsMaxItemsSchema = z
 
 const GetSampledRequestsRequestSchema = z
   .object({
-    WebAclId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>WebACLId</code> of the <code>WebACL</code> for which you want <code>GetSampledRequests</code> to return a sample of requests.',
-        }),
-    ),
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> <code>RuleId</code> is one of three values:</p> <ul> <li> <p>The <code>RuleId</code> of the <code>Rule</code> or the <code>RuleGroupId</code> of the <code>RuleGroup</code> for which you want <code>GetSampledRequests</code> to return a sample of requests.</p> </li> <li> <p> <code>Default_Action</code>, which causes <code>GetSampledRequests</code> to return a sample of the requests that didn't match any of the rules in the specified <code>WebACL</code>.</p> </li> </ul>",
-        }),
-    ),
-    TimeWindow: TimeWindowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date and time and the end date and time of the range for which you want <code>GetSampledRequests</code> to return a sample of requests. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
-        }),
-    ),
-    MaxItems: GetSampledRequestsMaxItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of requests that you want AWS WAF to return from among the first 5,000 requests that your AWS resource received during the time range. If your resource received fewer requests than the value of <code>MaxItems</code>, <code>GetSampledRequests</code> returns information about all of them. ',
-        }),
-    ),
+    WebAclId: ResourceIdSchema.openapi({
+      description:
+        'The <code>WebACLId</code> of the <code>WebACL</code> for which you want <code>GetSampledRequests</code> to return a sample of requests.',
+    }),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        "<p> <code>RuleId</code> is one of three values:</p> <ul> <li> <p>The <code>RuleId</code> of the <code>Rule</code> or the <code>RuleGroupId</code> of the <code>RuleGroup</code> for which you want <code>GetSampledRequests</code> to return a sample of requests.</p> </li> <li> <p> <code>Default_Action</code>, which causes <code>GetSampledRequests</code> to return a sample of the requests that didn't match any of the rules in the specified <code>WebACL</code>.</p> </li> </ul>",
+    }),
+    TimeWindow: TimeWindowSchema.openapi({
+      description:
+        'The start date and time and the end date and time of the range for which you want <code>GetSampledRequests</code> to return a sample of requests. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
+    }),
+    MaxItems: GetSampledRequestsMaxItemsSchema.openapi({
+      description:
+        'The number of requests that you want AWS WAF to return from among the first 5,000 requests that your AWS resource received during the time range. If your resource received fewer requests than the value of <code>MaxItems</code>, <code>GetSampledRequests</code> returns information about all of them. ',
+    }),
   })
   .openapi({
     required: ['WebAclId', 'RuleId', 'TimeWindow', 'MaxItems'],
@@ -3205,14 +2359,10 @@ const GetSampledRequestsRequestSchema = z
 
 const GetSizeConstraintSetResponseSchema = z
   .object({
-    SizeConstraintSet: SizeConstraintSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>SizeConstraintSet</a> that you specified in the <code>GetSizeConstraintSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>SizeConstraintSet</a>: Contains <code>SizeConstraintSetId</code>, <code>SizeConstraints</code>, and <code>Name</code> </p> </li> <li> <p> <code>SizeConstraints</code>: Contains an array of <a>SizeConstraint</a> objects. Each <code>SizeConstraint</code> object contains <a>FieldToMatch</a>, <code>TextTransformation</code>, <code>ComparisonOperator</code>, and <code>Size</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    SizeConstraintSet: SizeConstraintSetSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>SizeConstraintSet</a> that you specified in the <code>GetSizeConstraintSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>SizeConstraintSet</a>: Contains <code>SizeConstraintSetId</code>, <code>SizeConstraints</code>, and <code>Name</code> </p> </li> <li> <p> <code>SizeConstraints</code>: Contains an array of <a>SizeConstraint</a> objects. Each <code>SizeConstraint</code> object contains <a>FieldToMatch</a>, <code>TextTransformation</code>, <code>ComparisonOperator</code>, and <code>Size</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -3235,28 +2385,20 @@ const GetSizeConstraintSetResponseSchema = z
 
 const GetSizeConstraintSetRequestSchema = z
   .object({
-    SizeConstraintSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to get. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
-        }),
-    ),
+    SizeConstraintSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to get. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
+    }),
   })
   .openapi({ required: ['SizeConstraintSetId'], title: 'GetSizeConstraintSetRequest' })
   .openapi('GetSizeConstraintSetRequest')
 
 const GetSqlInjectionMatchSetResponseSchema = z
   .object({
-    SqlInjectionMatchSet: SqlInjectionMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>SqlInjectionMatchSet</a> that you specified in the <code>GetSqlInjectionMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>SqlInjectionMatchSet</a>: Contains <code>Name</code>, <code>SqlInjectionMatchSetId</code>, and an array of <code>SqlInjectionMatchTuple</code> objects</p> </li> <li> <p> <a>SqlInjectionMatchTuple</a>: Each <code>SqlInjectionMatchTuple</code> object contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    SqlInjectionMatchSet: SqlInjectionMatchSetSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>SqlInjectionMatchSet</a> that you specified in the <code>GetSqlInjectionMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>SqlInjectionMatchSet</a>: Contains <code>Name</code>, <code>SqlInjectionMatchSetId</code>, and an array of <code>SqlInjectionMatchTuple</code> objects</p> </li> <li> <p> <a>SqlInjectionMatchTuple</a>: Each <code>SqlInjectionMatchTuple</code> object contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -3275,14 +2417,10 @@ const GetSqlInjectionMatchSetResponseSchema = z
 
 const GetSqlInjectionMatchSetRequestSchema = z
   .object({
-    SqlInjectionMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SqlInjectionMatchSetId</code> of the <a>SqlInjectionMatchSet</a> that you want to get. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
-        }),
-    ),
+    SqlInjectionMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SqlInjectionMatchSetId</code> of the <a>SqlInjectionMatchSet</a> that you want to get. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
+    }),
   })
   .openapi({
     required: ['SqlInjectionMatchSetId'],
@@ -3293,14 +2431,10 @@ const GetSqlInjectionMatchSetRequestSchema = z
 
 const GetWebACLResponseSchema = z
   .object({
-    WebACL: WebACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>WebACL</a> that you specified in the <code>GetWebACL</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>WebACL</a>: Contains <code>DefaultAction</code>, <code>MetricName</code>, <code>Name</code>, an array of <code>Rule</code> objects, and <code>WebACLId</code> </p> </li> <li> <p> <code>DefaultAction</code> (Data type is <a>WafAction</a>): Contains <code>Type</code> </p> </li> <li> <p> <code>Rules</code>: Contains an array of <code>ActivatedRule</code> objects, which contain <code>Action</code>, <code>Priority</code>, and <code>RuleId</code> </p> </li> <li> <p> <code>Action</code>: Contains <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    WebACL: WebACLSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>WebACL</a> that you specified in the <code>GetWebACL</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>WebACL</a>: Contains <code>DefaultAction</code>, <code>MetricName</code>, <code>Name</code>, an array of <code>Rule</code> objects, and <code>WebACLId</code> </p> </li> <li> <p> <code>DefaultAction</code> (Data type is <a>WafAction</a>): Contains <code>Type</code> </p> </li> <li> <p> <code>Rules</code>: Contains an array of <code>ActivatedRule</code> objects, which contain <code>Action</code>, <code>Priority</code>, and <code>RuleId</code> </p> </li> <li> <p> <code>Action</code>: Contains <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -3318,36 +2452,24 @@ const GetWebACLResponseSchema = z
 
 const GetWebACLRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>WebACLId</code> of the <a>WebACL</a> that you want to get. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
-        }),
-    ),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        'The <code>WebACLId</code> of the <a>WebACL</a> that you want to get. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
+    }),
   })
   .openapi({ required: ['WebACLId'], title: 'GetWebACLRequest' })
   .openapi('GetWebACLRequest')
 
 const WebACLSummarySchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>WebACL</code>. You use <code>WebACLId</code> to get information about a <code>WebACL</code> (see <a>GetWebACL</a>), update a <code>WebACL</code> (see <a>UpdateWebACL</a>), and delete a <code>WebACL</code> from AWS WAF (see <a>DeleteWebACL</a>).</p> <p> <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>WebACL</a>. You can't change the name of a <code>WebACL</code> after you create it.",
-        }),
-    ),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>WebACL</code>. You use <code>WebACLId</code> to get information about a <code>WebACL</code> (see <a>GetWebACL</a>), update a <code>WebACL</code> (see <a>UpdateWebACL</a>), and delete a <code>WebACL</code> from AWS WAF (see <a>DeleteWebACL</a>).</p> <p> <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>WebACL</a>. You can't change the name of a <code>WebACL</code> after you create it.",
+    }),
   })
   .openapi({
     required: ['WebACLId', 'Name'],
@@ -3358,42 +2480,30 @@ const WebACLSummarySchema = z
 
 const GetWebACLForResourceResponseSchema = z
   .object({
-    WebACLSummary: WebACLSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the web ACL that you specified in the <code>GetWebACLForResource</code> request. If there is no associated resource, a null WebACLSummary is returned.',
-        }),
-    ).exactOptional(),
+    WebACLSummary: WebACLSummarySchema.exactOptional().openapi({
+      description:
+        'Information about the web ACL that you specified in the <code>GetWebACLForResource</code> request. If there is no associated resource, a null WebACLSummary is returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWebACLForResourceResponse')
 
 const GetWebACLForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN (Amazon Resource Name) of the resource for which to get the web ACL, either an application load balancer or Amazon API Gateway stage.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The ARN (Amazon Resource Name) of the resource for which to get the web ACL, either an application load balancer or Amazon API Gateway stage.</p> <p>The ARN should be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:aws:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway stage: <code>arn:aws:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetWebACLForResourceRequest' })
   .openapi('GetWebACLForResourceRequest')
 
 const GetXssMatchSetResponseSchema = z
   .object({
-    XssMatchSet: XssMatchSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the <a>XssMatchSet</a> that you specified in the <code>GetXssMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>XssMatchSet</a>: Contains <code>Name</code>, <code>XssMatchSetId</code>, and an array of <code>XssMatchTuple</code> objects</p> </li> <li> <p> <a>XssMatchTuple</a>: Each <code>XssMatchTuple</code> object contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    XssMatchSet: XssMatchSetSchema.exactOptional().openapi({
+      description:
+        '<p>Information about the <a>XssMatchSet</a> that you specified in the <code>GetXssMatchSet</code> request. For more information, see the following topics:</p> <ul> <li> <p> <a>XssMatchSet</a>: Contains <code>Name</code>, <code>XssMatchSetId</code>, and an array of <code>XssMatchTuple</code> objects</p> </li> <li> <p> <a>XssMatchTuple</a>: Each <code>XssMatchTuple</code> object contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     example: {
@@ -3412,14 +2522,10 @@ const GetXssMatchSetResponseSchema = z
 
 const GetXssMatchSetRequestSchema = z
   .object({
-    XssMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>XssMatchSetId</code> of the <a>XssMatchSet</a> that you want to get. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
-        }),
-    ),
+    XssMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>XssMatchSetId</code> of the <a>XssMatchSet</a> that you want to get. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
+    }),
   })
   .openapi({
     required: ['XssMatchSetId'],
@@ -3430,17 +2536,13 @@ const GetXssMatchSetRequestSchema = z
 
 const ListActivatedRulesInRuleGroupResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>ActivatedRules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>ActivatedRules</code>, submit another <code>ListActivatedRulesInRuleGroup</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    ActivatedRules: ActivatedRulesSchema.and(
-      z.any().openapi({ description: 'An array of <code>ActivatedRules</code> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>ActivatedRules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>ActivatedRules</code>, submit another <code>ListActivatedRulesInRuleGroup</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    ActivatedRules: ActivatedRulesSchema.exactOptional().openapi({
+      description: 'An array of <code>ActivatedRules</code> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListActivatedRulesInRuleGroupResponse')
@@ -3449,52 +2551,32 @@ const PaginationLimitSchema = z.int().min(0).max(100).openapi('PaginationLimit')
 
 const ListActivatedRulesInRuleGroupRequestSchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleGroupId</code> of the <a>RuleGroup</a> for which you want to get a list of <a>ActivatedRule</a> objects.',
-        }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>ActivatedRules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ActivatedRules</code>. For the second and subsequent <code>ListActivatedRulesInRuleGroup</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ActivatedRules</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>ActivatedRules</code> that you want AWS WAF to return for this request. If you have more <code>ActivatedRules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>ActivatedRules</code>.',
-        }),
-    ).exactOptional(),
+    RuleGroupId: ResourceIdSchema.exactOptional().openapi({
+      description:
+        'The <code>RuleGroupId</code> of the <a>RuleGroup</a> for which you want to get a list of <a>ActivatedRule</a> objects.',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>ActivatedRules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ActivatedRules</code>. For the second and subsequent <code>ListActivatedRulesInRuleGroup</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ActivatedRules</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>ActivatedRules</code> that you want AWS WAF to return for this request. If you have more <code>ActivatedRules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>ActivatedRules</code>.',
+    }),
   })
   .openapi({ title: 'ListActivatedRulesInRuleGroupRequest', required: [] })
   .openapi('ListActivatedRulesInRuleGroupRequest')
 
 const ByteMatchSetSummarySchema = z
   .object({
-    ByteMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>ByteMatchSetId</code> for a <code>ByteMatchSet</code>. You use <code>ByteMatchSetId</code> to get information about a <code>ByteMatchSet</code>, update a <code>ByteMatchSet</code>, remove a <code>ByteMatchSet</code> from a <code>Rule</code>, and delete a <code>ByteMatchSet</code> from AWS WAF.</p> <p> <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
-        }),
-    ),
+    ByteMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>ByteMatchSetId</code> for a <code>ByteMatchSet</code>. You use <code>ByteMatchSetId</code> to get information about a <code>ByteMatchSet</code>, update a <code>ByteMatchSet</code>, remove a <code>ByteMatchSet</code> from a <code>Rule</code>, and delete a <code>ByteMatchSet</code> from AWS WAF.</p> <p> <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>ByteMatchSet</a>. You can't change <code>Name</code> after you create a <code>ByteMatchSet</code>.",
+    }),
   })
   .openapi({
     required: ['ByteMatchSetId', 'Name'],
@@ -3509,61 +2591,41 @@ const ByteMatchSetSummariesSchema = z
 
 const ListByteMatchSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>ByteMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>ByteMatchSet</code> objects, submit another <code>ListByteMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    ByteMatchSets: ByteMatchSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>ByteMatchSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>ByteMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>ByteMatchSet</code> objects, submit another <code>ListByteMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    ByteMatchSets: ByteMatchSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>ByteMatchSetSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListByteMatchSetsResponse')
 
 const ListByteMatchSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>ByteMatchSets</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ByteMatchSets</code>. For the second and subsequent <code>ListByteMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ByteMatchSets</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>ByteMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>ByteMatchSets</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>ByteMatchSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>ByteMatchSets</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ByteMatchSets</code>. For the second and subsequent <code>ListByteMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ByteMatchSets</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>ByteMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>ByteMatchSets</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>ByteMatchSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListByteMatchSetsRequest', required: [] })
   .openapi('ListByteMatchSetsRequest')
 
 const GeoMatchSetSummarySchema = z
   .object({
-    GeoMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>GeoMatchSetId</code> for an <a>GeoMatchSet</a>. You can use <code>GeoMatchSetId</code> in a <a>GetGeoMatchSet</a> request to get detailed information about an <a>GeoMatchSet</a>.',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>GeoMatchSet</a>. You can't change the name of an <code>GeoMatchSet</code> after you create it.",
-        }),
-    ),
+    GeoMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>GeoMatchSetId</code> for an <a>GeoMatchSet</a>. You can use <code>GeoMatchSetId</code> in a <a>GetGeoMatchSet</a> request to get detailed information about an <a>GeoMatchSet</a>.',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>GeoMatchSet</a>. You can't change the name of an <code>GeoMatchSet</code> after you create it.",
+    }),
   })
   .openapi({
     required: ['GeoMatchSetId', 'Name'],
@@ -3576,61 +2638,41 @@ const GeoMatchSetSummariesSchema = z.array(GeoMatchSetSummarySchema).openapi('Ge
 
 const ListGeoMatchSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>GeoMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>GeoMatchSet</code> objects, submit another <code>ListGeoMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    GeoMatchSets: GeoMatchSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>GeoMatchSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>GeoMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>GeoMatchSet</code> objects, submit another <code>ListGeoMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    GeoMatchSets: GeoMatchSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>GeoMatchSetSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListGeoMatchSetsResponse')
 
 const ListGeoMatchSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>GeoMatchSet</code>s than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>GeoMatchSet</code> objects. For the second and subsequent <code>ListGeoMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>GeoMatchSet</code> objects.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>GeoMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>GeoMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>GeoMatchSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>GeoMatchSet</code>s than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>GeoMatchSet</code> objects. For the second and subsequent <code>ListGeoMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>GeoMatchSet</code> objects.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>GeoMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>GeoMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>GeoMatchSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListGeoMatchSetsRequest', required: [] })
   .openapi('ListGeoMatchSetsRequest')
 
 const IPSetSummarySchema = z
   .object({
-    IPSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>IPSetId</code> for an <a>IPSet</a>. You can use <code>IPSetId</code> in a <a>GetIPSet</a> request to get detailed information about an <a>IPSet</a>.',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>IPSet</a>. You can't change the name of an <code>IPSet</code> after you create it.",
-        }),
-    ),
+    IPSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>IPSetId</code> for an <a>IPSet</a>. You can use <code>IPSetId</code> in a <a>GetIPSet</a> request to get detailed information about an <a>IPSet</a>.',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>IPSet</a>. You can't change the name of an <code>IPSet</code> after you create it.",
+    }),
   })
   .openapi({
     required: ['IPSetId', 'Name'],
@@ -3643,17 +2685,13 @@ const IPSetSummariesSchema = z.array(IPSetSummarySchema).openapi('IPSetSummaries
 
 const ListIPSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To list more <code>IPSet</code> objects, submit another <code>ListIPSets</code> request, and in the next request use the <code>NextMarker</code> response value as the <code>NextMarker</code> value.',
-        }),
-    ).exactOptional(),
-    IPSets: IPSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>IPSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'To list more <code>IPSet</code> objects, submit another <code>ListIPSets</code> request, and in the next request use the <code>NextMarker</code> response value as the <code>NextMarker</code> value.',
+    }),
+    IPSets: IPSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>IPSetSummary</a> objects.',
+    }),
   })
   .openapi({
     example: {
@@ -3665,22 +2703,14 @@ const ListIPSetsResponseSchema = z
 
 const ListIPSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>IPSets</code>. For the second and subsequent <code>ListIPSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>IPSets</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>IPSet</code> objects that you want AWS WAF to return for this request. If you have more <code>IPSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>IPSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>IPSets</code>. For the second and subsequent <code>ListIPSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>IPSets</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>IPSet</code> objects that you want AWS WAF to return for this request. If you have more <code>IPSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>IPSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListIPSetsRequest', required: [] })
   .openapi('ListIPSetsRequest')
@@ -3691,61 +2721,41 @@ const LoggingConfigurationsSchema = z
 
 const ListLoggingConfigurationsResponseSchema = z
   .object({
-    LoggingConfigurations: LoggingConfigurationsSchema.and(
-      z.any().openapi({ description: 'An array of <a>LoggingConfiguration</a> objects.' }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>LoggingConfigurations</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>LoggingConfigurations</code>, submit another <code>ListLoggingConfigurations</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
+    LoggingConfigurations: LoggingConfigurationsSchema.exactOptional().openapi({
+      description: 'An array of <a>LoggingConfiguration</a> objects.',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>LoggingConfigurations</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>LoggingConfigurations</code>, submit another <code>ListLoggingConfigurations</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLoggingConfigurationsResponse')
 
 const ListLoggingConfigurationsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>LoggingConfigurations</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>LoggingConfigurations</code>. For the second and subsequent <code>ListLoggingConfigurations</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ListLoggingConfigurations</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>LoggingConfigurations</code> that you want AWS WAF to return for this request. If you have more <code>LoggingConfigurations</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>LoggingConfigurations</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>LoggingConfigurations</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>LoggingConfigurations</code>. For the second and subsequent <code>ListLoggingConfigurations</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>ListLoggingConfigurations</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>LoggingConfigurations</code> that you want AWS WAF to return for this request. If you have more <code>LoggingConfigurations</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>LoggingConfigurations</code>.',
+    }),
   })
   .openapi({ title: 'ListLoggingConfigurationsRequest', required: [] })
   .openapi('ListLoggingConfigurationsRequest')
 
 const RuleSummarySchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>Rule</a>. You can't change the name of a <code>Rule</code> after you create it.",
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>Rule</code>. You use <code>RuleId</code> to get more information about a <code>Rule</code> (see <a>GetRule</a>), update a <code>Rule</code> (see <a>UpdateRule</a>), insert a <code>Rule</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>Rule</code> from AWS WAF (see <a>DeleteRule</a>).</p> <p> <code>RuleId</code> is returned by <a>CreateRule</a> and by <a>ListRules</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>Rule</a>. You can't change the name of a <code>Rule</code> after you create it.",
+    }),
   })
   .openapi({
     required: ['RuleId', 'Name'],
@@ -3758,61 +2768,41 @@ const RuleSummariesSchema = z.array(RuleSummarySchema).openapi('RuleSummaries')
 
 const ListRateBasedRulesResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>Rules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>Rules</code>, submit another <code>ListRateBasedRules</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    Rules: RuleSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RuleSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>Rules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>Rules</code>, submit another <code>ListRateBasedRules</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    Rules: RuleSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RuleSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRateBasedRulesResponse')
 
 const ListRateBasedRulesRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>Rules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>Rules</code>. For the second and subsequent <code>ListRateBasedRules</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>Rules</code> that you want AWS WAF to return for this request. If you have more <code>Rules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>Rules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>Rules</code>. For the second and subsequent <code>ListRateBasedRules</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>Rules</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>Rules</code> that you want AWS WAF to return for this request. If you have more <code>Rules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
+    }),
   })
   .openapi({ title: 'ListRateBasedRulesRequest', required: [] })
   .openapi('ListRateBasedRulesRequest')
 
 const RegexMatchSetSummarySchema = z
   .object({
-    RegexMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>RegexMatchSetId</code> for a <code>RegexMatchSet</code>. You use <code>RegexMatchSetId</code> to get information about a <code>RegexMatchSet</code>, update a <code>RegexMatchSet</code>, remove a <code>RegexMatchSet</code> from a <code>Rule</code>, and delete a <code>RegexMatchSet</code> from AWS WAF.</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
-        }),
-    ),
+    RegexMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>RegexMatchSetId</code> for a <code>RegexMatchSet</code>. You use <code>RegexMatchSetId</code> to get information about a <code>RegexMatchSet</code>, update a <code>RegexMatchSet</code>, remove a <code>RegexMatchSet</code> from a <code>Rule</code>, and delete a <code>RegexMatchSet</code> from AWS WAF.</p> <p> <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RegexMatchSet</a>. You can't change <code>Name</code> after you create a <code>RegexMatchSet</code>.",
+    }),
   })
   .openapi({
     required: ['RegexMatchSetId', 'Name'],
@@ -3827,61 +2817,41 @@ const RegexMatchSetSummariesSchema = z
 
 const ListRegexMatchSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>RegexMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RegexMatchSet</code> objects, submit another <code>ListRegexMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    RegexMatchSets: RegexMatchSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RegexMatchSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>RegexMatchSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RegexMatchSet</code> objects, submit another <code>ListRegexMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    RegexMatchSets: RegexMatchSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RegexMatchSetSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRegexMatchSetsResponse')
 
 const ListRegexMatchSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>RegexMatchSet</code> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ByteMatchSets</code>. For the second and subsequent <code>ListRegexMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RegexMatchSet</code> objects.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>RegexMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>RegexMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RegexMatchSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>RegexMatchSet</code> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>ByteMatchSets</code>. For the second and subsequent <code>ListRegexMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RegexMatchSet</code> objects.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>RegexMatchSet</code> objects that you want AWS WAF to return for this request. If you have more <code>RegexMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RegexMatchSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListRegexMatchSetsRequest', required: [] })
   .openapi('ListRegexMatchSetsRequest')
 
 const RegexPatternSetSummarySchema = z
   .object({
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>RegexPatternSetId</code> for a <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code>, update a <code>RegexPatternSet</code>, remove a <code>RegexPatternSet</code> from a <code>RegexMatchSet</code>, and delete a <code>RegexPatternSet</code> from AWS WAF.</p> <p> <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
-        }),
-    ),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>The <code>RegexPatternSetId</code> for a <code>RegexPatternSet</code>. You use <code>RegexPatternSetId</code> to get information about a <code>RegexPatternSet</code>, update a <code>RegexPatternSet</code>, remove a <code>RegexPatternSet</code> from a <code>RegexMatchSet</code>, and delete a <code>RegexPatternSet</code> from AWS WAF.</p> <p> <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RegexPatternSet</a>. You can't change <code>Name</code> after you create a <code>RegexPatternSet</code>.",
+    }),
   })
   .openapi({
     required: ['RegexPatternSetId', 'Name'],
@@ -3896,39 +2866,27 @@ const RegexPatternSetSummariesSchema = z
 
 const ListRegexPatternSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>RegexPatternSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RegexPatternSet</code> objects, submit another <code>ListRegexPatternSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    RegexPatternSets: RegexPatternSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RegexPatternSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>RegexPatternSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RegexPatternSet</code> objects, submit another <code>ListRegexPatternSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    RegexPatternSets: RegexPatternSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RegexPatternSetSummary</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRegexPatternSetsResponse')
 
 const ListRegexPatternSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>RegexPatternSet</code> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>RegexPatternSet</code> objects. For the second and subsequent <code>ListRegexPatternSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RegexPatternSet</code> objects.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>RegexPatternSet</code> objects that you want AWS WAF to return for this request. If you have more <code>RegexPatternSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RegexPatternSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>RegexPatternSet</code> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>RegexPatternSet</code> objects. For the second and subsequent <code>ListRegexPatternSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RegexPatternSet</code> objects.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>RegexPatternSet</code> objects that you want AWS WAF to return for this request. If you have more <code>RegexPatternSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RegexPatternSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListRegexPatternSetsRequest', required: [] })
   .openapi('ListRegexPatternSetsRequest')
@@ -3937,14 +2895,10 @@ const ResourceArnsSchema = z.array(ResourceArnSchema).openapi('ResourceArns')
 
 const ListResourcesForWebACLResponseSchema = z
   .object({
-    ResourceArns: ResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of ARNs (Amazon Resource Names) of the resources associated with the specified web ACL. An array with zero elements is returned if there are no resources associated with the web ACL.',
-        }),
-    ).exactOptional(),
+    ResourceArns: ResourceArnsSchema.exactOptional().openapi({
+      description:
+        'An array of ARNs (Amazon Resource Names) of the resources associated with the specified web ACL. An array with zero elements is returned if there are no resources associated with the web ACL.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesForWebACLResponse')
@@ -3955,44 +2909,28 @@ const ResourceTypeSchema = z
 
 const ListResourcesForWebACLRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier (ID) of the web ACL for which to list the associated resources.',
-        }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of resource to list, either an application load balancer or Amazon API Gateway.',
-        }),
-    ).exactOptional(),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        'The unique identifier (ID) of the web ACL for which to list the associated resources.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The type of resource to list, either an application load balancer or Amazon API Gateway.',
+    }),
   })
   .openapi({ required: ['WebACLId'], title: 'ListResourcesForWebACLRequest' })
   .openapi('ListResourcesForWebACLRequest')
 
 const RuleGroupSummarySchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>RuleGroup</code>. You use <code>RuleGroupId</code> to get more information about a <code>RuleGroup</code> (see <a>GetRuleGroup</a>), update a <code>RuleGroup</code> (see <a>UpdateRuleGroup</a>), insert a <code>RuleGroup</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RuleGroup</code> from AWS WAF (see <a>DeleteRuleGroup</a>).</p> <p> <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <a>RuleGroup</a>. You can't change the name of a <code>RuleGroup</code> after you create it.",
-        }),
-    ),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>RuleGroup</code>. You use <code>RuleGroupId</code> to get more information about a <code>RuleGroup</code> (see <a>GetRuleGroup</a>), update a <code>RuleGroup</code> (see <a>UpdateRuleGroup</a>), insert a <code>RuleGroup</code> into a <code>WebACL</code> or delete one from a <code>WebACL</code> (see <a>UpdateWebACL</a>), or delete a <code>RuleGroup</code> from AWS WAF (see <a>DeleteRuleGroup</a>).</p> <p> <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <a>RuleGroup</a>. You can't change the name of a <code>RuleGroup</code> after you create it.",
+    }),
   })
   .openapi({
     required: ['RuleGroupId', 'Name'],
@@ -4005,56 +2943,40 @@ const RuleGroupSummariesSchema = z.array(RuleGroupSummarySchema).openapi('RuleGr
 
 const ListRuleGroupsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>RuleGroups</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RuleGroups</code>, submit another <code>ListRuleGroups</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    RuleGroups: RuleGroupSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RuleGroup</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>RuleGroups</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>RuleGroups</code>, submit another <code>ListRuleGroups</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    RuleGroups: RuleGroupSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RuleGroup</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRuleGroupsResponse')
 
 const ListRuleGroupsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>RuleGroups</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>RuleGroups</code>. For the second and subsequent <code>ListRuleGroups</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RuleGroups</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>RuleGroups</code> that you want AWS WAF to return for this request. If you have more <code>RuleGroups</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RuleGroups</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>RuleGroups</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>RuleGroups</code>. For the second and subsequent <code>ListRuleGroups</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>RuleGroups</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>RuleGroups</code> that you want AWS WAF to return for this request. If you have more <code>RuleGroups</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>RuleGroups</code>.',
+    }),
   })
   .openapi({ title: 'ListRuleGroupsRequest', required: [] })
   .openapi('ListRuleGroupsRequest')
 
 const ListRulesResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>Rules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>Rules</code>, submit another <code>ListRules</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    Rules: RuleSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RuleSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>Rules</code> than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>Rules</code>, submit another <code>ListRules</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    Rules: RuleSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RuleSummary</a> objects.',
+    }),
   })
   .openapi({
     example: { Rules: [{ Name: 'WAFByteHeaderRule', RuleId: 'WAFRule-1-Example' }] },
@@ -4064,39 +2986,27 @@ const ListRulesResponseSchema = z
 
 const ListRulesRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>Rules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>Rules</code>. For the second and subsequent <code>ListRules</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>Rules</code> that you want AWS WAF to return for this request. If you have more <code>Rules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>Rules</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>Rules</code>. For the second and subsequent <code>ListRules</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>Rules</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>Rules</code> that you want AWS WAF to return for this request. If you have more <code>Rules</code> than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
+    }),
   })
   .openapi({ title: 'ListRulesRequest', required: [] })
   .openapi('ListRulesRequest')
 
 const SizeConstraintSetSummarySchema = z
   .object({
-    SizeConstraintSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>SizeConstraintSet</code>. You use <code>SizeConstraintSetId</code> to get information about a <code>SizeConstraintSet</code> (see <a>GetSizeConstraintSet</a>), update a <code>SizeConstraintSet</code> (see <a>UpdateSizeConstraintSet</a>), insert a <code>SizeConstraintSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SizeConstraintSet</code> from AWS WAF (see <a>DeleteSizeConstraintSet</a>).</p> <p> <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>SizeConstraintSet</code>, if any.' }),
-    ),
+    SizeConstraintSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>SizeConstraintSet</code>. You use <code>SizeConstraintSetId</code> to get information about a <code>SizeConstraintSet</code> (see <a>GetSizeConstraintSet</a>), update a <code>SizeConstraintSet</code> (see <a>UpdateSizeConstraintSet</a>), insert a <code>SizeConstraintSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SizeConstraintSet</code> from AWS WAF (see <a>DeleteSizeConstraintSet</a>).</p> <p> <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description: 'The name of the <code>SizeConstraintSet</code>, if any.',
+    }),
   })
   .openapi({
     required: ['SizeConstraintSetId', 'Name'],
@@ -4111,17 +3021,13 @@ const SizeConstraintSetSummariesSchema = z
 
 const ListSizeConstraintSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>SizeConstraintSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>SizeConstraintSet</code> objects, submit another <code>ListSizeConstraintSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    SizeConstraintSets: SizeConstraintSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>SizeConstraintSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>SizeConstraintSet</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>SizeConstraintSet</code> objects, submit another <code>ListSizeConstraintSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    SizeConstraintSets: SizeConstraintSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>SizeConstraintSetSummary</a> objects.',
+    }),
   })
   .openapi({
     example: {
@@ -4138,44 +3044,28 @@ const ListSizeConstraintSetsResponseSchema = z
 
 const ListSizeConstraintSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>SizeConstraintSets</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>SizeConstraintSets</code>. For the second and subsequent <code>ListSizeConstraintSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>SizeConstraintSets</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>SizeConstraintSet</code> objects that you want AWS WAF to return for this request. If you have more <code>SizeConstraintSets</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>SizeConstraintSet</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>SizeConstraintSets</code> than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>SizeConstraintSets</code>. For the second and subsequent <code>ListSizeConstraintSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>SizeConstraintSets</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>SizeConstraintSet</code> objects that you want AWS WAF to return for this request. If you have more <code>SizeConstraintSets</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>SizeConstraintSet</code> objects.',
+    }),
   })
   .openapi({ title: 'ListSizeConstraintSetsRequest', required: [] })
   .openapi('ListSizeConstraintSetsRequest')
 
 const SqlInjectionMatchSetSummarySchema = z
   .object({
-    SqlInjectionMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for a <code>SqlInjectionMatchSet</code>. You use <code>SqlInjectionMatchSetId</code> to get information about a <code>SqlInjectionMatchSet</code> (see <a>GetSqlInjectionMatchSet</a>), update a <code>SqlInjectionMatchSet</code> (see <a>UpdateSqlInjectionMatchSet</a>), insert a <code>SqlInjectionMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SqlInjectionMatchSet</code> from AWS WAF (see <a>DeleteSqlInjectionMatchSet</a>).</p> <p> <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the <code>SqlInjectionMatchSet</code>, if any, specified by <code>Id</code>.',
-        }),
-    ),
+    SqlInjectionMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for a <code>SqlInjectionMatchSet</code>. You use <code>SqlInjectionMatchSetId</code> to get information about a <code>SqlInjectionMatchSet</code> (see <a>GetSqlInjectionMatchSet</a>), update a <code>SqlInjectionMatchSet</code> (see <a>UpdateSqlInjectionMatchSet</a>), insert a <code>SqlInjectionMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete a <code>SqlInjectionMatchSet</code> from AWS WAF (see <a>DeleteSqlInjectionMatchSet</a>).</p> <p> <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        'The name of the <code>SqlInjectionMatchSet</code>, if any, specified by <code>Id</code>.',
+    }),
   })
   .openapi({
     required: ['SqlInjectionMatchSetId', 'Name'],
@@ -4190,17 +3080,13 @@ const SqlInjectionMatchSetSummariesSchema = z
 
 const ListSqlInjectionMatchSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <a>SqlInjectionMatchSet</a> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>SqlInjectionMatchSet</code> objects, submit another <code>ListSqlInjectionMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    SqlInjectionMatchSets: SqlInjectionMatchSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>SqlInjectionMatchSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <a>SqlInjectionMatchSet</a> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>SqlInjectionMatchSet</code> objects, submit another <code>ListSqlInjectionMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    SqlInjectionMatchSets: SqlInjectionMatchSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>SqlInjectionMatchSetSummary</a> objects.',
+    }),
   })
   .openapi({
     example: {
@@ -4218,22 +3104,14 @@ const ListSqlInjectionMatchSetsResponseSchema = z
 
 const ListSqlInjectionMatchSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <a>SqlInjectionMatchSet</a> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>SqlInjectionMatchSets</code>. For the second and subsequent <code>ListSqlInjectionMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>SqlInjectionMatchSets</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <a>SqlInjectionMatchSet</a> objects that you want AWS WAF to return for this request. If you have more <code>SqlInjectionMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <a>SqlInjectionMatchSet</a> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>SqlInjectionMatchSets</code>. For the second and subsequent <code>ListSqlInjectionMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>SqlInjectionMatchSets</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <a>SqlInjectionMatchSet</a> objects that you want AWS WAF to return for this request. If you have more <code>SqlInjectionMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
+    }),
   })
   .openapi({
     title: 'ListSqlInjectionMatchSetsRequest',
@@ -4245,25 +3123,17 @@ const ListSqlInjectionMatchSetsRequestSchema = z
 
 const SubscribedRuleGroupSummarySchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a <code>RuleGroup</code>.' }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A friendly name or description of the <code>RuleGroup</code>. You can't change the name of a <code>RuleGroup</code> after you create it.",
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
-        }),
-    ),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description: 'A unique identifier for a <code>RuleGroup</code>.',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        "A friendly name or description of the <code>RuleGroup</code>. You can't change the name of a <code>RuleGroup</code> after you create it.",
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        'A friendly name or description for the metrics for this <code>RuleGroup</code>. The name can contain only alphanumeric characters (A-Z, a-z, 0-9), with maximum length 128 and minimum length one. It can\'t contain whitespace or metric names reserved for AWS WAF, including "All" and "Default_Action." You can\'t change the name of the metric after you create the <code>RuleGroup</code>.',
+    }),
   })
   .openapi({
     required: ['RuleGroupId', 'Name', 'MetricName'],
@@ -4278,47 +3148,35 @@ const SubscribedRuleGroupSummariesSchema = z
 
 const ListSubscribedRuleGroupsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more objects, submit another <code>ListSubscribedRuleGroups</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    RuleGroups: SubscribedRuleGroupSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>RuleGroup</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more objects, submit another <code>ListSubscribedRuleGroups</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    RuleGroups: SubscribedRuleGroupSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>RuleGroup</a> objects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSubscribedRuleGroupsResponse')
 
 const ListSubscribedRuleGroupsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>ByteMatchSets</code>subscribed rule groups than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of subscribed rule groups. For the second and subsequent <code>ListSubscribedRuleGroupsRequest</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of subscribed rule groups.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of subscribed rule groups that you want AWS WAF to return for this request. If you have more objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>ByteMatchSets</code>subscribed rule groups than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of subscribed rule groups. For the second and subsequent <code>ListSubscribedRuleGroupsRequest</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of subscribed rule groups.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of subscribed rule groups that you want AWS WAF to return for this request. If you have more objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of objects.',
+    }),
   })
   .openapi({ title: 'ListSubscribedRuleGroupsRequest', required: [] })
   .openapi('ListSubscribedRuleGroupsRequest')
 
 const TagInfoForResourceSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    TagList: TagListSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    ResourceARN: ResourceArnSchema.exactOptional().openapi({ description: '<p/>' }),
+    TagList: TagListSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({
     description:
@@ -4329,19 +3187,17 @@ const TagInfoForResourceSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    TagInfoForResource: TagInfoForResourceSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({ description: '<p/>' }),
+    TagInfoForResource: TagInfoForResourceSchema.exactOptional().openapi({ description: '<p/>' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    Limit: PaginationLimitSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    ResourceARN: ResourceArnSchema.and(z.any().openapi({ description: '<p/>' })),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({ description: '<p/>' }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({ description: '<p/>' }),
+    ResourceARN: ResourceArnSchema.openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -4350,17 +3206,13 @@ const WebACLSummariesSchema = z.array(WebACLSummarySchema).openapi('WebACLSummar
 
 const ListWebACLsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <code>WebACL</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>WebACL</code> objects, submit another <code>ListWebACLs</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    WebACLs: WebACLSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>WebACLSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <code>WebACL</code> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>WebACL</code> objects, submit another <code>ListWebACLs</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    WebACLs: WebACLSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>WebACLSummary</a> objects.',
+    }),
   })
   .openapi({
     example: { WebACLs: [{ Name: 'WebACLexample', WebACLId: 'webacl-1472061481310' }] },
@@ -4370,44 +3222,28 @@ const ListWebACLsResponseSchema = z
 
 const ListWebACLsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <code>WebACL</code> objects than the number that you specify for <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>WebACL</code> objects. For the second and subsequent <code>ListWebACLs</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>WebACL</code> objects.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <code>WebACL</code> objects that you want AWS WAF to return for this request. If you have more <code>WebACL</code> objects than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>WebACL</code> objects.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <code>WebACL</code> objects than the number that you specify for <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>WebACL</code> objects. For the second and subsequent <code>ListWebACLs</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>WebACL</code> objects.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <code>WebACL</code> objects that you want AWS WAF to return for this request. If you have more <code>WebACL</code> objects than the number that you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>WebACL</code> objects.',
+    }),
   })
   .openapi({ title: 'ListWebACLsRequest', required: [] })
   .openapi('ListWebACLsRequest')
 
 const XssMatchSetSummarySchema = z
   .object({
-    XssMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A unique identifier for an <code>XssMatchSet</code>. You use <code>XssMatchSetId</code> to get information about a <code>XssMatchSet</code> (see <a>GetXssMatchSet</a>), update an <code>XssMatchSet</code> (see <a>UpdateXssMatchSet</a>), insert an <code>XssMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>XssMatchSet</code> from AWS WAF (see <a>DeleteXssMatchSet</a>).</p> <p> <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.</p>',
-        }),
-    ),
-    Name: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the <code>XssMatchSet</code>, if any, specified by <code>Id</code>.',
-        }),
-    ),
+    XssMatchSetId: ResourceIdSchema.openapi({
+      description:
+        '<p>A unique identifier for an <code>XssMatchSet</code>. You use <code>XssMatchSetId</code> to get information about a <code>XssMatchSet</code> (see <a>GetXssMatchSet</a>), update an <code>XssMatchSet</code> (see <a>UpdateXssMatchSet</a>), insert an <code>XssMatchSet</code> into a <code>Rule</code> or delete one from a <code>Rule</code> (see <a>UpdateRule</a>), and delete an <code>XssMatchSet</code> from AWS WAF (see <a>DeleteXssMatchSet</a>).</p> <p> <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.</p>',
+    }),
+    Name: ResourceNameSchema.openapi({
+      description:
+        'The name of the <code>XssMatchSet</code>, if any, specified by <code>Id</code>.',
+    }),
   })
   .openapi({
     required: ['XssMatchSetId', 'Name'],
@@ -4420,17 +3256,13 @@ const XssMatchSetSummariesSchema = z.array(XssMatchSetSummarySchema).openapi('Xs
 
 const ListXssMatchSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you have more <a>XssMatchSet</a> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>XssMatchSet</code> objects, submit another <code>ListXssMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
-        }),
-    ).exactOptional(),
-    XssMatchSets: XssMatchSetSummariesSchema.and(
-      z.any().openapi({ description: 'An array of <a>XssMatchSetSummary</a> objects.' }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you have more <a>XssMatchSet</a> objects than the number that you specified for <code>Limit</code> in the request, the response includes a <code>NextMarker</code> value. To list more <code>XssMatchSet</code> objects, submit another <code>ListXssMatchSets</code> request, and specify the <code>NextMarker</code> value from the response in the <code>NextMarker</code> value in the next request.',
+    }),
+    XssMatchSets: XssMatchSetSummariesSchema.exactOptional().openapi({
+      description: 'An array of <a>XssMatchSetSummary</a> objects.',
+    }),
   })
   .openapi({
     example: {
@@ -4445,22 +3277,14 @@ const ListXssMatchSetsResponseSchema = z
 
 const ListXssMatchSetsRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specify a value for <code>Limit</code> and you have more <a>XssMatchSet</a> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>XssMatchSets</code>. For the second and subsequent <code>ListXssMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>XssMatchSets</code>.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the number of <a>XssMatchSet</a> objects that you want AWS WAF to return for this request. If you have more <code>XssMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'If you specify a value for <code>Limit</code> and you have more <a>XssMatchSet</a> objects than the value of <code>Limit</code>, AWS WAF returns a <code>NextMarker</code> value in the response that allows you to list another group of <code>XssMatchSets</code>. For the second and subsequent <code>ListXssMatchSets</code> requests, specify the value of <code>NextMarker</code> from the previous response to get information about another batch of <code>XssMatchSets</code>.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'Specifies the number of <a>XssMatchSet</a> objects that you want AWS WAF to return for this request. If you have more <code>XssMatchSet</code> objects than the number you specify for <code>Limit</code>, the response includes a <code>NextMarker</code> value that you can use to get another batch of <code>Rules</code>.',
+    }),
   })
   .openapi({
     title: 'ListXssMatchSetsRequest',
@@ -4472,27 +3296,19 @@ const ListXssMatchSetsRequestSchema = z
 
 const PutLoggingConfigurationResponseSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>LoggingConfiguration</a> that you submitted in the request.',
-        }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: 'The <a>LoggingConfiguration</a> that you submitted in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutLoggingConfigurationResponse')
 
 const PutLoggingConfigurationRequestSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Kinesis Data Firehose that contains the inspected traffic information, the redacted fields details, and the Amazon Resource Name (ARN) of the web ACL to monitor.</p> <note> <p>When specifying <code>Type</code> in <code>RedactedFields</code>, you must use one of the following values: <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </note>',
-        }),
-    ),
+    LoggingConfiguration: LoggingConfigurationSchema.openapi({
+      description:
+        '<p>The Amazon Kinesis Data Firehose that contains the inspected traffic information, the redacted fields details, and the Amazon Resource Name (ARN) of the web ACL to monitor.</p> <note> <p>When specifying <code>Type</code> in <code>RedactedFields</code>, you must use one of the following values: <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </note>',
+    }),
   })
   .openapi({ required: ['LoggingConfiguration'], title: 'PutLoggingConfigurationRequest' })
   .openapi('PutLoggingConfigurationRequest')
@@ -4501,21 +3317,17 @@ const WAFServiceLinkedRoleErrorExceptionSchema = z
   .any()
   .openapi('WAFServiceLinkedRoleErrorException')
 
-const PutPermissionPolicyResponseSchema = z.object({}).openapi('PutPermissionPolicyResponse')
+const PutPermissionPolicyResponseSchema = z.looseObject({}).openapi('PutPermissionPolicyResponse')
 
 const PutPermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the RuleGroup to which you want to attach the policy.',
-        }),
-    ),
-    Policy: PolicyStringSchema.and(
-      z.any().openapi({ description: 'The policy to attach to the specified RuleGroup.' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the RuleGroup to which you want to attach the policy.',
+    }),
+    Policy: PolicyStringSchema.openapi({
+      description: 'The policy to attach to the specified RuleGroup.',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Policy'], title: 'PutPermissionPolicyRequest' })
   .openapi('PutPermissionPolicyRequest')
@@ -4524,38 +3336,34 @@ const WAFInvalidPermissionPolicyExceptionSchema = z
   .any()
   .openapi('WAFInvalidPermissionPolicyException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(z.any().openapi({ description: '<p/>' })),
-    Tags: TagListSchema.and(z.any().openapi({ description: '<p/>' })),
+    ResourceARN: ResourceArnSchema.openapi({ description: '<p/>' }),
+    Tags: TagListSchema.openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(z.any().openapi({ description: '<p/>' })),
-    TagKeys: TagKeyListSchema.and(z.any().openapi({ description: '<p/>' })),
+    ResourceARN: ResourceArnSchema.openapi({ description: '<p/>' }),
+    TagKeys: TagKeyListSchema.openapi({ description: '<p/>' }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateByteMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateByteMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('UpdateByteMatchSetResponse')
@@ -4564,19 +3372,13 @@ const ChangeActionSchema = z.enum(['INSERT', 'DELETE']).openapi('ChangeAction')
 
 const ByteMatchSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies whether to insert or delete a <a>ByteMatchTuple</a>.' }),
-    ),
-    ByteMatchTuple: ByteMatchTupleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the part of a web request that you want AWS WAF to inspect and the value that you want AWS WAF to search for. If you specify <code>DELETE</code> for the value of <code>Action</code>, the <code>ByteMatchTuple</code> values must exactly match the values in the <code>ByteMatchTuple</code> that you want to delete from the <code>ByteMatchSet</code>.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description: 'Specifies whether to insert or delete a <a>ByteMatchTuple</a>.',
+    }),
+    ByteMatchTuple: ByteMatchTupleSchema.openapi({
+      description:
+        'Information about the part of a web request that you want AWS WAF to inspect and the value that you want AWS WAF to search for. If you specify <code>DELETE</code> for the value of <code>Action</code>, the <code>ByteMatchTuple</code> values must exactly match the values in the <code>ByteMatchTuple</code> that you want to delete from the <code>ByteMatchSet</code>.',
+    }),
   })
   .openapi({
     required: ['Action', 'ByteMatchTuple'],
@@ -4592,29 +3394,17 @@ const ByteMatchSetUpdatesSchema = z
 
 const UpdateByteMatchSetRequestSchema = z
   .object({
-    ByteMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to update. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: ByteMatchSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>ByteMatchSetUpdate</code> objects that you want to insert into or delete from a <a>ByteMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>ByteMatchSetUpdate</a>: Contains <code>Action</code> and <code>ByteMatchTuple</code> </p> </li> <li> <p> <a>ByteMatchTuple</a>: Contains <code>FieldToMatch</code>, <code>PositionalConstraint</code>, <code>TargetString</code>, and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ),
+    ByteMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>ByteMatchSetId</code> of the <a>ByteMatchSet</a> that you want to update. <code>ByteMatchSetId</code> is returned by <a>CreateByteMatchSet</a> and by <a>ListByteMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: ByteMatchSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>ByteMatchSetUpdate</code> objects that you want to insert into or delete from a <a>ByteMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>ByteMatchSetUpdate</a>: Contains <code>Action</code> and <code>ByteMatchTuple</code> </p> </li> <li> <p> <a>ByteMatchTuple</a>: Contains <code>FieldToMatch</code>, <code>PositionalConstraint</code>, <code>TargetString</code>, and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ByteMatchSetId', 'ChangeToken', 'Updates'],
@@ -4626,36 +3416,23 @@ const WAFNonexistentContainerExceptionSchema = z.any().openapi('WAFNonexistentCo
 
 const UpdateGeoMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateGeoMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGeoMatchSetResponse')
 
 const GeoMatchSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to insert or delete a country with <a>UpdateGeoMatchSet</a>.',
-        }),
-    ),
-    GeoMatchConstraint: GeoMatchConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The country from which web requests originate that you want AWS WAF to search for.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description: 'Specifies whether to insert or delete a country with <a>UpdateGeoMatchSet</a>.',
+    }),
+    GeoMatchConstraint: GeoMatchConstraintSchema.openapi({
+      description:
+        'The country from which web requests originate that you want AWS WAF to search for.',
+    }),
   })
   .openapi({
     required: ['Action', 'GeoMatchConstraint'],
@@ -4671,29 +3448,17 @@ const GeoMatchSetUpdatesSchema = z
 
 const UpdateGeoMatchSetRequestSchema = z
   .object({
-    GeoMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>GeoMatchSetId</code> of the <a>GeoMatchSet</a> that you want to update. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: GeoMatchSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>GeoMatchSetUpdate</code> objects that you want to insert into or delete from an <a>GeoMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>GeoMatchSetUpdate</a>: Contains <code>Action</code> and <code>GeoMatchConstraint</code> </p> </li> <li> <p> <a>GeoMatchConstraint</a>: Contains <code>Type</code> and <code>Value</code> </p> <p>You can have only one <code>Type</code> and <code>Value</code> per <code>GeoMatchConstraint</code>. To add multiple countries, include multiple <code>GeoMatchSetUpdate</code> objects in your request.</p> </li> </ul>',
-        }),
-    ),
+    GeoMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>GeoMatchSetId</code> of the <a>GeoMatchSet</a> that you want to update. <code>GeoMatchSetId</code> is returned by <a>CreateGeoMatchSet</a> and by <a>ListGeoMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: GeoMatchSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>GeoMatchSetUpdate</code> objects that you want to insert into or delete from an <a>GeoMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>GeoMatchSetUpdate</a>: Contains <code>Action</code> and <code>GeoMatchConstraint</code> </p> </li> <li> <p> <a>GeoMatchConstraint</a>: Contains <code>Type</code> and <code>Value</code> </p> <p>You can have only one <code>Type</code> and <code>Value</code> per <code>GeoMatchConstraint</code>. To add multiple countries, include multiple <code>GeoMatchSetUpdate</code> objects in your request.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['GeoMatchSetId', 'ChangeToken', 'Updates'],
@@ -4703,36 +3468,23 @@ const UpdateGeoMatchSetRequestSchema = z
 
 const UpdateIPSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateIPSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('UpdateIPSetResponse')
 
 const IPSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to insert or delete an IP address with <a>UpdateIPSet</a>.',
-        }),
-    ),
-    IPSetDescriptor: IPSetDescriptorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address type (<code>IPV4</code> or <code>IPV6</code>) and the IP address range (in CIDR notation) that web requests originate from.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description: 'Specifies whether to insert or delete an IP address with <a>UpdateIPSet</a>.',
+    }),
+    IPSetDescriptor: IPSetDescriptorSchema.openapi({
+      description:
+        'The IP address type (<code>IPV4</code> or <code>IPV6</code>) and the IP address range (in CIDR notation) that web requests originate from.',
+    }),
   })
   .openapi({
     required: ['Action', 'IPSetDescriptor'],
@@ -4745,65 +3497,41 @@ const IPSetUpdatesSchema = z.array(IPSetUpdateSchema).min(1).openapi('IPSetUpdat
 
 const UpdateIPSetRequestSchema = z
   .object({
-    IPSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>IPSetId</code> of the <a>IPSet</a> that you want to update. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: IPSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>IPSetUpdate</code> objects that you want to insert into or delete from an <a>IPSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>IPSetUpdate</a>: Contains <code>Action</code> and <code>IPSetDescriptor</code> </p> </li> <li> <p> <a>IPSetDescriptor</a>: Contains <code>Type</code> and <code>Value</code> </p> </li> </ul> <p>You can insert a maximum of 1000 addresses in a single request.</p>',
-        }),
-    ),
+    IPSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>IPSetId</code> of the <a>IPSet</a> that you want to update. <code>IPSetId</code> is returned by <a>CreateIPSet</a> and by <a>ListIPSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: IPSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>IPSetUpdate</code> objects that you want to insert into or delete from an <a>IPSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>IPSetUpdate</a>: Contains <code>Action</code> and <code>IPSetDescriptor</code> </p> </li> <li> <p> <a>IPSetDescriptor</a>: Contains <code>Type</code> and <code>Value</code> </p> </li> </ul> <p>You can insert a maximum of 1000 addresses in a single request.</p>',
+    }),
   })
   .openapi({ required: ['IPSetId', 'ChangeToken', 'Updates'], title: 'UpdateIPSetRequest' })
   .openapi('UpdateIPSetRequest')
 
 const UpdateRateBasedRuleResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateRateBasedRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRateBasedRuleResponse')
 
 const RuleUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>INSERT</code> to add a <code>Predicate</code> to a <code>Rule</code>. Use <code>DELETE</code> to remove a <code>Predicate</code> from a <code>Rule</code>.',
-        }),
-    ),
-    Predicate: PredicateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>Predicate</code> (such as an <code>IPSet</code>) that you want to add to a <code>Rule</code>.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specify <code>INSERT</code> to add a <code>Predicate</code> to a <code>Rule</code>. Use <code>DELETE</code> to remove a <code>Predicate</code> from a <code>Rule</code>.',
+    }),
+    Predicate: PredicateSchema.openapi({
+      description:
+        'The ID of the <code>Predicate</code> (such as an <code>IPSet</code>) that you want to add to a <code>Rule</code>.',
+    }),
   })
   .openapi({
     required: ['Action', 'Predicate'],
@@ -4816,37 +3544,21 @@ const RuleUpdatesSchema = z.array(RuleUpdateSchema).openapi('RuleUpdates')
 
 const UpdateRateBasedRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <code>RateBasedRule</code> that you want to update. <code>RuleId</code> is returned by <code>CreateRateBasedRule</code> and by <a>ListRateBasedRules</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: RuleUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>RuleUpdate</code> objects that you want to insert into or delete from a <a>RateBasedRule</a>. ',
-        }),
-    ),
-    RateLimit: RateLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of requests, which have an identical value in the field specified by the <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <code>RateBasedRule</code> that you want to update. <code>RuleId</code> is returned by <code>CreateRateBasedRule</code> and by <a>ListRateBasedRules</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: RuleUpdatesSchema.openapi({
+      description:
+        'An array of <code>RuleUpdate</code> objects that you want to insert into or delete from a <a>RateBasedRule</a>. ',
+    }),
+    RateLimit: RateLimitSchema.openapi({
+      description:
+        'The maximum number of requests, which have an identical value in the field specified by the <code>RateKey</code>, allowed in a five-minute period. If the number of requests exceeds the <code>RateLimit</code> and the other predicates specified in the rule are also met, AWS WAF triggers the action that is specified for this rule.',
+    }),
   })
   .openapi({
     required: ['RuleId', 'ChangeToken', 'Updates', 'RateLimit'],
@@ -4856,35 +3568,23 @@ const UpdateRateBasedRuleRequestSchema = z
 
 const UpdateRegexMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateRegexMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRegexMatchSetResponse')
 
 const RegexMatchSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether to insert or delete a <a>RegexMatchTuple</a>.',
-        }),
-    ),
-    RegexMatchTuple: RegexMatchTupleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the part of a web request that you want AWS WAF to inspect and the identifier of the regular expression (regex) pattern that you want AWS WAF to search for. If you specify <code>DELETE</code> for the value of <code>Action</code>, the <code>RegexMatchTuple</code> values must exactly match the values in the <code>RegexMatchTuple</code> that you want to delete from the <code>RegexMatchSet</code>.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description: 'Specifies whether to insert or delete a <a>RegexMatchTuple</a>.',
+    }),
+    RegexMatchTuple: RegexMatchTupleSchema.openapi({
+      description:
+        'Information about the part of a web request that you want AWS WAF to inspect and the identifier of the regular expression (regex) pattern that you want AWS WAF to search for. If you specify <code>DELETE</code> for the value of <code>Action</code>, the <code>RegexMatchTuple</code> values must exactly match the values in the <code>RegexMatchTuple</code> that you want to delete from the <code>RegexMatchSet</code>.',
+    }),
   })
   .openapi({
     required: ['Action', 'RegexMatchTuple'],
@@ -4900,29 +3600,17 @@ const RegexMatchSetUpdatesSchema = z
 
 const UpdateRegexMatchSetRequestSchema = z
   .object({
-    RegexMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to update. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
-        }),
-    ),
-    Updates: RegexMatchSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>RegexMatchSetUpdate</code> objects that you want to insert into or delete from a <a>RegexMatchSet</a>. For more information, see <a>RegexMatchTuple</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RegexMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexMatchSetId</code> of the <a>RegexMatchSet</a> that you want to update. <code>RegexMatchSetId</code> is returned by <a>CreateRegexMatchSet</a> and by <a>ListRegexMatchSets</a>.',
+    }),
+    Updates: RegexMatchSetUpdatesSchema.openapi({
+      description:
+        'An array of <code>RegexMatchSetUpdate</code> objects that you want to insert into or delete from a <a>RegexMatchSet</a>. For more information, see <a>RegexMatchTuple</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['RegexMatchSetId', 'Updates', 'ChangeToken'],
@@ -4932,35 +3620,23 @@ const UpdateRegexMatchSetRequestSchema = z
 
 const UpdateRegexPatternSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateRegexPatternSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRegexPatternSetResponse')
 
 const RegexPatternSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies whether to insert or delete a <code>RegexPatternString</code>.',
-        }),
-    ),
-    RegexPatternString: RegexPatternStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the regular expression (regex) pattern that you want AWS WAF to search for, such as <code>B[a@]dB[o0]t</code>.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description: 'Specifies whether to insert or delete a <code>RegexPatternString</code>.',
+    }),
+    RegexPatternString: RegexPatternStringSchema.openapi({
+      description:
+        'Specifies the regular expression (regex) pattern that you want AWS WAF to search for, such as <code>B[a@]dB[o0]t</code>.',
+    }),
   })
   .openapi({
     required: ['Action', 'RegexPatternString'],
@@ -4976,29 +3652,17 @@ const RegexPatternSetUpdatesSchema = z
 
 const UpdateRegexPatternSetRequestSchema = z
   .object({
-    RegexPatternSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to update. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
-        }),
-    ),
-    Updates: RegexPatternSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>RegexPatternSetUpdate</code> objects that you want to insert into or delete from a <a>RegexPatternSet</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RegexPatternSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RegexPatternSetId</code> of the <a>RegexPatternSet</a> that you want to update. <code>RegexPatternSetId</code> is returned by <a>CreateRegexPatternSet</a> and by <a>ListRegexPatternSets</a>.',
+    }),
+    Updates: RegexPatternSetUpdatesSchema.openapi({
+      description:
+        'An array of <code>RegexPatternSetUpdate</code> objects that you want to insert into or delete from a <a>RegexPatternSet</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({
     required: ['RegexPatternSetId', 'Updates', 'ChangeToken'],
@@ -5010,79 +3674,51 @@ const WAFInvalidRegexPatternExceptionSchema = z.any().openapi('WAFInvalidRegexPa
 
 const UpdateRuleResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateRule</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('UpdateRuleResponse')
 
 const UpdateRuleRequestSchema = z
   .object({
-    RuleId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleId</code> of the <code>Rule</code> that you want to update. <code>RuleId</code> is returned by <code>CreateRule</code> and by <a>ListRules</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: RuleUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>RuleUpdate</code> objects that you want to insert into or delete from a <a>Rule</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>RuleUpdate</a>: Contains <code>Action</code> and <code>Predicate</code> </p> </li> <li> <p> <a>Predicate</a>: Contains <code>DataId</code>, <code>Negated</code>, and <code>Type</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ),
+    RuleId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleId</code> of the <code>Rule</code> that you want to update. <code>RuleId</code> is returned by <code>CreateRule</code> and by <a>ListRules</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: RuleUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>RuleUpdate</code> objects that you want to insert into or delete from a <a>Rule</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>RuleUpdate</a>: Contains <code>Action</code> and <code>Predicate</code> </p> </li> <li> <p> <a>Predicate</a>: Contains <code>DataId</code>, <code>Negated</code>, and <code>Type</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['RuleId', 'ChangeToken', 'Updates'], title: 'UpdateRuleRequest' })
   .openapi('UpdateRuleRequest')
 
 const UpdateRuleGroupResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateRuleGroup</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRuleGroupResponse')
 
 const RuleGroupUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>INSERT</code> to add an <code>ActivatedRule</code> to a <code>RuleGroup</code>. Use <code>DELETE</code> to remove an <code>ActivatedRule</code> from a <code>RuleGroup</code>.',
-        }),
-    ),
-    ActivatedRule: ActivatedRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ActivatedRule</code> object specifies a <code>Rule</code> that you want to insert or delete, the priority of the <code>Rule</code> in the <code>WebACL</code>, and the action that you want AWS WAF to take when a web request matches the <code>Rule</code> (<code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>).',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specify <code>INSERT</code> to add an <code>ActivatedRule</code> to a <code>RuleGroup</code>. Use <code>DELETE</code> to remove an <code>ActivatedRule</code> from a <code>RuleGroup</code>.',
+    }),
+    ActivatedRule: ActivatedRuleSchema.openapi({
+      description:
+        'The <code>ActivatedRule</code> object specifies a <code>Rule</code> that you want to insert or delete, the priority of the <code>Rule</code> in the <code>WebACL</code>, and the action that you want AWS WAF to take when a web request matches the <code>Rule</code> (<code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>).',
+    }),
   })
   .openapi({
     required: ['Action', 'ActivatedRule'],
@@ -5095,65 +3731,41 @@ const RuleGroupUpdatesSchema = z.array(RuleGroupUpdateSchema).min(1).openapi('Ru
 
 const UpdateRuleGroupRequestSchema = z
   .object({
-    RuleGroupId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to update. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
-        }),
-    ),
-    Updates: RuleGroupUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>RuleGroupUpdate</code> objects that you want to insert into or delete from a <a>RuleGroup</a>.</p> <p>You can only insert <code>REGULAR</code> rules into a rule group.</p> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
+    RuleGroupId: ResourceIdSchema.openapi({
+      description:
+        'The <code>RuleGroupId</code> of the <a>RuleGroup</a> that you want to update. <code>RuleGroupId</code> is returned by <a>CreateRuleGroup</a> and by <a>ListRuleGroups</a>.',
+    }),
+    Updates: RuleGroupUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>RuleGroupUpdate</code> objects that you want to insert into or delete from a <a>RuleGroup</a>.</p> <p>You can only insert <code>REGULAR</code> rules into a rule group.</p> <p> <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>.</p>',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
   })
   .openapi({ required: ['RuleGroupId', 'Updates', 'ChangeToken'], title: 'UpdateRuleGroupRequest' })
   .openapi('UpdateRuleGroupRequest')
 
 const UpdateSizeConstraintSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateSizeConstraintSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('UpdateSizeConstraintSetResponse')
 
 const SizeConstraintSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>INSERT</code> to add a <a>SizeConstraintSetUpdate</a> to a <a>SizeConstraintSet</a>. Use <code>DELETE</code> to remove a <code>SizeConstraintSetUpdate</code> from a <code>SizeConstraintSet</code>.',
-        }),
-    ),
-    SizeConstraint: SizeConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a constraint on the size of a part of the web request. AWS WAF uses the <code>Size</code>, <code>ComparisonOperator</code>, and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specify <code>INSERT</code> to add a <a>SizeConstraintSetUpdate</a> to a <a>SizeConstraintSet</a>. Use <code>DELETE</code> to remove a <code>SizeConstraintSetUpdate</code> from a <code>SizeConstraintSet</code>.',
+    }),
+    SizeConstraint: SizeConstraintSchema.openapi({
+      description:
+        'Specifies a constraint on the size of a part of the web request. AWS WAF uses the <code>Size</code>, <code>ComparisonOperator</code>, and <code>FieldToMatch</code> to build an expression in the form of "<code>Size</code> <code>ComparisonOperator</code> size in bytes of <code>FieldToMatch</code>". If that expression is true, the <code>SizeConstraint</code> is considered to match.',
+    }),
   })
   .openapi({
     required: ['Action', 'SizeConstraint'],
@@ -5169,29 +3781,17 @@ const SizeConstraintSetUpdatesSchema = z
 
 const UpdateSizeConstraintSetRequestSchema = z
   .object({
-    SizeConstraintSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to update. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: SizeConstraintSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>SizeConstraintSetUpdate</code> objects that you want to insert into or delete from a <a>SizeConstraintSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>SizeConstraintSetUpdate</a>: Contains <code>Action</code> and <code>SizeConstraint</code> </p> </li> <li> <p> <a>SizeConstraint</a>: Contains <code>FieldToMatch</code>, <code>TextTransformation</code>, <code>ComparisonOperator</code>, and <code>Size</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ),
+    SizeConstraintSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SizeConstraintSetId</code> of the <a>SizeConstraintSet</a> that you want to update. <code>SizeConstraintSetId</code> is returned by <a>CreateSizeConstraintSet</a> and by <a>ListSizeConstraintSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: SizeConstraintSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>SizeConstraintSetUpdate</code> objects that you want to insert into or delete from a <a>SizeConstraintSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>SizeConstraintSetUpdate</a>: Contains <code>Action</code> and <code>SizeConstraint</code> </p> </li> <li> <p> <a>SizeConstraint</a>: Contains <code>FieldToMatch</code>, <code>TextTransformation</code>, <code>ComparisonOperator</code>, and <code>Size</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SizeConstraintSetId', 'ChangeToken', 'Updates'],
@@ -5201,14 +3801,10 @@ const UpdateSizeConstraintSetRequestSchema = z
 
 const UpdateSqlInjectionMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateSqlInjectionMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' },
@@ -5219,22 +3815,14 @@ const UpdateSqlInjectionMatchSetResponseSchema = z
 
 const SqlInjectionMatchSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>INSERT</code> to add a <a>SqlInjectionMatchSetUpdate</a> to a <a>SqlInjectionMatchSet</a>. Use <code>DELETE</code> to remove a <code>SqlInjectionMatchSetUpdate</code> from a <code>SqlInjectionMatchSet</code>.',
-        }),
-    ),
-    SqlInjectionMatchTuple: SqlInjectionMatchTupleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the part of a web request that you want AWS WAF to inspect for snippets of malicious SQL code and, if you want AWS WAF to inspect a header, the name of the header.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specify <code>INSERT</code> to add a <a>SqlInjectionMatchSetUpdate</a> to a <a>SqlInjectionMatchSet</a>. Use <code>DELETE</code> to remove a <code>SqlInjectionMatchSetUpdate</code> from a <code>SqlInjectionMatchSet</code>.',
+    }),
+    SqlInjectionMatchTuple: SqlInjectionMatchTupleSchema.openapi({
+      description:
+        'Specifies the part of a web request that you want AWS WAF to inspect for snippets of malicious SQL code and, if you want AWS WAF to inspect a header, the name of the header.',
+    }),
   })
   .openapi({
     required: ['Action', 'SqlInjectionMatchTuple'],
@@ -5250,29 +3838,17 @@ const SqlInjectionMatchSetUpdatesSchema = z
 
 const UpdateSqlInjectionMatchSetRequestSchema = z
   .object({
-    SqlInjectionMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>SqlInjectionMatchSetId</code> of the <code>SqlInjectionMatchSet</code> that you want to update. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: SqlInjectionMatchSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>SqlInjectionMatchSetUpdate</code> objects that you want to insert into or delete from a <a>SqlInjectionMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>SqlInjectionMatchSetUpdate</a>: Contains <code>Action</code> and <code>SqlInjectionMatchTuple</code> </p> </li> <li> <p> <a>SqlInjectionMatchTuple</a>: Contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ),
+    SqlInjectionMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>SqlInjectionMatchSetId</code> of the <code>SqlInjectionMatchSet</code> that you want to update. <code>SqlInjectionMatchSetId</code> is returned by <a>CreateSqlInjectionMatchSet</a> and by <a>ListSqlInjectionMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: SqlInjectionMatchSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>SqlInjectionMatchSetUpdate</code> objects that you want to insert into or delete from a <a>SqlInjectionMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>SqlInjectionMatchSetUpdate</a>: Contains <code>Action</code> and <code>SqlInjectionMatchTuple</code> </p> </li> <li> <p> <a>SqlInjectionMatchTuple</a>: Contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['SqlInjectionMatchSetId', 'ChangeToken', 'Updates'],
@@ -5283,36 +3859,24 @@ const UpdateSqlInjectionMatchSetRequestSchema = z
 
 const UpdateWebACLResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateWebACL</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({ example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' }, required: [] })
   .openapi('UpdateWebACLResponse')
 
 const WebACLUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether to insert a <code>Rule</code> into or delete a <code>Rule</code> from a <code>WebACL</code>.',
-        }),
-    ),
-    ActivatedRule: ActivatedRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ActivatedRule</code> object in an <a>UpdateWebACL</a> request specifies a <code>Rule</code> that you want to insert or delete, the priority of the <code>Rule</code> in the <code>WebACL</code>, and the action that you want AWS WAF to take when a web request matches the <code>Rule</code> (<code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>).',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specifies whether to insert a <code>Rule</code> into or delete a <code>Rule</code> from a <code>WebACL</code>.',
+    }),
+    ActivatedRule: ActivatedRuleSchema.openapi({
+      description:
+        'The <code>ActivatedRule</code> object in an <a>UpdateWebACL</a> request specifies a <code>Rule</code> that you want to insert or delete, the priority of the <code>Rule</code> in the <code>WebACL</code>, and the action that you want AWS WAF to take when a web request matches the <code>Rule</code> (<code>ALLOW</code>, <code>BLOCK</code>, or <code>COUNT</code>).',
+    }),
   })
   .openapi({
     required: ['Action', 'ActivatedRule'],
@@ -5325,37 +3889,21 @@ const WebACLUpdatesSchema = z.array(WebACLUpdateSchema).openapi('WebACLUpdates')
 
 const UpdateWebACLRequestSchema = z
   .object({
-    WebACLId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>WebACLId</code> of the <a>WebACL</a> that you want to update. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: WebACLUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of updates to make to the <a>WebACL</a>.</p> <p>An array of <code>WebACLUpdate</code> objects that you want to insert into or delete from a <a>WebACL</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>WebACLUpdate</a>: Contains <code>Action</code> and <code>ActivatedRule</code> </p> </li> <li> <p> <a>ActivatedRule</a>: Contains <code>Action</code>, <code>OverrideAction</code>, <code>Priority</code>, <code>RuleId</code>, and <code>Type</code>. <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case, you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>. </p> </li> <li> <p> <a>WafAction</a>: Contains <code>Type</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DefaultAction: WafActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A default action for the web ACL, either ALLOW or BLOCK. AWS WAF performs the default action if a request doesn't match the criteria in any of the rules in a web ACL.",
-        }),
-    ).exactOptional(),
+    WebACLId: ResourceIdSchema.openapi({
+      description:
+        'The <code>WebACLId</code> of the <a>WebACL</a> that you want to update. <code>WebACLId</code> is returned by <a>CreateWebACL</a> and by <a>ListWebACLs</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: WebACLUpdatesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of updates to make to the <a>WebACL</a>.</p> <p>An array of <code>WebACLUpdate</code> objects that you want to insert into or delete from a <a>WebACL</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>WebACLUpdate</a>: Contains <code>Action</code> and <code>ActivatedRule</code> </p> </li> <li> <p> <a>ActivatedRule</a>: Contains <code>Action</code>, <code>OverrideAction</code>, <code>Priority</code>, <code>RuleId</code>, and <code>Type</code>. <code>ActivatedRule|OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a <code>WebACL</code>. In this case, you do not use <code>ActivatedRule|Action</code>. For all other update requests, <code>ActivatedRule|Action</code> is used instead of <code>ActivatedRule|OverrideAction</code>. </p> </li> <li> <p> <a>WafAction</a>: Contains <code>Type</code> </p> </li> </ul>',
+    }),
+    DefaultAction: WafActionSchema.exactOptional().openapi({
+      description:
+        "A default action for the web ACL, either ALLOW or BLOCK. AWS WAF performs the default action if a request doesn't match the criteria in any of the rules in a web ACL.",
+    }),
   })
   .openapi({ required: ['WebACLId', 'ChangeToken'], title: 'UpdateWebACLRequest' })
   .openapi('UpdateWebACLRequest')
@@ -5364,14 +3912,10 @@ const WAFSubscriptionNotFoundExceptionSchema = z.any().openapi('WAFSubscriptionN
 
 const UpdateXssMatchSetResponseSchema = z
   .object({
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChangeToken</code> that you used to submit the <code>UpdateXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
-        }),
-    ).exactOptional(),
+    ChangeToken: ChangeTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>ChangeToken</code> that you used to submit the <code>UpdateXssMatchSet</code> request. You can also use this value to query the status of the request. For more information, see <a>GetChangeTokenStatus</a>.',
+    }),
   })
   .openapi({
     example: { ChangeToken: 'abcd12f2-46da-4fdb-b8d5-fbd4c466928f' },
@@ -5382,22 +3926,14 @@ const UpdateXssMatchSetResponseSchema = z
 
 const XssMatchSetUpdateSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify <code>INSERT</code> to add an <a>XssMatchSetUpdate</a> to an <a>XssMatchSet</a>. Use <code>DELETE</code> to remove an <code>XssMatchSetUpdate</code> from an <code>XssMatchSet</code>.',
-        }),
-    ),
-    XssMatchTuple: XssMatchTupleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the part of a web request that you want AWS WAF to inspect for cross-site scripting attacks and, if you want AWS WAF to inspect a header, the name of the header.',
-        }),
-    ),
+    Action: ChangeActionSchema.openapi({
+      description:
+        'Specify <code>INSERT</code> to add an <a>XssMatchSetUpdate</a> to an <a>XssMatchSet</a>. Use <code>DELETE</code> to remove an <code>XssMatchSetUpdate</code> from an <code>XssMatchSet</code>.',
+    }),
+    XssMatchTuple: XssMatchTupleSchema.openapi({
+      description:
+        'Specifies the part of a web request that you want AWS WAF to inspect for cross-site scripting attacks and, if you want AWS WAF to inspect a header, the name of the header.',
+    }),
   })
   .openapi({
     required: ['Action', 'XssMatchTuple'],
@@ -5413,29 +3949,17 @@ const XssMatchSetUpdatesSchema = z
 
 const UpdateXssMatchSetRequestSchema = z
   .object({
-    XssMatchSetId: ResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>XssMatchSetId</code> of the <code>XssMatchSet</code> that you want to update. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
-        }),
-    ),
-    ChangeToken: ChangeTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
-        }),
-    ),
-    Updates: XssMatchSetUpdatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of <code>XssMatchSetUpdate</code> objects that you want to insert into or delete from an <a>XssMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>XssMatchSetUpdate</a>: Contains <code>Action</code> and <code>XssMatchTuple</code> </p> </li> <li> <p> <a>XssMatchTuple</a>: Contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
-        }),
-    ),
+    XssMatchSetId: ResourceIdSchema.openapi({
+      description:
+        'The <code>XssMatchSetId</code> of the <code>XssMatchSet</code> that you want to update. <code>XssMatchSetId</code> is returned by <a>CreateXssMatchSet</a> and by <a>ListXssMatchSets</a>.',
+    }),
+    ChangeToken: ChangeTokenSchema.openapi({
+      description: 'The value returned by the most recent call to <a>GetChangeToken</a>.',
+    }),
+    Updates: XssMatchSetUpdatesSchema.openapi({
+      description:
+        '<p>An array of <code>XssMatchSetUpdate</code> objects that you want to insert into or delete from an <a>XssMatchSet</a>. For more information, see the applicable data types:</p> <ul> <li> <p> <a>XssMatchSetUpdate</a>: Contains <code>Action</code> and <code>XssMatchTuple</code> </p> </li> <li> <p> <a>XssMatchTuple</a>: Contains <code>FieldToMatch</code> and <code>TextTransformation</code> </p> </li> <li> <p> <a>FieldToMatch</a>: Contains <code>Data</code> and <code>Type</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['XssMatchSetId', 'ChangeToken', 'Updates'],

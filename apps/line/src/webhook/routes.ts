@@ -319,7 +319,7 @@ const UserMentioneeSchema = MentioneeSchema.and(
   .openapi({ description: 'Mentioned target is user' })
   .openapi('UserMentionee')
 
-const AllMentioneeSchema = MentioneeSchema.and(z.object({}))
+const AllMentioneeSchema = MentioneeSchema.and(z.looseObject({}))
   .openapi({ description: 'Mentioned target is entire group' })
   .openapi('AllMentionee')
 
@@ -584,7 +584,7 @@ const FollowEventSchema = EventSchema.and(
   })
   .openapi('FollowEvent')
 
-const UnfollowEventSchema = EventSchema.and(z.object({}))
+const UnfollowEventSchema = EventSchema.and(z.looseObject({}))
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#unfollow-event' },
     description: 'Event object for when your LINE Official Account is blocked.',
@@ -607,7 +607,7 @@ const JoinEventSchema = EventSchema.and(
   })
   .openapi('JoinEvent')
 
-const LeaveEventSchema = EventSchema.and(z.object({}))
+const LeaveEventSchema = EventSchema.and(z.looseObject({}))
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#leave-event' },
     description:
@@ -984,7 +984,7 @@ const ActivatedEventSchema = EventSchema.and(
   })
   .openapi('ActivatedEvent')
 
-const DeactivatedEventSchema = EventSchema.and(z.object({}))
+const DeactivatedEventSchema = EventSchema.and(z.looseObject({}))
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/partner-docs/#deactivated-event',
@@ -994,7 +994,7 @@ const DeactivatedEventSchema = EventSchema.and(z.object({}))
   })
   .openapi('DeactivatedEvent')
 
-const BotSuspendedEventSchema = EventSchema.and(z.object({}))
+const BotSuspendedEventSchema = EventSchema.and(z.looseObject({}))
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/partner-docs/#botsuspend-event',
@@ -1004,7 +1004,7 @@ const BotSuspendedEventSchema = EventSchema.and(z.object({}))
   })
   .openapi('BotSuspendedEvent')
 
-const BotResumedEventSchema = EventSchema.and(z.object({}))
+const BotResumedEventSchema = EventSchema.and(z.looseObject({}))
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/partner-docs/#botresumed-event',

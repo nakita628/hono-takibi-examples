@@ -4,49 +4,32 @@ const StringSchema = z.string().openapi('String')
 
 const EgressAccessLogsSchema = z
   .object({
-    LogGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'logGroupName' }, description: 'Customize the log group name.' }),
-    ).exactOptional(),
+    LogGroupName: StringSchema.exactOptional().openapi({
+      xml: { name: 'logGroupName' },
+      description: 'Customize the log group name.',
+    }),
   })
   .openapi({ description: 'Configure egress access logging.', required: [] })
   .openapi('EgressAccessLogs')
 
 const IngestEndpointSchema = z
   .object({
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description: 'The system generated unique identifier for the IngestEndpoint',
-        }),
-    ).exactOptional(),
-    Password: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'password' },
-          description: 'The system generated password for ingest authentication.',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The ingest URL to which the source stream should be sent.',
-        }),
-    ).exactOptional(),
-    Username: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'username' },
-          description: 'The system generated username for ingest authentication.',
-        }),
-    ).exactOptional(),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The system generated unique identifier for the IngestEndpoint',
+    }),
+    Password: StringSchema.exactOptional().openapi({
+      xml: { name: 'password' },
+      description: 'The system generated password for ingest authentication.',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The ingest URL to which the source stream should be sent.',
+    }),
+    Username: StringSchema.exactOptional().openapi({
+      xml: { name: 'username' },
+      description: 'The system generated username for ingest authentication.',
+    }),
   })
   .openapi({ description: 'An endpoint for ingesting source content for a Channel.', required: [] })
   .openapi('IngestEndpoint')
@@ -55,14 +38,10 @@ const ListOfIngestEndpointSchema = z.array(IngestEndpointSchema).openapi('ListOf
 
 const HlsIngestSchema = z
   .object({
-    IngestEndpoints: ListOfIngestEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ingestEndpoints' },
-          description: 'A list of endpoints to which the source stream should be sent.',
-        }),
-    ).exactOptional(),
+    IngestEndpoints: ListOfIngestEndpointSchema.exactOptional().openapi({
+      xml: { name: 'ingestEndpoints' },
+      description: 'A list of endpoints to which the source stream should be sent.',
+    }),
   })
   .openapi({
     description: 'An HTTP Live Streaming (HLS) ingest resource configuration.',
@@ -72,11 +51,10 @@ const HlsIngestSchema = z
 
 const IngressAccessLogsSchema = z
   .object({
-    LogGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'logGroupName' }, description: 'Customize the log group name.' }),
-    ).exactOptional(),
+    LogGroupName: StringSchema.exactOptional().openapi({
+      xml: { name: 'logGroupName' },
+      description: 'Customize the log group name.',
+    }),
   })
   .openapi({ description: 'Configure ingress access logging.', required: [] })
   .openapi('IngressAccessLogs')
@@ -88,41 +66,30 @@ const TagsSchema = z
 
 const ConfigureLogsResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('ConfigureLogsResponse')
@@ -141,72 +108,49 @@ const TooManyRequestsExceptionSchema = z.any().openapi('TooManyRequestsException
 
 const CreateChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelResponse')
 
 const S3DestinationSchema = z
   .object({
-    BucketName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'bucketName' },
-          description: 'The name of an S3 bucket within which harvested content will be exported\n',
-        }),
-    ),
-    ManifestKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestKey' },
-          description:
-            'The key in the specified S3 bucket where the harvested top-level manifest will be placed.\n',
-        }),
-    ),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description: 'The IAM role used to write to the specified S3 bucket\n',
-        }),
-    ),
+    BucketName: StringSchema.openapi({
+      xml: { name: 'bucketName' },
+      description: 'The name of an S3 bucket within which harvested content will be exported\n',
+    }),
+    ManifestKey: StringSchema.openapi({
+      xml: { name: 'manifestKey' },
+      description:
+        'The key in the specified S3 bucket where the harvested top-level manifest will be placed.\n',
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description: 'The IAM role used to write to the specified S3 bucket\n',
+    }),
   })
   .openapi({
     required: ['ManifestKey', 'BucketName', 'RoleArn'],
@@ -219,100 +163,58 @@ const StatusSchema = z.enum(['IN_PROGRESS', 'SUCCEEDED', 'FAILED']).openapi('Sta
 
 const CreateHarvestJobResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
-        }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the HarvestJob was submitted.\n',
-        }),
-    ).exactOptional(),
-    EndTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'endTime' },
-          description: 'The end of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    OriginEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'originEndpointId' },
-          description:
-            'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    S3Destination: S3DestinationSchema.and(
-      z.any().openapi({ xml: { name: 's3Destination' } }),
-    ).exactOptional(),
-    StartTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The start of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
+    }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the HarvestJob was submitted.\n',
+    }),
+    EndTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'endTime' },
+      description: 'The end of the time-window which will be harvested.\n',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    OriginEndpointId: StringSchema.exactOptional().openapi({
+      xml: { name: 'originEndpointId' },
+      description:
+        'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    S3Destination: S3DestinationSchema.exactOptional().openapi({ xml: { name: 's3Destination' } }),
+    StartTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'startTime' },
+      description: 'The start of the time-window which will be harvested.\n',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateHarvestJobResponse')
 
 const AuthorizationSchema = z
   .object({
-    CdnIdentifierSecret: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cdnIdentifierSecret' },
-          description:
-            'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
-        }),
-    ),
-    SecretsRoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'secretsRoleArn' },
-          description:
-            'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
-        }),
-    ),
+    CdnIdentifierSecret: StringSchema.openapi({
+      xml: { name: 'cdnIdentifierSecret' },
+      description:
+        'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
+    }),
+    SecretsRoleArn: StringSchema.openapi({
+      xml: { name: 'secretsRoleArn' },
+      description:
+        'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
+    }),
   })
   .openapi({
     required: ['SecretsRoleArn', 'CdnIdentifierSecret'],
@@ -348,22 +250,14 @@ const PresetSpeke20VideoSchema = z
 
 const EncryptionContractConfigurationSchema = z
   .object({
-    PresetSpeke20Audio: PresetSpeke20AudioSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'presetSpeke20Audio' },
-          description: 'A collection of audio encryption presets.',
-        }),
-    ),
-    PresetSpeke20Video: PresetSpeke20VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'presetSpeke20Video' },
-          description: 'A collection of video encryption presets.',
-        }),
-    ),
+    PresetSpeke20Audio: PresetSpeke20AudioSchema.openapi({
+      xml: { name: 'presetSpeke20Audio' },
+      description: 'A collection of audio encryption presets.',
+    }),
+    PresetSpeke20Video: PresetSpeke20VideoSchema.openapi({
+      xml: { name: 'presetSpeke20Video' },
+      description: 'A collection of video encryption presets.',
+    }),
   })
   .openapi({
     required: ['PresetSpeke20Audio', 'PresetSpeke20Video'],
@@ -376,51 +270,31 @@ const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const SpekeKeyProviderSchema = z
   .object({
-    CertificateArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'certificateArn' },
-          description:
-            'An Amazon Resource Name (ARN) of a Certificate Manager certificate\nthat MediaPackage will use for enforcing secure end-to-end data\ntransfer with the key provider service.\n',
-        }),
-    ).exactOptional(),
-    EncryptionContractConfiguration: EncryptionContractConfigurationSchema.and(
-      z.any().openapi({ xml: { name: 'encryptionContractConfiguration' } }),
-    ).exactOptional(),
-    ResourceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceId' },
-          description: 'The resource ID to include in key requests.',
-        }),
-    ),
-    RoleArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'roleArn' },
-          description:
-            'An Amazon Resource Name (ARN) of an IAM role that AWS Elemental\nMediaPackage will assume when accessing the key provider service.\n',
-        }),
-    ),
-    SystemIds: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'systemIds' },
-          description: 'The system IDs to include in key requests.',
-        }),
-    ),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the external key provider service.',
-        }),
-    ),
+    CertificateArn: StringSchema.exactOptional().openapi({
+      xml: { name: 'certificateArn' },
+      description:
+        'An Amazon Resource Name (ARN) of a Certificate Manager certificate\nthat MediaPackage will use for enforcing secure end-to-end data\ntransfer with the key provider service.\n',
+    }),
+    EncryptionContractConfiguration: EncryptionContractConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'encryptionContractConfiguration' },
+    }),
+    ResourceId: StringSchema.openapi({
+      xml: { name: 'resourceId' },
+      description: 'The resource ID to include in key requests.',
+    }),
+    RoleArn: StringSchema.openapi({
+      xml: { name: 'roleArn' },
+      description:
+        'An Amazon Resource Name (ARN) of an IAM role that AWS Elemental\nMediaPackage will assume when accessing the key provider service.\n',
+    }),
+    SystemIds: ListOfStringSchema.openapi({
+      xml: { name: 'systemIds' },
+      description: 'The system IDs to include in key requests.',
+    }),
+    Url: StringSchema.openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the external key provider service.',
+    }),
   })
   .openapi({
     required: ['ResourceId', 'SystemIds', 'Url', 'RoleArn'],
@@ -431,29 +305,19 @@ const SpekeKeyProviderSchema = z
 
 const CmafEncryptionSchema = z
   .object({
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            "An optional 128-bit, 16-byte hex value represented by a 32-character string, used in conjunction with the key for encrypting blocks. If you don't specify a value, then MediaPackage creates the constant initialization vector (IV).",
-        }),
-    ).exactOptional(),
-    EncryptionMethod: CmafEncryptionMethodSchema.and(
-      z.any().openapi({ xml: { name: 'encryptionMethod' } }),
-    ).exactOptional(),
-    KeyRotationIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'keyRotationIntervalSeconds' },
-          description: 'Time (in seconds) between each encryption key rotation.',
-        }),
-    ).exactOptional(),
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        "An optional 128-bit, 16-byte hex value represented by a 32-character string, used in conjunction with the key for encrypting blocks. If you don't specify a value, then MediaPackage creates the constant initialization vector (IV).",
+    }),
+    EncryptionMethod: CmafEncryptionMethodSchema.exactOptional().openapi({
+      xml: { name: 'encryptionMethod' },
+    }),
+    KeyRotationIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'keyRotationIntervalSeconds' },
+      description: 'Time (in seconds) between each encryption key rotation.',
+    }),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -500,81 +364,47 @@ const AdsOnDeliveryRestrictionsSchema = z
 
 const HlsManifestSchema = z
   .object({
-    AdMarkers: AdMarkersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adMarkers' },
-          description:
-            'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the manifest. The ID must be unique within the OriginEndpoint and it cannot be changed after it is created.',
-        }),
-    ),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description:
-            'An optional short string appended to the end of the OriginEndpoint URL. If not specified, defaults to the manifestName for the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    PlaylistType: PlaylistTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistType' },
-          description:
-            'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
-        }),
-    ).exactOptional(),
-    PlaylistWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistWindowSeconds' },
-          description: 'Time window (in seconds) contained in each parent manifest.',
-        }),
-    ).exactOptional(),
-    ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'programDateTimeIntervalSeconds' },
-          description:
-            'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the packaged OriginEndpoint for consumption.',
-        }),
-    ).exactOptional(),
-    AdTriggers: AdTriggersSchema.and(
-      z.any().openapi({ xml: { name: 'adTriggers' } }),
-    ).exactOptional(),
-    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-      z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-    ).exactOptional(),
+    AdMarkers: AdMarkersSchema.exactOptional().openapi({
+      xml: { name: 'adMarkers' },
+      description:
+        'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
+    }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the manifest. The ID must be unique within the OriginEndpoint and it cannot be changed after it is created.',
+    }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description:
+        'An optional short string appended to the end of the OriginEndpoint URL. If not specified, defaults to the manifestName for the OriginEndpoint.',
+    }),
+    PlaylistType: PlaylistTypeSchema.exactOptional().openapi({
+      xml: { name: 'playlistType' },
+      description:
+        'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
+    }),
+    PlaylistWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'playlistWindowSeconds' },
+      description: 'Time window (in seconds) contained in each parent manifest.',
+    }),
+    ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'programDateTimeIntervalSeconds' },
+      description:
+        'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the packaged OriginEndpoint for consumption.',
+    }),
+    AdTriggers: AdTriggersSchema.exactOptional().openapi({ xml: { name: 'adTriggers' } }),
+    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+      xml: { name: 'adsOnDeliveryRestrictions' },
+    }),
   })
   .openapi({ required: ['Id'], description: 'A HTTP Live Streaming (HLS) manifest configuration.' })
   .openapi('HlsManifest')
@@ -587,68 +417,42 @@ const StreamOrderSchema = z
 
 const StreamSelectionSchema = z
   .object({
-    MaxVideoBitsPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxVideoBitsPerSecond' },
-          description: 'The maximum video bitrate (bps) to include in output.',
-        }),
-    ).exactOptional(),
-    MinVideoBitsPerSecond: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minVideoBitsPerSecond' },
-          description: 'The minimum video bitrate (bps) to include in output.',
-        }),
-    ).exactOptional(),
-    StreamOrder: StreamOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'streamOrder' },
-          description: 'A directive that determines the order of streams in the output.',
-        }),
-    ).exactOptional(),
+    MaxVideoBitsPerSecond: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'maxVideoBitsPerSecond' },
+      description: 'The maximum video bitrate (bps) to include in output.',
+    }),
+    MinVideoBitsPerSecond: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minVideoBitsPerSecond' },
+      description: 'The minimum video bitrate (bps) to include in output.',
+    }),
+    StreamOrder: StreamOrderSchema.exactOptional().openapi({
+      xml: { name: 'streamOrder' },
+      description: 'A directive that determines the order of streams in the output.',
+    }),
   })
   .openapi({ description: 'A StreamSelection configuration.', required: [] })
   .openapi('StreamSelection')
 
 const CmafPackageSchema = z
   .object({
-    Encryption: CmafEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    HlsManifests: ListOfHlsManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hlsManifests' },
-          description: 'A list of HLS manifest configurations',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-        }),
-    ).exactOptional(),
-    SegmentPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentPrefix' },
-          description:
-            'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    Encryption: CmafEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    HlsManifests: ListOfHlsManifestSchema.exactOptional().openapi({
+      xml: { name: 'hlsManifests' },
+      description: 'A list of HLS manifest configurations',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+    }),
+    SegmentPrefix: StringSchema.exactOptional().openapi({
+      xml: { name: 'segmentPrefix' },
+      description:
+        'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({
     description: 'A Common Media Application Format (CMAF) packaging configuration.',
@@ -658,17 +462,11 @@ const CmafPackageSchema = z
 
 const DashEncryptionSchema = z
   .object({
-    KeyRotationIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'keyRotationIntervalSeconds' },
-          description: 'Time (in seconds) between each encryption key rotation.',
-        }),
-    ).exactOptional(),
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    KeyRotationIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'keyRotationIntervalSeconds' },
+      description: 'Time (in seconds) between each encryption key rotation.',
+    }),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -698,123 +496,71 @@ const UtcTimingSchema = z
 
 const DashPackageSchema = z
   .object({
-    AdTriggers: AdTriggersSchema.and(
-      z.any().openapi({ xml: { name: 'adTriggers' } }),
-    ).exactOptional(),
-    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-      z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-    ).exactOptional(),
-    Encryption: DashEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    ManifestLayout: ManifestLayoutSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestLayout' },
-          description:
-            'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
-        }),
-    ).exactOptional(),
-    ManifestWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestWindowSeconds' },
-          description: 'Time window (in seconds) contained in each manifest.',
-        }),
-    ).exactOptional(),
-    MinBufferTimeSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minBufferTimeSeconds' },
-          description:
-            'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
-        }),
-    ).exactOptional(),
-    MinUpdatePeriodSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minUpdatePeriodSeconds' },
-          description:
-            'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
-        }),
-    ).exactOptional(),
-    PeriodTriggers: ListOfPeriodTriggersElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'periodTriggers' },
-          description:
-            'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
-        }),
-    ).exactOptional(),
-    Profile: ProfileSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'profile' },
-          description:
-            'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-        }),
-    ).exactOptional(),
-    SegmentTemplateFormat: SegmentTemplateFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentTemplateFormat' },
-          description:
-            'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
-    SuggestedPresentationDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'suggestedPresentationDelaySeconds' },
-          description: 'Duration (in seconds) to delay live content before presentation.',
-        }),
-    ).exactOptional(),
-    UtcTiming: UtcTimingSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'utcTiming' },
-          description:
-            'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
-        }),
-    ).exactOptional(),
-    UtcTimingUri: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'utcTimingUri' },
-          description:
-            'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
-        }),
-    ).exactOptional(),
+    AdTriggers: AdTriggersSchema.exactOptional().openapi({ xml: { name: 'adTriggers' } }),
+    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+      xml: { name: 'adsOnDeliveryRestrictions' },
+    }),
+    Encryption: DashEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    ManifestLayout: ManifestLayoutSchema.exactOptional().openapi({
+      xml: { name: 'manifestLayout' },
+      description:
+        'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
+    }),
+    ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'manifestWindowSeconds' },
+      description: 'Time window (in seconds) contained in each manifest.',
+    }),
+    MinBufferTimeSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minBufferTimeSeconds' },
+      description:
+        'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
+    }),
+    MinUpdatePeriodSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'minUpdatePeriodSeconds' },
+      description:
+        'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
+    }),
+    PeriodTriggers: ListOfPeriodTriggersElementSchema.exactOptional().openapi({
+      xml: { name: 'periodTriggers' },
+      description:
+        'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
+    }),
+    Profile: ProfileSchema.exactOptional().openapi({
+      xml: { name: 'profile' },
+      description:
+        'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+    }),
+    SegmentTemplateFormat: SegmentTemplateFormatSchema.exactOptional().openapi({
+      xml: { name: 'segmentTemplateFormat' },
+      description:
+        'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
+    SuggestedPresentationDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'suggestedPresentationDelaySeconds' },
+      description: 'Duration (in seconds) to delay live content before presentation.',
+    }),
+    UtcTiming: UtcTimingSchema.exactOptional().openapi({
+      xml: { name: 'utcTiming' },
+      description:
+        'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
+    }),
+    UtcTimingUri: StringSchema.exactOptional().openapi({
+      xml: { name: 'utcTimingUri' },
+      description:
+        'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
+    }),
   })
   .openapi({
     description: 'A Dynamic Adaptive Streaming over HTTP (DASH) packaging configuration.',
@@ -826,42 +572,24 @@ const EncryptionMethodSchema = z.enum(['AES_128', 'SAMPLE_AES']).openapi('Encryp
 
 const HlsEncryptionSchema = z
   .object({
-    ConstantInitializationVector: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'constantInitializationVector' },
-          description:
-            'A constant initialization vector for encryption (optional).\nWhen not specified the initialization vector will be periodically rotated.\n',
-        }),
-    ).exactOptional(),
-    EncryptionMethod: EncryptionMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'encryptionMethod' },
-          description: 'The encryption method to use.',
-        }),
-    ).exactOptional(),
-    KeyRotationIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'keyRotationIntervalSeconds' },
-          description: 'Interval (in seconds) between each encryption key rotation.',
-        }),
-    ).exactOptional(),
-    RepeatExtXKey: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'repeatExtXKey' },
-          description: 'When enabled, the EXT-X-KEY tag will be repeated in output manifests.',
-        }),
-    ).exactOptional(),
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    ConstantInitializationVector: StringSchema.exactOptional().openapi({
+      xml: { name: 'constantInitializationVector' },
+      description:
+        'A constant initialization vector for encryption (optional).\nWhen not specified the initialization vector will be periodically rotated.\n',
+    }),
+    EncryptionMethod: EncryptionMethodSchema.exactOptional().openapi({
+      xml: { name: 'encryptionMethod' },
+      description: 'The encryption method to use.',
+    }),
+    KeyRotationIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'keyRotationIntervalSeconds' },
+      description: 'Interval (in seconds) between each encryption key rotation.',
+    }),
+    RepeatExtXKey: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'repeatExtXKey' },
+      description: 'When enabled, the EXT-X-KEY tag will be repeated in output manifests.',
+    }),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -871,97 +599,58 @@ const HlsEncryptionSchema = z
 
 const HlsPackageSchema = z
   .object({
-    AdMarkers: AdMarkersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adMarkers' },
-          description:
-            'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
-        }),
-    ).exactOptional(),
-    AdTriggers: AdTriggersSchema.and(
-      z.any().openapi({ xml: { name: 'adTriggers' } }),
-    ).exactOptional(),
-    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-      z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-    ).exactOptional(),
-    Encryption: HlsEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    IncludeDvbSubtitles: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeDvbSubtitles' },
-          description:
-            'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
-        }),
-    ).exactOptional(),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    PlaylistType: PlaylistTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistType' },
-          description:
-            'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
-        }),
-    ).exactOptional(),
-    PlaylistWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistWindowSeconds' },
-          description: 'Time window (in seconds) contained in each parent manifest.',
-        }),
-    ).exactOptional(),
-    ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'programDateTimeIntervalSeconds' },
-          description:
-            'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
-    UseAudioRenditionGroup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'useAudioRenditionGroup' },
-          description:
-            'When enabled, audio streams will be placed in rendition groups in the output.',
-        }),
-    ).exactOptional(),
+    AdMarkers: AdMarkersSchema.exactOptional().openapi({
+      xml: { name: 'adMarkers' },
+      description:
+        'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
+    }),
+    AdTriggers: AdTriggersSchema.exactOptional().openapi({ xml: { name: 'adTriggers' } }),
+    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+      xml: { name: 'adsOnDeliveryRestrictions' },
+    }),
+    Encryption: HlsEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    IncludeDvbSubtitles: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeDvbSubtitles' },
+      description:
+        'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
+    }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    PlaylistType: PlaylistTypeSchema.exactOptional().openapi({
+      xml: { name: 'playlistType' },
+      description:
+        'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
+    }),
+    PlaylistWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'playlistWindowSeconds' },
+      description: 'Time window (in seconds) contained in each parent manifest.',
+    }),
+    ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'programDateTimeIntervalSeconds' },
+      description:
+        'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
+    UseAudioRenditionGroup: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'useAudioRenditionGroup' },
+      description: 'When enabled, audio streams will be placed in rendition groups in the output.',
+    }),
   })
   .openapi({ description: 'An HTTP Live Streaming (HLS) packaging configuration.', required: [] })
   .openapi('HlsPackage')
 
 const MssEncryptionSchema = z
   .object({
-    SpekeKeyProvider: SpekeKeyProviderSchema.and(
-      z.any().openapi({ xml: { name: 'spekeKeyProvider' } }),
-    ),
+    SpekeKeyProvider: SpekeKeyProviderSchema.openapi({ xml: { name: 'spekeKeyProvider' } }),
   })
   .openapi({
     required: ['SpekeKeyProvider'],
@@ -971,28 +660,18 @@ const MssEncryptionSchema = z
 
 const MssPackageSchema = z
   .object({
-    Encryption: MssEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    ManifestWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestWindowSeconds' },
-          description: 'The time window (in seconds) contained in each manifest.',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description: 'The duration (in seconds) of each segment.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    Encryption: MssEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'manifestWindowSeconds' },
+      description: 'The time window (in seconds) contained in each manifest.',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description: 'The duration (in seconds) of each segment.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({
     description: 'A Microsoft Smooth Streaming (MSS) packaging configuration.',
@@ -1004,182 +683,103 @@ const OriginationSchema = z.enum(['ALLOW', 'DENY']).openapi('Origination')
 
 const CreateOriginEndpointResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel the OriginEndpoint is associated with.',
-        }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the OriginEndpoint was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the OriginEndpoint.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'A short string appended to the end of the OriginEndpoint URL.',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the packaged OriginEndpoint for consumption.',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel the OriginEndpoint is associated with.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the OriginEndpoint was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the OriginEndpoint.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'A short string appended to the end of the OriginEndpoint URL.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the packaged OriginEndpoint for consumption.',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateOriginEndpointResponse')
 
 const HlsManifestCreateOrUpdateParametersSchema = z
   .object({
-    AdMarkers: AdMarkersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'adMarkers' },
-          description:
-            'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
-        }),
-    ).exactOptional(),
-    AdTriggers: AdTriggersSchema.and(
-      z.any().openapi({ xml: { name: 'adTriggers' } }),
-    ).exactOptional(),
-    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-      z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the manifest. The ID must be unique within the OriginEndpoint and it cannot be changed after it is created.',
-        }),
-    ),
-    IncludeIframeOnlyStream: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'includeIframeOnlyStream' },
-          description: 'When enabled, an I-Frame only stream will be included in the output.',
-        }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description:
-            'An optional short string appended to the end of the OriginEndpoint URL. If not specified, defaults to the manifestName for the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    PlaylistType: PlaylistTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistType' },
-          description:
-            'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
-        }),
-    ).exactOptional(),
-    PlaylistWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'playlistWindowSeconds' },
-          description: 'Time window (in seconds) contained in each parent manifest.',
-        }),
-    ).exactOptional(),
-    ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'programDateTimeIntervalSeconds' },
-          description:
-            'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-        }),
-    ).exactOptional(),
+    AdMarkers: AdMarkersSchema.exactOptional().openapi({
+      xml: { name: 'adMarkers' },
+      description:
+        'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
+    }),
+    AdTriggers: AdTriggersSchema.exactOptional().openapi({ xml: { name: 'adTriggers' } }),
+    AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+      xml: { name: 'adsOnDeliveryRestrictions' },
+    }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the manifest. The ID must be unique within the OriginEndpoint and it cannot be changed after it is created.',
+    }),
+    IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'includeIframeOnlyStream' },
+      description: 'When enabled, an I-Frame only stream will be included in the output.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description:
+        'An optional short string appended to the end of the OriginEndpoint URL. If not specified, defaults to the manifestName for the OriginEndpoint.',
+    }),
+    PlaylistType: PlaylistTypeSchema.exactOptional().openapi({
+      xml: { name: 'playlistType' },
+      description:
+        'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
+    }),
+    PlaylistWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'playlistWindowSeconds' },
+      description: 'Time window (in seconds) contained in each parent manifest.',
+    }),
+    ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'programDateTimeIntervalSeconds' },
+      description:
+        'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+    }),
   })
   .openapi({ required: ['Id'], description: 'A HTTP Live Streaming (HLS) manifest configuration.' })
   .openapi('HlsManifestCreateOrUpdateParameters')
@@ -1188,273 +788,168 @@ const ListOfHlsManifestCreateOrUpdateParametersSchema = z
   .array(HlsManifestCreateOrUpdateParametersSchema)
   .openapi('ListOfHlsManifestCreateOrUpdateParameters')
 
-const DeleteChannelResponseSchema = z.object({}).openapi('DeleteChannelResponse')
+const DeleteChannelResponseSchema = z.looseObject({}).openapi('DeleteChannelResponse')
 
-const DeleteOriginEndpointResponseSchema = z.object({}).openapi('DeleteOriginEndpointResponse')
+const DeleteOriginEndpointResponseSchema = z.looseObject({}).openapi('DeleteOriginEndpointResponse')
 
 const DescribeChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelResponse')
 
 const DescribeHarvestJobResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
-        }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the HarvestJob was submitted.\n',
-        }),
-    ).exactOptional(),
-    EndTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'endTime' },
-          description: 'The end of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    OriginEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'originEndpointId' },
-          description:
-            'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    S3Destination: S3DestinationSchema.and(
-      z.any().openapi({ xml: { name: 's3Destination' } }),
-    ).exactOptional(),
-    StartTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The start of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
+    }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the HarvestJob was submitted.\n',
+    }),
+    EndTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'endTime' },
+      description: 'The end of the time-window which will be harvested.\n',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    OriginEndpointId: StringSchema.exactOptional().openapi({
+      xml: { name: 'originEndpointId' },
+      description:
+        'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    S3Destination: S3DestinationSchema.exactOptional().openapi({ xml: { name: 's3Destination' } }),
+    StartTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'startTime' },
+      description: 'The start of the time-window which will be harvested.\n',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeHarvestJobResponse')
 
 const DescribeOriginEndpointResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel the OriginEndpoint is associated with.',
-        }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the OriginEndpoint was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the OriginEndpoint.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'A short string appended to the end of the OriginEndpoint URL.',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the packaged OriginEndpoint for consumption.',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel the OriginEndpoint is associated with.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the OriginEndpoint was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the OriginEndpoint.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'A short string appended to the end of the OriginEndpoint URL.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the packaged OriginEndpoint for consumption.',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOriginEndpointResponse')
 
 const ChannelSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ description: 'A Channel resource configuration.', required: [] })
   .openapi('Channel')
@@ -1463,94 +958,56 @@ const ListOfChannelSchema = z.array(ChannelSchema).openapi('ListOfChannel')
 
 const ListChannelsResponseSchema = z
   .object({
-    Channels: ListOfChannelSchema.and(
-      z.any().openapi({ xml: { name: 'channels' }, description: 'A list of Channel records.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
+    Channels: ListOfChannelSchema.exactOptional().openapi({
+      xml: { name: 'channels' },
+      description: 'A list of Channel records.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelsResponse')
 
 const HarvestJobSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
-        }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the HarvestJob was submitted.\n',
-        }),
-    ).exactOptional(),
-    EndTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'endTime' },
-          description: 'The end of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    OriginEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'originEndpointId' },
-          description:
-            'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ).exactOptional(),
-    S3Destination: S3DestinationSchema.and(
-      z.any().openapi({ xml: { name: 's3Destination' } }),
-    ).exactOptional(),
-    StartTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The start of the time-window which will be harvested.\n',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the HarvestJob.\n',
+    }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel that the HarvestJob will harvest from.\n',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the HarvestJob was submitted.\n',
+    }),
+    EndTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'endTime' },
+      description: 'The end of the time-window which will be harvested.\n',
+    }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    OriginEndpointId: StringSchema.exactOptional().openapi({
+      xml: { name: 'originEndpointId' },
+      description:
+        'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    S3Destination: S3DestinationSchema.exactOptional().openapi({ xml: { name: 's3Destination' } }),
+    StartTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'startTime' },
+      description: 'The start of the time-window which will be harvested.\n',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'The current status of the HarvestJob. Consider setting up a CloudWatch Event to listen for\nHarvestJobs as they succeed or fail. In the event of failure, the CloudWatch Event will\ninclude an explanation of why the HarvestJob failed.\n',
+    }),
   })
   .openapi({ description: 'A HarvestJob resource configuration', required: [] })
   .openapi('HarvestJob')
@@ -1559,129 +1016,74 @@ const ListOfHarvestJobSchema = z.array(HarvestJobSchema).openapi('ListOfHarvestJ
 
 const ListHarvestJobsResponseSchema = z
   .object({
-    HarvestJobs: ListOfHarvestJobSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'harvestJobs' }, description: 'A list of HarvestJob records.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
+    HarvestJobs: ListOfHarvestJobSchema.exactOptional().openapi({
+      xml: { name: 'harvestJobs' },
+      description: 'A list of HarvestJob records.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListHarvestJobsResponse')
 
 const OriginEndpointSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel the OriginEndpoint is associated with.',
-        }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the OriginEndpoint was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the OriginEndpoint.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'A short string appended to the end of the OriginEndpoint URL.',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the packaged OriginEndpoint for consumption.',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel the OriginEndpoint is associated with.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the OriginEndpoint was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the OriginEndpoint.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'A short string appended to the end of the OriginEndpoint URL.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the packaged OriginEndpoint for consumption.',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({ description: 'An OriginEndpoint resource configuration.', required: [] })
   .openapi('OriginEndpoint')
@@ -1690,23 +1092,14 @@ const ListOfOriginEndpointSchema = z.array(OriginEndpointSchema).openapi('ListOf
 
 const ListOriginEndpointsResponseSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'A token that can be used to resume pagination from the end of the collection.',
-        }),
-    ).exactOptional(),
-    OriginEndpoints: ListOfOriginEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'originEndpoints' },
-          description: 'A list of OriginEndpoint records.',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'A token that can be used to resume pagination from the end of the collection.',
+    }),
+    OriginEndpoints: ListOfOriginEndpointSchema.exactOptional().openapi({
+      xml: { name: 'originEndpoints' },
+      description: 'A list of OriginEndpoint records.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOriginEndpointsResponse')
@@ -1714,278 +1107,180 @@ const ListOriginEndpointsResponseSchema = z
 const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfString')
 
 const ListTagsForResourceResponseSchema = z
-  .object({
-    Tags: MapOfStringSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-  })
+  .object({ Tags: MapOfStringSchema.exactOptional().openapi({ xml: { name: 'tags' } }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const RotateChannelCredentialsResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ deprecated: true, required: [] })
   .openapi('RotateChannelCredentialsResponse')
 
 const RotateIngestEndpointCredentialsResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('RotateIngestEndpointCredentialsResponse')
 
 const UpdateChannelResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
-        }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the Channel was created.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    HlsIngest: HlsIngestSchema.and(z.any().openapi({ xml: { name: 'hlsIngest' } })).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the Channel.' }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the Channel.',
+    }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the Channel was created.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    HlsIngest: HlsIngestSchema.exactOptional().openapi({ xml: { name: 'hlsIngest' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the Channel.',
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({ required: [] })
   .openapi('UpdateChannelResponse')
 
 const UpdateOriginEndpointResponseSchema = z
   .object({
-    Arn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'arn' },
-          description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description: 'The ID of the Channel the OriginEndpoint is associated with.',
-        }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    CreatedAt: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdAt' },
-          description: 'The date and time the OriginEndpoint was created.',
-        }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z.any().openapi({ xml: { name: 'id' }, description: 'The ID of the OriginEndpoint.' }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'A short string appended to the end of the OriginEndpoint URL.',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Url: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'url' },
-          description: 'The URL of the packaged OriginEndpoint for consumption.',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The Amazon Resource Name (ARN) assigned to the OriginEndpoint.',
+    }),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    ChannelId: StringSchema.exactOptional().openapi({
+      xml: { name: 'channelId' },
+      description: 'The ID of the Channel the OriginEndpoint is associated with.',
+    }),
+    CmafPackage: CmafPackageSchema.exactOptional().openapi({ xml: { name: 'cmafPackage' } }),
+    CreatedAt: StringSchema.exactOptional().openapi({
+      xml: { name: 'createdAt' },
+      description: 'The date and time the OriginEndpoint was created.',
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.exactOptional().openapi({
+      xml: { name: 'id' },
+      description: 'The ID of the OriginEndpoint.',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'A short string appended to the end of the OriginEndpoint URL.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Url: StringSchema.exactOptional().openapi({
+      xml: { name: 'url' },
+      description: 'The URL of the packaged OriginEndpoint for consumption.',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateOriginEndpointResponse')
 
 const CmafPackageCreateOrUpdateParametersSchema = z
   .object({
-    Encryption: CmafEncryptionSchema.and(
-      z.any().openapi({ xml: { name: 'encryption' } }),
-    ).exactOptional(),
-    HlsManifests: ListOfHlsManifestCreateOrUpdateParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hlsManifests' },
-          description: 'A list of HLS manifest configurations',
-        }),
-    ).exactOptional(),
-    SegmentDurationSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentDurationSeconds' },
-          description:
-            'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-        }),
-    ).exactOptional(),
-    SegmentPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'segmentPrefix' },
-          description:
-            'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
-        }),
-    ).exactOptional(),
-    StreamSelection: StreamSelectionSchema.and(
-      z.any().openapi({ xml: { name: 'streamSelection' } }),
-    ).exactOptional(),
+    Encryption: CmafEncryptionSchema.exactOptional().openapi({ xml: { name: 'encryption' } }),
+    HlsManifests: ListOfHlsManifestCreateOrUpdateParametersSchema.exactOptional().openapi({
+      xml: { name: 'hlsManifests' },
+      description: 'A list of HLS manifest configurations',
+    }),
+    SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'segmentDurationSeconds' },
+      description:
+        'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+    }),
+    SegmentPrefix: StringSchema.exactOptional().openapi({
+      xml: { name: 'segmentPrefix' },
+      description:
+        'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
+    }),
+    StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+      xml: { name: 'streamSelection' },
+    }),
   })
   .openapi({
     description: 'A Common Media Application Format (CMAF) packaging configuration.',
@@ -1995,12 +1290,12 @@ const CmafPackageCreateOrUpdateParametersSchema = z
 
 const ConfigureLogsRequestSchema = z
   .object({
-    EgressAccessLogs: EgressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'egressAccessLogs' } }),
-    ).exactOptional(),
-    IngressAccessLogs: IngressAccessLogsSchema.and(
-      z.any().openapi({ xml: { name: 'ingressAccessLogs' } }),
-    ).exactOptional(),
+    EgressAccessLogs: EgressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'egressAccessLogs' },
+    }),
+    IngressAccessLogs: IngressAccessLogsSchema.exactOptional().openapi({
+      xml: { name: 'ingressAccessLogs' },
+    }),
   })
   .openapi({
     title: 'ConfigureLogsRequest',
@@ -2011,24 +1306,16 @@ const ConfigureLogsRequestSchema = z
 
 const CreateChannelRequestSchema = z
   .object({
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the Channel. The ID must be unique within the region and it\ncannot be changed after a Channel is created.\n',
-        }),
-    ),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the Channel. The ID must be unique within the region and it\ncannot be changed after a Channel is created.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
   })
   .openapi({
     required: ['Id'],
@@ -2039,41 +1326,25 @@ const CreateChannelRequestSchema = z
 
 const CreateHarvestJobRequestSchema = z
   .object({
-    EndTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'endTime' },
-          description: 'The end of the time-window which will be harvested\n',
-        }),
-    ),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted\n',
-        }),
-    ),
-    OriginEndpointId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'originEndpointId' },
-          description:
-            'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
-        }),
-    ),
-    S3Destination: S3DestinationSchema.and(z.any().openapi({ xml: { name: 's3Destination' } })),
-    StartTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startTime' },
-          description: 'The start of the time-window which will be harvested\n',
-        }),
-    ),
+    EndTime: StringSchema.openapi({
+      xml: { name: 'endTime' },
+      description: 'The end of the time-window which will be harvested\n',
+    }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the HarvestJob. The ID must be unique within the region\nand it cannot be changed after the HarvestJob is submitted\n',
+    }),
+    OriginEndpointId: StringSchema.openapi({
+      xml: { name: 'originEndpointId' },
+      description:
+        'The ID of the OriginEndpoint that the HarvestJob will harvest from.\nThis cannot be changed after the HarvestJob is submitted.\n',
+    }),
+    S3Destination: S3DestinationSchema.openapi({ xml: { name: 's3Destination' } }),
+    StartTime: StringSchema.openapi({
+      xml: { name: 'startTime' },
+      description: 'The start of the time-window which will be harvested\n',
+    }),
   })
   .openapi({
     required: ['S3Destination', 'EndTime', 'OriginEndpointId', 'StartTime', 'Id'],
@@ -2084,93 +1355,53 @@ const CreateHarvestJobRequestSchema = z
 
 const CreateOriginEndpointRequestSchema = z
   .object({
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    ChannelId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'channelId' },
-          description:
-            'The ID of the Channel that the OriginEndpoint will be associated with.\nThis cannot be changed after the OriginEndpoint is created.\n',
-        }),
-    ),
-    CmafPackage: CmafPackageCreateOrUpdateParametersSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    Id: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'id' },
-          description:
-            'The ID of the OriginEndpoint.  The ID must be unique within the region\nand it cannot be changed after the OriginEndpoint is created.\n',
-        }),
-    ),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description:
-            'A short string that will be used as the filename of the OriginEndpoint URL (defaults to "index").',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    ChannelId: StringSchema.openapi({
+      xml: { name: 'channelId' },
+      description:
+        'The ID of the Channel that the OriginEndpoint will be associated with.\nThis cannot be changed after the OriginEndpoint is created.\n',
+    }),
+    CmafPackage: CmafPackageCreateOrUpdateParametersSchema.exactOptional().openapi({
+      xml: { name: 'cmafPackage' },
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    Id: StringSchema.openapi({
+      xml: { name: 'id' },
+      description:
+        'The ID of the OriginEndpoint.  The ID must be unique within the region\nand it cannot be changed after the OriginEndpoint is created.\n',
+    }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description:
+        'A short string that will be used as the filename of the OriginEndpoint URL (defaults to "index").',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({
     required: ['ChannelId', 'Id'],
@@ -2180,82 +1411,78 @@ const CreateOriginEndpointRequestSchema = z
   .openapi('CreateOriginEndpointRequest')
 
 const DeleteChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelRequest' })
   .openapi('DeleteChannelRequest')
 
 const DeleteOriginEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteOriginEndpointRequest' })
   .openapi('DeleteOriginEndpointRequest')
 
 const DescribeChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelRequest' })
   .openapi('DescribeChannelRequest')
 
 const DescribeHarvestJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeHarvestJobRequest' })
   .openapi('DescribeHarvestJobRequest')
 
 const DescribeOriginEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeOriginEndpointRequest' })
   .openapi('DescribeOriginEndpointRequest')
 
 const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const ListChannelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelsRequest' })
   .openapi('ListChannelsRequest')
 
 const ListHarvestJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListHarvestJobsRequest' })
   .openapi('ListHarvestJobsRequest')
 
 const ListOriginEndpointsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOriginEndpointsRequest' })
   .openapi('ListOriginEndpointsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const RotateChannelCredentialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ deprecated: true, title: 'RotateChannelCredentialsRequest' })
   .openapi('RotateChannelCredentialsRequest')
 
 const RotateIngestEndpointCredentialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RotateIngestEndpointCredentialsRequest' })
   .openapi('RotateIngestEndpointCredentialsRequest')
 
 const TagResourceRequestSchema = z
-  .object({ Tags: MapOfStringSchema.and(z.any().openapi({ xml: { name: 'tags' } })) })
+  .object({ Tags: MapOfStringSchema.openapi({ xml: { name: 'tags' } }) })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateChannelRequestSchema = z
   .object({
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the Channel.',
-        }),
-    ).exactOptional(),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the Channel.',
+    }),
   })
   .openapi({
     title: 'UpdateChannelRequest',
@@ -2266,73 +1493,41 @@ const UpdateChannelRequestSchema = z
 
 const UpdateOriginEndpointRequestSchema = z
   .object({
-    Authorization: AuthorizationSchema.and(
-      z.any().openapi({ xml: { name: 'authorization' } }),
-    ).exactOptional(),
-    CmafPackage: CmafPackageCreateOrUpdateParametersSchema.and(
-      z.any().openapi({ xml: { name: 'cmafPackage' } }),
-    ).exactOptional(),
-    DashPackage: DashPackageSchema.and(
-      z.any().openapi({ xml: { name: 'dashPackage' } }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'A short text description of the OriginEndpoint.',
-        }),
-    ).exactOptional(),
-    HlsPackage: HlsPackageSchema.and(
-      z.any().openapi({ xml: { name: 'hlsPackage' } }),
-    ).exactOptional(),
-    ManifestName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'manifestName' },
-          description: 'A short string that will be appended to the end of the Endpoint URL.',
-        }),
-    ).exactOptional(),
-    MssPackage: MssPackageSchema.and(
-      z.any().openapi({ xml: { name: 'mssPackage' } }),
-    ).exactOptional(),
-    Origination: OriginationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'origination' },
-          description:
-            'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
-        }),
-    ).exactOptional(),
-    StartoverWindowSeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'startoverWindowSeconds' },
-          description:
-            'Maximum duration (in seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    TimeDelaySeconds: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeDelaySeconds' },
-          description:
-            'Amount of delay (in seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
-        }),
-    ).exactOptional(),
-    Whitelist: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'whitelist' },
-          description:
-            'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
-        }),
-    ).exactOptional(),
+    Authorization: AuthorizationSchema.exactOptional().openapi({ xml: { name: 'authorization' } }),
+    CmafPackage: CmafPackageCreateOrUpdateParametersSchema.exactOptional().openapi({
+      xml: { name: 'cmafPackage' },
+    }),
+    DashPackage: DashPackageSchema.exactOptional().openapi({ xml: { name: 'dashPackage' } }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'A short text description of the OriginEndpoint.',
+    }),
+    HlsPackage: HlsPackageSchema.exactOptional().openapi({ xml: { name: 'hlsPackage' } }),
+    ManifestName: StringSchema.exactOptional().openapi({
+      xml: { name: 'manifestName' },
+      description: 'A short string that will be appended to the end of the Endpoint URL.',
+    }),
+    MssPackage: MssPackageSchema.exactOptional().openapi({ xml: { name: 'mssPackage' } }),
+    Origination: OriginationSchema.exactOptional().openapi({
+      xml: { name: 'origination' },
+      description:
+        'Control whether origination of video is allowed for this OriginEndpoint. If set to ALLOW, the OriginEndpoint\nmay by requested, pursuant to any other form of access control. If set to DENY, the OriginEndpoint may not be\nrequested. This can be helpful for Live to VOD harvesting, or for temporarily disabling origination\n',
+    }),
+    StartoverWindowSeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'startoverWindowSeconds' },
+      description:
+        'Maximum duration (in seconds) of content to retain for startover playback.\nIf not specified, startover playback will be disabled for the OriginEndpoint.\n',
+    }),
+    TimeDelaySeconds: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'timeDelaySeconds' },
+      description:
+        'Amount of delay (in seconds) to enforce on the playback of live content.\nIf not specified, there will be no time delay in effect for the OriginEndpoint.\n',
+    }),
+    Whitelist: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'whitelist' },
+      description:
+        'A list of source IP CIDR blocks that will be allowed to access the OriginEndpoint.',
+    }),
   })
   .openapi({
     title: 'UpdateOriginEndpointRequest',
@@ -2448,27 +1643,19 @@ export const putChannelsIdConfigureLogsRoute = createRoute({
             .object({
               egressAccessLogs: z
                 .object({
-                  LogGroupName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'logGroupName' },
-                        description: 'Customize the log group name.',
-                      }),
-                  ).exactOptional(),
+                  LogGroupName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'logGroupName' },
+                    description: 'Customize the log group name.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configure egress access logging.', required: [] }),
               ingressAccessLogs: z
                 .object({
-                  LogGroupName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'logGroupName' },
-                        description: 'Customize the log group name.',
-                      }),
-                  ).exactOptional(),
+                  LogGroupName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'logGroupName' },
+                    description: 'Customize the log group name.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configure ingress access logging.', required: [] }),
@@ -2859,32 +2046,20 @@ export const postHarvestJobsRoute = createRoute({
                 }),
               s3Destination: z
                 .object({
-                  BucketName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'bucketName' },
-                        description:
-                          'The name of an S3 bucket within which harvested content will be exported\n',
-                      }),
-                  ).exactOptional(),
-                  ManifestKey: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestKey' },
-                        description:
-                          'The key in the specified S3 bucket where the harvested top-level manifest will be placed.\n',
-                      }),
-                  ).exactOptional(),
-                  RoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'roleArn' },
-                        description: 'The IAM role used to write to the specified S3 bucket\n',
-                      }),
-                  ).exactOptional(),
+                  BucketName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'bucketName' },
+                    description:
+                      'The name of an S3 bucket within which harvested content will be exported\n',
+                  }),
+                  ManifestKey: StringSchema.exactOptional().openapi({
+                    xml: { name: 'manifestKey' },
+                    description:
+                      'The key in the specified S3 bucket where the harvested top-level manifest will be placed.\n',
+                  }),
+                  RoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'roleArn' },
+                    description: 'The IAM role used to write to the specified S3 bucket\n',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3076,24 +2251,16 @@ export const postOriginEndpointsRoute = createRoute({
             .object({
               authorization: z
                 .object({
-                  CdnIdentifierSecret: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'cdnIdentifierSecret' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
-                      }),
-                  ).exactOptional(),
-                  SecretsRoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretsRoleArn' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
-                      }),
-                  ).exactOptional(),
+                  CdnIdentifierSecret: StringSchema.exactOptional().openapi({
+                    xml: { name: 'cdnIdentifierSecret' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
+                  }),
+                  SecretsRoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretsRoleArn' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'CDN Authorization credentials', required: [] }),
@@ -3105,38 +2272,27 @@ export const postOriginEndpointsRoute = createRoute({
                 }),
               cmafPackage: z
                 .object({
-                  Encryption: CmafEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  HlsManifests: ListOfHlsManifestCreateOrUpdateParametersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hlsManifests' },
-                        description: 'A list of HLS manifest configurations',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentPrefix' },
-                        description:
-                          'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
+                  Encryption: CmafEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  HlsManifests:
+                    ListOfHlsManifestCreateOrUpdateParametersSchema.exactOptional().openapi({
+                      xml: { name: 'hlsManifests' },
+                      description: 'A list of HLS manifest configurations',
+                    }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+                  }),
+                  SegmentPrefix: StringSchema.exactOptional().openapi({
+                    xml: { name: 'segmentPrefix' },
+                    description:
+                      'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3145,125 +2301,77 @@ export const postOriginEndpointsRoute = createRoute({
                 }),
               dashPackage: z
                 .object({
-                  AdTriggers: AdTriggersSchema.and(
-                    z.any().openapi({ xml: { name: 'adTriggers' } }),
-                  ).exactOptional(),
-                  AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-                    z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-                  ).exactOptional(),
-                  Encryption: DashEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  IncludeIframeOnlyStream: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeIframeOnlyStream' },
-                        description:
-                          'When enabled, an I-Frame only stream will be included in the output.',
-                      }),
-                  ).exactOptional(),
-                  ManifestLayout: ManifestLayoutSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestLayout' },
-                        description:
-                          'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
-                      }),
-                  ).exactOptional(),
-                  ManifestWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestWindowSeconds' },
-                        description: 'Time window (in seconds) contained in each manifest.',
-                      }),
-                  ).exactOptional(),
-                  MinBufferTimeSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'minBufferTimeSeconds' },
-                        description:
-                          'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
-                      }),
-                  ).exactOptional(),
-                  MinUpdatePeriodSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'minUpdatePeriodSeconds' },
-                        description:
-                          'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
-                      }),
-                  ).exactOptional(),
-                  PeriodTriggers: ListOfPeriodTriggersElementSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'periodTriggers' },
-                        description:
-                          'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
-                      }),
-                  ).exactOptional(),
-                  Profile: ProfileSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'profile' },
-                        description:
-                          'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentTemplateFormat: SegmentTemplateFormatSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentTemplateFormat' },
-                        description:
-                          'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
-                  SuggestedPresentationDelaySeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'suggestedPresentationDelaySeconds' },
-                        description:
-                          'Duration (in seconds) to delay live content before presentation.',
-                      }),
-                  ).exactOptional(),
-                  UtcTiming: UtcTimingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'utcTiming' },
-                        description:
-                          'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
-                      }),
-                  ).exactOptional(),
-                  UtcTimingUri: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'utcTimingUri' },
-                        description:
-                          'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
-                      }),
-                  ).exactOptional(),
+                  AdTriggers: AdTriggersSchema.exactOptional().openapi({
+                    xml: { name: 'adTriggers' },
+                  }),
+                  AdsOnDeliveryRestrictions:
+                    AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+                      xml: { name: 'adsOnDeliveryRestrictions' },
+                    }),
+                  Encryption: DashEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeIframeOnlyStream' },
+                    description:
+                      'When enabled, an I-Frame only stream will be included in the output.',
+                  }),
+                  ManifestLayout: ManifestLayoutSchema.exactOptional().openapi({
+                    xml: { name: 'manifestLayout' },
+                    description:
+                      'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
+                  }),
+                  ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'manifestWindowSeconds' },
+                    description: 'Time window (in seconds) contained in each manifest.',
+                  }),
+                  MinBufferTimeSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'minBufferTimeSeconds' },
+                    description:
+                      'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
+                  }),
+                  MinUpdatePeriodSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'minUpdatePeriodSeconds' },
+                    description:
+                      'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
+                  }),
+                  PeriodTriggers: ListOfPeriodTriggersElementSchema.exactOptional().openapi({
+                    xml: { name: 'periodTriggers' },
+                    description:
+                      'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
+                  }),
+                  Profile: ProfileSchema.exactOptional().openapi({
+                    xml: { name: 'profile' },
+                    description:
+                      'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+                  }),
+                  SegmentTemplateFormat: SegmentTemplateFormatSchema.exactOptional().openapi({
+                    xml: { name: 'segmentTemplateFormat' },
+                    description:
+                      'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
+                  SuggestedPresentationDelaySeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'suggestedPresentationDelaySeconds' },
+                    description: 'Duration (in seconds) to delay live content before presentation.',
+                  }),
+                  UtcTiming: UtcTimingSchema.exactOptional().openapi({
+                    xml: { name: 'utcTiming' },
+                    description:
+                      'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
+                  }),
+                  UtcTimingUri: StringSchema.exactOptional().openapi({
+                    xml: { name: 'utcTimingUri' },
+                    description:
+                      'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3277,89 +2385,58 @@ export const postOriginEndpointsRoute = createRoute({
                 .openapi({ description: 'A short text description of the OriginEndpoint.' }),
               hlsPackage: z
                 .object({
-                  AdMarkers: AdMarkersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'adMarkers' },
-                        description:
-                          'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
-                      }),
-                  ).exactOptional(),
-                  AdTriggers: AdTriggersSchema.and(
-                    z.any().openapi({ xml: { name: 'adTriggers' } }),
-                  ).exactOptional(),
-                  AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-                    z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-                  ).exactOptional(),
-                  Encryption: HlsEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  IncludeDvbSubtitles: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeDvbSubtitles' },
-                        description:
-                          'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
-                      }),
-                  ).exactOptional(),
-                  IncludeIframeOnlyStream: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeIframeOnlyStream' },
-                        description:
-                          'When enabled, an I-Frame only stream will be included in the output.',
-                      }),
-                  ).exactOptional(),
-                  PlaylistType: PlaylistTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'playlistType' },
-                        description:
-                          'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
-                      }),
-                  ).exactOptional(),
-                  PlaylistWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'playlistWindowSeconds' },
-                        description: 'Time window (in seconds) contained in each parent manifest.',
-                      }),
-                  ).exactOptional(),
-                  ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'programDateTimeIntervalSeconds' },
-                        description:
-                          'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
-                  UseAudioRenditionGroup: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'useAudioRenditionGroup' },
-                        description:
-                          'When enabled, audio streams will be placed in rendition groups in the output.',
-                      }),
-                  ).exactOptional(),
+                  AdMarkers: AdMarkersSchema.exactOptional().openapi({
+                    xml: { name: 'adMarkers' },
+                    description:
+                      'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
+                  }),
+                  AdTriggers: AdTriggersSchema.exactOptional().openapi({
+                    xml: { name: 'adTriggers' },
+                  }),
+                  AdsOnDeliveryRestrictions:
+                    AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+                      xml: { name: 'adsOnDeliveryRestrictions' },
+                    }),
+                  Encryption: HlsEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  IncludeDvbSubtitles: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeDvbSubtitles' },
+                    description:
+                      'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
+                  }),
+                  IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeIframeOnlyStream' },
+                    description:
+                      'When enabled, an I-Frame only stream will be included in the output.',
+                  }),
+                  PlaylistType: PlaylistTypeSchema.exactOptional().openapi({
+                    xml: { name: 'playlistType' },
+                    description:
+                      'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
+                  }),
+                  PlaylistWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'playlistWindowSeconds' },
+                    description: 'Time window (in seconds) contained in each parent manifest.',
+                  }),
+                  ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'programDateTimeIntervalSeconds' },
+                    description:
+                      'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
+                  UseAudioRenditionGroup: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'useAudioRenditionGroup' },
+                    description:
+                      'When enabled, audio streams will be placed in rendition groups in the output.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3381,28 +2458,20 @@ export const postOriginEndpointsRoute = createRoute({
                 }),
               mssPackage: z
                 .object({
-                  Encryption: MssEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  ManifestWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestWindowSeconds' },
-                        description: 'The time window (in seconds) contained in each manifest.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description: 'The duration (in seconds) of each segment.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
+                  Encryption: MssEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'manifestWindowSeconds' },
+                    description: 'The time window (in seconds) contained in each manifest.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description: 'The duration (in seconds) of each segment.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3774,61 +2843,42 @@ export const putOriginEndpointsIdRoute = createRoute({
             .object({
               authorization: z
                 .object({
-                  CdnIdentifierSecret: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'cdnIdentifierSecret' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
-                      }),
-                  ).exactOptional(),
-                  SecretsRoleArn: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'secretsRoleArn' },
-                        description:
-                          'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
-                      }),
-                  ).exactOptional(),
+                  CdnIdentifierSecret: StringSchema.exactOptional().openapi({
+                    xml: { name: 'cdnIdentifierSecret' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the secret in Secrets Manager that your Content Distribution Network (CDN) uses for authorization to access your endpoint.\n',
+                  }),
+                  SecretsRoleArn: StringSchema.exactOptional().openapi({
+                    xml: { name: 'secretsRoleArn' },
+                    description:
+                      'The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager.\n',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'CDN Authorization credentials', required: [] }),
               cmafPackage: z
                 .object({
-                  Encryption: CmafEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  HlsManifests: ListOfHlsManifestCreateOrUpdateParametersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'hlsManifests' },
-                        description: 'A list of HLS manifest configurations',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentPrefix: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentPrefix' },
-                        description:
-                          'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
+                  Encryption: CmafEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  HlsManifests:
+                    ListOfHlsManifestCreateOrUpdateParametersSchema.exactOptional().openapi({
+                      xml: { name: 'hlsManifests' },
+                      description: 'A list of HLS manifest configurations',
+                    }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+                  }),
+                  SegmentPrefix: StringSchema.exactOptional().openapi({
+                    xml: { name: 'segmentPrefix' },
+                    description:
+                      'An optional custom string that is prepended to the name of each segment. If not specified, it defaults to the ChannelId.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3837,125 +2887,77 @@ export const putOriginEndpointsIdRoute = createRoute({
                 }),
               dashPackage: z
                 .object({
-                  AdTriggers: AdTriggersSchema.and(
-                    z.any().openapi({ xml: { name: 'adTriggers' } }),
-                  ).exactOptional(),
-                  AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-                    z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-                  ).exactOptional(),
-                  Encryption: DashEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  IncludeIframeOnlyStream: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeIframeOnlyStream' },
-                        description:
-                          'When enabled, an I-Frame only stream will be included in the output.',
-                      }),
-                  ).exactOptional(),
-                  ManifestLayout: ManifestLayoutSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestLayout' },
-                        description:
-                          'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
-                      }),
-                  ).exactOptional(),
-                  ManifestWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestWindowSeconds' },
-                        description: 'Time window (in seconds) contained in each manifest.',
-                      }),
-                  ).exactOptional(),
-                  MinBufferTimeSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'minBufferTimeSeconds' },
-                        description:
-                          'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
-                      }),
-                  ).exactOptional(),
-                  MinUpdatePeriodSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'minUpdatePeriodSeconds' },
-                        description:
-                          'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
-                      }),
-                  ).exactOptional(),
-                  PeriodTriggers: ListOfPeriodTriggersElementSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'periodTriggers' },
-                        description:
-                          'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
-                      }),
-                  ).exactOptional(),
-                  Profile: ProfileSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'profile' },
-                        description:
-                          'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentTemplateFormat: SegmentTemplateFormatSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentTemplateFormat' },
-                        description:
-                          'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
-                  SuggestedPresentationDelaySeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'suggestedPresentationDelaySeconds' },
-                        description:
-                          'Duration (in seconds) to delay live content before presentation.',
-                      }),
-                  ).exactOptional(),
-                  UtcTiming: UtcTimingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'utcTiming' },
-                        description:
-                          'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
-                      }),
-                  ).exactOptional(),
-                  UtcTimingUri: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'utcTimingUri' },
-                        description:
-                          'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
-                      }),
-                  ).exactOptional(),
+                  AdTriggers: AdTriggersSchema.exactOptional().openapi({
+                    xml: { name: 'adTriggers' },
+                  }),
+                  AdsOnDeliveryRestrictions:
+                    AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+                      xml: { name: 'adsOnDeliveryRestrictions' },
+                    }),
+                  Encryption: DashEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeIframeOnlyStream' },
+                    description:
+                      'When enabled, an I-Frame only stream will be included in the output.',
+                  }),
+                  ManifestLayout: ManifestLayoutSchema.exactOptional().openapi({
+                    xml: { name: 'manifestLayout' },
+                    description:
+                      'Determines the position of some tags in the Media Presentation Description (MPD).  When set to FULL, elements like SegmentTemplate and ContentProtection are included in each Representation.  When set to COMPACT, duplicate elements are combined and presented at the AdaptationSet level.',
+                  }),
+                  ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'manifestWindowSeconds' },
+                    description: 'Time window (in seconds) contained in each manifest.',
+                  }),
+                  MinBufferTimeSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'minBufferTimeSeconds' },
+                    description:
+                      'Minimum duration (in seconds) that a player will buffer media before starting the presentation.',
+                  }),
+                  MinUpdatePeriodSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'minUpdatePeriodSeconds' },
+                    description:
+                      'Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).',
+                  }),
+                  PeriodTriggers: ListOfPeriodTriggersElementSchema.exactOptional().openapi({
+                    xml: { name: 'periodTriggers' },
+                    description:
+                      'A list of triggers that controls when the outgoing Dynamic Adaptive Streaming over HTTP (DASH)\nMedia Presentation Description (MPD) will be partitioned into multiple periods. If empty, the content will not\nbe partitioned into more than one period. If the list contains "ADS", new periods will be created where\nthe Channel source contains SCTE-35 ad markers.\n',
+                  }),
+                  Profile: ProfileSchema.exactOptional().openapi({
+                    xml: { name: 'profile' },
+                    description:
+                      'The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled. When set to "DVB-DASH_2014", DVB-DASH 2014 compliant output is enabled.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each segment. Actual segments will be\nrounded to the nearest multiple of the source segment duration.\n',
+                  }),
+                  SegmentTemplateFormat: SegmentTemplateFormatSchema.exactOptional().openapi({
+                    xml: { name: 'segmentTemplateFormat' },
+                    description:
+                      'Determines the type of SegmentTemplate included in the Media Presentation Description (MPD).  When set to NUMBER_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Number$ media URLs.  When set to TIME_WITH_TIMELINE, a full timeline is presented in each SegmentTemplate, with $Time$ media URLs. When set to NUMBER_WITH_DURATION, only a duration is included in each SegmentTemplate, with $Number$ media URLs.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
+                  SuggestedPresentationDelaySeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'suggestedPresentationDelaySeconds' },
+                    description: 'Duration (in seconds) to delay live content before presentation.',
+                  }),
+                  UtcTiming: UtcTimingSchema.exactOptional().openapi({
+                    xml: { name: 'utcTiming' },
+                    description:
+                      'Determines the type of UTCTiming included in the Media Presentation Description (MPD)',
+                  }),
+                  UtcTimingUri: StringSchema.exactOptional().openapi({
+                    xml: { name: 'utcTimingUri' },
+                    description:
+                      'Specifies the value attribute of the UTCTiming field when utcTiming is set to HTTP-ISO, HTTP-HEAD or HTTP-XSDATE',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -3969,89 +2971,58 @@ export const putOriginEndpointsIdRoute = createRoute({
                 .openapi({ description: 'A short text description of the OriginEndpoint.' }),
               hlsPackage: z
                 .object({
-                  AdMarkers: AdMarkersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'adMarkers' },
-                        description:
-                          'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
-                      }),
-                  ).exactOptional(),
-                  AdTriggers: AdTriggersSchema.and(
-                    z.any().openapi({ xml: { name: 'adTriggers' } }),
-                  ).exactOptional(),
-                  AdsOnDeliveryRestrictions: AdsOnDeliveryRestrictionsSchema.and(
-                    z.any().openapi({ xml: { name: 'adsOnDeliveryRestrictions' } }),
-                  ).exactOptional(),
-                  Encryption: HlsEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  IncludeDvbSubtitles: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeDvbSubtitles' },
-                        description:
-                          'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
-                      }),
-                  ).exactOptional(),
-                  IncludeIframeOnlyStream: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'includeIframeOnlyStream' },
-                        description:
-                          'When enabled, an I-Frame only stream will be included in the output.',
-                      }),
-                  ).exactOptional(),
-                  PlaylistType: PlaylistTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'playlistType' },
-                        description:
-                          'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
-                      }),
-                  ).exactOptional(),
-                  PlaylistWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'playlistWindowSeconds' },
-                        description: 'Time window (in seconds) contained in each parent manifest.',
-                      }),
-                  ).exactOptional(),
-                  ProgramDateTimeIntervalSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'programDateTimeIntervalSeconds' },
-                        description:
-                          'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description:
-                          'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
-                  UseAudioRenditionGroup: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'useAudioRenditionGroup' },
-                        description:
-                          'When enabled, audio streams will be placed in rendition groups in the output.',
-                      }),
-                  ).exactOptional(),
+                  AdMarkers: AdMarkersSchema.exactOptional().openapi({
+                    xml: { name: 'adMarkers' },
+                    description:
+                      'This setting controls how ad markers are included in the packaged OriginEndpoint.\n"NONE" will omit all SCTE-35 ad markers from the output.\n"PASSTHROUGH" causes the manifest to contain a copy of the SCTE-35 ad\nmarkers (comments) taken directly from the input HTTP Live Streaming (HLS) manifest.\n"SCTE35_ENHANCED" generates ad markers and blackout tags based on SCTE-35\nmessages in the input source.\n"DATERANGE" inserts EXT-X-DATERANGE tags to signal ad and program transition events \nin HLS and CMAF manifests. For this option, you must set a programDateTimeIntervalSeconds value \nthat is greater than 0.\n',
+                  }),
+                  AdTriggers: AdTriggersSchema.exactOptional().openapi({
+                    xml: { name: 'adTriggers' },
+                  }),
+                  AdsOnDeliveryRestrictions:
+                    AdsOnDeliveryRestrictionsSchema.exactOptional().openapi({
+                      xml: { name: 'adsOnDeliveryRestrictions' },
+                    }),
+                  Encryption: HlsEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  IncludeDvbSubtitles: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeDvbSubtitles' },
+                    description:
+                      'When enabled, MediaPackage passes through digital video broadcasting (DVB) subtitles into the output.',
+                  }),
+                  IncludeIframeOnlyStream: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'includeIframeOnlyStream' },
+                    description:
+                      'When enabled, an I-Frame only stream will be included in the output.',
+                  }),
+                  PlaylistType: PlaylistTypeSchema.exactOptional().openapi({
+                    xml: { name: 'playlistType' },
+                    description:
+                      'The HTTP Live Streaming (HLS) playlist type.\nWhen either "EVENT" or "VOD" is specified, a corresponding EXT-X-PLAYLIST-TYPE\nentry will be included in the media playlist.\n',
+                  }),
+                  PlaylistWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'playlistWindowSeconds' },
+                    description: 'Time window (in seconds) contained in each parent manifest.',
+                  }),
+                  ProgramDateTimeIntervalSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'programDateTimeIntervalSeconds' },
+                    description:
+                      'The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag\ninserted into manifests. Additionally, when an interval is specified\nID3Timed Metadata messages will be generated every 5 seconds using the\ningest time of the content.\nIf the interval is not specified, or set to 0, then\nno EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no\nID3Timed Metadata messages will be generated. Note that irrespective\nof this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input,\nit will be passed through to HLS output.\n',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description:
+                      'Duration (in seconds) of each fragment. Actual fragments will be\nrounded to the nearest multiple of the source fragment duration.\n',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
+                  UseAudioRenditionGroup: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'useAudioRenditionGroup' },
+                    description:
+                      'When enabled, audio streams will be placed in rendition groups in the output.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4067,28 +3038,20 @@ export const putOriginEndpointsIdRoute = createRoute({
                 }),
               mssPackage: z
                 .object({
-                  Encryption: MssEncryptionSchema.and(
-                    z.any().openapi({ xml: { name: 'encryption' } }),
-                  ).exactOptional(),
-                  ManifestWindowSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'manifestWindowSeconds' },
-                        description: 'The time window (in seconds) contained in each manifest.',
-                      }),
-                  ).exactOptional(),
-                  SegmentDurationSeconds: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'segmentDurationSeconds' },
-                        description: 'The duration (in seconds) of each segment.',
-                      }),
-                  ).exactOptional(),
-                  StreamSelection: StreamSelectionSchema.and(
-                    z.any().openapi({ xml: { name: 'streamSelection' } }),
-                  ).exactOptional(),
+                  Encryption: MssEncryptionSchema.exactOptional().openapi({
+                    xml: { name: 'encryption' },
+                  }),
+                  ManifestWindowSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'manifestWindowSeconds' },
+                    description: 'The time window (in seconds) contained in each manifest.',
+                  }),
+                  SegmentDurationSeconds: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'segmentDurationSeconds' },
+                    description: 'The duration (in seconds) of each segment.',
+                  }),
+                  StreamSelection: StreamSelectionSchema.exactOptional().openapi({
+                    xml: { name: 'streamSelection' },
+                  }),
                 })
                 .exactOptional()
                 .openapi({

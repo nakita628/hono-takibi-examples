@@ -135,195 +135,127 @@ type GoogleCloudMlV1StudyConfigParameterSpecType = {
   type?: 'PARAMETER_TYPE_UNSPECIFIED' | 'DOUBLE' | 'INTEGER' | 'CATEGORICAL' | 'DISCRETE'
 }
 
-const GoogleApiHttpBodySchema = z
+const GoogleCloudMlV1PredictionInputSchema = z
   .object({
-    contentType: z
+    batchSize: z
       .string()
-      .exactOptional()
-      .openapi({
-        description: 'The HTTP Content-Type header value specifying the content type of the body.',
-      }),
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
-    extensions: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
       .exactOptional()
       .openapi({
         description:
-          'Application specific response metadata. Must be set in the first response for streaming APIs.',
+          'Optional. Number of records per batch, defaults to 64. The service will buffer batch_size number of records in memory before invoking one Tensorflow prediction call internally. So take the record size and memory available into consideration when setting this parameter.',
+      }),
+    dataFormat: z
+      .enum(['DATA_FORMAT_UNSPECIFIED', 'JSON', 'TEXT', 'TF_RECORD', 'TF_RECORD_GZIP', 'CSV'])
+      .exactOptional()
+      .openapi({ description: 'Required. The format of the input data files.' }),
+    inputPaths: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Cloud Storage location of the input data files. May contain wildcards.',
+      }),
+    maxWorkerCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The maximum number of workers to be used for parallel processing. Defaults to 10 if not specified.',
+      }),
+    modelName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this field if you want to use the default version for the specified model. The string must use the following format: `"projects/YOUR_PROJECT/models/YOUR_MODEL"`',
+      }),
+    outputDataFormat: z
+      .enum(['DATA_FORMAT_UNSPECIFIED', 'JSON', 'TEXT', 'TF_RECORD', 'TF_RECORD_GZIP', 'CSV'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Format of the output data files, defaults to JSON.' }),
+    outputPath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The output Google Cloud Storage location.' }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Google Compute Engine region to run the prediction job in. See the available regions for AI Platform services.',
+      }),
+    runtimeVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The AI Platform runtime version to use for this batch prediction. If not set, AI Platform will pick the runtime version used during the CreateVersion request for this model version, or choose the latest stable version when model version information is not available such as when the model is specified by uri.',
+      }),
+    signatureName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The name of the signature defined in the SavedModel to use for this job. Please refer to [SavedModel](https://tensorflow.github.io/serving/serving_basic.html) for information about how to use signatures. Defaults to [DEFAULT_SERVING_SIGNATURE_DEF_KEY](https://www.tensorflow.org/api_docs/python/tf/saved_model/signature_constants) , which is "serving_default".',
+      }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this field if you want to specify a Google Cloud Storage path for the model to use.',
+      }),
+    versionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this field if you want to specify a version of the model to use. The string is formatted the same way as `model_version`, with the addition of the version information: `"projects/YOUR_PROJECT/models/YOUR_MODEL/versions/YOUR_VERSION"`',
+      }),
+  })
+  .openapi({ description: 'Represents input parameters for a prediction job.', required: [] })
+  .openapi('GoogleCloudMlV1PredictionInput')
+
+const GoogleCloudMlV1PredictionOutputSchema = z
+  .object({
+    errorCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of data instances which resulted in errors.' }),
+    nodeHours: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Node hours used by the batch prediction job.' }),
+    outputPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The output Google Cloud Storage location provided at the job creation time.',
+      }),
+    predictionCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The number of generated predictions.' }),
+  })
+  .openapi({ description: 'Represents results of a prediction job.', required: [] })
+  .openapi('GoogleCloudMlV1PredictionOutput')
+
+const GoogleCloudMlV1EncryptionConfigSchema = z
+  .object({
+    kmsKeyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Cloud KMS resource identifier of the customer-managed encryption key used to protect a resource, such as a training job. It has the following format: `projects/{PROJECT_ID}/locations/{REGION}/keyRings/{KEY_RING_NAME}/cryptoKeys/{KEY_NAME}`',
       }),
   })
   .openapi({
     description:
-      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
+      'Represents a custom encryption key configuration that can be applied to a resource.',
     required: [],
   })
-  .openapi('GoogleApiHttpBody')
-
-const GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfigSchema = z
-  .object({
-    useElapsedTime: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, measurement.elapsed_time is used as the x-axis of each Trials Decay Curve. Otherwise, Measurement.steps will be used as the x-axis.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfig')
-
-const GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfigSchema = z
-  .object({
-    useElapsedTime: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "If true, the median automated stopping rule applies to measurement.use_elapsed_time, which means the elapsed_time field of the current trial's latest measurement is used to compute the median objective value for each completed trial.",
-      }),
-  })
-  .openapi({
-    description:
-      "The median automated stopping rule stops a pending trial if the trial's best objective_value is strictly below the median 'performance' of all completed trials reported up to the trial's last measurement. Currently, 'performance' refers to the running average of the objective values reported by the trial in each measurement.",
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfig')
-
-const GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema = z
-  .object({
-    objectiveValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The objective value at this training step.' }),
-    trainingStep: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The global training step for this metric.' }),
-  })
-  .openapi({ description: 'An observed value of a metric.', required: [] })
-  .openapi('GoogleCloudMlV1HyperparameterOutputHyperparameterMetric')
-
-const GoogleCloudMlV1MeasurementMetricSchema = z
-  .object({
-    metric: z.string().exactOptional().openapi({ description: 'Required. Metric name.' }),
-    value: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Required. The value for this metric.' }),
-  })
-  .openapi({ description: 'A message representing a metric in the measurement.', required: [] })
-  .openapi('GoogleCloudMlV1MeasurementMetric')
-
-const GoogleCloudMlV1StudyConfigMetricSpecSchema = z
-  .object({
-    goal: z
-      .enum(['GOAL_TYPE_UNSPECIFIED', 'MAXIMIZE', 'MINIMIZE'])
-      .exactOptional()
-      .openapi({ description: 'Required. The optimization goal of the metric.' }),
-    metric: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the metric.' }),
-  })
-  .openapi({ description: 'Represents a metric to optimize.', required: [] })
-  .openapi('GoogleCloudMlV1StudyConfigMetricSpec')
-
-const GoogleCloudMlV1StudyConfigParameterSpecSchema: z.ZodType<GoogleCloudMlV1StudyConfigParameterSpecType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          categoricalValueSpec:
-            GoogleCloudMlV1StudyConfigParameterSpecCategoricalValueSpecSchema.exactOptional().openapi(
-              { description: "The value spec for a 'CATEGORICAL' parameter." },
-            ),
-          childParameterSpecs: z
-            .array(GoogleCloudMlV1StudyConfigParameterSpecSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                "A child node is active if the parameter's value matches the child node's matching_parent_values. If two items in child_parameter_specs have the same name, they must have disjoint matching_parent_values.",
-            }),
-          discreteValueSpec:
-            GoogleCloudMlV1StudyConfigParameterSpecDiscreteValueSpecSchema.exactOptional().openapi({
-              description: "The value spec for a 'DISCRETE' parameter.",
-            }),
-          doubleValueSpec:
-            GoogleCloudMlV1StudyConfigParameterSpecDoubleValueSpecSchema.exactOptional().openapi({
-              description: "The value spec for a 'DOUBLE' parameter.",
-            }),
-          integerValueSpec:
-            GoogleCloudMlV1StudyConfigParameterSpecIntegerValueSpecSchema.exactOptional().openapi({
-              description: "The value spec for an 'INTEGER' parameter.",
-            }),
-          parameter: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Required. The parameter name must be unique amongst all ParameterSpecs.',
-            }),
-          parentCategoricalValues:
-            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentCategoricalValueSpecSchema.exactOptional(),
-          parentDiscreteValues:
-            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentDiscreteValueSpecSchema.exactOptional(),
-          parentIntValues:
-            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentIntValueSpecSchema.exactOptional(),
-          scaleType: z
-            .enum([
-              'SCALE_TYPE_UNSPECIFIED',
-              'UNIT_LINEAR_SCALE',
-              'UNIT_LOG_SCALE',
-              'UNIT_REVERSE_LOG_SCALE',
-            ])
-            .exactOptional()
-            .openapi({
-              description:
-                'How the parameter should be scaled. Leave unset for categorical parameters.',
-            }),
-          type: z
-            .enum(['PARAMETER_TYPE_UNSPECIFIED', 'DOUBLE', 'INTEGER', 'CATEGORICAL', 'DISCRETE'])
-            .exactOptional()
-            .openapi({ description: 'Required. The type of the parameter.' }),
-        })
-        .openapi({ description: 'Represents a single parameter to optimize.', required: [] }),
-    )
-    .openapi('GoogleCloudMlV1StudyConfigParameterSpec')
-
-const GoogleCloudMlV1TrialParameterSchema = z
-  .object({
-    floatValue: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Must be set if ParameterType is DOUBLE or DISCRETE.' }),
-    intValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Must be set if ParameterType is INTEGER' }),
-    parameter: z.string().exactOptional().openapi({ description: 'The name of the parameter.' }),
-    stringValue: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Must be set if ParameterTypeis CATEGORICAL' }),
-  })
-  .openapi({
-    description:
-      'A message representing a parameter to be tuned. Contains the name of the parameter and the suggested value to use for this trial.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1TrialParameter')
+  .openapi('GoogleCloudMlV1EncryptionConfig')
 
 const GoogleCloudMlV1AcceleratorConfigSchema = z
   .object({
@@ -358,337 +290,6 @@ const GoogleCloudMlV1AcceleratorConfigSchema = z
   })
   .openapi('GoogleCloudMlV1AcceleratorConfig')
 
-const GoogleCloudMlV1MeasurementSchema = z
-  .object({
-    elapsedTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Time that the trial has been running at the point of this measurement.',
-      }),
-    metrics: z
-      .array(GoogleCloudMlV1MeasurementMetricSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Provides a list of metrics that act as inputs into the objective function.',
-      }),
-    stepCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of steps a machine learning model has been trained for. Must be non-negative.',
-      }),
-  })
-  .openapi({ description: 'A message representing a measurement.', required: [] })
-  .openapi('GoogleCloudMlV1Measurement')
-
-const GoogleCloudMlV1AddTrialMeasurementRequestSchema = z
-  .object({
-    measurement: GoogleCloudMlV1MeasurementSchema.exactOptional().openapi({
-      description: 'Required. The measurement to be added to a trial.',
-    }),
-  })
-  .openapi({
-    description: 'The request message for the AddTrialMeasurement service method.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1AddTrialMeasurementRequest')
-
-const GoogleCloudMlV1MetricSpecSchema = z
-  .object({
-    name: z
-      .enum(['METRIC_NAME_UNSPECIFIED', 'CPU_USAGE', 'GPU_DUTY_CYCLE'])
-      .exactOptional()
-      .openapi({ description: 'metric name.' }),
-    target: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Target specifies the target value for the given metric; once real metric deviates from the threshold by a certain percentage, the node count changes.',
-      }),
-  })
-  .openapi({
-    description:
-      'MetricSpec contains the specifications to use to calculate the desired nodes count when autoscaling is enabled.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1MetricSpec')
-
-const GoogleCloudMlV1AutoScalingSchema = z
-  .object({
-    maxNodes: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of nodes to scale this model under load. The actual value will depend on resource quota and availability.',
-      }),
-    metrics: z
-      .array(GoogleCloudMlV1MetricSpecSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'MetricSpec contains the specifications to use to calculate the desired nodes count.',
-      }),
-    minNodes: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The minimum number of nodes to allocate for this model. These nodes are always up, starting from the time the model is deployed. Therefore, the cost of operating this model will be at least `rate` * `min_nodes` * number of hours since last billing cycle, where `rate` is the cost per node-hour as documented in the [pricing guide](/ml-engine/docs/pricing), even if no predictions are performed. There is additional cost for each prediction performed. Unlike manual scaling, if the load gets too heavy for the nodes that are up, the service will automatically add nodes to handle the increased load as well as scale back as traffic drops, always maintaining at least `min_nodes`. You will be charged for the time in which additional nodes are used. If `min_nodes` is not specified and AutoScaling is used with a [legacy (MLS1) machine type](/ml-engine/docs/machine-types-online-prediction), `min_nodes` defaults to 0, in which case, when traffic to a model stops (and after a cool-down period), nodes will be shut down and no charges will be incurred until traffic to the model resumes. If `min_nodes` is not specified and AutoScaling is used with a [Compute Engine (N1) machine type](/ml-engine/docs/machine-types-online-prediction), `min_nodes` defaults to 1. `min_nodes` must be at least 1 for use with a Compute Engine machine type. You can set `min_nodes` when creating the model version, and you can also update `min_nodes` for an existing version: update_body.json: { 'autoScaling': { 'minNodes': 5 } } HTTP request: PATCH https://ml.googleapis.com/v1/{name=projects/*/models/*/versions/*}?update_mask=autoScaling.minNodes -d @./update_body.json ",
-      }),
-  })
-  .openapi({ description: 'Options for automatically scaling a model.', required: [] })
-  .openapi('GoogleCloudMlV1AutoScaling')
-
-const GoogleCloudMlV1AutomatedStoppingConfigSchema = z
-  .object({
-    decayCurveStoppingConfig:
-      GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfigSchema.exactOptional(),
-    medianAutomatedStoppingConfig:
-      GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfigSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Configuration for Automated Early Stopping of Trials. If no implementation_config is set, automated early stopping will not be run.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1AutomatedStoppingConfig')
-
-const GoogleCloudMlV1BuiltInAlgorithmOutputSchema = z
-  .object({
-    framework: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Framework on which the built-in algorithm was trained.' }),
-    modelPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Cloud Storage path to the `model/` directory where the training job saves the trained model. Only set for successful jobs that don't use hyperparameter tuning.",
-      }),
-    pythonVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Python version on which the built-in algorithm was trained.' }),
-    runtimeVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'AI Platform runtime version on which the built-in algorithm was trained.',
-      }),
-  })
-  .openapi({ description: 'Represents output related to a built-in algorithm Job.', required: [] })
-  .openapi('GoogleCloudMlV1BuiltInAlgorithmOutput')
-
-const GoogleCloudMlV1CancelJobRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for the CancelJob method.' })
-  .openapi('GoogleCloudMlV1CancelJobRequest')
-
-const GoogleCloudMlV1CapabilitySchema = z
-  .object({
-    availableAccelerators: z
-      .array(
-        z.enum([
-          'ACCELERATOR_TYPE_UNSPECIFIED',
-          'NVIDIA_TESLA_K80',
-          'NVIDIA_TESLA_P100',
-          'NVIDIA_TESLA_V100',
-          'NVIDIA_TESLA_P4',
-          'NVIDIA_TESLA_T4',
-          'NVIDIA_TESLA_A100',
-          'TPU_V2',
-          'TPU_V3',
-          'TPU_V2_POD',
-          'TPU_V3_POD',
-          'TPU_V4_POD',
-        ]),
-      )
-      .exactOptional()
-      .openapi({ description: 'Available accelerators for the capability.' }),
-    type: z
-      .enum(['TYPE_UNSPECIFIED', 'TRAINING', 'BATCH_PREDICTION', 'ONLINE_PREDICTION'])
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudMlV1Capability')
-
-const GoogleCloudMlV1CheckTrialEarlyStoppingStateMetatdataSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which the operation was submitted.' }),
-    study: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the study that the trial belongs to.' }),
-    trial: z.string().exactOptional().openapi({ description: 'The trial name.' }),
-  })
-  .openapi({
-    description:
-      'This message will be placed in the metadata field of a google.longrunning.Operation associated with a CheckTrialEarlyStoppingState request.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateMetatdata')
-
-const GoogleCloudMlV1CheckTrialEarlyStoppingStateRequestSchema = z
-  .object({})
-  .openapi({
-    description: 'The request message for the CheckTrialEarlyStoppingState service method.',
-  })
-  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateRequest')
-
-const GoogleCloudMlV1CheckTrialEarlyStoppingStateResponseSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which operation processing completed.' }),
-    shouldStop: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the Trial should stop.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time at which the operation was started.' }),
-  })
-  .openapi({
-    description:
-      'The message will be placed in the response field of a completed google.longrunning.Operation associated with a CheckTrialEarlyStoppingState request.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateResponse')
-
-const GoogleCloudMlV1CompleteTrialRequestSchema = z
-  .object({
-    finalMeasurement: GoogleCloudMlV1MeasurementSchema.exactOptional().openapi({
-      description:
-        "Optional. If provided, it will be used as the completed trial's final_measurement; Otherwise, the service will auto-select a previously reported measurement as the final-measurement",
-    }),
-    infeasibleReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A human readable reason why the trial was infeasible. This should only be provided if `trial_infeasible` is true.',
-      }),
-    trialInfeasible: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. True if the trial cannot be run with the given Parameter, and final_measurement will be ignored.',
-      }),
-  })
-  .openapi({
-    description: 'The request message for the CompleteTrial service method.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1CompleteTrialRequest')
-
-const GoogleCloudMlV1ConfigSchema = z
-  .object({
-    tpuServiceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The service account Cloud ML uses to run on TPU node.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudMlV1Config')
-
-const GoogleCloudMlV1ContainerPortSchema = z
-  .object({
-    containerPort: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of the port to expose on the container. This must be a valid port number: 0 < PORT_NUMBER < 65536.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a network port in a single container. This message is a subset of the [Kubernetes ContainerPort v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#containerport-v1-core).',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1ContainerPort')
-
-const GoogleCloudMlV1EnvVarSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the environment variable. Must be a [valid C identifier](https://github.com/kubernetes/kubernetes/blob/v1.18.8/staging/src/k8s.io/apimachinery/pkg/util/validation/validation.go#L258) and must not begin with the prefix `AIP_`.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Value of the environment variable. Defaults to an empty string. In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set earlier in the same env field as where this message occurs. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $(VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME)',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents an environment variable to be made available in a container. This message is a subset of the [Kubernetes EnvVar v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envvar-v1-core).',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1EnvVar')
-
-const GoogleCloudMlV1ContainerSpecSchema = z
-  .object({
-    args: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Immutable. Specifies arguments for the command that runs when the container starts. This overrides the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd). Specify this field as an array of executable and arguments, similar to a Docker `CMD`'s \"default parameters\" form. If you don't specify this field but do specify the command field, then the command from the `command` field runs without any additional arguments. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). If you don't specify this field and don't specify the `commmand` field, then the container's [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#cmd) and `CMD` determine what runs based on their default behavior. See the [Docker documentation about how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `args` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).",
-      }),
-    command: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Immutable. Specifies the command that runs when the container starts. This overrides the container's [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint). Specify this field as an array of executable and arguments, similar to a Docker `ENTRYPOINT`'s \"exec\" form, not its \"shell\" form. If you do not specify this field, then the container's `ENTRYPOINT` runs, in conjunction with the args field or the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd), if either exists. If this field is not specified and the container does not have an `ENTRYPOINT`, then refer to the [Docker documentation about how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). If you specify this field, then you can also specify the `args` field to provide additional arguments for this command. However, if you specify this field, then the container's `CMD` is ignored. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `command` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).",
-      }),
-    env: z
-      .array(GoogleCloudMlV1EnvVarSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. List of environment variables to set in the container. After the container starts running, code running in the container can read these environment variables. Additionally, the command and args fields can reference these variables. Later entries in this list can also reference earlier entries. For example, the following example sets the variable `VAR_2` to have the value `foo bar`: ```json [ { "name": "VAR_1", "value": "foo" }, { "name": "VAR_2", "value": "$(VAR_1) bar" } ] ``` If you switch the order of the variables in the example, then the expansion does not occur. This field corresponds to the `env` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
-      }),
-    image: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "URI of the Docker image to be used as the custom container for serving predictions. This URI must identify [an image in Artifact Registry](/artifact-registry/docs/overview) and begin with the hostname `{REGION}-docker.pkg.dev`, where `{REGION}` is replaced by the region that matches AI Platform Prediction [regional endpoint](/ai-platform/prediction/docs/regional-endpoints) that you are using. For example, if you are using the `us-central1-ml.googleapis.com` endpoint, then this URI must begin with `us-central1-docker.pkg.dev`. To use a custom container, the [AI Platform Google-managed service account](/ai-platform/prediction/docs/custom-service-account#default) must have permission to pull (read) the Docker image at this URI. The AI Platform Google-managed service account has the following format: `service-{PROJECT_NUMBER}@cloud-ml.google.com.iam.gserviceaccount.com` {PROJECT_NUMBER} is replaced by your Google Cloud project number. By default, this service account has necessary permissions to pull an Artifact Registry image in the same Google Cloud project where you are using AI Platform Prediction. In this case, no configuration is necessary. If you want to use an image from a different Google Cloud project, learn how to [grant the Artifact Registry Reader (roles/artifactregistry.reader) role for a repository](/artifact-registry/docs/access-control#grant-repo) to your projet's AI Platform Google-managed service account. To learn about the requirements for the Docker image itself, read [Custom container requirements](/ai-platform/prediction/docs/custom-container-requirements).",
-      }),
-    ports: z
-      .array(GoogleCloudMlV1ContainerPortSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. List of ports to expose from the container. AI Platform Prediction sends any prediction requests that it receives to the first port on this list. AI Platform Prediction also sends [liveness and health checks](/ai-platform/prediction/docs/custom-container-requirements#health) to this port. If you do not specify this field, it defaults to following value: ```json [ { "containerPort": 8080 } ] ``` AI Platform Prediction does not use ports other than the first one listed. This field corresponds to the `ports` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
-      }),
-  })
-  .openapi({
-    description:
-      'Specification of a custom container for serving predictions. This message is a subset of the [Kubernetes Container v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1ContainerSpec')
-
 const GoogleCloudMlV1DiskConfigSchema = z
   .object({
     bootDiskSizeGb: z
@@ -706,191 +307,49 @@ const GoogleCloudMlV1DiskConfigSchema = z
   .openapi({ description: 'Represents the config of disk options.', required: [] })
   .openapi('GoogleCloudMlV1DiskConfig')
 
-const GoogleCloudMlV1EncryptionConfigSchema = z
+const GoogleCloudMlV1ReplicaConfigSchema = z
   .object({
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Cloud KMS resource identifier of the customer-managed encryption key used to protect a resource, such as a training job. It has the following format: `projects/{PROJECT_ID}/locations/{REGION}/keyRings/{KEY_RING_NAME}/cryptoKeys/{KEY_NAME}`',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a custom encryption key configuration that can be applied to a resource.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1EncryptionConfig')
-
-const GoogleCloudMlV1ExplainRequestSchema = z
-  .object({
-    httpBody: GoogleApiHttpBodySchema.exactOptional().openapi({
-      description: 'Required. The explanation request body.',
-    }),
-  })
-  .openapi({
-    description: 'Request for explanations to be issued against a trained model.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1ExplainRequest')
-
-const GoogleCloudMlV1IntegratedGradientsAttributionSchema = z
-  .object({
-    numIntegralSteps: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range.',
-      }),
-  })
-  .openapi({
-    description:
-      "Attributes credit by computing the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1IntegratedGradientsAttribution')
-
-const GoogleCloudMlV1SampledShapleyAttributionSchema = z
-  .object({
-    numPaths: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of feature permutations to consider when approximating the Shapley values.',
-      }),
-  })
-  .openapi({
-    description:
-      'An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1SampledShapleyAttribution')
-
-const GoogleCloudMlV1XraiAttributionSchema = z
-  .object({
-    numIntegralSteps: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range.',
-      }),
-  })
-  .openapi({
-    description:
-      "Attributes credit by computing the XRAI taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Currently only implemented for models with natural image inputs.",
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1XraiAttribution')
-
-const GoogleCloudMlV1ExplanationConfigSchema = z
-  .object({
-    integratedGradientsAttribution:
-      GoogleCloudMlV1IntegratedGradientsAttributionSchema.exactOptional().openapi({
-        description:
-          "Attributes credit by computing the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
-      }),
-    sampledShapleyAttribution:
-      GoogleCloudMlV1SampledShapleyAttributionSchema.exactOptional().openapi({
-        description:
-          'An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.',
-      }),
-    xraiAttribution: GoogleCloudMlV1XraiAttributionSchema.exactOptional().openapi({
+    acceleratorConfig: GoogleCloudMlV1AcceleratorConfigSchema.exactOptional().openapi({
       description:
-        "Attributes credit by computing the XRAI taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Currently only implemented for models with natural image inputs.",
+        'Represents the type and number of accelerators used by the replica. [Learn about restrictions on accelerator configurations for training.](/ai-platform/training/docs/using-gpus#compute-engine-machine-types-with-gpu)',
     }),
-  })
-  .openapi({
-    description:
-      'Message holding configuration options for explaining model predictions. There are three feature attribution methods supported for TensorFlow models: integrated gradients, sampled Shapley, and XRAI. [Learn more about feature attributions.](/ai-platform/prediction/docs/ai-explanations/overview)',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1ExplanationConfig')
-
-const GoogleCloudMlV1GetConfigResponseSchema = z
-  .object({
-    config: GoogleCloudMlV1ConfigSchema.exactOptional(),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The service account Cloud ML uses to access resources in the project.',
-      }),
-    serviceAccountProject: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The project number for `service_account`.' }),
-  })
-  .openapi({
-    description: 'Returns service account information associated with a project.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1GetConfigResponse')
-
-const GoogleCloudMlV1HyperparameterOutputSchema = z
-  .object({
-    allMetrics: z
-      .array(GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema)
+    containerArgs: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          'All recorded object metrics for this trial. This field is not currently populated.',
+          'Arguments to the entrypoint command. The following rules apply for container_command and container_args: - If you do not supply command or args: The defaults defined in the Docker image are used. - If you supply a command but no args: The default EntryPoint and the default Cmd defined in the Docker image are ignored. Your command is run without any arguments. - If you supply only args: The default Entrypoint defined in the Docker image is run with the args that you supplied. - If you supply a command and args: The default Entrypoint and the default Cmd defined in the Docker image are ignored. Your command is run with your args. It cannot be set if custom container image is not provided. Note that this field and [TrainingInput.args] are mutually exclusive, i.e., both cannot be set at the same time.',
       }),
-    builtInAlgorithmOutput: GoogleCloudMlV1BuiltInAlgorithmOutputSchema.exactOptional().openapi({
-      description:
-        'Details related to built-in algorithms jobs. Only set for trials of built-in algorithms jobs that have succeeded.',
-    }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. End time for the trial.' }),
-    finalMetric:
-      GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema.exactOptional().openapi({
-        description: 'The final objective metric seen for this trial.',
-      }),
-    hyperparameters: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'The hyperparameters given to this trial.' }),
-    isTrialStoppedEarly: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the trial is stopped early.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Start time for the trial.' }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'QUEUED',
-        'PREPARING',
-        'RUNNING',
-        'SUCCEEDED',
-        'FAILED',
-        'CANCELLING',
-        'CANCELLED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. The detailed state of the trial.' }),
-    trialId: z.string().exactOptional().openapi({ description: 'The trial id for these results.' }),
-    webAccessUris: z
-      .record(z.string(), z.string())
+    containerCommand: z
+      .array(z.string())
       .exactOptional()
       .openapi({
         description:
-          "URIs for accessing [interactive shells](https://cloud.google.com/ai-platform/training/docs/monitor-debug-interactive-shell) (one URI for each training node). Only available if this trial is part of a hyperparameter tuning job and the job's training_input.enable_web_access is `true`. The keys are names of each node in the training job; for example, `master-replica-0` for the master node, `worker-replica-0` for the first worker, and `ps-replica-0` for the first parameter server. The values are the URIs for each node's interactive shell.",
+          "The command with which the replica's custom container is run. If provided, it will override default ENTRYPOINT of the docker image. If not provided, the docker image's ENTRYPOINT is used. It cannot be set if custom container image is not provided. Note that this field and [TrainingInput.args] are mutually exclusive, i.e., both cannot be set at the same time.",
+      }),
+    diskConfig: GoogleCloudMlV1DiskConfigSchema.exactOptional().openapi({
+      description: 'Represents the configuration of disk options.',
+    }),
+    imageUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The Docker image to run on the replica. This image must be in Container Registry. Learn more about [configuring custom containers](/ai-platform/training/docs/distributed-training-containers).',
+      }),
+    tpuTfVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The AI Platform runtime version that includes a TensorFlow version matching the one used in the custom container. This field is required if the replica is a TPU worker that uses a custom container. Otherwise, do not specify this field. This must be a [runtime version that currently supports training with TPUs](/ml-engine/docs/tensorflow/runtime-version-list#tpu-support). Note that the version of TensorFlow included in a runtime version may differ from the numbering of the runtime version itself, because it may have a different [patch version](https://www.tensorflow.org/guide/version_compat#semantic_versioning_20). In this field, you must specify the runtime version (TensorFlow minor version). For example, if your custom container runs TensorFlow `1.x.y`, specify `1.x`.',
       }),
   })
   .openapi({
-    description:
-      'Represents the result of a single hyperparameter tuning trial from a training job. The TrainingOutput object that is returned on successful completion of a training job with hyperparameter tuning includes a list of HyperparameterOutput objects, one for each successful trial.',
+    description: 'Represents the configuration for a replica in a cluster.',
     required: [],
   })
-  .openapi('GoogleCloudMlV1HyperparameterOutput')
+  .openapi('GoogleCloudMlV1ReplicaConfig')
 
 const GoogleCloudMlV1ParameterSpecSchema = z
   .object({
@@ -1008,155 +467,6 @@ const GoogleCloudMlV1HyperparameterSpecSchema = z
   })
   .openapi({ description: 'Represents a set of hyperparameters to optimize.', required: [] })
   .openapi('GoogleCloudMlV1HyperparameterSpec')
-
-const GoogleCloudMlV1PredictionInputSchema = z
-  .object({
-    batchSize: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Number of records per batch, defaults to 64. The service will buffer batch_size number of records in memory before invoking one Tensorflow prediction call internally. So take the record size and memory available into consideration when setting this parameter.',
-      }),
-    dataFormat: z
-      .enum(['DATA_FORMAT_UNSPECIFIED', 'JSON', 'TEXT', 'TF_RECORD', 'TF_RECORD_GZIP', 'CSV'])
-      .exactOptional()
-      .openapi({ description: 'Required. The format of the input data files.' }),
-    inputPaths: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Cloud Storage location of the input data files. May contain wildcards.',
-      }),
-    maxWorkerCount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The maximum number of workers to be used for parallel processing. Defaults to 10 if not specified.',
-      }),
-    modelName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use this field if you want to use the default version for the specified model. The string must use the following format: `"projects/YOUR_PROJECT/models/YOUR_MODEL"`',
-      }),
-    outputDataFormat: z
-      .enum(['DATA_FORMAT_UNSPECIFIED', 'JSON', 'TEXT', 'TF_RECORD', 'TF_RECORD_GZIP', 'CSV'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Format of the output data files, defaults to JSON.' }),
-    outputPath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The output Google Cloud Storage location.' }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Google Compute Engine region to run the prediction job in. See the available regions for AI Platform services.',
-      }),
-    runtimeVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The AI Platform runtime version to use for this batch prediction. If not set, AI Platform will pick the runtime version used during the CreateVersion request for this model version, or choose the latest stable version when model version information is not available such as when the model is specified by uri.',
-      }),
-    signatureName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The name of the signature defined in the SavedModel to use for this job. Please refer to [SavedModel](https://tensorflow.github.io/serving/serving_basic.html) for information about how to use signatures. Defaults to [DEFAULT_SERVING_SIGNATURE_DEF_KEY](https://www.tensorflow.org/api_docs/python/tf/saved_model/signature_constants) , which is "serving_default".',
-      }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use this field if you want to specify a Google Cloud Storage path for the model to use.',
-      }),
-    versionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use this field if you want to specify a version of the model to use. The string is formatted the same way as `model_version`, with the addition of the version information: `"projects/YOUR_PROJECT/models/YOUR_MODEL/versions/YOUR_VERSION"`',
-      }),
-  })
-  .openapi({ description: 'Represents input parameters for a prediction job.', required: [] })
-  .openapi('GoogleCloudMlV1PredictionInput')
-
-const GoogleCloudMlV1PredictionOutputSchema = z
-  .object({
-    errorCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of data instances which resulted in errors.' }),
-    nodeHours: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'Node hours used by the batch prediction job.' }),
-    outputPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The output Google Cloud Storage location provided at the job creation time.',
-      }),
-    predictionCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The number of generated predictions.' }),
-  })
-  .openapi({ description: 'Represents results of a prediction job.', required: [] })
-  .openapi('GoogleCloudMlV1PredictionOutput')
-
-const GoogleCloudMlV1ReplicaConfigSchema = z
-  .object({
-    acceleratorConfig: GoogleCloudMlV1AcceleratorConfigSchema.exactOptional().openapi({
-      description:
-        'Represents the type and number of accelerators used by the replica. [Learn about restrictions on accelerator configurations for training.](/ai-platform/training/docs/using-gpus#compute-engine-machine-types-with-gpu)',
-    }),
-    containerArgs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Arguments to the entrypoint command. The following rules apply for container_command and container_args: - If you do not supply command or args: The defaults defined in the Docker image are used. - If you supply a command but no args: The default EntryPoint and the default Cmd defined in the Docker image are ignored. Your command is run without any arguments. - If you supply only args: The default Entrypoint defined in the Docker image is run with the args that you supplied. - If you supply a command and args: The default Entrypoint and the default Cmd defined in the Docker image are ignored. Your command is run with your args. It cannot be set if custom container image is not provided. Note that this field and [TrainingInput.args] are mutually exclusive, i.e., both cannot be set at the same time.',
-      }),
-    containerCommand: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "The command with which the replica's custom container is run. If provided, it will override default ENTRYPOINT of the docker image. If not provided, the docker image's ENTRYPOINT is used. It cannot be set if custom container image is not provided. Note that this field and [TrainingInput.args] are mutually exclusive, i.e., both cannot be set at the same time.",
-      }),
-    diskConfig: GoogleCloudMlV1DiskConfigSchema.exactOptional().openapi({
-      description: 'Represents the configuration of disk options.',
-    }),
-    imageUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The Docker image to run on the replica. This image must be in Container Registry. Learn more about [configuring custom containers](/ai-platform/training/docs/distributed-training-containers).',
-      }),
-    tpuTfVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The AI Platform runtime version that includes a TensorFlow version matching the one used in the custom container. This field is required if the replica is a TPU worker that uses a custom container. Otherwise, do not specify this field. This must be a [runtime version that currently supports training with TPUs](/ml-engine/docs/tensorflow/runtime-version-list#tpu-support). Note that the version of TensorFlow included in a runtime version may differ from the numbering of the runtime version itself, because it may have a different [patch version](https://www.tensorflow.org/guide/version_compat#semantic_versioning_20). In this field, you must specify the runtime version (TensorFlow minor version). For example, if your custom container runs TensorFlow `1.x.y`, specify `1.x`.',
-      }),
-  })
-  .openapi({
-    description: 'Represents the configuration for a replica in a cluster.',
-    required: [],
-  })
-  .openapi('GoogleCloudMlV1ReplicaConfig')
 
 const GoogleCloudMlV1SchedulingSchema = z
   .object({
@@ -1353,6 +663,109 @@ const GoogleCloudMlV1TrainingInputSchema = z
   })
   .openapi('GoogleCloudMlV1TrainingInput')
 
+const GoogleCloudMlV1BuiltInAlgorithmOutputSchema = z
+  .object({
+    framework: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Framework on which the built-in algorithm was trained.' }),
+    modelPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The Cloud Storage path to the `model/` directory where the training job saves the trained model. Only set for successful jobs that don't use hyperparameter tuning.",
+      }),
+    pythonVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Python version on which the built-in algorithm was trained.' }),
+    runtimeVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'AI Platform runtime version on which the built-in algorithm was trained.',
+      }),
+  })
+  .openapi({ description: 'Represents output related to a built-in algorithm Job.', required: [] })
+  .openapi('GoogleCloudMlV1BuiltInAlgorithmOutput')
+
+const GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema = z
+  .object({
+    objectiveValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The objective value at this training step.' }),
+    trainingStep: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The global training step for this metric.' }),
+  })
+  .openapi({ description: 'An observed value of a metric.', required: [] })
+  .openapi('GoogleCloudMlV1HyperparameterOutputHyperparameterMetric')
+
+const GoogleCloudMlV1HyperparameterOutputSchema = z
+  .object({
+    allMetrics: z
+      .array(GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'All recorded object metrics for this trial. This field is not currently populated.',
+      }),
+    builtInAlgorithmOutput: GoogleCloudMlV1BuiltInAlgorithmOutputSchema.exactOptional().openapi({
+      description:
+        'Details related to built-in algorithms jobs. Only set for trials of built-in algorithms jobs that have succeeded.',
+    }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. End time for the trial.' }),
+    finalMetric:
+      GoogleCloudMlV1HyperparameterOutputHyperparameterMetricSchema.exactOptional().openapi({
+        description: 'The final objective metric seen for this trial.',
+      }),
+    hyperparameters: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'The hyperparameters given to this trial.' }),
+    isTrialStoppedEarly: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the trial is stopped early.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Start time for the trial.' }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'QUEUED',
+        'PREPARING',
+        'RUNNING',
+        'SUCCEEDED',
+        'FAILED',
+        'CANCELLING',
+        'CANCELLED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. The detailed state of the trial.' }),
+    trialId: z.string().exactOptional().openapi({ description: 'The trial id for these results.' }),
+    webAccessUris: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "URIs for accessing [interactive shells](https://cloud.google.com/ai-platform/training/docs/monitor-debug-interactive-shell) (one URI for each training node). Only available if this trial is part of a hyperparameter tuning job and the job's training_input.enable_web_access is `true`. The keys are names of each node in the training job; for example, `master-replica-0` for the master node, `worker-replica-0` for the first worker, and `ps-replica-0` for the first parameter server. The values are the URIs for each node's interactive shell.",
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the result of a single hyperparameter tuning trial from a training job. The TrainingOutput object that is returned on successful completion of a training job with hyperparameter tuning includes a list of HyperparameterOutput objects, one for each successful trial.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1HyperparameterOutput')
+
 const GoogleCloudMlV1TrainingOutputSchema = z
   .object({
     builtInAlgorithmOutput: GoogleCloudMlV1BuiltInAlgorithmOutputSchema.exactOptional().openapi({
@@ -1477,7 +890,656 @@ const GoogleCloudMlV1JobSchema = z
   .openapi({ description: 'Represents a training or prediction job.', required: [] })
   .openapi('GoogleCloudMlV1Job')
 
-const GoogleCloudMlV1ListJobsResponseSchema = z
+type GoogleCloudMlV1ListJobsResponseType = {
+  jobs?: z.infer<typeof GoogleCloudMlV1JobSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfigSchema = z
+  .object({
+    useElapsedTime: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, measurement.elapsed_time is used as the x-axis of each Trials Decay Curve. Otherwise, Measurement.steps will be used as the x-axis.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfig')
+
+const GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfigSchema = z
+  .object({
+    useElapsedTime: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "If true, the median automated stopping rule applies to measurement.use_elapsed_time, which means the elapsed_time field of the current trial's latest measurement is used to compute the median objective value for each completed trial.",
+      }),
+  })
+  .openapi({
+    description:
+      "The median automated stopping rule stops a pending trial if the trial's best objective_value is strictly below the median 'performance' of all completed trials reported up to the trial's last measurement. Currently, 'performance' refers to the running average of the objective values reported by the trial in each measurement.",
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfig')
+
+const GoogleCloudMlV1AutomatedStoppingConfigSchema = z
+  .object({
+    decayCurveStoppingConfig:
+      GoogleCloudMlV1AutomatedStoppingConfigDecayCurveAutomatedStoppingConfigSchema.exactOptional(),
+    medianAutomatedStoppingConfig:
+      GoogleCloudMlV1AutomatedStoppingConfigMedianAutomatedStoppingConfigSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Configuration for Automated Early Stopping of Trials. If no implementation_config is set, automated early stopping will not be run.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1AutomatedStoppingConfig')
+
+const GoogleCloudMlV1StudyConfigMetricSpecSchema = z
+  .object({
+    goal: z
+      .enum(['GOAL_TYPE_UNSPECIFIED', 'MAXIMIZE', 'MINIMIZE'])
+      .exactOptional()
+      .openapi({ description: 'Required. The optimization goal of the metric.' }),
+    metric: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The name of the metric.' }),
+  })
+  .openapi({ description: 'Represents a metric to optimize.', required: [] })
+  .openapi('GoogleCloudMlV1StudyConfigMetricSpec')
+
+const GoogleCloudMlV1StudyConfigParameterSpecSchema: z.ZodType<GoogleCloudMlV1StudyConfigParameterSpecType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          categoricalValueSpec:
+            GoogleCloudMlV1StudyConfigParameterSpecCategoricalValueSpecSchema.exactOptional().openapi(
+              { description: "The value spec for a 'CATEGORICAL' parameter." },
+            ),
+          childParameterSpecs: z
+            .array(GoogleCloudMlV1StudyConfigParameterSpecSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                "A child node is active if the parameter's value matches the child node's matching_parent_values. If two items in child_parameter_specs have the same name, they must have disjoint matching_parent_values.",
+            }),
+          discreteValueSpec:
+            GoogleCloudMlV1StudyConfigParameterSpecDiscreteValueSpecSchema.exactOptional().openapi({
+              description: "The value spec for a 'DISCRETE' parameter.",
+            }),
+          doubleValueSpec:
+            GoogleCloudMlV1StudyConfigParameterSpecDoubleValueSpecSchema.exactOptional().openapi({
+              description: "The value spec for a 'DOUBLE' parameter.",
+            }),
+          integerValueSpec:
+            GoogleCloudMlV1StudyConfigParameterSpecIntegerValueSpecSchema.exactOptional().openapi({
+              description: "The value spec for an 'INTEGER' parameter.",
+            }),
+          parameter: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Required. The parameter name must be unique amongst all ParameterSpecs.',
+            }),
+          parentCategoricalValues:
+            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentCategoricalValueSpecSchema.exactOptional(),
+          parentDiscreteValues:
+            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentDiscreteValueSpecSchema.exactOptional(),
+          parentIntValues:
+            GoogleCloudMlV1StudyConfigParameterSpecMatchingParentIntValueSpecSchema.exactOptional(),
+          scaleType: z
+            .enum([
+              'SCALE_TYPE_UNSPECIFIED',
+              'UNIT_LINEAR_SCALE',
+              'UNIT_LOG_SCALE',
+              'UNIT_REVERSE_LOG_SCALE',
+            ])
+            .exactOptional()
+            .openapi({
+              description:
+                'How the parameter should be scaled. Leave unset for categorical parameters.',
+            }),
+          type: z
+            .enum(['PARAMETER_TYPE_UNSPECIFIED', 'DOUBLE', 'INTEGER', 'CATEGORICAL', 'DISCRETE'])
+            .exactOptional()
+            .openapi({ description: 'Required. The type of the parameter.' }),
+        })
+        .openapi({ description: 'Represents a single parameter to optimize.', required: [] }),
+    )
+    .openapi('GoogleCloudMlV1StudyConfigParameterSpec')
+
+const GoogleCloudMlV1StudyConfigSchema = z
+  .object({
+    algorithm: z
+      .enum(['ALGORITHM_UNSPECIFIED', 'GAUSSIAN_PROCESS_BANDIT', 'GRID_SEARCH', 'RANDOM_SEARCH'])
+      .exactOptional()
+      .openapi({ description: 'The search algorithm specified for the study.' }),
+    automatedStoppingConfig: GoogleCloudMlV1AutomatedStoppingConfigSchema.exactOptional().openapi({
+      description: 'Configuration for automated stopping of unpromising Trials.',
+    }),
+    metrics: z
+      .array(GoogleCloudMlV1StudyConfigMetricSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'Metric specs for the study.' }),
+    parameters: z
+      .array(GoogleCloudMlV1StudyConfigParameterSpecSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. The set of parameters to tune.' }),
+  })
+  .openapi({ description: 'Represents configuration of a study.', required: [] })
+  .openapi('GoogleCloudMlV1StudyConfig')
+
+const GoogleCloudMlV1StudySchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time at which the study was created.',
+        readOnly: true,
+      }),
+    inactiveReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A human readable reason why the Study is inactive. This should be empty if a study is ACTIVE or COMPLETED.',
+        readOnly: true,
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of a study.', readOnly: true }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'INACTIVE', 'COMPLETED'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The detailed state of a study.', readOnly: true }),
+    studyConfig: GoogleCloudMlV1StudyConfigSchema.exactOptional().openapi({
+      description: 'Required. Configuration of the study.',
+    }),
+  })
+  .openapi({ description: 'A message representing a Study.', required: [] })
+  .openapi('GoogleCloudMlV1Study')
+
+type GoogleCloudMlV1ListStudiesResponseType = {
+  studies?: z.infer<typeof GoogleCloudMlV1StudySchema>[]
+}
+
+const GoogleApiHttpBodySchema = z
+  .object({
+    contentType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The HTTP Content-Type header value specifying the content type of the body.',
+      }),
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The HTTP request/response body as raw binary.' }),
+    extensions: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Application specific response metadata. Must be set in the first response for streaming APIs.',
+      }),
+  })
+  .openapi({
+    description:
+      "Message that represents an arbitrary HTTP body. It should only be used for payload formats that can't be represented as JSON, such as raw binary or an HTML page. This message can be used both in streaming and non-streaming API methods in the request as well as the response. It can be used as a top-level request field, which is convenient if one wants to extract parameters from either the URL or HTTP template into the request fields and also want access to the raw HTTP body. Example: message GetResourceRequest { // A unique request id. string request_id = 1; // The raw HTTP body is bound to this field. google.api.HttpBody http_body = 2; } service ResourceService { rpc GetResource(GetResourceRequest) returns (google.api.HttpBody); rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty); } Example with streaming methods: service CaldavService { rpc GetCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); rpc UpdateCalendar(stream google.api.HttpBody) returns (stream google.api.HttpBody); } Use of this type only changes how the request and response bodies are handled, all other features will continue to work unchanged.",
+    required: [],
+  })
+  .openapi('GoogleApiHttpBody')
+
+const GoogleCloudMlV1MeasurementMetricSchema = z
+  .object({
+    metric: z.string().exactOptional().openapi({ description: 'Required. Metric name.' }),
+    value: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Required. The value for this metric.' }),
+  })
+  .openapi({ description: 'A message representing a metric in the measurement.', required: [] })
+  .openapi('GoogleCloudMlV1MeasurementMetric')
+
+const GoogleCloudMlV1TrialParameterSchema = z
+  .object({
+    floatValue: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Must be set if ParameterType is DOUBLE or DISCRETE.' }),
+    intValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Must be set if ParameterType is INTEGER' }),
+    parameter: z.string().exactOptional().openapi({ description: 'The name of the parameter.' }),
+    stringValue: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Must be set if ParameterTypeis CATEGORICAL' }),
+  })
+  .openapi({
+    description:
+      'A message representing a parameter to be tuned. Contains the name of the parameter and the suggested value to use for this trial.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1TrialParameter')
+
+const GoogleCloudMlV1MeasurementSchema = z
+  .object({
+    elapsedTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Time that the trial has been running at the point of this measurement.',
+      }),
+    metrics: z
+      .array(GoogleCloudMlV1MeasurementMetricSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Provides a list of metrics that act as inputs into the objective function.',
+      }),
+    stepCount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of steps a machine learning model has been trained for. Must be non-negative.',
+      }),
+  })
+  .openapi({ description: 'A message representing a measurement.', required: [] })
+  .openapi('GoogleCloudMlV1Measurement')
+
+const GoogleCloudMlV1AddTrialMeasurementRequestSchema = z
+  .object({
+    measurement: GoogleCloudMlV1MeasurementSchema.exactOptional().openapi({
+      description: 'Required. The measurement to be added to a trial.',
+    }),
+  })
+  .openapi({
+    description: 'The request message for the AddTrialMeasurement service method.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1AddTrialMeasurementRequest')
+
+const GoogleCloudMlV1MetricSpecSchema = z
+  .object({
+    name: z
+      .enum(['METRIC_NAME_UNSPECIFIED', 'CPU_USAGE', 'GPU_DUTY_CYCLE'])
+      .exactOptional()
+      .openapi({ description: 'metric name.' }),
+    target: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target specifies the target value for the given metric; once real metric deviates from the threshold by a certain percentage, the node count changes.',
+      }),
+  })
+  .openapi({
+    description:
+      'MetricSpec contains the specifications to use to calculate the desired nodes count when autoscaling is enabled.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1MetricSpec')
+
+const GoogleCloudMlV1AutoScalingSchema = z
+  .object({
+    maxNodes: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of nodes to scale this model under load. The actual value will depend on resource quota and availability.',
+      }),
+    metrics: z
+      .array(GoogleCloudMlV1MetricSpecSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'MetricSpec contains the specifications to use to calculate the desired nodes count.',
+      }),
+    minNodes: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. The minimum number of nodes to allocate for this model. These nodes are always up, starting from the time the model is deployed. Therefore, the cost of operating this model will be at least `rate` * `min_nodes` * number of hours since last billing cycle, where `rate` is the cost per node-hour as documented in the [pricing guide](/ml-engine/docs/pricing), even if no predictions are performed. There is additional cost for each prediction performed. Unlike manual scaling, if the load gets too heavy for the nodes that are up, the service will automatically add nodes to handle the increased load as well as scale back as traffic drops, always maintaining at least `min_nodes`. You will be charged for the time in which additional nodes are used. If `min_nodes` is not specified and AutoScaling is used with a [legacy (MLS1) machine type](/ml-engine/docs/machine-types-online-prediction), `min_nodes` defaults to 0, in which case, when traffic to a model stops (and after a cool-down period), nodes will be shut down and no charges will be incurred until traffic to the model resumes. If `min_nodes` is not specified and AutoScaling is used with a [Compute Engine (N1) machine type](/ml-engine/docs/machine-types-online-prediction), `min_nodes` defaults to 1. `min_nodes` must be at least 1 for use with a Compute Engine machine type. You can set `min_nodes` when creating the model version, and you can also update `min_nodes` for an existing version: update_body.json: { 'autoScaling': { 'minNodes': 5 } } HTTP request: PATCH https://ml.googleapis.com/v1/{name=projects/*/models/*/versions/*}?update_mask=autoScaling.minNodes -d @./update_body.json ",
+      }),
+  })
+  .openapi({ description: 'Options for automatically scaling a model.', required: [] })
+  .openapi('GoogleCloudMlV1AutoScaling')
+
+const GoogleCloudMlV1CancelJobRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for the CancelJob method.' })
+  .openapi('GoogleCloudMlV1CancelJobRequest')
+
+const GoogleCloudMlV1CapabilitySchema = z
+  .object({
+    availableAccelerators: z
+      .array(
+        z.enum([
+          'ACCELERATOR_TYPE_UNSPECIFIED',
+          'NVIDIA_TESLA_K80',
+          'NVIDIA_TESLA_P100',
+          'NVIDIA_TESLA_V100',
+          'NVIDIA_TESLA_P4',
+          'NVIDIA_TESLA_T4',
+          'NVIDIA_TESLA_A100',
+          'TPU_V2',
+          'TPU_V3',
+          'TPU_V2_POD',
+          'TPU_V3_POD',
+          'TPU_V4_POD',
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: 'Available accelerators for the capability.' }),
+    type: z
+      .enum(['TYPE_UNSPECIFIED', 'TRAINING', 'BATCH_PREDICTION', 'ONLINE_PREDICTION'])
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudMlV1Capability')
+
+const GoogleCloudMlV1CheckTrialEarlyStoppingStateMetatdataSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time at which the operation was submitted.' }),
+    study: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the study that the trial belongs to.' }),
+    trial: z.string().exactOptional().openapi({ description: 'The trial name.' }),
+  })
+  .openapi({
+    description:
+      'This message will be placed in the metadata field of a google.longrunning.Operation associated with a CheckTrialEarlyStoppingState request.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateMetatdata')
+
+const GoogleCloudMlV1CheckTrialEarlyStoppingStateRequestSchema = z
+  .looseObject({})
+  .openapi({
+    description: 'The request message for the CheckTrialEarlyStoppingState service method.',
+  })
+  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateRequest')
+
+const GoogleCloudMlV1CheckTrialEarlyStoppingStateResponseSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time at which operation processing completed.' }),
+    shouldStop: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if the Trial should stop.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time at which the operation was started.' }),
+  })
+  .openapi({
+    description:
+      'The message will be placed in the response field of a completed google.longrunning.Operation associated with a CheckTrialEarlyStoppingState request.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1CheckTrialEarlyStoppingStateResponse')
+
+const GoogleCloudMlV1CompleteTrialRequestSchema = z
+  .object({
+    finalMeasurement: GoogleCloudMlV1MeasurementSchema.exactOptional().openapi({
+      description:
+        "Optional. If provided, it will be used as the completed trial's final_measurement; Otherwise, the service will auto-select a previously reported measurement as the final-measurement",
+    }),
+    infeasibleReason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. A human readable reason why the trial was infeasible. This should only be provided if `trial_infeasible` is true.',
+      }),
+    trialInfeasible: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. True if the trial cannot be run with the given Parameter, and final_measurement will be ignored.',
+      }),
+  })
+  .openapi({
+    description: 'The request message for the CompleteTrial service method.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1CompleteTrialRequest')
+
+const GoogleCloudMlV1ConfigSchema = z
+  .object({
+    tpuServiceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The service account Cloud ML uses to run on TPU node.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GoogleCloudMlV1Config')
+
+const GoogleCloudMlV1ContainerPortSchema = z
+  .object({
+    containerPort: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of the port to expose on the container. This must be a valid port number: 0 < PORT_NUMBER < 65536.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a network port in a single container. This message is a subset of the [Kubernetes ContainerPort v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#containerport-v1-core).',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1ContainerPort')
+
+const GoogleCloudMlV1EnvVarSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the environment variable. Must be a [valid C identifier](https://github.com/kubernetes/kubernetes/blob/v1.18.8/staging/src/k8s.io/apimachinery/pkg/util/validation/validation.go#L258) and must not begin with the prefix `AIP_`.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Value of the environment variable. Defaults to an empty string. In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set earlier in the same env field as where this message occurs. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $(VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME)',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents an environment variable to be made available in a container. This message is a subset of the [Kubernetes EnvVar v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envvar-v1-core).',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1EnvVar')
+
+const GoogleCloudMlV1ContainerSpecSchema = z
+  .object({
+    args: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Immutable. Specifies arguments for the command that runs when the container starts. This overrides the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd). Specify this field as an array of executable and arguments, similar to a Docker `CMD`'s \"default parameters\" form. If you don't specify this field but do specify the command field, then the command from the `command` field runs without any additional arguments. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). If you don't specify this field and don't specify the `commmand` field, then the container's [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#cmd) and `CMD` determine what runs based on their default behavior. See the [Docker documentation about how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `args` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).",
+      }),
+    command: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          "Immutable. Specifies the command that runs when the container starts. This overrides the container's [`ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint). Specify this field as an array of executable and arguments, similar to a Docker `ENTRYPOINT`'s \"exec\" form, not its \"shell\" form. If you do not specify this field, then the container's `ENTRYPOINT` runs, in conjunction with the args field or the container's [`CMD`](https://docs.docker.com/engine/reference/builder/#cmd), if either exists. If this field is not specified and the container does not have an `ENTRYPOINT`, then refer to the [Docker documentation about how `CMD` and `ENTRYPOINT` interact](https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact). If you specify this field, then you can also specify the `args` field to provide additional arguments for this command. However, if you specify this field, then the container's `CMD` is ignored. See the [Kubernetes documentation about how the `command` and `args` fields interact with a container's `ENTRYPOINT` and `CMD`](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#notes). In this field, you can reference [environment variables set by AI Platform Prediction](/ai-platform/prediction/docs/custom-container-requirements#aip-variables) and environment variables set in the env field. You cannot reference environment variables set in the Docker image. In order for environment variables to be expanded, reference them by using the following syntax: $( VARIABLE_NAME) Note that this differs from Bash variable expansion, which does not use parentheses. If a variable cannot be resolved, the reference in the input string is used unchanged. To avoid variable expansion, you can escape this syntax with `$$`; for example: $$(VARIABLE_NAME) This field corresponds to the `command` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).",
+      }),
+    env: z
+      .array(GoogleCloudMlV1EnvVarSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. List of environment variables to set in the container. After the container starts running, code running in the container can read these environment variables. Additionally, the command and args fields can reference these variables. Later entries in this list can also reference earlier entries. For example, the following example sets the variable `VAR_2` to have the value `foo bar`: ```json [ { "name": "VAR_1", "value": "foo" }, { "name": "VAR_2", "value": "$(VAR_1) bar" } ] ``` If you switch the order of the variables in the example, then the expansion does not occur. This field corresponds to the `env` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
+      }),
+    image: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "URI of the Docker image to be used as the custom container for serving predictions. This URI must identify [an image in Artifact Registry](/artifact-registry/docs/overview) and begin with the hostname `{REGION}-docker.pkg.dev`, where `{REGION}` is replaced by the region that matches AI Platform Prediction [regional endpoint](/ai-platform/prediction/docs/regional-endpoints) that you are using. For example, if you are using the `us-central1-ml.googleapis.com` endpoint, then this URI must begin with `us-central1-docker.pkg.dev`. To use a custom container, the [AI Platform Google-managed service account](/ai-platform/prediction/docs/custom-service-account#default) must have permission to pull (read) the Docker image at this URI. The AI Platform Google-managed service account has the following format: `service-{PROJECT_NUMBER}@cloud-ml.google.com.iam.gserviceaccount.com` {PROJECT_NUMBER} is replaced by your Google Cloud project number. By default, this service account has necessary permissions to pull an Artifact Registry image in the same Google Cloud project where you are using AI Platform Prediction. In this case, no configuration is necessary. If you want to use an image from a different Google Cloud project, learn how to [grant the Artifact Registry Reader (roles/artifactregistry.reader) role for a repository](/artifact-registry/docs/access-control#grant-repo) to your projet's AI Platform Google-managed service account. To learn about the requirements for the Docker image itself, read [Custom container requirements](/ai-platform/prediction/docs/custom-container-requirements).",
+      }),
+    ports: z
+      .array(GoogleCloudMlV1ContainerPortSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. List of ports to expose from the container. AI Platform Prediction sends any prediction requests that it receives to the first port on this list. AI Platform Prediction also sends [liveness and health checks](/ai-platform/prediction/docs/custom-container-requirements#health) to this port. If you do not specify this field, it defaults to following value: ```json [ { "containerPort": 8080 } ] ``` AI Platform Prediction does not use ports other than the first one listed. This field corresponds to the `ports` field of the [Kubernetes Containers v1 core API](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
+      }),
+  })
+  .openapi({
+    description:
+      'Specification of a custom container for serving predictions. This message is a subset of the [Kubernetes Container v1 core specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#container-v1-core).',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1ContainerSpec')
+
+const GoogleCloudMlV1ExplainRequestSchema = z
+  .object({
+    httpBody: GoogleApiHttpBodySchema.exactOptional().openapi({
+      description: 'Required. The explanation request body.',
+    }),
+  })
+  .openapi({
+    description: 'Request for explanations to be issued against a trained model.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1ExplainRequest')
+
+const GoogleCloudMlV1IntegratedGradientsAttributionSchema = z
+  .object({
+    numIntegralSteps: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range.',
+      }),
+  })
+  .openapi({
+    description:
+      "Attributes credit by computing the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1IntegratedGradientsAttribution')
+
+const GoogleCloudMlV1SampledShapleyAttributionSchema = z
+  .object({
+    numPaths: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of feature permutations to consider when approximating the Shapley values.',
+      }),
+  })
+  .openapi({
+    description:
+      'An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1SampledShapleyAttribution')
+
+const GoogleCloudMlV1XraiAttributionSchema = z
+  .object({
+    numIntegralSteps: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of steps for approximating the path integral. A good value to start is 50 and gradually increase until the sum to diff property is met within the desired error range.',
+      }),
+  })
+  .openapi({
+    description:
+      "Attributes credit by computing the XRAI taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Currently only implemented for models with natural image inputs.",
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1XraiAttribution')
+
+const GoogleCloudMlV1ExplanationConfigSchema = z
+  .object({
+    integratedGradientsAttribution:
+      GoogleCloudMlV1IntegratedGradientsAttributionSchema.exactOptional().openapi({
+        description:
+          "Attributes credit by computing the Aumann-Shapley value taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1703.01365",
+      }),
+    sampledShapleyAttribution:
+      GoogleCloudMlV1SampledShapleyAttributionSchema.exactOptional().openapi({
+        description:
+          'An attribution method that approximates Shapley values for features that contribute to the label being predicted. A sampling strategy is used to approximate the value rather than considering all subsets of features.',
+      }),
+    xraiAttribution: GoogleCloudMlV1XraiAttributionSchema.exactOptional().openapi({
+      description:
+        "Attributes credit by computing the XRAI taking advantage of the model's fully differentiable structure. Refer to this paper for more details: https://arxiv.org/abs/1906.02825 Currently only implemented for models with natural image inputs.",
+    }),
+  })
+  .openapi({
+    description:
+      'Message holding configuration options for explaining model predictions. There are three feature attribution methods supported for TensorFlow models: integrated gradients, sampled Shapley, and XRAI. [Learn more about feature attributions.](/ai-platform/prediction/docs/ai-explanations/overview)',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1ExplanationConfig')
+
+const GoogleCloudMlV1GetConfigResponseSchema = z
+  .object({
+    config: GoogleCloudMlV1ConfigSchema.exactOptional(),
+    serviceAccount: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The service account Cloud ML uses to access resources in the project.',
+      }),
+    serviceAccountProject: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The project number for `service_account`.' }),
+  })
+  .openapi({
+    description: 'Returns service account information associated with a project.',
+    required: [],
+  })
+  .openapi('GoogleCloudMlV1GetConfigResponse')
+
+const GoogleCloudMlV1ListJobsResponseSchema: z.ZodType<GoogleCloudMlV1ListJobsResponseType> = z
   .object({
     jobs: z
       .array(GoogleCloudMlV1JobSchema)
@@ -1825,7 +1887,7 @@ const GoogleCloudMlV1ListModelsResponseSchema = z
   .openapi('GoogleCloudMlV1ListModelsResponse')
 
 const GoogleCloudMlV1ListOptimalTrialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for the ListTrials service method.' })
   .openapi('GoogleCloudMlV1ListOptimalTrialsRequest')
 
@@ -1910,68 +1972,16 @@ const GoogleCloudMlV1ListOptimalTrialsResponseSchema = z
   .openapi({ description: 'The response message for the ListOptimalTrials method.', required: [] })
   .openapi('GoogleCloudMlV1ListOptimalTrialsResponse')
 
-const GoogleCloudMlV1StudyConfigSchema = z
-  .object({
-    algorithm: z
-      .enum(['ALGORITHM_UNSPECIFIED', 'GAUSSIAN_PROCESS_BANDIT', 'GRID_SEARCH', 'RANDOM_SEARCH'])
-      .exactOptional()
-      .openapi({ description: 'The search algorithm specified for the study.' }),
-    automatedStoppingConfig: GoogleCloudMlV1AutomatedStoppingConfigSchema.exactOptional().openapi({
-      description: 'Configuration for automated stopping of unpromising Trials.',
-    }),
-    metrics: z
-      .array(GoogleCloudMlV1StudyConfigMetricSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'Metric specs for the study.' }),
-    parameters: z
-      .array(GoogleCloudMlV1StudyConfigParameterSpecSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. The set of parameters to tune.' }),
-  })
-  .openapi({ description: 'Represents configuration of a study.', required: [] })
-  .openapi('GoogleCloudMlV1StudyConfig')
-
-const GoogleCloudMlV1StudySchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time at which the study was created.',
-        readOnly: true,
-      }),
-    inactiveReason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A human readable reason why the Study is inactive. This should be empty if a study is ACTIVE or COMPLETED.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of a study.', readOnly: true }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'ACTIVE', 'INACTIVE', 'COMPLETED'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The detailed state of a study.', readOnly: true }),
-    studyConfig: GoogleCloudMlV1StudyConfigSchema.exactOptional().openapi({
-      description: 'Required. Configuration of the study.',
-    }),
-  })
-  .openapi({ description: 'A message representing a Study.', required: [] })
-  .openapi('GoogleCloudMlV1Study')
-
-const GoogleCloudMlV1ListStudiesResponseSchema = z
-  .object({
-    studies: z
-      .array(GoogleCloudMlV1StudySchema)
-      .exactOptional()
-      .openapi({ description: 'The studies associated with the project.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GoogleCloudMlV1ListStudiesResponse')
+const GoogleCloudMlV1ListStudiesResponseSchema: z.ZodType<GoogleCloudMlV1ListStudiesResponseType> =
+  z
+    .object({
+      studies: z
+        .array(GoogleCloudMlV1StudySchema)
+        .exactOptional()
+        .openapi({ description: 'The studies associated with the project.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('GoogleCloudMlV1ListStudiesResponse')
 
 const GoogleCloudMlV1ListTrialsResponseSchema = z
   .object({
@@ -2068,12 +2078,12 @@ const GoogleCloudMlV1PredictRequestSchema = z
   .openapi('GoogleCloudMlV1PredictRequest')
 
 const GoogleCloudMlV1SetDefaultVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for the SetDefaultVersion request.' })
   .openapi('GoogleCloudMlV1SetDefaultVersionRequest')
 
 const GoogleCloudMlV1StopTrialRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi('GoogleCloudMlV1StopTrialRequest')
 
 const GoogleCloudMlV1SuggestTrialsMetadataSchema = z
@@ -2440,7 +2450,7 @@ const GoogleLongrunningListOperationsResponseSchema = z
   .openapi('GoogleLongrunningListOperationsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

@@ -245,6 +245,7 @@ const SloV0_0ReadOnlySchema = z
 const SloV0_0SloSchema = z
   .strictObject({
     alerting: SloV0_0AlertingSchema.exactOptional(),
+    customDashboardUid: z.string().exactOptional(),
     description: z.string(),
     destinationDatasource: SloV0_0DestinationDatasourceSchema.exactOptional(),
     folder: SloV0_0FolderSchema.exactOptional(),

@@ -565,1888 +565,124 @@ const PossibleNormLawFirmSchema = z
   })
   .openapi('PossibleNormLawFirm')
 
-type AttorneyType = {
-  attorneyId: string
-  attorneyLawFirmArray: z.infer<typeof AttorneyLawFirmSchema>[]
-  attorneyType: z.infer<typeof AttorneyTypeSchema>
-  barNumber: string | null
-  contact: z.infer<typeof ContactSchema>
-  firstFetchDate: string
-  firstName: string | null
-  isVisible: boolean
-  lastFetchDate: string
-  lastName: string | null
-  middleName: string | null
-  name: string
-  namePrefix: string | null
-  nameSuffix: string | null
-  object: string
-  partyAttorneyAssociations: z.infer<typeof PartyAttorneyAssociationsSchema>
-  partyRoleGroupIdArray: string[]
-  partyRoleIdArray: string[]
-  possibleNormAttorneyArray: z.infer<typeof PossibleNormAttorneySchema>[]
-  possibleNormLawFirmArray: z.infer<typeof PossibleNormLawFirmSchema>[]
-  sourceAttorneyType: string
-} | null
-
-const JudgeTypeSchema = z
+const AttorneySchema = z
   .object({
-    createdDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
+    attorneyId: z
+      .string()
+      .length(18)
       .openapi({
         description:
-          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
-        example: '2020-05-07T10:17:56+00:00',
+          'ID for the attorney in this case. This ID is unique within a case and NOT across cases. If the same attorney were to appear in another case this ID would be different.',
+        example: 'ATTYgu01be2e4de654',
       }),
-    judgeTypeId: z.string().length(18).openapi({ example: 'JGTPkwrfzkDJUvxpN9' }),
-    name: z.string().min(1).max(255).openapi({ example: 'Judge' }),
-    object: z.string().length(9).default('JudgeType').openapi({ example: 'JudgeType' }),
-  })
-  .nullable()
-  .openapi({
-    required: ['object', 'judgeTypeId', 'name', 'createdDate'],
-    title: 'JudgeType',
-    'x-unicourt-container': false,
-  })
-  .openapi('JudgeType')
-
-const PossibleNormJudgeSchema = z
-  .object({
-    associatedNormAttorneysAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormAttorneys?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormAttorneysForNormJudgeAPI',
-      }),
-    associatedNormLawFirmsAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormLawFirms?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormLawFirmsForNormJudgeAPI',
-      }),
-    associatedNormPartiesAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormParties?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormPartiesForNormJudgeAPI',
-      }),
-    bestMatch: z.boolean().default(false),
-    caseCountAnalyticsByNormJudgeAPI: z
-      .url()
+    attorneyLawFirmArray: z.array(AttorneyLawFirmSchema).max(25),
+    attorneyType: AttorneyTypeSchema,
+    barNumber: z
+      .string()
       .max(250)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByNormJudgeAPI' }),
-    confidenceScore: z.float32().nullable(),
-    normJudgeAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details For the Judge.',
-        example: 'https://enterpriseapi.unicourt.com/normJudge/NJUD3Ygn4ooAvNxAmd',
-        'x-logical-reference': 'NormJudgeAPI',
-      }),
-    normJudgeId: z.string().length(18),
-    normJudgeName: z.string().max(500),
-    object: z
-      .string()
-      .length(17)
-      .default('PossibleNormJudge')
-      .openapi({ description: 'Name of the object' }),
-    scoreConstituents: z
-      .object({
-        address: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-        email: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-        nameSimilarityScore: z.float32(),
-        otherPotentialNormJudges: z.int(),
-        phone: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-      })
       .nullable()
-      .openapi({
-        required: ['nameSimilarityScore', 'otherPotentialNormJudges', 'address', 'email', 'phone'],
-      }),
-  })
-  .nullable()
-  .openapi({
-    required: [
-      'object',
-      'normJudgeId',
-      'normJudgeName',
-      'bestMatch',
-      'confidenceScore',
-      'scoreConstituents',
-      'normJudgeAPI',
-      'associatedNormAttorneysAPI',
-      'associatedNormLawFirmsAPI',
-      'associatedNormPartiesAPI',
-      'caseCountAnalyticsByNormJudgeAPI',
-    ],
-    title: 'PossibleNormJudge',
-    'x-unicourt-container': false,
-  })
-  .openapi('PossibleNormJudge')
-
-type JudgeType = {
-  contact: z.infer<typeof ContactSchema>
-  firstFetchDate: string
-  firstName: string | null
-  isVisible: boolean
-  judgeId: string
-  judgeType: z.infer<typeof JudgeTypeSchema>
-  lastFetchDate: string
-  lastName: string | null
-  middleName: string | null
-  name: string
-  namePrefix: string | null
-  nameSuffix: string | null
-  object: string
-  possibleNormJudgeArray: z.infer<typeof PossibleNormJudgeSchema>[]
-  sourceJudgeType: string
-} | null
-
-const AttorneyAnalyticsAPISchema = z
-  .object({
-    associatedNormJudgesAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormAttorneyAPI' }),
-    associatedNormLawFirmsAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormLawFirmsForNormAttorneyAPI' }),
-    associatedNormPartiesAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormPartiesForNormAttorneyAPI' }),
-    caseCountAnalyticsByOpposingNormAttorneyAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
-    caseCountAnalyticsByOpposingNormLawFirmAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
-    caseCountAnalyticsByOpposingNormPartyAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
-    normAttorneyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details for the Attorney.',
-        'x-logical-reference': 'NormAttorneyAPI',
-      }),
-    object: z.string().max(20).default('AttorneyAnalyticsAPI'),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normAttorneyAPI',
-      'associatedNormJudgesAPI',
-      'associatedNormLawFirmsAPI',
-      'associatedNormPartiesAPI',
-      'caseCountAnalyticsByOpposingNormAttorneyAPI',
-      'caseCountAnalyticsByOpposingNormLawFirmAPI',
-      'caseCountAnalyticsByOpposingNormPartyAPI',
-    ],
-    title: 'AttorneyAnalyticsAPI',
-    'x-unicourt-container': false,
-  })
-  .openapi('AttorneyAnalyticsAPI')
-
-const BarSourceDataSchema = z
-  .object({
-    administrativeActionsArray: z.array(
-      z
-        .object({
-          caseNumber: z.string().max(250).nullable(),
-          description: z.string().max(250).nullable(),
-          effectiveDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          resultingStatus: z.string().max(250).nullable(),
-          type: z.string().max(250).nullable(),
-        })
-        .openapi({
-          required: ['caseNumber', 'description', 'effectiveDate', 'resultingStatus', 'type'],
-        }),
-    ),
-    admissionType: z.string().max(250).nullable(),
-    advancedDegreeArray: z.array(
-      z
-        .object({ area: z.string().max(250).nullable(), degree: z.string().max(250).nullable() })
-        .openapi({ required: ['area', 'degree'] }),
-    ),
-    appellateCourtDistrict: z.string().max(250).nullable(),
-    appellateDivisionDepartment: z.string().max(250).nullable(),
-    attorneyGroup: z.string().max(250).nullable(),
-    authorized: z.string().max(250).nullable(),
-    barLawFirm: z.string().max(250).nullable(),
-    barServiceClass: z.string().max(250).nullable(),
-    barStatusArray: z.array(
-      z
-        .object({ date: z.string().max(25).nullable(), status: z.string().max(250).nullable() })
-        .openapi({ required: ['status', 'date'] }),
-    ),
-    bio: z.string().max(5000).nullable(),
-    boardCertificationsArray: z.array(
-      z
-        .object({ area: z.string().max(250).nullable(), year: z.string().max(250).nullable() })
-        .openapi({ required: ['area', 'year'] }),
-    ),
-    boardDistrict: z.string().max(250).nullable(),
-    circuit: z.string().max(250).nullable(),
-    clientsRepresentedArray: z.array(z.string().max(250)),
-    comments: z.string().max(250).nullable(),
-    committeesArray: z.array(
-      z
-        .object({
-          committee: z.string().max(250).nullable(),
-          office: z.string().max(250).nullable(),
-          term: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['committee', 'office', 'term'] }),
-    ),
-    courtHistoryArray: z.array(
-      z
-        .object({
-          action: z.string().max(250).nullable(),
-          actionComments: z.string().max(2000).nullable(),
-          reinstatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          startDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-        })
-        .openapi({ required: ['action', 'actionComments', 'reinstatedDate', 'startDate'] }),
-    ),
-    courtOfAdmissions: z
-      .object({
-        courtStateArray: z.array(z.string().max(250)),
-        federalArray: z.array(z.string().max(250)),
-        otherCourtsArray: z.array(z.string().max(500)),
-      })
-      .nullable()
-      .openapi({ required: ['courtStateArray', 'federalArray', 'otherCourtsArray'] }),
-    courtServiceEmail: z.string().max(250).nullable(),
-    disciplinaryHistoryArray: z.array(
-      z
-        .object({
-          action: z.string().max(250).nullable(),
-          caseNumber: z.string().max(250).nullable(),
-          complaint: z.string().max(1000).nullable(),
-          contactId: z.string().min(1).max(250).nullable(),
-          dateOfAction: z.iso.datetime({ offset: true }).max(25).nullable(),
-          definition: z.string().max(1000).nullable(),
-          disciplinaryDecision: z.string().max(250).nullable(),
-          entryDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          information: z.string().max(250).nullable(),
-          link: z.string().max(250).nullable(),
-          note: z.string().max(1000).nullable(),
-          probationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          reinstatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          rule: z.string().max(250).nullable(),
-          ruleNumber: z.string().max(250).nullable(),
-          sectionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          status: z.string().max(250).nullable(),
-          stayDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          supremeCourt: z.string().max(250).nullable(),
-          term: z.string().max(250).nullable(),
-          typeOfAction: z.string().max(250).nullable(),
-        })
-        .openapi({
-          required: [
-            'action',
-            'caseNumber',
-            'complaint',
-            'contactId',
-            'dateOfAction',
-            'definition',
-            'disciplinaryDecision',
-            'entryDate',
-            'information',
-            'link',
-            'note',
-            'probationDate',
-            'reinstatedDate',
-            'rule',
-            'ruleNumber',
-            'sectionDate',
-            'status',
-            'stayDate',
-            'supremeCourt',
-            'term',
-            'typeOfAction',
-          ],
-        }),
-    ),
-    disciplineSummariesArray: z.array(
-      z
-        .object({
-          date: z.iso.datetime({ offset: true }).max(25).nullable(),
-          link: z.string().max(250).nullable(),
-          title: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['date', 'link', 'title'] }),
-    ),
-    dismissalsArray: z.array(z.string().max(250)),
-    district: z.string().max(250).nullable(),
-    employmentHistoryArray: z.array(
-      z
-        .object({
-          employer: z.string().max(250).nullable(),
-          endDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          startDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-        })
-        .openapi({ required: ['employer', 'endDate', 'startDate'] }),
-    ),
-    expirationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    feesOptionsArray: z.array(
-      z
-        .object({
-          contingencyFees: z.string().max(250).nullable(),
-          flatFees: z.string().max(250).nullable(),
-          hourlyRate: z.string().max(250).nullable(),
-          paymentPlans: z.string().max(250).nullable(),
-          slidingScaleFees: z.string().max(250).nullable(),
-        })
-        .openapi({
-          required: [
-            'contingencyFees',
-            'flatFees',
-            'hourlyRate',
-            'paymentPlans',
-            'slidingScaleFees',
-          ],
-        }),
-    ),
-    firmSize: z.string().max(250).nullable(),
-    firmWebsite: z.string().max(1000).nullable(),
-    firstAdmittedDate: z.iso
+      .openapi({ description: 'The bar enrollment number of an attorney.' }),
+    contact: ContactSchema,
+    firstFetchDate: z.iso
       .datetime({ offset: true })
-      .max(25)
+      .length(25)
+      .openapi({
+        description: 'When was the attorney first fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    firstName: z
+      .string()
+      .max(250)
       .nullable()
+      .openapi({
+        description: 'First name of the attorney. This is normalized by UniCourt.',
+        example: 'POMERANTZ',
+      }),
+    isVisible: z
+      .boolean()
       .openapi({
         description:
-          'The firstAdmittedDate is the date when an attorney was admitted to the bar for the very first time regardless of which U.S state.',
+          'Signifies if the attorney as this attorney type is currently isVisible or not for the case.',
+        example: true,
       }),
-    firstAdmittedYear: z.int().nullable(),
-    homeCounty: z.string().max(250).nullable(),
-    inGoodStanding: z.string().max(250).nullable(),
-    insurance: z.string().max(500).nullable(),
-    involvementsArray: z.array(
-      z
-        .object({
-          name: z.string().max(500).nullable(),
-          position: z.string().max(250).nullable(),
-          type: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['name', 'position', 'type'] }),
-    ),
-    judicialDistrict: z.string().max(250).nullable(),
-    jurisType: z.string().max(250).nullable(),
-    languagesArray: z.array(z.string().max(1000)),
-    lastRenewalDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    lawSchoolArray: z.array(
-      z
-        .object({
-          lawSchool: z.string().max(250).nullable(),
-          lawSchoolGraduatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-        })
-        .openapi({ required: ['lawSchool', 'lawSchoolGraduatedDate'] }),
-    ),
-    legalSpecialityArray: z.array(z.string().max(250)),
-    licenseType: z.string().max(250).nullable(),
+    lastFetchDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'When was the attorney last fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    lastName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Last name of the attorney. This is normalized by UniCourt.',
+        example: 'SLONE',
+      }),
+    middleName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Middle name of the attorney. This is normalized by UniCourt.',
+        example: 'ANDREW',
+      }),
     name: z
-      .object({
-        firstName: z.string().max(500),
-        lastName: z.string().max(500),
-        middleName: z.string().max(500).nullable(),
-        name: z.string().max(500),
-        prefix: z.string().max(250).nullable(),
-        suffix: z.string().max(250).nullable(),
-      })
-      .openapi({ required: ['name', 'firstName', 'middleName', 'lastName', 'prefix', 'suffix'] }),
-    nextRegistration: z.iso.datetime({ offset: true }).max(25).nullable(),
-    nextRenewalDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    object: z.string().max(13).default('BarSourceData'),
-    openActionStatusArray: z.array(
-      z
-        .object({
-          date: z.iso.datetime({ offset: true }).max(25).nullable(),
-          reason: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['date', 'reason'] }),
-    ),
-    otherJurisdictionArray: z.array(
-      z
-        .object({
-          barNumber: z.string().max(250).nullable(),
-          state: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['barNumber', 'state'] }),
-    ),
-    otherNameArray: z.array(z.string().max(500)),
-    parish: z.string().max(250).nullable(),
-    pendingProceedingArray: z.array(z.string().max(250)),
-    position: z.string().max(250).nullable(),
-    practiceAreaArray: z.array(z.string().max(250)),
-    practiceLocationArray: z.array(z.string().max(250)),
-    privateLawPractice: z.string().max(250).nullable(),
-    profileLastCertified: z.iso.datetime({ offset: true }).max(25).nullable(),
-    publicHearingArray: z.array(
-      z
-        .object({
-          conduct: z.string().max(500).nullable(),
-          date: z.iso.datetime({ offset: true }).max(25).nullable(),
-          issuedBy: z.string().max(250).nullable(),
-          order: z.string().max(250).nullable(),
-          respondent: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['conduct', 'date', 'issuedBy', 'order', 'respondent'] }),
-    ),
-    reasonForInactivation: z
-      .object({ caseNumber: z.string().max(250).nullable(), link: z.string().max(250).nullable() })
-      .nullable()
-      .openapi({ required: ['caseNumber', 'link'] }),
-    relatedCasesArray: z.array(
-      z
-        .object({
-          caseDetails: z.string().max(250).nullable(),
-          caseId: z.string().min(1).max(250).nullable(),
-        })
-        .openapi({ required: ['caseId', 'caseDetails'] }),
-    ),
-    sectionsArray: z.array(z.string().max(250)),
-    servicesArray: z.array(z.string().max(250)),
-    sourceInfo: z
-      .object({ url: z.url().max(250).nullable() })
-      .nullable()
-      .openapi({ required: ['url'] }),
-    statewideGrievanceCommitteeHistoryArray: z.array(
-      z
-        .object({
-          finalDecision: z.string().max(250).nullable(),
-          finalDecisionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          grievanceComplaintNumber: z.string().max(250).nullable(),
-          publicComments: z.string().max(1000).nullable(),
-        })
-        .openapi({
-          required: [
-            'finalDecision',
-            'finalDecisionDate',
-            'grievanceComplaintNumber',
-            'publicComments',
-          ],
-        }),
-    ),
-    status: z.string().max(500).nullable(),
-    statusDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    statusHint: z.string().max(500).nullable(),
-    statusHistoryArray: z.array(
-      z
-        .object({
-          effectiveDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          statusChange: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['effectiveDate', 'statusChange'] }),
-    ),
-    tenYearDisciplineArray: z.array(
-      z
-        .object({
-          actionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-          description: z.string().max(250).nullable(),
-          reference: z.string().max(250).nullable(),
-        })
-        .openapi({ required: ['actionDate', 'description', 'reference'] }),
-    ),
-    undergraduateSchool: z.string().max(250).nullable(),
-    yearsOfPractice: z.string().max(250).nullable(),
-  })
-  .openapi({
-    required: [
-      'object',
-      'administrativeActionsArray',
-      'admissionType',
-      'appellateCourtDistrict',
-      'appellateDivisionDepartment',
-      'attorneyGroup',
-      'authorized',
-      'barServiceClass',
-      'bio',
-      'boardCertificationsArray',
-      'boardDistrict',
-      'circuit',
-      'comments',
-      'committeesArray',
-      'courtHistoryArray',
-      'courtOfAdmissions',
-      'courtServiceEmail',
-      'disciplinaryHistoryArray',
-      'disciplineSummariesArray',
-      'dismissalsArray',
-      'district',
-      'employmentHistoryArray',
-      'expirationDate',
-      'feesOptionsArray',
-      'firmSize',
-      'firmWebsite',
-      'firstAdmittedDate',
-      'firstAdmittedYear',
-      'homeCounty',
-      'inGoodStanding',
-      'insurance',
-      'involvementsArray',
-      'judicialDistrict',
-      'jurisType',
-      'languagesArray',
-      'lastRenewalDate',
-      'lawSchoolArray',
-      'legalSpecialityArray',
-      'licenseType',
-      'name',
-      'nextRegistration',
-      'nextRenewalDate',
-      'openActionStatusArray',
-      'otherJurisdictionArray',
-      'otherNameArray',
-      'parish',
-      'pendingProceedingArray',
-      'position',
-      'practiceAreaArray',
-      'practiceLocationArray',
-      'privateLawPractice',
-      'profileLastCertified',
-      'publicHearingArray',
-      'reasonForInactivation',
-      'sectionsArray',
-      'servicesArray',
-      'sourceInfo',
-      'statewideGrievanceCommitteeHistoryArray',
-      'status',
-      'statusDate',
-      'statusHistoryArray',
-      'tenYearDisciplineArray',
-      'undergraduateSchool',
-      'barLawFirm',
-      'yearsOfPractice',
-      'clientsRepresentedArray',
-      'statusHint',
-      'advancedDegreeArray',
-      'barStatusArray',
-      'relatedCasesArray',
-    ],
-    title: 'BarSourceData',
-    'x-unicourt-container': false,
-  })
-  .openapi('BarSourceData')
-
-const BarRecordSchema = z
-  .object({
-    admittedDate: z.iso
-      .datetime({ offset: true })
-      .max(25)
-      .nullable()
+      .string()
+      .min(1)
+      .max(250)
       .openapi({
-        description:
-          'The admittedDate is the date when an attorney was admitted to the bar of a given state.',
+        description: 'Name of the attorney as provided by Court.',
+        example: 'POMERANTZ ANDREW SLONE',
       }),
-    barNumber: z.string().max(250).nullable(),
-    barSourceData: BarSourceDataSchema,
-    barSourceType: z.string().max(70),
-    contact: ContactSchema,
-    firstFetchDate: z.iso.datetime({ offset: true }).max(25),
-    inactivationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    lastFetchDate: z.iso.datetime({ offset: true }).max(25),
-    lastFetchDateWithUpdates: z.iso
-      .datetime({ offset: true })
-      .max(25)
-      .openapi({ description: 'Last Fetch Date of the Attorney Update.' }),
-    object: z.string().max(9).default('BarRecord'),
-    stateCode: z.string().max(2),
-    status: z.enum(['Active', 'Inactive', 'Not Classified', 'Unknown']),
+    namePrefix: z.string().max(10).nullable(),
+    nameSuffix: z.string().max(10).nullable(),
+    object: z.string().length(8).default('Attorney').openapi({ description: 'Name of the object' }),
+    partyAttorneyAssociations: PartyAttorneyAssociationsSchema,
+    partyRoleGroupIdArray: z
+      .array(z.string().length(18))
+      .openapi({ description: 'Party Role Group Id for a Attorney.' }),
+    partyRoleIdArray: z
+      .array(z.string().length(18))
+      .openapi({ description: 'Party Role Id for a Attorney.' }),
+    possibleNormAttorneyArray: z.array(PossibleNormAttorneySchema),
+    possibleNormLawFirmArray: z
+      .array(PossibleNormLawFirmSchema)
+      .openapi({ description: 'Possible Norm Lawfirm array for a Attorney.' }),
+    sourceAttorneyType: z
+      .string()
+      .max(250)
+      .openapi({ description: 'Attorney Type as provided by Court.', example: 'atty' }),
   })
+  .nullable()
   .openapi({
-    description:
-      'This contains the Attorney details that is obtained from the State Bar where the attorney is registered.',
     required: [
       'object',
+      'attorneyId',
+      'name',
+      'namePrefix',
+      'firstName',
+      'middleName',
+      'lastName',
+      'nameSuffix',
+      'contact',
+      'attorneyLawFirmArray',
       'barNumber',
-      'barSourceType',
-      'admittedDate',
-      'stateCode',
-      'status',
-      'inactivationDate',
-      'barSourceData',
-      'contact',
+      'attorneyType',
+      'sourceAttorneyType',
+      'isVisible',
       'firstFetchDate',
       'lastFetchDate',
-      'lastFetchDateWithUpdates',
-    ],
-    title: 'BarRecord',
-    'x-unicourt-container': false,
-  })
-  .openapi('BarRecord')
-
-const CaseAnalyticsAPISchema = z
-  .object({
-    caseCountAnalyticsByAreaOfLawAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByAreaOfLawAPI' }),
-    caseCountAnalyticsByCaseClassAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseClassAPI' }),
-    caseCountAnalyticsByCaseTypeAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseTypeAPI' }),
-    caseCountAnalyticsByCaseTypeGroupAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseTypeGroupAPI' }),
-    caseCountAnalyticsByCourtAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtAPI' }),
-    caseCountAnalyticsByCourtLocationAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtLocationAPI' }),
-    caseCountAnalyticsByCourtSystemAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtSystemAPI' }),
-    caseCountAnalyticsByCourtTypeAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtTypeAPI' }),
-    caseCountAnalyticsByJurisdictionGeoAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByJurisdictionGeoAPI' }),
-    caseCountAnalyticsByPartyRoleAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByPartyRoleAPI' }),
-    caseCountAnalyticsByPartyRoleGroupAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByPartyRoleGroupAPI' }),
-    object: z.string().max(16).default('CaseAnalyticsAPI'),
-    totalCases: z.int(),
-  })
-  .openapi({
-    description: 'Provides Court Data per State Jurisdiction for an entity.',
-    required: [
-      'object',
-      'caseCountAnalyticsByCourtAPI',
-      'caseCountAnalyticsByCourtTypeAPI',
-      'caseCountAnalyticsByCourtSystemAPI',
-      'caseCountAnalyticsByCourtLocationAPI',
-      'caseCountAnalyticsByJurisdictionGeoAPI',
-      'caseCountAnalyticsByAreaOfLawAPI',
-      'caseCountAnalyticsByCaseClassAPI',
-      'caseCountAnalyticsByCaseTypeAPI',
-      'caseCountAnalyticsByCaseTypeGroupAPI',
-      'caseCountAnalyticsByPartyRoleAPI',
-      'caseCountAnalyticsByPartyRoleGroupAPI',
-      'totalCases',
-    ],
-    title: 'CaseAnalyticsAPI',
-    'x-unicourt-container': false,
-  })
-  .openapi('CaseAnalyticsAPI')
-
-const BarRecordPreviewSchema = z
-  .object({
-    barNumber: z.string().max(250).nullable(),
-    barSourceType: z.string().max(70).nullable(),
-    object: z.string().max(16).default('BarRecordPreview'),
-    stateCode: z.string().max(2),
-  })
-  .openapi({
-    required: ['object', 'barSourceType', 'barNumber', 'stateCode'],
-    title: 'BarRecordPreview',
-    'x-unicourt-container': false,
-  })
-  .openapi('BarRecordPreview')
-
-const SimilarNormAttorneySchema = z
-  .object({
-    barRecordPreviewArray: z.array(BarRecordPreviewSchema),
-    name: z.string().min(1).max(500),
-    normAttorneyAPI: z.url().max(255),
-    normAttorneyId: z.string().length(18),
-    normAttorneySimilarityScore: z.float32(),
-    object: z.string().length(19).default('SimilarNormAttorney'),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normAttorneyId',
-      'normAttorneyAPI',
-      'name',
-      'normAttorneySimilarityScore',
-      'barRecordPreviewArray',
-    ],
-    title: 'SimilarNormAttorney',
-    'x-unicourt-container': false,
-  })
-  .openapi('SimilarNormAttorney')
-
-type NormAttorneyType = {
-  attorneyAnalyticsAPI: z.infer<typeof AttorneyAnalyticsAPISchema>
-  barRecordArray: z.infer<typeof BarRecordSchema>[]
-  caseAnalyticsAPI: z.infer<typeof CaseAnalyticsAPISchema>
-  caseSearchAPI: string
-  firstName: string
-  hasAssociatedPublicData: boolean
-  lastName: string
-  middleName: string | null
-  name: string
-  normAttorneyId: string
-  object: string
-  similarNormAttorneyArray: z.infer<typeof SimilarNormAttorneySchema>[]
-}
-
-const NormCorporateGroupSchema = z
-  .object({
-    normCorporateGroupId: z.string().length(18).nullable(),
-    normCorporateGroupName: z.string().max(500).nullable(),
-    object: z.string().max(18).default('NormCorporateGroup'),
-  })
-  .openapi({
-    required: ['object', 'normCorporateGroupId', 'normCorporateGroupName'],
-    title: 'NormCorporateGroup',
-    'x-unicourt-container': false,
-  })
-  .openapi('NormCorporateGroup')
-
-const AssociatedSoSPersonSchema = z
-  .object({
-    contact: ContactSchema,
-    entityName: z.string().max(500),
-    entityType: z.enum([
-      'Partner',
-      'Agent',
-      'CEO',
-      'Partner/General Member',
-      'Partner/GeneralMember',
-    ]),
-    object: z.string().max(19).default('AssociatedSoSPerson'),
-  })
-  .openapi({
-    required: ['object', 'contact', 'entityName', 'entityType'],
-    title: 'AssociatedSoSPerson',
-    'x-unicourt-container': false,
-  })
-  .openapi('AssociatedSoSPerson')
-
-const SOSNameChangeSchema = z
-  .object({
-    fromDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    name: z.string().max(500),
-    object: z.string().max(13).default('SOSNameChange'),
-    toDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-  })
-  .openapi({
-    required: ['object', 'name', 'fromDate', 'toDate'],
-    title: 'SOSNameChange',
-    'x-unicourt-container': false,
-  })
-  .openapi('SOSNameChange')
-
-const SOSAssociatedNormOrganizationSchema = z
-  .object({
-    fromDate: z.iso.datetime({ offset: true }).max(25),
-    name: z.string().max(500),
-    normOrganizationAPI: z.url().max(255).nullable(),
-    normOrganizationId: z.string().min(17).max(18).nullable(),
-    object: z.string().max(29).default('SOSAssociatedNormOrganization'),
-    relationshipType: z.enum(['Parent', 'Child']),
-    toDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normOrganizationId',
-      'normOrganizationAPI',
-      'relationshipType',
-      'name',
-      'fromDate',
-      'toDate',
-    ],
-    title: 'SOSAssociatedNormOrganization',
-    'x-unicourt-container': false,
-  })
-  .openapi('SOSAssociatedNormOrganization')
-
-const SOSDataSchema = z
-  .object({
-    associatedSoSPersonArray: z.array(AssociatedSoSPersonSchema),
-    contact: ContactSchema,
-    domesticRegistration: z.boolean().default(true),
-    fein: z.string().max(16).nullable(),
-    firstFetchDate: z.iso.datetime({ offset: true }).max(25),
-    inactivationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    isActive: z.boolean().default(true),
-    lastFetchDate: z.iso.datetime({ offset: true }).max(25),
-    lastFetchDateWithUpdates: z.iso
-      .datetime({ offset: true })
-      .max(25)
-      .openapi({ description: 'Last Fetch Date of Organization with Updates.' }),
-    nameChangesArray: z.array(SOSNameChangeSchema),
-    object: z.string().max(7).default('SOSData'),
-    registeredDate: z.iso.datetime({ offset: true }).max(25).nullable(),
-    sosAssociatedNormOrganizationArray: z.array(SOSAssociatedNormOrganizationSchema),
-    sosNumber: z.string().max(50).nullable(),
-    stateCode: z.string().max(2),
-    status: z.literal('Active').nullable(),
-  })
-  .openapi({
-    required: [
-      'object',
-      'sosNumber',
-      'stateCode',
-      'fein',
-      'domesticRegistration',
-      'registeredDate',
-      'status',
-      'isActive',
-      'inactivationDate',
-      'associatedSoSPersonArray',
-      'contact',
-      'nameChangesArray',
-      'sosAssociatedNormOrganizationArray',
-      'firstFetchDate',
-      'lastFetchDate',
-      'lastFetchDateWithUpdates',
-    ],
-    title: 'SOSData',
-    'x-unicourt-container': false,
-  })
-  .openapi('SOSData')
-
-const NormOrganizationSchema = z
-  .object({
-    cik: z.string().max(15).nullable(),
-    isInvolvedInLitigation: z.boolean(),
-    lei: z.string().max(250).nullable(),
-    naics: z.string().max(250).nullable(),
-    naicsDescription: z.string().max(250).nullable(),
-    name: z.string().max(500),
-    normCorporateGroupArray: z.array(NormCorporateGroupSchema),
-    normOrganizationId: z.string().length(18),
-    normPartyAPI: z.url().max(255),
-    object: z.string().max(16).default('NormOrganization'),
-    organizationType: z.enum(['Business', 'GovernmentAgency']),
-    sic: z.string().max(10).nullable(),
-    sicDescription: z.string().max(100).nullable(),
-    sosDataArray: z.array(SOSDataSchema),
-    tickerArray: z.array(
-      z
-        .object({ exchange: z.string().max(250).nullable(), symbols: z.array(z.string().max(250)) })
-        .openapi({ required: ['exchange', 'symbols'] }),
-    ),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normOrganizationId',
-      'name',
-      'organizationType',
-      'lei',
-      'cik',
-      'tickerArray',
-      'naics',
-      'naicsDescription',
-      'sic',
-      'sicDescription',
-      'isInvolvedInLitigation',
-      'normPartyAPI',
-      'normCorporateGroupArray',
-      'sosDataArray',
-    ],
-    title: 'NormOrganization',
-    'x-unicourt-container': false,
-  })
-  .openapi('NormOrganization')
-
-const PartyAnalyticsAPISchema = z
-  .object({
-    associatedNormAttorneysAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormAttorneysForNormPartyAPI' }),
-    associatedNormJudgesAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormPartyAPI' }),
-    associatedNormLawFirmsAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormLawFirmsForNormPartyAPI' }),
-    caseCountAnalyticsByOpposingNormAttorneyAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
-    caseCountAnalyticsByOpposingNormLawFirmAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
-    caseCountAnalyticsByOpposingNormPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
-    normPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details for the Party.',
-        'x-logical-reference': 'NormPartyAPI',
-      }),
-    object: z.string().max(17).default('PartyAnalyticsAPI'),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normPartyAPI',
-      'associatedNormAttorneysAPI',
-      'associatedNormLawFirmsAPI',
-      'associatedNormJudgesAPI',
-      'caseCountAnalyticsByOpposingNormAttorneyAPI',
-      'caseCountAnalyticsByOpposingNormLawFirmAPI',
-      'caseCountAnalyticsByOpposingNormPartyAPI',
-    ],
-    title: 'PartyAnalyticsAPI',
-    'x-unicourt-container': false,
-  })
-  .openapi('PartyAnalyticsAPI')
-
-const RelatedNormPartySchema = z
-  .object({
-    normPartyId: z.string().length(18),
-    object: z.string().max(16).default('RelatedNormParty'),
-    relationshipType: z.enum(['Parent', 'Child', 'Same_Corporate_Group']),
-  })
-  .openapi({
-    required: ['object', 'normPartyId', 'relationshipType'],
-    title: 'RelatedNormParty',
-    'x-unicourt-container': false,
-  })
-  .openapi('RelatedNormParty')
-
-type NormPartyType = {
-  caseAnalyticsAPI: z.infer<typeof CaseAnalyticsAPISchema>
-  caseSearchAPI: string
-  individualData: {
-    firstName: string | null
-    lastName: string | null
-    middleName: string | null
-    name: string | null
-  } | null
-  name: string
-  normOrganizationData: z.infer<typeof NormOrganizationSchema>
-  normPartyId: string
-  object: string
-  partyAnalyticsAPI: z.infer<typeof PartyAnalyticsAPISchema>
-  partyClassificationType: 'Individual' | 'Organization'
-  relatedNormPartyArray: z.infer<typeof RelatedNormPartySchema>[]
-}
-
-const AttorneyRepresentationTypeSchema = z
-  .object({
-    attorneyRepresentationTypeId: z.string().length(18).openapi({ example: 'ATRPYgPMGJufoCsR6Q' }),
-    createdDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
-      .openapi({
-        description:
-          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
-        example: '2020-05-07T10:17:56+00:00',
-      }),
-    name: z.string().min(1).max(255).openapi({ example: 'Self Represented' }),
-    object: z
-      .string()
-      .length(26)
-      .default('AttorneyRepresentationType')
-      .openapi({ example: 'AttorneyRepresentationType' }),
-  })
-  .nullable()
-  .openapi({
-    required: ['object', 'attorneyRepresentationTypeId', 'name', 'createdDate'],
-    title: 'AttorneyRepresentationType',
-    'x-unicourt-container': false,
-  })
-  .openapi('AttorneyRepresentationType')
-
-const PartyRoleSchema = z
-  .object({
-    createdDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
-      .openapi({
-        description:
-          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
-        example: '2020-05-07T10:17:56+00:00',
-      }),
-    description: z.string().min(1).max(255).nullable().openapi({ example: null }),
-    name: z.string().min(1).max(255).openapi({ example: 'Plaintiff' }),
-    object: z.string().length(9).default('PartyRole').openapi({ example: 'PartyRole' }),
-    partyRoleGroup: z.string().min(1).max(255).openapi({ example: 'Party Offensive' }),
-    partyRoleGroupId: z.string().length(18).openapi({ example: 'PTYGBnjxbx6tKNfVEP' }),
-    partyRoleId: z.string().length(18).openapi({ example: 'PTYRiP8nMgPxBsPc5i' }),
-  })
-  .nullable()
-  .openapi({
-    required: [
-      'object',
-      'partyRoleId',
-      'partyRoleGroupId',
-      'partyRoleGroup',
-      'name',
-      'description',
-      'createdDate',
-    ],
-    title: 'PartyRole',
-    'x-unicourt-container': false,
-  })
-  .openapi('PartyRole')
-
-const PossibleNormPartySchema = z
-  .object({
-    associatedNormAttorneysAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormAttorneys?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormAttorneysForNormPartyAPI',
-      }),
-    associatedNormJudgesAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormJudges?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormJudgesForNormPartyAPI',
-      }),
-    associatedNormLawFirmsAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormLawFirms?pageNumber=1',
-        'x-logical-reference': 'AssociatedNormLawFirmsForNormPartyAPI',
-      }),
-    bestMatch: z.boolean().default(false),
-    caseCountAnalyticsByNormPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByNormPartyAPI' }),
-    caseCountAnalyticsByOpposingNormPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        example:
-          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/caseCountAnalyticsByOpposingNormParty?pageNumber=1',
-        'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI',
-      }),
-    confidenceScore: z.float32(),
-    normPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details For the Party.',
-        example: 'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAmd',
-        'x-logical-reference': 'NormPartyAPI',
-      }),
-    normPartyId: z.string().length(18),
-    normPartyName: z.string().max(500),
-    object: z
-      .string()
-      .length(17)
-      .default('PossibleNormParty')
-      .openapi({ description: 'Name of the object' }),
-    scoreConstituents: z
-      .object({
-        address: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-        email: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-        nameSimilarityScore: z.float32(),
-        otherPotentialNormParties: z.int(),
-        phone: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-        secretaryOfStateId: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
-      })
-      .openapi({
-        required: [
-          'nameSimilarityScore',
-          'otherPotentialNormParties',
-          'secretaryOfStateId',
-          'address',
-          'email',
-          'phone',
-        ],
-      }),
-  })
-  .nullable()
-  .openapi({
-    required: [
-      'object',
-      'normPartyId',
-      'normPartyName',
-      'bestMatch',
-      'confidenceScore',
-      'scoreConstituents',
-      'normPartyAPI',
-      'associatedNormAttorneysAPI',
-      'associatedNormLawFirmsAPI',
-      'associatedNormJudgesAPI',
-      'caseCountAnalyticsByNormPartyAPI',
-      'caseCountAnalyticsByOpposingNormPartyAPI',
-    ],
-    title: 'PossibleNormParty',
-    'x-unicourt-container': false,
-  })
-  .openapi('PossibleNormParty')
-
-type PartyType = {
-  attorneyRepresentationType: z.infer<typeof AttorneyRepresentationTypeSchema>
-  contact: z.infer<typeof ContactSchema>
-  firstFetchDate: string
-  firstName: string | null
-  isVisible: boolean
-  lastFetchDate: string
-  lastName: string | null
-  middleName: string | null
-  name: string
-  namePrefix: string | null
-  nameSuffix: string | null
-  object: string
-  partyAttorneyAssociations: z.infer<typeof PartyAttorneyAssociationsSchema>
-  partyClassificationType: 'INDIVIDUAL' | 'COMPANY' | 'OTHER'
-  partyId: string
-  partyRole: z.infer<typeof PartyRoleSchema>
-  possibleNormPartyArray: z.infer<typeof PossibleNormPartySchema>[]
-  sourcePartyRole: string
-} | null
-
-const AccessTokenIdResponseSchema = z
-  .object({
-    issueAddress: z
-      .string()
-      .min(7)
-      .max(15)
-      .openapi({ description: 'Ip address.', example: '192.0.2.1' }),
-    issuedDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
-      .openapi({
-        description: 'Date when access token was created.',
-        example: '2022-11-10T10:17:56+00:00',
-      }),
-    object: z
-      .string()
-      .length(21)
-      .default('AccessTokenIdResponse')
-      .openapi({ description: 'Name of the object.', example: 'AccessTokenIdResponse' }),
-    tokenId: z
-      .string()
-      .length(18)
-      .openapi({ description: 'Unique Id for the access token.', example: 'TKID384a057WFC3Dp3' }),
-  })
-  .openapi({
-    required: ['object', 'tokenId', 'issuedDate', 'issueAddress'],
-    'x-unicourt-container': false,
-  })
-  .openapi('AccessTokenIdResponse')
-
-const AccessTokenIdListResponseSchema = z
-  .object({
-    AccessTokenIdArray: z
-      .array(AccessTokenIdResponseSchema)
-      .min(0)
-      .max(10)
-      .openapi({ description: 'Array of access tokens Id.' }),
-    object: z
-      .string()
-      .length(25)
-      .default('AccessTokenIdListResponse')
-      .openapi({ description: 'Name of the object.', example: 'AccessTokenIdListResponse' }),
-  })
-  .openapi({ required: ['object', 'AccessTokenIdArray'], 'x-unicourt-container': false })
-  .openapi('AccessTokenIdListResponse')
-
-const AccessTokenRequestSchema = z
-  .object({
-    clientId: z
-      .string()
-      .length(32)
-      .openapi({
-        description: 'Your Client ID obtainable by logging into your UniCourt account.',
-        example: 'G3cfixgetVzfaoszGOBp5LPGtih1nMJ9',
-      }),
-    clientSecret: z
-      .string()
-      .length(64)
-      .openapi({
-        description: 'Your Client Secret ID obtainable by logging into your UniCourt account.',
-        example: 'u6PTti57IjPlrwU5MzOwLBD2MCwx-IEbo8sTStTivh1I-EqQ8Jcm27Gfo2GhpHCw',
-      }),
-  })
-  .openapi({ required: ['clientId', 'clientSecret'], 'x-unicourt-container': false })
-  .openapi('AccessTokenRequest')
-
-const AccessTokenResponseSchema = z
-  .object({
-    accessToken: z
-      .string()
-      .min(700)
-      .max(2000)
-      .openapi({
-        description: 'Access token for API.',
-        example:
-          'eyJhbG44ciOiJS111UzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I11111ktfX2NsOVhLUDJYMmtBVGRBSVkzQiJ9.eyJodHRwczovL3VuaWNvdXJ0LmNvbS9jbGllbnRfaWQiOiIxbWVOcHRBeXJUUFN2UjBSbVVxdEh2QVNoeDVqVmI2RCIsImh0dHBzOi8vdW5pY291cnQuY29tL2NsaWVudF9uYW1lIjoiYXBvbGxvIiwiaHR0cHM6Ly91bmljb3VydC5jb20vYWNjb3VudF9pZCI6IkFQTzAwMDBBMSIsImlzcyI6Imh0dHBzOi8vdGVzdHVjLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiIxbWVOcHRBeXJUUFN2UjBSbVVxdEh2QVNoeDVqVmI2REBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly85dGxsbG1oZnhkLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjIwNzA4NjAzLCJleHAiOjE2MjA3OTUwMDMsImF6cCI6IjFtZU5wdEF5clRQU3ZSMFJtVXF0SHZBU2h4NWpWYjZEIiwic2NvcGUiOiJleHRyYSIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.TjhNCPvt5bRDW5Kp9OW9-epch9ggoYiK-85f6l7illLtKMeEoD3myllyIXo_ltZv7TDbmSg9tmHZ2V4mPiGvn-Fc9MwGXyUN7LjFF0tpnwysqgTVq_pvnCNe-xLOR_clmkl881QlUfXwB0R0PjhU00_c63ImSISC1Tv4GfawYLQwBy1Q22-rqB4ZsrSszRMo0rTOCu4d7KVc9MgcjA_idz45E9BxR2UbZ6lAbAXp-C1AqR8Dm40BHeUy5oJFFpzoP46sqTcdQHzwuMX5AhK6uGugVqlHpUbwRy9SDCxCldArz5j0Ab_aaZ7zIbuqgE-XueSlug_n2MenElUAeBKe-g',
-      }),
-    object: z
-      .string()
-      .length(19)
-      .default('AccessTokenResponse')
-      .openapi({ description: 'Name of the object.', example: 'AccessTokenResponse' }),
-    tokenId: z
-      .string()
-      .length(18)
-      .openapi({ description: 'Unique Id for the access token.', example: 'TKID384a057WFC3Dp3' }),
-    tokenType: z.string().length(6).openapi({ description: 'Token type.', example: 'Bearer' }),
-  })
-  .openapi({
-    required: ['object', 'accessToken', 'tokenId', 'tokenType'],
-    'x-unicourt-container': false,
-  })
-  .openapi('AccessTokenResponse')
-
-const AdditionalLevelsSchema = z
-  .object({
-    level1: z.string().min(1).max(255).nullable(),
-    level2: z.string().min(1).max(255).nullable(),
-    level3: z.string().min(1).max(255).nullable(),
-    level4: z.string().min(1).max(255).nullable(),
-    object: z
-      .string()
-      .length(16)
-      .default('AdditionalLevels')
-      .openapi({ example: 'AdditionalLevels' }),
-  })
-  .nullable()
-  .openapi({
-    example: null,
-    required: ['object', 'level1', 'level2', 'level3', 'level4'],
-    title: 'AdditionalLevels',
-    'x-unicourt-container': false,
-  })
-  .openapi('AdditionalLevels')
-
-const AreaOfLawSchema = z
-  .object({
-    areaOfLawId: z.string().length(18).openapi({ example: 'AOFLGAd9Ah5qkTRNw9' }),
-    caseClass: z.string().min(1).max(255).openapi({ example: 'Civil' }),
-    caseClassId: z.string().length(18).openapi({ example: 'CSCLNjbKTN7Yfo2wdb' }),
-    createdDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
-      .openapi({
-        description:
-          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
-        example: '2020-05-07T10:17:56+00:00',
-      }),
-    name: z.string().min(1).max(255).openapi({ example: 'Tax and Revenue' }),
-    object: z.string().length(9).default('AreaOfLaw').openapi({ example: 'AreaOfLaw' }),
-  })
-  .openapi({
-    required: ['object', 'areaOfLawId', 'caseClassId', 'caseClass', 'name', 'createdDate'],
-    title: 'AreaOfLaw',
-    'x-unicourt-container': false,
-  })
-  .openapi('AreaOfLaw')
-
-const AreaOfLawResponseSchema = z
-  .object({
-    areaOfLawArray: z.array(AreaOfLawSchema),
-    nextPageAPI: z
-      .url()
-      .min(1)
-      .max(2140)
-      .nullable()
-      .openapi({ description: 'Link to next page.', example: null }),
-    object: z
-      .string()
-      .length(17)
-      .default('AreaOfLawResponse')
-      .openapi({ example: 'AreaOfLawResponse' }),
-    pageNumber: z
-      .int()
-      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
-    previousPageAPI: z
-      .url()
-      .min(1)
-      .max(2139)
-      .nullable()
-      .openapi({ description: 'Link to previous page.', example: null }),
-    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
-    totalPages: z
-      .int()
-      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'areaOfLawArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'pageNumber',
-      'totalPages',
-      'totalCount',
+      'partyAttorneyAssociations',
+      'possibleNormAttorneyArray',
+      'possibleNormLawFirmArray',
+      'partyRoleGroupIdArray',
+      'partyRoleIdArray',
     ],
     'x-unicourt-container': false,
   })
-  .openapi('AreaOfLawResponse')
-
-const CaseTimelineSchema = z
-  .object({
-    firstCaseFiledDate: z.iso
-      .datetime({ offset: true })
-      .max(25)
-      .openapi({
-        description:
-          'The first date when the two entities have appeared together in the case. (These dates are determined from case filed dates)',
-      }),
-    lastCaseFiledDate: z.iso
-      .datetime({ offset: true })
-      .max(25)
-      .openapi({
-        description:
-          'The last date when the two entities have appeared together in the case. (These dates are determined from case filed dates)',
-      }),
-    object: z.string().max(12).default('CaseTimeline'),
-  })
-  .openapi({
-    required: ['object', 'firstCaseFiledDate', 'lastCaseFiledDate'],
-    title: 'CaseTimeline',
-    'x-unicourt-container': true,
-  })
-  .openapi('CaseTimeline')
-
-const AssociatedNormAttorneySchema = z
-  .object({
-    caseCount: z.int(),
-    caseSearchAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to related cases for this association.',
-        'x-logical-reference': 'CaseSearchAPI',
-      }),
-    caseTimeline: CaseTimelineSchema,
-    firstName: z.string().max(500),
-    lastName: z.string().max(500),
-    middleName: z.string().max(500).nullable(),
-    name: z.string().max(500),
-    normAttorneyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to details for the Attorney.',
-        'x-logical-reference': 'NormAttorneyAPI',
-      }),
-    normAttorneyId: z.string().min(17).max(18),
-    object: z.string().max(22).default('AssociatedNormAttorney'),
-    stateBarDataArray: z.array(BarRecordPreviewSchema),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normAttorneyAPI',
-      'normAttorneyId',
-      'caseTimeline',
-      'name',
-      'firstName',
-      'middleName',
-      'lastName',
-      'caseSearchAPI',
-      'caseCount',
-      'stateBarDataArray',
-    ],
-    title: 'AssociatedNormAttorney',
-    'x-unicourt-container': false,
-  })
-  .openapi('AssociatedNormAttorney')
-
-const AssociatedNormAttorneyResponseSchema = z
-  .object({
-    associatedNormAttorneyArray: z.array(AssociatedNormAttorneySchema),
-    nextPageAPI: z
-      .url()
-      .max(2173)
-      .nullable()
-      .openapi({ description: 'Next page of results if applicable.' }),
-    previousPageAPI: z
-      .url()
-      .max(2172)
-      .nullable()
-      .openapi({ description: 'Previous page of results if applicable.' }),
-    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
-    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
-  })
-  .openapi({
-    required: [
-      'associatedNormAttorneyArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'totalPages',
-      'totalCount',
-    ],
-    title: 'AssociatedNormAttorneyResponse',
-    'x-unicourt-container': true,
-  })
-  .openapi('AssociatedNormAttorneyResponse')
-
-const AssociatedNormJudgeSchema = z
-  .object({
-    caseCount: z.int(),
-    caseSearchAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to related cases for this association.',
-        'x-logical-reference': 'CaseSearchAPI',
-      }),
-    caseTimeline: CaseTimelineSchema,
-    firstName: z.string().max(500),
-    lastName: z.string().max(500),
-    middleName: z.string().max(500).nullable(),
-    name: z.string().max(500),
-    normJudgeAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details from the Judge.',
-        'x-logical-reference': 'NormJudgeAPI',
-      }),
-    normJudgeId: z.string().min(17).max(18),
-    object: z.string().max(19).default('AssociatedNormJudge'),
-    version: z.string().max(7),
-  })
-  .openapi({
-    description: 'Associated Judge',
-    required: [
-      'object',
-      'normJudgeId',
-      'normJudgeAPI',
-      'caseTimeline',
-      'name',
-      'firstName',
-      'middleName',
-      'lastName',
-      'caseSearchAPI',
-      'caseCount',
-      'version',
-    ],
-    title: 'AssociatedNormJudge',
-    'x-unicourt-container': false,
-  })
-  .openapi('AssociatedNormJudge')
-
-const AssociatedNormJudgeResponseSchema = z
-  .object({
-    associatedNormJudgeArray: z.array(AssociatedNormJudgeSchema),
-    nextPageAPI: z.url().max(2173).nullable(),
-    previousPageAPI: z
-      .url()
-      .max(2172)
-      .nullable()
-      .openapi({ description: 'Previous page of results if applicable.' }),
-    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
-    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
-  })
-  .openapi({
-    required: [
-      'associatedNormJudgeArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'totalPages',
-      'totalCount',
-    ],
-    title: 'AssociatedNormJudgeResponse',
-    'x-unicourt-container': true,
-  })
-  .openapi('AssociatedNormJudgeResponse')
-
-const SOSDataPreviewSchema = z
-  .object({
-    object: z.string().max(14).default('SOSDataPreview'),
-    sosNumber: z.string().max(250),
-    stateCode: z.string().max(2),
-  })
-  .openapi({
-    required: ['object', 'sosNumber', 'stateCode'],
-    title: 'SOSDataPreview',
-    'x-unicourt-container': true,
-  })
-  .openapi('SOSDataPreview')
-
-const AssociatedNormLawFirmSchema = z
-  .object({
-    caseCount: z.int(),
-    caseSearchAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to related cases for this association.',
-        'x-logical-reference': 'CaseSearchAPI',
-      }),
-    caseTimeline: CaseTimelineSchema,
-    name: z.string().max(500),
-    normLawFirmAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details for this Law Firm.',
-        'x-logical-reference': 'NormLawFirmAPI',
-      }),
-    normLawFirmId: z.string().min(17).max(18),
-    object: z.string().max(21).default('AssociatedNormLawFirm'),
-    sosDataArray: z.array(SOSDataPreviewSchema),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normLawFirmId',
-      'normLawFirmAPI',
-      'caseTimeline',
-      'name',
-      'caseSearchAPI',
-      'caseCount',
-      'sosDataArray',
-    ],
-    title: 'AssociatedNormLawFirm',
-    'x-unicourt-container': false,
-  })
-  .openapi('AssociatedNormLawFirm')
-
-const AssociatedNormLawFirmResponseSchema = z
-  .object({
-    associatedNormLawFirmArray: z.array(AssociatedNormLawFirmSchema),
-    nextPageAPI: z
-      .url()
-      .max(2173)
-      .nullable()
-      .openapi({ description: 'Link to next page of results.' }),
-    previousPageAPI: z
-      .url()
-      .max(2172)
-      .nullable()
-      .openapi({ description: 'Link to previous page of results.' }),
-    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
-    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
-  })
-  .openapi({
-    required: [
-      'associatedNormLawFirmArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'totalPages',
-      'totalCount',
-    ],
-    title: 'AssociatedNormLawFirmResponse',
-    'x-unicourt-container': true,
-  })
-  .openapi('AssociatedNormLawFirmResponse')
-
-const AssociatedNormPartySchema = z
-  .object({
-    caseCount: z.int(),
-    caseSearchAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to related cases for this association.',
-        'x-logical-reference': 'CaseSearchAPI',
-      }),
-    caseTimeline: CaseTimelineSchema,
-    name: z.string().max(500),
-    normPartyAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details for the Party.',
-        'x-logical-reference': 'NormPartyAPI',
-      }),
-    normPartyId: z.string().min(17).max(18),
-    object: z.string().max(19).default('AssociatedNormParty'),
-    sosDataArray: z.array(SOSDataPreviewSchema),
-  })
-  .openapi({
-    required: [
-      'object',
-      'normPartyId',
-      'normPartyAPI',
-      'caseTimeline',
-      'name',
-      'caseSearchAPI',
-      'caseCount',
-      'sosDataArray',
-    ],
-    title: 'AssociatedNormParty',
-    'x-unicourt-container': false,
-  })
-  .openapi('AssociatedNormParty')
-
-const AssociatedNormPartyResponseSchema = z
-  .object({
-    associatedNormPartyArray: z.array(AssociatedNormPartySchema),
-    nextPageAPI: z
-      .url()
-      .max(2173)
-      .nullable()
-      .openapi({ description: 'Link to next page of results.' }),
-    previousPageAPI: z
-      .url()
-      .max(2172)
-      .nullable()
-      .openapi({ description: 'Link to previous page of results.' }),
-    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
-    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
-  })
-  .openapi({
-    required: [
-      'associatedNormPartyArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'totalPages',
-      'totalCount',
-    ],
-    title: 'AssociatedNormPartyResponse',
-    'x-unicourt-container': true,
-  })
-  .openapi('AssociatedNormPartyResponse')
-
-const AttorneySchema: z.ZodType<AttorneyType> = z
-  .lazy(() =>
-    z
-      .object({
-        attorneyId: z
-          .string()
-          .length(18)
-          .openapi({
-            description:
-              'ID for the attorney in this case. This ID is unique within a case and NOT across cases. If the same attorney were to appear in another case this ID would be different.',
-            example: 'ATTYgu01be2e4de654',
-          }),
-        attorneyLawFirmArray: z.array(AttorneyLawFirmSchema).max(25),
-        attorneyType: AttorneyTypeSchema,
-        barNumber: z
-          .string()
-          .max(250)
-          .nullable()
-          .openapi({ description: 'The bar enrollment number of an attorney.' }),
-        contact: ContactSchema,
-        firstFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the attorney first fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        firstName: z
-          .string()
-          .max(250)
-          .nullable()
-          .openapi({
-            description: 'First name of the attorney. This is normalized by UniCourt.',
-            example: 'POMERANTZ',
-          }),
-        isVisible: z
-          .boolean()
-          .openapi({
-            description:
-              'Signifies if the attorney as this attorney type is currently isVisible or not for the case.',
-            example: true,
-          }),
-        lastFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the attorney last fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        lastName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Last name of the attorney. This is normalized by UniCourt.',
-            example: 'SLONE',
-          }),
-        middleName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Middle name of the attorney. This is normalized by UniCourt.',
-            example: 'ANDREW',
-          }),
-        name: z
-          .string()
-          .min(1)
-          .max(250)
-          .openapi({
-            description: 'Name of the attorney as provided by Court.',
-            example: 'POMERANTZ ANDREW SLONE',
-          }),
-        namePrefix: z.string().max(10).nullable(),
-        nameSuffix: z.string().max(10).nullable(),
-        object: z
-          .string()
-          .length(8)
-          .default('Attorney')
-          .openapi({ description: 'Name of the object' }),
-        partyAttorneyAssociations: PartyAttorneyAssociationsSchema,
-        partyRoleGroupIdArray: z
-          .array(z.string().length(18))
-          .openapi({ description: 'Party Role Group Id for a Attorney.' }),
-        partyRoleIdArray: z
-          .array(z.string().length(18))
-          .openapi({ description: 'Party Role Id for a Attorney.' }),
-        possibleNormAttorneyArray: z.array(PossibleNormAttorneySchema),
-        possibleNormLawFirmArray: z
-          .array(PossibleNormLawFirmSchema)
-          .openapi({ description: 'Possible Norm Lawfirm array for a Attorney.' }),
-        sourceAttorneyType: z
-          .string()
-          .max(250)
-          .openapi({ description: 'Attorney Type as provided by Court.', example: 'atty' }),
-      })
-      .nullable()
-      .openapi({
-        required: [
-          'object',
-          'attorneyId',
-          'name',
-          'namePrefix',
-          'firstName',
-          'middleName',
-          'lastName',
-          'nameSuffix',
-          'contact',
-          'attorneyLawFirmArray',
-          'barNumber',
-          'attorneyType',
-          'sourceAttorneyType',
-          'isVisible',
-          'firstFetchDate',
-          'lastFetchDate',
-          'partyAttorneyAssociations',
-          'possibleNormAttorneyArray',
-          'possibleNormLawFirmArray',
-          'partyRoleGroupIdArray',
-          'partyRoleIdArray',
-        ],
-        'x-unicourt-container': false,
-      }),
-  )
   .openapi('Attorney')
-
-const AttorneyRepresentationTypeResponseSchema = z
-  .object({
-    attorneyRepresentationTypeArray: z.array(AttorneyRepresentationTypeSchema),
-    nextPageAPI: z
-      .url()
-      .min(1)
-      .max(2159)
-      .nullable()
-      .openapi({ description: 'Link to next page.', example: null }),
-    object: z
-      .string()
-      .length(34)
-      .default('AttorneyRepresentationTypeResponse')
-      .openapi({ example: 'AttorneyRepresentationTypeResponse' }),
-    pageNumber: z
-      .int()
-      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
-    previousPageAPI: z
-      .url()
-      .min(1)
-      .max(2158)
-      .nullable()
-      .openapi({ description: 'Link to previous page.', example: null }),
-    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
-    totalPages: z
-      .int()
-      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'attorneyRepresentationTypeArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'pageNumber',
-      'totalPages',
-      'totalCount',
-    ],
-    'x-unicourt-container': false,
-  })
-  .openapi('AttorneyRepresentationTypeResponse')
-
-const AttorneyTypeResponseSchema = z
-  .object({
-    attorneyTypeArray: z.array(AttorneyTypeSchema),
-    nextPageAPI: z
-      .url()
-      .min(1)
-      .max(2145)
-      .nullable()
-      .openapi({ description: 'Link to next page.', example: null }),
-    object: z
-      .string()
-      .length(20)
-      .default('AttorneyTypeResponse')
-      .openapi({ example: 'AttorneyTypeResponse' }),
-    pageNumber: z
-      .int()
-      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
-    previousPageAPI: z
-      .url()
-      .min(1)
-      .max(2144)
-      .nullable()
-      .openapi({ description: 'Link to previous page.', example: null }),
-    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
-    totalPages: z
-      .int()
-      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'attorneyTypeArray',
-      'nextPageAPI',
-      'previousPageAPI',
-      'pageNumber',
-      'totalPages',
-      'totalCount',
-    ],
-    'x-unicourt-container': false,
-  })
-  .openapi('AttorneyTypeResponse')
 
 const AttorneysSchema = z
   .object({
@@ -2487,170 +723,6 @@ const AttorneysSchema = z
     'x-unicourt-container': false,
   })
   .openapi('Attorneys')
-
-const BillingCycleUsageResponseSchema = z
-  .object({
-    apiCallsBillable: z
-      .object({
-        count: z
-          .int()
-          .openapi({ description: 'Total API calls billed  for the billing cycle', example: 100 }),
-        lastUpdated: z
-          .string()
-          .length(25)
-          .nullable()
-          .openapi({
-            description: 'Last Updated date and time for the field apiCallsBillable',
-            example: '2022-11-10T10:17:56+00:00',
-          }),
-      })
-      .openapi({
-        description: 'Total number of API calls billed for the billing cycle.',
-        required: ['count', 'lastUpdated'],
-      }),
-    apiCallsCredited: z
-      .object({
-        count: z
-          .int()
-          .openapi({
-            description: 'Total API calls credited back for the billing cycle',
-            example: 100,
-          }),
-        lastUpdated: z
-          .string()
-          .length(25)
-          .nullable()
-          .openapi({
-            description: 'Last Updated date and time for the field apiCallsCredited',
-            example: '2022-11-10T10:17:56+00:00',
-          }),
-      })
-      .openapi({
-        description:
-          'Total number of callbackFailures including caseUpdate, caseDocumentOrder and caseExport for the billing cycle.',
-        required: ['count', 'lastUpdated'],
-      }),
-    apiCallsMade: z
-      .object({
-        count: z
-          .int()
-          .openapi({ description: 'Total API calls made for the billing cycle', example: 100 }),
-        lastUpdated: z
-          .string()
-          .length(25)
-          .nullable()
-          .openapi({
-            description: 'Last Updated date and time for the field apiCallsMade',
-            example: '2022-11-10T10:17:56+00:00',
-          }),
-      })
-      .openapi({
-        description: 'Total API calls made for the billing cycle.',
-        required: ['count', 'lastUpdated'],
-      }),
-    apiUsage: z.object({}).openapi({ description: 'StartDate and endDate of the billing cycle.' }),
-    billingCycle: z
-      .object({
-        endDate: z.iso
-          .date()
-          .length(25)
-          .openapi({
-            description: 'End date of the billing cycle.',
-            example: '2022-08-22T00:00:00+00:00',
-          }),
-        startDate: z.iso
-          .date()
-          .length(25)
-          .openapi({
-            description: 'Start date of the billing cycle.',
-            example: '2022-08-22T00:00:00+00:00',
-          }),
-      })
-      .openapi({
-        description: 'StartDate and endDate of the billing cycle.',
-        required: ['startDate', 'endDate'],
-      }),
-    days: z.object({}).openapi({ description: 'Billing cycle days.' }),
-    object: z
-      .string()
-      .length(25)
-      .default('BillingCycleUsageResponse')
-      .openapi({ description: 'Name of the object.', example: 'BillingCycleUsageResponse' }),
-    totalCasesTracked: z
-      .int()
-      .openapi({ description: 'Total number of successful case tracks.', example: 200 }),
-  })
-  .openapi({
-    required: [
-      'object',
-      'billingCycle',
-      'days',
-      'apiUsage',
-      'apiCallsMade',
-      'apiCallsCredited',
-      'apiCallsBillable',
-      'totalCasesTracked',
-    ],
-    'x-unicourt-container': false,
-  })
-  .openapi('BillingCycleUsageResponse')
-
-const BillingCyclesResponseSchema = z
-  .object({
-    billingCycleArray: z
-      .array(z.iso.date().length(22).nullable().openapi({ example: '2023-01-10to2023-02-09' }))
-      .min(0)
-      .max(12)
-      .nullable()
-      .openapi({ description: 'Array of previous 12 Billing Cycles.' }),
-    object: z
-      .string()
-      .length(21)
-      .default('BillingCyclesResponse')
-      .openapi({ description: 'Name of the object.', example: 'BillingCyclesResponse' }),
-  })
-  .openapi({ required: ['object', 'billingCycleArray'], 'x-unicourt-container': false })
-  .openapi('BillingCyclesResponse')
-
-const CallbackListResponseSchema = z
-  .object({
-    caseDocumentOrderCallbacks: z
-      .object({
-        count: z.int().openapi({ example: 7 }),
-        link: z
-          .url()
-          .min(1)
-          .max(1024)
-          .openapi({
-            example:
-              'https://enterpriseapi.unicourt.com/caseDocumentOrder/callbacks?date=2022-03-08T10:17:56+00:00',
-          }),
-      })
-      .openapi({ required: ['count', 'link'] }),
-    caseExportCallbacks: z
-      .object({
-        count: z.int().openapi({ example: 10 }),
-        link: z
-          .url()
-          .min(1)
-          .max(1024)
-          .openapi({
-            example:
-              'https://enterpriseapi.unicourt.com/caseExport/callbacks?date=2022-03-08T10:17:56+00:00',
-          }),
-      })
-      .openapi({ required: ['count', 'link'] }),
-    object: z
-      .string()
-      .length(20)
-      .default('CallbackListResponse')
-      .openapi({ description: 'Name of the object.', example: 'CallbackListResponse' }),
-  })
-  .openapi({
-    required: ['object', 'caseDocumentOrderCallbacks', 'caseExportCallbacks'],
-    'x-unicourt-container': false,
-  })
-  .openapi('CallbackListResponse')
 
 const PreviewDocumentSchema = z
   .object({
@@ -3235,6 +1307,27 @@ const CaseChargeSchema = z
   })
   .openapi('CaseCharge')
 
+const AdditionalLevelsSchema = z
+  .object({
+    level1: z.string().min(1).max(255).nullable(),
+    level2: z.string().min(1).max(255).nullable(),
+    level3: z.string().min(1).max(255).nullable(),
+    level4: z.string().min(1).max(255).nullable(),
+    object: z
+      .string()
+      .length(16)
+      .default('AdditionalLevels')
+      .openapi({ example: 'AdditionalLevels' }),
+  })
+  .nullable()
+  .openapi({
+    example: null,
+    required: ['object', 'level1', 'level2', 'level3', 'level4'],
+    title: 'AdditionalLevels',
+    'x-unicourt-container': false,
+  })
+  .openapi('AdditionalLevels')
+
 const CourtSchema = z
   .object({
     additionalLevels: AdditionalLevelsSchema,
@@ -3540,7 +1633,7 @@ const RawOrderedDataChildSchema = z
       .array(
         z
           .object({
-            childArray: z.array(z.object({})),
+            childArray: z.array(z.looseObject({})),
             lbl: z
               .string()
               .max(500)
@@ -3604,7 +1697,12 @@ const RawOrderedDataSchema = z
   .openapi({ required: ['ord', 'lbl', 'val', 'childArray'], 'x-unicourt-container': false })
   .openapi('RawOrderedData')
 
-const SourceStructuredDataSchema = z
+type SourceStructuredDataType = {
+  extractedFields: z.infer<typeof ExtractedFieldsSchema>
+  rawOrderedDataArray: z.infer<typeof RawOrderedDataSchema>[]
+} | null
+
+const SourceStructuredDataSchema: z.ZodType<SourceStructuredDataType> = z
   .object({
     extractedFields: ExtractedFieldsSchema,
     rawOrderedDataArray: z.array(RawOrderedDataSchema),
@@ -3613,7 +1711,37 @@ const SourceStructuredDataSchema = z
   .openapi({ required: ['rawOrderedDataArray', 'extractedFields'], 'x-unicourt-container': false })
   .openapi('SourceStructuredData')
 
-const DocketEntrySchema = z
+type DocketEntryType = {
+  boundary: 'first' | 'last' | 'single_docket_entry' | null
+  docketBadge:
+    | 'DOCKET'
+    | 'CHARGE'
+    | 'HEARING'
+    | 'JUDGEMENT'
+    | 'FINANCIAL'
+    | 'DISPOSITION'
+    | 'SENTENCE'
+    | 'BOND'
+    | 'BAIL'
+    | 'CAUSE_OF_ACTION'
+    | 'ARREST'
+    | 'WARRANT'
+    | 'SUMMON'
+    | 'TICKLER'
+    | 'OPINION'
+  docketEntryDate: string
+  docketEntryPrimaryDocuments: z.infer<typeof DocketEntryPrimaryDocumentsSchema>
+  docketEntrySecondaryDocuments: z.infer<typeof DocketEntrySecondaryDocumentsSchema>
+  docketNumber: number | null
+  lastFetchDate: string
+  object: string
+  referencedDocketNumberArray: z.infer<typeof ReferencedDocketNumberSchema>[]
+  sortOrder: number
+  text: string
+  textStructured: z.infer<typeof SourceStructuredDataSchema>
+} | null
+
+const DocketEntrySchema: z.ZodType<DocketEntryType> = z
   .object({
     boundary: z
       .union([
@@ -3716,7 +1844,16 @@ const DocketEntrySchema = z
   })
   .openapi('DocketEntry')
 
-const DocketEntriesSchema = z
+type DocketEntriesType = {
+  docketEntryArray: z.infer<typeof DocketEntrySchema>[]
+  nextPageAPI: string | null
+  object: string
+  pageNumber: number
+  totalCount: number
+  totalPages: number
+} | null
+
+const DocketEntriesSchema: z.ZodType<DocketEntriesType> = z
   .object({
     docketEntryArray: z.array(DocketEntrySchema).max(100),
     nextPageAPI: z
@@ -3762,7 +1899,17 @@ const DocketEntriesSchema = z
   })
   .openapi('DocketEntries')
 
-const HearingSchema = z
+type HearingType = {
+  firstFetchDate: string
+  hearingDate: string
+  hearingDescription: string | null
+  hearingStructured: z.infer<typeof SourceStructuredDataSchema>
+  lastFetchDate: string
+  location: string | null
+  object: string
+} | null
+
+const HearingSchema: z.ZodType<HearingType> = z
   .object({
     firstFetchDate: z
       .string()
@@ -3817,7 +1964,16 @@ const HearingSchema = z
   })
   .openapi('Hearing')
 
-const HearingsSchema = z
+type HearingsType = {
+  hearingArray: z.infer<typeof HearingSchema>[]
+  nextPageAPI: string | null
+  object: string
+  pageNumber: number
+  totalCount: number
+  totalPages: number
+} | null
+
+const HearingsSchema: z.ZodType<HearingsType> = z
   .object({
     hearingArray: z.array(HearingSchema),
     nextPageAPI: z
@@ -3852,105 +2008,200 @@ const HearingsSchema = z
   })
   .openapi('Hearings')
 
-const JudgeSchema: z.ZodType<JudgeType> = z
-  .lazy(() =>
-    z
+const JudgeTypeSchema = z
+  .object({
+    createdDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description:
+          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
+        example: '2020-05-07T10:17:56+00:00',
+      }),
+    judgeTypeId: z.string().length(18).openapi({ example: 'JGTPkwrfzkDJUvxpN9' }),
+    name: z.string().min(1).max(255).openapi({ example: 'Judge' }),
+    object: z.string().length(9).default('JudgeType').openapi({ example: 'JudgeType' }),
+  })
+  .nullable()
+  .openapi({
+    required: ['object', 'judgeTypeId', 'name', 'createdDate'],
+    title: 'JudgeType',
+    'x-unicourt-container': false,
+  })
+  .openapi('JudgeType')
+
+const PossibleNormJudgeSchema = z
+  .object({
+    associatedNormAttorneysAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormAttorneys?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormAttorneysForNormJudgeAPI',
+      }),
+    associatedNormLawFirmsAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormLawFirms?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormLawFirmsForNormJudgeAPI',
+      }),
+    associatedNormPartiesAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normJudge/NATY2LJwigb5HFRir/associatedNormParties?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormPartiesForNormJudgeAPI',
+      }),
+    bestMatch: z.boolean().default(false),
+    caseCountAnalyticsByNormJudgeAPI: z
+      .url()
+      .max(250)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByNormJudgeAPI' }),
+    confidenceScore: z.float32().nullable(),
+    normJudgeAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details For the Judge.',
+        example: 'https://enterpriseapi.unicourt.com/normJudge/NJUD3Ygn4ooAvNxAmd',
+        'x-logical-reference': 'NormJudgeAPI',
+      }),
+    normJudgeId: z.string().length(18),
+    normJudgeName: z.string().max(500),
+    object: z
+      .string()
+      .length(17)
+      .default('PossibleNormJudge')
+      .openapi({ description: 'Name of the object' }),
+    scoreConstituents: z
       .object({
-        contact: ContactSchema,
-        firstFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the judge first fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        firstName: z
-          .string()
-          .max(250)
-          .nullable()
-          .openapi({
-            description: 'First name of the judge. This is normalized by UniCourt.',
-            example: 'Donald',
-          }),
-        isVisible: z
-          .boolean()
-          .openapi({
-            description:
-              'Signifies if the judge as this judge type is currently isVisible or not for the case.',
-            example: true,
-          }),
-        judgeId: z
-          .string()
-          .length(18)
-          .openapi({
-            description:
-              'ID for the judge in this case. This ID is unique within a case and NOT across cases. If the same Judge were to appear in another case this ID would be different.',
-            example: 'JUDGgue04d2894de7a',
-          }),
-        judgeType: JudgeTypeSchema,
-        lastFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the judge last fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        lastName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Last name of the judge. This is normalized by UniCourt.',
-            example: 'Grincewicz',
-          }),
-        middleName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Middle name of the judge. This is normalized by UniCourt.',
-            example: 'E',
-          }),
-        name: z
-          .string()
-          .min(1)
-          .max(250)
-          .openapi({
-            description: 'Name of the judge as provided by Court.',
-            example: 'Donald E Grincewicz',
-          }),
-        namePrefix: z.string().max(10).nullable(),
-        nameSuffix: z.string().max(10).nullable(),
-        object: z
-          .string()
-          .length(5)
-          .default('Judge')
-          .openapi({ description: 'Name of the object' }),
-        possibleNormJudgeArray: z.array(PossibleNormJudgeSchema),
-        sourceJudgeType: z.string().max(50).openapi({ example: 'judge' }),
+        address: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
+        email: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
+        nameSimilarityScore: z.float32(),
+        otherPotentialNormJudges: z.int(),
+        phone: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
       })
       .nullable()
       .openapi({
-        required: [
-          'object',
-          'judgeId',
-          'name',
-          'namePrefix',
-          'firstName',
-          'middleName',
-          'lastName',
-          'nameSuffix',
-          'contact',
-          'judgeType',
-          'sourceJudgeType',
-          'isVisible',
-          'firstFetchDate',
-          'lastFetchDate',
-          'possibleNormJudgeArray',
-        ],
-        'x-unicourt-container': false,
+        required: ['nameSimilarityScore', 'otherPotentialNormJudges', 'address', 'email', 'phone'],
       }),
-  )
+  })
+  .nullable()
+  .openapi({
+    required: [
+      'object',
+      'normJudgeId',
+      'normJudgeName',
+      'bestMatch',
+      'confidenceScore',
+      'scoreConstituents',
+      'normJudgeAPI',
+      'associatedNormAttorneysAPI',
+      'associatedNormLawFirmsAPI',
+      'associatedNormPartiesAPI',
+      'caseCountAnalyticsByNormJudgeAPI',
+    ],
+    title: 'PossibleNormJudge',
+    'x-unicourt-container': false,
+  })
+  .openapi('PossibleNormJudge')
+
+const JudgeSchema = z
+  .object({
+    contact: ContactSchema,
+    firstFetchDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'When was the judge first fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    firstName: z
+      .string()
+      .max(250)
+      .nullable()
+      .openapi({
+        description: 'First name of the judge. This is normalized by UniCourt.',
+        example: 'Donald',
+      }),
+    isVisible: z
+      .boolean()
+      .openapi({
+        description:
+          'Signifies if the judge as this judge type is currently isVisible or not for the case.',
+        example: true,
+      }),
+    judgeId: z
+      .string()
+      .length(18)
+      .openapi({
+        description:
+          'ID for the judge in this case. This ID is unique within a case and NOT across cases. If the same Judge were to appear in another case this ID would be different.',
+        example: 'JUDGgue04d2894de7a',
+      }),
+    judgeType: JudgeTypeSchema,
+    lastFetchDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'When was the judge last fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    lastName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Last name of the judge. This is normalized by UniCourt.',
+        example: 'Grincewicz',
+      }),
+    middleName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Middle name of the judge. This is normalized by UniCourt.',
+        example: 'E',
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(250)
+      .openapi({
+        description: 'Name of the judge as provided by Court.',
+        example: 'Donald E Grincewicz',
+      }),
+    namePrefix: z.string().max(10).nullable(),
+    nameSuffix: z.string().max(10).nullable(),
+    object: z.string().length(5).default('Judge').openapi({ description: 'Name of the object' }),
+    possibleNormJudgeArray: z.array(PossibleNormJudgeSchema),
+    sourceJudgeType: z.string().max(50).openapi({ example: 'judge' }),
+  })
+  .nullable()
+  .openapi({
+    required: [
+      'object',
+      'judgeId',
+      'name',
+      'namePrefix',
+      'firstName',
+      'middleName',
+      'lastName',
+      'nameSuffix',
+      'contact',
+      'judgeType',
+      'sourceJudgeType',
+      'isVisible',
+      'firstFetchDate',
+      'lastFetchDate',
+      'possibleNormJudgeArray',
+    ],
+    'x-unicourt-container': false,
+  })
   .openapi('Judge')
 
 const JudgesSchema = z
@@ -3988,119 +2239,267 @@ const JudgesSchema = z
   })
   .openapi('Judges')
 
-const PartySchema: z.ZodType<PartyType> = z
-  .lazy(() =>
-    z
+const AttorneyRepresentationTypeSchema = z
+  .object({
+    attorneyRepresentationTypeId: z.string().length(18).openapi({ example: 'ATRPYgPMGJufoCsR6Q' }),
+    createdDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description:
+          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
+        example: '2020-05-07T10:17:56+00:00',
+      }),
+    name: z.string().min(1).max(255).openapi({ example: 'Self Represented' }),
+    object: z
+      .string()
+      .length(26)
+      .default('AttorneyRepresentationType')
+      .openapi({ example: 'AttorneyRepresentationType' }),
+  })
+  .nullable()
+  .openapi({
+    required: ['object', 'attorneyRepresentationTypeId', 'name', 'createdDate'],
+    title: 'AttorneyRepresentationType',
+    'x-unicourt-container': false,
+  })
+  .openapi('AttorneyRepresentationType')
+
+const PartyRoleSchema = z
+  .object({
+    createdDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description:
+          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
+        example: '2020-05-07T10:17:56+00:00',
+      }),
+    description: z.string().min(1).max(255).nullable().openapi({ example: null }),
+    name: z.string().min(1).max(255).openapi({ example: 'Plaintiff' }),
+    object: z.string().length(9).default('PartyRole').openapi({ example: 'PartyRole' }),
+    partyRoleGroup: z.string().min(1).max(255).openapi({ example: 'Party Offensive' }),
+    partyRoleGroupId: z.string().length(18).openapi({ example: 'PTYGBnjxbx6tKNfVEP' }),
+    partyRoleId: z.string().length(18).openapi({ example: 'PTYRiP8nMgPxBsPc5i' }),
+  })
+  .nullable()
+  .openapi({
+    required: [
+      'object',
+      'partyRoleId',
+      'partyRoleGroupId',
+      'partyRoleGroup',
+      'name',
+      'description',
+      'createdDate',
+    ],
+    title: 'PartyRole',
+    'x-unicourt-container': false,
+  })
+  .openapi('PartyRole')
+
+const PossibleNormPartySchema = z
+  .object({
+    associatedNormAttorneysAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormAttorneys?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormAttorneysForNormPartyAPI',
+      }),
+    associatedNormJudgesAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormJudges?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormJudgesForNormPartyAPI',
+      }),
+    associatedNormLawFirmsAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/associatedNormLawFirms?pageNumber=1',
+        'x-logical-reference': 'AssociatedNormLawFirmsForNormPartyAPI',
+      }),
+    bestMatch: z.boolean().default(false),
+    caseCountAnalyticsByNormPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByNormPartyAPI' }),
+    caseCountAnalyticsByOpposingNormPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        example:
+          'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAm2/caseCountAnalyticsByOpposingNormParty?pageNumber=1',
+        'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI',
+      }),
+    confidenceScore: z.float32(),
+    normPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details For the Party.',
+        example: 'https://enterpriseapi.unicourt.com/normParty/NPTY3Ygn4ooAvNxAmd',
+        'x-logical-reference': 'NormPartyAPI',
+      }),
+    normPartyId: z.string().length(18),
+    normPartyName: z.string().max(500),
+    object: z
+      .string()
+      .length(17)
+      .default('PossibleNormParty')
+      .openapi({ description: 'Name of the object' }),
+    scoreConstituents: z
       .object({
-        attorneyRepresentationType: AttorneyRepresentationTypeSchema,
-        contact: ContactSchema,
-        firstFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the party first fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        firstName: z
-          .string()
-          .max(250)
-          .nullable()
-          .openapi({
-            description: 'First name of the party. This is normalized by UniCourt.',
-            example: 'LA',
-          }),
-        isVisible: z
-          .boolean()
-          .openapi({
-            description:
-              'Signifies if the party as this party type is currently isVisible or not for the case.',
-            example: true,
-          }),
-        lastFetchDate: z.iso
-          .datetime({ offset: true })
-          .length(25)
-          .openapi({
-            description: 'When was the party last fetched from the court site.',
-            example: '2021-10-10T10:10:24+00:00',
-          }),
-        lastName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Last name of the party. This is normalized by UniCourt.',
-            example: 'DE',
-          }),
-        middleName: z
-          .string()
-          .max(100)
-          .nullable()
-          .openapi({
-            description: 'Middle name of the party. This is normalized by UniCourt.',
-            example: 'FUENTE JOE',
-          }),
-        name: z
-          .string()
-          .min(1)
-          .max(250)
-          .openapi({
-            description: 'Name of the party as provided by Court.',
-            example: 'DE LA FUENTE JOE',
-          }),
-        namePrefix: z.string().max(10).nullable(),
-        nameSuffix: z.string().max(10).nullable(),
-        object: z
-          .string()
-          .length(5)
-          .default('Party')
-          .openapi({ description: 'Name of the object' }),
-        partyAttorneyAssociations: PartyAttorneyAssociationsSchema,
-        partyClassificationType: z
-          .enum(['INDIVIDUAL', 'COMPANY', 'OTHER'])
-          .openapi({
-            description:
-              'To know the type of an entity in a case, if it is an Individual, Company or Other. An entity to a case could be the parties, attorneys or judges involved.',
-          }),
-        partyId: z
-          .string()
-          .length(18)
-          .openapi({
-            description:
-              'ID for the party in this case. This ID is unique within a case and NOT across cases. If the same party were to appear in another case this ID would be different.',
-            example: 'PRTYgu537f3901f406',
-          }),
-        partyRole: PartyRoleSchema,
-        possibleNormPartyArray: z.array(PossibleNormPartySchema),
-        sourcePartyRole: z
-          .string()
-          .max(50)
-          .openapi({ description: 'Party Type as provided by Court.', example: 'ptf' }),
+        address: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
+        email: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
+        nameSimilarityScore: z.float32(),
+        otherPotentialNormParties: z.int(),
+        phone: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
+        secretaryOfStateId: z.enum(['Matched', 'Mismatched', 'Not_Provided_By_Data_Source']),
       })
-      .nullable()
       .openapi({
         required: [
-          'object',
-          'partyId',
-          'name',
-          'namePrefix',
-          'firstName',
-          'middleName',
-          'lastName',
-          'nameSuffix',
-          'contact',
-          'partyClassificationType',
-          'partyRole',
-          'sourcePartyRole',
-          'isVisible',
-          'firstFetchDate',
-          'lastFetchDate',
-          'attorneyRepresentationType',
-          'partyAttorneyAssociations',
-          'possibleNormPartyArray',
+          'nameSimilarityScore',
+          'otherPotentialNormParties',
+          'secretaryOfStateId',
+          'address',
+          'email',
+          'phone',
         ],
-        'x-unicourt-container': false,
       }),
-  )
+  })
+  .nullable()
+  .openapi({
+    required: [
+      'object',
+      'normPartyId',
+      'normPartyName',
+      'bestMatch',
+      'confidenceScore',
+      'scoreConstituents',
+      'normPartyAPI',
+      'associatedNormAttorneysAPI',
+      'associatedNormLawFirmsAPI',
+      'associatedNormJudgesAPI',
+      'caseCountAnalyticsByNormPartyAPI',
+      'caseCountAnalyticsByOpposingNormPartyAPI',
+    ],
+    title: 'PossibleNormParty',
+    'x-unicourt-container': false,
+  })
+  .openapi('PossibleNormParty')
+
+const PartySchema = z
+  .object({
+    attorneyRepresentationType: AttorneyRepresentationTypeSchema,
+    contact: ContactSchema,
+    firstFetchDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'When was the party first fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    firstName: z
+      .string()
+      .max(250)
+      .nullable()
+      .openapi({
+        description: 'First name of the party. This is normalized by UniCourt.',
+        example: 'LA',
+      }),
+    isVisible: z
+      .boolean()
+      .openapi({
+        description:
+          'Signifies if the party as this party type is currently isVisible or not for the case.',
+        example: true,
+      }),
+    lastFetchDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'When was the party last fetched from the court site.',
+        example: '2021-10-10T10:10:24+00:00',
+      }),
+    lastName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Last name of the party. This is normalized by UniCourt.',
+        example: 'DE',
+      }),
+    middleName: z
+      .string()
+      .max(100)
+      .nullable()
+      .openapi({
+        description: 'Middle name of the party. This is normalized by UniCourt.',
+        example: 'FUENTE JOE',
+      }),
+    name: z
+      .string()
+      .min(1)
+      .max(250)
+      .openapi({
+        description: 'Name of the party as provided by Court.',
+        example: 'DE LA FUENTE JOE',
+      }),
+    namePrefix: z.string().max(10).nullable(),
+    nameSuffix: z.string().max(10).nullable(),
+    object: z.string().length(5).default('Party').openapi({ description: 'Name of the object' }),
+    partyAttorneyAssociations: PartyAttorneyAssociationsSchema,
+    partyClassificationType: z
+      .enum(['INDIVIDUAL', 'COMPANY', 'OTHER'])
+      .openapi({
+        description:
+          'To know the type of an entity in a case, if it is an Individual, Company or Other. An entity to a case could be the parties, attorneys or judges involved.',
+      }),
+    partyId: z
+      .string()
+      .length(18)
+      .openapi({
+        description:
+          'ID for the party in this case. This ID is unique within a case and NOT across cases. If the same party were to appear in another case this ID would be different.',
+        example: 'PRTYgu537f3901f406',
+      }),
+    partyRole: PartyRoleSchema,
+    possibleNormPartyArray: z.array(PossibleNormPartySchema),
+    sourcePartyRole: z
+      .string()
+      .max(50)
+      .openapi({ description: 'Party Type as provided by Court.', example: 'ptf' }),
+  })
+  .nullable()
+  .openapi({
+    required: [
+      'object',
+      'partyId',
+      'name',
+      'namePrefix',
+      'firstName',
+      'middleName',
+      'lastName',
+      'nameSuffix',
+      'contact',
+      'partyClassificationType',
+      'partyRole',
+      'sourcePartyRole',
+      'isVisible',
+      'firstFetchDate',
+      'lastFetchDate',
+      'attorneyRepresentationType',
+      'partyAttorneyAssociations',
+      'possibleNormPartyArray',
+    ],
+    'x-unicourt-container': false,
+  })
   .openapi('Party')
 
 const PartiesSchema = z
@@ -4164,7 +2563,19 @@ const CaseRelationshipTypeSchema = z
   })
   .openapi('CaseRelationshipType')
 
-const RelatedCaseSchema = z
+type RelatedCaseType = {
+  additionalSourceData: z.infer<typeof SourceStructuredDataSchema>
+  caseAPI: string | null
+  caseId: string | null
+  caseName: string | null
+  caseNumber: string
+  caseRelationshipType: z.infer<typeof CaseRelationshipTypeSchema>
+  isVisible: boolean
+  object: string
+  sourceCaseRelationshipType: string
+} | null
+
+const RelatedCaseSchema: z.ZodType<RelatedCaseType> = z
   .object({
     additionalSourceData: SourceStructuredDataSchema,
     caseAPI: z
@@ -4237,7 +2648,16 @@ const RelatedCaseSchema = z
   })
   .openapi('RelatedCase')
 
-const RelatedCasesSchema = z
+type RelatedCasesType = {
+  nextPageAPI: string | null
+  object: string
+  pageNumber: number
+  relatedCaseArray: z.infer<typeof RelatedCaseSchema>[]
+  totalCount: number
+  totalPages: number
+} | null
+
+const RelatedCasesSchema: z.ZodType<RelatedCasesType> = z
   .object({
     nextPageAPI: z
       .string()
@@ -4501,7 +2921,15 @@ const SourceChargeSchema = z
   })
   .openapi('SourceCharge')
 
-const SourcePageDataSchema = z
+type SourcePageDataType = {
+  additionalSourceData: z.infer<typeof SourceStructuredDataSchema>
+  firstFetchDate: string
+  lastFetchDate: string
+  object: string
+  pageName: string
+} | null
+
+const SourcePageDataSchema: z.ZodType<SourcePageDataType> = z
   .object({
     additionalSourceData: SourceStructuredDataSchema,
     firstFetchDate: z
@@ -4540,7 +2968,18 @@ const SourcePageDataSchema = z
   })
   .openapi('SourcePageData')
 
-const SourceCaseDataSchema = z
+type SourceCaseDataType = {
+  natureOfSuitArray: z.infer<typeof NatureOfSuitSchema>[]
+  object: string
+  sourceCaseStatus: string
+  sourceCaseType: string
+  sourceCauseOfActionArray: z.infer<typeof SourceCauseOfActionSchema>[]
+  sourceChargeArray: z.infer<typeof SourceChargeSchema>[]
+  sourceCourt: string
+  sourcePageData: z.infer<typeof SourcePageDataSchema>[]
+}
+
+const SourceCaseDataSchema: z.ZodType<SourceCaseDataType> = z
   .object({
     natureOfSuitArray: z
       .array(NatureOfSuitSchema)
@@ -4594,7 +3033,41 @@ const SourceCaseDataSchema = z
   })
   .openapi('SourceCaseData')
 
-const CaseSchema = z
+type CaseType = {
+  attorneys: z.infer<typeof AttorneysSchema>
+  caseDocuments: z.infer<typeof CaseDocumentsSchema>
+  caseId: string
+  caseName: string | null
+  caseNumber: string
+  caseStats: z.infer<typeof CaseStatsSchema>
+  caseStatus: z.infer<typeof CaseStatusSchema>
+  caseType: z.infer<typeof CaseTypeSchema>
+  causeOfActionArray: z.infer<typeof CaseCauseOfActionSchema>[]
+  chargeArray: z.infer<typeof CaseChargeSchema>[]
+  court: z.infer<typeof CourtSchema>
+  courtLocation: z.infer<typeof CourtLocationSchema>
+  courtServiceStatusAPI: string | null
+  courtServiceStatusId: string | null
+  docketEntries: z.infer<typeof DocketEntriesSchema>
+  exportAPI: string
+  filedDate: string
+  firstFetchDate: string
+  hasDocumentsWithPreview: boolean
+  hasOnlyMetaInfo: boolean
+  hearings: z.infer<typeof HearingsSchema>
+  judges: z.infer<typeof JudgesSchema>
+  lastFetchDate: string
+  lastFetchDateWithUpdates: string
+  object: string
+  participantsLastFetchDate: string | null
+  parties: z.infer<typeof PartiesSchema>
+  relatedCases: z.infer<typeof RelatedCasesSchema>
+  sourceCaseData: z.infer<typeof SourceCaseDataSchema>
+  sourceDataStatus: 'NO_LONGER_AVAILABLE_IN_COURT' | 'SOURCE_DEPRECATED' | null
+  url: string | null
+} | null
+
+const CaseSchema: z.ZodType<CaseType> = z
   .object({
     attorneys: AttorneysSchema,
     caseDocuments: CaseDocumentsSchema,
@@ -4775,6 +3248,1820 @@ const CaseSchema = z
     'x-unicourt-container': false,
   })
   .openapi('Case')
+
+const ExceptionSchema = z
+  .object({
+    code: z
+      .string()
+      .min(1)
+      .max(75)
+      .openapi({ description: 'Indicates the type of error occured.' }),
+    details: z.string().min(1).max(255).openapi({ description: 'Describes what went wrong.' }),
+    message: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({ description: 'Indicates the error message that describes the error code.' }),
+    object: z.string().length(9).default('Exception').openapi({ example: 'Exception' }),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'Exception object contains specific error code and its message related to the API request validation error or error occurred during API request processing.',
+    required: ['object', 'code', 'message', 'details'],
+    title: 'Exception',
+    'x-unicourt-container': false,
+  })
+  .openapi('Exception')
+
+const CaseUpdatePacerOptionsResponseSchema = z
+  .object({
+    additionalPageArray: z
+      .array(
+        z
+          .object({
+            fetchIfOlderThanDays: z
+              .int()
+              .min(0)
+              .max(100)
+              .default(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  'You can limit how often this page information is fetched to reduce your PACER fees.\n\nMin days is 0 and Max days is 100.\n\nExample:\n1.  Specifying a value of 0 ensures that this page is fetched from PACER for this case update irrespective of when the page was last fetched.\n2.  Specifying a value of 30 ensures that this page is fetched from PACER for this case update only if the last fetch was older than 30 days.\n',
+                example: 30,
+              }),
+            page: z
+              .enum(['associatedCases', 'caseSummary', 'listOfCreditors'])
+              .exactOptional()
+              .openapi({ example: 'caseSummary' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .nullable()
+      .openapi({
+        description:
+          'Currently this option is only applicable for Federal PACER cases. The default behavior of the Case Update is to fetch the Docket Report from PACER which includes the parties and attorneys too.\n\nHowever if you need to fetch information for other pages in PACER you will need to specify it here.\n- associatedCases:\n> This will fetch the Associated Cases page in PACER if available. This page consists of related cases especially applicable for Multi-District Litigation cases and Member Cases. Including this option will internally link all related cases in our system. Data from this page will be available via the Related Cases API.\n- caseSummary:\n> This will fetch the Case Summary page in PACER if available. This page consists of additional case info which is not present in the Docket Report page. Data from this page will be structured and available as response in the Case API’s ```additional_info``` field.\n- listOfCreditors:\n> This page will fetch the “List Of Creditors” page for PACER Bankruptcy cases of case type "bk". Note that this page cannot be extracted for Bankruptcy cases of case type "ap" (Adversary Proceedings). This page consists of the Creditor information like the name and address of the Creditors. Data from this page will be structured and available as response in the Case API.\n',
+        example: [
+          { fetchIfOlderThanDays: 30, page: 'associatedCases' },
+          { fetchIfOlderThanDays: 15, page: 'caseSummary' },
+          { fetchIfOlderThanDays: 15, page: 'listOfCreditors' },
+        ],
+      }),
+    fetchParticipantsIfOlderThanDays: z
+      .int()
+      .min(0)
+      .max(100)
+      .default(0)
+      .openapi({
+        description:
+          '**Currently this option is only applicable for Federal PACER cases. You can limit how often parties and attorneys for a PACER case are fetched to reduce your PACER fees. If you are tracking cases daily or hourly you could easily end up with a large PACER bill.**\n\n**Use Case: Cases are typically updated to check for new docket entry filings. However every update to PACER case costs money. Participants for a case change less often than docket entry filings. So fetching participants for every update might result in unnecessary PACER costs; especially on cases which have a lot of parties and attorneys. So instead of getting charged the minimum cost of $0.10 for an update which might have had few docket entries, you could end up spending $3 for every update because there were a lot of parties for that case that were also fetched.**\n\n**With this option you can choose when to fetch parties for case based on when was it last fetched.**\nYou can limit how often this participants are fetched in a PACER case to keep your PACER costs under control.\n\nMin days is 0 and Max days is 100.\n\nExample:\n1.  Specifying a value of 0 ensures that participants are fetched from PACER for this case update irrespective of when the participants were last fetched.\n2.  Specifying a value of 30 ensures that participants are fetched from PACER for this case update only if the last fetch was older than 30 days.\n',
+        example: 30,
+      }),
+    object: z
+      .string()
+      .length(30)
+      .default('CaseUpdatePacerOptionsResponse')
+      .openapi({ description: 'Name of the object.', example: 'CaseUpdatePacerOptionsResponse' }),
+    pacerClientCode: z
+      .string()
+      .min(0)
+      .max(32)
+      .nullable()
+      .openapi({
+        description:
+          'PACER Client Code. This is mandatory if your setting in PACER website is set to True for required client code.',
+        example: 'Test UniCourt API',
+      }),
+    pacerUserId: z
+      .string()
+      .min(6)
+      .max(40)
+      .openapi({
+        description:
+          '**Your PACER credentials username. This is mandatory when a PACER Case is being requested in the API. For Non PACER cases this is not mandatory. Suppose your request consists of Non PACER and PACER Cases then this needs to be passed becuase you are requesting a PACER case too.**',
+        example: 'URKYwer3tyh5r56gq2',
+      }),
+    refreshType: z
+      .enum(['fetchNewDocketEntries', 'fetchAllDocketEntries'])
+      .nullable()
+      .default('fetchNewDocketEntries')
+      .openapi({
+        description:
+          'This flag determines whether to pull only new or pull all the docket entries for a PACER case being requested.\n\nOnly one of the two values is allowed:\n-   fetchNewDocketEntries:\n    >   Updates the PACER case with only new docket entries that have been added after the previous update of the case being requested.\n-   fetchAllDocketEntries:\n    >   Updates the PACER case by re-parsing all dockets from #1 till latest docket entry available.\n',
+        example: 'fetchNewDocketEntries',
+      }),
+  })
+  .nullable()
+  .openapi({
+    description: 'Applicable for PACER cases.',
+    required: [
+      'object',
+      'pacerUserId',
+      'pacerClientCode',
+      'fetchParticipantsIfOlderThanDays',
+      'refreshType',
+      'additionalPageArray',
+    ],
+    title: 'CaseUpdatePacerOptionsResponse',
+    'x-unicourt-container': false,
+  })
+  .openapi('CaseUpdatePacerOptionsResponse')
+
+const LastTrackedDetailsSchema = z
+  .object({
+    lastTrackDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .nullable()
+      .openapi({
+        description: 'The date and time when the case was tracked for this account.',
+        example: '2020-05-14T11:51:27+00:00',
+      }),
+    lastTrackException: ExceptionSchema,
+    object: z
+      .string()
+      .length(18)
+      .default('LastTrackedDetails')
+      .openapi({ description: 'Name of the object.', example: 'LastTrackedDetails' }),
+    pacerOptions: CaseUpdatePacerOptionsResponseSchema,
+  })
+  .openapi({
+    required: ['object', 'pacerOptions', 'lastTrackDate', 'lastTrackException'],
+    'x-unicourt-container': false,
+  })
+  .openapi('LastTrackedDetails')
+
+const ScheduleSchema = z
+  .object({
+    days: z
+      .array(z.int())
+      .openapi({
+        description:
+          '[] -> if schedule type is daily <br>\n1-7 -> if schedule type is weekly <br>\n1-31 -> if schedule type is monthly\n',
+        example: [1, 3, 5],
+      }),
+    object: z
+      .string()
+      .length(8)
+      .default('Schedule')
+      .openapi({ description: 'Name of the object.', example: 'Schedule' }),
+    type: z.enum(['daily', 'weekly', 'monthly']).openapi({ example: 'weekly' }),
+  })
+  .openapi({
+    required: ['object', 'type', 'days'],
+    title: 'Schedule',
+    'x-unicourt-container': false,
+  })
+  .openapi('Schedule')
+
+type CaseTrackType = {
+  case: z.infer<typeof CaseSchema>
+  caseAPI: string
+  caseId: string
+  lastFetchDate: string | null
+  lastFetchDateWithUpdates: string | null
+  lastTrackedDetails: z.infer<typeof LastTrackedDetailsSchema> | null
+  object: string
+  pacerOptions: z.infer<typeof CaseUpdatePacerOptionsResponseSchema>
+  schedule: z.infer<typeof ScheduleSchema>
+}
+
+type CaseUpdateType = {
+  case: z.infer<typeof CaseSchema>
+  caseAPI: string
+  caseId: string
+  exception: z.infer<typeof ExceptionSchema>
+  object: string
+  pacerOptions: z.infer<typeof CaseUpdatePacerOptionsResponseSchema>
+  requestedDate: string
+  status: 'COMPLETE' | 'FAILURE' | 'IN_PROGRESS'
+}
+
+const CaseAnalyticsAPISchema = z
+  .object({
+    caseCountAnalyticsByAreaOfLawAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByAreaOfLawAPI' }),
+    caseCountAnalyticsByCaseClassAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseClassAPI' }),
+    caseCountAnalyticsByCaseTypeAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseTypeAPI' }),
+    caseCountAnalyticsByCaseTypeGroupAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCaseTypeGroupAPI' }),
+    caseCountAnalyticsByCourtAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtAPI' }),
+    caseCountAnalyticsByCourtLocationAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtLocationAPI' }),
+    caseCountAnalyticsByCourtSystemAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtSystemAPI' }),
+    caseCountAnalyticsByCourtTypeAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByCourtTypeAPI' }),
+    caseCountAnalyticsByJurisdictionGeoAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByJurisdictionGeoAPI' }),
+    caseCountAnalyticsByPartyRoleAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByPartyRoleAPI' }),
+    caseCountAnalyticsByPartyRoleGroupAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByPartyRoleGroupAPI' }),
+    object: z.string().max(16).default('CaseAnalyticsAPI'),
+    totalCases: z.int(),
+  })
+  .openapi({
+    description: 'Provides Court Data per State Jurisdiction for an entity.',
+    required: [
+      'object',
+      'caseCountAnalyticsByCourtAPI',
+      'caseCountAnalyticsByCourtTypeAPI',
+      'caseCountAnalyticsByCourtSystemAPI',
+      'caseCountAnalyticsByCourtLocationAPI',
+      'caseCountAnalyticsByJurisdictionGeoAPI',
+      'caseCountAnalyticsByAreaOfLawAPI',
+      'caseCountAnalyticsByCaseClassAPI',
+      'caseCountAnalyticsByCaseTypeAPI',
+      'caseCountAnalyticsByCaseTypeGroupAPI',
+      'caseCountAnalyticsByPartyRoleAPI',
+      'caseCountAnalyticsByPartyRoleGroupAPI',
+      'totalCases',
+    ],
+    title: 'CaseAnalyticsAPI',
+    'x-unicourt-container': false,
+  })
+  .openapi('CaseAnalyticsAPI')
+
+const LawFirmAnalyticsAPISchema = z
+  .object({
+    associatedNormAttorneyAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormAttorneysForNormLawFirmAPI' }),
+    associatedNormJudgeAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormLawFirmAPI' }),
+    associatedNormPartiesAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormPartiesForNormLawFirmAPI' }),
+    caseCountAnalyticsByOpposingNormAttorneyAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
+    caseCountAnalyticsByOpposingNormLawFirmAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
+    caseCountAnalyticsByOpposingNormPartyAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
+    normLawFirmAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details for the Law Firm.',
+        'x-logical-reference': 'NormLawFirmAPI',
+      }),
+    object: z.string().max(19).default('LawFirmAnalyticsAPI'),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normLawFirmAPI',
+      'associatedNormAttorneyAPI',
+      'associatedNormJudgeAPI',
+      'associatedNormPartiesAPI',
+      'caseCountAnalyticsByOpposingNormAttorneyAPI',
+      'caseCountAnalyticsByOpposingNormLawFirmAPI',
+      'caseCountAnalyticsByOpposingNormPartyAPI',
+    ],
+    title: 'LawFirmAnalyticsAPI',
+    'x-unicourt-container': false,
+  })
+  .openapi('LawFirmAnalyticsAPI')
+
+const NormCorporateGroupSchema = z
+  .object({
+    normCorporateGroupId: z.string().length(18).nullable(),
+    normCorporateGroupName: z.string().max(500).nullable(),
+    object: z.string().max(18).default('NormCorporateGroup'),
+  })
+  .openapi({
+    required: ['object', 'normCorporateGroupId', 'normCorporateGroupName'],
+    title: 'NormCorporateGroup',
+    'x-unicourt-container': false,
+  })
+  .openapi('NormCorporateGroup')
+
+const AssociatedSoSPersonSchema = z
+  .object({
+    contact: ContactSchema,
+    entityName: z.string().max(500),
+    entityType: z.enum([
+      'Partner',
+      'Agent',
+      'CEO',
+      'Partner/General Member',
+      'Partner/GeneralMember',
+    ]),
+    object: z.string().max(19).default('AssociatedSoSPerson'),
+  })
+  .openapi({
+    required: ['object', 'contact', 'entityName', 'entityType'],
+    title: 'AssociatedSoSPerson',
+    'x-unicourt-container': false,
+  })
+  .openapi('AssociatedSoSPerson')
+
+const SOSNameChangeSchema = z
+  .object({
+    fromDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    name: z.string().max(500),
+    object: z.string().max(13).default('SOSNameChange'),
+    toDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+  })
+  .openapi({
+    required: ['object', 'name', 'fromDate', 'toDate'],
+    title: 'SOSNameChange',
+    'x-unicourt-container': false,
+  })
+  .openapi('SOSNameChange')
+
+const SOSAssociatedNormOrganizationSchema = z
+  .object({
+    fromDate: z.iso.datetime({ offset: true }).max(25),
+    name: z.string().max(500),
+    normOrganizationAPI: z.url().max(255).nullable(),
+    normOrganizationId: z.string().min(17).max(18).nullable(),
+    object: z.string().max(29).default('SOSAssociatedNormOrganization'),
+    relationshipType: z.enum(['Parent', 'Child']),
+    toDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normOrganizationId',
+      'normOrganizationAPI',
+      'relationshipType',
+      'name',
+      'fromDate',
+      'toDate',
+    ],
+    title: 'SOSAssociatedNormOrganization',
+    'x-unicourt-container': false,
+  })
+  .openapi('SOSAssociatedNormOrganization')
+
+const SOSDataSchema = z
+  .object({
+    associatedSoSPersonArray: z.array(AssociatedSoSPersonSchema),
+    contact: ContactSchema,
+    domesticRegistration: z.boolean().default(true),
+    fein: z.string().max(16).nullable(),
+    firstFetchDate: z.iso.datetime({ offset: true }).max(25),
+    inactivationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    isActive: z.boolean().default(true),
+    lastFetchDate: z.iso.datetime({ offset: true }).max(25),
+    lastFetchDateWithUpdates: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .openapi({ description: 'Last Fetch Date of Organization with Updates.' }),
+    nameChangesArray: z.array(SOSNameChangeSchema),
+    object: z.string().max(7).default('SOSData'),
+    registeredDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    sosAssociatedNormOrganizationArray: z.array(SOSAssociatedNormOrganizationSchema),
+    sosNumber: z.string().max(50).nullable(),
+    stateCode: z.string().max(2),
+    status: z.literal('Active').nullable(),
+  })
+  .openapi({
+    required: [
+      'object',
+      'sosNumber',
+      'stateCode',
+      'fein',
+      'domesticRegistration',
+      'registeredDate',
+      'status',
+      'isActive',
+      'inactivationDate',
+      'associatedSoSPersonArray',
+      'contact',
+      'nameChangesArray',
+      'sosAssociatedNormOrganizationArray',
+      'firstFetchDate',
+      'lastFetchDate',
+      'lastFetchDateWithUpdates',
+    ],
+    title: 'SOSData',
+    'x-unicourt-container': false,
+  })
+  .openapi('SOSData')
+
+type NormOrganizationType = {
+  cik: string | null
+  isInvolvedInLitigation: boolean
+  lei: string | null
+  naics: string | null
+  naicsDescription: string | null
+  name: string
+  normCorporateGroupArray: z.infer<typeof NormCorporateGroupSchema>[]
+  normOrganizationId: string
+  normPartyAPI: string
+  object: string
+  organizationType: 'Business' | 'GovernmentAgency'
+  sic: string | null
+  sicDescription: string | null
+  sosDataArray: z.infer<typeof SOSDataSchema>[]
+  tickerArray: { exchange: string | null; symbols: string[] }[]
+}
+
+const NormOrganizationSchema: z.ZodType<NormOrganizationType> = z
+  .object({
+    cik: z.string().max(15).nullable(),
+    isInvolvedInLitigation: z.boolean(),
+    lei: z.string().max(250).nullable(),
+    naics: z.string().max(250).nullable(),
+    naicsDescription: z.string().max(250).nullable(),
+    name: z.string().max(500),
+    normCorporateGroupArray: z.array(NormCorporateGroupSchema),
+    normOrganizationId: z.string().length(18),
+    normPartyAPI: z.url().max(255),
+    object: z.string().max(16).default('NormOrganization'),
+    organizationType: z.enum(['Business', 'GovernmentAgency']),
+    sic: z.string().max(10).nullable(),
+    sicDescription: z.string().max(100).nullable(),
+    sosDataArray: z.array(SOSDataSchema),
+    tickerArray: z.array(
+      z
+        .object({ exchange: z.string().max(250).nullable(), symbols: z.array(z.string().max(250)) })
+        .openapi({ required: ['exchange', 'symbols'] }),
+    ),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normOrganizationId',
+      'name',
+      'organizationType',
+      'lei',
+      'cik',
+      'tickerArray',
+      'naics',
+      'naicsDescription',
+      'sic',
+      'sicDescription',
+      'isInvolvedInLitigation',
+      'normPartyAPI',
+      'normCorporateGroupArray',
+      'sosDataArray',
+    ],
+    title: 'NormOrganization',
+    'x-unicourt-container': false,
+  })
+  .openapi('NormOrganization')
+
+type NormLawFirmType = {
+  caseAnalyticsAPI: z.infer<typeof CaseAnalyticsAPISchema>
+  caseSearchAPI: string
+  lawFirmAnalyticsAPI: z.infer<typeof LawFirmAnalyticsAPISchema>
+  name: string
+  normLawFirmId: string
+  normOrganizationData: z.infer<typeof NormOrganizationSchema>
+  object: string
+}
+
+const PartyAnalyticsAPISchema = z
+  .object({
+    associatedNormAttorneysAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormAttorneysForNormPartyAPI' }),
+    associatedNormJudgesAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormPartyAPI' }),
+    associatedNormLawFirmsAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormLawFirmsForNormPartyAPI' }),
+    caseCountAnalyticsByOpposingNormAttorneyAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
+    caseCountAnalyticsByOpposingNormLawFirmAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
+    caseCountAnalyticsByOpposingNormPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
+    normPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details for the Party.',
+        'x-logical-reference': 'NormPartyAPI',
+      }),
+    object: z.string().max(17).default('PartyAnalyticsAPI'),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normPartyAPI',
+      'associatedNormAttorneysAPI',
+      'associatedNormLawFirmsAPI',
+      'associatedNormJudgesAPI',
+      'caseCountAnalyticsByOpposingNormAttorneyAPI',
+      'caseCountAnalyticsByOpposingNormLawFirmAPI',
+      'caseCountAnalyticsByOpposingNormPartyAPI',
+    ],
+    title: 'PartyAnalyticsAPI',
+    'x-unicourt-container': false,
+  })
+  .openapi('PartyAnalyticsAPI')
+
+const RelatedNormPartySchema = z
+  .object({
+    normPartyId: z.string().length(18),
+    object: z.string().max(16).default('RelatedNormParty'),
+    relationshipType: z.enum(['Parent', 'Child', 'Same_Corporate_Group']),
+  })
+  .openapi({
+    required: ['object', 'normPartyId', 'relationshipType'],
+    title: 'RelatedNormParty',
+    'x-unicourt-container': false,
+  })
+  .openapi('RelatedNormParty')
+
+type NormPartyType = {
+  caseAnalyticsAPI: z.infer<typeof CaseAnalyticsAPISchema>
+  caseSearchAPI: string
+  individualData: {
+    firstName: string | null
+    lastName: string | null
+    middleName: string | null
+    name: string | null
+  } | null
+  name: string
+  normOrganizationData: z.infer<typeof NormOrganizationSchema>
+  normPartyId: string
+  object: string
+  partyAnalyticsAPI: z.infer<typeof PartyAnalyticsAPISchema>
+  partyClassificationType: 'Individual' | 'Organization'
+  relatedNormPartyArray: z.infer<typeof RelatedNormPartySchema>[]
+}
+
+const AccessTokenIdResponseSchema = z
+  .object({
+    issueAddress: z
+      .string()
+      .min(7)
+      .max(15)
+      .openapi({ description: 'Ip address.', example: '192.0.2.1' }),
+    issuedDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description: 'Date when access token was created.',
+        example: '2022-11-10T10:17:56+00:00',
+      }),
+    object: z
+      .string()
+      .length(21)
+      .default('AccessTokenIdResponse')
+      .openapi({ description: 'Name of the object.', example: 'AccessTokenIdResponse' }),
+    tokenId: z
+      .string()
+      .length(18)
+      .openapi({ description: 'Unique Id for the access token.', example: 'TKID384a057WFC3Dp3' }),
+  })
+  .openapi({
+    required: ['object', 'tokenId', 'issuedDate', 'issueAddress'],
+    'x-unicourt-container': false,
+  })
+  .openapi('AccessTokenIdResponse')
+
+const AccessTokenIdListResponseSchema = z
+  .object({
+    AccessTokenIdArray: z
+      .array(AccessTokenIdResponseSchema)
+      .min(0)
+      .max(10)
+      .openapi({ description: 'Array of access tokens Id.' }),
+    object: z
+      .string()
+      .length(25)
+      .default('AccessTokenIdListResponse')
+      .openapi({ description: 'Name of the object.', example: 'AccessTokenIdListResponse' }),
+  })
+  .openapi({ required: ['object', 'AccessTokenIdArray'], 'x-unicourt-container': false })
+  .openapi('AccessTokenIdListResponse')
+
+const AccessTokenRequestSchema = z
+  .object({
+    clientId: z
+      .string()
+      .length(32)
+      .openapi({
+        description: 'Your Client ID obtainable by logging into your UniCourt account.',
+        example: 'G3cfixgetVzfaoszGOBp5LPGtih1nMJ9',
+      }),
+    clientSecret: z
+      .string()
+      .length(64)
+      .openapi({
+        description: 'Your Client Secret ID obtainable by logging into your UniCourt account.',
+        example: 'u6PTti57IjPlrwU5MzOwLBD2MCwx-IEbo8sTStTivh1I-EqQ8Jcm27Gfo2GhpHCw',
+      }),
+  })
+  .openapi({ required: ['clientId', 'clientSecret'], 'x-unicourt-container': false })
+  .openapi('AccessTokenRequest')
+
+const AccessTokenResponseSchema = z
+  .object({
+    accessToken: z
+      .string()
+      .min(700)
+      .max(2000)
+      .openapi({
+        description: 'Access token for API.',
+        example:
+          'eyJhbG44ciOiJS111UzI1NiIsInR5cCI6IkpXVCIsImtpZCI6I11111ktfX2NsOVhLUDJYMmtBVGRBSVkzQiJ9.eyJodHRwczovL3VuaWNvdXJ0LmNvbS9jbGllbnRfaWQiOiIxbWVOcHRBeXJUUFN2UjBSbVVxdEh2QVNoeDVqVmI2RCIsImh0dHBzOi8vdW5pY291cnQuY29tL2NsaWVudF9uYW1lIjoiYXBvbGxvIiwiaHR0cHM6Ly91bmljb3VydC5jb20vYWNjb3VudF9pZCI6IkFQTzAwMDBBMSIsImlzcyI6Imh0dHBzOi8vdGVzdHVjLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiIxbWVOcHRBeXJUUFN2UjBSbVVxdEh2QVNoeDVqVmI2REBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly85dGxsbG1oZnhkLmV4ZWN1dGUtYXBpLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tIiwiaWF0IjoxNjIwNzA4NjAzLCJleHAiOjE2MjA3OTUwMDMsImF6cCI6IjFtZU5wdEF5clRQU3ZSMFJtVXF0SHZBU2h4NWpWYjZEIiwic2NvcGUiOiJleHRyYSIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.TjhNCPvt5bRDW5Kp9OW9-epch9ggoYiK-85f6l7illLtKMeEoD3myllyIXo_ltZv7TDbmSg9tmHZ2V4mPiGvn-Fc9MwGXyUN7LjFF0tpnwysqgTVq_pvnCNe-xLOR_clmkl881QlUfXwB0R0PjhU00_c63ImSISC1Tv4GfawYLQwBy1Q22-rqB4ZsrSszRMo0rTOCu4d7KVc9MgcjA_idz45E9BxR2UbZ6lAbAXp-C1AqR8Dm40BHeUy5oJFFpzoP46sqTcdQHzwuMX5AhK6uGugVqlHpUbwRy9SDCxCldArz5j0Ab_aaZ7zIbuqgE-XueSlug_n2MenElUAeBKe-g',
+      }),
+    object: z
+      .string()
+      .length(19)
+      .default('AccessTokenResponse')
+      .openapi({ description: 'Name of the object.', example: 'AccessTokenResponse' }),
+    tokenId: z
+      .string()
+      .length(18)
+      .openapi({ description: 'Unique Id for the access token.', example: 'TKID384a057WFC3Dp3' }),
+    tokenType: z.string().length(6).openapi({ description: 'Token type.', example: 'Bearer' }),
+  })
+  .openapi({
+    required: ['object', 'accessToken', 'tokenId', 'tokenType'],
+    'x-unicourt-container': false,
+  })
+  .openapi('AccessTokenResponse')
+
+const AreaOfLawSchema = z
+  .object({
+    areaOfLawId: z.string().length(18).openapi({ example: 'AOFLGAd9Ah5qkTRNw9' }),
+    caseClass: z.string().min(1).max(255).openapi({ example: 'Civil' }),
+    caseClassId: z.string().length(18).openapi({ example: 'CSCLNjbKTN7Yfo2wdb' }),
+    createdDate: z.iso
+      .datetime({ offset: true })
+      .length(25)
+      .openapi({
+        description:
+          'The date and time when it was first created. This date and time is in UTC. Formatted as YYYY-MM-DD HH:MM:SS.',
+        example: '2020-05-07T10:17:56+00:00',
+      }),
+    name: z.string().min(1).max(255).openapi({ example: 'Tax and Revenue' }),
+    object: z.string().length(9).default('AreaOfLaw').openapi({ example: 'AreaOfLaw' }),
+  })
+  .openapi({
+    required: ['object', 'areaOfLawId', 'caseClassId', 'caseClass', 'name', 'createdDate'],
+    title: 'AreaOfLaw',
+    'x-unicourt-container': false,
+  })
+  .openapi('AreaOfLaw')
+
+const AreaOfLawResponseSchema = z
+  .object({
+    areaOfLawArray: z.array(AreaOfLawSchema),
+    nextPageAPI: z
+      .url()
+      .min(1)
+      .max(2140)
+      .nullable()
+      .openapi({ description: 'Link to next page.', example: null }),
+    object: z
+      .string()
+      .length(17)
+      .default('AreaOfLawResponse')
+      .openapi({ example: 'AreaOfLawResponse' }),
+    pageNumber: z
+      .int()
+      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
+    previousPageAPI: z
+      .url()
+      .min(1)
+      .max(2139)
+      .nullable()
+      .openapi({ description: 'Link to previous page.', example: null }),
+    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
+    totalPages: z
+      .int()
+      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'areaOfLawArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'pageNumber',
+      'totalPages',
+      'totalCount',
+    ],
+    'x-unicourt-container': false,
+  })
+  .openapi('AreaOfLawResponse')
+
+const CaseTimelineSchema = z
+  .object({
+    firstCaseFiledDate: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .openapi({
+        description:
+          'The first date when the two entities have appeared together in the case. (These dates are determined from case filed dates)',
+      }),
+    lastCaseFiledDate: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .openapi({
+        description:
+          'The last date when the two entities have appeared together in the case. (These dates are determined from case filed dates)',
+      }),
+    object: z.string().max(12).default('CaseTimeline'),
+  })
+  .openapi({
+    required: ['object', 'firstCaseFiledDate', 'lastCaseFiledDate'],
+    title: 'CaseTimeline',
+    'x-unicourt-container': true,
+  })
+  .openapi('CaseTimeline')
+
+const BarRecordPreviewSchema = z
+  .object({
+    barNumber: z.string().max(250).nullable(),
+    barSourceType: z.string().max(70).nullable(),
+    object: z.string().max(16).default('BarRecordPreview'),
+    stateCode: z.string().max(2),
+  })
+  .openapi({
+    required: ['object', 'barSourceType', 'barNumber', 'stateCode'],
+    title: 'BarRecordPreview',
+    'x-unicourt-container': false,
+  })
+  .openapi('BarRecordPreview')
+
+const AssociatedNormAttorneySchema = z
+  .object({
+    caseCount: z.int(),
+    caseSearchAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to related cases for this association.',
+        'x-logical-reference': 'CaseSearchAPI',
+      }),
+    caseTimeline: CaseTimelineSchema,
+    firstName: z.string().max(500),
+    lastName: z.string().max(500),
+    middleName: z.string().max(500).nullable(),
+    name: z.string().max(500),
+    normAttorneyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to details for the Attorney.',
+        'x-logical-reference': 'NormAttorneyAPI',
+      }),
+    normAttorneyId: z.string().min(17).max(18),
+    object: z.string().max(22).default('AssociatedNormAttorney'),
+    stateBarDataArray: z.array(BarRecordPreviewSchema),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normAttorneyAPI',
+      'normAttorneyId',
+      'caseTimeline',
+      'name',
+      'firstName',
+      'middleName',
+      'lastName',
+      'caseSearchAPI',
+      'caseCount',
+      'stateBarDataArray',
+    ],
+    title: 'AssociatedNormAttorney',
+    'x-unicourt-container': false,
+  })
+  .openapi('AssociatedNormAttorney')
+
+const AssociatedNormAttorneyResponseSchema = z
+  .object({
+    associatedNormAttorneyArray: z.array(AssociatedNormAttorneySchema),
+    nextPageAPI: z
+      .url()
+      .max(2173)
+      .nullable()
+      .openapi({ description: 'Next page of results if applicable.' }),
+    previousPageAPI: z
+      .url()
+      .max(2172)
+      .nullable()
+      .openapi({ description: 'Previous page of results if applicable.' }),
+    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
+    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
+  })
+  .openapi({
+    required: [
+      'associatedNormAttorneyArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'totalPages',
+      'totalCount',
+    ],
+    title: 'AssociatedNormAttorneyResponse',
+    'x-unicourt-container': true,
+  })
+  .openapi('AssociatedNormAttorneyResponse')
+
+const AssociatedNormJudgeSchema = z
+  .object({
+    caseCount: z.int(),
+    caseSearchAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to related cases for this association.',
+        'x-logical-reference': 'CaseSearchAPI',
+      }),
+    caseTimeline: CaseTimelineSchema,
+    firstName: z.string().max(500),
+    lastName: z.string().max(500),
+    middleName: z.string().max(500).nullable(),
+    name: z.string().max(500),
+    normJudgeAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details from the Judge.',
+        'x-logical-reference': 'NormJudgeAPI',
+      }),
+    normJudgeId: z.string().min(17).max(18),
+    object: z.string().max(19).default('AssociatedNormJudge'),
+    version: z.string().max(7),
+  })
+  .openapi({
+    description: 'Associated Judge',
+    required: [
+      'object',
+      'normJudgeId',
+      'normJudgeAPI',
+      'caseTimeline',
+      'name',
+      'firstName',
+      'middleName',
+      'lastName',
+      'caseSearchAPI',
+      'caseCount',
+      'version',
+    ],
+    title: 'AssociatedNormJudge',
+    'x-unicourt-container': false,
+  })
+  .openapi('AssociatedNormJudge')
+
+const AssociatedNormJudgeResponseSchema = z
+  .object({
+    associatedNormJudgeArray: z.array(AssociatedNormJudgeSchema),
+    nextPageAPI: z.url().max(2173).nullable(),
+    previousPageAPI: z
+      .url()
+      .max(2172)
+      .nullable()
+      .openapi({ description: 'Previous page of results if applicable.' }),
+    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
+    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
+  })
+  .openapi({
+    required: [
+      'associatedNormJudgeArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'totalPages',
+      'totalCount',
+    ],
+    title: 'AssociatedNormJudgeResponse',
+    'x-unicourt-container': true,
+  })
+  .openapi('AssociatedNormJudgeResponse')
+
+const SOSDataPreviewSchema = z
+  .object({
+    object: z.string().max(14).default('SOSDataPreview'),
+    sosNumber: z.string().max(250),
+    stateCode: z.string().max(2),
+  })
+  .openapi({
+    required: ['object', 'sosNumber', 'stateCode'],
+    title: 'SOSDataPreview',
+    'x-unicourt-container': true,
+  })
+  .openapi('SOSDataPreview')
+
+const AssociatedNormLawFirmSchema = z
+  .object({
+    caseCount: z.int(),
+    caseSearchAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to related cases for this association.',
+        'x-logical-reference': 'CaseSearchAPI',
+      }),
+    caseTimeline: CaseTimelineSchema,
+    name: z.string().max(500),
+    normLawFirmAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details for this Law Firm.',
+        'x-logical-reference': 'NormLawFirmAPI',
+      }),
+    normLawFirmId: z.string().min(17).max(18),
+    object: z.string().max(21).default('AssociatedNormLawFirm'),
+    sosDataArray: z.array(SOSDataPreviewSchema),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normLawFirmId',
+      'normLawFirmAPI',
+      'caseTimeline',
+      'name',
+      'caseSearchAPI',
+      'caseCount',
+      'sosDataArray',
+    ],
+    title: 'AssociatedNormLawFirm',
+    'x-unicourt-container': false,
+  })
+  .openapi('AssociatedNormLawFirm')
+
+const AssociatedNormLawFirmResponseSchema = z
+  .object({
+    associatedNormLawFirmArray: z.array(AssociatedNormLawFirmSchema),
+    nextPageAPI: z
+      .url()
+      .max(2173)
+      .nullable()
+      .openapi({ description: 'Link to next page of results.' }),
+    previousPageAPI: z
+      .url()
+      .max(2172)
+      .nullable()
+      .openapi({ description: 'Link to previous page of results.' }),
+    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
+    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
+  })
+  .openapi({
+    required: [
+      'associatedNormLawFirmArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'totalPages',
+      'totalCount',
+    ],
+    title: 'AssociatedNormLawFirmResponse',
+    'x-unicourt-container': true,
+  })
+  .openapi('AssociatedNormLawFirmResponse')
+
+const AssociatedNormPartySchema = z
+  .object({
+    caseCount: z.int(),
+    caseSearchAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to related cases for this association.',
+        'x-logical-reference': 'CaseSearchAPI',
+      }),
+    caseTimeline: CaseTimelineSchema,
+    name: z.string().max(500),
+    normPartyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details for the Party.',
+        'x-logical-reference': 'NormPartyAPI',
+      }),
+    normPartyId: z.string().min(17).max(18),
+    object: z.string().max(19).default('AssociatedNormParty'),
+    sosDataArray: z.array(SOSDataPreviewSchema),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normPartyId',
+      'normPartyAPI',
+      'caseTimeline',
+      'name',
+      'caseSearchAPI',
+      'caseCount',
+      'sosDataArray',
+    ],
+    title: 'AssociatedNormParty',
+    'x-unicourt-container': false,
+  })
+  .openapi('AssociatedNormParty')
+
+const AssociatedNormPartyResponseSchema = z
+  .object({
+    associatedNormPartyArray: z.array(AssociatedNormPartySchema),
+    nextPageAPI: z
+      .url()
+      .max(2173)
+      .nullable()
+      .openapi({ description: 'Link to next page of results.' }),
+    previousPageAPI: z
+      .url()
+      .max(2172)
+      .nullable()
+      .openapi({ description: 'Link to previous page of results.' }),
+    totalCount: z.int().openapi({ description: 'Total no. of results for this criteria.' }),
+    totalPages: z.int().openapi({ description: 'Total no. of pages.' }),
+  })
+  .openapi({
+    required: [
+      'associatedNormPartyArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'totalPages',
+      'totalCount',
+    ],
+    title: 'AssociatedNormPartyResponse',
+    'x-unicourt-container': true,
+  })
+  .openapi('AssociatedNormPartyResponse')
+
+const AttorneyAnalyticsAPISchema = z
+  .object({
+    associatedNormJudgesAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormAttorneyAPI' }),
+    associatedNormLawFirmsAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormLawFirmsForNormAttorneyAPI' }),
+    associatedNormPartiesAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'AssociatedNormPartiesForNormAttorneyAPI' }),
+    caseCountAnalyticsByOpposingNormAttorneyAPI: z
+      .url()
+      .max(255)
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
+    caseCountAnalyticsByOpposingNormLawFirmAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
+    caseCountAnalyticsByOpposingNormPartyAPI: z
+      .url()
+      .max(255)
+      .nullable()
+      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
+    normAttorneyAPI: z
+      .url()
+      .max(255)
+      .openapi({
+        description: 'Link to Details for the Attorney.',
+        'x-logical-reference': 'NormAttorneyAPI',
+      }),
+    object: z.string().max(20).default('AttorneyAnalyticsAPI'),
+  })
+  .openapi({
+    required: [
+      'object',
+      'normAttorneyAPI',
+      'associatedNormJudgesAPI',
+      'associatedNormLawFirmsAPI',
+      'associatedNormPartiesAPI',
+      'caseCountAnalyticsByOpposingNormAttorneyAPI',
+      'caseCountAnalyticsByOpposingNormLawFirmAPI',
+      'caseCountAnalyticsByOpposingNormPartyAPI',
+    ],
+    title: 'AttorneyAnalyticsAPI',
+    'x-unicourt-container': false,
+  })
+  .openapi('AttorneyAnalyticsAPI')
+
+const AttorneyRepresentationTypeResponseSchema = z
+  .object({
+    attorneyRepresentationTypeArray: z.array(AttorneyRepresentationTypeSchema),
+    nextPageAPI: z
+      .url()
+      .min(1)
+      .max(2159)
+      .nullable()
+      .openapi({ description: 'Link to next page.', example: null }),
+    object: z
+      .string()
+      .length(34)
+      .default('AttorneyRepresentationTypeResponse')
+      .openapi({ example: 'AttorneyRepresentationTypeResponse' }),
+    pageNumber: z
+      .int()
+      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
+    previousPageAPI: z
+      .url()
+      .min(1)
+      .max(2158)
+      .nullable()
+      .openapi({ description: 'Link to previous page.', example: null }),
+    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
+    totalPages: z
+      .int()
+      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'attorneyRepresentationTypeArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'pageNumber',
+      'totalPages',
+      'totalCount',
+    ],
+    'x-unicourt-container': false,
+  })
+  .openapi('AttorneyRepresentationTypeResponse')
+
+const AttorneyTypeResponseSchema = z
+  .object({
+    attorneyTypeArray: z.array(AttorneyTypeSchema),
+    nextPageAPI: z
+      .url()
+      .min(1)
+      .max(2145)
+      .nullable()
+      .openapi({ description: 'Link to next page.', example: null }),
+    object: z
+      .string()
+      .length(20)
+      .default('AttorneyTypeResponse')
+      .openapi({ example: 'AttorneyTypeResponse' }),
+    pageNumber: z
+      .int()
+      .openapi({ description: 'Page number for which results where obtained.', example: 1 }),
+    previousPageAPI: z
+      .url()
+      .min(1)
+      .max(2144)
+      .nullable()
+      .openapi({ description: 'Link to previous page.', example: null }),
+    totalCount: z.int().openapi({ description: 'Total number of matches found.', example: 1 }),
+    totalPages: z
+      .int()
+      .openapi({ description: 'Total number of pages to obtain all the objects.', example: 1 }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'attorneyTypeArray',
+      'nextPageAPI',
+      'previousPageAPI',
+      'pageNumber',
+      'totalPages',
+      'totalCount',
+    ],
+    'x-unicourt-container': false,
+  })
+  .openapi('AttorneyTypeResponse')
+
+const BarSourceDataSchema = z
+  .object({
+    administrativeActionsArray: z.array(
+      z
+        .object({
+          caseNumber: z.string().max(250).nullable(),
+          description: z.string().max(250).nullable(),
+          effectiveDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          resultingStatus: z.string().max(250).nullable(),
+          type: z.string().max(250).nullable(),
+        })
+        .openapi({
+          required: ['caseNumber', 'description', 'effectiveDate', 'resultingStatus', 'type'],
+        }),
+    ),
+    admissionType: z.string().max(250).nullable(),
+    advancedDegreeArray: z.array(
+      z
+        .object({ area: z.string().max(250).nullable(), degree: z.string().max(250).nullable() })
+        .openapi({ required: ['area', 'degree'] }),
+    ),
+    appellateCourtDistrict: z.string().max(250).nullable(),
+    appellateDivisionDepartment: z.string().max(250).nullable(),
+    attorneyGroup: z.string().max(250).nullable(),
+    authorized: z.string().max(250).nullable(),
+    barLawFirm: z.string().max(250).nullable(),
+    barServiceClass: z.string().max(250).nullable(),
+    barStatusArray: z.array(
+      z
+        .object({ date: z.string().max(25).nullable(), status: z.string().max(250).nullable() })
+        .openapi({ required: ['status', 'date'] }),
+    ),
+    bio: z.string().max(5000).nullable(),
+    boardCertificationsArray: z.array(
+      z
+        .object({ area: z.string().max(250).nullable(), year: z.string().max(250).nullable() })
+        .openapi({ required: ['area', 'year'] }),
+    ),
+    boardDistrict: z.string().max(250).nullable(),
+    circuit: z.string().max(250).nullable(),
+    clientsRepresentedArray: z.array(z.string().max(250)),
+    comments: z.string().max(250).nullable(),
+    committeesArray: z.array(
+      z
+        .object({
+          committee: z.string().max(250).nullable(),
+          office: z.string().max(250).nullable(),
+          term: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['committee', 'office', 'term'] }),
+    ),
+    courtHistoryArray: z.array(
+      z
+        .object({
+          action: z.string().max(250).nullable(),
+          actionComments: z.string().max(2000).nullable(),
+          reinstatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          startDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+        })
+        .openapi({ required: ['action', 'actionComments', 'reinstatedDate', 'startDate'] }),
+    ),
+    courtOfAdmissions: z
+      .object({
+        courtStateArray: z.array(z.string().max(250)),
+        federalArray: z.array(z.string().max(250)),
+        otherCourtsArray: z.array(z.string().max(500)),
+      })
+      .nullable()
+      .openapi({ required: ['courtStateArray', 'federalArray', 'otherCourtsArray'] }),
+    courtServiceEmail: z.string().max(250).nullable(),
+    disciplinaryHistoryArray: z.array(
+      z
+        .object({
+          action: z.string().max(250).nullable(),
+          caseNumber: z.string().max(250).nullable(),
+          complaint: z.string().max(1000).nullable(),
+          contactId: z.string().min(1).max(250).nullable(),
+          dateOfAction: z.iso.datetime({ offset: true }).max(25).nullable(),
+          definition: z.string().max(1000).nullable(),
+          disciplinaryDecision: z.string().max(250).nullable(),
+          entryDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          information: z.string().max(250).nullable(),
+          link: z.string().max(250).nullable(),
+          note: z.string().max(1000).nullable(),
+          probationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          reinstatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          rule: z.string().max(250).nullable(),
+          ruleNumber: z.string().max(250).nullable(),
+          sectionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          status: z.string().max(250).nullable(),
+          stayDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          supremeCourt: z.string().max(250).nullable(),
+          term: z.string().max(250).nullable(),
+          typeOfAction: z.string().max(250).nullable(),
+        })
+        .openapi({
+          required: [
+            'action',
+            'caseNumber',
+            'complaint',
+            'contactId',
+            'dateOfAction',
+            'definition',
+            'disciplinaryDecision',
+            'entryDate',
+            'information',
+            'link',
+            'note',
+            'probationDate',
+            'reinstatedDate',
+            'rule',
+            'ruleNumber',
+            'sectionDate',
+            'status',
+            'stayDate',
+            'supremeCourt',
+            'term',
+            'typeOfAction',
+          ],
+        }),
+    ),
+    disciplineSummariesArray: z.array(
+      z
+        .object({
+          date: z.iso.datetime({ offset: true }).max(25).nullable(),
+          link: z.string().max(250).nullable(),
+          title: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['date', 'link', 'title'] }),
+    ),
+    dismissalsArray: z.array(z.string().max(250)),
+    district: z.string().max(250).nullable(),
+    employmentHistoryArray: z.array(
+      z
+        .object({
+          employer: z.string().max(250).nullable(),
+          endDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          startDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+        })
+        .openapi({ required: ['employer', 'endDate', 'startDate'] }),
+    ),
+    expirationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    feesOptionsArray: z.array(
+      z
+        .object({
+          contingencyFees: z.string().max(250).nullable(),
+          flatFees: z.string().max(250).nullable(),
+          hourlyRate: z.string().max(250).nullable(),
+          paymentPlans: z.string().max(250).nullable(),
+          slidingScaleFees: z.string().max(250).nullable(),
+        })
+        .openapi({
+          required: [
+            'contingencyFees',
+            'flatFees',
+            'hourlyRate',
+            'paymentPlans',
+            'slidingScaleFees',
+          ],
+        }),
+    ),
+    firmSize: z.string().max(250).nullable(),
+    firmWebsite: z.string().max(1000).nullable(),
+    firstAdmittedDate: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .nullable()
+      .openapi({
+        description:
+          'The firstAdmittedDate is the date when an attorney was admitted to the bar for the very first time regardless of which U.S state.',
+      }),
+    firstAdmittedYear: z.int().nullable(),
+    homeCounty: z.string().max(250).nullable(),
+    inGoodStanding: z.string().max(250).nullable(),
+    insurance: z.string().max(500).nullable(),
+    involvementsArray: z.array(
+      z
+        .object({
+          name: z.string().max(500).nullable(),
+          position: z.string().max(250).nullable(),
+          type: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['name', 'position', 'type'] }),
+    ),
+    judicialDistrict: z.string().max(250).nullable(),
+    jurisType: z.string().max(250).nullable(),
+    languagesArray: z.array(z.string().max(1000)),
+    lastRenewalDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    lawSchoolArray: z.array(
+      z
+        .object({
+          lawSchool: z.string().max(250).nullable(),
+          lawSchoolGraduatedDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+        })
+        .openapi({ required: ['lawSchool', 'lawSchoolGraduatedDate'] }),
+    ),
+    legalSpecialityArray: z.array(z.string().max(250)),
+    licenseType: z.string().max(250).nullable(),
+    name: z
+      .object({
+        firstName: z.string().max(500),
+        lastName: z.string().max(500),
+        middleName: z.string().max(500).nullable(),
+        name: z.string().max(500),
+        prefix: z.string().max(250).nullable(),
+        suffix: z.string().max(250).nullable(),
+      })
+      .openapi({ required: ['name', 'firstName', 'middleName', 'lastName', 'prefix', 'suffix'] }),
+    nextRegistration: z.iso.datetime({ offset: true }).max(25).nullable(),
+    nextRenewalDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    object: z.string().max(13).default('BarSourceData'),
+    openActionStatusArray: z.array(
+      z
+        .object({
+          date: z.iso.datetime({ offset: true }).max(25).nullable(),
+          reason: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['date', 'reason'] }),
+    ),
+    otherJurisdictionArray: z.array(
+      z
+        .object({
+          barNumber: z.string().max(250).nullable(),
+          state: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['barNumber', 'state'] }),
+    ),
+    otherNameArray: z.array(z.string().max(500)),
+    parish: z.string().max(250).nullable(),
+    pendingProceedingArray: z.array(z.string().max(250)),
+    position: z.string().max(250).nullable(),
+    practiceAreaArray: z.array(z.string().max(250)),
+    practiceLocationArray: z.array(z.string().max(250)),
+    privateLawPractice: z.string().max(250).nullable(),
+    profileLastCertified: z.iso.datetime({ offset: true }).max(25).nullable(),
+    publicHearingArray: z.array(
+      z
+        .object({
+          conduct: z.string().max(500).nullable(),
+          date: z.iso.datetime({ offset: true }).max(25).nullable(),
+          issuedBy: z.string().max(250).nullable(),
+          order: z.string().max(250).nullable(),
+          respondent: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['conduct', 'date', 'issuedBy', 'order', 'respondent'] }),
+    ),
+    reasonForInactivation: z
+      .object({ caseNumber: z.string().max(250).nullable(), link: z.string().max(250).nullable() })
+      .nullable()
+      .openapi({ required: ['caseNumber', 'link'] }),
+    relatedCasesArray: z.array(
+      z
+        .object({
+          caseDetails: z.string().max(250).nullable(),
+          caseId: z.string().min(1).max(250).nullable(),
+        })
+        .openapi({ required: ['caseId', 'caseDetails'] }),
+    ),
+    sectionsArray: z.array(z.string().max(250)),
+    servicesArray: z.array(z.string().max(250)),
+    sourceInfo: z
+      .object({ url: z.url().max(250).nullable() })
+      .nullable()
+      .openapi({ required: ['url'] }),
+    statewideGrievanceCommitteeHistoryArray: z.array(
+      z
+        .object({
+          finalDecision: z.string().max(250).nullable(),
+          finalDecisionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          grievanceComplaintNumber: z.string().max(250).nullable(),
+          publicComments: z.string().max(1000).nullable(),
+        })
+        .openapi({
+          required: [
+            'finalDecision',
+            'finalDecisionDate',
+            'grievanceComplaintNumber',
+            'publicComments',
+          ],
+        }),
+    ),
+    status: z.string().max(500).nullable(),
+    statusDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    statusHint: z.string().max(500).nullable(),
+    statusHistoryArray: z.array(
+      z
+        .object({
+          effectiveDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          statusChange: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['effectiveDate', 'statusChange'] }),
+    ),
+    tenYearDisciplineArray: z.array(
+      z
+        .object({
+          actionDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+          description: z.string().max(250).nullable(),
+          reference: z.string().max(250).nullable(),
+        })
+        .openapi({ required: ['actionDate', 'description', 'reference'] }),
+    ),
+    undergraduateSchool: z.string().max(250).nullable(),
+    yearsOfPractice: z.string().max(250).nullable(),
+  })
+  .openapi({
+    required: [
+      'object',
+      'administrativeActionsArray',
+      'admissionType',
+      'appellateCourtDistrict',
+      'appellateDivisionDepartment',
+      'attorneyGroup',
+      'authorized',
+      'barServiceClass',
+      'bio',
+      'boardCertificationsArray',
+      'boardDistrict',
+      'circuit',
+      'comments',
+      'committeesArray',
+      'courtHistoryArray',
+      'courtOfAdmissions',
+      'courtServiceEmail',
+      'disciplinaryHistoryArray',
+      'disciplineSummariesArray',
+      'dismissalsArray',
+      'district',
+      'employmentHistoryArray',
+      'expirationDate',
+      'feesOptionsArray',
+      'firmSize',
+      'firmWebsite',
+      'firstAdmittedDate',
+      'firstAdmittedYear',
+      'homeCounty',
+      'inGoodStanding',
+      'insurance',
+      'involvementsArray',
+      'judicialDistrict',
+      'jurisType',
+      'languagesArray',
+      'lastRenewalDate',
+      'lawSchoolArray',
+      'legalSpecialityArray',
+      'licenseType',
+      'name',
+      'nextRegistration',
+      'nextRenewalDate',
+      'openActionStatusArray',
+      'otherJurisdictionArray',
+      'otherNameArray',
+      'parish',
+      'pendingProceedingArray',
+      'position',
+      'practiceAreaArray',
+      'practiceLocationArray',
+      'privateLawPractice',
+      'profileLastCertified',
+      'publicHearingArray',
+      'reasonForInactivation',
+      'sectionsArray',
+      'servicesArray',
+      'sourceInfo',
+      'statewideGrievanceCommitteeHistoryArray',
+      'status',
+      'statusDate',
+      'statusHistoryArray',
+      'tenYearDisciplineArray',
+      'undergraduateSchool',
+      'barLawFirm',
+      'yearsOfPractice',
+      'clientsRepresentedArray',
+      'statusHint',
+      'advancedDegreeArray',
+      'barStatusArray',
+      'relatedCasesArray',
+    ],
+    title: 'BarSourceData',
+    'x-unicourt-container': false,
+  })
+  .openapi('BarSourceData')
+
+const BarRecordSchema = z
+  .object({
+    admittedDate: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .nullable()
+      .openapi({
+        description:
+          'The admittedDate is the date when an attorney was admitted to the bar of a given state.',
+      }),
+    barNumber: z.string().max(250).nullable(),
+    barSourceData: BarSourceDataSchema,
+    barSourceType: z.string().max(70),
+    contact: ContactSchema,
+    firstFetchDate: z.iso.datetime({ offset: true }).max(25),
+    inactivationDate: z.iso.datetime({ offset: true }).max(25).nullable(),
+    lastFetchDate: z.iso.datetime({ offset: true }).max(25),
+    lastFetchDateWithUpdates: z.iso
+      .datetime({ offset: true })
+      .max(25)
+      .openapi({ description: 'Last Fetch Date of the Attorney Update.' }),
+    object: z.string().max(9).default('BarRecord'),
+    stateCode: z.string().max(2),
+    status: z.enum(['Active', 'Inactive', 'Not Classified', 'Unknown']),
+  })
+  .openapi({
+    description:
+      'This contains the Attorney details that is obtained from the State Bar where the attorney is registered.',
+    required: [
+      'object',
+      'barNumber',
+      'barSourceType',
+      'admittedDate',
+      'stateCode',
+      'status',
+      'inactivationDate',
+      'barSourceData',
+      'contact',
+      'firstFetchDate',
+      'lastFetchDate',
+      'lastFetchDateWithUpdates',
+    ],
+    title: 'BarRecord',
+    'x-unicourt-container': false,
+  })
+  .openapi('BarRecord')
+
+const BillingCycleUsageResponseSchema = z
+  .object({
+    apiCallsBillable: z
+      .object({
+        count: z
+          .int()
+          .openapi({ description: 'Total API calls billed  for the billing cycle', example: 100 }),
+        lastUpdated: z
+          .string()
+          .length(25)
+          .nullable()
+          .openapi({
+            description: 'Last Updated date and time for the field apiCallsBillable',
+            example: '2022-11-10T10:17:56+00:00',
+          }),
+      })
+      .openapi({
+        description: 'Total number of API calls billed for the billing cycle.',
+        required: ['count', 'lastUpdated'],
+      }),
+    apiCallsCredited: z
+      .object({
+        count: z
+          .int()
+          .openapi({
+            description: 'Total API calls credited back for the billing cycle',
+            example: 100,
+          }),
+        lastUpdated: z
+          .string()
+          .length(25)
+          .nullable()
+          .openapi({
+            description: 'Last Updated date and time for the field apiCallsCredited',
+            example: '2022-11-10T10:17:56+00:00',
+          }),
+      })
+      .openapi({
+        description:
+          'Total number of callbackFailures including caseUpdate, caseDocumentOrder and caseExport for the billing cycle.',
+        required: ['count', 'lastUpdated'],
+      }),
+    apiCallsMade: z
+      .object({
+        count: z
+          .int()
+          .openapi({ description: 'Total API calls made for the billing cycle', example: 100 }),
+        lastUpdated: z
+          .string()
+          .length(25)
+          .nullable()
+          .openapi({
+            description: 'Last Updated date and time for the field apiCallsMade',
+            example: '2022-11-10T10:17:56+00:00',
+          }),
+      })
+      .openapi({
+        description: 'Total API calls made for the billing cycle.',
+        required: ['count', 'lastUpdated'],
+      }),
+    apiUsage: z
+      .looseObject({})
+      .openapi({ description: 'StartDate and endDate of the billing cycle.' }),
+    billingCycle: z
+      .object({
+        endDate: z.iso
+          .date()
+          .length(25)
+          .openapi({
+            description: 'End date of the billing cycle.',
+            example: '2022-08-22T00:00:00+00:00',
+          }),
+        startDate: z.iso
+          .date()
+          .length(25)
+          .openapi({
+            description: 'Start date of the billing cycle.',
+            example: '2022-08-22T00:00:00+00:00',
+          }),
+      })
+      .openapi({
+        description: 'StartDate and endDate of the billing cycle.',
+        required: ['startDate', 'endDate'],
+      }),
+    days: z.looseObject({}).openapi({ description: 'Billing cycle days.' }),
+    object: z
+      .string()
+      .length(25)
+      .default('BillingCycleUsageResponse')
+      .openapi({ description: 'Name of the object.', example: 'BillingCycleUsageResponse' }),
+    totalCasesTracked: z
+      .int()
+      .openapi({ description: 'Total number of successful case tracks.', example: 200 }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'billingCycle',
+      'days',
+      'apiUsage',
+      'apiCallsMade',
+      'apiCallsCredited',
+      'apiCallsBillable',
+      'totalCasesTracked',
+    ],
+    'x-unicourt-container': false,
+  })
+  .openapi('BillingCycleUsageResponse')
+
+const BillingCyclesResponseSchema = z
+  .object({
+    billingCycleArray: z
+      .array(z.iso.date().length(22).nullable().openapi({ example: '2023-01-10to2023-02-09' }))
+      .min(0)
+      .max(12)
+      .nullable()
+      .openapi({ description: 'Array of previous 12 Billing Cycles.' }),
+    object: z
+      .string()
+      .length(21)
+      .default('BillingCyclesResponse')
+      .openapi({ description: 'Name of the object.', example: 'BillingCyclesResponse' }),
+  })
+  .openapi({ required: ['object', 'billingCycleArray'], 'x-unicourt-container': false })
+  .openapi('BillingCyclesResponse')
+
+const CallbackListResponseSchema = z
+  .object({
+    caseDocumentOrderCallbacks: z
+      .object({
+        count: z.int().openapi({ example: 7 }),
+        link: z
+          .url()
+          .min(1)
+          .max(1024)
+          .openapi({
+            example:
+              'https://enterpriseapi.unicourt.com/caseDocumentOrder/callbacks?date=2022-03-08T10:17:56+00:00',
+          }),
+      })
+      .openapi({ required: ['count', 'link'] }),
+    caseExportCallbacks: z
+      .object({
+        count: z.int().openapi({ example: 10 }),
+        link: z
+          .url()
+          .min(1)
+          .max(1024)
+          .openapi({
+            example:
+              'https://enterpriseapi.unicourt.com/caseExport/callbacks?date=2022-03-08T10:17:56+00:00',
+          }),
+      })
+      .openapi({ required: ['count', 'link'] }),
+    object: z
+      .string()
+      .length(20)
+      .default('CallbackListResponse')
+      .openapi({ description: 'Name of the object.', example: 'CallbackListResponse' }),
+  })
+  .openapi({
+    required: ['object', 'caseDocumentOrderCallbacks', 'caseExportCallbacks'],
+    'x-unicourt-container': false,
+  })
+  .openapi('CallbackListResponse')
 
 const CaseClassSchema = z
   .object({
@@ -5962,31 +6249,6 @@ const CaseCountAnalyticsByPartyRoleResponseSchema = z
   })
   .openapi('CaseCountAnalyticsByPartyRoleResponse')
 
-const ExceptionSchema = z
-  .object({
-    code: z
-      .string()
-      .min(1)
-      .max(75)
-      .openapi({ description: 'Indicates the type of error occured.' }),
-    details: z.string().min(1).max(255).openapi({ description: 'Describes what went wrong.' }),
-    message: z
-      .string()
-      .min(1)
-      .max(255)
-      .openapi({ description: 'Indicates the error message that describes the error code.' }),
-    object: z.string().length(9).default('Exception').openapi({ example: 'Exception' }),
-  })
-  .nullable()
-  .openapi({
-    description:
-      'Exception object contains specific error code and its message related to the API request validation error or error occurred during API request processing.',
-    required: ['object', 'code', 'message', 'details'],
-    title: 'Exception',
-    'x-unicourt-container': false,
-  })
-  .openapi('Exception')
-
 const ExportFileSchema = z
   .object({
     expiryDate: z
@@ -6582,148 +6844,7 @@ const CaseStatusResponseSchema = z
   })
   .openapi('CaseStatusResponse')
 
-const CaseUpdatePacerOptionsResponseSchema = z
-  .object({
-    additionalPageArray: z
-      .array(
-        z
-          .object({
-            fetchIfOlderThanDays: z
-              .int()
-              .min(0)
-              .max(100)
-              .default(0)
-              .exactOptional()
-              .openapi({
-                description:
-                  'You can limit how often this page information is fetched to reduce your PACER fees.\n\nMin days is 0 and Max days is 100.\n\nExample:\n1.  Specifying a value of 0 ensures that this page is fetched from PACER for this case update irrespective of when the page was last fetched.\n2.  Specifying a value of 30 ensures that this page is fetched from PACER for this case update only if the last fetch was older than 30 days.\n',
-                example: 30,
-              }),
-            page: z
-              .enum(['associatedCases', 'caseSummary', 'listOfCreditors'])
-              .exactOptional()
-              .openapi({ example: 'caseSummary' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .nullable()
-      .openapi({
-        description:
-          'Currently this option is only applicable for Federal PACER cases. The default behavior of the Case Update is to fetch the Docket Report from PACER which includes the parties and attorneys too.\n\nHowever if you need to fetch information for other pages in PACER you will need to specify it here.\n- associatedCases:\n> This will fetch the Associated Cases page in PACER if available. This page consists of related cases especially applicable for Multi-District Litigation cases and Member Cases. Including this option will internally link all related cases in our system. Data from this page will be available via the Related Cases API.\n- caseSummary:\n> This will fetch the Case Summary page in PACER if available. This page consists of additional case info which is not present in the Docket Report page. Data from this page will be structured and available as response in the Case API’s ```additional_info``` field.\n- listOfCreditors:\n> This page will fetch the “List Of Creditors” page for PACER Bankruptcy cases of case type "bk". Note that this page cannot be extracted for Bankruptcy cases of case type "ap" (Adversary Proceedings). This page consists of the Creditor information like the name and address of the Creditors. Data from this page will be structured and available as response in the Case API.\n',
-        example: [
-          { fetchIfOlderThanDays: 30, page: 'associatedCases' },
-          { fetchIfOlderThanDays: 15, page: 'caseSummary' },
-          { fetchIfOlderThanDays: 15, page: 'listOfCreditors' },
-        ],
-      }),
-    fetchParticipantsIfOlderThanDays: z
-      .int()
-      .min(0)
-      .max(100)
-      .default(0)
-      .openapi({
-        description:
-          '**Currently this option is only applicable for Federal PACER cases. You can limit how often parties and attorneys for a PACER case are fetched to reduce your PACER fees. If you are tracking cases daily or hourly you could easily end up with a large PACER bill.**\n\n**Use Case: Cases are typically updated to check for new docket entry filings. However every update to PACER case costs money. Participants for a case change less often than docket entry filings. So fetching participants for every update might result in unnecessary PACER costs; especially on cases which have a lot of parties and attorneys. So instead of getting charged the minimum cost of $0.10 for an update which might have had few docket entries, you could end up spending $3 for every update because there were a lot of parties for that case that were also fetched.**\n\n**With this option you can choose when to fetch parties for case based on when was it last fetched.**\nYou can limit how often this participants are fetched in a PACER case to keep your PACER costs under control.\n\nMin days is 0 and Max days is 100.\n\nExample:\n1.  Specifying a value of 0 ensures that participants are fetched from PACER for this case update irrespective of when the participants were last fetched.\n2.  Specifying a value of 30 ensures that participants are fetched from PACER for this case update only if the last fetch was older than 30 days.\n',
-        example: 30,
-      }),
-    object: z
-      .string()
-      .length(30)
-      .default('CaseUpdatePacerOptionsResponse')
-      .openapi({ description: 'Name of the object.', example: 'CaseUpdatePacerOptionsResponse' }),
-    pacerClientCode: z
-      .string()
-      .min(0)
-      .max(32)
-      .nullable()
-      .openapi({
-        description:
-          'PACER Client Code. This is mandatory if your setting in PACER website is set to True for required client code.',
-        example: 'Test UniCourt API',
-      }),
-    pacerUserId: z
-      .string()
-      .min(6)
-      .max(40)
-      .openapi({
-        description:
-          '**Your PACER credentials username. This is mandatory when a PACER Case is being requested in the API. For Non PACER cases this is not mandatory. Suppose your request consists of Non PACER and PACER Cases then this needs to be passed becuase you are requesting a PACER case too.**',
-        example: 'URKYwer3tyh5r56gq2',
-      }),
-    refreshType: z
-      .enum(['fetchNewDocketEntries', 'fetchAllDocketEntries'])
-      .nullable()
-      .default('fetchNewDocketEntries')
-      .openapi({
-        description:
-          'This flag determines whether to pull only new or pull all the docket entries for a PACER case being requested.\n\nOnly one of the two values is allowed:\n-   fetchNewDocketEntries:\n    >   Updates the PACER case with only new docket entries that have been added after the previous update of the case being requested.\n-   fetchAllDocketEntries:\n    >   Updates the PACER case by re-parsing all dockets from #1 till latest docket entry available.\n',
-        example: 'fetchNewDocketEntries',
-      }),
-  })
-  .nullable()
-  .openapi({
-    description: 'Applicable for PACER cases.',
-    required: [
-      'object',
-      'pacerUserId',
-      'pacerClientCode',
-      'fetchParticipantsIfOlderThanDays',
-      'refreshType',
-      'additionalPageArray',
-    ],
-    title: 'CaseUpdatePacerOptionsResponse',
-    'x-unicourt-container': false,
-  })
-  .openapi('CaseUpdatePacerOptionsResponse')
-
-const LastTrackedDetailsSchema = z
-  .object({
-    lastTrackDate: z.iso
-      .datetime({ offset: true })
-      .length(25)
-      .nullable()
-      .openapi({
-        description: 'The date and time when the case was tracked for this account.',
-        example: '2020-05-14T11:51:27+00:00',
-      }),
-    lastTrackException: ExceptionSchema,
-    object: z
-      .string()
-      .length(18)
-      .default('LastTrackedDetails')
-      .openapi({ description: 'Name of the object.', example: 'LastTrackedDetails' }),
-    pacerOptions: CaseUpdatePacerOptionsResponseSchema,
-  })
-  .openapi({
-    required: ['object', 'pacerOptions', 'lastTrackDate', 'lastTrackException'],
-    'x-unicourt-container': false,
-  })
-  .openapi('LastTrackedDetails')
-
-const ScheduleSchema = z
-  .object({
-    days: z
-      .array(z.int())
-      .openapi({
-        description:
-          '[] -> if schedule type is daily <br>\n1-7 -> if schedule type is weekly <br>\n1-31 -> if schedule type is monthly\n',
-        example: [1, 3, 5],
-      }),
-    object: z
-      .string()
-      .length(8)
-      .default('Schedule')
-      .openapi({ description: 'Name of the object.', example: 'Schedule' }),
-    type: z.enum(['daily', 'weekly', 'monthly']).openapi({ example: 'weekly' }),
-  })
-  .openapi({
-    required: ['object', 'type', 'days'],
-    title: 'Schedule',
-    'x-unicourt-container': false,
-  })
-  .openapi('Schedule')
-
-const CaseTrackSchema = z
+const CaseTrackSchema: z.ZodType<CaseTrackType> = z
   .object({
     case: CaseSchema,
     caseAPI: z
@@ -7074,7 +7195,7 @@ const CaseTypeResponseSchema = z
   })
   .openapi('CaseTypeResponse')
 
-const CaseUpdateSchema = z
+const CaseUpdateSchema: z.ZodType<CaseUpdateType> = z
   .object({
     case: CaseSchema,
     caseAPI: z
@@ -8069,7 +8190,9 @@ const DailyUsageResponseSchema = z
         description: 'Total API calls made for the billing cycle.',
         required: ['count', 'lastUpdated'],
       }),
-    apiUsage: z.object({}).openapi({ description: 'StartDate and endDate of the billing cycle.' }),
+    apiUsage: z
+      .looseObject({})
+      .openapi({ description: 'StartDate and endDate of the billing cycle.' }),
     object: z
       .string()
       .length(18)
@@ -8288,96 +8411,63 @@ const JurisdictionGeoResponseSchema = z
   })
   .openapi('JurisdictionGeoResponse')
 
-const LawFirmAnalyticsAPISchema = z
+const SimilarNormAttorneySchema = z
   .object({
-    associatedNormAttorneyAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormAttorneysForNormLawFirmAPI' }),
-    associatedNormJudgeAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormJudgesForNormLawFirmAPI' }),
-    associatedNormPartiesAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'AssociatedNormPartiesForNormLawFirmAPI' }),
-    caseCountAnalyticsByOpposingNormAttorneyAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormAttorneyAPI' }),
-    caseCountAnalyticsByOpposingNormLawFirmAPI: z
-      .url()
-      .max(255)
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormLawFirmAPI' }),
-    caseCountAnalyticsByOpposingNormPartyAPI: z
-      .url()
-      .max(255)
-      .nullable()
-      .openapi({ 'x-logical-reference': 'CaseCountAnalyticsByOpposingNormPartyAPI' }),
-    normLawFirmAPI: z
-      .url()
-      .max(255)
-      .openapi({
-        description: 'Link to Details for the Law Firm.',
-        'x-logical-reference': 'NormLawFirmAPI',
-      }),
-    object: z.string().max(19).default('LawFirmAnalyticsAPI'),
+    barRecordPreviewArray: z.array(BarRecordPreviewSchema),
+    name: z.string().min(1).max(500),
+    normAttorneyAPI: z.url().max(255),
+    normAttorneyId: z.string().length(18),
+    normAttorneySimilarityScore: z.float32(),
+    object: z.string().length(19).default('SimilarNormAttorney'),
   })
   .openapi({
     required: [
       'object',
-      'normLawFirmAPI',
-      'associatedNormAttorneyAPI',
-      'associatedNormJudgeAPI',
-      'associatedNormPartiesAPI',
-      'caseCountAnalyticsByOpposingNormAttorneyAPI',
-      'caseCountAnalyticsByOpposingNormLawFirmAPI',
-      'caseCountAnalyticsByOpposingNormPartyAPI',
+      'normAttorneyId',
+      'normAttorneyAPI',
+      'name',
+      'normAttorneySimilarityScore',
+      'barRecordPreviewArray',
     ],
-    title: 'LawFirmAnalyticsAPI',
+    title: 'SimilarNormAttorney',
     'x-unicourt-container': false,
   })
-  .openapi('LawFirmAnalyticsAPI')
+  .openapi('SimilarNormAttorney')
 
-const NormAttorneySchema: z.ZodType<NormAttorneyType> = z
-  .lazy(() =>
-    z
-      .object({
-        attorneyAnalyticsAPI: AttorneyAnalyticsAPISchema,
-        barRecordArray: z.array(BarRecordSchema),
-        caseAnalyticsAPI: CaseAnalyticsAPISchema,
-        caseSearchAPI: z.url().max(255).openapi({ 'x-logical-reference': 'CaseSearchAPI' }),
-        firstName: z.string().max(500),
-        hasAssociatedPublicData: z.boolean(),
-        lastName: z.string().max(500),
-        middleName: z.string().max(500).nullable(),
-        name: z.string().max(500),
-        normAttorneyId: z.string().length(18),
-        object: z.string().max(12).default('NormAttorney'),
-        similarNormAttorneyArray: z.array(SimilarNormAttorneySchema),
-      })
-      .openapi({
-        description: 'Norm Attorney',
-        required: [
-          'object',
-          'normAttorneyId',
-          'name',
-          'firstName',
-          'middleName',
-          'lastName',
-          'caseSearchAPI',
-          'caseAnalyticsAPI',
-          'hasAssociatedPublicData',
-          'barRecordArray',
-          'attorneyAnalyticsAPI',
-          'similarNormAttorneyArray',
-        ],
-        title: 'NormAttorney',
-        'x-unicourt-container': false,
-      }),
-  )
+const NormAttorneySchema = z
+  .object({
+    attorneyAnalyticsAPI: AttorneyAnalyticsAPISchema,
+    barRecordArray: z.array(BarRecordSchema),
+    caseAnalyticsAPI: CaseAnalyticsAPISchema,
+    caseSearchAPI: z.url().max(255).openapi({ 'x-logical-reference': 'CaseSearchAPI' }),
+    firstName: z.string().max(500),
+    hasAssociatedPublicData: z.boolean(),
+    lastName: z.string().max(500),
+    middleName: z.string().max(500).nullable(),
+    name: z.string().max(500),
+    normAttorneyId: z.string().length(18),
+    object: z.string().max(12).default('NormAttorney'),
+    similarNormAttorneyArray: z.array(SimilarNormAttorneySchema),
+  })
+  .openapi({
+    description: 'Norm Attorney',
+    required: [
+      'object',
+      'normAttorneyId',
+      'name',
+      'firstName',
+      'middleName',
+      'lastName',
+      'caseSearchAPI',
+      'caseAnalyticsAPI',
+      'hasAssociatedPublicData',
+      'barRecordArray',
+      'attorneyAnalyticsAPI',
+      'similarNormAttorneyArray',
+    ],
+    title: 'NormAttorney',
+    'x-unicourt-container': false,
+  })
   .openapi('NormAttorney')
 
 const NormAttorneySearchResultSchema = z
@@ -8847,7 +8937,7 @@ const NormJudgeSearchResponseSchema = z
   })
   .openapi('NormJudgeSearchResponse')
 
-const NormLawFirmSchema = z
+const NormLawFirmSchema: z.ZodType<NormLawFirmType> = z
   .object({
     caseAnalyticsAPI: CaseAnalyticsAPISchema,
     caseSearchAPI: z.url().max(255).openapi({ 'x-logical-reference': 'CaseSearchAPI' }),
@@ -8971,50 +9061,47 @@ const NormLawFirmSearchResponseSchema = z
   .openapi('NormLawFirmSearchResponse')
 
 const NormPartySchema: z.ZodType<NormPartyType> = z
-  .lazy(() =>
-    z
+  .object({
+    caseAnalyticsAPI: CaseAnalyticsAPISchema,
+    caseSearchAPI: z.url().max(255).openapi({ 'x-logical-reference': 'CaseSearchAPI' }),
+    individualData: z
       .object({
-        caseAnalyticsAPI: CaseAnalyticsAPISchema,
-        caseSearchAPI: z.url().max(255).openapi({ 'x-logical-reference': 'CaseSearchAPI' }),
-        individualData: z
-          .object({
-            firstName: z.string().max(500).nullable(),
-            lastName: z.string().max(500).nullable(),
-            middleName: z.string().max(500).nullable(),
-            name: z.string().max(500).nullable(),
-          })
-          .nullable()
-          .openapi({
-            description: '* Only applicable if the Party is an Individual.\n',
-            required: ['name', 'firstName', 'middleName', 'lastName'],
-            title: 'Individual',
-          }),
-        name: z.string().max(500),
-        normOrganizationData: NormOrganizationSchema,
-        normPartyId: z.string().length(18),
-        object: z.string().max(9).default('NormParty'),
-        partyAnalyticsAPI: PartyAnalyticsAPISchema,
-        partyClassificationType: z.enum(['Individual', 'Organization']),
-        relatedNormPartyArray: z.array(RelatedNormPartySchema),
+        firstName: z.string().max(500).nullable(),
+        lastName: z.string().max(500).nullable(),
+        middleName: z.string().max(500).nullable(),
+        name: z.string().max(500).nullable(),
       })
+      .nullable()
       .openapi({
-        description: 'Norm Party',
-        required: [
-          'object',
-          'normPartyId',
-          'name',
-          'partyClassificationType',
-          'caseSearchAPI',
-          'caseAnalyticsAPI',
-          'individualData',
-          'normOrganizationData',
-          'partyAnalyticsAPI',
-          'relatedNormPartyArray',
-        ],
-        title: 'NormParty',
-        'x-unicourt-container': false,
+        description: '* Only applicable if the Party is an Individual.\n',
+        required: ['name', 'firstName', 'middleName', 'lastName'],
+        title: 'Individual',
       }),
-  )
+    name: z.string().max(500),
+    normOrganizationData: NormOrganizationSchema,
+    normPartyId: z.string().length(18),
+    object: z.string().max(9).default('NormParty'),
+    partyAnalyticsAPI: PartyAnalyticsAPISchema,
+    partyClassificationType: z.enum(['Individual', 'Organization']),
+    relatedNormPartyArray: z.array(RelatedNormPartySchema),
+  })
+  .openapi({
+    description: 'Norm Party',
+    required: [
+      'object',
+      'normPartyId',
+      'name',
+      'partyClassificationType',
+      'caseSearchAPI',
+      'caseAnalyticsAPI',
+      'individualData',
+      'normOrganizationData',
+      'partyAnalyticsAPI',
+      'relatedNormPartyArray',
+    ],
+    title: 'NormParty',
+    'x-unicourt-container': false,
+  })
   .openapi('NormParty')
 
 const NormPartySearchResultSchema = z

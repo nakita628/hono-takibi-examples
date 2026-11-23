@@ -24,12 +24,6 @@ Base URLs:
 |analytics.behavioral_events.send||
 |behavioral_events.event_definitions.read_write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="events-send-event-completions-basic">Basic</h1>
 
 ## Send a custom event occurrence

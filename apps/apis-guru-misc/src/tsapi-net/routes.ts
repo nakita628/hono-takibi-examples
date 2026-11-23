@@ -29,23 +29,92 @@ type HierarchicalInterviewType = {
   level?: z.infer<typeof LevelSchema> | null
 }
 
-const HierarchicalInterviewSchema: z.ZodType<HierarchicalInterviewType> = z
+const LanguageSchema: z.ZodType<LanguageType> = z
   .lazy(() =>
     z
       .strictObject({
-        dataItems: z.array(DataItemSchema).nullable().exactOptional(),
-        hierarchicalInterviews: z.array(HierarchicalInterviewSchema).nullable().exactOptional(),
         ident: z.string().nullable().exactOptional(),
-        level: LevelSchema.nullable().exactOptional(),
+        name: z.string().nullable().exactOptional(),
+        subLanguages: z.array(LanguageSchema).nullable().exactOptional(),
       })
       .openapi({ required: [] }),
   )
-  .openapi('HierarchicalInterview')
+  .openapi('Language')
 
-type InterviewType = {
-  dataItems?: z.infer<typeof DataItemSchema>[] | null
-  hierarchicalInterviews?: z.infer<typeof HierarchicalInterviewSchema>[] | null
+const VariableSchema: z.ZodType<VariableType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        ident: z.string().nullable().exactOptional(),
+        label: LabelSchema.nullable().exactOptional(),
+        maxResponses: z.int32().exactOptional(),
+        name: z.string().nullable().exactOptional(),
+        parentType: ParentTypeSchema.exactOptional(),
+        questions: z.array(VariableSchema).nullable().exactOptional(),
+        type: VariableTypeSchema.exactOptional(),
+        use: UseTypeSchema.exactOptional(),
+        variableValues: VariableValuesSchema.nullable().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Variable')
+
+type SurveyMetadataBaseType = {
+  interviewCount?: number
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  name?: string | null
+  title?: string | null
+  variables?: z.infer<typeof VariableSchema>[] | null
+}
+
+const SurveyMetadataBaseSchema: z.ZodType<SurveyMetadataBaseType> = z
+  .strictObject({
+    interviewCount: z.int32().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    variables: z.array(VariableSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SurveyMetadataBase')
+
+const ParentDetailsSchema = z
+  .strictObject({
+    level: z.string().nullable().exactOptional(),
+    linkVar: z.string().nullable().exactOptional(),
+    ordered: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ParentDetails')
+
+type HierarchyType = {
   ident?: string | null
+  metadata?: z.infer<typeof SurveyMetadataBaseSchema> | null
+  parent?: z.infer<typeof ParentDetailsSchema> | null
+}
+
+type LanguageType = {
+  ident?: string | null
+  name?: string | null
+  subLanguages?: LanguageType[] | null
+}
+
+const HierarchySchema: z.ZodType<HierarchyType> = z
+  .strictObject({
+    ident: z.string().nullable().exactOptional(),
+    metadata: SurveyMetadataBaseSchema.nullable().exactOptional(),
+    parent: ParentDetailsSchema.nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Hierarchy')
+
+type SurveyMetadataType = {
+  hierarchies?: z.infer<typeof HierarchySchema>[] | null
+  interviewCount?: number
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  name?: string | null
+  title?: string | null
+  variables?: z.infer<typeof VariableSchema>[] | null
 }
 
 const AltLabelModeSchema = z.union([z.literal(1), z.literal(2)]).openapi('AltLabelMode')
@@ -59,23 +128,12 @@ const AltLabelSchema = z
   .openapi({ required: [] })
   .openapi('AltLabel')
 
-type LabelType = { altLabels?: z.infer<typeof AltLabelSchema>[] | null; text?: string | null }
-
-type LanguageType = {
-  ident?: string | null
-  name?: string | null
-  subLanguages?: LanguageType[] | null
-}
-
-const LabelSchema: z.ZodType<LabelType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        altLabels: z.array(AltLabelSchema).nullable().exactOptional(),
-        text: z.string().nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
+const LabelSchema = z
+  .strictObject({
+    altLabels: z.array(AltLabelSchema).nullable().exactOptional(),
+    text: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Label')
 
 const ParentTypeSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]).openapi('ParentType')
@@ -135,75 +193,26 @@ type VariableType = {
   variableValues?: z.infer<typeof VariableValuesSchema> | null
 }
 
-const LanguageSchema: z.ZodType<LanguageType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        ident: z.string().nullable().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        subLanguages: z.array(LanguageSchema).nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Language')
-
-const VariableSchema: z.ZodType<VariableType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        ident: z.string().nullable().exactOptional(),
-        label: LabelSchema.nullable().exactOptional(),
-        maxResponses: z.int32().exactOptional(),
-        name: z.string().nullable().exactOptional(),
-        parentType: ParentTypeSchema.exactOptional(),
-        questions: z.array(VariableSchema).nullable().exactOptional(),
-        type: VariableTypeSchema.exactOptional(),
-        use: UseTypeSchema.exactOptional(),
-        variableValues: VariableValuesSchema.nullable().exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Variable')
-
-const SurveyMetadataBaseSchema = z
-  .strictObject({
-    interviewCount: z.int32().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    variables: z.array(VariableSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SurveyMetadataBase')
-
-const ParentDetailsSchema = z
-  .strictObject({
-    level: z.string().nullable().exactOptional(),
-    linkVar: z.string().nullable().exactOptional(),
-    ordered: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ParentDetails')
-
-const HierarchySchema = z
-  .strictObject({
-    ident: z.string().nullable().exactOptional(),
-    metadata: SurveyMetadataBaseSchema.nullable().exactOptional(),
-    parent: ParentDetailsSchema.nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Hierarchy')
-
-const InterviewSchema: z.ZodType<InterviewType> = z
+const HierarchicalInterviewSchema: z.ZodType<HierarchicalInterviewType> = z
   .lazy(() =>
     z
       .strictObject({
         dataItems: z.array(DataItemSchema).nullable().exactOptional(),
         hierarchicalInterviews: z.array(HierarchicalInterviewSchema).nullable().exactOptional(),
         ident: z.string().nullable().exactOptional(),
+        level: LevelSchema.nullable().exactOptional(),
       })
       .openapi({ required: [] }),
   )
+  .openapi('HierarchicalInterview')
+
+const InterviewSchema = z
+  .strictObject({
+    dataItems: z.array(DataItemSchema).nullable().exactOptional(),
+    hierarchicalInterviews: z.array(HierarchicalInterviewSchema).nullable().exactOptional(),
+    ident: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
   .openapi('Interview')
 
 const SurveyDetailSchema = z
@@ -215,7 +224,7 @@ const SurveyDetailSchema = z
   .openapi({ required: [] })
   .openapi('SurveyDetail')
 
-const SurveyMetadataSchema = z
+const SurveyMetadataSchema: z.ZodType<SurveyMetadataType> = z
   .strictObject({
     hierarchies: z.array(HierarchySchema).nullable().exactOptional(),
     interviewCount: z.int32().exactOptional(),

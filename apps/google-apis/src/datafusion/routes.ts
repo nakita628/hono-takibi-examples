@@ -1,19 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AcceleratorSchema = z
-  .object({
-    acceleratorType: z
-      .enum(['ACCELERATOR_TYPE_UNSPECIFIED', 'CDC', 'HEALTHCARE', 'CCAI_INSIGHTS', 'CLOUDSEARCH'])
-      .exactOptional()
-      .openapi({ description: 'The type of an accelator for a CDF instance.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'ENABLED', 'DISABLED', 'UNKNOWN'])
-      .exactOptional()
-      .openapi({ description: 'The state of the accelerator.' }),
-  })
-  .openapi({ description: 'Identifies Data Fusion accelerators for an instance.', required: [] })
-  .openapi('Accelerator')
-
 const AuditLogConfigSchema = z
   .object({
     exemptedMembers: z
@@ -118,90 +104,6 @@ const BindingSchema = z
   .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
   .openapi('Binding')
 
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const CryptoKeyConfigSchema = z
-  .object({
-    keyReference: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the key which is used to encrypt/decrypt customer data. For key in Cloud KMS, the key should be in the format of `projects/*/locations/*/keyRings/*/cryptoKeys/*`.',
-      }),
-  })
-  .openapi({
-    description:
-      'The crypto key configuration. This field is used by the Customer-managed encryption keys (CMEK) feature.',
-    required: [],
-  })
-  .openapi('CryptoKeyConfig')
-
-const DnsPeeringSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Optional description of the dns zone.' }),
-    domain: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The dns name suffix of the zone.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The resource name of the dns peering zone. Format: projects/{project}/locations/{location}/instances/{instance}/dnsPeerings/{dns_peering}',
-      }),
-    targetNetwork: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Optional target network to which dns peering should happen.',
-      }),
-    targetProject: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Optional target project to which dns peering should happen.',
-      }),
-  })
-  .openapi({
-    description:
-      'DNS peering configuration. These configurations are used to create DNS peering with the customer Cloud DNS.',
-    required: [],
-  })
-  .openapi('DnsPeering')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const EventPublishConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Required. Option to enable Event Publishing.' }),
-    topic: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The resource name of the Pub/Sub topic. Format: projects/{project_id}/topics/{topic_id}',
-      }),
-  })
-  .openapi({ description: 'Confirguration of PubSubEventWriter.', required: [] })
-  .openapi('EventPublishConfig')
-
 const PolicySchema = z
   .object({
     auditConfigs: z
@@ -289,6 +191,121 @@ const IAMPolicySchema = z
     required: [],
   })
   .openapi('IAMPolicy')
+
+type NamespaceType = { iamPolicy?: z.infer<typeof IAMPolicySchema>; name?: string }
+
+const NamespaceSchema: z.ZodType<NamespaceType> = z
+  .object({
+    iamPolicy: IAMPolicySchema.exactOptional().openapi({
+      description: 'IAM policy associated with this namespace.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'Name of the given namespace.' }),
+  })
+  .openapi({ description: 'Represents the information of a namespace', required: [] })
+  .openapi('Namespace')
+
+type ListNamespacesResponseType = {
+  namespaces?: z.infer<typeof NamespaceSchema>[]
+  nextPageToken?: string
+}
+
+const AcceleratorSchema = z
+  .object({
+    acceleratorType: z
+      .enum(['ACCELERATOR_TYPE_UNSPECIFIED', 'CDC', 'HEALTHCARE', 'CCAI_INSIGHTS', 'CLOUDSEARCH'])
+      .exactOptional()
+      .openapi({ description: 'The type of an accelator for a CDF instance.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'ENABLED', 'DISABLED', 'UNKNOWN'])
+      .exactOptional()
+      .openapi({ description: 'The state of the accelerator.' }),
+  })
+  .openapi({ description: 'Identifies Data Fusion accelerators for an instance.', required: [] })
+  .openapi('Accelerator')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const CryptoKeyConfigSchema = z
+  .object({
+    keyReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the key which is used to encrypt/decrypt customer data. For key in Cloud KMS, the key should be in the format of `projects/*/locations/*/keyRings/*/cryptoKeys/*`.',
+      }),
+  })
+  .openapi({
+    description:
+      'The crypto key configuration. This field is used by the Customer-managed encryption keys (CMEK) feature.',
+    required: [],
+  })
+  .openapi('CryptoKeyConfig')
+
+const DnsPeeringSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Optional description of the dns zone.' }),
+    domain: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The dns name suffix of the zone.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The resource name of the dns peering zone. Format: projects/{project}/locations/{location}/instances/{instance}/dnsPeerings/{dns_peering}',
+      }),
+    targetNetwork: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Optional target network to which dns peering should happen.',
+      }),
+    targetProject: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Optional target project to which dns peering should happen.',
+      }),
+  })
+  .openapi({
+    description:
+      'DNS peering configuration. These configurations are used to create DNS peering with the customer Cloud DNS.',
+    required: [],
+  })
+  .openapi('DnsPeering')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const EventPublishConfigSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Required. Option to enable Event Publishing.' }),
+    topic: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The resource name of the Pub/Sub topic. Format: projects/{project_id}/topics/{topic_id}',
+      }),
+  })
+  .openapi({ description: 'Confirguration of PubSubEventWriter.', required: [] })
+  .openapi('EventPublishConfig')
 
 const VersionSchema = z
   .object({
@@ -655,17 +672,7 @@ const ListLocationsResponseSchema = z
   .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
   .openapi('ListLocationsResponse')
 
-const NamespaceSchema = z
-  .object({
-    iamPolicy: IAMPolicySchema.exactOptional().openapi({
-      description: 'IAM policy associated with this namespace.',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'Name of the given namespace.' }),
-  })
-  .openapi({ description: 'Represents the information of a namespace', required: [] })
-  .openapi('Namespace')
-
-const ListNamespacesResponseSchema = z
+const ListNamespacesResponseSchema: z.ZodType<ListNamespacesResponseType> = z
   .object({
     namespaces: z
       .array(NamespaceSchema)
@@ -798,17 +805,17 @@ const OperationMetadataSchema = z
   .openapi('OperationMetadata')
 
 const RemoveIamPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for RemoveIamPolicy method.' })
   .openapi('RemoveIamPolicyRequest')
 
 const RemoveIamPolicyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for RemoveIamPolicy method.' })
   .openapi('RemoveIamPolicyResponse')
 
 const RestartInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for restarting a Data Fusion instance.' })
   .openapi('RestartInstanceRequest')
 
@@ -855,7 +862,7 @@ const TestIamPermissionsResponseSchema = z
   .openapi('TestIamPermissionsResponse')
 
 const UpgradeInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Request message for upgrading a Data Fusion instance. To change the instance properties, instance update should be used.',

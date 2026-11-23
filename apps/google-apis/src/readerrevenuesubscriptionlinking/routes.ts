@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const DeleteReaderResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response to deleting a reader of a publication.' })
   .openapi('DeleteReaderResponse')
 

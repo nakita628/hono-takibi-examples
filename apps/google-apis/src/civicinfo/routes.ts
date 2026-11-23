@@ -566,7 +566,7 @@ const ElectionsQueryResponseSchema = z
   .openapi('ElectionsQueryResponse')
 
 const MessageSetSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "This is proto2's version of MessageSet." })
   .openapi('MessageSet')
 

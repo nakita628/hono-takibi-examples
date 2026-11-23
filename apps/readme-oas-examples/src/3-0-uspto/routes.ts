@@ -204,7 +204,7 @@ export const postDatasetVersionRecordsRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.array(z.record(z.string(), z.object({}))) } },
+      content: { 'application/json': { schema: z.array(z.record(z.string(), z.looseObject({}))) } },
     },
     404: { description: 'No matching record found for the given criteria.' },
   },

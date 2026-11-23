@@ -246,12 +246,12 @@ const DiscountSchema = z
   .openapi('Discount')
 
 const InfosSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ xml: { name: 'infos' } })
   .openapi('Infos')
 
 const ItemsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ xml: { name: 'items' } })
   .openapi('Items')
 

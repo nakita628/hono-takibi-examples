@@ -887,7 +887,9 @@ const PreferenceSetChannelsSchema = z
 
 const PreferenceSetWorkflowCategorySettingSchema = z
   .xor([
-    z.boolean().openapi({ example: false, 'x-struct': null, 'x-validate': null }),
+    z
+      .looseObject({})
+      .and(z.boolean().openapi({ example: false, 'x-struct': null, 'x-validate': null })),
     z
       .object({
         channel_types: z
@@ -2612,7 +2614,7 @@ const ActivitySchema = z
     actor: z
       .union([
         RecipientSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -4493,8 +4495,8 @@ const CreateSchedulesRequestSchema: z.ZodType<CreateSchedulesRequestType> = z
   .object({
     actor: z
       .xor([
-        RecipientRequestSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(RecipientRequestSchema),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7028,8 +7030,10 @@ const BulkCreateSchedulesRequestSchema: z.ZodType<BulkCreateSchedulesRequestType
           .object({
             actor: z
               .xor([
-                RecipientRequestSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z.looseObject({}).and(RecipientRequestSchema),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -7228,7 +7232,7 @@ const MessageDeliveryLogResponseSchema = z
   .object({
     body: z
       .xor([
-        z.string().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.string().openapi({ 'x-struct': null, 'x-validate': null })),
         z.looseObject({}).openapi({ 'x-struct': null, 'x-validate': null }),
       ])
       .exactOptional()
@@ -7347,7 +7351,7 @@ const MessageDeliveryLogRequestSchema = z
   .object({
     body: z
       .xor([
-        z.string().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.string().openapi({ 'x-struct': null, 'x-validate': null })),
         z.looseObject({}).openapi({ 'x-struct': null, 'x-validate': null }),
       ])
       .exactOptional()
@@ -9869,6 +9873,18 @@ export const putV1UsersUserIdPreferencesIdChannelTypesRoute = createRoute({
   description:
     'Updates the channel types in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceChannelTypes',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -9883,6 +9899,23 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdCategoriesRoute = create
   summary: 'Update categories in preference set',
   description: "Updates the category preferences for an object's preference set.",
   operationId: 'updateObjectPreferenceCategories',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -10266,6 +10299,23 @@ export const putV1UsersUserIdPreferencesIdChannelTypesTypeRoute = createRoute({
   description:
     'Updates a single channel type in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceChannelType',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      type: z
+        .string()
+        .openapi({
+          param: { name: 'type', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -11089,6 +11139,18 @@ export const putV1UsersUserIdPreferencesIdWorkflowsRoute = createRoute({
   description:
     'Updates the workflows in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceWorkflows',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -11304,6 +11366,28 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyRoute = cre
   summary: 'Update a category preference',
   description: "Updates a specific category preference for an object's preference set. Deprecated.",
   operationId: 'updateObjectPreferenceCategory',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      key: z
+        .string()
+        .openapi({
+          param: { name: 'key', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -11319,6 +11403,23 @@ export const putV1UsersUserIdPreferencesIdCategoriesKeyRoute = createRoute({
   description:
     'Updates a single category in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceCategory',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      key: z
+        .string()
+        .openapi({
+          param: { name: 'key', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -11906,6 +12007,23 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsRoute = createR
   summary: 'Update workflows in preference set',
   description: "Updates the workflow preferences for an object's preference set.",
   operationId: 'updateObjectPreferenceWorkflows',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -13096,6 +13214,18 @@ export const putV1UsersUserIdPreferencesIdCategoriesRoute = createRoute({
   description:
     'Updates the categories in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceCategories',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -13598,6 +13728,28 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeRoute = 
   summary: 'Update a channel type preference',
   description: "Updates a specific channel type preference for an object's preference set.",
   operationId: 'updateObjectPreferenceChannelType',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      type: z
+        .string()
+        .openapi({
+          param: { name: 'type', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -13612,6 +13764,23 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesRoute = crea
   summary: 'Update channel types in preference set',
   description: "Updates the channel type preferences for an object's preference set.",
   operationId: 'updateObjectPreferenceChannelTypes',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -14028,6 +14197,11 @@ export const putV1UsersUserIdGuidesMessagesMessageIdArchivedRoute = createRoute(
           },
           'x-struct': null,
           'x-validate': null,
+        }),
+      message_id: z
+        .string()
+        .openapi({
+          param: { name: 'message_id', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
     body: {
@@ -14950,6 +15124,28 @@ export const putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyRoute = crea
   summary: 'Update a workflow preference',
   description: "Updates a specific workflow preference for an object's preference set.",
   operationId: 'updateObjectPreferenceWorkflow',
+  request: {
+    params: z.object({
+      collection: z
+        .string()
+        .openapi({
+          param: { name: 'collection', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      object_id: z
+        .string()
+        .openapi({
+          param: { name: 'object_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      key: z
+        .string()
+        .openapi({
+          param: { name: 'key', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -15278,6 +15474,23 @@ export const putV1UsersUserIdPreferencesIdWorkflowsKeyRoute = createRoute({
   description:
     'Updates a single workflow in a specific user preference set. This operation is deprecated.',
   operationId: 'updateUserPreferenceWorkflow',
+  request: {
+    params: z.object({
+      user_id: z
+        .string()
+        .openapi({
+          param: { name: 'user_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      id: z
+        .string()
+        .openapi({ param: { name: 'id', in: 'path', required: true, schema: { type: 'string' } } }),
+      key: z
+        .string()
+        .openapi({
+          param: { name: 'key', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+    }),
+  },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PreferenceSetSchema } } },
   },
@@ -15762,6 +15975,11 @@ export const putV1UsersUserIdGuidesMessagesMessageIdSeenRoute = createRoute({
           },
           'x-struct': null,
           'x-validate': null,
+        }),
+      message_id: z
+        .string()
+        .openapi({
+          param: { name: 'message_id', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
     body: {
@@ -17280,6 +17498,11 @@ export const putV1UsersUserIdGuidesMessagesMessageIdInteractedRoute = createRout
           },
           'x-struct': null,
           'x-validate': null,
+        }),
+      message_id: z
+        .string()
+        .openapi({
+          param: { name: 'message_id', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
     body: {

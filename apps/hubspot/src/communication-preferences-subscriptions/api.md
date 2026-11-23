@@ -21,15 +21,11 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|communication_preferences.read||
 |communication_preferences.read_write||
 |communication_preferences.statuses.batch.read||
 |communication_preferences.statuses.batch.write||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|communication_preferences.write||
 
 <h1 id="communication-preferences-subscriptions-batch">Batch</h1>
 
@@ -352,7 +348,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read_write ), oauth2 ( Scopes: communication_preferences.read )
 </aside>
 
 ## Unsubscribe a contact from all subscriptions
@@ -410,7 +406,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read_write ), oauth2 ( Scopes: communication_preferences.write )
 </aside>
 
 <h1 id="communication-preferences-subscriptions-status">Status</h1>
@@ -480,7 +476,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read communication_preferences.write ), oauth2 ( Scopes: communication_preferences.read_write )
 </aside>
 
 ## Get subscription preferences for a specific contact
@@ -536,7 +532,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read_write ), oauth2 ( Scopes: communication_preferences.read )
 </aside>
 
 ## Update a contact's subscription status
@@ -615,7 +611,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read_write ), oauth2 ( Scopes: communication_preferences.write )
 </aside>
 
 ## Retrieve a contact's unsubscribed status
@@ -672,7 +668,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: communication_preferences.read_write )
+oauth2 ( Scopes: communication_preferences.read_write ), oauth2 ( Scopes: communication_preferences.read )
 </aside>
 
 # Schemas

@@ -1,74 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AlertSchema = z
-  .object({
-    alert_id: z.string().exactOptional(),
-    last_sent: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'The UTC date and time when the alert was last triggered and sent out (may be null).',
-      }),
-    search: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The search phrase that the alert triggers on.' }),
-    send_count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of time the alert has triggered and been send out.' }),
-    types: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of the post types that the alert is set to match against.  The available post types are: offer, wanted <br /><br /> NOTE: Additional post types may be added in the future (eg. events) so clients should take care to support arbitrary types being returned.\n',
-      }),
-    user_id: z.string().exactOptional(),
-  })
-  .openapi({
-    description:
-      'A search alert that the user has created so that they can be notified when new posts match the search query specified by the alert.',
-    example: {
-      alert_id: 7584,
-      last_sent: '2018-02-16T12:58:51',
-      search: 'table',
-      send_count: 3,
-      types: ['offer'],
-      user_id: 9191,
-    },
-    required: [],
-  })
-  .openapi('Alert')
-
-const BoundingBoxSchema = z
-  .object({
-    northeast: z
-      .object({ latitude: z.number().exactOptional(), longitude: z.number().exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'The point defining the northeast corner of the bounding box.',
-        required: [],
-      }),
-    southwest: z
-      .object({ latitude: z.number().exactOptional(), longitude: z.number().exactOptional() })
-      .exactOptional()
-      .openapi({
-        description: 'The point defining the southwest corner of the bounding box.',
-        required: [],
-      }),
-  })
-  .openapi({
-    description: 'A geographic bounding box defined by its southwest and northeast points.',
-    example: {
-      northeast: { latitude: 52.8293255665, longitude: -0.600956182 },
-      southwest: { latitude: 51.0025285305, longitude: -3.5323240284 },
-    },
-    required: [],
-  })
-  .openapi('BoundingBox')
-
 const PhotoSchema = z
   .object({
     blurhash: z
@@ -465,7 +396,86 @@ const UserSchema = z
   })
   .openapi('User')
 
-const ConversationSchema = z
+type ConversationType = {
+  archived?: boolean
+  blocked?: boolean
+  conversation_id?: string
+  last_message_date?: string
+  messages?: z.infer<typeof MessageSchema>[]
+  num_unread_messages?: number
+  user?: z.infer<typeof UserSchema>
+}
+
+const AlertSchema = z
+  .object({
+    alert_id: z.string().exactOptional(),
+    last_sent: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'The UTC date and time when the alert was last triggered and sent out (may be null).',
+      }),
+    search: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The search phrase that the alert triggers on.' }),
+    send_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The number of time the alert has triggered and been send out.' }),
+    types: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of the post types that the alert is set to match against.  The available post types are: offer, wanted <br /><br /> NOTE: Additional post types may be added in the future (eg. events) so clients should take care to support arbitrary types being returned.\n',
+      }),
+    user_id: z.string().exactOptional(),
+  })
+  .openapi({
+    description:
+      'A search alert that the user has created so that they can be notified when new posts match the search query specified by the alert.',
+    example: {
+      alert_id: 7584,
+      last_sent: '2018-02-16T12:58:51',
+      search: 'table',
+      send_count: 3,
+      types: ['offer'],
+      user_id: 9191,
+    },
+    required: [],
+  })
+  .openapi('Alert')
+
+const BoundingBoxSchema = z
+  .object({
+    northeast: z
+      .object({ latitude: z.number().exactOptional(), longitude: z.number().exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'The point defining the northeast corner of the bounding box.',
+        required: [],
+      }),
+    southwest: z
+      .object({ latitude: z.number().exactOptional(), longitude: z.number().exactOptional() })
+      .exactOptional()
+      .openapi({
+        description: 'The point defining the southwest corner of the bounding box.',
+        required: [],
+      }),
+  })
+  .openapi({
+    description: 'A geographic bounding box defined by its southwest and northeast points.',
+    example: {
+      northeast: { latitude: 52.8293255665, longitude: -0.600956182 },
+      southwest: { latitude: 51.0025285305, longitude: -3.5323240284 },
+    },
+    required: [],
+  })
+  .openapi('BoundingBox')
+
+const ConversationSchema: z.ZodType<ConversationType> = z
   .object({
     archived: z
       .boolean()

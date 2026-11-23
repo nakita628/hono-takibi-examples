@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="https://openbanking.org.uk">https://openbanking.org.uk</a>
 
-* <a href="https://api.apis.guru/open-banking/v3.1/aisp">https://api.apis.guru/open-banking/v3.1/aisp</a>
+* <a href="/open-banking/v3.1/aisp">/open-banking/v3.1/aisp</a>
 
 <a href="https://www.openbanking.org.uk/terms">Terms of service</a>
 Email: <a href="mailto:ServiceDesk@openbanking.org.uk">Service Desk</a> 
@@ -15292,12 +15292,12 @@ Overdraft fee type
 
 Period e.g. day, week, month etc. for which the fee/charge is capped
 
-<h2 id="tocS_OB_Rate1_0">OB_Rate1_0</h2>
+<h2 id="tocS_OB_Rate1_02">OB_Rate1_02</h2>
 <!-- backwards compatibility -->
-<a id="schemaob_rate1_0"></a>
-<a id="schema_OB_Rate1_0"></a>
-<a id="tocSob_rate1_0"></a>
-<a id="tocsob_rate1_0"></a>
+<a id="schemaob_rate1_02"></a>
+<a id="schema_OB_Rate1_02"></a>
+<a id="tocSob_rate1_02"></a>
+<a id="tocsob_rate1_02"></a>
 
 ```json
 "string"
@@ -15305,12 +15305,12 @@ Period e.g. day, week, month etc. for which the fee/charge is capped
 
 Rate charged for overdraft fee/charge (where it is charged in terms of a rate rather than an amount)
 
-<h2 id="tocS_OB_Rate1_1">OB_Rate1_1</h2>
+<h2 id="tocS_OB_Rate1_12">OB_Rate1_12</h2>
 <!-- backwards compatibility -->
-<a id="schemaob_rate1_1"></a>
-<a id="schema_OB_Rate1_1"></a>
-<a id="tocSob_rate1_1"></a>
-<a id="tocsob_rate1_1"></a>
+<a id="schemaob_rate1_12"></a>
+<a id="schema_OB_Rate1_12"></a>
+<a id="tocSob_rate1_12"></a>
+<a id="tocsob_rate1_12"></a>
 
 ```json
 "string"

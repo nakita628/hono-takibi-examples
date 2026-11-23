@@ -1,10 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const OnDutySchema = z
-  .object({ account: z.url() })
-  .openapi({ required: ['account'] })
-  .openapi('OnDuty')
-
 const LocationTypeEnumSchema = z.literal('Point').openapi('LocationTypeEnum')
 
 const LocationSchema = z
@@ -32,56 +27,6 @@ const NestedAddressSchema = z
   })
   .openapi({ required: ['geocode_failed_at', 'geocoded_at'] })
   .openapi('NestedAddress')
-
-const AuthenticatedUserCreateSchema = z
-  .object({
-    address: NestedAddressSchema.exactOptional(),
-    display_name: z.string().openapi({ readOnly: true }),
-    email: z.email(),
-    first_name: z.string().max(30).exactOptional(),
-    id: z.uuid().openapi({ readOnly: true }),
-    last_name: z.string().max(30).exactOptional(),
-    password: z.string().exactOptional().openapi({ writeOnly: true }),
-    phone: z.string().max(128).exactOptional(),
-    url: z.url().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['display_name', 'email', 'id', 'url'] })
-  .openapi('AuthenticatedUserCreate')
-
-const AuthenticatedUserUpdateSchema = z
-  .object({
-    address: NestedAddressSchema.exactOptional(),
-    display_name: z.string().openapi({ readOnly: true }),
-    email: z.email(),
-    first_name: z.string().max(30).exactOptional(),
-    id: z.uuid().openapi({ readOnly: true }),
-    last_name: z.string().max(30).exactOptional(),
-    phone: z.string().max(128).exactOptional(),
-    url: z.url().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['display_name', 'email', 'id', 'url'] })
-  .openapi('AuthenticatedUserUpdate')
-
-const ReadableUserSchema = z
-  .object({
-    display_name: z.string().openapi({ readOnly: true }),
-    email: z.email(),
-    first_name: z.string().max(30).exactOptional(),
-    id: z.uuid().openapi({ readOnly: true }),
-    intercom_hash: z.string().openapi({ readOnly: true }),
-    last_name: z.string().max(30).exactOptional(),
-    phone: z.string().max(128).exactOptional(),
-    signature_image: z.url().exactOptional(),
-    url: z.url().openapi({ readOnly: true }),
-  })
-  .openapi({ required: ['display_name', 'email', 'id', 'intercom_hash', 'url'] })
-  .openapi('ReadableUser')
-
-type UserType =
-  | z.infer<typeof OnDutySchema>
-  | z.infer<typeof AuthenticatedUserCreateSchema>
-  | z.infer<typeof AuthenticatedUserUpdateSchema>
-  | z.infer<typeof ReadableUserSchema>
 
 const AccountBillingMethodEnumSchema = z
   .enum(['braintree', 'free', 'invoice', 'stripe', 'trial'])
@@ -945,7 +890,7 @@ const AccountSchema = z
       }),
     auto_assign_orders: z.boolean().exactOptional(),
     auto_assign_rotate: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1023,16 +968,16 @@ const AccountSchema = z
         readOnly: true,
       }),
     task_duration: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
     task_expiry_duration_from_complete_after: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
     task_expiry_duration_from_complete_before: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -1284,6 +1229,35 @@ const AuthTokenSchema = z
   .openapi({ required: ['password', 'token', 'username'] })
   .openapi('AuthToken')
 
+const AuthenticatedUserCreateSchema = z
+  .object({
+    address: NestedAddressSchema.exactOptional(),
+    display_name: z.string().openapi({ readOnly: true }),
+    email: z.email(),
+    first_name: z.string().max(30).exactOptional(),
+    id: z.uuid().openapi({ readOnly: true }),
+    last_name: z.string().max(30).exactOptional(),
+    password: z.string().exactOptional().openapi({ writeOnly: true }),
+    phone: z.string().max(128).exactOptional(),
+    url: z.url().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['display_name', 'email', 'id', 'url'] })
+  .openapi('AuthenticatedUserCreate')
+
+const AuthenticatedUserUpdateSchema = z
+  .object({
+    address: NestedAddressSchema.exactOptional(),
+    display_name: z.string().openapi({ readOnly: true }),
+    email: z.email(),
+    first_name: z.string().max(30).exactOptional(),
+    id: z.uuid().openapi({ readOnly: true }),
+    last_name: z.string().max(30).exactOptional(),
+    phone: z.string().max(128).exactOptional(),
+    url: z.url().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['display_name', 'email', 'id', 'url'] })
+  .openapi('AuthenticatedUserUpdate')
+
 const BraintreeCustomerSchema = z
   .object({
     account: z.url(),
@@ -1388,7 +1362,7 @@ const ClientRoleSchema = z
 const ConfigurationDefaultsSchema = z
   .object({
     distance_units: z.string(),
-    task_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    task_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
   })
   .openapi({ required: ['distance_units', 'task_duration'] })
   .openapi('ConfigurationDefaults')
@@ -1409,11 +1383,26 @@ const ConfigurationNotificationSchema = z
 const ConfigurationSettingsSchema = z
   .object({
     date_format: z.string(),
-    task_command_queue_limit: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    task_command_queue_limit: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     time_format: z.string(),
   })
   .openapi({ required: ['date_format', 'task_command_queue_limit', 'time_format'] })
   .openapi('ConfigurationSettings')
+
+const ReadableUserSchema = z
+  .object({
+    display_name: z.string().openapi({ readOnly: true }),
+    email: z.email(),
+    first_name: z.string().max(30).exactOptional(),
+    id: z.uuid().openapi({ readOnly: true }),
+    intercom_hash: z.string().openapi({ readOnly: true }),
+    last_name: z.string().max(30).exactOptional(),
+    phone: z.string().max(128).exactOptional(),
+    signature_image: z.url().exactOptional(),
+    url: z.url().openapi({ readOnly: true }),
+  })
+  .openapi({ required: ['display_name', 'email', 'id', 'intercom_hash', 'url'] })
+  .openapi('ReadableUser')
 
 const ConfigurationSerializerV2Schema = z
   .object({
@@ -1581,34 +1570,42 @@ const TaskMetadataSchema = z
   .object({
     accepted_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
     accepted_duration: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ default: '4 10:55:34.12' }),
     active_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    active_duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    active_duration: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ default: '4 10:55:34.12' }),
     assigned_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
     assigned_duration: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ default: '4 10:55:34.12' }),
     cancelled_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
     cancelled_duration: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ default: '4 10:55:34.12' }),
     completed_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
     completed_duration: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ default: '4 10:55:34.12' }),
     documents_count: z.int().min(0).max(32767).nullable().exactOptional(),
     events_count: z.int().min(0).max(32767).nullable().exactOptional(),
     failed_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    failed_duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    failed_duration: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ default: '4 10:55:34.12' }),
     forms_completed_count: z.int().min(0).max(32767).nullable().exactOptional(),
     forms_count: z.int().min(0).max(32767).nullable().exactOptional(),
     id: z.uuid().openapi({ readOnly: true }),
@@ -1625,10 +1622,14 @@ const TaskMetadataSchema = z
     task: z.url(),
     task_event_notes_count: z.int().min(0).max(32767).nullable().exactOptional(),
     transit_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
-    transit_duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    transit_duration: z
+      .looseObject({})
+      .nullable()
+      .exactOptional()
+      .openapi({ default: '4 10:55:34.12' }),
     unassigned_distance: z.int().min(0).max(2147483647).nullable().exactOptional(),
     unassigned_duration: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ default: '4 10:55:34.12' }),
@@ -1690,7 +1691,7 @@ const LegacyTaskSchema = z
     created_by: z.url().openapi({ readOnly: true }),
     description: z.string().exactOptional(),
     documents: z.url().openapi({ readOnly: true }),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     events: z.url().openapi({ readOnly: true }),
     external_id: z.string().max(100).nullable().exactOptional(),
     forms: z.record(z.string(), z.any()).openapi({ readOnly: true }),
@@ -1826,7 +1827,7 @@ const DeviceSchema = z
             : typeof val === 'string' && /^-?\d+$/.test(val)
               ? BigInt(val)
               : val,
-        z.int64().min(-9223372036854776000n).max(9223372036854776000n),
+        z.int64().min(-9223372036854775808n).max(9223372036854775807n),
       )
       .nullable()
       .exactOptional()
@@ -2286,6 +2287,11 @@ const NotificationTemplateSchema = z
   .openapi({ required: ['account', 'created_at', 'id', 'message', 'name', 'updated_at', 'url'] })
   .openapi('NotificationTemplate')
 
+const OnDutySchema = z
+  .object({ account: z.url() })
+  .openapi({ required: ['account'] })
+  .openapi('OnDuty')
+
 const PublicUserSchema = z
   .object({
     display_name: z.string().openapi({ readOnly: true }),
@@ -2327,7 +2333,7 @@ const TaskSerializerV2Schema = z
     created_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
     description: z.string().exactOptional(),
     documents: z.array(z.url()).exactOptional(),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     external_id: z.string().max(100).nullable().exactOptional(),
     forms: z.record(z.string(), z.any()).openapi({ readOnly: true }),
     id: z.uuid().nullable().exactOptional(),
@@ -2564,7 +2570,7 @@ const TaskSchema = z
     created_by: z.url().openapi({ readOnly: true }),
     description: z.string().exactOptional(),
     documents: z.url().openapi({ readOnly: true }),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     events: z.url().openapi({ readOnly: true }),
     external_id: z.string().max(100).nullable().exactOptional(),
     forms: z.record(z.string(), z.any()).openapi({ readOnly: true }),
@@ -2690,7 +2696,7 @@ const RouteOptimizationSerializerV2Schema = z
     state: RouteOptimizationSerializerV2StateEnumSchema.openapi({ readOnly: true }),
     tasks: z.array(z.url()),
     total_distance: z.int().openapi({ readOnly: true }),
-    total_duration: z.object({}).openapi({ readOnly: true, default: '4 10:55:34.12' }),
+    total_duration: z.looseObject({}).openapi({ readOnly: true, default: '4 10:55:34.12' }),
     unassign_not_optimal: z.boolean().exactOptional(),
     updated_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
     url: z.url().openapi({ readOnly: true }),
@@ -2985,7 +2991,7 @@ const TaskEventTaskSchema = z
     created_at: z.iso.datetime({ offset: true }).openapi({ readOnly: true }),
     description: z.string().exactOptional(),
     documents: z.array(z.url()).exactOptional(),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     external_id: z.string().max(100).nullable().exactOptional(),
     forms: z.record(z.string(), z.any()).openapi({ readOnly: true }),
     id: z.uuid().nullable().exactOptional(),
@@ -3152,25 +3158,25 @@ const TaskExportSchema = z
     created_by__email: z.email().default('').exactOptional(),
     created_by__phone: z.string().default('').exactOptional(),
     description: z.string().exactOptional(),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     external_id: z.string().max(100).nullable().exactOptional(),
     id: z.uuid().nullable().exactOptional(),
     is_full_load: z.boolean().exactOptional(),
     issues: z.array(z.string().default('')).exactOptional(),
     metadata__accepted_distance: z.int(),
-    metadata__accepted_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__accepted_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__active_distance: z.int(),
-    metadata__active_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__active_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__assigned_distance: z.int(),
-    metadata__assigned_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__assigned_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__cancelled_distance: z.int(),
-    metadata__cancelled_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__cancelled_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__completed_distance: z.int(),
-    metadata__completed_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__completed_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__documents_count: z.int(),
     metadata__events_count: z.int(),
     metadata__failed_distance: z.int(),
-    metadata__failed_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__failed_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__forms_completed_count: z.int(),
     metadata__forms_count: z.int(),
     metadata__last_accepted_at: z.iso
@@ -3217,9 +3223,9 @@ const TaskExportSchema = z
     metadata__signatures_count: z.int(),
     metadata__task_event_notes_count: z.int().default(0).exactOptional(),
     metadata__transit_distance: z.int(),
-    metadata__transit_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__transit_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     metadata__unassigned_distance: z.int(),
-    metadata__unassigned_duration: z.object({}).openapi({ default: '4 10:55:34.12' }),
+    metadata__unassigned_duration: z.looseObject({}).openapi({ default: '4 10:55:34.12' }),
     order__auto_assign: z.string().default('').exactOptional(),
     order__created_at: z.iso.datetime({ offset: true }).nullable().default(null).exactOptional(),
     order__created_by: z.string().default('').exactOptional(),
@@ -3508,15 +3514,13 @@ const TrackerSchema = z
 
 const PaginatedTrackerListSchema = z.array(TrackerSchema).openapi('PaginatedTrackerList')
 
-const UserSchema: z.ZodType<UserType> = z
-  .lazy(() =>
-    z.xor([
-      OnDutySchema,
-      AuthenticatedUserCreateSchema,
-      AuthenticatedUserUpdateSchema,
-      ReadableUserSchema,
-    ]),
-  )
+const UserSchema = z
+  .xor([
+    OnDutySchema,
+    AuthenticatedUserCreateSchema,
+    AuthenticatedUserUpdateSchema,
+    ReadableUserSchema,
+  ])
   .openapi('User')
 
 const PaginatedUserListSchema = z.array(UserSchema).openapi('PaginatedUserList')
@@ -3680,7 +3684,7 @@ const PatchedAccountSchema = z
       }),
     auto_assign_orders: z.boolean().exactOptional(),
     auto_assign_rotate: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -3760,16 +3764,16 @@ const PatchedAccountSchema = z
         readOnly: true,
       }),
     task_duration: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
     task_expiry_duration_from_complete_after: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
     task_expiry_duration_from_complete_before: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -4239,7 +4243,7 @@ const PatchedTaskSerializerV2Schema = z
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
     description: z.string().exactOptional(),
     documents: z.array(z.url()).exactOptional(),
-    duration: z.object({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
+    duration: z.looseObject({}).nullable().exactOptional().openapi({ default: '4 10:55:34.12' }),
     external_id: z.string().max(100).nullable().exactOptional(),
     forms: z.record(z.string(), z.any()).exactOptional().openapi({ readOnly: true }),
     id: z.uuid().nullable().exactOptional(),
@@ -6102,7 +6106,7 @@ export const putAccountsIdIndexRoute = createRoute({
                 )
                 .exactOptional(),
               auto_assign_rotate: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -6418,16 +6422,16 @@ export const putAccountsIdIndexRoute = createRoute({
                   readOnly: true,
                 }),
               task_duration: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_after: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_before: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -6586,7 +6590,7 @@ export const putAccountsIdIndexRoute = createRoute({
                 )
                 .exactOptional(),
               auto_assign_rotate: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -6902,16 +6906,16 @@ export const putAccountsIdIndexRoute = createRoute({
                   readOnly: true,
                 }),
               task_duration: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_after: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_before: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -7121,7 +7125,7 @@ export const patchAccountsIdIndexRoute = createRoute({
                 )
                 .exactOptional(),
               auto_assign_rotate: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -7443,16 +7447,16 @@ export const patchAccountsIdIndexRoute = createRoute({
                   readOnly: true,
                 }),
               task_duration: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_after: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_before: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -7591,7 +7595,7 @@ export const patchAccountsIdIndexRoute = createRoute({
                 )
                 .exactOptional(),
               auto_assign_rotate: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({
@@ -7913,16 +7917,16 @@ export const patchAccountsIdIndexRoute = createRoute({
                   readOnly: true,
                 }),
               task_duration: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ title: 'Default task duration', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_after: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
               task_expiry_duration_from_complete_before: z
-                .object({})
+                .looseObject({})
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'HH:mm:ss', default: '4 10:55:34.12' }),
@@ -17277,7 +17281,7 @@ export const postDevicesIndexRoute = createRoute({
                       if (/^-?\d+$/.test(val)) return BigInt(val)
                       const num = Number(val)
                       return Number.isSafeInteger(num) ? BigInt(num) : val
-                    }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                    }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                     .nullable(),
                 )
                 .exactOptional()
@@ -17401,7 +17405,7 @@ export const postDevicesIndexRoute = createRoute({
                       if (/^-?\d+$/.test(val)) return BigInt(val)
                       const num = Number(val)
                       return Number.isSafeInteger(num) ? BigInt(num) : val
-                    }, z.int64().min(-9223372036854776000n).max(9223372036854776000n))
+                    }, z.int64().min(-9223372036854775808n).max(9223372036854775807n))
                     .nullable(),
                 )
                 .exactOptional()
@@ -25617,7 +25621,7 @@ export const postOrdersIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),
@@ -25913,7 +25917,7 @@ export const postOrdersIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),
@@ -26273,7 +26277,7 @@ export const putOrdersIdIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),
@@ -26569,7 +26573,7 @@ export const putOrdersIdIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),
@@ -26904,7 +26908,7 @@ export const patchOrdersIdIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),
@@ -27205,7 +27209,7 @@ export const patchOrdersIdIndexRoute = createRoute({
                           )
                           .exactOptional(),
                         duration: z
-                          .object({})
+                          .looseObject({})
                           .nullable()
                           .exactOptional()
                           .openapi({ default: '4 10:55:34.12' }),

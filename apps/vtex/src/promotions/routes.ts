@@ -72,6 +72,25 @@ const CalculatediscountsandtaxesBundlesRequestSchema = z
   .openapi({
     example: {
       isShoppingCart: true,
+      items: [
+        {
+          id: '160',
+          index: 0,
+          isGift: false,
+          logisticsInfos: [],
+          measurementUnit: 'un',
+          params: [
+            { name: 'Seller@CatalogSystem', value: '1' },
+            { name: 'product@CatalogSystem', value: '94' },
+          ],
+          priceSheet: [],
+          priceTags: [],
+          productSpecifications: [],
+          quantity: 3,
+          sellerId: '1',
+          unitMultiplier: 1,
+        },
+      ],
       origin: 'Marketplace',
       params: [
         { name: 'product@CatalogSystem', value: '2662' },

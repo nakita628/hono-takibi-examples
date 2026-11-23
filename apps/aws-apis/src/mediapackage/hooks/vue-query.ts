@@ -1,0 +1,1378 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getChannelsKey() {
+  return ['channels'] as const
+}
+
+export function getHarvestJobsKey() {
+  return ['harvest_jobs'] as const
+}
+
+export function getOriginEndpointsKey() {
+  return ['origin_endpoints'] as const
+}
+
+export function getTagsKey() {
+  return ['tags'] as const
+}
+
+export function getPutChannelsIdConfigureLogsMutationKey() {
+  return ['channels', '/channels/:id/configure_logs', 'PUT'] as const
+}
+
+export function getPutChannelsIdConfigureLogsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.channels)[':id']['configure_logs']['$put']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.channels)[':id']['configure_logs']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutChannelsIdConfigureLogsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.channels)[':id']['configure_logs']['$put']>,
+    ) {
+      return parseResponse(client.channels[':id'].configure_logs.$put(args, options))
+    },
+  })
+}
+
+export function usePutChannelsIdConfigureLogs<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.channels)[':id']['configure_logs']['$put']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.channels)[':id']['configure_logs']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutChannelsIdConfigureLogsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getChannelsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.channels.$get>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['channels', '/channels', keyArgs] as const
+}
+
+export function getChannelsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.channels.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getChannelsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.channels.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useChannels<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.channels.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$get>>>>
+          >,
+          ReturnType<typeof getChannelsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getChannelsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getChannelsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.channels.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostChannelsMutationKey() {
+  return ['channels', '/channels', 'POST'] as const
+}
+
+export function getPostChannelsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.channels.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostChannelsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.channels.$post>) {
+      return parseResponse(client.channels.$post(args, options))
+    },
+  })
+}
+
+export function usePostChannels<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.channels.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.channels.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostChannelsMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getHarvestJobsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.harvest_jobs.$get>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['harvest_jobs', '/harvest_jobs', keyArgs] as const
+}
+
+export function getHarvestJobsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.harvest_jobs.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getHarvestJobsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.harvest_jobs.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useHarvestJobs<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.harvest_jobs.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$get>>>>
+          >,
+          ReturnType<typeof getHarvestJobsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getHarvestJobsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getHarvestJobsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.harvest_jobs.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostHarvestJobsMutationKey() {
+  return ['harvest_jobs', '/harvest_jobs', 'POST'] as const
+}
+
+export function getPostHarvestJobsMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.harvest_jobs.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostHarvestJobsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.harvest_jobs.$post>) {
+      return parseResponse(client.harvest_jobs.$post(args, options))
+    },
+  })
+}
+
+export function usePostHarvestJobs<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.harvest_jobs.$post>>>>
+          >,
+          TError,
+          InferRequestType<typeof client.harvest_jobs.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostHarvestJobsMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getOriginEndpointsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.origin_endpoints.$get>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['origin_endpoints', '/origin_endpoints', keyArgs] as const
+}
+
+export function getOriginEndpointsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.origin_endpoints.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getOriginEndpointsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.origin_endpoints.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useOriginEndpoints<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.origin_endpoints.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$get>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$get>>>
+            >
+          >,
+          ReturnType<typeof getOriginEndpointsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOriginEndpointsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getOriginEndpointsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.origin_endpoints.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostOriginEndpointsMutationKey() {
+  return ['origin_endpoints', '/origin_endpoints', 'POST'] as const
+}
+
+export function getPostOriginEndpointsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.origin_endpoints.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostOriginEndpointsMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.origin_endpoints.$post>) {
+      return parseResponse(client.origin_endpoints.$post(args, options))
+    },
+  })
+}
+
+export function usePostOriginEndpoints<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<typeof client.origin_endpoints.$post>>>
+            >
+          >,
+          TError,
+          InferRequestType<typeof client.origin_endpoints.$post>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostOriginEndpointsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getChannelsIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.channels)[':id']['$get']>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['channels', '/channels/:id', keyArgs] as const
+}
+
+export function getChannelsIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.channels)[':id']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getChannelsIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.channels[':id'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useChannelsId<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.channels)[':id']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$get']>>>
+            >
+          >,
+          ReturnType<typeof getChannelsIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$get']>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getChannelsIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getChannelsIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.channels[':id'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutChannelsIdMutationKey() {
+  return ['channels', '/channels/:id', 'PUT'] as const
+}
+
+export function getPutChannelsIdMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$put']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.channels)[':id']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutChannelsIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.channels)[':id']['$put']>) {
+      return parseResponse(client.channels[':id'].$put(args, options))
+    },
+  })
+}
+
+export function usePutChannelsId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$put']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.channels)[':id']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutChannelsIdMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteChannelsIdMutationKey() {
+  return ['channels', '/channels/:id', 'DELETE'] as const
+}
+
+export function getDeleteChannelsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$delete']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.channels)[':id']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteChannelsIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.channels)[':id']['$delete']>) {
+      return parseResponse(client.channels[':id'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteChannelsId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.channels)[':id']['$delete']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.channels)[':id']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteChannelsIdMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getOriginEndpointsIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.origin_endpoints)[':id']['$get']>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['origin_endpoints', '/origin_endpoints/:id', keyArgs] as const
+}
+
+export function getOriginEndpointsIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.origin_endpoints)[':id']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getOriginEndpointsIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.origin_endpoints[':id'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useOriginEndpointsId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.origin_endpoints)[':id']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getOriginEndpointsIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOriginEndpointsIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getOriginEndpointsIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.origin_endpoints[':id'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutOriginEndpointsIdMutationKey() {
+  return ['origin_endpoints', '/origin_endpoints/:id', 'PUT'] as const
+}
+
+export function getPutOriginEndpointsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$put']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.origin_endpoints)[':id']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutOriginEndpointsIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.origin_endpoints)[':id']['$put']>) {
+      return parseResponse(client.origin_endpoints[':id'].$put(args, options))
+    },
+  })
+}
+
+export function usePutOriginEndpointsId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$put']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.origin_endpoints)[':id']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutOriginEndpointsIdMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteOriginEndpointsIdMutationKey() {
+  return ['origin_endpoints', '/origin_endpoints/:id', 'DELETE'] as const
+}
+
+export function getDeleteOriginEndpointsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$delete']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.origin_endpoints)[':id']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteOriginEndpointsIdMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.origin_endpoints)[':id']['$delete']>) {
+      return parseResponse(client.origin_endpoints[':id'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteOriginEndpointsId<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.origin_endpoints)[':id']['$delete']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.origin_endpoints)[':id']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteOriginEndpointsIdMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getHarvestJobsIdQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.harvest_jobs)[':id']['$get']>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['harvest_jobs', '/harvest_jobs/:id', keyArgs] as const
+}
+
+export function getHarvestJobsIdQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.harvest_jobs)[':id']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getHarvestJobsIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.harvest_jobs[':id'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useHarvestJobsId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.harvest_jobs)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.harvest_jobs)[':id']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.harvest_jobs)[':id']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.harvest_jobs)[':id']['$get']>>>
+            >
+          >,
+          ReturnType<typeof getHarvestJobsIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.harvest_jobs)[':id']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getHarvestJobsIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getHarvestJobsIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.harvest_jobs[':id'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getTagsResourceArnQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.tags)[':resource-arn']['$get']>>,
+) {
+  const { header: _, ...keyArgs } = toValue(args)
+  return ['tags', '/tags/:resource-arn', keyArgs] as const
+}
+
+export function getTagsResourceArnQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.tags)[':resource-arn']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getTagsResourceArnQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.tags[':resource-arn'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useTagsResourceArn<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.tags)[':resource-arn']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getTagsResourceArnQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getTagsResourceArnQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getTagsResourceArnQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.tags[':resource-arn'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostTagsResourceArnMutationKey() {
+  return ['tags', '/tags/:resource-arn', 'POST'] as const
+}
+
+export function getPostTagsResourceArnMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$post']>>>
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.tags)[':resource-arn']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostTagsResourceArnMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.tags)[':resource-arn']['$post']>) {
+      return parseResponse(client.tags[':resource-arn'].$post(args, options))
+    },
+  })
+}
+
+export function usePostTagsResourceArn<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<ReturnType<(typeof client.tags)[':resource-arn']['$post']>>
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<(typeof client.tags)[':resource-arn']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostTagsResourceArnMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPutChannelsIdCredentialsMutationKey() {
+  return ['channels', '/channels/:id/credentials', 'PUT'] as const
+}
+
+export function getPutChannelsIdCredentialsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.channels)[':id']['credentials']['$put']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.channels)[':id']['credentials']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutChannelsIdCredentialsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.channels)[':id']['credentials']['$put']>,
+    ) {
+      return parseResponse(client.channels[':id'].credentials.$put(args, options))
+    },
+  })
+}
+
+export function usePutChannelsIdCredentials<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.channels)[':id']['credentials']['$put']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.channels)[':id']['credentials']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutChannelsIdCredentialsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPutChannelsIdIngestEndpointsIngestEndpointIdCredentialsMutationKey() {
+  return [
+    'channels',
+    '/channels/:id/ingest_endpoints/:ingest_endpoint_id/credentials',
+    'PUT',
+  ] as const
+}
+
+export function getPutChannelsIdIngestEndpointsIngestEndpointIdCredentialsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.channels)[':id']['ingest_endpoints'][':ingest_endpoint_id']['credentials']['$put']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.channels)[':id']['ingest_endpoints'][':ingest_endpoint_id']['credentials']['$put']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPutChannelsIdIngestEndpointsIngestEndpointIdCredentialsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.channels)[':id']['ingest_endpoints'][':ingest_endpoint_id']['credentials']['$put']
+      >,
+    ) {
+      return parseResponse(
+        client.channels[':id'].ingest_endpoints[':ingest_endpoint_id'].credentials.$put(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePutChannelsIdIngestEndpointsIngestEndpointIdCredentials<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.channels)[':id']['ingest_endpoints'][':ingest_endpoint_id']['credentials']['$put']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.channels)[':id']['ingest_endpoints'][':ingest_endpoint_id']['credentials']['$put']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPutChannelsIdIngestEndpointsIngestEndpointIdCredentialsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteTagsResourceArnTagKeysMutationKey() {
+  return ['tags', '/tags/:resource-arn#tagKeys', 'DELETE'] as const
+}
+
+export function getDeleteTagsResourceArnTagKeysMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.tags)[':resource-arn#tagKeys']['$delete']>>
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.tags)[':resource-arn#tagKeys']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteTagsResourceArnTagKeysMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.tags)[':resource-arn#tagKeys']['$delete']>,
+    ) {
+      return parseResponse(client.tags[':resource-arn#tagKeys'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteTagsResourceArnTagKeys<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          | Awaited<
+              ReturnType<
+                typeof parseResponse<
+                  Awaited<ReturnType<(typeof client.tags)[':resource-arn#tagKeys']['$delete']>>
+                >
+              >
+            >
+          | undefined,
+          TError,
+          InferRequestType<(typeof client.tags)[':resource-arn#tagKeys']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteTagsResourceArnTagKeysMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

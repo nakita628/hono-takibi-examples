@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AssociateDomainResponseSchema = z.object({}).openapi('AssociateDomainResponse')
+const AssociateDomainResponseSchema = z.looseObject({}).openapi('AssociateDomainResponse')
 
 const UnauthorizedExceptionSchema = z.any().openapi('UnauthorizedException')
 
@@ -18,18 +18,18 @@ const IdSchema = z.string().min(1).max(256).openapi('Id')
 
 const AssociateWebsiteAuthorizationProviderResponseSchema = z
   .object({
-    AuthorizationProviderId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the authorization provider.' }),
-    ).exactOptional(),
+    AuthorizationProviderId: IdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the authorization provider.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateWebsiteAuthorizationProviderResponse')
 
 const AssociateWebsiteCertificateAuthorityResponseSchema = z
   .object({
-    WebsiteCaId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the CA.' }),
-    ).exactOptional(),
+    WebsiteCaId: IdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the CA.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateWebsiteCertificateAuthorityResponse')
@@ -38,16 +38,16 @@ const FleetArnSchema = z.string().min(20).max(2048).openapi('FleetArn')
 
 const CreateFleetResponseSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the fleet.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the fleet.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFleetResponse')
 
 const TagValueSchema = z.string().max(256).openapi('TagValue')
 
-const DeleteFleetResponseSchema = z.object({}).openapi('DeleteFleetResponse')
+const DeleteFleetResponseSchema = z.looseObject({}).openapi('DeleteFleetResponse')
 
 const AuditStreamArnSchema = z
   .string()
@@ -56,14 +56,9 @@ const AuditStreamArnSchema = z
 
 const DescribeAuditStreamConfigurationResponseSchema = z
   .object({
-    AuditStreamArn: AuditStreamArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Kinesis data stream that will receive the audit events.',
-        }),
-    ).exactOptional(),
+    AuditStreamArn: AuditStreamArnSchema.exactOptional().openapi({
+      description: 'The ARN of the Amazon Kinesis data stream that will receive the audit events.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuditStreamConfigurationResponse')
@@ -89,24 +84,16 @@ const SecurityGroupIdsSchema = z.array(SecurityGroupIdSchema).max(5).openapi('Se
 
 const DescribeCompanyNetworkConfigurationResponseSchema = z
   .object({
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The VPC with connectivity to associated websites.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnets used for X-ENI connections from Amazon WorkLink rendering containers.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The security groups associated with access to the provided subnets.',
-        }),
-    ).exactOptional(),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The VPC with connectivity to associated websites.',
+    }),
+    SubnetIds: SubnetIdsSchema.exactOptional().openapi({
+      description:
+        'The subnets used for X-ENI connections from Amazon WorkLink rendering containers.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.exactOptional().openapi({
+      description: 'The security groups associated with access to the provided subnets.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCompanyNetworkConfigurationResponse')
@@ -137,35 +124,31 @@ const UsernameSchema = z.string().min(1).max(256).openapi('Username')
 
 const DescribeDeviceResponseSchema = z
   .object({
-    Status: DeviceStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the device.' }),
-    ).exactOptional(),
-    Model: DeviceModelSchema.and(
-      z.any().openapi({ description: 'The model of the device.' }),
-    ).exactOptional(),
-    Manufacturer: DeviceManufacturerSchema.and(
-      z.any().openapi({ description: 'The manufacturer of the device.' }),
-    ).exactOptional(),
-    OperatingSystem: DeviceOperatingSystemNameSchema.and(
-      z.any().openapi({ description: 'The operating system of the device.' }),
-    ).exactOptional(),
-    OperatingSystemVersion: DeviceOperatingSystemVersionSchema.and(
-      z.any().openapi({ description: 'The operating system version of the device.' }),
-    ).exactOptional(),
-    PatchLevel: DevicePatchLevelSchema.and(
-      z.any().openapi({ description: 'The operating system patch level of the device.' }),
-    ).exactOptional(),
-    FirstAccessedTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the device first signed in to Amazon WorkLink.' }),
-    ).exactOptional(),
-    LastAccessedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date that the device last accessed Amazon WorkLink.' }),
-    ).exactOptional(),
-    Username: UsernameSchema.and(
-      z.any().openapi({ description: 'The user name associated with the device.' }),
-    ).exactOptional(),
+    Status: DeviceStatusSchema.exactOptional().openapi({
+      description: 'The current state of the device.',
+    }),
+    Model: DeviceModelSchema.exactOptional().openapi({ description: 'The model of the device.' }),
+    Manufacturer: DeviceManufacturerSchema.exactOptional().openapi({
+      description: 'The manufacturer of the device.',
+    }),
+    OperatingSystem: DeviceOperatingSystemNameSchema.exactOptional().openapi({
+      description: 'The operating system of the device.',
+    }),
+    OperatingSystemVersion: DeviceOperatingSystemVersionSchema.exactOptional().openapi({
+      description: 'The operating system version of the device.',
+    }),
+    PatchLevel: DevicePatchLevelSchema.exactOptional().openapi({
+      description: 'The operating system patch level of the device.',
+    }),
+    FirstAccessedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date that the device first signed in to Amazon WorkLink.',
+    }),
+    LastAccessedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date that the device last accessed Amazon WorkLink.',
+    }),
+    Username: UsernameSchema.exactOptional().openapi({
+      description: 'The user name associated with the device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDeviceResponse')
@@ -181,14 +164,10 @@ const CertificateSchema = z
 
 const DescribeDevicePolicyConfigurationResponseSchema = z
   .object({
-    DeviceCaCertificate: CertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.',
-        }),
-    ).exactOptional(),
+    DeviceCaCertificate: CertificateSchema.exactOptional().openapi({
+      description:
+        'The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDevicePolicyConfigurationResponse')
@@ -222,26 +201,20 @@ const AcmCertificateArnSchema = z
 
 const DescribeDomainResponseSchema = z
   .object({
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the domain was added.' }),
-    ).exactOptional(),
-    DomainStatus: DomainStatusSchema.and(
-      z.any().openapi({ description: 'The current state for the domain.' }),
-    ).exactOptional(),
-    AcmCertificateArn: AcmCertificateArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an issued ACM certificate that is valid for the domain being associated.',
-        }),
-    ).exactOptional(),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The name of the domain.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the domain was added.',
+    }),
+    DomainStatus: DomainStatusSchema.exactOptional().openapi({
+      description: 'The current state for the domain.',
+    }),
+    AcmCertificateArn: AcmCertificateArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of an issued ACM certificate that is valid for the domain being associated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDomainResponse')
@@ -269,41 +242,27 @@ const TagMapSchema = z
 
 const DescribeFleetMetadataResponseSchema = z
   .object({
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the fleet was created.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the fleet was last updated.' }),
-    ).exactOptional(),
-    FleetName: FleetNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
-    OptimizeForEndUserLocation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
-        }),
-    ).exactOptional(),
-    CompanyCode: CompanyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier used by users to sign in to the Amazon WorkLink app.',
-        }),
-    ).exactOptional(),
-    FleetStatus: FleetStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the fleet.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags attached to the resource. A tag is a key-value pair.' }),
-    ).exactOptional(),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the fleet was created.',
+    }),
+    LastUpdatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the fleet was last updated.',
+    }),
+    FleetName: FleetNameSchema.exactOptional().openapi({ description: 'The name of the fleet.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
+    OptimizeForEndUserLocation: BooleanSchema.exactOptional().openapi({
+      description:
+        'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
+    }),
+    CompanyCode: CompanyCodeSchema.exactOptional().openapi({
+      description: 'The identifier used by users to sign in to the Amazon WorkLink app.',
+    }),
+    FleetStatus: FleetStatusSchema.exactOptional().openapi({
+      description: 'The current state of the fleet.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetMetadataResponse')
@@ -314,60 +273,50 @@ const SamlMetadataSchema = z.string().min(1).max(204800).openapi('SamlMetadata')
 
 const DescribeIdentityProviderConfigurationResponseSchema = z
   .object({
-    IdentityProviderType: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The type of identity provider.' }),
-    ).exactOptional(),
-    ServiceProviderSamlMetadata: SamlMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SAML metadata document uploaded to the user’s identity provider.',
-        }),
-    ).exactOptional(),
-    IdentityProviderSamlMetadata: SamlMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SAML metadata document provided by the user’s identity provider.',
-        }),
-    ).exactOptional(),
+    IdentityProviderType: IdentityProviderTypeSchema.exactOptional().openapi({
+      description: 'The type of identity provider.',
+    }),
+    ServiceProviderSamlMetadata: SamlMetadataSchema.exactOptional().openapi({
+      description: 'The SAML metadata document uploaded to the user’s identity provider.',
+    }),
+    IdentityProviderSamlMetadata: SamlMetadataSchema.exactOptional().openapi({
+      description: 'The SAML metadata document provided by the user’s identity provider.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeIdentityProviderConfigurationResponse')
 
 const DescribeWebsiteCertificateAuthorityResponseSchema = z
   .object({
-    Certificate: CertificateSchema.and(
-      z.any().openapi({ description: 'The root certificate of the certificate authority.' }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the certificate authority was added.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The certificate name to display.' }),
-    ).exactOptional(),
+    Certificate: CertificateSchema.exactOptional().openapi({
+      description: 'The root certificate of the certificate authority.',
+    }),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the certificate authority was added.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The certificate name to display.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWebsiteCertificateAuthorityResponse')
 
-const DisassociateDomainResponseSchema = z.object({}).openapi('DisassociateDomainResponse')
+const DisassociateDomainResponseSchema = z.looseObject({}).openapi('DisassociateDomainResponse')
 
 const DisassociateWebsiteAuthorizationProviderResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWebsiteAuthorizationProviderResponse')
 
 const DisassociateWebsiteCertificateAuthorityResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateWebsiteCertificateAuthorityResponse')
 
 const DeviceSummarySchema = z
   .object({
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the device.' }),
-    ).exactOptional(),
-    DeviceStatus: DeviceStatusSchema.and(
-      z.any().openapi({ description: 'The status of the device.' }),
-    ).exactOptional(),
+    DeviceId: IdSchema.exactOptional().openapi({ description: 'The ID of the device.' }),
+    DeviceStatus: DeviceStatusSchema.exactOptional().openapi({
+      description: 'The status of the device.',
+    }),
   })
   .openapi({ description: 'The summary of devices.', required: [] })
   .openapi('DeviceSummary')
@@ -383,33 +332,23 @@ const NextTokenSchema = z
 
 const ListDevicesResponseSchema = z
   .object({
-    Devices: DeviceSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the devices.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Devices: DeviceSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the devices.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDevicesResponse')
 
 const DomainSummarySchema = z
   .object({
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the domain was created.' }),
-    ),
-    DomainStatus: DomainStatusSchema.and(
-      z.any().openapi({ description: 'The status of the domain.' }),
-    ),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
+    CreatedTime: DateTimeSchema.openapi({ description: 'The time that the domain was created.' }),
+    DomainStatus: DomainStatusSchema.openapi({ description: 'The status of the domain.' }),
   })
   .openapi({
     required: ['DomainName', 'CreatedTime', 'DomainStatus'],
@@ -421,53 +360,41 @@ const DomainSummaryListSchema = z.array(DomainSummarySchema).openapi('DomainSumm
 
 const ListDomainsResponseSchema = z
   .object({
-    Domains: DomainSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the domains.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    Domains: DomainSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the domains.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDomainsResponse')
 
 const FleetSummarySchema = z
   .object({
-    FleetArn: FleetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the fleet.' }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time when the fleet was created.' }),
-    ).exactOptional(),
-    LastUpdatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time when the fleet was last updated.' }),
-    ).exactOptional(),
-    FleetName: FleetNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet to display.' }),
-    ).exactOptional(),
-    CompanyCode: CompanyCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier used by users to sign into the Amazon WorkLink app.',
-        }),
-    ).exactOptional(),
-    FleetStatus: FleetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the fleet.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags attached to the resource. A tag is a key-value pair.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the fleet.',
+    }),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time when the fleet was created.',
+    }),
+    LastUpdatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time when the fleet was last updated.',
+    }),
+    FleetName: FleetNameSchema.exactOptional().openapi({ description: 'The name of the fleet.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the fleet to display.',
+    }),
+    CompanyCode: CompanyCodeSchema.exactOptional().openapi({
+      description: 'The identifier used by users to sign into the Amazon WorkLink app.',
+    }),
+    FleetStatus: FleetStatusSchema.exactOptional().openapi({
+      description: 'The status of the fleet.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ description: 'The summary of the fleet.', required: [] })
   .openapi('FleetSummary')
@@ -476,28 +403,22 @@ const FleetSummaryListSchema = z.array(FleetSummarySchema).openapi('FleetSummary
 
 const ListFleetsResponseSchema = z
   .object({
-    FleetSummaryList: FleetSummaryListSchema.and(
-      z.any().openapi({ description: 'The summary list of the fleets.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    FleetSummaryList: FleetSummaryListSchema.exactOptional().openapi({
+      description: 'The summary list of the fleets.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFleetsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags attached to the resource. A tag is a key-value pair.' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags attached to the resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -506,23 +427,17 @@ const AuthorizationProviderTypeSchema = z.literal('SAML').openapi('Authorization
 
 const WebsiteAuthorizationProviderSummarySchema = z
   .object({
-    AuthorizationProviderId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the authorization provider.' }),
-    ).exactOptional(),
-    AuthorizationProviderType: AuthorizationProviderTypeSchema.and(
-      z.any().openapi({ description: 'The authorization provider type.' }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name of the authorization provider. This applies only to SAML-based authorization providers.',
-        }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time of creation.' }),
-    ).exactOptional(),
+    AuthorizationProviderId: IdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the authorization provider.',
+    }),
+    AuthorizationProviderType: AuthorizationProviderTypeSchema.openapi({
+      description: 'The authorization provider type.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        'The domain name of the authorization provider. This applies only to SAML-based authorization providers.',
+    }),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({ description: 'The time of creation.' }),
   })
   .openapi({
     required: ['AuthorizationProviderType'],
@@ -536,32 +451,27 @@ const WebsiteAuthorizationProvidersSummaryListSchema = z
 
 const ListWebsiteAuthorizationProvidersResponseSchema = z
   .object({
-    WebsiteAuthorizationProviders: WebsiteAuthorizationProvidersSummaryListSchema.and(
-      z.any().openapi({ description: 'The website authorization providers.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    WebsiteAuthorizationProviders:
+      WebsiteAuthorizationProvidersSummaryListSchema.exactOptional().openapi({
+        description: 'The website authorization providers.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWebsiteAuthorizationProvidersResponse')
 
 const WebsiteCaSummarySchema = z
   .object({
-    WebsiteCaId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the CA.' }),
-    ).exactOptional(),
-    CreatedTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time when the CA was added.' }),
-    ).exactOptional(),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
+    WebsiteCaId: IdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the CA.',
+    }),
+    CreatedTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time when the CA was added.',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
   })
   .openapi({ description: 'The summary of the certificate authority (CA).', required: [] })
   .openapi('WebsiteCaSummary')
@@ -570,30 +480,26 @@ const WebsiteCaSummaryListSchema = z.array(WebsiteCaSummarySchema).openapi('Webs
 
 const ListWebsiteCertificateAuthoritiesResponseSchema = z
   .object({
-    WebsiteCertificateAuthorities: WebsiteCaSummaryListSchema.and(
-      z.any().openapi({ description: 'Information about the certificates.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
-        }),
-    ).exactOptional(),
+    WebsiteCertificateAuthorities: WebsiteCaSummaryListSchema.exactOptional().openapi({
+      description: 'Information about the certificates.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If there are no more pages, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWebsiteCertificateAuthoritiesResponse')
 
-const RestoreDomainAccessResponseSchema = z.object({}).openapi('RestoreDomainAccessResponse')
+const RestoreDomainAccessResponseSchema = z.looseObject({}).openapi('RestoreDomainAccessResponse')
 
-const RevokeDomainAccessResponseSchema = z.object({}).openapi('RevokeDomainAccessResponse')
+const RevokeDomainAccessResponseSchema = z.looseObject({}).openapi('RevokeDomainAccessResponse')
 
-const SignOutUserResponseSchema = z.object({}).openapi('SignOutUserResponse')
+const SignOutUserResponseSchema = z.looseObject({}).openapi('SignOutUserResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -603,44 +509,38 @@ const TagKeySchema = z
   .openapi('TagKey')
 
 const UpdateAuditStreamConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateAuditStreamConfigurationResponse')
 
 const UpdateCompanyNetworkConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateCompanyNetworkConfigurationResponse')
 
 const UpdateDevicePolicyConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateDevicePolicyConfigurationResponse')
 
-const UpdateDomainMetadataResponseSchema = z.object({}).openapi('UpdateDomainMetadataResponse')
+const UpdateDomainMetadataResponseSchema = z.looseObject({}).openapi('UpdateDomainMetadataResponse')
 
-const UpdateFleetMetadataResponseSchema = z.object({}).openapi('UpdateFleetMetadataResponse')
+const UpdateFleetMetadataResponseSchema = z.looseObject({}).openapi('UpdateFleetMetadataResponse')
 
 const UpdateIdentityProviderConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateIdentityProviderConfigurationResponse')
 
 const AssociateDomainRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the fleet.' }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The fully qualified domain name (FQDN).' }),
-    ),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
-    AcmCertificateArn: AcmCertificateArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an issued ACM certificate that is valid for the domain being associated.',
-        }),
-    ),
+    FleetArn: FleetArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the fleet.',
+    }),
+    DomainName: DomainNameSchema.openapi({
+      description: 'The fully qualified domain name (FQDN).',
+    }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
+    AcmCertificateArn: AcmCertificateArnSchema.openapi({
+      description:
+        'The ARN of an issued ACM certificate that is valid for the domain being associated.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'DomainName', 'AcmCertificateArn'],
@@ -650,18 +550,14 @@ const AssociateDomainRequestSchema = z
 
 const AssociateWebsiteAuthorizationProviderRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    AuthorizationProviderType: AuthorizationProviderTypeSchema.and(
-      z.any().openapi({ description: 'The authorization provider type.' }),
-    ),
-    DomainName: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The domain name of the authorization provider. This applies only to SAML-based authorization providers.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    AuthorizationProviderType: AuthorizationProviderTypeSchema.openapi({
+      description: 'The authorization provider type.',
+    }),
+    DomainName: DomainNameSchema.exactOptional().openapi({
+      description:
+        'The domain name of the authorization provider. This applies only to SAML-based authorization providers.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'AuthorizationProviderType'],
@@ -671,13 +567,11 @@ const AssociateWebsiteAuthorizationProviderRequestSchema = z
 
 const AssociateWebsiteCertificateAuthorityRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    Certificate: CertificateSchema.and(
-      z.any().openapi({ description: 'The root certificate of the CA.' }),
-    ),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The certificate name to display.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    Certificate: CertificateSchema.openapi({ description: 'The root certificate of the CA.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The certificate name to display.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'Certificate'],
@@ -696,97 +590,79 @@ const CertificateChainSchema = z
 
 const CreateFleetRequestSchema = z
   .object({
-    FleetName: FleetNameSchema.and(
-      z.any().openapi({ description: 'A unique name for the fleet.' }),
-    ),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The fleet name to display.' }),
-    ).exactOptional(),
-    OptimizeForEndUserLocation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The tags to add to the resource. A tag is a key-value pair.' }),
-    ).exactOptional(),
+    FleetName: FleetNameSchema.openapi({ description: 'A unique name for the fleet.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description: 'The fleet name to display.',
+    }),
+    OptimizeForEndUserLocation: BooleanSchema.exactOptional().openapi({
+      description:
+        'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: ' The tags to add to the resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['FleetName'], title: 'CreateFleetRequest' })
   .openapi('CreateFleetRequest')
 
 const DeleteFleetRequestSchema = z
-  .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-  })
+  .object({ FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }) })
   .openapi({ required: ['FleetArn'], title: 'DeleteFleetRequest' })
   .openapi('DeleteFleetRequest')
 
 const DescribeAuditStreamConfigurationRequestSchema = z
-  .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-  })
+  .object({ FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }) })
   .openapi({ required: ['FleetArn'], title: 'DescribeAuditStreamConfigurationRequest' })
   .openapi('DescribeAuditStreamConfigurationRequest')
 
 const DescribeCompanyNetworkConfigurationRequestSchema = z
-  .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-  })
+  .object({ FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }) })
   .openapi({ required: ['FleetArn'], title: 'DescribeCompanyNetworkConfigurationRequest' })
   .openapi('DescribeCompanyNetworkConfigurationRequest')
 
 const DescribeDevicePolicyConfigurationRequestSchema = z
-  .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-  })
+  .object({ FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }) })
   .openapi({ required: ['FleetArn'], title: 'DescribeDevicePolicyConfigurationRequest' })
   .openapi('DescribeDevicePolicyConfigurationRequest')
 
 const DescribeDeviceRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: "A unique identifier for a registered user's device." }),
-    ),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DeviceId: IdSchema.openapi({
+      description: "A unique identifier for a registered user's device.",
+    }),
   })
   .openapi({ required: ['FleetArn', 'DeviceId'], title: 'DescribeDeviceRequest' })
   .openapi('DescribeDeviceRequest')
 
 const DescribeDomainRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
   })
   .openapi({ required: ['FleetArn', 'DomainName'], title: 'DescribeDomainRequest' })
   .openapi('DescribeDomainRequest')
 
 const DescribeFleetMetadataRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the fleet.' }),
-    ),
+    FleetArn: FleetArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the fleet.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'DescribeFleetMetadataRequest' })
   .openapi('DescribeFleetMetadataRequest')
 
 const DescribeIdentityProviderConfigurationRequestSchema = z
-  .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-  })
+  .object({ FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }) })
   .openapi({ required: ['FleetArn'], title: 'DescribeIdentityProviderConfigurationRequest' })
   .openapi('DescribeIdentityProviderConfigurationRequest')
 
 const DescribeWebsiteCertificateAuthorityRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    WebsiteCaId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the certificate authority.' }),
-    ),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    WebsiteCaId: IdSchema.openapi({
+      description: 'A unique identifier for the certificate authority.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'WebsiteCaId'],
@@ -796,18 +672,18 @@ const DescribeWebsiteCertificateAuthorityRequestSchema = z
 
 const DisassociateDomainRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
   })
   .openapi({ required: ['FleetArn', 'DomainName'], title: 'DisassociateDomainRequest' })
   .openapi('DisassociateDomainRequest')
 
 const DisassociateWebsiteAuthorizationProviderRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    AuthorizationProviderId: IdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the authorization provider.' }),
-    ),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    AuthorizationProviderId: IdSchema.openapi({
+      description: 'A unique identifier for the authorization provider.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'AuthorizationProviderId'],
@@ -817,8 +693,8 @@ const DisassociateWebsiteAuthorizationProviderRequestSchema = z
 
 const DisassociateWebsiteCertificateAuthorityRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    WebsiteCaId: IdSchema.and(z.any().openapi({ description: 'A unique identifier for the CA.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    WebsiteCaId: IdSchema.openapi({ description: 'A unique identifier for the CA.' }),
   })
   .openapi({
     required: ['FleetArn', 'WebsiteCaId'],
@@ -830,128 +706,98 @@ const MaxResultsSchema = z.int().min(1).openapi('MaxResults')
 
 const ListDevicesRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be included in the next page.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be included in the next page.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'ListDevicesRequest' })
   .openapi('ListDevicesRequest')
 
 const ListDomainsRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be included in the next page.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be included in the next page.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'ListDomainsRequest' })
   .openapi('ListDomainsRequest')
 
 const ListFleetsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be included in the next page.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be included in the next page.',
+    }),
   })
   .openapi({ title: 'ListFleetsRequest', required: [] })
   .openapi('ListFleetsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListWebsiteAuthorizationProvidersRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be included in the next page.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token to use to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be included in the next page.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'ListWebsiteAuthorizationProvidersRequest' })
   .openapi('ListWebsiteAuthorizationProvidersRequest')
 
 const ListWebsiteCertificateAuthoritiesRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of results to be included in the next page.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to be included in the next page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The pagination token used to retrieve the next page of results for this operation. If this value is null, it retrieves the first page.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'ListWebsiteCertificateAuthoritiesRequest' })
   .openapi('ListWebsiteCertificateAuthoritiesRequest')
 
 const RestoreDomainAccessRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
   })
   .openapi({ required: ['FleetArn', 'DomainName'], title: 'RestoreDomainAccessRequest' })
   .openapi('RestoreDomainAccessRequest')
 
 const RevokeDomainAccessRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
   })
   .openapi({ required: ['FleetArn', 'DomainName'], title: 'RevokeDomainAccessRequest' })
   .openapi('RevokeDomainAccessRequest')
 
 const SignOutUserRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    Username: UsernameSchema.and(z.any().openapi({ description: 'The name of the user.' })),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    Username: UsernameSchema.openapi({ description: 'The name of the user.' }),
   })
   .openapi({ required: ['FleetArn', 'Username'], title: 'SignOutUserRequest' })
   .openapi('SignOutUserRequest')
@@ -960,55 +806,41 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The tags to add to the resource. A tag is a key-value pair.' }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description: 'The tags to add to the resource. A tag is a key-value pair.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAuditStreamConfigurationRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    AuditStreamArn: AuditStreamArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the Amazon Kinesis data stream that receives the audit events.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    AuditStreamArn: AuditStreamArnSchema.exactOptional().openapi({
+      description: 'The ARN of the Amazon Kinesis data stream that receives the audit events.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'UpdateAuditStreamConfigurationRequest' })
   .openapi('UpdateAuditStreamConfigurationRequest')
 
 const UpdateCompanyNetworkConfigurationRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The VPC with connectivity to associated websites.' }),
-    ),
-    SubnetIds: SubnetIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subnets used for X-ENI connections from Amazon WorkLink rendering containers.',
-        }),
-    ),
-    SecurityGroupIds: SecurityGroupIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The security groups associated with access to the provided subnets.',
-        }),
-    ),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    VpcId: VpcIdSchema.openapi({
+      description: 'The VPC with connectivity to associated websites.',
+    }),
+    SubnetIds: SubnetIdsSchema.openapi({
+      description:
+        'The subnets used for X-ENI connections from Amazon WorkLink rendering containers.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsSchema.openapi({
+      description: 'The security groups associated with access to the provided subnets.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'VpcId', 'SubnetIds', 'SecurityGroupIds'],
@@ -1018,67 +850,49 @@ const UpdateCompanyNetworkConfigurationRequestSchema = z
 
 const UpdateDevicePolicyConfigurationRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DeviceCaCertificate: CertificateChainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DeviceCaCertificate: CertificateChainSchema.exactOptional().openapi({
+      description:
+        'The certificate chain, including intermediate certificates and the root certificate authority certificate used to issue device certificates.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'UpdateDevicePolicyConfigurationRequest' })
   .openapi('UpdateDevicePolicyConfigurationRequest')
 
 const UpdateDomainMetadataRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DomainName: DomainNameSchema.and(z.any().openapi({ description: 'The name of the domain.' })),
-    DisplayName: DisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to display.' }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DomainName: DomainNameSchema.openapi({ description: 'The name of the domain.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({ description: 'The name to display.' }),
   })
   .openapi({ required: ['FleetArn', 'DomainName'], title: 'UpdateDomainMetadataRequest' })
   .openapi('UpdateDomainMetadataRequest')
 
 const UpdateFleetMetadataRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    DisplayName: DisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The fleet name to display. The existing DisplayName is unset if null is passed.',
-        }),
-    ).exactOptional(),
-    OptimizeForEndUserLocation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    DisplayName: DisplayNameSchema.exactOptional().openapi({
+      description:
+        'The fleet name to display. The existing DisplayName is unset if null is passed.',
+    }),
+    OptimizeForEndUserLocation: BooleanSchema.exactOptional().openapi({
+      description:
+        'The option to optimize for better performance by routing traffic through the closest AWS Region to users, which may be outside of your home Region.',
+    }),
   })
   .openapi({ required: ['FleetArn'], title: 'UpdateFleetMetadataRequest' })
   .openapi('UpdateFleetMetadataRequest')
 
 const UpdateIdentityProviderConfigurationRequestSchema = z
   .object({
-    FleetArn: FleetArnSchema.and(z.any().openapi({ description: 'The ARN of the fleet.' })),
-    IdentityProviderType: IdentityProviderTypeSchema.and(
-      z.any().openapi({ description: 'The type of identity provider.' }),
-    ),
-    IdentityProviderSamlMetadata: SamlMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SAML metadata document provided by the customer’s identity provider. The existing IdentityProviderSamlMetadata is unset if null is passed.',
-        }),
-    ).exactOptional(),
+    FleetArn: FleetArnSchema.openapi({ description: 'The ARN of the fleet.' }),
+    IdentityProviderType: IdentityProviderTypeSchema.openapi({
+      description: 'The type of identity provider.',
+    }),
+    IdentityProviderSamlMetadata: SamlMetadataSchema.exactOptional().openapi({
+      description:
+        'The SAML metadata document provided by the customer’s identity provider. The existing IdentityProviderSamlMetadata is unset if null is passed.',
+    }),
   })
   .openapi({
     required: ['FleetArn', 'IdentityProviderType'],

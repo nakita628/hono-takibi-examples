@@ -772,13 +772,19 @@ export function getPutV1UsersUserIdPreferencesIdChannelTypesMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdChannelTypesMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].channel_types.$put(undefined, options),
+        client.v1.users[':user_id'].preferences[':id'].channel_types.$put(args, options),
       )
     },
   })
@@ -804,7 +810,9 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypes<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -851,14 +859,20 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdCategoriesMutation
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdCategoriesMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].categories.$put(
-          undefined,
+          args,
           options,
         ),
       )
@@ -886,7 +900,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategories<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1005,16 +1021,19 @@ export function getPutV1UsersUserIdPreferencesIdChannelTypesTypeMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdChannelTypesTypeMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].channel_types[':type'].$put(
-          undefined,
-          options,
-        ),
+        client.v1.users[':user_id'].preferences[':id'].channel_types[':type'].$put(args, options),
       )
     },
   })
@@ -1040,7 +1059,9 @@ export function usePutV1UsersUserIdPreferencesIdChannelTypesType<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1625,13 +1646,19 @@ export function getPutV1UsersUserIdPreferencesIdWorkflowsMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdWorkflowsMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].workflows.$put(undefined, options),
+        client.v1.users[':user_id'].preferences[':id'].workflows.$put(args, options),
       )
     },
   })
@@ -1657,7 +1684,9 @@ export function usePutV1UsersUserIdPreferencesIdWorkflows<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1910,14 +1939,20 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyMutat
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].categories[':key'].$put(
-          undefined,
+          args,
           options,
         ),
       )
@@ -1945,7 +1980,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdCategoriesKey<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -1993,13 +2030,19 @@ export function getPutV1UsersUserIdPreferencesIdCategoriesKeyMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdCategoriesKeyMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].categories[':key'].$put(undefined, options),
+        client.v1.users[':user_id'].preferences[':id'].categories[':key'].$put(args, options),
       )
     },
   })
@@ -2025,7 +2068,9 @@ export function usePutV1UsersUserIdPreferencesIdCategoriesKey<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -2855,14 +2900,20 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsMutationO
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows.$put(
-          undefined,
+          args,
           options,
         ),
       )
@@ -2890,7 +2941,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflows<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -3582,13 +3635,19 @@ export function getPutV1UsersUserIdPreferencesIdCategoriesMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdCategoriesMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].categories.$put(undefined, options),
+        client.v1.users[':user_id'].preferences[':id'].categories.$put(args, options),
       )
     },
   })
@@ -3614,7 +3673,9 @@ export function usePutV1UsersUserIdPreferencesIdCategories<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -4290,15 +4351,21 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeMu
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types[
           ':type'
-        ].$put(undefined, options),
+        ].$put(args, options),
       )
     },
   })
@@ -4324,7 +4391,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesType<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -4372,14 +4441,20 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesMutati
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdChannelTypesMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types.$put(
-          undefined,
+          args,
           options,
         ),
       )
@@ -4407,7 +4482,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdChannelTypes<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -6166,14 +6243,20 @@ export function getPutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyMutati
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+      >,
+    ) {
       return parseResponse(
         client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows[':key'].$put(
-          undefined,
+          args,
           options,
         ),
       )
@@ -6201,7 +6284,9 @@ export function usePutV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKey<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -6777,13 +6862,19 @@ export function getPutV1UsersUserIdPreferencesIdWorkflowsKeyMutationOptions<
       >
     >,
     TError,
-    void,
+    InferRequestType<
+      (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+    >,
     TOnMutateResult
   >({
     mutationKey: getPutV1UsersUserIdPreferencesIdWorkflowsKeyMutationKey(),
-    async mutationFn() {
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+      >,
+    ) {
       return parseResponse(
-        client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(undefined, options),
+        client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(args, options),
       )
     },
   })
@@ -6809,7 +6900,9 @@ export function usePutV1UsersUserIdPreferencesIdWorkflowsKey<
             >
           >,
           TError,
-          void,
+          InferRequestType<
+            (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+          >,
           TOnMutateResult
         >,
         { mutationFn?: unknown }

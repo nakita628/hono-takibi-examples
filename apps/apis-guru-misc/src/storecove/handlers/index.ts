@@ -1,0 +1,7 @@
+export * from './discovery'
+export * from './document-submissions'
+export * from './invoice-submissions'
+export * from './legal-entities'
+export * from './purchase-invoices'
+export * from './received-documents'
+export * from './webhook-instances'

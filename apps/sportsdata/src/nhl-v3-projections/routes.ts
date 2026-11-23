@@ -140,7 +140,24 @@ const DfsSlatePlayerSchema = z
   .openapi({ required: [] })
   .openapi('DfsSlatePlayer')
 
-const DfsSlateSchema = z
+type DfsSlateType = {
+  DfsSlateGames?: z.infer<typeof DfsSlateGameSchema>[]
+  DfsSlatePlayers?: z.infer<typeof DfsSlatePlayerSchema>[]
+  IsMultiDaySlate?: boolean | null
+  NumberOfGames?: number | null
+  Operator?: string | null
+  OperatorDay?: string | null
+  OperatorGameType?: string | null
+  OperatorName?: string | null
+  OperatorSlateID?: number | null
+  OperatorStartTime?: string | null
+  RemovedByOperator?: boolean | null
+  SalaryCap?: number | null
+  SlateID?: number
+  SlateRosterSlots?: (string | null)[]
+}
+
+const DfsSlateSchema: z.ZodType<DfsSlateType> = z
   .object({
     DfsSlateGames: z.array(DfsSlateGameSchema).exactOptional(),
     DfsSlatePlayers: z.array(DfsSlatePlayerSchema).exactOptional(),

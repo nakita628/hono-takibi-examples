@@ -1,5 +1,42 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const MetadataSchema = z
+  .object({
+    display_phone_number: z
+      .string()
+      .openapi({ description: 'Business display phone number.', example: '15550783881' }),
+    phone_number_id: z
+      .string()
+      .openapi({ description: 'Business phone number ID.', example: '106540352242922' }),
+  })
+  .openapi({ required: ['display_phone_number', 'phone_number_id'] })
+  .openapi('Metadata')
+
+const ContactProfileSchema = z
+  .object({
+    profile: z
+      .object({
+        name: z
+          .string()
+          .openapi({
+            description:
+              "WhatsApp user's name as it appears in their profile in the WhatsApp client.",
+            example: 'Sheena Nelson',
+          }),
+      })
+      .openapi({ required: ['name'] }),
+    wa_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "WhatsApp user ID. Note that a WhatsApp user's ID and phone number may not always match.",
+        example: '16505551234',
+      }),
+  })
+  .openapi({ required: ['profile'] })
+  .openapi('ContactProfile')
+
 const MessageContextSchema = z
   .object({
     message_id: z
@@ -35,22 +72,64 @@ const BaseMessagePropertiesSchema = z
   })
   .openapi('BaseMessageProperties')
 
-const TextMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({
-      type: z.literal('text').exactOptional(),
-      text: z
-        .strictObject({
-          body: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The text of the message.', example: 'Hello World!' }),
-          preview_url: z.boolean().exactOptional(),
-        })
-        .openapi({ required: [] }),
-    })
-    .openapi({ required: ['text'] }),
-).openapi('TextMessage')
+const TextMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('text').exactOptional(),
+        text: z
+          .strictObject({
+            body: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The text of the message.', example: 'Hello World!' }),
+            preview_url: z.boolean().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      })
+      .openapi({ required: ['text'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'text'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('TextMessage')
+
+const ReactionMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('reaction').exactOptional(),
+        reaction: z
+          .strictObject({
+            emoji: z.string().exactOptional().openapi({ description: 'emoji' }),
+            message_id: z.string().exactOptional().openapi({ description: 'reacted message-id' }),
+          })
+          .openapi({ required: [] }),
+      })
+      .openapi({ required: ['reaction'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'reaction'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ReactionMessage')
 
 const MediaObjectSchema = z
   .xor([
@@ -78,458 +157,160 @@ const MediaObjectSchema = z
   .openapi({ description: 'A media object. Either `id` or `link` is required.' })
   .openapi('MediaObject')
 
-const AudioMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({ type: z.literal('audio').exactOptional(), audio: MediaObjectSchema })
-    .openapi({ required: ['audio'] }),
-).openapi('AudioMessage')
+const AudioMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({ type: z.literal('audio').exactOptional(), audio: MediaObjectSchema })
+      .openapi({ required: ['audio'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'audio'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('AudioMessage')
 
-const DocumentMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({ type: z.literal('document').exactOptional(), document: MediaObjectSchema })
-    .openapi({ required: ['document'] }),
-).openapi('DocumentMessage')
+const DocumentMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({ type: z.literal('document').exactOptional(), document: MediaObjectSchema })
+      .openapi({ required: ['document'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'document'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('DocumentMessage')
 
-const ImageMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({ type: z.literal('image').exactOptional(), image: MediaObjectSchema })
-    .openapi({ required: ['image'] }),
-).openapi('ImageMessage')
+const ImageMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({ type: z.literal('image').exactOptional(), image: MediaObjectSchema })
+      .openapi({ required: ['image'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'image'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ImageMessage')
 
-const LocationMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({
-      type: z.literal('location').exactOptional(),
-      location: z
-        .strictObject({
-          address: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'The address of the location.',
-              example: '1 Hacker Way, Menlo Park, CA 94025',
-            }),
-          latitude: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The latitude of the location.', example: 37.4847 }),
-          longitude: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The longitude of the location.', example: -122.1486 }),
-          name: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'The name of the location.', example: 'Meta HQ' }),
-        })
-        .openapi({ required: [] }),
-    })
-    .openapi({ required: ['location'] }),
-).openapi('LocationMessage')
+const StickerMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('sticker').exactOptional(),
+        sticker: z.xor([
+          z
+            .strictObject({ id: z.string().openapi({ description: 'The ID of the sticker.' }) })
+            .openapi({ required: ['id'] }),
+          z
+            .strictObject({ link: z.string().openapi({ description: 'The URL of the sticker.' }) })
+            .openapi({ required: ['link'] }),
+        ]),
+      })
+      .openapi({ required: ['sticker'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'sticker'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('StickerMessage')
 
-const VideoMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({ type: z.literal('video').exactOptional(), video: MediaObjectSchema })
-    .openapi({ required: ['video'] }),
-).openapi('VideoMessage')
+const VideoMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({ type: z.literal('video').exactOptional(), video: MediaObjectSchema })
+      .openapi({ required: ['video'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'video'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('VideoMessage')
 
-const StickerMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({
-      type: z.literal('sticker').exactOptional(),
-      sticker: z.xor([
-        z
-          .strictObject({ id: z.string().openapi({ description: 'The ID of the sticker.' }) })
-          .openapi({ required: ['id'] }),
-        z
-          .strictObject({ link: z.string().openapi({ description: 'The URL of the sticker.' }) })
-          .openapi({ required: ['link'] }),
-      ]),
-    })
-    .openapi({ required: ['sticker'] }),
-).openapi('StickerMessage')
-
-const ReactionMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({
-      type: z.literal('reaction').exactOptional(),
-      reaction: z
-        .strictObject({
-          emoji: z.string().exactOptional().openapi({ description: 'emoji' }),
-          message_id: z.string().exactOptional().openapi({ description: 'reacted message-id' }),
-        })
-        .openapi({ required: [] }),
-    })
-    .openapi({ required: ['reaction'] }),
-).openapi('ReactionMessage')
-
-const HeaderObjectSchema = z
-  .object({
-    type: z
-      .enum(['text', 'video', 'image', 'document'])
-      .openapi({ description: 'The header type.' }),
-    text: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({
-        description:
-          "Text for the header. Required if 'type' is 'text'. Emojis supported, no markdown.",
-      }),
-    sub_text: z
-      .string()
-      .max(60)
-      .exactOptional()
-      .openapi({ description: 'Optional sub-text for the header. Emojis supported, no markdown.' }),
-    document: MediaObjectSchema.exactOptional().openapi({
-      description: "Contains the media object for this document. Required if 'type' is 'document'.",
-    }),
-    image: MediaObjectSchema.exactOptional().openapi({
-      description: "Contains the media object for this image. Required if 'type' is 'image'.",
-    }),
-    video: MediaObjectSchema.exactOptional().openapi({
-      description: "Contains the media object for this video. Required if 'type' is 'video'.",
-    }),
-  })
-  .openapi({
-    description:
-      "Header content displayed on top of a message. Required for 'product_list' type. Cannot be set for 'product' type.",
-    required: ['type'],
-  })
-  .openapi('HeaderObject')
-
-const BodyObjectSchema = z
-  .object({
-    text: z
-      .string()
-      .max(1024)
-      .openapi({
-        description: 'The content of the message body. Emojis and markdown are supported.',
-      }),
-  })
-  .openapi({
-    description:
-      "An object with the body of the message. Optional for 'product' type, required for other interactive message types.",
-    required: ['text'],
-  })
-  .openapi('BodyObject')
-
-const FooterObjectSchema = z
-  .object({
-    text: z
-      .string()
-      .max(60)
-      .openapi({ description: 'The footer content. Emojis, markdown, and links are supported.' }),
-  })
-  .openapi({
-    description: 'An object with the footer of the message. Optional.',
-    required: ['text'],
-  })
-  .openapi('FooterObject')
-
-const SectionObjectSchema = z
-  .object({
-    title: z
-      .string()
-      .max(24)
-      .exactOptional()
-      .openapi({
-        description:
-          'Title of the section. Required if the message has more than one section. Max 24 characters.',
-      }),
-    product_items: z
-      .array(
-        z
-          .object({
-            product_retailer_id: z
+const LocationMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('location').exactOptional(),
+        location: z
+          .strictObject({
+            address: z
               .string()
-              .openapi({ description: 'Unique identifier of the product in a catalog.' }),
-          })
-          .openapi({ required: ['product_retailer_id'] }),
-      )
-      .min(1)
-      .max(30)
-      .exactOptional()
-      .openapi({ description: 'Array of product objects.' }),
-    rows: z
-      .array(
-        z
-          .object({
-            id: z.string().max(200).openapi({ description: 'Unique row identifier.' }),
-            title: z.string().max(24).openapi({ description: 'Row title.' }),
-            description: z
-              .string()
-              .max(72)
               .exactOptional()
-              .openapi({ description: 'Optional row description.' }),
-          })
-          .openapi({ required: ['id', 'title'] }),
-      )
-      .max(10)
-      .exactOptional()
-      .openapi({ description: 'Contains a list of rows.' }),
-  })
-  .openapi({
-    description: 'A section object, used in List Messages and Multi-Product Messages.',
-    required: [],
-  })
-  .openapi('SectionObject')
-
-const ActionObjectSchema = z
-  .xor([
-    z
-      .object({
-        button: z
-          .string()
-          .max(20)
-          .openapi({
-            description:
-              'Button content for List Messages. Cannot be empty, must be unique. Emojis supported, no markdown.',
-          }),
-        sections: z
-          .array(SectionObjectSchema)
-          .min(1)
-          .max(10)
-          .openapi({ description: 'Array of section objects.' }),
-      })
-      .openapi({ required: ['button', 'sections'] }),
-    z
-      .object({
-        buttons: z
-          .array(
-            z
-              .object({
-                type: z
-                  .literal('reply')
-                  .openapi({ description: 'Only supported type is "reply" for Reply Button.' }),
-                reply: z
-                  .object({
-                    id: z
-                      .string()
-                      .max(256)
-                      .openapi({
-                        description:
-                          'Unique identifier for your button. No leading/trailing spaces.',
-                      }),
-                    title: z
-                      .string()
-                      .max(20)
-                      .openapi({
-                        description:
-                          'Button title. Cannot be empty, must be unique. Emojis supported, no markdown.',
-                      }),
-                  })
-                  .openapi({ required: ['id', 'title'] }),
-              })
-              .openapi({ required: ['type', 'reply'] }),
-          )
-          .min(1)
-          .max(3)
-          .openapi({ description: 'Array of button objects.' }),
-      })
-      .openapi({ required: ['buttons'] }),
-    z
-      .object({
-        catalog_id: z
-          .string()
-          .openapi({
-            description:
-              'Unique identifier of the Facebook catalog linked to your WhatsApp Business Account.',
-          }),
-        product_retailer_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Unique identifier of the product in a catalog. Required for Single Product Messages.',
-          }),
-        sections: z
-          .array(SectionObjectSchema)
-          .min(1)
-          .max(10)
-          .exactOptional()
-          .openapi({ description: 'Array of section objects.' }),
-      })
-      .openapi({ required: ['catalog_id'] }),
-    z
-      .object({
-        name: z.literal('catalog_message'),
-        parameters: z
-          .object({
-            thumbnail_product_retailer_id: z
+              .openapi({
+                description: 'The address of the location.',
+                example: '1 Hacker Way, Menlo Park, CA 94025',
+              }),
+            latitude: z
               .string()
-              .openapi({ description: 'Product retailer ID for the thumbnail.' }),
+              .exactOptional()
+              .openapi({ description: 'The latitude of the location.', example: 37.4847 }),
+            longitude: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The longitude of the location.', example: -122.1486 }),
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The name of the location.', example: 'Meta HQ' }),
           })
-          .openapi({ required: ['thumbnail_product_retailer_id'] }),
+          .openapi({ required: [] }),
       })
-      .openapi({ required: ['name', 'parameters'] }),
-    z
-      .object({
-        name: z.literal('flow'),
-        parameters: z
-          .xor([
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'flow_id')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                }
-              })
-              .openapi({ required: ['flow_id'] }),
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'flow_name')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                }
-              })
-              .openapi({ required: ['flow_name'] }),
-          ])
-          .openapi({ required: ['flow_message_version', 'flow_cta'] }),
-      })
-      .openapi({ required: ['name', 'parameters'] }),
-    z.object({ name: z.literal('call_permission_request') }).openapi({ required: ['name'] }),
-  ])
-  .openapi({
-    description:
-      'Action you want the user to perform after reading the message. Its structure varies by interactive message type.',
-  })
-  .openapi('ActionObject')
-
-const InteractiveObjectSchema = z
-  .object({
-    type: z
-      .enum([
-        'button',
-        'call_permission_request',
-        'catalog_message',
-        'list',
-        'product',
-        'product_list',
-        'flow',
-      ])
-      .openapi({ description: 'The type of interactive message to send.' }),
-    header: HeaderObjectSchema.exactOptional(),
-    body: BodyObjectSchema.exactOptional(),
-    footer: FooterObjectSchema.exactOptional(),
-    action: ActionObjectSchema,
-  })
-  .openapi({
-    description: 'An object containing the content for an interactive message.',
-    required: ['type', 'action'],
-  })
-  .openapi('InteractiveObject')
-
-const InteractiveMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .strictObject({
-      type: z.literal('interactive').exactOptional(),
-      interactive: InteractiveObjectSchema,
-    })
-    .openapi({ required: ['interactive'] }),
-).openapi('InteractiveMessage')
-
-const LanguageObjectSchema = z
-  .object({
-    policy: z
-      .literal('deterministic')
-      .openapi({
-        description: 'The language policy the message should follow.',
-        example: 'deterministic',
-      }),
-    code: z
-      .string()
-      .openapi({
-        description: 'The code of the language or locale to use (e.g., `"en"`, `"en_US"`).',
-        example: 'en_US',
-      }),
-  })
-  .openapi({ required: ['policy', 'code'] })
-  .openapi('LanguageObject')
-
-const TemplateComponentSchema = z
-  .object({
-    type: z
-      .enum(['header', 'body', 'button'])
-      .openapi({ description: 'Describes the component type.' }),
-    sub_type: z
-      .enum(['quick_reply', 'url', 'catalog'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required when `type=button`. Not used for other types. Type of button to create.',
-      }),
-    parameters: z
-      .array(z.any())
-      .exactOptional()
-      .openapi({ description: 'Array of parameter objects with the content of the message.' }),
-    index: z
-      .string()
-      .regex(/^[2-6, 11-14]$/)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required when `type=button`. Not used for other types. Position index of the button (0-9).',
-        example: '0',
-      }),
-  })
-  .openapi({
-    required: ['type'],
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        header: '#/components/schemas/HeaderComponent',
-        body: '#/components/schemas/BodyComponent',
-        button: '#/components/schemas/ButtonComponent',
-      },
-    },
-  })
-  .openapi('TemplateComponent')
-
-const TemplateObjectSchema = z
-  .object({
-    name: z.string().openapi({ description: 'Name of the template.', example: 'TEMPLATE_NAME' }),
-    language: LanguageObjectSchema.openapi({
-      description:
-        'Contains a `language` object. Specifies the language the template may be rendered in',
-    }),
-    components: z
-      .array(TemplateComponentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of `components` objects containing the parameters of the message.',
-        example: [
-          {
-            type: 'header',
-            parameters: [{ type: 'image', image: { link: 'http(s)://example.com/image.jpg' } }],
-          },
-          {
-            type: 'body',
-            parameters: [
-              { type: 'text', text: 'Hello {{1}}! Your order of {{2}} is confirmed for {{3}}.' },
-            ],
-          },
-          {
-            type: 'button',
-            sub_type: 'quick_reply',
-            index: '0',
-            parameters: [{ type: 'payload', payload: 'ORDER_DETAILS_CLICKED' }],
-          },
-        ],
-      }),
-  })
-  .openapi({ required: ['name', 'language'] })
-  .openapi('TemplateObject')
-
-const TemplateMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({ type: z.literal('template').exactOptional(), template: TemplateObjectSchema })
-    .openapi({ required: ['template'] }),
-).openapi('TemplateMessage')
+      .openapi({ required: ['location'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'location'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('LocationMessage')
 
 const AddressObjectSchema = z
   .strictObject({
@@ -638,27 +419,577 @@ const ContactObjectSchema = z
   .openapi({ required: [] })
   .openapi('ContactObject')
 
-const ContactsMessageSchema = BaseMessagePropertiesSchema.and(
+const ContactSharingMessageSchema = BaseMessagePropertiesSchema.and(
   z
-    .strictObject({
-      type: z.literal('contacts').exactOptional(),
-      contacts: z.array(ContactObjectSchema).min(1).max(5),
+    .object({
+      type: z.literal('contacts').openapi({ example: 'contacts' }),
+      contacts: z
+        .array(ContactObjectSchema)
+        .openapi({
+          description:
+            'Array of contact objects. Many contact object properties may be omitted if the WhatsApp user chooses not to share them, or their device prevents them from being shared.',
+        }),
     })
-    .openapi({ required: ['contacts'] }),
-).openapi('ContactsMessage')
+    .openapi({
+      required: ['type', 'contacts'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTRBNjU5OUFFRTAzODEwMTQ0RgA=',
+        timestamp: '1744344496',
+        type: 'contacts',
+        contacts: [
+          {
+            name: { first_name: 'Lucía', last_name: 'Gómez', formatted_name: 'Lucía Gómez' },
+            org: { company: 'Google' },
+            phones: [{ phone: '+1 (983) 555-2319', wa_id: '19835552319', type: 'MOBILE' }],
+          },
+        ],
+      },
+    }),
+).openapi('ContactSharingMessage')
 
-type MessageType =
-  | z.infer<typeof TextMessageSchema>
-  | z.infer<typeof AudioMessageSchema>
-  | z.infer<typeof DocumentMessageSchema>
-  | z.infer<typeof ImageMessageSchema>
-  | z.infer<typeof LocationMessageSchema>
-  | z.infer<typeof VideoMessageSchema>
-  | z.infer<typeof StickerMessageSchema>
-  | z.infer<typeof ReactionMessageSchema>
-  | z.infer<typeof InteractiveMessageSchema>
-  | z.infer<typeof TemplateMessageSchema>
-  | z.infer<typeof ContactsMessageSchema>
+const ErrorObjectSchema = z
+  .object({
+    message: z.string().openapi({ description: 'Human-readable description of the error' }),
+    type: z.string().openapi({ description: 'Error type classification' }),
+    code: z.int().openapi({ description: 'Numeric error code' }),
+  })
+  .openapi({ required: ['message', 'type', 'code'] })
+  .openapi('ErrorObject')
+
+const UnsupportedMessageSchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({
+      type: z.enum(['unsupported', 'unknown']).openapi({ example: 'unsupported' }),
+      errors: z.array(ErrorObjectSchema),
+    })
+    .openapi({
+      required: ['type', 'errors'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTQyMDU1NTA3NDkVAgASGBI5N0MwRjg0RTVBNUI1RDA2OTkA',
+        timestamp: '1750090702',
+        errors: [
+          {
+            code: 131051,
+            title: 'Message type unknown',
+            message: 'Message type unknown',
+            error_data: { details: 'Message type is currently not supported.' },
+          },
+        ],
+        type: 'unsupported',
+      },
+    }),
+).openapi('UnsupportedMessage')
+
+const ButtonMessageSchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({
+      type: z.literal('button').openapi({ example: 'button' }),
+      context: z
+        .object({
+          from: z
+            .string()
+            .openapi({ description: 'Business display phone number.', example: '15550783881' }),
+          id: z
+            .string()
+            .openapi({
+              description:
+                'WhatsApp message ID of the message containing the button the WhatsApp user tapped.',
+              example: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJFNjk2OTMwNEZCQjhGMzUyQUYA',
+            }),
+        })
+        .openapi({ required: ['from', 'id'] }),
+      button: z
+        .object({
+          payload: z
+            .string()
+            .openapi({ description: 'Quick-reply button payload.', example: 'Unsubscribe' }),
+          text: z
+            .string()
+            .openapi({ description: 'Quick-reply button label text.', example: 'Unsubscribe' }),
+        })
+        .openapi({ required: ['payload', 'text'] }),
+    })
+    .openapi({
+      required: ['type', 'context', 'button'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUU0M0MxQzQzMUJCMTMwNUZFOQA=',
+        timestamp: '1750091045',
+        type: 'button',
+        context: {
+          from: '15550783881',
+          id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJFNjk2OTMwNEZCQjhGMzUyQUYA',
+        },
+        button: { payload: 'Unsubscribe', text: 'Unsubscribe' },
+      },
+    }),
+).openapi('ButtonMessage')
+
+const InteractiveMessageReplySchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({
+      type: z.literal('interactive').openapi({ example: 'interactive' }),
+      context: z
+        .object({
+          from: z
+            .string()
+            .openapi({ description: 'Business display phone number.', example: '15550783881' }),
+          id: z
+            .string()
+            .openapi({
+              description:
+                'WhatsApp message ID of the message containing the interactive component the user tapped.',
+              example: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJGMzEyNzhENTZDMzNGODlDRDgA',
+            }),
+        })
+        .openapi({ required: ['from', 'id'] }),
+      interactive: z
+        .object({
+          type: z
+            .enum(['list_reply', 'button_reply'])
+            .openapi({
+              description: 'Type of interactive reply (list_reply or button_reply).',
+              example: 'list_reply',
+            }),
+        })
+        .openapi({
+          discriminator: {
+            propertyName: 'type',
+            mapping: {
+              list_reply: '#/components/schemas/InteractiveListReplyContent',
+              button_reply: '#/components/schemas/InteractiveButtonReplyContent',
+            },
+          },
+          required: ['type'],
+        }),
+    })
+    .openapi({
+      required: ['type', 'context', 'interactive'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUJDQ0NDM0FEODY4ODkzOTc5RgA=',
+        timestamp: '1749854575',
+        type: 'interactive',
+        context: {
+          from: '15550783881',
+          id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJGMzEyNzhENTZDMzNGODlDRDgA',
+        },
+        interactive: {
+          type: 'list_reply',
+          list_reply: {
+            id: 'priority_express',
+            title: 'Priority Mail Express',
+            description: 'Next Day to 2 Days',
+          },
+        },
+      },
+    }),
+).openapi('InteractiveMessageReply')
+
+const OrderMessageSchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({
+      type: z.literal('order').openapi({ example: 'order' }),
+      order: z
+        .object({
+          catalog_id: z
+            .string()
+            .openapi({ description: 'Product catalog ID.', example: '194836987003835' }),
+          text: z.string().openapi({ description: 'Empty string.', example: '' }),
+          product_items: z.array(
+            z
+              .object({
+                product_retailer_id: z
+                  .string()
+                  .openapi({ description: 'Product ID.', example: 'di9ozbzfi4' }),
+                quantity: z.int().openapi({ description: 'Product quantity.', example: 2 }),
+                item_price: z
+                  .float32()
+                  .openapi({ description: 'Individual product price.', example: 30 }),
+                currency: z
+                  .string()
+                  .openapi({ description: 'Catalog currency code.', example: 'USD' }),
+              })
+              .openapi({ required: ['product_retailer_id', 'quantity', 'item_price', 'currency'] }),
+          ),
+        })
+        .openapi({ required: ['catalog_id', 'text', 'product_items'] }),
+    })
+    .openapi({
+      required: ['type', 'order'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTEyQjFGNzI1QTQxMjI5QTMyOQA=',
+        timestamp: '1750096325',
+        type: 'order',
+        order: {
+          catalog_id: '194836987003835',
+          text: '',
+          product_items: [
+            { product_retailer_id: 'di9ozbzfi4', quantity: 2, item_price: 30, currency: 'USD' },
+            { product_retailer_id: 'nqryix03ez', quantity: 1, item_price: 25, currency: 'USD' },
+          ],
+        },
+      },
+    }),
+).openapi('OrderMessage')
+
+const IncomingMessageSchema = z
+  .xor([
+    TextMessageSchema,
+    ReactionMessageSchema,
+    AudioMessageSchema,
+    DocumentMessageSchema,
+    ImageMessageSchema,
+    StickerMessageSchema,
+    VideoMessageSchema,
+    LocationMessageSchema,
+    ContactSharingMessageSchema,
+    UnsupportedMessageSchema,
+    ButtonMessageSchema,
+    InteractiveMessageReplySchema,
+    OrderMessageSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/TextMessage',
+        reaction: '#/components/schemas/ReactionMessage',
+        audio: '#/components/schemas/AudioMessage',
+        document: '#/components/schemas/DocumentMessage',
+        image: '#/components/schemas/ImageMessage',
+        sticker: '#/components/schemas/StickerMessage',
+        video: '#/components/schemas/VideoMessage',
+        location: '#/components/schemas/LocationMessage',
+        contacts: '#/components/schemas/ContactSharingMessage',
+        unsupported: '#/components/schemas/UnsupportedMessage',
+        unknown: '#/components/schemas/UnsupportedMessage',
+        button: '#/components/schemas/ButtonMessage',
+        interactive: '#/components/schemas/InteractiveMessageReply',
+        order: '#/components/schemas/OrderMessage',
+      },
+    },
+  })
+  .openapi('IncomingMessage')
+
+const IncomingMessageValueGeneralSchema = z
+  .object({
+    messaging_product: z
+      .string()
+      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
+    metadata: MetadataSchema,
+    contacts: z
+      .array(ContactProfileSchema)
+      .openapi({
+        description:
+          'Array of contact profiles for the sender. Included for all non-system incoming messages.',
+      }),
+    messages: z
+      .array(IncomingMessageSchema)
+      .openapi({
+        description: "Array of message objects. The structure varies based on the 'type' property.",
+      }),
+  })
+  .openapi({ required: ['messaging_product', 'metadata', 'contacts', 'messages'] })
+  .openapi('IncomingMessageValueGeneral')
+
+const SystemMessageSchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({
+      type: z.literal('system').openapi({ example: 'system' }),
+      system: z
+        .object({
+          body: z
+            .string()
+            .openapi({
+              description: 'Description of the system change (e.g., user changed number).',
+              example: 'User Sheena Nelson changed from 16505551234 to 12195555358',
+            }),
+          wa_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                "The user's WhatsApp ID. On user_changed_number messages this is the new phone number. Omitted when the user has no phone number visible to the business.",
+              example: '12195555358',
+            }),
+          type: z
+            .enum(['user_changed_number', 'user_changed_user_id'])
+            .openapi({
+              description:
+                "Type of system message. user_changed_number reports a change to the user's phone number and carries the new number. user_changed_user_id reports a change to the user's business-scoped user ID, with no phone number included.",
+              example: 'user_changed_number',
+            }),
+          user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                "The user's current business-scoped user ID (BSUID). Omitted when business-scoped user IDs are not enabled for the business.",
+              example: 'US.13491208655302741918',
+            }),
+          parent_user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                "The user's current business-scoped user ID (BSUID) scoped to the parent business portfolio. Omitted when the business is not onboarded to parent-scoped IDs.",
+              example: 'US.ENT.506847293015824',
+            }),
+          previous_user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The business-scoped user ID (BSUID) the user had before the change. Omitted when the previous BSUID is unavailable.',
+              example: 'US.10230984751029384756',
+            }),
+          previous_parent_user_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The parent-scoped business-scoped user ID (BSUID) the user had before the change. Omitted when the previous parent BSUID is unavailable.',
+              example: 'US.ENT.918273645500112',
+            }),
+        })
+        .openapi({ required: ['body', 'type'] }),
+    })
+    .openapi({
+      required: ['type', 'system'],
+      example: {
+        from: '16505551234',
+        id: 'wamid.HBgLMTk4MzU1NTE5NzQVAgASGAoxMTgyMDg2MjY3AA==',
+        timestamp: '1750269342',
+        type: 'system',
+        system: {
+          body: 'User Sheena Nelson changed from 16505551234 to 12195555358',
+          wa_id: '12195555358',
+          type: 'user_changed_number',
+        },
+      },
+    }),
+).openapi('SystemMessage')
+
+const IncomingMessageValueSystemSchema = z
+  .object({
+    messaging_product: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
+    metadata: MetadataSchema.exactOptional(),
+    messages: z
+      .array(SystemMessageSchema)
+      .exactOptional()
+      .openapi({ description: "Array containing only 'system' message objects." }),
+  })
+  .openapi({ required: [] })
+  .refine(
+    (val) =>
+      !z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'contacts')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['contacts'] })
+        .safeParse(val).success,
+  )
+  .openapi({
+    required: ['messaging_product', 'metadata', 'messages'],
+    not: { required: ['contacts'] },
+  })
+  .openapi('IncomingMessageValueSystem')
+
+const ConversationOriginSchema = z
+  .object({ type: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ConversationOrigin')
+
+const ConversationSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    expiration_timestamp: z.string().exactOptional(),
+    origin: ConversationOriginSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Conversation')
+
+const PricingSchema = z
+  .object({
+    billable: z.boolean().exactOptional(),
+    pricing_model: z.enum(['CBP', 'PMP']).exactOptional(),
+    category: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Pricing')
+
+const ErrorDataSchema = z
+  .object({ details: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ErrorData')
+
+const StatusErrorSchema = z
+  .object({
+    code: z.int().exactOptional(),
+    title: z.string().exactOptional(),
+    message: z.string().exactOptional(),
+    error_data: ErrorDataSchema.exactOptional(),
+    href: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('StatusError')
+
+const StatusesSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Unique WhatsApp message ID the status is associated with.' }),
+    status: z.enum(['sent', 'delivered', 'read', 'failed']),
+    timestamp: z.string(),
+    recipient_id: z.string().openapi({ description: 'Recipeint phone number.' }),
+    group_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Group ID if the message was sent to a group.' }),
+    conversation: ConversationSchema.exactOptional(),
+    pricing: PricingSchema.exactOptional(),
+    errors: z.array(StatusErrorSchema).exactOptional(),
+  })
+  .openapi({ required: ['id', 'status', 'timestamp', 'recipient_id'] })
+  .openapi('Statuses')
+
+const StatusMessageValueSchema = z
+  .object({
+    messaging_product: z
+      .string()
+      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
+    metadata: MetadataSchema,
+    statuses: z.array(StatusesSchema).openapi({ description: 'Array of status objects.' }),
+  })
+  .openapi({ required: ['messaging_product', 'metadata', 'statuses'] })
+  .openapi('StatusMessageValue')
+
+const GroupParticipantSchema = z
+  .object({
+    input: z.string().exactOptional().openapi({ description: 'Input phone number or WhatsApp ID' }),
+    wa_id: z.string().exactOptional().openapi({ description: 'WhatsApp ID of the participant' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GroupParticipant')
+
+const GroupProfilePictureSchema = z
+  .object({
+    mime_type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'MIME type of the profile picture' }),
+    sha256: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'SHA256 hash of the profile picture' }),
+  })
+  .openapi({ required: [] })
+  .openapi('GroupProfilePicture')
+
+const GroupsSchema = z
+  .object({
+    timestamp: z.int().openapi({ description: 'Unix timestamp of the group event' }),
+    group_id: z.string().openapi({ description: 'Unique identifier for the group' }),
+    type: z
+      .enum([
+        'group_create',
+        'group_delete',
+        'group_settings_update',
+        'group_add_participants',
+        'group_remove_participants',
+      ])
+      .openapi({ description: 'Type of group event' }),
+    request_id: z.string().openapi({ description: 'Unique identifier for the request' }),
+    subject: z.string().exactOptional().openapi({ description: 'Group subject/name' }),
+    description: z.string().exactOptional().openapi({ description: 'Group description' }),
+    added_participants: z
+      .array(GroupParticipantSchema)
+      .exactOptional()
+      .openapi({ description: 'List of participants added to the group' }),
+    removed_participants: z
+      .array(GroupParticipantSchema)
+      .exactOptional()
+      .openapi({ description: 'List of participants removed from the group' }),
+    profile_picture: GroupProfilePictureSchema.exactOptional().openapi({
+      description: 'Group profile picture information',
+    }),
+  })
+  .openapi({ required: ['timestamp', 'group_id', 'type', 'request_id'] })
+  .openapi('Groups')
+
+const GroupValueSchema = z
+  .object({
+    messaging_product: z
+      .string()
+      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
+    metadata: MetadataSchema,
+    groups: z.array(GroupsSchema).openapi({ description: 'Array of group objects.' }),
+  })
+  .openapi({ required: ['messaging_product', 'metadata', 'groups'] })
+  .openapi('GroupValue')
+
+type ChangeType = {
+  value:
+    | z.infer<typeof IncomingMessageValueGeneralSchema>
+    | z.infer<typeof IncomingMessageValueSystemSchema>
+    | z.infer<typeof StatusMessageValueSchema>
+    | z.infer<typeof GroupValueSchema>
+  field:
+    | 'messages'
+    | 'group_lifecycle_update'
+    | 'group_settings_update'
+    | 'group_participant_update'
+}
+
+const ChangeSchema: z.ZodType<ChangeType> = z
+  .object({
+    value: z.xor([
+      IncomingMessageValueGeneralSchema,
+      IncomingMessageValueSystemSchema,
+      StatusMessageValueSchema,
+      GroupValueSchema,
+    ]),
+    field: z
+      .enum([
+        'messages',
+        'group_lifecycle_update',
+        'group_settings_update',
+        'group_participant_update',
+      ])
+      .openapi({
+        description:
+          'The field indicate to what object is the webhook related:\n- messages: the webhook is related to messages from consumer or status of message sent by business to consumer.\n- group_lifecycle_update: the webhook is related to group creation and deletion.\n- group_settings_update: the webhook is related to group settings update.\n- group_participant_update: the webhook is related to participants joining and leaving the groups.\n',
+        example: 'messages',
+      }),
+  })
+  .openapi({ required: ['value', 'field'] })
+  .openapi('Change')
+
+type EntryType = { id: string; changes: z.infer<typeof ChangeSchema>[] }
+
+const EntrySchema: z.ZodType<EntryType> = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'WhatsApp Business Account ID.', example: '419561257915477' }),
+    changes: z.array(ChangeSchema),
+  })
+  .openapi({ required: ['id', 'changes'] })
+  .openapi('Entry')
+
+type WebhookPayloadType = { object: string; entry: z.infer<typeof EntrySchema>[] }
 
 const BusinessVerificationStatusSchema = z
   .enum(['VERIFIED', 'UNVERIFIED', 'PENDING', 'REJECTED'])
@@ -2010,15 +2341,6 @@ const CallTerminateResponsePayloadSchema = z
   .openapi({ required: [] })
   .openapi('CallTerminateResponsePayload')
 
-const ErrorObjectSchema = z
-  .object({
-    message: z.string().openapi({ description: 'Human-readable description of the error' }),
-    type: z.string().openapi({ description: 'Error type classification' }),
-    code: z.int().openapi({ description: 'Numeric error code' }),
-  })
-  .openapi({ required: ['message', 'type', 'code'] })
-  .openapi('ErrorObject')
-
 const ErrorResponseSchema = z
   .object({ error: ErrorObjectSchema })
   .openapi({ required: ['error'] })
@@ -2042,6 +2364,98 @@ const PagingInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('PagingInfo')
+
+const LanguageObjectSchema = z
+  .object({
+    policy: z
+      .literal('deterministic')
+      .openapi({
+        description: 'The language policy the message should follow.',
+        example: 'deterministic',
+      }),
+    code: z
+      .string()
+      .openapi({
+        description: 'The code of the language or locale to use (e.g., `"en"`, `"en_US"`).',
+        example: 'en_US',
+      }),
+  })
+  .openapi({ required: ['policy', 'code'] })
+  .openapi('LanguageObject')
+
+const TemplateComponentSchema = z
+  .object({
+    type: z
+      .enum(['header', 'body', 'button'])
+      .openapi({ description: 'Describes the component type.' }),
+    sub_type: z
+      .enum(['quick_reply', 'url', 'catalog'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Required when `type=button`. Not used for other types. Type of button to create.',
+      }),
+    parameters: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({ description: 'Array of parameter objects with the content of the message.' }),
+    index: z
+      .string()
+      .regex(/^[2-6, 11-14]$/)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required when `type=button`. Not used for other types. Position index of the button (0-9).',
+        example: '0',
+      }),
+  })
+  .openapi({
+    required: ['type'],
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        header: '#/components/schemas/HeaderComponent',
+        body: '#/components/schemas/BodyComponent',
+        button: '#/components/schemas/ButtonComponent',
+      },
+    },
+  })
+  .openapi('TemplateComponent')
+
+const TemplateObjectSchema = z
+  .object({
+    name: z.string().openapi({ description: 'Name of the template.', example: 'TEMPLATE_NAME' }),
+    language: LanguageObjectSchema.openapi({
+      description:
+        'Contains a `language` object. Specifies the language the template may be rendered in',
+    }),
+    components: z
+      .array(TemplateComponentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of `components` objects containing the parameters of the message.',
+        example: [
+          {
+            type: 'header',
+            parameters: [{ type: 'image', image: { link: 'http(s)://example.com/image.jpg' } }],
+          },
+          {
+            type: 'body',
+            parameters: [
+              { type: 'text', text: 'Hello {{1}}! Your order of {{2}} is confirmed for {{3}}.' },
+            ],
+          },
+          {
+            type: 'button',
+            sub_type: 'quick_reply',
+            index: '0',
+            parameters: [{ type: 'payload', payload: 'ORDER_DETAILS_CLICKED' }],
+          },
+        ],
+      }),
+  })
+  .openapi({ required: ['name', 'language'] })
+  .openapi('TemplateObject')
 
 const ParameterObjectSchema = z
   .object({
@@ -2366,41 +2780,421 @@ const MediaObject_1Schema = z
   .openapi({ description: 'A media object. Either `id` or `link` is required.' })
   .openapi('MediaObject_1')
 
-const MessageSchema: z.ZodType<MessageType> = z
-  .lazy(() =>
-    z
-      .xor([
-        TextMessageSchema,
-        AudioMessageSchema,
-        DocumentMessageSchema,
-        ImageMessageSchema,
-        LocationMessageSchema,
-        VideoMessageSchema,
-        StickerMessageSchema,
-        ReactionMessageSchema,
-        InteractiveMessageSchema,
-        TemplateMessageSchema,
-        ContactsMessageSchema,
-      ])
+const HeaderObjectSchema = z
+  .object({
+    type: z
+      .enum(['text', 'video', 'image', 'document'])
+      .openapi({ description: 'The header type.' }),
+    text: z
+      .string()
+      .max(60)
+      .exactOptional()
       .openapi({
-        discriminator: {
-          propertyName: 'type',
-          mapping: {
-            text: '#/components/schemas/TextMessage',
-            audio: '#/components/schemas/AudioMessage',
-            document: '#/components/schemas/DocumentMessage',
-            image: '#/components/schemas/ImageMessage',
-            location: '#/components/schemas/LocationMessage',
-            video: '#/components/schemas/VideoMessage',
-            sticker: '#/components/schemas/StickerMessage',
-            reaction: '#/components/schemas/ReactionMessage',
-            interactive: '#/components/schemas/InteractiveMessage',
-            template: '#/components/schemas/TemplateMessage',
-            contacts: '#/components/schemas/ContactsMessage',
-          },
-        },
+        description:
+          "Text for the header. Required if 'type' is 'text'. Emojis supported, no markdown.",
       }),
+    sub_text: z
+      .string()
+      .max(60)
+      .exactOptional()
+      .openapi({ description: 'Optional sub-text for the header. Emojis supported, no markdown.' }),
+    document: MediaObjectSchema.exactOptional().openapi({
+      description: "Contains the media object for this document. Required if 'type' is 'document'.",
+    }),
+    image: MediaObjectSchema.exactOptional().openapi({
+      description: "Contains the media object for this image. Required if 'type' is 'image'.",
+    }),
+    video: MediaObjectSchema.exactOptional().openapi({
+      description: "Contains the media object for this video. Required if 'type' is 'video'.",
+    }),
+  })
+  .openapi({
+    description:
+      "Header content displayed on top of a message. Required for 'product_list' type. Cannot be set for 'product' type.",
+    required: ['type'],
+  })
+  .openapi('HeaderObject')
+
+const BodyObjectSchema = z
+  .object({
+    text: z
+      .string()
+      .max(1024)
+      .openapi({
+        description: 'The content of the message body. Emojis and markdown are supported.',
+      }),
+  })
+  .openapi({
+    description:
+      "An object with the body of the message. Optional for 'product' type, required for other interactive message types.",
+    required: ['text'],
+  })
+  .openapi('BodyObject')
+
+const FooterObjectSchema = z
+  .object({
+    text: z
+      .string()
+      .max(60)
+      .openapi({ description: 'The footer content. Emojis, markdown, and links are supported.' }),
+  })
+  .openapi({
+    description: 'An object with the footer of the message. Optional.',
+    required: ['text'],
+  })
+  .openapi('FooterObject')
+
+const SectionObjectSchema = z
+  .object({
+    title: z
+      .string()
+      .max(24)
+      .exactOptional()
+      .openapi({
+        description:
+          'Title of the section. Required if the message has more than one section. Max 24 characters.',
+      }),
+    product_items: z
+      .array(
+        z
+          .object({
+            product_retailer_id: z
+              .string()
+              .openapi({ description: 'Unique identifier of the product in a catalog.' }),
+          })
+          .openapi({ required: ['product_retailer_id'] }),
+      )
+      .min(1)
+      .max(30)
+      .exactOptional()
+      .openapi({ description: 'Array of product objects.' }),
+    rows: z
+      .array(
+        z
+          .object({
+            id: z.string().max(200).openapi({ description: 'Unique row identifier.' }),
+            title: z.string().max(24).openapi({ description: 'Row title.' }),
+            description: z
+              .string()
+              .max(72)
+              .exactOptional()
+              .openapi({ description: 'Optional row description.' }),
+          })
+          .openapi({ required: ['id', 'title'] }),
+      )
+      .max(10)
+      .exactOptional()
+      .openapi({ description: 'Contains a list of rows.' }),
+  })
+  .openapi({
+    description: 'A section object, used in List Messages and Multi-Product Messages.',
+    required: [],
+  })
+  .openapi('SectionObject')
+
+const ActionObjectSchema = z
+  .xor([
+    z
+      .object({
+        button: z
+          .string()
+          .max(20)
+          .openapi({
+            description:
+              'Button content for List Messages. Cannot be empty, must be unique. Emojis supported, no markdown.',
+          }),
+        sections: z
+          .array(SectionObjectSchema)
+          .min(1)
+          .max(10)
+          .openapi({ description: 'Array of section objects.' }),
+      })
+      .openapi({ required: ['button', 'sections'] }),
+    z
+      .object({
+        buttons: z
+          .array(
+            z
+              .object({
+                type: z
+                  .literal('reply')
+                  .openapi({ description: 'Only supported type is "reply" for Reply Button.' }),
+                reply: z
+                  .object({
+                    id: z
+                      .string()
+                      .max(256)
+                      .openapi({
+                        description:
+                          'Unique identifier for your button. No leading/trailing spaces.',
+                      }),
+                    title: z
+                      .string()
+                      .max(20)
+                      .openapi({
+                        description:
+                          'Button title. Cannot be empty, must be unique. Emojis supported, no markdown.',
+                      }),
+                  })
+                  .openapi({ required: ['id', 'title'] }),
+              })
+              .openapi({ required: ['type', 'reply'] }),
+          )
+          .min(1)
+          .max(3)
+          .openapi({ description: 'Array of button objects.' }),
+      })
+      .openapi({ required: ['buttons'] }),
+    z
+      .object({
+        catalog_id: z
+          .string()
+          .openapi({
+            description:
+              'Unique identifier of the Facebook catalog linked to your WhatsApp Business Account.',
+          }),
+        product_retailer_id: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Unique identifier of the product in a catalog. Required for Single Product Messages.',
+          }),
+        sections: z
+          .array(SectionObjectSchema)
+          .min(1)
+          .max(10)
+          .exactOptional()
+          .openapi({ description: 'Array of section objects.' }),
+      })
+      .openapi({ required: ['catalog_id'] }),
+    z
+      .object({
+        name: z.literal('catalog_message'),
+        parameters: z
+          .object({
+            thumbnail_product_retailer_id: z
+              .string()
+              .openapi({ description: 'Product retailer ID for the thumbnail.' }),
+          })
+          .openapi({ required: ['thumbnail_product_retailer_id'] }),
+      })
+      .openapi({ required: ['name', 'parameters'] }),
+    z
+      .object({
+        name: z.literal('flow'),
+        parameters: z
+          .xor([
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'flow_id')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['flow_id'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'flow_name')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['flow_name'] }),
+          ])
+          .and(
+            z
+              .object({
+                flow_message_version: z.literal('3').openapi({ description: 'Must be "3".' }),
+                flow_id: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Unique identifier of the Flow provided by WhatsApp. Required unless flow_name is set. Cannot be used with flow_name.',
+                  }),
+                flow_name: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The name of the Flow that you created. Required unless flow_id is set. Cannot be used with flow_id.',
+                  }),
+                flow_cta: z
+                  .string()
+                  .max(30)
+                  .openapi({
+                    description:
+                      'Text on the CTA button (e.g., "Signup"). Advised 30 characters or less, no emoji.',
+                  }),
+                mode: z
+                  .enum(['draft', 'published'])
+                  .default('published')
+                  .exactOptional()
+                  .openapi({
+                    description: 'The current mode of the Flow, either "draft" or "published".',
+                  }),
+                flow_token: z
+                  .string()
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'A token generated by the business to serve as an identifier. Defaults to "unused".',
+                  }),
+                flow_action: z
+                  .enum(['navigate', 'data_exchange'])
+                  .default('navigate')
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'Either "navigate" to predefine the first screen, or "data_exchange" for advanced use cases.',
+                  }),
+                flow_action_payload: z
+                  .object({
+                    screen: z
+                      .string()
+                      .default('FIRST_ENTRY_SCREEN')
+                      .exactOptional()
+                      .openapi({ description: "The 'id' of the first screen of the Flow." }),
+                    data: z
+                      .looseObject({})
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'The input data for the first screen of the Flow. Must be a non-empty object.',
+                      }),
+                  })
+                  .exactOptional()
+                  .openapi({
+                    description: "Optional only if 'flow_action' is 'navigate'.",
+                    required: [],
+                  }),
+              })
+              .openapi({ required: ['flow_message_version', 'flow_cta'] }),
+          )
+          .openapi({ required: ['flow_message_version', 'flow_cta'] }),
+      })
+      .openapi({ required: ['name', 'parameters'] }),
+    z.object({ name: z.literal('call_permission_request') }).openapi({ required: ['name'] }),
+  ])
+  .openapi({
+    description:
+      'Action you want the user to perform after reading the message. Its structure varies by interactive message type.',
+  })
+  .openapi('ActionObject')
+
+const InteractiveObjectSchema = z
+  .object({
+    type: z
+      .enum([
+        'button',
+        'call_permission_request',
+        'catalog_message',
+        'list',
+        'product',
+        'product_list',
+        'flow',
+      ])
+      .openapi({ description: 'The type of interactive message to send.' }),
+    header: HeaderObjectSchema.exactOptional(),
+    body: BodyObjectSchema.exactOptional(),
+    footer: FooterObjectSchema.exactOptional(),
+    action: ActionObjectSchema,
+  })
+  .openapi({
+    description: 'An object containing the content for an interactive message.',
+    required: ['type', 'action'],
+  })
+  .openapi('InteractiveObject')
+
+const InteractiveMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('interactive').exactOptional(),
+        interactive: InteractiveObjectSchema,
+      })
+      .openapi({ required: ['interactive'] }),
   )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'interactive'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('InteractiveMessage')
+
+const TemplateMessageSchema = BaseMessagePropertiesSchema.and(
+  z
+    .object({ type: z.literal('template').exactOptional(), template: TemplateObjectSchema })
+    .openapi({ required: ['template'] }),
+).openapi('TemplateMessage')
+
+const ContactsMessageSchema = (() => {
+  const Schema = BaseMessagePropertiesSchema.and(
+    z
+      .strictObject({
+        type: z.literal('contacts').exactOptional(),
+        contacts: z.array(ContactObjectSchema).min(1).max(5),
+      })
+      .openapi({ required: ['contacts'] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['type', 'contacts'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ContactsMessage')
+
+const MessageSchema = z
+  .xor([
+    TextMessageSchema,
+    AudioMessageSchema,
+    DocumentMessageSchema,
+    ImageMessageSchema,
+    LocationMessageSchema,
+    VideoMessageSchema,
+    StickerMessageSchema,
+    ReactionMessageSchema,
+    InteractiveMessageSchema,
+    TemplateMessageSchema,
+    ContactsMessageSchema,
+  ])
+  .openapi({
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        text: '#/components/schemas/TextMessage',
+        audio: '#/components/schemas/AudioMessage',
+        document: '#/components/schemas/DocumentMessage',
+        image: '#/components/schemas/ImageMessage',
+        location: '#/components/schemas/LocationMessage',
+        video: '#/components/schemas/VideoMessage',
+        sticker: '#/components/schemas/StickerMessage',
+        reaction: '#/components/schemas/ReactionMessage',
+        interactive: '#/components/schemas/InteractiveMessage',
+        template: '#/components/schemas/TemplateMessage',
+        contacts: '#/components/schemas/ContactsMessage',
+      },
+    },
+  })
   .openapi('Message')
 
 const MessageResponsePayloadSchema = z
@@ -7427,587 +8221,7 @@ const WhatsAppBusinessVertical_1Schema = z
   .openapi({ description: 'Industry vertical classification for the business', example: 'RETAIL' })
   .openapi('WhatsAppBusinessVertical_1')
 
-const MetadataSchema = z
-  .object({
-    display_phone_number: z
-      .string()
-      .openapi({ description: 'Business display phone number.', example: '15550783881' }),
-    phone_number_id: z
-      .string()
-      .openapi({ description: 'Business phone number ID.', example: '106540352242922' }),
-  })
-  .openapi({ required: ['display_phone_number', 'phone_number_id'] })
-  .openapi('Metadata')
-
-const ContactProfileSchema = z
-  .object({
-    profile: z
-      .object({
-        name: z
-          .string()
-          .openapi({
-            description:
-              "WhatsApp user's name as it appears in their profile in the WhatsApp client.",
-            example: 'Sheena Nelson',
-          }),
-      })
-      .openapi({ required: ['name'] }),
-    wa_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "WhatsApp user ID. Note that a WhatsApp user's ID and phone number may not always match.",
-        example: '16505551234',
-      }),
-  })
-  .openapi({ required: ['profile'] })
-  .openapi('ContactProfile')
-
-const ContactSharingMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.literal('contacts').openapi({ example: 'contacts' }),
-      contacts: z
-        .array(ContactObjectSchema)
-        .openapi({
-          description:
-            'Array of contact objects. Many contact object properties may be omitted if the WhatsApp user chooses not to share them, or their device prevents them from being shared.',
-        }),
-    })
-    .openapi({
-      required: ['type', 'contacts'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTRBNjU5OUFFRTAzODEwMTQ0RgA=',
-        timestamp: '1744344496',
-        type: 'contacts',
-        contacts: [
-          {
-            name: { first_name: 'Lucía', last_name: 'Gómez', formatted_name: 'Lucía Gómez' },
-            org: { company: 'Google' },
-            phones: [{ phone: '+1 (983) 555-2319', wa_id: '19835552319', type: 'MOBILE' }],
-          },
-        ],
-      },
-    }),
-).openapi('ContactSharingMessage')
-
-const UnsupportedMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.enum(['unsupported', 'unknown']).openapi({ example: 'unsupported' }),
-      errors: z.array(ErrorObjectSchema),
-    })
-    .openapi({
-      required: ['type', 'errors'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTQyMDU1NTA3NDkVAgASGBI5N0MwRjg0RTVBNUI1RDA2OTkA',
-        timestamp: '1750090702',
-        errors: [
-          {
-            code: 131051,
-            title: 'Message type unknown',
-            message: 'Message type unknown',
-            error_data: { details: 'Message type is currently not supported.' },
-          },
-        ],
-        type: 'unsupported',
-      },
-    }),
-).openapi('UnsupportedMessage')
-
-const ButtonMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.literal('button').openapi({ example: 'button' }),
-      context: z
-        .object({
-          from: z
-            .string()
-            .openapi({ description: 'Business display phone number.', example: '15550783881' }),
-          id: z
-            .string()
-            .openapi({
-              description:
-                'WhatsApp message ID of the message containing the button the WhatsApp user tapped.',
-              example: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJFNjk2OTMwNEZCQjhGMzUyQUYA',
-            }),
-        })
-        .openapi({ required: ['from', 'id'] }),
-      button: z
-        .object({
-          payload: z
-            .string()
-            .openapi({ description: 'Quick-reply button payload.', example: 'Unsubscribe' }),
-          text: z
-            .string()
-            .openapi({ description: 'Quick-reply button label text.', example: 'Unsubscribe' }),
-        })
-        .openapi({ required: ['payload', 'text'] }),
-    })
-    .openapi({
-      required: ['type', 'context', 'button'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUU0M0MxQzQzMUJCMTMwNUZFOQA=',
-        timestamp: '1750091045',
-        type: 'button',
-        context: {
-          from: '15550783881',
-          id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJFNjk2OTMwNEZCQjhGMzUyQUYA',
-        },
-        button: { payload: 'Unsubscribe', text: 'Unsubscribe' },
-      },
-    }),
-).openapi('ButtonMessage')
-
-const InteractiveMessageReplySchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.literal('interactive').openapi({ example: 'interactive' }),
-      context: z
-        .object({
-          from: z
-            .string()
-            .openapi({ description: 'Business display phone number.', example: '15550783881' }),
-          id: z
-            .string()
-            .openapi({
-              description:
-                'WhatsApp message ID of the message containing the interactive component the user tapped.',
-              example: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJGMzEyNzhENTZDMzNGODlDRDgA',
-            }),
-        })
-        .openapi({ required: ['from', 'id'] }),
-      interactive: z
-        .object({
-          type: z
-            .enum(['list_reply', 'button_reply'])
-            .openapi({
-              description: 'Type of interactive reply (list_reply or button_reply).',
-              example: 'list_reply',
-            }),
-        })
-        .openapi({
-          discriminator: {
-            propertyName: 'type',
-            mapping: {
-              list_reply: '#/components/schemas/InteractiveListReplyContent',
-              button_reply: '#/components/schemas/InteractiveButtonReplyContent',
-            },
-          },
-          required: ['type'],
-        }),
-    })
-    .openapi({
-      required: ['type', 'context', 'interactive'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQUJDQ0NDM0FEODY4ODkzOTc5RgA=',
-        timestamp: '1749854575',
-        type: 'interactive',
-        context: {
-          from: '15550783881',
-          id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgARGBJGMzEyNzhENTZDMzNGODlDRDgA',
-        },
-        interactive: {
-          type: 'list_reply',
-          list_reply: {
-            id: 'priority_express',
-            title: 'Priority Mail Express',
-            description: 'Next Day to 2 Days',
-          },
-        },
-      },
-    }),
-).openapi('InteractiveMessageReply')
-
-const OrderMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.literal('order').openapi({ example: 'order' }),
-      order: z
-        .object({
-          catalog_id: z
-            .string()
-            .openapi({ description: 'Product catalog ID.', example: '194836987003835' }),
-          text: z.string().openapi({ description: 'Empty string.', example: '' }),
-          product_items: z.array(
-            z
-              .object({
-                product_retailer_id: z
-                  .string()
-                  .openapi({ description: 'Product ID.', example: 'di9ozbzfi4' }),
-                quantity: z.int().openapi({ description: 'Product quantity.', example: 2 }),
-                item_price: z
-                  .float32()
-                  .openapi({ description: 'Individual product price.', example: 30 }),
-                currency: z
-                  .string()
-                  .openapi({ description: 'Catalog currency code.', example: 'USD' }),
-              })
-              .openapi({ required: ['product_retailer_id', 'quantity', 'item_price', 'currency'] }),
-          ),
-        })
-        .openapi({ required: ['catalog_id', 'text', 'product_items'] }),
-    })
-    .openapi({
-      required: ['type', 'order'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTY1MDM4Nzk0MzkVAgASGBQzQTEyQjFGNzI1QTQxMjI5QTMyOQA=',
-        timestamp: '1750096325',
-        type: 'order',
-        order: {
-          catalog_id: '194836987003835',
-          text: '',
-          product_items: [
-            { product_retailer_id: 'di9ozbzfi4', quantity: 2, item_price: 30, currency: 'USD' },
-            { product_retailer_id: 'nqryix03ez', quantity: 1, item_price: 25, currency: 'USD' },
-          ],
-        },
-      },
-    }),
-).openapi('OrderMessage')
-
-const IncomingMessageSchema = z
-  .xor([
-    TextMessageSchema,
-    ReactionMessageSchema,
-    AudioMessageSchema,
-    DocumentMessageSchema,
-    ImageMessageSchema,
-    StickerMessageSchema,
-    VideoMessageSchema,
-    LocationMessageSchema,
-    ContactSharingMessageSchema,
-    UnsupportedMessageSchema,
-    ButtonMessageSchema,
-    InteractiveMessageReplySchema,
-    OrderMessageSchema,
-  ])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        text: '#/components/schemas/TextMessage',
-        reaction: '#/components/schemas/ReactionMessage',
-        audio: '#/components/schemas/AudioMessage',
-        document: '#/components/schemas/DocumentMessage',
-        image: '#/components/schemas/ImageMessage',
-        sticker: '#/components/schemas/StickerMessage',
-        video: '#/components/schemas/VideoMessage',
-        location: '#/components/schemas/LocationMessage',
-        contacts: '#/components/schemas/ContactSharingMessage',
-        unsupported: '#/components/schemas/UnsupportedMessage',
-        unknown: '#/components/schemas/UnsupportedMessage',
-        button: '#/components/schemas/ButtonMessage',
-        interactive: '#/components/schemas/InteractiveMessageReply',
-        order: '#/components/schemas/OrderMessage',
-      },
-    },
-  })
-  .openapi('IncomingMessage')
-
-const IncomingMessageValueGeneralSchema = z
-  .object({
-    messaging_product: z
-      .string()
-      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
-    metadata: MetadataSchema,
-    contacts: z
-      .array(ContactProfileSchema)
-      .openapi({
-        description:
-          'Array of contact profiles for the sender. Included for all non-system incoming messages.',
-      }),
-    messages: z
-      .array(IncomingMessageSchema)
-      .openapi({
-        description: "Array of message objects. The structure varies based on the 'type' property.",
-      }),
-  })
-  .openapi({ required: ['messaging_product', 'metadata', 'contacts', 'messages'] })
-  .openapi('IncomingMessageValueGeneral')
-
-const SystemMessageSchema = BaseMessagePropertiesSchema.and(
-  z
-    .object({
-      type: z.literal('system').openapi({ example: 'system' }),
-      system: z
-        .object({
-          body: z
-            .string()
-            .openapi({
-              description: 'Description of the system change (e.g., user changed number).',
-              example: 'User Sheena Nelson changed from 16505551234 to 12195555358',
-            }),
-          wa_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "The user's WhatsApp ID. On user_changed_number messages this is the new phone number. Omitted when the user has no phone number visible to the business.",
-              example: '12195555358',
-            }),
-          type: z
-            .enum(['user_changed_number', 'user_changed_user_id'])
-            .openapi({
-              description:
-                "Type of system message. user_changed_number reports a change to the user's phone number and carries the new number. user_changed_user_id reports a change to the user's business-scoped user ID, with no phone number included.",
-              example: 'user_changed_number',
-            }),
-          user_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "The user's current business-scoped user ID (BSUID). Omitted when business-scoped user IDs are not enabled for the business.",
-              example: 'US.13491208655302741918',
-            }),
-          parent_user_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                "The user's current business-scoped user ID (BSUID) scoped to the parent business portfolio. Omitted when the business is not onboarded to parent-scoped IDs.",
-              example: 'US.ENT.506847293015824',
-            }),
-          previous_user_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The business-scoped user ID (BSUID) the user had before the change. Omitted when the previous BSUID is unavailable.',
-              example: 'US.10230984751029384756',
-            }),
-          previous_parent_user_id: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The parent-scoped business-scoped user ID (BSUID) the user had before the change. Omitted when the previous parent BSUID is unavailable.',
-              example: 'US.ENT.918273645500112',
-            }),
-        })
-        .openapi({ required: ['body', 'type'] }),
-    })
-    .openapi({
-      required: ['type', 'system'],
-      example: {
-        from: '16505551234',
-        id: 'wamid.HBgLMTk4MzU1NTE5NzQVAgASGAoxMTgyMDg2MjY3AA==',
-        timestamp: '1750269342',
-        type: 'system',
-        system: {
-          body: 'User Sheena Nelson changed from 16505551234 to 12195555358',
-          wa_id: '12195555358',
-          type: 'user_changed_number',
-        },
-      },
-    }),
-).openapi('SystemMessage')
-
-const IncomingMessageValueSystemSchema = z
-  .object({
-    messaging_product: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
-    metadata: MetadataSchema.exactOptional(),
-    messages: z
-      .array(SystemMessageSchema)
-      .exactOptional()
-      .openapi({ description: "Array containing only 'system' message objects." }),
-  })
-  .openapi({ required: [] })
-  .refine(
-    (val) =>
-      !z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'contacts')) {
-              ctx.addIssue({ code: 'custom' })
-            }
-          }
-        })
-        .openapi({ required: ['contacts'] })
-        .safeParse(val).success,
-  )
-  .openapi({ required: ['messaging_product', 'metadata', 'messages'] })
-  .openapi('IncomingMessageValueSystem')
-
-const ConversationOriginSchema = z
-  .object({ type: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ConversationOrigin')
-
-const ConversationSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    expiration_timestamp: z.string().exactOptional(),
-    origin: ConversationOriginSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Conversation')
-
-const PricingSchema = z
-  .object({
-    billable: z.boolean().exactOptional(),
-    pricing_model: z.enum(['CBP', 'PMP']).exactOptional(),
-    category: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Pricing')
-
-const ErrorDataSchema = z
-  .object({ details: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ErrorData')
-
-const StatusErrorSchema = z
-  .object({
-    code: z.int().exactOptional(),
-    title: z.string().exactOptional(),
-    message: z.string().exactOptional(),
-    error_data: ErrorDataSchema.exactOptional(),
-    href: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('StatusError')
-
-const StatusesSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'Unique WhatsApp message ID the status is associated with.' }),
-    status: z.enum(['sent', 'delivered', 'read', 'failed']),
-    timestamp: z.string(),
-    recipient_id: z.string().openapi({ description: 'Recipeint phone number.' }),
-    group_id: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Group ID if the message was sent to a group.' }),
-    conversation: ConversationSchema.exactOptional(),
-    pricing: PricingSchema.exactOptional(),
-    errors: z.array(StatusErrorSchema).exactOptional(),
-  })
-  .openapi({ required: ['id', 'status', 'timestamp', 'recipient_id'] })
-  .openapi('Statuses')
-
-const StatusMessageValueSchema = z
-  .object({
-    messaging_product: z
-      .string()
-      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
-    metadata: MetadataSchema,
-    statuses: z.array(StatusesSchema).openapi({ description: 'Array of status objects.' }),
-  })
-  .openapi({ required: ['messaging_product', 'metadata', 'statuses'] })
-  .openapi('StatusMessageValue')
-
-const GroupParticipantSchema = z
-  .object({
-    input: z.string().exactOptional().openapi({ description: 'Input phone number or WhatsApp ID' }),
-    wa_id: z.string().exactOptional().openapi({ description: 'WhatsApp ID of the participant' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GroupParticipant')
-
-const GroupProfilePictureSchema = z
-  .object({
-    mime_type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'MIME type of the profile picture' }),
-    sha256: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'SHA256 hash of the profile picture' }),
-  })
-  .openapi({ required: [] })
-  .openapi('GroupProfilePicture')
-
-const GroupsSchema = z
-  .object({
-    timestamp: z.int().openapi({ description: 'Unix timestamp of the group event' }),
-    group_id: z.string().openapi({ description: 'Unique identifier for the group' }),
-    type: z
-      .enum([
-        'group_create',
-        'group_delete',
-        'group_settings_update',
-        'group_add_participants',
-        'group_remove_participants',
-      ])
-      .openapi({ description: 'Type of group event' }),
-    request_id: z.string().openapi({ description: 'Unique identifier for the request' }),
-    subject: z.string().exactOptional().openapi({ description: 'Group subject/name' }),
-    description: z.string().exactOptional().openapi({ description: 'Group description' }),
-    added_participants: z
-      .array(GroupParticipantSchema)
-      .exactOptional()
-      .openapi({ description: 'List of participants added to the group' }),
-    removed_participants: z
-      .array(GroupParticipantSchema)
-      .exactOptional()
-      .openapi({ description: 'List of participants removed from the group' }),
-    profile_picture: GroupProfilePictureSchema.exactOptional().openapi({
-      description: 'Group profile picture information',
-    }),
-  })
-  .openapi({ required: ['timestamp', 'group_id', 'type', 'request_id'] })
-  .openapi('Groups')
-
-const GroupValueSchema = z
-  .object({
-    messaging_product: z
-      .string()
-      .openapi({ description: "Always 'whatsapp'.", example: 'whatsapp' }),
-    metadata: MetadataSchema,
-    groups: z.array(GroupsSchema).openapi({ description: 'Array of group objects.' }),
-  })
-  .openapi({ required: ['messaging_product', 'metadata', 'groups'] })
-  .openapi('GroupValue')
-
-const ChangeSchema = z
-  .object({
-    value: z.xor([
-      IncomingMessageValueGeneralSchema,
-      IncomingMessageValueSystemSchema,
-      StatusMessageValueSchema,
-      GroupValueSchema,
-    ]),
-    field: z
-      .enum([
-        'messages',
-        'group_lifecycle_update',
-        'group_settings_update',
-        'group_participant_update',
-      ])
-      .openapi({
-        description:
-          'The field indicate to what object is the webhook related:\n- messages: the webhook is related to messages from consumer or status of message sent by business to consumer.\n- group_lifecycle_update: the webhook is related to group creation and deletion.\n- group_settings_update: the webhook is related to group settings update.\n- group_participant_update: the webhook is related to participants joining and leaving the groups.\n',
-        example: 'messages',
-      }),
-  })
-  .openapi({ required: ['value', 'field'] })
-  .openapi('Change')
-
-const EntrySchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'WhatsApp Business Account ID.', example: '419561257915477' }),
-    changes: z.array(ChangeSchema),
-  })
-  .openapi({ required: ['id', 'changes'] })
-  .openapi('Entry')
-
-const WebhookPayloadSchema = z
+const WebhookPayloadSchema: z.ZodType<WebhookPayloadType> = z
   .object({
     object: z
       .string()
@@ -19362,128 +19576,92 @@ export const getVersionPhoneNumberIDWhatsappCommerceSettingsRoute = createRoute(
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '*' }),
-        },
-        'Alt-Svc': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'h3=":443"; ma=86400' }),
-        },
-        'Cache-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'private, no-cache, no-store, must-revalidate',
-            }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '84' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Fri, 07 Apr 2023 20:02:54 GMT' }),
-        },
-        ETag: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '"be665e167cf848b6b62159f1d6828c494dc47008"',
-            }),
-        },
-        Expires: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Sat, 01 Jan 2000 00:00:00 GMT' }),
-        },
-        Pragma: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'no-cache' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15552000; preload' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-FB-Debug': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                'N/Bc7wjn7wzoGQzxpah+q29b3kn3Cu3Q5Vexydxna3Nq00SaWCkxw7wXuyFyLggvngmTAGNe60aQ2TTFzvT2hQ==',
-            }),
-        },
-        'facebook-api-version': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'v16.0' }),
-        },
-        'x-business-use-case-usage': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '{"102290129340398":[{"type":"whatsapp_business_management","call_count":1,"total_cputime":1,"total_time":1,"estimated_time_to_regain_access":0}]}',
-            }),
-        },
-        'x-fb-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'ATqienUCgZnGDTAHjSt_s1u' }),
-        },
-        'x-fb-rev': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1007268877' }),
-        },
-        'x-fb-rlafr': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '0' }),
-        },
-        'x-fb-trace-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'BZ2vk4sqqeh' }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '*' }),
+        'Alt-Svc': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'h3=":443"; ma=86400' }),
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'private, no-cache, no-store, must-revalidate',
+          }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '84' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Fri, 07 Apr 2023 20:02:54 GMT' }),
+        ETag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '"be665e167cf848b6b62159f1d6828c494dc47008"',
+          }),
+        Expires: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Sat, 01 Jan 2000 00:00:00 GMT' }),
+        Pragma: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'no-cache' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15552000; preload' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-FB-Debug': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              'N/Bc7wjn7wzoGQzxpah+q29b3kn3Cu3Q5Vexydxna3Nq00SaWCkxw7wXuyFyLggvngmTAGNe60aQ2TTFzvT2hQ==',
+          }),
+        'facebook-api-version': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'v16.0' }),
+        'x-business-use-case-usage': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '{"102290129340398":[{"type":"whatsapp_business_management","call_count":1,"total_cputime":1,"total_time":1,"estimated_time_to_regain_access":0}]}',
+          }),
+        'x-fb-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'ATqienUCgZnGDTAHjSt_s1u' }),
+        'x-fb-rev': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1007268877' }),
+        'x-fb-rlafr': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '0' }),
+        'x-fb-trace-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'BZ2vk4sqqeh' }),
       }),
     },
   },
@@ -19559,124 +19737,88 @@ export const postVersionPhoneNumberIDWhatsappCommerceSettingsRoute = createRoute
         },
       },
       headers: z.object({
-        'Access-Control-Allow-Origin': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '*' }),
-        },
-        'Alt-Svc': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'h3=":443"; ma=86400' }),
-        },
-        'Cache-Control': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'private, no-cache, no-store, must-revalidate',
-            }),
-        },
-        Connection: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'keep-alive' }),
-        },
-        'Content-Length': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '16' }),
-        },
-        Date: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Fri, 07 Apr 2023 20:01:14 GMT' }),
-        },
-        Expires: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Sat, 01 Jan 2000 00:00:00 GMT' }),
-        },
-        Pragma: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'no-cache' }),
-        },
-        'Strict-Transport-Security': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'max-age=15552000; preload' }),
-        },
-        Vary: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'Origin' }),
-        },
-        'X-FB-Debug': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example:
-                '03bVIwTYJnh6qJe3sqWWNGapvvRoU/yKE+3nC45djcuaeV41y+6Z4SgWhK/SRB+WUUBEKWInR4hxFzHnKZ1+7Q==',
-            }),
-        },
-        'cross-origin-resource-policy': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cross-origin' }),
-        },
-        'facebook-api-version': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'v16.0' }),
-        },
-        'x-app-usage': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '{"call_count":0,"total_cputime":0,"total_time":0}',
-            }),
-        },
-        'x-fb-request-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'AB0EvD-U5WkosUqnPBMwXhB' }),
-        },
-        'x-fb-rev': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '1007268877' }),
-        },
-        'x-fb-rlafr': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: '0' }),
-        },
-        'x-fb-trace-id': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'A5pEgwxfemZ' }),
-        },
+        'Access-Control-Allow-Origin': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '*' }),
+        'Alt-Svc': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'h3=":443"; ma=86400' }),
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'private, no-cache, no-store, must-revalidate',
+          }),
+        Connection: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'keep-alive' }),
+        'Content-Length': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '16' }),
+        Date: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Fri, 07 Apr 2023 20:01:14 GMT' }),
+        Expires: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Sat, 01 Jan 2000 00:00:00 GMT' }),
+        Pragma: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'no-cache' }),
+        'Strict-Transport-Security': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'max-age=15552000; preload' }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'Origin' }),
+        'X-FB-Debug': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example:
+              '03bVIwTYJnh6qJe3sqWWNGapvvRoU/yKE+3nC45djcuaeV41y+6Z4SgWhK/SRB+WUUBEKWInR4hxFzHnKZ1+7Q==',
+          }),
+        'cross-origin-resource-policy': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cross-origin' }),
+        'facebook-api-version': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'v16.0' }),
+        'x-app-usage': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '{"call_count":0,"total_cputime":0,"total_time":0}',
+          }),
+        'x-fb-request-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'AB0EvD-U5WkosUqnPBMwXhB' }),
+        'x-fb-rev': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '1007268877' }),
+        'x-fb-rlafr': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: '0' }),
+        'x-fb-trace-id': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'A5pEgwxfemZ' }),
       }),
     },
   },
@@ -23014,7 +23156,7 @@ export const postVersionSolutionIDAcceptDeactivationRequestRoute = createRoute({
     }),
     body: {
       description: 'Empty request body - no parameters required for this endpoint',
-      content: { 'application/json': { schema: z.object({}).openapi({ example: {} }) } },
+      content: { 'application/json': { schema: z.looseObject({}).openapi({ example: {} }) } },
     },
   },
   responses: {
@@ -23162,17 +23304,14 @@ export const postVersionSolutionIDAcceptDeactivationRequestRoute = createRoute({
         },
       },
       headers: z.object({
-        'Retry-After': {
-          description: 'Number of seconds to wait before retrying',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Number of seconds to wait before retrying',
-              param: { required: false },
-              example: 60,
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Number of seconds to wait before retrying',
+            param: { required: false },
+            example: 60,
+          }),
       }),
     },
     500: {
@@ -26859,7 +26998,7 @@ export const getVersionFlowIDAssetsRoute = createRoute({
           param: { name: 'Flow-ID', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
-    body: { content: { 'multipart/form-data': { schema: z.object({}) } } },
+    body: { content: { 'multipart/form-data': { schema: z.looseObject({}) } } },
   },
   responses: {
     200: {

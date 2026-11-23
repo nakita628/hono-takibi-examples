@@ -1439,6 +1439,7 @@ curl 'https://{appId}.algolia.net/1/indexes/ALGOLIA_INDEX_NAME/browse' \
     "reRankingApplyFilter": [
       {}
     ],
+    "allowReRankingOnPersonalization": false,
     "cursor": "jMDY3M2MwM2QwMWUxMmQwYWI0ZTN"
   }'
 ```
@@ -1693,6 +1694,7 @@ If you send these parameters with your browse requests, they're ignored.
   "reRankingApplyFilter": [
     {}
   ],
+  "allowReRankingOnPersonalization": false,
   "cursor": "jMDY3M2MwM2QwMWUxMmQwYWI0ZTN"
 }
 ```
@@ -6243,7 +6245,8 @@ To find the object ID of rules, use the [`search` operation](https://www.algolia
           "score": 1,
           "disjunctive": false
         }
-      ]
+      ],
+      "allowReRankingOnPersonalization": false
     },
     "promote": [
       {
@@ -6609,7 +6612,8 @@ curl 'https://{appId}.algolia.net/1/indexes/ALGOLIA_INDEX_NAME/rules/string' \
             "score": 1,
             "disjunctive": false
           }
-        ]
+        ],
+        "allowReRankingOnPersonalization": false
       },
       "promote": [
         {
@@ -6920,7 +6924,8 @@ To create or update more than one rule, use the [`batch` operation](https://www.
           "score": 1,
           "disjunctive": false
         }
-      ]
+      ],
+      "allowReRankingOnPersonalization": false
     },
     "promote": [
       {
@@ -7409,7 +7414,8 @@ curl 'https://{appId}.algolia.net/1/indexes/ALGOLIA_INDEX_NAME/rules/batch' \
               "score": 1,
               "disjunctive": false
             }
-          ]
+          ],
+          "allowReRankingOnPersonalization": false
         },
         "promote": [
           {
@@ -7724,7 +7730,8 @@ This operation is subject to [indexing rate limits](https://support.algolia.com/
             "score": 1,
             "disjunctive": false
           }
-        ]
+        ],
+        "allowReRankingOnPersonalization": false
       },
       "promote": [
         {
@@ -8258,7 +8265,8 @@ Searches for rules in your index.
               "score": 1,
               "disjunctive": false
             }
-          ]
+          ],
+          "allowReRankingOnPersonalization": false
         },
         "promote": [
           {
@@ -11302,7 +11310,7 @@ appId & apiKey
 > Code samples
 
 ```bash
-curl 'https://{appId}.algolia.net/browseObjects?indexName=string&query=&similarQuery=comedy%20drama%20crime%20Macy%20Buscemi&filters=(category%3ABook%20OR%20category%3AEbook)%20AND%20_tags%3Apublished&facetFilters=%5B%5B%22category%3ABook%22%2C%22category%3A-Movie%22%5D%2C%22author%3AJohn%20Doe%22%5D&optionalFilters=%5B%22category%3ABook%22%2C%22author%3AJohn%20Doe%22%5D&numericFilters=%5B%5B%22inStock%20%3D%201%22%2C%22deliveryDate%20%3C%201441755506%22%5D%2C%22price%20%3C%201000%22%5D&tagFilters=%5B%5B%22Book%22%2C%22Movie%22%5D%2C%22SciFi%22%5D&sumOrFiltersScores=false&restrictSearchableAttributes=%5B%22title%22%2C%22author%22%5D&facets=%5B%22*%22%5D&facetingAfterDistinct=false&page=0&offset=0&length=0&aroundLatLng=40.71%2C-74.01&aroundLatLngViaIP=false&aroundRadius=1&aroundPrecision=10&minimumAroundRadius=1&insideBoundingBox=string&insidePolygon=%5B%5B47.3165%2C4.9665%2C47.3424%2C5.0201%2C47.32%2C4.9%5D%2C%5B40.9234%2C2.1185%2C38.643%2C1.9916%2C39.2587%2C2.0104%5D%5D&naturalLanguages=%5B%5D&ruleContexts=%5B%22mobile%22%5D&personalizationImpact=100&userToken=test-user-123&getRankingInfo=false&synonyms=true&clickAnalytics=false&analytics=true&analyticsTags=%5B%5D&percentileComputation=true&enableABTest=true&attributesToRetrieve=%5B%22author%22%2C%22title%22%2C%22content%22%5D&ranking=%5B%22typo%22%2C%22geo%22%2C%22words%22%2C%22filters%22%2C%22proximity%22%2C%22attribute%22%2C%22exact%22%2C%22custom%22%5D&relevancyStrictness=90&attributesToHighlight=%5B%22author%22%2C%22title%22%2C%22conten%22%2C%22content%22%5D&attributesToSnippet=%5B%22content%3A80%22%2C%22description%22%5D&highlightPreTag=%3Cem%3E&highlightPostTag=%3C%2Fem%3E&snippetEllipsisText=%E2%80%A6&restrictHighlightAndSnippetArrays=false&hitsPerPage=20&minWordSizefor1Typo=4&minWordSizefor2Typos=8&typoTolerance=true&allowTyposOnNumericTokens=true&disableTypoToleranceOnAttributes=%5B%22sku%22%5D&ignorePlurals=%5B%22ca%22%2C%22es%22%5D&removeStopWords=%5B%22ca%22%2C%22es%22%5D&queryLanguages=%5B%22es%22%5D&decompoundQuery=true&enableRules=true&enablePersonalization=false&queryType=prefixLast&removeWordsIfNoResults=firstWords&mode=keywordSearch&semanticSearch=%7B%22eventSources%22%3A%5B%22string%22%5D%7D&advancedSyntax=false&optionalWords=string&disableExactOnAttributes=%5B%22description%22%5D&exactOnSingleWordQuery=attribute&alternativesAsExact=%5B%22ignorePlurals%22%2C%22singleWordSynonym%22%5D&advancedSyntaxFeatures=%5B%22exactPhrase%22%2C%22excludeWords%22%5D&distinct=1&replaceSynonymsInHighlight=false&minProximity=1&responseFields=%5B%22*%22%5D&maxValuesPerFacet=100&sortFacetValuesBy=count&attributeCriteriaComputedByMinProximity=false&attributeCriteriaComputedBy=best&renderingContent=%7B%22facetOrdering%22%3A%7B%22facets%22%3A%7B%22order%22%3A%5B%22string%22%5D%7D%2C%22values%22%3A%7B%22property1%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%2C%22property2%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%7D%7D%2C%22redirect%22%3A%7B%22url%22%3A%22string%22%7D%2C%22widgets%22%3A%7B%22banners%22%3A%5B%7B%22image%22%3A%7B%22urls%22%3A%5B%7B%22url%22%3A%22string%22%7D%5D%2C%22title%22%3A%22string%22%7D%2C%22link%22%3A%7B%22url%22%3A%22string%22%7D%7D%5D%2C%22resultCard%22%3A%7B%22enabled%22%3Atrue%7D%7D%7D&enableReRanking=true&reRankingApplyFilter=%5B%7B%7D%5D&cursor=jMDY3M2MwM2QwMWUxMmQwYWI0ZTN' \
+curl 'https://{appId}.algolia.net/browseObjects?indexName=string&query=&similarQuery=comedy%20drama%20crime%20Macy%20Buscemi&filters=(category%3ABook%20OR%20category%3AEbook)%20AND%20_tags%3Apublished&facetFilters=%5B%5B%22category%3ABook%22%2C%22category%3A-Movie%22%5D%2C%22author%3AJohn%20Doe%22%5D&optionalFilters=%5B%22category%3ABook%22%2C%22author%3AJohn%20Doe%22%5D&numericFilters=%5B%5B%22inStock%20%3D%201%22%2C%22deliveryDate%20%3C%201441755506%22%5D%2C%22price%20%3C%201000%22%5D&tagFilters=%5B%5B%22Book%22%2C%22Movie%22%5D%2C%22SciFi%22%5D&sumOrFiltersScores=false&restrictSearchableAttributes=%5B%22title%22%2C%22author%22%5D&facets=%5B%22*%22%5D&facetingAfterDistinct=false&page=0&offset=0&length=0&aroundLatLng=40.71%2C-74.01&aroundLatLngViaIP=false&aroundRadius=1&aroundPrecision=10&minimumAroundRadius=1&insideBoundingBox=string&insidePolygon=%5B%5B47.3165%2C4.9665%2C47.3424%2C5.0201%2C47.32%2C4.9%5D%2C%5B40.9234%2C2.1185%2C38.643%2C1.9916%2C39.2587%2C2.0104%5D%5D&naturalLanguages=%5B%5D&ruleContexts=%5B%22mobile%22%5D&personalizationImpact=100&userToken=test-user-123&getRankingInfo=false&synonyms=true&clickAnalytics=false&analytics=true&analyticsTags=%5B%5D&percentileComputation=true&enableABTest=true&attributesToRetrieve=%5B%22author%22%2C%22title%22%2C%22content%22%5D&ranking=%5B%22typo%22%2C%22geo%22%2C%22words%22%2C%22filters%22%2C%22proximity%22%2C%22attribute%22%2C%22exact%22%2C%22custom%22%5D&relevancyStrictness=90&attributesToHighlight=%5B%22author%22%2C%22title%22%2C%22conten%22%2C%22content%22%5D&attributesToSnippet=%5B%22content%3A80%22%2C%22description%22%5D&highlightPreTag=%3Cem%3E&highlightPostTag=%3C%2Fem%3E&snippetEllipsisText=%E2%80%A6&restrictHighlightAndSnippetArrays=false&hitsPerPage=20&minWordSizefor1Typo=4&minWordSizefor2Typos=8&typoTolerance=true&allowTyposOnNumericTokens=true&disableTypoToleranceOnAttributes=%5B%22sku%22%5D&ignorePlurals=%5B%22ca%22%2C%22es%22%5D&removeStopWords=%5B%22ca%22%2C%22es%22%5D&queryLanguages=%5B%22es%22%5D&decompoundQuery=true&enableRules=true&enablePersonalization=false&queryType=prefixLast&removeWordsIfNoResults=firstWords&mode=keywordSearch&semanticSearch=%7B%22eventSources%22%3A%5B%22string%22%5D%7D&advancedSyntax=false&optionalWords=string&disableExactOnAttributes=%5B%22description%22%5D&exactOnSingleWordQuery=attribute&alternativesAsExact=%5B%22ignorePlurals%22%2C%22singleWordSynonym%22%5D&advancedSyntaxFeatures=%5B%22exactPhrase%22%2C%22excludeWords%22%5D&distinct=1&replaceSynonymsInHighlight=false&minProximity=1&responseFields=%5B%22*%22%5D&maxValuesPerFacet=100&sortFacetValuesBy=count&attributeCriteriaComputedByMinProximity=false&attributeCriteriaComputedBy=best&renderingContent=%7B%22facetOrdering%22%3A%7B%22facets%22%3A%7B%22order%22%3A%5B%22string%22%5D%7D%2C%22values%22%3A%7B%22property1%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%2C%22property2%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%7D%7D%2C%22redirect%22%3A%7B%22url%22%3A%22string%22%7D%2C%22widgets%22%3A%7B%22banners%22%3A%5B%7B%22image%22%3A%7B%22urls%22%3A%5B%7B%22url%22%3A%22string%22%7D%5D%2C%22title%22%3A%22string%22%7D%2C%22link%22%3A%7B%22url%22%3A%22string%22%7D%7D%5D%2C%22resultCard%22%3A%7B%22enabled%22%3Atrue%7D%7D%7D&enableReRanking=true&reRankingApplyFilter=%5B%7B%7D%5D&allowReRankingOnPersonalization=false&cursor=jMDY3M2MwM2QwMWUxMmQwYWI0ZTN' \
   -H 'Accept: application/json' \
   -H "x-algolia-application-id: ${API_KEY}" \
   -H "x-algolia-api-key: ${API_KEY}"
@@ -11353,7 +11361,7 @@ appId & apiKey
 > Code samples
 
 ```bash
-curl 'https://{appId}.algolia.net/generateSecuredApiKey?parentApiKey=string&searchParams=%7B%22query%22%3A%22%22%2C%22similarQuery%22%3A%22comedy%20drama%20crime%20Macy%20Buscemi%22%2C%22filters%22%3A%22(category%3ABook%20OR%20category%3AEbook)%20AND%20_tags%3Apublished%22%2C%22facetFilters%22%3A%5B%5B%22category%3ABook%22%2C%22category%3A-Movie%22%5D%2C%22author%3AJohn%20Doe%22%5D%2C%22optionalFilters%22%3A%5B%22category%3ABook%22%2C%22author%3AJohn%20Doe%22%5D%2C%22numericFilters%22%3A%5B%5B%22inStock%20%3D%201%22%2C%22deliveryDate%20%3C%201441755506%22%5D%2C%22price%20%3C%201000%22%5D%2C%22tagFilters%22%3A%5B%5B%22Book%22%2C%22Movie%22%5D%2C%22SciFi%22%5D%2C%22sumOrFiltersScores%22%3Afalse%2C%22restrictSearchableAttributes%22%3A%5B%22title%22%2C%22author%22%5D%2C%22facets%22%3A%5B%22*%22%5D%2C%22facetingAfterDistinct%22%3Afalse%2C%22page%22%3A0%2C%22offset%22%3A0%2C%22length%22%3A0%2C%22aroundLatLng%22%3A%2240.71%2C-74.01%22%2C%22aroundLatLngViaIP%22%3Afalse%2C%22aroundRadius%22%3A1%2C%22aroundPrecision%22%3A10%2C%22minimumAroundRadius%22%3A1%2C%22insideBoundingBox%22%3A%22string%22%2C%22insidePolygon%22%3A%5B%5B47.3165%2C4.9665%2C47.3424%2C5.0201%2C47.32%2C4.9%5D%2C%5B40.9234%2C2.1185%2C38.643%2C1.9916%2C39.2587%2C2.0104%5D%5D%2C%22naturalLanguages%22%3A%5B%5D%2C%22ruleContexts%22%3A%5B%22mobile%22%5D%2C%22personalizationImpact%22%3A100%2C%22userToken%22%3A%22test-user-123%22%2C%22getRankingInfo%22%3Afalse%2C%22synonyms%22%3Atrue%2C%22clickAnalytics%22%3Afalse%2C%22analytics%22%3Atrue%2C%22analyticsTags%22%3A%5B%5D%2C%22percentileComputation%22%3Atrue%2C%22enableABTest%22%3Atrue%2C%22attributesToRetrieve%22%3A%5B%22author%22%2C%22title%22%2C%22content%22%5D%2C%22ranking%22%3A%5B%22typo%22%2C%22geo%22%2C%22words%22%2C%22filters%22%2C%22proximity%22%2C%22attribute%22%2C%22exact%22%2C%22custom%22%5D%2C%22relevancyStrictness%22%3A90%2C%22attributesToHighlight%22%3A%5B%22author%22%2C%22title%22%2C%22conten%22%2C%22content%22%5D%2C%22attributesToSnippet%22%3A%5B%22content%3A80%22%2C%22description%22%5D%2C%22highlightPreTag%22%3A%22%3Cem%3E%22%2C%22highlightPostTag%22%3A%22%3C%2Fem%3E%22%2C%22snippetEllipsisText%22%3A%22%E2%80%A6%22%2C%22restrictHighlightAndSnippetArrays%22%3Afalse%2C%22hitsPerPage%22%3A20%2C%22minWordSizefor1Typo%22%3A4%2C%22minWordSizefor2Typos%22%3A8%2C%22typoTolerance%22%3Atrue%2C%22allowTyposOnNumericTokens%22%3Atrue%2C%22disableTypoToleranceOnAttributes%22%3A%5B%22sku%22%5D%2C%22ignorePlurals%22%3A%5B%22ca%22%2C%22es%22%5D%2C%22removeStopWords%22%3A%5B%22ca%22%2C%22es%22%5D%2C%22queryLanguages%22%3A%5B%22es%22%5D%2C%22decompoundQuery%22%3Atrue%2C%22enableRules%22%3Atrue%2C%22enablePersonalization%22%3Afalse%2C%22queryType%22%3A%22prefixLast%22%2C%22removeWordsIfNoResults%22%3A%22firstWords%22%2C%22mode%22%3A%22keywordSearch%22%2C%22semanticSearch%22%3A%7B%22eventSources%22%3A%5B%22string%22%5D%7D%2C%22advancedSyntax%22%3Afalse%2C%22optionalWords%22%3A%22string%22%2C%22disableExactOnAttributes%22%3A%5B%22description%22%5D%2C%22exactOnSingleWordQuery%22%3A%22attribute%22%2C%22alternativesAsExact%22%3A%5B%22ignorePlurals%22%2C%22singleWordSynonym%22%5D%2C%22advancedSyntaxFeatures%22%3A%5B%22exactPhrase%22%2C%22excludeWords%22%5D%2C%22distinct%22%3A1%2C%22replaceSynonymsInHighlight%22%3Afalse%2C%22minProximity%22%3A1%2C%22responseFields%22%3A%5B%22*%22%5D%2C%22maxValuesPerFacet%22%3A100%2C%22sortFacetValuesBy%22%3A%22count%22%2C%22attributeCriteriaComputedByMinProximity%22%3Afalse%2C%22attributeCriteriaComputedBy%22%3A%22best%22%2C%22renderingContent%22%3A%7B%22facetOrdering%22%3A%7B%22facets%22%3A%7B%22order%22%3A%5B%22string%22%5D%7D%2C%22values%22%3A%7B%22property1%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%2C%22property2%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%7D%7D%2C%22redirect%22%3A%7B%22url%22%3A%22string%22%7D%2C%22widgets%22%3A%7B%22banners%22%3A%5B%7B%22image%22%3A%7B%22urls%22%3A%5B%7B%22url%22%3A%22string%22%7D%5D%2C%22title%22%3A%22string%22%7D%2C%22link%22%3A%7B%22url%22%3A%22string%22%7D%7D%5D%2C%22resultCard%22%3A%7B%22enabled%22%3Atrue%7D%7D%7D%2C%22enableReRanking%22%3Atrue%2C%22reRankingApplyFilter%22%3A%5B%7B%7D%5D%7D&filters=string&validUntil=0&restrictIndices=%5B%22string%22%5D&restrictSources=192.168.1.0%2F24&userToken=string' \
+curl 'https://{appId}.algolia.net/generateSecuredApiKey?parentApiKey=string&searchParams=%7B%22query%22%3A%22%22%2C%22similarQuery%22%3A%22comedy%20drama%20crime%20Macy%20Buscemi%22%2C%22filters%22%3A%22(category%3ABook%20OR%20category%3AEbook)%20AND%20_tags%3Apublished%22%2C%22facetFilters%22%3A%5B%5B%22category%3ABook%22%2C%22category%3A-Movie%22%5D%2C%22author%3AJohn%20Doe%22%5D%2C%22optionalFilters%22%3A%5B%22category%3ABook%22%2C%22author%3AJohn%20Doe%22%5D%2C%22numericFilters%22%3A%5B%5B%22inStock%20%3D%201%22%2C%22deliveryDate%20%3C%201441755506%22%5D%2C%22price%20%3C%201000%22%5D%2C%22tagFilters%22%3A%5B%5B%22Book%22%2C%22Movie%22%5D%2C%22SciFi%22%5D%2C%22sumOrFiltersScores%22%3Afalse%2C%22restrictSearchableAttributes%22%3A%5B%22title%22%2C%22author%22%5D%2C%22facets%22%3A%5B%22*%22%5D%2C%22facetingAfterDistinct%22%3Afalse%2C%22page%22%3A0%2C%22offset%22%3A0%2C%22length%22%3A0%2C%22aroundLatLng%22%3A%2240.71%2C-74.01%22%2C%22aroundLatLngViaIP%22%3Afalse%2C%22aroundRadius%22%3A1%2C%22aroundPrecision%22%3A10%2C%22minimumAroundRadius%22%3A1%2C%22insideBoundingBox%22%3A%22string%22%2C%22insidePolygon%22%3A%5B%5B47.3165%2C4.9665%2C47.3424%2C5.0201%2C47.32%2C4.9%5D%2C%5B40.9234%2C2.1185%2C38.643%2C1.9916%2C39.2587%2C2.0104%5D%5D%2C%22naturalLanguages%22%3A%5B%5D%2C%22ruleContexts%22%3A%5B%22mobile%22%5D%2C%22personalizationImpact%22%3A100%2C%22userToken%22%3A%22test-user-123%22%2C%22getRankingInfo%22%3Afalse%2C%22synonyms%22%3Atrue%2C%22clickAnalytics%22%3Afalse%2C%22analytics%22%3Atrue%2C%22analyticsTags%22%3A%5B%5D%2C%22percentileComputation%22%3Atrue%2C%22enableABTest%22%3Atrue%2C%22attributesToRetrieve%22%3A%5B%22author%22%2C%22title%22%2C%22content%22%5D%2C%22ranking%22%3A%5B%22typo%22%2C%22geo%22%2C%22words%22%2C%22filters%22%2C%22proximity%22%2C%22attribute%22%2C%22exact%22%2C%22custom%22%5D%2C%22relevancyStrictness%22%3A90%2C%22attributesToHighlight%22%3A%5B%22author%22%2C%22title%22%2C%22conten%22%2C%22content%22%5D%2C%22attributesToSnippet%22%3A%5B%22content%3A80%22%2C%22description%22%5D%2C%22highlightPreTag%22%3A%22%3Cem%3E%22%2C%22highlightPostTag%22%3A%22%3C%2Fem%3E%22%2C%22snippetEllipsisText%22%3A%22%E2%80%A6%22%2C%22restrictHighlightAndSnippetArrays%22%3Afalse%2C%22hitsPerPage%22%3A20%2C%22minWordSizefor1Typo%22%3A4%2C%22minWordSizefor2Typos%22%3A8%2C%22typoTolerance%22%3Atrue%2C%22allowTyposOnNumericTokens%22%3Atrue%2C%22disableTypoToleranceOnAttributes%22%3A%5B%22sku%22%5D%2C%22ignorePlurals%22%3A%5B%22ca%22%2C%22es%22%5D%2C%22removeStopWords%22%3A%5B%22ca%22%2C%22es%22%5D%2C%22queryLanguages%22%3A%5B%22es%22%5D%2C%22decompoundQuery%22%3Atrue%2C%22enableRules%22%3Atrue%2C%22enablePersonalization%22%3Afalse%2C%22queryType%22%3A%22prefixLast%22%2C%22removeWordsIfNoResults%22%3A%22firstWords%22%2C%22mode%22%3A%22keywordSearch%22%2C%22semanticSearch%22%3A%7B%22eventSources%22%3A%5B%22string%22%5D%7D%2C%22advancedSyntax%22%3Afalse%2C%22optionalWords%22%3A%22string%22%2C%22disableExactOnAttributes%22%3A%5B%22description%22%5D%2C%22exactOnSingleWordQuery%22%3A%22attribute%22%2C%22alternativesAsExact%22%3A%5B%22ignorePlurals%22%2C%22singleWordSynonym%22%5D%2C%22advancedSyntaxFeatures%22%3A%5B%22exactPhrase%22%2C%22excludeWords%22%5D%2C%22distinct%22%3A1%2C%22replaceSynonymsInHighlight%22%3Afalse%2C%22minProximity%22%3A1%2C%22responseFields%22%3A%5B%22*%22%5D%2C%22maxValuesPerFacet%22%3A100%2C%22sortFacetValuesBy%22%3A%22count%22%2C%22attributeCriteriaComputedByMinProximity%22%3Afalse%2C%22attributeCriteriaComputedBy%22%3A%22best%22%2C%22renderingContent%22%3A%7B%22facetOrdering%22%3A%7B%22facets%22%3A%7B%22order%22%3A%5B%22string%22%5D%7D%2C%22values%22%3A%7B%22property1%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%2C%22property2%22%3A%7B%22order%22%3A%5B%22string%22%5D%2C%22sortRemainingBy%22%3A%22count%22%2C%22hide%22%3A%5B%22string%22%5D%7D%7D%7D%2C%22redirect%22%3A%7B%22url%22%3A%22string%22%7D%2C%22widgets%22%3A%7B%22banners%22%3A%5B%7B%22image%22%3A%7B%22urls%22%3A%5B%7B%22url%22%3A%22string%22%7D%5D%2C%22title%22%3A%22string%22%7D%2C%22link%22%3A%7B%22url%22%3A%22string%22%7D%7D%5D%2C%22resultCard%22%3A%7B%22enabled%22%3Atrue%7D%7D%7D%2C%22enableReRanking%22%3Atrue%2C%22reRankingApplyFilter%22%3A%5B%7B%7D%5D%2C%22allowReRankingOnPersonalization%22%3Afalse%7D&filters=string&validUntil=0&restrictIndices=%5B%22string%22%5D&restrictSources=192.168.1.0%2F24&userToken=string' \
   -H 'Accept: application/json' \
   -H "x-algolia-application-id: ${API_KEY}" \
   -H "x-algolia-api-key: ${API_KEY}"
@@ -11787,7 +11795,7 @@ Helper: Saves the given array of objects in the given index. The `chunkedBatch` 
 |---|---|---|---|---|
 |indexName|query|string|true|The `indexName` to save `objects` into.|
 |objects|query|[object]|true|The objects to save in the index.|
-|waitForTasks|query|boolean|false|Whether to wait until every `batch` task has been processed. This may take longer but is more reliable.|
+|waitForTasks|query|boolean|false|Whether to wait until every `batch` task has been processed. This may take longer but is more reliable. In Java, pass `waitForTasks` together with `batchSize` or `requestOptions`; there's no overload that takes `waitForTasks` on its own.|
 |batchSize|query|integer|false|The size of the chunk of `objects`. The number of `batch` calls will be equal to `length(objects) / batchSize`. Defaults to 1,000.|
 |requestOptions|query|object|false|The request options to pass to the `batch` method.|
 
@@ -11945,7 +11953,7 @@ Helper: Deletes every records for the given objectIDs. The `chunkedBatch` helper
 |---|---|---|---|---|
 |indexName|query|string|true|The `indexName` to delete `objectIDs` from.|
 |objectIDs|query|[string]|true|The objectIDs to delete.|
-|waitForTasks|query|boolean|false|Whether to wait until every `batch` task has been processed. This may take longer but is more reliable.|
+|waitForTasks|query|boolean|false|Whether to wait until every `batch` task has been processed. This may take longer but is more reliable. In Java, pass `waitForTasks` together with `batchSize` or `requestOptions`; there's no overload that takes `waitForTasks` on its own.|
 |batchSize|query|integer|false|The size of the chunk of `objects`. The number of `batch` calls will be equal to `length(objects) / batchSize`. Defaults to 1,000.|
 |requestOptions|query|object|false|The request options to pass to the `batch` method.|
 
@@ -15165,6 +15173,40 @@ Restrict [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-r
 |attributeCriteriaComputedBy|best|
 |attributeCriteriaComputedBy|sum|
 
+<h2 id="tocS_allowReRankingOnPersonalization">allowReRankingOnPersonalization</h2>
+<!-- backwards compatibility -->
+<a id="schemaallowrerankingonpersonalization"></a>
+<a id="schema_allowReRankingOnPersonalization"></a>
+<a id="tocSallowrerankingonpersonalization"></a>
+<a id="tocsallowrerankingonpersonalization"></a>
+
+```json
+false
+```
+
+Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.
+
+Dynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.
+
+<h2 id="tocS_searchParamsAllowReRanking">searchParamsAllowReRanking</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchparamsallowreranking"></a>
+<a id="schema_searchParamsAllowReRanking"></a>
+<a id="tocSsearchparamsallowreranking"></a>
+<a id="tocssearchparamsallowreranking"></a>
+
+```json
+{
+  "allowReRankingOnPersonalization": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowReRankingOnPersonalization|[allowReRankingOnPersonalization](#schemaallowrerankingonpersonalization)|false|none|Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.<br><br>Dynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.<br>|
+
 <h2 id="tocS_searchParamsObject">searchParamsObject</h2>
 <!-- backwards compatibility -->
 <a id="schemasearchparamsobject"></a>
@@ -15390,7 +15432,8 @@ Restrict [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-r
   "enableReRanking": true,
   "reRankingApplyFilter": [
     {}
-  ]
+  ],
+  "allowReRankingOnPersonalization": false
 }
 ```
 
@@ -15474,6 +15517,7 @@ Each parameter value, including the `query` must not be larger than 512 bytes.
 |renderingContent|[renderingContent](#schemarenderingcontent)|false|none|Extra data that can be used in the search UI.<br><br>You can use this to control aspects of your search UI, such as the order of facet names and values<br>without changing your frontend code.<br>|
 |enableReRanking|[enableReRanking](#schemaenablereranking)|false|none|Whether this search will use [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking).<br>This setting only has an effect if you activated Dynamic Re-Ranking for this index in the Algolia dashboard.<br>|
 |reRankingApplyFilter|[reRankingApplyFilter](#schemarerankingapplyfilter) \| null|false|none|none|
+|allowReRankingOnPersonalization|[allowReRankingOnPersonalization](#schemaallowrerankingonpersonalization)|false|none|Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.<br><br>Dynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.<br>|
 
 #### Enumerated Values
 
@@ -17959,6 +18003,7 @@ deserialization.
   "reRankingApplyFilter": [
     {}
   ],
+  "allowReRankingOnPersonalization": false,
   "cursor": "jMDY3M2MwM2QwMWUxMmQwYWI0ZTN"
 }
 ```
@@ -18041,6 +18086,7 @@ deserialization.
 |renderingContent|[renderingContent](#schemarenderingcontent)|false|none|Extra data that can be used in the search UI.<br><br>You can use this to control aspects of your search UI, such as the order of facet names and values<br>without changing your frontend code.<br>|
 |enableReRanking|[enableReRanking](#schemaenablereranking)|false|none|Whether this search will use [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking).<br>This setting only has an effect if you activated Dynamic Re-Ranking for this index in the Algolia dashboard.<br>|
 |reRankingApplyFilter|[reRankingApplyFilter](#schemarerankingapplyfilter) \| null|false|none|none|
+|allowReRankingOnPersonalization|[allowReRankingOnPersonalization](#schemaallowrerankingonpersonalization)|false|none|Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.<br><br>Dynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.<br>|
 |cursor|string|false|none|Cursor to get the next page of the response.<br><br>The parameter must match the value returned in the response of a previous request.<br>The last page of the response does not return a `cursor` attribute.<br>|
 
 #### Enumerated Values
@@ -18431,6 +18477,7 @@ deserialization.
   "reRankingApplyFilter": [
     {}
   ],
+  "allowReRankingOnPersonalization": false,
   "cursor": "jMDY3M2MwM2QwMWUxMmQwYWI0ZTN"
 }
 ```
@@ -21035,7 +21082,8 @@ You can use all search parameters, plus special `automaticFacetFilters`, `automa
       "score": 1,
       "disjunctive": false
     }
-  ]
+  ],
+  "allowReRankingOnPersonalization": false
 }
 ```
 
@@ -21120,6 +21168,7 @@ You can use all search parameters, plus special `automaticFacetFilters`, `automa
 |automaticFacetFilters|[automaticFacetFilters](#schemaautomaticfacetfilters)|false|none|Filter to be applied to the search.<br><br>You can use this to respond to search queries that match a facet value.<br>For example, if users search for "comedy", which matches a facet value of the "genre" facet,<br>you can filter the results to show the top-ranked comedy movies.<br>|
 |automaticOptionalFacetFilters|[automaticFacetFilters](#schemaautomaticfacetfilters)|false|none|Filter to be applied to the search.<br><br>You can use this to respond to search queries that match a facet value.<br>For example, if users search for "comedy", which matches a facet value of the "genre" facet,<br>you can filter the results to show the top-ranked comedy movies.<br>|
 |renderingContent|[renderingContent](#schemarenderingcontent)|false|none|Extra data that can be used in the search UI.<br><br>You can use this to control aspects of your search UI, such as the order of facet names and values<br>without changing your frontend code.<br>|
+|allowReRankingOnPersonalization|[allowReRankingOnPersonalization](#schemaallowrerankingonpersonalization)|false|none|Whether [Dynamic Re-Ranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking) runs concurrently with Personalization.<br><br>Dynamic Re-Ranking isn't applied when `distinct` > 1, even if `allowReRankingOnPersonalization` is `true`.<br>|
 
 #### Enumerated Values
 
@@ -21618,7 +21667,8 @@ Record to promote.
         "score": 1,
         "disjunctive": false
       }
-    ]
+    ],
+    "allowReRankingOnPersonalization": false
   },
   "promote": [
     {
@@ -21942,7 +21992,8 @@ For more information, see [Consequences](https://www.algolia.com/doc/guides/mana
           "score": 1,
           "disjunctive": false
         }
-      ]
+      ],
+      "allowReRankingOnPersonalization": false
     },
     "promote": [
       {
@@ -23008,7 +23059,8 @@ A/B test metadata. Only present if the index is part of an active A/B test.
     "enableReRanking": true,
     "reRankingApplyFilter": [
       {}
-    ]
+    ],
+    "allowReRankingOnPersonalization": false
   },
   "filters": "string",
   "validUntil": 0,

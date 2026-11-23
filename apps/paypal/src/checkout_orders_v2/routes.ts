@@ -31,35 +31,6 @@ const MoneySchema = z
   })
   .openapi('Money')
 
-const Level_2CardProcessingDataSchema = z
-  .object({
-    invoice_id: z
-      .string()
-      .regex(/^[\w‘\-.,":;\!?]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'Use this field to pass a purchase identification value of up to 127 ASCII characters. The length of this field will be adjusted to meet network specifications (25chars for Visa and Mastercard, 17chars for Amex), and the original invoice ID will still be displayed in your existing reports.',
-      }),
-    tax_total: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Use this field to break down the amount of tax included in the total purchase amount. The value provided here will not add to the total purchase amount. The value can't be negative, and in most cases, it must be greater than zero in order to qualify for lower interchange rates. \n Value, by country, is:\n\n    UK. A county.\n    US. A state.\n    Canada. A province.\n    Japan. A prefecture.\n    Switzerland. A kanton.\n",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'level_2',
-    description:
-      'The level 2 card processing data collections. If your merchant account has been configured for Level 2 processing this field will be passed to the processor on your behalf. Please contact your PayPal Technical Account Manager to define level 2 data for your business.',
-    required: [],
-  })
-  .openapi('Level_2CardProcessingData')
-
 const CountryCodeSchema = z
   .string()
   .regex(/^([A-Z]{2}|C2)$/)
@@ -244,24 +215,16 @@ const UniversalProductCodeSchema = z
 
 const PricingSchemeSchema = z
   .object({
-    price: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The price the customer will be charged based on the pricing model',
-        }),
-    ).exactOptional(),
+    price: MoneySchema.exactOptional().openapi({
+      description: 'The price the customer will be charged based on the pricing model',
+    }),
     pricing_model: z
       .enum(['FIXED', 'VARIABLE', 'AUTO_RELOAD'])
       .openapi({ description: 'The pricing model for the billing cycle.' }),
-    reload_threshold_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The threshold amount on which the reload charge would be triggered. This will be associated with the account-balance where if the account-balance goes below this amount then customer would incur reload charge.',
-        }),
-    ).exactOptional(),
+    reload_threshold_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The threshold amount on which the reload charge would be triggered. This will be associated with the account-balance where if the account-balance goes below this amount then customer would incur reload charge.',
+    }),
   })
   .openapi({
     title: 'pricing_scheme',
@@ -288,14 +251,10 @@ const BillingCycleSchema = z
         description:
           'The tenure type of the billing cycle identifies if the billing cycle is a trial(free or discounted) or regular billing cycle.',
       }),
-    pricing_scheme: PricingSchemeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
-        }),
-    ).exactOptional(),
+    pricing_scheme: PricingSchemeSchema.exactOptional().openapi({
+      description:
+        'The active pricing scheme for this billing cycle. A free trial billing cycle does not require a pricing scheme.',
+    }),
     total_cycles: z
       .int()
       .min(0)
@@ -316,14 +275,10 @@ const BillingCycleSchema = z
         description:
           'The order in which this cycle is to run among other billing cycles. For example, a trial billing cycle has a `sequence` of `1` while a regular billing cycle has a `sequence` of `2`, so that trial cycle runs before the regular cycle.',
       }),
-    start_date: DateNoTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date for the billing cycle, in YYYY-MM-DD. This field should be not be provided if the billing cycle starts at the time of checkout. When this field is not provided, the billing cycle amount will be included in any data validations confirming that the total provided by the merchant match the sum of individual items due at the time of checkout. Only one billing cycle (with sequence equal to 1) can have a no start date.',
-        }),
-    ).exactOptional(),
+    start_date: DateNoTimeSchema.exactOptional().openapi({
+      description:
+        'The start date for the billing cycle, in YYYY-MM-DD. This field should be not be provided if the billing cycle starts at the time of checkout. When this field is not provided, the billing cycle amount will be included in any data validations confirming that the total provided by the merchant match the sum of individual items due at the time of checkout. Only one billing cycle (with sequence equal to 1) can have a no start date.',
+    }),
   })
   .openapi({
     title: 'billing_cycle',
@@ -343,13 +298,9 @@ const OrderBillingPlanSchema = z
         description:
           'An array of billing cycles for trial billing and regular billing. A plan can have at most two trial cycles and only one regular cycle.',
       }),
-    setup_fee: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The setup fee for the recurring plan. Ensure its part of the item amount.',
-        }),
-    ).exactOptional(),
+    setup_fee: MoneySchema.exactOptional().openapi({
+      description: 'The setup fee for the recurring plan. Ensure its part of the item amount.',
+    }),
     name: z
       .string()
       .regex(/^[A-Za-z0-9() +',.:-]+$/)
@@ -412,9 +363,9 @@ const ItemWithoutCategoryTaxOrAmountSchema = z
         description:
           "The URL of the item's image. File type and size restrictions apply. An image that violates these restrictions will not be honored.",
       }),
-    upc: UniversalProductCodeSchema.and(
-      z.any().openapi({ description: 'The Universal Product Code of the item.' }),
-    ).exactOptional(),
+    upc: UniversalProductCodeSchema.exactOptional().openapi({
+      description: 'The Universal Product Code of the item.',
+    }),
     billing_plan: OrderBillingPlanSchema.exactOptional(),
   })
   .openapi({
@@ -427,22 +378,14 @@ const ItemWithoutCategoryTaxOrAmountSchema = z
 const LineItemSchema = ItemWithoutCategoryTaxOrAmountSchema.and(
   z
     .object({
-      unit_amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The item price or rate per unit. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
-          }),
-      ).exactOptional(),
-      tax: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The item tax for each unit. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
-          }),
-      ).exactOptional(),
+      unit_amount: MoneySchema.exactOptional().openapi({
+        description:
+          'The item price or rate per unit. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
+      }),
+      tax: MoneySchema.exactOptional().openapi({
+        description:
+          'The item tax for each unit. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
+      }),
       commodity_code: z
         .string()
         .regex(/^[a-zA-Z0-9_'.-]*$/)
@@ -453,22 +396,14 @@ const LineItemSchema = ItemWithoutCategoryTaxOrAmountSchema.and(
           description:
             'Code used to classify items purchased and track the total amount spent across various categories of products and services. Different corporate purchasing organizations may use different standards, but the United Nations Standard Products and Services Code (UNSPSC) is frequently used.',
         }),
-      discount_amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Use this field to break down the discount amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
-          }),
-      ).exactOptional(),
-      total_amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The subtotal for all items. Must equal the sum of (items[].unit_amount * items[].quantity) for all items. item_total.value can not be a negative number.',
-          }),
-      ).exactOptional(),
+      discount_amount: MoneySchema.exactOptional().openapi({
+        description:
+          'Use this field to break down the discount amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
+      }),
+      total_amount: MoneySchema.exactOptional().openapi({
+        description:
+          'The subtotal for all items. Must equal the sum of (items[].unit_amount * items[].quantity) for all items. item_total.value can not be a negative number.',
+      }),
       unit_of_measure: z
         .string()
         .regex(/^[a-zA-Z0-9_'.-]*$/)
@@ -489,32 +424,54 @@ const LineItemSchema = ItemWithoutCategoryTaxOrAmountSchema.and(
   })
   .openapi('LineItem')
 
-const Level_3CardProcessingDataSchema = z
+type Level_3CardProcessingDataType = {
+  shipping_amount?: z.infer<typeof MoneySchema> & unknown
+  duty_amount?: z.infer<typeof MoneySchema> & unknown
+  discount_amount?: z.infer<typeof MoneySchema> & unknown
+  shipping_address?: z.infer<typeof AddressPortableSchema> & unknown
+  ships_from_postal_code?: string
+  line_items?: (z.infer<typeof LineItemSchema> & unknown)[]
+}
+
+const Level_2CardProcessingDataSchema = z
   .object({
-    shipping_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this field to break down the shipping cost included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
-        }),
-    ).exactOptional(),
-    duty_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this field to break down the duty amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
-        }),
-    ).exactOptional(),
-    discount_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this field to break down the discount amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
-        }),
-    ).exactOptional(),
+    invoice_id: z
+      .string()
+      .regex(/^[\w‘\-.,":;\!?]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'Use this field to pass a purchase identification value of up to 127 ASCII characters. The length of this field will be adjusted to meet network specifications (25chars for Visa and Mastercard, 17chars for Amex), and the original invoice ID will still be displayed in your existing reports.',
+      }),
+    tax_total: MoneySchema.exactOptional().openapi({
+      description:
+        "Use this field to break down the amount of tax included in the total purchase amount. The value provided here will not add to the total purchase amount. The value can't be negative, and in most cases, it must be greater than zero in order to qualify for lower interchange rates. \n Value, by country, is:\n\n    UK. A county.\n    US. A state.\n    Canada. A province.\n    Japan. A prefecture.\n    Switzerland. A kanton.\n",
+    }),
+  })
+  .openapi({
+    title: 'level_2',
+    description:
+      'The level 2 card processing data collections. If your merchant account has been configured for Level 2 processing this field will be passed to the processor on your behalf. Please contact your PayPal Technical Account Manager to define level 2 data for your business.',
+    required: [],
+  })
+  .openapi('Level_2CardProcessingData')
+
+const Level_3CardProcessingDataSchema: z.ZodType<Level_3CardProcessingDataType> = z
+  .object({
+    shipping_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'Use this field to break down the shipping cost included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
+    }),
+    duty_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'Use this field to break down the duty amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
+    }),
+    discount_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'Use this field to break down the discount amount included in the total purchase amount. The value provided here will not add to the total purchase amount. The value cannot be negative.',
+    }),
     shipping_address: AddressPortableSchema.and(
       z
         .any()
@@ -568,6 +525,14 @@ const Level_3CardProcessingDataSchema = z
         .openapi({
           description:
             'The address of the person to whom to ship the items. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
     ships_from_postal_code: z
@@ -580,7 +545,7 @@ const Level_3CardProcessingDataSchema = z
         description: 'Use this field to specify the postal code of the shipping location.',
       }),
     line_items: z
-      .array(LineItemSchema.and(z.any().openapi({ title: 'line_item' })))
+      .array(LineItemSchema.openapi({ title: 'line_item' }))
       .min(1)
       .max(100)
       .exactOptional()
@@ -597,7 +562,12 @@ const Level_3CardProcessingDataSchema = z
   })
   .openapi('Level_3CardProcessingData')
 
-const CardSupplementaryDataSchema = z
+type CardSupplementaryDataType = {
+  level_2?: z.infer<typeof Level_2CardProcessingDataSchema>
+  level_3?: z.infer<typeof Level_3CardProcessingDataSchema>
+}
+
+const CardSupplementaryDataSchema: z.ZodType<CardSupplementaryDataType> = z
   .object({
     level_2: Level_2CardProcessingDataSchema.exactOptional(),
     level_3: Level_3CardProcessingDataSchema.exactOptional(),
@@ -626,14 +596,10 @@ const IpAddressSchema = z
 
 const ParticipantMetadataSchema = z
   .object({
-    ip_address: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The consumer's IP address, which can be represented in either IPv4 or IPv6 format.",
-        }),
-    ).exactOptional(),
+    ip_address: IpAddressSchema.exactOptional().openapi({
+      description:
+        "The consumer's IP address, which can be represented in either IPv4 or IPv6 format.",
+    }),
   })
   .openapi({
     title: 'participant_metadata',
@@ -652,80 +618,66 @@ const RiskSupplementaryDataSchema = z
   .openapi('RiskSupplementaryData')
 
 type SupplementaryDataType = {
-  card?: z.infer<typeof CardSupplementaryDataSchema> & { [key: string]: unknown }
-  risk?: z.infer<typeof RiskSupplementaryDataSchema> & { [key: string]: unknown }
+  card?: z.infer<typeof CardSupplementaryDataSchema> & unknown
+  risk?: z.infer<typeof RiskSupplementaryDataSchema> & unknown
 }
 
-const LiabilityShiftSchema = z
-  .enum(['NO', 'POSSIBLE', 'UNKNOWN'])
+const DiscountWithBreakdownSchema = MoneySchema.and(z.looseObject({}))
   .openapi({
-    title: 'liability_shift',
-    description: "Liability shift indicator. The outcome of the issuer's authentication.",
-  })
-  .openapi('LiabilityShift')
-
-const ParesStatusSchema = z
-  .enum(['Y', 'N', 'U', 'A', 'C', 'R', 'D', 'I'])
-  .openapi({
+    title: 'discount_with_breakdown',
     description:
-      "Transactions status result identifier. The outcome of the issuer's authentication.",
+      'The discount amount and currency code. For list of supported currencies and decimal precision, see the PayPal REST APIs <a href="/docs/integration/direct/rest/currency-codes/">Currency Codes</a>.',
   })
-  .openapi('ParesStatus')
+  .openapi('DiscountWithBreakdown')
 
-const EnrolledSchema = z
-  .enum(['Y', 'N', 'U', 'B'])
-  .openapi({ description: 'Status of Authentication eligibility.' })
-  .openapi('Enrolled')
-
-const ThreeDSecureAuthenticationResponseSchema = z
+const AmountBreakdownSchema = z
   .object({
-    authentication_status: ParesStatusSchema.and(
-      z.any().openapi({ description: "The outcome of the issuer's authentication." }),
-    ).exactOptional(),
-    enrollment_status: EnrolledSchema.and(
-      z.any().openapi({ description: 'Status of authentication eligibility.' }),
-    ).exactOptional(),
+    item_total: MoneySchema.exactOptional().openapi({
+      description:
+        'The subtotal for all items. Required if the request includes `purchase_units[].items[].unit_amount`. Must equal the sum of `(items[].unit_amount * items[].quantity)` for all items. <code>item_total.value</code> can not be a negative number.',
+    }),
+    shipping: MoneySchema.exactOptional().openapi({
+      description:
+        'The shipping fee for all items within a given `purchase_unit`. <code>shipping.value</code> can not be a negative number.',
+    }),
+    handling: MoneySchema.exactOptional().openapi({
+      description:
+        'The handling fee for all items within a given `purchase_unit`. <code>handling.value</code> can not be a negative number.',
+    }),
+    tax_total: MoneySchema.exactOptional().openapi({
+      description:
+        'The total tax for all items. Required if the request includes `purchase_units.items.tax`. Must equal the sum of `(items[].tax * items[].quantity)` for all items. <code>tax_total.value</code> can not be a negative number.',
+    }),
+    insurance: MoneySchema.exactOptional().openapi({
+      description:
+        'The insurance fee for all items within a given `purchase_unit`. <code>insurance.value</code> can not be a negative number.',
+    }),
+    shipping_discount: MoneySchema.exactOptional().openapi({
+      description:
+        'The shipping discount for all items within a given `purchase_unit`. <code>shipping_discount.value</code> can not be a negative number.',
+    }),
+    discount: DiscountWithBreakdownSchema.exactOptional().openapi({
+      description:
+        'The discount for all items within a given `purchase_unit`. <code>discount.value</code> can not be a negative number.',
+    }),
   })
   .openapi({
-    title: 'three_d_secure_authentication_response',
-    description: 'Results of 3D Secure Authentication.',
+    title: 'amount_breakdown',
+    description:
+      'The breakdown of the amount. Breakdown provides details such as total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.',
     required: [],
   })
-  .openapi('ThreeDSecureAuthenticationResponse')
+  .openapi('AmountBreakdown')
 
-type AuthenticationResponseType = {
-  liability_shift?: z.infer<typeof LiabilityShiftSchema>
-  three_d_secure?: z.infer<typeof ThreeDSecureAuthenticationResponseSchema>
-}
-
-const GuidSchema = z
-  .string()
-  .regex(/^[A-Za-z0-9-{}(),]*$/)
-  .min(1)
-  .max(68)
-  .openapi({ title: 'GUID', description: 'A Globally Unique Identifier (GUID) value.' })
-  .openapi('Guid')
-
-const StandardHeaderSchemaSchema = z
-  .string()
-  .regex(/^.*$/)
-  .min(1)
-  .max(16000)
+const AmountWithBreakdownSchema = MoneySchema.and(
+  z.object({ breakdown: AmountBreakdownSchema.exactOptional() }).openapi({ required: [] }),
+)
   .openapi({
-    title: 'Schema Object for standard headers',
+    title: 'amount_with_breakdown',
     description:
-      'Standard headers are generally less restrictive in structure due to historical precedent across browsers, etc. This is a common schema for use in defining most standard headers.',
+      'The total order amount with an optional breakdown that provides details, such as the total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.<br/>If you specify `amount.breakdown`, the amount equals `item_total` plus `tax_total` plus `shipping` plus `handling` plus `insurance` minus `shipping_discount` minus discount.<br/>The amount must be a positive number. For listed of supported currencies and decimal precision, see the PayPal REST APIs <a href="/docs/integration/direct/rest/currency-codes/">Currency Codes</a>.',
   })
-  .openapi('StandardHeaderSchema')
-
-const CheckoutPaymentIntentSchema = z
-  .enum(['CAPTURE', 'AUTHORIZE'])
-  .openapi({
-    title: 'checkout_payment_intent',
-    description:
-      'The intent to either capture payment immediately or authorize a payment for an order after order creation.',
-  })
-  .openapi('CheckoutPaymentIntent')
+  .openapi('AmountWithBreakdown')
 
 const EmailSchema = z
   .string()
@@ -751,22 +703,175 @@ const AccountIdSchema = z
   })
   .openapi('AccountId')
 
-const PayerBaseSchema = z
+const PayeeBaseSchema = z
   .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the payer.' }),
-    ).exactOptional(),
-    payer_id: AccountIdSchema.and(
-      z.any().openapi({ description: 'The PayPal-assigned ID for the payer.', readOnly: true }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of merchant.',
+    }),
+    merchant_id: AccountIdSchema.exactOptional().openapi({
+      description: 'The encrypted PayPal account ID of the merchant.',
+    }),
   })
   .openapi({
-    title: 'payer_base',
+    title: 'payee_base',
     description:
-      'The customer who approves and pays for the order. The customer is also known as the payer.',
+      'The details for the merchant who receives the funds and fulfills the order. The merchant is also known as the payee.',
     required: [],
   })
-  .openapi('PayerBase')
+  .openapi('PayeeBase')
+
+const PayeeSchema = PayeeBaseSchema.and(z.looseObject({}))
+  .openapi({
+    title: 'payee',
+    description:
+      'The merchant who receives the funds and fulfills the order. The merchant is also known as the payee.',
+  })
+  .openapi('Payee')
+
+const PlatformFeeSchema = z
+  .object({
+    amount: MoneySchema.openapi({ title: 'amount', description: 'The fee for this transaction.' }),
+    payee: PayeeBaseSchema.exactOptional().openapi({
+      title: 'payee',
+      description: 'The recipient of the fee for this transaction.',
+    }),
+  })
+  .openapi({
+    title: 'platform_fee',
+    description:
+      'The platform or partner fee, commission, or brokerage fee that is associated with the transaction. Not a separate or isolated transaction leg from the external perspective. The platform fee is limited in scope and is always associated with the original payment for the purchase unit.',
+    required: ['amount'],
+  })
+  .openapi('PlatformFee')
+
+const DisbursementModeSchema = z
+  .enum(['INSTANT', 'DELAYED'])
+  .default('INSTANT')
+  .openapi({
+    title: 'disbursement_mode',
+    description: 'The funds that are held on behalf of the merchant.',
+  })
+  .openapi('DisbursementMode')
+
+const PaymentInstructionSchema = z
+  .object({
+    platform_fees: z
+      .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
+      .min(0)
+      .max(1)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of various fees, commissions, tips, or donations. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
+      }),
+    disbursement_mode: DisbursementModeSchema.exactOptional().openapi({
+      description:
+        'The funds that are held payee by the marketplace/platform. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
+    }),
+    payee_pricing_tier_id: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(20)
+      .exactOptional()
+      .openapi({
+        description:
+          "This field is only enabled for selected merchants/partners to use and provides the ability to trigger a specific pricing rate/plan for a payment transaction. The list of eligible 'payee_pricing_tier_id' would be provided to you by your Account Manager. Specifying values other than the one provided to you by your account manager would result in an error.",
+      }),
+    payee_receivable_fx_rate_id: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(4000)
+      .exactOptional()
+      .openapi({
+        description:
+          'FX identifier generated returned by PayPal to be used for payment processing in order to honor FX rate (for eligible integrations) to be used when amount is settled/received into the payee account.',
+      }),
+  })
+  .openapi({
+    title: 'payment_instruction',
+    description:
+      'Any additional payment instructions to be consider during payment processing. This processing instruction is applicable for Capturing an order or Authorizing an Order.',
+    required: [],
+  })
+  .openapi('PaymentInstruction')
+
+const ItemRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(3000)
+      .openapi({
+        description:
+          'The item name or title. <blockquote>This field supports up to 3000 characters, but <strong>any content beyond 127 characters (including spaces) will be truncated. The 127 character limit is reflected in the response</strong> representation of this field</blockquote>.',
+      }),
+    unit_amount: MoneySchema.openapi({
+      description:
+        'The item price or rate per unit. If you specify <code>unit_amount</code>, <code>purchase_units[].amount.breakdown.item_total</code> is required. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
+    }),
+    tax: MoneySchema.exactOptional().openapi({
+      description:
+        'The item tax for each unit. If <code>tax</code> is specified, <code>purchase_units[].amount.breakdown.tax_total</code> is required. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
+    }),
+    quantity: z
+      .string()
+      .regex(/^[1-9][0-9]{0,9}$/)
+      .min(0)
+      .max(10)
+      .openapi({ description: 'The item quantity. Must be a whole number.' }),
+    description: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(4000)
+      .exactOptional()
+      .openapi({
+        description:
+          '<blockquote>This field supports up to 4000 characters, but <strong>any content beyond 2048 characters (including spaces) will be truncated. The 2048 character limit is reflected in the response</strong> representation of this field</blockquote>.',
+      }),
+    sku: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(127)
+      .exactOptional()
+      .openapi({ description: 'The stock keeping unit (SKU) for the item.' }),
+    url: z
+      .url()
+      .min(1)
+      .max(2048)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL to the item being purchased. Visible to buyer and used in buyer experiences.',
+      }),
+    category: z
+      .enum(['DIGITAL_GOODS', 'PHYSICAL_GOODS', 'DONATION'])
+      .exactOptional()
+      .openapi({ description: 'The item category type.' }),
+    image_url: z
+      .url()
+      .min(1)
+      .max(2048)
+      .exactOptional()
+      .openapi({
+        description:
+          "The URL of the item's image. File type and size restrictions apply. An image that violates these restrictions will not be honored.",
+      }),
+    upc: UniversalProductCodeSchema.exactOptional().openapi({
+      description: 'The Universal Product Code of the item.',
+    }),
+    billing_plan: OrderBillingPlanSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'item_request',
+    description: 'The details for the items to be purchased.',
+    required: ['name', 'quantity', 'unit_amount'],
+  })
+  .openapi('ItemRequest')
 
 const NameSchema = z
   .object({
@@ -822,333 +927,18 @@ const NameSchema = z
   .openapi({ title: 'Name', description: 'The name of the party.', required: [] })
   .openapi('Name')
 
-const PhoneTypeSchema = z
-  .enum(['FAX', 'HOME', 'MOBILE', 'OTHER', 'PAGER'])
-  .openapi({ title: 'Phone Type', description: 'The phone type.' })
-  .openapi('PhoneType')
-
-const PhoneNumberWithoutCountryCodeSchema = z
-  .object({
-    national_number: z
-      .string()
-      .regex(/^[0-9]{1,14}?$/)
-      .min(1)
-      .max(14)
-      .openapi({
-        description:
-          'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
-      }),
-  })
-  .openapi({
-    title: 'Phone Number Format Requiring National Number Excluding Country Code',
-    description:
-      'A structured representation of a phone number conforming to the international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en),requiring only the national_number field.',
-    required: ['national_number'],
-  })
-  .openapi('PhoneNumberWithoutCountryCode')
-
-const PhoneWithTypeSchema = z
-  .object({
-    phone_type: PhoneTypeSchema.exactOptional(),
-    phone_number: PhoneNumberWithoutCountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
-        }),
-    ),
-  })
-  .openapi({
-    title: 'phone_with_type',
-    description: 'The phone information.',
-    required: ['phone_number'],
-  })
-  .openapi('PhoneWithType')
-
-const TaxInfoSchema = z
-  .object({
-    tax_id: z
-      .string()
-      .regex(/^.*([a-zA-Z0-9]).*$/)
-      .min(1)
-      .max(14)
-      .openapi({ description: "The customer's tax ID value." }),
-    tax_id_type: z
-      .enum(['BR_CPF', 'BR_CNPJ'])
-      .openapi({ description: "The customer's tax ID type." }),
-  })
-  .openapi({
-    title: 'tax_info',
-    description:
-      'The tax ID of the customer. The customer is also known as the payer. Both `tax_id` and `tax_id_type` are required.',
-    required: ['tax_id', 'tax_id_type'],
-  })
-  .openapi('TaxInfo')
-
-const CountryCode_2Schema = z
+const EmailAddressSchema = z
   .string()
-  .regex(/^([A-Z]{2}|C2)$/)
-  .length(2)
+  .regex(
+    /^(?:[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/,
+  )
+  .min(3)
+  .max(254)
   .openapi({
     description:
-      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
   })
-  .openapi('CountryCode_2')
-
-const PayerSchema = PayerBaseSchema.and(
-  z
-    .object({
-      name: NameSchema.and(
-        z
-          .any()
-          .refine(
-            (val) =>
-              !z
-                .union([
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'prefix')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['prefix'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'middle_name')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['middle_name'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'suffix')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['suffix'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'alternate_full_name')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['alternate_full_name'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'full_name')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['full_name'] }),
-                ])
-                .safeParse(val).success,
-          )
-          .openapi({
-            description:
-              'The name of the payer. Supports only the `given_name` and `surname` properties.',
-          }),
-      ).exactOptional(),
-      phone: PhoneWithTypeSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
-          }),
-      ).exactOptional(),
-      birth_date: DateNoTimeSchema.and(
-        z.any().openapi({ description: 'The birth date of the payer in `YYYY-MM-DD` format.' }),
-      ).exactOptional(),
-      tax_info: TaxInfoSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "The tax information of the payer. Required only for Brazilian payer's. Both `tax_id` and `tax_id_type` are required.",
-          }),
-      ).exactOptional(),
-      address: AddressPortableSchema.and(
-        z
-          .any()
-          .refine(
-            (val) =>
-              !z
-                .union([
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'address_line_3')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['address_line_3'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'admin_area_3')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['admin_area_3'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'admin_area_4')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['admin_area_4'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'address_details')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['address_details'] }),
-                ])
-                .safeParse(val).success,
-          )
-          .openapi({
-            description:
-              'The address of the payer. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. Also referred to as the billing address of the customer.',
-          }),
-      ).exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    title: 'payer',
-    description:
-      'The customer who approves and pays for the order. The customer is also known as the payer.',
-  })
-  .openapi('Payer')
-
-const DiscountWithBreakdownSchema = MoneySchema.and(z.object({}))
-  .openapi({
-    title: 'discount_with_breakdown',
-    description:
-      'The discount amount and currency code. For list of supported currencies and decimal precision, see the PayPal REST APIs <a href="/docs/integration/direct/rest/currency-codes/">Currency Codes</a>.',
-  })
-  .openapi('DiscountWithBreakdown')
-
-const AmountBreakdownSchema = z
-  .object({
-    item_total: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subtotal for all items. Required if the request includes `purchase_units[].items[].unit_amount`. Must equal the sum of `(items[].unit_amount * items[].quantity)` for all items. <code>item_total.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    shipping: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shipping fee for all items within a given `purchase_unit`. <code>shipping.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    handling: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The handling fee for all items within a given `purchase_unit`. <code>handling.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    tax_total: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total tax for all items. Required if the request includes `purchase_units.items.tax`. Must equal the sum of `(items[].tax * items[].quantity)` for all items. <code>tax_total.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    insurance: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insurance fee for all items within a given `purchase_unit`. <code>insurance.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    shipping_discount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shipping discount for all items within a given `purchase_unit`. <code>shipping_discount.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    discount: DiscountWithBreakdownSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The discount for all items within a given `purchase_unit`. <code>discount.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'amount_breakdown',
-    description:
-      'The breakdown of the amount. Breakdown provides details such as total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.',
-    required: [],
-  })
-  .openapi('AmountBreakdown')
-
-const AmountWithBreakdownSchema = MoneySchema.and(
-  z.object({ breakdown: AmountBreakdownSchema.exactOptional() }).openapi({ required: [] }),
-)
-  .openapi({
-    title: 'amount_with_breakdown',
-    description:
-      'The total order amount with an optional breakdown that provides details, such as the total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.<br/>If you specify `amount.breakdown`, the amount equals `item_total` plus `tax_total` plus `shipping` plus `handling` plus `insurance` minus `shipping_discount` minus discount.<br/>The amount must be a positive number. For listed of supported currencies and decimal precision, see the PayPal REST APIs <a href="/docs/integration/direct/rest/currency-codes/">Currency Codes</a>.',
-  })
-  .openapi('AmountWithBreakdown')
-
-const PayeeBaseSchema = z
-  .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of merchant.' }),
-    ).exactOptional(),
-    merchant_id: AccountIdSchema.and(
-      z.any().openapi({ description: 'The encrypted PayPal account ID of the merchant.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'payee_base',
-    description:
-      'The details for the merchant who receives the funds and fulfills the order. The merchant is also known as the payee.',
-    required: [],
-  })
-  .openapi('PayeeBase')
+  .openapi('EmailAddress')
 
 const PhoneSchema = z
   .object({
@@ -1187,187 +977,6 @@ const PhoneSchema = z
   })
   .openapi('Phone')
 
-const PayeeSchema = PayeeBaseSchema.and(z.object({}))
-  .openapi({
-    title: 'payee',
-    description:
-      'The merchant who receives the funds and fulfills the order. The merchant is also known as the payee.',
-  })
-  .openapi('Payee')
-
-const PlatformFeeSchema = z
-  .object({
-    amount: MoneySchema.and(
-      z.any().openapi({ title: 'amount', description: 'The fee for this transaction.' }),
-    ),
-    payee: PayeeBaseSchema.and(
-      z
-        .any()
-        .openapi({ title: 'payee', description: 'The recipient of the fee for this transaction.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'platform_fee',
-    description:
-      'The platform or partner fee, commission, or brokerage fee that is associated with the transaction. Not a separate or isolated transaction leg from the external perspective. The platform fee is limited in scope and is always associated with the original payment for the purchase unit.',
-    required: ['amount'],
-  })
-  .openapi('PlatformFee')
-
-const DisbursementModeSchema = z
-  .enum(['INSTANT', 'DELAYED'])
-  .default('INSTANT')
-  .openapi({
-    title: 'disbursement_mode',
-    description: 'The funds that are held on behalf of the merchant.',
-  })
-  .openapi('DisbursementMode')
-
-const PaymentInstructionSchema = z
-  .object({
-    platform_fees: z
-      .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
-      .min(0)
-      .max(1)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of various fees, commissions, tips, or donations. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
-      }),
-    disbursement_mode: DisbursementModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The funds that are held payee by the marketplace/platform. This field is only applicable to merchants that been enabled for PayPal Complete Payments Platform for Marketplaces and Platforms capability.',
-        }),
-    ).exactOptional(),
-    payee_pricing_tier_id: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        description:
-          "This field is only enabled for selected merchants/partners to use and provides the ability to trigger a specific pricing rate/plan for a payment transaction. The list of eligible 'payee_pricing_tier_id' would be provided to you by your Account Manager. Specifying values other than the one provided to you by your account manager would result in an error.",
-      }),
-    payee_receivable_fx_rate_id: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(4000)
-      .exactOptional()
-      .openapi({
-        description:
-          'FX identifier generated returned by PayPal to be used for payment processing in order to honor FX rate (for eligible integrations) to be used when amount is settled/received into the payee account.',
-      }),
-  })
-  .openapi({
-    title: 'payment_instruction',
-    description:
-      'Any additional payment instructions to be consider during payment processing. This processing instruction is applicable for Capturing an order or Authorizing an Order.',
-    required: [],
-  })
-  .openapi('PaymentInstruction')
-
-const ItemRequestSchema = z
-  .object({
-    name: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(3000)
-      .openapi({
-        description:
-          'The item name or title. <blockquote>This field supports up to 3000 characters, but <strong>any content beyond 127 characters (including spaces) will be truncated. The 127 character limit is reflected in the response</strong> representation of this field</blockquote>.',
-      }),
-    unit_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The item price or rate per unit. If you specify <code>unit_amount</code>, <code>purchase_units[].amount.breakdown.item_total</code> is required. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
-        }),
-    ),
-    tax: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The item tax for each unit. If <code>tax</code> is specified, <code>purchase_units[].amount.breakdown.tax_total</code> is required. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
-    quantity: z
-      .string()
-      .regex(/^[1-9][0-9]{0,9}$/)
-      .min(0)
-      .max(10)
-      .openapi({ description: 'The item quantity. Must be a whole number.' }),
-    description: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(4000)
-      .exactOptional()
-      .openapi({
-        description:
-          '<blockquote>This field supports up to 4000 characters, but <strong>any content beyond 2048 characters (including spaces) will be truncated. The 2048 character limit is reflected in the response</strong> representation of this field</blockquote>.',
-      }),
-    sku: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(127)
-      .exactOptional()
-      .openapi({ description: 'The stock keeping unit (SKU) for the item.' }),
-    url: z
-      .url()
-      .min(1)
-      .max(2048)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL to the item being purchased. Visible to buyer and used in buyer experiences.',
-      }),
-    category: z
-      .enum(['DIGITAL_GOODS', 'PHYSICAL_GOODS', 'DONATION'])
-      .exactOptional()
-      .openapi({ description: 'The item category type.' }),
-    image_url: z
-      .url()
-      .min(1)
-      .max(2048)
-      .exactOptional()
-      .openapi({
-        description:
-          "The URL of the item's image. File type and size restrictions apply. An image that violates these restrictions will not be honored.",
-      }),
-    upc: UniversalProductCodeSchema.and(
-      z.any().openapi({ description: 'The Universal Product Code of the item.' }),
-    ).exactOptional(),
-    billing_plan: OrderBillingPlanSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'item_request',
-    description: 'The details for the items to be purchased.',
-    required: ['name', 'quantity', 'unit_amount'],
-  })
-  .openapi('ItemRequest')
-
-const EmailAddressSchema = z
-  .string()
-  .regex(
-    /^(?:[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/,
-  )
-  .min(3)
-  .max(254)
-  .openapi({
-    description:
-      'The internationalized email address.<blockquote><strong>Note:</strong> Up to 64 characters are allowed before and 255 characters are allowed after the <code>@</code> sign. However, the generally accepted maximum length for an email address is 254 characters. The pattern verifies that an unquoted <code>@</code> sign exists.</blockquote>',
-  })
-  .openapi('EmailAddress')
-
 const ShippingTypeSchema = z
   .enum(['SHIPPING', 'PICKUP', 'PICKUP_IN_STORE', 'PICKUP_FROM_PERSON'])
   .default('SHIPPING')
@@ -1376,19 +985,6 @@ const ShippingTypeSchema = z
     description: 'A classification for the method of purchase fulfillment.',
   })
   .openapi('ShippingType')
-
-const DateTimeSchema = z
-  .string()
-  .regex(
-    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
-  )
-  .min(20)
-  .max(64)
-  .openapi({
-    description:
-      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
-  })
-  .openapi('DateTime')
 
 const ShippingOptionSchema = z
   .object({
@@ -1407,12 +1003,12 @@ const ShippingOptionSchema = z
         description:
           "A description that the payer sees, which helps them choose an appropriate shipping option. For example, `Free Shipping`, `USPS Priority Shipping`, `Expédition prioritaire USPS`, or `USPS yōuxiān fā huò`. Localize this description to the payer's locale.",
       }),
-    type: ShippingTypeSchema.and(
-      z.any().openapi({ description: 'A classification for the method of purchase fulfillment.' }),
-    ).exactOptional(),
-    amount: MoneySchema.and(
-      z.any().openapi({ description: 'The shipping cost for the selected option.' }),
-    ).exactOptional(),
+    type: ShippingTypeSchema.exactOptional().openapi({
+      description: 'A classification for the method of purchase fulfillment.',
+    }),
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'The shipping cost for the selected option.',
+    }),
     selected: z
       .boolean()
       .openapi({
@@ -1503,16 +1099,22 @@ const ShippingDetailSchema = z
         .openapi({
           description:
             'The name of the person to whom to ship the items. Supports only the `full_name` property.',
+          not: {
+            anyOf: [
+              { required: ['prefix'] },
+              { required: ['given_name'] },
+              { required: ['surname'] },
+              { required: ['middle_name'] },
+              { required: ['suffix'] },
+              { required: ['alternate_full_name'] },
+            ],
+          },
         }),
     ).exactOptional(),
-    email_address: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the recipient of the shipped items, which may belong to either the payer, or an alternate contact, for delivery.',
-        }),
-    ).exactOptional(),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description:
+        'The email address of the recipient of the shipped items, which may belong to either the payer, or an alternate contact, for delivery.',
+    }),
     phone_number: PhoneSchema.and(
       z
         .any()
@@ -1533,6 +1135,7 @@ const ShippingDetailSchema = z
         .openapi({
           description:
             'The phone number of the recipient of the shipped items, which may belong to either the payer, or an alternate contact, for delivery. [Format - canonical international [E.164 numbering plan](https://www.itu.int/rec/T-REC-E.164/en)]',
+          not: { required: ['extension_number'] },
         }),
     ).exactOptional(),
     type: z
@@ -1546,15 +1149,11 @@ const ShippingDetailSchema = z
       }),
     options: z
       .array(
-        ShippingOptionSchema.and(
-          z
-            .any()
-            .openapi({
-              title: 'shipping_option',
-              description:
-                'The option that the payee or merchant offers to the payer to ship or pick up their items.',
-            }),
-        ),
+        ShippingOptionSchema.openapi({
+          title: 'shipping_option',
+          description:
+            'The option that the payee or merchant offers to the payer to ship or pick up their items.',
+        }),
       )
       .min(0)
       .max(30)
@@ -1616,6 +1215,14 @@ const ShippingDetailSchema = z
         .openapi({
           description:
             'The address of the person to whom to ship the items. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. `admin_area_1` is required for addresses located in Argentina, Brazil, China, Canada, India, Indonesia, Japan, Mexico, Thailand, and the United States.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
   })
@@ -1623,188 +1230,37 @@ const ShippingDetailSchema = z
   .openapi('ShippingDetail')
 
 const SupplementaryDataSchema: z.ZodType<SupplementaryDataType> = z
-  .lazy(() =>
-    z
-      .object({
-        card: CardSupplementaryDataSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.',
-            }),
-        ).exactOptional(),
-        risk: RiskSupplementaryDataSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Merchants and partners can add additional customer parameters that can help with better fraud protection and reduced risk for unbranded card payments.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        title: 'supplementary_data',
-        description:
-          'Supplementary data about a payment. This object passes information that can be used to improve risk assessments and processing costs, for example, by providing Level 2 and Level 3 payment data.',
-        required: [],
-      }),
-  )
-  .openapi('SupplementaryData')
-
-const PurchaseUnitRequestSchema = z
   .object({
-    reference_id: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(256)
-      .exactOptional()
-      .openapi({
-        description:
-          'The API caller-provided external ID for the purchase unit. Required for multiple purchase units when you must update the order through `PATCH`. If you omit this value and the order contains only one purchase unit, PayPal sets this value to `default`.',
-      }),
-    amount: AmountWithBreakdownSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total order amount with an optional breakdown that provides details, such as the total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.<br/>If you specify `amount.breakdown`, the amount equals `item_total` plus `tax_total` plus `shipping` plus `handling` plus `insurance` minus `shipping_discount` minus discount.<br/>The amount must be a positive number. The `amount.value` field supports up to 15 digits preceding the decimal. For a list of supported currencies, decimal precision, and maximum charge amount, see the PayPal REST APIs <a href="https://developer.paypal.com/api/rest/reference/currency-codes/">Currency Codes</a>.',
-        }),
-    ),
-    payee: PayeeSchema.and(
-      z.any().openapi({ description: 'The merchant who receives payment for this transaction.' }),
-    ).exactOptional(),
-    payment_instruction: PaymentInstructionSchema.exactOptional(),
-    description: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(3000)
-      .exactOptional()
-      .openapi({
-        description:
-          '<blockquote>This field supports up to 3,000 characters, but <strong>any content beyond 127 characters (including spaces) will be truncated. The 127 character limit is reflected in the response</strong> representation of this field.</blockquote>The purchase description. The maximum length of the character is dependent on the type of characters used. The character length is specified assuming a US ASCII character. Depending on type of character; (e.g. accented character, Japanese characters) the number of characters that that can be specified as input might not equal the permissible max length.',
-      }),
-    custom_id: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(255)
-      .exactOptional()
-      .openapi({
-        description:
-          'The API caller-provided external ID. Used to reconcile client transactions with PayPal transactions. Appears in transaction and settlement reports but is not visible to the payer.',
-      }),
-    invoice_id: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          "The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the emails that the payer receives. invoice_id values are required to be unique within each merchant account by default. Although the uniqueness validation is configurable, disabling this behavior will remove the account's ability to use invoice_id in other APIs as an identifier. It is highly recommended to keep a unique invoice_id for each Order.",
-      }),
-    soft_descriptor: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(1000)
-      .exactOptional()
-      .openapi({
-        description:
-          '<blockquote>This field supports up to 127 characters, but <strong>any content beyond 22 characters (including spaces) will be truncated. The 22 character limit is reflected in the response</strong> representation of this field.</blockquote>The soft descriptor is the dynamic text used to construct the statement descriptor that appears on a payer\'s card statement.<br><br>If an Order is paid using the "PayPal Wallet", the statement descriptor will appear in following format on the payer\'s card statement: <code><var>PAYPAL_prefix</var>+(space)+<var>merchant_descriptor</var>+(space)+ <var>soft_descriptor</var></code><blockquote><strong>Note:</strong> The merchant descriptor is the descriptor of the merchant’s payment receiving preferences which can be seen by logging into the merchant account https://www.sandbox.paypal.com/businessprofile/settings/info/edit</blockquote>The <code>PAYPAL</code> prefix uses 8 characters. Only the first 22 characters will be displayed in the statement. <br>For example, if:<ul><li>The PayPal prefix toggle is <code>PAYPAL *</code>.</li><li>The merchant descriptor in the profile is <code>Janes Gift</code>.</li><li>The soft descriptor is <code>800-123-1234</code>.</li></ul>Then, the statement descriptor on the card is <code>PAYPAL * Janes Gift 80</code>.',
-      }),
-    items: z
-      .array(ItemRequestSchema.and(z.any().openapi({ title: 'item', description: 'The item.' })))
-      .min(0)
-      .max(32767)
-      .exactOptional()
-      .openapi({ description: 'An array of items that the customer purchases from the merchant.' }),
-    shipping: ShippingDetailSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name and address of the person to whom to ship the items.' }),
-    ).exactOptional(),
-    supplementary_data: SupplementaryDataSchema.and(
-      z.any().openapi({ description: 'Contains Supplementary Data.' }),
-    ).exactOptional(),
+    card: CardSupplementaryDataSchema.exactOptional().openapi({
+      description:
+        'Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.',
+    }),
+    risk: RiskSupplementaryDataSchema.exactOptional().openapi({
+      description:
+        'Merchants and partners can add additional customer parameters that can help with better fraud protection and reduced risk for unbranded card payments.',
+    }),
   })
   .openapi({
-    title: 'Purchase Unit Request',
+    title: 'supplementary_data',
     description:
-      'The purchase unit request. Includes required information for the payment contract.',
-    required: ['amount'],
-  })
-  .openapi('PurchaseUnitRequest')
-
-const LanguageSchema = z
-  .string()
-  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$/)
-  .min(2)
-  .max(10)
-  .openapi({
-    description:
-      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/api/rest/reference/country-codes/) or [M49 region code](https://unstats.un.org/unsd/methodology/m49/).',
-  })
-  .openapi('Language')
-
-const UrlSchema = z
-  .url()
-  .min(0)
-  .max(2147483647)
-  .openapi({ description: 'Describes the URL.' })
-  .openapi('Url')
-
-const ExperienceContextBaseSchema = z
-  .object({
-    brand_name: z
-      .string()
-      .regex(/^.*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description:
-          'The label that overrides the business name in the PayPal account on the PayPal site. The pattern is defined by an external party and supports Unicode.',
-      }),
-    locale: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
-        }),
-    ).exactOptional(),
-    shipping_preference: z
-      .enum(['GET_FROM_FILE', 'NO_SHIPPING', 'SET_PROVIDED_ADDRESS'])
-      .default('GET_FROM_FILE')
-      .exactOptional()
-      .openapi({ description: 'The location from which the shipping address is derived.' }),
-    return_url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL where the customer is redirected after the customer approves the payment.',
-        }),
-    ).exactOptional(),
-    cancel_url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL where the customer is redirected after the customer cancels the payment.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'experience_context_base',
-    description: 'Customizes the payer experience during the approval process for the payment.',
+      'Supplementary data about a payment. This object passes information that can be used to improve risk assessments and processing costs, for example, by providing Level 2 and Level 3 payment data.',
     required: [],
   })
-  .openapi('ExperienceContextBase')
+  .openapi('SupplementaryData')
+
+type PurchaseUnitRequestType = {
+  reference_id?: string
+  amount: z.infer<typeof AmountWithBreakdownSchema> & unknown
+  payee?: z.infer<typeof PayeeSchema> & unknown
+  payment_instruction?: z.infer<typeof PaymentInstructionSchema>
+  description?: string
+  custom_id?: string
+  invoice_id?: string
+  soft_descriptor?: string
+  items?: (z.infer<typeof ItemRequestSchema> & unknown)[]
+  shipping?: z.infer<typeof ShippingDetailSchema> & unknown
+  supplementary_data?: z.infer<typeof SupplementaryDataSchema> & unknown
+}
 
 const InstrumentIdSchema = z
   .string()
@@ -1868,21 +1324,6 @@ const CardTypeSchema = z
   .openapi({ title: 'card_type', description: 'Type of card. i.e Credit, Debit and so on.' })
   .openapi('CardType')
 
-const EciFlagSchema = z
-  .enum([
-    'MASTERCARD_NON_3D_SECURE_TRANSACTION',
-    'MASTERCARD_ATTEMPTED_AUTHENTICATION_TRANSACTION',
-    'MASTERCARD_FULLY_AUTHENTICATED_TRANSACTION',
-    'FULLY_AUTHENTICATED_TRANSACTION',
-    'ATTEMPTED_AUTHENTICATION_TRANSACTION',
-    'NON_3D_SECURE_TRANSACTION',
-  ])
-  .openapi({
-    description:
-      'Electronic Commerce Indicator (ECI). The ECI value is part of the 2 data elements that indicate the transaction was processed electronically. This should be passed on the authorization transaction to the Gateway/Processor.',
-  })
-  .openapi('EciFlag')
-
 const MerchantPartnerCustomerIdSchema = z
   .string()
   .regex(/^[0-9a-zA-Z_-]+$/)
@@ -1894,25 +1335,57 @@ const MerchantPartnerCustomerIdSchema = z
   })
   .openapi('MerchantPartnerCustomerId')
 
+const PhoneTypeSchema = z
+  .enum(['FAX', 'HOME', 'MOBILE', 'OTHER', 'PAGER'])
+  .openapi({ title: 'Phone Type', description: 'The phone type.' })
+  .openapi('PhoneType')
+
+const PhoneNumberWithoutCountryCodeSchema = z
+  .object({
+    national_number: z
+      .string()
+      .regex(/^[0-9]{1,14}?$/)
+      .min(1)
+      .max(14)
+      .openapi({
+        description:
+          'The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). The combined length of the country calling code (CC) and the national number must not be greater than 15 digits. The national number consists of a national destination code (NDC) and subscriber number (SN).',
+      }),
+  })
+  .openapi({
+    title: 'Phone Number Format Requiring National Number Excluding Country Code',
+    description:
+      'A structured representation of a phone number conforming to the international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en),requiring only the national_number field.',
+    required: ['national_number'],
+  })
+  .openapi('PhoneNumberWithoutCountryCode')
+
+const PhoneWithTypeSchema = z
+  .object({
+    phone_type: PhoneTypeSchema.exactOptional(),
+    phone_number: PhoneNumberWithoutCountryCodeSchema.openapi({
+      description:
+        'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+    }),
+  })
+  .openapi({
+    title: 'phone_with_type',
+    description: 'The phone information.',
+    required: ['phone_number'],
+  })
+  .openapi('PhoneWithType')
+
 const CustomerSchema = z
   .object({
     id: MerchantPartnerCustomerIdSchema.exactOptional(),
-    email_address: EmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Email address of the customer as provided to the merchant or on file with the merchant. Email Address is required if you are processing the transaction using PayPal Guest Processing which is offered to select partners and merchants.',
-        }),
-    ).exactOptional(),
-    phone: PhoneWithTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of the customer as provided to the merchant or on file with the merchant. The `phone.phone_number` supports only `national_number`.',
-        }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description:
+        'Email address of the customer as provided to the merchant or on file with the merchant. Email Address is required if you are processing the transaction using PayPal Guest Processing which is offered to select partners and merchants.',
+    }),
+    phone: PhoneWithTypeSchema.exactOptional().openapi({
+      description:
+        'The phone number of the customer as provided to the merchant or on file with the merchant. The `phone.phone_number` supports only `national_number`.',
+    }),
     name: NameSchema.and(
       z
         .any()
@@ -1976,6 +1449,15 @@ const CustomerSchema = z
         .openapi({
           description:
             'The full name of the customer as provided to the merchant or on file with the merchant.',
+          not: {
+            anyOf: [
+              { required: ['prefix'] },
+              { required: ['middle_name'] },
+              { required: ['suffix'] },
+              { required: ['alternate_full_name'] },
+              { required: ['full_name'] },
+            ],
+          },
         }),
     ).exactOptional(),
   })
@@ -2049,18 +1531,12 @@ const CardVerificationSchema = z
 const CardAttributesSchema = z
   .object({
     customer: CardCustomerSchema.exactOptional(),
-    vault: VaultInstructionBaseSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Instruction to vault the card based on the specified strategy.' }),
-    ).exactOptional(),
-    verification: CardVerificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Instruction to optionally verify the card based on the specified strategy.',
-        }),
-    ).exactOptional(),
+    vault: VaultInstructionBaseSchema.exactOptional().openapi({
+      description: 'Instruction to vault the card based on the specified strategy.',
+    }),
+    verification: CardVerificationSchema.exactOptional().openapi({
+      description: 'Instruction to optionally verify the card based on the specified strategy.',
+    }),
   })
   .openapi({
     title: 'card_attributes',
@@ -2071,9 +1547,10 @@ const CardAttributesSchema = z
 
 const CardSchema = z
   .object({
-    id: InstrumentIdSchema.and(
-      z.any().openapi({ description: 'The PayPal-generated ID for the card.', readOnly: true }),
-    ).exactOptional(),
+    id: InstrumentIdSchema.exactOptional().openapi({
+      description: 'The PayPal-generated ID for the card.',
+      readOnly: true,
+    }),
     name: z
       .string()
       .regex(/^.{1,300}$/)
@@ -2088,14 +1565,10 @@ const CardSchema = z
       .max(19)
       .exactOptional()
       .openapi({ description: 'The primary account number (PAN) for the payment card.' }),
-    expiry: DateYearMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6) For example: 2028-04',
-        }),
-    ).exactOptional(),
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6) For example: 2028-04',
+    }),
     security_code: z
       .string()
       .regex(/^[0-9]{3,4}$/)
@@ -2113,24 +1586,16 @@ const CardSchema = z
       .max(4)
       .exactOptional()
       .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-    card_type: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card brand or network. Typically used in the response. <b>DEPRECATED</b><br><table><tr><th>See</th></tr><tr><td>type</td></tr></table>',
-          deprecated: true,
-          readOnly: true,
-        }),
-    ).exactOptional(),
-    type: CardTypeSchema.and(
-      z.any().openapi({ description: 'The payment card type.' }),
-    ).exactOptional(),
-    brand: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The card brand or network. Typically used in the response.' }),
-    ).exactOptional(),
+    card_type: CardBrandSchema.exactOptional().openapi({
+      description:
+        'The card brand or network. Typically used in the response. <b>DEPRECATED</b><br><table><tr><th>See</th></tr><tr><td>type</td></tr></table>',
+      deprecated: true,
+      readOnly: true,
+    }),
+    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
+    brand: CardBrandSchema.exactOptional().openapi({
+      description: 'The card brand or network. Typically used in the response.',
+    }),
     billing_address: AddressPortableSchema.and(
       z
         .any()
@@ -2184,16 +1649,20 @@ const CardSchema = z
         .openapi({
           description:
             'The billing address for this card. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
-    attributes: CardAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'card_attributes',
-          description: 'Additional attributes associated with the use of this card.',
-        }),
-    ).exactOptional(),
+    attributes: CardAttributesSchema.exactOptional().openapi({
+      title: 'card_attributes',
+      description: 'Additional attributes associated with the use of this card.',
+    }),
   })
   .openapi({
     title: 'card',
@@ -2273,13 +1742,9 @@ const NetworkTransactionSchema = z
         description:
           'The date that the transaction was authorized by the scheme. This field may not be returned for all networks. MasterCard refers to this field as "BankNet reference date". For some specific networks, such as MasterCard and Discover, this date field is mandatory when the `previous_network_transaction_reference_id` is passed.',
       }),
-    network: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Name of the card network through which the transaction was routed.',
-        }),
-    ).exactOptional(),
+    network: CardBrandSchema.exactOptional().openapi({
+      description: 'Name of the card network through which the transaction was routed.',
+    }),
     acquirer_reference_number: z
       .string()
       .regex(/^[a-zA-Z0-9]+$/)
@@ -2298,11 +1763,22 @@ const NetworkTransactionSchema = z
   })
   .openapi('NetworkTransaction')
 
-const NetworkTransactionReferenceSchema = NetworkTransactionSchema.openapi({
-  title: 'network_transaction_reference',
-  description: 'Reference values used by the card network to identify a transaction.',
-  required: ['id'],
-}).openapi('NetworkTransactionReference')
+const NetworkTransactionReferenceSchema = NetworkTransactionSchema.and(
+  z.looseObject({}).openapi({ required: ['id'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .openapi({
+    title: 'network_transaction_reference',
+    description: 'Reference values used by the card network to identify a transaction.',
+    required: ['id'],
+  })
+  .openapi('NetworkTransactionReference')
 
 const CardStoredCredentialSchema = z
   .object({
@@ -2319,6 +1795,21 @@ const CardStoredCredentialSchema = z
   })
   .openapi('CardStoredCredential')
 
+const EciFlagSchema = z
+  .enum([
+    'MASTERCARD_NON_3D_SECURE_TRANSACTION',
+    'MASTERCARD_ATTEMPTED_AUTHENTICATION_TRANSACTION',
+    'MASTERCARD_FULLY_AUTHENTICATED_TRANSACTION',
+    'FULLY_AUTHENTICATED_TRANSACTION',
+    'ATTEMPTED_AUTHENTICATION_TRANSACTION',
+    'NON_3D_SECURE_TRANSACTION',
+  ])
+  .openapi({
+    description:
+      'Electronic Commerce Indicator (ECI). The ECI value is part of the 2 data elements that indicate the transaction was processed electronically. This should be passed on the authorization transaction to the Gateway/Processor.',
+  })
+  .openapi('EciFlag')
+
 const NetworkTokenRequestSchema = z
   .object({
     number: z
@@ -2327,14 +1818,10 @@ const NetworkTokenRequestSchema = z
       .min(13)
       .max(19)
       .openapi({ description: 'Third party network token number.' }),
-    expiry: DateYearMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-        }),
-    ),
+    expiry: DateYearMonthSchema.openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
     cryptogram: z
       .string()
       .regex(/^.*$/)
@@ -2363,6 +1850,13 @@ const NetworkTokenRequestSchema = z
     required: ['expiry', 'number'],
   })
   .openapi('NetworkTokenRequest')
+
+const UrlSchema = z
+  .url()
+  .min(0)
+  .max(2147483647)
+  .openapi({ description: 'Describes the URL.' })
+  .openapi('Url')
 
 const CardExperienceContextSchema = z
   .object({
@@ -2395,92 +1889,93 @@ const CardExperienceContextSchema = z
   .openapi('CardExperienceContext')
 
 const CardRequestSchema = CardSchema.and(
-  z.any().refine(
-    (val) =>
-      !z
-        .union([
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'id')) {
-                  ctx.addIssue({ code: 'custom' })
+  z
+    .any()
+    .refine(
+      (val) =>
+        !z
+          .union([
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'id')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['id'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'last_digits')) {
-                  ctx.addIssue({ code: 'custom' })
+              })
+              .openapi({ required: ['id'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'last_digits')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['last_digits'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'card_type')) {
-                  ctx.addIssue({ code: 'custom' })
+              })
+              .openapi({ required: ['last_digits'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'card_type')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['card_type'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'type')) {
-                  ctx.addIssue({ code: 'custom' })
+              })
+              .openapi({ required: ['card_type'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'type')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['type'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'brand')) {
-                  ctx.addIssue({ code: 'custom' })
+              })
+              .openapi({ required: ['type'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'brand')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
                 }
-              }
-            })
-            .openapi({ required: ['brand'] }),
-        ])
-        .safeParse(val).success,
-  ),
+              })
+              .openapi({ required: ['brand'] }),
+          ])
+          .safeParse(val).success,
+    )
+    .openapi({
+      not: {
+        anyOf: [
+          { required: ['id'] },
+          { required: ['last_digits'] },
+          { required: ['card_type'] },
+          { required: ['type'] },
+          { required: ['brand'] },
+        ],
+      },
+    }),
 )
   .and(
     z
       .object({
-        vault_id: VaultIdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The PayPal-generated ID for the saved card payment source. Typically stored on the merchant's server.",
-            }),
-        ).exactOptional(),
-        single_use_token: SingleUseTokenSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The PayPal-generated, short-lived, one-time-use token, used to communicate payment information to PayPal for transaction processing.',
-            }),
-        ).exactOptional(),
+        vault_id: VaultIdSchema.exactOptional().openapi({
+          description:
+            "The PayPal-generated ID for the saved card payment source. Typically stored on the merchant's server.",
+        }),
+        single_use_token: SingleUseTokenSchema.exactOptional().openapi({
+          description:
+            'The PayPal-generated, short-lived, one-time-use token, used to communicate payment information to PayPal for transaction processing.',
+        }),
         stored_credential: CardStoredCredentialSchema.exactOptional(),
-        network_token: NetworkTokenRequestSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A 3rd party network token refers to a network token that the merchant provisions from and vaults with an external TSP (Token Service Provider) other than PayPal.',
-            }),
-        ).exactOptional(),
+        network_token: NetworkTokenRequestSchema.exactOptional().openapi({
+          description:
+            'A 3rd party network token refers to a network token that the merchant provisions from and vaults with an external TSP (Token Service Provider) other than PayPal.',
+        }),
         experience_context: CardExperienceContextSchema.and(z.any()).exactOptional(),
       })
       .openapi({ required: [] }),
@@ -2511,24 +2006,25 @@ const TokenSchema = z
   })
   .openapi('Token')
 
-const V3VaultInstructionBaseSchema = z
-  .object({ store_in_vault: StoreInVaultInstructionSchema })
+const TaxInfoSchema = z
+  .object({
+    tax_id: z
+      .string()
+      .regex(/^.*([a-zA-Z0-9]).*$/)
+      .min(1)
+      .max(14)
+      .openapi({ description: "The customer's tax ID value." }),
+    tax_id_type: z
+      .enum(['BR_CPF', 'BR_CNPJ'])
+      .openapi({ description: "The customer's tax ID type." }),
+  })
   .openapi({
-    title: 'v3_vault_instruction_base',
+    title: 'tax_info',
     description:
-      'Base vaulting specification. The object can be extended for specific use cases within each payment_source that supports vaulting.',
-    required: ['store_in_vault'],
+      'The tax ID of the customer. The customer is also known as the payer. Both `tax_id` and `tax_id_type` are required.',
+    required: ['tax_id', 'tax_id_type'],
   })
-  .openapi('V3VaultInstructionBase')
-
-const PayeePaymentMethodPreferenceSchema = z
-  .enum(['UNRESTRICTED', 'IMMEDIATE_PAYMENT_REQUIRED'])
-  .default('UNRESTRICTED')
-  .openapi({
-    title: 'payee_payment_method_preference',
-    description: 'The merchant-preferred payment methods.',
-  })
-  .openapi('PayeePaymentMethodPreference')
+  .openapi('TaxInfo')
 
 const PaypalWalletCustomerSchema = CustomerSchema.and(
   z
@@ -2552,95 +2048,98 @@ const PaypalWalletCustomerSchema = CustomerSchema.and(
   })
   .openapi('PaypalWalletCustomer')
 
-const AccountId_2Schema = z
-  .string()
-  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
-  .length(13)
-  .openapi({
-    description:
-      'The PayPal payer ID, which is a masked version of the PayPal account number intended for use with third parties. The account number is reversibly encrypted and a proprietary variant of Base32 is used to encode the result.',
-  })
-  .openapi('AccountId_2')
-
 const VaultPaypalWalletBaseSchema = VaultInstructionBaseSchema.and(
-  z
-    .object({
-      description: z
-        .string()
-        .regex(/^[\S\s]*$/)
-        .min(1)
-        .max(128)
-        .exactOptional()
-        .openapi({
-          description:
-            'The description displayed to PayPal consumer on the approval flow for PayPal, as well as on the PayPal payment token management experience on PayPal.com.',
-        }),
-      usage_pattern: z
-        .enum([
-          'IMMEDIATE',
-          'DEFERRED',
-          'RECURRING_PREPAID',
-          'RECURRING_POSTPAID',
-          'THRESHOLD_PREPAID',
-          'THRESHOLD_POSTPAID',
-          'SUBSCRIPTION_PREPAID',
-          'SUBSCRIPTION_POSTPAID',
-          'UNSCHEDULED_PREPAID',
-          'UNSCHEDULED_POSTPAID',
-          'INSTALLMENT_PREPAID',
-          'INSTALLMENT_POSTPAID',
-        ])
-        .exactOptional()
-        .openapi({
-          title: 'PayPal Payment Token Usage Pattern',
-          description: 'Expected business/pricing model for the billing agreement.',
-        }),
-      shipping: ShippingDetailSchema.and(
-        z
-          .any()
-          .refine(
-            (val) =>
-              !z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'options')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .openapi({ required: ['options'] })
-                .safeParse(val).success,
-          )
-          .openapi({ description: 'The shipping address for the Payer.' }),
-      ).exactOptional(),
-      usage_type: z
-        .enum(['MERCHANT', 'PLATFORM'])
-        .exactOptional()
-        .openapi({
-          title: 'PayPal Payment Token Usage Type',
-          description: 'The usage type associated with the PayPal payment token.',
-        }),
-      customer_type: z
-        .enum(['CONSUMER', 'BUSINESS'])
-        .default('CONSUMER')
-        .exactOptional()
-        .openapi({
-          title: 'PayPal Payment Token Customer Type',
-          description:
-            'The customer type associated with the PayPal payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.',
-        }),
-      permit_multiple_payment_tokens: z
-        .boolean()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          description:
-            'Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same PayPal account. This only applies to PayPal payment source.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['usage_type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'usage_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        description: z
+          .string()
+          .regex(/^[\S\s]*$/)
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({
+            description:
+              'The description displayed to PayPal consumer on the approval flow for PayPal, as well as on the PayPal payment token management experience on PayPal.com.',
+          }),
+        usage_pattern: z
+          .enum([
+            'IMMEDIATE',
+            'DEFERRED',
+            'RECURRING_PREPAID',
+            'RECURRING_POSTPAID',
+            'THRESHOLD_PREPAID',
+            'THRESHOLD_POSTPAID',
+            'SUBSCRIPTION_PREPAID',
+            'SUBSCRIPTION_POSTPAID',
+            'UNSCHEDULED_PREPAID',
+            'UNSCHEDULED_POSTPAID',
+            'INSTALLMENT_PREPAID',
+            'INSTALLMENT_POSTPAID',
+          ])
+          .exactOptional()
+          .openapi({
+            title: 'PayPal Payment Token Usage Pattern',
+            description: 'Expected business/pricing model for the billing agreement.',
+          }),
+        shipping: ShippingDetailSchema.and(
+          z
+            .any()
+            .refine(
+              (val) =>
+                !z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'options')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['options'] })
+                  .safeParse(val).success,
+            )
+            .openapi({
+              description: 'The shipping address for the Payer.',
+              not: { required: ['options'] },
+            }),
+        ).exactOptional(),
+        usage_type: z
+          .enum(['MERCHANT', 'PLATFORM'])
+          .exactOptional()
+          .openapi({
+            title: 'PayPal Payment Token Usage Type',
+            description: 'The usage type associated with the PayPal payment token.',
+          }),
+        customer_type: z
+          .enum(['CONSUMER', 'BUSINESS'])
+          .default('CONSUMER')
+          .exactOptional()
+          .openapi({
+            title: 'PayPal Payment Token Customer Type',
+            description:
+              'The customer type associated with the PayPal payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.',
+          }),
+        permit_multiple_payment_tokens: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same PayPal account. This only applies to PayPal payment source.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     title: 'vault_paypal_wallet_base',
     description:
@@ -2648,24 +2147,6 @@ const VaultPaypalWalletBaseSchema = VaultInstructionBaseSchema.and(
     required: ['usage_type'],
   })
   .openapi('VaultPaypalWalletBase')
-
-const ChargePatternSchema = z
-  .enum([
-    'IMMEDIATE',
-    'DEFERRED',
-    'RECURRING_PREPAID',
-    'RECURRING_POSTPAID',
-    'THRESHOLD_PREPAID',
-    'THRESHOLD_POSTPAID',
-    'SUBSCRIPTION_PREPAID',
-    'SUBSCRIPTION_POSTPAID',
-    'UNSCHEDULED_PREPAID',
-    'UNSCHEDULED_POSTPAID',
-    'INSTALLMENT_PREPAID',
-    'INSTALLMENT_POSTPAID',
-  ])
-  .openapi({ description: 'Expected business/pricing model for the billing agreement.' })
-  .openapi('ChargePattern')
 
 const PaypalWalletAttributesSchema = z
   .object({
@@ -2690,6 +2171,7 @@ const PaypalWalletAttributesSchema = z
         .openapi({
           description:
             'Attributes used to provide the instructions during vaulting of the PayPal Wallet.',
+          not: { required: ['shipping'] },
         }),
     ).exactOptional(),
   })
@@ -2699,6 +2181,17 @@ const PaypalWalletAttributesSchema = z
     required: [],
   })
   .openapi('PaypalWalletAttributes')
+
+const LanguageSchema = z
+  .string()
+  .regex(/^[a-z]{2}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$/)
+  .min(2)
+  .max(10)
+  .openapi({
+    description:
+      'The [language tag](https://tools.ietf.org/html/bcp47#section-2) for the language in which to localize the error-related strings, such as messages, issues, and suggested actions. The tag is made up of the [ISO 639-2 language code](https://www.loc.gov/standards/iso639-2/php/code_list.php), the optional [ISO-15924 script tag](https://www.unicode.org/iso15924/codelists.html), and the [ISO-3166 alpha-2 country code](/api/rest/reference/country-codes/) or [M49 region code](https://unstats.un.org/unsd/methodology/m49/).',
+  })
+  .openapi('Language')
 
 const NativeAppContextSchema = z
   .object({
@@ -2770,18 +2263,6 @@ const AppSwitchContextSchema = z
   })
   .openapi('AppSwitchContext')
 
-const BillingAgreementIdSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9-]+$/)
-  .min(2)
-  .max(128)
-  .openapi({
-    title: 'billing_agreement_id',
-    description:
-      'The PayPal billing agreement ID. References an approved recurring payment for goods or services.',
-  })
-  .openapi('BillingAgreementId')
-
 const CallbackConfigurationSchema = z
   .object({
     callback_events: z
@@ -2832,14 +2313,10 @@ const PaypalWalletExperienceContextSchema = z
         description:
           'The label that overrides the business name in the PayPal account on the PayPal site. The pattern is defined by an external party and supports Unicode.',
       }),
-    locale: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
-        }),
-    ).exactOptional(),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
+    }),
     shipping_preference: z
       .enum(['GET_FROM_FILE', 'NO_SHIPPING', 'SET_PROVIDED_ADDRESS'])
       .default('GET_FROM_FILE')
@@ -2868,14 +2345,10 @@ const PaypalWalletExperienceContextSchema = z
             'The URL where the customer will be redirected upon cancelling the payment approval.',
         }),
     ).exactOptional(),
-    app_switch_context: AppSwitchContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Merchants can use this to switch buyers from their website/application to the PayPal consumer app to review and approve the transaction.',
-        }),
-    ).exactOptional(),
+    app_switch_context: AppSwitchContextSchema.exactOptional().openapi({
+      description:
+        'Merchants can use this to switch buyers from their website/application to the PayPal consumer app to review and approve the transaction.',
+    }),
     landing_page: z
       .enum(['LOGIN', 'GUEST_CHECKOUT', 'NO_PREFERENCE', 'BILLING'])
       .default('NO_PREFERENCE')
@@ -2896,14 +2369,10 @@ const PaypalWalletExperienceContextSchema = z
       .default('UNRESTRICTED')
       .exactOptional()
       .openapi({ description: 'The merchant-preferred payment methods.' }),
-    order_update_callback_config: CallbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Merchant provided Order Update callback configuration for PayPal Wallet.PayPal will call back merchant when the specified event occurs.we recommend merchants to pass both the shipping_options and shipping_address callback events. Not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.",
-        }),
-    ).exactOptional(),
+    order_update_callback_config: CallbackConfigurationSchema.exactOptional().openapi({
+      description:
+        "Merchant provided Order Update callback configuration for PayPal Wallet.PayPal will call back merchant when the specified event occurs.we recommend merchants to pass both the shipping_options and shipping_address callback events. Not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.",
+    }),
   })
   .openapi({
     title: 'paypal_wallet_experience_context',
@@ -2913,18 +2382,44 @@ const PaypalWalletExperienceContextSchema = z
   })
   .openapi('PaypalWalletExperienceContext')
 
+const BillingAgreementIdSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9-]+$/)
+  .min(2)
+  .max(128)
+  .openapi({
+    title: 'billing_agreement_id',
+    description:
+      'The PayPal billing agreement ID. References an approved recurring payment for goods or services.',
+  })
+  .openapi('BillingAgreementId')
+
+const ChargePatternSchema = z
+  .enum([
+    'IMMEDIATE',
+    'DEFERRED',
+    'RECURRING_PREPAID',
+    'RECURRING_POSTPAID',
+    'THRESHOLD_PREPAID',
+    'THRESHOLD_POSTPAID',
+    'SUBSCRIPTION_PREPAID',
+    'SUBSCRIPTION_POSTPAID',
+    'UNSCHEDULED_PREPAID',
+    'UNSCHEDULED_POSTPAID',
+    'INSTALLMENT_PREPAID',
+    'INSTALLMENT_POSTPAID',
+  ])
+  .openapi({ description: 'Expected business/pricing model for the billing agreement.' })
+  .openapi('ChargePattern')
+
 const PaypalWalletStoredCredentialSchema = z
   .object({
     payment_initiator: PaymentInitiatorSchema,
-    charge_pattern: ChargePatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DEPRECATED. Expected business/pricing model for the billing agreement, Please use usage_pattern instead. <b>DEPRECATED</b><br><table><tr><th>See</th></tr><tr><td>usage_pattern</td></tr></table>',
-          deprecated: true,
-        }),
-    ).exactOptional(),
+    charge_pattern: ChargePatternSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED. Expected business/pricing model for the billing agreement, Please use usage_pattern instead. <b>DEPRECATED</b><br><table><tr><th>See</th></tr><tr><td>usage_pattern</td></tr></table>',
+      deprecated: true,
+    }),
     usage_pattern: ChargePatternSchema.exactOptional(),
     usage: StoredPaymentSourceUsageTypeSchema.exactOptional(),
   })
@@ -2938,16 +2433,12 @@ const PaypalWalletStoredCredentialSchema = z
 
 const PaypalWalletSchema = z
   .object({
-    vault_id: VaultIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The PayPal-generated ID for the payment_source stored within the Vault.',
-        }),
-    ).exactOptional(),
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the PayPal account holder.' }),
-    ).exactOptional(),
+    vault_id: VaultIdSchema.exactOptional().openapi({
+      description: 'The PayPal-generated ID for the payment_source stored within the Vault.',
+    }),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the PayPal account holder.',
+    }),
     name: NameSchema.and(
       z
         .any()
@@ -3011,31 +2502,28 @@ const PaypalWalletSchema = z
         .openapi({
           description:
             'The name of the PayPal account holder. Supports only the `given_name` and `surname` properties.',
+          not: {
+            anyOf: [
+              { required: ['prefix'] },
+              { required: ['middle_name'] },
+              { required: ['suffix'] },
+              { required: ['alternate_full_name'] },
+              { required: ['full_name'] },
+            ],
+          },
         }),
     ).exactOptional(),
-    phone: PhoneWithTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
-        }),
-    ).exactOptional(),
-    birth_date: DateNoTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The birth date of the PayPal account holder in `YYYY-MM-DD` format.',
-        }),
-    ).exactOptional(),
-    tax_info: TaxInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The tax information of the PayPal account holder. Required only for Brazilian PayPal account holder's. Both `tax_id` and `tax_id_type` are required.",
-        }),
-    ).exactOptional(),
+    phone: PhoneWithTypeSchema.exactOptional().openapi({
+      description:
+        'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
+    }),
+    birth_date: DateNoTimeSchema.exactOptional().openapi({
+      description: 'The birth date of the PayPal account holder in `YYYY-MM-DD` format.',
+    }),
+    tax_info: TaxInfoSchema.exactOptional().openapi({
+      description:
+        "The tax information of the PayPal account holder. Required only for Brazilian PayPal account holder's. Both `tax_id` and `tax_id_type` are required.",
+    }),
     address: AddressPortableSchema.and(
       z
         .any()
@@ -3089,16 +2577,20 @@ const PaypalWalletSchema = z
         .openapi({
           description:
             'The address of the PayPal account holder. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. Also referred to as the billing address of the customer.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
-    attributes: PaypalWalletAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'paypal_wallet_attributes',
-          description: 'Additional attributes associated with the use of this wallet.',
-        }),
-    ).exactOptional(),
+    attributes: PaypalWalletAttributesSchema.exactOptional().openapi({
+      title: 'paypal_wallet_attributes',
+      description: 'Additional attributes associated with the use of this wallet.',
+    }),
     experience_context: PaypalWalletExperienceContextSchema.exactOptional(),
     billing_agreement_id: BillingAgreementIdSchema.exactOptional(),
     stored_credential: PaypalWalletStoredCredentialSchema.exactOptional(),
@@ -3118,27 +2610,73 @@ const FullNameSchema = z
   .openapi({ title: 'name', description: 'The full name representation like Mr J Smith.' })
   .openapi('FullName')
 
-const BancontactRequestSchema = z
+const CountryCode_2Schema = z
+  .string()
+  .regex(/^([A-Z]{2}|C2)$/)
+  .length(2)
+  .openapi({
+    description:
+      'The [two-character ISO 3166-1 code](/api/rest/reference/country-codes/) that identifies the country or region.<blockquote><strong>Note:</strong> The country code for Great Britain is <code>GB</code> and not <code>UK</code> as used in the top-level domain names for that country. Use the `C2` country code for China worldwide for comparable uncontrolled price (CUP) method, bank card, and cross-border transactions.</blockquote>',
+  })
+  .openapi('CountryCode_2')
+
+const ExperienceContextBaseSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
+    brand_name: z
+      .string()
+      .regex(/^.*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          'The label that overrides the business name in the PayPal account on the PayPal site. The pattern is defined by an external party and supports Unicode.',
+      }),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
+    }),
+    shipping_preference: z
+      .enum(['GET_FROM_FILE', 'NO_SHIPPING', 'SET_PROVIDED_ADDRESS'])
+      .default('GET_FROM_FILE')
+      .exactOptional()
+      .openapi({ description: 'The location from which the shipping address is derived.' }),
+    return_url: UrlSchema.and(
       z
         .any()
         .openapi({
           description:
-            'Customizes the payer experience during the approval process for the payment.',
+            'The URL where the customer is redirected after the customer approves the payment.',
         }),
     ).exactOptional(),
+    cancel_url: UrlSchema.and(
+      z
+        .any()
+        .openapi({
+          description:
+            'The URL where the customer is redirected after the customer cancels the payment.',
+        }),
+    ).exactOptional(),
+  })
+  .openapi({
+    title: 'experience_context_base',
+    description: 'Customizes the payer experience during the approval process for the payment.',
+    required: [],
+  })
+  .openapi('ExperienceContextBase')
+
+const BancontactRequestSchema = z
+  .object({
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'bancontact_request',
@@ -3150,13 +2688,9 @@ const BancontactRequestSchema = z
 const BlikExperienceContextSchema = ExperienceContextBaseSchema.and(
   z
     .object({
-      consumer_ip: IpAddressSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The IP address of the consumer. It could be either IPv4 or IPv6.',
-          }),
-      ).exactOptional(),
+      consumer_ip: IpAddressSchema.exactOptional().openapi({
+        description: 'The IP address of the consumer. It could be either IPv4 or IPv6.',
+      }),
       consumer_user_agent: z
         .string()
         .regex(/^.*$/)
@@ -3239,39 +2773,25 @@ const BlikOneClickSchema = z
 
 const BlikRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    experience_context: BlikExperienceContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
-    level_0: BlikSeamlessSchema.and(
-      z.any().openapi({ description: 'The level_0 integration flow object.' }),
-    ).exactOptional(),
-    one_click: BlikOneClickSchema.and(
-      z.any().openapi({ description: 'The one-click integration flow object.' }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    experience_context: BlikExperienceContextSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
+    level_0: BlikSeamlessSchema.exactOptional().openapi({
+      description: 'The level_0 integration flow object.',
+    }),
+    one_click: BlikOneClickSchema.exactOptional().openapi({
+      description: 'The one-click integration flow object.',
+    }),
   })
   .openapi({
     title: 'blik_request',
@@ -3282,25 +2802,16 @@ const BlikRequestSchema = z
 
 const EpsRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'eps_request',
@@ -3311,25 +2822,16 @@ const EpsRequestSchema = z
 
 const GiropayRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'giropay_request',
@@ -3352,28 +2854,17 @@ const BicSchema = z
 
 const IdealRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'ideal_request',
@@ -3384,25 +2875,16 @@ const IdealRequestSchema = z
 
 const MybankRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'mybank_request',
@@ -3413,33 +2895,19 @@ const MybankRequestSchema = z
 
 const P24RequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    email: EmailAddressSchema.openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'p24_request',
@@ -3450,25 +2918,16 @@ const P24RequestSchema = z
 
 const SofortRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'sofort_request',
@@ -3479,33 +2938,19 @@ const SofortRequestSchema = z
 
 const TrustlyRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ),
-    experience_context: ExperienceContextBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    email: EmailAddressSchema.openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    experience_context: ExperienceContextBaseSchema.exactOptional().openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'trustly_request',
@@ -3567,14 +3012,10 @@ const ApplePayPaymentDataSchema = z
 
 const ApplePayDecryptedTokenDataSchema = z
   .object({
-    transaction_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transaction amount for the payment that the payer has approved on apple platform.',
-        }),
-    ).exactOptional(),
+    transaction_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The transaction amount for the payment that the payer has approved on apple platform.',
+    }),
     tokenized_card: CardSchema.and(
       z
         .any()
@@ -3635,7 +3076,18 @@ const ApplePayDecryptedTokenDataSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ description: 'Apple Pay tokenized credit card used to pay.' }),
+        .openapi({
+          description: 'Apple Pay tokenized credit card used to pay.',
+          not: {
+            anyOf: [
+              { required: ['id'] },
+              { required: ['security_code'] },
+              { required: ['last_digits'] },
+              { required: ['authentication_results'] },
+              { required: ['attributes'] },
+            ],
+          },
+        }),
     ),
     device_manufacturer_id: z
       .string()
@@ -3654,14 +3106,10 @@ const ApplePayDecryptedTokenDataSchema = z
         description:
           'Indicates the type of payment data passed, in case of Non China the payment data is 3DSECURE and for China it is EMV.',
       }),
-    payment_data: ApplePayPaymentDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Apple Pay payment data object which contains the cryptogram, eci_indicator and other data.',
-        }),
-    ).exactOptional(),
+    payment_data: ApplePayPaymentDataSchema.exactOptional().openapi({
+      description:
+        'Apple Pay payment data object which contains the cryptogram, eci_indicator and other data.',
+    }),
   })
   .openapi({
     title: 'apple_pay_decrypted_token_data',
@@ -3669,6 +3117,16 @@ const ApplePayDecryptedTokenDataSchema = z
     required: ['tokenized_card'],
   })
   .openapi('ApplePayDecryptedTokenData')
+
+const V3VaultInstructionBaseSchema = z
+  .object({ store_in_vault: StoreInVaultInstructionSchema })
+  .openapi({
+    title: 'v3_vault_instruction_base',
+    description:
+      'Base vaulting specification. The object can be extended for specific use cases within each payment_source that supports vaulting.',
+    required: ['store_in_vault'],
+  })
+  .openapi('V3VaultInstructionBase')
 
 const ApplePayAttributesSchema = z
   .object({
@@ -3720,36 +3178,24 @@ const ApplePayRequestSchema = z
         description:
           'ApplePay transaction identifier, this will be the unique identifier for this transaction provided by Apple. The pattern is defined by an external party and supports Unicode.',
       }),
-    name: FullNameSchema.and(
-      z.any().openapi({ description: 'Name on the account holder associated with apple pay.' }),
-    ).exactOptional(),
-    email_address: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address of the account holder associated with apple pay.',
-        }),
-    ).exactOptional(),
-    phone_number: PhoneNumberWithoutCountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
-        }),
-    ).exactOptional(),
-    decrypted_token: ApplePayDecryptedTokenDataSchema.and(
-      z.any().openapi({ description: 'The decrypted payload details for the apple pay token.' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      description: 'Name on the account holder associated with apple pay.',
+    }),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with apple pay.',
+    }),
+    phone_number: PhoneNumberWithoutCountryCodeSchema.exactOptional().openapi({
+      description:
+        'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+    }),
+    decrypted_token: ApplePayDecryptedTokenDataSchema.exactOptional().openapi({
+      description: 'The decrypted payload details for the apple pay token.',
+    }),
     stored_credential: CardStoredCredentialSchema.exactOptional(),
-    vault_id: VaultIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The PayPal-generated ID for the saved apple pay payment_source. This ID should be stored on the merchant's server so the saved payment source can be used for future transactions.",
-        }),
-    ).exactOptional(),
+    vault_id: VaultIdSchema.exactOptional().openapi({
+      description:
+        "The PayPal-generated ID for the saved apple pay payment_source. This ID should be stored on the merchant's server so the saved payment source can be used for future transactions.",
+    }),
     attributes: ApplePayAttributesSchema.exactOptional(),
     experience_context: ApplePayExperienceContextSchema.exactOptional(),
   })
@@ -3807,14 +3253,10 @@ const GooglePayCardSchema = z
       .max(19)
       .exactOptional()
       .openapi({ description: 'The primary account number (PAN) for the payment card.' }),
-    expiry: DateYearMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-        }),
-    ).exactOptional(),
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
     last_digits: z
       .string()
       .regex(/^[0-9]{2,4}$/)
@@ -3822,14 +3264,10 @@ const GooglePayCardSchema = z
       .max(4)
       .exactOptional()
       .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-    type: CardTypeSchema.and(
-      z.any().openapi({ description: 'The payment card type.' }),
-    ).exactOptional(),
-    brand: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The card brand or network. Typically used in the response.' }),
-    ).exactOptional(),
+    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
+    brand: CardBrandSchema.exactOptional().openapi({
+      description: 'The card brand or network. Typically used in the response.',
+    }),
     billing_address: AddressPortableSchema.and(
       z
         .any()
@@ -3883,6 +3321,14 @@ const GooglePayCardSchema = z
         .openapi({
           description:
             'The billing address for this card. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
   })
@@ -4022,24 +3468,16 @@ const GooglePayExperienceContextSchema = z
 
 const GooglePayRequestSchema = z
   .object({
-    name: FullNameSchema.and(
-      z.any().openapi({ description: 'Name on the account holder associated with Google Pay.' }),
-    ).exactOptional(),
-    email_address: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address of the account holder associated with Google Pay.',
-        }),
-    ).exactOptional(),
-    phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of account holder, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      description: 'Name on the account holder associated with Google Pay.',
+    }),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with Google Pay.',
+    }),
+    phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.exactOptional().openapi({
+      description:
+        'The phone number of account holder, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+    }),
     card: GooglePayCardSchema.and(
       z
         .any()
@@ -4080,19 +3518,24 @@ const GooglePayRequestSchema = z
               ])
               .safeParse(val).success,
         )
-        .openapi({ description: 'The payment card information.' }),
-    ).exactOptional(),
-    decrypted_token: GooglePayDecryptedTokenDataSchema.and(
-      z.any().openapi({ description: 'The decrypted payload details for the Google Pay token.' }),
-    ).exactOptional(),
-    assurance_details: AssuranceDetailsSchema.and(
-      z
-        .any()
         .openapi({
-          description:
-            'Information about what validation has been performed on the returned payment credentials.',
+          description: 'The payment card information.',
+          not: {
+            anyOf: [
+              { required: ['number'] },
+              { required: ['expiry'] },
+              { required: ['last_digits'] },
+            ],
+          },
         }),
     ).exactOptional(),
+    decrypted_token: GooglePayDecryptedTokenDataSchema.exactOptional().openapi({
+      description: 'The decrypted payload details for the Google Pay token.',
+    }),
+    assurance_details: AssuranceDetailsSchema.exactOptional().openapi({
+      description:
+        'Information about what validation has been performed on the returned payment credentials.',
+    }),
     experience_context: GooglePayExperienceContextSchema.exactOptional(),
   })
   .openapi({
@@ -4119,14 +3562,10 @@ const VenmoWalletExperienceContextSchema = z
       .default('GET_FROM_FILE')
       .exactOptional()
       .openapi({ description: 'The location from which the shipping address is derived.' }),
-    order_update_callback_config: CallbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Merchant provided Order Update callback configuration for Venmo Wallet.Venmo will call back merchant when the specified event occurs.we recommend merchants to pass both the shipping_options and shipping_address callback events. Not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.",
-        }),
-    ).exactOptional(),
+    order_update_callback_config: CallbackConfigurationSchema.exactOptional().openapi({
+      description:
+        "Merchant provided Order Update callback configuration for Venmo Wallet.Venmo will call back merchant when the specified event occurs.we recommend merchants to pass both the shipping_options and shipping_address callback events. Not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.",
+    }),
     user_action: z
       .enum(['CONTINUE', 'PAY_NOW'])
       .default('CONTINUE')
@@ -4144,7 +3583,7 @@ const VenmoWalletExperienceContextSchema = z
   })
   .openapi('VenmoWalletExperienceContext')
 
-const VenmoWalletCustomerSchema = CustomerSchema.and(z.object({}))
+const VenmoWalletCustomerSchema = CustomerSchema.and(z.looseObject({}))
   .openapi({
     title: 'venmo_wallet_customer',
     description:
@@ -4153,59 +3592,69 @@ const VenmoWalletCustomerSchema = CustomerSchema.and(z.object({}))
   .openapi('VenmoWalletCustomer')
 
 const VaultVenmoWalletBaseSchema = V3VaultInstructionBaseSchema.and(
-  z
-    .object({
-      description: z
-        .string()
-        .regex(/^[a-zA-Z0-9_'\-., :;\!?"]*$/)
-        .min(1)
-        .max(128)
-        .exactOptional()
-        .openapi({
-          description:
-            'The description displayed to Venmo consumer on the approval flow for Venmo, as well as on the Venmo payment token management experience on Venmo.com.',
-        }),
-      usage_pattern: z
-        .enum([
-          'IMMEDIATE',
-          'DEFERRED',
-          'RECURRING_PREPAID',
-          'RECURRING_POSTPAID',
-          'THRESHOLD_PREPAID',
-          'THRESHOLD_POSTPAID',
-        ])
-        .exactOptional()
-        .openapi({
-          title: 'Venmo Payment Token Usage Pattern',
-          description: 'Expected business/pricing model for the billing agreement.',
-        }),
-      usage_type: z
-        .enum(['MERCHANT', 'PLATFORM'])
-        .exactOptional()
-        .openapi({
-          title: 'Venmo Payment Token Usage Type',
-          description: 'The usage type associated with the Venmo payment token.',
-        }),
-      customer_type: z
-        .enum(['CONSUMER', 'BUSINESS'])
-        .default('CONSUMER')
-        .exactOptional()
-        .openapi({
-          title: 'Venmo Payment Token Customer Type',
-          description:
-            'The customer type associated with the Venmo payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.',
-        }),
-      permit_multiple_payment_tokens: z
-        .boolean()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          description:
-            'Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same Venmo account.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['usage_type'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'usage_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        description: z
+          .string()
+          .regex(/^[a-zA-Z0-9_'\-., :;\!?"]*$/)
+          .min(1)
+          .max(128)
+          .exactOptional()
+          .openapi({
+            description:
+              'The description displayed to Venmo consumer on the approval flow for Venmo, as well as on the Venmo payment token management experience on Venmo.com.',
+          }),
+        usage_pattern: z
+          .enum([
+            'IMMEDIATE',
+            'DEFERRED',
+            'RECURRING_PREPAID',
+            'RECURRING_POSTPAID',
+            'THRESHOLD_PREPAID',
+            'THRESHOLD_POSTPAID',
+          ])
+          .exactOptional()
+          .openapi({
+            title: 'Venmo Payment Token Usage Pattern',
+            description: 'Expected business/pricing model for the billing agreement.',
+          }),
+        usage_type: z
+          .enum(['MERCHANT', 'PLATFORM'])
+          .exactOptional()
+          .openapi({
+            title: 'Venmo Payment Token Usage Type',
+            description: 'The usage type associated with the Venmo payment token.',
+          }),
+        customer_type: z
+          .enum(['CONSUMER', 'BUSINESS'])
+          .default('CONSUMER')
+          .exactOptional()
+          .openapi({
+            title: 'Venmo Payment Token Customer Type',
+            description:
+              'The customer type associated with the Venmo payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.',
+          }),
+        permit_multiple_payment_tokens: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same Venmo account.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     title: 'vault_Venmo_wallet_base',
     description:
@@ -4217,14 +3666,10 @@ const VaultVenmoWalletBaseSchema = V3VaultInstructionBaseSchema.and(
 const VenmoWalletAttributesSchema = z
   .object({
     customer: VenmoWalletCustomerSchema.exactOptional(),
-    vault: VaultVenmoWalletBaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Attributes used to provide the instructions during vaulting of the Venmo Wallet.',
-        }),
-    ).exactOptional(),
+    vault: VaultVenmoWalletBaseSchema.exactOptional().openapi({
+      description:
+        'Attributes used to provide the instructions during vaulting of the Venmo Wallet.',
+    }),
   })
   .openapi({
     title: 'venmo_wallet_attributes',
@@ -4235,23 +3680,17 @@ const VenmoWalletAttributesSchema = z
 
 const VenmoWalletRequestSchema = z
   .object({
-    vault_id: VaultIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The PayPal-generated ID for the saved Venmo wallet payment_source. This ID should be stored on the merchant's server so the saved payment source can be used for future transactions.",
-        }),
-    ).exactOptional(),
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the payer.' }),
-    ).exactOptional(),
+    vault_id: VaultIdSchema.exactOptional().openapi({
+      description:
+        "The PayPal-generated ID for the saved Venmo wallet payment_source. This ID should be stored on the merchant's server so the saved payment source can be used for future transactions.",
+    }),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
     experience_context: VenmoWalletExperienceContextSchema.exactOptional(),
-    attributes: VenmoWalletAttributesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Additional attributes associated with the use of this wallet.' }),
-    ).exactOptional(),
+    attributes: VenmoWalletAttributesSchema.exactOptional().openapi({
+      description: 'Additional attributes associated with the use of this wallet.',
+    }),
   })
   .openapi({
     title: 'venmo_wallet_request',
@@ -4307,14 +3746,10 @@ const CryptoAccountHolderNameSchema = z
 
 const ExperienceContextBaseWithoutBrandShippingSchema = z
   .object({
-    locale: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
-        }),
-    ).exactOptional(),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
+    }),
     return_url: UrlSchema.and(
       z
         .any()
@@ -4341,22 +3776,15 @@ const ExperienceContextBaseWithoutBrandShippingSchema = z
 
 const CryptoRequestSchema = z
   .object({
-    country_code: CountryCodeSchema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 purchase country code.' }),
-    ),
-    name: CryptoAccountHolderNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the account holder associated with Crypto wallet.' }),
-    ),
-    experience_context: ExperienceContextBaseWithoutBrandShippingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Customizes the payer experience during the approval process for the payment.',
-        }),
-    ),
+    country_code: CountryCodeSchema.openapi({
+      description: 'The two-character ISO 3166-1 purchase country code.',
+    }),
+    name: CryptoAccountHolderNameSchema.openapi({
+      description: 'The name of the account holder associated with Crypto wallet.',
+    }),
+    experience_context: ExperienceContextBaseWithoutBrandShippingSchema.openapi({
+      description: 'Customizes the payer experience during the approval process for the payment.',
+    }),
   })
   .openapi({
     title: 'crypto_request',
@@ -4365,136 +3793,376 @@ const CryptoRequestSchema = z
   })
   .openapi('CryptoRequest')
 
-const PaymentSourceSchema = z
+type PaymentSourceType = {
+  card?: z.infer<typeof CardRequestSchema>
+  token?: z.infer<typeof TokenSchema>
+  paypal?: z.infer<typeof PaypalWalletSchema> & unknown
+  bancontact?: z.infer<typeof BancontactRequestSchema> & unknown
+  blik?: z.infer<typeof BlikRequestSchema> & unknown
+  eps?: z.infer<typeof EpsRequestSchema> & unknown
+  giropay?: z.infer<typeof GiropayRequestSchema> & unknown
+  ideal?: z.infer<typeof IdealRequestSchema> & unknown
+  mybank?: z.infer<typeof MybankRequestSchema> & unknown
+  p24?: z.infer<typeof P24RequestSchema> & unknown
+  sofort?: z.infer<typeof SofortRequestSchema> & unknown
+  trustly?: z.infer<typeof TrustlyRequestSchema> & unknown
+  apple_pay?: z.infer<typeof ApplePayRequestSchema> & unknown
+  google_pay?: z.infer<typeof GooglePayRequestSchema> & unknown
+  venmo?: z.infer<typeof VenmoWalletRequestSchema> & unknown
+  crypto?: z.infer<typeof CryptoRequestSchema> & unknown
+}
+
+const CheckoutPaymentIntentSchema = z
+  .enum(['CAPTURE', 'AUTHORIZE'])
+  .openapi({
+    title: 'checkout_payment_intent',
+    description:
+      'The intent to either capture payment immediately or authorize a payment for an order after order creation.',
+  })
+  .openapi('CheckoutPaymentIntent')
+
+const PayerBaseSchema = z
+  .object({
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
+    payer_id: AccountIdSchema.exactOptional().openapi({
+      description: 'The PayPal-assigned ID for the payer.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'payer_base',
+    description:
+      'The customer who approves and pays for the order. The customer is also known as the payer.',
+    required: [],
+  })
+  .openapi('PayerBase')
+
+const PayerSchema = PayerBaseSchema.and(
+  z
+    .object({
+      name: NameSchema.and(
+        z
+          .any()
+          .refine(
+            (val) =>
+              !z
+                .union([
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'prefix')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['prefix'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'middle_name')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['middle_name'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'suffix')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['suffix'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'alternate_full_name')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['alternate_full_name'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'full_name')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['full_name'] }),
+                ])
+                .safeParse(val).success,
+          )
+          .openapi({
+            description:
+              'The name of the payer. Supports only the `given_name` and `surname` properties.',
+            not: {
+              anyOf: [
+                { required: ['prefix'] },
+                { required: ['middle_name'] },
+                { required: ['suffix'] },
+                { required: ['alternate_full_name'] },
+                { required: ['full_name'] },
+              ],
+            },
+          }),
+      ).exactOptional(),
+      phone: PhoneWithTypeSchema.exactOptional().openapi({
+        description:
+          'The phone number of the customer. Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. The `phone.phone_number` supports only `national_number`.',
+      }),
+      birth_date: DateNoTimeSchema.exactOptional().openapi({
+        description: 'The birth date of the payer in `YYYY-MM-DD` format.',
+      }),
+      tax_info: TaxInfoSchema.exactOptional().openapi({
+        description:
+          "The tax information of the payer. Required only for Brazilian payer's. Both `tax_id` and `tax_id_type` are required.",
+      }),
+      address: AddressPortableSchema.and(
+        z
+          .any()
+          .refine(
+            (val) =>
+              !z
+                .union([
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'address_line_3')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['address_line_3'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'admin_area_3')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['admin_area_3'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'admin_area_4')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['admin_area_4'] }),
+                  z
+                    .unknown()
+                    .superRefine((val, ctx) => {
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (!Object.hasOwn(val, 'address_details')) {
+                          ctx.addIssue({ code: 'custom' })
+                        }
+                      }
+                    })
+                    .openapi({ required: ['address_details'] }),
+                ])
+                .safeParse(val).success,
+          )
+          .openapi({
+            description:
+              'The address of the payer. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. Also referred to as the billing address of the customer.',
+            not: {
+              anyOf: [
+                { required: ['address_line_3'] },
+                { required: ['admin_area_3'] },
+                { required: ['admin_area_4'] },
+                { required: ['address_details'] },
+              ],
+            },
+          }),
+      ).exactOptional(),
+    })
+    .openapi({ required: [] }),
+)
+  .openapi({
+    title: 'payer',
+    description:
+      'The customer who approves and pays for the order. The customer is also known as the payer.',
+  })
+  .openapi('Payer')
+
+const PurchaseUnitRequestSchema: z.ZodType<PurchaseUnitRequestType> = z
+  .object({
+    reference_id: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(256)
+      .exactOptional()
+      .openapi({
+        description:
+          'The API caller-provided external ID for the purchase unit. Required for multiple purchase units when you must update the order through `PATCH`. If you omit this value and the order contains only one purchase unit, PayPal sets this value to `default`.',
+      }),
+    amount: AmountWithBreakdownSchema.openapi({
+      description:
+        'The total order amount with an optional breakdown that provides details, such as the total item amount, total tax amount, shipping, handling, insurance, and discounts, if any.<br/>If you specify `amount.breakdown`, the amount equals `item_total` plus `tax_total` plus `shipping` plus `handling` plus `insurance` minus `shipping_discount` minus discount.<br/>The amount must be a positive number. The `amount.value` field supports up to 15 digits preceding the decimal. For a list of supported currencies, decimal precision, and maximum charge amount, see the PayPal REST APIs <a href="https://developer.paypal.com/api/rest/reference/currency-codes/">Currency Codes</a>.',
+    }),
+    payee: PayeeSchema.exactOptional().openapi({
+      description: 'The merchant who receives payment for this transaction.',
+    }),
+    payment_instruction: PaymentInstructionSchema.exactOptional(),
+    description: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(3000)
+      .exactOptional()
+      .openapi({
+        description:
+          '<blockquote>This field supports up to 3,000 characters, but <strong>any content beyond 127 characters (including spaces) will be truncated. The 127 character limit is reflected in the response</strong> representation of this field.</blockquote>The purchase description. The maximum length of the character is dependent on the type of characters used. The character length is specified assuming a US ASCII character. Depending on type of character; (e.g. accented character, Japanese characters) the number of characters that that can be specified as input might not equal the permissible max length.',
+      }),
+    custom_id: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(255)
+      .exactOptional()
+      .openapi({
+        description:
+          'The API caller-provided external ID. Used to reconcile client transactions with PayPal transactions. Appears in transaction and settlement reports but is not visible to the payer.',
+      }),
+    invoice_id: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description:
+          "The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the emails that the payer receives. invoice_id values are required to be unique within each merchant account by default. Although the uniqueness validation is configurable, disabling this behavior will remove the account's ability to use invoice_id in other APIs as an identifier. It is highly recommended to keep a unique invoice_id for each Order.",
+      }),
+    soft_descriptor: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(1000)
+      .exactOptional()
+      .openapi({
+        description:
+          '<blockquote>This field supports up to 127 characters, but <strong>any content beyond 22 characters (including spaces) will be truncated. The 22 character limit is reflected in the response</strong> representation of this field.</blockquote>The soft descriptor is the dynamic text used to construct the statement descriptor that appears on a payer\'s card statement.<br><br>If an Order is paid using the "PayPal Wallet", the statement descriptor will appear in following format on the payer\'s card statement: <code><var>PAYPAL_prefix</var>+(space)+<var>merchant_descriptor</var>+(space)+ <var>soft_descriptor</var></code><blockquote><strong>Note:</strong> The merchant descriptor is the descriptor of the merchant’s payment receiving preferences which can be seen by logging into the merchant account https://www.sandbox.paypal.com/businessprofile/settings/info/edit</blockquote>The <code>PAYPAL</code> prefix uses 8 characters. Only the first 22 characters will be displayed in the statement. <br>For example, if:<ul><li>The PayPal prefix toggle is <code>PAYPAL *</code>.</li><li>The merchant descriptor in the profile is <code>Janes Gift</code>.</li><li>The soft descriptor is <code>800-123-1234</code>.</li></ul>Then, the statement descriptor on the card is <code>PAYPAL * Janes Gift 80</code>.',
+      }),
+    items: z
+      .array(ItemRequestSchema.openapi({ title: 'item', description: 'The item.' }))
+      .min(0)
+      .max(32767)
+      .exactOptional()
+      .openapi({ description: 'An array of items that the customer purchases from the merchant.' }),
+    shipping: ShippingDetailSchema.exactOptional().openapi({
+      description: 'The name and address of the person to whom to ship the items.',
+    }),
+    supplementary_data: SupplementaryDataSchema.exactOptional().openapi({
+      description: 'Contains Supplementary Data.',
+    }),
+  })
+  .openapi({
+    title: 'Purchase Unit Request',
+    description:
+      'The purchase unit request. Includes required information for the payment contract.',
+    required: ['amount'],
+  })
+  .openapi('PurchaseUnitRequest')
+
+const PaymentSourceSchema: z.ZodType<PaymentSourceType> = z
   .object({
     card: CardRequestSchema.exactOptional(),
     token: TokenSchema.exactOptional(),
-    paypal: PaypalWalletSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that PayPal Wallet is the payment source. Main use of this selection is to provide additional instructions associated with this choice like vaulting.',
-        }),
-    ).exactOptional(),
-    bancontact: BancontactRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'bancontact',
-          description:
-            'Bancontact is the most popular online payment in Belgium. [More Details](https://www.bancontact.com/).',
-        }),
-    ).exactOptional(),
-    blik: BlikRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'blik',
-          description:
-            'BLIK is a mobile payment system, created by Polish Payment Standard in order to allow millions of users to pay in shops, payout cash in ATMs and make online purchases and payments. [More Details](https://blikmobile.pl/).',
-        }),
-    ).exactOptional(),
-    eps: EpsRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'eps',
-          description:
-            'The eps transfer is an online payment method developed by many Austrian banks. [More Details](https://www.eps-ueberweisung.at/).',
-        }),
-    ).exactOptional(),
-    giropay: GiropayRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'giropay',
-          description:
-            'Giropay is an Internet payment System in Germany, based on online banking. [More Details](https://giropay.de/).',
-        }),
-    ).exactOptional(),
-    ideal: IdealRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'ideal',
-          description:
-            'The Dutch payment method iDEAL is an online payment method that enables consumers to pay online through their own bank. [More Details](https://www.ideal.nl/).',
-        }),
-    ).exactOptional(),
-    mybank: MybankRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'mybank',
-          description:
-            'MyBank is an e-authorisation solution which enables safe digital payments and identity authentication through a consumer’s own online banking portal or mobile application. [More Details](https://www.mybank.eu/).',
-        }),
-    ).exactOptional(),
-    p24: P24RequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'p24',
-          description:
-            'P24 (Przelewy24) is a secure and fast online bank transfer service linked to all the major banks in Poland. [More Details](https://www.przelewy24.pl/).',
-        }),
-    ).exactOptional(),
-    sofort: SofortRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'sofort',
-          description:
-            'SOFORT Banking is a real-time bank transfer payment method that buyers use to transfer funds directly to merchants from their bank accounts. [More Details](https://www.klarna.com/sofort/).',
-        }),
-    ).exactOptional(),
-    trustly: TrustlyRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'trustly',
-          description:
-            'Trustly is a payment method that allows customers to shop and pay from their bank account. [More Details](https://www.trustly.net/).',
-        }),
-    ).exactOptional(),
-    apple_pay: ApplePayRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'applepay',
-          description:
-            'ApplePay payment source, allows buyer to pay using ApplePay, both on Web as well as on Native.',
-        }),
-    ).exactOptional(),
-    google_pay: GooglePayRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'googlepay',
-          description: 'Google Pay payment source, allows buyer to pay using Google Pay.',
-        }),
-    ).exactOptional(),
-    venmo: VenmoWalletRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'venmo',
-          description:
-            'Information needed to indicate that Venmo is being used to fund the payment.',
-        }),
-    ).exactOptional(),
-    crypto: CryptoRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'crypto',
-          description: 'Indicates that Crypto Wallet is the payment source.',
-        }),
-    ).exactOptional(),
+    paypal: PaypalWalletSchema.exactOptional().openapi({
+      description:
+        'Indicates that PayPal Wallet is the payment source. Main use of this selection is to provide additional instructions associated with this choice like vaulting.',
+    }),
+    bancontact: BancontactRequestSchema.exactOptional().openapi({
+      title: 'bancontact',
+      description:
+        'Bancontact is the most popular online payment in Belgium. [More Details](https://www.bancontact.com/).',
+    }),
+    blik: BlikRequestSchema.exactOptional().openapi({
+      title: 'blik',
+      description:
+        'BLIK is a mobile payment system, created by Polish Payment Standard in order to allow millions of users to pay in shops, payout cash in ATMs and make online purchases and payments. [More Details](https://blikmobile.pl/).',
+    }),
+    eps: EpsRequestSchema.exactOptional().openapi({
+      title: 'eps',
+      description:
+        'The eps transfer is an online payment method developed by many Austrian banks. [More Details](https://www.eps-ueberweisung.at/).',
+    }),
+    giropay: GiropayRequestSchema.exactOptional().openapi({
+      title: 'giropay',
+      description:
+        'Giropay is an Internet payment System in Germany, based on online banking. [More Details](https://giropay.de/).',
+    }),
+    ideal: IdealRequestSchema.exactOptional().openapi({
+      title: 'ideal',
+      description:
+        'The Dutch payment method iDEAL is an online payment method that enables consumers to pay online through their own bank. [More Details](https://www.ideal.nl/).',
+    }),
+    mybank: MybankRequestSchema.exactOptional().openapi({
+      title: 'mybank',
+      description:
+        'MyBank is an e-authorisation solution which enables safe digital payments and identity authentication through a consumer’s own online banking portal or mobile application. [More Details](https://www.mybank.eu/).',
+    }),
+    p24: P24RequestSchema.exactOptional().openapi({
+      title: 'p24',
+      description:
+        'P24 (Przelewy24) is a secure and fast online bank transfer service linked to all the major banks in Poland. [More Details](https://www.przelewy24.pl/).',
+    }),
+    sofort: SofortRequestSchema.exactOptional().openapi({
+      title: 'sofort',
+      description:
+        'SOFORT Banking is a real-time bank transfer payment method that buyers use to transfer funds directly to merchants from their bank accounts. [More Details](https://www.klarna.com/sofort/).',
+    }),
+    trustly: TrustlyRequestSchema.exactOptional().openapi({
+      title: 'trustly',
+      description:
+        'Trustly is a payment method that allows customers to shop and pay from their bank account. [More Details](https://www.trustly.net/).',
+    }),
+    apple_pay: ApplePayRequestSchema.exactOptional().openapi({
+      title: 'applepay',
+      description:
+        'ApplePay payment source, allows buyer to pay using ApplePay, both on Web as well as on Native.',
+    }),
+    google_pay: GooglePayRequestSchema.exactOptional().openapi({
+      title: 'googlepay',
+      description: 'Google Pay payment source, allows buyer to pay using Google Pay.',
+    }),
+    venmo: VenmoWalletRequestSchema.exactOptional().openapi({
+      title: 'venmo',
+      description: 'Information needed to indicate that Venmo is being used to fund the payment.',
+    }),
+    crypto: CryptoRequestSchema.exactOptional().openapi({
+      title: 'crypto',
+      description: 'Indicates that Crypto Wallet is the payment source.',
+    }),
   })
   .openapi({ title: 'payment_source', description: 'The payment source definition.', required: [] })
   .openapi('PaymentSource')
+
+const PayeePaymentMethodPreferenceSchema = z
+  .enum(['UNRESTRICTED', 'IMMEDIATE_PAYMENT_REQUIRED'])
+  .default('UNRESTRICTED')
+  .openapi({
+    title: 'payee_payment_method_preference',
+    description: 'The merchant-preferred payment methods.',
+  })
+  .openapi('PayeePaymentMethodPreference')
 
 const PaymentMethodSchema = z
   .object({
@@ -4542,14 +4210,10 @@ const OrderApplicationContextSchema = z
         description:
           'DEPRECATED. The label that overrides the business name in the PayPal account on the PayPal site. The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.brand_name`). Please specify this field in the `experience_context` object instead of the `application_context` object.',
       }),
-    locale: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DEPRECATED. The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.  The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.locale`). Please specify this field in the `experience_context` object instead of the `application_context` object.',
-        }),
-    ).exactOptional(),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED. The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.  The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.locale`). Please specify this field in the `experience_context` object instead of the `application_context` object.',
+    }),
     landing_page: z
       .enum(['LOGIN', 'BILLING', 'NO_PREFERENCE'])
       .default('NO_PREFERENCE')
@@ -4578,14 +4242,10 @@ const OrderApplicationContextSchema = z
         description:
           'DEPRECATED. Configures a <strong>Continue</strong> or <strong>Pay Now</strong> checkout flow.  The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.user_action`). Please specify this field in the `experience_context` object instead of the `application_context` object.',
       }),
-    payment_method: PaymentMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DEPRECATED. The customer and merchant payment preferences. The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.payment_method_selected`). Please specify this field in the `experience_context` object instead of the `application_context` object..',
-        }),
-    ).exactOptional(),
+    payment_method: PaymentMethodSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED. The customer and merchant payment preferences. The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.payment_method_selected`). Please specify this field in the `experience_context` object instead of the `application_context` object..',
+    }),
     return_url: z
       .url()
       .min(0)
@@ -4604,15 +4264,11 @@ const OrderApplicationContextSchema = z
         description:
           'DEPRECATED. The URL where the customer is redirected after the customer cancels the payment. The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.cancel_url`). Please specify this field in the `experience_context` object instead of the `application_context` object.',
       }),
-    stored_payment_source: StoredPaymentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DEPRECATED. Provides additional details to process a payment using a `payment_source` that has been stored or is intended to be stored (also referred to as stored_credential or card-on-file).<br/>Parameter compatibility:<br/><ul><li>`payment_type=ONE_TIME` is compatible only with `payment_initiator=CUSTOMER`.</li><li>`usage=FIRST` is compatible only with `payment_initiator=CUSTOMER`.</li><li>`previous_transaction_reference` or `previous_network_transaction_reference` is compatible only with `payment_initiator=MERCHANT`.</li><li>Only one of the parameters - `previous_transaction_reference` and `previous_network_transaction_reference` - can be present in the request.</li></ul>.  The fields in `stored_payment_source` are now available in the `stored_credential` object under the `payment_source` which supports them (eg. `payment_source.card.stored_credential.payment_initiator`). Please specify this field in the `payment_source` object instead of the `application_context` object. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.card.stored_credential</td><td>2.9</td></tr></table>',
-          deprecated: true,
-        }),
-    ).exactOptional(),
+    stored_payment_source: StoredPaymentSourceSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED. Provides additional details to process a payment using a `payment_source` that has been stored or is intended to be stored (also referred to as stored_credential or card-on-file).<br/>Parameter compatibility:<br/><ul><li>`payment_type=ONE_TIME` is compatible only with `payment_initiator=CUSTOMER`.</li><li>`usage=FIRST` is compatible only with `payment_initiator=CUSTOMER`.</li><li>`previous_transaction_reference` or `previous_network_transaction_reference` is compatible only with `payment_initiator=MERCHANT`.</li><li>Only one of the parameters - `previous_transaction_reference` and `previous_network_transaction_reference` - can be present in the request.</li></ul>.  The fields in `stored_payment_source` are now available in the `stored_credential` object under the `payment_source` which supports them (eg. `payment_source.card.stored_credential.payment_initiator`). Please specify this field in the `payment_source` object instead of the `application_context` object. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.card.stored_credential</td><td>2.9</td></tr></table>',
+      deprecated: true,
+    }),
   })
   .openapi({
     title: 'application_context',
@@ -4622,81 +4278,90 @@ const OrderApplicationContextSchema = z
   })
   .openapi('OrderApplicationContext')
 
-const OrderRequestSchema = z
+type OrderRequestType = {
+  intent: z.infer<typeof CheckoutPaymentIntentSchema>
+  payer?: z.infer<typeof PayerSchema> & unknown
+  purchase_units: (z.infer<typeof PurchaseUnitRequestSchema> & unknown)[]
+  payment_source?: z.infer<typeof PaymentSourceSchema>
+  application_context?: z.infer<typeof OrderApplicationContextSchema> & unknown
+}
+
+const LiabilityShiftSchema = z
+  .enum(['NO', 'POSSIBLE', 'UNKNOWN'])
+  .openapi({
+    title: 'liability_shift',
+    description: "Liability shift indicator. The outcome of the issuer's authentication.",
+  })
+  .openapi('LiabilityShift')
+
+const ParesStatusSchema = z
+  .enum(['Y', 'N', 'U', 'A', 'C', 'R', 'D', 'I'])
+  .openapi({
+    description:
+      "Transactions status result identifier. The outcome of the issuer's authentication.",
+  })
+  .openapi('ParesStatus')
+
+const EnrolledSchema = z
+  .enum(['Y', 'N', 'U', 'B'])
+  .openapi({ description: 'Status of Authentication eligibility.' })
+  .openapi('Enrolled')
+
+const ThreeDSecureAuthenticationResponseSchema = z
   .object({
-    intent: CheckoutPaymentIntentSchema,
-    payer: PayerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'DEPRECATED. The customer is also known as the payer. The Payer object was intended to only be used with the `payment_source.paypal` object. In order to make this design more clear, the details in the `payer` object are now available under `payment_source.paypal`. Please use `payment_source.paypal`. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.paypal</td><td>2.9</td></tr></table>',
-          deprecated: true,
-        }),
-    ).exactOptional(),
-    purchase_units: z
-      .array(
-        PurchaseUnitRequestSchema.and(
-          z
-            .any()
-            .openapi({
-              title: 'purchase_unit',
-              description:
-                'The purchase unit. Establishes a contract between a payer and the payee.',
-            }),
-        ),
-      )
-      .min(1)
-      .max(10)
-      .openapi({
-        description:
-          'An array of purchase units. Each purchase unit establishes a contract between a payer and the payee. Each purchase unit represents either a full or partial order that the payer intends to purchase from the payee.',
-      }),
-    payment_source: PaymentSourceSchema.exactOptional(),
-    application_context: OrderApplicationContextSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'application_context',
-          description:
-            'Customize the payer experience during the approval process for the payment with PayPal.',
-        }),
-    ).exactOptional(),
+    authentication_status: ParesStatusSchema.exactOptional().openapi({
+      description: "The outcome of the issuer's authentication.",
+    }),
+    enrollment_status: EnrolledSchema.exactOptional().openapi({
+      description: 'Status of authentication eligibility.',
+    }),
   })
   .openapi({
-    title: 'Order Request',
-    description: 'The order request details.',
-    required: ['intent', 'purchase_units'],
+    title: 'three_d_secure_authentication_response',
+    description: 'Results of 3D Secure Authentication.',
+    required: [],
   })
-  .openapi('OrderRequest')
+  .openapi('ThreeDSecureAuthenticationResponse')
+
+const AuthenticationResponseSchema = z
+  .object({
+    liability_shift: LiabilityShiftSchema.exactOptional(),
+    three_d_secure: ThreeDSecureAuthenticationResponseSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'authentication_response',
+    description: 'Results of Authentication such as 3D Secure.',
+    required: [],
+  })
+  .openapi('AuthenticationResponse')
 
 const LinkSchemaSchema = z
   .object({
     additionalItems: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'additional_items', description: 'Any additional items.' }),
     dependencies: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Dependencies', description: 'The dependencies.' }),
-    items: z.object({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
+    items: z.looseObject({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
     definitions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Definitions', description: 'Definitions.' }),
     patternProperties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'pattern_properties', description: 'The pattern properties.' }),
     properties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Properties', description: 'The properties.' }),
     allOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'all_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -4712,7 +4377,7 @@ const LinkSchemaSchema = z
     anyOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'any_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -4729,7 +4394,7 @@ const LinkSchemaSchema = z
     oneOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'one_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -4742,9 +4407,9 @@ const LinkSchemaSchema = z
         title: 'one_of',
         description: 'An array of sub-schemas. The data must validate against one sub-schema.',
       }),
-    not: z.object({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
+    not: z.looseObject({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
     links: z
-      .array(z.object({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
+      .array(z.looseObject({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
       .min(0)
       .max(32767)
       .exactOptional()
@@ -4852,17 +4517,13 @@ const LinkDescriptionSchema = z
         title: 'enc_type',
         description: 'The media type in which to submit the request data.',
       }),
-    schema: LinkSchemaSchema.and(
-      z.any().openapi({ description: 'The schema that describes the request data.' }),
-    ).exactOptional(),
-    targetSchema: LinkSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'target_schema',
-          description: 'The schema that describes the link target.',
-        }),
-    ).exactOptional(),
+    schema: LinkSchemaSchema.exactOptional().openapi({
+      description: 'The schema that describes the request data.',
+    }),
+    targetSchema: LinkSchemaSchema.exactOptional().openapi({
+      title: 'target_schema',
+      description: 'The schema that describes the link target.',
+    }),
   })
   .openapi({
     title: 'Link Description',
@@ -4871,162 +4532,6 @@ const LinkDescriptionSchema = z
     required: ['href', 'rel'],
   })
   .openapi('LinkDescription')
-
-const ErrorDetailsSchema = z
-  .object({
-    field: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          "The field that caused the error. If this field is in the body, set this value to the field's JSON pointer value. Required for client-side errors.",
-      }),
-    value: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({ description: 'The value of the field that caused the error.' }),
-    location: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .default('body')
-      .exactOptional()
-      .openapi({
-        description:
-          'The location of the field that caused the error. Value is `body`, `path`, or `query`.',
-      }),
-    issue: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .openapi({ description: 'The unique, fine-grained application-level error code.' }),
-    links: z
-      .array(
-        LinkDescriptionSchema.and(z.any().openapi({ title: 'link_description', readOnly: true })),
-      )
-      .min(1)
-      .max(4)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links) that are either relevant to the issue by providing additional information or offering potential resolutions.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .exactOptional()
-      .openapi({
-        description:
-          'The human-readable description for an issue. The description can change over the lifetime of an API, so clients must not depend on this value.',
-      }),
-  })
-  .openapi({
-    title: 'Error Details',
-    description: 'The error details. Required for client-side `4XX` errors.',
-    required: ['issue'],
-  })
-  .openapi('ErrorDetails')
-
-const ErrorSchema = z
-  .object({
-    name: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .openapi({ description: 'The human-readable, unique name of the error.' }),
-    message: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .openapi({ description: 'The message that describes the error.' }),
-    debug_id: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(0)
-      .max(2147483647)
-      .openapi({ description: 'The PayPal internal ID. Used for correlation purposes.' }),
-    details: z
-      .array(ErrorDetailsSchema.and(z.any().openapi({ title: 'error_details' })))
-      .min(0)
-      .max(32767)
-      .exactOptional()
-      .openapi({ description: 'An array of additional details about the error.' }),
-    links: z
-      .array(
-        LinkDescriptionSchema.and(z.any().openapi({ title: 'link_description', readOnly: true })),
-      )
-      .min(0)
-      .max(32767)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links).',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    title: 'Error',
-    description: 'The error details.',
-    required: ['debug_id', 'message', 'name'],
-  })
-  .openapi('Error')
-
-const ActivityTimestampsSchema = z
-  .object({
-    create_time: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the transaction occurred, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-          readOnly: true,
-        }),
-    ).exactOptional(),
-    update_time: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the transaction was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-          readOnly: true,
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    title: 'activity_timestamps',
-    description:
-      'The date and time stamps that are common to authorized payment, captured payment, and refund transactions.',
-    required: [],
-  })
-  .openapi('ActivityTimestamps')
-
-const AuthenticationResponseSchema: z.ZodType<AuthenticationResponseType> = z
-  .lazy(() =>
-    z
-      .object({
-        liability_shift: LiabilityShiftSchema.exactOptional(),
-        three_d_secure: ThreeDSecureAuthenticationResponseSchema.exactOptional(),
-      })
-      .openapi({
-        title: 'authentication_response',
-        description: 'Results of Authentication such as 3D Secure.',
-        required: [],
-      }),
-  )
-  .openapi('AuthenticationResponse')
 
 const VaultResponseSchema = z
   .object({
@@ -5042,45 +4547,44 @@ const VaultResponseSchema = z
       .exactOptional()
       .openapi({ title: 'Vault Status', description: 'The vault status.' }),
     customer: CustomerSchema.and(
-      z.any().refine(
-        (val) =>
-          !z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'email_address')) {
-                      ctx.addIssue({ code: 'custom' })
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'email_address')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['email_address'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'phone')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['email_address'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'phone')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['phone'] }),
-            ])
-            .safeParse(val).success,
-      ),
+                  })
+                  .openapi({ required: ['phone'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({ not: { anyOf: [{ required: ['email_address'] }, { required: ['phone'] }] } }),
     ).exactOptional(),
     links: z
       .array(
-        LinkDescriptionSchema.and(
-          z
-            .any()
-            .openapi({
-              title: 'link_description',
-              description:
-                'A request-related [HATEOAS link](/docs/api/reference/api-responses/#hateoas-links).',
-            }),
-        ),
+        LinkDescriptionSchema.openapi({
+          title: 'link_description',
+          description:
+            'A request-related [HATEOAS link](/docs/api/reference/api-responses/#hateoas-links).',
+        }),
       )
       .min(1)
       .max(10)
@@ -5095,20 +4599,23 @@ const VaultResponseSchema = z
   .openapi('VaultResponse')
 
 const CardVaultResponseSchema = VaultResponseSchema.and(
-  z.any().refine(
-    (val) =>
-      !z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'customer')) {
-              ctx.addIssue({ code: 'custom' })
+  z
+    .any()
+    .refine(
+      (val) =>
+        !z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'customer')) {
+                ctx.addIssue({ code: 'custom' })
+              }
             }
-          }
-        })
-        .openapi({ required: ['customer'] })
-        .safeParse(val).success,
-  ),
+          })
+          .openapi({ required: ['customer'] })
+          .safeParse(val).success,
+    )
+    .openapi({ not: { required: ['customer'] } }),
 )
   .and(z.object({ customer: CardCustomerSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
@@ -5128,14 +4635,10 @@ const CardAttributesResponseSchema = z
 
 const CardFromRequestSchema = z
   .object({
-    expiry: DateYearMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-        }),
-    ).exactOptional(),
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
     last_digits: z
       .string()
       .regex(/^.*[0-9]{2,}.*$/)
@@ -5170,14 +4673,10 @@ const BinDetailsSchema = z
       .max(64)
       .exactOptional()
       .openapi({ description: 'The issuer of the card instrument.' }),
-    bin_country_code: CountryCode_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The [two-character ISO-3166-1 country code](/docs/integration/direct/rest/country-codes/) of the bank.',
-        }),
-    ).exactOptional(),
+    bin_country_code: CountryCode_2Schema.exactOptional().openapi({
+      description:
+        'The [two-character ISO-3166-1 country code](/docs/integration/direct/rest/country-codes/) of the bank.',
+    }),
     products: z
       .array(
         z
@@ -5221,16 +4720,12 @@ const CardResponseSchema = z
       .max(2147483647)
       .exactOptional()
       .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-    brand: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The card brand or network. Typically used in the response.',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    brand: CardBrandSchema.exactOptional().openapi({
+      description: 'The card brand or network. Typically used in the response.',
+      readOnly: true,
+    }),
     available_networks: z
-      .array(CardBrandSchema.and(z.any().openapi({ title: 'card_brand' })))
+      .array(CardBrandSchema.openapi({ title: 'card_brand' }))
       .min(1)
       .max(256)
       .exactOptional()
@@ -5238,27 +4733,17 @@ const CardResponseSchema = z
         description: 'Array of brands or networks associated with the card.',
         readOnly: true,
       }),
-    type: CardTypeSchema.and(
-      z.any().openapi({ description: 'The payment card type.' }),
-    ).exactOptional(),
+    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
     authentication_result: AuthenticationResponseSchema.exactOptional(),
     attributes: CardAttributesResponseSchema.exactOptional(),
     from_request: CardFromRequestSchema.exactOptional(),
-    expiry: DateYearMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-        }),
-    ).exactOptional(),
-    bin_details: BinDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Bank Identification Number (BIN) details used to fund a payment.',
-        }),
-    ).exactOptional(),
+    expiry: DateYearMonthSchema.exactOptional().openapi({
+      description:
+        'The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+    }),
+    bin_details: BinDetailsSchema.exactOptional().openapi({
+      description: 'Bank Identification Number (BIN) details used to fund a payment.',
+    }),
     stored_credential: CardStoredCredentialSchema.exactOptional(),
   })
   .openapi({
@@ -5267,6 +4752,167 @@ const CardResponseSchema = z
     required: [],
   })
   .openapi('CardResponse')
+
+const ApplePayCardResponseSchema = CardResponseSchema.and(
+  z
+    .any()
+    .refine(
+      (val) =>
+        !z
+          .union([
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'id')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['id'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'last_n_chars')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['last_n_chars'] }),
+            z
+              .unknown()
+              .superRefine((val, ctx) => {
+                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                  if (!Object.hasOwn(val, 'issuer')) {
+                    ctx.addIssue({ code: 'custom' })
+                  }
+                }
+              })
+              .openapi({ required: ['issuer'] }),
+          ])
+          .safeParse(val).success,
+    )
+    .openapi({
+      not: {
+        anyOf: [{ required: ['id'] }, { required: ['last_n_chars'] }, { required: ['issuer'] }],
+      },
+    }),
+)
+  .and(
+    z
+      .object({
+        name: z
+          .string()
+          .regex(/^[\S\s]*$/)
+          .min(0)
+          .max(300)
+          .exactOptional()
+          .openapi({ description: "The card holder's name as it appears on the card." }),
+        billing_address: AddressPortableSchema.and(
+          z
+            .any()
+            .refine(
+              (val) =>
+                !z
+                  .union([
+                    z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'address_line_3')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                        }
+                      })
+                      .openapi({ required: ['address_line_3'] }),
+                    z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'admin_area_3')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                        }
+                      })
+                      .openapi({ required: ['admin_area_3'] }),
+                    z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'admin_area_4')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                        }
+                      })
+                      .openapi({ required: ['admin_area_4'] }),
+                    z
+                      .unknown()
+                      .superRefine((val, ctx) => {
+                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                          if (!Object.hasOwn(val, 'address_details')) {
+                            ctx.addIssue({ code: 'custom' })
+                          }
+                        }
+                      })
+                      .openapi({ required: ['address_details'] }),
+                  ])
+                  .safeParse(val).success,
+            )
+            .openapi({
+              description:
+                'The billing address for this card. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
+              not: {
+                anyOf: [
+                  { required: ['address_line_3'] },
+                  { required: ['admin_area_3'] },
+                  { required: ['admin_area_4'] },
+                  { required: ['address_details'] },
+                ],
+              },
+            }),
+        ).exactOptional(),
+        country_code: CountryCode_2Schema.exactOptional().openapi({
+          description: 'The country where the card is issued.',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    title: 'apple_pay_card_response',
+    description: 'The Card from Apple Pay Wallet used to fund the payment.',
+  })
+  .openapi('ApplePayCardResponse')
+
+const ApplePayAttributesResponseSchema = z
+  .object({ vault: VaultResponseSchema.exactOptional() })
+  .openapi({
+    title: 'apple_pay_attributes_response',
+    description: 'Additional attributes associated with the use of Apple Pay.',
+    required: [],
+  })
+  .openapi('ApplePayAttributesResponse')
+
+type ApplePayType = {
+  id?: string
+  token?: string
+  name?: z.infer<typeof FullNameSchema> & unknown
+  email_address?: z.infer<typeof EmailAddressSchema> & unknown
+  phone_number?: z.infer<typeof PhoneSchema> & unknown
+  card?: z.infer<typeof ApplePayCardResponseSchema> & unknown
+  attributes?: z.infer<typeof ApplePayAttributesResponseSchema> & unknown
+  stored_credential?: z.infer<typeof CardStoredCredentialSchema>
+}
+
+const AccountId_2Schema = z
+  .string()
+  .regex(/^[2-9A-HJ-NP-Z]{13}$/)
+  .length(13)
+  .openapi({
+    description:
+      'The PayPal payer ID, which is a masked version of the PayPal account number intended for use with third parties. The account number is reversibly encrypted and a proprietary variant of Base32 is used to encode the result.',
+  })
+  .openapi('AccountId_2')
 
 const Phone_3Schema = z
   .object({
@@ -5289,20 +4935,23 @@ const Phone_3Schema = z
   .openapi('Phone_3')
 
 const PaypalWalletVaultResponseSchema = VaultResponseSchema.and(
-  z.any().refine(
-    (val) =>
-      !z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'customer')) {
-              ctx.addIssue({ code: 'custom' })
+  z
+    .any()
+    .refine(
+      (val) =>
+        !z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'customer')) {
+                ctx.addIssue({ code: 'custom' })
+              }
             }
-          }
-        })
-        .openapi({ required: ['customer'] })
-        .safeParse(val).success,
-  ),
+          })
+          .openapi({ required: ['customer'] })
+          .safeParse(val).success,
+    )
+    .openapi({ not: { required: ['customer'] } }),
 )
   .and(z.object({ customer: PaypalWalletCustomerSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
@@ -5343,11 +4992,15 @@ const CobrandedCardSchema = z
               .openapi({ required: ['client_id'] })
               .safeParse(val).success,
         )
-        .openapi({ title: 'payee', description: 'Merchant associated with the purchase.' }),
+        .openapi({
+          title: 'payee',
+          description: 'Merchant associated with the purchase.',
+          not: { required: ['client_id'] },
+        }),
     ).exactOptional(),
-    amount: MoneySchema.and(
-      z.any().openapi({ description: 'Amount that was charged to the cobranded card.' }),
-    ).exactOptional(),
+    amount: MoneySchema.exactOptional().openapi({
+      description: 'Amount that was charged to the cobranded card.',
+    }),
   })
   .openapi({
     title: 'cobranded_card',
@@ -5360,7 +5013,7 @@ const PaypalWalletAttributesResponseSchema = z
   .object({
     vault: PaypalWalletVaultResponseSchema.exactOptional(),
     cobranded_cards: z
-      .array(CobrandedCardSchema.and(z.any().openapi({ title: 'cobranded_card' })))
+      .array(CobrandedCardSchema.openapi({ title: 'cobranded_card' }))
       .min(0)
       .max(25)
       .exactOptional()
@@ -5378,17 +5031,13 @@ const PaypalWalletAttributesResponseSchema = z
 
 const PaypalWalletResponseSchema = z
   .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the PayPal account holder.' }),
-    ).exactOptional(),
-    account_id: AccountId_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The PayPal-assigned ID for the PayPal account holder.',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the PayPal account holder.',
+    }),
+    account_id: AccountId_2Schema.exactOptional().openapi({
+      description: 'The PayPal-assigned ID for the PayPal account holder.',
+      readOnly: true,
+    }),
     account_status: z
       .enum(['VERIFIED', 'UNVERIFIED'])
       .exactOptional()
@@ -5460,24 +5109,25 @@ const PaypalWalletResponseSchema = z
         .openapi({
           description:
             'The name of the PayPal account holder. Supports only the `given_name` and `surname` properties.',
+          not: {
+            anyOf: [
+              { required: ['prefix'] },
+              { required: ['middle_name'] },
+              { required: ['suffix'] },
+              { required: ['alternate_full_name'] },
+              { required: ['full_name'] },
+            ],
+          },
         }),
     ).exactOptional(),
     phone_type: PhoneTypeSchema.exactOptional(),
-    phone_number: Phone_3Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. Supports only the `national_number` property.',
-        }),
-    ).exactOptional(),
-    birth_date: DateNoTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The birth date of the PayPal account holder in `YYYY-MM-DD` format.',
-        }),
-    ).exactOptional(),
+    phone_number: Phone_3Schema.exactOptional().openapi({
+      description:
+        'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Available only when you enable the **Contact Telephone Number** option in the <a href="https://www.paypal.com/cgi-bin/customerprofileweb?cmd=_profile-website-payments">**Profile & Settings**</a> for the merchant\'s PayPal account. Supports only the `national_number` property.',
+    }),
+    birth_date: DateNoTimeSchema.exactOptional().openapi({
+      description: 'The birth date of the PayPal account holder in `YYYY-MM-DD` format.',
+    }),
     business_name: z
       .string()
       .regex(/^.*$/)
@@ -5488,14 +5138,10 @@ const PaypalWalletResponseSchema = z
         description:
           'The business name of the PayPal account holder (populated for business accounts only)',
       }),
-    tax_info: TaxInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The tax information of the PayPal account holder. Required only for Brazilian PayPal account holder's. Both `tax_id` and `tax_id_type` are required.",
-        }),
-    ).exactOptional(),
+    tax_info: TaxInfoSchema.exactOptional().openapi({
+      description:
+        "The tax information of the PayPal account holder. Required only for Brazilian PayPal account holder's. Both `tax_id` and `tax_id_type` are required.",
+    }),
     address: AddressPortableSchema.and(
       z
         .any()
@@ -5549,6 +5195,14 @@ const PaypalWalletResponseSchema = z
         .openapi({
           description:
             'The address of the PayPal account holder. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. Also referred to as the billing address of the customer.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
     attributes: PaypalWalletAttributesResponseSchema.exactOptional(),
@@ -5569,122 +5223,6 @@ const PaypalWalletResponseSchema = z
   })
   .openapi('PaypalWalletResponse')
 
-const ApplePayCardResponseSchema = CardResponseSchema.and(
-  z.any().refine(
-    (val) =>
-      !z
-        .union([
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'id')) {
-                  ctx.addIssue({ code: 'custom' })
-                }
-              }
-            })
-            .openapi({ required: ['id'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'last_n_chars')) {
-                  ctx.addIssue({ code: 'custom' })
-                }
-              }
-            })
-            .openapi({ required: ['last_n_chars'] }),
-          z
-            .unknown()
-            .superRefine((val, ctx) => {
-              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                if (!Object.hasOwn(val, 'issuer')) {
-                  ctx.addIssue({ code: 'custom' })
-                }
-              }
-            })
-            .openapi({ required: ['issuer'] }),
-        ])
-        .safeParse(val).success,
-  ),
-)
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .regex(/^[\S\s]*$/)
-          .min(0)
-          .max(300)
-          .exactOptional()
-          .openapi({ description: "The card holder's name as it appears on the card." }),
-        billing_address: AddressPortableSchema.and(
-          z
-            .any()
-            .refine(
-              (val) =>
-                !z
-                  .union([
-                    z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'address_line_3')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['address_line_3'] }),
-                    z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'admin_area_3')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['admin_area_3'] }),
-                    z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'admin_area_4')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['admin_area_4'] }),
-                    z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'address_details')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['address_details'] }),
-                  ])
-                  .safeParse(val).success,
-            )
-            .openapi({
-              description:
-                'The billing address for this card. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
-            }),
-        ).exactOptional(),
-        country_code: CountryCode_2Schema.and(
-          z.any().openapi({ description: 'The country where the card is issued.' }),
-        ).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi({
-    title: 'apple_pay_card_response',
-    description: 'The Card from Apple Pay Wallet used to fund the payment.',
-  })
-  .openapi('ApplePayCardResponse')
-
 const IbanLastCharsSchema = z
   .string()
   .regex(/^.*[a-zA-Z0-9]{4}.*$/)
@@ -5698,20 +5236,14 @@ const IbanLastCharsSchema = z
 
 const BancontactSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
     iban_last_chars: IbanLastCharsSchema.exactOptional(),
     card_last_digits: z
       .string()
@@ -5749,68 +5281,47 @@ const BlikOneClickResponseSchema = z
 
 const BlikSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    one_click: BlikOneClickResponseSchema.and(
-      z.any().openapi({ description: 'The one-click integration flow object.' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    one_click: BlikOneClickResponseSchema.exactOptional().openapi({
+      description: 'The one-click integration flow object.',
+    }),
   })
   .openapi({ title: 'blik', description: 'Information used to pay using BLIK.', required: [] })
   .openapi('Blik')
 
 const EpsSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
   })
   .openapi({ title: 'eps', description: 'Information used to pay using eps.', required: [] })
   .openapi('Eps')
 
 const GiropaySchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
   })
   .openapi({
     title: 'giropay',
@@ -5821,20 +5332,14 @@ const GiropaySchema = z
 
 const IdealSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
     iban_last_chars: IbanLastCharsSchema.exactOptional(),
   })
   .openapi({ title: 'ideal', description: 'Information used to pay using iDEAL.', required: [] })
@@ -5842,20 +5347,14 @@ const IdealSchema = z
 
 const MybankSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
     iban_last_chars: IbanLastCharsSchema.exactOptional(),
   })
   .openapi({ title: 'mybank', description: 'Information used to pay using MyBank.', required: [] })
@@ -5863,25 +5362,17 @@ const MybankSchema = z
 
 const P24Schema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ title: 'name', description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      title: 'name',
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
     payment_descriptor: z
       .string()
       .regex(/^[\S\s]*$/)
@@ -5917,20 +5408,14 @@ const P24Schema = z
 
 const SofortSchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
     iban_last_chars: IbanLastCharsSchema.exactOptional(),
   })
   .openapi({ title: 'sofort', description: 'Information used to pay using Sofort.', required: [] })
@@ -5938,28 +5423,17 @@ const SofortSchema = z
 
 const TrustlySchema = z
   .object({
-    name: FullNameSchema.and(
-      z
-        .any()
-        .openapi({
-          title: 'name',
-          description: 'The name of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    country_code: CountryCode_2Schema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 country code.' }),
-    ).exactOptional(),
-    email: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
-    bic: BicSchema.and(
-      z.any().openapi({ description: 'The bank identification code (BIC).' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      title: 'name',
+      description: 'The name of the account holder associated with this payment method.',
+    }),
+    country_code: CountryCode_2Schema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 country code.',
+    }),
+    email: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
+    bic: BicSchema.exactOptional().openapi({ description: 'The bank identification code (BIC).' }),
     iban_last_chars: IbanLastCharsSchema.exactOptional(),
   })
   .openapi({
@@ -5969,16 +5443,7 @@ const TrustlySchema = z
   })
   .openapi('Trustly')
 
-const ApplePayAttributesResponseSchema = z
-  .object({ vault: VaultResponseSchema.exactOptional() })
-  .openapi({
-    title: 'apple_pay_attributes_response',
-    description: 'Additional attributes associated with the use of Apple Pay.',
-    required: [],
-  })
-  .openapi('ApplePayAttributesResponse')
-
-const ApplePaySchema = z
+const ApplePaySchema: z.ZodType<ApplePayType> = z
   .object({
     id: z
       .string()
@@ -6000,17 +5465,10 @@ const ApplePaySchema = z
         description:
           'Encrypted ApplePay token, containing card information. This token would be base64encoded. The pattern is defined by an external party and supports Unicode.',
       }),
-    name: FullNameSchema.and(
-      z.any().openapi({ description: 'Name on the wallet.' }),
-    ).exactOptional(),
-    email_address: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The email address of the account holder associated with this payment method.',
-        }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({ description: 'Name on the wallet.' }),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with this payment method.',
+    }),
     phone_number: PhoneSchema.and(
       z
         .any()
@@ -6044,14 +5502,15 @@ const ApplePaySchema = z
         .openapi({
           description:
             'The phone number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+          not: { anyOf: [{ required: ['country_code'] }, { required: ['extension_number'] }] },
         }),
     ).exactOptional(),
-    card: ApplePayCardResponseSchema.and(
-      z.any().openapi({ description: 'The payment card information.' }),
-    ).exactOptional(),
-    attributes: ApplePayAttributesResponseSchema.and(
-      z.any().openapi({ description: 'Additional attributes associated with apple pay.' }),
-    ).exactOptional(),
+    card: ApplePayCardResponseSchema.exactOptional().openapi({
+      description: 'The payment card information.',
+    }),
+    attributes: ApplePayAttributesResponseSchema.exactOptional().openapi({
+      description: 'Additional attributes associated with apple pay.',
+    }),
     stored_credential: CardStoredCredentialSchema.exactOptional(),
   })
   .openapi({
@@ -6077,14 +5536,10 @@ const GooglePayCardResponseSchema = z
       .max(4)
       .exactOptional()
       .openapi({ description: 'The last digits of the payment card.', readOnly: true }),
-    type: CardTypeSchema.and(
-      z.any().openapi({ description: 'The payment card type.' }),
-    ).exactOptional(),
-    brand: CardBrandSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The card brand or network. Typically used in the response.' }),
-    ).exactOptional(),
+    type: CardTypeSchema.exactOptional().openapi({ description: 'The payment card type.' }),
+    brand: CardBrandSchema.exactOptional().openapi({
+      description: 'The card brand or network. Typically used in the response.',
+    }),
     billing_address: AddressPortableSchema.and(
       z
         .any()
@@ -6138,6 +5593,14 @@ const GooglePayCardResponseSchema = z
         .openapi({
           description:
             'The billing address for this card. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
     authentication_result: AuthenticationResponseSchema.exactOptional(),
@@ -6152,46 +5615,41 @@ const GooglePayCardResponseSchema = z
 
 const GooglePaySchema = z
   .object({
-    name: FullNameSchema.and(
-      z.any().openapi({ description: 'Name on the account holder associated with Google Pay.' }),
-    ).exactOptional(),
-    email_address: EmailAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email address of the account holder associated with Google Pay.',
-        }),
-    ).exactOptional(),
-    phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number of account holder, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
-        }),
-    ).exactOptional(),
-    card: GooglePayCardResponseSchema.and(
-      z.any().openapi({ description: 'The Card from Google Pay Wallet used to fund the payment.' }),
-    ).exactOptional(),
+    name: FullNameSchema.exactOptional().openapi({
+      description: 'Name on the account holder associated with Google Pay.',
+    }),
+    email_address: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address of the account holder associated with Google Pay.',
+    }),
+    phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.exactOptional().openapi({
+      description:
+        'The phone number of account holder, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+    }),
+    card: GooglePayCardResponseSchema.exactOptional().openapi({
+      description: 'The Card from Google Pay Wallet used to fund the payment.',
+    }),
   })
   .openapi({ title: 'google_pay', description: 'Google Pay Wallet payment data.', required: [] })
   .openapi('GooglePay')
 
 const VenmoVaultResponseSchema = VaultResponseSchema.and(
-  z.any().refine(
-    (val) =>
-      !z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'customer')) {
-              ctx.addIssue({ code: 'custom' })
+  z
+    .any()
+    .refine(
+      (val) =>
+        !z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'customer')) {
+                ctx.addIssue({ code: 'custom' })
+              }
             }
-          }
-        })
-        .openapi({ required: ['customer'] })
-        .safeParse(val).success,
-  ),
+          })
+          .openapi({ required: ['customer'] })
+          .safeParse(val).success,
+    )
+    .openapi({ not: { required: ['customer'] } }),
 )
   .and(z.object({ customer: VenmoWalletCustomerSchema.exactOptional() }).openapi({ required: [] }))
   .openapi({
@@ -6211,17 +5669,13 @@ const VenmoWalletAttributesResponseSchema = z
 
 const VenmoWalletResponseSchema = z
   .object({
-    email_address: EmailSchema.and(
-      z.any().openapi({ description: 'The email address of the payer.' }),
-    ).exactOptional(),
-    account_id: AccountId_2Schema.and(
-      z
-        .any()
-        .openapi({
-          description: "This is an immutable system-generated id for a user's Venmo account.",
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    email_address: EmailSchema.exactOptional().openapi({
+      description: 'The email address of the payer.',
+    }),
+    account_id: AccountId_2Schema.exactOptional().openapi({
+      description: "This is an immutable system-generated id for a user's Venmo account.",
+      readOnly: true,
+    }),
     user_name: z
       .string()
       .regex(/^[-a-zA-Z0-9_]*$/)
@@ -6294,16 +5748,21 @@ const VenmoWalletResponseSchema = z
         .openapi({
           description:
             'The name associated with the Venmo account. Supports only the `given_name` and `surname` properties.',
+          not: {
+            anyOf: [
+              { required: ['prefix'] },
+              { required: ['middle_name'] },
+              { required: ['suffix'] },
+              { required: ['alternate_full_name'] },
+              { required: ['full_name'] },
+            ],
+          },
         }),
     ).exactOptional(),
-    phone_number: Phone_3Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number associated with the Venmo account, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
-        }),
-    ).exactOptional(),
+    phone_number: Phone_3Schema.exactOptional().openapi({
+      description:
+        'The phone number associated with the Venmo account, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en). Supports only the `national_number` property.',
+    }),
     address: AddressPortableSchema.and(
       z
         .any()
@@ -6357,6 +5816,14 @@ const VenmoWalletResponseSchema = z
         .openapi({
           description:
             'The address of the payer. Supports only the `address_line_1`, `address_line_2`, `admin_area_1`, `admin_area_2`, `postal_code`, and `country_code` properties. Also referred to as the billing address of the customer.',
+          not: {
+            anyOf: [
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
     return_flow: z
@@ -6375,14 +5842,12 @@ const VenmoWalletResponseSchema = z
 
 const CryptoSchema = z
   .object({
-    country_code: CountryCodeSchema.and(
-      z.any().openapi({ description: 'The two-character ISO 3166-1 purchase country code.' }),
-    ).exactOptional(),
-    name: CryptoAccountHolderNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the account holder associated with Crypto wallet.' }),
-    ).exactOptional(),
+    country_code: CountryCodeSchema.exactOptional().openapi({
+      description: 'The two-character ISO 3166-1 purchase country code.',
+    }),
+    name: CryptoAccountHolderNameSchema.exactOptional().openapi({
+      description: 'The name of the account holder associated with Crypto wallet.',
+    }),
     experience_context: ExperienceContextBaseSchema.and(
       z
         .any()
@@ -6416,6 +5881,7 @@ const CryptoSchema = z
         .openapi({
           description:
             'Customizes the payer experience during the approval process for the payment.',
+          not: { anyOf: [{ required: ['brand_name'] }, { required: ['shipping_preference'] }] },
         }),
     ).exactOptional(),
   })
@@ -6426,30 +5892,23 @@ const CryptoSchema = z
   })
   .openapi('Crypto')
 
-const PaymentSourceResponseSchema = z
-  .object({
-    card: CardResponseSchema.exactOptional(),
-    paypal: PaypalWalletResponseSchema.exactOptional(),
-    bancontact: BancontactSchema.exactOptional(),
-    blik: BlikSchema.exactOptional(),
-    eps: EpsSchema.exactOptional(),
-    giropay: GiropaySchema.exactOptional(),
-    ideal: IdealSchema.exactOptional(),
-    mybank: MybankSchema.exactOptional(),
-    p24: P24Schema.exactOptional(),
-    sofort: SofortSchema.exactOptional(),
-    trustly: TrustlySchema.exactOptional(),
-    apple_pay: ApplePaySchema.exactOptional(),
-    google_pay: GooglePaySchema.exactOptional(),
-    venmo: VenmoWalletResponseSchema.exactOptional(),
-    crypto: CryptoSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'payment_source_response',
-    description: 'The payment source used to fund the payment.',
-    required: [],
-  })
-  .openapi('PaymentSourceResponse')
+type PaymentSourceResponseType = {
+  card?: z.infer<typeof CardResponseSchema>
+  paypal?: z.infer<typeof PaypalWalletResponseSchema>
+  bancontact?: z.infer<typeof BancontactSchema>
+  blik?: z.infer<typeof BlikSchema>
+  eps?: z.infer<typeof EpsSchema>
+  giropay?: z.infer<typeof GiropaySchema>
+  ideal?: z.infer<typeof IdealSchema>
+  mybank?: z.infer<typeof MybankSchema>
+  p24?: z.infer<typeof P24Schema>
+  sofort?: z.infer<typeof SofortSchema>
+  trustly?: z.infer<typeof TrustlySchema>
+  apple_pay?: z.infer<typeof ApplePaySchema>
+  google_pay?: z.infer<typeof GooglePaySchema>
+  venmo?: z.infer<typeof VenmoWalletResponseSchema>
+  crypto?: z.infer<typeof CryptoSchema>
+}
 
 const ItemSchema = z
   .object({
@@ -6459,22 +5918,14 @@ const ItemSchema = z
       .min(1)
       .max(127)
       .openapi({ description: 'The item name or title.' }),
-    unit_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The item price or rate per unit. If you specify <code>unit_amount</code>, <code>purchase_units[].amount.breakdown.item_total</code> is required. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
-        }),
-    ),
-    tax: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The item tax for each unit. If <code>tax</code> is specified, <code>purchase_units[].amount.breakdown.tax_total</code> is required. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
-        }),
-    ).exactOptional(),
+    unit_amount: MoneySchema.openapi({
+      description:
+        'The item price or rate per unit. If you specify <code>unit_amount</code>, <code>purchase_units[].amount.breakdown.item_total</code> is required. Must equal <code>unit_amount * quantity</code> for all items. <code>unit_amount.value</code> can not be a negative number.',
+    }),
+    tax: MoneySchema.exactOptional().openapi({
+      description:
+        'The item tax for each unit. If <code>tax</code> is specified, <code>purchase_units[].amount.breakdown.tax_total</code> is required. Must equal <code>tax * quantity</code> for all items. <code>tax.value</code> can not be a negative number.',
+    }),
     quantity: z
       .string()
       .regex(/^[1-9][0-9]{0,9}$/)
@@ -6517,9 +5968,9 @@ const ItemSchema = z
         description:
           "The URL of the item's image. File type and size restrictions apply. An image that violates these restrictions will not be honored.",
       }),
-    upc: UniversalProductCodeSchema.and(
-      z.any().openapi({ description: 'The Universal Product Code of the item.' }),
-    ).exactOptional(),
+    upc: UniversalProductCodeSchema.exactOptional().openapi({
+      description: 'The Universal Product Code of the item.',
+    }),
     billing_plan: OrderBillingPlanSchema.exactOptional(),
   })
   .openapi({
@@ -6578,9 +6029,9 @@ const TrackerItemSchema = z
         description:
           "The URL of the item's image. File type and size restrictions apply. An image that violates these restrictions will not be honored.",
       }),
-    upc: UniversalProductCodeSchema.and(
-      z.any().openapi({ description: 'The Universal Product Code of the item.' }),
-    ).exactOptional(),
+    upc: UniversalProductCodeSchema.exactOptional().openapi({
+      description: 'The Universal Product Code of the item.',
+    }),
   })
   .openapi({
     title: 'tracker_item',
@@ -6592,30 +6043,30 @@ const TrackerItemSchema = z
 const LinkSchema_2Schema = z
   .object({
     additionalItems: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'additional_items', description: 'Any additional items.' }),
     dependencies: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Dependencies', description: 'Any Dependencies.' }),
-    items: z.object({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
+    items: z.looseObject({}).exactOptional().openapi({ title: 'Items', description: 'An item.' }),
     definitions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Definitions', description: 'Definitions.' }),
     patternProperties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'pattern_properties', description: 'The pattern properties.' }),
     properties: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ title: 'Properties', description: 'Properties.' }),
     allOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'all_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -6631,7 +6082,7 @@ const LinkSchema_2Schema = z
     anyOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'any_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -6648,7 +6099,7 @@ const LinkSchema_2Schema = z
     oneOf: z
       .array(
         z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'one_of_item',
             description: 'A sub-schema against which the data must validate.',
@@ -6661,9 +6112,9 @@ const LinkSchema_2Schema = z
         title: 'one_of',
         description: 'An array of sub-schemas. The data must validate against one sub-schema.',
       }),
-    not: z.object({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
+    not: z.looseObject({}).exactOptional().openapi({ title: 'Not', description: 'Not.' }),
     links: z
-      .array(z.object({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
+      .array(z.looseObject({}).openapi({ title: 'link', description: 'A link.', readOnly: true }))
       .min(0)
       .max(32767)
       .exactOptional()
@@ -6771,17 +6222,13 @@ const LinkDescription_2Schema = z
         title: 'enc_type',
         description: 'The media type in which to submit the request data.',
       }),
-    schema: LinkSchema_2Schema.and(
-      z.any().openapi({ description: 'The schema that describes the request data.' }),
-    ).exactOptional(),
-    targetSchema: LinkSchema_2Schema.and(
-      z
-        .any()
-        .openapi({
-          title: 'target_schema',
-          description: 'The schema that describes the link target.',
-        }),
-    ).exactOptional(),
+    schema: LinkSchema_2Schema.exactOptional().openapi({
+      description: 'The schema that describes the request data.',
+    }),
+    targetSchema: LinkSchema_2Schema.exactOptional().openapi({
+      title: 'target_schema',
+      description: 'The schema that describes the link target.',
+    }),
   })
   .openapi({
     title: 'Link Description',
@@ -6790,6 +6237,40 @@ const LinkDescription_2Schema = z
     required: ['href', 'rel'],
   })
   .openapi('LinkDescription_2')
+
+const DateTimeSchema = z
+  .string()
+  .regex(
+    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])[T,t]([0-1][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)([.][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})$/,
+  )
+  .min(20)
+  .max(64)
+  .openapi({
+    description:
+      'The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). Seconds are required while fractional seconds are optional.<blockquote><strong>Note:</strong> The regular expression provides guidance but does not reject all invalid dates.</blockquote>',
+  })
+  .openapi('DateTime')
+
+const ActivityTimestampsSchema = z
+  .object({
+    create_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction occurred, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+    update_time: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time when the transaction was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    title: 'activity_timestamps',
+    description:
+      'The date and time stamps that are common to authorized payment, captured payment, and refund transactions.',
+    required: [],
+  })
+  .openapi('ActivityTimestamps')
 
 const TrackerSchema = z
   .object({
@@ -6803,9 +6284,7 @@ const TrackerSchema = z
     status: TrackerStatusSchema.exactOptional(),
     items: z
       .array(
-        TrackerItemSchema.and(
-          z.any().openapi({ title: 'tracker_item', description: 'Items in a shipment.' }),
-        ),
+        TrackerItemSchema.openapi({ title: 'tracker_item', description: 'Items in a shipment.' }),
       )
       .min(0)
       .max(32767)
@@ -6813,14 +6292,10 @@ const TrackerSchema = z
       .openapi({ description: 'An array of details of items in the shipment.' }),
     links: z
       .array(
-        LinkDescription_2Schema.and(
-          z
-            .any()
-            .openapi({
-              title: 'link_description',
-              description: 'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links).',
-            }),
-        ),
+        LinkDescription_2Schema.openapi({
+          title: 'link_description',
+          description: 'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links).',
+        }),
       )
       .min(0)
       .max(32767)
@@ -6835,14 +6310,10 @@ const TrackerSchema = z
 const ShippingWithTrackingDetailsSchema = ShippingDetailSchema.and(
   z
     .object({
-      phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The phone number of the recipient of the shipped items, which may belong to either the payer, or an alternate contact, for delivery.',
-          }),
-      ).exactOptional(),
+      phone_number: PhoneWithNationalRequiredAndCountryCodeSchema.exactOptional().openapi({
+        description:
+          'The phone number of the recipient of the shipped items, which may belong to either the payer, or an alternate contact, for delivery.',
+      }),
       trackers: z
         .array(TrackerSchema)
         .min(0)
@@ -6882,14 +6353,10 @@ const AuthorizationStatusSchema = z
         description: 'The status for the authorized payment.',
         readOnly: true,
       }),
-    status_details: AuthorizationStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The details of the authorized order pending status.',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    status_details: AuthorizationStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the authorized order pending status.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'authorization_status',
@@ -6947,9 +6414,10 @@ const AuthorizationSchema = AuthorizationStatusSchema.and(
           description: 'The PayPal-generated ID for the authorized payment.',
           readOnly: true,
         }),
-      amount: AmountWithBreakdownSchema.and(
-        z.any().openapi({ description: 'The amount for this authorized payment.', readOnly: true }),
-      ).exactOptional(),
+      amount: AmountWithBreakdownSchema.exactOptional().openapi({
+        description: 'The amount for this authorized payment.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -6972,20 +6440,14 @@ const AuthorizationSchema = AuthorizationStatusSchema.and(
             'The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports.',
         }),
       network_transaction_reference: NetworkTransactionSchema.exactOptional(),
-      seller_protection: SellerProtectionSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
-      expiration_time: DateTimeSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The date and time when the authorized payment expires, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      seller_protection: SellerProtectionSchema.exactOptional().openapi({ readOnly: true }),
+      expiration_time: DateTimeSchema.exactOptional().openapi({
+        description:
+          'The date and time when the authorized payment expires, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).',
+        readOnly: true,
+      }),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -7242,14 +6704,10 @@ const ProcessorResponseSchema = z
 const AuthorizationWithAdditionalDataSchema = AuthorizationSchema.and(
   z
     .object({
-      processor_response: ProcessorResponseSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The processor response for card transactions.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      processor_response: ProcessorResponseSchema.exactOptional().openapi({
+        description: 'The processor response for card transactions.',
+        readOnly: true,
+      }),
     })
     .openapi({ required: [] }),
 )
@@ -7300,11 +6758,10 @@ const CaptureStatusSchema = z
         description: 'The status of the captured payment.',
         readOnly: true,
       }),
-    status_details: CaptureStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The details of the captured payment status.', readOnly: true }),
-    ).exactOptional(),
+    status_details: CaptureStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the captured payment status.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'capture_status',
@@ -7315,12 +6772,12 @@ const CaptureStatusSchema = z
 
 const ExchangeRateSchema = z
   .object({
-    source_currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The source currency from which to convert an amount.' }),
-    ).exactOptional(),
-    target_currency: CurrencyCodeSchema.and(
-      z.any().openapi({ description: 'The target currency to which to convert an amount.' }),
-    ).exactOptional(),
+    source_currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: 'The source currency from which to convert an amount.',
+    }),
+    target_currency: CurrencyCodeSchema.exactOptional().openapi({
+      description: 'The target currency to which to convert an amount.',
+    }),
     value: z
       .string()
       .regex(/^[\S\s]*$/)
@@ -7343,55 +6800,31 @@ const ExchangeRateSchema = z
 
 const SellerReceivableBreakdownSchema = z
   .object({
-    gross_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount for this captured payment in the currency of the transaction.',
-        }),
-    ),
-    paypal_fee: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The applicable fee for this captured payment in the currency of the transaction.',
-        }),
-    ).exactOptional(),
-    paypal_fee_in_receivable_currency: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The applicable fee for this captured payment in the receivable currency. Returned only in cases the fee is charged in the receivable currency. Example 'CNY'.",
-        }),
-    ).exactOptional(),
-    net_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as <code>gross_amount</code> minus the <code>paypal_fee</code> minus the <code>platform_fees</code>.',
-        }),
-    ).exactOptional(),
-    receivable_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The net amount that is credited to the payee's PayPal account. Returned only when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds. The amount is computed as <code>net_amount</code> times <code>exchange_rate</code>.",
-        }),
-    ).exactOptional(),
-    exchange_rate: ExchangeRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The exchange rate that determines the amount that is credited to the payee's PayPal account. Returned when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds.",
-        }),
-    ).exactOptional(),
+    gross_amount: MoneySchema.openapi({
+      description: 'The amount for this captured payment in the currency of the transaction.',
+    }),
+    paypal_fee: MoneySchema.exactOptional().openapi({
+      description:
+        'The applicable fee for this captured payment in the currency of the transaction.',
+    }),
+    paypal_fee_in_receivable_currency: MoneySchema.exactOptional().openapi({
+      description:
+        "The applicable fee for this captured payment in the receivable currency. Returned only in cases the fee is charged in the receivable currency. Example 'CNY'.",
+    }),
+    net_amount: MoneySchema.exactOptional().openapi({
+      description:
+        'The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as <code>gross_amount</code> minus the <code>paypal_fee</code> minus the <code>platform_fees</code>.',
+    }),
+    receivable_amount: MoneySchema.exactOptional().openapi({
+      description:
+        "The net amount that is credited to the payee's PayPal account. Returned only when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds. The amount is computed as <code>net_amount</code> times <code>exchange_rate</code>.",
+    }),
+    exchange_rate: ExchangeRateSchema.exactOptional().openapi({
+      description:
+        "The exchange rate that determines the amount that is credited to the payee's PayPal account. Returned when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds.",
+    }),
     platform_fees: z
-      .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
+      .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
       .min(0)
       .max(1)
       .exactOptional()
@@ -7421,9 +6854,10 @@ const CaptureSchema = CaptureStatusSchema.and(
           description: 'The PayPal-generated ID for the captured payment.',
           readOnly: true,
         }),
-      amount: AmountWithBreakdownSchema.and(
-        z.any().openapi({ description: 'The amount for this captured payment.', readOnly: true }),
-      ).exactOptional(),
+      amount: AmountWithBreakdownSchema.exactOptional().openapi({
+        description: 'The amount for this captured payment.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -7446,9 +6880,7 @@ const CaptureSchema = CaptureStatusSchema.and(
             'The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports.',
         }),
       network_transaction_reference: NetworkTransactionSchema.exactOptional(),
-      seller_protection: SellerProtectionSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
+      seller_protection: SellerProtectionSchema.exactOptional().openapi({ readOnly: true }),
       final_capture: z
         .boolean()
         .default(false)
@@ -7458,12 +6890,12 @@ const CaptureSchema = CaptureStatusSchema.and(
             'Indicates whether you can make additional captures against the authorized payment. Set to `true` if you do not intend to capture additional payments against the authorization. Set to `false` if you intend to capture additional payments against the authorization.',
           readOnly: true,
         }),
-      seller_receivable_breakdown: SellerReceivableBreakdownSchema.and(
-        z.any().openapi({ readOnly: true }),
-      ).exactOptional(),
+      seller_receivable_breakdown: SellerReceivableBreakdownSchema.exactOptional().openapi({
+        readOnly: true,
+      }),
       disbursement_mode: DisbursementModeSchema.exactOptional(),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -7472,14 +6904,10 @@ const CaptureSchema = CaptureStatusSchema.and(
             'An array of related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links).',
           readOnly: true,
         }),
-      processor_response: ProcessorResponseSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'An object that provides additional processor information for a direct credit card transaction.',
-          }),
-      ).exactOptional(),
+      processor_response: ProcessorResponseSchema.exactOptional().openapi({
+        description:
+          'An object that provides additional processor information for a direct credit card transaction.',
+      }),
     })
     .openapi({ required: [] }),
 )
@@ -7514,35 +6942,29 @@ const RefundStatusSchema = z
         description: 'The status of the refund.',
         readOnly: true,
       }),
-    status_details: RefundStatusDetailsSchema.and(
-      z.any().openapi({ description: 'The details of the refund status.', readOnly: true }),
-    ).exactOptional(),
+    status_details: RefundStatusDetailsSchema.exactOptional().openapi({
+      description: 'The details of the refund status.',
+      readOnly: true,
+    }),
   })
   .openapi({ title: 'refund_status', description: 'The refund status with details.', required: [] })
   .openapi('RefundStatus')
 
 const NetAmountBreakdownItemSchema = z
   .object({
-    payable_amount: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The net amount debited from the merchant's PayPal account.",
-          readOnly: true,
-        }),
-    ).exactOptional(),
-    converted_amount: MoneySchema.and(
-      z.any().openapi({ description: 'The converted payable amount.', readOnly: true }),
-    ).exactOptional(),
-    exchange_rate: ExchangeRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The exchange rate that determines the amount that was debited from the merchant's PayPal account.",
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    payable_amount: MoneySchema.exactOptional().openapi({
+      description: "The net amount debited from the merchant's PayPal account.",
+      readOnly: true,
+    }),
+    converted_amount: MoneySchema.exactOptional().openapi({
+      description: 'The converted payable amount.',
+      readOnly: true,
+    }),
+    exchange_rate: ExchangeRateSchema.exactOptional().openapi({
+      description:
+        "The exchange rate that determines the amount that was debited from the merchant's PayPal account.",
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'net_amount_breakdown',
@@ -7562,14 +6984,10 @@ const RefundSchema = RefundStatusSchema.and(
         .max(2147483647)
         .exactOptional()
         .openapi({ description: 'The PayPal-generated ID for the refund.', readOnly: true }),
-      amount: MoneySchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The amount that the payee refunded to the payer.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      amount: MoneySchema.exactOptional().openapi({
+        description: 'The amount that the payee refunded to the payer.',
+        readOnly: true,
+      }),
       invoice_id: z
         .string()
         .regex(/^[\S\s]*$/)
@@ -7614,52 +7032,32 @@ const RefundSchema = RefundStatusSchema.and(
         }),
       seller_payable_breakdown: z
         .object({
-          gross_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description: 'The amount that the payee refunded to the payer.',
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          paypal_fee: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The PayPal fee that was refunded to the payer in the currency of the transaction. This fee might not match the PayPal fee that the payee paid when the payment was captured.',
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          paypal_fee_in_receivable_currency: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The PayPal fee that was refunded to the payer in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          net_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The net amount that the payee's account is debited in the transaction currency. The net amount is calculated as <code>gross_amount</code> minus <code>paypal_fee</code> minus <code>platform_fees</code>.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
-          net_amount_in_receivable_currency: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  "The net amount that the payee's account is debited in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
-                readOnly: true,
-              }),
-          ).exactOptional(),
+          gross_amount: MoneySchema.exactOptional().openapi({
+            description: 'The amount that the payee refunded to the payer.',
+            readOnly: true,
+          }),
+          paypal_fee: MoneySchema.exactOptional().openapi({
+            description:
+              'The PayPal fee that was refunded to the payer in the currency of the transaction. This fee might not match the PayPal fee that the payee paid when the payment was captured.',
+            readOnly: true,
+          }),
+          paypal_fee_in_receivable_currency: MoneySchema.exactOptional().openapi({
+            description:
+              "The PayPal fee that was refunded to the payer in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
+            readOnly: true,
+          }),
+          net_amount: MoneySchema.exactOptional().openapi({
+            description:
+              "The net amount that the payee's account is debited in the transaction currency. The net amount is calculated as <code>gross_amount</code> minus <code>paypal_fee</code> minus <code>platform_fees</code>.",
+            readOnly: true,
+          }),
+          net_amount_in_receivable_currency: MoneySchema.exactOptional().openapi({
+            description:
+              "The net amount that the payee's account is debited in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'.",
+            readOnly: true,
+          }),
           platform_fees: z
-            .array(PlatformFeeSchema.and(z.any().openapi({ title: 'platform_fee' })))
+            .array(PlatformFeeSchema.openapi({ title: 'platform_fee' }))
             .min(0)
             .max(1)
             .exactOptional()
@@ -7668,11 +7066,7 @@ const RefundSchema = RefundStatusSchema.and(
                 'An array of platform or partner fees, commissions, or brokerage fees for the refund.',
             }),
           net_amount_breakdown: z
-            .array(
-              NetAmountBreakdownItemSchema.and(
-                z.any().openapi({ title: 'net_amount_breakdown_item' }),
-              ),
-            )
+            .array(NetAmountBreakdownItemSchema.openapi({ title: 'net_amount_breakdown_item' }))
             .min(0)
             .max(32767)
             .exactOptional()
@@ -7681,14 +7075,10 @@ const RefundSchema = RefundStatusSchema.and(
                 'An array of breakdown values for the net amount. Returned when the currency of the refund is different from the currency of the PayPal account where the payee holds their funds.',
               readOnly: true,
             }),
-          total_refunded_amount: MoneySchema.and(
-            z
-              .any()
-              .openapi({
-                description:
-                  'The total amount refunded from the original capture to date. For example, if a payer makes a $100 purchase and was refunded $20 a week ago and was refunded $30 in this refund, the `gross_amount` is $30 for this refund and the `total_refunded_amount` is $50.',
-              }),
-          ).exactOptional(),
+          total_refunded_amount: MoneySchema.exactOptional().openapi({
+            description:
+              'The total amount refunded from the original capture to date. For example, if a payer makes a $100 purchase and was refunded $20 a week ago and was refunded $30 in this refund, the `gross_amount` is $30 for this refund and the `total_refunded_amount` is $50.',
+          }),
         })
         .exactOptional()
         .openapi({
@@ -7697,16 +7087,12 @@ const RefundSchema = RefundStatusSchema.and(
           readOnly: true,
           required: [],
         }),
-      payer: PayeeBaseSchema.and(
-        z
-          .any()
-          .openapi({
-            description: 'The details associated with the merchant for this transaction.',
-            readOnly: true,
-          }),
-      ).exactOptional(),
+      payer: PayeeBaseSchema.exactOptional().openapi({
+        description: 'The details associated with the merchant for this transaction.',
+        readOnly: true,
+      }),
       links: z
-        .array(LinkDescription_2Schema.and(z.any().openapi({ title: 'link_description' })))
+        .array(LinkDescription_2Schema.openapi({ title: 'link_description' }))
         .min(0)
         .max(32767)
         .exactOptional()
@@ -7731,14 +7117,10 @@ const PaymentCollectionSchema = z
   .object({
     authorizations: z
       .array(
-        AuthorizationWithAdditionalDataSchema.and(
-          z
-            .any()
-            .openapi({
-              title: 'authorizations',
-              description: 'The authorized payment for a purchase unit.',
-            }),
-        ),
+        AuthorizationWithAdditionalDataSchema.openapi({
+          title: 'authorizations',
+          description: 'The authorized payment for a purchase unit.',
+        }),
       )
       .min(0)
       .max(32767)
@@ -7749,14 +7131,10 @@ const PaymentCollectionSchema = z
       }),
     captures: z
       .array(
-        CaptureSchema.and(
-          z
-            .any()
-            .openapi({
-              title: 'capture',
-              description: 'The captured payment for a purchase unit.',
-            }),
-        ),
+        CaptureSchema.openapi({
+          title: 'capture',
+          description: 'The captured payment for a purchase unit.',
+        }),
       )
       .min(0)
       .max(32767)
@@ -7767,9 +7145,7 @@ const PaymentCollectionSchema = z
       }),
     refunds: z
       .array(
-        RefundSchema.and(
-          z.any().openapi({ title: 'refund', description: 'A refund for a purchase unit.' }),
-        ),
+        RefundSchema.openapi({ title: 'refund', description: 'A refund for a purchase unit.' }),
       )
       .min(0)
       .max(32767)
@@ -7787,7 +7163,48 @@ const PaymentCollectionSchema = z
   })
   .openapi('PaymentCollection')
 
-const PurchaseUnitSchema = z
+type PurchaseUnitType = {
+  reference_id?: string
+  amount?: z.infer<typeof AmountWithBreakdownSchema>
+  payee?: z.infer<typeof PayeeSchema> & unknown
+  payment_instruction?: z.infer<typeof PaymentInstructionSchema>
+  description?: string
+  custom_id?: string
+  invoice_id?: string
+  id?: string
+  soft_descriptor?: string
+  items?: (z.infer<typeof ItemSchema> & unknown)[]
+  shipping?: z.infer<typeof ShippingWithTrackingDetailsSchema> & unknown
+  supplementary_data?: z.infer<typeof SupplementaryDataSchema> & unknown
+  payments?: z.infer<typeof PaymentCollectionSchema> & unknown
+}
+
+const PaymentSourceResponseSchema: z.ZodType<PaymentSourceResponseType> = z
+  .object({
+    card: CardResponseSchema.exactOptional(),
+    paypal: PaypalWalletResponseSchema.exactOptional(),
+    bancontact: BancontactSchema.exactOptional(),
+    blik: BlikSchema.exactOptional(),
+    eps: EpsSchema.exactOptional(),
+    giropay: GiropaySchema.exactOptional(),
+    ideal: IdealSchema.exactOptional(),
+    mybank: MybankSchema.exactOptional(),
+    p24: P24Schema.exactOptional(),
+    sofort: SofortSchema.exactOptional(),
+    trustly: TrustlySchema.exactOptional(),
+    apple_pay: ApplePaySchema.exactOptional(),
+    google_pay: GooglePaySchema.exactOptional(),
+    venmo: VenmoWalletResponseSchema.exactOptional(),
+    crypto: CryptoSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'payment_source_response',
+    description: 'The payment source used to fund the payment.',
+    required: [],
+  })
+  .openapi('PaymentSourceResponse')
+
+const PurchaseUnitSchema: z.ZodType<PurchaseUnitType> = z
   .object({
     reference_id: z
       .string()
@@ -7800,9 +7217,9 @@ const PurchaseUnitSchema = z
           'The API caller-provided external ID for the purchase unit. Required for multiple purchase units when you must update the order through `PATCH`. If you omit this value and the order contains only one purchase unit, PayPal sets this value to `default`. <blockquote><strong>Note:</strong> If there are multiple purchase units, <code>reference_id</code> is required for each purchase unit.</blockquote>',
       }),
     amount: AmountWithBreakdownSchema.exactOptional(),
-    payee: PayeeSchema.and(
-      z.any().openapi({ description: 'The merchant who receives payment for this transaction.' }),
-    ).exactOptional(),
+    payee: PayeeSchema.exactOptional().openapi({
+      description: 'The merchant who receives payment for this transaction.',
+    }),
     payment_instruction: PaymentInstructionSchema.exactOptional(),
     description: z
       .string()
@@ -7849,30 +7266,22 @@ const PurchaseUnitSchema = z
           "The payment descriptor on account transactions on the customer's credit card statement, that PayPal sends to processors. The maximum length of the soft descriptor information that you can pass in the API field is 22 characters, in the following format:<code>22 - len(PAYPAL * (8)) - len(<var>Descriptor in Payment Receiving Preferences of Merchant account</var> + 1)</code>The PAYPAL prefix uses 8 characters.<br/><br/>The soft descriptor supports the following ASCII characters:<ul><li>Alphanumeric characters</li><li>Dashes</li><li>Asterisks</li><li>Periods (.)</li><li>Spaces</li></ul>For Wallet payments marketplace integrations:<ul><li>The merchant descriptor in the Payment Receiving Preferences must be the marketplace name.</li><li>You can't use the remaining space to show the customer service number.</li><li>The remaining spaces can be a combination of seller name and country.</li></ul><br/>For unbranded payments (Direct Card) marketplace integrations, use a combination of the seller name and phone number.",
       }),
     items: z
-      .array(ItemSchema.and(z.any().openapi({ title: 'item', description: 'An item.' })))
+      .array(ItemSchema.openapi({ title: 'item', description: 'An item.' }))
       .min(0)
       .max(32767)
       .exactOptional()
       .openapi({ description: 'An array of items that the customer purchases from the merchant.' }),
-    shipping: ShippingWithTrackingDetailsSchema.and(
-      z.any().openapi({ description: 'The shipping address and method.' }),
-    ).exactOptional(),
-    supplementary_data: SupplementaryDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Supplementary data about this payment. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.',
-        }),
-    ).exactOptional(),
-    payments: PaymentCollectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The comprehensive history of payments for the purchase unit.',
-          readOnly: true,
-        }),
-    ).exactOptional(),
+    shipping: ShippingWithTrackingDetailsSchema.exactOptional().openapi({
+      description: 'The shipping address and method.',
+    }),
+    supplementary_data: SupplementaryDataSchema.exactOptional().openapi({
+      description:
+        'Supplementary data about this payment. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.',
+    }),
+    payments: PaymentCollectionSchema.exactOptional().openapi({
+      description: 'The comprehensive history of payments for the purchase unit.',
+      readOnly: true,
+    }),
   })
   .openapi({
     title: 'Purchase Unit',
@@ -7887,7 +7296,250 @@ const OrderStatusSchema = z
   .openapi({ title: 'Order Status', description: 'The order status.' })
   .openapi('OrderStatus')
 
-const OrderSchema = ActivityTimestampsSchema.and(z.any().openapi({ title: 'activity_timestamps' }))
+type OrderType = (z.infer<typeof ActivityTimestampsSchema> & unknown) & {
+  id?: string
+  payment_source?: z.infer<typeof PaymentSourceResponseSchema>
+  intent?: z.infer<typeof CheckoutPaymentIntentSchema>
+  payer?: z.infer<typeof PayerSchema> & unknown
+  purchase_units?: (z.infer<typeof PurchaseUnitSchema> & unknown)[]
+  status?: z.infer<typeof OrderStatusSchema> & unknown
+  links?: (z.infer<typeof LinkDescription_2Schema> & unknown)[]
+}
+
+const OrderConfirmApplicationContextSchema = z
+  .object({
+    brand_name: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(1)
+      .max(127)
+      .exactOptional()
+      .openapi({
+        description: 'Label to present to your payer as part of the PayPal hosted web experience.',
+      }),
+    locale: LanguageSchema.exactOptional().openapi({
+      description:
+        'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
+    }),
+    return_url: z
+      .url()
+      .min(10)
+      .max(4000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL where the customer is redirected after the customer approves the payment.',
+      }),
+    cancel_url: z
+      .url()
+      .min(10)
+      .max(4000)
+      .exactOptional()
+      .openapi({
+        description:
+          'The URL where the customer is redirected after the customer cancels the payment.',
+      }),
+    stored_payment_source: StoredPaymentSourceSchema.exactOptional(),
+  })
+  .openapi({
+    title: 'Order Confirm Application Context',
+    description: 'Customizes the payer confirmation experience.',
+    required: [],
+  })
+  .openapi('OrderConfirmApplicationContext')
+
+type ConfirmOrderRequestType = {
+  payment_source: z.infer<typeof PaymentSourceSchema>
+  application_context?: z.infer<typeof OrderConfirmApplicationContextSchema>
+}
+
+type OrderAuthorizeRequestType = { payment_source?: z.infer<typeof PaymentSourceSchema> & unknown }
+
+type OrderAuthorizeResponseType = (z.infer<typeof ActivityTimestampsSchema> & unknown) & {
+  id?: string
+  payment_source?: z.infer<typeof PaymentSourceResponseSchema> & unknown
+  intent?: z.infer<typeof CheckoutPaymentIntentSchema>
+  payer?: z.infer<typeof PayerSchema>
+  purchase_units?: (z.infer<typeof PurchaseUnitSchema> & unknown)[]
+  status?: z.infer<typeof OrderStatusSchema> & unknown
+  links?: (z.infer<typeof LinkDescription_2Schema> & unknown)[]
+}
+
+type OrderCaptureRequestType = { payment_source?: z.infer<typeof PaymentSourceSchema> & unknown }
+
+type OrderUpdateCallbackRequestType = {
+  id?: string
+  shipping_address?: z.infer<typeof AddressPortableSchema> & unknown
+  shipping_option?: z.infer<typeof ShippingOptionSchema> & unknown
+  purchase_units: (z.infer<typeof PurchaseUnitRequestSchema> & unknown)[]
+}
+
+const GuidSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9-{}(),]*$/)
+  .min(1)
+  .max(68)
+  .openapi({ title: 'GUID', description: 'A Globally Unique Identifier (GUID) value.' })
+  .openapi('Guid')
+
+const StandardHeaderSchemaSchema = z
+  .string()
+  .regex(/^.*$/)
+  .min(1)
+  .max(16000)
+  .openapi({
+    title: 'Schema Object for standard headers',
+    description:
+      'Standard headers are generally less restrictive in structure due to historical precedent across browsers, etc. This is a common schema for use in defining most standard headers.',
+  })
+  .openapi('StandardHeaderSchema')
+
+const OrderRequestSchema: z.ZodType<OrderRequestType> = z
+  .object({
+    intent: CheckoutPaymentIntentSchema,
+    payer: PayerSchema.exactOptional().openapi({
+      description:
+        'DEPRECATED. The customer is also known as the payer. The Payer object was intended to only be used with the `payment_source.paypal` object. In order to make this design more clear, the details in the `payer` object are now available under `payment_source.paypal`. Please use `payment_source.paypal`. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.paypal</td><td>2.9</td></tr></table>',
+      deprecated: true,
+    }),
+    purchase_units: z
+      .array(
+        PurchaseUnitRequestSchema.openapi({
+          title: 'purchase_unit',
+          description: 'The purchase unit. Establishes a contract between a payer and the payee.',
+        }),
+      )
+      .min(1)
+      .max(10)
+      .openapi({
+        description:
+          'An array of purchase units. Each purchase unit establishes a contract between a payer and the payee. Each purchase unit represents either a full or partial order that the payer intends to purchase from the payee.',
+      }),
+    payment_source: PaymentSourceSchema.exactOptional(),
+    application_context: OrderApplicationContextSchema.exactOptional().openapi({
+      title: 'application_context',
+      description:
+        'Customize the payer experience during the approval process for the payment with PayPal.',
+    }),
+  })
+  .openapi({
+    title: 'Order Request',
+    description: 'The order request details.',
+    required: ['intent', 'purchase_units'],
+  })
+  .openapi('OrderRequest')
+
+const ErrorDetailsSchema = z
+  .object({
+    field: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          "The field that caused the error. If this field is in the body, set this value to the field's JSON pointer value. Required for client-side errors.",
+      }),
+    value: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({ description: 'The value of the field that caused the error.' }),
+    location: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .default('body')
+      .exactOptional()
+      .openapi({
+        description:
+          'The location of the field that caused the error. Value is `body`, `path`, or `query`.',
+      }),
+    issue: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .openapi({ description: 'The unique, fine-grained application-level error code.' }),
+    links: z
+      .array(LinkDescriptionSchema.openapi({ title: 'link_description', readOnly: true }))
+      .min(1)
+      .max(4)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links) that are either relevant to the issue by providing additional information or offering potential resolutions.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .exactOptional()
+      .openapi({
+        description:
+          'The human-readable description for an issue. The description can change over the lifetime of an API, so clients must not depend on this value.',
+      }),
+  })
+  .openapi({
+    title: 'Error Details',
+    description: 'The error details. Required for client-side `4XX` errors.',
+    required: ['issue'],
+  })
+  .openapi('ErrorDetails')
+
+const ErrorSchema = z
+  .object({
+    name: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .openapi({ description: 'The human-readable, unique name of the error.' }),
+    message: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .openapi({ description: 'The message that describes the error.' }),
+    debug_id: z
+      .string()
+      .regex(/^[\S\s]*$/)
+      .min(0)
+      .max(2147483647)
+      .openapi({ description: 'The PayPal internal ID. Used for correlation purposes.' }),
+    details: z
+      .array(ErrorDetailsSchema.openapi({ title: 'error_details' }))
+      .min(0)
+      .max(32767)
+      .exactOptional()
+      .openapi({ description: 'An array of additional details about the error.' }),
+    links: z
+      .array(LinkDescriptionSchema.openapi({ title: 'link_description', readOnly: true }))
+      .min(0)
+      .max(32767)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of request-related [HATEOAS links](/api/rest/responses/#hateoas-links).',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    title: 'Error',
+    description: 'The error details.',
+    required: ['debug_id', 'message', 'name'],
+  })
+  .openapi('Error')
+
+const OrderSchema: z.ZodType<OrderType> = ActivityTimestampsSchema.openapi({
+  title: 'activity_timestamps',
+})
   .and(
     z
       .object({
@@ -7900,26 +7552,18 @@ const OrderSchema = ActivityTimestampsSchema.and(z.any().openapi({ title: 'activ
           .openapi({ description: 'The ID of the order.', readOnly: true }),
         payment_source: PaymentSourceResponseSchema.exactOptional(),
         intent: CheckoutPaymentIntentSchema.exactOptional(),
-        payer: PayerSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'DEPRECATED. The customer is also known as the payer. The Payer object was intended to only be used with the `payment_source.paypal` object. In order to make this design more clear, the details in the `payer` object are now available under `payment_source.paypal`. Please use `payment_source.paypal`. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.paypal</td><td>2.9</td></tr></table>',
-              deprecated: true,
-            }),
-        ).exactOptional(),
+        payer: PayerSchema.exactOptional().openapi({
+          description:
+            'DEPRECATED. The customer is also known as the payer. The Payer object was intended to only be used with the `payment_source.paypal` object. In order to make this design more clear, the details in the `payer` object are now available under `payment_source.paypal`. Please use `payment_source.paypal`. <b>DEPRECATED</b><br><table><tr><th>See</th><th>Since Version</th></tr><tr><td>payment_source.paypal</td><td>2.9</td></tr></table>',
+          deprecated: true,
+        }),
         purchase_units: z
           .array(
-            PurchaseUnitSchema.and(
-              z
-                .any()
-                .openapi({
-                  title: 'purchase_unit',
-                  description:
-                    'A purchase unit. Establishes a contract between a customer and merchant.',
-                }),
-            ),
+            PurchaseUnitSchema.openapi({
+              title: 'purchase_unit',
+              description:
+                'A purchase unit. Establishes a contract between a customer and merchant.',
+            }),
           )
           .min(1)
           .max(10)
@@ -7928,18 +7572,14 @@ const OrderSchema = ActivityTimestampsSchema.and(z.any().openapi({ title: 'activ
             description:
               'An array of purchase units. Each purchase unit establishes a contract between a customer and merchant. Each purchase unit represents either a full or partial order that the customer intends to purchase from the merchant.',
           }),
-        status: OrderStatusSchema.and(z.any().openapi({ readOnly: true })).exactOptional(),
+        status: OrderStatusSchema.exactOptional().openapi({ readOnly: true }),
         links: z
           .array(
-            LinkDescription_2Schema.and(
-              z
-                .any()
-                .openapi({
-                  title: 'link_description',
-                  description:
-                    'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links). To complete payer approval, use the `approve` link with the `GET` method.',
-                }),
-            ),
+            LinkDescription_2Schema.openapi({
+              title: 'link_description',
+              description:
+                'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links). To complete payer approval, use the `approve` link with the `GET` method.',
+            }),
           )
           .min(0)
           .max(32767)
@@ -7997,7 +7637,7 @@ const PatchSchema = z
   .openapi('Patch')
 
 const PatchRequestSchema = z
-  .array(PatchSchema.and(z.any().openapi({ title: 'patch' })))
+  .array(PatchSchema.openapi({ title: 'patch' }))
   .min(0)
   .max(32767)
   .openapi({
@@ -8006,53 +7646,7 @@ const PatchRequestSchema = z
   })
   .openapi('PatchRequest')
 
-const OrderConfirmApplicationContextSchema = z
-  .object({
-    brand_name: z
-      .string()
-      .regex(/^[\S\s]*$/)
-      .min(1)
-      .max(127)
-      .exactOptional()
-      .openapi({
-        description: 'Label to present to your payer as part of the PayPal hosted web experience.',
-      }),
-    locale: LanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal supports a five-character code. For example, `da-DK`, `he-IL`, `id-ID`, `ja-JP`, `no-NO`, `pt-BR`, `ru-RU`, `sv-SE`, `th-TH`, `zh-CN`, `zh-HK`, or `zh-TW`.',
-        }),
-    ).exactOptional(),
-    return_url: z
-      .url()
-      .min(10)
-      .max(4000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL where the customer is redirected after the customer approves the payment.',
-      }),
-    cancel_url: z
-      .url()
-      .min(10)
-      .max(4000)
-      .exactOptional()
-      .openapi({
-        description:
-          'The URL where the customer is redirected after the customer cancels the payment.',
-      }),
-    stored_payment_source: StoredPaymentSourceSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'Order Confirm Application Context',
-    description: 'Customizes the payer confirmation experience.',
-    required: [],
-  })
-  .openapi('OrderConfirmApplicationContext')
-
-const ConfirmOrderRequestSchema = z
+const ConfirmOrderRequestSchema: z.ZodType<ConfirmOrderRequestType> = z
   .object({
     payment_source: PaymentSourceSchema,
     application_context: OrderConfirmApplicationContextSchema.exactOptional(),
@@ -8065,16 +7659,12 @@ const ConfirmOrderRequestSchema = z
   })
   .openapi('ConfirmOrderRequest')
 
-const OrderAuthorizeRequestSchema = z
+const OrderAuthorizeRequestSchema: z.ZodType<OrderAuthorizeRequestType> = z
   .object({
-    payment_source: PaymentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The source of payment for the order, which can be a token or a card. Use this object only if you have not redirected the user after order creation to approve the payment. In such cases, the user-selected payment method in the PayPal flow is implicitly used.',
-        }),
-    ).exactOptional(),
+    payment_source: PaymentSourceSchema.exactOptional().openapi({
+      description:
+        'The source of payment for the order, which can be a token or a card. Use this object only if you have not redirected the user after order creation to approve the payment. In such cases, the user-selected payment method in the PayPal flow is implicitly used.',
+    }),
   })
   .openapi({
     title: 'Order Authorize Request',
@@ -8083,710 +7673,779 @@ const OrderAuthorizeRequestSchema = z
   })
   .openapi('OrderAuthorizeRequest')
 
-const OrderAuthorizeResponseSchema = ActivityTimestampsSchema.and(
-  z.any().openapi({ title: 'activity_timestamps' }),
-)
-  .and(
-    z
-      .object({
-        id: z
-          .string()
-          .regex(/^[\S\s]*$/)
-          .min(0)
-          .max(2147483647)
-          .exactOptional()
-          .openapi({ description: 'The ID of the order.', readOnly: true }),
-        payment_source: PaymentSourceResponseSchema.and(
-          z.any().refine(
-            (val) =>
-              !z
-                .union([
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'alipay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['alipay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'bancomatpay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['bancomatpay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'bancontact')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['bancontact'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'blik')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['blik'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'boletobancario')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['boletobancario'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'eps')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['eps'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'giropay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['giropay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'grabpay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['grabpay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'ideal')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['ideal'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'mbway')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['mbway'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'multibanco')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['multibanco'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'mybank')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['mybank'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'oxxo')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['oxxo'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'payu')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['payu'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'pay_upon_invoice')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['pay_upon_invoice'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'p24')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['p24'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'safetypay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['safetypay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'satispay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['satispay'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'swish')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['swish'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'sofort')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['sofort'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'trustly')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['trustly'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'verkkopankki')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['verkkopankki'] }),
-                  z
-                    .unknown()
-                    .superRefine((val, ctx) => {
-                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                        if (!Object.hasOwn(val, 'wechatpay')) {
-                          ctx.addIssue({ code: 'custom' })
-                        }
-                      }
-                    })
-                    .openapi({ required: ['wechatpay'] }),
-                ])
-                .safeParse(val).success,
-          ),
-        ).exactOptional(),
-        intent: CheckoutPaymentIntentSchema.exactOptional(),
-        payer: PayerSchema.exactOptional(),
-        purchase_units: z
-          .array(
-            PurchaseUnitSchema.and(
-              z
-                .any()
-                .openapi({
-                  title: 'purchase_unit',
-                  description:
-                    'A purchase unit. Establishes a contract between a customer and merchant.',
-                }),
-            ),
-          )
-          .min(1)
-          .max(10)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array of purchase units. Each purchase unit establishes a contract between a customer and merchant. Each purchase unit represents either a full or partial order that the customer intends to purchase from the merchant.',
-          }),
-        status: OrderStatusSchema.and(z.any().openapi({ readOnly: true })).exactOptional(),
-        links: z
-          .array(
-            LinkDescription_2Schema.and(
-              z
-                .any()
-                .openapi({
-                  title: 'link_description',
-                  description:
-                    'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links). To complete payer approval, use the `approve` link with the `GET` method.',
-                }),
-            ),
-          )
-          .min(0)
-          .max(32767)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array of request-related HATEOAS links. To complete payer approval, use the `approve` link to redirect the payer. The API caller has 6 hours (default setting, this which can be changed by your account manager to 24/48/72 hours to accommodate your use case) from the time the order is created, to redirect your payer. Once redirected, the API caller has 6 hours for the payer to approve the order and either authorize or capture the order. If you are not using the PayPal JavaScript SDK to initiate PayPal Checkout (in context) ensure that you include `application_context.return_url` is specified or you will get "We\'re sorry, Things don\'t appear to be working at the moment" after the payer approves the payment.',
-            readOnly: true,
-          }),
-      })
-      .openapi({
-        title: 'Order Authorize Response',
-        description: 'The order authorize response.',
-        required: [],
-      }),
-  )
-  .openapi({ title: 'Order Authorize Response', description: 'The order authorize response.' })
-  .openapi('OrderAuthorizeResponse')
+const OrderAuthorizeResponseSchema: z.ZodType<OrderAuthorizeResponseType> =
+  ActivityTimestampsSchema.openapi({ title: 'activity_timestamps' })
+    .and(
+      z
+        .object({
+          id: z
+            .string()
+            .regex(/^[\S\s]*$/)
+            .min(0)
+            .max(2147483647)
+            .exactOptional()
+            .openapi({ description: 'The ID of the order.', readOnly: true }),
+          payment_source: PaymentSourceResponseSchema.and(
+            z
+              .any()
+              .refine(
+                (val) =>
+                  !z
+                    .union([
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'alipay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['alipay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'bancomatpay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['bancomatpay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'bancontact')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['bancontact'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'blik')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['blik'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'boletobancario')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['boletobancario'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'eps')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['eps'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'giropay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['giropay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'grabpay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['grabpay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'ideal')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['ideal'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'mbway')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['mbway'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'multibanco')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['multibanco'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'mybank')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['mybank'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'oxxo')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['oxxo'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'payu')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['payu'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'pay_upon_invoice')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['pay_upon_invoice'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'p24')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['p24'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'safetypay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['safetypay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'satispay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['satispay'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'swish')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['swish'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'sofort')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['sofort'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'trustly')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['trustly'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'verkkopankki')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['verkkopankki'] }),
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'wechatpay')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['wechatpay'] }),
+                    ])
+                    .safeParse(val).success,
+              )
+              .openapi({
+                not: {
+                  anyOf: [
+                    { required: ['alipay'] },
+                    { required: ['bancomatpay'] },
+                    { required: ['bancontact'] },
+                    { required: ['blik'] },
+                    { required: ['boletobancario'] },
+                    { required: ['eps'] },
+                    { required: ['giropay'] },
+                    { required: ['grabpay'] },
+                    { required: ['ideal'] },
+                    { required: ['mbway'] },
+                    { required: ['multibanco'] },
+                    { required: ['mybank'] },
+                    { required: ['oxxo'] },
+                    { required: ['payu'] },
+                    { required: ['pay_upon_invoice'] },
+                    { required: ['p24'] },
+                    { required: ['safetypay'] },
+                    { required: ['satispay'] },
+                    { required: ['swish'] },
+                    { required: ['sofort'] },
+                    { required: ['trustly'] },
+                    { required: ['verkkopankki'] },
+                    { required: ['wechatpay'] },
+                  ],
+                },
+              }),
+          ).exactOptional(),
+          intent: CheckoutPaymentIntentSchema.exactOptional(),
+          payer: PayerSchema.exactOptional(),
+          purchase_units: z
+            .array(
+              PurchaseUnitSchema.openapi({
+                title: 'purchase_unit',
+                description:
+                  'A purchase unit. Establishes a contract between a customer and merchant.',
+              }),
+            )
+            .min(1)
+            .max(10)
+            .exactOptional()
+            .openapi({
+              description:
+                'An array of purchase units. Each purchase unit establishes a contract between a customer and merchant. Each purchase unit represents either a full or partial order that the customer intends to purchase from the merchant.',
+            }),
+          status: OrderStatusSchema.exactOptional().openapi({ readOnly: true }),
+          links: z
+            .array(
+              LinkDescription_2Schema.openapi({
+                title: 'link_description',
+                description:
+                  'A request-related [HATEOAS link](/api/rest/responses/#hateoas-links). To complete payer approval, use the `approve` link with the `GET` method.',
+              }),
+            )
+            .min(0)
+            .max(32767)
+            .exactOptional()
+            .openapi({
+              description:
+                'An array of request-related HATEOAS links. To complete payer approval, use the `approve` link to redirect the payer. The API caller has 6 hours (default setting, this which can be changed by your account manager to 24/48/72 hours to accommodate your use case) from the time the order is created, to redirect your payer. Once redirected, the API caller has 6 hours for the payer to approve the order and either authorize or capture the order. If you are not using the PayPal JavaScript SDK to initiate PayPal Checkout (in context) ensure that you include `application_context.return_url` is specified or you will get "We\'re sorry, Things don\'t appear to be working at the moment" after the payer approves the payment.',
+              readOnly: true,
+            }),
+        })
+        .openapi({
+          title: 'Order Authorize Response',
+          description: 'The order authorize response.',
+          required: [],
+        }),
+    )
+    .openapi({ title: 'Order Authorize Response', description: 'The order authorize response.' })
+    .openapi('OrderAuthorizeResponse')
 
-const OrderCaptureRequestSchema = z
+const OrderCaptureRequestSchema: z.ZodType<OrderCaptureRequestType> = z
   .object({
     payment_source: PaymentSourceSchema.and(
-      z.any().refine(
-        (val) =>
-          !z
-            .union([
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'afterpay')) {
-                      ctx.addIssue({ code: 'custom' })
+      z
+        .any()
+        .refine(
+          (val) =>
+            !z
+              .union([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'afterpay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['afterpay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'bancontact')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['afterpay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'bancontact')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['bancontact'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'blik')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['bancontact'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'blik')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['blik'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'bizum')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['blik'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'bizum')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['bizum'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'blik_pay_later')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['bizum'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'blik_pay_later')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['blik_pay_later'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'crypto')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['blik_pay_later'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'crypto')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['crypto'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'dragonpay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['crypto'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'dragonpay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['dragonpay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'eps')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['dragonpay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'eps')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['eps'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'estonia_banks')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['eps'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'estonia_banks')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['estonia_banks'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'fiuu_cash')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['estonia_banks'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'fiuu_cash')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['fiuu_cash'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'floa_pay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['fiuu_cash'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'floa_pay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['floa_pay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'fpx')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['floa_pay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'fpx')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['fpx'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'giropay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['fpx'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'giropay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['giropay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'gopay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['giropay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'gopay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['gopay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'ideal')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['gopay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'ideal')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['ideal'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'klarna')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['ideal'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'klarna')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['klarna'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'latvia_banks')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['klarna'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'latvia_banks')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['latvia_banks'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'lithuania_banks')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['latvia_banks'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'lithuania_banks')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['lithuania_banks'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'mybank')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['lithuania_banks'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'mybank')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['mybank'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'paysafecard')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['mybank'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'paysafecard')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['paysafecard'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'pix_international')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['paysafecard'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'pix_international')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['pix_international'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'p24')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['pix_international'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'p24')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['p24'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'skrill')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['p24'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'skrill')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['skrill'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'paysera')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['skrill'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'paysera')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['paysera'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'scalapay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['paysera'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'scalapay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['scalapay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'sofort')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['scalapay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'sofort')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['sofort'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'swish')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['sofort'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'swish')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['swish'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'thailand_banks')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['swish'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'thailand_banks')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['thailand_banks'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'trustly')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['thailand_banks'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'trustly')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['trustly'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'wero')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['trustly'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'wero')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['wero'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'zip')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['wero'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'zip')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['zip'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'doku')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['zip'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'doku')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['doku'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'alfamart')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['doku'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'alfamart')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['alfamart'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'indomaret')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['alfamart'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'indomaret')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['indomaret'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'indonesia_banks')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['indomaret'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'indonesia_banks')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['indonesia_banks'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'jenius_pay')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['indonesia_banks'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'jenius_pay')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['jenius_pay'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'kredivo')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['jenius_pay'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'kredivo')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['kredivo'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'linkaja')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['kredivo'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'linkaja')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['linkaja'] }),
-              z
-                .unknown()
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'ovo')) {
-                      ctx.addIssue({ code: 'custom' })
+                  })
+                  .openapi({ required: ['linkaja'] }),
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'ovo')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
                     }
-                  }
-                })
-                .openapi({ required: ['ovo'] }),
-            ])
-            .safeParse(val).success,
-      ),
+                  })
+                  .openapi({ required: ['ovo'] }),
+              ])
+              .safeParse(val).success,
+        )
+        .openapi({
+          not: {
+            anyOf: [
+              { required: ['afterpay'] },
+              { required: ['bancontact'] },
+              { required: ['blik'] },
+              { required: ['bizum'] },
+              { required: ['blik_pay_later'] },
+              { required: ['crypto'] },
+              { required: ['dragonpay'] },
+              { required: ['eps'] },
+              { required: ['estonia_banks'] },
+              { required: ['fiuu_cash'] },
+              { required: ['floa_pay'] },
+              { required: ['fpx'] },
+              { required: ['giropay'] },
+              { required: ['gopay'] },
+              { required: ['ideal'] },
+              { required: ['klarna'] },
+              { required: ['latvia_banks'] },
+              { required: ['lithuania_banks'] },
+              { required: ['mybank'] },
+              { required: ['paysafecard'] },
+              { required: ['pix_international'] },
+              { required: ['p24'] },
+              { required: ['skrill'] },
+              { required: ['paysera'] },
+              { required: ['scalapay'] },
+              { required: ['sofort'] },
+              { required: ['swish'] },
+              { required: ['thailand_banks'] },
+              { required: ['trustly'] },
+              { required: ['wero'] },
+              { required: ['zip'] },
+              { required: ['doku'] },
+              { required: ['alfamart'] },
+              { required: ['indomaret'] },
+              { required: ['indonesia_banks'] },
+              { required: ['jenius_pay'] },
+              { required: ['kredivo'] },
+              { required: ['linkaja'] },
+              { required: ['ovo'] },
+            ],
+          },
+        }),
     ).exactOptional(),
   })
   .openapi({
@@ -10267,9 +9926,7 @@ const OrderTrackerRequestSchema = ShipmentTrackerSchema.and(
         }),
       items: z
         .array(
-          TrackerItemSchema.and(
-            z.any().openapi({ title: 'tracker_item', description: 'Items in a shipment.' }),
-          ),
+          TrackerItemSchema.openapi({ title: 'tracker_item', description: 'Items in a shipment.' }),
         )
         .min(0)
         .max(32767)
@@ -10285,7 +9942,7 @@ const OrderTrackerRequestSchema = ShipmentTrackerSchema.and(
   .openapi({ title: 'tracker_request', description: 'The tracking details of an order.' })
   .openapi('OrderTrackerRequest')
 
-const OrderUpdateCallbackRequestSchema = z
+const OrderUpdateCallbackRequestSchema: z.ZodType<OrderUpdateCallbackRequestType> = z
   .object({
     id: z
       .string()
@@ -10367,6 +10024,16 @@ const OrderUpdateCallbackRequestSchema = z
         .openapi({
           description:
             'Redacted shipping address to be used for shipping options and tax calculations.',
+          not: {
+            anyOf: [
+              { required: ['address_line_1'] },
+              { required: ['address_line_2'] },
+              { required: ['address_line_3'] },
+              { required: ['admin_area_3'] },
+              { required: ['admin_area_4'] },
+              { required: ['address_details'] },
+            ],
+          },
         }),
     ).exactOptional(),
     shipping_option: ShippingOptionSchema.and(
@@ -10386,10 +10053,13 @@ const OrderUpdateCallbackRequestSchema = z
               .openapi({ required: ['selected'] })
               .safeParse(val).success,
         )
-        .openapi({ description: 'Buyer selected shipping option.' }),
+        .openapi({
+          description: 'Buyer selected shipping option.',
+          not: { required: ['selected'] },
+        }),
     ).exactOptional(),
     purchase_units: z
-      .array(PurchaseUnitRequestSchema.and(z.any().openapi({ title: 'purchase_unit' })))
+      .array(PurchaseUnitRequestSchema.openapi({ title: 'purchase_unit' }))
       .length(1)
       .openapi({
         description:

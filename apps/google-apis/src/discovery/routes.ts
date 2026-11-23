@@ -326,6 +326,66 @@ const RestMethodSchema = z
   .openapi({ required: [] })
   .openapi('RestMethod')
 
+const RestResourceSchema: z.ZodType<RestResourceType> = z
+  .lazy(() =>
+    z
+      .object({
+        methods: z
+          .record(
+            z.string(),
+            RestMethodSchema.openapi({
+              description: 'Description for any methods on this resource.',
+            }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Methods on this resource.' }),
+        resources: z
+          .record(
+            z.string(),
+            RestResourceSchema.openapi({
+              description: 'Description for any sub-resources on this resource.',
+            }),
+          )
+          .exactOptional()
+          .openapi({ description: 'Sub-resources on this resource.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('RestResource')
+
+type RestDescriptionType = {
+  auth?: { oauth2?: { scopes?: { [key: string]: { description?: string } } } }
+  basePath?: string
+  baseUrl?: string
+  batchPath?: string
+  canonicalName?: string
+  description?: string
+  discoveryVersion?: string
+  documentationLink?: string
+  etag?: string
+  exponentialBackoffDefault?: boolean
+  features?: string[]
+  icons?: { x16?: string; x32?: string }
+  id?: string
+  kind?: string
+  labels?: string[]
+  methods?: { [key: string]: z.infer<typeof RestMethodSchema> }
+  name?: string
+  ownerDomain?: string
+  ownerName?: string
+  packagePath?: string
+  parameters?: { [key: string]: z.infer<typeof JsonSchemaSchema> }
+  protocol?: string
+  resources?: { [key: string]: z.infer<typeof RestResourceSchema> }
+  revision?: string
+  rootUrl?: string
+  schemas?: { [key: string]: z.infer<typeof JsonSchemaSchema> }
+  servicePath?: string
+  title?: string
+  version?: string
+  version_module?: boolean
+}
+
 type RestResourceType = {
   methods?: { [key: string]: z.infer<typeof RestMethodSchema> }
   resources?: { [key: string]: RestResourceType }
@@ -411,34 +471,7 @@ const DirectoryListSchema = z
   .openapi({ required: [] })
   .openapi('DirectoryList')
 
-const RestResourceSchema: z.ZodType<RestResourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        methods: z
-          .record(
-            z.string(),
-            RestMethodSchema.openapi({
-              description: 'Description for any methods on this resource.',
-            }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Methods on this resource.' }),
-        resources: z
-          .record(
-            z.string(),
-            RestResourceSchema.openapi({
-              description: 'Description for any sub-resources on this resource.',
-            }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Sub-resources on this resource.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('RestResource')
-
-const RestDescriptionSchema = z
+const RestDescriptionSchema: z.ZodType<RestDescriptionType> = z
   .object({
     auth: z
       .object({

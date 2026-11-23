@@ -46,26 +46,9 @@ const PolicyActionGetResponseSchema = z
 const StatementGetResponseSchema = z
   .object({
     actions: z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Action ID. The possible values can be `SendSlackMessage`, `SendEmail`, and `DeactivatePromotions`',
-            title: 'id',
-          }),
-        metadata: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({ description: 'Data inside of the actions', title: 'metadata' }),
-      })
+      .array(z.any())
       .exactOptional()
-      .openapi({
-        description: 'Actions that the Policy will execute',
-        title: 'actions',
-        required: [],
-      }),
+      .openapi({ description: 'Actions that the Policy will execute', title: 'actions' }),
     condition: z
       .object({
         conditions: z

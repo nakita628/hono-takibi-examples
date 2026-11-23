@@ -1,0 +1,3096 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getV1Key() {
+  return ['v1'] as const
+}
+
+export function getV1ProductsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.products.$get>>,
+) {
+  return ['v1', '/v1/products', toValue(args)] as const
+}
+
+export function getV1ProductsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.products.$get>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ProductsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.products.$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useV1Products<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.products.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<typeof client.v1.products.$get>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.products.$get>>>>
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.products.$get>>>>
+          >,
+          ReturnType<typeof getV1ProductsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.v1.products.$get>>>>>,
+    TError,
+    TData,
+    ReturnType<typeof getV1ProductsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ProductsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.products.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1AccountListSubscribersQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':account:listSubscribers']['$get']>>,
+) {
+  return ['v1', '/v1/:account:listSubscribers', toValue(args)] as const
+}
+
+export function getV1AccountListSubscribersQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':account:listSubscribers']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1AccountListSubscribersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':account:listSubscribers'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1AccountListSubscribers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':account:listSubscribers']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':account:listSubscribers']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':account:listSubscribers']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':account:listSubscribers']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1AccountListSubscribersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':account:listSubscribers']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1AccountListSubscribersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1AccountListSubscribersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':account:listSubscribers'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1AccountRegisterMutationKey() {
+  return ['v1', '/v1/:account:register', 'POST'] as const
+}
+
+export function getPostV1AccountRegisterMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':account:register']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':account:register']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1AccountRegisterMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':account:register']['$post']>) {
+      return parseResponse(client.v1[':account:register'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1AccountRegister<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':account:register']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':account:register']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1AccountRegisterMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1AccountUnregisterMutationKey() {
+  return ['v1', '/v1/:account:unregister', 'POST'] as const
+}
+
+export function getPostV1AccountUnregisterMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':account:unregister']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':account:unregister']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1AccountUnregisterMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':account:unregister']['$post']>) {
+      return parseResponse(client.v1[':account:unregister'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1AccountUnregister<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':account:unregister']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':account:unregister']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1AccountUnregisterMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1CustomerListPurchasableOffersQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:customer:listPurchasableOffers', toValue(args)] as const
+}
+
+export function getV1CustomerListPurchasableOffersQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1CustomerListPurchasableOffersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':customer:listPurchasableOffers'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1CustomerListPurchasableOffers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1CustomerListPurchasableOffersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableOffers']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1CustomerListPurchasableOffersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1CustomerListPurchasableOffersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':customer:listPurchasableOffers'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1CustomerListPurchasableSkusQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:customer:listPurchasableSkus', toValue(args)] as const
+}
+
+export function getV1CustomerListPurchasableSkusQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1CustomerListPurchasableSkusQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':customer:listPurchasableSkus'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1CustomerListPurchasableSkus<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1CustomerListPurchasableSkusQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':customer:listPurchasableSkus']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1CustomerListPurchasableSkusQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1CustomerListPurchasableSkusQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':customer:listPurchasableSkus'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1CustomerProvisionCloudIdentityMutationKey() {
+  return ['v1', '/v1/:customer:provisionCloudIdentity', 'POST'] as const
+}
+
+export function getPostV1CustomerProvisionCloudIdentityMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':customer:provisionCloudIdentity']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':customer:provisionCloudIdentity']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1CustomerProvisionCloudIdentityMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':customer:provisionCloudIdentity']['$post']>,
+    ) {
+      return parseResponse(client.v1[':customer:provisionCloudIdentity'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1CustomerProvisionCloudIdentity<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':customer:provisionCloudIdentity']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':customer:provisionCloudIdentity']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1CustomerProvisionCloudIdentityMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1EntitlementLookupOfferQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>,
+) {
+  return ['v1', '/v1/:entitlement:lookupOffer', toValue(args)] as const
+}
+
+export function getV1EntitlementLookupOfferQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1EntitlementLookupOfferQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':entitlement:lookupOffer'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1EntitlementLookupOffer<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1EntitlementLookupOfferQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':entitlement:lookupOffer']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1EntitlementLookupOfferQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1EntitlementLookupOfferQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':entitlement:lookupOffer'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1NameQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+) {
+  return ['v1', '/v1/:name', toValue(args)] as const
+}
+
+export function getV1NameQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1NameQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':name'].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useV1Name<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>
+            >
+          >,
+          ReturnType<typeof getV1NameQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1NameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1NameQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':name'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1NameMutationKey() {
+  return ['v1', '/v1/:name', 'DELETE'] as const
+}
+
+export function getDeleteV1NameMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$delete']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1NameMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name']['$delete']>) {
+      return parseResponse(client.v1[':name'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteV1Name<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$delete']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteV1NameMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchV1NameMutationKey() {
+  return ['v1', '/v1/:name', 'PATCH'] as const
+}
+
+export function getPatchV1NameMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$patch']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name']['$patch']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchV1NameMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name']['$patch']>) {
+      return parseResponse(client.v1[':name'].$patch(args, options))
+    },
+  })
+}
+
+export function usePatchV1Name<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$patch']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name']['$patch']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPatchV1NameMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameActivateMutationKey() {
+  return ['v1', '/v1/:name:activate', 'POST'] as const
+}
+
+export function getPostV1NameActivateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:activate']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:activate']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameActivateMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:activate']['$post']>) {
+      return parseResponse(client.v1[':name:activate'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameActivate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:activate']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:activate']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameActivateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameCancelMutationKey() {
+  return ['v1', '/v1/:name:cancel', 'POST'] as const
+}
+
+export function getPostV1NameCancelMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:cancel']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:cancel']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameCancelMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:cancel']['$post']>) {
+      return parseResponse(client.v1[':name:cancel'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameCancel<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:cancel']['$post']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:cancel']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameCancelMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameChangeOfferMutationKey() {
+  return ['v1', '/v1/:name:changeOffer', 'POST'] as const
+}
+
+export function getPostV1NameChangeOfferMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:changeOffer']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:changeOffer']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameChangeOfferMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:changeOffer']['$post']>) {
+      return parseResponse(client.v1[':name:changeOffer'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameChangeOffer<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:changeOffer']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:changeOffer']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameChangeOfferMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameChangeParametersMutationKey() {
+  return ['v1', '/v1/:name:changeParameters', 'POST'] as const
+}
+
+export function getPostV1NameChangeParametersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':name:changeParameters']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:changeParameters']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameChangeParametersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':name:changeParameters']['$post']>,
+    ) {
+      return parseResponse(client.v1[':name:changeParameters'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameChangeParameters<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:changeParameters']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:changeParameters']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameChangeParametersMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameChangeRenewalSettingsMutationKey() {
+  return ['v1', '/v1/:name:changeRenewalSettings', 'POST'] as const
+}
+
+export function getPostV1NameChangeRenewalSettingsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':name:changeRenewalSettings']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:changeRenewalSettings']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameChangeRenewalSettingsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':name:changeRenewalSettings']['$post']>,
+    ) {
+      return parseResponse(client.v1[':name:changeRenewalSettings'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameChangeRenewalSettings<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:changeRenewalSettings']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:changeRenewalSettings']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameChangeRenewalSettingsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameRunMutationKey() {
+  return ['v1', '/v1/:name:run', 'POST'] as const
+}
+
+export function getPostV1NameRunMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:run']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:run']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameRunMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:run']['$post']>) {
+      return parseResponse(client.v1[':name:run'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameRun<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:run']['$post']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:run']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameRunMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameStartPaidServiceMutationKey() {
+  return ['v1', '/v1/:name:startPaidService', 'POST'] as const
+}
+
+export function getPostV1NameStartPaidServiceMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':name:startPaidService']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:startPaidService']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameStartPaidServiceMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':name:startPaidService']['$post']>,
+    ) {
+      return parseResponse(client.v1[':name:startPaidService'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameStartPaidService<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:startPaidService']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:startPaidService']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameStartPaidServiceMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameSuspendMutationKey() {
+  return ['v1', '/v1/:name:suspend', 'POST'] as const
+}
+
+export function getPostV1NameSuspendMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:suspend']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:suspend']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameSuspendMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:suspend']['$post']>) {
+      return parseResponse(client.v1[':name:suspend'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameSuspend<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:suspend']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:suspend']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameSuspendMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentChannelPartnerLinksQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent/channelPartnerLinks', toValue(args)] as const
+}
+
+export function getV1ParentChannelPartnerLinksQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentChannelPartnerLinksQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].channelPartnerLinks.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentChannelPartnerLinks<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentChannelPartnerLinksQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentChannelPartnerLinksQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentChannelPartnerLinksQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].channelPartnerLinks.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentChannelPartnerLinksMutationKey() {
+  return ['v1', '/v1/:parent/channelPartnerLinks', 'POST'] as const
+}
+
+export function getPostV1ParentChannelPartnerLinksMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentChannelPartnerLinksMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent'].channelPartnerLinks.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentChannelPartnerLinks<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerLinks']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['channelPartnerLinks']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentChannelPartnerLinksMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentChannelPartnerRepricingConfigsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent/channelPartnerRepricingConfigs', toValue(args)] as const
+}
+
+export function getV1ParentChannelPartnerRepricingConfigsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentChannelPartnerRepricingConfigsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].channelPartnerRepricingConfigs.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentChannelPartnerRepricingConfigs<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentChannelPartnerRepricingConfigsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentChannelPartnerRepricingConfigsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentChannelPartnerRepricingConfigsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].channelPartnerRepricingConfigs.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentChannelPartnerRepricingConfigsMutationKey() {
+  return ['v1', '/v1/:parent/channelPartnerRepricingConfigs', 'POST'] as const
+}
+
+export function getPostV1ParentChannelPartnerRepricingConfigsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentChannelPartnerRepricingConfigsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$post']
+      >,
+    ) {
+      return parseResponse(client.v1[':parent'].channelPartnerRepricingConfigs.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentChannelPartnerRepricingConfigs<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1)[':parent']['channelPartnerRepricingConfigs']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentChannelPartnerRepricingConfigsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentCustomerRepricingConfigsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent/customerRepricingConfigs', toValue(args)] as const
+}
+
+export function getV1ParentCustomerRepricingConfigsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentCustomerRepricingConfigsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].customerRepricingConfigs.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentCustomerRepricingConfigs<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentCustomerRepricingConfigsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentCustomerRepricingConfigsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentCustomerRepricingConfigsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].customerRepricingConfigs.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentCustomerRepricingConfigsMutationKey() {
+  return ['v1', '/v1/:parent/customerRepricingConfigs', 'POST'] as const
+}
+
+export function getPostV1ParentCustomerRepricingConfigsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentCustomerRepricingConfigsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent'].customerRepricingConfigs.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentCustomerRepricingConfigs<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['customerRepricingConfigs']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentCustomerRepricingConfigsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentCustomersQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['customers']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/customers', toValue(args)] as const
+}
+
+export function getV1ParentCustomersQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['customers']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentCustomersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].customers.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentCustomers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['customers']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentCustomersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentCustomersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentCustomersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].customers.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentCustomersMutationKey() {
+  return ['v1', '/v1/:parent/customers', 'POST'] as const
+}
+
+export function getPostV1ParentCustomersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['customers']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentCustomersMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':parent']['customers']['$post']>) {
+      return parseResponse(client.v1[':parent'].customers.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentCustomers<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['customers']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['customers']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentCustomersMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentCustomersImportMutationKey() {
+  return ['v1', '/v1/:parent/customers:import', 'POST'] as const
+}
+
+export function getPostV1ParentCustomersImportMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['customers:import']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['customers:import']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentCustomersImportMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['customers:import']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent']['customers:import'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentCustomersImport<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['customers:import']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['customers:import']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentCustomersImportMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentEntitlementsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['entitlements']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/entitlements', toValue(args)] as const
+}
+
+export function getV1ParentEntitlementsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['entitlements']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentEntitlementsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].entitlements.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentEntitlements<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['entitlements']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentEntitlementsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentEntitlementsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentEntitlementsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].entitlements.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentEntitlementsMutationKey() {
+  return ['v1', '/v1/:parent/entitlements', 'POST'] as const
+}
+
+export function getPostV1ParentEntitlementsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['entitlements']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentEntitlementsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['entitlements']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent'].entitlements.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentEntitlements<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['entitlements']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['entitlements']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentEntitlementsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentOffersQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['offers']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/offers', toValue(args)] as const
+}
+
+export function getV1ParentOffersQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['offers']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentOffersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].offers.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentOffers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['offers']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['offers']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['offers']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['offers']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentOffersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['offers']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentOffersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentOffersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].offers.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentReportsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['reports']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/reports', toValue(args)] as const
+}
+
+export function getV1ParentReportsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['reports']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentReportsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].reports.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentReports<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['reports']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['reports']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['reports']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['reports']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentReportsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['reports']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentReportsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentReportsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].reports.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentSkusQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['skus']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/skus', toValue(args)] as const
+}
+
+export function getV1ParentSkusQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['skus']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentSkusQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].skus.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentSkus<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['skus']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['skus']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['skus']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['skus']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentSkusQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['skus']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentSkusQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentSkusQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].skus.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentCheckCloudIdentityAccountsExistMutationKey() {
+  return ['v1', '/v1/:parent:checkCloudIdentityAccountsExist', 'POST'] as const
+}
+
+export function getPostV1ParentCheckCloudIdentityAccountsExistMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.v1)[':parent:checkCloudIdentityAccountsExist']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent:checkCloudIdentityAccountsExist']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentCheckCloudIdentityAccountsExistMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1)[':parent:checkCloudIdentityAccountsExist']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1[':parent:checkCloudIdentityAccountsExist'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostV1ParentCheckCloudIdentityAccountsExist<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.v1)[':parent:checkCloudIdentityAccountsExist']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent:checkCloudIdentityAccountsExist']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentCheckCloudIdentityAccountsExistMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentListEntitlementChangesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent:listEntitlementChanges', toValue(args)] as const
+}
+
+export function getV1ParentListEntitlementChangesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentListEntitlementChangesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent:listEntitlementChanges'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentListEntitlementChanges<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentListEntitlementChangesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent:listEntitlementChanges']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentListEntitlementChangesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentListEntitlementChangesQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent:listEntitlementChanges'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentListTransferableOffersMutationKey() {
+  return ['v1', '/v1/:parent:listTransferableOffers', 'POST'] as const
+}
+
+export function getPostV1ParentListTransferableOffersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent:listTransferableOffers']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent:listTransferableOffers']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentListTransferableOffersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent:listTransferableOffers']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent:listTransferableOffers'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentListTransferableOffers<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent:listTransferableOffers']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent:listTransferableOffers']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentListTransferableOffersMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentListTransferableSkusMutationKey() {
+  return ['v1', '/v1/:parent:listTransferableSkus', 'POST'] as const
+}
+
+export function getPostV1ParentListTransferableSkusMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent:listTransferableSkus']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent:listTransferableSkus']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentListTransferableSkusMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent:listTransferableSkus']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent:listTransferableSkus'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentListTransferableSkus<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent:listTransferableSkus']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent:listTransferableSkus']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentListTransferableSkusMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentTransferEntitlementsMutationKey() {
+  return ['v1', '/v1/:parent:transferEntitlements', 'POST'] as const
+}
+
+export function getPostV1ParentTransferEntitlementsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent:transferEntitlements']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent:transferEntitlements']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentTransferEntitlementsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent:transferEntitlements']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent:transferEntitlements'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentTransferEntitlements<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent:transferEntitlements']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent:transferEntitlements']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentTransferEntitlementsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentTransferEntitlementsToGoogleMutationKey() {
+  return ['v1', '/v1/:parent:transferEntitlementsToGoogle', 'POST'] as const
+}
+
+export function getPostV1ParentTransferEntitlementsToGoogleMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent:transferEntitlementsToGoogle']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent:transferEntitlementsToGoogle']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentTransferEntitlementsToGoogleMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent:transferEntitlementsToGoogle']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent:transferEntitlementsToGoogle'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentTransferEntitlementsToGoogle<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client.v1)[':parent:transferEntitlementsToGoogle']['$post']>
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent:transferEntitlementsToGoogle']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentTransferEntitlementsToGoogleMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ReportJobFetchReportResultsMutationKey() {
+  return ['v1', '/v1/:reportJob:fetchReportResults', 'POST'] as const
+}
+
+export function getPostV1ReportJobFetchReportResultsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':reportJob:fetchReportResults']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':reportJob:fetchReportResults']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ReportJobFetchReportResultsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':reportJob:fetchReportResults']['$post']>,
+    ) {
+      return parseResponse(client.v1[':reportJob:fetchReportResults'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ReportJobFetchReportResults<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':reportJob:fetchReportResults']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':reportJob:fetchReportResults']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ReportJobFetchReportResultsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

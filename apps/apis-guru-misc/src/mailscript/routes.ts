@@ -150,7 +150,7 @@ const AddActionWebhookRequestSchema = z
       .object({
         body: z.string(),
         opts: z
-          .object({ headers: z.object({}), method: z.enum(['POST', 'GET', 'DELETE']) })
+          .object({ headers: z.looseObject({}), method: z.enum(['POST', 'GET', 'DELETE']) })
           .openapi({ required: ['headers', 'method'] }),
         url: z.string(),
       })

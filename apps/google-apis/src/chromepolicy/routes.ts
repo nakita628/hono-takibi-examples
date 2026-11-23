@@ -1,5 +1,361 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GoogleChromePolicyVersionsV1AdditionalTargetKeyNameSchema = z
+  .object({
+    key: z.string().exactOptional().openapi({ description: 'Key name.' }),
+    keyDescription: z.string().exactOptional().openapi({ description: 'Key description.' }),
+  })
+  .openapi({
+    description:
+      'Additional key names that will be used to identify the target of the policy value.',
+    required: [],
+  })
+  .openapi('GoogleChromePolicyVersionsV1AdditionalTargetKeyName')
+
+const Proto2EnumValueDescriptorProtoSchema = z
+  .object({ name: z.string().exactOptional(), number: z.int32().exactOptional() })
+  .openapi({ description: 'Describes a value within an enum.', required: [] })
+  .openapi('Proto2EnumValueDescriptorProto')
+
+const Proto2EnumDescriptorProtoSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    value: z.array(Proto2EnumValueDescriptorProtoSchema).exactOptional(),
+  })
+  .openapi({ description: 'Describes an enum type.', required: [] })
+  .openapi('Proto2EnumDescriptorProto')
+
+const Proto2DescriptorProtoSchema: z.ZodType<Proto2DescriptorProtoType> = z
+  .lazy(() =>
+    z
+      .object({
+        enumType: z.array(Proto2EnumDescriptorProtoSchema).exactOptional(),
+        field: z.array(Proto2FieldDescriptorProtoSchema).exactOptional(),
+        name: z.string().exactOptional(),
+        nestedType: z.array(Proto2DescriptorProtoSchema).exactOptional(),
+        oneofDecl: z.array(Proto2OneofDescriptorProtoSchema).exactOptional(),
+      })
+      .openapi({ description: 'Describes a message type.', required: [] }),
+  )
+  .openapi('Proto2DescriptorProto')
+
+const Proto2FileDescriptorProtoSchema = z
+  .object({
+    enumType: z.array(Proto2EnumDescriptorProtoSchema).exactOptional(),
+    messageType: z
+      .array(Proto2DescriptorProtoSchema)
+      .exactOptional()
+      .openapi({ description: 'All top-level definitions in this file.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'file name, relative to root of source tree' }),
+    package: z.string().exactOptional().openapi({ description: 'e.g. "foo", "foo.bar", etc.' }),
+    syntax: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The syntax of the proto file. The supported values are "proto2", "proto3", and "editions". If `edition` is present, this value must be "editions".',
+      }),
+  })
+  .openapi({ description: 'Describes a complete .proto file.', required: [] })
+  .openapi('Proto2FileDescriptorProto')
+
+const GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema: z.ZodType<GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          defaultValue: z
+            .any()
+            .exactOptional()
+            .openapi({
+              description: 'Output only. Client default if the policy is unset.',
+              readOnly: true,
+            }),
+          description: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Deprecated. Use name and field_description instead. The description for the field.',
+            }),
+          field: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. The name of the field for associated with this description.',
+              readOnly: true,
+            }),
+          fieldConstraints:
+            GoogleChromePolicyVersionsV1FieldConstraintsSchema.exactOptional().openapi({
+              description:
+                'Output only. Information on any input constraints associated on the values for the field.',
+              readOnly: true,
+            }),
+          fieldDependencies: z
+            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDependenciesSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. Provides a list of fields and values. At least one of the fields must have the corresponding value in order for this field to be allowed to be set.',
+              readOnly: true,
+            }),
+          fieldDescription: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Output only. The description of the field.', readOnly: true }),
+          inputConstraint: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. Any input constraints associated on the values for the field.',
+              readOnly: true,
+            }),
+          knownValueDescriptions: z
+            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldKnownValueDescriptionSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. If the field has a set of known values, this field will provide a description for these values.',
+              readOnly: true,
+            }),
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Output only. The name of the field.', readOnly: true }),
+          nestedFieldDescriptions: z
+            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. Provides the description of the fields nested in this field, if the field is a message type that defines multiple fields.',
+              readOnly: true,
+            }),
+          requiredItems: z
+            .array(GoogleChromePolicyVersionsV1PolicySchemaRequiredItemsSchema)
+            .exactOptional()
+            .openapi({
+              description:
+                'Output only. Provides a list of fields that are required to be set if this field has a certain value.',
+              readOnly: true,
+            }),
+        })
+        .openapi({
+          description:
+            'Provides detailed information for a particular field that is part of a PolicySchema.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleChromePolicyVersionsV1PolicySchemaFieldDescription')
+
+const GoogleChromePolicyVersionsV1PolicySchemaNoticeDescriptionSchema = z
+  .object({
+    acknowledgementRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. Whether the user needs to acknowledge the notice message before the value can be set.',
+        readOnly: true,
+      }),
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The field name associated with the notice.',
+        readOnly: true,
+      }),
+    noticeMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The notice message associate with the value of the field.',
+        readOnly: true,
+      }),
+    noticeValue: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The value of the field that has a notice. When setting the field to this value, the user may be required to acknowledge the notice message in order for the value to be set.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'Provides special notice messages related to a particular value in a field that is part of a PolicySchema.',
+    required: [],
+  })
+  .openapi('GoogleChromePolicyVersionsV1PolicySchemaNoticeDescription')
+
+const GoogleTypeDateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('GoogleTypeDate')
+
+const ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycleSchema = z
+  .object({
+    deprecatedInFavorOf: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'In the event that this policy was deprecated in favor of another policy, the fully qualified namespace(s) of the new policies as they will show in PolicyAPI.',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description about current life cycle.' }),
+    endSupport: GoogleTypeDateSchema.exactOptional().openapi({
+      description: 'End supporting date for current policy.',
+    }),
+    policyApiLifecycleStage: z
+      .enum(['API_UNSPECIFIED', 'API_PREVIEW', 'API_DEVELOPMENT', 'API_CURRENT', 'API_DEPRECATED'])
+      .exactOptional()
+      .openapi({ description: 'Indicate current life cycle stage of the policy API.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycle')
+
+type GoogleChromePolicyVersionsV1PolicySchemaType = {
+  accessRestrictions?: string[]
+  additionalTargetKeyNames?: z.infer<
+    typeof GoogleChromePolicyVersionsV1AdditionalTargetKeyNameSchema
+  >[]
+  categoryTitle?: string
+  definition?: z.infer<typeof Proto2FileDescriptorProtoSchema>
+  fieldDescriptions?: z.infer<
+    typeof GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema
+  >[]
+  name?: string
+  notices?: z.infer<typeof GoogleChromePolicyVersionsV1PolicySchemaNoticeDescriptionSchema>[]
+  policyApiLifecycle?: z.infer<typeof ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycleSchema>
+  policyDescription?: string
+  schemaName?: string
+  supportUri?: string
+  validTargetResources?: ('TARGET_RESOURCE_UNSPECIFIED' | 'ORG_UNIT' | 'GROUP')[]
+}
+
+const GoogleChromePolicyVersionsV1PolicySchemaSchema: z.ZodType<GoogleChromePolicyVersionsV1PolicySchemaType> =
+  z
+    .object({
+      accessRestrictions: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Specific access restrictions related to this policy.',
+          readOnly: true,
+        }),
+      additionalTargetKeyNames: z
+        .array(GoogleChromePolicyVersionsV1AdditionalTargetKeyNameSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Additional key names that will be used to identify the target of the policy value. When specifying a `policyTargetKey`, each of the additional keys specified here will have to be included in the `additionalTargetKeys` map.',
+          readOnly: true,
+        }),
+      categoryTitle: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Title of the category in which a setting belongs.' }),
+      definition: Proto2FileDescriptorProtoSchema.exactOptional().openapi({
+        description: 'Schema definition using proto descriptor.',
+      }),
+      fieldDescriptions: z
+        .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Detailed description of each field that is part of the schema.',
+          readOnly: true,
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Format: name=customers/{customer}/policySchemas/{schema_namespace}',
+        }),
+      notices: z
+        .array(GoogleChromePolicyVersionsV1PolicySchemaNoticeDescriptionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Special notice messages related to setting certain values in certain fields in the schema.',
+          readOnly: true,
+        }),
+      policyApiLifecycle:
+        ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycleSchema.exactOptional().openapi({
+          description: 'Output only. Current lifecycle information.',
+          readOnly: true,
+        }),
+      policyDescription: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Description about the policy schema for user consumption.',
+          readOnly: true,
+        }),
+      schemaName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The fully qualified name of the policy schema. This value is used to fill the field `policy_schema` in PolicyValue when calling BatchInheritOrgUnitPolicies BatchModifyOrgUnitPolicies BatchModifyGroupPolicies or BatchDeleteGroupPolicies.',
+          readOnly: true,
+        }),
+      supportUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. URI to related support article for this schema.',
+          readOnly: true,
+        }),
+      validTargetResources: z
+        .array(z.enum(['TARGET_RESOURCE_UNSPECIFIED', 'ORG_UNIT', 'GROUP']))
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Information about applicable target resources for the policy.',
+          readOnly: true,
+        }),
+    })
+    .openapi({ description: 'Resource representing a policy schema.', required: [] })
+    .openapi('GoogleChromePolicyVersionsV1PolicySchema')
+
+type GoogleChromePolicyVersionsV1ListPolicySchemasResponseType = {
+  nextPageToken?: string
+  policySchemas?: z.infer<typeof GoogleChromePolicyVersionsV1PolicySchemaSchema>[]
+}
+
 const GoogleChromePolicyVersionsV1NumericRangeConstraintSchema = z
   .object({
     maximum: z.string().exactOptional().openapi({ description: 'Maximum value.' }),
@@ -89,7 +445,7 @@ const GoogleChromePolicyVersionsV1PolicySchemaRequiredItemsSchema = z
   .openapi('GoogleChromePolicyVersionsV1PolicySchemaRequiredItems')
 
 type GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionType = {
-  defaultValue?: { [key: string]: unknown }
+  defaultValue?: unknown
   description?: string
   field?: string
   fieldConstraints?: z.infer<typeof GoogleChromePolicyVersionsV1FieldConstraintsSchema>
@@ -105,19 +461,6 @@ type GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionType = {
   nestedFieldDescriptions?: GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionType[]
   requiredItems?: z.infer<typeof GoogleChromePolicyVersionsV1PolicySchemaRequiredItemsSchema>[]
 }
-
-const Proto2EnumValueDescriptorProtoSchema = z
-  .object({ name: z.string().exactOptional(), number: z.int32().exactOptional() })
-  .openapi({ description: 'Describes a value within an enum.', required: [] })
-  .openapi('Proto2EnumValueDescriptorProto')
-
-const Proto2EnumDescriptorProtoSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    value: z.array(Proto2EnumValueDescriptorProtoSchema).exactOptional(),
-  })
-  .openapi({ description: 'Describes an enum type.', required: [] })
-  .openapi('Proto2EnumDescriptorProto')
 
 const Proto2FieldDescriptorProtoSchema = z
   .object({
@@ -201,73 +544,6 @@ type Proto2DescriptorProtoType = {
   nestedType?: Proto2DescriptorProtoType[]
   oneofDecl?: z.infer<typeof Proto2OneofDescriptorProtoSchema>[]
 }
-
-const GoogleTypeDateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('GoogleTypeDate')
-
-const ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycleSchema = z
-  .object({
-    deprecatedInFavorOf: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'In the event that this policy was deprecated in favor of another policy, the fully qualified namespace(s) of the new policies as they will show in PolicyAPI.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Description about current life cycle.' }),
-    endSupport: GoogleTypeDateSchema.exactOptional().openapi({
-      description: 'End supporting date for current policy.',
-    }),
-    policyApiLifecycleStage: z
-      .enum(['API_UNSPECIFIED', 'API_PREVIEW', 'API_DEVELOPMENT', 'API_CURRENT', 'API_DEPRECATED'])
-      .exactOptional()
-      .openapi({ description: 'Indicate current life cycle stage of the policy API.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycle')
-
-const GoogleChromePolicyVersionsV1AdditionalTargetKeyNameSchema = z
-  .object({
-    key: z.string().exactOptional().openapi({ description: 'Key name.' }),
-    keyDescription: z.string().exactOptional().openapi({ description: 'Key description.' }),
-  })
-  .openapi({
-    description:
-      'Additional key names that will be used to identify the target of the policy value.',
-    required: [],
-  })
-  .openapi('GoogleChromePolicyVersionsV1AdditionalTargetKeyName')
 
 const GoogleChromePolicyVersionsV1PolicyTargetKeySchema = z
   .object({
@@ -648,272 +924,23 @@ const GoogleChromePolicyVersionsV1ListGroupPriorityOrderingResponseSchema = z
   })
   .openapi('GoogleChromePolicyVersionsV1ListGroupPriorityOrderingResponse')
 
-const Proto2DescriptorProtoSchema: z.ZodType<Proto2DescriptorProtoType> = z
-  .lazy(() =>
-    z
-      .object({
-        enumType: z.array(Proto2EnumDescriptorProtoSchema).exactOptional(),
-        field: z.array(Proto2FieldDescriptorProtoSchema).exactOptional(),
-        name: z.string().exactOptional(),
-        nestedType: z.array(Proto2DescriptorProtoSchema).exactOptional(),
-        oneofDecl: z.array(Proto2OneofDescriptorProtoSchema).exactOptional(),
-      })
-      .openapi({ description: 'Describes a message type.', required: [] }),
-  )
-  .openapi('Proto2DescriptorProto')
-
-const Proto2FileDescriptorProtoSchema = z
-  .object({
-    enumType: z.array(Proto2EnumDescriptorProtoSchema).exactOptional(),
-    messageType: z
-      .array(Proto2DescriptorProtoSchema)
-      .exactOptional()
-      .openapi({ description: 'All top-level definitions in this file.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'file name, relative to root of source tree' }),
-    package: z.string().exactOptional().openapi({ description: 'e.g. "foo", "foo.bar", etc.' }),
-    syntax: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The syntax of the proto file. The supported values are "proto2", "proto3", and "editions". If `edition` is present, this value must be "editions".',
-      }),
-  })
-  .openapi({ description: 'Describes a complete .proto file.', required: [] })
-  .openapi('Proto2FileDescriptorProto')
-
-const GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema: z.ZodType<GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionType> =
+const GoogleChromePolicyVersionsV1ListPolicySchemasResponseSchema: z.ZodType<GoogleChromePolicyVersionsV1ListPolicySchemasResponseType> =
   z
-    .lazy(() =>
-      z
-        .object({
-          defaultValue: z
-            .any()
-            .exactOptional()
-            .openapi({
-              description: 'Output only. Client default if the policy is unset.',
-              readOnly: true,
-            }),
-          description: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Deprecated. Use name and field_description instead. The description for the field.',
-            }),
-          field: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. The name of the field for associated with this description.',
-              readOnly: true,
-            }),
-          fieldConstraints:
-            GoogleChromePolicyVersionsV1FieldConstraintsSchema.exactOptional().openapi({
-              description:
-                'Output only. Information on any input constraints associated on the values for the field.',
-              readOnly: true,
-            }),
-          fieldDependencies: z
-            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDependenciesSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. Provides a list of fields and values. At least one of the fields must have the corresponding value in order for this field to be allowed to be set.',
-              readOnly: true,
-            }),
-          fieldDescription: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Output only. The description of the field.', readOnly: true }),
-          inputConstraint: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. Any input constraints associated on the values for the field.',
-              readOnly: true,
-            }),
-          knownValueDescriptions: z
-            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldKnownValueDescriptionSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. If the field has a set of known values, this field will provide a description for these values.',
-              readOnly: true,
-            }),
-          name: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Output only. The name of the field.', readOnly: true }),
-          nestedFieldDescriptions: z
-            .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. Provides the description of the fields nested in this field, if the field is a message type that defines multiple fields.',
-              readOnly: true,
-            }),
-          requiredItems: z
-            .array(GoogleChromePolicyVersionsV1PolicySchemaRequiredItemsSchema)
-            .exactOptional()
-            .openapi({
-              description:
-                'Output only. Provides a list of fields that are required to be set if this field has a certain value.',
-              readOnly: true,
-            }),
-        })
-        .openapi({
-          description:
-            'Provides detailed information for a particular field that is part of a PolicySchema.',
-          required: [],
-        }),
-    )
-    .openapi('GoogleChromePolicyVersionsV1PolicySchemaFieldDescription')
-
-const GoogleChromePolicyVersionsV1PolicySchemaNoticeDescriptionSchema = z
-  .object({
-    acknowledgementRequired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Whether the user needs to acknowledge the notice message before the value can be set.',
-        readOnly: true,
-      }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The field name associated with the notice.',
-        readOnly: true,
-      }),
-    noticeMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The notice message associate with the value of the field.',
-        readOnly: true,
-      }),
-    noticeValue: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The value of the field that has a notice. When setting the field to this value, the user may be required to acknowledge the notice message in order for the value to be set.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Provides special notice messages related to a particular value in a field that is part of a PolicySchema.',
-    required: [],
-  })
-  .openapi('GoogleChromePolicyVersionsV1PolicySchemaNoticeDescription')
-
-const GoogleChromePolicyVersionsV1PolicySchemaSchema = z
-  .object({
-    accessRestrictions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Specific access restrictions related to this policy.',
-        readOnly: true,
-      }),
-    additionalTargetKeyNames: z
-      .array(GoogleChromePolicyVersionsV1AdditionalTargetKeyNameSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Additional key names that will be used to identify the target of the policy value. When specifying a `policyTargetKey`, each of the additional keys specified here will have to be included in the `additionalTargetKeys` map.',
-        readOnly: true,
-      }),
-    categoryTitle: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title of the category in which a setting belongs.' }),
-    definition: Proto2FileDescriptorProtoSchema.exactOptional().openapi({
-      description: 'Schema definition using proto descriptor.',
-    }),
-    fieldDescriptions: z
-      .array(GoogleChromePolicyVersionsV1PolicySchemaFieldDescriptionSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Detailed description of each field that is part of the schema.',
-        readOnly: true,
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Format: name=customers/{customer}/policySchemas/{schema_namespace}',
-      }),
-    notices: z
-      .array(GoogleChromePolicyVersionsV1PolicySchemaNoticeDescriptionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Special notice messages related to setting certain values in certain fields in the schema.',
-        readOnly: true,
-      }),
-    policyApiLifecycle:
-      ChromeCrosDpanelAutosettingsProtoPolicyApiLifecycleSchema.exactOptional().openapi({
-        description: 'Output only. Current lifecycle information.',
-        readOnly: true,
-      }),
-    policyDescription: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Description about the policy schema for user consumption.',
-        readOnly: true,
-      }),
-    schemaName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The fully qualified name of the policy schema. This value is used to fill the field `policy_schema` in PolicyValue when calling BatchInheritOrgUnitPolicies BatchModifyOrgUnitPolicies BatchModifyGroupPolicies or BatchDeleteGroupPolicies.',
-        readOnly: true,
-      }),
-    supportUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. URI to related support article for this schema.',
-        readOnly: true,
-      }),
-    validTargetResources: z
-      .array(z.enum(['TARGET_RESOURCE_UNSPECIFIED', 'ORG_UNIT', 'GROUP']))
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Information about applicable target resources for the policy.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Resource representing a policy schema.', required: [] })
-  .openapi('GoogleChromePolicyVersionsV1PolicySchema')
-
-const GoogleChromePolicyVersionsV1ListPolicySchemasResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The page token used to get the next page of policy schemas.' }),
-    policySchemas: z
-      .array(GoogleChromePolicyVersionsV1PolicySchemaSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of policy schemas that match the query.' }),
-  })
-  .openapi({
-    description: 'Response message for listing policy schemas that match a filter.',
-    required: [],
-  })
-  .openapi('GoogleChromePolicyVersionsV1ListPolicySchemasResponse')
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The page token used to get the next page of policy schemas.' }),
+      policySchemas: z
+        .array(GoogleChromePolicyVersionsV1PolicySchemaSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of policy schemas that match the query.' }),
+    })
+    .openapi({
+      description: 'Response message for listing policy schemas that match a filter.',
+      required: [],
+    })
+    .openapi('GoogleChromePolicyVersionsV1ListPolicySchemasResponse')
 
 const GoogleChromePolicyVersionsV1PolicyModificationFieldErrorSchema = z
   .object({
@@ -1028,7 +1055,7 @@ const GoogleChromePolicyVersionsV1RemoveCertificateRequestSchema = z
   .openapi('GoogleChromePolicyVersionsV1RemoveCertificateRequest')
 
 const GoogleChromePolicyVersionsV1RemoveCertificateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response object for removing a certificate.' })
   .openapi('GoogleChromePolicyVersionsV1RemoveCertificateResponse')
 
@@ -1050,7 +1077,7 @@ const GoogleChromePolicyVersionsV1RemoveNetworkRequestSchema = z
   .openapi('GoogleChromePolicyVersionsV1RemoveNetworkRequest')
 
 const GoogleChromePolicyVersionsV1RemoveNetworkResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response object for removing a network.' })
   .openapi('GoogleChromePolicyVersionsV1RemoveNetworkResponse')
 
@@ -1178,7 +1205,7 @@ const GoogleChromePolicyVersionsV1UploadPolicyFileResponseSchema = z
   .openapi('GoogleChromePolicyVersionsV1UploadPolicyFileResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

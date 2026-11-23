@@ -13,7 +13,7 @@ const AttributeSchema = z
 
 const CalendarSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     data: z.string().exactOptional().openapi({ description: 'base64 encoded in iCalendar format' }),
     id: z.int().exactOptional(),
     name: z.string().exactOptional(),
@@ -23,7 +23,7 @@ const CalendarSchema = z
 
 const CommandSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     deviceId: z.int().exactOptional(),
     id: z.int().exactOptional(),
@@ -39,7 +39,7 @@ const CommandTypeSchema = z
 
 const DeviceSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     category: z.string().exactOptional(),
     contact: z.string().exactOptional(),
     disabled: z.boolean().exactOptional(),
@@ -71,7 +71,7 @@ const DeviceAccumulatorsSchema = z
 
 const DriverSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     id: z.int().exactOptional(),
     name: z.string().exactOptional(),
     uniqueId: z.string().exactOptional(),
@@ -81,7 +81,7 @@ const DriverSchema = z
 
 const EventSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     deviceId: z.int().exactOptional(),
     eventTime: z.iso
       .datetime({ offset: true })
@@ -99,7 +99,7 @@ const EventSchema = z
 const GeofenceSchema = z
   .object({
     area: z.string().exactOptional(),
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     calendarId: z.int().exactOptional(),
     description: z.string().exactOptional(),
     id: z.int().exactOptional(),
@@ -110,7 +110,7 @@ const GeofenceSchema = z
 
 const GroupSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     groupId: z.int().exactOptional(),
     id: z.int().exactOptional(),
     name: z.string().exactOptional(),
@@ -120,7 +120,7 @@ const GroupSchema = z
 
 const MaintenanceSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     id: z.int().exactOptional(),
     name: z.string().exactOptional(),
     period: z.number().exactOptional(),
@@ -133,7 +133,7 @@ const MaintenanceSchema = z
 const NotificationSchema = z
   .object({
     always: z.boolean().exactOptional(),
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     calendarId: z.int().exactOptional(),
     id: z.int().exactOptional(),
     mail: z.boolean().exactOptional(),
@@ -209,7 +209,7 @@ const PositionSchema = z
     accuracy: z.number().exactOptional(),
     address: z.string().exactOptional(),
     altitude: z.number().exactOptional(),
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     course: z.number().exactOptional(),
     deviceId: z.int().exactOptional(),
     deviceTime: z.iso
@@ -223,7 +223,7 @@ const PositionSchema = z
     id: z.int().exactOptional(),
     latitude: z.number().exactOptional(),
     longitude: z.number().exactOptional(),
-    network: z.object({}).exactOptional(),
+    network: z.looseObject({}).exactOptional(),
     outdated: z.boolean().exactOptional(),
     protocol: z.string().exactOptional(),
     serverTime: z.iso
@@ -302,7 +302,7 @@ const ReportTripsSchema = z
 
 const ServerSchema = z
   .object({
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     bingKey: z.string().exactOptional(),
     coordinateFormat: z.string().exactOptional(),
     deviceReadonly: z.boolean().exactOptional(),
@@ -341,7 +341,7 @@ const StatisticsSchema = z
 const UserSchema = z
   .object({
     administrator: z.boolean().exactOptional(),
-    attributes: z.object({}).exactOptional(),
+    attributes: z.looseObject({}).exactOptional(),
     coordinateFormat: z.string().exactOptional(),
     deviceLimit: z.int().exactOptional(),
     deviceReadonly: z.boolean().exactOptional(),

@@ -1,28 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DemographicFilterSchema = z
-  .object({
-    type: z.string().exactOptional().openapi({ description: 'Type of demographic filter' }),
-  })
-  .openapi({
-    description: 'Demographic filter',
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        age: '#/components/schemas/AgeDemographicFilter',
-        appType: '#/components/schemas/AppTypeDemographicFilter',
-        area: '#/components/schemas/AreaDemographicFilter',
-        gender: '#/components/schemas/GenderDemographicFilter',
-        operator: '#/components/schemas/OperatorDemographicFilter',
-        subscriptionPeriod: '#/components/schemas/SubscriptionPeriodDemographicFilter',
-      },
-    },
-    required: [],
-  })
-  .openapi('DemographicFilter')
-
-type FilterType = { demographic?: z.infer<typeof DemographicFilterSchema> }
-
 const GetWebhookEndpointResponseSchema = z
   .object({
     endpoint: z.url().openapi({ description: 'Webhook URL' }),
@@ -347,7 +324,7 @@ const MulticastRequestSchema = z
   .openapi('MulticastRequest')
 
 const MulticastResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#send-multicast-response',
@@ -371,12 +348,30 @@ const RecipientSchema = z
   })
   .openapi('Recipient')
 
-const FilterSchema: z.ZodType<FilterType> = z
-  .lazy(() =>
-    z
-      .object({ demographic: DemographicFilterSchema.exactOptional() })
-      .openapi({ description: 'Filter for narrowcast', required: [] }),
-  )
+const DemographicFilterSchema = z
+  .object({
+    type: z.string().exactOptional().openapi({ description: 'Type of demographic filter' }),
+  })
+  .openapi({
+    description: 'Demographic filter',
+    discriminator: {
+      propertyName: 'type',
+      mapping: {
+        age: '#/components/schemas/AgeDemographicFilter',
+        appType: '#/components/schemas/AppTypeDemographicFilter',
+        area: '#/components/schemas/AreaDemographicFilter',
+        gender: '#/components/schemas/GenderDemographicFilter',
+        operator: '#/components/schemas/OperatorDemographicFilter',
+        subscriptionPeriod: '#/components/schemas/SubscriptionPeriodDemographicFilter',
+      },
+    },
+    required: [],
+  })
+  .openapi('DemographicFilter')
+
+const FilterSchema = z
+  .object({ demographic: DemographicFilterSchema.exactOptional() })
+  .openapi({ description: 'Filter for narrowcast', required: [] })
   .openapi('Filter')
 
 const LimitSchema = z
@@ -436,7 +431,7 @@ const NarrowcastRequestSchema = z
   .openapi('NarrowcastRequest')
 
 const NarrowcastResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#send-narrowcast-response',
@@ -952,7 +947,7 @@ const BroadcastRequestSchema = z
   .openapi('BroadcastRequest')
 
 const BroadcastResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#send-broadcast-response',
@@ -1670,10 +1665,23 @@ const RichMenuBatchRequestSchema = z
   .openapi('RichMenuBatchRequest')
 
 const RichMenuBatchLinkOperationSchema = RichMenuBatchOperationSchema.and(
-  z
-    .object({ from: z.string().exactOptional(), to: z.string().exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['from', 'to'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'from')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'to')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ from: z.string().exactOptional(), to: z.string().exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     description:
       'Replace the rich menu with the rich menu specified in the `to` property for all users linked to the rich menu specified in the `from` property.',
@@ -1682,8 +1690,16 @@ const RichMenuBatchLinkOperationSchema = RichMenuBatchOperationSchema.and(
   .openapi('RichMenuBatchLinkOperation')
 
 const RichMenuBatchUnlinkOperationSchema = RichMenuBatchOperationSchema.and(
-  z.object({ from: z.string().exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['from'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'from')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ from: z.string().exactOptional() }).openapi({ required: [] }))
   .openapi({
     description:
       'Unlink the rich menu for all users linked to the rich menu specified in the `from` property.',
@@ -1936,18 +1952,26 @@ const EmojiSchema = z
   .openapi({ required: [] })
   .openapi('Emoji')
 
-const TextMessageSchema = MessageSchema.and(
-  z
-    .object({
-      text: z.string().exactOptional(),
-      emojis: z.array(EmojiSchema).exactOptional(),
-      quoteToken: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Quote token of the message you want to quote.' }),
-    })
-    .openapi({ required: [] }),
-)
+const TextMessageSchema = MessageSchema.and(z.looseObject({}).openapi({ required: ['text'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'text')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        text: z.string().exactOptional(),
+        emojis: z.array(EmojiSchema).exactOptional(),
+        quoteToken: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Quote token of the message you want to quote.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#text-message' },
     required: ['text'],
@@ -1969,24 +1993,32 @@ const SubstitutionObjectSchema = z
   })
   .openapi('SubstitutionObject')
 
-const TextMessageV2Schema = MessageSchema.and(
-  z
-    .object({
-      text: z.string().exactOptional(),
-      substitution: z
-        .record(z.string(), SubstitutionObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'A mapping that specifies substitutions for parts enclosed in {} within the `text` field.',
-        }),
-      quoteToken: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Quote token of the message you want to quote.' }),
-    })
-    .openapi({ required: [] }),
-)
+const TextMessageV2Schema = MessageSchema.and(z.looseObject({}).openapi({ required: ['text'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'text')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        text: z.string().exactOptional(),
+        substitution: z
+          .record(z.string(), SubstitutionObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'A mapping that specifies substitutions for parts enclosed in {} within the `text` field.',
+          }),
+        quoteToken: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Quote token of the message you want to quote.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#text-message-v2',
@@ -2050,17 +2082,30 @@ const EmojiSubstitutionObjectSchema = SubstitutionObjectSchema.and(
   .openapi('EmojiSubstitutionObject')
 
 const StickerMessageSchema = MessageSchema.and(
-  z
-    .object({
-      packageId: z.string().exactOptional(),
-      stickerId: z.string().exactOptional(),
-      quoteToken: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Quote token of the message you want to quote.' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['packageId', 'stickerId'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'packageId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'stickerId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        packageId: z.string().exactOptional(),
+        stickerId: z.string().exactOptional(),
+        quoteToken: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Quote token of the message you want to quote.' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#sticker-message',
@@ -2070,13 +2115,26 @@ const StickerMessageSchema = MessageSchema.and(
   .openapi('StickerMessage')
 
 const ImageMessageSchema = MessageSchema.and(
-  z
-    .object({
-      originalContentUrl: z.url().exactOptional(),
-      previewImageUrl: z.url().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['originalContentUrl', 'previewImageUrl'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'originalContentUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'previewImageUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        originalContentUrl: z.url().exactOptional(),
+        previewImageUrl: z.url().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#image-message' },
     required: ['originalContentUrl', 'previewImageUrl'],
@@ -2084,14 +2142,27 @@ const ImageMessageSchema = MessageSchema.and(
   .openapi('ImageMessage')
 
 const VideoMessageSchema = MessageSchema.and(
-  z
-    .object({
-      originalContentUrl: z.url().exactOptional(),
-      previewImageUrl: z.url().exactOptional(),
-      trackingId: z.string().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['originalContentUrl', 'previewImageUrl'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'originalContentUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'previewImageUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        originalContentUrl: z.url().exactOptional(),
+        previewImageUrl: z.url().exactOptional(),
+        trackingId: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#video-message' },
     required: ['originalContentUrl', 'previewImageUrl'],
@@ -2099,24 +2170,37 @@ const VideoMessageSchema = MessageSchema.and(
   .openapi('VideoMessage')
 
 const AudioMessageSchema = MessageSchema.and(
-  z
-    .object({
-      originalContentUrl: z.url().exactOptional(),
-      duration: z
-        .preprocess(
-          (val) =>
-            typeof val === 'number' && Number.isSafeInteger(val)
-              ? BigInt(val)
-              : typeof val === 'string' && /^-?\d+$/.test(val)
-                ? BigInt(val)
-                : val,
-          z.int64(),
-        )
-        .exactOptional()
-        .openapi({ type: 'integer', format: 'int64' }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['originalContentUrl', 'duration'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'originalContentUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'duration')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        originalContentUrl: z.url().exactOptional(),
+        duration: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .exactOptional()
+          .openapi({ type: 'integer', format: 'int64' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#audio-message' },
     required: ['originalContentUrl', 'duration'],
@@ -2124,15 +2208,34 @@ const AudioMessageSchema = MessageSchema.and(
   .openapi('AudioMessage')
 
 const LocationMessageSchema = MessageSchema.and(
-  z
-    .object({
-      title: z.string().exactOptional(),
-      address: z.string().exactOptional(),
-      latitude: z.float64().exactOptional(),
-      longitude: z.float64().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['title', 'address', 'latitude', 'longitude'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'title')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'address')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'latitude')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'longitude')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        title: z.string().exactOptional(),
+        address: z.string().exactOptional(),
+        latitude: z.float64().exactOptional(),
+        longitude: z.float64().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#location-message',
@@ -2185,16 +2288,35 @@ const ImagemapVideoSchema = z
   .openapi('ImagemapVideo')
 
 const ImagemapMessageSchema = MessageSchema.and(
-  z
-    .object({
-      baseUrl: z.url().exactOptional(),
-      altText: z.string().exactOptional(),
-      baseSize: ImagemapBaseSizeSchema.exactOptional(),
-      actions: z.array(ImagemapActionSchema).exactOptional(),
-      video: ImagemapVideoSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['baseUrl', 'altText', 'baseSize', 'actions'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'baseUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'altText')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'baseSize')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'actions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        baseUrl: z.url().exactOptional(),
+        altText: z.string().exactOptional(),
+        baseSize: ImagemapBaseSizeSchema.exactOptional(),
+        actions: z.array(ImagemapActionSchema).exactOptional(),
+        video: ImagemapVideoSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#imagemap-message',
@@ -2204,36 +2326,66 @@ const ImagemapMessageSchema = MessageSchema.and(
   .openapi('ImagemapMessage')
 
 const MessageImagemapActionSchema = ImagemapActionSchema.and(
-  z
-    .object({ text: z.string().exactOptional(), label: z.string().exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['text'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'text')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ text: z.string().exactOptional(), label: z.string().exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['text'] })
   .openapi('MessageImagemapAction')
 
 const URIImagemapActionSchema = ImagemapActionSchema.and(
-  z
-    .object({ linkUri: z.string().exactOptional(), label: z.string().exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['linkUri'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'linkUri')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ linkUri: z.string().exactOptional(), label: z.string().exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['linkUri'] })
   .openapi('URIImagemapAction')
 
 const ClipboardImagemapActionSchema = ImagemapActionSchema.and(
-  z
-    .object({
-      clipboardText: z
-        .string()
-        .min(1)
-        .max(1000)
-        .exactOptional()
-        .openapi({
-          description: 'Text that is copied to the clipboard.\nMax character limit: 1000\n',
-        }),
-      label: z.string().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['clipboardText'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'clipboardText')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        clipboardText: z
+          .string()
+          .min(1)
+          .max(1000)
+          .exactOptional()
+          .openapi({
+            description: 'Text that is copied to the clipboard.\nMax character limit: 1000\n',
+          }),
+        label: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#imagemap-clipboard-action-object',
@@ -2259,10 +2411,23 @@ const TemplateSchema = z
   .openapi('Template')
 
 const TemplateMessageSchema = MessageSchema.and(
-  z
-    .object({ altText: z.string().exactOptional(), template: TemplateSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['altText', 'template'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'altText')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'template')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ altText: z.string().exactOptional(), template: TemplateSchema.exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#template-messages',
@@ -2272,19 +2437,32 @@ const TemplateMessageSchema = MessageSchema.and(
   .openapi('TemplateMessage')
 
 const ButtonsTemplateSchema = TemplateSchema.and(
-  z
-    .object({
-      thumbnailImageUrl: z.url().exactOptional(),
-      imageAspectRatio: z.string().exactOptional(),
-      imageSize: z.string().exactOptional(),
-      imageBackgroundColor: z.string().exactOptional(),
-      title: z.string().exactOptional(),
-      text: z.string().exactOptional(),
-      defaultAction: ActionSchema.exactOptional(),
-      actions: z.array(ActionSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['text', 'actions'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'text')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'actions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        thumbnailImageUrl: z.url().exactOptional(),
+        imageAspectRatio: z.string().exactOptional(),
+        imageSize: z.string().exactOptional(),
+        imageBackgroundColor: z.string().exactOptional(),
+        title: z.string().exactOptional(),
+        text: z.string().exactOptional(),
+        defaultAction: ActionSchema.exactOptional(),
+        actions: z.array(ActionSchema).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['text', 'actions'] })
   .openapi('ButtonsTemplate')
 
@@ -2305,10 +2483,23 @@ const TemplateImageSizeSchema = z
   .openapi('TemplateImageSize')
 
 const ConfirmTemplateSchema = TemplateSchema.and(
-  z
-    .object({ text: z.string().exactOptional(), actions: z.array(ActionSchema).exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['text', 'actions'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'text')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'actions')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ text: z.string().exactOptional(), actions: z.array(ActionSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['text', 'actions'] })
   .openapi('ConfirmTemplate')
 
@@ -2325,14 +2516,24 @@ const CarouselColumnSchema = z
   .openapi('CarouselColumn')
 
 const CarouselTemplateSchema = TemplateSchema.and(
-  z
-    .object({
-      columns: z.array(CarouselColumnSchema).exactOptional(),
-      imageAspectRatio: z.string().exactOptional(),
-      imageSize: z.string().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['columns'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'columns')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        columns: z.array(CarouselColumnSchema).exactOptional(),
+        imageAspectRatio: z.string().exactOptional(),
+        imageSize: z.string().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['columns'] })
   .openapi('CarouselTemplate')
 
@@ -2342,31 +2543,49 @@ const ImageCarouselColumnSchema = z
   .openapi('ImageCarouselColumn')
 
 const ImageCarouselTemplateSchema = TemplateSchema.and(
-  z
-    .object({ columns: z.array(ImageCarouselColumnSchema).exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['columns'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'columns')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({ columns: z.array(ImageCarouselColumnSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['columns'] })
   .openapi('ImageCarouselTemplate')
 
-const CouponMessageSchema = MessageSchema.and(
-  z
-    .object({
-      couponId: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Unique identifier of the coupon.' }),
-      deliveryTag: z
-        .string()
-        .max(30)
-        .exactOptional()
-        .openapi({
-          description:
-            'Delivery route tag information. It can be used for analysis in LINE OA Manager.',
-        }),
-    })
-    .openapi({ required: [] }),
-)
+const CouponMessageSchema = MessageSchema.and(z.looseObject({}).openapi({ required: ['couponId'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'couponId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        couponId: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Unique identifier of the coupon.' }),
+        deliveryTag: z
+          .string()
+          .max(30)
+          .exactOptional()
+          .openapi({
+            description:
+              'Delivery route tag information. It can be used for analysis in LINE OA Manager.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#coupon-message' },
     required: ['couponId'],
@@ -2388,10 +2607,26 @@ const FlexContainerSchema = z
   .openapi('FlexContainer')
 
 const FlexMessageSchema = MessageSchema.and(
-  z
-    .object({ altText: z.string().exactOptional(), contents: FlexContainerSchema.exactOptional() })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['altText', 'contents'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'altText')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'contents')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        altText: z.string().exactOptional(),
+        contents: FlexContainerSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#flex-message' },
     required: ['altText', 'contents'],
@@ -2450,40 +2685,60 @@ const FlexBoxBackgroundSchema = z
   .openapi('FlexBoxBackground')
 
 const FlexBoxSchema = FlexComponentSchema.and(
-  z
-    .object({
-      layout: z.enum(['horizontal', 'vertical', 'baseline']).exactOptional(),
-      flex: z.int32().exactOptional(),
-      contents: z.array(FlexComponentSchema).exactOptional(),
-      spacing: z.string().exactOptional(),
-      margin: z.string().exactOptional(),
-      position: z.enum(['relative', 'absolute']).exactOptional(),
-      offsetTop: z.string().exactOptional(),
-      offsetBottom: z.string().exactOptional(),
-      offsetStart: z.string().exactOptional(),
-      offsetEnd: z.string().exactOptional(),
-      backgroundColor: z.string().exactOptional(),
-      borderColor: z.string().exactOptional(),
-      borderWidth: z.string().exactOptional(),
-      cornerRadius: z.string().exactOptional(),
-      width: z.string().exactOptional(),
-      maxWidth: z.string().exactOptional(),
-      height: z.string().exactOptional(),
-      maxHeight: z.string().exactOptional(),
-      paddingAll: z.string().exactOptional(),
-      paddingTop: z.string().exactOptional(),
-      paddingBottom: z.string().exactOptional(),
-      paddingStart: z.string().exactOptional(),
-      paddingEnd: z.string().exactOptional(),
-      action: ActionSchema.exactOptional(),
-      justifyContent: z
-        .enum(['center', 'flex-start', 'flex-end', 'space-between', 'space-around', 'space-evenly'])
-        .exactOptional(),
-      alignItems: z.enum(['center', 'flex-start', 'flex-end']).exactOptional(),
-      background: FlexBoxBackgroundSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['layout', 'contents'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'layout')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'contents')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        layout: z.enum(['horizontal', 'vertical', 'baseline']).exactOptional(),
+        flex: z.int32().exactOptional(),
+        contents: z.array(FlexComponentSchema).exactOptional(),
+        spacing: z.string().exactOptional(),
+        margin: z.string().exactOptional(),
+        position: z.enum(['relative', 'absolute']).exactOptional(),
+        offsetTop: z.string().exactOptional(),
+        offsetBottom: z.string().exactOptional(),
+        offsetStart: z.string().exactOptional(),
+        offsetEnd: z.string().exactOptional(),
+        backgroundColor: z.string().exactOptional(),
+        borderColor: z.string().exactOptional(),
+        borderWidth: z.string().exactOptional(),
+        cornerRadius: z.string().exactOptional(),
+        width: z.string().exactOptional(),
+        maxWidth: z.string().exactOptional(),
+        height: z.string().exactOptional(),
+        maxHeight: z.string().exactOptional(),
+        paddingAll: z.string().exactOptional(),
+        paddingTop: z.string().exactOptional(),
+        paddingBottom: z.string().exactOptional(),
+        paddingStart: z.string().exactOptional(),
+        paddingEnd: z.string().exactOptional(),
+        action: ActionSchema.exactOptional(),
+        justifyContent: z
+          .enum([
+            'center',
+            'flex-start',
+            'flex-end',
+            'space-between',
+            'space-around',
+            'space-evenly',
+          ])
+          .exactOptional(),
+        alignItems: z.enum(['center', 'flex-start', 'flex-end']).exactOptional(),
+        background: FlexBoxBackgroundSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['layout', 'contents'] })
   .openapi('FlexBox')
 
@@ -2503,8 +2758,16 @@ const FlexBubbleSchema = FlexContainerSchema.and(
 ).openapi('FlexBubble')
 
 const FlexCarouselSchema = FlexContainerSchema.and(
-  z.object({ contents: z.array(FlexBubbleSchema).exactOptional() }).openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['contents'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'contents')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(z.object({ contents: z.array(FlexBubbleSchema).exactOptional() }).openapi({ required: [] }))
   .openapi({ required: ['contents'] })
   .openapi('FlexCarousel')
 
@@ -2589,105 +2852,129 @@ const FlexOffsetSchema = z
   .openapi('FlexOffset')
 
 const FlexButtonSchema = FlexComponentSchema.and(
-  z
-    .object({
-      flex: z.int32().exactOptional(),
-      color: z.string().exactOptional(),
-      style: z.enum(['primary', 'secondary', 'link']).exactOptional(),
-      action: ActionSchema.exactOptional(),
-      gravity: z.enum(['top', 'bottom', 'center']).exactOptional(),
-      margin: z.string().exactOptional(),
-      position: z.enum(['relative', 'absolute']).exactOptional(),
-      offsetTop: z.string().exactOptional(),
-      offsetBottom: z.string().exactOptional(),
-      offsetStart: z.string().exactOptional(),
-      offsetEnd: z.string().exactOptional(),
-      height: z.enum(['md', 'sm']).exactOptional(),
-      adjustMode: z.literal('shrink-to-fit').exactOptional(),
-      scaling: z.boolean().exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['action'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'action')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        flex: z.int32().exactOptional(),
+        color: z.string().exactOptional(),
+        style: z.enum(['primary', 'secondary', 'link']).exactOptional(),
+        action: ActionSchema.exactOptional(),
+        gravity: z.enum(['top', 'bottom', 'center']).exactOptional(),
+        margin: z.string().exactOptional(),
+        position: z.enum(['relative', 'absolute']).exactOptional(),
+        offsetTop: z.string().exactOptional(),
+        offsetBottom: z.string().exactOptional(),
+        offsetStart: z.string().exactOptional(),
+        offsetEnd: z.string().exactOptional(),
+        height: z.enum(['md', 'sm']).exactOptional(),
+        adjustMode: z.literal('shrink-to-fit').exactOptional(),
+        scaling: z.boolean().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['action'] })
   .openapi('FlexButton')
 
 const FlexImageSchema = FlexComponentSchema.and(
-  z
-    .object({
-      url: z
-        .url()
-        .exactOptional()
-        .openapi({
-          description:
-            'Image URL (Max character limit: 2000)\nProtocol: HTTPS (TLS 1.2 or later)\nImage format: JPEG or PNG\nMaximum image size: 1024×1024 pixels\nMaximum file size: 10 MB (300 KB when the animated property is true)\n',
-        }),
-      flex: z
-        .int32()
-        .exactOptional()
-        .openapi({
-          description: 'The ratio of the width or height of this component within the parent box.',
-        }),
-      margin: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The minimum amount of space to include before this component in its parent container.\n',
-        }),
-      position: z
-        .enum(['relative', 'absolute'])
-        .exactOptional()
-        .openapi({
-          description:
-            'Reference for offsetTop, offsetBottom, offsetStart, and offsetEnd. Specify one of the following values:\n\n`relative`: Use the previous box as reference.\n`absolute`: Use the top left of parent element as reference. The default value is relative.\n',
-        }),
-      offsetTop: z.string().exactOptional().openapi({ description: 'Offset.' }),
-      offsetBottom: z.string().exactOptional().openapi({ description: 'Offset.' }),
-      offsetStart: z.string().exactOptional().openapi({ description: 'Offset.' }),
-      offsetEnd: z.string().exactOptional().openapi({ description: 'Offset.' }),
-      align: z
-        .enum(['start', 'end', 'center'])
-        .exactOptional()
-        .openapi({ description: 'Alignment style in horizontal direction.\n' }),
-      gravity: z
-        .enum(['top', 'bottom', 'center'])
-        .exactOptional()
-        .openapi({ description: 'Alignment style in vertical direction.' }),
-      size: z
-        .string()
-        .default('md')
-        .exactOptional()
-        .openapi({ description: 'The maximum image width. This is md by default.\n' }),
-      aspectRatio: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'Aspect ratio of the image.\n`{width}:{height}` format.\nSpecify the value of `{width}` and `{height}` in the range from `1` to `100000`.\nHowever, you cannot set `{height}` to a value that is more than three times the value of `{width}`.\nThe default value is `1:1`.\n',
-        }),
-      aspectMode: z
-        .enum(['fit', 'cover'])
-        .exactOptional()
-        .openapi({
-          description:
-            'The display style of the image if the aspect ratio of the image and that specified by the aspectRatio property do not match.\n',
-        }),
-      backgroundColor: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'Background color of the image. Use a hexadecimal color code.' }),
-      action: ActionSchema.exactOptional(),
-      animated: z
-        .boolean()
-        .default(false)
-        .exactOptional()
-        .openapi({
-          description:
-            "When this is `true`, an animated image (APNG) plays.\nYou can specify a value of true up to 10 images in a single message.\nYou can't send messages that exceed this limit.\nThis is `false` by default.\nAnimated images larger than 300 KB aren't played back.\n",
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['type', 'url'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        url: z
+          .url()
+          .exactOptional()
+          .openapi({
+            description:
+              'Image URL (Max character limit: 2000)\nProtocol: HTTPS (TLS 1.2 or later)\nImage format: JPEG or PNG\nMaximum image size: 1024×1024 pixels\nMaximum file size: 10 MB (300 KB when the animated property is true)\n',
+          }),
+        flex: z
+          .int32()
+          .exactOptional()
+          .openapi({
+            description:
+              'The ratio of the width or height of this component within the parent box.',
+          }),
+        margin: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The minimum amount of space to include before this component in its parent container.\n',
+          }),
+        position: z
+          .enum(['relative', 'absolute'])
+          .exactOptional()
+          .openapi({
+            description:
+              'Reference for offsetTop, offsetBottom, offsetStart, and offsetEnd. Specify one of the following values:\n\n`relative`: Use the previous box as reference.\n`absolute`: Use the top left of parent element as reference. The default value is relative.\n',
+          }),
+        offsetTop: z.string().exactOptional().openapi({ description: 'Offset.' }),
+        offsetBottom: z.string().exactOptional().openapi({ description: 'Offset.' }),
+        offsetStart: z.string().exactOptional().openapi({ description: 'Offset.' }),
+        offsetEnd: z.string().exactOptional().openapi({ description: 'Offset.' }),
+        align: z
+          .enum(['start', 'end', 'center'])
+          .exactOptional()
+          .openapi({ description: 'Alignment style in horizontal direction.\n' }),
+        gravity: z
+          .enum(['top', 'bottom', 'center'])
+          .exactOptional()
+          .openapi({ description: 'Alignment style in vertical direction.' }),
+        size: z
+          .string()
+          .default('md')
+          .exactOptional()
+          .openapi({ description: 'The maximum image width. This is md by default.\n' }),
+        aspectRatio: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Aspect ratio of the image.\n`{width}:{height}` format.\nSpecify the value of `{width}` and `{height}` in the range from `1` to `100000`.\nHowever, you cannot set `{height}` to a value that is more than three times the value of `{width}`.\nThe default value is `1:1`.\n',
+          }),
+        aspectMode: z
+          .enum(['fit', 'cover'])
+          .exactOptional()
+          .openapi({
+            description:
+              'The display style of the image if the aspect ratio of the image and that specified by the aspectRatio property do not match.\n',
+          }),
+        backgroundColor: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Background color of the image. Use a hexadecimal color code.' }),
+        action: ActionSchema.exactOptional(),
+        animated: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              "When this is `true`, an animated image (APNG) plays.\nYou can specify a value of true up to 10 images in a single message.\nYou can't send messages that exceed this limit.\nThis is `false` by default.\nAnimated images larger than 300 KB aren't played back.\n",
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#f-image' },
     required: ['type', 'url'],
@@ -2695,35 +2982,59 @@ const FlexImageSchema = FlexComponentSchema.and(
   .openapi('FlexImage')
 
 const FlexVideoSchema = FlexComponentSchema.and(
-  z
-    .object({
-      url: z.url().exactOptional(),
-      previewUrl: z.url().exactOptional(),
-      altContent: FlexComponentSchema.exactOptional(),
-      aspectRatio: z.string().exactOptional(),
-      action: ActionSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['url', 'previewUrl', 'altContent'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'previewUrl')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'altContent')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        url: z.url().exactOptional(),
+        previewUrl: z.url().exactOptional(),
+        altContent: FlexComponentSchema.exactOptional(),
+        aspectRatio: z.string().exactOptional(),
+        action: ActionSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['url', 'previewUrl', 'altContent'] })
   .openapi('FlexVideo')
 
-const FlexIconSchema = FlexComponentSchema.and(
-  z
-    .object({
-      url: z.url().exactOptional(),
-      size: z.string().exactOptional(),
-      aspectRatio: z.string().exactOptional(),
-      margin: z.string().exactOptional(),
-      position: z.enum(['relative', 'absolute']).exactOptional(),
-      offsetTop: z.string().exactOptional(),
-      offsetBottom: z.string().exactOptional(),
-      offsetStart: z.string().exactOptional(),
-      offsetEnd: z.string().exactOptional(),
-      scaling: z.boolean().exactOptional(),
-    })
-    .openapi({ required: [] }),
-)
+const FlexIconSchema = FlexComponentSchema.and(z.looseObject({}).openapi({ required: ['url'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'url')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        url: z.url().exactOptional(),
+        size: z.string().exactOptional(),
+        aspectRatio: z.string().exactOptional(),
+        margin: z.string().exactOptional(),
+        position: z.enum(['relative', 'absolute']).exactOptional(),
+        offsetTop: z.string().exactOptional(),
+        offsetBottom: z.string().exactOptional(),
+        offsetStart: z.string().exactOptional(),
+        offsetEnd: z.string().exactOptional(),
+        scaling: z.boolean().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({
     externalDocs: { url: 'https://developers.line.biz/en/reference/messaging-api/#icon' },
     required: ['url'],
@@ -3807,7 +4118,7 @@ const ShowLoadingAnimationRequestSchema = z
   .openapi('ShowLoadingAnimationRequest')
 
 const ShowLoadingAnimationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     externalDocs: {
       url: 'https://developers.line.biz/en/reference/messaging-api/#display-a-loading-indicator-response',

@@ -1,5 +1,49 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CursorObjectSchema = z
+  .object({
+    after: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cursor to use as key to find the next page of items.' }),
+    before: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The cursor to use as key to find the previous page of items.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CursorObject', required: [] })
+  .openapi('CursorObject')
+
+const CursorPagingObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint returning the full result of the request.',
+      }),
+    limit: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum number of items in the response (as set in the query or by default).',
+      }),
+    next: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL to the next page of items. ( `null` if none)' }),
+    cursors: CursorObjectSchema.exactOptional().openapi({
+      description: 'The cursors used to find the next set of items.',
+    }),
+    total: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The total number of items available to return.' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CursorPagingObject', required: [] })
+  .openapi('CursorPagingObject')
+
 const ExternalUrlObjectSchema = z
   .object({
     spotify: z
@@ -241,243 +285,120 @@ const TrackRestrictionObjectSchema = z
   .openapi({ 'x-spotify-docs-type': 'TrackRestrictionObject', required: [] })
   .openapi('TrackRestrictionObject')
 
-type TrackObjectType = {
-  album?: z.infer<typeof SimplifiedAlbumObjectSchema>
-  artists?: z.infer<typeof SimplifiedArtistObjectSchema>[]
-  available_markets?: string[]
-  disc_number?: number
-  duration_ms?: number
-  explicit?: boolean
-  external_ids?: z.infer<typeof ExternalIdObjectSchema>
-  external_urls?: z.infer<typeof ExternalUrlObjectSchema>
-  href?: string
-  id?: string
-  is_playable?: boolean
-  linked_from?: z.infer<typeof LinkedTrackObjectSchema>
-  restrictions?: z.infer<typeof TrackRestrictionObjectSchema>
-  name?: string
-  popularity?: number
-  preview_url?: string | null
-  track_number?: number
-  type?: 'track'
-  uri?: string
-  is_local?: boolean
-}
-
-const EpisodeRestrictionObjectSchema = z
+const TrackObjectSchema = z
   .object({
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
-      }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'EpisodeRestrictionObject', required: [] })
-  .openapi('EpisodeRestrictionObject')
-
-const ChapterRestrictionObjectSchema = z
-  .object({
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n- `payment_required` - Payment is required to play the content item.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
-      }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'ChapterRestrictionObject', required: [] })
-  .openapi('ChapterRestrictionObject')
-
-const FollowersObjectSchema = z
-  .object({
-    href: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'This will always be set to null, as the Web API does not support it at the moment.\n',
-      }),
-    total: z.int().exactOptional().openapi({ description: 'The total number of followers.\n' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'FollowersObject', required: [] })
-  .openapi('FollowersObject')
-
-const ArtistObjectSchema = z
-  .object({
-    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
-      description: 'Known external URLs for this artist.\n',
+    album: SimplifiedAlbumObjectSchema.exactOptional().openapi({
+      description:
+        'The album on which the track appears. The album object includes a link in `href` to full information about the album.\n',
     }),
-    followers: FollowersObjectSchema.exactOptional().openapi({
-      deprecated: true,
-      description: 'Information about the followers of the artist.\n',
-    }),
-    genres: z
+    artists: z
+      .array(SimplifiedArtistObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.\n',
+      }),
+    available_markets: z
       .array(z.string())
       .exactOptional()
       .openapi({
         deprecated: true,
-        example: ['Prog rock', 'Grunge'],
         description:
-          'A list of the genres the artist is associated with. If not yet classified, the array is empty.\n',
+          'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
       }),
+    disc_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The disc number (usually `1` unless the album consists of more than one disc).\n',
+      }),
+    duration_ms: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The track length in milliseconds.\n' }),
+    explicit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).\n',
+      }),
+    external_ids: ExternalIdObjectSchema.exactOptional().openapi({
+      description: 'Known external IDs for the track.\n',
+    }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this track.\n',
+    }),
     href: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'A link to the Web API endpoint providing full details of the artist.\n',
+        description: 'A link to the Web API endpoint providing full details of the track.\n',
       }),
     id: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
       }),
-    images: z
-      .array(ImageObjectSchema)
+    is_playable: z
+      .boolean()
       .exactOptional()
-      .openapi({ description: 'Images of the artist in various sizes, widest first.\n' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the artist.\n' }),
+      .openapi({
+        description:
+          'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
+      }),
+    linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied, and the requested track has been replaced with different track. The track in the `linked_from` object contains information about the originally requested track.',
+    }),
+    restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the track.\n' }),
     popularity: z
       .int()
       .exactOptional()
       .openapi({
         deprecated: true,
         description:
-          "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.\n",
+          'The popularity of the track. The value will be between 0 and 100, with 100 being the most popular.<br/>The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.<br/>Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity is derived mathematically from track popularity. _**Note**: the popularity value may lag actual popularity by a few days: the value is not updated in real time._\n',
       }),
-    type: z.literal('artist').exactOptional().openapi({ description: 'The object type.\n' }),
+    preview_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'A link to a 30 second preview (MP3 format) of the track. Can be `null`\n',
+      }),
+    track_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
+      }),
+    type: z
+      .literal('track')
+      .exactOptional()
+      .openapi({ description: 'The object type: "track".\n' }),
     uri: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
       }),
+    is_local: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the track is from a local file.\n' }),
   })
-  .openapi({ 'x-spotify-docs-type': 'ArtistObject', required: [] })
-  .openapi('ArtistObject')
-
-const TrackObjectSchema: z.ZodType<TrackObjectType> = z
-  .lazy(() =>
-    z
-      .object({
-        album: SimplifiedAlbumObjectSchema.exactOptional().openapi({
-          description:
-            'The album on which the track appears. The album object includes a link in `href` to full information about the album.\n',
-        }),
-        artists: z
-          .array(SimplifiedArtistObjectSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.\n',
-          }),
-        available_markets: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
-          }),
-        disc_number: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The disc number (usually `1` unless the album consists of more than one disc).\n',
-          }),
-        duration_ms: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The track length in milliseconds.\n' }),
-        explicit: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).\n',
-          }),
-        external_ids: ExternalIdObjectSchema.exactOptional().openapi({
-          description: 'Known external IDs for the track.\n',
-        }),
-        external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
-          description: 'Known external URLs for this track.\n',
-        }),
-        href: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'A link to the Web API endpoint providing full details of the track.\n',
-          }),
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
-          }),
-        is_playable: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
-          }),
-        linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
-          deprecated: true,
-          description:
-            'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking) is applied, and the requested track has been replaced with different track. The track in the `linked_from` object contains information about the originally requested track.',
-        }),
-        restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
-          description: 'Included in the response when a content restriction is applied.\n',
-        }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the track.\n' }),
-        popularity: z
-          .int()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'The popularity of the track. The value will be between 0 and 100, with 100 being the most popular.<br/>The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.<br/>Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past. Duplicate tracks (e.g. the same track from a single and an album) are rated independently. Artist and album popularity is derived mathematically from track popularity. _**Note**: the popularity value may lag actual popularity by a few days: the value is not updated in real time._\n',
-          }),
-        preview_url: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description: 'A link to a 30 second preview (MP3 format) of the track. Can be `null`\n',
-          }),
-        track_number: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
-          }),
-        type: z
-          .literal('track')
-          .exactOptional()
-          .openapi({ description: 'The object type: "track".\n' }),
-        uri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
-          }),
-        is_local: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether or not the track is from a local file.\n' }),
-      })
-      .openapi({ 'x-spotify-docs-type': 'TrackObject', required: [] }),
-  )
+  .openapi({ 'x-spotify-docs-type': 'TrackObject', required: [] })
   .openapi('TrackObject')
 
 const ContextObjectSchema = z
@@ -525,6 +446,311 @@ const PlayHistoryObjectSchema = z
   .openapi({ 'x-spotify-docs-type': 'PlayHistoryObject', required: [] })
   .openapi('PlayHistoryObject')
 
+type CursorPagingPlayHistoryObjectType = z.infer<typeof CursorPagingObjectSchema> & {
+  items?: z.infer<typeof PlayHistoryObjectSchema>[]
+}
+
+const PagingObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=0&limit=20\n',
+        description: 'A link to the Web API endpoint returning the full result of the request\n',
+      }),
+    limit: z
+      .int()
+      .openapi({
+        example: 20,
+        description:
+          'The maximum number of items in the response (as set in the query or by default).\n',
+      }),
+    next: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
+        description: 'URL to the next page of items. ( `null` if none)\n',
+      }),
+    offset: z
+      .int()
+      .openapi({
+        example: 0,
+        description: 'The offset of the items returned (as set in the query or by default)\n',
+      }),
+    previous: z
+      .string()
+      .nullable()
+      .openapi({
+        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
+        description: 'URL to the previous page of items. ( `null` if none)\n',
+      }),
+    total: z
+      .int()
+      .openapi({ example: 4, description: 'The total number of items available to return.\n' }),
+  })
+  .openapi({
+    'x-spotify-docs-type': 'PagingObject',
+    required: ['href', 'items', 'limit', 'next', 'offset', 'previous', 'total'],
+  })
+  .openapi('PagingObject')
+
+const SimplifiedTrackObjectSchema = z
+  .object({
+    artists: z
+      .array(SimplifiedArtistObjectSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.',
+      }),
+    available_markets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    disc_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The disc number (usually `1` unless the album consists of more than one disc).',
+      }),
+    duration_ms: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The track length in milliseconds.' }),
+    explicit: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).',
+      }),
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'External URLs for this track.\n',
+    }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the track.',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+    is_playable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
+      }),
+    linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied and is only part of the response if the track linking, in fact, exists. The requested track has been replaced with a different track. The track in the `linked_from` object contains information about the originally requested track.',
+    }),
+    restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the track.' }),
+    preview_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description: 'A URL to a 30 second preview (MP3 format) of the track.\n',
+      }),
+    track_number: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
+      }),
+    type: z.string().exactOptional().openapi({ description: 'The object type: "track".\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
+      }),
+    is_local: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether or not the track is from a local file.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SimplifiedTrackObject', required: [] })
+  .openapi('SimplifiedTrackObject')
+
+const PagingSimplifiedTrackObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedTrackObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+  .openapi('PagingSimplifiedTrackObject')
+
+const CopyrightObjectSchema = z
+  .object({
+    text: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The copyright text for this content.\n' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of copyright: `C` = the copyright, `P` = the sound recording (performance) copyright.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'CopyrightObject', required: [] })
+  .openapi('CopyrightObject')
+
+const AlbumObjectSchema = AlbumBaseSchema.and(
+  z
+    .looseObject({})
+    .openapi({
+      required: [
+        'artists',
+        'tracks',
+        'copyrights',
+        'external_ids',
+        'genres',
+        'label',
+        'popularity',
+      ],
+    }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'artists')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'tracks')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'copyrights')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'external_ids')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'genres')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'label')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'popularity')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        artists: z
+          .array(SimplifiedArtistObjectSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'The artists of the album. Each artist object includes a link in `href` to more detailed information about the artist.\n',
+          }),
+        tracks: PagingSimplifiedTrackObjectSchema.exactOptional().openapi({
+          description: 'The tracks of the album.\n',
+        }),
+        copyrights: z
+          .array(CopyrightObjectSchema)
+          .exactOptional()
+          .openapi({ description: 'The copyright statements of the album.\n' }),
+        external_ids: ExternalIdObjectSchema.exactOptional().openapi({
+          description: 'Known external IDs for the album.\n',
+        }),
+        genres: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            example: [],
+            description: '**Deprecated** The array is always empty.\n',
+          }),
+        label: z
+          .string()
+          .exactOptional()
+          .openapi({ deprecated: true, description: 'The label associated with the album.\n' }),
+        popularity: z
+          .int()
+          .exactOptional()
+          .openapi({
+            deprecated: true,
+            description:
+              'The popularity of the album. The value will be between 0 and 100, with 100 being the most popular.\n',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi({
+    'x-spotify-docs-type': 'AlbumObject',
+    required: ['artists', 'tracks', 'copyrights', 'external_ids', 'genres', 'label', 'popularity'],
+  })
+  .openapi('AlbumObject')
+
+type SavedAlbumObjectType = { added_at?: string; album?: z.infer<typeof AlbumObjectSchema> }
+
+const SavedAlbumObjectSchema: z.ZodType<SavedAlbumObjectType> = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the album was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    album: AlbumObjectSchema.exactOptional().openapi({
+      description: 'Information about the album.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedAlbumObject', required: [] })
+  .openapi('SavedAlbumObject')
+
+type PagingSavedAlbumObjectType = z.infer<typeof PagingObjectSchema> & {
+  items?: z.infer<typeof SavedAlbumObjectSchema>[]
+}
+
+const SavedTrackObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the track was saved.\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    track: TrackObjectSchema.exactOptional().openapi({
+      description: 'Information about the track.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedTrackObject', required: [] })
+  .openapi('SavedTrackObject')
+
+type PagingSavedTrackObjectType = z.infer<typeof PagingObjectSchema> & {
+  items?: z.infer<typeof SavedTrackObjectSchema>[]
+}
+
 const PlaylistUserObjectSchema = z
   .object({
     external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
@@ -568,6 +794,19 @@ const ResumePointObjectSchema = z
   })
   .openapi({ 'x-spotify-docs-type': 'ResumePointObject', required: [] })
   .openapi('ResumePointObject')
+
+const EpisodeRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'EpisodeRestrictionObject', required: [] })
+  .openapi('EpisodeRestrictionObject')
 
 const EpisodeBaseSchema = z
   .object({
@@ -704,23 +943,6 @@ const EpisodeBaseSchema = z
     ],
   })
   .openapi('EpisodeBase')
-
-const CopyrightObjectSchema = z
-  .object({
-    text: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The copyright text for this content.\n' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of copyright: `C` = the copyright, `P` = the sound recording (performance) copyright.\n',
-      }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'CopyrightObject', required: [] })
-  .openapi('CopyrightObject')
 
 const ShowBaseSchema = z
   .object({
@@ -873,6 +1095,429 @@ const PlaylistTrackObjectSchema = z
   })
   .openapi({ 'x-spotify-docs-type': 'PlaylistTrackObject', required: [] })
   .openapi('PlaylistTrackObject')
+
+type PagingPlaylistTrackObjectType = z.infer<typeof PagingObjectSchema> & {
+  items?: z.infer<typeof PlaylistTrackObjectSchema>[]
+}
+
+const PlaylistOwnerObjectSchema = PlaylistUserObjectSchema.and(
+  z
+    .object({
+      display_name: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description: "The name displayed on the user's profile. `null` if not available.\n",
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('PlaylistOwnerObject')
+
+const PagingPlaylistTrackObjectSchema: z.ZodType<PagingPlaylistTrackObjectType> =
+  PagingObjectSchema.and(
+    z
+      .object({ items: z.array(PlaylistTrackObjectSchema).exactOptional() })
+      .openapi({ required: [] }),
+  )
+    .openapi({ 'x-spotify-docs-type': 'PagingPlaylistTrackObject' })
+    .openapi('PagingPlaylistTrackObject')
+
+const FollowersObjectSchema = z
+  .object({
+    href: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'This will always be set to null, as the Web API does not support it at the moment.\n',
+      }),
+    total: z.int().exactOptional().openapi({ description: 'The total number of followers.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'FollowersObject', required: [] })
+  .openapi('FollowersObject')
+
+type PlaylistObjectType = {
+  collaborative?: boolean
+  description?: string | null
+  external_urls?: z.infer<typeof ExternalUrlObjectSchema>
+  href?: string
+  id?: string
+  images?: z.infer<typeof ImageObjectSchema>[]
+  name?: string
+  owner?: z.infer<typeof PlaylistOwnerObjectSchema>
+  public?: boolean
+  snapshot_id?: string
+  items?: z.infer<typeof PagingPlaylistTrackObjectSchema>
+  tracks?: z.infer<typeof PagingPlaylistTrackObjectSchema>
+  type?: string
+  uri?: string
+  followers?: z.infer<typeof FollowersObjectSchema>
+}
+
+const AuthorObjectSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the author.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'AuthorObject', required: [] })
+  .openapi('AuthorObject')
+
+const NarratorObjectSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the Narrator.\n' }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'NarratorObject', required: [] })
+  .openapi('NarratorObject')
+
+const AudiobookBaseSchema = z
+  .object({
+    authors: z
+      .array(AuthorObjectSchema)
+      .openapi({ description: 'The author(s) for the audiobook.\n' }),
+    available_markets: z
+      .array(z.string())
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the audiobook can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    copyrights: z
+      .array(CopyrightObjectSchema)
+      .openapi({ description: 'The copyright statements of the audiobook.\n' }),
+    description: z
+      .string()
+      .openapi({
+        description:
+          'A description of the audiobook. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({
+        description: 'A description of the audiobook. This field may contain HTML tags.\n',
+      }),
+    edition: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The edition of the audiobook.\n', example: 'Unabridged' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the audiobook has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this audiobook.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the audiobook.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({
+        description: 'The cover art for the audiobook in various sizes, widest first.\n',
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        description:
+          'A list of the languages used in the audiobook, identified by their [ISO 639](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    media_type: z.string().openapi({ description: 'The media type of the audiobook.\n' }),
+    name: z.string().openapi({ description: 'The name of the audiobook.\n' }),
+    narrators: z
+      .array(NarratorObjectSchema)
+      .openapi({ description: 'The narrator(s) for the audiobook.\n' }),
+    publisher: z
+      .string()
+      .openapi({ deprecated: true, description: 'The publisher of the audiobook.\n' }),
+    type: z.literal('audiobook').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
+      }),
+    total_chapters: z.int().openapi({ description: 'The number of chapters in this audiobook.\n' }),
+  })
+  .openapi({
+    required: [
+      'authors',
+      'available_markets',
+      'copyrights',
+      'description',
+      'explicit',
+      'external_urls',
+      'href',
+      'html_description',
+      'id',
+      'images',
+      'languages',
+      'media_type',
+      'name',
+      'narrators',
+      'publisher',
+      'total_chapters',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('AudiobookBase')
+
+const ChapterRestrictionObjectSchema = z
+  .object({
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The reason for the restriction. Supported values:\n- `market` - The content item is not available in the given market.\n- `product` - The content item is not available for the user's subscription type.\n- `explicit` - The content item is explicit and the user's account is set to not play explicit content.\n- `payment_required` - Payment is required to play the content item.\n\nAdditional reasons may be added in the future.\n**Note**: If you use this field, make sure that your application safely handles unknown values.\n",
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ChapterRestrictionObject', required: [] })
+  .openapi('ChapterRestrictionObject')
+
+const ChapterBaseSchema = z
+  .object({
+    audio_preview_url: z
+      .string()
+      .nullable()
+      .openapi({
+        deprecated: true,
+        example: 'https://p.scdn.co/mp3-preview/2f37da1d4221f40b9d1a98cd191f4d6f1646ad17',
+        description:
+          'A URL to a 30 second preview (MP3 format) of the chapter. `null` if not available.\n',
+      }),
+    available_markets: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          'A list of the countries in which the chapter can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
+      }),
+    chapter_number: z.int().openapi({ example: 1, description: 'The number of the chapter\n' }),
+    description: z
+      .string()
+      .openapi({
+        example:
+          'We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.\n',
+        description:
+          'A description of the chapter. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
+      }),
+    html_description: z
+      .string()
+      .openapi({
+        example:
+          '<p>We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.</p>\n',
+        description: 'A description of the chapter. This field may contain HTML tags.\n',
+      }),
+    duration_ms: z
+      .int()
+      .openapi({ example: 1686230, description: 'The chapter length in milliseconds.\n' }),
+    explicit: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether or not the chapter has explicit content (true = yes it does; false = no it does not OR unknown).\n',
+      }),
+    external_urls: ExternalUrlObjectSchema.openapi({
+      description: 'External URLs for this chapter.\n',
+    }),
+    href: z
+      .string()
+      .openapi({
+        example: 'https://api.spotify.com/v1/episodes/5Xt5DXGzch68nYYamXrNxZ',
+        description: 'A link to the Web API endpoint providing full details of the chapter.\n',
+      }),
+    id: z
+      .string()
+      .openapi({
+        example: '5Xt5DXGzch68nYYamXrNxZ',
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .openapi({ description: 'The cover art for the chapter in various sizes, widest first.\n' }),
+    is_playable: z
+      .boolean()
+      .openapi({
+        description: 'True if the chapter is playable in the given market. Otherwise false.\n',
+      }),
+    languages: z
+      .array(z.string())
+      .openapi({
+        example: ['fr', 'en'],
+        description:
+          'A list of the languages used in the chapter, identified by their [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639) code.\n',
+      }),
+    name: z
+      .string()
+      .openapi({
+        example: 'Starting Your Own Podcast: Tips, Tricks, and Advice From Anchor Creators\n',
+        description: 'The name of the chapter.\n',
+      }),
+    release_date: z
+      .string()
+      .openapi({
+        example: '1981-12-15',
+        description:
+          'The date the chapter was first released, for example `"1981-12-15"`. Depending on the precision, it might be shown as `"1981"` or `"1981-12"`.\n',
+      }),
+    release_date_precision: z
+      .enum(['year', 'month', 'day'])
+      .openapi({
+        example: 'day',
+        description: 'The precision with which `release_date` value is known.\n',
+      }),
+    resume_point: ResumePointObjectSchema.exactOptional().openapi({
+      description:
+        "The user's most recent position in the chapter. Set if the supplied access token is a user token and has the scope 'user-read-playback-position'.\n",
+    }),
+    type: z.literal('episode').openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .openapi({
+        example: 'spotify:episode:0zLhl3WsOCQHbe1BPTiHgr',
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
+      }),
+    restrictions: ChapterRestrictionObjectSchema.exactOptional().openapi({
+      description: 'Included in the response when a content restriction is applied.\n',
+    }),
+  })
+  .openapi({
+    required: [
+      'audio_preview_url',
+      'chapter_number',
+      'description',
+      'html_description',
+      'duration_ms',
+      'explicit',
+      'external_urls',
+      'href',
+      'id',
+      'images',
+      'is_playable',
+      'languages',
+      'name',
+      'release_date',
+      'release_date_precision',
+      'type',
+      'uri',
+    ],
+  })
+  .openapi('ChapterBase')
+
+const SimplifiedChapterObjectSchema = ChapterBaseSchema.openapi({
+  'x-spotify-docs-type': 'SimplifiedChapterObject',
+}).openapi('SimplifiedChapterObject')
+
+const PagingSimplifiedChapterObjectSchema = PagingObjectSchema.and(
+  z
+    .object({ items: z.array(SimplifiedChapterObjectSchema).exactOptional() })
+    .openapi({ required: [] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'PagingSimplifiedChapterObject' })
+  .openapi('PagingSimplifiedChapterObject')
+
+const AudiobookObjectSchema = AudiobookBaseSchema.and(
+  z
+    .object({
+      chapters: PagingSimplifiedChapterObjectSchema.openapi({
+        description: 'The chapters of the audiobook.\n',
+      }),
+    })
+    .openapi({ required: ['chapters'] }),
+)
+  .openapi({ 'x-spotify-docs-type': 'AudiobookObject' })
+  .openapi('AudiobookObject')
+
+const SavedAudiobookObjectSchema = z
+  .object({
+    added_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        'x-spotify-docs-type': 'Timestamp',
+        description:
+          'The date and time the audiobook was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
+      }),
+    audiobook: AudiobookObjectSchema.exactOptional().openapi({
+      description: 'Information about the audiobook.',
+    }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'SavedAudiobookObject', required: [] })
+  .openapi('SavedAudiobookObject')
+
+type PagingSavedAudiobookObjectType = z.infer<typeof PagingObjectSchema> & {
+  items?: z.infer<typeof SavedAudiobookObjectSchema>[]
+}
+
+const ArtistObjectSchema = z
+  .object({
+    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
+      description: 'Known external URLs for this artist.\n',
+    }),
+    followers: FollowersObjectSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Information about the followers of the artist.\n',
+    }),
+    genres: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        example: ['Prog rock', 'Grunge'],
+        description:
+          'A list of the genres the artist is associated with. If not yet classified, the array is empty.\n',
+      }),
+    href: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A link to the Web API endpoint providing full details of the artist.\n',
+      }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+    images: z
+      .array(ImageObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'Images of the artist in various sizes, widest first.\n' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the artist.\n' }),
+    popularity: z
+      .int()
+      .exactOptional()
+      .openapi({
+        deprecated: true,
+        description:
+          "The popularity of the artist. The value will be between 0 and 100, with 100 being the most popular. The artist's popularity is calculated from the popularity of all the artist's tracks.\n",
+      }),
+    type: z.literal('artist').exactOptional().openapi({ description: 'The object type.\n' }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the artist.\n',
+      }),
+  })
+  .openapi({ 'x-spotify-docs-type': 'ArtistObject', required: [] })
+  .openapi('ArtistObject')
 
 const QueueObjectSchema = z
   .object({
@@ -1851,218 +2496,18 @@ const AudioFeaturesObjectSchema = z
   .openapi({ 'x-spotify-docs-type': 'AudioFeaturesObject', required: [] })
   .openapi('AudioFeaturesObject')
 
-const SimplifiedTrackObjectSchema = z
-  .object({
-    artists: z
-      .array(SimplifiedArtistObjectSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The artists who performed the track. Each artist object includes a link in `href` to more detailed information about the artist.',
-      }),
-    available_markets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'A list of the countries in which the track can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
-      }),
-    disc_number: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The disc number (usually `1` unless the album consists of more than one disc).',
-      }),
-    duration_ms: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The track length in milliseconds.' }),
-    explicit: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether or not the track has explicit lyrics ( `true` = yes it does; `false` = no it does not OR unknown).',
-      }),
-    external_urls: ExternalUrlObjectSchema.exactOptional().openapi({
-      description: 'External URLs for this track.\n',
-    }),
-    href: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A link to the Web API endpoint providing full details of the track.',
-      }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
-      }),
-    is_playable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied. If `true`, the track is playable in the given market. Otherwise `false`.\n',
-      }),
-    linked_from: LinkedTrackObjectSchema.exactOptional().openapi({
-      deprecated: true,
-      description:
-        'Part of the response when [Track Relinking](/documentation/web-api/concepts/track-relinking/) is applied and is only part of the response if the track linking, in fact, exists. The requested track has been replaced with a different track. The track in the `linked_from` object contains information about the originally requested track.',
-    }),
-    restrictions: TrackRestrictionObjectSchema.exactOptional().openapi({
-      description: 'Included in the response when a content restriction is applied.\n',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the track.' }),
-    preview_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description: 'A URL to a 30 second preview (MP3 format) of the track.\n',
-      }),
-    track_number: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The number of the track. If an album has several discs, the track number is the number on the specified disc.\n',
-      }),
-    type: z.string().exactOptional().openapi({ description: 'The object type: "track".\n' }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the track.\n',
-      }),
-    is_local: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether or not the track is from a local file.\n' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'SimplifiedTrackObject', required: [] })
-  .openapi('SimplifiedTrackObject')
-
-const CursorObjectSchema = z
-  .object({
-    after: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The cursor to use as key to find the next page of items.' }),
-    before: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The cursor to use as key to find the previous page of items.' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'CursorObject', required: [] })
-  .openapi('CursorObject')
-
-const CursorPagingObjectSchema = z
-  .object({
-    href: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A link to the Web API endpoint returning the full result of the request.',
-      }),
-    limit: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of items in the response (as set in the query or by default).',
-      }),
-    next: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'URL to the next page of items. ( `null` if none)' }),
-    cursors: CursorObjectSchema.exactOptional().openapi({
-      description: 'The cursors used to find the next set of items.',
-    }),
-    total: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The total number of items available to return.' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'CursorPagingObject', required: [] })
-  .openapi('CursorPagingObject')
-
-const CursorPagingPlayHistoryObjectSchema = CursorPagingObjectSchema.and(
-  z.object({ items: z.array(PlayHistoryObjectSchema).exactOptional() }).openapi({ required: [] }),
-)
-  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
-  .openapi('CursorPagingPlayHistoryObject')
+const CursorPagingPlayHistoryObjectSchema: z.ZodType<CursorPagingPlayHistoryObjectType> =
+  CursorPagingObjectSchema.and(
+    z.object({ items: z.array(PlayHistoryObjectSchema).exactOptional() }).openapi({ required: [] }),
+  )
+    .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
+    .openapi('CursorPagingPlayHistoryObject')
 
 const CursorPagingSimplifiedArtistObjectSchema = CursorPagingObjectSchema.and(
   z.object({ items: z.array(ArtistObjectSchema).exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ 'x-spotify-docs-type': 'PagingArtistObject' })
   .openapi('CursorPagingSimplifiedArtistObject')
-
-const PagingObjectSchema = z
-  .object({
-    href: z
-      .string()
-      .openapi({
-        example: 'https://api.spotify.com/v1/me/shows?offset=0&limit=20\n',
-        description: 'A link to the Web API endpoint returning the full result of the request\n',
-      }),
-    limit: z
-      .int()
-      .openapi({
-        example: 20,
-        description:
-          'The maximum number of items in the response (as set in the query or by default).\n',
-      }),
-    next: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
-        description: 'URL to the next page of items. ( `null` if none)\n',
-      }),
-    offset: z
-      .int()
-      .openapi({
-        example: 0,
-        description: 'The offset of the items returned (as set in the query or by default)\n',
-      }),
-    previous: z
-      .string()
-      .nullable()
-      .openapi({
-        example: 'https://api.spotify.com/v1/me/shows?offset=1&limit=1',
-        description: 'URL to the previous page of items. ( `null` if none)\n',
-      }),
-    total: z
-      .int()
-      .openapi({ example: 4, description: 'The total number of items available to return.\n' }),
-  })
-  .openapi({
-    'x-spotify-docs-type': 'PagingObject',
-    required: ['href', 'items', 'limit', 'next', 'offset', 'previous', 'total'],
-  })
-  .openapi('PagingObject')
-
-const PlaylistOwnerObjectSchema = PlaylistUserObjectSchema.and(
-  z
-    .object({
-      display_name: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description: "The name displayed on the user's profile. `null` if not available.\n",
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('PlaylistOwnerObject')
 
 const PlaylistTracksRefObjectSchema = z
   .object({
@@ -2207,104 +2652,13 @@ const PagingSimplifiedAlbumObjectSchema = PagingObjectSchema.and(
   .openapi({ 'x-spotify-docs-type': 'PagingAlbumObject' })
   .openapi('PagingSimplifiedAlbumObject')
 
-const PagingSimplifiedTrackObjectSchema = PagingObjectSchema.and(
-  z
-    .object({ items: z.array(SimplifiedTrackObjectSchema).exactOptional() })
-    .openapi({ required: [] }),
-)
-  .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
-  .openapi('PagingSimplifiedTrackObject')
-
-const AlbumObjectSchema = AlbumBaseSchema.and(
-  z
-    .object({
-      artists: z
-        .array(SimplifiedArtistObjectSchema)
-        .exactOptional()
-        .openapi({
-          description:
-            'The artists of the album. Each artist object includes a link in `href` to more detailed information about the artist.\n',
-        }),
-      tracks: PagingSimplifiedTrackObjectSchema.exactOptional().openapi({
-        description: 'The tracks of the album.\n',
-      }),
-      copyrights: z
-        .array(CopyrightObjectSchema)
-        .exactOptional()
-        .openapi({ description: 'The copyright statements of the album.\n' }),
-      external_ids: ExternalIdObjectSchema.exactOptional().openapi({
-        description: 'Known external IDs for the album.\n',
-      }),
-      genres: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          deprecated: true,
-          example: [],
-          description: '**Deprecated** The array is always empty.\n',
-        }),
-      label: z
-        .string()
-        .exactOptional()
-        .openapi({ deprecated: true, description: 'The label associated with the album.\n' }),
-      popularity: z
-        .int()
-        .exactOptional()
-        .openapi({
-          deprecated: true,
-          description:
-            'The popularity of the album. The value will be between 0 and 100, with 100 being the most popular.\n',
-        }),
-    })
-    .openapi({ required: [] }),
-)
-  .openapi({
-    'x-spotify-docs-type': 'AlbumObject',
-    required: ['artists', 'tracks', 'copyrights', 'external_ids', 'genres', 'label', 'popularity'],
-  })
-  .openapi('AlbumObject')
-
-const SavedAlbumObjectSchema = z
-  .object({
-    added_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        'x-spotify-docs-type': 'Timestamp',
-        description:
-          'The date and time the album was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
-      }),
-    album: AlbumObjectSchema.exactOptional().openapi({
-      description: 'Information about the album.',
-    }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'SavedAlbumObject', required: [] })
-  .openapi('SavedAlbumObject')
-
-const PagingSavedAlbumObjectSchema = PagingObjectSchema.and(
+const PagingSavedAlbumObjectSchema: z.ZodType<PagingSavedAlbumObjectType> = PagingObjectSchema.and(
   z.object({ items: z.array(SavedAlbumObjectSchema).exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ 'x-spotify-docs-type': 'PagingSavedAlbumObject' })
   .openapi('PagingSavedAlbumObject')
 
-const SavedTrackObjectSchema = z
-  .object({
-    added_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        'x-spotify-docs-type': 'Timestamp',
-        description:
-          'The date and time the track was saved.\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
-      }),
-    track: TrackObjectSchema.exactOptional().openapi({
-      description: 'Information about the track.',
-    }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'SavedTrackObject', required: [] })
-  .openapi('SavedTrackObject')
-
-const PagingSavedTrackObjectSchema = PagingObjectSchema.and(
+const PagingSavedTrackObjectSchema: z.ZodType<PagingSavedTrackObjectType> = PagingObjectSchema.and(
   z.object({ items: z.array(SavedTrackObjectSchema).exactOptional() }).openapi({ required: [] }),
 )
   .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
@@ -2315,12 +2669,6 @@ const PagingTrackObjectSchema = PagingObjectSchema.and(
 )
   .openapi({ 'x-spotify-docs-type': 'PagingTrackObject' })
   .openapi('PagingTrackObject')
-
-const PagingPlaylistTrackObjectSchema = PagingObjectSchema.and(
-  z.object({ items: z.array(PlaylistTrackObjectSchema).exactOptional() }).openapi({ required: [] }),
-)
-  .openapi({ 'x-spotify-docs-type': 'PagingPlaylistTrackObject' })
-  .openapi('PagingPlaylistTrackObject')
 
 const PagingSimplifiedShowObjectSchema = PagingObjectSchema.and(
   z
@@ -2388,122 +2736,6 @@ const PagingSavedEpisodeObjectSchema = PagingObjectSchema.and(
   .openapi({ 'x-spotify-docs-type': 'PagingEpisodeObject' })
   .openapi('PagingSavedEpisodeObject')
 
-const AuthorObjectSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the author.\n' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'AuthorObject', required: [] })
-  .openapi('AuthorObject')
-
-const NarratorObjectSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the Narrator.\n' }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'NarratorObject', required: [] })
-  .openapi('NarratorObject')
-
-const AudiobookBaseSchema = z
-  .object({
-    authors: z
-      .array(AuthorObjectSchema)
-      .openapi({ description: 'The author(s) for the audiobook.\n' }),
-    available_markets: z
-      .array(z.string())
-      .openapi({
-        deprecated: true,
-        description:
-          'A list of the countries in which the audiobook can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
-      }),
-    copyrights: z
-      .array(CopyrightObjectSchema)
-      .openapi({ description: 'The copyright statements of the audiobook.\n' }),
-    description: z
-      .string()
-      .openapi({
-        description:
-          'A description of the audiobook. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
-      }),
-    html_description: z
-      .string()
-      .openapi({
-        description: 'A description of the audiobook. This field may contain HTML tags.\n',
-      }),
-    edition: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The edition of the audiobook.\n', example: 'Unabridged' }),
-    explicit: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether or not the audiobook has explicit content (true = yes it does; false = no it does not OR unknown).\n',
-      }),
-    external_urls: ExternalUrlObjectSchema.openapi({
-      description: 'External URLs for this audiobook.\n',
-    }),
-    href: z
-      .string()
-      .openapi({
-        description: 'A link to the Web API endpoint providing full details of the audiobook.\n',
-      }),
-    id: z
-      .string()
-      .openapi({
-        description:
-          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
-      }),
-    images: z
-      .array(ImageObjectSchema)
-      .openapi({
-        description: 'The cover art for the audiobook in various sizes, widest first.\n',
-      }),
-    languages: z
-      .array(z.string())
-      .openapi({
-        description:
-          'A list of the languages used in the audiobook, identified by their [ISO 639](https://en.wikipedia.org/wiki/ISO_639) code.\n',
-      }),
-    media_type: z.string().openapi({ description: 'The media type of the audiobook.\n' }),
-    name: z.string().openapi({ description: 'The name of the audiobook.\n' }),
-    narrators: z
-      .array(NarratorObjectSchema)
-      .openapi({ description: 'The narrator(s) for the audiobook.\n' }),
-    publisher: z
-      .string()
-      .openapi({ deprecated: true, description: 'The publisher of the audiobook.\n' }),
-    type: z.literal('audiobook').openapi({ description: 'The object type.\n' }),
-    uri: z
-      .string()
-      .openapi({
-        description:
-          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the audiobook.\n',
-      }),
-    total_chapters: z.int().openapi({ description: 'The number of chapters in this audiobook.\n' }),
-  })
-  .openapi({
-    required: [
-      'authors',
-      'available_markets',
-      'copyrights',
-      'description',
-      'explicit',
-      'external_urls',
-      'href',
-      'html_description',
-      'id',
-      'images',
-      'languages',
-      'media_type',
-      'name',
-      'narrators',
-      'publisher',
-      'total_chapters',
-      'type',
-      'uri',
-    ],
-  })
-  .openapi('AudiobookBase')
-
 const SimplifiedAudiobookObjectSchema = AudiobookBaseSchema.openapi({
   'x-spotify-docs-type': 'SimplifiedAudiobookObject',
 }).openapi('SimplifiedAudiobookObject')
@@ -2521,151 +2753,6 @@ const PagingArtistObjectSchema = PagingObjectSchema.and(
 )
   .openapi({ 'x-spotify-docs-type': 'PagingArtistObject' })
   .openapi('PagingArtistObject')
-
-const ChapterBaseSchema = z
-  .object({
-    audio_preview_url: z
-      .string()
-      .nullable()
-      .openapi({
-        deprecated: true,
-        example: 'https://p.scdn.co/mp3-preview/2f37da1d4221f40b9d1a98cd191f4d6f1646ad17',
-        description:
-          'A URL to a 30 second preview (MP3 format) of the chapter. `null` if not available.\n',
-      }),
-    available_markets: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        deprecated: true,
-        description:
-          'A list of the countries in which the chapter can be played, identified by their [ISO 3166-1 alpha-2](http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code.\n',
-      }),
-    chapter_number: z.int().openapi({ example: 1, description: 'The number of the chapter\n' }),
-    description: z
-      .string()
-      .openapi({
-        example:
-          'We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.\n',
-        description:
-          'A description of the chapter. HTML tags are stripped away from this field, use `html_description` field in case HTML tags are needed.\n',
-      }),
-    html_description: z
-      .string()
-      .openapi({
-        example:
-          '<p>We kept on ascending, with occasional periods of quick descent, but in the main always ascending. Suddenly, I became conscious of the fact that the driver was in the act of pulling up the horses in the courtyard of a vast ruined castle, from whose tall black windows came no ray of light, and whose broken battlements showed a jagged line against the moonlit sky.</p>\n',
-        description: 'A description of the chapter. This field may contain HTML tags.\n',
-      }),
-    duration_ms: z
-      .int()
-      .openapi({ example: 1686230, description: 'The chapter length in milliseconds.\n' }),
-    explicit: z
-      .boolean()
-      .openapi({
-        description:
-          'Whether or not the chapter has explicit content (true = yes it does; false = no it does not OR unknown).\n',
-      }),
-    external_urls: ExternalUrlObjectSchema.openapi({
-      description: 'External URLs for this chapter.\n',
-    }),
-    href: z
-      .string()
-      .openapi({
-        example: 'https://api.spotify.com/v1/episodes/5Xt5DXGzch68nYYamXrNxZ',
-        description: 'A link to the Web API endpoint providing full details of the chapter.\n',
-      }),
-    id: z
-      .string()
-      .openapi({
-        example: '5Xt5DXGzch68nYYamXrNxZ',
-        description:
-          'The [Spotify ID](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
-      }),
-    images: z
-      .array(ImageObjectSchema)
-      .openapi({ description: 'The cover art for the chapter in various sizes, widest first.\n' }),
-    is_playable: z
-      .boolean()
-      .openapi({
-        description: 'True if the chapter is playable in the given market. Otherwise false.\n',
-      }),
-    languages: z
-      .array(z.string())
-      .openapi({
-        example: ['fr', 'en'],
-        description:
-          'A list of the languages used in the chapter, identified by their [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639) code.\n',
-      }),
-    name: z
-      .string()
-      .openapi({
-        example: 'Starting Your Own Podcast: Tips, Tricks, and Advice From Anchor Creators\n',
-        description: 'The name of the chapter.\n',
-      }),
-    release_date: z
-      .string()
-      .openapi({
-        example: '1981-12-15',
-        description:
-          'The date the chapter was first released, for example `"1981-12-15"`. Depending on the precision, it might be shown as `"1981"` or `"1981-12"`.\n',
-      }),
-    release_date_precision: z
-      .enum(['year', 'month', 'day'])
-      .openapi({
-        example: 'day',
-        description: 'The precision with which `release_date` value is known.\n',
-      }),
-    resume_point: ResumePointObjectSchema.exactOptional().openapi({
-      description:
-        "The user's most recent position in the chapter. Set if the supplied access token is a user token and has the scope 'user-read-playback-position'.\n",
-    }),
-    type: z.literal('episode').openapi({ description: 'The object type.\n' }),
-    uri: z
-      .string()
-      .openapi({
-        example: 'spotify:episode:0zLhl3WsOCQHbe1BPTiHgr',
-        description:
-          'The [Spotify URI](/documentation/web-api/concepts/spotify-uris-ids) for the chapter.\n',
-      }),
-    restrictions: ChapterRestrictionObjectSchema.exactOptional().openapi({
-      description: 'Included in the response when a content restriction is applied.\n',
-    }),
-  })
-  .openapi({
-    required: [
-      'audio_preview_url',
-      'chapter_number',
-      'description',
-      'html_description',
-      'duration_ms',
-      'explicit',
-      'external_urls',
-      'href',
-      'id',
-      'images',
-      'is_playable',
-      'languages',
-      'name',
-      'release_date',
-      'release_date_precision',
-      'type',
-      'uri',
-    ],
-  })
-  .openapi('ChapterBase')
-
-const SimplifiedChapterObjectSchema = ChapterBaseSchema.openapi({
-  'x-spotify-docs-type': 'SimplifiedChapterObject',
-}).openapi('SimplifiedChapterObject')
-
-const PagingSimplifiedChapterObjectSchema = PagingObjectSchema.and(
-  z
-    .object({ items: z.array(SimplifiedChapterObjectSchema).exactOptional() })
-    .openapi({ required: [] }),
-)
-  .openapi({ 'x-spotify-docs-type': 'PagingSimplifiedChapterObject' })
-  .openapi('PagingSimplifiedChapterObject')
 
 const RecommendationSeedObjectSchema = z
   .object({
@@ -2724,7 +2811,7 @@ const RecommendationsObjectSchema = z
   .openapi({ 'x-spotify-docs-type': 'RecommendationsObject', required: ['seeds', 'tracks'] })
   .openapi('RecommendationsObject')
 
-const PlaylistObjectSchema = z
+const PlaylistObjectSchema: z.ZodType<PlaylistObjectType> = z
   .object({
     collaborative: z
       .boolean()
@@ -2836,18 +2923,6 @@ const ShowObjectSchema = ShowBaseSchema.and(
   .openapi({ 'x-spotify-docs-type': 'ShowObject' })
   .openapi('ShowObject')
 
-const AudiobookObjectSchema = AudiobookBaseSchema.and(
-  z
-    .object({
-      chapters: PagingSimplifiedChapterObjectSchema.openapi({
-        description: 'The chapters of the audiobook.\n',
-      }),
-    })
-    .openapi({ required: ['chapters'] }),
-)
-  .openapi({ 'x-spotify-docs-type': 'AudiobookObject' })
-  .openapi('AudiobookObject')
-
 const ChapterObjectSchema = ChapterBaseSchema.and(
   z
     .object({
@@ -2914,28 +2989,12 @@ const CurrentlyPlayingObjectSchema = z
   .openapi({ 'x-spotify-docs-type': 'CurrentlyPlayingObject', required: [] })
   .openapi('CurrentlyPlayingObject')
 
-const SavedAudiobookObjectSchema = z
-  .object({
-    added_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        'x-spotify-docs-type': 'Timestamp',
-        description:
-          'The date and time the audiobook was saved\nTimestamps are returned in ISO 8601 format as Coordinated Universal Time (UTC) with a zero offset: YYYY-MM-DDTHH:MM:SSZ.\nIf the time is imprecise (for example, the date/time of an album release), an additional field indicates the precision; see for example, release_date in an album object.\n',
-      }),
-    audiobook: AudiobookObjectSchema.exactOptional().openapi({
-      description: 'Information about the audiobook.',
-    }),
-  })
-  .openapi({ 'x-spotify-docs-type': 'SavedAudiobookObject', required: [] })
-  .openapi('SavedAudiobookObject')
-
-const PagingSavedAudiobookObjectSchema = PagingObjectSchema.and(
-  z
-    .object({ items: z.array(SavedAudiobookObjectSchema).exactOptional() })
-    .openapi({ required: [] }),
-).openapi('PagingSavedAudiobookObject')
+const PagingSavedAudiobookObjectSchema: z.ZodType<PagingSavedAudiobookObjectType> =
+  PagingObjectSchema.and(
+    z
+      .object({ items: z.array(SavedAudiobookObjectSchema).exactOptional() })
+      .openapi({ required: [] }),
+  ).openapi('PagingSavedAudiobookObject')
 
 const UnauthorizedResponse = {
   description:

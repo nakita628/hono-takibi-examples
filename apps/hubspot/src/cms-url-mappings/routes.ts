@@ -191,6 +191,7 @@ const UrlMappingSchema = z
         'SITE_MAP',
         'SITE_MENU',
         'SITE_SETTINGS',
+        'STAGED_CONTENT',
         'SUBSCRIPTIONS_SETTINGS',
         'TAG',
         'THEME',
@@ -444,11 +445,8 @@ const Oauth2SecurityScheme = {
       scopes: { content: '' },
     },
   },
+  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getUrlMappings202609UrlMappingsRoute = createRoute({
   method: 'get',
@@ -462,7 +460,10 @@ export const getUrlMappings202609UrlMappingsRoute = createRoute({
     200: {
       description: 'successful operation',
       content: {
-        '*/*': { schema: z.array(UrlMappingSchema).openapi({ example: null }), example: null },
+        'application/json': {
+          schema: z.array(UrlMappingSchema).openapi({ example: null }),
+          example: null,
+        },
       },
     },
     default: ErrorResponse,
@@ -479,7 +480,10 @@ export const postUrlMappings202609UrlMappingsRoute = createRoute({
     'Create a new URL mapping in your HubSpot account. This endpoint allows you to define URL redirections and mappings, which can be useful for managing site navigation and SEO. The request body must include all required properties of the UrlMapping schema.',
   operationId: 'post-/url-mappings/2026-09/url-mappings_/url-mappings/v3/url-mappings',
   request: {
-    body: { content: { '*/*': { schema: UrlMappingSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: UrlMappingSchema, example: null } },
+      required: true,
+    },
   },
   responses: { default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
@@ -521,7 +525,7 @@ export const getUrlMappings202609UrlMappingsIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: UrlMappingSchema, example: null } },
+      content: { 'application/json': { schema: UrlMappingSchema, example: null } },
     },
     default: ErrorResponse,
   },

@@ -1,275 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PipeSchema = z
-  .object({
-    mode: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The mode for the Pipe. Not applicable for abstract sockets.' }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Unix Domain Socket path. On Linux, paths starting with '@' will use the abstract namespace. The starting '@' is replaced by a null byte by Envoy. Paths starting with '@' will result in an error in environments other than Linux.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('Pipe')
-
-const SocketAddressSchema = z
-  .object({
-    address: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The address for this socket. :ref:`Listeners ` will bind to the address. An empty address is not allowed. Specify ``0.0.0.0`` or ``::`` to bind to any address. [#comment:TODO(zuercher) reinstate when implemented: It is possible to distinguish a Listener address via the prefix/suffix matching in :ref:`FilterChainMatch `.] When used within an upstream :ref:`BindConfig `, the address controls the source address of outbound connections. For :ref:`clusters `, the cluster type determines whether the address must be an IP (*STATIC* or *EDS* clusters) or a hostname resolved by DNS (*STRICT_DNS* or *LOGICAL_DNS* clusters). Address resolution can be customized via :ref:`resolver_name `.',
-      }),
-    ipv4Compat: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'When binding to an IPv6 address above, this enables `IPv4 compatibility `_. Binding to ``::`` will allow both IPv4 and IPv6 connections, with peer IPv4 addresses mapped into IPv6 space as ``::FFFF:``.',
-      }),
-    namedPort: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is only valid if :ref:`resolver_name ` is specified below and the named resolver is capable of named port resolution.',
-      }),
-    portValue: z.uint32().exactOptional(),
-    protocol: z.enum(['TCP', 'UDP']).exactOptional(),
-    resolverName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the custom resolver. This must have been registered with Envoy. If this is empty, a context dependent default applies. If the address is a concrete IP address, no resolution will occur. If address is a hostname this should be set for resolution other than DNS. Specifying a custom resolver with *STRICT_DNS* or *LOGICAL_DNS* will generate an error at runtime.',
-      }),
-  })
-  .openapi({ description: '[#next-free-field: 7]', required: [] })
-  .openapi('SocketAddress')
-
-type AddressType = {
-  pipe?: z.infer<typeof PipeSchema>
-  socketAddress?: z.infer<typeof SocketAddressSchema>
-}
-
-const DoubleRangeSchema = z
-  .object({
-    end: z.float64().exactOptional().openapi({ description: 'end of the range (exclusive)' }),
-    start: z.float64().exactOptional().openapi({ description: 'start of the range (inclusive)' }),
-  })
-  .openapi({
-    description:
-      'Specifies the double start and end of the range using half-open interval semantics [start, end).',
-    required: [],
-  })
-  .openapi('DoubleRange')
-
-type DoubleMatcherType = { exact?: number; range?: z.infer<typeof DoubleRangeSchema> }
-
-const ValueMatcherSchema: z.ZodType<ValueMatcherType> = z
-  .lazy(() =>
-    z
-      .object({
-        boolMatch: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'If specified, a match occurs if and only if the target value is a bool value and is equal to this field.',
-          }),
-        doubleMatch: DoubleMatcherSchema.exactOptional().openapi({
-          description:
-            'If specified, a match occurs if and only if the target value is a double value and is matched to this field.',
-        }),
-        listMatch: ListMatcherSchema.exactOptional().openapi({
-          description:
-            'If specified, a match occurs if and only if the target value is a list value and is matched to this field.',
-        }),
-        nullMatch: NullMatchSchema.exactOptional().openapi({
-          description:
-            'If specified, a match occurs if and only if the target value is a NullValue.',
-        }),
-        presentMatch: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'If specified, value match will be performed based on whether the path is referring to a valid primitive value in the metadata. If the path is referring to a non-primitive value, the result is always not matched.',
-          }),
-        stringMatch: StringMatcherSchema.exactOptional().openapi({
-          description:
-            'If specified, a match occurs if and only if the target value is a string value and is matched to this field.',
-        }),
-      })
-      .openapi({
-        description:
-          'Specifies the way to match a ProtobufWkt::Value. Primitive values and ListValue are supported. StructValue is not supported and is always not matched. [#next-free-field: 7]',
-        required: [],
-      }),
-  )
-  .openapi('ValueMatcher')
-
-type ListMatcherType = { oneOf?: z.infer<typeof ValueMatcherSchema> }
-
-type NullMatchType = { [key: string]: unknown }
-
-const GoogleRE2Schema = z
-  .object({
-    maxProgramSize: z
-      .uint32()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field controls the RE2 "program size" which is a rough estimate of how complex a compiled regex is to evaluate. A regex that has a program size greater than the configured value will fail to compile. In this case, the configured max program size can be increased or the regex can be simplified. If not specified, the default is 100. This field is deprecated; regexp validation should be performed on the management server instead of being done by each individual client.',
-      }),
-  })
-  .openapi({
-    description:
-      "Google's `RE2 `_ regex engine. The regex string must adhere to the documented `syntax `_. The engine is designed to complete execution in linear time as well as limit the amount of memory used. Envoy supports program size checking via runtime. The runtime keys ``re2.max_program_size.error_level`` and ``re2.max_program_size.warn_level`` can be set to integers as the maximum program size or complexity that a compiled regex can have before an exception is thrown or a warning is logged, respectively. ``re2.max_program_size.error_level`` defaults to 100, and ``re2.max_program_size.warn_level`` has no default if unset (will not check/log a warning). Envoy emits two stats for tracking the program size of regexes: the histogram `re2.program_size`, which records the program size, and the counter `re2.exceeded_warn_level`, which is incremented each time the program size exceeds the warn level threshold.",
-    required: [],
-  })
-  .openapi('GoogleRE2')
-
-const RegexMatcherSchema = z
-  .object({
-    googleRe2: GoogleRE2Schema.exactOptional().openapi({
-      description: "Google's RE2 regex engine.",
-    }),
-    regex: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The regex match string. The string must be supported by the configured engine.',
-      }),
-  })
-  .openapi({
-    description: 'A regex matcher designed for safety when used with untrusted input.',
-    required: [],
-  })
-  .openapi('RegexMatcher')
-
-type StringMatcherType = {
-  exact?: string
-  ignoreCase?: boolean
-  prefix?: string
-  regex?: string
-  safeRegex?: z.infer<typeof RegexMatcherSchema>
-  suffix?: string
-}
-
-const DoubleMatcherSchema: z.ZodType<DoubleMatcherType> = z
-  .object({
-    exact: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'If specified, the input double value must be equal to the value specified here.',
-      }),
-    range: DoubleRangeSchema.exactOptional().openapi({
-      description:
-        'If specified, the input double value must be in the range specified here. Note: The range is using half-open interval semantics [start, end).',
-    }),
-  })
-  .openapi({ description: 'Specifies the way to match a double value.', required: [] })
-  .openapi('DoubleMatcher')
-
-const ListMatcherSchema: z.ZodType<ListMatcherType> = z
-  .lazy(() =>
-    z
-      .object({
-        oneOf: ValueMatcherSchema.exactOptional().openapi({
-          description:
-            'If specified, at least one of the values in the list must match the value specified.',
-        }),
-      })
-      .openapi({ description: 'Specifies the way to match a list value.', required: [] }),
-  )
-  .openapi('ListMatcher')
-
-const NullMatchSchema: z.ZodType<NullMatchType> = z
-  .object({})
-  .openapi({ description: 'NullMatch is an empty message to specify a null value.' })
-  .openapi('NullMatch')
-
-const StringMatcherSchema: z.ZodType<StringMatcherType> = z
-  .object({
-    exact: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The input string must match exactly the string specified here. Examples: * *abc* only matches the value *abc*.',
-      }),
-    ignoreCase: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, indicates the exact/prefix/suffix matching should be case insensitive. This has no effect for the safe_regex match. For example, the matcher *data* will match both input string *Data* and *data* if set to true.',
-      }),
-    prefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * *abc* matches the value *abc.xyz*',
-      }),
-    regex: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The input string must match the regular expression specified here. The regex grammar is defined `here `_. Examples: * The regex ``\\d{3}`` matches the value *123* * The regex ``\\d{3}`` does not match the value *1234* * The regex ``\\d{3}`` does not match the value *123.456* .. attention:: This field has been deprecated in favor of `safe_regex` as it is not safe for use with untrusted input in all cases.',
-      }),
-    safeRegex: RegexMatcherSchema.exactOptional().openapi({
-      description: 'The input string must match the regular expression specified here.',
-    }),
-    suffix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * *abc* matches the value *xyz.abc*',
-      }),
-  })
-  .openapi({
-    description: 'Specifies the way to match a string. [#next-free-field: 7]',
-    required: [],
-  })
-  .openapi('StringMatcher')
-
-type ValueMatcherType = {
-  boolMatch?: boolean
-  doubleMatch?: z.infer<typeof DoubleMatcherSchema>
-  listMatch?: z.infer<typeof ListMatcherSchema>
-  nullMatch?: z.infer<typeof NullMatchSchema>
-  presentMatch?: boolean
-  stringMatch?: z.infer<typeof StringMatcherSchema>
-}
-
-const AddressSchema: z.ZodType<AddressType> = z
-  .lazy(() =>
-    z
-      .object({
-        pipe: PipeSchema.exactOptional(),
-        socketAddress: SocketAddressSchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'Addresses specify either a logical or physical address and port, which are used to tell Envoy where to bind/listen, connect to upstream and find management servers.',
-        required: [],
-      }),
-  )
-  .openapi('Address')
-
 const SemanticVersionSchema = z
   .object({
     majorNumber: z.uint32().exactOptional(),
@@ -343,6 +73,68 @@ const ExtensionSchema = z
     required: [],
   })
   .openapi('Extension')
+
+const PipeSchema = z
+  .object({
+    mode: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The mode for the Pipe. Not applicable for abstract sockets.' }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Unix Domain Socket path. On Linux, paths starting with '@' will use the abstract namespace. The starting '@' is replaced by a null byte by Envoy. Paths starting with '@' will result in an error in environments other than Linux.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('Pipe')
+
+const SocketAddressSchema = z
+  .object({
+    address: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The address for this socket. :ref:`Listeners ` will bind to the address. An empty address is not allowed. Specify ``0.0.0.0`` or ``::`` to bind to any address. [#comment:TODO(zuercher) reinstate when implemented: It is possible to distinguish a Listener address via the prefix/suffix matching in :ref:`FilterChainMatch `.] When used within an upstream :ref:`BindConfig `, the address controls the source address of outbound connections. For :ref:`clusters `, the cluster type determines whether the address must be an IP (*STATIC* or *EDS* clusters) or a hostname resolved by DNS (*STRICT_DNS* or *LOGICAL_DNS* clusters). Address resolution can be customized via :ref:`resolver_name `.',
+      }),
+    ipv4Compat: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'When binding to an IPv6 address above, this enables `IPv4 compatibility `_. Binding to ``::`` will allow both IPv4 and IPv6 connections, with peer IPv4 addresses mapped into IPv6 space as ``::FFFF:``.',
+      }),
+    namedPort: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This is only valid if :ref:`resolver_name ` is specified below and the named resolver is capable of named port resolution.',
+      }),
+    portValue: z.uint32().exactOptional(),
+    protocol: z.enum(['TCP', 'UDP']).exactOptional(),
+    resolverName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of the custom resolver. This must have been registered with Envoy. If this is empty, a context dependent default applies. If the address is a concrete IP address, no resolution will occur. If address is a hostname this should be set for resolution other than DNS. Specifying a custom resolver with *STRICT_DNS* or *LOGICAL_DNS* will generate an error at runtime.',
+      }),
+  })
+  .openapi({ description: '[#next-free-field: 7]', required: [] })
+  .openapi('SocketAddress')
+
+const AddressSchema = z
+  .object({ pipe: PipeSchema.exactOptional(), socketAddress: SocketAddressSchema.exactOptional() })
+  .openapi({
+    description:
+      'Addresses specify either a logical or physical address and port, which are used to tell Envoy where to bind/listen, connect to upstream and find management servers.',
+    required: [],
+  })
+  .openapi('Address')
 
 const LocalitySchema = z
   .object({
@@ -824,13 +616,102 @@ const PerXdsConfigSchema = z
   })
   .openapi('PerXdsConfig')
 
-const ClientConfigSchema = z
+type ClientConfigType = {
+  node?: z.infer<typeof NodeSchema>
+  xdsConfig?: z.infer<typeof PerXdsConfigSchema>[]
+}
+
+const GoogleRE2Schema = z
   .object({
-    node: NodeSchema.exactOptional().openapi({ description: 'Node for a particular client.' }),
-    xdsConfig: z.array(PerXdsConfigSchema).exactOptional(),
+    maxProgramSize: z
+      .uint32()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field controls the RE2 "program size" which is a rough estimate of how complex a compiled regex is to evaluate. A regex that has a program size greater than the configured value will fail to compile. In this case, the configured max program size can be increased or the regex can be simplified. If not specified, the default is 100. This field is deprecated; regexp validation should be performed on the management server instead of being done by each individual client.',
+      }),
   })
-  .openapi({ description: 'All xds configs for a particular client.', required: [] })
-  .openapi('ClientConfig')
+  .openapi({
+    description:
+      "Google's `RE2 `_ regex engine. The regex string must adhere to the documented `syntax `_. The engine is designed to complete execution in linear time as well as limit the amount of memory used. Envoy supports program size checking via runtime. The runtime keys ``re2.max_program_size.error_level`` and ``re2.max_program_size.warn_level`` can be set to integers as the maximum program size or complexity that a compiled regex can have before an exception is thrown or a warning is logged, respectively. ``re2.max_program_size.error_level`` defaults to 100, and ``re2.max_program_size.warn_level`` has no default if unset (will not check/log a warning). Envoy emits two stats for tracking the program size of regexes: the histogram `re2.program_size`, which records the program size, and the counter `re2.exceeded_warn_level`, which is incremented each time the program size exceeds the warn level threshold.",
+    required: [],
+  })
+  .openapi('GoogleRE2')
+
+const RegexMatcherSchema = z
+  .object({
+    googleRe2: GoogleRE2Schema.exactOptional().openapi({
+      description: "Google's RE2 regex engine.",
+    }),
+    regex: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The regex match string. The string must be supported by the configured engine.',
+      }),
+  })
+  .openapi({
+    description: 'A regex matcher designed for safety when used with untrusted input.',
+    required: [],
+  })
+  .openapi('RegexMatcher')
+
+type StringMatcherType = {
+  exact?: string
+  ignoreCase?: boolean
+  prefix?: string
+  regex?: string
+  safeRegex?: z.infer<typeof RegexMatcherSchema>
+  suffix?: string
+}
+
+const StringMatcherSchema: z.ZodType<StringMatcherType> = z
+  .object({
+    exact: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The input string must match exactly the string specified here. Examples: * *abc* only matches the value *abc*.',
+      }),
+    ignoreCase: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, indicates the exact/prefix/suffix matching should be case insensitive. This has no effect for the safe_regex match. For example, the matcher *data* will match both input string *Data* and *data* if set to true.',
+      }),
+    prefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The input string must have the prefix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * *abc* matches the value *abc.xyz*',
+      }),
+    regex: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The input string must match the regular expression specified here. The regex grammar is defined `here `_. Examples: * The regex ``\\d{3}`` matches the value *123* * The regex ``\\d{3}`` does not match the value *1234* * The regex ``\\d{3}`` does not match the value *123.456* .. attention:: This field has been deprecated in favor of `safe_regex` as it is not safe for use with untrusted input in all cases.',
+      }),
+    safeRegex: RegexMatcherSchema.exactOptional().openapi({
+      description: 'The input string must match the regular expression specified here.',
+    }),
+    suffix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The input string must have the suffix specified here. Note: empty prefix is not allowed, please use regex instead. Examples: * *abc* matches the value *xyz.abc*',
+      }),
+  })
+  .openapi({
+    description: 'Specifies the way to match a string. [#next-free-field: 7]',
+    required: [],
+  })
+  .openapi('StringMatcher')
 
 const PathSegmentSchema = z
   .object({
@@ -844,6 +725,49 @@ const PathSegmentSchema = z
     required: [],
   })
   .openapi('PathSegment')
+
+const ValueMatcherSchema: z.ZodType<ValueMatcherType> = z
+  .lazy(() =>
+    z
+      .object({
+        boolMatch: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'If specified, a match occurs if and only if the target value is a bool value and is equal to this field.',
+          }),
+        doubleMatch: DoubleMatcherSchema.exactOptional().openapi({
+          description:
+            'If specified, a match occurs if and only if the target value is a double value and is matched to this field.',
+        }),
+        listMatch: ListMatcherSchema.exactOptional().openapi({
+          description:
+            'If specified, a match occurs if and only if the target value is a list value and is matched to this field.',
+        }),
+        nullMatch: NullMatchSchema.exactOptional().openapi({
+          description:
+            'If specified, a match occurs if and only if the target value is a NullValue.',
+        }),
+        presentMatch: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'If specified, value match will be performed based on whether the path is referring to a valid primitive value in the metadata. If the path is referring to a non-primitive value, the result is always not matched.',
+          }),
+        stringMatch: StringMatcherSchema.exactOptional().openapi({
+          description:
+            'If specified, a match occurs if and only if the target value is a string value and is matched to this field.',
+        }),
+      })
+      .openapi({
+        description:
+          'Specifies the way to match a ProtobufWkt::Value. Primitive values and ListValue are supported. StructValue is not supported and is always not matched. [#next-free-field: 7]',
+        required: [],
+      }),
+  )
+  .openapi('ValueMatcher')
 
 const StructMatcherSchema = z
   .object({
@@ -879,7 +803,81 @@ const NodeMatcherSchema = z
   })
   .openapi('NodeMatcher')
 
-const ClientStatusRequestSchema = z
+type ClientStatusRequestType = { nodeMatchers?: z.infer<typeof NodeMatcherSchema>[] }
+
+const ClientConfigSchema: z.ZodType<ClientConfigType> = z
+  .object({
+    node: NodeSchema.exactOptional().openapi({ description: 'Node for a particular client.' }),
+    xdsConfig: z.array(PerXdsConfigSchema).exactOptional(),
+  })
+  .openapi({ description: 'All xds configs for a particular client.', required: [] })
+  .openapi('ClientConfig')
+
+type ClientStatusResponseType = { config?: z.infer<typeof ClientConfigSchema>[] }
+
+const DoubleRangeSchema = z
+  .object({
+    end: z.float64().exactOptional().openapi({ description: 'end of the range (exclusive)' }),
+    start: z.float64().exactOptional().openapi({ description: 'start of the range (inclusive)' }),
+  })
+  .openapi({
+    description:
+      'Specifies the double start and end of the range using half-open interval semantics [start, end).',
+    required: [],
+  })
+  .openapi('DoubleRange')
+
+type DoubleMatcherType = { exact?: number; range?: z.infer<typeof DoubleRangeSchema> }
+
+type ListMatcherType = { oneOf?: z.infer<typeof ValueMatcherSchema> }
+
+type NullMatchType = { [key: string]: unknown }
+
+const DoubleMatcherSchema: z.ZodType<DoubleMatcherType> = z
+  .object({
+    exact: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'If specified, the input double value must be equal to the value specified here.',
+      }),
+    range: DoubleRangeSchema.exactOptional().openapi({
+      description:
+        'If specified, the input double value must be in the range specified here. Note: The range is using half-open interval semantics [start, end).',
+    }),
+  })
+  .openapi({ description: 'Specifies the way to match a double value.', required: [] })
+  .openapi('DoubleMatcher')
+
+const ListMatcherSchema: z.ZodType<ListMatcherType> = z
+  .lazy(() =>
+    z
+      .object({
+        oneOf: ValueMatcherSchema.exactOptional().openapi({
+          description:
+            'If specified, at least one of the values in the list must match the value specified.',
+        }),
+      })
+      .openapi({ description: 'Specifies the way to match a list value.', required: [] }),
+  )
+  .openapi('ListMatcher')
+
+const NullMatchSchema: z.ZodType<NullMatchType> = z
+  .looseObject({})
+  .openapi({ description: 'NullMatch is an empty message to specify a null value.' })
+  .openapi('NullMatch')
+
+type ValueMatcherType = {
+  boolMatch?: boolean
+  doubleMatch?: z.infer<typeof DoubleMatcherSchema>
+  listMatch?: z.infer<typeof ListMatcherSchema>
+  nullMatch?: z.infer<typeof NullMatchSchema>
+  presentMatch?: boolean
+  stringMatch?: z.infer<typeof StringMatcherSchema>
+}
+
+const ClientStatusRequestSchema: z.ZodType<ClientStatusRequestType> = z
   .object({
     nodeMatchers: z
       .array(NodeMatcherSchema)
@@ -895,7 +893,7 @@ const ClientStatusRequestSchema = z
   })
   .openapi('ClientStatusRequest')
 
-const ClientStatusResponseSchema = z
+const ClientStatusResponseSchema: z.ZodType<ClientStatusResponseType> = z
   .object({
     config: z
       .array(ClientConfigSchema)

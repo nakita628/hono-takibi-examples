@@ -31,7 +31,7 @@ type DocumentFilterType =
         | 'notIn'
         | 'isNull'
         | 'isNotNull'
-      value?: { [key: string]: unknown }
+      value?: unknown
     }
   | { operator: 'AND' | 'OR'; filters: DocumentFilterType[] }
 
@@ -39,7 +39,7 @@ type DocumentsDeletedFilterType =
   | {
       field: 'deletedAt' | 'deletedById'
       operator: 'eq' | 'neq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'notIn' | 'isNull' | 'isNotNull'
-      value?: { [key: string]: unknown }
+      value?: unknown
     }
   | { operator: 'AND' | 'OR'; filters: DocumentsDeletedFilterType[] }
 
@@ -63,7 +63,7 @@ type CollectionFilterType =
         | 'notIn'
         | 'isNull'
         | 'isNotNull'
-      value?: { [key: string]: unknown }
+      value?: unknown
     }
   | { operator: 'AND' | 'OR'; filters: CollectionFilterType[] }
 
@@ -95,7 +95,7 @@ type UserFilterType =
         | 'notIn'
         | 'isNull'
         | 'isNotNull'
-      value?: { [key: string]: unknown }
+      value?: unknown
     }
   | { operator: 'AND' | 'OR'; filters: UserFilterType[] }
 
@@ -700,7 +700,7 @@ const TeamSchema = z
       .exactOptional()
       .openapi({ description: 'Whether passkey authentication is enabled for this workspace.' }),
     preferences: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Workspace-level preference flags.' }),
@@ -765,7 +765,7 @@ const CollectionSchema = z
         example: '',
       }),
     data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'The collection description as rich-text JSON, when available.' }),
@@ -876,7 +876,7 @@ const CommentSchema = z
       .exactOptional()
       .openapi({ description: 'Unique identifier for the object.', readOnly: true }),
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The editor data representing this comment.' }),
     documentId: z
@@ -924,7 +924,7 @@ const CommentSchema = z
         readOnly: true,
       }),
     reactions: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of emoji reactions on this comment.', readOnly: true }),
     anchorText: z
@@ -1083,7 +1083,7 @@ const DocumentSchema = z
         example: '…',
       }),
     data: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1091,6 +1091,14 @@ const DocumentSchema = z
           'The body of the document as a Prosemirror document, returned in place of text when requested.',
       }),
     url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A URL path to access the document. Deprecated – prefer the `path` field.',
+        readOnly: true,
+        deprecated: true,
+      }),
+    path: z
       .string()
       .exactOptional()
       .openapi({ description: 'A URL path to access the document.', readOnly: true }),
@@ -1286,7 +1294,7 @@ const EventSchema = z
       .exactOptional()
       .openapi({ description: 'The date and time that this event was created', readOnly: true }),
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: { name: 'Equipment list' },
@@ -1294,7 +1302,7 @@ const EventSchema = z
         readOnly: true,
       }),
     changes: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({
@@ -1313,7 +1321,7 @@ const ErrorSchema = z
     error: z.string().exactOptional(),
     message: z.string().exactOptional(),
     status: z.number().exactOptional(),
-    data: z.object({}).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Error')
@@ -1436,7 +1444,7 @@ const GroupSchema = z
       .exactOptional()
       .openapi({ description: 'Whether mentioning this group is disabled.' }),
     externalGroup: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Details of the linked external group, if any.' }),
@@ -1682,7 +1690,7 @@ const RevisionDetailSchema = RevisionSchema.and(
   z
     .object({
       data: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description: 'The body of the revision as a Prosemirror document.',
@@ -1801,6 +1809,14 @@ const ShareSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Whether to show a table of contents on the shared page.' }),
+    expiresAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time when the share link expires and can no longer be used to access the document. When `null` the share does not expire.',
+      }),
     views: z
       .number()
       .exactOptional()
@@ -2084,6 +2100,14 @@ const TemplateSchema = z
     url: z
       .string()
       .exactOptional()
+      .openapi({
+        description: 'A URL path to access the template. Deprecated – prefer the `path` field.',
+        readOnly: true,
+        deprecated: true,
+      }),
+    path: z
+      .string()
+      .exactOptional()
       .openapi({ description: 'A URL path to access the template.', readOnly: true }),
     urlId: z
       .string()
@@ -2094,7 +2118,7 @@ const TemplateSchema = z
       }),
     title: z.string().exactOptional().openapi({ description: 'The title of the template.' }),
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The body of the template as a Prosemirror document.' }),
     icon: z
@@ -2426,6 +2450,14 @@ const NotificationSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Identifier for the associated revision, if any.' }),
+    fileOperationId: z
+      .uuid()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Identifier for the associated file operation, such as an export, if any.',
+      }),
+    fileOperation: FileOperationSchema.exactOptional(),
     viewedAt: z.iso
       .datetime({ offset: true })
       .nullable()
@@ -2960,7 +2992,7 @@ export const postAttachmentsCreateRoute = createRoute({
                         'Present when `mode` is `post`. The endpoint to POST a multipart form upload to.',
                     }),
                   form: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -2974,7 +3006,7 @@ export const postAttachmentsCreateRoute = createRoute({
                         'Present when `mode` is `put`. The presigned URL to PUT the file contents to.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -3242,7 +3274,7 @@ export const postAuthDeleteRoute = createRoute({
   description:
     "Sign out the authenticated user. This rotates the user's token secret, immediately invalidating all existing API tokens and sessions for that user.",
   operationId: 'authDelete',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: {
     200: {
       description: 'OK',
@@ -3431,7 +3463,7 @@ export const postCollectionsCreateRoute = createRoute({
                   example: 'HR documentation is confidential and should be handled with care.',
                 }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3565,7 +3597,7 @@ export const postCollectionsUpdateRoute = createRoute({
                   example: 'HR documentation is confidential and should be handled with care.',
                 }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -4301,7 +4333,7 @@ export const postCommentsCreateRoute = createRoute({
               documentId: z.uuid(),
               parentCommentId: z.uuid().exactOptional(),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The body of the comment.' }),
               text: z
@@ -4418,7 +4450,7 @@ export const postCommentsUpdateRoute = createRoute({
             .object({
               id: z.uuid(),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The body of the comment.' }),
               text: z
@@ -5053,7 +5085,7 @@ export const postDocumentsImportRoute = createRoute({
           schema: z
             .object({
               file: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description:
                     'Plain text, markdown, docx, pdf, csv, tsv, html, mhtml (or mht) web pages, eml email messages, and textbundle/textpack bundles are supported.',
@@ -8901,28 +8933,57 @@ export const postSharesCreateRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.xor([
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'documentId')) {
-                    ctx.addIssue({ code: 'custom' })
+          schema: z
+            .xor([
+              z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'documentId')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['documentId'] }),
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'collectionId')) {
-                    ctx.addIssue({ code: 'custom' })
+                })
+                .openapi({ required: ['documentId'] }),
+              z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'collectionId')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
                   }
-                }
-              })
-              .openapi({ required: ['collectionId'] }),
-          ]),
+                })
+                .openapi({ required: ['collectionId'] }),
+            ])
+            .and(
+              z
+                .object({
+                  documentId: z
+                    .uuid()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Identifier for the document to share. Mutually exclusive with `collectionId`.',
+                    }),
+                  collectionId: z
+                    .uuid()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Identifier for the collection to share. Mutually exclusive with `documentId`.',
+                    }),
+                  expiresAt: z.iso
+                    .datetime({ offset: true })
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'An optional date and time when the share link should expire and no longer be usable. When omitted the workspace default share expiry is applied, if one is configured.',
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
         },
       },
     },
@@ -8981,6 +9042,14 @@ export const postSharesUpdateRoute = createRoute({
                 .openapi({
                   description:
                     'URL of an icon to display on the publicly shared page, overriding the workspace branding.',
+                }),
+              expiresAt: z.iso
+                .datetime({ offset: true })
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Date and time when the share link should expire and no longer be usable. Set to `null` to remove an existing expiry.',
                 }),
             })
             .openapi({ required: ['id', 'published'] }),
@@ -9441,7 +9510,7 @@ export const postTemplatesCreateRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The title of the template. Required when publishing.' }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -9621,7 +9690,7 @@ export const postTemplatesUpdateRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The title of the template.' }),
               data: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({ description: 'The body of the template as a Prosemirror document.' }),
               icon: z

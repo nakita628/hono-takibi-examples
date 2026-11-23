@@ -192,11 +192,14 @@ const Oauth2SecurityScheme = {
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'analytics.behavioral_events.send': { portal: ['public', 'private'], developer: false },
+    'behavioral_events.event_definitions.read_write': {
+      portal: ['public', 'private'],
+      developer: false,
+    },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const postEvents202609SendRoute = createRoute({
   method: 'post',

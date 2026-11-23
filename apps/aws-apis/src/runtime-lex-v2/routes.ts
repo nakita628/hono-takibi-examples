@@ -2,210 +2,6 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const NonEmptyStringSchema = z.string().min(1).openapi('NonEmptyString')
 
-type ElicitSubSlotType = {
-  name: z.infer<typeof NonEmptyStringSchema> & { [key: string]: unknown }
-  subSlotToElicit?: ElicitSubSlotType & { [key: string]: unknown }
-}
-
-const SlotSchema: z.ZodType<SlotType> = z
-  .lazy(() =>
-    z
-      .object({
-        value: ValueSchema.and(
-          z.any().openapi({ description: 'The current value of the slot.' }),
-        ).exactOptional(),
-        values: ValuesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A list of one or more values that the user provided for the slot. For example, if a for a slot that elicits pizza toppings, the values might be "pepperoni" and "pineapple." ',
-            }),
-        ).exactOptional(),
-        subSlots: SlotsSchema.and(
-          z.any().openapi({ description: 'The constituent sub slots of a composite slot.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'A value that Amazon Lex V2 uses to fulfill an intent. ',
-        required: [],
-      }),
-  )
-  .openapi('Slot')
-
-type SlotsType = { [key: string]: z.infer<typeof SlotSchema> }
-
-const RuntimeHintPhraseSchema = z.string().min(1).max(140).openapi('RuntimeHintPhrase')
-
-const RuntimeHintValueSchema = z
-  .object({
-    phrase: RuntimeHintPhraseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The phrase that Amazon Lex V2 should look for in the user's input to the bot.",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['phrase'],
-    description:
-      "Provides the phrase that Amazon Lex V2 should look for in the user's input to the bot.",
-  })
-  .openapi('RuntimeHintValue')
-
-type RuntimeHintValuesListType = z.infer<typeof RuntimeHintValueSchema>[]
-
-const RuntimeHintDetailsSchema: z.ZodType<RuntimeHintDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        runtimeHintValues: RuntimeHintValuesListSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'One or more strings that Amazon Lex V2 should look for in the input to the bot. Each phrase is given preference when deciding on slot values.',
-            }),
-        ).exactOptional(),
-        subSlotHints: SlotHintsSlotMapSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A map of constituent sub slot names inside a composite slot in the intent and the phrases that should be added for each sub slot. Inside each composite slot hints, this structure provides a mechanism to add granular sub slot phrases. Only sub slot hints are supported for composite slots. The intent name, composite slot name and the constituent sub slot names must exist.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Provides an array of phrases that should be given preference when resolving values for a slot.',
-        required: [],
-      }),
-  )
-  .openapi('RuntimeHintDetails')
-
-type SlotHintsSlotMapType = { [key: string]: z.infer<typeof RuntimeHintDetailsSchema> }
-
-const RuntimeHintValuesListSchema: z.ZodType<RuntimeHintValuesListType> = z
-  .array(RuntimeHintValueSchema)
-  .min(1)
-  .max(100)
-  .openapi('RuntimeHintValuesList')
-
-const SlotHintsSlotMapSchema: z.ZodType<SlotHintsSlotMapType> = z
-  .lazy(() => z.record(z.string(), RuntimeHintDetailsSchema))
-  .openapi('SlotHintsSlotMap')
-
-type RuntimeHintDetailsType = {
-  runtimeHintValues?: z.infer<typeof RuntimeHintValuesListSchema> & { [key: string]: unknown }
-  subSlotHints?: z.infer<typeof SlotHintsSlotMapSchema> & { [key: string]: unknown }
-}
-
-const StringListSchema = z.array(NonEmptyStringSchema).openapi('StringList')
-
-type ValueType = {
-  originalValue?: z.infer<typeof NonEmptyStringSchema> & { [key: string]: unknown }
-  interpretedValue: z.infer<typeof NonEmptyStringSchema> & { [key: string]: unknown }
-  resolvedValues?: z.infer<typeof StringListSchema> & { [key: string]: unknown }
-}
-
-type ValuesType = z.infer<typeof SlotSchema>[]
-
-const ValueSchema: z.ZodType<ValueType> = z
-  .object({
-    originalValue: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The text of the utterance from the user that was entered for the slot.',
-        }),
-    ).exactOptional(),
-    interpretedValue: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value that Amazon Lex V2 determines for the slot. The actual value depends on the setting of the value selection strategy for the bot. You can choose to use the value entered by the user, or you can have Amazon Lex V2 choose the first value in the <code>resolvedValues</code> list.',
-        }),
-    ),
-    resolvedValues: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of additional values that have been recognized for the slot.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['interpretedValue'], description: 'The value of a slot.' })
-  .openapi('Value')
-
-const ValuesSchema: z.ZodType<ValuesType> = z.lazy(() => z.array(SlotSchema)).openapi('Values')
-
-const SlotsSchema: z.ZodType<SlotsType> = z
-  .lazy(() => z.record(z.string(), SlotSchema))
-  .openapi('Slots')
-
-type SlotType = {
-  value?: z.infer<typeof ValueSchema> & { [key: string]: unknown }
-  values?: z.infer<typeof ValuesSchema> & { [key: string]: unknown }
-  subSlots?: z.infer<typeof SlotsSchema> & { [key: string]: unknown }
-}
-
-const BotIdentifierSchema = z
-  .string()
-  .regex(/^[0-9a-zA-Z]+$/)
-  .length(10)
-  .openapi('BotIdentifier')
-
-const BotAliasIdentifierSchema = z.string().openapi('BotAliasIdentifier')
-
-const LocaleIdSchema = z.string().min(1).openapi('LocaleId')
-
-const SessionIdSchema = z
-  .string()
-  .regex(/[0-9a-zA-Z._:-]+/)
-  .min(2)
-  .max(100)
-  .openapi('SessionId')
-
-const DeleteSessionResponseSchema = z
-  .object({
-    botId: BotIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the bot that contained the session data.' }),
-    ).exactOptional(),
-    botAliasId: BotAliasIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The alias identifier in use for the bot that contained the session data.',
-        }),
-    ).exactOptional(),
-    localeId: LocaleIdSchema.and(
-      z.any().openapi({ description: 'The locale where the session was used.' }),
-    ).exactOptional(),
-    sessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the deleted session.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteSessionResponse')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
 const TextSchema = z.string().min(1).max(1024).openapi('Text')
 
 const MessageContentTypeSchema = z
@@ -222,16 +18,10 @@ const ButtonValueSchema = z.string().min(1).max(50).openapi('ButtonValue')
 
 const ButtonSchema = z
   .object({
-    text: ButtonTextSchema.and(
-      z.any().openapi({ description: 'The text that is displayed on the button.' }),
-    ),
-    value: ButtonValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value returned to Amazon Lex V2 when a user chooses the button.',
-        }),
-    ),
+    text: ButtonTextSchema.openapi({ description: 'The text that is displayed on the button.' }),
+    value: ButtonValueSchema.openapi({
+      description: 'The value returned to Amazon Lex V2 when a user chooses the button.',
+    }),
   })
   .openapi({
     required: ['text', 'value'],
@@ -243,38 +33,22 @@ const ButtonsListSchema = z.array(ButtonSchema).min(0).max(5).openapi('ButtonsLi
 
 const ImageResponseCardSchema = z
   .object({
-    title: AttachmentTitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The title to display on the response card. The format of the title is determined by the platform displaying the response card.',
-        }),
-    ),
-    subtitle: AttachmentTitleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subtitle to display on the response card. The format of the subtitle is determined by the platform displaying the response card.',
-        }),
-    ).exactOptional(),
-    imageUrl: AttachmentUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of an image to display on the response card. The image URL must be publicly available so that the platform displaying the response card has access to the image.',
-        }),
-    ).exactOptional(),
-    buttons: ButtonsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of buttons that should be displayed on the response card. The arrangement of the buttons is determined by the platform that displays the button.',
-        }),
-    ).exactOptional(),
+    title: AttachmentTitleSchema.openapi({
+      description:
+        'The title to display on the response card. The format of the title is determined by the platform displaying the response card.',
+    }),
+    subtitle: AttachmentTitleSchema.exactOptional().openapi({
+      description:
+        'The subtitle to display on the response card. The format of the subtitle is determined by the platform displaying the response card.',
+    }),
+    imageUrl: AttachmentUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of an image to display on the response card. The image URL must be publicly available so that the platform displaying the response card has access to the image.',
+    }),
+    buttons: ButtonsListSchema.exactOptional().openapi({
+      description:
+        'A list of buttons that should be displayed on the response card. The arrangement of the buttons is determined by the platform that displays the button.',
+    }),
   })
   .openapi({
     required: ['title'],
@@ -285,12 +59,10 @@ const ImageResponseCardSchema = z
 
 const MessageSchema = z
   .object({
-    content: TextSchema.and(
-      z.any().openapi({ description: 'The text of the message.' }),
-    ).exactOptional(),
-    contentType: MessageContentTypeSchema.and(
-      z.any().openapi({ description: 'Indicates the type of response.' }),
-    ),
+    content: TextSchema.exactOptional().openapi({ description: 'The text of the message.' }),
+    contentType: MessageContentTypeSchema.openapi({
+      description: 'Indicates the type of response.',
+    }),
     imageResponseCard: ImageResponseCardSchema.exactOptional(),
   })
   .openapi({
@@ -305,14 +77,10 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const ConfidenceScoreSchema = z
   .object({
-    score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A score that indicates how confident Amazon Lex V2 is that an intent satisfies the user's intent. Ranges between 0.00 and 1.00. Higher scores indicate higher confidence.",
-        }),
-    ).exactOptional(),
+    score: DoubleSchema.exactOptional().openapi({
+      description:
+        "A score that indicates how confident Amazon Lex V2 is that an intent satisfies the user's intent. Ranges between 0.00 and 1.00. Higher scores indicate higher confidence.",
+    }),
   })
   .openapi({
     description:
@@ -327,52 +95,32 @@ const SentimentTypeSchema = z
 
 const SentimentScoreSchema = z
   .object({
-    positive: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>POSITIVE</code> sentiment.',
-        }),
-    ).exactOptional(),
-    negative: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEGATIVE</code> sentiment.',
-        }),
-    ).exactOptional(),
-    neutral: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEUTRAL</code> sentiment.',
-        }),
-    ).exactOptional(),
-    mixed: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>MIXED</code> sentiment.',
-        }),
-    ).exactOptional(),
+    positive: DoubleSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>POSITIVE</code> sentiment.',
+    }),
+    negative: DoubleSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEGATIVE</code> sentiment.',
+    }),
+    neutral: DoubleSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>NEUTRAL</code> sentiment.',
+    }),
+    mixed: DoubleSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that Amazon Comprehend has in the accuracy of its detection of the <code>MIXED</code> sentiment.',
+    }),
   })
   .openapi({ description: 'The individual sentiment responses for the utterance.', required: [] })
   .openapi('SentimentScore')
 
 const SentimentResponseSchema = z
   .object({
-    sentiment: SentimentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The overall sentiment expressed in the user's response. This is the sentiment most likely expressed by the user based on the analysis by Amazon Comprehend.",
-        }),
-    ).exactOptional(),
+    sentiment: SentimentTypeSchema.exactOptional().openapi({
+      description:
+        "The overall sentiment expressed in the user's response. This is the sentiment most likely expressed by the user based on the analysis by Amazon Comprehend.",
+    }),
     sentimentScore: SentimentScoreSchema.exactOptional(),
   })
   .openapi({
@@ -381,6 +129,10 @@ const SentimentResponseSchema = z
     required: [],
   })
   .openapi('SentimentResponse')
+
+const SlotsSchema: z.ZodType<SlotsType> = z
+  .lazy(() => z.record(z.string(), SlotSchema))
+  .openapi('Slots')
 
 const IntentStateSchema = z
   .enum([
@@ -397,26 +149,18 @@ const ConfirmationStateSchema = z.enum(['Confirmed', 'Denied', 'None']).openapi(
 
 const IntentSchema = z
   .object({
-    name: NonEmptyStringSchema.and(z.any().openapi({ description: 'The name of the intent.' })),
-    slots: SlotsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of all of the slots for the intent. The name of the slot maps to the value of the slot. If a slot has not been filled, the value is null.',
-        }),
-    ).exactOptional(),
-    state: IntentStateSchema.and(
-      z.any().openapi({ description: 'Contains fulfillment information for the intent. ' }),
-    ).exactOptional(),
-    confirmationState: ConfirmationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about whether fulfillment of the intent has been confirmed.',
-        }),
-    ).exactOptional(),
+    name: NonEmptyStringSchema.openapi({ description: 'The name of the intent.' }),
+    slots: SlotsSchema.exactOptional().openapi({
+      description:
+        'A map of all of the slots for the intent. The name of the slot maps to the value of the slot. If a slot has not been filled, the value is null.',
+    }),
+    state: IntentStateSchema.exactOptional().openapi({
+      description: 'Contains fulfillment information for the intent. ',
+    }),
+    confirmationState: ConfirmationStateSchema.exactOptional().openapi({
+      description:
+        'Contains information about whether fulfillment of the intent has been confirmed.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -426,30 +170,18 @@ const IntentSchema = z
 
 const InterpretationSchema = z
   .object({
-    nluConfidence: ConfidenceScoreSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines the threshold where Amazon Lex V2 will insert the <code>AMAZON.FallbackIntent</code>, <code>AMAZON.KendraSearchIntent</code>, or both when returning alternative intents in a response. <code>AMAZON.FallbackIntent</code> and <code>AMAZON.KendraSearchIntent</code> are only inserted if they are configured for the bot.',
-        }),
-    ).exactOptional(),
-    sentimentResponse: SentimentResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The sentiment expressed in an utterance. </p> <p>When the bot is configured to send utterances to Amazon Comprehend for sentiment analysis, this field contains the result of the analysis.</p>',
-        }),
-    ).exactOptional(),
-    intent: IntentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of intents that might satisfy the user's utterance. The intents are ordered by the confidence score.",
-        }),
-    ).exactOptional(),
+    nluConfidence: ConfidenceScoreSchema.exactOptional().openapi({
+      description:
+        'Determines the threshold where Amazon Lex V2 will insert the <code>AMAZON.FallbackIntent</code>, <code>AMAZON.KendraSearchIntent</code>, or both when returning alternative intents in a response. <code>AMAZON.FallbackIntent</code> and <code>AMAZON.KendraSearchIntent</code> are only inserted if they are configured for the bot.',
+    }),
+    sentimentResponse: SentimentResponseSchema.exactOptional().openapi({
+      description:
+        '<p>The sentiment expressed in an utterance. </p> <p>When the bot is configured to send utterances to Amazon Comprehend for sentiment analysis, this field contains the result of the analysis.</p>',
+    }),
+    intent: IntentSchema.exactOptional().openapi({
+      description:
+        "A list of intents that might satisfy the user's utterance. The intents are ordered by the confidence score.",
+    }),
   })
   .openapi({
     description:
@@ -470,16 +202,12 @@ const ElicitSubSlotSchema: z.ZodType<ElicitSubSlotType> = z
   .lazy(() =>
     z
       .object({
-        name: NonEmptyStringSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The name of the slot that should be elicited from the user.',
-            }),
-        ),
-        subSlotToElicit: ElicitSubSlotSchema.and(
-          z.any().openapi({ description: 'The field is not supported.' }),
-        ).exactOptional(),
+        name: NonEmptyStringSchema.openapi({
+          description: 'The name of the slot that should be elicited from the user.',
+        }),
+        subSlotToElicit: ElicitSubSlotSchema.exactOptional().openapi({
+          description: 'The field is not supported.',
+        }),
       })
       .openapi({
         required: ['name'],
@@ -491,35 +219,21 @@ const ElicitSubSlotSchema: z.ZodType<ElicitSubSlotType> = z
 
 const DialogActionSchema = z
   .object({
-    type: DialogActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>Close</code> - Indicates that there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex V2.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to elicit an intent from the user.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
-        }),
-    ),
-    slotToElicit: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the slot that should be elicited from the user.' }),
-    ).exactOptional(),
-    slotElicitationStyle: StyleTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Configures the slot to use spell-by-letter or spell-by-word style. When you use a style on a slot, users can spell out their input to make it clear to your bot.</p> <ul> <li> <p>Spell by letter - "b" "o" "b"</p> </li> <li> <p>Spell by word - "b as in boy" "o as in oscar" "b as in boy"</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/lexv2/latest/dg/using-spelling.html"> Using spelling to enter slot values </a>.</p>',
-        }),
-    ).exactOptional(),
-    subSlotToElicit: ElicitSubSlotSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the constituent sub slot of the composite slot specified in slotToElicit that should be elicited from the user.',
-        }),
-    ).exactOptional(),
+    type: DialogActionTypeSchema.openapi({
+      description:
+        '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>Close</code> - Indicates that there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex V2.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to elicit an intent from the user.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
+    }),
+    slotToElicit: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The name of the slot that should be elicited from the user.',
+    }),
+    slotElicitationStyle: StyleTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Configures the slot to use spell-by-letter or spell-by-word style. When you use a style on a slot, users can spell out their input to make it clear to your bot.</p> <ul> <li> <p>Spell by letter - "b" "o" "b"</p> </li> <li> <p>Spell by word - "b as in boy" "o as in oscar" "b as in boy"</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/lexv2/latest/dg/using-spelling.html"> Using spelling to enter slot values </a>.</p>',
+    }),
+    subSlotToElicit: ElicitSubSlotSchema.exactOptional().openapi({
+      description:
+        'The name of the constituent sub slot of the composite slot specified in slotToElicit that should be elicited from the user.',
+    }),
   })
   .openapi({ required: ['type'], description: 'The next action that Amazon Lex V2 should take.' })
   .openapi('DialogAction')
@@ -541,22 +255,14 @@ const ActiveContextTurnsToLiveSchema = z.int().min(1).max(20).openapi('ActiveCon
 
 const ActiveContextTimeToLiveSchema = z
   .object({
-    timeToLiveInSeconds: ActiveContextTimeToLiveInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds that the context is active. You can specify between 5 and 86400 seconds (24 hours).',
-        }),
-    ),
-    turnsToLive: ActiveContextTurnsToLiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of turns that the context is active. You can specify up to 20 turns. Each request and response from the bot is a turn.',
-        }),
-    ),
+    timeToLiveInSeconds: ActiveContextTimeToLiveInSecondsSchema.openapi({
+      description:
+        'The number of seconds that the context is active. You can specify between 5 and 86400 seconds (24 hours).',
+    }),
+    turnsToLive: ActiveContextTurnsToLiveSchema.openapi({
+      description:
+        'The number of turns that the context is active. You can specify up to 20 turns. Each request and response from the bot is a turn.',
+    }),
   })
   .openapi({
     required: ['timeToLiveInSeconds', 'turnsToLive'],
@@ -573,23 +279,15 @@ const ActiveContextParametersMapSchema = z
 
 const ActiveContextSchema = z
   .object({
-    name: ActiveContextNameSchema.and(z.any().openapi({ description: 'The name of the context.' })),
-    timeToLive: ActiveContextTimeToLiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the number of turns or seconds that the context is active. Once the time to live expires, the context is no longer returned in a response.',
-        }),
-    ),
-    contextAttributes: ActiveContextParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request.</p> <p>If you don't specify a list of contexts, Amazon Lex V2 will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared. </p>",
-        }),
-    ),
+    name: ActiveContextNameSchema.openapi({ description: 'The name of the context.' }),
+    timeToLive: ActiveContextTimeToLiveSchema.openapi({
+      description:
+        'Indicates the number of turns or seconds that the context is active. Once the time to live expires, the context is no longer returned in a response.',
+    }),
+    contextAttributes: ActiveContextParametersMapSchema.openapi({
+      description:
+        "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request.</p> <p>If you don't specify a list of contexts, Amazon Lex V2 will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared. </p>",
+    }),
   })
   .openapi({
     required: ['name', 'timeToLive', 'contextAttributes'],
@@ -608,20 +306,20 @@ const StringSchema = z.string().openapi('String')
 
 const StringMapSchema = z.record(z.string(), StringSchema).openapi('StringMap')
 
+const SlotHintsSlotMapSchema: z.ZodType<SlotHintsSlotMapType> = z
+  .lazy(() => z.record(z.string(), RuntimeHintDetailsSchema))
+  .openapi('SlotHintsSlotMap')
+
 const SlotHintsIntentMapSchema = z
   .record(z.string(), SlotHintsSlotMapSchema)
   .openapi('SlotHintsIntentMap')
 
 const RuntimeHintsSchema = z
   .object({
-    slotHints: SlotHintsIntentMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the slots in the intent that should have runtime hints added, and the phrases that should be added for each slot.</p> <p>The first level of the <code>slotHints</code> map is the name of the intent. The second level is the name of the slot within the intent. For more information, see <a href="https://docs.aws.amazon.com/lexv2/latest/dg/using-hints.html">Using hints to improve accuracy</a>.</p> <p>The intent name and slot name must exist.</p>',
-        }),
-    ).exactOptional(),
+    slotHints: SlotHintsIntentMapSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the slots in the intent that should have runtime hints added, and the phrases that should be added for each slot.</p> <p>The first level of the <code>slotHints</code> map is the name of the intent. The second level is the name of the slot within the intent. For more information, see <a href="https://docs.aws.amazon.com/lexv2/latest/dg/using-hints.html">Using hints to improve accuracy</a>.</p> <p>The intent name and slot name must exist.</p>',
+    }),
   })
   .openapi({
     description:
@@ -632,100 +330,50 @@ const RuntimeHintsSchema = z
 
 const SessionStateSchema = z
   .object({
-    dialogAction: DialogActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next step that Amazon Lex V2 should take in the conversation with a user.',
-        }),
-    ).exactOptional(),
-    intent: IntentSchema.and(
-      z.any().openapi({ description: 'The active intent that Amazon Lex V2 is processing.' }),
-    ).exactOptional(),
-    activeContexts: ActiveContextsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
-        }),
-    ).exactOptional(),
-    sessionAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
-        }),
-    ).exactOptional(),
-    originatingRequestId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for a specific request.' }),
-    ).exactOptional(),
-    runtimeHints: RuntimeHintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
-        }),
-    ).exactOptional(),
+    dialogAction: DialogActionSchema.exactOptional().openapi({
+      description: 'The next step that Amazon Lex V2 should take in the conversation with a user.',
+    }),
+    intent: IntentSchema.exactOptional().openapi({
+      description: 'The active intent that Amazon Lex V2 is processing.',
+    }),
+    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+      description:
+        'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
+    }),
+    sessionAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
+    }),
+    originatingRequestId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for a specific request.',
+    }),
+    runtimeHints: RuntimeHintsSchema.exactOptional().openapi({
+      description:
+        'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
+    }),
   })
   .openapi({ description: "The state of the user's session with Amazon Lex V2.", required: [] })
   .openapi('SessionState')
 
-const GetSessionResponseSchema = z
-  .object({
-    sessionId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The identifier of the returned session.' }),
-    ).exactOptional(),
-    messages: MessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of messages that were last sent to the user. The messages are ordered based on the order that your returned the messages from your Lambda function or the order that messages are defined in the bot. ',
-        }),
-    ).exactOptional(),
-    interpretations: InterpretationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of intents that Amazon Lex V2 determined might satisfy the user's utterance. </p> <p>Each interpretation includes the intent, a score that indicates how confident Amazon Lex V2 is that the interpretation is the correct one, and an optional sentiment response that indicates the sentiment expressed in the utterance.</p>",
-        }),
-    ).exactOptional(),
-    sessionState: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Represents the current state of the dialog between the user and the bot.</p> <p>You can use this to determine the progress of the conversation and what the next action might be.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('GetSessionResponse')
+type GetSessionResponseType = {
+  sessionId?: z.infer<typeof NonEmptyStringSchema> & unknown
+  messages?: z.infer<typeof MessagesSchema> & unknown
+  interpretations?: z.infer<typeof InterpretationsSchema> & unknown
+  sessionState?: z.infer<typeof SessionStateSchema> & unknown
+}
 
-const BlobStreamSchema = z.string().openapi('BlobStream')
+const SessionIdSchema = z
+  .string()
+  .regex(/[0-9a-zA-Z._:-]+/)
+  .min(2)
+  .max(100)
+  .openapi('SessionId')
 
-const PutSessionResponseSchema = z
-  .object({
-    audioStream: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the requested content type was audio, the audio version of the message to convey to the user.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PutSessionResponse')
-
-const DependencyFailedExceptionSchema = z.any().openapi('DependencyFailedException')
-
-const BadGatewayExceptionSchema = z.any().openapi('BadGatewayException')
+const BotIdentifierSchema = z
+  .string()
+  .regex(/^[0-9a-zA-Z]+$/)
+  .length(10)
+  .openapi('BotIdentifier')
 
 const NameSchema = z
   .string()
@@ -736,135 +384,301 @@ const NameSchema = z
 
 const RecognizedBotMemberSchema = z
   .object({
-    botId: BotIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the bot member that processes the request.' }),
-    ),
-    botName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the bot member that processes the request.' }),
-    ).exactOptional(),
+    botId: BotIdentifierSchema.openapi({
+      description: 'The identifier of the bot member that processes the request.',
+    }),
+    botName: NameSchema.exactOptional().openapi({
+      description: 'The name of the bot member that processes the request.',
+    }),
   })
   .openapi({ required: ['botId'], description: 'The bot member that processes the request.' })
   .openapi('RecognizedBotMember')
 
-const RecognizeTextResponseSchema = z
+type RecognizeTextResponseType = {
+  messages?: z.infer<typeof MessagesSchema> & unknown
+  sessionState?: z.infer<typeof SessionStateSchema> & unknown
+  interpretations?: z.infer<typeof InterpretationsSchema> & unknown
+  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
+  sessionId?: z.infer<typeof SessionIdSchema> & unknown
+  recognizedBotMember?: z.infer<typeof RecognizedBotMemberSchema> & unknown
+}
+
+type ElicitSubSlotType = {
+  name: z.infer<typeof NonEmptyStringSchema> & unknown
+  subSlotToElicit?: ElicitSubSlotType & unknown
+}
+
+const SlotSchema: z.ZodType<SlotType> = z
+  .lazy(() =>
+    z
+      .object({
+        value: ValueSchema.exactOptional().openapi({
+          description: 'The current value of the slot.',
+        }),
+        values: ValuesSchema.exactOptional().openapi({
+          description:
+            'A list of one or more values that the user provided for the slot. For example, if a for a slot that elicits pizza toppings, the values might be "pepperoni" and "pineapple." ',
+        }),
+        subSlots: SlotsSchema.exactOptional().openapi({
+          description: 'The constituent sub slots of a composite slot.',
+        }),
+      })
+      .openapi({
+        description: 'A value that Amazon Lex V2 uses to fulfill an intent. ',
+        required: [],
+      }),
+  )
+  .openapi('Slot')
+
+type SlotsType = { [key: string]: z.infer<typeof SlotSchema> }
+
+type PutSessionRequestType = {
+  messages?: z.infer<typeof MessagesSchema> & unknown
+  sessionState: z.infer<typeof SessionStateSchema> & unknown
+  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
+}
+
+type RecognizeTextRequestType = {
+  text: z.infer<typeof TextSchema> & unknown
+  sessionState?: z.infer<typeof SessionStateSchema> & unknown
+  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
+}
+
+const RuntimeHintPhraseSchema = z.string().min(1).max(140).openapi('RuntimeHintPhrase')
+
+const RuntimeHintValueSchema = z
   .object({
-    messages: MessagesSchema.and(
-      z
-        .any()
-        .openapi({
+    phrase: RuntimeHintPhraseSchema.openapi({
+      description: "The phrase that Amazon Lex V2 should look for in the user's input to the bot.",
+    }),
+  })
+  .openapi({
+    required: ['phrase'],
+    description:
+      "Provides the phrase that Amazon Lex V2 should look for in the user's input to the bot.",
+  })
+  .openapi('RuntimeHintValue')
+
+type RuntimeHintValuesListType = z.infer<typeof RuntimeHintValueSchema>[]
+
+const RuntimeHintDetailsSchema: z.ZodType<RuntimeHintDetailsType> = z
+  .lazy(() =>
+    z
+      .object({
+        runtimeHintValues: RuntimeHintValuesListSchema.exactOptional().openapi({
           description:
-            'A list of messages last sent to the user. The messages are ordered based on the order that you returned the messages from your Lambda function or the order that the messages are defined in the bot.',
+            'One or more strings that Amazon Lex V2 should look for in the input to the bot. Each phrase is given preference when deciding on slot values.',
         }),
-    ).exactOptional(),
-    sessionState: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
+        subSlotHints: SlotHintsSlotMapSchema.exactOptional().openapi({
           description:
-            '<p>Represents the current state of the dialog between the user and the bot. </p> <p>Use this to determine the progress of the conversation and what the next action may be.</p>',
+            'A map of constituent sub slot names inside a composite slot in the intent and the phrases that should be added for each sub slot. Inside each composite slot hints, this structure provides a mechanism to add granular sub slot phrases. Only sub slot hints are supported for composite slots. The intent name, composite slot name and the constituent sub slot names must exist.',
         }),
-    ).exactOptional(),
-    interpretations: InterpretationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of intents that Amazon Lex V2 determined might satisfy the user's utterance. </p> <p>Each interpretation includes the intent, a score that indicates now confident Amazon Lex V2 is that the interpretation is the correct one, and an optional sentiment response that indicates the sentiment expressed in the utterance.</p>",
-        }),
-    ).exactOptional(),
-    requestAttributes: StringMapSchema.and(
-      z.any().openapi({ description: 'The attributes sent in the request.' }),
-    ).exactOptional(),
-    sessionId: SessionIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the session in use.' }),
-    ).exactOptional(),
-    recognizedBotMember: RecognizedBotMemberSchema.and(
-      z.any().openapi({ description: 'The bot member that recognized the text.' }),
-    ).exactOptional(),
+      })
+      .openapi({
+        description:
+          'Provides an array of phrases that should be given preference when resolving values for a slot.',
+        required: [],
+      }),
+  )
+  .openapi('RuntimeHintDetails')
+
+type SlotHintsSlotMapType = { [key: string]: z.infer<typeof RuntimeHintDetailsSchema> }
+
+const RuntimeHintValuesListSchema: z.ZodType<RuntimeHintValuesListType> = z
+  .array(RuntimeHintValueSchema)
+  .min(1)
+  .max(100)
+  .openapi('RuntimeHintValuesList')
+
+type RuntimeHintDetailsType = {
+  runtimeHintValues?: z.infer<typeof RuntimeHintValuesListSchema> & unknown
+  subSlotHints?: z.infer<typeof SlotHintsSlotMapSchema> & unknown
+}
+
+const StringListSchema = z.array(NonEmptyStringSchema).openapi('StringList')
+
+type ValueType = {
+  originalValue?: z.infer<typeof NonEmptyStringSchema> & unknown
+  interpretedValue: z.infer<typeof NonEmptyStringSchema> & unknown
+  resolvedValues?: z.infer<typeof StringListSchema> & unknown
+}
+
+type ValuesType = z.infer<typeof SlotSchema>[]
+
+const ValueSchema: z.ZodType<ValueType> = z
+  .object({
+    originalValue: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The text of the utterance from the user that was entered for the slot.',
+    }),
+    interpretedValue: NonEmptyStringSchema.openapi({
+      description:
+        'The value that Amazon Lex V2 determines for the slot. The actual value depends on the setting of the value selection strategy for the bot. You can choose to use the value entered by the user, or you can have Amazon Lex V2 choose the first value in the <code>resolvedValues</code> list.',
+    }),
+    resolvedValues: StringListSchema.exactOptional().openapi({
+      description: 'A list of additional values that have been recognized for the slot.',
+    }),
+  })
+  .openapi({ required: ['interpretedValue'], description: 'The value of a slot.' })
+  .openapi('Value')
+
+const ValuesSchema: z.ZodType<ValuesType> = z.lazy(() => z.array(SlotSchema)).openapi('Values')
+
+type SlotType = {
+  value?: z.infer<typeof ValueSchema> & unknown
+  values?: z.infer<typeof ValuesSchema> & unknown
+  subSlots?: z.infer<typeof SlotsSchema> & unknown
+}
+
+const BotAliasIdentifierSchema = z.string().openapi('BotAliasIdentifier')
+
+const LocaleIdSchema = z.string().min(1).openapi('LocaleId')
+
+const DeleteSessionResponseSchema = z
+  .object({
+    botId: BotIdentifierSchema.exactOptional().openapi({
+      description: 'The identifier of the bot that contained the session data.',
+    }),
+    botAliasId: BotAliasIdentifierSchema.exactOptional().openapi({
+      description: 'The alias identifier in use for the bot that contained the session data.',
+    }),
+    localeId: LocaleIdSchema.exactOptional().openapi({
+      description: 'The locale where the session was used.',
+    }),
+    sessionId: SessionIdSchema.exactOptional().openapi({
+      description: 'The identifier of the deleted session.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteSessionResponse')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const GetSessionResponseSchema: z.ZodType<GetSessionResponseType> = z
+  .object({
+    sessionId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The identifier of the returned session.',
+    }),
+    messages: MessagesSchema.exactOptional().openapi({
+      description:
+        'A list of messages that were last sent to the user. The messages are ordered based on the order that your returned the messages from your Lambda function or the order that messages are defined in the bot. ',
+    }),
+    interpretations: InterpretationsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of intents that Amazon Lex V2 determined might satisfy the user's utterance. </p> <p>Each interpretation includes the intent, a score that indicates how confident Amazon Lex V2 is that the interpretation is the correct one, and an optional sentiment response that indicates the sentiment expressed in the utterance.</p>",
+    }),
+    sessionState: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>Represents the current state of the dialog between the user and the bot.</p> <p>You can use this to determine the progress of the conversation and what the next action might be.</p>',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('GetSessionResponse')
+
+const BlobStreamSchema = z.string().openapi('BlobStream')
+
+const PutSessionResponseSchema = z
+  .object({
+    audioStream: BlobStreamSchema.exactOptional().openapi({
+      description:
+        'If the requested content type was audio, the audio version of the message to convey to the user.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('PutSessionResponse')
+
+const DependencyFailedExceptionSchema = z.any().openapi('DependencyFailedException')
+
+const BadGatewayExceptionSchema = z.any().openapi('BadGatewayException')
+
+const RecognizeTextResponseSchema: z.ZodType<RecognizeTextResponseType> = z
+  .object({
+    messages: MessagesSchema.exactOptional().openapi({
+      description:
+        'A list of messages last sent to the user. The messages are ordered based on the order that you returned the messages from your Lambda function or the order that the messages are defined in the bot.',
+    }),
+    sessionState: SessionStateSchema.exactOptional().openapi({
+      description:
+        '<p>Represents the current state of the dialog between the user and the bot. </p> <p>Use this to determine the progress of the conversation and what the next action may be.</p>',
+    }),
+    interpretations: InterpretationsSchema.exactOptional().openapi({
+      description:
+        "<p>A list of intents that Amazon Lex V2 determined might satisfy the user's utterance. </p> <p>Each interpretation includes the intent, a score that indicates now confident Amazon Lex V2 is that the interpretation is the correct one, and an optional sentiment response that indicates the sentiment expressed in the utterance.</p>",
+    }),
+    requestAttributes: StringMapSchema.exactOptional().openapi({
+      description: 'The attributes sent in the request.',
+    }),
+    sessionId: SessionIdSchema.exactOptional().openapi({
+      description: 'The identifier of the session in use.',
+    }),
+    recognizedBotMember: RecognizedBotMemberSchema.exactOptional().openapi({
+      description: 'The bot member that recognized the text.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RecognizeTextResponse')
 
 const RecognizeUtteranceResponseSchema = z
   .object({
-    audioStream: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prompt or statement to send to the user. This is based on the bot configuration and context. For example, if Amazon Lex V2 did not understand the user intent, it sends the <code>clarificationPrompt</code> configured for the bot. If the intent requires confirmation before taking the fulfillment action, it sends the <code>confirmationPrompt</code>. Another example: Suppose that the Lambda function successfully fulfilled the intent, and sent a message to convey to the user. Then Amazon Lex V2 sends that message in the response.',
-        }),
-    ).exactOptional(),
+    audioStream: BlobStreamSchema.exactOptional().openapi({
+      description:
+        'The prompt or statement to send to the user. This is based on the bot configuration and context. For example, if Amazon Lex V2 did not understand the user intent, it sends the <code>clarificationPrompt</code> configured for the bot. If the intent requires confirmation before taking the fulfillment action, it sends the <code>confirmationPrompt</code>. Another example: Suppose that the Lambda function successfully fulfilled the intent, and sent a message to convey to the user. Then Amazon Lex V2 sends that message in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RecognizeUtteranceResponse')
 
 const DeleteSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSessionRequest' })
   .openapi('DeleteSessionRequest')
 
 const GetSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSessionRequest' })
   .openapi('GetSessionRequest')
 
 const ParameterNameSchema = z.string().min(1).max(100).openapi('ParameterName')
 
-const PutSessionRequestSchema = z
+const PutSessionRequestSchema: z.ZodType<PutSessionRequestType> = z
   .object({
-    messages: MessagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of messages to send to the user. Messages are sent in the order that they are defined in the list.',
-        }),
-    ).exactOptional(),
-    sessionState: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the state of the session with the user. You can use this to set the current intent, attributes, context, and dialog action. Use the dialog action to determine the next step that Amazon Lex V2 should use in the conversation with the user.',
-        }),
-    ),
-    requestAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Request-specific information passed between Amazon Lex V2 and the client application.</p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don't create any request attributes with the prefix <code>x-amz-lex:</code>.</p>",
-        }),
-    ).exactOptional(),
+    messages: MessagesSchema.exactOptional().openapi({
+      description:
+        'A list of messages to send to the user. Messages are sent in the order that they are defined in the list.',
+    }),
+    sessionState: SessionStateSchema.openapi({
+      description:
+        'Sets the state of the session with the user. You can use this to set the current intent, attributes, context, and dialog action. Use the dialog action to determine the next step that Amazon Lex V2 should use in the conversation with the user.',
+    }),
+    requestAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        "<p>Request-specific information passed between Amazon Lex V2 and the client application.</p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don't create any request attributes with the prefix <code>x-amz-lex:</code>.</p>",
+    }),
   })
   .openapi({ required: ['sessionState'], title: 'PutSessionRequest' })
   .openapi('PutSessionRequest')
 
-const RecognizeTextRequestSchema = z
+const RecognizeTextRequestSchema: z.ZodType<RecognizeTextRequestType> = z
   .object({
-    text: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The text that the user entered. Amazon Lex V2 interprets this text.',
-        }),
-    ),
-    sessionState: SessionStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current state of the dialog between the user and the bot.' }),
-    ).exactOptional(),
-    requestAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Request-specific information passed between the client application and Amazon Lex V2 </p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don't create any request attributes with the prefix <code>x-amz-lex:</code>.</p>",
-        }),
-    ).exactOptional(),
+    text: TextSchema.openapi({
+      description: 'The text that the user entered. Amazon Lex V2 interprets this text.',
+    }),
+    sessionState: SessionStateSchema.exactOptional().openapi({
+      description: 'The current state of the dialog between the user and the bot.',
+    }),
+    requestAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        "<p>Request-specific information passed between the client application and Amazon Lex V2 </p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don't create any request attributes with the prefix <code>x-amz-lex:</code>.</p>",
+    }),
   })
   .openapi({ required: ['text'], title: 'RecognizeTextRequest' })
   .openapi('RecognizeTextRequest')
@@ -873,14 +687,10 @@ const SensitiveNonEmptyStringSchema = z.string().openapi('SensitiveNonEmptyStrin
 
 const RecognizeUtteranceRequestSchema = z
   .object({
-    inputStream: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'User input in PCM or Opus audio format or text format as described in the <code>requestContentType</code> parameter.',
-        }),
-    ).exactOptional(),
+    inputStream: BlobStreamSchema.exactOptional().openapi({
+      description:
+        'User input in PCM or Opus audio format or text format as described in the <code>requestContentType</code> parameter.',
+    }),
   })
   .openapi({ title: 'RecognizeUtteranceRequest', required: [] })
   .openapi('RecognizeUtteranceRequest')
@@ -1157,50 +967,28 @@ export const postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionI
                   }),
                 sessionState: z
                   .object({
-                    dialogAction: DialogActionSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The next step that Amazon Lex V2 should take in the conversation with a user.',
-                        }),
-                    ).exactOptional(),
-                    intent: IntentSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'The active intent that Amazon Lex V2 is processing.',
-                        }),
-                    ).exactOptional(),
-                    activeContexts: ActiveContextsListSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
-                        }),
-                    ).exactOptional(),
-                    sessionAttributes: StringMapSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
-                        }),
-                    ).exactOptional(),
-                    originatingRequestId: NonEmptyStringSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'A unique identifier for a specific request.' }),
-                    ).exactOptional(),
-                    runtimeHints: RuntimeHintsSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
-                        }),
-                    ).exactOptional(),
+                    dialogAction: DialogActionSchema.exactOptional().openapi({
+                      description:
+                        'The next step that Amazon Lex V2 should take in the conversation with a user.',
+                    }),
+                    intent: IntentSchema.exactOptional().openapi({
+                      description: 'The active intent that Amazon Lex V2 is processing.',
+                    }),
+                    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+                      description:
+                        'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
+                    }),
+                    sessionAttributes: StringMapSchema.exactOptional().openapi({
+                      description:
+                        'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
+                    }),
+                    originatingRequestId: NonEmptyStringSchema.exactOptional().openapi({
+                      description: 'A unique identifier for a specific request.',
+                    }),
+                    runtimeHints: RuntimeHintsSchema.exactOptional().openapi({
+                      description:
+                        'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
+                    }),
                   })
                   .openapi({
                     description: "The state of the user's session with Amazon Lex V2.",
@@ -1447,50 +1235,28 @@ export const postBotsBotIdBotAliasesBotAliasIdBotLocalesLocaleIdSessionsSessionI
                   }),
                 sessionState: z
                   .object({
-                    dialogAction: DialogActionSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'The next step that Amazon Lex V2 should take in the conversation with a user.',
-                        }),
-                    ).exactOptional(),
-                    intent: IntentSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description: 'The active intent that Amazon Lex V2 is processing.',
-                        }),
-                    ).exactOptional(),
-                    activeContexts: ActiveContextsListSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
-                        }),
-                    ).exactOptional(),
-                    sessionAttributes: StringMapSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
-                        }),
-                    ).exactOptional(),
-                    originatingRequestId: NonEmptyStringSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'A unique identifier for a specific request.' }),
-                    ).exactOptional(),
-                    runtimeHints: RuntimeHintsSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
-                        }),
-                    ).exactOptional(),
+                    dialogAction: DialogActionSchema.exactOptional().openapi({
+                      description:
+                        'The next step that Amazon Lex V2 should take in the conversation with a user.',
+                    }),
+                    intent: IntentSchema.exactOptional().openapi({
+                      description: 'The active intent that Amazon Lex V2 is processing.',
+                    }),
+                    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+                      description:
+                        'One or more contexts that indicate to Amazon Lex V2 the context of a request. When a context is active, Amazon Lex V2 considers intents with the matching context as a trigger as the next intent in a session.',
+                    }),
+                    sessionAttributes: StringMapSchema.exactOptional().openapi({
+                      description:
+                        'Map of key/value pairs representing session-specific context information. It contains application information passed between Amazon Lex V2 and a client application.',
+                    }),
+                    originatingRequestId: NonEmptyStringSchema.exactOptional().openapi({
+                      description: 'A unique identifier for a specific request.',
+                    }),
+                    runtimeHints: RuntimeHintsSchema.exactOptional().openapi({
+                      description:
+                        'Hints for phrases that a customer is likely to use for a slot. Amazon Lex V2 uses the hints to help determine the correct value of a slot.',
+                    }),
                   })
                   .exactOptional()
                   .openapi({

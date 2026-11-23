@@ -1,0 +1,7 @@
+export * from './well-known'
+export * from './admin'
+export * from './credentials'
+export * from './health'
+export * from './oauth2'
+export * from './userinfo'
+export * from './version'

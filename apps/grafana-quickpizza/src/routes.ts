@@ -774,15 +774,13 @@ export const postApiAdminLoginRoute = createRoute({
         },
       },
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'admin_token=c7jn1o1kb71p30h7f1bg; Path=/; SameSite=Strict',
-            }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'admin_token=c7jn1o1kb71p30h7f1bg; Path=/; SameSite=Strict',
+          }),
       }),
     },
     400: { description: 'Missing credentials' },
@@ -801,15 +799,13 @@ export const postApiCsrfTokenRoute = createRoute({
     200: {
       description: 'CSRF token set in cookies',
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: 'csrf_token=abc123def456ghi789; Path=/; SameSite=Strict',
-            }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: 'csrf_token=abc123def456ghi789; Path=/; SameSite=Strict',
+          }),
       }),
     },
   },
@@ -1161,12 +1157,10 @@ export const postApiCookiesRoute = createRoute({
     200: {
       description: 'Cookies have been set',
       headers: z.object({
-        'Set-Cookie': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'cookieName=cookieValue' }),
-        },
+        'Set-Cookie': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'cookieName=cookieValue' }),
       }),
     },
   },

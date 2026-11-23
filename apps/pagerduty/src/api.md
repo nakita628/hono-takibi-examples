@@ -27363,6 +27363,7 @@ Scoped OAuth requires: `event_orchestrations.read`
                   "target": "event.source"
                 }
               ],
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -27606,6 +27607,7 @@ curl https://api.pagerduty.com/event_orchestrations/string/global \
                     "target": "event.source"
                   }
                 ],
+                "incident_type": "PT10C33",
                 "incident_custom_field_updates": [
                   {
                     "id": "PEXCK89",
@@ -27741,6 +27743,7 @@ Scoped OAuth requires: `event_orchestrations.write`
                   "target": "event.source"
                 }
               ],
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -27892,6 +27895,7 @@ Scoped OAuth requires: `event_orchestrations.write`
 |» » » » » » parameters|body|[object]|false|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » » key|body|string|false|none|
 |» » » » » » » value|body|string|false|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » » incident_type|body|string \| null|false|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » » incident_custom_field_updates|body|[object]|false|Configure custom field updates for the incident.|
 |» » » » » » id|body|string|false|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » » value|body|string|false|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -27929,6 +27933,7 @@ Scoped OAuth requires: `event_orchestrations.write`
 |» » » » » parameters|body|[object]|false|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » key|body|string|false|none|
 |» » » » » » value|body|string|false|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » incident_type|body|string \| null|false|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » incident_custom_field_updates|body|[object]|false|Configure custom field updates for the incident.|
 |» » » » » id|body|string|false|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » value|body|string|false|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -28002,6 +28007,7 @@ Scoped OAuth requires: `event_orchestrations.write`
                   "target": "event.source"
                 }
               ],
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -28296,6 +28302,7 @@ Status Code **200**
 |» » » » » parameters|[object]|false|none|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » key|string|false|none|none|
 |» » » » » » value|string|false|none|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » incident_type|string \| null|false|none|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » incident_custom_field_updates|[object]|false|none|Configure custom field updates for the incident.|
 |» » » » » id|string|false|none|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » value|string|false|none|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -28333,6 +28340,7 @@ Status Code **200**
 |» » » » parameters|[object]|false|none|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » key|string|false|none|none|
 |» » » » » value|string|false|none|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » incident_type|string \| null|false|none|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » incident_custom_field_updates|[object]|false|none|Configure custom field updates for the incident.|
 |» » » » id|string|false|none|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » value|string|false|none|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -29935,6 +29943,7 @@ Scoped OAuth requires: `services.read`
                 }
               ],
               "route_to": "step-two",
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -30238,6 +30247,7 @@ curl https://api.pagerduty.com/event_orchestrations/services/string \
                     ]
                   }
                 ],
+                "incident_type": "PT10C33",
                 "incident_custom_field_updates": [
                   {
                     "id": "PEXCK89",
@@ -30421,6 +30431,7 @@ Scoped OAuth requires: `services.write`
                   ]
                 }
               ],
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -30614,6 +30625,7 @@ Scoped OAuth requires: `services.write`
 |» » » » » » parameters|body|[object]|false|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » » key|body|string|false|none|
 |» » » » » » » value|body|string|false|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » » incident_type|body|string \| null|false|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » » incident_custom_field_updates|body|[object]|false|Configure custom field updates for the incident.|
 |» » » » » » id|body|string|false|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » » value|body|string|false|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -30653,6 +30665,7 @@ Scoped OAuth requires: `services.write`
 |» » » » » parameters|body|[object]|false|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » key|body|string|false|none|
 |» » » » » » value|body|string|false|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » incident_type|body|string \| null|false|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » incident_custom_field_updates|body|[object]|false|Configure custom field updates for the incident.|
 |» » » » » id|body|string|false|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » value|body|string|false|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -30740,6 +30753,7 @@ Scoped OAuth requires: `services.write`
                   ]
                 }
               ],
+              "incident_type": "PT10C33",
               "incident_custom_field_updates": [
                 {
                   "id": "PEXCK89",
@@ -31095,6 +31109,7 @@ Status Code **200**
 |» » » » » parameters|[object]|false|none|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » » key|string|false|none|none|
 |» » » » » » value|string|false|none|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » » incident_type|string \| null|false|none|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » » incident_custom_field_updates|[object]|false|none|Configure custom field updates for the incident.|
 |» » » » » id|string|false|none|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » » value|string|false|none|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -31134,6 +31149,7 @@ Status Code **200**
 |» » » » parameters|[object]|false|none|Specify custom key/value pairs that'll be included in the webhook request's JSON payload.|
 |» » » » » key|string|false|none|none|
 |» » » » » value|string|false|none|AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.|
+|» » » incident_type|string \| null|false|none|The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.|
 |» » » incident_custom_field_updates|[object]|false|none|Configure custom field updates for the incident.|
 |» » » » id|string|false|none|Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.|
 |» » » » value|string|false|none|A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.|
@@ -44711,12 +44727,12 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-<h1 id="pagerduty-api-incident-reviews">Incident Reviews</h1>
+<h1 id="pagerduty-api-post-incident-reviews">Post-Incident Reviews</h1>
 
-An Incident Review is a structured, post-resolution record of what happened during an Incident: what the impact was, how it was handled, and what should change as a result. Each Incident has at most one Incident Review, and its sections are determined by the template the Incident Review follows.
+A Post-Incident Review is a structured, post-resolution record of what happened during an Incident: what the impact was, how it was handled, and what should change as a result. Each Incident has at most one Post-Incident Review, and its sections are determined by the template the Post-Incident Review follows.
 
 
-## List Incident Reviews
+## List Post-Incident Reviews
 
 <a id="opIdlistIncidentReviews"></a>
 
@@ -44730,16 +44746,16 @@ curl https://api.pagerduty.com/incidents/reviews \
 
 `GET /incidents/reviews`
 
-List the Incident Reviews on the account, newest first by creation time.
+List the Post-Incident Reviews on the account, newest first by creation time.
 
-Only Incident Reviews on Incidents the caller can see are returned. Each entry is a summary; fetch the Incident Review by its Incident to get its sections.
+Only Post-Incident Reviews on Incidents the caller can see are returned. Each entry is a summary; fetch the Post-Incident Review by its Incident to get its sections.
 
 This endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.
 
 Scoped OAuth requires: `incident_reviews.read`
 
 
-<h3 id="list-incident-reviews-parameters">Parameters</h3>
+<h3 id="list-post-incident-reviews-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -44747,12 +44763,12 @@ Scoped OAuth requires: `incident_reviews.read`
 |Content-Type|header|string|true|none|
 |limit|query|integer|false|The number of results per page.|
 |cursor|query|string|false|Optional parameter used to request the "next" set of results from an API.  The value provided here is most commonly obtained from the `next_cursor` field of the previous request.  When no value is provided, the request starts at the beginning of the result set.<br>|
-|status|query|[string]|false|Only return Incident Reviews with one of these statuses. Repeat the parameter to pass more than one.|
-|status_not|query|[string]|false|Exclude Incident Reviews with any of these statuses. Repeat the parameter to pass more than one.|
-|status_not_empty|query|boolean|false|When `true`, only return Incident Reviews that have a status set.|
+|status|query|[string]|false|Only return Post-Incident Reviews with one of these statuses. Repeat the parameter to pass more than one.|
+|status_not|query|[string]|false|Exclude Post-Incident Reviews with any of these statuses. Repeat the parameter to pass more than one.|
+|status_not_empty|query|boolean|false|When `true`, only return Post-Incident Reviews that have a status set.|
 |created_since|query|string(date-time)|false|Only return results created on or after this time.|
 |created_until|query|string(date-time)|false|Only return results created on or before this time.|
-|has_open_action_items|query|boolean|false|When `true`, only return Incident Reviews that have at least one action item that is not complete.|
+|has_open_action_items|query|boolean|false|When `true`, only return Post-Incident Reviews that have at least one action item that is not complete.|
 
 #### Enumerated Values
 
@@ -44835,17 +44851,17 @@ Scoped OAuth requires: `incident_reviews.read`
 }
 ```
 
-<h3 id="list-incident-reviews-responses">Responses</h3>
+<h3 id="list-post-incident-reviews-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|A page of Incident Reviews on the account.|Inline|
+|200|OK|A page of Post-Incident Reviews on the account.|Inline|
 |400|Bad Request|Caller provided invalid arguments. Please review the response for error details. Retrying with the same arguments will *not* work.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="list-incident-reviews-responseschema">Response Schema</h3>
+<h3 id="list-post-incident-reviews-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -44853,7 +44869,7 @@ Status Code **200**
 |---|---|---|---|---|
 |incident_reviews|[[IncidentReviewListItem](#schemaincidentreviewlistitem)]|true|none|none|
 |limit|integer|false|none|The number of results per page requested.|
-|more|boolean|false|none|Whether more Incident Reviews exist after this page.|
+|more|boolean|false|none|Whether more Post-Incident Reviews exist after this page.|
 |next_cursor|string \| null|false|none|The cursor to pass as `cursor` to fetch the next page, or `null` on the last page.|
 
 Status Code **400**
@@ -44897,7 +44913,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## List action items across all Incident Reviews
+## List action items across all Post-Incident Reviews
 
 <a id="opIdlistAccountIncidentReviewActionItems"></a>
 
@@ -44911,16 +44927,16 @@ curl https://api.pagerduty.com/incidents/reviews/action_items \
 
 `GET /incidents/reviews/action_items`
 
-List the action items across every Incident Review on the account, oldest first by creation time.
+List the action items across every Post-Incident Review on the account, oldest first by creation time.
 
-Only action items on Incident Reviews the caller can see are returned. Each action item's `incident_id` identifies the Incident Review it belongs to.
+Only action items on Post-Incident Reviews the caller can see are returned. Each action item's `incident_id` identifies the Post-Incident Review it belongs to.
 
 This endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.
 
 Scoped OAuth requires: `incident_reviews.read`
 
 
-<h3 id="list-action-items-across-all-incident-reviews-parameters">Parameters</h3>
+<h3 id="list-action-items-across-all-post-incident-reviews-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -45017,17 +45033,17 @@ Scoped OAuth requires: `incident_reviews.read`
 }
 ```
 
-<h3 id="list-action-items-across-all-incident-reviews-responses">Responses</h3>
+<h3 id="list-action-items-across-all-post-incident-reviews-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|A page of action items across the account's Incident Reviews.|Inline|
+|200|OK|A page of action items across the account's Post-Incident Reviews.|Inline|
 |400|Bad Request|Caller provided invalid arguments. Please review the response for error details. Retrying with the same arguments will *not* work.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="list-action-items-across-all-incident-reviews-responseschema">Response Schema</h3>
+<h3 id="list-action-items-across-all-post-incident-reviews-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -45079,7 +45095,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## Get an Incident Review
+## Get a Post-Incident Review
 
 <a id="opIdgetIncidentReview"></a>
 
@@ -45093,16 +45109,16 @@ curl https://api.pagerduty.com/incidents/string/review \
 
 `GET /incidents/{id}/review`
 
-Get the Incident Review for the specified Incident.
+Get the Post-Incident Review for the specified Incident.
 
-An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.
+A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.
 
-Returns `404` if the Incident has no Incident Review, or if the caller cannot see it.
+Returns `404` if the Incident has no Post-Incident Review, or if the caller cannot see it.
 
 Scoped OAuth requires: `incident_reviews.read`
 
 
-<h3 id="get-an-incident-review-parameters">Parameters</h3>
+<h3 id="get-a-post-incident-review-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -45201,23 +45217,23 @@ Scoped OAuth requires: `incident_reviews.read`
 }
 ```
 
-<h3 id="get-an-incident-review-responses">Responses</h3>
+<h3 id="get-a-post-incident-review-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The Incident Review for the specified Incident.|Inline|
+|200|OK|The Post-Incident Review for the specified Incident.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
 |404|Not Found|The requested resource was not found.|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="get-an-incident-review-responseschema">Response Schema</h3>
+<h3 id="get-a-post-incident-review-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|incident_review|[IncidentReview](#schemaincidentreview)|true|none|An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.|
+|incident_review|[IncidentReview](#schemaincidentreview)|true|none|A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.|
 
 Status Code **401**
 
@@ -45260,7 +45276,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## Update an Incident Review
+## Update a Post-Incident Review
 
 <a id="opIdupdateIncidentReview"></a>
 
@@ -45280,15 +45296,15 @@ curl https://api.pagerduty.com/incidents/string/review \
 
 `PUT /incidents/{id}/review`
 
-Update the Incident Review for the specified Incident.
+Update the Post-Incident Review for the specified Incident.
 
 This is a partial update: an omitted field leaves the current value unchanged.
 
 Moving `status` to `completed` is rejected with `409` while any required section is still unfilled.
 
-On accounts where completed Incident Reviews are read-only, any other change to a `completed` Incident Review is rejected with `409` until it is reopened by setting `status` to another value. Completing or reopening an Incident Review requires permission to complete it, or the request is rejected with `403`.
+On accounts where completed Post-Incident Reviews are read-only, any other change to a `completed` Post-Incident Review is rejected with `409` until it is reopened by setting `status` to another value. Completing or reopening a Post-Incident Review requires permission to complete it, or the request is rejected with `403`.
 
-`409` is also returned if the Incident Review is locked, or if it uses a format this version of the API cannot edit.
+`409` is also returned if the Post-Incident Review is locked, or if it uses a format this version of the API cannot edit.
 
 Scoped OAuth requires: `incident_reviews.write`
 
@@ -45302,7 +45318,7 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="update-an-incident-review-parameters">Parameters</h3>
+<h3 id="update-a-post-incident-review-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -45310,8 +45326,8 @@ Scoped OAuth requires: `incident_reviews.write`
 |Content-Type|header|string|true|none|
 |id|path|string|true|The ID of the resource.|
 |body|body|object|true|none|
-|» title|body|string|false|The updated title of the Incident Review.|
-|» status|body|string|false|The updated status of the Incident Review.|
+|» title|body|string|false|The updated title of the Post-Incident Review.|
+|» status|body|string|false|The updated status of the Post-Incident Review.|
 
 #### Enumerated Values
 
@@ -45422,11 +45438,11 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="update-an-incident-review-responses">Responses</h3>
+<h3 id="update-a-post-incident-review-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The Incident Review updated.|Inline|
+|200|OK|The Post-Incident Review updated.|Inline|
 |400|Bad Request|Caller provided invalid arguments. Please review the response for error details. Retrying with the same arguments will *not* work.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
@@ -45434,13 +45450,13 @@ Scoped OAuth requires: `incident_reviews.write`
 |409|Conflict|The request conflicts with the current state of the server.|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="update-an-incident-review-responseschema">Response Schema</h3>
+<h3 id="update-a-post-incident-review-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|incident_review|[IncidentReview](#schemaincidentreview)|true|none|An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.|
+|incident_review|[IncidentReview](#schemaincidentreview)|true|none|A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.|
 
 Status Code **400**
 
@@ -45501,7 +45517,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## Create an Incident Review
+## Create a Post-Incident Review
 
 <a id="opIdcreateIncidentReview"></a>
 
@@ -45520,13 +45536,13 @@ curl https://api.pagerduty.com/incidents/string/review \
 
 `POST /incidents/{id}/review`
 
-Create an Incident Review for the specified Incident.
+Create a Post-Incident Review for the specified Incident.
 
-An Incident can have at most one Incident Review, so this returns `400` if the Incident already has one. A caller that wants create-or-fetch behaviour should fall back to `GET` on failure.
+An Incident can have at most one Post-Incident Review, so this returns `400` if the Incident already has one. A caller that wants create-or-fetch behaviour should fall back to `GET` on failure.
 
-The new Incident Review follows the account's default template, which determines its sections.
+The new Post-Incident Review follows the account's default template, which determines its sections.
 
-When called with a User API token, the caller owns the new Incident Review. An account API key may name an owner with `owner_user_id`.
+When called with a User API token, the caller owns the new Post-Incident Review. An account API key may name an owner with `owner_user_id`.
 
 Returns `400` if `owner_user_id` is not a User on the account, or if a User API token names someone other than the caller.
 
@@ -45541,7 +45557,7 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="create-an-incident-review-parameters">Parameters</h3>
+<h3 id="create-a-post-incident-review-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -45549,8 +45565,8 @@ Scoped OAuth requires: `incident_reviews.write`
 |Content-Type|header|string|true|none|
 |id|path|string|true|The ID of the resource.|
 |body|body|object|true|none|
-|» title|body|string|true|The title of the Incident Review.|
-|» owner_user_id|body|string|false|The ID of the User who should own the Incident Review. Only for account API keys, whose Incident Reviews would otherwise have no owner; with a User API token the caller is the owner, and naming anyone else is rejected with `400`. The User must belong to the account. Ignored unless the account has per-review permissions.<br>|
+|» title|body|string|true|The title of the Post-Incident Review.|
+|» owner_user_id|body|string|false|The ID of the User who should own the Post-Incident Review. Only for account API keys, whose Post-Incident Reviews would otherwise have no owner; with a User API token the caller is the owner, and naming anyone else is rejected with `400`. The User must belong to the account. Ignored unless the account has per-review permissions.<br>|
 
 #### Enumerated Values
 
@@ -45636,23 +45652,23 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="create-an-incident-review-responses">Responses</h3>
+<h3 id="create-a-post-incident-review-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|Created|The Incident Review created.|Inline|
+|201|Created|The Post-Incident Review created.|Inline|
 |400|Bad Request|Caller provided invalid arguments. Please review the response for error details. Retrying with the same arguments will *not* work.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="create-an-incident-review-responseschema">Response Schema</h3>
+<h3 id="create-a-post-incident-review-responseschema">Response Schema</h3>
 
 Status Code **201**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|incident_review|[IncidentReview](#schemaincidentreview)|true|none|An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.|
+|incident_review|[IncidentReview](#schemaincidentreview)|true|none|A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.|
 
 Status Code **400**
 
@@ -45695,7 +45711,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## List action items for an Incident Review
+## List action items for a Post-Incident Review
 
 <a id="opIdlistIncidentReviewActionItems"></a>
 
@@ -45709,16 +45725,16 @@ curl https://api.pagerduty.com/incidents/string/review/action_items \
 
 `GET /incidents/{id}/review/action_items`
 
-List the action items on the Incident Review for the specified Incident, oldest first by creation time.
+List the action items on the Post-Incident Review for the specified Incident, oldest first by creation time.
 
-Returns an empty list for an Incident Review that has no action items, and `404` when the Incident has no Incident Review, or if the caller cannot see it.
+Returns an empty list for a Post-Incident Review that has no action items, and `404` when the Incident has no Post-Incident Review, or if the caller cannot see it.
 
 This endpoint uses cursor pagination. Omit `cursor` for the first page, then pass the `next_cursor` from the previous response until it is `null`.
 
 Scoped OAuth requires: `incident_reviews.read`
 
 
-<h3 id="list-action-items-for-an-incident-review-parameters">Parameters</h3>
+<h3 id="list-action-items-for-a-post-incident-review-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -45819,18 +45835,18 @@ Scoped OAuth requires: `incident_reviews.read`
 }
 ```
 
-<h3 id="list-action-items-for-an-incident-review-responses">Responses</h3>
+<h3 id="list-action-items-for-a-post-incident-review-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|An array of action items on the Incident Review.|Inline|
+|200|OK|An array of action items on the Post-Incident Review.|Inline|
 |400|Bad Request|Caller provided invalid arguments. Please review the response for error details. Retrying with the same arguments will *not* work.|Inline|
 |401|Unauthorized|Caller did not supply credentials or did not provide the correct credentials.<br>If you are using an API key, it may be invalid or your Authorization header may be malformed.<br>|Inline|
 |403|Forbidden|Caller is not authorized to view the requested resource.<br>While your authentication is valid, the authenticated user or token does not have permission to perform this action.<br>|Inline|
 |404|Not Found|The requested resource was not found.|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="list-action-items-for-an-incident-review-responseschema">Response Schema</h3>
+<h3 id="list-action-items-for-a-post-incident-review-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -45891,7 +45907,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key
 </aside>
 
-## Add a marker to an Incident Review timeline
+## Add a marker to a Post-Incident Review timeline
 
 <a id="opIdcreateIncidentReviewMarker"></a>
 
@@ -45914,13 +45930,13 @@ curl https://api.pagerduty.com/incidents/string/review/markers \
 
 `POST /incidents/{id}/review/markers`
 
-Add a marker to the timeline of the Incident Review for the specified Incident.
+Add a marker to the timeline of the Post-Incident Review for the specified Incident.
 
 A marker highlights a point of interest on the timeline. Each entry in `notes` is added as its own event attached to the new marker.
 
-Returns `404` when the Incident has no Incident Review, or if the caller cannot see it, and `409` when the Incident Review is `completed` and must be reopened first.
+Returns `404` when the Incident has no Post-Incident Review, or if the caller cannot see it, and `409` when the Post-Incident Review is `completed` and must be reopened first.
 
-`409` is also returned if the Incident Review is locked, or if it uses a format this version of the API cannot edit.
+`409` is also returned if the Post-Incident Review is locked, or if it uses a format this version of the API cannot edit.
 
 Scoped OAuth requires: `incident_reviews.write`
 
@@ -45937,7 +45953,7 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="add-a-marker-to-an-incident-review-timeline-parameters">Parameters</h3>
+<h3 id="add-a-marker-to-a-post-incident-review-timeline-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -46044,7 +46060,7 @@ Scoped OAuth requires: `incident_reviews.write`
 }
 ```
 
-<h3 id="add-a-marker-to-an-incident-review-timeline-responses">Responses</h3>
+<h3 id="add-a-marker-to-a-post-incident-review-timeline-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -46056,13 +46072,13 @@ Scoped OAuth requires: `incident_reviews.write`
 |409|Conflict|The request conflicts with the current state of the server.|Inline|
 |429|Too Many Requests|Too many requests have been made, the rate limit has been reached.|Inline|
 
-<h3 id="add-a-marker-to-an-incident-review-timeline-responseschema">Response Schema</h3>
+<h3 id="add-a-marker-to-a-post-incident-review-timeline-responseschema">Response Schema</h3>
 
 Status Code **201**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|marker|[IncidentReviewMarker](#schemaincidentreviewmarker)|true|none|A marker highlights a point of interest on an Incident Review timeline, along with the notes captured as supporting evidence for it.|
+|marker|[IncidentReviewMarker](#schemaincidentreviewmarker)|true|none|A marker highlights a point of interest on a Post-Incident Review timeline, along with the notes captured as supporting evidence for it.|
 
 Status Code **400**
 
@@ -52326,7 +52342,7 @@ api_key
 
 <h1 id="pagerduty-api-ip-allow-lists">IP Allow Lists</h1>
 
-Manage account-level IP Allow Lists that restrict access to your PagerDuty subdomain to a configured set of IPv4 CIDR ranges. Enforcement currently applies to web and mobile application traffic.
+Manage account-level IP Allow Lists that restrict access to your PagerDuty subdomain to a configured set of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in each allow list's `targets`.
 
 
 ## List IP allow lists
@@ -52375,6 +52391,16 @@ Scoped OAuth requires: `ip_allow_lists.read`
         {
           "cidr": "10.0.0.0/24",
           "description": "Data Center"
+        }
+      ],
+      "targets": [
+        {
+          "type": "surface",
+          "value": "web"
+        },
+        {
+          "type": "surface",
+          "value": "mobile"
         }
       ]
     }
@@ -52527,6 +52553,16 @@ curl https://api.pagerduty.com/ip_allow_lists \
           "cidr": "192.168.1.0/24",
           "description": "Office VPN"
         }
+      ],
+      "targets": [
+        {
+          "type": "surface",
+          "value": "web"
+        },
+        {
+          "type": "surface",
+          "value": "mobile"
+        }
       ]
     }
   }'
@@ -52535,6 +52571,8 @@ curl https://api.pagerduty.com/ip_allow_lists \
 `POST /ip_allow_lists`
 
 Create the account's IP allow list.
+
+`targets` is required. A `400` is returned when `targets` is missing or empty, contains duplicates, or contains a value other than `web` or `mobile`.
 
 Only Account Owners, Global Admins, and Account API Keys can call this endpoint.
 
@@ -52553,6 +52591,16 @@ Scoped OAuth requires: `ip_allow_lists.write`
         "cidr": "192.168.1.0/24",
         "description": "Office VPN"
       }
+    ],
+    "targets": [
+      {
+        "type": "surface",
+        "value": "web"
+      },
+      {
+        "type": "surface",
+        "value": "mobile"
+      }
     ]
   }
 }
@@ -52565,7 +52613,7 @@ Scoped OAuth requires: `ip_allow_lists.write`
 |Accept|header|string|true|The `Accept` header is used as a versioning header.|
 |Content-Type|header|string|true|none|
 |body|body|object|true|none|
-|» ip_allow_list|body|[IpAllowList](#schemaipallowlist)|true|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement currently applies to web and mobile<br>application traffic.<br>|
+|» ip_allow_list|body|[IpAllowList](#schemaipallowlist)|true|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in<br>`targets`.<br>|
 
 #### Enumerated Values
 
@@ -52591,6 +52639,16 @@ Scoped OAuth requires: `ip_allow_lists.write`
       {
         "cidr": "10.0.0.0/24",
         "description": "Data Center"
+      }
+    ],
+    "targets": [
+      {
+        "type": "surface",
+        "value": "web"
+      },
+      {
+        "type": "surface",
+        "value": "mobile"
       }
     ]
   }
@@ -52681,7 +52739,7 @@ Status Code **201**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement currently applies to web and mobile<br>application traffic.<br>|
+|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in<br>`targets`.<br>|
 
 Status Code **400**
 
@@ -52789,6 +52847,16 @@ Scoped OAuth requires: `ip_allow_lists.read`
         "cidr": "10.0.0.0/24",
         "description": "Data Center"
       }
+    ],
+    "targets": [
+      {
+        "type": "surface",
+        "value": "web"
+      },
+      {
+        "type": "surface",
+        "value": "mobile"
+      }
     ]
   }
 }
@@ -52866,7 +52934,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement currently applies to web and mobile<br>application traffic.<br>|
+|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in<br>`targets`.<br>|
 
 Status Code **401**
 
@@ -52943,6 +53011,16 @@ curl https://api.pagerduty.com/ip_allow_lists/string \
           "cidr": "10.0.0.0/24",
           "description": "Data Center"
         }
+      ],
+      "targets": [
+        {
+          "type": "surface",
+          "value": "web"
+        },
+        {
+          "type": "surface",
+          "value": "mobile"
+        }
       ]
     }
   }'
@@ -52950,7 +53028,9 @@ curl https://api.pagerduty.com/ip_allow_lists/string \
 
 `PUT /ip_allow_lists/{id}`
 
-Update the IP allow list with the given `id`. The request body fully replaces the writable fields.
+Update the IP allow list with the given `id`. Updates are applied per field: any field omitted from the request body is left unchanged, and a provided `cidr_entries` or `targets` array fully replaces the existing one.
+
+A `400` is returned when `targets` is empty, contains duplicates, or contains a value other than `web` or `mobile`.
 
 Only Account Owners, Global Admins, and Account API Keys can call this endpoint.
 
@@ -52973,6 +53053,16 @@ Scoped OAuth requires: `ip_allow_lists.write`
         "cidr": "10.0.0.0/24",
         "description": "Data Center"
       }
+    ],
+    "targets": [
+      {
+        "type": "surface",
+        "value": "web"
+      },
+      {
+        "type": "surface",
+        "value": "mobile"
+      }
     ]
   }
 }
@@ -52986,7 +53076,7 @@ Scoped OAuth requires: `ip_allow_lists.write`
 |Content-Type|header|string|true|none|
 |id|path|string|true|The ID of the resource.|
 |body|body|object|true|none|
-|» ip_allow_list|body|[IpAllowList](#schemaipallowlist)|true|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement currently applies to web and mobile<br>application traffic.<br>|
+|» ip_allow_list|body|[IpAllowListUpdate](#schemaipallowlistupdate)|true|The writable fields of an IP allow list for an update. Every field is<br>optional; any omitted field is left unchanged. A provided `cidr_entries`<br>or `targets` array fully replaces the existing one.<br>|
 
 #### Enumerated Values
 
@@ -53012,6 +53102,16 @@ Scoped OAuth requires: `ip_allow_lists.write`
       {
         "cidr": "10.0.0.0/24",
         "description": "Data Center"
+      }
+    ],
+    "targets": [
+      {
+        "type": "surface",
+        "value": "web"
+      },
+      {
+        "type": "surface",
+        "value": "mobile"
       }
     ]
   }
@@ -53102,7 +53202,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement currently applies to web and mobile<br>application traffic.<br>|
+|ip_allow_list|[IpAllowList](#schemaipallowlist)|true|none|An IP allow list restricts access to a PagerDuty account's subdomain to a set<br>of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in<br>`targets`.<br>|
 
 Status Code **400**
 
@@ -105940,27 +106040,27 @@ The Push Contact Method of the User.
 }
 ```
 
-An Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Incident Review.
+A Post-Incident Review is a structured, post-resolution record of what happened during an Incident. Each Incident has at most one Post-Incident Review.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|read-only|The unique identifier of the Incident Review.|
-|incident_id|string|false|read-only|The ID of the Incident this Incident Review describes.|
-|title|string|false|none|The title of the Incident Review.|
-|status|string|false|none|The status of the Incident Review.<br><br>Moving to `completed` is rejected while any required section is still unfilled.<br><br>On accounts where completed Incident Reviews are read-only, a `completed` Incident Review cannot be changed until it is reopened by setting another status.<br>|
-|sections|[[IncidentReviewSection](#schemaincidentreviewsection)]|false|read-only|The sections of the Incident Review, ordered by `priority`.|
-|generation_status|string|false|read-only|Whether an AI draft is currently being generated for this Incident Review. While this is `generating`, section content is still being written and the Incident Review should be re-fetched to see the result.<br>|
-|ai_generated|boolean|false|read-only|Whether this Incident Review has been through the AI draft flow.|
-|template_id|string \| null|false|read-only|The ID of the template this Incident Review currently follows, or `null` if it does not follow one.|
-|has_events|boolean|false|read-only|Whether the Incident Review has at least one event on its timeline.|
-|action_item_count|integer|false|read-only|The total number of action items on this Incident Review.|
-|completed_action_item_count|integer|false|read-only|The number of completed action items on this Incident Review.|
-|created_by|string \| null|false|read-only|The ID of the User who created this Incident Review, or `null` if it was not created by a User.|
-|created_at|string(date-time)|false|read-only|The time the Incident Review was created.|
-|updated_at|string(date-time)|false|read-only|The time the Incident Review was last modified.|
-|completed_at|string(date-time) \| null|false|read-only|The time the Incident Review was completed, or `null` if it has not been completed.|
+|id|string|false|read-only|The unique identifier of the Post-Incident Review.|
+|incident_id|string|false|read-only|The ID of the Incident this Post-Incident Review describes.|
+|title|string|false|none|The title of the Post-Incident Review.|
+|status|string|false|none|The status of the Post-Incident Review.<br><br>Moving to `completed` is rejected while any required section is still unfilled.<br><br>On accounts where completed Post-Incident Reviews are read-only, a `completed` Post-Incident Review cannot be changed until it is reopened by setting another status.<br>|
+|sections|[[IncidentReviewSection](#schemaincidentreviewsection)]|false|read-only|The sections of the Post-Incident Review, ordered by `priority`.|
+|generation_status|string|false|read-only|Whether an AI draft is currently being generated for this Post-Incident Review. While this is `generating`, section content is still being written and the Post-Incident Review should be re-fetched to see the result.<br>|
+|ai_generated|boolean|false|read-only|Whether this Post-Incident Review has been through the AI draft flow.|
+|template_id|string \| null|false|read-only|The ID of the template this Post-Incident Review currently follows, or `null` if it does not follow one.|
+|has_events|boolean|false|read-only|Whether the Post-Incident Review has at least one event on its timeline.|
+|action_item_count|integer|false|read-only|The total number of action items on this Post-Incident Review.|
+|completed_action_item_count|integer|false|read-only|The number of completed action items on this Post-Incident Review.|
+|created_by|string \| null|false|read-only|The ID of the User who created this Post-Incident Review, or `null` if it was not created by a User.|
+|created_at|string(date-time)|false|read-only|The time the Post-Incident Review was created.|
+|updated_at|string(date-time)|false|read-only|The time the Post-Incident Review was last modified.|
+|completed_at|string(date-time) \| null|false|read-only|The time the Post-Incident Review was completed, or `null` if it has not been completed.|
 
 #### Enumerated Values
 
@@ -105993,21 +106093,21 @@ An Incident Review is a structured, post-resolution record of what happened duri
 }
 ```
 
-A summary of an Incident Review, as returned when listing Incident Reviews. Fetch the Incident Review by its Incident to get its sections.
+A summary of a Post-Incident Review, as returned when listing Post-Incident Reviews. Fetch the Post-Incident Review by its Incident to get its sections.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|read-only|The unique identifier of the Incident Review.|
-|incident_id|string|false|read-only|The ID of the Incident this Incident Review describes.|
-|title|string|false|read-only|The title of the Incident Review.|
-|status|string|false|read-only|The status of the Incident Review.|
-|action_item_count|integer|false|read-only|The total number of action items on this Incident Review.|
-|completed_action_item_count|integer|false|read-only|The number of completed action items on this Incident Review.|
-|created_at|string(date-time)|false|read-only|The time the Incident Review was created.|
-|updated_at|string(date-time)|false|read-only|The time the Incident Review was last modified.|
-|completed_at|string(date-time) \| null|false|read-only|The time the Incident Review was completed, or `null` if it has not been completed.|
+|id|string|false|read-only|The unique identifier of the Post-Incident Review.|
+|incident_id|string|false|read-only|The ID of the Incident this Post-Incident Review describes.|
+|title|string|false|read-only|The title of the Post-Incident Review.|
+|status|string|false|read-only|The status of the Post-Incident Review.|
+|action_item_count|integer|false|read-only|The total number of action items on this Post-Incident Review.|
+|completed_action_item_count|integer|false|read-only|The number of completed action items on this Post-Incident Review.|
+|created_at|string(date-time)|false|read-only|The time the Post-Incident Review was created.|
+|updated_at|string(date-time)|false|read-only|The time the Post-Incident Review was last modified.|
+|completed_at|string(date-time) \| null|false|read-only|The time the Post-Incident Review was completed, or `null` if it has not been completed.|
 
 #### Enumerated Values
 
@@ -106034,7 +106134,7 @@ A summary of an Incident Review, as returned when listing Incident Reviews. Fetc
 }
 ```
 
-A single section of an Incident Review. The set of sections is determined by the template the Incident Review follows.
+A single section of a Post-Incident Review. The set of sections is determined by the template the Post-Incident Review follows.
 
 ### Properties
 
@@ -106042,8 +106142,8 @@ A single section of an Incident Review. The set of sections is determined by the
 |---|---|---|---|---|
 |title|string|false|read-only|The title of the section.|
 |content|string \| null|false|none|The section's content, as [Tiptap](https://tiptap.dev/) editor JSON. `null` or empty for a section that has not been written or generated yet.<br>|
-|priority|integer|false|read-only|The display order of the section within the Incident Review. Lower values sort first.|
-|required|boolean|false|read-only|Whether this section must be filled in before the Incident Review can be moved to the `completed` status.|
+|priority|integer|false|read-only|The display order of the section within the Post-Incident Review. Lower values sort first.|
+|required|boolean|false|read-only|Whether this section must be filled in before the Post-Incident Review can be moved to the `completed` status.|
 |completed_at|string(date-time) \| null|false|read-only|The time the section was marked completed, or `null` if it has not been completed.|
 
 <h2 id="tocS_IncidentReviewActionItem">IncidentReviewActionItem</h2>
@@ -106072,17 +106172,17 @@ A single section of an Incident Review. The set of sections is determined by the
 }
 ```
 
-An action item captured on an Incident Review: a follow-up task identified while reviewing the Incident.
+An action item captured on a Post-Incident Review: a follow-up task identified while reviewing the Incident.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|read-only|The unique identifier of the action item.|
-|incident_id|string|false|read-only|The ID of the Incident whose Incident Review this action item belongs to.|
+|incident_id|string|false|read-only|The ID of the Incident whose Post-Incident Review this action item belongs to.|
 |name|string|false|none|The name of the action item.|
 |description|string \| null|false|none|A long-form description of the action item.|
-|status|string|false|none|The status of the action item on the Incident Review.|
+|status|string|false|none|The status of the action item on the Post-Incident Review.|
 |priority|string \| null|false|none|The priority of the action item.|
 |assignee|string \| null|false|none|The ID of the User the action item is assigned to, or `null` if it is unassigned.|
 |due_at|string(date-time) \| null|false|none|The time the action item is due, or `null` if no due date is set.|
@@ -106117,14 +106217,14 @@ An action item captured on an Incident Review: a follow-up task identified while
 }
 ```
 
-A marker highlights a point of interest on an Incident Review timeline, along with the notes captured as supporting evidence for it.
+A marker highlights a point of interest on a Post-Incident Review timeline, along with the notes captured as supporting evidence for it.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|false|read-only|The unique identifier of the marker.|
-|incident_review_id|string|false|read-only|The ID of the Incident Review this marker was added to.|
+|incident_review_id|string|false|read-only|The ID of the Post-Incident Review this marker was added to.|
 |type|string|false|none|The name of the marker type. Note that unlike most PagerDuty resources, this is a customer-configurable marker type name rather than a string identifying the schema of the object.<br>|
 |title|string|false|none|The title of the marker.|
 |events|[[IncidentReviewMarkerEvent](#schemaincidentreviewmarkerevent)]|false|read-only|The note events attached to this marker.|
@@ -106145,7 +106245,7 @@ A marker highlights a point of interest on an Incident Review timeline, along wi
 }
 ```
 
-A free-text note attached to an Incident Review marker. Each note supplied when creating a marker is stored as its own event on the Incident Review timeline.
+A free-text note attached to a Post-Incident Review marker. Each note supplied when creating a marker is stored as its own event on the Post-Incident Review timeline.
 
 ### Properties
 
@@ -109289,13 +109389,23 @@ A single CIDR entry within an IP allow list.
       "cidr": "10.0.0.0/24",
       "description": "Data Center"
     }
+  ],
+  "targets": [
+    {
+      "type": "surface",
+      "value": "web"
+    },
+    {
+      "type": "surface",
+      "value": "mobile"
+    }
   ]
 }
 ```
 
 An IP allow list restricts access to a PagerDuty account's subdomain to a set
-of IPv4 CIDR ranges. Enforcement currently applies to web and mobile
-application traffic.
+of IPv4 CIDR ranges. Enforcement applies to the surfaces listed in
+`targets`.
 
 ### Properties
 
@@ -109305,6 +109415,85 @@ application traffic.
 |type|string|false|read-only|A string that determines the schema of the object.|
 |state|string|true|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
 |cidr_entries|[[CidrEntry](#schemacidrentry)]|true|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
+|targets|[[IpAllowListTarget](#schemaipallowlisttarget)]|true|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|ip_allow_list|
+|state|enabled|
+|state|disabled|
+
+<h2 id="tocS_IpAllowListTarget">IpAllowListTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowlisttarget"></a>
+<a id="schema_IpAllowListTarget"></a>
+<a id="tocSipallowlisttarget"></a>
+<a id="tocsipallowlisttarget"></a>
+
+```json
+{
+  "type": "surface",
+  "value": "web"
+}
+```
+
+A surface that the IP allow list is enforced on.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The kind of target.|
+|value|string|true|none|The surface to enforce the allow list on.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|surface|
+|value|web|
+|value|mobile|
+
+<h2 id="tocS_IpAllowListUpdate">IpAllowListUpdate</h2>
+<!-- backwards compatibility -->
+<a id="schemaipallowlistupdate"></a>
+<a id="schema_IpAllowListUpdate"></a>
+<a id="tocSipallowlistupdate"></a>
+<a id="tocsipallowlistupdate"></a>
+
+```json
+{
+  "type": "ip_allow_list",
+  "state": "enabled",
+  "cidr_entries": [
+    {
+      "cidr": "192.168.1.0/24",
+      "description": "Office VPN"
+    }
+  ],
+  "targets": [
+    {
+      "type": "surface",
+      "value": "web"
+    }
+  ]
+}
+```
+
+The writable fields of an IP allow list for an update. Every field is
+optional; any omitted field is left unchanged. A provided `cidr_entries`
+or `targets` array fully replaces the existing one.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|read-only|A string that determines the schema of the object.|
+|state|string|false|none|Whether the allow list is enforced for the account. When `enabled`, only<br>requests from IPs matching one of the `cidr_entries` are permitted to<br>access the subdomain. When `disabled`, the allow list is stored but not<br>enforced.<br>|
+|cidr_entries|[[CidrEntry](#schemacidrentry)]|false|none|The CIDR ranges that are allowed when the allow list is `enabled`. Must<br>be non-empty when `state` is `enabled`.<br>|
+|targets|[[IpAllowListTarget](#schemaipallowlisttarget)]|false|none|The surfaces the allow list is enforced on. Must be non-empty and must<br>not contain duplicates.<br>|
 
 #### Enumerated Values
 
@@ -111268,48 +111457,143 @@ A rule for contacting the user for Handoff Notifications.
 ```json
 {
   "orchestration_path": {
-    "type": "service",
+    "type": "global",
     "parent": {
-      "id": "string",
-      "type": "string",
-      "self": "http://example.com"
+      "id": "b02e973d-9620-4e0a-9edc-00fedf7d4694",
+      "self": "https://api.pagerduty.com/event_orchestrations/b02e973d-9620-4e0a-9edc-00fedf7d4694",
+      "type": "event_orchestration_reference"
     },
+    "self": "https://api.pagerduty.com/event_orchestrations/b02e973d-9620-4e0a-9edc-00fedf7d4694/global",
     "sets": [
       {
         "id": "start",
         "rules": [
           {
-            "id": "string",
-            "label": "string",
+            "label": "Always apply some consistent event transformations to all events",
+            "id": "c91f72f3",
+            "conditions": [],
+            "actions": {
+              "variables": [
+                {
+                  "name": "hostname",
+                  "path": "event.component",
+                  "value": "hostname: (.*)",
+                  "type": "regex"
+                }
+              ],
+              "extractions": [
+                {
+                  "template": "{{variables.hostname}}",
+                  "target": "event.custom_details.hostname"
+                },
+                {
+                  "source": "event.source",
+                  "regex": "www (.*) service",
+                  "target": "event.source"
+                }
+              ],
+              "incident_type": "PT10C33",
+              "incident_custom_field_updates": [
+                {
+                  "id": "PEXCK89",
+                  "value": "#my-team-channel"
+                },
+                {
+                  "id": "PN1C4A2",
+                  "value": "{{event.timestamp}}"
+                }
+              ],
+              "route_to": "step-two"
+            }
+          }
+        ]
+      },
+      {
+        "id": "step-two",
+        "rules": [
+          {
+            "label": "All critical alerts should be treated as P1 incidents",
+            "id": "7c54529d",
             "conditions": [
               {
-                "expression": "event.summary matches part 'my service error'"
+                "expression": "event.severity matches 'critical'"
               }
             ],
-            "actions": {},
-            "disabled": true
+            "actions": {
+              "priority": "P0IN2KQ",
+              "suppress": false,
+              "incident_custom_field_updates": [
+                {
+                  "id": "PEXCK89",
+                  "value": "#p1-incident-response"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Drop all events from the very-noisy monitoring tool",
+            "id": "1f6d9a33",
+            "conditions": [
+              {
+                "expression": "event.source matches part 'very-noisy'"
+              }
+            ],
+            "actions": {
+              "drop_event": true
+            }
+          },
+          {
+            "label": "Assign all database related incidents to the Database Team's escalation policy",
+            "id": "4314d9ce",
+            "conditions": [
+              {
+                "expression": "event.source matches 'prod-db'"
+              }
+            ],
+            "actions": {
+              "escalation_policy": "PEYSGVF"
+            }
+          },
+          {
+            "label": "Never bother the on-call for info-level events outside of work hours",
+            "id": "cd770384",
+            "conditions": [
+              {
+                "expression": "event.severity matches 'info' and not (now in Mon,Tue,Wed,Thu,Fri 09:00:00 to 17:00:00 America/Los_Angeles)"
+              }
+            ],
+            "actions": {
+              "suppress": true
+            }
           }
         ]
       }
     ],
     "catch_all": {
-      "actions": {}
+      "actions": {
+        "suppress": true,
+        "incident_custom_field_updates": [
+          {
+            "id": "PEXCK89",
+            "value": "#general-incident-notifications"
+          }
+        ]
+      }
     },
-    "created_at": "1970-01-01T00:00:00Z",
+    "created_at": "2021-11-18T16:42:01Z",
     "created_by": {
-      "id": "string",
-      "type": "string",
-      "self": "http://example.com"
+      "id": "P8B9WR8",
+      "self": "https://api.pagerduty.com/users/P8B9WR8",
+      "type": "user_reference"
     },
-    "updated_at": "1970-01-01T00:00:00Z",
+    "updated_at": "2021-11-18T16:42:01Z",
     "updated_by": {
-      "id": "string",
-      "type": "string",
-      "self": "http://example.com"
+      "id": "P8B9WR8",
+      "self": "https://api.pagerduty.com/users/P8B9WR8",
+      "type": "user_reference"
     },
-    "version": "string"
-  },
-  "$ref": "#/components/examples/OrchestrationPathGlobalTypeResponse/value"
+    "version": "rn1Mja13T1HBdmPChqFilSQXUW2fWXM_"
+  }
 }
 ```
 
@@ -111759,7 +112043,7 @@ This rule includes invalid data for a feature item.
 |---|---|---|---|---|
 |message|string|false|none|A description of the warning and any potential side effects.|
 |rule_id|string|false|none|The ID of the rule using the feature.|
-|feature|string|false|none|The feature that includes invalid data.<br><br>Example values include:<br>  * `incident_custom_field_updates`<br>  * `escalation_policy`<br>  * `cache_variable:annotate`<br>  * `cache_variable:conditions`<br>  * `cache_variable:automation_actions`<br>|
+|feature|string|false|none|The feature that includes invalid data.<br><br>Example values include:<br>  * `incident_type`<br>  * `incident_custom_field_updates`<br>  * `escalation_policy`<br>  * `cache_variable:annotate`<br>  * `cache_variable:conditions`<br>  * `cache_variable:automation_actions`<br>|
 |feature_type|string|false|none|Specifies the feature type of the impacted item.<br><br>Example values include:<br>  * `actions`<br>  * `conditions`<br>|
 |warning_type|string|false|none|The type of warning that is being returned for the rule.|
 

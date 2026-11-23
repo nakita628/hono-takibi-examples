@@ -1,5 +1,692 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ProjectVersionArnSchema = z
+  .string()
+  .regex(
+    /(^arn:[a-z\d-]+:rekognition:[a-z\d-]+:\d{12}:project\/[a-zA-Z0-9_.\-]{1,255}\/version\/[a-zA-Z0-9_.\-]{1,255}\/[0-9]+$)/,
+  )
+  .min(20)
+  .max(2048)
+  .openapi('ProjectVersionArn')
+
+const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
+
+const InferenceUnitsSchema = z.int().min(1).openapi('InferenceUnits')
+
+const ProjectVersionStatusSchema = z
+  .enum([
+    'TRAINING_IN_PROGRESS',
+    'TRAINING_COMPLETED',
+    'TRAINING_FAILED',
+    'STARTING',
+    'RUNNING',
+    'FAILED',
+    'STOPPING',
+    'STOPPED',
+    'DELETING',
+    'COPYING_IN_PROGRESS',
+    'COPYING_COMPLETED',
+    'COPYING_FAILED',
+  ])
+  .openapi('ProjectVersionStatus')
+
+const StatusMessageSchema = z.string().openapi('StatusMessage')
+
+const ULongSchema = z.int().min(0).openapi('ULong')
+
+const S3BucketSchema = z
+  .string()
+  .regex(/[0-9A-Za-z\.\-_]*/)
+  .min(3)
+  .max(255)
+  .openapi('S3Bucket')
+
+const S3KeyPrefixSchema = z.string().max(1024).openapi('S3KeyPrefix')
+
+const OutputConfigSchema = z
+  .object({
+    S3Bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The S3 bucket where training output is placed.',
+    }),
+    S3KeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description: 'The prefix applied to the training output files. ',
+    }),
+  })
+  .openapi({
+    description: 'The S3 bucket and folder location where training output is placed.',
+    required: [],
+  })
+  .openapi('OutputConfig')
+
+const S3ObjectNameSchema = z.string().min(1).max(1024).openapi('S3ObjectName')
+
+const S3ObjectVersionSchema = z.string().min(1).max(1024).openapi('S3ObjectVersion')
+
+const S3ObjectSchema = z
+  .object({
+    Bucket: S3BucketSchema.exactOptional().openapi({ description: 'Name of the S3 bucket.' }),
+    Name: S3ObjectNameSchema.exactOptional().openapi({ description: 'S3 object key name.' }),
+    Version: S3ObjectVersionSchema.exactOptional().openapi({
+      description: 'If the bucket is versioning enabled, you can specify the object version. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Provides the S3 bucket name and object name.</p> <p>The region for the S3 bucket containing the S3 object must match the region you use for Amazon Rekognition operations.</p> <p>For Amazon Rekognition to process an S3 object, the user must have permission to access the S3 object. For more information, see How Amazon Rekognition works with IAM in the Amazon Rekognition Developer Guide. </p>',
+    required: [],
+  })
+  .openapi('S3Object')
+
+const GroundTruthManifestSchema = z
+  .object({ S3Object: S3ObjectSchema.exactOptional() })
+  .openapi({
+    description:
+      'The S3 bucket that contains an Amazon Sagemaker Ground Truth format manifest file. ',
+    required: [],
+  })
+  .openapi('GroundTruthManifest')
+
+const AssetSchema = z
+  .object({ GroundTruthManifest: GroundTruthManifestSchema.exactOptional() })
+  .openapi({
+    description:
+      'Assets are the images that you use to train and evaluate a model version. Assets can also contain validation information that you use to debug a failed model training. ',
+    required: [],
+  })
+  .openapi('Asset')
+
+const AssetsSchema = z.array(AssetSchema).openapi('Assets')
+
+const TrainingDataSchema = z
+  .object({
+    Assets: AssetsSchema.exactOptional().openapi({
+      description:
+        'A Sagemaker GroundTruth manifest file that contains the training images (assets).',
+    }),
+  })
+  .openapi({ description: 'The dataset used for training.', required: [] })
+  .openapi('TrainingData')
+
+const ValidationDataSchema = z
+  .object({
+    Assets: AssetsSchema.exactOptional().openapi({
+      description: 'The assets that comprise the validation data. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON Lines in the dataset. For more information, see <i>Debugging a Failed Model Training</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>',
+    required: [],
+  })
+  .openapi('ValidationData')
+
+const TrainingDataResultSchema = z
+  .object({
+    Input: TrainingDataSchema.exactOptional().openapi({
+      description: 'The training assets that you supplied for training.',
+    }),
+    Output: TrainingDataSchema.exactOptional().openapi({
+      description:
+        'The images (assets) that were actually trained by Amazon Rekognition Custom Labels. ',
+    }),
+    Validation: ValidationDataSchema.exactOptional().openapi({
+      description:
+        'The location of the data validation manifest. The data validation manifest is created for the training dataset during model training.',
+    }),
+  })
+  .openapi({
+    description:
+      'Sagemaker Groundtruth format manifest files for the input, output and validation datasets that are used and created during testing.',
+    required: [],
+  })
+  .openapi('TrainingDataResult')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const TestingDataSchema = z
+  .object({
+    Assets: AssetsSchema.exactOptional().openapi({ description: 'The assets used for testing.' }),
+    AutoCreate: BooleanSchema.exactOptional().openapi({
+      description:
+        'If specified, Amazon Rekognition Custom Labels temporarily splits the training dataset (80%) to create a test dataset (20%) for the training job. After training completes, the test dataset is not stored and the training dataset reverts to its previous size.',
+    }),
+  })
+  .openapi({
+    description:
+      'The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition Custom Labels uses the training dataset to create a test dataset with a temporary split of the training dataset. ',
+    required: [],
+  })
+  .openapi('TestingData')
+
+const TestingDataResultSchema = z
+  .object({
+    Input: TestingDataSchema.exactOptional().openapi({
+      description: 'The testing dataset that was supplied for training.',
+    }),
+    Output: TestingDataSchema.exactOptional().openapi({
+      description:
+        'The subset of the dataset that was actually tested. Some images (assets) might not be tested due to file formatting and other issues. ',
+    }),
+    Validation: ValidationDataSchema.exactOptional().openapi({
+      description:
+        'The location of the data validation manifest. The data validation manifest is created for the test dataset during model training.',
+    }),
+  })
+  .openapi({
+    description:
+      'Sagemaker Groundtruth format manifest files for the input, output and validation datasets that are used and created during testing.',
+    required: [],
+  })
+  .openapi('TestingDataResult')
+
+const FloatSchema = z.float32().openapi('Float')
+
+const SummarySchema = z
+  .object({ S3Object: S3ObjectSchema.exactOptional() })
+  .openapi({
+    description:
+      '<p>The S3 bucket that contains the training summary. The training summary includes aggregated evaluation metrics for the entire testing dataset and metrics for each individual label. </p> <p>You get the training summary S3 bucket location by calling <a>DescribeProjectVersions</a>. </p>',
+    required: [],
+  })
+  .openapi('Summary')
+
+const EvaluationResultSchema = z
+  .object({
+    F1Score: FloatSchema.exactOptional().openapi({
+      description:
+        'The F1 score for the evaluation of all labels. The F1 score metric evaluates the overall precision and recall performance of the model as a single value. A higher value indicates better precision and recall performance. A lower score indicates that precision, recall, or both are performing poorly. ',
+    }),
+    Summary: SummarySchema.exactOptional().openapi({
+      description: 'The S3 bucket that contains the training summary.',
+    }),
+  })
+  .openapi({ description: 'The evaluation results for the training of a model.', required: [] })
+  .openapi('EvaluationResult')
+
+const KmsKeyIdSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9][A-Za-z0-9:_\/+=,@.-]{0,2048}$/)
+  .min(1)
+  .max(2048)
+  .openapi('KmsKeyId')
+
+const ProjectVersionDescriptionSchema = z
+  .object({
+    ProjectVersionArn: ProjectVersionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the model version. ',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix datetime for the date and time that training started.',
+    }),
+    MinInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        'The minimum number of inference units used by the model. For more information, see <a>StartProjectVersion</a>.',
+    }),
+    Status: ProjectVersionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the model version.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'A descriptive message for an error or warning that occurred.',
+    }),
+    BillableTrainingTimeInSeconds: ULongSchema.exactOptional().openapi({
+      description:
+        'The duration, in seconds, that you were billed for a successful training of the model version. This value is only returned if the model version has been successfully trained.',
+    }),
+    TrainingEndTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix date and time that training of the model ended.',
+    }),
+    OutputConfig: OutputConfigSchema.exactOptional().openapi({
+      description: 'The location where training results are saved.',
+    }),
+    TrainingDataResult: TrainingDataResultSchema.exactOptional().openapi({
+      description: 'Contains information about the training results.',
+    }),
+    TestingDataResult: TestingDataResultSchema.exactOptional().openapi({
+      description: 'Contains information about the testing results.',
+    }),
+    EvaluationResult: EvaluationResultSchema.exactOptional().openapi({
+      description:
+        'The training results. <code>EvaluationResult</code> is only returned if training is successful.',
+    }),
+    ManifestSummary: GroundTruthManifestSchema.exactOptional().openapi({
+      description:
+        'The location of the summary manifest. The summary manifest provides aggregate data validation results for the training and test datasets.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The identifer for the AWS Key Management Service key (AWS KMS key) that was used to encrypt the model during training. ',
+    }),
+    MaxInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of inference units Amazon Rekognition Custom Labels uses to auto-scale the model. For more information, see <a>StartProjectVersion</a>.',
+    }),
+    SourceProjectVersionArn: ProjectVersionArnSchema.exactOptional().openapi({
+      description:
+        'If the model version was copied from a different project, <code>SourceProjectVersionArn</code> contains the ARN of the source model version. ',
+    }),
+  })
+  .openapi({
+    description: 'A description of a version of an Amazon Rekognition Custom Labels model.',
+    required: [],
+  })
+  .openapi('ProjectVersionDescription')
+
+type ProjectVersionDescriptionsType = z.infer<typeof ProjectVersionDescriptionSchema>[]
+
+const ProjectVersionDescriptionsSchema: z.ZodType<ProjectVersionDescriptionsType> = z
+  .array(ProjectVersionDescriptionSchema)
+  .openapi('ProjectVersionDescriptions')
+
+const ExtendedPaginationTokenSchema = z.string().max(1024).openapi('ExtendedPaginationToken')
+
+type DescribeProjectVersionsResponseType = {
+  ProjectVersionDescriptions?: z.infer<typeof ProjectVersionDescriptionsSchema> & unknown
+  NextToken?: z.infer<typeof ExtendedPaginationTokenSchema> & unknown
+}
+
+const StringSchema = z.string().openapi('String')
+
+const BodyPartSchema = z.enum(['FACE', 'HEAD', 'LEFT_HAND', 'RIGHT_HAND']).openapi('BodyPart')
+
+const PercentSchema = z.float32().min(0).max(100).openapi('Percent')
+
+const BoundingBoxSchema = z
+  .object({
+    Width: FloatSchema.exactOptional().openapi({
+      description: 'Width of the bounding box as a ratio of the overall image width.',
+    }),
+    Height: FloatSchema.exactOptional().openapi({
+      description: 'Height of the bounding box as a ratio of the overall image height.',
+    }),
+    Left: FloatSchema.exactOptional().openapi({
+      description: 'Left coordinate of the bounding box as a ratio of overall image width.',
+    }),
+    Top: FloatSchema.exactOptional().openapi({
+      description: 'Top coordinate of the bounding box as a ratio of overall image height.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Identifies the bounding box around the label, face, text, object of interest, or personal protective equipment. The <code>left</code> (x-coordinate) and <code>top</code> (y-coordinate) are coordinates representing the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>The <code>top</code> and <code>left</code> values returned are ratios of the overall image size. For example, if the input image is 700x200 pixels, and the top-left coordinate of the bounding box is 350x50 pixels, the API returns a <code>left</code> value of 0.5 (350/700) and a <code>top</code> value of 0.25 (50/200).</p> <p>The <code>width</code> and <code>height</code> values represent the dimensions of the bounding box as a ratio of the overall image dimension. For example, if the input image is 700x200 pixels, and the bounding box width is 70 pixels, the width returned is 0.1. </p> <note> <p> The bounding box coordinates can have negative values. For example, if Amazon Rekognition is able to detect a face that is at the image edge and is only partially visible, the service can return coordinates that are outside the image bounds and, depending on the image edge, you might get negative values or values greater than 1 for the <code>left</code> or <code>top</code> values. </p> </note>',
+    required: [],
+  })
+  .openapi('BoundingBox')
+
+const ProtectiveEquipmentTypeSchema = z
+  .enum(['FACE_COVER', 'HAND_COVER', 'HEAD_COVER'])
+  .openapi('ProtectiveEquipmentType')
+
+const CoversBodyPartSchema = z
+  .object({
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence that Amazon Rekognition has in the value of <code>Value</code>.',
+    }),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'True if the PPE covers the corresponding body part, otherwise false.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about an item of Personal Protective Equipment covering a corresponding body part. For more information, see <a>DetectProtectiveEquipment</a>.',
+    required: [],
+  })
+  .openapi('CoversBodyPart')
+
+const EquipmentDetectionSchema = z
+  .object({
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'A bounding box surrounding the item of detected PPE.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition has that the bounding box (<code>BoundingBox</code>) contains an item of PPE.',
+    }),
+    Type: ProtectiveEquipmentTypeSchema.exactOptional().openapi({
+      description: 'The type of detected PPE.',
+    }),
+    CoversBodyPart: CoversBodyPartSchema.exactOptional().openapi({
+      description: 'Information about the body part covered by the detected PPE.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about an item of Personal Protective Equipment (PPE) detected by <a>DetectProtectiveEquipment</a>. For more information, see <a>DetectProtectiveEquipment</a>.',
+    required: [],
+  })
+  .openapi('EquipmentDetection')
+
+const EquipmentDetectionsSchema = z.array(EquipmentDetectionSchema).openapi('EquipmentDetections')
+
+const ProtectiveEquipmentBodyPartSchema = z
+  .object({
+    Name: BodyPartSchema.exactOptional().openapi({ description: 'The detected body part.' }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition has in the detection accuracy of the detected body part. ',
+    }),
+    EquipmentDetections: EquipmentDetectionsSchema.exactOptional().openapi({
+      description: 'An array of Personal Protective Equipment items detected around a body part.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about a body part detected by <a>DetectProtectiveEquipment</a> that contains PPE. An array of <code>ProtectiveEquipmentBodyPart</code> objects is returned for each person detected by <code>DetectProtectiveEquipment</code>. ',
+    required: [],
+  })
+  .openapi('ProtectiveEquipmentBodyPart')
+
+const BodyPartsSchema = z.array(ProtectiveEquipmentBodyPartSchema).openapi('BodyParts')
+
+const UIntegerSchema = z.int().min(0).openapi('UInteger')
+
+const ProtectiveEquipmentPersonSchema = z
+  .object({
+    BodyParts: BodyPartsSchema.exactOptional().openapi({
+      description:
+        "An array of body parts detected on a person's body (including body parts without PPE). ",
+    }),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'A bounding box around the detected person.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition has that the bounding box contains a person.',
+    }),
+    Id: UIntegerSchema.exactOptional().openapi({
+      description:
+        'The identifier for the detected person. The identifier is only unique for a single call to <code>DetectProtectiveEquipment</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'A person detected by a call to <a>DetectProtectiveEquipment</a>. The API returns all persons detected in the input image in an array of <code>ProtectiveEquipmentPerson</code> objects.',
+    required: [],
+  })
+  .openapi('ProtectiveEquipmentPerson')
+
+const ProtectiveEquipmentPersonsSchema = z
+  .array(ProtectiveEquipmentPersonSchema)
+  .openapi('ProtectiveEquipmentPersons')
+
+const ProtectiveEquipmentPersonIdsSchema = z
+  .array(UIntegerSchema)
+  .openapi('ProtectiveEquipmentPersonIds')
+
+const ProtectiveEquipmentSummarySchema = z
+  .object({
+    PersonsWithRequiredEquipment: ProtectiveEquipmentPersonIdsSchema.exactOptional().openapi({
+      description:
+        'An array of IDs for persons who are wearing detected personal protective equipment. ',
+    }),
+    PersonsWithoutRequiredEquipment: ProtectiveEquipmentPersonIdsSchema.exactOptional().openapi({
+      description:
+        'An array of IDs for persons who are not wearing all of the types of PPE specified in the <code>RequiredEquipmentTypes</code> field of the detected personal protective equipment. ',
+    }),
+    PersonsIndeterminate: ProtectiveEquipmentPersonIdsSchema.exactOptional().openapi({
+      description:
+        'An array of IDs for persons where it was not possible to determine if they are wearing personal protective equipment. ',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Summary information for required items of personal protective equipment (PPE) detected on persons by a call to <a>DetectProtectiveEquipment</a>. You specify the required type of PPE in the <code>SummarizationAttributes</code> (<a>ProtectiveEquipmentSummarizationAttributes</a>) input parameter. The summary includes which persons were detected wearing the required personal protective equipment (<code>PersonsWithRequiredEquipment</code>), which persons were detected as not wearing the required PPE (<code>PersonsWithoutRequiredEquipment</code>), and the persons in which a determination could not be made (<code>PersonsIndeterminate</code>).</p> <p>To get a total for each category, use the size of the field array. For example, to find out how many people were detected as wearing the specified PPE, use the size of the <code>PersonsWithRequiredEquipment</code> array. If you want to find out more about a person, such as the location (<a>BoundingBox</a>) of the person on the image, use the person ID in each array element. Each person ID matches the ID field of a <a>ProtectiveEquipmentPerson</a> object returned in the <code>Persons</code> array by <code>DetectProtectiveEquipment</code>.</p>',
+    required: [],
+  })
+  .openapi('ProtectiveEquipmentSummary')
+
+type DetectProtectiveEquipmentResponseType = {
+  ProtectiveEquipmentModelVersion?: z.infer<typeof StringSchema> & unknown
+  Persons?: z.infer<typeof ProtectiveEquipmentPersonsSchema> & unknown
+  Summary?: z.infer<typeof ProtectiveEquipmentSummarySchema> & unknown
+}
+
+const VideoJobStatusSchema = z
+  .enum(['IN_PROGRESS', 'SUCCEEDED', 'FAILED'])
+  .openapi('VideoJobStatus')
+
+const VideoColorRangeSchema = z.enum(['FULL', 'LIMITED']).openapi('VideoColorRange')
+
+const VideoMetadataSchema = z
+  .object({
+    Codec: StringSchema.exactOptional().openapi({
+      description: 'Type of compression used in the analyzed video. ',
+    }),
+    DurationMillis: ULongSchema.exactOptional().openapi({
+      description: 'Length of the video in milliseconds.',
+    }),
+    Format: StringSchema.exactOptional().openapi({
+      description: 'Format of the analyzed video. Possible values are MP4, MOV and AVI. ',
+    }),
+    FrameRate: FloatSchema.exactOptional().openapi({
+      description: 'Number of frames per second in the video.',
+    }),
+    FrameHeight: ULongSchema.exactOptional().openapi({
+      description: 'Vertical pixel dimension of the video.',
+    }),
+    FrameWidth: ULongSchema.exactOptional().openapi({
+      description: 'Horizontal pixel dimension of the video.',
+    }),
+    ColorRange: VideoColorRangeSchema.exactOptional().openapi({
+      description:
+        ' A description of the range of luminance values in a video, either LIMITED (16 to 235) or FULL (0 to 255). ',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
+    required: [],
+  })
+  .openapi('VideoMetadata')
+
+const PaginationTokenSchema = z.string().max(255).openapi('PaginationToken')
+
+const TimestampSchema = z.int().openapi('Timestamp')
+
+const DominantColorSchema = z
+  .object({
+    Red: UIntegerSchema.exactOptional().openapi({
+      description: 'The Red RGB value for a dominant color.',
+    }),
+    Blue: UIntegerSchema.exactOptional().openapi({
+      description: 'The Blue RGB value for a dominant color.',
+    }),
+    Green: UIntegerSchema.exactOptional().openapi({
+      description: 'The Green RGB value for a dominant color.',
+    }),
+    HexCode: StringSchema.exactOptional().openapi({
+      description: 'The Hex code equivalent of the RGB values for a dominant color.',
+    }),
+    CSSColor: StringSchema.exactOptional().openapi({
+      description: 'The CSS color name of a dominant color.',
+    }),
+    SimplifiedColor: StringSchema.exactOptional().openapi({
+      description: 'One of 12 simplified color names applied to a dominant color.',
+    }),
+    PixelPercent: PercentSchema.exactOptional().openapi({
+      description: 'The percentage of image pixels that have a given dominant color.',
+    }),
+  })
+  .openapi({ description: 'A description of the dominant colors in an image.', required: [] })
+  .openapi('DominantColor')
+
+const DominantColorsSchema = z.array(DominantColorSchema).openapi('DominantColors')
+
+const InstanceSchema = z
+  .object({
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'The position of the label instance on the image.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition has in the accuracy of the bounding box.',
+    }),
+    DominantColors: DominantColorsSchema.exactOptional().openapi({
+      description: 'The dominant colors found in an individual instance of a label.',
+    }),
+  })
+  .openapi({
+    description:
+      'An instance of a label returned by Amazon Rekognition Image (<a>DetectLabels</a>) or by Amazon Rekognition Video (<a>GetLabelDetection</a>).',
+    required: [],
+  })
+  .openapi('Instance')
+
+const InstancesSchema = z.array(InstanceSchema).openapi('Instances')
+
+const ParentSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the parent label.' }),
+  })
+  .openapi({
+    description: 'A parent label for a label. A label can have 0, 1, or more parents. ',
+    required: [],
+  })
+  .openapi('Parent')
+
+const ParentsSchema = z.array(ParentSchema).openapi('Parents')
+
+const LabelAliasSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of an alias for a given label.',
+    }),
+  })
+  .openapi({ description: 'A potential alias of for a given label.', required: [] })
+  .openapi('LabelAlias')
+
+const LabelAliasesSchema = z.array(LabelAliasSchema).openapi('LabelAliases')
+
+const LabelCategorySchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of a category that applies to a given label.',
+    }),
+  })
+  .openapi({ description: 'The category that applies to a given label.', required: [] })
+  .openapi('LabelCategory')
+
+const LabelCategoriesSchema = z.array(LabelCategorySchema).openapi('LabelCategories')
+
+const LabelSchema = z
+  .object({
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name (label) of the object or scene.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({ description: 'Level of confidence.' }),
+    Instances: InstancesSchema.exactOptional().openapi({
+      description:
+        'If <code>Label</code> represents an object, <code>Instances</code> contains the bounding boxes for each instance of the detected object. Bounding boxes are returned for common object labels such as people, cars, furniture, apparel or pets.',
+    }),
+    Parents: ParentsSchema.exactOptional().openapi({
+      description: 'The parent labels for a label. The response includes all ancestor labels.',
+    }),
+    Aliases: LabelAliasesSchema.exactOptional().openapi({
+      description: 'A list of potential aliases for a given label.',
+    }),
+    Categories: LabelCategoriesSchema.exactOptional().openapi({
+      description: 'A list of the categories associated with a given label.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Structure containing details about the detected label, including the name, detected instances, parent labels, and level of confidence.</p> <p> </p>',
+    required: [],
+  })
+  .openapi('Label')
+
+const LabelDetectionSchema = z
+  .object({
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time, in milliseconds from the start of the video, that the label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the label first appears.',
+    }),
+    Label: LabelSchema.exactOptional().openapi({
+      description: 'Details about the detected label.',
+    }),
+    StartTimestampMillis: ULongSchema.exactOptional().openapi({
+      description:
+        'The time in milliseconds defining the start of the timeline segment containing a continuously detected label.',
+    }),
+    EndTimestampMillis: ULongSchema.exactOptional().openapi({
+      description:
+        'The time in milliseconds defining the end of the timeline segment containing a continuously detected label.',
+    }),
+    DurationMillis: ULongSchema.exactOptional().openapi({
+      description:
+        'The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis.',
+    }),
+  })
+  .openapi({
+    description:
+      'Information about a label detected in a video analysis request and the time the label was detected in the video. ',
+    required: [],
+  })
+  .openapi('LabelDetection')
+
+const LabelDetectionsSchema = z.array(LabelDetectionSchema).openapi('LabelDetections')
+
+const JobIdSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9-_]+$/)
+  .min(1)
+  .max(64)
+  .openapi('JobId')
+
+const VideoSchema = z
+  .object({
+    S3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket name and file name for the video.',
+    }),
+  })
+  .openapi({
+    description:
+      'Video file stored in an Amazon S3 bucket. Amazon Rekognition video start operations such as <a>StartLabelDetection</a> use <code>Video</code> to specify a video for analysis. The supported file formats are .mp4, .mov and .avi.',
+    required: [],
+  })
+  .openapi('Video')
+
+const JobTagSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_.\-:+=\/]+/)
+  .min(1)
+  .max(1024)
+  .openapi('JobTag')
+
+const LabelDetectionSortBySchema = z.enum(['NAME', 'TIMESTAMP']).openapi('LabelDetectionSortBy')
+
+const LabelDetectionAggregateBySchema = z
+  .enum(['TIMESTAMPS', 'SEGMENTS'])
+  .openapi('LabelDetectionAggregateBy')
+
+const GetLabelDetectionRequestMetadataSchema = z
+  .object({
+    SortBy: LabelDetectionSortBySchema.exactOptional().openapi({
+      description: 'The sorting method chosen for a GetLabelDetection request.',
+    }),
+    AggregateBy: LabelDetectionAggregateBySchema.exactOptional().openapi({
+      description: 'The aggregation method chosen for a GetLabelDetection request.',
+    }),
+  })
+  .openapi({
+    description:
+      'Contains metadata about a label detection request, including the SortBy and AggregateBy options.',
+    required: [],
+  })
+  .openapi('GetLabelDetectionRequestMetadata')
+
+type GetLabelDetectionResponseType = {
+  JobStatus?: z.infer<typeof VideoJobStatusSchema> & unknown
+  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
+  VideoMetadata?: z.infer<typeof VideoMetadataSchema> & unknown
+  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  Labels?: z.infer<typeof LabelDetectionsSchema> & unknown
+  LabelModelVersion?: z.infer<typeof StringSchema> & unknown
+  JobId?: z.infer<typeof JobIdSchema> & unknown
+  Video?: z.infer<typeof VideoSchema>
+  JobTag?: z.infer<typeof JobTagSchema> & unknown
+  GetRequestMetadata?: z.infer<typeof GetLabelDetectionRequestMetadataSchema> & unknown
+}
+
 const FaceIdSchema = z
   .string()
   .regex(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)
@@ -7,9 +694,9 @@ const FaceIdSchema = z
 
 const AssociatedFaceSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier assigned to the face.' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'Unique identifier assigned to the face.',
+    }),
   })
   .openapi({
     description: 'Provides face metadata for the faces that are associated to a specific UserID.',
@@ -30,8 +717,6 @@ const UserIdSchema = z
   .max(128)
   .openapi('UserId')
 
-const PercentSchema = z.float32().min(0).max(100).openapi('Percent')
-
 const UnsuccessfulFaceAssociationReasonSchema = z
   .enum(['FACE_NOT_FOUND', 'ASSOCIATED_TO_A_DIFFERENT_USER', 'LOW_MATCH_CONFIDENCE'])
   .openapi('UnsuccessfulFaceAssociationReason')
@@ -42,25 +727,19 @@ const UnsuccessfulFaceAssociationReasonsSchema = z
 
 const UnsuccessfulFaceAssociationSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier assigned to the face. ' }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A provided ID for the UserID. Unique within the collection. ' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Match confidence with the UserID, provides information regarding if a face association was unsuccessful because it didn't meet UserMatchThreshold.",
-        }),
-    ).exactOptional(),
-    Reasons: UnsuccessfulFaceAssociationReasonsSchema.and(
-      z.any().openapi({ description: ' The reason why the association was unsuccessful. ' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'A unique identifier assigned to the face. ',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: 'A provided ID for the UserID. Unique within the collection. ',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        "Match confidence with the UserID, provides information regarding if a face association was unsuccessful because it didn't meet UserMatchThreshold.",
+    }),
+    Reasons: UnsuccessfulFaceAssociationReasonsSchema.exactOptional().openapi({
+      description: ' The reason why the association was unsuccessful. ',
+    }),
   })
   .openapi({
     description:
@@ -79,30 +758,18 @@ const UserStatusSchema = z.enum(['ACTIVE', 'UPDATING', 'CREATING', 'CREATED']).o
 
 const AssociateFacesResponseSchema = z
   .object({
-    AssociatedFaces: AssociatedFacesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of AssociatedFace objects containing FaceIDs that are successfully associated with the UserID is returned. Returned if the AssociateFaces action is successful.',
-        }),
-    ).exactOptional(),
-    UnsuccessfulFaceAssociations: UnsuccessfulFaceAssociationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of UnsuccessfulAssociation objects containing FaceIDs that are not successfully associated along with the reasons. Returned if the AssociateFaces action is successful.',
-        }),
-    ).exactOptional(),
-    UserStatus: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of an update made to a UserID. Reflects if the UserID has been updated for every requested change.',
-        }),
-    ).exactOptional(),
+    AssociatedFaces: AssociatedFacesListSchema.exactOptional().openapi({
+      description:
+        'An array of AssociatedFace objects containing FaceIDs that are successfully associated with the UserID is returned. Returned if the AssociateFaces action is successful.',
+    }),
+    UnsuccessfulFaceAssociations: UnsuccessfulFaceAssociationListSchema.exactOptional().openapi({
+      description:
+        'An array of UnsuccessfulAssociation objects containing FaceIDs that are not successfully associated along with the reasons. Returned if the AssociateFaces action is successful.',
+    }),
+    UserStatus: UserStatusSchema.exactOptional().openapi({
+      description:
+        'The status of an update made to a UserID. Reflects if the UserID has been updated for every requested change.',
+    }),
   })
   .openapi({
     example: {
@@ -143,29 +810,21 @@ const ClientRequestTokenSchema = z
 
 const AssociateFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of an existing collection containing the UserID.' }),
-    ),
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'The ID for the existing UserID.' })),
-    FaceIds: UserFaceIdListSchema.and(
-      z.any().openapi({ description: 'An array of FaceIDs to associate with the UserID.' }),
-    ),
-    UserMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional value specifying the minimum confidence in the UserID match to return. The default value is 75.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the request to <code>AssociateFaces</code>. If you use the same token with multiple <code>AssociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of an existing collection containing the UserID.',
+    }),
+    UserId: UserIdSchema.openapi({ description: 'The ID for the existing UserID.' }),
+    FaceIds: UserFaceIdListSchema.openapi({
+      description: 'An array of FaceIDs to associate with the UserID.',
+    }),
+    UserMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        'An optional value specifying the minimum confidence in the UserID match to return. The default value is 75.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the request to <code>AssociateFaces</code>. If you use the same token with multiple <code>AssociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
+    }),
   })
   .openapi({ required: ['CollectionId', 'UserId', 'FaceIds'], title: 'AssociateFacesRequest' })
   .openapi('AssociateFacesRequest')
@@ -192,58 +851,14 @@ const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
 const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
 
-const FloatSchema = z.float32().openapi('Float')
-
-const BoundingBoxSchema = z
-  .object({
-    Width: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Width of the bounding box as a ratio of the overall image width.',
-        }),
-    ).exactOptional(),
-    Height: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Height of the bounding box as a ratio of the overall image height.',
-        }),
-    ).exactOptional(),
-    Left: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Left coordinate of the bounding box as a ratio of overall image width.',
-        }),
-    ).exactOptional(),
-    Top: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Top coordinate of the bounding box as a ratio of overall image height.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Identifies the bounding box around the label, face, text, object of interest, or personal protective equipment. The <code>left</code> (x-coordinate) and <code>top</code> (y-coordinate) are coordinates representing the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>The <code>top</code> and <code>left</code> values returned are ratios of the overall image size. For example, if the input image is 700x200 pixels, and the top-left coordinate of the bounding box is 350x50 pixels, the API returns a <code>left</code> value of 0.5 (350/700) and a <code>top</code> value of 0.25 (50/200).</p> <p>The <code>width</code> and <code>height</code> values represent the dimensions of the bounding box as a ratio of the overall image dimension. For example, if the input image is 700x200 pixels, and the bounding box width is 70 pixels, the width returned is 0.1. </p> <note> <p> The bounding box coordinates can have negative values. For example, if Amazon Rekognition is able to detect a face that is at the image edge and is only partially visible, the service can return coordinates that are outside the image bounds and, depending on the image edge, you might get negative values or values greater than 1 for the <code>left</code> or <code>top</code> values. </p> </note>',
-    required: [],
-  })
-  .openapi('BoundingBox')
-
 const ComparedSourceImageFaceSchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box of the face.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Confidence level that the selected bounding box contains a face.',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box of the face.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Confidence level that the selected bounding box contains a face.',
+    }),
   })
   .openapi({
     description:
@@ -289,25 +904,15 @@ const LandmarkTypeSchema = z
 
 const LandmarkSchema = z
   .object({
-    Type: LandmarkTypeSchema.and(
-      z.any().openapi({ description: 'Type of landmark.' }),
-    ).exactOptional(),
-    X: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The x-coordinate of the landmark expressed as a ratio of the width of the image. The x-coordinate is measured from the left-side of the image. For example, if the image is 700 pixels wide and the x-coordinate of the landmark is at 350 pixels, this value is 0.5. ',
-        }),
-    ).exactOptional(),
-    Y: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The y-coordinate of the landmark expressed as a ratio of the height of the image. The y-coordinate is measured from the top of the image. For example, if the image height is 200 pixels and the y-coordinate of the landmark is at 50 pixels, this value is 0.25.',
-        }),
-    ).exactOptional(),
+    Type: LandmarkTypeSchema.exactOptional().openapi({ description: 'Type of landmark.' }),
+    X: FloatSchema.exactOptional().openapi({
+      description:
+        'The x-coordinate of the landmark expressed as a ratio of the width of the image. The x-coordinate is measured from the left-side of the image. For example, if the image is 700 pixels wide and the x-coordinate of the landmark is at 350 pixels, this value is 0.5. ',
+    }),
+    Y: FloatSchema.exactOptional().openapi({
+      description:
+        'The y-coordinate of the landmark expressed as a ratio of the height of the image. The y-coordinate is measured from the top of the image. For example, if the image height is 200 pixels and the y-coordinate of the landmark is at 50 pixels, this value is 0.25.',
+    }),
   })
   .openapi({ description: 'Indicates the location of the landmark on the face.', required: [] })
   .openapi('Landmark')
@@ -318,15 +923,15 @@ const DegreeSchema = z.float32().min(-180).max(180).openapi('Degree')
 
 const PoseSchema = z
   .object({
-    Roll: DegreeSchema.and(
-      z.any().openapi({ description: 'Value representing the face rotation on the roll axis.' }),
-    ).exactOptional(),
-    Yaw: DegreeSchema.and(
-      z.any().openapi({ description: 'Value representing the face rotation on the yaw axis.' }),
-    ).exactOptional(),
-    Pitch: DegreeSchema.and(
-      z.any().openapi({ description: 'Value representing the face rotation on the pitch axis.' }),
-    ).exactOptional(),
+    Roll: DegreeSchema.exactOptional().openapi({
+      description: 'Value representing the face rotation on the roll axis.',
+    }),
+    Yaw: DegreeSchema.exactOptional().openapi({
+      description: 'Value representing the face rotation on the yaw axis.',
+    }),
+    Pitch: DegreeSchema.exactOptional().openapi({
+      description: 'Value representing the face rotation on the pitch axis.',
+    }),
   })
   .openapi({
     description: 'Indicates the pose of the face as determined by its pitch, roll, and yaw.',
@@ -336,22 +941,14 @@ const PoseSchema = z
 
 const ImageQualitySchema = z
   .object({
-    Brightness: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value representing brightness of the face. The service returns a value between 0 and 100 (inclusive). A higher value indicates a brighter face image.',
-        }),
-    ).exactOptional(),
-    Sharpness: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Value representing sharpness of the face. The service returns a value between 0 and 100 (inclusive). A higher value indicates a sharper face image.',
-        }),
-    ).exactOptional(),
+    Brightness: FloatSchema.exactOptional().openapi({
+      description:
+        'Value representing brightness of the face. The service returns a value between 0 and 100 (inclusive). A higher value indicates a brighter face image.',
+    }),
+    Sharpness: FloatSchema.exactOptional().openapi({
+      description:
+        'Value representing sharpness of the face. The service returns a value between 0 and 100 (inclusive). A higher value indicates a sharper face image.',
+    }),
   })
   .openapi({ description: 'Identifies face image brightness and sharpness. ', required: [] })
   .openapi('ImageQuality')
@@ -362,12 +959,10 @@ const EmotionNameSchema = z
 
 const EmotionSchema = z
   .object({
-    Type: EmotionNameSchema.and(
-      z.any().openapi({ description: 'Type of emotion detected.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Type: EmotionNameSchema.exactOptional().openapi({ description: 'Type of emotion detected.' }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -378,20 +973,14 @@ const EmotionSchema = z
 
 const EmotionsSchema = z.array(EmotionSchema).openapi('Emotions')
 
-const BooleanSchema = z.boolean().openapi('Boolean')
-
 const SmileSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean value that indicates whether the face is smiling or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the face is smiling or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -402,45 +991,29 @@ const SmileSchema = z
 
 const ComparedFaceSchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box of the face.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Level of confidence that what the bounding box contains is a face.',
-        }),
-    ).exactOptional(),
-    Landmarks: LandmarksSchema.and(
-      z.any().openapi({ description: 'An array of facial landmarks.' }),
-    ).exactOptional(),
-    Pose: PoseSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the pose of the face as determined by its pitch, roll, and yaw.',
-        }),
-    ).exactOptional(),
-    Quality: ImageQualitySchema.and(
-      z.any().openapi({ description: 'Identifies face image brightness and sharpness. ' }),
-    ).exactOptional(),
-    Emotions: EmotionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The emotions that appear to be expressed on the face, and the confidence level in the determination. Valid values include "Happy", "Sad", "Angry", "Confused", "Disgusted", "Surprised", "Calm", "Unknown", and "Fear". ',
-        }),
-    ).exactOptional(),
-    Smile: SmileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether or not the face is smiling, and the confidence level in the determination. ',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box of the face.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence that what the bounding box contains is a face.',
+    }),
+    Landmarks: LandmarksSchema.exactOptional().openapi({
+      description: 'An array of facial landmarks.',
+    }),
+    Pose: PoseSchema.exactOptional().openapi({
+      description: 'Indicates the pose of the face as determined by its pitch, roll, and yaw.',
+    }),
+    Quality: ImageQualitySchema.exactOptional().openapi({
+      description: 'Identifies face image brightness and sharpness. ',
+    }),
+    Emotions: EmotionsSchema.exactOptional().openapi({
+      description:
+        ' The emotions that appear to be expressed on the face, and the confidence level in the determination. Valid values include "Happy", "Sad", "Angry", "Confused", "Disgusted", "Surprised", "Calm", "Unknown", and "Fear". ',
+    }),
+    Smile: SmileSchema.exactOptional().openapi({
+      description:
+        ' Indicates whether or not the face is smiling, and the confidence level in the determination. ',
+    }),
   })
   .openapi({
     description:
@@ -451,17 +1024,13 @@ const ComparedFaceSchema = z
 
 const CompareFacesMatchSchema = z
   .object({
-    Similarity: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence that the faces match.' }),
-    ).exactOptional(),
-    Face: ComparedFaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides face metadata (bounding box and confidence that the bounding box actually contains a face).',
-        }),
-    ).exactOptional(),
+    Similarity: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence that the faces match.',
+    }),
+    Face: ComparedFaceSchema.exactOptional().openapi({
+      description:
+        'Provides face metadata (bounding box and confidence that the bounding box actually contains a face).',
+    }),
   })
   .openapi({
     description:
@@ -482,43 +1051,25 @@ const OrientationCorrectionSchema = z
 
 const CompareFacesResponseSchema = z
   .object({
-    SourceImageFace: ComparedSourceImageFaceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The face in the source image that was used for comparison.' }),
-    ).exactOptional(),
-    FaceMatches: CompareFacesMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of faces in the target image that match the source image face. Each <code>CompareFacesMatch</code> object provides the bounding box, the confidence level that the bounding box contains a face, and the similarity score for the face in the bounding box and the face in the source image.',
-        }),
-    ).exactOptional(),
-    UnmatchedFaces: CompareFacesUnmatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of faces in the target image that did not match the source image face.',
-        }),
-    ).exactOptional(),
-    SourceImageOrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value of <code>SourceImageOrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
-        }),
-    ).exactOptional(),
-    TargetImageOrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value of <code>TargetImageOrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
-        }),
-    ).exactOptional(),
+    SourceImageFace: ComparedSourceImageFaceSchema.exactOptional().openapi({
+      description: 'The face in the source image that was used for comparison.',
+    }),
+    FaceMatches: CompareFacesMatchListSchema.exactOptional().openapi({
+      description:
+        'An array of faces in the target image that match the source image face. Each <code>CompareFacesMatch</code> object provides the bounding box, the confidence level that the bounding box contains a face, and the similarity score for the face in the bounding box and the face in the source image.',
+    }),
+    UnmatchedFaces: CompareFacesUnmatchListSchema.exactOptional().openapi({
+      description:
+        'An array of faces in the target image that did not match the source image face.',
+    }),
+    SourceImageOrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<p>The value of <code>SourceImageOrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
+    }),
+    TargetImageOrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<p>The value of <code>TargetImageOrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
+    }),
   })
   .openapi({
     example: {
@@ -552,53 +1103,15 @@ const CompareFacesResponseSchema = z
 
 const ImageBlobSchema = z.string().min(1).max(5242880).openapi('ImageBlob')
 
-const S3BucketSchema = z
-  .string()
-  .regex(/[0-9A-Za-z\.\-_]*/)
-  .min(3)
-  .max(255)
-  .openapi('S3Bucket')
-
-const S3ObjectNameSchema = z.string().min(1).max(1024).openapi('S3ObjectName')
-
-const S3ObjectVersionSchema = z.string().min(1).max(1024).openapi('S3ObjectVersion')
-
-const S3ObjectSchema = z
-  .object({
-    Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'Name of the S3 bucket.' }),
-    ).exactOptional(),
-    Name: S3ObjectNameSchema.and(
-      z.any().openapi({ description: 'S3 object key name.' }),
-    ).exactOptional(),
-    Version: S3ObjectVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the bucket is versioning enabled, you can specify the object version. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Provides the S3 bucket name and object name.</p> <p>The region for the S3 bucket containing the S3 object must match the region you use for Amazon Rekognition operations.</p> <p>For Amazon Rekognition to process an S3 object, the user must have permission to access the S3 object. For more information, see How Amazon Rekognition works with IAM in the Amazon Rekognition Developer Guide. </p>',
-    required: [],
-  })
-  .openapi('S3Object')
-
 const ImageSchema = z
   .object({
-    Bytes: ImageBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Blob of image bytes up to 5 MBs. Note that the maximum image size you can pass to <code>DetectCustomLabels</code> is 4MB. ',
-        }),
-    ).exactOptional(),
-    S3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'Identifies an S3 object as the image source.' }),
-    ).exactOptional(),
+    Bytes: ImageBlobSchema.exactOptional().openapi({
+      description:
+        'Blob of image bytes up to 5 MBs. Note that the maximum image size you can pass to <code>DetectCustomLabels</code> is 4MB. ',
+    }),
+    S3Object: S3ObjectSchema.exactOptional().openapi({
+      description: 'Identifies an S3 object as the image source.',
+    }),
   })
   .openapi({
     description:
@@ -613,38 +1126,22 @@ const QualityFilterSchema = z
 
 const CompareFacesRequestSchema = z
   .object({
-    SourceImage: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    TargetImage: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The target image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    SimilarityThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum level of confidence in the face matches that a match must meet to be included in the <code>FaceMatches</code> array.',
-        }),
-    ).exactOptional(),
-    QualityFilter: QualityFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't compared. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. The default value is <code>NONE</code>. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
-        }),
-    ).exactOptional(),
+    SourceImage: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    TargetImage: ImageSchema.openapi({
+      description:
+        '<p>The target image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    SimilarityThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        'The minimum level of confidence in the face matches that a match must meet to be included in the <code>FaceMatches</code> array.',
+    }),
+    QualityFilter: QualityFilterSchema.exactOptional().openapi({
+      description:
+        "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't compared. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. The default value is <code>NONE</code>. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
+    }),
   })
   .openapi({ required: ['SourceImage', 'TargetImage'], title: 'CompareFacesRequest' })
   .openapi('CompareFacesRequest')
@@ -655,24 +1152,11 @@ const ImageTooLargeExceptionSchema = z.any().openapi('ImageTooLargeException')
 
 const InvalidImageFormatExceptionSchema = z.any().openapi('InvalidImageFormatException')
 
-const ProjectVersionArnSchema = z
-  .string()
-  .regex(
-    /(^arn:[a-z\d-]+:rekognition:[a-z\d-]+:\d{12}:project\/[a-zA-Z0-9_.\-]{1,255}\/version\/[a-zA-Z0-9_.\-]{1,255}\/[0-9]+$)/,
-  )
-  .min(20)
-  .max(2048)
-  .openapi('ProjectVersionArn')
-
 const CopyProjectVersionResponseSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the copied model version in the destination project. ',
-        }),
-    ).exactOptional(),
+    ProjectVersionArn: ProjectVersionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the copied model version in the destination project. ',
+    }),
   })
   .openapi({
     example: {
@@ -697,23 +1181,6 @@ const VersionNameSchema = z
   .max(255)
   .openapi('VersionName')
 
-const S3KeyPrefixSchema = z.string().max(1024).openapi('S3KeyPrefix')
-
-const OutputConfigSchema = z
-  .object({
-    S3Bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The S3 bucket where training output is placed.' }),
-    ).exactOptional(),
-    S3KeyPrefix: S3KeyPrefixSchema.and(
-      z.any().openapi({ description: 'The prefix applied to the training output files. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The S3 bucket and folder location where training output is placed.',
-    required: [],
-  })
-  .openapi('OutputConfig')
-
 const TagValueSchema = z
   .string()
   .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
@@ -727,63 +1194,33 @@ const TagMapSchema = z
   .refine((val) => Object.keys(val).length <= 200)
   .openapi('TagMap')
 
-const KmsKeyIdSchema = z
-  .string()
-  .regex(/^[A-Za-z0-9][A-Za-z0-9:_\/+=,@.-]{0,2048}$/)
-  .min(1)
-  .max(2048)
-  .openapi('KmsKeyId')
-
 const CopyProjectVersionRequestSchema = z
   .object({
-    SourceProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the source project in the trusting AWS account.' }),
-    ),
-    SourceProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the model version in the source project that you want to copy to a destination project.',
-        }),
-    ),
-    DestinationProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the project in the trusted AWS account that you want to copy the model version to. ',
-        }),
-    ),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A name for the version of the model that's copied to the destination project.",
-        }),
-    ),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 bucket and folder location where the training output for the source model version is placed.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The key-value tags to assign to the model version. ' }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>",
-        }),
-    ).exactOptional(),
+    SourceProjectArn: ProjectArnSchema.openapi({
+      description: 'The ARN of the source project in the trusting AWS account.',
+    }),
+    SourceProjectVersionArn: ProjectVersionArnSchema.openapi({
+      description:
+        'The ARN of the model version in the source project that you want to copy to a destination project.',
+    }),
+    DestinationProjectArn: ProjectArnSchema.openapi({
+      description:
+        'The ARN of the project in the trusted AWS account that you want to copy the model version to. ',
+    }),
+    VersionName: VersionNameSchema.openapi({
+      description: "A name for the version of the model that's copied to the destination project.",
+    }),
+    OutputConfig: OutputConfigSchema.openapi({
+      description:
+        'The S3 bucket and folder location where the training output for the source model version is placed.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The key-value tags to assign to the model version. ',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>",
+    }),
   })
   .openapi({
     required: [
@@ -801,31 +1238,19 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
-const UIntegerSchema = z.int().min(0).openapi('UInteger')
-
-const StringSchema = z.string().openapi('String')
-
 const CreateCollectionResponseSchema = z
   .object({
-    StatusCode: UIntegerSchema.and(
-      z.any().openapi({ description: 'HTTP status code indicating the result of the operation.' }),
-    ).exactOptional(),
-    CollectionArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the collection. You can use this to manage permissions on your resources. ',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the collection you are creating.',
-        }),
-    ).exactOptional(),
+    StatusCode: UIntegerSchema.exactOptional().openapi({
+      description: 'HTTP status code indicating the result of the operation.',
+    }),
+    CollectionArn: StringSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the collection. You can use this to manage permissions on your resources. ',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the collection you are creating.',
+    }),
   })
   .openapi({
     example: {
@@ -838,17 +1263,12 @@ const CreateCollectionResponseSchema = z
 
 const CreateCollectionRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'ID for the collection that you are creating.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A set of tags (key-value pairs) that you want to attach to the collection. ',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'ID for the collection that you are creating.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: ' A set of tags (key-value pairs) that you want to attach to the collection. ',
+    }),
   })
   .openapi({ required: ['CollectionId'], title: 'CreateCollectionRequest' })
   .openapi('CreateCollectionRequest')
@@ -866,13 +1286,9 @@ const DatasetArnSchema = z
 
 const CreateDatasetResponseSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The ARN of the created Amazon Rekognition Custom Labels dataset. ',
-        }),
-    ).exactOptional(),
+    DatasetArn: DatasetArnSchema.exactOptional().openapi({
+      description: ' The ARN of the created Amazon Rekognition Custom Labels dataset. ',
+    }),
   })
   .openapi({
     example: {
@@ -883,26 +1299,13 @@ const CreateDatasetResponseSchema = z
   })
   .openapi('CreateDatasetResponse')
 
-const GroundTruthManifestSchema = z
-  .object({ S3Object: S3ObjectSchema.exactOptional() })
-  .openapi({
-    description:
-      'The S3 bucket that contains an Amazon Sagemaker Ground Truth format manifest file. ',
-    required: [],
-  })
-  .openapi('GroundTruthManifest')
-
 const DatasetSourceSchema = z
   .object({
     GroundTruthManifest: GroundTruthManifestSchema.exactOptional(),
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of an Amazon Rekognition Custom Labels dataset that you want to copy. ',
-        }),
-    ).exactOptional(),
+    DatasetArn: DatasetArnSchema.exactOptional().openapi({
+      description:
+        ' The ARN of an Amazon Rekognition Custom Labels dataset that you want to copy. ',
+    }),
   })
   .openapi({
     description:
@@ -915,30 +1318,18 @@ const DatasetTypeSchema = z.enum(['TRAIN', 'TEST']).openapi('DatasetType')
 
 const CreateDatasetRequestSchema = z
   .object({
-    DatasetSource: DatasetSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The source files for the dataset. You can specify the ARN of an existing dataset or specify the Amazon S3 bucket location of an Amazon Sagemaker format manifest file. If you don't specify <code>datasetSource</code>, an empty dataset is created. To add labeled images to the dataset, You can use the console or call <a>UpdateDatasetEntries</a>. ",
-        }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The type of the dataset. Specify <code>TRAIN</code> to create a training dataset. Specify <code>TEST</code> to create a test dataset. ',
-        }),
-    ),
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of the Amazon Rekognition Custom Labels project to which you want to asssign the dataset. ',
-        }),
-    ),
+    DatasetSource: DatasetSourceSchema.exactOptional().openapi({
+      description:
+        " The source files for the dataset. You can specify the ARN of an existing dataset or specify the Amazon S3 bucket location of an Amazon Sagemaker format manifest file. If you don't specify <code>datasetSource</code>, an empty dataset is created. To add labeled images to the dataset, You can use the console or call <a>UpdateDatasetEntries</a>. ",
+    }),
+    DatasetType: DatasetTypeSchema.openapi({
+      description:
+        ' The type of the dataset. Specify <code>TRAIN</code> to create a training dataset. Specify <code>TEST</code> to create a test dataset. ',
+    }),
+    ProjectArn: ProjectArnSchema.openapi({
+      description:
+        ' The ARN of the Amazon Rekognition Custom Labels project to which you want to asssign the dataset. ',
+    }),
   })
   .openapi({ required: ['DatasetType', 'ProjectArn'], title: 'CreateDatasetRequest' })
   .openapi('CreateDatasetRequest')
@@ -951,11 +1342,9 @@ const LivenessSessionIdSchema = z
 
 const CreateFaceLivenessSessionResponseSchema = z
   .object({
-    SessionId: LivenessSessionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique 128-bit UUID identifying a Face Liveness session.' }),
-    ),
+    SessionId: LivenessSessionIdSchema.openapi({
+      description: 'A unique 128-bit UUID identifying a Face Liveness session.',
+    }),
   })
   .openapi({ required: ['SessionId'] })
   .openapi('CreateFaceLivenessSessionResponse')
@@ -964,22 +1353,14 @@ const LivenessS3KeyPrefixSchema = z.string().regex(/\S*/).max(950).openapi('Live
 
 const LivenessOutputConfigSchema = z
   .object({
-    S3Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to an AWS Amazon S3 bucket used to store Face Liveness session results.',
-        }),
-    ),
-    S3KeyPrefix: LivenessS3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix prepended to the output files for the Face Liveness session results.',
-        }),
-    ).exactOptional(),
+    S3Bucket: S3BucketSchema.openapi({
+      description:
+        'The path to an AWS Amazon S3 bucket used to store Face Liveness session results.',
+    }),
+    S3KeyPrefix: LivenessS3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        'The prefix prepended to the output files for the Face Liveness session results.',
+    }),
   })
   .openapi({
     required: ['S3Bucket'],
@@ -992,22 +1373,14 @@ const AuditImagesLimitSchema = z.int().min(0).max(4).openapi('AuditImagesLimit')
 
 const CreateFaceLivenessSessionRequestSettingsSchema = z
   .object({
-    OutputConfig: LivenessOutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Can specify the location of an Amazon S3 bucket, where reference and audit images will be stored. Note that the Amazon S3 bucket must be located in the caller's AWS account and in the same region as the Face Liveness end-point. Additionally, the Amazon S3 object keys are auto-generated by the Face Liveness system. Requires that the caller has the <code>s3:PutObject</code> permission on the Amazon S3 bucket.",
-        }),
-    ).exactOptional(),
-    AuditImagesLimit: AuditImagesLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of audit images to be returned back. Takes an integer between 0-4. Any integer less than 0 will return 0, any integer above 4 will return 4 images in the response. By default, it is set to 0. The limit is best effort and is based on the actual duration of the selfie-video.',
-        }),
-    ).exactOptional(),
+    OutputConfig: LivenessOutputConfigSchema.exactOptional().openapi({
+      description:
+        "Can specify the location of an Amazon S3 bucket, where reference and audit images will be stored. Note that the Amazon S3 bucket must be located in the caller's AWS account and in the same region as the Face Liveness end-point. Additionally, the Amazon S3 object keys are auto-generated by the Face Liveness system. Requires that the caller has the <code>s3:PutObject</code> permission on the Amazon S3 bucket.",
+    }),
+    AuditImagesLimit: AuditImagesLimitSchema.exactOptional().openapi({
+      description:
+        'Number of audit images to be returned back. Takes an integer between 0-4. Any integer less than 0 will return 0, any integer above 4 will return 4 images in the response. By default, it is set to 0. The limit is best effort and is based on the actual duration of the selfie-video.',
+    }),
   })
   .openapi({
     description:
@@ -1018,44 +1391,28 @@ const CreateFaceLivenessSessionRequestSettingsSchema = z
 
 const CreateFaceLivenessSessionRequestSchema = z
   .object({
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier for your AWS Key Management Service key (AWS KMS key). Used to encrypt audit images and reference images.',
-        }),
-    ).exactOptional(),
-    Settings: CreateFaceLivenessSessionRequestSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A session settings object. It contains settings for the operation to be performed. For Face Liveness, it accepts <code>OutputConfig</code> and <code>AuditImagesLimit</code>.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token is used to recognize the Face Liveness request. If the same token is used with multiple <code>CreateFaceLivenessSession</code> requests, the same session is returned. This token is employed to avoid unintentionally creating the same session multiple times.',
-        }),
-    ).exactOptional(),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        ' The identifier for your AWS Key Management Service key (AWS KMS key). Used to encrypt audit images and reference images.',
+    }),
+    Settings: CreateFaceLivenessSessionRequestSettingsSchema.exactOptional().openapi({
+      description:
+        'A session settings object. It contains settings for the operation to be performed. For Face Liveness, it accepts <code>OutputConfig</code> and <code>AuditImagesLimit</code>.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token is used to recognize the Face Liveness request. If the same token is used with multiple <code>CreateFaceLivenessSession</code> requests, the same session is returned. This token is employed to avoid unintentionally creating the same session multiple times.',
+    }),
   })
   .openapi({ title: 'CreateFaceLivenessSessionRequest', required: [] })
   .openapi('CreateFaceLivenessSessionRequest')
 
 const CreateProjectResponseSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the new project. You can use the ARN to configure IAM access to the project. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the new project. You can use the ARN to configure IAM access to the project. ',
+    }),
   })
   .openapi({
     example: {
@@ -1074,23 +1431,17 @@ const ProjectNameSchema = z
 
 const CreateProjectRequestSchema = z
   .object({
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project to create.' }),
-    ),
+    ProjectName: ProjectNameSchema.openapi({ description: 'The name of the project to create.' }),
   })
   .openapi({ required: ['ProjectName'], title: 'CreateProjectRequest' })
   .openapi('CreateProjectRequest')
 
 const CreateProjectVersionResponseSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the model version that was created. Use <code>DescribeProjectVersion</code> to get the current status of the training operation.',
-        }),
-    ).exactOptional(),
+    ProjectVersionArn: ProjectVersionArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the model version that was created. Use <code>DescribeProjectVersion</code> to get the current status of the training operation.',
+    }),
   })
   .openapi({
     example: {
@@ -1101,108 +1452,34 @@ const CreateProjectVersionResponseSchema = z
   })
   .openapi('CreateProjectVersionResponse')
 
-const AssetSchema = z
-  .object({ GroundTruthManifest: GroundTruthManifestSchema.exactOptional() })
-  .openapi({
-    description:
-      'Assets are the images that you use to train and evaluate a model version. Assets can also contain validation information that you use to debug a failed model training. ',
-    required: [],
-  })
-  .openapi('Asset')
-
-const AssetsSchema = z.array(AssetSchema).openapi('Assets')
-
-const TrainingDataSchema = z
-  .object({
-    Assets: AssetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Sagemaker GroundTruth manifest file that contains the training images (assets).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The dataset used for training.', required: [] })
-  .openapi('TrainingData')
-
-const TestingDataSchema = z
-  .object({
-    Assets: AssetsSchema.and(
-      z.any().openapi({ description: 'The assets used for testing.' }),
-    ).exactOptional(),
-    AutoCreate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, Amazon Rekognition Custom Labels temporarily splits the training dataset (80%) to create a test dataset (20%) for the training job. After training completes, the test dataset is not stored and the training dataset reverts to its previous size.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The dataset used for testing. Optionally, if <code>AutoCreate</code> is set, Amazon Rekognition Custom Labels uses the training dataset to create a test dataset with a temporary split of the training dataset. ',
-    required: [],
-  })
-  .openapi('TestingData')
-
 const CreateProjectVersionRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon Rekognition Custom Labels project that manages the model that you want to train.',
-        }),
-    ),
-    VersionName: VersionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A name for the version of the model. This value must be unique.',
-        }),
-    ),
-    OutputConfig: OutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 bucket location to store the results of training. The S3 bucket can be in any AWS account as long as the caller has <code>s3:PutObject</code> permissions on the S3 bucket.',
-        }),
-    ),
-    TrainingData: TrainingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an external manifest that the services uses to train the model. If you specify <code>TrainingData</code> you must also specify <code>TestingData</code>. The project must not have any associated datasets. ',
-        }),
-    ).exactOptional(),
-    TestingData: TestingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an external manifest that the service uses to test the model. If you specify <code>TestingData</code> you must also specify <code>TrainingData</code>. The project must not have any associated datasets.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A set of tags (key-value pairs) that you want to attach to the model. ',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>",
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.openapi({
+      description:
+        'The ARN of the Amazon Rekognition Custom Labels project that manages the model that you want to train.',
+    }),
+    VersionName: VersionNameSchema.openapi({
+      description: 'A name for the version of the model. This value must be unique.',
+    }),
+    OutputConfig: OutputConfigSchema.openapi({
+      description:
+        'The Amazon S3 bucket location to store the results of training. The S3 bucket can be in any AWS account as long as the caller has <code>s3:PutObject</code> permissions on the S3 bucket.',
+    }),
+    TrainingData: TrainingDataSchema.exactOptional().openapi({
+      description:
+        'Specifies an external manifest that the services uses to train the model. If you specify <code>TrainingData</code> you must also specify <code>TestingData</code>. The project must not have any associated datasets. ',
+    }),
+    TestingData: TestingDataSchema.exactOptional().openapi({
+      description:
+        'Specifies an external manifest that the service uses to test the model. If you specify <code>TestingData</code> you must also specify <code>TrainingData</code>. The project must not have any associated datasets.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: ' A set of tags (key-value pairs) that you want to attach to the model. ',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        "<p>The identifier for your AWS Key Management Service key (AWS KMS key). You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt training and test images copied into the service for model training. Your source images are unaffected. The key is also used to encrypt training results and manifest files written to the output Amazon S3 bucket (<code>OutputConfig</code>).</p> <p>If you choose to use your own KMS key, you need the following permissions on the KMS key.</p> <ul> <li> <p>kms:CreateGrant</p> </li> <li> <p>kms:DescribeKey</p> </li> <li> <p>kms:GenerateDataKey</p> </li> <li> <p>kms:Decrypt</p> </li> </ul> <p>If you don't specify a value for <code>KmsKeyId</code>, images copied into the service are encrypted using a key that AWS owns and manages.</p>",
+    }),
   })
   .openapi({
     required: ['ProjectArn', 'VersionName', 'OutputConfig'],
@@ -1217,11 +1494,9 @@ const StreamProcessorArnSchema = z
 
 const CreateStreamProcessorResponseSchema = z
   .object({
-    StreamProcessorArn: StreamProcessorArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon Resource Number for the newly created stream processor.' }),
-    ).exactOptional(),
+    StreamProcessorArn: StreamProcessorArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Number for the newly created stream processor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamProcessorResponse')
@@ -1233,13 +1508,9 @@ const KinesisVideoArnSchema = z
 
 const KinesisVideoStreamSchema = z
   .object({
-    Arn: KinesisVideoArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ARN of the Kinesis video stream stream that streams the source video.',
-        }),
-    ).exactOptional(),
+    Arn: KinesisVideoArnSchema.exactOptional().openapi({
+      description: 'ARN of the Kinesis video stream stream that streams the source video.',
+    }),
   })
   .openapi({
     description:
@@ -1250,13 +1521,9 @@ const KinesisVideoStreamSchema = z
 
 const StreamProcessorInputSchema = z
   .object({
-    KinesisVideoStream: KinesisVideoStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Kinesis video stream input stream for the source streaming video.',
-        }),
-    ).exactOptional(),
+    KinesisVideoStream: KinesisVideoStreamSchema.exactOptional().openapi({
+      description: 'The Kinesis video stream input stream for the source streaming video.',
+    }),
   })
   .openapi({ description: 'Information about the source streaming video. ', required: [] })
   .openapi('StreamProcessorInput')
@@ -1268,9 +1535,9 @@ const KinesisDataArnSchema = z
 
 const KinesisDataStreamSchema = z
   .object({
-    Arn: KinesisDataArnSchema.and(
-      z.any().openapi({ description: 'ARN of the output Amazon Kinesis Data Streams stream.' }),
-    ).exactOptional(),
+    Arn: KinesisDataArnSchema.exactOptional().openapi({
+      description: 'ARN of the output Amazon Kinesis Data Streams stream.',
+    }),
   })
   .openapi({
     description:
@@ -1281,22 +1548,14 @@ const KinesisDataStreamSchema = z
 
 const S3DestinationSchema = z
   .object({
-    Bucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the Amazon S3 bucket you want to associate with the streaming video project. You must be the owner of the Amazon S3 bucket. ',
-        }),
-    ).exactOptional(),
-    KeyPrefix: S3KeyPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The prefix value of the location within the bucket that you want the information to be published to. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Using prefixes</a>. ',
-        }),
-    ).exactOptional(),
+    Bucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        ' The name of the Amazon S3 bucket you want to associate with the streaming video project. You must be the owner of the Amazon S3 bucket. ',
+    }),
+    KeyPrefix: S3KeyPrefixSchema.exactOptional().openapi({
+      description:
+        ' The prefix value of the location within the bucket that you want the information to be published to. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">Using prefixes</a>. ',
+    }),
   })
   .openapi({
     description:
@@ -1307,22 +1566,14 @@ const S3DestinationSchema = z
 
 const StreamProcessorOutputSchema = z
   .object({
-    KinesisDataStream: KinesisDataStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Kinesis Data Streams stream to which the Amazon Rekognition stream processor streams the analysis results.',
-        }),
-    ).exactOptional(),
-    S3Destination: S3DestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon S3 bucket location to which Amazon Rekognition publishes the detailed inference results of a video analysis operation. ',
-        }),
-    ).exactOptional(),
+    KinesisDataStream: KinesisDataStreamSchema.exactOptional().openapi({
+      description:
+        'The Amazon Kinesis Data Streams stream to which the Amazon Rekognition stream processor streams the analysis results.',
+    }),
+    S3Destination: S3DestinationSchema.exactOptional().openapi({
+      description:
+        ' The Amazon S3 bucket location to which Amazon Rekognition publishes the detailed inference results of a video analysis operation. ',
+    }),
   })
   .openapi({
     description:
@@ -1340,21 +1591,13 @@ const StreamProcessorNameSchema = z
 
 const FaceSearchSettingsSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of a collection that contains faces that you want to search for.',
-        }),
-    ).exactOptional(),
-    FaceMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Minimum face match confidence score that must be met to return a result for a recognized face. The default is 80. 0 is the lowest confidence. 100 is the highest confidence. Values between 0 and 100 are accepted, and values lower than 80 are set to 80.',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.exactOptional().openapi({
+      description: 'The ID of a collection that contains faces that you want to search for.',
+    }),
+    FaceMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        'Minimum face match confidence score that must be met to return a result for a recognized face. The default is 80. 0 is the lowest confidence. 100 is the highest confidence. Values between 0 and 100 are accepted, and values lower than 80 are set to 80.',
+    }),
   })
   .openapi({
     description:
@@ -1373,21 +1616,13 @@ const ConnectedHomeLabelsSchema = z
 
 const ConnectedHomeSettingsSchema = z
   .object({
-    Labels: ConnectedHomeLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies what you want to detect in the video, such as people, packages, or pets. The current valid labels you can include in this list are: "PERSON", "PET", "PACKAGE", and "ALL". ',
-        }),
-    ),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The minimum confidence required to label an object in the video. ',
-        }),
-    ).exactOptional(),
+    Labels: ConnectedHomeLabelsSchema.openapi({
+      description:
+        ' Specifies what you want to detect in the video, such as people, packages, or pets. The current valid labels you can include in this list are: "PERSON", "PET", "PACKAGE", and "ALL". ',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description: ' The minimum confidence required to label an object in the video. ',
+    }),
   })
   .openapi({
     required: ['Labels'],
@@ -1398,9 +1633,9 @@ const ConnectedHomeSettingsSchema = z
 
 const StreamProcessorSettingsSchema = z
   .object({
-    FaceSearch: FaceSearchSettingsSchema.and(
-      z.any().openapi({ description: 'Face search settings to use on a streaming video. ' }),
-    ).exactOptional(),
+    FaceSearch: FaceSearchSettingsSchema.exactOptional().openapi({
+      description: 'Face search settings to use on a streaming video. ',
+    }),
     ConnectedHome: ConnectedHomeSettingsSchema.exactOptional(),
   })
   .openapi({
@@ -1422,14 +1657,10 @@ const SNSTopicArnSchema = z
 
 const StreamProcessorNotificationChannelSchema = z
   .object({
-    SNSTopicArn: SNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Number (ARN) of the Amazon Amazon Simple Notification Service topic to which Amazon Rekognition posts the completion status. ',
-        }),
-    ),
+    SNSTopicArn: SNSTopicArnSchema.openapi({
+      description:
+        ' The Amazon Resource Number (ARN) of the Amazon Amazon Simple Notification Service topic to which Amazon Rekognition posts the completion status. ',
+    }),
   })
   .openapi({
     required: ['SNSTopicArn'],
@@ -1440,20 +1671,12 @@ const StreamProcessorNotificationChannelSchema = z
 
 const PointSchema = z
   .object({
-    X: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the X coordinate for a point on a <code>Polygon</code>.',
-        }),
-    ).exactOptional(),
-    Y: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value of the Y coordinate for a point on a <code>Polygon</code>.',
-        }),
-    ).exactOptional(),
+    X: FloatSchema.exactOptional().openapi({
+      description: 'The value of the X coordinate for a point on a <code>Polygon</code>.',
+    }),
+    Y: FloatSchema.exactOptional().openapi({
+      description: 'The value of the Y coordinate for a point on a <code>Polygon</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1466,17 +1689,13 @@ const PolygonSchema = z.array(PointSchema).openapi('Polygon')
 
 const RegionOfInterestSchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'The box representing a region of interest on screen.' }),
-    ).exactOptional(),
-    Polygon: PolygonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies a shape made up of up to 10 <code>Point</code> objects to define a region of interest. ',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'The box representing a region of interest on screen.',
+    }),
+    Polygon: PolygonSchema.exactOptional().openapi({
+      description:
+        ' Specifies a shape made up of up to 10 <code>Point</code> objects to define a region of interest. ',
+    }),
   })
   .openapi({
     description:
@@ -1493,14 +1712,10 @@ const RegionsOfInterestSchema = z
 
 const StreamProcessorDataSharingPreferenceSchema = z
   .object({
-    OptIn: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If this option is set to true, you choose to share data with Rekognition to improve model performance. ',
-        }),
-    ),
+    OptIn: BooleanSchema.openapi({
+      description:
+        ' If this option is set to true, you choose to share data with Rekognition to improve model performance. ',
+    }),
   })
   .openapi({
     required: ['OptIn'],
@@ -1511,79 +1726,43 @@ const StreamProcessorDataSharingPreferenceSchema = z
 
 const CreateStreamProcessorRequestSchema = z
   .object({
-    Input: StreamProcessorInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Kinesis video stream stream that provides the source streaming video. If you are using the AWS CLI, the parameter name is <code>StreamProcessorInput</code>. This is required for both face search and label detection stream processors.',
-        }),
-    ),
-    Output: StreamProcessorOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Kinesis data stream stream or Amazon S3 bucket location to which Amazon Rekognition Video puts the analysis results. If you are using the AWS CLI, the parameter name is <code>StreamProcessorOutput</code>. This must be a <a>S3Destination</a> of an Amazon S3 bucket that you own for a label detection stream processor or a Kinesis data stream ARN for a face search stream processor.',
-        }),
-    ),
-    Name: StreamProcessorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier you assign to the stream processor. You can use <code>Name</code> to manage the stream processor. For example, you can get the current status of the stream processor by calling <a>DescribeStreamProcessor</a>. <code>Name</code> is idempotent. This is required for both face search and label detection stream processors. ',
-        }),
-    ),
-    Settings: StreamProcessorSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Input parameters used in a streaming video analyzed by a stream processor. You can use <code>FaceSearch</code> to recognize faces in a streaming video, or you can use <code>ConnectedHome</code> to detect labels.',
-        }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Number (ARN) of the IAM role that allows access to the stream processor. The IAM role provides Rekognition read permissions for a Kinesis stream. It also provides write permissions to an Amazon S3 bucket and Amazon Simple Notification Service topic for a label detection stream processor. This is required for both face search and label detection stream processors.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A set of tags (key-value pairs) that you want to attach to the stream processor. ',
-        }),
-    ).exactOptional(),
+    Input: StreamProcessorInputSchema.openapi({
+      description:
+        'Kinesis video stream stream that provides the source streaming video. If you are using the AWS CLI, the parameter name is <code>StreamProcessorInput</code>. This is required for both face search and label detection stream processors.',
+    }),
+    Output: StreamProcessorOutputSchema.openapi({
+      description:
+        'Kinesis data stream stream or Amazon S3 bucket location to which Amazon Rekognition Video puts the analysis results. If you are using the AWS CLI, the parameter name is <code>StreamProcessorOutput</code>. This must be a <a>S3Destination</a> of an Amazon S3 bucket that you own for a label detection stream processor or a Kinesis data stream ARN for a face search stream processor.',
+    }),
+    Name: StreamProcessorNameSchema.openapi({
+      description:
+        'An identifier you assign to the stream processor. You can use <code>Name</code> to manage the stream processor. For example, you can get the current status of the stream processor by calling <a>DescribeStreamProcessor</a>. <code>Name</code> is idempotent. This is required for both face search and label detection stream processors. ',
+    }),
+    Settings: StreamProcessorSettingsSchema.openapi({
+      description:
+        'Input parameters used in a streaming video analyzed by a stream processor. You can use <code>FaceSearch</code> to recognize faces in a streaming video, or you can use <code>ConnectedHome</code> to detect labels.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Number (ARN) of the IAM role that allows access to the stream processor. The IAM role provides Rekognition read permissions for a Kinesis stream. It also provides write permissions to an Amazon S3 bucket and Amazon Simple Notification Service topic for a label detection stream processor. This is required for both face search and label detection stream processors.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        ' A set of tags (key-value pairs) that you want to attach to the stream processor. ',
+    }),
     NotificationChannel: StreamProcessorNotificationChannelSchema.exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The identifier for your AWS Key Management Service key (AWS KMS key). This is an optional parameter for label detection stream processors and should not be used to create a face search stream processor. You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt results and data published to your Amazon S3 bucket, which includes image frames and hero images. Your source images are unaffected. </p> <p> </p>',
-        }),
-    ).exactOptional(),
-    RegionsOfInterest: RegionsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. You can specify up to 10 regions of interest, and each region has either a polygon or a bounding box. This is an optional parameter for label detection stream processors and should not be used to create a face search stream processor. ',
-        }),
-    ).exactOptional(),
-    DataSharingPreference: StreamProcessorDataSharingPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
-        }),
-    ).exactOptional(),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        '<p> The identifier for your AWS Key Management Service key (AWS KMS key). This is an optional parameter for label detection stream processors and should not be used to create a face search stream processor. You can supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key, an alias for your KMS key, or an alias ARN. The key is used to encrypt results and data published to your Amazon S3 bucket, which includes image frames and hero images. Your source images are unaffected. </p> <p> </p>',
+    }),
+    RegionsOfInterest: RegionsOfInterestSchema.exactOptional().openapi({
+      description:
+        ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. You can specify up to 10 regions of interest, and each region has either a polygon or a bounding box. This is an optional parameter for label detection stream processors and should not be used to create a face search stream processor. ',
+    }),
+    DataSharingPreference: StreamProcessorDataSharingPreferenceSchema.exactOptional().openapi({
+      description:
+        ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
+    }),
   })
   .openapi({
     required: ['Input', 'Output', 'Name', 'Settings', 'RoleArn'],
@@ -1591,73 +1770,52 @@ const CreateStreamProcessorRequestSchema = z
   })
   .openapi('CreateStreamProcessorRequest')
 
-const CreateUserResponseSchema = z.object({}).openapi('CreateUserResponse')
+const CreateUserResponseSchema = z.looseObject({}).openapi('CreateUserResponse')
 
 const CreateUserRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an existing collection to which the new UserID needs to be created.',
-        }),
-    ),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ID for the UserID to be created. This ID needs to be unique within the collection.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the request to <code>CreateUser</code>. If you use the same token with multiple <code>CreateUser</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of an existing collection to which the new UserID needs to be created.',
+    }),
+    UserId: UserIdSchema.openapi({
+      description:
+        'ID for the UserID to be created. This ID needs to be unique within the collection.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the request to <code>CreateUser</code>. If you use the same token with multiple <code>CreateUser</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
+    }),
   })
   .openapi({ required: ['CollectionId', 'UserId'], title: 'CreateUserRequest' })
   .openapi('CreateUserRequest')
 
 const DeleteCollectionResponseSchema = z
   .object({
-    StatusCode: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'HTTP status code that indicates the result of the operation.' }),
-    ).exactOptional(),
+    StatusCode: UIntegerSchema.exactOptional().openapi({
+      description: 'HTTP status code that indicates the result of the operation.',
+    }),
   })
   .openapi({ example: { StatusCode: 200 }, required: [] })
   .openapi('DeleteCollectionResponse')
 
 const DeleteCollectionRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'ID of the collection to delete.' }),
-    ),
+    CollectionId: CollectionIdSchema.openapi({ description: 'ID of the collection to delete.' }),
   })
   .openapi({ required: ['CollectionId'], title: 'DeleteCollectionRequest' })
   .openapi('DeleteCollectionRequest')
 
 const DeleteDatasetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteDatasetResponse')
 
 const DeleteDatasetRequestSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ARN of the Amazon Rekognition Custom Labels dataset that you want to delete. ',
-        }),
-    ),
+    DatasetArn: DatasetArnSchema.openapi({
+      description:
+        ' The ARN of the Amazon Rekognition Custom Labels dataset that you want to delete. ',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
@@ -1674,17 +1832,15 @@ const UnsuccessfulFaceDeletionReasonsSchema = z
 
 const UnsuccessfulFaceDeletionSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: ' A unique identifier assigned to the face.' }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A provided ID for the UserID. Unique within the collection. ' }),
-    ).exactOptional(),
-    Reasons: UnsuccessfulFaceDeletionReasonsSchema.and(
-      z.any().openapi({ description: 'The reason why the deletion was unsuccessful. ' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: ' A unique identifier assigned to the face.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: ' A provided ID for the UserID. Unique within the collection. ',
+    }),
+    Reasons: UnsuccessfulFaceDeletionReasonsSchema.exactOptional().openapi({
+      description: 'The reason why the deletion was unsuccessful. ',
+    }),
   })
   .openapi({
     description:
@@ -1701,26 +1857,22 @@ const UnsuccessfulFaceDeletionsListSchema = z
 
 const DeleteFacesResponseSchema = z
   .object({
-    DeletedFaces: FaceIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of strings (face IDs) of the faces that were deleted.' }),
-    ).exactOptional(),
-    UnsuccessfulFaceDeletions: UnsuccessfulFaceDeletionsListSchema.and(
-      z.any().openapi({ description: "An array of any faces that weren't deleted." }),
-    ).exactOptional(),
+    DeletedFaces: FaceIdListSchema.exactOptional().openapi({
+      description: 'An array of strings (face IDs) of the faces that were deleted.',
+    }),
+    UnsuccessfulFaceDeletions: UnsuccessfulFaceDeletionsListSchema.exactOptional().openapi({
+      description: "An array of any faces that weren't deleted.",
+    }),
   })
   .openapi({ example: { DeletedFaces: ['ff43d742-0c13-5d16-a3e8-03d3f58e980b'] }, required: [] })
   .openapi('DeleteFacesResponse')
 
 const DeleteFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'Collection from which to remove the specific faces.' }),
-    ),
-    FaceIds: FaceIdListSchema.and(
-      z.any().openapi({ description: 'An array of face IDs to delete.' }),
-    ),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'Collection from which to remove the specific faces.',
+    }),
+    FaceIds: FaceIdListSchema.openapi({ description: 'An array of face IDs to delete.' }),
   })
   .openapi({ required: ['CollectionId', 'FaceIds'], title: 'DeleteFacesRequest' })
   .openapi('DeleteFacesRequest')
@@ -1729,28 +1881,24 @@ const ProjectStatusSchema = z.enum(['CREATING', 'CREATED', 'DELETING']).openapi(
 
 const DeleteProjectResponseSchema = z
   .object({
-    Status: ProjectStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the delete project operation.' }),
-    ).exactOptional(),
+    Status: ProjectStatusSchema.exactOptional().openapi({
+      description: 'The current status of the delete project operation.',
+    }),
   })
   .openapi({ example: { Status: 'DELETING' }, required: [] })
   .openapi('DeleteProjectResponse')
 
 const DeleteProjectRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the project that you want to delete.',
-        }),
-    ),
+    ProjectArn: ProjectArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the project that you want to delete.',
+    }),
   })
   .openapi({ required: ['ProjectArn'], title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DeleteProjectPolicyResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DeleteProjectPolicyResponse')
 
@@ -1769,151 +1917,98 @@ const ProjectPolicyRevisionIdSchema = z
 
 const DeleteProjectPolicyRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project that the project policy you want to delete is attached to.',
-        }),
-    ),
-    PolicyName: ProjectPolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy that you want to delete.' }),
-    ),
-    PolicyRevisionId: ProjectPolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the project policy revision that you want to delete.' }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project that the project policy you want to delete is attached to.',
+    }),
+    PolicyName: ProjectPolicyNameSchema.openapi({
+      description: 'The name of the policy that you want to delete.',
+    }),
+    PolicyRevisionId: ProjectPolicyRevisionIdSchema.exactOptional().openapi({
+      description: 'The ID of the project policy revision that you want to delete.',
+    }),
   })
   .openapi({ required: ['ProjectArn', 'PolicyName'], title: 'DeleteProjectPolicyRequest' })
   .openapi('DeleteProjectPolicyRequest')
 
 const InvalidPolicyRevisionIdExceptionSchema = z.any().openapi('InvalidPolicyRevisionIdException')
 
-const ProjectVersionStatusSchema = z
-  .enum([
-    'TRAINING_IN_PROGRESS',
-    'TRAINING_COMPLETED',
-    'TRAINING_FAILED',
-    'STARTING',
-    'RUNNING',
-    'FAILED',
-    'STOPPING',
-    'STOPPED',
-    'DELETING',
-    'COPYING_IN_PROGRESS',
-    'COPYING_COMPLETED',
-    'COPYING_FAILED',
-  ])
-  .openapi('ProjectVersionStatus')
-
 const DeleteProjectVersionResponseSchema = z
   .object({
-    Status: ProjectVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the deletion operation.' }),
-    ).exactOptional(),
+    Status: ProjectVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the deletion operation.',
+    }),
   })
   .openapi({ example: { Status: 'DELETING' }, required: [] })
   .openapi('DeleteProjectVersionResponse')
 
 const DeleteProjectVersionRequestSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the model version that you want to delete.',
-        }),
-    ),
+    ProjectVersionArn: ProjectVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the model version that you want to delete.',
+    }),
   })
   .openapi({ required: ['ProjectVersionArn'], title: 'DeleteProjectVersionRequest' })
   .openapi('DeleteProjectVersionRequest')
 
-const DeleteStreamProcessorResponseSchema = z.object({}).openapi('DeleteStreamProcessorResponse')
+const DeleteStreamProcessorResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteStreamProcessorResponse')
 
 const DeleteStreamProcessorRequestSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream processor you want to delete.' }),
-    ),
+    Name: StreamProcessorNameSchema.openapi({
+      description: 'The name of the stream processor you want to delete.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DeleteStreamProcessorRequest' })
   .openapi('DeleteStreamProcessorRequest')
 
-const DeleteUserResponseSchema = z.object({}).openapi('DeleteUserResponse')
+const DeleteUserResponseSchema = z.looseObject({}).openapi('DeleteUserResponse')
 
 const DeleteUserRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an existing collection from which the UserID needs to be deleted. ',
-        }),
-    ),
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'ID for the UserID to be deleted. ' })),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the request to <code>DeleteUser</code>. If you use the same token with multiple <code>DeleteUser </code>requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of an existing collection from which the UserID needs to be deleted. ',
+    }),
+    UserId: UserIdSchema.openapi({ description: 'ID for the UserID to be deleted. ' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the request to <code>DeleteUser</code>. If you use the same token with multiple <code>DeleteUser </code>requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
+    }),
   })
   .openapi({ required: ['CollectionId', 'UserId'], title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
-const ULongSchema = z.int().min(0).openapi('ULong')
-
-const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
-
 const DescribeCollectionResponseSchema = z
   .object({
-    FaceCount: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of faces that are indexed into the collection. To index faces into a collection, use <a>IndexFaces</a>.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The version of the face model that's used by the collection for face detection.</p> <p>For more information, see Model versioning in the Amazon Rekognition Developer Guide.</p>",
-        }),
-    ).exactOptional(),
-    CollectionARN: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the collection.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of milliseconds since the Unix epoch time until the creation of the collection. The Unix epoch time is 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970.',
-        }),
-    ).exactOptional(),
-    UserCount: ULongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of UserIDs assigned to the specified colleciton.' }),
-    ).exactOptional(),
+    FaceCount: ULongSchema.exactOptional().openapi({
+      description:
+        'The number of faces that are indexed into the collection. To index faces into a collection, use <a>IndexFaces</a>.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        "<p>The version of the face model that's used by the collection for face detection.</p> <p>For more information, see Model versioning in the Amazon Rekognition Developer Guide.</p>",
+    }),
+    CollectionARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the collection.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The number of milliseconds since the Unix epoch time until the creation of the collection. The Unix epoch time is 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970.',
+    }),
+    UserCount: ULongSchema.exactOptional().openapi({
+      description: 'The number of UserIDs assigned to the specified colleciton.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCollectionResponse')
 
 const DescribeCollectionRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the collection to describe.' }),
-    ),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of the collection to describe.',
+    }),
   })
   .openapi({ required: ['CollectionId'], title: 'DescribeCollectionRequest' })
   .openapi('DescribeCollectionRequest')
@@ -1930,30 +2025,24 @@ const DatasetStatusSchema = z
   ])
   .openapi('DatasetStatus')
 
-const StatusMessageSchema = z.string().openapi('StatusMessage')
-
 const DatasetStatusMessageCodeSchema = z
   .enum(['SUCCESS', 'SERVICE_ERROR', 'CLIENT_ERROR'])
   .openapi('DatasetStatusMessageCode')
 
 const DatasetStatsSchema = z
   .object({
-    LabeledEntries: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The total number of images in the dataset that have labels. ' }),
-    ).exactOptional(),
-    TotalEntries: UIntegerSchema.and(
-      z.any().openapi({ description: ' The total number of images in the dataset. ' }),
-    ).exactOptional(),
-    TotalLabels: UIntegerSchema.and(
-      z.any().openapi({ description: ' The total number of labels declared in the dataset. ' }),
-    ).exactOptional(),
-    ErrorEntries: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The total number of entries that contain at least one error. ' }),
-    ).exactOptional(),
+    LabeledEntries: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of images in the dataset that have labels. ',
+    }),
+    TotalEntries: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of images in the dataset. ',
+    }),
+    TotalLabels: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of labels declared in the dataset. ',
+    }),
+    ErrorEntries: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of entries that contain at least one error. ',
+    }),
   })
   .openapi({
     description:
@@ -1964,38 +2053,25 @@ const DatasetStatsSchema = z
 
 const DatasetDescriptionSchema = z
   .object({
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Unix timestamp for the time and date that the dataset was created. ',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Unix timestamp for the date and time that the dataset was last updated. ',
-        }),
-    ).exactOptional(),
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: ' The status of the dataset. ' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: ' The status message for the dataset. ' }),
-    ).exactOptional(),
-    StatusMessageCode: DatasetStatusMessageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. ',
-        }),
-    ).exactOptional(),
-    DatasetStats: DatasetStatsSchema.and(
-      z.any().openapi({ description: ' The status message code for the dataset. ' }),
-    ).exactOptional(),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: ' The Unix timestamp for the time and date that the dataset was created. ',
+    }),
+    LastUpdatedTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: ' The Unix timestamp for the date and time that the dataset was last updated. ',
+    }),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: ' The status of the dataset. ',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: ' The status message for the dataset. ',
+    }),
+    StatusMessageCode: DatasetStatusMessageCodeSchema.exactOptional().openapi({
+      description:
+        ' The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. ',
+    }),
+    DatasetStats: DatasetStatsSchema.exactOptional().openapi({
+      description: ' The status message code for the dataset. ',
+    }),
   })
   .openapi({
     description:
@@ -2006,9 +2082,9 @@ const DatasetDescriptionSchema = z
 
 const DescribeDatasetResponseSchema = z
   .object({
-    DatasetDescription: DatasetDescriptionSchema.and(
-      z.any().openapi({ description: ' The description for the dataset. ' }),
-    ).exactOptional(),
+    DatasetDescription: DatasetDescriptionSchema.exactOptional().openapi({
+      description: ' The description for the dataset. ',
+    }),
   })
   .openapi({
     example: {
@@ -2027,233 +2103,23 @@ const DescribeDatasetResponseSchema = z
 
 const DescribeDatasetRequestSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the dataset that you want to describe. ',
-        }),
-    ),
+    DatasetArn: DatasetArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) of the dataset that you want to describe. ',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
-const InferenceUnitsSchema = z.int().min(1).openapi('InferenceUnits')
-
-const ValidationDataSchema = z
+const DescribeProjectVersionsResponseSchema: z.ZodType<DescribeProjectVersionsResponseType> = z
   .object({
-    Assets: AssetsSchema.and(
-      z.any().openapi({ description: 'The assets that comprise the validation data. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains the Amazon S3 bucket location of the validation data for a model training job. </p> <p>The validation data includes error information for individual JSON Lines in the dataset. For more information, see <i>Debugging a Failed Model Training</i> in the Amazon Rekognition Custom Labels Developer Guide. </p> <p>You get the <code>ValidationData</code> object for the training dataset (<a>TrainingDataResult</a>) and the test dataset (<a>TestingDataResult</a>) by calling <a>DescribeProjectVersions</a>. </p> <p>The assets array contains a single <a>Asset</a> object. The <a>GroundTruthManifest</a> field of the Asset object contains the S3 bucket location of the validation data. </p>',
-    required: [],
-  })
-  .openapi('ValidationData')
-
-const TrainingDataResultSchema = z
-  .object({
-    Input: TrainingDataSchema.and(
-      z.any().openapi({ description: 'The training assets that you supplied for training.' }),
-    ).exactOptional(),
-    Output: TrainingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The images (assets) that were actually trained by Amazon Rekognition Custom Labels. ',
-        }),
-    ).exactOptional(),
-    Validation: ValidationDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data validation manifest. The data validation manifest is created for the training dataset during model training.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Sagemaker Groundtruth format manifest files for the input, output and validation datasets that are used and created during testing.',
-    required: [],
-  })
-  .openapi('TrainingDataResult')
-
-const TestingDataResultSchema = z
-  .object({
-    Input: TestingDataSchema.and(
-      z.any().openapi({ description: 'The testing dataset that was supplied for training.' }),
-    ).exactOptional(),
-    Output: TestingDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The subset of the dataset that was actually tested. Some images (assets) might not be tested due to file formatting and other issues. ',
-        }),
-    ).exactOptional(),
-    Validation: ValidationDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data validation manifest. The data validation manifest is created for the test dataset during model training.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Sagemaker Groundtruth format manifest files for the input, output and validation datasets that are used and created during testing.',
-    required: [],
-  })
-  .openapi('TestingDataResult')
-
-const SummarySchema = z
-  .object({ S3Object: S3ObjectSchema.exactOptional() })
-  .openapi({
-    description:
-      '<p>The S3 bucket that contains the training summary. The training summary includes aggregated evaluation metrics for the entire testing dataset and metrics for each individual label. </p> <p>You get the training summary S3 bucket location by calling <a>DescribeProjectVersions</a>. </p>',
-    required: [],
-  })
-  .openapi('Summary')
-
-const EvaluationResultSchema = z
-  .object({
-    F1Score: FloatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The F1 score for the evaluation of all labels. The F1 score metric evaluates the overall precision and recall performance of the model as a single value. A higher value indicates better precision and recall performance. A lower score indicates that precision, recall, or both are performing poorly. ',
-        }),
-    ).exactOptional(),
-    Summary: SummarySchema.and(
-      z.any().openapi({ description: 'The S3 bucket that contains the training summary.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The evaluation results for the training of a model.', required: [] })
-  .openapi('EvaluationResult')
-
-const ProjectVersionDescriptionSchema = z
-  .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the model version. ' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Unix datetime for the date and time that training started.' }),
-    ).exactOptional(),
-    MinInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of inference units used by the model. For more information, see <a>StartProjectVersion</a>.',
-        }),
-    ).exactOptional(),
-    Status: ProjectVersionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the model version.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A descriptive message for an error or warning that occurred.' }),
-    ).exactOptional(),
-    BillableTrainingTimeInSeconds: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The duration, in seconds, that you were billed for a successful training of the model version. This value is only returned if the model version has been successfully trained.',
-        }),
-    ).exactOptional(),
-    TrainingEndTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The Unix date and time that training of the model ended.' }),
-    ).exactOptional(),
-    OutputConfig: OutputConfigSchema.and(
-      z.any().openapi({ description: 'The location where training results are saved.' }),
-    ).exactOptional(),
-    TrainingDataResult: TrainingDataResultSchema.and(
-      z.any().openapi({ description: 'Contains information about the training results.' }),
-    ).exactOptional(),
-    TestingDataResult: TestingDataResultSchema.and(
-      z.any().openapi({ description: 'Contains information about the testing results.' }),
-    ).exactOptional(),
-    EvaluationResult: EvaluationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The training results. <code>EvaluationResult</code> is only returned if training is successful.',
-        }),
-    ).exactOptional(),
-    ManifestSummary: GroundTruthManifestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the summary manifest. The summary manifest provides aggregate data validation results for the training and test datasets.',
-        }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifer for the AWS Key Management Service key (AWS KMS key) that was used to encrypt the model during training. ',
-        }),
-    ).exactOptional(),
-    MaxInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of inference units Amazon Rekognition Custom Labels uses to auto-scale the model. For more information, see <a>StartProjectVersion</a>.',
-        }),
-    ).exactOptional(),
-    SourceProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the model version was copied from a different project, <code>SourceProjectVersionArn</code> contains the ARN of the source model version. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A description of a version of an Amazon Rekognition Custom Labels model.',
-    required: [],
-  })
-  .openapi('ProjectVersionDescription')
-
-const ProjectVersionDescriptionsSchema = z
-  .array(ProjectVersionDescriptionSchema)
-  .openapi('ProjectVersionDescriptions')
-
-const ExtendedPaginationTokenSchema = z.string().max(1024).openapi('ExtendedPaginationToken')
-
-const DescribeProjectVersionsResponseSchema = z
-  .object({
-    ProjectVersionDescriptions: ProjectVersionDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of model descriptions. The list is sorted by the creation date and time of the model versions, latest to earliest.',
-        }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    ProjectVersionDescriptions: ProjectVersionDescriptionsSchema.exactOptional().openapi({
+      description:
+        'A list of model descriptions. The list is sorted by the creation date and time of the model versions, latest to earliest.',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
   })
   .openapi({
     example: {
@@ -2354,38 +2220,22 @@ const ProjectVersionsPageSizeSchema = z.int().min(1).max(100).openapi('ProjectVe
 
 const DescribeProjectVersionsRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project that contains the models you want to describe.',
-        }),
-    ),
-    VersionNames: VersionNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of model version names that you want to describe. You can add up to 10 model version names to the list. If you don't specify a value, all model descriptions are returned. A version name is part of a model (ProjectVersion) ARN. For example, <code>my-model.2020-01-21T09.10.15</code> is the version name in the following ARN. <code>arn:aws:rekognition:us-east-1:123456789012:project/getting-started/version/<i>my-model.2020-01-21T09.10.15</i>/1234567890123</code>.",
-        }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ProjectVersionsPageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project that contains the models you want to describe.',
+    }),
+    VersionNames: VersionNamesSchema.exactOptional().openapi({
+      description:
+        "A list of model version names that you want to describe. You can add up to 10 model version names to the list. If you don't specify a value, all model descriptions are returned. A version name is part of a model (ProjectVersion) ARN. For example, <code>my-model.2020-01-21T09.10.15</code> is the version name in the following ARN. <code>arn:aws:rekognition:us-east-1:123456789012:project/getting-started/version/<i>my-model.2020-01-21T09.10.15</i>/1234567890123</code>.",
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
+    MaxResults: ProjectVersionsPageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
+    }),
   })
   .openapi({ required: ['ProjectArn'], title: 'DescribeProjectVersionsRequest' })
   .openapi('DescribeProjectVersionsRequest')
@@ -2394,33 +2244,25 @@ const InvalidPaginationTokenExceptionSchema = z.any().openapi('InvalidPagination
 
 const DatasetMetadataSchema = z
   .object({
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Unix timestamp for the date and time that the dataset was created. ',
-        }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: ' The type of the dataset. ' }),
-    ).exactOptional(),
-    DatasetArn: DatasetArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Name (ARN) for the dataset. ' }),
-    ).exactOptional(),
-    Status: DatasetStatusSchema.and(
-      z.any().openapi({ description: ' The status for the dataset. ' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: ' The status message for the dataset. ' }),
-    ).exactOptional(),
-    StatusMessageCode: DatasetStatusMessageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. ',
-        }),
-    ).exactOptional(),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: ' The Unix timestamp for the date and time that the dataset was created. ',
+    }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({
+      description: ' The type of the dataset. ',
+    }),
+    DatasetArn: DatasetArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Name (ARN) for the dataset. ',
+    }),
+    Status: DatasetStatusSchema.exactOptional().openapi({
+      description: ' The status for the dataset. ',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: ' The status message for the dataset. ',
+    }),
+    StatusMessageCode: DatasetStatusMessageCodeSchema.exactOptional().openapi({
+      description:
+        ' The status message code for the dataset operation. If a service error occurs, try the API call again later. If a client error occurs, check the input parameters to the dataset API call that failed. ',
+    }),
   })
   .openapi({
     description:
@@ -2433,26 +2275,18 @@ const DatasetMetadataListSchema = z.array(DatasetMetadataSchema).openapi('Datase
 
 const ProjectDescriptionSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix timestamp for the date and time that the project was created.',
-        }),
-    ).exactOptional(),
-    Status: ProjectStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the project.' }),
-    ).exactOptional(),
-    Datasets: DatasetMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Information about the training and test datasets in the project. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix timestamp for the date and time that the project was created.',
+    }),
+    Status: ProjectStatusSchema.exactOptional().openapi({
+      description: 'The current status of the project.',
+    }),
+    Datasets: DatasetMetadataListSchema.exactOptional().openapi({
+      description: ' Information about the training and test datasets in the project. ',
+    }),
   })
   .openapi({
     description:
@@ -2465,22 +2299,14 @@ const ProjectDescriptionsSchema = z.array(ProjectDescriptionSchema).openapi('Pro
 
 const DescribeProjectsResponseSchema = z
   .object({
-    ProjectDescriptions: ProjectDescriptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of project descriptions. The list is sorted by the date and time the projects are created.',
-        }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    ProjectDescriptions: ProjectDescriptionsSchema.exactOptional().openapi({
+      description:
+        'A list of project descriptions. The list is sorted by the date and time the projects are created.',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
   })
   .openapi({
     example: {
@@ -2522,30 +2348,18 @@ const ProjectNamesSchema = z.array(ProjectNameSchema).min(1).max(10).openapi('Pr
 
 const DescribeProjectsRequestSchema = z
   .object({
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ProjectsPageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
-        }),
-    ).exactOptional(),
-    ProjectNames: ProjectNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of the projects that you want Amazon Rekognition Custom Labels to describe. If you don't specify a value, the response includes descriptions for all the projects in your AWS account.",
-        }),
-    ).exactOptional(),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
+    MaxResults: ProjectsPageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
+    }),
+    ProjectNames: ProjectNamesSchema.exactOptional().openapi({
+      description:
+        "A list of the projects that you want Amazon Rekognition Custom Labels to describe. If you don't specify a value, the response includes descriptions for all the projects in your AWS account.",
+    }),
   })
   .openapi({ title: 'DescribeProjectsRequest', required: [] })
   .openapi('DescribeProjectsRequest')
@@ -2556,114 +2370,74 @@ const StreamProcessorStatusSchema = z
 
 const DescribeStreamProcessorResponseSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z.any().openapi({ description: 'Name of the stream processor. ' }),
-    ).exactOptional(),
-    StreamProcessorArn: StreamProcessorArnSchema.and(
-      z.any().openapi({ description: 'ARN of the stream processor.' }),
-    ).exactOptional(),
-    Status: StreamProcessorStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the stream processor.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'Detailed status message about the stream processor.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time the stream processor was created' }),
-    ).exactOptional(),
-    LastUpdateTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in Unix format, the stream processor was last updated. For example, when the stream processor moves from a running state to a failed state, or when the user starts or stops the stream processor.',
-        }),
-    ).exactOptional(),
-    Input: StreamProcessorInputSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Kinesis video stream that provides the source streaming video.' }),
-    ).exactOptional(),
-    Output: StreamProcessorOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Kinesis data stream to which Amazon Rekognition Video puts the analysis results.',
-        }),
-    ).exactOptional(),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ARN of the IAM role that allows access to the stream processor.',
-        }),
-    ).exactOptional(),
-    Settings: StreamProcessorSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Input parameters used in a streaming video analyzed by a stream processor. You can use <code>FaceSearch</code> to recognize faces in a streaming video, or you can use <code>ConnectedHome</code> to detect labels.',
-        }),
-    ).exactOptional(),
+    Name: StreamProcessorNameSchema.exactOptional().openapi({
+      description: 'Name of the stream processor. ',
+    }),
+    StreamProcessorArn: StreamProcessorArnSchema.exactOptional().openapi({
+      description: 'ARN of the stream processor.',
+    }),
+    Status: StreamProcessorStatusSchema.exactOptional().openapi({
+      description: 'Current status of the stream processor.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'Detailed status message about the stream processor.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time the stream processor was created',
+    }),
+    LastUpdateTimestamp: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The time, in Unix format, the stream processor was last updated. For example, when the stream processor moves from a running state to a failed state, or when the user starts or stops the stream processor.',
+    }),
+    Input: StreamProcessorInputSchema.exactOptional().openapi({
+      description: 'Kinesis video stream that provides the source streaming video.',
+    }),
+    Output: StreamProcessorOutputSchema.exactOptional().openapi({
+      description:
+        'Kinesis data stream to which Amazon Rekognition Video puts the analysis results.',
+    }),
+    RoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'ARN of the IAM role that allows access to the stream processor.',
+    }),
+    Settings: StreamProcessorSettingsSchema.exactOptional().openapi({
+      description:
+        'Input parameters used in a streaming video analyzed by a stream processor. You can use <code>FaceSearch</code> to recognize faces in a streaming video, or you can use <code>ConnectedHome</code> to detect labels.',
+    }),
     NotificationChannel: StreamProcessorNotificationChannelSchema.exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The identifier for your AWS Key Management Service key (AWS KMS key). This is an optional parameter for label detection stream processors. ',
-        }),
-    ).exactOptional(),
-    RegionsOfInterest: RegionsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. This is an optional parameter for label detection stream processors. ',
-        }),
-    ).exactOptional(),
-    DataSharingPreference: StreamProcessorDataSharingPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
-        }),
-    ).exactOptional(),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        ' The identifier for your AWS Key Management Service key (AWS KMS key). This is an optional parameter for label detection stream processors. ',
+    }),
+    RegionsOfInterest: RegionsOfInterestSchema.exactOptional().openapi({
+      description:
+        ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. This is an optional parameter for label detection stream processors. ',
+    }),
+    DataSharingPreference: StreamProcessorDataSharingPreferenceSchema.exactOptional().openapi({
+      description:
+        ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStreamProcessorResponse')
 
 const DescribeStreamProcessorRequestSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Name of the stream processor for which you want information.' }),
-    ),
+    Name: StreamProcessorNameSchema.openapi({
+      description: 'Name of the stream processor for which you want information.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'DescribeStreamProcessorRequest' })
   .openapi('DescribeStreamProcessorRequest')
 
 const GeometrySchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An axis-aligned coarse representation of the detected item's location on the image.",
-        }),
-    ).exactOptional(),
-    Polygon: PolygonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Within the bounding box, a fine-grained polygon around the detected item.',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        "An axis-aligned coarse representation of the detected item's location on the image.",
+    }),
+    Polygon: PolygonSchema.exactOptional().openapi({
+      description: 'Within the bounding box, a fine-grained polygon around the detected item.',
+    }),
   })
   .openapi({
     description:
@@ -2674,25 +2448,15 @@ const GeometrySchema = z
 
 const CustomLabelSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the custom label.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that the model has in the detection of the custom label. The range is 0-100. A higher value indicates a higher confidence.',
-        }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the detected object on the image that corresponds to the custom label. Includes an axis aligned coarse bounding box surrounding the object and a finer grain polygon for more accurate spatial information.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the custom label.' }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that the model has in the detection of the custom label. The range is 0-100. A higher value indicates a higher confidence.',
+    }),
+    Geometry: GeometrySchema.exactOptional().openapi({
+      description:
+        'The location of the detected object on the image that corresponds to the custom label. Includes an axis aligned coarse bounding box surrounding the object and a finer grain polygon for more accurate spatial information.',
+    }),
   })
   .openapi({
     description: 'A custom label detected in an image by a call to <a>DetectCustomLabels</a>.',
@@ -2704,9 +2468,9 @@ const CustomLabelsSchema = z.array(CustomLabelSchema).openapi('CustomLabels')
 
 const DetectCustomLabelsResponseSchema = z
   .object({
-    CustomLabels: CustomLabelsSchema.and(
-      z.any().openapi({ description: 'An array of custom labels detected in the input image.' }),
-    ).exactOptional(),
+    CustomLabels: CustomLabelsSchema.exactOptional().openapi({
+      description: 'An array of custom labels detected in the input image.',
+    }),
   })
   .openapi({
     example: {
@@ -2721,26 +2485,18 @@ const DetectCustomLabelsResponseSchema = z
 
 const DetectCustomLabelsRequestSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the model version that you want to use.' }),
-    ),
+    ProjectVersionArn: ProjectVersionArnSchema.openapi({
+      description: 'The ARN of the model version that you want to use.',
+    }),
     Image: ImageSchema,
-    MaxResults: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results you want the service to return in the response. The service returns the specified number of highest confidence labels ranked from highest confidence to lowest.',
-        }),
-    ).exactOptional(),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the minimum confidence level for the labels to return. <code>DetectCustomLabels</code> doesn't return any labels with a confidence value that's lower than this specified value. If you specify a value of 0, <code>DetectCustomLabels</code> returns all labels, regardless of the assumed threshold applied to each label. If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.",
-        }),
-    ).exactOptional(),
+    MaxResults: UIntegerSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results you want the service to return in the response. The service returns the specified number of highest confidence labels ranked from highest confidence to lowest.',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        "Specifies the minimum confidence level for the labels to return. <code>DetectCustomLabels</code> doesn't return any labels with a confidence value that's lower than this specified value. If you specify a value of 0, <code>DetectCustomLabels</code> returns all labels, regardless of the assumed threshold applied to each label. If you don't specify a value for <code>MinConfidence</code>, <code>DetectCustomLabels</code> returns labels based on the assumed threshold of each label.",
+    }),
   })
   .openapi({ required: ['ProjectVersionArn', 'Image'], title: 'DetectCustomLabelsRequest' })
   .openapi('DetectCustomLabelsRequest')
@@ -2749,12 +2505,8 @@ const ResourceNotReadyExceptionSchema = z.any().openapi('ResourceNotReadyExcepti
 
 const AgeRangeSchema = z
   .object({
-    Low: UIntegerSchema.and(
-      z.any().openapi({ description: 'The lowest estimated age.' }),
-    ).exactOptional(),
-    High: UIntegerSchema.and(
-      z.any().openapi({ description: 'The highest estimated age.' }),
-    ).exactOptional(),
+    Low: UIntegerSchema.exactOptional().openapi({ description: 'The lowest estimated age.' }),
+    High: UIntegerSchema.exactOptional().openapi({ description: 'The highest estimated age.' }),
   })
   .openapi({
     description:
@@ -2765,17 +2517,12 @@ const AgeRangeSchema = z
 
 const EyeglassesSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean value that indicates whether the face is wearing eye glasses or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the face is wearing eye glasses or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2786,17 +2533,12 @@ const EyeglassesSchema = z
 
 const SunglassesSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean value that indicates whether the face is wearing sunglasses or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the face is wearing sunglasses or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2809,12 +2551,12 @@ const GenderTypeSchema = z.enum(['Male', 'Female']).openapi('GenderType')
 
 const GenderSchema = z
   .object({
-    Value: GenderTypeSchema.and(
-      z.any().openapi({ description: 'The predicted gender of the face.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the prediction.' }),
-    ).exactOptional(),
+    Value: GenderTypeSchema.exactOptional().openapi({
+      description: 'The predicted gender of the face.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the prediction.',
+    }),
   })
   .openapi({
     description:
@@ -2825,16 +2567,12 @@ const GenderSchema = z
 
 const BeardSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean value that indicates whether the face has beard or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the face has beard or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2845,16 +2583,12 @@ const BeardSchema = z
 
 const MustacheSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean value that indicates whether the face has mustache or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the face has mustache or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2865,16 +2599,12 @@ const MustacheSchema = z
 
 const EyeOpenSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean value that indicates whether the eyes on the face are open.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the eyes on the face are open.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2885,16 +2615,12 @@ const EyeOpenSchema = z
 
 const MouthOpenSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean value that indicates whether the mouth on the face is open or not.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence in the determination.' }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean value that indicates whether the mouth on the face is open or not.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'Level of confidence in the determination.',
+    }),
   })
   .openapi({
     description:
@@ -2905,22 +2631,13 @@ const MouthOpenSchema = z
 
 const FaceOccludedSchema = z
   .object({
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if a detected face’s eyes, nose, and mouth are partially captured or if they are covered by masks, dark sunglasses, cell phones, hands, or other objects. False if common occurrences that do not impact face verification are detected, such as eye glasses, lightly tinted sunglasses, strands of hair, and others.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that the service has detected the presence of a face occlusion.',
-        }),
-    ).exactOptional(),
+    Value: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if a detected face’s eyes, nose, and mouth are partially captured or if they are covered by masks, dark sunglasses, cell phones, hands, or other objects. False if common occurrences that do not impact face verification are detected, such as eye glasses, lightly tinted sunglasses, strands of hair, and others.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence that the service has detected the presence of a face occlusion.',
+    }),
   })
   .openapi({
     description:
@@ -2931,19 +2648,15 @@ const FaceOccludedSchema = z
 
 const EyeDirectionSchema = z
   .object({
-    Yaw: DegreeSchema.and(
-      z.any().openapi({ description: 'Value representing eye direction on the yaw axis.' }),
-    ).exactOptional(),
-    Pitch: DegreeSchema.and(
-      z.any().openapi({ description: 'Value representing eye direction on the pitch axis.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The confidence that the service has in its predicted eye direction.',
-        }),
-    ).exactOptional(),
+    Yaw: DegreeSchema.exactOptional().openapi({
+      description: 'Value representing eye direction on the yaw axis.',
+    }),
+    Pitch: DegreeSchema.exactOptional().openapi({
+      description: 'Value representing eye direction on the pitch axis.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description: 'The confidence that the service has in its predicted eye direction.',
+    }),
   })
   .openapi({
     description:
@@ -2954,128 +2667,69 @@ const EyeDirectionSchema = z
 
 const FaceDetailSchema = z
   .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box of the face. Default attribute.' }),
-    ).exactOptional(),
-    AgeRange: AgeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated age range, in years, for the face. Low represents the lowest estimated age and High represents the highest estimated age.',
-        }),
-    ).exactOptional(),
-    Smile: SmileSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the face is smiling, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    Eyeglasses: EyeglassesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the face is wearing eye glasses, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    Sunglasses: SunglassesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the face is wearing sunglasses, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    Gender: GenderSchema.and(
-      z.any().openapi({ description: 'The predicted gender of a detected face. ' }),
-    ).exactOptional(),
-    Beard: BeardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the face has a beard, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    Mustache: MustacheSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the face has a mustache, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    EyesOpen: EyeOpenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the eyes on the face are open, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    MouthOpen: MouthOpenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether or not the mouth on the face is open, and the confidence level in the determination.',
-        }),
-    ).exactOptional(),
-    Emotions: EmotionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The emotions that appear to be expressed on the face, and the confidence level in the determination. The API is only making a determination of the physical appearance of a person's face. It is not a determination of the person’s internal emotional state and should not be used in such a way. For example, a person pretending to have a sad face might not be sad emotionally.",
-        }),
-    ).exactOptional(),
-    Landmarks: LandmarksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the location of landmarks on the face. Default attribute.',
-        }),
-    ).exactOptional(),
-    Pose: PoseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the pose of the face as determined by its pitch, roll, and yaw. Default attribute.',
-        }),
-    ).exactOptional(),
-    Quality: ImageQualitySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Identifies image brightness and sharpness. Default attribute.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Confidence level that the bounding box contains a face (and not a different object such as a tree). Default attribute.',
-        }),
-    ).exactOptional(),
-    FaceOccluded: FaceOccludedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>FaceOccluded</code> should return "true" with a high confidence score if a detected face’s eyes, nose, and mouth are partially captured or if they are covered by masks, dark sunglasses, cell phones, hands, or other objects. <code>FaceOccluded</code> should return "false" with a high confidence score if common occurrences that do not impact face verification are detected, such as eye glasses, lightly tinted sunglasses, strands of hair, and others. ',
-        }),
-    ).exactOptional(),
-    EyeDirection: EyeDirectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the direction the eyes are gazing in, as defined by pitch and yaw.',
-        }),
-    ).exactOptional(),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box of the face. Default attribute.',
+    }),
+    AgeRange: AgeRangeSchema.exactOptional().openapi({
+      description:
+        'The estimated age range, in years, for the face. Low represents the lowest estimated age and High represents the highest estimated age.',
+    }),
+    Smile: SmileSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the face is smiling, and the confidence level in the determination.',
+    }),
+    Eyeglasses: EyeglassesSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the face is wearing eye glasses, and the confidence level in the determination.',
+    }),
+    Sunglasses: SunglassesSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the face is wearing sunglasses, and the confidence level in the determination.',
+    }),
+    Gender: GenderSchema.exactOptional().openapi({
+      description: 'The predicted gender of a detected face. ',
+    }),
+    Beard: BeardSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the face has a beard, and the confidence level in the determination.',
+    }),
+    Mustache: MustacheSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the face has a mustache, and the confidence level in the determination.',
+    }),
+    EyesOpen: EyeOpenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the eyes on the face are open, and the confidence level in the determination.',
+    }),
+    MouthOpen: MouthOpenSchema.exactOptional().openapi({
+      description:
+        'Indicates whether or not the mouth on the face is open, and the confidence level in the determination.',
+    }),
+    Emotions: EmotionsSchema.exactOptional().openapi({
+      description:
+        "The emotions that appear to be expressed on the face, and the confidence level in the determination. The API is only making a determination of the physical appearance of a person's face. It is not a determination of the person’s internal emotional state and should not be used in such a way. For example, a person pretending to have a sad face might not be sad emotionally.",
+    }),
+    Landmarks: LandmarksSchema.exactOptional().openapi({
+      description: 'Indicates the location of landmarks on the face. Default attribute.',
+    }),
+    Pose: PoseSchema.exactOptional().openapi({
+      description:
+        'Indicates the pose of the face as determined by its pitch, roll, and yaw. Default attribute.',
+    }),
+    Quality: ImageQualitySchema.exactOptional().openapi({
+      description: 'Identifies image brightness and sharpness. Default attribute.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'Confidence level that the bounding box contains a face (and not a different object such as a tree). Default attribute.',
+    }),
+    FaceOccluded: FaceOccludedSchema.exactOptional().openapi({
+      description:
+        ' <code>FaceOccluded</code> should return "true" with a high confidence score if a detected face’s eyes, nose, and mouth are partially captured or if they are covered by masks, dark sunglasses, cell phones, hands, or other objects. <code>FaceOccluded</code> should return "false" with a high confidence score if common occurrences that do not impact face verification are detected, such as eye glasses, lightly tinted sunglasses, strands of hair, and others. ',
+    }),
+    EyeDirection: EyeDirectionSchema.exactOptional().openapi({
+      description: 'Indicates the direction the eyes are gazing in, as defined by pitch and yaw.',
+    }),
   })
   .openapi({
     description:
@@ -3088,17 +2742,13 @@ const FaceDetailListSchema = z.array(FaceDetailSchema).openapi('FaceDetailList')
 
 const DetectFacesResponseSchema = z
   .object({
-    FaceDetails: FaceDetailListSchema.and(
-      z.any().openapi({ description: 'Details of each face found in the image. ' }),
-    ).exactOptional(),
-    OrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value of <code>OrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
-        }),
-    ).exactOptional(),
+    FaceDetails: FaceDetailListSchema.exactOptional().openapi({
+      description: 'Details of each face found in the image. ',
+    }),
+    OrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<p>The value of <code>OrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
+    }),
   })
   .openapi({
     example: {
@@ -3151,181 +2801,31 @@ const AttributesSchema = z.array(AttributeSchema).openapi('Attributes')
 
 const DetectFacesRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of facial attributes you want to be returned. A <code>DEFAULT</code> subset of facial attributes - <code>BoundingBox</code>, <code>Confidence</code>, <code>Pose</code>, <code>Quality</code>, and <code>Landmarks</code> - will always be returned. You can request for specific facial attributes (in addition to the default list) - by using [<code>"DEFAULT", "FACE_OCCLUDED"</code>] or just [<code>"FACE_OCCLUDED"</code>]. You can request for all facial attributes by using [<code>"ALL"]</code>. Requesting more attributes may increase response time.</p> <p>If you provide both, <code>["ALL", "DEFAULT"]</code>, the service uses a logical "AND" operator to determine which attributes to return (in this case, all attributes). </p> <p>Note that while the FaceOccluded and EyeDirection attributes are supported when using <code>DetectFaces</code>, they aren\'t supported when analyzing videos with <code>StartFaceDetection</code> and <code>GetFaceDetection</code>.</p>',
-        }),
-    ).exactOptional(),
+    Image: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of facial attributes you want to be returned. A <code>DEFAULT</code> subset of facial attributes - <code>BoundingBox</code>, <code>Confidence</code>, <code>Pose</code>, <code>Quality</code>, and <code>Landmarks</code> - will always be returned. You can request for specific facial attributes (in addition to the default list) - by using [<code>"DEFAULT", "FACE_OCCLUDED"</code>] or just [<code>"FACE_OCCLUDED"</code>]. You can request for all facial attributes by using [<code>"ALL"]</code>. Requesting more attributes may increase response time.</p> <p>If you provide both, <code>["ALL", "DEFAULT"]</code>, the service uses a logical "AND" operator to determine which attributes to return (in this case, all attributes). </p> <p>Note that while the FaceOccluded and EyeDirection attributes are supported when using <code>DetectFaces</code>, they aren\'t supported when analyzing videos with <code>StartFaceDetection</code> and <code>GetFaceDetection</code>.</p>',
+    }),
   })
   .openapi({ required: ['Image'], title: 'DetectFacesRequest' })
   .openapi('DetectFacesRequest')
-
-const DominantColorSchema = z
-  .object({
-    Red: UIntegerSchema.and(
-      z.any().openapi({ description: 'The Red RGB value for a dominant color.' }),
-    ).exactOptional(),
-    Blue: UIntegerSchema.and(
-      z.any().openapi({ description: 'The Blue RGB value for a dominant color.' }),
-    ).exactOptional(),
-    Green: UIntegerSchema.and(
-      z.any().openapi({ description: 'The Green RGB value for a dominant color.' }),
-    ).exactOptional(),
-    HexCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Hex code equivalent of the RGB values for a dominant color.',
-        }),
-    ).exactOptional(),
-    CSSColor: StringSchema.and(
-      z.any().openapi({ description: 'The CSS color name of a dominant color.' }),
-    ).exactOptional(),
-    SimplifiedColor: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'One of 12 simplified color names applied to a dominant color.' }),
-    ).exactOptional(),
-    PixelPercent: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percentage of image pixels that have a given dominant color.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A description of the dominant colors in an image.', required: [] })
-  .openapi('DominantColor')
-
-const DominantColorsSchema = z.array(DominantColorSchema).openapi('DominantColors')
-
-const InstanceSchema = z
-  .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'The position of the label instance on the image.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has in the accuracy of the bounding box.',
-        }),
-    ).exactOptional(),
-    DominantColors: DominantColorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The dominant colors found in an individual instance of a label.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An instance of a label returned by Amazon Rekognition Image (<a>DetectLabels</a>) or by Amazon Rekognition Video (<a>GetLabelDetection</a>).',
-    required: [],
-  })
-  .openapi('Instance')
-
-const InstancesSchema = z.array(InstanceSchema).openapi('Instances')
-
-const ParentSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parent label.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'A parent label for a label. A label can have 0, 1, or more parents. ',
-    required: [],
-  })
-  .openapi('Parent')
-
-const ParentsSchema = z.array(ParentSchema).openapi('Parents')
-
-const LabelAliasSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of an alias for a given label.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'A potential alias of for a given label.', required: [] })
-  .openapi('LabelAlias')
-
-const LabelAliasesSchema = z.array(LabelAliasSchema).openapi('LabelAliases')
-
-const LabelCategorySchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of a category that applies to a given label.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The category that applies to a given label.', required: [] })
-  .openapi('LabelCategory')
-
-const LabelCategoriesSchema = z.array(LabelCategorySchema).openapi('LabelCategories')
-
-const LabelSchema = z
-  .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name (label) of the object or scene.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z.any().openapi({ description: 'Level of confidence.' }),
-    ).exactOptional(),
-    Instances: InstancesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>Label</code> represents an object, <code>Instances</code> contains the bounding boxes for each instance of the detected object. Bounding boxes are returned for common object labels such as people, cars, furniture, apparel or pets.',
-        }),
-    ).exactOptional(),
-    Parents: ParentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The parent labels for a label. The response includes all ancestor labels.',
-        }),
-    ).exactOptional(),
-    Aliases: LabelAliasesSchema.and(
-      z.any().openapi({ description: 'A list of potential aliases for a given label.' }),
-    ).exactOptional(),
-    Categories: LabelCategoriesSchema.and(
-      z.any().openapi({ description: 'A list of the categories associated with a given label.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Structure containing details about the detected label, including the name, detected instances, parent labels, and level of confidence.</p> <p> </p>',
-    required: [],
-  })
-  .openapi('Label')
 
 const LabelsSchema = z.array(LabelSchema).openapi('Labels')
 
 const DetectLabelsImageQualitySchema = z
   .object({
-    Brightness: FloatSchema.and(
-      z.any().openapi({ description: 'The brightness of an image provided for label detection.' }),
-    ).exactOptional(),
-    Sharpness: FloatSchema.and(
-      z.any().openapi({ description: 'The sharpness of an image provided for label detection.' }),
-    ).exactOptional(),
-    Contrast: FloatSchema.and(
-      z.any().openapi({ description: 'The contrast of an image provided for label detection.' }),
-    ).exactOptional(),
+    Brightness: FloatSchema.exactOptional().openapi({
+      description: 'The brightness of an image provided for label detection.',
+    }),
+    Sharpness: FloatSchema.exactOptional().openapi({
+      description: 'The sharpness of an image provided for label detection.',
+    }),
+    Contrast: FloatSchema.exactOptional().openapi({
+      description: 'The contrast of an image provided for label detection.',
+    }),
   })
   .openapi({
     description:
@@ -3336,22 +2836,13 @@ const DetectLabelsImageQualitySchema = z
 
 const DetectLabelsImageForegroundSchema = z
   .object({
-    Quality: DetectLabelsImageQualitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quality of the image foreground as defined by brightness and sharpness.',
-        }),
-    ).exactOptional(),
-    DominantColors: DominantColorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dominant colors found in the foreground of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
-        }),
-    ).exactOptional(),
+    Quality: DetectLabelsImageQualitySchema.exactOptional().openapi({
+      description: 'The quality of the image foreground as defined by brightness and sharpness.',
+    }),
+    DominantColors: DominantColorsSchema.exactOptional().openapi({
+      description:
+        'The dominant colors found in the foreground of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
+    }),
   })
   .openapi({
     description: 'The foreground of the image with regard to image quality and dominant colors.',
@@ -3361,22 +2852,13 @@ const DetectLabelsImageForegroundSchema = z
 
 const DetectLabelsImageBackgroundSchema = z
   .object({
-    Quality: DetectLabelsImageQualitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quality of the image background as defined by brightness and sharpness.',
-        }),
-    ).exactOptional(),
-    DominantColors: DominantColorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dominant colors found in the background of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
-        }),
-    ).exactOptional(),
+    Quality: DetectLabelsImageQualitySchema.exactOptional().openapi({
+      description: 'The quality of the image background as defined by brightness and sharpness.',
+    }),
+    DominantColors: DominantColorsSchema.exactOptional().openapi({
+      description:
+        'The dominant colors found in the background of an image, defined with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
+    }),
   })
   .openapi({
     description: 'The background of the image with regard to image quality and dominant colors.',
@@ -3386,38 +2868,22 @@ const DetectLabelsImageBackgroundSchema = z
 
 const DetectLabelsImagePropertiesSchema = z
   .object({
-    Quality: DetectLabelsImageQualitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the quality of the image foreground as defined by brightness, sharpness, and contrast. The higher the value the greater the brightness, sharpness, and contrast respectively.',
-        }),
-    ).exactOptional(),
-    DominantColors: DominantColorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the dominant colors found in an image, described with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
-        }),
-    ).exactOptional(),
-    Foreground: DetectLabelsImageForegroundSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the properties of an image’s foreground, including the foreground’s quality and dominant colors, including the quality and dominant colors of the image.',
-        }),
-    ).exactOptional(),
-    Background: DetectLabelsImageBackgroundSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the properties of an image’s background, including the background’s quality and dominant colors, including the quality and dominant colors of the image.',
-        }),
-    ).exactOptional(),
+    Quality: DetectLabelsImageQualitySchema.exactOptional().openapi({
+      description:
+        'Information about the quality of the image foreground as defined by brightness, sharpness, and contrast. The higher the value the greater the brightness, sharpness, and contrast respectively.',
+    }),
+    DominantColors: DominantColorsSchema.exactOptional().openapi({
+      description:
+        'Information about the dominant colors found in an image, described with RGB values, CSS color name, simplified color name, and PixelPercentage (the percentage of image pixels that have a particular color).',
+    }),
+    Foreground: DetectLabelsImageForegroundSchema.exactOptional().openapi({
+      description:
+        'Information about the properties of an image’s foreground, including the foreground’s quality and dominant colors, including the quality and dominant colors of the image.',
+    }),
+    Background: DetectLabelsImageBackgroundSchema.exactOptional().openapi({
+      description:
+        'Information about the properties of an image’s background, including the background’s quality and dominant colors, including the quality and dominant colors of the image.',
+    }),
   })
   .openapi({
     description:
@@ -3428,33 +2894,20 @@ const DetectLabelsImagePropertiesSchema = z
 
 const DetectLabelsResponseSchema = z
   .object({
-    Labels: LabelsSchema.and(
-      z.any().openapi({ description: 'An array of labels for the real-world objects detected. ' }),
-    ).exactOptional(),
-    OrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The value of <code>OrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
-        }),
-    ).exactOptional(),
-    LabelModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the label detection model that was used to detect labels.',
-        }),
-    ).exactOptional(),
-    ImageProperties: DetectLabelsImagePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the properties of the input image, such as brightness, sharpness, contrast, and dominant colors.',
-        }),
-    ).exactOptional(),
+    Labels: LabelsSchema.exactOptional().openapi({
+      description: 'An array of labels for the real-world objects detected. ',
+    }),
+    OrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<p>The value of <code>OrientationCorrection</code> is always null.</p> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction. The bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata.</p> <p>Amazon Rekognition doesn’t perform image correction for images in .png format and .jpeg images without orientation information in the image Exif metadata. The bounding box coordinates aren't translated and represent the object locations before the image is rotated. </p>",
+    }),
+    LabelModelVersion: StringSchema.exactOptional().openapi({
+      description: 'Version number of the label detection model that was used to detect labels.',
+    }),
+    ImageProperties: DetectLabelsImagePropertiesSchema.exactOptional().openapi({
+      description:
+        'Information about the properties of the input image, such as brightness, sharpness, contrast, and dominant colors.',
+    }),
   })
   .openapi({
     example: {
@@ -3492,36 +2945,19 @@ const GeneralLabelsFilterListSchema = z
 
 const GeneralLabelsSettingsSchema = z
   .object({
-    LabelInclusionFilters: GeneralLabelsFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The labels that should be included in the return from DetectLabels.',
-        }),
-    ).exactOptional(),
-    LabelExclusionFilters: GeneralLabelsFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The labels that should be excluded from the return from DetectLabels.',
-        }),
-    ).exactOptional(),
-    LabelCategoryInclusionFilters: GeneralLabelsFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The label categories that should be included in the return from DetectLabels.',
-        }),
-    ).exactOptional(),
-    LabelCategoryExclusionFilters: GeneralLabelsFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The label categories that should be excluded from the return from DetectLabels.',
-        }),
-    ).exactOptional(),
+    LabelInclusionFilters: GeneralLabelsFilterListSchema.exactOptional().openapi({
+      description: 'The labels that should be included in the return from DetectLabels.',
+    }),
+    LabelExclusionFilters: GeneralLabelsFilterListSchema.exactOptional().openapi({
+      description: 'The labels that should be excluded from the return from DetectLabels.',
+    }),
+    LabelCategoryInclusionFilters: GeneralLabelsFilterListSchema.exactOptional().openapi({
+      description: 'The label categories that should be included in the return from DetectLabels.',
+    }),
+    LabelCategoryExclusionFilters: GeneralLabelsFilterListSchema.exactOptional().openapi({
+      description:
+        'The label categories that should be excluded from the return from DetectLabels.',
+    }),
   })
   .openapi({
     description:
@@ -3538,30 +2974,22 @@ const DetectLabelsMaxDominantColorsSchema = z
 
 const DetectLabelsImagePropertiesSettingsSchema = z
   .object({
-    MaxDominantColors: DetectLabelsMaxDominantColorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of dominant colors to return when detecting labels in an image. The default value is 10.',
-        }),
-    ).exactOptional(),
+    MaxDominantColors: DetectLabelsMaxDominantColorsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of dominant colors to return when detecting labels in an image. The default value is 10.',
+    }),
   })
   .openapi({ description: 'Settings for the IMAGE_PROPERTIES feature type.', required: [] })
   .openapi('DetectLabelsImagePropertiesSettings')
 
 const DetectLabelsSettingsSchema = z
   .object({
-    GeneralLabels: GeneralLabelsSettingsSchema.and(
-      z.any().openapi({ description: 'Contains the specified filters for GENERAL_LABELS.' }),
-    ).exactOptional(),
-    ImageProperties: DetectLabelsImagePropertiesSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the chosen number of maximum dominant colors in an image.',
-        }),
-    ).exactOptional(),
+    GeneralLabels: GeneralLabelsSettingsSchema.exactOptional().openapi({
+      description: 'Contains the specified filters for GENERAL_LABELS.',
+    }),
+    ImageProperties: DetectLabelsImagePropertiesSettingsSchema.exactOptional().openapi({
+      description: 'Contains the chosen number of maximum dominant colors in an image.',
+    }),
   })
   .openapi({
     description:
@@ -3572,75 +3000,43 @@ const DetectLabelsSettingsSchema = z
 
 const DetectLabelsRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. Images stored in an S3 Bucket do not need to be base64-encoded.</p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    MaxLabels: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of labels you want the service to return in the response. The service returns the specified number of highest confidence labels. Only valid when GENERAL_LABELS is specified as a feature type in the Feature input parameter.',
-        }),
-    ).exactOptional(),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the minimum confidence level for the labels to return. Amazon Rekognition doesn't return any labels with confidence lower than this specified value.</p> <p>If <code>MinConfidence</code> is not specified, the operation returns labels with a confidence values greater than or equal to 55 percent. Only valid when GENERAL_LABELS is specified as a feature type in the Feature input parameter.</p>",
-        }),
-    ).exactOptional(),
-    Features: DetectLabelsFeatureListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the types of analysis to perform. Specifying GENERAL_LABELS uses the label detection feature, while specifying IMAGE_PROPERTIES returns information regarding image color and quality. If no option is specified GENERAL_LABELS is used by default.',
-        }),
-    ).exactOptional(),
-    Settings: DetectLabelsSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the filters to be applied to returned detected labels and image properties. Specified filters can be inclusive, exclusive, or a combination of both. Filters can be used for individual labels or label categories. The exact label names or label categories must be supplied. For a full list of labels and label categories, see <a href="https://docs.aws.amazon.com/rekognition/latest/dg/labels.html">Detecting labels</a>.',
-        }),
-    ).exactOptional(),
+    Image: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing image bytes is not supported. Images stored in an S3 Bucket do not need to be base64-encoded.</p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    MaxLabels: UIntegerSchema.exactOptional().openapi({
+      description:
+        'Maximum number of labels you want the service to return in the response. The service returns the specified number of highest confidence labels. Only valid when GENERAL_LABELS is specified as a feature type in the Feature input parameter.',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the minimum confidence level for the labels to return. Amazon Rekognition doesn't return any labels with confidence lower than this specified value.</p> <p>If <code>MinConfidence</code> is not specified, the operation returns labels with a confidence values greater than or equal to 55 percent. Only valid when GENERAL_LABELS is specified as a feature type in the Feature input parameter.</p>",
+    }),
+    Features: DetectLabelsFeatureListSchema.exactOptional().openapi({
+      description:
+        'A list of the types of analysis to perform. Specifying GENERAL_LABELS uses the label detection feature, while specifying IMAGE_PROPERTIES returns information regarding image color and quality. If no option is specified GENERAL_LABELS is used by default.',
+    }),
+    Settings: DetectLabelsSettingsSchema.exactOptional().openapi({
+      description:
+        'A list of the filters to be applied to returned detected labels and image properties. Specified filters can be inclusive, exclusive, or a combination of both. Filters can be used for individual labels or label categories. The exact label names or label categories must be supplied. For a full list of labels and label categories, see <a href="https://docs.aws.amazon.com/rekognition/latest/dg/labels.html">Detecting labels</a>.',
+    }),
   })
   .openapi({ required: ['Image'], title: 'DetectLabelsRequest' })
   .openapi('DetectLabelsRequest')
 
 const ModerationLabelSchema = z
   .object({
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the confidence that Amazon Rekognition has that the label has been correctly identified.</p> <p>If you don't specify the <code>MinConfidence</code> parameter in the call to <code>DetectModerationLabels</code>, the operation returns labels with a confidence value greater than or equal to 50 percent.</p>",
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The label name for the type of unsafe content detected in the image.',
-        }),
-    ).exactOptional(),
-    ParentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the parent label. Labels at the top level of the hierarchy have the parent label <code>""</code>.',
-        }),
-    ).exactOptional(),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the confidence that Amazon Rekognition has that the label has been correctly identified.</p> <p>If you don't specify the <code>MinConfidence</code> parameter in the call to <code>DetectModerationLabels</code>, the operation returns labels with a confidence value greater than or equal to 50 percent.</p>",
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The label name for the type of unsafe content detected in the image.',
+    }),
+    ParentName: StringSchema.exactOptional().openapi({
+      description:
+        'The name for the parent label. Labels at the top level of the hierarchy have the parent label <code>""</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3667,21 +3063,17 @@ const HumanLoopActivationConditionsEvaluationResultsSchema = z
 
 const HumanLoopActivationOutputSchema = z
   .object({
-    HumanLoopArn: HumanLoopArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the HumanLoop created.' }),
-    ).exactOptional(),
-    HumanLoopActivationReasons: HumanLoopActivationReasonsSchema.and(
-      z.any().openapi({ description: 'Shows if and why human review was needed.' }),
-    ).exactOptional(),
+    HumanLoopArn: HumanLoopArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the HumanLoop created.',
+    }),
+    HumanLoopActivationReasons: HumanLoopActivationReasonsSchema.exactOptional().openapi({
+      description: 'Shows if and why human review was needed.',
+    }),
     HumanLoopActivationConditionsEvaluationResults:
-      HumanLoopActivationConditionsEvaluationResultsSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'Shows the result of condition evaluations, including those conditions which activated a human review.',
-          }),
-      ).exactOptional(),
+      HumanLoopActivationConditionsEvaluationResultsSchema.exactOptional().openapi({
+        description:
+          'Shows the result of condition evaluations, including those conditions which activated a human review.',
+      }),
   })
   .openapi({
     description:
@@ -3692,25 +3084,17 @@ const HumanLoopActivationOutputSchema = z
 
 const DetectModerationLabelsResponseSchema = z
   .object({
-    ModerationLabels: ModerationLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of detected Moderation labels and the time, in milliseconds from the start of the video, they were detected.',
-        }),
-    ).exactOptional(),
-    ModerationModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the moderation detection model that was used to detect unsafe content.',
-        }),
-    ).exactOptional(),
-    HumanLoopActivationOutput: HumanLoopActivationOutputSchema.and(
-      z.any().openapi({ description: 'Shows the results of the human in the loop evaluation.' }),
-    ).exactOptional(),
+    ModerationLabels: ModerationLabelsSchema.exactOptional().openapi({
+      description:
+        'Array of detected Moderation labels and the time, in milliseconds from the start of the video, they were detected.',
+    }),
+    ModerationModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the moderation detection model that was used to detect unsafe content.',
+    }),
+    HumanLoopActivationOutput: HumanLoopActivationOutputSchema.exactOptional().openapi({
+      description: 'Shows the results of the human in the loop evaluation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectModerationLabelsResponse')
@@ -3735,14 +3119,9 @@ const ContentClassifiersSchema = z
 
 const HumanLoopDataAttributesSchema = z
   .object({
-    ContentClassifiers: ContentClassifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets whether the input image is free of personally identifiable information.',
-        }),
-    ).exactOptional(),
+    ContentClassifiers: ContentClassifiersSchema.exactOptional().openapi({
+      description: 'Sets whether the input image is free of personally identifiable information.',
+    }),
   })
   .openapi({
     description:
@@ -3753,25 +3132,17 @@ const HumanLoopDataAttributesSchema = z
 
 const HumanLoopConfigSchema = z
   .object({
-    HumanLoopName: HumanLoopNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the human review used for this image. This should be kept unique within a region.',
-        }),
-    ),
-    FlowDefinitionArn: FlowDefinitionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the flow definition. You can create a flow definition by using the Amazon Sagemaker <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateFlowDefinition.html">CreateFlowDefinition</a> Operation. ',
-        }),
-    ),
-    DataAttributes: HumanLoopDataAttributesSchema.and(
-      z.any().openapi({ description: 'Sets attributes of the input data.' }),
-    ).exactOptional(),
+    HumanLoopName: HumanLoopNameSchema.openapi({
+      description:
+        'The name of the human review used for this image. This should be kept unique within a region.',
+    }),
+    FlowDefinitionArn: FlowDefinitionArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the flow definition. You can create a flow definition by using the Amazon Sagemaker <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateFlowDefinition.html">CreateFlowDefinition</a> Operation. ',
+    }),
+    DataAttributes: HumanLoopDataAttributesSchema.exactOptional().openapi({
+      description: 'Sets attributes of the input data.',
+    }),
   })
   .openapi({
     required: ['HumanLoopName', 'FlowDefinitionArn'],
@@ -3782,234 +3153,36 @@ const HumanLoopConfigSchema = z
 
 const DetectModerationLabelsRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the minimum confidence level for the labels to return. Amazon Rekognition doesn't return any labels with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the operation returns labels with confidence values greater than or equal to 50 percent.</p>",
-        }),
-    ).exactOptional(),
-    HumanLoopConfig: HumanLoopConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets up the configuration for human evaluation, including the FlowDefinition the image will be sent to.',
-        }),
-    ).exactOptional(),
+    Image: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the minimum confidence level for the labels to return. Amazon Rekognition doesn't return any labels with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the operation returns labels with confidence values greater than or equal to 50 percent.</p>",
+    }),
+    HumanLoopConfig: HumanLoopConfigSchema.exactOptional().openapi({
+      description:
+        'Sets up the configuration for human evaluation, including the FlowDefinition the image will be sent to.',
+    }),
   })
   .openapi({ required: ['Image'], title: 'DetectModerationLabelsRequest' })
   .openapi('DetectModerationLabelsRequest')
 
 const HumanLoopQuotaExceededExceptionSchema = z.any().openapi('HumanLoopQuotaExceededException')
 
-const BodyPartSchema = z.enum(['FACE', 'HEAD', 'LEFT_HAND', 'RIGHT_HAND']).openapi('BodyPart')
-
-const ProtectiveEquipmentTypeSchema = z
-  .enum(['FACE_COVER', 'HAND_COVER', 'HEAD_COVER'])
-  .openapi('ProtectiveEquipmentType')
-
-const CoversBodyPartSchema = z
+const DetectProtectiveEquipmentResponseSchema: z.ZodType<DetectProtectiveEquipmentResponseType> = z
   .object({
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has in the value of <code>Value</code>.',
-        }),
-    ).exactOptional(),
-    Value: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if the PPE covers the corresponding body part, otherwise false.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about an item of Personal Protective Equipment covering a corresponding body part. For more information, see <a>DetectProtectiveEquipment</a>.',
-    required: [],
-  })
-  .openapi('CoversBodyPart')
-
-const EquipmentDetectionSchema = z
-  .object({
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'A bounding box surrounding the item of detected PPE.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has that the bounding box (<code>BoundingBox</code>) contains an item of PPE.',
-        }),
-    ).exactOptional(),
-    Type: ProtectiveEquipmentTypeSchema.and(
-      z.any().openapi({ description: 'The type of detected PPE.' }),
-    ).exactOptional(),
-    CoversBodyPart: CoversBodyPartSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the body part covered by the detected PPE.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about an item of Personal Protective Equipment (PPE) detected by <a>DetectProtectiveEquipment</a>. For more information, see <a>DetectProtectiveEquipment</a>.',
-    required: [],
-  })
-  .openapi('EquipmentDetection')
-
-const EquipmentDetectionsSchema = z.array(EquipmentDetectionSchema).openapi('EquipmentDetections')
-
-const ProtectiveEquipmentBodyPartSchema = z
-  .object({
-    Name: BodyPartSchema.and(
-      z.any().openapi({ description: 'The detected body part.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has in the detection accuracy of the detected body part. ',
-        }),
-    ).exactOptional(),
-    EquipmentDetections: EquipmentDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Personal Protective Equipment items detected around a body part.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about a body part detected by <a>DetectProtectiveEquipment</a> that contains PPE. An array of <code>ProtectiveEquipmentBodyPart</code> objects is returned for each person detected by <code>DetectProtectiveEquipment</code>. ',
-    required: [],
-  })
-  .openapi('ProtectiveEquipmentBodyPart')
-
-const BodyPartsSchema = z.array(ProtectiveEquipmentBodyPartSchema).openapi('BodyParts')
-
-const ProtectiveEquipmentPersonSchema = z
-  .object({
-    BodyParts: BodyPartsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of body parts detected on a person's body (including body parts without PPE). ",
-        }),
-    ).exactOptional(),
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'A bounding box around the detected person.' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has that the bounding box contains a person.',
-        }),
-    ).exactOptional(),
-    Id: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the detected person. The identifier is only unique for a single call to <code>DetectProtectiveEquipment</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A person detected by a call to <a>DetectProtectiveEquipment</a>. The API returns all persons detected in the input image in an array of <code>ProtectiveEquipmentPerson</code> objects.',
-    required: [],
-  })
-  .openapi('ProtectiveEquipmentPerson')
-
-const ProtectiveEquipmentPersonsSchema = z
-  .array(ProtectiveEquipmentPersonSchema)
-  .openapi('ProtectiveEquipmentPersons')
-
-const ProtectiveEquipmentPersonIdsSchema = z
-  .array(UIntegerSchema)
-  .openapi('ProtectiveEquipmentPersonIds')
-
-const ProtectiveEquipmentSummarySchema = z
-  .object({
-    PersonsWithRequiredEquipment: ProtectiveEquipmentPersonIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IDs for persons who are wearing detected personal protective equipment. ',
-        }),
-    ).exactOptional(),
-    PersonsWithoutRequiredEquipment: ProtectiveEquipmentPersonIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IDs for persons who are not wearing all of the types of PPE specified in the <code>RequiredEquipmentTypes</code> field of the detected personal protective equipment. ',
-        }),
-    ).exactOptional(),
-    PersonsIndeterminate: ProtectiveEquipmentPersonIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of IDs for persons where it was not possible to determine if they are wearing personal protective equipment. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Summary information for required items of personal protective equipment (PPE) detected on persons by a call to <a>DetectProtectiveEquipment</a>. You specify the required type of PPE in the <code>SummarizationAttributes</code> (<a>ProtectiveEquipmentSummarizationAttributes</a>) input parameter. The summary includes which persons were detected wearing the required personal protective equipment (<code>PersonsWithRequiredEquipment</code>), which persons were detected as not wearing the required PPE (<code>PersonsWithoutRequiredEquipment</code>), and the persons in which a determination could not be made (<code>PersonsIndeterminate</code>).</p> <p>To get a total for each category, use the size of the field array. For example, to find out how many people were detected as wearing the specified PPE, use the size of the <code>PersonsWithRequiredEquipment</code> array. If you want to find out more about a person, such as the location (<a>BoundingBox</a>) of the person on the image, use the person ID in each array element. Each person ID matches the ID field of a <a>ProtectiveEquipmentPerson</a> object returned in the <code>Persons</code> array by <code>DetectProtectiveEquipment</code>.</p>',
-    required: [],
-  })
-  .openapi('ProtectiveEquipmentSummary')
-
-const DetectProtectiveEquipmentResponseSchema = z
-  .object({
-    ProtectiveEquipmentModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the PPE detection model used to detect PPE in the image.',
-        }),
-    ).exactOptional(),
-    Persons: ProtectiveEquipmentPersonsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of persons detected in the image (including persons not wearing PPE).',
-        }),
-    ).exactOptional(),
-    Summary: ProtectiveEquipmentSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summary information for the types of PPE specified in the <code>SummarizationAttributes</code> input parameter.',
-        }),
-    ).exactOptional(),
+    ProtectiveEquipmentModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the PPE detection model used to detect PPE in the image.',
+    }),
+    Persons: ProtectiveEquipmentPersonsSchema.exactOptional().openapi({
+      description: 'An array of persons detected in the image (including persons not wearing PPE).',
+    }),
+    Summary: ProtectiveEquipmentSummarySchema.exactOptional().openapi({
+      description:
+        'Summary information for the types of PPE specified in the <code>SummarizationAttributes</code> input parameter.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectProtectiveEquipmentResponse')
@@ -4020,22 +3193,14 @@ const ProtectiveEquipmentTypesSchema = z
 
 const ProtectiveEquipmentSummarizationAttributesSchema = z
   .object({
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The minimum confidence level for which you want summary information. The confidence level applies to person detection, body part detection, equipment detection, and body part coverage. Amazon Rekognition doesn't return summary information with a confidence than this specified value. There isn't a default value.</p> <p>Specify a <code>MinConfidence</code> value that is between 50-100% as <code>DetectProtectiveEquipment</code> returns predictions only where the detection confidence is between 50% - 100%. If you specify a value that is less than 50%, the results are the same specifying a value of 50%.</p> <p> </p>",
-        }),
-    ),
-    RequiredEquipmentTypes: ProtectiveEquipmentTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of personal protective equipment types for which you want summary information. If a person is detected wearing a required requipment type, the person's ID is added to the <code>PersonsWithRequiredEquipment</code> array field returned in <a>ProtectiveEquipmentSummary</a> by <code>DetectProtectiveEquipment</code>. ",
-        }),
-    ),
+    MinConfidence: PercentSchema.openapi({
+      description:
+        "<p>The minimum confidence level for which you want summary information. The confidence level applies to person detection, body part detection, equipment detection, and body part coverage. Amazon Rekognition doesn't return summary information with a confidence than this specified value. There isn't a default value.</p> <p>Specify a <code>MinConfidence</code> value that is between 50-100% as <code>DetectProtectiveEquipment</code> returns predictions only where the detection confidence is between 50% - 100%. If you specify a value that is less than 50%, the results are the same specifying a value of 50%.</p> <p> </p>",
+    }),
+    RequiredEquipmentTypes: ProtectiveEquipmentTypesSchema.openapi({
+      description:
+        "An array of personal protective equipment types for which you want summary information. If a person is detected wearing a required requipment type, the person's ID is added to the <code>PersonsWithRequiredEquipment</code> array field returned in <a>ProtectiveEquipmentSummary</a> by <code>DetectProtectiveEquipment</code>. ",
+    }),
   })
   .openapi({
     required: ['MinConfidence', 'RequiredEquipmentTypes'],
@@ -4046,17 +3211,14 @@ const ProtectiveEquipmentSummarizationAttributesSchema = z
 
 const DetectProtectiveEquipmentRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image in which you want to detect PPE on detected persons. The image can be passed as image bytes or you can reference an image stored in an Amazon S3 bucket. ',
-        }),
-    ),
-    SummarizationAttributes: ProtectiveEquipmentSummarizationAttributesSchema.and(
-      z.any().openapi({ description: 'An array of PPE types that you want to summarize.' }),
-    ).exactOptional(),
+    Image: ImageSchema.openapi({
+      description:
+        'The image in which you want to detect PPE on detected persons. The image can be passed as image bytes or you can reference an image stored in an Amazon S3 bucket. ',
+    }),
+    SummarizationAttributes:
+      ProtectiveEquipmentSummarizationAttributesSchema.exactOptional().openapi({
+        description: 'An array of PPE types that you want to summarize.',
+      }),
   })
   .openapi({ required: ['Image'], title: 'DetectProtectiveEquipmentRequest' })
   .openapi('DetectProtectiveEquipmentRequest')
@@ -4065,46 +3227,28 @@ const TextTypesSchema = z.enum(['LINE', 'WORD']).openapi('TextTypes')
 
 const TextDetectionSchema = z
   .object({
-    DetectedText: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The word or line of text recognized by Amazon Rekognition. ' }),
-    ).exactOptional(),
-    Type: TextTypesSchema.and(
-      z.any().openapi({ description: 'The type of text that was detected.' }),
-    ).exactOptional(),
-    Id: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the detected text. The identifier is only unique for a single call to <code>DetectText</code>. ',
-        }),
-    ).exactOptional(),
-    ParentId: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Parent identifier for the detected text identified by the value of <code>ID</code>. If the type of detected text is <code>LINE</code>, the value of <code>ParentId</code> is <code>Null</code>. ',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition has in the accuracy of the detected text and the accuracy of the geometry points around the detected text.',
-        }),
-    ).exactOptional(),
-    Geometry: GeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the detected text on the image. Includes an axis aligned coarse bounding box surrounding the text and a finer grain polygon for more accurate spatial information.',
-        }),
-    ).exactOptional(),
+    DetectedText: StringSchema.exactOptional().openapi({
+      description: 'The word or line of text recognized by Amazon Rekognition. ',
+    }),
+    Type: TextTypesSchema.exactOptional().openapi({
+      description: 'The type of text that was detected.',
+    }),
+    Id: UIntegerSchema.exactOptional().openapi({
+      description:
+        'The identifier for the detected text. The identifier is only unique for a single call to <code>DetectText</code>. ',
+    }),
+    ParentId: UIntegerSchema.exactOptional().openapi({
+      description:
+        'The Parent identifier for the detected text identified by the value of <code>ID</code>. If the type of detected text is <code>LINE</code>, the value of <code>ParentId</code> is <code>Null</code>. ',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition has in the accuracy of the detected text and the accuracy of the geometry points around the detected text.',
+    }),
+    Geometry: GeometrySchema.exactOptional().openapi({
+      description:
+        'The location of the detected text on the image. Includes an axis aligned coarse bounding box surrounding the text and a finer grain polygon for more accurate spatial information.',
+    }),
   })
   .openapi({
     description:
@@ -4117,12 +3261,12 @@ const TextDetectionListSchema = z.array(TextDetectionSchema).openapi('TextDetect
 
 const DetectTextResponseSchema = z
   .object({
-    TextDetections: TextDetectionListSchema.and(
-      z.any().openapi({ description: 'An array of text that was detected in the input image.' }),
-    ).exactOptional(),
-    TextModelVersion: StringSchema.and(
-      z.any().openapi({ description: 'The model version used to detect text.' }),
-    ).exactOptional(),
+    TextDetections: TextDetectionListSchema.exactOptional().openapi({
+      description: 'An array of text that was detected in the input image.',
+    }),
+    TextModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The model version used to detect text.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectTextResponse')
@@ -4133,30 +3277,18 @@ const BoundingBoxWidthSchema = z.float32().min(0).max(1).openapi('BoundingBoxWid
 
 const DetectionFilterSchema = z
   .object({
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the confidence of word detection. Words with detection confidence below this will be excluded from the result. Values should be between 0 and 100. The default MinConfidence is 80.',
-        }),
-    ).exactOptional(),
-    MinBoundingBoxHeight: BoundingBoxHeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the minimum height of the word bounding box. Words with bounding box heights lesser than this value will be excluded from the result. Value is relative to the video frame height.',
-        }),
-    ).exactOptional(),
-    MinBoundingBoxWidth: BoundingBoxWidthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets the minimum width of the word bounding box. Words with bounding boxes widths lesser than this value will be excluded from the result. Value is relative to the video frame width.',
-        }),
-    ).exactOptional(),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        'Sets the confidence of word detection. Words with detection confidence below this will be excluded from the result. Values should be between 0 and 100. The default MinConfidence is 80.',
+    }),
+    MinBoundingBoxHeight: BoundingBoxHeightSchema.exactOptional().openapi({
+      description:
+        'Sets the minimum height of the word bounding box. Words with bounding box heights lesser than this value will be excluded from the result. Value is relative to the video frame height.',
+    }),
+    MinBoundingBoxWidth: BoundingBoxWidthSchema.exactOptional().openapi({
+      description:
+        'Sets the minimum width of the word bounding box. Words with bounding boxes widths lesser than this value will be excluded from the result. Value is relative to the video frame width.',
+    }),
   })
   .openapi({
     description:
@@ -4168,14 +3300,10 @@ const DetectionFilterSchema = z
 const DetectTextFiltersSchema = z
   .object({
     WordFilter: DetectionFilterSchema.exactOptional(),
-    RegionsOfInterest: RegionsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A Filter focusing on a certain area of the image. Uses a <code>BoundingBox</code> object to set the region of the image.',
-        }),
-    ).exactOptional(),
+    RegionsOfInterest: RegionsOfInterestSchema.exactOptional().openapi({
+      description:
+        ' A Filter focusing on a certain area of the image. Uses a <code>BoundingBox</code> object to set the region of the image.',
+    }),
   })
   .openapi({
     description:
@@ -4186,31 +3314,23 @@ const DetectTextFiltersSchema = z
 
 const DetectTextRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The input image as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Rekognition operations, you can't pass image bytes. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>",
-        }),
-    ),
-    Filters: DetectTextFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional parameters that let you set the criteria that the text must meet to be included in your response.',
-        }),
-    ).exactOptional(),
+    Image: ImageSchema.openapi({
+      description:
+        "<p>The input image as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Rekognition operations, you can't pass image bytes. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>",
+    }),
+    Filters: DetectTextFiltersSchema.exactOptional().openapi({
+      description:
+        'Optional parameters that let you set the criteria that the text must meet to be included in your response.',
+    }),
   })
   .openapi({ required: ['Image'], title: 'DetectTextRequest' })
   .openapi('DetectTextRequest')
 
 const DisassociatedFaceSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier assigned to the face.' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'Unique identifier assigned to the face.',
+    }),
   })
   .openapi({
     description:
@@ -4235,17 +3355,15 @@ const UnsuccessfulFaceDisassociationReasonsSchema = z
 
 const UnsuccessfulFaceDisassociationSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier assigned to the face. ' }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A provided ID for the UserID. Unique within the collection. ' }),
-    ).exactOptional(),
-    Reasons: UnsuccessfulFaceDisassociationReasonsSchema.and(
-      z.any().openapi({ description: 'The reason why the deletion was unsuccessful. ' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'A unique identifier assigned to the face. ',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: 'A provided ID for the UserID. Unique within the collection. ',
+    }),
+    Reasons: UnsuccessfulFaceDisassociationReasonsSchema.exactOptional().openapi({
+      description: 'The reason why the deletion was unsuccessful. ',
+    }),
   })
   .openapi({
     description:
@@ -4262,30 +3380,19 @@ const UnsuccessfulFaceDisassociationListSchema = z
 
 const DisassociateFacesResponseSchema = z
   .object({
-    DisassociatedFaces: DisassociatedFacesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of DissociatedFace objects containing FaceIds that are successfully disassociated with the UserID is returned. Returned if the DisassociatedFaces action is successful.',
-        }),
-    ).exactOptional(),
-    UnsuccessfulFaceDisassociations: UnsuccessfulFaceDisassociationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of UnsuccessfulDisassociation objects containing FaceIds that are not successfully associated, along with the reasons for the failure to associate. Returned if the DisassociateFaces action is successful.',
-        }),
-    ).exactOptional(),
-    UserStatus: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of an update made to a User. Reflects if the User has been updated for every requested change.',
-        }),
-    ).exactOptional(),
+    DisassociatedFaces: DisassociatedFacesListSchema.exactOptional().openapi({
+      description:
+        'An array of DissociatedFace objects containing FaceIds that are successfully disassociated with the UserID is returned. Returned if the DisassociatedFaces action is successful.',
+    }),
+    UnsuccessfulFaceDisassociations:
+      UnsuccessfulFaceDisassociationListSchema.exactOptional().openapi({
+        description:
+          'An array of UnsuccessfulDisassociation objects containing FaceIds that are not successfully associated, along with the reasons for the failure to associate. Returned if the DisassociateFaces action is successful.',
+      }),
+    UserStatus: UserStatusSchema.exactOptional().openapi({
+      description:
+        'The status of an update made to a User. Reflects if the User has been updated for every requested change.',
+    }),
   })
   .openapi({
     example: {
@@ -4305,39 +3412,31 @@ const DisassociateFacesResponseSchema = z
 
 const DisassociateFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of an existing collection containing the UserID.' }),
-    ),
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'ID for the existing UserID.' })),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the request to <code>DisassociateFaces</code>. If you use the same token with multiple <code>DisassociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
-        }),
-    ).exactOptional(),
-    FaceIds: UserFaceIdListSchema.and(
-      z.any().openapi({ description: 'An array of face IDs to disassociate from the UserID. ' }),
-    ),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of an existing collection containing the UserID.',
+    }),
+    UserId: UserIdSchema.openapi({ description: 'ID for the existing UserID.' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the request to <code>DisassociateFaces</code>. If you use the same token with multiple <code>DisassociateFaces</code> requests, the same response is returned. Use ClientRequestToken to prevent the same request from being processed more than once.',
+    }),
+    FaceIds: UserFaceIdListSchema.openapi({
+      description: 'An array of face IDs to disassociate from the UserID. ',
+    }),
   })
   .openapi({ required: ['CollectionId', 'UserId', 'FaceIds'], title: 'DisassociateFacesRequest' })
   .openapi('DisassociateFacesRequest')
 
 const DistributeDatasetEntriesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('DistributeDatasetEntriesResponse')
 
 const DistributeDatasetSchema = z
   .object({
-    Arn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset that you want to use. ',
-        }),
-    ),
+    Arn: DatasetArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset that you want to use. ',
+    }),
   })
   .openapi({
     required: ['Arn'],
@@ -4353,14 +3452,10 @@ const DistributeDatasetMetadataListSchema = z
 
 const DistributeDatasetEntriesRequestSchema = z
   .object({
-    Datasets: DistributeDatasetMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNS for the training dataset and test dataset that you want to use. The datasets must belong to the same project. The test dataset must be empty. ',
-        }),
-    ),
+    Datasets: DistributeDatasetMetadataListSchema.openapi({
+      description:
+        'The ARNS for the training dataset and test dataset that you want to use. The datasets must belong to the same project. The test dataset must be empty. ',
+    }),
   })
   .openapi({ required: ['Datasets'], title: 'DistributeDatasetEntriesRequest' })
   .openapi('DistributeDatasetEntriesRequest')
@@ -4378,11 +3473,9 @@ const KnownGenderTypeSchema = z
 
 const KnownGenderSchema = z
   .object({
-    Type: KnownGenderTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A string value of the KnownGender info about the Celebrity.' }),
-    ).exactOptional(),
+    Type: KnownGenderTypeSchema.exactOptional().openapi({
+      description: 'A string value of the KnownGender info about the Celebrity.',
+    }),
   })
   .openapi({
     description:
@@ -4393,19 +3486,13 @@ const KnownGenderSchema = z
 
 const GetCelebrityInfoResponseSchema = z
   .object({
-    Urls: UrlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of URLs pointing to additional celebrity information. ',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the celebrity.' }),
-    ).exactOptional(),
-    KnownGender: KnownGenderSchema.and(
-      z.any().openapi({ description: 'Retrieves the known gender for the celebrity.' }),
-    ).exactOptional(),
+    Urls: UrlsSchema.exactOptional().openapi({
+      description: 'An array of URLs pointing to additional celebrity information. ',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the celebrity.' }),
+    KnownGender: KnownGenderSchema.exactOptional().openapi({
+      description: 'Retrieves the known gender for the celebrity.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCelebrityInfoResponse')
@@ -4417,117 +3504,49 @@ const RekognitionUniqueIdSchema = z
 
 const GetCelebrityInfoRequestSchema = z
   .object({
-    Id: RekognitionUniqueIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID for the celebrity. You get the celebrity ID from a call to the <a>RecognizeCelebrities</a> operation, which recognizes celebrities in an image. ',
-        }),
-    ),
+    Id: RekognitionUniqueIdSchema.openapi({
+      description:
+        'The ID for the celebrity. You get the celebrity ID from a call to the <a>RecognizeCelebrities</a> operation, which recognizes celebrities in an image. ',
+    }),
   })
   .openapi({ required: ['Id'], title: 'GetCelebrityInfoRequest' })
   .openapi('GetCelebrityInfoRequest')
 
-const VideoJobStatusSchema = z
-  .enum(['IN_PROGRESS', 'SUCCEEDED', 'FAILED'])
-  .openapi('VideoJobStatus')
-
-const VideoColorRangeSchema = z.enum(['FULL', 'LIMITED']).openapi('VideoColorRange')
-
-const VideoMetadataSchema = z
-  .object({
-    Codec: StringSchema.and(
-      z.any().openapi({ description: 'Type of compression used in the analyzed video. ' }),
-    ).exactOptional(),
-    DurationMillis: ULongSchema.and(
-      z.any().openapi({ description: 'Length of the video in milliseconds.' }),
-    ).exactOptional(),
-    Format: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Format of the analyzed video. Possible values are MP4, MOV and AVI. ',
-        }),
-    ).exactOptional(),
-    FrameRate: FloatSchema.and(
-      z.any().openapi({ description: 'Number of frames per second in the video.' }),
-    ).exactOptional(),
-    FrameHeight: ULongSchema.and(
-      z.any().openapi({ description: 'Vertical pixel dimension of the video.' }),
-    ).exactOptional(),
-    FrameWidth: ULongSchema.and(
-      z.any().openapi({ description: 'Horizontal pixel dimension of the video.' }),
-    ).exactOptional(),
-    ColorRange: VideoColorRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A description of the range of luminance values in a video, either LIMITED (16 to 235) or FULL (0 to 255). ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
-    required: [],
-  })
-  .openapi('VideoMetadata')
-
-const PaginationTokenSchema = z.string().max(255).openapi('PaginationToken')
-
-const TimestampSchema = z.int().openapi('Timestamp')
-
 const CelebrityDetailSchema = z
   .object({
-    Urls: UrlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of URLs pointing to additional celebrity information. ',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the celebrity.' }),
-    ).exactOptional(),
-    Id: RekognitionUniqueIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the celebrity. ' }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence, in percentage, that Amazon Rekognition has that the recognized face is the celebrity. ',
-        }),
-    ).exactOptional(),
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box around the body of a celebrity.' }),
-    ).exactOptional(),
-    Face: FaceDetailSchema.and(
-      z.any().openapi({ description: 'Face details for the recognized celebrity.' }),
-    ).exactOptional(),
-    KnownGender: KnownGenderSchema.and(
-      z.any().openapi({ description: 'Retrieves the known gender for the celebrity.' }),
-    ).exactOptional(),
+    Urls: UrlsSchema.exactOptional().openapi({
+      description: 'An array of URLs pointing to additional celebrity information. ',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the celebrity.' }),
+    Id: RekognitionUniqueIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the celebrity. ',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence, in percentage, that Amazon Rekognition has that the recognized face is the celebrity. ',
+    }),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box around the body of a celebrity.',
+    }),
+    Face: FaceDetailSchema.exactOptional().openapi({
+      description: 'Face details for the recognized celebrity.',
+    }),
+    KnownGender: KnownGenderSchema.exactOptional().openapi({
+      description: 'Retrieves the known gender for the celebrity.',
+    }),
   })
   .openapi({ description: 'Information about a recognized celebrity.', required: [] })
   .openapi('CelebrityDetail')
 
 const CelebrityRecognitionSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds from the start of the video, that the celebrity was recognized. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the celebrity first appears.',
-        }),
-    ).exactOptional(),
-    Celebrity: CelebrityDetailSchema.and(
-      z.any().openapi({ description: 'Information about a recognized celebrity.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds from the start of the video, that the celebrity was recognized. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the celebrity first appears.',
+    }),
+    Celebrity: CelebrityDetailSchema.exactOptional().openapi({
+      description: 'Information about a recognized celebrity.',
+    }),
   })
   .openapi({
     description:
@@ -4540,82 +3559,35 @@ const CelebrityRecognitionsSchema = z
   .array(CelebrityRecognitionSchema)
   .openapi('CelebrityRecognitions')
 
-const JobIdSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9-_]+$/)
-  .min(1)
-  .max(64)
-  .openapi('JobId')
-
-const VideoSchema = z
-  .object({
-    S3Object: S3ObjectSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 bucket name and file name for the video.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Video file stored in an Amazon S3 bucket. Amazon Rekognition video start operations such as <a>StartLabelDetection</a> use <code>Video</code> to specify a video for analysis. The supported file formats are .mp4, .mov and .avi.',
-    required: [],
-  })
-  .openapi('Video')
-
-const JobTagSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_.\-:+=\/]+/)
-  .min(1)
-  .max(1024)
-  .openapi('JobTag')
-
 const GetCelebrityRecognitionResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the celebrity recognition job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of celebrities.',
-        }),
-    ).exactOptional(),
-    Celebrities: CelebrityRecognitionsSchema.and(
-      z.any().openapi({ description: 'Array of celebrities recognized in the video.' }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the celebrity recognition operation for which you want to obtain results. The job identifer is returned by an initial call to StartCelebrityRecognition.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the celebrity recognition job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of celebrities.',
+    }),
+    Celebrities: CelebrityRecognitionsSchema.exactOptional().openapi({
+      description: 'Array of celebrities recognized in the video.',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the celebrity recognition operation for which you want to obtain results. The job identifer is returned by an initial call to StartCelebrityRecognition.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCelebrityRecognitionResponse')
@@ -4628,81 +3600,47 @@ const CelebrityRecognitionSortBySchema = z
 
 const GetCelebrityRecognitionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the required celebrity recognition analysis. You can get the job identifer from a call to <code>StartCelebrityRecognition</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more recognized celebrities to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of celebrities. ',
-        }),
-    ).exactOptional(),
-    SortBy: CelebrityRecognitionSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sort to use for celebrities returned in <code>Celebrities</code> field. Specify <code>ID</code> to sort by the celebrity identifier, specify <code>TIMESTAMP</code> to sort by the time the celebrity was recognized.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'Job identifier for the required celebrity recognition analysis. You can get the job identifer from a call to <code>StartCelebrityRecognition</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more recognized celebrities to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of celebrities. ',
+    }),
+    SortBy: CelebrityRecognitionSortBySchema.exactOptional().openapi({
+      description:
+        'Sort to use for celebrities returned in <code>Celebrities</code> field. Specify <code>ID</code> to sort by the celebrity identifier, specify <code>TIMESTAMP</code> to sort by the time the celebrity was recognized.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetCelebrityRecognitionRequest' })
   .openapi('GetCelebrityRecognitionRequest')
 
 const ContentModerationDetectionSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time, in milliseconds from the beginning of the video, that the content moderation label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the moderated content first appears.',
-        }),
-    ).exactOptional(),
-    ModerationLabel: ModerationLabelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The content moderation label detected by in the stored video.' }),
-    ).exactOptional(),
-    StartTimestampMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in milliseconds defining the start of the timeline segment containing a continuously detected moderation label.',
-        }),
-    ).exactOptional(),
-    EndTimestampMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time in milliseconds defining the end of the timeline segment containing a continuously detected moderation label. ',
-        }),
-    ).exactOptional(),
-    DurationMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis. ',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time, in milliseconds from the beginning of the video, that the content moderation label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the moderated content first appears.',
+    }),
+    ModerationLabel: ModerationLabelSchema.exactOptional().openapi({
+      description: 'The content moderation label detected by in the stored video.',
+    }),
+    StartTimestampMillis: ULongSchema.exactOptional().openapi({
+      description:
+        'The time in milliseconds defining the start of the timeline segment containing a continuously detected moderation label.',
+    }),
+    EndTimestampMillis: ULongSchema.exactOptional().openapi({
+      description:
+        ' The time in milliseconds defining the end of the timeline segment containing a continuously detected moderation label. ',
+    }),
+    DurationMillis: ULongSchema.exactOptional().openapi({
+      description:
+        ' The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis. ',
+    }),
   })
   .openapi({
     description:
@@ -4725,18 +3663,12 @@ const ContentModerationAggregateBySchema = z
 
 const GetContentModerationRequestMetadataSchema = z
   .object({
-    SortBy: ContentModerationSortBySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The sorting method chosen for a GetContentModeration request.' }),
-    ).exactOptional(),
-    AggregateBy: ContentModerationAggregateBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The aggregation method chosen for a GetContentModeration request.',
-        }),
-    ).exactOptional(),
+    SortBy: ContentModerationSortBySchema.exactOptional().openapi({
+      description: 'The sorting method chosen for a GetContentModeration request.',
+    }),
+    AggregateBy: ContentModerationAggregateBySchema.exactOptional().openapi({
+      description: 'The aggregation method chosen for a GetContentModeration request.',
+    }),
   })
   .openapi({
     description:
@@ -4747,139 +3679,81 @@ const GetContentModerationRequestMetadataSchema = z
 
 const GetContentModerationResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current status of the content moderation analysis job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from <code>GetContentModeration</code>. ',
-        }),
-    ).exactOptional(),
-    ModerationLabels: ContentModerationDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The detected inappropriate, unwanted, or offensive content moderation labels and the time(s) they were detected.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of content moderation labels. ',
-        }),
-    ).exactOptional(),
-    ModerationModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the moderation detection model that was used to detect inappropriate, unwanted, or offensive content.',
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the content moderation operation for which you want to obtain results. The job identifer is returned by an initial call to StartContentModeration.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the content moderation analysis job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from <code>GetContentModeration</code>. ',
+    }),
+    ModerationLabels: ContentModerationDetectionsSchema.exactOptional().openapi({
+      description:
+        'The detected inappropriate, unwanted, or offensive content moderation labels and the time(s) they were detected.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of content moderation labels. ',
+    }),
+    ModerationModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the moderation detection model that was used to detect inappropriate, unwanted, or offensive content.',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the content moderation operation for which you want to obtain results. The job identifer is returned by an initial call to StartContentModeration.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartContentModeration and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
-    GetRequestMetadata: GetContentModerationRequestMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartContentModeration and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
+    GetRequestMetadata: GetContentModerationRequestMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContentModerationResponse')
 
 const GetContentModerationRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the inappropriate, unwanted, or offensive content moderation job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetContentModeration</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more data to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of content moderation labels.',
-        }),
-    ).exactOptional(),
-    SortBy: ContentModerationSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sort to use for elements in the <code>ModerationLabelDetections</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time labels are detected. Use <code>NAME</code> to alphabetically group elements for a label together. Within each label group, the array element are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
-        }),
-    ).exactOptional(),
-    AggregateBy: ContentModerationAggregateBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines how to aggregate results of the StartContentModeration request. Default aggregation option is TIMESTAMPS. SEGMENTS mode aggregates moderation labels over time.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier for the inappropriate, unwanted, or offensive content moderation job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetContentModeration</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more data to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of content moderation labels.',
+    }),
+    SortBy: ContentModerationSortBySchema.exactOptional().openapi({
+      description:
+        'Sort to use for elements in the <code>ModerationLabelDetections</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time labels are detected. Use <code>NAME</code> to alphabetically group elements for a label together. Within each label group, the array element are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
+    }),
+    AggregateBy: ContentModerationAggregateBySchema.exactOptional().openapi({
+      description:
+        'Defines how to aggregate results of the StartContentModeration request. Default aggregation option is TIMESTAMPS. SEGMENTS mode aggregates moderation labels over time.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetContentModerationRequest' })
   .openapi('GetContentModerationRequest')
 
 const FaceDetectionSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time, in milliseconds from the start of the video, that the face was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the face first appears.',
-        }),
-    ).exactOptional(),
-    Face: FaceDetailSchema.and(
-      z.any().openapi({ description: 'The face properties for the detected face.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'Time, in milliseconds from the start of the video, that the face was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the face first appears.',
+    }),
+    Face: FaceDetailSchema.exactOptional().openapi({
+      description: 'The face properties for the detected face.',
+    }),
   })
   .openapi({
     description:
@@ -4892,88 +3766,52 @@ const FaceDetectionsSchema = z.array(FaceDetectionSchema).openapi('FaceDetection
 
 const GetFaceDetectionResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the face detection job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of faces. ',
-        }),
-    ).exactOptional(),
-    Faces: FaceDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of faces detected in the video. Each element contains a detected face's details and the time, in milliseconds from the start of the video, the face was detected. ",
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the face detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceDetection.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the face detection job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of faces. ',
+    }),
+    Faces: FaceDetectionsSchema.exactOptional().openapi({
+      description:
+        "An array of faces detected in the video. Each element contains a detected face's details and the time, in milliseconds from the start of the video, the face was detected. ",
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the face detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceDetection.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartFaceDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartFaceDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFaceDetectionResponse')
 
 const GetFaceDetectionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for the face detection job. The <code>JobId</code> is returned from <code>StartFaceDetection</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more faces to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of faces.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'Unique identifier for the face detection job. The <code>JobId</code> is returned from <code>StartFaceDetection</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more faces to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of faces.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetFaceDetectionRequest' })
   .openapi('GetFaceDetectionRequest')
@@ -4986,14 +3824,10 @@ const LivenessImageBlobSchema = z.string().min(1).max(204800).openapi('LivenessI
 
 const AuditImageSchema = z
   .object({
-    Bytes: LivenessImageBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Base64-encoded bytes representing an image selected from the Face Liveness video and returned for audit purposes.',
-        }),
-    ).exactOptional(),
+    Bytes: LivenessImageBlobSchema.exactOptional().openapi({
+      description:
+        'The Base64-encoded bytes representing an image selected from the Face Liveness video and returned for audit purposes.',
+    }),
     S3Object: S3ObjectSchema.exactOptional(),
     BoundingBox: BoundingBoxSchema.exactOptional(),
   })
@@ -5008,55 +3842,35 @@ const AuditImagesSchema = z.array(AuditImageSchema).openapi('AuditImages')
 
 const GetFaceLivenessSessionResultsResponseSchema = z
   .object({
-    SessionId: LivenessSessionIdSchema.and(
-      z.any().openapi({ description: 'The sessionId for which this request was called.' }),
-    ),
-    Status: LivenessSessionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a status corresponding to the state of the session. Possible statuses are: CREATED, IN_PROGRESS, SUCCEEDED, FAILED, EXPIRED.',
-        }),
-    ),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Probabalistic confidence score for if the person in the given video was live, represented as a float value between 0 to 100.',
-        }),
-    ).exactOptional(),
-    ReferenceImage: AuditImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A high-quality image from the Face Liveness video that can be used for face comparison or search. It includes a bounding box of the face and the Base64-encoded bytes that return an image. If the CreateFaceLivenessSession request included an OutputConfig argument, the image will be uploaded to an S3Object specified in the output configuration. In case the reference image is not returned, it's recommended to retry the Liveness check.",
-        }),
-    ).exactOptional(),
-    AuditImages: AuditImagesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of images from the Face Liveness video that can be used for audit purposes. It includes a bounding box of the face and the Base64-encoded bytes that return an image. If the CreateFaceLivenessSession request included an OutputConfig argument, the image will be uploaded to an S3Object specified in the output configuration. If no Amazon S3 bucket is defined, raw bytes are sent instead.',
-        }),
-    ).exactOptional(),
+    SessionId: LivenessSessionIdSchema.openapi({
+      description: 'The sessionId for which this request was called.',
+    }),
+    Status: LivenessSessionStatusSchema.openapi({
+      description:
+        'Represents a status corresponding to the state of the session. Possible statuses are: CREATED, IN_PROGRESS, SUCCEEDED, FAILED, EXPIRED.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'Probabalistic confidence score for if the person in the given video was live, represented as a float value between 0 to 100.',
+    }),
+    ReferenceImage: AuditImageSchema.exactOptional().openapi({
+      description:
+        "A high-quality image from the Face Liveness video that can be used for face comparison or search. It includes a bounding box of the face and the Base64-encoded bytes that return an image. If the CreateFaceLivenessSession request included an OutputConfig argument, the image will be uploaded to an S3Object specified in the output configuration. In case the reference image is not returned, it's recommended to retry the Liveness check.",
+    }),
+    AuditImages: AuditImagesSchema.exactOptional().openapi({
+      description:
+        'A set of images from the Face Liveness video that can be used for audit purposes. It includes a bounding box of the face and the Base64-encoded bytes that return an image. If the CreateFaceLivenessSession request included an OutputConfig argument, the image will be uploaded to an S3Object specified in the output configuration. If no Amazon S3 bucket is defined, raw bytes are sent instead.',
+    }),
   })
   .openapi({ required: ['SessionId', 'Status'] })
   .openapi('GetFaceLivenessSessionResultsResponse')
 
 const GetFaceLivenessSessionResultsRequestSchema = z
   .object({
-    SessionId: LivenessSessionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique 128-bit UUID. This is used to uniquely identify the session and also acts as an idempotency token for all operations associated with the session.',
-        }),
-    ),
+    SessionId: LivenessSessionIdSchema.openapi({
+      description:
+        'A unique 128-bit UUID. This is used to uniquely identify the session and also acts as an idempotency token for all operations associated with the session.',
+    }),
   })
   .openapi({ required: ['SessionId'], title: 'GetFaceLivenessSessionResultsRequest' })
   .openapi('GetFaceLivenessSessionResultsRequest')
@@ -5067,20 +3881,16 @@ const PersonIndexSchema = z.int().openapi('PersonIndex')
 
 const PersonDetailSchema = z
   .object({
-    Index: PersonIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for the person detected person within a video. Use to keep track of the person throughout the video. The identifier is not stored by Amazon Rekognition.',
-        }),
-    ).exactOptional(),
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box around the detected person.' }),
-    ).exactOptional(),
-    Face: FaceDetailSchema.and(
-      z.any().openapi({ description: 'Face details for the detected person.' }),
-    ).exactOptional(),
+    Index: PersonIndexSchema.exactOptional().openapi({
+      description:
+        'Identifier for the person detected person within a video. Use to keep track of the person throughout the video. The identifier is not stored by Amazon Rekognition.',
+    }),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box around the detected person.',
+    }),
+    Face: FaceDetailSchema.exactOptional().openapi({
+      description: 'Face details for the detected person.',
+    }),
   })
   .openapi({
     description: 'Details about a person detected in a video analysis request.',
@@ -5107,47 +3917,29 @@ const IndexFacesModelVersionSchema = z
 
 const FaceSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Unique identifier that Amazon Rekognition assigns to the face.' }),
-    ).exactOptional(),
-    BoundingBox: BoundingBoxSchema.and(
-      z.any().openapi({ description: 'Bounding box of the face.' }),
-    ).exactOptional(),
-    ImageId: ImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Unique identifier that Amazon Rekognition assigns to the input image.',
-        }),
-    ).exactOptional(),
-    ExternalImageId: ExternalImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifier that you assign to all the faces in the input image.',
-        }),
-    ).exactOptional(),
-    Confidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Confidence level that the bounding box contains a face (and not a different object such as a tree).',
-        }),
-    ).exactOptional(),
-    IndexFacesModelVersion: IndexFacesModelVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The version of the face detect and storage model that was used when indexing the face vector. ',
-        }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier assigned to the user.' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'Unique identifier that Amazon Rekognition assigns to the face.',
+    }),
+    BoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description: 'Bounding box of the face.',
+    }),
+    ImageId: ImageIdSchema.exactOptional().openapi({
+      description: 'Unique identifier that Amazon Rekognition assigns to the input image.',
+    }),
+    ExternalImageId: ExternalImageIdSchema.exactOptional().openapi({
+      description: 'Identifier that you assign to all the faces in the input image.',
+    }),
+    Confidence: PercentSchema.exactOptional().openapi({
+      description:
+        'Confidence level that the bounding box contains a face (and not a different object such as a tree).',
+    }),
+    IndexFacesModelVersion: IndexFacesModelVersionSchema.exactOptional().openapi({
+      description:
+        ' The version of the face detect and storage model that was used when indexing the face vector. ',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: 'Unique identifier assigned to the user.',
+    }),
   })
   .openapi({
     description:
@@ -5158,17 +3950,13 @@ const FaceSchema = z
 
 const FaceMatchSchema = z
   .object({
-    Similarity: PercentSchema.and(
-      z.any().openapi({ description: 'Confidence in the match of this face with the input face.' }),
-    ).exactOptional(),
-    Face: FaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the face properties such as the bounding box, face ID, image ID of the source image, and external image ID that you assigned.',
-        }),
-    ).exactOptional(),
+    Similarity: PercentSchema.exactOptional().openapi({
+      description: 'Confidence in the match of this face with the input face.',
+    }),
+    Face: FaceSchema.exactOptional().openapi({
+      description:
+        'Describes the face properties such as the bounding box, face ID, image ID of the source image, and external image ID that you assigned.',
+    }),
   })
   .openapi({
     description:
@@ -5181,25 +3969,17 @@ const FaceMatchListSchema = z.array(FaceMatchSchema).openapi('FaceMatchList')
 
 const PersonMatchSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds from the beginning of the video, that the person was matched in the video.',
-        }),
-    ).exactOptional(),
-    Person: PersonDetailSchema.and(
-      z.any().openapi({ description: 'Information about the matched person.' }),
-    ).exactOptional(),
-    FaceMatches: FaceMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the faces in the input collection that match the face of a person in the video.',
-        }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds from the beginning of the video, that the person was matched in the video.',
+    }),
+    Person: PersonDetailSchema.exactOptional().openapi({
+      description: 'Information about the matched person.',
+    }),
+    FaceMatches: FaceMatchListSchema.exactOptional().openapi({
+      description:
+        'Information about the faces in the input collection that match the face of a person in the video.',
+    }),
   })
   .openapi({
     description:
@@ -5212,58 +3992,34 @@ const PersonMatchesSchema = z.array(PersonMatchSchema).openapi('PersonMatches')
 
 const GetFaceSearchResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the face search job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of search results. ',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation. ',
-        }),
-    ).exactOptional(),
-    Persons: PersonMatchesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of persons, <a>PersonMatch</a>, in the video whose face(s) match the face(s) in an Amazon Rekognition collection. It also includes time information for when persons are matched in the video. You specify the input collection in an initial call to <code>StartFaceSearch</code>. Each <code>Persons</code> element includes a time the person was matched, face match details (<code>FaceMatches</code>) for matching faces in the collection, and person information (<code>Person</code>) for the matched person. ',
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the face search operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceSearch.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the face search job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of search results. ',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation. ',
+    }),
+    Persons: PersonMatchesSchema.exactOptional().openapi({
+      description:
+        'An array of persons, <a>PersonMatch</a>, in the video whose face(s) match the face(s) in an Amazon Rekognition collection. It also includes time information for when persons are matched in the video. You specify the input collection in an initial call to <code>StartFaceSearch</code>. Each <code>Persons</code> element includes a time the person was matched, face match details (<code>FaceMatches</code>) for matching faces in the collection, and person information (<code>Person</code>) for the matched person. ',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the face search operation for which you want to obtain results. The job identifer is returned by an initial call to StartFaceSearch.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartFaceSearch and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartFaceSearch and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFaceSearchResponse')
@@ -5272,248 +4028,102 @@ const FaceSearchSortBySchema = z.enum(['INDEX', 'TIMESTAMP']).openapi('FaceSearc
 
 const GetFaceSearchRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The job identifer for the search request. You get the job identifier from an initial call to <code>StartFaceSearch</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more search results to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of search results. ',
-        }),
-    ).exactOptional(),
-    SortBy: FaceSearchSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sort to use for grouping faces in the response. Use <code>TIMESTAMP</code> to group faces by the time that they are recognized. Use <code>INDEX</code> to sort by recognized faces. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The job identifer for the search request. You get the job identifier from an initial call to <code>StartFaceSearch</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more search results to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of search results. ',
+    }),
+    SortBy: FaceSearchSortBySchema.exactOptional().openapi({
+      description:
+        'Sort to use for grouping faces in the response. Use <code>TIMESTAMP</code> to group faces by the time that they are recognized. Use <code>INDEX</code> to sort by recognized faces. ',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetFaceSearchRequest' })
   .openapi('GetFaceSearchRequest')
 
-const LabelDetectionSchema = z
+const GetLabelDetectionResponseSchema: z.ZodType<GetLabelDetectionResponseType> = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time, in milliseconds from the start of the video, that the label was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the label first appears.',
-        }),
-    ).exactOptional(),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'Details about the detected label.' }),
-    ).exactOptional(),
-    StartTimestampMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in milliseconds defining the start of the timeline segment containing a continuously detected label.',
-        }),
-    ).exactOptional(),
-    EndTimestampMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in milliseconds defining the end of the timeline segment containing a continuously detected label.',
-        }),
-    ).exactOptional(),
-    DurationMillis: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about a label detected in a video analysis request and the time the label was detected in the video. ',
-    required: [],
-  })
-  .openapi('LabelDetection')
-
-const LabelDetectionsSchema = z.array(LabelDetectionSchema).openapi('LabelDetections')
-
-const LabelDetectionSortBySchema = z.enum(['NAME', 'TIMESTAMP']).openapi('LabelDetectionSortBy')
-
-const LabelDetectionAggregateBySchema = z
-  .enum(['TIMESTAMPS', 'SEGMENTS'])
-  .openapi('LabelDetectionAggregateBy')
-
-const GetLabelDetectionRequestMetadataSchema = z
-  .object({
-    SortBy: LabelDetectionSortBySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The sorting method chosen for a GetLabelDetection request.' }),
-    ).exactOptional(),
-    AggregateBy: LabelDetectionAggregateBySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The aggregation method chosen for a GetLabelDetection request.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Contains metadata about a label detection request, including the SortBy and AggregateBy options.',
-    required: [],
-  })
-  .openapi('GetLabelDetectionRequestMetadata')
-
-const GetLabelDetectionResponseSchema = z
-  .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the label detection job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of labels.',
-        }),
-    ).exactOptional(),
-    Labels: LabelDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of labels detected in the video. Each element contains the detected label and the time, in milliseconds from the start of the video, that the label was detected. ',
-        }),
-    ).exactOptional(),
-    LabelModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the label detection model that was used to detect labels.',
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the label detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartLabelDetection.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the label detection job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition video operation.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of labels.',
+    }),
+    Labels: LabelDetectionsSchema.exactOptional().openapi({
+      description:
+        'An array of labels detected in the video. Each element contains the detected label and the time, in milliseconds from the start of the video, that the label was detected. ',
+    }),
+    LabelModelVersion: StringSchema.exactOptional().openapi({
+      description: 'Version number of the label detection model that was used to detect labels.',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the label detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartLabelDetection.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartLabelDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
-    GetRequestMetadata: GetLabelDetectionRequestMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartLabelDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
+    GetRequestMetadata: GetLabelDetectionRequestMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about the paramters used when getting a response. Includes information on aggregation and sorting methods.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLabelDetectionResponse')
 
 const GetLabelDetectionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the label detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartlabelDetection</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of labels. ',
-        }),
-    ).exactOptional(),
-    SortBy: LabelDetectionSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sort to use for elements in the <code>Labels</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time labels are detected. Use <code>NAME</code> to alphabetically group elements for a label together. Within each label group, the array element are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
-        }),
-    ).exactOptional(),
-    AggregateBy: LabelDetectionAggregateBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines how to aggregate the returned results. Results can be aggregated by timestamps or segments.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'Job identifier for the label detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartlabelDetection</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of labels. ',
+    }),
+    SortBy: LabelDetectionSortBySchema.exactOptional().openapi({
+      description:
+        'Sort to use for elements in the <code>Labels</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time labels are detected. Use <code>NAME</code> to alphabetically group elements for a label together. Within each label group, the array element are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
+    }),
+    AggregateBy: LabelDetectionAggregateBySchema.exactOptional().openapi({
+      description:
+        'Defines how to aggregate the returned results. Results can be aggregated by timestamps or segments.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetLabelDetectionRequest' })
   .openapi('GetLabelDetectionRequest')
 
 const PersonDetectionSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time, in milliseconds from the start of the video, that the person's path was tracked. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the person's path first appears.",
-        }),
-    ).exactOptional(),
-    Person: PersonDetailSchema.and(
-      z.any().openapi({ description: 'Details about a person whose path was tracked in a video.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time, in milliseconds from the start of the video, that the person's path was tracked. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the person's path first appears.",
+    }),
+    Person: PersonDetailSchema.exactOptional().openapi({
+      description: 'Details about a person whose path was tracked in a video.',
+    }),
   })
   .openapi({
     description:
@@ -5526,58 +4136,34 @@ const PersonDetectionsSchema = z.array(PersonDetectionSchema).openapi('PersonDet
 
 const GetPersonTrackingResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the person tracking job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of persons. ',
-        }),
-    ).exactOptional(),
-    Persons: PersonDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of the persons detected in the video and the time(s) their path was tracked throughout the video. An array element will exist for each time a person's path is tracked. ",
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the person tracking operation for which you want to obtain results. The job identifer is returned by an initial call to StartPersonTracking.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'The current status of the person tracking job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataSchema.exactOptional().openapi({
+      description:
+        'Information about a video that Amazon Rekognition Video analyzed. <code>Videometadata</code> is returned in every page of paginated responses from a Amazon Rekognition Video operation.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of persons. ',
+    }),
+    Persons: PersonDetectionsSchema.exactOptional().openapi({
+      description:
+        "An array of the persons detected in the video and the time(s) their path was tracked throughout the video. An array element will exist for each time a person's path is tracked. ",
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the person tracking operation for which you want to obtain results. The job identifer is returned by an initial call to StartPersonTracking.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartCelebrityRecognition and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPersonTrackingResponse')
@@ -5586,38 +4172,22 @@ const PersonTrackingSortBySchema = z.enum(['INDEX', 'TIMESTAMP']).openapi('Perso
 
 const GetPersonTrackingRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for a job that tracks persons in a video. You get the <code>JobId</code> from a call to <code>StartPersonTracking</code>. ',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more persons to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of persons. ',
-        }),
-    ).exactOptional(),
-    SortBy: PersonTrackingSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sort to use for elements in the <code>Persons</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time persons are detected. Use <code>INDEX</code> to sort by the tracked persons. If you sort by <code>INDEX</code>, the array elements for each person are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'The identifier for a job that tracks persons in a video. You get the <code>JobId</code> from a call to <code>StartPersonTracking</code>. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000. If you specify a value greater than 1000, a maximum of 1000 results is returned. The default value is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more persons to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of persons. ',
+    }),
+    SortBy: PersonTrackingSortBySchema.exactOptional().openapi({
+      description:
+        'Sort to use for elements in the <code>Persons</code> array. Use <code>TIMESTAMP</code> to sort array elements by the time persons are detected. Use <code>INDEX</code> to sort by the tracked persons. If you sort by <code>INDEX</code>, the array elements for each person are sorted by detection confidence. The default sort is by <code>TIMESTAMP</code>.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetPersonTrackingRequest' })
   .openapi('GetPersonTrackingRequest')
@@ -5626,20 +4196,18 @@ const VideoMetadataListSchema = z.array(VideoMetadataSchema).openapi('VideoMetad
 
 const AudioMetadataSchema = z
   .object({
-    Codec: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The audio codec used to encode or decode the audio stream. ' }),
-    ).exactOptional(),
-    DurationMillis: ULongSchema.and(
-      z.any().openapi({ description: 'The duration of the audio stream in milliseconds.' }),
-    ).exactOptional(),
-    SampleRate: ULongSchema.and(
-      z.any().openapi({ description: 'The sample rate for the audio stream.' }),
-    ).exactOptional(),
-    NumberOfChannels: ULongSchema.and(
-      z.any().openapi({ description: 'The number of audio channels in the segment.' }),
-    ).exactOptional(),
+    Codec: StringSchema.exactOptional().openapi({
+      description: 'The audio codec used to encode or decode the audio stream. ',
+    }),
+    DurationMillis: ULongSchema.exactOptional().openapi({
+      description: 'The duration of the audio stream in milliseconds.',
+    }),
+    SampleRate: ULongSchema.exactOptional().openapi({
+      description: 'The sample rate for the audio stream.',
+    }),
+    NumberOfChannels: ULongSchema.exactOptional().openapi({
+      description: 'The number of audio channels in the segment.',
+    }),
   })
   .openapi({
     description:
@@ -5670,17 +4238,13 @@ const SegmentConfidenceSchema = z.float32().min(50).max(100).openapi('SegmentCon
 
 const TechnicalCueSegmentSchema = z
   .object({
-    Type: TechnicalCueTypeSchema.and(
-      z.any().openapi({ description: 'The type of the technical cue.' }),
-    ).exactOptional(),
-    Confidence: SegmentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition Video has in the accuracy of the detected segment.',
-        }),
-    ).exactOptional(),
+    Type: TechnicalCueTypeSchema.exactOptional().openapi({
+      description: 'The type of the technical cue.',
+    }),
+    Confidence: SegmentConfidenceSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition Video has in the accuracy of the detected segment.',
+    }),
   })
   .openapi({
     description:
@@ -5691,21 +4255,13 @@ const TechnicalCueSegmentSchema = z
 
 const ShotSegmentSchema = z
   .object({
-    Index: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An Identifier for a shot detection segment detected in a video. ',
-        }),
-    ).exactOptional(),
-    Confidence: SegmentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence that Amazon Rekognition Video has in the accuracy of the detected segment.',
-        }),
-    ).exactOptional(),
+    Index: ULongSchema.exactOptional().openapi({
+      description: 'An Identifier for a shot detection segment detected in a video. ',
+    }),
+    Confidence: SegmentConfidenceSchema.exactOptional().openapi({
+      description:
+        'The confidence that Amazon Rekognition Video has in the accuracy of the detected segment.',
+    }),
   })
   .openapi({
     description:
@@ -5716,91 +4272,51 @@ const ShotSegmentSchema = z
 
 const SegmentDetectionSchema = z
   .object({
-    Type: SegmentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the segment. Valid values are <code>TECHNICAL_CUE</code> and <code>SHOT</code>.',
-        }),
-    ).exactOptional(),
-    StartTimestampMillis: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of the detected segment in milliseconds from the start of the video. This value is rounded down. For example, if the actual timestamp is 100.6667 milliseconds, Amazon Rekognition Video returns a value of 100 millis.',
-        }),
-    ).exactOptional(),
-    EndTimestampMillis: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time of the detected segment, in milliseconds, from the start of the video. This value is rounded down.',
-        }),
-    ).exactOptional(),
-    DurationMillis: ULongSchema.and(
-      z.any().openapi({ description: 'The duration of the detected segment in milliseconds. ' }),
-    ).exactOptional(),
-    StartTimecodeSMPTE: TimecodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The frame-accurate SMPTE timecode, from the start of a video, for the start of a detected segment. <code>StartTimecode</code> is in <i>HH:MM:SS:fr</i> format (and <i>;fr</i> for drop frame-rates). ',
-        }),
-    ).exactOptional(),
-    EndTimecodeSMPTE: TimecodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The frame-accurate SMPTE timecode, from the start of a video, for the end of a detected segment. <code>EndTimecode</code> is in <i>HH:MM:SS:fr</i> format (and <i>;fr</i> for drop frame-rates).',
-        }),
-    ).exactOptional(),
-    DurationSMPTE: TimecodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The duration of the timecode for the detected segment in SMPTE format.',
-        }),
-    ).exactOptional(),
-    TechnicalCueSegment: TechnicalCueSegmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the segment is a technical cue, contains information about the technical cue.',
-        }),
-    ).exactOptional(),
-    ShotSegment: ShotSegmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the segment is a shot detection, contains information about the shot detection.',
-        }),
-    ).exactOptional(),
-    StartFrameNumber: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The frame number of the start of a video segment, using a frame index that starts with 0. ',
-        }),
-    ).exactOptional(),
-    EndFrameNumber: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The frame number at the end of a video segment, using a frame index that starts with 0. ',
-        }),
-    ).exactOptional(),
-    DurationFrames: ULongSchema.and(
-      z.any().openapi({ description: ' The duration of a video segment, expressed in frames. ' }),
-    ).exactOptional(),
+    Type: SegmentTypeSchema.exactOptional().openapi({
+      description:
+        'The type of the segment. Valid values are <code>TECHNICAL_CUE</code> and <code>SHOT</code>.',
+    }),
+    StartTimestampMillis: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start time of the detected segment in milliseconds from the start of the video. This value is rounded down. For example, if the actual timestamp is 100.6667 milliseconds, Amazon Rekognition Video returns a value of 100 millis.',
+    }),
+    EndTimestampMillis: TimestampSchema.exactOptional().openapi({
+      description:
+        'The end time of the detected segment, in milliseconds, from the start of the video. This value is rounded down.',
+    }),
+    DurationMillis: ULongSchema.exactOptional().openapi({
+      description: 'The duration of the detected segment in milliseconds. ',
+    }),
+    StartTimecodeSMPTE: TimecodeSchema.exactOptional().openapi({
+      description:
+        'The frame-accurate SMPTE timecode, from the start of a video, for the start of a detected segment. <code>StartTimecode</code> is in <i>HH:MM:SS:fr</i> format (and <i>;fr</i> for drop frame-rates). ',
+    }),
+    EndTimecodeSMPTE: TimecodeSchema.exactOptional().openapi({
+      description:
+        'The frame-accurate SMPTE timecode, from the start of a video, for the end of a detected segment. <code>EndTimecode</code> is in <i>HH:MM:SS:fr</i> format (and <i>;fr</i> for drop frame-rates).',
+    }),
+    DurationSMPTE: TimecodeSchema.exactOptional().openapi({
+      description: 'The duration of the timecode for the detected segment in SMPTE format.',
+    }),
+    TechnicalCueSegment: TechnicalCueSegmentSchema.exactOptional().openapi({
+      description:
+        'If the segment is a technical cue, contains information about the technical cue.',
+    }),
+    ShotSegment: ShotSegmentSchema.exactOptional().openapi({
+      description:
+        'If the segment is a shot detection, contains information about the shot detection.',
+    }),
+    StartFrameNumber: ULongSchema.exactOptional().openapi({
+      description:
+        ' The frame number of the start of a video segment, using a frame index that starts with 0. ',
+    }),
+    EndFrameNumber: ULongSchema.exactOptional().openapi({
+      description:
+        ' The frame number at the end of a video segment, using a frame index that starts with 0. ',
+    }),
+    DurationFrames: ULongSchema.exactOptional().openapi({
+      description: ' The duration of a video segment, expressed in frames. ',
+    }),
   })
   .openapi({
     description:
@@ -5813,12 +4329,12 @@ const SegmentDetectionsSchema = z.array(SegmentDetectionSchema).openapi('Segment
 
 const SegmentTypeInfoSchema = z
   .object({
-    Type: SegmentTypeSchema.and(
-      z.any().openapi({ description: 'The type of a segment (technical cue or shot detection).' }),
-    ).exactOptional(),
-    ModelVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version of the model used to detect segments.' }),
-    ).exactOptional(),
+    Type: SegmentTypeSchema.exactOptional().openapi({
+      description: 'The type of a segment (technical cue or shot detection).',
+    }),
+    ModelVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the model used to detect segments.',
+    }),
   })
   .openapi({
     description:
@@ -5831,121 +4347,73 @@ const SegmentTypesInfoSchema = z.array(SegmentTypeInfoSchema).openapi('SegmentTy
 
 const GetSegmentDetectionResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the segment detection job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
-    VideoMetadata: VideoMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Currently, Amazon Rekognition Video returns a single object in the <code>VideoMetadata</code> array. The object contains information about the video stream in the input file that Amazon Rekognition Video chose to analyze. The <code>VideoMetadata</code> object includes the video codec, video format and other information. Video metadata is returned in each page of information returned by <code>GetSegmentDetection</code>.',
-        }),
-    ).exactOptional(),
-    AudioMetadata: AudioMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects. There can be multiple audio streams. Each <code>AudioMetadata</code> object contains metadata for a single audio stream. Audio information in an <code>AudioMetadata</code> objects includes the audio codec, the number of audio channels, the duration of the audio stream, and the sample rate. Audio metadata is returned in each page of information returned by <code>GetSegmentDetection</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of text.',
-        }),
-    ).exactOptional(),
-    Segments: SegmentDetectionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of segments detected in a video. The array is sorted by the segment types (TECHNICAL_CUE or SHOT) specified in the <code>SegmentTypes</code> input parameter of <code>StartSegmentDetection</code>. Within each segment type the array is sorted by timestamp values.',
-        }),
-    ).exactOptional(),
-    SelectedSegmentTypes: SegmentTypesInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the segment types requested in the call to <code>StartSegmentDetection</code>. ',
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the segment detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartSegmentDetection.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'Current status of the segment detection job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
+    VideoMetadata: VideoMetadataListSchema.exactOptional().openapi({
+      description:
+        'Currently, Amazon Rekognition Video returns a single object in the <code>VideoMetadata</code> array. The object contains information about the video stream in the input file that Amazon Rekognition Video chose to analyze. The <code>VideoMetadata</code> object includes the video codec, video format and other information. Video metadata is returned in each page of information returned by <code>GetSegmentDetection</code>.',
+    }),
+    AudioMetadata: AudioMetadataListSchema.exactOptional().openapi({
+      description:
+        'An array of objects. There can be multiple audio streams. Each <code>AudioMetadata</code> object contains metadata for a single audio stream. Audio information in an <code>AudioMetadata</code> objects includes the audio codec, the number of audio channels, the duration of the audio stream, and the sample rate. Audio metadata is returned in each page of information returned by <code>GetSegmentDetection</code>.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of text.',
+    }),
+    Segments: SegmentDetectionsSchema.exactOptional().openapi({
+      description:
+        'An array of segments detected in a video. The array is sorted by the segment types (TECHNICAL_CUE or SHOT) specified in the <code>SegmentTypes</code> input parameter of <code>StartSegmentDetection</code>. Within each segment type the array is sorted by timestamp values.',
+    }),
+    SelectedSegmentTypes: SegmentTypesInfoSchema.exactOptional().openapi({
+      description:
+        'An array containing the segment types requested in the call to <code>StartSegmentDetection</code>. ',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the segment detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartSegmentDetection.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartSegmentDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartSegmentDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSegmentDetectionResponse')
 
 const GetSegmentDetectionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the text detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartSegmentDetection</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of text.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'Job identifier for the text detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartSegmentDetection</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of text.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetSegmentDetectionRequest' })
   .openapi('GetSegmentDetectionRequest')
 
 const TextDetectionResultSchema = z
   .object({
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds from the start of the video, that the text was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the text first appears.',
-        }),
-    ).exactOptional(),
-    TextDetection: TextDetectionSchema.and(
-      z.any().openapi({ description: 'Details about text detected in a video.' }),
-    ).exactOptional(),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds from the start of the video, that the text was detected. Note that <code>Timestamp</code> is not guaranteed to be accurate to the individual frame where the text first appears.',
+    }),
+    TextDetection: TextDetectionSchema.exactOptional().openapi({
+      description: 'Details about text detected in a video.',
+    }),
   })
   .openapi({
     description:
@@ -5960,109 +4428,65 @@ const TextDetectionResultsSchema = z
 
 const GetTextDetectionResponseSchema = z
   .object({
-    JobStatus: VideoJobStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the text detection job.' }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
-        }),
-    ).exactOptional(),
+    JobStatus: VideoJobStatusSchema.exactOptional().openapi({
+      description: 'Current status of the text detection job.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'If the job fails, <code>StatusMessage</code> provides a descriptive error message.',
+    }),
     VideoMetadata: VideoMetadataSchema.exactOptional(),
-    TextDetections: TextDetectionResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of text detected in the video. Each element contains the detected text, the time in milliseconds from the start of the video that the text was detected, and where it was detected on the screen.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of text.',
-        }),
-    ).exactOptional(),
-    TextModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Version number of the text detection model that was used to detect text.',
-        }),
-    ).exactOptional(),
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the text detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartTextDetection.',
-        }),
-    ).exactOptional(),
+    TextDetections: TextDetectionResultsSchema.exactOptional().openapi({
+      description:
+        'An array of text detected in the video. Each element contains the detected text, the time in milliseconds from the start of the video that the text was detected, and where it was detected on the screen.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of text.',
+    }),
+    TextModelVersion: StringSchema.exactOptional().openapi({
+      description: 'Version number of the text detection model that was used to detect text.',
+    }),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Job identifier for the text detection operation for which you want to obtain results. The job identifer is returned by an initial call to StartTextDetection.',
+    }),
     Video: VideoSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A job identifier specified in the call to StartTextDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'A job identifier specified in the call to StartTextDetection and returned in the job completion notification sent to your Amazon Simple Notification Service topic.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTextDetectionResponse')
 
 const GetTextDetectionRequestSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Job identifier for the text detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartTextDetection</code>.',
-        }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of results to return per paginated call. The largest value you can specify is 1000.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of text.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.openapi({
+      description:
+        'Job identifier for the text detection operation for which you want results returned. You get the job identifer from an initial call to <code>StartTextDetection</code>.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of results to return per paginated call. The largest value you can specify is 1000.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more labels to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of text.',
+    }),
   })
   .openapi({ required: ['JobId'], title: 'GetTextDetectionRequest' })
   .openapi('GetTextDetectionRequest')
 
 const FaceRecordSchema = z
   .object({
-    Face: FaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the face properties such as the bounding box, face ID, image ID of the input image, and external image ID that you assigned. ',
-        }),
-    ).exactOptional(),
-    FaceDetail: FaceDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Structure containing attributes of the face that the algorithm detected.',
-        }),
-    ).exactOptional(),
+    Face: FaceSchema.exactOptional().openapi({
+      description:
+        'Describes the face properties such as the bounding box, face ID, image ID of the input image, and external image ID that you assigned. ',
+    }),
+    FaceDetail: FaceDetailSchema.exactOptional().openapi({
+      description: 'Structure containing attributes of the face that the algorithm detected.',
+    }),
   })
   .openapi({
     description:
@@ -6089,22 +4513,14 @@ const ReasonsSchema = z.array(ReasonSchema).openapi('Reasons')
 
 const UnindexedFaceSchema = z
   .object({
-    Reasons: ReasonsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of reasons that specify why a face wasn't indexed. </p> <ul> <li> <p>EXTREME_POSE - The face is at a pose that can't be detected. For example, the head is turned too far away from the camera.</p> </li> <li> <p>EXCEEDS_MAX_FACES - The number of faces detected is already higher than that specified by the <code>MaxFaces</code> input parameter for <code>IndexFaces</code>.</p> </li> <li> <p>LOW_BRIGHTNESS - The image is too dark.</p> </li> <li> <p>LOW_SHARPNESS - The image is too blurry.</p> </li> <li> <p>LOW_CONFIDENCE - The face was detected with a low confidence.</p> </li> <li> <p>SMALL_BOUNDING_BOX - The bounding box around the face is too small.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    FaceDetail: FaceDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The structure that contains attributes of a face that <code>IndexFaces</code>detected, but didn't index. ",
-        }),
-    ).exactOptional(),
+    Reasons: ReasonsSchema.exactOptional().openapi({
+      description:
+        "<p>An array of reasons that specify why a face wasn't indexed. </p> <ul> <li> <p>EXTREME_POSE - The face is at a pose that can't be detected. For example, the head is turned too far away from the camera.</p> </li> <li> <p>EXCEEDS_MAX_FACES - The number of faces detected is already higher than that specified by the <code>MaxFaces</code> input parameter for <code>IndexFaces</code>.</p> </li> <li> <p>LOW_BRIGHTNESS - The image is too dark.</p> </li> <li> <p>LOW_SHARPNESS - The image is too blurry.</p> </li> <li> <p>LOW_CONFIDENCE - The face was detected with a low confidence.</p> </li> <li> <p>SMALL_BOUNDING_BOX - The bounding box around the face is too small.</p> </li> </ul>",
+    }),
+    FaceDetail: FaceDetailSchema.exactOptional().openapi({
+      description:
+        "The structure that contains attributes of a face that <code>IndexFaces</code>detected, but didn't index. ",
+    }),
   })
   .openapi({
     description:
@@ -6117,38 +4533,22 @@ const UnindexedFacesSchema = z.array(UnindexedFaceSchema).openapi('UnindexedFace
 
 const IndexFacesResponseSchema = z
   .object({
-    FaceRecords: FaceRecordListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of faces detected and added to the collection. For more information, see Searching Faces in a Collection in the Amazon Rekognition Developer Guide. ',
-        }),
-    ).exactOptional(),
-    OrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>If your collection is associated with a face detection model that's later than version 3.0, the value of <code>OrientationCorrection</code> is always null and no orientation information is returned.</p> <p>If your collection is associated with a face detection model that's version 3.0 or earlier, the following applies:</p> <ul> <li> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction - the bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata. The value of <code>OrientationCorrection</code> is null.</p> </li> <li> <p>If the image doesn't contain orientation information in its Exif metadata, Amazon Rekognition returns an estimated orientation (ROTATE_0, ROTATE_90, ROTATE_180, ROTATE_270). Amazon Rekognition doesn’t perform image correction for images. The bounding box coordinates aren't translated and represent the object locations before the image is rotated.</p> </li> </ul> <p>Bounding box information is returned in the <code>FaceRecords</code> array. You can get the version of the face detection model by calling <a>DescribeCollection</a>. </p>",
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version number of the face detection model that's associated with the input collection (<code>CollectionId</code>).",
-        }),
-    ).exactOptional(),
-    UnindexedFaces: UnindexedFacesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of faces that were detected in the image but weren't indexed. They weren't indexed because the quality filter identified them as low quality, or the <code>MaxFaces</code> request parameter filtered them out. To use the quality filter, you specify the <code>QualityFilter</code> request parameter.",
-        }),
-    ).exactOptional(),
+    FaceRecords: FaceRecordListSchema.exactOptional().openapi({
+      description:
+        'An array of faces detected and added to the collection. For more information, see Searching Faces in a Collection in the Amazon Rekognition Developer Guide. ',
+    }),
+    OrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<p>If your collection is associated with a face detection model that's later than version 3.0, the value of <code>OrientationCorrection</code> is always null and no orientation information is returned.</p> <p>If your collection is associated with a face detection model that's version 3.0 or earlier, the following applies:</p> <ul> <li> <p>If the input image is in .jpeg format, it might contain exchangeable image file format (Exif) metadata that includes the image's orientation. Amazon Rekognition uses this orientation information to perform image correction - the bounding box coordinates are translated to represent object locations after the orientation information in the Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata. The value of <code>OrientationCorrection</code> is null.</p> </li> <li> <p>If the image doesn't contain orientation information in its Exif metadata, Amazon Rekognition returns an estimated orientation (ROTATE_0, ROTATE_90, ROTATE_180, ROTATE_270). Amazon Rekognition doesn’t perform image correction for images. The bounding box coordinates aren't translated and represent the object locations before the image is rotated.</p> </li> </ul> <p>Bounding box information is returned in the <code>FaceRecords</code> array. You can get the version of the face detection model by calling <a>DescribeCollection</a>. </p>",
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        "The version number of the face detection model that's associated with the input collection (<code>CollectionId</code>).",
+    }),
+    UnindexedFaces: UnindexedFacesSchema.exactOptional().openapi({
+      description:
+        "An array of faces that were detected in the image but weren't indexed. They weren't indexed because the quality filter identified them as low quality, or the <code>MaxFaces</code> request parameter filtered them out. To use the quality filter, you specify the <code>QualityFilter</code> request parameter.",
+    }),
   })
   .openapi({
     example: {
@@ -6226,53 +4626,29 @@ const MaxFacesToIndexSchema = z.int().min(1).openapi('MaxFacesToIndex')
 
 const IndexFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an existing collection to which you want to add the faces that are detected in the input images.',
-        }),
-    ),
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes isn't supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>",
-        }),
-    ),
-    ExternalImageId: ExternalImageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID you want to assign to all the faces detected in the image.',
-        }),
-    ).exactOptional(),
-    DetectionAttributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of facial attributes you want to be returned. A <code>DEFAULT</code> subset of facial attributes - <code>BoundingBox</code>, <code>Confidence</code>, <code>Pose</code>, <code>Quality</code>, and <code>Landmarks</code> - will always be returned. You can request for specific facial attributes (in addition to the default list) - by using <code>["DEFAULT", "FACE_OCCLUDED"]</code> or just <code>["FACE_OCCLUDED"]</code>. You can request for all facial attributes by using <code>["ALL"]</code>. Requesting more attributes may increase response time.</p> <p>If you provide both, <code>["ALL", "DEFAULT"]</code>, the service uses a logical AND operator to determine which attributes to return (in this case, all attributes). </p>',
-        }),
-    ).exactOptional(),
-    MaxFaces: MaxFacesToIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum number of faces to index. The value of <code>MaxFaces</code> must be greater than or equal to 1. <code>IndexFaces</code> returns no more than 100 detected faces in an image, even if you specify a larger value for <code>MaxFaces</code>.</p> <p>If <code>IndexFaces</code> detects more faces than the value of <code>MaxFaces</code>, the faces with the lowest quality are filtered out first. If there are still more faces than the value of <code>MaxFaces</code>, the faces with the smallest bounding boxes are filtered out (up to the number that's needed to satisfy the value of <code>MaxFaces</code>). Information about the unindexed faces is available in the <code>UnindexedFaces</code> array. </p> <p>The faces that are returned by <code>IndexFaces</code> are sorted by the largest face bounding box size to the smallest size, in descending order.</p> <p> <code>MaxFaces</code> can be used with a collection associated with any version of the face model.</p>",
-        }),
-    ).exactOptional(),
-    QualityFilter: QualityFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't indexed. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The default value is <code>AUTO</code>. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description:
+        'The ID of an existing collection to which you want to add the faces that are detected in the input images.',
+    }),
+    Image: ImageSchema.openapi({
+      description:
+        "<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes isn't supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>",
+    }),
+    ExternalImageId: ExternalImageIdSchema.exactOptional().openapi({
+      description: 'The ID you want to assign to all the faces detected in the image.',
+    }),
+    DetectionAttributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of facial attributes you want to be returned. A <code>DEFAULT</code> subset of facial attributes - <code>BoundingBox</code>, <code>Confidence</code>, <code>Pose</code>, <code>Quality</code>, and <code>Landmarks</code> - will always be returned. You can request for specific facial attributes (in addition to the default list) - by using <code>["DEFAULT", "FACE_OCCLUDED"]</code> or just <code>["FACE_OCCLUDED"]</code>. You can request for all facial attributes by using <code>["ALL"]</code>. Requesting more attributes may increase response time.</p> <p>If you provide both, <code>["ALL", "DEFAULT"]</code>, the service uses a logical AND operator to determine which attributes to return (in this case, all attributes). </p>',
+    }),
+    MaxFaces: MaxFacesToIndexSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum number of faces to index. The value of <code>MaxFaces</code> must be greater than or equal to 1. <code>IndexFaces</code> returns no more than 100 detected faces in an image, even if you specify a larger value for <code>MaxFaces</code>.</p> <p>If <code>IndexFaces</code> detects more faces than the value of <code>MaxFaces</code>, the faces with the lowest quality are filtered out first. If there are still more faces than the value of <code>MaxFaces</code>, the faces with the smallest bounding boxes are filtered out (up to the number that's needed to satisfy the value of <code>MaxFaces</code>). Information about the unindexed faces is available in the <code>UnindexedFaces</code> array. </p> <p>The faces that are returned by <code>IndexFaces</code> are sorted by the largest face bounding box size to the smallest size, in descending order.</p> <p> <code>MaxFaces</code> can be used with a collection associated with any version of the face model.</p>",
+    }),
+    QualityFilter: QualityFilterSchema.exactOptional().openapi({
+      description:
+        "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't indexed. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The default value is <code>AUTO</code>. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
+    }),
   })
   .openapi({ required: ['CollectionId', 'Image'], title: 'IndexFacesRequest' })
   .openapi('IndexFacesRequest')
@@ -6283,25 +4659,17 @@ const FaceModelVersionListSchema = z.array(StringSchema).openapi('FaceModelVersi
 
 const ListCollectionsResponseSchema = z
   .object({
-    CollectionIds: CollectionIdListSchema.and(
-      z.any().openapi({ description: 'An array of collection IDs.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result is truncated, the response provides a <code>NextToken</code> that you can use in the subsequent request to fetch the next set of collection IDs.',
-        }),
-    ).exactOptional(),
-    FaceModelVersions: FaceModelVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version numbers of the face detection models associated with the collections in the array <code>CollectionIds</code>. For example, the value of <code>FaceModelVersions[2]</code> is the version number for the face detection model used by the collection in <code>CollectionId[2]</code>.',
-        }),
-    ).exactOptional(),
+    CollectionIds: CollectionIdListSchema.exactOptional().openapi({
+      description: 'An array of collection IDs.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the result is truncated, the response provides a <code>NextToken</code> that you can use in the subsequent request to fetch the next set of collection IDs.',
+    }),
+    FaceModelVersions: FaceModelVersionListSchema.exactOptional().openapi({
+      description:
+        'Version numbers of the face detection models associated with the collections in the array <code>CollectionIds</code>. For example, the value of <code>FaceModelVersions[2]</code> is the version number for the face detection model used by the collection in <code>CollectionId[2]</code>.',
+    }),
   })
   .openapi({ example: { CollectionIds: ['myphotos'] }, required: [] })
   .openapi('ListCollectionsResponse')
@@ -6310,12 +4678,12 @@ const PageSizeSchema = z.int().min(0).max(4096).openapi('PageSize')
 
 const ListCollectionsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token from the previous response.' }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'Maximum number of collection IDs to return. ' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Pagination token from the previous response.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'Maximum number of collection IDs to return. ',
+    }),
   })
   .openapi({ title: 'ListCollectionsRequest', required: [] })
   .openapi('ListCollectionsRequest')
@@ -6331,17 +4699,13 @@ const DatasetEntriesSchema = z.array(DatasetEntrySchema).openapi('DatasetEntries
 
 const ListDatasetEntriesResponseSchema = z
   .object({
-    DatasetEntries: DatasetEntriesSchema.and(
-      z.any().openapi({ description: ' A list of entries (images) in the dataset. ' }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    DatasetEntries: DatasetEntriesSchema.exactOptional().openapi({
+      description: ' A list of entries (images) in the dataset. ',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
   })
   .openapi({
     example: {
@@ -6377,78 +4741,45 @@ const ListDatasetEntriesPageSizeSchema = z
 
 const ListDatasetEntriesRequestSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) for the dataset that you want to use. ',
-        }),
-    ),
-    ContainsLabels: DatasetLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a label filter for the response. The response includes an entry only if one or more of the labels in <code>ContainsLabels</code> exist in the entry. ',
-        }),
-    ).exactOptional(),
-    Labeled: IsLabeledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Specify <code>true</code> to get only the JSON Lines where the image is labeled. Specify <code>false</code> to get only the JSON Lines where the image isn't labeled. If you don't specify <code>Labeled</code>, <code>ListDatasetEntries</code> returns JSON Lines for labeled and unlabeled images. ",
-        }),
-    ).exactOptional(),
-    SourceRefContains: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, <code>ListDatasetEntries</code> only returns JSON Lines where the value of <code>SourceRefContains</code> is part of the <code>source-ref</code> field. The <code>source-ref</code> field contains the Amazon S3 location of the image. You can use <code>SouceRefContains</code> for tasks such as getting the JSON Line for a single image, or gettting JSON Lines for all images within a specific folder.',
-        }),
-    ).exactOptional(),
-    HasErrors: HasErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies an error filter for the response. Specify <code>True</code> to only include entries that have errors. ',
-        }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ListDatasetEntriesPageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
-        }),
-    ).exactOptional(),
+    DatasetArn: DatasetArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) for the dataset that you want to use. ',
+    }),
+    ContainsLabels: DatasetLabelsSchema.exactOptional().openapi({
+      description:
+        'Specifies a label filter for the response. The response includes an entry only if one or more of the labels in <code>ContainsLabels</code> exist in the entry. ',
+    }),
+    Labeled: IsLabeledSchema.exactOptional().openapi({
+      description:
+        " Specify <code>true</code> to get only the JSON Lines where the image is labeled. Specify <code>false</code> to get only the JSON Lines where the image isn't labeled. If you don't specify <code>Labeled</code>, <code>ListDatasetEntries</code> returns JSON Lines for labeled and unlabeled images. ",
+    }),
+    SourceRefContains: QueryStringSchema.exactOptional().openapi({
+      description:
+        'If specified, <code>ListDatasetEntries</code> only returns JSON Lines where the value of <code>SourceRefContains</code> is part of the <code>source-ref</code> field. The <code>source-ref</code> field contains the Amazon S3 location of the image. You can use <code>SouceRefContains</code> for tasks such as getting the JSON Line for a single image, or gettting JSON Lines for all images within a specific folder.',
+    }),
+    HasErrors: HasErrorsSchema.exactOptional().openapi({
+      description:
+        'Specifies an error filter for the response. Specify <code>True</code> to only include entries that have errors. ',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
+    MaxResults: ListDatasetEntriesPageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'ListDatasetEntriesRequest' })
   .openapi('ListDatasetEntriesRequest')
 
 const DatasetLabelStatsSchema = z
   .object({
-    EntryCount: UIntegerSchema.and(
-      z.any().openapi({ description: ' The total number of images that use the label. ' }),
-    ).exactOptional(),
-    BoundingBoxCount: UIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The total number of images that have the label assigned to a bounding box. ',
-        }),
-    ).exactOptional(),
+    EntryCount: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of images that use the label. ',
+    }),
+    BoundingBoxCount: UIntegerSchema.exactOptional().openapi({
+      description: ' The total number of images that have the label assigned to a bounding box. ',
+    }),
   })
   .openapi({
     description:
@@ -6459,12 +4790,12 @@ const DatasetLabelStatsSchema = z
 
 const DatasetLabelDescriptionSchema = z
   .object({
-    LabelName: DatasetLabelSchema.and(
-      z.any().openapi({ description: ' The name of the label. ' }),
-    ).exactOptional(),
-    LabelStats: DatasetLabelStatsSchema.and(
-      z.any().openapi({ description: ' Statistics about the label. ' }),
-    ).exactOptional(),
+    LabelName: DatasetLabelSchema.exactOptional().openapi({
+      description: ' The name of the label. ',
+    }),
+    LabelStats: DatasetLabelStatsSchema.exactOptional().openapi({
+      description: ' Statistics about the label. ',
+    }),
   })
   .openapi({
     description: ' Describes a dataset label. For more information, see <a>ListDatasetLabels</a>. ',
@@ -6478,17 +4809,13 @@ const DatasetLabelDescriptionsSchema = z
 
 const ListDatasetLabelsResponseSchema = z
   .object({
-    DatasetLabelDescriptions: DatasetLabelDescriptionsSchema.and(
-      z.any().openapi({ description: ' A list of the labels in the dataset. ' }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
+    DatasetLabelDescriptions: DatasetLabelDescriptionsSchema.exactOptional().openapi({
+      description: ' A list of the labels in the dataset. ',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
   })
   .openapi({
     example: {
@@ -6506,29 +4833,17 @@ const ListDatasetLabelsPageSizeSchema = z.int().min(1).max(100).openapi('ListDat
 
 const ListDatasetLabelsRequestSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the dataset that you want to use. ',
-        }),
-    ),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ListDatasetLabelsPageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
-        }),
-    ).exactOptional(),
+    DatasetArn: DatasetArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) of the dataset that you want to use. ',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
+    MaxResults: ListDatasetLabelsPageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 100. If you specify a value greater than 100, a ValidationException error occurs. The default value is 100. ',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'ListDatasetLabelsRequest' })
   .openapi('ListDatasetLabelsRequest')
@@ -6537,25 +4852,17 @@ const FaceListSchema = z.array(FaceSchema).openapi('FaceList')
 
 const ListFacesResponseSchema = z
   .object({
-    Faces: FaceListSchema.and(
-      z.any().openapi({ description: 'An array of <code>Face</code> objects. ' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of faces.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
-        }),
-    ).exactOptional(),
+    Faces: FaceListSchema.exactOptional().openapi({
+      description: 'An array of <code>Face</code> objects. ',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of faces.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
+    }),
   })
   .openapi({
     example: {
@@ -6606,36 +4913,24 @@ const ListFacesResponseSchema = z
 
 const ListFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'ID of the collection from which to list the faces.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more data to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of faces.',
-        }),
-    ).exactOptional(),
-    MaxResults: PageSizeSchema.and(
-      z.any().openapi({ description: 'Maximum number of faces to return.' }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of user IDs to filter results with when listing faces in a collection.',
-        }),
-    ).exactOptional(),
-    FaceIds: FaceIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of face IDs to filter results with when listing faces in a collection.',
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'ID of the collection from which to list the faces.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more data to retrieve), Amazon Rekognition returns a pagination token in the response. You can use this pagination token to retrieve the next set of faces.',
+    }),
+    MaxResults: PageSizeSchema.exactOptional().openapi({
+      description: 'Maximum number of faces to return.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description:
+        'An array of user IDs to filter results with when listing faces in a collection.',
+    }),
+    FaceIds: FaceIdListSchema.exactOptional().openapi({
+      description:
+        'An array of face IDs to filter results with when listing faces in a collection.',
+    }),
   })
   .openapi({ required: ['CollectionId'], title: 'ListFacesRequest' })
   .openapi('ListFacesRequest')
@@ -6649,33 +4944,25 @@ const ProjectPolicyDocumentSchema = z
 
 const ProjectPolicySchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project to which the project policy is attached.',
-        }),
-    ).exactOptional(),
-    PolicyName: ProjectPolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the project policy.' }),
-    ).exactOptional(),
-    PolicyRevisionId: ProjectPolicyRevisionIdSchema.and(
-      z.any().openapi({ description: 'The revision ID of the project policy.' }),
-    ).exactOptional(),
-    PolicyDocument: ProjectPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON document for the project policy.' }),
-    ).exactOptional(),
-    CreationTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The Unix datetime for the creation of the project policy.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Unix datetime for when the project policy was last updated. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project to which the project policy is attached.',
+    }),
+    PolicyName: ProjectPolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the project policy.',
+    }),
+    PolicyRevisionId: ProjectPolicyRevisionIdSchema.exactOptional().openapi({
+      description: 'The revision ID of the project policy.',
+    }),
+    PolicyDocument: ProjectPolicyDocumentSchema.exactOptional().openapi({
+      description: 'The JSON document for the project policy.',
+    }),
+    CreationTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix datetime for the creation of the project policy.',
+    }),
+    LastUpdatedTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The Unix datetime for when the project policy was last updated. ',
+    }),
   })
   .openapi({
     description:
@@ -6688,17 +4975,13 @@ const ProjectPoliciesSchema = z.array(ProjectPolicySchema).openapi('ProjectPolic
 
 const ListProjectPoliciesResponseSchema = z
   .object({
-    ProjectPolicies: ProjectPoliciesSchema.and(
-      z.any().openapi({ description: 'A list of project policies attached to the project.' }),
-    ).exactOptional(),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of project policies.',
-        }),
-    ).exactOptional(),
+    ProjectPolicies: ProjectPoliciesSchema.exactOptional().openapi({
+      description: 'A list of project policies attached to the project.',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition returns this token that you can use in the subsequent request to retrieve the next set of project policies.',
+    }),
   })
   .openapi({
     example: {
@@ -6728,43 +5011,29 @@ const ListProjectPoliciesPageSizeSchema = z
 
 const ListProjectPoliciesRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the project for which you want to list the project policies.',
-        }),
-    ),
-    NextToken: ExtendedPaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
-        }),
-    ).exactOptional(),
-    MaxResults: ListProjectPoliciesPageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to return per paginated call. The largest value you can specify is 5. If you specify a value greater than 5, a ValidationException error occurs. The default value is 5. ',
-        }),
-    ).exactOptional(),
+    ProjectArn: ProjectArnSchema.openapi({
+      description: 'The ARN of the project for which you want to list the project policies.',
+    }),
+    NextToken: ExtendedPaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there is more results to retrieve), Amazon Rekognition Custom Labels returns a pagination token in the response. You can use this pagination token to retrieve the next set of results. ',
+    }),
+    MaxResults: ListProjectPoliciesPageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to return per paginated call. The largest value you can specify is 5. If you specify a value greater than 5, a ValidationException error occurs. The default value is 5. ',
+    }),
   })
   .openapi({ required: ['ProjectArn'], title: 'ListProjectPoliciesRequest' })
   .openapi('ListProjectPoliciesRequest')
 
 const StreamProcessorSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z.any().openapi({ description: 'Name of the Amazon Rekognition stream processor. ' }),
-    ).exactOptional(),
-    Status: StreamProcessorStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Current status of the Amazon Rekognition stream processor.' }),
-    ).exactOptional(),
+    Name: StreamProcessorNameSchema.exactOptional().openapi({
+      description: 'Name of the Amazon Rekognition stream processor. ',
+    }),
+    Status: StreamProcessorStatusSchema.exactOptional().openapi({
+      description: 'Current status of the Amazon Rekognition stream processor.',
+    }),
   })
   .openapi({
     description:
@@ -6777,48 +5046,36 @@ const StreamProcessorListSchema = z.array(StreamProcessorSchema).openapi('Stream
 
 const ListStreamProcessorsResponseSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of stream processors. ',
-        }),
-    ).exactOptional(),
-    StreamProcessors: StreamProcessorListSchema.and(
-      z.any().openapi({ description: 'List of stream processors that you have created.' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Rekognition Video returns this token that you can use in the subsequent request to retrieve the next set of stream processors. ',
+    }),
+    StreamProcessors: StreamProcessorListSchema.exactOptional().openapi({
+      description: 'List of stream processors that you have created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamProcessorsResponse')
 
 const ListStreamProcessorsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the previous response was incomplete (because there are more stream processors to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of stream processors. ',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of stream processors you want Amazon Rekognition Video to return in the response. The default is 1000. ',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If the previous response was incomplete (because there are more stream processors to retrieve), Amazon Rekognition Video returns a pagination token in the response. You can use this pagination token to retrieve the next set of stream processors. ',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'Maximum number of stream processors you want Amazon Rekognition Video to return in the response. The default is 1000. ',
+    }),
   })
   .openapi({ title: 'ListStreamProcessorsRequest', required: [] })
   .openapi('ListStreamProcessorsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: ' A list of key-value tags assigned to the resource. ' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: ' A list of key-value tags assigned to the resource. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -6827,33 +5084,23 @@ const ResourceArnSchema = z.string().min(20).max(2048).openapi('ResourceArn')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Amazon Resource Name (ARN) of the model, collection, or stream processor that contains the tags that you want a list of. ',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        ' Amazon Resource Name (ARN) of the model, collection, or stream processor that contains the tags that you want a list of. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const UserSchema = z
   .object({
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A provided ID for the User. Unique within the collection.' }),
-    ).exactOptional(),
-    UserStatus: UserStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Communicates if the UserID has been updated with latest set of faces to be associated with the UserID. ',
-        }),
-    ).exactOptional(),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: ' A provided ID for the User. Unique within the collection.',
+    }),
+    UserStatus: UserStatusSchema.exactOptional().openapi({
+      description:
+        ' Communicates if the UserID has been updated with latest set of faces to be associated with the UserID. ',
+    }),
   })
   .openapi({ description: 'Metadata of the user stored in a collection.', required: [] })
   .openapi('User')
@@ -6862,17 +5109,13 @@ const UserListSchema = z.array(UserSchema).max(500).openapi('UserList')
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UserListSchema.and(
-      z.any().openapi({ description: 'List of UsersID associated with the specified collection.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token to be used with the subsequent request if the response is truncated.',
-        }),
-    ).exactOptional(),
+    Users: UserListSchema.exactOptional().openapi({
+      description: 'List of UsersID associated with the specified collection.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token to be used with the subsequent request if the response is truncated.',
+    }),
   })
   .openapi({
     example: {
@@ -6890,57 +5133,41 @@ const MaxUserResultsSchema = z.int().min(1).max(500).openapi('MaxUserResults')
 
 const ListUsersRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of an existing collection.' }),
-    ),
-    MaxResults: MaxUserResultsSchema.and(
-      z.any().openapi({ description: 'Maximum number of UsersID to return. ' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z.any().openapi({ description: 'Pagingation token to receive the next set of UsersID.' }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({ description: 'The ID of an existing collection.' }),
+    MaxResults: MaxUserResultsSchema.exactOptional().openapi({
+      description: 'Maximum number of UsersID to return. ',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'Pagingation token to receive the next set of UsersID.',
+    }),
   })
   .openapi({ required: ['CollectionId'], title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
 const PutProjectPolicyResponseSchema = z
   .object({
-    PolicyRevisionId: ProjectPolicyRevisionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the project policy.' }),
-    ).exactOptional(),
+    PolicyRevisionId: ProjectPolicyRevisionIdSchema.exactOptional().openapi({
+      description: 'The ID of the project policy.',
+    }),
   })
   .openapi({ example: { PolicyRevisionId: '0123456789abcdef' }, required: [] })
   .openapi('PutProjectPolicyResponse')
 
 const PutProjectPolicyRequestSchema = z
   .object({
-    ProjectArn: ProjectArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the project that the project policy is attached to.',
-        }),
-    ),
-    PolicyName: ProjectPolicyNameSchema.and(
-      z.any().openapi({ description: 'A name for the policy.' }),
-    ),
-    PolicyRevisionId: ProjectPolicyRevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The revision ID for the Project Policy. Each time you modify a policy, Amazon Rekognition Custom Labels generates and assigns a new <code>PolicyRevisionId</code> and then deletes the previous version of the policy.',
-        }),
-    ).exactOptional(),
-    PolicyDocument: ProjectPolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A resource policy to add to the model. The policy is a JSON structure that contains one or more statements that define the policy. The policy must follow the IAM syntax. For more information about the contents of a JSON policy document, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html">IAM JSON policy reference</a>. ',
-        }),
-    ),
+    ProjectArn: ProjectArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the project that the project policy is attached to.',
+    }),
+    PolicyName: ProjectPolicyNameSchema.openapi({ description: 'A name for the policy.' }),
+    PolicyRevisionId: ProjectPolicyRevisionIdSchema.exactOptional().openapi({
+      description:
+        'The revision ID for the Project Policy. Each time you modify a policy, Amazon Rekognition Custom Labels generates and assigns a new <code>PolicyRevisionId</code> and then deletes the previous version of the policy.',
+    }),
+    PolicyDocument: ProjectPolicyDocumentSchema.openapi({
+      description:
+        'A resource policy to add to the model. The policy is a JSON structure that contains one or more statements that define the policy. The policy must follow the IAM syntax. For more information about the contents of a JSON policy document, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html">IAM JSON policy reference</a>. ',
+    }),
   })
   .openapi({
     required: ['ProjectArn', 'PolicyName', 'PolicyDocument'],
@@ -6952,36 +5179,22 @@ const MalformedPolicyDocumentExceptionSchema = z.any().openapi('MalformedPolicyD
 
 const CelebritySchema = z
   .object({
-    Urls: UrlsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of URLs pointing to additional information about the celebrity. If there is no additional information about the celebrity, this list is empty.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the celebrity.' }),
-    ).exactOptional(),
-    Id: RekognitionUniqueIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the celebrity. ' }),
-    ).exactOptional(),
-    Face: ComparedFaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides information about the celebrity's face, such as its location on the image.",
-        }),
-    ).exactOptional(),
-    MatchConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The confidence, in percentage, that Amazon Rekognition has that the recognized face is the celebrity.',
-        }),
-    ).exactOptional(),
+    Urls: UrlsSchema.exactOptional().openapi({
+      description:
+        'An array of URLs pointing to additional information about the celebrity. If there is no additional information about the celebrity, this list is empty.',
+    }),
+    Name: StringSchema.exactOptional().openapi({ description: 'The name of the celebrity.' }),
+    Id: RekognitionUniqueIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the celebrity. ',
+    }),
+    Face: ComparedFaceSchema.exactOptional().openapi({
+      description:
+        "Provides information about the celebrity's face, such as its location on the image.",
+    }),
+    MatchConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The confidence, in percentage, that Amazon Rekognition has that the recognized face is the celebrity.',
+    }),
     KnownGender: KnownGenderSchema.exactOptional(),
   })
   .openapi({
@@ -6997,66 +5210,44 @@ const ComparedFaceListSchema = z.array(ComparedFaceSchema).openapi('ComparedFace
 
 const RecognizeCelebritiesResponseSchema = z
   .object({
-    CelebrityFaces: CelebrityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about each celebrity found in the image. Amazon Rekognition can detect a maximum of 64 celebrities in an image. Each celebrity object includes the following attributes: <code>Face</code>, <code>Confidence</code>, <code>Emotions</code>, <code>Landmarks</code>, <code>Pose</code>, <code>Quality</code>, <code>Smile</code>, <code>Id</code>, <code>KnownGender</code>, <code>MatchConfidence</code>, <code>Name</code>, <code>Urls</code>.',
-        }),
-    ).exactOptional(),
-    UnrecognizedFaces: ComparedFaceListSchema.and(
-      z.any().openapi({ description: 'Details about each unrecognized face in the image.' }),
-    ).exactOptional(),
-    OrientationCorrection: OrientationCorrectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<note> <p>Support for estimating image orientation using the the OrientationCorrection field has ceased as of August 2021. Any returned values for this field included in an API response will always be NULL.</p> </note> <p>The orientation of the input image (counterclockwise direction). If your application displays the image, you can use this value to correct the orientation. The bounding box coordinates returned in <code>CelebrityFaces</code> and <code>UnrecognizedFaces</code> represent face locations before the image orientation is corrected. </p> <note> <p>If the input image is in .jpeg format, it might contain exchangeable image (Exif) metadata that includes the image's orientation. If so, and the Exif metadata for the input image populates the orientation field, the value of <code>OrientationCorrection</code> is null. The <code>CelebrityFaces</code> and <code>UnrecognizedFaces</code> bounding box coordinates represent face locations after Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata. </p> </note>",
-        }),
-    ).exactOptional(),
+    CelebrityFaces: CelebrityListSchema.exactOptional().openapi({
+      description:
+        'Details about each celebrity found in the image. Amazon Rekognition can detect a maximum of 64 celebrities in an image. Each celebrity object includes the following attributes: <code>Face</code>, <code>Confidence</code>, <code>Emotions</code>, <code>Landmarks</code>, <code>Pose</code>, <code>Quality</code>, <code>Smile</code>, <code>Id</code>, <code>KnownGender</code>, <code>MatchConfidence</code>, <code>Name</code>, <code>Urls</code>.',
+    }),
+    UnrecognizedFaces: ComparedFaceListSchema.exactOptional().openapi({
+      description: 'Details about each unrecognized face in the image.',
+    }),
+    OrientationCorrection: OrientationCorrectionSchema.exactOptional().openapi({
+      description:
+        "<note> <p>Support for estimating image orientation using the the OrientationCorrection field has ceased as of August 2021. Any returned values for this field included in an API response will always be NULL.</p> </note> <p>The orientation of the input image (counterclockwise direction). If your application displays the image, you can use this value to correct the orientation. The bounding box coordinates returned in <code>CelebrityFaces</code> and <code>UnrecognizedFaces</code> represent face locations before the image orientation is corrected. </p> <note> <p>If the input image is in .jpeg format, it might contain exchangeable image (Exif) metadata that includes the image's orientation. If so, and the Exif metadata for the input image populates the orientation field, the value of <code>OrientationCorrection</code> is null. The <code>CelebrityFaces</code> and <code>UnrecognizedFaces</code> bounding box coordinates represent face locations after Exif metadata is used to correct the image orientation. Images in .png format don't contain Exif metadata. </p> </note>",
+    }),
   })
   .openapi({ required: [] })
   .openapi('RecognizeCelebritiesResponse')
 
 const RecognizeCelebritiesRequestSchema = z
   .object({
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
+    Image: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
   })
   .openapi({ required: ['Image'], title: 'RecognizeCelebritiesRequest' })
   .openapi('RecognizeCelebritiesRequest')
 
 const SearchFacesResponseSchema = z
   .object({
-    SearchedFaceId: FaceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'ID of the face that was searched for matches in a collection.' }),
-    ).exactOptional(),
-    FaceMatches: FaceMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of faces that matched the input face, along with the confidence in the match.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
-        }),
-    ).exactOptional(),
+    SearchedFaceId: FaceIdSchema.exactOptional().openapi({
+      description: 'ID of the face that was searched for matches in a collection.',
+    }),
+    FaceMatches: FaceMatchListSchema.exactOptional().openapi({
+      description:
+        'An array of faces that matched the input face, along with the confidence in the match.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
+    }),
   })
   .openapi({
     example: {
@@ -7114,66 +5305,42 @@ const MaxFacesSchema = z.int().min(1).max(4096).openapi('MaxFaces')
 
 const SearchFacesRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'ID of the collection the face belongs to.' }),
-    ),
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'ID of a face to find matches for in the collection.' }),
-    ),
-    MaxFaces: MaxFacesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of faces to return. The operation returns the maximum number of faces with the highest confidence in the match.',
-        }),
-    ).exactOptional(),
-    FaceMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Optional value specifying the minimum confidence in the face match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%. ",
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'ID of the collection the face belongs to.',
+    }),
+    FaceId: FaceIdSchema.openapi({
+      description: 'ID of a face to find matches for in the collection.',
+    }),
+    MaxFaces: MaxFacesSchema.exactOptional().openapi({
+      description:
+        'Maximum number of faces to return. The operation returns the maximum number of faces with the highest confidence in the match.',
+    }),
+    FaceMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        "Optional value specifying the minimum confidence in the face match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%. ",
+    }),
   })
   .openapi({ required: ['CollectionId', 'FaceId'], title: 'SearchFacesRequest' })
   .openapi('SearchFacesRequest')
 
 const SearchFacesByImageResponseSchema = z
   .object({
-    SearchedFaceBoundingBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The bounding box around the face in the input image that Amazon Rekognition used for the search.',
-        }),
-    ).exactOptional(),
-    SearchedFaceConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The level of confidence that the <code>searchedFaceBoundingBox</code>, contains a face.',
-        }),
-    ).exactOptional(),
-    FaceMatches: FaceMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of faces that match the input face, along with the confidence in the match.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
-        }),
-    ).exactOptional(),
+    SearchedFaceBoundingBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        'The bounding box around the face in the input image that Amazon Rekognition used for the search.',
+    }),
+    SearchedFaceConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        'The level of confidence that the <code>searchedFaceBoundingBox</code>, contains a face.',
+    }),
+    FaceMatches: FaceMatchListSchema.exactOptional().openapi({
+      description:
+        'An array of faces that match the input face, along with the confidence in the match.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the input collection (<code>CollectionId</code>).',
+    }),
   })
   .openapi({
     example: {
@@ -7207,55 +5374,35 @@ const SearchFacesByImageResponseSchema = z
 
 const SearchFacesByImageRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'ID of the collection to search.' }),
-    ),
-    Image: ImageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
-        }),
-    ),
-    MaxFaces: MaxFacesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Maximum number of faces to return. The operation returns the maximum number of faces with the highest confidence in the match.',
-        }),
-    ).exactOptional(),
-    FaceMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Optional) Specifies the minimum confidence in the face match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%.",
-        }),
-    ).exactOptional(),
-    QualityFilter: QualityFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't searched for in the collection. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. The default value is <code>NONE</code>. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
-        }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({ description: 'ID of the collection to search.' }),
+    Image: ImageSchema.openapi({
+      description:
+        '<p>The input image as base64-encoded bytes or an S3 object. If you use the AWS CLI to call Amazon Rekognition operations, passing base64-encoded image bytes is not supported. </p> <p>If you are using an AWS SDK to call Amazon Rekognition, you might not need to base64-encode image bytes passed using the <code>Bytes</code> field. For more information, see Images in the Amazon Rekognition developer guide.</p>',
+    }),
+    MaxFaces: MaxFacesSchema.exactOptional().openapi({
+      description:
+        'Maximum number of faces to return. The operation returns the maximum number of faces with the highest confidence in the match.',
+    }),
+    FaceMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        "(Optional) Specifies the minimum confidence in the face match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%.",
+    }),
+    QualityFilter: QualityFilterSchema.exactOptional().openapi({
+      description:
+        "<p>A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't searched for in the collection. If you specify <code>AUTO</code>, Amazon Rekognition chooses the quality bar. If you specify <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>, filtering removes all faces that don’t meet the chosen quality bar. The quality bar is based on a variety of common use cases. Low-quality detections can occur for a number of reasons. Some examples are an object that's misidentified as a face, a face that's too blurry, or a face with a pose that's too extreme to use. If you specify <code>NONE</code>, no filtering is performed. The default value is <code>NONE</code>. </p> <p>To use quality filtering, the collection you are using must be associated with version 3 of the face model or higher.</p>",
+    }),
   })
   .openapi({ required: ['CollectionId', 'Image'], title: 'SearchFacesByImageRequest' })
   .openapi('SearchFacesByImageRequest')
 
 const MatchedUserSchema = z
   .object({
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A provided ID for the UserID. Unique within the collection.' }),
-    ).exactOptional(),
-    UserStatus: UserStatusSchema.and(
-      z.any().openapi({ description: 'The status of the user matched to a provided FaceID.' }),
-    ).exactOptional(),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: 'A provided ID for the UserID. Unique within the collection.',
+    }),
+    UserStatus: UserStatusSchema.exactOptional().openapi({
+      description: 'The status of the user matched to a provided FaceID.',
+    }),
   })
   .openapi({
     description: 'Contains metadata for a UserID matched with a given face.',
@@ -7265,14 +5412,12 @@ const MatchedUserSchema = z
 
 const UserMatchSchema = z
   .object({
-    Similarity: PercentSchema.and(
-      z.any().openapi({ description: ' Describes the UserID metadata.' }),
-    ).exactOptional(),
-    User: MatchedUserSchema.and(
-      z
-        .any()
-        .openapi({ description: ' Confidence in the match of this UserID with the input face. ' }),
-    ).exactOptional(),
+    Similarity: PercentSchema.exactOptional().openapi({
+      description: ' Describes the UserID metadata.',
+    }),
+    User: MatchedUserSchema.exactOptional().openapi({
+      description: ' Confidence in the match of this UserID with the input face. ',
+    }),
   })
   .openapi({
     description:
@@ -7285,9 +5430,9 @@ const UserMatchListSchema = z.array(UserMatchSchema).max(500).openapi('UserMatch
 
 const SearchedFaceSchema = z
   .object({
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: ' Unique identifier assigned to the face.' }),
-    ).exactOptional(),
+    FaceId: FaceIdSchema.exactOptional().openapi({
+      description: ' Unique identifier assigned to the face.',
+    }),
   })
   .openapi({
     description:
@@ -7298,11 +5443,9 @@ const SearchedFaceSchema = z
 
 const SearchedUserSchema = z
   .object({
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A provided ID for the UserID. Unique within the collection. ' }),
-    ).exactOptional(),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description: ' A provided ID for the UserID. Unique within the collection. ',
+    }),
   })
   .openapi({
     description: 'Contains metadata about a User searched for within a collection.',
@@ -7312,38 +5455,21 @@ const SearchedUserSchema = z
 
 const SearchUsersResponseSchema = z
   .object({
-    UserMatches: UserMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of UserMatch objects that matched the input face along with the confidence in the match. Array will be empty if there are no matches.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the input CollectionId.',
-        }),
-    ).exactOptional(),
-    SearchedFace: SearchedFaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the ID of a face that was used to search for matches in a collection.',
-        }),
-    ).exactOptional(),
-    SearchedUser: SearchedUserSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the ID of the UserID that was used to search for matches in a collection.',
-        }),
-    ).exactOptional(),
+    UserMatches: UserMatchListSchema.exactOptional().openapi({
+      description:
+        'An array of UserMatch objects that matched the input face along with the confidence in the match. Array will be empty if there are no matches.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the input CollectionId.',
+    }),
+    SearchedFace: SearchedFaceSchema.exactOptional().openapi({
+      description: 'Contains the ID of a face that was used to search for matches in a collection.',
+    }),
+    SearchedUser: SearchedUserSchema.exactOptional().openapi({
+      description:
+        'Contains the ID of the UserID that was used to search for matches in a collection.',
+    }),
   })
   .openapi({
     example: {
@@ -7359,31 +5485,19 @@ const SearchUsersResponseSchema = z
 
 const SearchUsersRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an existing collection containing the UserID, used with a UserId or FaceId. If a FaceId is provided, UserId isn’t required to be present in the Collection.',
-        }),
-    ),
-    UserId: UserIdSchema.and(
-      z.any().openapi({ description: 'ID for the existing User.' }),
-    ).exactOptional(),
-    FaceId: FaceIdSchema.and(
-      z.any().openapi({ description: 'ID for the existing face.' }),
-    ).exactOptional(),
-    UserMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional value that specifies the minimum confidence in the matched UserID to return. Default value of 80.',
-        }),
-    ).exactOptional(),
-    MaxUsers: MaxUserResultsSchema.and(
-      z.any().openapi({ description: 'Maximum number of identities to return.' }),
-    ).exactOptional(),
+    CollectionId: CollectionIdSchema.openapi({
+      description:
+        'The ID of an existing collection containing the UserID, used with a UserId or FaceId. If a FaceId is provided, UserId isn’t required to be present in the Collection.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({ description: 'ID for the existing User.' }),
+    FaceId: FaceIdSchema.exactOptional().openapi({ description: 'ID for the existing face.' }),
+    UserMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        'Optional value that specifies the minimum confidence in the matched UserID to return. Default value of 80.',
+    }),
+    MaxUsers: MaxUserResultsSchema.exactOptional().openapi({
+      description: 'Maximum number of identities to return.',
+    }),
   })
   .openapi({ required: ['CollectionId'], title: 'SearchUsersRequest' })
   .openapi('SearchUsersRequest')
@@ -7416,9 +5530,9 @@ const UnsearchedFaceReasonsSchema = z
 const UnsearchedFaceSchema = z
   .object({
     FaceDetails: FaceDetailSchema.exactOptional(),
-    Reasons: UnsearchedFaceReasonsSchema.and(
-      z.any().openapi({ description: " Reasons why a face wasn't used for Search. " }),
-    ).exactOptional(),
+    Reasons: UnsearchedFaceReasonsSchema.exactOptional().openapi({
+      description: " Reasons why a face wasn't used for Search. ",
+    }),
   })
   .openapi({
     description:
@@ -7431,38 +5545,22 @@ const UnsearchedFacesListSchema = z.array(UnsearchedFaceSchema).openapi('Unsearc
 
 const SearchUsersByImageResponseSchema = z
   .object({
-    UserMatches: UserMatchListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of UserID objects that matched the input face, along with the confidence in the match. The returned structure will be empty if there are no matches. Returned if the SearchUsersByImageResponse action is successful.',
-        }),
-    ).exactOptional(),
-    FaceModelVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Version number of the face detection model associated with the input collection CollectionId.',
-        }),
-    ).exactOptional(),
-    SearchedFace: SearchedFaceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of FaceDetail objects containing the BoundingBox for the largest face in image, as well as the confidence in the bounding box, that was searched for matches. If no valid face is detected in the image the response will contain no SearchedFace object.',
-        }),
-    ).exactOptional(),
-    UnsearchedFaces: UnsearchedFacesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "List of UnsearchedFace objects. Contains the face details infered from the specified image but not used for search. Contains reasons that describe why a face wasn't used for Search. ",
-        }),
-    ).exactOptional(),
+    UserMatches: UserMatchListSchema.exactOptional().openapi({
+      description:
+        'An array of UserID objects that matched the input face, along with the confidence in the match. The returned structure will be empty if there are no matches. Returned if the SearchUsersByImageResponse action is successful.',
+    }),
+    FaceModelVersion: StringSchema.exactOptional().openapi({
+      description:
+        'Version number of the face detection model associated with the input collection CollectionId.',
+    }),
+    SearchedFace: SearchedFaceDetailsSchema.exactOptional().openapi({
+      description:
+        'A list of FaceDetail objects containing the BoundingBox for the largest face in image, as well as the confidence in the bounding box, that was searched for matches. If no valid face is detected in the image the response will contain no SearchedFace object.',
+    }),
+    UnsearchedFaces: UnsearchedFacesListSchema.exactOptional().openapi({
+      description:
+        "List of UnsearchedFace objects. Contains the face details infered from the specified image but not used for search. Contains reasons that describe why a face wasn't used for Search. ",
+    }),
   })
   .openapi({
     example: {
@@ -7511,65 +5609,44 @@ const SearchUsersByImageResponseSchema = z
 
 const SearchUsersByImageRequestSchema = z
   .object({
-    CollectionId: CollectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of an existing collection containing the UserID.' }),
-    ),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'The ID of an existing collection containing the UserID.',
+    }),
     Image: ImageSchema,
-    UserMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the minimum confidence in the UserID match to return. Default value is 80.',
-        }),
-    ).exactOptional(),
-    MaxUsers: MaxUserResultsSchema.and(
-      z.any().openapi({ description: 'Maximum number of UserIDs to return.' }),
-    ).exactOptional(),
-    QualityFilter: QualityFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't searched for in the collection. The default value is NONE.",
-        }),
-    ).exactOptional(),
+    UserMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        'Specifies the minimum confidence in the UserID match to return. Default value is 80.',
+    }),
+    MaxUsers: MaxUserResultsSchema.exactOptional().openapi({
+      description: 'Maximum number of UserIDs to return.',
+    }),
+    QualityFilter: QualityFilterSchema.exactOptional().openapi({
+      description:
+        "A filter that specifies a quality bar for how much filtering is done to identify faces. Filtered faces aren't searched for in the collection. The default value is NONE.",
+    }),
   })
   .openapi({ required: ['CollectionId', 'Image'], title: 'SearchUsersByImageRequest' })
   .openapi('SearchUsersByImageRequest')
 
 const StartCelebrityRecognitionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the celebrity recognition analysis job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetCelebrityRecognition</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the celebrity recognition analysis job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetCelebrityRecognition</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartCelebrityRecognitionResponse')
 
 const NotificationChannelSchema = z
   .object({
-    SNSTopicArn: SNSTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic to which Amazon Rekognition posts the completion status.',
-        }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role that gives Amazon Rekognition publishing permissions to the Amazon SNS topic. ',
-        }),
-    ),
+    SNSTopicArn: SNSTopicArnSchema.openapi({
+      description: 'The Amazon SNS topic to which Amazon Rekognition posts the completion status.',
+    }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of an IAM role that gives Amazon Rekognition publishing permissions to the Amazon SNS topic. ',
+    }),
   })
   .openapi({
     required: ['SNSTopicArn', 'RoleArn'],
@@ -7580,38 +5657,22 @@ const NotificationChannelSchema = z
 
 const StartCelebrityRecognitionRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video in which you want to recognize celebrities. The video must be stored in an Amazon S3 bucket.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartCelebrityRecognition</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN that you want Amazon Rekognition Video to publish the completion status of the celebrity recognition analysis to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video in which you want to recognize celebrities. The video must be stored in an Amazon S3 bucket.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartCelebrityRecognition</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN that you want Amazon Rekognition Video to publish the completion status of the celebrity recognition analysis to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartCelebrityRecognitionRequest' })
   .openapi('StartCelebrityRecognitionRequest')
@@ -7620,74 +5681,46 @@ const VideoTooLargeExceptionSchema = z.any().openapi('VideoTooLargeException')
 
 const StartContentModerationResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the content analysis job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetContentModeration</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the content analysis job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetContentModeration</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartContentModerationResponse')
 
 const StartContentModerationRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video in which you want to detect inappropriate, unwanted, or offensive content. The video must be stored in an Amazon S3 bucket.',
-        }),
-    ),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the minimum confidence that Amazon Rekognition must have in order to return a moderated content label. Confidence represents how certain Amazon Rekognition is that the moderated content is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition doesn't return any moderated content labels with a confidence level lower than this specified value. If you don't specify <code>MinConfidence</code>, <code>GetContentModeration</code> returns labels with confidence values greater than or equal to 50 percent.",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartContentModeration</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN that you want Amazon Rekognition Video to publish the completion status of the content analysis to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video in which you want to detect inappropriate, unwanted, or offensive content. The video must be stored in an Amazon S3 bucket.',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        "Specifies the minimum confidence that Amazon Rekognition must have in order to return a moderated content label. Confidence represents how certain Amazon Rekognition is that the moderated content is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition doesn't return any moderated content labels with a confidence level lower than this specified value. If you don't specify <code>MinConfidence</code>, <code>GetContentModeration</code> returns labels with confidence values greater than or equal to 50 percent.",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartContentModeration</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN that you want Amazon Rekognition Video to publish the completion status of the content analysis to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartContentModerationRequest' })
   .openapi('StartContentModerationRequest')
 
 const StartFaceDetectionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the face detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetFaceDetection</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the face detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetFaceDetection</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartFaceDetectionResponse')
@@ -7696,127 +5729,75 @@ const FaceAttributesSchema = z.enum(['DEFAULT', 'ALL']).openapi('FaceAttributes'
 
 const StartFaceDetectionRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video in which you want to detect faces. The video must be stored in an Amazon S3 bucket.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartFaceDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the face detection operation. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
-        }),
-    ).exactOptional(),
-    FaceAttributes: FaceAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The face attributes you want returned.</p> <p> <code>DEFAULT</code> - The following subset of facial attributes are returned: BoundingBox, Confidence, Pose, Quality and Landmarks. </p> <p> <code>ALL</code> - All facial attributes are returned.</p>',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video in which you want to detect faces. The video must be stored in an Amazon S3 bucket.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartFaceDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the face detection operation. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
+    }),
+    FaceAttributes: FaceAttributesSchema.exactOptional().openapi({
+      description:
+        '<p>The face attributes you want returned.</p> <p> <code>DEFAULT</code> - The following subset of facial attributes are returned: BoundingBox, Confidence, Pose, Quality and Landmarks. </p> <p> <code>ALL</code> - All facial attributes are returned.</p>',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartFaceDetectionRequest' })
   .openapi('StartFaceDetectionRequest')
 
 const StartFaceSearchResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the search job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetFaceSearch</code>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the search job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetFaceSearch</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartFaceSearchResponse')
 
 const StartFaceSearchRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video you want to search. The video must be stored in an Amazon S3 bucket. ',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartFaceSearch</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    FaceMatchThreshold: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The minimum confidence in the person match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%.",
-        }),
-    ).exactOptional(),
-    CollectionId: CollectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ID of the collection that contains the faces you want to search for.',
-        }),
-    ),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the search. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video you want to search. The video must be stored in an Amazon S3 bucket. ',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartFaceSearch</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    FaceMatchThreshold: PercentSchema.exactOptional().openapi({
+      description:
+        "The minimum confidence in the person match to return. For example, don't return any matches where confidence in matches is less than 70%. The default value is 80%.",
+    }),
+    CollectionId: CollectionIdSchema.openapi({
+      description: 'ID of the collection that contains the faces you want to search for.',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the search. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
   })
   .openapi({ required: ['Video', 'CollectionId'], title: 'StartFaceSearchRequest' })
   .openapi('StartFaceSearchRequest')
 
 const StartLabelDetectionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the label detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetLabelDetection</code>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the label detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetLabelDetection</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartLabelDetectionResponse')
@@ -7842,152 +5823,92 @@ const LabelDetectionSettingsSchema = z
 
 const StartLabelDetectionRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video in which you want to detect labels. The video must be stored in an Amazon S3 bucket.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartLabelDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected label. Confidence represents how certain Amazon Rekognition is that a label is correctly identified.0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any labels with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the operation returns labels and bounding boxes (if detected) with confidence values greater than or equal to 50 percent.</p>",
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN you want Amazon Rekognition Video to publish the completion status of the label detection operation to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
-    Features: LabelDetectionFeatureListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The features to return after video analysis. You can specify that GENERAL_LABELS are returned.',
-        }),
-    ).exactOptional(),
-    Settings: LabelDetectionSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The settings for a StartLabelDetection request.Contains the specified parameters for the label detection request of an asynchronous label analysis operation. Settings can include filters for GENERAL_LABELS.',
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video in which you want to detect labels. The video must be stored in an Amazon S3 bucket.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartLabelDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected label. Confidence represents how certain Amazon Rekognition is that a label is correctly identified.0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any labels with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinConfidence</code>, the operation returns labels and bounding boxes (if detected) with confidence values greater than or equal to 50 percent.</p>",
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN you want Amazon Rekognition Video to publish the completion status of the label detection operation to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
+    Features: LabelDetectionFeatureListSchema.exactOptional().openapi({
+      description:
+        'The features to return after video analysis. You can specify that GENERAL_LABELS are returned.',
+    }),
+    Settings: LabelDetectionSettingsSchema.exactOptional().openapi({
+      description:
+        'The settings for a StartLabelDetection request.Contains the specified parameters for the label detection request of an asynchronous label analysis operation. Settings can include filters for GENERAL_LABELS.',
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartLabelDetectionRequest' })
   .openapi('StartLabelDetectionRequest')
 
 const StartPersonTrackingResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the person detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetPersonTracking</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the person detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetPersonTracking</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartPersonTrackingResponse')
 
 const StartPersonTrackingRequestSchema = z
   .object({
-    Video: VideoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The video in which you want to detect people. The video must be stored in an Amazon S3 bucket.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartPersonTracking</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon SNS topic ARN you want Amazon Rekognition Video to publish the completion status of the people detection operation to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
+    Video: VideoSchema.openapi({
+      description:
+        'The video in which you want to detect people. The video must be stored in an Amazon S3 bucket.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartPersonTracking</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The Amazon SNS topic ARN you want Amazon Rekognition Video to publish the completion status of the people detection operation to. The Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartPersonTrackingRequest' })
   .openapi('StartPersonTrackingRequest')
 
 const StartProjectVersionResponseSchema = z
   .object({
-    Status: ProjectVersionStatusSchema.and(
-      z.any().openapi({ description: 'The current running status of the model. ' }),
-    ).exactOptional(),
+    Status: ProjectVersionStatusSchema.exactOptional().openapi({
+      description: 'The current running status of the model. ',
+    }),
   })
   .openapi({ example: { Status: 'STARTING' }, required: [] })
   .openapi('StartProjectVersionResponse')
 
 const StartProjectVersionRequestSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name(ARN) of the model version that you want to start.',
-        }),
-    ),
-    MinInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum number of inference units to use. A single inference unit represents 1 hour of processing. </p> <p>For information about the number of transactions per second (TPS) that an inference unit can support, see <i>Running a trained Amazon Rekognition Custom Labels model</i> in the Amazon Rekognition Custom Labels Guide. </p> <p>Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. </p>',
-        }),
-    ),
-    MaxInferenceUnits: InferenceUnitsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Rekognition Custom Labels doesn't auto-scale the model.",
-        }),
-    ).exactOptional(),
+    ProjectVersionArn: ProjectVersionArnSchema.openapi({
+      description: 'The Amazon Resource Name(ARN) of the model version that you want to start.',
+    }),
+    MinInferenceUnits: InferenceUnitsSchema.openapi({
+      description:
+        '<p>The minimum number of inference units to use. A single inference unit represents 1 hour of processing. </p> <p>For information about the number of transactions per second (TPS) that an inference unit can support, see <i>Running a trained Amazon Rekognition Custom Labels model</i> in the Amazon Rekognition Custom Labels Guide. </p> <p>Use a higher number to increase the TPS throughput of your model. You are charged for the number of inference units that you use. </p>',
+    }),
+    MaxInferenceUnits: InferenceUnitsSchema.exactOptional().openapi({
+      description:
+        "The maximum number of inference units to use for auto-scaling the model. If you don't specify a value, Amazon Rekognition Custom Labels doesn't auto-scale the model.",
+    }),
   })
   .openapi({
     required: ['ProjectVersionArn', 'MinInferenceUnits'],
@@ -7997,14 +5918,10 @@ const StartProjectVersionRequestSchema = z
 
 const StartSegmentDetectionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique identifier for the segment detection job. The <code>JobId</code> is returned from <code>StartSegmentDetection</code>. ',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Unique identifier for the segment detection job. The <code>JobId</code> is returned from <code>StartSegmentDetection</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartSegmentDetectionResponse')
@@ -8015,22 +5932,14 @@ const MinCoveragePercentageSchema = z.float32().min(0).max(100).openapi('MinCove
 
 const BlackFrameSchema = z
   .object({
-    MaxPixelThreshold: MaxPixelThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A threshold used to determine the maximum luminance value for a pixel to be considered black. In a full color range video, luminance values range from 0-255. A pixel value of 0 is pure black, and the most strict filter. The maximum black pixel value is computed as follows: max_black_pixel_value = minimum_luminance + MaxPixelThreshold *luminance_range. </p> <p>For example, for a full range video with BlackPixelThreshold = 0.1, max_black_pixel_value is 0 + 0.1 * (255-0) = 25.5.</p> <p>The default value of MaxPixelThreshold is 0.2, which maps to a max_black_pixel_value of 51 for a full range video. You can lower this threshold to be more strict on black levels.</p>',
-        }),
-    ).exactOptional(),
-    MinCoveragePercentage: MinCoveragePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The minimum percentage of pixels in a frame that need to have a luminance below the max_black_pixel_value for a frame to be considered a black frame. Luminance is calculated using the BT.709 matrix. </p> <p>The default value is 99, which means at least 99% of all pixels in the frame are black pixels as per the <code>MaxPixelThreshold</code> set. You can reduce this value to allow more noise on the black frame.</p>',
-        }),
-    ).exactOptional(),
+    MaxPixelThreshold: MaxPixelThresholdSchema.exactOptional().openapi({
+      description:
+        '<p> A threshold used to determine the maximum luminance value for a pixel to be considered black. In a full color range video, luminance values range from 0-255. A pixel value of 0 is pure black, and the most strict filter. The maximum black pixel value is computed as follows: max_black_pixel_value = minimum_luminance + MaxPixelThreshold *luminance_range. </p> <p>For example, for a full range video with BlackPixelThreshold = 0.1, max_black_pixel_value is 0 + 0.1 * (255-0) = 25.5.</p> <p>The default value of MaxPixelThreshold is 0.2, which maps to a max_black_pixel_value of 51 for a full range video. You can lower this threshold to be more strict on black levels.</p>',
+    }),
+    MinCoveragePercentage: MinCoveragePercentageSchema.exactOptional().openapi({
+      description:
+        '<p> The minimum percentage of pixels in a frame that need to have a luminance below the max_black_pixel_value for a frame to be considered a black frame. Luminance is calculated using the BT.709 matrix. </p> <p>The default value is 99, which means at least 99% of all pixels in the frame are black pixels as per the <code>MaxPixelThreshold</code> set. You can reduce this value to allow more noise on the black frame.</p>',
+    }),
   })
   .openapi({
     description:
@@ -8041,22 +5950,14 @@ const BlackFrameSchema = z
 
 const StartTechnicalCueDetectionFilterSchema = z
   .object({
-    MinSegmentConfidence: SegmentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected segment. Confidence represents how certain Amazon Rekognition is that a segment is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any segments with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinSegmentConfidence</code>, <code>GetSegmentDetection</code> returns segments with confidence values greater than or equal to 50 percent.</p>",
-        }),
-    ).exactOptional(),
-    BlackFrame: BlackFrameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A filter that allows you to control the black frame detection by specifying the black levels and pixel coverage of black pixels in a frame. Videos can come from multiple sources, formats, and time periods, with different standards and varying noise levels for black frames that need to be accounted for. ',
-        }),
-    ).exactOptional(),
+    MinSegmentConfidence: SegmentConfidenceSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected segment. Confidence represents how certain Amazon Rekognition is that a segment is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any segments with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinSegmentConfidence</code>, <code>GetSegmentDetection</code> returns segments with confidence values greater than or equal to 50 percent.</p>",
+    }),
+    BlackFrame: BlackFrameSchema.exactOptional().openapi({
+      description:
+        ' A filter that allows you to control the black frame detection by specifying the black levels and pixel coverage of black pixels in a frame. Videos can come from multiple sources, formats, and time periods, with different standards and varying noise levels for black frames that need to be accounted for. ',
+    }),
   })
   .openapi({
     description:
@@ -8067,14 +5968,10 @@ const StartTechnicalCueDetectionFilterSchema = z
 
 const StartShotDetectionFilterSchema = z
   .object({
-    MinSegmentConfidence: SegmentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected segment. Confidence represents how certain Amazon Rekognition is that a segment is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any segments with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinSegmentConfidence</code>, the <code>GetSegmentDetection</code> returns segments with confidence values greater than or equal to 50 percent.</p>",
-        }),
-    ).exactOptional(),
+    MinSegmentConfidence: SegmentConfidenceSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the minimum confidence that Amazon Rekognition Video must have in order to return a detected segment. Confidence represents how certain Amazon Rekognition is that a segment is correctly identified. 0 is the lowest confidence. 100 is the highest confidence. Amazon Rekognition Video doesn't return any segments with a confidence level lower than this specified value.</p> <p>If you don't specify <code>MinSegmentConfidence</code>, the <code>GetSegmentDetection</code> returns segments with confidence values greater than or equal to 50 percent.</p>",
+    }),
   })
   .openapi({
     description:
@@ -8085,12 +5982,12 @@ const StartShotDetectionFilterSchema = z
 
 const StartSegmentDetectionFiltersSchema = z
   .object({
-    TechnicalCueFilter: StartTechnicalCueDetectionFilterSchema.and(
-      z.any().openapi({ description: 'Filters that are specific to technical cues.' }),
-    ).exactOptional(),
-    ShotFilter: StartShotDetectionFilterSchema.and(
-      z.any().openapi({ description: 'Filters that are specific to shot detections.' }),
-    ).exactOptional(),
+    TechnicalCueFilter: StartTechnicalCueDetectionFilterSchema.exactOptional().openapi({
+      description: 'Filters that are specific to technical cues.',
+    }),
+    ShotFilter: StartShotDetectionFilterSchema.exactOptional().openapi({
+      description: 'Filters that are specific to shot detections.',
+    }),
   })
   .openapi({
     description:
@@ -8104,41 +6001,25 @@ const SegmentTypesSchema = z.array(SegmentTypeSchema).min(1).openapi('SegmentTyp
 const StartSegmentDetectionRequestSchema = z
   .object({
     Video: VideoSchema,
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartSegmentDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
-        }),
-    ).exactOptional(),
-    NotificationChannel: NotificationChannelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the segment detection operation. Note that the Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
-        }),
-    ).exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
-        }),
-    ).exactOptional(),
-    Filters: StartSegmentDetectionFiltersSchema.and(
-      z.any().openapi({ description: 'Filters for technical cue or shot detection.' }),
-    ).exactOptional(),
-    SegmentTypes: SegmentTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of segment types to detect in the video. Valid values are TECHNICAL_CUE and SHOT.',
-        }),
-    ),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartSegmentDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidently started more than once. ',
+    }),
+    NotificationChannel: NotificationChannelSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Amazon SNS topic to which you want Amazon Rekognition Video to publish the completion status of the segment detection operation. Note that the Amazon SNS topic must have a topic name that begins with <i>AmazonRekognition</i> if you are using the AmazonRekognitionServiceRole permissions policy to access the topic.',
+    }),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        "An identifier you specify that's returned in the completion notification that's published to your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.",
+    }),
+    Filters: StartSegmentDetectionFiltersSchema.exactOptional().openapi({
+      description: 'Filters for technical cue or shot detection.',
+    }),
+    SegmentTypes: SegmentTypesSchema.openapi({
+      description:
+        'An array of segment types to detect in the video. Valid values are TECHNICAL_CUE and SHOT.',
+    }),
   })
   .openapi({ required: ['Video', 'SegmentTypes'], title: 'StartSegmentDetectionRequest' })
   .openapi('StartSegmentDetectionRequest')
@@ -8147,9 +6028,9 @@ const StartStreamProcessorSessionIdSchema = z.string().openapi('StartStreamProce
 
 const StartStreamProcessorResponseSchema = z
   .object({
-    SessionId: StartStreamProcessorSessionIdSchema.and(
-      z.any().openapi({ description: ' A unique identifier for the stream processing session. ' }),
-    ).exactOptional(),
+    SessionId: StartStreamProcessorSessionIdSchema.exactOptional().openapi({
+      description: ' A unique identifier for the stream processing session. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartStreamProcessorResponse')
@@ -8163,22 +6044,14 @@ const KinesisVideoStreamFragmentNumberSchema = z
 
 const KinesisVideoStreamStartSelectorSchema = z
   .object({
-    ProducerTimestamp: ULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The timestamp from the producer corresponding to the fragment, in milliseconds, expressed in unix time format. ',
-        }),
-    ).exactOptional(),
-    FragmentNumber: KinesisVideoStreamFragmentNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique identifier of the fragment. This value monotonically increases based on the ingestion order. ',
-        }),
-    ).exactOptional(),
+    ProducerTimestamp: ULongSchema.exactOptional().openapi({
+      description:
+        ' The timestamp from the producer corresponding to the fragment, in milliseconds, expressed in unix time format. ',
+    }),
+    FragmentNumber: KinesisVideoStreamFragmentNumberSchema.exactOptional().openapi({
+      description:
+        ' The unique identifier of the fragment. This value monotonically increases based on the ingestion order. ',
+    }),
   })
   .openapi({
     description:
@@ -8189,14 +6062,10 @@ const KinesisVideoStreamStartSelectorSchema = z
 
 const StreamProcessingStartSelectorSchema = z
   .object({
-    KVSStreamStartSelector: KinesisVideoStreamStartSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the starting point in the stream to start processing. This can be done with a producer timestamp or a fragment number in a Kinesis stream. ',
-        }),
-    ).exactOptional(),
+    KVSStreamStartSelector: KinesisVideoStreamStartSelectorSchema.exactOptional().openapi({
+      description:
+        ' Specifies the starting point in the stream to start processing. This can be done with a producer timestamp or a fragment number in a Kinesis stream. ',
+    }),
   })
   .openapi({
     description:
@@ -8209,14 +6078,10 @@ const MaxDurationInSecondsULongSchema = z.int().min(1).max(120).openapi('MaxDura
 
 const StreamProcessingStopSelectorSchema = z
   .object({
-    MaxDurationInSeconds: MaxDurationInSecondsULongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the maximum amount of time in seconds that you want the stream to be processed. The largest amount of time is 2 minutes. The default is 10 seconds. ',
-        }),
-    ).exactOptional(),
+    MaxDurationInSeconds: MaxDurationInSecondsULongSchema.exactOptional().openapi({
+      description:
+        ' Specifies the maximum amount of time in seconds that you want the stream to be processed. The largest amount of time is 2 minutes. The default is 10 seconds. ',
+    }),
   })
   .openapi({
     description:
@@ -8227,60 +6092,40 @@ const StreamProcessingStopSelectorSchema = z
 
 const StartStreamProcessorRequestSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z.any().openapi({ description: 'The name of the stream processor to start processing.' }),
-    ),
-    StartSelector: StreamProcessingStartSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Specifies the starting point in the Kinesis stream to start processing. You can use the producer timestamp or the fragment number. If you use the producer timestamp, you must put the time in milliseconds. For more information about fragment numbers, see <a href="https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html">Fragment</a>. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>',
-        }),
-    ).exactOptional(),
-    StopSelector: StreamProcessingStopSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Specifies when to stop processing the stream. You can specify a maximum amount of time to process the video. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>',
-        }),
-    ).exactOptional(),
+    Name: StreamProcessorNameSchema.openapi({
+      description: 'The name of the stream processor to start processing.',
+    }),
+    StartSelector: StreamProcessingStartSelectorSchema.exactOptional().openapi({
+      description:
+        '<p> Specifies the starting point in the Kinesis stream to start processing. You can use the producer timestamp or the fragment number. If you use the producer timestamp, you must put the time in milliseconds. For more information about fragment numbers, see <a href="https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_reader_Fragment.html">Fragment</a>. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>',
+    }),
+    StopSelector: StreamProcessingStopSelectorSchema.exactOptional().openapi({
+      description:
+        '<p> Specifies when to stop processing the stream. You can specify a maximum amount of time to process the video. </p> <p>This is a required parameter for label detection stream processors and should not be used to start a face search stream processor.</p>',
+    }),
   })
   .openapi({ required: ['Name'], title: 'StartStreamProcessorRequest' })
   .openapi('StartStreamProcessorRequest')
 
 const StartTextDetectionResponseSchema = z
   .object({
-    JobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for the text detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetTextDetection</code>.',
-        }),
-    ).exactOptional(),
+    JobId: JobIdSchema.exactOptional().openapi({
+      description:
+        'Identifier for the text detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetTextDetection</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartTextDetectionResponse')
 
 const StartTextDetectionFiltersSchema = z
   .object({
-    WordFilter: DetectionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filters focusing on qualities of the text, such as confidence or size.',
-        }),
-    ).exactOptional(),
-    RegionsOfInterest: RegionsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter focusing on a certain area of the frame. Uses a <code>BoundingBox</code> object to set the region of the screen.',
-        }),
-    ).exactOptional(),
+    WordFilter: DetectionFilterSchema.exactOptional().openapi({
+      description: 'Filters focusing on qualities of the text, such as confidence or size.',
+    }),
+    RegionsOfInterest: RegionsOfInterestSchema.exactOptional().openapi({
+      description:
+        'Filter focusing on a certain area of the frame. Uses a <code>BoundingBox</code> object to set the region of the screen.',
+    }),
   })
   .openapi({
     description:
@@ -8292,93 +6137,67 @@ const StartTextDetectionFiltersSchema = z
 const StartTextDetectionRequestSchema = z
   .object({
     Video: VideoSchema,
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentaly started more than once.',
-        }),
-    ).exactOptional(),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Idempotent token used to identify the start request. If you use the same token with multiple <code>StartTextDetection</code> requests, the same <code>JobId</code> is returned. Use <code>ClientRequestToken</code> to prevent the same job from being accidentaly started more than once.',
+    }),
     NotificationChannel: NotificationChannelSchema.exactOptional(),
-    JobTag: JobTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier returned in the completion status published by your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.',
-        }),
-    ).exactOptional(),
-    Filters: StartTextDetectionFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional parameters that let you set criteria the text must meet to be included in your response.',
-        }),
-    ).exactOptional(),
+    JobTag: JobTagSchema.exactOptional().openapi({
+      description:
+        'An identifier returned in the completion status published by your Amazon Simple Notification Service topic. For example, you can use <code>JobTag</code> to group related jobs and identify them in the completion notification.',
+    }),
+    Filters: StartTextDetectionFiltersSchema.exactOptional().openapi({
+      description:
+        'Optional parameters that let you set criteria the text must meet to be included in your response.',
+    }),
   })
   .openapi({ required: ['Video'], title: 'StartTextDetectionRequest' })
   .openapi('StartTextDetectionRequest')
 
 const StopProjectVersionResponseSchema = z
   .object({
-    Status: ProjectVersionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the stop operation. ' }),
-    ).exactOptional(),
+    Status: ProjectVersionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the stop operation. ',
+    }),
   })
   .openapi({ example: { Status: 'STOPPING' }, required: [] })
   .openapi('StopProjectVersionResponse')
 
 const StopProjectVersionRequestSchema = z
   .object({
-    ProjectVersionArn: ProjectVersionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the model version that you want to delete.</p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>',
-        }),
-    ),
+    ProjectVersionArn: ProjectVersionArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the model version that you want to delete.</p> <p>This operation requires permissions to perform the <code>rekognition:StopProjectVersion</code> action.</p>',
+    }),
   })
   .openapi({ required: ['ProjectVersionArn'], title: 'StopProjectVersionRequest' })
   .openapi('StopProjectVersionRequest')
 
-const StopStreamProcessorResponseSchema = z.object({}).openapi('StopStreamProcessorResponse')
+const StopStreamProcessorResponseSchema = z.looseObject({}).openapi('StopStreamProcessorResponse')
 
 const StopStreamProcessorRequestSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a stream processor created by <a>CreateStreamProcessor</a>.',
-        }),
-    ),
+    Name: StreamProcessorNameSchema.openapi({
+      description: 'The name of a stream processor created by <a>CreateStreamProcessor</a>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'StopStreamProcessorRequest' })
   .openapi('StopStreamProcessorRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Amazon Resource Name (ARN) of the model, collection, or stream processor that you want to assign the tags to. ',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: ' The key-value tags to assign to the resource. ' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        ' Amazon Resource Name (ARN) of the model, collection, or stream processor that you want to assign the tags to. ',
+    }),
+    Tags: TagMapSchema.openapi({ description: ' The key-value tags to assign to the resource. ' }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -8391,23 +6210,19 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeyLi
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Amazon Resource Name (ARN) of the model, collection, or stream processor that you want to remove the tags from. ',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: ' A list of the tags that you want to remove. ' }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        ' Amazon Resource Name (ARN) of the model, collection, or stream processor that you want to remove the tags from. ',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: ' A list of the tags that you want to remove. ',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDatasetEntriesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ example: {} })
   .openapi('UpdateDatasetEntriesResponse')
 
@@ -8415,14 +6230,10 @@ const GroundTruthBlobSchema = z.string().min(1).max(5242880).openapi('GroundTrut
 
 const DatasetChangesSchema = z
   .object({
-    GroundTruth: GroundTruthBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A Base64-encoded binary data object containing one or JSON lines that either update the dataset or are additions to the dataset. You change a dataset by calling <a>UpdateDatasetEntries</a>. If you are using an AWS SDK to call <code>UpdateDatasetEntries</code>, you don't need to encode <code>Changes</code> as the SDK encodes the data for you. </p> <p>For example JSON lines, see Image-Level labels in manifest files and and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>",
-        }),
-    ),
+    GroundTruth: GroundTruthBlobSchema.openapi({
+      description:
+        "<p>A Base64-encoded binary data object containing one or JSON lines that either update the dataset or are additions to the dataset. You change a dataset by calling <a>UpdateDatasetEntries</a>. If you are using an AWS SDK to call <code>UpdateDatasetEntries</code>, you don't need to encode <code>Changes</code> as the SDK encodes the data for you. </p> <p>For example JSON lines, see Image-Level labels in manifest files and and Object localization in manifest files in the <i>Amazon Rekognition Custom Labels Developer Guide</i>. </p>",
+    }),
   })
   .openapi({
     required: ['GroundTruth'],
@@ -8433,39 +6244,29 @@ const DatasetChangesSchema = z
 
 const UpdateDatasetEntriesRequestSchema = z
   .object({
-    DatasetArn: DatasetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Amazon Resource Name (ARN) of the dataset that you want to update. ',
-        }),
-    ),
-    Changes: DatasetChangesSchema.and(
-      z.any().openapi({ description: ' The changes that you want to make to the dataset. ' }),
-    ),
+    DatasetArn: DatasetArnSchema.openapi({
+      description: ' The Amazon Resource Name (ARN) of the dataset that you want to update. ',
+    }),
+    Changes: DatasetChangesSchema.openapi({
+      description: ' The changes that you want to make to the dataset. ',
+    }),
   })
   .openapi({ required: ['DatasetArn', 'Changes'], title: 'UpdateDatasetEntriesRequest' })
   .openapi('UpdateDatasetEntriesRequest')
 
-const UpdateStreamProcessorResponseSchema = z.object({}).openapi('UpdateStreamProcessorResponse')
+const UpdateStreamProcessorResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateStreamProcessorResponse')
 
 const ConnectedHomeSettingsForUpdateSchema = z
   .object({
-    Labels: ConnectedHomeLabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies what you want to detect in the video, such as people, packages, or pets. The current valid labels you can include in this list are: "PERSON", "PET", "PACKAGE", and "ALL". ',
-        }),
-    ).exactOptional(),
-    MinConfidence: PercentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The minimum confidence required to label an object in the video. ',
-        }),
-    ).exactOptional(),
+    Labels: ConnectedHomeLabelsSchema.exactOptional().openapi({
+      description:
+        ' Specifies what you want to detect in the video, such as people, packages, or pets. The current valid labels you can include in this list are: "PERSON", "PET", "PACKAGE", and "ALL". ',
+    }),
+    MinConfidence: PercentSchema.exactOptional().openapi({
+      description: ' The minimum confidence required to label an object in the video. ',
+    }),
   })
   .openapi({
     description:
@@ -8476,13 +6277,9 @@ const ConnectedHomeSettingsForUpdateSchema = z
 
 const StreamProcessorSettingsForUpdateSchema = z
   .object({
-    ConnectedHomeForUpdate: ConnectedHomeSettingsForUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The label detection settings you want to use for your stream processor. ',
-        }),
-    ).exactOptional(),
+    ConnectedHomeForUpdate: ConnectedHomeSettingsForUpdateSchema.exactOptional().openapi({
+      description: ' The label detection settings you want to use for your stream processor. ',
+    }),
   })
   .openapi({
     description:
@@ -8501,40 +6298,25 @@ const StreamProcessorParametersToDeleteSchema = z
 
 const UpdateStreamProcessorRequestSchema = z
   .object({
-    Name: StreamProcessorNameSchema.and(
-      z.any().openapi({ description: ' Name of the stream processor that you want to update. ' }),
-    ),
-    SettingsForUpdate: StreamProcessorSettingsForUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The stream processor settings that you want to update. Label detection settings can be updated to detect different labels with a different minimum confidence. ',
-        }),
-    ).exactOptional(),
-    RegionsOfInterestForUpdate: RegionsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. This is an optional parameter for label detection stream processors. ',
-        }),
-    ).exactOptional(),
-    DataSharingPreferenceForUpdate: StreamProcessorDataSharingPreferenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
-        }),
-    ).exactOptional(),
-    ParametersToDelete: StreamProcessorParametersToDeleteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' A list of parameters you want to delete from the stream processor. ',
-        }),
-    ).exactOptional(),
+    Name: StreamProcessorNameSchema.openapi({
+      description: ' Name of the stream processor that you want to update. ',
+    }),
+    SettingsForUpdate: StreamProcessorSettingsForUpdateSchema.exactOptional().openapi({
+      description:
+        ' The stream processor settings that you want to update. Label detection settings can be updated to detect different labels with a different minimum confidence. ',
+    }),
+    RegionsOfInterestForUpdate: RegionsOfInterestSchema.exactOptional().openapi({
+      description:
+        ' Specifies locations in the frames where Amazon Rekognition checks for objects or people. This is an optional parameter for label detection stream processors. ',
+    }),
+    DataSharingPreferenceForUpdate:
+      StreamProcessorDataSharingPreferenceSchema.exactOptional().openapi({
+        description:
+          ' Shows whether you are sharing data with Rekognition to improve model performance. You can choose this option at the account level or on a per-stream basis. Note that if you opt out at the account level this setting is ignored on individual streams. ',
+      }),
+    ParametersToDelete: StreamProcessorParametersToDeleteSchema.exactOptional().openapi({
+      description: ' A list of parameters you want to delete from the stream processor. ',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateStreamProcessorRequest' })
   .openapi('UpdateStreamProcessorRequest')

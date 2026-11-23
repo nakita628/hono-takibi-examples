@@ -6,16 +6,10 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const CreateActivityOutputSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the created activity.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the activity is created.' }),
-    ),
+    activityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the created activity.',
+    }),
+    creationDate: TimestampSchema.openapi({ description: 'The date the activity is created.' }),
   })
   .openapi({ required: ['activityArn', 'creationDate'] })
   .openapi('CreateActivityOutput')
@@ -28,10 +22,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    key: TagKeySchema.and(z.any().openapi({ description: 'The key of a tag.' })).exactOptional(),
-    value: TagValueSchema.and(
-      z.any().openapi({ description: 'The value of a tag.' }),
-    ).exactOptional(),
+    key: TagKeySchema.exactOptional().openapi({ description: 'The key of a tag.' }),
+    value: TagValueSchema.exactOptional().openapi({ description: 'The value of a tag.' }),
   })
   .openapi({
     description:
@@ -44,22 +36,14 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const CreateActivityInputSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the activity to create. This name must be unique for your Amazon Web Services account and region for 90 days. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of tags to add to a resource.</p> <p>An array of key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the activity to create. This name must be unique for your Amazon Web Services account and region for 90 days. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>The list of tags to add to a resource.</p> <p>An array of key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
   })
   .openapi({ required: ['name'], title: 'CreateActivityInput' })
   .openapi('CreateActivityInput')
@@ -72,24 +56,16 @@ const TooManyTagsSchema = z.any().openapi('TooManyTags')
 
 const CreateStateMachineOutputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the created state machine.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the state machine is created.' }),
-    ),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the created state machine version. If you do not set the <code>publish</code> parameter to <code>true</code>, this field returns null value.',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the created state machine.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the state machine is created.',
+    }),
+    stateMachineVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the created state machine version. If you do not set the <code>publish</code> parameter to <code>true</code>, this field returns null value.',
+    }),
   })
   .openapi({ required: ['stateMachineArn', 'creationDate'] })
   .openapi('CreateStateMachineOutput')
@@ -104,28 +80,20 @@ const IncludeExecutionDataSchema = z.boolean().openapi('IncludeExecutionData')
 
 const CloudWatchLogsLogGroupSchema = z
   .object({
-    logGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the the CloudWatch log group to which you want your logs emitted to. The ARN must end with <code>:*</code> ',
-        }),
-    ).exactOptional(),
+    logGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the the CloudWatch log group to which you want your logs emitted to. The ARN must end with <code>:*</code> ',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('CloudWatchLogsLogGroup')
 
 const LogDestinationSchema = z
   .object({
-    cloudWatchLogsLogGroup: CloudWatchLogsLogGroupSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object describing a CloudWatch log group. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html">AWS::Logs::LogGroup</a> in the CloudFormation User Guide.',
-        }),
-    ).exactOptional(),
+    cloudWatchLogsLogGroup: CloudWatchLogsLogGroupSchema.exactOptional().openapi({
+      description:
+        'An object describing a CloudWatch log group. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html">AWS::Logs::LogGroup</a> in the CloudFormation User Guide.',
+    }),
   })
   .openapi({ description: '<p/>', required: [] })
   .openapi('LogDestination')
@@ -134,27 +102,17 @@ const LogDestinationListSchema = z.array(LogDestinationSchema).openapi('LogDesti
 
 const LoggingConfigurationSchema = z
   .object({
-    level: LogLevelSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Defines which category of execution history events are logged.' }),
-    ).exactOptional(),
-    includeExecutionData: IncludeExecutionDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether execution data is included in your log. When set to <code>false</code>, data is excluded.',
-        }),
-    ).exactOptional(),
-    destinations: LogDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that describes where your execution history events will be logged. Limited to size 1. Required, if your log level is not set to <code>OFF</code>.',
-        }),
-    ).exactOptional(),
+    level: LogLevelSchema.exactOptional().openapi({
+      description: 'Defines which category of execution history events are logged.',
+    }),
+    includeExecutionData: IncludeExecutionDataSchema.exactOptional().openapi({
+      description:
+        'Determines whether execution data is included in your log. When set to <code>false</code>, data is excluded.',
+    }),
+    destinations: LogDestinationListSchema.exactOptional().openapi({
+      description:
+        'An array of objects that describes where your execution history events will be logged. Limited to size 1. Required, if your log level is not set to <code>OFF</code>.',
+    }),
   })
   .openapi({
     description:
@@ -167,9 +125,9 @@ const EnabledSchema = z.boolean().openapi('Enabled')
 
 const TracingConfigurationSchema = z
   .object({
-    enabled: EnabledSchema.and(
-      z.any().openapi({ description: 'When set to <code>true</code>, X-Ray tracing is enabled.' }),
-    ).exactOptional(),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'When set to <code>true</code>, X-Ray tracing is enabled.',
+    }),
   })
   .openapi({
     description:
@@ -184,73 +142,40 @@ const VersionDescriptionSchema = z.string().max(256).openapi('VersionDescription
 
 const CreateStateMachineInputSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the state machine. </p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    definition: DefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role to use for this state machine.',
-        }),
-    ),
-    type: StateMachineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether a Standard or Express state machine is created. The default is <code>STANDARD</code>. You cannot update the <code>type</code> of a state machine once it has been created.',
-        }),
-    ).exactOptional(),
-    loggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines what execution history events are logged and where they are logged.</p> <note> <p>By default, the <code>level</code> is set to <code>OFF</code>. For more information see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html">Log Levels</a> in the Step Functions User Guide.</p> </note>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags to be added when creating a state machine.</p> <p>An array of key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ).exactOptional(),
-    tracingConfiguration: TracingConfigurationSchema.and(
-      z.any().openapi({ description: 'Selects whether X-Ray tracing is enabled.' }),
-    ).exactOptional(),
-    publish: PublishSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set to <code>true</code> to publish the first version of the state machine during creation. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    versionDescription: VersionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sets description about the state machine version. You can only set the description if the <code>publish</code> parameter is set to <code>true</code>. Otherwise, if you set <code>versionDescription</code>, but <code>publish</code> to <code>false</code>, this API action throws <code>ValidationException</code>.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the state machine. </p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    definition: DefinitionSchema.openapi({
+      description:
+        'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the IAM role to use for this state machine.',
+    }),
+    type: StateMachineTypeSchema.exactOptional().openapi({
+      description:
+        'Determines whether a Standard or Express state machine is created. The default is <code>STANDARD</code>. You cannot update the <code>type</code> of a state machine once it has been created.',
+    }),
+    loggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p>Defines what execution history events are logged and where they are logged.</p> <note> <p>By default, the <code>level</code> is set to <code>OFF</code>. For more information see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html">Log Levels</a> in the Step Functions User Guide.</p> </note>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Tags to be added when creating a state machine.</p> <p>An array of key-value pairs. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
+    tracingConfiguration: TracingConfigurationSchema.exactOptional().openapi({
+      description: 'Selects whether X-Ray tracing is enabled.',
+    }),
+    publish: PublishSchema.exactOptional().openapi({
+      description:
+        'Set to <code>true</code> to publish the first version of the state machine during creation. The default is <code>false</code>.',
+    }),
+    versionDescription: VersionDescriptionSchema.exactOptional().openapi({
+      description:
+        'Sets description about the state machine version. You can only set the description if the <code>publish</code> parameter is set to <code>true</code>. Otherwise, if you set <code>versionDescription</code>, but <code>publish</code> to <code>false</code>, this API action throws <code>ValidationException</code>.',
+    }),
   })
   .openapi({ required: ['name', 'definition', 'roleArn'], title: 'CreateStateMachineInput' })
   .openapi('CreateStateMachineInput')
@@ -277,17 +202,13 @@ const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
 const CreateStateMachineAliasOutputSchema = z
   .object({
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the created state machine alias.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the state machine alias was created.' }),
-    ),
+    stateMachineAliasArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the created state machine alias.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the state machine alias was created.',
+    }),
   })
   .openapi({ required: ['stateMachineAliasArn', 'creationDate'] })
   .openapi('CreateStateMachineAliasOutput')
@@ -305,22 +226,14 @@ const VersionWeightSchema = z.int().min(0).max(100).openapi('VersionWeight')
 
 const RoutingConfigurationListItemSchema = z
   .object({
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration.</p> <p>If you specify the ARN of a second version, it must belong to the same state machine as the first version.</p>',
-        }),
-    ),
-    weight: VersionWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of traffic you want to route to the second state machine version. The sum of the weights in the routing configuration must be equal to 100.',
-        }),
-    ),
+    stateMachineVersionArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration.</p> <p>If you specify the ARN of a second version, it must belong to the same state machine as the first version.</p>',
+    }),
+    weight: VersionWeightSchema.openapi({
+      description:
+        'The percentage of traffic you want to route to the second state machine version. The sum of the weights in the routing configuration must be equal to 100.',
+    }),
   })
   .openapi({
     required: ['stateMachineVersionArn', 'weight'],
@@ -337,25 +250,17 @@ const RoutingConfigurationListSchema = z
 
 const CreateStateMachineAliasInputSchema = z
   .object({
-    description: AliasDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the state machine alias.' }),
-    ).exactOptional(),
-    name: CharacterRestrictedNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the state machine alias.</p> <p>To avoid conflict with version ARNs, don't use an integer in the name of the alias.</p>",
-        }),
-    ),
-    routingConfiguration: RoutingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routing configuration of a state machine alias. The routing configuration shifts execution traffic between two state machine versions. <code>routingConfiguration</code> contains an array of <code>RoutingConfig</code> objects that specify up to two state machine versions. Step Functions then randomly choses which version to run an execution with based on the weight assigned to each <code>RoutingConfig</code>.',
-        }),
-    ),
+    description: AliasDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the state machine alias.',
+    }),
+    name: CharacterRestrictedNameSchema.openapi({
+      description:
+        "<p>The name of the state machine alias.</p> <p>To avoid conflict with version ARNs, don't use an integer in the name of the alias.</p>",
+    }),
+    routingConfiguration: RoutingConfigurationListSchema.openapi({
+      description:
+        'The routing configuration of a state machine alias. The routing configuration shifts execution traffic between two state machine versions. <code>routingConfiguration</code> contains an array of <code>RoutingConfig</code> objects that specify up to two state machine versions. Step Functions then randomly choses which version to run an execution with based on the weight assigned to each <code>RoutingConfig</code>.',
+    }),
   })
   .openapi({ required: ['name', 'routingConfiguration'], title: 'CreateStateMachineAliasInput' })
   .openapi('CreateStateMachineAliasInput')
@@ -364,93 +269,75 @@ const ResourceNotFoundSchema = z.any().openapi('ResourceNotFound')
 
 const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
 
-const DeleteActivityOutputSchema = z.object({}).openapi('DeleteActivityOutput')
+const DeleteActivityOutputSchema = z.looseObject({}).openapi('DeleteActivityOutput')
 
 const DeleteActivityInputSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the activity to delete.' }),
-    ),
+    activityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the activity to delete.',
+    }),
   })
   .openapi({ required: ['activityArn'], title: 'DeleteActivityInput' })
   .openapi('DeleteActivityInput')
 
-const DeleteStateMachineOutputSchema = z.object({}).openapi('DeleteStateMachineOutput')
+const DeleteStateMachineOutputSchema = z.looseObject({}).openapi('DeleteStateMachineOutput')
 
 const DeleteStateMachineInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the state machine to delete.' }),
-    ),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine to delete.',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'DeleteStateMachineInput' })
   .openapi('DeleteStateMachineInput')
 
-const DeleteStateMachineAliasOutputSchema = z.object({}).openapi('DeleteStateMachineAliasOutput')
+const DeleteStateMachineAliasOutputSchema = z
+  .looseObject({})
+  .openapi('DeleteStateMachineAliasOutput')
 
 const DeleteStateMachineAliasInputSchema = z
   .object({
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the state machine alias to delete.',
-        }),
-    ),
+    stateMachineAliasArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine alias to delete.',
+    }),
   })
   .openapi({ required: ['stateMachineAliasArn'], title: 'DeleteStateMachineAliasInput' })
   .openapi('DeleteStateMachineAliasInput')
 
 const DeleteStateMachineVersionOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteStateMachineVersionOutput')
 
 const LongArnSchema = z.string().min(1).max(2000).openapi('LongArn')
 
 const DeleteStateMachineVersionInputSchema = z
   .object({
-    stateMachineVersionArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the state machine version to delete.',
-        }),
-    ),
+    stateMachineVersionArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine version to delete.',
+    }),
   })
   .openapi({ required: ['stateMachineVersionArn'], title: 'DeleteStateMachineVersionInput' })
   .openapi('DeleteStateMachineVersionInput')
 
 const DescribeActivityOutputSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the activity.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the activity.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the activity is created.' }),
-    ),
+    activityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the activity.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the activity.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    creationDate: TimestampSchema.openapi({ description: 'The date the activity is created.' }),
   })
   .openapi({ required: ['activityArn', 'name', 'creationDate'] })
   .openapi('DescribeActivityOutput')
 
 const DescribeActivityInputSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the activity to describe.' }),
-    ),
+    activityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the activity to describe.',
+    }),
   })
   .openapi({ required: ['activityArn'], title: 'DescribeActivityInput' })
   .openapi('DescribeActivityInput')
@@ -467,14 +354,10 @@ const IncludedDetailsSchema = z.boolean().openapi('IncludedDetails')
 
 const CloudWatchEventsExecutionDataDetailsSchema = z
   .object({
-    included: IncludedDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether input or output was included in the response. Always <code>true</code> for API calls. ',
-        }),
-    ).exactOptional(),
+    included: IncludedDetailsSchema.exactOptional().openapi({
+      description:
+        'Indicates whether input or output was included in the response. Always <code>true</code> for API calls. ',
+    }),
   })
   .openapi({ description: 'Provides details about execution input or output.', required: [] })
   .openapi('CloudWatchEventsExecutionDataDetails')
@@ -492,95 +375,61 @@ const SensitiveCauseSchema = z.string().min(0).max(32768).openapi('SensitiveCaus
 
 const DescribeExecutionOutputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the execution.' }),
-    ),
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the executed stated machine.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the execution.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ).exactOptional(),
-    status: ExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the execution.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the execution is started.' }),
-    ),
-    stopDate: TimestampSchema.and(
-      z.any().openapi({ description: 'If the execution ended, the date the execution stopped.' }),
-    ).exactOptional(),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that contains the JSON input data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the execution.',
+    }),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the executed stated machine.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the execution.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    status: ExecutionStatusSchema.openapi({ description: 'The current status of the execution.' }),
+    startDate: TimestampSchema.openapi({ description: 'The date the execution is started.' }),
+    stopDate: TimestampSchema.exactOptional().openapi({
+      description: 'If the execution ended, the date the execution stopped.',
+    }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The string that contains the JSON input data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
     inputDetails: CloudWatchEventsExecutionDataDetailsSchema.exactOptional(),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON output data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p> <note> <p>This field is set only if the execution succeeds. If the execution fails, this field is null.</p> </note>',
-        }),
-    ).exactOptional(),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        '<p>The JSON output data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p> <note> <p>This field is set only if the execution succeeds. If the execution fails, this field is null.</p> </note>',
+    }),
     outputDetails: CloudWatchEventsExecutionDataDetailsSchema.exactOptional(),
-    traceHeader: TraceHeaderSchema.and(
-      z.any().openapi({ description: 'The X-Ray trace header that was passed to the execution.' }),
-    ).exactOptional(),
-    mapRunArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies a Map Run, which dispatched this execution.',
-        }),
-    ).exactOptional(),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error string if the state machine execution failed.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'The cause string if the state machine execution failed.' }),
-    ).exactOptional(),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request without specifying a state machine version or alias ARN, Step Functions returns a null value.</p>',
-        }),
-    ).exactOptional(),
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine alias associated with the execution. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request with a state machine version ARN, this field will be null.</p>',
-        }),
-    ).exactOptional(),
+    traceHeader: TraceHeaderSchema.exactOptional().openapi({
+      description: 'The X-Ray trace header that was passed to the execution.',
+    }),
+    mapRunArn: LongArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies a Map Run, which dispatched this execution.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error string if the state machine execution failed.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'The cause string if the state machine execution failed.',
+    }),
+    stateMachineVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request without specifying a state machine version or alias ARN, Step Functions returns a null value.</p>',
+    }),
+    stateMachineAliasArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine alias associated with the execution. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.</p> <p>If you start an execution from a <code>StartExecution</code> request with a state machine version ARN, this field will be null.</p>',
+    }),
   })
   .openapi({ required: ['executionArn', 'stateMachineArn', 'status', 'startDate'] })
   .openapi('DescribeExecutionOutput')
 
 const DescribeExecutionInputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the execution to describe.' }),
-    ),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the execution to describe.',
+    }),
   })
   .openapi({ required: ['executionArn'], title: 'DescribeExecutionInput' })
   .openapi('DescribeExecutionInput')
@@ -605,70 +454,38 @@ const UnsignedLongSchema = z.int().min(0).openapi('UnsignedLong')
 
 const MapRunItemCountsSchema = z
   .object({
-    pending: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of items to process in child workflow executions that haven't started running yet.",
-        }),
-    ),
-    running: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items being processed in child workflow executions that are currently in-progress.',
-        }),
-    ),
-    succeeded: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items processed in child workflow executions that have completed successfully.',
-        }),
-    ),
-    failed: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items processed in child workflow executions that have failed.',
-        }),
-    ),
-    timedOut: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items processed in child workflow executions that have timed out.',
-        }),
-    ),
-    aborted: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items processed in child workflow executions that were either stopped by the user or by Step Functions, because the Map Run failed.',
-        }),
-    ),
-    total: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of items processed in all the child workflow executions started by a Map Run.',
-        }),
-    ),
-    resultsWritten: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the count of items whose results were written by <code>ResultWriter</code>. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.',
-        }),
-    ),
+    pending: UnsignedLongSchema.openapi({
+      description:
+        "The total number of items to process in child workflow executions that haven't started running yet.",
+    }),
+    running: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items being processed in child workflow executions that are currently in-progress.',
+    }),
+    succeeded: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items processed in child workflow executions that have completed successfully.',
+    }),
+    failed: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items processed in child workflow executions that have failed.',
+    }),
+    timedOut: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items processed in child workflow executions that have timed out.',
+    }),
+    aborted: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items processed in child workflow executions that were either stopped by the user or by Step Functions, because the Map Run failed.',
+    }),
+    total: UnsignedLongSchema.openapi({
+      description:
+        'The total number of items processed in all the child workflow executions started by a Map Run.',
+    }),
+    resultsWritten: UnsignedLongSchema.openapi({
+      description:
+        'Returns the count of items whose results were written by <code>ResultWriter</code>. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: [
@@ -688,70 +505,37 @@ const MapRunItemCountsSchema = z
 
 const MapRunExecutionCountsSchema = z
   .object({
-    pending: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of child workflow executions that were started by a Map Run, but haven't started executing yet. ",
-        }),
-    ),
-    running: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run and are currently in-progress.',
-        }),
-    ),
-    succeeded: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run and have completed successfully.',
-        }),
-    ),
-    failed: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run, but have failed.',
-        }),
-    ),
-    timedOut: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run and have timed out.',
-        }),
-    ),
-    aborted: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run and were running, but were either stopped by the user or by Step Functions because the Map Run failed. ',
-        }),
-    ),
-    total: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of child workflow executions that were started by a Map Run.',
-        }),
-    ),
-    resultsWritten: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the count of child workflow executions whose results were written by <code>ResultWriter</code>. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.',
-        }),
-    ),
+    pending: UnsignedLongSchema.openapi({
+      description:
+        "The total number of child workflow executions that were started by a Map Run, but haven't started executing yet. ",
+    }),
+    running: UnsignedLongSchema.openapi({
+      description:
+        'The total number of child workflow executions that were started by a Map Run and are currently in-progress.',
+    }),
+    succeeded: UnsignedLongSchema.openapi({
+      description:
+        'The total number of child workflow executions that were started by a Map Run and have completed successfully.',
+    }),
+    failed: UnsignedLongSchema.openapi({
+      description:
+        'The total number of child workflow executions that were started by a Map Run, but have failed.',
+    }),
+    timedOut: UnsignedLongSchema.openapi({
+      description:
+        'The total number of child workflow executions that were started by a Map Run and have timed out.',
+    }),
+    aborted: UnsignedLongSchema.openapi({
+      description:
+        'The total number of child workflow executions that were started by a Map Run and were running, but were either stopped by the user or by Step Functions because the Map Run failed. ',
+    }),
+    total: UnsignedLongSchema.openapi({
+      description: 'The total number of child workflow executions that were started by a Map Run.',
+    }),
+    resultsWritten: UnsignedLongSchema.openapi({
+      description:
+        'Returns the count of child workflow executions whose results were written by <code>ResultWriter</code>. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html">ResultWriter</a> in the <i>Step Functions Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: [
@@ -771,66 +555,38 @@ const MapRunExecutionCountsSchema = z
 
 const DescribeMapRunOutputSchema = z
   .object({
-    mapRunArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) that identifies a Map Run.' }),
-    ),
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the execution in which the Map Run was started.',
-        }),
-    ),
-    status: MapRunStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the Map Run.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the Map Run was started.' }),
-    ),
-    stopDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when the Map Run was stopped.' }),
-    ).exactOptional(),
-    maxConcurrency: MaxConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of child workflow executions configured to run in parallel for the Map Run at the same time.',
-        }),
-    ),
-    toleratedFailurePercentage: ToleratedFailurePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum percentage of failed child workflow executions before the Map Run fails.',
-        }),
-    ),
-    toleratedFailureCount: ToleratedFailureCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of failed child workflow executions before the Map Run fails.',
-        }),
-    ),
-    itemCounts: MapRunItemCountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON object that contains information about the total number of items, and the item count for each processing status, such as <code>pending</code> and <code>failed</code>.',
-        }),
-    ),
-    executionCounts: MapRunExecutionCountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON object that contains information about the total number of child workflow executions for the Map Run, and the count of child workflow executions for each status, such as <code>failed</code> and <code>succeeded</code>.',
-        }),
-    ),
+    mapRunArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies a Map Run.',
+    }),
+    executionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the execution in which the Map Run was started.',
+    }),
+    status: MapRunStatusSchema.openapi({ description: 'The current status of the Map Run.' }),
+    startDate: TimestampSchema.openapi({ description: 'The date when the Map Run was started.' }),
+    stopDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date when the Map Run was stopped.',
+    }),
+    maxConcurrency: MaxConcurrencySchema.openapi({
+      description:
+        'The maximum number of child workflow executions configured to run in parallel for the Map Run at the same time.',
+    }),
+    toleratedFailurePercentage: ToleratedFailurePercentageSchema.openapi({
+      description:
+        'The maximum percentage of failed child workflow executions before the Map Run fails.',
+    }),
+    toleratedFailureCount: ToleratedFailureCountSchema.openapi({
+      description:
+        'The maximum number of failed child workflow executions before the Map Run fails.',
+    }),
+    itemCounts: MapRunItemCountsSchema.openapi({
+      description:
+        'A JSON object that contains information about the total number of items, and the item count for each processing status, such as <code>pending</code> and <code>failed</code>.',
+    }),
+    executionCounts: MapRunExecutionCountsSchema.openapi({
+      description:
+        'A JSON object that contains information about the total number of child workflow executions for the Map Run, and the count of child workflow executions for each status, such as <code>failed</code> and <code>succeeded</code>.',
+    }),
   })
   .openapi({
     required: [
@@ -849,9 +605,9 @@ const DescribeMapRunOutputSchema = z
 
 const DescribeMapRunInputSchema = z
   .object({
-    mapRunArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) that identifies a Map Run.' }),
-    ),
+    mapRunArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies a Map Run.',
+    }),
   })
   .openapi({ required: ['mapRunArn'], title: 'DescribeMapRunInput' })
   .openapi('DescribeMapRunInput')
@@ -864,80 +620,48 @@ const RevisionIdSchema = z.string().openapi('RevisionId')
 
 const DescribeStateMachineOutputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) that identifies the state machine.</p> <p>If you specified a state machine version ARN in your request, the API returns the version ARN. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the state machine.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    status: StateMachineStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the state machine.' }),
-    ).exactOptional(),
-    definition: DefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role used when creating this state machine. (The IAM role maintains security by granting Step Functions access to Amazon Web Services resources.)',
-        }),
-    ),
-    type: StateMachineTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>type</code> of the state machine (<code>STANDARD</code> or <code>EXPRESS</code>).',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date the state machine is created.</p> <p>For a state machine version, <code>creationDate</code> is the date the version was created.</p>',
-        }),
-    ),
+    stateMachineArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) that identifies the state machine.</p> <p>If you specified a state machine version ARN in your request, the API returns the version ARN. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the state machine.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    status: StateMachineStatusSchema.exactOptional().openapi({
+      description: 'The current status of the state machine.',
+    }),
+    definition: DefinitionSchema.openapi({
+      description:
+        'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role used when creating this state machine. (The IAM role maintains security by granting Step Functions access to Amazon Web Services resources.)',
+    }),
+    type: StateMachineTypeSchema.openapi({
+      description:
+        'The <code>type</code> of the state machine (<code>STANDARD</code> or <code>EXPRESS</code>).',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description:
+        '<p>The date the state machine is created.</p> <p>For a state machine version, <code>creationDate</code> is the date the version was created.</p>',
+    }),
     loggingConfiguration: LoggingConfigurationSchema.exactOptional(),
-    tracingConfiguration: TracingConfigurationSchema.and(
-      z.any().openapi({ description: 'Selects whether X-Ray tracing is enabled.' }),
-    ).exactOptional(),
-    label: MapRunLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-defined or an auto-generated string that identifies a <code>Map</code> state. This parameter is present only if the <code>stateMachineArn</code> specified in input is a qualified state machine ARN.',
-        }),
-    ).exactOptional(),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The revision identifier for the state machine.</p> <p>Use the <code>revisionId</code> parameter to compare between versions of a state machine configuration used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>',
-        }),
-    ).exactOptional(),
-    description: VersionDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the state machine version.' }),
-    ).exactOptional(),
+    tracingConfiguration: TracingConfigurationSchema.exactOptional().openapi({
+      description: 'Selects whether X-Ray tracing is enabled.',
+    }),
+    label: MapRunLabelSchema.exactOptional().openapi({
+      description:
+        'A user-defined or an auto-generated string that identifies a <code>Map</code> state. This parameter is present only if the <code>stateMachineArn</code> specified in input is a qualified state machine ARN.',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The revision identifier for the state machine.</p> <p>Use the <code>revisionId</code> parameter to compare between versions of a state machine configuration used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>',
+    }),
+    description: VersionDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the state machine version.',
+    }),
   })
   .openapi({
     required: ['stateMachineArn', 'name', 'definition', 'roleArn', 'type', 'creationDate'],
@@ -946,14 +670,10 @@ const DescribeStateMachineOutputSchema = z
 
 const DescribeStateMachineInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine for which you want the information.</p> <p>If you specify a state machine version ARN, this API returns details about that version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>',
-        }),
-    ),
+    stateMachineArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine for which you want the information.</p> <p>If you specify a state machine version ARN, this API returns details about that version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'DescribeStateMachineInput' })
   .openapi('DescribeStateMachineInput')
@@ -962,127 +682,85 @@ const StateMachineDoesNotExistSchema = z.any().openapi('StateMachineDoesNotExist
 
 const DescribeStateMachineAliasOutputSchema = z
   .object({
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the state machine alias.' }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the state machine alias.' }),
-    ).exactOptional(),
-    description: AliasDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the alias.' }),
-    ).exactOptional(),
-    routingConfiguration: RoutingConfigurationListSchema.and(
-      z.any().openapi({ description: 'The routing configuration of the alias.' }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the state machine alias was created.' }),
-    ).exactOptional(),
-    updateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date the state machine alias was last updated.</p> <p>For a newly created state machine, this is the same as the creation date.</p>',
-        }),
-    ).exactOptional(),
+    stateMachineAliasArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine alias.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the state machine alias.',
+    }),
+    description: AliasDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the alias.',
+    }),
+    routingConfiguration: RoutingConfigurationListSchema.exactOptional().openapi({
+      description: 'The routing configuration of the alias.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the state machine alias was created.',
+    }),
+    updateDate: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The date the state machine alias was last updated.</p> <p>For a newly created state machine, this is the same as the creation date.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStateMachineAliasOutput')
 
 const DescribeStateMachineAliasInputSchema = z
   .object({
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the state machine alias.' }),
-    ),
+    stateMachineAliasArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine alias.',
+    }),
   })
   .openapi({ required: ['stateMachineAliasArn'], title: 'DescribeStateMachineAliasInput' })
   .openapi('DescribeStateMachineAliasInput')
 
 const DescribeStateMachineForExecutionOutputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the state machine associated with the execution.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the state machine associated with the execution.' }),
-    ),
-    definition: DefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
-        }),
-    ),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role of the State Machine for the execution. ',
-        }),
-    ),
-    updateDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the state machine associated with an execution was updated. For a newly created state machine, this is the creation date.',
-        }),
-    ),
+    stateMachineArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the state machine associated with the execution.',
+    }),
+    name: NameSchema.openapi({
+      description: 'The name of the state machine associated with the execution.',
+    }),
+    definition: DefinitionSchema.openapi({
+      description:
+        'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
+    }),
+    roleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role of the State Machine for the execution. ',
+    }),
+    updateDate: TimestampSchema.openapi({
+      description:
+        'The date and time the state machine associated with an execution was updated. For a newly created state machine, this is the creation date.',
+    }),
     loggingConfiguration: LoggingConfigurationSchema.exactOptional(),
-    tracingConfiguration: TracingConfigurationSchema.and(
-      z.any().openapi({ description: 'Selects whether X-Ray tracing is enabled.' }),
-    ).exactOptional(),
-    mapRunArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Map Run that started the child workflow execution. This field is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.',
-        }),
-    ).exactOptional(),
-    label: MapRunLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-defined or an auto-generated string that identifies a <code>Map</code> state. This ﬁeld is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.',
-        }),
-    ).exactOptional(),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The revision identifier for the state machine. The first revision ID when you create the state machine is null.</p> <p>Use the state machine <code>revisionId</code> parameter to compare the revision of a state machine with the configuration of the state machine used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>',
-        }),
-    ).exactOptional(),
+    tracingConfiguration: TracingConfigurationSchema.exactOptional().openapi({
+      description: 'Selects whether X-Ray tracing is enabled.',
+    }),
+    mapRunArn: LongArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Map Run that started the child workflow execution. This field is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.',
+    }),
+    label: MapRunLabelSchema.exactOptional().openapi({
+      description:
+        'A user-defined or an auto-generated string that identifies a <code>Map</code> state. This ﬁeld is returned only if the <code>executionArn</code> is a child workflow execution that was started by a Distributed Map state.',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The revision identifier for the state machine. The first revision ID when you create the state machine is null.</p> <p>Use the state machine <code>revisionId</code> parameter to compare the revision of a state machine with the configuration of the state machine used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>',
+    }),
   })
   .openapi({ required: ['stateMachineArn', 'name', 'definition', 'roleArn', 'updateDate'] })
   .openapi('DescribeStateMachineForExecutionOutput')
 
 const DescribeStateMachineForExecutionInputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the execution you want state machine information for.',
-        }),
-    ),
+    executionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the execution you want state machine information for.',
+    }),
   })
   .openapi({ required: ['executionArn'], title: 'DescribeStateMachineForExecutionInput' })
   .openapi('DescribeStateMachineForExecutionInput')
@@ -1093,44 +771,28 @@ const SensitiveDataJobInputSchema = z.string().max(262144).openapi('SensitiveDat
 
 const GetActivityTaskOutputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that identifies the scheduled task. This token must be copied and included in subsequent calls to <a>SendTaskHeartbeat</a>, <a>SendTaskSuccess</a> or <a>SendTaskFailure</a> in order to report the progress or completion of the task.',
-        }),
-    ).exactOptional(),
-    input: SensitiveDataJobInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that contains the JSON input data for the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.exactOptional().openapi({
+      description:
+        'A token that identifies the scheduled task. This token must be copied and included in subsequent calls to <a>SendTaskHeartbeat</a>, <a>SendTaskSuccess</a> or <a>SendTaskFailure</a> in order to report the progress or completion of the task.',
+    }),
+    input: SensitiveDataJobInputSchema.exactOptional().openapi({
+      description:
+        'The string that contains the JSON input data for the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetActivityTaskOutput')
 
 const GetActivityTaskInputSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the activity to retrieve tasks from (assigned when you create the task using <a>CreateActivity</a>.)',
-        }),
-    ),
-    workerName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can provide an arbitrary name in order to identify the worker that the task is assigned to. This name is used when it is logged in the execution history.',
-        }),
-    ).exactOptional(),
+    activityArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the activity to retrieve tasks from (assigned when you create the task using <a>CreateActivity</a>.)',
+    }),
+    workerName: NameSchema.exactOptional().openapi({
+      description:
+        'You can provide an arbitrary name in order to identify the worker that the task is assigned to. This name is used when it is logged in the execution history.',
+    }),
   })
   .openapi({ required: ['activityArn'], title: 'GetActivityTaskInput' })
   .openapi('GetActivityTaskInput')
@@ -1205,12 +867,12 @@ const EventIdSchema = z.int().openapi('EventId')
 
 const ActivityFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description: 'Contains details about an activity that failed during an execution.',
@@ -1220,12 +882,12 @@ const ActivityFailedEventDetailsSchema = z
 
 const ActivityScheduleFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description:
@@ -1238,14 +900,10 @@ const TruncatedSchema = z.boolean().openapi('Truncated')
 
 const HistoryEventExecutionDataDetailsSchema = z
   .object({
-    truncated: TruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls.',
-        }),
-    ).exactOptional(),
+    truncated: TruncatedSchema.exactOptional().openapi({
+      description:
+        'Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls.',
+    }),
   })
   .openapi({
     description: 'Provides details about input or output in an execution history event.',
@@ -1257,34 +915,22 @@ const TimeoutInSecondsSchema = z.int().openapi('TimeoutInSeconds')
 
 const ActivityScheduledEventDetailsSchema = z
   .object({
-    resource: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the scheduled activity.' }),
-    ),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data input to the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    inputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the input for an execution history event.',
-        }),
-    ).exactOptional(),
-    timeoutInSeconds: TimeoutInSecondsSchema.and(
-      z.any().openapi({ description: 'The maximum allowed duration of the activity task.' }),
-    ).exactOptional(),
-    heartbeatInSeconds: TimeoutInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum allowed duration between two heartbeats for the activity task.',
-        }),
-    ).exactOptional(),
+    resource: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the scheduled activity.',
+    }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data input to the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    inputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the input for an execution history event.',
+    }),
+    timeoutInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum allowed duration of the activity task.',
+    }),
+    heartbeatInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum allowed duration between two heartbeats for the activity task.',
+    }),
   })
   .openapi({
     required: ['resource'],
@@ -1296,14 +942,10 @@ const IdentitySchema = z.string().max(256).openapi('Identity')
 
 const ActivityStartedEventDetailsSchema = z
   .object({
-    workerName: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the worker that the task is assigned to. These names are provided by the workers when calling <a>GetActivityTask</a>.',
-        }),
-    ).exactOptional(),
+    workerName: IdentitySchema.exactOptional().openapi({
+      description:
+        'The name of the worker that the task is assigned to. These names are provided by the workers when calling <a>GetActivityTask</a>.',
+    }),
   })
   .openapi({
     description: 'Contains details about the start of an activity during an execution.',
@@ -1313,21 +955,13 @@ const ActivityStartedEventDetailsSchema = z
 
 const ActivitySucceededEventDetailsSchema = z
   .object({
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data output by the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data output by the activity task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     description:
@@ -1338,12 +972,12 @@ const ActivitySucceededEventDetailsSchema = z
 
 const ActivityTimedOutEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the timeout.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the timeout.',
+    }),
   })
   .openapi({
     description: 'Contains details about an activity timeout that occurred during an execution.',
@@ -1353,18 +987,18 @@ const ActivityTimedOutEventDetailsSchema = z
 
 const TaskFailedEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1376,14 +1010,10 @@ const ConnectorParametersSchema = z.string().min(0).max(262144).openapi('Connect
 
 const TaskCredentialsSchema = z
   .object({
-    roleArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role that Step Functions assumes for the task. The role can allow cross-account access to resources.',
-        }),
-    ).exactOptional(),
+    roleArn: LongArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM role that Step Functions assumes for the task. The role can allow cross-account access to resources.',
+    }),
   })
   .openapi({
     description: 'Contains details about the credentials that Step Functions uses for a task.',
@@ -1393,34 +1023,26 @@ const TaskCredentialsSchema = z
 
 const TaskScheduledEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    region: NameSchema.and(z.any().openapi({ description: 'The region of the scheduled task' })),
-    parameters: ConnectorParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data passed to the resource referenced in a task state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ),
-    timeoutInSeconds: TimeoutInSecondsSchema.and(
-      z.any().openapi({ description: 'The maximum allowed duration of the task.' }),
-    ).exactOptional(),
-    heartbeatInSeconds: TimeoutInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum allowed duration between two heartbeats for the task.',
-        }),
-    ).exactOptional(),
-    taskCredentials: TaskCredentialsSchema.and(
-      z.any().openapi({ description: 'The credentials that Step Functions uses for the task.' }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    region: NameSchema.openapi({ description: 'The region of the scheduled task' }),
+    parameters: ConnectorParametersSchema.openapi({
+      description:
+        'The JSON data passed to the resource referenced in a task state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    timeoutInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum allowed duration of the task.',
+    }),
+    heartbeatInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum allowed duration between two heartbeats for the task.',
+    }),
+    taskCredentials: TaskCredentialsSchema.exactOptional().openapi({
+      description: 'The credentials that Step Functions uses for the task.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource', 'region', 'parameters'],
@@ -1430,18 +1052,18 @@ const TaskScheduledEventDetailsSchema = z
 
 const TaskStartFailedEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1451,12 +1073,12 @@ const TaskStartFailedEventDetailsSchema = z
 
 const TaskStartedEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1466,18 +1088,18 @@ const TaskStartedEventDetailsSchema = z
 
 const TaskSubmitFailedEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1487,27 +1109,19 @@ const TaskSubmitFailedEventDetailsSchema = z
 
 const TaskSubmittedEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The response from a resource when a task has started. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The response from a resource when a task has started. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1517,27 +1131,19 @@ const TaskSubmittedEventDetailsSchema = z
 
 const TaskSucceededEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full JSON response from a resource when a task has succeeded. This response becomes the output of the related task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The full JSON response from a resource when a task has succeeded. This response becomes the output of the related task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1547,18 +1153,18 @@ const TaskSucceededEventDetailsSchema = z
 
 const TaskTimedOutEventDetailsSchema = z
   .object({
-    resourceType: NameSchema.and(
-      z.any().openapi({ description: 'The service name of the resource in a task state.' }),
-    ),
-    resource: NameSchema.and(
-      z.any().openapi({ description: 'The action of the resource called by a task state.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    resourceType: NameSchema.openapi({
+      description: 'The service name of the resource in a task state.',
+    }),
+    resource: NameSchema.openapi({
+      description: 'The action of the resource called by a task state.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     required: ['resourceType', 'resource'],
@@ -1568,78 +1174,50 @@ const TaskTimedOutEventDetailsSchema = z
 
 const ExecutionFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({ description: 'Contains details about an execution failure event.', required: [] })
   .openapi('ExecutionFailedEventDetails')
 
 const ExecutionStartedEventDetailsSchema = z
   .object({
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data input to the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    inputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the input for an execution history event.',
-        }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role used for executing Lambda tasks.',
-        }),
-    ).exactOptional(),
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies a state machine alias used for starting the state machine execution.',
-        }),
-    ).exactOptional(),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies a state machine version used for starting the state machine execution.',
-        }),
-    ).exactOptional(),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data input to the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    inputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the input for an execution history event.',
+    }),
+    roleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role used for executing Lambda tasks.',
+    }),
+    stateMachineAliasArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies a state machine alias used for starting the state machine execution.',
+    }),
+    stateMachineVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies a state machine version used for starting the state machine execution.',
+    }),
   })
   .openapi({ description: 'Contains details about the start of the execution.', required: [] })
   .openapi('ExecutionStartedEventDetails')
 
 const ExecutionSucceededEventDetailsSchema = z
   .object({
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data output by the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data output by the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     description: 'Contains details about the successful termination of the execution.',
@@ -1649,24 +1227,24 @@ const ExecutionSucceededEventDetailsSchema = z
 
 const ExecutionAbortedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({ description: 'Contains details about an abort of an execution.', required: [] })
   .openapi('ExecutionAbortedEventDetails')
 
 const ExecutionTimedOutEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the timeout.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the timeout.',
+    }),
   })
   .openapi({
     description: 'Contains details about the execution timeout that occurred during the execution.',
@@ -1678,35 +1256,33 @@ const UnsignedIntegerSchema = z.int().min(0).openapi('UnsignedInteger')
 
 const MapStateStartedEventDetailsSchema = z
   .object({
-    length: UnsignedIntegerSchema.and(
-      z.any().openapi({ description: 'The size of the array for Map state iterations.' }),
-    ).exactOptional(),
+    length: UnsignedIntegerSchema.exactOptional().openapi({
+      description: 'The size of the array for Map state iterations.',
+    }),
   })
   .openapi({ description: 'Details about a Map state that was started.', required: [] })
   .openapi('MapStateStartedEventDetails')
 
 const MapIterationEventDetailsSchema = z
   .object({
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the iteration’s parent Map state.' }),
-    ).exactOptional(),
-    index: UnsignedIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The index of the array belonging to the Map state iteration.' }),
-    ).exactOptional(),
+    name: NameSchema.exactOptional().openapi({
+      description: 'The name of the iteration’s parent Map state.',
+    }),
+    index: UnsignedIntegerSchema.exactOptional().openapi({
+      description: 'The index of the array belonging to the Map state iteration.',
+    }),
   })
   .openapi({ description: 'Contains details about an iteration of a Map state.', required: [] })
   .openapi('MapIterationEventDetails')
 
 const LambdaFunctionFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description: 'Contains details about a Lambda function that failed during an execution.',
@@ -1716,12 +1292,12 @@ const LambdaFunctionFailedEventDetailsSchema = z
 
 const LambdaFunctionScheduleFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description:
@@ -1732,32 +1308,22 @@ const LambdaFunctionScheduleFailedEventDetailsSchema = z
 
 const LambdaFunctionScheduledEventDetailsSchema = z
   .object({
-    resource: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the scheduled Lambda function.',
-        }),
-    ),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data input to the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    inputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains details about input for an execution history event.' }),
-    ).exactOptional(),
-    timeoutInSeconds: TimeoutInSecondsSchema.and(
-      z.any().openapi({ description: 'The maximum allowed duration of the Lambda function.' }),
-    ).exactOptional(),
-    taskCredentials: TaskCredentialsSchema.and(
-      z.any().openapi({ description: 'The credentials that Step Functions uses for the task.' }),
-    ).exactOptional(),
+    resource: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the scheduled Lambda function.',
+    }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data input to the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    inputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about input for an execution history event.',
+    }),
+    timeoutInSeconds: TimeoutInSecondsSchema.exactOptional().openapi({
+      description: 'The maximum allowed duration of the Lambda function.',
+    }),
+    taskCredentials: TaskCredentialsSchema.exactOptional().openapi({
+      description: 'The credentials that Step Functions uses for the task.',
+    }),
   })
   .openapi({
     required: ['resource'],
@@ -1767,12 +1333,12 @@ const LambdaFunctionScheduledEventDetailsSchema = z
 
 const LambdaFunctionStartFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description:
@@ -1783,21 +1349,13 @@ const LambdaFunctionStartFailedEventDetailsSchema = z
 
 const LambdaFunctionSucceededEventDetailsSchema = z
   .object({
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON data output by the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON data output by the Lambda function. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     description:
@@ -1808,12 +1366,12 @@ const LambdaFunctionSucceededEventDetailsSchema = z
 
 const LambdaFunctionTimedOutEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the timeout.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the timeout.',
+    }),
   })
   .openapi({
     description:
@@ -1824,22 +1382,14 @@ const LambdaFunctionTimedOutEventDetailsSchema = z
 
 const StateEnteredEventDetailsSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: 'The name of the state.' })),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that contains the JSON input data for the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    inputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the input for an execution history event.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: 'The name of the state.' }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The string that contains the JSON input data for the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    inputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the input for an execution history event.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -1849,29 +1399,17 @@ const StateEnteredEventDetailsSchema = z
 
 const StateExitedEventDetailsSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the state.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON output data of the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
-    outputDetails: HistoryEventExecutionDataDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about the output of an execution history event.',
-        }),
-    ).exactOptional(),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the state.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The JSON output data of the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
+    outputDetails: HistoryEventExecutionDataDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the output of an execution history event.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -1881,11 +1419,9 @@ const StateExitedEventDetailsSchema = z
 
 const MapRunStartedEventDetailsSchema = z
   .object({
-    mapRunArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of a Map Run that was started.' }),
-    ).exactOptional(),
+    mapRunArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of a Map Run that was started.',
+    }),
   })
   .openapi({
     description:
@@ -1896,12 +1432,12 @@ const MapRunStartedEventDetailsSchema = z
 
 const MapRunFailedEventDetailsSchema = z
   .object({
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the Map Run failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the Map Run failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({
     description:
@@ -1912,131 +1448,92 @@ const MapRunFailedEventDetailsSchema = z
 
 const HistoryEventSchema = z
   .object({
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the event occurred.' }),
-    ),
-    type: HistoryEventTypeSchema.and(z.any().openapi({ description: 'The type of the event.' })),
-    id: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The id of the event. Events are numbered sequentially, starting at one.',
-        }),
-    ),
-    previousEventId: EventIdSchema.and(
-      z.any().openapi({ description: 'The id of the previous event.' }),
-    ).exactOptional(),
+    timestamp: TimestampSchema.openapi({ description: 'The date and time the event occurred.' }),
+    type: HistoryEventTypeSchema.openapi({ description: 'The type of the event.' }),
+    id: EventIdSchema.openapi({
+      description: 'The id of the event. Events are numbered sequentially, starting at one.',
+    }),
+    previousEventId: EventIdSchema.exactOptional().openapi({
+      description: 'The id of the previous event.',
+    }),
     activityFailedEventDetails: ActivityFailedEventDetailsSchema.exactOptional(),
-    activityScheduleFailedEventDetails: ActivityScheduleFailedEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains details about an activity schedule event that failed during an execution.',
-        }),
-    ).exactOptional(),
+    activityScheduleFailedEventDetails:
+      ActivityScheduleFailedEventDetailsSchema.exactOptional().openapi({
+        description:
+          'Contains details about an activity schedule event that failed during an execution.',
+      }),
     activityScheduledEventDetails: ActivityScheduledEventDetailsSchema.exactOptional(),
     activityStartedEventDetails: ActivityStartedEventDetailsSchema.exactOptional(),
     activitySucceededEventDetails: ActivitySucceededEventDetailsSchema.exactOptional(),
     activityTimedOutEventDetails: ActivityTimedOutEventDetailsSchema.exactOptional(),
-    taskFailedEventDetails: TaskFailedEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about the failure of a task.' }),
-    ).exactOptional(),
-    taskScheduledEventDetails: TaskScheduledEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a task that was scheduled.' }),
-    ).exactOptional(),
-    taskStartFailedEventDetails: TaskStartFailedEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a task that failed to start.' }),
-    ).exactOptional(),
-    taskStartedEventDetails: TaskStartedEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a task that was started.' }),
-    ).exactOptional(),
-    taskSubmitFailedEventDetails: TaskSubmitFailedEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains details about a task that where the submit failed.' }),
-    ).exactOptional(),
-    taskSubmittedEventDetails: TaskSubmittedEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a submitted task.' }),
-    ).exactOptional(),
-    taskSucceededEventDetails: TaskSucceededEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a task that succeeded.' }),
-    ).exactOptional(),
-    taskTimedOutEventDetails: TaskTimedOutEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about a task that timed out.' }),
-    ).exactOptional(),
+    taskFailedEventDetails: TaskFailedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about the failure of a task.',
+    }),
+    taskScheduledEventDetails: TaskScheduledEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that was scheduled.',
+    }),
+    taskStartFailedEventDetails: TaskStartFailedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that failed to start.',
+    }),
+    taskStartedEventDetails: TaskStartedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that was started.',
+    }),
+    taskSubmitFailedEventDetails: TaskSubmitFailedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that where the submit failed.',
+    }),
+    taskSubmittedEventDetails: TaskSubmittedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a submitted task.',
+    }),
+    taskSucceededEventDetails: TaskSucceededEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that succeeded.',
+    }),
+    taskTimedOutEventDetails: TaskTimedOutEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about a task that timed out.',
+    }),
     executionFailedEventDetails: ExecutionFailedEventDetailsSchema.exactOptional(),
     executionStartedEventDetails: ExecutionStartedEventDetailsSchema.exactOptional(),
     executionSucceededEventDetails: ExecutionSucceededEventDetailsSchema.exactOptional(),
     executionAbortedEventDetails: ExecutionAbortedEventDetailsSchema.exactOptional(),
     executionTimedOutEventDetails: ExecutionTimedOutEventDetailsSchema.exactOptional(),
-    mapStateStartedEventDetails: MapStateStartedEventDetailsSchema.and(
-      z.any().openapi({ description: 'Contains details about Map state that was started.' }),
-    ).exactOptional(),
-    mapIterationStartedEventDetails: MapIterationEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about an iteration of a Map state that was started.',
-        }),
-    ).exactOptional(),
-    mapIterationSucceededEventDetails: MapIterationEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about an iteration of a Map state that succeeded.',
-        }),
-    ).exactOptional(),
-    mapIterationFailedEventDetails: MapIterationEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about an iteration of a Map state that failed.',
-        }),
-    ).exactOptional(),
-    mapIterationAbortedEventDetails: MapIterationEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains details about an iteration of a Map state that was aborted.',
-        }),
-    ).exactOptional(),
+    mapStateStartedEventDetails: MapStateStartedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about Map state that was started.',
+    }),
+    mapIterationStartedEventDetails: MapIterationEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about an iteration of a Map state that was started.',
+    }),
+    mapIterationSucceededEventDetails: MapIterationEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about an iteration of a Map state that succeeded.',
+    }),
+    mapIterationFailedEventDetails: MapIterationEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about an iteration of a Map state that failed.',
+    }),
+    mapIterationAbortedEventDetails: MapIterationEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains details about an iteration of a Map state that was aborted.',
+    }),
     lambdaFunctionFailedEventDetails: LambdaFunctionFailedEventDetailsSchema.exactOptional(),
     lambdaFunctionScheduleFailedEventDetails:
       LambdaFunctionScheduleFailedEventDetailsSchema.exactOptional(),
     lambdaFunctionScheduledEventDetails: LambdaFunctionScheduledEventDetailsSchema.exactOptional(),
-    lambdaFunctionStartFailedEventDetails: LambdaFunctionStartFailedEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains details about a lambda function that failed to start during an execution.',
-        }),
-    ).exactOptional(),
-    lambdaFunctionSucceededEventDetails: LambdaFunctionSucceededEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains details about a Lambda function that terminated successfully during an execution.',
-        }),
-    ).exactOptional(),
+    lambdaFunctionStartFailedEventDetails:
+      LambdaFunctionStartFailedEventDetailsSchema.exactOptional().openapi({
+        description:
+          'Contains details about a lambda function that failed to start during an execution.',
+      }),
+    lambdaFunctionSucceededEventDetails:
+      LambdaFunctionSucceededEventDetailsSchema.exactOptional().openapi({
+        description:
+          'Contains details about a Lambda function that terminated successfully during an execution.',
+      }),
     lambdaFunctionTimedOutEventDetails: LambdaFunctionTimedOutEventDetailsSchema.exactOptional(),
     stateEnteredEventDetails: StateEnteredEventDetailsSchema.exactOptional(),
     stateExitedEventDetails: StateExitedEventDetailsSchema.exactOptional(),
-    mapRunStartedEventDetails: MapRunStartedEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains details, such as <code>mapRunArn</code>, and the start date and time of a Map Run. <code>mapRunArn</code> is the Amazon Resource Name (ARN) of the Map Run that was started.',
-        }),
-    ).exactOptional(),
-    mapRunFailedEventDetails: MapRunFailedEventDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains error and cause details about a Map Run that failed.' }),
-    ).exactOptional(),
+    mapRunStartedEventDetails: MapRunStartedEventDetailsSchema.exactOptional().openapi({
+      description:
+        'Contains details, such as <code>mapRunArn</code>, and the start date and time of a Map Run. <code>mapRunArn</code> is the Amazon Resource Name (ARN) of the Map Run that was started.',
+    }),
+    mapRunFailedEventDetails: MapRunFailedEventDetailsSchema.exactOptional().openapi({
+      description: 'Contains error and cause details about a Map Run that failed.',
+    }),
   })
   .openapi({
     required: ['timestamp', 'type', 'id'],
@@ -2053,17 +1550,13 @@ const PageTokenSchema = z.string().min(1).max(1024).openapi('PageToken')
 
 const GetExecutionHistoryOutputSchema = z
   .object({
-    events: HistoryEventListSchema.and(
-      z.any().openapi({ description: 'The list of events that occurred in the execution.' }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    events: HistoryEventListSchema.openapi({
+      description: 'The list of events that occurred in the execution.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['events'] })
   .openapi('GetExecutionHistoryOutput')
@@ -2078,40 +1571,24 @@ const IncludeExecutionDataGetExecutionHistorySchema = z
 
 const GetExecutionHistoryInputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the execution.' }),
-    ),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lists events in descending order of their <code>timeStamp</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
-    includeExecutionData: IncludeExecutionDataGetExecutionHistorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'You can select whether execution data (input or output of a history event) is returned. The default is <code>true</code>.',
-        }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the execution.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description: 'Lists events in descending order of their <code>timeStamp</code>.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
+    includeExecutionData: IncludeExecutionDataGetExecutionHistorySchema.exactOptional().openapi({
+      description:
+        'You can select whether execution data (input or output of a history event) is returned. The default is <code>true</code>.',
+    }),
   })
   .openapi({ required: ['executionArn'], title: 'GetExecutionHistoryInput' })
   .openapi('GetExecutionHistoryInput')
@@ -2120,22 +1597,14 @@ const InvalidTokenSchema = z.any().openapi('InvalidToken')
 
 const ActivityListItemSchema = z
   .object({
-    activityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the activity.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the activity.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the activity is created.' }),
-    ),
+    activityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the activity.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the activity.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    creationDate: TimestampSchema.openapi({ description: 'The date the activity is created.' }),
   })
   .openapi({
     required: ['activityArn', 'name', 'creationDate'],
@@ -2147,109 +1616,62 @@ const ActivityListSchema = z.array(ActivityListItemSchema).openapi('ActivityList
 
 const ListActivitiesOutputSchema = z
   .object({
-    activities: ActivityListSchema.and(z.any().openapi({ description: 'The list of activities.' })),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    activities: ActivityListSchema.openapi({ description: 'The list of activities.' }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['activities'] })
   .openapi('ListActivitiesOutput')
 
 const ListActivitiesInputSchema = z
   .object({
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ title: 'ListActivitiesInput', required: [] })
   .openapi('ListActivitiesInput')
 
 const ExecutionListItemSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the execution.' }),
-    ),
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the state machine that ran the execution.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the execution.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    status: ExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the execution.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the execution started.' }),
-    ),
-    stopDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the execution already ended, the date the execution stopped.',
-        }),
-    ).exactOptional(),
-    mapRunArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of a Map Run. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>mapRunArn</code> isn't returned.",
-        }),
-    ).exactOptional(),
-    itemCount: UnsignedIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The total number of items processed in a child workflow execution. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>itemCount</code> field isn't returned.",
-        }),
-    ).exactOptional(),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution.</p> <p>If the state machine execution was started with an unqualified ARN, it returns null.</p> <p>If the execution was started using a <code>stateMachineAliasArn</code>, both the <code>stateMachineAliasArn</code> and <code>stateMachineVersionArn</code> parameters contain the respective values.</p>',
-        }),
-    ).exactOptional(),
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine alias used to start an execution.</p> <p>If the state machine execution was started with an unqualified ARN or a version ARN, it returns null.</p>',
-        }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the execution.',
+    }),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine that ran the execution.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the execution.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    status: ExecutionStatusSchema.openapi({ description: 'The current status of the execution.' }),
+    startDate: TimestampSchema.openapi({ description: 'The date the execution started.' }),
+    stopDate: TimestampSchema.exactOptional().openapi({
+      description: 'If the execution already ended, the date the execution stopped.',
+    }),
+    mapRunArn: LongArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of a Map Run. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>mapRunArn</code> isn't returned.",
+    }),
+    itemCount: UnsignedIntegerSchema.exactOptional().openapi({
+      description:
+        "The total number of items processed in a child workflow execution. This field is returned only if <code>mapRunArn</code> was specified in the <code>ListExecutions</code> API action. If <code>stateMachineArn</code> was specified in <code>ListExecutions</code>, the <code>itemCount</code> field isn't returned.",
+    }),
+    stateMachineVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine version associated with the execution.</p> <p>If the state machine execution was started with an unqualified ARN, it returns null.</p> <p>If the execution was started using a <code>stateMachineAliasArn</code>, both the <code>stateMachineAliasArn</code> and <code>stateMachineVersionArn</code> parameters contain the respective values.</p>',
+    }),
+    stateMachineAliasArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine alias used to start an execution.</p> <p>If the state machine execution was started with an unqualified ARN or a version ARN, it returns null.</p>',
+    }),
   })
   .openapi({
     required: ['executionArn', 'stateMachineArn', 'name', 'status', 'startDate'],
@@ -2263,91 +1685,57 @@ const ListExecutionsPageTokenSchema = z.string().min(1).max(3096).openapi('ListE
 
 const ListExecutionsOutputSchema = z
   .object({
-    executions: ExecutionListSchema.and(
-      z.any().openapi({ description: 'The list of matching executions.' }),
-    ),
-    nextToken: ListExecutionsPageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    executions: ExecutionListSchema.openapi({ description: 'The list of matching executions.' }),
+    nextToken: ListExecutionsPageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['executions'] })
   .openapi('ListExecutionsOutput')
 
 const ListExecutionsInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p> <p>You can also return a list of executions associated with a specific <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html">alias</a> or <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html">version</a>, by specifying an alias ARN or a version ARN in the <code>stateMachineArn</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    statusFilter: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, only list the executions whose current execution status matches the given filter.',
-        }),
-    ).exactOptional(),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: ListExecutionsPageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
-    mapRunArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Map Run that started the child workflow executions. If the <code>mapRunArn</code> field is specified, a list of all of the child workflow executions started by a Map Run is returned. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html">Examining Map Run</a> in the <i>Step Functions Developer Guide</i>.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine whose executions is listed.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p> <p>You can also return a list of executions associated with a specific <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html">alias</a> or <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html">version</a>, by specifying an alias ARN or a version ARN in the <code>stateMachineArn</code> parameter.</p>',
+    }),
+    statusFilter: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        'If specified, only list the executions whose current execution status matches the given filter.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
+    nextToken: ListExecutionsPageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
+    mapRunArn: LongArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Map Run that started the child workflow executions. If the <code>mapRunArn</code> field is specified, a list of all of the child workflow executions started by a Map Run is returned. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html">Examining Map Run</a> in the <i>Step Functions Developer Guide</i>.</p> <p>You can specify either a <code>mapRunArn</code> or a <code>stateMachineArn</code>, but not both.</p>',
+    }),
   })
   .openapi({ title: 'ListExecutionsInput', required: [] })
   .openapi('ListExecutionsInput')
 
 const MapRunListItemSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>executionArn</code> of the execution from which the Map Run was started.',
-        }),
-    ),
-    mapRunArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Map Run.' }),
-    ),
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the executed state machine.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date on which the Map Run started.' }),
-    ),
-    stopDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date on which the Map Run stopped.' }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description:
+        'The <code>executionArn</code> of the execution from which the Map Run was started.',
+    }),
+    mapRunArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Map Run.',
+    }),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the executed state machine.',
+    }),
+    startDate: TimestampSchema.openapi({ description: 'The date on which the Map Run started.' }),
+    stopDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date on which the Map Run stopped.',
+    }),
   })
   .openapi({
     required: ['executionArn', 'mapRunArn', 'stateMachineArn', 'startDate'],
@@ -2359,69 +1747,45 @@ const MapRunListSchema = z.array(MapRunListItemSchema).openapi('MapRunList')
 
 const ListMapRunsOutputSchema = z
   .object({
-    mapRuns: MapRunListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array that lists information related to a Map Run, such as the Amazon Resource Name (ARN) of the Map Run and the ARN of the state machine that started the Map Run.',
-        }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    mapRuns: MapRunListSchema.openapi({
+      description:
+        'An array that lists information related to a Map Run, such as the Amazon Resource Name (ARN) of the Map Run and the ARN of the state machine that started the Map Run.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['mapRuns'] })
   .openapi('ListMapRunsOutput')
 
 const ListMapRunsInputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the execution for which the Map Runs must be listed.',
-        }),
-    ),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the execution for which the Map Runs must be listed.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['executionArn'], title: 'ListMapRunsInput' })
   .openapi('ListMapRunsInput')
 
 const StateMachineAliasListItemSchema = z
   .object({
-    stateMachineAliasArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies a state machine alias. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date of a state machine alias.' }),
-    ),
+    stateMachineAliasArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies a state machine alias. The alias ARN is a combination of state machine ARN and the alias name separated by a colon (:). For example, <code>stateMachineARN:PROD</code>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The creation date of a state machine alias.',
+    }),
   })
   .openapi({
     required: ['stateMachineAliasArn', 'creationDate'],
@@ -2435,64 +1799,44 @@ const StateMachineAliasListSchema = z
 
 const ListStateMachineAliasesOutputSchema = z
   .object({
-    stateMachineAliases: StateMachineAliasListSchema.and(
-      z.any().openapi({ description: 'Aliases for the state machine.' }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    stateMachineAliases: StateMachineAliasListSchema.openapi({
+      description: 'Aliases for the state machine.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['stateMachineAliases'] })
   .openapi('ListStateMachineAliasesOutput')
 
 const ListStateMachineAliasesInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the state machine for which you want to list aliases.</p> <p>If you specify a state machine version ARN, this API returns a list of aliases for that version.</p>',
-        }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the state machine for which you want to list aliases.</p> <p>If you specify a state machine version ARN, this API returns a list of aliases for that version.</p>',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'ListStateMachineAliasesInput' })
   .openapi('ListStateMachineAliasesInput')
 
 const StateMachineVersionListItemSchema = z
   .object({
-    stateMachineVersionArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies a state machine version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.',
-        }),
-    ),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The creation date of a state machine version.' }),
-    ),
+    stateMachineVersionArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies a state machine version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The creation date of a state machine version.',
+    }),
   })
   .openapi({
     required: ['stateMachineVersionArn', 'creationDate'],
@@ -2506,67 +1850,47 @@ const StateMachineVersionListSchema = z
 
 const ListStateMachineVersionsOutputSchema = z
   .object({
-    stateMachineVersions: StateMachineVersionListSchema.and(
-      z.any().openapi({ description: 'Versions for the state machine.' }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    stateMachineVersions: StateMachineVersionListSchema.openapi({
+      description: 'Versions for the state machine.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['stateMachineVersions'] })
   .openapi('ListStateMachineVersionsOutput')
 
 const ListStateMachineVersionsInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the state machine.' }),
-    ),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine.',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'ListStateMachineVersionsInput' })
   .openapi('ListStateMachineVersionsInput')
 
 const StateMachineListItemSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the state machine.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the state machine.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ),
-    type: StateMachineTypeSchema.and(z.any().openapi({ description: '<p/>' })),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the state machine is created.' }),
-    ),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the state machine.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the state machine.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    type: StateMachineTypeSchema.openapi({ description: '<p/>' }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date the state machine is created.',
+    }),
   })
   .openapi({
     required: ['stateMachineArn', 'name', 'type', 'creationDate'],
@@ -2579,118 +1903,88 @@ const StateMachineListSchema = z.array(StateMachineListItemSchema).openapi('Stat
 const ListStateMachinesOutputSchema = z
   .object({
     stateMachines: StateMachineListSchema,
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ required: ['stateMachines'] })
   .openapi('ListStateMachinesOutput')
 
 const ListStateMachinesInputSchema = z
   .object({
-    maxResults: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
-        }),
-    ).exactOptional(),
+    maxResults: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to obtain further pages of results. The default is 100 and the maximum allowed page size is 1000. A value of 0 uses the default.</p> <p>This is only an upper limit. The actual number of results returned per call might be fewer than the specified maximum.</p>',
+    }),
+    nextToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.',
+    }),
   })
   .openapi({ title: 'ListStateMachinesInput', required: [] })
   .openapi('ListStateMachinesInput')
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'An array of tags associated with the resource.' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of tags associated with the resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
 
 const PublishStateMachineVersionOutputSchema = z
   .object({
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the version was created.' }),
-    ),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) (ARN) that identifies the state machine version.',
-        }),
-    ),
+    creationDate: TimestampSchema.openapi({ description: 'The date the version was created.' }),
+    stateMachineVersionArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) (ARN) that identifies the state machine version.',
+    }),
   })
   .openapi({ required: ['creationDate', 'stateMachineVersionArn'] })
   .openapi('PublishStateMachineVersionOutput')
 
 const PublishStateMachineVersionInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the state machine.' }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Only publish the state machine version if the current state machine's revision ID matches the specified ID.</p> <p>Use this option to avoid publishing a version if the state machine changed since you last updated it. If the specified revision ID doesn't match the state machine's current revision ID, the API returns <code>ConflictException</code>.</p> <note> <p>To specify an initial revision ID for a state machine with no revision ID assigned, specify the string <code>INITIAL</code> for the <code>revisionId</code> parameter. For example, you can specify a <code>revisionID</code> of <code>INITIAL</code> when you create a state machine using the <a>CreateStateMachine</a> API action.</p> </note>",
-        }),
-    ).exactOptional(),
-    description: VersionDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description of the state machine version.' }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine.',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description:
+        "<p>Only publish the state machine version if the current state machine's revision ID matches the specified ID.</p> <p>Use this option to avoid publishing a version if the state machine changed since you last updated it. If the specified revision ID doesn't match the state machine's current revision ID, the API returns <code>ConflictException</code>.</p> <note> <p>To specify an initial revision ID for a state machine with no revision ID assigned, specify the string <code>INITIAL</code> for the <code>revisionId</code> parameter. For example, you can specify a <code>revisionID</code> of <code>INITIAL</code> when you create a state machine using the <a>CreateStateMachine</a> API action.</p> </note>",
+    }),
+    description: VersionDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description of the state machine version.',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'PublishStateMachineVersionInput' })
   .openapi('PublishStateMachineVersionInput')
 
-const SendTaskFailureOutputSchema = z.object({}).openapi('SendTaskFailureOutput')
+const SendTaskFailureOutputSchema = z.looseObject({}).openapi('SendTaskFailureOutput')
 
 const SendTaskFailureInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
-        }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'SendTaskFailureInput' })
   .openapi('SendTaskFailureInput')
@@ -2699,42 +1993,30 @@ const TaskDoesNotExistSchema = z.any().openapi('TaskDoesNotExist')
 
 const TaskTimedOutSchema = z.any().openapi('TaskTimedOut')
 
-const SendTaskHeartbeatOutputSchema = z.object({}).openapi('SendTaskHeartbeatOutput')
+const SendTaskHeartbeatOutputSchema = z.looseObject({}).openapi('SendTaskHeartbeatOutput')
 
 const SendTaskHeartbeatInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
-        }),
-    ),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'SendTaskHeartbeatInput' })
   .openapi('SendTaskHeartbeatInput')
 
-const SendTaskSuccessOutputSchema = z.object({}).openapi('SendTaskSuccessOutput')
+const SendTaskSuccessOutputSchema = z.looseObject({}).openapi('SendTaskSuccessOutput')
 
 const SendTaskSuccessInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
-        }),
-    ),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON output of the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        'The token that represents this task. Task tokens are generated by Step Functions when tasks are assigned to a worker, or in the <a href="https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html">context object</a> when a workflow enters a task state. See <a>GetActivityTaskOutput$taskToken</a>.',
+    }),
+    output: SensitiveDataSchema.openapi({
+      description:
+        'The JSON output of the task. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
   })
   .openapi({ required: ['taskToken', 'output'], title: 'SendTaskSuccessInput' })
   .openapi('SendTaskSuccessInput')
@@ -2743,52 +2025,32 @@ const InvalidOutputSchema = z.any().openapi('InvalidOutput')
 
 const StartExecutionOutputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the execution.' }),
-    ),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the execution is started.' }),
-    ),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the execution.',
+    }),
+    startDate: TimestampSchema.openapi({ description: 'The date the execution is started.' }),
   })
   .openapi({ required: ['executionArn', 'startDate'] })
   .openapi('StartExecutionOutput')
 
 const StartExecutionInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the state machine to execute.</p> <p>The <code>stateMachineArn</code> parameter accepts one of the following inputs:</p> <ul> <li> <p> <b>An unqualified state machine ARN</b> – Refers to a state machine ARN that isn't qualified with a version or alias ARN. The following is an example of an unqualified state machine ARN.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> <p>Step Functions doesn't associate state machine executions that you start with an unqualified ARN with a version. This is true even if that version uses the same revision that the execution used.</p> </li> <li> <p> <b>A state machine version ARN</b> – Refers to a version ARN, which is a combination of state machine ARN and the version number separated by a colon (:). The following is an example of the ARN for version 10. </p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;:10</code> </p> <p>Step Functions doesn't associate executions that you start with a version ARN with any aliases that point to that version.</p> </li> <li> <p> <b>A state machine alias ARN</b> – Refers to an alias ARN, which is a combination of state machine ARN and the alias name separated by a colon (:). The following is an example of the ARN for an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <p>Step Functions associates executions that you start with an alias ARN with that alias and the state machine version used for that execution.</p> </li> </ul>",
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional name of the execution. This name must be unique for your Amazon Web Services account, Region, and state machine for 90 days. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
-        }),
-    ).exactOptional(),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The string that contains the JSON input data for the execution, for example:</p> <p> <code>"input": "{\\"first_name\\" : \\"test\\"}"</code> </p> <note> <p>If you don\'t include any JSON input data, you still must include the two braces, for example: <code>"input": "{}"</code> </p> </note> <p>Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>',
-        }),
-    ).exactOptional(),
-    traceHeader: TraceHeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passes the X-Ray trace header. The trace header can also be passed in the request payload.',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the state machine to execute.</p> <p>The <code>stateMachineArn</code> parameter accepts one of the following inputs:</p> <ul> <li> <p> <b>An unqualified state machine ARN</b> – Refers to a state machine ARN that isn't qualified with a version or alias ARN. The following is an example of an unqualified state machine ARN.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> <p>Step Functions doesn't associate state machine executions that you start with an unqualified ARN with a version. This is true even if that version uses the same revision that the execution used.</p> </li> <li> <p> <b>A state machine version ARN</b> – Refers to a version ARN, which is a combination of state machine ARN and the version number separated by a colon (:). The following is an example of the ARN for version 10. </p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;:10</code> </p> <p>Step Functions doesn't associate executions that you start with a version ARN with any aliases that point to that version.</p> </li> <li> <p> <b>A state machine alias ARN</b> – Refers to an alias ARN, which is a combination of state machine ARN and the alias name separated by a colon (:). The following is an example of the ARN for an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <p>Step Functions associates executions that you start with an alias ARN with that alias and the state machine version used for that execution.</p> </li> </ul>",
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description:
+        '<p>Optional name of the execution. This name must be unique for your Amazon Web Services account, Region, and state machine for 90 days. For more information, see <a href="https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions"> Limits Related to State Machine Executions</a> in the <i>Step Functions Developer Guide</i>.</p> <p>A name must <i>not</i> contain:</p> <ul> <li> <p>white space</p> </li> <li> <p>brackets <code>&lt; &gt; { } [ ]</code> </p> </li> <li> <p>wildcard characters <code>? *</code> </p> </li> <li> <p>special characters <code>" # % \\ ^ | ~ ` $ &amp; , ; : /</code> </p> </li> <li> <p>control characters (<code>U+0000-001F</code>, <code>U+007F-009F</code>)</p> </li> </ul> <p>To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z, a-z, - and _.</p>',
+    }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        '<p>The string that contains the JSON input data for the execution, for example:</p> <p> <code>"input": "{\\"first_name\\" : \\"test\\"}"</code> </p> <note> <p>If you don\'t include any JSON input data, you still must include the two braces, for example: <code>"input": "{}"</code> </p> </note> <p>Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>',
+    }),
+    traceHeader: TraceHeaderSchema.exactOptional().openapi({
+      description:
+        'Passes the X-Ray trace header. The trace header can also be passed in the request payload.',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'StartExecutionInput' })
   .openapi('StartExecutionInput')
@@ -2809,284 +2071,196 @@ const BilledDurationSchema = z.int().min(0).openapi('BilledDuration')
 
 const BillingDetailsSchema = z
   .object({
-    billedMemoryUsedInMB: BilledMemoryUsedSchema.and(
-      z.any().openapi({ description: 'Billed memory consumption of your workflow, in MB.' }),
-    ).exactOptional(),
-    billedDurationInMilliseconds: BilledDurationSchema.and(
-      z.any().openapi({ description: 'Billed duration of your workflow, in milliseconds.' }),
-    ).exactOptional(),
+    billedMemoryUsedInMB: BilledMemoryUsedSchema.exactOptional().openapi({
+      description: 'Billed memory consumption of your workflow, in MB.',
+    }),
+    billedDurationInMilliseconds: BilledDurationSchema.exactOptional().openapi({
+      description: 'Billed duration of your workflow, in milliseconds.',
+    }),
   })
   .openapi({ description: 'An object that describes workflow billing details.', required: [] })
   .openapi('BillingDetails')
 
 const StartSyncExecutionOutputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) that identifies the execution.' }),
-    ),
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) that identifies the state machine.',
-        }),
-    ).exactOptional(),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the execution.' }),
-    ).exactOptional(),
-    startDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the execution is started.' }),
-    ),
-    stopDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the execution has already ended, the date the execution stopped.',
-        }),
-    ),
-    status: SyncExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the execution.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The string that contains the JSON input data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
-        }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the execution.',
+    }),
+    stateMachineArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the state machine.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the execution.' }),
+    startDate: TimestampSchema.openapi({ description: 'The date the execution is started.' }),
+    stopDate: TimestampSchema.openapi({
+      description: 'If the execution has already ended, the date the execution stopped.',
+    }),
+    status: SyncExecutionStatusSchema.openapi({
+      description: 'The current status of the execution.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        'The string that contains the JSON input data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.',
+    }),
     inputDetails: CloudWatchEventsExecutionDataDetailsSchema.exactOptional(),
-    output: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The JSON output data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p> <note> <p>This field is set only if the execution succeeds. If the execution fails, this field is null.</p> </note>',
-        }),
-    ).exactOptional(),
+    output: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        '<p>The JSON output data of the execution. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p> <note> <p>This field is set only if the execution succeeds. If the execution fails, this field is null.</p> </note>',
+    }),
     outputDetails: CloudWatchEventsExecutionDataDetailsSchema.exactOptional(),
-    traceHeader: TraceHeaderSchema.and(
-      z.any().openapi({ description: 'The X-Ray trace header that was passed to the execution.' }),
-    ).exactOptional(),
-    billingDetails: BillingDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that describes workflow billing details, including billed duration and memory use.',
-        }),
-    ).exactOptional(),
+    traceHeader: TraceHeaderSchema.exactOptional().openapi({
+      description: 'The X-Ray trace header that was passed to the execution.',
+    }),
+    billingDetails: BillingDetailsSchema.exactOptional().openapi({
+      description:
+        'An object that describes workflow billing details, including billed duration and memory use.',
+    }),
   })
   .openapi({ required: ['executionArn', 'startDate', 'stopDate', 'status'] })
   .openapi('StartSyncExecutionOutput')
 
 const StartSyncExecutionInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the state machine to execute.',
-        }),
-    ),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the execution.' }),
-    ).exactOptional(),
-    input: SensitiveDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The string that contains the JSON input data for the execution, for example:</p> <p> <code>"input": "{\\"first_name\\" : \\"test\\"}"</code> </p> <note> <p>If you don\'t include any JSON input data, you still must include the two braces, for example: <code>"input": "{}"</code> </p> </note> <p>Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>',
-        }),
-    ).exactOptional(),
-    traceHeader: TraceHeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passes the X-Ray trace header. The trace header can also be passed in the request payload.',
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine to execute.',
+    }),
+    name: NameSchema.exactOptional().openapi({ description: 'The name of the execution.' }),
+    input: SensitiveDataSchema.exactOptional().openapi({
+      description:
+        '<p>The string that contains the JSON input data for the execution, for example:</p> <p> <code>"input": "{\\"first_name\\" : \\"test\\"}"</code> </p> <note> <p>If you don\'t include any JSON input data, you still must include the two braces, for example: <code>"input": "{}"</code> </p> </note> <p>Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>',
+    }),
+    traceHeader: TraceHeaderSchema.exactOptional().openapi({
+      description:
+        'Passes the X-Ray trace header. The trace header can also be passed in the request payload.',
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'StartSyncExecutionInput' })
   .openapi('StartSyncExecutionInput')
 
 const StopExecutionOutputSchema = z
   .object({
-    stopDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the execution is stopped.' }),
-    ),
+    stopDate: TimestampSchema.openapi({ description: 'The date the execution is stopped.' }),
   })
   .openapi({ required: ['stopDate'] })
   .openapi('StopExecutionOutput')
 
 const StopExecutionInputSchema = z
   .object({
-    executionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the execution to stop.' }),
-    ),
-    error: SensitiveErrorSchema.and(
-      z.any().openapi({ description: 'The error code of the failure.' }),
-    ).exactOptional(),
-    cause: SensitiveCauseSchema.and(
-      z.any().openapi({ description: 'A more detailed explanation of the cause of the failure.' }),
-    ).exactOptional(),
+    executionArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the execution to stop.',
+    }),
+    error: SensitiveErrorSchema.exactOptional().openapi({
+      description: 'The error code of the failure.',
+    }),
+    cause: SensitiveCauseSchema.exactOptional().openapi({
+      description: 'A more detailed explanation of the cause of the failure.',
+    }),
   })
   .openapi({ required: ['executionArn'], title: 'StopExecutionInput' })
   .openapi('StopExecutionInput')
 
-const TagResourceOutputSchema = z.object({}).openapi('TagResourceOutput')
+const TagResourceOutputSchema = z.looseObject({}).openapi('TagResourceOutput')
 
 const TagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of tags to add to a resource.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
+    }),
+    tags: TagListSchema.openapi({
+      description:
+        '<p>The list of tags to add to a resource.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
-const UntagResourceOutputSchema = z.object({}).openapi('UntagResourceOutput')
+const UntagResourceOutputSchema = z.looseObject({}).openapi('UntagResourceOutput')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
-        }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tags to remove from the resource.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the Step Functions state machine or activity.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tags to remove from the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')
 
-const UpdateMapRunOutputSchema = z.object({}).openapi('UpdateMapRunOutput')
+const UpdateMapRunOutputSchema = z.looseObject({}).openapi('UpdateMapRunOutput')
 
 const UpdateMapRunInputSchema = z
   .object({
-    mapRunArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of a Map Run.' }),
-    ),
-    maxConcurrency: MaxConcurrencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of child workflow executions that can be specified to run in parallel for the Map Run at the same time.',
-        }),
-    ).exactOptional(),
-    toleratedFailurePercentage: ToleratedFailurePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum percentage of failed items before the Map Run fails.',
-        }),
-    ).exactOptional(),
-    toleratedFailureCount: ToleratedFailureCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of failed items before the Map Run fails.' }),
-    ).exactOptional(),
+    mapRunArn: LongArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of a Map Run.',
+    }),
+    maxConcurrency: MaxConcurrencySchema.exactOptional().openapi({
+      description:
+        'The maximum number of child workflow executions that can be specified to run in parallel for the Map Run at the same time.',
+    }),
+    toleratedFailurePercentage: ToleratedFailurePercentageSchema.exactOptional().openapi({
+      description: 'The maximum percentage of failed items before the Map Run fails.',
+    }),
+    toleratedFailureCount: ToleratedFailureCountSchema.exactOptional().openapi({
+      description: 'The maximum number of failed items before the Map Run fails.',
+    }),
   })
   .openapi({ required: ['mapRunArn'], title: 'UpdateMapRunInput' })
   .openapi('UpdateMapRunInput')
 
 const UpdateStateMachineOutputSchema = z
   .object({
-    updateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the state machine was updated.' }),
-    ),
-    revisionId: RevisionIdSchema.and(
-      z.any().openapi({ description: 'The revision identifier for the updated state machine.' }),
-    ).exactOptional(),
-    stateMachineVersionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of the published state machine version.</p> <p>If the <code>publish</code> parameter isn't set to <code>true</code>, this field returns null.</p>",
-        }),
-    ).exactOptional(),
+    updateDate: TimestampSchema.openapi({
+      description: 'The date and time the state machine was updated.',
+    }),
+    revisionId: RevisionIdSchema.exactOptional().openapi({
+      description: 'The revision identifier for the updated state machine.',
+    }),
+    stateMachineVersionArn: ArnSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of the published state machine version.</p> <p>If the <code>publish</code> parameter isn't set to <code>true</code>, this field returns null.</p>",
+    }),
   })
   .openapi({ required: ['updateDate'] })
   .openapi('UpdateStateMachineOutput')
 
 const UpdateStateMachineInputSchema = z
   .object({
-    stateMachineArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the state machine.' }),
-    ),
-    definition: DefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
-        }),
-    ).exactOptional(),
-    roleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the IAM role of the state machine.',
-        }),
-    ).exactOptional(),
-    loggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use the <code>LoggingConfiguration</code> data type to set CloudWatch Logs options.',
-        }),
-    ).exactOptional(),
-    tracingConfiguration: TracingConfigurationSchema.and(
-      z.any().openapi({ description: 'Selects whether X-Ray tracing is enabled.' }),
-    ).exactOptional(),
-    publish: PublishSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the state machine version is published. The default is <code>false</code>. To publish a version after updating the state machine, set <code>publish</code> to <code>true</code>.',
-        }),
-    ).exactOptional(),
-    versionDescription: VersionDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An optional description of the state machine version to publish.</p> <p>You can only specify the <code>versionDescription</code> parameter if you've set <code>publish</code> to <code>true</code>.</p>",
-        }),
-    ).exactOptional(),
+    stateMachineArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine.',
+    }),
+    definition: DefinitionSchema.exactOptional().openapi({
+      description:
+        'The Amazon States Language definition of the state machine. See <a href="https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html">Amazon States Language</a>.',
+    }),
+    roleArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the IAM role of the state machine.',
+    }),
+    loggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description:
+        'Use the <code>LoggingConfiguration</code> data type to set CloudWatch Logs options.',
+    }),
+    tracingConfiguration: TracingConfigurationSchema.exactOptional().openapi({
+      description: 'Selects whether X-Ray tracing is enabled.',
+    }),
+    publish: PublishSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the state machine version is published. The default is <code>false</code>. To publish a version after updating the state machine, set <code>publish</code> to <code>true</code>.',
+    }),
+    versionDescription: VersionDescriptionSchema.exactOptional().openapi({
+      description:
+        "<p>An optional description of the state machine version to publish.</p> <p>You can only specify the <code>versionDescription</code> parameter if you've set <code>publish</code> to <code>true</code>.</p>",
+    }),
   })
   .openapi({ required: ['stateMachineArn'], title: 'UpdateStateMachineInput' })
   .openapi('UpdateStateMachineInput')
@@ -3095,31 +2269,25 @@ const MissingRequiredParameterSchema = z.any().openapi('MissingRequiredParameter
 
 const UpdateStateMachineAliasOutputSchema = z
   .object({
-    updateDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the state machine alias was updated.' }),
-    ),
+    updateDate: TimestampSchema.openapi({
+      description: 'The date and time the state machine alias was updated.',
+    }),
   })
   .openapi({ required: ['updateDate'] })
   .openapi('UpdateStateMachineAliasOutput')
 
 const UpdateStateMachineAliasInputSchema = z
   .object({
-    stateMachineAliasArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the state machine alias.' }),
-    ),
-    description: AliasDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the state machine alias.' }),
-    ).exactOptional(),
-    routingConfiguration: RoutingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The routing configuration of the state machine alias.</p> <p>An array of <code>RoutingConfig</code> objects that specifies up to two state machine versions that the alias starts executions for.</p>',
-        }),
-    ).exactOptional(),
+    stateMachineAliasArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the state machine alias.',
+    }),
+    description: AliasDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the state machine alias.',
+    }),
+    routingConfiguration: RoutingConfigurationListSchema.exactOptional().openapi({
+      description:
+        '<p>The routing configuration of the state machine alias.</p> <p>An array of <code>RoutingConfig</code> objects that specifies up to two state machine versions that the alias starts executions for.</p>',
+    }),
   })
   .openapi({ required: ['stateMachineAliasArn'], title: 'UpdateStateMachineAliasInput' })
   .openapi('UpdateStateMachineAliasInput')

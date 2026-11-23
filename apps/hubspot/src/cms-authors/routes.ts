@@ -2836,7 +2836,7 @@ const BatchInputBlogAuthorSchema = z
 const BatchInputJsonNodeSchema = z
   .object({
     inputs: z
-      .array(z.object({}).openapi({ example: null }))
+      .array(z.looseObject({}).openapi({ example: null }))
       .openapi({ description: 'JSON nodes to input.', example: null }),
   })
   .openapi({ required: ['inputs'], example: null })
@@ -2936,7 +2936,7 @@ const StandardErrorSchema = z
     message: z.string().openapi({ description: 'Error message.', example: null }),
     status: z.string().openapi({ description: 'Error status.', example: null }),
     subCategory: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Error subcategory.', example: null }),
   })
@@ -4061,14 +4061,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { content: '' },
+      scopes: { 'cms.blogs.blog_posts.read': '', content: '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'cms.blogs.blog_posts.read': { user: ['public', 'private'], developer: false },
+    content: { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsBlogs202609AuthorsRoute = createRoute({
   method: 'get',
@@ -4263,12 +4263,15 @@ export const getCmsBlogs202609AuthorsRoute = createRoute({
     200: {
       description: 'successful operation',
       content: {
-        '*/*': { schema: CollectionResponseWithTotalBlogAuthorForwardPagingSchema, example: null },
+        'application/json': {
+          schema: CollectionResponseWithTotalBlogAuthorForwardPagingSchema,
+          example: null,
+        },
       },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsBlogs202609AuthorsRoute = createRoute({
@@ -4279,25 +4282,24 @@ export const postCmsBlogs202609AuthorsRoute = createRoute({
   description: 'Create a new Blog Author.',
   operationId: 'post-/cms/blogs/2026-09/authors_create',
   request: {
-    body: { content: { '*/*': { schema: BlogAuthorSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     201: {
       description: 'successful operation',
-      content: { '*/*': { schema: BlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,
@@ -4313,9 +4315,21 @@ export const postCmsBlogs202609AuthorsBatchArchiveRoute = createRoute({
   description: 'Delete the Blog Author objects identified in the request body.',
   operationId: 'post-/cms/blogs/2026-09/authors/batch/archive_archiveBatch',
   request: {
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: {
+    204: { description: 'No content', content: {} },
+    207: {
+      description: 'multiple statuses',
+      content: {
+        'application/json': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null },
+      },
+    },
+    default: ErrorResponse,
+  },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -4328,18 +4342,20 @@ export const postCmsBlogs202609AuthorsBatchCreateRoute = createRoute({
   operationId: 'post-/cms/blogs/2026-09/authors/batch/create_createBatch',
   request: {
     body: {
-      content: { '*/*': { schema: BatchInputBlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputBlogAuthorSchema, example: null } },
       required: true,
     },
   },
   responses: {
     201: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseBlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseBlogAuthorSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null } },
+      content: {
+        'application/json': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
@@ -4371,20 +4387,25 @@ export const postCmsBlogs202609AuthorsBatchReadRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BatchInputStringSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BatchInputStringSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseBlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseBlogAuthorSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null } },
+      content: {
+        'application/json': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const postCmsBlogs202609AuthorsBatchUpdateRoute = createRoute({
@@ -4413,18 +4434,20 @@ export const postCmsBlogs202609AuthorsBatchUpdateRoute = createRoute({
         }),
     }),
     body: {
-      content: { '*/*': { schema: BatchInputJsonNodeSchema, example: null } },
+      content: { 'application/json': { schema: BatchInputJsonNodeSchema, example: null } },
       required: true,
     },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BatchResponseBlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BatchResponseBlogAuthorSchema, example: null } },
     },
     207: {
       description: 'multiple statuses',
-      content: { '*/*': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null } },
+      content: {
+        'application/json': { schema: BatchResponseBlogAuthorWithErrorsSchema, example: null },
+      },
     },
     default: ErrorResponse,
   },
@@ -4441,7 +4464,9 @@ export const postCmsBlogs202609AuthorsMultiLanguageAttachToLangGroupRoute = crea
     'post-/cms/blogs/2026-09/authors/multi-language/attach-to-lang-group_attachToLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: AttachToLangPrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: AttachToLangPrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -4459,14 +4484,14 @@ export const postCmsBlogs202609AuthorsMultiLanguageCreateLanguageVariationRoute 
     'post-/cms/blogs/2026-09/authors/multi-language/create-language-variation_createLangVariation',
   request: {
     body: {
-      content: { '*/*': { schema: BlogAuthorCloneRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: BlogAuthorCloneRequestVNextSchema, example: null } },
       required: true,
     },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
     },
     default: ErrorResponse,
   },
@@ -4483,7 +4508,9 @@ export const postCmsBlogs202609AuthorsMultiLanguageDetachFromLangGroupRoute = cr
     'post-/cms/blogs/2026-09/authors/multi-language/detach-from-lang-group_detachFromLangGroup',
   request: {
     body: {
-      content: { '*/*': { schema: DetachFromLangGroupRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: DetachFromLangGroupRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -4500,7 +4527,9 @@ export const putCmsBlogs202609AuthorsMultiLanguageSetNewLangPrimaryRoute = creat
   operationId: 'put-/cms/blogs/2026-09/authors/multi-language/set-new-lang-primary_setLangPrimary',
   request: {
     body: {
-      content: { '*/*': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null } },
+      content: {
+        'application/json': { schema: SetNewLanguagePrimaryRequestVNextSchema, example: null },
+      },
       required: true,
     },
   },
@@ -4517,7 +4546,7 @@ export const postCmsBlogs202609AuthorsMultiLanguageUpdateLanguagesRoute = create
   operationId: 'post-/cms/blogs/2026-09/authors/multi-language/update-languages_updateLangs',
   request: {
     body: {
-      content: { '*/*': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
+      content: { 'application/json': { schema: UpdateLanguagesRequestVNextSchema, example: null } },
       required: true,
     },
   },
@@ -4585,11 +4614,11 @@ export const getCmsBlogs202609AuthorsObjectIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.blogs.blog_posts.read'] }, { oauth2: ['content'] }],
 })
 
 export const deleteCmsBlogs202609AuthorsObjectIdRoute = createRoute({
@@ -4680,12 +4709,15 @@ export const patchCmsBlogs202609AuthorsObjectIdRoute = createRoute({
           example: null,
         }),
     }),
-    body: { content: { '*/*': { schema: BlogAuthorSchema, example: null } }, required: true },
+    body: {
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
+      required: true,
+    },
   },
   responses: {
     200: {
       description: 'successful operation',
-      content: { '*/*': { schema: BlogAuthorSchema, example: null } },
+      content: { 'application/json': { schema: BlogAuthorSchema, example: null } },
     },
     default: ErrorResponse,
   },

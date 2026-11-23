@@ -13,110 +13,38 @@ const AdBreakSchema = z
   .openapi({ description: 'Ad break.', required: [] })
   .openapi('AdBreak')
 
-const AnimationEndSchema = z
-  .object({
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time to end overlay object, in seconds. Default: 0' }),
-  })
-  .openapi({
-    description:
-      'End previous overlay animation from the video. Without AnimationEnd, the overlay object will keep the state of previous animation until the end of the video.',
-    required: [],
-  })
-  .openapi('AnimationEnd')
-
-const NormalizedCoordinateSchema = z
-  .object({
-    x: z.float64().exactOptional().openapi({ description: 'Normalized x coordinate.' }),
-    y: z.float64().exactOptional().openapi({ description: 'Normalized y coordinate.' }),
-  })
-  .openapi({ description: '2D normalized coordinates. Default: `{0.0, 0.0}`', required: [] })
-  .openapi('NormalizedCoordinate')
-
-const AnimationFadeSchema = z
+const EditAtomSchema = z
   .object({
     endTimeOffset: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The time to end the fade animation, in seconds. Default: `start_time_offset` + 1s',
+          'End time in seconds for the atom, relative to the input file timeline. When `end_time_offset` is not specified, the `inputs` are used until the end of the atom.',
       }),
-    fadeType: z
-      .enum(['FADE_TYPE_UNSPECIFIED', 'FADE_IN', 'FADE_OUT'])
+    inputs: z
+      .array(z.string())
       .exactOptional()
-      .openapi({ description: 'Required. Type of fade animation: `FADE_IN` or `FADE_OUT`.' }),
-    startTimeOffset: z
+      .openapi({
+        description:
+          'List of `Input.key`s identifying files that should be used in this atom. The listed `inputs` must have the same timeline.',
+      }),
+    key: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The time to start the fade animation, in seconds. Default: 0' }),
-    xy: NormalizedCoordinateSchema.exactOptional().openapi({
-      description:
-        'Normalized coordinates based on output video resolution. Valid values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay object. For example, use the x and y coordinates {0,0} to position the top-left corner of the overlay animation in the top-left corner of the output video.',
-    }),
-  })
-  .openapi({ description: 'Display overlay object with fade animation.', required: [] })
-  .openapi('AnimationFade')
-
-const AnimationStaticSchema = z
-  .object({
+      .openapi({
+        description: 'A unique key for this atom. Must be specified when using advanced mapping.',
+      }),
     startTimeOffset: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'The time to start displaying the overlay object, in seconds. Default: 0',
-      }),
-    xy: NormalizedCoordinateSchema.exactOptional().openapi({
-      description:
-        'Normalized coordinates based on output video resolution. Valid values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay object. For example, use the x and y coordinates {0,0} to position the top-left corner of the overlay animation in the top-left corner of the output video.',
-    }),
-  })
-  .openapi({ description: 'Display static overlay object.', required: [] })
-  .openapi('AnimationStatic')
-
-const AnimationSchema = z
-  .object({
-    animationEnd: AnimationEndSchema.exactOptional().openapi({
-      description: 'End previous animation.',
-    }),
-    animationFade: AnimationFadeSchema.exactOptional().openapi({
-      description: 'Display overlay object with fade animation.',
-    }),
-    animationStatic: AnimationStaticSchema.exactOptional().openapi({
-      description: 'Display static overlay object.',
-    }),
-  })
-  .openapi({ description: 'Animation types.', required: [] })
-  .openapi('Animation')
-
-const AudioSchema = z
-  .object({
-    highBoost: z
-      .boolean()
-      .exactOptional()
-      .openapi({
         description:
-          'Enable boosting high frequency components. The default is `false`. **Note:** This field is not supported.',
-      }),
-    lowBoost: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Enable boosting low frequency components. The default is `false`. **Note:** This field is not supported.',
-      }),
-    lufs: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specify audio loudness normalization in loudness units relative to full scale (LUFS). Enter a value between -24 and 0 (the default), where: * -24 is the Advanced Television Systems Committee (ATSC A/85) standard * -23 is the EU R128 broadcast standard * -19 is the prior standard for online mono audio * -18 is the ReplayGain standard * -16 is the prior standard for stereo audio * -14 is the new online audio standard recommended by Spotify, as well as Amazon Echo * 0 disables normalization',
+          'Start time in seconds for the atom, relative to the input file timeline. The default is `0s`.',
       }),
   })
-  .openapi({ description: 'Audio preprocessing configuration.', required: [] })
-  .openapi('Audio')
+  .openapi({ description: 'Edit atom.', required: [] })
+  .openapi('EditAtom')
 
 const AudioMappingSchema = z
   .object({
@@ -217,211 +145,6 @@ const AudioStreamSchema = z
   })
   .openapi({ description: 'Audio stream resource.', required: [] })
   .openapi('AudioStream')
-
-const BwdifConfigSchema = z
-  .object({
-    deinterlaceAllFrames: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.',
-      }),
-    mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field',
-      }),
-    parity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity',
-      }),
-  })
-  .openapi({ description: 'Bob Weaver Deinterlacing Filter Configuration.', required: [] })
-  .openapi('BwdifConfig')
-
-const ColorSchema = z
-  .object({
-    brightness: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Control brightness of the video. Enter a value between -1 and 1, where -1 is minimum brightness and 1 is maximum brightness. 0 is no change. The default is 0.',
-      }),
-    contrast: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Control black and white contrast of the video. Enter a value between -1 and 1, where -1 is minimum contrast and 1 is maximum contrast. 0 is no change. The default is 0.',
-      }),
-    saturation: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Control color saturation of the video. Enter a value between -1 and 1, where -1 is fully desaturated and 1 is maximum saturation. 0 is no change. The default is 0.',
-      }),
-  })
-  .openapi({
-    description:
-      'Color preprocessing configuration. **Note:** This configuration is not supported.',
-    required: [],
-  })
-  .openapi('Color')
-
-const CropSchema = z
-  .object({
-    bottomPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of pixels to crop from the bottom. The default is 0.' }),
-    leftPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of pixels to crop from the left. The default is 0.' }),
-    rightPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of pixels to crop from the right. The default is 0.' }),
-    topPixels: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The number of pixels to crop from the top. The default is 0.' }),
-  })
-  .openapi({
-    description:
-      'Video cropping configuration for the input video. The cropped input video is scaled to match the output resolution.',
-    required: [],
-  })
-  .openapi('Crop')
-
-const DeblockSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Enable deblocker. The default is `false`.' }),
-    strength: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set strength of the deblocker. Enter a value between 0 and 1. The higher the value, the stronger the block removal. 0 is no deblocking. The default is 0.',
-      }),
-  })
-  .openapi({
-    description:
-      'Deblock preprocessing configuration. **Note:** This configuration is not supported.',
-    required: [],
-  })
-  .openapi('Deblock')
-
-const YadifConfigSchema = z
-  .object({
-    deinterlaceAllFrames: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.',
-      }),
-    disableSpatialInterlacing: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Disable spacial interlacing. The default is `false`.' }),
-    mode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field',
-      }),
-    parity: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity',
-      }),
-  })
-  .openapi({ description: 'Yet Another Deinterlacing Filter Configuration.', required: [] })
-  .openapi('YadifConfig')
-
-const DeinterlaceSchema = z
-  .object({
-    bwdif: BwdifConfigSchema.exactOptional().openapi({
-      description: 'Specifies the Bob Weaver Deinterlacing Filter Configuration.',
-    }),
-    yadif: YadifConfigSchema.exactOptional().openapi({
-      description: 'Specifies the Yet Another Deinterlacing Filter Configuration.',
-    }),
-  })
-  .openapi({ description: 'Deinterlace configuration for input video.', required: [] })
-  .openapi('Deinterlace')
-
-const DenoiseSchema = z
-  .object({
-    strength: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set strength of the denoise. Enter a value between 0 and 1. The higher the value, the smoother the image. 0 is no denoising. The default is 0.',
-      }),
-    tune: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the denoiser mode. The default is `standard`. Supported denoiser modes: - `standard` - `grain`',
-      }),
-  })
-  .openapi({
-    description:
-      'Denoise preprocessing configuration. **Note:** This configuration is not supported.',
-    required: [],
-  })
-  .openapi('Denoise')
-
-const EditAtomSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'End time in seconds for the atom, relative to the input file timeline. When `end_time_offset` is not specified, the `inputs` are used until the end of the atom.',
-      }),
-    inputs: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of `Input.key`s identifying files that should be used in this atom. The listed `inputs` must have the same timeline.',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A unique key for this atom. Must be specified when using advanced mapping.',
-      }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Start time in seconds for the atom, relative to the input file timeline. The default is `0s`.',
-      }),
-  })
-  .openapi({ description: 'Edit atom.', required: [] })
-  .openapi('EditAtom')
 
 const TextMappingSchema = z
   .object({
@@ -876,37 +599,204 @@ const ElementaryStreamSchema = z
   })
   .openapi('ElementaryStream')
 
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const ImageSchema = z
+const AudioSchema = z
   .object({
-    alpha: z
+    highBoost: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable boosting high frequency components. The default is `false`. **Note:** This field is not supported.',
+      }),
+    lowBoost: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Enable boosting low frequency components. The default is `false`. **Note:** This field is not supported.',
+      }),
+    lufs: z
       .float64()
       .exactOptional()
       .openapi({
         description:
-          'Target image opacity. Valid values are from `1.0` (solid, default) to `0.0` (transparent), exclusive. Set this to a value greater than `0.0`.',
+          'Specify audio loudness normalization in loudness units relative to full scale (LUFS). Enter a value between -24 and 0 (the default), where: * -24 is the Advanced Television Systems Committee (ATSC A/85) standard * -23 is the EU R128 broadcast standard * -19 is the prior standard for online mono audio * -18 is the ReplayGain standard * -16 is the prior standard for stereo audio * -14 is the new online audio standard recommended by Spotify, as well as Amazon Echo * 0 disables normalization',
       }),
-    resolution: NormalizedCoordinateSchema.exactOptional().openapi({
-      description:
-        'Normalized image resolution, based on output video resolution. Valid values: `0.0`–`1.0`. To respect the original image aspect ratio, set either `x` or `y` to `0.0`. To use the original image resolution, set both `x` and `y` to `0.0`.',
-    }),
-    uri: z
+  })
+  .openapi({ description: 'Audio preprocessing configuration.', required: [] })
+  .openapi('Audio')
+
+const ColorSchema = z
+  .object({
+    brightness: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Control brightness of the video. Enter a value between -1 and 1, where -1 is minimum brightness and 1 is maximum brightness. 0 is no change. The default is 0.',
+      }),
+    contrast: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Control black and white contrast of the video. Enter a value between -1 and 1, where -1 is minimum contrast and 1 is maximum contrast. 0 is no change. The default is 0.',
+      }),
+    saturation: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Control color saturation of the video. Enter a value between -1 and 1, where -1 is fully desaturated and 1 is maximum saturation. 0 is no change. The default is 0.',
+      }),
+  })
+  .openapi({
+    description:
+      'Color preprocessing configuration. **Note:** This configuration is not supported.',
+    required: [],
+  })
+  .openapi('Color')
+
+const CropSchema = z
+  .object({
+    bottomPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of pixels to crop from the bottom. The default is 0.' }),
+    leftPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of pixels to crop from the left. The default is 0.' }),
+    rightPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of pixels to crop from the right. The default is 0.' }),
+    topPixels: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The number of pixels to crop from the top. The default is 0.' }),
+  })
+  .openapi({
+    description:
+      'Video cropping configuration for the input video. The cropped input video is scaled to match the output resolution.',
+    required: [],
+  })
+  .openapi('Crop')
+
+const DeblockSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Enable deblocker. The default is `false`.' }),
+    strength: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set strength of the deblocker. Enter a value between 0 and 1. The higher the value, the stronger the block removal. 0 is no deblocking. The default is 0.',
+      }),
+  })
+  .openapi({
+    description:
+      'Deblock preprocessing configuration. **Note:** This configuration is not supported.',
+    required: [],
+  })
+  .openapi('Deblock')
+
+const BwdifConfigSchema = z
+  .object({
+    deinterlaceAllFrames: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.',
+      }),
+    mode: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. URI of the image in Cloud Storage. For example, `gs://bucket/inputs/image.png`. Only PNG and JPEG images are supported.',
+          'Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field',
+      }),
+    parity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity',
       }),
   })
-  .openapi({ description: 'Overlaid image.', required: [] })
-  .openapi('Image')
+  .openapi({ description: 'Bob Weaver Deinterlacing Filter Configuration.', required: [] })
+  .openapi('BwdifConfig')
+
+const YadifConfigSchema = z
+  .object({
+    deinterlaceAllFrames: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deinterlace all frames rather than just the frames identified as interlaced. The default is `false`.',
+      }),
+    disableSpatialInterlacing: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Disable spacial interlacing. The default is `false`.' }),
+    mode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the deinterlacing mode to adopt. The default is `send_frame`. Supported values: - `send_frame`: Output one frame for each frame - `send_field`: Output one frame for each field',
+      }),
+    parity: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The picture field parity assumed for the input interlaced video. The default is `auto`. Supported values: - `tff`: Assume the top field is first - `bff`: Assume the bottom field is first - `auto`: Enable automatic detection of field parity',
+      }),
+  })
+  .openapi({ description: 'Yet Another Deinterlacing Filter Configuration.', required: [] })
+  .openapi('YadifConfig')
+
+const DeinterlaceSchema = z
+  .object({
+    bwdif: BwdifConfigSchema.exactOptional().openapi({
+      description: 'Specifies the Bob Weaver Deinterlacing Filter Configuration.',
+    }),
+    yadif: YadifConfigSchema.exactOptional().openapi({
+      description: 'Specifies the Yet Another Deinterlacing Filter Configuration.',
+    }),
+  })
+  .openapi({ description: 'Deinterlace configuration for input video.', required: [] })
+  .openapi('Deinterlace')
+
+const DenoiseSchema = z
+  .object({
+    strength: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set strength of the denoise. Enter a value between 0 and 1. The higher the value, the smoother the image. 0 is no denoising. The default is 0.',
+      }),
+    tune: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the denoiser mode. The default is `standard`. Supported denoiser modes: - `standard` - `grain`',
+      }),
+  })
+  .openapi({
+    description:
+      'Denoise preprocessing configuration. **Note:** This configuration is not supported.',
+    required: [],
+  })
+  .openapi('Denoise')
 
 const PadSchema = z
   .object({
@@ -1073,6 +963,108 @@ const OutputSchema = z
   })
   .openapi({ description: 'Location of output file(s) in a Cloud Storage bucket.', required: [] })
   .openapi('Output')
+
+const AnimationEndSchema = z
+  .object({
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time to end overlay object, in seconds. Default: 0' }),
+  })
+  .openapi({
+    description:
+      'End previous overlay animation from the video. Without AnimationEnd, the overlay object will keep the state of previous animation until the end of the video.',
+    required: [],
+  })
+  .openapi('AnimationEnd')
+
+const NormalizedCoordinateSchema = z
+  .object({
+    x: z.float64().exactOptional().openapi({ description: 'Normalized x coordinate.' }),
+    y: z.float64().exactOptional().openapi({ description: 'Normalized y coordinate.' }),
+  })
+  .openapi({ description: '2D normalized coordinates. Default: `{0.0, 0.0}`', required: [] })
+  .openapi('NormalizedCoordinate')
+
+const AnimationFadeSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time to end the fade animation, in seconds. Default: `start_time_offset` + 1s',
+      }),
+    fadeType: z
+      .enum(['FADE_TYPE_UNSPECIFIED', 'FADE_IN', 'FADE_OUT'])
+      .exactOptional()
+      .openapi({ description: 'Required. Type of fade animation: `FADE_IN` or `FADE_OUT`.' }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time to start the fade animation, in seconds. Default: 0' }),
+    xy: NormalizedCoordinateSchema.exactOptional().openapi({
+      description:
+        'Normalized coordinates based on output video resolution. Valid values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay object. For example, use the x and y coordinates {0,0} to position the top-left corner of the overlay animation in the top-left corner of the output video.',
+    }),
+  })
+  .openapi({ description: 'Display overlay object with fade animation.', required: [] })
+  .openapi('AnimationFade')
+
+const AnimationStaticSchema = z
+  .object({
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The time to start displaying the overlay object, in seconds. Default: 0',
+      }),
+    xy: NormalizedCoordinateSchema.exactOptional().openapi({
+      description:
+        'Normalized coordinates based on output video resolution. Valid values: `0.0`–`1.0`. `xy` is the upper-left coordinate of the overlay object. For example, use the x and y coordinates {0,0} to position the top-left corner of the overlay animation in the top-left corner of the output video.',
+    }),
+  })
+  .openapi({ description: 'Display static overlay object.', required: [] })
+  .openapi('AnimationStatic')
+
+const AnimationSchema = z
+  .object({
+    animationEnd: AnimationEndSchema.exactOptional().openapi({
+      description: 'End previous animation.',
+    }),
+    animationFade: AnimationFadeSchema.exactOptional().openapi({
+      description: 'Display overlay object with fade animation.',
+    }),
+    animationStatic: AnimationStaticSchema.exactOptional().openapi({
+      description: 'Display static overlay object.',
+    }),
+  })
+  .openapi({ description: 'Animation types.', required: [] })
+  .openapi('Animation')
+
+const ImageSchema = z
+  .object({
+    alpha: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'Target image opacity. Valid values are from `1.0` (solid, default) to `0.0` (transparent), exclusive. Set this to a value greater than `0.0`.',
+      }),
+    resolution: NormalizedCoordinateSchema.exactOptional().openapi({
+      description:
+        'Normalized image resolution, based on output video resolution. Valid values: `0.0`–`1.0`. To respect the original image aspect ratio, set either `x` or `y` to `0.0`. To use the original image resolution, set both `x` and `y` to `0.0`.',
+    }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. URI of the image in Cloud Storage. For example, `gs://bucket/inputs/image.png`. Only PNG and JPEG images are supported.',
+      }),
+  })
+  .openapi({ description: 'Overlaid image.', required: [] })
+  .openapi('Image')
 
 const OverlaySchema = z
   .object({
@@ -1271,7 +1263,58 @@ const StatusSchema = z
   })
   .openapi('Status')
 
-const JobSchema = z
+type JobType = {
+  config?: z.infer<typeof JobConfigSchema>
+  createTime?: string
+  endTime?: string
+  error?: z.infer<typeof StatusSchema>
+  inputUri?: string
+  labels?: { [key: string]: string }
+  mode?: 'PROCESSING_MODE_UNSPECIFIED' | 'PROCESSING_MODE_INTERACTIVE' | 'PROCESSING_MODE_BATCH'
+  name?: string
+  outputUri?: string
+  startTime?: string
+  state?: 'PROCESSING_STATE_UNSPECIFIED' | 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED'
+  templateId?: string
+  ttlAfterCompletionDays?: number
+}
+
+type JobTemplateType = {
+  config?: z.infer<typeof JobConfigSchema>
+  labels?: { [key: string]: string }
+  name?: string
+}
+
+const JobTemplateSchema: z.ZodType<JobTemplateType> = z
+  .object({
+    config: JobConfigSchema.exactOptional().openapi({
+      description: 'The configuration for this template.',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The labels associated with this job template. You can use these to organize and group your job templates.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the job template. Format: `projects/{project_number}/locations/{location}/jobTemplates/{job_template}`',
+      }),
+  })
+  .openapi({ description: 'Transcoding job template resource.', required: [] })
+  .openapi('JobTemplate')
+
+type ListJobTemplatesResponseType = {
+  jobTemplates?: z.infer<typeof JobTemplateSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const JobSchema: z.ZodType<JobType> = z
   .object({
     config: JobConfigSchema.exactOptional().openapi({
       description: 'The configuration for this job.',
@@ -1350,30 +1393,21 @@ const JobSchema = z
   .openapi({ description: 'Transcoding job resource.', required: [] })
   .openapi('Job')
 
-const JobTemplateSchema = z
-  .object({
-    config: JobConfigSchema.exactOptional().openapi({
-      description: 'The configuration for this template.',
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The labels associated with this job template. You can use these to organize and group your job templates.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the job template. Format: `projects/{project_number}/locations/{location}/jobTemplates/{job_template}`',
-      }),
-  })
-  .openapi({ description: 'Transcoding job template resource.', required: [] })
-  .openapi('JobTemplate')
+type ListJobsResponseType = {
+  jobs?: z.infer<typeof JobSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
 
-const ListJobTemplatesResponseSchema = z
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const ListJobTemplatesResponseSchema: z.ZodType<ListJobTemplatesResponseType> = z
   .object({
     jobTemplates: z
       .array(JobTemplateSchema)
@@ -1391,7 +1425,7 @@ const ListJobTemplatesResponseSchema = z
   })
   .openapi('ListJobTemplatesResponse')
 
-const ListJobsResponseSchema = z
+const ListJobsResponseSchema: z.ZodType<ListJobsResponseType> = z
   .object({
     jobs: z
       .array(JobSchema)

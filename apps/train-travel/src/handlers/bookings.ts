@@ -3,6 +3,7 @@ import {
   deleteBookingsBookingIdRoute,
   getBookingsBookingIdRoute,
   getBookingsRoute,
+  postBookingsBookingIdPaymentRoute,
   postBookingsRoute,
 } from '../routes'
 
@@ -19,5 +20,8 @@ export const bookingsHandler = app
     throw new Error('Not implemented')
   })
   .openapi(deleteBookingsBookingIdRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(postBookingsBookingIdPaymentRoute, (c) => {
     throw new Error('Not implemented')
   })

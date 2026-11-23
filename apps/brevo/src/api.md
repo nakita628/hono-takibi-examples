@@ -12208,7 +12208,7 @@ It returns the background process ID which on completion calls the notify URL th
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|object|true|Values to import contacts in Brevo. To know more about the expected format, please have a look at ``https://help.brevo.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns``|
+|body|body|object|true|Values to import contacts in Brevo. To know more about the expected format, please have a look at ``https://help.brevo.com/hc/en-us/articles/209499265-Build-contacts-lists-for-your-email-marketing-campaigns``<br><br><Note>Contacts with a matching `EXT_ID` are updated as usual. If the `EXT_ID` in your file or `jsonBody` is new and the email belongs to a contact with no `EXT_ID`, that contact is replaced by a new one with a new contact ID, and its email history is lost. Its blocklist status can also be reset. To keep history, identify contacts by email or contact ID.</Note>|
 |» disableNotification|body|boolean|false|To disable email notification|
 |» emailBlacklist|body|boolean|false|To blacklist all the contacts for email|
 |» emptyContactsAttributes|body|boolean|false|To facilitate the choice to erase any attribute of the existing contacts with empty value. emptyContactsAttributes = true means the empty fields in your import will erase any attribute that currently contain data in Brevo, & emptyContactsAttributes = false means the empty fields will not affect your existing data ( **only available if `updateExistingContacts` set to true **)<br>|

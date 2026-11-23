@@ -43,14 +43,14 @@ const OrientationSchema = z
 
 const CreateOrUpdateTemplateRequestSchema = z
   .object({
-    components: z.array(z.object({})).openapi({ title: 'Components' }),
+    components: z.array(z.looseObject({})).openapi({ title: 'Components' }),
     css: z.string().openapi({ title: 'Css' }),
     footer_html: z.string().exactOptional().openapi({ title: 'Footer Html' }),
     format: FormatSchema,
     header_html: z.string().exactOptional().openapi({ title: 'Header Html' }),
     name: z.string().openapi({ title: 'Name' }),
     orientation: OrientationSchema,
-    preview_payload: z.object({}).openapi({ title: 'Preview Payload' }),
+    preview_payload: z.looseObject({}).openapi({ title: 'Preview Payload' }),
     template_html: z.string().openapi({ title: 'Template Html' }),
   })
   .openapi({
@@ -105,7 +105,7 @@ const DateFieldSchema = z
 
 const DesignerTemplateSchema = z
   .object({
-    components: z.array(z.object({})).openapi({ title: 'Components' }),
+    components: z.array(z.looseObject({})).openapi({ title: 'Components' }),
     created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ title: 'Created At' }),
     css: z.string().openapi({ title: 'Css' }),
     footer_html: z.string().exactOptional().openapi({ title: 'Footer Html' }),
@@ -114,7 +114,7 @@ const DesignerTemplateSchema = z
     id: z.string().exactOptional().openapi({ title: 'Id' }),
     name: z.string().openapi({ title: 'Name' }),
     orientation: OrientationSchema,
-    preview_payload: z.object({}).openapi({ title: 'Preview Payload' }),
+    preview_payload: z.looseObject({}).openapi({ title: 'Preview Payload' }),
     template_html: z.string().openapi({ title: 'Template Html' }),
   })
   .openapi({
@@ -132,12 +132,12 @@ const DesignerTemplateSchema = z
   .openapi('DesignerTemplate')
 
 const FillTemplateRequestSchema = z
-  .object({ data: z.object({}).default({}).exactOptional().openapi({ title: 'Data' }) })
+  .object({ data: z.looseObject({}).default({}).exactOptional().openapi({ title: 'Data' }) })
   .openapi({ title: 'FillTemplateRequest', required: [] })
   .openapi('FillTemplateRequest')
 
 const GeneratePDFPayloadSchema = z
-  .object({ data: z.object({}).openapi({ title: 'Data' }) })
+  .object({ data: z.looseObject({}).openapi({ title: 'Data' }) })
   .openapi({ required: ['data'], title: 'GeneratePDFPayload' })
   .openapi('GeneratePDFPayload')
 
@@ -161,7 +161,7 @@ const ImageFieldSchema = z
 const PreviewModelSchema = z
   .object({
     css: z.string().openapi({ title: 'Css' }),
-    data: z.object({}).openapi({ title: 'Data' }),
+    data: z.looseObject({}).openapi({ title: 'Data' }),
     footer_html: z.string().exactOptional().openapi({ title: 'Footer Html' }),
     header_html: z.string().exactOptional().openapi({ title: 'Header Html' }),
     template_html: z.string().openapi({ title: 'Template Html' }),
@@ -217,13 +217,13 @@ const TemplateSchema = z
           .xor([DateFieldSchema, TextFieldSchema, ImageFieldSchema, CheckBoxFieldSchema])
           .openapi({
             discriminator: {
+              propertyName: 'type',
               mapping: {
                 check: '#/components/schemas/CheckBoxField',
                 date: '#/components/schemas/DateField',
                 image: '#/components/schemas/ImageField',
                 text: '#/components/schemas/TextField',
               },
-              propertyName: 'type',
             },
           }),
       )
@@ -274,13 +274,13 @@ const UpdateTemplateRequestSchema = z
           .xor([DateFieldSchema, TextFieldSchema, ImageFieldSchema, CheckBoxFieldSchema])
           .openapi({
             discriminator: {
+              propertyName: 'type',
               mapping: {
                 check: '#/components/schemas/CheckBoxField',
                 date: '#/components/schemas/DateField',
                 image: '#/components/schemas/ImageField',
                 text: '#/components/schemas/TextField',
               },
-              propertyName: 'type',
             },
           }),
       )

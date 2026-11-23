@@ -6,9 +6,7 @@ const StringSchema = z
   .openapi('String')
 
 const AddTagsToResourceResponseSchema = z
-  .object({
-    Status: StringSchema.and(z.any().openapi({ description: 'The status of the operation.' })),
-  })
+  .object({ Status: StringSchema.openapi({ description: 'The status of the operation.' }) })
   .openapi({ required: ['Status'] })
   .openapi('AddTagsToResourceResponse')
 
@@ -18,8 +16,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -32,14 +30,10 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const AddTagsToResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource to tag.',
-        }),
-    ),
-    TagList: TagListSchema.and(z.any().openapi({ description: 'One or more tags.' })),
+    ResourceArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource to tag.',
+    }),
+    TagList: TagListSchema.openapi({ description: 'One or more tags.' }),
   })
   .openapi({ required: ['ResourceArn', 'TagList'], title: 'AddTagsToResourceRequest' })
   .openapi('AddTagsToResourceRequest')
@@ -57,9 +51,9 @@ const HapgArnSchema = z
 
 const CreateHapgResponseSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the high-availability partition group.' }),
-    ).exactOptional(),
+    HapgArn: HapgArnSchema.exactOptional().openapi({
+      description: 'The ARN of the high-availability partition group.',
+    }),
   })
   .openapi({
     description: 'Contains the output of the <a>CreateHAPartitionGroup</a> action.',
@@ -74,9 +68,9 @@ const LabelSchema = z
 
 const CreateHapgRequestSchema = z
   .object({
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'The label of the new high-availability partition group.' }),
-    ),
+    Label: LabelSchema.openapi({
+      description: 'The label of the new high-availability partition group.',
+    }),
   })
   .openapi({
     required: ['Label'],
@@ -92,11 +86,7 @@ const HsmArnSchema = z
   .openapi('HsmArn')
 
 const CreateHsmResponseSchema = z
-  .object({
-    HsmArn: HsmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the HSM.' }),
-    ).exactOptional(),
-  })
+  .object({ HsmArn: HsmArnSchema.exactOptional().openapi({ description: 'The ARN of the HSM.' }) })
   .openapi({
     description: 'Contains the output of the <code>CreateHsm</code> operation.',
     required: [],
@@ -143,52 +133,30 @@ const ClientTokenSchema = z
 
 const CreateHsmRequestSchema = z
   .object({
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the subnet in your VPC in which to place the HSM.',
-        }),
-    ),
-    SshKey: SshKeySchema.and(
-      z.any().openapi({ description: 'The SSH public key to install on the HSM.' }),
-    ),
-    EniIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The IP address to assign to the HSM's ENI.</p> <p>If an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the subnet.</p>",
-        }),
-    ).exactOptional(),
-    IamRoleArn: IamRoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role to enable the AWS CloudHSM service to allocate an ENI on your behalf.',
-        }),
-    ),
-    ExternalId: ExternalIdSchema.and(
-      z.any().openapi({ description: 'The external ID from <code>IamRoleArn</code>, if present.' }),
-    ).exactOptional(),
+    SubnetId: SubnetIdSchema.openapi({
+      description: 'The identifier of the subnet in your VPC in which to place the HSM.',
+    }),
+    SshKey: SshKeySchema.openapi({ description: 'The SSH public key to install on the HSM.' }),
+    EniIp: IpAddressSchema.exactOptional().openapi({
+      description:
+        "<p>The IP address to assign to the HSM's ENI.</p> <p>If an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the subnet.</p>",
+    }),
+    IamRoleArn: IamRoleArnSchema.openapi({
+      description:
+        'The ARN of an IAM role to enable the AWS CloudHSM service to allocate an ENI on your behalf.',
+    }),
+    ExternalId: ExternalIdSchema.exactOptional().openapi({
+      description: 'The external ID from <code>IamRoleArn</code>, if present.',
+    }),
     SubscriptionType: SubscriptionTypeSchema,
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-defined token to ensure idempotence. Subsequent calls to this operation with the same token will be ignored.',
-        }),
-    ).exactOptional(),
-    SyslogIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IP address for the syslog monitoring server. The AWS CloudHSM service only supports one syslog monitoring server.',
-        }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        'A user-defined token to ensure idempotence. Subsequent calls to this operation with the same token will be ignored.',
+    }),
+    SyslogIp: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The IP address for the syslog monitoring server. The AWS CloudHSM service only supports one syslog monitoring server.',
+    }),
   })
   .openapi({
     required: ['SubnetId', 'SshKey', 'IamRoleArn', 'SubscriptionType'],
@@ -204,9 +172,7 @@ const ClientArnSchema = z
 
 const CreateLunaClientResponseSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the client.' }),
-    ).exactOptional(),
+    ClientArn: ClientArnSchema.exactOptional().openapi({ description: 'The ARN of the client.' }),
   })
   .openapi({
     description: 'Contains the output of the <a>CreateLunaClient</a> action.',
@@ -228,17 +194,11 @@ const CertificateSchema = z
 
 const CreateLunaClientRequestSchema = z
   .object({
-    Label: ClientLabelSchema.and(
-      z.any().openapi({ description: 'The label for the client.' }),
-    ).exactOptional(),
-    Certificate: CertificateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contents of a Base64-Encoded X.509 v3 certificate to be installed on the HSMs used by this client.',
-        }),
-    ),
+    Label: ClientLabelSchema.exactOptional().openapi({ description: 'The label for the client.' }),
+    Certificate: CertificateSchema.openapi({
+      description:
+        'The contents of a Base64-Encoded X.509 v3 certificate to be installed on the HSMs used by this client.',
+    }),
   })
   .openapi({
     required: ['Certificate'],
@@ -248,9 +208,7 @@ const CreateLunaClientRequestSchema = z
   .openapi('CreateLunaClientRequest')
 
 const DeleteHapgResponseSchema = z
-  .object({
-    Status: StringSchema.and(z.any().openapi({ description: 'The status of the action.' })),
-  })
+  .object({ Status: StringSchema.openapi({ description: 'The status of the action.' }) })
   .openapi({
     required: ['Status'],
     description: 'Contains the output of the <a>DeleteHapg</a> action.',
@@ -259,11 +217,9 @@ const DeleteHapgResponseSchema = z
 
 const DeleteHapgRequestSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the high-availability partition group to delete.' }),
-    ),
+    HapgArn: HapgArnSchema.openapi({
+      description: 'The ARN of the high-availability partition group to delete.',
+    }),
   })
   .openapi({
     required: ['HapgArn'],
@@ -273,9 +229,7 @@ const DeleteHapgRequestSchema = z
   .openapi('DeleteHapgRequest')
 
 const DeleteHsmResponseSchema = z
-  .object({
-    Status: StringSchema.and(z.any().openapi({ description: 'The status of the operation.' })),
-  })
+  .object({ Status: StringSchema.openapi({ description: 'The status of the operation.' }) })
   .openapi({
     required: ['Status'],
     description: 'Contains the output of the <a>DeleteHsm</a> operation.',
@@ -283,9 +237,7 @@ const DeleteHsmResponseSchema = z
   .openapi('DeleteHsmResponse')
 
 const DeleteHsmRequestSchema = z
-  .object({
-    HsmArn: HsmArnSchema.and(z.any().openapi({ description: 'The ARN of the HSM to delete.' })),
-  })
+  .object({ HsmArn: HsmArnSchema.openapi({ description: 'The ARN of the HSM to delete.' }) })
   .openapi({
     required: ['HsmArn'],
     title: 'DeleteHsmRequest',
@@ -294,17 +246,13 @@ const DeleteHsmRequestSchema = z
   .openapi('DeleteHsmRequest')
 
 const DeleteLunaClientResponseSchema = z
-  .object({
-    Status: StringSchema.and(z.any().openapi({ description: 'The status of the action.' })),
-  })
+  .object({ Status: StringSchema.openapi({ description: 'The status of the action.' }) })
   .openapi({ required: ['Status'] })
   .openapi('DeleteLunaClientResponse')
 
 const DeleteLunaClientRequestSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the client to delete.' }),
-    ),
+    ClientArn: ClientArnSchema.openapi({ description: 'The ARN of the client to delete.' }),
   })
   .openapi({ required: ['ClientArn'], title: 'DeleteLunaClientRequest' })
   .openapi('DeleteLunaClientRequest')
@@ -329,55 +277,37 @@ const CloudHsmObjectStateSchema = z
 
 const DescribeHapgResponseSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the high-availability partition group.' }),
-    ).exactOptional(),
-    HapgSerial: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The serial number of the high-availability partition group.' }),
-    ).exactOptional(),
-    HsmsLastActionFailed: HsmListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    HsmsPendingDeletion: HsmListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    HsmsPendingRegistration: HsmListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'The label for the high-availability partition group.' }),
-    ).exactOptional(),
-    LastModifiedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time the high-availability partition group was last modified.',
-        }),
-    ).exactOptional(),
-    PartitionSerialList: PartitionSerialListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of partition serial numbers that belong to the high-availability partition group.',
-        }),
-    ).exactOptional(),
-    State: CloudHsmObjectStateSchema.and(
-      z.any().openapi({ description: 'The state of the high-availability partition group.' }),
-    ).exactOptional(),
+    HapgArn: HapgArnSchema.exactOptional().openapi({
+      description: 'The ARN of the high-availability partition group.',
+    }),
+    HapgSerial: StringSchema.exactOptional().openapi({
+      description: 'The serial number of the high-availability partition group.',
+    }),
+    HsmsLastActionFailed: HsmListSchema.exactOptional().openapi({ description: '<p/>' }),
+    HsmsPendingDeletion: HsmListSchema.exactOptional().openapi({ description: '<p/>' }),
+    HsmsPendingRegistration: HsmListSchema.exactOptional().openapi({ description: '<p/>' }),
+    Label: LabelSchema.exactOptional().openapi({
+      description: 'The label for the high-availability partition group.',
+    }),
+    LastModifiedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the high-availability partition group was last modified.',
+    }),
+    PartitionSerialList: PartitionSerialListSchema.exactOptional().openapi({
+      description:
+        'The list of partition serial numbers that belong to the high-availability partition group.',
+    }),
+    State: CloudHsmObjectStateSchema.exactOptional().openapi({
+      description: 'The state of the high-availability partition group.',
+    }),
   })
   .openapi({ description: 'Contains the output of the <a>DescribeHapg</a> action.', required: [] })
   .openapi('DescribeHapgResponse')
 
 const DescribeHapgRequestSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the high-availability partition group to describe.' }),
-    ),
+    HapgArn: HapgArnSchema.openapi({
+      description: 'The ARN of the high-availability partition group to describe.',
+    }),
   })
   .openapi({
     required: ['HapgArn'],
@@ -419,77 +349,59 @@ const PartitionListSchema = z.array(PartitionArnSchema).openapi('PartitionList')
 
 const DescribeHsmResponseSchema = z
   .object({
-    HsmArn: HsmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the HSM.' }),
-    ).exactOptional(),
-    Status: HsmStatusSchema.and(
-      z.any().openapi({ description: 'The status of the HSM.' }),
-    ).exactOptional(),
-    StatusDetails: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains additional information about the status of the HSM.' }),
-    ).exactOptional(),
-    AvailabilityZone: AZSchema.and(
-      z.any().openapi({ description: 'The Availability Zone that the HSM is in.' }),
-    ).exactOptional(),
-    EniId: EniIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the elastic network interface (ENI) attached to the HSM.',
-        }),
-    ).exactOptional(),
-    EniIp: IpAddressSchema.and(
-      z.any().openapi({ description: "The IP address assigned to the HSM's ENI." }),
-    ).exactOptional(),
+    HsmArn: HsmArnSchema.exactOptional().openapi({ description: 'The ARN of the HSM.' }),
+    Status: HsmStatusSchema.exactOptional().openapi({ description: 'The status of the HSM.' }),
+    StatusDetails: StringSchema.exactOptional().openapi({
+      description: 'Contains additional information about the status of the HSM.',
+    }),
+    AvailabilityZone: AZSchema.exactOptional().openapi({
+      description: 'The Availability Zone that the HSM is in.',
+    }),
+    EniId: EniIdSchema.exactOptional().openapi({
+      description: 'The identifier of the elastic network interface (ENI) attached to the HSM.',
+    }),
+    EniIp: IpAddressSchema.exactOptional().openapi({
+      description: "The IP address assigned to the HSM's ENI.",
+    }),
     SubscriptionType: SubscriptionTypeSchema.exactOptional(),
-    SubscriptionStartDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The subscription start date.' }),
-    ).exactOptional(),
-    SubscriptionEndDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The subscription end date.' }),
-    ).exactOptional(),
-    VpcId: VpcIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the VPC that the HSM is in.' }),
-    ).exactOptional(),
-    SubnetId: SubnetIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the subnet that the HSM is in.' }),
-    ).exactOptional(),
-    IamRoleArn: IamRoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role assigned to the HSM.' }),
-    ).exactOptional(),
-    SerialNumber: HsmSerialNumberSchema.and(
-      z.any().openapi({ description: 'The serial number of the HSM.' }),
-    ).exactOptional(),
-    VendorName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the HSM vendor.' }),
-    ).exactOptional(),
-    HsmType: StringSchema.and(
-      z.any().openapi({ description: 'The HSM model type.' }),
-    ).exactOptional(),
-    SoftwareVersion: StringSchema.and(
-      z.any().openapi({ description: 'The HSM software version.' }),
-    ).exactOptional(),
-    SshPublicKey: SshKeySchema.and(
-      z.any().openapi({ description: 'The public SSH key.' }),
-    ).exactOptional(),
-    SshKeyLastUpdated: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the SSH key was last updated.' }),
-    ).exactOptional(),
-    ServerCertUri: StringSchema.and(
-      z.any().openapi({ description: 'The URI of the certificate server.' }),
-    ).exactOptional(),
-    ServerCertLastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time that the server certificate was last updated.',
-        }),
-    ).exactOptional(),
-    Partitions: PartitionListSchema.and(
-      z.any().openapi({ description: 'The list of partitions on the HSM.' }),
-    ).exactOptional(),
+    SubscriptionStartDate: TimestampSchema.exactOptional().openapi({
+      description: 'The subscription start date.',
+    }),
+    SubscriptionEndDate: TimestampSchema.exactOptional().openapi({
+      description: 'The subscription end date.',
+    }),
+    VpcId: VpcIdSchema.exactOptional().openapi({
+      description: 'The identifier of the VPC that the HSM is in.',
+    }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description: 'The identifier of the subnet that the HSM is in.',
+    }),
+    IamRoleArn: IamRoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role assigned to the HSM.',
+    }),
+    SerialNumber: HsmSerialNumberSchema.exactOptional().openapi({
+      description: 'The serial number of the HSM.',
+    }),
+    VendorName: StringSchema.exactOptional().openapi({
+      description: 'The name of the HSM vendor.',
+    }),
+    HsmType: StringSchema.exactOptional().openapi({ description: 'The HSM model type.' }),
+    SoftwareVersion: StringSchema.exactOptional().openapi({
+      description: 'The HSM software version.',
+    }),
+    SshPublicKey: SshKeySchema.exactOptional().openapi({ description: 'The public SSH key.' }),
+    SshKeyLastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the SSH key was last updated.',
+    }),
+    ServerCertUri: StringSchema.exactOptional().openapi({
+      description: 'The URI of the certificate server.',
+    }),
+    ServerCertLastUpdated: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the server certificate was last updated.',
+    }),
+    Partitions: PartitionListSchema.exactOptional().openapi({
+      description: 'The list of partitions on the HSM.',
+    }),
   })
   .openapi({
     description: 'Contains the output of the <a>DescribeHsm</a> operation.',
@@ -499,22 +411,14 @@ const DescribeHsmResponseSchema = z
 
 const DescribeHsmRequestSchema = z
   .object({
-    HsmArn: HsmArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the HSM. Either the <code>HsmArn</code> or the <code>SerialNumber</code> parameter must be specified.',
-        }),
-    ).exactOptional(),
-    HsmSerialNumber: HsmSerialNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The serial number of the HSM. Either the <code>HsmArn</code> or the <code>HsmSerialNumber</code> parameter must be specified.',
-        }),
-    ).exactOptional(),
+    HsmArn: HsmArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the HSM. Either the <code>HsmArn</code> or the <code>SerialNumber</code> parameter must be specified.',
+    }),
+    HsmSerialNumber: HsmSerialNumberSchema.exactOptional().openapi({
+      description:
+        'The serial number of the HSM. Either the <code>HsmArn</code> or the <code>HsmSerialNumber</code> parameter must be specified.',
+    }),
   })
   .openapi({
     title: 'DescribeHsmRequest',
@@ -530,54 +434,40 @@ const CertificateFingerprintSchema = z
 
 const DescribeLunaClientResponseSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the client.' }),
-    ).exactOptional(),
-    Certificate: CertificateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The certificate installed on the HSMs used by this client.' }),
-    ).exactOptional(),
-    CertificateFingerprint: CertificateFingerprintSchema.and(
-      z.any().openapi({ description: 'The certificate fingerprint.' }),
-    ).exactOptional(),
-    LastModifiedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the client was last modified.' }),
-    ).exactOptional(),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'The label of the client.' }),
-    ).exactOptional(),
+    ClientArn: ClientArnSchema.exactOptional().openapi({ description: 'The ARN of the client.' }),
+    Certificate: CertificateSchema.exactOptional().openapi({
+      description: 'The certificate installed on the HSMs used by this client.',
+    }),
+    CertificateFingerprint: CertificateFingerprintSchema.exactOptional().openapi({
+      description: 'The certificate fingerprint.',
+    }),
+    LastModifiedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time the client was last modified.',
+    }),
+    Label: LabelSchema.exactOptional().openapi({ description: 'The label of the client.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeLunaClientResponse')
 
 const DescribeLunaClientRequestSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the client.' }),
-    ).exactOptional(),
-    CertificateFingerprint: CertificateFingerprintSchema.and(
-      z.any().openapi({ description: 'The certificate fingerprint.' }),
-    ).exactOptional(),
+    ClientArn: ClientArnSchema.exactOptional().openapi({ description: 'The ARN of the client.' }),
+    CertificateFingerprint: CertificateFingerprintSchema.exactOptional().openapi({
+      description: 'The certificate fingerprint.',
+    }),
   })
   .openapi({ title: 'DescribeLunaClientRequest', required: [] })
   .openapi('DescribeLunaClientRequest')
 
 const GetConfigResponseSchema = z
   .object({
-    ConfigType: StringSchema.and(
-      z.any().openapi({ description: 'The type of credentials.' }),
-    ).exactOptional(),
-    ConfigFile: StringSchema.and(
-      z.any().openapi({ description: 'The chrystoki.conf configuration file.' }),
-    ).exactOptional(),
-    ConfigCred: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The certificate file containing the server.pem files of the HSMs.',
-        }),
-    ).exactOptional(),
+    ConfigType: StringSchema.exactOptional().openapi({ description: 'The type of credentials.' }),
+    ConfigFile: StringSchema.exactOptional().openapi({
+      description: 'The chrystoki.conf configuration file.',
+    }),
+    ConfigCred: StringSchema.exactOptional().openapi({
+      description: 'The certificate file containing the server.pem files of the HSMs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConfigResponse')
@@ -588,16 +478,12 @@ const HapgListSchema = z.array(HapgArnSchema).openapi('HapgList')
 
 const GetConfigRequestSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(z.any().openapi({ description: 'The ARN of the client.' })),
-    ClientVersion: ClientVersionSchema.and(z.any().openapi({ description: 'The client version.' })),
-    HapgList: HapgListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of ARNs that identify the high-availability partition groups that are associated with the client.',
-        }),
-    ),
+    ClientArn: ClientArnSchema.openapi({ description: 'The ARN of the client.' }),
+    ClientVersion: ClientVersionSchema.openapi({ description: 'The client version.' }),
+    HapgList: HapgListSchema.openapi({
+      description:
+        'A list of ARNs that identify the high-availability partition groups that are associated with the client.',
+    }),
   })
   .openapi({ required: ['ClientArn', 'ClientVersion', 'HapgList'], title: 'GetConfigRequest' })
   .openapi('GetConfigRequest')
@@ -606,19 +492,15 @@ const AZListSchema = z.array(AZSchema).openapi('AZList')
 
 const ListAvailableZonesResponseSchema = z
   .object({
-    AZList: AZListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of Availability Zones that have available AWS CloudHSM capacity.',
-        }),
-    ).exactOptional(),
+    AZList: AZListSchema.exactOptional().openapi({
+      description: 'The list of Availability Zones that have available AWS CloudHSM capacity.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAvailableZonesResponse')
 
 const ListAvailableZonesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListAvailableZonesRequest',
     description: 'Contains the inputs for the <a>ListAvailableZones</a> action.',
@@ -632,48 +514,36 @@ const PaginationTokenSchema = z
 
 const ListHapgsResponseSchema = z
   .object({
-    HapgList: HapgListSchema.and(
-      z.any().openapi({ description: 'The list of high-availability partition groups.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value to <code>ListHapgs</code> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    HapgList: HapgListSchema.openapi({
+      description: 'The list of high-availability partition groups.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value to <code>ListHapgs</code> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: ['HapgList'] })
   .openapi('ListHapgsResponse')
 
 const ListHapgsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value from a previous call to <code>ListHapgs</code>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value from a previous call to <code>ListHapgs</code>. Pass null if this is the first call.',
+    }),
   })
   .openapi({ title: 'ListHapgsRequest', required: [] })
   .openapi('ListHapgsRequest')
 
 const ListHsmsResponseSchema = z
   .object({
-    HsmList: HsmListSchema.and(
-      z.any().openapi({ description: 'The list of ARNs that identify the HSMs.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this value to <code>ListHsms</code> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    HsmList: HsmListSchema.exactOptional().openapi({
+      description: 'The list of ARNs that identify the HSMs.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this value to <code>ListHsms</code> to retrieve the next set of items.',
+    }),
   })
   .openapi({
     description: 'Contains the output of the <code>ListHsms</code> operation.',
@@ -683,14 +553,10 @@ const ListHsmsResponseSchema = z
 
 const ListHsmsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value from a previous call to <code>ListHsms</code>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value from a previous call to <code>ListHsms</code>. Pass null if this is the first call.',
+    }),
   })
   .openapi({ title: 'ListHsmsRequest', required: [] })
   .openapi('ListHsmsRequest')
@@ -699,122 +565,86 @@ const ClientListSchema = z.array(ClientArnSchema).openapi('ClientList')
 
 const ListLunaClientsResponseSchema = z
   .object({
-    ClientList: ClientListSchema.and(z.any().openapi({ description: 'The list of clients.' })),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If not null, more results are available. Pass this to <code>ListLunaClients</code> to retrieve the next set of items.',
-        }),
-    ).exactOptional(),
+    ClientList: ClientListSchema.openapi({ description: 'The list of clients.' }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'If not null, more results are available. Pass this to <code>ListLunaClients</code> to retrieve the next set of items.',
+    }),
   })
   .openapi({ required: ['ClientList'] })
   .openapi('ListLunaClientsResponse')
 
 const ListLunaClientsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>NextToken</code> value from a previous call to <code>ListLunaClients</code>. Pass null if this is the first call.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>NextToken</code> value from a previous call to <code>ListLunaClients</code>. Pass null if this is the first call.',
+    }),
   })
   .openapi({ title: 'ListLunaClientsRequest', required: [] })
   .openapi('ListLunaClientsRequest')
 
 const ListTagsForResourceResponseSchema = z
-  .object({ TagList: TagListSchema.and(z.any().openapi({ description: 'One or more tags.' })) })
+  .object({ TagList: TagListSchema.openapi({ description: 'One or more tags.' }) })
   .openapi({ required: ['TagList'] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource.' }),
-    ),
+    ResourceArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ModifyHapgResponseSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the high-availability partition group.' }),
-    ).exactOptional(),
+    HapgArn: HapgArnSchema.exactOptional().openapi({
+      description: 'The ARN of the high-availability partition group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ModifyHapgResponse')
 
 const ModifyHapgRequestSchema = z
   .object({
-    HapgArn: HapgArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the high-availability partition group to modify.' }),
-    ),
-    Label: LabelSchema.and(
-      z.any().openapi({ description: 'The new label for the high-availability partition group.' }),
-    ).exactOptional(),
-    PartitionSerialList: PartitionSerialListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of partition serial numbers to make members of the high-availability partition group.',
-        }),
-    ).exactOptional(),
+    HapgArn: HapgArnSchema.openapi({
+      description: 'The ARN of the high-availability partition group to modify.',
+    }),
+    Label: LabelSchema.exactOptional().openapi({
+      description: 'The new label for the high-availability partition group.',
+    }),
+    PartitionSerialList: PartitionSerialListSchema.exactOptional().openapi({
+      description:
+        'The list of partition serial numbers to make members of the high-availability partition group.',
+    }),
   })
   .openapi({ required: ['HapgArn'], title: 'ModifyHapgRequest' })
   .openapi('ModifyHapgRequest')
 
 const ModifyHsmResponseSchema = z
-  .object({
-    HsmArn: HsmArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the HSM.' }),
-    ).exactOptional(),
-  })
+  .object({ HsmArn: HsmArnSchema.exactOptional().openapi({ description: 'The ARN of the HSM.' }) })
   .openapi({ description: 'Contains the output of the <a>ModifyHsm</a> operation.', required: [] })
   .openapi('ModifyHsmResponse')
 
 const ModifyHsmRequestSchema = z
   .object({
-    HsmArn: HsmArnSchema.and(z.any().openapi({ description: 'The ARN of the HSM to modify.' })),
-    SubnetId: SubnetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new identifier of the subnet that the HSM is in. The new subnet must be in the same Availability Zone as the current subnet.',
-        }),
-    ).exactOptional(),
-    EniIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new IP address for the elastic network interface (ENI) attached to the HSM.</p> <p>If the HSM is moved to a different subnet, and an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the new subnet.</p>',
-        }),
-    ).exactOptional(),
-    IamRoleArn: IamRoleArnSchema.and(
-      z.any().openapi({ description: 'The new IAM role ARN.' }),
-    ).exactOptional(),
-    ExternalId: ExternalIdSchema.and(
-      z.any().openapi({ description: 'The new external ID.' }),
-    ).exactOptional(),
-    SyslogIp: IpAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The new IP address for the syslog monitoring server. The AWS CloudHSM service only supports one syslog monitoring server.',
-        }),
-    ).exactOptional(),
+    HsmArn: HsmArnSchema.openapi({ description: 'The ARN of the HSM to modify.' }),
+    SubnetId: SubnetIdSchema.exactOptional().openapi({
+      description:
+        'The new identifier of the subnet that the HSM is in. The new subnet must be in the same Availability Zone as the current subnet.',
+    }),
+    EniIp: IpAddressSchema.exactOptional().openapi({
+      description:
+        '<p>The new IP address for the elastic network interface (ENI) attached to the HSM.</p> <p>If the HSM is moved to a different subnet, and an IP address is not specified, an IP address will be randomly chosen from the CIDR range of the new subnet.</p>',
+    }),
+    IamRoleArn: IamRoleArnSchema.exactOptional().openapi({ description: 'The new IAM role ARN.' }),
+    ExternalId: ExternalIdSchema.exactOptional().openapi({ description: 'The new external ID.' }),
+    SyslogIp: IpAddressSchema.exactOptional().openapi({
+      description:
+        'The new IP address for the syslog monitoring server. The AWS CloudHSM service only supports one syslog monitoring server.',
+    }),
   })
   .openapi({
     required: ['HsmArn'],
@@ -825,27 +655,21 @@ const ModifyHsmRequestSchema = z
 
 const ModifyLunaClientResponseSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the client.' }),
-    ).exactOptional(),
+    ClientArn: ClientArnSchema.exactOptional().openapi({ description: 'The ARN of the client.' }),
   })
   .openapi({ required: [] })
   .openapi('ModifyLunaClientResponse')
 
 const ModifyLunaClientRequestSchema = z
   .object({
-    ClientArn: ClientArnSchema.and(z.any().openapi({ description: 'The ARN of the client.' })),
-    Certificate: CertificateSchema.and(
-      z.any().openapi({ description: 'The new certificate for the client.' }),
-    ),
+    ClientArn: ClientArnSchema.openapi({ description: 'The ARN of the client.' }),
+    Certificate: CertificateSchema.openapi({ description: 'The new certificate for the client.' }),
   })
   .openapi({ required: ['ClientArn', 'Certificate'], title: 'ModifyLunaClientRequest' })
   .openapi('ModifyLunaClientRequest')
 
 const RemoveTagsFromResourceResponseSchema = z
-  .object({
-    Status: StringSchema.and(z.any().openapi({ description: 'The status of the operation.' })),
-  })
+  .object({ Status: StringSchema.openapi({ description: 'The status of the operation.' }) })
   .openapi({ required: ['Status'] })
   .openapi('RemoveTagsFromResourceResponse')
 
@@ -853,19 +677,13 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const RemoveTagsFromResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource.' }),
-    ),
-    TagKeyList: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag key or keys to remove.</p> <p>Specify only the tag key to remove (not the value). To overwrite the value for an existing tag, use <a>AddTagsToResource</a>.</p>',
-        }),
-    ),
+    ResourceArn: StringSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the AWS CloudHSM resource.',
+    }),
+    TagKeyList: TagKeyListSchema.openapi({
+      description:
+        '<p>The tag key or keys to remove.</p> <p>Specify only the tag key to remove (not the value). To overwrite the value for an existing tag, use <a>AddTagsToResource</a>.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeyList'], title: 'RemoveTagsFromResourceRequest' })
   .openapi('RemoveTagsFromResourceRequest')

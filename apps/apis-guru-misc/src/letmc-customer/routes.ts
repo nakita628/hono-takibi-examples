@@ -403,7 +403,7 @@ const LandlordTenancyModelSchema = z
   .openapi({ description: 'Landlord Tenancy Model.', required: [] })
   .openapi('LandlordTenancyModel')
 
-const ObjectSchema = z.object({}).openapi('Object')
+const ObjectSchema = z.looseObject({}).openapi('Object')
 
 const ApiKeySecurityScheme = {
   description: 'ApiKey Authentication',

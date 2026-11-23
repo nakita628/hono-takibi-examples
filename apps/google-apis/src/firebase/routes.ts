@@ -287,7 +287,7 @@ const DefaultResourcesSchema = z
   .openapi('DefaultResources')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -801,7 +801,7 @@ const ListWebAppsResponseSchema = z
   .openapi('ListWebAppsResponse')
 
 const MessageSetSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: "This is proto2's version of MessageSet." })
   .openapi('MessageSet')
 
@@ -900,7 +900,7 @@ const OperationSchema = z
   .openapi('Operation')
 
 const OperationMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Describes the progress of an LRO. It is included in the `metadata` field of the `Operation`.',

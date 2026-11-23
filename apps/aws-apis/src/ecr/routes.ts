@@ -1,149 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const MetricSchema = z.string().openapi('Metric')
-
-const ReasonSchema = z.string().openapi('Reason')
-
-const CvssScoreAdjustmentSchema = z
-  .object({
-    metric: MetricSchema.and(
-      z.any().openapi({ description: 'The metric used to adjust the CVSS score.' }),
-    ).exactOptional(),
-    reason: ReasonSchema.and(
-      z.any().openapi({ description: 'The reason the CVSS score has been adjustment.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Details on adjustments Amazon Inspector made to the CVSS score for a finding.',
-    required: [],
-  })
-  .openapi('CvssScoreAdjustment')
-
-const CvssScoreAdjustmentListSchema = z
-  .array(CvssScoreAdjustmentSchema)
-  .openapi('CvssScoreAdjustmentList')
-
-const ScoreSchema = z.float64().openapi('Score')
-
-const SourceSchema = z.string().openapi('Source')
-
-const ScoringVectorSchema = z.string().openapi('ScoringVector')
-
-const VersionSchema = z.string().openapi('Version')
-
-const CvssScoreDetailsSchema = z
-  .object({
-    adjustments: CvssScoreAdjustmentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains details about adjustment Amazon Inspector made to the CVSS score.',
-        }),
-    ).exactOptional(),
-    score: ScoreSchema.and(z.any().openapi({ description: 'The CVSS score.' })).exactOptional(),
-    scoreSource: SourceSchema.and(
-      z.any().openapi({ description: 'The source for the CVSS score.' }),
-    ).exactOptional(),
-    scoringVector: ScoringVectorSchema.and(
-      z.any().openapi({ description: 'The vector for the CVSS score.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The CVSS version used in scoring.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about the CVSS score.', required: [] })
-  .openapi('CvssScoreDetails')
-
-type ScoreDetailsType = {
-  cvss?: z.infer<typeof CvssScoreDetailsSchema> & { [key: string]: unknown }
-}
-
-const LayerDigestSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9-_+.]+:[a-fA-F0-9]+/)
-  .openapi('LayerDigest')
-
-const LayerAvailabilitySchema = z.enum(['AVAILABLE', 'UNAVAILABLE']).openapi('LayerAvailability')
-
-const LayerSizeInBytesSchema = z.int().openapi('LayerSizeInBytes')
-
-const MediaTypeSchema = z.string().openapi('MediaType')
-
-const LayerSchema = z
-  .object({
-    layerDigest: LayerDigestSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image layer.' }),
-    ).exactOptional(),
-    layerAvailability: LayerAvailabilitySchema.and(
-      z.any().openapi({ description: 'The availability status of the image layer.' }),
-    ).exactOptional(),
-    layerSize: LayerSizeInBytesSchema.and(
-      z.any().openapi({ description: 'The size, in bytes, of the image layer.' }),
-    ).exactOptional(),
-    mediaType: MediaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The media type of the layer, such as <code>application/vnd.docker.image.rootfs.diff.tar.gzip</code> or <code>application/vnd.oci.image.layer.v1.tar+gzip</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object representing an Amazon ECR image layer.', required: [] })
-  .openapi('Layer')
-
-const LayerListSchema = z.array(LayerSchema).openapi('LayerList')
-
-const BatchedOperationLayerDigestSchema = z
-  .string()
-  .min(0)
-  .max(1000)
-  .openapi('BatchedOperationLayerDigest')
-
-const LayerFailureCodeSchema = z
-  .enum(['InvalidLayerDigest', 'MissingLayerDigest'])
-  .openapi('LayerFailureCode')
-
-const LayerFailureReasonSchema = z.string().openapi('LayerFailureReason')
-
-const LayerFailureSchema = z
-  .object({
-    layerDigest: BatchedOperationLayerDigestSchema.and(
-      z.any().openapi({ description: 'The layer digest associated with the failure.' }),
-    ).exactOptional(),
-    failureCode: LayerFailureCodeSchema.and(
-      z.any().openapi({ description: 'The failure code associated with the failure.' }),
-    ).exactOptional(),
-    failureReason: LayerFailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the failure.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'An object representing an Amazon ECR image layer failure.',
-    required: [],
-  })
-  .openapi('LayerFailure')
-
-const LayerFailureListSchema = z.array(LayerFailureSchema).openapi('LayerFailureList')
-
-const BatchCheckLayerAvailabilityResponseSchema = z
-  .object({
-    layers: LayerListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of image layer objects corresponding to the image layer references in the request.',
-        }),
-    ).exactOptional(),
-    failures: LayerFailureListSchema.and(
-      z.any().openapi({ description: 'Any failures associated with the call.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchCheckLayerAvailabilityResponse')
-
 const RegistryIdSchema = z
   .string()
   .regex(/[0-9]{12}/)
@@ -156,1053 +12,24 @@ const RepositoryNameSchema = z
   .max(256)
   .openapi('RepositoryName')
 
-const BatchedOperationLayerDigestListSchema = z
-  .array(BatchedOperationLayerDigestSchema)
-  .min(1)
-  .max(100)
-  .openapi('BatchedOperationLayerDigestList')
-
-const BatchCheckLayerAvailabilityRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the image layers to check. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that is associated with the image layers to check.',
-        }),
-    ),
-    layerDigests: BatchedOperationLayerDigestListSchema.and(
-      z.any().openapi({ description: 'The digests of the image layers to check.' }),
-    ),
-  })
-  .openapi({
-    required: ['repositoryName', 'layerDigests'],
-    title: 'BatchCheckLayerAvailabilityRequest',
-  })
-  .openapi('BatchCheckLayerAvailabilityRequest')
-
-const RepositoryNotFoundExceptionSchema = z.any().openapi('RepositoryNotFoundException')
-
-const InvalidParameterExceptionSchema = z.any().openapi('InvalidParameterException')
-
-const ServerExceptionSchema = z.any().openapi('ServerException')
-
 const ImageDigestSchema = z.string().openapi('ImageDigest')
 
 const ImageTagSchema = z.string().min(1).max(300).openapi('ImageTag')
 
 const ImageIdentifierSchema = z
   .object({
-    imageDigest: ImageDigestSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image manifest.' }),
-    ).exactOptional(),
-    imageTag: ImageTagSchema.and(
-      z.any().openapi({ description: 'The tag used for the image.' }),
-    ).exactOptional(),
+    imageDigest: ImageDigestSchema.exactOptional().openapi({
+      description: 'The <code>sha256</code> digest of the image manifest.',
+    }),
+    imageTag: ImageTagSchema.exactOptional().openapi({
+      description: 'The tag used for the image.',
+    }),
   })
   .openapi({
     description: 'An object with identifying information for an image in an Amazon ECR repository.',
     required: [],
   })
   .openapi('ImageIdentifier')
-
-const ImageIdentifierListSchema = z
-  .array(ImageIdentifierSchema)
-  .min(1)
-  .max(100)
-  .openapi('ImageIdentifierList')
-
-const ImageFailureCodeSchema = z
-  .enum([
-    'InvalidImageDigest',
-    'InvalidImageTag',
-    'ImageTagDoesNotMatchDigest',
-    'ImageNotFound',
-    'MissingDigestAndTag',
-    'ImageReferencedByManifestList',
-    'KmsError',
-  ])
-  .openapi('ImageFailureCode')
-
-const ImageFailureReasonSchema = z.string().openapi('ImageFailureReason')
-
-const ImageFailureSchema = z
-  .object({
-    imageId: ImageIdentifierSchema.and(
-      z.any().openapi({ description: 'The image ID associated with the failure.' }),
-    ).exactOptional(),
-    failureCode: ImageFailureCodeSchema.and(
-      z.any().openapi({ description: 'The code associated with the failure.' }),
-    ).exactOptional(),
-    failureReason: ImageFailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the failure.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object representing an Amazon ECR image failure.', required: [] })
-  .openapi('ImageFailure')
-
-const ImageFailureListSchema = z.array(ImageFailureSchema).openapi('ImageFailureList')
-
-const BatchDeleteImageResponseSchema = z
-  .object({
-    imageIds: ImageIdentifierListSchema.and(
-      z.any().openapi({ description: 'The image IDs of the deleted images.' }),
-    ).exactOptional(),
-    failures: ImageFailureListSchema.and(
-      z.any().openapi({ description: 'Any failures associated with the call.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: {
-      failures: [],
-      imageIds: [
-        {
-          imageDigest: 'sha256:examplee6d1e504117a17000003d3753086354a38375961f2e665416ef4b1b2f',
-          imageTag: 'precise',
-        },
-      ],
-    },
-    required: [],
-  })
-  .openapi('BatchDeleteImageResponse')
-
-const BatchDeleteImageRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the image to delete. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository that contains the image to delete.' }),
-    ),
-    imageIds: ImageIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of image ID references that correspond to images to delete. The format of the <code>imageIds</code> reference is <code>imageTag=tag</code> or <code>imageDigest=digest</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['repositoryName', 'imageIds'],
-    title: 'BatchDeleteImageRequest',
-    description:
-      'Deletes specified images within a specified repository. Images are specified with either the <code>imageTag</code> or <code>imageDigest</code>.',
-  })
-  .openapi('BatchDeleteImageRequest')
-
-const ImageManifestSchema = z.string().min(1).max(4194304).openapi('ImageManifest')
-
-const ImageSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry containing the image.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository associated with the image.' }),
-    ).exactOptional(),
-    imageId: ImageIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object containing the image tag and image digest associated with an image.',
-        }),
-    ).exactOptional(),
-    imageManifest: ImageManifestSchema.and(
-      z.any().openapi({ description: 'The image manifest associated with the image.' }),
-    ).exactOptional(),
-    imageManifestMediaType: MediaTypeSchema.and(
-      z.any().openapi({ description: 'The manifest media type of the image.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object representing an Amazon ECR image.', required: [] })
-  .openapi('Image')
-
-const ImageListSchema = z.array(ImageSchema).openapi('ImageList')
-
-const BatchGetImageResponseSchema = z
-  .object({
-    images: ImageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of image objects corresponding to the image references in the request.',
-        }),
-    ).exactOptional(),
-    failures: ImageFailureListSchema.and(
-      z.any().openapi({ description: 'Any failures associated with the call.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: {
-      failures: [],
-      images: [
-        {
-          imageId: {
-            imageDigest: 'sha256:example76bdff6d83a09ba2a818f0d00000063724a9ac3ba5019c56f74ebf42a',
-            imageTag: 'precise',
-          },
-          imageManifest: '{\n "schemaVersion": 1,\n "name": "ubuntu",\n "tag": "precise",\n...',
-          registryId: '244698725403',
-          repositoryName: 'ubuntu',
-        },
-      ],
-    },
-    required: [],
-  })
-  .openapi('BatchGetImageResponse')
-
-const MediaTypeListSchema = z.array(MediaTypeSchema).min(1).max(100).openapi('MediaTypeList')
-
-const BatchGetImageRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the images to describe. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository that contains the images to describe.' }),
-    ),
-    imageIds: ImageIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of image ID references that correspond to images to describe. The format of the <code>imageIds</code> reference is <code>imageTag=tag</code> or <code>imageDigest=digest</code>.',
-        }),
-    ),
-    acceptedMediaTypes: MediaTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The accepted media types for the request.</p> <p>Valid values: <code>application/vnd.docker.distribution.manifest.v1+json</code> | <code>application/vnd.docker.distribution.manifest.v2+json</code> | <code>application/vnd.oci.image.manifest.v1+json</code> </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['repositoryName', 'imageIds'], title: 'BatchGetImageRequest' })
-  .openapi('BatchGetImageRequest')
-
-const ArnSchema = z.string().openapi('Arn')
-
-const ScanOnPushFlagSchema = z.boolean().openapi('ScanOnPushFlag')
-
-const ScanFrequencySchema = z
-  .enum(['SCAN_ON_PUSH', 'CONTINUOUS_SCAN', 'MANUAL'])
-  .openapi('ScanFrequency')
-
-const ScanningRepositoryFilterValueSchema = z
-  .string()
-  .regex(/^[a-z0-9*](?:[._\-\/a-z0-9*]?[a-z0-9*]+)*$/)
-  .min(1)
-  .max(255)
-  .openapi('ScanningRepositoryFilterValue')
-
-const ScanningRepositoryFilterTypeSchema = z
-  .literal('WILDCARD')
-  .openapi('ScanningRepositoryFilterType')
-
-const ScanningRepositoryFilterSchema = z
-  .object({
-    filter: ScanningRepositoryFilterValueSchema.and(
-      z.any().openapi({ description: 'The filter to use when scanning.' }),
-    ),
-    filterType: ScanningRepositoryFilterTypeSchema.and(
-      z.any().openapi({ description: 'The type associated with the filter.' }),
-    ),
-  })
-  .openapi({
-    required: ['filter', 'filterType'],
-    description:
-      'The details of a scanning repository filter. For more information on how to use filters, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html#image-scanning-filters">Using filters</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
-  })
-  .openapi('ScanningRepositoryFilter')
-
-const ScanningRepositoryFilterListSchema = z
-  .array(ScanningRepositoryFilterSchema)
-  .min(0)
-  .max(100)
-  .openapi('ScanningRepositoryFilterList')
-
-const RepositoryScanningConfigurationSchema = z
-  .object({
-    repositoryArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the repository.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    scanOnPush: ScanOnPushFlagSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Whether or not scan on push is configured for the repository.' }),
-    ).exactOptional(),
-    scanFrequency: ScanFrequencySchema.and(
-      z.any().openapi({ description: 'The scan frequency for the repository.' }),
-    ).exactOptional(),
-    appliedScanFilters: ScanningRepositoryFilterListSchema.and(
-      z.any().openapi({ description: 'The scan filters applied to the repository.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The details of the scanning configuration for a repository.',
-    required: [],
-  })
-  .openapi('RepositoryScanningConfiguration')
-
-const RepositoryScanningConfigurationListSchema = z
-  .array(RepositoryScanningConfigurationSchema)
-  .openapi('RepositoryScanningConfigurationList')
-
-const ScanningConfigurationFailureCodeSchema = z
-  .literal('REPOSITORY_NOT_FOUND')
-  .openapi('ScanningConfigurationFailureCode')
-
-const ScanningConfigurationFailureReasonSchema = z
-  .string()
-  .openapi('ScanningConfigurationFailureReason')
-
-const RepositoryScanningConfigurationFailureSchema = z
-  .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    failureCode: ScanningConfigurationFailureCodeSchema.and(
-      z.any().openapi({ description: 'The failure code.' }),
-    ).exactOptional(),
-    failureReason: ScanningConfigurationFailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the failure.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The details about any failures associated with the scanning configuration of a repository.',
-    required: [],
-  })
-  .openapi('RepositoryScanningConfigurationFailure')
-
-const RepositoryScanningConfigurationFailureListSchema = z
-  .array(RepositoryScanningConfigurationFailureSchema)
-  .openapi('RepositoryScanningConfigurationFailureList')
-
-const BatchGetRepositoryScanningConfigurationResponseSchema = z
-  .object({
-    scanningConfigurations: RepositoryScanningConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The scanning configuration for the requested repositories.' }),
-    ).exactOptional(),
-    failures: RepositoryScanningConfigurationFailureListSchema.and(
-      z.any().openapi({ description: 'Any failures associated with the call.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BatchGetRepositoryScanningConfigurationResponse')
-
-const ScanningConfigurationRepositoryNameListSchema = z
-  .array(RepositoryNameSchema)
-  .min(1)
-  .max(25)
-  .openapi('ScanningConfigurationRepositoryNameList')
-
-const BatchGetRepositoryScanningConfigurationRequestSchema = z
-  .object({
-    repositoryNames: ScanningConfigurationRepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more repository names to get the scanning configuration for.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['repositoryNames'],
-    title: 'BatchGetRepositoryScanningConfigurationRequest',
-  })
-  .openapi('BatchGetRepositoryScanningConfigurationRequest')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const UploadIdSchema = z
-  .string()
-  .regex(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/)
-  .openapi('UploadId')
-
-const CompleteLayerUploadResponseSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    uploadId: UploadIdSchema.and(
-      z.any().openapi({ description: 'The upload ID associated with the layer.' }),
-    ).exactOptional(),
-    layerDigest: LayerDigestSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image layer.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CompleteLayerUploadResponse')
-
-const LayerDigestListSchema = z.array(LayerDigestSchema).min(1).max(100).openapi('LayerDigestList')
-
-const CompleteLayerUploadRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to which to upload layers. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository to associate with the image layer.' }),
-    ),
-    uploadId: UploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upload ID from a previous <a>InitiateLayerUpload</a> operation to associate with the image layer.',
-        }),
-    ),
-    layerDigests: LayerDigestListSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image layer.' }),
-    ),
-  })
-  .openapi({
-    required: ['repositoryName', 'uploadId', 'layerDigests'],
-    title: 'CompleteLayerUploadRequest',
-  })
-  .openapi('CompleteLayerUploadRequest')
-
-const UploadNotFoundExceptionSchema = z.any().openapi('UploadNotFoundException')
-
-const InvalidLayerExceptionSchema = z.any().openapi('InvalidLayerException')
-
-const LayerPartTooSmallExceptionSchema = z.any().openapi('LayerPartTooSmallException')
-
-const LayerAlreadyExistsExceptionSchema = z.any().openapi('LayerAlreadyExistsException')
-
-const EmptyUploadExceptionSchema = z.any().openapi('EmptyUploadException')
-
-const KmsExceptionSchema = z.any().openapi('KmsException')
-
-const PullThroughCacheRuleRepositoryPrefixSchema = z
-  .string()
-  .regex(/[a-z0-9]+(?:[._-][a-z0-9]+)*/)
-  .min(2)
-  .max(20)
-  .openapi('PullThroughCacheRuleRepositoryPrefix')
-
-const UrlSchema = z.string().openapi('Url')
-
-const CreationTimestampSchema = z.iso.datetime({ offset: true }).openapi('CreationTimestamp')
-
-const CreatePullThroughCacheRuleResponseSchema = z
-  .object({
-    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon ECR repository prefix associated with the pull through cache rule.',
-        }),
-    ).exactOptional(),
-    upstreamRegistryUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The upstream registry URL associated with the pull through cache rule.',
-        }),
-    ).exactOptional(),
-    createdAt: CreationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in JavaScript date format, when the pull through cache rule was created.',
-        }),
-    ).exactOptional(),
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CreatePullThroughCacheRuleResponse')
-
-const CreatePullThroughCacheRuleRequestSchema = z
-  .object({
-    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository name prefix to use when caching images from the source registry.',
-        }),
-    ),
-    upstreamRegistryUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The registry URL of the upstream public registry to use as the source for the pull through cache rule.',
-        }),
-    ),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to create the pull through cache rule for. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ecrRepositoryPrefix', 'upstreamRegistryUrl'],
-    title: 'CreatePullThroughCacheRuleRequest',
-  })
-  .openapi('CreatePullThroughCacheRuleRequest')
-
-const PullThroughCacheRuleAlreadyExistsExceptionSchema = z
-  .any()
-  .openapi('PullThroughCacheRuleAlreadyExistsException')
-
-const UnsupportedUpstreamRegistryExceptionSchema = z
-  .any()
-  .openapi('UnsupportedUpstreamRegistryException')
-
-const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
-
-const ImageTagMutabilitySchema = z.enum(['MUTABLE', 'IMMUTABLE']).openapi('ImageTagMutability')
-
-const ImageScanningConfigurationSchema = z
-  .object({
-    scanOnPush: ScanOnPushFlagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The setting that determines whether images are scanned after being pushed to a repository. If set to <code>true</code>, images will be scanned after being pushed. If this parameter is not specified, it will default to <code>false</code> and images will not be scanned unless a scan is manually started with the <a href="https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_StartImageScan.html">API_StartImageScan</a> API.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The image scanning configuration for a repository.', required: [] })
-  .openapi('ImageScanningConfiguration')
-
-const EncryptionTypeSchema = z.enum(['AES256', 'KMS']).openapi('EncryptionType')
-
-const KmsKeySchema = z.string().min(1).max(2048).openapi('KmsKey')
-
-const EncryptionConfigurationSchema = z
-  .object({
-    encryptionType: EncryptionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">Protecting data using server-side encryption with an KMS key stored in Key Management Service (SSE-KMS)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES-256 encryption algorithm. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html">Protecting data using server-side encryption with Amazon S3-managed encryption keys (SSE-S3)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p>',
-        }),
-    ),
-    kmsKey: KmsKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you use the <code>KMS</code> encryption type, specify the KMS key to use for encryption. The alias, key ID, or full ARN of the KMS key can be specified. The key must exist in the same Region as the repository. If no key is specified, the default Amazon Web Services managed KMS key for Amazon ECR will be used.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['encryptionType'],
-    description:
-      '<p>The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.</p> <p>By default, when no encryption configuration is set or the <code>AES256</code> encryption type is used, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts your data at rest using an AES-256 encryption algorithm. This does not require any action on your part.</p> <p>For more control over the encryption of the contents of your repository, you can use server-side encryption with Key Management Service key stored in Key Management Service (KMS) to encrypt your images. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html">Amazon ECR encryption at rest</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>',
-  })
-  .openapi('EncryptionConfiguration')
-
-const RepositorySchema = z
-  .object({
-    repositoryArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, repository namespace, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository/test</code>.',
-        }),
-    ).exactOptional(),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    repositoryUri: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI for the repository. You can use this URI for container image <code>push</code> and <code>pull</code> operations.',
-        }),
-    ).exactOptional(),
-    createdAt: CreationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in JavaScript date format, when the repository was created.',
-        }),
-    ).exactOptional(),
-    imageTagMutability: ImageTagMutabilitySchema.and(
-      z.any().openapi({ description: 'The tag mutability setting for the repository.' }),
-    ).exactOptional(),
-    imageScanningConfiguration: ImageScanningConfigurationSchema.exactOptional(),
-    encryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'An object representing a repository.', required: [] })
-  .openapi('Repository')
-
-const CreateRepositoryResponseSchema = z
-  .object({
-    repository: RepositorySchema.and(
-      z.any().openapi({ description: 'The repository that was created.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: {
-      repository: {
-        registryId: 12345678901,
-        repositoryArn: 'arn:aws:ecr:us-west-2:012345678901:repository/project-a/nginx-web-app',
-        repositoryName: 'project-a/nginx-web-app',
-      },
-    },
-    required: [],
-  })
-  .openapi('CreateRepositoryResponse')
-
-const TagKeySchema = z.string().openapi('TagKey')
-
-const TagValueSchema = z.string().openapi('TagValue')
-
-const TagSchema = z
-  .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that make up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A <code>value</code> acts as a descriptor within a tag category (key).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The metadata to apply to a resource to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-    required: [],
-  })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).openapi('TagList')
-
-const CreateRepositoryRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to create the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name to use for the repository. The repository name may be specified on its own (such as <code>nginx-web-app</code>) or it can be prepended with a namespace to group the repository into a category (such as <code>project-a/nginx-web-app</code>).',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata that you apply to the repository to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ).exactOptional(),
-    imageTagMutability: ImageTagMutabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.',
-        }),
-    ).exactOptional(),
-    imageScanningConfiguration: ImageScanningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.',
-        }),
-    ).exactOptional(),
-    encryptionConfiguration: EncryptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['repositoryName'], title: 'CreateRepositoryRequest' })
-  .openapi('CreateRepositoryRequest')
-
-const InvalidTagParameterExceptionSchema = z.any().openapi('InvalidTagParameterException')
-
-const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
-
-const RepositoryAlreadyExistsExceptionSchema = z.any().openapi('RepositoryAlreadyExistsException')
-
-const LifecyclePolicyTextSchema = z.string().min(100).max(30720).openapi('LifecyclePolicyText')
-
-const EvaluationTimestampSchema = z.iso.datetime({ offset: true }).openapi('EvaluationTimestamp')
-
-const DeleteLifecyclePolicyResponseSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON lifecycle policy text.' }),
-    ).exactOptional(),
-    lastEvaluatedAt: EvaluationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time stamp of the last time that the lifecycle policy was run.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteLifecyclePolicyResponse')
-
-const DeleteLifecyclePolicyRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ),
-  })
-  .openapi({ required: ['repositoryName'], title: 'DeleteLifecyclePolicyRequest' })
-  .openapi('DeleteLifecyclePolicyRequest')
-
-const LifecyclePolicyNotFoundExceptionSchema = z.any().openapi('LifecyclePolicyNotFoundException')
-
-const DeletePullThroughCacheRuleResponseSchema = z
-  .object({
-    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon ECR repository prefix associated with the request.' }),
-    ).exactOptional(),
-    upstreamRegistryUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The upstream registry URL associated with the pull through cache rule.',
-        }),
-    ).exactOptional(),
-    createdAt: CreationTimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp associated with the pull through cache rule.' }),
-    ).exactOptional(),
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeletePullThroughCacheRuleResponse')
-
-const DeletePullThroughCacheRuleRequestSchema = z
-  .object({
-    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon ECR repository prefix associated with the pull through cache rule to delete.',
-        }),
-    ),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the pull through cache rule. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['ecrRepositoryPrefix'], title: 'DeletePullThroughCacheRuleRequest' })
-  .openapi('DeletePullThroughCacheRuleRequest')
-
-const PullThroughCacheRuleNotFoundExceptionSchema = z
-  .any()
-  .openapi('PullThroughCacheRuleNotFoundException')
-
-const RegistryPolicyTextSchema = z.string().min(0).max(10240).openapi('RegistryPolicyText')
-
-const DeleteRegistryPolicyResponseSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    policyText: RegistryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The contents of the registry permissions policy that was deleted.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DeleteRegistryPolicyResponse')
-
-const DeleteRegistryPolicyRequestSchema = z
-  .object({})
-  .openapi({ title: 'DeleteRegistryPolicyRequest' })
-  .openapi('DeleteRegistryPolicyRequest')
-
-const RegistryPolicyNotFoundExceptionSchema = z.any().openapi('RegistryPolicyNotFoundException')
-
-const DeleteRepositoryResponseSchema = z
-  .object({
-    repository: RepositorySchema.and(
-      z.any().openapi({ description: 'The repository that was deleted.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: {
-      repository: {
-        registryId: 12345678901,
-        repositoryArn: 'arn:aws:ecr:us-west-2:012345678901:repository/ubuntu',
-        repositoryName: 'ubuntu',
-      },
-    },
-    required: [],
-  })
-  .openapi('DeleteRepositoryResponse')
-
-const ForceFlagSchema = z.boolean().openapi('ForceFlag')
-
-const DeleteRepositoryRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository to delete. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to delete.' }),
-    ),
-    force: ForceFlagSchema.and(
-      z.any().openapi({ description: ' If a repository contains images, forces the deletion.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['repositoryName'], title: 'DeleteRepositoryRequest' })
-  .openapi('DeleteRepositoryRequest')
-
-const RepositoryNotEmptyExceptionSchema = z.any().openapi('RepositoryNotEmptyException')
-
-const RepositoryPolicyTextSchema = z.string().min(0).max(10240).openapi('RepositoryPolicyText')
-
-const DeleteRepositoryPolicyResponseSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    policyText: RepositoryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON repository policy that was deleted from the repository.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    example: { policyText: '{ ... }', registryId: 12345678901, repositoryName: 'ubuntu' },
-    required: [],
-  })
-  .openapi('DeleteRepositoryPolicyResponse')
-
-const DeleteRepositoryPolicyRequestSchema = z
-  .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository policy to delete. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that is associated with the repository policy to delete.',
-        }),
-    ),
-  })
-  .openapi({ required: ['repositoryName'], title: 'DeleteRepositoryPolicyRequest' })
-  .openapi('DeleteRepositoryPolicyRequest')
-
-const RepositoryPolicyNotFoundExceptionSchema = z.any().openapi('RepositoryPolicyNotFoundException')
-
-const RegionSchema = z
-  .string()
-  .regex(/[0-9a-z-]{2,25}/)
-  .min(2)
-  .max(25)
-  .openapi('Region')
-
-const ReplicationStatusSchema = z
-  .enum(['IN_PROGRESS', 'COMPLETE', 'FAILED'])
-  .openapi('ReplicationStatus')
-
-const ReplicationErrorSchema = z.string().openapi('ReplicationError')
-
-const ImageReplicationStatusSchema = z
-  .object({
-    region: RegionSchema.and(
-      z.any().openapi({ description: 'The destination Region for the image replication.' }),
-    ).exactOptional(),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to which the image belongs.',
-        }),
-    ).exactOptional(),
-    status: ReplicationStatusSchema.and(
-      z.any().openapi({ description: 'The image replication status.' }),
-    ).exactOptional(),
-    failureCode: ReplicationErrorSchema.and(
-      z.any().openapi({ description: 'The failure code for a replication that has failed.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The status of the replication process for an image.', required: [] })
-  .openapi('ImageReplicationStatus')
-
-const ImageReplicationStatusListSchema = z
-  .array(ImageReplicationStatusSchema)
-  .openapi('ImageReplicationStatusList')
-
-const DescribeImageReplicationStatusResponseSchema = z
-  .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    imageId: ImageIdentifierSchema.exactOptional(),
-    replicationStatuses: ImageReplicationStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The replication status details for the images in the specified repository.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('DescribeImageReplicationStatusResponse')
-
-const DescribeImageReplicationStatusRequestSchema = z
-  .object({
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository that the image is in.' }),
-    ),
-    imageId: ImageIdentifierSchema,
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['repositoryName', 'imageId'],
-    title: 'DescribeImageReplicationStatusRequest',
-  })
-  .openapi('DescribeImageReplicationStatusRequest')
-
-const ImageNotFoundExceptionSchema = z.any().openapi('ImageNotFoundException')
 
 const ScanStatusSchema = z
   .enum([
@@ -1221,12 +48,12 @@ const ScanStatusDescriptionSchema = z.string().openapi('ScanStatusDescription')
 
 const ImageScanStatusSchema = z
   .object({
-    status: ScanStatusSchema.and(
-      z.any().openapi({ description: 'The current state of an image scan.' }),
-    ).exactOptional(),
-    description: ScanStatusDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the image scan status.' }),
-    ).exactOptional(),
+    status: ScanStatusSchema.exactOptional().openapi({
+      description: 'The current state of an image scan.',
+    }),
+    description: ScanStatusDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the image scan status.',
+    }),
   })
   .openapi({ description: 'The current status of an image scan.', required: [] })
   .openapi('ImageScanStatus')
@@ -1247,6 +74,8 @@ const FindingNameSchema = z.string().openapi('FindingName')
 
 const FindingDescriptionSchema = z.string().openapi('FindingDescription')
 
+const UrlSchema = z.string().openapi('Url')
+
 const FindingSeveritySchema = z
   .enum(['INFORMATIONAL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL', 'UNDEFINED'])
   .openapi('FindingSeverity')
@@ -1257,10 +86,10 @@ const AttributeValueSchema = z.string().min(1).max(256).openapi('AttributeValue'
 
 const AttributeSchema = z
   .object({
-    key: AttributeKeySchema.and(z.any().openapi({ description: 'The attribute key.' })),
-    value: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The value assigned to the attribute key.' }),
-    ).exactOptional(),
+    key: AttributeKeySchema.openapi({ description: 'The attribute key.' }),
+    value: AttributeValueSchema.exactOptional().openapi({
+      description: 'The value assigned to the attribute key.',
+    }),
   })
   .openapi({
     required: ['key'],
@@ -1272,32 +101,21 @@ const AttributeListSchema = z.array(AttributeSchema).min(0).max(50).openapi('Att
 
 const ImageScanFindingSchema = z
   .object({
-    name: FindingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name associated with the finding, usually a CVE number.' }),
-    ).exactOptional(),
-    description: FindingDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the finding.' }),
-    ).exactOptional(),
-    uri: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A link containing additional details about the security vulnerability.',
-        }),
-    ).exactOptional(),
-    severity: FindingSeveritySchema.and(
-      z.any().openapi({ description: 'The finding severity.' }),
-    ).exactOptional(),
-    attributes: AttributeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of attributes of the host from which the finding is generated.',
-        }),
-    ).exactOptional(),
+    name: FindingNameSchema.exactOptional().openapi({
+      description: 'The name associated with the finding, usually a CVE number.',
+    }),
+    description: FindingDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the finding.',
+    }),
+    uri: UrlSchema.exactOptional().openapi({
+      description: 'A link containing additional details about the security vulnerability.',
+    }),
+    severity: FindingSeveritySchema.exactOptional().openapi({
+      description: 'The finding severity.',
+    }),
+    attributes: AttributeListSchema.exactOptional().openapi({
+      description: 'A collection of attributes of the host from which the finding is generated.',
+    }),
   })
   .openapi({ description: 'Contains information about an image scan finding.', required: [] })
   .openapi('ImageScanFinding')
@@ -1310,20 +128,24 @@ const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
 
 const BaseScoreSchema = z.float64().openapi('BaseScore')
 
+const ScoringVectorSchema = z.string().openapi('ScoringVector')
+
+const SourceSchema = z.string().openapi('Source')
+
+const VersionSchema = z.string().openapi('Version')
+
 const CvssScoreSchema = z
   .object({
-    baseScore: BaseScoreSchema.and(
-      z.any().openapi({ description: 'The base CVSS score used for the finding.' }),
-    ).exactOptional(),
-    scoringVector: ScoringVectorSchema.and(
-      z.any().openapi({ description: 'The vector string of the CVSS score.' }),
-    ).exactOptional(),
-    source: SourceSchema.and(
-      z.any().openapi({ description: 'The source of the CVSS score.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of CVSS used for the score.' }),
-    ).exactOptional(),
+    baseScore: BaseScoreSchema.exactOptional().openapi({
+      description: 'The base CVSS score used for the finding.',
+    }),
+    scoringVector: ScoringVectorSchema.exactOptional().openapi({
+      description: 'The vector string of the CVSS score.',
+    }),
+    source: SourceSchema.exactOptional().openapi({ description: 'The source of the CVSS score.' }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of CVSS used for the score.',
+    }),
   })
   .openapi({ description: 'The CVSS score for a finding.', required: [] })
   .openapi('CvssScore')
@@ -1358,30 +180,30 @@ const SourceLayerHashSchema = z.string().openapi('SourceLayerHash')
 
 const VulnerablePackageSchema = z
   .object({
-    arch: ArchSchema.and(
-      z.any().openapi({ description: 'The architecture of the vulnerable package.' }),
-    ).exactOptional(),
-    epoch: EpochSchema.and(
-      z.any().openapi({ description: 'The epoch of the vulnerable package.' }),
-    ).exactOptional(),
-    filePath: FilePathSchema.and(
-      z.any().openapi({ description: 'The file path of the vulnerable package.' }),
-    ).exactOptional(),
-    name: VulnerablePackageNameSchema.and(
-      z.any().openapi({ description: 'The name of the vulnerable package.' }),
-    ).exactOptional(),
-    packageManager: PackageManagerSchema.and(
-      z.any().openapi({ description: 'The package manager of the vulnerable package.' }),
-    ).exactOptional(),
-    release: ReleaseSchema.and(
-      z.any().openapi({ description: 'The release of the vulnerable package.' }),
-    ).exactOptional(),
-    sourceLayerHash: SourceLayerHashSchema.and(
-      z.any().openapi({ description: 'The source layer hash of the vulnerable package.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the vulnerable package.' }),
-    ).exactOptional(),
+    arch: ArchSchema.exactOptional().openapi({
+      description: 'The architecture of the vulnerable package.',
+    }),
+    epoch: EpochSchema.exactOptional().openapi({
+      description: 'The epoch of the vulnerable package.',
+    }),
+    filePath: FilePathSchema.exactOptional().openapi({
+      description: 'The file path of the vulnerable package.',
+    }),
+    name: VulnerablePackageNameSchema.exactOptional().openapi({
+      description: 'The name of the vulnerable package.',
+    }),
+    packageManager: PackageManagerSchema.exactOptional().openapi({
+      description: 'The package manager of the vulnerable package.',
+    }),
+    release: ReleaseSchema.exactOptional().openapi({
+      description: 'The release of the vulnerable package.',
+    }),
+    sourceLayerHash: SourceLayerHashSchema.exactOptional().openapi({
+      description: 'The source layer hash of the vulnerable package.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the vulnerable package.',
+    }),
   })
   .openapi({
     description: 'Information on the vulnerable package identified by a finding.',
@@ -1395,60 +217,38 @@ const VulnerablePackagesListSchema = z
 
 const PackageVulnerabilityDetailsSchema = z
   .object({
-    cvss: CvssScoreListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains details about the CVSS score of a finding.',
-        }),
-    ).exactOptional(),
-    referenceUrls: ReferenceUrlsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more URLs that contain details about this vulnerability type.',
-        }),
-    ).exactOptional(),
-    relatedVulnerabilities: RelatedVulnerabilitiesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more vulnerabilities related to the one identified in this finding.',
-        }),
-    ).exactOptional(),
-    source: SourceSchema.and(
-      z.any().openapi({ description: 'The source of the vulnerability information.' }),
-    ).exactOptional(),
-    sourceUrl: UrlSchema.and(
-      z.any().openapi({ description: 'A URL to the source of the vulnerability information.' }),
-    ).exactOptional(),
-    vendorCreatedAt: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date and time that this vulnerability was first added to the vendor's database.",
-        }),
-    ).exactOptional(),
-    vendorSeverity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The severity the vendor has given to this vulnerability type.' }),
-    ).exactOptional(),
-    vendorUpdatedAt: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time the vendor last updated this vulnerability in their database.',
-        }),
-    ).exactOptional(),
-    vulnerabilityId: VulnerabilityIdSchema.and(
-      z.any().openapi({ description: 'The ID given to this vulnerability.' }),
-    ).exactOptional(),
-    vulnerablePackages: VulnerablePackagesListSchema.and(
-      z.any().openapi({ description: 'The packages impacted by this vulnerability.' }),
-    ).exactOptional(),
+    cvss: CvssScoreListSchema.exactOptional().openapi({
+      description: 'An object that contains details about the CVSS score of a finding.',
+    }),
+    referenceUrls: ReferenceUrlsListSchema.exactOptional().openapi({
+      description: 'One or more URLs that contain details about this vulnerability type.',
+    }),
+    relatedVulnerabilities: RelatedVulnerabilitiesListSchema.exactOptional().openapi({
+      description: 'One or more vulnerabilities related to the one identified in this finding.',
+    }),
+    source: SourceSchema.exactOptional().openapi({
+      description: 'The source of the vulnerability information.',
+    }),
+    sourceUrl: UrlSchema.exactOptional().openapi({
+      description: 'A URL to the source of the vulnerability information.',
+    }),
+    vendorCreatedAt: DateSchema.exactOptional().openapi({
+      description:
+        "The date and time that this vulnerability was first added to the vendor's database.",
+    }),
+    vendorSeverity: SeveritySchema.exactOptional().openapi({
+      description: 'The severity the vendor has given to this vulnerability type.',
+    }),
+    vendorUpdatedAt: DateSchema.exactOptional().openapi({
+      description:
+        'The date and time the vendor last updated this vulnerability in their database.',
+    }),
+    vulnerabilityId: VulnerabilityIdSchema.exactOptional().openapi({
+      description: 'The ID given to this vulnerability.',
+    }),
+    vulnerablePackages: VulnerablePackagesListSchema.exactOptional().openapi({
+      description: 'The packages impacted by this vulnerability.',
+    }),
   })
   .openapi({ description: 'Information about a package vulnerability finding.', required: [] })
   .openapi('PackageVulnerabilityDetails')
@@ -1457,14 +257,12 @@ const RecommendationTextSchema = z.string().openapi('RecommendationText')
 
 const RecommendationSchema = z
   .object({
-    url: UrlSchema.and(
-      z.any().openapi({ description: 'The URL address to the CVE remediation recommendations.' }),
-    ).exactOptional(),
-    text: RecommendationTextSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The recommended course of action to remediate the finding.' }),
-    ).exactOptional(),
+    url: UrlSchema.exactOptional().openapi({
+      description: 'The URL address to the CVE remediation recommendations.',
+    }),
+    text: RecommendationTextSchema.exactOptional().openapi({
+      description: 'The recommended course of action to remediate the finding.',
+    }),
   })
   .openapi({
     description: 'Details about the recommended course of action to remediate the finding.',
@@ -1474,14 +272,10 @@ const RecommendationSchema = z
 
 const RemediationSchema = z
   .object({
-    recommendation: RecommendationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the recommended course of action to remediate the finding.',
-        }),
-    ).exactOptional(),
+    recommendation: RecommendationSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the recommended course of action to remediate the finding.',
+    }),
   })
   .openapi({ description: 'Information on how to remediate a finding.', required: [] })
   .openapi('Remediation')
@@ -1494,52 +288,40 @@ const PlatformSchema = z.string().openapi('Platform')
 
 const AwsEcrContainerImageDetailsSchema = z
   .object({
-    architecture: ArchSchema.and(
-      z.any().openapi({ description: 'The architecture of the Amazon ECR container image.' }),
-    ).exactOptional(),
-    author: AuthorSchema.and(
-      z.any().openapi({ description: 'The image author of the Amazon ECR container image.' }),
-    ).exactOptional(),
-    imageHash: ImageDigestSchema.and(
-      z.any().openapi({ description: 'The image hash of the Amazon ECR container image.' }),
-    ).exactOptional(),
-    imageTags: ImageTagsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The image tags attached to the Amazon ECR container image.' }),
-    ).exactOptional(),
-    platform: PlatformSchema.and(
-      z.any().openapi({ description: 'The platform of the Amazon ECR container image.' }),
-    ).exactOptional(),
-    pushedAt: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time the Amazon ECR container image was pushed.' }),
-    ).exactOptional(),
-    registry: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry the Amazon ECR container image belongs to.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository the Amazon ECR container image resides in.',
-        }),
-    ).exactOptional(),
+    architecture: ArchSchema.exactOptional().openapi({
+      description: 'The architecture of the Amazon ECR container image.',
+    }),
+    author: AuthorSchema.exactOptional().openapi({
+      description: 'The image author of the Amazon ECR container image.',
+    }),
+    imageHash: ImageDigestSchema.exactOptional().openapi({
+      description: 'The image hash of the Amazon ECR container image.',
+    }),
+    imageTags: ImageTagsListSchema.exactOptional().openapi({
+      description: 'The image tags attached to the Amazon ECR container image.',
+    }),
+    platform: PlatformSchema.exactOptional().openapi({
+      description: 'The platform of the Amazon ECR container image.',
+    }),
+    pushedAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time the Amazon ECR container image was pushed.',
+    }),
+    registry: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry the Amazon ECR container image belongs to.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository the Amazon ECR container image resides in.',
+    }),
   })
   .openapi({ description: 'The image details of the Amazon ECR container image.', required: [] })
   .openapi('AwsEcrContainerImageDetails')
 
 const ResourceDetailsSchema = z
   .object({
-    awsEcrContainerImage: AwsEcrContainerImageDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains details about the Amazon ECR container image involved in the finding.',
-        }),
-    ).exactOptional(),
+    awsEcrContainerImage: AwsEcrContainerImageDetailsSchema.exactOptional().openapi({
+      description:
+        'An object that contains details about the Amazon ECR container image involved in the finding.',
+    }),
   })
   .openapi({
     description: 'Contains details about the resource involved in the finding.',
@@ -1549,50 +331,81 @@ const ResourceDetailsSchema = z
 
 const ResourceIdSchema = z.string().openapi('ResourceId')
 
+const TagValueSchema = z.string().openapi('TagValue')
+
 const TagsSchema = z.record(z.string(), TagValueSchema).openapi('Tags')
 
 const TypeSchema = z.string().openapi('Type')
 
 const ResourceSchema = z
   .object({
-    details: ResourceDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains details about the resource involved in a finding.',
-        }),
-    ).exactOptional(),
-    id: ResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags attached to the resource.' }),
-    ).exactOptional(),
-    type: TypeSchema.and(z.any().openapi({ description: 'The type of resource.' })).exactOptional(),
+    details: ResourceDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains details about the resource involved in a finding.',
+    }),
+    id: ResourceIdSchema.exactOptional().openapi({ description: 'The ID of the resource.' }),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags attached to the resource.' }),
+    type: TypeSchema.exactOptional().openapi({ description: 'The type of resource.' }),
   })
   .openapi({ description: 'Details about the resource involved in a finding.', required: [] })
   .openapi('Resource')
 
 const ResourceListSchema = z.array(ResourceSchema).openapi('ResourceList')
 
-const ScoreDetailsSchema: z.ZodType<ScoreDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        cvss: CvssScoreDetailsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An object that contains details about the CVSS score given to a finding.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Information about the Amazon Inspector score given to a finding.',
-        required: [],
-      }),
-  )
+const ScoreSchema = z.float64().openapi('Score')
+
+const MetricSchema = z.string().openapi('Metric')
+
+const ReasonSchema = z.string().openapi('Reason')
+
+const CvssScoreAdjustmentSchema = z
+  .object({
+    metric: MetricSchema.exactOptional().openapi({
+      description: 'The metric used to adjust the CVSS score.',
+    }),
+    reason: ReasonSchema.exactOptional().openapi({
+      description: 'The reason the CVSS score has been adjustment.',
+    }),
+  })
+  .openapi({
+    description: 'Details on adjustments Amazon Inspector made to the CVSS score for a finding.',
+    required: [],
+  })
+  .openapi('CvssScoreAdjustment')
+
+const CvssScoreAdjustmentListSchema = z
+  .array(CvssScoreAdjustmentSchema)
+  .openapi('CvssScoreAdjustmentList')
+
+const CvssScoreDetailsSchema = z
+  .object({
+    adjustments: CvssScoreAdjustmentListSchema.exactOptional().openapi({
+      description:
+        'An object that contains details about adjustment Amazon Inspector made to the CVSS score.',
+    }),
+    score: ScoreSchema.exactOptional().openapi({ description: 'The CVSS score.' }),
+    scoreSource: SourceSchema.exactOptional().openapi({
+      description: 'The source for the CVSS score.',
+    }),
+    scoringVector: ScoringVectorSchema.exactOptional().openapi({
+      description: 'The vector for the CVSS score.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The CVSS version used in scoring.',
+    }),
+  })
+  .openapi({ description: 'Information about the CVSS score.', required: [] })
+  .openapi('CvssScoreDetails')
+
+const ScoreDetailsSchema = z
+  .object({
+    cvss: CvssScoreDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains details about the CVSS score given to a finding.',
+    }),
+  })
+  .openapi({
+    description: 'Information about the Amazon Inspector score given to a finding.',
+    required: [],
+  })
   .openapi('ScoreDetails')
 
 const StatusSchema = z.string().openapi('Status')
@@ -1601,65 +414,45 @@ const TitleSchema = z.string().openapi('Title')
 
 const EnhancedImageScanFindingSchema = z
   .object({
-    awsAccountId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID associated with the image.' }),
-    ).exactOptional(),
-    description: FindingDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the finding.' }),
-    ).exactOptional(),
-    findingArn: FindingArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Number (ARN) of the finding.' }),
-    ).exactOptional(),
-    firstObservedAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the finding was first observed.' }),
-    ).exactOptional(),
-    lastObservedAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the finding was last observed.' }),
-    ).exactOptional(),
-    packageVulnerabilityDetails: PackageVulnerabilityDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the details of a package vulnerability finding.',
-        }),
-    ).exactOptional(),
-    remediation: RemediationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that contains the details about how to remediate a finding.',
-        }),
-    ).exactOptional(),
-    resources: ResourceListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains information on the resources involved in a finding.' }),
-    ).exactOptional(),
-    score: ScoreSchema.and(
-      z.any().openapi({ description: 'The Amazon Inspector score given to the finding.' }),
-    ).exactOptional(),
-    scoreDetails: ScoreDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An object that contains details of the Amazon Inspector score.' }),
-    ).exactOptional(),
-    severity: SeveritySchema.and(
-      z.any().openapi({ description: 'The severity of the finding.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the finding.' }),
-    ).exactOptional(),
-    title: TitleSchema.and(
-      z.any().openapi({ description: 'The title of the finding.' }),
-    ).exactOptional(),
-    type: TypeSchema.and(
-      z.any().openapi({ description: 'The type of the finding.' }),
-    ).exactOptional(),
-    updatedAt: DateSchema.and(
-      z.any().openapi({ description: 'The date and time the finding was last updated at.' }),
-    ).exactOptional(),
+    awsAccountId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID associated with the image.',
+    }),
+    description: FindingDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the finding.',
+    }),
+    findingArn: FindingArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the finding.',
+    }),
+    firstObservedAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the finding was first observed.',
+    }),
+    lastObservedAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the finding was last observed.',
+    }),
+    packageVulnerabilityDetails: PackageVulnerabilityDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains the details of a package vulnerability finding.',
+    }),
+    remediation: RemediationSchema.exactOptional().openapi({
+      description: 'An object that contains the details about how to remediate a finding.',
+    }),
+    resources: ResourceListSchema.exactOptional().openapi({
+      description: 'Contains information on the resources involved in a finding.',
+    }),
+    score: ScoreSchema.exactOptional().openapi({
+      description: 'The Amazon Inspector score given to the finding.',
+    }),
+    scoreDetails: ScoreDetailsSchema.exactOptional().openapi({
+      description: 'An object that contains details of the Amazon Inspector score.',
+    }),
+    severity: SeveritySchema.exactOptional().openapi({
+      description: 'The severity of the finding.',
+    }),
+    status: StatusSchema.exactOptional().openapi({ description: 'The status of the finding.' }),
+    title: TitleSchema.exactOptional().openapi({ description: 'The title of the finding.' }),
+    type: TypeSchema.exactOptional().openapi({ description: 'The type of the finding.' }),
+    updatedAt: DateSchema.exactOptional().openapi({
+      description: 'The date and time the finding was last updated at.',
+    }),
   })
   .openapi({
     description:
@@ -1672,56 +465,956 @@ const EnhancedImageScanFindingListSchema = z
   .array(EnhancedImageScanFindingSchema)
   .openapi('EnhancedImageScanFindingList')
 
-const ImageScanFindingsSchema = z
+type ImageScanFindingsType = {
+  imageScanCompletedAt?: z.infer<typeof ScanTimestampSchema> & unknown
+  vulnerabilitySourceUpdatedAt?: z.infer<typeof VulnerabilitySourceUpdateTimestampSchema> & unknown
+  findingSeverityCounts?: z.infer<typeof FindingSeverityCountsSchema> & unknown
+  findings?: z.infer<typeof ImageScanFindingListSchema> & unknown
+  enhancedFindings?: z.infer<typeof EnhancedImageScanFindingListSchema> & unknown
+}
+
+const ImageScanFindingsSchema: z.ZodType<ImageScanFindingsType> = z
   .object({
-    imageScanCompletedAt: ScanTimestampSchema.and(
-      z.any().openapi({ description: 'The time of the last completed image scan.' }),
-    ).exactOptional(),
-    vulnerabilitySourceUpdatedAt: VulnerabilitySourceUpdateTimestampSchema.and(
-      z.any().openapi({ description: 'The time when the vulnerability data was last scanned.' }),
-    ).exactOptional(),
-    findingSeverityCounts: FindingSeverityCountsSchema.and(
-      z.any().openapi({ description: 'The image vulnerability counts, sorted by severity.' }),
-    ).exactOptional(),
-    findings: ImageScanFindingListSchema.and(
-      z.any().openapi({ description: 'The findings from the image scan.' }),
-    ).exactOptional(),
-    enhancedFindings: EnhancedImageScanFindingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the enhanced scan findings from Amazon Inspector.',
-        }),
-    ).exactOptional(),
+    imageScanCompletedAt: ScanTimestampSchema.exactOptional().openapi({
+      description: 'The time of the last completed image scan.',
+    }),
+    vulnerabilitySourceUpdatedAt: VulnerabilitySourceUpdateTimestampSchema.exactOptional().openapi({
+      description: 'The time when the vulnerability data was last scanned.',
+    }),
+    findingSeverityCounts: FindingSeverityCountsSchema.exactOptional().openapi({
+      description: 'The image vulnerability counts, sorted by severity.',
+    }),
+    findings: ImageScanFindingListSchema.exactOptional().openapi({
+      description: 'The findings from the image scan.',
+    }),
+    enhancedFindings: EnhancedImageScanFindingListSchema.exactOptional().openapi({
+      description: 'Details about the enhanced scan findings from Amazon Inspector.',
+    }),
   })
   .openapi({ description: 'The details of an image scan.', required: [] })
   .openapi('ImageScanFindings')
 
 const NextTokenSchema = z.string().openapi('NextToken')
 
-const DescribeImageScanFindingsResponseSchema = z
+type DescribeImageScanFindingsResponseType = {
+  registryId?: z.infer<typeof RegistryIdSchema> & unknown
+  repositoryName?: z.infer<typeof RepositoryNameSchema> & unknown
+  imageId?: z.infer<typeof ImageIdentifierSchema>
+  imageScanStatus?: z.infer<typeof ImageScanStatusSchema> & unknown
+  imageScanFindings?: z.infer<typeof ImageScanFindingsSchema> & unknown
+  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+const LayerDigestSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9-_+.]+:[a-fA-F0-9]+/)
+  .openapi('LayerDigest')
+
+const LayerAvailabilitySchema = z.enum(['AVAILABLE', 'UNAVAILABLE']).openapi('LayerAvailability')
+
+const LayerSizeInBytesSchema = z.int().openapi('LayerSizeInBytes')
+
+const MediaTypeSchema = z.string().openapi('MediaType')
+
+const LayerSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
+    layerDigest: LayerDigestSchema.exactOptional().openapi({
+      description: 'The <code>sha256</code> digest of the image layer.',
+    }),
+    layerAvailability: LayerAvailabilitySchema.exactOptional().openapi({
+      description: 'The availability status of the image layer.',
+    }),
+    layerSize: LayerSizeInBytesSchema.exactOptional().openapi({
+      description: 'The size, in bytes, of the image layer.',
+    }),
+    mediaType: MediaTypeSchema.exactOptional().openapi({
+      description:
+        'The media type of the layer, such as <code>application/vnd.docker.image.rootfs.diff.tar.gzip</code> or <code>application/vnd.oci.image.layer.v1.tar+gzip</code>.',
+    }),
+  })
+  .openapi({ description: 'An object representing an Amazon ECR image layer.', required: [] })
+  .openapi('Layer')
+
+const LayerListSchema = z.array(LayerSchema).openapi('LayerList')
+
+const BatchedOperationLayerDigestSchema = z
+  .string()
+  .min(0)
+  .max(1000)
+  .openapi('BatchedOperationLayerDigest')
+
+const LayerFailureCodeSchema = z
+  .enum(['InvalidLayerDigest', 'MissingLayerDigest'])
+  .openapi('LayerFailureCode')
+
+const LayerFailureReasonSchema = z.string().openapi('LayerFailureReason')
+
+const LayerFailureSchema = z
+  .object({
+    layerDigest: BatchedOperationLayerDigestSchema.exactOptional().openapi({
+      description: 'The layer digest associated with the failure.',
+    }),
+    failureCode: LayerFailureCodeSchema.exactOptional().openapi({
+      description: 'The failure code associated with the failure.',
+    }),
+    failureReason: LayerFailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for the failure.',
+    }),
+  })
+  .openapi({
+    description: 'An object representing an Amazon ECR image layer failure.',
+    required: [],
+  })
+  .openapi('LayerFailure')
+
+const LayerFailureListSchema = z.array(LayerFailureSchema).openapi('LayerFailureList')
+
+const BatchCheckLayerAvailabilityResponseSchema = z
+  .object({
+    layers: LayerListSchema.exactOptional().openapi({
+      description:
+        'A list of image layer objects corresponding to the image layer references in the request.',
+    }),
+    failures: LayerFailureListSchema.exactOptional().openapi({
+      description: 'Any failures associated with the call.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchCheckLayerAvailabilityResponse')
+
+const BatchedOperationLayerDigestListSchema = z
+  .array(BatchedOperationLayerDigestSchema)
+  .min(1)
+  .max(100)
+  .openapi('BatchedOperationLayerDigestList')
+
+const BatchCheckLayerAvailabilityRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the image layers to check. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that is associated with the image layers to check.',
+    }),
+    layerDigests: BatchedOperationLayerDigestListSchema.openapi({
+      description: 'The digests of the image layers to check.',
+    }),
+  })
+  .openapi({
+    required: ['repositoryName', 'layerDigests'],
+    title: 'BatchCheckLayerAvailabilityRequest',
+  })
+  .openapi('BatchCheckLayerAvailabilityRequest')
+
+const RepositoryNotFoundExceptionSchema = z.any().openapi('RepositoryNotFoundException')
+
+const InvalidParameterExceptionSchema = z.any().openapi('InvalidParameterException')
+
+const ServerExceptionSchema = z.any().openapi('ServerException')
+
+const ImageIdentifierListSchema = z
+  .array(ImageIdentifierSchema)
+  .min(1)
+  .max(100)
+  .openapi('ImageIdentifierList')
+
+const ImageFailureCodeSchema = z
+  .enum([
+    'InvalidImageDigest',
+    'InvalidImageTag',
+    'ImageTagDoesNotMatchDigest',
+    'ImageNotFound',
+    'MissingDigestAndTag',
+    'ImageReferencedByManifestList',
+    'KmsError',
+  ])
+  .openapi('ImageFailureCode')
+
+const ImageFailureReasonSchema = z.string().openapi('ImageFailureReason')
+
+const ImageFailureSchema = z
+  .object({
+    imageId: ImageIdentifierSchema.exactOptional().openapi({
+      description: 'The image ID associated with the failure.',
+    }),
+    failureCode: ImageFailureCodeSchema.exactOptional().openapi({
+      description: 'The code associated with the failure.',
+    }),
+    failureReason: ImageFailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for the failure.',
+    }),
+  })
+  .openapi({ description: 'An object representing an Amazon ECR image failure.', required: [] })
+  .openapi('ImageFailure')
+
+const ImageFailureListSchema = z.array(ImageFailureSchema).openapi('ImageFailureList')
+
+const BatchDeleteImageResponseSchema = z
+  .object({
+    imageIds: ImageIdentifierListSchema.exactOptional().openapi({
+      description: 'The image IDs of the deleted images.',
+    }),
+    failures: ImageFailureListSchema.exactOptional().openapi({
+      description: 'Any failures associated with the call.',
+    }),
+  })
+  .openapi({
+    example: {
+      failures: [],
+      imageIds: [
+        {
+          imageDigest: 'sha256:examplee6d1e504117a17000003d3753086354a38375961f2e665416ef4b1b2f',
+          imageTag: 'precise',
+        },
+      ],
+    },
+    required: [],
+  })
+  .openapi('BatchDeleteImageResponse')
+
+const BatchDeleteImageRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the image to delete. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository that contains the image to delete.',
+    }),
+    imageIds: ImageIdentifierListSchema.openapi({
+      description:
+        'A list of image ID references that correspond to images to delete. The format of the <code>imageIds</code> reference is <code>imageTag=tag</code> or <code>imageDigest=digest</code>.',
+    }),
+  })
+  .openapi({
+    required: ['repositoryName', 'imageIds'],
+    title: 'BatchDeleteImageRequest',
+    description:
+      'Deletes specified images within a specified repository. Images are specified with either the <code>imageTag</code> or <code>imageDigest</code>.',
+  })
+  .openapi('BatchDeleteImageRequest')
+
+const ImageManifestSchema = z.string().min(1).max(4194304).openapi('ImageManifest')
+
+const ImageSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry containing the image.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository associated with the image.',
+    }),
+    imageId: ImageIdentifierSchema.exactOptional().openapi({
+      description: 'An object containing the image tag and image digest associated with an image.',
+    }),
+    imageManifest: ImageManifestSchema.exactOptional().openapi({
+      description: 'The image manifest associated with the image.',
+    }),
+    imageManifestMediaType: MediaTypeSchema.exactOptional().openapi({
+      description: 'The manifest media type of the image.',
+    }),
+  })
+  .openapi({ description: 'An object representing an Amazon ECR image.', required: [] })
+  .openapi('Image')
+
+const ImageListSchema = z.array(ImageSchema).openapi('ImageList')
+
+const BatchGetImageResponseSchema = z
+  .object({
+    images: ImageListSchema.exactOptional().openapi({
+      description: 'A list of image objects corresponding to the image references in the request.',
+    }),
+    failures: ImageFailureListSchema.exactOptional().openapi({
+      description: 'Any failures associated with the call.',
+    }),
+  })
+  .openapi({
+    example: {
+      failures: [],
+      images: [
+        {
+          imageId: {
+            imageDigest: 'sha256:example76bdff6d83a09ba2a818f0d00000063724a9ac3ba5019c56f74ebf42a',
+            imageTag: 'precise',
+          },
+          imageManifest: '{\n "schemaVersion": 1,\n "name": "ubuntu",\n "tag": "precise",\n...',
+          registryId: '244698725403',
+          repositoryName: 'ubuntu',
+        },
+      ],
+    },
+    required: [],
+  })
+  .openapi('BatchGetImageResponse')
+
+const MediaTypeListSchema = z.array(MediaTypeSchema).min(1).max(100).openapi('MediaTypeList')
+
+const BatchGetImageRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the images to describe. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository that contains the images to describe.',
+    }),
+    imageIds: ImageIdentifierListSchema.openapi({
+      description:
+        'A list of image ID references that correspond to images to describe. The format of the <code>imageIds</code> reference is <code>imageTag=tag</code> or <code>imageDigest=digest</code>.',
+    }),
+    acceptedMediaTypes: MediaTypeListSchema.exactOptional().openapi({
+      description:
+        '<p>The accepted media types for the request.</p> <p>Valid values: <code>application/vnd.docker.distribution.manifest.v1+json</code> | <code>application/vnd.docker.distribution.manifest.v2+json</code> | <code>application/vnd.oci.image.manifest.v1+json</code> </p>',
+    }),
+  })
+  .openapi({ required: ['repositoryName', 'imageIds'], title: 'BatchGetImageRequest' })
+  .openapi('BatchGetImageRequest')
+
+const ArnSchema = z.string().openapi('Arn')
+
+const ScanOnPushFlagSchema = z.boolean().openapi('ScanOnPushFlag')
+
+const ScanFrequencySchema = z
+  .enum(['SCAN_ON_PUSH', 'CONTINUOUS_SCAN', 'MANUAL'])
+  .openapi('ScanFrequency')
+
+const ScanningRepositoryFilterValueSchema = z
+  .string()
+  .regex(/^[a-z0-9*](?:[._\-\/a-z0-9*]?[a-z0-9*]+)*$/)
+  .min(1)
+  .max(255)
+  .openapi('ScanningRepositoryFilterValue')
+
+const ScanningRepositoryFilterTypeSchema = z
+  .literal('WILDCARD')
+  .openapi('ScanningRepositoryFilterType')
+
+const ScanningRepositoryFilterSchema = z
+  .object({
+    filter: ScanningRepositoryFilterValueSchema.openapi({
+      description: 'The filter to use when scanning.',
+    }),
+    filterType: ScanningRepositoryFilterTypeSchema.openapi({
+      description: 'The type associated with the filter.',
+    }),
+  })
+  .openapi({
+    required: ['filter', 'filterType'],
+    description:
+      'The details of a scanning repository filter. For more information on how to use filters, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html#image-scanning-filters">Using filters</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
+  })
+  .openapi('ScanningRepositoryFilter')
+
+const ScanningRepositoryFilterListSchema = z
+  .array(ScanningRepositoryFilterSchema)
+  .min(0)
+  .max(100)
+  .openapi('ScanningRepositoryFilterList')
+
+const RepositoryScanningConfigurationSchema = z
+  .object({
+    repositoryArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the repository.' }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository.',
+    }),
+    scanOnPush: ScanOnPushFlagSchema.exactOptional().openapi({
+      description: 'Whether or not scan on push is configured for the repository.',
+    }),
+    scanFrequency: ScanFrequencySchema.exactOptional().openapi({
+      description: 'The scan frequency for the repository.',
+    }),
+    appliedScanFilters: ScanningRepositoryFilterListSchema.exactOptional().openapi({
+      description: 'The scan filters applied to the repository.',
+    }),
+  })
+  .openapi({
+    description: 'The details of the scanning configuration for a repository.',
+    required: [],
+  })
+  .openapi('RepositoryScanningConfiguration')
+
+const RepositoryScanningConfigurationListSchema = z
+  .array(RepositoryScanningConfigurationSchema)
+  .openapi('RepositoryScanningConfigurationList')
+
+const ScanningConfigurationFailureCodeSchema = z
+  .literal('REPOSITORY_NOT_FOUND')
+  .openapi('ScanningConfigurationFailureCode')
+
+const ScanningConfigurationFailureReasonSchema = z
+  .string()
+  .openapi('ScanningConfigurationFailureReason')
+
+const RepositoryScanningConfigurationFailureSchema = z
+  .object({
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository.',
+    }),
+    failureCode: ScanningConfigurationFailureCodeSchema.exactOptional().openapi({
+      description: 'The failure code.',
+    }),
+    failureReason: ScanningConfigurationFailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for the failure.',
+    }),
+  })
+  .openapi({
+    description:
+      'The details about any failures associated with the scanning configuration of a repository.',
+    required: [],
+  })
+  .openapi('RepositoryScanningConfigurationFailure')
+
+const RepositoryScanningConfigurationFailureListSchema = z
+  .array(RepositoryScanningConfigurationFailureSchema)
+  .openapi('RepositoryScanningConfigurationFailureList')
+
+const BatchGetRepositoryScanningConfigurationResponseSchema = z
+  .object({
+    scanningConfigurations: RepositoryScanningConfigurationListSchema.exactOptional().openapi({
+      description: 'The scanning configuration for the requested repositories.',
+    }),
+    failures: RepositoryScanningConfigurationFailureListSchema.exactOptional().openapi({
+      description: 'Any failures associated with the call.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('BatchGetRepositoryScanningConfigurationResponse')
+
+const ScanningConfigurationRepositoryNameListSchema = z
+  .array(RepositoryNameSchema)
+  .min(1)
+  .max(25)
+  .openapi('ScanningConfigurationRepositoryNameList')
+
+const BatchGetRepositoryScanningConfigurationRequestSchema = z
+  .object({
+    repositoryNames: ScanningConfigurationRepositoryNameListSchema.openapi({
+      description: 'One or more repository names to get the scanning configuration for.',
+    }),
+  })
+  .openapi({
+    required: ['repositoryNames'],
+    title: 'BatchGetRepositoryScanningConfigurationRequest',
+  })
+  .openapi('BatchGetRepositoryScanningConfigurationRequest')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const UploadIdSchema = z
+  .string()
+  .regex(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/)
+  .openapi('UploadId')
+
+const CompleteLayerUploadResponseSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    uploadId: UploadIdSchema.exactOptional().openapi({
+      description: 'The upload ID associated with the layer.',
+    }),
+    layerDigest: LayerDigestSchema.exactOptional().openapi({
+      description: 'The <code>sha256</code> digest of the image layer.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CompleteLayerUploadResponse')
+
+const LayerDigestListSchema = z.array(LayerDigestSchema).min(1).max(100).openapi('LayerDigestList')
+
+const CompleteLayerUploadRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to which to upload layers. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to associate with the image layer.',
+    }),
+    uploadId: UploadIdSchema.openapi({
+      description:
+        'The upload ID from a previous <a>InitiateLayerUpload</a> operation to associate with the image layer.',
+    }),
+    layerDigests: LayerDigestListSchema.openapi({
+      description: 'The <code>sha256</code> digest of the image layer.',
+    }),
+  })
+  .openapi({
+    required: ['repositoryName', 'uploadId', 'layerDigests'],
+    title: 'CompleteLayerUploadRequest',
+  })
+  .openapi('CompleteLayerUploadRequest')
+
+const UploadNotFoundExceptionSchema = z.any().openapi('UploadNotFoundException')
+
+const InvalidLayerExceptionSchema = z.any().openapi('InvalidLayerException')
+
+const LayerPartTooSmallExceptionSchema = z.any().openapi('LayerPartTooSmallException')
+
+const LayerAlreadyExistsExceptionSchema = z.any().openapi('LayerAlreadyExistsException')
+
+const EmptyUploadExceptionSchema = z.any().openapi('EmptyUploadException')
+
+const KmsExceptionSchema = z.any().openapi('KmsException')
+
+const PullThroughCacheRuleRepositoryPrefixSchema = z
+  .string()
+  .regex(/[a-z0-9]+(?:[._-][a-z0-9]+)*/)
+  .min(2)
+  .max(20)
+  .openapi('PullThroughCacheRuleRepositoryPrefix')
+
+const CreationTimestampSchema = z.iso.datetime({ offset: true }).openapi('CreationTimestamp')
+
+const CreatePullThroughCacheRuleResponseSchema = z
+  .object({
+    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.exactOptional().openapi({
+      description: 'The Amazon ECR repository prefix associated with the pull through cache rule.',
+    }),
+    upstreamRegistryUrl: UrlSchema.exactOptional().openapi({
+      description: 'The upstream registry URL associated with the pull through cache rule.',
+    }),
+    createdAt: CreationTimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time, in JavaScript date format, when the pull through cache rule was created.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('CreatePullThroughCacheRuleResponse')
+
+const CreatePullThroughCacheRuleRequestSchema = z
+  .object({
+    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.openapi({
+      description:
+        'The repository name prefix to use when caching images from the source registry.',
+    }),
+    upstreamRegistryUrl: UrlSchema.openapi({
+      description:
+        'The registry URL of the upstream public registry to use as the source for the pull through cache rule.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to create the pull through cache rule for. If you do not specify a registry, the default registry is assumed.',
+    }),
+  })
+  .openapi({
+    required: ['ecrRepositoryPrefix', 'upstreamRegistryUrl'],
+    title: 'CreatePullThroughCacheRuleRequest',
+  })
+  .openapi('CreatePullThroughCacheRuleRequest')
+
+const PullThroughCacheRuleAlreadyExistsExceptionSchema = z
+  .any()
+  .openapi('PullThroughCacheRuleAlreadyExistsException')
+
+const UnsupportedUpstreamRegistryExceptionSchema = z
+  .any()
+  .openapi('UnsupportedUpstreamRegistryException')
+
+const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
+
+const ImageTagMutabilitySchema = z.enum(['MUTABLE', 'IMMUTABLE']).openapi('ImageTagMutability')
+
+const ImageScanningConfigurationSchema = z
+  .object({
+    scanOnPush: ScanOnPushFlagSchema.exactOptional().openapi({
+      description:
+        'The setting that determines whether images are scanned after being pushed to a repository. If set to <code>true</code>, images will be scanned after being pushed. If this parameter is not specified, it will default to <code>false</code> and images will not be scanned unless a scan is manually started with the <a href="https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_StartImageScan.html">API_StartImageScan</a> API.',
+    }),
+  })
+  .openapi({ description: 'The image scanning configuration for a repository.', required: [] })
+  .openapi('ImageScanningConfiguration')
+
+const EncryptionTypeSchema = z.enum(['AES256', 'KMS']).openapi('EncryptionType')
+
+const KmsKeySchema = z.string().min(1).max(2048).openapi('KmsKey')
+
+const EncryptionConfigurationSchema = z
+  .object({
+    encryptionType: EncryptionTypeSchema.openapi({
+      description:
+        '<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">Protecting data using server-side encryption with an KMS key stored in Key Management Service (SSE-KMS)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES-256 encryption algorithm. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html">Protecting data using server-side encryption with Amazon S3-managed encryption keys (SSE-S3)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p>',
+    }),
+    kmsKey: KmsKeySchema.exactOptional().openapi({
+      description:
+        'If you use the <code>KMS</code> encryption type, specify the KMS key to use for encryption. The alias, key ID, or full ARN of the KMS key can be specified. The key must exist in the same Region as the repository. If no key is specified, the default Amazon Web Services managed KMS key for Amazon ECR will be used.',
+    }),
+  })
+  .openapi({
+    required: ['encryptionType'],
+    description:
+      '<p>The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.</p> <p>By default, when no encryption configuration is set or the <code>AES256</code> encryption type is used, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts your data at rest using an AES-256 encryption algorithm. This does not require any action on your part.</p> <p>For more control over the encryption of the contents of your repository, you can use server-side encryption with Key Management Service key stored in Key Management Service (KMS) to encrypt your images. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html">Amazon ECR encryption at rest</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>',
+  })
+  .openapi('EncryptionConfiguration')
+
+const RepositorySchema = z
+  .object({
+    repositoryArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the repository. The ARN contains the <code>arn:aws:ecr</code> namespace, followed by the region of the repository, Amazon Web Services account ID of the repository owner, repository namespace, and repository name. For example, <code>arn:aws:ecr:region:012345678910:repository/test</code>.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository.',
+    }),
+    repositoryUri: UrlSchema.exactOptional().openapi({
+      description:
+        'The URI for the repository. You can use this URI for container image <code>push</code> and <code>pull</code> operations.',
+    }),
+    createdAt: CreationTimestampSchema.exactOptional().openapi({
+      description: 'The date and time, in JavaScript date format, when the repository was created.',
+    }),
+    imageTagMutability: ImageTagMutabilitySchema.exactOptional().openapi({
+      description: 'The tag mutability setting for the repository.',
+    }),
+    imageScanningConfiguration: ImageScanningConfigurationSchema.exactOptional(),
+    encryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.',
+    }),
+  })
+  .openapi({ description: 'An object representing a repository.', required: [] })
+  .openapi('Repository')
+
+const CreateRepositoryResponseSchema = z
+  .object({
+    repository: RepositorySchema.exactOptional().openapi({
+      description: 'The repository that was created.',
+    }),
+  })
+  .openapi({
+    example: {
+      repository: {
+        registryId: 12345678901,
+        repositoryArn: 'arn:aws:ecr:us-west-2:012345678901:repository/project-a/nginx-web-app',
+        repositoryName: 'project-a/nginx-web-app',
+      },
+    },
+    required: [],
+  })
+  .openapi('CreateRepositoryResponse')
+
+const TagKeySchema = z.string().openapi('TagKey')
+
+const TagSchema = z
+  .object({
+    Key: TagKeySchema.exactOptional().openapi({
+      description:
+        'One part of a key-value pair that make up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description: 'A <code>value</code> acts as a descriptor within a tag category (key).',
+    }),
+  })
+  .openapi({
+    description:
+      'The metadata to apply to a resource to help you categorize and organize them. Each tag consists of a key and a value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    required: [],
+  })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).openapi('TagList')
+
+const CreateRepositoryRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to create the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name to use for the repository. The repository name may be specified on its own (such as <code>nginx-web-app</code>) or it can be prepended with a namespace to group the repository into a category (such as <code>project-a/nginx-web-app</code>).',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        'The metadata that you apply to the repository to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
+    imageTagMutability: ImageTagMutabilitySchema.exactOptional().openapi({
+      description:
+        'The tag mutability setting for the repository. If this parameter is omitted, the default setting of <code>MUTABLE</code> will be used which will allow image tags to be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.',
+    }),
+    imageScanningConfiguration: ImageScanningConfigurationSchema.exactOptional().openapi({
+      description:
+        'The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.',
+    }),
+    encryptionConfiguration: EncryptionConfigurationSchema.exactOptional().openapi({
+      description:
+        'The encryption configuration for the repository. This determines how the contents of your repository are encrypted at rest.',
+    }),
+  })
+  .openapi({ required: ['repositoryName'], title: 'CreateRepositoryRequest' })
+  .openapi('CreateRepositoryRequest')
+
+const InvalidTagParameterExceptionSchema = z.any().openapi('InvalidTagParameterException')
+
+const TooManyTagsExceptionSchema = z.any().openapi('TooManyTagsException')
+
+const RepositoryAlreadyExistsExceptionSchema = z.any().openapi('RepositoryAlreadyExistsException')
+
+const LifecyclePolicyTextSchema = z.string().min(100).max(30720).openapi('LifecyclePolicyText')
+
+const EvaluationTimestampSchema = z.iso.datetime({ offset: true }).openapi('EvaluationTimestamp')
+
+const DeleteLifecyclePolicyResponseSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON lifecycle policy text.',
+    }),
+    lastEvaluatedAt: EvaluationTimestampSchema.exactOptional().openapi({
+      description: 'The time stamp of the last time that the lifecycle policy was run.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteLifecyclePolicyResponse')
+
+const DeleteLifecyclePolicyRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The name of the repository.' }),
+  })
+  .openapi({ required: ['repositoryName'], title: 'DeleteLifecyclePolicyRequest' })
+  .openapi('DeleteLifecyclePolicyRequest')
+
+const LifecyclePolicyNotFoundExceptionSchema = z.any().openapi('LifecyclePolicyNotFoundException')
+
+const DeletePullThroughCacheRuleResponseSchema = z
+  .object({
+    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.exactOptional().openapi({
+      description: 'The Amazon ECR repository prefix associated with the request.',
+    }),
+    upstreamRegistryUrl: UrlSchema.exactOptional().openapi({
+      description: 'The upstream registry URL associated with the pull through cache rule.',
+    }),
+    createdAt: CreationTimestampSchema.exactOptional().openapi({
+      description: 'The timestamp associated with the pull through cache rule.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeletePullThroughCacheRuleResponse')
+
+const DeletePullThroughCacheRuleRequestSchema = z
+  .object({
+    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.openapi({
+      description:
+        'The Amazon ECR repository prefix associated with the pull through cache rule to delete.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the pull through cache rule. If you do not specify a registry, the default registry is assumed.',
+    }),
+  })
+  .openapi({ required: ['ecrRepositoryPrefix'], title: 'DeletePullThroughCacheRuleRequest' })
+  .openapi('DeletePullThroughCacheRuleRequest')
+
+const PullThroughCacheRuleNotFoundExceptionSchema = z
+  .any()
+  .openapi('PullThroughCacheRuleNotFoundException')
+
+const RegistryPolicyTextSchema = z.string().min(0).max(10240).openapi('RegistryPolicyText')
+
+const DeleteRegistryPolicyResponseSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    policyText: RegistryPolicyTextSchema.exactOptional().openapi({
+      description: 'The contents of the registry permissions policy that was deleted.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DeleteRegistryPolicyResponse')
+
+const DeleteRegistryPolicyRequestSchema = z
+  .looseObject({})
+  .openapi({ title: 'DeleteRegistryPolicyRequest' })
+  .openapi('DeleteRegistryPolicyRequest')
+
+const RegistryPolicyNotFoundExceptionSchema = z.any().openapi('RegistryPolicyNotFoundException')
+
+const DeleteRepositoryResponseSchema = z
+  .object({
+    repository: RepositorySchema.exactOptional().openapi({
+      description: 'The repository that was deleted.',
+    }),
+  })
+  .openapi({
+    example: {
+      repository: {
+        registryId: 12345678901,
+        repositoryArn: 'arn:aws:ecr:us-west-2:012345678901:repository/ubuntu',
+        repositoryName: 'ubuntu',
+      },
+    },
+    required: [],
+  })
+  .openapi('DeleteRepositoryResponse')
+
+const ForceFlagSchema = z.boolean().openapi('ForceFlag')
+
+const DeleteRepositoryRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository to delete. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to delete.',
+    }),
+    force: ForceFlagSchema.exactOptional().openapi({
+      description: ' If a repository contains images, forces the deletion.',
+    }),
+  })
+  .openapi({ required: ['repositoryName'], title: 'DeleteRepositoryRequest' })
+  .openapi('DeleteRepositoryRequest')
+
+const RepositoryNotEmptyExceptionSchema = z.any().openapi('RepositoryNotEmptyException')
+
+const RepositoryPolicyTextSchema = z.string().min(0).max(10240).openapi('RepositoryPolicyText')
+
+const DeleteRepositoryPolicyResponseSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    policyText: RepositoryPolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON repository policy that was deleted from the repository.',
+    }),
+  })
+  .openapi({
+    example: { policyText: '{ ... }', registryId: 12345678901, repositoryName: 'ubuntu' },
+    required: [],
+  })
+  .openapi('DeleteRepositoryPolicyResponse')
+
+const DeleteRepositoryPolicyRequestSchema = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository policy to delete. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository that is associated with the repository policy to delete.',
+    }),
+  })
+  .openapi({ required: ['repositoryName'], title: 'DeleteRepositoryPolicyRequest' })
+  .openapi('DeleteRepositoryPolicyRequest')
+
+const RepositoryPolicyNotFoundExceptionSchema = z.any().openapi('RepositoryPolicyNotFoundException')
+
+const RegionSchema = z
+  .string()
+  .regex(/[0-9a-z-]{2,25}/)
+  .min(2)
+  .max(25)
+  .openapi('Region')
+
+const ReplicationStatusSchema = z
+  .enum(['IN_PROGRESS', 'COMPLETE', 'FAILED'])
+  .openapi('ReplicationStatus')
+
+const ReplicationErrorSchema = z.string().openapi('ReplicationError')
+
+const ImageReplicationStatusSchema = z
+  .object({
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The destination Region for the image replication.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to which the image belongs.',
+    }),
+    status: ReplicationStatusSchema.exactOptional().openapi({
+      description: 'The image replication status.',
+    }),
+    failureCode: ReplicationErrorSchema.exactOptional().openapi({
+      description: 'The failure code for a replication that has failed.',
+    }),
+  })
+  .openapi({ description: 'The status of the replication process for an image.', required: [] })
+  .openapi('ImageReplicationStatus')
+
+const ImageReplicationStatusListSchema = z
+  .array(ImageReplicationStatusSchema)
+  .openapi('ImageReplicationStatusList')
+
+const DescribeImageReplicationStatusResponseSchema = z
+  .object({
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
     imageId: ImageIdentifierSchema.exactOptional(),
-    imageScanStatus: ImageScanStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the scan.' }),
-    ).exactOptional(),
-    imageScanFindings: ImageScanFindingsSchema.and(
-      z.any().openapi({ description: 'The information contained in the image scan findings.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>DescribeImageScanFindings</code> request. When the results of a <code>DescribeImageScanFindings</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    replicationStatuses: ImageReplicationStatusListSchema.exactOptional().openapi({
+      description: 'The replication status details for the images in the specified repository.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('DescribeImageReplicationStatusResponse')
+
+const DescribeImageReplicationStatusRequestSchema = z
+  .object({
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that the image is in.',
+    }),
+    imageId: ImageIdentifierSchema,
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry. If you do not specify a registry, the default registry is assumed.',
+    }),
+  })
+  .openapi({
+    required: ['repositoryName', 'imageId'],
+    title: 'DescribeImageReplicationStatusRequest',
+  })
+  .openapi('DescribeImageReplicationStatusRequest')
+
+const ImageNotFoundExceptionSchema = z.any().openapi('ImageNotFoundException')
+
+const DescribeImageScanFindingsResponseSchema: z.ZodType<DescribeImageScanFindingsResponseType> = z
+  .object({
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    imageId: ImageIdentifierSchema.exactOptional(),
+    imageScanStatus: ImageScanStatusSchema.exactOptional().openapi({
+      description: 'The current state of the scan.',
+    }),
+    imageScanFindings: ImageScanFindingsSchema.exactOptional().openapi({
+      description: 'The information contained in the image scan findings.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>DescribeImageScanFindings</code> request. When the results of a <code>DescribeImageScanFindings</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImageScanFindingsResponse')
@@ -1730,38 +1423,22 @@ const MaxResultsSchema = z.int().min(1).max(1000).openapi('MaxResults')
 
 const DescribeImageScanFindingsRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to describe the image scan findings for. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The repository for the image for which to describe the scan findings.',
-        }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to describe the image scan findings for. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository for the image for which to describe the scan findings.',
+    }),
     imageId: ImageIdentifierSchema,
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value returned from a previous paginated <code>DescribeImageScanFindings</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of image scan results returned by <code>DescribeImageScanFindings</code> in paginated output. When this parameter is used, <code>DescribeImageScanFindings</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeImageScanFindings</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeImageScanFindings</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value returned from a previous paginated <code>DescribeImageScanFindings</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of image scan results returned by <code>DescribeImageScanFindings</code> in paginated output. When this parameter is used, <code>DescribeImageScanFindings</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeImageScanFindings</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeImageScanFindings</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'imageId'], title: 'DescribeImageScanFindingsRequest' })
   .openapi('DescribeImageScanFindingsRequest')
@@ -1776,15 +1453,15 @@ const PushTimestampSchema = z.iso.datetime({ offset: true }).openapi('PushTimest
 
 const ImageScanFindingsSummarySchema = z
   .object({
-    imageScanCompletedAt: ScanTimestampSchema.and(
-      z.any().openapi({ description: 'The time of the last completed image scan.' }),
-    ).exactOptional(),
-    vulnerabilitySourceUpdatedAt: VulnerabilitySourceUpdateTimestampSchema.and(
-      z.any().openapi({ description: 'The time when the vulnerability data was last scanned.' }),
-    ).exactOptional(),
-    findingSeverityCounts: FindingSeverityCountsSchema.and(
-      z.any().openapi({ description: 'The image vulnerability counts, sorted by severity.' }),
-    ).exactOptional(),
+    imageScanCompletedAt: ScanTimestampSchema.exactOptional().openapi({
+      description: 'The time of the last completed image scan.',
+    }),
+    vulnerabilitySourceUpdatedAt: VulnerabilitySourceUpdateTimestampSchema.exactOptional().openapi({
+      description: 'The time when the vulnerability data was last scanned.',
+    }),
+    findingSeverityCounts: FindingSeverityCountsSchema.exactOptional().openapi({
+      description: 'The image vulnerability counts, sorted by severity.',
+    }),
   })
   .openapi({ description: 'A summary of the last completed image scan.', required: [] })
   .openapi('ImageScanFindingsSummary')
@@ -1795,59 +1472,43 @@ const RecordedPullTimestampSchema = z.iso
 
 const ImageDetailSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to which this image belongs.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to which this image belongs.' }),
-    ).exactOptional(),
-    imageDigest: ImageDigestSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image manifest.' }),
-    ).exactOptional(),
-    imageTags: ImageTagListSchema.and(
-      z.any().openapi({ description: 'The list of tags associated with this image.' }),
-    ).exactOptional(),
-    imageSizeInBytes: ImageSizeInBytesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by <a>DescribeImages</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-    imagePushedAt: PushTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, expressed in standard JavaScript date format, at which the current image was pushed to the repository. ',
-        }),
-    ).exactOptional(),
-    imageScanStatus: ImageScanStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the scan.' }),
-    ).exactOptional(),
-    imageScanFindingsSummary: ImageScanFindingsSummarySchema.and(
-      z.any().openapi({ description: 'A summary of the last completed image scan.' }),
-    ).exactOptional(),
-    imageManifestMediaType: MediaTypeSchema.and(
-      z.any().openapi({ description: 'The media type of the image manifest.' }),
-    ).exactOptional(),
-    artifactMediaType: MediaTypeSchema.and(
-      z.any().openapi({ description: 'The artifact media type of the image.' }),
-    ).exactOptional(),
-    lastRecordedPullTime: RecordedPullTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The date and time, expressed in standard JavaScript date format, when Amazon ECR recorded the last image pull.</p> <note> <p>Amazon ECR refreshes the last image pull timestamp at least once every 24 hours. For example, if you pull an image once a day then the <code>lastRecordedPullTime</code> timestamp will indicate the exact time that the image was last pulled. However, if you pull an image once an hour, because Amazon ECR refreshes the <code>lastRecordedPullTime</code> timestamp at least once every 24 hours, the result may not be the exact time that the image was last pulled.</p> </note>',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to which this image belongs.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The name of the repository to which this image belongs.',
+    }),
+    imageDigest: ImageDigestSchema.exactOptional().openapi({
+      description: 'The <code>sha256</code> digest of the image manifest.',
+    }),
+    imageTags: ImageTagListSchema.exactOptional().openapi({
+      description: 'The list of tags associated with this image.',
+    }),
+    imageSizeInBytes: ImageSizeInBytesSchema.exactOptional().openapi({
+      description:
+        '<p>The size, in bytes, of the image in the repository.</p> <p>If the image is a manifest list, this will be the max size of all manifests in the list.</p> <note> <p>Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the <code>docker images</code> command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by <a>DescribeImages</a>.</p> </note>',
+    }),
+    imagePushedAt: PushTimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time, expressed in standard JavaScript date format, at which the current image was pushed to the repository. ',
+    }),
+    imageScanStatus: ImageScanStatusSchema.exactOptional().openapi({
+      description: 'The current state of the scan.',
+    }),
+    imageScanFindingsSummary: ImageScanFindingsSummarySchema.exactOptional().openapi({
+      description: 'A summary of the last completed image scan.',
+    }),
+    imageManifestMediaType: MediaTypeSchema.exactOptional().openapi({
+      description: 'The media type of the image manifest.',
+    }),
+    artifactMediaType: MediaTypeSchema.exactOptional().openapi({
+      description: 'The artifact media type of the image.',
+    }),
+    lastRecordedPullTime: RecordedPullTimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The date and time, expressed in standard JavaScript date format, when Amazon ECR recorded the last image pull.</p> <note> <p>Amazon ECR refreshes the last image pull timestamp at least once every 24 hours. For example, if you pull an image once a day then the <code>lastRecordedPullTime</code> timestamp will indicate the exact time that the image was last pulled. However, if you pull an image once an hour, because Amazon ECR refreshes the <code>lastRecordedPullTime</code> timestamp at least once every 24 hours, the result may not be the exact time that the image was last pulled.</p> </note>',
+    }),
   })
   .openapi({
     description: 'An object that describes an image returned by a <a>DescribeImages</a> operation.',
@@ -1859,21 +1520,13 @@ const ImageDetailListSchema = z.array(ImageDetailSchema).openapi('ImageDetailLis
 
 const DescribeImagesResponseSchema = z
   .object({
-    imageDetails: ImageDetailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <a>ImageDetail</a> objects that contain data about the image.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>DescribeImages</code> request. When the results of a <code>DescribeImages</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    imageDetails: ImageDetailListSchema.exactOptional().openapi({
+      description: 'A list of <a>ImageDetail</a> objects that contain data about the image.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>DescribeImages</code> request. When the results of a <code>DescribeImages</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeImagesResponse')
@@ -1882,14 +1535,10 @@ const TagStatusSchema = z.enum(['TAGGED', 'UNTAGGED', 'ANY']).openapi('TagStatus
 
 const DescribeImagesFilterSchema = z
   .object({
-    tagStatus: TagStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag status with which to filter your <a>DescribeImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.',
-        }),
-    ).exactOptional(),
+    tagStatus: TagStatusSchema.exactOptional().openapi({
+      description:
+        'The tag status with which to filter your <a>DescribeImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.',
+    }),
   })
   .openapi({
     description: 'An object representing a filter on a <a>DescribeImages</a> operation.',
@@ -1899,76 +1548,47 @@ const DescribeImagesFilterSchema = z
 
 const DescribeImagesRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to describe images. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository that contains the images to describe.' }),
-    ),
-    imageIds: ImageIdentifierListSchema.and(
-      z.any().openapi({ description: 'The list of image IDs for the requested repository.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value returned from a previous paginated <code>DescribeImages</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return. This option cannot be used when you specify images with <code>imageIds</code>.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of repository results returned by <code>DescribeImages</code> in paginated output. When this parameter is used, <code>DescribeImages</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeImages</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeImages</code> returns up to 100 results and a <code>nextToken</code> value, if applicable. This option cannot be used when you specify images with <code>imageIds</code>.',
-        }),
-    ).exactOptional(),
-    filter: DescribeImagesFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filter key and value with which to filter your <code>DescribeImages</code> results.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to describe images. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository that contains the images to describe.',
+    }),
+    imageIds: ImageIdentifierListSchema.exactOptional().openapi({
+      description: 'The list of image IDs for the requested repository.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value returned from a previous paginated <code>DescribeImages</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return. This option cannot be used when you specify images with <code>imageIds</code>.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of repository results returned by <code>DescribeImages</code> in paginated output. When this parameter is used, <code>DescribeImages</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeImages</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeImages</code> returns up to 100 results and a <code>nextToken</code> value, if applicable. This option cannot be used when you specify images with <code>imageIds</code>.',
+    }),
+    filter: DescribeImagesFilterSchema.exactOptional().openapi({
+      description:
+        'The filter key and value with which to filter your <code>DescribeImages</code> results.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'DescribeImagesRequest' })
   .openapi('DescribeImagesRequest')
 
 const PullThroughCacheRuleSchema = z
   .object({
-    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon ECR repository prefix associated with the pull through cache rule.',
-        }),
-    ).exactOptional(),
-    upstreamRegistryUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The upstream registry URL associated with the pull through cache rule.',
-        }),
-    ).exactOptional(),
-    createdAt: CreationTimestampSchema.and(
-      z.any().openapi({ description: 'The date and time the pull through cache was created.' }),
-    ).exactOptional(),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry the pull through cache rule is associated with.',
-        }),
-    ).exactOptional(),
+    ecrRepositoryPrefix: PullThroughCacheRuleRepositoryPrefixSchema.exactOptional().openapi({
+      description: 'The Amazon ECR repository prefix associated with the pull through cache rule.',
+    }),
+    upstreamRegistryUrl: UrlSchema.exactOptional().openapi({
+      description: 'The upstream registry URL associated with the pull through cache rule.',
+    }),
+    createdAt: CreationTimestampSchema.exactOptional().openapi({
+      description: 'The date and time the pull through cache was created.',
+    }),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry the pull through cache rule is associated with.',
+    }),
   })
   .openapi({ description: 'The details of a pull through cache rule.', required: [] })
   .openapi('PullThroughCacheRule')
@@ -1979,17 +1599,13 @@ const PullThroughCacheRuleListSchema = z
 
 const DescribePullThroughCacheRulesResponseSchema = z
   .object({
-    pullThroughCacheRules: PullThroughCacheRuleListSchema.and(
-      z.any().openapi({ description: 'The details of the pull through cache rules.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>DescribePullThroughCacheRulesRequest</code> request. When the results of a <code>DescribePullThroughCacheRulesRequest</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    pullThroughCacheRules: PullThroughCacheRuleListSchema.exactOptional().openapi({
+      description: 'The details of the pull through cache rules.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>DescribePullThroughCacheRulesRequest</code> request. When the results of a <code>DescribePullThroughCacheRulesRequest</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePullThroughCacheRulesResponse')
@@ -2002,53 +1618,33 @@ const PullThroughCacheRuleRepositoryPrefixListSchema = z
 
 const DescribePullThroughCacheRulesRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to return the pull through cache rules for. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    ecrRepositoryPrefixes: PullThroughCacheRuleRepositoryPrefixListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon ECR repository prefixes associated with the pull through cache rules to return. If no repository prefix value is specified, all pull through cache rules are returned.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value returned from a previous paginated <code>DescribePullThroughCacheRulesRequest</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of pull through cache rules returned by <code>DescribePullThroughCacheRulesRequest</code> in paginated output. When this parameter is used, <code>DescribePullThroughCacheRulesRequest</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribePullThroughCacheRulesRequest</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribePullThroughCacheRulesRequest</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to return the pull through cache rules for. If you do not specify a registry, the default registry is assumed.',
+    }),
+    ecrRepositoryPrefixes: PullThroughCacheRuleRepositoryPrefixListSchema.exactOptional().openapi({
+      description:
+        'The Amazon ECR repository prefixes associated with the pull through cache rules to return. If no repository prefix value is specified, all pull through cache rules are returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value returned from a previous paginated <code>DescribePullThroughCacheRulesRequest</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of pull through cache rules returned by <code>DescribePullThroughCacheRulesRequest</code> in paginated output. When this parameter is used, <code>DescribePullThroughCacheRulesRequest</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribePullThroughCacheRulesRequest</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribePullThroughCacheRulesRequest</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
+    }),
   })
   .openapi({ title: 'DescribePullThroughCacheRulesRequest', required: [] })
   .openapi('DescribePullThroughCacheRulesRequest')
 
 const ReplicationDestinationSchema = z
   .object({
-    region: RegionSchema.and(z.any().openapi({ description: 'The Region to replicate to.' })),
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID of the Amazon ECR private registry to replicate to. When configuring cross-Region replication within your own registry, specify your own account ID.',
-        }),
-    ),
+    region: RegionSchema.openapi({ description: 'The Region to replicate to.' }),
+    registryId: RegistryIdSchema.openapi({
+      description:
+        'The Amazon Web Services account ID of the Amazon ECR private registry to replicate to. When configuring cross-Region replication within your own registry, specify your own account ID.',
+    }),
   })
   .openapi({
     required: ['region', 'registryId'],
@@ -2073,22 +1669,14 @@ const RepositoryFilterTypeSchema = z.literal('PREFIX_MATCH').openapi('Repository
 
 const RepositoryFilterSchema = z
   .object({
-    filter: RepositoryFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository filter details. When the <code>PREFIX_MATCH</code> filter type is specified, this value is required and should be the repository name prefix to configure replication for.',
-        }),
-    ),
-    filterType: RepositoryFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository filter type. The only supported value is <code>PREFIX_MATCH</code>, which is a repository name prefix specified with the <code>filter</code> parameter.',
-        }),
-    ),
+    filter: RepositoryFilterValueSchema.openapi({
+      description:
+        'The repository filter details. When the <code>PREFIX_MATCH</code> filter type is specified, this value is required and should be the repository name prefix to configure replication for.',
+    }),
+    filterType: RepositoryFilterTypeSchema.openapi({
+      description:
+        'The repository filter type. The only supported value is <code>PREFIX_MATCH</code>, which is a repository name prefix specified with the <code>filter</code> parameter.',
+    }),
   })
   .openapi({
     required: ['filter', 'filterType'],
@@ -2105,21 +1693,13 @@ const RepositoryFilterListSchema = z
 
 const ReplicationRuleSchema = z
   .object({
-    destinations: ReplicationDestinationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of objects representing the destination for a replication rule.',
-        }),
-    ),
-    repositoryFilters: RepositoryFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects representing the filters for a replication rule. Specifying a repository filter for a replication rule provides a method for controlling which repositories in a private registry are replicated.',
-        }),
-    ).exactOptional(),
+    destinations: ReplicationDestinationListSchema.openapi({
+      description: 'An array of objects representing the destination for a replication rule.',
+    }),
+    repositoryFilters: RepositoryFilterListSchema.exactOptional().openapi({
+      description:
+        'An array of objects representing the filters for a replication rule. Specifying a repository filter for a replication rule provides a method for controlling which repositories in a private registry are replicated.',
+    }),
   })
   .openapi({
     required: ['destinations'],
@@ -2136,32 +1716,28 @@ const ReplicationRuleListSchema = z
 
 const ReplicationConfigurationSchema = z
   .object({
-    rules: ReplicationRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects representing the replication destinations and repository filters for a replication configuration.',
-        }),
-    ),
+    rules: ReplicationRuleListSchema.openapi({
+      description:
+        'An array of objects representing the replication destinations and repository filters for a replication configuration.',
+    }),
   })
   .openapi({ required: ['rules'], description: 'The replication configuration for a registry.' })
   .openapi('ReplicationConfiguration')
 
 const DescribeRegistryResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the registry.' }),
-    ).exactOptional(),
-    replicationConfiguration: ReplicationConfigurationSchema.and(
-      z.any().openapi({ description: 'The replication configuration for the registry.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The ID of the registry.',
+    }),
+    replicationConfiguration: ReplicationConfigurationSchema.exactOptional().openapi({
+      description: 'The replication configuration for the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRegistryResponse')
 
 const DescribeRegistryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRegistryRequest' })
   .openapi('DescribeRegistryRequest')
 
@@ -2169,21 +1745,13 @@ const RepositoryListSchema = z.array(RepositorySchema).openapi('RepositoryList')
 
 const DescribeRepositoriesResponseSchema = z
   .object({
-    repositories: RepositoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of repository objects corresponding to valid repositories.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>DescribeRepositories</code> request. When the results of a <code>DescribeRepositories</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    repositories: RepositoryListSchema.exactOptional().openapi({
+      description: 'A list of repository objects corresponding to valid repositories.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>DescribeRepositories</code> request. When the results of a <code>DescribeRepositories</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({
     example: {
@@ -2212,38 +1780,22 @@ const RepositoryNameListSchema = z
 
 const DescribeRepositoriesRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repositories to be described. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryNames: RepositoryNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of repositories to describe. If this parameter is omitted, then all repositories in a registry are described.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribeRepositories</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return. This option cannot be used when you specify repositories with <code>repositoryNames</code>.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of repository results returned by <code>DescribeRepositories</code> in paginated output. When this parameter is used, <code>DescribeRepositories</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeRepositories</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeRepositories</code> returns up to 100 results and a <code>nextToken</code> value, if applicable. This option cannot be used when you specify repositories with <code>repositoryNames</code>.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repositories to be described. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryNames: RepositoryNameListSchema.exactOptional().openapi({
+      description:
+        'A list of repositories to describe. If this parameter is omitted, then all repositories in a registry are described.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>nextToken</code> value returned from a previous paginated <code>DescribeRepositories</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return. This option cannot be used when you specify repositories with <code>repositoryNames</code>.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of repository results returned by <code>DescribeRepositories</code> in paginated output. When this parameter is used, <code>DescribeRepositories</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>DescribeRepositories</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>DescribeRepositories</code> returns up to 100 results and a <code>nextToken</code> value, if applicable. This option cannot be used when you specify repositories with <code>repositoryNames</code>.',
+    }),
   })
   .openapi({ title: 'DescribeRepositoriesRequest', required: [] })
   .openapi('DescribeRepositoriesRequest')
@@ -2256,30 +1808,18 @@ const ProxyEndpointSchema = z.string().openapi('ProxyEndpoint')
 
 const AuthorizationDataSchema = z
   .object({
-    authorizationToken: Base64Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A base64-encoded string that contains authorization data for the specified Amazon ECR registry. When the string is decoded, it is presented in the format <code>user:password</code> for private registry authentication using <code>docker login</code>.',
-        }),
-    ).exactOptional(),
-    expiresAt: ExpirationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Unix time in seconds and milliseconds when the authorization token expires. Authorization tokens are valid for 12 hours.',
-        }),
-    ).exactOptional(),
-    proxyEndpoint: ProxyEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The registry URL to use for this authorization token in a <code>docker login</code> command. The Amazon ECR registry URL format is <code>https://aws_account_id.dkr.ecr.region.amazonaws.com</code>. For example, <code>https://012345678910.dkr.ecr.us-east-1.amazonaws.com</code>.. ',
-        }),
-    ).exactOptional(),
+    authorizationToken: Base64Schema.exactOptional().openapi({
+      description:
+        'A base64-encoded string that contains authorization data for the specified Amazon ECR registry. When the string is decoded, it is presented in the format <code>user:password</code> for private registry authentication using <code>docker login</code>.',
+    }),
+    expiresAt: ExpirationTimestampSchema.exactOptional().openapi({
+      description:
+        'The Unix time in seconds and milliseconds when the authorization token expires. Authorization tokens are valid for 12 hours.',
+    }),
+    proxyEndpoint: ProxyEndpointSchema.exactOptional().openapi({
+      description:
+        'The registry URL to use for this authorization token in a <code>docker login</code> command. The Amazon ECR registry URL format is <code>https://aws_account_id.dkr.ecr.region.amazonaws.com</code>. For example, <code>https://012345678910.dkr.ecr.us-east-1.amazonaws.com</code>.. ',
+    }),
   })
   .openapi({
     description: 'An object representing authorization data for an Amazon ECR registry.',
@@ -2293,14 +1833,10 @@ const AuthorizationDataListSchema = z
 
 const GetAuthorizationTokenResponseSchema = z
   .object({
-    authorizationData: AuthorizationDataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of authorization token data objects that correspond to the <code>registryIds</code> values in the request.',
-        }),
-    ).exactOptional(),
+    authorizationData: AuthorizationDataListSchema.exactOptional().openapi({
+      description:
+        'A list of authorization token data objects that correspond to the <code>registryIds</code> values in the request.',
+    }),
   })
   .openapi({
     example: {
@@ -2324,54 +1860,40 @@ const GetAuthorizationTokenRegistryIdListSchema = z
 
 const GetAuthorizationTokenRequestSchema = z
   .object({
-    registryIds: GetAuthorizationTokenRegistryIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "A list of Amazon Web Services account IDs that are associated with the registries for which to get AuthorizationData objects. If you do not specify a registry, the default registry is assumed.This field is deprecated. The returned authorization token can be used to access any Amazon ECR registry that the IAM principal has access to, specifying a registry ID doesn't change the permissions scope of the authorization token.",
-        }),
-    ).exactOptional(),
+    registryIds: GetAuthorizationTokenRegistryIdListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "A list of Amazon Web Services account IDs that are associated with the registries for which to get AuthorizationData objects. If you do not specify a registry, the default registry is assumed.This field is deprecated. The returned authorization token can be used to access any Amazon ECR registry that the IAM principal has access to, specifying a registry ID doesn't change the permissions scope of the authorization token.",
+    }),
   })
   .openapi({ title: 'GetAuthorizationTokenRequest', required: [] })
   .openapi('GetAuthorizationTokenRequest')
 
 const GetDownloadUrlForLayerResponseSchema = z
   .object({
-    downloadUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pre-signed Amazon S3 download URL for the requested layer.' }),
-    ).exactOptional(),
-    layerDigest: LayerDigestSchema.and(
-      z.any().openapi({ description: 'The digest of the image layer to download.' }),
-    ).exactOptional(),
+    downloadUrl: UrlSchema.exactOptional().openapi({
+      description: 'The pre-signed Amazon S3 download URL for the requested layer.',
+    }),
+    layerDigest: LayerDigestSchema.exactOptional().openapi({
+      description: 'The digest of the image layer to download.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDownloadUrlForLayerResponse')
 
 const GetDownloadUrlForLayerRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the image layer to download. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository that is associated with the image layer to download.',
-        }),
-    ),
-    layerDigest: LayerDigestSchema.and(
-      z.any().openapi({ description: 'The digest of the image layer to download.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the image layer to download. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository that is associated with the image layer to download.',
+    }),
+    layerDigest: LayerDigestSchema.openapi({
+      description: 'The digest of the image layer to download.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'layerDigest'], title: 'GetDownloadUrlForLayerRequest' })
   .openapi('GetDownloadUrlForLayerRequest')
@@ -2382,39 +1904,29 @@ const LayerInaccessibleExceptionSchema = z.any().openapi('LayerInaccessibleExcep
 
 const GetLifecyclePolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON lifecycle policy text.' }),
-    ).exactOptional(),
-    lastEvaluatedAt: EvaluationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time stamp of the last time that the lifecycle policy was run.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON lifecycle policy text.',
+    }),
+    lastEvaluatedAt: EvaluationTimestampSchema.exactOptional().openapi({
+      description: 'The time stamp of the last time that the lifecycle policy was run.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLifecyclePolicyResponse')
 
 const GetLifecyclePolicyRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The name of the repository.' }),
   })
   .openapi({ required: ['repositoryName'], title: 'GetLifecyclePolicyRequest' })
   .openapi('GetLifecyclePolicyRequest')
@@ -2427,9 +1939,9 @@ const ImageActionTypeSchema = z.literal('EXPIRE').openapi('ImageActionType')
 
 const LifecyclePolicyRuleActionSchema = z
   .object({
-    type: ImageActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of action to be taken.' }),
-    ).exactOptional(),
+    type: ImageActionTypeSchema.exactOptional().openapi({
+      description: 'The type of action to be taken.',
+    }),
   })
   .openapi({ description: 'The type of action to be taken.', required: [] })
   .openapi('LifecyclePolicyRuleAction')
@@ -2438,26 +1950,22 @@ const LifecyclePolicyRulePrioritySchema = z.int().min(1).openapi('LifecyclePolic
 
 const LifecyclePolicyPreviewResultSchema = z
   .object({
-    imageTags: ImageTagListSchema.and(
-      z.any().openapi({ description: 'The list of tags associated with this image.' }),
-    ).exactOptional(),
-    imageDigest: ImageDigestSchema.and(
-      z.any().openapi({ description: 'The <code>sha256</code> digest of the image manifest.' }),
-    ).exactOptional(),
-    imagePushedAt: PushTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, expressed in standard JavaScript date format, at which the current image was pushed to the repository.',
-        }),
-    ).exactOptional(),
-    action: LifecyclePolicyRuleActionSchema.and(
-      z.any().openapi({ description: 'The type of action to be taken.' }),
-    ).exactOptional(),
-    appliedRulePriority: LifecyclePolicyRulePrioritySchema.and(
-      z.any().openapi({ description: 'The priority of the applied rule.' }),
-    ).exactOptional(),
+    imageTags: ImageTagListSchema.exactOptional().openapi({
+      description: 'The list of tags associated with this image.',
+    }),
+    imageDigest: ImageDigestSchema.exactOptional().openapi({
+      description: 'The <code>sha256</code> digest of the image manifest.',
+    }),
+    imagePushedAt: PushTimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time, expressed in standard JavaScript date format, at which the current image was pushed to the repository.',
+    }),
+    action: LifecyclePolicyRuleActionSchema.exactOptional().openapi({
+      description: 'The type of action to be taken.',
+    }),
+    appliedRulePriority: LifecyclePolicyRulePrioritySchema.exactOptional().openapi({
+      description: 'The priority of the applied rule.',
+    }),
   })
   .openapi({ description: 'The result of the lifecycle policy preview.', required: [] })
   .openapi('LifecyclePolicyPreviewResult')
@@ -2470,43 +1978,37 @@ const ImageCountSchema = z.int().min(0).openapi('ImageCount')
 
 const LifecyclePolicyPreviewSummarySchema = z
   .object({
-    expiringImageTotalCount: ImageCountSchema.and(
-      z.any().openapi({ description: 'The number of expiring images.' }),
-    ).exactOptional(),
+    expiringImageTotalCount: ImageCountSchema.exactOptional().openapi({
+      description: 'The number of expiring images.',
+    }),
   })
   .openapi({ description: 'The summary of the lifecycle policy preview request.', required: [] })
   .openapi('LifecyclePolicyPreviewSummary')
 
 const GetLifecyclePolicyPreviewResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON lifecycle policy text.' }),
-    ).exactOptional(),
-    status: LifecyclePolicyPreviewStatusSchema.and(
-      z.any().openapi({ description: 'The status of the lifecycle policy preview request.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>GetLifecyclePolicyPreview</code> request. When the results of a <code>GetLifecyclePolicyPreview</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
-    previewResults: LifecyclePolicyPreviewResultListSchema.and(
-      z.any().openapi({ description: 'The results of the lifecycle policy preview request.' }),
-    ).exactOptional(),
-    summary: LifecyclePolicyPreviewSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of images that is returned as a result of the action.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON lifecycle policy text.',
+    }),
+    status: LifecyclePolicyPreviewStatusSchema.exactOptional().openapi({
+      description: 'The status of the lifecycle policy preview request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>GetLifecyclePolicyPreview</code> request. When the results of a <code>GetLifecyclePolicyPreview</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
+    previewResults: LifecyclePolicyPreviewResultListSchema.exactOptional().openapi({
+      description: 'The results of the lifecycle policy preview request.',
+    }),
+    summary: LifecyclePolicyPreviewSummarySchema.exactOptional().openapi({
+      description: 'The list of images that is returned as a result of the action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLifecyclePolicyPreviewResponse')
@@ -2519,53 +2021,35 @@ const LifecyclePreviewMaxResultsSchema = z
 
 const LifecyclePolicyPreviewFilterSchema = z
   .object({
-    tagStatus: TagStatusSchema.and(
-      z.any().openapi({ description: 'The tag status of the image.' }),
-    ).exactOptional(),
+    tagStatus: TagStatusSchema.exactOptional().openapi({
+      description: 'The tag status of the image.',
+    }),
   })
   .openapi({ description: 'The filter for the lifecycle policy preview.', required: [] })
   .openapi('LifecyclePolicyPreviewFilter')
 
 const GetLifecyclePolicyPreviewRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ),
-    imageIds: ImageIdentifierListSchema.and(
-      z.any().openapi({ description: 'The list of imageIDs to be included.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value returned from a previous paginated&#x2028; <code>GetLifecyclePolicyPreviewRequest</code> request where <code>maxResults</code> was used and the&#x2028; results exceeded the value of that parameter. Pagination continues from the end of the&#x2028; previous results that returned the <code>nextToken</code> value. This value is&#x2028; <code>null</code> when there are no more results to return. This option cannot be used when you specify images with <code>imageIds</code>.',
-        }),
-    ).exactOptional(),
-    maxResults: LifecyclePreviewMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of repository results returned by <code>GetLifecyclePolicyPreviewRequest</code> in&#x2028; paginated output. When this parameter is used, <code>GetLifecyclePolicyPreviewRequest</code> only returns&#x2028; <code>maxResults</code> results in a single page along with a <code>nextToken</code>&#x2028; response element. The remaining results of the initial request can be seen by sending&#x2028; another <code>GetLifecyclePolicyPreviewRequest</code> request with the returned <code>nextToken</code>&#x2028; value. This value can be between 1 and 1000. If this&#x2028; parameter is not used, then <code>GetLifecyclePolicyPreviewRequest</code> returns up to&#x2028; 100 results and a <code>nextToken</code> value, if&#x2028; applicable. This option cannot be used when you specify images with <code>imageIds</code>.',
-        }),
-    ).exactOptional(),
-    filter: LifecyclePolicyPreviewFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that filters results based on image tag status and all tags, if tagged.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({ description: 'The name of the repository.' }),
+    imageIds: ImageIdentifierListSchema.exactOptional().openapi({
+      description: 'The list of imageIDs to be included.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value returned from a previous paginated&#x2028; <code>GetLifecyclePolicyPreviewRequest</code> request where <code>maxResults</code> was used and the&#x2028; results exceeded the value of that parameter. Pagination continues from the end of the&#x2028; previous results that returned the <code>nextToken</code> value. This value is&#x2028; <code>null</code> when there are no more results to return. This option cannot be used when you specify images with <code>imageIds</code>.',
+    }),
+    maxResults: LifecyclePreviewMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of repository results returned by <code>GetLifecyclePolicyPreviewRequest</code> in&#x2028; paginated output. When this parameter is used, <code>GetLifecyclePolicyPreviewRequest</code> only returns&#x2028; <code>maxResults</code> results in a single page along with a <code>nextToken</code>&#x2028; response element. The remaining results of the initial request can be seen by sending&#x2028; another <code>GetLifecyclePolicyPreviewRequest</code> request with the returned <code>nextToken</code>&#x2028; value. This value can be between 1 and 1000. If this&#x2028; parameter is not used, then <code>GetLifecyclePolicyPreviewRequest</code> returns up to&#x2028; 100 results and a <code>nextToken</code> value, if&#x2028; applicable. This option cannot be used when you specify images with <code>imageIds</code>.',
+    }),
+    filter: LifecyclePolicyPreviewFilterSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that filters results based on image tag status and all tags, if tagged.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'GetLifecyclePolicyPreviewRequest' })
   .openapi('GetLifecyclePolicyPreviewRequest')
@@ -2576,18 +2060,18 @@ const LifecyclePolicyPreviewNotFoundExceptionSchema = z
 
 const GetRegistryPolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the registry.' }),
-    ).exactOptional(),
-    policyText: RegistryPolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON text of the permissions policy for a registry.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The ID of the registry.',
+    }),
+    policyText: RegistryPolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON text of the permissions policy for a registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegistryPolicyResponse')
 
 const GetRegistryPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRegistryPolicyRequest' })
   .openapi('GetRegistryPolicyRequest')
 
@@ -2595,22 +2079,14 @@ const ScanTypeSchema = z.enum(['BASIC', 'ENHANCED']).openapi('ScanType')
 
 const RegistryScanningRuleSchema = z
   .object({
-    scanFrequency: ScanFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The frequency that scans are performed at for a private registry. When the <code>ENHANCED</code> scan type is specified, the supported scan frequencies are <code>CONTINUOUS_SCAN</code> and <code>SCAN_ON_PUSH</code>. When the <code>BASIC</code> scan type is specified, the <code>SCAN_ON_PUSH</code> and <code>MANUAL</code> scan frequencies are supported.',
-        }),
-    ),
-    repositoryFilters: ScanningRepositoryFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The repository filters associated with the scanning configuration for a private registry.',
-        }),
-    ),
+    scanFrequency: ScanFrequencySchema.openapi({
+      description:
+        'The frequency that scans are performed at for a private registry. When the <code>ENHANCED</code> scan type is specified, the supported scan frequencies are <code>CONTINUOUS_SCAN</code> and <code>SCAN_ON_PUSH</code>. When the <code>BASIC</code> scan type is specified, the <code>SCAN_ON_PUSH</code> and <code>MANUAL</code> scan frequencies are supported.',
+    }),
+    repositoryFilters: ScanningRepositoryFilterListSchema.openapi({
+      description:
+        'The repository filters associated with the scanning configuration for a private registry.',
+    }),
   })
   .openapi({
     required: ['scanFrequency', 'repositoryFilters'],
@@ -2626,48 +2102,44 @@ const RegistryScanningRuleListSchema = z
 
 const RegistryScanningConfigurationSchema = z
   .object({
-    scanType: ScanTypeSchema.and(
-      z.any().openapi({ description: 'The type of scanning configured for the registry.' }),
-    ).exactOptional(),
-    rules: RegistryScanningRuleListSchema.and(
-      z.any().openapi({ description: 'The scanning rules associated with the registry.' }),
-    ).exactOptional(),
+    scanType: ScanTypeSchema.exactOptional().openapi({
+      description: 'The type of scanning configured for the registry.',
+    }),
+    rules: RegistryScanningRuleListSchema.exactOptional().openapi({
+      description: 'The scanning rules associated with the registry.',
+    }),
   })
   .openapi({ description: 'The scanning configuration for a private registry.', required: [] })
   .openapi('RegistryScanningConfiguration')
 
 const GetRegistryScanningConfigurationResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the registry.' }),
-    ).exactOptional(),
-    scanningConfiguration: RegistryScanningConfigurationSchema.and(
-      z.any().openapi({ description: 'The scanning configuration for the registry.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The ID of the registry.',
+    }),
+    scanningConfiguration: RegistryScanningConfigurationSchema.exactOptional().openapi({
+      description: 'The scanning configuration for the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegistryScanningConfigurationResponse')
 
 const GetRegistryScanningConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRegistryScanningConfigurationRequest' })
   .openapi('GetRegistryScanningConfigurationRequest')
 
 const GetRepositoryPolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    policyText: RepositoryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON repository policy text associated with the repository.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    policyText: RepositoryPolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON repository policy text associated with the repository.',
+    }),
   })
   .openapi({
     example: {
@@ -2682,17 +2154,13 @@ const GetRepositoryPolicyResponseSchema = z
 
 const GetRepositoryPolicyRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository with the policy to retrieve.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository with the policy to retrieve.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'GetRepositoryPolicyRequest' })
   .openapi('GetRepositoryPolicyRequest')
@@ -2701,60 +2169,39 @@ const PartSizeSchema = z.int().min(0).openapi('PartSize')
 
 const InitiateLayerUploadResponseSchema = z
   .object({
-    uploadId: UploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upload ID for the layer upload. This parameter is passed to further <a>UploadLayerPart</a> and <a>CompleteLayerUpload</a> operations.',
-        }),
-    ).exactOptional(),
-    partSize: PartSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size, in bytes, that Amazon ECR expects future layer part uploads to be.',
-        }),
-    ).exactOptional(),
+    uploadId: UploadIdSchema.exactOptional().openapi({
+      description:
+        'The upload ID for the layer upload. This parameter is passed to further <a>UploadLayerPart</a> and <a>CompleteLayerUpload</a> operations.',
+    }),
+    partSize: PartSizeSchema.exactOptional().openapi({
+      description: 'The size, in bytes, that Amazon ECR expects future layer part uploads to be.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InitiateLayerUploadResponse')
 
 const InitiateLayerUploadRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to which you intend to upload layers. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository to which you intend to upload layers.',
-        }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to which you intend to upload layers. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to which you intend to upload layers.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'InitiateLayerUploadRequest' })
   .openapi('InitiateLayerUploadRequest')
 
 const ListImagesResponseSchema = z
   .object({
-    imageIds: ImageIdentifierListSchema.and(
-      z.any().openapi({ description: 'The list of image IDs for the requested repository.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListImages</code> request. When the results of a <code>ListImages</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
-        }),
-    ).exactOptional(),
+    imageIds: ImageIdentifierListSchema.exactOptional().openapi({
+      description: 'The list of image IDs for the requested repository.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListImages</code> request. When the results of a <code>ListImages</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.',
+    }),
   })
   .openapi({
     example: {
@@ -2771,14 +2218,10 @@ const ListImagesResponseSchema = z
 
 const ListImagesFilterSchema = z
   .object({
-    tagStatus: TagStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag status with which to filter your <a>ListImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.',
-        }),
-    ).exactOptional(),
+    tagStatus: TagStatusSchema.exactOptional().openapi({
+      description:
+        'The tag status with which to filter your <a>ListImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.',
+    }),
   })
   .openapi({
     description: 'An object representing a filter on a <a>ListImages</a> operation.',
@@ -2788,118 +2231,76 @@ const ListImagesFilterSchema = z
 
 const ListImagesRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to list images. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository with image IDs to be listed.' }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>nextToken</code> value returned from a previous paginated <code>ListImages</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of image results returned by <code>ListImages</code> in paginated output. When this parameter is used, <code>ListImages</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListImages</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>ListImages</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
-        }),
-    ).exactOptional(),
-    filter: ListImagesFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The filter key and value with which to filter your <code>ListImages</code> results.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to list images. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The repository with image IDs to be listed.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>nextToken</code> value returned from a previous paginated <code>ListImages</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of image results returned by <code>ListImages</code> in paginated output. When this parameter is used, <code>ListImages</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListImages</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>ListImages</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.',
+    }),
+    filter: ListImagesFilterSchema.exactOptional().openapi({
+      description:
+        'The filter key and value with which to filter your <code>ListImages</code> results.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'ListImagesRequest' })
   .openapi('ListImagesRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the resource.' }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the only supported resource is an Amazon ECR repository.',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the only supported resource is an Amazon ECR repository.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutImageResponseSchema = z
   .object({
-    image: ImageSchema.and(
-      z.any().openapi({ description: 'Details of the image uploaded.' }),
-    ).exactOptional(),
+    image: ImageSchema.exactOptional().openapi({ description: 'Details of the image uploaded.' }),
   })
   .openapi({ required: [] })
   .openapi('PutImageResponse')
 
 const PutImageRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to put the image. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository in which to put the image.' }),
-    ),
-    imageManifest: ImageManifestSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The image manifest corresponding to the image to be uploaded.' }),
-    ),
-    imageManifestMediaType: MediaTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The media type of the image manifest. If you push an image manifest that does not contain the <code>mediaType</code> field, you must specify the <code>imageManifestMediaType</code> in the request.',
-        }),
-    ).exactOptional(),
-    imageTag: ImageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag to associate with the image. This parameter is required for images that use the Docker Image Manifest V2 Schema 2 or Open Container Initiative (OCI) formats.',
-        }),
-    ).exactOptional(),
-    imageDigest: ImageDigestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The image digest of the image manifest corresponding to the image.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to put the image. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository in which to put the image.',
+    }),
+    imageManifest: ImageManifestSchema.openapi({
+      description: 'The image manifest corresponding to the image to be uploaded.',
+    }),
+    imageManifestMediaType: MediaTypeSchema.exactOptional().openapi({
+      description:
+        'The media type of the image manifest. If you push an image manifest that does not contain the <code>mediaType</code> field, you must specify the <code>imageManifestMediaType</code> in the request.',
+    }),
+    imageTag: ImageTagSchema.exactOptional().openapi({
+      description:
+        'The tag to associate with the image. This parameter is required for images that use the Docker Image Manifest V2 Schema 2 or Open Container Initiative (OCI) formats.',
+    }),
+    imageDigest: ImageDigestSchema.exactOptional().openapi({
+      description: 'The image digest of the image manifest corresponding to the image.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'imageManifest'], title: 'PutImageRequest' })
   .openapi('PutImageRequest')
@@ -2914,47 +2315,33 @@ const ImageDigestDoesNotMatchExceptionSchema = z.any().openapi('ImageDigestDoesN
 
 const PutImageScanningConfigurationResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    imageScanningConfiguration: ImageScanningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The image scanning configuration setting for the repository.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    imageScanningConfiguration: ImageScanningConfigurationSchema.exactOptional().openapi({
+      description: 'The image scanning configuration setting for the repository.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutImageScanningConfigurationResponse')
 
 const PutImageScanningConfigurationRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to update the image scanning configuration setting. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository in which to update the image scanning configuration setting.',
-        }),
-    ),
-    imageScanningConfiguration: ImageScanningConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The image scanning configuration for the repository. This setting determines whether images are scanned for known vulnerabilities after being pushed to the repository.',
-        }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to update the image scanning configuration setting. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository in which to update the image scanning configuration setting.',
+    }),
+    imageScanningConfiguration: ImageScanningConfigurationSchema.openapi({
+      description:
+        'The image scanning configuration for the repository. This setting determines whether images are scanned for known vulnerabilities after being pushed to the repository.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'imageScanningConfiguration'],
@@ -2964,45 +2351,33 @@ const PutImageScanningConfigurationRequestSchema = z
 
 const PutImageTagMutabilityResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    imageTagMutability: ImageTagMutabilitySchema.and(
-      z.any().openapi({ description: 'The image tag mutability setting for the repository.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    imageTagMutability: ImageTagMutabilitySchema.exactOptional().openapi({
+      description: 'The image tag mutability setting for the repository.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutImageTagMutabilityResponse')
 
 const PutImageTagMutabilityRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to update the image tag mutability settings. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository in which to update the image tag mutability settings.',
-        }),
-    ),
-    imageTagMutability: ImageTagMutabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tag mutability setting for the repository. If <code>MUTABLE</code> is specified, image tags can be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.',
-        }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to update the image tag mutability settings. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description:
+        'The name of the repository in which to update the image tag mutability settings.',
+    }),
+    imageTagMutability: ImageTagMutabilitySchema.openapi({
+      description:
+        'The tag mutability setting for the repository. If <code>MUTABLE</code> is specified, image tags can be overwritten. If <code>IMMUTABLE</code> is specified, all image tags within the repository will be immutable which will prevent them from being overwritten.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'imageTagMutability'],
@@ -3012,37 +2387,31 @@ const PutImageTagMutabilityRequestSchema = z
 
 const PutLifecyclePolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON repository policy text.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON repository policy text.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutLifecyclePolicyResponse')
 
 const PutLifecyclePolicyRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do&#x2028; not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to receive the policy.' }),
-    ),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The JSON repository policy text to apply to the repository.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do&#x2028; not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to receive the policy.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.openapi({
+      description: 'The JSON repository policy text to apply to the repository.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'lifecyclePolicyText'],
@@ -3052,168 +2421,126 @@ const PutLifecyclePolicyRequestSchema = z
 
 const PutRegistryPolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID.' }),
-    ).exactOptional(),
-    policyText: RegistryPolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON policy text for your registry.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({ description: 'The registry ID.' }),
+    policyText: RegistryPolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON policy text for your registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRegistryPolicyResponse')
 
 const PutRegistryPolicyRequestSchema = z
   .object({
-    policyText: RegistryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON policy text to apply to your registry. The policy text follows the same format as IAM policy text. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry-permissions.html">Registry permissions</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
-        }),
-    ),
+    policyText: RegistryPolicyTextSchema.openapi({
+      description:
+        'The JSON policy text to apply to your registry. The policy text follows the same format as IAM policy text. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry-permissions.html">Registry permissions</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
+    }),
   })
   .openapi({ required: ['policyText'], title: 'PutRegistryPolicyRequest' })
   .openapi('PutRegistryPolicyRequest')
 
 const PutRegistryScanningConfigurationResponseSchema = z
   .object({
-    registryScanningConfiguration: RegistryScanningConfigurationSchema.and(
-      z.any().openapi({ description: 'The scanning configuration for your registry.' }),
-    ).exactOptional(),
+    registryScanningConfiguration: RegistryScanningConfigurationSchema.exactOptional().openapi({
+      description: 'The scanning configuration for your registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRegistryScanningConfigurationResponse')
 
 const PutRegistryScanningConfigurationRequestSchema = z
   .object({
-    scanType: ScanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scanning type to set for the registry.</p> <p>When a registry scanning configuration is not defined, by default the <code>BASIC</code> scan type is used. When basic scanning is used, you may specify filters to determine which individual repositories, or all repositories, are scanned when new images are pushed to those repositories. Alternatively, you can do manual scans of images with basic scanning.</p> <p>When the <code>ENHANCED</code> scan type is set, Amazon Inspector provides automated vulnerability scanning. You may choose between continuous scanning or scan on push and you may specify filters to determine which individual repositories, or all repositories, are scanned.</p>',
-        }),
-    ).exactOptional(),
-    rules: RegistryScanningRuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scanning rules to use for the registry. A scanning rule is used to determine which repository filters are used and at what frequency scanning will occur.',
-        }),
-    ).exactOptional(),
+    scanType: ScanTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The scanning type to set for the registry.</p> <p>When a registry scanning configuration is not defined, by default the <code>BASIC</code> scan type is used. When basic scanning is used, you may specify filters to determine which individual repositories, or all repositories, are scanned when new images are pushed to those repositories. Alternatively, you can do manual scans of images with basic scanning.</p> <p>When the <code>ENHANCED</code> scan type is set, Amazon Inspector provides automated vulnerability scanning. You may choose between continuous scanning or scan on push and you may specify filters to determine which individual repositories, or all repositories, are scanned.</p>',
+    }),
+    rules: RegistryScanningRuleListSchema.exactOptional().openapi({
+      description:
+        'The scanning rules to use for the registry. A scanning rule is used to determine which repository filters are used and at what frequency scanning will occur.',
+    }),
   })
   .openapi({ title: 'PutRegistryScanningConfigurationRequest', required: [] })
   .openapi('PutRegistryScanningConfigurationRequest')
 
 const PutReplicationConfigurationResponseSchema = z
   .object({
-    replicationConfiguration: ReplicationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The contents of the replication configuration for the registry.',
-        }),
-    ).exactOptional(),
+    replicationConfiguration: ReplicationConfigurationSchema.exactOptional().openapi({
+      description: 'The contents of the replication configuration for the registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutReplicationConfigurationResponse')
 
 const PutReplicationConfigurationRequestSchema = z
   .object({
-    replicationConfiguration: ReplicationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object representing the replication configuration for a registry.',
-        }),
-    ),
+    replicationConfiguration: ReplicationConfigurationSchema.openapi({
+      description: 'An object representing the replication configuration for a registry.',
+    }),
   })
   .openapi({ required: ['replicationConfiguration'], title: 'PutReplicationConfigurationRequest' })
   .openapi('PutReplicationConfigurationRequest')
 
 const SetRepositoryPolicyResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    policyText: RepositoryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The JSON repository policy text applied to the repository.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    policyText: RepositoryPolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON repository policy text applied to the repository.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetRepositoryPolicyResponse')
 
 const SetRepositoryPolicyRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to receive the policy.' }),
-    ),
-    policyText: RepositoryPolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON repository policy text to apply to the repository. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html">Amazon ECR repository policies</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
-        }),
-    ),
-    force: ForceFlagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the policy you are attempting to set on a repository policy would prevent you from setting another policy in the future, you must force the <a>SetRepositoryPolicy</a> operation. This is intended to prevent accidental repository lock outs.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to receive the policy.',
+    }),
+    policyText: RepositoryPolicyTextSchema.openapi({
+      description:
+        'The JSON repository policy text to apply to the repository. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html">Amazon ECR repository policies</a> in the <i>Amazon Elastic Container Registry User Guide</i>.',
+    }),
+    force: ForceFlagSchema.exactOptional().openapi({
+      description:
+        'If the policy you are attempting to set on a repository policy would prevent you from setting another policy in the future, you must force the <a>SetRepositoryPolicy</a> operation. This is intended to prevent accidental repository lock outs.',
+    }),
   })
   .openapi({ required: ['repositoryName', 'policyText'], title: 'SetRepositoryPolicyRequest' })
   .openapi('SetRepositoryPolicyRequest')
 
 const StartImageScanResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
     imageId: ImageIdentifierSchema.exactOptional(),
-    imageScanStatus: ImageScanStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the scan.' }),
-    ).exactOptional(),
+    imageScanStatus: ImageScanStatusSchema.exactOptional().openapi({
+      description: 'The current state of the scan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartImageScanResponse')
 
 const StartImageScanRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository in which to start an image scan request. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the repository that contains the images to scan.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository in which to start an image scan request. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository that contains the images to scan.',
+    }),
     imageId: ImageIdentifierSchema,
   })
   .openapi({ required: ['repositoryName', 'imageId'], title: 'StartImageScanRequest' })
@@ -3223,43 +2550,35 @@ const UnsupportedImageTypeExceptionSchema = z.any().openapi('UnsupportedImageTyp
 
 const StartLifecyclePolicyPreviewResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z.any().openapi({ description: 'The JSON repository policy text.' }),
-    ).exactOptional(),
-    status: LifecyclePolicyPreviewStatusSchema.and(
-      z.any().openapi({ description: 'The status of the lifecycle policy preview request.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description: 'The JSON repository policy text.',
+    }),
+    status: LifecyclePolicyPreviewStatusSchema.exactOptional().openapi({
+      description: 'The status of the lifecycle policy preview request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartLifecyclePolicyPreviewResponse')
 
 const StartLifecyclePolicyPreviewRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The name of the repository to be evaluated.' }),
-    ),
-    lifecyclePolicyText: LifecyclePolicyTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The policy to be evaluated against. If you do not specify a policy, the current policy for the repository is used.',
-        }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to be evaluated.',
+    }),
+    lifecyclePolicyText: LifecyclePolicyTextSchema.exactOptional().openapi({
+      description:
+        'The policy to be evaluated against. If you do not specify a policy, the current policy for the repository is used.',
+    }),
   })
   .openapi({ required: ['repositoryName'], title: 'StartLifecyclePolicyPreviewRequest' })
   .openapi('StartLifecyclePolicyPreviewRequest')
@@ -3268,67 +2587,51 @@ const LifecyclePolicyPreviewInProgressExceptionSchema = z
   .any()
   .openapi('LifecyclePolicyPreviewInProgressException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the the resource to which to add tags. Currently, the only supported resource is an Amazon ECR repository.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the the resource to which to add tags. Currently, the only supported resource is an Amazon ECR repository.',
+    }),
+    tags: TagListSchema.openapi({
+      description:
+        'The tags to add to the resource. A tag is an array of key-value pairs. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource from which to remove tags. Currently, the only supported resource is an Amazon ECR repository.',
-        }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource from which to remove tags. Currently, the only supported resource is an Amazon ECR repository.',
+    }),
+    tagKeys: TagKeyListSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UploadLayerPartResponseSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z.any().openapi({ description: 'The registry ID associated with the request.' }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z.any().openapi({ description: 'The repository name associated with the request.' }),
-    ).exactOptional(),
-    uploadId: UploadIdSchema.and(
-      z.any().openapi({ description: 'The upload ID associated with the request.' }),
-    ).exactOptional(),
-    lastByteReceived: PartSizeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The integer value of the last byte received in the request.' }),
-    ).exactOptional(),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description: 'The registry ID associated with the request.',
+    }),
+    repositoryName: RepositoryNameSchema.exactOptional().openapi({
+      description: 'The repository name associated with the request.',
+    }),
+    uploadId: UploadIdSchema.exactOptional().openapi({
+      description: 'The upload ID associated with the request.',
+    }),
+    lastByteReceived: PartSizeSchema.exactOptional().openapi({
+      description: 'The integer value of the last byte received in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UploadLayerPartResponse')
@@ -3337,48 +2640,28 @@ const LayerPartBlobSchema = z.string().min(0).max(20971520).openapi('LayerPartBl
 
 const UploadLayerPartRequestSchema = z
   .object({
-    registryId: RegistryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID associated with the registry to which you are uploading layer parts. If you do not specify a registry, the default registry is assumed.',
-        }),
-    ).exactOptional(),
-    repositoryName: RepositoryNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the repository to which you are uploading layer parts.',
-        }),
-    ),
-    uploadId: UploadIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upload ID from a previous <a>InitiateLayerUpload</a> operation to associate with the layer part upload.',
-        }),
-    ),
-    partFirstByte: PartSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position of the first byte of the layer part witin the overall image layer.',
-        }),
-    ),
-    partLastByte: PartSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The position of the last byte of the layer part within the overall image layer.',
-        }),
-    ),
-    layerPartBlob: LayerPartBlobSchema.and(
-      z.any().openapi({ description: 'The base64-encoded layer part payload.' }),
-    ),
+    registryId: RegistryIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account ID associated with the registry to which you are uploading layer parts. If you do not specify a registry, the default registry is assumed.',
+    }),
+    repositoryName: RepositoryNameSchema.openapi({
+      description: 'The name of the repository to which you are uploading layer parts.',
+    }),
+    uploadId: UploadIdSchema.openapi({
+      description:
+        'The upload ID from a previous <a>InitiateLayerUpload</a> operation to associate with the layer part upload.',
+    }),
+    partFirstByte: PartSizeSchema.openapi({
+      description:
+        'The position of the first byte of the layer part witin the overall image layer.',
+    }),
+    partLastByte: PartSizeSchema.openapi({
+      description:
+        'The position of the last byte of the layer part within the overall image layer.',
+    }),
+    layerPartBlob: LayerPartBlobSchema.openapi({
+      description: 'The base64-encoded layer part payload.',
+    }),
   })
   .openapi({
     required: ['repositoryName', 'uploadId', 'partFirstByte', 'partLastByte', 'layerPartBlob'],

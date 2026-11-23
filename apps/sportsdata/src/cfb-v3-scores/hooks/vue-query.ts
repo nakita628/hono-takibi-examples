@@ -1,0 +1,1766 @@
+import { useQuery } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getFormatKey() {
+  return ['{format}'] as const
+}
+
+export function getFormatAreAnyGamesInProgressQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>
+  >,
+) {
+  return [':format', '/:format/AreAnyGamesInProgress', toValue(args)] as const
+}
+
+export function getFormatAreAnyGamesInProgressQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatAreAnyGamesInProgressQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].AreAnyGamesInProgress.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatAreAnyGamesInProgress<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatAreAnyGamesInProgressQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['AreAnyGamesInProgress']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatAreAnyGamesInProgressQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatAreAnyGamesInProgressQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].AreAnyGamesInProgress.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatCurrentSeasonQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeason']['$get']>>,
+) {
+  return [':format', '/:format/CurrentSeason', toValue(args)] as const
+}
+
+export function getFormatCurrentSeasonQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeason']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatCurrentSeasonQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].CurrentSeason.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatCurrentSeason<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['CurrentSeason']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeason']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeason']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeason']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatCurrentSeasonQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['CurrentSeason']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatCurrentSeasonQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatCurrentSeasonQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].CurrentSeason.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatCurrentSeasonDetailsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>
+  >,
+) {
+  return [':format', '/:format/CurrentSeasonDetails', toValue(args)] as const
+}
+
+export function getFormatCurrentSeasonDetailsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatCurrentSeasonDetailsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].CurrentSeasonDetails.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatCurrentSeasonDetails<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatCurrentSeasonDetailsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonDetails']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatCurrentSeasonDetailsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatCurrentSeasonDetailsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].CurrentSeasonDetails.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatCurrentSeasonTypeQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeasonType']['$get']>>,
+) {
+  return [':format', '/:format/CurrentSeasonType', toValue(args)] as const
+}
+
+export function getFormatCurrentSeasonTypeQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeasonType']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatCurrentSeasonTypeQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].CurrentSeasonType.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatCurrentSeasonType<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonType']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentSeasonType']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonType']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonType']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatCurrentSeasonTypeQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['CurrentSeasonType']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatCurrentSeasonTypeQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatCurrentSeasonTypeQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].CurrentSeasonType.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatCurrentWeekQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentWeek']['$get']>>,
+) {
+  return [':format', '/:format/CurrentWeek', toValue(args)] as const
+}
+
+export function getFormatCurrentWeekQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentWeek']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatCurrentWeekQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].CurrentWeek.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatCurrentWeek<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['CurrentWeek']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['CurrentWeek']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentWeek']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['CurrentWeek']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatCurrentWeekQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['CurrentWeek']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatCurrentWeekQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatCurrentWeekQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].CurrentWeek.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatGamesSeasonQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Games'][':season']['$get']>>,
+) {
+  return [':format', '/:format/Games/:season', toValue(args)] as const
+}
+
+export function getFormatGamesSeasonQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Games'][':season']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatGamesSeasonQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Games[':season'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatGamesSeason<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['Games'][':season']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Games'][':season']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Games'][':season']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Games'][':season']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatGamesSeasonQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['Games'][':season']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatGamesSeasonQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatGamesSeasonQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Games[':season'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatGamesByDateDateQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByDate'][':date']['$get']>
+  >,
+) {
+  return [':format', '/:format/GamesByDate/:date', toValue(args)] as const
+}
+
+export function getFormatGamesByDateDateQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByDate'][':date']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatGamesByDateDateQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].GamesByDate[':date'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatGamesByDateDate<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['GamesByDate'][':date']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByDate'][':date']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['GamesByDate'][':date']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['GamesByDate'][':date']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatGamesByDateDateQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['GamesByDate'][':date']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatGamesByDateDateQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatGamesByDateDateQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].GamesByDate[':date'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatGamesByWeekSeasonWeekQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>
+  >,
+) {
+  return [':format', '/:format/GamesByWeek/:season/:week', toValue(args)] as const
+}
+
+export function getFormatGamesByWeekSeasonWeekQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatGamesByWeekSeasonWeekQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].GamesByWeek[':season'][':week'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatGamesByWeekSeasonWeek<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getFormatGamesByWeekSeasonWeekQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['GamesByWeek'][':season'][':week']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatGamesByWeekSeasonWeekQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatGamesByWeekSeasonWeekQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].GamesByWeek[':season'][':week'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatInjuredPlayersQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['InjuredPlayers']['$get']>>,
+) {
+  return [':format', '/:format/InjuredPlayers', toValue(args)] as const
+}
+
+export function getFormatInjuredPlayersQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['InjuredPlayers']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatInjuredPlayersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].InjuredPlayers.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatInjuredPlayers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['InjuredPlayers']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['InjuredPlayers']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['InjuredPlayers']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['InjuredPlayers']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatInjuredPlayersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['InjuredPlayers']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatInjuredPlayersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatInjuredPlayersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].InjuredPlayers.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatLeagueHierarchyQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['LeagueHierarchy']['$get']>>,
+) {
+  return [':format', '/:format/LeagueHierarchy', toValue(args)] as const
+}
+
+export function getFormatLeagueHierarchyQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['LeagueHierarchy']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatLeagueHierarchyQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].LeagueHierarchy.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatLeagueHierarchy<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['LeagueHierarchy']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['LeagueHierarchy']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['LeagueHierarchy']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['LeagueHierarchy']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatLeagueHierarchyQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['LeagueHierarchy']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatLeagueHierarchyQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatLeagueHierarchyQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].LeagueHierarchy.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatPlayerPlayeridQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['Player'][':playerid']['$get']>
+  >,
+) {
+  return [':format', '/:format/Player/:playerid', toValue(args)] as const
+}
+
+export function getFormatPlayerPlayeridQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['Player'][':playerid']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatPlayerPlayeridQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Player[':playerid'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatPlayerPlayerid<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['Player'][':playerid']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['Player'][':playerid']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Player'][':playerid']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Player'][':playerid']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatPlayerPlayeridQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['Player'][':playerid']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatPlayerPlayeridQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatPlayerPlayeridQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Player[':playerid'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatPlayersQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players']['$get']>>,
+) {
+  return [':format', '/:format/Players', toValue(args)] as const
+}
+
+export function getFormatPlayersQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatPlayersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Players.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatPlayers<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Players']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Players']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Players']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatPlayersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Players']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatPlayersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatPlayersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Players.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatPlayersTeamQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players'][':team']['$get']>>,
+) {
+  return [':format', '/:format/Players/:team', toValue(args)] as const
+}
+
+export function getFormatPlayersTeamQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players'][':team']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatPlayersTeamQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Players[':team'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatPlayersTeam<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['Players'][':team']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Players'][':team']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Players'][':team']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Players'][':team']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatPlayersTeamQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['Players'][':team']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatPlayersTeamQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatPlayersTeamQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Players[':team'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatStadiumsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Stadiums']['$get']>>,
+) {
+  return [':format', '/:format/Stadiums', toValue(args)] as const
+}
+
+export function getFormatStadiumsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Stadiums']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatStadiumsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Stadiums.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatStadiums<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Stadiums']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Stadiums']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Stadiums']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)[':format']['Stadiums']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getFormatStadiumsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Stadiums']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatStadiumsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatStadiumsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Stadiums.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+    >
+  >,
+) {
+  return [
+    ':format',
+    '/:format/TeamGameStatsBySeason/:season/:teamid/:numberofgames',
+    toValue(args),
+  ] as const
+}
+
+export function getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].TeamGameStatsBySeason[':season'][':teamid'][':numberofgames'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useFormatTeamGameStatsBySeasonSeasonTeamidNumberofgames<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client)[':format']['TeamGameStatsBySeason'][':season'][':teamid'][':numberofgames']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getFormatTeamGameStatsBySeasonSeasonTeamidNumberofgamesQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].TeamGameStatsBySeason[':season'][':teamid'][':numberofgames'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatTeamGameStatsByWeekSeasonWeekQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']>
+  >,
+) {
+  return [':format', '/:format/TeamGameStatsByWeek/:season/:week', toValue(args)] as const
+}
+
+export function getFormatTeamGameStatsByWeekSeasonWeekQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatTeamGameStatsByWeekSeasonWeekQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].TeamGameStatsByWeek[':season'][':week'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatTeamGameStatsByWeekSeasonWeek<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getFormatTeamGameStatsByWeekSeasonWeekQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client)[':format']['TeamGameStatsByWeek'][':season'][':week']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatTeamGameStatsByWeekSeasonWeekQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatTeamGameStatsByWeekSeasonWeekQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].TeamGameStatsByWeek[':season'][':week'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatTeamSeasonStatsSeasonQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>
+  >,
+) {
+  return [':format', '/:format/TeamSeasonStats/:season', toValue(args)] as const
+}
+
+export function getFormatTeamSeasonStatsSeasonQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatTeamSeasonStatsSeasonQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].TeamSeasonStats[':season'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatTeamSeasonStatsSeason<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getFormatTeamSeasonStatsSeasonQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client)[':format']['TeamSeasonStats'][':season']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatTeamSeasonStatsSeasonQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatTeamSeasonStatsSeasonQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].TeamSeasonStats[':season'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getFormatTeamsQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Teams']['$get']>>,
+) {
+  return [':format', '/:format/Teams', toValue(args)] as const
+}
+
+export function getFormatTeamsQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Teams']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getFormatTeamsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client[':format'].Teams.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useFormatTeams<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Teams']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)[':format']['Teams']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Teams']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Teams']['$get']>>>
+            >
+          >,
+          ReturnType<typeof getFormatTeamsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client)[':format']['Teams']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getFormatTeamsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getFormatTeamsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client[':format'].Teams.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}

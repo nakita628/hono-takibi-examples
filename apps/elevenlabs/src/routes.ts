@@ -260,13 +260,7 @@ type ASTGreaterThanOrEqualsOperatorNodeOutputType = {
   right: z.infer<typeof ASTNodeOutputSchema>
 }
 
-type LLMLiteralJsonSchemaPropertyType = {
-  type: 'boolean' | 'string' | 'integer' | 'number' | string[]
-  description: string
-  enum?: string[] | null
-}
-
-const LLMLiteralJsonSchemaPropertySchema: z.ZodType<LLMLiteralJsonSchemaPropertyType> = z
+const LLMLiteralJsonSchemaPropertySchema = z
   .object({
     type: z
       .union([z.enum(['boolean', 'string', 'integer', 'number']), z.array(z.string()).length(2)])
@@ -1016,7 +1010,13 @@ const ASRQualitySchema = z
   .openapi('ASRQuality')
 
 const ASRProviderSchema = z
-  .enum(['elevenlabs', 'scribe_realtime', 'scribe_v2_turbo'])
+  .enum([
+    'elevenlabs',
+    'scribe_realtime',
+    'scribe_v2_turbo',
+    'scribe_v3_live',
+    'scribe_v3_live_medical',
+  ])
   .default('scribe_realtime')
   .openapi({
     title: 'ASRProvider',
@@ -1123,7 +1123,7 @@ const SoftTimeoutConfigSchema = z
       }),
     additional_soft_timeout_messages: z
       .array(z.string())
-      .max(7)
+      .max(30)
       .exactOptional()
       .openapi({
         title: 'Additional Soft Timeout Messages',
@@ -1160,6 +1160,15 @@ const SoftTimeoutConfigSchema = z
         title: 'Max Soft Timeouts Per Generation',
         description:
           'Maximum filler messages while waiting for a single LLM response. Fires every timeout_seconds until the LLM streams content or this limit is reached.',
+      }),
+    pause_after_filler: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Pause After Filler',
+        description:
+          "If enabled, leave a short pause after a filler message before the agent's response, so the two do not run together.",
       }),
     llm_generated_message_prompt_override: z
       .union([z.string().min(1).max(1000), z.null().nullable()])
@@ -2119,6 +2128,8 @@ const LLMSchema = z
     'gpt-6-luna',
     'gpt-6.1-sol',
     'gpt-6.1-terra',
+    'gpt-6.2-astra',
+    'gpt-6.2-sol',
     'gpt-5-mini',
     'gpt-5-nano',
     'gpt-3.5-turbo',
@@ -2139,6 +2150,8 @@ const LLMSchema = z
     'gemini-3.7-flash',
     'gemini-3.8-flash',
     'gemini-4-argon',
+    'gemini-4-hydrogen',
+    'gemini-4-neon',
     'claude-sonnet-4-5',
     'claude-opus-4-6',
     'claude-opus-4-7',
@@ -2155,7 +2168,6 @@ const LLMSchema = z
     'claude-3-5-sonnet',
     'claude-3-5-sonnet-v1',
     'claude-3-haiku',
-    'grok-beta',
     'custom-llm',
     'qwen3-4b',
     'qwen3-30b-a3b',
@@ -2567,6 +2579,7 @@ const ObjectJsonSchemaPropertyInputSchema: z.ZodType<ObjectJsonSchemaPropertyInp
               LiteralJsonSchemaPropertySchema,
               ObjectJsonSchemaPropertyInputSchema,
               ArrayJsonSchemaPropertyInputSchema,
+              AnyOfJsonSchemaPropertyInputSchema,
             ]),
           )
           .exactOptional()
@@ -4023,6 +4036,18 @@ const CustomLLMSchema = z
         description:
           'Optional workspace auth connection for authentication. Only auth connections that produce an Authorization Bearer token are supported; Basic auth, mTLS, custom header, and URL secret auth connections are not supported.',
       }),
+    mtls_auth_connection: z
+      .union([
+        AuthConnectionLocatorSchema,
+        EnvironmentAuthConnectionLocatorSchema,
+        z.null().nullable(),
+      ])
+      .exactOptional()
+      .openapi({
+        title: 'Mtls Auth Connection',
+        description:
+          'Optional mTLS auth connection. When set, its client certificate is used for the TLS handshake with the LLM endpoint and, when auth_connection is OAuth2 client credentials or OAuth2 JWT, with its token endpoint too. Application auth stays on auth_connection or api_key. auth_connection must then be OAuth2 client credentials, OAuth2 JWT or bearer.',
+      }),
     request_headers: z
       .record(
         z.string(),
@@ -4287,10 +4312,174 @@ const LiteralJsonSchemaPropertySchema: z.ZodType<LiteralJsonSchemaPropertyType> 
   })
   .openapi('LiteralJsonSchemaProperty')
 
-const QueryParamsJsonSchemaInputSchema = z
+const ArrayJsonSchemaPropertyInputSchema: z.ZodType<ArrayJsonSchemaPropertyInputType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        property_kind: z
+          .enum(['array', 'object'])
+          .default('array')
+          .exactOptional()
+          .openapi({ title: 'Property Kind' }),
+        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
+        dynamic_variable: z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({
+            title: 'Dynamic Variable',
+            description:
+              'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
+          }),
+        constant_value: z
+          .union([z.array(z.any()), z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            title: 'Constant Value',
+            description:
+              'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
+          }),
+        is_omitted: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            title: 'Is Omitted',
+            description:
+              'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
+          }),
+        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
+        items: z
+          .xor([
+            LiteralJsonSchemaPropertySchema,
+            ObjectJsonSchemaPropertyInputSchema,
+            ArrayJsonSchemaPropertyInputSchema,
+            AnyOfJsonSchemaPropertyInputSchema,
+          ])
+          .default({
+            type: 'string',
+            description: 'Array element',
+            is_system_provided: false,
+            dynamic_variable: '',
+            allowed_values_dynamic_variable: '',
+            constant_value: '',
+            is_omitted: false,
+          })
+          .exactOptional()
+          .openapi({ title: 'Items', description: 'Schema for array elements.' }),
+      })
+      .openapi({ title: 'ArrayJsonSchemaProperty', required: [] }),
+  )
+  .openapi('ArrayJsonSchemaPropertyInput')
+
+const AnyOfJsonSchemaPropertyInputSchema: z.ZodType<AnyOfJsonSchemaPropertyInputType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        any_of: z
+          .array(ObjectJsonSchemaPropertyInputSchema)
+          .min(2)
+          .openapi({ title: 'Any Of', description: 'The object shapes the value can take.' }),
+        discriminator: z
+          .string()
+          .min(1)
+          .openapi({
+            title: 'Discriminator',
+            description:
+              'The property every branch declares as a required string with a single enum value; that value names the branch.',
+          }),
+        description: z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ title: 'Description', description: 'What the value is, for the LLM.' }),
+      })
+      .openapi({ required: ['any_of', 'discriminator'], title: 'AnyOfJsonSchemaProperty' }),
+  )
+  .openapi('AnyOfJsonSchemaPropertyInput')
+
+const QueryArrayJsonSchemaPropertyInputSchema = z
+  .strictObject({
+    property_kind: z
+      .enum(['array', 'object'])
+      .default('array')
+      .exactOptional()
+      .openapi({ title: 'Property Kind' }),
+    description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
+    dynamic_variable: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Dynamic Variable',
+        description:
+          'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
+      }),
+    constant_value: z
+      .union([z.array(z.any()), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Constant Value',
+        description:
+          'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
+      }),
+    is_omitted: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Is Omitted',
+        description:
+          'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
+      }),
+    type: z.literal('array').openapi({ title: 'Type' }),
+    items: z
+      .xor([
+        LiteralJsonSchemaPropertySchema,
+        ObjectJsonSchemaPropertyInputSchema.openapi({
+          description: 'JSON schema for the parameters the LLM provides.',
+        }),
+        ArrayJsonSchemaPropertyInputSchema,
+        AnyOfJsonSchemaPropertyInputSchema,
+      ])
+      .default({
+        type: 'string',
+        description: 'Array element',
+        is_system_provided: false,
+        dynamic_variable: '',
+        allowed_values_dynamic_variable: '',
+        constant_value: '',
+        is_omitted: false,
+      })
+      .exactOptional()
+      .openapi({
+        title: 'Items',
+        description: 'Schema for each value; must be a string, number or boolean.',
+      }),
+  })
+  .openapi({
+    required: ['type'],
+    title: 'QueryArrayJsonSchemaProperty',
+    description: 'A query param holding several literals, sent as a repeated key (?a=x&a=y).',
+  })
+  .openapi('QueryArrayJsonSchemaPropertyInput')
+
+type QueryParamsJsonSchemaInputType = {
+  properties: {
+    [key: string]:
+      | z.infer<typeof LiteralJsonSchemaPropertySchema>
+      | z.infer<typeof QueryArrayJsonSchemaPropertyInputSchema>
+  }
+  required?: string[]
+}
+
+const QueryParamsJsonSchemaInputSchema: z.ZodType<QueryParamsJsonSchemaInputType> = z
   .strictObject({
     properties: z
-      .record(z.string(), LiteralJsonSchemaPropertySchema)
+      .record(
+        z.string(),
+        z.union([LiteralJsonSchemaPropertySchema, QueryArrayJsonSchemaPropertyInputSchema]),
+      )
       .refine((val) => Object.keys(val).length >= 1)
       .openapi({ title: 'Properties' }),
     required: z.array(z.string()).exactOptional().openapi({ title: 'Required' }),
@@ -4340,7 +4529,30 @@ const ResponseFilterSchema = z
   })
   .openapi('ResponseFilter')
 
-const WebhookToolApiSchemaConfigInputSchema = z
+type WebhookToolApiSchemaConfigInputType = {
+  request_headers?: {
+    [key: string]:
+      | string
+      | z.infer<typeof ConvAISecretLocatorSchema>
+      | z.infer<typeof ConvAIDynamicVariableSchema>
+      | z.infer<typeof ConvAIEnvVarLocatorSchema>
+  }
+  url: string
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  path_params_schema?: { [key: string]: z.infer<typeof LiteralJsonSchemaPropertySchema> }
+  query_params_schema?: z.infer<typeof QueryParamsJsonSchemaInputSchema> | null
+  request_body_schema?: z.infer<typeof ObjectJsonSchemaPropertyInputSchema> | null
+  response_body_schema?: z.infer<typeof ObjectJsonSchemaPropertyInputSchema> | null
+  response_filter?: z.infer<typeof ResponseFilterSchema> | null
+  content_type?: 'application/json' | 'application/x-www-form-urlencoded'
+  auth_resolved_params?: string[]
+  auth_connection?:
+    | z.infer<typeof AuthConnectionLocatorSchema>
+    | z.infer<typeof EnvironmentAuthConnectionLocatorSchema>
+    | null
+}
+
+const WebhookToolApiSchemaConfigInputSchema: z.ZodType<WebhookToolApiSchemaConfigInputType> = z
   .object({
     request_headers: z
       .record(
@@ -4385,12 +4597,7 @@ const WebhookToolApiSchemaConfigInputSchema = z
           'Schema for any query params, if any. These will be added to end of the URL as query params. Note: properties in a query param must all be literal types',
       }),
     request_body_schema: z
-      .union([
-        ObjectJsonSchemaPropertyInputSchema.openapi({
-          description: 'JSON schema for the parameters the LLM provides.',
-        }),
-        z.null().nullable(),
-      ])
+      .union([ObjectJsonSchemaPropertyInputSchema, z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -4460,7 +4667,27 @@ const WebhookToolApiSchemaConfigInputSchema = z
   })
   .openapi('WebhookToolApiSchemaConfigInput')
 
-const WebhookToolConfigInputSchema = z
+type WebhookToolConfigInputType = {
+  type?: 'webhook'
+  name: string
+  description: string
+  response_timeout_secs?: number
+  disable_interruptions?: boolean
+  interruption_mode?: z.infer<typeof ToolInterruptionModeSchema>
+  force_pre_tool_speech?: boolean
+  pre_tool_speech?: z.infer<typeof PreToolSpeechModeSchema>
+  assignments?: z.infer<typeof DynamicVariableAssignmentSchema>[]
+  tool_call_sound?: z.infer<typeof ToolCallSoundTypeSchema> | null
+  tool_call_sound_behavior?: z.infer<typeof ToolCallSoundBehaviorSchema>
+  tool_error_handling_mode?: z.infer<typeof ToolErrorHandlingModeSchema>
+  dynamic_variables?: z.infer<typeof DynamicVariablesConfigSchema>
+  execution_mode?: z.infer<typeof ToolExecutionModeSchema>
+  api_schema: z.infer<typeof WebhookToolApiSchemaConfigInputSchema>
+  follow_redirects?: boolean
+  follow_redirects_allowed_domains?: string[]
+}
+
+const WebhookToolConfigInputSchema: z.ZodType<WebhookToolConfigInputType> = z
   .object({
     type: z
       .literal('webhook')
@@ -6124,6 +6351,22 @@ const GetBookingSlugStatusParamsSchema = z
   .openapi({ title: 'GetBookingSlugStatusParams', required: [] })
   .openapi('GetBookingSlugStatusParams')
 
+const ConfirmChangeParamsSchema = z
+  .object({
+    smb_tool_type: z
+      .literal('smb_confirm_change')
+      .default('smb_confirm_change')
+      .exactOptional()
+      .openapi({ title: 'Smb Tool Type' }),
+  })
+  .openapi({
+    title: 'ConfirmChangeParams',
+    description:
+      "The owner's spoken answer to changes the assistant read back to them.\n\nRuns in the agent runtime rather than Reception: it needs the conversation's\nchat to check the owner actually answered after hearing the changes.",
+    required: [],
+  })
+  .openapi('ConfirmChangeParams')
+
 const SetBookingSlugParamsSchema = z
   .object({
     smb_tool_type: z
@@ -6581,6 +6824,7 @@ const SMBToolConfigSchema = z
         UpdateBookingPageSettingsParamsSchema,
         UpdateBookingPageAppearanceParamsSchema,
         GetBookingSlugStatusParamsSchema,
+        ConfirmChangeParamsSchema,
         SetBookingSlugParamsSchema,
         ListClientInteractionsParamsSchema,
         CreateClientInteractionParamsSchema,
@@ -6687,6 +6931,7 @@ const SMBToolConfigSchema = z
             search_clients: '#/components/schemas/SearchClientsParams',
             send_custom_email: '#/components/schemas/SendCustomEmailParams',
             set_booking_slug: '#/components/schemas/SetBookingSlugParams',
+            smb_confirm_change: '#/components/schemas/ConfirmChangeParams',
             submit_business_info: '#/components/schemas/SubmitBusinessInfoParams',
             trigger_user_verification: '#/components/schemas/TriggerUserVerificationParams',
             update_agent_config: '#/components/schemas/UpdateAgentConfigParams',
@@ -9311,6 +9556,7 @@ const ConfigEntityTypeSchema = z
     'occupation',
     'physical_attribute',
     'language',
+    'criminal_record',
     'username',
     'password',
     'url',
@@ -9624,6 +9870,14 @@ const AlertingSettingsSchema = z
         title: 'Auto Resolve After Inactive Minutes',
         description:
           'How many minutes an alert can stay inactive before it is auto-resolved. Unset values fall through to the next layer.',
+      }),
+    environments: z
+      .union([z.array(z.string()).min(1).max(20), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Environments',
+        description:
+          "Environments whose conversations are monitored, e.g. ``['production']``. The list must include ``production``. Unset values fall through to the next layer; when no layer sets it, every environment is monitored.",
       }),
     notifiers: z
       .array(
@@ -10188,6 +10442,14 @@ const SoftTimeoutConfigWorkflowOverrideSchema = z
         title: 'Max Soft Timeouts Per Generation',
         description:
           'Maximum filler messages while waiting for a single LLM response. Fires every timeout_seconds until the LLM streams content or this limit is reached.',
+      }),
+    pause_after_filler: z
+      .union([z.boolean(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Pause After Filler',
+        description:
+          "If enabled, leave a short pause after a filler message before the agent's response, so the two do not run together.",
       }),
     llm_generated_message_prompt_override: z
       .union([z.string(), z.null().nullable()])
@@ -11454,6 +11716,39 @@ const WorkflowToolNodeModelInputSchema = z
   .openapi({ title: 'WorkflowToolNodeModel', required: [] })
   .openapi('WorkflowToolNodeModelInput')
 
+const WorkflowStartProcedureNodeModelInputSchema = z
+  .object({
+    type: z
+      .literal('start_procedure')
+      .default('start_procedure')
+      .exactOptional()
+      .openapi({ title: 'Type' }),
+    position: PositionInputSchema.exactOptional().openapi({
+      description: 'Position of the node in the workflow.',
+    }),
+    edge_order: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        title: 'Edge Order',
+        description: 'The ids of outgoing edges in the order they should be evaluated.',
+      }),
+    procedure_id: z
+      .string()
+      .min(1)
+      .openapi({
+        title: 'Procedure Id',
+        description: 'ID of the procedure to start when the workflow reaches this node.',
+      }),
+  })
+  .openapi({
+    required: ['procedure_id'],
+    title: 'WorkflowStartProcedureNodeModel',
+    description:
+      "Starts one procedure when the workflow reaches it.\n\nA freeform procedure is injected and traversal continues along the node's\noutgoing edges in the same turn. A structured procedure transfers into its\ncompiled island with this node as the return node; when it ends, the\nworkflow runner hosts this node and evaluates its outgoing edges.",
+  })
+  .openapi('WorkflowStartProcedureNodeModelInput')
+
 type AgentWorkflowRequestModelType = {
   edges?: { [key: string]: z.infer<typeof WorkflowEdgeModelInputSchema> }
   nodes?: {
@@ -11464,6 +11759,7 @@ type AgentWorkflowRequestModelType = {
       | z.infer<typeof WorkflowOverrideAgentNodeModelInputSchema>
       | z.infer<typeof WorkflowStandaloneAgentNodeModelInputSchema>
       | z.infer<typeof WorkflowToolNodeModelInputSchema>
+      | z.infer<typeof WorkflowStartProcedureNodeModelInputSchema>
   }
   prevent_subagent_loops?: boolean
 }
@@ -11498,6 +11794,9 @@ const AgentWorkflowRequestModelSchema: z.ZodType<AgentWorkflowRequestModelType> 
             WorkflowToolNodeModelInputSchema.openapi({
               description: 'Executes one or more tools in parallel.',
             }),
+            WorkflowStartProcedureNodeModelInputSchema.openapi({
+              description: 'Starts a procedure, then continues along its outgoing edges.',
+            }),
           ])
           .openapi({
             discriminator: {
@@ -11508,6 +11807,7 @@ const AgentWorkflowRequestModelSchema: z.ZodType<AgentWorkflowRequestModelType> 
                 phone_number: '#/components/schemas/WorkflowPhoneNumberNodeModel-Input',
                 standalone_agent: '#/components/schemas/WorkflowStandaloneAgentNodeModel-Input',
                 start: '#/components/schemas/WorkflowStartNodeModel-Input',
+                start_procedure: '#/components/schemas/WorkflowStartProcedureNodeModel-Input',
                 tool: '#/components/schemas/WorkflowToolNodeModel-Input',
               },
             },
@@ -11605,8 +11905,8 @@ const AgentWorkflowRequestModelSchema: z.ZodType<AgentWorkflowRequestModelType> 
   .openapi('AgentWorkflowRequestModel')
 
 type AdhocAgentConfigOverrideForTestRequestModelType = {
-  conversation_config: z.infer<typeof ConversationalConfigAPIModelInputSchema>
-  platform_settings: z.infer<typeof AgentPlatformSettingsRequestModelSchema>
+  conversation_config?: z.infer<typeof ConversationalConfigAPIModelInputSchema>
+  platform_settings?: z.infer<typeof AgentPlatformSettingsRequestModelSchema>
   workflow?: z.infer<typeof AgentWorkflowRequestModelSchema> | null
 }
 
@@ -11650,6 +11950,7 @@ const ObjectJsonSchemaPropertyOutputSchema: z.ZodType<ObjectJsonSchemaPropertyOu
               LiteralJsonSchemaPropertySchema,
               ObjectJsonSchemaPropertyOutputSchema,
               ArrayJsonSchemaPropertyOutputSchema,
+              AnyOfJsonSchemaPropertyOutputSchema,
             ]),
           )
           .exactOptional()
@@ -12529,10 +12830,164 @@ const RagConfigOutputSchema = z
   .openapi({ title: 'RagConfig', required: [] })
   .openapi('RagConfigOutput')
 
-const QueryParamsJsonSchemaOutputSchema = z
+const ArrayJsonSchemaPropertyOutputSchema: z.ZodType<ArrayJsonSchemaPropertyOutputType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
+        dynamic_variable: z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({
+            title: 'Dynamic Variable',
+            description:
+              'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
+          }),
+        constant_value: z
+          .union([z.array(z.any()), z.null().nullable()])
+          .exactOptional()
+          .openapi({
+            title: 'Constant Value',
+            description:
+              'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
+          }),
+        is_omitted: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            title: 'Is Omitted',
+            description:
+              'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
+          }),
+        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
+        items: z
+          .xor([
+            LiteralJsonSchemaPropertySchema,
+            ObjectJsonSchemaPropertyOutputSchema,
+            ArrayJsonSchemaPropertyOutputSchema,
+            AnyOfJsonSchemaPropertyOutputSchema,
+          ])
+          .default({
+            type: 'string',
+            description: 'Array element',
+            is_system_provided: false,
+            dynamic_variable: '',
+            allowed_values_dynamic_variable: '',
+            constant_value: '',
+            is_omitted: false,
+          })
+          .exactOptional()
+          .openapi({ title: 'Items', description: 'Schema for array elements.' }),
+      })
+      .openapi({ title: 'ArrayJsonSchemaProperty', required: [] }),
+  )
+  .openapi('ArrayJsonSchemaPropertyOutput')
+
+const AnyOfJsonSchemaPropertyOutputSchema: z.ZodType<AnyOfJsonSchemaPropertyOutputType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        any_of: z
+          .array(ObjectJsonSchemaPropertyOutputSchema)
+          .min(2)
+          .openapi({ title: 'Any Of', description: 'The object shapes the value can take.' }),
+        discriminator: z
+          .string()
+          .min(1)
+          .openapi({
+            title: 'Discriminator',
+            description:
+              'The property every branch declares as a required string with a single enum value; that value names the branch.',
+          }),
+        description: z
+          .string()
+          .default('')
+          .exactOptional()
+          .openapi({ title: 'Description', description: 'What the value is, for the LLM.' }),
+      })
+      .openapi({ required: ['any_of', 'discriminator'], title: 'AnyOfJsonSchemaProperty' }),
+  )
+  .openapi('AnyOfJsonSchemaPropertyOutput')
+
+const QueryArrayJsonSchemaPropertyOutputSchema = z
+  .strictObject({
+    description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
+    dynamic_variable: z
+      .string()
+      .default('')
+      .exactOptional()
+      .openapi({
+        title: 'Dynamic Variable',
+        description:
+          'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
+      }),
+    constant_value: z
+      .union([z.array(z.any()), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Constant Value',
+        description:
+          'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
+      }),
+    is_omitted: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Is Omitted',
+        description:
+          'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
+      }),
+    type: z.literal('array').openapi({ title: 'Type' }),
+    items: z
+      .xor([
+        LiteralJsonSchemaPropertySchema,
+        ObjectJsonSchemaPropertyOutputSchema.openapi({
+          description: 'JSON schema for the parameters the LLM provides.',
+        }),
+        ArrayJsonSchemaPropertyOutputSchema,
+        AnyOfJsonSchemaPropertyOutputSchema,
+      ])
+      .default({
+        type: 'string',
+        description: 'Array element',
+        is_system_provided: false,
+        dynamic_variable: '',
+        allowed_values_dynamic_variable: '',
+        constant_value: '',
+        is_omitted: false,
+      })
+      .exactOptional()
+      .openapi({
+        title: 'Items',
+        description: 'Schema for each value; must be a string, number or boolean.',
+      }),
+  })
+  .openapi({
+    required: ['type'],
+    title: 'QueryArrayJsonSchemaProperty',
+    description: 'A query param holding several literals, sent as a repeated key (?a=x&a=y).',
+  })
+  .openapi('QueryArrayJsonSchemaPropertyOutput')
+
+type QueryParamsJsonSchemaOutputType = {
+  properties: {
+    [key: string]:
+      | z.infer<typeof LiteralJsonSchemaPropertySchema>
+      | z.infer<typeof QueryArrayJsonSchemaPropertyOutputSchema>
+  }
+  required?: string[]
+}
+
+const QueryParamsJsonSchemaOutputSchema: z.ZodType<QueryParamsJsonSchemaOutputType> = z
   .strictObject({
     properties: z
-      .record(z.string(), LiteralJsonSchemaPropertySchema)
+      .record(
+        z.string(),
+        z.union([LiteralJsonSchemaPropertySchema, QueryArrayJsonSchemaPropertyOutputSchema]),
+      )
       .refine((val) => Object.keys(val).length >= 1)
       .openapi({ title: 'Properties' }),
     required: z.array(z.string()).exactOptional().openapi({ title: 'Required' }),
@@ -12540,7 +12995,30 @@ const QueryParamsJsonSchemaOutputSchema = z
   .openapi({ required: ['properties'], title: 'QueryParamsJsonSchema' })
   .openapi('QueryParamsJsonSchemaOutput')
 
-const WebhookToolApiSchemaConfigOutputSchema = z
+type WebhookToolApiSchemaConfigOutputType = {
+  request_headers?: {
+    [key: string]:
+      | string
+      | z.infer<typeof ConvAISecretLocatorSchema>
+      | z.infer<typeof ConvAIDynamicVariableSchema>
+      | z.infer<typeof ConvAIEnvVarLocatorSchema>
+  }
+  url: string
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  path_params_schema?: { [key: string]: z.infer<typeof LiteralJsonSchemaPropertySchema> }
+  query_params_schema?: z.infer<typeof QueryParamsJsonSchemaOutputSchema> | null
+  request_body_schema?: z.infer<typeof ObjectJsonSchemaPropertyOutputSchema> | null
+  response_body_schema?: z.infer<typeof ObjectJsonSchemaPropertyOutputSchema> | null
+  response_filter?: z.infer<typeof ResponseFilterSchema> | null
+  content_type?: 'application/json' | 'application/x-www-form-urlencoded'
+  auth_resolved_params?: string[]
+  auth_connection?:
+    | z.infer<typeof AuthConnectionLocatorSchema>
+    | z.infer<typeof EnvironmentAuthConnectionLocatorSchema>
+    | null
+}
+
+const WebhookToolApiSchemaConfigOutputSchema: z.ZodType<WebhookToolApiSchemaConfigOutputType> = z
   .object({
     request_headers: z
       .record(
@@ -12585,12 +13063,7 @@ const WebhookToolApiSchemaConfigOutputSchema = z
           'Schema for any query params, if any. These will be added to end of the URL as query params. Note: properties in a query param must all be literal types',
       }),
     request_body_schema: z
-      .union([
-        ObjectJsonSchemaPropertyOutputSchema.openapi({
-          description: 'JSON schema for the parameters the LLM provides.',
-        }),
-        z.null().nullable(),
-      ])
+      .union([ObjectJsonSchemaPropertyOutputSchema, z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -12652,7 +13125,27 @@ const WebhookToolApiSchemaConfigOutputSchema = z
   })
   .openapi('WebhookToolApiSchemaConfigOutput')
 
-const WebhookToolConfigOutputSchema = z
+type WebhookToolConfigOutputType = {
+  type?: 'webhook'
+  name: string
+  description: string
+  response_timeout_secs?: number
+  disable_interruptions?: boolean
+  interruption_mode?: z.infer<typeof ToolInterruptionModeSchema>
+  force_pre_tool_speech?: boolean
+  pre_tool_speech?: z.infer<typeof PreToolSpeechModeSchema>
+  assignments?: z.infer<typeof DynamicVariableAssignmentSchema>[]
+  tool_call_sound?: z.infer<typeof ToolCallSoundTypeSchema> | null
+  tool_call_sound_behavior?: z.infer<typeof ToolCallSoundBehaviorSchema>
+  tool_error_handling_mode?: z.infer<typeof ToolErrorHandlingModeSchema>
+  dynamic_variables?: z.infer<typeof DynamicVariablesConfigSchema>
+  execution_mode?: z.infer<typeof ToolExecutionModeSchema>
+  api_schema: z.infer<typeof WebhookToolApiSchemaConfigOutputSchema>
+  follow_redirects?: boolean
+  follow_redirects_allowed_domains?: string[]
+}
+
+const WebhookToolConfigOutputSchema: z.ZodType<WebhookToolConfigOutputType> = z
   .object({
     type: z
       .literal('webhook')
@@ -13964,6 +14457,16 @@ const ConversationHistoryTranscriptToolCallMCPDetailsSchema = z
   })
   .openapi('ConversationHistoryTranscriptToolCallMCPDetails')
 
+const ConversationHistoryTranscriptToolCallIntegrationFunctionDetailsSchema = z
+  .object({
+    resolved_parameters: z.record(z.string(), z.string()).openapi({ title: 'Resolved Parameters' }),
+  })
+  .openapi({
+    required: ['resolved_parameters'],
+    title: 'ConversationHistoryTranscriptToolCallIntegrationFunctionDetails',
+  })
+  .openapi('ConversationHistoryTranscriptToolCallIntegrationFunctionDetails')
+
 const ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsOutputSchema = z
   .object({
     type: z
@@ -13977,6 +14480,10 @@ const ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsOutputSch
       .default('')
       .openapi({ title: 'Integration Connection Id' }),
     webhook_details: ConversationHistoryTranscriptToolCallWebhookDetailsSchema,
+    function_details: z.union([
+      ConversationHistoryTranscriptToolCallIntegrationFunctionDetailsSchema,
+      z.null().nullable(),
+    ]),
   })
   .openapi({
     required: [
@@ -13985,6 +14492,7 @@ const ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsOutputSch
       'credential_id',
       'integration_connection_id',
       'webhook_details',
+      'function_details',
     ],
     title: 'ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetails',
   })
@@ -16658,6 +17166,34 @@ const WorkflowToolNodeModelOutputSchema = z
   })
   .openapi('WorkflowToolNodeModelOutput')
 
+const WorkflowStartProcedureNodeModelOutputSchema = z
+  .object({
+    type: z.literal('start_procedure').default('start_procedure').openapi({ title: 'Type' }),
+    position: PositionOutputSchema.openapi({
+      description: 'Position of the node in the workflow.',
+    }),
+    edge_order: z
+      .array(z.string())
+      .openapi({
+        title: 'Edge Order',
+        description: 'The ids of outgoing edges in the order they should be evaluated.',
+      }),
+    procedure_id: z
+      .string()
+      .min(1)
+      .openapi({
+        title: 'Procedure Id',
+        description: 'ID of the procedure to start when the workflow reaches this node.',
+      }),
+  })
+  .openapi({
+    required: ['type', 'position', 'edge_order', 'procedure_id'],
+    title: 'WorkflowStartProcedureNodeModel',
+    description:
+      "Starts one procedure when the workflow reaches it.\n\nA freeform procedure is injected and traversal continues along the node's\noutgoing edges in the same turn. A structured procedure transfers into its\ncompiled island with this node as the return node; when it ends, the\nworkflow runner hosts this node and evaluates its outgoing edges.",
+  })
+  .openapi('WorkflowStartProcedureNodeModelOutput')
+
 type AgentWorkflowResponseModelType = {
   edges: { [key: string]: z.infer<typeof WorkflowEdgeModelOutputSchema> }
   nodes: {
@@ -16668,8 +17204,21 @@ type AgentWorkflowResponseModelType = {
       | z.infer<typeof WorkflowOverrideAgentNodeModelOutputSchema>
       | z.infer<typeof WorkflowStandaloneAgentNodeModelOutputSchema>
       | z.infer<typeof WorkflowToolNodeModelOutputSchema>
+      | z.infer<typeof WorkflowStartProcedureNodeModelOutputSchema>
   }
   prevent_subagent_loops: boolean
+}
+
+type AnyOfJsonSchemaPropertyInputType = {
+  any_of: z.infer<typeof ObjectJsonSchemaPropertyInputSchema>[]
+  discriminator: string
+  description?: string
+}
+
+type AnyOfJsonSchemaPropertyOutputType = {
+  any_of: z.infer<typeof ObjectJsonSchemaPropertyOutputSchema>[]
+  discriminator: string
+  description?: string
 }
 
 type ArrayJsonSchemaPropertyInputType = {
@@ -16683,6 +17232,7 @@ type ArrayJsonSchemaPropertyInputType = {
     | z.infer<typeof LiteralJsonSchemaPropertySchema>
     | z.infer<typeof ObjectJsonSchemaPropertyInputSchema>
     | ArrayJsonSchemaPropertyInputType
+    | z.infer<typeof AnyOfJsonSchemaPropertyInputSchema>
 }
 
 type ArrayJsonSchemaPropertyOutputType = {
@@ -16695,6 +17245,7 @@ type ArrayJsonSchemaPropertyOutputType = {
     | z.infer<typeof LiteralJsonSchemaPropertySchema>
     | z.infer<typeof ObjectJsonSchemaPropertyOutputSchema>
     | ArrayJsonSchemaPropertyOutputType
+    | z.infer<typeof AnyOfJsonSchemaPropertyOutputSchema>
 }
 
 const ContentSchemaSchema: z.ZodType<ContentSchemaType> = z
@@ -16910,11 +17461,13 @@ const ConversationInitiationSourceSchema = z
     'whatsapp',
     'twilio_sms',
     'flutter_sdk',
+    'unity_sdk',
     'zendesk_integration',
     'slack_integration',
     'telegram_integration',
     'intercom_integration',
     'freshdesk_integration',
+    'plain_integration',
     'salesforce_integration',
     'template_preview',
     'genesys_bot_connector',
@@ -17289,6 +17842,12 @@ const ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsInputSche
       .exactOptional()
       .openapi({ title: 'Integration Connection Id' }),
     webhook_details: ConversationHistoryTranscriptToolCallWebhookDetailsSchema,
+    function_details: z
+      .union([
+        ConversationHistoryTranscriptToolCallIntegrationFunctionDetailsSchema,
+        z.null().nullable(),
+      ])
+      .exactOptional(),
   })
   .openapi({
     required: ['webhook_details'],
@@ -18301,6 +18860,30 @@ const CallingPeriodPolicySchema = z
   .openapi({ required: ['weekdays', 'intervals'], title: 'CallingPeriodPolicy' })
   .openapi('CallingPeriodPolicy')
 
+const DateOverridePolicySchema = z
+  .object({
+    start_date: z.iso
+      .date()
+      .openapi({ title: 'Start Date', description: 'First local date the override applies on.' }),
+    end_date: z.iso
+      .date()
+      .openapi({
+        title: 'End Date',
+        description: 'Last local date the override applies on, inclusive.',
+      }),
+    intervals: z
+      .array(CallingIntervalPolicySchema)
+      .exactOptional()
+      .openapi({
+        title: 'Intervals',
+        description:
+          'Calling windows on every day from `start_date` to `end_date`, replacing the weekly ones. Empty means no calls on those days.',
+      }),
+    name: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Name' }),
+  })
+  .openapi({ required: ['start_date', 'end_date'], title: 'DateOverridePolicy' })
+  .openapi('DateOverridePolicy')
+
 const DataCollectionPolicySchema = z
   .object({
     callback_time: z
@@ -18368,6 +18951,10 @@ const CampaignPolicySnapshotSchema = z
     timezone: z.string().openapi({ title: 'Timezone' }),
     retry: RetryPolicySchema,
     calling_periods: z.array(CallingPeriodPolicySchema).openapi({ title: 'Calling Periods' }),
+    date_overrides: z
+      .array(DateOverridePolicySchema)
+      .exactOptional()
+      .openapi({ title: 'Date Overrides' }),
     data_collection: DataCollectionPolicySchema,
     followup_context: FollowupContextPolicySchema,
   })
@@ -18569,6 +19156,9 @@ const AgentWorkflowResponseModelSchema: z.ZodType<AgentWorkflowResponseModelType
             WorkflowToolNodeModelOutputSchema.openapi({
               description: 'Executes one or more tools in parallel.',
             }),
+            WorkflowStartProcedureNodeModelOutputSchema.openapi({
+              description: 'Starts a procedure, then continues along its outgoing edges.',
+            }),
           ])
           .openapi({
             discriminator: {
@@ -18579,6 +19169,7 @@ const AgentWorkflowResponseModelSchema: z.ZodType<AgentWorkflowResponseModelType
                 phone_number: '#/components/schemas/WorkflowPhoneNumberNodeModel-Output',
                 standalone_agent: '#/components/schemas/WorkflowStandaloneAgentNodeModel-Output',
                 start: '#/components/schemas/WorkflowStartNodeModel-Output',
+                start_procedure: '#/components/schemas/WorkflowStartProcedureNodeModel-Output',
                 tool: '#/components/schemas/WorkflowToolNodeModel-Output',
               },
             },
@@ -20465,6 +21056,10 @@ const AlertingSettingsResponseSchema = z
       .union([z.int(), z.null().nullable()])
       .exactOptional()
       .openapi({ title: 'Auto Resolve After Inactive Minutes' }),
+    environments: z
+      .union([z.array(z.string()), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Environments' }),
     notifiers: z
       .array(
         z.xor([
@@ -21430,7 +22025,7 @@ const ConversationChargingCommonModelSchema = z
       .openapi({
         title: 'Voice Surcharge Charge',
         description:
-          'Credits charged as the voice actor reward for the Voice Library voices this conversation used. It is not included in `cost`.',
+          'Credits charged as the voice owner fee for the custom rate voices this conversation used. It is not included in `cost`.',
       }),
   })
   .openapi({ title: 'ConversationChargingCommonModel', required: [] })
@@ -23883,160 +24478,6 @@ type GetVoicesV2ResponseModelType = {
   next_page_token?: string | null
 }
 
-const LLMObjectJsonSchemaPropertyInputSchema: z.ZodType<LLMObjectJsonSchemaPropertyInputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        type: z.literal('object').default('object').exactOptional().openapi({ title: 'Type' }),
-        required: z.array(z.string()).exactOptional().openapi({ title: 'Required' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        properties: z
-          .record(
-            z.string(),
-            z.xor([
-              LLMLiteralJsonSchemaPropertySchema,
-              LLMObjectJsonSchemaPropertyInputSchema,
-              LLMArrayJsonSchemaPropertyInputSchema,
-              LLMAnyOfJsonSchemaPropertyInputSchema,
-            ]),
-          )
-          .exactOptional()
-          .openapi({ title: 'Properties' }),
-      })
-      .openapi({ title: 'LLMObjectJsonSchemaProperty', required: [] }),
-  )
-  .openapi('LLMObjectJsonSchemaPropertyInput')
-
-type LLMAnyOfJsonSchemaPropertyInputType = {
-  any_of: z.infer<typeof LLMObjectJsonSchemaPropertyInputSchema>[]
-  description?: string
-}
-
-type LLMAnyOfJsonSchemaPropertyOutputType = { [key: string]: unknown }
-
-const LLMAnyOfJsonSchemaPropertyInputSchema: z.ZodType<LLMAnyOfJsonSchemaPropertyInputType> = z
-  .lazy(() =>
-    z
-      .object({
-        any_of: z.array(LLMObjectJsonSchemaPropertyInputSchema).openapi({ title: 'Any Of' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-      })
-      .openapi({ required: ['any_of'], title: 'LLMAnyOfJsonSchemaProperty' }),
-  )
-  .openapi('LLMAnyOfJsonSchemaPropertyInput')
-
-type LLMArrayJsonSchemaPropertyInputType = {
-  type?: 'array'
-  description?: string
-  items:
-    | z.infer<typeof LLMLiteralJsonSchemaPropertySchema>
-    | z.infer<typeof LLMObjectJsonSchemaPropertyInputSchema>
-    | LLMArrayJsonSchemaPropertyInputType
-    | z.infer<typeof LLMAnyOfJsonSchemaPropertyInputSchema>
-}
-
-const LLMObjectJsonSchemaPropertyOutputSchema: z.ZodType<LLMObjectJsonSchemaPropertyOutputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        type: z.literal('object').default('object').exactOptional().openapi({ title: 'Type' }),
-        required: z.array(z.string()).exactOptional().openapi({ title: 'Required' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        properties: z
-          .record(
-            z.string(),
-            z.xor([
-              LLMLiteralJsonSchemaPropertySchema,
-              LLMObjectJsonSchemaPropertyOutputSchema,
-              LLMArrayJsonSchemaPropertyOutputSchema,
-              LLMAnyOfJsonSchemaPropertyOutputSchema,
-            ]),
-          )
-          .exactOptional()
-          .openapi({ title: 'Properties' }),
-      })
-      .openapi({ title: 'LLMObjectJsonSchemaProperty', required: [] }),
-  )
-  .openapi('LLMObjectJsonSchemaPropertyOutput')
-
-const LLMAnyOfJsonSchemaPropertyOutputSchema: z.ZodType<LLMAnyOfJsonSchemaPropertyOutputType> = z
-  .looseObject({})
-  .openapi('LLMAnyOfJsonSchemaPropertyOutput')
-
-type LLMArrayJsonSchemaPropertyOutputType = {
-  type?: 'array'
-  description?: string
-  items:
-    | z.infer<typeof LLMLiteralJsonSchemaPropertySchema>
-    | z.infer<typeof LLMObjectJsonSchemaPropertyOutputSchema>
-    | LLMArrayJsonSchemaPropertyOutputType
-    | z.infer<typeof LLMAnyOfJsonSchemaPropertyOutputSchema>
-}
-
-const LLMArrayJsonSchemaPropertyInputSchema: z.ZodType<LLMArrayJsonSchemaPropertyInputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        items: z
-          .xor([
-            LLMLiteralJsonSchemaPropertySchema,
-            LLMObjectJsonSchemaPropertyInputSchema,
-            LLMArrayJsonSchemaPropertyInputSchema,
-            LLMAnyOfJsonSchemaPropertyInputSchema,
-          ])
-          .openapi({ title: 'Items' }),
-      })
-      .openapi({ required: ['items'], title: 'LLMArrayJsonSchemaProperty' }),
-  )
-  .openapi('LLMArrayJsonSchemaPropertyInput')
-
-type LLMObjectJsonSchemaPropertyInputType = {
-  type?: 'object'
-  required?: string[]
-  description?: string
-  properties?: {
-    [key: string]:
-      | z.infer<typeof LLMLiteralJsonSchemaPropertySchema>
-      | LLMObjectJsonSchemaPropertyInputType
-      | z.infer<typeof LLMArrayJsonSchemaPropertyInputSchema>
-      | z.infer<typeof LLMAnyOfJsonSchemaPropertyInputSchema>
-  }
-}
-
-const LLMArrayJsonSchemaPropertyOutputSchema: z.ZodType<LLMArrayJsonSchemaPropertyOutputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        items: z
-          .xor([
-            LLMLiteralJsonSchemaPropertySchema,
-            LLMObjectJsonSchemaPropertyOutputSchema,
-            LLMArrayJsonSchemaPropertyOutputSchema,
-            LLMAnyOfJsonSchemaPropertyOutputSchema,
-          ])
-          .openapi({ title: 'Items' }),
-      })
-      .openapi({ required: ['items'], title: 'LLMArrayJsonSchemaProperty' }),
-  )
-  .openapi('LLMArrayJsonSchemaPropertyOutput')
-
-type LLMObjectJsonSchemaPropertyOutputType = {
-  type?: 'object'
-  required?: string[]
-  description?: string
-  properties?: {
-    [key: string]:
-      | z.infer<typeof LLMLiteralJsonSchemaPropertySchema>
-      | LLMObjectJsonSchemaPropertyOutputType
-      | z.infer<typeof LLMArrayJsonSchemaPropertyOutputSchema>
-      | z.infer<typeof LLMAnyOfJsonSchemaPropertyOutputSchema>
-  }
-}
-
 const MCPToolApprovalPolicySchema = z
   .enum(['auto_approved', 'requires_approval'])
   .default('requires_approval')
@@ -24844,8 +25285,23 @@ const FieldConflictSchema = z
       .any()
       .exactOptional()
       .openapi({ title: 'Target Value', description: 'Value on the target branch tip.' }),
+    id: z
+      .string()
+      .openapi({
+        title: 'Id',
+        description: 'Stable identifier of this conflict within a merge.',
+        readOnly: true,
+      }),
+    accepts_custom_value: z
+      .boolean()
+      .openapi({
+        title: 'Accepts Custom Value',
+        description:
+          'Whether a resolution of this conflict may use `custom` with a `custom_value` instead of keeping a side.',
+        readOnly: true,
+      }),
   })
-  .openapi({ required: ['path', 'section'], title: 'FieldConflict' })
+  .openapi({ required: ['path', 'section', 'id', 'accepts_custom_value'], title: 'FieldConflict' })
   .openapi('FieldConflict')
 
 type MergePreviewResponseModelType = {
@@ -24871,6 +25327,9 @@ type MergePreviewResponseModelType = {
   overridden_fields?: string[]
   conflicts?: z.infer<typeof FieldConflictSchema>[]
   source_identical_to_target?: boolean
+  source_tip_version_id?: string | null
+  target_tip_version_id?: string | null
+  merge_error?: string | null
 }
 
 const TimeRangeSchema = z
@@ -25316,65 +25775,6 @@ const OTelResourceSpansSchema: z.ZodType<OTelResourceSpansType> = z
 
 type OTelTracePayloadType = { resourceSpans: z.infer<typeof OTelResourceSpansSchema>[] }
 
-const ArrayJsonSchemaPropertyInputSchema: z.ZodType<ArrayJsonSchemaPropertyInputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        property_kind: z
-          .enum(['array', 'object'])
-          .default('array')
-          .exactOptional()
-          .openapi({ title: 'Property Kind' }),
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        dynamic_variable: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({
-            title: 'Dynamic Variable',
-            description:
-              'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
-          }),
-        constant_value: z
-          .union([z.array(z.any()), z.null().nullable()])
-          .exactOptional()
-          .openapi({
-            title: 'Constant Value',
-            description:
-              'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
-          }),
-        is_omitted: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            title: 'Is Omitted',
-            description:
-              'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
-          }),
-        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
-        items: z
-          .xor([
-            LiteralJsonSchemaPropertySchema,
-            ObjectJsonSchemaPropertyInputSchema,
-            ArrayJsonSchemaPropertyInputSchema,
-          ])
-          .default({
-            type: 'string',
-            description: 'Array element',
-            is_system_provided: false,
-            dynamic_variable: '',
-            allowed_values_dynamic_variable: '',
-            constant_value: '',
-            is_omitted: false,
-          })
-          .exactOptional()
-          .openapi({ title: 'Items', description: 'Schema for array elements.' }),
-      })
-      .openapi({ title: 'ArrayJsonSchemaProperty', required: [] }),
-  )
-  .openapi('ArrayJsonSchemaPropertyInput')
-
 const RequiredConstraintSchema = z
   .object({ required: z.array(z.string()).openapi({ title: 'Required' }) })
   .openapi({
@@ -25414,63 +25814,10 @@ type ObjectJsonSchemaPropertyInputType = {
       | z.infer<typeof LiteralJsonSchemaPropertySchema>
       | ObjectJsonSchemaPropertyInputType
       | z.infer<typeof ArrayJsonSchemaPropertyInputSchema>
+      | z.infer<typeof AnyOfJsonSchemaPropertyInputSchema>
   }
   required_constraints?: z.infer<typeof RequiredConstraintsSchema> | null
 }
-
-const ArrayJsonSchemaPropertyOutputSchema: z.ZodType<ArrayJsonSchemaPropertyOutputType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-        dynamic_variable: z
-          .string()
-          .default('')
-          .exactOptional()
-          .openapi({
-            title: 'Dynamic Variable',
-            description:
-              'When set, the entire parameter is populated from this dynamic variable at runtime. Mutually exclusive with description (LLM-provided value), constant_value, and is_omitted.',
-          }),
-        constant_value: z
-          .union([z.array(z.any()), z.null().nullable()])
-          .exactOptional()
-          .openapi({
-            title: 'Constant Value',
-            description:
-              'When set, the entire array uses this constant value at runtime. Mutually exclusive with description (LLM-provided array), dynamic_variable, and is_omitted.',
-          }),
-        is_omitted: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            title: 'Is Omitted',
-            description:
-              'If true, this parameter will be completely omitted from the request. Only valid for optional parameters. Mutually exclusive with description, dynamic_variable, and constant_value.',
-          }),
-        type: z.literal('array').default('array').exactOptional().openapi({ title: 'Type' }),
-        items: z
-          .xor([
-            LiteralJsonSchemaPropertySchema,
-            ObjectJsonSchemaPropertyOutputSchema,
-            ArrayJsonSchemaPropertyOutputSchema,
-          ])
-          .default({
-            type: 'string',
-            description: 'Array element',
-            is_system_provided: false,
-            dynamic_variable: '',
-            allowed_values_dynamic_variable: '',
-            constant_value: '',
-            is_omitted: false,
-          })
-          .exactOptional()
-          .openapi({ title: 'Items', description: 'Schema for array elements.' }),
-      })
-      .openapi({ title: 'ArrayJsonSchemaProperty', required: [] }),
-  )
-  .openapi('ArrayJsonSchemaPropertyOutput')
 
 type ObjectJsonSchemaPropertyOutputType = {
   description?: string
@@ -25484,6 +25831,7 @@ type ObjectJsonSchemaPropertyOutputType = {
       | z.infer<typeof LiteralJsonSchemaPropertySchema>
       | ObjectJsonSchemaPropertyOutputType
       | z.infer<typeof ArrayJsonSchemaPropertyOutputSchema>
+      | z.infer<typeof AnyOfJsonSchemaPropertyOutputSchema>
   }
   required_constraints?: z.infer<typeof RequiredConstraintsSchema> | null
 }
@@ -27302,6 +27650,33 @@ const CallingPeriodSchema = z
   .openapi({ required: ['weekdays', 'intervals'], title: 'CallingPeriod' })
   .openapi('CallingPeriod')
 
+const DateOverrideSchema = z
+  .object({
+    start_date: z.iso
+      .date()
+      .openapi({ title: 'Start Date', description: 'First local date the override applies on.' }),
+    end_date: z.iso
+      .date()
+      .openapi({
+        title: 'End Date',
+        description: 'Last local date the override applies on, inclusive.',
+      }),
+    intervals: z
+      .array(CallingIntervalPolicySchema)
+      .exactOptional()
+      .openapi({
+        title: 'Intervals',
+        description:
+          'Calling windows on every day from `start_date` to `end_date`, replacing the weekly ones. Empty means no calls on those days.',
+      }),
+    name: z
+      .union([z.string().min(1).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({ title: 'Name', description: 'What the override is for, such as `Christmas`.' }),
+  })
+  .openapi({ required: ['start_date', 'end_date'], title: 'DateOverride' })
+  .openapi('DateOverride')
+
 const DataCollectionConfigSchema = z
   .object({
     callback_time: z
@@ -27364,6 +27739,15 @@ const PolicyConfigInputSchema = z
         title: 'Calling Periods',
         description: 'The weekly windows calls may be placed in.',
       }),
+    date_overrides: z
+      .array(DateOverrideSchema)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        title: 'Date Overrides',
+        description:
+          'Local dates in `timezone` whose calling windows replace `calling_periods`. Date ranges may not overlap.',
+      }),
     data_collection: DataCollectionConfigSchema.exactOptional(),
     followup_context: FollowupContextPolicySchema.exactOptional(),
   })
@@ -27381,6 +27765,14 @@ const AgentPolicyOverrideInputSchema = z
       .union([z.array(CallingPeriodSchema).min(1), z.null().nullable()])
       .exactOptional()
       .openapi({ title: 'Calling Periods' }),
+    date_overrides: z
+      .union([z.array(DateOverrideSchema).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Date Overrides',
+        description:
+          'Replaces the inherited date overrides; unset inherits them and an empty list clears them.',
+      }),
     data_collection: z.union([DataCollectionConfigSchema, z.null().nullable()]).exactOptional(),
     followup_context: z.union([FollowupContextPolicySchema, z.null().nullable()]).exactOptional(),
   })
@@ -27422,14 +27814,25 @@ type ReplaceWorkspaceConfigRequestType = {
 const AdhocAgentConfigOverrideForTestRequestModelSchema: z.ZodType<AdhocAgentConfigOverrideForTestRequestModelType> =
   z
     .object({
-      conversation_config: ConversationalConfigAPIModelInputSchema,
-      platform_settings: AgentPlatformSettingsRequestModelSchema,
-      workflow: z.union([AgentWorkflowRequestModelSchema, z.null().nullable()]).exactOptional(),
+      conversation_config: ConversationalConfigAPIModelInputSchema.exactOptional().openapi({
+        title: 'Conversation Config',
+        description:
+          "Conversation config fields to change for this run. Fields left out keep the agent's values.",
+      }),
+      platform_settings: AgentPlatformSettingsRequestModelSchema.exactOptional().openapi({
+        title: 'Platform Settings',
+        description:
+          "Platform settings fields to change for this run. Fields left out keep the agent's values.",
+      }),
+      workflow: z
+        .union([AgentWorkflowRequestModelSchema, z.null().nullable()])
+        .exactOptional()
+        .openapi({
+          description:
+            "A workflow to run instead of the agent's. It replaces the agent's workflow whole.",
+        }),
     })
-    .openapi({
-      required: ['conversation_config', 'platform_settings'],
-      title: 'AdhocAgentConfigOverrideForTestRequestModel',
-    })
+    .openapi({ title: 'AdhocAgentConfigOverrideForTestRequestModel', required: [] })
     .openapi('AdhocAgentConfigOverrideForTestRequestModel')
 
 type ResubmitTestsRequestModelType = {
@@ -27509,6 +27912,14 @@ const SubmitCampaignRecipientSchema = z
       .openapi({
         title: 'Id',
         description: "Your identifier for the recipient, returned as its lead's `recipient_id`.",
+      }),
+    timezone_override: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Timezone Override',
+        description:
+          "IANA timezone to read the calling windows and callback times in for this recipient, overriding the campaign's.",
       }),
     conversation_initiation_client_data: z
       .union([ConversationInitiationClientDataRequestInputSchema, z.null().nullable()])
@@ -29106,6 +29517,15 @@ const PolicyConfigOutputSchema = z
         title: 'Calling Periods',
         description: 'The weekly windows calls may be placed in.',
       }),
+    date_overrides: z
+      .array(DateOverrideSchema)
+      .max(100)
+      .exactOptional()
+      .openapi({
+        title: 'Date Overrides',
+        description:
+          'Local dates in `timezone` whose calling windows replace `calling_periods`. Date ranges may not overlap.',
+      }),
     data_collection: DataCollectionConfigSchema.exactOptional(),
     followup_context: FollowupContextPolicySchema.exactOptional(),
   })
@@ -29123,6 +29543,14 @@ const AgentPolicyOverrideOutputSchema = z
       .union([z.array(CallingPeriodSchema).min(1), z.null().nullable()])
       .exactOptional()
       .openapi({ title: 'Calling Periods' }),
+    date_overrides: z
+      .union([z.array(DateOverrideSchema).max(100), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Date Overrides',
+        description:
+          'Replaces the inherited date overrides; unset inherits them and an empty list clears them.',
+      }),
     data_collection: z.union([DataCollectionConfigSchema, z.null().nullable()]).exactOptional(),
     followup_context: z.union([FollowupContextPolicySchema, z.null().nullable()]).exactOptional(),
   })
@@ -30451,21 +30879,6 @@ const AgentChatResponsePartClientEventSchema = z
   .openapi({ required: ['text_response_part'], title: 'AgentChatResponsePartClientEvent' })
   .openapi('AgentChatResponsePartClientEvent')
 
-const AgentConversationTicketIssueTypeSchema = z
-  .enum([
-    'knowledge_gap',
-    'incorrect_information',
-    'documentation_gap',
-    'product_feedback',
-    'platform_bug',
-    'tool_issue',
-    'missing_tool',
-    'unnecessary_escalation',
-    'wrong_action',
-  ])
-  .openapi({ title: 'AgentConversationTicketIssueType' })
-  .openapi('AgentConversationTicketIssueType')
-
 const AgentConversationTicketPrioritySchema = z
   .enum(['low', 'medium', 'high', 'urgent'])
   .openapi({ title: 'AgentConversationTicketPriority' })
@@ -30586,7 +30999,15 @@ const AgentConversationTicketResponseModelSchema = z
         description:
           'One-line headline for the agent issue. None only on issues created before titles existed.',
       }),
-    issue_type: z.union([AgentConversationTicketIssueTypeSchema, z.null().nullable()]),
+    issue_type: z
+      .null()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        title: 'Issue Type',
+        description: 'Always null. Issue types are labels, written as `issue_type:<value>`.',
+        deprecated: true,
+      }),
     labels: z.array(z.string()).openapi({ title: 'Labels' }),
     conversation_ids: z.array(z.string()).openapi({ title: 'Conversation Ids' }),
     first_seen_unix_secs: z
@@ -30636,7 +31057,6 @@ const AgentConversationTicketResponseModelSchema = z
       'agent_id',
       'needs_clustering',
       'title',
-      'issue_type',
       'labels',
       'conversation_ids',
       'first_seen_unix_secs',
@@ -31672,64 +32092,6 @@ const AgentTopicResponseModelSchema = z
   })
   .openapi('AgentTopicResponseModel')
 
-const AgentTransferOpReplaceSchema = z
-  .object({
-    type: z.literal('replace').default('replace').exactOptional().openapi({ title: 'Type' }),
-  })
-  .openapi({ title: 'AgentTransferOpReplace', required: [] })
-  .openapi('AgentTransferOpReplace')
-
-const AgentTransferOpPushSchema = z
-  .object({
-    type: z.literal('push').default('push').exactOptional().openapi({ title: 'Type' }),
-    return_node_id: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Return Node Id' }),
-  })
-  .openapi({ title: 'AgentTransferOpPush', required: [] })
-  .openapi('AgentTransferOpPush')
-
-const AgentTransferOpPopSchema = z
-  .object({ type: z.literal('pop').default('pop').exactOptional().openapi({ title: 'Type' }) })
-  .openapi({ title: 'AgentTransferOpPop', required: [] })
-  .openapi('AgentTransferOpPop')
-
-const AgentTransferOpSchema = z
-  .xor([AgentTransferOpReplaceSchema, AgentTransferOpPushSchema, AgentTransferOpPopSchema])
-  .openapi({
-    discriminator: {
-      propertyName: 'type',
-      mapping: {
-        pop: '#/components/schemas/AgentTransferOpPop',
-        push: '#/components/schemas/AgentTransferOpPush',
-        replace: '#/components/schemas/AgentTransferOpReplace',
-      },
-    },
-  })
-  .openapi('AgentTransferOp')
-
-const AlertingWebhookHeaderSchema = z
-  .object({
-    name: z.string().max(256).openapi({ title: 'Name' }),
-    is_secret: z.boolean().default(false).exactOptional().openapi({ title: 'Is Secret' }),
-    value: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Value',
-        description: 'Header value. May be null only for a secret header on update.',
-      }),
-  })
-  .openapi({ required: ['name'], title: 'AlertingWebhookHeader' })
-  .openapi('AlertingWebhookHeader')
-
-const AlertingWebhookMethodSchema = z
-  .enum(['POST', 'PUT'])
-  .default('POST')
-  .openapi({ title: 'AlertingWebhookMethod' })
-  .openapi('AlertingWebhookMethod')
-
 const AlertingWebhookSecretHeaderValueSchema = z
   .object({
     encrypted_value: z.string().openapi({ title: 'Encrypted Value' }),
@@ -32317,23 +32679,6 @@ const ApplicationNumberTypeSchema = z
     description: 'Which kind of regulated number a request or an issued number is for.',
   })
   .openapi('ApplicationNumberType')
-
-const AppointmentReminderModeSchema = z
-  .enum(['reminder', 'confirmation'])
-  .openapi({ title: 'AppointmentReminderMode' })
-  .openapi('AppointmentReminderMode')
-
-const ArchitectDispatchResponseModelSchema = z
-  .object({
-    architect_chat_id: z.string().openapi({ title: 'Architect Chat Id' }),
-    user_id: z.string().openapi({ title: 'User Id' }),
-    dispatched_at_unix_secs: z.int().openapi({ title: 'Dispatched At Unix Secs' }),
-  })
-  .openapi({
-    required: ['architect_chat_id', 'user_id', 'dispatched_at_unix_secs'],
-    title: 'ArchitectDispatchResponseModel',
-  })
-  .openapi('ArchitectDispatchResponseModel')
 
 const AssetResponseSchema = z
   .object({
@@ -33040,6 +33385,9 @@ const AuditActivityNameSchema = z
     'Notification Preference Deletion',
     'Notification Preference Management',
     'Notification Preference Update',
+    'OAuth App Authorization Grant',
+    'OAuth App Authorization Management',
+    'OAuth App Authorization Revocation',
     'Password Reset Email Request',
     'Password Reset Link Generation',
     'Reporting Workspace SSO Inheritance Update',
@@ -33096,6 +33444,14 @@ const AuditActivityNameSchema = z
     'Webhook Deletion',
     'Webhook Management',
     'Webhook Update',
+    'Workload Identity Federation Assignment Creation',
+    'Workload Identity Federation Assignment Deletion',
+    'Workload Identity Federation Assignment Management',
+    'Workload Identity Federation Pool Creation',
+    'Workload Identity Federation Pool Deletion',
+    'Workload Identity Federation Pool Management',
+    'Workload Identity Federation Pool Update',
+    'Workload Identity Federation Token Exchange',
     'Workspace Creation',
     'Workspace Deletion',
     'Workspace Deletion Cancellation',
@@ -33149,57 +33505,6 @@ const AuthenticationActivityIdSchema = z
       'OCSF Activity IDs for Authentication [3002] events.\n\nSpec: https://schema.ocsf.io/1.6.0/classes/authentication',
   })
   .openapi('AuthenticationActivityId')
-
-const AutoGenerationMetadataSchema = z
-  .object({
-    agent_id: z
-      .string()
-      .openapi({
-        title: 'Agent Id',
-        description: 'Agent whose simulation library this test belongs to.',
-      }),
-    stable_topic_id: z
-      .string()
-      .openapi({
-        title: 'Stable Topic Id',
-        description: 'Stable topic id (from topic discovery) this test covers.',
-      }),
-    criteria_id: z
-      .string()
-      .openapi({ title: 'Criteria Id', description: 'Evaluation criterion id this test targets.' }),
-    topic_label: z
-      .string()
-      .openapi({
-        title: 'Topic Label',
-        description: 'Human-readable topic label at generation time.',
-      }),
-    source_conversation_id: z
-      .string()
-      .openapi({
-        title: 'Source Conversation Id',
-        description: 'Conversation the test was generated from.',
-      }),
-    generated_at_unix: z
-      .int()
-      .openapi({
-        title: 'Generated At Unix',
-        description: 'Unix timestamp (seconds) when the test was generated.',
-      }),
-  })
-  .openapi({
-    required: [
-      'agent_id',
-      'stable_topic_id',
-      'criteria_id',
-      'topic_label',
-      'source_conversation_id',
-      'generated_at_unix',
-    ],
-    title: 'AutoGenerationMetadata',
-    description:
-      'Metadata for an automatically generated simulation test.\n\nTracks the origin and context of tests that were auto-generated from\nconversations, including the source conversation, topic, and evaluation\ncriteria the test covers.',
-  })
-  .openapi('AutoGenerationMetadata')
 
 const AutoSyncInfoSchema = z
   .object({
@@ -36757,6 +37062,37 @@ const BodyMakeAnOutboundCallViaWhatsAppV1ConvaiWhatsappOutboundCallPostSchema = 
   })
   .openapi('BodyMakeAnOutboundCallViaWhatsAppV1ConvaiWhatsappOutboundCallPost')
 
+const ConflictResolutionChoiceSchema = z
+  .enum(['source', 'target', 'custom'])
+  .openapi({ title: 'ConflictResolutionChoice' })
+  .openapi('ConflictResolutionChoice')
+
+const ConflictResolutionSchema = z
+  .object({
+    conflict_id: z
+      .string()
+      .openapi({
+        title: 'Conflict Id',
+        description:
+          '`id` of the conflict this resolves, as the merge or rebase preview reported it.',
+        examples: ['conversation_config:agent.first_message'],
+      }),
+    choice: ConflictResolutionChoiceSchema.openapi({
+      description:
+        'Keep the source value, the target value, or `custom_value`. On a list of entities, the side settles the entities both branches changed; ones only one branch changed still merge in.',
+    }),
+    custom_value: z
+      .union([z.string().max(1000000), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Custom Value',
+        description:
+          'Text to keep when `choice` is `custom`, or for a procedure conflict the id of the procedure version to pin. Only conflicts with `accepts_custom_value` take one.',
+      }),
+  })
+  .openapi({ required: ['conflict_id', 'choice'], title: 'ConflictResolution' })
+  .openapi('ConflictResolution')
+
 const BodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePostSchema =
   z
     .object({
@@ -36775,7 +37111,36 @@ const BodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIdBranchesSourceBranch
         .openapi({
           title: 'Force',
           description:
-            'Force source branch changes onto the target, overriding timestamp-based conflict resolution',
+            "Keep the source branch's value for every conflict instead of sending `conflict_resolutions`",
+        }),
+      conflict_resolutions: z
+        .union([z.array(ConflictResolutionSchema), z.null().nullable()])
+        .exactOptional()
+        .openapi({
+          title: 'Conflict Resolutions',
+          description:
+            "Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.",
+          examples: [
+            [{ choice: 'source', conflict_id: 'conversation_config:agent.first_message' }],
+          ],
+        }),
+      source_tip_id: z
+        .union([z.string(), z.null().nullable()])
+        .exactOptional()
+        .openapi({
+          title: 'Source Tip Id',
+          description:
+            'Source branch tip version the conflicts were resolved against (`source_tip_version_id` of the preview). The request fails with 409 if the branch moved since.',
+          examples: ['agtvrsn_0901k4aafjxxfxt93gd841r7tv5t'],
+        }),
+      target_tip_id: z
+        .union([z.string(), z.null().nullable()])
+        .exactOptional()
+        .openapi({
+          title: 'Target Tip Id',
+          description:
+            'Target branch tip version the conflicts were resolved against (`target_tip_version_id` of the preview). The request fails with 409 if the branch moved since.',
+          examples: ['agtvrsn_0901k4aafjxxfxt93gd841r7tv5t'],
         }),
     })
     .openapi({
@@ -36803,8 +37168,7 @@ const BodyMergeAMergeProposalV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdM
       .exactOptional()
       .openapi({
         title: 'Force',
-        description:
-          'Force source branch changes onto the target, overriding timestamp-based conflict resolution.',
+        description: "Keep the source branch's value for every conflict.",
       }),
   })
   .openapi({
@@ -36940,10 +37304,39 @@ const BodyPostAgentHoldAudioV1ConvaiAgentsAgentIdHoldAudioPostSchema = z
   .openapi('BodyPostAgentHoldAudioV1ConvaiAgentsAgentIdHoldAudioPost')
 
 const BodyRebaseABranchOntoMainV1ConvaiAgentsAgentIdBranchesBranchIdRebasePostSchema = z
-  .looseObject({})
+  .object({
+    conflict_resolutions: z
+      .union([z.array(ConflictResolutionSchema), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Conflict Resolutions',
+        description:
+          "Side to keep, or custom text where the conflict accepts it, for each conflict the preview reported. A merge or rebase with conflicts is rejected unless there is one for every conflict, sent with both tip ids. On a merge it can't be combined with `force`, which lets the source win every conflict instead.",
+        examples: [[{ choice: 'source', conflict_id: 'conversation_config:agent.first_message' }]],
+      }),
+    branch_tip_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Branch Tip Id',
+        description:
+          'Tip version of the branch being rebased (`source_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.',
+        examples: ['agtvrsn_0901k4aafjxxfxt93gd841r7tv5t'],
+      }),
+    source_tip_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Source Tip Id',
+        description:
+          'Tip version of the branch the changes are pulled from (`source_branch_id`, the main branch by default; `target_tip_version_id` of the rebase preview) the conflicts were resolved against. The request fails with 409 if it moved since.',
+        examples: ['agtvrsn_0901k4aafjxxfxt93gd841r7tv5t'],
+      }),
+  })
   .openapi({
     title:
       'Body_Rebase_a_branch_onto_main_v1_convai_agents__agent_id__branches__branch_id__rebase_post',
+    required: [],
   })
   .openapi('BodyRebaseABranchOntoMainV1ConvaiAgentsAgentIdBranchesBranchIdRebasePost')
 
@@ -41607,16 +42000,6 @@ const BytedanceSeedream5ProRequestSchema = z
   })
   .openapi('BytedanceSeedream5ProRequest')
 
-const CalComConnectionHealthStatusSchema = z
-  .enum(['healthy', 'needs_reauth'])
-  .openapi({ title: 'CalComConnectionHealthStatus' })
-  .openapi('CalComConnectionHealthStatus')
-
-const CalendlyConnectionHealthStatusSchema = z
-  .enum(['healthy', 'needs_reauth'])
-  .openapi({ title: 'CalendlyConnectionHealthStatus' })
-  .openapi('CalendlyConnectionHealthStatus')
-
 const CallStatusSchema = z
   .enum(['queued', 'submitted', 'completed', 'cancelled', 'attention'])
   .openapi({ title: 'CallStatus' })
@@ -41867,6 +42250,14 @@ const LeadViewSchema = z
       .openapi({
         title: 'Phone Numbers Index',
         description: 'The position in `phone_numbers` of the number being called.',
+      }),
+    timezone_override: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Timezone Override',
+        description:
+          "The timezone the recipient's calling windows are read in; unset when the lead follows the campaign's.",
       }),
     user_id: z
       .string()
@@ -42196,54 +42587,10 @@ const ChapterSnapshotsResponseModelSchema = z
   })
   .openapi('ChapterSnapshotsResponseModel')
 
-const CharacterAgeSchema = z.enum(['young', 'middle_aged', 'old']).openapi('CharacterAge')
-
-const CharacterGenderSchema = z.enum(['male', 'female', 'neutral']).openapi('CharacterGender')
-
-const CharacterRoleSchema = z
-  .enum(['narrator', 'main', 'supporting', 'minor'])
-  .openapi('CharacterRole')
-
-const CharacterMetadataResponseModelSchema = z
-  .object({
-    description: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Description' }),
-    sample_message: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Sample Message' }),
-    voice_creation_prompt_suggestion: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Voice Creation Prompt Suggestion' }),
-    gender: z.union([CharacterGenderSchema, z.null().nullable()]).exactOptional(),
-    age: z.union([CharacterAgeSchema, z.null().nullable()]).exactOptional(),
-    accent: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Accent' }),
-    role: z.union([CharacterRoleSchema, z.null().nullable()]).exactOptional(),
-  })
-  .openapi({ title: 'CharacterMetadataResponseModel', required: [] })
-  .openapi('CharacterMetadataResponseModel')
-
 const CharacterRefreshPeriodSchema = z
   .enum(['monthly_period', '3_month_period', '6_month_period', 'annual_period'])
   .openapi({ title: 'CharacterRefreshPeriod' })
   .openapi('CharacterRefreshPeriod')
-
-const CharacterResponseModelSchema = z
-  .object({
-    character_id: z.string().openapi({ title: 'Character Id' }),
-    name: z.string().openapi({ title: 'Name' }),
-    metadata: z.union([CharacterMetadataResponseModelSchema, z.null().nullable()]),
-    recommended_voice_ids: z
-      .array(z.string())
-      .default([])
-      .exactOptional()
-      .openapi({ title: 'Recommended Voice Ids' }),
-  })
-  .openapi({ required: ['character_id', 'name', 'metadata'], title: 'CharacterResponseModel' })
-  .openapi('CharacterResponseModel')
 
 const ChunkingOverrideSchema = z
   .object({
@@ -42657,40 +43004,6 @@ const ColumnUnitSchema = z
   .openapi({ title: 'ColumnUnit' })
   .openapi('ColumnUnit')
 
-const CompactionSettingsWorkflowOverrideSchema = z
-  .object({
-    enabled: z
-      .union([z.boolean(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Enabled',
-        description: 'Whether context compaction is enabled for this agent.',
-      }),
-    soft_trigger_fraction: z
-      .union([z.number(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Soft Trigger Fraction',
-        description: 'Context window fraction at which compaction is triggered.',
-      }),
-    tail_size: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Tail Size',
-        description: 'Number of recent messages kept verbatim after compaction.',
-      }),
-    min_reclaimable_tokens: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Min Reclaimable Tokens',
-        description: 'Minimum number of tokens that compaction must reclaim.',
-      }),
-  })
-  .openapi({ title: 'CompactionSettingsWorkflowOverride', required: [] })
-  .openapi('CompactionSettingsWorkflowOverride')
-
 const CompileProceduresResponseModelSchema: z.ZodType<CompileProceduresResponseModelType> = z
   .object({
     workflow: AgentWorkflowResponseModelSchema.openapi({
@@ -43005,18 +43318,6 @@ const ConversationSignedUrlResponseModelSchema = z
   .object({ signed_url: z.string().openapi({ title: 'Signed Url' }) })
   .openapi({ required: ['signed_url'], title: 'ConversationSignedUrlResponseModel' })
   .openapi('ConversationSignedUrlResponseModel')
-
-const ConversationSourceSchema = z
-  .object({
-    type: z
-      .literal('conversation')
-      .default('conversation')
-      .exactOptional()
-      .openapi({ title: 'Type' }),
-    conversation_id: z.string().openapi({ title: 'Conversation Id' }),
-  })
-  .openapi({ required: ['conversation_id'], title: 'ConversationSource' })
-  .openapi('ConversationSource')
 
 const ConversationSummaryMessageModelSchema = z
   .object({
@@ -46813,8 +47114,6 @@ const ElevenV3RequestSchema = z
   })
   .openapi('ElevenV3Request')
 
-const EmailOptionalSchema = z.string().max(254).openapi('EmailOptional')
-
 const EntityManagementActivityIdSchema = z
   .union([
     z.literal(0),
@@ -47613,6 +47912,12 @@ const FinetuneVisibilitySchema = z
   .openapi({ title: 'FinetuneVisibility' })
   .openapi('FinetuneVisibility')
 
+const FirstMessageModeSchema = z
+  .enum(['interruptible', 'uninterruptible', 'recording_notice'])
+  .default('interruptible')
+  .openapi({ title: 'FirstMessageMode', description: "How the receptionist's greeting plays." })
+  .openapi('FirstMessageMode')
+
 const ForcedAlignmentCharacterResponseModelSchema = z
   .object({
     text: z.string().openapi({ title: 'Text', description: 'The character that was transcribed.' }),
@@ -48303,38 +48608,6 @@ const GenerationChunkOutputSchema = z
   })
   .openapi({ required: ['text', 'duration_ms', 'positive_styles'], title: 'GenerationChunk' })
   .openapi('GenerationChunkOutput')
-
-const GenesysBotOutcomeSchema = z
-  .enum(['success', 'escalate'])
-  .openapi({
-    title: 'GenesysBotOutcome',
-    description:
-      'Exit branch taken when the Genesys Bot Connector session ends.\n\nThese values are the intent names registered in the Genesys bot list, so they are\nwhat the Call Bot Connector node branches on. Adding a value here without also\nregistering the intent in Genesys would produce an exit the flow cannot handle.',
-  })
-  .openapi('GenesysBotOutcome')
-
-const GenesysRegionSchema = z
-  .enum([
-    'us_east_1',
-    'eu_west_1',
-    'ap_southeast_2',
-    'ap_northeast_1',
-    'eu_central_1',
-    'us_west_2',
-    'ca_central_1',
-    'ap_northeast_2',
-    'eu_west_2',
-    'ap_south_1',
-    'us_east_2',
-    'sa_east_1',
-    'me_central_1',
-    'ap_northeast_3',
-    'eu_central_2',
-    'mx_central_1',
-    'ap_southeast_1',
-  ])
-  .openapi({ title: 'GenesysRegion' })
-  .openapi('GenesysRegion')
 
 const GetAgentConversationTicketsPageResponseModelSchema = z
   .object({
@@ -52396,52 +52669,6 @@ const IntakeQuestionKindSchema = z
   })
   .openapi('IntakeQuestionKind')
 
-const InternalAlertingWebhookNotifierSchema = z
-  .object({
-    type: z.literal('webhook').default('webhook').exactOptional().openapi({ title: 'Type' }),
-    url: z
-      .string()
-      .max(2048)
-      .openapi({ title: 'Url', description: 'The URL to send alert lifecycle notifications to.' }),
-    method: AlertingWebhookMethodSchema.default('POST')
-      .exactOptional()
-      .openapi({ description: 'HTTP method used when calling the webhook URL.' }),
-    headers: z
-      .array(AlertingWebhookHeaderSchema)
-      .max(25)
-      .exactOptional()
-      .openapi({
-        title: 'Headers',
-        description:
-          'Custom request headers sent with every notification. Secret header values are encrypted at rest and never returned by the API.',
-      }),
-  })
-  .openapi({ required: ['url'], title: 'InternalAlertingWebhookNotifier' })
-  .openapi('InternalAlertingWebhookNotifier')
-
-const InternalKBCrawlPageTimingSchema = z
-  .object({
-    url: z.string().openapi({ title: 'Url' }),
-    doc_id: z.string().openapi({ title: 'Doc Id' }),
-    read_ms: z.union([z.int(), z.null().nullable()]).exactOptional().openapi({ title: 'Read Ms' }),
-    index_ms: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Index Ms' }),
-    html_len: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Html Len' }),
-    skipped: z.boolean().default(false).exactOptional().openapi({ title: 'Skipped' }),
-    error: z.boolean().default(false).exactOptional().openapi({ title: 'Error' }),
-  })
-  .openapi({
-    required: ['url', 'doc_id'],
-    title: 'InternalKBCrawlPageTiming',
-    description: 'Per-document timing data for one crawled page.',
-  })
-  .openapi('InternalKBCrawlPageTiming')
-
 const InternalSamplingConfigResponseModelSchema = z
   .object({
     focus: z
@@ -53146,6 +53373,14 @@ const LeadDetailResponseSchema = z
         title: 'Phone Numbers Index',
         description: 'The position in `phone_numbers` of the number being called.',
       }),
+    timezone_override: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Timezone Override',
+        description:
+          "The timezone the recipient's calling windows are read in; unset when the lead follows the campaign's.",
+      }),
     user_id: z
       .string()
       .openapi({
@@ -53226,84 +53461,6 @@ const LeadDetailResponseSchema = z
     title: 'LeadDetailResponse',
   })
   .openapi('LeadDetailResponse')
-
-const LenientCountrySchema = z
-  .union([CountryCodeSchema, z.null().nullable()])
-  .openapi('LenientCountry')
-
-const LenientCurrencySchema = z
-  .union([
-    z.enum([
-      'USD',
-      'EUR',
-      'GBP',
-      'PLN',
-      'CAD',
-      'AUD',
-      'CHF',
-      'SEK',
-      'NOK',
-      'DKK',
-      'ISK',
-      'CZK',
-      'HUF',
-      'RON',
-      'BGN',
-      'JPY',
-      'CNY',
-      'TWD',
-      'INR',
-      'BRL',
-      'MXN',
-      'KRW',
-      'SGD',
-      'HKD',
-      'NZD',
-      'ZAR',
-      'AED',
-      'SAR',
-      'QAR',
-      'KWD',
-      'ILS',
-      'TRY',
-      'THB',
-      'IDR',
-      'MYR',
-      'PHP',
-      'VND',
-      'BDT',
-      'RUB',
-      'UAH',
-      'CLP',
-      'COP',
-      'ARS',
-      'PEN',
-      'EGP',
-      'NGN',
-      'KES',
-      'PKR',
-    ]),
-    z.null().nullable(),
-  ])
-  .openapi('LenientCurrency')
-
-const LenientOptionalBoolSchema = z
-  .union([z.boolean(), z.null().nullable()])
-  .openapi('LenientOptionalBool')
-
-const LenientOptionalStrSchema = z
-  .union([z.string(), z.null().nullable()])
-  .openapi('LenientOptionalStr')
-
-const PhoneNumberNullableSchema = z
-  .union([z.string(), z.null().nullable()])
-  .openapi('PhoneNumberNullable')
-
-const LenientPhoneSchema = z
-  .union([PhoneNumberNullableSchema, z.null().nullable()])
-  .openapi('LenientPhone')
-
-const LenientStateSchema = z.union([z.string(), z.null().nullable()]).openapi('LenientState')
 
 const OAuth2ClientCredsResponseSchema = z
   .object({
@@ -54259,19 +54416,6 @@ const ListWhatsAppAccountsResponseSchema = z
   .openapi({ required: ['items'], title: 'ListWhatsAppAccountsResponse' })
   .openapi('ListWhatsAppAccountsResponse')
 
-const LoadMemoryEntryToolErrorStatusSchema = z
-  .enum(['not_found', 'invalid_id'])
-  .openapi('LoadMemoryEntryToolErrorStatus')
-
-const LoadableMemoryEntrySchema = z
-  .object({
-    entry_id: z.string().openapi({ title: 'Entry Id' }),
-    summary: z.string().openapi({ title: 'Summary' }),
-    text: z.string().openapi({ title: 'Text' }),
-  })
-  .openapi({ required: ['entry_id', 'summary', 'text'], title: 'LoadableMemoryEntry' })
-  .openapi('LoadableMemoryEntry')
-
 const LockReasonSchema = z
   .enum(['trial_ended', 'subscription_downgrade', 'exposed_publicly', 'self_disabled'])
   .openapi({ title: 'LockReason' })
@@ -54689,20 +54833,6 @@ const MCPToolConfigOverrideUpdateRequestModelSchema = z
   .openapi({ title: 'MCPToolConfigOverrideUpdateRequestModel', required: [] })
   .openapi('MCPToolConfigOverrideUpdateRequestModel')
 
-const MCPTransportSchema = z
-  .enum(['SSE', 'STREAMABLE_HTTP'])
-  .openapi({ title: 'MCPTransport' })
-  .openapi('MCPTransport')
-
-const ManualSourceSchema = z
-  .object({
-    type: z.literal('manual').default('manual').exactOptional().openapi({ title: 'Type' }),
-    created_by_user_id: z.string().openapi({ title: 'Created By User Id' }),
-    notes: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Notes' }),
-  })
-  .openapi({ required: ['created_by_user_id'], title: 'ManualSource' })
-  .openapi('ManualSource')
-
 const MediaGenerationCompletedResponseSchema = z
   .object({
     id: z
@@ -54915,23 +55045,6 @@ const MediaGenerationListResponseSchema = z
   })
   .openapi('MediaGenerationListResponse')
 
-const MemoryEntrySearchResultSchema = z
-  .object({
-    entry_id: z.string().openapi({ title: 'Entry Id' }),
-    version: z.int().openapi({ title: 'Version' }),
-    summary: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Summary' }),
-    text: z.union([z.string(), z.null().nullable()]).exactOptional().openapi({ title: 'Text' }),
-    source: z
-      .union([ConversationSourceSchema, ManualSourceSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Source' }),
-  })
-  .openapi({ required: ['entry_id', 'version'], title: 'MemoryEntrySearchResult' })
-  .openapi('MemoryEntrySearchResult')
-
 const MergeAgentConversationTicketsRequestModelSchema = z
   .object({
     source_ticket_ids: z
@@ -55043,7 +55156,7 @@ const MergePreviewResponseModelSchema: z.ZodType<MergePreviewResponseModelType> 
       .openapi({
         title: 'Conflicts',
         description:
-          'Structured view of the same conflicts as overridden_fields, each carrying the value on the base (common ancestor), source branch, and target branch so the divergence can be presented and resolved field-by-field.',
+          'Structured view of the same conflicts as overridden_fields, each carrying the value on the base (common ancestor), source branch, and target branch so the divergence can be presented and resolved field-by-field. A merge or rebase is rejected while any of them has no resolution in `conflict_resolutions`, unless the merge is forced.',
       }),
     source_identical_to_target: z
       .boolean()
@@ -55053,6 +55166,30 @@ const MergePreviewResponseModelSchema: z.ZodType<MergePreviewResponseModelType> 
         title: 'Source Identical To Target',
         description:
           'True when the merge/rebase would be a no-op, i.e. the merged result is identical to the source branch tip. The rebase endpoint rejects in this case.',
+      }),
+    source_tip_version_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Source Tip Version Id',
+        description:
+          'Tip version of the source branch (the rebased branch for a rebase) the preview was computed from.',
+      }),
+    target_tip_version_id: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Target Tip Version Id',
+        description:
+          'Tip version of the target branch (main for a rebase) the preview was computed from.',
+      }),
+    merge_error: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Merge Error',
+        description:
+          "Why the merge doesn't combine into a valid configuration while conflicts are left to resolve. The preview then shows the branch the merge writes unchanged.",
       }),
   })
   .openapi({
@@ -56035,18 +56172,6 @@ const OTelTracePayloadSchema: z.ZodType<OTelTracePayloadType> = z
   .openapi({ required: ['resourceSpans'], title: 'OTelTracePayload' })
   .openapi('OTelTracePayload')
 
-const OpenerConfigSchema = z
-  .object({
-    llm: LLMSchema.openapi({
-      description:
-        'Model used to speak a fast opener while the main model generates its full reply. Must be a hosted model (not a bring-your-own LLM type).',
-    }),
-  })
-  .openapi({ required: ['llm'], title: 'OpenerConfig' })
-  .openapi('OpenerConfig')
-
-const OptionValueSchema = z.union([z.number(), z.string(), z.boolean()]).openapi('OptionValue')
-
 const OrderDeliverablesResponseSchema = z
   .object({
     deliverables: z
@@ -56660,14 +56785,6 @@ const ProcedureDraftResponseModelSchema = z
   })
   .openapi('ProcedureDraftResponseModel')
 
-const ProcessingProgressSchema = z
-  .enum(['Converting', 'Storing', 'Scraping', 'Crawling', 'Extracting'])
-  .openapi({
-    title: 'ProcessingProgress',
-    description: 'Single-word processing step shown in the UI status badge.',
-  })
-  .openapi('ProcessingProgress')
-
 const ProjectExtendedResponseModelSchema: z.ZodType<ProjectExtendedResponseModelType> = z
   .object({
     project_id: z.string().openapi({ title: 'Project Id', description: 'The ID of the project.' }),
@@ -57174,91 +57291,6 @@ const PronunciationDictionaryRulesResponseModelSchema = z
   })
   .openapi('PronunciationDictionaryRulesResponseModel')
 
-const ProvisionResellerWorkspaceSubscriptionSchema = z
-  .object({
-    tier_id: z.string().openapi({ title: 'Tier Id' }),
-    billing_period: z
-      .enum(['monthly_period', 'annual_period'])
-      .default('monthly_period')
-      .exactOptional()
-      .openapi({ title: 'Billing Period' }),
-  })
-  .openapi({ required: ['tier_id'], title: 'ProvisionResellerWorkspaceSubscription' })
-  .openapi('ProvisionResellerWorkspaceSubscription')
-
-const TeamInviteRequestSchema = z
-  .object({
-    email: z
-      .string()
-      .min(1)
-      .max(254)
-      .openapi({
-        title: 'Email',
-        description: 'The email address to invite.',
-        examples: ['sam@example.com'],
-      }),
-    role: z
-      .enum(['workspace_admin', 'workspace_member'])
-      .default('workspace_member')
-      .exactOptional()
-      .openapi({
-        title: 'Role',
-        description: "The role the invitee joins with: 'workspace_admin' or 'workspace_member'.",
-      }),
-  })
-  .openapi({ required: ['email'], title: 'TeamInviteRequest' })
-  .openapi('TeamInviteRequest')
-
-const ProvisionResellerWorkspaceRequestSchema = z
-  .object({
-    business_name: z.string().min(1).max(100).openapi({ title: 'Business Name' }),
-    subscription: z
-      .union([ProvisionResellerWorkspaceSubscriptionSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        description:
-          'Paid tier to subscribe to. Omitted leaves the workspace with no subscription.',
-      }),
-    phone_number: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Phone Number',
-        description:
-          "A free number from the reseller's phone pool, reserved for the workspace until onboarding binds it to the receptionist.",
-      }),
-    members: z
-      .array(TeamInviteRequestSchema)
-      .max(100)
-      .default([])
-      .exactOptional()
-      .openapi({
-        title: 'Members',
-        description:
-          "People to invite once the workspace exists, capped by the tier's team size. Best-effort: each outcome is in `member_results`.",
-      }),
-    complete_onboarding: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Complete Onboarding',
-        description:
-          'Finish setup right away, as `POST /v1/reception/reseller/workspaces/{workspace_id}/complete-onboarding` does. Best-effort: `onboarding_completed_at_unix` stays null on failure, and that call can be retried.',
-      }),
-    idempotency_key: z
-      .union([z.string().max(255), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Idempotency Key',
-        description:
-          'Client-generated key that makes a retry safe. The same key and body within 24 hours returns the first result without running again. While that first request is still running, a retry gets 409 `idempotency_key_in_progress`; a different body with the same key gets 400 `idempotency_key_reused`. A request that fails is not saved, so it can be retried with the same key.',
-        examples: ['3c1d2b7e-8f4a-4e5b-9c6d-1a2b3c4d5e6f'],
-      }),
-  })
-  .openapi({ required: ['business_name'], title: 'ProvisionResellerWorkspaceRequest' })
-  .openapi('ProvisionResellerWorkspaceRequest')
-
 const ResellerWorkspaceSubscriptionSchema = z
   .object({
     tier_id: z.string().openapi({ title: 'Tier Id' }),
@@ -57374,6 +57406,18 @@ const ProvisionResellerWorkspaceResponseSchema = z
   })
   .openapi('ProvisionResellerWorkspaceResponse')
 
+const ProvisionResellerWorkspaceSubscriptionSchema = z
+  .object({
+    tier_id: z.string().openapi({ title: 'Tier Id' }),
+    billing_period: z
+      .enum(['monthly_period', 'annual_period'])
+      .default('monthly_period')
+      .exactOptional()
+      .openapi({ title: 'Billing Period' }),
+  })
+  .openapi({ required: ['tier_id'], title: 'ProvisionResellerWorkspaceSubscription' })
+  .openapi('ProvisionResellerWorkspaceSubscription')
+
 const RAGIndexStatusSchema = z
   .enum([
     'new',
@@ -57444,58 +57488,6 @@ const RAGIndexRequestModelSchema = z
   .object({ model: EmbeddingModelEnumSchema })
   .openapi({ required: ['model'], title: 'RAGIndexRequestModel' })
   .openapi('RAGIndexRequestModel')
-
-const RawLocationInfoSchema = z
-  .object({
-    name: LenientOptionalStrSchema.exactOptional(),
-    address: LenientOptionalStrSchema.exactOptional(),
-    operating_hours: z
-      .union([z.looseObject({}), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Operating Hours' }),
-  })
-  .openapi({
-    title: 'RawLocationInfo',
-    description: 'A single branch/location extracted from a page.',
-    required: [],
-  })
-  .openapi('RawLocationInfo')
-
-const RawBusinessInfoSchema = z
-  .object({
-    company_name: LenientOptionalStrSchema.exactOptional(),
-    description: LenientOptionalStrSchema.exactOptional(),
-    business_phone: LenientOptionalStrSchema.exactOptional(),
-    locations: z.array(RawLocationInfoSchema).exactOptional().openapi({ title: 'Locations' }),
-    business_country: LenientOptionalStrSchema.exactOptional(),
-    business_state: LenientOptionalStrSchema.exactOptional(),
-    suggested_currency: LenientOptionalStrSchema.exactOptional(),
-    suggested_language: LenientOptionalStrSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'RawBusinessInfo',
-    description: 'Business profile data extracted from a single page.',
-    required: [],
-  })
-  .openapi('RawBusinessInfo')
-
-const RawItemSchema = z
-  .object({
-    name: z.string().openapi({ title: 'Name' }),
-    description: z.string().default('').exactOptional().openapi({ title: 'Description' }),
-    price: z.union([z.number(), z.null().nullable()]).exactOptional().openapi({ title: 'Price' }),
-    duration_minutes: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({ title: 'Duration Minutes' }),
-  })
-  .openapi({
-    required: ['name'],
-    title: 'RawItem',
-    description:
-      'A single item extracted from a page — could be a service, person, product, or asset.',
-  })
-  .openapi('RawItem')
 
 const RealtimeConversationGroupSharingSummarySchema = z
   .object({
@@ -57791,6 +57783,7 @@ const ReceptionAgentInfoResponseSchema = z
         'NGN',
         'KES',
         'PKR',
+        'GEL',
       ])
       .default('USD')
       .exactOptional()
@@ -57838,11 +57831,6 @@ const ReceptionAgentInfoResponseSchema = z
     description: "The business profile, with the current time in the business's timezone.",
   })
   .openapi('ReceptionAgentInfoResponse')
-
-const ReceptionAgentTargetSchema = z
-  .enum(['customer_facing', 'assistant'])
-  .openapi({ title: 'ReceptionAgentTarget' })
-  .openapi('ReceptionAgentTarget')
 
 const ReceptionGroupMembershipSchema = z
   .object({
@@ -57951,40 +57939,6 @@ const ReceptionAssetResourceSchema = z
     description: 'Represents a physical resource that can be booked (rooms, equipment, vehicles).',
   })
   .openapi('ReceptionAssetResource')
-
-const ReceptionAssetScrapableSchema = z
-  .object({
-    groups: z
-      .array(ReceptionGroupMembershipSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Groups',
-        description:
-          "Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.",
-      }),
-    ungrouped_rank: z
-      .union([z.int().min(0), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Ungrouped Rank',
-        description:
-          'Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.',
-      }),
-    name: StrippedStrSchema.openapi({
-      description:
-        'Internal/admin name of the asset, shown in the dashboard and owner notifications.',
-    }),
-    description: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Description of the asset.' }),
-  })
-  .openapi({
-    required: ['name'],
-    title: 'ReceptionAssetScrapable',
-    description: 'Scrape-reachable subset of an asset (resource that can be booked).',
-  })
-  .openapi('ReceptionAssetScrapable')
 
 const ReceptionIntakeQuestionSchema = z
   .object({
@@ -58977,6 +58931,14 @@ const ReceptionCreateTransferRuleRequestSchema = z
   })
   .openapi('ReceptionCreateTransferRuleRequest')
 
+const ReceptionCustomerFacingAgentDeactivationReasonSchema = z
+  .enum(['tier_downgrade', 'user'])
+  .openapi({
+    title: 'ReceptionCustomerFacingAgentDeactivationReason',
+    description: 'Why a receptionist is currently inactive (live calls disabled).',
+  })
+  .openapi('ReceptionCustomerFacingAgentDeactivationReason')
+
 const ReceptionTurnEagernessSchema = z
   .enum(['patient', 'normal', 'eager'])
   .default('eager')
@@ -59084,231 +59046,6 @@ const ReceptionProcedureSchema = z
   })
   .openapi('ReceptionProcedure')
 
-const ReceptionCustomerFacingConfigInputSchema = z
-  .object({
-    additional_instructions: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({
-        description:
-          "Extra instructions for the agent (e.g., 'Always ask callers to spell out their name')",
-      }),
-    tone_traits: z
-      .array(StrippedStrSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Tone Traits',
-        description: "Personality traits for the receptionist, e.g. `['professional', 'concise']`.",
-      }),
-    details_to_collect: z
-      .array(StrippedStrSchema)
-      .max(30)
-      .exactOptional()
-      .openapi({
-        title: 'Details To Collect',
-        description:
-          "Details the agent should always try to collect from callers (presets + custom labels, e.g. ['full name', 'phone number']).",
-      }),
-    llm: z
-      .union([LLMSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'Model the receptionist runs on. Null uses the default.' }),
-    reasoning_effort: z
-      .union([LLMReasoningEffortSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        description:
-          "Reasoning effort for the receptionist's model, up to `medium` and only among the efforts the model supports. Null uses the model's default.",
-      }),
-    disable_rag: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Disable Rag',
-        description:
-          'When true, the whole knowledge base is given to the receptionist up front instead of searched on each turn. Faster, but only for small knowledge bases; larger ones are still searched.',
-      }),
-    background_voice_detection: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        title: 'Background Voice Detection',
-        description: 'Filter out far-field human speech before transcription.',
-      }),
-    turn_eagerness: ReceptionTurnEagernessSchema.default('eager')
-      .exactOptional()
-      .openapi({
-        description:
-          'How quickly the receptionist decides the caller has finished speaking. Eager replies soonest; patient waits for a clearer end of turn.',
-      }),
-    voice_id: z
-      .string()
-      .default('5kMbtRSEKIkRZSdXxrZg')
-      .exactOptional()
-      .openapi({
-        title: 'Voice Id',
-        description: 'ElevenLabs voice ID',
-        examples: ['21m00Tcm4TlvDq8ikWAM'],
-      }),
-    language: SupportedLangSchema.default('en')
-      .exactOptional()
-      .openapi({ description: 'Primary language code' }),
-    additional_languages: z
-      .array(SupportedLangSchema)
-      .exactOptional()
-      .openapi({
-        title: 'Additional Languages',
-        description: 'Additional language codes the agent can communicate in',
-      }),
-    first_message: z
-      .string()
-      .default('Hello! Thanks for calling. How can I help you today?')
-      .exactOptional()
-      .openapi({
-        title: 'First Message',
-        description: 'The first message the agent says when starting a conversation',
-        examples: ['Hi, thanks for calling Bloom Salon! How can I help you today?'],
-      }),
-    disable_first_message_interruptions: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Disable First Message Interruptions',
-        description:
-          'When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.',
-      }),
-    enable_end_call_tool: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        title: 'Enable End Call Tool',
-        description: 'Allow the end_call system tool during conversations.',
-      }),
-    enable_skip_turn_tool: z
-      .boolean()
-      .default(true)
-      .exactOptional()
-      .openapi({
-        title: 'Enable Skip Turn Tool',
-        description: 'Allow the skip_turn system tool during conversations.',
-      }),
-    enable_play_keypad_touch_tone_tool: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Enable Play Keypad Touch Tone Tool',
-        description:
-          "Allow the play_keypad_touch_tone (DTMF) system tool during conversations. When enabled, the receptionist can play touch-tone digits on a live call to navigate automated phone menus or answer carrier prompts such as a 'press 1 to accept' call-screening step.",
-      }),
-    agent_rules: z
-      .array(AgentRuleSchema)
-      .max(50)
-      .exactOptional()
-      .openapi({ title: 'Agent Rules', description: 'Behavioral rules this agent must follow.' }),
-    transfer_rules: z
-      .array(ReceptionTransferRuleSchema)
-      .max(100)
-      .exactOptional()
-      .openapi({
-        title: 'Transfer Rules',
-        description: 'Phone numbers this agent can transfer calls to.',
-      }),
-    hide_caller_number_on_transfers: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Hide Caller Number On Transfers',
-        description:
-          "Show the business's own number, rather than the caller's, as the caller ID on transferred calls.",
-      }),
-    record_after_transfers: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Record After Transfers',
-        description:
-          'Keep recording after a call is transferred and add that audio to the call recording.',
-      }),
-    procedures: z
-      .array(ReceptionProcedureSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Procedures',
-        description: 'Standard operating procedures (SOPs) this agent can run on calls.',
-      }),
-    enable_secure_mode: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Enable Secure Mode',
-        description:
-          "When enabled, the receptionist may only look up or modify appointments and client records tied to the caller's verified phone number.",
-      }),
-    enable_spam_protection: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Enable Spam Protection',
-        description:
-          'When enabled, inbound calls to US numbers are screened before the receptionist answers: calls whose caller ID failed carrier (STIR/SHAKEN) verification are rejected, and unknown callers whose caller ID the carrier could not vouch for must press a key to be connected.',
-      }),
-  })
-  .openapi({ title: 'ReceptionCustomerFacingConfig', required: [] })
-  .openapi('ReceptionCustomerFacingConfigInput')
-
-const ReceptionCustomerFacingAgentDeactivationReasonSchema = z
-  .enum(['tier_downgrade', 'user'])
-  .openapi({
-    title: 'ReceptionCustomerFacingAgentDeactivationReason',
-    description: 'Why a receptionist is currently inactive (live calls disabled).',
-  })
-  .openapi('ReceptionCustomerFacingAgentDeactivationReason')
-
-const ReceptionCustomerFacingAgentSchema = z
-  .object({
-    agent_id: z
-      .string()
-      .default('')
-      .exactOptional()
-      .openapi({
-        title: 'Agent Id',
-        description: 'ID of the ElevenLabs agent behind this receptionist.',
-        examples: ['agent_4801jx8k3m5n7p9q2r4s6t8v0w2y'],
-      }),
-    config: ReceptionCustomerFacingConfigInputSchema.exactOptional().openapi({
-      description: "The receptionist's voice, language, greeting, rules and other settings.",
-    }),
-    deactivated_at_unix: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Deactivated At Unix',
-        description: 'Unix timestamp when this receptionist was deactivated. None when active.',
-        examples: [1767225600],
-      }),
-    deactivation_reason: z
-      .union([ReceptionCustomerFacingAgentDeactivationReasonSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'Why this receptionist was deactivated. None when active.' }),
-  })
-  .openapi({
-    title: 'ReceptionCustomerFacingAgent',
-    description:
-      'A single customer-facing receptionist agent.\n\nA workspace can have multiple of these. Each entry owns its own ConvAI\nagent id and full ``CustomerFacingConfig`` (voice, language, first message,\nsystem tool toggles, agent rules, transfer rules).',
-    required: [],
-  })
-  .openapi('ReceptionCustomerFacingAgent')
-
 const ReceptionCustomerFacingConfigOutputSchema = z
   .object({
     additional_instructions: StrippedStrSchema.default('')
@@ -59396,14 +59133,11 @@ const ReceptionCustomerFacingConfigOutputSchema = z
         description: 'The first message the agent says when starting a conversation',
         examples: ['Hi, thanks for calling Bloom Salon! How can I help you today?'],
       }),
-    disable_first_message_interruptions: z
-      .boolean()
-      .default(false)
+    first_message_mode: FirstMessageModeSchema.default('interruptible')
       .exactOptional()
       .openapi({
-        title: 'Disable First Message Interruptions',
         description:
-          'When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.',
+          "How the first message plays. interruptible: callers can talk over it. uninterruptible: it always plays to the end. recording_notice: it opens with a short 'this call may be recorded' notice in the receptionist's language, spoken by a separate voice, and always plays to the end.",
       }),
     enable_end_call_tool: z
       .boolean()
@@ -59697,14 +59431,10 @@ const ReceptionCustomerFacingConfigPatchSchema = z
         description: 'The first message the agent says when starting a conversation',
         examples: ['Hi, thanks for calling Bloom Salon! How can I help you today?'],
       }),
-    disable_first_message_interruptions: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        title: 'Disable First Message Interruptions',
-        description:
-          'When true, callers cannot interrupt the receptionist while the first message is being delivered. Use when the greeting carries a recording or legal notice callers must hear in full.',
-      }),
+    first_message_mode: FirstMessageModeSchema.exactOptional().openapi({
+      description:
+        "How the first message plays. interruptible: callers can talk over it. uninterruptible: it always plays to the end. recording_notice: it opens with a short 'this call may be recorded' notice in the receptionist's language, spoken by a separate voice, and always plays to the end.",
+    }),
     enable_end_call_tool: z
       .boolean()
       .exactOptional()
@@ -59767,49 +59497,6 @@ const ReceptionCustomerFacingConfigPatchSchema = z
     required: [],
   })
   .openapi('ReceptionCustomerFacingConfigPatch')
-
-const ReceptionNotificationChannelSchema = z
-  .enum(['email', 'sms'])
-  .openapi({ title: 'ReceptionNotificationChannel' })
-  .openapi('ReceptionNotificationChannel')
-
-const ReceptionIdentityVerificationConfigSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .default(false)
-      .exactOptional()
-      .openapi({
-        title: 'Enabled',
-        description:
-          "When enabled, the receptionist may only look up or modify a client's appointments and records after that client has completed OTP identity verification in this conversation.",
-      }),
-    channels: z
-      .array(ReceptionNotificationChannelSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .exactOptional()
-      .openapi({ title: 'Channels' }),
-    sms_phone_number_id: z
-      .union([z.string(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Sms Phone Number Id',
-        description: 'Twilio phone number ID used to send SMS verification codes.',
-      }),
-  })
-  .openapi({
-    title: 'ReceptionIdentityVerificationConfig',
-    description: 'Per-agent (receptionist) configuration for client identity verification codes.',
-    required: [],
-  })
-  .openapi('ReceptionIdentityVerificationConfig')
 
 const ReceptionKnowledgeSourceSchema = z
   .object({
@@ -59931,32 +59618,6 @@ const ReceptionKnowledgeSourceSchema = z
   })
   .openapi('ReceptionKnowledgeSource')
 
-const ReceptionVerticalSchema = z
-  .enum([
-    'salon_barbershop',
-    'nail_beauty',
-    'spa',
-    'medical',
-    'veterinary',
-    'fitness',
-    'home_services',
-    'photography',
-    'consulting',
-    'restaurant',
-    'dental',
-    'auto_service',
-    'tutoring',
-    'legal',
-    'real_estate',
-    'other',
-  ])
-  .openapi({ title: 'ReceptionVertical' })
-  .openapi('ReceptionVertical')
-
-const ReceptionLenientVerticalSchema = z
-  .union([ReceptionVerticalSchema, z.null().nullable()])
-  .openapi('ReceptionLenientVertical')
-
 const ReceptionLocationDeactivationReasonSchema = z
   .enum(['tier_downgrade', 'user'])
   .openapi({
@@ -59964,121 +59625,6 @@ const ReceptionLocationDeactivationReasonSchema = z
     description: 'Why a location is currently inactive.',
   })
   .openapi('ReceptionLocationDeactivationReason')
-
-const ReceptionLocationInputSchema = z
-  .object({
-    name: StrippedStrSchema.openapi({
-      description:
-        "Internal name, e.g. 'Main Office' or 'Downtown Branch', shown in the dashboard and owner notifications.",
-    }),
-    address: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Street address.' }),
-    notes: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({
-        description:
-          "Directions or other notes for customers, e.g. 'Free parking behind the building'.",
-      }),
-    operating_hours: WorkingHoursSchema.exactOptional().openapi({
-      description: 'When this location is open.',
-    }),
-    customer_facing_name: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Name shown to customers; empty reuses name.' }),
-    max_concurrent_appointments: z
-      .int()
-      .min(1)
-      .max(999)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        title: 'Max Concurrent Appointments',
-        description:
-          'Maximum number of appointments that may overlap at this location at a single instant. Only enforced while the booking page setting concurrent_limit_enabled is on.',
-        examples: [3],
-      }),
-    id: z.string().openapi({ title: 'Id' }),
-    deactivated_at_unix: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Deactivated At Unix',
-        description: 'Unix timestamp when this location was deactivated. None when active.',
-        examples: [1767225600],
-      }),
-    deactivation_reason: z
-      .union([ReceptionLocationDeactivationReasonSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'Why this location was deactivated. None when active.' }),
-  })
-  .openapi({
-    required: ['name', 'id'],
-    title: 'ReceptionLocation',
-    description: 'A single business location stored inline in agent info.',
-  })
-  .openapi('ReceptionLocationInput')
-
-const ReceptionLocationOutputSchema = z
-  .object({
-    name: StrippedStrSchema.openapi({
-      description:
-        "Internal name, e.g. 'Main Office' or 'Downtown Branch', shown in the dashboard and owner notifications.",
-    }),
-    address: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Street address.' }),
-    notes: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({
-        description:
-          "Directions or other notes for customers, e.g. 'Free parking behind the building'.",
-      }),
-    operating_hours: WorkingHoursSchema.exactOptional().openapi({
-      description: 'When this location is open.',
-    }),
-    customer_facing_name: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Name shown to customers; empty reuses name.' }),
-    max_concurrent_appointments: z
-      .int()
-      .min(1)
-      .max(999)
-      .default(1)
-      .exactOptional()
-      .openapi({
-        title: 'Max Concurrent Appointments',
-        description:
-          'Maximum number of appointments that may overlap at this location at a single instant. Only enforced while the booking page setting concurrent_limit_enabled is on.',
-        examples: [3],
-      }),
-    id: z.string().openapi({ title: 'Id' }),
-    deactivated_at_unix: z
-      .union([z.int(), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Deactivated At Unix',
-        description: 'Unix timestamp when this location was deactivated. None when active.',
-        examples: [1767225600],
-      }),
-    deactivation_reason: z
-      .union([ReceptionLocationDeactivationReasonSchema, z.null().nullable()])
-      .exactOptional()
-      .openapi({ description: 'Why this location was deactivated. None when active.' }),
-    is_active: z
-      .boolean()
-      .openapi({
-        title: 'Is Active',
-        description: 'Whether the location is active. Inactive locations take no bookings.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    required: ['name', 'id', 'is_active'],
-    title: 'ReceptionLocation',
-    description: 'A single business location stored inline in agent info.',
-  })
-  .openapi('ReceptionLocationOutput')
 
 const ReceptionLocationRequestSchema = z
   .object({
@@ -60536,55 +60082,107 @@ const ReceptionProductSchema = z
   })
   .openapi('ReceptionProduct')
 
-const ReceptionProductScrapableSchema = z
-  .object({
-    pricing_mode: PricingModeSchema.default('fixed')
-      .exactOptional()
-      .openapi({
-        description:
-          "'fixed' (default): the item has a known price the agent can quote, and customers can book or order it directly. 'quote': the price depends on the job (renovation, catering, custom work), so no price or slot is offered; the agent collects the intake_questions and files a quote request instead. Takes effect only while quotes are enabled for the business. Group services cannot use 'quote'.",
-      }),
-    groups: z
-      .array(ReceptionGroupMembershipSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Groups',
-        description:
-          "Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.",
-      }),
-    ungrouped_rank: z
-      .union([z.int().min(0), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Ungrouped Rank',
-        description:
-          'Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.',
-      }),
-    name: StrippedStrSchema.openapi({ description: 'Name of the product.' }),
-    description: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Description of the product.' }),
-    price: z
-      .union([z.number().min(0), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Price',
-        description: 'Price of the product; null for no listed price.',
-        examples: [4.5],
-      }),
-  })
-  .openapi({
-    required: ['name'],
-    title: 'ReceptionProductScrapable',
-    description: 'Scrape-reachable subset of a product (retail/catalog item).',
-  })
-  .openapi('ReceptionProductScrapable')
+const ReceptionVerticalSchema = z
+  .enum([
+    'salon_barbershop',
+    'nail_beauty',
+    'spa',
+    'medical',
+    'veterinary',
+    'fitness',
+    'home_services',
+    'photography',
+    'consulting',
+    'restaurant',
+    'dental',
+    'auto_service',
+    'tutoring',
+    'legal',
+    'real_estate',
+    'other',
+  ])
+  .openapi({ title: 'ReceptionVertical' })
+  .openapi('ReceptionVertical')
 
-const ReceptionScrapingModeSchema = z
-  .enum(['single_page', 'deep_scan', 'quick_scan'])
-  .openapi({ title: 'ReceptionScrapingMode' })
-  .openapi('ReceptionScrapingMode')
+const TeamInviteRequestSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1)
+      .max(254)
+      .openapi({
+        title: 'Email',
+        description: 'The email address to invite.',
+        examples: ['sam@example.com'],
+      }),
+    role: z
+      .enum(['workspace_admin', 'workspace_member'])
+      .default('workspace_member')
+      .exactOptional()
+      .openapi({
+        title: 'Role',
+        description: "The role the invitee joins with: 'workspace_admin' or 'workspace_member'.",
+      }),
+  })
+  .openapi({ required: ['email'], title: 'TeamInviteRequest' })
+  .openapi('TeamInviteRequest')
+
+const ReceptionProvisionResellerWorkspaceRequestSchema = z
+  .object({
+    business_name: z.string().min(1).max(100).openapi({ title: 'Business Name' }),
+    vertical: z
+      .union([ReceptionVerticalSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          "The business's vertical, used with `complete_onboarding`. Without it, onboarding picks the vertical as usual.",
+      }),
+    subscription: z
+      .union([ProvisionResellerWorkspaceSubscriptionSchema, z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Paid tier to subscribe to. Omitted leaves the workspace with no subscription.',
+      }),
+    phone_number: z
+      .union([z.string(), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Phone Number',
+        description:
+          "A free number from the reseller's phone pool, reserved for the workspace until onboarding binds it to the receptionist.",
+      }),
+    members: z
+      .array(TeamInviteRequestSchema)
+      .max(100)
+      .default([])
+      .exactOptional()
+      .openapi({
+        title: 'Members',
+        description:
+          "People to invite once the workspace exists, capped by the tier's team size. Best-effort: each outcome is in `member_results`.",
+      }),
+    complete_onboarding: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        title: 'Complete Onboarding',
+        description:
+          'Finish setup right away, as `POST /v1/reception/reseller/workspaces/{workspace_id}/complete-onboarding` does. Best-effort: `onboarding_completed_at_unix` stays null on failure, and that call can be retried.',
+      }),
+    idempotency_key: z
+      .union([z.string().max(255), z.null().nullable()])
+      .exactOptional()
+      .openapi({
+        title: 'Idempotency Key',
+        description:
+          'Client-generated key that makes a retry safe. The same key and body within 24 hours returns the first result without running again. While that first request is still running, a retry gets 409 `idempotency_key_in_progress`; a different body with the same key gets 400 `idempotency_key_reused`. A request that fails is not saved, so it can be retried with the same key.',
+        examples: ['3c1d2b7e-8f4a-4e5b-9c6d-1a2b3c4d5e6f'],
+      }),
+  })
+  .openapi({ required: ['business_name'], title: 'ReceptionProvisionResellerWorkspaceRequest' })
+  .openapi('ReceptionProvisionResellerWorkspaceRequest')
 
 const ReceptionServiceSchema = z
   .object({
@@ -60824,102 +60422,6 @@ const ReceptionServiceSchema = z
   })
   .openapi('ReceptionService')
 
-const ReceptionServiceScrapableSchema = z
-  .object({
-    pricing_mode: PricingModeSchema.default('fixed')
-      .exactOptional()
-      .openapi({
-        description:
-          "'fixed' (default): the item has a known price the agent can quote, and customers can book or order it directly. 'quote': the price depends on the job (renovation, catering, custom work), so no price or slot is offered; the agent collects the intake_questions and files a quote request instead. Takes effect only while quotes are enabled for the business. Group services cannot use 'quote'.",
-      }),
-    groups: z
-      .array(ReceptionGroupMembershipSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Groups',
-        description:
-          "Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.",
-      }),
-    ungrouped_rank: z
-      .union([z.int().min(0), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Ungrouped Rank',
-        description:
-          'Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.',
-      }),
-    name: StrippedStrSchema.openapi({
-      description: 'Service name shown to customers and the receptionist.',
-      examples: ['Haircut'],
-    }),
-    description: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({
-        description:
-          'Details about the service for customers and the receptionist; empty string means none.',
-        examples: ['A classic cut, finished with a wash and style.'],
-      }),
-    variants: z
-      .array(ReceptionServiceVariantSchema)
-      .min(1)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Variants',
-        description:
-          "Bookable options for this service. Always non-empty; `variants[0]` is the default option shown when callers don't pick a specific variant. Each entry has its own duration and (optional) price, and uniqueness is keyed by duration.",
-      }),
-    kind: ReceptionServiceKindSchema.default('classic')
-      .exactOptional()
-      .openapi({
-        description:
-          'Classic = staff-delivered; rental = asset-based; group = multi-participant session.',
-      }),
-    buffer_minutes: z
-      .int()
-      .min(0)
-      .max(1440)
-      .default(0)
-      .exactOptional()
-      .openapi({
-        title: 'Buffer Minutes',
-        description:
-          'Turnover/cleanup time reserved after each booking. Applies to every service kind; default 0 means no buffer.',
-        examples: [15],
-      }),
-    service_location: ServiceLocationTypeSchema.default('business')
-      .exactOptional()
-      .openapi({
-        description:
-          "Where the service is delivered. `business` = client visits the business location (default); `customer` = staff travels to the client. Only meaningful for `kind='classic'`.",
-      }),
-    add_ons: z
-      .array(ReceptionAddOnSchema)
-      .max(10)
-      .exactOptional()
-      .openapi({
-        title: 'Add Ons',
-        description: 'Optional extras that can be added to a booking of this service.',
-      }),
-    max_participants: z
-      .union([z.int().min(2).max(200), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Max Participants',
-        description:
-          "Capacity for `kind='group'`: how many seats a single session can sell across all registrations. Must be null for classic and rental services (those are always exclusive to one client per booking).",
-        examples: [12],
-      }),
-  })
-  .openapi({
-    required: ['name'],
-    title: 'ReceptionServiceScrapable',
-    description:
-      'Scrape-reachable subset of a service (classic, rental or group).\n\nThe extraction pipeline uses one LLM prompt per kind (so the model sees\nkind-specific guidance), but every code path produces this single shape:\nonboarding, imports and the unified ``smb_services`` collection all\ndiscriminate by the ``kind`` field.',
-  })
-  .openapi('ReceptionServiceScrapable')
-
 const ReceptionServiceUpdateResponseSchema = z
   .object({
     service: z
@@ -61060,40 +60562,6 @@ const ReceptionStaffResourceSchema = z
     description: 'Represents a staff member who can provide services.',
   })
   .openapi('ReceptionStaffResource')
-
-const ReceptionStaffScrapableSchema = z
-  .object({
-    groups: z
-      .array(ReceptionGroupMembershipSchema)
-      .max(20)
-      .exactOptional()
-      .openapi({
-        title: 'Groups',
-        description:
-          "Group memberships for this item. Each entry carries the group label and the item's 0-based rank within that group.",
-      }),
-    ungrouped_rank: z
-      .union([z.int().min(0), z.null().nullable()])
-      .exactOptional()
-      .openapi({
-        title: 'Ungrouped Rank',
-        description:
-          'Display position among items with no group; `null` sorts last. Change it with the reorder endpoint.',
-      }),
-    name: StrippedStrSchema.openapi({
-      description:
-        'Internal/admin name of the staff member, shown in the dashboard and owner notifications.',
-    }),
-    description: StrippedStrSchema.default('')
-      .exactOptional()
-      .openapi({ description: 'Description or bio of the staff member.' }),
-  })
-  .openapi({
-    required: ['name'],
-    title: 'ReceptionStaffScrapable',
-    description: 'Scrape-reachable subset of a staff/team member.',
-  })
-  .openapi('ReceptionStaffScrapable')
 
 const ReceptionTeamInviteResponseSchema = z
   .object({
@@ -61263,6 +60731,7 @@ const ReceptionUpdateAgentInfoRequestSchema = z
         'NGN',
         'KES',
         'PKR',
+        'GEL',
       ])
       .default('USD')
       .exactOptional()
@@ -62250,10 +61719,67 @@ const ResellerTierResponseSchema = z
   .object({
     tier_id: z.string().openapi({ title: 'Tier Id' }),
     display_name: z.string().openapi({ title: 'Display Name' }),
+    currency: z
+      .enum([
+        'USD',
+        'EUR',
+        'GBP',
+        'PLN',
+        'CAD',
+        'AUD',
+        'CHF',
+        'SEK',
+        'NOK',
+        'DKK',
+        'ISK',
+        'CZK',
+        'HUF',
+        'RON',
+        'BGN',
+        'JPY',
+        'CNY',
+        'TWD',
+        'INR',
+        'BRL',
+        'MXN',
+        'KRW',
+        'SGD',
+        'HKD',
+        'NZD',
+        'ZAR',
+        'AED',
+        'SAR',
+        'QAR',
+        'KWD',
+        'ILS',
+        'TRY',
+        'THB',
+        'IDR',
+        'MYR',
+        'PHP',
+        'VND',
+        'BDT',
+        'RUB',
+        'UAH',
+        'CLP',
+        'COP',
+        'ARS',
+        'PEN',
+        'EGP',
+        'NGN',
+        'KES',
+        'PKR',
+        'GEL',
+      ])
+      .openapi({
+        title: 'Currency',
+        description: 'What the prices are in. The same for every tier on a ladder.',
+        examples: ['USD'],
+      }),
     tier_economics: ResellerTierEconomicsSchema,
   })
   .openapi({
-    required: ['tier_id', 'display_name', 'tier_economics'],
+    required: ['tier_id', 'display_name', 'currency', 'tier_economics'],
     title: 'ResellerTierResponse',
     description: 'A tier you can sell.',
   })
@@ -62669,79 +62195,6 @@ const SafetyCommonModelInputSchema = z
   })
   .openapi('SafetyCommonModelInput')
 
-const SafetyCommonModelOutputSchema = z
-  .object({
-    ivc: SafetyEvaluationSchema.exactOptional(),
-    non_ivc: SafetyEvaluationSchema.exactOptional(),
-  })
-  .openapi({
-    title: 'SafetyCommonModel',
-    description:
-      'Safety object that has the information of safety evaluations based on used voice.',
-    required: [],
-  })
-  .openapi('SafetyCommonModelOutput')
-
-const TranslatedStringSchema = z
-  .object({ value: z.string().min(1).openapi({ title: 'Value' }) })
-  .openapi({ required: ['value'], title: 'TranslatedString' })
-  .openapi('TranslatedString')
-
-const SayNodeLiteralMessageInputSchema = z
-  .object({
-    type: z.literal('literal').default('literal').exactOptional().openapi({ title: 'Type' }),
-    text: z
-      .string()
-      .min(1)
-      .openapi({ title: 'Text', description: 'Literal text message to be spoken by the agent.' }),
-    text_translations: z
-      .record(z.string(), TranslatedStringSchema)
-      .exactOptional()
-      .openapi({ title: 'Text Translations', description: 'Translations for the text field' }),
-  })
-  .openapi({ required: ['text'], title: 'SayNodeLiteralMessage' })
-  .openapi('SayNodeLiteralMessageInput')
-
-const SayNodeLiteralMessageOutputSchema = z
-  .object({
-    type: z.literal('literal').default('literal').openapi({ title: 'Type' }),
-    text: z
-      .string()
-      .min(1)
-      .openapi({ title: 'Text', description: 'Literal text message to be spoken by the agent.' }),
-    text_translations: z
-      .record(z.string(), TranslatedStringSchema)
-      .openapi({ title: 'Text Translations', description: 'Translations for the text field' }),
-  })
-  .openapi({ required: ['type', 'text', 'text_translations'], title: 'SayNodeLiteralMessage' })
-  .openapi('SayNodeLiteralMessageOutput')
-
-const SayNodePromptMessageInputSchema = z
-  .object({
-    type: z.literal('prompt').default('prompt').exactOptional().openapi({ title: 'Type' }),
-    prompt: z
-      .string()
-      .openapi({
-        title: 'Prompt',
-        description: 'LLM prompt describing what message should be generated.',
-      }),
-  })
-  .openapi({ required: ['prompt'], title: 'SayNodePromptMessage' })
-  .openapi('SayNodePromptMessageInput')
-
-const SayNodePromptMessageOutputSchema = z
-  .object({
-    type: z.literal('prompt').default('prompt').openapi({ title: 'Type' }),
-    prompt: z
-      .string()
-      .openapi({
-        title: 'Prompt',
-        description: 'LLM prompt describing what message should be generated.',
-      }),
-  })
-  .openapi({ required: ['type', 'prompt'], title: 'SayNodePromptMessage' })
-  .openapi('SayNodePromptMessageOutput')
-
 const SecretDependencyResourceTypeSchema = z
   .enum(['tools', 'agents', 'phone_numbers'])
   .openapi({ title: 'SecretDependencyResourceType' })
@@ -62975,11 +62428,6 @@ const SimilarVoicesForSpeakerResponseSchema = z
   .openapi({ required: ['voices'], title: 'SimilarVoicesForSpeakerResponse' })
   .openapi('SimilarVoicesForSpeakerResponse')
 
-const SimulationLibrarySettingsSchema = z
-  .looseObject({})
-  .openapi({ title: 'SimulationLibrarySettings' })
-  .openapi('SimulationLibrarySettings')
-
 const SingleUseTokenResponseModelSchema = z
   .object({
     token: z
@@ -63001,29 +62449,6 @@ const SingleUseTokenTypeSchema = z
   .enum(['realtime_scribe', 'batch_scribe', 'tts_websocket'])
   .openapi({ title: 'SingleUseTokenType' })
   .openapi('SingleUseTokenType')
-
-const SmbSipMediaEncryptionSchema = z
-  .enum(['disabled', 'allowed', 'required'])
-  .openapi({
-    title: 'SmbSipMediaEncryption',
-    description:
-      'Media (SRTP) encryption policy for a SIP trunk.\n\nValues match the Agents platform ``SIPMediaEncryptionEnum`` so the SMB\nadapter maps by value.',
-  })
-  .openapi('SmbSipMediaEncryption')
-
-const SmbSipTransportSchema = z
-  .enum(['udp', 'tcp', 'tls'])
-  .openapi({
-    title: 'SmbSipTransport',
-    description:
-      'Signalling transport for outbound SIP INVITEs.\n\nValues match the Agents platform ``SIPTrunkTransportEnum`` so the SMB adapter\nmaps by value. ``AUTO`` is omitted: the Agents UI hides it too, since it can\npick UDP, which is known to misbehave (CAI-299). Reception defaults to TLS.',
-  })
-  .openapi('SmbSipTransport')
-
-const SmsTemplateStyleSchema = z
-  .enum(['friendly', 'professional', 'concise'])
-  .openapi({ title: 'SmsTemplateStyle', description: 'Preset tone for an SMS message body.' })
-  .openapi('SmsTemplateStyle')
 
 const SortDirectionSchema = z
   .enum(['asc', 'desc'])
@@ -63971,17 +63396,6 @@ const SuppressLeadResponseSchema = z
   })
   .openapi('SuppressLeadResponse')
 
-const SystemEvaluationCriteriaSchema = z
-  .object({
-    user_sentiment_score: z.number().min(-1).max(1).openapi({ title: 'User Sentiment Score' }),
-    user_frustration_score: z.number().min(0).max(1).openapi({ title: 'User Frustration Score' }),
-  })
-  .openapi({
-    required: ['user_sentiment_score', 'user_frustration_score'],
-    title: 'SystemEvaluationCriteria',
-  })
-  .openapi('SystemEvaluationCriteria')
-
 const TemplateListResponseSchema: z.ZodType<TemplateListResponseType> = z
   .object({
     templates: z
@@ -64257,20 +63671,6 @@ const TextToSpeechGenerationRequestSchema = z
     },
   })
   .openapi('TextToSpeechGenerationRequest')
-
-const TicketMergeProposalLinkResponseModelSchema = z
-  .object({
-    merge_proposal_id: z.string().openapi({ title: 'Merge Proposal Id' }),
-    linked_by_user_id: z
-      .union([z.string(), z.null().nullable()])
-      .openapi({ title: 'Linked By User Id' }),
-    linked_at_unix_secs: z.int().openapi({ title: 'Linked At Unix Secs' }),
-  })
-  .openapi({
-    required: ['merge_proposal_id', 'linked_by_user_id', 'linked_at_unix_secs'],
-    title: 'TicketMergeProposalLinkResponseModel',
-  })
-  .openapi('TicketMergeProposalLinkResponseModel')
 
 const TokenResponseModelSchema = z
   .object({
@@ -65991,11 +65391,6 @@ const WebhookAuthMethodTypeSchema = z
   .enum(['hmac', 'oauth2', 'mtls'])
   .openapi({ title: 'WebhookAuthMethodType' })
   .openapi('WebhookAuthMethodType')
-
-const WebhookHttpMethodSchema = z
-  .enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
-  .openapi({ title: 'WebhookHttpMethod' })
-  .openapi('WebhookHttpMethod')
 
 const WebhookOutcomeSchema = z
   .enum([
@@ -74983,6 +74378,501 @@ export const getV1StudioProjectsProjectIdMutedTracksRoute = createRoute({
   },
 })
 
+export const postV1AudioNativeRoute = createRoute({
+  method: 'post',
+  path: '/v1/audio-native',
+  tags: ['audio-native'],
+  summary: 'Creates Audio Native Enabled Project.',
+  description:
+    'Creates Audio Native enabled project, optionally starts conversion and returns project ID and embeddable HTML snippet.',
+  operationId: 'create_audio_native_project',
+  request: {
+    headers: z.object({
+      'xi-api-key': ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'xi-api-key',
+            in: 'header',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+              title: 'Xi-Api-Key',
+            },
+            description:
+              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          },
+          description:
+            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          title: 'Xi-Api-Key',
+        }),
+    }),
+    body: {
+      content: {
+        'multipart/form-data': {
+          schema: z
+            .object({
+              name: z.string().openapi({ title: 'Name', description: 'Project name.' }),
+              image: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Image',
+                  description:
+                    '(Deprecated) Image URL used in the player. If not provided, default image set in the Player settings is used.',
+                  deprecated: true,
+                }),
+              author: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Author',
+                  description:
+                    'Author used in the player and inserted at the start of the uploaded article. If not provided, the default author set in the Player settings is used.',
+                }),
+              title: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Title',
+                  description:
+                    'Title used in the player and inserted at the top of the uploaded article. If not provided, the default title set in the Player settings is used.',
+                }),
+              small: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  title: 'Small',
+                  description:
+                    '(Deprecated) Whether to use small player or not. If not provided, default value set in the Player settings is used.',
+                  deprecated: true,
+                }),
+              text_color: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Text Color',
+                  description:
+                    'Text color used in the player. If not provided, default text color set in the Player settings is used.',
+                }),
+              background_color: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Background Color',
+                  description:
+                    'Background color used in the player. If not provided, default background color set in the Player settings is used.',
+                }),
+              sessionization: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  z.int(),
+                )
+                .default(0)
+                .exactOptional()
+                .openapi({
+                  title: 'Sessionization',
+                  description:
+                    '(Deprecated) Specifies for how many minutes to persist the session across page reloads. If not provided, default sessionization set in the Player settings is used.',
+                  deprecated: true,
+                }),
+              voice_id: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Voice Id',
+                  description:
+                    'Voice ID used to voice the content. If not provided, default voice ID set in the Player settings is used.',
+                }),
+              model_id: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.string(),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Model Id',
+                  description:
+                    'TTS Model ID used in the player. If not provided, default model ID set in the Player settings is used.',
+                }),
+              file: z
+                .file()
+                .exactOptional()
+                .openapi({
+                  type: 'string',
+                  format: 'binary',
+                  title: 'File',
+                  description:
+                    "Either txt or HTML input file containing the article content. HTML should be formatted as follows '&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;Your content&lt;/p&gt;&lt;h3&gt;More of your content&lt;/h3&gt;&lt;p&gt;Some more of your content&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;'",
+                }),
+              auto_convert: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  title: 'Auto Convert',
+                  description: 'Whether to auto convert the project to audio or not.',
+                }),
+              apply_text_normalization: ((schema) =>
+                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+                z.union([
+                  z.enum(['auto', 'on', 'off', 'apply_english']),
+                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+                ]),
+              )
+                .exactOptional()
+                .openapi({
+                  title: 'Apply Text Normalization',
+                  description:
+                    "\n    This parameter controls text normalization with four modes: 'auto', 'on', 'apply_english' and 'off'.\n    When set to 'auto', the system will automatically decide whether to apply text normalization\n    (e.g., spelling out numbers). With 'on', text normalization will always be applied, while\n    with 'off', it will be skipped. 'apply_english' is the same as 'on' but will assume that text is in English.\n    ",
+                }),
+              pronunciation_dictionary_locators: z
+                .preprocess(
+                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                  z.array(z.string()),
+                )
+                .exactOptional()
+                .openapi({
+                  title: 'Pronunciation Dictionary Locators',
+                  description:
+                    'A list of pronunciation dictionary locators (pronunciation_dictionary_id, version_id) encoded as a list of JSON strings for pronunciation dictionaries to be applied to the text. A list of json encoded strings is required as adding projects may occur through formData as opposed to jsonBody. To specify multiple dictionaries use multiple --form lines in your curl, such as --form \'pronunciation_dictionary_locators="{\\"pronunciation_dictionary_id\\":\\"Vmd4Zor6fplcA7WrINey\\",\\"version_id\\":\\"hRPaxjlTdR7wFMhV4w0b\\"}"\' --form \'pronunciation_dictionary_locators="{\\"pronunciation_dictionary_id\\":\\"JzWtcGQMJ6bnlWwyMo7e\\",\\"version_id\\":\\"lbmwxiLu4q6txYxgdZqn\\"}"\'.',
+                  examples: [
+                    [
+                      '{"pronunciation_dictionary_id": "21m00Tcm4TlvDq8ikWAM", "version_id": "BdF0s0aZ3oFoKnDYdTox"}',
+                    ],
+                  ],
+                }),
+            })
+            .openapi({
+              required: ['name'],
+              title: 'Body_Creates_Audio_Native_enabled_project__v1_audio_native_post',
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: AudioNativeCreateProjectResponseModelSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+})
+
+export const getV1AudioNativeProjectIdSettingsRoute = createRoute({
+  method: 'get',
+  path: '/v1/audio-native/{project_id}/settings',
+  tags: ['audio-native'],
+  summary: 'Get Audio Native Project Settings',
+  description: 'Get player settings for the specific project.',
+  operationId: 'get_audio_native_project_settings_endpoint',
+  request: {
+    params: z.object({
+      project_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'project_id',
+            in: 'path',
+            required: true,
+            schema: {
+              type: 'string',
+              description: 'The ID of the Studio project.',
+              examples: ['21m00Tcm4TlvDq8ikWAM'],
+              title: 'Project Id',
+            },
+            description: 'The ID of the Studio project.',
+          },
+          description: 'The ID of the Studio project.',
+          examples: ['21m00Tcm4TlvDq8ikWAM'],
+          title: 'Project Id',
+        }),
+    }),
+    headers: z.object({
+      'xi-api-key': ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'xi-api-key',
+            in: 'header',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+              title: 'Xi-Api-Key',
+            },
+            description:
+              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          },
+          description:
+            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          title: 'Xi-Api-Key',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: GetAudioNativeProjectSettingsResponseModelSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+})
+
+export const postV1AudioNativeProjectIdContentRoute = createRoute({
+  method: 'post',
+  path: '/v1/audio-native/{project_id}/content',
+  tags: ['audio-native'],
+  summary: 'Update Audio-Native Project Content',
+  description: 'Updates content for the specific AudioNative Project.',
+  operationId: 'audio_native_project_update_content_endpoint',
+  request: {
+    params: z.object({
+      project_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'project_id',
+            in: 'path',
+            required: true,
+            schema: {
+              type: 'string',
+              description: 'The ID of the Studio project.',
+              examples: ['21m00Tcm4TlvDq8ikWAM'],
+              title: 'Project Id',
+            },
+            description: 'The ID of the Studio project.',
+          },
+          description: 'The ID of the Studio project.',
+          examples: ['21m00Tcm4TlvDq8ikWAM'],
+          title: 'Project Id',
+        }),
+    }),
+    headers: z.object({
+      'xi-api-key': ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'xi-api-key',
+            in: 'header',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+              title: 'Xi-Api-Key',
+            },
+            description:
+              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          },
+          description:
+            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          title: 'Xi-Api-Key',
+        }),
+    }),
+    body: {
+      content: {
+        'multipart/form-data': {
+          schema: z
+            .object({
+              file: z
+                .file()
+                .exactOptional()
+                .openapi({
+                  type: 'string',
+                  format: 'binary',
+                  title: 'File',
+                  description:
+                    "Either txt or HTML input file containing the article content. HTML should be formatted as follows '&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;Your content&lt;/p&gt;&lt;h5&gt;More of your content&lt;/h5&gt;&lt;p&gt;Some more of your content&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;'",
+                }),
+              auto_convert: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  title: 'Auto Convert',
+                  description: 'Whether to auto convert the project to audio or not.',
+                }),
+              auto_publish: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  title: 'Auto Publish',
+                  description:
+                    "Whether to auto publish the new project snapshot after it's converted.",
+                }),
+            })
+            .openapi({
+              title:
+                'Body_Update_audio_native_Project_content_v1_audio_native__project_id__content_post',
+              required: [],
+            }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: AudioNativeEditContentResponseModelSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+})
+
+export const postV1AudioNativeContentRoute = createRoute({
+  method: 'post',
+  path: '/v1/audio-native/content',
+  tags: ['audio-native'],
+  summary: 'Update Audio-Native Content From Url',
+  description:
+    'Finds an AudioNative project matching the provided URL, extracts content from the URL, updates the project content, and queues it for conversion and auto-publishing.',
+  operationId: 'audio_native_update_content_from_url',
+  request: {
+    headers: z.object({
+      'xi-api-key': ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'xi-api-key',
+            in: 'header',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description:
+                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+              title: 'Xi-Api-Key',
+            },
+            description:
+              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          },
+          description:
+            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
+          title: 'Xi-Api-Key',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPostSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful Response',
+      content: { 'application/json': { schema: AudioNativeEditContentResponseModelSchema } },
+    },
+    422: {
+      description: 'Validation Error',
+      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
+    },
+  },
+})
+
 export const getV1DubbingProjectRoute = createRoute({
   method: 'get',
   path: '/v1/dubbing/project',
@@ -78746,501 +78636,6 @@ export const getV1ModelsRoute = createRoute({
   },
 })
 
-export const postV1AudioNativeRoute = createRoute({
-  method: 'post',
-  path: '/v1/audio-native',
-  tags: ['audio-native'],
-  summary: 'Creates Audio Native Enabled Project.',
-  description:
-    'Creates Audio Native enabled project, optionally starts conversion and returns project ID and embeddable HTML snippet.',
-  operationId: 'create_audio_native_project',
-  request: {
-    headers: z.object({
-      'xi-api-key': ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          z.string(),
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'xi-api-key',
-            in: 'header',
-            required: false,
-            schema: {
-              anyOf: [{ type: 'string' }, { type: 'null' }],
-              description:
-                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-              title: 'Xi-Api-Key',
-            },
-            description:
-              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          },
-          description:
-            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          title: 'Xi-Api-Key',
-        }),
-    }),
-    body: {
-      content: {
-        'multipart/form-data': {
-          schema: z
-            .object({
-              name: z.string().openapi({ title: 'Name', description: 'Project name.' }),
-              image: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Image',
-                  description:
-                    '(Deprecated) Image URL used in the player. If not provided, default image set in the Player settings is used.',
-                  deprecated: true,
-                }),
-              author: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Author',
-                  description:
-                    'Author used in the player and inserted at the start of the uploaded article. If not provided, the default author set in the Player settings is used.',
-                }),
-              title: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Title',
-                  description:
-                    'Title used in the player and inserted at the top of the uploaded article. If not provided, the default title set in the Player settings is used.',
-                }),
-              small: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  z.boolean(),
-                )
-                .default(false)
-                .exactOptional()
-                .openapi({
-                  title: 'Small',
-                  description:
-                    '(Deprecated) Whether to use small player or not. If not provided, default value set in the Player settings is used.',
-                  deprecated: true,
-                }),
-              text_color: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Text Color',
-                  description:
-                    'Text color used in the player. If not provided, default text color set in the Player settings is used.',
-                }),
-              background_color: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Background Color',
-                  description:
-                    'Background color used in the player. If not provided, default background color set in the Player settings is used.',
-                }),
-              sessionization: z
-                .preprocess(
-                  (val) =>
-                    typeof val === 'string' &&
-                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                      ? Number(val)
-                      : val,
-                  z.int(),
-                )
-                .default(0)
-                .exactOptional()
-                .openapi({
-                  title: 'Sessionization',
-                  description:
-                    '(Deprecated) Specifies for how many minutes to persist the session across page reloads. If not provided, default sessionization set in the Player settings is used.',
-                  deprecated: true,
-                }),
-              voice_id: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Voice Id',
-                  description:
-                    'Voice ID used to voice the content. If not provided, default voice ID set in the Player settings is used.',
-                }),
-              model_id: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.string(),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Model Id',
-                  description:
-                    'TTS Model ID used in the player. If not provided, default model ID set in the Player settings is used.',
-                }),
-              file: z
-                .file()
-                .exactOptional()
-                .openapi({
-                  type: 'string',
-                  format: 'binary',
-                  title: 'File',
-                  description:
-                    "Either txt or HTML input file containing the article content. HTML should be formatted as follows '&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;Your content&lt;/p&gt;&lt;h3&gt;More of your content&lt;/h3&gt;&lt;p&gt;Some more of your content&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;'",
-                }),
-              auto_convert: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  z.boolean(),
-                )
-                .default(false)
-                .exactOptional()
-                .openapi({
-                  title: 'Auto Convert',
-                  description: 'Whether to auto convert the project to audio or not.',
-                }),
-              apply_text_normalization: ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.union([
-                  z.enum(['auto', 'on', 'off', 'apply_english']),
-                  z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-                ]),
-              )
-                .exactOptional()
-                .openapi({
-                  title: 'Apply Text Normalization',
-                  description:
-                    "\n    This parameter controls text normalization with four modes: 'auto', 'on', 'apply_english' and 'off'.\n    When set to 'auto', the system will automatically decide whether to apply text normalization\n    (e.g., spelling out numbers). With 'on', text normalization will always be applied, while\n    with 'off', it will be skipped. 'apply_english' is the same as 'on' but will assume that text is in English.\n    ",
-                }),
-              pronunciation_dictionary_locators: z
-                .preprocess(
-                  (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                  z.array(z.string()),
-                )
-                .exactOptional()
-                .openapi({
-                  title: 'Pronunciation Dictionary Locators',
-                  description:
-                    'A list of pronunciation dictionary locators (pronunciation_dictionary_id, version_id) encoded as a list of JSON strings for pronunciation dictionaries to be applied to the text. A list of json encoded strings is required as adding projects may occur through formData as opposed to jsonBody. To specify multiple dictionaries use multiple --form lines in your curl, such as --form \'pronunciation_dictionary_locators="{\\"pronunciation_dictionary_id\\":\\"Vmd4Zor6fplcA7WrINey\\",\\"version_id\\":\\"hRPaxjlTdR7wFMhV4w0b\\"}"\' --form \'pronunciation_dictionary_locators="{\\"pronunciation_dictionary_id\\":\\"JzWtcGQMJ6bnlWwyMo7e\\",\\"version_id\\":\\"lbmwxiLu4q6txYxgdZqn\\"}"\'.',
-                  examples: [
-                    [
-                      '{"pronunciation_dictionary_id": "21m00Tcm4TlvDq8ikWAM", "version_id": "BdF0s0aZ3oFoKnDYdTox"}',
-                    ],
-                  ],
-                }),
-            })
-            .openapi({
-              required: ['name'],
-              title: 'Body_Creates_Audio_Native_enabled_project__v1_audio_native_post',
-            }),
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: { 'application/json': { schema: AudioNativeCreateProjectResponseModelSchema } },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const getV1AudioNativeProjectIdSettingsRoute = createRoute({
-  method: 'get',
-  path: '/v1/audio-native/{project_id}/settings',
-  tags: ['audio-native'],
-  summary: 'Get Audio Native Project Settings',
-  description: 'Get player settings for the specific project.',
-  operationId: 'get_audio_native_project_settings_endpoint',
-  request: {
-    params: z.object({
-      project_id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'project_id',
-            in: 'path',
-            required: true,
-            schema: {
-              type: 'string',
-              description: 'The ID of the Studio project.',
-              examples: ['21m00Tcm4TlvDq8ikWAM'],
-              title: 'Project Id',
-            },
-            description: 'The ID of the Studio project.',
-          },
-          description: 'The ID of the Studio project.',
-          examples: ['21m00Tcm4TlvDq8ikWAM'],
-          title: 'Project Id',
-        }),
-    }),
-    headers: z.object({
-      'xi-api-key': ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          z.string(),
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'xi-api-key',
-            in: 'header',
-            required: false,
-            schema: {
-              anyOf: [{ type: 'string' }, { type: 'null' }],
-              description:
-                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-              title: 'Xi-Api-Key',
-            },
-            description:
-              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          },
-          description:
-            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          title: 'Xi-Api-Key',
-        }),
-    }),
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: { 'application/json': { schema: GetAudioNativeProjectSettingsResponseModelSchema } },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const postV1AudioNativeProjectIdContentRoute = createRoute({
-  method: 'post',
-  path: '/v1/audio-native/{project_id}/content',
-  tags: ['audio-native'],
-  summary: 'Update Audio-Native Project Content',
-  description: 'Updates content for the specific AudioNative Project.',
-  operationId: 'audio_native_project_update_content_endpoint',
-  request: {
-    params: z.object({
-      project_id: z
-        .string()
-        .openapi({
-          param: {
-            name: 'project_id',
-            in: 'path',
-            required: true,
-            schema: {
-              type: 'string',
-              description: 'The ID of the Studio project.',
-              examples: ['21m00Tcm4TlvDq8ikWAM'],
-              title: 'Project Id',
-            },
-            description: 'The ID of the Studio project.',
-          },
-          description: 'The ID of the Studio project.',
-          examples: ['21m00Tcm4TlvDq8ikWAM'],
-          title: 'Project Id',
-        }),
-    }),
-    headers: z.object({
-      'xi-api-key': ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          z.string(),
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'xi-api-key',
-            in: 'header',
-            required: false,
-            schema: {
-              anyOf: [{ type: 'string' }, { type: 'null' }],
-              description:
-                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-              title: 'Xi-Api-Key',
-            },
-            description:
-              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          },
-          description:
-            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          title: 'Xi-Api-Key',
-        }),
-    }),
-    body: {
-      content: {
-        'multipart/form-data': {
-          schema: z
-            .object({
-              file: z
-                .file()
-                .exactOptional()
-                .openapi({
-                  type: 'string',
-                  format: 'binary',
-                  title: 'File',
-                  description:
-                    "Either txt or HTML input file containing the article content. HTML should be formatted as follows '&lt;html&gt;&lt;body&gt;&lt;div&gt;&lt;p&gt;Your content&lt;/p&gt;&lt;h5&gt;More of your content&lt;/h5&gt;&lt;p&gt;Some more of your content&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;'",
-                }),
-              auto_convert: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  z.boolean(),
-                )
-                .default(false)
-                .exactOptional()
-                .openapi({
-                  title: 'Auto Convert',
-                  description: 'Whether to auto convert the project to audio or not.',
-                }),
-              auto_publish: z
-                .preprocess(
-                  ((read) => (val: unknown) => {
-                    const result = read.safeParse(val)
-                    return result.success ? result.data : val
-                  })(z.stringbool()),
-                  z.boolean(),
-                )
-                .default(false)
-                .exactOptional()
-                .openapi({
-                  title: 'Auto Publish',
-                  description:
-                    "Whether to auto publish the new project snapshot after it's converted.",
-                }),
-            })
-            .openapi({
-              title:
-                'Body_Update_audio_native_Project_content_v1_audio_native__project_id__content_post',
-              required: [],
-            }),
-        },
-      },
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: { 'application/json': { schema: AudioNativeEditContentResponseModelSchema } },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
-export const postV1AudioNativeContentRoute = createRoute({
-  method: 'post',
-  path: '/v1/audio-native/content',
-  tags: ['audio-native'],
-  summary: 'Update Audio-Native Content From Url',
-  description:
-    'Finds an AudioNative project matching the provided URL, extracts content from the URL, updates the project content, and queues it for conversion and auto-publishing.',
-  operationId: 'audio_native_update_content_from_url',
-  request: {
-    headers: z.object({
-      'xi-api-key': ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          z.string(),
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'xi-api-key',
-            in: 'header',
-            required: false,
-            schema: {
-              anyOf: [{ type: 'string' }, { type: 'null' }],
-              description:
-                "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-              title: 'Xi-Api-Key',
-            },
-            description:
-              "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          },
-          description:
-            "Your API key. This is required by most endpoints to access our API programmatically. You can view your xi-api-key using the 'Profile' tab on the website.",
-          title: 'Xi-Api-Key',
-        }),
-    }),
-    body: {
-      content: {
-        'application/json': {
-          schema: BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPostSchema,
-        },
-      },
-      required: true,
-    },
-  },
-  responses: {
-    200: {
-      description: 'Successful Response',
-      content: { 'application/json': { schema: AudioNativeEditContentResponseModelSchema } },
-    },
-    422: {
-      description: 'Validation Error',
-      content: { 'application/json': { schema: HTTPValidationErrorSchema } },
-    },
-  },
-})
-
 export const postV1ContentProvenanceWatermarkRoute = createRoute({
   method: 'post',
   path: '/v1/content-provenance/watermark',
@@ -79306,6 +78701,220 @@ export const postV1SimilarVoicesRoute = createRoute({
     'Returns a list of shared voices similar to the provided audio sample. If neither similarity_threshold nor top_k is provided, we will apply default values.',
   operationId: 'get_similar_library_voices',
   request: {
+    query: z.object({
+      category: z
+        .union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'category',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: 'Voice category used for filtering',
+              examples: ['professional'],
+              enum: ['professional', 'famous', 'high_quality'],
+              title: 'Category',
+            },
+            description: 'Voice category used for filtering',
+          },
+          description: 'Voice category used for filtering',
+          examples: ['professional'],
+          title: 'Category',
+        }),
+      gender: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'gender',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: 'Gender used for filtering',
+              examples: ['male'],
+              title: 'Gender',
+            },
+            description: 'Gender used for filtering',
+          },
+          description: 'Gender used for filtering',
+          examples: ['male'],
+          title: 'Gender',
+        }),
+      age: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'age',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: 'Age used for filtering',
+              examples: ['young'],
+              title: 'Age',
+            },
+            description: 'Age used for filtering',
+          },
+          description: 'Age used for filtering',
+          examples: ['young'],
+          title: 'Age',
+        }),
+      use_cases: z
+        .union([
+          z.array(z.string()),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'use_cases',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'array', items: { type: 'string' } }, { type: 'null' }],
+              description: 'Use-case used for filtering',
+              examples: ['audiobook'],
+              title: 'Use Cases',
+            },
+            description: 'Use-case used for filtering',
+          },
+          description: 'Use-case used for filtering',
+          examples: ['audiobook'],
+          title: 'Use Cases',
+        }),
+      min_notice_period_days: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.union([z.int(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'min_notice_period_days',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'integer' }, { type: 'null' }],
+              description:
+                'Filter voices with a minimum notice period of the given number of days.',
+              examples: [30],
+              title: 'Min Notice Period Days',
+            },
+            description: 'Filter voices with a minimum notice period of the given number of days.',
+          },
+          description: 'Filter voices with a minimum notice period of the given number of days.',
+          examples: [30],
+          title: 'Min Notice Period Days',
+        }),
+      include_custom_rates: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            ((read) => (val: unknown) => {
+              const result = read.safeParse(val)
+              return result.success ? result.data : val
+            })(z.stringbool()),
+            z.union([z.boolean(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_custom_rates',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'boolean' }, { type: 'null' }],
+              description: 'Include/exclude voices with custom rates',
+              examples: [true],
+              title: 'Include Custom Rates',
+            },
+            description: 'Include/exclude voices with custom rates',
+          },
+          description: 'Include/exclude voices with custom rates',
+          examples: [true],
+          title: 'Include Custom Rates',
+        }),
+      include_live_moderated: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            ((read) => (val: unknown) => {
+              const result = read.safeParse(val)
+              return result.success ? result.data : val
+            })(z.stringbool()),
+            z.union([z.boolean(), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'include_live_moderated',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'boolean' }, { type: 'null' }],
+              description: 'Include/exclude voices that are live moderated',
+              examples: [true],
+              title: 'Include Live Moderated',
+            },
+            description: 'Include/exclude voices that are live moderated',
+          },
+          description: 'Include/exclude voices that are live moderated',
+          examples: [true],
+          title: 'Include Live Moderated',
+        }),
+      owner_id: ((schema) =>
+        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
+        z.union([
+          z.string(),
+          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
+        ]),
+      )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'owner_id',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'string' }, { type: 'null' }],
+              description: 'Filter voices by public owner ID',
+              examples: ['7c9fab611d9a0e1fb2e7448a0c294a8804efc2bcc324b0a366a5d5232b7d1532'],
+              title: 'Owner Id',
+            },
+            description: 'Filter voices by public owner ID',
+          },
+          description: 'Filter voices by public owner ID',
+          examples: ['7c9fab611d9a0e1fb2e7448a0c294a8804efc2bcc324b0a366a5d5232b7d1532'],
+          title: 'Owner Id',
+        }),
+    }),
     headers: z.object({
       'xi-api-key': ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -84572,12 +84181,823 @@ export const postV1SpeechToTextRoute = createRoute({
       description: 'Synchronous transcription result',
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Schema = z.union([
               SpeechToTextChunkResponseModelSchema,
               MultichannelSpeechToTextResponseModelSchema,
               SpeechToTextWebhookResponseModelSchema,
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const val = ctx.value
+                  if (
+                    (SpeechToTextChunkResponseModelSchema.safeParse(val).success ? 1 : 0) +
+                      (MultichannelSpeechToTextResponseModelSchema.safeParse(val).success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const val = ctx.value
+                  if (
+                    ((await SpeechToTextChunkResponseModelSchema.safeParseAsync(val)).success
+                      ? 1
+                      : 0) +
+                      ((await MultichannelSpeechToTextResponseModelSchema.safeParseAsync(val))
+                        .success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })()
+            .openapi({
+              oneOf: [
+                {
+                  properties: {
+                    language_code: {
+                      type: 'string',
+                      title: 'Language Code',
+                      description: "The detected language code (e.g. 'eng' for English).",
+                    },
+                    language_probability: {
+                      type: 'number',
+                      title: 'Language Probability',
+                      description: 'The confidence score of the language detection (0 to 1).',
+                    },
+                    text: {
+                      type: 'string',
+                      title: 'Text',
+                      description: 'The raw text of the transcription.',
+                    },
+                    words: {
+                      items: {
+                        properties: {
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The word or sound that was transcribed.',
+                          },
+                          start: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Start',
+                            description: 'The start time of the word or sound in seconds.',
+                          },
+                          end: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'End',
+                            description: 'The end time of the word or sound in seconds.',
+                          },
+                          type: {
+                            type: 'string',
+                            enum: ['word', 'spacing', 'audio_event'],
+                            title: 'Type',
+                            description:
+                              "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                          },
+                          speaker_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Speaker Id',
+                            description: 'Unique identifier for the speaker of this word.',
+                          },
+                          logprob: {
+                            type: 'number',
+                            title: 'Logprob',
+                            description:
+                              'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                          },
+                          characters: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The character that was transcribed.',
+                                    },
+                                    start: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'Start',
+                                      description: 'The start time of the character in seconds.',
+                                    },
+                                    end: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'End',
+                                      description: 'The end time of the character in seconds.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text'],
+                                  title: 'SpeechToTextCharacterResponseModel',
+                                  example: { end: 0.1, start: 0, text: 'H' },
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Characters',
+                            description:
+                              'The characters that make up the word and their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['text', 'type', 'logprob'],
+                        title: 'SpeechToTextWordResponseModel',
+                        description:
+                          'Word-level detail of the transcription with timing information.',
+                        example: {
+                          characters: [
+                            { end: 0.1, start: 0, text: 'H' },
+                            { end: 0.2, start: 0.1, text: 'e' },
+                            { end: 0.3, start: 0.2, text: 'l' },
+                            { end: 0.4, start: 0.3, text: 'l' },
+                            { end: 0.5, start: 0.4, text: 'o' },
+                          ],
+                          end: 0.5,
+                          logprob: -0.124,
+                          speaker_id: 'speaker_1',
+                          start: 0,
+                          text: 'Hello',
+                          type: 'word',
+                        },
+                      },
+                      type: 'array',
+                      title: 'Words',
+                      description: 'List of words with their timing information.',
+                    },
+                    channel_index: {
+                      anyOf: [{ type: 'integer' }, { type: 'null' }],
+                      title: 'Channel Index',
+                      description:
+                        'The channel index this transcript belongs to (for multichannel audio).',
+                    },
+                    additional_formats: {
+                      anyOf: [
+                        {
+                          items: {
+                            anyOf: [
+                              {
+                                properties: {
+                                  requested_format: {
+                                    type: 'string',
+                                    title: 'Requested Format',
+                                    description: 'The requested format.',
+                                  },
+                                  file_extension: {
+                                    type: 'string',
+                                    title: 'File Extension',
+                                    description: 'The file extension of the additional format.',
+                                  },
+                                  content_type: {
+                                    type: 'string',
+                                    title: 'Content Type',
+                                    description: 'The content type of the additional format.',
+                                  },
+                                  is_base64_encoded: {
+                                    type: 'boolean',
+                                    title: 'Is Base64 Encoded',
+                                    description: 'Whether the content is base64 encoded.',
+                                  },
+                                  content: {
+                                    type: 'string',
+                                    title: 'Content',
+                                    description: 'The content of the additional format.',
+                                  },
+                                },
+                                type: 'object',
+                                required: [
+                                  'requested_format',
+                                  'file_extension',
+                                  'content_type',
+                                  'is_base64_encoded',
+                                  'content',
+                                ],
+                                title: 'AdditionalFormatResponseModel',
+                              },
+                              { type: 'null' },
+                            ],
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Additional Formats',
+                      description: 'Requested additional formats of the transcript.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    entities: {
+                      anyOf: [
+                        {
+                          items: {
+                            properties: {
+                              text: {
+                                type: 'string',
+                                title: 'Text',
+                                description: 'The text that was identified as an entity.',
+                              },
+                              entity_type: {
+                                type: 'string',
+                                title: 'Entity Type',
+                                description:
+                                  "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                              },
+                              start_char: {
+                                type: 'integer',
+                                title: 'Start Char',
+                                description: 'Start character position in the transcript text.',
+                              },
+                              end_char: {
+                                type: 'integer',
+                                title: 'End Char',
+                                description: 'End character position in the transcript text.',
+                              },
+                            },
+                            type: 'object',
+                            required: ['text', 'entity_type', 'start_char', 'end_char'],
+                            title: 'DetectedEntity',
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Entities',
+                      description:
+                        'List of detected entities with their text, type, and character positions in the transcript.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description: 'The duration of the audio that was transcribed in seconds.',
+                    },
+                    edited_transcript: {
+                      anyOf: [
+                        {
+                          oneOf: [
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'transcript',
+                                  title: 'Kind',
+                                  default: 'transcript',
+                                },
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The edited transcript text.',
+                                },
+                                edited_text: {
+                                  type: 'string',
+                                  title: 'Edited Text',
+                                  description:
+                                    'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                  readOnly: true,
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'text', 'edited_text'],
+                              title: 'EditedTranscript',
+                              description:
+                                'A transcript produced by the optional transcript edit (text only, untimed).',
+                            },
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'error',
+                                  title: 'Kind',
+                                  default: 'error',
+                                },
+                                error_type: {
+                                  type: 'string',
+                                  const: 'edit_failed',
+                                  title: 'Error Type',
+                                  description: 'edit_failed: the edit could not be produced.',
+                                },
+                                message: {
+                                  type: 'string',
+                                  title: 'Message',
+                                  description: 'A short, user-facing explanation of the failure.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'error_type', 'message'],
+                              title: 'TranscriptEditError',
+                              description:
+                                'An error returned in place of an edited transcript when the edit could not be produced.',
+                            },
+                          ],
+                          discriminator: {
+                            propertyName: 'kind',
+                            mapping: {
+                              error: '#/components/schemas/TranscriptEditError',
+                              transcript: '#/components/schemas/EditedTranscript',
+                            },
+                          },
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Edited Transcript',
+                      description:
+                        'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['language_code', 'language_probability', 'text', 'words'],
+                  title: 'SpeechToTextChunkResponseModel',
+                  description: 'Chunk-level detail of the transcription with timing information.',
+                  example: {
+                    language_code: 'en',
+                    language_probability: 0.98,
+                    text: 'Hello world!',
+                    words: [
+                      {
+                        end: 0.5,
+                        logprob: -0.124,
+                        speaker_id: 'speaker_1',
+                        start: 0,
+                        text: 'Hello',
+                        type: 'word',
+                      },
+                      {
+                        end: 0.5,
+                        logprob: 0,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: ' ',
+                        type: 'spacing',
+                      },
+                      {
+                        end: 1.2,
+                        logprob: -0.089,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: 'world!',
+                        type: 'word',
+                      },
+                    ],
+                  },
+                },
+                {
+                  properties: {
+                    transcripts: {
+                      items: {
+                        properties: {
+                          language_code: {
+                            type: 'string',
+                            title: 'Language Code',
+                            description: "The detected language code (e.g. 'eng' for English).",
+                          },
+                          language_probability: {
+                            type: 'number',
+                            title: 'Language Probability',
+                            description: 'The confidence score of the language detection (0 to 1).',
+                          },
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The raw text of the transcription.',
+                          },
+                          words: {
+                            items: {
+                              properties: {
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The word or sound that was transcribed.',
+                                },
+                                start: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'Start',
+                                  description: 'The start time of the word or sound in seconds.',
+                                },
+                                end: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'End',
+                                  description: 'The end time of the word or sound in seconds.',
+                                },
+                                type: {
+                                  type: 'string',
+                                  enum: ['word', 'spacing', 'audio_event'],
+                                  title: 'Type',
+                                  description:
+                                    "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                                },
+                                speaker_id: {
+                                  anyOf: [{ type: 'string' }, { type: 'null' }],
+                                  title: 'Speaker Id',
+                                  description: 'Unique identifier for the speaker of this word.',
+                                },
+                                logprob: {
+                                  type: 'number',
+                                  title: 'Logprob',
+                                  description:
+                                    'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                                },
+                                characters: {
+                                  anyOf: [
+                                    {
+                                      items: {
+                                        properties: {
+                                          text: {
+                                            type: 'string',
+                                            title: 'Text',
+                                            description: 'The character that was transcribed.',
+                                          },
+                                          start: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'Start',
+                                            description:
+                                              'The start time of the character in seconds.',
+                                          },
+                                          end: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'End',
+                                            description:
+                                              'The end time of the character in seconds.',
+                                          },
+                                        },
+                                        type: 'object',
+                                        required: ['text'],
+                                        title: 'SpeechToTextCharacterResponseModel',
+                                        example: { end: 0.1, start: 0, text: 'H' },
+                                      },
+                                      type: 'array',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                  title: 'Characters',
+                                  description:
+                                    'The characters that make up the word and their timing information.',
+                                },
+                                channel_index: {
+                                  anyOf: [{ type: 'integer' }, { type: 'null' }],
+                                  title: 'Channel Index',
+                                  description:
+                                    'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['text', 'type', 'logprob'],
+                              title: 'SpeechToTextWordResponseModel',
+                              description:
+                                'Word-level detail of the transcription with timing information.',
+                              example: {
+                                characters: [
+                                  { end: 0.1, start: 0, text: 'H' },
+                                  { end: 0.2, start: 0.1, text: 'e' },
+                                  { end: 0.3, start: 0.2, text: 'l' },
+                                  { end: 0.4, start: 0.3, text: 'l' },
+                                  { end: 0.5, start: 0.4, text: 'o' },
+                                ],
+                                end: 0.5,
+                                logprob: -0.124,
+                                speaker_id: 'speaker_1',
+                                start: 0,
+                                text: 'Hello',
+                                type: 'word',
+                              },
+                            },
+                            type: 'array',
+                            title: 'Words',
+                            description: 'List of words with their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel index this transcript belongs to (for multichannel audio).',
+                          },
+                          additional_formats: {
+                            anyOf: [
+                              {
+                                items: {
+                                  anyOf: [
+                                    {
+                                      properties: {
+                                        requested_format: {
+                                          type: 'string',
+                                          title: 'Requested Format',
+                                          description: 'The requested format.',
+                                        },
+                                        file_extension: {
+                                          type: 'string',
+                                          title: 'File Extension',
+                                          description:
+                                            'The file extension of the additional format.',
+                                        },
+                                        content_type: {
+                                          type: 'string',
+                                          title: 'Content Type',
+                                          description: 'The content type of the additional format.',
+                                        },
+                                        is_base64_encoded: {
+                                          type: 'boolean',
+                                          title: 'Is Base64 Encoded',
+                                          description: 'Whether the content is base64 encoded.',
+                                        },
+                                        content: {
+                                          type: 'string',
+                                          title: 'Content',
+                                          description: 'The content of the additional format.',
+                                        },
+                                      },
+                                      type: 'object',
+                                      required: [
+                                        'requested_format',
+                                        'file_extension',
+                                        'content_type',
+                                        'is_base64_encoded',
+                                        'content',
+                                      ],
+                                      title: 'AdditionalFormatResponseModel',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Additional Formats',
+                            description: 'Requested additional formats of the transcript.',
+                          },
+                          transcription_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Transcription Id',
+                            description: 'The transcription ID of the response.',
+                          },
+                          entities: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The text that was identified as an entity.',
+                                    },
+                                    entity_type: {
+                                      type: 'string',
+                                      title: 'Entity Type',
+                                      description:
+                                        "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                                    },
+                                    start_char: {
+                                      type: 'integer',
+                                      title: 'Start Char',
+                                      description:
+                                        'Start character position in the transcript text.',
+                                    },
+                                    end_char: {
+                                      type: 'integer',
+                                      title: 'End Char',
+                                      description: 'End character position in the transcript text.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text', 'entity_type', 'start_char', 'end_char'],
+                                  title: 'DetectedEntity',
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Entities',
+                            description:
+                              'List of detected entities with their text, type, and character positions in the transcript.',
+                          },
+                          audio_duration_secs: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Audio Duration Secs',
+                            description:
+                              'The duration of the audio that was transcribed in seconds.',
+                          },
+                          edited_transcript: {
+                            anyOf: [
+                              {
+                                oneOf: [
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'transcript',
+                                        title: 'Kind',
+                                        default: 'transcript',
+                                      },
+                                      text: {
+                                        type: 'string',
+                                        title: 'Text',
+                                        description: 'The edited transcript text.',
+                                      },
+                                      edited_text: {
+                                        type: 'string',
+                                        title: 'Edited Text',
+                                        description:
+                                          'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                        readOnly: true,
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'text', 'edited_text'],
+                                    title: 'EditedTranscript',
+                                    description:
+                                      'A transcript produced by the optional transcript edit (text only, untimed).',
+                                  },
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'error',
+                                        title: 'Kind',
+                                        default: 'error',
+                                      },
+                                      error_type: {
+                                        type: 'string',
+                                        const: 'edit_failed',
+                                        title: 'Error Type',
+                                        description: 'edit_failed: the edit could not be produced.',
+                                      },
+                                      message: {
+                                        type: 'string',
+                                        title: 'Message',
+                                        description:
+                                          'A short, user-facing explanation of the failure.',
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'error_type', 'message'],
+                                    title: 'TranscriptEditError',
+                                    description:
+                                      'An error returned in place of an edited transcript when the edit could not be produced.',
+                                  },
+                                ],
+                                discriminator: {
+                                  propertyName: 'kind',
+                                  mapping: {
+                                    error: '#/components/schemas/TranscriptEditError',
+                                    transcript: '#/components/schemas/EditedTranscript',
+                                  },
+                                },
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Edited Transcript',
+                            description:
+                              'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['language_code', 'language_probability', 'text', 'words'],
+                        title: 'SpeechToTextChunkResponseModel',
+                        description:
+                          'Chunk-level detail of the transcription with timing information.',
+                        example: {
+                          language_code: 'en',
+                          language_probability: 0.98,
+                          text: 'Hello world!',
+                          words: [
+                            {
+                              end: 0.5,
+                              logprob: -0.124,
+                              speaker_id: 'speaker_1',
+                              start: 0,
+                              text: 'Hello',
+                              type: 'word',
+                            },
+                            {
+                              end: 0.5,
+                              logprob: 0,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: ' ',
+                              type: 'spacing',
+                            },
+                            {
+                              end: 1.2,
+                              logprob: -0.089,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: 'world!',
+                              type: 'word',
+                            },
+                          ],
+                        },
+                      },
+                      type: 'array',
+                      title: 'Transcripts',
+                      description:
+                        'List of transcripts, one for each audio channel. Each transcript contains the text and word-level details for its respective channel.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description:
+                        'The duration of the audio that was transcribed across all channels in seconds.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['transcripts'],
+                  title: 'MultichannelSpeechToTextResponseModel',
+                  description: 'Response model for multichannel speech-to-text transcription.',
+                  example: {
+                    transcripts: [
+                      {
+                        language_code: 'en',
+                        language_probability: 0.98,
+                        text: 'Hello from channel one.',
+                        words: [
+                          {
+                            end: 0.5,
+                            logprob: -0.124,
+                            speaker_id: 'speaker_0',
+                            start: 0,
+                            text: 'Hello',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.5,
+                            logprob: 0,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 0.8,
+                            logprob: -0.089,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                      {
+                        language_code: 'en',
+                        language_probability: 0.97,
+                        text: 'Greetings from channel two.',
+                        words: [
+                          {
+                            end: 0.7,
+                            logprob: -0.156,
+                            speaker_id: 'speaker_1',
+                            start: 0.1,
+                            text: 'Greetings',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.7,
+                            logprob: 0,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 1,
+                            logprob: -0.078,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            })
             .openapi({ title: 'Response Speech To Text V1 Speech To Text Post' }),
           examples: {
             single_channel: {
@@ -84710,11 +85130,822 @@ export const getV1SpeechToTextTranscriptsTranscriptionIdRoute = createRoute({
       description: 'The transcript data',
       content: {
         'application/json': {
-          schema: z
-            .union([
+          schema: (() => {
+            const Schema = z.union([
               SpeechToTextChunkResponseModelSchema,
               MultichannelSpeechToTextResponseModelSchema,
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              const reported = ctx.issues.length
+              try {
+                ;((ctx) => {
+                  const val = ctx.value
+                  if (
+                    (SpeechToTextChunkResponseModelSchema.safeParse(val).success ? 1 : 0) +
+                      (MultichannelSpeechToTextResponseModelSchema.safeParse(val).success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx)
+              } catch (error) {
+                if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                ctx.issues.length = reported
+                return (async (ctx) => {
+                  const val = ctx.value
+                  if (
+                    ((await SpeechToTextChunkResponseModelSchema.safeParseAsync(val)).success
+                      ? 1
+                      : 0) +
+                      ((await MultichannelSpeechToTextResponseModelSchema.safeParseAsync(val))
+                        .success
+                        ? 1
+                        : 0) !==
+                    1
+                  ) {
+                    ctx.issues.push({ code: 'custom', input: val })
+                  }
+                })(ctx).then(() => val)
+              }
+              return val
+            }, Schema)
+          })()
+            .openapi({
+              oneOf: [
+                {
+                  properties: {
+                    language_code: {
+                      type: 'string',
+                      title: 'Language Code',
+                      description: "The detected language code (e.g. 'eng' for English).",
+                    },
+                    language_probability: {
+                      type: 'number',
+                      title: 'Language Probability',
+                      description: 'The confidence score of the language detection (0 to 1).',
+                    },
+                    text: {
+                      type: 'string',
+                      title: 'Text',
+                      description: 'The raw text of the transcription.',
+                    },
+                    words: {
+                      items: {
+                        properties: {
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The word or sound that was transcribed.',
+                          },
+                          start: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Start',
+                            description: 'The start time of the word or sound in seconds.',
+                          },
+                          end: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'End',
+                            description: 'The end time of the word or sound in seconds.',
+                          },
+                          type: {
+                            type: 'string',
+                            enum: ['word', 'spacing', 'audio_event'],
+                            title: 'Type',
+                            description:
+                              "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                          },
+                          speaker_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Speaker Id',
+                            description: 'Unique identifier for the speaker of this word.',
+                          },
+                          logprob: {
+                            type: 'number',
+                            title: 'Logprob',
+                            description:
+                              'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                          },
+                          characters: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The character that was transcribed.',
+                                    },
+                                    start: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'Start',
+                                      description: 'The start time of the character in seconds.',
+                                    },
+                                    end: {
+                                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                                      title: 'End',
+                                      description: 'The end time of the character in seconds.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text'],
+                                  title: 'SpeechToTextCharacterResponseModel',
+                                  example: { end: 0.1, start: 0, text: 'H' },
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Characters',
+                            description:
+                              'The characters that make up the word and their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['text', 'type', 'logprob'],
+                        title: 'SpeechToTextWordResponseModel',
+                        description:
+                          'Word-level detail of the transcription with timing information.',
+                        example: {
+                          characters: [
+                            { end: 0.1, start: 0, text: 'H' },
+                            { end: 0.2, start: 0.1, text: 'e' },
+                            { end: 0.3, start: 0.2, text: 'l' },
+                            { end: 0.4, start: 0.3, text: 'l' },
+                            { end: 0.5, start: 0.4, text: 'o' },
+                          ],
+                          end: 0.5,
+                          logprob: -0.124,
+                          speaker_id: 'speaker_1',
+                          start: 0,
+                          text: 'Hello',
+                          type: 'word',
+                        },
+                      },
+                      type: 'array',
+                      title: 'Words',
+                      description: 'List of words with their timing information.',
+                    },
+                    channel_index: {
+                      anyOf: [{ type: 'integer' }, { type: 'null' }],
+                      title: 'Channel Index',
+                      description:
+                        'The channel index this transcript belongs to (for multichannel audio).',
+                    },
+                    additional_formats: {
+                      anyOf: [
+                        {
+                          items: {
+                            anyOf: [
+                              {
+                                properties: {
+                                  requested_format: {
+                                    type: 'string',
+                                    title: 'Requested Format',
+                                    description: 'The requested format.',
+                                  },
+                                  file_extension: {
+                                    type: 'string',
+                                    title: 'File Extension',
+                                    description: 'The file extension of the additional format.',
+                                  },
+                                  content_type: {
+                                    type: 'string',
+                                    title: 'Content Type',
+                                    description: 'The content type of the additional format.',
+                                  },
+                                  is_base64_encoded: {
+                                    type: 'boolean',
+                                    title: 'Is Base64 Encoded',
+                                    description: 'Whether the content is base64 encoded.',
+                                  },
+                                  content: {
+                                    type: 'string',
+                                    title: 'Content',
+                                    description: 'The content of the additional format.',
+                                  },
+                                },
+                                type: 'object',
+                                required: [
+                                  'requested_format',
+                                  'file_extension',
+                                  'content_type',
+                                  'is_base64_encoded',
+                                  'content',
+                                ],
+                                title: 'AdditionalFormatResponseModel',
+                              },
+                              { type: 'null' },
+                            ],
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Additional Formats',
+                      description: 'Requested additional formats of the transcript.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    entities: {
+                      anyOf: [
+                        {
+                          items: {
+                            properties: {
+                              text: {
+                                type: 'string',
+                                title: 'Text',
+                                description: 'The text that was identified as an entity.',
+                              },
+                              entity_type: {
+                                type: 'string',
+                                title: 'Entity Type',
+                                description:
+                                  "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                              },
+                              start_char: {
+                                type: 'integer',
+                                title: 'Start Char',
+                                description: 'Start character position in the transcript text.',
+                              },
+                              end_char: {
+                                type: 'integer',
+                                title: 'End Char',
+                                description: 'End character position in the transcript text.',
+                              },
+                            },
+                            type: 'object',
+                            required: ['text', 'entity_type', 'start_char', 'end_char'],
+                            title: 'DetectedEntity',
+                          },
+                          type: 'array',
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Entities',
+                      description:
+                        'List of detected entities with their text, type, and character positions in the transcript.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description: 'The duration of the audio that was transcribed in seconds.',
+                    },
+                    edited_transcript: {
+                      anyOf: [
+                        {
+                          oneOf: [
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'transcript',
+                                  title: 'Kind',
+                                  default: 'transcript',
+                                },
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The edited transcript text.',
+                                },
+                                edited_text: {
+                                  type: 'string',
+                                  title: 'Edited Text',
+                                  description:
+                                    'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                  readOnly: true,
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'text', 'edited_text'],
+                              title: 'EditedTranscript',
+                              description:
+                                'A transcript produced by the optional transcript edit (text only, untimed).',
+                            },
+                            {
+                              properties: {
+                                kind: {
+                                  type: 'string',
+                                  const: 'error',
+                                  title: 'Kind',
+                                  default: 'error',
+                                },
+                                error_type: {
+                                  type: 'string',
+                                  const: 'edit_failed',
+                                  title: 'Error Type',
+                                  description: 'edit_failed: the edit could not be produced.',
+                                },
+                                message: {
+                                  type: 'string',
+                                  title: 'Message',
+                                  description: 'A short, user-facing explanation of the failure.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['kind', 'error_type', 'message'],
+                              title: 'TranscriptEditError',
+                              description:
+                                'An error returned in place of an edited transcript when the edit could not be produced.',
+                            },
+                          ],
+                          discriminator: {
+                            propertyName: 'kind',
+                            mapping: {
+                              error: '#/components/schemas/TranscriptEditError',
+                              transcript: '#/components/schemas/EditedTranscript',
+                            },
+                          },
+                        },
+                        { type: 'null' },
+                      ],
+                      title: 'Edited Transcript',
+                      description:
+                        'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['language_code', 'language_probability', 'text', 'words'],
+                  title: 'SpeechToTextChunkResponseModel',
+                  description: 'Chunk-level detail of the transcription with timing information.',
+                  example: {
+                    language_code: 'en',
+                    language_probability: 0.98,
+                    text: 'Hello world!',
+                    words: [
+                      {
+                        end: 0.5,
+                        logprob: -0.124,
+                        speaker_id: 'speaker_1',
+                        start: 0,
+                        text: 'Hello',
+                        type: 'word',
+                      },
+                      {
+                        end: 0.5,
+                        logprob: 0,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: ' ',
+                        type: 'spacing',
+                      },
+                      {
+                        end: 1.2,
+                        logprob: -0.089,
+                        speaker_id: 'speaker_1',
+                        start: 0.5,
+                        text: 'world!',
+                        type: 'word',
+                      },
+                    ],
+                  },
+                },
+                {
+                  properties: {
+                    transcripts: {
+                      items: {
+                        properties: {
+                          language_code: {
+                            type: 'string',
+                            title: 'Language Code',
+                            description: "The detected language code (e.g. 'eng' for English).",
+                          },
+                          language_probability: {
+                            type: 'number',
+                            title: 'Language Probability',
+                            description: 'The confidence score of the language detection (0 to 1).',
+                          },
+                          text: {
+                            type: 'string',
+                            title: 'Text',
+                            description: 'The raw text of the transcription.',
+                          },
+                          words: {
+                            items: {
+                              properties: {
+                                text: {
+                                  type: 'string',
+                                  title: 'Text',
+                                  description: 'The word or sound that was transcribed.',
+                                },
+                                start: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'Start',
+                                  description: 'The start time of the word or sound in seconds.',
+                                },
+                                end: {
+                                  anyOf: [{ type: 'number' }, { type: 'null' }],
+                                  title: 'End',
+                                  description: 'The end time of the word or sound in seconds.',
+                                },
+                                type: {
+                                  type: 'string',
+                                  enum: ['word', 'spacing', 'audio_event'],
+                                  title: 'Type',
+                                  description:
+                                    "The type of the word or sound. 'audio_event' is used for non-word sounds like laughter or footsteps.",
+                                },
+                                speaker_id: {
+                                  anyOf: [{ type: 'string' }, { type: 'null' }],
+                                  title: 'Speaker Id',
+                                  description: 'Unique identifier for the speaker of this word.',
+                                },
+                                logprob: {
+                                  type: 'number',
+                                  title: 'Logprob',
+                                  description:
+                                    'The log of the probability with which this word was predicted. Logprobs are in range [-infinity, 0], higher logprobs indicate a higher confidence the model has in its predictions.',
+                                },
+                                characters: {
+                                  anyOf: [
+                                    {
+                                      items: {
+                                        properties: {
+                                          text: {
+                                            type: 'string',
+                                            title: 'Text',
+                                            description: 'The character that was transcribed.',
+                                          },
+                                          start: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'Start',
+                                            description:
+                                              'The start time of the character in seconds.',
+                                          },
+                                          end: {
+                                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                                            title: 'End',
+                                            description:
+                                              'The end time of the character in seconds.',
+                                          },
+                                        },
+                                        type: 'object',
+                                        required: ['text'],
+                                        title: 'SpeechToTextCharacterResponseModel',
+                                        example: { end: 0.1, start: 0, text: 'H' },
+                                      },
+                                      type: 'array',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                  title: 'Characters',
+                                  description:
+                                    'The characters that make up the word and their timing information.',
+                                },
+                                channel_index: {
+                                  anyOf: [{ type: 'integer' }, { type: 'null' }],
+                                  title: 'Channel Index',
+                                  description:
+                                    'The channel this word was spoken on (for multichannel audio). Null for single-channel transcriptions.',
+                                },
+                              },
+                              type: 'object',
+                              required: ['text', 'type', 'logprob'],
+                              title: 'SpeechToTextWordResponseModel',
+                              description:
+                                'Word-level detail of the transcription with timing information.',
+                              example: {
+                                characters: [
+                                  { end: 0.1, start: 0, text: 'H' },
+                                  { end: 0.2, start: 0.1, text: 'e' },
+                                  { end: 0.3, start: 0.2, text: 'l' },
+                                  { end: 0.4, start: 0.3, text: 'l' },
+                                  { end: 0.5, start: 0.4, text: 'o' },
+                                ],
+                                end: 0.5,
+                                logprob: -0.124,
+                                speaker_id: 'speaker_1',
+                                start: 0,
+                                text: 'Hello',
+                                type: 'word',
+                              },
+                            },
+                            type: 'array',
+                            title: 'Words',
+                            description: 'List of words with their timing information.',
+                          },
+                          channel_index: {
+                            anyOf: [{ type: 'integer' }, { type: 'null' }],
+                            title: 'Channel Index',
+                            description:
+                              'The channel index this transcript belongs to (for multichannel audio).',
+                          },
+                          additional_formats: {
+                            anyOf: [
+                              {
+                                items: {
+                                  anyOf: [
+                                    {
+                                      properties: {
+                                        requested_format: {
+                                          type: 'string',
+                                          title: 'Requested Format',
+                                          description: 'The requested format.',
+                                        },
+                                        file_extension: {
+                                          type: 'string',
+                                          title: 'File Extension',
+                                          description:
+                                            'The file extension of the additional format.',
+                                        },
+                                        content_type: {
+                                          type: 'string',
+                                          title: 'Content Type',
+                                          description: 'The content type of the additional format.',
+                                        },
+                                        is_base64_encoded: {
+                                          type: 'boolean',
+                                          title: 'Is Base64 Encoded',
+                                          description: 'Whether the content is base64 encoded.',
+                                        },
+                                        content: {
+                                          type: 'string',
+                                          title: 'Content',
+                                          description: 'The content of the additional format.',
+                                        },
+                                      },
+                                      type: 'object',
+                                      required: [
+                                        'requested_format',
+                                        'file_extension',
+                                        'content_type',
+                                        'is_base64_encoded',
+                                        'content',
+                                      ],
+                                      title: 'AdditionalFormatResponseModel',
+                                    },
+                                    { type: 'null' },
+                                  ],
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Additional Formats',
+                            description: 'Requested additional formats of the transcript.',
+                          },
+                          transcription_id: {
+                            anyOf: [{ type: 'string' }, { type: 'null' }],
+                            title: 'Transcription Id',
+                            description: 'The transcription ID of the response.',
+                          },
+                          entities: {
+                            anyOf: [
+                              {
+                                items: {
+                                  properties: {
+                                    text: {
+                                      type: 'string',
+                                      title: 'Text',
+                                      description: 'The text that was identified as an entity.',
+                                    },
+                                    entity_type: {
+                                      type: 'string',
+                                      title: 'Entity Type',
+                                      description:
+                                        "The type of entity detected (e.g., 'credit_card', 'email_address', 'person_name').",
+                                    },
+                                    start_char: {
+                                      type: 'integer',
+                                      title: 'Start Char',
+                                      description:
+                                        'Start character position in the transcript text.',
+                                    },
+                                    end_char: {
+                                      type: 'integer',
+                                      title: 'End Char',
+                                      description: 'End character position in the transcript text.',
+                                    },
+                                  },
+                                  type: 'object',
+                                  required: ['text', 'entity_type', 'start_char', 'end_char'],
+                                  title: 'DetectedEntity',
+                                },
+                                type: 'array',
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Entities',
+                            description:
+                              'List of detected entities with their text, type, and character positions in the transcript.',
+                          },
+                          audio_duration_secs: {
+                            anyOf: [{ type: 'number' }, { type: 'null' }],
+                            title: 'Audio Duration Secs',
+                            description:
+                              'The duration of the audio that was transcribed in seconds.',
+                          },
+                          edited_transcript: {
+                            anyOf: [
+                              {
+                                oneOf: [
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'transcript',
+                                        title: 'Kind',
+                                        default: 'transcript',
+                                      },
+                                      text: {
+                                        type: 'string',
+                                        title: 'Text',
+                                        description: 'The edited transcript text.',
+                                      },
+                                      edited_text: {
+                                        type: 'string',
+                                        title: 'Edited Text',
+                                        description:
+                                          'The edited transcript text. Same value as `text`; matches the `edited_text` field of the realtime `edited_transcript` event.',
+                                        readOnly: true,
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'text', 'edited_text'],
+                                    title: 'EditedTranscript',
+                                    description:
+                                      'A transcript produced by the optional transcript edit (text only, untimed).',
+                                  },
+                                  {
+                                    properties: {
+                                      kind: {
+                                        type: 'string',
+                                        const: 'error',
+                                        title: 'Kind',
+                                        default: 'error',
+                                      },
+                                      error_type: {
+                                        type: 'string',
+                                        const: 'edit_failed',
+                                        title: 'Error Type',
+                                        description: 'edit_failed: the edit could not be produced.',
+                                      },
+                                      message: {
+                                        type: 'string',
+                                        title: 'Message',
+                                        description:
+                                          'A short, user-facing explanation of the failure.',
+                                      },
+                                    },
+                                    type: 'object',
+                                    required: ['kind', 'error_type', 'message'],
+                                    title: 'TranscriptEditError',
+                                    description:
+                                      'An error returned in place of an edited transcript when the edit could not be produced.',
+                                  },
+                                ],
+                                discriminator: {
+                                  propertyName: 'kind',
+                                  mapping: {
+                                    error: '#/components/schemas/TranscriptEditError',
+                                    transcript: '#/components/schemas/EditedTranscript',
+                                  },
+                                },
+                              },
+                              { type: 'null' },
+                            ],
+                            title: 'Edited Transcript',
+                            description:
+                              'Result of the optional transcript edit: the edited text, or an error if it could not be produced. Absent when no edit was requested. On success, both `text` and `edited_text` hold the edited transcript; compare them with the top-level `text` to see what changed.',
+                          },
+                        },
+                        type: 'object',
+                        required: ['language_code', 'language_probability', 'text', 'words'],
+                        title: 'SpeechToTextChunkResponseModel',
+                        description:
+                          'Chunk-level detail of the transcription with timing information.',
+                        example: {
+                          language_code: 'en',
+                          language_probability: 0.98,
+                          text: 'Hello world!',
+                          words: [
+                            {
+                              end: 0.5,
+                              logprob: -0.124,
+                              speaker_id: 'speaker_1',
+                              start: 0,
+                              text: 'Hello',
+                              type: 'word',
+                            },
+                            {
+                              end: 0.5,
+                              logprob: 0,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: ' ',
+                              type: 'spacing',
+                            },
+                            {
+                              end: 1.2,
+                              logprob: -0.089,
+                              speaker_id: 'speaker_1',
+                              start: 0.5,
+                              text: 'world!',
+                              type: 'word',
+                            },
+                          ],
+                        },
+                      },
+                      type: 'array',
+                      title: 'Transcripts',
+                      description:
+                        'List of transcripts, one for each audio channel. Each transcript contains the text and word-level details for its respective channel.',
+                    },
+                    transcription_id: {
+                      anyOf: [{ type: 'string' }, { type: 'null' }],
+                      title: 'Transcription Id',
+                      description: 'The transcription ID of the response.',
+                    },
+                    audio_duration_secs: {
+                      anyOf: [{ type: 'number' }, { type: 'null' }],
+                      title: 'Audio Duration Secs',
+                      description:
+                        'The duration of the audio that was transcribed across all channels in seconds.',
+                    },
+                  },
+                  type: 'object',
+                  required: ['transcripts'],
+                  title: 'MultichannelSpeechToTextResponseModel',
+                  description: 'Response model for multichannel speech-to-text transcription.',
+                  example: {
+                    transcripts: [
+                      {
+                        language_code: 'en',
+                        language_probability: 0.98,
+                        text: 'Hello from channel one.',
+                        words: [
+                          {
+                            end: 0.5,
+                            logprob: -0.124,
+                            speaker_id: 'speaker_0',
+                            start: 0,
+                            text: 'Hello',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.5,
+                            logprob: 0,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 0.8,
+                            logprob: -0.089,
+                            speaker_id: 'speaker_0',
+                            start: 0.5,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                      {
+                        language_code: 'en',
+                        language_probability: 0.97,
+                        text: 'Greetings from channel two.',
+                        words: [
+                          {
+                            end: 0.7,
+                            logprob: -0.156,
+                            speaker_id: 'speaker_1',
+                            start: 0.1,
+                            text: 'Greetings',
+                            type: 'word',
+                          },
+                          {
+                            end: 0.7,
+                            logprob: 0,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: ' ',
+                            type: 'spacing',
+                          },
+                          {
+                            end: 1,
+                            logprob: -0.078,
+                            speaker_id: 'speaker_1',
+                            start: 0.7,
+                            text: 'from',
+                            type: 'word',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            })
             .openapi({
               title:
                 'Response Get Transcript By Id V1 Speech To Text Transcripts  Transcription Id  Get',
@@ -84818,6 +86049,40 @@ export const postV1SingleUseTokenTokenTypeRoute = createRoute({
           schema: { $ref: '#/components/schemas/SingleUseTokenType' },
         },
       }),
+    }),
+    query: z.object({
+      max_session_duration_seconds: z
+        .preprocess(
+          (val) => (val === 'null' ? null : val),
+          z.preprocess(
+            (val) =>
+              typeof val === 'string' &&
+              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                ? Number(val)
+                : val,
+            z.union([z.int().gt(0), z.null().nullable()]),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'max_session_duration_seconds',
+            in: 'query',
+            required: false,
+            schema: {
+              anyOf: [{ type: 'integer', exclusiveMinimum: 0 }, { type: 'null' }],
+              description:
+                'Closes the realtime transcription session opened with this token after this many seconds. Only for realtime_scribe tokens.',
+              title: 'Max Session Duration Seconds',
+            },
+            description:
+              'Closes the realtime transcription session opened with this token after this many seconds. Only for realtime_scribe tokens.',
+          },
+          description:
+            'Closes the realtime transcription session opened with this token after this many seconds. Only for realtime_scribe tokens.',
+          title: 'Max Session Duration Seconds',
+        }),
     }),
     headers: z.object({
       'xi-api-key': ((schema) =>
@@ -93332,15 +94597,15 @@ export const getV1ConvaiAgentsAgentIdTriageTicketsRoute = createRoute({
               enum: ['created_at', 'priority', 'last_reported'],
               title: 'AgentConversationTicketSortBy',
               description:
-                'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+                'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
               default: 'created_at',
             },
             description:
-              'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+              'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
           },
           title: 'AgentConversationTicketSortBy',
           description:
-            'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+            'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
         }),
       owner_user_id: ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -93390,32 +94655,6 @@ export const getV1ConvaiAgentsAgentIdTriageTicketsRoute = createRoute({
           description:
             "Filter agent issues by assignee. Use 'unassigned' for issues with no assignee.",
           title: 'Assignee User Id',
-        }),
-      issue_type: ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          AgentConversationTicketIssueTypeSchema,
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'issue_type',
-            in: 'query',
-            required: false,
-            schema: {
-              anyOf: [
-                { $ref: '#/components/schemas/AgentConversationTicketIssueType' },
-                { type: 'null' },
-              ],
-              description: 'Filter agent issues by type.',
-              title: 'Issue Type',
-            },
-            description: 'Filter agent issues by type.',
-          },
-          description: 'Filter agent issues by type.',
-          title: 'Issue Type',
         }),
       label: ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -93790,15 +95029,15 @@ export const getV1ConvaiTriageTicketsRoute = createRoute({
               enum: ['created_at', 'priority', 'last_reported'],
               title: 'AgentConversationTicketSortBy',
               description:
-                'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+                'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
               default: 'created_at',
             },
             description:
-              'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+              'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
           },
           title: 'AgentConversationTicketSortBy',
           description:
-            'Order by most recently created, by priority (most urgent first, then most recently created), or by most recently reported (the newest report merged into the agent issue, else its creation).',
+            'Order by most recently created, by priority (most urgent first, then most recently created), by most recently reported (the newest report merged into the agent issue, else its creation), or by report count (most reports merged into the agent issue first, then most recently created).',
         }),
       owner_user_id: ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -93848,32 +95087,6 @@ export const getV1ConvaiTriageTicketsRoute = createRoute({
           description:
             "Filter agent issues by assignee. Use 'unassigned' for issues with no assignee.",
           title: 'Assignee User Id',
-        }),
-      issue_type: ((schema) =>
-        z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-        z.union([
-          AgentConversationTicketIssueTypeSchema,
-          z.preprocess((val) => (val === 'null' ? null : val), z.null().nullable()),
-        ]),
-      )
-        .exactOptional()
-        .openapi({
-          param: {
-            name: 'issue_type',
-            in: 'query',
-            required: false,
-            schema: {
-              anyOf: [
-                { $ref: '#/components/schemas/AgentConversationTicketIssueType' },
-                { type: 'null' },
-              ],
-              description: 'Filter agent issues by type.',
-              title: 'Issue Type',
-            },
-            description: 'Filter agent issues by type.',
-          },
-          description: 'Filter agent issues by type.',
-          title: 'Issue Type',
         }),
       label: ((schema) =>
         z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
@@ -104231,7 +105444,7 @@ export const getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRoute = c
   tags: ['Agents Platform'],
   summary: 'Preview Merged Configuration',
   description:
-    'Returns the result of merging the source branch into the target branch without performing the merge. Useful for showing an accurate diff before confirming.',
+    'Returns the result of merging the source branch into the target branch without performing the merge. When `conflicts` is not empty, the merge itself is rejected unless `conflict_resolutions` settles every conflict or `force` is set; until then the returned configuration shows one side of each conflict only as a placeholder.',
   operationId: 'merge_preview_route',
   request: {
     params: z.object({
@@ -104306,15 +105519,15 @@ export const getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRoute = c
             schema: {
               type: 'boolean',
               description:
-                'When true, source branch changes always win conflicts regardless of timestamps',
+                "When true, the preview keeps the source branch's value for every conflict, as a merge with `force` does. Without it, a merge with conflicts needs `conflict_resolutions`.",
               default: false,
               title: 'Force',
             },
             description:
-              'When true, source branch changes always win conflicts regardless of timestamps',
+              "When true, the preview keeps the source branch's value for every conflict, as a merge with `force` does. Without it, a merge with conflicts needs `conflict_resolutions`.",
           },
           description:
-            'When true, source branch changes always win conflicts regardless of timestamps',
+            "When true, the preview keeps the source branch's value for every conflict, as a merge with `force` does. Without it, a merge with conflicts needs `conflict_resolutions`.",
           title: 'Force',
         }),
       include_procedure_generated_workflow_elements: z
@@ -104387,7 +105600,8 @@ export const postV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergeRoute = createR
   path: '/v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge',
   tags: ['Agents Platform'],
   summary: 'Merge A Branch Into A Target Branch',
-  description: 'Merge a branch into a target branch',
+  description:
+    'Merge a branch into a target branch. If both branches changed the same field, the merge returns 409 unless `conflict_resolutions` settles every conflict the merge preview reports, or `force` is set.',
   operationId: 'merge_branch_into_target',
   request: {
     params: z.object({
@@ -104506,7 +105720,7 @@ export const getV1ConvaiAgentsAgentIdBranchesBranchIdRebasePreviewRoute = create
   tags: ['Agents Platform'],
   summary: 'Preview Rebased Configuration',
   description:
-    "Returns the result of pulling changes from a source branch (defaults to main) into the given branch without performing it, preserving the given branch's own changes. Useful for showing an accurate diff before confirming.",
+    "Returns the result of pulling changes from a source branch (defaults to main) into the given branch without performing it. When `conflicts` is not empty, the rebase itself is rejected unless `conflict_resolutions` settles every conflict; until then the returned configuration keeps the given branch's side of each conflict.",
   operationId: 'rebase_preview_route',
   request: {
     params: z.object({
@@ -104649,7 +105863,7 @@ export const postV1ConvaiAgentsAgentIdBranchesBranchIdRebaseRoute = createRoute(
   tags: ['Agents Platform'],
   summary: 'Rebase A Branch Onto Main',
   description:
-    "Pull changes from a source branch (defaults to main) into this branch as a new version, preserving this branch's own changes on conflicts.",
+    'Pull changes from a source branch (defaults to main) into this branch as a new version. If both branches changed the same field, the rebase returns 409 unless `conflict_resolutions` settles every conflict the rebase preview reports.',
   operationId: 'rebase_branch_onto_main',
   request: {
     params: z.object({
@@ -116457,7 +117671,7 @@ export const postV1WorkspaceWebhooksWebhookIdDeliveriesDeliveryIdRedeliverRoute 
   path: '/v1/workspace/webhooks/{webhook_id}/deliveries/{delivery_id}/redeliver',
   summary: 'Redeliver Webhook Delivery',
   description:
-    'Sends a stored delivery again, once, with the same delivery ID, a new signature and an ElevenLabs-Webhook-Redelivery header. A retry that is already scheduled is still sent. Only workspace admins on a web session can redeliver, and only deliveries whose payload is stored. Redeliveries and test events share a limit of 10 per webhook per minute.',
+    "Sends a stored delivery again, once, with the same delivery ID, a new signature and an ElevenLabs-Webhook-Redelivery header. A retry that is already scheduled is still sent. Redelivering needs permission to manage webhooks and a web session, and the delivery's payload must be stored. Redeliveries and test events share a limit of 10 per webhook per minute.",
   operationId: 'redeliver_webhook_delivery_route',
   request: {
     params: z.object({
@@ -121995,7 +123209,7 @@ export const postV1ReceptionResellerWorkspacesRoute = createRoute({
         }),
     }),
     body: {
-      content: { 'application/json': { schema: ProvisionResellerWorkspaceRequestSchema } },
+      content: { 'application/json': { schema: ReceptionProvisionResellerWorkspaceRequestSchema } },
       required: true,
     },
   },

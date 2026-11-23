@@ -30,7 +30,8 @@ const LiveScheduleSchema = z
 const VideoCategorySetSchema = z
   .int()
   .openapi({
-    description: 'category id of the video (see [/videos/categories](#operation/getCategories))',
+    description:
+      'category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))',
     example: 15,
   })
   .openapi('VideoCategorySet')
@@ -46,7 +47,8 @@ const VideoConstantNumberCategorySchema = z
 const VideoLicenceSetSchema = z
   .int()
   .openapi({
-    description: 'licence id of the video (see [/videos/licences](#operation/getLicences))',
+    description:
+      'licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))',
     example: 2,
   })
   .openapi('VideoLicenceSet')
@@ -62,7 +64,8 @@ const VideoConstantNumberLicenceSchema = z
 const VideoLanguageSetSchema = z
   .string()
   .openapi({
-    description: 'language id of the video (see [/videos/languages](#operation/getLanguages))',
+    description:
+      'language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html))',
     example: 'en',
   })
   .openapi('VideoLanguageSet')
@@ -79,7 +82,7 @@ const VideoPrivacySetSchema = z
   .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
   .openapi({
     description:
-      'privacy id of the video (see [/videos/privacies](#operation/getVideoPrivacyPolicies))',
+      'privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))',
   })
   .openapi('VideoPrivacySet')
 
@@ -164,11 +167,17 @@ const VideoStateConstantSchema = z
         z.literal(7),
         z.literal(8),
         z.literal(9),
+        z.literal(10),
+        z.literal(11),
+        z.literal(12),
+        z.literal(13),
+        z.literal(14),
+        z.literal(15),
       ])
       .exactOptional()
       .openapi({
         description:
-          'The video state:\n- `1`: Published\n- `2`: To transcode\n- `3`: To import\n- `4`: Waiting for live stream\n- `5`: Live ended\n- `6`: To move to an external storage (object storage...)\n- `7`: Transcoding failed\n- `8`: Moving to an external storage failed\n- `9`: To edit using studio edition feature\n',
+          'The video state:\n- `1`: Published\n- `2`: To transcode\n- `3`: To import\n- `4`: Waiting for live stream\n- `5`: Live ended\n- `6`: To move to an external storage (object storage...)\n- `7`: Transcoding failed\n- `8`: Moving to an external storage failed\n- `9`: To edit using studio edition feature\n- `10`: To move to the file system\n- `11`: Moving to the file system failed\n- `12`: Import failed\n- `13`: To duplicate, the files of another video are being copied\n- `14`: Duplication failed, the files of the other video could not be copied\n- `15`: The studio edition of a video saved as a new video failed\n',
       }),
     label: z.string().exactOptional(),
   })
@@ -369,6 +378,13 @@ const VideoSchema = z
       .nullable()
       .exactOptional()
       .openapi({ required: [] }),
+    captionLanguages: z
+      .array(z.string().openapi({ example: 'fr' }))
+      .exactOptional()
+      .openapi({
+        description:
+          '**PeerTube >= 9.0** Languages of the video captions. Only returned by video lists',
+      }),
   })
   .openapi({ required: [] })
   .openapi('Video')
@@ -483,11 +499,19 @@ const UsernameChannelSchema = z
 
 const PasswordSchema = z.string().min(6).max(50).openapi('Password')
 
+const CurrentPasswordSchema = z
+  .string()
+  .openapi({
+    description:
+      'Password of the authenticated user, required if [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation) is enabled',
+  })
+  .openapi('CurrentPassword')
+
 const VideoPlaylistPrivacySetSchema = z
   .union([z.literal(1), z.literal(2), z.literal(3)])
   .openapi({
     description:
-      'Video playlist privacy policy (see [/video-playlists/privacies](#operation/getPlaylistPrivacyPolicies))',
+      'Video playlist privacy policy (see [/video-playlists/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getplaylistprivacypolicies.html))',
   })
   .openapi('VideoPlaylistPrivacySet')
 
@@ -801,9 +825,9 @@ const ServerErrorSchema = z
       .exactOptional()
       .openapi({
         description:
-          'URI identifying the error type. `about:blank` when the error has no specific type. Otherwise it links to the corresponding section of the [Errors](#section/Errors) documentation; the type name itself is also available in `code`.\n',
+          'URI identifying the error type. `about:blank` when the error has no specific type. Otherwise it links to the corresponding section of the [Errors](https://docs.joinpeertube.org/api-rest-reference/api.html#errors) documentation; the type name itself is also available in `code`.\n',
         example:
-          'https://docs.joinpeertube.org/api-rest-reference.html#section/Errors/video_requires_password',
+          'https://docs.joinpeertube.org/api-rest-reference/api.html#video-requires-password',
       }),
     detail: z
       .string()
@@ -1273,14 +1297,37 @@ const VideoUploadRequestCommonSchema = z
   .openapi({ required: ['channelId', 'name'] })
   .openapi('VideoUploadRequestCommon')
 
-const VideoCreateImportSchema = z
-  .xor([
+const VideoCreateImportSchema = (() => {
+  const Schema = z.xor([
     z.object({ targetUrl: z.lazy(() => VideoImportSchema) }).openapi({ required: ['targetUrl'] }),
     z.object({ magnetUri: z.lazy(() => VideoImportSchema) }).openapi({ required: ['magnetUri'] }),
     z
       .object({ torrentfile: z.lazy(() => VideoImportSchema) })
       .openapi({ required: ['torrentfile'] }),
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .and(z.looseObject({}).openapi({ required: ['channelId', 'name'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'channelId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(VideoUploadRequestCommonSchema)
   .openapi({ required: ['channelId', 'name'] })
   .openapi('VideoCreateImport')
@@ -1435,7 +1482,7 @@ const VideoPlaylistSchema = z
     description: z.string().min(3).max(1000).exactOptional(),
     displayName: z.string().min(1).max(120).exactOptional(),
     isLocal: z.boolean().exactOptional(),
-    videoLength: z.int().min(0).exactOptional(),
+    videosLength: z.int().min(0).exactOptional(),
     thumbnailPath: z
       .string()
       .nullable()
@@ -1553,6 +1600,30 @@ const VideoChaptersSchema = z
   })
   .openapi({ required: [] })
   .openapi('VideoChapters')
+
+const PodcastChaptersSchema = z
+  .object({
+    version: z.string().exactOptional().openapi({ example: '1.2.0' }),
+    chapters: z
+      .array(
+        z
+          .object({
+            startTime: z
+              .int()
+              .exactOptional()
+              .openapi({ description: 'Start of the chapter, in seconds' }),
+            title: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'Podcasting 2.0 JSON chapters, see https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/chapters/jsonChapters.md',
+    required: [],
+  })
+  .openapi('PodcastChapters')
 
 const VideoSourceSchema = z
   .object({
@@ -1809,6 +1880,52 @@ const ServerConfigSchema = z
           .exactOptional()
           .openapi({ required: [] }),
         enabledResolutions: z.array(VideoResolutionSetSchema).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    live: z
+      .object({
+        enabled: z.boolean().exactOptional(),
+        allowReplay: z.boolean().exactOptional(),
+        dvr: z
+          .object({
+            maxWindow: z
+              .int()
+              .min(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  '**PeerTube >= 8.2** Max DVR window of a live, in seconds. `0` means DVR is disabled on the instance\n',
+              }),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        latencySetting: z
+          .object({ enabled: z.boolean().exactOptional() })
+          .exactOptional()
+          .openapi({ required: [] }),
+        maxDuration: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Max duration of a live, in milliseconds. `-1` means no limit' }),
+        maxInstanceLives: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Max number of concurrent lives on the instance. `-1` means no limit',
+          }),
+        maxUserLives: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Max number of concurrent lives per user. `-1` means no limit' }),
+        transcoding: z
+          .object({
+            enabled: z.boolean().exactOptional(),
+            enabledResolutions: z.array(VideoResolutionSetSchema).exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+        rtmp: z.object({ port: z.int().exactOptional() }).exactOptional().openapi({ required: [] }),
       })
       .exactOptional()
       .openapi({ required: [] }),
@@ -2950,6 +3067,10 @@ const AddUserSchema = z
     channelName: UsernameChannelSchema.exactOptional(),
     role: UserRoleSchema,
     adminFlags: UserAdminFlagsSchema.exactOptional(),
+    currentPassword: CurrentPasswordSchema.exactOptional().openapi({
+      description:
+        'Required to create an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)',
+    }),
   })
   .openapi({ required: ['username', 'password', 'email', 'role'] })
   .openapi('AddUser')
@@ -2983,6 +3104,10 @@ const UpdateUserSchema = z
     role: UserRoleSchema.exactOptional(),
     adminFlags: UserAdminFlagsSchema.exactOptional(),
     password: PasswordSchema.exactOptional(),
+    currentPassword: CurrentPasswordSchema.exactOptional().openapi({
+      description:
+        'Required to give the administrator role, or to change the password, email or auth plugin of an administrator, see [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation)\n',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateUser')
@@ -3345,35 +3470,75 @@ const OAuthClientSchema = z
   .openapi('OAuthClient')
 
 const OAuthTokenPasswordSchema = OAuthClientSchema.and(
-  z
-    .object({
-      grant_type: z.literal('password').exactOptional(),
-      username: UsernameSchema.exactOptional(),
-      password: PasswordSchema.exactOptional(),
-      externalAuthToken: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'If you want to authenticate using an external authentication token you got from an auth plugin (like `peertube-plugin-auth-openid-connect` for example) instead of a password or a refresh token, provide it here.',
-        }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['client_id', 'client_secret', 'grant_type', 'username'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'client_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'client_secret')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'grant_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        grant_type: z.literal('password').exactOptional(),
+        username: UsernameSchema.exactOptional(),
+        password: PasswordSchema.exactOptional(),
+        externalAuthToken: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'If you want to authenticate using an external authentication token you got from an auth plugin (like `peertube-plugin-auth-openid-connect` for example) instead of a password or a refresh token, provide it here.',
+          }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'username'] })
   .openapi('OAuthTokenPassword')
 
 const OAuthTokenRefreshTokenSchema = OAuthClientSchema.and(
   z
-    .object({
-      grant_type: z.literal('refresh_token').exactOptional(),
-      refresh_token: z
-        .string()
-        .exactOptional()
-        .openapi({ example: '2e0d675df9fc96d2e4ec8a3ebbbf45eca9137bb7' }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'refresh_token'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'client_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'client_secret')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'grant_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'refresh_token')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        grant_type: z.literal('refresh_token').exactOptional(),
+        refresh_token: z
+          .string()
+          .exactOptional()
+          .openapi({ example: '2e0d675df9fc96d2e4ec8a3ebbbf45eca9137bb7' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'refresh_token'] })
   .openapi('OAuthTokenRefreshToken')
 
@@ -3392,14 +3557,27 @@ const VideoChannelEditSchema = z
   .openapi('VideoChannelEdit')
 
 const VideoChannelCreateSchema = VideoChannelEditSchema.and(
-  z
-    .object({
-      name: UsernameChannelSchema.exactOptional().openapi({
-        description: 'username of the channel to create',
-      }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['name', 'displayName'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'displayName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        name: UsernameChannelSchema.exactOptional().openapi({
+          description: 'username of the channel to create',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['name', 'displayName'] })
   .openapi('VideoChannelCreate')
 
@@ -3704,10 +3882,11 @@ const NotificationTypeSchema = z
     z.literal(31),
     z.literal(32),
     z.literal(33),
+    z.literal(34),
   ])
   .openapi({
     description:
-      'Notification type. One of the following values:\n\n  - `1` NEW_VIDEO_FROM_SUBSCRIPTION\n\n  - `2` NEW_COMMENT_ON_MY_VIDEO\n\n  - `3` NEW_ABUSE_FOR_MODERATORS\n\n  - `4` BLACKLIST_ON_MY_VIDEO\n\n  - `5` UNBLACKLIST_ON_MY_VIDEO\n\n  - `6` MY_VIDEO_PUBLISHED\n\n  - `7` MY_VIDEO_IMPORT_SUCCESS\n\n  - `8` MY_VIDEO_IMPORT_ERROR\n\n  - `9` NEW_USER_REGISTRATION\n\n  - `10` NEW_FOLLOW\n\n  - `11` COMMENT_MENTION\n\n  - `12` VIDEO_AUTO_BLACKLIST_FOR_MODERATORS\n\n  - `13` NEW_INSTANCE_FOLLOWER\n\n  - `14` AUTO_INSTANCE_FOLLOWING\n\n  - `15` ABUSE_STATE_CHANGE\n\n  - `16` ABUSE_NEW_MESSAGE\n\n  - `17` NEW_PLUGIN_VERSION\n\n  - `18` NEW_PEERTUBE_VERSION\n\n  - `19` MY_VIDEO_STUDIO_EDITION_FINISHED\n\n  - `20` NEW_USER_REGISTRATION_REQUEST\n\n  - `21` NEW_LIVE_FROM_SUBSCRIPTION\n\n  - `22` MY_VIDEO_TRANSCRIPTION_GENERATED\n\n  - `23` INVITED_TO_COLLABORATE_TO_CHANNEL\n\n  - `24` ACCEPTED_TO_COLLABORATE_TO_CHANNEL\n\n  - `25` REFUSED_TO_COLLABORATE_TO_CHANNEL\n\n  - `26` VIDEO_OWNERSHIP_CHANGED_REQUEST\n\n  - `27` VIDEO_OWNERSHIP_CHANGED_ACCEPTED\n\n  - `28` VIDEO_OWNERSHIP_CHANGED_REJECTED\n\n  - `29` CHANNEL_OWNERSHIP_CHANGED_REQUEST\n\n  - `30` CHANNEL_OWNERSHIP_CHANGED_ACCEPTED\n\n  - `31` CHANNEL_OWNERSHIP_CHANGED_REJECTED\n\n  - `32` AUTOMATIC_BLOCKLIST_UPDATE\n',
+      'Notification type. One of the following values:\n\n  - `1` NEW_VIDEO_FROM_SUBSCRIPTION\n\n  - `2` NEW_COMMENT_ON_MY_VIDEO\n\n  - `3` NEW_ABUSE_FOR_MODERATORS\n\n  - `4` BLACKLIST_ON_MY_VIDEO\n\n  - `5` UNBLACKLIST_ON_MY_VIDEO\n\n  - `6` MY_VIDEO_PUBLISHED\n\n  - `7` MY_VIDEO_IMPORT_SUCCESS\n\n  - `8` MY_VIDEO_IMPORT_ERROR\n\n  - `9` NEW_USER_REGISTRATION\n\n  - `10` NEW_FOLLOW\n\n  - `11` COMMENT_MENTION\n\n  - `12` VIDEO_AUTO_BLACKLIST_FOR_MODERATORS\n\n  - `13` NEW_INSTANCE_FOLLOWER\n\n  - `14` AUTO_INSTANCE_FOLLOWING\n\n  - `15` ABUSE_STATE_CHANGE\n\n  - `16` ABUSE_NEW_MESSAGE\n\n  - `17` NEW_PLUGIN_VERSION\n\n  - `18` NEW_PEERTUBE_VERSION\n\n  - `19` MY_VIDEO_STUDIO_EDITION_FINISHED\n\n  - `20` NEW_USER_REGISTRATION_REQUEST\n\n  - `21` NEW_LIVE_FROM_SUBSCRIPTION\n\n  - `22` MY_VIDEO_TRANSCRIPTION_GENERATED\n\n  - `23` INVITED_TO_COLLABORATE_TO_CHANNEL\n\n  - `24` ACCEPTED_TO_COLLABORATE_TO_CHANNEL\n\n  - `25` REFUSED_TO_COLLABORATE_TO_CHANNEL\n\n  - `26` VIDEO_OWNERSHIP_CHANGED_REQUEST\n\n  - `27` VIDEO_OWNERSHIP_CHANGED_ACCEPTED\n\n  - `28` VIDEO_OWNERSHIP_CHANGED_REJECTED\n\n  - `29` CHANNEL_OWNERSHIP_CHANGED_REQUEST\n\n  - `30` CHANNEL_OWNERSHIP_CHANGED_ACCEPTED\n\n  - `31` CHANNEL_OWNERSHIP_CHANGED_REJECTED\n\n  - `32` AUTOMATIC_BLOCKLIST_UPDATE\n\n  - `33` MY_VIDEO_STUDIO_EDITION_ERROR\n\n  - `34` MY_VIDEO_DUPLICATION_ERROR\n',
   })
   .openapi('NotificationType')
 
@@ -3829,6 +4008,15 @@ const PluginResponseSchema = z
   .openapi({ required: [] })
   .openapi('PluginResponse')
 
+const LiveVideoDVRWindowSchema = z
+  .int()
+  .min(0)
+  .openapi({
+    description:
+      '**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` disables DVR. Cannot be higher than the max DVR window of the instance\n',
+  })
+  .openapi('LiveVideoDVRWindow')
+
 const LiveVideoUpdateSchema = z
   .object({
     saveReplay: z.boolean().exactOptional(),
@@ -3840,6 +4028,7 @@ const LiveVideoUpdateSchema = z
     latencyMode: LiveVideoLatencyModeSchema.exactOptional().openapi({
       description: 'User can select live latency mode if enabled by the instance',
     }),
+    dvrWindow: LiveVideoDVRWindowSchema.exactOptional(),
     schedules: z.array(LiveScheduleSchema).exactOptional(),
   })
   .openapi({ required: [] })
@@ -3871,6 +4060,14 @@ const LiveVideoResponseSchema = z
     latencyMode: LiveVideoLatencyModeSchema.exactOptional().openapi({
       description: 'User can select live latency mode if enabled by the instance',
     }),
+    dvrWindow: z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description:
+          '**PeerTube >= 8.2** How far back viewers can rewind the live, in seconds. `0` means DVR is disabled.\n',
+      }),
     schedules: z.array(LiveScheduleSchema).exactOptional(),
   })
   .openapi({ required: [] })
@@ -4090,9 +4287,27 @@ const RunnerSchema = z
     updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
     createdAt: z.iso.datetime({ offset: true }).exactOptional(),
     lastContact: z.iso.datetime({ offset: true }).exactOptional(),
+    version: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        example: '0.4.0',
+        description:
+          'Version of the runner, sent when it registers or requests jobs. `null` if the runner never sent its version',
+      }),
   })
   .openapi({ required: [] })
   .openapi('Runner')
+
+const RunnerVersionSchema = z
+  .string()
+  .regex(/^\d+\.\d+\.\d+(-(rc|alpha|beta)\.\d+)?$/)
+  .openapi({
+    example: '0.4.0',
+    description: 'Version of the runner, updated on the runner model if provided',
+  })
+  .openapi('RunnerVersion')
 
 const RunnerJobTypeSchema = z
   .enum([
@@ -4222,7 +4437,7 @@ const RunnerJobSchema = z
   .openapi('RunnerJob')
 
 const RunnerJobAdminSchema = RunnerJobSchema.and(
-  z.object({ privatePayload: z.object({}).exactOptional() }).openapi({ required: [] }),
+  z.object({ privatePayload: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
 ).openapi('RunnerJobAdmin')
 
 const WatchedWordsListsSchema = z
@@ -5092,7 +5307,8 @@ const CategoryOneOfParamsSchema = z
       name: 'categoryOneOf',
       in: 'query',
       required: false,
-      description: 'category id of the video (see [/videos/categories](#operation/getCategories))',
+      description:
+        'category id of the video (see [/videos/categories](https://docs.joinpeertube.org/api-rest-reference/api/operations/getcategories.html))',
       schema: {
         oneOf: [
           { $ref: '#/components/schemas/VideoCategorySet' },
@@ -5145,7 +5361,7 @@ const LanguageOneOfParamsSchema = z
       in: 'query',
       required: false,
       description:
-        "language id of the video (see [/videos/languages](#operation/getLanguages)). Use `_unknown` to filter on videos that don't have a video language",
+        "language id of the video (see [/videos/languages](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlanguages.html)). Use `_unknown` to filter on videos that don't have a video language",
       schema: {
         oneOf: [
           { $ref: '#/components/schemas/VideoLanguageSet' },
@@ -5271,7 +5487,8 @@ const LicenceOneOfParamsSchema = z
       name: 'licenceOneOf',
       in: 'query',
       required: false,
-      description: 'licence id of the video (see [/videos/licences](#operation/getLicences))',
+      description:
+        'licence id of the video (see [/videos/licences](https://docs.joinpeertube.org/api-rest-reference/api/operations/getlicences.html))',
       schema: {
         oneOf: [
           { $ref: '#/components/schemas/VideoLicenceSet' },
@@ -5638,7 +5855,7 @@ const VideoFileTokenParamsSchema = z
       in: 'query',
       required: false,
       description:
-        "Video file token [generated](#operation/requestVideoToken) by PeerTube so you don't need to provide an OAuth token in the request header.",
+        "Video file token [generated](https://docs.joinpeertube.org/api-rest-reference/api/operations/requestvideotoken.html) by PeerTube so you don't need to provide an OAuth token in the request header.",
       schema: { type: 'string' },
     },
   })
@@ -5980,6 +6197,7 @@ export const getStaticWebVideosFilenameRoute = createRoute({
   tags: ['Static Video Files'],
   summary: 'Get public Web Video file',
   description: '**PeerTube >= 6.0**',
+  operationId: 'getStaticWebVideoFile',
   request: { params: z.object({ filename: StaticFilenameParamsSchema }) },
   responses: { 200: { description: 'successful operation' }, 404: { description: 'not found' } },
 })
@@ -5990,6 +6208,7 @@ export const getStaticWebVideosPrivateFilenameRoute = createRoute({
   tags: ['Static Video Files'],
   summary: 'Get private Web Video file',
   description: '**PeerTube >= 6.0**',
+  operationId: 'getStaticPrivateWebVideoFile',
   request: {
     params: z.object({ filename: StaticFilenameParamsSchema }),
     query: z.object({ videoFileToken: VideoFileTokenParamsSchema }),
@@ -6007,6 +6226,7 @@ export const getStaticStreamingPlaylistsHlsFilenameRoute = createRoute({
   path: '/static/streaming-playlists/hls/{filename}',
   tags: ['Static Video Files'],
   summary: 'Get public HLS video file',
+  operationId: 'getStaticHLSFile',
   request: { params: z.object({ filename: StaticFilenameParamsSchema }) },
   responses: {
     200: { description: 'successful operation' },
@@ -6021,6 +6241,7 @@ export const getStaticStreamingPlaylistsHlsPrivateFilenameRoute = createRoute({
   path: '/static/streaming-playlists/hls/private/{filename}',
   tags: ['Static Video Files'],
   summary: 'Get private HLS video file',
+  operationId: 'getStaticPrivateHLSFile',
   request: {
     params: z.object({ filename: StaticFilenameParamsSchema }),
     query: z.object({
@@ -6043,6 +6264,7 @@ export const getDownloadVideosGenerateVideoIdOrUUIDRoute = createRoute({
   summary: 'Download video file',
   description:
     'Generate a mp4 container that contains at most 1 video stream and at most 1 audio stream. Mainly used to merge the HLS audio only video file and the HLS video only resolution file.',
+  operationId: 'downloadVideoFile',
   request: {
     params: z.object({ videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
     query: z.object({
@@ -6224,7 +6446,7 @@ export const getFeedsVideoCommentsFormatRoute = createRoute({
           },
         },
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             nightly: {
               externalValue: 'https://peertube2.cpy.re/feeds/video-comments.json?scope=local',
@@ -6233,13 +6455,11 @@ export const getFeedsVideoCommentsFormatRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: { description: 'Arises when:\n  - videoId filter is mixed with a channel filter\n' },
@@ -6359,20 +6579,18 @@ export const getFeedsVideosFormatRoute = createRoute({
           },
         },
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             nightly: { externalValue: 'https://peertube2.cpy.re/feeds/videos.json?scope=local' },
           },
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: { description: 'video channel or account not found' },
@@ -6444,16 +6662,14 @@ export const getFeedsSubscriptionsFormatRoute = createRoute({
         'application/rss+xml': { schema: VideosForXMLSchema },
         'text/xml': { schema: VideosForXMLSchema },
         'application/atom+xml': { schema: VideosForXMLSchema },
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
       },
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     406: { description: 'accept header unsupported' },
@@ -6510,16 +6726,50 @@ export const getFeedsPodcastVideosXmlRoute = createRoute({
     200: {
       description: 'successful operation',
       headers: z.object({
-        'Cache-Control': {
-          schema: z
-            .string()
-            .default('max-age=900')
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Cache-Control': z
+          .string()
+          .default('max-age=900')
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     404: { description: 'video channel or playlist not found' },
+  },
+})
+
+export const getFeedsPodcastVideoChaptersJsonRoute = createRoute({
+  method: 'get',
+  path: '/feeds/podcast/video-chapters.json',
+  tags: ['Video Feeds'],
+  summary: 'Video chapters of podcast feeds',
+  description:
+    '**PeerTube >= 9.0** Chapters of a video in the Podcasting 2.0 JSON format, referenced by the `podcast:chapters` tag of podcast feed items.\nSee https://podcasting2.org/docs/podcast-namespace/tags/chapters\n',
+  operationId: 'getVideoPodcastChapters',
+  request: {
+    query: z.object({
+      videoId: z
+        .string()
+        .openapi({
+          param: {
+            name: 'videoId',
+            in: 'query',
+            description: 'The video id, uuid or short uuid',
+            required: true,
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json+chapters': { schema: PodcastChaptersSchema },
+        'application/json': { schema: PodcastChaptersSchema },
+      },
+    },
+    404: { description: 'video not found' },
+    406: { description: 'accept header unsupported' },
   },
 })
 
@@ -6719,13 +6969,19 @@ export const putApiV1ConfigCustomRoute = createRoute({
   path: '/api/v1/config/custom',
   tags: ['Config'],
   summary: 'Set instance runtime configuration',
+  description:
+    'Changing `instance.customizations.javascript` or `instance.customizations.css` requires a [password confirmation](https://docs.joinpeertube.org/api-rest-reference/api.html#password-confirmation): set `currentPassword` at the root of the request body.\n',
   operationId: 'putCustomConfig',
   responses: {
     200: { description: 'successful operation' },
     400: {
       description:
-        'Arises when:\n  - the emailer is disabled and the instance is open to registrations\n  - web videos and hls are disabled with transcoding enabled - you need at least one enabled\n',
+        'Arises when:\n  - the emailer is disabled and the instance is open to registrations\n  - web videos and hls are disabled with transcoding enabled - you need at least one enabled\n  - the custom JavaScript or CSS changed and `currentPassword` is missing\n',
     },
+    403: {
+      description: 'invalid `currentPassword`, or password confirmation unavailable for this user',
+    },
+    429: { description: 'too many failed password confirmations' },
   },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -6745,6 +7001,7 @@ export const postApiV1ConfigInstanceBannerPickRoute = createRoute({
   path: '/api/v1/config/instance-banner/pick',
   tags: ['Config'],
   summary: 'Update instance banner',
+  operationId: 'updateInstanceBanner',
   request: {
     body: {
       content: {
@@ -6767,16 +7024,10 @@ export const postApiV1ConfigInstanceBannerPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the banner',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the banner',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the banner', param: { required: false } }),
       }),
     },
   },
@@ -6788,6 +7039,7 @@ export const deleteApiV1ConfigInstanceBannerRoute = createRoute({
   path: '/api/v1/config/instance-banner',
   tags: ['Config'],
   summary: 'Delete instance banner',
+  operationId: 'deleteInstanceBanner',
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -6797,6 +7049,7 @@ export const postApiV1ConfigInstanceAvatarPickRoute = createRoute({
   path: '/api/v1/config/instance-avatar/pick',
   tags: ['Config'],
   summary: 'Update instance avatar',
+  operationId: 'updateInstanceAvatar',
   request: {
     body: {
       content: {
@@ -6819,16 +7072,10 @@ export const postApiV1ConfigInstanceAvatarPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the avatar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the avatar',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the avatar', param: { required: false } }),
       }),
     },
   },
@@ -6840,6 +7087,7 @@ export const deleteApiV1ConfigInstanceAvatarRoute = createRoute({
   path: '/api/v1/config/instance-avatar',
   tags: ['Config'],
   summary: 'Delete instance avatar',
+  operationId: 'deleteInstanceAvatar',
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -6849,6 +7097,7 @@ export const postApiV1ConfigInstanceLogoLogoTypePickRoute = createRoute({
   path: '/api/v1/config/instance-logo/{logoType}/pick',
   tags: ['Config'],
   summary: 'Update instance logo',
+  operationId: 'updateInstanceLogo',
   request: {
     params: z.object({ logoType: LogoTypeParamParamsSchema }),
     body: {
@@ -6872,16 +7121,10 @@ export const postApiV1ConfigInstanceLogoLogoTypePickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the banner',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the banner',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the banner', param: { required: false } }),
       }),
     },
   },
@@ -6893,6 +7136,7 @@ export const deleteApiV1ConfigInstanceLogoLogoTypeRoute = createRoute({
   path: '/api/v1/config/instance-logo/{logoType}',
   tags: ['Config'],
   summary: 'Delete instance logo',
+  operationId: 'deleteInstanceLogo',
   request: { params: z.object({ logoType: LogoTypeParamParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
@@ -6903,6 +7147,7 @@ export const getApiV1CustomPagesHomepageInstanceRoute = createRoute({
   path: '/api/v1/custom-pages/homepage/instance',
   tags: ['Homepage'],
   summary: 'Get instance custom homepage',
+  operationId: 'getInstanceHomepage',
   responses: {
     200: {
       description: 'successful operation',
@@ -6917,6 +7162,7 @@ export const putApiV1CustomPagesHomepageInstanceRoute = createRoute({
   path: '/api/v1/custom-pages/homepage/instance',
   tags: ['Homepage'],
   summary: 'Set instance custom homepage',
+  operationId: 'updateInstanceHomepage',
   request: {
     body: {
       content: {
@@ -6944,6 +7190,7 @@ export const postApiV1JobsPauseRoute = createRoute({
   path: '/api/v1/jobs/pause',
   tags: ['Job'],
   summary: 'Pause job queue',
+  operationId: 'pauseJobQueue',
   request: {
     body: {
       content: {
@@ -6973,6 +7220,7 @@ export const postApiV1JobsResumeRoute = createRoute({
   path: '/api/v1/jobs/resume',
   tags: ['Job'],
   summary: 'Resume job queue',
+  operationId: 'resumeJobQueue',
   request: {
     body: {
       content: {
@@ -7090,6 +7338,7 @@ export const getApiV1ServerFollowersRoute = createRoute({
   path: '/api/v1/server/followers',
   tags: ['Instance Follows'],
   summary: 'List instances following the server',
+  operationId: 'listInstanceFollowers',
   request: {
     query: z.object({
       state: FollowStateParamsSchema,
@@ -7121,6 +7370,7 @@ export const deleteApiV1ServerFollowersHandleRoute = createRoute({
   path: '/api/v1/server/followers/{handle}',
   tags: ['Instance Follows'],
   summary: 'Remove or reject a follower to your server',
+  operationId: 'removeInstanceFollower',
   request: {
     params: z.object({
       handle: z
@@ -7148,6 +7398,7 @@ export const postApiV1ServerFollowersHandleRejectRoute = createRoute({
   path: '/api/v1/server/followers/{handle}/reject',
   tags: ['Instance Follows'],
   summary: 'Reject a pending follower to your server',
+  operationId: 'rejectInstanceFollower',
   request: {
     params: z.object({
       handle: z
@@ -7175,6 +7426,7 @@ export const postApiV1ServerFollowersHandleAcceptRoute = createRoute({
   path: '/api/v1/server/followers/{handle}/accept',
   tags: ['Instance Follows'],
   summary: 'Accept a pending follower to your server',
+  operationId: 'acceptInstanceFollower',
   request: {
     params: z.object({
       handle: z
@@ -7202,6 +7454,7 @@ export const getApiV1ServerFollowingRoute = createRoute({
   path: '/api/v1/server/following',
   tags: ['Instance Follows'],
   summary: 'List instances followed by the server',
+  operationId: 'listInstanceFollowing',
   request: {
     query: z.object({
       state: FollowStateParamsSchema,
@@ -7233,6 +7486,7 @@ export const postApiV1ServerFollowingRoute = createRoute({
   path: '/api/v1/server/following',
   tags: ['Instance Follows'],
   summary: 'Follow a list of actors (PeerTube instance, channel or account)',
+  operationId: 'followActors',
   request: {
     body: {
       content: {
@@ -7279,6 +7533,7 @@ export const deleteApiV1ServerFollowingHostOrHandleRoute = createRoute({
   path: '/api/v1/server/following/{hostOrHandle}',
   tags: ['Instance Follows'],
   summary: 'Unfollow an actor (PeerTube instance, channel or account)',
+  operationId: 'unfollowActor',
   request: {
     params: z.object({
       hostOrHandle: z
@@ -7419,6 +7674,7 @@ export const postApiV1UsersIdBlockRoute = createRoute({
   tags: ['Users'],
   summary: 'Block a user',
   description: 'Prevent a user from logging in and interacting with the instance',
+  operationId: 'blockUser',
   request: {
     params: z.object({ id: IdParamsSchema }),
     body: {
@@ -7453,6 +7709,7 @@ export const postApiV1UsersIdUnblockRoute = createRoute({
   tags: ['Users'],
   summary: 'Unblock a user',
   description: 'Allow a previously blocked user to login and interact with the instance',
+  operationId: 'unblockUser',
   request: { params: z.object({ id: IdParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -7469,7 +7726,7 @@ export const getApiV1OauthClientsLocalRoute = createRoute({
   tags: ['Session'],
   summary: 'Login prerequisite',
   description:
-    'You need to retrieve a client id and secret before [logging in](#operation/getOAuthToken).',
+    'You need to retrieve a client id and secret before [logging in](https://docs.joinpeertube.org/api-rest-reference/api/operations/getoauthtoken.html).',
   operationId: 'getOAuthClient',
   responses: {
     200: {
@@ -7494,7 +7751,7 @@ export const postApiV1UsersTokenRoute = createRoute({
   tags: ['Session'],
   summary: 'Login',
   description:
-    'With your [client id and secret](#operation/getOAuthClient), you can retrieve an access and refresh tokens.',
+    'With your [client id and secret](https://docs.joinpeertube.org/api-rest-reference/api/operations/getoauthclient.html), you can retrieve an access and refresh tokens.',
   operationId: 'getOAuthToken',
   request: {
     headers: z.object({
@@ -7591,6 +7848,7 @@ export const getApiV1UsersIdTokenSessionsRoute = createRoute({
   path: '/api/v1/users/{id}/token-sessions',
   tags: ['Session'],
   summary: 'List token sessions',
+  operationId: 'listUserTokenSessions',
   request: { params: z.object({ id: IdParamsSchema }) },
   responses: {
     200: {
@@ -7610,11 +7868,12 @@ export const getApiV1UsersIdTokenSessionsRoute = createRoute({
   security: [{ OAuth2: [] }],
 })
 
-export const getApiV1UsersIdTokenSessionsTokenSessionIdRevokeRoute = createRoute({
-  method: 'get',
+export const postApiV1UsersIdTokenSessionsTokenSessionIdRevokeRoute = createRoute({
+  method: 'post',
   path: '/api/v1/users/{id}/token-sessions/{tokenSessionId}/revoke',
   tags: ['Session'],
-  summary: 'List token sessions',
+  summary: 'Revoke a token session',
+  operationId: 'revokeUserTokenSession',
   request: { params: z.object({ id: IdParamsSchema, tokenSessionId: TokenSessionIdParamsSchema }) },
   responses: { 200: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -7720,6 +7979,7 @@ export const postApiV1UsersAskResetPasswordRoute = createRoute({
   tags: ['Users'],
   summary: 'Ask to reset password',
   description: 'An email containing a reset password link',
+  operationId: 'askResetPassword',
   request: {
     body: {
       content: {
@@ -7739,6 +7999,7 @@ export const postApiV1UsersIdResetPasswordRoute = createRoute({
   path: '/api/v1/users/{id}/reset-password',
   tags: ['Users'],
   summary: 'Reset password',
+  operationId: 'resetPassword',
   request: {
     params: z.object({ id: IdParamsSchema }),
     body: {
@@ -7890,18 +8151,14 @@ export const putApiV1UsersUserIdImportsImportResumableRoute = createRoute({
     308: {
       description: 'resume incomplete',
       headers: z.object({
-        Range: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Range: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     400: {
@@ -7911,12 +8168,10 @@ export const putApiV1UsersUserIdImportsImportResumableRoute = createRoute({
     503: {
       description: 'upload is already being processed',
       headers: z.object({
-        'Retry-After': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 300 }),
-        },
+        'Retry-After': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 300 }),
       }),
     },
   },
@@ -7943,18 +8198,14 @@ export const postApiV1UsersUserIdImportsImportResumableRoute = createRoute({
     201: {
       description: 'created',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
   },
@@ -7998,12 +8249,10 @@ export const deleteApiV1UsersUserIdImportsImportResumableRoute = createRoute({
     204: {
       description: 'import cancelled',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
   },
@@ -8193,6 +8442,7 @@ export const getApiV1UsersMeVideosCommentsRoute = createRoute({
   tags: ['Video Comments'],
   summary: "List comments on user's videos",
   description: '**PeerTube >= 6.2**',
+  operationId: 'listMyVideosComments',
   request: {
     query: z.object({
       search: SearchParamsSchema,
@@ -8228,6 +8478,7 @@ export const getApiV1UsersMeVideosImportsRoute = createRoute({
   path: '/api/v1/users/me/videos/imports',
   tags: ['Videos', 'My User'],
   summary: 'Get video imports of my user',
+  operationId: 'getMyVideoImports',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -8332,6 +8583,7 @@ export const getApiV1UsersMeVideoQuotaUsedRoute = createRoute({
   path: '/api/v1/users/me/video-quota-used',
   tags: ['My User'],
   summary: 'Get my user used quota',
+  operationId: 'getMyVideoQuotaUsed',
   responses: {
     200: {
       description: 'successful operation',
@@ -8367,6 +8619,7 @@ export const getApiV1UsersMeVideosVideoIdOrUUIDRatingRoute = createRoute({
   path: '/api/v1/users/me/videos/{videoIdOrUUID}/rating',
   tags: ['My User', 'Video Rates'],
   summary: 'Get rate of my user for a video',
+  operationId: 'getMyVideoRating',
   request: { params: z.object({ videoIdOrUUID: VideoIdOrUUIDParamsSchema }) },
   responses: {
     200: {
@@ -8382,6 +8635,7 @@ export const getApiV1UsersMeVideosRoute = createRoute({
   path: '/api/v1/users/me/videos',
   tags: ['My User', 'Videos'],
   summary: 'List videos of my user',
+  operationId: 'listMyVideos',
   request: {
     query: z.object({
       channelNameOneOf: ChannelNameOneOfParamsSchema,
@@ -8427,6 +8681,7 @@ export const getApiV1UsersMeSubscriptionsRoute = createRoute({
   path: '/api/v1/users/me/subscriptions',
   tags: ['My Subscriptions'],
   summary: 'List my user subscriptions',
+  operationId: 'listMySubscriptions',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -8448,6 +8703,7 @@ export const postApiV1UsersMeSubscriptionsRoute = createRoute({
   path: '/api/v1/users/me/subscriptions',
   tags: ['My Subscriptions'],
   summary: 'Add subscription to my user',
+  operationId: 'addMySubscription',
   request: {
     body: {
       content: {
@@ -8473,11 +8729,12 @@ export const getApiV1UsersMeSubscriptionsExistRoute = createRoute({
   path: '/api/v1/users/me/subscriptions/exist',
   tags: ['My Subscriptions'],
   summary: 'Get if subscriptions exist for my user',
+  operationId: 'getMySubscriptionsExist',
   request: { query: z.object({ uris: SubscriptionsUrisParamsSchema }) },
   responses: {
     200: {
       description: 'successful operation',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
   },
   security: [{ OAuth2: ['user'] }],
@@ -8488,6 +8745,7 @@ export const getApiV1UsersMeSubscriptionsVideosRoute = createRoute({
   path: '/api/v1/users/me/subscriptions/videos',
   tags: ['My Subscriptions', 'Videos'],
   summary: 'List videos of subscriptions of my user',
+  operationId: 'listMySubscriptionsVideos',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -8531,6 +8789,7 @@ export const getApiV1UsersMeSubscriptionsSubscriptionHandleRoute = createRoute({
   path: '/api/v1/users/me/subscriptions/{subscriptionHandle}',
   tags: ['My Subscriptions'],
   summary: 'Get subscription of my user',
+  operationId: 'getMySubscription',
   request: { params: z.object({ subscriptionHandle: SubscriptionHandleParamsSchema }) },
   responses: {
     200: {
@@ -8546,6 +8805,7 @@ export const deleteApiV1UsersMeSubscriptionsSubscriptionHandleRoute = createRout
   path: '/api/v1/users/me/subscriptions/{subscriptionHandle}',
   tags: ['My Subscriptions'],
   summary: 'Delete subscription of my user',
+  operationId: 'deleteMySubscription',
   request: { params: z.object({ subscriptionHandle: SubscriptionHandleParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['user'] }],
@@ -8556,6 +8816,7 @@ export const getApiV1UsersMeNotificationsRoute = createRoute({
   path: '/api/v1/users/me/notifications',
   tags: ['My Notifications'],
   summary: 'List my notifications',
+  operationId: 'listMyNotifications',
   request: {
     query: z.object({
       typeOneOf: z
@@ -8614,6 +8875,7 @@ export const postApiV1UsersMeNotificationsReadRoute = createRoute({
   path: '/api/v1/users/me/notifications/read',
   tags: ['My Notifications'],
   summary: 'Mark notifications as read by their id',
+  operationId: 'markMyNotificationsAsRead',
   request: {
     body: {
       content: {
@@ -8638,6 +8900,7 @@ export const postApiV1UsersMeNotificationsReadAllRoute = createRoute({
   path: '/api/v1/users/me/notifications/read-all',
   tags: ['My Notifications'],
   summary: 'Mark all my notification as read',
+  operationId: 'markAllMyNotificationsAsRead',
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
 })
@@ -8647,6 +8910,7 @@ export const putApiV1UsersMeNotificationSettingsRoute = createRoute({
   path: '/api/v1/users/me/notification-settings',
   tags: ['My Notifications'],
   summary: 'Update my notification settings',
+  operationId: 'updateMyNotificationSettings',
   request: {
     body: { content: { 'application/json': { schema: UserNotificationSettingsSchema } } },
   },
@@ -8660,6 +8924,7 @@ export const postApiV1UsersMeNewFeatureInfoReadRoute = createRoute({
   tags: ['My User'],
   summary: 'Mark feature info as read',
   description: '**PeerTube >= v8.0.0',
+  operationId: 'markMyNewFeatureInfoAsRead',
   request: {
     body: {
       content: {
@@ -8680,6 +8945,7 @@ export const getApiV1UsersMeHistoryVideosRoute = createRoute({
   path: '/api/v1/users/me/history/videos',
   tags: ['My History'],
   summary: 'List watched videos history',
+  operationId: 'listMyVideoHistory',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -8701,6 +8967,7 @@ export const deleteApiV1UsersMeHistoryVideosVideoIdOrUUIDRoute = createRoute({
   path: '/api/v1/users/me/history/videos/{videoIdOrUUID}',
   tags: ['My History'],
   summary: 'Delete history element',
+  operationId: 'deleteMyVideoHistoryElement',
   request: { params: z.object({ videoIdOrUUID: VideoIdOrUUIDParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -8711,6 +8978,7 @@ export const postApiV1UsersMeHistoryVideosRemoveRoute = createRoute({
   path: '/api/v1/users/me/history/videos/remove',
   tags: ['My History'],
   summary: 'Clear video history',
+  operationId: 'clearMyVideoHistory',
   request: {
     body: {
       content: {
@@ -8736,6 +9004,7 @@ export const postApiV1UsersMeAvatarPickRoute = createRoute({
   path: '/api/v1/users/me/avatar/pick',
   tags: ['My User'],
   summary: 'Update my user avatar',
+  operationId: 'updateMyAvatar',
   request: {
     body: {
       content: {
@@ -8767,16 +9036,10 @@ export const postApiV1UsersMeAvatarPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the avatar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the avatar',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the avatar', param: { required: false } }),
       }),
     },
   },
@@ -8788,6 +9051,7 @@ export const deleteApiV1UsersMeAvatarRoute = createRoute({
   path: '/api/v1/users/me/avatar',
   tags: ['My User'],
   summary: 'Delete my avatar',
+  operationId: 'deleteMyAvatar',
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
 })
@@ -8991,6 +9255,7 @@ export const getApiV1VideosOwnershipRoute = createRoute({
   summary: 'List video ownership changes',
   description:
     'List ownership change requests received by the authenticated user and requests sent by a channel managed by the authenticated user',
+  operationId: 'listVideoOwnershipChanges',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -9032,6 +9297,7 @@ export const postApiV1VideosOwnershipIdAcceptRoute = createRoute({
   path: '/api/v1/videos/ownership/{id}/accept',
   tags: ['Ownership Change'],
   summary: 'Accept ownership change request',
+  operationId: 'acceptVideoOwnershipChange',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     body: {
@@ -9066,6 +9332,7 @@ export const postApiV1VideosOwnershipIdRefuseRoute = createRoute({
   path: '/api/v1/videos/ownership/{id}/refuse',
   tags: ['Ownership Change'],
   summary: 'Refuse ownership change request',
+  operationId: 'refuseVideoOwnershipChange',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -9083,6 +9350,7 @@ export const deleteApiV1VideosOwnershipIdRoute = createRoute({
   summary: 'Delete ownership change request',
   description:
     'Delete an ownership change request. Only users who can manage the video can delete the request.',
+  operationId: 'deleteVideoOwnershipChange',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -9102,6 +9370,7 @@ export const getApiV1VideosVideoIdOrUUIDOwnershipRoute = createRoute({
   summary: 'List ownership change requests for a video',
   description:
     'List all ownership change requests for a specific video. The authenticated user must be able to manage the video.',
+  operationId: 'listOwnershipChangesOfVideo',
   request: {
     params: z.object({ videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
     query: z.object({
@@ -9164,6 +9433,7 @@ export const postApiV1VideosVideoIdOrUUIDGiveOwnershipRoute = createRoute({
   path: '/api/v1/videos/{videoIdOrUUID}/give-ownership',
   tags: ['Ownership Change'],
   summary: 'Request ownership change',
+  operationId: 'requestVideoOwnershipChange',
   request: {
     params: z.object({ videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
     body: {
@@ -9194,6 +9464,7 @@ export const getApiV1VideoChannelsOwnershipRoute = createRoute({
   summary: 'List channel ownership changes',
   description:
     'List ownership change requests received by the authenticated user and requests sent by channels managed by the authenticated user',
+  operationId: 'listChannelOwnershipChanges',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -9235,6 +9506,7 @@ export const postApiV1VideoChannelsOwnershipIdAcceptRoute = createRoute({
   path: '/api/v1/video-channels/ownership/{id}/accept',
   tags: ['Ownership Change'],
   summary: 'Accept channel ownership change request',
+  operationId: 'acceptChannelOwnershipChange',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -9254,6 +9526,7 @@ export const postApiV1VideoChannelsOwnershipIdRefuseRoute = createRoute({
   path: '/api/v1/video-channels/ownership/{id}/refuse',
   tags: ['Ownership Change'],
   summary: 'Refuse channel ownership change request',
+  operationId: 'refuseChannelOwnershipChange',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -9273,6 +9546,7 @@ export const deleteApiV1VideoChannelsOwnershipIdRoute = createRoute({
   summary: 'Delete channel ownership change request',
   description:
     'Delete a channel ownership change request. Only channel owners can delete the request.',
+  operationId: 'deleteChannelOwnershipChange',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -9290,6 +9564,7 @@ export const getApiV1VideoChannelsChannelHandleOwnershipRoute = createRoute({
   summary: 'List ownership change requests for a channel',
   description:
     'List all ownership change requests for a specific channel. The authenticated user must be able to manage the channel.',
+  operationId: 'listOwnershipChangesOfChannel',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     query: z.object({
@@ -9353,6 +9628,7 @@ export const postApiV1VideoChannelsChannelHandleGiveOwnershipRoute = createRoute
   path: '/api/v1/video-channels/{channelHandle}/give-ownership',
   tags: ['Ownership Change'],
   summary: 'Request channel ownership change',
+  operationId: 'requestChannelOwnershipChange',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     body: {
@@ -9404,141 +9680,220 @@ export const postApiV1VideosIdStudioEditRoute = createRoute({
   path: '/api/v1/videos/{id}/studio/edit',
   tags: ['Video Transcoding', 'Video'],
   summary: 'Create a studio task',
-  description: 'Create a task to edit a video  (cut, add intro/outro etc)',
+  description:
+    'Create a task to edit a video (cut, add intro/outro etc). By default the video is edited in place. Set `saveAsNewVideo` to keep it untouched and save the result in a new video.',
+  operationId: 'createVideoStudioTask',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     body: {
       content: {
         'multipart/form-data': {
-          schema: z.preprocess(
-            (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-            z.array(
-              z.union([
-                z
-                  .object({
-                    name: z.literal('cut').exactOptional(),
-                    options: z
+          schema: z
+            .object({
+              tasks: z.preprocess(
+                (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+                z.array(
+                  z.union([
+                    z
                       .object({
-                        start: z
-                          .preprocess(
-                            (val) =>
-                              typeof val === 'string' &&
-                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                ? Number(val)
-                                : val,
-                            z.int(),
-                          )
-                          .exactOptional(),
-                        end: z
-                          .preprocess(
-                            (val) =>
-                              typeof val === 'string' &&
-                              /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                              (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                ? Number(val)
-                                : val,
-                            z.int(),
-                          )
-                          .exactOptional(),
-                      })
-                      .exactOptional()
-                      .openapi({ required: [] }),
-                  })
-                  .openapi({ title: 'cut', required: [] }),
-                z
-                  .object({
-                    name: z.literal('add-intro').exactOptional(),
-                    options: z
-                      .object({
-                        file: z
-                          .file()
+                        name: z.literal('cut').exactOptional(),
+                        options: z
+                          .object({
+                            start: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'string' &&
+                                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                    ? Number(val)
+                                    : val,
+                                z.int(),
+                              )
+                              .exactOptional(),
+                            end: z
+                              .preprocess(
+                                (val) =>
+                                  typeof val === 'string' &&
+                                  /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                  (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                                    ? Number(val)
+                                    : val,
+                                z.int(),
+                              )
+                              .exactOptional(),
+                          })
                           .exactOptional()
-                          .openapi({ type: 'string', format: 'binary' }),
+                          .openapi({ required: [] }),
                       })
-                      .exactOptional()
-                      .openapi({ required: [] }),
-                  })
-                  .openapi({ title: 'add-intro', required: [] }),
-                z
-                  .object({
-                    name: z.literal('add-outro').exactOptional(),
-                    options: z
+                      .openapi({ title: 'cut', required: [] }),
+                    z
                       .object({
-                        file: z
-                          .file()
+                        name: z.literal('add-intro').exactOptional(),
+                        options: z
+                          .object({
+                            file: z
+                              .file()
+                              .exactOptional()
+                              .openapi({ type: 'string', format: 'binary' }),
+                          })
                           .exactOptional()
-                          .openapi({ type: 'string', format: 'binary' }),
+                          .openapi({ required: [] }),
                       })
-                      .exactOptional()
-                      .openapi({ required: [] }),
-                  })
-                  .openapi({ title: 'add-outro', required: [] }),
-                z
-                  .object({
-                    name: z.literal('add-watermark').exactOptional(),
-                    options: z
+                      .openapi({ title: 'add-intro', required: [] }),
+                    z
                       .object({
-                        file: z
-                          .file()
+                        name: z.literal('add-outro').exactOptional(),
+                        options: z
+                          .object({
+                            file: z
+                              .file()
+                              .exactOptional()
+                              .openapi({ type: 'string', format: 'binary' }),
+                          })
                           .exactOptional()
-                          .openapi({ type: 'string', format: 'binary' }),
+                          .openapi({ required: [] }),
                       })
-                      .exactOptional()
-                      .openapi({ required: [] }),
-                  })
-                  .openapi({ title: 'add-watermark', required: [] }),
-                z
-                  .object({
-                    name: z.literal('remove-segments').exactOptional(),
-                    options: z
+                      .openapi({ title: 'add-outro', required: [] }),
+                    z
                       .object({
-                        segments: z.preprocess(
-                          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-                          z
-                            .array(
+                        name: z.literal('add-watermark').exactOptional(),
+                        options: z
+                          .object({
+                            file: z
+                              .file()
+                              .exactOptional()
+                              .openapi({ type: 'string', format: 'binary' }),
+                          })
+                          .exactOptional()
+                          .openapi({ required: [] }),
+                      })
+                      .openapi({ title: 'add-watermark', required: [] }),
+                    z
+                      .object({
+                        name: z.literal('remove-segments').exactOptional(),
+                        options: z
+                          .object({
+                            segments: z.preprocess(
+                              (val) => (val === undefined || Array.isArray(val) ? val : [val]),
                               z
-                                .object({
-                                  start: z.preprocess(
-                                    (val) =>
-                                      typeof val === 'string' &&
-                                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                        ? Number(val)
-                                        : val,
-                                    z.int().min(0),
-                                  ),
-                                  end: z.preprocess(
-                                    (val) =>
-                                      typeof val === 'string' &&
-                                      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
-                                      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
-                                        ? Number(val)
-                                        : val,
-                                    z.int().min(1),
-                                  ),
-                                })
-                                .openapi({ required: ['start', 'end'] }),
-                            )
-                            .min(1),
-                        ),
+                                .array(
+                                  z
+                                    .object({
+                                      start: z.preprocess(
+                                        (val) =>
+                                          typeof val === 'string' &&
+                                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                          (!/^-?\d+$/.test(val) ||
+                                            Number.isSafeInteger(Number(val)))
+                                            ? Number(val)
+                                            : val,
+                                        z.int().min(0),
+                                      ),
+                                      end: z.preprocess(
+                                        (val) =>
+                                          typeof val === 'string' &&
+                                          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                          (!/^-?\d+$/.test(val) ||
+                                            Number.isSafeInteger(Number(val)))
+                                            ? Number(val)
+                                            : val,
+                                        z.int().min(1),
+                                      ),
+                                    })
+                                    .openapi({ required: ['start', 'end'] }),
+                                )
+                                .min(1),
+                            ),
+                          })
+                          .exactOptional()
+                          .openapi({ required: ['segments'] }),
                       })
-                      .exactOptional()
-                      .openapi({ required: ['segments'] }),
-                  })
-                  .openapi({ title: 'remove-segments', required: [] }),
-              ]),
-            ),
-          ),
+                      .openapi({ title: 'remove-segments', required: [] }),
+                  ]),
+                ),
+              ),
+              saveAsNewVideo: z
+                .preprocess(
+                  ((read) => (val: unknown) => {
+                    const result = read.safeParse(val)
+                    return result.success ? result.data : val
+                  })(z.stringbool()),
+                  z.boolean(),
+                )
+                .default(false)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Keep the source video untouched: duplicate it, and edit the duplicate. The duplicate is created private, in the same channel as the source video, with the source video metadata. The size of the source video counts towards the user quota.\n',
+                }),
+            })
+            .openapi({ required: ['tasks'] }),
         },
       },
       required: true,
     },
   },
   responses: {
-    204: { description: 'successful operation' },
+    200: {
+      description:
+        'successful operation, when `saveAsNewVideo` is `true`. Returns the identifiers of the new video',
+      content: { 'application/json': { schema: VideoUploadResponseSchema } },
+    },
+    204: { description: 'successful operation, when the source video is edited in place' },
     400: { description: 'incorrect parameters' },
+    403: {
+      description:
+        'the user cannot manage this video, or `saveAsNewVideo` is `true` on a blocked video and the user cannot manage blocks',
+    },
     404: { description: 'video not found' },
+    409: { description: 'video is already being processed' },
+  },
+  security: [{ OAuth2: [] }],
+})
+
+export const postApiV1VideosIdDuplicateRoute = createRoute({
+  method: 'post',
+  path: '/api/v1/videos/{id}/duplicate',
+  tags: ['Video'],
+  summary: 'Duplicate a video',
+  description:
+    'Create a copy of a local video, in the same channel.\n\nThe copy of a blocked video (that only moderators can duplicate) is blocked for the same reason.\n',
+  operationId: 'duplicateVideo',
+  request: {
+    params: z.object({ id: IdOrUUIDParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              name: z
+                .string()
+                .min(3)
+                .max(120)
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Name of the copy. Defaults to the name of the source video followed by "(Copy)"',
+                }),
+            })
+            .openapi({ required: [] }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'successful operation. Returns the identifiers of the new video',
+      content: { 'application/json': { schema: VideoUploadResponseSchema } },
+    },
+    400: { description: 'incorrect parameters' },
+    403: {
+      description:
+        'the user cannot manage this video, the video is not local, or the video is blocked and the user cannot manage blocks',
+    },
+    404: { description: 'video not found' },
+    409: { description: 'video is already being processed' },
+    413: { description: 'the user video quota is exceeded' },
   },
   security: [{ OAuth2: [] }],
 })
@@ -10099,6 +10454,7 @@ export const getApiV1VideosIdStatsOverallRoute = createRoute({
   path: '/api/v1/videos/{id}/stats/overall',
   tags: ['Video Stats'],
   summary: 'Get overall stats of a video',
+  operationId: 'getVideoOverallStats',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     query: z.object({
@@ -10142,6 +10498,7 @@ export const getApiV1VideosIdStatsUserAgentRoute = createRoute({
   path: '/api/v1/videos/{id}/stats/user-agent',
   tags: ['Video Stats'],
   summary: 'Get user agent stats of a video',
+  operationId: 'getVideoUserAgentStats',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     query: z.object({
@@ -10185,6 +10542,7 @@ export const getApiV1VideosIdStatsRetentionRoute = createRoute({
   path: '/api/v1/videos/{id}/stats/retention',
   tags: ['Video Stats'],
   summary: 'Get retention stats of a video',
+  operationId: 'getVideoRetentionStats',
   request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
   responses: {
     200: {
@@ -10200,6 +10558,7 @@ export const getApiV1VideosIdStatsTimeseriesMetricRoute = createRoute({
   path: '/api/v1/videos/{id}/stats/timeseries/{metric}',
   tags: ['Video Stats'],
   summary: 'Get timeserie stats of a video',
+  operationId: 'getVideoTimeserieStats',
   request: {
     params: z.object({
       id: IdOrUUIDParamsSchema,
@@ -10527,16 +10886,10 @@ export const postApiV1VideosUploadRoute = createRoute({
       description:
         "If the response has no body, it means the reverse-proxy didn't let it through. Otherwise disambiguate via `code`:\n- `quota_reached` for quota limits whether daily or global\n",
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the video',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the video',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the video', param: { required: false } }),
       }),
     },
     415: { description: 'video type unsupported' },
@@ -10572,29 +10925,23 @@ export const putApiV1VideosUploadResumableRoute = createRoute({
       description: 'last chunk received',
       content: { 'application/json': { schema: VideoUploadResponseSchema } },
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     308: {
       description: 'resume incomplete',
       headers: z.object({
-        Range: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Range: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     400: {
@@ -10609,12 +10956,10 @@ export const putApiV1VideosUploadResumableRoute = createRoute({
     503: {
       description: 'upload is already being processed',
       headers: z.object({
-        'Retry-After': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 300 }),
-        },
+        'Retry-After': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 300 }),
       }),
     },
   },
@@ -10644,21 +10989,17 @@ export const postApiV1VideosUploadResumableRoute = createRoute({
     201: {
       description: 'created',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              example: '/api/v1/videos/upload-resumable?upload_id=471e97554f21dec3b8bb5d4602939c51',
-            }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            example: '/api/v1/videos/upload-resumable?upload_id=471e97554f21dec3b8bb5d4602939c51',
+          }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     413: {
@@ -10706,12 +11047,10 @@ export const deleteApiV1VideosUploadResumableRoute = createRoute({
     204: {
       description: 'upload cancelled',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     404: { description: 'upload not found' },
@@ -10731,8 +11070,8 @@ export const postApiV1VideosImportsRoute = createRoute({
     body: {
       content: {
         'multipart/form-data': {
-          schema: z
-            .xor([
+          schema: (() => {
+            const Schema = z.xor([
               z
                 .object({ targetUrl: z.lazy(() => VideoImportSchema) })
                 .openapi({ required: ['targetUrl'] }),
@@ -10743,6 +11082,29 @@ export const postApiV1VideosImportsRoute = createRoute({
                 .object({ torrentfile: z.lazy(() => VideoImportSchema) })
                 .openapi({ required: ['torrentfile'] }),
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
+            .and(z.looseObject({}).openapi({ required: ['channelId', 'name'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'channelId')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'name')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
             .and(
               z
                 .object({
@@ -11015,6 +11377,7 @@ export const postApiV1VideosImportsIdCancelRoute = createRoute({
   tags: ['Video Imports'],
   summary: 'Cancel video import',
   description: 'Cancel a pending video import',
+  operationId: 'cancelVideoImport',
   request: { params: z.object({ id: IdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -11025,9 +11388,32 @@ export const postApiV1VideosImportsIdRetryRoute = createRoute({
   path: '/api/v1/videos/imports/{id}/retry',
   tags: ['Video Imports'],
   summary: 'Retry video import',
-  description: '**PeerTube >= 8.0** Retry a failed or cancelled (**PeerTube >= 8.3**) video import',
+  description:
+    '**PeerTube >= 8.0** Retry a failed or cancelled (**PeerTube >= 8.3**) video import.\n',
+  operationId: 'retryVideoImport',
   request: { params: z.object({ id: IdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
+  security: [{ OAuth2: [] }],
+})
+
+export const postApiV1VideosIdImportRetryRoute = createRoute({
+  method: 'post',
+  path: '/api/v1/videos/{id}/import/retry',
+  tags: ['Video Imports'],
+  summary: 'Retry the import of a video',
+  description:
+    '**PeerTube >= 9.0** Retry the failed or cancelled import of a video, without having to know the video import id.\n',
+  operationId: 'retryImportOfVideo',
+  request: { params: z.object({ id: IdOrUUIDParamsSchema }) },
+  responses: {
+    204: { description: 'successful operation' },
+    400: {
+      description:
+        'the import is not failed or cancelled, or has reached the maximum number of attempts',
+    },
+    403: { description: 'the user cannot manage this video import' },
+    404: { description: 'the video does not exist or has not been imported' },
+  },
   security: [{ OAuth2: [] }],
 })
 
@@ -11037,6 +11423,7 @@ export const deleteApiV1VideosImportsIdRoute = createRoute({
   tags: ['Video Imports'],
   summary: 'Delete video import',
   description: 'Delete ended video import',
+  operationId: 'deleteVideoImport',
   request: { params: z.object({ id: IdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -11113,6 +11500,21 @@ export const postApiV1VideosLiveRoute = createRoute({
                 .exactOptional()
                 .openapi({
                   description: 'User can select live latency mode if enabled by the instance',
+                }),
+              dvrWindow: z
+                .preprocess(
+                  (val) =>
+                    typeof val === 'string' &&
+                    /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                    (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                      ? Number(val)
+                      : val,
+                  LiveVideoDVRWindowSchema,
+                )
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Defaults to the max DVR window of the instance (`live.dvr.maxWindow` in `GET /api/v1/config`), so DVR is enabled by default if the instance allows it',
                 }),
               thumbnailfile: z
                 .file()
@@ -11295,7 +11697,7 @@ export const postApiV1VideosLiveRoute = createRoute({
     },
     400: {
       description:
-        'Disambiguate via `code`:\n- default type for a validation error\n- `live_conflicting_permanent_and_save_replay` for conflicting parameters set\n',
+        'Disambiguate via `code`:\n- default type for a validation error, including a `dvrWindow` higher than the max DVR window of the instance\n- `live_conflicting_permanent_and_save_replay` for conflicting parameters set\n',
     },
     403: {
       description:
@@ -11333,7 +11735,10 @@ export const putApiV1VideosLiveIdRoute = createRoute({
   },
   responses: {
     204: { description: 'successful operation' },
-    400: { description: 'bad parameters or trying to update a live that has already started' },
+    400: {
+      description:
+        'bad parameters (including a `dvrWindow` higher than the max DVR window of the instance) or trying to update a live that has already started\n',
+    },
     403: {
       description:
         'trying to save replay of the live but saving replay is not enabled on the instance',
@@ -11348,6 +11753,7 @@ export const getApiV1VideosLiveIdSessionsRoute = createRoute({
   tags: ['Live Videos'],
   summary: 'List live sessions',
   description: 'List all sessions created in a particular live',
+  operationId: 'listLiveSessions',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     query: z.object({ sort: SortParamsSchema }),
@@ -11377,6 +11783,7 @@ export const getApiV1VideosIdLiveSessionRoute = createRoute({
   summary: 'Get live session of a replay',
   description:
     'If the video is a replay of a live, you can find the associated live session using this endpoint',
+  operationId: 'getReplayLiveSession',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     headers: z.object({ 'x-peertube-video-password': VideoPasswordHeaderParamsSchema }),
@@ -11449,18 +11856,14 @@ export const putApiV1VideosIdSourceReplaceResumableRoute = createRoute({
     308: {
       description: 'resume incomplete',
       headers: z.object({
-        Range: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Range: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 'bytes=0-262143' }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     400: {
@@ -11475,12 +11878,10 @@ export const putApiV1VideosIdSourceReplaceResumableRoute = createRoute({
     503: {
       description: 'upload is already being processed',
       headers: z.object({
-        'Retry-After': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 300 }),
-        },
+        'Retry-After': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 300 }),
       }),
     },
   },
@@ -11511,18 +11912,14 @@ export const postApiV1VideosIdSourceReplaceResumableRoute = createRoute({
     201: {
       description: 'created',
       headers: z.object({
-        Location: {
-          schema: z
-            .url()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        Location: z
+          .url()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     413: {
@@ -11571,12 +11968,10 @@ export const deleteApiV1VideosIdSourceReplaceResumableRoute = createRoute({
     204: {
       description: 'source file replacement cancelled',
       headers: z.object({
-        'Content-Length': {
-          schema: z
-            .number()
-            .exactOptional()
-            .openapi({ param: { required: false }, example: 0 }),
-        },
+        'Content-Length': z
+          .number()
+          .exactOptional()
+          .openapi({ param: { required: false }, example: 0 }),
       }),
     },
     404: { description: 'source file replacement not found' },
@@ -11822,7 +12217,9 @@ export const postApiV1AbusesRoute = createRoute({
   summary: 'Report an abuse',
   description:
     'You cannot report a video that you own or on which you are a collaborator (video channel editor).\n',
+  operationId: 'reportAbuse',
   request: {
+    headers: z.object({ 'x-peertube-video-password': VideoPasswordHeaderParamsSchema }),
     body: {
       content: {
         'application/json': {
@@ -11860,6 +12257,13 @@ export const postApiV1AbusesRoute = createRoute({
               comment: z
                 .object({
                   id: IdSchema.exactOptional().openapi({ description: 'Comment id to report' }),
+                  videoUUID: z
+                    .uuid()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'UUID of the video of the comment, required to report a comment of an unlisted video',
+                    }),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -11903,6 +12307,7 @@ export const putApiV1AbusesAbuseIdRoute = createRoute({
   path: '/api/v1/abuses/{abuseId}',
   tags: ['Abuses'],
   summary: 'Update an abuse',
+  operationId: 'updateAbuse',
   request: {
     params: z.object({ abuseId: AbuseIdParamsSchema }),
     body: {
@@ -11937,6 +12342,7 @@ export const deleteApiV1AbusesAbuseIdRoute = createRoute({
   path: '/api/v1/abuses/{abuseId}',
   tags: ['Abuses'],
   summary: 'Delete an abuse',
+  operationId: 'deleteAbuse',
   request: { params: z.object({ abuseId: AbuseIdParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -11950,6 +12356,7 @@ export const getApiV1AbusesAbuseIdMessagesRoute = createRoute({
   path: '/api/v1/abuses/{abuseId}/messages',
   tags: ['Abuses'],
   summary: 'List messages of an abuse',
+  operationId: 'listAbuseMessages',
   request: { params: z.object({ abuseId: AbuseIdParamsSchema }) },
   responses: {
     200: {
@@ -11974,6 +12381,7 @@ export const postApiV1AbusesAbuseIdMessagesRoute = createRoute({
   path: '/api/v1/abuses/{abuseId}/messages',
   tags: ['Abuses'],
   summary: 'Add message to an abuse',
+  operationId: 'addAbuseMessage',
   request: {
     params: z.object({ abuseId: AbuseIdParamsSchema }),
     body: {
@@ -12001,6 +12409,7 @@ export const deleteApiV1AbusesAbuseIdMessagesAbuseMessageIdRoute = createRoute({
   path: '/api/v1/abuses/{abuseId}/messages/{abuseMessageId}',
   tags: ['Abuses'],
   summary: 'Delete an abuse message',
+  operationId: 'deleteAbuseMessage',
   request: {
     params: z.object({ abuseId: AbuseIdParamsSchema, abuseMessageId: AbuseMessageIdParamsSchema }),
   },
@@ -12281,6 +12690,7 @@ export const putApiV1VideosIdChaptersRoute = createRoute({
                     })
                     .openapi({ required: [] }),
                 )
+                .max(500)
                 .exactOptional(),
             })
             .openapi({ required: [] }),
@@ -12290,6 +12700,10 @@ export const putApiV1VideosIdChaptersRoute = createRoute({
   },
   responses: {
     204: { description: 'successful operation' },
+    400: {
+      description:
+        'invalid chapters (invalid title or timecode, duplicate timecode or more than 500 chapters)',
+    },
     404: { description: 'video not found' },
   },
   security: [{ OAuth2: ['user'] }],
@@ -12646,6 +13060,7 @@ export const getApiV1VideoChannelsChannelHandleVideoPlaylistsRoute = createRoute
   path: '/api/v1/video-channels/{channelHandle}/video-playlists',
   tags: ['Video Playlists', 'Video Channels'],
   summary: 'List playlists of a channel',
+  operationId: 'getVideoChannelPlaylists',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     query: z.object({
@@ -12749,6 +13164,7 @@ export const postApiV1VideoChannelsChannelHandleAvatarPickRoute = createRoute({
   path: '/api/v1/video-channels/{channelHandle}/avatar/pick',
   tags: ['Video Channels'],
   summary: 'Update channel avatar',
+  operationId: 'updateVideoChannelAvatar',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     body: {
@@ -12781,16 +13197,10 @@ export const postApiV1VideoChannelsChannelHandleAvatarPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the avatar',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the avatar',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the avatar', param: { required: false } }),
       }),
     },
   },
@@ -12802,6 +13212,7 @@ export const deleteApiV1VideoChannelsChannelHandleAvatarRoute = createRoute({
   path: '/api/v1/video-channels/{channelHandle}/avatar',
   tags: ['Video Channels'],
   summary: 'Delete channel avatar',
+  operationId: 'deleteVideoChannelAvatar',
   request: { params: z.object({ channelHandle: ChannelHandleParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -12812,6 +13223,7 @@ export const postApiV1VideoChannelsChannelHandleBannerPickRoute = createRoute({
   path: '/api/v1/video-channels/{channelHandle}/banner/pick',
   tags: ['Video Channels'],
   summary: 'Update channel banner',
+  operationId: 'updateVideoChannelBanner',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     body: {
@@ -12844,16 +13256,10 @@ export const postApiV1VideoChannelsChannelHandleBannerPickRoute = createRoute({
     413: {
       description: 'image file too large',
       headers: z.object({
-        'X-File-Maximum-Size': {
-          description: 'Maximum file size for the banner',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Maximum file size for the banner',
-              param: { required: false },
-            }),
-        },
+        'X-File-Maximum-Size': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Maximum file size for the banner', param: { required: false } }),
       }),
     },
   },
@@ -12865,6 +13271,7 @@ export const deleteApiV1VideoChannelsChannelHandleBannerRoute = createRoute({
   path: '/api/v1/video-channels/{channelHandle}/banner',
   tags: ['Video Channels'],
   summary: 'Delete channel banner',
+  operationId: 'deleteVideoChannelBanner',
   request: { params: z.object({ channelHandle: ChannelHandleParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -12876,6 +13283,7 @@ export const postApiV1VideoChannelsChannelHandleImportVideosRoute = createRoute(
   tags: ['Video Channels', 'Channels Sync'],
   summary: 'Import videos in channel',
   description: 'Import a remote channel/playlist videos into a channel',
+  operationId: 'importVideosInChannel',
   request: {
     params: z.object({ channelHandle: ChannelHandleParamsSchema }),
     body: { content: { 'application/json': { schema: ImportVideosInChannelCreateSchema } } },
@@ -13183,6 +13591,7 @@ export const getApiV1VideoPlaylistsPlaylistIdRoute = createRoute({
   path: '/api/v1/video-playlists/{playlistId}',
   tags: ['Video Playlists'],
   summary: 'Get a video playlist',
+  operationId: 'getVideoPlaylist',
   request: { params: z.object({ playlistId: PlaylistIdParamsSchema }) },
   responses: {
     200: {
@@ -13198,6 +13607,7 @@ export const putApiV1VideoPlaylistsPlaylistIdRoute = createRoute({
   tags: ['Video Playlists'],
   summary: 'Update a video playlist',
   description: 'If the video playlist is set as public, the playlist must have a assigned channel.',
+  operationId: 'updateVideoPlaylist',
   request: {
     params: z.object({ playlistId: PlaylistIdParamsSchema }),
     body: {
@@ -13262,6 +13672,7 @@ export const deleteApiV1VideoPlaylistsPlaylistIdRoute = createRoute({
   path: '/api/v1/video-playlists/{playlistId}',
   tags: ['Video Playlists'],
   summary: 'Delete a video playlist',
+  operationId: 'deleteVideoPlaylist',
   request: { params: z.object({ playlistId: PlaylistIdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -13451,6 +13862,7 @@ export const getApiV1UsersMeVideoPlaylistsVideosExistRoute = createRoute({
   path: '/api/v1/users/me/video-playlists/videos-exist',
   tags: ['Video Playlists'],
   summary: 'Check video exists in my playlists',
+  operationId: 'getMyPlaylistsVideosExist',
   request: {
     query: z.object({
       videoIds: z
@@ -13502,6 +13914,7 @@ export const getApiV1AccountsNameVideoPlaylistsRoute = createRoute({
   path: '/api/v1/accounts/{name}/video-playlists',
   tags: ['Video Playlists', 'Accounts'],
   summary: 'List playlists of an account',
+  operationId: 'getAccountPlaylists',
   request: {
     params: z.object({ name: NameParamsSchema }),
     query: z.object({
@@ -13550,6 +13963,7 @@ export const getApiV1AccountsNameVideoChannelsRoute = createRoute({
   path: '/api/v1/accounts/{name}/video-channels',
   tags: ['Video Channels', 'Accounts'],
   summary: 'List video channels of an account',
+  operationId: 'getAccountVideoChannels',
   request: {
     params: z.object({ name: NameParamsSchema }),
     query: z.object({
@@ -13608,6 +14022,7 @@ export const getApiV1AccountsNameVideoChannelSyncsRoute = createRoute({
   path: '/api/v1/accounts/{name}/video-channel-syncs',
   tags: ['Video Channels', 'Channels Sync', 'Accounts'],
   summary: 'List the synchronizations of video channels of an account',
+  operationId: 'getAccountVideoChannelSyncs',
   request: {
     params: z.object({ name: NameParamsSchema }),
     query: z.object({
@@ -13630,6 +14045,7 @@ export const getApiV1AccountsNameRatingsRoute = createRoute({
   path: '/api/v1/accounts/{name}/ratings',
   tags: ['Accounts'],
   summary: 'List ratings of an account',
+  operationId: 'getAccountRatings',
   request: {
     params: z.object({ name: NameParamsSchema }),
     query: z.object({
@@ -13664,6 +14080,7 @@ export const getApiV1VideosIdCommentThreadsRoute = createRoute({
   path: '/api/v1/videos/{id}/comment-threads',
   tags: ['Video Comments'],
   summary: 'List threads of a video',
+  operationId: 'listVideoCommentThreads',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     query: z.object({
@@ -13686,6 +14103,7 @@ export const postApiV1VideosIdCommentThreadsRoute = createRoute({
   path: '/api/v1/videos/{id}/comment-threads',
   tags: ['Video Comments'],
   summary: 'Create a thread',
+  operationId: 'addVideoCommentThread',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     body: {
@@ -13715,6 +14133,7 @@ export const getApiV1VideosIdCommentThreadsThreadIdRoute = createRoute({
   summary: 'Get a thread',
   description:
     'Since PeerTube 8.3 the returned tree is truncated: only the first replies of each comment are included, and only down to `maxDepth` nesting levels. Use `GET /api/v1/videos/{id}/comments/{commentId}/replies` to fetch the replies that are missing, comparing `children` and `totalChildren` of each node of the tree.\n',
+  operationId: 'getVideoCommentThread',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema, threadId: ThreadIdParamsSchema }),
     query: z.object({
@@ -13738,6 +14157,7 @@ export const getApiV1VideosIdCommentsCommentIdRepliesRoute = createRoute({
   summary: 'List replies of a comment',
   description:
     '**PeerTube >= 8.3** List the direct replies of a comment, each of them nested up to `maxDepth` levels. Used to unfold the parts of a thread that `GET /api/v1/videos/{id}/comment-threads/{threadId}` truncated.\n',
+  operationId: 'listVideoCommentReplies',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema, commentId: CommentIdParamsSchema }),
     query: z.object({
@@ -13777,6 +14197,7 @@ export const getApiV1VideosCommentsRoute = createRoute({
   path: '/api/v1/videos/comments',
   tags: ['Video Comments'],
   summary: 'List instance comments',
+  operationId: 'listInstanceComments',
   request: {
     query: z.object({
       search: SearchParamsSchema,
@@ -13813,6 +14234,7 @@ export const postApiV1VideosIdCommentsCommentIdRoute = createRoute({
   path: '/api/v1/videos/{id}/comments/{commentId}',
   tags: ['Video Comments'],
   summary: 'Reply to a thread of a video',
+  operationId: 'replyVideoComment',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema, commentId: CommentIdParamsSchema }),
     headers: z.object({ 'x-peertube-video-password': VideoPasswordHeaderParamsSchema }),
@@ -13841,6 +14263,7 @@ export const deleteApiV1VideosIdCommentsCommentIdRoute = createRoute({
   path: '/api/v1/videos/{id}/comments/{commentId}',
   tags: ['Video Comments'],
   summary: 'Delete a comment or a reply',
+  operationId: 'deleteVideoComment',
   request: { params: z.object({ id: IdOrUUIDParamsSchema, commentId: CommentIdParamsSchema }) },
   responses: {
     204: { description: 'successful operation' },
@@ -13857,6 +14280,7 @@ export const postApiV1VideosIdCommentsCommentIdApproveRoute = createRoute({
   tags: ['Video Comments'],
   summary: 'Approve a comment',
   description: '**PeerTube >= 6.2** Approve a comment that requires a review',
+  operationId: 'approveVideoComment',
   request: { params: z.object({ id: IdOrUUIDParamsSchema, commentId: CommentIdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: [] }],
@@ -13867,6 +14291,7 @@ export const putApiV1VideosIdRateRoute = createRoute({
   path: '/api/v1/videos/{id}/rate',
   tags: ['Video Rates'],
   summary: 'Like/dislike a video',
+  operationId: 'rateVideo',
   request: {
     params: z.object({ id: IdOrUUIDParamsSchema }),
     headers: z.object({ 'x-peertube-video-password': VideoPasswordHeaderParamsSchema }),
@@ -14184,6 +14609,7 @@ export const getApiV1BlocklistStatusRoute = createRoute({
   path: '/api/v1/blocklist/status',
   tags: ['Account Blocklist', 'Server Blocklist'],
   summary: 'Get block status of accounts/hosts',
+  operationId: 'getBlocklistStatus',
   request: {
     query: z.object({
       accounts: z
@@ -14454,6 +14880,7 @@ export const getApiV1ServerBlocklistAccountsRoute = createRoute({
   path: '/api/v1/server/blocklist/accounts',
   tags: ['Server Blocklist'],
   summary: 'List blocked accounts by server',
+  operationId: 'getServerBlockedAccounts',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -14495,6 +14922,7 @@ export const postApiV1ServerBlocklistAccountsRoute = createRoute({
   path: '/api/v1/server/blocklist/accounts',
   tags: ['Server Blocklist'],
   summary: 'Block an account by server',
+  operationId: 'blockAccountByServer',
   request: {
     body: {
       content: {
@@ -14525,6 +14953,7 @@ export const deleteApiV1ServerBlocklistAccountsAccountNameRoute = createRoute({
   path: '/api/v1/server/blocklist/accounts/{accountName}',
   tags: ['Server Blocklist'],
   summary: 'Unblock an account by server',
+  operationId: 'unblockAccountByServer',
   request: {
     params: z.object({
       accountName: z
@@ -14552,6 +14981,7 @@ export const getApiV1ServerBlocklistServersRoute = createRoute({
   path: '/api/v1/server/blocklist/servers',
   tags: ['Server Blocklist'],
   summary: 'List blocked servers by server',
+  operationId: 'getServerBlockedServers',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -14593,6 +15023,7 @@ export const postApiV1ServerBlocklistServersRoute = createRoute({
   path: '/api/v1/server/blocklist/servers',
   tags: ['Server Blocklist'],
   summary: 'Block a server by server',
+  operationId: 'blockServerByServer',
   request: {
     body: {
       content: {
@@ -14616,6 +15047,7 @@ export const deleteApiV1ServerBlocklistServersHostRoute = createRoute({
   path: '/api/v1/server/blocklist/servers/{host}',
   tags: ['Server Blocklist'],
   summary: 'Unblock a server by server',
+  operationId: 'unblockServerByServer',
   request: {
     params: z.object({
       host: z
@@ -14643,6 +15075,7 @@ export const getApiV1ServerBlocklistSubscriptionsRoute = createRoute({
   path: '/api/v1/server/blocklist/subscriptions',
   tags: ['Server Blocklist'],
   summary: 'List server blocklist subscriptions',
+  operationId: 'listServerBlocklistSubscriptions',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -14674,6 +15107,7 @@ export const postApiV1ServerBlocklistSubscriptionsRoute = createRoute({
   path: '/api/v1/server/blocklist/subscriptions',
   tags: ['Server Blocklist'],
   summary: 'Add a server blocklist subscription',
+  operationId: 'addServerBlocklistSubscription',
   request: {
     body: {
       content: {
@@ -14696,6 +15130,7 @@ export const deleteApiV1ServerBlocklistSubscriptionsIdRoute = createRoute({
   path: '/api/v1/server/blocklist/subscriptions/{id}',
   tags: ['Server Blocklist'],
   summary: 'Delete a server blocklist subscription',
+  operationId: 'deleteServerBlocklistSubscription',
   request: {
     params: z.object({
       id: z
@@ -14725,6 +15160,7 @@ export const getApiV1ServerBlocklistPublicLogRoute = createRoute({
   path: '/api/v1/server/blocklist/public-log',
   tags: ['Server Blocklist'],
   summary: 'List publicly shared server blocklist log entries',
+  operationId: 'listServerBlocklistPublicLog',
   request: {
     query: z.object({
       startDate: z.iso
@@ -14753,6 +15189,7 @@ export const putApiV1ServerRedundancyHostRoute = createRoute({
   path: '/api/v1/server/redundancy/{host}',
   tags: ['Instance Redundancy'],
   summary: 'Update a server redundancy policy',
+  operationId: 'updateServerRedundancy',
   request: {
     params: z.object({
       host: z
@@ -15277,9 +15714,15 @@ export const postApiV1PluginsInstallRoute = createRoute({
             z
               .strictObject({
                 npmName: z.string().openapi({ example: 'peertube-plugin-auth-ldap' }),
+                currentPassword: CurrentPasswordSchema.exactOptional(),
               })
               .openapi({ required: ['npmName'] }),
-            z.strictObject({ path: z.string() }).openapi({ required: ['path'] }),
+            z
+              .strictObject({
+                path: z.string(),
+                currentPassword: CurrentPasswordSchema.exactOptional(),
+              })
+              .openapi({ required: ['path'] }),
           ]),
         },
       },
@@ -15287,7 +15730,13 @@ export const postApiV1PluginsInstallRoute = createRoute({
   },
   responses: {
     204: { description: 'successful operation' },
-    400: { description: 'should have either `npmName` or `path` set' },
+    400: {
+      description: 'should have either `npmName` or `path` set, or `currentPassword` is missing',
+    },
+    403: {
+      description: 'invalid `currentPassword`, or password confirmation unavailable for this user',
+    },
+    429: { description: 'too many failed password confirmations' },
   },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -15306,9 +15755,15 @@ export const postApiV1PluginsUpdateRoute = createRoute({
             z
               .strictObject({
                 npmName: z.string().openapi({ example: 'peertube-plugin-auth-ldap' }),
+                currentPassword: CurrentPasswordSchema.exactOptional(),
               })
               .openapi({ required: ['npmName'] }),
-            z.strictObject({ path: z.string() }).openapi({ required: ['path'] }),
+            z
+              .strictObject({
+                path: z.string(),
+                currentPassword: CurrentPasswordSchema.exactOptional(),
+              })
+              .openapi({ required: ['path'] }),
           ]),
         },
       },
@@ -15316,8 +15771,14 @@ export const postApiV1PluginsUpdateRoute = createRoute({
   },
   responses: {
     204: { description: 'successful operation' },
-    400: { description: 'should have either `npmName` or `path` set' },
+    400: {
+      description: 'should have either `npmName` or `path` set, or `currentPassword` is missing',
+    },
+    403: {
+      description: 'invalid `currentPassword`, or password confirmation unavailable for this user',
+    },
     404: { description: 'existing plugin not found' },
+    429: { description: 'too many failed password confirmations' },
   },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -15375,6 +15836,7 @@ export const putApiV1PluginsNpmNameSettingsRoute = createRoute({
   path: '/api/v1/plugins/{npmName}/settings',
   tags: ['Plugins'],
   summary: "Set a plugin's settings",
+  operationId: 'updatePluginSettings',
   request: {
     params: z.object({ npmName: NpmNameParamsSchema }),
     body: {
@@ -15399,6 +15861,7 @@ export const getApiV1PluginsNpmNamePublicSettingsRoute = createRoute({
   path: '/api/v1/plugins/{npmName}/public-settings',
   tags: ['Plugins'],
   summary: "Get a plugin's public settings",
+  operationId: 'getPluginPublicSettings',
   request: { params: z.object({ npmName: NpmNameParamsSchema }) },
   responses: {
     200: {
@@ -15414,6 +15877,7 @@ export const getApiV1PluginsNpmNameRegisteredSettingsRoute = createRoute({
   path: '/api/v1/plugins/{npmName}/registered-settings',
   tags: ['Plugins'],
   summary: "Get a plugin's registered settings",
+  operationId: 'getPluginRegisteredSettings',
   request: { params: z.object({ npmName: NpmNameParamsSchema }) },
   responses: {
     200: {
@@ -15431,6 +15895,7 @@ export const postApiV1MetricsPlaybackRoute = createRoute({
   tags: ['Stats'],
   summary: 'Create playback metrics',
   description: 'These metrics are exposed by OpenTelemetry metrics exporter if enabled.',
+  operationId: 'createPlaybackMetrics',
   request: { body: { content: { 'application/json': { schema: PlaybackMetricCreateSchema } } } },
   responses: { 204: { description: 'successful operation' } },
 })
@@ -15441,6 +15906,7 @@ export const postApiV1RunnersRegistrationTokensGenerateRoute = createRoute({
   tags: ['Runner Registration Token'],
   summary: 'Generate registration token',
   description: 'Generate a new runner registration token',
+  operationId: 'generateRunnerRegistrationToken',
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
 })
@@ -15452,6 +15918,7 @@ export const deleteApiV1RunnersRegistrationTokensRegistrationTokenIdRoute = crea
   summary: 'Remove registration token',
   description:
     'Remove a registration token. Runners that used this token for their registration are automatically removed.',
+  operationId: 'deleteRunnerRegistrationToken',
   request: { params: z.object({ registrationTokenId: RegistrationTokenIdParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
@@ -15462,6 +15929,7 @@ export const getApiV1RunnersRegistrationTokensRoute = createRoute({
   path: '/api/v1/runners/registration-tokens',
   tags: ['Runner Registration Token'],
   summary: 'List registration tokens',
+  operationId: 'listRunnerRegistrationTokens',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -15493,6 +15961,7 @@ export const postApiV1RunnersRegisterRoute = createRoute({
   tags: ['Runners'],
   summary: 'Register a new runner',
   description: 'API used by PeerTube runners',
+  operationId: 'registerRunner',
   request: {
     body: {
       content: {
@@ -15502,6 +15971,7 @@ export const postApiV1RunnersRegisterRoute = createRoute({
               registrationToken: z.string(),
               name: z.string(),
               description: z.string().exactOptional(),
+              version: RunnerVersionSchema.exactOptional(),
             })
             .openapi({ required: ['registrationToken', 'name'] }),
         },
@@ -15531,6 +16001,7 @@ export const postApiV1RunnersUnregisterRoute = createRoute({
   tags: ['Runners'],
   summary: 'Unregister a runner',
   description: 'API used by PeerTube runners',
+  operationId: 'unregisterRunner',
   request: {
     body: {
       content: {
@@ -15548,6 +16019,7 @@ export const deleteApiV1RunnersRunnerIdRoute = createRoute({
   path: '/api/v1/runners/{runnerId}',
   tags: ['Runners'],
   summary: 'Delete a runner',
+  operationId: 'deleteRunner',
   request: {
     params: z.object({ runnerId: RunnerIdParamsSchema }),
     body: {
@@ -15567,6 +16039,7 @@ export const getApiV1RunnersRoute = createRoute({
   path: '/api/v1/runners',
   tags: ['Runners'],
   summary: 'List runners',
+  operationId: 'listRunners',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -15598,6 +16071,7 @@ export const postApiV1RunnersJobsRequestRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Request a new job',
   description: 'API used by PeerTube runners',
+  operationId: 'requestRunnerJob',
   request: {
     body: {
       content: {
@@ -15609,6 +16083,7 @@ export const postApiV1RunnersJobsRequestRoute = createRoute({
                 .array(z.string())
                 .exactOptional()
                 .openapi({ description: 'Filter jobs depending on their types' }),
+              version: RunnerVersionSchema.exactOptional(),
             })
             .openapi({ required: ['runnerToken'] }),
         },
@@ -15647,6 +16122,7 @@ export const postApiV1RunnersJobsJobUUIDAcceptRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Accept job',
   description: 'API used by PeerTube runners',
+  operationId: 'acceptRunnerJob',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema }),
     body: {
@@ -15681,6 +16157,7 @@ export const postApiV1RunnersJobsJobUUIDAbortRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Abort job',
   description: 'API used by PeerTube runners',
+  operationId: 'abortRunnerJob',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema }),
     body: {
@@ -15706,6 +16183,7 @@ export const postApiV1RunnersJobsJobUUIDUpdateRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Update job',
   description: 'API used by PeerTube runners',
+  operationId: 'updateRunnerJob',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema }),
     body: {
@@ -15760,6 +16238,7 @@ export const postApiV1RunnersJobsJobUUIDErrorRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Post job error',
   description: 'API used by PeerTube runners',
+  operationId: 'errorRunnerJob',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema }),
     body: {
@@ -15787,6 +16266,7 @@ export const postApiV1RunnersJobsJobUUIDSuccessRoute = createRoute({
   tags: ['Runner Jobs'],
   summary: 'Post job success',
   description: 'API used by PeerTube runners',
+  operationId: 'successRunnerJob',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema }),
     body: {
@@ -15825,7 +16305,7 @@ export const postApiV1RunnersJobsJobUUIDSuccessRoute = createRoute({
                       .openapi({ type: 'string', format: 'binary' }),
                   })
                   .openapi({ title: 'VOD audio merge transcoding', required: [] }),
-                z.object({}).openapi({ title: 'Live RTMP to HLS transcoding' }),
+                z.looseObject({}).openapi({ title: 'Live RTMP to HLS transcoding' }),
               ]),
             })
             .openapi({ required: ['runnerToken', 'jobToken', 'payload'] }),
@@ -15842,6 +16322,7 @@ export const postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityAudioR
   tags: ['Runner Jobs'],
   summary: 'Download the max-quality audio file for a job video',
   description: 'API used by PeerTube runners.',
+  operationId: 'downloadRunnerJobMaxQualityAudio',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema, videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
     body: {
@@ -15874,6 +16355,7 @@ export const postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDMaxQualityRoute 
   tags: ['Runner Jobs'],
   summary: 'Download the max-quality video file for a job video',
   description: 'API used by PeerTube runners.',
+  operationId: 'downloadRunnerJobMaxQualityVideo',
   request: {
     params: z.object({ jobUUID: JobUUIDParamsSchema, videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
     body: {
@@ -15907,6 +16389,7 @@ export const postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDThumbnailsMaxQua
     tags: ['Runner Jobs'],
     summary: 'Download the max-quality thumbnail for a job video',
     description: 'API used by PeerTube runners.',
+    operationId: 'downloadRunnerJobMaxQualityThumbnail',
     request: {
       params: z.object({ jobUUID: JobUUIDParamsSchema, videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
       body: {
@@ -15940,6 +16423,7 @@ export const postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDPreviewsMaxQuali
     tags: ['Runner Jobs'],
     summary: 'Download the max-quality preview for a job video',
     description: 'API used by PeerTube runners.',
+    operationId: 'downloadRunnerJobMaxQualityPreview',
     request: {
       params: z.object({ jobUUID: JobUUIDParamsSchema, videoIdOrUUID: VideoIdOrUUIDParamsSchema }),
       body: {
@@ -15973,6 +16457,7 @@ export const postApiV1RunnersJobsJobUUIDFilesVideosVideoIdOrUUIDStudioTaskFilesF
     tags: ['Runner Jobs'],
     summary: 'Download a video studio task file for a job video',
     description: 'API used by PeerTube runners.',
+    operationId: 'downloadRunnerJobStudioTaskFile',
     request: {
       params: z.object({
         jobUUID: JobUUIDParamsSchema,
@@ -16019,6 +16504,7 @@ export const postApiV1RunnersJobsJobUUIDCancelRoute = createRoute({
   path: '/api/v1/runners/jobs/{jobUUID}/cancel',
   tags: ['Runner Jobs'],
   summary: 'Cancel a job',
+  operationId: 'cancelRunnerJob',
   request: { params: z.object({ jobUUID: JobUUIDParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
@@ -16031,6 +16517,7 @@ export const deleteApiV1RunnersJobsJobUUIDRoute = createRoute({
   summary: 'Delete a job',
   description:
     'The endpoint will first cancel the job if needed, and then remove it from the database. Children jobs will also be removed',
+  operationId: 'deleteRunnerJob',
   request: { params: z.object({ jobUUID: JobUUIDParamsSchema }) },
   responses: { 204: { description: 'successful operation' } },
   security: [{ OAuth2: ['admin'] }],
@@ -16041,6 +16528,7 @@ export const getApiV1RunnersJobsRoute = createRoute({
   path: '/api/v1/runners/jobs',
   tags: ['Runner Jobs'],
   summary: 'List jobs',
+  operationId: 'listRunnerJobs',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -16111,6 +16599,7 @@ export const getApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute = cre
   tags: ['Automatic Tags'],
   summary: 'Get account auto tag policies on comments',
   description: '**PeerTube >= 6.2**',
+  operationId: 'getAccountCommentAutoTagPolicies',
   request: {
     params: z.object({
       accountName: z
@@ -16141,6 +16630,7 @@ export const putApiV1AutomaticTagsPoliciesAccountsAccountNameCommentsRoute = cre
   tags: ['Automatic Tags'],
   summary: 'Update account auto tag policies on comments',
   description: '**PeerTube >= 6.2**',
+  operationId: 'updateAccountCommentAutoTagPolicies',
   request: {
     params: z.object({
       accountName: z
@@ -16182,6 +16672,7 @@ export const getApiV1AutomaticTagsAccountsAccountNameAvailableRoute = createRout
   tags: ['Automatic Tags'],
   summary: 'Get account available auto tags',
   description: '**PeerTube >= 6.2**',
+  operationId: 'getAccountAvailableAutoTags',
   request: {
     params: z.object({
       accountName: z
@@ -16212,6 +16703,7 @@ export const getApiV1AutomaticTagsServerAvailableRoute = createRoute({
   tags: ['Automatic Tags'],
   summary: 'Get server available auto tags',
   description: '**PeerTube >= 6.2**',
+  operationId: 'getServerAvailableAutoTags',
   responses: {
     200: {
       description: 'successful operation',
@@ -16227,6 +16719,7 @@ export const getApiV1AutomaticTagsPoliciesServerVideosRoute = createRoute({
   tags: ['Automatic Tags'],
   summary: 'Get server auto tag policies for videos',
   description: '**PeerTube >= 8.3**',
+  operationId: 'getServerVideoAutoTagPolicies',
   responses: {
     200: {
       description: 'successful operation',
@@ -16242,6 +16735,7 @@ export const putApiV1AutomaticTagsPoliciesServerVideosRoute = createRoute({
   tags: ['Automatic Tags'],
   summary: 'Update server auto tag policies for videos',
   description: '**PeerTube >= 8.3**',
+  operationId: 'updateServerVideoAutoTagPolicies',
   request: {
     body: {
       content: {
@@ -16270,6 +16764,7 @@ export const getApiV1WatchedWordsAccountsAccountNameListsRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'List account watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'listAccountWatchedWords',
   request: {
     params: z.object({
       accountName: z
@@ -16309,6 +16804,7 @@ export const postApiV1WatchedWordsAccountsAccountNameListsRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'Add account watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'addAccountWatchedWords',
   request: {
     params: z.object({
       accountName: z
@@ -16356,6 +16852,7 @@ export const putApiV1WatchedWordsAccountsAccountNameListsListIdRoute = createRou
   tags: ['Watched Words'],
   summary: 'Update account watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'updateAccountWatchedWords',
   request: {
     params: z.object({
       accountName: z
@@ -16398,6 +16895,7 @@ export const deleteApiV1WatchedWordsAccountsAccountNameListsListIdRoute = create
   tags: ['Watched Words'],
   summary: 'Delete account watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'deleteAccountWatchedWords',
   request: {
     params: z.object({
       accountName: z
@@ -16428,6 +16926,7 @@ export const getApiV1WatchedWordsServerListsRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'List server watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'listServerWatchedWords',
   responses: {
     200: {
       description: 'successful operation',
@@ -16452,6 +16951,7 @@ export const postApiV1WatchedWordsServerListsRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'Add server watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'addServerWatchedWords',
   request: {
     body: {
       content: {
@@ -16492,6 +16992,7 @@ export const putApiV1WatchedWordsServerListsListIdRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'Update server watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'updateServerWatchedWords',
   request: {
     params: z.object({
       listId: z
@@ -16529,6 +17030,7 @@ export const deleteApiV1WatchedWordsServerListsListIdRoute = createRoute({
   tags: ['Watched Words'],
   summary: 'Delete server watched words',
   description: '**PeerTube >= 6.2**',
+  operationId: 'deleteServerWatchedWords',
   request: {
     params: z.object({
       listId: z
@@ -16553,6 +17055,7 @@ export const getApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute = createR
   path: '/api/v1/watched-words/accounts/{accountName}/subscriptions',
   tags: ['Watched Words'],
   summary: 'List account watched words subscriptions',
+  operationId: 'listAccountWatchedWordsSubscriptions',
   request: {
     params: z.object({
       accountName: z
@@ -16597,6 +17100,7 @@ export const postApiV1WatchedWordsAccountsAccountNameSubscriptionsRoute = create
   path: '/api/v1/watched-words/accounts/{accountName}/subscriptions',
   tags: ['Watched Words'],
   summary: 'Add account watched words subscription',
+  operationId: 'addAccountWatchedWordsSubscription',
   request: {
     params: z.object({
       accountName: z
@@ -16630,6 +17134,7 @@ export const deleteApiV1WatchedWordsAccountsAccountNameSubscriptionsIdRoute = cr
   path: '/api/v1/watched-words/accounts/{accountName}/subscriptions/{id}',
   tags: ['Watched Words'],
   summary: 'Delete account watched words subscription',
+  operationId: 'deleteAccountWatchedWordsSubscription',
   request: {
     params: z.object({
       accountName: z
@@ -16664,6 +17169,7 @@ export const getApiV1WatchedWordsServerSubscriptionsRoute = createRoute({
   path: '/api/v1/watched-words/server/subscriptions',
   tags: ['Watched Words'],
   summary: 'List server watched words subscriptions',
+  operationId: 'listServerWatchedWordsSubscriptions',
   request: {
     query: z.object({
       start: StartParamsSchema,
@@ -16695,6 +17201,7 @@ export const postApiV1WatchedWordsServerSubscriptionsRoute = createRoute({
   path: '/api/v1/watched-words/server/subscriptions',
   tags: ['Watched Words'],
   summary: 'Add server watched words subscription',
+  operationId: 'addServerWatchedWordsSubscription',
   request: {
     body: {
       content: {
@@ -16721,6 +17228,7 @@ export const deleteApiV1WatchedWordsServerSubscriptionsIdRoute = createRoute({
   path: '/api/v1/watched-words/server/subscriptions/{id}',
   tags: ['Watched Words'],
   summary: 'Delete server watched words subscription',
+  operationId: 'deleteServerWatchedWordsSubscription',
   request: {
     params: z.object({
       id: z

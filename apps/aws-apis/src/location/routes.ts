@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const AssociateTrackerConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateTrackerConsumerResponse')
 
 const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
@@ -40,12 +40,12 @@ const StringSchema = z.string().openapi('String')
 
 const BatchItemErrorSchema = z
   .object({
-    Code: BatchItemErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code associated with the batch request error.' }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'A message with the reason for the batch request error.' }),
-    ).exactOptional(),
+    Code: BatchItemErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code associated with the batch request error.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'A message with the reason for the batch request error.',
+    }),
   })
   .openapi({
     description: 'Contains the batch request error details associated with the request.',
@@ -55,9 +55,7 @@ const BatchItemErrorSchema = z
 
 const BatchDeleteDevicePositionHistoryErrorSchema = z
   .object({
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the device for this position.' }),
-    ),
+    DeviceId: IdSchema.openapi({ description: 'The ID of the device for this position.' }),
     Error: BatchItemErrorSchema,
   })
   .openapi({
@@ -72,25 +70,21 @@ const BatchDeleteDevicePositionHistoryErrorListSchema = z
 
 const BatchDeleteDevicePositionHistoryResponseSchema = z
   .object({
-    Errors: BatchDeleteDevicePositionHistoryErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains error details for each device history that failed to delete.',
-        }),
-    ),
+    Errors: BatchDeleteDevicePositionHistoryErrorListSchema.openapi({
+      description: 'Contains error details for each device history that failed to delete.',
+    }),
   })
   .openapi({ required: ['Errors'] })
   .openapi('BatchDeleteDevicePositionHistoryResponse')
 
 const BatchDeleteGeofenceErrorSchema = z
   .object({
-    Error: BatchItemErrorSchema.and(
-      z.any().openapi({ description: 'Contains details associated to the batch error.' }),
-    ),
-    GeofenceId: IdSchema.and(
-      z.any().openapi({ description: 'The geofence associated with the error message.' }),
-    ),
+    Error: BatchItemErrorSchema.openapi({
+      description: 'Contains details associated to the batch error.',
+    }),
+    GeofenceId: IdSchema.openapi({
+      description: 'The geofence associated with the error message.',
+    }),
   })
   .openapi({
     required: ['Error', 'GeofenceId'],
@@ -105,13 +99,9 @@ const BatchDeleteGeofenceErrorListSchema = z
 
 const BatchDeleteGeofenceResponseSchema = z
   .object({
-    Errors: BatchDeleteGeofenceErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains error details for each geofence that failed to delete.',
-        }),
-    ),
+    Errors: BatchDeleteGeofenceErrorListSchema.openapi({
+      description: 'Contains error details for each geofence that failed to delete.',
+    }),
   })
   .openapi({ required: ['Errors'] })
   .openapi('BatchDeleteGeofenceResponse')
@@ -120,20 +110,16 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const BatchEvaluateGeofencesErrorSchema = z
   .object({
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The device associated with the position evaluation error.' }),
-    ),
-    Error: BatchItemErrorSchema.and(
-      z.any().openapi({ description: 'Contains details associated to the batch error.' }),
-    ),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a timestamp for when the error occurred in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    DeviceId: IdSchema.openapi({
+      description: 'The device associated with the position evaluation error.',
+    }),
+    Error: BatchItemErrorSchema.openapi({
+      description: 'Contains details associated to the batch error.',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'Specifies a timestamp for when the error occurred in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['DeviceId', 'Error', 'SampleTime'],
@@ -148,14 +134,10 @@ const BatchEvaluateGeofencesErrorListSchema = z
 
 const BatchEvaluateGeofencesResponseSchema = z
   .object({
-    Errors: BatchEvaluateGeofencesErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains error details for each device that failed to evaluate its position against the given geofence collection.',
-        }),
-    ),
+    Errors: BatchEvaluateGeofencesErrorListSchema.openapi({
+      description:
+        'Contains error details for each device that failed to evaluate its position against the given geofence collection.',
+    }),
   })
   .openapi({ required: ['Errors'] })
   .openapi('BatchEvaluateGeofencesResponse')
@@ -168,14 +150,10 @@ const PositionalAccuracyHorizontalDoubleSchema = z
 
 const PositionalAccuracySchema = z
   .object({
-    Horizontal: PositionalAccuracyHorizontalDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Estimated maximum distance, in meters, between the measured position and the true position of a device, along the Earth's surface.",
-        }),
-    ),
+    Horizontal: PositionalAccuracyHorizontalDoubleSchema.openapi({
+      description:
+        "Estimated maximum distance, in meters, between the measured position and the true position of a device, along the Earth's surface.",
+    }),
   })
   .openapi({
     required: ['Horizontal'],
@@ -197,36 +175,22 @@ const PropertyMapSchema = z
 
 const DevicePositionUpdateSchema = z
   .object({
-    Accuracy: PositionalAccuracySchema.and(
-      z.any().openapi({ description: 'The accuracy of the device position.' }),
-    ).exactOptional(),
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The device associated to the position update.' }),
-    ),
-    Position: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest device position defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">WGS 84</a> format: <code>[X or longitude, Y or latitude]</code>.',
-        }),
-    ),
-    PositionProperties: PropertyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Associates one of more properties with the position update. A property is a key-value pair stored with the position update and added to any geofence event the update may trigger.</p> <p>Format: <code>"key" : "value"</code> </p>',
-        }),
-    ).exactOptional(),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    Accuracy: PositionalAccuracySchema.exactOptional().openapi({
+      description: 'The accuracy of the device position.',
+    }),
+    DeviceId: IdSchema.openapi({ description: 'The device associated to the position update.' }),
+    Position: PositionSchema.openapi({
+      description:
+        'The latest device position defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">WGS 84</a> format: <code>[X or longitude, Y or latitude]</code>.',
+    }),
+    PositionProperties: PropertyMapSchema.exactOptional().openapi({
+      description:
+        '<p>Associates one of more properties with the position update. A property is a key-value pair stored with the position update and added to any geofence event the update may trigger.</p> <p>Format: <code>"key" : "value"</code> </p>',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['DeviceId', 'Position', 'SampleTime'],
@@ -236,34 +200,24 @@ const DevicePositionUpdateSchema = z
 
 const DevicePositionSchema = z
   .object({
-    Accuracy: PositionalAccuracySchema.and(
-      z.any().openapi({ description: 'The accuracy of the device position.' }),
-    ).exactOptional(),
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The device whose position you retrieved.' }),
-    ).exactOptional(),
-    Position: PositionSchema.and(
-      z.any().openapi({ description: 'The last known device position.' }),
-    ),
-    PositionProperties: PropertyMapSchema.and(
-      z.any().openapi({ description: 'The properties associated with the position.' }),
-    ).exactOptional(),
-    ReceivedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource received the device position in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    Accuracy: PositionalAccuracySchema.exactOptional().openapi({
+      description: 'The accuracy of the device position.',
+    }),
+    DeviceId: IdSchema.exactOptional().openapi({
+      description: 'The device whose position you retrieved.',
+    }),
+    Position: PositionSchema.openapi({ description: 'The last known device position.' }),
+    PositionProperties: PropertyMapSchema.exactOptional().openapi({
+      description: 'The properties associated with the position.',
+    }),
+    ReceivedTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource received the device position in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: ['Position', 'ReceivedTime', 'SampleTime'],
@@ -275,12 +229,12 @@ const DevicePositionListSchema = z.array(DevicePositionSchema).openapi('DevicePo
 
 const BatchGetDevicePositionErrorSchema = z
   .object({
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: "The ID of the device that didn't return a position." }),
-    ),
-    Error: BatchItemErrorSchema.and(
-      z.any().openapi({ description: 'Contains details related to the error code.' }),
-    ),
+    DeviceId: IdSchema.openapi({
+      description: "The ID of the device that didn't return a position.",
+    }),
+    Error: BatchItemErrorSchema.openapi({
+      description: 'Contains details related to the error code.',
+    }),
   })
   .openapi({
     required: ['DeviceId', 'Error'],
@@ -294,34 +248,26 @@ const BatchGetDevicePositionErrorListSchema = z
 
 const BatchGetDevicePositionResponseSchema = z
   .object({
-    DevicePositions: DevicePositionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains device position details such as the device ID, position, and timestamps for when the position was received and sampled.',
-        }),
-    ),
-    Errors: BatchGetDevicePositionErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains error details for each device that failed to send its position to the tracker resource.',
-        }),
-    ),
+    DevicePositions: DevicePositionListSchema.openapi({
+      description:
+        'Contains device position details such as the device ID, position, and timestamps for when the position was received and sampled.',
+    }),
+    Errors: BatchGetDevicePositionErrorListSchema.openapi({
+      description:
+        'Contains error details for each device that failed to send its position to the tracker resource.',
+    }),
   })
   .openapi({ required: ['DevicePositions', 'Errors'] })
   .openapi('BatchGetDevicePositionResponse')
 
 const BatchPutGeofenceErrorSchema = z
   .object({
-    Error: BatchItemErrorSchema.and(
-      z.any().openapi({ description: 'Contains details associated to the batch error.' }),
-    ),
-    GeofenceId: IdSchema.and(
-      z.any().openapi({ description: 'The geofence associated with the error message.' }),
-    ),
+    Error: BatchItemErrorSchema.openapi({
+      description: 'Contains details associated to the batch error.',
+    }),
+    GeofenceId: IdSchema.openapi({
+      description: 'The geofence associated with the error message.',
+    }),
   })
   .openapi({
     required: ['Error', 'GeofenceId'],
@@ -336,27 +282,17 @@ const BatchPutGeofenceErrorListSchema = z
 
 const BatchPutGeofenceSuccessSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was stored in a geofence collection in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    GeofenceId: IdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The geofence successfully stored in a geofence collection.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was stored in a geofence collection in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    GeofenceId: IdSchema.openapi({
+      description: 'The geofence successfully stored in a geofence collection.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'GeofenceId', 'UpdateTime'],
@@ -371,44 +307,27 @@ const BatchPutGeofenceSuccessListSchema = z
 
 const BatchPutGeofenceResponseSchema = z
   .object({
-    Errors: BatchPutGeofenceErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains additional error details for each geofence that failed to be stored in a geofence collection.',
-        }),
-    ),
-    Successes: BatchPutGeofenceSuccessListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains each geofence that was successfully stored in a geofence collection.',
-        }),
-    ),
+    Errors: BatchPutGeofenceErrorListSchema.openapi({
+      description:
+        'Contains additional error details for each geofence that failed to be stored in a geofence collection.',
+    }),
+    Successes: BatchPutGeofenceSuccessListSchema.openapi({
+      description: 'Contains each geofence that was successfully stored in a geofence collection.',
+    }),
   })
   .openapi({ required: ['Errors', 'Successes'] })
   .openapi('BatchPutGeofenceResponse')
 
 const CircleSchema = z
   .object({
-    Center: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single point geometry, specifying the center of the circle, using <a href="https://gisgeography.com/wgs84-world-geodetic-system/">WGS 84</a> coordinates, in the form <code>[longitude, latitude]</code>.',
-        }),
-    ),
-    Radius: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The radius of the circle in meters. Must be greater than zero and no larger than 100,000 (100 kilometers).',
-        }),
-    ),
+    Center: PositionSchema.openapi({
+      description:
+        'A single point geometry, specifying the center of the circle, using <a href="https://gisgeography.com/wgs84-world-geodetic-system/">WGS 84</a> coordinates, in the form <code>[longitude, latitude]</code>.',
+    }),
+    Radius: DoubleSchema.openapi({
+      description:
+        'The radius of the circle in meters. Must be greater than zero and no larger than 100,000 (100 kilometers).',
+    }),
   })
   .openapi({
     required: ['Center', 'Radius'],
@@ -422,21 +341,13 @@ const LinearRingsSchema = z.array(LinearRingSchema).min(1).openapi('LinearRings'
 
 const GeofenceGeometrySchema = z
   .object({
-    Circle: CircleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A circle on the earth, as defined by a center point and a radius.',
-        }),
-    ).exactOptional(),
-    Polygon: LinearRingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A polygon is a list of linear rings which are each made up of a list of vertices.</p> <p>Each vertex is a 2-dimensional point of the form: <code>[longitude, latitude]</code>. This is represented as an array of doubles of length 2 (so <code>[double, double]</code>).</p> <p>An array of 4 or more vertices, where the first and last vertex are the same (to form a closed boundary), is called a linear ring. The linear ring vertices must be listed in counter-clockwise order around the ring’s interior. The linear ring is represented as an array of vertices, or an array of arrays of doubles (<code>[[double, double], ...]</code>).</p> <p>A geofence consists of a single linear ring. To allow for future expansion, the Polygon parameter takes an array of linear rings, which is represented as an array of arrays of arrays of doubles (<code>[[[double, double], ...], ...]</code>).</p> <p>A linear ring for use in geofences can consist of between 4 and 1,000 vertices.</p>',
-        }),
-    ).exactOptional(),
+    Circle: CircleSchema.exactOptional().openapi({
+      description: 'A circle on the earth, as defined by a center point and a radius.',
+    }),
+    Polygon: LinearRingsSchema.exactOptional().openapi({
+      description:
+        '<p>A polygon is a list of linear rings which are each made up of a list of vertices.</p> <p>Each vertex is a 2-dimensional point of the form: <code>[longitude, latitude]</code>. This is represented as an array of doubles of length 2 (so <code>[double, double]</code>).</p> <p>An array of 4 or more vertices, where the first and last vertex are the same (to form a closed boundary), is called a linear ring. The linear ring vertices must be listed in counter-clockwise order around the ring’s interior. The linear ring is represented as an array of vertices, or an array of arrays of doubles (<code>[[double, double], ...]</code>).</p> <p>A geofence consists of a single linear ring. To allow for future expansion, the Polygon parameter takes an array of linear rings, which is represented as an array of arrays of arrays of doubles (<code>[[[double, double], ...], ...]</code>).</p> <p>A linear ring for use in geofences can consist of between 4 and 1,000 vertices.</p>',
+    }),
   })
   .openapi({
     description:
@@ -447,22 +358,13 @@ const GeofenceGeometrySchema = z
 
 const BatchPutGeofenceRequestEntrySchema = z
   .object({
-    GeofenceId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the geofence to be stored in a given geofence collection.',
-        }),
-    ),
-    Geometry: GeofenceGeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the details of the position of the geofence. Can be either a polygon or a circle. Including both will return a validation error.</p> <note> <p>Each <a href="https://docs.aws.amazon.com/location-geofences/latest/APIReference/API_GeofenceGeometry.html"> geofence polygon</a> can have a maximum of 1,000 vertices.</p> </note>',
-        }),
-    ),
+    GeofenceId: IdSchema.openapi({
+      description: 'The identifier for the geofence to be stored in a given geofence collection.',
+    }),
+    Geometry: GeofenceGeometrySchema.openapi({
+      description:
+        '<p>Contains the details of the position of the geofence. Can be either a polygon or a circle. Including both will return a validation error.</p> <note> <p>Each <a href="https://docs.aws.amazon.com/location-geofences/latest/APIReference/API_GeofenceGeometry.html"> geofence polygon</a> can have a maximum of 1,000 vertices.</p> </note>',
+    }),
   })
   .openapi({
     required: ['GeofenceId', 'Geometry'],
@@ -472,25 +374,17 @@ const BatchPutGeofenceRequestEntrySchema = z
 
 const BatchUpdateDevicePositionErrorSchema = z
   .object({
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The device associated with the failed location update.' }),
-    ),
-    Error: BatchItemErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains details related to the error code such as the error code and error message.',
-        }),
-    ),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    DeviceId: IdSchema.openapi({
+      description: 'The device associated with the failed location update.',
+    }),
+    Error: BatchItemErrorSchema.openapi({
+      description:
+        'Contains details related to the error code such as the error code and error message.',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: ['DeviceId', 'Error', 'SampleTime'],
@@ -504,13 +398,9 @@ const BatchUpdateDevicePositionErrorListSchema = z
 
 const BatchUpdateDevicePositionResponseSchema = z
   .object({
-    Errors: BatchUpdateDevicePositionErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains error details for each device that failed to update its position.',
-        }),
-    ),
+    Errors: BatchUpdateDevicePositionErrorListSchema.openapi({
+      description: 'Contains error details for each device that failed to update its position.',
+    }),
   })
   .openapi({ required: ['Errors'] })
   .openapi('BatchUpdateDevicePositionResponse')
@@ -523,14 +413,10 @@ const LineStringSchema = z.array(PositionSchema).min(2).openapi('LineString')
 
 const LegGeometrySchema = z
   .object({
-    LineString: LineStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An ordered list of positions used to plot a route on a map. </p> <p>The first position is closest to the start position for the leg, and the last position is the closest to the end position for the leg.</p> <ul> <li> <p>For example, <code>[[-123.117, 49.284],[-123.115, 49.285],[-123.115, 49.285]]</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    LineString: LineStringSchema.exactOptional().openapi({
+      description:
+        '<p>An ordered list of positions used to plot a route on a map. </p> <p>The first position is closest to the start position for the leg, and the last position is the closest to the end position for the leg.</p> <ul> <li> <p>For example, <code>[[-123.117, 49.284],[-123.115, 49.285],[-123.115, 49.285]]</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -547,46 +433,26 @@ const StepGeometryOffsetIntegerSchema = z.int().min(0).openapi('StepGeometryOffs
 
 const StepSchema = z
   .object({
-    Distance: StepDistanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The travel distance between the step's <code>StartPosition</code> and <code>EndPosition</code>.",
-        }),
-    ),
-    DurationSeconds: StepDurationSecondsDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The estimated travel time, in seconds, from the step's <code>StartPosition</code> to the <code>EndPosition</code>. . The travel mode and departure time that you specify in the request determines the calculated time.",
-        }),
-    ),
-    EndPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end position of a step. If the position the last step in the leg, this position is the same as the end position of the leg.',
-        }),
-    ),
-    GeometryOffset: StepGeometryOffsetIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Represents the start position, or index, in a sequence of steps within the leg's line string geometry. For example, the index of the first step in a leg geometry is <code>0</code>. </p> <p>Included in the response for queries that set <code>IncludeLegGeometry</code> to <code>True</code>. </p>",
-        }),
-    ).exactOptional(),
-    StartPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The starting position of a step. If the position is the first step in the leg, this position is the same as the start position of the leg.',
-        }),
-    ),
+    Distance: StepDistanceDoubleSchema.openapi({
+      description:
+        "The travel distance between the step's <code>StartPosition</code> and <code>EndPosition</code>.",
+    }),
+    DurationSeconds: StepDurationSecondsDoubleSchema.openapi({
+      description:
+        "The estimated travel time, in seconds, from the step's <code>StartPosition</code> to the <code>EndPosition</code>. . The travel mode and departure time that you specify in the request determines the calculated time.",
+    }),
+    EndPosition: PositionSchema.openapi({
+      description:
+        'The end position of a step. If the position the last step in the leg, this position is the same as the end position of the leg.',
+    }),
+    GeometryOffset: StepGeometryOffsetIntegerSchema.exactOptional().openapi({
+      description:
+        "<p>Represents the start position, or index, in a sequence of steps within the leg's line string geometry. For example, the index of the first step in a leg geometry is <code>0</code>. </p> <p>Included in the response for queries that set <code>IncludeLegGeometry</code> to <code>True</code>. </p>",
+    }),
+    StartPosition: PositionSchema.openapi({
+      description:
+        'The starting position of a step. If the position is the first step in the leg, this position is the same as the start position of the leg.',
+    }),
   })
   .openapi({
     required: ['Distance', 'DurationSeconds', 'EndPosition', 'StartPosition'],
@@ -599,51 +465,29 @@ const StepListSchema = z.array(StepSchema).openapi('StepList')
 
 const LegSchema = z
   .object({
-    Distance: LegDistanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The distance between the leg's <code>StartPosition</code> and <code>EndPosition</code> along a calculated route. </p> <ul> <li> <p>The default measurement is <code>Kilometers</code> unless the request specifies a <code>DistanceUnit</code> of <code>Miles</code>.</p> </li> </ul>",
-        }),
-    ),
-    DurationSeconds: LegDurationSecondsDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The estimated travel time between the leg's <code>StartPosition</code> and <code>EndPosition</code>. The travel mode and departure time that you specify in the request determines the calculated time.",
-        }),
-    ),
-    EndPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The terminating position of the leg. Follows the format <code>[longitude,latitude]</code>.</p> <note> <p>If the <code>EndPosition</code> isn\'t located on a road, it\'s <a href="https://docs.aws.amazon.com/location/latest/developerguide/nap-to-nearby-road.html">snapped to a nearby road</a>. </p> </note>',
-        }),
-    ),
-    Geometry: LegGeometrySchema.and(
-      z
-        .any()
-        .openapi({ description: "Contains the calculated route's path as a linestring geometry." }),
-    ).exactOptional(),
-    StartPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The starting position of the leg. Follows the format <code>[longitude,latitude]</code>.</p> <note> <p>If the <code>StartPosition</code> isn\'t located on a road, it\'s <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">snapped to a nearby road</a>. </p> </note>',
-        }),
-    ),
-    Steps: StepListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Contains a list of steps, which represent subsections of a leg. Each step provides instructions for how to move to the next step in the leg such as the step's start position, end position, travel distance, travel duration, and geometry offset.",
-        }),
-    ),
+    Distance: LegDistanceDoubleSchema.openapi({
+      description:
+        "<p>The distance between the leg's <code>StartPosition</code> and <code>EndPosition</code> along a calculated route. </p> <ul> <li> <p>The default measurement is <code>Kilometers</code> unless the request specifies a <code>DistanceUnit</code> of <code>Miles</code>.</p> </li> </ul>",
+    }),
+    DurationSeconds: LegDurationSecondsDoubleSchema.openapi({
+      description:
+        "The estimated travel time between the leg's <code>StartPosition</code> and <code>EndPosition</code>. The travel mode and departure time that you specify in the request determines the calculated time.",
+    }),
+    EndPosition: PositionSchema.openapi({
+      description:
+        '<p>The terminating position of the leg. Follows the format <code>[longitude,latitude]</code>.</p> <note> <p>If the <code>EndPosition</code> isn\'t located on a road, it\'s <a href="https://docs.aws.amazon.com/location/latest/developerguide/nap-to-nearby-road.html">snapped to a nearby road</a>. </p> </note>',
+    }),
+    Geometry: LegGeometrySchema.exactOptional().openapi({
+      description: "Contains the calculated route's path as a linestring geometry.",
+    }),
+    StartPosition: PositionSchema.openapi({
+      description:
+        '<p>The starting position of the leg. Follows the format <code>[longitude,latitude]</code>.</p> <note> <p>If the <code>StartPosition</code> isn\'t located on a road, it\'s <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">snapped to a nearby road</a>. </p> </note>',
+    }),
+    Steps: StepListSchema.openapi({
+      description:
+        "Contains a list of steps, which represent subsections of a leg. Each step provides instructions for how to move to the next step in the leg such as the step's start position, end position, travel distance, travel duration, and geometry offset.",
+    }),
   })
   .openapi({
     required: ['Distance', 'DurationSeconds', 'EndPosition', 'StartPosition', 'Steps'],
@@ -670,41 +514,25 @@ const BoundingBoxSchema = z.array(DoubleSchema).length(4).openapi('BoundingBox')
 
 const CalculateRouteSummarySchema = z
   .object({
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of traffic and road network data used to calculate the route. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    Distance: CalculateRouteSummaryDistanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total distance covered by the route. The sum of the distance travelled between every stop on the route.</p> <note> <p>If Esri is the data source for the route calculator, the route distance can’t be greater than 400 km. If the route exceeds 400 km, the response is a <code>400 RoutesValidationException</code> error.</p> </note>',
-        }),
-    ),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The unit of measurement for route distances.' }),
-    ),
-    DurationSeconds: CalculateRouteSummaryDurationSecondsDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total travel time for the route measured in seconds. The sum of the travel time between every stop on the route.',
-        }),
-    ),
-    RouteBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies a geographical box surrounding a route. Used to zoom into a route when displaying it in a map. For example, <code>[min x, min y, max x, max y]</code>.</p> <p>The first 2 <code>bbox</code> parameters describe the lower southwest corner: </p> <ul> <li> <p>The first <code>bbox</code> position is the X coordinate or longitude of the lower southwest corner. </p> </li> <li> <p>The second <code>bbox</code> position is the Y coordinate or latitude of the lower southwest corner. </p> </li> </ul> <p>The next 2 <code>bbox</code> parameters describe the upper northeast corner: </p> <ul> <li> <p>The third <code>bbox</code> position is the X coordinate, or longitude of the upper northeast corner. </p> </li> <li> <p>The fourth <code>bbox</code> position is the Y coordinate, or latitude of the upper northeast corner. </p> </li> </ul>',
-        }),
-    ),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of traffic and road network data used to calculate the route. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    Distance: CalculateRouteSummaryDistanceDoubleSchema.openapi({
+      description:
+        '<p>The total distance covered by the route. The sum of the distance travelled between every stop on the route.</p> <note> <p>If Esri is the data source for the route calculator, the route distance can’t be greater than 400 km. If the route exceeds 400 km, the response is a <code>400 RoutesValidationException</code> error.</p> </note>',
+    }),
+    DistanceUnit: DistanceUnitSchema.openapi({
+      description: 'The unit of measurement for route distances.',
+    }),
+    DurationSeconds: CalculateRouteSummaryDurationSecondsDoubleSchema.openapi({
+      description:
+        'The total travel time for the route measured in seconds. The sum of the travel time between every stop on the route.',
+    }),
+    RouteBBox: BoundingBoxSchema.openapi({
+      description:
+        '<p>Specifies a geographical box surrounding a route. Used to zoom into a route when displaying it in a map. For example, <code>[min x, min y, max x, max y]</code>.</p> <p>The first 2 <code>bbox</code> parameters describe the lower southwest corner: </p> <ul> <li> <p>The first <code>bbox</code> position is the X coordinate or longitude of the lower southwest corner. </p> </li> <li> <p>The second <code>bbox</code> position is the Y coordinate or latitude of the lower southwest corner. </p> </li> </ul> <p>The next 2 <code>bbox</code> parameters describe the upper northeast corner: </p> <ul> <li> <p>The third <code>bbox</code> position is the X coordinate, or longitude of the upper northeast corner. </p> </li> <li> <p>The fourth <code>bbox</code> position is the Y coordinate, or latitude of the upper northeast corner. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['DataSource', 'Distance', 'DistanceUnit', 'DurationSeconds', 'RouteBBox'],
@@ -714,22 +542,14 @@ const CalculateRouteSummarySchema = z
 
 const CalculateRouteResponseSchema = z
   .object({
-    Legs: LegListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains details about each path between a pair of positions included along a route such as: <code>StartPosition</code>, <code>EndPosition</code>, <code>Distance</code>, <code>DurationSeconds</code>, <code>Geometry</code>, and <code>Steps</code>. The number of legs returned corresponds to one fewer than the total number of positions in the request. </p> <p>For example, a route with a departure position and destination position returns one leg with the positions <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">snapped to a nearby road</a>:</p> <ul> <li> <p>The <code>StartPosition</code> is the departure position.</p> </li> <li> <p>The <code>EndPosition</code> is the destination position.</p> </li> </ul> <p>A route with a waypoint between the departure and destination position returns two legs with the positions snapped to a nearby road:</p> <ul> <li> <p>Leg 1: The <code>StartPosition</code> is the departure position . The <code>EndPosition</code> is the waypoint positon.</p> </li> <li> <p>Leg 2: The <code>StartPosition</code> is the waypoint position. The <code>EndPosition</code> is the destination position.</p> </li> </ul>',
-        }),
-    ),
-    Summary: CalculateRouteSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the whole route, such as: <code>RouteBBox</code>, <code>DataSource</code>, <code>Distance</code>, <code>DistanceUnit</code>, and <code>DurationSeconds</code>.',
-        }),
-    ),
+    Legs: LegListSchema.openapi({
+      description:
+        '<p>Contains details about each path between a pair of positions included along a route such as: <code>StartPosition</code>, <code>EndPosition</code>, <code>Distance</code>, <code>DurationSeconds</code>, <code>Geometry</code>, and <code>Steps</code>. The number of legs returned corresponds to one fewer than the total number of positions in the request. </p> <p>For example, a route with a departure position and destination position returns one leg with the positions <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">snapped to a nearby road</a>:</p> <ul> <li> <p>The <code>StartPosition</code> is the departure position.</p> </li> <li> <p>The <code>EndPosition</code> is the destination position.</p> </li> </ul> <p>A route with a waypoint between the departure and destination position returns two legs with the positions snapped to a nearby road:</p> <ul> <li> <p>Leg 1: The <code>StartPosition</code> is the departure position . The <code>EndPosition</code> is the waypoint positon.</p> </li> <li> <p>Leg 2: The <code>StartPosition</code> is the waypoint position. The <code>EndPosition</code> is the destination position.</p> </li> </ul>',
+    }),
+    Summary: CalculateRouteSummarySchema.openapi({
+      description:
+        'Contains information about the whole route, such as: <code>RouteBBox</code>, <code>DataSource</code>, <code>Distance</code>, <code>DistanceUnit</code>, and <code>DurationSeconds</code>.',
+    }),
   })
   .openapi({
     required: ['Legs', 'Summary'],
@@ -750,38 +570,22 @@ const TruckDimensionsWidthDoubleSchema = z.float64().min(0).openapi('TruckDimens
 
 const TruckDimensionsSchema = z
   .object({
-    Height: TruckDimensionsHeightDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The height of the truck.</p> <ul> <li> <p>For example, <code>4.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 50 meters. </p> </note>',
-        }),
-    ).exactOptional(),
-    Length: TruckDimensionsLengthDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The length of the truck.</p> <ul> <li> <p>For example, <code>15.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 300 meters. </p> </note>',
-        }),
-    ).exactOptional(),
-    Unit: DimensionUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Specifies the unit of measurement for the truck dimensions.</p> <p>Default Value: <code>Meters</code> </p>',
-        }),
-    ).exactOptional(),
-    Width: TruckDimensionsWidthDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The width of the truck.</p> <ul> <li> <p>For example, <code>4.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 50 meters. </p> </note>',
-        }),
-    ).exactOptional(),
+    Height: TruckDimensionsHeightDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The height of the truck.</p> <ul> <li> <p>For example, <code>4.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 50 meters. </p> </note>',
+    }),
+    Length: TruckDimensionsLengthDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The length of the truck.</p> <ul> <li> <p>For example, <code>15.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 300 meters. </p> </note>',
+    }),
+    Unit: DimensionUnitSchema.exactOptional().openapi({
+      description:
+        '<p> Specifies the unit of measurement for the truck dimensions.</p> <p>Default Value: <code>Meters</code> </p>',
+    }),
+    Width: TruckDimensionsWidthDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The width of the truck.</p> <ul> <li> <p>For example, <code>4.5</code>.</p> </li> </ul> <note> <p> For routes calculated with a HERE resource, this value must be between 0 and 50 meters. </p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -796,22 +600,14 @@ const VehicleWeightUnitSchema = z.enum(['Kilograms', 'Pounds']).openapi('Vehicle
 
 const TruckWeightSchema = z
   .object({
-    Total: TruckWeightTotalDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total weight of the truck. </p> <ul> <li> <p>For example, <code>3500</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Unit: VehicleWeightUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unit of measurement to use for the truck weight.</p> <p>Default Value: <code>Kilograms</code> </p>',
-        }),
-    ).exactOptional(),
+    Total: TruckWeightTotalDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The total weight of the truck. </p> <ul> <li> <p>For example, <code>3500</code>.</p> </li> </ul>',
+    }),
+    Unit: VehicleWeightUnitSchema.exactOptional().openapi({
+      description:
+        '<p>The unit of measurement to use for the truck weight.</p> <p>Default Value: <code>Kilograms</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -843,18 +639,12 @@ const RouteMatrixErrorCodeSchema = z
 
 const RouteMatrixEntryErrorSchema = z
   .object({
-    Code: RouteMatrixErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of error which occurred for the route calculation.' }),
-    ),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A message about the error that occurred for the route calculation.',
-        }),
-    ).exactOptional(),
+    Code: RouteMatrixErrorCodeSchema.openapi({
+      description: 'The type of error which occurred for the route calculation.',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'A message about the error that occurred for the route calculation.',
+    }),
   })
   .openapi({
     required: ['Code'],
@@ -865,20 +655,16 @@ const RouteMatrixEntryErrorSchema = z
 
 const RouteMatrixEntrySchema = z
   .object({
-    Distance: RouteMatrixEntryDistanceDoubleSchema.and(
-      z.any().openapi({ description: 'The total distance of travel for the route.' }),
-    ).exactOptional(),
-    DurationSeconds: RouteMatrixEntryDurationSecondsDoubleSchema.and(
-      z.any().openapi({ description: 'The expected duration of travel for the route.' }),
-    ).exactOptional(),
-    Error: RouteMatrixEntryErrorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An error corresponding to the calculation of a route between the <code>DeparturePosition</code> and <code>DestinationPosition</code>.',
-        }),
-    ).exactOptional(),
+    Distance: RouteMatrixEntryDistanceDoubleSchema.exactOptional().openapi({
+      description: 'The total distance of travel for the route.',
+    }),
+    DurationSeconds: RouteMatrixEntryDurationSecondsDoubleSchema.exactOptional().openapi({
+      description: 'The expected duration of travel for the route.',
+    }),
+    Error: RouteMatrixEntryErrorSchema.exactOptional().openapi({
+      description:
+        'An error corresponding to the calculation of a route between the <code>DeparturePosition</code> and <code>DestinationPosition</code>.',
+    }),
   })
   .openapi({
     description:
@@ -917,33 +703,21 @@ const CalculateRouteMatrixSummaryRouteCountIntegerSchema = z
 
 const CalculateRouteMatrixSummarySchema = z
   .object({
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of traffic and road network data used to calculate the routes. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    DistanceUnit: DistanceUnitSchema.and(
-      z.any().openapi({ description: 'The unit of measurement for route distances.' }),
-    ),
-    ErrorCount: CalculateRouteMatrixSummaryErrorCountIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of error results in the route matrix. If this number is 0, all routes were calculated successfully.',
-        }),
-    ),
-    RouteCount: CalculateRouteMatrixSummaryRouteCountIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of cells in the route matrix. Equal to the number of <code>DeparturePositions</code> multiplied by the number of <code>DestinationPositions</code>.',
-        }),
-    ),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of traffic and road network data used to calculate the routes. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    DistanceUnit: DistanceUnitSchema.openapi({
+      description: 'The unit of measurement for route distances.',
+    }),
+    ErrorCount: CalculateRouteMatrixSummaryErrorCountIntegerSchema.openapi({
+      description:
+        'The count of error results in the route matrix. If this number is 0, all routes were calculated successfully.',
+    }),
+    RouteCount: CalculateRouteMatrixSummaryRouteCountIntegerSchema.openapi({
+      description:
+        'The count of cells in the route matrix. Equal to the number of <code>DeparturePositions</code> multiplied by the number of <code>DestinationPositions</code>.',
+    }),
   })
   .openapi({
     required: ['DataSource', 'DistanceUnit', 'ErrorCount', 'RouteCount'],
@@ -953,39 +727,24 @@ const CalculateRouteMatrixSummarySchema = z
 
 const CalculateRouteMatrixResponseSchema = z
   .object({
-    RouteMatrix: RouteMatrixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The calculated route matrix containing the results for all pairs of <code>DeparturePositions</code> to <code>DestinationPositions</code>. Each row corresponds to one entry in <code>DeparturePositions</code>. Each entry in the row corresponds to the route from that entry in <code>DeparturePositions</code> to an entry in <code>DestinationPositions</code>. ',
-        }),
-    ),
-    SnappedDeparturePositions: CalculateRouteMatrixResponseSnappedDeparturePositionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For routes calculated using an Esri route calculator resource, departure positions are snapped to the closest road. For Esri route calculator resources, this returns the list of departure/origin positions used for calculation of the <code>RouteMatrix</code>.',
-        }),
-    ).exactOptional(),
+    RouteMatrix: RouteMatrixSchema.openapi({
+      description:
+        'The calculated route matrix containing the results for all pairs of <code>DeparturePositions</code> to <code>DestinationPositions</code>. Each row corresponds to one entry in <code>DeparturePositions</code>. Each entry in the row corresponds to the route from that entry in <code>DeparturePositions</code> to an entry in <code>DestinationPositions</code>. ',
+    }),
+    SnappedDeparturePositions:
+      CalculateRouteMatrixResponseSnappedDeparturePositionsListSchema.exactOptional().openapi({
+        description:
+          'For routes calculated using an Esri route calculator resource, departure positions are snapped to the closest road. For Esri route calculator resources, this returns the list of departure/origin positions used for calculation of the <code>RouteMatrix</code>.',
+      }),
     SnappedDestinationPositions:
-      CalculateRouteMatrixResponseSnappedDestinationPositionsListSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              'The list of destination positions for the route matrix used for calculation of the <code>RouteMatrix</code>.',
-          }),
-      ).exactOptional(),
-    Summary: CalculateRouteMatrixSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the route matrix, <code>DataSource</code>, <code>DistanceUnit</code>, <code>RouteCount</code> and <code>ErrorCount</code>.',
-        }),
-    ),
+      CalculateRouteMatrixResponseSnappedDestinationPositionsListSchema.exactOptional().openapi({
+        description:
+          'The list of destination positions for the route matrix used for calculation of the <code>RouteMatrix</code>.',
+      }),
+    Summary: CalculateRouteMatrixSummarySchema.openapi({
+      description:
+        'Contains information about the route matrix, <code>DataSource</code>, <code>DistanceUnit</code>, <code>RouteCount</code> and <code>ErrorCount</code>.',
+    }),
   })
   .openapi({
     required: ['RouteMatrix', 'Summary'],
@@ -1009,25 +768,17 @@ const ResourceNameSchema = z
 
 const CreateGeofenceCollectionResponseSchema = z
   .object({
-    CollectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
-        }),
-    ),
-    CollectionName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for the geofence collection.' }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CollectionArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
+    }),
+    CollectionName: ResourceNameSchema.openapi({
+      description: 'The name for the geofence collection.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({ required: ['CollectionArn', 'CollectionName', 'CreateTime'] })
   .openapi('CreateGeofenceCollectionResponse')
@@ -1043,33 +794,19 @@ const ApiKeySchema = z.string().min(0).max(1000).openapi('ApiKey')
 
 const CreateKeyResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    Key: ApiKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key value/string of an API key. This value is used when making API calls to authorize the call. For example, see <a href="https://docs.aws.amazon.com/location/latest/APIReference/API_GetMapGlyphs.html">GetMapGlyphs</a>.',
-        }),
-    ),
-    KeyArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
-        }),
-    ),
-    KeyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the API key resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    Key: ApiKeySchema.openapi({
+      description:
+        'The key value/string of an API key. This value is used when making API calls to authorize the call. For example, see <a href="https://docs.aws.amazon.com/location/latest/APIReference/API_GetMapGlyphs.html">GetMapGlyphs</a>.',
+    }),
+    KeyArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
+    }),
+    KeyName: ResourceNameSchema.openapi({ description: 'The name of the API key resource.' }),
   })
   .openapi({ required: ['CreateTime', 'Key', 'KeyArn', 'KeyName'] })
   .openapi('CreateKeyResponse')
@@ -1114,25 +851,15 @@ const ApiKeyRestrictionsAllowResourcesListSchema = z
 
 const CreateMapResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
-    MapArn: GeoArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
-        }),
-    ),
-    MapName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the map resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
+    MapArn: GeoArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
+    }),
+    MapName: ResourceNameSchema.openapi({ description: 'The name of the map resource.' }),
   })
   .openapi({ required: ['CreateTime', 'MapArn', 'MapName'] })
   .openapi('CreateMapResponse')
@@ -1146,25 +873,17 @@ const MapStyleSchema = z
 
 const CreatePlaceIndexResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    IndexArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>',
-        }),
-    ),
-    IndexName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name for the place index resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    IndexArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>',
+    }),
+    IndexName: ResourceNameSchema.openapi({
+      description: 'The name for the place index resource.',
+    }),
   })
   .openapi({ required: ['CreateTime', 'IndexArn', 'IndexName'] })
   .openapi('CreatePlaceIndexResponse')
@@ -1173,72 +892,52 @@ const IntendedUseSchema = z.enum(['SingleUse', 'Storage']).openapi('IntendedUse'
 
 const CreateRouteCalculatorResponseSchema = z
   .object({
-    CalculatorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the route calculator resource. Use the ARN when you specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>',
-        }),
-    ),
-    CalculatorName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the route calculator resource. </p> <ul> <li> <p>For example, <code>ExampleRouteCalculator</code>.</p> </li> </ul>',
-        }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ),
+    CalculatorArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the route calculator resource. Use the ARN when you specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>',
+    }),
+    CalculatorName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the route calculator resource. </p> <ul> <li> <p>For example, <code>ExampleRouteCalculator</code>.</p> </li> </ul>',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['CalculatorArn', 'CalculatorName', 'CreateTime'] })
   .openapi('CreateRouteCalculatorResponse')
 
 const CreateTrackerResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    TrackerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
-        }),
-    ),
-    TrackerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the tracker resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    TrackerArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
+    }),
+    TrackerName: ResourceNameSchema.openapi({ description: 'The name of the tracker resource.' }),
   })
   .openapi({ required: ['CreateTime', 'TrackerArn', 'TrackerName'] })
   .openapi('CreateTrackerResponse')
 
 const DeleteGeofenceCollectionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteGeofenceCollectionResponse')
 
-const DeleteKeyResponseSchema = z.object({}).openapi('DeleteKeyResponse')
+const DeleteKeyResponseSchema = z.looseObject({}).openapi('DeleteKeyResponse')
 
-const DeleteMapResponseSchema = z.object({}).openapi('DeleteMapResponse')
+const DeleteMapResponseSchema = z.looseObject({}).openapi('DeleteMapResponse')
 
-const DeletePlaceIndexResponseSchema = z.object({}).openapi('DeletePlaceIndexResponse')
+const DeletePlaceIndexResponseSchema = z.looseObject({}).openapi('DeletePlaceIndexResponse')
 
-const DeleteRouteCalculatorResponseSchema = z.object({}).openapi('DeleteRouteCalculatorResponse')
+const DeleteRouteCalculatorResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteRouteCalculatorResponse')
 
-const DeleteTrackerResponseSchema = z.object({}).openapi('DeleteTrackerResponse')
+const DeleteTrackerResponseSchema = z.looseObject({}).openapi('DeleteTrackerResponse')
 
 const ResourceDescriptionSchema = z.string().min(0).max(1000).openapi('ResourceDescription')
 
@@ -1256,68 +955,40 @@ const TagMapSchema = z
 
 const DescribeGeofenceCollectionResponseSchema = z
   .object({
-    CollectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
-        }),
-    ),
-    CollectionName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the geofence collection.' }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the geofence collection.' }),
-    ),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource',
-        }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Displays the key, value pairs of tags associated with this resource.',
-        }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CollectionArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the geofence collection resource. Used when you need to specify a resource across all Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
+    }),
+    CollectionName: ResourceNameSchema.openapi({
+      description: 'The name of the geofence collection.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description for the geofence collection.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Displays the key, value pairs of tags associated with this resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['CollectionArn', 'CollectionName', 'CreateTime', 'Description', 'UpdateTime'],
@@ -1326,30 +997,18 @@ const DescribeGeofenceCollectionResponseSchema = z
 
 const ApiKeyRestrictionsSchema = z
   .object({
-    AllowActions: ApiKeyRestrictionsAllowActionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
-        }),
-    ),
-    AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AllowResources: ApiKeyRestrictionsAllowResourcesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
-        }),
-    ),
+    AllowActions: ApiKeyRestrictionsAllowActionsListSchema.openapi({
+      description:
+        '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
+    }),
+    AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
+    }),
+    AllowResources: ApiKeyRestrictionsAllowResourcesListSchema.openapi({
+      description:
+        '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['AllowActions', 'AllowResources'],
@@ -1360,49 +1019,31 @@ const ApiKeyRestrictionsSchema = z
 
 const DescribeKeyResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the API key resource.' }),
-    ).exactOptional(),
-    ExpireTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    Key: ApiKeySchema.and(z.any().openapi({ description: 'The key value/string of an API key.' })),
-    KeyArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
-        }),
-    ),
-    KeyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the API key resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The optional description for the API key resource.',
+    }),
+    ExpireTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    Key: ApiKeySchema.openapi({ description: 'The key value/string of an API key.' }),
+    KeyArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
+    }),
+    KeyName: ResourceNameSchema.openapi({ description: 'The name of the API key resource.' }),
     Restrictions: ApiKeyRestrictionsSchema,
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags associated with the API key resource.' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags associated with the API key resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: [
@@ -1419,14 +1060,10 @@ const DescribeKeyResponseSchema = z
 
 const MapConfigurationSchema = z
   .object({
-    Style: MapStyleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the map style selected from an available data provider.</p> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri map styles</a>:</p> <ul> <li> <p> <code>VectorEsriDarkGrayCanvas</code> – The Esri Dark Gray Canvas map style. A vector basemap with a dark gray, neutral background with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>RasterEsriImagery</code> – The Esri Imagery map style. A raster basemap that provides one meter or better satellite and aerial imagery in many parts of the world and lower resolution satellite imagery worldwide. </p> </li> <li> <p> <code>VectorEsriLightGrayCanvas</code> – The Esri Light Gray Canvas map style, which provides a detailed vector basemap with a light gray, neutral background style with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>VectorEsriTopographic</code> – The Esri Light map style, which provides a detailed vector basemap with a classic Esri map style.</p> </li> <li> <p> <code>VectorEsriStreets</code> – The Esri World Streets map style, which provides a detailed vector basemap for the world symbolized with a classic Esri street map style. The vector tile layer is similar in content and style to the World Street Map raster map.</p> </li> <li> <p> <code>VectorEsriNavigation</code> – The Esri World Navigation map style, which provides a detailed basemap for the world symbolized with a custom navigation map style that\'s designed for use during the day in mobile devices.</p> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies map styles</a>:</p> <ul> <li> <p> <code>VectorHereContrast</code> – The HERE Contrast (Berlin) map style is a high contrast detailed base map of the world that blends 3D and 2D rendering.</p> <note> <p>The <code>VectorHereContrast</code> style has been renamed from <code>VectorHereBerlin</code>. <code>VectorHereBerlin</code> has been deprecated, but will continue to work in applications that use it.</p> </note> </li> <li> <p> <code>VectorHereExplore</code> – A default HERE map style containing a neutral, global map and its features including roads, buildings, landmarks, and water features. It also now includes a fully designed map of Japan.</p> </li> <li> <p> <code>VectorHereExploreTruck</code> – A global map containing truck restrictions and attributes (e.g. width / height / HAZMAT) symbolized with highlighted segments and icons on top of HERE Explore to support use cases within transport and logistics.</p> </li> <li> <p> <code>RasterHereExploreSatellite</code> – A global map containing high resolution satellite imagery.</p> </li> <li> <p> <code>HybridHereExploreSatellite</code> – A global map displaying the road network, street names, and city labels over satellite imagery. This style will automatically retrieve both raster and vector tiles, and your charges will be based on total tiles retrieved.</p> <note> <p>Hybrid styles use both vector and raster tiles when rendering the map that you see. This means that more tiles are retrieved than when using either vector or raster tiles alone. Your charges will include all tiles retrieved.</p> </note> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps map styles</a>:</p> <ul> <li> <p> <code>VectorGrabStandardLight</code> – The Grab Standard Light map style provides a basemap with detailed land use coloring, area names, roads, landmarks, and points of interest covering Southeast Asia.</p> </li> <li> <p> <code>VectorGrabStandardDark</code> – The Grab Standard Dark map style provides a dark variation of the standard basemap covering Southeast Asia.</p> </li> </ul> <note> <p>Grab provides maps only for countries in Southeast Asia, and is only available in the Asia Pacific (Singapore) Region (<code>ap-southeast-1</code>). For more information, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and area covered</a>.</p> </note> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/open-data.html">Open Data map styles</a>:</p> <ul> <li> <p> <code>VectorOpenDataStandardLight</code> – The Open Data Standard Light map style provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataStandardDark</code> – Open Data Standard Dark is a dark-themed map style that provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataVisualizationLight</code> – The Open Data Visualization Light map style is a light-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> <li> <p> <code>VectorOpenDataVisualizationDark</code> – The Open Data Visualization Dark map style is a dark-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> </ul>',
-        }),
-    ),
+    Style: MapStyleSchema.openapi({
+      description:
+        '<p>Specifies the map style selected from an available data provider.</p> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri map styles</a>:</p> <ul> <li> <p> <code>VectorEsriDarkGrayCanvas</code> – The Esri Dark Gray Canvas map style. A vector basemap with a dark gray, neutral background with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>RasterEsriImagery</code> – The Esri Imagery map style. A raster basemap that provides one meter or better satellite and aerial imagery in many parts of the world and lower resolution satellite imagery worldwide. </p> </li> <li> <p> <code>VectorEsriLightGrayCanvas</code> – The Esri Light Gray Canvas map style, which provides a detailed vector basemap with a light gray, neutral background style with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>VectorEsriTopographic</code> – The Esri Light map style, which provides a detailed vector basemap with a classic Esri map style.</p> </li> <li> <p> <code>VectorEsriStreets</code> – The Esri World Streets map style, which provides a detailed vector basemap for the world symbolized with a classic Esri street map style. The vector tile layer is similar in content and style to the World Street Map raster map.</p> </li> <li> <p> <code>VectorEsriNavigation</code> – The Esri World Navigation map style, which provides a detailed basemap for the world symbolized with a custom navigation map style that\'s designed for use during the day in mobile devices.</p> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies map styles</a>:</p> <ul> <li> <p> <code>VectorHereContrast</code> – The HERE Contrast (Berlin) map style is a high contrast detailed base map of the world that blends 3D and 2D rendering.</p> <note> <p>The <code>VectorHereContrast</code> style has been renamed from <code>VectorHereBerlin</code>. <code>VectorHereBerlin</code> has been deprecated, but will continue to work in applications that use it.</p> </note> </li> <li> <p> <code>VectorHereExplore</code> – A default HERE map style containing a neutral, global map and its features including roads, buildings, landmarks, and water features. It also now includes a fully designed map of Japan.</p> </li> <li> <p> <code>VectorHereExploreTruck</code> – A global map containing truck restrictions and attributes (e.g. width / height / HAZMAT) symbolized with highlighted segments and icons on top of HERE Explore to support use cases within transport and logistics.</p> </li> <li> <p> <code>RasterHereExploreSatellite</code> – A global map containing high resolution satellite imagery.</p> </li> <li> <p> <code>HybridHereExploreSatellite</code> – A global map displaying the road network, street names, and city labels over satellite imagery. This style will automatically retrieve both raster and vector tiles, and your charges will be based on total tiles retrieved.</p> <note> <p>Hybrid styles use both vector and raster tiles when rendering the map that you see. This means that more tiles are retrieved than when using either vector or raster tiles alone. Your charges will include all tiles retrieved.</p> </note> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps map styles</a>:</p> <ul> <li> <p> <code>VectorGrabStandardLight</code> – The Grab Standard Light map style provides a basemap with detailed land use coloring, area names, roads, landmarks, and points of interest covering Southeast Asia.</p> </li> <li> <p> <code>VectorGrabStandardDark</code> – The Grab Standard Dark map style provides a dark variation of the standard basemap covering Southeast Asia.</p> </li> </ul> <note> <p>Grab provides maps only for countries in Southeast Asia, and is only available in the Asia Pacific (Singapore) Region (<code>ap-southeast-1</code>). For more information, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and area covered</a>.</p> </note> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/open-data.html">Open Data map styles</a>:</p> <ul> <li> <p> <code>VectorOpenDataStandardLight</code> – The Open Data Standard Light map style provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataStandardDark</code> – Open Data Standard Dark is a dark-themed map style that provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataVisualizationLight</code> – The Open Data Visualization Light map style is a light-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> <li> <p> <code>VectorOpenDataVisualizationDark</code> – The Open Data Visualization Dark map style is a dark-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Style'],
@@ -1436,58 +1073,38 @@ const MapConfigurationSchema = z
 
 const DescribeMapResponseSchema = z
   .object({
-    Configuration: MapConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the map tile style selected from a partner data provider.',
-        }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the data provider for the associated map tiles.' }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the map resource.' }),
-    ),
-    MapArn: GeoArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
-        }),
-    ),
-    MapName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The map style selected from an available provider.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags associated with the map resource.' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was last update in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
+    Configuration: MapConfigurationSchema.openapi({
+      description: 'Specifies the map tile style selected from a partner data provider.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
+    DataSource: StringSchema.openapi({
+      description: 'Specifies the data provider for the associated map tiles.',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description for the map resource.',
+    }),
+    MapArn: GeoArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the map resource. Used to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
+    }),
+    MapName: ResourceNameSchema.openapi({
+      description: 'The map style selected from an available provider.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags associated with the map resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was last update in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
   })
   .openapi({
     required: [
@@ -1504,14 +1121,10 @@ const DescribeMapResponseSchema = z
 
 const DataSourceConfigurationSchema = z
   .object({
-    IntendedUse: IntendedUseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
-        }),
-    ).exactOptional(),
+    IntendedUse: IntendedUseSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
+    }),
   })
   .openapi({
     description:
@@ -1522,59 +1135,39 @@ const DataSourceConfigurationSchema = z
 
 const DescribePlaceIndexResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of geospatial data. Values can be one of the following:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    DataSourceConfiguration: DataSourceConfigurationSchema.and(
-      z.any().openapi({ description: 'The specified data storage option for requesting Places.' }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the place index resource.' }),
-    ),
-    IndexArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>',
-        }),
-    ),
-    IndexName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the place index resource being described.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags associated with place index resource.' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of geospatial data. Values can be one of the following:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    DataSourceConfiguration: DataSourceConfigurationSchema.openapi({
+      description: 'The specified data storage option for requesting Places.',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description for the place index resource.',
+    }),
+    IndexArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the place index resource. Used to specify a resource across Amazon Web Services. </p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place-index/ExamplePlaceIndex</code> </p> </li> </ul>',
+    }),
+    IndexName: ResourceNameSchema.openapi({
+      description: 'The name of the place index resource being described.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags associated with place index resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: [
@@ -1591,60 +1184,36 @@ const DescribePlaceIndexResponseSchema = z
 
 const DescribeRouteCalculatorResponseSchema = z
   .object({
-    CalculatorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the Route calculator resource. Use the ARN when you specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>',
-        }),
-    ),
-    CalculatorName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the route calculator resource being described.' }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of traffic and road network data. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The optional description of the route calculator resource.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Tags associated with route calculator resource.' }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp when the route calculator resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ),
+    CalculatorArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the Route calculator resource. Use the ARN when you specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route-calculator/ExampleCalculator</code> </p> </li> </ul>',
+    }),
+    CalculatorName: ResourceNameSchema.openapi({
+      description: 'The name of the route calculator resource being described.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of traffic and road network data. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description of the route calculator resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Tags associated with route calculator resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp when the route calculator resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: [
@@ -1664,105 +1233,69 @@ const PositionFilteringSchema = z
 
 const DescribeTrackerResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the tracker resource.' }),
-    ),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource.',
-        }),
-    ).exactOptional(),
-    PositionFiltering: PositionFilteringSchema.and(
-      z.any().openapi({ description: 'The position filtering method of the tracker resource.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'The tags associated with the tracker resource.' }),
-    ).exactOptional(),
-    TrackerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
-        }),
-    ),
-    TrackerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the tracker resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description for the tracker resource.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a> assigned to the Amazon Location resource.',
+    }),
+    PositionFiltering: PositionFilteringSchema.exactOptional().openapi({
+      description: 'The position filtering method of the tracker resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags associated with the tracker resource.',
+    }),
+    TrackerArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
+    }),
+    TrackerName: ResourceNameSchema.openapi({ description: 'The name of the tracker resource.' }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['CreateTime', 'Description', 'TrackerArn', 'TrackerName', 'UpdateTime'] })
   .openapi('DescribeTrackerResponse')
 
 const DisassociateTrackerConsumerResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateTrackerConsumerResponse')
 
 const GetDevicePositionResponseSchema = z
   .object({
-    Accuracy: PositionalAccuracySchema.and(
-      z.any().openapi({ description: 'The accuracy of the device position.' }),
-    ).exactOptional(),
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The device whose position you retrieved.' }),
-    ).exactOptional(),
-    Position: PositionSchema.and(
-      z.any().openapi({ description: 'The last known device position.' }),
-    ),
-    PositionProperties: PropertyMapSchema.and(
-      z.any().openapi({ description: 'The properties associated with the position.' }),
-    ).exactOptional(),
-    ReceivedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource received the device position in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601 </a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601 </a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    Accuracy: PositionalAccuracySchema.exactOptional().openapi({
+      description: 'The accuracy of the device position.',
+    }),
+    DeviceId: IdSchema.exactOptional().openapi({
+      description: 'The device whose position you retrieved.',
+    }),
+    Position: PositionSchema.openapi({ description: 'The last known device position.' }),
+    PositionProperties: PropertyMapSchema.exactOptional().openapi({
+      description: 'The properties associated with the position.',
+    }),
+    ReceivedTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource received the device position in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601 </a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601 </a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['Position', 'ReceivedTime', 'SampleTime'] })
   .openapi('GetDevicePositionResponse')
@@ -1771,59 +1304,35 @@ const TokenSchema = z.string().min(1).max(2000).openapi('Token')
 
 const GetDevicePositionHistoryResponseSchema = z
   .object({
-    DevicePositions: DevicePositionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the position history details for the requested device.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results.',
-        }),
-    ).exactOptional(),
+    DevicePositions: DevicePositionListSchema.openapi({
+      description: 'Contains the position history details for the requested device.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results.',
+    }),
   })
   .openapi({ required: ['DevicePositions'] })
   .openapi('GetDevicePositionHistoryResponse')
 
 const GetGeofenceResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    GeofenceId: IdSchema.and(z.any().openapi({ description: 'The geofence identifier.' })),
-    Geometry: GeofenceGeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the geofence geometry details describing a polygon or a circle.',
-        }),
-    ),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the state of the geofence. A geofence will hold one of the following states:</p> <ul> <li> <p> <code>ACTIVE</code> — The geofence has been indexed by the system. </p> </li> <li> <p> <code>PENDING</code> — The geofence is being processed by the system.</p> </li> <li> <p> <code>FAILED</code> — The geofence failed to be indexed by the system.</p> </li> <li> <p> <code>DELETED</code> — The geofence has been deleted from the system index.</p> </li> <li> <p> <code>DELETING</code> — The geofence is being deleted from the system index.</p> </li> </ul>',
-        }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    GeofenceId: IdSchema.openapi({ description: 'The geofence identifier.' }),
+    Geometry: GeofenceGeometrySchema.openapi({
+      description: 'Contains the geofence geometry details describing a polygon or a circle.',
+    }),
+    Status: StringSchema.openapi({
+      description:
+        '<p>Identifies the state of the geofence. A geofence will hold one of the following states:</p> <ul> <li> <p> <code>ACTIVE</code> — The geofence has been indexed by the system. </p> </li> <li> <p> <code>PENDING</code> — The geofence is being processed by the system.</p> </li> <li> <p> <code>FAILED</code> — The geofence failed to be indexed by the system.</p> </li> <li> <p> <code>DELETED</code> — The geofence has been deleted from the system index.</p> </li> <li> <p> <code>DELETING</code> — The geofence is being deleted from the system index.</p> </li> </ul>',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({ required: ['CreateTime', 'GeofenceId', 'Geometry', 'Status', 'UpdateTime'] })
   .openapi('GetGeofenceResponse')
@@ -1832,50 +1341,44 @@ const BlobSchema = z.string().openapi('Blob')
 
 const GetMapGlyphsResponseSchema = z
   .object({
-    Blob: BlobSchema.and(
-      z.any().openapi({ description: 'The glyph, as binary blob.' }),
-    ).exactOptional(),
+    Blob: BlobSchema.exactOptional().openapi({ description: 'The glyph, as binary blob.' }),
   })
   .openapi({ required: [] })
   .openapi('GetMapGlyphsResponse')
 
 const GetMapSpritesResponseSchema = z
   .object({
-    Blob: BlobSchema.and(
-      z.any().openapi({ description: 'Contains the body of the sprite sheet or JSON offset ﬁle.' }),
-    ).exactOptional(),
+    Blob: BlobSchema.exactOptional().openapi({
+      description: 'Contains the body of the sprite sheet or JSON offset ﬁle.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMapSpritesResponse')
 
 const GetMapStyleDescriptorResponseSchema = z
   .object({
-    Blob: BlobSchema.and(
-      z.any().openapi({ description: 'Contains the body of the style descriptor.' }),
-    ).exactOptional(),
+    Blob: BlobSchema.exactOptional().openapi({
+      description: 'Contains the body of the style descriptor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMapStyleDescriptorResponse')
 
 const GetMapTileResponseSchema = z
   .object({
-    Blob: BlobSchema.and(
-      z.any().openapi({ description: 'Contains Mapbox Vector Tile (MVT) data.' }),
-    ).exactOptional(),
+    Blob: BlobSchema.exactOptional().openapi({
+      description: 'Contains Mapbox Vector Tile (MVT) data.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMapTileResponse')
 
 const PlaceGeometrySchema = z
   .object({
-    Point: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single point geometry specifies a location for a Place using <a href="https://gisgeography.com/wgs84-world-geodetic-system/">WGS 84</a> coordinates:</p> <ul> <li> <p> <i>x</i> — Specifies the x coordinate or longitude. </p> </li> <li> <p> <i>y</i> — Specifies the y coordinate or latitude. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Point: PositionSchema.exactOptional().openapi({
+      description:
+        '<p>A single point geometry specifies a location for a Place using <a href="https://gisgeography.com/wgs84-world-geodetic-system/">WGS 84</a> coordinates:</p> <ul> <li> <p> <i>x</i> — Specifies the x coordinate or longitude. </p> </li> <li> <p> <i>y</i> — Specifies the y coordinate or latitude. </p> </li> </ul>',
+    }),
   })
   .openapi({
     description: 'Places uses a point geometry to specify a location or a Place.',
@@ -1887,17 +1390,13 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const TimeZoneSchema = z
   .object({
-    Name: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the time zone, following the <a href="https://www.iana.org/time-zones"> IANA time zone standard</a>. For example, <code>America/Los_Angeles</code>.',
-        }),
-    ),
-    Offset: IntegerSchema.and(
-      z.any().openapi({ description: "The time zone's offset, in seconds, from UTC." }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({
+      description:
+        'The name of the time zone, following the <a href="https://www.iana.org/time-zones"> IANA time zone standard</a>. For example, <code>America/Los_Angeles</code>.',
+    }),
+    Offset: IntegerSchema.exactOptional().openapi({
+      description: "The time zone's offset, in seconds, from UTC.",
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -1908,109 +1407,57 @@ const TimeZoneSchema = z
 
 const PlaceSchema = z
   .object({
-    AddressNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The numerical portion of an address, such as a building number. ',
-        }),
-    ).exactOptional(),
-    Country: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A country/region specified using <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country/region code. For example, <code>CAN</code>.',
-        }),
-    ).exactOptional(),
+    AddressNumber: StringSchema.exactOptional().openapi({
+      description: 'The numerical portion of an address, such as a building number. ',
+    }),
+    Country: StringSchema.exactOptional().openapi({
+      description:
+        'A country/region specified using <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country/region code. For example, <code>CAN</code>.',
+    }),
     Geometry: PlaceGeometrySchema,
-    Interpolated: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <code>True</code> if the result is interpolated from other known places.</p> <p> <code>False</code> if the Place is a known place.</p> <p>Not returned when the partner does not provide the information.</p> <p>For example, returns <code>False</code> for an address location that is found in the partner data, but returns <code>True</code> if an address does not exist in the partner data and its location is calculated by interpolating between other known addresses. </p>',
-        }),
-    ).exactOptional(),
-    Label: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The full name and address of the point of interest such as a city, region, or country. For example, <code>123 Any Street, Any Town, USA</code>.',
-        }),
-    ).exactOptional(),
-    Municipality: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for a local area, such as a city or town name. For example, <code>Toronto</code>.',
-        }),
-    ).exactOptional(),
-    Neighborhood: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a community district. For example, <code>Downtown</code>.',
-        }),
-    ).exactOptional(),
-    PostalCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A group of numbers and letters in a country-specific format, which accompanies the address for the purpose of identifying a location. ',
-        }),
-    ).exactOptional(),
-    Region: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for an area or geographical division, such as a province or state name. For example, <code>British Columbia</code>.',
-        }),
-    ).exactOptional(),
-    Street: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for a street or a road to identify a location. For example, <code>Main Street</code>.',
-        }),
-    ).exactOptional(),
-    SubRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A county, or an area that's part of a larger region. For example, <code>Metro Vancouver</code>.",
-        }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time zone in which the <code>Place</code> is located. Returned only when using HERE as the selected partner.',
-        }),
-    ).exactOptional(),
-    UnitNumber: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    UnitType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.',
-        }),
-    ).exactOptional(),
+    Interpolated: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p> <code>True</code> if the result is interpolated from other known places.</p> <p> <code>False</code> if the Place is a known place.</p> <p>Not returned when the partner does not provide the information.</p> <p>For example, returns <code>False</code> for an address location that is found in the partner data, but returns <code>True</code> if an address does not exist in the partner data and its location is calculated by interpolating between other known addresses. </p>',
+    }),
+    Label: StringSchema.exactOptional().openapi({
+      description:
+        'The full name and address of the point of interest such as a city, region, or country. For example, <code>123 Any Street, Any Town, USA</code>.',
+    }),
+    Municipality: StringSchema.exactOptional().openapi({
+      description:
+        'A name for a local area, such as a city or town name. For example, <code>Toronto</code>.',
+    }),
+    Neighborhood: StringSchema.exactOptional().openapi({
+      description: 'The name of a community district. For example, <code>Downtown</code>.',
+    }),
+    PostalCode: StringSchema.exactOptional().openapi({
+      description:
+        'A group of numbers and letters in a country-specific format, which accompanies the address for the purpose of identifying a location. ',
+    }),
+    Region: StringSchema.exactOptional().openapi({
+      description:
+        'A name for an area or geographical division, such as a province or state name. For example, <code>British Columbia</code>.',
+    }),
+    Street: StringSchema.exactOptional().openapi({
+      description:
+        'The name for a street or a road to identify a location. For example, <code>Main Street</code>.',
+    }),
+    SubRegion: StringSchema.exactOptional().openapi({
+      description:
+        "A county, or an area that's part of a larger region. For example, <code>Metro Vancouver</code>.",
+    }),
+    TimeZone: TimeZoneSchema.exactOptional().openapi({
+      description:
+        'The time zone in which the <code>Place</code> is located. Returned only when using HERE as the selected partner.',
+    }),
+    UnitNumber: StringSchema.exactOptional().openapi({
+      description:
+        '<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>',
+    }),
+    UnitType: StringSchema.exactOptional().openapi({
+      description:
+        'For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.',
+    }),
   })
   .openapi({
     required: ['Geometry'],
@@ -2021,41 +1468,29 @@ const PlaceSchema = z
 
 const GetPlaceResponseSchema = z
   .object({
-    Place: PlaceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Details about the result, such as its address and position.' }),
-    ),
+    Place: PlaceSchema.openapi({
+      description: 'Details about the result, such as its address and position.',
+    }),
   })
   .openapi({ required: ['Place'] })
   .openapi('GetPlaceResponse')
 
 const ListDevicePositionsResponseEntrySchema = z
   .object({
-    Accuracy: PositionalAccuracySchema.and(
-      z.any().openapi({ description: 'The accuracy of the device position.' }),
-    ).exactOptional(),
-    DeviceId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the device for this position.' }),
-    ),
-    Position: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last known device position. Empty if no positions currently stored.',
-        }),
-    ),
-    PositionProperties: PropertyMapSchema.and(
-      z.any().openapi({ description: 'The properties associated with the position.' }),
-    ).exactOptional(),
-    SampleTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
+    Accuracy: PositionalAccuracySchema.exactOptional().openapi({
+      description: 'The accuracy of the device position.',
+    }),
+    DeviceId: IdSchema.openapi({ description: 'The ID of the device for this position.' }),
+    Position: PositionSchema.openapi({
+      description: 'The last known device position. Empty if no positions currently stored.',
+    }),
+    PositionProperties: PropertyMapSchema.exactOptional().openapi({
+      description: 'The properties associated with the position.',
+    }),
+    SampleTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
   })
   .openapi({
     required: ['DeviceId', 'Position', 'SampleTime'],
@@ -2069,67 +1504,43 @@ const ListDevicePositionsResponseEntryListSchema = z
 
 const ListDevicePositionsResponseSchema = z
   .object({
-    Entries: ListDevicePositionsResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Contains details about each device's last known position. These details includes the device ID, the time when the position was sampled on the device, the time that the service received the update, and the most recent coordinates.",
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results.',
-        }),
-    ).exactOptional(),
+    Entries: ListDevicePositionsResponseEntryListSchema.openapi({
+      description:
+        "Contains details about each device's last known position. These details includes the device ID, the time when the position was sampled on the device, the time that the service received the update, and the most recent coordinates.",
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results.',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListDevicePositionsResponse')
 
 const ListGeofenceCollectionsResponseEntrySchema = z
   .object({
-    CollectionName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the geofence collection.' }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the geofence collection' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
-        }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a timestamp for when the resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CollectionName: ResourceNameSchema.openapi({
+      description: 'The name of the geofence collection.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence collection was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The description for the geofence collection',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'Specifies a timestamp for when the resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['CollectionName', 'CreateTime', 'Description', 'UpdateTime'],
@@ -2143,60 +1554,35 @@ const ListGeofenceCollectionsResponseEntryListSchema = z
 
 const ListGeofenceCollectionsResponseSchema = z
   .object({
-    Entries: ListGeofenceCollectionsResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the geofence collections that exist in your Amazon Web Services account.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    Entries: ListGeofenceCollectionsResponseEntryListSchema.openapi({
+      description: 'Lists the geofence collections that exist in your Amazon Web Services account.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListGeofenceCollectionsResponse')
 
 const ListGeofenceResponseEntrySchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was stored in a geofence collection in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    GeofenceId: IdSchema.and(z.any().openapi({ description: 'The geofence identifier.' })),
-    Geometry: GeofenceGeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the geofence geometry details describing a polygon or a circle.',
-        }),
-    ),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Identifies the state of the geofence. A geofence will hold one of the following states:</p> <ul> <li> <p> <code>ACTIVE</code> — The geofence has been indexed by the system. </p> </li> <li> <p> <code>PENDING</code> — The geofence is being processed by the system.</p> </li> <li> <p> <code>FAILED</code> — The geofence failed to be indexed by the system.</p> </li> <li> <p> <code>DELETED</code> — The geofence has been deleted from the system index.</p> </li> <li> <p> <code>DELETING</code> — The geofence is being deleted from the system index.</p> </li> </ul>',
-        }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was stored in a geofence collection in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    GeofenceId: IdSchema.openapi({ description: 'The geofence identifier.' }),
+    Geometry: GeofenceGeometrySchema.openapi({
+      description: 'Contains the geofence geometry details describing a polygon or a circle.',
+    }),
+    Status: StringSchema.openapi({
+      description:
+        '<p>Identifies the state of the geofence. A geofence will hold one of the following states:</p> <ul> <li> <p> <code>ACTIVE</code> — The geofence has been indexed by the system. </p> </li> <li> <p> <code>PENDING</code> — The geofence is being processed by the system.</p> </li> <li> <p> <code>FAILED</code> — The geofence failed to be indexed by the system.</p> </li> <li> <p> <code>DELETED</code> — The geofence has been deleted from the system index.</p> </li> <li> <p> <code>DELETING</code> — The geofence is being deleted from the system index.</p> </li> </ul>',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'GeofenceId', 'Geometry', 'Status', 'UpdateTime'],
@@ -2210,58 +1596,36 @@ const ListGeofenceResponseEntryListSchema = z
 
 const ListGeofencesResponseSchema = z
   .object({
-    Entries: ListGeofenceResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains a list of geofences stored in the geofence collection.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    Entries: ListGeofenceResponseEntryListSchema.openapi({
+      description: 'Contains a list of geofences stored in the geofence collection.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListGeofencesResponse')
 
 const ListKeysResponseEntrySchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the API key was created, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the API key resource.' }),
-    ).exactOptional(),
-    ExpireTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource will expire, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
-    KeyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the API key resource.' }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp of when the API key was created, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The optional description for the API key resource.',
+    }),
+    ExpireTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource will expire, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
+    KeyName: ResourceNameSchema.openapi({ description: 'The name of the API key resource.' }),
     Restrictions: ApiKeyRestrictionsSchema,
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the API key was last updated, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp of when the API key was last updated, in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'ExpireTime', 'KeyName', 'Restrictions', 'UpdateTime'],
@@ -2275,22 +1639,14 @@ const ListKeysResponseEntryListSchema = z
 
 const ListKeysResponseSchema = z
   .object({
-    Entries: ListKeysResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains API key resources in your Amazon Web Services account. Details include API key name, allowed referers and timestamp for when the API key will expire.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    Entries: ListKeysResponseEntryListSchema.openapi({
+      description:
+        'Contains API key resources in your Amazon Web Services account. Details include API key name, allowed referers and timestamp for when the API key will expire.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListKeysResponse')
@@ -2299,40 +1655,28 @@ const StatusSchema = z.enum(['Active', 'Expired']).openapi('Status')
 
 const ListMapsResponseEntrySchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z.any().openapi({ description: 'Specifies the data provider for the associated map tiles.' }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the map resource.' }),
-    ),
-    MapName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the associated map resource.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
+    DataSource: StringSchema.openapi({
+      description: 'Specifies the data provider for the associated map tiles.',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The description for the map resource.',
+    }),
+    MapName: ResourceNameSchema.openapi({
+      description: 'The name of the associated map resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>.',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'DataSource', 'Description', 'MapName', 'UpdateTime'],
@@ -2347,64 +1691,40 @@ const ListMapsResponseEntryListSchema = z
 
 const ListMapsResponseSchema = z
   .object({
-    Entries: ListMapsResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains a list of maps in your Amazon Web Services account' }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    Entries: ListMapsResponseEntryListSchema.openapi({
+      description: 'Contains a list of maps in your Amazon Web Services account',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListMapsResponse')
 
 const ListPlaceIndexesResponseEntrySchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of geospatial data. Values can be one of the following:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the place index resource.' }),
-    ),
-    IndexName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the place index resource.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of geospatial data. Values can be one of the following:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description for the place index resource.',
+    }),
+    IndexName: ResourceNameSchema.openapi({ description: 'The name of the place index resource.' }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'DataSource', 'Description', 'IndexName', 'UpdateTime'],
@@ -2418,69 +1738,42 @@ const ListPlaceIndexesResponseEntryListSchema = z
 
 const ListPlaceIndexesResponseSchema = z
   .object({
-    Entries: ListPlaceIndexesResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the place index resources that exist in your Amazon Web Services account',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating that there are additional pages available. You can use the token in a new request to fetch the next page of results.',
-        }),
-    ).exactOptional(),
+    Entries: ListPlaceIndexesResponseEntryListSchema.openapi({
+      description: 'Lists the place index resources that exist in your Amazon Web Services account',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating that there are additional pages available. You can use the token in a new request to fetch the next page of results.',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListPlaceIndexesResponse')
 
 const ListRouteCalculatorsResponseEntrySchema = z
   .object({
-    CalculatorName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the route calculator resource.' }),
-    ),
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data provider of traffic and road network data. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The optional description of the route calculator resource.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The timestamp when the route calculator resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ),
+    CalculatorName: ResourceNameSchema.openapi({
+      description: 'The name of the route calculator resource.',
+    }),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp when the route calculator resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The data provider of traffic and road network data. Indicates one of the available providers:</p> <ul> <li> <p> <code>Esri</code> </p> </li> <li> <p> <code>Grab</code> </p> </li> <li> <p> <code>Here</code> </p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The optional description of the route calculator resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        '<p>The timestamp when the route calculator resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. </p> <ul> <li> <p>For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['CalculatorName', 'CreateTime', 'DataSource', 'Description', 'UpdateTime'],
@@ -2494,36 +1787,24 @@ const ListRouteCalculatorsResponseEntryListSchema = z
 
 const ListRouteCalculatorsResponseSchema = z
   .object({
-    Entries: ListRouteCalculatorsResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the route calculator resources that exist in your Amazon Web Services account',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a subsequent request to fetch the next set of results.',
-        }),
-    ).exactOptional(),
+    Entries: ListRouteCalculatorsResponseEntryListSchema.openapi({
+      description:
+        'Lists the route calculator resources that exist in your Amazon Web Services account',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a subsequent request to fetch the next set of results.',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListRouteCalculatorsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags that have been applied to the specified resource. Tags are mapped from the tag key to the tag value: <code>"TagKey" : "TagValue"</code>.</p> <ul> <li> <p>Format example: <code>{"tag1" : "value1", "tag2" : "value2"} </code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Tags that have been applied to the specified resource. Tags are mapped from the tag key to the tag value: <code>"TagKey" : "TagValue"</code>.</p> <ul> <li> <p>Format example: <code>{"tag1" : "value1", "tag2" : "value2"} </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2532,67 +1813,41 @@ const ArnListSchema = z.array(ArnSchema).openapi('ArnList')
 
 const ListTrackerConsumersResponseSchema = z
   .object({
-    ConsumerArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the list of geofence collection ARNs associated to the tracker resource.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    ConsumerArns: ArnListSchema.openapi({
+      description:
+        'Contains the list of geofence collection ARNs associated to the tracker resource.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['ConsumerArns'] })
   .openapi('ListTrackerConsumersResponse')
 
 const ListTrackersResponseEntrySchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for the tracker resource.' }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
-        }),
-    ).exactOptional(),
-    TrackerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the tracker resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    Description: ResourceDescriptionSchema.openapi({
+      description: 'The description for the tracker resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'Always returns <code>RequestBasedUsage</code>.Deprecated. Always returns RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'No longer used. Always returns an empty string.Deprecated. Unused.',
+    }),
+    TrackerName: ResourceNameSchema.openapi({ description: 'The name of the tracker resource.' }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp at which the device\'s position was determined. Uses <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({
     required: ['CreateTime', 'Description', 'TrackerName', 'UpdateTime'],
@@ -2606,47 +1861,31 @@ const ListTrackersResponseEntryListSchema = z
 
 const ListTrackersResponseSchema = z
   .object({
-    Entries: ListTrackersResponseEntryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains tracker resources in your Amazon Web Services account. Details include tracker name, description and timestamps for when the tracker was created and last updated.',
-        }),
-    ),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
-        }),
-    ).exactOptional(),
+    Entries: ListTrackersResponseEntryListSchema.openapi({
+      description:
+        'Contains tracker resources in your Amazon Web Services account. Details include tracker name, description and timestamps for when the tracker was created and last updated.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'A pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. ',
+    }),
   })
   .openapi({ required: ['Entries'] })
   .openapi('ListTrackersResponse')
 
 const PutGeofenceResponseSchema = z
   .object({
-    CreateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
-    GeofenceId: IdSchema.and(
-      z.any().openapi({ description: 'The geofence identifier entered in the request.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CreateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was created in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
+    GeofenceId: IdSchema.openapi({
+      description: 'The geofence identifier entered in the request.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the geofence was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({ required: ['CreateTime', 'GeofenceId', 'UpdateTime'] })
   .openapi('PutGeofenceResponse')
@@ -2660,29 +1899,17 @@ const PlaceIdSchema = z.string().openapi('PlaceId')
 
 const SearchForPositionResultSchema = z
   .object({
-    Distance: SearchForPositionResultDistanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The distance in meters of a great-circle arc between the query position and the result.</p> <note> <p>A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.</p> </note>',
-        }),
-    ),
-    Place: PlaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the search result, such as its address and position.',
-        }),
-    ),
-    PlaceId: PlaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForPosition</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE or Grab as a data provider.</p> </note>',
-        }),
-    ).exactOptional(),
+    Distance: SearchForPositionResultDistanceDoubleSchema.openapi({
+      description:
+        '<p>The distance in meters of a great-circle arc between the query position and the result.</p> <note> <p>A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.</p> </note>',
+    }),
+    Place: PlaceSchema.openapi({
+      description: 'Details about the search result, such as its address and position.',
+    }),
+    PlaceId: PlaceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForPosition</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE or Grab as a data provider.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Distance', 'Place'],
@@ -2705,33 +1932,19 @@ const PlaceIndexSearchResultLimitSchema = z
 
 const SearchPlaceIndexForPositionSummarySchema = z
   .object({
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
-        }),
-    ).exactOptional(),
-    MaxResults: PlaceIndexSearchResultLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the optional result count limit that is specified in the request.</p> <p>Default value: <code>50</code> </p>',
-        }),
-    ).exactOptional(),
-    Position: PositionSchema.and(
-      z.any().openapi({ description: 'The position specified in the request.' }),
-    ),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
+    }),
+    MaxResults: PlaceIndexSearchResultLimitSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the optional result count limit that is specified in the request.</p> <p>Default value: <code>50</code> </p>',
+    }),
+    Position: PositionSchema.openapi({ description: 'The position specified in the request.' }),
   })
   .openapi({
     required: ['DataSource', 'Position'],
@@ -2741,44 +1954,27 @@ const SearchPlaceIndexForPositionSummarySchema = z
 
 const SearchPlaceIndexForPositionResponseSchema = z
   .object({
-    Results: SearchForPositionResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of Places closest to the specified position. Each result contains additional information about the Places returned.',
-        }),
-    ),
-    Summary: SearchPlaceIndexForPositionSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a summary of the request. Echoes the input values for <code>Position</code>, <code>Language</code>, <code>MaxResults</code>, and the <code>DataSource</code> of the place index. ',
-        }),
-    ),
+    Results: SearchForPositionResultListSchema.openapi({
+      description:
+        'Returns a list of Places closest to the specified position. Each result contains additional information about the Places returned.',
+    }),
+    Summary: SearchPlaceIndexForPositionSummarySchema.openapi({
+      description:
+        'Contains a summary of the request. Echoes the input values for <code>Position</code>, <code>Language</code>, <code>MaxResults</code>, and the <code>DataSource</code> of the place index. ',
+    }),
   })
   .openapi({ required: ['Results', 'Summary'] })
   .openapi('SearchPlaceIndexForPositionResponse')
 
 const SearchForSuggestionsResultSchema = z
   .object({
-    PlaceId: PlaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForSuggestions</code> operations, the <code>PlaceId</code> is returned by place indexes that use Esri, Grab, or HERE as data providers.</p> </note>',
-        }),
-    ).exactOptional(),
-    Text: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The text of the place suggestion, typically formatted as an address string.',
-        }),
-    ),
+    PlaceId: PlaceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForSuggestions</code> operations, the <code>PlaceId</code> is returned by place indexes that use Esri, Grab, or HERE as data providers.</p> </note>',
+    }),
+    Text: StringSchema.openapi({
+      description: 'The text of the place suggestion, typically formatted as an address string.',
+    }),
   })
   .openapi({
     required: ['Text'],
@@ -2802,55 +1998,31 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const SearchPlaceIndexForSuggestionsSummarySchema = z
   .object({
-    BiasPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
-        }),
-    ).exactOptional(),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    FilterBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the coordinates for the optional bounding box specified in the request.',
-        }),
-    ).exactOptional(),
-    FilterCountries: CountryCodeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the optional country filter specified in the request.' }),
-    ).exactOptional(),
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
-        }),
-    ).exactOptional(),
-    MaxResults: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the optional result count limit specified in the request.',
-        }),
-    ).exactOptional(),
-    Text: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The free-form partial text input specified in the request.' }),
-    ),
+    BiasPosition: PositionSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    FilterBBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        'Contains the coordinates for the optional bounding box specified in the request.',
+    }),
+    FilterCountries: CountryCodeListSchema.exactOptional().openapi({
+      description: 'Contains the optional country filter specified in the request.',
+    }),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
+    }),
+    MaxResults: IntegerSchema.exactOptional().openapi({
+      description: 'Contains the optional result count limit specified in the request.',
+    }),
+    Text: SensitiveStringSchema.openapi({
+      description: 'The free-form partial text input specified in the request.',
+    }),
   })
   .openapi({
     required: ['DataSource', 'Text'],
@@ -2861,19 +2033,13 @@ const SearchPlaceIndexForSuggestionsSummarySchema = z
 
 const SearchPlaceIndexForSuggestionsResponseSchema = z
   .object({
-    Results: SearchForSuggestionsResultListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of place suggestions that best match the search text.' }),
-    ),
-    Summary: SearchPlaceIndexForSuggestionsSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a summary of the request. Echoes the input values for <code>BiasPosition</code>, <code>FilterBBox</code>, <code>FilterCountries</code>, <code>Language</code>, <code>MaxResults</code>, and <code>Text</code>. Also includes the <code>DataSource</code> of the place index. ',
-        }),
-    ),
+    Results: SearchForSuggestionsResultListSchema.openapi({
+      description: 'A list of place suggestions that best match the search text.',
+    }),
+    Summary: SearchPlaceIndexForSuggestionsSummarySchema.openapi({
+      description:
+        'Contains a summary of the request. Echoes the input values for <code>BiasPosition</code>, <code>FilterBBox</code>, <code>FilterCountries</code>, <code>Language</code>, <code>MaxResults</code>, and <code>Text</code>. Also includes the <code>DataSource</code> of the place index. ',
+    }),
   })
   .openapi({ required: ['Results', 'Summary'] })
   .openapi('SearchPlaceIndexForSuggestionsResponse')
@@ -2891,37 +2057,21 @@ const SearchForTextResultRelevanceDoubleSchema = z
 
 const SearchForTextResultSchema = z
   .object({
-    Distance: SearchForTextResultDistanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The distance in meters of a great-circle arc between the bias position specified and the result. <code>Distance</code> will be returned only if a bias position was specified in the query.</p> <note> <p>A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.</p> </note>',
-        }),
-    ).exactOptional(),
-    Place: PlaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about the search result, such as its address and position.',
-        }),
-    ),
-    PlaceId: PlaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForText</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE or Grab as a data provider.</p> </note>',
-        }),
-    ).exactOptional(),
-    Relevance: SearchForTextResultRelevanceDoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The relative confidence in the match for a result among the results returned. For example, if more fields for an address match (including house number, street, city, country/region, and postal code), the relevance score is closer to 1.</p> <p>Returned only when the partner selected is Esri or Grab.</p>',
-        }),
-    ).exactOptional(),
+    Distance: SearchForTextResultDistanceDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The distance in meters of a great-circle arc between the bias position specified and the result. <code>Distance</code> will be returned only if a bias position was specified in the query.</p> <note> <p>A great-circle arc is the shortest path on a sphere, in this case the Earth. This returns the shortest distance between two locations.</p> </note>',
+    }),
+    Place: PlaceSchema.openapi({
+      description: 'Details about the search result, such as its address and position.',
+    }),
+    PlaceId: PlaceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of the place. You can use this with the <code>GetPlace</code> operation to find the place again later.</p> <note> <p>For <code>SearchPlaceIndexForText</code> operations, the <code>PlaceId</code> is returned only by place indexes that use HERE or Grab as a data provider.</p> </note>',
+    }),
+    Relevance: SearchForTextResultRelevanceDoubleSchema.exactOptional().openapi({
+      description:
+        '<p>The relative confidence in the match for a result among the results returned. For example, if more fields for an address match (including house number, street, city, country/region, and postal code), the relevance score is closer to 1.</p> <p>Returned only when the partner selected is Esri or Grab.</p>',
+    }),
   })
   .openapi({
     required: ['Place'],
@@ -2936,61 +2086,35 @@ const SearchForTextResultListSchema = z
 
 const SearchPlaceIndexForTextSummarySchema = z
   .object({
-    BiasPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
-        }),
-    ).exactOptional(),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
-        }),
-    ),
-    FilterBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the coordinates for the optional bounding box specified in the request.',
-        }),
-    ).exactOptional(),
-    FilterCountries: CountryCodeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains the optional country filter specified in the request.' }),
-    ).exactOptional(),
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
-        }),
-    ).exactOptional(),
-    MaxResults: PlaceIndexSearchResultLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains the optional result count limit specified in the request.',
-        }),
-    ).exactOptional(),
-    ResultBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The bounding box that fully contains all search results.</p> <note> <p>If you specified the optional <code>FilterBBox</code> parameter in the request, <code>ResultBBox</code> is contained within <code>FilterBBox</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    Text: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The search text specified in the request.' }),
-    ),
+    BiasPosition: PositionSchema.exactOptional().openapi({
+      description:
+        '<p>Contains the coordinates for the optional bias position specified in the request.</p> <p>This parameter contains a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>The geospatial data provider attached to the place index resource specified in the request. Values can be one of the following:</p> <ul> <li> <p>Esri</p> </li> <li> <p>Grab</p> </li> <li> <p>Here</p> </li> </ul> <p>For more information about data providers, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Amazon Location Service data providers</a>.</p>',
+    }),
+    FilterBBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        'Contains the coordinates for the optional bounding box specified in the request.',
+    }),
+    FilterCountries: CountryCodeListSchema.exactOptional().openapi({
+      description: 'Contains the optional country filter specified in the request.',
+    }),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        'The preferred language used to return results. Matches the language in the request. The value is a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.',
+    }),
+    MaxResults: PlaceIndexSearchResultLimitSchema.exactOptional().openapi({
+      description: 'Contains the optional result count limit specified in the request.',
+    }),
+    ResultBBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        '<p>The bounding box that fully contains all search results.</p> <note> <p>If you specified the optional <code>FilterBBox</code> parameter in the request, <code>ResultBBox</code> is contained within <code>FilterBBox</code>.</p> </note>',
+    }),
+    Text: SensitiveStringSchema.openapi({
+      description: 'The search text specified in the request.',
+    }),
   })
   .openapi({
     required: ['DataSource', 'Text'],
@@ -3000,203 +2124,135 @@ const SearchPlaceIndexForTextSummarySchema = z
 
 const SearchPlaceIndexForTextResponseSchema = z
   .object({
-    Results: SearchForTextResultListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Places matching the input text. Each result contains additional information about the specific point of interest. </p> <p>Not all response properties are included with all responses. Some properties may only be returned by specific data partners.</p>',
-        }),
-    ),
-    Summary: SearchPlaceIndexForTextSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains a summary of the request. Echoes the input values for <code>BiasPosition</code>, <code>FilterBBox</code>, <code>FilterCountries</code>, <code>Language</code>, <code>MaxResults</code>, and <code>Text</code>. Also includes the <code>DataSource</code> of the place index and the bounding box, <code>ResultBBox</code>, which surrounds the search results. ',
-        }),
-    ),
+    Results: SearchForTextResultListSchema.openapi({
+      description:
+        '<p>A list of Places matching the input text. Each result contains additional information about the specific point of interest. </p> <p>Not all response properties are included with all responses. Some properties may only be returned by specific data partners.</p>',
+    }),
+    Summary: SearchPlaceIndexForTextSummarySchema.openapi({
+      description:
+        'Contains a summary of the request. Echoes the input values for <code>BiasPosition</code>, <code>FilterBBox</code>, <code>FilterCountries</code>, <code>Language</code>, <code>MaxResults</code>, and <code>Text</code>. Also includes the <code>DataSource</code> of the place index and the bounding box, <code>ResultBBox</code>, which surrounds the search results. ',
+    }),
   })
   .openapi({ required: ['Results', 'Summary'] })
   .openapi('SearchPlaceIndexForTextResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateGeofenceCollectionResponseSchema = z
   .object({
-    CollectionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the updated geofence collection. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
-        }),
-    ),
-    CollectionName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated geofence collection.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
-        }),
-    ),
+    CollectionArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the updated geofence collection. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollection</code> </p> </li> </ul>',
+    }),
+    CollectionName: ResourceNameSchema.openapi({
+      description: 'The name of the updated geofence collection.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The time when the geofence collection was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code> ',
+    }),
   })
   .openapi({ required: ['CollectionArn', 'CollectionName', 'UpdateTime'] })
   .openapi('UpdateGeofenceCollectionResponse')
 
 const UpdateKeyResponseSchema = z
   .object({
-    KeyArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
-        }),
-    ),
-    KeyName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the API key resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the API key resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    KeyArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the API key resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:key/ExampleKey</code> </p> </li> </ul>',
+    }),
+    KeyName: ResourceNameSchema.openapi({ description: 'The name of the API key resource.' }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the API key resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['KeyArn', 'KeyName', 'UpdateTime'] })
   .openapi('UpdateKeyResponse')
 
 const UpdateMapResponseSchema = z
   .object({
-    MapArn: GeoArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the updated map resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
-        }),
-    ),
-    MapName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated map resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the map resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    MapArn: GeoArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the updated map resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:map/ExampleMap</code> </p> </li> </ul>',
+    }),
+    MapName: ResourceNameSchema.openapi({ description: 'The name of the updated map resource.' }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the map resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['MapArn', 'MapName', 'UpdateTime'] })
   .openapi('UpdateMapResponse')
 
 const UpdatePlaceIndexResponseSchema = z
   .object({
-    IndexArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the upated place index resource. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place- index/ExamplePlaceIndex</code> </p> </li> </ul>',
-        }),
-    ),
-    IndexName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated place index resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    IndexArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the upated place index resource. Used to specify a resource across Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:place- index/ExamplePlaceIndex</code> </p> </li> </ul>',
+    }),
+    IndexName: ResourceNameSchema.openapi({
+      description: 'The name of the updated place index resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the place index resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['IndexArn', 'IndexName', 'UpdateTime'] })
   .openapi('UpdatePlaceIndexResponse')
 
 const UpdateRouteCalculatorResponseSchema = z
   .object({
-    CalculatorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the updated route calculator resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route- calculator/ExampleCalculator</code> </p> </li> </ul>',
-        }),
-    ),
-    CalculatorName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated route calculator resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the route calculator was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    CalculatorArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the updated route calculator resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:route- calculator/ExampleCalculator</code> </p> </li> </ul>',
+    }),
+    CalculatorName: ResourceNameSchema.openapi({
+      description: 'The name of the updated route calculator resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the route calculator was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['CalculatorArn', 'CalculatorName', 'UpdateTime'] })
   .openapi('UpdateRouteCalculatorResponse')
 
 const UpdateTrackerResponseSchema = z
   .object({
-    TrackerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the updated tracker resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
-        }),
-    ),
-    TrackerName: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated tracker resource.' }),
-    ),
-    UpdateTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp for when the tracker resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ),
+    TrackerArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the updated tracker resource. Used to specify a resource across AWS.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:tracker/ExampleTracker</code> </p> </li> </ul>',
+    }),
+    TrackerName: ResourceNameSchema.openapi({
+      description: 'The name of the updated tracker resource.',
+    }),
+    UpdateTime: TimestampSchema.openapi({
+      description:
+        'The timestamp for when the tracker resource was last updated in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
   })
   .openapi({ required: ['TrackerArn', 'TrackerName', 'UpdateTime'] })
   .openapi('UpdateTrackerResponse')
 
 const ApiKeyFilterSchema = z
   .object({
-    KeyStatus: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Filter on <code>Active</code> or <code>Expired</code> API keys.',
-        }),
-    ).exactOptional(),
+    KeyStatus: StatusSchema.exactOptional().openapi({
+      description: 'Filter on <code>Active</code> or <code>Expired</code> API keys.',
+    }),
   })
   .openapi({ description: 'Options for filtering API keys.', required: [] })
   .openapi('ApiKeyFilter')
 
 const AssociateTrackerConsumerRequestSchema = z
   .object({
-    ConsumerArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the geofence collection to be associated to tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>',
-        }),
-    ),
+    ConsumerArn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the geofence collection to be associated to tracker resource. Used when you need to specify a resource across all Amazon Web Services.</p> <ul> <li> <p>Format example: <code>arn:aws:geo:region:account-id:geofence-collection/ExampleGeofenceCollectionConsumer</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ConsumerArn'], title: 'AssociateTrackerConsumerRequest' })
   .openapi('AssociateTrackerConsumerRequest')
@@ -3209,14 +2265,10 @@ const BatchDeleteDevicePositionHistoryRequestDeviceIdsListSchema = z
 
 const BatchDeleteDevicePositionHistoryRequestSchema = z
   .object({
-    DeviceIds: BatchDeleteDevicePositionHistoryRequestDeviceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Devices whose position history you want to delete.</p> <ul> <li> <p>For example, for two devices: <code>“DeviceIds” : [DeviceId1,DeviceId2]</code> </p> </li> </ul>',
-        }),
-    ),
+    DeviceIds: BatchDeleteDevicePositionHistoryRequestDeviceIdsListSchema.openapi({
+      description:
+        '<p>Devices whose position history you want to delete.</p> <ul> <li> <p>For example, for two devices: <code>“DeviceIds” : [DeviceId1,DeviceId2]</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DeviceIds'], title: 'BatchDeleteDevicePositionHistoryRequest' })
   .openapi('BatchDeleteDevicePositionHistoryRequest')
@@ -3229,9 +2281,9 @@ const BatchDeleteGeofenceRequestGeofenceIdsListSchema = z
 
 const BatchDeleteGeofenceRequestSchema = z
   .object({
-    GeofenceIds: BatchDeleteGeofenceRequestGeofenceIdsListSchema.and(
-      z.any().openapi({ description: 'The batch of geofences to be deleted.' }),
-    ),
+    GeofenceIds: BatchDeleteGeofenceRequestGeofenceIdsListSchema.openapi({
+      description: 'The batch of geofences to be deleted.',
+    }),
   })
   .openapi({ required: ['GeofenceIds'], title: 'BatchDeleteGeofenceRequest' })
   .openapi('BatchDeleteGeofenceRequest')
@@ -3244,14 +2296,10 @@ const BatchEvaluateGeofencesRequestDevicePositionUpdatesListSchema = z
 
 const BatchEvaluateGeofencesRequestSchema = z
   .object({
-    DevicePositionUpdates: BatchEvaluateGeofencesRequestDevicePositionUpdatesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains device details for each device to be evaluated against the given geofence collection.',
-        }),
-    ),
+    DevicePositionUpdates: BatchEvaluateGeofencesRequestDevicePositionUpdatesListSchema.openapi({
+      description:
+        'Contains device details for each device to be evaluated against the given geofence collection.',
+    }),
   })
   .openapi({ required: ['DevicePositionUpdates'], title: 'BatchEvaluateGeofencesRequest' })
   .openapi('BatchEvaluateGeofencesRequest')
@@ -3270,14 +2318,10 @@ const BatchGetDevicePositionRequestTrackerNameStringSchema = z
 
 const BatchGetDevicePositionRequestSchema = z
   .object({
-    DeviceIds: BatchGetDevicePositionRequestDeviceIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Devices whose position you want to retrieve.</p> <ul> <li> <p>For example, for two devices: <code>device-ids=DeviceId1&amp;device-ids=DeviceId2</code> </p> </li> </ul>',
-        }),
-    ),
+    DeviceIds: BatchGetDevicePositionRequestDeviceIdsListSchema.openapi({
+      description:
+        '<p>Devices whose position you want to retrieve.</p> <ul> <li> <p>For example, for two devices: <code>device-ids=DeviceId1&amp;device-ids=DeviceId2</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DeviceIds'], title: 'BatchGetDevicePositionRequest' })
   .openapi('BatchGetDevicePositionRequest')
@@ -3290,11 +2334,9 @@ const BatchPutGeofenceRequestEntriesListSchema = z
 
 const BatchPutGeofenceRequestSchema = z
   .object({
-    Entries: BatchPutGeofenceRequestEntriesListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The batch of geofences to be stored in a geofence collection.' }),
-    ),
+    Entries: BatchPutGeofenceRequestEntriesListSchema.openapi({
+      description: 'The batch of geofences to be stored in a geofence collection.',
+    }),
   })
   .openapi({ required: ['Entries'], title: 'BatchPutGeofenceRequest' })
   .openapi('BatchPutGeofenceRequest')
@@ -3307,31 +2349,23 @@ const BatchUpdateDevicePositionRequestUpdatesListSchema = z
 
 const BatchUpdateDevicePositionRequestSchema = z
   .object({
-    Updates: BatchUpdateDevicePositionRequestUpdatesListSchema.and(
-      z.any().openapi({ description: 'Contains the position update details for each device.' }),
-    ),
+    Updates: BatchUpdateDevicePositionRequestUpdatesListSchema.openapi({
+      description: 'Contains the position update details for each device.',
+    }),
   })
   .openapi({ required: ['Updates'], title: 'BatchUpdateDevicePositionRequest' })
   .openapi('BatchUpdateDevicePositionRequest')
 
 const CalculateRouteCarModeOptionsSchema = z
   .object({
-    AvoidFerries: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    AvoidTolls: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
+    AvoidFerries: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
+    AvoidTolls: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -3358,38 +2392,22 @@ const TravelModeSchema = z
 
 const CalculateRouteTruckModeOptionsSchema = z
   .object({
-    AvoidFerries: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    AvoidTolls: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    Dimensions: TruckDimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
-        }),
-    ).exactOptional(),
-    Weight: TruckWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
-        }),
-    ).exactOptional(),
+    AvoidFerries: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
+    AvoidTolls: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
+    Dimensions: TruckDimensionsSchema.exactOptional().openapi({
+      description:
+        "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
+    }),
+    Weight: TruckWeightSchema.exactOptional().openapi({
+      description:
+        "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
+    }),
   })
   .openapi({
     description:
@@ -3400,70 +2418,38 @@ const CalculateRouteTruckModeOptionsSchema = z
 
 const CalculateRouteMatrixRequestSchema = z
   .object({
-    CarModeOptions: CalculateRouteCarModeOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies route preferences when traveling by <code>Car</code>, such as avoiding routes that use ferries or tolls.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Car</code>.</p>',
-        }),
-    ).exactOptional(),
-    DepartNow: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Sets the time of departure as the current time. Uses the current time to calculate the route matrix. You can't set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>",
-        }),
-    ).exactOptional(),
-    DeparturePositions: CalculateRouteMatrixRequestDeparturePositionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of departure (origin) positions for the route matrix. An array of points, each of which is itself a 2-value array defined in <a href="https://earth-info.nga.mil/GandG/wgs84/index.html">WGS 84</a> format: <code>[longitude, latitude]</code>. For example, <code>[-123.115, 49.285]</code>.</p> <important> <p>Depending on the data provider selected in the route calculator resource there may be additional restrictions on the inputs you can choose. See <a href="https://docs.aws.amazon.com/location/latest/developerguide/calculate-route-matrix.html#matrix-routing-position-limits"> Position restrictions</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </important> <note> <p>For route calculators that use Esri as the data provider, if you specify a departure that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html"> moves the position to the nearest road</a>. The snapped value is available in the result in <code>SnappedDeparturePositions</code>.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
-        }),
-    ),
-    DepartureTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the desired time of departure. Uses the given time to calculate the route matrix. You can\'t set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DestinationPositions: CalculateRouteMatrixRequestDestinationPositionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of destination positions for the route matrix. An array of points, each of which is itself a 2-value array defined in <a href="https://earth-info.nga.mil/GandG/wgs84/index.html">WGS 84</a> format: <code>[longitude, latitude]</code>. For example, <code>[-122.339, 47.615]</code> </p> <important> <p>Depending on the data provider selected in the route calculator resource there may be additional restrictions on the inputs you can choose. See <a href="https://docs.aws.amazon.com/location/latest/developerguide/calculate-route-matrix.html#matrix-routing-position-limits"> Position restrictions</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </important> <note> <p>For route calculators that use Esri as the data provider, if you specify a destination that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html"> moves the position to the nearest road</a>. The snapped value is available in the result in <code>SnappedDestinationPositions</code>.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
-        }),
-    ),
-    DistanceUnit: DistanceUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>',
-        }),
-    ).exactOptional(),
-    TravelMode: TravelModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the mode of transport when calculating a route. Used in estimating the speed of travel and road compatibility.</p> <p>The <code>TravelMode</code> you specify also determines how you specify route preferences: </p> <ul> <li> <p>If traveling by <code>Car</code> use the <code>CarModeOptions</code> parameter.</p> </li> <li> <p>If traveling by <code>Truck</code> use the <code>TruckModeOptions</code> parameter.</p> </li> </ul> <note> <p> <code>Bicycle</code> or <code>Motorcycle</code> are only valid when using <code>Grab</code> as a data provider, and only within Southeast Asia.</p> <p> <code>Truck</code> is not available for Grab.</p> <p>For more information about using Grab as a data provider, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>Default Value: <code>Car</code> </p>',
-        }),
-    ).exactOptional(),
-    TruckModeOptions: CalculateRouteTruckModeOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies route preferences when traveling by <code>Truck</code>, such as avoiding routes that use ferries or tolls, and truck specifications to consider when choosing an optimal road.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Truck</code>.</p>',
-        }),
-    ).exactOptional(),
+    CarModeOptions: CalculateRouteCarModeOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies route preferences when traveling by <code>Car</code>, such as avoiding routes that use ferries or tolls.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Car</code>.</p>',
+    }),
+    DepartNow: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Sets the time of departure as the current time. Uses the current time to calculate the route matrix. You can't set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>",
+    }),
+    DeparturePositions: CalculateRouteMatrixRequestDeparturePositionsListSchema.openapi({
+      description:
+        '<p>The list of departure (origin) positions for the route matrix. An array of points, each of which is itself a 2-value array defined in <a href="https://earth-info.nga.mil/GandG/wgs84/index.html">WGS 84</a> format: <code>[longitude, latitude]</code>. For example, <code>[-123.115, 49.285]</code>.</p> <important> <p>Depending on the data provider selected in the route calculator resource there may be additional restrictions on the inputs you can choose. See <a href="https://docs.aws.amazon.com/location/latest/developerguide/calculate-route-matrix.html#matrix-routing-position-limits"> Position restrictions</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </important> <note> <p>For route calculators that use Esri as the data provider, if you specify a departure that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html"> moves the position to the nearest road</a>. The snapped value is available in the result in <code>SnappedDeparturePositions</code>.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
+    }),
+    DepartureTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the desired time of departure. Uses the given time to calculate the route matrix. You can\'t set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
+    DestinationPositions: CalculateRouteMatrixRequestDestinationPositionsListSchema.openapi({
+      description:
+        '<p>The list of destination positions for the route matrix. An array of points, each of which is itself a 2-value array defined in <a href="https://earth-info.nga.mil/GandG/wgs84/index.html">WGS 84</a> format: <code>[longitude, latitude]</code>. For example, <code>[-122.339, 47.615]</code> </p> <important> <p>Depending on the data provider selected in the route calculator resource there may be additional restrictions on the inputs you can choose. See <a href="https://docs.aws.amazon.com/location/latest/developerguide/calculate-route-matrix.html#matrix-routing-position-limits"> Position restrictions</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </important> <note> <p>For route calculators that use Esri as the data provider, if you specify a destination that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html"> moves the position to the nearest road</a>. The snapped value is available in the result in <code>SnappedDestinationPositions</code>.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
+    }),
+    DistanceUnit: DistanceUnitSchema.exactOptional().openapi({
+      description:
+        '<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>',
+    }),
+    TravelMode: TravelModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the mode of transport when calculating a route. Used in estimating the speed of travel and road compatibility.</p> <p>The <code>TravelMode</code> you specify also determines how you specify route preferences: </p> <ul> <li> <p>If traveling by <code>Car</code> use the <code>CarModeOptions</code> parameter.</p> </li> <li> <p>If traveling by <code>Truck</code> use the <code>TruckModeOptions</code> parameter.</p> </li> </ul> <note> <p> <code>Bicycle</code> or <code>Motorcycle</code> are only valid when using <code>Grab</code> as a data provider, and only within Southeast Asia.</p> <p> <code>Truck</code> is not available for Grab.</p> <p>For more information about using Grab as a data provider, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>Default Value: <code>Car</code> </p>',
+    }),
+    TruckModeOptions: CalculateRouteTruckModeOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies route preferences when traveling by <code>Truck</code>, such as avoiding routes that use ferries or tolls, and truck specifications to consider when choosing an optimal road.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Truck</code>.</p>',
+    }),
   })
   .openapi({
     required: ['DeparturePositions', 'DestinationPositions'],
@@ -3479,86 +2465,46 @@ const CalculateRouteRequestWaypointPositionsListSchema = z
 
 const CalculateRouteRequestSchema = z
   .object({
-    CarModeOptions: CalculateRouteCarModeOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies route preferences when traveling by <code>Car</code>, such as avoiding routes that use ferries or tolls.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Car</code>.</p>',
-        }),
-    ).exactOptional(),
-    DepartNow: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Sets the time of departure as the current time. Uses the current time to calculate a route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    DeparturePosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The start position for the route. Defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p>For example, <code>[-123.115, 49.285]</code> </p> </li> </ul> <note> <p>If you specify a departure that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
-        }),
-    ),
-    DepartureTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the desired time of departure. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DestinationPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The finish position for the route. Defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p> For example, <code>[-122.339, 47.615]</code> </p> </li> </ul> <note> <p>If you specify a destination that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. </p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
-        }),
-    ),
-    DistanceUnit: DistanceUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>',
-        }),
-    ).exactOptional(),
-    IncludeLegGeometry: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to include the geometry details in the result for each path between a pair of positions.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-        }),
-    ).exactOptional(),
-    TravelMode: TravelModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the mode of transport when calculating a route. Used in estimating the speed of travel and road compatibility. You can choose <code>Car</code>, <code>Truck</code>, <code>Walking</code>, <code>Bicycle</code> or <code>Motorcycle</code> as options for the <code>TravelMode</code>.</p> <note> <p> <code>Bicycle</code> and <code>Motorcycle</code> are only valid when using Grab as a data provider, and only within Southeast Asia.</p> <p> <code>Truck</code> is not available for Grab.</p> <p>For more details on the using Grab for routing, including areas of coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>The <code>TravelMode</code> you specify also determines how you specify route preferences: </p> <ul> <li> <p>If traveling by <code>Car</code> use the <code>CarModeOptions</code> parameter.</p> </li> <li> <p>If traveling by <code>Truck</code> use the <code>TruckModeOptions</code> parameter.</p> </li> </ul> <p>Default Value: <code>Car</code> </p>',
-        }),
-    ).exactOptional(),
-    TruckModeOptions: CalculateRouteTruckModeOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies route preferences when traveling by <code>Truck</code>, such as avoiding routes that use ferries or tolls, and truck specifications to consider when choosing an optimal road.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Truck</code>.</p>',
-        }),
-    ).exactOptional(),
-    WaypointPositions: CalculateRouteRequestWaypointPositionsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies an ordered list of up to 23 intermediate positions to include along a route between the departure position and destination position. </p> <ul> <li> <p>For example, from the <code>DeparturePosition</code> <code>[-123.115, 49.285]</code>, the route follows the order that the waypoint positions are given <code>[[-122.757, 49.0021],[-122.349, 47.620]]</code> </p> </li> </ul> <note> <p>If you specify a waypoint position that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. </p> <p>Specifying more than 23 waypoints returns a <code>400 ValidationException</code> error.</p> <p>If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
-        }),
-    ).exactOptional(),
+    CarModeOptions: CalculateRouteCarModeOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies route preferences when traveling by <code>Car</code>, such as avoiding routes that use ferries or tolls.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Car</code>.</p>',
+    }),
+    DepartNow: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Sets the time of departure as the current time. Uses the current time to calculate a route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
+    DeparturePosition: PositionSchema.openapi({
+      description:
+        '<p>The start position for the route. Defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p>For example, <code>[-123.115, 49.285]</code> </p> </li> </ul> <note> <p>If you specify a departure that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
+    }),
+    DepartureTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the desired time of departure. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>',
+    }),
+    DestinationPosition: PositionSchema.openapi({
+      description:
+        '<p>The finish position for the route. Defined in <a href="https://earth-info.nga.mil/index.php?dir=wgs84&amp;action=wgs84">World Geodetic System (WGS 84)</a> format: <code>[longitude, latitude]</code>.</p> <ul> <li> <p> For example, <code>[-122.339, 47.615]</code> </p> </li> </ul> <note> <p>If you specify a destination that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. </p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
+    }),
+    DistanceUnit: DistanceUnitSchema.exactOptional().openapi({
+      description:
+        '<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>',
+    }),
+    IncludeLegGeometry: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Set to include the geometry details in the result for each path between a pair of positions.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+    }),
+    TravelMode: TravelModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the mode of transport when calculating a route. Used in estimating the speed of travel and road compatibility. You can choose <code>Car</code>, <code>Truck</code>, <code>Walking</code>, <code>Bicycle</code> or <code>Motorcycle</code> as options for the <code>TravelMode</code>.</p> <note> <p> <code>Bicycle</code> and <code>Motorcycle</code> are only valid when using Grab as a data provider, and only within Southeast Asia.</p> <p> <code>Truck</code> is not available for Grab.</p> <p>For more details on the using Grab for routing, including areas of coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a> in the <i>Amazon Location Service Developer Guide</i>.</p> </note> <p>The <code>TravelMode</code> you specify also determines how you specify route preferences: </p> <ul> <li> <p>If traveling by <code>Car</code> use the <code>CarModeOptions</code> parameter.</p> </li> <li> <p>If traveling by <code>Truck</code> use the <code>TruckModeOptions</code> parameter.</p> </li> </ul> <p>Default Value: <code>Car</code> </p>',
+    }),
+    TruckModeOptions: CalculateRouteTruckModeOptionsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies route preferences when traveling by <code>Truck</code>, such as avoiding routes that use ferries or tolls, and truck specifications to consider when choosing an optimal road.</p> <p>Requirements: <code>TravelMode</code> must be specified as <code>Truck</code>.</p>',
+    }),
+    WaypointPositions: CalculateRouteRequestWaypointPositionsListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies an ordered list of up to 23 intermediate positions to include along a route between the departure position and destination position. </p> <ul> <li> <p>For example, from the <code>DeparturePosition</code> <code>[-123.115, 49.285]</code>, the route follows the order that the waypoint positions are given <code>[[-122.757, 49.0021],[-122.349, 47.620]]</code> </p> </li> </ul> <note> <p>If you specify a waypoint position that\'s not located on a road, Amazon Location <a href="https://docs.aws.amazon.com/location/latest/developerguide/snap-to-nearby-road.html">moves the position to the nearest road</a>. </p> <p>Specifying more than 23 waypoints returns a <code>400 ValidationException</code> error.</p> <p>If Esri is the provider for your route calculator, specifying a route that is longer than 400 km returns a <code>400 RoutesValidationException</code> error.</p> </note> <p>Valid Values: <code>[-180 to 180,-90 to 90]</code> </p>',
+    }),
   })
   .openapi({
     required: ['DeparturePosition', 'DestinationPosition'],
@@ -3568,349 +2514,239 @@ const CalculateRouteRequestSchema = z
 
 const CreateGeofenceCollectionRequestSchema = z
   .object({
-    CollectionName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom name for the geofence collection.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique geofence collection name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleGeofenceCollection</code>.</p> </li> </ul>',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for the geofence collection.' }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN. ',
-        }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'This parameter is no longer used.Deprecated. No longer allowed.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the geofence collection. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    CollectionName: ResourceNameSchema.openapi({
+      description:
+        '<p>A custom name for the geofence collection.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique geofence collection name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleGeofenceCollection</code>.</p> </li> </ul>',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for the geofence collection.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN. ',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This parameter is no longer used.Deprecated. No longer allowed.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the geofence collection. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['CollectionName'], title: 'CreateGeofenceCollectionRequest' })
   .openapi('CreateGeofenceCollectionRequest')
 
 const CreateKeyRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for the API key resource.' }),
-    ).exactOptional(),
-    ExpireTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.',
-        }),
-    ).exactOptional(),
-    KeyName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A custom name for the API key resource.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique API key name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleAPIKey</code>.</p> </li> </ul>',
-        }),
-    ),
-    NoExpiry: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optionally set to <code>true</code> to set no expiration time for the API key. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.',
-        }),
-    ).exactOptional(),
-    Restrictions: ApiKeyRestrictionsSchema.and(
-      z.any().openapi({ description: 'The API key restrictions for the API key resource.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the map resource. A tag is a key-value pair that helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for the API key resource.',
+    }),
+    ExpireTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The optional timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.',
+    }),
+    KeyName: ResourceNameSchema.openapi({
+      description:
+        '<p>A custom name for the API key resource.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique API key name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleAPIKey</code>.</p> </li> </ul>',
+    }),
+    NoExpiry: BooleanSchema.exactOptional().openapi({
+      description:
+        'Optionally set to <code>true</code> to set no expiration time for the API key. One of <code>NoExpiry</code> or <code>ExpireTime</code> must be set.',
+    }),
+    Restrictions: ApiKeyRestrictionsSchema.openapi({
+      description: 'The API key restrictions for the API key resource.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the map resource. A tag is a key-value pair that helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['KeyName', 'Restrictions'], title: 'CreateKeyRequest' })
   .openapi('CreateKeyRequest')
 
 const CreateMapRequestSchema = z
   .object({
-    Configuration: MapConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the <code>MapConfiguration</code>, including the map style, for the map resource that you create. The map style defines the look of maps and the data provider for your map resource.',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for the map resource.' }),
-    ).exactOptional(),
-    MapName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the map resource.</p> <p>Requirements:</p> <ul> <li> <p>Must contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique map resource name. </p> </li> <li> <p>No spaces allowed. For example, <code>ExampleMap</code>.</p> </li> </ul>',
-        }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the map resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Configuration: MapConfigurationSchema.openapi({
+      description:
+        'Specifies the <code>MapConfiguration</code>, including the map style, for the map resource that you create. The map style defines the look of maps and the data provider for your map resource.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for the map resource.',
+    }),
+    MapName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name for the map resource.</p> <p>Requirements:</p> <ul> <li> <p>Must contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_). </p> </li> <li> <p>Must be a unique map resource name. </p> </li> <li> <p>No spaces allowed. For example, <code>ExampleMap</code>.</p> </li> </ul>',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the map resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Configuration', 'MapName'], title: 'CreateMapRequest' })
   .openapi('CreateMapRequest')
 
 const CreatePlaceIndexRequestSchema = z
   .object({
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the geospatial data provider for the new place index.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri</a>\'s coverage in your region of interest, see <a href="https://developers.arcgis.com/rest/geocode/api-reference/geocode-coverage.htm">Esri details on geocoding coverage</a>.</p> </li> <li> <p> <code>Grab</code> – Grab provides place index functionality for Southeast Asia. For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a>\' coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies</a>\' coverage in your region of interest, see <a href="https://developer.here.com/documentation/geocoder/dev_guide/topics/coverage-geocoder.html">HERE details on goecoding coverage</a>.</p> <important> <p>If you specify HERE Technologies (<code>Here</code>) as the data provider, you may not <a href="https://docs.aws.amazon.com/location-places/latest/APIReference/API_DataSourceConfiguration.html">store results</a> for locations in Japan. For more information, see the <a href="http://aws.amazon.com/service-terms/">Amazon Web Services Service Terms</a> for Amazon Location Service.</p> </important> </li> </ul> <p>For additional information , see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>',
-        }),
-    ),
-    DataSourceConfiguration: DataSourceConfigurationSchema.and(
-      z.any().openapi({ description: 'Specifies the data storage option requesting Places.' }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'The optional description for the place index resource.' }),
-    ).exactOptional(),
-    IndexName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the place index resource. </p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique place index resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExamplePlaceIndex</code>.</p> </li> </ul>',
-        }),
-    ),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the place index resource. A tag is a key-value pair that helps you manage, identify, search, and filter your resources.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource.</p> </li> <li> <p>Each tag key must be unique and must have exactly one associated value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @</p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>Specifies the geospatial data provider for the new place index.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri</a>\'s coverage in your region of interest, see <a href="https://developers.arcgis.com/rest/geocode/api-reference/geocode-coverage.htm">Esri details on geocoding coverage</a>.</p> </li> <li> <p> <code>Grab</code> – Grab provides place index functionality for Southeast Asia. For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a>\' coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies</a>\' coverage in your region of interest, see <a href="https://developer.here.com/documentation/geocoder/dev_guide/topics/coverage-geocoder.html">HERE details on goecoding coverage</a>.</p> <important> <p>If you specify HERE Technologies (<code>Here</code>) as the data provider, you may not <a href="https://docs.aws.amazon.com/location-places/latest/APIReference/API_DataSourceConfiguration.html">store results</a> for locations in Japan. For more information, see the <a href="http://aws.amazon.com/service-terms/">Amazon Web Services Service Terms</a> for Amazon Location Service.</p> </important> </li> </ul> <p>For additional information , see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>',
+    }),
+    DataSourceConfiguration: DataSourceConfigurationSchema.exactOptional().openapi({
+      description: 'Specifies the data storage option requesting Places.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The optional description for the place index resource.',
+    }),
+    IndexName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the place index resource. </p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9), hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique place index resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExamplePlaceIndex</code>.</p> </li> </ul>',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the place index resource. A tag is a key-value pair that helps you manage, identify, search, and filter your resources.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource.</p> </li> <li> <p>Each tag key must be unique and must have exactly one associated value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @</p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DataSource', 'IndexName'], title: 'CreatePlaceIndexRequest' })
   .openapi('CreatePlaceIndexRequest')
 
 const CreateRouteCalculatorRequestSchema = z
   .object({
-    CalculatorName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the route calculator resource. </p> <p>Requirements:</p> <ul> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9) , hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique Route calculator resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleRouteCalculator</code>.</p> </li> </ul>',
-        }),
-    ),
-    DataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the data provider of traffic and road network data.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri</a>\'s coverage in your region of interest, see <a href="https://doc.arcgis.com/en/arcgis-online/reference/network-coverage.htm">Esri details on street networks and traffic coverage</a>.</p> <p>Route calculators that use Esri as a data source only calculate routes that are shorter than 400 km.</p> </li> <li> <p> <code>Grab</code> – Grab provides routing functionality for Southeast Asia. For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a>\' coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies</a>\' coverage in your region of interest, see <a href="https://developer.here.com/documentation/routing-api/dev_guide/topics/coverage/car-routing.html">HERE car routing coverage</a> and <a href="https://developer.here.com/documentation/routing-api/dev_guide/topics/coverage/truck-routing.html">HERE truck routing coverage</a>.</p> </li> </ul> <p>For additional information , see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>',
-        }),
-    ),
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The optional description for the route calculator resource.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the route calculator resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <ul> <li> <p>For example: { <code>"tag1" : "value1"</code>, <code>"tag2" : "value2"</code>}</p> </li> </ul> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    CalculatorName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name of the route calculator resource. </p> <p>Requirements:</p> <ul> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9) , hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique Route calculator resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleRouteCalculator</code>.</p> </li> </ul>',
+    }),
+    DataSource: StringSchema.openapi({
+      description:
+        '<p>Specifies the data provider of traffic and road network data.</p> <note> <p>This field is case-sensitive. Enter the valid values as shown. For example, entering <code>HERE</code> returns an error.</p> </note> <p>Valid values include:</p> <ul> <li> <p> <code>Esri</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri</a>\'s coverage in your region of interest, see <a href="https://doc.arcgis.com/en/arcgis-online/reference/network-coverage.htm">Esri details on street networks and traffic coverage</a>.</p> <p>Route calculators that use Esri as a data source only calculate routes that are shorter than 400 km.</p> </li> <li> <p> <code>Grab</code> – Grab provides routing functionality for Southeast Asia. For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps</a>\' coverage, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and areas covered</a>.</p> </li> <li> <p> <code>Here</code> – For additional information about <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies</a>\' coverage in your region of interest, see <a href="https://developer.here.com/documentation/routing-api/dev_guide/topics/coverage/car-routing.html">HERE car routing coverage</a> and <a href="https://developer.here.com/documentation/routing-api/dev_guide/topics/coverage/truck-routing.html">HERE truck routing coverage</a>.</p> </li> </ul> <p>For additional information , see <a href="https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html">Data providers</a> on the <i>Amazon Location Service Developer Guide</i>.</p>',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'The optional description for the route calculator resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the route calculator resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <ul> <li> <p>For example: { <code>"tag1" : "value1"</code>, <code>"tag2" : "value2"</code>}</p> </li> </ul> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['CalculatorName', 'DataSource'], title: 'CreateRouteCalculatorRequest' })
   .openapi('CreateRouteCalculatorRequest')
 
 const CreateTrackerRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'An optional description for the tracker resource.' }),
-    ).exactOptional(),
-    KmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN.',
-        }),
-    ).exactOptional(),
-    PositionFiltering: PositionFilteringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this area are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This can reduce the effects of GPS noise when displaying device trajectories on a map, and can help control your costs by reducing the number of geofence evaluations. </p> </li> </ul> <p>This field is optional. If not specified, the default value is <code>TimeBased</code>.</p>',
-        }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'This parameter is no longer used.Deprecated. No longer allowed.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to the tracker resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TrackerName: ResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the tracker resource.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A-Z, a-z, 0-9) , hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique tracker resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleTracker</code>.</p> </li> </ul>',
-        }),
-    ),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'An optional description for the tracker resource.',
+    }),
+    KmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'A key identifier for an <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html">Amazon Web Services KMS customer managed key</a>. Enter a key ID, key ARN, alias name, or alias ARN.',
+    }),
+    PositionFiltering: PositionFilteringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this area are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This can reduce the effects of GPS noise when displaying device trajectories on a map, and can help control your costs by reducing the number of geofence evaluations. </p> </li> </ul> <p>This field is optional. If not specified, the default value is <code>TimeBased</code>.</p>',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This parameter is no longer used.Deprecated. No longer allowed.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>Applies one or more tags to the tracker resource. A tag is a key-value pair helps manage, identify, search, and filter your resources by labelling them.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource</p> </li> <li> <p>Each resource tag must be unique with a maximum of one value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @. </p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
+    TrackerName: ResourceNameSchema.openapi({
+      description:
+        '<p>The name for the tracker resource.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A-Z, a-z, 0-9) , hyphens (-), periods (.), and underscores (_).</p> </li> <li> <p>Must be a unique tracker resource name.</p> </li> <li> <p>No spaces allowed. For example, <code>ExampleTracker</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['TrackerName'], title: 'CreateTrackerRequest' })
   .openapi('CreateTrackerRequest')
 
 const DeleteGeofenceCollectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGeofenceCollectionRequest' })
   .openapi('DeleteGeofenceCollectionRequest')
 
 const DeleteKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteKeyRequest' })
   .openapi('DeleteKeyRequest')
 
 const DeleteMapRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMapRequest' })
   .openapi('DeleteMapRequest')
 
 const DeletePlaceIndexRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePlaceIndexRequest' })
   .openapi('DeletePlaceIndexRequest')
 
 const DeleteRouteCalculatorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteCalculatorRequest' })
   .openapi('DeleteRouteCalculatorRequest')
 
 const DeleteTrackerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTrackerRequest' })
   .openapi('DeleteTrackerRequest')
 
 const DescribeGeofenceCollectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGeofenceCollectionRequest' })
   .openapi('DescribeGeofenceCollectionRequest')
 
 const DescribeKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeKeyRequest' })
   .openapi('DescribeKeyRequest')
 
 const DescribeMapRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeMapRequest' })
   .openapi('DescribeMapRequest')
 
 const DescribePlaceIndexRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribePlaceIndexRequest' })
   .openapi('DescribePlaceIndexRequest')
 
 const DescribeRouteCalculatorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRouteCalculatorRequest' })
   .openapi('DescribeRouteCalculatorRequest')
 
 const DescribeTrackerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeTrackerRequest' })
   .openapi('DescribeTrackerRequest')
 
 const DisassociateTrackerConsumerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateTrackerConsumerRequest' })
   .openapi('DisassociateTrackerConsumerRequest')
 
@@ -3922,49 +2758,33 @@ const GetDevicePositionHistoryRequestMaxResultsIntegerSchema = z
 
 const GetDevicePositionHistoryRequestSchema = z
   .object({
-    EndTimeExclusive: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the end time for the position history in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. By default, the value will be the time that the request is made.</p> <p>Requirement:</p> <ul> <li> <p>The time specified for <code>EndTimeExclusive</code> must be after the time for <code>StartTimeInclusive</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxResults: GetDevicePositionHistoryRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of device positions returned in a single call.</p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
-    StartTimeInclusive: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the start time for the position history in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. By default, the value will be 24 hours prior to the time that the request is made.</p> <p>Requirement:</p> <ul> <li> <p>The time specified for <code>StartTimeInclusive</code> must be before <code>EndTimeExclusive</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    EndTimeExclusive: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the end time for the position history in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. By default, the value will be the time that the request is made.</p> <p>Requirement:</p> <ul> <li> <p>The time specified for <code>EndTimeExclusive</code> must be after the time for <code>StartTimeInclusive</code>.</p> </li> </ul>',
+    }),
+    MaxResults: GetDevicePositionHistoryRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of device positions returned in a single call.</p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
+    StartTimeInclusive: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the start time for the position history in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. By default, the value will be 24 hours prior to the time that the request is made.</p> <p>Requirement:</p> <ul> <li> <p>The time specified for <code>StartTimeInclusive</code> must be before <code>EndTimeExclusive</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'GetDevicePositionHistoryRequest', required: [] })
   .openapi('GetDevicePositionHistoryRequest')
 
 const GetDevicePositionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDevicePositionRequest' })
   .openapi('GetDevicePositionRequest')
 
 const GetGeofenceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetGeofenceRequest' })
   .openapi('GetGeofenceRequest')
 
@@ -3974,7 +2794,7 @@ const GetMapGlyphsRequestFontUnicodeRangeStringSchema = z
   .openapi('GetMapGlyphsRequestFontUnicodeRangeString')
 
 const GetMapGlyphsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMapGlyphsRequest' })
   .openapi('GetMapGlyphsRequest')
 
@@ -3984,12 +2804,12 @@ const GetMapSpritesRequestFileNameStringSchema = z
   .openapi('GetMapSpritesRequestFileNameString')
 
 const GetMapSpritesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMapSpritesRequest' })
   .openapi('GetMapSpritesRequest')
 
 const GetMapStyleDescriptorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMapStyleDescriptorRequest' })
   .openapi('GetMapStyleDescriptorRequest')
 
@@ -4000,12 +2820,12 @@ const GetMapTileRequestYStringSchema = z.string().regex(/\d+/).openapi('GetMapTi
 const GetMapTileRequestZStringSchema = z.string().regex(/\d+/).openapi('GetMapTileRequestZString')
 
 const GetMapTileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMapTileRequest' })
   .openapi('GetMapTileRequest')
 
 const GetPlaceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPlaceRequest' })
   .openapi('GetPlaceRequest')
 
@@ -4017,22 +2837,14 @@ const ListDevicePositionsRequestMaxResultsIntegerSchema = z
 
 const ListDevicePositionsRequestSchema = z
   .object({
-    MaxResults: ListDevicePositionsRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of entries returned in a single call.</p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListDevicePositionsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of entries returned in a single call.</p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListDevicePositionsRequest', required: [] })
   .openapi('ListDevicePositionsRequest')
@@ -4045,22 +2857,14 @@ const ListGeofenceCollectionsRequestMaxResultsIntegerSchema = z
 
 const ListGeofenceCollectionsRequestSchema = z
   .object({
-    MaxResults: ListGeofenceCollectionsRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListGeofenceCollectionsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListGeofenceCollectionsRequest', required: [] })
   .openapi('ListGeofenceCollectionsRequest')
@@ -4073,22 +2877,14 @@ const ListGeofencesRequestMaxResultsIntegerSchema = z
 
 const ListGeofencesRequestSchema = z
   .object({
-    MaxResults: ListGeofencesRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of geofences returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListGeofencesRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of geofences returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListGeofencesRequest', required: [] })
   .openapi('ListGeofencesRequest')
@@ -4101,30 +2897,18 @@ const ListKeysRequestMaxResultsIntegerSchema = z
 
 const ListKeysRequestSchema = z
   .object({
-    Filter: ApiKeyFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optionally filter the list to only <code>Active</code> or <code>Expired</code> API keys.',
-        }),
-    ).exactOptional(),
-    MaxResults: ListKeysRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    Filter: ApiKeyFilterSchema.exactOptional().openapi({
+      description:
+        'Optionally filter the list to only <code>Active</code> or <code>Expired</code> API keys.',
+    }),
+    MaxResults: ListKeysRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListKeysRequest', required: [] })
   .openapi('ListKeysRequest')
@@ -4137,22 +2921,14 @@ const ListMapsRequestMaxResultsIntegerSchema = z
 
 const ListMapsRequestSchema = z
   .object({
-    MaxResults: ListMapsRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListMapsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListMapsRequest', required: [] })
   .openapi('ListMapsRequest')
@@ -4165,22 +2941,14 @@ const ListPlaceIndexesRequestMaxResultsIntegerSchema = z
 
 const ListPlaceIndexesRequestSchema = z
   .object({
-    MaxResults: ListPlaceIndexesRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the maximum number of results returned in a single call.</p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListPlaceIndexesRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the maximum number of results returned in a single call.</p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListPlaceIndexesRequest', required: [] })
   .openapi('ListPlaceIndexesRequest')
@@ -4193,28 +2961,20 @@ const ListRouteCalculatorsRequestMaxResultsIntegerSchema = z
 
 const ListRouteCalculatorsRequestSchema = z
   .object({
-    MaxResults: ListRouteCalculatorsRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional maximum number of results returned in a single call.</p> <p>Default Value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default Value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListRouteCalculatorsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional maximum number of results returned in a single call.</p> <p>Default Value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page.</p> <p>Default Value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListRouteCalculatorsRequest', required: [] })
   .openapi('ListRouteCalculatorsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -4226,22 +2986,14 @@ const ListTrackerConsumersRequestMaxResultsIntegerSchema = z
 
 const ListTrackerConsumersRequestSchema = z
   .object({
-    MaxResults: ListTrackerConsumersRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListTrackerConsumersRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListTrackerConsumersRequest', required: [] })
   .openapi('ListTrackerConsumersRequest')
@@ -4254,22 +3006,14 @@ const ListTrackersRequestMaxResultsIntegerSchema = z
 
 const ListTrackersRequestSchema = z
   .object({
-    MaxResults: ListTrackersRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
-        }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
-        }),
-    ).exactOptional(),
+    MaxResults: ListTrackersRequestMaxResultsIntegerSchema.exactOptional().openapi({
+      description:
+        '<p>An optional limit for the number of resources returned in a single call. </p> <p>Default value: <code>100</code> </p>',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        '<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p> <p>Default value: <code>null</code> </p>',
+    }),
   })
   .openapi({ title: 'ListTrackersRequest', required: [] })
   .openapi('ListTrackersRequest')
@@ -4278,44 +3022,28 @@ const PropertyMapKeyStringSchema = z.string().min(1).max(20).openapi('PropertyMa
 
 const PutGeofenceRequestSchema = z
   .object({
-    Geometry: GeofenceGeometrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains the details to specify the position of the geofence. Can be either a polygon or a circle. Including both will return a validation error.</p> <note> <p>Each <a href="https://docs.aws.amazon.com/location-geofences/latest/APIReference/API_GeofenceGeometry.html"> geofence polygon</a> can have a maximum of 1,000 vertices.</p> </note>',
-        }),
-    ),
+    Geometry: GeofenceGeometrySchema.openapi({
+      description:
+        '<p>Contains the details to specify the position of the geofence. Can be either a polygon or a circle. Including both will return a validation error.</p> <note> <p>Each <a href="https://docs.aws.amazon.com/location-geofences/latest/APIReference/API_GeofenceGeometry.html"> geofence polygon</a> can have a maximum of 1,000 vertices.</p> </note>',
+    }),
   })
   .openapi({ required: ['Geometry'], title: 'PutGeofenceRequest' })
   .openapi('PutGeofenceRequest')
 
 const SearchPlaceIndexForPositionRequestSchema = z
   .object({
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for a location around Athens, Greece, with the <code>language</code> parameter set to <code>en</code>. The <code>city</code> in the results will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the <code>city</code> in the results will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: PlaceIndexSearchResultLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter. The maximum number of results returned per request.</p> <p>Default value: <code>50</code> </p>',
-        }),
-    ).exactOptional(),
-    Position: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the longitude and latitude of the position to query.</p> <p> This parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents a position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
-        }),
-    ),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for a location around Athens, Greece, with the <code>language</code> parameter set to <code>en</code>. The <code>city</code> in the results will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the <code>city</code> in the results will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
+    }),
+    MaxResults: PlaceIndexSearchResultLimitSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter. The maximum number of results returned per request.</p> <p>Default value: <code>50</code> </p>',
+    }),
+    Position: PositionSchema.openapi({
+      description:
+        '<p>Specifies the longitude and latitude of the position to query.</p> <p> This parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents a position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p>',
+    }),
   })
   .openapi({ required: ['Position'], title: 'SearchPlaceIndexForPositionRequest' })
   .openapi('SearchPlaceIndexForPositionRequest')
@@ -4334,54 +3062,31 @@ const SearchPlaceIndexForSuggestionsRequestTextStringSchema = z
 
 const SearchPlaceIndexForSuggestionsRequestSchema = z
   .object({
-    BiasPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that indicates a preference for place suggestions that are closer to a specified position.</p> <p> If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p> <note> <p> <code>BiasPosition</code> and <code>FilterBBox</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
-        }),
-    ).exactOptional(),
-    FilterBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that limits the search results by returning only suggestions within a specified bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
-        }),
-    ).exactOptional(),
-    FilterCountries: CountryCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that limits the search results by returning only suggestions within the provided list of countries.</p> <ul> <li> <p>Use the <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country code. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for <code>Athens, Gr</code> to get suggestions with the <code>language</code> parameter set to <code>en</code>. The results found will most likely be returned as <code>Athens, Greece</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα, Ελλάδα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: SearchPlaceIndexForSuggestionsRequestMaxResultsIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>5</code> </p>',
-        }),
-    ).exactOptional(),
-    Text: SearchPlaceIndexForSuggestionsRequestTextStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The free-form partial text to use to generate place suggestions. For example, <code>eiffel tow</code>.',
-        }),
-    ),
+    BiasPosition: PositionSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that indicates a preference for place suggestions that are closer to a specified position.</p> <p> If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p> <note> <p> <code>BiasPosition</code> and <code>FilterBBox</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
+    }),
+    FilterBBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that limits the search results by returning only suggestions within a specified bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
+    }),
+    FilterCountries: CountryCodeListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that limits the search results by returning only suggestions within the provided list of countries.</p> <ul> <li> <p>Use the <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country code. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>',
+    }),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for <code>Athens, Gr</code> to get suggestions with the <code>language</code> parameter set to <code>en</code>. The results found will most likely be returned as <code>Athens, Greece</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα, Ελλάδα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
+    }),
+    MaxResults:
+      SearchPlaceIndexForSuggestionsRequestMaxResultsIntegerSchema.exactOptional().openapi({
+        description:
+          '<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>5</code> </p>',
+      }),
+    Text: SearchPlaceIndexForSuggestionsRequestTextStringSchema.openapi({
+      description:
+        'The free-form partial text to use to generate place suggestions. For example, <code>eiffel tow</code>.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'SearchPlaceIndexForSuggestionsRequest' })
   .openapi('SearchPlaceIndexForSuggestionsRequest')
@@ -4394,54 +3099,30 @@ const SearchPlaceIndexForTextRequestTextStringSchema = z
 
 const SearchPlaceIndexForTextRequestSchema = z
   .object({
-    BiasPosition: PositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that indicates a preference for places that are closer to a specified position.</p> <p> If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p> <note> <p> <code>BiasPosition</code> and <code>FilterBBox</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
-        }),
-    ).exactOptional(),
-    FilterBBox: BoundingBoxSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that limits the search results by returning only places that are within the provided bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
-        }),
-    ).exactOptional(),
-    FilterCountries: CountryCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that limits the search results by returning only places that are in a specified list of countries.</p> <ul> <li> <p>Valid values include <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country codes. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Language: LanguageTagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for <code>Athens, Greece</code>, with the <code>language</code> parameter set to <code>en</code>. The result found will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: PlaceIndexSearchResultLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>50</code> </p>',
-        }),
-    ).exactOptional(),
-    Text: SearchPlaceIndexForTextRequestTextStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address, name, city, or region to be used in the search in free-form text format. For example, <code>123 Any Street</code>.',
-        }),
-    ),
+    BiasPosition: PositionSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that indicates a preference for places that are closer to a specified position.</p> <p> If provided, this parameter must contain a pair of numbers. The first number represents the X coordinate, or longitude; the second number represents the Y coordinate, or latitude.</p> <p>For example, <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>.</p> <note> <p> <code>BiasPosition</code> and <code>FilterBBox</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
+    }),
+    FilterBBox: BoundingBoxSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that limits the search results by returning only places that are within the provided bounding box.</p> <p> If provided, this parameter must contain a total of four consecutive numbers in two pairs. The first pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the southwest corner of the bounding box; the second pair of numbers represents the X and Y coordinates (longitude and latitude, respectively) of the northeast corner of the bounding box.</p> <p>For example, <code>[-12.7935, -37.4835, -12.0684, -36.9542]</code> represents a bounding box where the southwest corner has longitude <code>-12.7935</code> and latitude <code>-37.4835</code>, and the northeast corner has longitude <code>-12.0684</code> and latitude <code>-36.9542</code>.</p> <note> <p> <code>FilterBBox</code> and <code>BiasPosition</code> are mutually exclusive. Specifying both options results in an error. </p> </note>',
+    }),
+    FilterCountries: CountryCodeListSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that limits the search results by returning only places that are in a specified list of countries.</p> <ul> <li> <p>Valid values include <a href="https://www.iso.org/iso-3166-country-codes.html">ISO 3166</a> 3-digit country codes. For example, Australia uses three upper-case characters: <code>AUS</code>.</p> </li> </ul>',
+    }),
+    Language: LanguageTagSchema.exactOptional().openapi({
+      description:
+        '<p>The preferred language used to return results. The value must be a valid <a href="https://tools.ietf.org/search/bcp47">BCP 47</a> language tag, for example, <code>en</code> for English.</p> <p>This setting affects the languages used in the results, but not the results themselves. If no language is specified, or not supported for a particular result, the partner automatically chooses a language for the result.</p> <p>For an example, we\'ll use the Greek language. You search for <code>Athens, Greece</code>, with the <code>language</code> parameter set to <code>en</code>. The result found will most likely be returned as <code>Athens</code>.</p> <p>If you set the <code>language</code> parameter to <code>el</code>, for Greek, then the result found will more likely be returned as <code>Αθήνα</code>.</p> <p>If the data provider does not have a value for Greek, the result will be in a language that the provider does support.</p>',
+    }),
+    MaxResults: PlaceIndexSearchResultLimitSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter. The maximum number of results returned per request. </p> <p>The default: <code>50</code> </p>',
+    }),
+    Text: SearchPlaceIndexForTextRequestTextStringSchema.openapi({
+      description:
+        'The address, name, city, or region to be used in the search in free-form text format. For example, <code>123 Any Street</code>.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'SearchPlaceIndexForTextRequest' })
   .openapi('SearchPlaceIndexForTextRequest')
@@ -4457,178 +3138,124 @@ const TagKeysSchema = z.array(StringSchema).min(1).max(50).openapi('TagKeys')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Applies one or more tags to specific resource. A tag is a key-value pair that helps you manage, identify, search, and filter your resources.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource.</p> </li> <li> <p>Each tag key must be unique and must have exactly one associated value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @</p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
-        }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description:
+        '<p>Applies one or more tags to specific resource. A tag is a key-value pair that helps you manage, identify, search, and filter your resources.</p> <p>Format: <code>"key" : "value"</code> </p> <p>Restrictions:</p> <ul> <li> <p>Maximum 50 tags per resource.</p> </li> <li> <p>Each tag key must be unique and must have exactly one associated value.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Can use alphanumeric characters (A–Z, a–z, 0–9), and the following characters: + - = . _ : / @</p> </li> <li> <p>Cannot use "aws:" as a prefix for a key.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateGeofenceCollectionRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Updates the description for the geofence collection.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'This parameter is no longer used.Deprecated. No longer allowed.',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the geofence collection.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This parameter is no longer used.Deprecated. No longer allowed.',
+    }),
   })
   .openapi({ title: 'UpdateGeofenceCollectionRequest', required: [] })
   .openapi('UpdateGeofenceCollectionRequest')
 
 const UpdateKeyRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Updates the description for the API key resource.' }),
-    ).exactOptional(),
-    ExpireTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates the timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
-        }),
-    ).exactOptional(),
-    ForceUpdate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The boolean flag to be included for updating <code>ExpireTime</code> or <code>Restrictions</code> details.</p> <p>Must be set to <code>true</code> to update an API key resource that has been used in the past 7 days.</p> <p> <code>False</code> if force update is not preferred</p> <p>Default value: <code>False</code> </p>',
-        }),
-    ).exactOptional(),
-    NoExpiry: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the API key should expire. Set to <code>true</code> to set the API key to have no expiration time.',
-        }),
-    ).exactOptional(),
-    Restrictions: ApiKeyRestrictionsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Updates the API key restrictions for the API key resource.' }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the API key resource.',
+    }),
+    ExpireTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Updates the timestamp for when the API key resource will expire in <a href="https://www.iso.org/iso-8601-date-and-time-format.html"> ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. ',
+    }),
+    ForceUpdate: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>The boolean flag to be included for updating <code>ExpireTime</code> or <code>Restrictions</code> details.</p> <p>Must be set to <code>true</code> to update an API key resource that has been used in the past 7 days.</p> <p> <code>False</code> if force update is not preferred</p> <p>Default value: <code>False</code> </p>',
+    }),
+    NoExpiry: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether the API key should expire. Set to <code>true</code> to set the API key to have no expiration time.',
+    }),
+    Restrictions: ApiKeyRestrictionsSchema.exactOptional().openapi({
+      description: 'Updates the API key restrictions for the API key resource.',
+    }),
   })
   .openapi({ title: 'UpdateKeyRequest', required: [] })
   .openapi('UpdateKeyRequest')
 
 const UpdateMapRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Updates the description for the map resource.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the map resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
   })
   .openapi({ title: 'UpdateMapRequest', required: [] })
   .openapi('UpdateMapRequest')
 
 const UpdatePlaceIndexRequestSchema = z
   .object({
-    DataSourceConfiguration: DataSourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Updates the data storage option for the place index resource.' }),
-    ).exactOptional(),
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Updates the description for the place index resource.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
+    DataSourceConfiguration: DataSourceConfigurationSchema.exactOptional().openapi({
+      description: 'Updates the data storage option for the place index resource.',
+    }),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the place index resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
   })
   .openapi({ title: 'UpdatePlaceIndexRequest', required: [] })
   .openapi('UpdatePlaceIndexRequest')
 
 const UpdateRouteCalculatorRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Updates the description for the route calculator resource.' }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the route calculator resource.',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
   })
   .openapi({ title: 'UpdateRouteCalculatorRequest', required: [] })
   .openapi('UpdateRouteCalculatorRequest')
 
 const UpdateTrackerRequestSchema = z
   .object({
-    Description: ResourceDescriptionSchema.and(
-      z.any().openapi({ description: 'Updates the description for the tracker resource.' }),
-    ).exactOptional(),
-    PositionFiltering: PositionFilteringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Updates the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this distance are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This helps educe the effects of GPS noise when displaying device trajectories on a map, and can help control costs by reducing the number of geofence evaluations. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PricingPlan: PricingPlanSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
-        }),
-    ).exactOptional(),
-    PricingPlanDataSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'This parameter is no longer used.Deprecated. No longer allowed.',
-        }),
-    ).exactOptional(),
+    Description: ResourceDescriptionSchema.exactOptional().openapi({
+      description: 'Updates the description for the tracker resource.',
+    }),
+    PositionFiltering: PositionFilteringSchema.exactOptional().openapi({
+      description:
+        '<p>Updates the position filtering for the tracker resource.</p> <p>Valid values:</p> <ul> <li> <p> <code>TimeBased</code> - Location updates are evaluated against linked geofence collections, but not every location update is stored. If your update frequency is more often than 30 seconds, only one update per 30 seconds is stored for each unique device ID. </p> </li> <li> <p> <code>DistanceBased</code> - If the device has moved less than 30 m (98.4 ft), location updates are ignored. Location updates within this distance are neither evaluated against linked geofence collections, nor stored. This helps control costs by reducing the number of geofence evaluations and historical device positions to paginate through. Distance-based filtering can also reduce the effects of GPS noise when displaying device trajectories on a map. </p> </li> <li> <p> <code>AccuracyBased</code> - If the device has moved less than the measured accuracy, location updates are ignored. For example, if two consecutive updates from a device have a horizontal accuracy of 5 m and 10 m, the second update is ignored if the device has moved less than 15 m. Ignored location updates are neither evaluated against linked geofence collections, nor stored. This helps educe the effects of GPS noise when displaying device trajectories on a map, and can help control costs by reducing the number of geofence evaluations. </p> </li> </ul>',
+    }),
+    PricingPlan: PricingPlanSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'No longer used. If included, the only allowed value is <code>RequestBasedUsage</code>.Deprecated. If included, the only allowed value is RequestBasedUsage.',
+    }),
+    PricingPlanDataSource: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'This parameter is no longer used.Deprecated. No longer allowed.',
+    }),
   })
   .openapi({ title: 'UpdateTrackerRequest', required: [] })
   .openapi('UpdateTrackerRequest')
@@ -5309,22 +3936,14 @@ export const postRoutesV0CalculatorsCalculatorNameCalculateRouteRoute = createRo
             .object({
               CarModeOptions: z
                 .object({
-                  AvoidFerries: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  AvoidTolls: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  AvoidFerries: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  AvoidTolls: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5383,38 +4002,22 @@ export const postRoutesV0CalculatorsCalculatorNameCalculateRouteRoute = createRo
                 }),
               TruckModeOptions: z
                 .object({
-                  AvoidFerries: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  AvoidTolls: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  Dimensions: TruckDimensionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
-                      }),
-                  ).exactOptional(),
-                  Weight: TruckWeightSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
-                      }),
-                  ).exactOptional(),
+                  AvoidFerries: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  AvoidTolls: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  Dimensions: TruckDimensionsSchema.exactOptional().openapi({
+                    description:
+                      "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
+                  }),
+                  Weight: TruckWeightSchema.exactOptional().openapi({
+                    description:
+                      "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5506,22 +4109,14 @@ export const postRoutesV0CalculatorsCalculatorNameCalculateRouteMatrixRoute = cr
             .object({
               CarModeOptions: z
                 .object({
-                  AvoidFerries: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  AvoidTolls: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
+                  AvoidFerries: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  AvoidTolls: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5575,38 +4170,22 @@ export const postRoutesV0CalculatorsCalculatorNameCalculateRouteMatrixRoute = cr
                 }),
               TruckModeOptions: z
                 .object({
-                  AvoidFerries: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  AvoidTolls: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  Dimensions: TruckDimensionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
-                      }),
-                  ).exactOptional(),
-                  Weight: TruckWeightSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
-                      }),
-                  ).exactOptional(),
+                  AvoidFerries: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  AvoidTolls: BooleanSchema.exactOptional().openapi({
+                    description:
+                      '<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>',
+                  }),
+                  Dimensions: TruckDimensionsSchema.exactOptional().openapi({
+                    description:
+                      "Specifies the truck's dimension specifications including length, height, width, and unit of measurement. Used to avoid roads that can't support the truck's dimensions.",
+                  }),
+                  Weight: TruckWeightSchema.exactOptional().openapi({
+                    description:
+                      "Specifies the truck's weight specifications including total weight and unit of measurement. Used to avoid roads that can't support the truck's weight.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5804,30 +4383,19 @@ export const postMetadataV0KeysRoute = createRoute({
                 }),
               Restrictions: z
                 .object({
-                  AllowActions: ApiKeyRestrictionsAllowActionsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
-                      }),
-                  ).exactOptional(),
-                  AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  AllowResources: ApiKeyRestrictionsAllowResourcesListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  AllowActions: ApiKeyRestrictionsAllowActionsListSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
+                  }),
+                  AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.exactOptional().openapi({
+                    description:
+                      '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
+                  }),
+                  AllowResources:
+                    ApiKeyRestrictionsAllowResourcesListSchema.exactOptional().openapi({
+                      description:
+                        '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
+                    }),
                 })
                 .openapi({
                   description:
@@ -5905,14 +4473,10 @@ export const postMapsV0MapsRoute = createRoute({
             .object({
               Configuration: z
                 .object({
-                  Style: MapStyleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies the map style selected from an available data provider.</p> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri map styles</a>:</p> <ul> <li> <p> <code>VectorEsriDarkGrayCanvas</code> – The Esri Dark Gray Canvas map style. A vector basemap with a dark gray, neutral background with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>RasterEsriImagery</code> – The Esri Imagery map style. A raster basemap that provides one meter or better satellite and aerial imagery in many parts of the world and lower resolution satellite imagery worldwide. </p> </li> <li> <p> <code>VectorEsriLightGrayCanvas</code> – The Esri Light Gray Canvas map style, which provides a detailed vector basemap with a light gray, neutral background style with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>VectorEsriTopographic</code> – The Esri Light map style, which provides a detailed vector basemap with a classic Esri map style.</p> </li> <li> <p> <code>VectorEsriStreets</code> – The Esri World Streets map style, which provides a detailed vector basemap for the world symbolized with a classic Esri street map style. The vector tile layer is similar in content and style to the World Street Map raster map.</p> </li> <li> <p> <code>VectorEsriNavigation</code> – The Esri World Navigation map style, which provides a detailed basemap for the world symbolized with a custom navigation map style that\'s designed for use during the day in mobile devices.</p> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies map styles</a>:</p> <ul> <li> <p> <code>VectorHereContrast</code> – The HERE Contrast (Berlin) map style is a high contrast detailed base map of the world that blends 3D and 2D rendering.</p> <note> <p>The <code>VectorHereContrast</code> style has been renamed from <code>VectorHereBerlin</code>. <code>VectorHereBerlin</code> has been deprecated, but will continue to work in applications that use it.</p> </note> </li> <li> <p> <code>VectorHereExplore</code> – A default HERE map style containing a neutral, global map and its features including roads, buildings, landmarks, and water features. It also now includes a fully designed map of Japan.</p> </li> <li> <p> <code>VectorHereExploreTruck</code> – A global map containing truck restrictions and attributes (e.g. width / height / HAZMAT) symbolized with highlighted segments and icons on top of HERE Explore to support use cases within transport and logistics.</p> </li> <li> <p> <code>RasterHereExploreSatellite</code> – A global map containing high resolution satellite imagery.</p> </li> <li> <p> <code>HybridHereExploreSatellite</code> – A global map displaying the road network, street names, and city labels over satellite imagery. This style will automatically retrieve both raster and vector tiles, and your charges will be based on total tiles retrieved.</p> <note> <p>Hybrid styles use both vector and raster tiles when rendering the map that you see. This means that more tiles are retrieved than when using either vector or raster tiles alone. Your charges will include all tiles retrieved.</p> </note> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps map styles</a>:</p> <ul> <li> <p> <code>VectorGrabStandardLight</code> – The Grab Standard Light map style provides a basemap with detailed land use coloring, area names, roads, landmarks, and points of interest covering Southeast Asia.</p> </li> <li> <p> <code>VectorGrabStandardDark</code> – The Grab Standard Dark map style provides a dark variation of the standard basemap covering Southeast Asia.</p> </li> </ul> <note> <p>Grab provides maps only for countries in Southeast Asia, and is only available in the Asia Pacific (Singapore) Region (<code>ap-southeast-1</code>). For more information, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and area covered</a>.</p> </note> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/open-data.html">Open Data map styles</a>:</p> <ul> <li> <p> <code>VectorOpenDataStandardLight</code> – The Open Data Standard Light map style provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataStandardDark</code> – Open Data Standard Dark is a dark-themed map style that provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataVisualizationLight</code> – The Open Data Visualization Light map style is a light-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> <li> <p> <code>VectorOpenDataVisualizationDark</code> – The Open Data Visualization Dark map style is a dark-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  Style: MapStyleSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies the map style selected from an available data provider.</p> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/esri.html">Esri map styles</a>:</p> <ul> <li> <p> <code>VectorEsriDarkGrayCanvas</code> – The Esri Dark Gray Canvas map style. A vector basemap with a dark gray, neutral background with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>RasterEsriImagery</code> – The Esri Imagery map style. A raster basemap that provides one meter or better satellite and aerial imagery in many parts of the world and lower resolution satellite imagery worldwide. </p> </li> <li> <p> <code>VectorEsriLightGrayCanvas</code> – The Esri Light Gray Canvas map style, which provides a detailed vector basemap with a light gray, neutral background style with minimal colors, labels, and features that\'s designed to draw attention to your thematic content. </p> </li> <li> <p> <code>VectorEsriTopographic</code> – The Esri Light map style, which provides a detailed vector basemap with a classic Esri map style.</p> </li> <li> <p> <code>VectorEsriStreets</code> – The Esri World Streets map style, which provides a detailed vector basemap for the world symbolized with a classic Esri street map style. The vector tile layer is similar in content and style to the World Street Map raster map.</p> </li> <li> <p> <code>VectorEsriNavigation</code> – The Esri World Navigation map style, which provides a detailed basemap for the world symbolized with a custom navigation map style that\'s designed for use during the day in mobile devices.</p> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/HERE.html">HERE Technologies map styles</a>:</p> <ul> <li> <p> <code>VectorHereContrast</code> – The HERE Contrast (Berlin) map style is a high contrast detailed base map of the world that blends 3D and 2D rendering.</p> <note> <p>The <code>VectorHereContrast</code> style has been renamed from <code>VectorHereBerlin</code>. <code>VectorHereBerlin</code> has been deprecated, but will continue to work in applications that use it.</p> </note> </li> <li> <p> <code>VectorHereExplore</code> – A default HERE map style containing a neutral, global map and its features including roads, buildings, landmarks, and water features. It also now includes a fully designed map of Japan.</p> </li> <li> <p> <code>VectorHereExploreTruck</code> – A global map containing truck restrictions and attributes (e.g. width / height / HAZMAT) symbolized with highlighted segments and icons on top of HERE Explore to support use cases within transport and logistics.</p> </li> <li> <p> <code>RasterHereExploreSatellite</code> – A global map containing high resolution satellite imagery.</p> </li> <li> <p> <code>HybridHereExploreSatellite</code> – A global map displaying the road network, street names, and city labels over satellite imagery. This style will automatically retrieve both raster and vector tiles, and your charges will be based on total tiles retrieved.</p> <note> <p>Hybrid styles use both vector and raster tiles when rendering the map that you see. This means that more tiles are retrieved than when using either vector or raster tiles alone. Your charges will include all tiles retrieved.</p> </note> </li> </ul> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html">GrabMaps map styles</a>:</p> <ul> <li> <p> <code>VectorGrabStandardLight</code> – The Grab Standard Light map style provides a basemap with detailed land use coloring, area names, roads, landmarks, and points of interest covering Southeast Asia.</p> </li> <li> <p> <code>VectorGrabStandardDark</code> – The Grab Standard Dark map style provides a dark variation of the standard basemap covering Southeast Asia.</p> </li> </ul> <note> <p>Grab provides maps only for countries in Southeast Asia, and is only available in the Asia Pacific (Singapore) Region (<code>ap-southeast-1</code>). For more information, see <a href="https://docs.aws.amazon.com/location/latest/developerguide/grab.html#grab-coverage-area">GrabMaps countries and area covered</a>.</p> </note> <p>Valid <a href="https://docs.aws.amazon.com/location/latest/developerguide/open-data.html">Open Data map styles</a>:</p> <ul> <li> <p> <code>VectorOpenDataStandardLight</code> – The Open Data Standard Light map style provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataStandardDark</code> – Open Data Standard Dark is a dark-themed map style that provides a detailed basemap for the world suitable for website and mobile application use. The map includes highways major roads, minor roads, railways, water features, cities, parks, landmarks, building footprints, and administrative boundaries.</p> </li> <li> <p> <code>VectorOpenDataVisualizationLight</code> – The Open Data Visualization Light map style is a light-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> <li> <p> <code>VectorOpenDataVisualizationDark</code> – The Open Data Visualization Dark map style is a dark-themed style with muted colors and fewer features that aids in understanding overlaid data.</p> </li> </ul>',
+                  }),
                 })
                 .openapi({
                   description: 'Specifies the map tile style selected from an available provider.',
@@ -6017,14 +4581,10 @@ export const postPlacesV0IndexesRoute = createRoute({
                 }),
               DataSourceConfiguration: z
                 .object({
-                  IntendedUse: IntendedUseSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
-                      }),
-                  ).exactOptional(),
+                  IntendedUse: IntendedUseSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6705,30 +5265,19 @@ export const patchMetadataV0KeysKeyNameRoute = createRoute({
                 }),
               Restrictions: z
                 .object({
-                  AllowActions: ApiKeyRestrictionsAllowActionsListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
-                      }),
-                  ).exactOptional(),
-                  AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  AllowResources: ApiKeyRestrictionsAllowResourcesListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  AllowActions: ApiKeyRestrictionsAllowActionsListSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of allowed actions that an API key resource grants permissions to perform</p> <note> <p>Currently, the only valid action is <code>geo:GetMap*</code> as an input to the list. For example, <code>["geo:GetMap*"]</code> is valid but <code>["geo:GetMapTile"]</code> is not.</p> </note>',
+                  }),
+                  AllowReferers: ApiKeyRestrictionsAllowReferersListSchema.exactOptional().openapi({
+                    description:
+                      '<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>',
+                  }),
+                  AllowResources:
+                    ApiKeyRestrictionsAllowResourcesListSchema.exactOptional().openapi({
+                      description:
+                        '<p>A list of allowed resource ARNs that a API key bearer can perform actions on</p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs)</a>.</p> <note> <p>In this preview, you can allow only map resources.</p> </note> <p>Requirements:</p> <ul> <li> <p>Must be prefixed with <code>arn</code>.</p> </li> <li> <p> <code>partition</code> and <code>service</code> must not be empty and should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>region</code> and <code>account-id</code> can be empty or should begin with only alphanumeric characters (A–Z, a–z, 0–9) and contain only alphanumeric numbers, hyphens (-) and periods (.).</p> </li> <li> <p> <code>resource-id</code> can begin with any character except for forward slash (/) and contain any characters after, including forward slashes to form a path.</p> <p> <code>resource-id</code> can also include wildcard characters, denoted by an asterisk (*).</p> </li> <li> <p> <code>arn</code>, <code>partition</code>, <code>service</code>, <code>region</code>, <code>account-id</code> and <code>resource-id</code> must be delimited by a colon (:).</p> </li> <li> <p>No spaces allowed. For example, <code>arn:aws:geo:region:<i>account-id</i>:map/ExampleMap*</code>.</p> </li> </ul>',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7135,14 +5684,10 @@ export const patchPlacesV0IndexesIndexNameRoute = createRoute({
             .object({
               DataSourceConfiguration: z
                 .object({
-                  IntendedUse: IntendedUseSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
-                      }),
-                  ).exactOptional(),
+                  IntendedUse: IntendedUseSchema.exactOptional().openapi({
+                    description:
+                      "<p>Specifies how the results of an operation will be stored by the caller. </p> <p>Valid values include:</p> <ul> <li> <p> <code>SingleUse</code> specifies that the results won't be stored. </p> </li> <li> <p> <code>Storage</code> specifies that the result can be cached or stored in a database.</p> </li> </ul> <p>Default value: <code>SingleUse</code> </p>",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8071,22 +6616,14 @@ export const putGeofencingV0CollectionsCollectionNameGeofencesGeofenceIdRoute = 
             .object({
               Geometry: z
                 .object({
-                  Circle: CircleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A circle on the earth, as defined by a center point and a radius.',
-                      }),
-                  ).exactOptional(),
-                  Polygon: LinearRingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A polygon is a list of linear rings which are each made up of a list of vertices.</p> <p>Each vertex is a 2-dimensional point of the form: <code>[longitude, latitude]</code>. This is represented as an array of doubles of length 2 (so <code>[double, double]</code>).</p> <p>An array of 4 or more vertices, where the first and last vertex are the same (to form a closed boundary), is called a linear ring. The linear ring vertices must be listed in counter-clockwise order around the ring’s interior. The linear ring is represented as an array of vertices, or an array of arrays of doubles (<code>[[double, double], ...]</code>).</p> <p>A geofence consists of a single linear ring. To allow for future expansion, the Polygon parameter takes an array of linear rings, which is represented as an array of arrays of arrays of doubles (<code>[[[double, double], ...], ...]</code>).</p> <p>A linear ring for use in geofences can consist of between 4 and 1,000 vertices.</p>',
-                      }),
-                  ).exactOptional(),
+                  Circle: CircleSchema.exactOptional().openapi({
+                    description:
+                      'A circle on the earth, as defined by a center point and a radius.',
+                  }),
+                  Polygon: LinearRingsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A polygon is a list of linear rings which are each made up of a list of vertices.</p> <p>Each vertex is a 2-dimensional point of the form: <code>[longitude, latitude]</code>. This is represented as an array of doubles of length 2 (so <code>[double, double]</code>).</p> <p>An array of 4 or more vertices, where the first and last vertex are the same (to form a closed boundary), is called a linear ring. The linear ring vertices must be listed in counter-clockwise order around the ring’s interior. The linear ring is represented as an array of vertices, or an array of arrays of doubles (<code>[[double, double], ...]</code>).</p> <p>A geofence consists of a single linear ring. To allow for future expansion, the Polygon parameter takes an array of linear rings, which is represented as an array of arrays of arrays of doubles (<code>[[[double, double], ...], ...]</code>).</p> <p>A linear ring for use in geofences can consist of between 4 and 1,000 vertices.</p>',
+                  }),
                 })
                 .openapi({
                   description:
@@ -8977,14 +7514,9 @@ export const postMetadataV0ListKeysRoute = createRoute({
             .object({
               Filter: z
                 .object({
-                  KeyStatus: StatusSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Filter on <code>Active</code> or <code>Expired</code> API keys.',
-                      }),
-                  ).exactOptional(),
+                  KeyStatus: StatusSchema.exactOptional().openapi({
+                    description: 'Filter on <code>Active</code> or <code>Expired</code> API keys.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Options for filtering API keys.', required: [] }),

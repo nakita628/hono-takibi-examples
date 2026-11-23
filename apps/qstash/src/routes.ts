@@ -1181,7 +1181,7 @@ export const postV2PublishDestinationRoute = createRoute({
       description: 'The raw request message passed to the endpoints as is',
       content: {
         'text/plain': { schema: z.string() },
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'application/octet-stream': {
           schema: z.file().openapi({ type: 'string', format: 'binary' }),
         },
@@ -1471,7 +1471,7 @@ export const postV2EnqueueQueueNameDestinationRoute = createRoute({
       description: 'The raw request message passed to the endpoints as is',
       content: {
         'text/plain': { schema: z.string() },
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'application/octet-stream': {
           schema: z.file().openapi({ type: 'string', format: 'binary' }),
         },
@@ -2525,7 +2525,7 @@ export const postV2SchedulesDestinationRoute = createRoute({
     body: {
       description: 'The raw request message passed to the endpoints as is',
       content: {
-        'application/json': { schema: z.object({}) },
+        'application/json': { schema: z.looseObject({}) },
         'text/plain': { schema: z.string() },
         'application/octet-stream': {
           schema: z.file().openapi({ type: 'string', format: 'binary' }),

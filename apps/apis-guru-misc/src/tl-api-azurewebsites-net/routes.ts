@@ -28,19 +28,48 @@ const ValidationErrorSchema = z
   .openapi({ required: [] })
   .openapi('ValidationError')
 
-const ApiExceptionSchema = ExceptionSchema.and(
-  z
-    .strictObject({
-      customError: z.any().nullable().exactOptional(),
-      errors: z.array(ValidationErrorSchema).nullable().exactOptional(),
-      isCustomErrorObject: z.boolean().exactOptional(),
-      isModelValidatonError: z.boolean().exactOptional(),
-      referenceDocumentLink: z.string().nullable().exactOptional(),
-      referenceErrorCode: z.string().nullable().exactOptional(),
-      statusCode: z.int32().exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('ApiException')
+const ApiExceptionSchema = (() => {
+  const Schema = ExceptionSchema.and(
+    z
+      .strictObject({
+        customError: z.any().nullable().exactOptional(),
+        errors: z.array(ValidationErrorSchema).nullable().exactOptional(),
+        isCustomErrorObject: z.boolean().exactOptional(),
+        isModelValidatonError: z.boolean().exactOptional(),
+        referenceDocumentLink: z.string().nullable().exactOptional(),
+        referenceErrorCode: z.string().nullable().exactOptional(),
+        statusCode: z.int32().exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['InnerException', 'Message', 'Source', 'StackTrace'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+      for (const k of Object.keys(o)) {
+        if (
+          ![
+            'customError',
+            'errors',
+            'isCustomErrorObject',
+            'isModelValidatonError',
+            'referenceDocumentLink',
+            'referenceErrorCode',
+            'statusCode',
+          ].includes(k)
+        ) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})().openapi('ApiException')
 
 const ApiResponseSchema = z
   .strictObject({

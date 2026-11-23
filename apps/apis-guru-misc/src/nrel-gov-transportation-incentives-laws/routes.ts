@@ -15,7 +15,7 @@ const CategorySchema = z
   .openapi('Category')
 
 const InputsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The parameters that were passed to the API' })
   .openapi('Inputs')
 

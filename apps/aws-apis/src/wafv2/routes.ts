@@ -1,129 +1,83 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const ScopeSchema = z.enum(['CLOUDFRONT', 'REGIONAL']).openapi('Scope')
+
+type EntityNameType = string
+
+const EntityNameSchema: z.ZodType<EntityNameType> = z
+  .string()
+  .regex(/^[\w\-]+$/)
+  .min(1)
+  .max(128)
+  .openapi('EntityName')
+
+const RulePrioritySchema = z.int().min(0).openapi('RulePriority')
+
 const StatementSchema: z.ZodType<StatementType> = z
   .lazy(() =>
     z
       .object({
-        ByteMatchStatement: ByteMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A rule statement that defines a string match search for WAF to apply to web requests. The byte match statement provides the bytes to search for, the location in requests that you want WAF to search, and other settings. The bytes to search for are typically a string that corresponds with ASCII characters. In the WAF console and the developer guide, this is called a string match statement.',
-            }),
-        ).exactOptional(),
-        SqliMatchStatement: SqliMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A rule statement that inspects for malicious SQL code. Attackers insert malicious SQL code into web requests to do things like modify your database or extract data from it. ',
-            }),
-        ).exactOptional(),
-        XssMatchStatement: XssMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A rule statement that inspects for cross-site scripting (XSS) attacks. In XSS attacks, the attacker uses vulnerabilities in a benign website as a vehicle to inject malicious client-site scripts into other legitimate web browsers. ',
-            }),
-        ).exactOptional(),
-        SizeConstraintStatement: SizeConstraintStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement that compares a number of bytes against the size of a request component, using a comparison operator, such as greater than (&gt;) or less than (&lt;). For example, you can use a size constraint statement to look for query strings that are longer than 100 bytes. </p> <p>If you configure WAF to inspect the request body, WAF inspects only the number of bytes of the body up to the limit for the web ACL. By default, for regional web ACLs, this limit is 8 KB (8,192 kilobytes) and for CloudFront web ACLs, this limit is 16 KB (16,384 kilobytes). For CloudFront web ACLs, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional fees. If you know that the request body for your web requests should never exceed the inspection limit, you could use a size constraint statement to block requests that have a larger request body size.</p> <p>If you choose URI for the value of Part of the request to filter on, the slash (/) in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>',
-            }),
-        ).exactOptional(),
-        GeoMatchStatement: GeoMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement that labels web requests by country and region and that matches against web requests based on country code. A geo match rule labels every request that it inspects regardless of whether it finds a match.</p> <ul> <li> <p>To manage requests only by country, you can use this statement by itself and specify the countries that you want to match against in the <code>CountryCodes</code> array. </p> </li> <li> <p>Otherwise, configure your geo match rule with Count action so that it only labels requests. Then, add one or more label match rules to run after the geo match rule and configure them to match against the geographic labels and handle the requests as needed. </p> </li> </ul> <p>WAF labels requests using the alpha-2 country and region codes from the International Organization for Standardization (ISO) 3166 standard. WAF determines the codes using either the IP address in the web request origin or, if you specify it, the address in the geo match <code>ForwardedIPConfig</code>. </p> <p>If you use the web request origin, the label formats are <code>awswaf:clientip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:clientip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>If you use a forwarded IP address, the label formats are <code>awswaf:forwardedip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:forwardedip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>For additional details, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-geo-match.html">Geographic match rule statement</a> in the <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html">WAF Developer Guide</a>. </p>',
-            }),
-        ).exactOptional(),
-        RuleGroupReferenceStatement: RuleGroupReferenceStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement used to run the rules that are defined in a <a>RuleGroup</a>. To use this, create a rule group with your rules, then provide the ARN of the rule group in this statement.</p> <p>You cannot nest a <code>RuleGroupReferenceStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. You can only use a rule group reference statement at the top level inside a web ACL. </p>',
-            }),
-        ).exactOptional(),
-        IPSetReferenceStatement: IPSetReferenceStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement used to detect web requests coming from particular IP addresses or address ranges. To use this, create an <a>IPSet</a> that specifies the addresses you want to detect, then use the ARN of that set in this statement. To create an IP set, see <a>CreateIPSet</a>.</p> <p>Each IP set rule statement references an IP set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>',
-            }),
-        ).exactOptional(),
-        RegexPatternSetReferenceStatement: RegexPatternSetReferenceStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement used to search web request components for matches with regular expressions. To use this, create a <a>RegexPatternSet</a> that specifies the expressions that you want to detect, then use the ARN of that set in this statement. A web request matches the pattern set rule statement if the request component matches any of the patterns in the set. To create a regex pattern set, see <a>CreateRegexPatternSet</a>.</p> <p>Each regex pattern set rule statement references a regex pattern set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>',
-            }),
-        ).exactOptional(),
-        RateBasedStatement: RateBasedStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rate-based rule tracks the rate of requests for each originating IP address, and triggers the rule action when the rate exceeds a limit that you specify on the number of requests in any 5-minute time span. You can use this to put a temporary block on requests from an IP address that is sending excessive requests. </p> <p>WAF tracks and manages web requests separately for each instance of a rate-based rule that you use. For example, if you provide the same rate-based rule settings in two web ACLs, each of the two rule statements represents a separate instance of the rate-based rule and gets its own tracking and management by WAF. If you define a rate-based rule inside a rule group, and then use that rule group in multiple places, each use creates a separate instance of the rate-based rule that gets its own tracking and management by WAF. </p> <p>When the rule action triggers, WAF blocks additional requests from the IP address until the request rate falls below the limit.</p> <p>You can optionally nest another statement inside the rate-based statement, to narrow the scope of the rule so that it only counts requests that match the nested statement. For example, based on recent requests that you have seen from an attacker, you might create a rate-based rule with a nested AND rule statement that contains the following nested statements:</p> <ul> <li> <p>An IP match statement with an IP set that specifies the address 192.0.2.44.</p> </li> <li> <p>A string match statement that searches in the User-Agent header for the string BadBot.</p> </li> </ul> <p>In this rate-based rule, you also define a rate limit. For this example, the rate limit is 1,000. Requests that meet the criteria of both of the nested statements are counted. If the count exceeds 1,000 requests per five minutes, the rule action triggers. Requests that do not meet the criteria of both of the nested statements are not counted towards the rate limit and are not affected by this rule.</p> <p>You cannot nest a <code>RateBasedStatement</code> inside another statement, for example inside a <code>NotStatement</code> or <code>OrStatement</code>. You can define a <code>RateBasedStatement</code> inside a web ACL and inside a rule group. </p>',
-            }),
-        ).exactOptional(),
-        AndStatement: AndStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A logical rule statement used to combine other rule statements with AND logic. You provide more than one <a>Statement</a> within the <code>AndStatement</code>. ',
-            }),
-        ).exactOptional(),
-        OrStatement: OrStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A logical rule statement used to combine other rule statements with OR logic. You provide more than one <a>Statement</a> within the <code>OrStatement</code>. ',
-            }),
-        ).exactOptional(),
-        NotStatement: NotStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A logical rule statement used to negate the results of another rule statement. You provide one <a>Statement</a> within the <code>NotStatement</code>.',
-            }),
-        ).exactOptional(),
-        ManagedRuleGroupStatement: ManagedRuleGroupStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement used to run the rules that are defined in a managed rule group. To use this, provide the vendor name and the name of the rule group in this statement. You can retrieve the required names by calling <a>ListAvailableManagedRuleGroups</a>.</p> <p>You cannot nest a <code>ManagedRuleGroupStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. It can only be referenced as a top-level statement within a rule.</p> <note> <p>You are charged additional fees when you use the WAF Bot Control managed rule group <code>AWSManagedRulesBotControlRuleSet</code> or the WAF Fraud Control account takeover prevention (ATP) managed rule group <code>AWSManagedRulesATPRuleSet</code>. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-            }),
-        ).exactOptional(),
-        LabelMatchStatement: LabelMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>A rule statement to match against labels that have been added to the web request by rules that have already run in the web ACL. </p> <p>The label match statement provides the label or namespace string to search for. The label string can represent a part or all of the fully qualified label name that had been added to the web request. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. If you do not provide the fully qualified name in your label match string, WAF performs the search for labels that were added in the same context as the label match statement. </p>',
-            }),
-        ).exactOptional(),
-        RegexMatchStatement: RegexMatchStatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A rule statement used to search web request components for a match against a single regular expression. ',
-            }),
-        ).exactOptional(),
+        ByteMatchStatement: ByteMatchStatementSchema.exactOptional().openapi({
+          description:
+            'A rule statement that defines a string match search for WAF to apply to web requests. The byte match statement provides the bytes to search for, the location in requests that you want WAF to search, and other settings. The bytes to search for are typically a string that corresponds with ASCII characters. In the WAF console and the developer guide, this is called a string match statement.',
+        }),
+        SqliMatchStatement: SqliMatchStatementSchema.exactOptional().openapi({
+          description:
+            'A rule statement that inspects for malicious SQL code. Attackers insert malicious SQL code into web requests to do things like modify your database or extract data from it. ',
+        }),
+        XssMatchStatement: XssMatchStatementSchema.exactOptional().openapi({
+          description:
+            'A rule statement that inspects for cross-site scripting (XSS) attacks. In XSS attacks, the attacker uses vulnerabilities in a benign website as a vehicle to inject malicious client-site scripts into other legitimate web browsers. ',
+        }),
+        SizeConstraintStatement: SizeConstraintStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement that compares a number of bytes against the size of a request component, using a comparison operator, such as greater than (&gt;) or less than (&lt;). For example, you can use a size constraint statement to look for query strings that are longer than 100 bytes. </p> <p>If you configure WAF to inspect the request body, WAF inspects only the number of bytes of the body up to the limit for the web ACL. By default, for regional web ACLs, this limit is 8 KB (8,192 kilobytes) and for CloudFront web ACLs, this limit is 16 KB (16,384 kilobytes). For CloudFront web ACLs, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional fees. If you know that the request body for your web requests should never exceed the inspection limit, you could use a size constraint statement to block requests that have a larger request body size.</p> <p>If you choose URI for the value of Part of the request to filter on, the slash (/) in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>',
+        }),
+        GeoMatchStatement: GeoMatchStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement that labels web requests by country and region and that matches against web requests based on country code. A geo match rule labels every request that it inspects regardless of whether it finds a match.</p> <ul> <li> <p>To manage requests only by country, you can use this statement by itself and specify the countries that you want to match against in the <code>CountryCodes</code> array. </p> </li> <li> <p>Otherwise, configure your geo match rule with Count action so that it only labels requests. Then, add one or more label match rules to run after the geo match rule and configure them to match against the geographic labels and handle the requests as needed. </p> </li> </ul> <p>WAF labels requests using the alpha-2 country and region codes from the International Organization for Standardization (ISO) 3166 standard. WAF determines the codes using either the IP address in the web request origin or, if you specify it, the address in the geo match <code>ForwardedIPConfig</code>. </p> <p>If you use the web request origin, the label formats are <code>awswaf:clientip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:clientip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>If you use a forwarded IP address, the label formats are <code>awswaf:forwardedip:geo:region:&lt;ISO country code&gt;-&lt;ISO region code&gt;</code> and <code>awswaf:forwardedip:geo:country:&lt;ISO country code&gt;</code>.</p> <p>For additional details, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-geo-match.html">Geographic match rule statement</a> in the <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html">WAF Developer Guide</a>. </p>',
+        }),
+        RuleGroupReferenceStatement: RuleGroupReferenceStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement used to run the rules that are defined in a <a>RuleGroup</a>. To use this, create a rule group with your rules, then provide the ARN of the rule group in this statement.</p> <p>You cannot nest a <code>RuleGroupReferenceStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. You can only use a rule group reference statement at the top level inside a web ACL. </p>',
+        }),
+        IPSetReferenceStatement: IPSetReferenceStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement used to detect web requests coming from particular IP addresses or address ranges. To use this, create an <a>IPSet</a> that specifies the addresses you want to detect, then use the ARN of that set in this statement. To create an IP set, see <a>CreateIPSet</a>.</p> <p>Each IP set rule statement references an IP set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>',
+        }),
+        RegexPatternSetReferenceStatement:
+          RegexPatternSetReferenceStatementSchema.exactOptional().openapi({
+            description:
+              '<p>A rule statement used to search web request components for matches with regular expressions. To use this, create a <a>RegexPatternSet</a> that specifies the expressions that you want to detect, then use the ARN of that set in this statement. A web request matches the pattern set rule statement if the request component matches any of the patterns in the set. To create a regex pattern set, see <a>CreateRegexPatternSet</a>.</p> <p>Each regex pattern set rule statement references a regex pattern set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>',
+          }),
+        RateBasedStatement: RateBasedStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rate-based rule tracks the rate of requests for each originating IP address, and triggers the rule action when the rate exceeds a limit that you specify on the number of requests in any 5-minute time span. You can use this to put a temporary block on requests from an IP address that is sending excessive requests. </p> <p>WAF tracks and manages web requests separately for each instance of a rate-based rule that you use. For example, if you provide the same rate-based rule settings in two web ACLs, each of the two rule statements represents a separate instance of the rate-based rule and gets its own tracking and management by WAF. If you define a rate-based rule inside a rule group, and then use that rule group in multiple places, each use creates a separate instance of the rate-based rule that gets its own tracking and management by WAF. </p> <p>When the rule action triggers, WAF blocks additional requests from the IP address until the request rate falls below the limit.</p> <p>You can optionally nest another statement inside the rate-based statement, to narrow the scope of the rule so that it only counts requests that match the nested statement. For example, based on recent requests that you have seen from an attacker, you might create a rate-based rule with a nested AND rule statement that contains the following nested statements:</p> <ul> <li> <p>An IP match statement with an IP set that specifies the address 192.0.2.44.</p> </li> <li> <p>A string match statement that searches in the User-Agent header for the string BadBot.</p> </li> </ul> <p>In this rate-based rule, you also define a rate limit. For this example, the rate limit is 1,000. Requests that meet the criteria of both of the nested statements are counted. If the count exceeds 1,000 requests per five minutes, the rule action triggers. Requests that do not meet the criteria of both of the nested statements are not counted towards the rate limit and are not affected by this rule.</p> <p>You cannot nest a <code>RateBasedStatement</code> inside another statement, for example inside a <code>NotStatement</code> or <code>OrStatement</code>. You can define a <code>RateBasedStatement</code> inside a web ACL and inside a rule group. </p>',
+        }),
+        AndStatement: AndStatementSchema.exactOptional().openapi({
+          description:
+            'A logical rule statement used to combine other rule statements with AND logic. You provide more than one <a>Statement</a> within the <code>AndStatement</code>. ',
+        }),
+        OrStatement: OrStatementSchema.exactOptional().openapi({
+          description:
+            'A logical rule statement used to combine other rule statements with OR logic. You provide more than one <a>Statement</a> within the <code>OrStatement</code>. ',
+        }),
+        NotStatement: NotStatementSchema.exactOptional().openapi({
+          description:
+            'A logical rule statement used to negate the results of another rule statement. You provide one <a>Statement</a> within the <code>NotStatement</code>.',
+        }),
+        ManagedRuleGroupStatement: ManagedRuleGroupStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement used to run the rules that are defined in a managed rule group. To use this, provide the vendor name and the name of the rule group in this statement. You can retrieve the required names by calling <a>ListAvailableManagedRuleGroups</a>.</p> <p>You cannot nest a <code>ManagedRuleGroupStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. It can only be referenced as a top-level statement within a rule.</p> <note> <p>You are charged additional fees when you use the WAF Bot Control managed rule group <code>AWSManagedRulesBotControlRuleSet</code> or the WAF Fraud Control account takeover prevention (ATP) managed rule group <code>AWSManagedRulesATPRuleSet</code>. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+        }),
+        LabelMatchStatement: LabelMatchStatementSchema.exactOptional().openapi({
+          description:
+            '<p>A rule statement to match against labels that have been added to the web request by rules that have already run in the web ACL. </p> <p>The label match statement provides the label or namespace string to search for. The label string can represent a part or all of the fully qualified label name that had been added to the web request. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. If you do not provide the fully qualified name in your label match string, WAF performs the search for labels that were added in the same context as the label match statement. </p>',
+        }),
+        RegexMatchStatement: RegexMatchStatementSchema.exactOptional().openapi({
+          description:
+            'A rule statement used to search web request components for a match against a single regular expression. ',
+        }),
       })
       .openapi({
         description:
@@ -133,17 +87,584 @@ const StatementSchema: z.ZodType<StatementType> = z
   )
   .openapi('Statement')
 
-type StatementsType = z.infer<typeof StatementSchema>[]
+const ResponseStatusCodeSchema = z.int().min(200).max(599).openapi('ResponseStatusCode')
 
-const StatementsSchema: z.ZodType<StatementsType> = z
-  .lazy(() => z.array(StatementSchema))
-  .openapi('Statements')
+const CustomHTTPHeaderNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9._$-]+$/)
+  .min(1)
+  .max(64)
+  .openapi('CustomHTTPHeaderName')
 
-type AndStatementType = {
-  Statements: z.infer<typeof StatementsSchema> & { [key: string]: unknown }
+const CustomHTTPHeaderValueSchema = z
+  .string()
+  .regex(/.*/)
+  .min(1)
+  .max(255)
+  .openapi('CustomHTTPHeaderValue')
+
+const CustomHTTPHeaderSchema = z
+  .object({
+    Name: CustomHTTPHeaderNameSchema.openapi({
+      description:
+        '<p>The name of the custom header. </p> <p>For custom request header insertion, when WAF inserts the header into the request, it prefixes this name <code>x-amzn-waf-</code>, to avoid confusion with the headers that are already in the request. For example, for the header name <code>sample</code>, WAF inserts the header <code>x-amzn-waf-sample</code>.</p>',
+    }),
+    Value: CustomHTTPHeaderValueSchema.openapi({ description: 'The value of the custom header.' }),
+  })
+  .openapi({
+    required: ['Name', 'Value'],
+    description:
+      'A custom header for custom request and response handling. This is used in <a>CustomResponse</a> and <a>CustomRequestHandling</a>.',
+  })
+  .openapi('CustomHTTPHeader')
+
+const CustomHTTPHeadersSchema = z.array(CustomHTTPHeaderSchema).min(1).openapi('CustomHTTPHeaders')
+
+const CustomResponseSchema = z
+  .object({
+    ResponseCode: ResponseStatusCodeSchema.openapi({
+      description:
+        '<p>The HTTP status code to return to the client. </p> <p>For a list of status codes that you can use in your custom responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/customizing-the-response-status-codes.html">Supported status codes for custom response</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    CustomResponseBodyKey: EntityNameSchema.exactOptional().openapi({
+      description:
+        'References the response body that you want WAF to return to the web request client. You can define a custom response for a rule action or a default web ACL action that is set to block. To do this, you first define the response body key and value in the <code>CustomResponseBodies</code> setting for the <a>WebACL</a> or <a>RuleGroup</a> where you want to use it. Then, in the rule action or web ACL default action <code>BlockAction</code> setting, you reference the response body using this key. ',
+    }),
+    ResponseHeaders: CustomHTTPHeadersSchema.exactOptional().openapi({
+      description:
+        '<p>The HTTP headers to use in the response. Duplicate header names are not allowed. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    required: ['ResponseCode'],
+    description:
+      '<p>A custom response to send to the client. You can define a custom response for rule actions and default web ACL actions that are set to <a>BlockAction</a>. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+  })
+  .openapi('CustomResponse')
+
+const BlockActionSchema = z
+  .object({
+    CustomResponse: CustomResponseSchema.exactOptional().openapi({
+      description:
+        '<p>Defines a custom response for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Specifies that WAF should block the request and optionally defines additional custom handling for the response to the web request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
+    required: [],
+  })
+  .openapi('BlockAction')
+
+const CustomRequestHandlingSchema = z
+  .object({
+    InsertHeaders: CustomHTTPHeadersSchema.openapi({
+      description:
+        '<p>The HTTP headers to insert into the request. Duplicate header names are not allowed. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    required: ['InsertHeaders'],
+    description:
+      '<p>Custom request handling behavior that inserts custom headers into a web request. You can add custom request handling for WAF to use when the rule action doesn\'t block the request. For example, <code>CaptchaAction</code> for requests with valid t okens, and <code>AllowAction</code>. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+  })
+  .openapi('CustomRequestHandling')
+
+const AllowActionSchema = z
+  .object({
+    CustomRequestHandling: CustomRequestHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>Defines custom handling for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Specifies that WAF should allow the request and optionally defines additional custom handling for the request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
+    required: [],
+  })
+  .openapi('AllowAction')
+
+const CountActionSchema = z
+  .object({
+    CustomRequestHandling: CustomRequestHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>Defines custom handling for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Specifies that WAF should count the request. Optionally defines additional custom handling for the request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
+    required: [],
+  })
+  .openapi('CountAction')
+
+const CaptchaActionSchema = z
+  .object({
+    CustomRequestHandling: CustomRequestHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>Defines custom handling for the web request, used when the <code>CAPTCHA</code> inspection determines that the request\'s token is valid and unexpired.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Specifies that WAF should run a <code>CAPTCHA</code> check against the request: </p> <ul> <li> <p>If the request includes a valid, unexpired <code>CAPTCHA</code> token, WAF applies any custom request handling and labels that you've configured and then allows the web request inspection to proceed to the next rule, similar to a <code>CountAction</code>. </p> </li> <li> <p>If the request doesn't include a valid, unexpired token, WAF discontinues the web ACL evaluation of the request and blocks it from going to its intended destination.</p> <p>WAF generates a response that it sends back to the client, which includes the following: </p> <ul> <li> <p>The header <code>x-amzn-waf-action</code> with a value of <code>captcha</code>. </p> </li> <li> <p>The HTTP status code <code>405 Method Not Allowed</code>. </p> </li> <li> <p>If the request contains an <code>Accept</code> header with a value of <code>text/html</code>, the response includes a <code>CAPTCHA</code> JavaScript page interstitial. </p> </li> </ul> </li> </ul> <p>You can configure the expiration time in the <code>CaptchaConfig</code> <code>ImmunityTimeProperty</code> setting at the rule and web ACL level. The rule setting overrides the web ACL setting. </p> <p>This action option is available for rules. It isn't available for web ACL default actions. </p>",
+    required: [],
+  })
+  .openapi('CaptchaAction')
+
+const ChallengeActionSchema = z
+  .object({
+    CustomRequestHandling: CustomRequestHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>Defines custom handling for the web request, used when the challenge inspection determines that the request\'s token is valid and unexpired.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    description:
+      "<p>Specifies that WAF should run a <code>Challenge</code> check against the request to verify that the request is coming from a legitimate client session: </p> <ul> <li> <p>If the request includes a valid, unexpired challenge token, WAF applies any custom request handling and labels that you've configured and then allows the web request inspection to proceed to the next rule, similar to a <code>CountAction</code>. </p> </li> <li> <p>If the request doesn't include a valid, unexpired challenge token, WAF discontinues the web ACL evaluation of the request and blocks it from going to its intended destination.</p> <p>WAF then generates a challenge response that it sends back to the client, which includes the following: </p> <ul> <li> <p>The header <code>x-amzn-waf-action</code> with a value of <code>challenge</code>. </p> </li> <li> <p>The HTTP status code <code>202 Request Accepted</code>. </p> </li> <li> <p>If the request contains an <code>Accept</code> header with a value of <code>text/html</code>, the response includes a JavaScript page interstitial with a challenge script. </p> </li> </ul> <p>Challenges run silent browser interrogations in the background, and don't generally affect the end user experience. </p> <p>A challenge enforces token acquisition using an interstitial JavaScript challenge that inspects the client session for legitimate behavior. The challenge blocks bots or at least increases the cost of operating sophisticated bots. </p> <p>After the client session successfully responds to the challenge, it receives a new token from WAF, which the challenge script uses to resubmit the original request. </p> </li> </ul> <p>You can configure the expiration time in the <code>ChallengeConfig</code> <code>ImmunityTimeProperty</code> setting at the rule and web ACL level. The rule setting overrides the web ACL setting. </p> <p>This action option is available for rules. It isn't available for web ACL default actions. </p>",
+    required: [],
+  })
+  .openapi('ChallengeAction')
+
+const RuleActionSchema = z
+  .object({
+    Block: BlockActionSchema.exactOptional().openapi({
+      description: 'Instructs WAF to block the web request.',
+    }),
+    Allow: AllowActionSchema.exactOptional().openapi({
+      description: 'Instructs WAF to allow the web request.',
+    }),
+    Count: CountActionSchema.exactOptional().openapi({
+      description:
+        'Instructs WAF to count the web request and then continue evaluating the request using the remaining rules in the web ACL.',
+    }),
+    Captcha: CaptchaActionSchema.exactOptional().openapi({
+      description: 'Instructs WAF to run a <code>CAPTCHA</code> check against the web request.',
+    }),
+    Challenge: ChallengeActionSchema.exactOptional().openapi({
+      description: 'Instructs WAF to run a <code>Challenge</code> check against the web request.',
+    }),
+  })
+  .openapi({
+    description:
+      "The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. ",
+    required: [],
+  })
+  .openapi('RuleAction')
+
+const NoneActionSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      '<p>Specifies that WAF should do nothing. This is used for the <code>OverrideAction</code> setting on a <a>Rule</a> when the rule uses a rule group reference statement. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p> <p>JSON specification: <code>"None": {}</code> </p>',
+  })
+  .openapi('NoneAction')
+
+const OverrideActionSchema = z
+  .object({
+    Count: CountActionSchema.exactOptional().openapi({
+      description:
+        '<p>Override the rule group evaluation result to count only. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
+    }),
+    None: NoneActionSchema.exactOptional().openapi({
+      description:
+        "Don't override the rule group evaluation result. This is the most common setting.",
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
+    required: [],
+  })
+  .openapi('OverrideAction')
+
+const LabelNameSchema = z
+  .string()
+  .regex(/^[0-9A-Za-z_\-:]+$/)
+  .min(1)
+  .max(1024)
+  .openapi('LabelName')
+
+const LabelSchema = z
+  .object({ Name: LabelNameSchema.openapi({ description: 'The label string. ' }) })
+  .openapi({
+    required: ['Name'],
+    description:
+      'A single label container. This is used as an element of a label array in multiple contexts, for example, in <code>RuleLabels</code> inside a <a>Rule</a> and in <code>Labels</code> inside a <a>SampledHTTPRequest</a>. ',
+  })
+  .openapi('Label')
+
+const LabelsSchema = z.array(LabelSchema).openapi('Labels')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const MetricNameSchema = z
+  .string()
+  .regex(/^[\w#:\.\-\/]+$/)
+  .min(1)
+  .max(255)
+  .openapi('MetricName')
+
+const VisibilityConfigSchema = z
+  .object({
+    SampledRequestsEnabled: BooleanSchema.openapi({
+      description:
+        'A boolean indicating whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. ',
+    }),
+    CloudWatchMetricsEnabled: BooleanSchema.openapi({
+      description:
+        'A boolean indicating whether the associated resource sends metrics to Amazon CloudWatch. For the list of available metrics, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#waf-metrics">WAF Metrics</a> in the <i>WAF Developer Guide</i>.',
+    }),
+    MetricName: MetricNameSchema.openapi({
+      description:
+        "A name of the Amazon CloudWatch metric dimension. The name can contain only the characters: A-Z, a-z, 0-9, - (hyphen), and _ (underscore). The name can be from one to 128 characters long. It can't contain whitespace or metric names that are reserved for WAF, for example <code>All</code> and <code>Default_Action</code>. ",
+    }),
+  })
+  .openapi({
+    required: ['SampledRequestsEnabled', 'CloudWatchMetricsEnabled', 'MetricName'],
+    description:
+      'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+  })
+  .openapi('VisibilityConfig')
+
+const TimeWindowSecondSchema = z.int().min(60).max(259200).openapi('TimeWindowSecond')
+
+const ImmunityTimePropertySchema = z
+  .object({
+    ImmunityTime: TimeWindowSecondSchema.openapi({
+      description:
+        '<p>The amount of time, in seconds, that a <code>CAPTCHA</code> or challenge timestamp is considered valid by WAF. The default setting is 300. </p> <p>For the Challenge action, the minimum setting is 300. </p>',
+    }),
+  })
+  .openapi({
+    required: ['ImmunityTime'],
+    description:
+      'Used for CAPTCHA and challenge token settings. Determines how long a <code>CAPTCHA</code> or challenge timestamp remains valid after WAF updates it for a successful <code>CAPTCHA</code> or challenge response. ',
+  })
+  .openapi('ImmunityTimeProperty')
+
+const CaptchaConfigSchema = z
+  .object({
+    ImmunityTimeProperty: ImmunityTimePropertySchema.exactOptional().openapi({
+      description:
+        'Determines how long a <code>CAPTCHA</code> timestamp in the token remains valid after the client successfully solves a <code>CAPTCHA</code> puzzle. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies how WAF should handle <code>CAPTCHA</code> evaluations. This is available at the web ACL level and in each rule. ',
+    required: [],
+  })
+  .openapi('CaptchaConfig')
+
+const ChallengeConfigSchema = z
+  .object({
+    ImmunityTimeProperty: ImmunityTimePropertySchema.exactOptional().openapi({
+      description:
+        'Determines how long a challenge timestamp in the token remains valid after the client successfully responds to a challenge. ',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies how WAF should handle <code>Challenge</code> evaluations. This is available at the web ACL level and in each rule. ',
+    required: [],
+  })
+  .openapi('ChallengeConfig')
+
+type RuleType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Priority: z.infer<typeof RulePrioritySchema> & unknown
+  Statement: z.infer<typeof StatementSchema> & unknown
+  Action?: z.infer<typeof RuleActionSchema> & unknown
+  OverrideAction?: z.infer<typeof OverrideActionSchema> & unknown
+  RuleLabels?: z.infer<typeof LabelsSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
 }
 
-const SearchStringSchema = z.string().openapi('SearchString')
+const RuleSchema: z.ZodType<RuleType> = z
+  .object({
+    Name: EntityNameSchema.openapi({
+      description:
+        "The name of the rule. You can't change the name of a <code>Rule</code> after you create it. ",
+    }),
+    Priority: RulePrioritySchema.openapi({
+      description:
+        "If you define more than one <code>Rule</code> in a <code>WebACL</code>, WAF evaluates each request against the <code>Rules</code> in order based on the value of <code>Priority</code>. WAF processes rules with lower priority first. The priorities don't need to be consecutive, but they must all be different.",
+    }),
+    Statement: StatementSchema.openapi({
+      description:
+        'The WAF processing statement for the rule, for example <a>ByteMatchStatement</a> or <a>SizeConstraintStatement</a>. ',
+    }),
+    Action: RuleActionSchema.exactOptional().openapi({
+      description:
+        '<p>The action that WAF should take on a web request when it matches the rule statement. Settings at the web ACL level can override the rule action setting. </p> <p>This is used only for rules whose statements do not reference a rule group. Rule statements that reference a rule group include <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <p>You must specify either this <code>Action</code> setting or the rule <code>OverrideAction</code> setting, but not both:</p> <ul> <li> <p>If the rule statement does not reference a rule group, use this rule action setting and not the rule override action setting. </p> </li> <li> <p>If the rule statement references a rule group, use the override action setting and not this action setting. </p> </li> </ul>',
+    }),
+    OverrideAction: OverrideActionSchema.exactOptional().openapi({
+      description:
+        '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
+    }),
+    RuleLabels: LabelsSchema.exactOptional().openapi({
+      description:
+        "<p>Labels to apply to web requests that match the rule match statement. WAF applies fully qualified labels to matching web requests. A fully qualified label is the concatenation of a label namespace and a rule label. The rule's rule group or web ACL defines the label namespace. </p> <p>Rules that run after this rule in the web ACL can match against these labels using a <code>LabelMatchStatement</code>.</p> <p>For each label, provide a case-sensitive string containing optional namespaces and a label name, according to the following guidelines:</p> <ul> <li> <p>Separate each component of the label with a colon. </p> </li> <li> <p>Each namespace or name can have up to 128 characters.</p> </li> <li> <p>You can specify up to 5 namespaces in a label.</p> </li> <li> <p>Don't use the following reserved words in your label specification: <code>aws</code>, <code>waf</code>, <code>managed</code>, <code>rulegroup</code>, <code>webacl</code>, <code>regexpatternset</code>, or <code>ipset</code>.</p> </li> </ul> <p>For example, <code>myLabelName</code> or <code>nameSpace1:nameSpace2:myLabelName</code>. </p>",
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    CaptchaConfig: CaptchaConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle <code>CAPTCHA</code> evaluations. If you don't specify this, WAF uses the <code>CAPTCHA</code> configuration that's defined for the web ACL. ",
+    }),
+    ChallengeConfig: ChallengeConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle <code>Challenge</code> evaluations. If you don't specify this, WAF uses the challenge configuration that's defined for the web ACL. ",
+    }),
+  })
+  .openapi({
+    required: ['Name', 'Priority', 'Statement', 'VisibilityConfig'],
+    description:
+      'A single rule, which you can use in a <a>WebACL</a> or <a>RuleGroup</a> to identify web requests that you want to allow, block, or count. Each rule includes one top-level <a>Statement</a> that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+  })
+  .openapi('Rule')
+
+type RulesType = z.infer<typeof RuleSchema>[]
+
+const RulesSchema: z.ZodType<RulesType> = z.array(RuleSchema).openapi('Rules')
+
+type CheckCapacityRequestType = {
+  Scope: z.infer<typeof ScopeSchema> & unknown
+  Rules: z.infer<typeof RulesSchema> & unknown
+}
+
+const CapacityUnitSchema = z.int().min(1).openapi('CapacityUnit')
+
+const EntityDescriptionSchema = z
+  .string()
+  .regex(/^[\w+=:#@\/\-,\.][\w+=:#@\/\-,\.\s]+[\w+=:#@\/\-,\.]$/)
+  .min(1)
+  .max(256)
+  .openapi('EntityDescription')
+
+const TagKeySchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(1)
+  .max(128)
+  .openapi('TagKey')
+
+const TagValueSchema = z
+  .string()
+  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
+  .min(0)
+  .max(256)
+  .openapi('TagValue')
+
+const TagSchema = z
+  .object({
+    Key: TagKeySchema.openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
+    }),
+  })
+  .openapi({
+    required: ['Key', 'Value'],
+    description:
+      '<p>A tag associated with an Amazon Web Services resource. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing or other management. Typically, the tag key represents a category, such as "environment", and the tag value represents a specific value within that category, such as "test," "development," or "production". Or you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p> <p>You can tag the Amazon Web Services resources that you manage through WAF: web ACLs, rule groups, IP sets, and regex pattern sets. You can\'t manage or view tags through the WAF console. </p>',
+  })
+  .openapi('Tag')
+
+const TagListSchema = z.array(TagSchema).min(1).openapi('TagList')
+
+const ResponseContentTypeSchema = z
+  .enum(['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
+  .openapi('ResponseContentType')
+
+const ResponseContentSchema = z
+  .string()
+  .regex(/[\s\S]*/)
+  .min(1)
+  .max(10240)
+  .openapi('ResponseContent')
+
+const CustomResponseBodySchema = z
+  .object({
+    ContentType: ResponseContentTypeSchema.openapi({
+      description:
+        'The type of content in the payload that you are defining in the <code>Content</code> string.',
+    }),
+    Content: ResponseContentSchema.openapi({
+      description:
+        '<p>The payload of the custom response. </p> <p>You can use JSON escape strings in JSON content. To do this, you must specify JSON content in the <code>ContentType</code> setting. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+  })
+  .openapi({
+    required: ['ContentType', 'Content'],
+    description:
+      'The response body to use in a custom response to a web request. This is referenced by key from <a>CustomResponse</a> <code>CustomResponseBodyKey</code>.',
+  })
+  .openapi('CustomResponseBody')
+
+const CustomResponseBodiesSchema = z
+  .record(z.string(), CustomResponseBodySchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi('CustomResponseBodies')
+
+type CreateRuleGroupRequestType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Scope: z.infer<typeof ScopeSchema> & unknown
+  Capacity: z.infer<typeof CapacityUnitSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  Tags?: z.infer<typeof TagListSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+}
+
+const DefaultActionSchema = z
+  .object({
+    Block: BlockActionSchema.exactOptional().openapi({
+      description: 'Specifies that WAF should block requests by default. ',
+    }),
+    Allow: AllowActionSchema.exactOptional().openapi({
+      description: 'Specifies that WAF should allow requests by default.',
+    }),
+  })
+  .openapi({
+    description:
+      "In a <a>WebACL</a>, this is the action that you want WAF to perform when a web request doesn't match any of the rules in the <code>WebACL</code>. The default action must be a terminating action.",
+    required: [],
+  })
+  .openapi('DefaultAction')
+
+const TokenDomainSchema = z
+  .string()
+  .regex(/^[\w\.\-\/]+$/)
+  .min(1)
+  .max(253)
+  .openapi('TokenDomain')
+
+const TokenDomainsSchema = z.array(TokenDomainSchema).openapi('TokenDomains')
+
+const SizeInspectionLimitSchema = z
+  .enum(['KB_16', 'KB_32', 'KB_48', 'KB_64'])
+  .openapi('SizeInspectionLimit')
+
+const RequestBodyAssociatedResourceTypeConfigSchema = z
+  .object({
+    DefaultSizeInspectionLimit: SizeInspectionLimitSchema.openapi({
+      description:
+        '<p>Specifies the maximum size of the web request body component that an associated CloudFront distribution should send to WAF for inspection. This applies to statements in the web ACL that inspect the body or JSON body. </p> <p>Default: <code>16 KB (16,384 kilobytes)</code> </p>',
+    }),
+  })
+  .openapi({
+    required: ['DefaultSizeInspectionLimit'],
+    description:
+      '<p>Customizes the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default size is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note> <p>This is used in the <code>AssociationConfig</code> of the web ACL. </p>',
+  })
+  .openapi('RequestBodyAssociatedResourceTypeConfig')
+
+const RequestBodySchema = z
+  .record(z.string(), RequestBodyAssociatedResourceTypeConfigSchema)
+  .openapi('RequestBody')
+
+const AssociationConfigSchema = z
+  .object({
+    RequestBody: RequestBodySchema.exactOptional().openapi({
+      description:
+        '<p>Customizes the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default size is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+    required: [],
+  })
+  .openapi('AssociationConfig')
+
+type CreateWebACLRequestType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Scope: z.infer<typeof ScopeSchema> & unknown
+  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  Tags?: z.infer<typeof TagListSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
+  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+}
+
+type VersionKeyStringType = string
+
+const VersionKeyStringSchema: z.ZodType<VersionKeyStringType> = z
+  .string()
+  .regex(/^[\w#:\.\-\/]+$/)
+  .min(1)
+  .max(64)
+  .openapi('VersionKeyString')
+
+const ResourceArnSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(20)
+  .max(2048)
+  .openapi('ResourceArn')
+
+const RuleSummarySchema = z
+  .object({
+    Name: EntityNameSchema.exactOptional().openapi({ description: 'The name of the rule. ' }),
+    Action: RuleActionSchema.exactOptional().openapi({
+      description:
+        "The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. ",
+    }),
+  })
+  .openapi({
+    description:
+      'High-level information about a <a>Rule</a>, returned by operations like <a>DescribeManagedRuleGroup</a>. This provides information like the ID, that you can use to retrieve and manage a <code>RuleGroup</code>, and the ARN, that you provide to the <a>RuleGroupReferenceStatement</a> to use the rule group in a <a>Rule</a>.',
+    required: [],
+  })
+  .openapi('RuleSummary')
+
+const RuleSummariesSchema = z.array(RuleSummarySchema).openapi('RuleSummaries')
+
+const LabelSummarySchema = z
+  .object({
+    Name: LabelNameSchema.exactOptional().openapi({
+      description: 'An individual label specification.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>List of labels used by one or more of the rules of a <a>RuleGroup</a>. This summary object is used for the following rule group lists: </p> <ul> <li> <p> <code>AvailableLabels</code> - Labels that rules add to matching requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>. </p> </li> <li> <p> <code>ConsumedLabels</code> - Labels that rules match against. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. </p> </li> </ul>',
+    required: [],
+  })
+  .openapi('LabelSummary')
+
+const LabelSummariesSchema = z.array(LabelSummarySchema).openapi('LabelSummaries')
+
+type DescribeManagedRuleGroupResponseType = {
+  VersionName?: z.infer<typeof VersionKeyStringSchema> & unknown
+  SnsTopicArn?: z.infer<typeof ResourceArnSchema> & unknown
+  Capacity?: z.infer<typeof CapacityUnitSchema> & unknown
+  Rules?: z.infer<typeof RuleSummariesSchema> & unknown
+  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
+  AvailableLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+  ConsumedLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+}
+
+const LogDestinationConfigsSchema = z
+  .array(ResourceArnSchema)
+  .min(1)
+  .max(100)
+  .openapi('LogDestinationConfigs')
 
 const FieldToMatchDataSchema = z
   .string()
@@ -154,9 +675,9 @@ const FieldToMatchDataSchema = z
 
 const SingleHeaderSchema = z
   .object({
-    Name: FieldToMatchDataSchema.and(
-      z.any().openapi({ description: 'The name of the query header to inspect.' }),
-    ),
+    Name: FieldToMatchDataSchema.openapi({
+      description: 'The name of the query header to inspect.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -167,9 +688,9 @@ const SingleHeaderSchema = z
 
 const SingleQueryArgumentSchema = z
   .object({
-    Name: FieldToMatchDataSchema.and(
-      z.any().openapi({ description: 'The name of the query argument to inspect.' }),
-    ),
+    Name: FieldToMatchDataSchema.openapi({
+      description: 'The name of the query argument to inspect.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -179,7 +700,7 @@ const SingleQueryArgumentSchema = z
   .openapi('SingleQueryArgument')
 
 const AllQueryArgumentsSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Inspect all query arguments of the web request. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>"AllQueryArguments": {}</code> </p>',
@@ -187,7 +708,7 @@ const AllQueryArgumentsSchema = z
   .openapi('AllQueryArguments')
 
 const UriPathSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Inspect the path component of the URI of the web request. This is the part of the web request that identifies a resource. For example, <code>/images/daily-ad.jpg</code>.</p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>"UriPath": {}</code> </p>',
@@ -195,7 +716,7 @@ const UriPathSchema = z
   .openapi('UriPath')
 
 const QueryStringSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Inspect the query string of the web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>"QueryString": {}</code> </p>',
@@ -206,14 +727,10 @@ const OversizeHandlingSchema = z.enum(['CONTINUE', 'MATCH', 'NO_MATCH']).openapi
 
 const BodySchema = z
   .object({
-    OversizeHandling: OversizeHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. If the body is larger than the limit, the underlying host service only forwards the contents that are below the limit to WAF for inspection. </p> <p>The default limit is 8 KB (8,192 kilobytes) for regional resources and 16 KB (16,384 kilobytes) for CloudFront distributions. For CloudFront distributions, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>',
-        }),
-    ).exactOptional(),
+    OversizeHandling: OversizeHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. If the body is larger than the limit, the underlying host service only forwards the contents that are below the limit to WAF for inspection. </p> <p>The default limit is 8 KB (8,192 kilobytes) for regional resources and 16 KB (16,384 kilobytes) for CloudFront distributions. For CloudFront distributions, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -223,7 +740,7 @@ const BodySchema = z
   .openapi('Body')
 
 const MethodSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Inspect the HTTP method of the web request. The method indicates the type of operation that the request is asking the origin to perform. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>"Method": {}</code> </p>',
@@ -231,7 +748,7 @@ const MethodSchema = z
   .openapi('Method')
 
 const AllSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       '<p>Inspect all of the elements that WAF has parsed and extracted from the web request component that you\'ve identified in your <a>FieldToMatch</a> specifications. </p> <p>This is used only in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>"All": {}</code> </p>',
@@ -249,22 +766,14 @@ const JsonPointerPathsSchema = z.array(JsonPointerPathSchema).min(1).openapi('Js
 
 const JsonMatchPatternSchema = z
   .object({
-    All: AllSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Match all of the elements. See also <code>MatchScope</code> in <a>JsonBody</a>. </p> <p>You must specify either this setting or the <code>IncludedPaths</code> setting, but not both.</p>',
-        }),
-    ).exactOptional(),
-    IncludedPaths: JsonPointerPathsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Match only the specified include paths. See also <code>MatchScope</code> in <a>JsonBody</a>. </p> <p>Provide the include paths using JSON Pointer syntax. For example, <code>"IncludedPaths": ["/dogs/0/name", "/dogs/1/name"]</code>. For information about this syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>You must specify either this setting or the <code>All</code> setting, but not both.</p> <note> <p>Don\'t use this option to include all paths. Instead, use the <code>All</code> setting. </p> </note>',
-        }),
-    ).exactOptional(),
+    All: AllSchema.exactOptional().openapi({
+      description:
+        '<p>Match all of the elements. See also <code>MatchScope</code> in <a>JsonBody</a>. </p> <p>You must specify either this setting or the <code>IncludedPaths</code> setting, but not both.</p>',
+    }),
+    IncludedPaths: JsonPointerPathsSchema.exactOptional().openapi({
+      description:
+        '<p>Match only the specified include paths. See also <code>MatchScope</code> in <a>JsonBody</a>. </p> <p>Provide the include paths using JSON Pointer syntax. For example, <code>"IncludedPaths": ["/dogs/0/name", "/dogs/1/name"]</code>. For information about this syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>You must specify either this setting or the <code>All</code> setting, but not both.</p> <note> <p>Don\'t use this option to include all paths. Instead, use the <code>All</code> setting. </p> </note>',
+    }),
   })
   .openapi({
     description:
@@ -281,38 +790,22 @@ const BodyParsingFallbackBehaviorSchema = z
 
 const JsonBodySchema = z
   .object({
-    MatchPattern: JsonMatchPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The patterns to look for in the JSON body. WAF inspects the results of these pattern matches against the rule inspection criteria. ',
-        }),
-    ),
-    MatchScope: JsonMatchScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parts of the JSON to match against using the <code>MatchPattern</code>. If you specify <code>All</code>, WAF matches against keys and values. ',
-        }),
-    ),
-    InvalidFallbackBehavior: BodyParsingFallbackBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What WAF should do if it fails to completely parse the JSON body. The options are the following:</p> <ul> <li> <p> <code>EVALUATE_AS_STRING</code> - Inspect the body as plain text. WAF applies the text transformations and inspection criteria that you defined for the JSON inspection to the body text string.</p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>If you don\'t provide this setting, WAF parses and evaluates the content only up to the first parsing failure that it encounters. </p> <p>WAF does its best to parse the entire JSON body, but might be forced to stop for reasons such as invalid characters, duplicate keys, truncation, and any content whose root node isn\'t an object or an array. </p> <p>WAF parses the JSON in the following examples as two valid key, value pairs: </p> <ul> <li> <p>Missing comma: <code>{"key1":"value1""key2":"value2"}</code> </p> </li> <li> <p>Missing colon: <code>{"key1":"value1","key2""value2"}</code> </p> </li> <li> <p>Extra colons: <code>{"key1"::"value1","key2""value2"}</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OversizeHandling: OversizeHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. If the body is larger than the limit, the underlying host service only forwards the contents that are below the limit to WAF for inspection. </p> <p>The default limit is 8 KB (8,192 kilobytes) for regional resources and 16 KB (16,384 kilobytes) for CloudFront distributions. For CloudFront distributions, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>',
-        }),
-    ).exactOptional(),
+    MatchPattern: JsonMatchPatternSchema.openapi({
+      description:
+        'The patterns to look for in the JSON body. WAF inspects the results of these pattern matches against the rule inspection criteria. ',
+    }),
+    MatchScope: JsonMatchScopeSchema.openapi({
+      description:
+        'The parts of the JSON to match against using the <code>MatchPattern</code>. If you specify <code>All</code>, WAF matches against keys and values. ',
+    }),
+    InvalidFallbackBehavior: BodyParsingFallbackBehaviorSchema.exactOptional().openapi({
+      description:
+        '<p>What WAF should do if it fails to completely parse the JSON body. The options are the following:</p> <ul> <li> <p> <code>EVALUATE_AS_STRING</code> - Inspect the body as plain text. WAF applies the text transformations and inspection criteria that you defined for the JSON inspection to the body text string.</p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>If you don\'t provide this setting, WAF parses and evaluates the content only up to the first parsing failure that it encounters. </p> <p>WAF does its best to parse the entire JSON body, but might be forced to stop for reasons such as invalid characters, duplicate keys, truncation, and any content whose root node isn\'t an object or an array. </p> <p>WAF parses the JSON in the following examples as two valid key, value pairs: </p> <ul> <li> <p>Missing comma: <code>{"key1":"value1""key2":"value2"}</code> </p> </li> <li> <p>Missing colon: <code>{"key1":"value1","key2""value2"}</code> </p> </li> <li> <p>Extra colons: <code>{"key1"::"value1","key2""value2"}</code> </p> </li> </ul>',
+    }),
+    OversizeHandling: OversizeHandlingSchema.exactOptional().openapi({
+      description:
+        '<p>What WAF should do if the body is larger than WAF can inspect. WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. If the body is larger than the limit, the underlying host service only forwards the contents that are below the limit to WAF for inspection. </p> <p>The default limit is 8 KB (8,192 kilobytes) for regional resources and 16 KB (16,384 kilobytes) for CloudFront distributions. For CloudFront distributions, you can increase the limit in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the body normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>',
+    }),
   })
   .openapi({
     required: ['MatchPattern', 'MatchScope'],
@@ -325,23 +818,15 @@ const HeaderNamesSchema = z.array(FieldToMatchDataSchema).min(1).max(199).openap
 
 const HeaderMatchPatternSchema = z
   .object({
-    All: AllSchema.and(z.any().openapi({ description: 'Inspect all headers. ' })).exactOptional(),
-    IncludedHeaders: HeaderNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Inspect only the headers that have a key that matches one of the strings specified here. ',
-        }),
-    ).exactOptional(),
-    ExcludedHeaders: HeaderNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Inspect only the headers whose keys don't match any of the strings specified here. ",
-        }),
-    ).exactOptional(),
+    All: AllSchema.exactOptional().openapi({ description: 'Inspect all headers. ' }),
+    IncludedHeaders: HeaderNamesSchema.exactOptional().openapi({
+      description:
+        'Inspect only the headers that have a key that matches one of the strings specified here. ',
+    }),
+    ExcludedHeaders: HeaderNamesSchema.exactOptional().openapi({
+      description:
+        "Inspect only the headers whose keys don't match any of the strings specified here. ",
+    }),
   })
   .openapi({
     description:
@@ -354,30 +839,18 @@ const MapMatchScopeSchema = z.enum(['ALL', 'KEY', 'VALUE']).openapi('MapMatchSco
 
 const HeadersSchema = z
   .object({
-    MatchPattern: HeaderMatchPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filter to use to identify the subset of headers to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedHeaders</code>, or <code>ExcludedHeaders</code>.</p> <p>Example JSON: <code>"MatchPattern": { "ExcludedHeaders": {"KeyToExclude1", "KeyToExclude2"} }</code> </p>',
-        }),
-    ),
-    MatchScope: MapMatchScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parts of the headers to match with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. ',
-        }),
-    ),
-    OversizeHandling: OversizeHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What WAF should do if the headers of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>',
-        }),
-    ),
+    MatchPattern: HeaderMatchPatternSchema.openapi({
+      description:
+        '<p>The filter to use to identify the subset of headers to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedHeaders</code>, or <code>ExcludedHeaders</code>.</p> <p>Example JSON: <code>"MatchPattern": { "ExcludedHeaders": {"KeyToExclude1", "KeyToExclude2"} }</code> </p>',
+    }),
+    MatchScope: MapMatchScopeSchema.openapi({
+      description:
+        'The parts of the headers to match with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. ',
+    }),
+    OversizeHandling: OversizeHandlingSchema.openapi({
+      description:
+        '<p>What WAF should do if the headers of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request headers when they exceed 8 KB (8192 bytes) or 200 total headers. The underlying host service forwards a maximum of 200 headers and at most 8 KB of header contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the headers normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['MatchPattern', 'MatchScope', 'OversizeHandling'],
@@ -397,23 +870,15 @@ const CookieNamesSchema = z.array(SingleCookieNameSchema).min(1).max(199).openap
 
 const CookieMatchPatternSchema = z
   .object({
-    All: AllSchema.and(z.any().openapi({ description: 'Inspect all cookies. ' })).exactOptional(),
-    IncludedCookies: CookieNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Inspect only the cookies that have a key that matches one of the strings specified here. ',
-        }),
-    ).exactOptional(),
-    ExcludedCookies: CookieNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Inspect only the cookies whose keys don't match any of the strings specified here. ",
-        }),
-    ).exactOptional(),
+    All: AllSchema.exactOptional().openapi({ description: 'Inspect all cookies. ' }),
+    IncludedCookies: CookieNamesSchema.exactOptional().openapi({
+      description:
+        'Inspect only the cookies that have a key that matches one of the strings specified here. ',
+    }),
+    ExcludedCookies: CookieNamesSchema.exactOptional().openapi({
+      description:
+        "Inspect only the cookies whose keys don't match any of the strings specified here. ",
+    }),
   })
   .openapi({
     description:
@@ -424,30 +889,18 @@ const CookieMatchPatternSchema = z
 
 const CookiesSchema = z
   .object({
-    MatchPattern: CookieMatchPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filter to use to identify the subset of cookies to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedCookies</code>, or <code>ExcludedCookies</code>.</p> <p>Example JSON: <code>"MatchPattern": { "IncludedCookies": {"KeyToInclude1", "KeyToInclude2", "KeyToInclude3"} }</code> </p>',
-        }),
-    ),
-    MatchScope: MapMatchScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parts of the cookies to inspect with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. ',
-        }),
-    ),
-    OversizeHandling: OversizeHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>What WAF should do if the cookies of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request cookies when they exceed 8 KB (8192 bytes) or 200 total cookies. The underlying host service forwards a maximum of 200 cookies and at most 8 KB of cookie contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the cookies normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>',
-        }),
-    ),
+    MatchPattern: CookieMatchPatternSchema.openapi({
+      description:
+        '<p>The filter to use to identify the subset of cookies to inspect in a web request. </p> <p>You must specify exactly one setting: either <code>All</code>, <code>IncludedCookies</code>, or <code>ExcludedCookies</code>.</p> <p>Example JSON: <code>"MatchPattern": { "IncludedCookies": {"KeyToInclude1", "KeyToInclude2", "KeyToInclude3"} }</code> </p>',
+    }),
+    MatchScope: MapMatchScopeSchema.openapi({
+      description:
+        'The parts of the cookies to inspect with the rule inspection criteria. If you specify <code>All</code>, WAF inspects both keys and values. ',
+    }),
+    OversizeHandling: OversizeHandlingSchema.openapi({
+      description:
+        '<p>What WAF should do if the cookies of the request are larger than WAF can inspect. WAF does not support inspecting the entire contents of request cookies when they exceed 8 KB (8192 bytes) or 200 total cookies. The underlying host service forwards a maximum of 200 cookies and at most 8 KB of cookie contents to WAF. </p> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the cookies normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['MatchPattern', 'MatchScope', 'OversizeHandling'],
@@ -458,81 +911,45 @@ const CookiesSchema = z
 
 const FieldToMatchSchema = z
   .object({
-    SingleHeader: SingleHeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Inspect a single header. Provide the name of the header to inspect, for example, <code>User-Agent</code> or <code>Referer</code>. This setting isn\'t case sensitive.</p> <p>Example JSON: <code>"SingleHeader": { "Name": "haystack" }</code> </p> <p>Alternately, you can filter and inspect all headers with the <code>Headers</code> <code>FieldToMatch</code> setting. </p>',
-        }),
-    ).exactOptional(),
-    SingleQueryArgument: SingleQueryArgumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Inspect a single query argument. Provide the name of the query argument to inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The name can be up to 30 characters long and isn\'t case sensitive. </p> <p>Example JSON: <code>"SingleQueryArgument": { "Name": "myArgument" }</code> </p>',
-        }),
-    ).exactOptional(),
-    AllQueryArguments: AllQueryArgumentsSchema.and(
-      z.any().openapi({ description: 'Inspect all query arguments. ' }),
-    ).exactOptional(),
-    UriPath: UriPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Inspect the request URI path. This is the part of the web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.',
-        }),
-    ).exactOptional(),
-    QueryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Inspect the query string. This is the part of a URL that appears after a <code>?</code> character, if any.',
-        }),
-    ).exactOptional(),
-    Body: BodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>A limited amount of the request body is forwarded to WAF for inspection by the underlying host service. For regional resources, the limit is 8 KB (8,192 kilobytes) and for CloudFront distributions, the limit is 16 KB (16,384 kilobytes). For CloudFront distributions, you can increase the limit in the web ACL's <code>AssociationConfig</code>, for additional processing fees. </p> <p>For information about how to handle oversized request bodies, see the <code>Body</code> object configuration. </p>",
-        }),
-    ).exactOptional(),
-    Method: MethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Inspect the HTTP method. The method indicates the type of operation that the request is asking the origin to perform. ',
-        }),
-    ).exactOptional(),
-    JsonBody: JsonBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>A limited amount of the request body is forwarded to WAF for inspection by the underlying host service. For regional resources, the limit is 8 KB (8,192 kilobytes) and for CloudFront distributions, the limit is 16 KB (16,384 kilobytes). For CloudFront distributions, you can increase the limit in the web ACL's <code>AssociationConfig</code>, for additional processing fees. </p> <p>For information about how to handle oversized request bodies, see the <code>JsonBody</code> object configuration. </p>",
-        }),
-    ).exactOptional(),
-    Headers: HeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Inspect the request headers. You must configure scope and pattern matching filters in the <code>Headers</code> object, to define the set of headers to and the parts of the headers that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's headers and only the first 200 headers are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize header content in the <code>Headers</code> object. WAF applies the pattern matching filters to the headers that it receives from the underlying host service. </p>",
-        }),
-    ).exactOptional(),
-    Cookies: CookiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Inspect the request cookies. You must configure scope and pattern matching filters in the <code>Cookies</code> object, to define the set of cookies and the parts of the cookies that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's cookies and only the first 200 cookies are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize cookie content in the <code>Cookies</code> object. WAF applies the pattern matching filters to the cookies that it receives from the underlying host service. </p>",
-        }),
-    ).exactOptional(),
+    SingleHeader: SingleHeaderSchema.exactOptional().openapi({
+      description:
+        '<p>Inspect a single header. Provide the name of the header to inspect, for example, <code>User-Agent</code> or <code>Referer</code>. This setting isn\'t case sensitive.</p> <p>Example JSON: <code>"SingleHeader": { "Name": "haystack" }</code> </p> <p>Alternately, you can filter and inspect all headers with the <code>Headers</code> <code>FieldToMatch</code> setting. </p>',
+    }),
+    SingleQueryArgument: SingleQueryArgumentSchema.exactOptional().openapi({
+      description:
+        '<p>Inspect a single query argument. Provide the name of the query argument to inspect, such as <i>UserName</i> or <i>SalesRegion</i>. The name can be up to 30 characters long and isn\'t case sensitive. </p> <p>Example JSON: <code>"SingleQueryArgument": { "Name": "myArgument" }</code> </p>',
+    }),
+    AllQueryArguments: AllQueryArgumentsSchema.exactOptional().openapi({
+      description: 'Inspect all query arguments. ',
+    }),
+    UriPath: UriPathSchema.exactOptional().openapi({
+      description:
+        'Inspect the request URI path. This is the part of the web request that identifies a resource, for example, <code>/images/daily-ad.jpg</code>.',
+    }),
+    QueryString: QueryStringSchema.exactOptional().openapi({
+      description:
+        'Inspect the query string. This is the part of a URL that appears after a <code>?</code> character, if any.',
+    }),
+    Body: BodySchema.exactOptional().openapi({
+      description:
+        "<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>A limited amount of the request body is forwarded to WAF for inspection by the underlying host service. For regional resources, the limit is 8 KB (8,192 kilobytes) and for CloudFront distributions, the limit is 16 KB (16,384 kilobytes). For CloudFront distributions, you can increase the limit in the web ACL's <code>AssociationConfig</code>, for additional processing fees. </p> <p>For information about how to handle oversized request bodies, see the <code>Body</code> object configuration. </p>",
+    }),
+    Method: MethodSchema.exactOptional().openapi({
+      description:
+        'Inspect the HTTP method. The method indicates the type of operation that the request is asking the origin to perform. ',
+    }),
+    JsonBody: JsonBodySchema.exactOptional().openapi({
+      description:
+        "<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>A limited amount of the request body is forwarded to WAF for inspection by the underlying host service. For regional resources, the limit is 8 KB (8,192 kilobytes) and for CloudFront distributions, the limit is 16 KB (16,384 kilobytes). For CloudFront distributions, you can increase the limit in the web ACL's <code>AssociationConfig</code>, for additional processing fees. </p> <p>For information about how to handle oversized request bodies, see the <code>JsonBody</code> object configuration. </p>",
+    }),
+    Headers: HeadersSchema.exactOptional().openapi({
+      description:
+        "<p>Inspect the request headers. You must configure scope and pattern matching filters in the <code>Headers</code> object, to define the set of headers to and the parts of the headers that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's headers and only the first 200 headers are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize header content in the <code>Headers</code> object. WAF applies the pattern matching filters to the headers that it receives from the underlying host service. </p>",
+    }),
+    Cookies: CookiesSchema.exactOptional().openapi({
+      description:
+        "<p>Inspect the request cookies. You must configure scope and pattern matching filters in the <code>Cookies</code> object, to define the set of cookies and the parts of the cookies that WAF inspects. </p> <p>Only the first 8 KB (8192 bytes) of a request's cookies and only the first 200 cookies are forwarded to WAF for inspection by the underlying host service. You must configure how to handle any oversize cookie content in the <code>Cookies</code> object. WAF applies the pattern matching filters to the cookies that it receives from the underlying host service. </p>",
+    }),
   })
   .openapi({
     description:
@@ -540,6 +957,568 @@ const FieldToMatchSchema = z
     required: [],
   })
   .openapi('FieldToMatch')
+
+const RedactedFieldsSchema = z.array(FieldToMatchSchema).max(100).openapi('RedactedFields')
+
+const FilterBehaviorSchema = z.enum(['KEEP', 'DROP']).openapi('FilterBehavior')
+
+const FilterRequirementSchema = z.enum(['MEETS_ALL', 'MEETS_ANY']).openapi('FilterRequirement')
+
+const ActionValueSchema = z
+  .enum(['ALLOW', 'BLOCK', 'COUNT', 'CAPTCHA', 'CHALLENGE', 'EXCLUDED_AS_COUNT'])
+  .openapi('ActionValue')
+
+const ActionConditionSchema = z
+  .object({
+    Action: ActionValueSchema.openapi({
+      description:
+        "<p>The action setting that a log record must contain in order to meet the condition. This is the action that WAF applied to the web request. </p> <p>For rule groups, this is either the configured rule action setting, or if you've applied a rule action override to the rule, it's the override action. The value <code>EXCLUDED_AS_COUNT</code> matches on excluded rules and also on rules that have a rule action override of Count. </p>",
+    }),
+  })
+  .openapi({
+    required: ['Action'],
+    description: 'A single action condition for a <a>Condition</a> in a logging filter.',
+  })
+  .openapi('ActionCondition')
+
+const LabelNameConditionSchema = z
+  .object({
+    LabelName: LabelNameSchema.openapi({
+      description:
+        'The label name that a log record must contain in order to meet the condition. This must be a fully qualified label name. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. ',
+    }),
+  })
+  .openapi({
+    required: ['LabelName'],
+    description: 'A single label name condition for a <a>Condition</a> in a logging filter.',
+  })
+  .openapi('LabelNameCondition')
+
+const ConditionSchema = z
+  .object({
+    ActionCondition: ActionConditionSchema.exactOptional().openapi({
+      description:
+        'A single action condition. This is the action setting that a log record must contain in order to meet the condition.',
+    }),
+    LabelNameCondition: LabelNameConditionSchema.exactOptional().openapi({
+      description:
+        'A single label name condition. This is the fully qualified label name that a log record must contain in order to meet the condition. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. ',
+    }),
+  })
+  .openapi({ description: 'A single match condition for a <a>Filter</a>.', required: [] })
+  .openapi('Condition')
+
+const ConditionsSchema = z.array(ConditionSchema).min(1).openapi('Conditions')
+
+const FilterSchema = z
+  .object({
+    Behavior: FilterBehaviorSchema.openapi({
+      description: "How to handle logs that satisfy the filter's conditions and requirement. ",
+    }),
+    Requirement: FilterRequirementSchema.openapi({
+      description:
+        'Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition.',
+    }),
+    Conditions: ConditionsSchema.openapi({ description: 'Match conditions for the filter.' }),
+  })
+  .openapi({
+    required: ['Behavior', 'Requirement', 'Conditions'],
+    description: 'A single logging filter, used in <a>LoggingFilter</a>. ',
+  })
+  .openapi('Filter')
+
+const FiltersSchema = z.array(FilterSchema).min(1).openapi('Filters')
+
+const LoggingFilterSchema = z
+  .object({
+    Filters: FiltersSchema.openapi({
+      description: 'The filters that you want to apply to the logs. ',
+    }),
+    DefaultBehavior: FilterBehaviorSchema.openapi({
+      description:
+        "Default handling for logs that don't match any of the specified filtering conditions. ",
+    }),
+  })
+  .openapi({
+    required: ['Filters', 'DefaultBehavior'],
+    description:
+      "<p>Filtering that specifies which web requests are kept in the logs and which are dropped, defined for a web ACL's <a>LoggingConfiguration</a>. </p> <p>You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. </p>",
+  })
+  .openapi('LoggingFilter')
+
+const LoggingConfigurationSchema = z
+  .object({
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL that you want to associate with <code>LogDestinationConfigs</code>.',
+    }),
+    LogDestinationConfigs: LogDestinationConfigsSchema.openapi({
+      description:
+        '<p>The logging destination configuration that you want to associate with the web ACL.</p> <note> <p>You can associate one logging destination to a web ACL.</p> </note>',
+    }),
+    RedactedFields: RedactedFieldsSchema.exactOptional().openapi({
+      description:
+        '<p>The parts of the request that you want to keep out of the logs. For example, if you redact the <code>SingleHeader</code> field, the <code>HEADER</code> field in the logs will be <code>REDACTED</code>. </p> <note> <p>You can specify only the following fields for redaction: <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, <code>Method</code>, and <code>JsonBody</code>.</p> </note>',
+    }),
+    ManagedByFirewallManager: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the logging configuration was created by Firewall Manager, as part of an WAF policy configuration. If true, only Firewall Manager can modify or delete the configuration. ',
+    }),
+    LoggingFilter: LoggingFilterSchema.exactOptional().openapi({
+      description:
+        'Filtering that specifies which web requests are kept in the logs and which are dropped. You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. ',
+    }),
+  })
+  .openapi({
+    required: ['ResourceArn', 'LogDestinationConfigs'],
+    description:
+      '<p>Defines an association between logging destinations and a web ACL resource, for logging from WAF. As part of the association, you can specify parts of the standard logging fields to keep out of the logs and you can specify filters so that you log only a subset of the logging records. </p> <note> <p>You can define one logging destination per web ACL.</p> </note> <p>You can access information about the traffic that WAF inspects using the following steps:</p> <ol> <li> <p>Create your logging destination. You can use an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose. </p> <p>The name that you give the destination must start with <code>aws-waf-logs-</code>. Depending on the type of destination, you might need to configure additional settings or permissions. </p> <p>For configuration requirements and pricing information for each destination type, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging web ACL traffic</a> in the <i>WAF Developer Guide</i>.</p> </li> <li> <p>Associate your logging destination to your web ACL using a <code>PutLoggingConfiguration</code> request.</p> </li> </ol> <p>When you successfully enable logging using a <code>PutLoggingConfiguration</code> request, WAF creates an additional role or policy that is required to write logs to the logging destination. For an Amazon CloudWatch Logs log group, WAF creates a resource policy on the log group. For an Amazon S3 bucket, WAF creates a bucket policy. For an Amazon Kinesis Data Firehose, WAF creates a service-linked role.</p> <p>For additional information about web ACL logging, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging web ACL traffic information</a> in the <i>WAF Developer Guide</i>.</p>',
+  })
+  .openapi('LoggingConfiguration')
+
+type GetLoggingConfigurationResponseType = {
+  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema> & unknown
+}
+
+const EntityIdSchema = z
+  .string()
+  .regex(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/)
+  .min(1)
+  .max(36)
+  .openapi('EntityId')
+
+type RuleGroupType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Id: z.infer<typeof EntityIdSchema> & unknown
+  Capacity: z.infer<typeof CapacityUnitSchema> & unknown
+  ARN: z.infer<typeof ResourceArnSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  AvailableLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+  ConsumedLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+}
+
+const RuleGroupSchema: z.ZodType<RuleGroupType> = z
+  .object({
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Capacity: CapacityUnitSchema.openapi({
+      description:
+        '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>When you create your own rule group, you define this, and you cannot change it after creation. When you add or modify the rules in a rule group, WAF enforces this limit. You can check the capacity for a set of rules using <a>CheckCapacity</a>.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    ARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the rule group that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    LabelNamespace: LabelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The label namespace prefix for this rule group. All labels added by rules in this rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for your rule groups is the following: </p> <p> <code>awswaf:&lt;account ID&gt;:rulegroup:&lt;rule group name&gt;:</code> </p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    AvailableLabels: LabelSummariesSchema.exactOptional().openapi({
+      description:
+        'The labels that one or more rules in this rule group add to matching web requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>.',
+    }),
+    ConsumedLabels: LabelSummariesSchema.exactOptional().openapi({
+      description:
+        'The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'Id', 'Capacity', 'ARN', 'VisibilityConfig'],
+    description:
+      ' A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. ',
+  })
+  .openapi('RuleGroup')
+
+const LockTokenSchema = z
+  .string()
+  .regex(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/)
+  .min(1)
+  .max(36)
+  .openapi('LockToken')
+
+type GetRuleGroupResponseType = {
+  RuleGroup?: z.infer<typeof RuleGroupSchema> & unknown
+  LockToken?: z.infer<typeof LockTokenSchema> & unknown
+}
+
+const ConsumedCapacitySchema = z.int().min(0).openapi('ConsumedCapacity')
+
+const ManagedRuleGroupStatementSchema: z.ZodType<ManagedRuleGroupStatementType> = z
+  .lazy(() =>
+    z
+      .object({
+        VendorName: VendorNameSchema.openapi({
+          description:
+            'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
+        }),
+        Name: EntityNameSchema.openapi({
+          description:
+            'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
+        }),
+        Version: VersionKeyStringSchema.exactOptional().openapi({
+          description:
+            "The version of the managed rule group to use. If you specify this, the version setting is fixed until you change it. If you don't specify this, WAF uses the vendor's default version, and then keeps the version at the vendor's default when the vendor updates the managed rule group settings. ",
+        }),
+        ExcludedRules: ExcludedRulesSchema.exactOptional().openapi({
+          description:
+            '<p>Rules in the referenced rule group whose actions are set to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
+        }),
+        ScopeDownStatement: StatementSchema.exactOptional().openapi({
+          description:
+            'An optional nested statement that narrows the scope of the web requests that are evaluated by the managed rule group. Requests are only evaluated by the rule group if they match the scope-down statement. You can use any nestable <a>Statement</a> in the scope-down statement, and you can nest statements at any level, the same as you can for a rule statement. ',
+        }),
+        ManagedRuleGroupConfigs: ManagedRuleGroupConfigsSchema.exactOptional().openapi({
+          description:
+            "<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object for the account takeover prevention managed rule group, to provide information such as the sign-in page of your application and the type of content to accept or reject from the client. </p> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p>",
+        }),
+        RuleActionOverrides: RuleActionOverridesSchema.exactOptional().openapi({
+          description:
+            '<p>Action settings to use in the place of the rule actions that are configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
+        }),
+      })
+      .openapi({
+        required: ['VendorName', 'Name'],
+        description:
+          '<p>A rule statement used to run the rules that are defined in a managed rule group. To use this, provide the vendor name and the name of the rule group in this statement. You can retrieve the required names by calling <a>ListAvailableManagedRuleGroups</a>.</p> <p>You cannot nest a <code>ManagedRuleGroupStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. It can only be referenced as a top-level statement within a rule.</p> <note> <p>You are charged additional fees when you use the WAF Bot Control managed rule group <code>AWSManagedRulesBotControlRuleSet</code> or the WAF Fraud Control account takeover prevention (ATP) managed rule group <code>AWSManagedRulesATPRuleSet</code>. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+      }),
+  )
+  .openapi('ManagedRuleGroupStatement')
+
+const ExcludedRuleSchema = z
+  .object({
+    Name: EntityNameSchema.openapi({
+      description: 'The name of the rule whose action you want to override to <code>Count</code>.',
+    }),
+  })
+  .openapi({
+    required: ['Name'],
+    description:
+      '<p>Specifies a single rule in a rule group whose action you want to override to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
+  })
+  .openapi('ExcludedRule')
+
+type ExcludedRulesType = z.infer<typeof ExcludedRuleSchema>[]
+
+const ExcludedRulesSchema: z.ZodType<ExcludedRulesType> = z
+  .array(ExcludedRuleSchema)
+  .max(100)
+  .openapi('ExcludedRules')
+
+const RuleActionOverrideSchema = z
+  .object({
+    Name: EntityNameSchema.openapi({ description: 'The name of the rule to override.' }),
+    ActionToUse: RuleActionSchema.openapi({
+      description:
+        'The override action to use, in place of the configured action of the rule in the rule group. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'ActionToUse'],
+    description:
+      '<p>Action setting to use in the place of a rule action that is configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
+  })
+  .openapi('RuleActionOverride')
+
+type RuleActionOverridesType = z.infer<typeof RuleActionOverrideSchema>[]
+
+const RuleActionOverridesSchema: z.ZodType<RuleActionOverridesType> = z
+  .array(RuleActionOverrideSchema)
+  .min(1)
+  .max(100)
+  .openapi('RuleActionOverrides')
+
+type RuleGroupReferenceStatementType = {
+  ARN: z.infer<typeof ResourceArnSchema> & unknown
+  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & unknown
+  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & unknown
+}
+
+const RuleGroupReferenceStatementSchema: z.ZodType<RuleGroupReferenceStatementType> = z
+  .object({
+    ARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    ExcludedRules: ExcludedRulesSchema.exactOptional().openapi({
+      description:
+        '<p>Rules in the referenced rule group whose actions are set to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
+    }),
+    RuleActionOverrides: RuleActionOverridesSchema.exactOptional().openapi({
+      description:
+        '<p>Action settings to use in the place of the rule actions that are configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
+    }),
+  })
+  .openapi({
+    required: ['ARN'],
+    description:
+      '<p>A rule statement used to run the rules that are defined in a <a>RuleGroup</a>. To use this, create a rule group with your rules, then provide the ARN of the rule group in this statement.</p> <p>You cannot nest a <code>RuleGroupReferenceStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. You can only use a rule group reference statement at the top level inside a web ACL. </p>',
+  })
+  .openapi('RuleGroupReferenceStatement')
+
+type FirewallManagerStatementType = {
+  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema> & unknown
+  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema> & unknown
+}
+
+const FirewallManagerStatementSchema: z.ZodType<FirewallManagerStatementType> = z
+  .object({
+    ManagedRuleGroupStatement: ManagedRuleGroupStatementSchema.exactOptional().openapi({
+      description:
+        'A statement used by Firewall Manager to run the rules that are defined in a managed rule group. This is managed by Firewall Manager for an Firewall Manager WAF policy.',
+    }),
+    RuleGroupReferenceStatement: RuleGroupReferenceStatementSchema.exactOptional().openapi({
+      description:
+        'A statement used by Firewall Manager to run the rules that are defined in a rule group. This is managed by Firewall Manager for an Firewall Manager WAF policy.',
+    }),
+  })
+  .openapi({
+    description:
+      'The processing guidance for an Firewall Manager rule. This is like a regular rule <a>Statement</a>, but it can only contain a single rule group reference.',
+    required: [],
+  })
+  .openapi('FirewallManagerStatement')
+
+type FirewallManagerRuleGroupType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Priority: z.infer<typeof RulePrioritySchema> & unknown
+  FirewallManagerStatement: z.infer<typeof FirewallManagerStatementSchema> & unknown
+  OverrideAction: z.infer<typeof OverrideActionSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+}
+
+const FirewallManagerRuleGroupSchema: z.ZodType<FirewallManagerRuleGroupType> = z
+  .object({
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Priority: RulePrioritySchema.openapi({
+      description:
+        "If you define more than one rule group in the first or last Firewall Manager rule groups, WAF evaluates each request against the rule groups in order, starting from the lowest priority setting. The priorities don't need to be consecutive, but they must all be different.",
+    }),
+    FirewallManagerStatement: FirewallManagerStatementSchema.openapi({
+      description:
+        'The processing guidance for an Firewall Manager rule. This is like a regular rule <a>Statement</a>, but it can only contain a rule group reference.',
+    }),
+    OverrideAction: OverrideActionSchema.openapi({
+      description:
+        '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+  })
+  .openapi({
+    required: [
+      'Name',
+      'Priority',
+      'FirewallManagerStatement',
+      'OverrideAction',
+      'VisibilityConfig',
+    ],
+    description: "A rule group that's defined for an Firewall Manager WAF policy.",
+  })
+  .openapi('FirewallManagerRuleGroup')
+
+type FirewallManagerRuleGroupsType = z.infer<typeof FirewallManagerRuleGroupSchema>[]
+
+const FirewallManagerRuleGroupsSchema: z.ZodType<FirewallManagerRuleGroupsType> = z
+  .array(FirewallManagerRuleGroupSchema)
+  .openapi('FirewallManagerRuleGroups')
+
+type WebACLType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Id: z.infer<typeof EntityIdSchema> & unknown
+  ARN: z.infer<typeof ResourceArnSchema> & unknown
+  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  Capacity?: z.infer<typeof ConsumedCapacitySchema> & unknown
+  PreProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema> & unknown
+  PostProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema> & unknown
+  ManagedByFirewallManager?: z.infer<typeof BooleanSchema> & unknown
+  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
+  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+}
+
+const WebACLSchema: z.ZodType<WebACLType> = z
+  .object({
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the <code>WebACL</code>. This ID is returned in the responses to create and list commands. You use this ID to do things like get, update, and delete a <code>WebACL</code>.',
+    }),
+    ARN: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL that you want to associate with the resource.',
+    }),
+    DefaultAction: DefaultActionSchema.openapi({
+      description:
+        'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the web ACL that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    Capacity: ConsumedCapacitySchema.exactOptional().openapi({
+      description:
+        '<p>The web ACL capacity units (WCUs) currently being used by this web ACL. </p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    PreProcessFirewallManagerRuleGroups: FirewallManagerRuleGroupsSchema.exactOptional().openapi({
+      description:
+        "<p>The first set of rules for WAF to process in the web ACL. This is defined in an Firewall Manager WAF policy and contains only rule group references. You can't alter these. Any rules and rule groups that you define for the web ACL are prioritized after these. </p> <p>In the Firewall Manager WAF policy, the Firewall Manager administrator can define a set of rule groups to run first in the web ACL and a set of rule groups to run last. Within each set, the administrator prioritizes the rule groups, to determine their relative processing order.</p>",
+    }),
+    PostProcessFirewallManagerRuleGroups: FirewallManagerRuleGroupsSchema.exactOptional().openapi({
+      description:
+        "<p>The last set of rules for WAF to process in the web ACL. This is defined in an Firewall Manager WAF policy and contains only rule group references. You can't alter these. Any rules and rule groups that you define for the web ACL are prioritized before these. </p> <p>In the Firewall Manager WAF policy, the Firewall Manager administrator can define a set of rule groups to run first in the web ACL and a set of rule groups to run last. Within each set, the administrator prioritizes the rule groups, to determine their relative processing order.</p>",
+    }),
+    ManagedByFirewallManager: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether this web ACL is managed by Firewall Manager. If true, then only Firewall Manager can delete the web ACL or any Firewall Manager rule groups in the web ACL. ',
+    }),
+    LabelNamespace: LabelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The label namespace prefix for this web ACL. All labels added by rules in this web ACL have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a web ACL is the following: </p> <p> <code>awswaf:&lt;account ID&gt;:webacl:&lt;web ACL name&gt;:</code> </p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    CaptchaConfig: CaptchaConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
+    }),
+    ChallengeConfig: ChallengeConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
+    }),
+    TokenDomains: TokenDomainsSchema.exactOptional().openapi({
+      description:
+        "Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don't specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource's host domain plus all domains in the token domain list, including their prefixed subdomains.",
+    }),
+    AssociationConfig: AssociationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'Id', 'ARN', 'DefaultAction', 'VisibilityConfig'],
+    description:
+      ' A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. ',
+  })
+  .openapi('WebACL')
+
+const OutputUrlSchema = z.string().openapi('OutputUrl')
+
+type GetWebACLResponseType = {
+  WebACL?: z.infer<typeof WebACLSchema> & unknown
+  LockToken?: z.infer<typeof LockTokenSchema> & unknown
+  ApplicationIntegrationURL?: z.infer<typeof OutputUrlSchema> & unknown
+}
+
+type GetWebACLForResourceResponseType = { WebACL?: z.infer<typeof WebACLSchema> & unknown }
+
+type LoggingConfigurationsType = z.infer<typeof LoggingConfigurationSchema>[]
+
+const LoggingConfigurationsSchema: z.ZodType<LoggingConfigurationsType> = z
+  .array(LoggingConfigurationSchema)
+  .openapi('LoggingConfigurations')
+
+const NextMarkerSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(256)
+  .openapi('NextMarker')
+
+type ListLoggingConfigurationsResponseType = {
+  LoggingConfigurations?: z.infer<typeof LoggingConfigurationsSchema> & unknown
+  NextMarker?: z.infer<typeof NextMarkerSchema> & unknown
+}
+
+type PutLoggingConfigurationResponseType = {
+  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema> & unknown
+}
+
+type PutLoggingConfigurationRequestType = {
+  LoggingConfiguration: z.infer<typeof LoggingConfigurationSchema> & unknown
+}
+
+type UpdateRuleGroupRequestType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Scope: z.infer<typeof ScopeSchema> & unknown
+  Id: z.infer<typeof EntityIdSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  LockToken: z.infer<typeof LockTokenSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+}
+
+type UpdateWebACLRequestType = {
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Scope: z.infer<typeof ScopeSchema> & unknown
+  Id: z.infer<typeof EntityIdSchema> & unknown
+  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
+  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema> & unknown
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  LockToken: z.infer<typeof LockTokenSchema> & unknown
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
+  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+}
+
+type StatementsType = z.infer<typeof StatementSchema>[]
+
+const StatementsSchema: z.ZodType<StatementsType> = z
+  .lazy(() => z.array(StatementSchema))
+  .openapi('Statements')
+
+type AndStatementType = { Statements: z.infer<typeof StatementsSchema> & unknown }
+
+const SearchStringSchema = z.string().openapi('SearchString')
 
 const TextTransformationPrioritySchema = z.int().min(0).openapi('TextTransformationPriority')
 
@@ -571,22 +1550,14 @@ const TextTransformationTypeSchema = z
 
 const TextTransformationSchema = z
   .object({
-    Priority: TextTransformationPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Sets the relative processing order for multiple transformations that are defined for a rule statement. WAF processes all transformations, from lowest priority to highest, before inspecting the transformed content. The priorities don't need to be consecutive, but they must all be different. ",
-        }),
-    ),
-    Type: TextTransformationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>You can specify the following transformation types:</p> <p> <b>BASE64_DECODE</b> - Decode a <code>Base64</code>-encoded string.</p> <p> <b>BASE64_DECODE_EXT</b> - Decode a <code>Base64</code>-encoded string, but use a forgiving implementation that ignores characters that aren't valid.</p> <p> <b>CMD_LINE</b> - Command-line transformations. These are helpful in reducing effectiveness of attackers who inject an operating system command-line command and use unusual formatting to disguise some or all of the command. </p> <ul> <li> <p>Delete the following characters: <code>\\ \" ' ^</code> </p> </li> <li> <p>Delete spaces before the following characters: <code>/ (</code> </p> </li> <li> <p>Replace the following characters with a space: <code>, ;</code> </p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> - Replace these characters with a space character (decimal 32): </p> <ul> <li> <p> <code>\\f</code>, formfeed, decimal 12</p> </li> <li> <p> <code>\\t</code>, tab, decimal 9</p> </li> <li> <p> <code>\\n</code>, newline, decimal 10</p> </li> <li> <p> <code>\\r</code>, carriage return, decimal 13</p> </li> <li> <p> <code>\\v</code>, vertical tab, decimal 11</p> </li> <li> <p>Non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>CSS_DECODE</b> - Decode characters that were encoded using CSS 2.x escape rules <code>syndata.html#characters</code>. This function uses up to two bytes in the decoding process, so it can help to uncover ASCII characters that were encoded using CSS encoding that wouldn’t typically be encoded. It's also useful in countering evasion, which is a combination of a backslash and non-hexadecimal characters. For example, <code>ja\\vascript</code> for javascript. </p> <p> <b>ESCAPE_SEQ_DECODE</b> - Decode the following ANSI C escape sequences: <code>\\a</code>, <code>\\b</code>, <code>\\f</code>, <code>\\n</code>, <code>\\r</code>, <code>\\t</code>, <code>\\v</code>, <code>\\\\</code>, <code>\\?</code>, <code>\\'</code>, <code>\\\"</code>, <code>\\xHH</code> (hexadecimal), <code>\\0OOO</code> (octal). Encodings that aren't valid remain in the output. </p> <p> <b>HEX_DECODE</b> - Decode a string of hexadecimal characters into a binary.</p> <p> <b>HTML_ENTITY_DECODE</b> - Replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs these operations: </p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>\"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a \"less than\" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>JS_DECODE</b> - Decode JavaScript escape sequences. If a <code>\\</code> <code>u</code> <code>HHHH</code> code is in the full-width ASCII code range of <code>FF01-FF5E</code>, then the higher byte is used to detect and adjust the lower byte. If not, only the lower byte is used and the higher byte is zeroed, causing a possible loss of information. </p> <p> <b>LOWERCASE</b> - Convert uppercase letters (A-Z) to lowercase (a-z). </p> <p> <b>MD5</b> - Calculate an MD5 hash from the data in the input. The computed hash is in a raw binary form. </p> <p> <b>NONE</b> - Specify <code>NONE</code> if you don't want any text transformations. </p> <p> <b>NORMALIZE_PATH</b> - Remove multiple slashes, directory self-references, and directory back-references that are not at the beginning of the input from an input string. </p> <p> <b>NORMALIZE_PATH_WIN</b> - This is the same as <code>NORMALIZE_PATH</code>, but first converts backslash characters to forward slashes. </p> <p> <b>REMOVE_NULLS</b> - Remove all <code>NULL</code> bytes from the input. </p> <p> <b>REPLACE_COMMENTS</b> - Replace each occurrence of a C-style comment (<code>/* ... */</code>) with a single space. Multiple consecutive occurrences are not compressed. Unterminated comments are also replaced with a space (ASCII 0x20). However, a standalone termination of a comment (<code>*/</code>) is not acted upon. </p> <p> <b>REPLACE_NULLS</b> - Replace NULL bytes in the input with space characters (ASCII <code>0x20</code>). </p> <p> <b>SQL_HEX_DECODE</b> - Decode SQL hex data. Example (<code>0x414243</code>) will be decoded to (<code>ABC</code>).</p> <p> <b>URL_DECODE</b> - Decode a URL-encoded value. </p> <p> <b>URL_DECODE_UNI</b> - Like <code>URL_DECODE</code>, but with support for Microsoft-specific <code>%u</code> encoding. If the code is in the full-width ASCII code range of <code>FF01-FF5E</code>, the higher byte is used to detect and adjust the lower byte. Otherwise, only the lower byte is used and the higher byte is zeroed. </p> <p> <b>UTF8_TO_UNICODE</b> - Convert all UTF-8 character sequences to Unicode. This helps input normalization, and minimizing false-positives and false-negatives for non-English languages.</p>",
-        }),
-    ),
+    Priority: TextTransformationPrioritySchema.openapi({
+      description:
+        "Sets the relative processing order for multiple transformations that are defined for a rule statement. WAF processes all transformations, from lowest priority to highest, before inspecting the transformed content. The priorities don't need to be consecutive, but they must all be different. ",
+    }),
+    Type: TextTransformationTypeSchema.openapi({
+      description:
+        "<p>You can specify the following transformation types:</p> <p> <b>BASE64_DECODE</b> - Decode a <code>Base64</code>-encoded string.</p> <p> <b>BASE64_DECODE_EXT</b> - Decode a <code>Base64</code>-encoded string, but use a forgiving implementation that ignores characters that aren't valid.</p> <p> <b>CMD_LINE</b> - Command-line transformations. These are helpful in reducing effectiveness of attackers who inject an operating system command-line command and use unusual formatting to disguise some or all of the command. </p> <ul> <li> <p>Delete the following characters: <code>\\ \" ' ^</code> </p> </li> <li> <p>Delete spaces before the following characters: <code>/ (</code> </p> </li> <li> <p>Replace the following characters with a space: <code>, ;</code> </p> </li> <li> <p>Replace multiple spaces with one space</p> </li> <li> <p>Convert uppercase letters (A-Z) to lowercase (a-z)</p> </li> </ul> <p> <b>COMPRESS_WHITE_SPACE</b> - Replace these characters with a space character (decimal 32): </p> <ul> <li> <p> <code>\\f</code>, formfeed, decimal 12</p> </li> <li> <p> <code>\\t</code>, tab, decimal 9</p> </li> <li> <p> <code>\\n</code>, newline, decimal 10</p> </li> <li> <p> <code>\\r</code>, carriage return, decimal 13</p> </li> <li> <p> <code>\\v</code>, vertical tab, decimal 11</p> </li> <li> <p>Non-breaking space, decimal 160</p> </li> </ul> <p> <code>COMPRESS_WHITE_SPACE</code> also replaces multiple spaces with one space.</p> <p> <b>CSS_DECODE</b> - Decode characters that were encoded using CSS 2.x escape rules <code>syndata.html#characters</code>. This function uses up to two bytes in the decoding process, so it can help to uncover ASCII characters that were encoded using CSS encoding that wouldn’t typically be encoded. It's also useful in countering evasion, which is a combination of a backslash and non-hexadecimal characters. For example, <code>ja\\vascript</code> for javascript. </p> <p> <b>ESCAPE_SEQ_DECODE</b> - Decode the following ANSI C escape sequences: <code>\\a</code>, <code>\\b</code>, <code>\\f</code>, <code>\\n</code>, <code>\\r</code>, <code>\\t</code>, <code>\\v</code>, <code>\\\\</code>, <code>\\?</code>, <code>\\'</code>, <code>\\\"</code>, <code>\\xHH</code> (hexadecimal), <code>\\0OOO</code> (octal). Encodings that aren't valid remain in the output. </p> <p> <b>HEX_DECODE</b> - Decode a string of hexadecimal characters into a binary.</p> <p> <b>HTML_ENTITY_DECODE</b> - Replace HTML-encoded characters with unencoded characters. <code>HTML_ENTITY_DECODE</code> performs these operations: </p> <ul> <li> <p>Replaces <code>(ampersand)quot;</code> with <code>\"</code> </p> </li> <li> <p>Replaces <code>(ampersand)nbsp;</code> with a non-breaking space, decimal 160</p> </li> <li> <p>Replaces <code>(ampersand)lt;</code> with a \"less than\" symbol</p> </li> <li> <p>Replaces <code>(ampersand)gt;</code> with <code>&gt;</code> </p> </li> <li> <p>Replaces characters that are represented in hexadecimal format, <code>(ampersand)#xhhhh;</code>, with the corresponding characters</p> </li> <li> <p>Replaces characters that are represented in decimal format, <code>(ampersand)#nnnn;</code>, with the corresponding characters</p> </li> </ul> <p> <b>JS_DECODE</b> - Decode JavaScript escape sequences. If a <code>\\</code> <code>u</code> <code>HHHH</code> code is in the full-width ASCII code range of <code>FF01-FF5E</code>, then the higher byte is used to detect and adjust the lower byte. If not, only the lower byte is used and the higher byte is zeroed, causing a possible loss of information. </p> <p> <b>LOWERCASE</b> - Convert uppercase letters (A-Z) to lowercase (a-z). </p> <p> <b>MD5</b> - Calculate an MD5 hash from the data in the input. The computed hash is in a raw binary form. </p> <p> <b>NONE</b> - Specify <code>NONE</code> if you don't want any text transformations. </p> <p> <b>NORMALIZE_PATH</b> - Remove multiple slashes, directory self-references, and directory back-references that are not at the beginning of the input from an input string. </p> <p> <b>NORMALIZE_PATH_WIN</b> - This is the same as <code>NORMALIZE_PATH</code>, but first converts backslash characters to forward slashes. </p> <p> <b>REMOVE_NULLS</b> - Remove all <code>NULL</code> bytes from the input. </p> <p> <b>REPLACE_COMMENTS</b> - Replace each occurrence of a C-style comment (<code>/* ... */</code>) with a single space. Multiple consecutive occurrences are not compressed. Unterminated comments are also replaced with a space (ASCII 0x20). However, a standalone termination of a comment (<code>*/</code>) is not acted upon. </p> <p> <b>REPLACE_NULLS</b> - Replace NULL bytes in the input with space characters (ASCII <code>0x20</code>). </p> <p> <b>SQL_HEX_DECODE</b> - Decode SQL hex data. Example (<code>0x414243</code>) will be decoded to (<code>ABC</code>).</p> <p> <b>URL_DECODE</b> - Decode a URL-encoded value. </p> <p> <b>URL_DECODE_UNI</b> - Like <code>URL_DECODE</code>, but with support for Microsoft-specific <code>%u</code> encoding. If the code is in the full-width ASCII code range of <code>FF01-FF5E</code>, the higher byte is used to detect and adjust the lower byte. Otherwise, only the lower byte is used and the higher byte is zeroed. </p> <p> <b>UTF8_TO_UNICODE</b> - Convert all UTF-8 character sequences to Unicode. This helps input normalization, and minimizing false-positives and false-negatives for non-English languages.</p>",
+    }),
   })
   .openapi({
     required: ['Priority', 'Type'],
@@ -605,94 +1576,13 @@ const PositionalConstraintSchema = z
   .openapi('PositionalConstraint')
 
 type ByteMatchStatementType = {
-  SearchString: z.infer<typeof SearchStringSchema> & { [key: string]: unknown }
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
-  PositionalConstraint: z.infer<typeof PositionalConstraintSchema> & { [key: string]: unknown }
+  SearchString: z.infer<typeof SearchStringSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  PositionalConstraint: z.infer<typeof PositionalConstraintSchema> & unknown
 }
-
-const ActionValueSchema = z
-  .enum(['ALLOW', 'BLOCK', 'COUNT', 'CAPTCHA', 'CHALLENGE', 'EXCLUDED_AS_COUNT'])
-  .openapi('ActionValue')
-
-const ActionConditionSchema = z
-  .object({
-    Action: ActionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The action setting that a log record must contain in order to meet the condition. This is the action that WAF applied to the web request. </p> <p>For rule groups, this is either the configured rule action setting, or if you've applied a rule action override to the rule, it's the override action. The value <code>EXCLUDED_AS_COUNT</code> matches on excluded rules and also on rules that have a rule action override of Count. </p>",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Action'],
-    description: 'A single action condition for a <a>Condition</a> in a logging filter.',
-  })
-  .openapi('ActionCondition')
-
-const LabelNameSchema = z
-  .string()
-  .regex(/^[0-9A-Za-z_\-:]+$/)
-  .min(1)
-  .max(1024)
-  .openapi('LabelName')
-
-const LabelNameConditionSchema = z
-  .object({
-    LabelName: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The label name that a log record must contain in order to meet the condition. This must be a fully qualified label name. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['LabelName'],
-    description: 'A single label name condition for a <a>Condition</a> in a logging filter.',
-  })
-  .openapi('LabelNameCondition')
-
-type ConditionType = {
-  ActionCondition?: z.infer<typeof ActionConditionSchema> & { [key: string]: unknown }
-  LabelNameCondition?: z.infer<typeof LabelNameConditionSchema> & { [key: string]: unknown }
-}
-
-type EntityNameType = string
 
 type VendorNameType = string
-
-type VersionKeyStringType = string
-
-const EntityNameSchema: z.ZodType<EntityNameType> = z
-  .string()
-  .regex(/^[\w\-]+$/)
-  .min(1)
-  .max(128)
-  .openapi('EntityName')
-
-const ExcludedRuleSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule whose action you want to override to <code>Count</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Name'],
-    description:
-      '<p>Specifies a single rule in a rule group whose action you want to override to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
-  })
-  .openapi('ExcludedRule')
-
-type ExcludedRulesType = z.infer<typeof ExcludedRuleSchema>[]
 
 const VendorNameSchema: z.ZodType<VendorNameType> = z
   .string()
@@ -700,18 +1590,6 @@ const VendorNameSchema: z.ZodType<VendorNameType> = z
   .min(1)
   .max(128)
   .openapi('VendorName')
-
-const VersionKeyStringSchema: z.ZodType<VersionKeyStringType> = z
-  .string()
-  .regex(/^[\w#:\.\-\/]+$/)
-  .min(1)
-  .max(64)
-  .openapi('VersionKeyString')
-
-const ExcludedRulesSchema: z.ZodType<ExcludedRulesType> = z
-  .array(ExcludedRuleSchema)
-  .max(100)
-  .openapi('ExcludedRules')
 
 const LoginPathStringSchema = z
   .string()
@@ -731,13 +1609,9 @@ const FieldIdentifierSchema = z
 
 const UsernameFieldSchema = z
   .object({
-    Identifier: FieldIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the username field. For example <code>/form/username</code>.',
-        }),
-    ),
+    Identifier: FieldIdentifierSchema.openapi({
+      description: 'The name of the username field. For example <code>/form/username</code>.',
+    }),
   })
   .openapi({
     required: ['Identifier'],
@@ -748,13 +1622,9 @@ const UsernameFieldSchema = z
 
 const PasswordFieldSchema = z
   .object({
-    Identifier: FieldIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the password field. For example <code>/form/password</code>.',
-        }),
-    ),
+    Identifier: FieldIdentifierSchema.openapi({
+      description: 'The name of the password field. For example <code>/form/password</code>.',
+    }),
   })
   .openapi({
     required: ['Identifier'],
@@ -767,14 +1637,10 @@ const InspectionLevelSchema = z.enum(['COMMON', 'TARGETED']).openapi('Inspection
 
 const AWSManagedRulesBotControlRuleSetSchema = z
   .object({
-    InspectionLevel: InspectionLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inspection level to use for the Bot Control rule group. The common level is the least expensive. The targeted level includes all common level rules and adds rules with more advanced inspection criteria. For details, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-bot.html">WAF Bot Control rule group</a> in the <i>WAF Developer Guide</i>.',
-        }),
-    ),
+    InspectionLevel: InspectionLevelSchema.openapi({
+      description:
+        'The inspection level to use for the Bot Control rule group. The common level is the least expensive. The targeted level includes all common level rules and adds rules with more advanced inspection criteria. For details, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-bot.html">WAF Bot Control rule group</a> in the <i>WAF Developer Guide</i>.',
+    }),
   })
   .openapi({
     required: ['InspectionLevel'],
@@ -787,29 +1653,17 @@ const StringSchema = z.string().openapi('String')
 
 const RequestInspectionSchema = z
   .object({
-    PayloadType: PayloadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The payload type for your login endpoint, either JSON or form encoded.',
-        }),
-    ),
-    UsernameField: UsernameFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Details about your login page username field. </p> <p>How you specify this depends on the payload type.</p> <ul> <li> <p>For JSON payloads, specify the field name in JSON pointer syntax. For information about the JSON Pointer syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>For example, for the JSON payload <code>{ "login": { "username": "THE_USERNAME", "password": "THE_PASSWORD" } }</code>, the username field specification is <code>/login/username</code> and the password field specification is <code>/login/password</code>.</p> </li> <li> <p>For form encoded payload types, use the HTML form names.</p> <p>For example, for an HTML form with input elements named <code>username1</code> and <code>password1</code>, the username field specification is <code>username1</code> and the password field specification is <code>password1</code>.</p> </li> </ul>',
-        }),
-    ),
-    PasswordField: PasswordFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Details about your login page password field. </p> <p>How you specify this depends on the payload type.</p> <ul> <li> <p>For JSON payloads, specify the field name in JSON pointer syntax. For information about the JSON Pointer syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>For example, for the JSON payload <code>{ "login": { "username": "THE_USERNAME", "password": "THE_PASSWORD" } }</code>, the username field specification is <code>/login/username</code> and the password field specification is <code>/login/password</code>.</p> </li> <li> <p>For form encoded payload types, use the HTML form names.</p> <p>For example, for an HTML form with input elements named <code>username1</code> and <code>password1</code>, the username field specification is <code>username1</code> and the password field specification is <code>password1</code>.</p> </li> </ul>',
-        }),
-    ),
+    PayloadType: PayloadTypeSchema.openapi({
+      description: 'The payload type for your login endpoint, either JSON or form encoded.',
+    }),
+    UsernameField: UsernameFieldSchema.openapi({
+      description:
+        '<p>Details about your login page username field. </p> <p>How you specify this depends on the payload type.</p> <ul> <li> <p>For JSON payloads, specify the field name in JSON pointer syntax. For information about the JSON Pointer syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>For example, for the JSON payload <code>{ "login": { "username": "THE_USERNAME", "password": "THE_PASSWORD" } }</code>, the username field specification is <code>/login/username</code> and the password field specification is <code>/login/password</code>.</p> </li> <li> <p>For form encoded payload types, use the HTML form names.</p> <p>For example, for an HTML form with input elements named <code>username1</code> and <code>password1</code>, the username field specification is <code>username1</code> and the password field specification is <code>password1</code>.</p> </li> </ul>',
+    }),
+    PasswordField: PasswordFieldSchema.openapi({
+      description:
+        '<p>Details about your login page password field. </p> <p>How you specify this depends on the payload type.</p> <ul> <li> <p>For JSON payloads, specify the field name in JSON pointer syntax. For information about the JSON Pointer syntax, see the Internet Engineering Task Force (IETF) documentation <a href="https://tools.ietf.org/html/rfc6901">JavaScript Object Notation (JSON) Pointer</a>. </p> <p>For example, for the JSON payload <code>{ "login": { "username": "THE_USERNAME", "password": "THE_PASSWORD" } }</code>, the username field specification is <code>/login/username</code> and the password field specification is <code>/login/password</code>.</p> </li> <li> <p>For form encoded payload types, use the HTML form names.</p> <p>For example, for an HTML form with input elements named <code>username1</code> and <code>password1</code>, the username field specification is <code>username1</code> and the password field specification is <code>password1</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['PayloadType', 'UsernameField', 'PasswordField'],
@@ -836,22 +1690,14 @@ const ResponseInspectionStatusCodeFailureCodesSchema = z
 
 const ResponseInspectionStatusCodeSchema = z
   .object({
-    SuccessCodes: ResponseInspectionStatusCodeSuccessCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status codes in the response that indicate a successful login attempt. To be counted as a successful login, the response status code must match one of these. Each code must be unique among the success and failure status codes. </p> <p>JSON example: <code>"SuccessCodes": [ 200, 201 ]</code> </p>',
-        }),
-    ),
-    FailureCodes: ResponseInspectionStatusCodeFailureCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status codes in the response that indicate a failed login attempt. To be counted as a failed login, the response status code must match one of these. Each code must be unique among the success and failure status codes. </p> <p>JSON example: <code>"FailureCodes": [ 400, 404 ]</code> </p>',
-        }),
-    ),
+    SuccessCodes: ResponseInspectionStatusCodeSuccessCodesSchema.openapi({
+      description:
+        '<p>Status codes in the response that indicate a successful login attempt. To be counted as a successful login, the response status code must match one of these. Each code must be unique among the success and failure status codes. </p> <p>JSON example: <code>"SuccessCodes": [ 200, 201 ]</code> </p>',
+    }),
+    FailureCodes: ResponseInspectionStatusCodeFailureCodesSchema.openapi({
+      description:
+        '<p>Status codes in the response that indicate a failed login attempt. To be counted as a failed login, the response status code must match one of these. Each code must be unique among the success and failure status codes. </p> <p>JSON example: <code>"FailureCodes": [ 400, 404 ]</code> </p>',
+    }),
   })
   .openapi({
     required: ['SuccessCodes', 'FailureCodes'],
@@ -895,30 +1741,18 @@ const ResponseInspectionHeaderFailureValuesSchema = z
 
 const ResponseInspectionHeaderSchema = z
   .object({
-    Name: ResponseInspectionHeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the header to match against. The name must be an exact match, including case.</p> <p>JSON example: <code>"Name": [ "LoginResult" ]</code> </p>',
-        }),
-    ),
-    SuccessValues: ResponseInspectionHeaderSuccessValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Values in the response header with the specified name that indicate a successful login attempt. To be counted as a successful login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"SuccessValues": [ "LoginPassed", "Successful login" ]</code> </p>',
-        }),
-    ),
-    FailureValues: ResponseInspectionHeaderFailureValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Values in the response header with the specified name that indicate a failed login attempt. To be counted as a failed login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"FailureValues": [ "LoginFailed", "Failed login" ]</code> </p>',
-        }),
-    ),
+    Name: ResponseInspectionHeaderNameSchema.openapi({
+      description:
+        '<p>The name of the header to match against. The name must be an exact match, including case.</p> <p>JSON example: <code>"Name": [ "LoginResult" ]</code> </p>',
+    }),
+    SuccessValues: ResponseInspectionHeaderSuccessValuesSchema.openapi({
+      description:
+        '<p>Values in the response header with the specified name that indicate a successful login attempt. To be counted as a successful login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"SuccessValues": [ "LoginPassed", "Successful login" ]</code> </p>',
+    }),
+    FailureValues: ResponseInspectionHeaderFailureValuesSchema.openapi({
+      description:
+        '<p>Values in the response header with the specified name that indicate a failed login attempt. To be counted as a failed login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"FailureValues": [ "LoginFailed", "Failed login" ]</code> </p>',
+    }),
   })
   .openapi({
     required: ['Name', 'SuccessValues', 'FailureValues'],
@@ -941,22 +1775,14 @@ const ResponseInspectionBodyContainsFailureStringsSchema = z
 
 const ResponseInspectionBodyContainsSchema = z
   .object({
-    SuccessStrings: ResponseInspectionBodyContainsSuccessStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Strings in the body of the response that indicate a successful login attempt. To be counted as a successful login, the string can be anywhere in the body and must be an exact match, including case. Each string must be unique among the success and failure strings. </p> <p>JSON example: <code>"SuccessStrings": [ "Login successful", "Welcome to our site!" ]</code> </p>',
-        }),
-    ),
-    FailureStrings: ResponseInspectionBodyContainsFailureStringsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Strings in the body of the response that indicate a failed login attempt. To be counted as a failed login, the string can be anywhere in the body and must be an exact match, including case. Each string must be unique among the success and failure strings. </p> <p>JSON example: <code>"FailureStrings": [ "Login failed" ]</code> </p>',
-        }),
-    ),
+    SuccessStrings: ResponseInspectionBodyContainsSuccessStringsSchema.openapi({
+      description:
+        '<p>Strings in the body of the response that indicate a successful login attempt. To be counted as a successful login, the string can be anywhere in the body and must be an exact match, including case. Each string must be unique among the success and failure strings. </p> <p>JSON example: <code>"SuccessStrings": [ "Login successful", "Welcome to our site!" ]</code> </p>',
+    }),
+    FailureStrings: ResponseInspectionBodyContainsFailureStringsSchema.openapi({
+      description:
+        '<p>Strings in the body of the response that indicate a failed login attempt. To be counted as a failed login, the string can be anywhere in the body and must be an exact match, including case. Each string must be unique among the success and failure strings. </p> <p>JSON example: <code>"FailureStrings": [ "Login failed" ]</code> </p>',
+    }),
   })
   .openapi({
     required: ['SuccessStrings', 'FailureStrings'],
@@ -979,30 +1805,18 @@ const ResponseInspectionJsonFailureValuesSchema = z
 
 const ResponseInspectionJsonSchema = z
   .object({
-    Identifier: FieldIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the value to match against in the JSON. The identifier must be an exact match, including case.</p> <p>JSON example: <code>"Identifier": [ "/login/success" ]</code> </p>',
-        }),
-    ),
-    SuccessValues: ResponseInspectionJsonSuccessValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Values for the specified identifier in the response JSON that indicate a successful login attempt. To be counted as a successful login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"SuccessValues": [ "True", "Succeeded" ]</code> </p>',
-        }),
-    ),
-    FailureValues: ResponseInspectionJsonFailureValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Values for the specified identifier in the response JSON that indicate a failed login attempt. To be counted as a failed login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"FailureValues": [ "False", "Failed" ]</code> </p>',
-        }),
-    ),
+    Identifier: FieldIdentifierSchema.openapi({
+      description:
+        '<p>The identifier for the value to match against in the JSON. The identifier must be an exact match, including case.</p> <p>JSON example: <code>"Identifier": [ "/login/success" ]</code> </p>',
+    }),
+    SuccessValues: ResponseInspectionJsonSuccessValuesSchema.openapi({
+      description:
+        '<p>Values for the specified identifier in the response JSON that indicate a successful login attempt. To be counted as a successful login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"SuccessValues": [ "True", "Succeeded" ]</code> </p>',
+    }),
+    FailureValues: ResponseInspectionJsonFailureValuesSchema.openapi({
+      description:
+        '<p>Values for the specified identifier in the response JSON that indicate a failed login attempt. To be counted as a failed login, the value must be an exact match, including case. Each value must be unique among the success and failure values. </p> <p>JSON example: <code>"FailureValues": [ "False", "Failed" ]</code> </p>',
+    }),
   })
   .openapi({
     required: ['Identifier', 'SuccessValues', 'FailureValues'],
@@ -1013,28 +1827,20 @@ const ResponseInspectionJsonSchema = z
 
 const ResponseInspectionSchema = z
   .object({
-    StatusCode: ResponseInspectionStatusCodeSchema.and(
-      z.any().openapi({ description: 'Configures inspection of the response status code. ' }),
-    ).exactOptional(),
-    Header: ResponseInspectionHeaderSchema.and(
-      z.any().openapi({ description: 'Configures inspection of the response header. ' }),
-    ).exactOptional(),
-    BodyContains: ResponseInspectionBodyContainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures inspection of the response body. WAF can inspect the first 65,536 bytes (64 KB) of the response body. ',
-        }),
-    ).exactOptional(),
-    Json: ResponseInspectionJsonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configures inspection of the response JSON. WAF can inspect the first 65,536 bytes (64 KB) of the response JSON. ',
-        }),
-    ).exactOptional(),
+    StatusCode: ResponseInspectionStatusCodeSchema.exactOptional().openapi({
+      description: 'Configures inspection of the response status code. ',
+    }),
+    Header: ResponseInspectionHeaderSchema.exactOptional().openapi({
+      description: 'Configures inspection of the response header. ',
+    }),
+    BodyContains: ResponseInspectionBodyContainsSchema.exactOptional().openapi({
+      description:
+        'Configures inspection of the response body. WAF can inspect the first 65,536 bytes (64 KB) of the response body. ',
+    }),
+    Json: ResponseInspectionJsonSchema.exactOptional().openapi({
+      description:
+        'Configures inspection of the response JSON. WAF can inspect the first 65,536 bytes (64 KB) of the response JSON. ',
+    }),
   })
   .openapi({
     description:
@@ -1045,30 +1851,18 @@ const ResponseInspectionSchema = z
 
 const AWSManagedRulesATPRuleSetSchema = z
   .object({
-    LoginPath: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The path of the login endpoint for your application. For example, for the URL <code>https://example.com/web/login</code>, you would provide the path <code>/web/login</code>.</p> <p>The rule group inspects only HTTP <code>POST</code> requests to your specified login endpoint.</p>',
-        }),
-    ),
-    RequestInspection: RequestInspectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The criteria for inspecting login requests, used by the ATP rule group to validate credentials usage. ',
-        }),
-    ).exactOptional(),
-    ResponseInspection: ResponseInspectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The criteria for inspecting responses to login requests, used by the ATP rule group to track login failure rates. </p> <p>The ATP rule group evaluates the responses that your protected resources send back to client login attempts, keeping count of successful and failed attempts from each IP address and client session. Using this information, the rule group labels and mitigates requests from client sessions and IP addresses that submit too many failed login attempts in a short amount of time. </p> <note> <p>Response inspection is available only in web ACLs that protect Amazon CloudFront distributions.</p> </note>',
-        }),
-    ).exactOptional(),
+    LoginPath: StringSchema.openapi({
+      description:
+        '<p>The path of the login endpoint for your application. For example, for the URL <code>https://example.com/web/login</code>, you would provide the path <code>/web/login</code>.</p> <p>The rule group inspects only HTTP <code>POST</code> requests to your specified login endpoint.</p>',
+    }),
+    RequestInspection: RequestInspectionSchema.exactOptional().openapi({
+      description:
+        'The criteria for inspecting login requests, used by the ATP rule group to validate credentials usage. ',
+    }),
+    ResponseInspection: ResponseInspectionSchema.exactOptional().openapi({
+      description:
+        '<p>The criteria for inspecting responses to login requests, used by the ATP rule group to track login failure rates. </p> <p>The ATP rule group evaluates the responses that your protected resources send back to client login attempts, keeping count of successful and failed attempts from each IP address and client session. Using this information, the rule group labels and mitigates requests from client sessions and IP addresses that submit too many failed login attempts in a short amount of time. </p> <note> <p>Response inspection is available only in web ACLs that protect Amazon CloudFront distributions.</p> </note>',
+    }),
   })
   .openapi({
     required: ['LoginPath'],
@@ -1079,58 +1873,35 @@ const AWSManagedRulesATPRuleSetSchema = z
 
 const ManagedRuleGroupConfigSchema = z
   .object({
-    LoginPath: LoginPathStringSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet LoginPath',
-        }),
-    ).exactOptional(),
-    PayloadType: PayloadTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection PayloadType',
-        }),
-    ).exactOptional(),
-    UsernameField: UsernameFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection UsernameField',
-        }),
-    ).exactOptional(),
-    PasswordField: PasswordFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection PasswordField',
-        }),
-    ).exactOptional(),
-    AWSManagedRulesBotControlRuleSet: AWSManagedRulesBotControlRuleSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional configuration for using the Bot Control managed rule group. Use this to specify the inspection level that you want to use. For information about using the Bot Control managed rule group, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-bot.html">WAF Bot Control rule group</a> and <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-bot-control.html">WAF Bot Control</a> in the <i>WAF Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    AWSManagedRulesATPRuleSet: AWSManagedRulesATPRuleSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Additional configuration for using the account takeover prevention (ATP) managed rule group, <code>AWSManagedRulesATPRuleSet</code>. Use this to provide login request information to the rule group. For web ACLs that protect CloudFront distributions, use this to also provide the information about how your distribution responds to login requests. </p> <p>This configuration replaces the individual configuration fields in <code>ManagedRuleGroupConfig</code> and provides additional feature configuration. </p> <p>For information about using the ATP managed rule group, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-atp.html">WAF Fraud Control account takeover prevention (ATP) rule group</a> and <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-atp.html">WAF Fraud Control account takeover prevention (ATP)</a> in the <i>WAF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    LoginPath: LoginPathStringSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet LoginPath',
+    }),
+    PayloadType: PayloadTypeSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection PayloadType',
+    }),
+    UsernameField: UsernameFieldSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection UsernameField',
+    }),
+    PasswordField: PasswordFieldSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<note> <p>Instead of this setting, provide your configuration under <code>AWSManagedRulesATPRuleSet</code> <code>RequestInspection</code>. </p> </note>Deprecated. Use AWSManagedRulesATPRuleSet RequestInspection PasswordField',
+    }),
+    AWSManagedRulesBotControlRuleSet:
+      AWSManagedRulesBotControlRuleSetSchema.exactOptional().openapi({
+        description:
+          'Additional configuration for using the Bot Control managed rule group. Use this to specify the inspection level that you want to use. For information about using the Bot Control managed rule group, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-bot.html">WAF Bot Control rule group</a> and <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-bot-control.html">WAF Bot Control</a> in the <i>WAF Developer Guide</i>.',
+      }),
+    AWSManagedRulesATPRuleSet: AWSManagedRulesATPRuleSetSchema.exactOptional().openapi({
+      description:
+        '<p>Additional configuration for using the account takeover prevention (ATP) managed rule group, <code>AWSManagedRulesATPRuleSet</code>. Use this to provide login request information to the rule group. For web ACLs that protect CloudFront distributions, use this to also provide the information about how your distribution responds to login requests. </p> <p>This configuration replaces the individual configuration fields in <code>ManagedRuleGroupConfig</code> and provides additional feature configuration. </p> <p>For information about using the ATP managed rule group, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-atp.html">WAF Fraud Control account takeover prevention (ATP) rule group</a> and <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-atp.html">WAF Fraud Control account takeover prevention (ATP)</a> in the <i>WAF Developer Guide</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -1145,278 +1916,14 @@ const ManagedRuleGroupConfigsSchema: z.ZodType<ManagedRuleGroupConfigsType> = z
   .array(ManagedRuleGroupConfigSchema)
   .openapi('ManagedRuleGroupConfigs')
 
-const ResponseStatusCodeSchema = z.int().min(200).max(599).openapi('ResponseStatusCode')
-
-const CustomHTTPHeaderNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9._$-]+$/)
-  .min(1)
-  .max(64)
-  .openapi('CustomHTTPHeaderName')
-
-const CustomHTTPHeaderValueSchema = z
-  .string()
-  .regex(/.*/)
-  .min(1)
-  .max(255)
-  .openapi('CustomHTTPHeaderValue')
-
-const CustomHTTPHeaderSchema = z
-  .object({
-    Name: CustomHTTPHeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the custom header. </p> <p>For custom request header insertion, when WAF inserts the header into the request, it prefixes this name <code>x-amzn-waf-</code>, to avoid confusion with the headers that are already in the request. For example, for the header name <code>sample</code>, WAF inserts the header <code>x-amzn-waf-sample</code>.</p>',
-        }),
-    ),
-    Value: CustomHTTPHeaderValueSchema.and(
-      z.any().openapi({ description: 'The value of the custom header.' }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'Value'],
-    description:
-      'A custom header for custom request and response handling. This is used in <a>CustomResponse</a> and <a>CustomRequestHandling</a>.',
-  })
-  .openapi('CustomHTTPHeader')
-
-const CustomHTTPHeadersSchema = z.array(CustomHTTPHeaderSchema).min(1).openapi('CustomHTTPHeaders')
-
-const CustomResponseSchema = z
-  .object({
-    ResponseCode: ResponseStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The HTTP status code to return to the client. </p> <p>For a list of status codes that you can use in your custom responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/customizing-the-response-status-codes.html">Supported status codes for custom response</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ),
-    CustomResponseBodyKey: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'References the response body that you want WAF to return to the web request client. You can define a custom response for a rule action or a default web ACL action that is set to block. To do this, you first define the response body key and value in the <code>CustomResponseBodies</code> setting for the <a>WebACL</a> or <a>RuleGroup</a> where you want to use it. Then, in the rule action or web ACL default action <code>BlockAction</code> setting, you reference the response body using this key. ',
-        }),
-    ).exactOptional(),
-    ResponseHeaders: CustomHTTPHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The HTTP headers to use in the response. Duplicate header names are not allowed. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ResponseCode'],
-    description:
-      '<p>A custom response to send to the client. You can define a custom response for rule actions and default web ACL actions that are set to <a>BlockAction</a>. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-  })
-  .openapi('CustomResponse')
-
-const BlockActionSchema = z
-  .object({
-    CustomResponse: CustomResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines a custom response for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Specifies that WAF should block the request and optionally defines additional custom handling for the response to the web request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
-    required: [],
-  })
-  .openapi('BlockAction')
-
-const CustomRequestHandlingSchema = z
-  .object({
-    InsertHeaders: CustomHTTPHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The HTTP headers to insert into the request. Duplicate header names are not allowed. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['InsertHeaders'],
-    description:
-      '<p>Custom request handling behavior that inserts custom headers into a web request. You can add custom request handling for WAF to use when the rule action doesn\'t block the request. For example, <code>CaptchaAction</code> for requests with valid t okens, and <code>AllowAction</code>. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-  })
-  .openapi('CustomRequestHandling')
-
-const AllowActionSchema = z
-  .object({
-    CustomRequestHandling: CustomRequestHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines custom handling for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Specifies that WAF should allow the request and optionally defines additional custom handling for the request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
-    required: [],
-  })
-  .openapi('AllowAction')
-
-const CountActionSchema = z
-  .object({
-    CustomRequestHandling: CustomRequestHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines custom handling for the web request.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Specifies that WAF should count the request. Optionally defines additional custom handling for the request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>',
-    required: [],
-  })
-  .openapi('CountAction')
-
-const CaptchaActionSchema = z
-  .object({
-    CustomRequestHandling: CustomRequestHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines custom handling for the web request, used when the <code>CAPTCHA</code> inspection determines that the request\'s token is valid and unexpired.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Specifies that WAF should run a <code>CAPTCHA</code> check against the request: </p> <ul> <li> <p>If the request includes a valid, unexpired <code>CAPTCHA</code> token, WAF applies any custom request handling and labels that you've configured and then allows the web request inspection to proceed to the next rule, similar to a <code>CountAction</code>. </p> </li> <li> <p>If the request doesn't include a valid, unexpired token, WAF discontinues the web ACL evaluation of the request and blocks it from going to its intended destination.</p> <p>WAF generates a response that it sends back to the client, which includes the following: </p> <ul> <li> <p>The header <code>x-amzn-waf-action</code> with a value of <code>captcha</code>. </p> </li> <li> <p>The HTTP status code <code>405 Method Not Allowed</code>. </p> </li> <li> <p>If the request contains an <code>Accept</code> header with a value of <code>text/html</code>, the response includes a <code>CAPTCHA</code> JavaScript page interstitial. </p> </li> </ul> </li> </ul> <p>You can configure the expiration time in the <code>CaptchaConfig</code> <code>ImmunityTimeProperty</code> setting at the rule and web ACL level. The rule setting overrides the web ACL setting. </p> <p>This action option is available for rules. It isn't available for web ACL default actions. </p>",
-    required: [],
-  })
-  .openapi('CaptchaAction')
-
-const ChallengeActionSchema = z
-  .object({
-    CustomRequestHandling: CustomRequestHandlingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines custom handling for the web request, used when the challenge inspection determines that the request\'s token is valid and unexpired.</p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "<p>Specifies that WAF should run a <code>Challenge</code> check against the request to verify that the request is coming from a legitimate client session: </p> <ul> <li> <p>If the request includes a valid, unexpired challenge token, WAF applies any custom request handling and labels that you've configured and then allows the web request inspection to proceed to the next rule, similar to a <code>CountAction</code>. </p> </li> <li> <p>If the request doesn't include a valid, unexpired challenge token, WAF discontinues the web ACL evaluation of the request and blocks it from going to its intended destination.</p> <p>WAF then generates a challenge response that it sends back to the client, which includes the following: </p> <ul> <li> <p>The header <code>x-amzn-waf-action</code> with a value of <code>challenge</code>. </p> </li> <li> <p>The HTTP status code <code>202 Request Accepted</code>. </p> </li> <li> <p>If the request contains an <code>Accept</code> header with a value of <code>text/html</code>, the response includes a JavaScript page interstitial with a challenge script. </p> </li> </ul> <p>Challenges run silent browser interrogations in the background, and don't generally affect the end user experience. </p> <p>A challenge enforces token acquisition using an interstitial JavaScript challenge that inspects the client session for legitimate behavior. The challenge blocks bots or at least increases the cost of operating sophisticated bots. </p> <p>After the client session successfully responds to the challenge, it receives a new token from WAF, which the challenge script uses to resubmit the original request. </p> </li> </ul> <p>You can configure the expiration time in the <code>ChallengeConfig</code> <code>ImmunityTimeProperty</code> setting at the rule and web ACL level. The rule setting overrides the web ACL setting. </p> <p>This action option is available for rules. It isn't available for web ACL default actions. </p>",
-    required: [],
-  })
-  .openapi('ChallengeAction')
-
-const RuleActionSchema = z
-  .object({
-    Block: BlockActionSchema.and(
-      z.any().openapi({ description: 'Instructs WAF to block the web request.' }),
-    ).exactOptional(),
-    Allow: AllowActionSchema.and(
-      z.any().openapi({ description: 'Instructs WAF to allow the web request.' }),
-    ).exactOptional(),
-    Count: CountActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Instructs WAF to count the web request and then continue evaluating the request using the remaining rules in the web ACL.',
-        }),
-    ).exactOptional(),
-    Captcha: CaptchaActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Instructs WAF to run a <code>CAPTCHA</code> check against the web request.',
-        }),
-    ).exactOptional(),
-    Challenge: ChallengeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Instructs WAF to run a <code>Challenge</code> check against the web request.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. ",
-    required: [],
-  })
-  .openapi('RuleAction')
-
-const RuleActionOverrideSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule to override.' }),
-    ),
-    ActionToUse: RuleActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The override action to use, in place of the configured action of the rule in the rule group. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'ActionToUse'],
-    description:
-      '<p>Action setting to use in the place of a rule action that is configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
-  })
-  .openapi('RuleActionOverride')
-
-type RuleActionOverridesType = z.infer<typeof RuleActionOverrideSchema>[]
-
-const RuleActionOverridesSchema: z.ZodType<RuleActionOverridesType> = z
-  .array(RuleActionOverrideSchema)
-  .min(1)
-  .max(100)
-  .openapi('RuleActionOverrides')
-
 type ManagedRuleGroupStatementType = {
-  VendorName: z.infer<typeof VendorNameSchema> & { [key: string]: unknown }
-  Name: z.infer<typeof EntityNameSchema> & { [key: string]: unknown }
-  Version?: z.infer<typeof VersionKeyStringSchema> & { [key: string]: unknown }
-  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & { [key: string]: unknown }
-  ScopeDownStatement?: z.infer<typeof StatementSchema> & { [key: string]: unknown }
-  ManagedRuleGroupConfigs?: z.infer<typeof ManagedRuleGroupConfigsSchema> & {
-    [key: string]: unknown
-  }
-  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & { [key: string]: unknown }
-}
-
-const ResourceArnSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(20)
-  .max(2048)
-  .openapi('ResourceArn')
-
-type RuleGroupReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & { [key: string]: unknown }
-  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & { [key: string]: unknown }
-  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & { [key: string]: unknown }
+  VendorName: z.infer<typeof VendorNameSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema> & unknown
+  Version?: z.infer<typeof VersionKeyStringSchema> & unknown
+  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & unknown
+  ScopeDownStatement?: z.infer<typeof StatementSchema> & unknown
+  ManagedRuleGroupConfigs?: z.infer<typeof ManagedRuleGroupConfigsSchema> & unknown
+  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & unknown
 }
 
 const ForwardedIPHeaderNameSchema = z
@@ -1429,8 +1936,8 @@ const ForwardedIPHeaderNameSchema = z
 const FallbackBehaviorSchema = z.enum(['MATCH', 'NO_MATCH']).openapi('FallbackBehavior')
 
 type ForwardedIPConfigType = {
-  HeaderName: z.infer<typeof ForwardedIPHeaderNameSchema> & { [key: string]: unknown }
-  FallbackBehavior: z.infer<typeof FallbackBehaviorSchema> & { [key: string]: unknown }
+  HeaderName: z.infer<typeof ForwardedIPHeaderNameSchema> & unknown
+  FallbackBehavior: z.infer<typeof FallbackBehaviorSchema> & unknown
 }
 
 const CountryCodeSchema = z
@@ -1692,22 +2199,14 @@ const CountryCodesSchema = z.array(CountryCodeSchema).min(1).openapi('CountryCod
 
 const ForwardedIPConfigSchema: z.ZodType<ForwardedIPConfigType> = z
   .object({
-    HeaderName: ForwardedIPHeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the HTTP header to use for the IP address. For example, to use the X-Forwarded-For (XFF) header, set this to <code>X-Forwarded-For</code>.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
-        }),
-    ),
-    FallbackBehavior: FallbackBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The match status to assign to the web request if the request doesn't have a valid IP address in the specified position.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>",
-        }),
-    ),
+    HeaderName: ForwardedIPHeaderNameSchema.openapi({
+      description:
+        "<p>The name of the HTTP header to use for the IP address. For example, to use the X-Forwarded-For (XFF) header, set this to <code>X-Forwarded-For</code>.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
+    }),
+    FallbackBehavior: FallbackBehaviorSchema.openapi({
+      description:
+        "<p>The match status to assign to the web request if the request doesn't have a valid IP address in the specified position.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['HeaderName', 'FallbackBehavior'],
@@ -1717,38 +2216,26 @@ const ForwardedIPConfigSchema: z.ZodType<ForwardedIPConfigType> = z
   .openapi('ForwardedIPConfig')
 
 type GeoMatchStatementType = {
-  CountryCodes?: z.infer<typeof CountryCodesSchema> & { [key: string]: unknown }
-  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & { [key: string]: unknown }
+  CountryCodes?: z.infer<typeof CountryCodesSchema> & unknown
+  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & unknown
 }
 
 const ForwardedIPPositionSchema = z.enum(['FIRST', 'LAST', 'ANY']).openapi('ForwardedIPPosition')
 
 const IPSetForwardedIPConfigSchema = z
   .object({
-    HeaderName: ForwardedIPHeaderNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the HTTP header to use for the IP address. For example, to use the X-Forwarded-For (XFF) header, set this to <code>X-Forwarded-For</code>.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
-        }),
-    ),
-    FallbackBehavior: FallbackBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The match status to assign to the web request if the request doesn't have a valid IP address in the specified position.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>",
-        }),
-    ),
-    Position: ForwardedIPPositionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The position in the header to search for the IP address. The header can contain IP addresses of the original client and also of proxies. For example, the header value could be <code>10.1.1.1, 127.0.0.0, 10.10.10.10</code> where the first IP address identifies the original client and the rest identify proxies that the request went through. </p> <p>The options for this setting are the following: </p> <ul> <li> <p>FIRST - Inspect the first IP address in the list of IP addresses in the header. This is usually the client's original IP.</p> </li> <li> <p>LAST - Inspect the last IP address in the list of IP addresses in the header.</p> </li> <li> <p>ANY - Inspect all IP addresses in the header for a match. If the header contains more than 10 IP addresses, WAF inspects the last 10.</p> </li> </ul>",
-        }),
-    ),
+    HeaderName: ForwardedIPHeaderNameSchema.openapi({
+      description:
+        "<p>The name of the HTTP header to use for the IP address. For example, to use the X-Forwarded-For (XFF) header, set this to <code>X-Forwarded-For</code>.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
+    }),
+    FallbackBehavior: FallbackBehaviorSchema.openapi({
+      description:
+        "<p>The match status to assign to the web request if the request doesn't have a valid IP address in the specified position.</p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>",
+    }),
+    Position: ForwardedIPPositionSchema.openapi({
+      description:
+        "<p>The position in the header to search for the IP address. The header can contain IP addresses of the original client and also of proxies. For example, the header value could be <code>10.1.1.1, 127.0.0.0, 10.10.10.10</code> where the first IP address identifies the original client and the rest identify proxies that the request went through. </p> <p>The options for this setting are the following: </p> <ul> <li> <p>FIRST - Inspect the first IP address in the list of IP addresses in the header. This is usually the client's original IP.</p> </li> <li> <p>LAST - Inspect the last IP address in the list of IP addresses in the header.</p> </li> <li> <p>ANY - Inspect all IP addresses in the header for a match. If the header contains more than 10 IP addresses, WAF inspects the last 10.</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['HeaderName', 'FallbackBehavior', 'Position'],
@@ -1758,8 +2245,8 @@ const IPSetForwardedIPConfigSchema = z
   .openapi('IPSetForwardedIPConfig')
 
 type IPSetReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & { [key: string]: unknown }
-  IPSetForwardedIPConfig?: z.infer<typeof IPSetForwardedIPConfigSchema> & { [key: string]: unknown }
+  ARN: z.infer<typeof ResourceArnSchema> & unknown
+  IPSetForwardedIPConfig?: z.infer<typeof IPSetForwardedIPConfigSchema> & unknown
 }
 
 const LabelMatchScopeSchema = z.enum(['LABEL', 'NAMESPACE']).openapi('LabelMatchScope')
@@ -1772,41 +2259,27 @@ const LabelMatchKeySchema = z
   .openapi('LabelMatchKey')
 
 type LabelMatchStatementType = {
-  Scope: z.infer<typeof LabelMatchScopeSchema> & { [key: string]: unknown }
-  Key: z.infer<typeof LabelMatchKeySchema> & { [key: string]: unknown }
+  Scope: z.infer<typeof LabelMatchScopeSchema> & unknown
+  Key: z.infer<typeof LabelMatchKeySchema> & unknown
 }
 
 const ByteMatchStatementSchema: z.ZodType<ByteMatchStatementType> = z
   .object({
-    SearchString: SearchStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A string value that you want WAF to search for. WAF searches only in the part of web requests that you designate for inspection in <a>FieldToMatch</a>. The maximum length of the value is 200 bytes.</p> <p>Valid values depend on the component that you specify for inspection in <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>Method</code>: The HTTP method that you want WAF to search for. This indicates the type of operation specified in the request. </p> </li> <li> <p> <code>UriPath</code>: The value that you want WAF to search for in the URI path, for example, <code>/images/daily-ad.jpg</code>. </p> </li> </ul> <p>If <code>SearchString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 200 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>SearchString</code>.</p> <p> <b>If you're using the CLI or one of the Amazon Web Services SDKs</b> </p> <p>The value that you want WAF to search for. The SDK automatically base64 encodes the value.</p>",
-        }),
-    ),
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
-    PositionalConstraint: PositionalConstraintSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The area within the portion of the web request that you want WAF to search for <code>SearchString</code>. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, and <code>SearchString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>SearchString</code> must be a word, which means that both of the following are true:</p> <ul> <li> <p> <code>SearchString</code> is at the beginning of the specified part of the web request or is preceded by a character other than an alphanumeric character or underscore (_). Examples include the value of a header and <code>;BadBot</code>.</p> </li> <li> <p> <code>SearchString</code> is at the end of the specified part of the web request or is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code> and <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>SearchString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the end of the specified part of the web request.</p>",
-        }),
-    ),
+    SearchString: SearchStringSchema.openapi({
+      description:
+        "<p>A string value that you want WAF to search for. WAF searches only in the part of web requests that you designate for inspection in <a>FieldToMatch</a>. The maximum length of the value is 200 bytes.</p> <p>Valid values depend on the component that you specify for inspection in <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>Method</code>: The HTTP method that you want WAF to search for. This indicates the type of operation specified in the request. </p> </li> <li> <p> <code>UriPath</code>: The value that you want WAF to search for in the URI path, for example, <code>/images/daily-ad.jpg</code>. </p> </li> </ul> <p>If <code>SearchString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 200 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>SearchString</code>.</p> <p> <b>If you're using the CLI or one of the Amazon Web Services SDKs</b> </p> <p>The value that you want WAF to search for. The SDK automatically base64 encodes the value.</p>",
+    }),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
+    PositionalConstraint: PositionalConstraintSchema.openapi({
+      description:
+        "<p>The area within the portion of the web request that you want WAF to search for <code>SearchString</code>. Valid values include the following:</p> <p> <b>CONTAINS</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, but the location doesn't matter.</p> <p> <b>CONTAINS_WORD</b> </p> <p>The specified part of the web request must include the value of <code>SearchString</code>, and <code>SearchString</code> must contain only alphanumeric characters or underscore (A-Z, a-z, 0-9, or _). In addition, <code>SearchString</code> must be a word, which means that both of the following are true:</p> <ul> <li> <p> <code>SearchString</code> is at the beginning of the specified part of the web request or is preceded by a character other than an alphanumeric character or underscore (_). Examples include the value of a header and <code>;BadBot</code>.</p> </li> <li> <p> <code>SearchString</code> is at the end of the specified part of the web request or is followed by a character other than an alphanumeric character or underscore (_), for example, <code>BadBot;</code> and <code>-BadBot;</code>.</p> </li> </ul> <p> <b>EXACTLY</b> </p> <p>The value of the specified part of the web request must exactly match the value of <code>SearchString</code>.</p> <p> <b>STARTS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the beginning of the specified part of the web request.</p> <p> <b>ENDS_WITH</b> </p> <p>The value of <code>SearchString</code> must appear at the end of the specified part of the web request.</p>",
+    }),
   })
   .openapi({
     required: ['SearchString', 'FieldToMatch', 'TextTransformations', 'PositionalConstraint'],
@@ -1818,34 +2291,24 @@ const ByteMatchStatementSchema: z.ZodType<ByteMatchStatementType> = z
 const SensitivityLevelSchema = z.enum(['LOW', 'HIGH']).openapi('SensitivityLevel')
 
 type SqliMatchStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
-  SensitivityLevel?: z.infer<typeof SensitivityLevelSchema> & { [key: string]: unknown }
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  SensitivityLevel?: z.infer<typeof SensitivityLevelSchema> & unknown
 }
 
 const SqliMatchStatementSchema: z.ZodType<SqliMatchStatementType> = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
-    SensitivityLevel: SensitivityLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The sensitivity that you want WAF to use to inspect for SQL injection attacks. </p> <p> <code>HIGH</code> detects more attacks, but might generate more false positives, especially if your web requests frequently contain unusual strings. For information about identifying and mitigating false positives, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-testing.html">Testing and tuning</a> in the <i>WAF Developer Guide</i>.</p> <p> <code>LOW</code> is generally a better choice for resources that already have other protections against SQL injection attacks or that have a low tolerance for false positives. </p> <p>Default: <code>LOW</code> </p>',
-        }),
-    ).exactOptional(),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
+    SensitivityLevel: SensitivityLevelSchema.exactOptional().openapi({
+      description:
+        '<p>The sensitivity that you want WAF to use to inspect for SQL injection attacks. </p> <p> <code>HIGH</code> detects more attacks, but might generate more false positives, especially if your web requests frequently contain unusual strings. For information about identifying and mitigating false positives, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-testing.html">Testing and tuning</a> in the <i>WAF Developer Guide</i>.</p> <p> <code>LOW</code> is generally a better choice for resources that already have other protections against SQL injection attacks or that have a low tolerance for false positives. </p> <p>Default: <code>LOW</code> </p>',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformations'],
@@ -1855,25 +2318,19 @@ const SqliMatchStatementSchema: z.ZodType<SqliMatchStatementType> = z
   .openapi('SqliMatchStatement')
 
 type XssMatchStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
 }
 
 const XssMatchStatementSchema: z.ZodType<XssMatchStatementType> = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'TextTransformations'],
@@ -1889,42 +2346,27 @@ const ComparisonOperatorSchema = z
 const SizeSchema = z.int().min(0).max(21474836480).openapi('Size')
 
 type SizeConstraintStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  ComparisonOperator: z.infer<typeof ComparisonOperatorSchema> & { [key: string]: unknown }
-  Size: z.infer<typeof SizeSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  ComparisonOperator: z.infer<typeof ComparisonOperatorSchema> & unknown
+  Size: z.infer<typeof SizeSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
 }
 
 const SizeConstraintStatementSchema: z.ZodType<SizeConstraintStatementType> = z
   .object({
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    ComparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The operator to use to compare the request part to the size setting. ',
-        }),
-    ),
-    Size: SizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size, in byte, to compare to the request part, after any transformations.',
-        }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    ComparisonOperator: ComparisonOperatorSchema.openapi({
+      description: 'The operator to use to compare the request part to the size setting. ',
+    }),
+    Size: SizeSchema.openapi({
+      description: 'The size, in byte, to compare to the request part, after any transformations.',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
   })
   .openapi({
     required: ['FieldToMatch', 'ComparisonOperator', 'Size', 'TextTransformations'],
@@ -1935,22 +2377,14 @@ const SizeConstraintStatementSchema: z.ZodType<SizeConstraintStatementType> = z
 
 const GeoMatchStatementSchema: z.ZodType<GeoMatchStatementType> = z
   .object({
-    CountryCodes: CountryCodesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of two-character country codes that you want to match against, for example, <code>[ "US", "CN" ]</code>, from the alpha-2 country ISO codes of the ISO 3166 international standard. </p> <p>When you use a geo match statement just for the region and country labels that it adds to requests, you still have to supply a country code for the rule to evaluate. In this case, you configure the rule to only count matching requests, but it will still generate logging and count metrics for any matches. You can reduce the logging and metrics that the rule produces by specifying a country that\'s unlikely to be a source of traffic to your site.</p>',
-        }),
-    ).exactOptional(),
-    ForwardedIPConfig: ForwardedIPConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
-        }),
-    ).exactOptional(),
+    CountryCodes: CountryCodesSchema.exactOptional().openapi({
+      description:
+        '<p>An array of two-character country codes that you want to match against, for example, <code>[ "US", "CN" ]</code>, from the alpha-2 country ISO codes of the ISO 3166 international standard. </p> <p>When you use a geo match statement just for the region and country labels that it adds to requests, you still have to supply a country code for the rule to evaluate. In this case, you configure the rule to only count matching requests, but it will still generate logging and count metrics for any matches. You can reduce the logging and metrics that the rule produces by specifying a country that\'s unlikely to be a source of traffic to your site.</p>',
+    }),
+    ForwardedIPConfig: ForwardedIPConfigSchema.exactOptional().openapi({
+      description:
+        "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
+    }),
   })
   .openapi({
     description:
@@ -1959,53 +2393,16 @@ const GeoMatchStatementSchema: z.ZodType<GeoMatchStatementType> = z
   })
   .openapi('GeoMatchStatement')
 
-const RuleGroupReferenceStatementSchema: z.ZodType<RuleGroupReferenceStatementType> = z
-  .object({
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ),
-    ExcludedRules: ExcludedRulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Rules in the referenced rule group whose actions are set to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    RuleActionOverrides: RuleActionOverridesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Action settings to use in the place of the rule actions that are configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ARN'],
-    description:
-      '<p>A rule statement used to run the rules that are defined in a <a>RuleGroup</a>. To use this, create a rule group with your rules, then provide the ARN of the rule group in this statement.</p> <p>You cannot nest a <code>RuleGroupReferenceStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. You can only use a rule group reference statement at the top level inside a web ACL. </p>',
-  })
-  .openapi('RuleGroupReferenceStatement')
-
 const IPSetReferenceStatementSchema: z.ZodType<IPSetReferenceStatementType> = z
   .object({
-    ARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a>IPSet</a> that this statement references.',
-        }),
-    ),
-    IPSetForwardedIPConfig: IPSetForwardedIPConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
-        }),
-    ).exactOptional(),
+    ARN: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a>IPSet</a> that this statement references.',
+    }),
+    IPSetForwardedIPConfig: IPSetForwardedIPConfigSchema.exactOptional().openapi({
+      description:
+        "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note>",
+    }),
   })
   .openapi({
     required: ['ARN'],
@@ -2015,34 +2412,24 @@ const IPSetReferenceStatementSchema: z.ZodType<IPSetReferenceStatementType> = z
   .openapi('IPSetReferenceStatement')
 
 type RegexPatternSetReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & { [key: string]: unknown }
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
+  ARN: z.infer<typeof ResourceArnSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
 }
 
 const RegexPatternSetReferenceStatementSchema: z.ZodType<RegexPatternSetReferenceStatementType> = z
   .object({
-    ARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a>RegexPatternSet</a> that this statement references.',
-        }),
-    ),
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
+    ARN: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a>RegexPatternSet</a> that this statement references.',
+    }),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
   })
   .openapi({
     required: ['ARN', 'FieldToMatch', 'TextTransformations'],
@@ -2055,38 +2442,22 @@ const RateBasedStatementSchema: z.ZodType<RateBasedStatementType> = z
   .lazy(() =>
     z
       .object({
-        Limit: RateLimitSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The limit on requests per 5-minute period for a single originating IP address. If the statement includes a <code>ScopeDownStatement</code>, this limit is applied only to the requests that match the statement.',
-            }),
-        ),
-        AggregateKeyType: RateBasedStatementAggregateKeyTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Setting that indicates how to aggregate the request counts. The options are the following:</p> <ul> <li> <p>IP - Aggregate the request counts on the IP address from the web request origin.</p> </li> <li> <p>FORWARDED_IP - Aggregate the request counts on the first IP address in an HTTP header. If you use this, configure the <code>ForwardedIPConfig</code>, to specify the header to use. </p> </li> </ul>',
-            }),
-        ),
-        ScopeDownStatement: StatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An optional nested statement that narrows the scope of the web requests that are evaluated by the rate-based statement. Requests are only tracked by the rate-based statement if they match the scope-down statement. You can use any nestable <a>Statement</a> in the scope-down statement, and you can nest statements at any level, the same as you can for a rule statement. ',
-            }),
-        ).exactOptional(),
-        ForwardedIPConfig: ForwardedIPConfigSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>This is required if <code>AggregateKeyType</code> is set to <code>FORWARDED_IP</code>.</p>",
-            }),
-        ).exactOptional(),
+        Limit: RateLimitSchema.openapi({
+          description:
+            'The limit on requests per 5-minute period for a single originating IP address. If the statement includes a <code>ScopeDownStatement</code>, this limit is applied only to the requests that match the statement.',
+        }),
+        AggregateKeyType: RateBasedStatementAggregateKeyTypeSchema.openapi({
+          description:
+            '<p>Setting that indicates how to aggregate the request counts. The options are the following:</p> <ul> <li> <p>IP - Aggregate the request counts on the IP address from the web request origin.</p> </li> <li> <p>FORWARDED_IP - Aggregate the request counts on the first IP address in an HTTP header. If you use this, configure the <code>ForwardedIPConfig</code>, to specify the header to use. </p> </li> </ul>',
+        }),
+        ScopeDownStatement: StatementSchema.exactOptional().openapi({
+          description:
+            'An optional nested statement that narrows the scope of the web requests that are evaluated by the rate-based statement. Requests are only tracked by the rate-based statement if they match the scope-down statement. You can use any nestable <a>Statement</a> in the scope-down statement, and you can nest statements at any level, the same as you can for a rule statement. ',
+        }),
+        ForwardedIPConfig: ForwardedIPConfigSchema.exactOptional().openapi({
+          description:
+            "<p>The configuration for inspecting IP addresses in an HTTP header that you specify, instead of using the IP address that's reported by the web request origin. Commonly, this is the X-Forwarded-For (XFF) header, but you can specify any header name. </p> <note> <p>If the specified header isn't present in the request, WAF doesn't apply the rule to the web request at all.</p> </note> <p>This is required if <code>AggregateKeyType</code> is set to <code>FORWARDED_IP</code>.</p>",
+        }),
       })
       .openapi({
         required: ['Limit', 'AggregateKeyType'],
@@ -2100,14 +2471,10 @@ const AndStatementSchema: z.ZodType<AndStatementType> = z
   .lazy(() =>
     z
       .object({
-        Statements: StatementsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The statements to combine with AND logic. You can use any statements that can be nested. ',
-            }),
-        ),
+        Statements: StatementsSchema.openapi({
+          description:
+            'The statements to combine with AND logic. You can use any statements that can be nested. ',
+        }),
       })
       .openapi({
         required: ['Statements'],
@@ -2121,14 +2488,10 @@ const OrStatementSchema: z.ZodType<OrStatementType> = z
   .lazy(() =>
     z
       .object({
-        Statements: StatementsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The statements to combine with OR logic. You can use any statements that can be nested.',
-            }),
-        ),
+        Statements: StatementsSchema.openapi({
+          description:
+            'The statements to combine with OR logic. You can use any statements that can be nested.',
+        }),
       })
       .openapi({
         required: ['Statements'],
@@ -2142,13 +2505,9 @@ const NotStatementSchema: z.ZodType<NotStatementType> = z
   .lazy(() =>
     z
       .object({
-        Statement: StatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The statement to negate. You can use any statement that can be nested.',
-            }),
-        ),
+        Statement: StatementSchema.openapi({
+          description: 'The statement to negate. You can use any statement that can be nested.',
+        }),
       })
       .openapi({
         required: ['Statement'],
@@ -2158,93 +2517,15 @@ const NotStatementSchema: z.ZodType<NotStatementType> = z
   )
   .openapi('NotStatement')
 
-const ManagedRuleGroupStatementSchema: z.ZodType<ManagedRuleGroupStatementType> = z
-  .lazy(() =>
-    z
-      .object({
-        VendorName: VendorNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
-            }),
-        ),
-        Name: EntityNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
-            }),
-        ),
-        Version: VersionKeyStringSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "The version of the managed rule group to use. If you specify this, the version setting is fixed until you change it. If you don't specify this, WAF uses the vendor's default version, and then keeps the version at the vendor's default when the vendor updates the managed rule group settings. ",
-            }),
-        ).exactOptional(),
-        ExcludedRules: ExcludedRulesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Rules in the referenced rule group whose actions are set to <code>Count</code>. </p> <note> <p>Instead of this option, use <code>RuleActionOverrides</code>. It accepts any valid action setting, including <code>Count</code>.</p> </note>',
-            }),
-        ).exactOptional(),
-        ScopeDownStatement: StatementSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An optional nested statement that narrows the scope of the web requests that are evaluated by the managed rule group. Requests are only evaluated by the rule group if they match the scope-down statement. You can use any nestable <a>Statement</a> in the scope-down statement, and you can nest statements at any level, the same as you can for a rule statement. ',
-            }),
-        ).exactOptional(),
-        ManagedRuleGroupConfigs: ManagedRuleGroupConfigsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                "<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object for the account takeover prevention managed rule group, to provide information such as the sign-in page of your application and the type of content to accept or reject from the client. </p> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p>",
-            }),
-        ).exactOptional(),
-        RuleActionOverrides: RuleActionOverridesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Action settings to use in the place of the rule actions that are configured inside the rule group. You specify one override for each rule whose action you want to change. </p> <p>You can use overrides for testing, for example you can override all of rule actions to <code>Count</code> and then monitor the resulting count metrics to understand how the rule group would handle your web traffic. You can also permanently override some or all actions, to modify how the rule group manages your web traffic.</p>',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['VendorName', 'Name'],
-        description:
-          '<p>A rule statement used to run the rules that are defined in a managed rule group. To use this, provide the vendor name and the name of the rule group in this statement. You can retrieve the required names by calling <a>ListAvailableManagedRuleGroups</a>.</p> <p>You cannot nest a <code>ManagedRuleGroupStatement</code>, for example for use inside a <code>NotStatement</code> or <code>OrStatement</code>. It can only be referenced as a top-level statement within a rule.</p> <note> <p>You are charged additional fees when you use the WAF Bot Control managed rule group <code>AWSManagedRulesBotControlRuleSet</code> or the WAF Fraud Control account takeover prevention (ATP) managed rule group <code>AWSManagedRulesATPRuleSet</code>. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-      }),
-  )
-  .openapi('ManagedRuleGroupStatement')
-
 const LabelMatchStatementSchema: z.ZodType<LabelMatchStatementType> = z
   .object({
-    Scope: LabelMatchScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify whether you want to match using the label name or just the namespace. ',
-        }),
-    ),
-    Key: LabelMatchKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The string to match against. The setting you provide for this depends on the match statement's <code>Scope</code> setting: </p> <ul> <li> <p>If the <code>Scope</code> indicates <code>LABEL</code>, then this specification must include the name and can include any number of preceding namespace specifications and prefix up to providing the fully qualified label name. </p> </li> <li> <p>If the <code>Scope</code> indicates <code>NAMESPACE</code>, then this specification can include any number of contiguous namespace strings, and can include the entire label namespace prefix from the rule group or web ACL where the label originates.</p> </li> </ul> <p>Labels are case sensitive and components of a label must be separated by colon, for example <code>NS1:NS2:name</code>.</p>",
-        }),
-    ),
+    Scope: LabelMatchScopeSchema.openapi({
+      description: 'Specify whether you want to match using the label name or just the namespace. ',
+    }),
+    Key: LabelMatchKeySchema.openapi({
+      description:
+        "<p>The string to match against. The setting you provide for this depends on the match statement's <code>Scope</code> setting: </p> <ul> <li> <p>If the <code>Scope</code> indicates <code>LABEL</code>, then this specification must include the name and can include any number of preceding namespace specifications and prefix up to providing the fully qualified label name. </p> </li> <li> <p>If the <code>Scope</code> indicates <code>NAMESPACE</code>, then this specification can include any number of contiguous namespace strings, and can include the entire label namespace prefix from the rule group or web ACL where the label originates.</p> </li> </ul> <p>Labels are case sensitive and components of a label must be separated by colon, for example <code>NS1:NS2:name</code>.</p>",
+    }),
   })
   .openapi({
     required: ['Scope', 'Key'],
@@ -2261,29 +2542,23 @@ const RegexPatternStringSchema = z
   .openapi('RegexPatternString')
 
 type RegexMatchStatementType = {
-  RegexString: z.infer<typeof RegexPatternStringSchema> & { [key: string]: unknown }
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & { [key: string]: unknown }
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & { [key: string]: unknown }
+  RegexString: z.infer<typeof RegexPatternStringSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
+  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
 }
 
 const RegexMatchStatementSchema: z.ZodType<RegexMatchStatementType> = z
   .object({
-    RegexString: RegexPatternStringSchema.and(
-      z.any().openapi({ description: 'The string representing the regular expression.' }),
-    ),
-    FieldToMatch: FieldToMatchSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The part of the web request that you want WAF to inspect. ' }),
-    ),
-    TextTransformations: TextTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
-        }),
-    ),
+    RegexString: RegexPatternStringSchema.openapi({
+      description: 'The string representing the regular expression.',
+    }),
+    FieldToMatch: FieldToMatchSchema.openapi({
+      description: 'The part of the web request that you want WAF to inspect. ',
+    }),
+    TextTransformations: TextTransformationsSchema.openapi({
+      description:
+        'Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. If you specify one or more transformations in a rule statement, WAF performs all transformations on the content of the request component identified by <code>FieldToMatch</code>, starting from the lowest priority setting, before inspecting the content for a match.',
+    }),
   })
   .openapi({
     required: ['RegexString', 'FieldToMatch', 'TextTransformations'],
@@ -2293,36 +2568,27 @@ const RegexMatchStatementSchema: z.ZodType<RegexMatchStatementType> = z
   .openapi('RegexMatchStatement')
 
 type StatementType = {
-  ByteMatchStatement?: z.infer<typeof ByteMatchStatementSchema> & { [key: string]: unknown }
-  SqliMatchStatement?: z.infer<typeof SqliMatchStatementSchema> & { [key: string]: unknown }
-  XssMatchStatement?: z.infer<typeof XssMatchStatementSchema> & { [key: string]: unknown }
-  SizeConstraintStatement?: z.infer<typeof SizeConstraintStatementSchema> & {
-    [key: string]: unknown
-  }
-  GeoMatchStatement?: z.infer<typeof GeoMatchStatementSchema> & { [key: string]: unknown }
-  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema> & {
-    [key: string]: unknown
-  }
-  IPSetReferenceStatement?: z.infer<typeof IPSetReferenceStatementSchema> & {
-    [key: string]: unknown
-  }
-  RegexPatternSetReferenceStatement?: z.infer<typeof RegexPatternSetReferenceStatementSchema> & {
-    [key: string]: unknown
-  }
-  RateBasedStatement?: z.infer<typeof RateBasedStatementSchema> & { [key: string]: unknown }
-  AndStatement?: z.infer<typeof AndStatementSchema> & { [key: string]: unknown }
-  OrStatement?: z.infer<typeof OrStatementSchema> & { [key: string]: unknown }
-  NotStatement?: z.infer<typeof NotStatementSchema> & { [key: string]: unknown }
-  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema> & {
-    [key: string]: unknown
-  }
-  LabelMatchStatement?: z.infer<typeof LabelMatchStatementSchema> & { [key: string]: unknown }
-  RegexMatchStatement?: z.infer<typeof RegexMatchStatementSchema> & { [key: string]: unknown }
+  ByteMatchStatement?: z.infer<typeof ByteMatchStatementSchema> & unknown
+  SqliMatchStatement?: z.infer<typeof SqliMatchStatementSchema> & unknown
+  XssMatchStatement?: z.infer<typeof XssMatchStatementSchema> & unknown
+  SizeConstraintStatement?: z.infer<typeof SizeConstraintStatementSchema> & unknown
+  GeoMatchStatement?: z.infer<typeof GeoMatchStatementSchema> & unknown
+  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema> & unknown
+  IPSetReferenceStatement?: z.infer<typeof IPSetReferenceStatementSchema> & unknown
+  RegexPatternSetReferenceStatement?: z.infer<typeof RegexPatternSetReferenceStatementSchema> &
+    unknown
+  RateBasedStatement?: z.infer<typeof RateBasedStatementSchema> & unknown
+  AndStatement?: z.infer<typeof AndStatementSchema> & unknown
+  OrStatement?: z.infer<typeof OrStatementSchema> & unknown
+  NotStatement?: z.infer<typeof NotStatementSchema> & unknown
+  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema> & unknown
+  LabelMatchStatement?: z.infer<typeof LabelMatchStatementSchema> & unknown
+  RegexMatchStatement?: z.infer<typeof RegexMatchStatementSchema> & unknown
 }
 
-type NotStatementType = { Statement: z.infer<typeof StatementSchema> & { [key: string]: unknown } }
+type NotStatementType = { Statement: z.infer<typeof StatementSchema> & unknown }
 
-type OrStatementType = { Statements: z.infer<typeof StatementsSchema> & { [key: string]: unknown } }
+type OrStatementType = { Statements: z.infer<typeof StatementsSchema> & unknown }
 
 type RateLimitType = number
 
@@ -2338,34 +2604,24 @@ const RateBasedStatementAggregateKeyTypeSchema: z.ZodType<RateBasedStatementAggr
   z.enum(['IP', 'FORWARDED_IP']).openapi('RateBasedStatementAggregateKeyType')
 
 type RateBasedStatementType = {
-  Limit: z.infer<typeof RateLimitSchema> & { [key: string]: unknown }
-  AggregateKeyType: z.infer<typeof RateBasedStatementAggregateKeyTypeSchema> & {
-    [key: string]: unknown
-  }
-  ScopeDownStatement?: z.infer<typeof StatementSchema> & { [key: string]: unknown }
-  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & { [key: string]: unknown }
+  Limit: z.infer<typeof RateLimitSchema> & unknown
+  AggregateKeyType: z.infer<typeof RateBasedStatementAggregateKeyTypeSchema> & unknown
+  ScopeDownStatement?: z.infer<typeof StatementSchema> & unknown
+  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & unknown
 }
 
-const AssociateWebACLResponseSchema = z.object({}).openapi('AssociateWebACLResponse')
+const AssociateWebACLResponseSchema = z.looseObject({}).openapi('AssociateWebACLResponse')
 
 const AssociateWebACLRequestSchema = z
   .object({
-    WebACLArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL that you want to associate with the resource.',
-        }),
-    ),
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource to associate with the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    WebACLArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL that you want to associate with the resource.',
+    }),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource to associate with the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['WebACLArn', 'ResourceArn'], title: 'AssociateWebACLRequest' })
   .openapi('AssociateWebACLRequest')
@@ -2380,267 +2636,25 @@ const WAFUnavailableEntityExceptionSchema = z.any().openapi('WAFUnavailableEntit
 
 const WAFInvalidOperationExceptionSchema = z.any().openapi('WAFInvalidOperationException')
 
-const ConsumedCapacitySchema = z.int().min(0).openapi('ConsumedCapacity')
-
 const CheckCapacityResponseSchema = z
   .object({
-    Capacity: ConsumedCapacitySchema.and(
-      z.any().openapi({ description: 'The capacity required by the rules and scope.' }),
-    ).exactOptional(),
+    Capacity: ConsumedCapacitySchema.exactOptional().openapi({
+      description: 'The capacity required by the rules and scope.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CheckCapacityResponse')
 
-const ScopeSchema = z.enum(['CLOUDFRONT', 'REGIONAL']).openapi('Scope')
-
-const RulePrioritySchema = z.int().min(0).openapi('RulePriority')
-
-const NoneActionSchema = z
-  .object({})
-  .openapi({
-    description:
-      '<p>Specifies that WAF should do nothing. This is used for the <code>OverrideAction</code> setting on a <a>Rule</a> when the rule uses a rule group reference statement. </p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p> <p>JSON specification: <code>"None": {}</code> </p>',
-  })
-  .openapi('NoneAction')
-
-const OverrideActionSchema = z
+const CheckCapacityRequestSchema: z.ZodType<CheckCapacityRequestType> = z
   .object({
-    Count: CountActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Override the rule group evaluation result to count only. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
-        }),
-    ).exactOptional(),
-    None: NoneActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Don't override the rule group evaluation result. This is the most common setting.",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
-    required: [],
-  })
-  .openapi('OverrideAction')
-
-const LabelSchema = z
-  .object({ Name: LabelNameSchema.and(z.any().openapi({ description: 'The label string. ' })) })
-  .openapi({
-    required: ['Name'],
-    description:
-      'A single label container. This is used as an element of a label array in multiple contexts, for example, in <code>RuleLabels</code> inside a <a>Rule</a> and in <code>Labels</code> inside a <a>SampledHTTPRequest</a>. ',
-  })
-  .openapi('Label')
-
-const LabelsSchema = z.array(LabelSchema).openapi('Labels')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const MetricNameSchema = z
-  .string()
-  .regex(/^[\w#:\.\-\/]+$/)
-  .min(1)
-  .max(255)
-  .openapi('MetricName')
-
-const VisibilityConfigSchema = z
-  .object({
-    SampledRequestsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean indicating whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. ',
-        }),
-    ),
-    CloudWatchMetricsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean indicating whether the associated resource sends metrics to Amazon CloudWatch. For the list of available metrics, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/monitoring-cloudwatch.html#waf-metrics">WAF Metrics</a> in the <i>WAF Developer Guide</i>.',
-        }),
-    ),
-    MetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A name of the Amazon CloudWatch metric dimension. The name can contain only the characters: A-Z, a-z, 0-9, - (hyphen), and _ (underscore). The name can be from one to 128 characters long. It can't contain whitespace or metric names that are reserved for WAF, for example <code>All</code> and <code>Default_Action</code>. ",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['SampledRequestsEnabled', 'CloudWatchMetricsEnabled', 'MetricName'],
-    description:
-      'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-  })
-  .openapi('VisibilityConfig')
-
-const TimeWindowSecondSchema = z.int().min(60).max(259200).openapi('TimeWindowSecond')
-
-const ImmunityTimePropertySchema = z
-  .object({
-    ImmunityTime: TimeWindowSecondSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time, in seconds, that a <code>CAPTCHA</code> or challenge timestamp is considered valid by WAF. The default setting is 300. </p> <p>For the Challenge action, the minimum setting is 300. </p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ImmunityTime'],
-    description:
-      'Used for CAPTCHA and challenge token settings. Determines how long a <code>CAPTCHA</code> or challenge timestamp remains valid after WAF updates it for a successful <code>CAPTCHA</code> or challenge response. ',
-  })
-  .openapi('ImmunityTimeProperty')
-
-const CaptchaConfigSchema = z
-  .object({
-    ImmunityTimeProperty: ImmunityTimePropertySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines how long a <code>CAPTCHA</code> timestamp in the token remains valid after the client successfully solves a <code>CAPTCHA</code> puzzle. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies how WAF should handle <code>CAPTCHA</code> evaluations. This is available at the web ACL level and in each rule. ',
-    required: [],
-  })
-  .openapi('CaptchaConfig')
-
-const ChallengeConfigSchema = z
-  .object({
-    ImmunityTimeProperty: ImmunityTimePropertySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines how long a challenge timestamp in the token remains valid after the client successfully responds to a challenge. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies how WAF should handle <code>Challenge</code> evaluations. This is available at the web ACL level and in each rule. ',
-    required: [],
-  })
-  .openapi('ChallengeConfig')
-
-const RuleSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the rule. You can't change the name of a <code>Rule</code> after you create it. ",
-        }),
-    ),
-    Priority: RulePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you define more than one <code>Rule</code> in a <code>WebACL</code>, WAF evaluates each request against the <code>Rules</code> in order based on the value of <code>Priority</code>. WAF processes rules with lower priority first. The priorities don't need to be consecutive, but they must all be different.",
-        }),
-    ),
-    Statement: StatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The WAF processing statement for the rule, for example <a>ByteMatchStatement</a> or <a>SizeConstraintStatement</a>. ',
-        }),
-    ),
-    Action: RuleActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action that WAF should take on a web request when it matches the rule statement. Settings at the web ACL level can override the rule action setting. </p> <p>This is used only for rules whose statements do not reference a rule group. Rule statements that reference a rule group include <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <p>You must specify either this <code>Action</code> setting or the rule <code>OverrideAction</code> setting, but not both:</p> <ul> <li> <p>If the rule statement does not reference a rule group, use this rule action setting and not the rule override action setting. </p> </li> <li> <p>If the rule statement references a rule group, use the override action setting and not this action setting. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OverrideAction: OverrideActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
-        }),
-    ).exactOptional(),
-    RuleLabels: LabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Labels to apply to web requests that match the rule match statement. WAF applies fully qualified labels to matching web requests. A fully qualified label is the concatenation of a label namespace and a rule label. The rule's rule group or web ACL defines the label namespace. </p> <p>Rules that run after this rule in the web ACL can match against these labels using a <code>LabelMatchStatement</code>.</p> <p>For each label, provide a case-sensitive string containing optional namespaces and a label name, according to the following guidelines:</p> <ul> <li> <p>Separate each component of the label with a colon. </p> </li> <li> <p>Each namespace or name can have up to 128 characters.</p> </li> <li> <p>You can specify up to 5 namespaces in a label.</p> </li> <li> <p>Don't use the following reserved words in your label specification: <code>aws</code>, <code>waf</code>, <code>managed</code>, <code>rulegroup</code>, <code>webacl</code>, <code>regexpatternset</code>, or <code>ipset</code>.</p> </li> </ul> <p>For example, <code>myLabelName</code> or <code>nameSpace1:nameSpace2:myLabelName</code>. </p>",
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    CaptchaConfig: CaptchaConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle <code>CAPTCHA</code> evaluations. If you don't specify this, WAF uses the <code>CAPTCHA</code> configuration that's defined for the web ACL. ",
-        }),
-    ).exactOptional(),
-    ChallengeConfig: ChallengeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle <code>Challenge</code> evaluations. If you don't specify this, WAF uses the challenge configuration that's defined for the web ACL. ",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'Priority', 'Statement', 'VisibilityConfig'],
-    description:
-      'A single rule, which you can use in a <a>WebACL</a> or <a>RuleGroup</a> to identify web requests that you want to allow, block, or count. Each rule includes one top-level <a>Statement</a> that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-  })
-  .openapi('Rule')
-
-const RulesSchema = z.array(RuleSchema).openapi('Rules')
-
-const CheckCapacityRequestSchema = z
-  .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "An array of <a>Rule</a> that you're configuring to use in a rule group or web ACL. ",
-        }),
-    ),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Rules: RulesSchema.openapi({
+      description:
+        "An array of <a>Rule</a> that you're configuring to use in a rule group or web ACL. ",
+    }),
   })
   .openapi({ required: ['Scope', 'Rules'], title: 'CheckCapacityRequest' })
   .openapi('CheckCapacityRequest')
@@ -2664,103 +2678,49 @@ const APIKeySchema = z
 
 const CreateAPIKeyResponseSchema = z
   .object({
-    APIKey: APIKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    APIKey: APIKeySchema.exactOptional().openapi({
+      description:
+        '<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAPIKeyResponse')
-
-const TokenDomainSchema = z
-  .string()
-  .regex(/^[\w\.\-\/]+$/)
-  .min(1)
-  .max(253)
-  .openapi('TokenDomain')
 
 const APIKeyTokenDomainsSchema = z.array(TokenDomainSchema).min(1).openapi('APIKeyTokenDomains')
 
 const CreateAPIKeyRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    TokenDomains: APIKeyTokenDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client application domains that you want to use this API key for. ',
-        }),
-    ),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    TokenDomains: APIKeyTokenDomainsSchema.openapi({
+      description: 'The client application domains that you want to use this API key for. ',
+    }),
   })
   .openapi({ required: ['Scope', 'TokenDomains'], title: 'CreateAPIKeyRequest' })
   .openapi('CreateAPIKeyRequest')
 
-const EntityIdSchema = z
-  .string()
-  .regex(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/)
-  .min(1)
-  .max(36)
-  .openapi('EntityId')
-
-const EntityDescriptionSchema = z
-  .string()
-  .regex(/^[\w+=:#@\/\-,\.][\w+=:#@\/\-,\.\s]+[\w+=:#@\/\-,\.]$/)
-  .min(1)
-  .max(256)
-  .openapi('EntityDescription')
-
-const LockTokenSchema = z
-  .string()
-  .regex(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/)
-  .min(1)
-  .max(36)
-  .openapi('LockToken')
-
 const IPSetSummarySchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the IP set that helps with identification. ' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the IP set that helps with identification. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
   })
   .openapi({
     description:
@@ -2771,14 +2731,10 @@ const IPSetSummarySchema = z
 
 const CreateIPSetResponseSchema = z
   .object({
-    Summary: IPSetSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'High-level information about an <a>IPSet</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage an <code>IPSet</code>, and the ARN, that you provide to the <a>IPSetReferenceStatement</a> to use the address set in a <a>Rule</a>.',
-        }),
-    ).exactOptional(),
+    Summary: IPSetSummarySchema.exactOptional().openapi({
+      description:
+        'High-level information about an <a>IPSet</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage an <code>IPSet</code>, and the ARN, that you provide to the <a>IPSetReferenceStatement</a> to use the address set in a <a>Rule</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateIPSetResponse')
@@ -2794,92 +2750,30 @@ const IPAddressSchema = z
 
 const IPAddressesSchema = z.array(IPAddressSchema).openapi('IPAddresses')
 
-const TagKeySchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(1)
-  .max(128)
-  .openapi('TagKey')
-
-const TagValueSchema = z
-  .string()
-  .regex(/^([\p{L}\p{Z}\p{N}_.:\/=+\-@]*)$/u)
-  .min(0)
-  .max(256)
-  .openapi('TagValue')
-
-const TagSchema = z
-  .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag key to describe a category of information, such as "customer." Tag keys are case-sensitive.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Part of the key:value pair that defines a tag. You can use a tag value to describe a specific value within a category, such as "companyA" or "companyB." Tag values are case-sensitive.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Key', 'Value'],
-    description:
-      '<p>A tag associated with an Amazon Web Services resource. Tags are key:value pairs that you can use to categorize and manage your resources, for purposes like billing or other management. Typically, the tag key represents a category, such as "environment", and the tag value represents a specific value within that category, such as "test," "development," or "production". Or you might set the tag key to "customer" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p> <p>You can tag the Amazon Web Services resources that you manage through WAF: web ACLs, rule groups, IP sets, and regex pattern sets. You can\'t manage or view tags through the WAF console. </p>',
-  })
-  .openapi('Tag')
-
-const TagListSchema = z.array(TagSchema).min(1).openapi('TagList')
-
 const CreateIPSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the IP set that helps with identification. ' }),
-    ).exactOptional(),
-    IPAddressVersion: IPAddressVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
-        }),
-    ),
-    Addresses: IPAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of key:value pairs to associate with the resource.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the IP set that helps with identification. ',
+    }),
+    IPAddressVersion: IPAddressVersionSchema.openapi({
+      description:
+        'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
+    }),
+    Addresses: IPAddressesSchema.openapi({
+      description:
+        '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of key:value pairs to associate with the resource.',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'IPAddressVersion', 'Addresses'],
@@ -2899,36 +2793,24 @@ const WAFTagOperationInternalErrorExceptionSchema = z
 
 const RegexPatternSetSummarySchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data type instance. You cannot change the name after you create the instance.',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the data type instance. You cannot change the name after you create the instance.',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
   })
   .openapi({
     description:
@@ -2939,23 +2821,19 @@ const RegexPatternSetSummarySchema = z
 
 const CreateRegexPatternSetResponseSchema = z
   .object({
-    Summary: RegexPatternSetSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'High-level information about a <a>RegexPatternSet</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>RegexPatternSet</code>, and the ARN, that you provide to the <a>RegexPatternSetReferenceStatement</a> to use the pattern set in a <a>Rule</a>.',
-        }),
-    ).exactOptional(),
+    Summary: RegexPatternSetSummarySchema.exactOptional().openapi({
+      description:
+        'High-level information about a <a>RegexPatternSet</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>RegexPatternSet</code>, and the ARN, that you provide to the <a>RegexPatternSetReferenceStatement</a> to use the pattern set in a <a>Rule</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRegexPatternSetResponse')
 
 const RegexSchema = z
   .object({
-    RegexString: RegexPatternStringSchema.and(
-      z.any().openapi({ description: 'The string representing the regular expression.' }),
-    ).exactOptional(),
+    RegexString: RegexPatternStringSchema.exactOptional().openapi({
+      description: 'The string representing the regular expression.',
+    }),
   })
   .openapi({
     description: 'A single regular expression. This is used in a <a>RegexPatternSet</a>.',
@@ -2967,32 +2845,22 @@ const RegularExpressionListSchema = z.array(RegexSchema).openapi('RegularExpress
 
 const CreateRegexPatternSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the set. You cannot change the name after you create the set.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    RegularExpressionList: RegularExpressionListSchema.and(
-      z.any().openapi({ description: 'Array of regular expression strings. ' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of key:value pairs to associate with the resource.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description: 'The name of the set. You cannot change the name after you create the set.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    RegularExpressionList: RegularExpressionListSchema.openapi({
+      description: 'Array of regular expression strings. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of key:value pairs to associate with the resource.',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'RegularExpressionList'],
@@ -3002,40 +2870,24 @@ const CreateRegexPatternSetRequestSchema = z
 
 const RuleGroupSummarySchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the data type instance. You cannot change the name after you create the instance.',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the rule group that helps with identification. ',
-        }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the data type instance. You cannot change the name after you create the instance.',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the rule group that helps with identification. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
   })
   .openapi({
     description:
@@ -3046,124 +2898,46 @@ const RuleGroupSummarySchema = z
 
 const CreateRuleGroupResponseSchema = z
   .object({
-    Summary: RuleGroupSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'High-level information about a <a>RuleGroup</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>RuleGroup</code>, and the ARN, that you provide to the <a>RuleGroupReferenceStatement</a> to use the rule group in a <a>Rule</a>.',
-        }),
-    ).exactOptional(),
+    Summary: RuleGroupSummarySchema.exactOptional().openapi({
+      description:
+        'High-level information about a <a>RuleGroup</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>RuleGroup</code>, and the ARN, that you provide to the <a>RuleGroupReferenceStatement</a> to use the rule group in a <a>Rule</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRuleGroupResponse')
 
-const CapacityUnitSchema = z.int().min(1).openapi('CapacityUnit')
-
-const ResponseContentTypeSchema = z
-  .enum(['TEXT_PLAIN', 'TEXT_HTML', 'APPLICATION_JSON'])
-  .openapi('ResponseContentType')
-
-const ResponseContentSchema = z
-  .string()
-  .regex(/[\s\S]*/)
-  .min(1)
-  .max(10240)
-  .openapi('ResponseContent')
-
-const CustomResponseBodySchema = z
+const CreateRuleGroupRequestSchema: z.ZodType<CreateRuleGroupRequestType> = z
   .object({
-    ContentType: ResponseContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of content in the payload that you are defining in the <code>Content</code> string.',
-        }),
-    ),
-    Content: ResponseContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The payload of the custom response. </p> <p>You can use JSON escape strings in JSON content. To do this, you must specify JSON content in the <code>ContentType</code> setting. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ContentType', 'Content'],
-    description:
-      'The response body to use in a custom response to a web request. This is referenced by key from <a>CustomResponse</a> <code>CustomResponseBodyKey</code>.',
-  })
-  .openapi('CustomResponseBody')
-
-const CustomResponseBodiesSchema = z
-  .record(z.string(), CustomResponseBodySchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .openapi('CustomResponseBodies')
-
-const CreateRuleGroupRequestSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Capacity: CapacityUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>When you create your own rule group, you define this, and you cannot change it after creation. When you add or modify the rules in a rule group, WAF enforces this limit. You can check the capacity for a set of rules using <a>CheckCapacity</a>.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the rule group that helps with identification. ',
-        }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of key:value pairs to associate with the resource.' }),
-    ).exactOptional(),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Capacity: CapacityUnitSchema.openapi({
+      description:
+        '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>When you create your own rule group, you define this, and you cannot change it after creation. When you add or modify the rules in a rule group, WAF enforces this limit. You can check the capacity for a set of rules using <a>CheckCapacity</a>.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the rule group that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of key:value pairs to associate with the resource.',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Capacity', 'VisibilityConfig'],
@@ -3173,38 +2947,24 @@ const CreateRuleGroupRequestSchema = z
 
 const WebACLSummarySchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the web ACL that helps with identification. ' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the web ACL that helps with identification. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
   })
   .openapi({
     description:
@@ -3215,172 +2975,62 @@ const WebACLSummarySchema = z
 
 const CreateWebACLResponseSchema = z
   .object({
-    Summary: WebACLSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'High-level information about a <a>WebACL</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>WebACL</code>, and the ARN, that you provide to operations like <a>AssociateWebACL</a>.',
-        }),
-    ).exactOptional(),
+    Summary: WebACLSummarySchema.exactOptional().openapi({
+      description:
+        'High-level information about a <a>WebACL</a>, returned by operations like create and list. This provides information like the ID, that you can use to retrieve and manage a <code>WebACL</code>, and the ARN, that you provide to operations like <a>AssociateWebACL</a>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWebACLResponse')
 
-const DefaultActionSchema = z
+const CreateWebACLRequestSchema: z.ZodType<CreateWebACLRequestType> = z
   .object({
-    Block: BlockActionSchema.and(
-      z.any().openapi({ description: 'Specifies that WAF should block requests by default. ' }),
-    ).exactOptional(),
-    Allow: AllowActionSchema.and(
-      z.any().openapi({ description: 'Specifies that WAF should allow requests by default.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "In a <a>WebACL</a>, this is the action that you want WAF to perform when a web request doesn't match any of the rules in the <code>WebACL</code>. The default action must be a terminating action.",
-    required: [],
-  })
-  .openapi('DefaultAction')
-
-const TokenDomainsSchema = z.array(TokenDomainSchema).openapi('TokenDomains')
-
-const SizeInspectionLimitSchema = z
-  .enum(['KB_16', 'KB_32', 'KB_48', 'KB_64'])
-  .openapi('SizeInspectionLimit')
-
-const RequestBodyAssociatedResourceTypeConfigSchema = z
-  .object({
-    DefaultSizeInspectionLimit: SizeInspectionLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the maximum size of the web request body component that an associated CloudFront distribution should send to WAF for inspection. This applies to statements in the web ACL that inspect the body or JSON body. </p> <p>Default: <code>16 KB (16,384 kilobytes)</code> </p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['DefaultSizeInspectionLimit'],
-    description:
-      '<p>Customizes the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default size is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note> <p>This is used in the <code>AssociationConfig</code> of the web ACL. </p>',
-  })
-  .openapi('RequestBodyAssociatedResourceTypeConfig')
-
-const RequestBodySchema = z
-  .record(z.string(), RequestBodyAssociatedResourceTypeConfigSchema)
-  .openapi('RequestBody')
-
-const AssociationConfigSchema = z
-  .object({
-    RequestBody: RequestBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Customizes the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default size is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-    required: [],
-  })
-  .openapi('AssociationConfig')
-
-const CreateWebACLRequestSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    DefaultAction: DefaultActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the web ACL that helps with identification. ' }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of key:value pairs to associate with the resource.' }),
-    ).exactOptional(),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    CaptchaConfig: CaptchaConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
-        }),
-    ).exactOptional(),
-    ChallengeConfig: ChallengeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
-        }),
-    ).exactOptional(),
-    TokenDomains: TokenDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don\'t specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource\'s host domain plus all domains in the token domain list, including their prefixed subdomains.</p> <p>Example JSON: <code>"TokenDomains": { "mywebsite.com", "myotherwebsite.com" }</code> </p> <p>Public suffixes aren\'t allowed. For example, you can\'t use <code>usa.gov</code> or <code>co.uk</code> as token domains.</p>',
-        }),
-    ).exactOptional(),
-    AssociationConfig: AssociationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    DefaultAction: DefaultActionSchema.openapi({
+      description:
+        'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the web ACL that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'An array of key:value pairs to associate with the resource.',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    CaptchaConfig: CaptchaConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
+    }),
+    ChallengeConfig: ChallengeConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
+    }),
+    TokenDomains: TokenDomainsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don\'t specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource\'s host domain plus all domains in the token domain list, including their prefixed subdomains.</p> <p>Example JSON: <code>"TokenDomains": { "mywebsite.com", "myotherwebsite.com" }</code> </p> <p>Public suffixes aren\'t allowed. For example, you can\'t use <code>usa.gov</code> or <code>co.uk</code> as token domains.</p>',
+    }),
+    AssociationConfig: AssociationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'DefaultAction', 'VisibilityConfig'],
@@ -3392,31 +3042,23 @@ const WAFConfigurationWarningExceptionSchema = z.any().openapi('WAFConfiguration
 
 const DeleteFirewallManagerRuleGroupsResponseSchema = z
   .object({
-    NextWebACLLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    NextWebACLLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteFirewallManagerRuleGroupsResponse')
 
 const DeleteFirewallManagerRuleGroupsRequestSchema = z
   .object({
-    WebACLArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the web ACL.' }),
-    ),
-    WebACLLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    WebACLArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the web ACL.',
+    }),
+    WebACLLockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({
     required: ['WebACLArn', 'WebACLLockToken'],
@@ -3424,42 +3066,26 @@ const DeleteFirewallManagerRuleGroupsRequestSchema = z
   })
   .openapi('DeleteFirewallManagerRuleGroupsRequest')
 
-const DeleteIPSetResponseSchema = z.object({}).openapi('DeleteIPSetResponse')
+const DeleteIPSetResponseSchema = z.looseObject({}).openapi('DeleteIPSetResponse')
 
 const DeleteIPSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id', 'LockToken'], title: 'DeleteIPSetRequest' })
   .openapi('DeleteIPSetRequest')
@@ -3467,74 +3093,54 @@ const DeleteIPSetRequestSchema = z
 const WAFAssociatedItemExceptionSchema = z.any().openapi('WAFAssociatedItemException')
 
 const DeleteLoggingConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteLoggingConfigurationResponse')
 
 const DeleteLoggingConfigurationRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL from which you want to delete the <a>LoggingConfiguration</a>.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL from which you want to delete the <a>LoggingConfiguration</a>.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeleteLoggingConfigurationRequest' })
   .openapi('DeleteLoggingConfigurationRequest')
 
-const DeletePermissionPolicyResponseSchema = z.object({}).openapi('DeletePermissionPolicyResponse')
+const DeletePermissionPolicyResponseSchema = z
+  .looseObject({})
+  .openapi('DeletePermissionPolicyResponse')
 
 const DeletePermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the rule group from which you want to delete the policy.</p> <p>You must be the owner of the rule group to perform this operation.</p>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the rule group from which you want to delete the policy.</p> <p>You must be the owner of the rule group to perform this operation.</p>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeletePermissionPolicyRequest' })
   .openapi('DeletePermissionPolicyRequest')
 
-const DeleteRegexPatternSetResponseSchema = z.object({}).openapi('DeleteRegexPatternSetResponse')
+const DeleteRegexPatternSetResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteRegexPatternSetResponse')
 
 const DeleteRegexPatternSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the set. You cannot change the name after you create the set.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description: 'The name of the set. You cannot change the name after you create the set.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'LockToken'],
@@ -3542,224 +3148,114 @@ const DeleteRegexPatternSetRequestSchema = z
   })
   .openapi('DeleteRegexPatternSetRequest')
 
-const DeleteRuleGroupResponseSchema = z.object({}).openapi('DeleteRuleGroupResponse')
+const DeleteRuleGroupResponseSchema = z.looseObject({}).openapi('DeleteRuleGroupResponse')
 
 const DeleteRuleGroupRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id', 'LockToken'], title: 'DeleteRuleGroupRequest' })
   .openapi('DeleteRuleGroupRequest')
 
-const DeleteWebACLResponseSchema = z.object({}).openapi('DeleteWebACLResponse')
+const DeleteWebACLResponseSchema = z.looseObject({}).openapi('DeleteWebACLResponse')
 
 const DeleteWebACLRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id', 'LockToken'], title: 'DeleteWebACLRequest' })
   .openapi('DeleteWebACLRequest')
 
-const RuleSummarySchema = z
+const DescribeManagedRuleGroupResponseSchema: z.ZodType<DescribeManagedRuleGroupResponseType> = z
   .object({
-    Name: EntityNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule. ' }),
-    ).exactOptional(),
-    Action: RuleActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. ",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'High-level information about a <a>Rule</a>, returned by operations like <a>DescribeManagedRuleGroup</a>. This provides information like the ID, that you can use to retrieve and manage a <code>RuleGroup</code>, and the ARN, that you provide to the <a>RuleGroupReferenceStatement</a> to use the rule group in a <a>Rule</a>.',
-    required: [],
-  })
-  .openapi('RuleSummary')
-
-const RuleSummariesSchema = z.array(RuleSummarySchema).openapi('RuleSummaries')
-
-const LabelSummarySchema = z
-  .object({
-    Name: LabelNameSchema.and(
-      z.any().openapi({ description: 'An individual label specification.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>List of labels used by one or more of the rules of a <a>RuleGroup</a>. This summary object is used for the following rule group lists: </p> <ul> <li> <p> <code>AvailableLabels</code> - Labels that rules add to matching requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>. </p> </li> <li> <p> <code>ConsumedLabels</code> - Labels that rules match against. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. </p> </li> </ul>',
-    required: [],
-  })
-  .openapi('LabelSummary')
-
-const LabelSummariesSchema = z.array(LabelSummarySchema).openapi('LabelSummaries')
-
-const DescribeManagedRuleGroupResponseSchema = z
-  .object({
-    VersionName: VersionKeyStringSchema.and(
-      z.any().openapi({ description: "The managed rule group's version. " }),
-    ).exactOptional(),
-    SnsTopicArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that\'s used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon Simple Notification Service Developer Guide</a>.',
-        }),
-    ).exactOptional(),
-    Capacity: CapacityUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    Rules: RuleSummariesSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    LabelNamespace: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The label namespace prefix for this rule group. All labels added by rules in this rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AvailableLabels: LabelSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels that one or more rules in this rule group add to matching web requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>.',
-        }),
-    ).exactOptional(),
-    ConsumedLabels: LabelSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. ',
-        }),
-    ).exactOptional(),
+    VersionName: VersionKeyStringSchema.exactOptional().openapi({
+      description: "The managed rule group's version. ",
+    }),
+    SnsTopicArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon resource name (ARN) of the Amazon Simple Notification Service SNS topic that\'s used to record changes to the managed rule group. You can subscribe to the SNS topic to receive notifications when the managed rule group is modified, such as for new versions and for version expiration. For more information, see the <a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html">Amazon Simple Notification Service Developer Guide</a>.',
+    }),
+    Capacity: CapacityUnitSchema.exactOptional().openapi({
+      description:
+        '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    Rules: RuleSummariesSchema.exactOptional().openapi({ description: '<p/>' }),
+    LabelNamespace: LabelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The label namespace prefix for this rule group. All labels added by rules in this rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
+    }),
+    AvailableLabels: LabelSummariesSchema.exactOptional().openapi({
+      description:
+        'The labels that one or more rules in this rule group add to matching web requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>.',
+    }),
+    ConsumedLabels: LabelSummariesSchema.exactOptional().openapi({
+      description:
+        'The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeManagedRuleGroupResponse')
 
 const DescribeManagedRuleGroupRequestSchema = z
   .object({
-    VendorName: VendorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
-        }),
-    ),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    VersionName: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the rule group. You can only use a version that is not scheduled for expiration. If you don't provide this, WAF uses the vendor's default version. ",
-        }),
-    ).exactOptional(),
+    VendorName: VendorNameSchema.openapi({
+      description:
+        'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
+    }),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    VersionName: VersionKeyStringSchema.exactOptional().openapi({
+      description:
+        "The version of the rule group. You can only use a version that is not scheduled for expiration. If you don't provide this, WAF uses the vendor's default version. ",
+    }),
   })
   .openapi({ required: ['VendorName', 'Name', 'Scope'], title: 'DescribeManagedRuleGroupRequest' })
   .openapi('DescribeManagedRuleGroupRequest')
 
-const DisassociateWebACLResponseSchema = z.object({}).openapi('DisassociateWebACLResponse')
+const DisassociateWebACLResponseSchema = z.looseObject({}).openapi('DisassociateWebACLResponse')
 
 const DisassociateWebACLRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource to disassociate from the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource to disassociate from the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DisassociateWebACLRequest' })
   .openapi('DisassociateWebACLRequest')
@@ -3768,9 +3264,9 @@ const DownloadUrlSchema = z.string().openapi('DownloadUrl')
 
 const GenerateMobileSdkReleaseUrlResponseSchema = z
   .object({
-    Url: DownloadUrlSchema.and(
-      z.any().openapi({ description: 'The presigned download URL for the specified SDK release.' }),
-    ).exactOptional(),
+    Url: DownloadUrlSchema.exactOptional().openapi({
+      description: 'The presigned download URL for the specified SDK release.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GenerateMobileSdkReleaseUrlResponse')
@@ -3779,15 +3275,11 @@ const PlatformSchema = z.enum(['IOS', 'ANDROID']).openapi('Platform')
 
 const GenerateMobileSdkReleaseUrlRequestSchema = z
   .object({
-    Platform: PlatformSchema.and(z.any().openapi({ description: 'The device platform.' })),
-    ReleaseVersion: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The release version. For the latest available version, specify <code>LATEST</code>.',
-        }),
-    ),
+    Platform: PlatformSchema.openapi({ description: 'The device platform.' }),
+    ReleaseVersion: VersionKeyStringSchema.openapi({
+      description:
+        'The release version. For the latest available version, specify <code>LATEST</code>.',
+    }),
   })
   .openapi({
     required: ['Platform', 'ReleaseVersion'],
@@ -3799,73 +3291,51 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const GetDecryptedAPIKeyResponseSchema = z
   .object({
-    TokenDomains: TokenDomainsSchema.and(
-      z.any().openapi({ description: 'The token domains that are defined in this API key. ' }),
-    ).exactOptional(),
-    CreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the key was created. ' }),
-    ).exactOptional(),
+    TokenDomains: TokenDomainsSchema.exactOptional().openapi({
+      description: 'The token domains that are defined in this API key. ',
+    }),
+    CreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the key was created. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDecryptedAPIKeyResponse')
 
 const GetDecryptedAPIKeyRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    APIKey: APIKeySchema.and(z.any().openapi({ description: 'The encrypted API key. ' })),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    APIKey: APIKeySchema.openapi({ description: 'The encrypted API key. ' }),
   })
   .openapi({ required: ['Scope', 'APIKey'], title: 'GetDecryptedAPIKeyRequest' })
   .openapi('GetDecryptedAPIKeyRequest')
 
 const IPSetSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the IP set that helps with identification. ' }),
-    ).exactOptional(),
-    IPAddressVersion: IPAddressVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
-        }),
-    ),
-    Addresses: IPAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    ARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the IP set that helps with identification. ',
+    }),
+    IPAddressVersion: IPAddressVersionSchema.openapi({
+      description:
+        'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
+    }),
+    Addresses: IPAddressesSchema.openapi({
+      description:
+        '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Id', 'ARN', 'IPAddressVersion', 'Addresses'],
@@ -3876,209 +3346,48 @@ const IPSetSchema = z
 
 const GetIPSetResponseSchema = z
   .object({
-    IPSet: IPSetSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    IPSet: IPSetSchema.exactOptional().openapi({ description: '<p/>' }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIPSetResponse')
 
 const GetIPSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id'], title: 'GetIPSetRequest' })
   .openapi('GetIPSetRequest')
 
-const LogDestinationConfigsSchema = z
-  .array(ResourceArnSchema)
-  .min(1)
-  .max(100)
-  .openapi('LogDestinationConfigs')
-
-const RedactedFieldsSchema = z.array(FieldToMatchSchema).max(100).openapi('RedactedFields')
-
-const FilterBehaviorSchema = z.enum(['KEEP', 'DROP']).openapi('FilterBehavior')
-
-const FilterRequirementSchema = z.enum(['MEETS_ALL', 'MEETS_ANY']).openapi('FilterRequirement')
-
-const ConditionSchema: z.ZodType<ConditionType> = z
-  .lazy(() =>
-    z
-      .object({
-        ActionCondition: ActionConditionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A single action condition. This is the action setting that a log record must contain in order to meet the condition.',
-            }),
-        ).exactOptional(),
-        LabelNameCondition: LabelNameConditionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A single label name condition. This is the fully qualified label name that a log record must contain in order to meet the condition. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. ',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'A single match condition for a <a>Filter</a>.', required: [] }),
-  )
-  .openapi('Condition')
-
-const ConditionsSchema = z.array(ConditionSchema).min(1).openapi('Conditions')
-
-const FilterSchema = z
+const GetLoggingConfigurationResponseSchema: z.ZodType<GetLoggingConfigurationResponseType> = z
   .object({
-    Behavior: FilterBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "How to handle logs that satisfy the filter's conditions and requirement. ",
-        }),
-    ),
-    Requirement: FilterRequirementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition.',
-        }),
-    ),
-    Conditions: ConditionsSchema.and(
-      z.any().openapi({ description: 'Match conditions for the filter.' }),
-    ),
-  })
-  .openapi({
-    required: ['Behavior', 'Requirement', 'Conditions'],
-    description: 'A single logging filter, used in <a>LoggingFilter</a>. ',
-  })
-  .openapi('Filter')
-
-const FiltersSchema = z.array(FilterSchema).min(1).openapi('Filters')
-
-const LoggingFilterSchema = z
-  .object({
-    Filters: FiltersSchema.and(
-      z.any().openapi({ description: 'The filters that you want to apply to the logs. ' }),
-    ),
-    DefaultBehavior: FilterBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Default handling for logs that don't match any of the specified filtering conditions. ",
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Filters', 'DefaultBehavior'],
-    description:
-      "<p>Filtering that specifies which web requests are kept in the logs and which are dropped, defined for a web ACL's <a>LoggingConfiguration</a>. </p> <p>You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. </p>",
-  })
-  .openapi('LoggingFilter')
-
-const LoggingConfigurationSchema = z
-  .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL that you want to associate with <code>LogDestinationConfigs</code>.',
-        }),
-    ),
-    LogDestinationConfigs: LogDestinationConfigsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The logging destination configuration that you want to associate with the web ACL.</p> <note> <p>You can associate one logging destination to a web ACL.</p> </note>',
-        }),
-    ),
-    RedactedFields: RedactedFieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parts of the request that you want to keep out of the logs. For example, if you redact the <code>SingleHeader</code> field, the <code>HEADER</code> field in the logs will be <code>REDACTED</code>. </p> <note> <p>You can specify only the following fields for redaction: <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, <code>Method</code>, and <code>JsonBody</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    ManagedByFirewallManager: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the logging configuration was created by Firewall Manager, as part of an WAF policy configuration. If true, only Firewall Manager can modify or delete the configuration. ',
-        }),
-    ).exactOptional(),
-    LoggingFilter: LoggingFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filtering that specifies which web requests are kept in the logs and which are dropped. You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ResourceArn', 'LogDestinationConfigs'],
-    description:
-      '<p>Defines an association between logging destinations and a web ACL resource, for logging from WAF. As part of the association, you can specify parts of the standard logging fields to keep out of the logs and you can specify filters so that you log only a subset of the logging records. </p> <note> <p>You can define one logging destination per web ACL.</p> </note> <p>You can access information about the traffic that WAF inspects using the following steps:</p> <ol> <li> <p>Create your logging destination. You can use an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose. </p> <p>The name that you give the destination must start with <code>aws-waf-logs-</code>. Depending on the type of destination, you might need to configure additional settings or permissions. </p> <p>For configuration requirements and pricing information for each destination type, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging web ACL traffic</a> in the <i>WAF Developer Guide</i>.</p> </li> <li> <p>Associate your logging destination to your web ACL using a <code>PutLoggingConfiguration</code> request.</p> </li> </ol> <p>When you successfully enable logging using a <code>PutLoggingConfiguration</code> request, WAF creates an additional role or policy that is required to write logs to the logging destination. For an Amazon CloudWatch Logs log group, WAF creates a resource policy on the log group. For an Amazon S3 bucket, WAF creates a bucket policy. For an Amazon Kinesis Data Firehose, WAF creates a service-linked role.</p> <p>For additional information about web ACL logging, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/logging.html">Logging web ACL traffic information</a> in the <i>WAF Developer Guide</i>.</p>',
-  })
-  .openapi('LoggingConfiguration')
-
-const GetLoggingConfigurationResponseSchema = z
-  .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <a>LoggingConfiguration</a> for the specified web ACL.' }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: 'The <a>LoggingConfiguration</a> for the specified web ACL.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLoggingConfigurationResponse')
 
 const GetLoggingConfigurationRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL for which you want to get the <a>LoggingConfiguration</a>.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the web ACL for which you want to get the <a>LoggingConfiguration</a>.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetLoggingConfigurationRequest' })
   .openapi('GetLoggingConfigurationRequest')
@@ -4087,54 +3396,30 @@ const TimeWindowDaySchema = z.int().min(1).openapi('TimeWindowDay')
 
 const ManagedRuleSetVersionSchema = z
   .object({
-    AssociatedRuleGroupArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the vendor rule group that's used to define the published version of your managed rule group. ",
-        }),
-    ).exactOptional(),
-    Capacity: CapacityUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    ForecastedLifetime: TimeWindowDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time you expect this version of your managed rule group to last, in days. ',
-        }),
-    ).exactOptional(),
-    PublishTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time that you first published this version. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
-        }),
-    ).exactOptional(),
-    LastUpdateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time that you updated this version. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
-        }),
-    ).exactOptional(),
-    ExpiryTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time that this version is set to expire.</p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
-        }),
-    ).exactOptional(),
+    AssociatedRuleGroupArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the vendor rule group that's used to define the published version of your managed rule group. ",
+    }),
+    Capacity: CapacityUnitSchema.exactOptional().openapi({
+      description:
+        '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    ForecastedLifetime: TimeWindowDaySchema.exactOptional().openapi({
+      description:
+        'The amount of time you expect this version of your managed rule group to last, in days. ',
+    }),
+    PublishTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The time that you first published this version. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
+    }),
+    LastUpdateTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time that you updated this version. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
+    }),
+    ExpiryTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The time that this version is set to expire.</p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
+    }),
   })
   .openapi({
     description:
@@ -4149,47 +3434,31 @@ const PublishedVersionsSchema = z
 
 const ManagedRuleSetSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
-        }),
-    ),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    PublishedVersions: PublishedVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The versions of this managed rule set that are available for use by customers. ',
-        }),
-    ).exactOptional(),
-    RecommendedVersion: VersionKeyStringSchema.and(
-      z.any().openapi({ description: 'The version that you would like your customers to use.' }),
-    ).exactOptional(),
-    LabelNamespace: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The label namespace prefix for the managed rule groups that are offered to customers from this managed rule set. All labels that are added by rules in the managed rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
+    }),
+    ARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    PublishedVersions: PublishedVersionsSchema.exactOptional().openapi({
+      description:
+        'The versions of this managed rule set that are available for use by customers. ',
+    }),
+    RecommendedVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description: 'The version that you would like your customers to use.',
+    }),
+    LabelNamespace: LabelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The label namespace prefix for the managed rule groups that are offered to customers from this managed rule set. All labels that are added by rules in the managed rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Id', 'ARN'],
@@ -4200,47 +3469,31 @@ const ManagedRuleSetSchema = z
 
 const GetManagedRuleSetResponseSchema = z
   .object({
-    ManagedRuleSet: ManagedRuleSetSchema.and(
-      z.any().openapi({ description: 'The managed rule set that you requested. ' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    ManagedRuleSet: ManagedRuleSetSchema.exactOptional().openapi({
+      description: 'The managed rule set that you requested. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetManagedRuleSetResponse')
 
 const GetManagedRuleSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id'], title: 'GetManagedRuleSetRequest' })
   .openapi('GetManagedRuleSetRequest')
@@ -4249,18 +3502,18 @@ const ReleaseNotesSchema = z.string().openapi('ReleaseNotes')
 
 const MobileSdkReleaseSchema = z
   .object({
-    ReleaseVersion: VersionKeyStringSchema.and(
-      z.any().openapi({ description: 'The release version. ' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the release. ' }),
-    ).exactOptional(),
-    ReleaseNotes: ReleaseNotesSchema.and(
-      z.any().openapi({ description: 'Notes describing the release.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags that are associated with the release. ' }),
-    ).exactOptional(),
+    ReleaseVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description: 'The release version. ',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the release. ',
+    }),
+    ReleaseNotes: ReleaseNotesSchema.exactOptional().openapi({
+      description: 'Notes describing the release.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags that are associated with the release. ',
+    }),
   })
   .openapi({
     description:
@@ -4271,28 +3524,20 @@ const MobileSdkReleaseSchema = z
 
 const GetMobileSdkReleaseResponseSchema = z
   .object({
-    MobileSdkRelease: MobileSdkReleaseSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information for a specified SDK release, including release notes and tags.',
-        }),
-    ).exactOptional(),
+    MobileSdkRelease: MobileSdkReleaseSchema.exactOptional().openapi({
+      description: 'Information for a specified SDK release, including release notes and tags.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMobileSdkReleaseResponse')
 
 const GetMobileSdkReleaseRequestSchema = z
   .object({
-    Platform: PlatformSchema.and(z.any().openapi({ description: 'The device platform.' })),
-    ReleaseVersion: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The release version. For the latest available version, specify <code>LATEST</code>.',
-        }),
-    ),
+    Platform: PlatformSchema.openapi({ description: 'The device platform.' }),
+    ReleaseVersion: VersionKeyStringSchema.openapi({
+      description:
+        'The release version. For the latest available version, specify <code>LATEST</code>.',
+    }),
   })
   .openapi({ required: ['Platform', 'ReleaseVersion'], title: 'GetMobileSdkReleaseRequest' })
   .openapi('GetMobileSdkReleaseRequest')
@@ -4306,42 +3551,32 @@ const PolicyStringSchema = z
 
 const GetPermissionPolicyResponseSchema = z
   .object({
-    Policy: PolicyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IAM policy that is attached to the specified rule group.' }),
-    ).exactOptional(),
+    Policy: PolicyStringSchema.exactOptional().openapi({
+      description: 'The IAM policy that is attached to the specified rule group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPermissionPolicyResponse')
 
 const GetPermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the rule group for which you want to get the policy.',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the rule group for which you want to get the policy.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetPermissionPolicyRequest' })
   .openapi('GetPermissionPolicyRequest')
 
 const RateBasedStatementManagedKeysIPSetSchema = z
   .object({
-    IPAddressVersion: IPAddressVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
-        }),
-    ).exactOptional(),
-    Addresses: IPAddressesSchema.and(
-      z.any().openapi({ description: 'The IP addresses that are currently blocked.' }),
-    ).exactOptional(),
+    IPAddressVersion: IPAddressVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the IP addresses, either <code>IPV4</code> or <code>IPV6</code>. ',
+    }),
+    Addresses: IPAddressesSchema.exactOptional().openapi({
+      description: 'The IP addresses that are currently blocked.',
+    }),
   })
   .openapi({
     description:
@@ -4352,58 +3587,38 @@ const RateBasedStatementManagedKeysIPSetSchema = z
 
 const GetRateBasedStatementManagedKeysResponseSchema = z
   .object({
-    ManagedKeysIPV4: RateBasedStatementManagedKeysIPSetSchema.and(
-      z.any().openapi({ description: 'The keys that are of Internet Protocol version 4 (IPv4). ' }),
-    ).exactOptional(),
-    ManagedKeysIPV6: RateBasedStatementManagedKeysIPSetSchema.and(
-      z.any().openapi({ description: 'The keys that are of Internet Protocol version 6 (IPv6). ' }),
-    ).exactOptional(),
+    ManagedKeysIPV4: RateBasedStatementManagedKeysIPSetSchema.exactOptional().openapi({
+      description: 'The keys that are of Internet Protocol version 4 (IPv4). ',
+    }),
+    ManagedKeysIPV6: RateBasedStatementManagedKeysIPSetSchema.exactOptional().openapi({
+      description: 'The keys that are of Internet Protocol version 6 (IPv6). ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRateBasedStatementManagedKeysResponse')
 
 const GetRateBasedStatementManagedKeysRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    WebACLName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    WebACLId: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    RuleGroupRuleName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group reference statement in your web ACL. This is required only when you have the rate-based rule nested inside a rule group. ',
-        }),
-    ).exactOptional(),
-    RuleName: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the rate-based rule to get the keys for. If you have the rule defined inside a rule group that you're using in your web ACL, also provide the name of the rule group reference statement in the request parameter <code>RuleGroupRuleName</code>.",
-        }),
-    ),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    WebACLName: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    WebACLId: EntityIdSchema.openapi({
+      description:
+        'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    RuleGroupRuleName: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the rule group reference statement in your web ACL. This is required only when you have the rate-based rule nested inside a rule group. ',
+    }),
+    RuleName: EntityNameSchema.openapi({
+      description:
+        "The name of the rate-based rule to get the keys for. If you have the rule defined inside a rule group that you're using in your web ACL, also provide the name of the rule group reference statement in the request parameter <code>RuleGroupRuleName</code>.",
+    }),
   })
   .openapi({
     required: ['Scope', 'WebACLName', 'WebACLId', 'RuleName'],
@@ -4413,30 +3628,22 @@ const GetRateBasedStatementManagedKeysRequestSchema = z
 
 const RegexPatternSetSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the set. You cannot change the name after you create the set.',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    RegularExpressionList: RegularExpressionListSchema.and(
-      z.any().openapi({ description: 'The regular expression patterns in the set.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description: 'The name of the set. You cannot change the name after you create the set.',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    RegularExpressionList: RegularExpressionListSchema.exactOptional().openapi({
+      description: 'The regular expression patterns in the set.',
+    }),
   })
   .openapi({
     description:
@@ -4447,186 +3654,60 @@ const RegexPatternSetSchema = z
 
 const GetRegexPatternSetResponseSchema = z
   .object({
-    RegexPatternSet: RegexPatternSetSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    RegexPatternSet: RegexPatternSetSchema.exactOptional().openapi({ description: '<p/>' }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRegexPatternSetResponse')
 
 const GetRegexPatternSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the set. You cannot change the name after you create the set.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description: 'The name of the set. You cannot change the name after you create the set.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id'], title: 'GetRegexPatternSetRequest' })
   .openapi('GetRegexPatternSetRequest')
 
-const RuleGroupSchema = z
+const GetRuleGroupResponseSchema: z.ZodType<GetRuleGroupResponseType> = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    Capacity: CapacityUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The web ACL capacity units (WCUs) required for this rule group.</p> <p>When you create your own rule group, you define this, and you cannot change it after creation. When you add or modify the rules in a rule group, WAF enforces this limit. You can check the capacity for a set of rules using <a>CheckCapacity</a>.</p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the rule group that helps with identification. ',
-        }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    LabelNamespace: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The label namespace prefix for this rule group. All labels added by rules in this rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for your rule groups is the following: </p> <p> <code>awswaf:&lt;account ID&gt;:rulegroup:&lt;rule group name&gt;:</code> </p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    AvailableLabels: LabelSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels that one or more rules in this rule group add to matching web requests. These labels are defined in the <code>RuleLabels</code> for a <a>Rule</a>.',
-        }),
-    ).exactOptional(),
-    ConsumedLabels: LabelSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'Id', 'Capacity', 'ARN', 'VisibilityConfig'],
-    description:
-      ' A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. ',
-  })
-  .openapi('RuleGroup')
-
-const GetRuleGroupResponseSchema = z
-  .object({
-    RuleGroup: RuleGroupSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    RuleGroup: RuleGroupSchema.exactOptional().openapi({ description: '<p/>' }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRuleGroupResponse')
 
 const GetRuleGroupRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ).exactOptional(),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Scope: ScopeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
   })
   .openapi({ title: 'GetRuleGroupRequest', required: [] })
   .openapi('GetRuleGroupRequest')
@@ -4647,12 +3728,10 @@ const HeaderValueSchema = z.string().openapi('HeaderValue')
 
 const HTTPHeaderSchema = z
   .object({
-    Name: HeaderNameSchema.and(
-      z.any().openapi({ description: 'The name of the HTTP header.' }),
-    ).exactOptional(),
-    Value: HeaderValueSchema.and(
-      z.any().openapi({ description: 'The value of the HTTP header.' }),
-    ).exactOptional(),
+    Name: HeaderNameSchema.exactOptional().openapi({ description: 'The name of the HTTP header.' }),
+    Value: HeaderValueSchema.exactOptional().openapi({
+      description: 'The value of the HTTP header.',
+    }),
   })
   .openapi({
     description:
@@ -4665,49 +3744,29 @@ const HTTPHeadersSchema = z.array(HTTPHeaderSchema).openapi('HTTPHeaders')
 
 const HTTPRequestSchema = z
   .object({
-    ClientIP: IPStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IP address that the request originated from. If the web ACL is associated with a CloudFront distribution, this is the value of one of the following fields in CloudFront access logs:</p> <ul> <li> <p> <code>c-ip</code>, if the viewer did not use an HTTP proxy or a load balancer to send the request</p> </li> <li> <p> <code>x-forwarded-for</code>, if the viewer did use an HTTP proxy or a load balancer to send the request</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Country: CountrySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The two-letter country code for the country that the request originated from. For a current list of country codes, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>.',
-        }),
-    ).exactOptional(),
-    URI: URIStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URI path of the request, which identifies the resource, for example, <code>/images/daily-ad.jpg</code>.',
-        }),
-    ).exactOptional(),
-    Method: HTTPMethodSchema.and(
-      z.any().openapi({ description: 'The HTTP method specified in the sampled web request. ' }),
-    ).exactOptional(),
-    HTTPVersion: HTTPVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP version specified in the sampled web request, for example, <code>HTTP/1.1</code>.',
-        }),
-    ).exactOptional(),
-    Headers: HTTPHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains the name and value for each header in the sampled web request.',
-        }),
-    ).exactOptional(),
+    ClientIP: IPStringSchema.exactOptional().openapi({
+      description:
+        '<p>The IP address that the request originated from. If the web ACL is associated with a CloudFront distribution, this is the value of one of the following fields in CloudFront access logs:</p> <ul> <li> <p> <code>c-ip</code>, if the viewer did not use an HTTP proxy or a load balancer to send the request</p> </li> <li> <p> <code>x-forwarded-for</code>, if the viewer did use an HTTP proxy or a load balancer to send the request</p> </li> </ul>',
+    }),
+    Country: CountrySchema.exactOptional().openapi({
+      description:
+        'The two-letter country code for the country that the request originated from. For a current list of country codes, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">ISO 3166-1 alpha-2</a>.',
+    }),
+    URI: URIStringSchema.exactOptional().openapi({
+      description:
+        'The URI path of the request, which identifies the resource, for example, <code>/images/daily-ad.jpg</code>.',
+    }),
+    Method: HTTPMethodSchema.exactOptional().openapi({
+      description: 'The HTTP method specified in the sampled web request. ',
+    }),
+    HTTPVersion: HTTPVersionSchema.exactOptional().openapi({
+      description:
+        'The HTTP version specified in the sampled web request, for example, <code>HTTP/1.1</code>.',
+    }),
+    Headers: HTTPHeadersSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains the name and value for each header in the sampled web request.',
+    }),
   })
   .openapi({
     description:
@@ -4730,29 +3789,17 @@ const FailureReasonSchema = z
 
 const CaptchaResponseSchema = z
   .object({
-    ResponseCode: ResponseCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP response code indicating the status of the <code>CAPTCHA</code> token in the web request. If the token is missing, invalid, or expired, this code is <code>405 Method Not Allowed</code>.',
-        }),
-    ).exactOptional(),
-    SolveTimestamp: SolveTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the <code>CAPTCHA</code> was last solved for the supplied token. ',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason for failure, populated when the evaluation of the token fails.',
-        }),
-    ).exactOptional(),
+    ResponseCode: ResponseCodeSchema.exactOptional().openapi({
+      description:
+        'The HTTP response code indicating the status of the <code>CAPTCHA</code> token in the web request. If the token is missing, invalid, or expired, this code is <code>405 Method Not Allowed</code>.',
+    }),
+    SolveTimestamp: SolveTimestampSchema.exactOptional().openapi({
+      description:
+        'The time that the <code>CAPTCHA</code> was last solved for the supplied token. ',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for failure, populated when the evaluation of the token fails.',
+    }),
   })
   .openapi({
     description:
@@ -4763,28 +3810,16 @@ const CaptchaResponseSchema = z
 
 const ChallengeResponseSchema = z
   .object({
-    ResponseCode: ResponseCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The HTTP response code indicating the status of the challenge token in the web request. If the token is missing, invalid, or expired, this code is <code>202 Request Accepted</code>.',
-        }),
-    ).exactOptional(),
-    SolveTimestamp: SolveTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time that the challenge was last solved for the supplied token. ',
-        }),
-    ).exactOptional(),
-    FailureReason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason for failure, populated when the evaluation of the token fails.',
-        }),
-    ).exactOptional(),
+    ResponseCode: ResponseCodeSchema.exactOptional().openapi({
+      description:
+        'The HTTP response code indicating the status of the challenge token in the web request. If the token is missing, invalid, or expired, this code is <code>202 Request Accepted</code>.',
+    }),
+    SolveTimestamp: SolveTimestampSchema.exactOptional().openapi({
+      description: 'The time that the challenge was last solved for the supplied token. ',
+    }),
+    FailureReason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for failure, populated when the evaluation of the token fails.',
+    }),
   })
   .openapi({
     description: 'The result from the inspection of the web request for a valid challenge token. ',
@@ -4794,73 +3829,45 @@ const ChallengeResponseSchema = z
 
 const SampledHTTPRequestSchema = z
   .object({
-    Request: HTTPRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A complex type that contains detailed information about the request.',
-        }),
-    ),
-    Weight: SampleWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that indicates how one result in the response relates proportionally to other results in the response. For example, a result that has a weight of <code>2</code> represents roughly twice as many web requests as a result that has a weight of <code>1</code>.',
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which WAF received the request from your Amazon Web Services resource, in Unix time format (in seconds).',
-        }),
-    ).exactOptional(),
-    Action: ActionSchema.and(
-      z.any().openapi({ description: 'The action that WAF applied to the request.' }),
-    ).exactOptional(),
-    RuleNameWithinRuleGroup: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the <code>Rule</code> that the request matched. For managed rule groups, the format for this name is <code>&lt;vendor name&gt;#&lt;managed rule group name&gt;#&lt;rule name&gt;</code>. For your own rule groups, the format for this name is <code>&lt;rule group name&gt;#&lt;rule name&gt;</code>. If the rule is not in a rule group, this field is absent. ',
-        }),
-    ).exactOptional(),
-    RequestHeadersInserted: HTTPHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom request headers inserted by WAF into the request, according to the custom request configuration for the matching rule action.',
-        }),
-    ).exactOptional(),
-    ResponseCodeSent: ResponseStatusCodeSchema.and(
-      z.any().openapi({ description: 'The response code that was sent for the request.' }),
-    ).exactOptional(),
-    Labels: LabelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Labels applied to the web request by matching rules. WAF applies fully qualified labels to matching web requests. A fully qualified label is the concatenation of a label namespace and a rule label. The rule's rule group or web ACL defines the label namespace. </p> <p>For example, <code>awswaf:111122223333:myRuleGroup:testRules:testNS1:testNS2:labelNameA</code> or <code>awswaf:managed:aws:managed-rule-set:header:encoding:utf8</code>. </p>",
-        }),
-    ).exactOptional(),
-    CaptchaResponse: CaptchaResponseSchema.and(
-      z.any().openapi({ description: 'The <code>CAPTCHA</code> response for the request.' }),
-    ).exactOptional(),
-    ChallengeResponse: ChallengeResponseSchema.and(
-      z.any().openapi({ description: 'The <code>Challenge</code> response for the request.' }),
-    ).exactOptional(),
-    OverriddenAction: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used only for rule group rules that have a rule action override in place in the web ACL. This is the action that the rule group rule is configured for, and not the action that was applied to the request. The action that WAF applied is the <code>Action</code> value. ',
-        }),
-    ).exactOptional(),
+    Request: HTTPRequestSchema.openapi({
+      description: 'A complex type that contains detailed information about the request.',
+    }),
+    Weight: SampleWeightSchema.openapi({
+      description:
+        'A value that indicates how one result in the response relates proportionally to other results in the response. For example, a result that has a weight of <code>2</code> represents roughly twice as many web requests as a result that has a weight of <code>1</code>.',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which WAF received the request from your Amazon Web Services resource, in Unix time format (in seconds).',
+    }),
+    Action: ActionSchema.exactOptional().openapi({
+      description: 'The action that WAF applied to the request.',
+    }),
+    RuleNameWithinRuleGroup: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the <code>Rule</code> that the request matched. For managed rule groups, the format for this name is <code>&lt;vendor name&gt;#&lt;managed rule group name&gt;#&lt;rule name&gt;</code>. For your own rule groups, the format for this name is <code>&lt;rule group name&gt;#&lt;rule name&gt;</code>. If the rule is not in a rule group, this field is absent. ',
+    }),
+    RequestHeadersInserted: HTTPHeadersSchema.exactOptional().openapi({
+      description:
+        'Custom request headers inserted by WAF into the request, according to the custom request configuration for the matching rule action.',
+    }),
+    ResponseCodeSent: ResponseStatusCodeSchema.exactOptional().openapi({
+      description: 'The response code that was sent for the request.',
+    }),
+    Labels: LabelsSchema.exactOptional().openapi({
+      description:
+        "<p>Labels applied to the web request by matching rules. WAF applies fully qualified labels to matching web requests. A fully qualified label is the concatenation of a label namespace and a rule label. The rule's rule group or web ACL defines the label namespace. </p> <p>For example, <code>awswaf:111122223333:myRuleGroup:testRules:testNS1:testNS2:labelNameA</code> or <code>awswaf:managed:aws:managed-rule-set:header:encoding:utf8</code>. </p>",
+    }),
+    CaptchaResponse: CaptchaResponseSchema.exactOptional().openapi({
+      description: 'The <code>CAPTCHA</code> response for the request.',
+    }),
+    ChallengeResponse: ChallengeResponseSchema.exactOptional().openapi({
+      description: 'The <code>Challenge</code> response for the request.',
+    }),
+    OverriddenAction: ActionSchema.exactOptional().openapi({
+      description:
+        'Used only for rule group rules that have a rule action override in place in the web ACL. This is the action that the rule group rule is configured for, and not the action that was applied to the request. The action that WAF applied is the <code>Action</code> value. ',
+    }),
   })
   .openapi({
     required: ['Request', 'Weight'],
@@ -4875,22 +3882,14 @@ const PopulationSizeSchema = z.int().openapi('PopulationSize')
 
 const TimeWindowSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The beginning of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your Amazon Web Services resource received. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
-        }),
-    ),
-    EndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your Amazon Web Services resource received. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
-        }),
-    ),
+    StartTime: TimestampSchema.openapi({
+      description:
+        'The beginning of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your Amazon Web Services resource received. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
+    }),
+    EndTime: TimestampSchema.openapi({
+      description:
+        'The end of the time range from which you want <code>GetSampledRequests</code> to return a sample of the requests that your Amazon Web Services resource received. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours.',
+    }),
   })
   .openapi({
     required: ['StartTime', 'EndTime'],
@@ -4901,30 +3900,18 @@ const TimeWindowSchema = z
 
 const GetSampledRequestsResponseSchema = z
   .object({
-    SampledRequests: SampledHTTPRequestsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A complex type that contains detailed information about each of the requests in the sample.',
-        }),
-    ).exactOptional(),
-    PopulationSize: PopulationSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The total number of requests from which <code>GetSampledRequests</code> got a sample of <code>MaxItems</code> requests. If <code>PopulationSize</code> is less than <code>MaxItems</code>, the sample includes every request that your Amazon Web Services resource received during the specified time range.',
-        }),
-    ).exactOptional(),
-    TimeWindow: TimeWindowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Usually, <code>TimeWindow</code> is the time range that you specified in the <code>GetSampledRequests</code> request. However, if your Amazon Web Services resource received more than 5,000 requests during the time range that you specified in the request, <code>GetSampledRequests</code> returns the time range for the first 5,000 requests. Times are in Coordinated Universal Time (UTC) format.',
-        }),
-    ).exactOptional(),
+    SampledRequests: SampledHTTPRequestsSchema.exactOptional().openapi({
+      description:
+        'A complex type that contains detailed information about each of the requests in the sample.',
+    }),
+    PopulationSize: PopulationSizeSchema.exactOptional().openapi({
+      description:
+        'The total number of requests from which <code>GetSampledRequests</code> got a sample of <code>MaxItems</code> requests. If <code>PopulationSize</code> is less than <code>MaxItems</code>, the sample includes every request that your Amazon Web Services resource received during the specified time range.',
+    }),
+    TimeWindow: TimeWindowSchema.exactOptional().openapi({
+      description:
+        'Usually, <code>TimeWindow</code> is the time range that you specified in the <code>GetSampledRequests</code> request. However, if your Amazon Web Services resource received more than 5,000 requests during the time range that you specified in the request, <code>GetSampledRequests</code> returns the time range for the first 5,000 requests. Times are in Coordinated Universal Time (UTC) format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSampledRequestsResponse')
@@ -4933,46 +3920,26 @@ const ListMaxItemsSchema = z.int().min(1).max(500).openapi('ListMaxItems')
 
 const GetSampledRequestsRequestSchema = z
   .object({
-    WebAclArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon resource name (ARN) of the <code>WebACL</code> for which you want a sample of requests.',
-        }),
-    ),
-    RuleMetricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metric name assigned to the <code>Rule</code> or <code>RuleGroup</code> dimension for which you want a sample of requests.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    TimeWindow: TimeWindowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date and time and the end date and time of the range for which you want <code>GetSampledRequests</code> to return a sample of requests. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours. If you specify a start time that\'s earlier than three hours ago, WAF sets it to three hours ago.',
-        }),
-    ),
-    MaxItems: ListMaxItemsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of requests that you want WAF to return from among the first 5,000 requests that your Amazon Web Services resource received during the time range. If your resource received fewer requests than the value of <code>MaxItems</code>, <code>GetSampledRequests</code> returns information about all of them. ',
-        }),
-    ),
+    WebAclArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon resource name (ARN) of the <code>WebACL</code> for which you want a sample of requests.',
+    }),
+    RuleMetricName: MetricNameSchema.openapi({
+      description:
+        'The metric name assigned to the <code>Rule</code> or <code>RuleGroup</code> dimension for which you want a sample of requests.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    TimeWindow: TimeWindowSchema.openapi({
+      description:
+        'The start date and time and the end date and time of the range for which you want <code>GetSampledRequests</code> to return a sample of requests. You must specify the times in Coordinated Universal Time (UTC) format. UTC format includes the special designator, <code>Z</code>. For example, <code>"2016-09-27T14:50Z"</code>. You can specify any time range in the previous three hours. If you specify a start time that\'s earlier than three hours ago, WAF sets it to three hours ago.',
+    }),
+    MaxItems: ListMaxItemsSchema.openapi({
+      description:
+        'The number of requests that you want WAF to return from among the first 5,000 requests that your Amazon Web Services resource received during the time range. If your resource received fewer requests than the value of <code>MaxItems</code>, <code>GetSampledRequests</code> returns information about all of them. ',
+    }),
   })
   .openapi({
     required: ['WebAclArn', 'RuleMetricName', 'Scope', 'TimeWindow', 'MaxItems'],
@@ -4980,352 +3947,79 @@ const GetSampledRequestsRequestSchema = z
   })
   .openapi('GetSampledRequestsRequest')
 
-const FirewallManagerStatementSchema = z
+const GetWebACLResponseSchema: z.ZodType<GetWebACLResponseType> = z
   .object({
-    ManagedRuleGroupStatement: ManagedRuleGroupStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statement used by Firewall Manager to run the rules that are defined in a managed rule group. This is managed by Firewall Manager for an Firewall Manager WAF policy.',
-        }),
-    ).exactOptional(),
-    RuleGroupReferenceStatement: RuleGroupReferenceStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statement used by Firewall Manager to run the rules that are defined in a rule group. This is managed by Firewall Manager for an Firewall Manager WAF policy.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The processing guidance for an Firewall Manager rule. This is like a regular rule <a>Statement</a>, but it can only contain a single rule group reference.',
-    required: [],
-  })
-  .openapi('FirewallManagerStatement')
-
-const FirewallManagerRuleGroupSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ),
-    Priority: RulePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you define more than one rule group in the first or last Firewall Manager rule groups, WAF evaluates each request against the rule groups in order, starting from the lowest priority setting. The priorities don't need to be consecutive, but they must all be different.",
-        }),
-    ),
-    FirewallManagerStatement: FirewallManagerStatementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The processing guidance for an Firewall Manager rule. This is like a regular rule <a>Statement</a>, but it can only contain a rule group reference.',
-        }),
-    ),
-    OverrideAction: OverrideActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The action to use in the place of the action that results from the rule group evaluation. Set the override action to none to leave the result of the rule group alone. Set it to count to override the result to count only. </p> <p>You can only use this for rule statements that reference a rule group, like <code>RuleGroupReferenceStatement</code> and <code>ManagedRuleGroupStatement</code>. </p> <note> <p>This option is usually set to none. It does not affect how the rules in the rule group are evaluated. If you want the rules in the rule group to only count matches, do not use this and instead use the rule action override option, with <code>Count</code> action, in your rule group reference statement settings. </p> </note>',
-        }),
-    ),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: [
-      'Name',
-      'Priority',
-      'FirewallManagerStatement',
-      'OverrideAction',
-      'VisibilityConfig',
-    ],
-    description: "A rule group that's defined for an Firewall Manager WAF policy.",
-  })
-  .openapi('FirewallManagerRuleGroup')
-
-const FirewallManagerRuleGroupsSchema = z
-  .array(FirewallManagerRuleGroupSchema)
-  .openapi('FirewallManagerRuleGroups')
-
-const WebACLSchema = z
-  .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the <code>WebACL</code>. This ID is returned in the responses to create and list commands. You use this ID to do things like get, update, and delete a <code>WebACL</code>.',
-        }),
-    ),
-    ARN: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the web ACL that you want to associate with the resource.',
-        }),
-    ),
-    DefaultAction: DefaultActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the web ACL that helps with identification. ' }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    Capacity: ConsumedCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The web ACL capacity units (WCUs) currently being used by this web ACL. </p> <p>WAF uses WCUs to calculate and control the operating resources that are used to run your rules, rule groups, and web ACLs. WAF calculates capacity differently for each rule type, to reflect the relative cost of each rule. Simple rules that cost little to run use fewer WCUs than more complex rules that use more processing power. Rule group capacity is fixed at creation, which helps users plan their web ACL WCU usage when they use a rule group. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/aws-waf-capacity-units.html">WAF web ACL capacity units (WCU)</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    PreProcessFirewallManagerRuleGroups: FirewallManagerRuleGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The first set of rules for WAF to process in the web ACL. This is defined in an Firewall Manager WAF policy and contains only rule group references. You can't alter these. Any rules and rule groups that you define for the web ACL are prioritized after these. </p> <p>In the Firewall Manager WAF policy, the Firewall Manager administrator can define a set of rule groups to run first in the web ACL and a set of rule groups to run last. Within each set, the administrator prioritizes the rule groups, to determine their relative processing order.</p>",
-        }),
-    ).exactOptional(),
-    PostProcessFirewallManagerRuleGroups: FirewallManagerRuleGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The last set of rules for WAF to process in the web ACL. This is defined in an Firewall Manager WAF policy and contains only rule group references. You can't alter these. Any rules and rule groups that you define for the web ACL are prioritized before these. </p> <p>In the Firewall Manager WAF policy, the Firewall Manager administrator can define a set of rule groups to run first in the web ACL and a set of rule groups to run last. Within each set, the administrator prioritizes the rule groups, to determine their relative processing order.</p>",
-        }),
-    ).exactOptional(),
-    ManagedByFirewallManager: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether this web ACL is managed by Firewall Manager. If true, then only Firewall Manager can delete the web ACL or any Firewall Manager rule groups in the web ACL. ',
-        }),
-    ).exactOptional(),
-    LabelNamespace: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The label namespace prefix for this web ACL. All labels added by rules in this web ACL have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a web ACL is the following: </p> <p> <code>awswaf:&lt;account ID&gt;:webacl:&lt;web ACL name&gt;:</code> </p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    CaptchaConfig: CaptchaConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
-        }),
-    ).exactOptional(),
-    ChallengeConfig: ChallengeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
-        }),
-    ).exactOptional(),
-    TokenDomains: TokenDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don't specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource's host domain plus all domains in the token domain list, including their prefixed subdomains.",
-        }),
-    ).exactOptional(),
-    AssociationConfig: AssociationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'Id', 'ARN', 'DefaultAction', 'VisibilityConfig'],
-    description:
-      ' A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has an action defined (allow, block, or count) for requests that match the statement of the rule. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resources can be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an Application Load Balancer, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. ',
-  })
-  .openapi('WebACL')
-
-const OutputUrlSchema = z.string().openapi('OutputUrl')
-
-const GetWebACLResponseSchema = z
-  .object({
-    WebACL: WebACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The web ACL specification. You can modify the settings in this web ACL and use it to update this web ACL or create a new one.',
-        }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ApplicationIntegrationURL: OutputUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL to use in SDK integrations with Amazon Web Services managed rule groups. For example, you can use the integration SDKs with the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code>. This is only populated if you are using a rule group in your web ACL that integrates with your applications in this way. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.',
-        }),
-    ).exactOptional(),
+    WebACL: WebACLSchema.exactOptional().openapi({
+      description:
+        'The web ACL specification. You can modify the settings in this web ACL and use it to update this web ACL or create a new one.',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ApplicationIntegrationURL: OutputUrlSchema.exactOptional().openapi({
+      description:
+        'The URL to use in SDK integrations with Amazon Web Services managed rule groups. For example, you can use the integration SDKs with the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code>. This is only populated if you are using a rule group in your web ACL that integrates with your applications in this way. For more information, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWebACLResponse')
 
 const GetWebACLRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
   })
   .openapi({ required: ['Name', 'Scope', 'Id'], title: 'GetWebACLRequest' })
   .openapi('GetWebACLRequest')
 
-const GetWebACLForResourceResponseSchema = z
+const GetWebACLForResourceResponseSchema: z.ZodType<GetWebACLForResourceResponseType> = z
   .object({
-    WebACL: WebACLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The web ACL that is associated with the resource. If there is no associated resource, WAF returns a null web ACL.',
-        }),
-    ).exactOptional(),
+    WebACL: WebACLSchema.exactOptional().openapi({
+      description:
+        'The web ACL that is associated with the resource. If there is no associated resource, WAF returns a null web ACL.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWebACLForResourceResponse')
 
 const GetWebACLForResourceRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource whose web ACL you want to retrieve. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource whose web ACL you want to retrieve. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'GetWebACLForResourceRequest' })
   .openapi('GetWebACLForResourceRequest')
-
-const NextMarkerSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(256)
-  .openapi('NextMarker')
 
 const APIKeyVersionSchema = z.int().min(0).openapi('APIKeyVersion')
 
 const APIKeySummarySchema = z
   .object({
-    TokenDomains: TokenDomainsSchema.and(
-      z.any().openapi({ description: 'The token domains that are defined in this API key. ' }),
-    ).exactOptional(),
-    APIKey: APIKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    CreationTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the key was created. ' }),
-    ).exactOptional(),
-    Version: APIKeyVersionSchema.and(
-      z.any().openapi({ description: 'Internal value used by WAF to manage the key. ' }),
-    ).exactOptional(),
+    TokenDomains: TokenDomainsSchema.exactOptional().openapi({
+      description: 'The token domains that are defined in this API key. ',
+    }),
+    APIKey: APIKeySchema.exactOptional().openapi({
+      description:
+        '<p>The generated, encrypted API key. You can copy this for use in your JavaScript CAPTCHA integration. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
+    }),
+    CreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the key was created. ',
+    }),
+    Version: APIKeyVersionSchema.exactOptional().openapi({
+      description: 'Internal value used by WAF to manage the key. ',
+    }),
   })
   .openapi({ description: 'Information for a single API key. ', required: [] })
   .openapi('APIKeySummary')
@@ -5334,30 +4028,18 @@ const APIKeySummariesSchema = z.array(APIKeySummarySchema).openapi('APIKeySummar
 
 const ListAPIKeysResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    APIKeySummaries: APIKeySummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of key summaries. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
-    ApplicationIntegrationURL: OutputUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The CAPTCHA application integration URL, for use in your JavaScript implementation. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    APIKeySummaries: APIKeySummariesSchema.exactOptional().openapi({
+      description:
+        'The array of key summaries. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
+    ApplicationIntegrationURL: OutputUrlSchema.exactOptional().openapi({
+      description:
+        '<p>The CAPTCHA application integration URL, for use in your JavaScript implementation. </p> <p>For information about how to use this in your CAPTCHA JavaScript integration, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAPIKeysResponse')
@@ -5366,47 +4048,29 @@ const PaginationLimitSchema = z.int().min(1).max(100).openapi('PaginationLimit')
 
 const ListAPIKeysRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListAPIKeysRequest' })
   .openapi('ListAPIKeysRequest')
 
 const ManagedRuleGroupVersionSchema = z
   .object({
-    Name: VersionKeyStringSchema.and(
-      z.any().openapi({ description: 'The version name. ' }),
-    ).exactOptional(),
-    LastUpdateTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time that the managed rule group owner updated the rule group version information. ',
-        }),
-    ).exactOptional(),
+    Name: VersionKeyStringSchema.exactOptional().openapi({ description: 'The version name. ' }),
+    LastUpdateTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time that the managed rule group owner updated the rule group version information. ',
+    }),
   })
   .openapi({ description: 'Describes a single version of a managed rule group. ', required: [] })
   .openapi('ManagedRuleGroupVersion')
@@ -5417,73 +4081,43 @@ const ManagedRuleGroupVersionsSchema = z
 
 const ListAvailableManagedRuleGroupVersionsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Versions: ManagedRuleGroupVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The versions that are currently available for the specified managed rule group. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
-    CurrentDefaultVersion: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: "The name of the version that's currently set as the default. " }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Versions: ManagedRuleGroupVersionsSchema.exactOptional().openapi({
+      description:
+        'The versions that are currently available for the specified managed rule group. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
+    CurrentDefaultVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description: "The name of the version that's currently set as the default. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAvailableManagedRuleGroupVersionsResponse')
 
 const ListAvailableManagedRuleGroupVersionsRequestSchema = z
   .object({
-    VendorName: VendorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
-        }),
-    ),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    VendorName: VendorNameSchema.openapi({
+      description:
+        'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
+    }),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({
     required: ['VendorName', 'Name', 'Scope'],
@@ -5493,38 +4127,22 @@ const ListAvailableManagedRuleGroupVersionsRequestSchema = z
 
 const ManagedRuleGroupSummarySchema = z
   .object({
-    VendorName: VendorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
-        }),
-    ).exactOptional(),
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
-        }),
-    ).exactOptional(),
-    VersioningSupported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the managed rule group is versioned. If it is, you can retrieve the versions list by calling <a>ListAvailableManagedRuleGroupVersions</a>. ',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the managed rule group, provided by Amazon Web Services Managed Rules or the Amazon Web Services Marketplace seller who manages it.',
-        }),
-    ).exactOptional(),
+    VendorName: VendorNameSchema.exactOptional().openapi({
+      description:
+        'The name of the managed rule group vendor. You use this, along with the rule group name, to identify the rule group.',
+    }),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        'The name of the managed rule group. You use this, along with the vendor name, to identify the rule group.',
+    }),
+    VersioningSupported: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the managed rule group is versioned. If it is, you can retrieve the versions list by calling <a>ListAvailableManagedRuleGroupVersions</a>. ',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description:
+        'The description of the managed rule group, provided by Amazon Web Services Managed Rules or the Amazon Web Services Marketplace seller who manages it.',
+    }),
   })
   .openapi({
     description:
@@ -5539,52 +4157,32 @@ const ManagedRuleGroupSummariesSchema = z
 
 const ListAvailableManagedRuleGroupsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    ManagedRuleGroups: ManagedRuleGroupSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of managed rule groups that you can use. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    ManagedRuleGroups: ManagedRuleGroupSummariesSchema.exactOptional().openapi({
+      description:
+        'Array of managed rule groups that you can use. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAvailableManagedRuleGroupsResponse')
 
 const ListAvailableManagedRuleGroupsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListAvailableManagedRuleGroupsRequest' })
   .openapi('ListAvailableManagedRuleGroupsRequest')
@@ -5593,152 +4191,92 @@ const IPSetSummariesSchema = z.array(IPSetSummarySchema).openapi('IPSetSummaries
 
 const ListIPSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    IPSets: IPSetSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of IPSets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    IPSets: IPSetSummariesSchema.exactOptional().openapi({
+      description:
+        'Array of IPSets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIPSetsResponse')
 
 const ListIPSetsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListIPSetsRequest' })
   .openapi('ListIPSetsRequest')
 
-const LoggingConfigurationsSchema = z
-  .array(LoggingConfigurationSchema)
-  .openapi('LoggingConfigurations')
-
-const ListLoggingConfigurationsResponseSchema = z
+const ListLoggingConfigurationsResponseSchema: z.ZodType<ListLoggingConfigurationsResponseType> = z
   .object({
-    LoggingConfigurations: LoggingConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of logging configurations. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
+    LoggingConfigurations: LoggingConfigurationsSchema.exactOptional().openapi({
+      description:
+        'Array of logging configurations. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLoggingConfigurationsResponse')
 
 const ListLoggingConfigurationsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListLoggingConfigurationsRequest' })
   .openapi('ListLoggingConfigurationsRequest')
 
 const ManagedRuleSetSummarySchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
-        }),
-    ).exactOptional(),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
-        }),
-    ).exactOptional(),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
-    ARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the entity.' }),
-    ).exactOptional(),
-    LabelNamespace: LabelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The label namespace prefix for the managed rule groups that are offered to customers from this managed rule set. All labels that are added by rules in the managed rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
+    }),
+    Id: EntityIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    LockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    ARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the entity.',
+    }),
+    LabelNamespace: LabelNameSchema.exactOptional().openapi({
+      description:
+        '<p>The label namespace prefix for the managed rule groups that are offered to customers from this managed rule set. All labels that are added by rules in the managed rule group have this prefix. </p> <ul> <li> <p>The syntax for the label namespace prefix for a managed rule group is the following: </p> <p> <code>awswaf:managed:&lt;vendor&gt;:&lt;rule group name&gt;</code>:</p> </li> <li> <p>When a rule with a label matches a web request, WAF adds the fully qualified label to the request. A fully qualified label is made up of the label namespace from the rule group or web ACL where the rule is defined and the label from the rule, separated by a colon: </p> <p> <code>&lt;label namespace&gt;:&lt;label from rule&gt;</code> </p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -5753,64 +4291,44 @@ const ManagedRuleSetSummariesSchema = z
 
 const ListManagedRuleSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    ManagedRuleSets: ManagedRuleSetSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Your managed rule sets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    ManagedRuleSets: ManagedRuleSetSummariesSchema.exactOptional().openapi({
+      description:
+        'Your managed rule sets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListManagedRuleSetsResponse')
 
 const ListManagedRuleSetsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListManagedRuleSetsRequest' })
   .openapi('ListManagedRuleSetsRequest')
 
 const ReleaseSummarySchema = z
   .object({
-    ReleaseVersion: VersionKeyStringSchema.and(
-      z.any().openapi({ description: 'The release version. ' }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the release. ' }),
-    ).exactOptional(),
+    ReleaseVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description: 'The release version. ',
+    }),
+    Timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the release. ',
+    }),
   })
   .openapi({ description: 'High level information for an SDK release. ', required: [] })
   .openapi('ReleaseSummary')
@@ -5819,47 +4337,31 @@ const ReleaseSummariesSchema = z.array(ReleaseSummarySchema).openapi('ReleaseSum
 
 const ListMobileSdkReleasesResponseSchema = z
   .object({
-    ReleaseSummaries: ReleaseSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The high level information for the available SDK releases. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
+    ReleaseSummaries: ReleaseSummariesSchema.exactOptional().openapi({
+      description:
+        'The high level information for the available SDK releases. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMobileSdkReleasesResponse')
 
 const ListMobileSdkReleasesRequestSchema = z
   .object({
-    Platform: PlatformSchema.and(
-      z.any().openapi({ description: 'The device platform to retrieve the list for.' }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Platform: PlatformSchema.openapi({
+      description: 'The device platform to retrieve the list for.',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Platform'], title: 'ListMobileSdkReleasesRequest' })
   .openapi('ListMobileSdkReleasesRequest')
@@ -5870,52 +4372,32 @@ const RegexPatternSetSummariesSchema = z
 
 const ListRegexPatternSetsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    RegexPatternSets: RegexPatternSetSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of regex pattern sets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    RegexPatternSets: RegexPatternSetSummariesSchema.exactOptional().openapi({
+      description:
+        'Array of regex pattern sets. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRegexPatternSetsResponse')
 
 const ListRegexPatternSetsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListRegexPatternSetsRequest' })
   .openapi('ListRegexPatternSetsRequest')
@@ -5924,13 +4406,9 @@ const ResourceArnsSchema = z.array(ResourceArnSchema).openapi('ResourceArns')
 
 const ListResourcesForWebACLResponseSchema = z
   .object({
-    ResourceArns: ResourceArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The array of Amazon Resource Names (ARNs) of the associated resources.',
-        }),
-    ).exactOptional(),
+    ResourceArns: ResourceArnsSchema.exactOptional().openapi({
+      description: 'The array of Amazon Resource Names (ARNs) of the associated resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesForWebACLResponse')
@@ -5947,17 +4425,13 @@ const ResourceTypeSchema = z
 
 const ListResourcesForWebACLRequestSchema = z
   .object({
-    WebACLArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the web ACL.' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Used for web ACLs that are scoped for regional applications. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <note> <p>If you don't provide a resource type, the call uses the resource type <code>APPLICATION_LOAD_BALANCER</code>. </p> </note> <p>Default: <code>APPLICATION_LOAD_BALANCER</code> </p>",
-        }),
-    ).exactOptional(),
+    WebACLArn: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the web ACL.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Used for web ACLs that are scoped for regional applications. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <note> <p>If you don't provide a resource type, the call uses the resource type <code>APPLICATION_LOAD_BALANCER</code>. </p> </note> <p>Default: <code>APPLICATION_LOAD_BALANCER</code> </p>",
+    }),
   })
   .openapi({ required: ['WebACLArn'], title: 'ListResourcesForWebACLRequest' })
   .openapi('ListResourcesForWebACLRequest')
@@ -5966,66 +4440,44 @@ const RuleGroupSummariesSchema = z.array(RuleGroupSummarySchema).openapi('RuleGr
 
 const ListRuleGroupsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    RuleGroups: RuleGroupSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of rule groups. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    RuleGroups: RuleGroupSummariesSchema.exactOptional().openapi({
+      description:
+        'Array of rule groups. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRuleGroupsResponse')
 
 const ListRuleGroupsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListRuleGroupsRequest' })
   .openapi('ListRuleGroupsRequest')
 
 const TagInfoForResourceSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    TagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The array of <a>Tag</a> objects defined for the resource. ' }),
-    ).exactOptional(),
+    ResourceARN: ResourceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'The array of <a>Tag</a> objects defined for the resource. ',
+    }),
   })
   .openapi({
     description:
@@ -6036,47 +4488,31 @@ const TagInfoForResourceSchema = z
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    TagInfoForResource: TagInfoForResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The collection of tagging definitions for the resource. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    TagInfoForResource: TagInfoForResourceSchema.exactOptional().openapi({
+      description:
+        'The collection of tagging definitions for the resource. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
-    ResourceARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
+    ResourceARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
@@ -6085,69 +4521,47 @@ const WebACLSummariesSchema = z.array(WebACLSummarySchema).openapi('WebACLSummar
 
 const ListWebACLsResponseSchema = z
   .object({
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    WebACLs: WebACLSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Array of web ACLs. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
-        }),
-    ).exactOptional(),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    WebACLs: WebACLSummariesSchema.exactOptional().openapi({
+      description:
+        'Array of web ACLs. If you specified a <code>Limit</code> in your request, this might not be the full list. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWebACLsResponse')
 
 const ListWebACLsRequestSchema = z
   .object({
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    NextMarker: NextMarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
-        }),
-    ).exactOptional(),
-    Limit: PaginationLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
-        }),
-    ).exactOptional(),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    NextMarker: NextMarkerSchema.exactOptional().openapi({
+      description:
+        'When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.',
+    }),
+    Limit: PaginationLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.',
+    }),
   })
   .openapi({ required: ['Scope'], title: 'ListWebACLsRequest' })
   .openapi('ListWebACLsRequest')
 
-const PutLoggingConfigurationResponseSchema = z
+const PutLoggingConfigurationResponseSchema: z.ZodType<PutLoggingConfigurationResponseType> = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: '<p/>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutLoggingConfigurationResponse')
 
-const PutLoggingConfigurationRequestSchema = z
-  .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(z.any().openapi({ description: '<p/>' })),
-  })
+const PutLoggingConfigurationRequestSchema: z.ZodType<PutLoggingConfigurationRequestType> = z
+  .object({ LoggingConfiguration: LoggingConfigurationSchema.openapi({ description: '<p/>' }) })
   .openapi({ required: ['LoggingConfiguration'], title: 'PutLoggingConfigurationRequest' })
   .openapi('PutLoggingConfigurationRequest')
 
@@ -6161,36 +4575,24 @@ const WAFLogDestinationPermissionIssueExceptionSchema = z
 
 const PutManagedRuleSetVersionsResponseSchema = z
   .object({
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutManagedRuleSetVersionsResponse')
 
 const VersionToPublishSchema = z
   .object({
-    AssociatedRuleGroupArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the vendor's rule group that's used in the published managed rule group version. ",
-        }),
-    ).exactOptional(),
-    ForecastedLifetime: TimeWindowDaySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time the vendor expects this version of the managed rule group to last, in days. ',
-        }),
-    ).exactOptional(),
+    AssociatedRuleGroupArn: ResourceArnSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the vendor's rule group that's used in the published managed rule group version. ",
+    }),
+    ForecastedLifetime: TimeWindowDaySchema.exactOptional().openapi({
+      description:
+        'The amount of time the vendor expects this version of the managed rule group to last, in days. ',
+    }),
   })
   .openapi({
     description:
@@ -6205,54 +4607,30 @@ const VersionsToPublishSchema = z
 
 const PutManagedRuleSetVersionsRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
-    RecommendedVersion: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The version of the named managed rule group that you'd like your customers to choose, from among your version offerings. ",
-        }),
-    ).exactOptional(),
-    VersionsToPublish: VersionsToPublishSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The versions of the named managed rule group that you want to offer to your customers. ',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    RecommendedVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description:
+        "The version of the named managed rule group that you'd like your customers to choose, from among your version offerings. ",
+    }),
+    VersionsToPublish: VersionsToPublishSchema.exactOptional().openapi({
+      description:
+        'The versions of the named managed rule group that you want to offer to your customers. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'LockToken'],
@@ -6260,26 +4638,18 @@ const PutManagedRuleSetVersionsRequestSchema = z
   })
   .openapi('PutManagedRuleSetVersionsRequest')
 
-const PutPermissionPolicyResponseSchema = z.object({}).openapi('PutPermissionPolicyResponse')
+const PutPermissionPolicyResponseSchema = z.looseObject({}).openapi('PutPermissionPolicyResponse')
 
 const PutPermissionPolicyRequestSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a>RuleGroup</a> to which you want to attach the policy.',
-        }),
-    ),
-    Policy: PolicyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy to attach to the specified rule group. </p> <p>The policy specifications must conform to the following:</p> <ul> <li> <p>The policy must be composed using IAM Policy version 2012-10-17.</p> </li> <li> <p>The policy must include specifications for <code>Effect</code>, <code>Action</code>, and <code>Principal</code>.</p> </li> <li> <p> <code>Effect</code> must specify <code>Allow</code>.</p> </li> <li> <p> <code>Action</code> must specify <code>wafv2:CreateWebACL</code>, <code>wafv2:UpdateWebACL</code>, and <code>wafv2:PutFirewallManagerRuleGroups</code> and may optionally specify <code>wafv2:GetRuleGroup</code>. WAF rejects any extra actions or wildcard actions in the policy.</p> </li> <li> <p>The policy must not include a <code>Resource</code> parameter.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html">IAM Policies</a>. </p>',
-        }),
-    ),
+    ResourceArn: ResourceArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a>RuleGroup</a> to which you want to attach the policy.',
+    }),
+    Policy: PolicyStringSchema.openapi({
+      description:
+        '<p>The policy to attach to the specified rule group. </p> <p>The policy specifications must conform to the following:</p> <ul> <li> <p>The policy must be composed using IAM Policy version 2012-10-17.</p> </li> <li> <p>The policy must include specifications for <code>Effect</code>, <code>Action</code>, and <code>Principal</code>.</p> </li> <li> <p> <code>Effect</code> must specify <code>Allow</code>.</p> </li> <li> <p> <code>Action</code> must specify <code>wafv2:CreateWebACL</code>, <code>wafv2:UpdateWebACL</code>, and <code>wafv2:PutFirewallManagerRuleGroups</code> and may optionally specify <code>wafv2:GetRuleGroup</code>. WAF rejects any extra actions or wildcard actions in the policy.</p> </li> <li> <p>The policy must not include a <code>Resource</code> parameter.</p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html">IAM Policies</a>. </p>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Policy'], title: 'PutPermissionPolicyRequest' })
   .openapi('PutPermissionPolicyRequest')
@@ -6288,103 +4658,71 @@ const WAFInvalidPermissionPolicyExceptionSchema = z
   .any()
   .openapi('WAFInvalidPermissionPolicyException')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An array of key:value pairs to associate with the resource.' }),
-    ),
+    ResourceARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    Tags: TagListSchema.openapi({
+      description: 'An array of key:value pairs to associate with the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the resource.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of keys identifying the tags to disassociate from the resource.',
-        }),
-    ),
+    ResourceARN: ResourceArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'An array of keys identifying the tags to disassociate from the resource.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateIPSetResponseSchema = z
   .object({
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
-        }),
-    ).exactOptional(),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateIPSetResponse')
 
 const UpdateIPSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the IP set that helps with identification. ' }),
-    ).exactOptional(),
-    Addresses: IPAddressesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the IP set. You cannot change the name of an <code>IPSet</code> after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the IP set that helps with identification. ',
+    }),
+    Addresses: IPAddressesSchema.openapi({
+      description:
+        '<p>Contains an array of strings that specifies zero or more IP addresses or blocks of IP addresses. All addresses must be specified using Classless Inter-Domain Routing (CIDR) notation. WAF supports all IPv4 and IPv6 CIDR ranges except for <code>/0</code>. </p> <p>Example address strings: </p> <ul> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 192.0.2.44, specify <code>192.0.2.44/32</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses from 192.0.2.0 to 192.0.2.255, specify <code>192.0.2.0/24</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from the IP address 1111:0000:0000:0000:0000:0000:0000:0111, specify <code>1111:0000:0000:0000:0000:0000:0000:0111/128</code>.</p> </li> <li> <p>To configure WAF to allow, block, or count requests that originated from IP addresses 1111:0000:0000:0000:0000:0000:0000:0000 to 1111:0000:0000:0000:ffff:ffff:ffff:ffff, specify <code>1111:0000:0000:0000:0000:0000:0000:0000/64</code>.</p> </li> </ul> <p>For more information about CIDR notation, see the Wikipedia entry <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>.</p> <p>Example JSON <code>Addresses</code> specifications: </p> <ul> <li> <p>Empty array: <code>"Addresses": []</code> </p> </li> <li> <p>Array with one address: <code>"Addresses": ["192.0.2.44/32"]</code> </p> </li> <li> <p>Array with three addresses: <code>"Addresses": ["192.0.2.44/32", "192.0.2.0/24", "192.0.0.0/16"]</code> </p> </li> <li> <p>INVALID specification: <code>"Addresses": [""]</code> INVALID </p> </li> </ul>',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'Addresses', 'LockToken'],
@@ -6394,79 +4732,47 @@ const UpdateIPSetRequestSchema = z
 
 const UpdateManagedRuleSetVersionExpiryDateResponseSchema = z
   .object({
-    ExpiringVersion: VersionKeyStringSchema.and(
-      z.any().openapi({ description: 'The version that is set to expire. ' }),
-    ).exactOptional(),
-    ExpiryTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time that the version will expire. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
-        }),
-    ).exactOptional(),
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ).exactOptional(),
+    ExpiringVersion: VersionKeyStringSchema.exactOptional().openapi({
+      description: 'The version that is set to expire. ',
+    }),
+    ExpiryTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The time that the version will expire. </p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
+    }),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateManagedRuleSetVersionExpiryDateResponse')
 
 const UpdateManagedRuleSetVersionExpiryDateRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
-    VersionToExpire: VersionKeyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version that you want to remove from your list of offerings for the named managed rule group. ',
-        }),
-    ),
-    ExpiryTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time that you want the version to expire.</p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description:
+        '<p>The name of the managed rule set. You use this, along with the rule set ID, to identify the rule set.</p> <p>This name is assigned to the corresponding managed rule group, which your customers can access and use. </p>',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the managed rule set. The ID is returned in the responses to commands like <code>list</code>. You provide it to operations like <code>get</code> and <code>update</code>.',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    VersionToExpire: VersionKeyStringSchema.openapi({
+      description:
+        'The version that you want to remove from your list of offerings for the named managed rule group. ',
+    }),
+    ExpiryTimestamp: TimestampSchema.openapi({
+      description:
+        '<p>The time that you want the version to expire.</p> <p>Times are in Coordinated Universal Time (UTC) format. UTC format includes the special designator, Z. For example, "2016-09-27T14:50Z". </p>',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'LockToken', 'VersionToExpire', 'ExpiryTimestamp'],
@@ -6476,57 +4782,35 @@ const UpdateManagedRuleSetVersionExpiryDateRequestSchema = z
 
 const UpdateRegexPatternSetResponseSchema = z
   .object({
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
-        }),
-    ).exactOptional(),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRegexPatternSetResponse')
 
 const UpdateRegexPatternSetRequestSchema = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the set. You cannot change the name after you create the set.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the set that helps with identification. ' }),
-    ).exactOptional(),
-    RegularExpressionList: RegularExpressionListSchema.and(
-      z.any().openapi({ description: '<p/>' }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
+    Name: EntityNameSchema.openapi({
+      description: 'The name of the set. You cannot change the name after you create the set.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the set. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the set that helps with identification. ',
+    }),
+    RegularExpressionList: RegularExpressionListSchema.openapi({ description: '<p/>' }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'RegularExpressionList', 'LockToken'],
@@ -6536,83 +4820,47 @@ const UpdateRegexPatternSetRequestSchema = z
 
 const UpdateRuleGroupResponseSchema = z
   .object({
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
-        }),
-    ).exactOptional(),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRuleGroupResponse')
 
-const UpdateRuleGroupRequestSchema = z
+const UpdateRuleGroupRequestSchema: z.ZodType<UpdateRuleGroupRequestType> = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the rule group. You cannot change the name of a rule group after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of the rule group that helps with identification. ',
-        }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the rule group. You cannot change the name of a rule group after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'A unique identifier for the rule group. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the rule group that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'VisibilityConfig', 'LockToken'],
@@ -6622,121 +4870,67 @@ const UpdateRuleGroupRequestSchema = z
 
 const UpdateWebACLResponseSchema = z
   .object({
-    NextLockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
-        }),
-    ).exactOptional(),
+    NextLockToken: LockTokenSchema.exactOptional().openapi({
+      description:
+        'A token used for optimistic locking. WAF returns this token to your <code>update</code> requests. You use <code>NextLockToken</code> in the same manner as you use <code>LockToken</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateWebACLResponse')
 
-const UpdateWebACLRequestSchema = z
+const UpdateWebACLRequestSchema: z.ZodType<UpdateWebACLRequestType> = z
   .object({
-    Name: EntityNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
-        }),
-    ),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
-        }),
-    ),
-    Id: EntityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
-        }),
-    ),
-    DefaultAction: DefaultActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
-        }),
-    ),
-    Description: EntityDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description of the web ACL that helps with identification. ' }),
-    ).exactOptional(),
-    Rules: RulesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
-        }),
-    ).exactOptional(),
-    VisibilityConfig: VisibilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
-        }),
-    ),
-    LockToken: LockTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
-        }),
-    ),
-    CustomResponseBodies: CustomResponseBodiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
-        }),
-    ).exactOptional(),
-    CaptchaConfig: CaptchaConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
-        }),
-    ).exactOptional(),
-    ChallengeConfig: ChallengeConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
-        }),
-    ).exactOptional(),
-    TokenDomains: TokenDomainsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don\'t specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource\'s host domain plus all domains in the token domain list, including their prefixed subdomains.</p> <p>Example JSON: <code>"TokenDomains": { "mywebsite.com", "myotherwebsite.com" }</code> </p> <p>Public suffixes aren\'t allowed. For example, you can\'t use <code>usa.gov</code> or <code>co.uk</code> as token domains.</p>',
-        }),
-    ).exactOptional(),
-    AssociationConfig: AssociationConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
-        }),
-    ).exactOptional(),
+    Name: EntityNameSchema.openapi({
+      description:
+        'The name of the web ACL. You cannot change the name of a web ACL after you create it.',
+    }),
+    Scope: ScopeSchema.openapi({
+      description:
+        '<p>Specifies whether this is for an Amazon CloudFront distribution or for a regional application. A regional application can be an Application Load Balancer (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito user pool, or an App Runner service. </p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>',
+    }),
+    Id: EntityIdSchema.openapi({
+      description:
+        'The unique identifier for the web ACL. This ID is returned in the responses to create and list commands. You provide it to operations like update and delete.',
+    }),
+    DefaultAction: DefaultActionSchema.openapi({
+      description:
+        'The action to perform if none of the <code>Rules</code> contained in the <code>WebACL</code> match. ',
+    }),
+    Description: EntityDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the web ACL that helps with identification. ',
+    }),
+    Rules: RulesSchema.exactOptional().openapi({
+      description:
+        'The <a>Rule</a> statements used to identify the web requests that you want to allow, block, or count. Each rule includes one top-level statement that WAF uses to identify matching web requests, and parameters that govern how WAF handles them. ',
+    }),
+    VisibilityConfig: VisibilityConfigSchema.openapi({
+      description:
+        'Defines and enables Amazon CloudWatch metrics and web request sample collection. ',
+    }),
+    LockToken: LockTokenSchema.openapi({
+      description:
+        'A token used for optimistic locking. WAF returns a token to your <code>get</code> and <code>list</code> requests, to mark the state of the entity at the time of the request. To make changes to the entity associated with the token, you provide the token to operations like <code>update</code> and <code>delete</code>. WAF uses the token to ensure that no changes have been made to the entity since you last retrieved it. If a change has been made, the update fails with a <code>WAFOptimisticLockException</code>. If this happens, perform another <code>get</code>, and use the new token returned by that operation. ',
+    }),
+    CustomResponseBodies: CustomResponseBodiesSchema.exactOptional().openapi({
+      description:
+        '<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the web ACL, and then use them in the rules and default actions that you define in the web ACL. </p> <p>For information about customizing web requests and responses, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href="https://docs.aws.amazon.com/waf/latest/developerguide/limits.html">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>',
+    }),
+    CaptchaConfig: CaptchaConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle <code>CAPTCHA</code> evaluations for rules that don't have their own <code>CaptchaConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>CaptchaConfig</code>. ",
+    }),
+    ChallengeConfig: ChallengeConfigSchema.exactOptional().openapi({
+      description:
+        "Specifies how WAF should handle challenge evaluations for rules that don't have their own <code>ChallengeConfig</code> settings. If you don't specify this, WAF uses its default settings for <code>ChallengeConfig</code>. ",
+    }),
+    TokenDomains: TokenDomainsSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the domains that WAF should accept in a web request token. This enables the use of tokens across multiple protected websites. When WAF provides a token, it uses the domain of the Amazon Web Services resource that the web ACL is protecting. If you don\'t specify a list of token domains, WAF accepts tokens only for the domain of the protected resource. With a token domain list, WAF accepts the resource\'s host domain plus all domains in the token domain list, including their prefixed subdomains.</p> <p>Example JSON: <code>"TokenDomains": { "mywebsite.com", "myotherwebsite.com" }</code> </p> <p>Public suffixes aren\'t allowed. For example, you can\'t use <code>usa.gov</code> or <code>co.uk</code> as token domains.</p>',
+    }),
+    AssociationConfig: AssociationConfigSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected CloudFront distributions forward to WAF for inspection. The default is 16 KB (16,384 kilobytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href="http://aws.amazon.com/waf/pricing/">WAF Pricing</a>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Name', 'Scope', 'Id', 'DefaultAction', 'VisibilityConfig', 'LockToken'],

@@ -1,104 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const LabelSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. Description of the price list, section, or item.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Display name for the price list, section, or item.' }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The BCP-47 language code that these strings apply for. Only one set of labels may be set per language.',
-      }),
-  })
-  .openapi({
-    description: 'Label to be used when displaying the price list, section, or item.',
-    required: [],
-  })
-  .openapi('Label')
-
-const FreeFormServiceItemSchema = z
-  .object({
-    category: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. This field represents the category name (i.e. the category's stable ID). The `category` and `service_type_id` should match the possible combinations provided in the `Category` message.",
-      }),
-    label: LabelSchema.exactOptional().openapi({
-      description:
-        'Required. Language-tagged labels for the item. We recommend that item names be 140 characters or less, and descriptions 250 characters or less. This field should only be set if the input is a custom service item. Standardized service types should be updated via service_type_id.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents a free-form service offered by the merchant. These are services that are not exposed as part of our structure service data. The merchant manually enters the names for of such services via a geomerchant surface.',
-    required: [],
-  })
-  .openapi('FreeFormServiceItem')
-
-const MoneySchema = z
-  .object({
-    currencyCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
-      }),
-    units: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
-      }),
-  })
-  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
-  .openapi('Money')
-
-const StructuredServiceItemSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of structured service item. The character limit is 300.',
-      }),
-    serviceTypeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The `service_type_id` field is a Google provided unique ID that can be found in `ServiceType`. This information is provided by `BatchGetCategories` rpc service.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a structured service offered by the merchant. For eg: toilet_installation.',
-    required: [],
-  })
-  .openapi('StructuredServiceItem')
-
-type ServiceItemType = {
-  freeFormServiceItem?: z.infer<typeof FreeFormServiceItemSchema>
-  price?: z.infer<typeof MoneySchema>
-  structuredServiceItem?: z.infer<typeof StructuredServiceItemSchema>
-}
-
 const AdWordsLocationExtensionsSchema = z
   .object({
     adPhone: z
@@ -111,174 +12,6 @@ const AdWordsLocationExtensionsSchema = z
   })
   .openapi({ description: 'Additional information that is surfaced in AdWords.', required: [] })
   .openapi('AdWordsLocationExtensions')
-
-const AssociateLocationRequestSchema = z
-  .object({
-    placeId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The association to establish. If not set, it indicates no match.' }),
-  })
-  .openapi({ description: 'Request message for Locations.AssociateLocationRequest.', required: [] })
-  .openapi('AssociateLocationRequest')
-
-const RepeatedEnumAttributeValueSchema = z
-  .object({
-    setValues: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Enum values that are set.' }),
-    unsetValues: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Enum values that are unset.' }),
-  })
-  .openapi({
-    description:
-      'Values for an attribute with a `value_type` of REPEATED_ENUM. This consists of two lists of value IDs: those that are set (true) and those that are unset (false). Values absent are considered unknown. At least one value must be specified.',
-    required: [],
-  })
-  .openapi('RepeatedEnumAttributeValue')
-
-const UriAttributeValueSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The proposed URI value for this attribute.' }),
-  })
-  .openapi({ description: 'Values for an attribute with a `value_type` of URL.', required: [] })
-  .openapi('UriAttributeValue')
-
-const AttributeSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The resource name for this attribute.' }),
-    repeatedEnumValue: RepeatedEnumAttributeValueSchema.exactOptional().openapi({
-      description:
-        'When the attribute value type is REPEATED_ENUM, this contains the attribute value, and the other values fields must be empty.',
-    }),
-    uriValues: z
-      .array(UriAttributeValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'When the attribute value type is URL, this field contains the value(s) for this attribute, and the other values fields must be empty.',
-      }),
-    valueType: z
-      .enum(['ATTRIBUTE_VALUE_TYPE_UNSPECIFIED', 'BOOL', 'ENUM', 'URL', 'REPEATED_ENUM'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The type of value that this attribute contains. This should be used to determine how to interpret the value.',
-        readOnly: true,
-      }),
-    values: z
-      .array(z.any())
-      .exactOptional()
-      .openapi({
-        description:
-          'The values for this attribute. The type of the values supplied must match that expected for that attribute. This is a repeated field where multiple attribute values may be provided. Attribute types only support one value.',
-      }),
-  })
-  .openapi({
-    description:
-      'A location attribute. Attributes provide additional information about a location. The attributes that can be set on a location may vary based on the properties of that location (for example, category). Available attributes are determined by Google and may be added and removed without API changes.',
-    required: [],
-  })
-  .openapi('Attribute')
-
-const AttributeValueMetadataSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The display name for this value, localized where available; otherwise, in English. The value display name is intended to be used in context with the attribute display name. For example, for a "WiFi" enum attribute, this could contain "Paid" to represent paid Wi-Fi.',
-      }),
-    value: z.any().exactOptional().openapi({ description: 'The attribute value.' }),
-  })
-  .openapi({ description: 'Metadata for supported attribute values.', required: [] })
-  .openapi('AttributeValueMetadata')
-
-const AttributeMetadataSchema = z
-  .object({
-    deprecated: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the attribute is deprecated and should no longer be used. If deprecated, updating this attribute will not result in an error, but updates will not be saved. At some point after being deprecated, the attribute will be removed entirely and it will become an error.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The localized display name for the attribute, if available; otherwise, the English display name.',
-      }),
-    groupDisplayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The localized display name of the group that contains this attribute, if available; otherwise, the English group name. Related attributes are collected into a group and should be displayed together under the heading given here.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique identifier for the attribute.' }),
-    repeatable: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the attribute supports multiple values. If false, only a single value should be provided.',
-      }),
-    valueMetadata: z
-      .array(AttributeValueMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'For some types of attributes (for example, enums), a list of supported values and corresponding display names for those values is provided.',
-      }),
-    valueType: z
-      .enum(['ATTRIBUTE_VALUE_TYPE_UNSPECIFIED', 'BOOL', 'ENUM', 'URL', 'REPEATED_ENUM'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The value type for the attribute. Values set and retrieved should be expected to be of this type.',
-      }),
-  })
-  .openapi({
-    description:
-      'Metadata for an attribute. Contains display information for the attribute, including a localized name and a heading for grouping related attributes together.',
-    required: [],
-  })
-  .openapi('AttributeMetadata')
-
-const AttributesSchema = z
-  .object({
-    attributes: z
-      .array(AttributeSchema)
-      .exactOptional()
-      .openapi({ description: 'A collection of attributes that need to be updated.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Google identifier for this location in the form of `locations/{location_id}/attributes`.',
-      }),
-  })
-  .openapi({
-    description: 'A container for all the attributes for a given location.',
-    required: [],
-  })
-  .openapi('Attributes')
 
 const MoreHoursTypeSchema = z
   .object({
@@ -373,117 +106,6 @@ const CategorySchema = z
   })
   .openapi('Category')
 
-const BatchGetCategoriesResponseSchema = z
-  .object({
-    categories: z
-      .array(CategorySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Categories that match the GConcept ids provided in the request. They will not come in the same order as category ids in the request.',
-      }),
-  })
-  .openapi({
-    description: 'Response message for BusinessCategories.BatchGetBusinessCategories.',
-    required: [],
-  })
-  .openapi('BatchGetCategoriesResponse')
-
-const TimeOfDaySchema = z
-  .object({
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
-    required: [],
-  })
-  .openapi('TimeOfDay')
-
-const TimePeriodSchema = z
-  .object({
-    closeDay: z
-      .enum([
-        'DAY_OF_WEEK_UNSPECIFIED',
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the day of the week this period ends on.' }),
-    closeTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'Required. Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.',
-    }),
-    openDay: z
-      .enum([
-        'DAY_OF_WEEK_UNSPECIFIED',
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. Indicates the day of the week this period starts on.' }),
-    openTime: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'Required. Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.',
-    }),
-  })
-  .openapi({
-    description:
-      'Represents a span of time that the business is open, starting on the specified open day/time and closing on the specified close day/time. The closing time must occur after the opening time, for example later in the same day, or on a subsequent day.',
-    required: [],
-  })
-  .openapi('TimePeriod')
-
-const BusinessHoursSchema = z
-  .object({
-    periods: z
-      .array(TimePeriodSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A collection of times that this location is open for business. Each period represents a range of hours when the location is open during the week.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the time periods that this location is open for business. Holds a collection of TimePeriod instances.',
-    required: [],
-  })
-  .openapi('BusinessHours')
-
 const CategoriesSchema = z
   .object({
     additionalCategories: z
@@ -504,96 +126,6 @@ const CategoriesSchema = z
     required: [],
   })
   .openapi('Categories')
-
-const ChainNameSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The display name for this chain.' }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The BCP 47 code of language of the name.' }),
-  })
-  .openapi({ description: 'Name to be used when displaying the chain.', required: [] })
-  .openapi('ChainName')
-
-const ChainUriSchema = z
-  .object({ uri: z.string().exactOptional().openapi({ description: 'The uri for this chain.' }) })
-  .openapi({ description: 'Url to be used when displaying the chain.', required: [] })
-  .openapi('ChainUri')
-
-const ChainSchema = z
-  .object({
-    chainNames: z
-      .array(ChainNameSchema)
-      .exactOptional()
-      .openapi({ description: 'Names of the chain.' }),
-    locationCount: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Number of locations that are part of this chain.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Required. The chain's resource name, in the format `chains/{chain_id}`.",
-      }),
-    websites: z
-      .array(ChainUriSchema)
-      .exactOptional()
-      .openapi({ description: 'Websites of the chain.' }),
-  })
-  .openapi({
-    description: "A chain is a brand that your business's locations can be affiliated with.",
-    required: [],
-  })
-  .openapi('Chain')
-
-const ClearLocationAssociationRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for Locations.ClearLocationAssociationRequest.' })
-  .openapi('ClearLocationAssociationRequest')
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
 
 const LatLngSchema = z
   .object({
@@ -724,6 +256,84 @@ const MetadataSchema = z
   })
   .openapi('Metadata')
 
+const TimeOfDaySchema = z
+  .object({
+    hours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+      }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
+    required: [],
+  })
+  .openapi('TimeOfDay')
+
+const TimePeriodSchema = z
+  .object({
+    closeDay: z
+      .enum([
+        'DAY_OF_WEEK_UNSPECIFIED',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the day of the week this period ends on.' }),
+    closeTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'Required. Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.',
+    }),
+    openDay: z
+      .enum([
+        'DAY_OF_WEEK_UNSPECIFIED',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. Indicates the day of the week this period starts on.' }),
+    openTime: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'Required. Valid values are 00:00-24:00, where 24:00 represents midnight at the end of the specified day field.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a span of time that the business is open, starting on the specified open day/time and closing on the specified close day/time. The closing time must occur after the opening time, for example later in the same day, or on a subsequent day.',
+    required: [],
+  })
+  .openapi('TimePeriod')
+
 const MoreHoursSchema = z
   .object({
     hoursTypeId: z
@@ -746,6 +356,37 @@ const MoreHoursSchema = z
     required: [],
   })
   .openapi('MoreHours')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
 
 const OpenInfoSchema = z
   .object({
@@ -810,6 +451,23 @@ const ProfileSchema = z
   })
   .openapi({ description: "All information pertaining to the location's profile.", required: [] })
   .openapi('Profile')
+
+const BusinessHoursSchema = z
+  .object({
+    periods: z
+      .array(TimePeriodSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A collection of times that this location is open for business. Each period represents a range of hours when the location is open during the week.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents the time periods that this location is open for business. Holds a collection of TimePeriod instances.',
+    required: [],
+  })
+  .openapi('BusinessHours')
 
 const RelevantLocationSchema = z
   .object({
@@ -919,27 +577,117 @@ const ServiceAreaBusinessSchema = z
   })
   .openapi('ServiceAreaBusiness')
 
-const ServiceItemSchema: z.ZodType<ServiceItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        freeFormServiceItem: FreeFormServiceItemSchema.exactOptional().openapi({
-          description: 'Optional. This field will be set case of free-form services data.',
-        }),
-        price: MoneySchema.exactOptional().openapi({
-          description:
-            'Optional. Represents the monetary price of the service item. We recommend that currency_code and units should be set when including a price. This will be treated as a fixed price for the service item.',
-        }),
-        structuredServiceItem: StructuredServiceItemSchema.exactOptional().openapi({
-          description: 'Optional. This field will be set case of structured services data.',
-        }),
-      })
+const LabelSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. Description of the price list, section, or item.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Display name for the price list, section, or item.' }),
+    languageCode: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'A message that describes a single service item. It is used to describe the type of service that the merchant provides. For example, haircut can be a service.',
-        required: [],
+          'Optional. The BCP-47 language code that these strings apply for. Only one set of labels may be set per language.',
       }),
-  )
+  })
+  .openapi({
+    description: 'Label to be used when displaying the price list, section, or item.',
+    required: [],
+  })
+  .openapi('Label')
+
+const FreeFormServiceItemSchema = z
+  .object({
+    category: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. This field represents the category name (i.e. the category's stable ID). The `category` and `service_type_id` should match the possible combinations provided in the `Category` message.",
+      }),
+    label: LabelSchema.exactOptional().openapi({
+      description:
+        'Required. Language-tagged labels for the item. We recommend that item names be 140 characters or less, and descriptions 250 characters or less. This field should only be set if the input is a custom service item. Standardized service types should be updated via service_type_id.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a free-form service offered by the merchant. These are services that are not exposed as part of our structure service data. The merchant manually enters the names for of such services via a geomerchant surface.',
+    required: [],
+  })
+  .openapi('FreeFormServiceItem')
+
+const MoneySchema = z
+  .object({
+    currencyCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The three-letter currency code defined in ISO 4217.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Number of nano (10^-9) units of the amount. The value must be between -999,999,999 and +999,999,999 inclusive. If `units` is positive, `nanos` must be positive or zero. If `units` is zero, `nanos` can be positive, zero, or negative. If `units` is negative, `nanos` must be negative or zero. For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.',
+      }),
+    units: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The whole units of the amount. For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.',
+      }),
+  })
+  .openapi({ description: 'Represents an amount of money with its currency type.', required: [] })
+  .openapi('Money')
+
+const StructuredServiceItemSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of structured service item. The character limit is 300.',
+      }),
+    serviceTypeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The `service_type_id` field is a Google provided unique ID that can be found in `ServiceType`. This information is provided by `BatchGetCategories` rpc service.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a structured service offered by the merchant. For eg: toilet_installation.',
+    required: [],
+  })
+  .openapi('StructuredServiceItem')
+
+const ServiceItemSchema = z
+  .object({
+    freeFormServiceItem: FreeFormServiceItemSchema.exactOptional().openapi({
+      description: 'Optional. This field will be set case of free-form services data.',
+    }),
+    price: MoneySchema.exactOptional().openapi({
+      description:
+        'Optional. Represents the monetary price of the service item. We recommend that currency_code and units should be set when including a price. This will be treated as a fixed price for the service item.',
+    }),
+    structuredServiceItem: StructuredServiceItemSchema.exactOptional().openapi({
+      description: 'Optional. This field will be set case of structured services data.',
+    }),
+  })
+  .openapi({
+    description:
+      'A message that describes a single service item. It is used to describe the type of service that the merchant provides. For example, haircut can be a service.',
+    required: [],
+  })
   .openapi('ServiceItem')
 
 const SpecialHourPeriodSchema = z
@@ -1181,6 +929,12 @@ const LocationSchema = z
   })
   .openapi('Location')
 
+type ListLocationsResponseType = {
+  locations?: z.infer<typeof LocationSchema>[]
+  nextPageToken?: string
+  totalSize?: number
+}
+
 const GoogleLocationSchema = z
   .object({
     location: LocationSchema.exactOptional().openapi({
@@ -1208,6 +962,253 @@ const GoogleLocationSchema = z
     required: [],
   })
   .openapi('GoogleLocation')
+
+type SearchGoogleLocationsResponseType = {
+  googleLocations?: z.infer<typeof GoogleLocationSchema>[]
+}
+
+const AssociateLocationRequestSchema = z
+  .object({
+    placeId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The association to establish. If not set, it indicates no match.' }),
+  })
+  .openapi({ description: 'Request message for Locations.AssociateLocationRequest.', required: [] })
+  .openapi('AssociateLocationRequest')
+
+const RepeatedEnumAttributeValueSchema = z
+  .object({
+    setValues: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Enum values that are set.' }),
+    unsetValues: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Enum values that are unset.' }),
+  })
+  .openapi({
+    description:
+      'Values for an attribute with a `value_type` of REPEATED_ENUM. This consists of two lists of value IDs: those that are set (true) and those that are unset (false). Values absent are considered unknown. At least one value must be specified.',
+    required: [],
+  })
+  .openapi('RepeatedEnumAttributeValue')
+
+const UriAttributeValueSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The proposed URI value for this attribute.' }),
+  })
+  .openapi({ description: 'Values for an attribute with a `value_type` of URL.', required: [] })
+  .openapi('UriAttributeValue')
+
+const AttributeSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The resource name for this attribute.' }),
+    repeatedEnumValue: RepeatedEnumAttributeValueSchema.exactOptional().openapi({
+      description:
+        'When the attribute value type is REPEATED_ENUM, this contains the attribute value, and the other values fields must be empty.',
+    }),
+    uriValues: z
+      .array(UriAttributeValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'When the attribute value type is URL, this field contains the value(s) for this attribute, and the other values fields must be empty.',
+      }),
+    valueType: z
+      .enum(['ATTRIBUTE_VALUE_TYPE_UNSPECIFIED', 'BOOL', 'ENUM', 'URL', 'REPEATED_ENUM'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The type of value that this attribute contains. This should be used to determine how to interpret the value.',
+        readOnly: true,
+      }),
+    values: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'The values for this attribute. The type of the values supplied must match that expected for that attribute. This is a repeated field where multiple attribute values may be provided. Attribute types only support one value.',
+      }),
+  })
+  .openapi({
+    description:
+      'A location attribute. Attributes provide additional information about a location. The attributes that can be set on a location may vary based on the properties of that location (for example, category). Available attributes are determined by Google and may be added and removed without API changes.',
+    required: [],
+  })
+  .openapi('Attribute')
+
+const AttributeValueMetadataSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The display name for this value, localized where available; otherwise, in English. The value display name is intended to be used in context with the attribute display name. For example, for a "WiFi" enum attribute, this could contain "Paid" to represent paid Wi-Fi.',
+      }),
+    value: z.any().exactOptional().openapi({ description: 'The attribute value.' }),
+  })
+  .openapi({ description: 'Metadata for supported attribute values.', required: [] })
+  .openapi('AttributeValueMetadata')
+
+const AttributeMetadataSchema = z
+  .object({
+    deprecated: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the attribute is deprecated and should no longer be used. If deprecated, updating this attribute will not result in an error, but updates will not be saved. At some point after being deprecated, the attribute will be removed entirely and it will become an error.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The localized display name for the attribute, if available; otherwise, the English display name.',
+      }),
+    groupDisplayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The localized display name of the group that contains this attribute, if available; otherwise, the English group name. Related attributes are collected into a group and should be displayed together under the heading given here.',
+      }),
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique identifier for the attribute.' }),
+    repeatable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the attribute supports multiple values. If false, only a single value should be provided.',
+      }),
+    valueMetadata: z
+      .array(AttributeValueMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'For some types of attributes (for example, enums), a list of supported values and corresponding display names for those values is provided.',
+      }),
+    valueType: z
+      .enum(['ATTRIBUTE_VALUE_TYPE_UNSPECIFIED', 'BOOL', 'ENUM', 'URL', 'REPEATED_ENUM'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The value type for the attribute. Values set and retrieved should be expected to be of this type.',
+      }),
+  })
+  .openapi({
+    description:
+      'Metadata for an attribute. Contains display information for the attribute, including a localized name and a heading for grouping related attributes together.',
+    required: [],
+  })
+  .openapi('AttributeMetadata')
+
+const AttributesSchema = z
+  .object({
+    attributes: z
+      .array(AttributeSchema)
+      .exactOptional()
+      .openapi({ description: 'A collection of attributes that need to be updated.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Google identifier for this location in the form of `locations/{location_id}/attributes`.',
+      }),
+  })
+  .openapi({
+    description: 'A container for all the attributes for a given location.',
+    required: [],
+  })
+  .openapi('Attributes')
+
+const BatchGetCategoriesResponseSchema = z
+  .object({
+    categories: z
+      .array(CategorySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Categories that match the GConcept ids provided in the request. They will not come in the same order as category ids in the request.',
+      }),
+  })
+  .openapi({
+    description: 'Response message for BusinessCategories.BatchGetBusinessCategories.',
+    required: [],
+  })
+  .openapi('BatchGetCategoriesResponse')
+
+const ChainNameSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The display name for this chain.' }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The BCP 47 code of language of the name.' }),
+  })
+  .openapi({ description: 'Name to be used when displaying the chain.', required: [] })
+  .openapi('ChainName')
+
+const ChainUriSchema = z
+  .object({ uri: z.string().exactOptional().openapi({ description: 'The uri for this chain.' }) })
+  .openapi({ description: 'Url to be used when displaying the chain.', required: [] })
+  .openapi('ChainUri')
+
+const ChainSchema = z
+  .object({
+    chainNames: z
+      .array(ChainNameSchema)
+      .exactOptional()
+      .openapi({ description: 'Names of the chain.' }),
+    locationCount: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Number of locations that are part of this chain.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Required. The chain's resource name, in the format `chains/{chain_id}`.",
+      }),
+    websites: z
+      .array(ChainUriSchema)
+      .exactOptional()
+      .openapi({ description: 'Websites of the chain.' }),
+  })
+  .openapi({
+    description: "A chain is a brand that your business's locations can be affiliated with.",
+    required: [],
+  })
+  .openapi('Chain')
+
+const ClearLocationAssociationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for Locations.ClearLocationAssociationRequest.' })
+  .openapi('ClearLocationAssociationRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
 
 const GoogleUpdatedLocationSchema = z
   .object({
@@ -1263,7 +1264,7 @@ const ListCategoriesResponseSchema = z
   .openapi({ description: 'Response message for BusinessCategories.ListCategories.', required: [] })
   .openapi('ListCategoriesResponse')
 
-const ListLocationsResponseSchema = z
+const ListLocationsResponseSchema: z.ZodType<ListLocationsResponseType> = z
   .object({
     locations: z.array(LocationSchema).exactOptional().openapi({ description: 'The locations.' }),
     nextPageToken: z
@@ -1323,7 +1324,7 @@ const SearchGoogleLocationsRequestSchema = z
   })
   .openapi('SearchGoogleLocationsRequest')
 
-const SearchGoogleLocationsResponseSchema = z
+const SearchGoogleLocationsResponseSchema: z.ZodType<SearchGoogleLocationsResponseType> = z
   .object({
     googleLocations: z
       .array(GoogleLocationSchema)

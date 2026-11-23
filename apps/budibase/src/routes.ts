@@ -1,5 +1,218 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type ViewType = {
+  name: string
+  tableId: string
+  type?: 'calculation'
+  primaryDisplay?: string
+  query?: {
+    logicalOperator?: 'all' | 'any'
+    onEmptyFilter?: 'all' | 'none'
+    groups?: {
+      logicalOperator?: 'all' | 'any'
+      filters?: {
+        operator?:
+          | 'equal'
+          | 'notEqual'
+          | 'empty'
+          | 'notEmpty'
+          | 'fuzzy'
+          | 'string'
+          | 'contains'
+          | 'notContains'
+          | 'containsAny'
+          | 'oneOf'
+          | 'notOneOf'
+          | 'range'
+        field?: string
+        value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+      }[]
+      groups?: {
+        logicalOperator?: 'all' | 'any'
+        filters?: {
+          operator?:
+            | 'equal'
+            | 'notEqual'
+            | 'empty'
+            | 'notEmpty'
+            | 'fuzzy'
+            | 'string'
+            | 'contains'
+            | 'notContains'
+            | 'containsAny'
+            | 'oneOf'
+            | 'notOneOf'
+            | 'range'
+          field?: string
+          value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+        }[]
+      }[]
+    }[]
+  }
+  sort?:
+    | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }
+    | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }[]
+  schema: {
+    [key: string]:
+      | {
+          visible?: boolean
+          readonly?: boolean
+          order?: number
+          width?: number
+          column?: { readonly?: boolean }[]
+        }
+      | {
+          calculationType?: 'sum' | 'avg' | 'count' | 'min' | 'max'
+          field?: string
+          distinct?: boolean
+        }
+  }
+}
+
+type ViewOutputType = {
+  data: {
+    name: string
+    tableId: string
+    type?: 'calculation'
+    primaryDisplay?: string
+    query?: {
+      logicalOperator?: 'all' | 'any'
+      onEmptyFilter?: 'all' | 'none'
+      groups?: {
+        logicalOperator?: 'all' | 'any'
+        filters?: {
+          operator?:
+            | 'equal'
+            | 'notEqual'
+            | 'empty'
+            | 'notEmpty'
+            | 'fuzzy'
+            | 'string'
+            | 'contains'
+            | 'notContains'
+            | 'containsAny'
+            | 'oneOf'
+            | 'notOneOf'
+            | 'range'
+          field?: string
+          value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+        }[]
+        groups?: {
+          logicalOperator?: 'all' | 'any'
+          filters?: {
+            operator?:
+              | 'equal'
+              | 'notEqual'
+              | 'empty'
+              | 'notEmpty'
+              | 'fuzzy'
+              | 'string'
+              | 'contains'
+              | 'notContains'
+              | 'containsAny'
+              | 'oneOf'
+              | 'notOneOf'
+              | 'range'
+            field?: string
+            value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+          }[]
+        }[]
+      }[]
+    }
+    sort?:
+      | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }
+      | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }[]
+    schema: {
+      [key: string]:
+        | {
+            visible?: boolean
+            readonly?: boolean
+            order?: number
+            width?: number
+            column?: { readonly?: boolean }[]
+          }
+        | {
+            calculationType?: 'sum' | 'avg' | 'count' | 'min' | 'max'
+            field?: string
+            distinct?: boolean
+          }
+    }
+    id: string
+  }
+}
+
+type ViewSearchType = {
+  data: {
+    name: string
+    tableId: string
+    type?: 'calculation'
+    primaryDisplay?: string
+    query?: {
+      logicalOperator?: 'all' | 'any'
+      onEmptyFilter?: 'all' | 'none'
+      groups?: {
+        logicalOperator?: 'all' | 'any'
+        filters?: {
+          operator?:
+            | 'equal'
+            | 'notEqual'
+            | 'empty'
+            | 'notEmpty'
+            | 'fuzzy'
+            | 'string'
+            | 'contains'
+            | 'notContains'
+            | 'containsAny'
+            | 'oneOf'
+            | 'notOneOf'
+            | 'range'
+          field?: string
+          value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+        }[]
+        groups?: {
+          logicalOperator?: 'all' | 'any'
+          filters?: {
+            operator?:
+              | 'equal'
+              | 'notEqual'
+              | 'empty'
+              | 'notEmpty'
+              | 'fuzzy'
+              | 'string'
+              | 'contains'
+              | 'notContains'
+              | 'containsAny'
+              | 'oneOf'
+              | 'notOneOf'
+              | 'range'
+            field?: string
+            value?: string | number | boolean | { [key: string]: unknown } | unknown[]
+          }[]
+        }[]
+      }[]
+    }
+    sort?:
+      | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }
+      | { field: string; order?: 'ascending' | 'descending'; type?: 'string' | 'number' }[]
+    schema: {
+      [key: string]:
+        | {
+            visible?: boolean
+            readonly?: boolean
+            order?: number
+            width?: number
+            column?: { readonly?: boolean }[]
+          }
+        | {
+            calculationType?: 'sum' | 'avg' | 'count' | 'min' | 'max'
+            field?: string
+            distinct?: boolean
+          }
+    }
+    id: string
+  }[]
+}
+
 const ApplicationSchema = z
   .object({
     name: z.string().openapi({ description: 'The name of the app.' }),
@@ -63,7 +276,7 @@ const ApplicationOutputSchema = z
               'In a multi-tenant environment this will state the tenant this app is within.',
           }),
         lockedBy: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The user this app is currently being built by.' }),
       })
@@ -113,7 +326,7 @@ const WorkspaceOutputSchema = z
               'In a multi-tenant environment this will state the tenant this app is within.',
           }),
         lockedBy: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The user this app is currently being built by.' }),
       })
@@ -165,7 +378,7 @@ const ApplicationSearchSchema = z
                 'In a multi-tenant environment this will state the tenant this app is within.',
             }),
           lockedBy: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ description: 'The user this app is currently being built by.' }),
         })
@@ -220,7 +433,7 @@ const WorkspaceSearchSchema = z
                 'In a multi-tenant environment this will state the tenant this app is within.',
             }),
           lockedBy: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ description: 'The user this app is currently being built by.' }),
         })
@@ -288,7 +501,7 @@ const RowSchema = z
 const SearchOutputSchema = z
   .object({
     data: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .openapi({
         description:
           'An array of rows, these will each contain an _id field which can be used to update or delete them.',
@@ -1194,11 +1407,11 @@ const ExecuteQuerySchema = z
 
 const ExecuteQueryOutputSchema = z
   .object({
-    data: z.array(z.object({})).openapi({ description: 'The data response from the query.' }),
+    data: z.array(z.looseObject({})).openapi({ description: 'The data response from the query.' }),
     extra: z
       .object({
         headers: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'If carrying out a REST request, this will contain the response headers.',
@@ -1214,7 +1427,7 @@ const ExecuteQueryOutputSchema = z
         required: [],
       }),
     pagination: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1236,7 +1449,7 @@ const QuerySchema = z
       .exactOptional()
       .openapi({ description: 'The bindings which are required to perform this query.' }),
     fields: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The fields that are used to perform this query, e.g. the sql statement',
@@ -1247,7 +1460,7 @@ const QuerySchema = z
       .openapi({ description: 'The verb that describes this query.' }),
     name: z.string().openapi({ description: 'The name of the query.' }),
     schema: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The schema of the data returned when the query is executed.' }),
     transformer: z
       .string()
@@ -1279,7 +1492,7 @@ const QuerySearchSchema = z
             .exactOptional()
             .openapi({ description: 'The bindings which are required to perform this query.' }),
           fields: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description: 'The fields that are used to perform this query, e.g. the sql statement',
@@ -1290,7 +1503,7 @@ const QuerySearchSchema = z
             .openapi({ description: 'The verb that describes this query.' }),
           name: z.string().openapi({ description: 'The name of the query.' }),
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: 'The schema of the data returned when the query is executed.',
             }),
@@ -1615,14 +1828,14 @@ const RowSearchSchema = z
               'A map of field name to the string to search for, this will look for rows that have a value starting with the string value.',
           }),
         fuzzy: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               "Searches for a sub-string within a string column, e.g. searching for 'dib' will match 'Budibase'.",
           }),
         range: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1630,20 +1843,20 @@ const RowSearchSchema = z
             example: { columnName1: { low: 10, high: 20 } },
           }),
         equal: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'Searches for rows that have a column value that is exactly the value set.',
           }),
         notEqual: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description: 'Searches for any row which does not contain the specified column value.',
           }),
         empty: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1651,18 +1864,18 @@ const RowSearchSchema = z
             example: { columnName1: '' },
           }),
         notEmpty: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'Searches for rows which have the specified column.' }),
         oneOf: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
               'Searches for rows which have a column value that is any of the specified values. The format of this must be columnName -> [value1, value2].',
           }),
         contains: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1670,7 +1883,7 @@ const RowSearchSchema = z
             example: { arrayColumn: ['a', 'b'] },
           }),
         notContains: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1678,7 +1891,7 @@ const RowSearchSchema = z
             example: { arrayColumn: ['a', 'b'] },
           }),
         containsAny: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -1831,7 +2044,7 @@ const RolesOutputSchema = z
   .openapi({ required: ['data'] })
   .openapi('RolesOutput')
 
-const ViewSchema = z
+const ViewSchema: z.ZodType<ViewType> = z
   .object({
     name: z.string().openapi({ description: 'The name of the view.' }),
     tableId: z.string().openapi({ description: 'The ID of the table this view is based on.' }),
@@ -1906,7 +2119,7 @@ const ViewSchema = z
                             z.string(),
                             z.number(),
                             z.boolean(),
-                            z.object({}),
+                            z.looseObject({}),
                             z.array(z.any()),
                           ])
                           .exactOptional()
@@ -1965,7 +2178,7 @@ const ViewSchema = z
                                     z.string(),
                                     z.number(),
                                     z.boolean(),
-                                    z.object({}),
+                                    z.looseObject({}),
                                     z.array(z.any()),
                                   ])
                                   .exactOptional()
@@ -2104,7 +2317,7 @@ const ViewSchema = z
   })
   .openapi('View')
 
-const ViewOutputSchema = z
+const ViewOutputSchema: z.ZodType<ViewOutputType> = z
   .object({
     data: z
       .object({
@@ -2182,7 +2395,7 @@ const ViewOutputSchema = z
                                 z.string(),
                                 z.number(),
                                 z.boolean(),
-                                z.object({}),
+                                z.looseObject({}),
                                 z.array(z.any()),
                               ])
                               .exactOptional()
@@ -2242,7 +2455,7 @@ const ViewOutputSchema = z
                                         z.string(),
                                         z.number(),
                                         z.boolean(),
-                                        z.object({}),
+                                        z.looseObject({}),
                                         z.array(z.any()),
                                       ])
                                       .exactOptional()
@@ -2388,7 +2601,7 @@ const ViewOutputSchema = z
   .openapi({ required: ['data'] })
   .openapi('ViewOutput')
 
-const ViewSearchSchema = z
+const ViewSearchSchema: z.ZodType<ViewSearchType> = z
   .object({
     data: z.array(
       z
@@ -2469,7 +2682,7 @@ const ViewSearchSchema = z
                                   z.string(),
                                   z.number(),
                                   z.boolean(),
-                                  z.object({}),
+                                  z.looseObject({}),
                                   z.array(z.any()),
                                 ])
                                 .exactOptional()
@@ -2529,7 +2742,7 @@ const ViewSearchSchema = z
                                           z.string(),
                                           z.number(),
                                           z.boolean(),
-                                          z.object({}),
+                                          z.looseObject({}),
                                           z.array(z.any()),
                                         ])
                                         .exactOptional()

@@ -1,130 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EntityTypeSchema = z
-  .enum([
-    'VirtualMachine',
-    'EC2Instance',
-    'Host',
-    'Vnic',
-    'Vmknic',
-    'VxlanLayer2Network',
-    'VlanL2Network',
-    'Cluster',
-    'SecurityTag',
-    'ResourcePool',
-    'NSXIPSet',
-    'EC2IPSet',
-    'NSXSecurityGroup',
-    'EC2SecurityGroup',
-    'Flow',
-    'ProblemEvent',
-    'Application',
-    'Tier',
-    'NSXFirewallRule',
-    'EC2SGFirewallRule',
-    'NSXRedirectRule',
-    'VCenterManager',
-    'NSXVManager',
-    'NSXService',
-    'EC2Service',
-    'VPC',
-    'NSXDistributedFirewall',
-    'EC2Firewall',
-    'NSXServiceGroup',
-    'DistributedVirtualSwitch',
-    'DistributedVirtualPortgroup',
-    'VCDatacenter',
-    'Datastore',
-    'Folder',
-  ])
-  .openapi('EntityType')
-
-const BaseEntitySchema = z
-  .object({
-    entity_id: z.string().exactOptional(),
-    entity_type: EntityTypeSchema.exactOptional(),
-    name: z.string().exactOptional(),
-  })
-  .openapi({ discriminator: { propertyName: 'entity_type' }, required: [] })
-  .openapi('BaseEntity')
-
-const ReferenceSchema = z
-  .object({ entity_id: z.string().exactOptional(), entity_type: EntityTypeSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('Reference')
-
-const RuleSetSchema = z
-  .object({
-    firewall: ReferenceSchema.exactOptional(),
-    rule_set_type: z.enum(['NSX_STANDARD', 'NSX_REDIRECT', 'AWS_STANDARD']).exactOptional(),
-    rules: z.array(ReferenceSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('RuleSet')
-
-const IpV4AddressSchema = z
-  .object({
-    ip_address: z.string().exactOptional(),
-    netmask: z.string().exactOptional(),
-    network_address: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('IpV4Address')
-
-const BaseVirtualMachineSchema = BaseEntitySchema.and(
-  z
-    .object({
-      default_gateway: z.string().exactOptional(),
-      destination_firewall_rules: z.array(RuleSetSchema).exactOptional(),
-      ip_addresses: z.array(IpV4AddressSchema).exactOptional(),
-      ip_sets: z.array(ReferenceSchema).exactOptional(),
-      security_groups: z.array(ReferenceSchema).exactOptional(),
-      source_firewall_rules: z.array(RuleSetSchema).exactOptional(),
-      vnics: z.array(ReferenceSchema).exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BaseVirtualMachine')
-
-const VlanSchema = z
-  .object({
-    begin: z.int().exactOptional().openapi({ 'x-searchable': true }),
-    end: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Vlan')
-
-type VirtualMachineType = z.infer<typeof BaseVirtualMachineSchema> & {
-  applied_to_destination_rules?: z.infer<typeof RuleSetSchema>[]
-  applied_to_source_rules?: z.infer<typeof RuleSetSchema>[]
-  cluster?: z.infer<typeof ReferenceSchema>
-  datacenter?: z.infer<typeof ReferenceSchema>
-  datastores?: z.infer<typeof ReferenceSchema>[]
-  destination_inversion_rules?: z.infer<typeof RuleSetSchema>[]
-  folders?: z.infer<typeof ReferenceSchema>[]
-  host?: z.infer<typeof ReferenceSchema>
-  layer2_networks?: z.infer<typeof ReferenceSchema>[]
-  nsx_manager?: z.infer<typeof ReferenceSchema>
-  resource_pool?: z.infer<typeof ReferenceSchema>
-  security_tags?: z.infer<typeof ReferenceSchema>[]
-  source_inversion_rules?: z.infer<typeof RuleSetSchema>[]
-  vcenter_manager?: z.infer<typeof ReferenceSchema>
-  vendor_id?: string
-  vlans?: z.infer<typeof VlanSchema>[]
-}
-
-const BaseVnicSchema = BaseEntitySchema.and(
-  z
-    .object({
-      ip_addresses: z.array(IpV4AddressSchema).exactOptional(),
-      layer2_network: ReferenceSchema.exactOptional(),
-      vlan: VlanSchema.exactOptional(),
-      vm: ReferenceSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
-).openapi('BaseVnic')
-
-type VnicType = z.infer<typeof BaseVnicSchema>
-
 const AllEntityTypeSchema = z
   .enum([
     'Group',
@@ -194,6 +69,54 @@ const ApiErrorSchema = z
   })
   .openapi({ required: [] })
   .openapi('ApiError')
+
+const EntityTypeSchema = z
+  .enum([
+    'VirtualMachine',
+    'EC2Instance',
+    'Host',
+    'Vnic',
+    'Vmknic',
+    'VxlanLayer2Network',
+    'VlanL2Network',
+    'Cluster',
+    'SecurityTag',
+    'ResourcePool',
+    'NSXIPSet',
+    'EC2IPSet',
+    'NSXSecurityGroup',
+    'EC2SecurityGroup',
+    'Flow',
+    'ProblemEvent',
+    'Application',
+    'Tier',
+    'NSXFirewallRule',
+    'EC2SGFirewallRule',
+    'NSXRedirectRule',
+    'VCenterManager',
+    'NSXVManager',
+    'NSXService',
+    'EC2Service',
+    'VPC',
+    'NSXDistributedFirewall',
+    'EC2Firewall',
+    'NSXServiceGroup',
+    'DistributedVirtualSwitch',
+    'DistributedVirtualPortgroup',
+    'VCDatacenter',
+    'Datastore',
+    'Folder',
+  ])
+  .openapi('EntityType')
+
+const BaseEntitySchema = z
+  .object({
+    entity_id: z.string().exactOptional(),
+    entity_type: EntityTypeSchema.exactOptional(),
+    name: z.string().exactOptional(),
+  })
+  .openapi({ discriminator: { propertyName: 'entity_type' }, required: [] })
+  .openapi('BaseEntity')
 
 const ApplicationSchema = BaseEntitySchema.and(
   z
@@ -306,6 +229,11 @@ const AristaSwitchDataSourceRequestSchema = SwitchDataSourceRequestSchema.openap
   'AristaSwitchDataSourceRequest',
 )
 
+const ReferenceSchema = z
+  .object({ entity_id: z.string().exactOptional(), entity_type: EntityTypeSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('Reference')
+
 const BaseEventSchema = BaseEntitySchema.and(
   z
     .object({
@@ -330,6 +258,15 @@ const BaseEventSchema = BaseEntitySchema.and(
     })
     .openapi({ required: [] }),
 ).openapi('BaseEvent')
+
+const RuleSetSchema = z
+  .object({
+    firewall: ReferenceSchema.exactOptional(),
+    rule_set_type: z.enum(['NSX_STANDARD', 'NSX_REDIRECT', 'AWS_STANDARD']).exactOptional(),
+    rules: z.array(ReferenceSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('RuleSet')
 
 const BaseFirewallSchema = BaseEntitySchema.and(
   z
@@ -376,6 +313,15 @@ const BaseFirewallRuleSchema = BaseEntitySchema.and(
     })
     .openapi({ required: [] }),
 ).openapi('BaseFirewallRule')
+
+const IpV4AddressSchema = z
+  .object({
+    ip_address: z.string().exactOptional(),
+    netmask: z.string().exactOptional(),
+    network_address: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IpV4Address')
 
 const IpNumericRangeSchema = z
   .object({
@@ -474,6 +420,39 @@ const BaseServiceSchema = BaseEntitySchema.and(
 ).openapi('BaseService')
 
 const BaseServiceGroupSchema = GroupSchema.openapi('BaseServiceGroup')
+
+const BaseVirtualMachineSchema = BaseEntitySchema.and(
+  z
+    .object({
+      default_gateway: z.string().exactOptional(),
+      destination_firewall_rules: z.array(RuleSetSchema).exactOptional(),
+      ip_addresses: z.array(IpV4AddressSchema).exactOptional(),
+      ip_sets: z.array(ReferenceSchema).exactOptional(),
+      security_groups: z.array(ReferenceSchema).exactOptional(),
+      source_firewall_rules: z.array(RuleSetSchema).exactOptional(),
+      vnics: z.array(ReferenceSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('BaseVirtualMachine')
+
+const VlanSchema = z
+  .object({
+    begin: z.int().exactOptional().openapi({ 'x-searchable': true }),
+    end: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Vlan')
+
+const BaseVnicSchema = BaseEntitySchema.and(
+  z
+    .object({
+      ip_addresses: z.array(IpV4AddressSchema).exactOptional(),
+      layer2_network: ReferenceSchema.exactOptional(),
+      vlan: VlanSchema.exactOptional(),
+      vm: ReferenceSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('BaseVnic')
 
 const BrocadeSwitchDataSourceSchema = SwitchDataSourceSchema.openapi('BrocadeSwitchDataSource')
 
@@ -1421,32 +1400,28 @@ const VersionResponseSchema = z
   .openapi({ required: [] })
   .openapi('VersionResponse')
 
-const VirtualMachineSchema: z.ZodType<VirtualMachineType> = z
-  .lazy(() =>
-    BaseVirtualMachineSchema.and(
-      z
-        .object({
-          applied_to_destination_rules: z.array(RuleSetSchema).exactOptional(),
-          applied_to_source_rules: z.array(RuleSetSchema).exactOptional(),
-          cluster: ReferenceSchema.exactOptional(),
-          datacenter: ReferenceSchema.exactOptional(),
-          datastores: z.array(ReferenceSchema).exactOptional(),
-          destination_inversion_rules: z.array(RuleSetSchema).exactOptional(),
-          folders: z.array(ReferenceSchema).exactOptional(),
-          host: ReferenceSchema.exactOptional(),
-          layer2_networks: z.array(ReferenceSchema).exactOptional(),
-          nsx_manager: ReferenceSchema.exactOptional(),
-          resource_pool: ReferenceSchema.exactOptional(),
-          security_tags: z.array(ReferenceSchema).exactOptional(),
-          source_inversion_rules: z.array(RuleSetSchema).exactOptional(),
-          vcenter_manager: ReferenceSchema.exactOptional(),
-          vendor_id: z.string().exactOptional(),
-          vlans: z.array(VlanSchema).exactOptional(),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('VirtualMachine')
+const VirtualMachineSchema = BaseVirtualMachineSchema.and(
+  z
+    .object({
+      applied_to_destination_rules: z.array(RuleSetSchema).exactOptional(),
+      applied_to_source_rules: z.array(RuleSetSchema).exactOptional(),
+      cluster: ReferenceSchema.exactOptional(),
+      datacenter: ReferenceSchema.exactOptional(),
+      datastores: z.array(ReferenceSchema).exactOptional(),
+      destination_inversion_rules: z.array(RuleSetSchema).exactOptional(),
+      folders: z.array(ReferenceSchema).exactOptional(),
+      host: ReferenceSchema.exactOptional(),
+      layer2_networks: z.array(ReferenceSchema).exactOptional(),
+      nsx_manager: ReferenceSchema.exactOptional(),
+      resource_pool: ReferenceSchema.exactOptional(),
+      security_tags: z.array(ReferenceSchema).exactOptional(),
+      source_inversion_rules: z.array(RuleSetSchema).exactOptional(),
+      vcenter_manager: ReferenceSchema.exactOptional(),
+      vendor_id: z.string().exactOptional(),
+      vlans: z.array(VlanSchema).exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('VirtualMachine')
 
 const VlanL2NetworkSchema = BaseL2NetworkSchema.and(
   z
@@ -1469,7 +1444,7 @@ const VmknicSchema = BaseEntitySchema.and(
     .openapi({ required: [] }),
 ).openapi('Vmknic')
 
-const VnicSchema: z.ZodType<VnicType> = z.lazy(() => BaseVnicSchema).openapi('Vnic')
+const VnicSchema = BaseVnicSchema.openapi('Vnic')
 
 const VxlanLayer2NetworkSchema = BaseL2NetworkSchema.and(
   z

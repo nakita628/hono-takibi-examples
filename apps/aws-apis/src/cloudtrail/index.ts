@@ -1,0 +1,118 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101AddTagsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CancelQueryHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateChannelHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateEventDataStoreHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateTrailHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteChannelHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteEventDataStoreHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteResourcePolicyHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeregisterOrganizationDelegatedAdminHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DescribeQueryHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DescribeTrailsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetChannelHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetEventDataStoreHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetEventSelectorsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetImportHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetInsightSelectorsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetQueryResultsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetResourcePolicyHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetTrailHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetTrailStatusHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListChannelsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListEventDataStoresHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListImportFailuresHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListImportsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListPublicKeysHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListQueriesHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListTagsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListTrailsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101LookupEventsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutEventSelectorsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutInsightSelectorsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutResourcePolicyHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RegisterOrganizationDelegatedAdminHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RemoveTagsHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RestoreEventDataStoreHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartImportHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartLoggingHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartQueryHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StopImportHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StopLoggingHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateChannelHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateEventDataStoreHandler,
+  xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateTrailHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101AddTagsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CancelQueryHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateChannelHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateEventDataStoreHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101CreateTrailHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteChannelHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteEventDataStoreHandler,
+  )
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteResourcePolicyHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeleteTrailHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DeregisterOrganizationDelegatedAdminHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DescribeQueryHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101DescribeTrailsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetChannelHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetEventDataStoreHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetEventSelectorsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetImportHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetInsightSelectorsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetQueryResultsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetResourcePolicyHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetTrailHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101GetTrailStatusHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListChannelsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListEventDataStoresHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListImportFailuresHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListImportsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListPublicKeysHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListQueriesHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListTagsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101ListTrailsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101LookupEventsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutEventSelectorsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutInsightSelectorsHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101PutResourcePolicyHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RegisterOrganizationDelegatedAdminHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RemoveTagsHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101RestoreEventDataStoreHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartImportHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartLoggingHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StartQueryHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StopImportHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101StopLoggingHandler)
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateChannelHandler)
+  .route(
+    '/',
+    xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateEventDataStoreHandler,
+  )
+  .route('/', xAmzTargetComAmazonawsCloudtrailV20131101CloudTrail20131101UpdateTrailHandler)
+
+export default app

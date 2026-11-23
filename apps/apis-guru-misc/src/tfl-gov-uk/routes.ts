@@ -11,6 +11,811 @@ const TflApiPresentationEntitiesAdditionalPropertiesSchema = z
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesAdditionalProperties')
 
+const TflApiPresentationEntitiesPlaceSchema: z.ZodType<TflApiPresentationEntitiesPlaceType> = z
+  .lazy(() =>
+    z
+      .object({
+        additionalProperties: z
+          .array(TflApiPresentationEntitiesAdditionalPropertiesSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'A bag of additional key/value pairs with extra information about this place.',
+          }),
+        children: z.array(TflApiPresentationEntitiesPlaceSchema).exactOptional(),
+        childrenUrls: z.array(z.string()).exactOptional(),
+        commonName: z.string().exactOptional().openapi({ description: 'A human readable name.' }),
+        distance: z
+          .float64()
+          .exactOptional()
+          .openapi({
+            description:
+              'The distance of the place from its search point, if this is the result\r\n            of a geographical search, otherwise zero.',
+          }),
+        id: z.string().exactOptional().openapi({ description: 'A unique identifier.' }),
+        lat: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'WGS84 latitude of the location.' }),
+        lon: z
+          .float64()
+          .exactOptional()
+          .openapi({ description: 'WGS84 longitude of the location.' }),
+        placeType: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'The type of Place. See /Place/Meta/placeTypes for possible values.',
+          }),
+        url: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The unique location of this resource.' }),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('TflApiPresentationEntitiesPlace')
+
+const TflApiPresentationEntitiesLineGroupSchema = z
+  .object({
+    lineIdentifier: z.array(z.string()).exactOptional(),
+    naptanIdReference: z.string().exactOptional(),
+    stationAtcoCode: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesLineGroup')
+
+const TflApiPresentationEntitiesLineModeGroupSchema = z
+  .object({
+    lineIdentifier: z.array(z.string()).exactOptional(),
+    modeName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesLineModeGroup')
+
+const TflApiPresentationEntitiesPassengerFlowSchema = z
+  .object({
+    timeSlice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Time in 24hr format with 15 minute intervals e.g. 0500-0515, 0515-0530 etc.',
+      }),
+    value: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Count of passenger flow towards a platform' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesPassengerFlow')
+
+const TflApiPresentationEntitiesTrainLoadingSchema = z
+  .object({
+    direction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Direction in regards to Journey Planner i.e. inbound or outbound' }),
+    line: z.string().exactOptional().openapi({ description: 'The Line Name e.g. "Victoria"' }),
+    lineDirection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Direction of the Line e.g. NB, SB, WB etc.' }),
+    naptanTo: z.string().exactOptional().openapi({ description: 'Naptan of the adjacent station' }),
+    platformDirection: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Direction displayed on the platform e.g. NB, SB, WB etc.' }),
+    timeSlice: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Time in 24hr format with 15 minute intervals e.g. 0500-0515, 0515-0530 etc.',
+      }),
+    value: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Scale between 1-6, \r\n             1 = Very quiet, 2 = Quiet, 3 = Fairly busy, 4 = Busy, 5 = Very busy, 6 = Exceptionally busy',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesTrainLoading')
+
+const TflApiPresentationEntitiesCrowdingSchema = z
+  .object({
+    passengerFlows: z
+      .array(TflApiPresentationEntitiesPassengerFlowSchema)
+      .exactOptional()
+      .openapi({ description: 'Busiest times at a station (static information)' }),
+    trainLoadings: z
+      .array(TflApiPresentationEntitiesTrainLoadingSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Train Loading on a scale 1-6, 1 being "Very quiet" and 6 being "Exceptionally busy" (static information)',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesCrowding')
+
+const TflApiPresentationEntitiesIdentifierSchema = z
+  .object({
+    crowding: TflApiPresentationEntitiesCrowdingSchema.exactOptional(),
+    fullName: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    motType: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    network: z.string().exactOptional(),
+    routeType: z
+      .enum([
+        'Unknown',
+        'All',
+        'Cycle Superhighways',
+        'Quietways',
+        'Cycleways',
+        'Mini-Hollands',
+        'Central London Grid',
+        'Streetspace Route',
+      ])
+      .exactOptional(),
+    status: z
+      .enum([
+        'Unknown',
+        'All',
+        'Open',
+        'In Progress',
+        'Planned',
+        'Planned - Subject to feasibility and consultation.',
+        'Not Open',
+      ])
+      .exactOptional(),
+    type: z.string().exactOptional(),
+    uri: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesIdentifier')
+
+const TflApiPresentationEntitiesStopPointSchema = z
+  .object({
+    accessibilitySummary: z.string().exactOptional(),
+    additionalProperties: z
+      .array(TflApiPresentationEntitiesAdditionalPropertiesSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A bag of additional key/value pairs with extra information about this place.',
+      }),
+    children: z.array(TflApiPresentationEntitiesPlaceSchema).exactOptional(),
+    childrenUrls: z.array(z.string()).exactOptional(),
+    commonName: z.string().exactOptional().openapi({ description: 'A human readable name.' }),
+    distance: z
+      .float64()
+      .exactOptional()
+      .openapi({
+        description:
+          'The distance of the place from its search point, if this is the result\r\n            of a geographical search, otherwise zero.',
+      }),
+    fullName: z.string().exactOptional(),
+    hubNaptanCode: z.string().exactOptional(),
+    icsCode: z.string().exactOptional(),
+    id: z.string().exactOptional().openapi({ description: 'A unique identifier.' }),
+    indicator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The indicator of the stop point e.g. "Stop K"' }),
+    individualStopId: z.string().exactOptional(),
+    lat: z.float64().exactOptional().openapi({ description: 'WGS84 latitude of the location.' }),
+    lineGroup: z.array(TflApiPresentationEntitiesLineGroupSchema).exactOptional(),
+    lineModeGroups: z.array(TflApiPresentationEntitiesLineModeGroupSchema).exactOptional(),
+    lines: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
+    lon: z.float64().exactOptional().openapi({ description: 'WGS84 longitude of the location.' }),
+    modes: z.array(z.string()).exactOptional(),
+    naptanId: z.string().exactOptional(),
+    naptanMode: z.string().exactOptional(),
+    placeType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The type of Place. See /Place/Meta/placeTypes for possible values.',
+      }),
+    platformName: z.string().exactOptional(),
+    smsCode: z.string().exactOptional(),
+    stationNaptan: z.string().exactOptional(),
+    status: z.boolean().exactOptional(),
+    stopLetter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The stop letter, if it could be cleansed from the Indicator e.g. "K"',
+      }),
+    stopType: z.string().exactOptional(),
+    url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique location of this resource.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesStopPoint')
+
+const TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema = z
+  .object({
+    ordinal: z.int32().exactOptional(),
+    stopPoint: TflApiPresentationEntitiesStopPointSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesRouteSectionNaptanEntrySequence')
+
+type TflApiPresentationEntitiesDisruptedRouteType = {
+  destinationName?: string
+  direction?: string
+  id?: string
+  isEntireRouteSection?: boolean
+  lineId?: string
+  lineString?: string
+  name?: string
+  originationName?: string
+  routeCode?: string
+  routeSectionNaptanEntrySequence?: z.infer<
+    typeof TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema
+  >[]
+  validFrom?: string
+  validTo?: string
+  via?: z.infer<typeof TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema>
+}
+
+const TflApiPresentationEntitiesDisruptedRouteSchema: z.ZodType<TflApiPresentationEntitiesDisruptedRouteType> =
+  z
+    .object({
+      destinationName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the Destination StopPoint' }),
+      direction: z.string().exactOptional().openapi({ description: 'Inbound or Outbound' }),
+      id: z.string().exactOptional().openapi({ description: 'The Id of the route' }),
+      isEntireRouteSection: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether this represents the entire route section' }),
+      lineId: z.string().exactOptional().openapi({ description: 'The Id of the Line' }),
+      lineString: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The co-ordinates of the route's path as a geoJSON lineString" }),
+      name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
+      originationName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the Origin StopPoint' }),
+      routeCode: z.string().exactOptional().openapi({ description: 'The route code' }),
+      routeSectionNaptanEntrySequence: z
+        .array(TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema)
+        .exactOptional(),
+      validFrom: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The DateTime that the Service containing this Route is valid from.',
+        }),
+      validTo: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The DateTime that the Service containing this Route is valid until.',
+        }),
+      via: TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema.exactOptional(),
+    })
+    .openapi({
+      description: 'keep old RouteSection name so as not to break contract',
+      required: [],
+    })
+    .openapi('TflApiPresentationEntitiesDisruptedRoute')
+
+type TflApiPresentationEntitiesDisruptionType = {
+  additionalInfo?: string
+  affectedRoutes?: z.infer<typeof TflApiPresentationEntitiesDisruptedRouteSchema>[]
+  affectedStops?: z.infer<typeof TflApiPresentationEntitiesStopPointSchema>[]
+  category?:
+    | 'Undefined'
+    | 'RealTime'
+    | 'PlannedWork'
+    | 'Information'
+    | 'Event'
+    | 'Crowding'
+    | 'StatusAlert'
+  categoryDescription?: string
+  closureText?: string
+  created?: string
+  description?: string
+  lastUpdate?: string
+  summary?: string
+  type?: string
+}
+
+const TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationDataSchema = z
+  .object({
+    destinationId: z.string().exactOptional(),
+    destinationNumberOfBikes: z.int32().exactOptional(),
+    destinationNumberOfEmptySlots: z.int32().exactOptional(),
+    originId: z.string().exactOptional(),
+    originNumberOfBikes: z.int32().exactOptional(),
+    originNumberOfEmptySlots: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationData')
+
+const TflApiPresentationEntitiesJourneyPlannerJourneyVectorSchema = z
+  .object({
+    from: z.string().exactOptional(),
+    to: z.string().exactOptional(),
+    uri: z.string().exactOptional(),
+    via: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyVector')
+
+const TflApiPresentationEntitiesJourneyPlannerFareCaveatSchema = z
+  .object({ text: z.string().exactOptional(), type: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerFareCaveat')
+
+const TflApiPresentationEntitiesJourneyPlannerFareTapDetailsSchema = z
+  .object({
+    busRouteId: z.string().exactOptional(),
+    hostDeviceType: z.string().exactOptional(),
+    modeType: z.string().exactOptional(),
+    nationalLocationCode: z.int32().exactOptional(),
+    tapTimestamp: z.iso.datetime({ offset: true }).exactOptional(),
+    validationType: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerFareTapDetails')
+
+const TflApiPresentationEntitiesJourneyPlannerFareTapSchema = z
+  .object({
+    atcoCode: z.string().exactOptional(),
+    tapDetails: TflApiPresentationEntitiesJourneyPlannerFareTapDetailsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerFareTap')
+
+const TflApiPresentationEntitiesJourneyPlannerFareSchema = z
+  .object({
+    chargeLevel: z.string().exactOptional(),
+    chargeProfileName: z.string().exactOptional(),
+    cost: z.int32().exactOptional(),
+    highZone: z.int32().exactOptional(),
+    isHopperFare: z.boolean().exactOptional(),
+    lowZone: z.int32().exactOptional(),
+    offPeak: z.int32().exactOptional(),
+    peak: z.int32().exactOptional(),
+    taps: z.array(TflApiPresentationEntitiesJourneyPlannerFareTapSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerFare')
+
+const TflApiPresentationEntitiesJourneyPlannerJourneyFareSchema = z
+  .object({
+    caveats: z.array(TflApiPresentationEntitiesJourneyPlannerFareCaveatSchema).exactOptional(),
+    fares: z.array(TflApiPresentationEntitiesJourneyPlannerFareSchema).exactOptional(),
+    totalCost: z.int32().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyFare')
+
+const TflApiPresentationEntitiesPointSchema = z
+  .object({
+    lat: z.float64().exactOptional().openapi({ description: 'WGS84 latitude of the location.' }),
+    lon: z.float64().exactOptional().openapi({ description: 'WGS84 longitude of the location.' }),
+  })
+  .openapi({
+    description:
+      'Represents a point located at a latitude and longitude using the WGS84 co-ordinate system.',
+    required: [],
+  })
+  .openapi('TflApiPresentationEntitiesPoint')
+
+const TflApiPresentationEntitiesDisruptionSchema: z.ZodType<TflApiPresentationEntitiesDisruptionType> =
+  z
+    .object({
+      additionalInfo: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the additionaInfo of this disruption.' }),
+      affectedRoutes: z
+        .array(TflApiPresentationEntitiesDisruptedRouteSchema)
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the routes affected by this disruption' }),
+      affectedStops: z
+        .array(TflApiPresentationEntitiesStopPointSchema)
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the stops affected by this disruption' }),
+      category: z
+        .enum([
+          'Undefined',
+          'RealTime',
+          'PlannedWork',
+          'Information',
+          'Event',
+          'Crowding',
+          'StatusAlert',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the category of this dispruption.' }),
+      categoryDescription: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the description of the category.' }),
+      closureText: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Text describing the closure type' }),
+      created: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the date/time when this disruption was created.' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the description of this disruption.' }),
+      lastUpdate: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'Gets or sets the date/time when this disruption was last updated.',
+        }),
+      summary: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the summary of this disruption.' }),
+      type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Gets or sets the disruption type of this dispruption.' }),
+    })
+    .openapi({
+      description: 'Represents a disruption to a route within the transport network.',
+      required: [],
+    })
+    .openapi('TflApiPresentationEntitiesDisruption')
+
+const TflApiPresentationEntitiesPathAttributeSchema = z
+  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesPathAttribute')
+
+const TflApiPresentationEntitiesInstructionStepSchema = z
+  .object({
+    cumulativeDistance: z.int32().exactOptional(),
+    cumulativeTravelTime: z.int32().exactOptional(),
+    description: z.string().exactOptional(),
+    descriptionHeading: z.string().exactOptional(),
+    distance: z.int32().exactOptional(),
+    latitude: z.float64().exactOptional(),
+    longitude: z.float64().exactOptional(),
+    pathAttribute: TflApiPresentationEntitiesPathAttributeSchema.exactOptional(),
+    skyDirection: z.int32().exactOptional(),
+    skyDirectionDescription: z
+      .enum(['North', 'NorthEast', 'East', 'SouthEast', 'South', 'SouthWest', 'West', 'NorthWest'])
+      .exactOptional(),
+    streetName: z.string().exactOptional(),
+    trackType: z
+      .enum([
+        'CycleSuperHighway',
+        'CanalTowpath',
+        'QuietRoad',
+        'ProvisionForCyclists',
+        'BusyRoads',
+        'None',
+        'PushBike',
+        'Quietway',
+      ])
+      .exactOptional(),
+    turnDirection: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesInstructionStep')
+
+const TflApiPresentationEntitiesInstructionSchema = z
+  .object({
+    detailed: z.string().exactOptional(),
+    steps: z.array(TflApiPresentationEntitiesInstructionStepSchema).exactOptional(),
+    summary: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesInstruction')
+
+const TflApiPresentationEntitiesJourneyPlannerObstacleSchema = z
+  .object({
+    incline: z.string().exactOptional(),
+    position: z.string().exactOptional(),
+    stopId: z.int32().exactOptional(),
+    type: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerObstacle')
+
+const TflApiCommonJourneyPlannerJpElevationSchema = z
+  .object({
+    distance: z.int32().exactOptional(),
+    endLat: z.float64().exactOptional(),
+    endLon: z.float64().exactOptional(),
+    gradient: z.float64().exactOptional(),
+    heightFromPreviousPoint: z.int32().exactOptional(),
+    startLat: z.float64().exactOptional(),
+    startLon: z.float64().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiCommonJourneyPlannerJpElevation')
+
+const TflApiPresentationEntitiesJourneyPlannerPathSchema = z
+  .object({
+    elevation: z.array(TflApiCommonJourneyPlannerJpElevationSchema).exactOptional(),
+    lineString: z.string().exactOptional(),
+    stopPoints: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerPath')
+
+const TflApiPresentationEntitiesJourneyPlannerPlannedWorkSchema = z
+  .object({
+    createdDateTime: z.iso.datetime({ offset: true }).exactOptional(),
+    description: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    lastUpdateDateTime: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerPlannedWork')
+
+const TflApiPresentationEntitiesJourneyPlannerRouteOptionSchema = z
+  .object({
+    direction: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The direction of the route, i.e. outbound or inbound.' }),
+    directions: z.array(z.string()).exactOptional(),
+    id: z.string().exactOptional().openapi({ description: 'The Id of the route' }),
+    lineIdentifier: TflApiPresentationEntitiesIdentifierSchema.exactOptional(),
+    name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerRouteOption')
+
+type TflApiPresentationEntitiesJourneyPlannerLegType = {
+  arrivalPoint?: z.infer<typeof TflApiPresentationEntitiesPointSchema>
+  arrivalTime?: string
+  departurePoint?: z.infer<typeof TflApiPresentationEntitiesPointSchema>
+  departureTime?: string
+  disruptions?: z.infer<typeof TflApiPresentationEntitiesDisruptionSchema>[]
+  distance?: number
+  duration?: number
+  hasFixedLocations?: boolean
+  instruction?: z.infer<typeof TflApiPresentationEntitiesInstructionSchema>
+  interChangeDuration?: string
+  interChangePosition?: string
+  isDisrupted?: boolean
+  mode?: z.infer<typeof TflApiPresentationEntitiesIdentifierSchema>
+  obstacles?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerObstacleSchema>[]
+  path?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerPathSchema>
+  plannedWorks?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerPlannedWorkSchema>[]
+  routeOptions?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerRouteOptionSchema>[]
+  scheduledArrivalTime?: string
+  scheduledDepartureTime?: string
+  speed?: string
+}
+
+const TflApiPresentationEntitiesJourneyPlannerLegSchema: z.ZodType<TflApiPresentationEntitiesJourneyPlannerLegType> =
+  z
+    .object({
+      arrivalPoint: TflApiPresentationEntitiesPointSchema.exactOptional(),
+      arrivalTime: z.iso.datetime({ offset: true }).exactOptional(),
+      departurePoint: TflApiPresentationEntitiesPointSchema.exactOptional(),
+      departureTime: z.iso.datetime({ offset: true }).exactOptional(),
+      disruptions: z.array(TflApiPresentationEntitiesDisruptionSchema).exactOptional(),
+      distance: z.float64().exactOptional(),
+      duration: z.int32().exactOptional(),
+      hasFixedLocations: z.boolean().exactOptional().openapi({ readOnly: true }),
+      instruction: TflApiPresentationEntitiesInstructionSchema.exactOptional(),
+      interChangeDuration: z.string().exactOptional(),
+      interChangePosition: z.string().exactOptional(),
+      isDisrupted: z.boolean().exactOptional().openapi({ readOnly: true }),
+      mode: TflApiPresentationEntitiesIdentifierSchema.exactOptional(),
+      obstacles: z.array(TflApiPresentationEntitiesJourneyPlannerObstacleSchema).exactOptional(),
+      path: TflApiPresentationEntitiesJourneyPlannerPathSchema.exactOptional(),
+      plannedWorks: z
+        .array(TflApiPresentationEntitiesJourneyPlannerPlannedWorkSchema)
+        .exactOptional(),
+      routeOptions: z
+        .array(TflApiPresentationEntitiesJourneyPlannerRouteOptionSchema)
+        .exactOptional(),
+      scheduledArrivalTime: z.iso.datetime({ offset: true }).exactOptional(),
+      scheduledDepartureTime: z.iso.datetime({ offset: true }).exactOptional(),
+      speed: z.string().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesJourneyPlannerLeg')
+
+type TflApiPresentationEntitiesJourneyPlannerJourneyType = {
+  arrivalDateTime?: string
+  duration?: number
+  fare?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerJourneyFareSchema>
+  legs?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerLegSchema>[]
+  startDateTime?: string
+}
+
+const TflApiPresentationEntitiesJourneyPlannerJourneySchema: z.ZodType<TflApiPresentationEntitiesJourneyPlannerJourneyType> =
+  z
+    .object({
+      arrivalDateTime: z.iso.datetime({ offset: true }).exactOptional(),
+      duration: z.int32().exactOptional(),
+      fare: TflApiPresentationEntitiesJourneyPlannerJourneyFareSchema.exactOptional(),
+      legs: z.array(TflApiPresentationEntitiesJourneyPlannerLegSchema).exactOptional(),
+      startDateTime: z.iso.datetime({ offset: true }).exactOptional(),
+    })
+    .openapi({
+      description: 'Object that represents an end to end journey (see schematic).',
+      required: [],
+    })
+    .openapi('TflApiPresentationEntitiesJourneyPlannerJourney')
+
+const TflApiPresentationEntitiesValidityPeriodSchema = z
+  .object({
+    fromDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the start date.' }),
+    isNow: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If true is a realtime status rather than planned or info' }),
+    toDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Gets or sets the end date.' }),
+  })
+  .openapi({ description: 'Represents a period for which a planned works is valid.', required: [] })
+  .openapi('TflApiPresentationEntitiesValidityPeriod')
+
+type TflApiPresentationEntitiesLineStatusType = {
+  created?: string
+  disruption?: z.infer<typeof TflApiPresentationEntitiesDisruptionSchema>
+  id?: number
+  lineId?: string
+  modified?: string
+  reason?: string
+  statusSeverity?: number
+  statusSeverityDescription?: string
+  validityPeriods?: z.infer<typeof TflApiPresentationEntitiesValidityPeriodSchema>[]
+}
+
+const TflApiPresentationEntitiesLineStatusSchema: z.ZodType<TflApiPresentationEntitiesLineStatusType> =
+  z
+    .object({
+      created: z.iso.datetime({ offset: true }).exactOptional(),
+      disruption: TflApiPresentationEntitiesDisruptionSchema.exactOptional(),
+      id: z.int32().exactOptional(),
+      lineId: z.string().exactOptional(),
+      modified: z.iso.datetime({ offset: true }).exactOptional(),
+      reason: z.string().exactOptional(),
+      statusSeverity: z.int32().exactOptional(),
+      statusSeverityDescription: z.string().exactOptional(),
+      validityPeriods: z.array(TflApiPresentationEntitiesValidityPeriodSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesLineStatus')
+
+const TflApiPresentationEntitiesMatchedRouteSchema = z
+  .object({
+    destination: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Id (NaPTAN code) or the Destination StopPoint' }),
+    destinationName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the Destination StopPoint' }),
+    direction: z.string().exactOptional().openapi({ description: 'Inbound or Outbound' }),
+    name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
+    originationName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the Origin StopPoint' }),
+    originator: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The Id (NaPTAN code) of the Origin StopPoint' }),
+    routeCode: z.string().exactOptional().openapi({ description: 'The route code' }),
+    serviceType: z.string().exactOptional().openapi({ description: 'Regular or Night' }),
+    validFrom: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The DateTime that the Service containing this Route is valid from.',
+      }),
+    validTo: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'The DateTime that the Service containing this Route is valid until.',
+      }),
+  })
+  .openapi({ description: 'Description of a Route used in Route search results.', required: [] })
+  .openapi('TflApiPresentationEntitiesMatchedRoute')
+
+const TflApiPresentationEntitiesLineServiceTypeInfoSchema = z
+  .object({ name: z.string().exactOptional(), uri: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesLineServiceTypeInfo')
+
+type TflApiPresentationEntitiesLineType = {
+  created?: string
+  crowding?: z.infer<typeof TflApiPresentationEntitiesCrowdingSchema>
+  disruptions?: z.infer<typeof TflApiPresentationEntitiesDisruptionSchema>[]
+  id?: string
+  lineStatuses?: z.infer<typeof TflApiPresentationEntitiesLineStatusSchema>[]
+  modeName?: string
+  modified?: string
+  name?: string
+  routeSections?: z.infer<typeof TflApiPresentationEntitiesMatchedRouteSchema>[]
+  serviceTypes?: z.infer<typeof TflApiPresentationEntitiesLineServiceTypeInfoSchema>[]
+}
+
+const TflApiPresentationEntitiesLineSchema: z.ZodType<TflApiPresentationEntitiesLineType> = z
+  .object({
+    created: z.iso.datetime({ offset: true }).exactOptional(),
+    crowding: TflApiPresentationEntitiesCrowdingSchema.exactOptional(),
+    disruptions: z.array(TflApiPresentationEntitiesDisruptionSchema).exactOptional(),
+    id: z.string().exactOptional(),
+    lineStatuses: z.array(TflApiPresentationEntitiesLineStatusSchema).exactOptional(),
+    modeName: z.string().exactOptional(),
+    modified: z.iso.datetime({ offset: true }).exactOptional(),
+    name: z.string().exactOptional(),
+    routeSections: z.array(TflApiPresentationEntitiesMatchedRouteSchema).exactOptional(),
+    serviceTypes: z.array(TflApiPresentationEntitiesLineServiceTypeInfoSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesLine')
+
+const TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema = z
+  .object({
+    date: z.string().exactOptional(),
+    time: z.string().exactOptional(),
+    timeIs: z.string().exactOptional(),
+    uri: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerTimeAdjustment')
+
+const TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentsSchema = z
+  .object({
+    earlier: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
+    earliest: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
+    later: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
+    latest: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerTimeAdjustments')
+
+const TflApiPresentationEntitiesJourneyPlannerSearchCriteriaSchema = z
+  .object({
+    dateTime: z.iso.datetime({ offset: true }).exactOptional(),
+    dateTimeType: z.enum(['Arriving', 'Departing']).exactOptional(),
+    timeAdjustments: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesJourneyPlannerSearchCriteria')
+
+type TflApiPresentationEntitiesJourneyPlannerItineraryResultType = {
+  cycleHireDockingStationData?: z.infer<
+    typeof TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationDataSchema
+  >
+  journeyVector?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerJourneyVectorSchema>
+  journeys?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerJourneySchema>[]
+  lines?: z.infer<typeof TflApiPresentationEntitiesLineSchema>[]
+  recommendedMaxAgeMinutes?: number
+  searchCriteria?: z.infer<typeof TflApiPresentationEntitiesJourneyPlannerSearchCriteriaSchema>
+  stopMessages?: string[]
+}
+
 type TflApiPresentationEntitiesPlaceType = {
   additionalProperties?: z.infer<typeof TflApiPresentationEntitiesAdditionalPropertiesSchema>[]
   children?: TflApiPresentationEntitiesPlaceType[]
@@ -22,6 +827,260 @@ type TflApiPresentationEntitiesPlaceType = {
   lon?: number
   placeType?: string
   url?: string
+}
+
+const TflApiPresentationEntitiesLineRouteSectionSchema = z
+  .object({
+    destination: z.string().exactOptional(),
+    direction: z.string().exactOptional(),
+    fromStation: z.string().exactOptional(),
+    routeId: z.int32().exactOptional(),
+    serviceType: z.string().exactOptional(),
+    toStation: z.string().exactOptional(),
+    vehicleDestinationText: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesLineRouteSection')
+
+const TflApiPresentationEntitiesMatchedRouteSectionsSchema = z
+  .object({ id: z.int32().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesMatchedRouteSections')
+
+const TflApiPresentationEntitiesMatchedStopSchema = z
+  .object({
+    accessibilitySummary: z.string().exactOptional(),
+    direction: z.string().exactOptional(),
+    hasDisruption: z.boolean().exactOptional(),
+    icsId: z.string().exactOptional(),
+    id: z.string().exactOptional(),
+    lat: z.float64().exactOptional(),
+    lines: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
+    lon: z.float64().exactOptional(),
+    modes: z.array(z.string()).exactOptional(),
+    name: z.string().exactOptional(),
+    parentId: z.string().exactOptional(),
+    routeId: z.int32().exactOptional(),
+    stationId: z.string().exactOptional(),
+    status: z.boolean().exactOptional(),
+    stopLetter: z.string().exactOptional(),
+    stopType: z.string().exactOptional(),
+    topMostParentId: z.string().exactOptional(),
+    towards: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    zone: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesMatchedStop')
+
+type TflApiPresentationEntitiesRouteSearchMatchType = {
+  id?: string
+  lat?: number
+  lineId?: string
+  lineName?: string
+  lineRouteSection?: z.infer<typeof TflApiPresentationEntitiesLineRouteSectionSchema>[]
+  lon?: number
+  matchedRouteSections?: z.infer<typeof TflApiPresentationEntitiesMatchedRouteSectionsSchema>[]
+  matchedStops?: z.infer<typeof TflApiPresentationEntitiesMatchedStopSchema>[]
+  mode?: string
+  name?: string
+  url?: string
+}
+
+const TflApiPresentationEntitiesRouteSearchMatchSchema: z.ZodType<TflApiPresentationEntitiesRouteSearchMatchType> =
+  z
+    .object({
+      id: z.string().exactOptional(),
+      lat: z.float64().exactOptional(),
+      lineId: z.string().exactOptional(),
+      lineName: z.string().exactOptional(),
+      lineRouteSection: z.array(TflApiPresentationEntitiesLineRouteSectionSchema).exactOptional(),
+      lon: z.float64().exactOptional(),
+      matchedRouteSections: z
+        .array(TflApiPresentationEntitiesMatchedRouteSectionsSchema)
+        .exactOptional(),
+      matchedStops: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
+      mode: z.string().exactOptional(),
+      name: z.string().exactOptional(),
+      url: z.string().exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesRouteSearchMatch')
+
+type TflApiPresentationEntitiesRouteSearchResponseType = {
+  input?: string
+  searchMatches?: z.infer<typeof TflApiPresentationEntitiesRouteSearchMatchSchema>[]
+}
+
+const TflApiPresentationEntitiesOrderedRouteSchema = z
+  .object({
+    name: z.string().exactOptional(),
+    naptanIds: z.array(z.string()).exactOptional(),
+    serviceType: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesOrderedRoute')
+
+type TflApiPresentationEntitiesStopPointSequenceType = {
+  branchId?: number
+  direction?: string
+  lineId?: string
+  lineName?: string
+  nextBranchIds?: number[]
+  prevBranchIds?: number[]
+  serviceType?: 'Regular' | 'Night'
+  stopPoint?: z.infer<typeof TflApiPresentationEntitiesMatchedStopSchema>[]
+}
+
+const TflApiPresentationEntitiesStopPointSequenceSchema: z.ZodType<TflApiPresentationEntitiesStopPointSequenceType> =
+  z
+    .object({
+      branchId: z.int32().exactOptional().openapi({ description: 'The id of this branch.' }),
+      direction: z.string().exactOptional(),
+      lineId: z.string().exactOptional(),
+      lineName: z.string().exactOptional(),
+      nextBranchIds: z
+        .array(z.int32())
+        .exactOptional()
+        .openapi({
+          description:
+            'The ids of the next branch(es) in the sequence. Note that the next and previous branch id can be\r\n            identical in the case of a looped route e.g. the Circle line.',
+        }),
+      prevBranchIds: z
+        .array(z.int32())
+        .exactOptional()
+        .openapi({
+          description:
+            'The ids of the previous branch(es) in the sequence. Note that the next and previous branch id can be\r\n            identical in the case of a looped route e.g. the Circle line.',
+        }),
+      serviceType: z.enum(['Regular', 'Night']).exactOptional(),
+      stopPoint: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesStopPointSequence')
+
+type TflApiPresentationEntitiesRouteSequenceType = {
+  direction?: string
+  isOutboundOnly?: boolean
+  lineId?: string
+  lineName?: string
+  lineStrings?: string[]
+  mode?: string
+  orderedLineRoutes?: z.infer<typeof TflApiPresentationEntitiesOrderedRouteSchema>[]
+  stations?: z.infer<typeof TflApiPresentationEntitiesMatchedStopSchema>[]
+  stopPointSequences?: z.infer<typeof TflApiPresentationEntitiesStopPointSequenceSchema>[]
+}
+
+type TflApiPresentationEntitiesStopPointsResponseType = {
+  centrePoint?: number[]
+  page?: number
+  pageSize?: number
+  stopPoints?: z.infer<typeof TflApiPresentationEntitiesStopPointSchema>[]
+  total?: number
+}
+
+const TflApiPresentationEntitiesKnownJourneySchema = z
+  .object({
+    hour: z.string().exactOptional(),
+    intervalId: z.int32().exactOptional(),
+    minute: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesKnownJourney')
+
+const TflApiPresentationEntitiesServiceFrequencySchema = z
+  .object({
+    highestFrequency: z.float64().exactOptional(),
+    lowestFrequency: z.float64().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesServiceFrequency')
+
+const TflApiPresentationEntitiesTwentyFourHourClockTimeSchema = z
+  .object({ hour: z.string().exactOptional(), minute: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesTwentyFourHourClockTime')
+
+const TflApiPresentationEntitiesPeriodSchema = z
+  .object({
+    frequency: TflApiPresentationEntitiesServiceFrequencySchema.exactOptional(),
+    fromTime: TflApiPresentationEntitiesTwentyFourHourClockTimeSchema.exactOptional(),
+    toTime: TflApiPresentationEntitiesTwentyFourHourClockTimeSchema.exactOptional(),
+    type: z.enum(['Normal', 'FrequencyHours', 'FrequencyMinutes', 'Unknown']).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesPeriod')
+
+const TflApiPresentationEntitiesScheduleSchema = z
+  .object({
+    firstJourney: TflApiPresentationEntitiesKnownJourneySchema.exactOptional(),
+    knownJourneys: z.array(TflApiPresentationEntitiesKnownJourneySchema).exactOptional(),
+    lastJourney: TflApiPresentationEntitiesKnownJourneySchema.exactOptional(),
+    name: z.string().exactOptional(),
+    periods: z.array(TflApiPresentationEntitiesPeriodSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesSchedule')
+
+const TflApiPresentationEntitiesIntervalSchema = z
+  .object({ stopId: z.string().exactOptional(), timeToArrival: z.float64().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesInterval')
+
+const TflApiPresentationEntitiesStationIntervalSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    intervals: z.array(TflApiPresentationEntitiesIntervalSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesStationInterval')
+
+const TflApiPresentationEntitiesTimetableRouteSchema = z
+  .object({
+    schedules: z.array(TflApiPresentationEntitiesScheduleSchema).exactOptional(),
+    stationIntervals: z.array(TflApiPresentationEntitiesStationIntervalSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesTimetableRoute')
+
+type TflApiPresentationEntitiesTimetableType = {
+  departureStopId?: string
+  routes?: z.infer<typeof TflApiPresentationEntitiesTimetableRouteSchema>[]
+}
+
+const TflApiPresentationEntitiesTimetablesDisambiguationOptionSchema = z
+  .object({ description: z.string().exactOptional(), uri: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesTimetablesDisambiguationOption')
+
+const TflApiPresentationEntitiesTimetablesDisambiguationSchema = z
+  .object({
+    disambiguationOptions: z
+      .array(TflApiPresentationEntitiesTimetablesDisambiguationOptionSchema)
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TflApiPresentationEntitiesTimetablesDisambiguation')
+
+const TflApiPresentationEntitiesTimetableSchema: z.ZodType<TflApiPresentationEntitiesTimetableType> =
+  z
+    .object({
+      departureStopId: z.string().exactOptional(),
+      routes: z.array(TflApiPresentationEntitiesTimetableRouteSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesTimetable')
+
+type TflApiPresentationEntitiesTimetableResponseType = {
+  direction?: string
+  disambiguation?: z.infer<typeof TflApiPresentationEntitiesTimetablesDisambiguationSchema>
+  lineId?: string
+  lineName?: string
+  pdfUrl?: string
+  stations?: z.infer<typeof TflApiPresentationEntitiesMatchedStopSchema>[]
+  statusErrorMessage?: string
+  stops?: z.infer<typeof TflApiPresentationEntitiesMatchedStopSchema>[]
+  timetable?: z.infer<typeof TflApiPresentationEntitiesTimetableSchema>
 }
 
 const SystemDataSpatialDbGeographyWellKnownValueSchema = z
@@ -38,7 +1097,7 @@ const SystemDataSpatialDbGeographySchema = z
   .openapi({ required: [] })
   .openapi('SystemDataSpatialDbGeography')
 
-const SystemObjectSchema = z.object({}).openapi('SystemObject')
+const SystemObjectSchema = z.looseObject({}).openapi('SystemObject')
 
 const TflApiCommonApiVersionInfoSchema = z
   .object({
@@ -70,19 +1129,6 @@ const TflApiCommonGeoPointSchema = z
   .object({ lat: z.float64(), lon: z.float64() })
   .openapi({ required: ['lat', 'lon'] })
   .openapi('TflApiCommonGeoPoint')
-
-const TflApiCommonJourneyPlannerJpElevationSchema = z
-  .object({
-    distance: z.int32().exactOptional(),
-    endLat: z.float64().exactOptional(),
-    endLon: z.float64().exactOptional(),
-    gradient: z.float64().exactOptional(),
-    heightFromPreviousPoint: z.int32().exactOptional(),
-    startLat: z.float64().exactOptional(),
-    startLon: z.float64().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiCommonJourneyPlannerJpElevation')
 
 const TflApiCommonPlaceGeoSchema = z
   .object({
@@ -324,72 +1370,6 @@ const TflApiPresentationEntitiesCoordinateSchema = z
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesCoordinate')
 
-const TflApiPresentationEntitiesPassengerFlowSchema = z
-  .object({
-    timeSlice: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Time in 24hr format with 15 minute intervals e.g. 0500-0515, 0515-0530 etc.',
-      }),
-    value: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Count of passenger flow towards a platform' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesPassengerFlow')
-
-const TflApiPresentationEntitiesTrainLoadingSchema = z
-  .object({
-    direction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Direction in regards to Journey Planner i.e. inbound or outbound' }),
-    line: z.string().exactOptional().openapi({ description: 'The Line Name e.g. "Victoria"' }),
-    lineDirection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Direction of the Line e.g. NB, SB, WB etc.' }),
-    naptanTo: z.string().exactOptional().openapi({ description: 'Naptan of the adjacent station' }),
-    platformDirection: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Direction displayed on the platform e.g. NB, SB, WB etc.' }),
-    timeSlice: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Time in 24hr format with 15 minute intervals e.g. 0500-0515, 0515-0530 etc.',
-      }),
-    value: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Scale between 1-6, \r\n             1 = Very quiet, 2 = Quiet, 3 = Fairly busy, 4 = Busy, 5 = Very busy, 6 = Exceptionally busy',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTrainLoading')
-
-const TflApiPresentationEntitiesCrowdingSchema = z
-  .object({
-    passengerFlows: z
-      .array(TflApiPresentationEntitiesPassengerFlowSchema)
-      .exactOptional()
-      .openapi({ description: 'Busiest times at a station (static information)' }),
-    trainLoadings: z
-      .array(TflApiPresentationEntitiesTrainLoadingSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Train Loading on a scale 1-6, 1 being "Very quiet" and 6 being "Exceptionally busy" (static information)',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesCrowding')
-
 const TflApiPresentationEntitiesCycleSuperhighwaySchema = z
   .object({
     geography: SystemDataSpatialDbGeographySchema.exactOptional(),
@@ -456,280 +1436,6 @@ const TflApiPresentationEntitiesDisruptedPointSchema = z
   })
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesDisruptedPoint')
-
-const TflApiPresentationEntitiesPlaceSchema: z.ZodType<TflApiPresentationEntitiesPlaceType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalProperties: z
-          .array(TflApiPresentationEntitiesAdditionalPropertiesSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'A bag of additional key/value pairs with extra information about this place.',
-          }),
-        children: z.array(TflApiPresentationEntitiesPlaceSchema).exactOptional(),
-        childrenUrls: z.array(z.string()).exactOptional(),
-        commonName: z.string().exactOptional().openapi({ description: 'A human readable name.' }),
-        distance: z
-          .float64()
-          .exactOptional()
-          .openapi({
-            description:
-              'The distance of the place from its search point, if this is the result\r\n            of a geographical search, otherwise zero.',
-          }),
-        id: z.string().exactOptional().openapi({ description: 'A unique identifier.' }),
-        lat: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'WGS84 latitude of the location.' }),
-        lon: z
-          .float64()
-          .exactOptional()
-          .openapi({ description: 'WGS84 longitude of the location.' }),
-        placeType: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The type of Place. See /Place/Meta/placeTypes for possible values.',
-          }),
-        url: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The unique location of this resource.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('TflApiPresentationEntitiesPlace')
-
-const TflApiPresentationEntitiesLineGroupSchema = z
-  .object({
-    lineIdentifier: z.array(z.string()).exactOptional(),
-    naptanIdReference: z.string().exactOptional(),
-    stationAtcoCode: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLineGroup')
-
-const TflApiPresentationEntitiesLineModeGroupSchema = z
-  .object({
-    lineIdentifier: z.array(z.string()).exactOptional(),
-    modeName: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLineModeGroup')
-
-const TflApiPresentationEntitiesIdentifierSchema = z
-  .object({
-    crowding: TflApiPresentationEntitiesCrowdingSchema.exactOptional(),
-    fullName: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    motType: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    network: z.string().exactOptional(),
-    routeType: z
-      .enum([
-        'Unknown',
-        'All',
-        'Cycle Superhighways',
-        'Quietways',
-        'Cycleways',
-        'Mini-Hollands',
-        'Central London Grid',
-        'Streetspace Route',
-      ])
-      .exactOptional(),
-    status: z
-      .enum([
-        'Unknown',
-        'All',
-        'Open',
-        'In Progress',
-        'Planned',
-        'Planned - Subject to feasibility and consultation.',
-        'Not Open',
-      ])
-      .exactOptional(),
-    type: z.string().exactOptional(),
-    uri: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesIdentifier')
-
-const TflApiPresentationEntitiesStopPointSchema = z
-  .object({
-    accessibilitySummary: z.string().exactOptional(),
-    additionalProperties: z
-      .array(TflApiPresentationEntitiesAdditionalPropertiesSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A bag of additional key/value pairs with extra information about this place.',
-      }),
-    children: z.array(TflApiPresentationEntitiesPlaceSchema).exactOptional(),
-    childrenUrls: z.array(z.string()).exactOptional(),
-    commonName: z.string().exactOptional().openapi({ description: 'A human readable name.' }),
-    distance: z
-      .float64()
-      .exactOptional()
-      .openapi({
-        description:
-          'The distance of the place from its search point, if this is the result\r\n            of a geographical search, otherwise zero.',
-      }),
-    fullName: z.string().exactOptional(),
-    hubNaptanCode: z.string().exactOptional(),
-    icsCode: z.string().exactOptional(),
-    id: z.string().exactOptional().openapi({ description: 'A unique identifier.' }),
-    indicator: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The indicator of the stop point e.g. "Stop K"' }),
-    individualStopId: z.string().exactOptional(),
-    lat: z.float64().exactOptional().openapi({ description: 'WGS84 latitude of the location.' }),
-    lineGroup: z.array(TflApiPresentationEntitiesLineGroupSchema).exactOptional(),
-    lineModeGroups: z.array(TflApiPresentationEntitiesLineModeGroupSchema).exactOptional(),
-    lines: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
-    lon: z.float64().exactOptional().openapi({ description: 'WGS84 longitude of the location.' }),
-    modes: z.array(z.string()).exactOptional(),
-    naptanId: z.string().exactOptional(),
-    naptanMode: z.string().exactOptional(),
-    placeType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The type of Place. See /Place/Meta/placeTypes for possible values.',
-      }),
-    platformName: z.string().exactOptional(),
-    smsCode: z.string().exactOptional(),
-    stationNaptan: z.string().exactOptional(),
-    status: z.boolean().exactOptional(),
-    stopLetter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The stop letter, if it could be cleansed from the Indicator e.g. "K"',
-      }),
-    stopType: z.string().exactOptional(),
-    url: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique location of this resource.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesStopPoint')
-
-const TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema = z
-  .object({
-    ordinal: z.int32().exactOptional(),
-    stopPoint: TflApiPresentationEntitiesStopPointSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesRouteSectionNaptanEntrySequence')
-
-const TflApiPresentationEntitiesDisruptedRouteSchema = z
-  .object({
-    destinationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Destination StopPoint' }),
-    direction: z.string().exactOptional().openapi({ description: 'Inbound or Outbound' }),
-    id: z.string().exactOptional().openapi({ description: 'The Id of the route' }),
-    isEntireRouteSection: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this represents the entire route section' }),
-    lineId: z.string().exactOptional().openapi({ description: 'The Id of the Line' }),
-    lineString: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The co-ordinates of the route's path as a geoJSON lineString" }),
-    name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
-    originationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Origin StopPoint' }),
-    routeCode: z.string().exactOptional().openapi({ description: 'The route code' }),
-    routeSectionNaptanEntrySequence: z
-      .array(TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema)
-      .exactOptional(),
-    validFrom: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The DateTime that the Service containing this Route is valid from.',
-      }),
-    validTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The DateTime that the Service containing this Route is valid until.',
-      }),
-    via: TflApiPresentationEntitiesRouteSectionNaptanEntrySequenceSchema.exactOptional(),
-  })
-  .openapi({ description: 'keep old RouteSection name so as not to break contract', required: [] })
-  .openapi('TflApiPresentationEntitiesDisruptedRoute')
-
-const TflApiPresentationEntitiesDisruptionSchema = z
-  .object({
-    additionalInfo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the additionaInfo of this disruption.' }),
-    affectedRoutes: z
-      .array(TflApiPresentationEntitiesDisruptedRouteSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the routes affected by this disruption' }),
-    affectedStops: z
-      .array(TflApiPresentationEntitiesStopPointSchema)
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the stops affected by this disruption' }),
-    category: z
-      .enum([
-        'Undefined',
-        'RealTime',
-        'PlannedWork',
-        'Information',
-        'Event',
-        'Crowding',
-        'StatusAlert',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the category of this dispruption.' }),
-    categoryDescription: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the description of the category.' }),
-    closureText: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Text describing the closure type' }),
-    created: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the date/time when this disruption was created.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the description of this disruption.' }),
-    lastUpdate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'Gets or sets the date/time when this disruption was last updated.',
-      }),
-    summary: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the summary of this disruption.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the disruption type of this dispruption.' }),
-  })
-  .openapi({
-    description: 'Represents a disruption to a route within the transport network.',
-    required: [],
-  })
-  .openapi('TflApiPresentationEntitiesDisruption')
 
 const TflApiPresentationEntitiesFaresFareSchema = z
   .object({
@@ -943,383 +1649,20 @@ const TflApiPresentationEntitiesGeoCodeSearchMatchSchema = z
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesGeoCodeSearchMatch')
 
-const TflApiPresentationEntitiesPathAttributeSchema = z
-  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesPathAttribute')
-
-const TflApiPresentationEntitiesInstructionStepSchema = z
-  .object({
-    cumulativeDistance: z.int32().exactOptional(),
-    cumulativeTravelTime: z.int32().exactOptional(),
-    description: z.string().exactOptional(),
-    descriptionHeading: z.string().exactOptional(),
-    distance: z.int32().exactOptional(),
-    latitude: z.float64().exactOptional(),
-    longitude: z.float64().exactOptional(),
-    pathAttribute: TflApiPresentationEntitiesPathAttributeSchema.exactOptional(),
-    skyDirection: z.int32().exactOptional(),
-    skyDirectionDescription: z
-      .enum(['North', 'NorthEast', 'East', 'SouthEast', 'South', 'SouthWest', 'West', 'NorthWest'])
-      .exactOptional(),
-    streetName: z.string().exactOptional(),
-    trackType: z
-      .enum([
-        'CycleSuperHighway',
-        'CanalTowpath',
-        'QuietRoad',
-        'ProvisionForCyclists',
-        'BusyRoads',
-        'None',
-        'PushBike',
-        'Quietway',
-      ])
-      .exactOptional(),
-    turnDirection: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesInstructionStep')
-
-const TflApiPresentationEntitiesInstructionSchema = z
-  .object({
-    detailed: z.string().exactOptional(),
-    steps: z.array(TflApiPresentationEntitiesInstructionStepSchema).exactOptional(),
-    summary: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesInstruction')
-
-const TflApiPresentationEntitiesIntervalSchema = z
-  .object({ stopId: z.string().exactOptional(), timeToArrival: z.float64().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesInterval')
-
-const TflApiPresentationEntitiesJourneyPlannerFareTapDetailsSchema = z
-  .object({
-    busRouteId: z.string().exactOptional(),
-    hostDeviceType: z.string().exactOptional(),
-    modeType: z.string().exactOptional(),
-    nationalLocationCode: z.int32().exactOptional(),
-    tapTimestamp: z.iso.datetime({ offset: true }).exactOptional(),
-    validationType: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerFareTapDetails')
-
-const TflApiPresentationEntitiesJourneyPlannerFareTapSchema = z
-  .object({
-    atcoCode: z.string().exactOptional(),
-    tapDetails: TflApiPresentationEntitiesJourneyPlannerFareTapDetailsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerFareTap')
-
-const TflApiPresentationEntitiesJourneyPlannerFareSchema = z
-  .object({
-    chargeLevel: z.string().exactOptional(),
-    chargeProfileName: z.string().exactOptional(),
-    cost: z.int32().exactOptional(),
-    highZone: z.int32().exactOptional(),
-    isHopperFare: z.boolean().exactOptional(),
-    lowZone: z.int32().exactOptional(),
-    offPeak: z.int32().exactOptional(),
-    peak: z.int32().exactOptional(),
-    taps: z.array(TflApiPresentationEntitiesJourneyPlannerFareTapSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerFare')
-
-const TflApiPresentationEntitiesJourneyPlannerFareCaveatSchema = z
-  .object({ text: z.string().exactOptional(), type: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerFareCaveat')
-
-const TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationDataSchema = z
-  .object({
-    destinationId: z.string().exactOptional(),
-    destinationNumberOfBikes: z.int32().exactOptional(),
-    destinationNumberOfEmptySlots: z.int32().exactOptional(),
-    originId: z.string().exactOptional(),
-    originNumberOfBikes: z.int32().exactOptional(),
-    originNumberOfEmptySlots: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationData')
-
-const TflApiPresentationEntitiesJourneyPlannerJourneyVectorSchema = z
-  .object({
-    from: z.string().exactOptional(),
-    to: z.string().exactOptional(),
-    uri: z.string().exactOptional(),
-    via: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyVector')
-
-const TflApiPresentationEntitiesJourneyPlannerJourneyFareSchema = z
-  .object({
-    caveats: z.array(TflApiPresentationEntitiesJourneyPlannerFareCaveatSchema).exactOptional(),
-    fares: z.array(TflApiPresentationEntitiesJourneyPlannerFareSchema).exactOptional(),
-    totalCost: z.int32().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerJourneyFare')
-
-const TflApiPresentationEntitiesPointSchema = z
-  .object({
-    lat: z.float64().exactOptional().openapi({ description: 'WGS84 latitude of the location.' }),
-    lon: z.float64().exactOptional().openapi({ description: 'WGS84 longitude of the location.' }),
-  })
-  .openapi({
-    description:
-      'Represents a point located at a latitude and longitude using the WGS84 co-ordinate system.',
-    required: [],
-  })
-  .openapi('TflApiPresentationEntitiesPoint')
-
-const TflApiPresentationEntitiesJourneyPlannerObstacleSchema = z
-  .object({
-    incline: z.string().exactOptional(),
-    position: z.string().exactOptional(),
-    stopId: z.int32().exactOptional(),
-    type: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerObstacle')
-
-const TflApiPresentationEntitiesJourneyPlannerPathSchema = z
-  .object({
-    elevation: z.array(TflApiCommonJourneyPlannerJpElevationSchema).exactOptional(),
-    lineString: z.string().exactOptional(),
-    stopPoints: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerPath')
-
-const TflApiPresentationEntitiesJourneyPlannerPlannedWorkSchema = z
-  .object({
-    createdDateTime: z.iso.datetime({ offset: true }).exactOptional(),
-    description: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    lastUpdateDateTime: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerPlannedWork')
-
-const TflApiPresentationEntitiesJourneyPlannerRouteOptionSchema = z
-  .object({
-    direction: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The direction of the route, i.e. outbound or inbound.' }),
-    directions: z.array(z.string()).exactOptional(),
-    id: z.string().exactOptional().openapi({ description: 'The Id of the route' }),
-    lineIdentifier: TflApiPresentationEntitiesIdentifierSchema.exactOptional(),
-    name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerRouteOption')
-
-const TflApiPresentationEntitiesJourneyPlannerLegSchema = z
-  .object({
-    arrivalPoint: TflApiPresentationEntitiesPointSchema.exactOptional(),
-    arrivalTime: z.iso.datetime({ offset: true }).exactOptional(),
-    departurePoint: TflApiPresentationEntitiesPointSchema.exactOptional(),
-    departureTime: z.iso.datetime({ offset: true }).exactOptional(),
-    disruptions: z.array(TflApiPresentationEntitiesDisruptionSchema).exactOptional(),
-    distance: z.float64().exactOptional(),
-    duration: z.int32().exactOptional(),
-    hasFixedLocations: z.boolean().exactOptional().openapi({ readOnly: true }),
-    instruction: TflApiPresentationEntitiesInstructionSchema.exactOptional(),
-    interChangeDuration: z.string().exactOptional(),
-    interChangePosition: z.string().exactOptional(),
-    isDisrupted: z.boolean().exactOptional().openapi({ readOnly: true }),
-    mode: TflApiPresentationEntitiesIdentifierSchema.exactOptional(),
-    obstacles: z.array(TflApiPresentationEntitiesJourneyPlannerObstacleSchema).exactOptional(),
-    path: TflApiPresentationEntitiesJourneyPlannerPathSchema.exactOptional(),
-    plannedWorks: z
-      .array(TflApiPresentationEntitiesJourneyPlannerPlannedWorkSchema)
-      .exactOptional(),
-    routeOptions: z
-      .array(TflApiPresentationEntitiesJourneyPlannerRouteOptionSchema)
-      .exactOptional(),
-    scheduledArrivalTime: z.iso.datetime({ offset: true }).exactOptional(),
-    scheduledDepartureTime: z.iso.datetime({ offset: true }).exactOptional(),
-    speed: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerLeg')
-
-const TflApiPresentationEntitiesJourneyPlannerJourneySchema = z
-  .object({
-    arrivalDateTime: z.iso.datetime({ offset: true }).exactOptional(),
-    duration: z.int32().exactOptional(),
-    fare: TflApiPresentationEntitiesJourneyPlannerJourneyFareSchema.exactOptional(),
-    legs: z.array(TflApiPresentationEntitiesJourneyPlannerLegSchema).exactOptional(),
-    startDateTime: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({
-    description: 'Object that represents an end to end journey (see schematic).',
-    required: [],
-  })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerJourney')
-
-const TflApiPresentationEntitiesValidityPeriodSchema = z
-  .object({
-    fromDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the start date.' }),
-    isNow: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'If true is a realtime status rather than planned or info' }),
-    toDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Gets or sets the end date.' }),
-  })
-  .openapi({ description: 'Represents a period for which a planned works is valid.', required: [] })
-  .openapi('TflApiPresentationEntitiesValidityPeriod')
-
-const TflApiPresentationEntitiesLineStatusSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    disruption: TflApiPresentationEntitiesDisruptionSchema.exactOptional(),
-    id: z.int32().exactOptional(),
-    lineId: z.string().exactOptional(),
-    modified: z.iso.datetime({ offset: true }).exactOptional(),
-    reason: z.string().exactOptional(),
-    statusSeverity: z.int32().exactOptional(),
-    statusSeverityDescription: z.string().exactOptional(),
-    validityPeriods: z.array(TflApiPresentationEntitiesValidityPeriodSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLineStatus')
-
-const TflApiPresentationEntitiesMatchedRouteSchema = z
-  .object({
-    destination: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Id (NaPTAN code) or the Destination StopPoint' }),
-    destinationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Destination StopPoint' }),
-    direction: z.string().exactOptional().openapi({ description: 'Inbound or Outbound' }),
-    name: z.string().exactOptional().openapi({ description: 'Name such as "72"' }),
-    originationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the Origin StopPoint' }),
-    originator: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The Id (NaPTAN code) of the Origin StopPoint' }),
-    routeCode: z.string().exactOptional().openapi({ description: 'The route code' }),
-    serviceType: z.string().exactOptional().openapi({ description: 'Regular or Night' }),
-    validFrom: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The DateTime that the Service containing this Route is valid from.',
-      }),
-    validTo: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'The DateTime that the Service containing this Route is valid until.',
-      }),
-  })
-  .openapi({ description: 'Description of a Route used in Route search results.', required: [] })
-  .openapi('TflApiPresentationEntitiesMatchedRoute')
-
-const TflApiPresentationEntitiesLineServiceTypeInfoSchema = z
-  .object({ name: z.string().exactOptional(), uri: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLineServiceTypeInfo')
-
-const TflApiPresentationEntitiesLineSchema = z
-  .object({
-    created: z.iso.datetime({ offset: true }).exactOptional(),
-    crowding: TflApiPresentationEntitiesCrowdingSchema.exactOptional(),
-    disruptions: z.array(TflApiPresentationEntitiesDisruptionSchema).exactOptional(),
-    id: z.string().exactOptional(),
-    lineStatuses: z.array(TflApiPresentationEntitiesLineStatusSchema).exactOptional(),
-    modeName: z.string().exactOptional(),
-    modified: z.iso.datetime({ offset: true }).exactOptional(),
-    name: z.string().exactOptional(),
-    routeSections: z.array(TflApiPresentationEntitiesMatchedRouteSchema).exactOptional(),
-    serviceTypes: z.array(TflApiPresentationEntitiesLineServiceTypeInfoSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLine')
-
-const TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema = z
-  .object({
-    date: z.string().exactOptional(),
-    time: z.string().exactOptional(),
-    timeIs: z.string().exactOptional(),
-    uri: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerTimeAdjustment')
-
-const TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentsSchema = z
-  .object({
-    earlier: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
-    earliest: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
-    later: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
-    latest: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerTimeAdjustments')
-
-const TflApiPresentationEntitiesJourneyPlannerSearchCriteriaSchema = z
-  .object({
-    dateTime: z.iso.datetime({ offset: true }).exactOptional(),
-    dateTimeType: z.enum(['Arriving', 'Departing']).exactOptional(),
-    timeAdjustments: TflApiPresentationEntitiesJourneyPlannerTimeAdjustmentsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerSearchCriteria')
-
-const TflApiPresentationEntitiesJourneyPlannerItineraryResultSchema = z
-  .object({
-    cycleHireDockingStationData:
-      TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationDataSchema.exactOptional(),
-    journeyVector: TflApiPresentationEntitiesJourneyPlannerJourneyVectorSchema.exactOptional(),
-    journeys: z.array(TflApiPresentationEntitiesJourneyPlannerJourneySchema).exactOptional(),
-    lines: z.array(TflApiPresentationEntitiesLineSchema).exactOptional(),
-    recommendedMaxAgeMinutes: z.int32().exactOptional(),
-    searchCriteria: TflApiPresentationEntitiesJourneyPlannerSearchCriteriaSchema.exactOptional(),
-    stopMessages: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ description: 'A DTO representing a list of possible journeys.', required: [] })
-  .openapi('TflApiPresentationEntitiesJourneyPlannerItineraryResult')
-
-const TflApiPresentationEntitiesKnownJourneySchema = z
-  .object({
-    hour: z.string().exactOptional(),
-    intervalId: z.int32().exactOptional(),
-    minute: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesKnownJourney')
-
-const TflApiPresentationEntitiesLineRouteSectionSchema = z
-  .object({
-    destination: z.string().exactOptional(),
-    direction: z.string().exactOptional(),
-    fromStation: z.string().exactOptional(),
-    routeId: z.int32().exactOptional(),
-    serviceType: z.string().exactOptional(),
-    toStation: z.string().exactOptional(),
-    vehicleDestinationText: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesLineRouteSection')
+const TflApiPresentationEntitiesJourneyPlannerItineraryResultSchema: z.ZodType<TflApiPresentationEntitiesJourneyPlannerItineraryResultType> =
+  z
+    .object({
+      cycleHireDockingStationData:
+        TflApiPresentationEntitiesJourneyPlannerJourneyPlannerCycleHireDockingStationDataSchema.exactOptional(),
+      journeyVector: TflApiPresentationEntitiesJourneyPlannerJourneyVectorSchema.exactOptional(),
+      journeys: z.array(TflApiPresentationEntitiesJourneyPlannerJourneySchema).exactOptional(),
+      lines: z.array(TflApiPresentationEntitiesLineSchema).exactOptional(),
+      recommendedMaxAgeMinutes: z.int32().exactOptional(),
+      searchCriteria: TflApiPresentationEntitiesJourneyPlannerSearchCriteriaSchema.exactOptional(),
+      stopMessages: z.array(z.string()).exactOptional(),
+    })
+    .openapi({ description: 'A DTO representing a list of possible journeys.', required: [] })
+    .openapi('TflApiPresentationEntitiesJourneyPlannerItineraryResult')
 
 const TflApiPresentationEntitiesLineSpecificServiceTypeSchema = z
   .object({
@@ -1338,37 +1681,6 @@ const TflApiPresentationEntitiesLineServiceTypeSchema = z
   })
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesLineServiceType')
-
-const TflApiPresentationEntitiesMatchedRouteSectionsSchema = z
-  .object({ id: z.int32().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesMatchedRouteSections')
-
-const TflApiPresentationEntitiesMatchedStopSchema = z
-  .object({
-    accessibilitySummary: z.string().exactOptional(),
-    direction: z.string().exactOptional(),
-    hasDisruption: z.boolean().exactOptional(),
-    icsId: z.string().exactOptional(),
-    id: z.string().exactOptional(),
-    lat: z.float64().exactOptional(),
-    lines: z.array(TflApiPresentationEntitiesIdentifierSchema).exactOptional(),
-    lon: z.float64().exactOptional(),
-    modes: z.array(z.string()).exactOptional(),
-    name: z.string().exactOptional(),
-    parentId: z.string().exactOptional(),
-    routeId: z.int32().exactOptional(),
-    stationId: z.string().exactOptional(),
-    status: z.boolean().exactOptional(),
-    stopLetter: z.string().exactOptional(),
-    stopType: z.string().exactOptional(),
-    topMostParentId: z.string().exactOptional(),
-    towards: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-    zone: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesMatchedStop')
 
 const TflApiPresentationEntitiesModeSchema = z
   .object({
@@ -1391,38 +1703,6 @@ const TflApiPresentationEntitiesNetworkStatusSchema = z
   })
   .openapi({ description: 'Represent travel network status', required: [] })
   .openapi('TflApiPresentationEntitiesNetworkStatus')
-
-const TflApiPresentationEntitiesOrderedRouteSchema = z
-  .object({
-    name: z.string().exactOptional(),
-    naptanIds: z.array(z.string()).exactOptional(),
-    serviceType: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesOrderedRoute')
-
-const TflApiPresentationEntitiesServiceFrequencySchema = z
-  .object({
-    highestFrequency: z.float64().exactOptional(),
-    lowestFrequency: z.float64().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesServiceFrequency')
-
-const TflApiPresentationEntitiesTwentyFourHourClockTimeSchema = z
-  .object({ hour: z.string().exactOptional(), minute: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTwentyFourHourClockTime')
-
-const TflApiPresentationEntitiesPeriodSchema = z
-  .object({
-    frequency: TflApiPresentationEntitiesServiceFrequencySchema.exactOptional(),
-    fromTime: TflApiPresentationEntitiesTwentyFourHourClockTimeSchema.exactOptional(),
-    toTime: TflApiPresentationEntitiesTwentyFourHourClockTimeSchema.exactOptional(),
-    type: z.enum(['Normal', 'FrequencyHours', 'FrequencyMinutes', 'Unknown']).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesPeriod')
 
 const TflApiPresentationEntitiesPlaceCategorySchema = z
   .object({
@@ -1889,84 +2169,32 @@ const TflApiPresentationEntitiesRoadDisruptionSchema = z
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesRoadDisruption')
 
-const TflApiPresentationEntitiesRouteSearchMatchSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    lat: z.float64().exactOptional(),
-    lineId: z.string().exactOptional(),
-    lineName: z.string().exactOptional(),
-    lineRouteSection: z.array(TflApiPresentationEntitiesLineRouteSectionSchema).exactOptional(),
-    lon: z.float64().exactOptional(),
-    matchedRouteSections: z
-      .array(TflApiPresentationEntitiesMatchedRouteSectionsSchema)
-      .exactOptional(),
-    matchedStops: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
-    mode: z.string().exactOptional(),
-    name: z.string().exactOptional(),
-    url: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesRouteSearchMatch')
+const TflApiPresentationEntitiesRouteSearchResponseSchema: z.ZodType<TflApiPresentationEntitiesRouteSearchResponseType> =
+  z
+    .object({
+      input: z.string().exactOptional(),
+      searchMatches: z.array(TflApiPresentationEntitiesRouteSearchMatchSchema).exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesRouteSearchResponse')
 
-const TflApiPresentationEntitiesRouteSearchResponseSchema = z
-  .object({
-    input: z.string().exactOptional(),
-    searchMatches: z.array(TflApiPresentationEntitiesRouteSearchMatchSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesRouteSearchResponse')
-
-const TflApiPresentationEntitiesStopPointSequenceSchema = z
-  .object({
-    branchId: z.int32().exactOptional().openapi({ description: 'The id of this branch.' }),
-    direction: z.string().exactOptional(),
-    lineId: z.string().exactOptional(),
-    lineName: z.string().exactOptional(),
-    nextBranchIds: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'The ids of the next branch(es) in the sequence. Note that the next and previous branch id can be\r\n            identical in the case of a looped route e.g. the Circle line.',
-      }),
-    prevBranchIds: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'The ids of the previous branch(es) in the sequence. Note that the next and previous branch id can be\r\n            identical in the case of a looped route e.g. the Circle line.',
-      }),
-    serviceType: z.enum(['Regular', 'Night']).exactOptional(),
-    stopPoint: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesStopPointSequence')
-
-const TflApiPresentationEntitiesRouteSequenceSchema = z
-  .object({
-    direction: z.string().exactOptional(),
-    isOutboundOnly: z.boolean().exactOptional(),
-    lineId: z.string().exactOptional(),
-    lineName: z.string().exactOptional(),
-    lineStrings: z.array(z.string()).exactOptional(),
-    mode: z.string().exactOptional(),
-    orderedLineRoutes: z.array(TflApiPresentationEntitiesOrderedRouteSchema).exactOptional(),
-    stations: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
-    stopPointSequences: z.array(TflApiPresentationEntitiesStopPointSequenceSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesRouteSequence')
-
-const TflApiPresentationEntitiesScheduleSchema = z
-  .object({
-    firstJourney: TflApiPresentationEntitiesKnownJourneySchema.exactOptional(),
-    knownJourneys: z.array(TflApiPresentationEntitiesKnownJourneySchema).exactOptional(),
-    lastJourney: TflApiPresentationEntitiesKnownJourneySchema.exactOptional(),
-    name: z.string().exactOptional(),
-    periods: z.array(TflApiPresentationEntitiesPeriodSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesSchedule')
+const TflApiPresentationEntitiesRouteSequenceSchema: z.ZodType<TflApiPresentationEntitiesRouteSequenceType> =
+  z
+    .object({
+      direction: z.string().exactOptional(),
+      isOutboundOnly: z.boolean().exactOptional(),
+      lineId: z.string().exactOptional(),
+      lineName: z.string().exactOptional(),
+      lineStrings: z.array(z.string()).exactOptional(),
+      mode: z.string().exactOptional(),
+      orderedLineRoutes: z.array(TflApiPresentationEntitiesOrderedRouteSchema).exactOptional(),
+      stations: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
+      stopPointSequences: z
+        .array(TflApiPresentationEntitiesStopPointSequenceSchema)
+        .exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesRouteSequence')
 
 const TflApiPresentationEntitiesSearchMatchSchema = z
   .object({
@@ -1992,14 +2220,6 @@ const TflApiPresentationEntitiesSearchResponseSchema = z
   })
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesSearchResponse')
-
-const TflApiPresentationEntitiesStationIntervalSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    intervals: z.array(TflApiPresentationEntitiesIntervalSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesStationInterval')
 
 const TflApiPresentationEntitiesStatusSeveritySchema = z
   .object({
@@ -2036,76 +2256,48 @@ const TflApiPresentationEntitiesStopPointRouteSectionSchema = z
   .openapi({ required: [] })
   .openapi('TflApiPresentationEntitiesStopPointRouteSection')
 
-const TflApiPresentationEntitiesStopPointsResponseSchema = z
-  .object({
-    centrePoint: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'The centre latitude/longitude of this list of StopPoints' }),
-    page: z.int32().exactOptional().openapi({ description: 'The index of this page' }),
-    pageSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum size of the page in this response i.e. the maximum number of StopPoints',
-      }),
-    stopPoints: z
-      .array(TflApiPresentationEntitiesStopPointSchema)
-      .exactOptional()
-      .openapi({ description: 'Collection of stop points' }),
-    total: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The total number of StopPoints available across all pages' }),
-  })
-  .openapi({ description: 'A paged response containing StopPoints', required: [] })
-  .openapi('TflApiPresentationEntitiesStopPointsResponse')
+const TflApiPresentationEntitiesStopPointsResponseSchema: z.ZodType<TflApiPresentationEntitiesStopPointsResponseType> =
+  z
+    .object({
+      centrePoint: z
+        .array(z.float64())
+        .exactOptional()
+        .openapi({ description: 'The centre latitude/longitude of this list of StopPoints' }),
+      page: z.int32().exactOptional().openapi({ description: 'The index of this page' }),
+      pageSize: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The maximum size of the page in this response i.e. the maximum number of StopPoints',
+        }),
+      stopPoints: z
+        .array(TflApiPresentationEntitiesStopPointSchema)
+        .exactOptional()
+        .openapi({ description: 'Collection of stop points' }),
+      total: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'The total number of StopPoints available across all pages' }),
+    })
+    .openapi({ description: 'A paged response containing StopPoints', required: [] })
+    .openapi('TflApiPresentationEntitiesStopPointsResponse')
 
-const TflApiPresentationEntitiesTimetableRouteSchema = z
-  .object({
-    schedules: z.array(TflApiPresentationEntitiesScheduleSchema).exactOptional(),
-    stationIntervals: z.array(TflApiPresentationEntitiesStationIntervalSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTimetableRoute')
-
-const TflApiPresentationEntitiesTimetableSchema = z
-  .object({
-    departureStopId: z.string().exactOptional(),
-    routes: z.array(TflApiPresentationEntitiesTimetableRouteSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTimetable')
-
-const TflApiPresentationEntitiesTimetablesDisambiguationOptionSchema = z
-  .object({ description: z.string().exactOptional(), uri: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTimetablesDisambiguationOption')
-
-const TflApiPresentationEntitiesTimetablesDisambiguationSchema = z
-  .object({
-    disambiguationOptions: z
-      .array(TflApiPresentationEntitiesTimetablesDisambiguationOptionSchema)
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTimetablesDisambiguation')
-
-const TflApiPresentationEntitiesTimetableResponseSchema = z
-  .object({
-    direction: z.string().exactOptional(),
-    disambiguation: TflApiPresentationEntitiesTimetablesDisambiguationSchema.exactOptional(),
-    lineId: z.string().exactOptional(),
-    lineName: z.string().exactOptional(),
-    pdfUrl: z.string().exactOptional(),
-    stations: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
-    statusErrorMessage: z.string().exactOptional(),
-    stops: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
-    timetable: TflApiPresentationEntitiesTimetableSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TflApiPresentationEntitiesTimetableResponse')
+const TflApiPresentationEntitiesTimetableResponseSchema: z.ZodType<TflApiPresentationEntitiesTimetableResponseType> =
+  z
+    .object({
+      direction: z.string().exactOptional(),
+      disambiguation: TflApiPresentationEntitiesTimetablesDisambiguationSchema.exactOptional(),
+      lineId: z.string().exactOptional(),
+      lineName: z.string().exactOptional(),
+      pdfUrl: z.string().exactOptional(),
+      stations: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
+      statusErrorMessage: z.string().exactOptional(),
+      stops: z.array(TflApiPresentationEntitiesMatchedStopSchema).exactOptional(),
+      timetable: TflApiPresentationEntitiesTimetableSchema.exactOptional(),
+    })
+    .openapi({ required: [] })
+    .openapi('TflApiPresentationEntitiesTimetableResponse')
 
 const ApiKeySecurityScheme = {
   description: 'API Key Authentication',

@@ -15,20 +15,18 @@ const StringSchema = z.string().openapi('String')
 
 const DeleteSessionResponseSchema = z
   .object({
-    botName: BotNameSchema.and(
-      z.any().openapi({ description: 'The name of the bot associated with the session data.' }),
-    ).exactOptional(),
-    botAlias: BotAliasSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The alias in use for the bot associated with the session data.' }),
-    ).exactOptional(),
-    userId: UserIdSchema.and(
-      z.any().openapi({ description: 'The ID of the client application user.' }),
-    ).exactOptional(),
-    sessionId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the session.' }),
-    ).exactOptional(),
+    botName: BotNameSchema.exactOptional().openapi({
+      description: 'The name of the bot associated with the session data.',
+    }),
+    botAlias: BotAliasSchema.exactOptional().openapi({
+      description: 'The alias in use for the bot associated with the session data.',
+    }),
+    userId: UserIdSchema.exactOptional().openapi({
+      description: 'The ID of the client application user.',
+    }),
+    sessionId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the session.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteSessionResponse')
@@ -68,54 +66,32 @@ const FulfillmentStateSchema = z
 
 const IntentSummarySchema = z
   .object({
-    intentName: IntentNameSchema.and(
-      z.any().openapi({ description: 'The name of the intent.' }),
-    ).exactOptional(),
-    checkpointLabel: IntentSummaryCheckpointLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A user-defined label that identifies a particular intent. You can use this label to return to a previous intent. </p> <p>Use the <code>checkpointLabelFilter</code> parameter of the <code>GetSessionRequest</code> operation to filter the intents returned by the operation to those with only the specified label.</p>',
-        }),
-    ).exactOptional(),
-    slots: StringMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Map of the slots that have been gathered and their values. ' }),
-    ).exactOptional(),
-    confirmationStatus: ConfirmationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the intent after the user responds to the confirmation prompt. If the user confirms the intent, Amazon Lex sets this field to <code>Confirmed</code>. If the user denies the intent, Amazon Lex sets this value to <code>Denied</code>. The possible values are:</p> <ul> <li> <p> <code>Confirmed</code> - The user has responded "Yes" to the confirmation prompt, confirming that the intent is complete and that it is ready to be fulfilled.</p> </li> <li> <p> <code>Denied</code> - The user has responded "No" to the confirmation prompt.</p> </li> <li> <p> <code>None</code> - The user has never been prompted for confirmation; or, the user was prompted but did not confirm or deny the prompt.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    dialogActionType: DialogActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
-        }),
-    ),
-    fulfillmentState: FulfillmentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    slotToElicit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The next slot to elicit from the user. If there is not slot to elicit, the field is blank.',
-        }),
-    ).exactOptional(),
+    intentName: IntentNameSchema.exactOptional().openapi({
+      description: 'The name of the intent.',
+    }),
+    checkpointLabel: IntentSummaryCheckpointLabelSchema.exactOptional().openapi({
+      description:
+        '<p>A user-defined label that identifies a particular intent. You can use this label to return to a previous intent. </p> <p>Use the <code>checkpointLabelFilter</code> parameter of the <code>GetSessionRequest</code> operation to filter the intents returned by the operation to those with only the specified label.</p>',
+    }),
+    slots: StringMapSchema.exactOptional().openapi({
+      description: 'Map of the slots that have been gathered and their values. ',
+    }),
+    confirmationStatus: ConfirmationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the intent after the user responds to the confirmation prompt. If the user confirms the intent, Amazon Lex sets this field to <code>Confirmed</code>. If the user denies the intent, Amazon Lex sets this value to <code>Denied</code>. The possible values are:</p> <ul> <li> <p> <code>Confirmed</code> - The user has responded "Yes" to the confirmation prompt, confirming that the intent is complete and that it is ready to be fulfilled.</p> </li> <li> <p> <code>Denied</code> - The user has responded "No" to the confirmation prompt.</p> </li> <li> <p> <code>None</code> - The user has never been prompted for confirmation; or, the user was prompted but did not confirm or deny the prompt.</p> </li> </ul>',
+    }),
+    dialogActionType: DialogActionTypeSchema.openapi({
+      description:
+        '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
+    }),
+    fulfillmentState: FulfillmentStateSchema.exactOptional().openapi({
+      description:
+        '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
+    }),
+    slotToElicit: StringSchema.exactOptional().openapi({
+      description:
+        'The next slot to elicit from the user. If there is not slot to elicit, the field is blank.',
+    }),
   })
   .openapi({
     required: ['dialogActionType'],
@@ -138,51 +114,31 @@ const MessageFormatTypeSchema = z
 
 const DialogActionSchema = z
   .object({
-    type: DialogActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
-        }),
-    ),
-    intentName: IntentNameSchema.and(
-      z.any().openapi({ description: 'The name of the intent.' }),
-    ).exactOptional(),
-    slots: StringMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Map of the slots that have been gathered and their values. ' }),
-    ).exactOptional(),
-    slotToElicit: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the slot that should be elicited from the user.' }),
-    ).exactOptional(),
-    fulfillmentState: FulfillmentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    message: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The message that should be shown to the user. If you don't specify a message, Amazon Lex will use the message configured for the intent.",
-        }),
-    ).exactOptional(),
-    messageFormat: MessageFormatTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format for the client.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/howitworks-manage-prompts.html">Message Groups</a>. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    type: DialogActionTypeSchema.openapi({
+      description:
+        '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
+    }),
+    intentName: IntentNameSchema.exactOptional().openapi({
+      description: 'The name of the intent.',
+    }),
+    slots: StringMapSchema.exactOptional().openapi({
+      description: 'Map of the slots that have been gathered and their values. ',
+    }),
+    slotToElicit: StringSchema.exactOptional().openapi({
+      description: 'The name of the slot that should be elicited from the user.',
+    }),
+    fulfillmentState: FulfillmentStateSchema.exactOptional().openapi({
+      description:
+        '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
+    }),
+    message: TextSchema.exactOptional().openapi({
+      description:
+        "The message that should be shown to the user. If you don't specify a message, Amazon Lex will use the message configured for the intent.",
+    }),
+    messageFormat: MessageFormatTypeSchema.exactOptional().openapi({
+      description:
+        '<ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format for the client.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/howitworks-manage-prompts.html">Message Groups</a>. </p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['type'],
@@ -208,22 +164,14 @@ const ActiveContextTurnsToLiveSchema = z.int().min(1).max(20).openapi('ActiveCon
 
 const ActiveContextTimeToLiveSchema = z
   .object({
-    timeToLiveInSeconds: ActiveContextTimeToLiveInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of seconds that the context should be active after it is first sent in a <code>PostContent</code> or <code>PostText</code> response. You can set the value between 5 and 86,400 seconds (24 hours).',
-        }),
-    ).exactOptional(),
-    turnsToLive: ActiveContextTurnsToLiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of conversation turns that the context should be active. A conversation turn is one <code>PostContent</code> or <code>PostText</code> request and the corresponding response from Amazon Lex.',
-        }),
-    ).exactOptional(),
+    timeToLiveInSeconds: ActiveContextTimeToLiveInSecondsSchema.exactOptional().openapi({
+      description:
+        'The number of seconds that the context should be active after it is first sent in a <code>PostContent</code> or <code>PostText</code> response. You can set the value between 5 and 86,400 seconds (24 hours).',
+    }),
+    turnsToLive: ActiveContextTurnsToLiveSchema.exactOptional().openapi({
+      description:
+        'The number of conversation turns that the context should be active. A conversation turn is one <code>PostContent</code> or <code>PostText</code> request and the corresponding response from Amazon Lex.',
+    }),
   })
   .openapi({
     description: 'The length of time or number of turns that a context remains active.',
@@ -239,22 +187,14 @@ const ActiveContextParametersMapSchema = z
 
 const ActiveContextSchema = z
   .object({
-    name: ActiveContextNameSchema.and(z.any().openapi({ description: 'The name of the context.' })),
-    timeToLive: ActiveContextTimeToLiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The length of time or number of turns that a context remains active.',
-        }),
-    ),
-    parameters: ActiveContextParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'State variables for the current context. You can use these values as default values for slots in subsequent events.',
-        }),
-    ),
+    name: ActiveContextNameSchema.openapi({ description: 'The name of the context.' }),
+    timeToLive: ActiveContextTimeToLiveSchema.openapi({
+      description: 'The length of time or number of turns that a context remains active.',
+    }),
+    parameters: ActiveContextParametersMapSchema.openapi({
+      description:
+        'State variables for the current context. You can use these values as default values for slots in subsequent events.',
+    }),
   })
   .openapi({
     required: ['name', 'timeToLive', 'parameters'],
@@ -271,36 +211,24 @@ const ActiveContextsListSchema = z
 
 const GetSessionResponseSchema = z
   .object({
-    recentIntentSummaryView: IntentSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of information about the intents used in the session. The array can contain a maximum of three summaries. If more than three intents are used in the session, the <code>recentIntentSummaryView</code> operation contains information about the last three intents used.</p> <p>If you set the <code>checkpointLabelFilter</code> parameter in the request, the array contains only the intents with the specified label.</p>',
-        }),
-    ).exactOptional(),
-    sessionAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of key/value pairs representing the session-specific context information. It contains application information passed between Amazon Lex and a client application.',
-        }),
-    ).exactOptional(),
-    sessionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the session.' }),
-    ).exactOptional(),
-    dialogAction: DialogActionSchema.and(
-      z.any().openapi({ description: 'Describes the current state of the bot.' }),
-    ).exactOptional(),
-    activeContexts: ActiveContextsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of active contexts for the session. A context can be set when an intent is fulfilled or by calling the <code>PostContent</code>, <code>PostText</code>, or <code>PutSession</code> operation.</p> <p>You can use a context to control the intents that can follow up an intent, or to modify the operation of your application.</p>',
-        }),
-    ).exactOptional(),
+    recentIntentSummaryView: IntentSummaryListSchema.exactOptional().openapi({
+      description:
+        '<p>An array of information about the intents used in the session. The array can contain a maximum of three summaries. If more than three intents are used in the session, the <code>recentIntentSummaryView</code> operation contains information about the last three intents used.</p> <p>If you set the <code>checkpointLabelFilter</code> parameter in the request, the array contains only the intents with the specified label.</p>',
+    }),
+    sessionAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        'Map of key/value pairs representing the session-specific context information. It contains application information passed between Amazon Lex and a client application.',
+    }),
+    sessionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the session.',
+    }),
+    dialogAction: DialogActionSchema.exactOptional().openapi({
+      description: 'Describes the current state of the bot.',
+    }),
+    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of active contexts for the session. A context can be set when an intent is fulfilled or by calling the <code>PostContent</code>, <code>PostText</code>, or <code>PutSession</code> operation.</p> <p>You can use a context to control the intents that can follow up an intent, or to modify the operation of your application.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSessionResponse')
@@ -309,14 +237,10 @@ const BlobStreamSchema = z.string().openapi('BlobStream')
 
 const PostContentResponseSchema = z
   .object({
-    audioStream: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prompt (or statement) to convey to the user. This is based on the bot configuration and context. For example, if Amazon Lex did not understand the user intent, it sends the <code>clarificationPrompt</code> configured for the bot. If the intent requires confirmation before taking the fulfillment action, it sends the <code>confirmationPrompt</code>. Another example: Suppose that the Lambda function successfully fulfilled the intent, and sent a message to convey to the user. Then Amazon Lex sends that message in the response. ',
-        }),
-    ).exactOptional(),
+    audioStream: BlobStreamSchema.exactOptional().openapi({
+      description:
+        'The prompt (or statement) to convey to the user. This is based on the bot configuration and context. For example, if Amazon Lex did not understand the user intent, it sends the <code>clarificationPrompt</code> configured for the bot. If the intent requires confirmation before taking the fulfillment action, it sends the <code>confirmationPrompt</code>. Another example: Suppose that the Lambda function successfully fulfilled the intent, and sent a message to convey to the user. Then Amazon Lex sends that message in the response. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PostContentResponse')
@@ -337,14 +261,10 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const IntentConfidenceSchema = z
   .object({
-    score: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A score that indicates how confident Amazon Lex is that an intent satisfies the user's intent. Ranges between 0.00 and 1.00. Higher scores indicate higher confidence.",
-        }),
-    ).exactOptional(),
+    score: DoubleSchema.exactOptional().openapi({
+      description:
+        "A score that indicates how confident Amazon Lex is that an intent satisfies the user's intent. Ranges between 0.00 and 1.00. Higher scores indicate higher confidence.",
+    }),
   })
   .openapi({
     description:
@@ -355,27 +275,16 @@ const IntentConfidenceSchema = z
 
 const PredictedIntentSchema = z
   .object({
-    intentName: IntentNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the intent that Amazon Lex suggests satisfies the user's intent.",
-        }),
-    ).exactOptional(),
-    nluIntentConfidence: IntentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates how confident Amazon Lex is that an intent satisfies the user's intent.",
-        }),
-    ).exactOptional(),
-    slots: StringMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The slot and slot values associated with the predicted intent.' }),
-    ).exactOptional(),
+    intentName: IntentNameSchema.exactOptional().openapi({
+      description: "The name of the intent that Amazon Lex suggests satisfies the user's intent.",
+    }),
+    nluIntentConfidence: IntentConfidenceSchema.exactOptional().openapi({
+      description:
+        "Indicates how confident Amazon Lex is that an intent satisfies the user's intent.",
+    }),
+    slots: StringMapSchema.exactOptional().openapi({
+      description: 'The slot and slot values associated with the predicted intent.',
+    }),
   })
   .openapi({
     description:
@@ -392,17 +301,12 @@ const SentimentScoreSchema = z.string().openapi('SentimentScore')
 
 const SentimentResponseSchema = z
   .object({
-    sentimentLabel: SentimentLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inferred sentiment that Amazon Comprehend has the highest confidence in.',
-        }),
-    ).exactOptional(),
-    sentimentScore: SentimentScoreSchema.and(
-      z.any().openapi({ description: 'The likelihood that the sentiment was correctly inferred.' }),
-    ).exactOptional(),
+    sentimentLabel: SentimentLabelSchema.exactOptional().openapi({
+      description: 'The inferred sentiment that Amazon Comprehend has the highest confidence in.',
+    }),
+    sentimentScore: SentimentScoreSchema.exactOptional().openapi({
+      description: 'The likelihood that the sentiment was correctly inferred.',
+    }),
   })
   .openapi({
     description:
@@ -442,17 +346,13 @@ const ButtonValueStringWithLengthSchema = z
 
 const ButtonSchema = z
   .object({
-    text: ButtonTextStringWithLengthSchema.and(
-      z.any().openapi({ description: 'Text that is visible to the user on the button.' }),
-    ),
-    value: ButtonValueStringWithLengthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value sent to Amazon Lex when a user chooses the button. For example, consider button text "NYC." When the user chooses the button, the value sent can be "New York City."',
-        }),
-    ),
+    text: ButtonTextStringWithLengthSchema.openapi({
+      description: 'Text that is visible to the user on the button.',
+    }),
+    value: ButtonValueStringWithLengthSchema.openapi({
+      description:
+        'The value sent to Amazon Lex when a user chooses the button. For example, consider button text "NYC." When the user chooses the button, the value sent can be "New York City."',
+    }),
   })
   .openapi({
     required: ['text', 'value'],
@@ -464,21 +364,21 @@ const ListOfButtonsSchema = z.array(ButtonSchema).min(0).max(5).openapi('ListOfB
 
 const GenericAttachmentSchema = z
   .object({
-    title: StringWithLengthSchema.and(
-      z.any().openapi({ description: 'The title of the option.' }),
-    ).exactOptional(),
-    subTitle: StringWithLengthSchema.and(
-      z.any().openapi({ description: 'The subtitle shown below the title.' }),
-    ).exactOptional(),
-    attachmentLinkUrl: StringUrlWithLengthSchema.and(
-      z.any().openapi({ description: 'The URL of an attachment to the response card.' }),
-    ).exactOptional(),
-    imageUrl: StringUrlWithLengthSchema.and(
-      z.any().openapi({ description: 'The URL of an image that is displayed to the user.' }),
-    ).exactOptional(),
-    buttons: ListOfButtonsSchema.and(
-      z.any().openapi({ description: 'The list of options to show to the user.' }),
-    ).exactOptional(),
+    title: StringWithLengthSchema.exactOptional().openapi({
+      description: 'The title of the option.',
+    }),
+    subTitle: StringWithLengthSchema.exactOptional().openapi({
+      description: 'The subtitle shown below the title.',
+    }),
+    attachmentLinkUrl: StringUrlWithLengthSchema.exactOptional().openapi({
+      description: 'The URL of an attachment to the response card.',
+    }),
+    imageUrl: StringUrlWithLengthSchema.exactOptional().openapi({
+      description: 'The URL of an image that is displayed to the user.',
+    }),
+    buttons: ListOfButtonsSchema.exactOptional().openapi({
+      description: 'The list of options to show to the user.',
+    }),
   })
   .openapi({
     description:
@@ -495,15 +395,15 @@ const GenericAttachmentListSchema = z
 
 const ResponseCardSchema = z
   .object({
-    version: StringSchema.and(
-      z.any().openapi({ description: 'The version of the response card format.' }),
-    ).exactOptional(),
-    contentType: ContentTypeSchema.and(
-      z.any().openapi({ description: 'The content type of the response.' }),
-    ).exactOptional(),
-    genericAttachments: GenericAttachmentListSchema.and(
-      z.any().openapi({ description: 'An array of attachment objects representing options.' }),
-    ).exactOptional(),
+    version: StringSchema.exactOptional().openapi({
+      description: 'The version of the response card format.',
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the response.',
+    }),
+    genericAttachments: GenericAttachmentListSchema.exactOptional().openapi({
+      description: 'An array of attachment objects representing options.',
+    }),
   })
   .openapi({
     description:
@@ -521,117 +421,69 @@ const BotVersionSchema = z
 
 const PostTextResponseSchema = z
   .object({
-    intentName: IntentNameSchema.and(
-      z.any().openapi({ description: 'The current user intent that Amazon Lex is aware of.' }),
-    ).exactOptional(),
-    nluIntentConfidence: IntentConfidenceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides a score that indicates how confident Amazon Lex is that the returned intent is the one that matches the user\'s intent. The score is between 0.0 and 1.0. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/confidence-scores.html">Confidence Scores</a>.</p> <p>The score is a relative score, not an absolute score. The score may change based on improvements to Amazon Lex.</p>',
-        }),
-    ).exactOptional(),
-    alternativeIntents: IntentListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>One to four alternative intents that may be applicable to the user's intent.</p> <p>Each alternative includes a score that indicates how confident Amazon Lex is that the intent matches the user's intent. The intents are sorted by the confidence score.</p>",
-        }),
-    ).exactOptional(),
-    slots: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The intent slots that Amazon Lex detected from the user input in the conversation. </p> <p>Amazon Lex creates a resolution list containing likely values for a slot. The value that it returns is determined by the <code>valueSelectionStrategy</code> selected when the slot type was created or updated. If <code>valueSelectionStrategy</code> is set to <code>ORIGINAL_VALUE</code>, the value provided by the user is returned, if the user value is similar to the slot values. If <code>valueSelectionStrategy</code> is set to <code>TOP_RESOLUTION</code> Amazon Lex returns the first value in the resolution list or, if there is no resolution list, null. If you don't specify a <code>valueSelectionStrategy</code>, the default is <code>ORIGINAL_VALUE</code>.</p>",
-        }),
-    ).exactOptional(),
-    sessionAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of key-value pairs representing the session-specific context information.',
-        }),
-    ).exactOptional(),
-    message: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The message to convey to the user. The message can come from the bot's configuration or from a Lambda function.</p> <p>If the intent is not configured with a Lambda function, or if the Lambda function returned <code>Delegate</code> as the <code>dialogAction.type</code> its response, Amazon Lex decides on the next course of action and selects an appropriate message from the bot's configuration based on the current interaction context. For example, if Amazon Lex isn't able to understand user input, it uses a clarification prompt message.</p> <p>When you create an intent you can assign messages to groups. When messages are assigned to groups Amazon Lex returns one message from each group in the response. The message field is an escaped JSON string containing the messages. For more information about the structure of the JSON string returned, see <a>msg-prompts-formats</a>.</p> <p>If the Lambda function returns a message, Amazon Lex passes it to the client in its response.</p>",
-        }),
-    ).exactOptional(),
-    sentimentResponse: SentimentResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The sentiment expressed in and utterance.</p> <p>When the bot is configured to send utterances to Amazon Comprehend for sentiment analysis, this field contains the result of the analysis.</p>',
-        }),
-    ).exactOptional(),
-    messageFormat: MessageFormatTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the response message. One of the following values:</p> <ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format defined by the Lambda function.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages from the groups that messages were assigned to when the intent was created.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    dialogState: DialogStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Identifies the current state of the user interaction. Amazon Lex returns one of the following values as <code>dialogState</code>. The client can optionally use this information to customize the user interface. </p> <ul> <li> <p> <code>ElicitIntent</code> - Amazon Lex wants to elicit user intent. </p> <p>For example, a user might utter an intent ("I want to order a pizza"). If Amazon Lex cannot infer the user intent from this utterance, it will return this dialogState.</p> </li> <li> <p> <code>ConfirmIntent</code> - Amazon Lex is expecting a "yes" or "no" response. </p> <p> For example, Amazon Lex wants user confirmation before fulfilling an intent. </p> <p>Instead of a simple "yes" or "no," a user might respond with additional information. For example, "yes, but make it thick crust pizza" or "no, I want to order a drink". Amazon Lex can process such additional information (in these examples, update the crust type slot value, or change intent from OrderPizza to OrderDrink).</p> </li> <li> <p> <code>ElicitSlot</code> - Amazon Lex is expecting a slot value for the current intent. </p> <p>For example, suppose that in the response Amazon Lex sends this message: "What size pizza would you like?". A user might reply with the slot value (e.g., "medium"). The user might also provide additional information in the response (e.g., "medium thick crust pizza"). Amazon Lex can process such additional information appropriately. </p> </li> <li> <p> <code>Fulfilled</code> - Conveys that the Lambda function configured for the intent has successfully fulfilled the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - Conveys that the client has to fulfill the intent. </p> </li> <li> <p> <code>Failed</code> - Conveys that the conversation with the user failed. </p> <p> This can happen for various reasons including that the user did not provide an appropriate response to prompts from the service (you can configure how many times Amazon Lex can prompt a user for specific information), or the Lambda function failed to fulfill the intent. </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    slotToElicit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>dialogState</code> value is <code>ElicitSlot</code>, returns the name of the slot for which Amazon Lex is eliciting a value. ',
-        }),
-    ).exactOptional(),
-    responseCard: ResponseCardSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents the options that the user has to respond to the current prompt. Response Card can come from the bot configuration (in the Amazon Lex console, choose the settings button next to a slot) or from a code hook (Lambda function). ',
-        }),
-    ).exactOptional(),
-    sessionId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the session.' }),
-    ).exactOptional(),
-    botVersion: BotVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the bot that responded to the conversation. You can use this information to help determine if one version of a bot is performing better than another version.',
-        }),
-    ).exactOptional(),
-    activeContexts: ActiveContextsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of active contexts for the session. A context can be set when an intent is fulfilled or by calling the <code>PostContent</code>, <code>PostText</code>, or <code>PutSession</code> operation.</p> <p>You can use a context to control the intents that can follow up an intent, or to modify the operation of your application.</p>',
-        }),
-    ).exactOptional(),
+    intentName: IntentNameSchema.exactOptional().openapi({
+      description: 'The current user intent that Amazon Lex is aware of.',
+    }),
+    nluIntentConfidence: IntentConfidenceSchema.exactOptional().openapi({
+      description:
+        '<p>Provides a score that indicates how confident Amazon Lex is that the returned intent is the one that matches the user\'s intent. The score is between 0.0 and 1.0. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/confidence-scores.html">Confidence Scores</a>.</p> <p>The score is a relative score, not an absolute score. The score may change based on improvements to Amazon Lex.</p>',
+    }),
+    alternativeIntents: IntentListSchema.exactOptional().openapi({
+      description:
+        "<p>One to four alternative intents that may be applicable to the user's intent.</p> <p>Each alternative includes a score that indicates how confident Amazon Lex is that the intent matches the user's intent. The intents are sorted by the confidence score.</p>",
+    }),
+    slots: StringMapSchema.exactOptional().openapi({
+      description:
+        "<p> The intent slots that Amazon Lex detected from the user input in the conversation. </p> <p>Amazon Lex creates a resolution list containing likely values for a slot. The value that it returns is determined by the <code>valueSelectionStrategy</code> selected when the slot type was created or updated. If <code>valueSelectionStrategy</code> is set to <code>ORIGINAL_VALUE</code>, the value provided by the user is returned, if the user value is similar to the slot values. If <code>valueSelectionStrategy</code> is set to <code>TOP_RESOLUTION</code> Amazon Lex returns the first value in the resolution list or, if there is no resolution list, null. If you don't specify a <code>valueSelectionStrategy</code>, the default is <code>ORIGINAL_VALUE</code>.</p>",
+    }),
+    sessionAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        'A map of key-value pairs representing the session-specific context information.',
+    }),
+    message: TextSchema.exactOptional().openapi({
+      description:
+        "<p>The message to convey to the user. The message can come from the bot's configuration or from a Lambda function.</p> <p>If the intent is not configured with a Lambda function, or if the Lambda function returned <code>Delegate</code> as the <code>dialogAction.type</code> its response, Amazon Lex decides on the next course of action and selects an appropriate message from the bot's configuration based on the current interaction context. For example, if Amazon Lex isn't able to understand user input, it uses a clarification prompt message.</p> <p>When you create an intent you can assign messages to groups. When messages are assigned to groups Amazon Lex returns one message from each group in the response. The message field is an escaped JSON string containing the messages. For more information about the structure of the JSON string returned, see <a>msg-prompts-formats</a>.</p> <p>If the Lambda function returns a message, Amazon Lex passes it to the client in its response.</p>",
+    }),
+    sentimentResponse: SentimentResponseSchema.exactOptional().openapi({
+      description:
+        '<p>The sentiment expressed in and utterance.</p> <p>When the bot is configured to send utterances to Amazon Comprehend for sentiment analysis, this field contains the result of the analysis.</p>',
+    }),
+    messageFormat: MessageFormatTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the response message. One of the following values:</p> <ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format defined by the Lambda function.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages from the groups that messages were assigned to when the intent was created.</p> </li> </ul>',
+    }),
+    dialogState: DialogStateSchema.exactOptional().openapi({
+      description:
+        '<p> Identifies the current state of the user interaction. Amazon Lex returns one of the following values as <code>dialogState</code>. The client can optionally use this information to customize the user interface. </p> <ul> <li> <p> <code>ElicitIntent</code> - Amazon Lex wants to elicit user intent. </p> <p>For example, a user might utter an intent ("I want to order a pizza"). If Amazon Lex cannot infer the user intent from this utterance, it will return this dialogState.</p> </li> <li> <p> <code>ConfirmIntent</code> - Amazon Lex is expecting a "yes" or "no" response. </p> <p> For example, Amazon Lex wants user confirmation before fulfilling an intent. </p> <p>Instead of a simple "yes" or "no," a user might respond with additional information. For example, "yes, but make it thick crust pizza" or "no, I want to order a drink". Amazon Lex can process such additional information (in these examples, update the crust type slot value, or change intent from OrderPizza to OrderDrink).</p> </li> <li> <p> <code>ElicitSlot</code> - Amazon Lex is expecting a slot value for the current intent. </p> <p>For example, suppose that in the response Amazon Lex sends this message: "What size pizza would you like?". A user might reply with the slot value (e.g., "medium"). The user might also provide additional information in the response (e.g., "medium thick crust pizza"). Amazon Lex can process such additional information appropriately. </p> </li> <li> <p> <code>Fulfilled</code> - Conveys that the Lambda function configured for the intent has successfully fulfilled the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - Conveys that the client has to fulfill the intent. </p> </li> <li> <p> <code>Failed</code> - Conveys that the conversation with the user failed. </p> <p> This can happen for various reasons including that the user did not provide an appropriate response to prompts from the service (you can configure how many times Amazon Lex can prompt a user for specific information), or the Lambda function failed to fulfill the intent. </p> </li> </ul>',
+    }),
+    slotToElicit: StringSchema.exactOptional().openapi({
+      description:
+        'If the <code>dialogState</code> value is <code>ElicitSlot</code>, returns the name of the slot for which Amazon Lex is eliciting a value. ',
+    }),
+    responseCard: ResponseCardSchema.exactOptional().openapi({
+      description:
+        'Represents the options that the user has to respond to the current prompt. Response Card can come from the bot configuration (in the Amazon Lex console, choose the settings button next to a slot) or from a code hook (Lambda function). ',
+    }),
+    sessionId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the session.',
+    }),
+    botVersion: BotVersionSchema.exactOptional().openapi({
+      description:
+        'The version of the bot that responded to the conversation. You can use this information to help determine if one version of a bot is performing better than another version.',
+    }),
+    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of active contexts for the session. A context can be set when an intent is fulfilled or by calling the <code>PostContent</code>, <code>PostText</code>, or <code>PutSession</code> operation.</p> <p>You can use a context to control the intents that can follow up an intent, or to modify the operation of your application.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PostTextResponse')
 
 const PutSessionResponseSchema = z
   .object({
-    audioStream: BlobStreamSchema.and(
-      z.any().openapi({ description: 'The audio version of the message to convey to the user.' }),
-    ).exactOptional(),
+    audioStream: BlobStreamSchema.exactOptional().openapi({
+      description: 'The audio version of the message to convey to the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutSessionResponse')
@@ -643,12 +495,12 @@ const ActiveContextsStringSchema = z.string().openapi('ActiveContextsString')
 const AttributesStringSchema = z.string().openapi('AttributesString')
 
 const DeleteSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSessionRequest' })
   .openapi('DeleteSessionRequest')
 
 const GetSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSessionRequest' })
   .openapi('GetSessionRequest')
 
@@ -658,14 +510,10 @@ const ParameterNameSchema = z.string().min(1).max(100).openapi('ParameterName')
 
 const PostContentRequestSchema = z
   .object({
-    inputStream: BlobStreamSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> User input in PCM or Opus audio format or text format as described in the <code>Content-Type</code> HTTP header. </p> <p>You can stream audio data to Amazon Lex or you can create a local buffer that captures all of the audio data before sending. In general, you get better performance if you stream audio data rather than buffering the data locally.</p>',
-        }),
-    ),
+    inputStream: BlobStreamSchema.openapi({
+      description:
+        '<p> User input in PCM or Opus audio format or text format as described in the <code>Content-Type</code> HTTP header. </p> <p>You can stream audio data to Amazon Lex or you can create a local buffer that captures all of the audio data before sending. In general, you get better performance if you stream audio data rather than buffering the data locally.</p>',
+    }),
   })
   .openapi({ required: ['inputStream'], title: 'PostContentRequest' })
   .openapi('PostContentRequest')
@@ -676,74 +524,42 @@ const SensitiveStringUnboundedSchema = z.string().openapi('SensitiveStringUnboun
 
 const PostTextRequestSchema = z
   .object({
-    sessionAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Application-specific information passed between Amazon Lex and a client application.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-session-attribs">Setting Session Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    requestAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Request-specific information passed between Amazon Lex and a client application.</p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don\'t create any request attributes with the prefix <code>x-amz-lex:</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-request-attribs">Setting Request Attributes</a>.</p>',
-        }),
-    ).exactOptional(),
-    inputText: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The text that the user entered (Amazon Lex interprets this text).',
-        }),
-    ),
-    activeContexts: ActiveContextsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request,</p> <p>If you don't specify a list of contexts, Amazon Lex will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared.</p>",
-        }),
-    ).exactOptional(),
+    sessionAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        '<p>Application-specific information passed between Amazon Lex and a client application.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-session-attribs">Setting Session Attributes</a>.</p>',
+    }),
+    requestAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        '<p>Request-specific information passed between Amazon Lex and a client application.</p> <p>The namespace <code>x-amz-lex:</code> is reserved for special attributes. Don\'t create any request attributes with the prefix <code>x-amz-lex:</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/context-mgmt.html#context-mgmt-request-attribs">Setting Request Attributes</a>.</p>',
+    }),
+    inputText: TextSchema.openapi({
+      description: 'The text that the user entered (Amazon Lex interprets this text).',
+    }),
+    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request,</p> <p>If you don't specify a list of contexts, Amazon Lex will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared.</p>",
+    }),
   })
   .openapi({ required: ['inputText'], title: 'PostTextRequest' })
   .openapi('PostTextRequest')
 
 const PutSessionRequestSchema = z
   .object({
-    sessionAttributes: StringMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Map of key/value pairs representing the session-specific context information. It contains application information passed between Amazon Lex and a client application.',
-        }),
-    ).exactOptional(),
-    dialogAction: DialogActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Sets the next action that the bot should take to fulfill the conversation.',
-        }),
-    ).exactOptional(),
-    recentIntentSummaryView: IntentSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A summary of the recent intents for the bot. You can use the intent summary view to set a checkpoint label on an intent and modify attributes of intents. You can also use it to remove or add intent summary objects to the list.</p> <p>An intent that you modify or add to the list must make sense for the bot. For example, the intent name must be valid for the bot. You must provide valid values for:</p> <ul> <li> <p> <code>intentName</code> </p> </li> <li> <p>slot names</p> </li> <li> <p> <code>slotToElict</code> </p> </li> </ul> <p>If you send the <code>recentIntentSummaryView</code> parameter in a <code>PutSession</code> request, the contents of the new summary view replaces the old summary view. For example, if a <code>GetSession</code> request returns three intents in the summary view and you call <code>PutSession</code> with one intent in the summary view, the next call to <code>GetSession</code> will only return one intent.</p>',
-        }),
-    ).exactOptional(),
-    activeContexts: ActiveContextsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request,</p> <p>If you don't specify a list of contexts, Amazon Lex will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared.</p>",
-        }),
-    ).exactOptional(),
+    sessionAttributes: StringMapSchema.exactOptional().openapi({
+      description:
+        'Map of key/value pairs representing the session-specific context information. It contains application information passed between Amazon Lex and a client application.',
+    }),
+    dialogAction: DialogActionSchema.exactOptional().openapi({
+      description: 'Sets the next action that the bot should take to fulfill the conversation.',
+    }),
+    recentIntentSummaryView: IntentSummaryListSchema.exactOptional().openapi({
+      description:
+        '<p>A summary of the recent intents for the bot. You can use the intent summary view to set a checkpoint label on an intent and modify attributes of intents. You can also use it to remove or add intent summary objects to the list.</p> <p>An intent that you modify or add to the list must make sense for the bot. For example, the intent name must be valid for the bot. You must provide valid values for:</p> <ul> <li> <p> <code>intentName</code> </p> </li> <li> <p>slot names</p> </li> <li> <p> <code>slotToElict</code> </p> </li> </ul> <p>If you send the <code>recentIntentSummaryView</code> parameter in a <code>PutSession</code> request, the contents of the new summary view replaces the old summary view. For example, if a <code>GetSession</code> request returns three intents in the summary view and you call <code>PutSession</code> with one intent in the summary view, the next call to <code>GetSession</code> will only return one intent.</p>',
+    }),
+    activeContexts: ActiveContextsListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of contexts active for the request. A context can be activated when a previous intent is fulfilled, or by including the context in the request,</p> <p>If you don't specify a list of contexts, Amazon Lex will use the current list of contexts for the session. If you specify an empty list, all contexts for the session are cleared.</p>",
+    }),
   })
   .openapi({ title: 'PutSessionRequest', required: [] })
   .openapi('PutSessionRequest')
@@ -902,55 +718,31 @@ export const postBotBotNameAliasBotAliasUserUserIdSessionRoute = createRoute({
                 }),
               dialogAction: z
                 .object({
-                  type: DialogActionTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  intentName: IntentNameSchema.and(
-                    z.any().openapi({ description: 'The name of the intent.' }),
-                  ).exactOptional(),
-                  slots: StringMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Map of the slots that have been gathered and their values. ',
-                      }),
-                  ).exactOptional(),
-                  slotToElicit: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name of the slot that should be elicited from the user.',
-                      }),
-                  ).exactOptional(),
-                  fulfillmentState: FulfillmentStateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  message: TextSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "The message that should be shown to the user. If you don't specify a message, Amazon Lex will use the message configured for the intent.",
-                      }),
-                  ).exactOptional(),
-                  messageFormat: MessageFormatTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format for the client.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/howitworks-manage-prompts.html">Message Groups</a>. </p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
+                  type: DialogActionTypeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The next action that the bot should take in its interaction with the user. The possible values are:</p> <ul> <li> <p> <code>ConfirmIntent</code> - The next action is asking the user if the intent is complete and ready to be fulfilled. This is a yes/no question such as "Place the order?"</p> </li> <li> <p> <code>Close</code> - Indicates that the there will not be a response from the user. For example, the statement "Your order has been placed" does not require a response.</p> </li> <li> <p> <code>Delegate</code> - The next action is determined by Amazon Lex.</p> </li> <li> <p> <code>ElicitIntent</code> - The next action is to determine the intent that the user wants to fulfill.</p> </li> <li> <p> <code>ElicitSlot</code> - The next action is to elicit a slot value from the user.</p> </li> </ul>',
+                  }),
+                  intentName: IntentNameSchema.exactOptional().openapi({
+                    description: 'The name of the intent.',
+                  }),
+                  slots: StringMapSchema.exactOptional().openapi({
+                    description: 'Map of the slots that have been gathered and their values. ',
+                  }),
+                  slotToElicit: StringSchema.exactOptional().openapi({
+                    description: 'The name of the slot that should be elicited from the user.',
+                  }),
+                  fulfillmentState: FulfillmentStateSchema.exactOptional().openapi({
+                    description:
+                      '<p>The fulfillment state of the intent. The possible values are:</p> <ul> <li> <p> <code>Failed</code> - The Lambda function associated with the intent failed to fulfill the intent.</p> </li> <li> <p> <code>Fulfilled</code> - The intent has fulfilled by the Lambda function associated with the intent. </p> </li> <li> <p> <code>ReadyForFulfillment</code> - All of the information necessary for the intent is present and the intent ready to be fulfilled by the client application.</p> </li> </ul>',
+                  }),
+                  message: TextSchema.exactOptional().openapi({
+                    description:
+                      "The message that should be shown to the user. If you don't specify a message, Amazon Lex will use the message configured for the intent.",
+                  }),
+                  messageFormat: MessageFormatTypeSchema.exactOptional().openapi({
+                    description:
+                      '<ul> <li> <p> <code>PlainText</code> - The message contains plain UTF-8 text.</p> </li> <li> <p> <code>CustomPayload</code> - The message is a custom format for the client.</p> </li> <li> <p> <code>SSML</code> - The message contains text formatted for voice output.</p> </li> <li> <p> <code>Composite</code> - The message contains an escaped JSON object containing one or more messages. For more information, see <a href="https://docs.aws.amazon.com/lex/latest/dg/howitworks-manage-prompts.html">Message Groups</a>. </p> </li> </ul>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

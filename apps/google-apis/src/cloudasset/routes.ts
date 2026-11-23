@@ -1,128 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AnalyzeIamPolicyLongrunningMetadataSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time the operation was created.', readOnly: true }),
-  })
-  .openapi({
-    description:
-      'Represents the metadata of the longrunning operation for the AnalyzeIamPolicyLongrunning RPC.',
-    required: [],
-  })
-  .openapi('AnalyzeIamPolicyLongrunningMetadata')
-
-const AnalyzeIamPolicyLongrunningResponseSchema = z
-  .object({})
-  .openapi({ description: 'A response message for AssetService.AnalyzeIamPolicyLongrunning.' })
-  .openapi('AnalyzeIamPolicyLongrunningResponse')
-
-const AuditLogConfigSchema = z
-  .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
-      }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
-    }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
-      }),
-  })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
 const GoogleIdentityAccesscontextmanagerV1OsConstraintSchema = z
   .object({
     minimumVersion: z
@@ -273,6 +150,44 @@ const GoogleIdentityAccesscontextmanagerV1BasicLevelSchema = z
   })
   .openapi('GoogleIdentityAccesscontextmanagerV1BasicLevel')
 
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
 const GoogleIdentityAccesscontextmanagerV1CustomLevelSchema = z
   .object({
     expr: ExprSchema.exactOptional().openapi({
@@ -360,6 +275,72 @@ const GoogleIdentityAccesscontextmanagerV1AccessPolicySchema = z
     required: [],
   })
   .openapi('GoogleIdentityAccesscontextmanagerV1AccessPolicy')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`.',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
 
 const PolicySchema = z
   .object({
@@ -456,7 +437,7 @@ const GoogleCloudOrgpolicyV1ListPolicySchema = z
   .openapi('GoogleCloudOrgpolicyV1ListPolicy')
 
 const GoogleCloudOrgpolicyV1RestoreDefaultSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Ignores policies set above this resource and restores the `constraint_default` enforcement behavior of the specific `Constraint` at this resource. Suppose that `constraint_default` is set to `ALLOW` for the `Constraint` `constraints/serviceuser.services`. Suppose that organization foo.com sets a `Policy` at their Organization resource node that restricts the allowed service activations to deny all service activations. They could then set a `Policy` with the `policy_type` `restore_default` on several experimental projects, restoring the `constraint_default` enforcement of the `Constraint` for only those projects, allowing those projects to have all services activated.',
@@ -875,106 +856,165 @@ const GoogleIdentityAccesscontextmanagerV1VpcAccessibleServicesSchema = z
   })
   .openapi('GoogleIdentityAccesscontextmanagerV1VpcAccessibleServices')
 
-const GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema = z
-  .object({
-    accessLevels: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of `AccessLevel` resource names that allow resources within the `ServicePerimeter` to be accessed from the internet. `AccessLevels` listed must be in the same policy as this `ServicePerimeter`. Referencing a nonexistent `AccessLevel` is a syntax error. If no `AccessLevel` names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `"accessPolicies/MY_POLICY/accessLevels/MY_LEVEL"`. For Service Perimeter Bridge, must be empty.',
-      }),
-    egressPolicies: z
-      .array(GoogleIdentityAccesscontextmanagerV1EgressPolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of EgressPolicies to apply to the perimeter. A perimeter may have multiple EgressPolicies, each of which is evaluated separately. Access is granted if any EgressPolicy grants it. Must be empty for a perimeter bridge.',
-      }),
-    ingressPolicies: z
-      .array(GoogleIdentityAccesscontextmanagerV1IngressPolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of IngressPolicies to apply to the perimeter. A perimeter may have multiple IngressPolicies, each of which is evaluated separately. Access is granted if any Ingress Policy grants it. Must be empty for a perimeter bridge.',
-      }),
-    resources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of Google Cloud resources that are inside of the service perimeter. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`.',
-      }),
-    restrictedServices: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          "Google Cloud services that are subject to the Service Perimeter restrictions. For example, if `storage.googleapis.com` is specified, access to the storage buckets inside the perimeter must meet the perimeter's access restrictions.",
-      }),
-    vpcAccessibleServices:
-      GoogleIdentityAccesscontextmanagerV1VpcAccessibleServicesSchema.exactOptional().openapi({
-        description: 'Configuration for APIs allowed within Perimeter.',
-      }),
-  })
-  .openapi({
-    description:
-      '`ServicePerimeterConfig` specifies a set of Google Cloud resources that describe specific Service Perimeter configuration.',
-    required: [],
-  })
-  .openapi('GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfig')
+type GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigType = {
+  accessLevels?: string[]
+  egressPolicies?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1EgressPolicySchema>[]
+  ingressPolicies?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1IngressPolicySchema>[]
+  resources?: string[]
+  restrictedServices?: string[]
+  vpcAccessibleServices?: z.infer<
+    typeof GoogleIdentityAccesscontextmanagerV1VpcAccessibleServicesSchema
+  >
+}
 
-const GoogleIdentityAccesscontextmanagerV1ServicePerimeterSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Description of the `ServicePerimeter` and its use. Does not affect behavior.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name for the `ServicePerimeter`. Format: `accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}`. The `service_perimeter` component must begin with a letter, followed by alphanumeric characters or `_`. After you create a `ServicePerimeter`, you cannot change its `name`.',
-      }),
-    perimeterType: z
-      .enum(['PERIMETER_TYPE_REGULAR', 'PERIMETER_TYPE_BRIDGE'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Perimeter type indicator. A single project or VPC network is allowed to be a member of single regular perimeter, but multiple service perimeter bridges. A project cannot be a included in a perimeter bridge without being included in regular perimeter. For perimeter bridges, the restricted service list as well as access level lists must be empty.',
-      }),
-    spec: GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema.exactOptional().openapi({
+const GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema: z.ZodType<GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigType> =
+  z
+    .object({
+      accessLevels: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of `AccessLevel` resource names that allow resources within the `ServicePerimeter` to be accessed from the internet. `AccessLevels` listed must be in the same policy as this `ServicePerimeter`. Referencing a nonexistent `AccessLevel` is a syntax error. If no `AccessLevel` names are listed, resources within the perimeter can only be accessed via Google Cloud calls with request origins within the perimeter. Example: `"accessPolicies/MY_POLICY/accessLevels/MY_LEVEL"`. For Service Perimeter Bridge, must be empty.',
+        }),
+      egressPolicies: z
+        .array(GoogleIdentityAccesscontextmanagerV1EgressPolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of EgressPolicies to apply to the perimeter. A perimeter may have multiple EgressPolicies, each of which is evaluated separately. Access is granted if any EgressPolicy grants it. Must be empty for a perimeter bridge.',
+        }),
+      ingressPolicies: z
+        .array(GoogleIdentityAccesscontextmanagerV1IngressPolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of IngressPolicies to apply to the perimeter. A perimeter may have multiple IngressPolicies, each of which is evaluated separately. Access is granted if any Ingress Policy grants it. Must be empty for a perimeter bridge.',
+        }),
+      resources: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'A list of Google Cloud resources that are inside of the service perimeter. Currently only projects and VPCs are allowed. Project format: `projects/{project_number}` VPC network format: `//compute.googleapis.com/projects/{PROJECT_ID}/global/networks/{NAME}`.',
+        }),
+      restrictedServices: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            "Google Cloud services that are subject to the Service Perimeter restrictions. For example, if `storage.googleapis.com` is specified, access to the storage buckets inside the perimeter must meet the perimeter's access restrictions.",
+        }),
+      vpcAccessibleServices:
+        GoogleIdentityAccesscontextmanagerV1VpcAccessibleServicesSchema.exactOptional().openapi({
+          description: 'Configuration for APIs allowed within Perimeter.',
+        }),
+    })
+    .openapi({
       description:
-        'Proposed (or dry run) ServicePerimeter configuration. This configuration allows to specify and test ServicePerimeter configuration without enforcing actual access restrictions. Only allowed to be set when the "use_explicit_dry_run_spec" flag is set.',
-    }),
-    status:
-      GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema.exactOptional().openapi({
-        description:
-          'Current ServicePerimeter configuration. Specifies sets of resources, restricted services and access levels that determine perimeter content and boundaries.',
-      }),
-    title: z
+        '`ServicePerimeterConfig` specifies a set of Google Cloud resources that describe specific Service Perimeter configuration.',
+      required: [],
+    })
+    .openapi('GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfig')
+
+type GoogleIdentityAccesscontextmanagerV1ServicePerimeterType = {
+  description?: string
+  name?: string
+  perimeterType?: 'PERIMETER_TYPE_REGULAR' | 'PERIMETER_TYPE_BRIDGE'
+  spec?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema>
+  status?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema>
+  title?: string
+  useExplicitDryRunSpec?: boolean
+}
+
+const GoogleIdentityAccesscontextmanagerV1ServicePerimeterSchema: z.ZodType<GoogleIdentityAccesscontextmanagerV1ServicePerimeterType> =
+  z
+    .object({
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Description of the `ServicePerimeter` and its use. Does not affect behavior.',
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Resource name for the `ServicePerimeter`. Format: `accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}`. The `service_perimeter` component must begin with a letter, followed by alphanumeric characters or `_`. After you create a `ServicePerimeter`, you cannot change its `name`.',
+        }),
+      perimeterType: z
+        .enum(['PERIMETER_TYPE_REGULAR', 'PERIMETER_TYPE_BRIDGE'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Perimeter type indicator. A single project or VPC network is allowed to be a member of single regular perimeter, but multiple service perimeter bridges. A project cannot be a included in a perimeter bridge without being included in regular perimeter. For perimeter bridges, the restricted service list as well as access level lists must be empty.',
+        }),
+      spec: GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema.exactOptional().openapi(
+        {
+          description:
+            'Proposed (or dry run) ServicePerimeter configuration. This configuration allows to specify and test ServicePerimeter configuration without enforcing actual access restrictions. Only allowed to be set when the "use_explicit_dry_run_spec" flag is set.',
+        },
+      ),
+      status:
+        GoogleIdentityAccesscontextmanagerV1ServicePerimeterConfigSchema.exactOptional().openapi({
+          description:
+            'Current ServicePerimeter configuration. Specifies sets of resources, restricted services and access levels that determine perimeter content and boundaries.',
+        }),
+      title: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Human readable title. Must be unique within the Policy.' }),
+      useExplicitDryRunSpec: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists for all Service Perimeters, and that spec is identical to the status for those Service Perimeters. When this flag is set, it inhibits the generation of the implicit spec, thereby allowing the user to explicitly provide a configuration ("spec") to use in a dry-run version of the Service Perimeter. This allows the user to test changes to the enforced config ("status") without actually enforcing them. This testing is done through analyzing the differences between currently enforced and suggested restrictions. use_explicit_dry_run_spec must bet set to True if any of the fields in the spec are set to non-default values.',
+        }),
+    })
+    .openapi({
+      description:
+        '`ServicePerimeter` describes a set of Google Cloud resources which can freely import and export data amongst themselves, but not export outside of the `ServicePerimeter`. If a request with a source within this `ServicePerimeter` has a target outside of the `ServicePerimeter`, the request will be blocked. Otherwise the request is allowed. There are two types of Service Perimeter - Regular and Bridge. Regular Service Perimeters cannot overlap, a single Google Cloud project or VPC network can only belong to a single regular Service Perimeter. Service Perimeter Bridges can contain only Google Cloud projects as members, a single Google Cloud project may belong to multiple Service Perimeter Bridges.',
+      required: [],
+    })
+    .openapi('GoogleIdentityAccesscontextmanagerV1ServicePerimeter')
+
+type GoogleCloudAssetV1p7beta1AssetType = {
+  accessLevel?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1AccessLevelSchema>
+  accessPolicy?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1AccessPolicySchema>
+  ancestors?: string[]
+  assetType?: string
+  iamPolicy?: z.infer<typeof PolicySchema>
+  name?: string
+  orgPolicy?: z.infer<typeof GoogleCloudOrgpolicyV1PolicySchema>[]
+  relatedAssets?: z.infer<typeof GoogleCloudAssetV1p7beta1RelatedAssetsSchema>
+  resource?: z.infer<typeof GoogleCloudAssetV1p7beta1ResourceSchema>
+  servicePerimeter?: z.infer<typeof GoogleIdentityAccesscontextmanagerV1ServicePerimeterSchema>
+  updateTime?: string
+}
+
+const AnalyzeIamPolicyLongrunningMetadataSchema = z
+  .object({
+    createTime: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Human readable title. Must be unique within the Policy.' }),
-    useExplicitDryRunSpec: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Use explicit dry run spec flag. Ordinarily, a dry-run spec implicitly exists for all Service Perimeters, and that spec is identical to the status for those Service Perimeters. When this flag is set, it inhibits the generation of the implicit spec, thereby allowing the user to explicitly provide a configuration ("spec") to use in a dry-run version of the Service Perimeter. This allows the user to test changes to the enforced config ("status") without actually enforcing them. This testing is done through analyzing the differences between currently enforced and suggested restrictions. use_explicit_dry_run_spec must bet set to True if any of the fields in the spec are set to non-default values.',
-      }),
+      .openapi({ description: 'Output only. The time the operation was created.', readOnly: true }),
   })
   .openapi({
     description:
-      '`ServicePerimeter` describes a set of Google Cloud resources which can freely import and export data amongst themselves, but not export outside of the `ServicePerimeter`. If a request with a source within this `ServicePerimeter` has a target outside of the `ServicePerimeter`, the request will be blocked. Otherwise the request is allowed. There are two types of Service Perimeter - Regular and Bridge. Regular Service Perimeters cannot overlap, a single Google Cloud project or VPC network can only belong to a single regular Service Perimeter. Service Perimeter Bridges can contain only Google Cloud projects as members, a single Google Cloud project may belong to multiple Service Perimeter Bridges.',
+      'Represents the metadata of the longrunning operation for the AnalyzeIamPolicyLongrunning RPC.',
     required: [],
   })
-  .openapi('GoogleIdentityAccesscontextmanagerV1ServicePerimeter')
+  .openapi('AnalyzeIamPolicyLongrunningMetadata')
 
-const GoogleCloudAssetV1p7beta1AssetSchema = z
+const AnalyzeIamPolicyLongrunningResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'A response message for AssetService.AnalyzeIamPolicyLongrunning.' })
+  .openapi('AnalyzeIamPolicyLongrunningResponse')
+
+const GoogleCloudAssetV1p7beta1AssetSchema: z.ZodType<GoogleCloudAssetV1p7beta1AssetType> = z
   .object({
     accessLevel: GoogleIdentityAccesscontextmanagerV1AccessLevelSchema.exactOptional().openapi({
       description:

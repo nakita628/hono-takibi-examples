@@ -68,79 +68,73 @@ const StorageTypeSchema = z.enum(['UNLIMITED', 'QUOTA']).openapi('StorageType')
 
 const StorageRuleTypeSchema = z
   .object({
-    StorageAllocatedInBytes: PositiveSizeTypeSchema.and(
-      z.any().openapi({ description: 'The amount of storage allocated, in bytes.' }),
-    ).exactOptional(),
-    StorageType: StorageTypeSchema.and(
-      z.any().openapi({ description: 'The type of storage.' }),
-    ).exactOptional(),
+    StorageAllocatedInBytes: PositiveSizeTypeSchema.exactOptional().openapi({
+      description: 'The amount of storage allocated, in bytes.',
+    }),
+    StorageType: StorageTypeSchema.exactOptional().openapi({ description: 'The type of storage.' }),
   })
   .openapi({ description: 'Describes the storage for a user.', required: [] })
   .openapi('StorageRuleType')
 
 const UserStorageMetadataSchema = z
   .object({
-    StorageUtilizedInBytes: SizeTypeSchema.and(
-      z.any().openapi({ description: 'The amount of storage used, in bytes.' }),
-    ).exactOptional(),
-    StorageRule: StorageRuleTypeSchema.and(
-      z.any().openapi({ description: 'The storage for a user.' }),
-    ).exactOptional(),
+    StorageUtilizedInBytes: SizeTypeSchema.exactOptional().openapi({
+      description: 'The amount of storage used, in bytes.',
+    }),
+    StorageRule: StorageRuleTypeSchema.exactOptional().openapi({
+      description: 'The storage for a user.',
+    }),
   })
   .openapi({ description: 'Describes the storage for a user.', required: [] })
   .openapi('UserStorageMetadata')
 
 const UserSchema = z
   .object({
-    Id: IdTypeSchema.and(z.any().openapi({ description: 'The ID of the user.' })).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The login name of the user.' }),
-    ).exactOptional(),
-    EmailAddress: EmailAddressTypeSchema.and(
-      z.any().openapi({ description: 'The email address of the user.' }),
-    ).exactOptional(),
-    GivenName: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The given name of the user.' }),
-    ).exactOptional(),
-    Surname: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The surname of the user.' }),
-    ).exactOptional(),
-    OrganizationId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the organization.' }),
-    ).exactOptional(),
-    RootFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the root folder.' }),
-    ).exactOptional(),
-    RecycleBinFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the recycle bin folder.' }),
-    ).exactOptional(),
-    Status: UserStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of the user.' }),
-    ).exactOptional(),
-    Type: UserTypeSchema.and(z.any().openapi({ description: 'The type of user.' })).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the user was created.' }),
-    ).exactOptional(),
-    ModifiedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the user was modified.' }),
-    ).exactOptional(),
-    TimeZoneId: TimeZoneIdTypeSchema.and(
-      z.any().openapi({ description: 'The time zone ID of the user.' }),
-    ).exactOptional(),
-    Locale: LocaleTypeSchema.and(
-      z.any().openapi({ description: 'The locale of the user.' }),
-    ).exactOptional(),
-    Storage: UserStorageMetadataSchema.and(
-      z.any().openapi({ description: 'The storage for the user.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the user.' }),
+    Username: UsernameTypeSchema.exactOptional().openapi({
+      description: 'The login name of the user.',
+    }),
+    EmailAddress: EmailAddressTypeSchema.exactOptional().openapi({
+      description: 'The email address of the user.',
+    }),
+    GivenName: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The given name of the user.',
+    }),
+    Surname: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The surname of the user.',
+    }),
+    OrganizationId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the organization.',
+    }),
+    RootFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the root folder.',
+    }),
+    RecycleBinFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the recycle bin folder.',
+    }),
+    Status: UserStatusTypeSchema.exactOptional().openapi({
+      description: 'The status of the user.',
+    }),
+    Type: UserTypeSchema.exactOptional().openapi({ description: 'The type of user.' }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the user was created.',
+    }),
+    ModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the user was modified.',
+    }),
+    TimeZoneId: TimeZoneIdTypeSchema.exactOptional().openapi({
+      description: 'The time zone ID of the user.',
+    }),
+    Locale: LocaleTypeSchema.exactOptional().openapi({ description: 'The locale of the user.' }),
+    Storage: UserStorageMetadataSchema.exactOptional().openapi({
+      description: 'The storage for the user.',
+    }),
   })
   .openapi({ description: 'Describes a user.', required: [] })
   .openapi('User')
 
 const ActivateUserResponseSchema = z
-  .object({
-    User: UserSchema.and(z.any().openapi({ description: 'The user information.' })).exactOptional(),
-  })
+  .object({ User: UserSchema.exactOptional().openapi({ description: 'The user information.' }) })
   .openapi({ required: [] })
   .openapi('ActivateUserResponse')
 
@@ -152,22 +146,18 @@ const MessageTypeSchema = z.string().min(0).max(2048).openapi('MessageType')
 
 const ShareResultSchema = z
   .object({
-    PrincipalId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the principal.' }),
-    ).exactOptional(),
-    InviteePrincipalId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the invited user.' }),
-    ).exactOptional(),
-    Role: RoleTypeSchema.and(z.any().openapi({ description: 'The role.' })).exactOptional(),
-    Status: ShareStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status.' }),
-    ).exactOptional(),
-    ShareId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the resource that was shared.' }),
-    ).exactOptional(),
-    StatusMessage: MessageTypeSchema.and(
-      z.any().openapi({ description: 'The status message.' }),
-    ).exactOptional(),
+    PrincipalId: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the principal.' }),
+    InviteePrincipalId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the invited user.',
+    }),
+    Role: RoleTypeSchema.exactOptional().openapi({ description: 'The role.' }),
+    Status: ShareStatusTypeSchema.exactOptional().openapi({ description: 'The status.' }),
+    ShareId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the resource that was shared.',
+    }),
+    StatusMessage: MessageTypeSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
   })
   .openapi({ description: 'Describes the share results of a resource.', required: [] })
   .openapi('ShareResult')
@@ -176,9 +166,9 @@ const ShareResultsListSchema = z.array(ShareResultSchema).openapi('ShareResultsL
 
 const AddResourcePermissionsResponseSchema = z
   .object({
-    ShareResults: ShareResultsListSchema.and(
-      z.any().openapi({ description: 'The share results.' }),
-    ).exactOptional(),
+    ShareResults: ShareResultsListSchema.exactOptional().openapi({
+      description: 'The share results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AddResourcePermissionsResponse')
@@ -189,9 +179,9 @@ const PrincipalTypeSchema = z
 
 const SharePrincipalSchema = z
   .object({
-    Id: IdTypeSchema.and(z.any().openapi({ description: 'The ID of the recipient.' })),
-    Type: PrincipalTypeSchema.and(z.any().openapi({ description: 'The type of the recipient.' })),
-    Role: RoleTypeSchema.and(z.any().openapi({ description: 'The role of the recipient.' })),
+    Id: IdTypeSchema.openapi({ description: 'The ID of the recipient.' }),
+    Type: PrincipalTypeSchema.openapi({ description: 'The type of the recipient.' }),
+    Role: RoleTypeSchema.openapi({ description: 'The role of the recipient.' }),
   })
   .openapi({
     required: ['Id', 'Type', 'Role'],
@@ -218,50 +208,42 @@ const CommentVisibilityTypeSchema = z.enum(['PUBLIC', 'PRIVATE']).openapi('Comme
 
 const CommentSchema = z
   .object({
-    CommentId: CommentIdTypeSchema.and(z.any().openapi({ description: 'The ID of the comment.' })),
-    ParentId: CommentIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent comment.' }),
-    ).exactOptional(),
-    ThreadId: CommentIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the root comment in the thread.' }),
-    ).exactOptional(),
-    Text: CommentTextTypeSchema.and(
-      z.any().openapi({ description: 'The text of the comment.' }),
-    ).exactOptional(),
-    Contributor: UserSchema.and(
-      z.any().openapi({ description: 'The details of the user who made the comment.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time that the comment was created.' }),
-    ).exactOptional(),
-    Status: CommentStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of the comment.' }),
-    ).exactOptional(),
-    Visibility: CommentVisibilityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The visibility of the comment. Options are either PRIVATE, where the comment is visible only to the comment author and document owner and co-owners, or PUBLIC, where the comment is visible to document owners, co-owners, and contributors.',
-        }),
-    ).exactOptional(),
-    RecipientId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the comment is a reply to another user's comment, this field contains the user ID of the user being replied to.",
-        }),
-    ).exactOptional(),
+    CommentId: CommentIdTypeSchema.openapi({ description: 'The ID of the comment.' }),
+    ParentId: CommentIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent comment.',
+    }),
+    ThreadId: CommentIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the root comment in the thread.',
+    }),
+    Text: CommentTextTypeSchema.exactOptional().openapi({
+      description: 'The text of the comment.',
+    }),
+    Contributor: UserSchema.exactOptional().openapi({
+      description: 'The details of the user who made the comment.',
+    }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time that the comment was created.',
+    }),
+    Status: CommentStatusTypeSchema.exactOptional().openapi({
+      description: 'The status of the comment.',
+    }),
+    Visibility: CommentVisibilityTypeSchema.exactOptional().openapi({
+      description:
+        'The visibility of the comment. Options are either PRIVATE, where the comment is visible only to the comment author and document owner and co-owners, or PUBLIC, where the comment is visible to document owners, co-owners, and contributors.',
+    }),
+    RecipientId: IdTypeSchema.exactOptional().openapi({
+      description:
+        "If the comment is a reply to another user's comment, this field contains the user ID of the user being replied to.",
+    }),
   })
   .openapi({ required: ['CommentId'], description: 'Describes a comment.' })
   .openapi('Comment')
 
 const CreateCommentResponseSchema = z
   .object({
-    Comment: CommentSchema.and(
-      z.any().openapi({ description: 'The comment that has been created.' }),
-    ).exactOptional(),
+    Comment: CommentSchema.exactOptional().openapi({
+      description: 'The comment that has been created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCommentResponse')
@@ -272,7 +254,7 @@ const DocumentLockedForCommentsExceptionSchema = z
 
 const InvalidCommentOperationExceptionSchema = z.any().openapi('InvalidCommentOperationException')
 
-const CreateCustomMetadataResponseSchema = z.object({}).openapi('CreateCustomMetadataResponse')
+const CreateCustomMetadataResponseSchema = z.looseObject({}).openapi('CreateCustomMetadataResponse')
 
 const CustomMetadataValueTypeSchema = z
   .string()
@@ -314,53 +296,44 @@ const SharedLabelsSchema = z.array(SharedLabelSchema).max(20).openapi('SharedLab
 
 const FolderMetadataSchema = z
   .object({
-    Id: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the folder.' }),
-    ).exactOptional(),
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the folder.' }),
-    ).exactOptional(),
-    CreatorId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the creator.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the folder was created.' }),
-    ).exactOptional(),
-    ModifiedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the folder was updated.' }),
-    ).exactOptional(),
-    ResourceState: ResourceStateTypeSchema.and(
-      z.any().openapi({ description: 'The resource state of the folder.' }),
-    ).exactOptional(),
-    Signature: HashTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier created from the subfolders and documents of the folder.',
-        }),
-    ).exactOptional(),
-    Labels: SharedLabelsSchema.and(
-      z.any().openapi({ description: 'List of labels on the folder.' }),
-    ).exactOptional(),
-    Size: SizeTypeSchema.and(
-      z.any().openapi({ description: 'The size of the folder metadata.' }),
-    ).exactOptional(),
-    LatestVersionSize: SizeTypeSchema.and(
-      z.any().openapi({ description: 'The size of the latest version of the folder metadata.' }),
-    ).exactOptional(),
+    Id: ResourceIdTypeSchema.exactOptional().openapi({ description: 'The ID of the folder.' }),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the folder.',
+    }),
+    CreatorId: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the creator.' }),
+    ParentFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent folder.',
+    }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the folder was created.',
+    }),
+    ModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the folder was updated.',
+    }),
+    ResourceState: ResourceStateTypeSchema.exactOptional().openapi({
+      description: 'The resource state of the folder.',
+    }),
+    Signature: HashTypeSchema.exactOptional().openapi({
+      description: 'The unique identifier created from the subfolders and documents of the folder.',
+    }),
+    Labels: SharedLabelsSchema.exactOptional().openapi({
+      description: 'List of labels on the folder.',
+    }),
+    Size: SizeTypeSchema.exactOptional().openapi({
+      description: 'The size of the folder metadata.',
+    }),
+    LatestVersionSize: SizeTypeSchema.exactOptional().openapi({
+      description: 'The size of the latest version of the folder metadata.',
+    }),
   })
   .openapi({ description: 'Describes a folder.', required: [] })
   .openapi('FolderMetadata')
 
 const CreateFolderResponseSchema = z
   .object({
-    Metadata: FolderMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the folder.' }),
-    ).exactOptional(),
+    Metadata: FolderMetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the folder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFolderResponse')
@@ -371,7 +344,7 @@ const ConflictingOperationExceptionSchema = z.any().openapi('ConflictingOperatio
 
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
-const CreateLabelsResponseSchema = z.object({}).openapi('CreateLabelsResponse')
+const CreateLabelsResponseSchema = z.looseObject({}).openapi('CreateLabelsResponse')
 
 const TooManyLabelsExceptionSchema = z.any().openapi('TooManyLabelsException')
 
@@ -385,24 +358,22 @@ const SubscriptionProtocolTypeSchema = z.enum(['HTTPS', 'SQS']).openapi('Subscri
 
 const SubscriptionSchema = z
   .object({
-    SubscriptionId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the subscription.' }),
-    ).exactOptional(),
-    EndPoint: SubscriptionEndPointTypeSchema.and(
-      z.any().openapi({ description: 'The endpoint of the subscription.' }),
-    ).exactOptional(),
-    Protocol: SubscriptionProtocolTypeSchema.and(
-      z.any().openapi({ description: 'The protocol of the subscription.' }),
-    ).exactOptional(),
+    SubscriptionId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the subscription.',
+    }),
+    EndPoint: SubscriptionEndPointTypeSchema.exactOptional().openapi({
+      description: 'The endpoint of the subscription.',
+    }),
+    Protocol: SubscriptionProtocolTypeSchema.exactOptional().openapi({
+      description: 'The protocol of the subscription.',
+    }),
   })
   .openapi({ description: 'Describes a subscription.', required: [] })
   .openapi('Subscription')
 
 const CreateNotificationSubscriptionResponseSchema = z
   .object({
-    Subscription: SubscriptionSchema.and(
-      z.any().openapi({ description: 'The subscription.' }),
-    ).exactOptional(),
+    Subscription: SubscriptionSchema.exactOptional().openapi({ description: 'The subscription.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateNotificationSubscriptionResponse')
@@ -412,13 +383,11 @@ const TooManySubscriptionsExceptionSchema = z.any().openapi('TooManySubscription
 const InvalidArgumentExceptionSchema = z.any().openapi('InvalidArgumentException')
 
 const CreateUserResponseSchema = z
-  .object({
-    User: UserSchema.and(z.any().openapi({ description: 'The user information.' })).exactOptional(),
-  })
+  .object({ User: UserSchema.exactOptional().openapi({ description: 'The user information.' }) })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
 
-const DeleteCustomMetadataResponseSchema = z.object({}).openapi('DeleteCustomMetadataResponse')
+const DeleteCustomMetadataResponseSchema = z.looseObject({}).openapi('DeleteCustomMetadataResponse')
 
 const CustomMetadataKeyTypeSchema = z
   .string()
@@ -429,7 +398,7 @@ const CustomMetadataKeyTypeSchema = z
 
 const InvalidOperationExceptionSchema = z.any().openapi('InvalidOperationException')
 
-const DeleteLabelsResponseSchema = z.object({}).openapi('DeleteLabelsResponse')
+const DeleteLabelsResponseSchema = z.looseObject({}).openapi('DeleteLabelsResponse')
 
 const ActivityTypeSchema = z
   .enum([
@@ -471,19 +440,17 @@ const ActivityTypeSchema = z
 
 const UserMetadataSchema = z
   .object({
-    Id: IdTypeSchema.and(z.any().openapi({ description: 'The ID of the user.' })).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the user.' }),
-    ).exactOptional(),
-    GivenName: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The given name of the user before a rename operation.' }),
-    ).exactOptional(),
-    Surname: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The surname of the user.' }),
-    ).exactOptional(),
-    EmailAddress: EmailAddressTypeSchema.and(
-      z.any().openapi({ description: 'The email address of the user.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the user.' }),
+    Username: UsernameTypeSchema.exactOptional().openapi({ description: 'The name of the user.' }),
+    GivenName: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The given name of the user before a rename operation.',
+    }),
+    Surname: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The surname of the user.',
+    }),
+    EmailAddress: EmailAddressTypeSchema.exactOptional().openapi({
+      description: 'The email address of the user.',
+    }),
   })
   .openapi({ description: 'Describes the metadata of the user.', required: [] })
   .openapi('UserMetadata')
@@ -494,12 +461,8 @@ const GroupNameTypeSchema = z.string().openapi('GroupNameType')
 
 const GroupMetadataSchema = z
   .object({
-    Id: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the user group.' }),
-    ).exactOptional(),
-    Name: GroupNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the group.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the user group.' }),
+    Name: GroupNameTypeSchema.exactOptional().openapi({ description: 'The name of the group.' }),
   })
   .openapi({ description: 'Describes the metadata of a user group.', required: [] })
   .openapi('GroupMetadata')
@@ -508,12 +471,10 @@ const GroupMetadataListSchema = z.array(GroupMetadataSchema).openapi('GroupMetad
 
 const ParticipantsSchema = z
   .object({
-    Users: UserMetadataListSchema.and(
-      z.any().openapi({ description: 'The list of users.' }),
-    ).exactOptional(),
-    Groups: GroupMetadataListSchema.and(
-      z.any().openapi({ description: 'The list of user groups.' }),
-    ).exactOptional(),
+    Users: UserMetadataListSchema.exactOptional().openapi({ description: 'The list of users.' }),
+    Groups: GroupMetadataListSchema.exactOptional().openapi({
+      description: 'The list of user groups.',
+    }),
   })
   .openapi({ description: 'Describes the users or user groups.', required: [] })
   .openapi('Participants')
@@ -529,111 +490,83 @@ const DocumentVersionIdTypeSchema = z
 
 const ResourceMetadataSchema = z
   .object({
-    Type: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    OriginalName: ResourceNameTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The original name of the resource before a rename operation.' }),
-    ).exactOptional(),
-    Id: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    VersionId: DocumentVersionIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version ID of the resource. This is an optional field and is filled for action on document version.',
-        }),
-    ).exactOptional(),
-    Owner: UserMetadataSchema.and(
-      z.any().openapi({ description: 'The owner of the resource.' }),
-    ).exactOptional(),
-    ParentId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The parent ID of the resource before a rename operation.' }),
-    ).exactOptional(),
+    Type: ResourceTypeSchema.exactOptional().openapi({ description: 'The type of resource.' }),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    OriginalName: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The original name of the resource before a rename operation.',
+    }),
+    Id: ResourceIdTypeSchema.exactOptional().openapi({ description: 'The ID of the resource.' }),
+    VersionId: DocumentVersionIdTypeSchema.exactOptional().openapi({
+      description:
+        'The version ID of the resource. This is an optional field and is filled for action on document version.',
+    }),
+    Owner: UserMetadataSchema.exactOptional().openapi({
+      description: 'The owner of the resource.',
+    }),
+    ParentId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The parent ID of the resource before a rename operation.',
+    }),
   })
   .openapi({ description: 'Describes the metadata of a resource.', required: [] })
   .openapi('ResourceMetadata')
 
 const CommentMetadataSchema = z
   .object({
-    CommentId: CommentIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the comment.' }),
-    ).exactOptional(),
-    Contributor: UserSchema.and(
-      z.any().openapi({ description: 'The user who made the comment.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The timestamp that the comment was created.' }),
-    ).exactOptional(),
-    CommentStatus: CommentStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of the comment.' }),
-    ).exactOptional(),
-    RecipientId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the user being replied to.' }),
-    ).exactOptional(),
-    ContributorId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the user who made the comment.' }),
-    ).exactOptional(),
+    CommentId: CommentIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the comment.',
+    }),
+    Contributor: UserSchema.exactOptional().openapi({
+      description: 'The user who made the comment.',
+    }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp that the comment was created.',
+    }),
+    CommentStatus: CommentStatusTypeSchema.exactOptional().openapi({
+      description: 'The status of the comment.',
+    }),
+    RecipientId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the user being replied to.',
+    }),
+    ContributorId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the user who made the comment.',
+    }),
   })
   .openapi({ description: 'Describes the metadata of a comment.', required: [] })
   .openapi('CommentMetadata')
 
 const ActivitySchema = z
   .object({
-    Type: ActivityTypeSchema.and(
-      z.any().openapi({ description: 'The activity type.' }),
-    ).exactOptional(),
-    TimeStamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the action was performed.' }),
-    ).exactOptional(),
-    IsIndirectActivity: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether an activity is indirect or direct. An indirect activity results from a direct activity performed on a parent resource. For example, sharing a parent folder (the direct activity) shares all of the subfolders and documents within the parent folder (the indirect activity).',
-        }),
-    ).exactOptional(),
-    OrganizationId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the organization.' }),
-    ).exactOptional(),
-    Initiator: UserMetadataSchema.and(
-      z.any().openapi({ description: 'The user who performed the action.' }),
-    ).exactOptional(),
-    Participants: ParticipantsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of users or groups impacted by this action. This is an optional field and is filled for the following sharing activities: DOCUMENT_SHARED, DOCUMENT_SHARED, DOCUMENT_UNSHARED, FOLDER_SHARED, FOLDER_UNSHARED.',
-        }),
-    ).exactOptional(),
-    ResourceMetadata: ResourceMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the resource involved in the user action.' }),
-    ).exactOptional(),
-    OriginalParent: ResourceMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The original parent of the resource. This is an optional field and is filled for move activities.',
-        }),
-    ).exactOptional(),
-    CommentMetadata: CommentMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata of the commenting activity. This is an optional field and is filled for commenting activities.',
-        }),
-    ).exactOptional(),
+    Type: ActivityTypeSchema.exactOptional().openapi({ description: 'The activity type.' }),
+    TimeStamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the action was performed.',
+    }),
+    IsIndirectActivity: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether an activity is indirect or direct. An indirect activity results from a direct activity performed on a parent resource. For example, sharing a parent folder (the direct activity) shares all of the subfolders and documents within the parent folder (the indirect activity).',
+    }),
+    OrganizationId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the organization.',
+    }),
+    Initiator: UserMetadataSchema.exactOptional().openapi({
+      description: 'The user who performed the action.',
+    }),
+    Participants: ParticipantsSchema.exactOptional().openapi({
+      description:
+        'The list of users or groups impacted by this action. This is an optional field and is filled for the following sharing activities: DOCUMENT_SHARED, DOCUMENT_SHARED, DOCUMENT_UNSHARED, FOLDER_SHARED, FOLDER_UNSHARED.',
+    }),
+    ResourceMetadata: ResourceMetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the resource involved in the user action.',
+    }),
+    OriginalParent: ResourceMetadataSchema.exactOptional().openapi({
+      description:
+        'The original parent of the resource. This is an optional field and is filled for move activities.',
+    }),
+    CommentMetadata: CommentMetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata of the commenting activity. This is an optional field and is filled for commenting activities.',
+    }),
   })
   .openapi({ description: 'Describes the activity information.', required: [] })
   .openapi('Activity')
@@ -649,14 +582,12 @@ const SearchMarkerTypeSchema = z
 
 const DescribeActivitiesResponseSchema = z
   .object({
-    UserActivities: UserActivitiesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of activities for the specified user and time period.' }),
-    ).exactOptional(),
-    Marker: SearchMarkerTypeSchema.and(
-      z.any().openapi({ description: 'The marker for the next set of results.' }),
-    ).exactOptional(),
+    UserActivities: UserActivitiesSchema.exactOptional().openapi({
+      description: 'The list of activities for the specified user and time period.',
+    }),
+    Marker: SearchMarkerTypeSchema.exactOptional().openapi({
+      description: 'The marker for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeActivitiesResponse')
@@ -672,17 +603,13 @@ const MarkerTypeSchema = z
 
 const DescribeCommentsResponseSchema = z
   .object({
-    Comments: CommentListSchema.and(
-      z.any().openapi({ description: 'The list of comments for the specified document version.' }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results. This marker was received from a previous call.',
-        }),
-    ).exactOptional(),
+    Comments: CommentListSchema.exactOptional().openapi({
+      description: 'The list of comments for the specified document version.',
+    }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results. This marker was received from a previous call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCommentsResponse')
@@ -703,51 +630,43 @@ const DocumentSourceUrlMapSchema = z
 
 const DocumentVersionMetadataSchema = z
   .object({
-    Id: DocumentVersionIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the version.' }),
-    ).exactOptional(),
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the version.' }),
-    ).exactOptional(),
-    ContentType: DocumentContentTypeSchema.and(
-      z.any().openapi({ description: 'The content type of the document.' }),
-    ).exactOptional(),
-    Size: SizeTypeSchema.and(
-      z.any().openapi({ description: 'The size of the document, in bytes.' }),
-    ).exactOptional(),
-    Signature: HashTypeSchema.and(
-      z.any().openapi({ description: 'The signature of the document.' }),
-    ).exactOptional(),
-    Status: DocumentStatusTypeSchema.and(
-      z.any().openapi({ description: 'The status of the document.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the document was first uploaded.' }),
-    ).exactOptional(),
-    ModifiedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the document was last uploaded.' }),
-    ).exactOptional(),
-    ContentCreatedTimestamp: TimestampTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the content of the document was originally created.',
-        }),
-    ).exactOptional(),
-    ContentModifiedTimestamp: TimestampTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the content of the document was modified.' }),
-    ).exactOptional(),
-    CreatorId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the creator.' }),
-    ).exactOptional(),
-    Thumbnail: DocumentThumbnailUrlMapSchema.and(
-      z.any().openapi({ description: 'The thumbnail of the document.' }),
-    ).exactOptional(),
-    Source: DocumentSourceUrlMapSchema.and(
-      z.any().openapi({ description: 'The source of the document.' }),
-    ).exactOptional(),
+    Id: DocumentVersionIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the version.',
+    }),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the version.',
+    }),
+    ContentType: DocumentContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the document.',
+    }),
+    Size: SizeTypeSchema.exactOptional().openapi({
+      description: 'The size of the document, in bytes.',
+    }),
+    Signature: HashTypeSchema.exactOptional().openapi({
+      description: 'The signature of the document.',
+    }),
+    Status: DocumentStatusTypeSchema.exactOptional().openapi({
+      description: 'The status of the document.',
+    }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the document was first uploaded.',
+    }),
+    ModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the document was last uploaded.',
+    }),
+    ContentCreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the content of the document was originally created.',
+    }),
+    ContentModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the content of the document was modified.',
+    }),
+    CreatorId: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the creator.' }),
+    Thumbnail: DocumentThumbnailUrlMapSchema.exactOptional().openapi({
+      description: 'The thumbnail of the document.',
+    }),
+    Source: DocumentSourceUrlMapSchema.exactOptional().openapi({
+      description: 'The source of the document.',
+    }),
   })
   .openapi({ description: 'Describes a version of a document.', required: [] })
   .openapi('DocumentVersionMetadata')
@@ -760,17 +679,13 @@ const PageMarkerTypeSchema = z.string().min(1).max(2048).openapi('PageMarkerType
 
 const DescribeDocumentVersionsResponseSchema = z
   .object({
-    DocumentVersions: DocumentVersionMetadataListSchema.and(
-      z.any().openapi({ description: 'The document versions.' }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    DocumentVersions: DocumentVersionMetadataListSchema.exactOptional().openapi({
+      description: 'The document versions.',
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDocumentVersionsResponse')
@@ -781,30 +696,26 @@ const FolderMetadataListSchema = z.array(FolderMetadataSchema).openapi('FolderMe
 
 const DocumentMetadataSchema = z
   .object({
-    Id: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the document.' }),
-    ).exactOptional(),
-    CreatorId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the creator.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the document was created.' }),
-    ).exactOptional(),
-    ModifiedTimestamp: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'The time when the document was updated.' }),
-    ).exactOptional(),
-    LatestVersionMetadata: DocumentVersionMetadataSchema.and(
-      z.any().openapi({ description: 'The latest version of the document.' }),
-    ).exactOptional(),
-    ResourceState: ResourceStateTypeSchema.and(
-      z.any().openapi({ description: 'The resource state.' }),
-    ).exactOptional(),
-    Labels: SharedLabelsSchema.and(
-      z.any().openapi({ description: 'List of labels on the document.' }),
-    ).exactOptional(),
+    Id: ResourceIdTypeSchema.exactOptional().openapi({ description: 'The ID of the document.' }),
+    CreatorId: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the creator.' }),
+    ParentFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent folder.',
+    }),
+    CreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the document was created.',
+    }),
+    ModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The time when the document was updated.',
+    }),
+    LatestVersionMetadata: DocumentVersionMetadataSchema.exactOptional().openapi({
+      description: 'The latest version of the document.',
+    }),
+    ResourceState: ResourceStateTypeSchema.exactOptional().openapi({
+      description: 'The resource state.',
+    }),
+    Labels: SharedLabelsSchema.exactOptional().openapi({
+      description: 'List of labels on the document.',
+    }),
   })
   .openapi({ description: 'Describes the document.', required: [] })
   .openapi('DocumentMetadata')
@@ -813,37 +724,27 @@ const DocumentMetadataListSchema = z.array(DocumentMetadataSchema).openapi('Docu
 
 const DescribeFolderContentsResponseSchema = z
   .object({
-    Folders: FolderMetadataListSchema.and(
-      z.any().openapi({ description: 'The subfolders in the specified folder.' }),
-    ).exactOptional(),
-    Documents: DocumentMetadataListSchema.and(
-      z.any().openapi({ description: 'The documents in the specified folder.' }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Folders: FolderMetadataListSchema.exactOptional().openapi({
+      description: 'The subfolders in the specified folder.',
+    }),
+    Documents: DocumentMetadataListSchema.exactOptional().openapi({
+      description: 'The documents in the specified folder.',
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFolderContentsResponse')
 
 const DescribeGroupsResponseSchema = z
   .object({
-    Groups: GroupMetadataListSchema.and(
-      z.any().openapi({ description: 'The list of groups.' }),
-    ).exactOptional(),
-    Marker: MarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Groups: GroupMetadataListSchema.exactOptional().openapi({ description: 'The list of groups.' }),
+    Marker: MarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGroupsResponse')
@@ -852,17 +753,13 @@ const SubscriptionListSchema = z.array(SubscriptionSchema).max(256).openapi('Sub
 
 const DescribeNotificationSubscriptionsResponseSchema = z
   .object({
-    Subscriptions: SubscriptionListSchema.and(
-      z.any().openapi({ description: 'The subscriptions.' }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Subscriptions: SubscriptionListSchema.exactOptional().openapi({
+      description: 'The subscriptions.',
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeNotificationSubscriptionsResponse')
@@ -871,12 +768,10 @@ const RolePermissionTypeSchema = z.enum(['DIRECT', 'INHERITED']).openapi('RolePe
 
 const PermissionInfoSchema = z
   .object({
-    Role: RoleTypeSchema.and(
-      z.any().openapi({ description: 'The role of the user.' }),
-    ).exactOptional(),
-    Type: RolePermissionTypeSchema.and(
-      z.any().openapi({ description: 'The type of permissions.' }),
-    ).exactOptional(),
+    Role: RoleTypeSchema.exactOptional().openapi({ description: 'The role of the user.' }),
+    Type: RolePermissionTypeSchema.exactOptional().openapi({
+      description: 'The type of permissions.',
+    }),
   })
   .openapi({ description: 'Describes the permissions.', required: [] })
   .openapi('PermissionInfo')
@@ -885,15 +780,11 @@ const PermissionInfoListSchema = z.array(PermissionInfoSchema).openapi('Permissi
 
 const PrincipalSchema = z
   .object({
-    Id: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    Type: PrincipalTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    Roles: PermissionInfoListSchema.and(
-      z.any().openapi({ description: 'The permission information for the resource.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the resource.' }),
+    Type: PrincipalTypeSchema.exactOptional().openapi({ description: 'The type of resource.' }),
+    Roles: PermissionInfoListSchema.exactOptional().openapi({
+      description: 'The permission information for the resource.',
+    }),
   })
   .openapi({ description: 'Describes a resource.', required: [] })
   .openapi('Principal')
@@ -902,29 +793,23 @@ const PrincipalListSchema = z.array(PrincipalSchema).openapi('PrincipalList')
 
 const DescribeResourcePermissionsResponseSchema = z
   .object({
-    Principals: PrincipalListSchema.and(
-      z.any().openapi({ description: 'The principals.' }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Principals: PrincipalListSchema.exactOptional().openapi({ description: 'The principals.' }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeResourcePermissionsResponse')
 
 const DescribeRootFoldersResponseSchema = z
   .object({
-    Folders: FolderMetadataListSchema.and(
-      z.any().openapi({ description: "The user's special folders." }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z.any().openapi({ description: 'The marker for the next set of results.' }),
-    ).exactOptional(),
+    Folders: FolderMetadataListSchema.exactOptional().openapi({
+      description: "The user's special folders.",
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description: 'The marker for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRootFoldersResponse')
@@ -933,25 +818,15 @@ const OrganizationUserListSchema = z.array(UserSchema).openapi('OrganizationUser
 
 const DescribeUsersResponseSchema = z
   .object({
-    Users: OrganizationUserListSchema.and(
-      z.any().openapi({ description: 'The users.' }),
-    ).exactOptional(),
-    TotalNumberOfUsers: SizeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description: 'The total number of users included in the results.',
-        }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Users: OrganizationUserListSchema.exactOptional().openapi({ description: 'The users.' }),
+    TotalNumberOfUsers: SizeTypeSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'The total number of users included in the results.',
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUsersResponse')
@@ -959,9 +834,7 @@ const DescribeUsersResponseSchema = z
 const RequestedEntityTooLargeExceptionSchema = z.any().openapi('RequestedEntityTooLargeException')
 
 const GetCurrentUserResponseSchema = z
-  .object({
-    User: UserSchema.and(z.any().openapi({ description: 'Metadata of the user.' })).exactOptional(),
-  })
+  .object({ User: UserSchema.exactOptional().openapi({ description: 'Metadata of the user.' }) })
   .openapi({ required: [] })
   .openapi('GetCurrentUserResponse')
 
@@ -973,24 +846,22 @@ const CustomMetadataMapSchema = z
 
 const GetDocumentResponseSchema = z
   .object({
-    Metadata: DocumentMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata details of the document.' }),
-    ).exactOptional(),
-    CustomMetadata: CustomMetadataMapSchema.and(
-      z.any().openapi({ description: 'The custom metadata on the document.' }),
-    ).exactOptional(),
+    Metadata: DocumentMetadataSchema.exactOptional().openapi({
+      description: 'The metadata details of the document.',
+    }),
+    CustomMetadata: CustomMetadataMapSchema.exactOptional().openapi({
+      description: 'The custom metadata on the document.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDocumentResponse')
 
 const ResourcePathComponentSchema = z
   .object({
-    Id: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the resource path.' }),
-    ).exactOptional(),
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the resource path.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.exactOptional().openapi({ description: 'The ID of the resource path.' }),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the resource path.',
+    }),
   })
   .openapi({ description: 'Describes the resource path.', required: [] })
   .openapi('ResourcePathComponent')
@@ -1001,71 +872,63 @@ const ResourcePathComponentListSchema = z
 
 const ResourcePathSchema = z
   .object({
-    Components: ResourcePathComponentListSchema.and(
-      z.any().openapi({ description: 'The components of the resource path.' }),
-    ).exactOptional(),
+    Components: ResourcePathComponentListSchema.exactOptional().openapi({
+      description: 'The components of the resource path.',
+    }),
   })
   .openapi({ description: 'Describes the path information of a resource.', required: [] })
   .openapi('ResourcePath')
 
 const GetDocumentPathResponseSchema = z
   .object({
-    Path: ResourcePathSchema.and(
-      z.any().openapi({ description: 'The path information.' }),
-    ).exactOptional(),
+    Path: ResourcePathSchema.exactOptional().openapi({ description: 'The path information.' }),
   })
   .openapi({ required: [] })
   .openapi('GetDocumentPathResponse')
 
 const GetDocumentVersionResponseSchema = z
   .object({
-    Metadata: DocumentVersionMetadataSchema.and(
-      z.any().openapi({ description: 'The version metadata.' }),
-    ).exactOptional(),
-    CustomMetadata: CustomMetadataMapSchema.and(
-      z.any().openapi({ description: 'The custom metadata on the document version.' }),
-    ).exactOptional(),
+    Metadata: DocumentVersionMetadataSchema.exactOptional().openapi({
+      description: 'The version metadata.',
+    }),
+    CustomMetadata: CustomMetadataMapSchema.exactOptional().openapi({
+      description: 'The custom metadata on the document version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDocumentVersionResponse')
 
 const GetFolderResponseSchema = z
   .object({
-    Metadata: FolderMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the folder.' }),
-    ).exactOptional(),
-    CustomMetadata: CustomMetadataMapSchema.and(
-      z.any().openapi({ description: 'The custom metadata on the folder.' }),
-    ).exactOptional(),
+    Metadata: FolderMetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the folder.',
+    }),
+    CustomMetadata: CustomMetadataMapSchema.exactOptional().openapi({
+      description: 'The custom metadata on the folder.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetFolderResponse')
 
 const GetFolderPathResponseSchema = z
   .object({
-    Path: ResourcePathSchema.and(
-      z.any().openapi({ description: 'The path information.' }),
-    ).exactOptional(),
+    Path: ResourcePathSchema.exactOptional().openapi({ description: 'The path information.' }),
   })
   .openapi({ required: [] })
   .openapi('GetFolderPathResponse')
 
 const GetResourcesResponseSchema = z
   .object({
-    Folders: FolderMetadataListSchema.and(
-      z.any().openapi({ description: 'The folders in the specified folder.' }),
-    ).exactOptional(),
-    Documents: DocumentMetadataListSchema.and(
-      z.any().openapi({ description: 'The documents in the specified collection.' }),
-    ).exactOptional(),
-    Marker: PageMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Folders: FolderMetadataListSchema.exactOptional().openapi({
+      description: 'The folders in the specified folder.',
+    }),
+    Documents: DocumentMetadataListSchema.exactOptional().openapi({
+      description: 'The documents in the specified collection.',
+    }),
+    Marker: PageMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourcesResponse')
@@ -1076,24 +939,22 @@ const SignedHeaderMapSchema = z.record(z.string(), HeaderValueTypeSchema).openap
 
 const UploadMetadataSchema = z
   .object({
-    UploadUrl: UrlTypeSchema.and(
-      z.any().openapi({ description: 'The URL of the upload.' }),
-    ).exactOptional(),
-    SignedHeaders: SignedHeaderMapSchema.and(
-      z.any().openapi({ description: 'The signed headers.' }),
-    ).exactOptional(),
+    UploadUrl: UrlTypeSchema.exactOptional().openapi({ description: 'The URL of the upload.' }),
+    SignedHeaders: SignedHeaderMapSchema.exactOptional().openapi({
+      description: 'The signed headers.',
+    }),
   })
   .openapi({ description: 'Describes the upload.', required: [] })
   .openapi('UploadMetadata')
 
 const InitiateDocumentVersionUploadResponseSchema = z
   .object({
-    Metadata: DocumentMetadataSchema.and(
-      z.any().openapi({ description: 'The document metadata.' }),
-    ).exactOptional(),
-    UploadMetadata: UploadMetadataSchema.and(
-      z.any().openapi({ description: 'The upload metadata.' }),
-    ).exactOptional(),
+    Metadata: DocumentMetadataSchema.exactOptional().openapi({
+      description: 'The document metadata.',
+    }),
+    UploadMetadata: UploadMetadataSchema.exactOptional().openapi({
+      description: 'The upload metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InitiateDocumentVersionUploadResponse')
@@ -1121,24 +982,24 @@ const ResponseItemWebUrlSchema = z
 
 const ResponseItemSchema = z
   .object({
-    ResourceType: ResponseItemTypeSchema.and(
-      z.any().openapi({ description: 'The type of item being returned.' }),
-    ).exactOptional(),
-    WebUrl: ResponseItemWebUrlSchema.and(
-      z.any().openapi({ description: 'The webUrl of the item being returned.' }),
-    ).exactOptional(),
-    DocumentMetadata: DocumentMetadataSchema.and(
-      z.any().openapi({ description: 'The document that matches the query.' }),
-    ).exactOptional(),
-    FolderMetadata: FolderMetadataSchema.and(
-      z.any().openapi({ description: 'The folder that matches the query.' }),
-    ).exactOptional(),
-    CommentMetadata: CommentMetadataSchema.and(
-      z.any().openapi({ description: 'The comment that matches the query.' }),
-    ).exactOptional(),
-    DocumentVersionMetadata: DocumentVersionMetadataSchema.and(
-      z.any().openapi({ description: 'The document version that matches the metadata.' }),
-    ).exactOptional(),
+    ResourceType: ResponseItemTypeSchema.exactOptional().openapi({
+      description: 'The type of item being returned.',
+    }),
+    WebUrl: ResponseItemWebUrlSchema.exactOptional().openapi({
+      description: 'The webUrl of the item being returned.',
+    }),
+    DocumentMetadata: DocumentMetadataSchema.exactOptional().openapi({
+      description: 'The document that matches the query.',
+    }),
+    FolderMetadata: FolderMetadataSchema.exactOptional().openapi({
+      description: 'The folder that matches the query.',
+    }),
+    CommentMetadata: CommentMetadataSchema.exactOptional().openapi({
+      description: 'The comment that matches the query.',
+    }),
+    DocumentVersionMetadata: DocumentVersionMetadataSchema.exactOptional().openapi({
+      description: 'The document version that matches the metadata.',
+    }),
   })
   .openapi({
     description: 'List of Documents, Folders, Comments, and Document Versions matching the query.',
@@ -1152,22 +1013,14 @@ const NextMarkerTypeSchema = z.string().regex(/[\d]+/).min(1).max(2048).openapi(
 
 const SearchResourcesResponseSchema = z
   .object({
-    Items: ResponseItemsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of Documents, Folders, Comments, and Document Versions matching the query.',
-        }),
-    ).exactOptional(),
-    Marker: NextMarkerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
-        }),
-    ).exactOptional(),
+    Items: ResponseItemsListSchema.exactOptional().openapi({
+      description:
+        'List of Documents, Folders, Comments, and Document Versions matching the query.',
+    }),
+    Marker: NextMarkerTypeSchema.exactOptional().openapi({
+      description:
+        'The marker to use when requesting the next set of results. If there are no additional results, the string is empty.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchResourcesResponse')
@@ -1260,10 +1113,10 @@ const SearchPrincipalRoleListSchema = z
 
 const SearchPrincipalTypeSchema = z
   .object({
-    Id: IdTypeSchema.and(z.any().openapi({ description: 'UserIds or GroupIds.' })),
-    Roles: SearchPrincipalRoleListSchema.and(
-      z.any().openapi({ description: 'The Role of a User or Group.' }),
-    ).exactOptional(),
+    Id: IdTypeSchema.openapi({ description: 'UserIds or GroupIds.' }),
+    Roles: SearchPrincipalRoleListSchema.exactOptional().openapi({
+      description: 'The Role of a User or Group.',
+    }),
   })
   .openapi({ required: ['Id'], description: 'Filter based on UserIds or GroupIds.' })
   .openapi('SearchPrincipalType')
@@ -1293,24 +1146,24 @@ const LongTypeSchema = z.int().openapi('LongType')
 
 const LongRangeTypeSchema = z
   .object({
-    StartValue: LongTypeSchema.and(
-      z.any().openapi({ description: 'The size start range (in bytes).' }),
-    ).exactOptional(),
-    EndValue: LongTypeSchema.and(
-      z.any().openapi({ description: 'The size end range (in bytes).' }),
-    ).exactOptional(),
+    StartValue: LongTypeSchema.exactOptional().openapi({
+      description: 'The size start range (in bytes).',
+    }),
+    EndValue: LongTypeSchema.exactOptional().openapi({
+      description: 'The size end range (in bytes).',
+    }),
   })
   .openapi({ description: 'Filter based on size (in bytes).', required: [] })
   .openapi('LongRangeType')
 
 const DateRangeTypeSchema = z
   .object({
-    StartValue: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'Timestamp range start value (in epochs)' }),
-    ).exactOptional(),
-    EndValue: TimestampTypeSchema.and(
-      z.any().openapi({ description: 'Timestamp range end value (in epochs).' }),
-    ).exactOptional(),
+    StartValue: TimestampTypeSchema.exactOptional().openapi({
+      description: 'Timestamp range start value (in epochs)',
+    }),
+    EndValue: TimestampTypeSchema.exactOptional().openapi({
+      description: 'Timestamp range end value (in epochs).',
+    }),
   })
   .openapi({ description: 'Filters results based on timestamp range (in epochs).', required: [] })
   .openapi('DateRangeType')
@@ -1323,18 +1176,16 @@ const SortOrderSchema = z.enum(['ASC', 'DESC']).openapi('SortOrder')
 
 const SearchSortResultSchema = z
   .object({
-    Field: OrderByFieldTypeSchema.and(
-      z.any().openapi({ description: 'Sort search results based on this field name.' }),
-    ).exactOptional(),
-    Order: SortOrderSchema.and(z.any().openapi({ description: 'Sort direction.' })).exactOptional(),
+    Field: OrderByFieldTypeSchema.exactOptional().openapi({
+      description: 'Sort search results based on this field name.',
+    }),
+    Order: SortOrderSchema.exactOptional().openapi({ description: 'Sort direction.' }),
   })
   .openapi({ description: 'The result of the sort operation.', required: [] })
   .openapi('SearchSortResult')
 
 const UpdateUserResponseSchema = z
-  .object({
-    User: UserSchema.and(z.any().openapi({ description: 'The user information.' })).exactOptional(),
-  })
+  .object({ User: UserSchema.exactOptional().openapi({ description: 'The user information.' }) })
   .openapi({ required: [] })
   .openapi('UpdateUserResponse')
 
@@ -1351,12 +1202,12 @@ const AuthenticationHeaderTypeSchema = z
   .openapi('AuthenticationHeaderType')
 
 const AbortDocumentVersionUploadRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AbortDocumentVersionUploadRequest' })
   .openapi('AbortDocumentVersionUploadRequest')
 
 const ActivateUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ActivateUserRequest' })
   .openapi('ActivateUserRequest')
 
@@ -1371,17 +1222,13 @@ const SharePrincipalListSchema = z.array(SharePrincipalSchema).openapi('SharePri
 
 const NotificationOptionsSchema = z
   .object({
-    SendEmail: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean value to indicate an email notification should be sent to the recipients.',
-        }),
-    ).exactOptional(),
-    EmailMessage: MessageTypeSchema.and(
-      z.any().openapi({ description: 'Text value to be included in the email body.' }),
-    ).exactOptional(),
+    SendEmail: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Boolean value to indicate an email notification should be sent to the recipients.',
+    }),
+    EmailMessage: MessageTypeSchema.exactOptional().openapi({
+      description: 'Text value to be included in the email body.',
+    }),
   })
   .openapi({
     description: 'Set of options which defines notification preferences of given action.',
@@ -1391,14 +1238,12 @@ const NotificationOptionsSchema = z
 
 const AddResourcePermissionsRequestSchema = z
   .object({
-    Principals: SharePrincipalListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The users, groups, or organization being granted permission.' }),
-    ),
-    NotificationOptions: NotificationOptionsSchema.and(
-      z.any().openapi({ description: 'The notification options.' }),
-    ).exactOptional(),
+    Principals: SharePrincipalListSchema.openapi({
+      description: 'The users, groups, or organization being granted permission.',
+    }),
+    NotificationOptions: NotificationOptionsSchema.exactOptional().openapi({
+      description: 'The notification options.',
+    }),
   })
   .openapi({ required: ['Principals'], title: 'AddResourcePermissionsRequest' })
   .openapi('AddResourcePermissionsRequest')
@@ -1411,59 +1256,47 @@ const BooleanEnumTypeSchema = z.enum(['TRUE', 'FALSE']).openapi('BooleanEnumType
 
 const CreateCommentRequestSchema = z
   .object({
-    ParentId: CommentIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent comment.' }),
-    ).exactOptional(),
-    ThreadId: CommentIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the root comment in the thread.' }),
-    ).exactOptional(),
-    Text: CommentTextTypeSchema.and(z.any().openapi({ description: 'The text of the comment.' })),
-    Visibility: CommentVisibilityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The visibility of the comment. Options are either PRIVATE, where the comment is visible only to the comment author and document owner and co-owners, or PUBLIC, where the comment is visible to document owners, co-owners, and contributors.',
-        }),
-    ).exactOptional(),
-    NotifyCollaborators: BooleanTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Set this parameter to TRUE to send an email out to the document collaborators after the comment is created.',
-        }),
-    ).exactOptional(),
+    ParentId: CommentIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent comment.',
+    }),
+    ThreadId: CommentIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the root comment in the thread.',
+    }),
+    Text: CommentTextTypeSchema.openapi({ description: 'The text of the comment.' }),
+    Visibility: CommentVisibilityTypeSchema.exactOptional().openapi({
+      description:
+        'The visibility of the comment. Options are either PRIVATE, where the comment is visible only to the comment author and document owner and co-owners, or PUBLIC, where the comment is visible to document owners, co-owners, and contributors.',
+    }),
+    NotifyCollaborators: BooleanTypeSchema.exactOptional().openapi({
+      description:
+        'Set this parameter to TRUE to send an email out to the document collaborators after the comment is created.',
+    }),
   })
   .openapi({ required: ['Text'], title: 'CreateCommentRequest' })
   .openapi('CreateCommentRequest')
 
 const CreateCustomMetadataRequestSchema = z
   .object({
-    CustomMetadata: CustomMetadataMapSchema.and(
-      z.any().openapi({ description: 'Custom metadata in the form of name-value pairs.' }),
-    ),
+    CustomMetadata: CustomMetadataMapSchema.openapi({
+      description: 'Custom metadata in the form of name-value pairs.',
+    }),
   })
   .openapi({ required: ['CustomMetadata'], title: 'CreateCustomMetadataRequest' })
   .openapi('CreateCustomMetadataRequest')
 
 const CreateFolderRequestSchema = z
   .object({
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the new folder.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the new folder.',
+    }),
+    ParentFolderId: ResourceIdTypeSchema.openapi({ description: 'The ID of the parent folder.' }),
   })
   .openapi({ required: ['ParentFolderId'], title: 'CreateFolderRequest' })
   .openapi('CreateFolderRequest')
 
 const CreateLabelsRequestSchema = z
   .object({
-    Labels: SharedLabelsSchema.and(
-      z.any().openapi({ description: 'List of labels to add to the resource.' }),
-    ),
+    Labels: SharedLabelsSchema.openapi({ description: 'List of labels to add to the resource.' }),
   })
   .openapi({ required: ['Labels'], title: 'CreateLabelsRequest' })
   .openapi('CreateLabelsRequest')
@@ -1472,25 +1305,15 @@ const SubscriptionTypeSchema = z.literal('ALL').openapi('SubscriptionType')
 
 const CreateNotificationSubscriptionRequestSchema = z
   .object({
-    Endpoint: SubscriptionEndPointTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint to receive the notifications. If the protocol is HTTPS, the endpoint is a URL that begins with <code>https</code>.',
-        }),
-    ),
-    Protocol: SubscriptionProtocolTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol to use. The supported value is https, which delivers JSON-encoded messages using HTTPS POST.',
-        }),
-    ),
-    SubscriptionType: SubscriptionTypeSchema.and(
-      z.any().openapi({ description: 'The notification type.' }),
-    ),
+    Endpoint: SubscriptionEndPointTypeSchema.openapi({
+      description:
+        'The endpoint to receive the notifications. If the protocol is HTTPS, the endpoint is a URL that begins with <code>https</code>.',
+    }),
+    Protocol: SubscriptionProtocolTypeSchema.openapi({
+      description:
+        'The protocol to use. The supported value is https, which delivers JSON-encoded messages using HTTPS POST.',
+    }),
+    SubscriptionType: SubscriptionTypeSchema.openapi({ description: 'The notification type.' }),
   })
   .openapi({
     required: ['Endpoint', 'Protocol', 'SubscriptionType'],
@@ -1507,28 +1330,22 @@ const PasswordTypeSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    OrganizationId: IdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the organization.' }),
-    ).exactOptional(),
-    Username: UsernameTypeSchema.and(
-      z.any().openapi({ description: 'The login name of the user.' }),
-    ),
-    EmailAddress: EmailAddressTypeSchema.and(
-      z.any().openapi({ description: 'The email address of the user.' }),
-    ).exactOptional(),
-    GivenName: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The given name of the user.' }),
-    ),
-    Surname: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The surname of the user.' }),
-    ),
-    Password: PasswordTypeSchema.and(z.any().openapi({ description: 'The password of the user.' })),
-    TimeZoneId: TimeZoneIdTypeSchema.and(
-      z.any().openapi({ description: 'The time zone ID of the user.' }),
-    ).exactOptional(),
-    StorageRule: StorageRuleTypeSchema.and(
-      z.any().openapi({ description: 'The amount of storage for the user.' }),
-    ).exactOptional(),
+    OrganizationId: IdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the organization.',
+    }),
+    Username: UsernameTypeSchema.openapi({ description: 'The login name of the user.' }),
+    EmailAddress: EmailAddressTypeSchema.exactOptional().openapi({
+      description: 'The email address of the user.',
+    }),
+    GivenName: UserAttributeValueTypeSchema.openapi({ description: 'The given name of the user.' }),
+    Surname: UserAttributeValueTypeSchema.openapi({ description: 'The surname of the user.' }),
+    Password: PasswordTypeSchema.openapi({ description: 'The password of the user.' }),
+    TimeZoneId: TimeZoneIdTypeSchema.exactOptional().openapi({
+      description: 'The time zone ID of the user.',
+    }),
+    StorageRule: StorageRuleTypeSchema.exactOptional().openapi({
+      description: 'The amount of storage for the user.',
+    }),
   })
   .openapi({
     required: ['Username', 'GivenName', 'Surname', 'Password'],
@@ -1542,64 +1359,64 @@ const CustomMetadataKeyListSchema = z
   .openapi('CustomMetadataKeyList')
 
 const DeactivateUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeactivateUserRequest' })
   .openapi('DeactivateUserRequest')
 
 const DeleteCommentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCommentRequest' })
   .openapi('DeleteCommentRequest')
 
 const DeleteCustomMetadataRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCustomMetadataRequest' })
   .openapi('DeleteCustomMetadataRequest')
 
 const DeleteDocumentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDocumentRequest' })
   .openapi('DeleteDocumentRequest')
 
 const DeleteDocumentVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDocumentVersionRequest' })
   .openapi('DeleteDocumentVersionRequest')
 
 const DeleteFolderContentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFolderContentsRequest' })
   .openapi('DeleteFolderContentsRequest')
 
 const DeleteFolderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFolderRequest' })
   .openapi('DeleteFolderRequest')
 
 const DeleteLabelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLabelsRequest' })
   .openapi('DeleteLabelsRequest')
 
 const DeleteNotificationSubscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteNotificationSubscriptionRequest' })
   .openapi('DeleteNotificationSubscriptionRequest')
 
 const DeleteUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteUserRequest' })
   .openapi('DeleteUserRequest')
 
 const LimitTypeSchema = z.int().min(1).max(999).openapi('LimitType')
 
 const DescribeActivitiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeActivitiesRequest' })
   .openapi('DescribeActivitiesRequest')
 
 const DescribeCommentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeCommentsRequest' })
   .openapi('DescribeCommentsRequest')
 
@@ -1611,7 +1428,7 @@ const FieldNamesTypeSchema = z
   .openapi('FieldNamesType')
 
 const DescribeDocumentVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDocumentVersionsRequest' })
   .openapi('DescribeDocumentVersionsRequest')
 
@@ -1622,7 +1439,7 @@ const OrderTypeSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('OrderType')
 const FolderContentTypeSchema = z.enum(['ALL', 'DOCUMENT', 'FOLDER']).openapi('FolderContentType')
 
 const DescribeFolderContentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFolderContentsRequest' })
   .openapi('DescribeFolderContentsRequest')
 
@@ -1636,22 +1453,22 @@ const SearchQueryTypeSchema = z
 const PositiveIntegerTypeSchema = z.int().min(1).openapi('PositiveIntegerType')
 
 const DescribeGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGroupsRequest' })
   .openapi('DescribeGroupsRequest')
 
 const DescribeNotificationSubscriptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeNotificationSubscriptionsRequest' })
   .openapi('DescribeNotificationSubscriptionsRequest')
 
 const DescribeResourcePermissionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeResourcePermissionsRequest' })
   .openapi('DescribeResourcePermissionsRequest')
 
 const DescribeRootFoldersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRootFoldersRequest' })
   .openapi('DescribeRootFoldersRequest')
 
@@ -1669,7 +1486,7 @@ const UserSortTypeSchema = z
   .openapi('UserSortType')
 
 const DescribeUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeUsersRequest' })
   .openapi('DescribeUsersRequest')
 
@@ -1683,74 +1500,74 @@ const DocumentVersionStatusSchema = z.literal('ACTIVE').openapi('DocumentVersion
 
 const FiltersSchema = z
   .object({
-    TextLocales: TextLocaleTypeListSchema.and(
-      z.any().openapi({ description: 'Filters by the locale of the content or comment.' }),
-    ).exactOptional(),
-    ContentCategories: SearchContentCategoryTypeListSchema.and(
-      z.any().openapi({ description: 'Filters by content category.' }),
-    ).exactOptional(),
-    ResourceTypes: SearchResourceTypeListSchema.and(
-      z.any().openapi({ description: 'Filters based on entity type.' }),
-    ).exactOptional(),
-    Labels: SearchLabelListSchema.and(
-      z.any().openapi({ description: 'Filter by labels using exact match.' }),
-    ).exactOptional(),
-    Principals: SearchPrincipalTypeListSchema.and(
-      z.any().openapi({ description: 'Filter based on UserIds or GroupIds.' }),
-    ).exactOptional(),
-    AncestorIds: SearchAncestorIdListSchema.and(
-      z.any().openapi({ description: 'Filter based on resource’s path.' }),
-    ).exactOptional(),
-    SearchCollectionTypes: SearchCollectionTypeListSchema.and(
-      z.any().openapi({ description: 'Filter based on file groupings.' }),
-    ).exactOptional(),
-    SizeRange: LongRangeTypeSchema.and(
-      z.any().openapi({ description: 'Filter based on size (in bytes).' }),
-    ).exactOptional(),
-    CreatedRange: DateRangeTypeSchema.and(
-      z.any().openapi({ description: 'Filter based on resource’s creation timestamp.' }),
-    ).exactOptional(),
-    ModifiedRange: DateRangeTypeSchema.and(
-      z.any().openapi({ description: 'Filter based on resource’s modified timestamp.' }),
-    ).exactOptional(),
+    TextLocales: TextLocaleTypeListSchema.exactOptional().openapi({
+      description: 'Filters by the locale of the content or comment.',
+    }),
+    ContentCategories: SearchContentCategoryTypeListSchema.exactOptional().openapi({
+      description: 'Filters by content category.',
+    }),
+    ResourceTypes: SearchResourceTypeListSchema.exactOptional().openapi({
+      description: 'Filters based on entity type.',
+    }),
+    Labels: SearchLabelListSchema.exactOptional().openapi({
+      description: 'Filter by labels using exact match.',
+    }),
+    Principals: SearchPrincipalTypeListSchema.exactOptional().openapi({
+      description: 'Filter based on UserIds or GroupIds.',
+    }),
+    AncestorIds: SearchAncestorIdListSchema.exactOptional().openapi({
+      description: 'Filter based on resource’s path.',
+    }),
+    SearchCollectionTypes: SearchCollectionTypeListSchema.exactOptional().openapi({
+      description: 'Filter based on file groupings.',
+    }),
+    SizeRange: LongRangeTypeSchema.exactOptional().openapi({
+      description: 'Filter based on size (in bytes).',
+    }),
+    CreatedRange: DateRangeTypeSchema.exactOptional().openapi({
+      description: 'Filter based on resource’s creation timestamp.',
+    }),
+    ModifiedRange: DateRangeTypeSchema.exactOptional().openapi({
+      description: 'Filter based on resource’s modified timestamp.',
+    }),
   })
   .openapi({ description: 'Filters results based on entity metadata.', required: [] })
   .openapi('Filters')
 
 const GetCurrentUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCurrentUserRequest' })
   .openapi('GetCurrentUserRequest')
 
 const GetDocumentPathRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDocumentPathRequest' })
   .openapi('GetDocumentPathRequest')
 
 const GetDocumentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDocumentRequest' })
   .openapi('GetDocumentRequest')
 
 const GetDocumentVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDocumentVersionRequest' })
   .openapi('GetDocumentVersionRequest')
 
 const GetFolderPathRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFolderPathRequest' })
   .openapi('GetFolderPathRequest')
 
 const GetFolderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetFolderRequest' })
   .openapi('GetFolderRequest')
 
 const ResourceCollectionTypeSchema = z.literal('SHARED_WITH_ME').openapi('ResourceCollectionType')
 
 const GetResourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourcesRequest' })
   .openapi('GetResourcesRequest')
 
@@ -1763,49 +1580,41 @@ const HeaderNameTypeSchema = z
 
 const InitiateDocumentVersionUploadRequestSchema = z
   .object({
-    Id: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the document.' }),
-    ).exactOptional(),
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the document.' }),
-    ).exactOptional(),
-    ContentCreatedTimestamp: TimestampTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp when the content of the document was originally created.',
-        }),
-    ).exactOptional(),
-    ContentModifiedTimestamp: TimestampTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when the content of the document was modified.' }),
-    ).exactOptional(),
-    ContentType: DocumentContentTypeSchema.and(
-      z.any().openapi({ description: 'The content type of the document.' }),
-    ).exactOptional(),
-    DocumentSizeInBytes: SizeTypeSchema.and(
-      z.any().openapi({ description: 'The size of the document, in bytes.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ).exactOptional(),
+    Id: ResourceIdTypeSchema.exactOptional().openapi({ description: 'The ID of the document.' }),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the document.',
+    }),
+    ContentCreatedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the content of the document was originally created.',
+    }),
+    ContentModifiedTimestamp: TimestampTypeSchema.exactOptional().openapi({
+      description: 'The timestamp when the content of the document was modified.',
+    }),
+    ContentType: DocumentContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the document.',
+    }),
+    DocumentSizeInBytes: SizeTypeSchema.exactOptional().openapi({
+      description: 'The size of the document, in bytes.',
+    }),
+    ParentFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent folder.',
+    }),
   })
   .openapi({ title: 'InitiateDocumentVersionUploadRequest', required: [] })
   .openapi('InitiateDocumentVersionUploadRequest')
 
 const RemoveAllResourcePermissionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveAllResourcePermissionsRequest' })
   .openapi('RemoveAllResourcePermissionsRequest')
 
 const RemoveResourcePermissionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveResourcePermissionRequest' })
   .openapi('RemoveResourcePermissionRequest')
 
 const RestoreDocumentVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RestoreDocumentVersionsRequest' })
   .openapi('RestoreDocumentVersionsRequest')
 
@@ -1823,131 +1632,97 @@ const SearchResultsLimitTypeSchema = z.int().min(1).max(100).openapi('SearchResu
 
 const SearchResourcesRequestSchema = z
   .object({
-    QueryText: SearchQueryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The String to search for. Searches across different text fields based on request parameters. Use double quotes around the query string for exact phrase matches.',
-        }),
-    ).exactOptional(),
-    QueryScopes: SearchQueryScopeTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter based on the text field type. A Folder has only a name and no content. A Comment has only content and no name. A Document or Document Version has a name and content',
-        }),
-    ).exactOptional(),
-    OrganizationId: IdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters based on the resource owner OrgId. This is a mandatory parameter when using Admin SigV4 credentials.',
-        }),
-    ).exactOptional(),
-    AdditionalResponseFields: AdditionalResponseFieldsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of attributes to include in the response. Used to request fields that are not normally returned in a standard response.',
-        }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z.any().openapi({ description: 'Filters results based on entity metadata.' }),
-    ).exactOptional(),
-    OrderBy: SearchResultSortListSchema.and(
-      z.any().openapi({ description: 'Order by results in one or more categories.' }),
-    ).exactOptional(),
-    Limit: SearchResultsLimitTypeSchema.and(
-      z.any().openapi({ description: 'Max results count per page.' }),
-    ).exactOptional(),
-    Marker: NextMarkerTypeSchema.and(
-      z.any().openapi({ description: 'The marker for the next set of results.' }),
-    ).exactOptional(),
+    QueryText: SearchQueryTypeSchema.exactOptional().openapi({
+      description:
+        'The String to search for. Searches across different text fields based on request parameters. Use double quotes around the query string for exact phrase matches.',
+    }),
+    QueryScopes: SearchQueryScopeTypeListSchema.exactOptional().openapi({
+      description:
+        'Filter based on the text field type. A Folder has only a name and no content. A Comment has only content and no name. A Document or Document Version has a name and content',
+    }),
+    OrganizationId: IdTypeSchema.exactOptional().openapi({
+      description:
+        'Filters based on the resource owner OrgId. This is a mandatory parameter when using Admin SigV4 credentials.',
+    }),
+    AdditionalResponseFields: AdditionalResponseFieldsListSchema.exactOptional().openapi({
+      description:
+        'A list of attributes to include in the response. Used to request fields that are not normally returned in a standard response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description: 'Filters results based on entity metadata.',
+    }),
+    OrderBy: SearchResultSortListSchema.exactOptional().openapi({
+      description: 'Order by results in one or more categories.',
+    }),
+    Limit: SearchResultsLimitTypeSchema.exactOptional().openapi({
+      description: 'Max results count per page.',
+    }),
+    Marker: NextMarkerTypeSchema.exactOptional().openapi({
+      description: 'The marker for the next set of results.',
+    }),
   })
   .openapi({ title: 'SearchResourcesRequest', required: [] })
   .openapi('SearchResourcesRequest')
 
 const UpdateDocumentRequestSchema = z
   .object({
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the document.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ).exactOptional(),
-    ResourceState: ResourceStateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource state of the document. Only ACTIVE and RECYCLED are supported.',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the document.',
+    }),
+    ParentFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent folder.',
+    }),
+    ResourceState: ResourceStateTypeSchema.exactOptional().openapi({
+      description: 'The resource state of the document. Only ACTIVE and RECYCLED are supported.',
+    }),
   })
   .openapi({ title: 'UpdateDocumentRequest', required: [] })
   .openapi('UpdateDocumentRequest')
 
 const UpdateDocumentVersionRequestSchema = z
   .object({
-    VersionStatus: DocumentVersionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the version.' }),
-    ).exactOptional(),
+    VersionStatus: DocumentVersionStatusSchema.exactOptional().openapi({
+      description: 'The status of the version.',
+    }),
   })
   .openapi({ title: 'UpdateDocumentVersionRequest', required: [] })
   .openapi('UpdateDocumentVersionRequest')
 
 const UpdateFolderRequestSchema = z
   .object({
-    Name: ResourceNameTypeSchema.and(
-      z.any().openapi({ description: 'The name of the folder.' }),
-    ).exactOptional(),
-    ParentFolderId: ResourceIdTypeSchema.and(
-      z.any().openapi({ description: 'The ID of the parent folder.' }),
-    ).exactOptional(),
-    ResourceState: ResourceStateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource state of the folder. Only ACTIVE and RECYCLED are accepted values from the API.',
-        }),
-    ).exactOptional(),
+    Name: ResourceNameTypeSchema.exactOptional().openapi({
+      description: 'The name of the folder.',
+    }),
+    ParentFolderId: ResourceIdTypeSchema.exactOptional().openapi({
+      description: 'The ID of the parent folder.',
+    }),
+    ResourceState: ResourceStateTypeSchema.exactOptional().openapi({
+      description:
+        'The resource state of the folder. Only ACTIVE and RECYCLED are accepted values from the API.',
+    }),
   })
   .openapi({ title: 'UpdateFolderRequest', required: [] })
   .openapi('UpdateFolderRequest')
 
 const UpdateUserRequestSchema = z
   .object({
-    GivenName: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The given name of the user.' }),
-    ).exactOptional(),
-    Surname: UserAttributeValueTypeSchema.and(
-      z.any().openapi({ description: 'The surname of the user.' }),
-    ).exactOptional(),
-    Type: UserTypeSchema.and(
-      z.any().openapi({ description: 'The type of the user.' }),
-    ).exactOptional(),
-    StorageRule: StorageRuleTypeSchema.and(
-      z.any().openapi({ description: 'The amount of storage for the user.' }),
-    ).exactOptional(),
-    TimeZoneId: TimeZoneIdTypeSchema.and(
-      z.any().openapi({ description: 'The time zone ID of the user.' }),
-    ).exactOptional(),
-    Locale: LocaleTypeSchema.and(
-      z.any().openapi({ description: 'The locale of the user.' }),
-    ).exactOptional(),
-    GrantPoweruserPrivileges: BooleanEnumTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean value to determine whether the user is granted Power user privileges.',
-        }),
-    ).exactOptional(),
+    GivenName: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The given name of the user.',
+    }),
+    Surname: UserAttributeValueTypeSchema.exactOptional().openapi({
+      description: 'The surname of the user.',
+    }),
+    Type: UserTypeSchema.exactOptional().openapi({ description: 'The type of the user.' }),
+    StorageRule: StorageRuleTypeSchema.exactOptional().openapi({
+      description: 'The amount of storage for the user.',
+    }),
+    TimeZoneId: TimeZoneIdTypeSchema.exactOptional().openapi({
+      description: 'The time zone ID of the user.',
+    }),
+    Locale: LocaleTypeSchema.exactOptional().openapi({ description: 'The locale of the user.' }),
+    GrantPoweruserPrivileges: BooleanEnumTypeSchema.exactOptional().openapi({
+      description: 'Boolean value to determine whether the user is granted Power user privileges.',
+    }),
   })
   .openapi({ title: 'UpdateUserRequest', required: [] })
   .openapi('UpdateUserRequest')
@@ -2718,19 +2493,13 @@ export const postApiV1ResourcesResourceIdPermissionsRoute = createRoute({
                 }),
               NotificationOptions: z
                 .object({
-                  SendEmail: BooleanTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Boolean value to indicate an email notification should be sent to the recipients.',
-                      }),
-                  ).exactOptional(),
-                  EmailMessage: MessageTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Text value to be included in the email body.' }),
-                  ).exactOptional(),
+                  SendEmail: BooleanTypeSchema.exactOptional().openapi({
+                    description:
+                      'Boolean value to indicate an email notification should be sent to the recipients.',
+                  }),
+                  EmailMessage: MessageTypeSchema.exactOptional().openapi({
+                    description: 'Text value to be included in the email body.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4054,12 +3823,12 @@ export const postApiV1UsersRoute = createRoute({
                 .openapi({ description: 'The time zone ID of the user.' }),
               StorageRule: z
                 .object({
-                  StorageAllocatedInBytes: PositiveSizeTypeSchema.and(
-                    z.any().openapi({ description: 'The amount of storage allocated, in bytes.' }),
-                  ).exactOptional(),
-                  StorageType: StorageTypeSchema.and(
-                    z.any().openapi({ description: 'The type of storage.' }),
-                  ).exactOptional(),
+                  StorageAllocatedInBytes: PositiveSizeTypeSchema.exactOptional().openapi({
+                    description: 'The amount of storage allocated, in bytes.',
+                  }),
+                  StorageType: StorageTypeSchema.exactOptional().openapi({
+                    description: 'The type of storage.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes the storage for a user.', required: [] }),
@@ -5422,12 +5191,12 @@ export const patchApiV1UsersUserIdRoute = createRoute({
                 .openapi({ description: 'The type of the user.' }),
               StorageRule: z
                 .object({
-                  StorageAllocatedInBytes: PositiveSizeTypeSchema.and(
-                    z.any().openapi({ description: 'The amount of storage allocated, in bytes.' }),
-                  ).exactOptional(),
-                  StorageType: StorageTypeSchema.and(
-                    z.any().openapi({ description: 'The type of storage.' }),
-                  ).exactOptional(),
+                  StorageAllocatedInBytes: PositiveSizeTypeSchema.exactOptional().openapi({
+                    description: 'The amount of storage allocated, in bytes.',
+                  }),
+                  StorageType: StorageTypeSchema.exactOptional().openapi({
+                    description: 'The type of storage.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes the storage for a user.', required: [] }),
@@ -7228,42 +6997,36 @@ export const postApiV1SearchRoute = createRoute({
                 }),
               Filters: z
                 .object({
-                  TextLocales: TextLocaleTypeListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Filters by the locale of the content or comment.' }),
-                  ).exactOptional(),
-                  ContentCategories: SearchContentCategoryTypeListSchema.and(
-                    z.any().openapi({ description: 'Filters by content category.' }),
-                  ).exactOptional(),
-                  ResourceTypes: SearchResourceTypeListSchema.and(
-                    z.any().openapi({ description: 'Filters based on entity type.' }),
-                  ).exactOptional(),
-                  Labels: SearchLabelListSchema.and(
-                    z.any().openapi({ description: 'Filter by labels using exact match.' }),
-                  ).exactOptional(),
-                  Principals: SearchPrincipalTypeListSchema.and(
-                    z.any().openapi({ description: 'Filter based on UserIds or GroupIds.' }),
-                  ).exactOptional(),
-                  AncestorIds: SearchAncestorIdListSchema.and(
-                    z.any().openapi({ description: 'Filter based on resource’s path.' }),
-                  ).exactOptional(),
-                  SearchCollectionTypes: SearchCollectionTypeListSchema.and(
-                    z.any().openapi({ description: 'Filter based on file groupings.' }),
-                  ).exactOptional(),
-                  SizeRange: LongRangeTypeSchema.and(
-                    z.any().openapi({ description: 'Filter based on size (in bytes).' }),
-                  ).exactOptional(),
-                  CreatedRange: DateRangeTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Filter based on resource’s creation timestamp.' }),
-                  ).exactOptional(),
-                  ModifiedRange: DateRangeTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Filter based on resource’s modified timestamp.' }),
-                  ).exactOptional(),
+                  TextLocales: TextLocaleTypeListSchema.exactOptional().openapi({
+                    description: 'Filters by the locale of the content or comment.',
+                  }),
+                  ContentCategories: SearchContentCategoryTypeListSchema.exactOptional().openapi({
+                    description: 'Filters by content category.',
+                  }),
+                  ResourceTypes: SearchResourceTypeListSchema.exactOptional().openapi({
+                    description: 'Filters based on entity type.',
+                  }),
+                  Labels: SearchLabelListSchema.exactOptional().openapi({
+                    description: 'Filter by labels using exact match.',
+                  }),
+                  Principals: SearchPrincipalTypeListSchema.exactOptional().openapi({
+                    description: 'Filter based on UserIds or GroupIds.',
+                  }),
+                  AncestorIds: SearchAncestorIdListSchema.exactOptional().openapi({
+                    description: 'Filter based on resource’s path.',
+                  }),
+                  SearchCollectionTypes: SearchCollectionTypeListSchema.exactOptional().openapi({
+                    description: 'Filter based on file groupings.',
+                  }),
+                  SizeRange: LongRangeTypeSchema.exactOptional().openapi({
+                    description: 'Filter based on size (in bytes).',
+                  }),
+                  CreatedRange: DateRangeTypeSchema.exactOptional().openapi({
+                    description: 'Filter based on resource’s creation timestamp.',
+                  }),
+                  ModifiedRange: DateRangeTypeSchema.exactOptional().openapi({
+                    description: 'Filter based on resource’s modified timestamp.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

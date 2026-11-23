@@ -1,5 +1,52 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AuthArgumentSchema = z
+  .object({ hash: z.string().openapi({ description: 'Authorization hash' }) })
+  .openapi({ required: ['hash'] })
+  .openapi('AuthArgument')
+
+const CategoryV3ItemSchema = z
+  .object({
+    category_code: z.string().exactOptional(),
+    category_name: z.string().exactOptional(),
+    subcategory: z.array(z.any()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CategoryV3Item')
+
+const CollectionWebFontTaskArgumentsSchema = z
+  .object({
+    arguments: z
+      .object({
+        collection: z.string().openapi({ description: 'collection identifier' }),
+        css_prefix: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'prefix for CSS rules, used to generate LESS/SCSS' }),
+        css_rules_case: z
+          .enum(['lowercase', 'as_is'])
+          .exactOptional()
+          .openapi({ description: 'glyph names conversion rule' }),
+        css_selector: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'template for glyph selector; placeholder {{glyph}} will be replaced with glyph names',
+          }),
+        font_name: z.string().openapi({ description: 'name of iconic webfont' }),
+      })
+      .exactOptional()
+      .openapi({ required: ['collection', 'font_name'] }),
+  })
+  .openapi({ required: [] })
+  .openapi('CollectionWebFontTaskArguments')
+
+const CompactCategoryV3ItemSchema = z
+  .object({ api_code: z.string(), name: z.string() })
+  .openapi({ required: ['name', 'api_code'] })
+  .openapi('CompactCategoryV3Item')
+
 const CompactIconV3ItemSchema = z
   .object({
     category: z.string().exactOptional(),
@@ -86,165 +133,94 @@ const CompactIconV3ItemSchema = z
   })
   .openapi('CompactIconV3Item')
 
-type IconV3ItemType = z.infer<typeof CompactIconV3ItemSchema> & {
-  category?: string
-  common_icon_id: number
-  created: string
-  features: { bitmap: number; nolink: number; vector: number }
-  id: number
-  name: string
-  platform_code: string
-  share?: { png?: unknown[]; url?: string }
-  subcategory?: { api_code: string; name: string }
-  svg: string
-  url?: string
-  vector?: { eps?: string; pdf?: string; 'svg-editable'?: string; 'svg-simplified'?: string }
-}
-
-const AuthArgumentSchema = z
-  .object({ hash: z.string().openapi({ description: 'Authorization hash' }) })
-  .openapi({ required: ['hash'] })
-  .openapi('AuthArgument')
-
-const CategoryV3ItemSchema = z
-  .object({
-    category_code: z.string().exactOptional(),
-    category_name: z.string().exactOptional(),
-    subcategory: z.array(z.any()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CategoryV3Item')
-
-const CollectionWebFontTaskArgumentsSchema = z
-  .object({
-    arguments: z
-      .object({
-        collection: z.string().openapi({ description: 'collection identifier' }),
-        css_prefix: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'prefix for CSS rules, used to generate LESS/SCSS' }),
-        css_rules_case: z
-          .enum(['lowercase', 'as_is'])
-          .exactOptional()
-          .openapi({ description: 'glyph names conversion rule' }),
-        css_selector: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'template for glyph selector; placeholder {{glyph}} will be replaced with glyph names',
-          }),
-        font_name: z.string().openapi({ description: 'name of iconic webfont' }),
-      })
-      .exactOptional()
-      .openapi({ required: ['collection', 'font_name'] }),
-  })
-  .openapi({ required: [] })
-  .openapi('CollectionWebFontTaskArguments')
-
-const CompactCategoryV3ItemSchema = z
-  .object({ api_code: z.string(), name: z.string() })
-  .openapi({ required: ['name', 'api_code'] })
-  .openapi('CompactCategoryV3Item')
-
-const IconV3ItemSchema: z.ZodType<IconV3ItemType> = z
-  .lazy(() =>
-    CompactIconV3ItemSchema.and(
-      z
+const IconV3ItemSchema = CompactIconV3ItemSchema.and(
+  z
+    .object({
+      category: z.string().exactOptional(),
+      common_icon_id: z
+        .number()
+        .openapi({
+          description:
+            'identifier for group of the same icons in different styles; i.e. id of all "home" icons',
+        }),
+      created: z.string().openapi({ description: 'date (ISO8601 format) of icon was published' }),
+      features: z
         .object({
-          category: z.string().exactOptional(),
-          common_icon_id: z
+          bitmap: z
             .number()
             .openapi({
-              description:
-                'identifier for group of the same icons in different styles; i.e. id of all "home" icons',
+              description: '"Could user use images in bitmap / raster formats in any size ?"',
             }),
-          created: z
-            .string()
-            .openapi({ description: 'date (ISO8601 format) of icon was published' }),
-          features: z
-            .object({
-              bitmap: z
-                .number()
-                .openapi({
-                  description: '"Could user use images in bitmap / raster formats in any size ?"',
-                }),
-              nolink: z
-                .number()
-                .openapi({ description: '"Could user use images without any link to Icons8 ?"' }),
-              vector: z
-                .number()
-                .openapi({ description: '"Could user use images in vector formats ?"' }),
-            })
-            .openapi({
-              description:
-                'internal service attribute; internal information about icon features; private; depend on the rights of the current user',
-              required: ['bitmap', 'vector', 'nolink'],
-            }),
-          id: z.number().openapi({ description: 'unique icon identifier' }),
-          name: z.string().openapi({ description: 'icon name' }),
-          platform_code: z.string().openapi({ description: 'icon style' }),
-          share: z
-            .object({
-              png: z
-                .array(z.any())
-                .exactOptional()
-                .openapi({ description: 'some raster images for share the icon' }),
-              url: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'short URL to use in twitter' }),
-            })
-            .exactOptional()
-            .openapi({
-              description: 'internal service attribute; some links to spread the world',
-              required: [],
-            }),
-          subcategory: z
-            .object({ api_code: z.string(), name: z.string() })
-            .exactOptional()
-            .openapi({ required: ['name', 'api_code'] }),
-          svg: z.string().openapi({ description: 'plain SVG content of icon' }),
-          url: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'internal service attribute; the meaning of this attribute is "Identifier of thread at Disquss"',
-            }),
+          nolink: z
+            .number()
+            .openapi({ description: '"Could user use images without any link to Icons8 ?"' }),
           vector: z
-            .object({
-              eps: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'absolute URL to file in EPS format' }),
-              pdf: z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'absolute URL to file in PDF format' }),
-              'svg-editable': z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'absolute URL to original SVG file' }),
-              'svg-simplified': z
-                .string()
-                .exactOptional()
-                .openapi({ description: 'absolute URL to compressed and simplified SVG file' }),
-            })
-            .exactOptional()
-            .openapi({
-              description:
-                "URLs to icon sources in different vector formats; private; depend on the current user and could be opened in user's browser only",
-              required: [],
-            }),
+            .number()
+            .openapi({ description: '"Could user use images in vector formats ?"' }),
         })
         .openapi({
-          required: ['id', 'name', 'platform_code', 'created', 'common_icon_id', 'svg', 'features'],
+          description:
+            'internal service attribute; internal information about icon features; private; depend on the rights of the current user',
+          required: ['bitmap', 'vector', 'nolink'],
         }),
-    ),
-  )
-  .openapi('IconV3Item')
+      id: z.number().openapi({ description: 'unique icon identifier' }),
+      name: z.string().openapi({ description: 'icon name' }),
+      platform_code: z.string().openapi({ description: 'icon style' }),
+      share: z
+        .object({
+          png: z
+            .array(z.any())
+            .exactOptional()
+            .openapi({ description: 'some raster images for share the icon' }),
+          url: z.string().exactOptional().openapi({ description: 'short URL to use in twitter' }),
+        })
+        .exactOptional()
+        .openapi({
+          description: 'internal service attribute; some links to spread the world',
+          required: [],
+        }),
+      subcategory: z
+        .object({ api_code: z.string(), name: z.string() })
+        .exactOptional()
+        .openapi({ required: ['name', 'api_code'] }),
+      svg: z.string().openapi({ description: 'plain SVG content of icon' }),
+      url: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'internal service attribute; the meaning of this attribute is "Identifier of thread at Disquss"',
+        }),
+      vector: z
+        .object({
+          eps: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'absolute URL to file in EPS format' }),
+          pdf: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'absolute URL to file in PDF format' }),
+          'svg-editable': z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'absolute URL to original SVG file' }),
+          'svg-simplified': z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'absolute URL to compressed and simplified SVG file' }),
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            "URLs to icon sources in different vector formats; private; depend on the current user and could be opened in user's browser only",
+          required: [],
+        }),
+    })
+    .openapi({
+      required: ['id', 'name', 'platform_code', 'created', 'common_icon_id', 'svg', 'features'],
+    }),
+).openapi('IconV3Item')
 
 const MetaSchema = z.any().openapi('Meta')
 
@@ -831,6 +807,11 @@ export const getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatf
               },
             },
           }),
+        term: z
+          .string()
+          .openapi({
+            param: { name: 'term', in: 'path', required: true, schema: { type: 'string' } },
+          }),
       }),
     },
     responses: {
@@ -1325,6 +1306,11 @@ export const getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatf
                 type: 'string',
               },
             },
+          }),
+        exact_amount: z
+          .string()
+          .openapi({
+            param: { name: 'exact_amount', in: 'path', required: true, schema: { type: 'string' } },
           }),
       }),
     },

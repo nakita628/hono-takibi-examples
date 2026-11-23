@@ -206,6 +206,7 @@ curl https://discourse.example.com/discourse-post-event/events.json \
       "chat_enabled": true,
       "channel": {},
       "livestream": true,
+      "allow_anonymous_livestream": true,
       "livestream_onebox": "string",
       "is_zoom_livestream": true,
       "recording_url": "string",
@@ -297,6 +298,7 @@ Status Code **200**
 |» chat_enabled|boolean \| null|false|none|none|
 |» channel|object|false|none|none|
 |» livestream|boolean|false|none|none|
+|» allow_anonymous_livestream|boolean|true|none|none|
 |» livestream_onebox|string \| null|false|none|none|
 |» is_zoom_livestream|boolean|false|none|none|
 |» recording_url|string|false|none|none|
@@ -1479,6 +1481,12 @@ curl https://discourse.example.com/categories.json \
       null
     ],
     "read_only_banner": "string",
+    "permission_groups": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ],
     "available_groups": [
       null
     ],
@@ -1520,6 +1528,7 @@ curl https://discourse.example.com/categories.json \
         "title": "string",
         "description": "string",
         "icon": "string",
+        "svg_icon": "string",
         "available": true,
         "visible": true,
         "configuration_schema": {}
@@ -1594,6 +1603,9 @@ Status Code **200**
 |» » reply_posting_review_mode|string|false|none|none|
 |» category_localizations|[object]|false|none|none|
 |» read_only_banner|string \| null|true|none|none|
+|» permission_groups|[object]|false|none|none|
+|» » id|integer|true|none|none|
+|» » name|string|true|none|none|
 |» available_groups|[object]|true|none|none|
 |» auto_close_hours|string \| null|true|none|none|
 |» auto_close_based_on_last_post|boolean|true|none|none|
@@ -1625,6 +1637,7 @@ Status Code **200**
 |» » title|string|true|none|none|
 |» » description|string|true|none|none|
 |» » icon|string|true|none|none|
+|» » svg_icon|string \| null|true|none|none|
 |» » available|boolean|true|none|none|
 |» » visible|boolean|true|none|none|
 |» » configuration_schema|object|true|none|none|
@@ -1808,6 +1821,12 @@ curl https://discourse.example.com/categories/0.json \
       null
     ],
     "read_only_banner": "string",
+    "permission_groups": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ],
     "available_groups": [
       null
     ],
@@ -1849,6 +1868,7 @@ curl https://discourse.example.com/categories/0.json \
         "title": "string",
         "description": "string",
         "icon": "string",
+        "svg_icon": "string",
         "available": true,
         "visible": true,
         "configuration_schema": {}
@@ -1924,6 +1944,9 @@ Status Code **200**
 |» » reply_posting_review_mode|string|false|none|none|
 |» category_localizations|[object]|false|none|none|
 |» read_only_banner|string \| null|true|none|none|
+|» permission_groups|[object]|false|none|none|
+|» » id|integer|true|none|none|
+|» » name|string|true|none|none|
 |» available_groups|[object]|true|none|none|
 |» auto_close_hours|string \| null|true|none|none|
 |» auto_close_based_on_last_post|boolean|true|none|none|
@@ -1955,6 +1978,7 @@ Status Code **200**
 |» » title|string|true|none|none|
 |» » description|string|true|none|none|
 |» » icon|string|true|none|none|
+|» » svg_icon|string \| null|true|none|none|
 |» » available|boolean|true|none|none|
 |» » visible|boolean|true|none|none|
 |» » configuration_schema|object|true|none|none|
@@ -2212,6 +2236,12 @@ curl https://discourse.example.com/c/0/show.json \
       null
     ],
     "read_only_banner": "string",
+    "permission_groups": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ],
     "available_groups": [
       null
     ],
@@ -2253,6 +2283,7 @@ curl https://discourse.example.com/c/0/show.json \
         "title": "string",
         "description": "string",
         "icon": "string",
+        "svg_icon": "string",
         "available": true,
         "visible": true,
         "configuration_schema": {}
@@ -2327,6 +2358,9 @@ Status Code **200**
 |» » reply_posting_review_mode|string|false|none|none|
 |» category_localizations|[object]|false|none|none|
 |» read_only_banner|string \| null|true|none|none|
+|» permission_groups|[object]|false|none|none|
+|» » id|integer|true|none|none|
+|» » name|string|true|none|none|
 |» available_groups|[object]|true|none|none|
 |» auto_close_hours|string \| null|true|none|none|
 |» auto_close_based_on_last_post|boolean|true|none|none|
@@ -2358,6 +2392,7 @@ Status Code **200**
 |» » title|string|true|none|none|
 |» » description|string|true|none|none|
 |» » icon|string|true|none|none|
+|» » svg_icon|string \| null|true|none|none|
 |» » available|boolean|true|none|none|
 |» » visible|boolean|true|none|none|
 |» » configuration_schema|object|true|none|none|
@@ -5872,6 +5907,7 @@ Can be used to fetch all categories and subcategories
       "title": "string",
       "description": "string",
       "icon": "string",
+      "svg_icon": "string",
       "available": true,
       "visible": true,
       "configuration_schema": {}
@@ -6116,6 +6152,7 @@ Status Code **200**
 |» title|string|true|none|none|
 |» description|string|true|none|none|
 |» icon|string|true|none|none|
+|» svg_icon|string \| null|true|none|none|
 |» available|boolean|true|none|none|
 |» visible|boolean|true|none|none|
 |» configuration_schema|object|true|none|none|
@@ -8911,7 +8948,8 @@ curl https://discourse.example.com/uploads/batch-presign-multipart-parts.json \
 
 Multipart uploads are uploaded in chunks or parts to individual presigned
 URLs, similar to the one generated by /generate-presigned-put. The part
-numbers provided must be between 1 and 10000. The total number of parts
+numbers provided must be between 1 and 10000, and a request can have at
+most 100 part numbers. The total number of parts
 will depend on the chunk size in bytes that you intend to use to upload
 each chunk. For example a 12MB file may have 2 5MB chunks and a final
 2MB chunk, for part numbers 1, 2, and 3.
@@ -8950,7 +8988,7 @@ be set to true for this endpoint to function.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» part_numbers|body|array|true|The part numbers to generate the presigned URLs for,<br>must be between 1 and 10000.|
+|» part_numbers|body|array|true|The part numbers to generate the presigned URLs for.<br>Each part number must be between 1 and 10000. A request can have<br>at most 100 part numbers.|
 |» unique_identifier|body|string|true|The unique identifier returned in the original /create-multipart<br>request.|
 
 > Example responses

@@ -1,129 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SingleTargetDatasetSchema = z
-  .object({
-    datasetId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The dataset ID of the target dataset.' }),
-  })
-  .openapi({
-    description: 'A single target dataset to which all data will be streamed.',
-    required: [],
-  })
-  .openapi('SingleTargetDataset')
-
-const DatasetTemplateSchema = z
-  .object({
-    datasetIdPrefix: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If supplied, every created dataset will have its name prefixed by the provided value. The prefix and name will be separated by an underscore. i.e. _.',
-      }),
-    kmsKeyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key. i.e. projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{cryptoKey}. See https://cloud.google.com/bigquery/docs/customer-managed-encryption for more information.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The geographic location where the dataset should reside. See https://cloud.google.com/bigquery/docs/locations for supported locations.',
-      }),
-  })
-  .openapi({ description: 'Dataset template used for dynamic dataset creation.', required: [] })
-  .openapi('DatasetTemplate')
-
-const SourceHierarchyDatasetsSchema = z
-  .object({
-    datasetTemplate: DatasetTemplateSchema.exactOptional().openapi({
-      description: 'The dataset template to use for dynamic dataset creation.',
-    }),
-  })
-  .openapi({
-    description:
-      'Destination datasets are created so that hierarchy of the destination data objects matches the source hierarchy.',
-    required: [],
-  })
-  .openapi('SourceHierarchyDatasets')
-
-const BigQueryDestinationConfigSchema = z
-  .object({
-    dataFreshness: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The guaranteed data freshness (in seconds) when querying tables created by the stream. Editing this field will only affect new tables created in the future, but existing tables will not be impacted. Lower values mean that queries will return fresher data, but may result in higher cost.',
-      }),
-    singleTargetDataset: SingleTargetDatasetSchema.exactOptional().openapi({
-      description: 'Single destination dataset.',
-    }),
-    sourceHierarchyDatasets: SourceHierarchyDatasetsSchema.exactOptional().openapi({
-      description: 'Source hierarchy datasets.',
-    }),
-  })
-  .openapi({ description: 'BigQuery destination configuration', required: [] })
-  .openapi('BigQueryDestinationConfig')
-
-const AvroFileFormatSchema = z
-  .object({})
-  .openapi({ description: 'AVRO file format configuration.' })
-  .openapi('AvroFileFormat')
-
-const JsonFileFormatSchema = z
-  .object({
-    compression: z
-      .enum(['JSON_COMPRESSION_UNSPECIFIED', 'NO_COMPRESSION', 'GZIP'])
-      .exactOptional()
-      .openapi({ description: 'Compression of the loaded JSON file.' }),
-    schemaFileFormat: z
-      .enum(['SCHEMA_FILE_FORMAT_UNSPECIFIED', 'NO_SCHEMA_FILE', 'AVRO_SCHEMA_FILE'])
-      .exactOptional()
-      .openapi({ description: 'The schema file format along JSON data files.' }),
-  })
-  .openapi({ description: 'JSON file format configuration.', required: [] })
-  .openapi('JsonFileFormat')
-
-const GcsDestinationConfigSchema = z
-  .object({
-    avroFileFormat: AvroFileFormatSchema.exactOptional().openapi({
-      description: 'AVRO file format configuration.',
-    }),
-    fileRotationInterval: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum duration for which new events are added before a file is closed and a new file is created.',
-      }),
-    fileRotationMb: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The maximum file size to be saved in the bucket.' }),
-    jsonFileFormat: JsonFileFormatSchema.exactOptional().openapi({
-      description: 'JSON file format configuration.',
-    }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Path inside the Cloud Storage bucket to write data to.' }),
-  })
-  .openapi({ description: 'Google Cloud Storage destination configuration', required: [] })
-  .openapi('GcsDestinationConfig')
-
-type DestinationConfigType = {
-  bigqueryDestinationConfig?: z.infer<typeof BigQueryDestinationConfigSchema>
-  destinationConnectionProfile?: string
-  gcsDestinationConfig?: z.infer<typeof GcsDestinationConfigSchema>
-}
-
 const MysqlColumnSchema = z
   .object({
     collation: z.string().exactOptional().openapi({ description: 'Column collation.' }),
@@ -187,37 +63,6 @@ const MysqlRdbmsSchema = z
   .openapi({ description: 'MySQL database structure', required: [] })
   .openapi('MysqlRdbms')
 
-const MysqlSourceConfigSchema = z
-  .object({
-    excludeObjects: MysqlRdbmsSchema.exactOptional().openapi({
-      description: 'MySQL objects to exclude from the stream.',
-    }),
-    includeObjects: MysqlRdbmsSchema.exactOptional().openapi({
-      description: 'MySQL objects to retrieve from the source.',
-    }),
-    maxConcurrentBackfillTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum number of concurrent backfill tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
-      }),
-    maxConcurrentCdcTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum number of concurrent CDC tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
-      }),
-  })
-  .openapi({ description: 'MySQL source configuration', required: [] })
-  .openapi('MysqlSourceConfig')
-
-const DropLargeObjectsSchema = z
-  .object({})
-  .openapi({ description: 'Configuration to drop large object values.' })
-  .openapi('DropLargeObjects')
-
 const OracleColumnSchema = z
   .object({
     column: z.string().exactOptional().openapi({ description: 'Column name.' }),
@@ -277,43 +122,6 @@ const OracleRdbmsSchema = z
   .openapi({ description: 'Oracle database structure.', required: [] })
   .openapi('OracleRdbms')
 
-const StreamLargeObjectsSchema = z
-  .object({})
-  .openapi({ description: 'Configuration to stream large object values.' })
-  .openapi('StreamLargeObjects')
-
-const OracleSourceConfigSchema = z
-  .object({
-    dropLargeObjects: DropLargeObjectsSchema.exactOptional().openapi({
-      description: 'Drop large object values.',
-    }),
-    excludeObjects: OracleRdbmsSchema.exactOptional().openapi({
-      description: 'Oracle objects to exclude from the stream.',
-    }),
-    includeObjects: OracleRdbmsSchema.exactOptional().openapi({
-      description: 'Oracle objects to include in the stream.',
-    }),
-    maxConcurrentBackfillTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum number of concurrent backfill tasks. The number should be non-negative. If not set (or set to 0), the system's default value is used.",
-      }),
-    maxConcurrentCdcTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum number of concurrent CDC tasks. The number should be non-negative. If not set (or set to 0), the system's default value is used.",
-      }),
-    streamLargeObjects: StreamLargeObjectsSchema.exactOptional().openapi({
-      description: 'Stream large object values. NOTE: This feature is currently experimental.',
-    }),
-  })
-  .openapi({ description: 'Oracle data source configuration', required: [] })
-  .openapi('OracleSourceConfig')
-
 const PostgresqlColumnSchema = z
   .object({
     column: z.string().exactOptional().openapi({ description: 'Column name.' }),
@@ -372,150 +180,16 @@ const PostgresqlRdbmsSchema = z
   .openapi({ description: 'PostgreSQL database structure.', required: [] })
   .openapi('PostgresqlRdbms')
 
-const PostgresqlSourceConfigSchema = z
-  .object({
-    excludeObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
-      description: 'PostgreSQL objects to exclude from the stream.',
-    }),
-    includeObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
-      description: 'PostgreSQL objects to include in the stream.',
-    }),
-    maxConcurrentBackfillTasks: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Maximum number of concurrent backfill tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
-      }),
-    publication: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. The name of the publication that includes the set of all tables that are defined in the stream's include_objects.",
-      }),
-    replicationSlot: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Immutable. The name of the logical replication slot that's configured with the pgoutput plugin.",
-      }),
-  })
-  .openapi({ description: 'PostgreSQL data source configuration', required: [] })
-  .openapi('PostgresqlSourceConfig')
-
-type SourceConfigType = {
-  mysqlSourceConfig?: z.infer<typeof MysqlSourceConfigSchema>
-  oracleSourceConfig?: z.infer<typeof OracleSourceConfigSchema>
-  postgresqlSourceConfig?: z.infer<typeof PostgresqlSourceConfigSchema>
-  sourceConnectionProfile?: string
+type BackfillAllStrategyType = {
+  mysqlExcludedObjects?: z.infer<typeof MysqlRdbmsSchema>
+  oracleExcludedObjects?: z.infer<typeof OracleRdbmsSchema>
+  postgresqlExcludedObjects?: z.infer<typeof PostgresqlRdbmsSchema>
 }
 
-const BackfillAllStrategySchema = z
-  .object({
-    mysqlExcludedObjects: MysqlRdbmsSchema.exactOptional().openapi({
-      description: 'MySQL data source objects to avoid backfilling.',
-    }),
-    oracleExcludedObjects: OracleRdbmsSchema.exactOptional().openapi({
-      description: 'Oracle data source objects to avoid backfilling.',
-    }),
-    postgresqlExcludedObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
-      description: 'PostgreSQL data source objects to avoid backfilling.',
-    }),
-  })
-  .openapi({
-    description:
-      "Backfill strategy to automatically backfill the Stream's objects. Specific objects can be excluded.",
-    required: [],
-  })
-  .openapi('BackfillAllStrategy')
-
-const ErrorSchema = z
-  .object({
-    details: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Additional information about the error.' }),
-    errorTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the error occurred.' }),
-    errorUuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A unique identifier for this specific error, allowing it to be traced throughout the system in logs and API responses.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'A message containing more information about the error that occurred.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A title that explains the reason for the error.' }),
-  })
-  .openapi({ description: 'Represent a user-facing Error.', required: [] })
-  .openapi('Error')
-
-const BackfillJobSchema = z
-  .object({
-    errors: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Errors which caused the backfill job to fail.',
-        readOnly: true,
-      }),
-    lastEndTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. Backfill job's end time.", readOnly: true }),
-    lastStartTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. Backfill job's start time.", readOnly: true }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'NOT_STARTED',
-        'PENDING',
-        'ACTIVE',
-        'STOPPED',
-        'FAILED',
-        'COMPLETED',
-        'UNSUPPORTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Backfill job state.' }),
-    trigger: z
-      .enum(['TRIGGER_UNSPECIFIED', 'AUTOMATIC', 'MANUAL'])
-      .exactOptional()
-      .openapi({ description: "Backfill job's triggering reason." }),
-  })
-  .openapi({ description: 'Represents a backfill job on a specific stream object.', required: [] })
-  .openapi('BackfillJob')
-
-const BackfillNoneStrategySchema = z
-  .object({})
-  .openapi({
-    description: "Backfill strategy to disable automatic backfill for the Stream's objects.",
-  })
-  .openapi('BackfillNoneStrategy')
-
 const BigQueryProfileSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'BigQuery warehouse profile.' })
   .openapi('BigQueryProfile')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
 
 const ForwardSshTunnelConnectivitySchema = z
   .object({
@@ -694,7 +368,7 @@ const PrivateConnectivitySchema = z
   .openapi('PrivateConnectivity')
 
 const StaticServiceIpConnectivitySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Static IP address connectivity. Used when the source database is configured to allow incoming connections from the Datastream public IP addresses for the region specified in the connection profile.',
@@ -749,29 +423,505 @@ const ConnectionProfileSchema = z
   })
   .openapi('ConnectionProfile')
 
-const DestinationConfigSchema: z.ZodType<DestinationConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        bigqueryDestinationConfig: BigQueryDestinationConfigSchema.exactOptional().openapi({
-          description: 'BigQuery destination configuration.',
-        }),
-        destinationConnectionProfile: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. Destination connection profile resource. Format: `projects/{project}/locations/{location}/connectionProfiles/{name}`',
-          }),
-        gcsDestinationConfig: GcsDestinationConfigSchema.exactOptional().openapi({
-          description: 'A configuration for how data should be loaded to Cloud Storage.',
-        }),
-      })
-      .openapi({ description: 'The configuration of the stream destination.', required: [] }),
-  )
+type DiscoverConnectionProfileRequestType = {
+  connectionProfile?: z.infer<typeof ConnectionProfileSchema>
+  connectionProfileName?: string
+  fullHierarchy?: boolean
+  hierarchyDepth?: number
+  mysqlRdbms?: z.infer<typeof MysqlRdbmsSchema>
+  oracleRdbms?: z.infer<typeof OracleRdbmsSchema>
+  postgresqlRdbms?: z.infer<typeof PostgresqlRdbmsSchema>
+}
+
+type DiscoverConnectionProfileResponseType = {
+  mysqlRdbms?: z.infer<typeof MysqlRdbmsSchema>
+  oracleRdbms?: z.infer<typeof OracleRdbmsSchema>
+  postgresqlRdbms?: z.infer<typeof PostgresqlRdbmsSchema>
+}
+
+const BackfillAllStrategySchema: z.ZodType<BackfillAllStrategyType> = z
+  .object({
+    mysqlExcludedObjects: MysqlRdbmsSchema.exactOptional().openapi({
+      description: 'MySQL data source objects to avoid backfilling.',
+    }),
+    oracleExcludedObjects: OracleRdbmsSchema.exactOptional().openapi({
+      description: 'Oracle data source objects to avoid backfilling.',
+    }),
+    postgresqlExcludedObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
+      description: 'PostgreSQL data source objects to avoid backfilling.',
+    }),
+  })
+  .openapi({
+    description:
+      "Backfill strategy to automatically backfill the Stream's objects. Specific objects can be excluded.",
+    required: [],
+  })
+  .openapi('BackfillAllStrategy')
+
+const BackfillNoneStrategySchema = z
+  .looseObject({})
+  .openapi({
+    description: "Backfill strategy to disable automatic backfill for the Stream's objects.",
+  })
+  .openapi('BackfillNoneStrategy')
+
+const SingleTargetDatasetSchema = z
+  .object({
+    datasetId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The dataset ID of the target dataset.' }),
+  })
+  .openapi({
+    description: 'A single target dataset to which all data will be streamed.',
+    required: [],
+  })
+  .openapi('SingleTargetDataset')
+
+const DatasetTemplateSchema = z
+  .object({
+    datasetIdPrefix: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If supplied, every created dataset will have its name prefixed by the provided value. The prefix and name will be separated by an underscore. i.e. _.',
+      }),
+    kmsKeyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Describes the Cloud KMS encryption key that will be used to protect destination BigQuery table. The BigQuery Service Account associated with your project requires access to this encryption key. i.e. projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{cryptoKey}. See https://cloud.google.com/bigquery/docs/customer-managed-encryption for more information.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The geographic location where the dataset should reside. See https://cloud.google.com/bigquery/docs/locations for supported locations.',
+      }),
+  })
+  .openapi({ description: 'Dataset template used for dynamic dataset creation.', required: [] })
+  .openapi('DatasetTemplate')
+
+const SourceHierarchyDatasetsSchema = z
+  .object({
+    datasetTemplate: DatasetTemplateSchema.exactOptional().openapi({
+      description: 'The dataset template to use for dynamic dataset creation.',
+    }),
+  })
+  .openapi({
+    description:
+      'Destination datasets are created so that hierarchy of the destination data objects matches the source hierarchy.',
+    required: [],
+  })
+  .openapi('SourceHierarchyDatasets')
+
+const BigQueryDestinationConfigSchema = z
+  .object({
+    dataFreshness: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The guaranteed data freshness (in seconds) when querying tables created by the stream. Editing this field will only affect new tables created in the future, but existing tables will not be impacted. Lower values mean that queries will return fresher data, but may result in higher cost.',
+      }),
+    singleTargetDataset: SingleTargetDatasetSchema.exactOptional().openapi({
+      description: 'Single destination dataset.',
+    }),
+    sourceHierarchyDatasets: SourceHierarchyDatasetsSchema.exactOptional().openapi({
+      description: 'Source hierarchy datasets.',
+    }),
+  })
+  .openapi({ description: 'BigQuery destination configuration', required: [] })
+  .openapi('BigQueryDestinationConfig')
+
+const AvroFileFormatSchema = z
+  .looseObject({})
+  .openapi({ description: 'AVRO file format configuration.' })
+  .openapi('AvroFileFormat')
+
+const JsonFileFormatSchema = z
+  .object({
+    compression: z
+      .enum(['JSON_COMPRESSION_UNSPECIFIED', 'NO_COMPRESSION', 'GZIP'])
+      .exactOptional()
+      .openapi({ description: 'Compression of the loaded JSON file.' }),
+    schemaFileFormat: z
+      .enum(['SCHEMA_FILE_FORMAT_UNSPECIFIED', 'NO_SCHEMA_FILE', 'AVRO_SCHEMA_FILE'])
+      .exactOptional()
+      .openapi({ description: 'The schema file format along JSON data files.' }),
+  })
+  .openapi({ description: 'JSON file format configuration.', required: [] })
+  .openapi('JsonFileFormat')
+
+const GcsDestinationConfigSchema = z
+  .object({
+    avroFileFormat: AvroFileFormatSchema.exactOptional().openapi({
+      description: 'AVRO file format configuration.',
+    }),
+    fileRotationInterval: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The maximum duration for which new events are added before a file is closed and a new file is created.',
+      }),
+    fileRotationMb: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The maximum file size to be saved in the bucket.' }),
+    jsonFileFormat: JsonFileFormatSchema.exactOptional().openapi({
+      description: 'JSON file format configuration.',
+    }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Path inside the Cloud Storage bucket to write data to.' }),
+  })
+  .openapi({ description: 'Google Cloud Storage destination configuration', required: [] })
+  .openapi('GcsDestinationConfig')
+
+const DestinationConfigSchema = z
+  .object({
+    bigqueryDestinationConfig: BigQueryDestinationConfigSchema.exactOptional().openapi({
+      description: 'BigQuery destination configuration.',
+    }),
+    destinationConnectionProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Destination connection profile resource. Format: `projects/{project}/locations/{location}/connectionProfiles/{name}`',
+      }),
+    gcsDestinationConfig: GcsDestinationConfigSchema.exactOptional().openapi({
+      description: 'A configuration for how data should be loaded to Cloud Storage.',
+    }),
+  })
+  .openapi({ description: 'The configuration of the stream destination.', required: [] })
   .openapi('DestinationConfig')
 
-const DiscoverConnectionProfileRequestSchema = z
+const ErrorSchema = z
+  .object({
+    details: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Additional information about the error.' }),
+    errorTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the error occurred.' }),
+    errorUuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A unique identifier for this specific error, allowing it to be traced throughout the system in logs and API responses.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'A message containing more information about the error that occurred.',
+      }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A title that explains the reason for the error.' }),
+  })
+  .openapi({ description: 'Represent a user-facing Error.', required: [] })
+  .openapi('Error')
+
+type MysqlSourceConfigType = {
+  excludeObjects?: z.infer<typeof MysqlRdbmsSchema>
+  includeObjects?: z.infer<typeof MysqlRdbmsSchema>
+  maxConcurrentBackfillTasks?: number
+  maxConcurrentCdcTasks?: number
+}
+
+const MysqlSourceConfigSchema: z.ZodType<MysqlSourceConfigType> = z
+  .object({
+    excludeObjects: MysqlRdbmsSchema.exactOptional().openapi({
+      description: 'MySQL objects to exclude from the stream.',
+    }),
+    includeObjects: MysqlRdbmsSchema.exactOptional().openapi({
+      description: 'MySQL objects to retrieve from the source.',
+    }),
+    maxConcurrentBackfillTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum number of concurrent backfill tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
+      }),
+    maxConcurrentCdcTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum number of concurrent CDC tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
+      }),
+  })
+  .openapi({ description: 'MySQL source configuration', required: [] })
+  .openapi('MysqlSourceConfig')
+
+const DropLargeObjectsSchema = z
+  .looseObject({})
+  .openapi({ description: 'Configuration to drop large object values.' })
+  .openapi('DropLargeObjects')
+
+const StreamLargeObjectsSchema = z
+  .looseObject({})
+  .openapi({ description: 'Configuration to stream large object values.' })
+  .openapi('StreamLargeObjects')
+
+type OracleSourceConfigType = {
+  dropLargeObjects?: z.infer<typeof DropLargeObjectsSchema>
+  excludeObjects?: z.infer<typeof OracleRdbmsSchema>
+  includeObjects?: z.infer<typeof OracleRdbmsSchema>
+  maxConcurrentBackfillTasks?: number
+  maxConcurrentCdcTasks?: number
+  streamLargeObjects?: z.infer<typeof StreamLargeObjectsSchema>
+}
+
+const OracleSourceConfigSchema: z.ZodType<OracleSourceConfigType> = z
+  .object({
+    dropLargeObjects: DropLargeObjectsSchema.exactOptional().openapi({
+      description: 'Drop large object values.',
+    }),
+    excludeObjects: OracleRdbmsSchema.exactOptional().openapi({
+      description: 'Oracle objects to exclude from the stream.',
+    }),
+    includeObjects: OracleRdbmsSchema.exactOptional().openapi({
+      description: 'Oracle objects to include in the stream.',
+    }),
+    maxConcurrentBackfillTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum number of concurrent backfill tasks. The number should be non-negative. If not set (or set to 0), the system's default value is used.",
+      }),
+    maxConcurrentCdcTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum number of concurrent CDC tasks. The number should be non-negative. If not set (or set to 0), the system's default value is used.",
+      }),
+    streamLargeObjects: StreamLargeObjectsSchema.exactOptional().openapi({
+      description: 'Stream large object values. NOTE: This feature is currently experimental.',
+    }),
+  })
+  .openapi({ description: 'Oracle data source configuration', required: [] })
+  .openapi('OracleSourceConfig')
+
+type PostgresqlSourceConfigType = {
+  excludeObjects?: z.infer<typeof PostgresqlRdbmsSchema>
+  includeObjects?: z.infer<typeof PostgresqlRdbmsSchema>
+  maxConcurrentBackfillTasks?: number
+  publication?: string
+  replicationSlot?: string
+}
+
+const PostgresqlSourceConfigSchema: z.ZodType<PostgresqlSourceConfigType> = z
+  .object({
+    excludeObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
+      description: 'PostgreSQL objects to exclude from the stream.',
+    }),
+    includeObjects: PostgresqlRdbmsSchema.exactOptional().openapi({
+      description: 'PostgreSQL objects to include in the stream.',
+    }),
+    maxConcurrentBackfillTasks: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Maximum number of concurrent backfill tasks. The number should be non negative. If not set (or set to 0), the system's default value will be used.",
+      }),
+    publication: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. The name of the publication that includes the set of all tables that are defined in the stream's include_objects.",
+      }),
+    replicationSlot: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Required. Immutable. The name of the logical replication slot that's configured with the pgoutput plugin.",
+      }),
+  })
+  .openapi({ description: 'PostgreSQL data source configuration', required: [] })
+  .openapi('PostgresqlSourceConfig')
+
+type SourceConfigType = {
+  mysqlSourceConfig?: z.infer<typeof MysqlSourceConfigSchema>
+  oracleSourceConfig?: z.infer<typeof OracleSourceConfigSchema>
+  postgresqlSourceConfig?: z.infer<typeof PostgresqlSourceConfigSchema>
+  sourceConnectionProfile?: string
+}
+
+const SourceConfigSchema: z.ZodType<SourceConfigType> = z
+  .object({
+    mysqlSourceConfig: MysqlSourceConfigSchema.exactOptional().openapi({
+      description: 'MySQL data source configuration.',
+    }),
+    oracleSourceConfig: OracleSourceConfigSchema.exactOptional().openapi({
+      description: 'Oracle data source configuration.',
+    }),
+    postgresqlSourceConfig: PostgresqlSourceConfigSchema.exactOptional().openapi({
+      description: 'PostgreSQL data source configuration.',
+    }),
+    sourceConnectionProfile: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Source connection profile resoource. Format: `projects/{project}/locations/{location}/connectionProfiles/{name}`',
+      }),
+  })
+  .openapi({ description: 'The configuration of the stream source.', required: [] })
+  .openapi('SourceConfig')
+
+type StreamType = {
+  backfillAll?: z.infer<typeof BackfillAllStrategySchema>
+  backfillNone?: z.infer<typeof BackfillNoneStrategySchema>
+  createTime?: string
+  customerManagedEncryptionKey?: string
+  destinationConfig?: z.infer<typeof DestinationConfigSchema>
+  displayName?: string
+  errors?: z.infer<typeof ErrorSchema>[]
+  labels?: { [key: string]: string }
+  name?: string
+  sourceConfig?: z.infer<typeof SourceConfigSchema>
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'NOT_STARTED'
+    | 'RUNNING'
+    | 'PAUSED'
+    | 'MAINTENANCE'
+    | 'FAILED'
+    | 'FAILED_PERMANENTLY'
+    | 'STARTING'
+    | 'DRAINING'
+  updateTime?: string
+}
+
+const StreamSchema: z.ZodType<StreamType> = z
+  .object({
+    backfillAll: BackfillAllStrategySchema.exactOptional().openapi({
+      description:
+        'Automatically backfill objects included in the stream source configuration. Specific objects can be excluded.',
+    }),
+    backfillNone: BackfillNoneStrategySchema.exactOptional().openapi({
+      description: 'Do not automatically backfill any objects.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The creation time of the stream.', readOnly: true }),
+    customerManagedEncryptionKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Immutable. A reference to a KMS encryption key. If provided, it will be used to encrypt the data. If left blank, data will be encrypted using an internal Stream-specific encryption key provisioned through KMS.',
+      }),
+    destinationConfig: DestinationConfigSchema.exactOptional().openapi({
+      description: 'Required. Destination connection profile configuration.',
+    }),
+    displayName: z.string().exactOptional().openapi({ description: 'Required. Display name.' }),
+    errors: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Output only. Errors on the Stream.', readOnly: true }),
+    labels: z.record(z.string(), z.string()).exactOptional().openapi({ description: 'Labels.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. The stream's name.", readOnly: true }),
+    sourceConfig: SourceConfigSchema.exactOptional().openapi({
+      description: 'Required. Source connection profile configuration.',
+    }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'NOT_STARTED',
+        'RUNNING',
+        'PAUSED',
+        'MAINTENANCE',
+        'FAILED',
+        'FAILED_PERMANENTLY',
+        'STARTING',
+        'DRAINING',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The state of the stream.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The last update time of the stream.', readOnly: true }),
+  })
+  .openapi({
+    description: 'A resource representing streaming data from a source to a destination.',
+    required: [],
+  })
+  .openapi('Stream')
+
+type ListStreamsResponseType = {
+  nextPageToken?: string
+  streams?: z.infer<typeof StreamSchema>[]
+  unreachable?: string[]
+}
+
+const BackfillJobSchema = z
+  .object({
+    errors: z
+      .array(ErrorSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Errors which caused the backfill job to fail.',
+        readOnly: true,
+      }),
+    lastEndTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. Backfill job's end time.", readOnly: true }),
+    lastStartTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Output only. Backfill job's start time.", readOnly: true }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'NOT_STARTED',
+        'PENDING',
+        'ACTIVE',
+        'STOPPED',
+        'FAILED',
+        'COMPLETED',
+        'UNSUPPORTED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Backfill job state.' }),
+    trigger: z
+      .enum(['TRIGGER_UNSPECIFIED', 'AUTOMATIC', 'MANUAL'])
+      .exactOptional()
+      .openapi({ description: "Backfill job's triggering reason." }),
+  })
+  .openapi({ description: 'Represents a backfill job on a specific stream object.', required: [] })
+  .openapi('BackfillJob')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const DiscoverConnectionProfileRequestSchema: z.ZodType<DiscoverConnectionProfileRequestType> = z
   .object({
     connectionProfile: ConnectionProfileSchema.exactOptional().openapi({
       description: 'An ad-hoc connection profile configuration.',
@@ -809,7 +959,7 @@ const DiscoverConnectionProfileRequestSchema = z
   })
   .openapi('DiscoverConnectionProfileRequest')
 
-const DiscoverConnectionProfileResponseSchema = z
+const DiscoverConnectionProfileResponseSchema: z.ZodType<DiscoverConnectionProfileResponseType> = z
   .object({
     mysqlRdbms: MysqlRdbmsSchema.exactOptional().openapi({
       description: 'Enriched MySQL RDBMS object.',
@@ -825,7 +975,7 @@ const DiscoverConnectionProfileResponseSchema = z
   .openapi('DiscoverConnectionProfileResponse')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -1265,93 +1415,7 @@ const ListStreamObjectsResponseSchema = z
   .openapi({ description: 'Response containing the objects for a stream.', required: [] })
   .openapi('ListStreamObjectsResponse')
 
-const SourceConfigSchema: z.ZodType<SourceConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        mysqlSourceConfig: MysqlSourceConfigSchema.exactOptional().openapi({
-          description: 'MySQL data source configuration.',
-        }),
-        oracleSourceConfig: OracleSourceConfigSchema.exactOptional().openapi({
-          description: 'Oracle data source configuration.',
-        }),
-        postgresqlSourceConfig: PostgresqlSourceConfigSchema.exactOptional().openapi({
-          description: 'PostgreSQL data source configuration.',
-        }),
-        sourceConnectionProfile: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. Source connection profile resoource. Format: `projects/{project}/locations/{location}/connectionProfiles/{name}`',
-          }),
-      })
-      .openapi({ description: 'The configuration of the stream source.', required: [] }),
-  )
-  .openapi('SourceConfig')
-
-const StreamSchema = z
-  .object({
-    backfillAll: BackfillAllStrategySchema.exactOptional().openapi({
-      description:
-        'Automatically backfill objects included in the stream source configuration. Specific objects can be excluded.',
-    }),
-    backfillNone: BackfillNoneStrategySchema.exactOptional().openapi({
-      description: 'Do not automatically backfill any objects.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The creation time of the stream.', readOnly: true }),
-    customerManagedEncryptionKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Immutable. A reference to a KMS encryption key. If provided, it will be used to encrypt the data. If left blank, data will be encrypted using an internal Stream-specific encryption key provisioned through KMS.',
-      }),
-    destinationConfig: DestinationConfigSchema.exactOptional().openapi({
-      description: 'Required. Destination connection profile configuration.',
-    }),
-    displayName: z.string().exactOptional().openapi({ description: 'Required. Display name.' }),
-    errors: z
-      .array(ErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Output only. Errors on the Stream.', readOnly: true }),
-    labels: z.record(z.string(), z.string()).exactOptional().openapi({ description: 'Labels.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Output only. The stream's name.", readOnly: true }),
-    sourceConfig: SourceConfigSchema.exactOptional().openapi({
-      description: 'Required. Source connection profile configuration.',
-    }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'NOT_STARTED',
-        'RUNNING',
-        'PAUSED',
-        'MAINTENANCE',
-        'FAILED',
-        'FAILED_PERMANENTLY',
-        'STARTING',
-        'DRAINING',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The state of the stream.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The last update time of the stream.', readOnly: true }),
-  })
-  .openapi({
-    description: 'A resource representing streaming data from a source to a destination.',
-    required: [],
-  })
-  .openapi('Stream')
-
-const ListStreamsResponseSchema = z
+const ListStreamsResponseSchema: z.ZodType<ListStreamsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -1493,7 +1557,7 @@ const OperationMetadataSchema = z
   .openapi('OperationMetadata')
 
 const StartBackfillJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Request for manually initiating a backfill job for a specific stream object.',
   })
@@ -1512,7 +1576,7 @@ const StartBackfillJobResponseSchema = z
   .openapi('StartBackfillJobResponse')
 
 const StopBackfillJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Request for manually stopping a running backfill job for a specific stream object.',

@@ -35,8 +35,56 @@ const AttachmentSchema = z
   .openapi({ description: 'An attachment to a note.', required: [] })
   .openapi('Attachment')
 
+const ListItemSchema: z.ZodType<ListItemType> = z
+  .lazy(() =>
+    z
+      .object({
+        checked: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether this item has been checked off or not.' }),
+        childListItems: z
+          .array(ListItemSchema)
+          .exactOptional()
+          .openapi({
+            description:
+              'If set, list of list items nested under this list item. Only one level of nesting is allowed.',
+          }),
+        text: TextContentSchema.exactOptional().openapi({
+          description: 'The text of this item. Length must be less than 1,000 characters.',
+        }),
+      })
+      .openapi({ description: "A single list item in a note's list.", required: [] }),
+  )
+  .openapi('ListItem')
+
+const ListContentSchema = z
+  .object({
+    listItems: z
+      .array(ListItemSchema)
+      .exactOptional()
+      .openapi({
+        description: 'The items in the list. The number of items must be less than 1,000.',
+      }),
+  })
+  .openapi({ description: 'The list of items for a single list note.', required: [] })
+  .openapi('ListContent')
+
+const SectionSchema = z
+  .object({
+    list: ListContentSchema.exactOptional().openapi({
+      description: "Used if this section's content is a list.",
+    }),
+    text: TextContentSchema.exactOptional().openapi({
+      description:
+        "Used if this section's content is a block of text. The length of the text content must be less than 20,000 characters.",
+    }),
+  })
+  .openapi({ description: 'The content of the note.', required: [] })
+  .openapi('Section')
+
 const FamilySchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Describes a single Google Family.' })
   .openapi('Family')
 
@@ -96,120 +144,6 @@ const PermissionSchema = z
     required: [],
   })
   .openapi('Permission')
-
-const CreatePermissionRequestSchema = z
-  .object({
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The parent note where this permission will be created. Format: `notes/{note}`',
-      }),
-    permission: PermissionSchema.exactOptional().openapi({
-      description:
-        'Required. The permission to create. One of Permission.email, User.email or Group.email must be supplied.',
-    }),
-  })
-  .openapi({ description: 'The request to add a single permission on the note.', required: [] })
-  .openapi('CreatePermissionRequest')
-
-const BatchCreatePermissionsRequestSchema = z
-  .object({
-    requests: z
-      .array(CreatePermissionRequestSchema)
-      .exactOptional()
-      .openapi({ description: 'The request message specifying the resources to create.' }),
-  })
-  .openapi({
-    description:
-      'The request to add one or more permissions on the note. Currently, only the `WRITER` role may be specified. If adding a permission fails, then the entire request fails and no changes are made.',
-    required: [],
-  })
-  .openapi('BatchCreatePermissionsRequest')
-
-const BatchCreatePermissionsResponseSchema = z
-  .object({
-    permissions: z
-      .array(PermissionSchema)
-      .exactOptional()
-      .openapi({ description: 'Permissions created.' }),
-  })
-  .openapi({ description: 'The response for creating permissions on a note.', required: [] })
-  .openapi('BatchCreatePermissionsResponse')
-
-const BatchDeletePermissionsRequestSchema = z
-  .object({
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The names of the permissions to delete. Format: `notes/{note}/permissions/{permission}`',
-      }),
-  })
-  .openapi({
-    description:
-      "The request to remove one or more permissions from a note. A permission with the `OWNER` role can't be removed. If removing a permission fails, then the entire request fails and no changes are made. Returns a 400 bad request error if a specified permission does not exist on the note.",
-    required: [],
-  })
-  .openapi('BatchDeletePermissionsRequest')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const ListItemSchema: z.ZodType<ListItemType> = z
-  .lazy(() =>
-    z
-      .object({
-        checked: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether this item has been checked off or not.' }),
-        childListItems: z
-          .array(ListItemSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'If set, list of list items nested under this list item. Only one level of nesting is allowed.',
-          }),
-        text: TextContentSchema.exactOptional().openapi({
-          description: 'The text of this item. Length must be less than 1,000 characters.',
-        }),
-      })
-      .openapi({ description: "A single list item in a note's list.", required: [] }),
-  )
-  .openapi('ListItem')
-
-const ListContentSchema = z
-  .object({
-    listItems: z
-      .array(ListItemSchema)
-      .exactOptional()
-      .openapi({
-        description: 'The items in the list. The number of items must be less than 1,000.',
-      }),
-  })
-  .openapi({ description: 'The list of items for a single list note.', required: [] })
-  .openapi('ListContent')
-
-const SectionSchema = z
-  .object({
-    list: ListContentSchema.exactOptional().openapi({
-      description: "Used if this section's content is a list.",
-    }),
-    text: TextContentSchema.exactOptional().openapi({
-      description:
-        "Used if this section's content is a block of text. The length of the text content must be less than 20,000 characters.",
-    }),
-  })
-  .openapi({ description: 'The content of the note.', required: [] })
-  .openapi('Section')
 
 const NoteSchema = z
   .object({
@@ -271,7 +205,75 @@ const NoteSchema = z
   .openapi({ description: 'A single note.', required: [] })
   .openapi('Note')
 
-const ListNotesResponseSchema = z
+type ListNotesResponseType = { nextPageToken?: string; notes?: z.infer<typeof NoteSchema>[] }
+
+const CreatePermissionRequestSchema = z
+  .object({
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The parent note where this permission will be created. Format: `notes/{note}`',
+      }),
+    permission: PermissionSchema.exactOptional().openapi({
+      description:
+        'Required. The permission to create. One of Permission.email, User.email or Group.email must be supplied.',
+    }),
+  })
+  .openapi({ description: 'The request to add a single permission on the note.', required: [] })
+  .openapi('CreatePermissionRequest')
+
+const BatchCreatePermissionsRequestSchema = z
+  .object({
+    requests: z
+      .array(CreatePermissionRequestSchema)
+      .exactOptional()
+      .openapi({ description: 'The request message specifying the resources to create.' }),
+  })
+  .openapi({
+    description:
+      'The request to add one or more permissions on the note. Currently, only the `WRITER` role may be specified. If adding a permission fails, then the entire request fails and no changes are made.',
+    required: [],
+  })
+  .openapi('BatchCreatePermissionsRequest')
+
+const BatchCreatePermissionsResponseSchema = z
+  .object({
+    permissions: z
+      .array(PermissionSchema)
+      .exactOptional()
+      .openapi({ description: 'Permissions created.' }),
+  })
+  .openapi({ description: 'The response for creating permissions on a note.', required: [] })
+  .openapi('BatchCreatePermissionsResponse')
+
+const BatchDeletePermissionsRequestSchema = z
+  .object({
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The names of the permissions to delete. Format: `notes/{note}/permissions/{permission}`',
+      }),
+  })
+  .openapi({
+    description:
+      "The request to remove one or more permissions from a note. A permission with the `OWNER` role can't be removed. If removing a permission fails, then the entire request fails and no changes are made. Returns a 400 bad request error if a specified permission does not exist on the note.",
+    required: [],
+  })
+  .openapi('BatchDeletePermissionsRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const ListNotesResponseSchema: z.ZodType<ListNotesResponseType> = z
   .object({
     nextPageToken: z
       .string()

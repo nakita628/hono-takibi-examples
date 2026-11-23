@@ -751,6 +751,40 @@ const AuthorisationNotificationAdditionalDataSchema = z
           'The eligibility for PayPal Seller Protection for this payment.\n\nExample: Ineligible',
       }),
     paypalRisk: z.string().exactOptional().openapi({ description: 'Related to PayPal.' }),
+    'pix.endToEndId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique end-to-end identifier of the Pix transaction.' }),
+    'pix.originalAmountCurrency': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character ISO currency code of the original Pix transaction amount.',
+      }),
+    'pix.originalAmountValue': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original amount of the Pix transaction, in minor units.' }),
+    'pix.payer.bankName': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the Pix payer's bank." }),
+    'pix.payer.isbp': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.",
+      }),
+    'pix.payer.name': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full name of the Pix payer.' }),
+    'pix.payer.taxId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tax identification number (CPF or CNPJ) of the Pix payer.' }),
     platform: z.string().exactOptional(),
     realtimeAccountUpdaterStatus: z
       .string()
@@ -1744,6 +1778,40 @@ const CancellationAdditionalDataSchema = z
     merchantOrderReference: z.string().exactOptional(),
     paymentLinkId: z.string().exactOptional(),
     paymentMethodVariant: z.string().exactOptional(),
+    'pix.endToEndId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique end-to-end identifier of the Pix transaction.' }),
+    'pix.originalAmountCurrency': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character ISO currency code of the original Pix transaction amount.',
+      }),
+    'pix.originalAmountValue': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original amount of the Pix transaction, in minor units.' }),
+    'pix.payer.bankName': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the Pix payer's bank." }),
+    'pix.payer.isbp': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.",
+      }),
+    'pix.payer.name': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full name of the Pix payer.' }),
+    'pix.payer.taxId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tax identification number (CPF or CNPJ) of the Pix payer.' }),
     'riskdata.<name>': z
       .string()
       .exactOptional()
@@ -5237,13 +5305,8 @@ const RecurringContractNotificationAdditionalDataSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'Address Verification Service result raw.' }),
-    bankAccountNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The bank account number.' }),
     bankLocation: z.string().exactOptional().openapi({ description: 'The bank location.' }),
     bankLocationId: z.string().exactOptional().openapi({ description: 'The bank location ID.' }),
-    bankName: z.string().exactOptional().openapi({ description: 'The bank name.' }),
     bankVerificationResult: z
       .string()
       .exactOptional()
@@ -5252,7 +5315,6 @@ const RecurringContractNotificationAdditionalDataSchema = z
       .string()
       .exactOptional()
       .openapi({ description: 'The bank verification result raw.' }),
-    bic: z.string().exactOptional().openapi({ description: 'Business Identifier Code.' }),
     'billingAddress.city': z
       .string()
       .exactOptional()
@@ -5421,7 +5483,6 @@ const RecurringContractNotificationAdditionalDataSchema = z
       .exactOptional()
       .openapi({ description: 'Chargeback gross currency.' }),
     grossValue: z.string().exactOptional().openapi({ description: 'Chargeback gross value.' }),
-    iban: z.string().exactOptional().openapi({ description: 'International Bank Account Number.' }),
     'installments.value': z
       .string()
       .exactOptional()
@@ -5499,7 +5560,6 @@ const RecurringContractNotificationAdditionalDataSchema = z
       .exactOptional()
       .openapi({ description: 'Trans token related to Oracle Opera.' }),
     ownerCity: z.string().exactOptional().openapi({ description: 'Owner city.' }),
-    ownerName: z.string().exactOptional().openapi({ description: 'Owner name.' }),
     payULatamTrazabilityCode: z
       .string()
       .exactOptional()
@@ -6657,6 +6717,40 @@ const RefundWithDataAdditionalDataSchema = z
       }),
     paymentLinkId: z.string().exactOptional(),
     paymentMethodVariant: z.string().exactOptional(),
+    'pix.endToEndId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique end-to-end identifier of the Pix transaction.' }),
+    'pix.originalAmountCurrency': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The three-character ISO currency code of the original Pix transaction amount.',
+      }),
+    'pix.originalAmountValue': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The original amount of the Pix transaction, in minor units.' }),
+    'pix.payer.bankName': z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The name of the Pix payer's bank." }),
+    'pix.payer.isbp': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ISPB (Identificador do Sistema de Pagamentos Brasileiro) code of the Pix payer's bank.",
+      }),
+    'pix.payer.name': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The full name of the Pix payer.' }),
+    'pix.payer.taxId': z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The tax identification number (CPF or CNPJ) of the Pix payer.' }),
     refusalReasonRaw: z.string().exactOptional(),
     shopperCountry: z.string().exactOptional(),
     shopperIP: z.string().exactOptional(),

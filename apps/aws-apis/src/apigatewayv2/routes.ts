@@ -47,57 +47,32 @@ const IntegerWithLengthBetweenMinus1And86400Schema = z
 
 const CorsSchema = z
   .object({
-    AllowCredentials: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowCredentials' },
-          description:
-            'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    AllowHeaders: CorsHeaderListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowHeaders' },
-          description: 'Represents a collection of allowed headers. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    AllowMethods: CorsMethodListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowMethods' },
-          description:
-            'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    AllowOrigins: CorsOriginListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'allowOrigins' },
-          description: 'Represents a collection of allowed origins. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ExposeHeaders: CorsHeaderListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'exposeHeaders' },
-          description: 'Represents a collection of exposed headers. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxAge' },
-          description:
-            'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    AllowCredentials: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'allowCredentials' },
+      description:
+        'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
+    }),
+    AllowHeaders: CorsHeaderListSchema.exactOptional().openapi({
+      xml: { name: 'allowHeaders' },
+      description: 'Represents a collection of allowed headers. Supported only for HTTP APIs.',
+    }),
+    AllowMethods: CorsMethodListSchema.exactOptional().openapi({
+      xml: { name: 'allowMethods' },
+      description: 'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
+    }),
+    AllowOrigins: CorsOriginListSchema.exactOptional().openapi({
+      xml: { name: 'allowOrigins' },
+      description: 'Represents a collection of allowed origins. Supported only for HTTP APIs.',
+    }),
+    ExposeHeaders: CorsHeaderListSchema.exactOptional().openapi({
+      xml: { name: 'exposeHeaders' },
+      description: 'Represents a collection of exposed headers. Supported only for HTTP APIs.',
+    }),
+    MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.exactOptional().openapi({
+      xml: { name: 'maxAge' },
+      description:
+        'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({
     description:
@@ -137,119 +112,75 @@ const TagsSchema = z
 
 const CreateApiResponseSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.exactOptional().openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApiResponse')
@@ -272,20 +203,22 @@ const SelectionKeySchema = z
 
 const CreateApiMappingResponseSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ).exactOptional(),
-    ApiMappingId: IdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'apiMappingId' }, description: 'The API mapping identifier.' }),
-    ).exactOptional(),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ).exactOptional(),
+    ApiId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiId' },
+      description: 'The API identifier.',
+    }),
+    ApiMappingId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingId' },
+      description: 'The API mapping identifier.',
+    }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateApiMappingResponse')
@@ -325,24 +258,16 @@ const IdentitySourceListSchema = z
 
 const JWTConfigurationSchema = z
   .object({
-    Audience: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'audience' },
-          description:
-            'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Issuer: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'issuer' },
-          description:
-            'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    Audience: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'audience' },
+      description:
+        'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
+    }),
+    Issuer: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'issuer' },
+      description:
+        'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({
     description:
@@ -353,92 +278,58 @@ const JWTConfigurationSchema = z
 
 const CreateAuthorizerResponseSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'authorizerId' }, description: 'The authorizer identifier.' }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ).exactOptional(),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ).exactOptional(),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'The validation expression does not apply to the REQUEST authorizer.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ).exactOptional(),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description: 'The authorizer identifier.',
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.exactOptional().openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'The validation expression does not apply to the REQUEST authorizer.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAuthorizerResponse')
@@ -450,54 +341,30 @@ const DeploymentStatusSchema = z
 
 const CreateDeploymentResponseSchema = z
   .object({
-    AutoDeployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeployed' },
-          description: 'Specifies whether a deployment was automatically released.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The date and time when the Deployment resource was created.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description: 'The identifier for the deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: DeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatus' },
-          description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
-        }),
-    ).exactOptional(),
-    DeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatusMessage' },
-          description: 'May contain additional feedback on the status of an API deployment.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment.',
-        }),
-    ).exactOptional(),
+    AutoDeployed: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeployed' },
+      description: 'Specifies whether a deployment was automatically released.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The date and time when the Deployment resource was created.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description: 'The identifier for the deployment.',
+    }),
+    DeploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatus' },
+      description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
+    }),
+    DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatusMessage' },
+      description: 'May contain additional feedback on the status of an API deployment.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDeploymentResponse')
@@ -530,88 +397,53 @@ const SecurityPolicySchema = z
 
 const DomainNameConfigurationSchema = z
   .object({
-    ApiGatewayDomainName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayDomainName' },
-          description: 'A domain name for the API.',
-        }),
-    ).exactOptional(),
-    CertificateArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'certificateArn' },
-          description:
-            'An AWS-managed certificate that will be used by the edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
-        }),
-    ).exactOptional(),
-    CertificateName: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'certificateName' },
-          description:
-            'The user-friendly name of the certificate that will be used by the edge-optimized endpoint for this domain name.',
-        }),
-    ).exactOptional(),
-    CertificateUploadDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'certificateUploadDate' },
-          description:
-            'The timestamp when the certificate that was used by edge-optimized endpoint for this domain name was uploaded.',
-        }),
-    ).exactOptional(),
-    DomainNameStatus: DomainNameStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameStatus' },
-          description:
-            'The status of the domain name migration. The valid values are AVAILABLE, UPDATING, PENDING_CERTIFICATE_REIMPORT, and PENDING_OWNERSHIP_VERIFICATION. If the status is UPDATING, the domain cannot be modified further until the existing operation is complete. If it is AVAILABLE, the domain can be updated.',
-        }),
-    ).exactOptional(),
-    DomainNameStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameStatusMessage' },
-          description:
-            'An optional text message containing detailed information about status of the domain name migration.',
-        }),
-    ).exactOptional(),
-    EndpointType: EndpointTypeSchema.and(
-      z.any().openapi({ xml: { name: 'endpointType' }, description: 'The endpoint type.' }),
-    ).exactOptional(),
-    HostedZoneId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'hostedZoneId' },
-          description: 'The Amazon Route 53 Hosted Zone ID of the endpoint.',
-        }),
-    ).exactOptional(),
-    SecurityPolicy: SecurityPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityPolicy' },
-          description:
-            'The Transport Layer Security (TLS) version of the security policy for this domain name. The valid values are TLS_1_0 and TLS_1_2.',
-        }),
-    ).exactOptional(),
-    OwnershipVerificationCertificateArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ownershipVerificationCertificateArn' },
-          description:
-            'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn',
-        }),
-    ).exactOptional(),
+    ApiGatewayDomainName: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayDomainName' },
+      description: 'A domain name for the API.',
+    }),
+    CertificateArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'certificateArn' },
+      description:
+        'An AWS-managed certificate that will be used by the edge-optimized endpoint for this domain name. AWS Certificate Manager is the only supported source.',
+    }),
+    CertificateName: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'certificateName' },
+      description:
+        'The user-friendly name of the certificate that will be used by the edge-optimized endpoint for this domain name.',
+    }),
+    CertificateUploadDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'certificateUploadDate' },
+      description:
+        'The timestamp when the certificate that was used by edge-optimized endpoint for this domain name was uploaded.',
+    }),
+    DomainNameStatus: DomainNameStatusSchema.exactOptional().openapi({
+      xml: { name: 'domainNameStatus' },
+      description:
+        'The status of the domain name migration. The valid values are AVAILABLE, UPDATING, PENDING_CERTIFICATE_REIMPORT, and PENDING_OWNERSHIP_VERIFICATION. If the status is UPDATING, the domain cannot be modified further until the existing operation is complete. If it is AVAILABLE, the domain can be updated.',
+    }),
+    DomainNameStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainNameStatusMessage' },
+      description:
+        'An optional text message containing detailed information about status of the domain name migration.',
+    }),
+    EndpointType: EndpointTypeSchema.exactOptional().openapi({
+      xml: { name: 'endpointType' },
+      description: 'The endpoint type.',
+    }),
+    HostedZoneId: StringSchema.exactOptional().openapi({
+      xml: { name: 'hostedZoneId' },
+      description: 'The Amazon Route 53 Hosted Zone ID of the endpoint.',
+    }),
+    SecurityPolicy: SecurityPolicySchema.exactOptional().openapi({
+      xml: { name: 'securityPolicy' },
+      description:
+        'The Transport Layer Security (TLS) version of the security policy for this domain name. The valid values are TLS_1_0 and TLS_1_2.',
+    }),
+    OwnershipVerificationCertificateArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'ownershipVerificationCertificateArn' },
+      description:
+        'The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn',
+    }),
   })
   .openapi({ description: 'The domain name configuration.', required: [] })
   .openapi('DomainNameConfiguration')
@@ -623,79 +455,47 @@ const DomainNameConfigurationsSchema = z
 
 const MutualTlsAuthenticationSchema = z
   .object({
-    TruststoreUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'truststoreUri' },
-          description:
-            'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-        }),
-    ).exactOptional(),
-    TruststoreVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'truststoreVersion' },
-          description:
-            'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
-        }),
-    ).exactOptional(),
-    TruststoreWarnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'truststoreWarnings' },
-          description:
-            'A list of warnings that API Gateway returns while processing your truststore. Invalid certificates produce warnings. Mutual TLS is still enabled, but some clients might not be able to access your API. To resolve warnings, upload a new truststore to S3, and then update you domain name to use the new version.',
-        }),
-    ).exactOptional(),
+    TruststoreUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'truststoreUri' },
+      description:
+        'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+    }),
+    TruststoreVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'truststoreVersion' },
+      description:
+        'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
+    }),
+    TruststoreWarnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'truststoreWarnings' },
+      description:
+        'A list of warnings that API Gateway returns while processing your truststore. Invalid certificates produce warnings. Mutual TLS is still enabled, but some clients might not be able to access your API. To resolve warnings, upload a new truststore to S3, and then update you domain name to use the new version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MutualTlsAuthentication')
 
 const CreateDomainNameResponseSchema = z
   .object({
-    ApiMappingSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiMappingSelectionExpression' },
-          description: 'The API mapping selection expression.',
-        }),
-    ).exactOptional(),
-    DomainName: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The name of the DomainName resource.',
-        }),
-    ).exactOptional(),
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The collection of tags associated with a domain name.',
-        }),
-    ).exactOptional(),
+    ApiMappingSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingSelectionExpression' },
+      description: 'The API mapping selection expression.',
+    }),
+    DomainName: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The name of the DomainName resource.',
+    }),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags associated with a domain name.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDomainNameResponse')
@@ -771,15 +571,11 @@ const IntegerWithLengthBetween50And30000Schema = z
 
 const TlsConfigSchema = z
   .object({
-    ServerNameToVerify: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serverNameToVerify' },
-          description:
-            "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
-        }),
-    ).exactOptional(),
+    ServerNameToVerify: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+      xml: { name: 'serverNameToVerify' },
+      description:
+        "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
+    }),
   })
   .openapi({
     description:
@@ -790,240 +586,136 @@ const TlsConfigSchema = z
 
 const CreateIntegrationResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
-        }),
-    ).exactOptional(),
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Represents the description of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationId' },
-          description: 'Represents the identifier of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseSelectionExpression' },
-          description:
-            'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
+    }),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Represents the description of an integration.',
+    }),
+    IntegrationId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationId' },
+      description: 'Represents the identifier of an integration.',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseSelectionExpression' },
+      description:
+        'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration. Supported only for WebSocket APIs.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateIntegrationResult')
 
 const CreateIntegrationResponseResponseSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseId' },
-          description: 'The integration response ID.',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expressions for the integration response.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseId' },
+      description: 'The integration response ID.',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expressions for the integration response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateIntegrationResponseResponse')
@@ -1035,39 +727,27 @@ const StringWithLengthBetween1And256Schema = z
 
 const CreateModelResponseSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    ModelId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'modelId' }, description: 'The model identifier.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the model. Must be alphanumeric.',
-        }),
-    ).exactOptional(),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    ModelId: IdSchema.exactOptional().openapi({
+      xml: { name: 'modelId' },
+      description: 'The model identifier.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model. Must be alphanumeric.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.exactOptional().openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateModelResponse')
@@ -1095,14 +775,10 @@ const RouteModelsSchema = z
 
 const ParameterConstraintsSchema = z
   .object({
-    Required: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'required' },
-          description: 'Whether or not the parameter is required.',
-        }),
-    ).exactOptional(),
+    Required: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'required' },
+      description: 'Whether or not the parameter is required.',
+    }),
   })
   .openapi({
     description:
@@ -1118,172 +794,107 @@ const RouteParametersSchema = z
 
 const CreateRouteResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
-        }),
-    ).exactOptional(),
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description:
-            'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'routeId' }, description: 'The route ID.' }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ).exactOptional(),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
+    }),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description:
+        'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeId' },
+      description: 'The route ID.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRouteResult')
 
 const CreateRouteResponseResponseSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'Represents the response models of a route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'Represents the response parameters of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseId' },
-          description: 'Represents the identifier of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseKey' },
-          description: 'Represents the route response key of a route response.',
-        }),
-    ).exactOptional(),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'Represents the response models of a route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'Represents the response parameters of a route response.',
+    }),
+    RouteResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseId' },
+      description: 'Represents the identifier of a route response.',
+    }),
+    RouteResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'Represents the route response key of a route response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRouteResponseResponse')
 
 const AccessLogSettingsSchema = z
   .object({
-    DestinationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'destinationArn' },
-          description: 'The ARN of the CloudWatch Logs log group to receive access logs.',
-        }),
-    ).exactOptional(),
-    Format: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'format' },
-          description:
-            'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
-        }),
-    ).exactOptional(),
+    DestinationArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'destinationArn' },
+      description: 'The ARN of the CloudWatch Logs log group to receive access logs.',
+    }),
+    Format: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'format' },
+      description:
+        'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
+    }),
   })
   .openapi({ description: 'Settings for logging access in a stage.', required: [] })
   .openapi('AccessLogSettings')
@@ -1299,48 +910,28 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const RouteSettingsSchema = z
   .object({
-    DataTraceEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'dataTraceEnabled' },
-          description:
-            'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DetailedMetricsEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'detailedMetricsEnabled' },
-          description: 'Specifies whether detailed metrics are enabled.',
-        }),
-    ).exactOptional(),
-    LoggingLevel: LoggingLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'loggingLevel' },
-          description:
-            'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ThrottlingBurstLimit: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'throttlingBurstLimit' },
-          description: 'Specifies the throttling burst limit.',
-        }),
-    ).exactOptional(),
-    ThrottlingRateLimit: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'throttlingRateLimit' },
-          description: 'Specifies the throttling rate limit.',
-        }),
-    ).exactOptional(),
+    DataTraceEnabled: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'dataTraceEnabled' },
+      description:
+        'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+    }),
+    DetailedMetricsEnabled: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'detailedMetricsEnabled' },
+      description: 'Specifies whether detailed metrics are enabled.',
+    }),
+    LoggingLevel: LoggingLevelSchema.exactOptional().openapi({
+      xml: { name: 'loggingLevel' },
+      description:
+        'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+    }),
+    ThrottlingBurstLimit: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'throttlingBurstLimit' },
+      description: 'Specifies the throttling burst limit.',
+    }),
+    ThrottlingRateLimit: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'throttlingRateLimit' },
+      description: 'Specifies the throttling rate limit.',
+    }),
   })
   .openapi({ description: 'Represents a collection of route settings.', required: [] })
   .openapi('RouteSettings')
@@ -1362,117 +953,68 @@ const StageVariablesMapSchema = z
 
 const CreateStageResponseSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description:
-            'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the stage was created.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'Default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description:
-            "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the stage.' }),
-    ).exactOptional(),
-    LastDeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastDeploymentStatusMessage' },
-          description:
-            'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
-        }),
-    ).exactOptional(),
-    LastUpdatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastUpdatedDate' },
-          description: 'The timestamp when the stage was last updated.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSettings' },
-          description: 'Route settings for the stage, by routeKey.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stageName' }, description: 'The name of the stage.' }),
-    ).exactOptional(),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description:
+        'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the stage was created.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'Default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description:
+        "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the stage.',
+    }),
+    LastDeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'lastDeploymentStatusMessage' },
+      description:
+        'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
+    }),
+    LastUpdatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'lastUpdatedDate' },
+      description: 'The timestamp when the stage was last updated.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage, by routeKey.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStageResponse')
@@ -1499,62 +1041,47 @@ const VpcLinkVersionSchema = z
 
 const CreateVpcLinkResponseSchema = z
   .object({
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the VPC link was created.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'A list of security group IDs for the VPC link.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description: 'A list of subnet IDs to include in the VPC link.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags for the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'vpcLinkId' }, description: 'The ID of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatus: VpcLinkStatusSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkStatus' }, description: 'The status of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcLinkStatusMessage' },
-          description: 'A message summarizing the cause of the status of the VPC link.',
-        }),
-    ).exactOptional(),
-    VpcLinkVersion: VpcLinkVersionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkVersion' }, description: 'The version of the VPC link.' }),
-    ).exactOptional(),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the VPC link was created.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.exactOptional().openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'A list of security group IDs for the VPC link.',
+    }),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description: 'A list of subnet IDs to include in the VPC link.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags for the VPC link.',
+    }),
+    VpcLinkId: IdSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkId' },
+      description: 'The ID of the VPC link.',
+    }),
+    VpcLinkStatus: VpcLinkStatusSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatus' },
+      description: 'The status of the VPC link.',
+    }),
+    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatusMessage' },
+      description: 'A message summarizing the cause of the status of the VPC link.',
+    }),
+    VpcLinkVersion: VpcLinkVersionSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkVersion' },
+      description: 'The version of the VPC link.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVpcLinkResponse')
 
-const DeleteVpcLinkResponseSchema = z.object({}).openapi('DeleteVpcLinkResponse')
+const DeleteVpcLinkResponseSchema = z.looseObject({}).openapi('DeleteVpcLinkResponse')
 
 const ExportedApiSchema = z
   .string()
@@ -1571,159 +1098,116 @@ const ExportApiResponseSchema = z
 
 const GetApiResponseSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.exactOptional().openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApiResponse')
 
 const GetApiMappingResponseSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ).exactOptional(),
-    ApiMappingId: IdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'apiMappingId' }, description: 'The API mapping identifier.' }),
-    ).exactOptional(),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ).exactOptional(),
+    ApiId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiId' },
+      description: 'The API identifier.',
+    }),
+    ApiMappingId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingId' },
+      description: 'The API mapping identifier.',
+    }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApiMappingResponse')
 
 const ApiMappingSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ),
-    ApiMappingId: IdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'apiMappingId' }, description: 'The API mapping identifier.' }),
-    ).exactOptional(),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ),
+    ApiId: IdSchema.openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
+    ApiMappingId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingId' },
+      description: 'The API mapping identifier.',
+    }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({ required: ['Stage', 'ApiId'], description: 'Represents an API mapping.' })
   .openapi('ApiMapping')
@@ -1740,139 +1224,90 @@ const NextTokenSchema = z
 
 const GetApiMappingsResponseSchema = z
   .object({
-    Items: ListOfApiMappingSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfApiMappingSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApiMappingsResponse')
 
 const ApiSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({
     required: ['RouteSelectionExpression', 'Name', 'ProtocolType'],
@@ -1884,204 +1319,131 @@ const ListOfApiSchema = z.array(ApiSchema).openapi('ListOfApi')
 
 const GetApisResponseSchema = z
   .object({
-    Items: ListOfApiSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfApiSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetApisResponse')
 
 const GetAuthorizerResponseSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'authorizerId' }, description: 'The authorizer identifier.' }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ).exactOptional(),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ).exactOptional(),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'The validation expression does not apply to the REQUEST authorizer.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ).exactOptional(),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description: 'The authorizer identifier.',
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.exactOptional().openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'The validation expression does not apply to the REQUEST authorizer.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAuthorizerResponse')
 
 const AuthorizerSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'authorizerId' }, description: 'The authorizer identifier.' }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ).exactOptional(),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ).exactOptional(),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'The validation expression does not apply to the REQUEST authorizer.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description: 'The authorizer identifier.',
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.exactOptional().openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'The validation expression does not apply to the REQUEST authorizer.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Represents an authorizer.' })
   .openapi('Authorizer')
@@ -2090,128 +1452,75 @@ const ListOfAuthorizerSchema = z.array(AuthorizerSchema).openapi('ListOfAuthoriz
 
 const GetAuthorizersResponseSchema = z
   .object({
-    Items: ListOfAuthorizerSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfAuthorizerSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAuthorizersResponse')
 
 const GetDeploymentResponseSchema = z
   .object({
-    AutoDeployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeployed' },
-          description: 'Specifies whether a deployment was automatically released.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The date and time when the Deployment resource was created.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description: 'The identifier for the deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: DeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatus' },
-          description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
-        }),
-    ).exactOptional(),
-    DeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatusMessage' },
-          description: 'May contain additional feedback on the status of an API deployment.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment.',
-        }),
-    ).exactOptional(),
+    AutoDeployed: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeployed' },
+      description: 'Specifies whether a deployment was automatically released.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The date and time when the Deployment resource was created.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description: 'The identifier for the deployment.',
+    }),
+    DeploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatus' },
+      description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
+    }),
+    DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatusMessage' },
+      description: 'May contain additional feedback on the status of an API deployment.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentResponse')
 
 const DeploymentSchema = z
   .object({
-    AutoDeployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeployed' },
-          description: 'Specifies whether a deployment was automatically released.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The date and time when the Deployment resource was created.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description: 'The identifier for the deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: DeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatus' },
-          description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
-        }),
-    ).exactOptional(),
-    DeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatusMessage' },
-          description: 'May contain additional feedback on the status of an API deployment.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment.',
-        }),
-    ).exactOptional(),
+    AutoDeployed: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeployed' },
+      description: 'Specifies whether a deployment was automatically released.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The date and time when the Deployment resource was created.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description: 'The identifier for the deployment.',
+    }),
+    DeploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatus' },
+      description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
+    }),
+    DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatusMessage' },
+      description: 'May contain additional feedback on the status of an API deployment.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment.',
+    }),
   })
   .openapi({
     description:
@@ -2224,112 +1533,67 @@ const ListOfDeploymentSchema = z.array(DeploymentSchema).openapi('ListOfDeployme
 
 const GetDeploymentsResponseSchema = z
   .object({
-    Items: ListOfDeploymentSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfDeploymentSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeploymentsResponse')
 
 const GetDomainNameResponseSchema = z
   .object({
-    ApiMappingSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiMappingSelectionExpression' },
-          description: 'The API mapping selection expression.',
-        }),
-    ).exactOptional(),
-    DomainName: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The name of the DomainName resource.',
-        }),
-    ).exactOptional(),
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The collection of tags associated with a domain name.',
-        }),
-    ).exactOptional(),
+    ApiMappingSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingSelectionExpression' },
+      description: 'The API mapping selection expression.',
+    }),
+    DomainName: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The name of the DomainName resource.',
+    }),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags associated with a domain name.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDomainNameResponse')
 
 const DomainNameSchema = z
   .object({
-    ApiMappingSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiMappingSelectionExpression' },
-          description: 'The API mapping selection expression.',
-        }),
-    ).exactOptional(),
-    DomainName: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The name of the DomainName resource.',
-        }),
-    ),
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The collection of tags associated with a domain name.',
-        }),
-    ).exactOptional(),
+    ApiMappingSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingSelectionExpression' },
+      description: 'The API mapping selection expression.',
+    }),
+    DomainName: StringWithLengthBetween1And512Schema.openapi({
+      xml: { name: 'domainName' },
+      description: 'The name of the DomainName resource.',
+    }),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags associated with a domain name.',
+    }),
   })
   .openapi({ required: ['DomainName'], description: 'Represents a domain name.' })
   .openapi('DomainName')
@@ -2338,317 +1602,184 @@ const ListOfDomainNameSchema = z.array(DomainNameSchema).openapi('ListOfDomainNa
 
 const GetDomainNamesResponseSchema = z
   .object({
-    Items: ListOfDomainNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfDomainNameSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDomainNamesResponse')
 
 const GetIntegrationResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
-        }),
-    ).exactOptional(),
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Represents the description of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationId' },
-          description: 'Represents the identifier of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseSelectionExpression' },
-          description:
-            'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
+    }),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Represents the description of an integration.',
+    }),
+    IntegrationId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationId' },
+      description: 'Represents the identifier of an integration.',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseSelectionExpression' },
+      description:
+        'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration. Supported only for WebSocket APIs.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIntegrationResult')
 
 const GetIntegrationResponseResponseSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseId' },
-          description: 'The integration response ID.',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expressions for the integration response.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseId' },
+      description: 'The integration response ID.',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expressions for the integration response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIntegrationResponseResponse')
 
 const IntegrationResponseSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseId' },
-          description: 'The integration response ID.',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expressions for the integration response.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseId' },
+      description: 'The integration response ID.',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expressions for the integration response.',
+    }),
   })
   .openapi({
     required: ['IntegrationResponseKey'],
@@ -2662,203 +1793,118 @@ const ListOfIntegrationResponseSchema = z
 
 const GetIntegrationResponsesResponseSchema = z
   .object({
-    Items: ListOfIntegrationResponseSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfIntegrationResponseSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIntegrationResponsesResponse')
 
 const IntegrationSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
-        }),
-    ).exactOptional(),
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Represents the description of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationId' },
-          description: 'Represents the identifier of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseSelectionExpression' },
-          description:
-            'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
+    }),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Represents the description of an integration.',
+    }),
+    IntegrationId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationId' },
+      description: 'Represents the identifier of an integration.',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseSelectionExpression' },
+      description:
+        'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration. Supported only for WebSocket APIs.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ description: 'Represents an integration.', required: [] })
   .openapi('Integration')
@@ -2867,107 +1913,79 @@ const ListOfIntegrationSchema = z.array(IntegrationSchema).openapi('ListOfIntegr
 
 const GetIntegrationsResponseSchema = z
   .object({
-    Items: ListOfIntegrationSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfIntegrationSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIntegrationsResponse')
 
 const GetModelResponseSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    ModelId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'modelId' }, description: 'The model identifier.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the model. Must be alphanumeric.',
-        }),
-    ).exactOptional(),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    ModelId: IdSchema.exactOptional().openapi({
+      xml: { name: 'modelId' },
+      description: 'The model identifier.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model. Must be alphanumeric.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.exactOptional().openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetModelResponse')
 
 const GetModelTemplateResponseSchema = z
   .object({
-    Value: StringSchema.and(
-      z.any().openapi({ xml: { name: 'value' }, description: 'The template value.' }),
-    ).exactOptional(),
+    Value: StringSchema.exactOptional().openapi({
+      xml: { name: 'value' },
+      description: 'The template value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetModelTemplateResponse')
 
 const ModelSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    ModelId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'modelId' }, description: 'The model identifier.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the model. Must be alphanumeric.',
-        }),
-    ),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    ModelId: IdSchema.exactOptional().openapi({
+      xml: { name: 'modelId' },
+      description: 'The model identifier.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model. Must be alphanumeric.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.exactOptional().openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -2980,216 +1998,134 @@ const ListOfModelSchema = z.array(ModelSchema).openapi('ListOfModel')
 
 const GetModelsResponseSchema = z
   .object({
-    Items: ListOfModelSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfModelSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetModelsResponse')
 
 const GetRouteResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
-        }),
-    ).exactOptional(),
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description:
-            'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'routeId' }, description: 'The route ID.' }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ).exactOptional(),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
+    }),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description:
+        'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeId' },
+      description: 'The route ID.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRouteResult')
 
 const GetRouteResponseResponseSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'Represents the response models of a route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'Represents the response parameters of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseId' },
-          description: 'Represents the identifier of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseKey' },
-          description: 'Represents the route response key of a route response.',
-        }),
-    ).exactOptional(),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'Represents the response models of a route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'Represents the response parameters of a route response.',
+    }),
+    RouteResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseId' },
+      description: 'Represents the identifier of a route response.',
+    }),
+    RouteResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'Represents the route response key of a route response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRouteResponseResponse')
 
 const RouteResponseSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'Represents the response models of a route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'Represents the response parameters of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseId' },
-          description: 'Represents the identifier of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseKey' },
-          description: 'Represents the route response key of a route response.',
-        }),
-    ),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'Represents the response models of a route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'Represents the response parameters of a route response.',
+    }),
+    RouteResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseId' },
+      description: 'Represents the identifier of a route response.',
+    }),
+    RouteResponseKey: SelectionKeySchema.openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'Represents the route response key of a route response.',
+    }),
   })
   .openapi({ required: ['RouteResponseKey'], description: 'Represents a route response.' })
   .openapi('RouteResponse')
@@ -3198,122 +2134,80 @@ const ListOfRouteResponseSchema = z.array(RouteResponseSchema).openapi('ListOfRo
 
 const GetRouteResponsesResponseSchema = z
   .object({
-    Items: ListOfRouteResponseSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfRouteResponseSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRouteResponsesResponse')
 
 const RouteSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
-        }),
-    ).exactOptional(),
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description:
-            'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'routeId' }, description: 'The route ID.' }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
+    }),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description:
+        'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeId' },
+      description: 'The route ID.',
+    }),
+    RouteKey: SelectionKeySchema.openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({ required: ['RouteKey'], description: 'Represents a route.' })
   .openapi('Route')
@@ -3322,254 +2216,151 @@ const ListOfRouteSchema = z.array(RouteSchema).openapi('ListOfRoute')
 
 const GetRoutesResponseSchema = z
   .object({
-    Items: ListOfRouteSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfRouteSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRoutesResponse')
 
 const GetStageResponseSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description:
-            'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the stage was created.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'Default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description:
-            "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the stage.' }),
-    ).exactOptional(),
-    LastDeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastDeploymentStatusMessage' },
-          description:
-            'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
-        }),
-    ).exactOptional(),
-    LastUpdatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastUpdatedDate' },
-          description: 'The timestamp when the stage was last updated.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSettings' },
-          description: 'Route settings for the stage, by routeKey.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stageName' }, description: 'The name of the stage.' }),
-    ).exactOptional(),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description:
+        'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the stage was created.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'Default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description:
+        "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the stage.',
+    }),
+    LastDeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'lastDeploymentStatusMessage' },
+      description:
+        'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
+    }),
+    LastUpdatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'lastUpdatedDate' },
+      description: 'The timestamp when the stage was last updated.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage, by routeKey.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStageResponse')
 
 const StageSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description:
-            'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the stage was created.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'Default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description:
-            "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the stage.' }),
-    ).exactOptional(),
-    LastDeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastDeploymentStatusMessage' },
-          description:
-            'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
-        }),
-    ).exactOptional(),
-    LastUpdatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastUpdatedDate' },
-          description: 'The timestamp when the stage was last updated.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSettings' },
-          description: 'Route settings for the stage, by routeKey.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stageName' }, description: 'The name of the stage.' }),
-    ),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description:
+        'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the stage was created.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'Default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description:
+        "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the stage.',
+    }),
+    LastDeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'lastDeploymentStatusMessage' },
+      description:
+        'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
+    }),
+    LastUpdatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'lastUpdatedDate' },
+      description: 'The timestamp when the stage was last updated.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage, by routeKey.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({ required: ['StageName'], description: 'Represents an API stage.' })
   .openapi('Stage')
@@ -3578,139 +2369,104 @@ const ListOfStageSchema = z.array(StageSchema).openapi('ListOfStage')
 
 const GetStagesResponseSchema = z
   .object({
-    Items: ListOfStageSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'items' }, description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfStageSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStagesResponse')
 
 const GetTagsResponseSchema = z
-  .object({ Tags: TagsSchema.and(z.any().openapi({ xml: { name: 'tags' } })).exactOptional() })
+  .object({ Tags: TagsSchema.exactOptional().openapi({ xml: { name: 'tags' } }) })
   .openapi({ required: [] })
   .openapi('GetTagsResponse')
 
 const GetVpcLinkResponseSchema = z
   .object({
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the VPC link was created.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'A list of security group IDs for the VPC link.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description: 'A list of subnet IDs to include in the VPC link.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags for the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'vpcLinkId' }, description: 'The ID of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatus: VpcLinkStatusSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkStatus' }, description: 'The status of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcLinkStatusMessage' },
-          description: 'A message summarizing the cause of the status of the VPC link.',
-        }),
-    ).exactOptional(),
-    VpcLinkVersion: VpcLinkVersionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkVersion' }, description: 'The version of the VPC link.' }),
-    ).exactOptional(),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the VPC link was created.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.exactOptional().openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'A list of security group IDs for the VPC link.',
+    }),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description: 'A list of subnet IDs to include in the VPC link.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags for the VPC link.',
+    }),
+    VpcLinkId: IdSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkId' },
+      description: 'The ID of the VPC link.',
+    }),
+    VpcLinkStatus: VpcLinkStatusSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatus' },
+      description: 'The status of the VPC link.',
+    }),
+    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatusMessage' },
+      description: 'A message summarizing the cause of the status of the VPC link.',
+    }),
+    VpcLinkVersion: VpcLinkVersionSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkVersion' },
+      description: 'The version of the VPC link.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVpcLinkResponse')
 
 const VpcLinkSchema = z
   .object({
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the VPC link was created.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'A list of security group IDs for the VPC link.',
-        }),
-    ),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description: 'A list of subnet IDs to include in the VPC link.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags for the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'vpcLinkId' }, description: 'The ID of the VPC link.' }),
-    ),
-    VpcLinkStatus: VpcLinkStatusSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkStatus' }, description: 'The status of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcLinkStatusMessage' },
-          description: 'A message summarizing the cause of the status of the VPC link.',
-        }),
-    ).exactOptional(),
-    VpcLinkVersion: VpcLinkVersionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkVersion' }, description: 'The version of the VPC link.' }),
-    ).exactOptional(),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the VPC link was created.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'A list of security group IDs for the VPC link.',
+    }),
+    SubnetIds: SubnetIdListSchema.openapi({
+      xml: { name: 'subnetIds' },
+      description: 'A list of subnet IDs to include in the VPC link.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags for the VPC link.',
+    }),
+    VpcLinkId: IdSchema.openapi({
+      xml: { name: 'vpcLinkId' },
+      description: 'The ID of the VPC link.',
+    }),
+    VpcLinkStatus: VpcLinkStatusSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatus' },
+      description: 'The status of the VPC link.',
+    }),
+    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatusMessage' },
+      description: 'A message summarizing the cause of the status of the VPC link.',
+    }),
+    VpcLinkVersion: VpcLinkVersionSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkVersion' },
+      description: 'The version of the VPC link.',
+    }),
   })
   .openapi({
     required: ['VpcLinkId', 'SecurityGroupIds', 'SubnetIds', 'Name'],
@@ -3722,1206 +2478,758 @@ const ListOfVpcLinkSchema = z.array(VpcLinkSchema).openapi('ListOfVpcLink')
 
 const GetVpcLinksResponseSchema = z
   .object({
-    Items: ListOfVpcLinkSchema.and(
-      z.any().openapi({ xml: { name: 'items' }, description: 'A collection of VPC links.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description:
-            'The next page of elements from this collection. Not valid for the last element of the collection.',
-        }),
-    ).exactOptional(),
+    Items: ListOfVpcLinkSchema.exactOptional().openapi({
+      xml: { name: 'items' },
+      description: 'A collection of VPC links.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description:
+        'The next page of elements from this collection. Not valid for the last element of the collection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVpcLinksResponse')
 
 const ImportApiResponseSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.exactOptional().openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportApiResponse')
 
 const ReimportApiResponseSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.exactOptional().openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ReimportApiResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const UpdateApiResponseSchema = z
   .object({
-    ApiEndpoint: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiEndpoint' },
-          description:
-            'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
-        }),
-    ).exactOptional(),
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
-    ).exactOptional(),
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the API was created.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    ImportInfo: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'importInfo' },
-          description:
-            'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'A collection of tags associated with the API.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
-    Warnings: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'warnings' },
-          description:
-            'The warning messages reported when failonwarnings is turned on during API import.',
-        }),
-    ).exactOptional(),
+    ApiEndpoint: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiEndpoint' },
+      description:
+        'The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com. The stage name is typically appended to this URI to form a complete path to a deployed API stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an API is managed by API Gateway. You can't update or delete a managed API by using API Gateway. A managed API can be deleted only through the tooling or service that created it.",
+    }),
+    ApiId: IdSchema.exactOptional().openapi({ xml: { name: 'apiId' }, description: 'The API ID.' }),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the API was created.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    ImportInfo: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'importInfo' },
+      description:
+        'The validation information during API import. This may include particular properties of your OpenAPI definition which are ignored during import. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.exactOptional().openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A collection of tags associated with the API.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
+    Warnings: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'warnings' },
+      description:
+        'The warning messages reported when failonwarnings is turned on during API import.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApiResponse')
 
 const UpdateApiMappingResponseSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ).exactOptional(),
-    ApiMappingId: IdSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'apiMappingId' }, description: 'The API mapping identifier.' }),
-    ).exactOptional(),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ).exactOptional(),
+    ApiId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiId' },
+      description: 'The API identifier.',
+    }),
+    ApiMappingId: IdSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingId' },
+      description: 'The API mapping identifier.',
+    }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateApiMappingResponse')
 
 const UpdateAuthorizerResponseSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'authorizerId' }, description: 'The authorizer identifier.' }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ).exactOptional(),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ).exactOptional(),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'The validation expression does not apply to the REQUEST authorizer.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ).exactOptional(),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description: 'The authorizer identifier.',
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.exactOptional().openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'The validation expression does not apply to the REQUEST authorizer.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAuthorizerResponse')
 
 const UpdateDeploymentResponseSchema = z
   .object({
-    AutoDeployed: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeployed' },
-          description: 'Specifies whether a deployment was automatically released.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The date and time when the Deployment resource was created.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description: 'The identifier for the deployment.',
-        }),
-    ).exactOptional(),
-    DeploymentStatus: DeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatus' },
-          description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
-        }),
-    ).exactOptional(),
-    DeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentStatusMessage' },
-          description: 'May contain additional feedback on the status of an API deployment.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment.',
-        }),
-    ).exactOptional(),
+    AutoDeployed: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeployed' },
+      description: 'Specifies whether a deployment was automatically released.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The date and time when the Deployment resource was created.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description: 'The identifier for the deployment.',
+    }),
+    DeploymentStatus: DeploymentStatusSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatus' },
+      description: 'The status of the deployment: PENDING, FAILED, or SUCCEEDED.',
+    }),
+    DeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'deploymentStatusMessage' },
+      description: 'May contain additional feedback on the status of an API deployment.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDeploymentResponse')
 
 const UpdateDomainNameResponseSchema = z
   .object({
-    ApiMappingSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiMappingSelectionExpression' },
-          description: 'The API mapping selection expression.',
-        }),
-    ).exactOptional(),
-    DomainName: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainName' },
-          description: 'The name of the DomainName resource.',
-        }),
-    ).exactOptional(),
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The collection of tags associated with a domain name.',
-        }),
-    ).exactOptional(),
+    ApiMappingSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiMappingSelectionExpression' },
+      description: 'The API mapping selection expression.',
+    }),
+    DomainName: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+      xml: { name: 'domainName' },
+      description: 'The name of the DomainName resource.',
+    }),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags associated with a domain name.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDomainNameResponse')
 
 const UpdateIntegrationResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
-        }),
-    ).exactOptional(),
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'Represents the description of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationId' },
-          description: 'Represents the identifier of an integration.',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseSelectionExpression' },
-          description:
-            'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether an integration is managed by API Gateway. If you created an API using using quick create, the resulting integration is managed by API Gateway. You can update a managed integration, but you can't delete it.",
+    }),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'Represents the description of an integration.',
+    }),
+    IntegrationId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationId' },
+      description: 'Represents the identifier of an integration.',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseSelectionExpression' },
+      description:
+        'The integration response selection expression for the integration. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions">Integration Response Selection Expressions</a>.',
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API itegrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to backend integrations. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt;. The action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration. Supported only for WebSocket APIs.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateIntegrationResult')
 
 const UpdateIntegrationResponseResponseSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseId' },
-          description: 'The integration response ID.',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expressions for the integration response.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseId' },
+      description: 'The integration response ID.',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where name is a valid and unique response header name and JSON-expression is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expressions for the integration response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateIntegrationResponseResponse')
 
 const UpdateModelResponseSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    ModelId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'modelId' }, description: 'The model identifier.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the model. Must be alphanumeric.',
-        }),
-    ).exactOptional(),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    ModelId: IdSchema.exactOptional().openapi({
+      xml: { name: 'modelId' },
+      description: 'The model identifier.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model. Must be alphanumeric.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.exactOptional().openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateModelResponse')
 
 const UpdateRouteResultSchema = z
   .object({
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
-        }),
-    ).exactOptional(),
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description:
-            'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'routeId' }, description: 'The route ID.' }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ).exactOptional(),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a route is managed by API Gateway. If you created an API using quick create, the $default route is managed by API Gateway. You can't modify the $default route key.",
+    }),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for this route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description:
+        'A list of authorization scopes configured on a route. The scopes are used with a JWT authorizer to authorize the method invocation. The authorization works by matching the route scopes against the scopes parsed from the access token in the incoming request. The method invocation is authorized if any route scope matches a claimed scope in the access token. Otherwise, the invocation is not authorized. When the route scope is configured, the client must provide an access token instead of an identity token for authorization purposes.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeId' },
+      description: 'The route ID.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRouteResult')
 
 const UpdateRouteResponseResponseSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'Represents the response models of a route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'Represents the response parameters of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseId' },
-          description: 'Represents the identifier of a route response.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseKey' },
-          description: 'Represents the route response key of a route response.',
-        }),
-    ).exactOptional(),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'Represents the model selection expression of a route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'Represents the response models of a route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'Represents the response parameters of a route response.',
+    }),
+    RouteResponseId: IdSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseId' },
+      description: 'Represents the identifier of a route response.',
+    }),
+    RouteResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'Represents the route response key of a route response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRouteResponseResponse')
 
 const UpdateStageResponseSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    ApiGatewayManaged: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiGatewayManaged' },
-          description:
-            "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description:
-            'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the stage was created.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'Default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description:
-            "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the stage.' }),
-    ).exactOptional(),
-    LastDeploymentStatusMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastDeploymentStatusMessage' },
-          description:
-            'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
-        }),
-    ).exactOptional(),
-    LastUpdatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'lastUpdatedDate' },
-          description: 'The timestamp when the stage was last updated.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSettings' },
-          description: 'Route settings for the stage, by routeKey.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stageName' }, description: 'The name of the stage.' }),
-    ).exactOptional(),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    ApiGatewayManaged: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiGatewayManaged' },
+      description:
+        "Specifies whether a stage is managed by API Gateway. If you created an API using quick create, the $default stage is managed by API Gateway. You can't modify the $default stage.",
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description:
+        'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
+    }),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the stage was created.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'Default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description:
+        "The identifier of the Deployment that the Stage is associated with. Can't be updated if autoDeploy is enabled.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the stage.',
+    }),
+    LastDeploymentStatusMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'lastDeploymentStatusMessage' },
+      description:
+        'Describes the status of the last deployment of a stage. Supported only for stages with autoDeploy enabled.',
+    }),
+    LastUpdatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'lastUpdatedDate' },
+      description: 'The timestamp when the stage was last updated.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage, by routeKey.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a stage resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStageResponse')
 
 const UpdateVpcLinkResponseSchema = z
   .object({
-    CreatedDate: TimestampIso8601Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createdDate' },
-          description: 'The timestamp when the VPC link was created.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'A list of security group IDs for the VPC link.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description: 'A list of subnet IDs to include in the VPC link.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'Tags for the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'vpcLinkId' }, description: 'The ID of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatus: VpcLinkStatusSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkStatus' }, description: 'The status of the VPC link.' }),
-    ).exactOptional(),
-    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'vpcLinkStatusMessage' },
-          description: 'A message summarizing the cause of the status of the VPC link.',
-        }),
-    ).exactOptional(),
-    VpcLinkVersion: VpcLinkVersionSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'vpcLinkVersion' }, description: 'The version of the VPC link.' }),
-    ).exactOptional(),
+    CreatedDate: TimestampIso8601Schema.exactOptional().openapi({
+      xml: { name: 'createdDate' },
+      description: 'The timestamp when the VPC link was created.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.exactOptional().openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'A list of security group IDs for the VPC link.',
+    }),
+    SubnetIds: SubnetIdListSchema.exactOptional().openapi({
+      xml: { name: 'subnetIds' },
+      description: 'A list of subnet IDs to include in the VPC link.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'Tags for the VPC link.',
+    }),
+    VpcLinkId: IdSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkId' },
+      description: 'The ID of the VPC link.',
+    }),
+    VpcLinkStatus: VpcLinkStatusSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatus' },
+      description: 'The status of the VPC link.',
+    }),
+    VpcLinkStatusMessage: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'vpcLinkStatusMessage' },
+      description: 'A message summarizing the cause of the status of the VPC link.',
+    }),
+    VpcLinkVersion: VpcLinkVersionSchema.exactOptional().openapi({
+      xml: { name: 'vpcLinkVersion' },
+      description: 'The version of the VPC link.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVpcLinkResponse')
 
 const CreateApiMappingRequestSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ),
+    ApiId: IdSchema.openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({
     required: ['Stage', 'ApiId'],
@@ -4932,101 +3240,66 @@ const CreateApiMappingRequestSchema = z
 
 const CreateApiRequestSchema = z
   .object({
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description:
-            'A CORS configuration. Supported only for HTTP APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html">Configuring CORS</a> for more information.',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "This property is part of quick create. It specifies the credentials required for the integration, if any. For a Lambda integration, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null. Currently, this property is not used for HTTP integrations. Supported only for HTTP APIs.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ),
-    ProtocolType: ProtocolTypeSchema.and(
-      z.any().openapi({ xml: { name: 'protocolType' }, description: 'The API protocol.' }),
-    ),
-    RouteKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeKey' },
-          description:
-            "This property is part of quick create. If you don't specify a routeKey, a default route of $default is created. The $default route acts as a catch-all for any request made to your API, for a particular stage. The $default route key can't be modified. You can add routes after creating the API, and you can update the route keys of additional routes. Supported only for HTTP APIs.",
-        }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
-    Target: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'target' },
-          description:
-            'This property is part of quick create. Quick create produces an API with an integration, a default catch-all route, and a default stage which is configured to automatically deploy changes. For HTTP integrations, specify a fully qualified URL. For Lambda integrations, specify a function ARN. The type of the integration will be HTTP_PROXY or AWS_PROXY, respectively. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description:
+        'A CORS configuration. Supported only for HTTP APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html">Configuring CORS</a> for more information.',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "This property is part of quick create. It specifies the credentials required for the integration, if any. For a Lambda integration, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null. Currently, this property is not used for HTTP integrations. Supported only for HTTP APIs.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    ProtocolType: ProtocolTypeSchema.openapi({
+      xml: { name: 'protocolType' },
+      description: 'The API protocol.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description:
+        "This property is part of quick create. If you don't specify a routeKey, a default route of $default is created. The $default route acts as a catch-all for any request made to your API, for a particular stage. The $default route key can't be modified. You can add routes after creating the API, and you can update the route keys of additional routes. Supported only for HTTP APIs.",
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
+    Target: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description:
+        'This property is part of quick create. Quick create produces an API with an integration, a default catch-all route, and a default stage which is configured to automatically deploy changes. For HTTP integrations, specify a fully qualified URL. For Lambda integrations, specify a function ARN. The type of the integration will be HTTP_PROXY or AWS_PROXY, respectively. Supported only for HTTP APIs.',
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
   })
   .openapi({
     required: ['ProtocolType', 'Name'],
@@ -5037,89 +3310,54 @@ const CreateApiRequestSchema = z
 
 const CreateAuthorizerRequestSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. By default, a Lambda authorizer must return an IAM policy. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'This parameter is not used.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter. Supported only for REQUEST authorizers.",
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. By default, a Lambda authorizer must return an IAM policy. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'This parameter is not used.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({
     required: ['AuthorizerType', 'IdentitySource', 'Name'],
@@ -5130,22 +3368,14 @@ const CreateAuthorizerRequestSchema = z
 
 const CreateDeploymentRequestSchema = z
   .object({
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment resource.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageName' },
-          description: 'The name of the Stage resource for the Deployment resource to create.',
-        }),
-    ).exactOptional(),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment resource.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the Stage resource for the Deployment resource to create.',
+    }),
   })
   .openapi({
     title: 'CreateDeploymentRequest',
@@ -5156,57 +3386,38 @@ const CreateDeploymentRequestSchema = z
 
 const MutualTlsAuthenticationInputSchema = z
   .object({
-    TruststoreUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'truststoreUri' },
-          description:
-            'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-        }),
-    ).exactOptional(),
-    TruststoreVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'truststoreVersion' },
-          description:
-            'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
-        }),
-    ).exactOptional(),
+    TruststoreUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'truststoreUri' },
+      description:
+        'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+    }),
+    TruststoreVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'truststoreVersion' },
+      description:
+        'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MutualTlsAuthenticationInput')
 
 const CreateDomainNameRequestSchema = z
   .object({
-    DomainName: StringWithLengthBetween1And512Schema.and(
-      z.any().openapi({ xml: { name: 'domainName' }, description: 'The domain name.' }),
-    ),
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The collection of tags associated with a domain name.',
-        }),
-    ).exactOptional(),
+    DomainName: StringWithLengthBetween1And512Schema.openapi({
+      xml: { name: 'domainName' },
+      description: 'The domain name.',
+    }),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationInputSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags associated with a domain name.',
+    }),
   })
   .openapi({
     required: ['DomainName'],
@@ -5217,15 +3428,11 @@ const CreateDomainNameRequestSchema = z
 
 const TlsConfigInputSchema = z
   .object({
-    ServerNameToVerify: StringWithLengthBetween1And512Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'serverNameToVerify' },
-          description:
-            "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
-        }),
-    ).exactOptional(),
+    ServerNameToVerify: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+      xml: { name: 'serverNameToVerify' },
+      description:
+        "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
+    }),
   })
   .openapi({
     description:
@@ -5236,156 +3443,88 @@ const TlsConfigInputSchema = z
 
 const CreateIntegrationRequestSchema = z
   .object({
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the integration.',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration. For HTTP API private integrations, use an HTTP_PROXY integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n               , where \n                  <replaceable>{location}</replaceable>\n                is querystring, path, or header; and \n                  <replaceable>{name}</replaceable>\n                must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API integrations without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to the backend. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt; where action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expression for the integration.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the integration.',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration. For HTTP API private integrations, use an HTTP_PROXY integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n               , where \n                  <replaceable>{location}</replaceable>\n                is querystring, path, or header; and \n                  <replaceable>{name}</replaceable>\n                must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API integrations without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to the backend. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt; where action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expression for the integration.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigInputSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({
     required: ['IntegrationType'],
@@ -5396,50 +3535,30 @@ const CreateIntegrationRequestSchema = z
 
 const CreateIntegrationResponseRequestSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where {name} is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where {name} is a valid and unique response header name and {JSON-expression} is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.{name}, where {name} is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.{name} or integration.response.body.{JSON-expression}, where {name} is a valid and unique response header name and {JSON-expression} is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration response. Supported only for WebSocket APIs.',
+    }),
   })
   .openapi({
     required: ['IntegrationResponseKey'],
@@ -5450,36 +3569,23 @@ const CreateIntegrationResponseRequestSchema = z
 
 const CreateModelRequestSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'name' },
-          description: 'The name of the model. Must be alphanumeric.',
-        }),
-    ),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model. Must be alphanumeric.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({
     required: ['Schema', 'Name'],
@@ -5490,89 +3596,55 @@ const CreateModelRequestSchema = z
 
 const CreateRouteRequestSchema = z
   .object({
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description: 'The authorization scopes supported by this route.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for the route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description: 'The authorization scopes supported by this route.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteKey: SelectionKeySchema.openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({
     required: ['RouteKey'],
@@ -5583,36 +3655,23 @@ const CreateRouteRequestSchema = z
 
 const CreateRouteResponseRequestSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'The response models for the route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'The route response parameters.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'routeResponseKey' }, description: 'The route response key.' }),
-    ),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'The response models for the route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'The route response parameters.',
+    }),
+    RouteResponseKey: SelectionKeySchema.openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'The route response key.',
+    }),
   })
   .openapi({
     required: ['RouteResponseKey'],
@@ -5623,85 +3682,49 @@ const CreateRouteResponseRequestSchema = z
 
 const CreateStageRequestSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description:
-            'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'The default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description: 'The deployment identifier of the API stage.',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the API stage.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSettings' },
-          description: 'Route settings for the stage, by routeKey.',
-        }),
-    ).exactOptional(),
-    StageName: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stageName' }, description: 'The name of the stage.' }),
-    ),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a Stage. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description:
+        'The identifier of a client certificate for a Stage. Supported only for WebSocket APIs.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'The default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description: 'The deployment identifier of the API stage.',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the API stage.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage, by routeKey.',
+    }),
+    StageName: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'stageName' },
+      description: 'The name of the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a Stage. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     required: ['StageName'],
@@ -5712,28 +3735,22 @@ const CreateStageRequestSchema = z
 
 const CreateVpcLinkRequestSchema = z
   .object({
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ),
-    SecurityGroupIds: SecurityGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'securityGroupIds' },
-          description: 'A list of security group IDs for the VPC link.',
-        }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'subnetIds' },
-          description: 'A list of subnet IDs to include in the VPC link.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z.any().openapi({ xml: { name: 'tags' }, description: 'A list of tags.' }),
-    ).exactOptional(),
+    Name: StringWithLengthBetween1And128Schema.openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
+    SecurityGroupIds: SecurityGroupIdListSchema.exactOptional().openapi({
+      xml: { name: 'securityGroupIds' },
+      description: 'A list of security group IDs for the VPC link.',
+    }),
+    SubnetIds: SubnetIdListSchema.openapi({
+      xml: { name: 'subnetIds' },
+      description: 'A list of subnet IDs to include in the VPC link.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'A list of tags.',
+    }),
   })
   .openapi({
     required: ['SubnetIds', 'Name'],
@@ -5743,264 +3760,251 @@ const CreateVpcLinkRequestSchema = z
   .openapi('CreateVpcLinkRequest')
 
 const DeleteAccessLogSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAccessLogSettingsRequest' })
   .openapi('DeleteAccessLogSettingsRequest')
 
 const DeleteApiMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApiMappingRequest' })
   .openapi('DeleteApiMappingRequest')
 
 const DeleteApiRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApiRequest' })
   .openapi('DeleteApiRequest')
 
 const DeleteAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAuthorizerRequest' })
   .openapi('DeleteAuthorizerRequest')
 
 const DeleteCorsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCorsConfigurationRequest' })
   .openapi('DeleteCorsConfigurationRequest')
 
 const DeleteDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeploymentRequest' })
   .openapi('DeleteDeploymentRequest')
 
 const DeleteDomainNameRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDomainNameRequest' })
   .openapi('DeleteDomainNameRequest')
 
 const DeleteIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteIntegrationRequest' })
   .openapi('DeleteIntegrationRequest')
 
 const DeleteIntegrationResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteIntegrationResponseRequest' })
   .openapi('DeleteIntegrationResponseRequest')
 
 const DeleteModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteModelRequest' })
   .openapi('DeleteModelRequest')
 
 const DeleteRouteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteRequest' })
   .openapi('DeleteRouteRequest')
 
 const DeleteRouteRequestParameterRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteRequestParameterRequest' })
   .openapi('DeleteRouteRequestParameterRequest')
 
 const DeleteRouteResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteResponseRequest' })
   .openapi('DeleteRouteResponseRequest')
 
 const DeleteRouteSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRouteSettingsRequest' })
   .openapi('DeleteRouteSettingsRequest')
 
 const DeleteStageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStageRequest' })
   .openapi('DeleteStageRequest')
 
 const DeleteVpcLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVpcLinkRequest' })
   .openapi('DeleteVpcLinkRequest')
 
 const ExportApiRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ExportApiRequest' })
   .openapi('ExportApiRequest')
 
 const ResetAuthorizersCacheRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ResetAuthorizersCacheRequest' })
   .openapi('ResetAuthorizersCacheRequest')
 
 const GetApiMappingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApiMappingRequest' })
   .openapi('GetApiMappingRequest')
 
 const GetApiMappingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApiMappingsRequest' })
   .openapi('GetApiMappingsRequest')
 
 const GetApiRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApiRequest' })
   .openapi('GetApiRequest')
 
 const GetApisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApisRequest' })
   .openapi('GetApisRequest')
 
 const GetAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAuthorizerRequest' })
   .openapi('GetAuthorizerRequest')
 
 const GetAuthorizersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAuthorizersRequest' })
   .openapi('GetAuthorizersRequest')
 
 const GetDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentRequest' })
   .openapi('GetDeploymentRequest')
 
 const GetDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentsRequest' })
   .openapi('GetDeploymentsRequest')
 
 const GetDomainNameRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDomainNameRequest' })
   .openapi('GetDomainNameRequest')
 
 const GetDomainNamesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDomainNamesRequest' })
   .openapi('GetDomainNamesRequest')
 
 const GetIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIntegrationRequest' })
   .openapi('GetIntegrationRequest')
 
 const GetIntegrationResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIntegrationResponseRequest' })
   .openapi('GetIntegrationResponseRequest')
 
 const GetIntegrationResponsesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIntegrationResponsesRequest' })
   .openapi('GetIntegrationResponsesRequest')
 
 const GetIntegrationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIntegrationsRequest' })
   .openapi('GetIntegrationsRequest')
 
 const GetModelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetModelRequest' })
   .openapi('GetModelRequest')
 
 const GetModelTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetModelTemplateRequest' })
   .openapi('GetModelTemplateRequest')
 
 const GetModelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetModelsRequest' })
   .openapi('GetModelsRequest')
 
 const GetRouteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRouteRequest' })
   .openapi('GetRouteRequest')
 
 const GetRouteResponseRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRouteResponseRequest' })
   .openapi('GetRouteResponseRequest')
 
 const GetRouteResponsesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRouteResponsesRequest' })
   .openapi('GetRouteResponsesRequest')
 
 const GetRoutesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRoutesRequest' })
   .openapi('GetRoutesRequest')
 
 const GetStageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStageRequest' })
   .openapi('GetStageRequest')
 
 const GetStagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetStagesRequest' })
   .openapi('GetStagesRequest')
 
 const GetTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTagsRequest' })
   .openapi('GetTagsRequest')
 
 const GetVpcLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVpcLinkRequest' })
   .openapi('GetVpcLinkRequest')
 
 const GetVpcLinksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVpcLinksRequest' })
   .openapi('GetVpcLinksRequest')
 
 const ImportApiRequestSchema = z
   .object({
-    Body: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'body' },
-          description: 'The OpenAPI definition. Supported only for HTTP APIs.',
-        }),
-    ),
+    Body: StringSchema.openapi({
+      xml: { name: 'body' },
+      description: 'The OpenAPI definition. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ required: ['Body'], title: 'ImportApiRequest', description: '' })
   .openapi('ImportApiRequest')
 
 const ReimportApiRequestSchema = z
   .object({
-    Body: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'body' },
-          description: 'The OpenAPI definition. Supported only for HTTP APIs.',
-        }),
-    ),
+    Body: StringSchema.openapi({
+      xml: { name: 'body' },
+      description: 'The OpenAPI definition. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({ required: ['Body'], title: 'ReimportApiRequest', description: '' })
   .openapi('ReimportApiRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            'The collection of tags. Each tag element is associated with a given resource.',
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The collection of tags. Each tag element is associated with a given resource.',
+    }),
   })
   .openapi({
     title: 'TagResourceRequest',
@@ -6010,21 +4014,21 @@ const TagResourceRequestSchema = z
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApiMappingRequestSchema = z
   .object({
-    ApiId: IdSchema.and(
-      z.any().openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
-    ),
-    ApiMappingKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'apiMappingKey' }, description: 'The API mapping key.' }),
-    ).exactOptional(),
-    Stage: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'stage' }, description: 'The API stage.' }),
-    ).exactOptional(),
+    ApiId: IdSchema.openapi({ xml: { name: 'apiId' }, description: 'The API identifier.' }),
+    ApiMappingKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'apiMappingKey' },
+      description: 'The API mapping key.',
+    }),
+    Stage: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'stage' },
+      description: 'The API stage.',
+    }),
   })
   .openapi({
     required: ['ApiId'],
@@ -6035,177 +4039,111 @@ const UpdateApiMappingRequestSchema = z
 
 const UpdateApiRequestSchema = z
   .object({
-    ApiKeySelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeySelectionExpression' },
-          description:
-            'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
-        }),
-    ).exactOptional(),
-    CorsConfiguration: CorsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'corsConfiguration' },
-          description: 'A CORS configuration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "This property is part of quick create. It specifies the credentials required for the integration, if any. For a Lambda integration, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, don't specify this parameter. Currently, this property is not used for HTTP integrations. If provided, this value replaces the credentials associated with the quick create integration. Supported only for HTTP APIs.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z.any().openapi({ xml: { name: 'description' }, description: 'The description of the API.' }),
-    ).exactOptional(),
-    DisableSchemaValidation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableSchemaValidation' },
-          description:
-            'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    DisableExecuteApiEndpoint: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'disableExecuteApiEndpoint' },
-          description:
-            'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the API.' }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeKey' },
-          description:
-            'This property is part of quick create. If not specified, the route created using quick create is kept. Otherwise, this value replaces the route key of the quick create route. Additional routes may still be added after the API is updated. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RouteSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeSelectionExpression' },
-          description:
-            'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'target' },
-          description:
-            "This property is part of quick create. For HTTP integrations, specify a fully qualified URL. For Lambda integrations, specify a function ARN. The type of the integration will be HTTP_PROXY or AWS_PROXY, respectively. The value provided updates the integration URI and integration type. You can update a quick-created target, but you can't remove it from an API. Supported only for HTTP APIs.",
-        }),
-    ).exactOptional(),
-    Version: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'version' }, description: 'A version identifier for the API.' }),
-    ).exactOptional(),
+    ApiKeySelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'apiKeySelectionExpression' },
+      description:
+        'An API key selection expression. Supported only for WebSocket APIs. See <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions">API Key Selection Expressions</a>.',
+    }),
+    CorsConfiguration: CorsSchema.exactOptional().openapi({
+      xml: { name: 'corsConfiguration' },
+      description: 'A CORS configuration. Supported only for HTTP APIs.',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "This property is part of quick create. It specifies the credentials required for the integration, if any. For a Lambda integration, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, don't specify this parameter. Currently, this property is not used for HTTP integrations. If provided, this value replaces the credentials associated with the quick create integration. Supported only for HTTP APIs.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the API.',
+    }),
+    DisableSchemaValidation: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableSchemaValidation' },
+      description:
+        'Avoid validating models when creating a deployment. Supported only for WebSocket APIs.',
+    }),
+    DisableExecuteApiEndpoint: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'disableExecuteApiEndpoint' },
+      description:
+        'Specifies whether clients can invoke your API by using the default execute-api endpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the API.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description:
+        'This property is part of quick create. If not specified, the route created using quick create is kept. Otherwise, this value replaces the route key of the quick create route. Additional routes may still be added after the API is updated. Supported only for HTTP APIs.',
+    }),
+    RouteSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeSelectionExpression' },
+      description:
+        'The route selection expression for the API. For HTTP APIs, the routeSelectionExpression must be ${request.method} ${request.path}. If not provided, this will be the default for HTTP APIs. This property is required for WebSocket APIs.',
+    }),
+    Target: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description:
+        "This property is part of quick create. For HTTP integrations, specify a fully qualified URL. For Lambda integrations, specify a function ARN. The type of the integration will be HTTP_PROXY or AWS_PROXY, respectively. The value provided updates the integration URI and integration type. You can update a quick-created target, but you can't remove it from an API. Supported only for HTTP APIs.",
+    }),
+    Version: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'version' },
+      description: 'A version identifier for the API.',
+    }),
   })
   .openapi({ title: 'UpdateApiRequest', description: 'Updates an Api.', required: [] })
   .openapi('UpdateApiRequest')
 
 const UpdateAuthorizerRequestSchema = z
   .object({
-    AuthorizerCredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerCredentialsArn' },
-          description:
-            "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter.",
-        }),
-    ).exactOptional(),
-    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerPayloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
-        }),
-    ).exactOptional(),
-    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerResultTtlInSeconds' },
-          description:
-            'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
-        }),
-    ).exactOptional(),
-    AuthorizerType: AuthorizerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerType' },
-          description:
-            'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
-        }),
-    ).exactOptional(),
-    AuthorizerUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerUri' },
-          description:
-            "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
-        }),
-    ).exactOptional(),
-    EnableSimpleResponses: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enableSimpleResponses' },
-          description:
-            'Specifies whether a Lambda authorizer returns a response in a simple format. By default, a Lambda authorizer must return an IAM policy. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
-        }),
-    ).exactOptional(),
-    IdentitySource: IdentitySourceListSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identitySource' },
-          description:
-            '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
-        }),
-    ).exactOptional(),
-    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityValidationExpression' },
-          description: 'This parameter is not used.',
-        }),
-    ).exactOptional(),
-    JwtConfiguration: JWTConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'jwtConfiguration' },
-          description:
-            'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the authorizer.' }),
-    ).exactOptional(),
+    AuthorizerCredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'authorizerCredentialsArn' },
+      description:
+        "Specifies the required credentials as an IAM role for API Gateway to invoke the authorizer. To specify an IAM role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To use resource-based permissions on the Lambda function, don't specify this parameter.",
+    }),
+    AuthorizerPayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'authorizerPayloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an HTTP API Lambda authorizer. Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.',
+    }),
+    AuthorizerResultTtlInSeconds: IntegerWithLengthBetween0And3600Schema.exactOptional().openapi({
+      xml: { name: 'authorizerResultTtlInSeconds' },
+      description:
+        'The time to live (TTL) for cached authorizer results, in seconds. If it equals 0, authorization caching is disabled. If it is greater than 0, API Gateway caches authorizer responses. The maximum value is 3600, or 1 hour. Supported only for HTTP API Lambda authorizers.',
+    }),
+    AuthorizerType: AuthorizerTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizerType' },
+      description:
+        'The authorizer type. Specify REQUEST for a Lambda function using incoming request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP APIs).',
+    }),
+    AuthorizerUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'authorizerUri' },
+      description:
+        "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers, this must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:<replaceable>{account_id}</replaceable>:function:<replaceable>{lambda_function_name}</replaceable>/invocations. In general, the URI has this form: arn:aws:apigateway:<replaceable>{region}</replaceable>:lambda:path/<replaceable>{service_api}</replaceable>\n               , where <replaceable></replaceable>{region} is the same as the region hosting the Lambda function, path indicates that the remaining substring in the URI should be treated as the path to the resource, including the initial /. For Lambda functions, this is usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported only for REQUEST authorizers.",
+    }),
+    EnableSimpleResponses: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enableSimpleResponses' },
+      description:
+        'Specifies whether a Lambda authorizer returns a response in a simple format. By default, a Lambda authorizer must return an IAM policy. If enabled, the Lambda authorizer can return a boolean value instead of an IAM policy. Supported only for HTTP APIs. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>',
+    }),
+    IdentitySource: IdentitySourceListSchema.exactOptional().openapi({
+      xml: { name: 'identitySource' },
+      description:
+        '<p>The identity source for which authorization is requested.</p> <p>For a REQUEST authorizer, this is optional. The value is a set of one or more mapping expressions of the specified request parameters. The identity source can be headers, query string parameters, stage variables, and context parameters. For example, if an Auth header and a Name query string parameter are defined as identity sources, this value is route.request.header.Auth, route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection expressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name. These parameters are used to perform runtime validation for Lambda-based authorizers by verifying all of the identity-related request parameters are present in the request, not null, and non-empty. Only when this is true does the authorizer invoke the authorizer Lambda function. Otherwise, it returns a 401 Unauthorized response without calling the Lambda function. For HTTP APIs, identity sources are also used as the cache key when caching is enabled. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html">Working with AWS Lambda authorizers for HTTP APIs</a>.</p> <p>For JWT, a single entry that specifies where to extract the JSON Web Token (JWT) from inbound requests. Currently only header-based and query parameter-based selections are supported, for example $request.header.Authorization.</p>',
+    }),
+    IdentityValidationExpression: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'identityValidationExpression' },
+      description: 'This parameter is not used.',
+    }),
+    JwtConfiguration: JWTConfigurationSchema.exactOptional().openapi({
+      xml: { name: 'jwtConfiguration' },
+      description:
+        'Represents the configuration of a JWT authorizer. Required for the JWT authorizer type. Supported only for HTTP APIs.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the authorizer.',
+    }),
   })
   .openapi({
     title: 'UpdateAuthorizerRequest',
@@ -6216,192 +4154,112 @@ const UpdateAuthorizerRequestSchema = z
 
 const UpdateDeploymentRequestSchema = z
   .object({
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the deployment resource.',
-        }),
-    ).exactOptional(),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the deployment resource.',
+    }),
   })
   .openapi({ title: 'UpdateDeploymentRequest', description: 'Updates a Deployment.', required: [] })
   .openapi('UpdateDeploymentRequest')
 
 const UpdateDomainNameRequestSchema = z
   .object({
-    DomainNameConfigurations: DomainNameConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainNameConfigurations' },
-          description: 'The domain name configurations.',
-        }),
-    ).exactOptional(),
-    MutualTlsAuthentication: MutualTlsAuthenticationInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mutualTlsAuthentication' },
-          description: 'The mutual TLS authentication configuration for a custom domain name.',
-        }),
-    ).exactOptional(),
+    DomainNameConfigurations: DomainNameConfigurationsSchema.exactOptional().openapi({
+      xml: { name: 'domainNameConfigurations' },
+      description: 'The domain name configurations.',
+    }),
+    MutualTlsAuthentication: MutualTlsAuthenticationInputSchema.exactOptional().openapi({
+      xml: { name: 'mutualTlsAuthentication' },
+      description: 'The mutual TLS authentication configuration for a custom domain name.',
+    }),
   })
   .openapi({ title: 'UpdateDomainNameRequest', description: 'Updates a DomainName.', required: [] })
   .openapi('UpdateDomainNameRequest')
 
 const UpdateIntegrationRequestSchema = z
   .object({
-    ConnectionId: StringWithLengthBetween1And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionId' },
-          description:
-            'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    ConnectionType: ConnectionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'connectionType' },
-          description:
-            'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
-        }),
-    ).exactOptional(),
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    CredentialsArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'credentialsArn' },
-          description:
-            "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description of the integration',
-        }),
-    ).exactOptional(),
-    IntegrationMethod: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationMethod' },
-          description: "Specifies the integration's HTTP method type.",
-        }),
-    ).exactOptional(),
-    IntegrationSubtype: StringWithLengthBetween1And128Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationSubtype' },
-          description:
-            'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
-        }),
-    ).exactOptional(),
-    IntegrationType: IntegrationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationType' },
-          description:
-            '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration. For HTTP API private integrations, use an HTTP_PROXY integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationUri: UriWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationUri' },
-          description:
-            '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
-        }),
-    ).exactOptional(),
-    PassthroughBehavior: PassthroughBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passthroughBehavior' },
-          description:
-            '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
-        }),
-    ).exactOptional(),
-    PayloadFormatVersion: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'payloadFormatVersion' },
-          description:
-            'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description:
-            '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API integrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to the backend. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt; where action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.">Transforming API requests and responses</a>.</p>',
-        }),
-    ).exactOptional(),
-    RequestTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestTemplates' },
-          description:
-            'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: ResponseParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description: 'The template selection expression for the integration.',
-        }),
-    ).exactOptional(),
-    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'timeoutInMillis' },
-          description:
-            'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
-        }),
-    ).exactOptional(),
-    TlsConfig: TlsConfigInputSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tlsConfig' },
-          description:
-            'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
-        }),
-    ).exactOptional(),
+    ConnectionId: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+      xml: { name: 'connectionId' },
+      description:
+        'The ID of the VPC link for a private integration. Supported only for HTTP APIs.',
+    }),
+    ConnectionType: ConnectionTypeSchema.exactOptional().openapi({
+      xml: { name: 'connectionType' },
+      description:
+        'The type of the network connection to the integration endpoint. Specify INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and resources in a VPC. The default value is INTERNET.',
+    }),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    CredentialsArn: ArnSchema.exactOptional().openapi({
+      xml: { name: 'credentialsArn' },
+      description:
+        "Specifies the credentials required for the integration, if any. For AWS integrations, three options are available. To specify an IAM Role for API Gateway to assume, use the role's Amazon Resource Name (ARN). To require that the caller's identity be passed through from the request, specify the string arn:aws:iam::*:user/*. To use resource-based permissions on supported AWS services, specify null.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the integration',
+    }),
+    IntegrationMethod: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'integrationMethod' },
+      description: "Specifies the integration's HTTP method type.",
+    }),
+    IntegrationSubtype: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'integrationSubtype' },
+      description:
+        'Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service action to invoke. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html">Integration subtype reference</a>.',
+    }),
+    IntegrationType: IntegrationTypeSchema.exactOptional().openapi({
+      xml: { name: 'integrationType' },
+      description:
+        '<p>The integration type of an integration. One of the following:</p> <p>AWS: for integrating the route or method request with an AWS service action, including the Lambda function-invoking action. With the Lambda function-invoking action, this is referred to as the Lambda custom integration. With any other AWS service action, this is known as AWS integration. Supported only for WebSocket APIs.</p> <p>AWS_PROXY: for integrating the route or method request with a Lambda function or other AWS service action. This integration is also referred to as a Lambda proxy integration.</p> <p>HTTP: for integrating the route or method request with an HTTP endpoint. This integration is also referred to as the HTTP custom integration. Supported only for WebSocket APIs.</p> <p>HTTP_PROXY: for integrating the route or method request with an HTTP endpoint, with the client request passed through as-is. This is also referred to as HTTP proxy integration. For HTTP API private integrations, use an HTTP_PROXY integration.</p> <p>MOCK: for integrating the route or method request with API Gateway as a "loopback" endpoint without invoking any backend. Supported only for WebSocket APIs.</p>',
+    }),
+    IntegrationUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+      xml: { name: 'integrationUri' },
+      description:
+        '<p>For a Lambda integration, specify the URI of a Lambda function.</p> <p>For an HTTP integration, specify a fully-qualified URL.</p> <p>For an HTTP API private integration, specify the ARN of an Application Load Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances to identify resources. You can use query parameters to target specific resources. To learn more, see <a href="https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html">DiscoverInstances</a>. For private integrations, all resources must be owned by the same AWS account.</p>',
+    }),
+    PassthroughBehavior: PassthroughBehaviorSchema.exactOptional().openapi({
+      xml: { name: 'passthroughBehavior' },
+      description:
+        '<p>Specifies the pass-through behavior for incoming requests based on the Content-Type header in the request, and the available mapping templates specified as the requestTemplates property on the Integration resource. There are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket APIs.</p> <p>WHEN_NO_MATCH passes the request body for unmapped content types through to the integration backend without transformation.</p> <p>NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type response.</p> <p>WHEN_NO_TEMPLATES allows pass-through when the integration has no content types mapped to templates. However, if there is at least one content type defined, unmapped content types will be rejected with the same HTTP 415 Unsupported Media Type response.</p>',
+    }),
+    PayloadFormatVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'payloadFormatVersion' },
+      description:
+        'Specifies the format of the payload sent to an integration. Required for HTTP APIs.',
+    }),
+    RequestParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description:
+        '<p>For WebSocket APIs, a key-value map specifying request parameters that are passed from the method request to the backend. The key is an integration request parameter name and the associated value is a method request parameter value or static value that must be enclosed within single quotes and pre-encoded as required by the backend. The method request parameter value must match the pattern of method.request.<replaceable>{location}</replaceable>.<replaceable>{name}</replaceable>\n          , where \n            <replaceable>{location}</replaceable>\n           is querystring, path, or header; and \n            <replaceable>{name}</replaceable>\n           must be a valid and unique method request parameter name.</p> <p>For HTTP API integrations with a specified integrationSubtype, request parameters are a key-value map specifying parameters that are passed to AWS_PROXY integrations. You can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html">Working with AWS service integrations for HTTP APIs</a>.</p> <p>For HTTP API integrations, without a specified integrationSubtype request parameters are a key-value map specifying how to transform HTTP requests before sending them to the backend. The key should follow the pattern &lt;action&gt;:&lt;header|querystring|path&gt;.&lt;location&gt; where action can be append, overwrite or remove. For values, you can provide static values, or map request data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.">Transforming API requests and responses</a>.</p>',
+    }),
+    RequestTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'requestTemplates' },
+      description:
+        'Represents a map of Velocity templates that are applied on the request payload based on the value of the Content-Type header sent by the client. The content type value is the key in this map, and the template (as a String) is the value. Supported only for WebSocket APIs.',
+    }),
+    ResponseParameters: ResponseParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'Supported only for HTTP APIs. You use response parameters to transform the HTTP response from a backend integration before returning the response to clients. Specify a key-value map from a selection key to response parameters. The selection key must be a valid HTTP status code within the range of 200-599. Response parameters are a key-value map. The key must match pattern &lt;action&gt;:&lt;header&gt;.&lt;location&gt; or overwrite.statuscode. The action can be append, overwrite or remove. The value can be a static value, or map to response data, stage variables, or context variables that are evaluated at runtime. To learn more, see <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html">Transforming API requests and responses</a>.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description: 'The template selection expression for the integration.',
+    }),
+    TimeoutInMillis: IntegerWithLengthBetween50And30000Schema.exactOptional().openapi({
+      xml: { name: 'timeoutInMillis' },
+      description:
+        'Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29 seconds for WebSocket APIs and 30 seconds for HTTP APIs.',
+    }),
+    TlsConfig: TlsConfigInputSchema.exactOptional().openapi({
+      xml: { name: 'tlsConfig' },
+      description:
+        'The TLS configuration for a private integration. If you specify a TLS configuration, private integration traffic uses the HTTPS protocol. Supported only for HTTP APIs.',
+    }),
   })
   .openapi({
     title: 'UpdateIntegrationRequest',
@@ -6412,50 +4270,30 @@ const UpdateIntegrationRequestSchema = z
 
 const UpdateIntegrationResponseRequestSchema = z
   .object({
-    ContentHandlingStrategy: ContentHandlingStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentHandlingStrategy' },
-          description:
-            '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
-        }),
-    ).exactOptional(),
-    IntegrationResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'integrationResponseKey' },
-          description: 'The integration response key.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: IntegrationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description:
-            'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.<replaceable>{name}</replaceable>\n               , where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.<replaceable>{name}</replaceable>\n                or integration.response.body.<replaceable>{JSON-expression}</replaceable>\n               , where \n                  <replaceable>{name}</replaceable>\n                is a valid and unique response header name and \n                  <replaceable>{JSON-expression}</replaceable>\n                is a valid JSON expression without the $ prefix.',
-        }),
-    ).exactOptional(),
-    ResponseTemplates: TemplateMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseTemplates' },
-          description:
-            'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
-        }),
-    ).exactOptional(),
-    TemplateSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'templateSelectionExpression' },
-          description:
-            'The template selection expression for the integration response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
+    ContentHandlingStrategy: ContentHandlingStrategySchema.exactOptional().openapi({
+      xml: { name: 'contentHandlingStrategy' },
+      description:
+        '<p>Supported only for WebSocket APIs. Specifies how to handle response payload content type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT, with the following behaviors:</p> <p>CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to the corresponding binary blob.</p> <p>CONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded string.</p> <p>If this property is not defined, the response payload will be passed through from the integration response to the route response or method response without modification.</p>',
+    }),
+    IntegrationResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'integrationResponseKey' },
+      description: 'The integration response key.',
+    }),
+    ResponseParameters: IntegrationParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description:
+        'A key-value map specifying response parameters that are passed to the method response from the backend. The key is a method response header parameter name and the mapped value is an integration response header value, a static value enclosed within a pair of single quotes, or a JSON expression from the integration response body. The mapping key must match the pattern of method.response.header.<replaceable>{name}</replaceable>\n               , where name is a valid and unique header name. The mapped non-static value must match the pattern of integration.response.header.<replaceable>{name}</replaceable>\n                or integration.response.body.<replaceable>{JSON-expression}</replaceable>\n               , where \n                  <replaceable>{name}</replaceable>\n                is a valid and unique response header name and \n                  <replaceable>{JSON-expression}</replaceable>\n                is a valid JSON expression without the $ prefix.',
+    }),
+    ResponseTemplates: TemplateMapSchema.exactOptional().openapi({
+      xml: { name: 'responseTemplates' },
+      description:
+        'The collection of response templates for the integration response as a string-to-string map of key-value pairs. Response templates are represented as a key/value map, with a content-type as the key and a template as the value.',
+    }),
+    TemplateSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'templateSelectionExpression' },
+      description:
+        'The template selection expression for the integration response. Supported only for WebSocket APIs.',
+    }),
   })
   .openapi({
     title: 'UpdateIntegrationResponseRequest',
@@ -6466,156 +4304,101 @@ const UpdateIntegrationResponseRequestSchema = z
 
 const UpdateModelRequestSchema = z
   .object({
-    ContentType: StringWithLengthBetween1And256Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'contentType' },
-          description: 'The content-type for the model, for example, "application/json".',
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'description' }, description: 'The description of the model.' }),
-    ).exactOptional(),
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the model.' }),
-    ).exactOptional(),
-    Schema: StringWithLengthBetween0And32KSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'schema' },
-          description:
-            'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
-        }),
-    ).exactOptional(),
+    ContentType: StringWithLengthBetween1And256Schema.exactOptional().openapi({
+      xml: { name: 'contentType' },
+      description: 'The content-type for the model, for example, "application/json".',
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description of the model.',
+    }),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the model.',
+    }),
+    Schema: StringWithLengthBetween0And32KSchema.exactOptional().openapi({
+      xml: { name: 'schema' },
+      description:
+        'The schema for the model. For application/json models, this should be JSON schema draft 4 model.',
+    }),
   })
   .openapi({ title: 'UpdateModelRequest', description: 'Updates a Model.', required: [] })
   .openapi('UpdateModelRequest')
 
 const UpdateRouteRequestSchema = z
   .object({
-    ApiKeyRequired: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiKeyRequired' },
-          description:
-            'Specifies whether an API key is required for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    AuthorizationScopes: AuthorizationScopesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationScopes' },
-          description: 'The authorization scopes supported by this route.',
-        }),
-    ).exactOptional(),
-    AuthorizationType: AuthorizationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizationType' },
-          description:
-            'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
-        }),
-    ).exactOptional(),
-    AuthorizerId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authorizerId' },
-          description:
-            'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
-        }),
-    ).exactOptional(),
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    OperationName: StringWithLengthBetween1And64Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operationName' },
-          description: 'The operation name for the route.',
-        }),
-    ).exactOptional(),
-    RequestModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestModels' },
-          description: 'The request models for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RequestParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requestParameters' },
-          description: 'The request parameters for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    RouteKey: SelectionKeySchema.and(
-      z.any().openapi({ xml: { name: 'routeKey' }, description: 'The route key for the route.' }),
-    ).exactOptional(),
-    RouteResponseSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'routeResponseSelectionExpression' },
-          description:
-            'The route response selection expression for the route. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    Target: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'target' }, description: 'The target for the route.' }),
-    ).exactOptional(),
+    ApiKeyRequired: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'apiKeyRequired' },
+      description:
+        'Specifies whether an API key is required for the route. Supported only for WebSocket APIs.',
+    }),
+    AuthorizationScopes: AuthorizationScopesSchema.exactOptional().openapi({
+      xml: { name: 'authorizationScopes' },
+      description: 'The authorization scopes supported by this route.',
+    }),
+    AuthorizationType: AuthorizationTypeSchema.exactOptional().openapi({
+      xml: { name: 'authorizationType' },
+      description:
+        'The authorization type for the route. For WebSocket APIs, valid values are NONE for open access, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer For HTTP APIs, valid values are NONE for open access, JWT for using JSON Web Tokens, AWS_IAM for using AWS IAM permissions, and CUSTOM for using a Lambda authorizer.',
+    }),
+    AuthorizerId: IdSchema.exactOptional().openapi({
+      xml: { name: 'authorizerId' },
+      description:
+        'The identifier of the Authorizer resource to be associated with this route. The authorizer identifier is generated by API Gateway when you created the authorizer.',
+    }),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    OperationName: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+      xml: { name: 'operationName' },
+      description: 'The operation name for the route.',
+    }),
+    RequestModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'requestModels' },
+      description: 'The request models for the route. Supported only for WebSocket APIs.',
+    }),
+    RequestParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'requestParameters' },
+      description: 'The request parameters for the route. Supported only for WebSocket APIs.',
+    }),
+    RouteKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeKey' },
+      description: 'The route key for the route.',
+    }),
+    RouteResponseSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'routeResponseSelectionExpression' },
+      description:
+        'The route response selection expression for the route. Supported only for WebSocket APIs.',
+    }),
+    Target: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'target' },
+      description: 'The target for the route.',
+    }),
   })
   .openapi({ title: 'UpdateRouteRequest', description: 'Updates a Route.', required: [] })
   .openapi('UpdateRouteRequest')
 
 const UpdateRouteResponseRequestSchema = z
   .object({
-    ModelSelectionExpression: SelectionExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelSelectionExpression' },
-          description:
-            'The model selection expression for the route response. Supported only for WebSocket APIs.',
-        }),
-    ).exactOptional(),
-    ResponseModels: RouteModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseModels' },
-          description: 'The response models for the route response.',
-        }),
-    ).exactOptional(),
-    ResponseParameters: RouteParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'responseParameters' },
-          description: 'The route response parameters.',
-        }),
-    ).exactOptional(),
-    RouteResponseKey: SelectionKeySchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'routeResponseKey' }, description: 'The route response key.' }),
-    ).exactOptional(),
+    ModelSelectionExpression: SelectionExpressionSchema.exactOptional().openapi({
+      xml: { name: 'modelSelectionExpression' },
+      description:
+        'The model selection expression for the route response. Supported only for WebSocket APIs.',
+    }),
+    ResponseModels: RouteModelsSchema.exactOptional().openapi({
+      xml: { name: 'responseModels' },
+      description: 'The response models for the route response.',
+    }),
+    ResponseParameters: RouteParametersSchema.exactOptional().openapi({
+      xml: { name: 'responseParameters' },
+      description: 'The route response parameters.',
+    }),
+    RouteResponseKey: SelectionKeySchema.exactOptional().openapi({
+      xml: { name: 'routeResponseKey' },
+      description: 'The route response key.',
+    }),
   })
   .openapi({
     title: 'UpdateRouteResponseRequest',
@@ -6626,79 +4409,51 @@ const UpdateRouteResponseRequestSchema = z
 
 const UpdateStageRequestSchema = z
   .object({
-    AccessLogSettings: AccessLogSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'accessLogSettings' },
-          description: 'Settings for logging access in this stage.',
-        }),
-    ).exactOptional(),
-    AutoDeploy: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'autoDeploy' },
-          description:
-            'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
-        }),
-    ).exactOptional(),
-    ClientCertificateId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'clientCertificateId' },
-          description: 'The identifier of a client certificate for a Stage.',
-        }),
-    ).exactOptional(),
-    DefaultRouteSettings: RouteSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultRouteSettings' },
-          description: 'The default route settings for the stage.',
-        }),
-    ).exactOptional(),
-    DeploymentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deploymentId' },
-          description:
-            "The deployment identifier for the API stage. Can't be updated if autoDeploy is enabled.",
-        }),
-    ).exactOptional(),
-    Description: StringWithLengthBetween0And1024Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description: 'The description for the API stage.',
-        }),
-    ).exactOptional(),
-    RouteSettings: RouteSettingsMapSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'routeSettings' }, description: 'Route settings for the stage.' }),
-    ).exactOptional(),
-    StageVariables: StageVariablesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stageVariables' },
-          description:
-            'A map that defines the stage variables for a Stage. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
-        }),
-    ).exactOptional(),
+    AccessLogSettings: AccessLogSettingsSchema.exactOptional().openapi({
+      xml: { name: 'accessLogSettings' },
+      description: 'Settings for logging access in this stage.',
+    }),
+    AutoDeploy: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'autoDeploy' },
+      description:
+        'Specifies whether updates to an API automatically trigger a new deployment. The default value is false.',
+    }),
+    ClientCertificateId: IdSchema.exactOptional().openapi({
+      xml: { name: 'clientCertificateId' },
+      description: 'The identifier of a client certificate for a Stage.',
+    }),
+    DefaultRouteSettings: RouteSettingsSchema.exactOptional().openapi({
+      xml: { name: 'defaultRouteSettings' },
+      description: 'The default route settings for the stage.',
+    }),
+    DeploymentId: IdSchema.exactOptional().openapi({
+      xml: { name: 'deploymentId' },
+      description:
+        "The deployment identifier for the API stage. Can't be updated if autoDeploy is enabled.",
+    }),
+    Description: StringWithLengthBetween0And1024Schema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description: 'The description for the API stage.',
+    }),
+    RouteSettings: RouteSettingsMapSchema.exactOptional().openapi({
+      xml: { name: 'routeSettings' },
+      description: 'Route settings for the stage.',
+    }),
+    StageVariables: StageVariablesMapSchema.exactOptional().openapi({
+      xml: { name: 'stageVariables' },
+      description:
+        'A map that defines the stage variables for a Stage. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&amp;=,]+.',
+    }),
   })
   .openapi({ title: 'UpdateStageRequest', description: 'Updates a Stage.', required: [] })
   .openapi('UpdateStageRequest')
 
 const UpdateVpcLinkRequestSchema = z
   .object({
-    Name: StringWithLengthBetween1And128Schema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the VPC link.' }),
-    ).exactOptional(),
+    Name: StringWithLengthBetween1And128Schema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the VPC link.',
+    }),
   })
   .openapi({ title: 'UpdateVpcLinkRequest', description: 'Updates a VPC link.', required: [] })
   .openapi('UpdateVpcLinkRequest')
@@ -6949,60 +4704,36 @@ export const postV2ApisRoute = createRoute({
                 }),
               corsConfiguration: z
                 .object({
-                  AllowCredentials: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowCredentials' },
-                        description:
-                          'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowHeaders: CorsHeaderListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowHeaders' },
-                        description:
-                          'Represents a collection of allowed headers. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowMethods: CorsMethodListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowMethods' },
-                        description:
-                          'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowOrigins: CorsOriginListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowOrigins' },
-                        description:
-                          'Represents a collection of allowed origins. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  ExposeHeaders: CorsHeaderListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'exposeHeaders' },
-                        description:
-                          'Represents a collection of exposed headers. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxAge' },
-                        description:
-                          'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
+                  AllowCredentials: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'allowCredentials' },
+                    description:
+                      'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
+                  }),
+                  AllowHeaders: CorsHeaderListSchema.exactOptional().openapi({
+                    xml: { name: 'allowHeaders' },
+                    description:
+                      'Represents a collection of allowed headers. Supported only for HTTP APIs.',
+                  }),
+                  AllowMethods: CorsMethodListSchema.exactOptional().openapi({
+                    xml: { name: 'allowMethods' },
+                    description:
+                      'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
+                  }),
+                  AllowOrigins: CorsOriginListSchema.exactOptional().openapi({
+                    xml: { name: 'allowOrigins' },
+                    description:
+                      'Represents a collection of allowed origins. Supported only for HTTP APIs.',
+                  }),
+                  ExposeHeaders: CorsHeaderListSchema.exactOptional().openapi({
+                    xml: { name: 'exposeHeaders' },
+                    description:
+                      'Represents a collection of exposed headers. Supported only for HTTP APIs.',
+                  }),
+                  MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.exactOptional().openapi({
+                    xml: { name: 'maxAge' },
+                    description:
+                      'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7400,24 +5131,16 @@ export const postV2ApisApiIdAuthorizersRoute = createRoute({
                 .openapi({ description: 'A string with a length between [0-1024].' }),
               jwtConfiguration: z
                 .object({
-                  Audience: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'audience' },
-                        description:
-                          'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  Issuer: UriWithLengthBetween1And2048Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'issuer' },
-                        description:
-                          'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
+                  Audience: ListOfStringSchema.exactOptional().openapi({
+                    xml: { name: 'audience' },
+                    description:
+                      'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
+                  }),
+                  Issuer: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+                    xml: { name: 'issuer' },
+                    description:
+                      'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7697,24 +5420,16 @@ export const postV2DomainnamesRoute = createRoute({
                 .openapi({ description: 'The domain name configurations.' }),
               mutualTlsAuthentication: z
                 .object({
-                  TruststoreUri: UriWithLengthBetween1And2048Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'truststoreUri' },
-                        description:
-                          'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-                      }),
-                  ).exactOptional(),
-                  TruststoreVersion: StringWithLengthBetween1And64Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'truststoreVersion' },
-                        description:
-                          'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  TruststoreUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+                    xml: { name: 'truststoreUri' },
+                    description:
+                      'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+                  }),
+                  TruststoreVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+                    xml: { name: 'truststoreVersion' },
+                    description:
+                      'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7959,15 +5674,11 @@ export const postV2ApisApiIdIntegrationsRoute = createRoute({
                 .openapi({ description: 'An integer with a value between [50-30000].' }),
               tlsConfig: z
                 .object({
-                  ServerNameToVerify: StringWithLengthBetween1And512Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serverNameToVerify' },
-                        description:
-                          "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
-                      }),
-                  ).exactOptional(),
+                  ServerNameToVerify: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+                    xml: { name: 'serverNameToVerify' },
+                    description:
+                      "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8846,24 +6557,15 @@ export const postV2ApisApiIdStagesRoute = createRoute({
             .object({
               accessLogSettings: z
                 .object({
-                  DestinationArn: ArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'destinationArn' },
-                        description:
-                          'The ARN of the CloudWatch Logs log group to receive access logs.',
-                      }),
-                  ).exactOptional(),
-                  Format: StringWithLengthBetween1And1024Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'format' },
-                        description:
-                          'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
-                      }),
-                  ).exactOptional(),
+                  DestinationArn: ArnSchema.exactOptional().openapi({
+                    xml: { name: 'destinationArn' },
+                    description: 'The ARN of the CloudWatch Logs log group to receive access logs.',
+                  }),
+                  Format: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+                    xml: { name: 'format' },
+                    description:
+                      'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Settings for logging access in a stage.', required: [] }),
@@ -8880,48 +6582,28 @@ export const postV2ApisApiIdStagesRoute = createRoute({
                 .openapi({ description: 'The identifier.' }),
               defaultRouteSettings: z
                 .object({
-                  DataTraceEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'dataTraceEnabled' },
-                        description:
-                          'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-                      }),
-                  ).exactOptional(),
-                  DetailedMetricsEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'detailedMetricsEnabled' },
-                        description: 'Specifies whether detailed metrics are enabled.',
-                      }),
-                  ).exactOptional(),
-                  LoggingLevel: LoggingLevelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'loggingLevel' },
-                        description:
-                          'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-                      }),
-                  ).exactOptional(),
-                  ThrottlingBurstLimit: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'throttlingBurstLimit' },
-                        description: 'Specifies the throttling burst limit.',
-                      }),
-                  ).exactOptional(),
-                  ThrottlingRateLimit: DoubleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'throttlingRateLimit' },
-                        description: 'Specifies the throttling rate limit.',
-                      }),
-                  ).exactOptional(),
+                  DataTraceEnabled: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'dataTraceEnabled' },
+                    description:
+                      'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+                  }),
+                  DetailedMetricsEnabled: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'detailedMetricsEnabled' },
+                    description: 'Specifies whether detailed metrics are enabled.',
+                  }),
+                  LoggingLevel: LoggingLevelSchema.exactOptional().openapi({
+                    xml: { name: 'loggingLevel' },
+                    description:
+                      'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+                  }),
+                  ThrottlingBurstLimit: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'throttlingBurstLimit' },
+                    description: 'Specifies the throttling burst limit.',
+                  }),
+                  ThrottlingRateLimit: DoubleSchema.exactOptional().openapi({
+                    xml: { name: 'throttlingRateLimit' },
+                    description: 'Specifies the throttling rate limit.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9376,60 +7058,36 @@ export const patchV2ApisApiIdRoute = createRoute({
                 }),
               corsConfiguration: z
                 .object({
-                  AllowCredentials: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowCredentials' },
-                        description:
-                          'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowHeaders: CorsHeaderListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowHeaders' },
-                        description:
-                          'Represents a collection of allowed headers. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowMethods: CorsMethodListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowMethods' },
-                        description:
-                          'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  AllowOrigins: CorsOriginListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'allowOrigins' },
-                        description:
-                          'Represents a collection of allowed origins. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  ExposeHeaders: CorsHeaderListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'exposeHeaders' },
-                        description:
-                          'Represents a collection of exposed headers. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'maxAge' },
-                        description:
-                          'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
+                  AllowCredentials: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'allowCredentials' },
+                    description:
+                      'Specifies whether credentials are included in the CORS request. Supported only for HTTP APIs.',
+                  }),
+                  AllowHeaders: CorsHeaderListSchema.exactOptional().openapi({
+                    xml: { name: 'allowHeaders' },
+                    description:
+                      'Represents a collection of allowed headers. Supported only for HTTP APIs.',
+                  }),
+                  AllowMethods: CorsMethodListSchema.exactOptional().openapi({
+                    xml: { name: 'allowMethods' },
+                    description:
+                      'Represents a collection of allowed HTTP methods. Supported only for HTTP APIs.',
+                  }),
+                  AllowOrigins: CorsOriginListSchema.exactOptional().openapi({
+                    xml: { name: 'allowOrigins' },
+                    description:
+                      'Represents a collection of allowed origins. Supported only for HTTP APIs.',
+                  }),
+                  ExposeHeaders: CorsHeaderListSchema.exactOptional().openapi({
+                    xml: { name: 'exposeHeaders' },
+                    description:
+                      'Represents a collection of exposed headers. Supported only for HTTP APIs.',
+                  }),
+                  MaxAge: IntegerWithLengthBetweenMinus1And86400Schema.exactOptional().openapi({
+                    xml: { name: 'maxAge' },
+                    description:
+                      'The number of seconds that the browser should cache preflight request results. Supported only for HTTP APIs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -9922,24 +7580,16 @@ export const patchV2ApisApiIdAuthorizersAuthorizerIdRoute = createRoute({
                 .openapi({ description: 'A string with a length between [0-1024].' }),
               jwtConfiguration: z
                 .object({
-                  Audience: ListOfStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'audience' },
-                        description:
-                          'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
-                  Issuer: UriWithLengthBetween1And2048Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'issuer' },
-                        description:
-                          'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
-                      }),
-                  ).exactOptional(),
+                  Audience: ListOfStringSchema.exactOptional().openapi({
+                    xml: { name: 'audience' },
+                    description:
+                      'A list of the intended recipients of the JWT. A valid JWT must provide an aud that matches at least one entry in this list. See <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519</a>. Supported only for HTTP APIs.',
+                  }),
+                  Issuer: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+                    xml: { name: 'issuer' },
+                    description:
+                      'The base domain of the identity provider that issues JSON Web Tokens. For example, an Amazon Cognito user pool has the following format: https://cognito-idp.<replaceable>{region}</replaceable>.amazonaws.com/<replaceable>{userPoolId}</replaceable>\n               . Required for the JWT authorizer type. Supported only for HTTP APIs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10338,24 +7988,16 @@ export const patchV2DomainnamesDomainNameRoute = createRoute({
                 .openapi({ description: 'The domain name configurations.' }),
               mutualTlsAuthentication: z
                 .object({
-                  TruststoreUri: UriWithLengthBetween1And2048Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'truststoreUri' },
-                        description:
-                          'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
-                      }),
-                  ).exactOptional(),
-                  TruststoreVersion: StringWithLengthBetween1And64Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'truststoreVersion' },
-                        description:
-                          'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  TruststoreUri: UriWithLengthBetween1And2048Schema.exactOptional().openapi({
+                    xml: { name: 'truststoreUri' },
+                    description:
+                      'An Amazon S3 URL that specifies the truststore for mutual TLS authentication, for example, s3://<replaceable>bucket-name</replaceable>/<replaceable>key-name</replaceable>. The truststore can contain certificates from public or private certificate authorities. To update the truststore, upload a new version to S3, and then update your custom domain name to use the new version. To update the truststore, you must have permissions to access the S3 object.',
+                  }),
+                  TruststoreVersion: StringWithLengthBetween1And64Schema.exactOptional().openapi({
+                    xml: { name: 'truststoreVersion' },
+                    description:
+                      'The version of the S3 object that contains your truststore. To specify a version, you must have versioning enabled for the S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10635,15 +8277,11 @@ export const patchV2ApisApiIdIntegrationsIntegrationIdRoute = createRoute({
                 .openapi({ description: 'An integer with a value between [50-30000].' }),
               tlsConfig: z
                 .object({
-                  ServerNameToVerify: StringWithLengthBetween1And512Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serverNameToVerify' },
-                        description:
-                          "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
-                      }),
-                  ).exactOptional(),
+                  ServerNameToVerify: StringWithLengthBetween1And512Schema.exactOptional().openapi({
+                    xml: { name: 'serverNameToVerify' },
+                    description:
+                      "If you specify a server name, API Gateway uses it to verify the hostname on the integration's certificate. The server name is also included in the TLS handshake to support Server Name Indication (SNI) or virtual hosting.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11906,24 +9544,15 @@ export const patchV2ApisApiIdStagesStageNameRoute = createRoute({
             .object({
               accessLogSettings: z
                 .object({
-                  DestinationArn: ArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'destinationArn' },
-                        description:
-                          'The ARN of the CloudWatch Logs log group to receive access logs.',
-                      }),
-                  ).exactOptional(),
-                  Format: StringWithLengthBetween1And1024Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'format' },
-                        description:
-                          'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
-                      }),
-                  ).exactOptional(),
+                  DestinationArn: ArnSchema.exactOptional().openapi({
+                    xml: { name: 'destinationArn' },
+                    description: 'The ARN of the CloudWatch Logs log group to receive access logs.',
+                  }),
+                  Format: StringWithLengthBetween1And1024Schema.exactOptional().openapi({
+                    xml: { name: 'format' },
+                    description:
+                      'A single line format of the access logs of data, as specified by selected $context variables. The format must include at least $context.requestId.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Settings for logging access in a stage.', required: [] }),
@@ -11940,48 +9569,28 @@ export const patchV2ApisApiIdStagesStageNameRoute = createRoute({
                 .openapi({ description: 'The identifier.' }),
               defaultRouteSettings: z
                 .object({
-                  DataTraceEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'dataTraceEnabled' },
-                        description:
-                          'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-                      }),
-                  ).exactOptional(),
-                  DetailedMetricsEnabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'detailedMetricsEnabled' },
-                        description: 'Specifies whether detailed metrics are enabled.',
-                      }),
-                  ).exactOptional(),
-                  LoggingLevel: LoggingLevelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'loggingLevel' },
-                        description:
-                          'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
-                      }),
-                  ).exactOptional(),
-                  ThrottlingBurstLimit: IntegerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'throttlingBurstLimit' },
-                        description: 'Specifies the throttling burst limit.',
-                      }),
-                  ).exactOptional(),
-                  ThrottlingRateLimit: DoubleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'throttlingRateLimit' },
-                        description: 'Specifies the throttling rate limit.',
-                      }),
-                  ).exactOptional(),
+                  DataTraceEnabled: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'dataTraceEnabled' },
+                    description:
+                      'Specifies whether (true) or not (false) data trace logging is enabled for this route. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+                  }),
+                  DetailedMetricsEnabled: BooleanSchema.exactOptional().openapi({
+                    xml: { name: 'detailedMetricsEnabled' },
+                    description: 'Specifies whether detailed metrics are enabled.',
+                  }),
+                  LoggingLevel: LoggingLevelSchema.exactOptional().openapi({
+                    xml: { name: 'loggingLevel' },
+                    description:
+                      'Specifies the logging level for this route: INFO, ERROR, or OFF. This property affects the log entries pushed to Amazon CloudWatch Logs. Supported only for WebSocket APIs.',
+                  }),
+                  ThrottlingBurstLimit: IntegerSchema.exactOptional().openapi({
+                    xml: { name: 'throttlingBurstLimit' },
+                    description: 'Specifies the throttling burst limit.',
+                  }),
+                  ThrottlingRateLimit: DoubleSchema.exactOptional().openapi({
+                    xml: { name: 'throttlingRateLimit' },
+                    description: 'Specifies the throttling rate limit.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

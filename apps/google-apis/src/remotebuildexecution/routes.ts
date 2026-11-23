@@ -21,6 +21,116 @@ const BuildBazelRemoteExecutionV2DigestSchema = z
   })
   .openapi('BuildBazelRemoteExecutionV2Digest')
 
+const BuildBazelRemoteExecutionV2DirectoryNodeSchema = z
+  .object({
+    digest: BuildBazelRemoteExecutionV2DigestSchema.exactOptional().openapi({
+      description:
+        'The digest of the Directory object represented. See Digest for information about how to take the digest of a proto message.',
+    }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the directory.' }),
+  })
+  .openapi({
+    description:
+      'A `DirectoryNode` represents a child of a Directory which is itself a `Directory` and its associated metadata.',
+    required: [],
+  })
+  .openapi('BuildBazelRemoteExecutionV2DirectoryNode')
+
+const BuildBazelRemoteExecutionV2NodePropertySchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The property name.' }),
+    value: z.string().exactOptional().openapi({ description: 'The property value.' }),
+  })
+  .openapi({
+    description:
+      'A single property for FileNodes, DirectoryNodes, and SymlinkNodes. The server is responsible for specifying the property `name`s that it accepts. If permitted by the server, the same `name` may occur multiple times.',
+    required: [],
+  })
+  .openapi('BuildBazelRemoteExecutionV2NodeProperty')
+
+const BuildBazelRemoteExecutionV2NodePropertiesSchema = z
+  .object({
+    mtime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The file's last modification timestamp." }),
+    properties: z
+      .array(BuildBazelRemoteExecutionV2NodePropertySchema)
+      .exactOptional()
+      .openapi({ description: 'A list of string-based NodeProperties.' }),
+    unixMode: z
+      .uint32()
+      .exactOptional()
+      .openapi({ description: 'The UNIX file mode, e.g., 0755.' }),
+  })
+  .openapi({
+    description:
+      'Node properties for FileNodes, DirectoryNodes, and SymlinkNodes. The server is responsible for specifying the properties that it accepts.',
+    required: [],
+  })
+  .openapi('BuildBazelRemoteExecutionV2NodeProperties')
+
+const BuildBazelRemoteExecutionV2FileNodeSchema = z
+  .object({
+    digest: BuildBazelRemoteExecutionV2DigestSchema.exactOptional().openapi({
+      description: "The digest of the file's content.",
+    }),
+    isExecutable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'True if file is executable, false otherwise.' }),
+    name: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
+    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'A `FileNode` represents a single file and associated metadata.',
+    required: [],
+  })
+  .openapi('BuildBazelRemoteExecutionV2FileNode')
+
+const BuildBazelRemoteExecutionV2SymlinkNodeSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the symlink.' }),
+    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
+    target: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The target path of the symlink. The path separator is a forward slash `/`. The target path can be relative to the parent directory of the symlink or it can be an absolute path starting with `/`. Support for absolute paths can be checked using the Capabilities API. `..` components are allowed anywhere in the target path as logical canonicalization may lead to different behavior in the presence of directory symlinks (e.g. `foo/../bar` may not be the same as `bar`). To reduce potential cache misses, canonicalization is still recommended where this is possible without impacting correctness.',
+      }),
+  })
+  .openapi({ description: 'A `SymlinkNode` represents a symbolic link.', required: [] })
+  .openapi('BuildBazelRemoteExecutionV2SymlinkNode')
+
+const BuildBazelRemoteExecutionV2DirectorySchema = z
+  .object({
+    directories: z
+      .array(BuildBazelRemoteExecutionV2DirectoryNodeSchema)
+      .exactOptional()
+      .openapi({ description: 'The subdirectories in the directory.' }),
+    files: z
+      .array(BuildBazelRemoteExecutionV2FileNodeSchema)
+      .exactOptional()
+      .openapi({ description: 'The files in the directory.' }),
+    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
+    symlinks: z
+      .array(BuildBazelRemoteExecutionV2SymlinkNodeSchema)
+      .exactOptional()
+      .openapi({ description: 'The symlinks in the directory.' }),
+  })
+  .openapi({
+    description:
+      'A `Directory` represents a directory node in a file tree, containing zero or more children FileNodes, DirectoryNodes and SymlinkNodes. Each `Node` contains its name in the directory, either the digest of its content (either a file blob or a `Directory` proto) or a symlink target, as well as possibly some metadata about the file or directory. In order to ensure that two equivalent directory trees hash to the same value, the following restrictions MUST be obeyed when constructing a a `Directory`: * Every child in the directory must have a path of exactly one segment. Multiple levels of directory hierarchy may not be collapsed. * Each child in the directory must have a unique path segment (file name). Note that while the API itself is case-sensitive, the environment where the Action is executed may or may not be case-sensitive. That is, it is legal to call the API with a Directory that has both "Foo" and "foo" as children, but the Action may be rejected by the remote system upon execution. * The files, directories and symlinks in the directory must each be sorted in lexicographical order by path. The path strings must be sorted by code point, equivalently, by UTF-8 bytes. * The NodeProperties of files, directories, and symlinks must be sorted in lexicographical order by property name. A `Directory` that obeys the restrictions is said to be in canonical form. As an example, the following could be used for a file named `bar` and a directory named `foo` with an executable file named `baz` (hashes shortened for readability): ```json // (Directory proto) { files: [ { name: "bar", digest: { hash: "4a73bc9d03...", size: 65534 }, node_properties: [ { "name": "MTime", "value": "2017-01-15T01:30:15.01Z" } ] } ], directories: [ { name: "foo", digest: { hash: "4cf2eda940...", size: 43 } } ] } // (Directory proto with hash "4cf2eda940..." and size 43) { files: [ { name: "baz", digest: { hash: "b2c941073e...", size: 1294, }, is_executable: true } ] } ```',
+    required: [],
+  })
+  .openapi('BuildBazelRemoteExecutionV2Directory')
+
+type BuildBazelRemoteExecutionV2TreeType = {
+  children?: z.infer<typeof BuildBazelRemoteExecutionV2DirectorySchema>[]
+  root?: z.infer<typeof BuildBazelRemoteExecutionV2DirectorySchema>
+}
+
 const BuildBazelRemoteExecutionV2PlatformPropertySchema = z
   .object({
     name: z.string().exactOptional().openapi({ description: 'The property name.' }),
@@ -191,40 +301,6 @@ const BuildBazelRemoteExecutionV2OutputDirectorySchema = z
     required: [],
   })
   .openapi('BuildBazelRemoteExecutionV2OutputDirectory')
-
-const BuildBazelRemoteExecutionV2NodePropertySchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The property name.' }),
-    value: z.string().exactOptional().openapi({ description: 'The property value.' }),
-  })
-  .openapi({
-    description:
-      'A single property for FileNodes, DirectoryNodes, and SymlinkNodes. The server is responsible for specifying the property `name`s that it accepts. If permitted by the server, the same `name` may occur multiple times.',
-    required: [],
-  })
-  .openapi('BuildBazelRemoteExecutionV2NodeProperty')
-
-const BuildBazelRemoteExecutionV2NodePropertiesSchema = z
-  .object({
-    mtime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The file's last modification timestamp." }),
-    properties: z
-      .array(BuildBazelRemoteExecutionV2NodePropertySchema)
-      .exactOptional()
-      .openapi({ description: 'A list of string-based NodeProperties.' }),
-    unixMode: z
-      .uint32()
-      .exactOptional()
-      .openapi({ description: 'The UNIX file mode, e.g., 0755.' }),
-  })
-  .openapi({
-    description:
-      'Node properties for FileNodes, DirectoryNodes, and SymlinkNodes. The server is responsible for specifying the properties that it accepts.',
-    required: [],
-  })
-  .openapi('BuildBazelRemoteExecutionV2NodeProperties')
 
 const BuildBazelRemoteExecutionV2OutputSymlinkSchema = z
   .object({
@@ -430,77 +506,6 @@ const BuildBazelRemoteExecutionV2CommandSchema = z
   })
   .openapi('BuildBazelRemoteExecutionV2Command')
 
-const BuildBazelRemoteExecutionV2DirectoryNodeSchema = z
-  .object({
-    digest: BuildBazelRemoteExecutionV2DigestSchema.exactOptional().openapi({
-      description:
-        'The digest of the Directory object represented. See Digest for information about how to take the digest of a proto message.',
-    }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the directory.' }),
-  })
-  .openapi({
-    description:
-      'A `DirectoryNode` represents a child of a Directory which is itself a `Directory` and its associated metadata.',
-    required: [],
-  })
-  .openapi('BuildBazelRemoteExecutionV2DirectoryNode')
-
-const BuildBazelRemoteExecutionV2FileNodeSchema = z
-  .object({
-    digest: BuildBazelRemoteExecutionV2DigestSchema.exactOptional().openapi({
-      description: "The digest of the file's content.",
-    }),
-    isExecutable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if file is executable, false otherwise.' }),
-    name: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
-    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'A `FileNode` represents a single file and associated metadata.',
-    required: [],
-  })
-  .openapi('BuildBazelRemoteExecutionV2FileNode')
-
-const BuildBazelRemoteExecutionV2SymlinkNodeSchema = z
-  .object({
-    name: z.string().exactOptional().openapi({ description: 'The name of the symlink.' }),
-    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
-    target: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The target path of the symlink. The path separator is a forward slash `/`. The target path can be relative to the parent directory of the symlink or it can be an absolute path starting with `/`. Support for absolute paths can be checked using the Capabilities API. `..` components are allowed anywhere in the target path as logical canonicalization may lead to different behavior in the presence of directory symlinks (e.g. `foo/../bar` may not be the same as `bar`). To reduce potential cache misses, canonicalization is still recommended where this is possible without impacting correctness.',
-      }),
-  })
-  .openapi({ description: 'A `SymlinkNode` represents a symbolic link.', required: [] })
-  .openapi('BuildBazelRemoteExecutionV2SymlinkNode')
-
-const BuildBazelRemoteExecutionV2DirectorySchema = z
-  .object({
-    directories: z
-      .array(BuildBazelRemoteExecutionV2DirectoryNodeSchema)
-      .exactOptional()
-      .openapi({ description: 'The subdirectories in the directory.' }),
-    files: z
-      .array(BuildBazelRemoteExecutionV2FileNodeSchema)
-      .exactOptional()
-      .openapi({ description: 'The files in the directory.' }),
-    nodeProperties: BuildBazelRemoteExecutionV2NodePropertiesSchema.exactOptional(),
-    symlinks: z
-      .array(BuildBazelRemoteExecutionV2SymlinkNodeSchema)
-      .exactOptional()
-      .openapi({ description: 'The symlinks in the directory.' }),
-  })
-  .openapi({
-    description:
-      'A `Directory` represents a directory node in a file tree, containing zero or more children FileNodes, DirectoryNodes and SymlinkNodes. Each `Node` contains its name in the directory, either the digest of its content (either a file blob or a `Directory` proto) or a symlink target, as well as possibly some metadata about the file or directory. In order to ensure that two equivalent directory trees hash to the same value, the following restrictions MUST be obeyed when constructing a a `Directory`: * Every child in the directory must have a path of exactly one segment. Multiple levels of directory hierarchy may not be collapsed. * Each child in the directory must have a unique path segment (file name). Note that while the API itself is case-sensitive, the environment where the Action is executed may or may not be case-sensitive. That is, it is legal to call the API with a Directory that has both "Foo" and "foo" as children, but the Action may be rejected by the remote system upon execution. * The files, directories and symlinks in the directory must each be sorted in lexicographical order by path. The path strings must be sorted by code point, equivalently, by UTF-8 bytes. * The NodeProperties of files, directories, and symlinks must be sorted in lexicographical order by property name. A `Directory` that obeys the restrictions is said to be in canonical form. As an example, the following could be used for a file named `bar` and a directory named `foo` with an executable file named `baz` (hashes shortened for readability): ```json // (Directory proto) { files: [ { name: "bar", digest: { hash: "4a73bc9d03...", size: 65534 }, node_properties: [ { "name": "MTime", "value": "2017-01-15T01:30:15.01Z" } ] } ], directories: [ { name: "foo", digest: { hash: "4cf2eda940...", size: 43 } } ] } // (Directory proto with hash "4cf2eda940..." and size 43) { files: [ { name: "baz", digest: { hash: "b2c941073e...", size: 1294, }, is_executable: true } ] } ```',
-    required: [],
-  })
-  .openapi('BuildBazelRemoteExecutionV2Directory')
-
 const BuildBazelRemoteExecutionV2ExecuteOperationMetadataSchema = z
   .object({
     actionDigest: BuildBazelRemoteExecutionV2DigestSchema.exactOptional().openapi({
@@ -694,7 +699,7 @@ const BuildBazelRemoteExecutionV2RequestMetadataSchema = z
   })
   .openapi('BuildBazelRemoteExecutionV2RequestMetadata')
 
-const BuildBazelRemoteExecutionV2TreeSchema = z
+const BuildBazelRemoteExecutionV2TreeSchema: z.ZodType<BuildBazelRemoteExecutionV2TreeType> = z
   .object({
     children: z
       .array(BuildBazelRemoteExecutionV2DirectorySchema)
@@ -1460,7 +1465,7 @@ const GoogleDevtoolsRemotebuildexecutionAdminV1alphaListWorkerPoolsResponseSchem
   .openapi('GoogleDevtoolsRemotebuildexecutionAdminV1alphaListWorkerPoolsResponse')
 
 const GoogleDevtoolsRemotebuildexecutionAdminV1alphaTestNotifyInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request used for `TestNotifyInstance`.' })
   .openapi('GoogleDevtoolsRemotebuildexecutionAdminV1alphaTestNotifyInstanceRequest')
 
@@ -1911,7 +1916,7 @@ const GoogleLongrunningOperationSchema = z
   .openapi('GoogleLongrunningOperation')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

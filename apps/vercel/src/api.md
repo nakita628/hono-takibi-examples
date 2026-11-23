@@ -1710,13 +1710,123 @@ bearerToken
 ```bash
 curl https://api.vercel.com/ai-gateway/virtual-model-configs \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "virtualModelSlug": "string",
+    "displayName": "string",
+    "description": "string",
+    "status": "string",
+    "modelSlug": "string",
+    "models": [
+      "string"
+    ],
+    "providerOrder": [
+      "string"
+    ],
+    "providerOnly": [
+      "string"
+    ],
+    "observabilityTags": [
+      "string"
+    ],
+    "providerOptions": {
+      "property1": {},
+      "property2": {}
+    },
+    "byokCredentialIds": [
+      "string"
+    ],
+    "inferenceRegion": {
+      "scope": "zone",
+      "geoRegion": "string",
+      "providers": {
+        "property1": {
+          "scope": "zone",
+          "geoRegion": "string"
+        },
+        "property2": {
+          "scope": "zone",
+          "geoRegion": "string"
+        }
+      }
+    },
+    "sort": "@default",
+    "has": [
+      "implicit-caching"
+    ],
+    "caching": "@default",
+    "serviceTier": "@default",
+    "providerTimeouts": "@default",
+    "zeroDataRetention": true,
+    "hipaaCompliant": true,
+    "disallowPromptTraining": true,
+    "speed": "fast",
+    "allowFallbackFromFast": true
+  }'
 ```
 
 `POST /ai-gateway/virtual-model-configs`
 
 Create a virtual model config (VMC)
+
+> Body parameter
+
+```json
+{
+  "virtualModelSlug": "string",
+  "displayName": "string",
+  "description": "string",
+  "status": "string",
+  "modelSlug": "string",
+  "models": [
+    "string"
+  ],
+  "providerOrder": [
+    "string"
+  ],
+  "providerOnly": [
+    "string"
+  ],
+  "observabilityTags": [
+    "string"
+  ],
+  "providerOptions": {
+    "property1": {},
+    "property2": {}
+  },
+  "byokCredentialIds": [
+    "string"
+  ],
+  "inferenceRegion": {
+    "scope": "zone",
+    "geoRegion": "string",
+    "providers": {
+      "property1": {
+        "scope": "zone",
+        "geoRegion": "string"
+      },
+      "property2": {
+        "scope": "zone",
+        "geoRegion": "string"
+      }
+    }
+  },
+  "sort": "@default",
+  "has": [
+    "implicit-caching"
+  ],
+  "caching": "@default",
+  "serviceTier": "@default",
+  "providerTimeouts": "@default",
+  "zeroDataRetention": true,
+  "hipaaCompliant": true,
+  "disallowPromptTraining": true,
+  "speed": "fast",
+  "allowFallbackFromFast": true
+}
+```
 
 <h3 id="create-virtual-model-config-parameters">Parameters</h3>
 
@@ -1724,6 +1834,81 @@ Create a virtual model config (VMC)
 |---|---|---|---|---|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» virtualModelSlug|body|string|true|The slug of the virtual model. Requests name it as `vmc/<slug>`. `list` is reserved.|
+|» displayName|body|string|false|The name shown in the UI.|
+|» description|body|string|false|none|
+|» status|body|string|false|The lifecycle status: `draft`, `active`, or `archived`. Any value other than `active` stops it serving requests. Defaults to `active`.|
+|» modelSlug|body|string|false|The model that the virtual model resolves to: a catalog model such as `openai/gpt-4o-mini`, or one of your team's private models as `private/<slug>`. Required on create.|
+|» models|body|[string \| object]|false|The ordered fallback models, optionally led by one conditional `{ model, when }` entry.|
+|» » *oneOf*|body|string|false|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » *oneOf*|body|object|false|A conditional fallback. Only an alias can have one.|
+|» » model|body|string|true|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » when|body|object|true|The fallback model is used when the answers of the primary model match this condition. Set exactly one of `confidenceBelow`, `probabilityBetween`, `any`, `all`, or `atLeast`. A condition tree can be 5 levels deep and can hold 100 conditions.|
+|» » » question|body|string|false|The question to check, with `confidenceBelow` or `probabilityBetween`. Without it, the condition checks every question of the applicable type.|
+|» » » confidenceBelow|body|number|false|none|
+|» » » probabilityBetween|body|[number]|false|A `[lower, upper]` pair.|
+|» » » any|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » all|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » atLeast|body|object|false|none|
+|» » » » count|body|integer|true|Must not be more than the number of conditions.|
+|» » » » conditions|body|[object]|true|Nested conditions. Each one has the same shape as `when`.|
+|» providerOrder|body|[string]|false|The providers to try, in order.|
+|» providerOnly|body|[string]|false|Restrict routing to these providers.|
+|» observabilityTags|body|[string]|false|Observability tags attached to requests through this virtual model.|
+|» providerOptions|body|object|false|Provider-specific options, keyed by provider slug. The slug of one of your team's private providers is also valid.|
+|» » **additionalProperties**|body|object|false|none|
+|» byokCredentialIds|body|[string]|false|The BYOK credentials that this virtual model can use.|
+|» inferenceRegion|body|object|false|The region that requests are pinned to.|
+|» » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» » providers|body|object|false|Region overrides for each provider, keyed by provider slug.|
+|» » » **additionalProperties**|body|object \| null|false|none|
+|» » » » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » » » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» sort|body|string|false|Rank eligible providers by an attribute. `@default` ignores the value from the inference request.|
+|» has|body|[string]|false|Limit providers to those with these features.|
+|» caching|body|string|false|Use caching if available. `@default` ignores the value from the inference request.|
+|» serviceTier|body|string|false|The service tier for providers that support it. `@default` ignores the value from the inference request.|
+|» providerTimeouts|body|string \| object|false|Provider timeouts in milliseconds. `@default` ignores the value from the inference request.|
+|» » *oneOf*|body|string|false|none|
+|» » *oneOf*|body|object|false|none|
+|» » byok|body|object|false|The timeout for each provider that uses a BYOK credential, keyed by provider slug.|
+|» » » **additionalProperties**|body|integer|false|none|
+|» zeroDataRetention|body|boolean|false|Only use providers with zero data retention.|
+|» hipaaCompliant|body|boolean|false|Only use HIPAA-compliant providers.|
+|» disallowPromptTraining|body|boolean|false|Only use providers that do not train on prompts.|
+|» speed|body|string|false|Only use the fastest providers, with short timeouts.|
+|» allowFallbackFromFast|body|boolean|false|Allow fallback from fast to standard providers on failure.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » scope|zone|
+|» » scope|global|
+|» » » » scope|zone|
+|» » » » scope|global|
+|» sort|@default|
+|» sort|cost|
+|» sort|ttft|
+|» sort|tps|
+|» sort|price|
+|» sort|latency|
+|» sort|throughput|
+|» has|implicit-caching|
+|» has|reasoning|
+|» has|structured-output|
+|» has|tool-use|
+|» has|vision|
+|» caching|@default|
+|» caching|auto|
+|» serviceTier|@default|
+|» serviceTier|flex|
+|» serviceTier|priority|
+|» serviceTier|fast|
+|» » *oneOf*|@default|
+|» speed|fast|
 
 > Example responses
 
@@ -1813,7 +1998,7 @@ Create a virtual model config (VMC)
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[AiGatewayVirtualModelConfig](#schemaaigatewayvirtualmodelconfig)|
-|400|Bad Request||None|
+|400|Bad Request|One of the provided values in the request body is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
@@ -1890,13 +2075,125 @@ bearerToken
 ```bash
 curl https://api.vercel.com/ai-gateway/virtual-model-configs \
   -X PATCH \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "virtualModelSlug": "string",
+    "displayName": "string",
+    "description": "string",
+    "status": "string",
+    "modelSlug": "string",
+    "models": [
+      "string"
+    ],
+    "providerOrder": [
+      "string"
+    ],
+    "providerOnly": [
+      "string"
+    ],
+    "observabilityTags": [
+      "string"
+    ],
+    "deleted": false,
+    "providerOptions": {
+      "property1": {},
+      "property2": {}
+    },
+    "byokCredentialIds": [
+      "string"
+    ],
+    "inferenceRegion": {
+      "scope": "zone",
+      "geoRegion": "string",
+      "providers": {
+        "property1": {
+          "scope": "zone",
+          "geoRegion": "string"
+        },
+        "property2": {
+          "scope": "zone",
+          "geoRegion": "string"
+        }
+      }
+    },
+    "sort": "@default",
+    "has": [
+      "implicit-caching"
+    ],
+    "caching": "@default",
+    "serviceTier": "@default",
+    "providerTimeouts": "@default",
+    "zeroDataRetention": true,
+    "hipaaCompliant": true,
+    "disallowPromptTraining": true,
+    "speed": "fast",
+    "allowFallbackFromFast": true
+  }'
 ```
 
 `PATCH /ai-gateway/virtual-model-configs`
 
 Update a virtual model config
+
+> Body parameter
+
+```json
+{
+  "virtualModelSlug": "string",
+  "displayName": "string",
+  "description": "string",
+  "status": "string",
+  "modelSlug": "string",
+  "models": [
+    "string"
+  ],
+  "providerOrder": [
+    "string"
+  ],
+  "providerOnly": [
+    "string"
+  ],
+  "observabilityTags": [
+    "string"
+  ],
+  "deleted": false,
+  "providerOptions": {
+    "property1": {},
+    "property2": {}
+  },
+  "byokCredentialIds": [
+    "string"
+  ],
+  "inferenceRegion": {
+    "scope": "zone",
+    "geoRegion": "string",
+    "providers": {
+      "property1": {
+        "scope": "zone",
+        "geoRegion": "string"
+      },
+      "property2": {
+        "scope": "zone",
+        "geoRegion": "string"
+      }
+    }
+  },
+  "sort": "@default",
+  "has": [
+    "implicit-caching"
+  ],
+  "caching": "@default",
+  "serviceTier": "@default",
+  "providerTimeouts": "@default",
+  "zeroDataRetention": true,
+  "hipaaCompliant": true,
+  "disallowPromptTraining": true,
+  "speed": "fast",
+  "allowFallbackFromFast": true
+}
+```
 
 <h3 id="update-virtual-model-config-parameters">Parameters</h3>
 
@@ -1904,6 +2201,87 @@ Update a virtual model config
 |---|---|---|---|---|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» virtualModelSlug|body|string|true|The slug of the virtual model to update.|
+|» displayName|body|string|false|The name shown in the UI.|
+|» description|body|string|false|none|
+|» status|body|string|false|The lifecycle status: `draft`, `active`, or `archived`. Any value other than `active` stops it serving requests. Defaults to `active`.|
+|» modelSlug|body|string|false|The model that the virtual model resolves to: a catalog model such as `openai/gpt-4o-mini`, or one of your team's private models as `private/<slug>`. Required on create.|
+|» models|body|[string \| object]|false|The ordered fallback models, optionally led by one conditional `{ model, when }` entry.|
+|» » *oneOf*|body|string|false|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » *oneOf*|body|object|false|A conditional fallback. Only an alias can have one.|
+|» » model|body|string|true|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » when|body|object|true|The fallback model is used when the answers of the primary model match this condition. Set exactly one of `confidenceBelow`, `probabilityBetween`, `any`, `all`, or `atLeast`. A condition tree can be 5 levels deep and can hold 100 conditions.|
+|» » » question|body|string|false|The question to check, with `confidenceBelow` or `probabilityBetween`. Without it, the condition checks every question of the applicable type.|
+|» » » confidenceBelow|body|number|false|none|
+|» » » probabilityBetween|body|[number]|false|A `[lower, upper]` pair.|
+|» » » any|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » all|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » atLeast|body|object|false|none|
+|» » » » count|body|integer|true|Must not be more than the number of conditions.|
+|» » » » conditions|body|[object]|true|Nested conditions. Each one has the same shape as `when`.|
+|» providerOrder|body|[string]|false|The providers to try, in order.|
+|» providerOnly|body|[string]|false|Restrict routing to these providers.|
+|» observabilityTags|body|[string]|false|Observability tags attached to requests through this virtual model.|
+|» deleted|body|boolean|false|Set to `false` to restore a deleted virtual model.|
+|» providerOptions|body|object \| null|false|Provider-specific options, keyed by provider slug. The slug of one of your team's private providers is also valid. `null` removes the stored value.|
+|» » **additionalProperties**|body|object|false|none|
+|» byokCredentialIds|body|[string]|false|The BYOK credentials that this virtual model can use. `null` removes the stored value.|
+|» inferenceRegion|body|object \| null|false|The region that requests are pinned to. `null` removes the stored value.|
+|» » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» » providers|body|object|false|Region overrides for each provider, keyed by provider slug.|
+|» » » **additionalProperties**|body|object \| null|false|none|
+|» » » » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » » » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» sort|body|string \| null|false|Rank eligible providers by an attribute. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» has|body|[string]|false|Limit providers to those with these features. `null` removes the stored value.|
+|» caching|body|string \| null|false|Use caching if available. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» serviceTier|body|string \| null|false|The service tier for providers that support it. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» providerTimeouts|body|string \| object \| null|false|Provider timeouts in milliseconds. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» » *oneOf*|body|string|false|none|
+|» » *oneOf*|body|object \| null|false|none|
+|» » byok|body|object|false|The timeout for each provider that uses a BYOK credential, keyed by provider slug.|
+|» » » **additionalProperties**|body|integer|false|none|
+|» zeroDataRetention|body|boolean \| null|false|Only use providers with zero data retention. `null` removes the stored value.|
+|» hipaaCompliant|body|boolean \| null|false|Only use HIPAA-compliant providers. `null` removes the stored value.|
+|» disallowPromptTraining|body|boolean \| null|false|Only use providers that do not train on prompts. `null` removes the stored value.|
+|» speed|body|string \| null|false|Only use the fastest providers, with short timeouts. `null` removes the stored value.|
+|» allowFallbackFromFast|body|boolean \| null|false|Allow fallback from fast to standard providers on failure. `null` removes the stored value.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» deleted|false|
+|» » scope|zone|
+|» » scope|global|
+|» » » » scope|zone|
+|» » » » scope|global|
+|» sort|@default|
+|» sort|cost|
+|» sort|ttft|
+|» sort|tps|
+|» sort|price|
+|» sort|latency|
+|» sort|throughput|
+|» sort|null|
+|» has|implicit-caching|
+|» has|reasoning|
+|» has|structured-output|
+|» has|tool-use|
+|» has|vision|
+|» caching|@default|
+|» caching|auto|
+|» caching|null|
+|» serviceTier|@default|
+|» serviceTier|flex|
+|» serviceTier|priority|
+|» serviceTier|fast|
+|» serviceTier|null|
+|» » *oneOf*|@default|
+|» speed|fast|
+|» speed|null|
 
 > Example responses
 
@@ -1993,7 +2371,7 @@ Update a virtual model config
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AiGatewayVirtualModelConfig](#schemaaigatewayvirtualmodelconfig)|
-|400|Bad Request||None|
+|400|Bad Request|One of the provided values in the request body is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
@@ -2333,13 +2711,123 @@ bearerToken
 ```bash
 curl https://api.vercel.com/ai-gateway/virtual-model-configs/string \
   -X PATCH \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "displayName": "string",
+    "description": "string",
+    "status": "string",
+    "modelSlug": "string",
+    "models": [
+      "string"
+    ],
+    "providerOrder": [
+      "string"
+    ],
+    "providerOnly": [
+      "string"
+    ],
+    "observabilityTags": [
+      "string"
+    ],
+    "deleted": false,
+    "providerOptions": {
+      "property1": {},
+      "property2": {}
+    },
+    "byokCredentialIds": [
+      "string"
+    ],
+    "inferenceRegion": {
+      "scope": "zone",
+      "geoRegion": "string",
+      "providers": {
+        "property1": {
+          "scope": "zone",
+          "geoRegion": "string"
+        },
+        "property2": {
+          "scope": "zone",
+          "geoRegion": "string"
+        }
+      }
+    },
+    "sort": "@default",
+    "has": [
+      "implicit-caching"
+    ],
+    "caching": "@default",
+    "serviceTier": "@default",
+    "providerTimeouts": "@default",
+    "zeroDataRetention": true,
+    "hipaaCompliant": true,
+    "disallowPromptTraining": true,
+    "speed": "fast",
+    "allowFallbackFromFast": true
+  }'
 ```
 
 `PATCH /ai-gateway/virtual-model-configs/{vmcSlug}`
 
 Update a virtual model config by path slug
+
+> Body parameter
+
+```json
+{
+  "displayName": "string",
+  "description": "string",
+  "status": "string",
+  "modelSlug": "string",
+  "models": [
+    "string"
+  ],
+  "providerOrder": [
+    "string"
+  ],
+  "providerOnly": [
+    "string"
+  ],
+  "observabilityTags": [
+    "string"
+  ],
+  "deleted": false,
+  "providerOptions": {
+    "property1": {},
+    "property2": {}
+  },
+  "byokCredentialIds": [
+    "string"
+  ],
+  "inferenceRegion": {
+    "scope": "zone",
+    "geoRegion": "string",
+    "providers": {
+      "property1": {
+        "scope": "zone",
+        "geoRegion": "string"
+      },
+      "property2": {
+        "scope": "zone",
+        "geoRegion": "string"
+      }
+    }
+  },
+  "sort": "@default",
+  "has": [
+    "implicit-caching"
+  ],
+  "caching": "@default",
+  "serviceTier": "@default",
+  "providerTimeouts": "@default",
+  "zeroDataRetention": true,
+  "hipaaCompliant": true,
+  "disallowPromptTraining": true,
+  "speed": "fast",
+  "allowFallbackFromFast": true
+}
+```
 
 <h3 id="update-virtual-model-config-1-parameters">Parameters</h3>
 
@@ -2348,6 +2836,86 @@ Update a virtual model config by path slug
 |vmcSlug|path|string|true|none|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» displayName|body|string|false|The name shown in the UI.|
+|» description|body|string|false|none|
+|» status|body|string|false|The lifecycle status: `draft`, `active`, or `archived`. Any value other than `active` stops it serving requests. Defaults to `active`.|
+|» modelSlug|body|string|false|The model that the virtual model resolves to: a catalog model such as `openai/gpt-4o-mini`, or one of your team's private models as `private/<slug>`. Required on create.|
+|» models|body|[string \| object]|false|The ordered fallback models, optionally led by one conditional `{ model, when }` entry.|
+|» » *oneOf*|body|string|false|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » *oneOf*|body|object|false|A conditional fallback. Only an alias can have one.|
+|» » model|body|string|true|A model ID: a catalog model such as `openai/gpt-4o`, or one of your team's private models as `private/<slug>`. A fallback can also name a virtual model as `vmc/<slug>`.|
+|» » when|body|object|true|The fallback model is used when the answers of the primary model match this condition. Set exactly one of `confidenceBelow`, `probabilityBetween`, `any`, `all`, or `atLeast`. A condition tree can be 5 levels deep and can hold 100 conditions.|
+|» » » question|body|string|false|The question to check, with `confidenceBelow` or `probabilityBetween`. Without it, the condition checks every question of the applicable type.|
+|» » » confidenceBelow|body|number|false|none|
+|» » » probabilityBetween|body|[number]|false|A `[lower, upper]` pair.|
+|» » » any|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » all|body|[object]|false|Nested conditions. Each one has the same shape as `when`.|
+|» » » atLeast|body|object|false|none|
+|» » » » count|body|integer|true|Must not be more than the number of conditions.|
+|» » » » conditions|body|[object]|true|Nested conditions. Each one has the same shape as `when`.|
+|» providerOrder|body|[string]|false|The providers to try, in order.|
+|» providerOnly|body|[string]|false|Restrict routing to these providers.|
+|» observabilityTags|body|[string]|false|Observability tags attached to requests through this virtual model.|
+|» deleted|body|boolean|false|Set to `false` to restore a deleted virtual model.|
+|» providerOptions|body|object \| null|false|Provider-specific options, keyed by provider slug. The slug of one of your team's private providers is also valid. `null` removes the stored value.|
+|» » **additionalProperties**|body|object|false|none|
+|» byokCredentialIds|body|[string]|false|The BYOK credentials that this virtual model can use. `null` removes the stored value.|
+|» inferenceRegion|body|object \| null|false|The region that requests are pinned to. `null` removes the stored value.|
+|» » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» » providers|body|object|false|Region overrides for each provider, keyed by provider slug.|
+|» » » **additionalProperties**|body|object \| null|false|none|
+|» » » » scope|body|string|false|The pin scope: `zone` (a geo zone) or `global`.|
+|» » » » geoRegion|body|string|false|The geo zone, for example `us` or `eu`. Required when `scope` is `zone`.|
+|» sort|body|string \| null|false|Rank eligible providers by an attribute. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» has|body|[string]|false|Limit providers to those with these features. `null` removes the stored value.|
+|» caching|body|string \| null|false|Use caching if available. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» serviceTier|body|string \| null|false|The service tier for providers that support it. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» providerTimeouts|body|string \| object \| null|false|Provider timeouts in milliseconds. `@default` ignores the value from the inference request. `null` removes the stored value.|
+|» » *oneOf*|body|string|false|none|
+|» » *oneOf*|body|object \| null|false|none|
+|» » byok|body|object|false|The timeout for each provider that uses a BYOK credential, keyed by provider slug.|
+|» » » **additionalProperties**|body|integer|false|none|
+|» zeroDataRetention|body|boolean \| null|false|Only use providers with zero data retention. `null` removes the stored value.|
+|» hipaaCompliant|body|boolean \| null|false|Only use HIPAA-compliant providers. `null` removes the stored value.|
+|» disallowPromptTraining|body|boolean \| null|false|Only use providers that do not train on prompts. `null` removes the stored value.|
+|» speed|body|string \| null|false|Only use the fastest providers, with short timeouts. `null` removes the stored value.|
+|» allowFallbackFromFast|body|boolean \| null|false|Allow fallback from fast to standard providers on failure. `null` removes the stored value.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» deleted|false|
+|» » scope|zone|
+|» » scope|global|
+|» » » » scope|zone|
+|» » » » scope|global|
+|» sort|@default|
+|» sort|cost|
+|» sort|ttft|
+|» sort|tps|
+|» sort|price|
+|» sort|latency|
+|» sort|throughput|
+|» sort|null|
+|» has|implicit-caching|
+|» has|reasoning|
+|» has|structured-output|
+|» has|tool-use|
+|» has|vision|
+|» caching|@default|
+|» caching|auto|
+|» caching|null|
+|» serviceTier|@default|
+|» serviceTier|flex|
+|» serviceTier|priority|
+|» serviceTier|fast|
+|» serviceTier|null|
+|» » *oneOf*|@default|
+|» speed|fast|
+|» speed|null|
 
 > Example responses
 
@@ -2437,7 +3005,7 @@ Update a virtual model config by path slug
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AiGatewayVirtualModelConfig](#schemaaigatewayvirtualmodelconfig)|
-|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
@@ -2634,6 +3202,7 @@ List the authenticated team's routing rules, oldest first. Without `limit` or `c
       },
       "ownerId": "string",
       "ruleId": "string",
+      "shadowedBy": "string",
       "type": "deny",
       "updatedAt": 0,
       "updatedBy": "string"
@@ -2668,13 +3237,43 @@ bearerToken
 ```bash
 curl https://api.vercel.com/ai-gateway/rules \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "type": "rewrite",
+    "match": {
+      "model": "string"
+    },
+    "action": {
+      "rewriteModel": "string",
+      "reason": "string"
+    },
+    "enabled": true,
+    "description": "string"
+  }'
 ```
 
 `POST /ai-gateway/rules`
 
 Create a routing rule
+
+> Body parameter
+
+```json
+{
+  "type": "rewrite",
+  "match": {
+    "model": "string"
+  },
+  "action": {
+    "rewriteModel": "string",
+    "reason": "string"
+  },
+  "enabled": true,
+  "description": "string"
+}
+```
 
 <h3 id="create-rule-parameters">Parameters</h3>
 
@@ -2682,6 +3281,22 @@ Create a routing rule
 |---|---|---|---|---|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» type|body|string|true|`rewrite` sends requests for the matched model to another model. `deny` rejects them.|
+|» match|body|object|true|none|
+|» » model|body|string|true|The model that the rule applies to.|
+|» action|body|object|false|Required when `type` is `rewrite`.|
+|» » rewriteModel|body|string|false|The model that serves the request: a catalog model, or one of your virtual models as `vmc/<slug>`. It must exist and be active. Required when `type` is `rewrite`.|
+|» » reason|body|string|false|Why the model is denied. Used when `type` is `deny`.|
+|» enabled|body|boolean|false|Whether the rule is enabled. Defaults to `true`.|
+|» description|body|string|false|A free-text note about the rule.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» type|rewrite|
+|» type|deny|
 
 > Example responses
 
@@ -2714,7 +3329,7 @@ Create a routing rule
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|Created||[AiGatewayRule](#schemaaigatewayrule)|
-|400|Bad Request||None|
+|400|Bad Request|One of the provided values in the request body is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
@@ -2786,13 +3401,37 @@ bearerToken
 ```bash
 curl https://api.vercel.com/ai-gateway/rules \
   -X PATCH \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "ruleId": "string",
+    "enabled": true,
+    "description": "string",
+    "action": {
+      "rewriteModel": "string",
+      "reason": "string"
+    }
+  }'
 ```
 
 `PATCH /ai-gateway/rules`
 
 Update a routing rule (enabled, action, or description)
+
+> Body parameter
+
+```json
+{
+  "ruleId": "string",
+  "enabled": true,
+  "description": "string",
+  "action": {
+    "rewriteModel": "string",
+    "reason": "string"
+  }
+}
+```
 
 <h3 id="update-rule-parameters">Parameters</h3>
 
@@ -2800,6 +3439,13 @@ Update a routing rule (enabled, action, or description)
 |---|---|---|---|---|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» ruleId|body|string|true|The ID of the rule to update. Send at least one of `enabled`, `description`, or `action` with it.|
+|» enabled|body|boolean|false|Whether the rule is enabled.|
+|» description|body|string|false|A free-text note about the rule.|
+|» action|body|object|false|Replaces the stored action. For a rewrite rule it must contain `rewriteModel`.|
+|» » rewriteModel|body|string|false|The model that serves the request, for a rewrite rule: a catalog model, or one of your virtual models as `vmc/<slug>`. It must exist and be active.|
+|» » reason|body|string|false|Why the model is denied, for a deny rule.|
 
 > Example responses
 
@@ -2832,7 +3478,7 @@ Update a routing rule (enabled, action, or description)
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AiGatewayRule](#schemaaigatewayrule)|
-|400|Bad Request||None|
+|400|Bad Request|One of the provided values in the request body is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
@@ -2858,7 +3504,7 @@ curl https://api.vercel.com/ai-gateway/budgets/list \
 
 `GET /ai-gateway/budgets/list`
 
-List the team's AI Gateway budgets (team/project/user scopes, plus default-covered api-key spend) as a flat list, optionally filtered by scope. Without `limit` or `cursor`, returns every budget. With either, returns one page ordered by `quotaEntityId` plus `nextCursor` (null on the last page) and `defaultCoveredCounts`. Paging still reads the full merge server-side: the gateway meter list it joins has no cursor.
+List the team's AI Gateway budgets (team/project/user/app scopes, plus default-covered api-key spend) as a flat list, optionally filtered by scope. Without `limit` or `cursor`, returns every budget. With either, returns one page ordered by `quotaEntityId` plus `nextCursor` (null on the last page) and `defaultCoveredCounts`. Paging still reads the full merge server-side: the gateway meter list it joins has no cursor.
 
 <h3 id="list-ai-gateway-budgets-parameters">Parameters</h3>
 
@@ -2878,6 +3524,7 @@ List the team's AI Gateway budgets (team/project/user scopes, plus default-cover
 |scopeType|team|
 |scopeType|project|
 |scopeType|user|
+|scopeType|app|
 |scopeType|api-key|
 |includeDefaultCovered|true|
 |includeDefaultCovered|false|
@@ -2911,6 +3558,7 @@ List the team's AI Gateway budgets (team/project/user scopes, plus default-cover
   ],
   "defaultCoveredCounts": {
     "api-key": 0,
+    "app": 0,
     "project": 0,
     "team": 0,
     "user": 0
@@ -2952,18 +3600,21 @@ curl https://api.vercel.com/ai-gateway/budgets \
     "scopeType": "team",
     "projectId": "string",
     "userId": "string",
+    "appId": "string",
     "limitAmount": 1,
-    "refreshPeriod": "monthly",
+    "increaseBy": 1,
+    "refreshPeriod": "daily",
     "includeByokInQuota": true,
     "alertThresholds": [
       50
-    ]
+    ],
+    "justification": "string"
   }'
 ```
 
 `PUT /ai-gateway/budgets`
 
-Create or update a team-, project-, or user-scope AI Gateway budget.
+Create or update a team-, project-, user-, or app-scope AI Gateway budget. Set a total with `limitAmount`, or raise the current budget with `increaseBy`.
 
 > Body parameter
 
@@ -2972,12 +3623,15 @@ Create or update a team-, project-, or user-scope AI Gateway budget.
   "scopeType": "team",
   "projectId": "string",
   "userId": "string",
+  "appId": "string",
   "limitAmount": 1,
-  "refreshPeriod": "monthly",
+  "increaseBy": 1,
+  "refreshPeriod": "daily",
   "includeByokInQuota": true,
   "alertThresholds": [
     50
-  ]
+  ],
+  "justification": "string"
 }
 ```
 
@@ -2989,12 +3643,15 @@ Create or update a team-, project-, or user-scope AI Gateway budget.
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
 |» scopeType|body|string|true|none|
-|» projectId|body|string|false|Required when scopeType is "project".|
-|» userId|body|string|false|Required when scopeType is "user".|
-|» limitAmount|body|number|true|Budget limit in dollars.|
-|» refreshPeriod|body|string|false|none|
+|» projectId|body|string|false|Required when scopeType is \"project\".|
+|» userId|body|string|false|Required when scopeType is \"user\".|
+|» appId|body|string|false|Required when scopeType is \"app\". The id of a Vercel App (`cl_…`).|
+|» limitAmount|body|number|false|Budget limit in dollars. Provide this or `increaseBy`, not both.|
+|» increaseBy|body|number|false|Dollars to add to the current budget, or to the scope's default when it has no budget of its own. Provide this or `limitAmount`, not both. Keeps the current refresh period and BYOK setting unless they are given.|
+|» refreshPeriod|body|string|false|Defaults to monthly with `limitAmount`; `increaseBy` keeps the current period.|
 |» includeByokInQuota|body|boolean|false|Whether BYOK usage counts toward this budget.|
 |» alertThresholds|body|[number]|false|none|
+|» justification|body|string|false|Why the budget is being changed, up to 500 characters. Recorded in the activity log and audit log drains, and sent in the ai-gateway.budget.updated webhook.|
 
 #### Enumerated Values
 
@@ -3003,6 +3660,7 @@ Create or update a team-, project-, or user-scope AI Gateway budget.
 |» scopeType|team|
 |» scopeType|project|
 |» scopeType|user|
+|» scopeType|app|
 |» refreshPeriod|daily|
 |» refreshPeriod|weekly|
 |» refreshPeriod|monthly|
@@ -3069,15 +3727,17 @@ curl 'https://api.vercel.com/ai-gateway/budgets?scopeType=team' \
 
 `DELETE /ai-gateway/budgets`
 
-Archive a team-, project-, or user-scope AI Gateway budget.
+Archive a team-, project-, user-, or app-scope AI Gateway budget.
 
 <h3 id="archive-ai-gateway-budget-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |scopeType|query|string|true|The budget scope to archive.|
-|projectId|query|string|false|Required when scopeType is "project".|
-|userId|query|string|false|Required when scopeType is "user".|
+|projectId|query|string|false|Required when scopeType is \"project\".|
+|userId|query|string|false|Required when scopeType is \"user\".|
+|appId|query|string|false|Required when scopeType is \"app\". The id of a Vercel App (`cl_…`).|
+|justification|query|string|false|Why the budget is being changed, up to 500 characters. Recorded in the activity log and audit log drains, and sent in the ai-gateway.budget.updated webhook.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -3088,6 +3748,7 @@ Archive a team-, project-, or user-scope AI Gateway budget.
 |scopeType|team|
 |scopeType|project|
 |scopeType|user|
+|scopeType|app|
 
 > Example responses
 
@@ -3146,7 +3807,7 @@ curl https://api.vercel.com/ai-gateway/budgets/defaults/list \
 
 `GET /ai-gateway/budgets/defaults/list`
 
-List the team's AI Gateway budget defaults as a flat per-scope list (one row per team/project/api-key/user scope with a default set). An empty list is a normal state for the dashboard.
+List the team's AI Gateway budget defaults as a flat per-scope list (one row per team/project/api-key/user/app scope with a default set). An empty list is a normal state for the dashboard.
 
 <h3 id="list-ai-gateway-budget-defaults-parameters">Parameters</h3>
 
@@ -3212,7 +3873,8 @@ curl https://api.vercel.com/ai-gateway/budgets/defaults \
     "refreshPeriod": "daily",
     "alertThresholds": [
       50
-    ]
+    ],
+    "justification": "string"
   }'
 ```
 
@@ -3229,7 +3891,8 @@ Create or update an AI Gateway budget default for one scope. Team-level authorit
   "refreshPeriod": "daily",
   "alertThresholds": [
     50
-  ]
+  ],
+  "justification": "string"
 }
 ```
 
@@ -3244,6 +3907,7 @@ Create or update an AI Gateway budget default for one scope. Team-level authorit
 |» limitAmount|body|number|true|Default budget limit in dollars.|
 |» refreshPeriod|body|string|false|none|
 |» alertThresholds|body|[number]|false|none|
+|» justification|body|string|false|Why the budget is being changed, up to 500 characters. Recorded in the activity log and audit log drains, and sent in the ai-gateway.budget.updated webhook.|
 
 #### Enumerated Values
 
@@ -3253,6 +3917,7 @@ Create or update an AI Gateway budget default for one scope. Team-level authorit
 |» scopeType|project|
 |» scopeType|api-key|
 |» scopeType|user|
+|» scopeType|app|
 |» refreshPeriod|daily|
 |» refreshPeriod|weekly|
 |» refreshPeriod|monthly|
@@ -3317,6 +3982,7 @@ Delete an AI Gateway budget default for one scope. Team-level authority only (ow
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |scopeType|query|string|true|The budget default scope to delete.|
+|justification|query|string|false|Why the budget is being changed, up to 500 characters. Recorded in the activity log and audit log drains, and sent in the ai-gateway.budget.updated webhook. Only recorded when scopeType is set.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -3328,6 +3994,7 @@ Delete an AI Gateway budget default for one scope. Team-level authority only (ow
 |scopeType|project|
 |scopeType|api-key|
 |scopeType|user|
+|scopeType|app|
 
 <h3 id="archive-ai-gateway-budget-default-responses">Responses</h3>
 
@@ -3366,7 +4033,8 @@ curl https://api.vercel.com/api-keys/string/quota \
     "archived": true,
     "alertThresholds": [
       50
-    ]
+    ],
+    "justification": "string"
   }'
 ```
 
@@ -3385,7 +4053,8 @@ Set, change, or remove the AI Gateway budget on an API key. Creates the budget i
   "archived": true,
   "alertThresholds": [
     50
-  ]
+  ],
+  "justification": "string"
 }
 ```
 
@@ -3401,6 +4070,7 @@ Set, change, or remove the AI Gateway budget on an API key. Creates the budget i
 |» active|body|boolean|false|Whether the quota is currently active.|
 |» archived|body|boolean|false|Set to true to archive (soft-delete) the quota. The api key itself is unaffected.|
 |» alertThresholds|body|[number]|false|Spend percentages (a subset of [50, 75, 100]) at which to send a spend alert. Pass an empty array to disable alerts.|
+|» justification|body|string|false|Why the budget is being changed, up to 500 characters. Recorded in the activity log and audit log drains.|
 
 #### Enumerated Values
 
@@ -4077,7 +4747,7 @@ curl 'https://api.vercel.com/v1/billing/charges?from=2025-01-01T00%3A00%3A00.000
 
 `GET /v1/billing/charges`
 
-Returns the billing charge data in FOCUS v1.3 JSONL format for a specified Vercel team, within a date range specified by `from` and `to` query parameters. Supports 1-day granularity with a maximum date range of 1 year. The response is streamed as newline-delimited JSON (JSONL) and can be optionally compressed with gzip if the `Accept-Encoding: gzip` header is provided. `SkuId` is the stable product ID. For unmapped items, it is derived from the item identifier. This is only available for Owner, Member, Developer, Security, Billing, and Enterprise Viewer roles for the supplied team.
+Returns the billing charge data in FOCUS v1.3 JSONL format for a specified Vercel team, within a date range specified by `from` and `to` query parameters. Supports 1-day granularity with a maximum date range of 1 year. The response is streamed as newline-delimited JSON (JSONL) and can be optionally compressed with gzip if the `Accept-Encoding: gzip` header is provided. `SkuId` is the stable product ID. For unmapped items, it is derived from the item identifier. `SubAccountId` and `SubAccountName` are the team. With `orgId` instead of a team, returns a row per team and product in an organization with Enterprise teams, plus Organization (unallocated) rows for spend no single team used; this requires the OrgAdmin or OrgViewer role. A team in such an organization, including the one that holds its subscription, gets only its own rows. Those rows are not split by region or project, and `x_CostAttribution` marks how cost was split between teams. This is only available for Owner, Member, Developer, Security, Billing, and Enterprise Viewer roles for the supplied team.
 
 <h3 id="list-focus-billing-charges-parameters">Parameters</h3>
 
@@ -4085,6 +4755,7 @@ Returns the billing charge data in FOCUS v1.3 JSONL format for a specified Verce
 |---|---|---|---|---|
 |from|query|string|true|Inclusive start of the date range as an ISO 8601 date-time string in UTC.|
 |to|query|string|true|Exclusive end of the date range as an ISO 8601 date-time string in UTC.|
+|orgId|query|string|false|The Organization identifier. Returns charges for every team in the organization, split by team, instead of a single team. Cannot be combined with `teamId` or `slug`. Requires the OrgAdmin or OrgViewer role.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -4109,10 +4780,10 @@ Status Code **200**
 |---|---|---|---|---|
 |BilledCost|number|true|none|Charge amount serving as the basis for invoicing|
 |BillingCurrency|string|true|none|Currency used for billing (ISO 4217)|
-|ChargeCategory|string|true|none|Classification of the charge|
+|ChargeCategory|string|true|none|Classification of the charge. `Usage` for measured consumption; `Purchase` for flat-fee or licensed charges without a consumption unit.|
 |ChargePeriodEnd|string|true|none|Exclusive end of the charge period (ISO 8601 UTC) - Required in v1.3|
 |ChargePeriodStart|string|true|none|Inclusive start of the charge period (ISO 8601 UTC)|
-|ConsumedQuantity|number \| null|true|none|Volume of resource consumed. Null when a charge does not involve measurable consumption quantity.|
+|ConsumedQuantity|number \| null|true|none|Volume of resource consumed. Null when ChargeCategory is not `Usage`; always paired with a non-null ConsumedUnit.|
 |ConsumedUnit|string \| null|true|none|Unit of measurement for consumed quantity. Null when the charge is not measured in units.|
 |EffectiveCost|number|true|none|Amortized cost representation including discounts, pre-commitment credit purchase amount, etc.|
 |PricingCategory|string|true|none|Pricing model used for the charge.|
@@ -4125,8 +4796,13 @@ Status Code **200**
 |ServiceName|string|true|none|Display name for the service/product|
 |ServiceProviderName|string|true|none|Entity making the resource/service available for purchase (v1.3)|
 |SkuId|string|true|none|Stable identifier for the charged product or item|
+|SkuPriceId|string|true|none|Identifier for the price applied to the charge. Equal to `SkuId`, which FOCUS allows.|
+|SubAccountId|string \| null|true|none|Vercel team the charge belongs to. Null on an org root's Organization (unallocated) rows, which no single team used.|
+|SubAccountName|string \| null|true|none|Team name, or `Organization (unallocated)`|
+|SubAccountType|string \| null|true|none|`Team`, or null on Organization (unallocated) rows|
 |Tags|object|true|none|Charge metadata including the Vercel ProjectId and ProjectName information|
 |» **additionalProperties**|string|false|none|none|
+|x_CostAttribution|string \| null|true|none|How the row's cost was split between teams. `uncalibrated_estimate` divides billed usage by each team's usage share; `calibrated_estimate` also scales each team to its rated cycle subtotal. Null on rows not split between teams. Product and day totals are billed amounts either way.|
 
 #### Enumerated Values
 
@@ -4162,71 +4838,11 @@ Status Code **200**
 |ServiceCategory|Security|
 |ServiceCategory|Storage|
 |ServiceCategory|Web|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerToken
-</aside>
-
-## List FOCUS contract commitments
-
-<a id="opIdlistContractCommitments"></a>
-
-> Code samples
-
-```bash
-curl https://api.vercel.com/v1/billing/contract-commitments \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v1/billing/contract-commitments`
-
-Returns commitment allocations per contract period in FOCUS v1.3 JSONL format for a specified Vercel team. The response is streamed as newline-delimited JSON (JSONL). This endpoint is only applicable to Enterprise Vercel customers. An empty response is returned for non-Enterprise (Pro/Flex) customers.
-
-<h3 id="list-focus-contract-commitments-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
-|slug|query|string|false|The Team slug to perform the request on behalf of.|
-
-<h3 id="list-focus-contract-commitments-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||Inline|
-|400|Bad Request||None|
-|401|Unauthorized|The request is not authorized.|None|
-|403|Forbidden|You do not have permission to access this resource.|None|
-|404|Not Found||None|
-|410|Gone||None|
-
-<h3 id="list-focus-contract-commitments-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|BillingCurrency|string|true|none|none|
-|ContractCommitmentCategory|string|true|none|Highest-level classification of the contract commitment. 'Spend' for Pro ($20/month), 'Usage' for Enterprise (MIU allocation).|
-|ContractCommitmentCost|number|false|none|Monetary value of the contract commitment (in BillingCurrency). Required when ContractCommitmentCategory is 'Spend'. For Pro: 20 (USD)|
-|ContractCommitmentDescription|string|false|none|Self-contained summary of the contract commitment's terms|
-|ContractCommitmentId|string|true|none|Unique identifier for a single contract term within a contract. Maps to specific commitment period or allocation ID.|
-|ContractCommitmentPeriodEnd|string|true|none|Exclusive end of the commitment term period (ISO 8601 UTC)|
-|ContractCommitmentPeriodStart|string|true|none|Inclusive start of the commitment term period (ISO 8601 UTC)|
-|ContractCommitmentQuantity|number|false|none|Amount associated with the commitment (in ContractCommitmentUnit). Required when ContractCommitmentCategory is 'Usage'. For Enterprise: MIU allocation amount.|
-|ContractCommitmentType|string|true|none|Service-provider-assigned name identifying the commitment type. 'Pro' or 'Enterprise' for Vercel.|
-|ContractCommitmentUnit|string|true|none|Measurement unit for ContractCommitmentQuantity. 'MIUs' for Enterprise, 'USD' for Pro spend commitments.|
-|ContractId|string|true|none|Service-provider-assigned identifier for a contract. Maps to Orb Subscription ID for Vercel.|
-|ContractPeriodEnd|string|true|none|Exclusive end of the overall contract period (ISO 8601 UTC)|
-|ContractPeriodStart|string|true|none|Inclusive start of the overall contract period (ISO 8601 UTC)|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|ContractCommitmentCategory|Spend|
-|ContractCommitmentCategory|Usage|
+|SubAccountType|Team|
+|SubAccountType|null|
+|x_CostAttribution|calibrated_estimate|
+|x_CostAttribution|uncalibrated_estimate|
+|x_CostAttribution|null|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -4416,7 +5032,8 @@ Status Code **200**
 |» » » pendingSubscriptionChangeId|string|false|none|The ID of the pending subscription change|
 |» » type|string|true|none|none|
 |» » *oneOf*|object|false|none|The configuration for a credit purchase|
-|» » options|object|true|none|Purchase configuration specific options|
+|» » options|object|true|none|none|
+|» » » *oneOf*|object|false|none|Restart-cycle purchase options|
 |» » » fromPlan|object|false|none|The current plan being replaced by this purchase|
 |» » » » additionalSubscriptions|[object]|false|none|Additional source subscriptions replaced by this purchase|
 |» » » » » currentCycleEndDate|string|true|none|The end of the additional source subscription billing cycle|
@@ -4446,6 +5063,17 @@ Status Code **200**
 |» » » » quantity|number|true|none|The nonnegative integer quantity for the plan item|
 |» » » » resourceIds|[string]|false|none|The resource IDs to associate with the plan item quantity|
 |» » » rateVariantKey|string|false|none|The rate variant key to apply to the subscription|
+|» » » transition|object|false|none|Replacement billing-cycle policy. Defaults to restart_cycle.|
+|» » » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Restart-cycle purchase options|
+|» » » fromPlan|object|true|none|none|
+|» » » » orbSubscriptionId|string|true|none|The owned active source subscription recorded by Copper|
+|» » » planId|string|true|none|The destination plan|
+|» » » planItemQuantities|[object]|false|none|Destination-only licensed quantities; shared quantities come from Copper|
+|» » » » planItemId|string|true|none|none|
+|» » » » quantity|number|true|none|none|
+|» » » transition|object|true|none|none|
+|» » » » type|string|true|none|none|
 |» » output|object|true|none|none|
 |» » » planChangeId|string|false|none|The committed Plan revision used to calculate the purchase price|
 |» » type|string|true|none|none|
@@ -4663,6 +5291,8 @@ Status Code **200**
 |» » type|orb_subscription_intent|
 |» » » » » » model|unit|
 |» » » » » model|unit|
+|» » » » type|restart_cycle|
+|» » » » type|preserve_source_cycle|
 |» » type|subscription|
 |» currency|miu|
 |» currency|usd|
@@ -5824,9 +6454,9 @@ Creates a new check for a project.
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
 |» name|body|string|true|none|
-|» isRerequestable|body|boolean|false|none|
+|» isRerequestable|body|boolean|false|Whether check runs can be manually re-requested. Git provider checks cannot be re-requested.|
 |» requires|body|string|true|none|
-|» targets|body|[string]|false|none|
+|» targets|body|[string]|false|Deployment targets where this check applies. Valid values are "production", "preview", "all", or a Custom Environment ID such as "env_...". If omitted, defaults to ["production"]. "all" cannot be combined with other targets.|
 |» blocks|body|string|false|none|
 |» source|body|object|false|none|
 |» » *oneOf*|body|object|false|none|
@@ -5839,8 +6469,8 @@ Creates a new check for a project.
 |» » kind|body|string|true|none|
 |» » webhookId|body|string|false|none|
 |» » *oneOf*|body|object|false|none|
-|» » kind|body|string|true|none|
-|» » externalCheckName|body|string|true|none|
+|» » kind|body|string|true|Imports Git provider check results, such as GitHub check runs or commit statuses, as Deployment Checks.|
+|» » externalCheckName|body|string|true|The Git provider check name or context to match, for example a GitHub Actions job name.|
 |» » provider|body|string|true|none|
 |» timeout|body|number|false|none|
 
@@ -6227,9 +6857,9 @@ Update an existing check.
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
 |» name|body|string|false|none|
-|» isRerequestable|body|boolean|false|none|
+|» isRerequestable|body|boolean|false|Whether check runs can be manually re-requested. Git provider checks cannot be re-requested.|
 |» requires|body|string|false|none|
-|» targets|body|[string]|false|none|
+|» targets|body|[string]|false|Deployment targets where this check applies. Valid values are "production", "preview", "all", or a Custom Environment ID such as "env_...". "all" cannot be combined with other targets.|
 |» blocks|body|string|false|none|
 |» timeout|body|number|false|none|
 
@@ -8665,6 +9295,9 @@ Allows to list Secure Compute networks.
     ],
     "awsRegion": "string",
     "cidr": "string",
+    "connectionTesting": {
+      "available": false
+    },
     "createdAt": 0,
     "egressIpAddresses": [
       "string"
@@ -8675,6 +9308,9 @@ Allows to list Secure Compute networks.
     "id": "string",
     "name": "string",
     "peeringConnections": {
+      "count": 0
+    },
+    "privateLinks": {
       "count": 0
     },
     "projects": {
@@ -8780,6 +9416,9 @@ Allows to create a Secure Compute network.
   ],
   "awsRegion": "string",
   "cidr": "string",
+  "connectionTesting": {
+    "available": false
+  },
   "createdAt": 0,
   "egressIpAddresses": [
     "string"
@@ -8790,6 +9429,9 @@ Allows to create a Secure Compute network.
   "id": "string",
   "name": "string",
   "peeringConnections": {
+    "count": 0
+  },
+  "privateLinks": {
     "count": 0
   },
   "projects": {
@@ -8859,6 +9501,9 @@ Allows to read a Secure Compute network.
   ],
   "awsRegion": "string",
   "cidr": "string",
+  "connectionTesting": {
+    "available": false
+  },
   "createdAt": 0,
   "egressIpAddresses": [
     "string"
@@ -8869,6 +9514,9 @@ Allows to read a Secure Compute network.
   "id": "string",
   "name": "string",
   "peeringConnections": {
+    "count": 0
+  },
+  "privateLinks": {
     "count": 0
   },
   "projects": {
@@ -8993,6 +9641,9 @@ Allows to update a Secure Compute network.
   ],
   "awsRegion": "string",
   "cidr": "string",
+  "connectionTesting": {
+    "available": false
+  },
   "createdAt": 0,
   "egressIpAddresses": [
     "string"
@@ -9003,6 +9654,9 @@ Allows to update a Secure Compute network.
   "id": "string",
   "name": "string",
   "peeringConnections": {
+    "count": 0
+  },
+  "privateLinks": {
     "count": 0
   },
   "projects": {
@@ -9604,7 +10258,7 @@ List connectors that belong to a team.
       "createdAt": 0,
       "createdBy": {
         "id": "string",
-        "type": "user"
+        "type": "app"
       },
       "creationMode": "managed",
       "defaultInstallationId": "string",
@@ -9654,7 +10308,7 @@ List connectors that belong to a team.
       "updatedAt": 0,
       "updatedBy": {
         "id": "string",
-        "type": "user"
+        "type": "app"
       },
       "userTokens": {
         "crossInstallation": false,
@@ -9838,7 +10492,7 @@ Get the connector by ID. Accepts a dashboard/team requester or a deployment's pr
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -9888,7 +10542,7 @@ Get the connector by ID. Accepts a dashboard/team requester or a deployment's pr
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -10448,7 +11102,7 @@ Create a connector and optionally link it to a project. Use `type` with complete
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -10498,7 +11152,7 @@ Create a connector and optionally link it to a project. Use `type` with complete
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -10868,7 +11522,7 @@ Update a connector and return the connector with any service-side update signals
     "createdAt": 0,
     "createdBy": {
       "id": "string",
-      "type": "user"
+      "type": "app"
     },
     "creationMode": "managed",
     "defaultInstallationId": "string",
@@ -10918,7 +11572,7 @@ Update a connector and return the connector with any service-side update signals
     "updatedAt": 0,
     "updatedBy": {
       "id": "string",
-      "type": "user"
+      "type": "app"
     },
     "userTokens": {
       "crossInstallation": false,
@@ -10950,7 +11604,8 @@ Update a connector and return the connector with any service-side update signals
       }
     ],
     "status": "done"
-  }
+  },
+  "uninstallNeeded": false
 }
 ```
 
@@ -11151,7 +11806,7 @@ Replace the full set of destinations that receive trigger requests for a connect
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -11201,7 +11856,7 @@ Replace the full set of destinations that receive trigger requests for a connect
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -11381,7 +12036,7 @@ Disconnect a managed connector from its provider-side manager.
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -11431,7 +12086,7 @@ Disconnect a managed connector from its provider-side manager.
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -12095,6 +12750,53 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
+## Disconnect a connector from a project environment
+
+<a id="opIddisconnectConnectorProjectEnvironment"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/connect/connectors/string/projects/string/environments/string \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/connect/connectors/{connector}/projects/{projectId}/environments/{environment}`
+
+Remove a connector's access and event destinations for one project environment. Other environments, the connector, and its provider installations are preserved. Preview disconnect removes destinations for every preview branch in the project. Disconnecting the last environment also releases the project-local UID. Safe to retry.
+
+<h3 id="disconnect-a-connector-from-a-project-environment-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|connector|path|string|true|none|
+|projectId|path|string|true|none|
+|environment|path|string|true|A built-in environment name or the stable env_* ID of a custom environment.|
+|slug|query|string|false|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+
+<h3 id="disconnect-a-connector-from-a-project-environment-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content||None|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|422|Unprocessable Entity||None|
+|500|Internal Server Error||None|
+|501|Not Implemented||None|
+|504|Gateway Timeout||None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
 ## List connectors for a project
 
 <a id="opIdlistProjectConnectorConnections"></a>
@@ -12294,6 +12996,8 @@ Get an access token for a connector identified by the path parameter and scoped 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |connector|path|string|true|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
 |» subject|body|object|false|none|
 |» » *anyOf*|body|object|false|none|
@@ -12487,6 +13191,8 @@ Create an authorization request for a connector and return the URL and verifier 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |connector|path|string|true|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
 |» subject|body|object|false|none|
 |» » *anyOf*|body|object|false|none|
@@ -12685,6 +13391,11 @@ List the daemons of a project.
             "image": "string",
             "lastCheckedAt": "string",
             "memoryMiB": 0,
+            "process": {
+              "lastExitCode": 0,
+              "restarts": 0,
+              "crashLooping": false
+            },
             "region": "string",
             "startedAt": "string",
             "stoppedAt": "string"
@@ -12698,7 +13409,7 @@ List the daemons of a project.
         "type": "target",
         "value": "development"
       },
-      "status": "ready",
+      "status": "crash_looping",
       "updatedAt": "string"
     }
   ],
@@ -12768,6 +13479,10 @@ Status Code **200**
 |» » » image|string|false|none|none|
 |» » » lastCheckedAt|string|false|none|none|
 |» » » memoryMiB|number|false|none|none|
+|» » » process|object|false|none|Quick restarts of the user container in a row. Absent when there are none.|
+|» » » » lastExitCode|number|false|none|none|
+|» » » » restarts|number|true|none|none|
+|» » » » crashLooping|boolean|true|none|none|
 |» » » region|string|true|none|none|
 |» » » startedAt|string|true|none|none|
 |» » » stoppedAt|string|false|none|none|
@@ -12798,12 +13513,15 @@ Status Code **200**
 |» » » » scheme|HTTPS|
 |» » » alive|false|
 |» » » alive|true|
+|» » » » crashLooping|false|
+|» » » » crashLooping|true|
 |» » type|target|
 |» » value|development|
 |» » value|preview|
 |» » value|production|
 |» » type|branch|
 |» » type|customEnvironment|
+|» status|crash_looping|
 |» status|ready|
 |» status|reconciling|
 |» status|stopped|
@@ -12851,6 +13569,7 @@ Override the instance counts of a daemon in the given regions, without changing 
 |idOrName|path|string|true|The unique project identifier or the project name|
 |daemonName|path|string|true|The name of the daemon to scale|
 |target|query|string|false|The deployment target for the daemon configuration.|
+|customEnvironmentId|query|string|false|The ID of the custom environment of the daemon, instead of `target`.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
@@ -12878,10 +13597,10 @@ Override the instance counts of a daemon in the given regions, without changing 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|The instance count overrides are saved.|Inline|
-|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.<br>Both `target` and `customEnvironmentId` were given.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
-|404|Not Found|The daemon does not exist for this target.|None|
+|404|Not Found|The project has no custom environment with this ID.<br>The daemon does not exist for this target or custom environment.|None|
 |410|Gone||None|
 
 <h3 id="override-a-project-daemons-instance-counts-responseschema">Response Schema</h3>
@@ -12919,7 +13638,7 @@ curl https://api.vercel.com/v1/projects/string/daemons/string/instances/string/r
 
 `POST /v1/projects/{idOrName}/daemons/{daemonName}/instances/{instanceId}/restart`
 
-Force restart a running production daemon instance. The new container starts asynchronously after the restart is accepted.
+Force restart a running daemon instance in production, or in a custom environment when `customEnvironmentId` is given. The new container starts asynchronously after the restart is accepted.
 
 <h3 id="force-restart-a-project-daemon-instance-parameters">Parameters</h3>
 
@@ -12928,6 +13647,7 @@ Force restart a running production daemon instance. The new container starts asy
 |idOrName|path|string|true|The unique project identifier or the project name|
 |daemonName|path|string|true|The name of the daemon that owns the instance|
 |instanceId|path|string|true|The ID of the daemon instance to restart|
+|customEnvironmentId|query|string|false|The ID of the custom environment of the instance. Production instances are restarted when omitted.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -12946,10 +13666,10 @@ Force restart a running production daemon instance. The new container starts asy
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |202|Accepted|The restart was accepted. The new user container starts asynchronously.|Inline|
-|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|400|Bad Request|One of the provided values in the request query is invalid.<br>Both `target` and `customEnvironmentId` were given.|None|
 |401|Unauthorized|The request is not authorized.|None|
-|403|Forbidden|You do not have permission to access this resource.<br>The OIDC token is not a production token for this project.|None|
-|404|Not Found|The daemon has no running production instance with this ID.|None|
+|403|Forbidden|You do not have permission to access this resource.<br>The OIDC token is not for this project or the daemon's environment.|None|
+|404|Not Found|The project has no custom environment with this ID.<br>The daemon has no running instance with this ID in the environment.|None|
 |409|Conflict|The instance is still starting and cannot be restarted yet.|None|
 |410|Gone||None|
 |500|Internal Server Error|The instance controller did not accept the restart.|None|
@@ -13095,7 +13815,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[object \| null]|false|none|none|
+|*anonymous*|[object]|false|none|none|
 |» *oneOf*|object|false|none|none|
 |» created|number|true|none|none|
 |» payload|object|true|none|none|
@@ -13699,6 +14419,7 @@ Status Code **200**
 |» » » *oneOf*|number|false|none|none|
 |» » » *oneOf*|string|false|none|none|
 |» » memory|number|false|none|none|
+|» » perimeter|string|false|none|none|
 |» » regions|[string]|false|none|none|
 |» » runtime|string|false|none|none|
 |» » supportsCancellation|boolean|false|none|none|
@@ -14197,6 +14918,7 @@ Status Code **200**
 |» » *oneOf*|object|false|none|none|
 |» » args|string|true|none|none|
 |» » env|[string]|false|none|none|
+|» » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » op|string|true|none|none|
 |» » type|string|true|none|none|
 |» *oneOf*|object|false|none|none|
@@ -14256,6 +14978,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -14296,6 +15019,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -14335,12 +15059,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -14420,6 +15141,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -14460,6 +15182,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -14499,12 +15222,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -14546,6 +15266,7 @@ Status Code **200**
 |» » » » *oneOf*|number|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » memory|number|false|none|none|
+|» » » perimeter|string|false|none|none|
 |» » » regions|[string]|false|none|none|
 |» » » runtime|string|false|none|none|
 |» » » supportsCancellation|boolean|false|none|none|
@@ -14806,6 +15527,7 @@ Status Code **200**
 |» » transforms|[object]|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» root|string|true|none|Path to the service root, relative to the project root.|
@@ -14945,6 +15667,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» » *oneOf*|object|false|none|none|
@@ -15619,6 +16342,8 @@ Status Code **200**
 |» » type|request.headers|
 |» » type|request.query|
 |» » type|response.headers|
+|» » fallback|false|
+|» » fallback|true|
 |» » op|set|
 |» » type|request.path|
 |» handle|error|
@@ -15671,6 +16396,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» » » type|service-ref|
@@ -15720,6 +16447,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» cleanUrls|false|
@@ -15762,6 +16491,8 @@ Status Code **200**
 |» » » type|query|
 |» » respectOriginCacheControl|false|
 |» » respectOriginCacheControl|true|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » caseSensitive|false|
@@ -15793,6 +16524,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » handle|error|
@@ -16554,6 +17287,7 @@ Status Code **200**
 |» » » *oneOf*|number|false|none|none|
 |» » » *oneOf*|string|false|none|none|
 |» » memory|number|false|none|none|
+|» » perimeter|string|false|none|none|
 |» » regions|[string]|false|none|none|
 |» » runtime|string|false|none|none|
 |» » supportsCancellation|boolean|false|none|none|
@@ -17052,6 +17786,7 @@ Status Code **200**
 |» » *oneOf*|object|false|none|none|
 |» » args|string|true|none|none|
 |» » env|[string]|false|none|none|
+|» » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » op|string|true|none|none|
 |» » type|string|true|none|none|
 |» *oneOf*|object|false|none|none|
@@ -17111,6 +17846,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -17151,6 +17887,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -17190,12 +17927,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -17275,6 +18009,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -17315,6 +18050,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -17354,12 +18090,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -17401,6 +18134,7 @@ Status Code **200**
 |» » » » *oneOf*|number|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » memory|number|false|none|none|
+|» » » perimeter|string|false|none|none|
 |» » » regions|[string]|false|none|none|
 |» » » runtime|string|false|none|none|
 |» » » supportsCancellation|boolean|false|none|none|
@@ -17661,6 +18395,7 @@ Status Code **200**
 |» » transforms|[object]|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» root|string|true|none|Path to the service root, relative to the project root.|
@@ -17800,6 +18535,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» » *oneOf*|object|false|none|none|
@@ -18176,6 +18912,8 @@ Status Code **200**
 |» » type|request.headers|
 |» » type|request.query|
 |» » type|response.headers|
+|» » fallback|false|
+|» » fallback|true|
 |» » op|set|
 |» » type|request.path|
 |» handle|error|
@@ -18228,6 +18966,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» » » type|service-ref|
@@ -18277,6 +19017,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» cleanUrls|false|
@@ -18319,6 +19061,8 @@ Status Code **200**
 |» » » type|query|
 |» » respectOriginCacheControl|false|
 |» » respectOriginCacheControl|true|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » caseSensitive|false|
@@ -18350,6 +19094,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » handle|error|
@@ -18632,6 +19378,7 @@ Cancels a deployment that is currently in progress, stopping the build before it
       "maxConcurrency": 0,
       "maxDuration": 0,
       "memory": 0,
+      "perimeter": "string",
       "regions": [
         "string"
       ],
@@ -18663,6 +19410,7 @@ Cancels a deployment that is currently in progress, stopping the build before it
       "maxConcurrency": 0,
       "maxDuration": 0,
       "memory": 0,
+      "perimeter": "string",
       "regions": [
         "string"
       ],
@@ -18995,6 +19743,7 @@ Cancels a deployment that is currently in progress, stopping the build before it
             },
             "root": "string",
             "terminationGracePeriodSeconds": 0,
+            "buildTarget": "string",
             "name": "string"
           },
           "debug": false,
@@ -19027,6 +19776,7 @@ Cancels a deployment that is currently in progress, stopping the build before it
               "maxConcurrency": 0,
               "maxDuration": 0,
               "memory": 0,
+              "perimeter": "string",
               "regions": [
                 "string"
               ],
@@ -19058,6 +19808,7 @@ Cancels a deployment that is currently in progress, stopping the build before it
               "maxConcurrency": 0,
               "maxDuration": 0,
               "memory": 0,
+              "perimeter": "string",
               "regions": [
                 "string"
               ],
@@ -19099,17 +19850,9 @@ Cancels a deployment that is currently in progress, stopping the build before it
             }
           },
           "rust": "string",
-          "scheduleFunction": {
-            "entrypoints": [
-              {
-                "entrypoint": "string",
-                "scheduleNames": [
-                  "string"
-                ],
-                "sourceFile": "string"
-              }
-            ],
-            "outputPath": "string"
+          "schedulesEntrypoint": false,
+          "schedulesModule": {
+            "module": "string"
           },
           "serviceName": "string",
           "zeroConfig": false
@@ -19365,6 +20108,7 @@ Status Code **200**
 |» » » *oneOf*|number|false|none|none|
 |» » » *oneOf*|string|false|none|none|
 |» » memory|number|false|none|none|
+|» » perimeter|string|false|none|none|
 |» » regions|[string]|false|none|none|
 |» » runtime|string|false|none|none|
 |» » supportsCancellation|boolean|false|none|none|
@@ -19863,6 +20607,7 @@ Status Code **200**
 |» » *oneOf*|object|false|none|none|
 |» » args|string|true|none|none|
 |» » env|[string]|false|none|none|
+|» » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » op|string|true|none|none|
 |» » type|string|true|none|none|
 |» *oneOf*|object|false|none|none|
@@ -19922,6 +20667,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -19962,6 +20708,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -20001,12 +20748,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -20086,6 +20830,7 @@ Status Code **200**
 |» » » » » » memory|string|true|none|none|
 |» » » » root|string|true|none|none|
 |» » » » terminationGracePeriodSeconds|number|false|none|none|
+|» » » » buildTarget|string|false|none|Dockerfile stage from an `entrypoint` like `Dockerfile#worker`.|
 |» » » » name|string|true|none|none|
 |» » » debug|boolean|false|none|none|
 |» » » devCommand|string|false|none|none|
@@ -20126,6 +20871,7 @@ Status Code **200**
 |» » » » » » *oneOf*|number|false|none|none|
 |» » » » » » *oneOf*|string|false|none|none|
 |» » » » » memory|number|false|none|none|
+|» » » » » perimeter|string|false|none|none|
 |» » » » » regions|[string]|false|none|none|
 |» » » » » runtime|string|false|none|none|
 |» » » » » supportsCancellation|boolean|false|none|none|
@@ -20165,12 +20911,9 @@ Status Code **200**
 |» » » » vercelFlags|object|false|none|none|
 |» » » » » enabledAt|number|false|none|none|
 |» » » rust|string|false|none|none|
-|» » » scheduleFunction|object|false|none|Set when this build produces a function for schedule entrypoints.|
-|» » » » entrypoints|[object]|true|none|none|
-|» » » » » entrypoint|string|true|none|Runtime-specific entrypoint locator from `vercel.json`.|
-|» » » » » scheduleNames|[string]|true|none|Names of the schedules that dispatch to this entrypoint, in config order.|
-|» » » » » sourceFile|string|true|none|Project-relative source file that contains the entrypoint.|
-|» » » » outputPath|string|true|none|Function output path every schedule in this build targets.|
+|» » » schedulesEntrypoint|boolean|false|none|Set when this build serves a JavaScript or TypeScript schedule: the entrypoint's default export runs each firing, and its `export const config` sets the schedule.|
+|» » » schedulesModule|object|false|none|Set when this build serves a Python schedule's module: the `@schedule` handlers that importing `module` registers.|
+|» » » » module|string|true|none|none|
 |» » » serviceName|string|false|none|Owning service name; scopes per-function config such as the v2beta consumer.|
 |» » » zeroConfig|boolean|false|none|none|
 |» » src|string|false|none|none|
@@ -20212,6 +20955,7 @@ Status Code **200**
 |» » » » *oneOf*|number|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » memory|number|false|none|none|
+|» » » perimeter|string|false|none|none|
 |» » » regions|[string]|false|none|none|
 |» » » runtime|string|false|none|none|
 |» » » supportsCancellation|boolean|false|none|none|
@@ -20472,6 +21216,7 @@ Status Code **200**
 |» » transforms|[object]|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» root|string|true|none|Path to the service root, relative to the project root.|
@@ -20611,6 +21356,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» » *oneOf*|object|false|none|none|
@@ -20975,6 +21721,8 @@ Status Code **200**
 |» » type|request.headers|
 |» » type|request.query|
 |» » type|response.headers|
+|» » fallback|false|
+|» » fallback|true|
 |» » op|set|
 |» » type|request.path|
 |» handle|error|
@@ -21027,6 +21775,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» » » type|service-ref|
@@ -21076,6 +21826,8 @@ Status Code **200**
 |» » » » gitForkProtection|true|
 |» » » » sourceFilesOutsideRootDirectory|false|
 |» » » » sourceFilesOutsideRootDirectory|true|
+|» » » schedulesEntrypoint|false|
+|» » » schedulesEntrypoint|true|
 |» » » zeroConfig|false|
 |» » » zeroConfig|true|
 |» cleanUrls|false|
@@ -21118,6 +21870,8 @@ Status Code **200**
 |» » » type|query|
 |» » respectOriginCacheControl|false|
 |» » respectOriginCacheControl|true|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » caseSensitive|false|
@@ -21149,6 +21903,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» » handle|error|
@@ -22516,6 +23272,8 @@ curl https://api.vercel.com/domains/example.com/records \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |domain|path|string|true|The domain name|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
 
 > Example responses
 
@@ -22572,6 +23330,8 @@ curl https://api.vercel.com/domains/records/string \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |recordId|path|string|true|The unique ID of the DNS record|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
 
 > Example responses
 
@@ -26223,7 +26983,10 @@ Get information about a domain order by its ID
   ],
   "status": "draft",
   "error": {
-    "code": "payment-failed"
+    "code": "payment-failed",
+    "details": {
+      "reason": "authentication-required"
+    }
   }
 }
 ```
@@ -26448,6 +27211,8 @@ Status Code **200**
 |» *anyOf*|object|false|none|none|
 |» *anyOf*|object|false|none|none|
 |» code|string|true|none|none|
+|» details|object|false|none|none|
+|» » reason|string|true|none|none|
 |» *anyOf*|object|false|none|none|
 |» code|string|true|none|none|
 |» details|object|true|none|none|
@@ -26565,6 +27330,7 @@ Status Code **200**
 |status|completed|
 |status|failed|
 |» code|payment-failed|
+|» » reason|authentication-required|
 |» code|tld-outage|
 |» code|price-mismatch|
 |» code|unexpected-error|
@@ -26705,7 +27471,7 @@ curl https://api.vercel.com/v9/domains/example.com/verification \
 
 `GET /v9/domains/{domain}/verification`
 
-Get the TXT verification record needed to claim ownership of a domain for the authenticated team. The caller must add this TXT record to `_vercel.{domain}` in their DNS configuration, then call POST /domains/:domain/claim to complete the ownership transfer.
+Get the TXT verification record needed to claim ownership of a domain for the authenticated team. The caller must add this TXT record to `_vercel.{domain}` in their DNS configuration, then call POST /domains/:domain/claim to complete the ownership transfer. Records expire at the returned expiresAt (at most 24 hours) or when ownership changes.
 
 <h3 id="get-domain-verification-record-parameters">Parameters</h3>
 
@@ -26721,6 +27487,7 @@ Get the TXT verification record needed to claim ownership of a domain for the au
 
 ```json
 {
+  "expiresAt": 0,
   "txtRecord": "string",
   "verificationDomain": "string"
 }
@@ -26735,6 +27502,7 @@ Get the TXT verification record needed to claim ownership of a domain for the au
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
+|409|Conflict||None|
 |410|Gone||None|
 
 <h3 id="get-domain-verification-record-responseschema">Response Schema</h3>
@@ -26743,6 +27511,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|expiresAt|number|true|none|none|
 |txtRecord|string|true|none|none|
 |verificationDomain|string|true|none|none|
 
@@ -26766,7 +27535,7 @@ curl https://api.vercel.com/v9/domains/example.com/claim \
 
 `POST /v9/domains/{domain}/claim`
 
-Claim ownership of a domain for the authenticated team by verifying a TXT record. The caller must first add a TXT record to `_vercel.{domain}` (obtained from GET /domains/:domain/verification), then call this endpoint to complete the ownership transfer. If the TXT record is verified, the domain ownership will be transferred to the caller's team, even if the domain is currently owned by another user or team.
+Claim ownership of a domain for the authenticated team by verifying a TXT record. The caller must first add a TXT record to `_vercel.{domain}` (obtained from GET /domains/:domain/verification), then call this endpoint to complete the ownership transfer. Proof must be unexpired and issued for the domain's current ownership. If the TXT record is verified, the domain ownership will be transferred to the caller's team, even if the domain is currently owned by another user or team.
 
 <h3 id="claim-domain-ownership-parameters">Parameters</h3>
 
@@ -26826,6 +27595,7 @@ Claim ownership of a domain for the authenticated team by verifying a TXT record
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
+|409|Conflict||None|
 |410|Gone||None|
 
 <h3 id="claim-domain-ownership-responseschema">Response Schema</h3>
@@ -27933,6 +28703,7 @@ Status Code **200**
 |» » encoding|string|true|none|none|
 |» » endpoint|string|true|none|none|
 |» » fileStructure|string|true|none|none|
+|» » kmsKeyId|string|false|none|none|
 |» » objectAcl|string|false|none|none|
 |» » region|string|true|none|none|
 |» » roleArn|string|true|none|none|
@@ -27975,10 +28746,13 @@ Status Code **200**
 |» status|string|false|none|none|
 |» teamId|string \| null|false|none|none|
 |» updatedAt|number|true|none|none|
-|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» » attempts|number|true|none|All delivery attempts in the window.|
-|» » failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» » attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» » failures|number|true|none|Deliveries that finally failed in the window.|
 |» » state|string|true|none|none|
+|» » totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» » totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» » totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» » window|string|true|none|none|
 |» filterV2|object|false|none|none|
 |» » filter|object|true|none|none|
@@ -28030,6 +28804,7 @@ Status Code **200**
 |» » encoding|string|true|none|none|
 |» » endpoint|string|true|none|none|
 |» » fileStructure|string|true|none|none|
+|» » kmsKeyId|string|false|none|none|
 |» » objectAcl|string|false|none|none|
 |» » region|string|true|none|none|
 |» » roleArn|string|true|none|none|
@@ -28072,10 +28847,13 @@ Status Code **200**
 |» status|string|false|none|none|
 |» teamId|string \| null|false|none|none|
 |» updatedAt|number|true|none|none|
-|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» » attempts|number|true|none|All delivery attempts in the window.|
-|» » failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» » attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» » failures|number|true|none|Deliveries that finally failed in the window.|
 |» » state|string|true|none|none|
+|» » totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» » totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» » totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» » window|string|true|none|none|
 |» filterV2|object|false|none|none|
 |» » filter|object|true|none|none|
@@ -28194,6 +28972,7 @@ Status Code **200**
 |» » » kind|INTEGRATION_SECRET|
 |» » type|otlphttp|
 |» » type|clickhouse|
+|» » compression|gzip|
 |» » compression|none|
 |» » encoding|json|
 |» » encoding|ndjson|
@@ -28220,6 +28999,7 @@ Status Code **200**
 |» » env|production|
 |» » type|head_sampling|
 |» » defaultFor|eve-tracing|
+|» » defaultFor|nextjs-tracing|
 |» » kind|self-served|
 |» » kind|integration|
 |» status|disabled|
@@ -28254,6 +29034,7 @@ Status Code **200**
 |» » » kind|INTEGRATION_SECRET|
 |» » type|otlphttp|
 |» » type|clickhouse|
+|» » compression|gzip|
 |» » compression|none|
 |» » encoding|json|
 |» » encoding|ndjson|
@@ -28280,6 +29061,7 @@ Status Code **200**
 |» » env|production|
 |» » type|head_sampling|
 |» » defaultFor|eve-tracing|
+|» » defaultFor|nextjs-tracing|
 |» » kind|self-served|
 |» » kind|integration|
 |» status|disabled|
@@ -28552,6 +29334,7 @@ Status Code **200**
 |» environments|preview|
 |» environments|production|
 |» » defaultFor|eve-tracing|
+|» » defaultFor|nextjs-tracing|
 |» » kind|self-served|
 |» » kind|integration|
 |» sources|build|
@@ -28751,6 +29534,7 @@ Status Code **200**
 |environments|preview|
 |environments|production|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |sources|build|
@@ -28892,6 +29676,9 @@ Allows to retrieve the list of Drains of the authenticated team.
         "attempts": 0,
         "failures": 0,
         "state": "failing",
+        "totalFailedDeliveries": 0,
+        "totalRetriedDeliveries": 0,
+        "totalSuccessfulDeliveries": 0,
         "window": "24h"
       },
       "filterV2": {
@@ -28975,6 +29762,7 @@ Status Code **200**
 |» » encoding|string|true|none|none|
 |» » endpoint|string|true|none|none|
 |» » fileStructure|string|true|none|none|
+|» » kmsKeyId|string|false|none|none|
 |» » objectAcl|string|false|none|none|
 |» » region|string|true|none|none|
 |» » roleArn|string|true|none|none|
@@ -29017,10 +29805,13 @@ Status Code **200**
 |» status|string|false|none|none|
 |» teamId|string \| null|false|none|none|
 |» updatedAt|number|true|none|none|
-|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» » attempts|number|true|none|All delivery attempts in the window.|
-|» » failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» » attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» » failures|number|true|none|Deliveries that finally failed in the window.|
 |» » state|string|true|none|none|
+|» » totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» » totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» » totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» » window|string|true|none|none|
 |» filterV2|object|false|none|none|
 |» » filter|object|true|none|none|
@@ -29072,6 +29863,7 @@ Status Code **200**
 |» » encoding|string|true|none|none|
 |» » endpoint|string|true|none|none|
 |» » fileStructure|string|true|none|none|
+|» » kmsKeyId|string|false|none|none|
 |» » objectAcl|string|false|none|none|
 |» » region|string|true|none|none|
 |» » roleArn|string|true|none|none|
@@ -29114,10 +29906,13 @@ Status Code **200**
 |» status|string|false|none|none|
 |» teamId|string \| null|false|none|none|
 |» updatedAt|number|true|none|none|
-|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» » attempts|number|true|none|All delivery attempts in the window.|
-|» » failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|» deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» » attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» » failures|number|true|none|Deliveries that finally failed in the window.|
 |» » state|string|true|none|none|
+|» » totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» » totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» » totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» » window|string|true|none|none|
 |» filterV2|object|false|none|none|
 |» » filter|object|true|none|none|
@@ -29161,6 +29956,7 @@ Status Code **200**
 |» » » kind|INTEGRATION_SECRET|
 |» » type|otlphttp|
 |» » type|clickhouse|
+|» » compression|gzip|
 |» » compression|none|
 |» » encoding|json|
 |» » encoding|ndjson|
@@ -29187,6 +29983,7 @@ Status Code **200**
 |» » env|production|
 |» » type|head_sampling|
 |» » defaultFor|eve-tracing|
+|» » defaultFor|nextjs-tracing|
 |» » kind|self-served|
 |» » kind|integration|
 |» status|disabled|
@@ -29221,6 +30018,7 @@ Status Code **200**
 |» » » kind|INTEGRATION_SECRET|
 |» » type|otlphttp|
 |» » type|clickhouse|
+|» » compression|gzip|
 |» » compression|none|
 |» » encoding|json|
 |» » encoding|ndjson|
@@ -29247,6 +30045,7 @@ Status Code **200**
 |» » env|production|
 |» » type|head_sampling|
 |» » defaultFor|eve-tracing|
+|» » defaultFor|nextjs-tracing|
 |» » kind|self-served|
 |» » kind|integration|
 |» status|disabled|
@@ -29487,6 +30286,7 @@ Create a new Drain with the provided configuration.
 |» » roleArn|body|string|true|none|
 |» » region|body|string|true|none|
 |» » serverSideEncryption|body|string|false|none|
+|» » kmsKeyId|body|string|false|none|
 |» » objectAcl|body|string|false|none|
 |» sampling|body|[object]|false|none|
 |» » type|body|string|true|none|
@@ -29531,6 +30331,7 @@ Create a new Drain with the provided configuration.
 |» » encoding|json|
 |» » encoding|json|
 |» » encoding|ndjson|
+|» » compression|gzip|
 |» » compression|none|
 |» » fileStructure|hive|
 |» » serverSideEncryption|AES256|
@@ -29598,6 +30399,9 @@ Create a new Drain with the provided configuration.
     "attempts": 0,
     "failures": 0,
     "state": "failing",
+    "totalFailedDeliveries": 0,
+    "totalRetriedDeliveries": 0,
+    "totalSuccessfulDeliveries": 0,
     "window": "24h"
   },
   "filterV2": {
@@ -29677,6 +30481,7 @@ Status Code **200**
 |» encoding|string|true|none|none|
 |» endpoint|string|true|none|none|
 |» fileStructure|string|true|none|none|
+|» kmsKeyId|string|false|none|none|
 |» objectAcl|string|false|none|none|
 |» region|string|true|none|none|
 |» roleArn|string|true|none|none|
@@ -29719,10 +30524,13 @@ Status Code **200**
 |status|string|false|none|none|
 |teamId|string \| null|false|none|none|
 |updatedAt|number|true|none|none|
-|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» attempts|number|true|none|All delivery attempts in the window.|
-|» failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» failures|number|true|none|Deliveries that finally failed in the window.|
 |» state|string|true|none|none|
+|» totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» window|string|true|none|none|
 |filterV2|object|false|none|none|
 |» filter|object|true|none|none|
@@ -29773,6 +30581,7 @@ Status Code **200**
 |» encoding|string|true|none|none|
 |» endpoint|string|true|none|none|
 |» fileStructure|string|true|none|none|
+|» kmsKeyId|string|false|none|none|
 |» objectAcl|string|false|none|none|
 |» region|string|true|none|none|
 |» roleArn|string|true|none|none|
@@ -29815,10 +30624,13 @@ Status Code **200**
 |status|string|false|none|none|
 |teamId|string \| null|false|none|none|
 |updatedAt|number|true|none|none|
-|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» attempts|number|true|none|All delivery attempts in the window.|
-|» failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» failures|number|true|none|Deliveries that finally failed in the window.|
 |» state|string|true|none|none|
+|» totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» window|string|true|none|none|
 |filterV2|object|false|none|none|
 |» filter|object|true|none|none|
@@ -29862,6 +30674,7 @@ Status Code **200**
 |» » kind|INTEGRATION_SECRET|
 |» type|otlphttp|
 |» type|clickhouse|
+|» compression|gzip|
 |» compression|none|
 |» encoding|json|
 |» encoding|ndjson|
@@ -29888,6 +30701,7 @@ Status Code **200**
 |» env|production|
 |» type|head_sampling|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |status|disabled|
@@ -29922,6 +30736,7 @@ Status Code **200**
 |» » kind|INTEGRATION_SECRET|
 |» type|otlphttp|
 |» type|clickhouse|
+|» compression|gzip|
 |» compression|none|
 |» encoding|json|
 |» encoding|ndjson|
@@ -29948,6 +30763,7 @@ Status Code **200**
 |» env|production|
 |» type|head_sampling|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |status|disabled|
@@ -30004,7 +30820,7 @@ Get the information for a specific Drain by passing the drain id in the URL.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
-|includeDeliveryStats|query|boolean|false|Include `deliveryStats` with the delivery health of the drain over the last 24 hours.|
+|includeDeliveryStats|query|boolean|false|Include `deliveryStats` with the delivery health of the drain over the last 24 hours. Ignored for teams without drain delivery metrics.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -30064,6 +30880,9 @@ Get the information for a specific Drain by passing the drain id in the URL.
     "attempts": 0,
     "failures": 0,
     "state": "failing",
+    "totalFailedDeliveries": 0,
+    "totalRetriedDeliveries": 0,
+    "totalSuccessfulDeliveries": 0,
     "window": "24h"
   },
   "filterV2": {
@@ -30142,6 +30961,7 @@ Status Code **200**
 |» encoding|string|true|none|none|
 |» endpoint|string|true|none|none|
 |» fileStructure|string|true|none|none|
+|» kmsKeyId|string|false|none|none|
 |» objectAcl|string|false|none|none|
 |» region|string|true|none|none|
 |» roleArn|string|true|none|none|
@@ -30184,10 +31004,13 @@ Status Code **200**
 |status|string|false|none|none|
 |teamId|string \| null|false|none|none|
 |updatedAt|number|true|none|none|
-|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» attempts|number|true|none|All delivery attempts in the window.|
-|» failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» failures|number|true|none|Deliveries that finally failed in the window.|
 |» state|string|true|none|none|
+|» totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» window|string|true|none|none|
 |filterV2|object|false|none|none|
 |» filter|object|true|none|none|
@@ -30220,6 +31043,7 @@ Status Code **200**
 |» » kind|INTEGRATION_SECRET|
 |» type|otlphttp|
 |» type|clickhouse|
+|» compression|gzip|
 |» compression|none|
 |» encoding|json|
 |» encoding|ndjson|
@@ -30246,6 +31070,7 @@ Status Code **200**
 |» env|production|
 |» type|head_sampling|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |status|disabled|
@@ -30485,6 +31310,7 @@ Update the configuration of an existing drain.
 |» » roleArn|body|string|true|none|
 |» » region|body|string|true|none|
 |» » serverSideEncryption|body|string|false|none|
+|» » kmsKeyId|body|string|false|none|
 |» » objectAcl|body|string|false|none|
 |» sampling|body|[object]|false|none|
 |» » type|body|string|true|none|
@@ -30530,6 +31356,7 @@ Update the configuration of an existing drain.
 |» » encoding|json|
 |» » encoding|json|
 |» » encoding|ndjson|
+|» » compression|gzip|
 |» » compression|none|
 |» » fileStructure|hive|
 |» » serverSideEncryption|AES256|
@@ -30599,6 +31426,9 @@ Update the configuration of an existing drain.
     "attempts": 0,
     "failures": 0,
     "state": "failing",
+    "totalFailedDeliveries": 0,
+    "totalRetriedDeliveries": 0,
+    "totalSuccessfulDeliveries": 0,
     "window": "24h"
   },
   "filterV2": {
@@ -30678,6 +31508,7 @@ Status Code **200**
 |» encoding|string|true|none|none|
 |» endpoint|string|true|none|none|
 |» fileStructure|string|true|none|none|
+|» kmsKeyId|string|false|none|none|
 |» objectAcl|string|false|none|none|
 |» region|string|true|none|none|
 |» roleArn|string|true|none|none|
@@ -30720,10 +31551,13 @@ Status Code **200**
 |status|string|false|none|none|
 |teamId|string \| null|false|none|none|
 |updatedAt|number|true|none|none|
-|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» attempts|number|true|none|All delivery attempts in the window.|
-|» failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» failures|number|true|none|Deliveries that finally failed in the window.|
 |» state|string|true|none|none|
+|» totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» window|string|true|none|none|
 |filterV2|object|false|none|none|
 |» filter|object|true|none|none|
@@ -30774,6 +31608,7 @@ Status Code **200**
 |» encoding|string|true|none|none|
 |» endpoint|string|true|none|none|
 |» fileStructure|string|true|none|none|
+|» kmsKeyId|string|false|none|none|
 |» objectAcl|string|false|none|none|
 |» region|string|true|none|none|
 |» roleArn|string|true|none|none|
@@ -30816,10 +31651,13 @@ Status Code **200**
 |status|string|false|none|none|
 |teamId|string \| null|false|none|none|
 |updatedAt|number|true|none|none|
-|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours: `failing` when more than 5 delivery attempts and at least 1% of all attempts did not succeed, `healthy` otherwise, and `unknown` when there were no attempts or the stats could not be loaded.|
-|» attempts|number|true|none|All delivery attempts in the window.|
-|» failures|number|true|none|Delivery attempts that did not succeed in the window.|
+|deliveryStats|object|false|none|Delivery health of a drain over the last 24 hours, counted on finished deliveries (a delivery saved by an automatic retry counts once, as delivered): `failing` when more than 5 deliveries failed and they are at least 1% of all finished deliveries, `healthy` otherwise, and `unknown` when no delivery finished in the window.|
+|» attempts|number|true|none|Finished deliveries in the window: delivered plus finally failed.|
+|» failures|number|true|none|Deliveries that finally failed in the window.|
 |» state|string|true|none|none|
+|» totalFailedDeliveries|number|true|none|Deliveries that finally failed in the window, after any automatic retries.|
+|» totalRetriedDeliveries|number|true|none|Deliveries whose first try failed and were scheduled for an automatic retry in the window, whatever their final outcome.|
+|» totalSuccessfulDeliveries|number|true|none|Deliveries delivered in the window, on the first try or after automatic retries.|
 |» window|string|true|none|none|
 |filterV2|object|false|none|none|
 |» filter|object|true|none|none|
@@ -30863,6 +31701,7 @@ Status Code **200**
 |» » kind|INTEGRATION_SECRET|
 |» type|otlphttp|
 |» type|clickhouse|
+|» compression|gzip|
 |» compression|none|
 |» encoding|json|
 |» encoding|ndjson|
@@ -30889,6 +31728,7 @@ Status Code **200**
 |» env|production|
 |» type|head_sampling|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |status|disabled|
@@ -30923,6 +31763,7 @@ Status Code **200**
 |» » kind|INTEGRATION_SECRET|
 |» type|otlphttp|
 |» type|clickhouse|
+|» compression|gzip|
 |» compression|none|
 |» encoding|json|
 |» encoding|ndjson|
@@ -30949,6 +31790,7 @@ Status Code **200**
 |» env|production|
 |» type|head_sampling|
 |» defaultFor|eve-tracing|
+|» defaultFor|nextjs-tracing|
 |» kind|self-served|
 |» kind|integration|
 |status|disabled|
@@ -31086,6 +31928,7 @@ Validate the delivery configuration of a Drain using sample events.
 |» » roleArn|body|string|true|none|
 |» » region|body|string|true|none|
 |» » serverSideEncryption|body|string|false|none|
+|» » kmsKeyId|body|string|false|none|
 |» » objectAcl|body|string|false|none|
 
 #### Enumerated Values
@@ -31100,6 +31943,7 @@ Validate the delivery configuration of a Drain using sample events.
 |» » encoding|json|
 |» » encoding|json|
 |» » encoding|ndjson|
+|» » compression|gzip|
 |» » compression|none|
 |» » fileStructure|hive|
 |» » serverSideEncryption|AES256|
@@ -31140,6 +31984,491 @@ Status Code **200**
 |endpoint|string|true|none|none|
 |error|string|true|none|none|
 |status|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+<h1 id="vercel-api-drives">drives</h1>
+
+## List drives
+
+<a id="opIdlistDrivesV1"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/drives \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/drives`
+
+Retrieves a paginated list of drives belonging to a specific project.
+
+<h3 id="list-drives-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectId|query|string|false|The project ID or name associated with the drives. Required unless using a Vercel OIDC token scoped to a project.|
+|limit|query|number|false|Maximum number of drives to return in the response. Used for pagination.|
+|cursor|query|string|false|Opaque pagination cursor from a previous response.|
+|sortBy|query|string|false|Field to sort drives by.|
+|namePrefix|query|string|false|Filter drives whose name starts with this prefix. Only valid when sortBy=name.|
+|sortOrder|query|string|false|Sort direction for results.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|sortBy|createdAt|
+|sortBy|updatedAt|
+|sortBy|name|
+|sortOrder|asc|
+|sortOrder|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "drives": [
+    {
+      "createdAt": 1750344501629,
+      "currentSandboxName": "my-sandbox",
+      "currentSessionId": "sbx_123",
+      "id": "drive_abc123",
+      "maxSizeBytes": 1099511627776,
+      "name": "workspace",
+      "parentDriveId": "string",
+      "projectId": "prj_abc123",
+      "region": "iad1",
+      "rootDriveId": "string",
+      "updatedAt": 1750344501629,
+      "workloadType": "sandbox"
+    }
+  ],
+  "pagination": {
+    "count": 0,
+    "next": "string"
+  }
+}
+```
+
+<h3 id="list-drives-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+|429|Too Many Requests||None|
+
+<h3 id="list-drives-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drives|[[Drive](#schemadrive)]|true|none|none|
+|pagination|object|true|none|none|
+|» count|number|true|none|none|
+|» next|string \| null|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Get a drive
+
+<a id="opIdgetDriveV1"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/drives/workspace \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/drives/{nameOrId}`
+
+Gets an existing drive by project and name or drive ID. Returns 404 if doesn't exist.
+
+<h3 id="get-a-drive-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|nameOrId|path|string|true|The drive name or ID.|
+|projectId|query|string|false|The project ID or name associated with the drive. Required unless using a Vercel OIDC token scoped to a project.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+<h3 id="get-a-drive-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+|429|Too Many Requests||None|
+
+<h3 id="get-a-drive-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Delete a drive
+
+<a id="opIddeleteDriveV1"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/drives/workspace \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/drives/{nameOrId}`
+
+Deletes a drive by project and name or drive ID. Attached drives cannot be deleted. Stop or replace the session currently using the drive before retrying deletion.
+
+<h3 id="delete-a-drive-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|nameOrId|path|string|true|The drive name or ID.|
+|projectId|query|string|false|The project ID or name associated with the drive. Required unless using a Vercel OIDC token scoped to a project.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+<h3 id="delete-a-drive-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|429|Too Many Requests||None|
+
+<h3 id="delete-a-drive-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Get or create a drive
+
+<a id="opIdgetOrCreateDriveV1"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/drives/workspace \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "projectId": "prj_abc123",
+    "maxSizeBytes": 0,
+    "region": "iad1"
+  }'
+```
+
+`POST /v1/drives/{name}`
+
+Gets an existing drive by project and name, or creates it when it does not exist.
+
+> Body parameter
+
+```json
+{
+  "projectId": "prj_abc123",
+  "maxSizeBytes": 0,
+  "region": "iad1"
+}
+```
+
+<h3 id="get-or-create-a-drive-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|Name for the drive. Must be unique per project and URL-safe (alphanumeric, hyphens, underscores).|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» projectId|body|string|false|The project ID or name to associate the drive with. Required unless using a Vercel OIDC token scoped to a project.|
+|» maxSizeBytes|body|integer|false|Maximum drive size in bytes. Must be a multiple of 4096 bytes. Defaults to 1 TiB when omitted (1 GiB for Hobby). The maximum quota is 16 TiB. Request a quota above 16 TiB at https://vercel.com/help.|
+|» region|body|string|false|Region where the drive is stored. Defaults to iad1.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» region|iad1|
+|» region|sfo1|
+|» region|cle1|
+|» region|cdg1|
+|» region|fra1|
+|» region|arn1|
+|» region|sin1|
+|» region|pdx1|
+|» region|lhr1|
+|» region|icn1|
+|» region|bom1|
+|» region|cpt1|
+|» region|dub1|
+|» region|gru1|
+|» region|hkg1|
+|» region|syd1|
+|» region|yul1|
+|» region|hnd1|
+|» region|kix1|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+> 201 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+<h3 id="get-or-create-a-drive-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|201|Created||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|402|Payment Required|The account is missing a payment so payment method must be updated|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|429|Too Many Requests||None|
+|503|Service Unavailable||None|
+
+<h3 id="get-or-create-a-drive-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Fork a drive
+
+<a id="opIdforkDriveV1"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/drives/workspace/fork \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "name": "workspace-fork"
+  }'
+```
+
+`POST /v1/drives/{name}/fork`
+
+Fork the provided drive into a new one with the provided name, inheriting the region and max size.
+
+> Body parameter
+
+```json
+{
+  "name": "workspace-fork"
+}
+```
+
+<h3 id="fork-a-drive-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|string|true|Name of the source drive to fork.|
+|projectId|query|string|false|The project ID or name associated with the drive. Required unless using a Vercel OIDC token scoped to a project.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» name|body|string|true|Name for the forked drive. Must be unique per project and URL-safe (alphanumeric, hyphens, underscores).|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+<h3 id="fork-a-drive-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|402|Payment Required|The account is missing a payment so payment method must be updated|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|429|Too Many Requests||None|
+|503|Service Unavailable||None|
+
+<h3 id="fork-a-drive-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -34793,6 +36122,12 @@ Retrieves information related to the currently authenticated User.
         "name": "string",
         "slug": "string"
       },
+      "orphanSsoTeam": {
+        "avatar": "string",
+        "name": "string",
+        "slug": "string",
+        "teamId": "string"
+      },
       "verifiedEmuDomains": [
         "string"
       ]
@@ -34882,11 +36217,13 @@ Retrieves information related to the currently authenticated User.
       "edgeFunctionExecutionTimeoutMs": 0,
       "edgeFunctionMaxSizeBytes": 0,
       "elasticConcurrencyEnabled": false,
+      "enableMessageboardPrivateBoards": false,
       "flagsExplorerOverridesThreshold": 0,
       "flagsExplorerUnlimitedOverrides": false,
       "imageOptimizationType": "string",
       "integrationStores": 0,
       "kvDatabases": 0,
+      "messageboardBoards": 0,
       "microfrontendGroupsPerTeam": 0,
       "microfrontendProjectsPerGroup": 0,
       "nodeType": "string",
@@ -35031,6 +36368,88 @@ bearerToken
 </aside>
 
 <h1 id="vercel-api-feature-flags">feature-flags</h1>
+
+## Sign flag overrides
+
+<a id="opIdsignFlagOverrides"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/projects/string/feature-flags/overrides/sign \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "overrides": {},
+    "environment": "string",
+    "ttl": 60
+  }'
+```
+
+`POST /v1/projects/{projectIdOrName}/feature-flags/overrides/sign`
+
+Signs flag overrides for the `vercel-flag-overrides` cookie, which the Flags SDK accepts without a `FLAGS_SECRET`. The overrides apply to one environment of the project and of the projects that share its microfrontends groups. An access token requires permission to read the project and an `environment`. A Vercel OIDC token signs only for its own project and environment.
+
+> Body parameter
+
+```json
+{
+  "overrides": {},
+  "environment": "string",
+  "ttl": 60
+}
+```
+
+<h3 id="sign-flag-overrides-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectIdOrName|path|string|true|The project id or name|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» overrides|body|object|true|The value of each overridden flag, by flag key|
+|» environment|body|string|false|production, preview, development or the slug of a custom environment. Defaults to the environment of a Vercel OIDC token.|
+|» ttl|body|integer|false|Seconds until the overrides expire. Defaults to one hour, at most one day.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "expiresIn": 0,
+  "token": "string"
+}
+```
+
+<h3 id="sign-flag-overrides-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+|413|Payload Too Large||None|
+
+<h3 id="sign-flag-overrides-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|expiresIn|number|true|none|none|
+|token|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
 
 ## List flags
 
@@ -38911,7 +40330,6 @@ curl https://api.vercel.com/v1/projects/string/feature-flags/settings \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "enabled": true,
     "entities": [
       {
         "kind": "string",
@@ -38944,7 +40362,6 @@ Update feature flag settings for a project.
 
 ```json
 {
-  "enabled": true,
   "entities": [
     {
       "kind": "string",
@@ -38977,7 +40394,6 @@ Update feature flag settings for a project.
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|false|none|
-|» enabled|body|boolean|false|none|
 |» entities|body|[object]|false|none|
 |» » kind|body|string|true|none|
 |» » label|body|string|true|none|
@@ -41980,6 +43396,209 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
+## List flags project connections
+
+<a id="opIdgetFlagsProjectConnections"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/projects/string/feature-flags/connections \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/projects/{projectIdOrName}/feature-flags/connections`
+
+Lists the flags project connections of a project. By default these are the projects that may read this project's flags; with `role=consumer` these are the projects whose flags this project may read. Connections are within one team and apply across environments. Requires permission to list connections on the selected project.
+
+<h3 id="list-flags-project-connections-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectIdOrName|path|string|true|The project id or name|
+|role|query|string|false|List connections where this project is the source (default) or the consumer|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|role|source|
+|role|consumer|
+
+> Example responses
+
+> 200 Response
+
+```json
+{}
+```
+
+<h3 id="list-flags-project-connections-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|402|Payment Required|The account is missing a payment so payment method must be updated|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+
+<h3 id="list-flags-project-connections-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|*oneOf*|object|false|none|none|
+|data|[object]|true|none|none|
+|» consumerProjectId|string|true|none|none|
+|» consumerProjectName|string|false|none|none|
+|» createdAt|number|true|none|none|
+|» createdBy|string|true|none|none|
+|» sourceProjectId|string|true|none|none|
+|» sourceProjectName|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Connect a project to the flags of this project
+
+<a id="opIdcreateFlagsProjectConnection"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/projects/string/feature-flags/connections \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "consumerProjectId": "string"
+  }'
+```
+
+`PUT /v1/projects/{projectIdOrName}/feature-flags/connections`
+
+Connects a project in the same team to the flags of this project. The consumer project reads this project's flags with its own deployment identity by naming this project in the Flags SDK. Connections grant read and evaluate access across environments, with the consumer deployment's environment selecting the source environment. Requires connection management permission on the source project and read access to the consumer project.
+
+> Body parameter
+
+```json
+{
+  "consumerProjectId": "string"
+}
+```
+
+<h3 id="connect-a-project-to-the-flags-of-this-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectIdOrName|path|string|true|The project id or name|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» consumerProjectId|body|string|true|The project in the same team that may read the flags of this project|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "consumerProjectId": "string",
+  "consumerProjectName": "string",
+  "createdAt": 0,
+  "createdBy": "string",
+  "sourceProjectId": "string",
+  "sourceProjectName": "string"
+}
+```
+
+<h3 id="connect-a-project-to-the-flags-of-this-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|402|Payment Required|The account is missing a payment so payment method must be updated|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|503|Service Unavailable||None|
+
+<h3 id="connect-a-project-to-the-flags-of-this-project-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|consumerProjectId|string|true|none|none|
+|consumerProjectName|string|true|none|none|
+|createdAt|number|true|none|none|
+|createdBy|string|true|none|none|
+|sourceProjectId|string|true|none|none|
+|sourceProjectName|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Disconnect a project from the flags of this project
+
+<a id="opIddeleteFlagsProjectConnection"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/projects/string/feature-flags/connections/string \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/projects/{projectIdOrName}/feature-flags/connections/{consumerProjectId}`
+
+Disconnects a project from the flags of this project. The consumer loses access without a redeploy. Requires connection management permission on the source project; access to the consumer project is not required.
+
+<h3 id="disconnect-a-project-from-the-flags-of-this-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectIdOrName|path|string|true|The project id or name|
+|consumerProjectId|path|string|true|The connected consumer project id|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+<h3 id="disconnect-a-project-from-the-flags-of-this-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content||None|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|402|Payment Required|The account is missing a payment so payment method must be updated|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|503|Service Unavailable||None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
 <h1 id="vercel-api-integrations">integrations</h1>
 
 ## List git namespaces by provider
@@ -42281,6 +43900,7 @@ Get a list of billing plans for an integration and product.
 |source|oauth|
 |source|backoffice|
 |source|import-recommended-integrations|
+|source|project-overview-recommended-integrations|
 |source|organization|
 
 > Example responses
@@ -42300,6 +43920,7 @@ Get a list of billing plans for an integration and product.
         }
       ],
       "disabled": false,
+      "disabledReason": "string",
       "effectiveDate": "string",
       "highlightedDetails": [
         {
@@ -42352,6 +43973,7 @@ Status Code **200**
 |» » label|string|true|none|none|
 |» » value|string|false|none|none|
 |» disabled|boolean|false|none|none|
+|» disabledReason|string|false|none|none|
 |» effectiveDate|string|false|none|none|
 |» highlightedDetails|[object]|false|none|none|
 |» » label|string|true|none|none|
@@ -42630,6 +44252,7 @@ Status Code **200**
 |» source|marketplace|
 |» source|oauth|
 |» source|organization|
+|» source|project-overview-recommended-integrations|
 |» source|resource-claims|
 |» source|v0|
 |» status|error|
@@ -42686,6 +44309,7 @@ Status Code **200**
 |» source|marketplace|
 |» source|oauth|
 |» source|organization|
+|» source|project-overview-recommended-integrations|
 |» source|resource-claims|
 |» source|v0|
 |» status|error|
@@ -42764,32 +44388,6 @@ Allows to retrieve a the configuration with the provided id in case it exists. T
   "source": "marketplace",
   "status": "error",
   "teamId": "team_nLlpyC6RE1qxydlFKbrxDlud",
-  "transferRequest": {
-    "approvedAt": 0,
-    "approvedBy": "string",
-    "authorizationId": "string",
-    "billingPlan": {
-      "description": "string",
-      "id": "string",
-      "name": "string",
-      "paymentMethodRequired": false,
-      "preauthorizationAmount": 0,
-      "scope": "installation",
-      "type": "prepayment"
-    },
-    "createdAt": 0,
-    "discardedAt": 0,
-    "discardedBy": "string",
-    "expiresAt": 0,
-    "kind": "transfer-to-marketplace",
-    "metadata": {},
-    "requester": {
-      "email": "string",
-      "name": "string"
-    },
-    "requestId": "string",
-    "transferId": "string"
-  },
   "type": "integration-configuration",
   "updatedAt": 1558531915505,
   "userId": "kr1PsOIzqEL5Xg6M4VZcZosf"
@@ -42840,44 +44438,6 @@ Status Code **200**
 |source|string|false|none|Source defines where the configuration was installed from. It is used to analyze user engagement for integration installations in product metrics.|
 |status|string|false|none|The configuration status. Optional. If not defined, assume 'ready'.|
 |teamId|string \| null|false|none|When the configuration was created for a team, this will show the ID of the team.|
-|transferRequest|object|true|none|none|
-|» *oneOf*|object|false|none|none|
-|» approvedAt|number|false|none|none|
-|» approvedBy|string|false|none|none|
-|» authorizationId|string|false|none|none|
-|» billingPlan|object|false|none|none|
-|» » description|string|true|none|none|
-|» » id|string|true|none|none|
-|» » name|string|true|none|none|
-|» » paymentMethodRequired|boolean|false|none|none|
-|» » preauthorizationAmount|number|false|none|none|
-|» » scope|string|false|none|none|
-|» » type|string|true|none|none|
-|» createdAt|number|true|none|none|
-|» discardedAt|number|false|none|none|
-|» discardedBy|string|false|none|none|
-|» expiresAt|number|true|none|none|
-|» kind|string|true|none|none|
-|» metadata|object|false|none|none|
-|» requester|object|true|none|none|
-|» » email|string|false|none|none|
-|» » name|string|true|none|none|
-|» requestId|string|true|none|none|
-|» transferId|string|true|none|none|
-|» *oneOf*|object|false|none|none|
-|» approvedAt|number|false|none|none|
-|» approvedBy|string|false|none|none|
-|» authorizationId|string|false|none|none|
-|» createdAt|number|true|none|none|
-|» discardedAt|number|false|none|none|
-|» discardedBy|string|false|none|none|
-|» expiresAt|number|true|none|none|
-|» kind|string|true|none|none|
-|» requester|object|true|none|none|
-|» » email|string|false|none|none|
-|» » name|string|true|none|none|
-|» requestId|string|true|none|none|
-|» transferId|string|true|none|none|
 |type|string|true|none|none|
 |updatedAt|number|true|none|A timestamp that tells you when the configuration was updated.|
 |userId|string|true|none|The ID of the user that created the configuration.|
@@ -42904,29 +44464,6 @@ Status Code **200**
 |type|string|true|none|none|
 |updatedAt|number|true|none|A timestamp that tells you when the configuration was updated.|
 |userId|string|true|none|The ID of the user that created the configuration.|
-|*oneOf*|object|false|none|A configuration represents information about a single installation of an integration within an individual or team account|
-|acceptedPoliciesInheritedFromInstallationId|string|false|none|Historical parent installation from which acceptedPolicies were inherited. This is immutable provenance, not current authorization or relationship truth.|
-|completedAt|number|false|none|A timestamp that tells you when the configuration was installed successfully|
-|createdAt|number|false|none|A timestamp that tells you when the configuration was created|
-|customerDeleteRequestedAt|number \| null|false|none|Record when the customer initited deletion, independent of whether `deleteRequestedAt` gets set.|
-|deletedAt|number \| null|false|none|A timestamp that tells you when the configuration was deleted.|
-|deleteRequestedAt|number \| null|false|none|A timestamp that tells you when the configuration deletion has been started for cases when the deletion needs to be settled/approved by partners, such as when marketplace invoices have been paid.|
-|disabledAt|number|false|none|A timestamp that tells you when the configuration was disabled. Note: Configurations can be disabled when the associated user loses access to a team. They do not function during this time until the configuration is 'transferred', meaning the associated user is changed to one with access to the team.|
-|disabledReason|string|false|none|none|
-|externalId|string|false|none|An external identifier defined by the integration vendor.|
-|id|string|false|none|The unique identifier of the configuration|
-|installationType|string|false|none|Defines the installation type. - 'external' integrations are installed via the existing integrations flow - 'marketplace' integrations are natively installed: - when accepting the TOS of a partner during the store creation process - if undefined, assume 'external'|
-|integrationId|string|false|none|The unique identifier of the app the configuration was created for|
-|ownerId|string|false|none|The user or team ID that owns the configuration|
-|projects|[string]|false|none|When a configuration is limited to access certain projects, this will contain each of the project ID it is allowed to access. If it is not defined, the configuration has full access.|
-|scopes|[string]|false|none|The resources that are allowed to be accessed by the configuration.|
-|slug|string|false|none|The slug of the integration the configuration is created for.|
-|source|string|false|none|Source defines where the configuration was installed from. It is used to analyze user engagement for integration installations in product metrics.|
-|status|string|false|none|The configuration status. Optional. If not defined, assume 'ready'.|
-|teamId|string \| null|false|none|When the configuration was created for a team, this will show the ID of the team.|
-|type|string|false|none|none|
-|updatedAt|number|false|none|A timestamp that tells you when the configuration was updated.|
-|userId|string|false|none|The ID of the user that created the configuration.|
 
 #### Enumerated Values
 
@@ -42955,40 +44492,7 @@ Status Code **200**
 |source|marketplace|
 |source|oauth|
 |source|organization|
-|source|resource-claims|
-|source|v0|
-|status|error|
-|status|onboarding|
-|status|pending|
-|status|ready|
-|status|resumed|
-|status|suspended|
-|status|uninstalled|
-|» » paymentMethodRequired|false|
-|» » paymentMethodRequired|true|
-|» » scope|installation|
-|» » scope|resource|
-|» » type|prepayment|
-|» » type|subscription|
-|» kind|transfer-to-marketplace|
-|» kind|transfer-from-marketplace|
-|type|integration-configuration|
-|disabledReason|account-plan-downgrade|
-|disabledReason|disabled-by-admin|
-|disabledReason|disabled-by-owner|
-|disabledReason|feature-not-available|
-|disabledReason|original-owner-left-the-team|
-|disabledReason|original-owner-role-downgraded|
-|installationType|external|
-|installationType|marketplace|
-|source|backoffice|
-|source|cli|
-|source|deploy-button|
-|source|external|
-|source|import-recommended-integrations|
-|source|marketplace|
-|source|oauth|
-|source|organization|
+|source|project-overview-recommended-integrations|
 |source|resource-claims|
 |source|v0|
 |status|error|
@@ -43015,6 +44519,7 @@ Status Code **200**
 |source|marketplace|
 |source|oauth|
 |source|organization|
+|source|project-overview-recommended-integrations|
 |source|resource-claims|
 |source|v0|
 |status|error|
@@ -44294,6 +45799,7 @@ Creates an integration store with automatic billing plan handling. For free reso
 |» source|oauth|
 |» source|backoffice|
 |» source|import-recommended-integrations|
+|» source|project-overview-recommended-integrations|
 |» source|organization|
 
 > Example responses
@@ -44358,6 +45864,7 @@ Creates an integration store with automatic billing plan handling. For free reso
         }
       ],
       "disabled": false,
+      "disabledReason": "string",
       "effectiveDate": "string",
       "highlightedDetails": [
         {
@@ -44386,6 +45893,11 @@ Creates an integration store with automatic billing plan handling. For free reso
       "agentTools": false,
       "autoSensitive": false,
       "billable": false,
+      "credentialTypesTransitions": [
+        [
+          "oidc"
+        ]
+      ],
       "mcp": false,
       "mcpReadonly": false,
       "projects": false,
@@ -44397,6 +45909,16 @@ Creates an integration store with automatic billing plan handling. For free reso
       "sso": false,
       "transferable": false,
       "v0": false
+    },
+    "credentialTypes": [
+      "oidc"
+    ],
+    "credentialTypesTransition": {
+      "completedAt": 0,
+      "requestedAt": 0,
+      "to": [
+        "oidc"
+      ]
     },
     "directPartnerConsoleUrl": "string",
     "externalResourceId": "string",
@@ -44555,6 +46077,11 @@ Creates an integration store with automatic billing plan handling. For free reso
           "checks": false,
           "connectedImportResource": false,
           "connectedProvisioning": false,
+          "credentialTypesCreate": [
+            [
+              "oidc"
+            ]
+          ],
           "flexCommitEligible": false,
           "importResource": false,
           "maxAllowedTeams": 0,
@@ -44616,7 +46143,8 @@ Creates an integration store with automatic billing plan handling. For free reso
         "frameworkPublishable": false,
         "length": 0,
         "name": "string",
-        "nonSensitive": false
+        "nonSensitive": false,
+        "tokenSetKey": "string"
       }
     ],
     "secretsAppliedAt": 0,
@@ -44682,6 +46210,7 @@ Status Code **200**
 |» » » label|string|true|none|none|
 |» » » value|string|false|none|none|
 |» » disabled|boolean|false|none|none|
+|» » disabledReason|string|false|none|none|
 |» » effectiveDate|string|false|none|none|
 |» » highlightedDetails|[object]|false|none|none|
 |» » » label|string|true|none|none|
@@ -44703,6 +46232,7 @@ Status Code **200**
 |» » agentTools|boolean|false|none|none|
 |» » autoSensitive|boolean|false|none|none|
 |» » billable|boolean|false|none|none|
+|» » credentialTypesTransitions|[[string]]|false|none|none|
 |» » mcp|boolean|false|none|none|
 |» » mcpReadonly|boolean|false|none|none|
 |» » projects|boolean|false|none|none|
@@ -44715,6 +46245,11 @@ Status Code **200**
 |» » sso|boolean|false|none|none|
 |» » transferable|boolean|false|none|none|
 |» » v0|boolean|false|none|none|
+|» credentialTypes|[string]|false|none|The credential types the resource accepts: `static` for long-lived secrets, `oidc` for resource OIDC tokens.|
+|» credentialTypesTransition|object|false|none|The latest requested change of `credentialTypes`, and when the provider completed it.|
+|» » completedAt|number|false|none|none|
+|» » requestedAt|number|true|none|none|
+|» » to|[string]|true|none|none|
 |» directPartnerConsoleUrl|string|false|none|none|
 |» externalResourceId|string|true|none|none|
 |» externalResourceStatus|string \| null|false|none|none|
@@ -45332,6 +46867,7 @@ Status Code **200**
 |» » » » checks|boolean|false|none|none|
 |» » » » connectedImportResource|boolean|false|none|none|
 |» » » » connectedProvisioning|boolean|false|none|none|
+|» » » » credentialTypesCreate|[[string]]|false|none|none|
 |» » » » flexCommitEligible|boolean|false|none|none|
 |» » » » importResource|boolean|false|none|none|
 |» » » » maxAllowedTeams|number|false|none|none|
@@ -45381,6 +46917,7 @@ Status Code **200**
 |» » length|number|true|none|none|
 |» » name|string|true|none|none|
 |» » nonSensitive|boolean|false|none|none|
+|» » tokenSetKey|string|false|none|The token set key `name` is built from; absent for env vars that are not in the token set.|
 |» secretsAppliedAt|number|false|none|none|
 |» targets|[string]|false|none|The deployment targets that this resource is available for.|
 
@@ -45497,6 +47034,8 @@ Status Code **200**
 |» » autoSensitive|true|
 |» » billable|false|
 |» » billable|true|
+|» » credentialTypesTransitions|oidc|
+|» » credentialTypesTransitions|static|
 |» » mcp|false|
 |» » mcp|true|
 |» » mcpReadonly|false|
@@ -45512,6 +47051,10 @@ Status Code **200**
 |» » transferable|true|
 |» » v0|false|
 |» » v0|true|
+|» credentialTypes|oidc|
+|» credentialTypes|static|
+|» » to|oidc|
+|» » to|static|
 |» externalResourceStatus|error|
 |» externalResourceStatus|onboarding|
 |» externalResourceStatus|pending|
@@ -45924,6 +47467,8 @@ Status Code **200**
 |» » » » connectedImportResource|true|
 |» » » » connectedProvisioning|false|
 |» » » » connectedProvisioning|true|
+|» » » » credentialTypesCreate|oidc|
+|» » » » credentialTypesCreate|static|
 |» » » » flexCommitEligible|false|
 |» » » » flexCommitEligible|true|
 |» » » » importResource|false|
@@ -47237,7 +48782,10 @@ curl https://api.vercel.com/v1/installations/string/resources/string \
           }
         }
       ]
-    }
+    },
+    "credentialTypes": [
+      "static"
+    ]
   }'
 ```
 
@@ -47314,7 +48862,10 @@ This endpoint updates an existing resource in the installation. All parameters a
         }
       }
     ]
-  }
+  },
+  "credentialTypes": [
+    "static"
+  ]
 }
 ```
 
@@ -47384,6 +48935,7 @@ This endpoint updates an existing resource in the installation. All parameters a
 |» » » » » *oneOf*|body|number|false|none|
 |» » » » » *oneOf*|body|boolean|false|none|
 |» » » » » *anyOf*|body|[string]|false|none|
+|» credentialTypes|body|[string]|false|The credential types the resource accepts: `static` for long-lived secrets, `oidc` for Vercel resource OIDC tokens. Can be set freely while the resource has none. After that, only to confirm a change Vercel requested with a secrets rotation, once it is complete. Without `static`, all long-lived secrets must be expired and removed, and no new ones minted or injected.|
 
 #### Enumerated Values
 
@@ -47404,6 +48956,8 @@ This endpoint updates an existing resource in the installation. All parameters a
 |» » level|info|
 |» » level|warn|
 |» » level|error|
+|» credentialTypes|static|
+|» credentialTypes|oidc|
 
 > Example responses
 
@@ -47535,8 +49089,8 @@ Sends the billing and usage data. The partner should do this at least once a day
 |integrationConfigurationId|path|string|true|none|
 |body|body|object|true|none|
 |» timestamp|body|string(date-time)|true|Server time of your integration, used to determine the most recent data for race conditions & updates. Only the latest usage data for a given day, week, and month will be kept.|
-|» eod|body|string(date-time)|true|End of Day, the UTC datetime for when the end of the billing/usage day is in UTC time. This tells us which day the usage data is for, and also allows for your "end of day" to be different from UTC 00:00:00. eod must be within the period dates, and cannot be older than 24h earlier from our server's current time.|
-|» period|body|object|true|Period for the billing cycle. The period end date cannot be older than 24 hours earlier than our current server's time.|
+|» eod|body|string(date-time)|true|End of Day, the UTC datetime for when the end of the billing/usage day is in UTC time. This tells us which day the usage data is for, and also allows for your "end of day" to be different from UTC 00:00:00. eod must be within the period dates, and cannot be older than 30 days earlier from our server's current time.|
+|» period|body|object|true|Period for the billing cycle. The period end date cannot be older than 30 days earlier than our current server's time.|
 |» » start|body|string(date-time)|true|none|
 |» » end|body|string(date-time)|true|none|
 |» billing|body|[object] \| object|true|Billing data (interim invoicing data).|
@@ -49429,6 +50983,7 @@ Retrieve the paginated KMS issuers that belong to the authenticated team or orga
       "algorithm": "ES256",
       "claimsSchema": {},
       "createdAt": "string",
+      "discoveryLayout": "connect",
       "id": "string",
       "managedBy": "string",
       "name": "string",
@@ -49508,6 +51063,7 @@ Status Code **200**
 |» algorithm|string|true|none|none|
 |» claimsSchema|object|false|none|none|
 |» createdAt|string|true|none|none|
+|» discoveryLayout|string|true|none|none|
 |» id|string|true|none|none|
 |» managedBy|string|false|none|none|
 |» name|string|true|none|none|
@@ -49525,6 +51081,12 @@ Status Code **200**
 |» » *oneOf*|object|false|none|none|
 |» » clientId|string|true|none|none|
 |» » createdAt|string|true|none|none|
+|» » kind|string|true|none|none|
+|» » tokenClaims|object|false|none|none|
+|» » updatedAt|string|true|none|none|
+|» » *oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|» » createdAt|string|true|none|none|
+|» » integrationId|string|true|none|none|
 |» » kind|string|true|none|none|
 |» » tokenClaims|object|false|none|none|
 |» » updatedAt|string|true|none|none|
@@ -49568,10 +51130,14 @@ Status Code **200**
 |» algorithm|RS256|
 |» algorithm|RS384|
 |» algorithm|RS512|
+|» discoveryLayout|connect|
+|» discoveryLayout|integrations|
+|» discoveryLayout|kms|
 |» origin|external|
 |» origin|vercel|
 |» » kind|project-grant|
 |» » kind|connex-grant|
+|» » kind|integration-tokens-grant|
 |» » status|active|
 |» » status|pending|
 |» » status|revoking|
@@ -49657,6 +51223,10 @@ Create a new KMS issuer for the authenticated team, or for the team or organizat
 |» » kind|body|string|true|none|
 |» » clientId|body|string|true|The Connex client ID for the Connex grant policy.|
 |» » tokenClaims|body|object|false|The claims that KMS should include in signed JWTs for this policy.|
+|» » *oneOf*|body|object|false|none|
+|» » kind|body|string|true|none|
+|» » integrationId|body|string|true|The marketplace integration ID for the integration tokens grant policy.|
+|» » tokenClaims|body|object|false|The claims that KMS should include in signed JWTs for this policy.|
 |» importKey|body|string|false|The PEM-encoded private key to use for the issuer.|
 |» importKeyId|body|string|false|The key id to use as the imported key's JWT/JWKS `kid`. Only allowed when `importKey` is provided. Not required to be unique; the addressable key id is the server-minted `keyId` returned in the response.|
 
@@ -49675,6 +51245,7 @@ Create a new KMS issuer for the authenticated team, or for the team or organizat
 |» algorithm|ES512|
 |» » kind|project-grant|
 |» » kind|connex-grant|
+|» » kind|integration-tokens-grant|
 
 > Example responses
 
@@ -49685,6 +51256,7 @@ Create a new KMS issuer for the authenticated team, or for the team or organizat
   "algorithm": "ES256",
   "claimsSchema": {},
   "createdAt": "string",
+  "discoveryLayout": "connect",
   "id": "string",
   "managedBy": "string",
   "name": "string",
@@ -49746,6 +51318,7 @@ Create a new KMS issuer for the authenticated team, or for the team or organizat
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
+|409|Conflict||None|
 |410|Gone||None|
 
 <h3 id="create-an-issuer-responseschema">Response Schema</h3>
@@ -49757,6 +51330,7 @@ Status Code **201**
 |algorithm|string|true|none|none|
 |claimsSchema|object|false|none|none|
 |createdAt|string|true|none|none|
+|discoveryLayout|string|true|none|none|
 |id|string|true|none|none|
 |managedBy|string|false|none|none|
 |name|string|true|none|none|
@@ -49774,6 +51348,12 @@ Status Code **201**
 |» *oneOf*|object|false|none|none|
 |» clientId|string|true|none|none|
 |» createdAt|string|true|none|none|
+|» kind|string|true|none|none|
+|» tokenClaims|object|false|none|none|
+|» updatedAt|string|true|none|none|
+|» *oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|» createdAt|string|true|none|none|
+|» integrationId|string|true|none|none|
 |» kind|string|true|none|none|
 |» tokenClaims|object|false|none|none|
 |» updatedAt|string|true|none|none|
@@ -49814,10 +51394,14 @@ Status Code **201**
 |algorithm|RS256|
 |algorithm|RS384|
 |algorithm|RS512|
+|discoveryLayout|connect|
+|discoveryLayout|integrations|
+|discoveryLayout|kms|
 |origin|external|
 |origin|vercel|
 |» kind|project-grant|
 |» kind|connex-grant|
+|» kind|integration-tokens-grant|
 |» status|active|
 |» status|pending|
 |» status|revoking|
@@ -50138,6 +51722,7 @@ Immediately revoke a signing key that is already scheduled for revocation.
   "algorithm": "ES256",
   "claimsSchema": {},
   "createdAt": "string",
+  "discoveryLayout": "connect",
   "id": "string",
   "managedBy": "string",
   "name": "string",
@@ -50211,6 +51796,7 @@ Status Code **200**
 |algorithm|string|true|none|none|
 |claimsSchema|object|false|none|none|
 |createdAt|string|true|none|none|
+|discoveryLayout|string|true|none|none|
 |id|string|true|none|none|
 |managedBy|string|false|none|none|
 |name|string|true|none|none|
@@ -50228,6 +51814,12 @@ Status Code **200**
 |» *oneOf*|object|false|none|none|
 |» clientId|string|true|none|none|
 |» createdAt|string|true|none|none|
+|» kind|string|true|none|none|
+|» tokenClaims|object|false|none|none|
+|» updatedAt|string|true|none|none|
+|» *oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|» createdAt|string|true|none|none|
+|» integrationId|string|true|none|none|
 |» kind|string|true|none|none|
 |» tokenClaims|object|false|none|none|
 |» updatedAt|string|true|none|none|
@@ -50268,10 +51860,14 @@ Status Code **200**
 |algorithm|RS256|
 |algorithm|RS384|
 |algorithm|RS512|
+|discoveryLayout|connect|
+|discoveryLayout|integrations|
+|discoveryLayout|kms|
 |origin|external|
 |origin|vercel|
 |» kind|project-grant|
 |» kind|connex-grant|
+|» kind|integration-tokens-grant|
 |» status|active|
 |» status|pending|
 |» status|revoking|
@@ -50314,6 +51910,7 @@ Retrieve a single KMS issuer by its ID. Accepts a team or organization bearer to
   "algorithm": "ES256",
   "claimsSchema": {},
   "createdAt": "string",
+  "discoveryLayout": "connect",
   "id": "string",
   "managedBy": "string",
   "name": "string",
@@ -50386,6 +51983,7 @@ Status Code **200**
 |algorithm|string|true|none|none|
 |claimsSchema|object|false|none|none|
 |createdAt|string|true|none|none|
+|discoveryLayout|string|true|none|none|
 |id|string|true|none|none|
 |managedBy|string|false|none|none|
 |name|string|true|none|none|
@@ -50403,6 +52001,12 @@ Status Code **200**
 |» *oneOf*|object|false|none|none|
 |» clientId|string|true|none|none|
 |» createdAt|string|true|none|none|
+|» kind|string|true|none|none|
+|» tokenClaims|object|false|none|none|
+|» updatedAt|string|true|none|none|
+|» *oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|» createdAt|string|true|none|none|
+|» integrationId|string|true|none|none|
 |» kind|string|true|none|none|
 |» tokenClaims|object|false|none|none|
 |» updatedAt|string|true|none|none|
@@ -50443,10 +52047,14 @@ Status Code **200**
 |algorithm|RS256|
 |algorithm|RS384|
 |algorithm|RS512|
+|discoveryLayout|connect|
+|discoveryLayout|integrations|
+|discoveryLayout|kms|
 |origin|external|
 |origin|vercel|
 |» kind|project-grant|
 |» kind|connex-grant|
+|» kind|integration-tokens-grant|
 |» status|active|
 |» status|pending|
 |» status|revoking|
@@ -50547,6 +52155,7 @@ Update a KMS issuer's name or claims schema.
   "algorithm": "ES256",
   "claimsSchema": {},
   "createdAt": "string",
+  "discoveryLayout": "connect",
   "id": "string",
   "managedBy": "string",
   "name": "string",
@@ -50619,6 +52228,7 @@ Status Code **200**
 |algorithm|string|true|none|none|
 |claimsSchema|object|false|none|none|
 |createdAt|string|true|none|none|
+|discoveryLayout|string|true|none|none|
 |id|string|true|none|none|
 |managedBy|string|false|none|none|
 |name|string|true|none|none|
@@ -50636,6 +52246,12 @@ Status Code **200**
 |» *oneOf*|object|false|none|none|
 |» clientId|string|true|none|none|
 |» createdAt|string|true|none|none|
+|» kind|string|true|none|none|
+|» tokenClaims|object|false|none|none|
+|» updatedAt|string|true|none|none|
+|» *oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|» createdAt|string|true|none|none|
+|» integrationId|string|true|none|none|
 |» kind|string|true|none|none|
 |» tokenClaims|object|false|none|none|
 |» updatedAt|string|true|none|none|
@@ -50676,10 +52292,14 @@ Status Code **200**
 |algorithm|RS256|
 |algorithm|RS384|
 |algorithm|RS512|
+|discoveryLayout|connect|
+|discoveryLayout|integrations|
+|discoveryLayout|kms|
 |origin|external|
 |origin|vercel|
 |» kind|project-grant|
 |» kind|connex-grant|
+|» kind|integration-tokens-grant|
 |» status|active|
 |» status|pending|
 |» status|revoking|
@@ -50796,6 +52416,12 @@ Status Code **201**
 |kind|string|true|none|none|
 |tokenClaims|object|false|none|none|
 |updatedAt|string|true|none|none|
+|*oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|createdAt|string|true|none|none|
+|integrationId|string|true|none|none|
+|kind|string|true|none|none|
+|tokenClaims|object|false|none|none|
+|updatedAt|string|true|none|none|
 
 #### Enumerated Values
 
@@ -50803,6 +52429,7 @@ Status Code **201**
 |---|---|
 |kind|project-grant|
 |kind|connex-grant|
+|kind|integration-tokens-grant|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -50841,6 +52468,7 @@ Remove a policy from a KMS issuer.
 |---|---|
 |kind|project-grant|
 |kind|connex-grant|
+|kind|integration-tokens-grant|
 
 <h3 id="delete-an-issuer-policy-responses">Responses</h3>
 
@@ -50961,6 +52589,12 @@ Status Code **200**
 |kind|string|true|none|none|
 |tokenClaims|object|false|none|none|
 |updatedAt|string|true|none|none|
+|*oneOf*|object|false|none|Lets the integration-tokens service sign marketplace resource tokens for one integration (`oac_…`).|
+|createdAt|string|true|none|none|
+|integrationId|string|true|none|none|
+|kind|string|true|none|none|
+|tokenClaims|object|false|none|none|
+|updatedAt|string|true|none|none|
 
 #### Enumerated Values
 
@@ -50968,6 +52602,7 @@ Status Code **200**
 |---|---|
 |kind|project-grant|
 |kind|connex-grant|
+|kind|integration-tokens-grant|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -51528,6 +53163,11 @@ Get the microfrontends for a given group ID.
             "string"
           ]
         },
+        "health-check": {
+          "targets": [
+            "string"
+          ]
+        },
         "lint": {
           "targets": [
             "string"
@@ -51712,6 +53352,9 @@ Get the microfrontends for a given group ID.
           "create"
         ],
         "aiGatewayBudget": [
+          "create"
+        ],
+        "aiGatewayBudgetOwnedBySelf": [
           "create"
         ],
         "aiGatewayByokCredentials": [
@@ -51930,6 +53573,9 @@ Get the microfrontends for a given group ID.
         "deploymentV0": [
           "create"
         ],
+        "desktopDevice": [
+          "create"
+        ],
         "domain": [
           "create"
         ],
@@ -51958,6 +53604,9 @@ Get the microfrontends for a given group ID.
           "create"
         ],
         "drain": [
+          "create"
+        ],
+        "drive": [
           "create"
         ],
         "edgeCacheNamespace": [
@@ -52215,7 +53864,13 @@ Get the microfrontends for a given group ID.
         "organization": [
           "create"
         ],
+        "organizationAdmin": [
+          "create"
+        ],
         "organizationDomain": [
+          "create"
+        ],
+        "organizationMember": [
           "create"
         ],
         "organizationTeam": [
@@ -52236,6 +53891,12 @@ Get the microfrontends for a given group ID.
         "paymentMethod": [
           "create"
         ],
+        "perimeter": [
+          "create"
+        ],
+        "perimeterLink": [
+          "create"
+        ],
         "permissions": [
           "create"
         ],
@@ -52252,6 +53913,9 @@ Get the microfrontends for a given group ID.
           "create"
         ],
         "privateLinkEndpoint": [
+          "create"
+        ],
+        "privateNpmUsage": [
           "create"
         ],
         "productionAliasProtectionBypass": [
@@ -52312,6 +53976,12 @@ Get the microfrontends for a given group ID.
           "create"
         ],
         "projectFlags": [
+          "create"
+        ],
+        "projectFlagsOverride": [
+          "create"
+        ],
+        "projectFlagsOverrideProduction": [
           "create"
         ],
         "projectFlagsProduction": [
@@ -52405,6 +54075,9 @@ Get the microfrontends for a given group ID.
           "create"
         ],
         "schedule": [
+          "create"
+        ],
+        "schedulePreview": [
           "create"
         ],
         "seawallConfig": [
@@ -52634,31 +54307,24 @@ Get the microfrontends for a given group ID.
       "rollbackDescription": {
         "createdAt": 0,
         "description": "string",
+        "principal": {
+          "type": "user",
+          "via": {
+            "app": {
+              "clientId": "string",
+              "id": "string"
+            },
+            "type": "app"
+          },
+          "user": {
+            "id": "string"
+          }
+        },
         "userId": "string",
         "username": "string"
       },
       "rollingRelease": {
         "canaryResponseHeader": false,
-        "gate": {
-          "action": "pause",
-          "checks": [
-            {
-              "excludePaths": [
-                "/api/health"
-              ],
-              "excludeStatusCodes": [
-                503
-              ],
-              "ingestWatermarkSeconds": 30,
-              "significanceLevel": 0.05,
-              "type": "error-rate-5xx"
-            }
-          ],
-          "dryRun": false,
-          "enabled": false,
-          "failureThreshold": 3,
-          "windowSize": 5
-        },
         "stages": [
           {
             "duration": 600,
@@ -52958,7 +54624,7 @@ Get the microfrontends for a given group ID.
           "withCache": false
         }
       },
-      "tier": "priority",
+      "tier": "critical",
       "tracing": {
         "domains": "string",
         "ignorePaths": [
@@ -53528,20 +55194,22 @@ Status Code **200**
 |» jobs|object|false|none|none|
 |» » flag-definitions-present|object|false|none|none|
 |» » » targets|[string]|true|none|none|
+|» » health-check|object|false|none|none|
+|» » » targets|[string]|true|none|none|
 |» » lint|object|false|none|none|
 |» » » targets|[string]|true|none|none|
 |» » mfe-config-present|object|false|none|none|
 |» » » targets|[string]|true|none|none|
 |» » typecheck|object|false|none|none|
 |» » » targets|[string]|true|none|none|
-|» lastAliasRequest|object \| null|false|none|none|
+|» lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» » fromDeploymentId|string \| null|true|none|none|
 |» » fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» » jobStatus|string|true|none|none|
 |» » requestedAt|number|true|none|none|
 |» » toDeploymentId|string|true|none|none|
 |» » type|string|true|none|none|
-|» lastRollbackTarget|object \| null|false|none|none|
+|» lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |» latestDeployments|[object]|false|none|none|
 |» » alias|[string]|false|none|none|
 |» » aliasAssigned|number \| boolean \| null|false|none|none|
@@ -53794,6 +55462,7 @@ Status Code **200**
 |» » aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -53866,6 +55535,7 @@ Status Code **200**
 |» » deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -53876,6 +55546,7 @@ Status Code **200**
 |» » domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -53961,19 +55632,24 @@ Status Code **200**
 |» » openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -53994,6 +55670,8 @@ Status Code **200**
 |» » projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -54025,6 +55703,7 @@ Status Code **200**
 |» » repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -54140,22 +55819,42 @@ Status Code **200**
 |» rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» » createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» » description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» » userId|string|true|none|The user who rolled back the project.|
-|» » username|string|true|none|The username of the user who rolled back the project.|
+|» » principal|object|false|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » type|string|true|none|none|
+|» » » via|object \| null|true|none|none|
+|» » » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » » app|object|true|none|none|
+|» » » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » » type|string|true|none|none|
+|» » » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » » integration|object|true|none|none|
+|» » » » » configurationId|string|true|none|none|
+|» » » » » integrationId|string|true|none|none|
+|» » » » type|string|true|none|none|
+|» » » user|object|true|none|none|
+|» » » » id|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » project|object|true|none|none|
+|» » » » id|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » type|string|true|none|none|
+|» » userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» » username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |» rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» » canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» » gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » » type|string|true|none|The metric this check evaluates.|
-|» » » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» » stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -54863,6 +56562,11 @@ Status Code **200**
 |» » aiGatewayBudget|list|
 |» » aiGatewayBudget|read|
 |» » aiGatewayBudget|update|
+|» » aiGatewayBudgetOwnedBySelf|create|
+|» » aiGatewayBudgetOwnedBySelf|delete|
+|» » aiGatewayBudgetOwnedBySelf|list|
+|» » aiGatewayBudgetOwnedBySelf|read|
+|» » aiGatewayBudgetOwnedBySelf|update|
 |» » aiGatewayByokCredentials|create|
 |» » aiGatewayByokCredentials|delete|
 |» » aiGatewayByokCredentials|list|
@@ -55223,6 +56927,11 @@ Status Code **200**
 |» » deploymentV0|list|
 |» » deploymentV0|read|
 |» » deploymentV0|update|
+|» » desktopDevice|create|
+|» » desktopDevice|delete|
+|» » desktopDevice|list|
+|» » desktopDevice|read|
+|» » desktopDevice|update|
 |» » domain|create|
 |» » domain|delete|
 |» » domain|list|
@@ -55273,6 +56982,11 @@ Status Code **200**
 |» » drain|list|
 |» » drain|read|
 |» » drain|update|
+|» » drive|create|
+|» » drive|delete|
+|» » drive|list|
+|» » drive|read|
+|» » drive|update|
 |» » edgeCacheNamespace|create|
 |» » edgeCacheNamespace|delete|
 |» » edgeCacheNamespace|list|
@@ -55698,11 +57412,21 @@ Status Code **200**
 |» » organization|list|
 |» » organization|read|
 |» » organization|update|
+|» » organizationAdmin|create|
+|» » organizationAdmin|delete|
+|» » organizationAdmin|list|
+|» » organizationAdmin|read|
+|» » organizationAdmin|update|
 |» » organizationDomain|create|
 |» » organizationDomain|delete|
 |» » organizationDomain|list|
 |» » organizationDomain|read|
 |» » organizationDomain|update|
+|» » organizationMember|create|
+|» » organizationMember|delete|
+|» » organizationMember|list|
+|» » organizationMember|read|
+|» » organizationMember|update|
 |» » organizationTeam|create|
 |» » organizationTeam|delete|
 |» » organizationTeam|list|
@@ -55733,6 +57457,16 @@ Status Code **200**
 |» » paymentMethod|list|
 |» » paymentMethod|read|
 |» » paymentMethod|update|
+|» » perimeter|create|
+|» » perimeter|delete|
+|» » perimeter|list|
+|» » perimeter|read|
+|» » perimeter|update|
+|» » perimeterLink|create|
+|» » perimeterLink|delete|
+|» » perimeterLink|list|
+|» » perimeterLink|read|
+|» » perimeterLink|update|
 |» » permissions|create|
 |» » permissions|delete|
 |» » permissions|list|
@@ -55763,6 +57497,11 @@ Status Code **200**
 |» » privateLinkEndpoint|list|
 |» » privateLinkEndpoint|read|
 |» » privateLinkEndpoint|update|
+|» » privateNpmUsage|create|
+|» » privateNpmUsage|delete|
+|» » privateNpmUsage|list|
+|» » privateNpmUsage|read|
+|» » privateNpmUsage|update|
 |» » productionAliasProtectionBypass|create|
 |» » productionAliasProtectionBypass|delete|
 |» » productionAliasProtectionBypass|list|
@@ -55863,6 +57602,16 @@ Status Code **200**
 |» » projectFlags|list|
 |» » projectFlags|read|
 |» » projectFlags|update|
+|» » projectFlagsOverride|create|
+|» » projectFlagsOverride|delete|
+|» » projectFlagsOverride|list|
+|» » projectFlagsOverride|read|
+|» » projectFlagsOverride|update|
+|» » projectFlagsOverrideProduction|create|
+|» » projectFlagsOverrideProduction|delete|
+|» » projectFlagsOverrideProduction|list|
+|» » projectFlagsOverrideProduction|read|
+|» » projectFlagsOverrideProduction|update|
 |» » projectFlagsProduction|create|
 |» » projectFlagsProduction|delete|
 |» » projectFlagsProduction|list|
@@ -56018,6 +57767,11 @@ Status Code **200**
 |» » schedule|list|
 |» » schedule|read|
 |» » schedule|update|
+|» » schedulePreview|create|
+|» » schedulePreview|delete|
+|» » schedulePreview|list|
+|» » schedulePreview|read|
+|» » schedulePreview|update|
 |» » seawallConfig|create|
 |» » seawallConfig|delete|
 |» » seawallConfig|list|
@@ -56360,15 +58114,15 @@ Status Code **200**
 |» » » cores|30|
 |» » » label|turbo|
 |» » » memory|61440|
+|» » » type|user|
+|» » » » type|app|
+|» » » » type|integration|
+|» » » type|project|
+|» » » type|app|
+|» » » type|integration|
+|» » » type|system|
 |» » canaryResponseHeader|false|
 |» » canaryResponseHeader|true|
-|» » » action|pause|
-|» » » action|rollback|
-|» » » » type|error-rate-5xx|
-|» » » dryRun|false|
-|» » » dryRun|true|
-|» » » enabled|false|
-|» » » enabled|true|
 |» » » linearShift|false|
 |» » » linearShift|true|
 |» » » requireApproval|false|
@@ -56611,6 +58365,7 @@ Status Code **200**
 |» » » type|LAMBDAS|
 |» » » withCache|false|
 |» » » withCache|true|
+|» tier|critical|
 |» tier|priority|
 |» » » destination|external|
 |» » » destination|internal|
@@ -57455,7 +59210,7 @@ curl https://api.vercel.com/v1/organizations/string/teams \
 
 `GET /v1/organizations/{organizationId}/teams`
 
-List up to 100 teams in an organization, each enriched with the team's slug, name, and avatar. Set `includeMemberCount` to include counts that include pending memberships but exclude email invitations without a membership record. Teams whose underlying record no longer exists are omitted, so a page may contain fewer teams than the page size (or be empty) while still returning a `cursor`; paginate until `cursor` is absent. This endpoint is in private beta. Contact your Vercel account team for access.
+List up to 100 teams in an organization, each enriched with the team's slug, name, and avatar. Set `includeMemberCount` to include counts that include pending memberships and organization Directory Sync grants, while excluding suppressed memberships and email invitations without a membership record. Teams whose underlying record no longer exists are omitted, so a page may contain fewer teams than the page size (or be empty) while still returning a `cursor`; paginate until `cursor` is absent. This endpoint is in private beta. Contact your Vercel account team for access.
 
 <h3 id="list-organization-teams-parameters">Parameters</h3>
 
@@ -57463,7 +59218,7 @@ List up to 100 teams in an organization, each enriched with the team's slug, nam
 |---|---|---|---|---|
 |organizationId|path|string|true|The ID of the organization.|
 |cursor|query|string|false|Pagination cursor.|
-|includeMemberCount|query|boolean|false|When true, includes each team's member count in the response.|
+|includeMemberCount|query|boolean|false|When true, includes each team's member count, including organization Directory Sync members. Counting Directory Sync members can add latency.|
 
 > Example responses
 
@@ -57538,7 +59293,7 @@ curl https://api.vercel.com/v1/organizations/string/teams \
 
 `POST /v1/organizations/{organizationId}/teams`
 
-Create a new team under an organization, or add an existing team. `mode: "create"` creates a brand-new child team from `slug` + `name` — a platform child by default, or an enterprise child (billed on the organization root's flex subscription) when `billingPlan: "enterprise"` is supplied. `mode: "link"` links an existing team identified by `teamId` or `slug`; the child's billing profile is derived from the target team's plan (enterprise team → enterprise child, else platform), or explicitly supplied. Both modes respond with the resulting organization-team link. This endpoint is in private beta. Contact your Vercel account team for access.
+Create a new team under an organization, or add an existing team. `mode: "create"` creates a brand-new child team from `slug` + `name` — a platform child by default, or an enterprise child (billed on the organization root's flex subscription) when `billingPlan: "enterprise"` is supplied. `mode: "link"` links an existing team identified by `teamId` or `slug`. The request must state the child's billing profile in `billingPlan`: `enterprise` or `platform`. Both modes respond with the resulting organization-team link. This endpoint is in private beta. Contact your Vercel account team for access.
 
 > Body parameter
 
@@ -57663,6 +59418,7 @@ Delete a team from an organization. This endpoint is in private beta. Contact yo
 |404|Not Found||None|
 |409|Conflict||None|
 |410|Gone||None|
+|500|Internal Server Error||None|
 
 <h3 id="delete-team-from-organization-responseschema">Response Schema</h3>
 
@@ -57672,6 +59428,469 @@ Status Code **200**
 |---|---|---|---|---|
 |organizationId|string|true|none|none|
 |teamId|string|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Update Organization Team Directory Sync Mode
+
+<a id="opIdputOrganizationTeamDsync"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/organizations/string/teams/string/dsync \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "dsyncMode": "organization"
+  }'
+```
+
+`PUT /v1/organizations/{organizationId}/teams/{targetTeamId}/dsync`
+
+Select whether one Organization team's memberships are governed by the Organization's Directory Sync or by the team's own directory. The team's own directory connection is kept either way. The root team can follow the Organization's Directory Sync only when no group grants OrgAdmin or at least one OrgAdmin group also grants the Owner role on it.
+
+> Body parameter
+
+```json
+{
+  "dsyncMode": "organization"
+}
+```
+
+<h3 id="update-organization-team-directory-sync-mode-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string|true|none|
+|targetTeamId|path|string|true|none|
+|slug|query|string|false|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|body|body|object|false|none|
+|» dsyncMode|body|string|true|Whether the Organization's Directory Sync or the team's own directory governs the team's memberships.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» dsyncMode|organization|
+|» dsyncMode|team|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "dsyncMode": "organization",
+  "organizationId": "string",
+  "teamId": "string"
+}
+```
+
+<h3 id="update-organization-team-directory-sync-mode-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+
+<h3 id="update-organization-team-directory-sync-mode-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dsyncMode|string|true|none|none|
+|organizationId|string|true|none|none|
+|teamId|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|dsyncMode|organization|
+|dsyncMode|team|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## List Organization Directory Sync Groups
+
+<a id="opIdlistOrganizationDsyncGroups"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/organizations/string/dsync/groups \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/organizations/{organizationId}/dsync/groups`
+
+List the groups in an organization's Identity Provider directory, along with their Directory Sync group configuration when one exists.
+
+<h3 id="list-organization-directory-sync-groups-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string|true|The ID of the organization.|
+|cursor|query|string|false|Pagination cursor.|
+|limit|query|number|false|Number of groups to return.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "cursor": "string",
+  "groups": [
+    {
+      "assignments": {
+        "organizationPermissions": [
+          "OrgAdmin"
+        ],
+        "teamRoles": [
+          "BILLING"
+        ],
+        "teams": {
+          "property1": {
+            "teamRoles": [
+              "BILLING"
+            ]
+          },
+          "property2": {
+            "teamRoles": [
+              "BILLING"
+            ]
+          }
+        }
+      },
+      "createdAt": "string",
+      "directoryGroupId": "string",
+      "directoryId": "string",
+      "name": "string",
+      "organizationId": "string",
+      "updatedAt": "string"
+    }
+  ]
+}
+```
+
+<h3 id="list-organization-directory-sync-groups-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+
+<h3 id="list-organization-directory-sync-groups-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cursor|string|false|none|none|
+|groups|[[OrganizationDirectorySyncGroup](#schemaorganizationdirectorysyncgroup)]|true|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Get Organization Directory Sync Group
+
+<a id="opIdgetOrganizationDsyncGroup"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/organizations/string/dsync/groups/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v1/organizations/{organizationId}/dsync/groups/{groupId}`
+
+Get one group from the organization's Identity Provider directory, joined with its Directory Sync group configuration when one exists.
+
+<h3 id="get-organization-directory-sync-group-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organizationId|path|string|true|none|
+|groupId|path|string|true|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assignments": {
+    "organizationPermissions": [
+      "OrgAdmin"
+    ],
+    "teamRoles": [
+      "BILLING"
+    ],
+    "teams": {
+      "property1": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      },
+      "property2": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      }
+    }
+  },
+  "createdAt": "string",
+  "directoryGroupId": "string",
+  "directoryId": "string",
+  "name": "string",
+  "organizationId": "string",
+  "updatedAt": "string"
+}
+```
+
+<h3 id="get-organization-directory-sync-group-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[OrganizationDirectorySyncGroup](#schemaorganizationdirectorysyncgroup)|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Create or Replace Organization Directory Sync Group Configuration
+
+<a id="opIdputOrganizationDsyncGroup"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/organizations/string/dsync/groups/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "assignments": {
+      "organizationPermissions": [
+        "OrgAdmin"
+      ],
+      "teamRoles": [
+        "OWNER"
+      ],
+      "teams": {
+        "property1": {
+          "teamRoles": [
+            "OWNER"
+          ]
+        },
+        "property2": {
+          "teamRoles": [
+            "OWNER"
+          ]
+        }
+      }
+    }
+  }'
+```
+
+`PUT /v1/organizations/{organizationId}/dsync/groups/{groupId}`
+
+Create or replace one organization's Directory Sync group configuration. The directory starts syncing when at least one group grants OrgAdmin. A group that grants OrgAdmin must also grant the Owner role on the organization's root team, as its default role or for that team.
+
+> Body parameter
+
+```json
+{
+  "assignments": {
+    "organizationPermissions": [
+      "OrgAdmin"
+    ],
+    "teamRoles": [
+      "OWNER"
+    ],
+    "teams": {
+      "property1": {
+        "teamRoles": [
+          "OWNER"
+        ]
+      },
+      "property2": {
+        "teamRoles": [
+          "OWNER"
+        ]
+      }
+    }
+  }
+}
+```
+
+<h3 id="create-or-replace-organization-directory-sync-group-configuration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|If-Match|header|string|false|none|
+|If-None-Match|header|string|false|none|
+|organizationId|path|string|true|none|
+|groupId|path|string|true|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+|body|body|object|false|none|
+|» assignments|body|object|true|none|
+|» » organizationPermissions|body|[string]|false|none|
+|» » teamRoles|body|[string]|false|none|
+|» » teams|body|object|false|none|
+|» » » **additionalProperties**|body|object|false|none|
+|» » » » teamRoles|body|[string]|true|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » organizationPermissions|OrgAdmin|
+|» » teamRoles|OWNER|
+|» » teamRoles|MEMBER|
+|» » teamRoles|DEVELOPER|
+|» » teamRoles|SECURITY|
+|» » teamRoles|BILLING|
+|» » teamRoles|VIEWER|
+|» » teamRoles|VIEWER_FOR_PLUS|
+|» » teamRoles|CONTRIBUTOR|
+|» » » » teamRoles|OWNER|
+|» » » » teamRoles|MEMBER|
+|» » » » teamRoles|DEVELOPER|
+|» » » » teamRoles|SECURITY|
+|» » » » teamRoles|BILLING|
+|» » » » teamRoles|VIEWER|
+|» » » » teamRoles|VIEWER_FOR_PLUS|
+|» » » » teamRoles|CONTRIBUTOR|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "assignments": {
+    "organizationPermissions": [
+      "OrgAdmin"
+    ],
+    "teamRoles": [
+      "BILLING"
+    ],
+    "teams": {
+      "property1": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      },
+      "property2": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      }
+    }
+  },
+  "createdAt": "string",
+  "directoryGroupId": "string",
+  "directoryId": "string",
+  "name": "string",
+  "organizationId": "string",
+  "updatedAt": "string"
+}
+```
+
+<h3 id="create-or-replace-organization-directory-sync-group-configuration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[OrganizationDirectorySyncGroup](#schemaorganizationdirectorysyncgroup)|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.<br>One of the provided values in the headers is invalid|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+|412|Precondition Failed||None|
+|428|Precondition Required||None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Delete Organization Directory Sync Group Configuration
+
+<a id="opIddeleteOrganizationDsyncGroup"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v1/organizations/string/dsync/groups/string \
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v1/organizations/{organizationId}/dsync/groups/{groupId}`
+
+Delete one organization's Directory Sync group configuration. The last group granting OrgAdmin cannot be removed.
+
+<h3 id="delete-organization-directory-sync-group-configuration-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|If-Match|header|string|false|none|
+|organizationId|path|string|true|none|
+|groupId|path|string|true|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+<h3 id="delete-organization-directory-sync-group-configuration-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content||None|
+|400|Bad Request|One of the provided values in the request query is invalid.<br>One of the provided values in the headers is invalid|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+|412|Precondition Failed||None|
+|428|Precondition Required||None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -58142,6 +60361,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» routeType|string|false|none|Computed route type based on the route configuration. Only present in API responses, not stored in S3.|
@@ -58299,6 +60519,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» routeType|string|false|none|Computed route type based on the route configuration. Only present in API responses, not stored in S3.|
@@ -58459,6 +60680,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» routeType|string|false|none|Computed route type based on the route configuration. Only present in API responses, not stored in S3.|
@@ -58509,6 +60731,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» routeType|redirect|
@@ -58555,6 +60779,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» routeType|redirect|
@@ -58601,6 +60827,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» routeType|redirect|
@@ -59202,6 +61430,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» routeType|string|false|none|none|
@@ -59252,6 +61481,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» routeType|redirect|
@@ -59801,6 +62032,7 @@ Status Code **200**
 |» » » *oneOf*|object|false|none|none|
 |» » » args|string|true|none|none|
 |» » » env|[string]|false|none|none|
+|» » » fallback|boolean|false|none|Keep an earlier request.path value. Builders use this for fallback routes.|
 |» » » op|string|true|none|none|
 |» » » type|string|true|none|none|
 |» routeType|string|false|none|none|
@@ -59851,6 +62083,8 @@ Status Code **200**
 |» » » type|request.headers|
 |» » » type|request.query|
 |» » » type|response.headers|
+|» » » fallback|false|
+|» » » fallback|true|
 |» » » op|set|
 |» » » type|request.path|
 |» routeType|redirect|
@@ -60548,6 +62782,9 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
         "vsmValue": "string"
       }
     ],
+    "expiration": {
+      "expiresAt": 0
+    },
     "framework": "actix-web",
     "gitComments": {
       "onCommit": false,
@@ -60728,26 +62965,6 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
     },
     "rollingRelease": {
       "canaryResponseHeader": false,
-      "gate": {
-        "action": "pause",
-        "checks": [
-          {
-            "excludePaths": [
-              "/api/health"
-            ],
-            "excludeStatusCodes": [
-              503
-            ],
-            "ingestWatermarkSeconds": 30,
-            "significanceLevel": 0.05,
-            "type": "error-rate-5xx"
-          }
-        ],
-        "dryRun": false,
-        "enabled": false,
-        "failureThreshold": 3,
-        "windowSize": 5
-      },
       "stages": [
         {
           "duration": 600,
@@ -60806,7 +63023,14 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
           "response_has": [
             {
               "key": "string",
-              "type": "response_status",
+              "type": "response_header",
+              "value": "string"
+            }
+          ],
+          "response_missing": [
+            {
+              "key": "string",
+              "type": "response_header",
               "value": "string"
             }
           ],
@@ -60867,6 +63091,7 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
             "string"
           ],
           "rateLimit": {
+            "action": "challenge",
             "algo": "fixed_window",
             "keys": [
               "string"
@@ -60887,6 +63112,7 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
             "string"
           ],
           "rateLimit": {
+            "action": "challenge",
             "algo": "fixed_window",
             "keys": [
               "string"
@@ -61079,7 +63305,7 @@ Allows to retrieve the list of projects of the authenticated user or team. The l
         "withCache": false
       }
     },
-    "tier": "priority",
+    "tier": "critical",
     "transferCompletedAt": 0,
     "transferredFromAccountId": "string",
     "transferStartedAt": 0,
@@ -61411,6 +63637,12 @@ Status Code **200**
 |» » value|string|true|none|none|
 |» » visibility|string|false|none|User-facing config/secret model. When set, authoritative for new code paths. Legacy rows omit this field and callers fall back to existing `type` behavior.|
 |» » vsmValue|string|false|none|none|
+|» expiration|object|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » expiresAt|number|true|none|Unix ms timestamp when the project is scheduled to expire.|
+|» » *oneOf*|object|false|none|none|
+|» » lockedAt|number|true|none|Unix ms timestamp when the project was locked.|
+|» » lockedBy|string|true|none|ID of the user, app, or integration that locked the project, or `system`.|
 |» framework|string \| null|false|none|none|
 |» gitComments|object|false|none|none|
 |» » onCommit|boolean|true|none|Whether the Vercel bot should comment on commits|
@@ -61704,18 +63936,6 @@ Status Code **200**
 |» » » memory|number|true|none|none|
 |» rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» » canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» » gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » » type|string|true|none|The metric this check evaluates.|
-|» » » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» » stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -61800,6 +64020,24 @@ Status Code **200**
 |» » » » » pre|string|false|none|none|
 |» » » » » re|string|false|none|none|
 |» » » » » suf|string|false|none|none|
+|» » » response_missing|[object]|false|none|none|
+|» » » » key|string|false|none|none|
+|» » » » type|string|true|none|none|
+|» » » » value|string \| object|false|none|none|
+|» » » » » *oneOf*|string|false|none|none|
+|» » » » » *oneOf*|object|false|none|none|
+|» » » » » eq|string|false|none|none|
+|» » » » » gt|number|false|none|none|
+|» » » » » gte|number|false|none|none|
+|» » » » » inc|[string]|false|none|none|
+|» » » » » list|string|false|none|none|
+|» » » » » lt|number|false|none|none|
+|» » » » » lte|number|false|none|none|
+|» » » » » neq|string|false|none|none|
+|» » » » » ninc|[string]|false|none|none|
+|» » » » » pre|string|false|none|none|
+|» » » » » re|string|false|none|none|
+|» » » » » suf|string|false|none|none|
 |» » » src|string \| object|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » » *oneOf*|object|false|none|none|
@@ -61857,6 +64095,7 @@ Status Code **200**
 |» » » » » *oneOf*|[string]|false|none|none|
 |» » » » » *oneOf*|string|false|none|none|
 |» » » » rateLimit|object \| null|false|none|none|
+|» » » » » action|string \| null|false|none|none|
 |» » » » » algo|string|true|none|none|
 |» » » » » keys|[string]|true|none|none|
 |» » » » » limit|number|true|none|none|
@@ -62211,6 +64450,12 @@ Status Code **200**
 |» » value|string|true|none|none|
 |» » visibility|string|false|none|User-facing config/secret model. When set, authoritative for new code paths. Legacy rows omit this field and callers fall back to existing `type` behavior.|
 |» » vsmValue|string|false|none|none|
+|» expiration|object|false|none|none|
+|» » *oneOf*|object|false|none|none|
+|» » expiresAt|number|true|none|Unix ms timestamp when the project is scheduled to expire.|
+|» » *oneOf*|object|false|none|none|
+|» » lockedAt|number|true|none|Unix ms timestamp when the project was locked.|
+|» » lockedBy|string|true|none|ID of the user, app, or integration that locked the project, or `system`.|
 |» framework|string \| null|false|none|none|
 |» gitComments|object|false|none|none|
 |» » onCommit|boolean|true|none|Whether the Vercel bot should comment on commits|
@@ -62504,18 +64749,6 @@ Status Code **200**
 |» » » memory|number|true|none|none|
 |» rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» » canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» » gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » » type|string|true|none|The metric this check evaluates.|
-|» » » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» » stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -62601,6 +64834,24 @@ Status Code **200**
 |» » » » » pre|string|false|none|none|
 |» » » » » re|string|false|none|none|
 |» » » » » suf|string|false|none|none|
+|» » » response_missing|[object]|false|none|none|
+|» » » » key|string|false|none|none|
+|» » » » type|string|true|none|none|
+|» » » » value|string \| object|false|none|none|
+|» » » » » *oneOf*|string|false|none|none|
+|» » » » » *oneOf*|object|false|none|none|
+|» » » » » eq|string|false|none|none|
+|» » » » » gt|number|false|none|none|
+|» » » » » gte|number|false|none|none|
+|» » » » » inc|[string]|false|none|none|
+|» » » » » list|string|false|none|none|
+|» » » » » lt|number|false|none|none|
+|» » » » » lte|number|false|none|none|
+|» » » » » neq|string|false|none|none|
+|» » » » » ninc|[string]|false|none|none|
+|» » » » » pre|string|false|none|none|
+|» » » » » re|string|false|none|none|
+|» » » » » suf|string|false|none|none|
 |» » » src|string \| object|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » » *oneOf*|object|false|none|none|
@@ -62660,6 +64911,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » » *oneOf*|string|false|none|none|
 |» » » » rateLimit|object \| null|false|none|none|
+|» » » » » action|string \| null|false|none|none|
 |» » » » » algo|string|true|none|none|
 |» » » » » keys|[string]|true|none|none|
 |» » » » » limit|number|true|none|none|
@@ -63215,20 +65467,22 @@ Status Code **200**
 |» jobs|object|false|none|none|
 |» » flag-definitions-present|object|false|none|none|
 |» » » targets|[string]|true|none|none|
+|» » health-check|object|false|none|none|
+|» » » targets|[string]|true|none|none|
 |» » lint|object|false|none|none|
 |» » » targets|[string]|true|none|none|
 |» » mfe-config-present|object|false|none|none|
 |» » » targets|[string]|true|none|none|
 |» » typecheck|object|false|none|none|
 |» » » targets|[string]|true|none|none|
-|» lastAliasRequest|object \| null|false|none|none|
+|» lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» » fromDeploymentId|string \| null|true|none|none|
 |» » fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» » jobStatus|string|true|none|none|
 |» » requestedAt|number|true|none|none|
 |» » toDeploymentId|string|true|none|none|
 |» » type|string|true|none|none|
-|» lastRollbackTarget|object \| null|false|none|none|
+|» lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |» latestDeployments|[object]|false|none|none|
 |» » alias|[string]|false|none|none|
 |» » aliasAssigned|number \| boolean \| null|false|none|none|
@@ -63481,6 +65735,7 @@ Status Code **200**
 |» » aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63553,6 +65808,7 @@ Status Code **200**
 |» » deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63563,6 +65819,7 @@ Status Code **200**
 |» » domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63648,19 +65905,24 @@ Status Code **200**
 |» » openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63681,6 +65943,8 @@ Status Code **200**
 |» » projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63712,6 +65976,7 @@ Status Code **200**
 |» » repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» » schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» » securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -63827,22 +66092,42 @@ Status Code **200**
 |» rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» » createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» » description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» » userId|string|true|none|The user who rolled back the project.|
-|» » username|string|true|none|The username of the user who rolled back the project.|
+|» » principal|object|false|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » type|string|true|none|none|
+|» » » via|object \| null|true|none|none|
+|» » » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » » app|object|true|none|none|
+|» » » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » » type|string|true|none|none|
+|» » » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » » integration|object|true|none|none|
+|» » » » » configurationId|string|true|none|none|
+|» » » » » integrationId|string|true|none|none|
+|» » » » type|string|true|none|none|
+|» » » user|object|true|none|none|
+|» » » » id|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » project|object|true|none|none|
+|» » » » id|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » » type|string|true|none|none|
+|» » userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» » username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |» rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» » canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» » gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » » type|string|true|none|The metric this check evaluates.|
-|» » » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» » stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -63896,6 +66181,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » » *oneOf*|string|false|none|none|
 |» » » » rateLimit|object \| null|false|none|none|
+|» » » » » action|string \| null|false|none|none|
 |» » » » » algo|string|true|none|none|
 |» » » » » keys|[string]|true|none|none|
 |» » » » » limit|number|true|none|none|
@@ -64409,13 +66695,6 @@ Status Code **200**
 |» » » memory|61440|
 |» » canaryResponseHeader|false|
 |» » canaryResponseHeader|true|
-|» » » action|pause|
-|» » » action|rollback|
-|» » » » type|error-rate-5xx|
-|» » » dryRun|false|
-|» » » dryRun|true|
-|» » » enabled|false|
-|» » » enabled|true|
 |» » » linearShift|false|
 |» » » linearShift|true|
 |» » » requireApproval|false|
@@ -64467,6 +66746,9 @@ Status Code **200**
 |» » » » » algo|fixed_window|
 |» » » » » algo|token_bucket|
 |» » » » » *oneOf*|*|
+|» » » » type|response_header|
+|» » » » type|response_status|
+|» » » » type|response_header|
 |» » » » type|response_status|
 |» » » tierRequirement|priority|
 |» » » » op|append|
@@ -64516,6 +66798,11 @@ Status Code **200**
 |» » » » bypassSystem|true|
 |» » » » bypassSystem|null|
 |» » » » » *oneOf*|*|
+|» » » » » action|challenge|
+|» » » » » action|deny|
+|» » » » » action|log|
+|» » » » » action|rate_limit|
+|» » » » » action|null|
 |» » » » » algo|fixed_window|
 |» » » » » algo|token_bucket|
 |» » » » » permanent|false|
@@ -64578,6 +66865,7 @@ Status Code **200**
 |» » » type|LAMBDAS|
 |» » » withCache|false|
 |» » » withCache|true|
+|» tier|critical|
 |» tier|priority|
 |» » enableVercelCiSameRepository|false|
 |» » enableVercelCiSameRepository|true|
@@ -64925,13 +67213,6 @@ Status Code **200**
 |» » » memory|61440|
 |» » canaryResponseHeader|false|
 |» » canaryResponseHeader|true|
-|» » » action|pause|
-|» » » action|rollback|
-|» » » » type|error-rate-5xx|
-|» » » dryRun|false|
-|» » » dryRun|true|
-|» » » enabled|false|
-|» » » enabled|true|
 |» » » linearShift|false|
 |» » » linearShift|true|
 |» » » requireApproval|false|
@@ -64983,6 +67264,9 @@ Status Code **200**
 |» » » » » algo|fixed_window|
 |» » » » » algo|token_bucket|
 |» » » » » *oneOf*|*|
+|» » » » type|response_header|
+|» » » » type|response_status|
+|» » » » type|response_header|
 |» » » » type|response_status|
 |» » » tierRequirement|priority|
 |» » » » op|append|
@@ -65032,6 +67316,11 @@ Status Code **200**
 |» » » » bypassSystem|true|
 |» » » » bypassSystem|null|
 |» » » » » *oneOf*|*|
+|» » » » » action|challenge|
+|» » » » » action|deny|
+|» » » » » action|log|
+|» » » » » action|rate_limit|
+|» » » » » action|null|
 |» » » » » algo|fixed_window|
 |» » » » » algo|token_bucket|
 |» » » » » permanent|false|
@@ -65094,6 +67383,7 @@ Status Code **200**
 |» » » type|LAMBDAS|
 |» » » withCache|false|
 |» » » withCache|true|
+|» tier|critical|
 |» tier|priority|
 |» » enableVercelCiSameRepository|false|
 |» » enableVercelCiSameRepository|true|
@@ -65581,6 +67871,11 @@ Status Code **200**
 |» » aiGatewayBudget|list|
 |» » aiGatewayBudget|read|
 |» » aiGatewayBudget|update|
+|» » aiGatewayBudgetOwnedBySelf|create|
+|» » aiGatewayBudgetOwnedBySelf|delete|
+|» » aiGatewayBudgetOwnedBySelf|list|
+|» » aiGatewayBudgetOwnedBySelf|read|
+|» » aiGatewayBudgetOwnedBySelf|update|
 |» » aiGatewayByokCredentials|create|
 |» » aiGatewayByokCredentials|delete|
 |» » aiGatewayByokCredentials|list|
@@ -65941,6 +68236,11 @@ Status Code **200**
 |» » deploymentV0|list|
 |» » deploymentV0|read|
 |» » deploymentV0|update|
+|» » desktopDevice|create|
+|» » desktopDevice|delete|
+|» » desktopDevice|list|
+|» » desktopDevice|read|
+|» » desktopDevice|update|
 |» » domain|create|
 |» » domain|delete|
 |» » domain|list|
@@ -65991,6 +68291,11 @@ Status Code **200**
 |» » drain|list|
 |» » drain|read|
 |» » drain|update|
+|» » drive|create|
+|» » drive|delete|
+|» » drive|list|
+|» » drive|read|
+|» » drive|update|
 |» » edgeCacheNamespace|create|
 |» » edgeCacheNamespace|delete|
 |» » edgeCacheNamespace|list|
@@ -66416,11 +68721,21 @@ Status Code **200**
 |» » organization|list|
 |» » organization|read|
 |» » organization|update|
+|» » organizationAdmin|create|
+|» » organizationAdmin|delete|
+|» » organizationAdmin|list|
+|» » organizationAdmin|read|
+|» » organizationAdmin|update|
 |» » organizationDomain|create|
 |» » organizationDomain|delete|
 |» » organizationDomain|list|
 |» » organizationDomain|read|
 |» » organizationDomain|update|
+|» » organizationMember|create|
+|» » organizationMember|delete|
+|» » organizationMember|list|
+|» » organizationMember|read|
+|» » organizationMember|update|
 |» » organizationTeam|create|
 |» » organizationTeam|delete|
 |» » organizationTeam|list|
@@ -66451,6 +68766,16 @@ Status Code **200**
 |» » paymentMethod|list|
 |» » paymentMethod|read|
 |» » paymentMethod|update|
+|» » perimeter|create|
+|» » perimeter|delete|
+|» » perimeter|list|
+|» » perimeter|read|
+|» » perimeter|update|
+|» » perimeterLink|create|
+|» » perimeterLink|delete|
+|» » perimeterLink|list|
+|» » perimeterLink|read|
+|» » perimeterLink|update|
 |» » permissions|create|
 |» » permissions|delete|
 |» » permissions|list|
@@ -66481,6 +68806,11 @@ Status Code **200**
 |» » privateLinkEndpoint|list|
 |» » privateLinkEndpoint|read|
 |» » privateLinkEndpoint|update|
+|» » privateNpmUsage|create|
+|» » privateNpmUsage|delete|
+|» » privateNpmUsage|list|
+|» » privateNpmUsage|read|
+|» » privateNpmUsage|update|
 |» » productionAliasProtectionBypass|create|
 |» » productionAliasProtectionBypass|delete|
 |» » productionAliasProtectionBypass|list|
@@ -66581,6 +68911,16 @@ Status Code **200**
 |» » projectFlags|list|
 |» » projectFlags|read|
 |» » projectFlags|update|
+|» » projectFlagsOverride|create|
+|» » projectFlagsOverride|delete|
+|» » projectFlagsOverride|list|
+|» » projectFlagsOverride|read|
+|» » projectFlagsOverride|update|
+|» » projectFlagsOverrideProduction|create|
+|» » projectFlagsOverrideProduction|delete|
+|» » projectFlagsOverrideProduction|list|
+|» » projectFlagsOverrideProduction|read|
+|» » projectFlagsOverrideProduction|update|
 |» » projectFlagsProduction|create|
 |» » projectFlagsProduction|delete|
 |» » projectFlagsProduction|list|
@@ -66736,6 +69076,11 @@ Status Code **200**
 |» » schedule|list|
 |» » schedule|read|
 |» » schedule|update|
+|» » schedulePreview|create|
+|» » schedulePreview|delete|
+|» » schedulePreview|list|
+|» » schedulePreview|read|
+|» » schedulePreview|update|
 |» » seawallConfig|create|
 |» » seawallConfig|delete|
 |» » seawallConfig|list|
@@ -67078,15 +69423,15 @@ Status Code **200**
 |» » » cores|30|
 |» » » label|turbo|
 |» » » memory|61440|
+|» » » type|user|
+|» » » » type|app|
+|» » » » type|integration|
+|» » » type|project|
+|» » » type|app|
+|» » » type|integration|
+|» » » type|system|
 |» » canaryResponseHeader|false|
 |» » canaryResponseHeader|true|
-|» » » action|pause|
-|» » » action|rollback|
-|» » » » type|error-rate-5xx|
-|» » » dryRun|false|
-|» » » dryRun|true|
-|» » » enabled|false|
-|» » » enabled|true|
 |» » » linearShift|false|
 |» » » linearShift|true|
 |» » » requireApproval|false|
@@ -67180,6 +69525,11 @@ Status Code **200**
 |» » » » bypassSystem|true|
 |» » » » bypassSystem|null|
 |» » » » » *oneOf*|*|
+|» » » » » action|challenge|
+|» » » » » action|deny|
+|» » » » » action|log|
+|» » » » » action|rate_limit|
+|» » » » » action|null|
 |» » » » » algo|fixed_window|
 |» » » » » algo|token_bucket|
 |» » » » » permanent|false|
@@ -67324,6 +69674,7 @@ Status Code **200**
 |» » » type|LAMBDAS|
 |» » » withCache|false|
 |» » » withCache|true|
+|» tier|critical|
 |» tier|priority|
 |» » » destination|external|
 |» » » destination|internal|
@@ -67525,6 +69876,9 @@ curl https://api.vercel.com/v11/projects \
   -d '{
     "enablePreviewFeedback": true,
     "enableProductionFeedback": true,
+    "expiration": {
+      "timeframe": "1-hour"
+    },
     "previewDeploymentsDisabled": true,
     "previewDeploymentSuffix": "string",
     "buildCommand": "string",
@@ -67604,6 +69958,9 @@ Allows to create a new project with the provided configuration. It only requires
 {
   "enablePreviewFeedback": true,
   "enableProductionFeedback": true,
+  "expiration": {
+    "timeframe": "1-hour"
+  },
   "previewDeploymentsDisabled": true,
   "previewDeploymentSuffix": "string",
   "buildCommand": "string",
@@ -67682,6 +70039,8 @@ Allows to create a new project with the provided configuration. It only requires
 |body|body|object|false|none|
 |» enablePreviewFeedback|body|boolean \| null|false|Opt-in to preview toolbar on the project level|
 |» enableProductionFeedback|body|boolean \| null|false|Opt-in to production toolbar on the project level|
+|» expiration|body|object|false|Schedules the project for automatic deletion after the given timeframe.|
+|» » timeframe|body|string|true|How far in the future the project will be automatically deleted|
 |» previewDeploymentsDisabled|body|boolean \| null|false|Specifies whether preview deployments are disabled for this project.|
 |» previewDeploymentSuffix|body|string \| null|false|Custom domain suffix for preview deployments. Takes precedence over team-level suffix. Must be a domain owned by the team.|
 |» buildCommand|body|string \| null|false|The build command for this project. When `null` is used this value will be automatically detected|
@@ -67742,6 +70101,11 @@ Allows to create a new project with the provided configuration. It only requires
 
 |Parameter|Value|
 |---|---|
+|» » timeframe|1-hour|
+|» » timeframe|1-day|
+|» » timeframe|1-week|
+|» » timeframe|2-week|
+|» » timeframe|1-month|
 |» » » *oneOf*|production|
 |» » » *oneOf*|preview|
 |» » » *oneOf*|development|
@@ -68284,6 +70648,11 @@ Allows to create a new project with the provided configuration. It only requires
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -68468,6 +70837,9 @@ Allows to create a new project with the provided configuration. It only requires
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -68686,6 +71058,9 @@ Allows to create a new project with the provided configuration. It only requires
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -68714,6 +71089,9 @@ Allows to create a new project with the provided configuration. It only requires
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -68971,7 +71349,13 @@ Allows to create a new project with the provided configuration. It only requires
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -68992,6 +71376,12 @@ Allows to create a new project with the provided configuration. It only requires
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -69008,6 +71398,9 @@ Allows to create a new project with the provided configuration. It only requires
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -69068,6 +71461,12 @@ Allows to create a new project with the provided configuration. It only requires
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -69161,6 +71560,9 @@ Allows to create a new project with the provided configuration. It only requires
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -69390,31 +71792,24 @@ Allows to create a new project with the provided configuration. It only requires
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -69481,6 +71876,7 @@ Allows to create a new project with the provided configuration. It only requires
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -69501,6 +71897,7 @@ Allows to create a new project with the provided configuration. It only requires
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -69712,7 +72109,7 @@ Allows to create a new project with the provided configuration. It only requires
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -70284,20 +72681,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -70550,6 +72949,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70622,6 +73022,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70632,6 +73033,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70717,19 +73119,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70750,6 +73157,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70781,6 +73190,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -70896,22 +73306,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -70965,6 +73395,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -71618,6 +74049,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -71978,6 +74414,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -72028,6 +74469,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -72453,11 +74899,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -72488,6 +74944,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -72518,6 +74984,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -72618,6 +75089,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -72773,6 +75254,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -73115,15 +75601,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -73217,6 +75703,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -73361,6 +75852,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -73572,6 +76064,7 @@ Get the information for a specific project by passing either the project `id` or
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |idOrName|path|string|true|The unique project identifier or the project name|
+|rollbackInfo|query|boolean|false|Include the status of the last promote or rollback request in `lastAliasRequest` (and its legacy mirror `lastRollbackTarget`). When omitted or `false`, both fields are always `null` regardless of project state.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -73966,6 +76459,11 @@ Get the information for a specific project by passing either the project `id` or
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -74150,6 +76648,9 @@ Get the information for a specific project by passing either the project `id` or
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -74368,6 +76869,9 @@ Get the information for a specific project by passing either the project `id` or
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -74396,6 +76900,9 @@ Get the information for a specific project by passing either the project `id` or
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -74653,7 +77160,13 @@ Get the information for a specific project by passing either the project `id` or
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -74674,6 +77187,12 @@ Get the information for a specific project by passing either the project `id` or
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -74690,6 +77209,9 @@ Get the information for a specific project by passing either the project `id` or
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -74750,6 +77272,12 @@ Get the information for a specific project by passing either the project `id` or
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -74843,6 +77371,9 @@ Get the information for a specific project by passing either the project `id` or
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -75072,31 +77603,24 @@ Get the information for a specific project by passing either the project `id` or
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -75163,6 +77687,7 @@ Get the information for a specific project by passing either the project `id` or
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -75183,6 +77708,7 @@ Get the information for a specific project by passing either the project `id` or
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -75394,7 +77920,7 @@ Get the information for a specific project by passing either the project `id` or
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -75965,20 +78491,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -76231,6 +78759,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76303,6 +78832,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76313,6 +78843,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76398,19 +78929,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76431,6 +78967,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76462,6 +79000,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -76577,22 +79116,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -76646,6 +79205,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -77297,6 +79857,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -77657,6 +80222,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -77707,6 +80277,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -78132,11 +80707,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -78167,6 +80752,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -78197,6 +80792,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -78297,6 +80897,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -78452,6 +81062,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -78794,15 +81409,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -78896,6 +81511,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -79040,6 +81660,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -79208,6 +81829,16 @@ curl https://api.vercel.com/v9/projects/prj_12HKQaOmR5t5Uy6vdcQsNIiZgHGB \
           "destination": "internal"
         }
       ]
+    },
+    "gitComments": {
+      "onPullRequest": true,
+      "onCommit": true
+    },
+    "gitProviderOptions": {
+      "createDeployments": "enabled",
+      "disableRepositoryDispatchEvents": true,
+      "requireVerifiedCommits": true,
+      "gitCommitStatus": true
     },
     "oidcTokenConfig": {
       "enabled": true,
@@ -79465,6 +82096,16 @@ Update the fields of a project using either its `name` or `id`.
       }
     ]
   },
+  "gitComments": {
+    "onPullRequest": true,
+    "onCommit": true
+  },
+  "gitProviderOptions": {
+    "createDeployments": "enabled",
+    "disableRepositoryDispatchEvents": true,
+    "requireVerifiedCommits": true,
+    "gitCommitStatus": true
+  },
   "oidcTokenConfig": {
     "enabled": true,
     "issuerMode": "team"
@@ -79709,6 +82350,14 @@ Update the fields of a project using either its `name` or `id`.
 |» » » env|body|string|false|Environment to apply sampling to|
 |» » » requestPath|body|string|false|Request path prefix to apply the sampling rule to|
 |» » » destination|body|string|false|Tracing destination this rule applies to. Derived server-side when project tracing is computed; accepted here so a computed config can round-trip through this endpoint.|
+|» gitComments|body|object \| null|false|Opt-in to Git pull request and commit comments on the project level. Replaces `github.silent`.|
+|» » onPullRequest|body|boolean|true|Whether or not Vercel should comment on pull requests|
+|» » onCommit|body|boolean|true|Whether or not Vercel should comment on commits|
+|» gitProviderOptions|body|object \| null|false|Miscellaneous options related to how this projects interacts with the linked git source.|
+|» » createDeployments|body|string|false|Whether or not Vercel should automatically create GitHub deployments|
+|» » disableRepositoryDispatchEvents|body|boolean|false|Whether Vercel should not automatically create GitHub repository-dispatch events on deployment events.|
+|» » requireVerifiedCommits|body|boolean \| null|false|Whether the project requires commits to be signed & verified before deployments will be created. `true` enables, `false` disables (explicit override of the team setting), `null` clears the override to inherit from the team setting.|
+|» » gitCommitStatus|body|boolean|false|Whether Vercel should post git commit statuses for this project.|
 |» oidcTokenConfig|body|object|false|OpenID Connect JSON Web Token generation configuration.|
 |» » enabled|body|boolean|false|**Deprecated.** Whether or not to generate OpenID Connect JSON Web Tokens.|
 |» » issuerMode|body|string|false|team: `https://oidc.vercel.com/[team_slug]` global: `https://oidc.vercel.com`|
@@ -79935,6 +82584,8 @@ Update the fields of a project using either its `name` or `id`.
 |» » » env|preview|
 |» » » destination|internal|
 |» » » destination|external|
+|» » createDeployments|enabled|
+|» » createDeployments|disabled|
 |» » issuerMode|team|
 |» » issuerMode|global|
 |» » deploymentType|all|
@@ -80397,6 +83048,11 @@ Update the fields of a project using either its `name` or `id`.
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -80581,6 +83237,9 @@ Update the fields of a project using either its `name` or `id`.
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -80799,6 +83458,9 @@ Update the fields of a project using either its `name` or `id`.
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -80827,6 +83489,9 @@ Update the fields of a project using either its `name` or `id`.
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -81084,7 +83749,13 @@ Update the fields of a project using either its `name` or `id`.
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -81105,6 +83776,12 @@ Update the fields of a project using either its `name` or `id`.
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -81121,6 +83798,9 @@ Update the fields of a project using either its `name` or `id`.
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -81181,6 +83861,12 @@ Update the fields of a project using either its `name` or `id`.
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -81274,6 +83960,9 @@ Update the fields of a project using either its `name` or `id`.
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -81503,31 +84192,24 @@ Update the fields of a project using either its `name` or `id`.
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -81594,6 +84276,7 @@ Update the fields of a project using either its `name` or `id`.
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -81614,6 +84297,7 @@ Update the fields of a project using either its `name` or `id`.
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -81825,7 +84509,7 @@ Update the fields of a project using either its `name` or `id`.
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -81974,6 +84658,7 @@ Update the fields of a project using either its `name` or `id`.
 |410|Gone||None|
 |428|Precondition Required||None|
 |500|Internal Server Error||None|
+|503|Service Unavailable||None|
 
 <h3 id="update-an-existing-project-responseschema">Response Schema</h3>
 
@@ -82396,20 +85081,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -82662,6 +85349,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -82734,6 +85422,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -82744,6 +85433,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -82829,19 +85519,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -82862,6 +85557,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -82893,6 +85590,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -83008,22 +85706,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -83077,6 +85795,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -83723,6 +86442,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -84083,6 +86807,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -84133,6 +86862,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -84558,11 +87292,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -84593,6 +87337,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -84623,6 +87377,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -84723,6 +87482,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -84878,6 +87647,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -85220,15 +87994,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -85322,6 +88096,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -85466,6 +88245,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -85916,6 +88696,11 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -86100,6 +88885,9 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -86318,6 +89106,9 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -86346,6 +89137,9 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -86603,7 +89397,13 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -86624,6 +89424,12 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -86640,6 +89446,9 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -86700,6 +89509,12 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -86793,6 +89608,9 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -87022,31 +89840,24 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -87113,6 +89924,7 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -87133,6 +89945,7 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -87344,7 +90157,7 @@ Upload an image as the avatar of the project identified by `idOrName`. The reque
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -87913,20 +90726,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -88179,6 +90994,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88251,6 +91067,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88261,6 +91078,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88346,19 +91164,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88379,6 +91202,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88410,6 +91235,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -88525,22 +91351,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -88594,6 +91440,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -89247,6 +92094,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -89607,6 +92459,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -89657,6 +92514,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -90082,11 +92944,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -90117,6 +92989,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -90147,6 +93029,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -90247,6 +93134,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -90402,6 +93299,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -90744,15 +93646,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -90846,6 +93748,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -90990,6 +93897,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -91437,6 +94345,11 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -91621,6 +94534,9 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -91839,6 +94755,9 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -91867,6 +94786,9 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -92124,7 +95046,13 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -92145,6 +95073,12 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -92161,6 +95095,9 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -92221,6 +95158,12 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -92314,6 +95257,9 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -92543,31 +95489,24 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -92634,6 +95573,7 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -92654,6 +95594,7 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -92865,7 +95806,7 @@ Remove the avatar of the project identified by `idOrName`. Deletes the chosen av
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -93432,20 +96373,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -93698,6 +96641,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -93770,6 +96714,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -93780,6 +96725,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -93865,19 +96811,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -93898,6 +96849,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -93929,6 +96882,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -94044,22 +96998,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -94113,6 +97087,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -94766,6 +97741,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -95126,6 +98106,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -95176,6 +98161,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -95601,11 +98591,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -95636,6 +98636,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -95666,6 +98676,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -95766,6 +98781,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -95921,6 +98946,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -96263,15 +99293,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -96365,6 +99395,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -96509,6 +99544,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -96978,6 +100014,7 @@ Update a project domain's configuration, including the name, git branch and redi
 |404|Not Found||None|
 |409|Conflict|The project is currently being transferred|None|
 |410|Gone||None|
+|429|Too Many Requests||None|
 
 <h3 id="update-a-project-domain-responseschema">Response Schema</h3>
 
@@ -97118,6 +100155,7 @@ Add a domain to the project by passing its domain name and by specifying the pro
 |404|Not Found||None|
 |409|Conflict|The domain is already assigned to another Vercel project<br>The domain is already assigned to a project on this account.<br>The domain is not allowed to be used<br>The project is currently being transferred|None|
 |410|Gone||None|
+|429|Too Many Requests||None|
 
 <h3 id="add-a-domain-to-a-project-responseschema">Response Schema</h3>
 
@@ -97256,6 +100294,7 @@ Move one project's domain to another project. Also allows the move of all redire
 |404|Not Found||None|
 |409|Conflict|The project is currently being transferred|None|
 |410|Gone||None|
+|429|Too Many Requests||None|
 
 <h3 id="move-a-project-domain-responseschema">Response Schema</h3>
 
@@ -99722,6 +102761,7 @@ Accept a project transfer request initated by another team. <br/> The `code` is 
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
 |404|Not Found||None|
+|409|Conflict||None|
 |410|Gone||None|
 |422|Unprocessable Entity||None|
 
@@ -100431,6 +103471,11 @@ Update the microfrontends settings for a project.
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -100615,6 +103660,9 @@ Update the microfrontends settings for a project.
       "create"
     ],
     "aiGatewayBudget": [
+      "create"
+    ],
+    "aiGatewayBudgetOwnedBySelf": [
       "create"
     ],
     "aiGatewayByokCredentials": [
@@ -100833,6 +103881,9 @@ Update the microfrontends settings for a project.
     "deploymentV0": [
       "create"
     ],
+    "desktopDevice": [
+      "create"
+    ],
     "domain": [
       "create"
     ],
@@ -100861,6 +103912,9 @@ Update the microfrontends settings for a project.
       "create"
     ],
     "drain": [
+      "create"
+    ],
+    "drive": [
       "create"
     ],
     "edgeCacheNamespace": [
@@ -101118,7 +104172,13 @@ Update the microfrontends settings for a project.
     "organization": [
       "create"
     ],
+    "organizationAdmin": [
+      "create"
+    ],
     "organizationDomain": [
+      "create"
+    ],
+    "organizationMember": [
       "create"
     ],
     "organizationTeam": [
@@ -101139,6 +104199,12 @@ Update the microfrontends settings for a project.
     "paymentMethod": [
       "create"
     ],
+    "perimeter": [
+      "create"
+    ],
+    "perimeterLink": [
+      "create"
+    ],
     "permissions": [
       "create"
     ],
@@ -101155,6 +104221,9 @@ Update the microfrontends settings for a project.
       "create"
     ],
     "privateLinkEndpoint": [
+      "create"
+    ],
+    "privateNpmUsage": [
       "create"
     ],
     "productionAliasProtectionBypass": [
@@ -101215,6 +104284,12 @@ Update the microfrontends settings for a project.
       "create"
     ],
     "projectFlags": [
+      "create"
+    ],
+    "projectFlagsOverride": [
+      "create"
+    ],
+    "projectFlagsOverrideProduction": [
       "create"
     ],
     "projectFlagsProduction": [
@@ -101308,6 +104383,9 @@ Update the microfrontends settings for a project.
       "create"
     ],
     "schedule": [
+      "create"
+    ],
+    "schedulePreview": [
       "create"
     ],
     "seawallConfig": [
@@ -101537,31 +104615,24 @@ Update the microfrontends settings for a project.
   "rollbackDescription": {
     "createdAt": 0,
     "description": "string",
+    "principal": {
+      "type": "user",
+      "via": {
+        "app": {
+          "clientId": "string",
+          "id": "string"
+        },
+        "type": "app"
+      },
+      "user": {
+        "id": "string"
+      }
+    },
     "userId": "string",
     "username": "string"
   },
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -101628,6 +104699,7 @@ Update the microfrontends settings for a project.
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -101648,6 +104720,7 @@ Update the microfrontends settings for a project.
           "string"
         ],
         "rateLimit": {
+          "action": "challenge",
           "algo": "fixed_window",
           "keys": [
             "string"
@@ -101859,7 +104932,7 @@ Update the microfrontends settings for a project.
       "withCache": false
     }
   },
-  "tier": "priority",
+  "tier": "critical",
   "tracing": {
     "domains": "string",
     "ignorePaths": [
@@ -102428,20 +105501,22 @@ Status Code **200**
 |jobs|object|false|none|none|
 |» flag-definitions-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
+|» health-check|object|false|none|none|
+|» » targets|[string]|true|none|none|
 |» lint|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» mfe-config-present|object|false|none|none|
 |» » targets|[string]|true|none|none|
 |» typecheck|object|false|none|none|
 |» » targets|[string]|true|none|none|
-|lastAliasRequest|object \| null|false|none|none|
+|lastAliasRequest|object \| null|false|none|The last promote or rollback request for the project and its job status. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response, even if a request exists.|
 |» fromDeploymentId|string \| null|true|none|none|
 |» fromRollingReleaseId|string|false|none|If rolling back from a rolling release, fromDeploymentId captures the "base" of that rolling release, and fromRollingReleaseId captures the "target" of that rolling release.|
 |» jobStatus|string|true|none|none|
 |» requestedAt|number|true|none|none|
 |» toDeploymentId|string|true|none|none|
 |» type|string|true|none|none|
-|lastRollbackTarget|object \| null|false|none|none|
+|lastRollbackTarget|object \| null|false|none|Legacy mirror of `lastAliasRequest` without `type`, kept for CLI compatibility. Only populated by `GET /v9/projects/{idOrName}` when called with `rollbackInfo=true`; `null` in every other response.|
 |latestDeployments|[object]|false|none|none|
 |» alias|[string]|false|none|none|
 |» aliasAssigned|number \| boolean \| null|false|none|none|
@@ -102694,6 +105769,7 @@ Status Code **200**
 |» aiGatewayApiKeySpendAttribution|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayApiKeyZdrExemption|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayBudget|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» aiGatewayBudgetOwnedBySelf|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayByokCredentials|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayCredits|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» aiGatewayGuardrails|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -102766,6 +105842,7 @@ Status Code **200**
 |» deploymentProtectionException|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentRollback|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» deploymentV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» desktopDevice|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAcceptDelegation|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainAuthCodes|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -102776,6 +105853,7 @@ Status Code **200**
 |» domainRecord|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» domainTransferIn|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» drain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» drive|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeCacheNamespace|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» edgeConfigItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -102861,19 +105939,24 @@ Status Code **200**
 |» openTelemetryEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» optionsAllowlist|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organization|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationAdmin|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationDomain|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» organizationMember|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» organizationTeam|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» ownEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» pageIntegrity|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtection|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» passwordProtectionInvoiceItem|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» paymentMethod|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeter|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» perimeterLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» permissions|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgres|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» postgresStoreTokenSet|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» previewDeploymentSuffix|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateCloudAccount|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» privateLinkEndpoint|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» privateNpmUsage|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionAliasProtectionBypass|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» productionShareableLink|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» project|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -102894,6 +105977,8 @@ Status Code **200**
 |» projectEnvVarsUnownedByIntegration|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectEvent|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlags|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverride|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» projectFlagsOverrideProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsProduction|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFlagsSdkKey|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» projectFromV0|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -102925,6 +106010,7 @@ Status Code **200**
 |» repository|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» samlConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» schedule|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
+|» schedulePreview|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» seawallConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» secret|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
 |» securityConfig|[[ACLAction](#schemaaclaction)]|false|none|Requested and authorized operations when `checkPermissions` is used. Legacy `includePermissions` responses contain a broader, non-authoritative permission summary.|
@@ -103040,22 +106126,42 @@ Status Code **200**
 |rollbackDescription|object|false|none|Description of why a project was rolled back, and by whom. Note that lastAliasRequest contains the from/to details of the rollback.|
 |» createdAt|number|true|none|Timestamp of when the rollback was requested.|
 |» description|string|true|none|User-supplied explanation of why they rolled back the project. Limited to 250 characters.|
-|» userId|string|true|none|The user who rolled back the project.|
-|» username|string|true|none|The username of the user who rolled back the project.|
+|» principal|object|false|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» » via|object \| null|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » app|object|true|none|none|
+|» » » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » » type|string|true|none|none|
+|» » » *oneOf*|object|false|none|Set when a Vercel App or Integration acts on behalf of a {@link User}. Captures user-consented OAuth delegation that the ACL layer may inspect to evaluate scope restrictions. This is NOT for impersonation or token-exchange provenance — those live on `auth.token`, not on the principal.|
+|» » » integration|object|true|none|none|
+|» » » » configurationId|string|true|none|none|
+|» » » » integrationId|string|true|none|none|
+|» » » type|string|true|none|none|
+|» » user|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » project|object|true|none|none|
+|» » » id|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » app|object|true|none|none|
+|» » » clientId|string|false|none|The protocol-facing OAuth client ID. This may differ from {@link id} when Client ID Metadata Documents (CIMD) are used.|
+|» » » id|string|true|none|The internal ID of the Vercel App backing this principal.|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » integration|object|true|none|none|
+|» » » configurationId|string|true|none|none|
+|» » » integrationId|string|true|none|none|
+|» » type|string|true|none|none|
+|» » *oneOf*|object|false|none|The principal who rolled back the project. Absent on historical rollbacks where the principal was a user (in this case, see `userId`).|
+|» » type|string|true|none|none|
+|» userId|string|false|none|The ID of the user who rolled back the project, when the principal was a user.|
+|» username|string|false|none|The username of the user who rolled back the project, when the principal was a user.|
 |rollingRelease|object \| null|false|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -103109,6 +106215,7 @@ Status Code **200**
 |*anonymous*|[string]|false|none|none|
 |» » » » *oneOf*|string|false|none|none|
 |» » » rateLimit|object \| null|false|none|none|
+|» » » » action|string \| null|false|none|none|
 |» » » » algo|string|true|none|none|
 |» » » » keys|[string]|true|none|none|
 |» » » » limit|number|true|none|none|
@@ -103762,6 +106869,11 @@ Status Code **200**
 |» aiGatewayBudget|list|
 |» aiGatewayBudget|read|
 |» aiGatewayBudget|update|
+|» aiGatewayBudgetOwnedBySelf|create|
+|» aiGatewayBudgetOwnedBySelf|delete|
+|» aiGatewayBudgetOwnedBySelf|list|
+|» aiGatewayBudgetOwnedBySelf|read|
+|» aiGatewayBudgetOwnedBySelf|update|
 |» aiGatewayByokCredentials|create|
 |» aiGatewayByokCredentials|delete|
 |» aiGatewayByokCredentials|list|
@@ -104122,6 +107234,11 @@ Status Code **200**
 |» deploymentV0|list|
 |» deploymentV0|read|
 |» deploymentV0|update|
+|» desktopDevice|create|
+|» desktopDevice|delete|
+|» desktopDevice|list|
+|» desktopDevice|read|
+|» desktopDevice|update|
 |» domain|create|
 |» domain|delete|
 |» domain|list|
@@ -104172,6 +107289,11 @@ Status Code **200**
 |» drain|list|
 |» drain|read|
 |» drain|update|
+|» drive|create|
+|» drive|delete|
+|» drive|list|
+|» drive|read|
+|» drive|update|
 |» edgeCacheNamespace|create|
 |» edgeCacheNamespace|delete|
 |» edgeCacheNamespace|list|
@@ -104597,11 +107719,21 @@ Status Code **200**
 |» organization|list|
 |» organization|read|
 |» organization|update|
+|» organizationAdmin|create|
+|» organizationAdmin|delete|
+|» organizationAdmin|list|
+|» organizationAdmin|read|
+|» organizationAdmin|update|
 |» organizationDomain|create|
 |» organizationDomain|delete|
 |» organizationDomain|list|
 |» organizationDomain|read|
 |» organizationDomain|update|
+|» organizationMember|create|
+|» organizationMember|delete|
+|» organizationMember|list|
+|» organizationMember|read|
+|» organizationMember|update|
 |» organizationTeam|create|
 |» organizationTeam|delete|
 |» organizationTeam|list|
@@ -104632,6 +107764,16 @@ Status Code **200**
 |» paymentMethod|list|
 |» paymentMethod|read|
 |» paymentMethod|update|
+|» perimeter|create|
+|» perimeter|delete|
+|» perimeter|list|
+|» perimeter|read|
+|» perimeter|update|
+|» perimeterLink|create|
+|» perimeterLink|delete|
+|» perimeterLink|list|
+|» perimeterLink|read|
+|» perimeterLink|update|
 |» permissions|create|
 |» permissions|delete|
 |» permissions|list|
@@ -104662,6 +107804,11 @@ Status Code **200**
 |» privateLinkEndpoint|list|
 |» privateLinkEndpoint|read|
 |» privateLinkEndpoint|update|
+|» privateNpmUsage|create|
+|» privateNpmUsage|delete|
+|» privateNpmUsage|list|
+|» privateNpmUsage|read|
+|» privateNpmUsage|update|
 |» productionAliasProtectionBypass|create|
 |» productionAliasProtectionBypass|delete|
 |» productionAliasProtectionBypass|list|
@@ -104762,6 +107909,16 @@ Status Code **200**
 |» projectFlags|list|
 |» projectFlags|read|
 |» projectFlags|update|
+|» projectFlagsOverride|create|
+|» projectFlagsOverride|delete|
+|» projectFlagsOverride|list|
+|» projectFlagsOverride|read|
+|» projectFlagsOverride|update|
+|» projectFlagsOverrideProduction|create|
+|» projectFlagsOverrideProduction|delete|
+|» projectFlagsOverrideProduction|list|
+|» projectFlagsOverrideProduction|read|
+|» projectFlagsOverrideProduction|update|
 |» projectFlagsProduction|create|
 |» projectFlagsProduction|delete|
 |» projectFlagsProduction|list|
@@ -104917,6 +108074,11 @@ Status Code **200**
 |» schedule|list|
 |» schedule|read|
 |» schedule|update|
+|» schedulePreview|create|
+|» schedulePreview|delete|
+|» schedulePreview|list|
+|» schedulePreview|read|
+|» schedulePreview|update|
 |» seawallConfig|create|
 |» seawallConfig|delete|
 |» seawallConfig|list|
@@ -105259,15 +108421,15 @@ Status Code **200**
 |» » cores|30|
 |» » label|turbo|
 |» » memory|61440|
+|» » type|user|
+|» » » type|app|
+|» » » type|integration|
+|» » type|project|
+|» » type|app|
+|» » type|integration|
+|» » type|system|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -105361,6 +108523,11 @@ Status Code **200**
 |» » » bypassSystem|true|
 |» » » bypassSystem|null|
 |» » » » *oneOf*|*|
+|» » » » action|challenge|
+|» » » » action|deny|
+|» » » » action|log|
+|» » » » action|rate_limit|
+|» » » » action|null|
 |» » » » algo|fixed_window|
 |» » » » algo|token_bucket|
 |» » » » permanent|false|
@@ -105505,6 +108672,7 @@ Status Code **200**
 |» » type|LAMBDAS|
 |» » withCache|false|
 |» » withCache|true|
+|tier|critical|
 |tier|priority|
 |» » destination|external|
 |» » destination|internal|
@@ -105630,7 +108798,7 @@ Get a list of aliases related to the last promote request with their mapping sta
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK||Inline|
+|200|OK|The aliases related to the last request of this type and whether each one has been mapped to the requested deployment.|Inline|
 |400|Bad Request|One of the provided values in the request query is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
@@ -105646,10 +108814,18 @@ Status Code **200**
 |*oneOf*|object|false|none|none|
 |*oneOf*|object|false|none|none|
 |aliases|[object]|true|none|none|
-|» alias|string|true|none|none|
-|» id|string|true|none|none|
-|» status|string|true|none|none|
+|» alias|string|true|none|The alias hostname.|
+|» id|string|true|none|The alias ID.|
+|» status|string|true|none|Whether the alias has been mapped to the deployment targeted by the last request. `pending` is also returned when the project has no request of the requested type, so it does not by itself indicate a running job.|
 |pagination|[Pagination](#schemapagination)|true|none|This object contains information related to the pagination of the current request, including the necessary parameters to get the next or previous page of data.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» status|completed|
+|» status|failed|
+|» status|pending|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -105860,26 +109036,6 @@ Get the Rolling Releases configuration for a project. The project-level config i
 {
   "rollingRelease": {
     "canaryResponseHeader": false,
-    "gate": {
-      "action": "pause",
-      "checks": [
-        {
-          "excludePaths": [
-            "/api/health"
-          ],
-          "excludeStatusCodes": [
-            503
-          ],
-          "ingestWatermarkSeconds": 30,
-          "significanceLevel": 0.05,
-          "type": "error-rate-5xx"
-        }
-      ],
-      "dryRun": false,
-      "enabled": false,
-      "failureThreshold": 3,
-      "windowSize": 5
-    },
     "stages": [
       {
         "duration": 600,
@@ -105912,18 +109068,6 @@ Status Code **200**
 |---|---|---|---|---|
 |rollingRelease|object \| null|true|none|Project-level rolling release configuration that defines how deployments should be gradually rolled out|
 |» canaryResponseHeader|boolean|false|none|Whether the request served by a canary deployment should return a header indicating a canary was served. Defaults to `false` when omitted.|
-|» gate|object|false|none|Automated gating configuration. Omitted (the default) means no gating is configured, which is equivalent to `enabled: false`.|
-|» » action|string|true|none|What to do when the gate trips: pause the rollout, or roll it back.|
-|» » checks|[object]|true|none|The checks to evaluate. An empty array means nothing is evaluated.|
-|» » » excludePaths|[string]|false|none|Request paths to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Matched exactly against the request path with any query string removed; no prefix or glob matching. Defaults to `[]` when omitted.|
-|» » » excludeStatusCodes|[number]|false|none|Response status codes to ignore entirely — dropped from both the numerator (errors) and the denominator (total requests). Defaults to `[]` when omitted.|
-|» » » ingestWatermarkSeconds|number|false|none|Seconds of ingest lag to allow for: the query's upper bound is `now() - this value`, so the check never reads a window that is still filling. Defaults to `30` when omitted.|
-|» » » significanceLevel|number|false|none|A run fails only when the canary's error rate is higher and its one-sided Fisher p-value is below this significance level. Defaults to `0.05`; lower values require stronger evidence.|
-|» » » type|string|true|none|The metric this check evaluates.|
-|» » dryRun|boolean|true|none|When true, a tripped gate is only reported — {@link action} is not taken.|
-|» » enabled|boolean|true|none|Whether automated gating is enabled for this project's rollouts.|
-|» » failureThreshold|number|false|none|How many failing evaluations within {@link windowSize} trip the gate. Defaults to `3` when omitted.|
-|» » windowSize|number|false|none|How many of the most recent evaluations {@link failureThreshold} is counted against. Defaults to `5` when omitted.|
 |» stages|[object]|false|none|An array of all the stages required during a deployment release. Each stage defines a target percentage and advancement rules. The final stage must always have targetPercentage: 100.|
 |» » duration|number|false|none|Duration in minutes for automatic advancement to the next stage|
 |» » linearShift|boolean|false|none|Whether to linearly shift traffic over the duration of this stage|
@@ -105937,13 +109081,6 @@ Status Code **200**
 |---|---|
 |» canaryResponseHeader|false|
 |» canaryResponseHeader|true|
-|» » action|pause|
-|» » action|rollback|
-|» » » type|error-rate-5xx|
-|» » dryRun|false|
-|» » dryRun|true|
-|» » enabled|false|
-|» » enabled|true|
 |» » linearShift|false|
 |» » linearShift|true|
 |» » requireApproval|false|
@@ -107198,6 +110335,7 @@ Retrieves a paginated list of named sandboxes belonging to a specific project. R
       "currentSnapshotId": "string",
       "cwd": "/vercel/sandbox",
       "expiresAt": 1750344801629,
+      "expiryNotificationLeadTime": 120000,
       "failoverRegions": [
         "sfo1",
         "cle1"
@@ -107401,6 +110539,7 @@ curl https://api.vercel.com/v2/sandboxes \
     "name": "my-sandbox",
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": {
       "count": 1,
       "expiration": null,
@@ -107521,6 +110660,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
   "name": "my-sandbox",
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": {
     "count": 1,
     "expiration": null,
@@ -107607,7 +110747,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» » » allow|body|[string]|false|none|
 |» » » deny|body|[string]|false|none|
 |» runtime|body|string|false|The runtime environment for the sandbox. Determines the pre-installed language runtimes and tools available.|
-|» architecture|body|string|false|CPU architecture. Inherits a snapshot or single image manifest when omitted. Image indexes default to amd64. Must match the source. ARM64 creation requires API v3 or v4 without runtime and team access.|
+|» architecture|body|string|false|none|
 |» resources|body|object|false|Resources to define the VM|
 |» » vcpus|body|integer|false|The number of virtual CPUs to allocate to the sandbox. Must be 1, or an even number.|
 |» » memory|body|integer|false|The amount of memory in megabytes to allocate to the sandbox. Must equal vcpus * 2048.|
@@ -107643,6 +110783,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. It affects only that webhook. When a deadline is closer than the lead time, the webhook is sent right away: at the start of a session whose timeout is shorter, and after each extension that leaves the deadline within the lead time. Defaults to 2 minutes. Takes effect from the next session.|
 |» keepLastSnapshots|body|object|false|Protect the N most recent snapshots with different expiration/deletion behavior.|
 |» » count|body|integer|true|Number of most recent snapshots to keep.|
 |» » expiration|body|object \| integer|false|Expiration time in milliseconds for kept snapshots. Falls back to snapshotExpiration.|
@@ -107729,6 +110870,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -107806,16 +110948,40 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -107832,6 +110998,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -107873,7 +111040,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
-## List drives
+## Deprecated: Use GET /v1/drives. Requires the read:drive app scope instead of read:sandbox, and drive:list instead of vercelRun:read. List drives
 
 <a id="opIdlistDrives"></a>
 
@@ -107887,9 +111054,13 @@ curl https://api.vercel.com/v2/sandboxes/drives \
 
 `GET /v2/sandboxes/drives`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Retrieves a paginated list of drives belonging to a specific project.
 
-<h3 id="list-drives-parameters">Parameters</h3>
+<h3 id="deprecated-use-get-v1drives-requires-the-readdrive-app-scope-instead-of-readsandbox-and-drivelist-instead-of-vercelrunread-list-drives-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -107941,7 +111112,7 @@ Retrieves a paginated list of drives belonging to a specific project.
 }
 ```
 
-<h3 id="list-drives-responses">Responses</h3>
+<h3 id="deprecated-use-get-v1drives-requires-the-readdrive-app-scope-instead-of-readsandbox-and-drivelist-instead-of-vercelrunread-list-drives-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -107954,7 +111125,7 @@ Retrieves a paginated list of drives belonging to a specific project.
 |422|Unprocessable Entity||None|
 |429|Too Many Requests||None|
 
-<h3 id="list-drives-responseschema">Response Schema</h3>
+<h3 id="deprecated-use-get-v1drives-requires-the-readdrive-app-scope-instead-of-readsandbox-and-drivelist-instead-of-vercelrunread-list-drives-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -107970,7 +111141,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
-## Get a drive
+## Deprecated: Use GET /v1/drives/:nameOrId. Requires the read:drive app scope instead of read:sandbox, and drive:read instead of vercelRun:read. Get a drive
 
 <a id="opIdgetDrive"></a>
 
@@ -107984,9 +111155,13 @@ curl https://api.vercel.com/v2/sandboxes/drives/workspace \
 
 `GET /v2/sandboxes/drives/{nameOrId}`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Gets an existing drive by project and name or drive ID. Returns 404 if doesn't exist.
 
-<h3 id="get-a-drive-parameters">Parameters</h3>
+<h3 id="deprecated-use-get-v1drivesnameorid-requires-the-readdrive-app-scope-instead-of-readsandbox-and-driveread-instead-of-vercelrunread-get-a-drive-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -108018,7 +111193,7 @@ Gets an existing drive by project and name or drive ID. Returns 404 if doesn't e
 }
 ```
 
-<h3 id="get-a-drive-responses">Responses</h3>
+<h3 id="deprecated-use-get-v1drivesnameorid-requires-the-readdrive-app-scope-instead-of-readsandbox-and-driveread-instead-of-vercelrunread-get-a-drive-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -108031,7 +111206,7 @@ Gets an existing drive by project and name or drive ID. Returns 404 if doesn't e
 |422|Unprocessable Entity||None|
 |429|Too Many Requests||None|
 
-<h3 id="get-a-drive-responseschema">Response Schema</h3>
+<h3 id="deprecated-use-get-v1drivesnameorid-requires-the-readdrive-app-scope-instead-of-readsandbox-and-driveread-instead-of-vercelrunread-get-a-drive-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -108044,7 +111219,87 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
-## Get or create a drive
+## Deprecated: Use DELETE /v1/drives/:nameOrId. Requires the read-write:drive app scope instead of read-write:sandbox, and drive:delete instead of vercelRun:delete. Emits drive-deleted activity events instead of sandbox-drive-deleted. Delete a drive
+
+<a id="opIddeleteDrive"></a>
+
+> Code samples
+
+```bash
+curl https://api.vercel.com/v2/sandboxes/drives/workspace \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /v2/sandboxes/drives/{nameOrId}`
+
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+Deletes a drive by project and name or drive ID. Attached drives cannot be deleted. Stop or replace the session currently using the drive before retrying deletion.
+
+<h3 id="deprecated-use-delete-v1drivesnameorid-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivedelete-instead-of-vercelrundelete-emits-drive-deleted-activity-events-instead-of-sandbox-drive-deleted-delete-a-drive-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|nameOrId|path|string|true|The drive name or ID.|
+|projectId|query|string|false|The project ID or name associated with the drive. Required unless using a Vercel OIDC token scoped to a project.|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|slug|query|string|false|The Team slug to perform the request on behalf of.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "drive": {
+    "createdAt": 1750344501629,
+    "currentSandboxName": "my-sandbox",
+    "currentSessionId": "sbx_123",
+    "id": "drive_abc123",
+    "maxSizeBytes": 1099511627776,
+    "name": "workspace",
+    "parentDriveId": "string",
+    "projectId": "prj_abc123",
+    "region": "iad1",
+    "rootDriveId": "string",
+    "updatedAt": 1750344501629,
+    "workloadType": "sandbox"
+  }
+}
+```
+
+<h3 id="deprecated-use-delete-v1drivesnameorid-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivedelete-instead-of-vercelrundelete-emits-drive-deleted-activity-events-instead-of-sandbox-drive-deleted-delete-a-drive-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|409|Conflict||None|
+|410|Gone||None|
+|422|Unprocessable Entity||None|
+|429|Too Many Requests||None|
+
+<h3 id="deprecated-use-delete-v1drivesnameorid-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivedelete-instead-of-vercelrundelete-emits-drive-deleted-activity-events-instead-of-sandbox-drive-deleted-delete-a-drive-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Deprecated: Use POST /v1/drives/:name. Requires the read-write:drive app scope instead of read-write:sandbox, and drive:create instead of vercelRun:create. Emits drive-created activity events instead of sandbox-drive-created. Get or create a drive
 
 <a id="opIdgetOrCreateDrive"></a>
 
@@ -108065,6 +111320,10 @@ curl https://api.vercel.com/v2/sandboxes/drives/workspace \
 
 `POST /v2/sandboxes/drives/{name}`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Gets an existing drive by project and name, or creates it when it does not exist.
 
 > Body parameter
@@ -108077,7 +111336,7 @@ Gets an existing drive by project and name, or creates it when it does not exist
 }
 ```
 
-<h3 id="get-or-create-a-drive-parameters">Parameters</h3>
+<h3 id="deprecated-use-post-v1drivesname-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivecreate-instead-of-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-get-or-create-a-drive-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -108157,7 +111416,7 @@ Gets an existing drive by project and name, or creates it when it does not exist
 }
 ```
 
-<h3 id="get-or-create-a-drive-responses">Responses</h3>
+<h3 id="deprecated-use-post-v1drivesname-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivecreate-instead-of-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-get-or-create-a-drive-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -108174,7 +111433,7 @@ Gets an existing drive by project and name, or creates it when it does not exist
 |429|Too Many Requests||None|
 |503|Service Unavailable||None|
 
-<h3 id="get-or-create-a-drive-responseschema">Response Schema</h3>
+<h3 id="deprecated-use-post-v1drivesname-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-drivecreate-instead-of-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-get-or-create-a-drive-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -108193,83 +111452,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
-## Delete a drive
-
-<a id="opIddeleteDrive"></a>
-
-> Code samples
-
-```bash
-curl https://api.vercel.com/v2/sandboxes/drives/workspace \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /v2/sandboxes/drives/{name}`
-
-Deletes a drive by project and name. Attached drives cannot be deleted. Stop or replace the session currently using the drive before retrying deletion.
-
-<h3 id="delete-a-drive-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|name|path|string|true|Name for the drive. Must be unique per project and URL-safe (alphanumeric, hyphens, underscores).|
-|projectId|query|string|false|The project ID or name associated with the drive. Required unless using a Vercel OIDC token scoped to a project.|
-|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
-|slug|query|string|false|The Team slug to perform the request on behalf of.|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "drive": {
-    "createdAt": 1750344501629,
-    "currentSandboxName": "my-sandbox",
-    "currentSessionId": "sbx_123",
-    "id": "drive_abc123",
-    "maxSizeBytes": 1099511627776,
-    "name": "workspace",
-    "parentDriveId": "string",
-    "projectId": "prj_abc123",
-    "region": "iad1",
-    "rootDriveId": "string",
-    "updatedAt": 1750344501629,
-    "workloadType": "sandbox"
-  }
-}
-```
-
-<h3 id="delete-a-drive-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||Inline|
-|400|Bad Request|One of the provided values in the request query is invalid.|None|
-|401|Unauthorized|The request is not authorized.|None|
-|403|Forbidden|You do not have permission to access this resource.|None|
-|404|Not Found||None|
-|409|Conflict||None|
-|410|Gone||None|
-|422|Unprocessable Entity||None|
-|429|Too Many Requests||None|
-
-<h3 id="delete-a-drive-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|drive|[Drive](#schemadrive)|true|none|This object contains information related to a Vercel Sandbox Drive.|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearerToken
-</aside>
-
-## Fork a drive
+## Deprecated: Use POST /v1/drives/:name/fork. Requires the read-write:drive app scope instead of read-write:sandbox, and drive:read and drive:create instead of vercelRun:read and vercelRun:create. Emits drive-created activity events instead of sandbox-drive-created. Fork a drive
 
 <a id="opIdforkDrive"></a>
 
@@ -108288,6 +111471,10 @@ curl https://api.vercel.com/v2/sandboxes/drives/workspace/fork \
 
 `POST /v2/sandboxes/drives/{name}/fork`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Fork the provided drive into a new one with the provided name, inheriting the region and max size.
 
 > Body parameter
@@ -108298,7 +111485,7 @@ Fork the provided drive into a new one with the provided name, inheriting the re
 }
 ```
 
-<h3 id="fork-a-drive-parameters">Parameters</h3>
+<h3 id="deprecated-use-post-v1drivesnamefork-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-driveread-and-drivecreate-instead-of-vercelrunread-and-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-fork-a-drive-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -108332,7 +111519,7 @@ Fork the provided drive into a new one with the provided name, inheriting the re
 }
 ```
 
-<h3 id="fork-a-drive-responses">Responses</h3>
+<h3 id="deprecated-use-post-v1drivesnamefork-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-driveread-and-drivecreate-instead-of-vercelrunread-and-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-fork-a-drive-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -108348,7 +111535,7 @@ Fork the provided drive into a new one with the provided name, inheriting the re
 |429|Too Many Requests||None|
 |503|Service Unavailable||None|
 
-<h3 id="fork-a-drive-responseschema">Response Schema</h3>
+<h3 id="deprecated-use-post-v1drivesnamefork-requires-the-read-writedrive-app-scope-instead-of-read-writesandbox-and-driveread-and-drivecreate-instead-of-vercelrunread-and-vercelruncreate-emits-drive-created-activity-events-instead-of-sandbox-drive-created-fork-a-drive-responseschema">Response Schema</h3>
 
 Status Code **201**
 
@@ -108725,16 +111912,40 @@ Retrieves detailed information about a specific session, including its current s
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -108751,6 +111962,7 @@ Retrieves detailed information about a specific session, including its current s
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -108835,6 +112047,7 @@ Retrieves a named sandbox by name, including its current sandbox and routes. If 
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -108912,16 +112125,40 @@ Retrieves a named sandbox by name, including its current sandbox and routes. If 
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -108938,6 +112175,7 @@ Retrieves a named sandbox by name, including its current sandbox and routes. If 
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -109027,6 +112265,7 @@ Deletes a sandbox by name. If sandboxes are currently running, they will be stop
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -109134,6 +112373,7 @@ curl https://api.vercel.com/v2/sandboxes/my-sandbox \
     "timeout": 300000,
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": "string",
     "networkPolicy": {
       "mode": "custom",
@@ -109239,6 +112479,7 @@ Updates the configuration of a sandbox. Only the provided fields will be modifie
   "timeout": 300000,
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": "string",
   "networkPolicy": {
     "mode": "custom",
@@ -109347,6 +112588,7 @@ Updates the configuration of a sandbox. Only the provided fields will be modifie
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. It affects only that webhook. When a deadline is closer than the lead time, the webhook is sent right away: at the start of a session whose timeout is shorter, and after each extension that leaves the deadline within the lead time. Defaults to 2 minutes. Takes effect from the next session.|
 |» keepLastSnapshots|body|string \| object|false|Protect the N most recent snapshots with different expiration/deletion behavior. Set to null to clear.|
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|object|false|none|
@@ -109512,6 +112754,7 @@ Updates the configuration of a sandbox. Only the provided fields will be modifie
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -109722,7 +112965,7 @@ curl https://api.vercel.com/v2/sandboxes/sessions/sbx_abc123/cmd \
 
 `POST /v2/sandboxes/sessions/{sessionId}/cmd`
 
-Executes a shell command inside a running session. The command runs asynchronously and returns immediately with a command ID that can be used to track its progress and retrieve its output. Optionally, use the `wait` parameter to stream the command status until completion.
+Executes a shell command inside a running session. The command runs asynchronously and returns immediately with a command ID that can be used to track its progress and retrieve its output. Optionally, use the `wait` parameter to stream the command status until completion. When `wait` is true, send `Accept: application/vnd.vercel.sandbox.command-stream+cbor-seq` to receive the stream as a CBOR Sequence (RFC 8742) instead of ND-JSON. Each item is a two-element array `[TYPE, PAYLOAD]`. `TYPE` is `1` for stdout or `2` for stderr with the raw output as a byte string, `3` for a stream failure with a `{ code, message }` map, or `128` for the `SessionCommand` as a map, sent when the command starts and again when it finishes.
 
 > Body parameter
 
@@ -109828,7 +113071,7 @@ curl https://api.vercel.com/v2/sandboxes/sessions/sbx_abc123/cmd/cmd_abc123 \
 
 `GET /v2/sandboxes/sessions/{sessionId}/cmd/{cmdId}`
 
-Retrieves the current status and details of a command executed in a session. Use the `wait` parameter to block until the command finishes execution.
+Retrieves the current status and details of a command executed in a session. Without `wait`, the stored command is returned as-is: its `exitCode` is `null` unless a previous request waited for the command to finish. Set `wait` to `true` to block until the command finishes and get its exit code.
 
 <h3 id="get-a-command-parameters">Parameters</h3>
 
@@ -109836,7 +113079,7 @@ Retrieves the current status and details of a command executed in a session. Use
 |---|---|---|---|---|
 |sessionId|path|string|true|The unique identifier of the session containing the command.|
 |cmdId|path|string|true|The unique identifier of the command to retrieve.|
-|wait|query|string|false|If set to "true", the request will block until the command finishes execution. Useful for synchronously waiting for command completion.|
+|wait|query|string|false|If set to "true", the request will block until the command finishes execution and the response will include its exit code. Otherwise, `exitCode` is `null` unless a previous request waited for the command to finish.|
 |teamId|query|string|false|The Team identifier to perform the request on behalf of.|
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 
@@ -109873,7 +113116,7 @@ Retrieves the current status and details of a command executed in a session. Use
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|The command data along with the exit code if the command did finish.|Inline|
+|200|OK|The command data. `exitCode` is set if this or a previous request waited for the command to finish, and `null` otherwise.|Inline|
 |400|Bad Request|One of the provided values in the request query is invalid.|None|
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
@@ -110095,7 +113338,7 @@ curl https://api.vercel.com/v2/sandboxes/sessions/sbx_abc123/cmd/cmd_abc123/logs
 
 `GET /v2/sandboxes/sessions/{sessionId}/cmd/{cmdId}/logs`
 
-Streams the output of a command in real-time using newline-delimited JSON (ND-JSON). Each entry includes the output data and stream type. Stream types include `stdout`, `stderr`, and `error` (for stream failures).
+Streams the output of a command in real-time using newline-delimited JSON (ND-JSON). Each entry includes the output data and stream type. Stream types include `stdout`, `stderr`, and `error` (for stream failures). Send `Accept: application/vnd.vercel.sandbox.command-stream+cbor-seq` to receive the raw output bytes as a CBOR Sequence (RFC 8742) instead. Each item is a two-element array `[TYPE, PAYLOAD]`, where `TYPE` is `1` for stdout or `2` for stderr with the raw output as a byte string, or `3` for a stream failure with a `{ code, message }` map.
 
 <h3 id="stream-command-logs-parameters">Parameters</h3>
 
@@ -110118,28 +113361,6 @@ Streams the output of a command in real-time using newline-delimited JSON (ND-JS
 |410|Gone||None|
 |422|Unprocessable Entity||None|
 |429|Too Many Requests||None|
-
-<h3 id="stream-command-logs-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|object|false|none|none|
-|data|object|true|none|none|
-|» code|string|true|none|none|
-|» message|string|true|none|none|
-|stream|string|true|none|none|
-|*oneOf*|object|false|none|none|
-|data|string|true|none|none|
-|stream|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|» code|sandbox_stream_closed|
-|» message|Sandbox stream was closed and is not accepting commands.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -110197,16 +113418,40 @@ Stops a running session and releases its allocated resources. All running proces
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -110223,6 +113468,7 @@ Stops a running session and releases its allocated resources. All running proces
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -110328,16 +113574,40 @@ Extends the maximum execution time of a running session. The session must be act
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -110354,6 +113624,7 @@ Extends the maximum execution time of a running session. The session must be act
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -110634,16 +113905,40 @@ Replaces the network access policy of a running session. Use this to control whi
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -110660,6 +113955,7 @@ Replaces the network access policy of a running session. Use this to control whi
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -110944,16 +114240,40 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -110970,6 +114290,7 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -111011,6 +114332,7 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
 |422|Unprocessable Entity||None|
 |429|Too Many Requests||None|
 |500|Internal Server Error||None|
+|504|Gateway Timeout||None|
 
 <h3 id="create-a-snapshot-responseschema">Response Schema</h3>
 
@@ -111128,6 +114450,7 @@ curl https://api.vercel.com/v2/sandboxes/string/fork \
     "name": "my-sandbox-fork",
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": {
       "count": 1,
       "expiration": null,
@@ -111237,6 +114560,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
   "name": "my-sandbox-fork",
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": {
     "count": 1,
     "expiration": null,
@@ -111344,6 +114668,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. Defaults to the source sandbox setting.|
 |» keepLastSnapshots|body|object|false|Protect the N most recent snapshots with different expiration/deletion behavior.|
 |» » count|body|integer|true|Number of most recent snapshots to keep.|
 |» » expiration|body|object \| integer|false|Expiration time in milliseconds for kept snapshots. Falls back to snapshotExpiration.|
@@ -111424,6 +114749,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -111501,16 +114827,40 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -111527,6 +114877,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -111680,6 +115031,7 @@ curl https://api.vercel.com/v3/sandboxes \
     "name": "my-sandbox",
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": {
       "count": 1,
       "expiration": null,
@@ -111799,6 +115151,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
   "name": "my-sandbox",
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": {
     "count": 1,
     "expiration": null,
@@ -111884,7 +115237,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» » subnets|body|object|false|none|
 |» » » allow|body|[string]|false|none|
 |» » » deny|body|[string]|false|none|
-|» architecture|body|string|false|CPU architecture. Inherits a snapshot or single image manifest when omitted. Image indexes default to amd64. Must match the source. ARM64 creation requires API v3 or v4 without runtime and team access.|
+|» architecture|body|string|false|none|
 |» resources|body|object|false|Resources to define the VM|
 |» » vcpus|body|integer|false|The number of virtual CPUs to allocate to the sandbox. Must be 1, or an even number.|
 |» » memory|body|integer|false|The amount of memory in megabytes to allocate to the sandbox. Must equal vcpus * 2048.|
@@ -111920,6 +115273,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. It affects only that webhook. When a deadline is closer than the lead time, the webhook is sent right away: at the start of a session whose timeout is shorter, and after each extension that leaves the deadline within the lead time. Defaults to 2 minutes. Takes effect from the next session.|
 |» keepLastSnapshots|body|object|false|Protect the N most recent snapshots with different expiration/deletion behavior.|
 |» » count|body|integer|true|Number of most recent snapshots to keep.|
 |» » expiration|body|object \| integer|false|Expiration time in milliseconds for kept snapshots. Falls back to snapshotExpiration.|
@@ -112002,6 +115356,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -112079,16 +115434,40 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -112105,6 +115484,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -112213,16 +115593,40 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -112239,6 +115643,7 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -112280,6 +115685,7 @@ Creates a point-in-time snapshot of a running session's filesystem. Snapshots ca
 |422|Unprocessable Entity||None|
 |429|Too Many Requests||None|
 |500|Internal Server Error||None|
+|504|Gateway Timeout||None|
 
 <h3 id="create-a-snapshot-1-responseschema">Response Schema</h3>
 
@@ -112397,6 +115803,7 @@ curl https://api.vercel.com/v3/sandboxes/string/fork \
     "name": "my-sandbox-fork",
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": "string",
     "tags": {
       "env": "staging",
@@ -112502,6 +115909,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
   "name": "my-sandbox-fork",
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": "string",
   "tags": {
     "env": "staging",
@@ -112605,6 +116013,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Defaults to 7 days. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. Defaults to the source sandbox setting.|
 |» keepLastSnapshots|body|string \| object|false|Protect the N most recent snapshots with different expiration/deletion behavior. Persistent sandboxes default to keeping only the last snapshot (evicted snapshots are deleted). Set to null to disable the limit.|
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|object|false|none|
@@ -112687,6 +116096,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -112764,16 +116174,40 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -112790,6 +116224,7 @@ Forks a named sandbox, creating a new named sandbox from the source's configurat
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -112943,6 +116378,7 @@ curl https://api.vercel.com/v4/sandboxes \
     "name": "my-sandbox",
     "persistent": true,
     "snapshotExpiration": 604800000,
+    "expiryNotificationLeadTime": 300000,
     "keepLastSnapshots": "string",
     "tags": {
       "env": "staging",
@@ -113058,6 +116494,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
   "name": "my-sandbox",
   "persistent": true,
   "snapshotExpiration": 604800000,
+  "expiryNotificationLeadTime": 300000,
   "keepLastSnapshots": "string",
   "tags": {
     "env": "staging",
@@ -113139,7 +116576,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» » subnets|body|object|false|none|
 |» » » allow|body|[string]|false|none|
 |» » » deny|body|[string]|false|none|
-|» architecture|body|string|false|CPU architecture. Inherits a snapshot or single image manifest when omitted. Image indexes default to amd64. Must match the source. ARM64 creation requires API v3 or v4 without runtime and team access.|
+|» architecture|body|string|false|none|
 |» resources|body|object|false|Resources to define the VM|
 |» » vcpus|body|integer|false|The number of virtual CPUs to allocate to the sandbox. Must be 1, or an even number.|
 |» » memory|body|integer|false|The amount of memory in megabytes to allocate to the sandbox. Must equal vcpus * 2048.|
@@ -113175,6 +116612,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
 |» snapshotExpiration|body|object \| integer|false|Default snapshot expiration time in milliseconds. Defaults to 7 days. Set to 0 to disable expiration. When set, this value is used as the default expiration for all snapshots created for this sandbox.|
 |» » *oneOf*|body|object|false|none|
 |» » *oneOf*|body|integer|false|none|
+|» expiryNotificationLeadTime|body|integer|false|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. It affects only that webhook. When a deadline is closer than the lead time, the webhook is sent right away: at the start of a session whose timeout is shorter, and after each extension that leaves the deadline within the lead time. Defaults to 2 minutes. Takes effect from the next session.|
 |» keepLastSnapshots|body|string \| object|false|Protect the N most recent snapshots with different expiration/deletion behavior. Persistent sandboxes default to keeping only the last snapshot (evicted snapshots are deleted). Set to null to disable the limit.|
 |» » *oneOf*|body|string|false|none|
 |» » *oneOf*|body|object|false|none|
@@ -113259,6 +116697,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "currentSnapshotId": "string",
     "cwd": "/vercel/sandbox",
     "expiresAt": 1750344801629,
+    "expiryNotificationLeadTime": 120000,
     "failoverRegions": [
       "sfo1",
       "cle1"
@@ -113336,16 +116775,40 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
       "deniedCIDRs": [
         "10.0.0.0/8"
       ],
+      "forwardRules": [
+        {
+          "domain": "string",
+          "forwardURL": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ]
+        }
+      ],
       "injectionRules": [
         {
           "domain": "api.vercel.com",
           "headerNames": [
             "Authorization",
             "X-API-Key"
+          ],
+          "matchDimensions": [
+            "path",
+            "method"
           ]
         }
       ],
-      "mode": "custom"
+      "mode": "custom",
+      "responseRules": [
+        {
+          "domain": "string",
+          "matchDimensions": [
+            "path",
+            "method"
+          ],
+          "statusCode": 0
+        }
+      ]
     },
     "networkTransfer": {
       "in": 12543852,
@@ -113362,6 +116825,7 @@ Creates a named sandbox environment. Named sandboxes have a unique name within a
     "startedAt": 1750344501629,
     "status": "running",
     "stoppedAt": 1750344501629,
+    "stopReason": "requested",
     "timeout": 3600000,
     "updatedAt": 1750344501629,
     "vcpus": 2,
@@ -114919,6 +118383,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115068,6 +118533,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115142,6 +118608,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115196,6 +118663,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -115291,6 +118759,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115440,6 +118909,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115514,6 +118984,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115568,6 +119039,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -115663,6 +119135,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115812,6 +119285,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115886,6 +119360,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -115940,6 +119415,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -116473,6 +119949,7 @@ Set the firewall configuration to provided rules and settings. Creates or overwr
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -116533,6 +120010,7 @@ Set the firewall configuration to provided rules and settings. Creates or overwr
 |» » » type|traffic_source|
 |» » » type|ruleset|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » op|re|
 |» » » op|eq|
 |» » » op|neq|
@@ -117082,6 +120560,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -117231,6 +120710,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -117305,6 +120785,7 @@ Status Code **200**
 |» » » » type|raw_path|
 |» » » » type|region|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » type|route|
 |» » » » type|ruleset|
 |» » » » type|scheme|
@@ -117359,6 +120840,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -117811,6 +121293,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -117863,6 +121346,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -117917,6 +121401,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -117966,6 +121451,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -118023,6 +121509,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -118083,6 +121570,7 @@ Process updates to modify the existing firewall config for a project
 |» » » » type|traffic_source|
 |» » » » type|ruleset|
 |» » » » type|response_code|
+|» » » » type|response_header|
 |» » » » op|re|
 |» » » » op|eq|
 |» » » » op|neq|
@@ -118718,6 +122206,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -118867,6 +122356,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -118941,6 +122431,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -118995,6 +122486,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -119637,6 +123129,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -119786,6 +123279,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -119860,6 +123354,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -119914,6 +123409,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -120557,6 +124053,7 @@ Status Code **200**
 |» » type|raw_path|
 |» » type|region|
 |» » type|response_code|
+|» » type|response_header|
 |» » type|route|
 |» » type|ruleset|
 |» » type|scheme|
@@ -120608,6 +124105,7 @@ Status Code **200**
 |» » » type|raw_path|
 |» » » type|region|
 |» » » type|response_code|
+|» » » type|response_header|
 |» » » type|route|
 |» » » type|ruleset|
 |» » » type|scheme|
@@ -120617,6 +124115,242 @@ Status Code **200**
 |» » » type|traffic_source|
 |» » » type|trusted_source|
 |» » » type|user_agent|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerToken
+</aside>
+
+## Update conditional firewall bypass
+
+<a id="opIdupdateConditionalBypass"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.vercel.com/v1/security/firewall/bypass/rules?projectId=string' \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "domain": "string",
+    "conditionGroup": [
+      {
+        "conditions": [
+          {
+            "type": "user_agent",
+            "op": "eq",
+            "value": "string",
+            "key": "user-agent"
+          }
+        ]
+      }
+    ],
+    "note": "string"
+  }'
+```
+
+`PUT /v1/security/firewall/bypass/rules`
+
+Update a conditional firewall bypass rule for a project domain. Replaces conditions and the note for the domain's existing rule. Omitting `note` clears it. The rule ID, domain, creator, and creation time are preserved. Missing or deleted rules are not created.
+
+> Body parameter
+
+```json
+{
+  "domain": "string",
+  "conditionGroup": [
+    {
+      "conditions": [
+        {
+          "type": "user_agent",
+          "op": "eq",
+          "value": "string",
+          "key": "user-agent"
+        }
+      ]
+    }
+  ],
+  "note": "string"
+}
+```
+
+<h3 id="update-conditional-firewall-bypass-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|projectId|query|string|true|none|
+|slug|query|string|false|none|
+|teamId|query|string|false|The Team identifier to perform the request on behalf of.|
+|body|body|object|false|none|
+|» domain|body|string|true|none|
+|» conditionGroup|body|[object]|true|none|
+|» » conditions|body|[object]|true|none|
+|» » » *oneOf*|body|object|false|none|
+|» » » type|body|string|true|none|
+|» » » op|body|string|true|none|
+|» » » value|body|string|true|none|
+|» » » key|body|string|false|none|
+|» » » *oneOf*|body|object|false|none|
+|» » » type|body|string|true|none|
+|» » » op|body|string|true|none|
+|» » » value|body|string|true|none|
+|» » » *oneOf*|body|object|false|none|
+|» » » type|body|string|true|none|
+|» » » op|body|string|true|none|
+|» » » key|body|string|true|none|
+|» » » value|body|string|true|none|
+|» » » *oneOf*|body|object|false|none|
+|» » » type|body|string|true|none|
+|» » » op|body|string|true|none|
+|» » » key|body|string|true|none|
+|» note|body|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » » type|user_agent|
+|» » » op|eq|
+|» » » op|pre|
+|» » » op|suf|
+|» » » op|sub|
+|» » » key|user-agent|
+|» » » type|path|
+|» » » op|eq|
+|» » » op|pre|
+|» » » op|suf|
+|» » » op|sub|
+|» » » type|header|
+|» » » op|eq|
+|» » » op|pre|
+|» » » op|suf|
+|» » » op|sub|
+|» » » type|header|
+|» » » op|ex|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "condition": "string",
+  "conditionGroup": [
+    {
+      "conditions": [
+        {
+          "key": "string",
+          "neg": false,
+          "op": "eq",
+          "type": "bot_category",
+          "value": "string"
+        }
+      ]
+    }
+  ],
+  "createdAt": "string",
+  "domain": "string",
+  "id": "string",
+  "note": "string",
+  "projectId": "string",
+  "updatedAt": "string"
+}
+```
+
+<h3 id="update-conditional-firewall-bypass-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
+|400|Bad Request|One of the provided values in the request body is invalid.<br>One of the provided values in the request query is invalid.|None|
+|401|Unauthorized|The request is not authorized.|None|
+|403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
+|410|Gone||None|
+
+<h3 id="update-conditional-firewall-bypass-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|condition|string|true|none|none|
+|conditionGroup|[object]|true|none|none|
+|» conditions|[object]|true|none|none|
+|» » key|string|false|none|none|
+|» » neg|boolean|false|none|none|
+|» » op|string|true|none|none|
+|» » type|string|true|none|none|
+|» » value|string \| number \| [string]|false|none|none|
+|» » » *oneOf*|string|false|none|none|
+|» » » *oneOf*|number|false|none|none|
+|» » » *oneOf*|[string]|false|none|none|
+|*anonymous*|[string]|false|none|none|
+|createdAt|string|true|none|none|
+|domain|string|true|none|none|
+|id|string|true|none|none|
+|note|string|false|none|none|
+|projectId|string|true|none|none|
+|updatedAt|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» » neg|false|
+|» » neg|true|
+|» » op|eq|
+|» » op|ex|
+|» » op|gt|
+|» » op|gte|
+|» » op|inc|
+|» » op|list|
+|» » op|lt|
+|» » op|lte|
+|» » op|neq|
+|» » op|nex|
+|» » op|ninc|
+|» » op|pre|
+|» » op|re|
+|» » op|sub|
+|» » op|suf|
+|» » type|bot_category|
+|» » type|bot_name|
+|» » type|bot_protection|
+|» » type|bot_status|
+|» » type|cookie|
+|» » type|domain_environment|
+|» » type|environment|
+|» » type|geo_as_number|
+|» » type|geo_city|
+|» » type|geo_continent|
+|» » type|geo_country|
+|» » type|geo_country_region|
+|» » type|header|
+|» » type|host|
+|» » type|ip_address|
+|» » type|ja3_digest|
+|» » type|ja4_digest|
+|» » type|method|
+|» » type|path|
+|» » type|protocol|
+|» » type|query|
+|» » type|rate_limit_api_id|
+|» » type|raw_path|
+|» » type|region|
+|» » type|response_code|
+|» » type|response_header|
+|» » type|route|
+|» » type|ruleset|
+|» » type|scheme|
+|» » type|server_action|
+|» » type|shared_condition|
+|» » type|target_path|
+|» » type|traffic_source|
+|» » type|trusted_source|
+|» » type|user_agent|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -120844,6 +124578,7 @@ Status Code **200**
 |» » type|raw_path|
 |» » type|region|
 |» » type|response_code|
+|» » type|response_header|
 |» » type|route|
 |» » type|ruleset|
 |» » type|scheme|
@@ -120930,11 +124665,11 @@ Retrieve firewall actions for a project Rule names are resolved against the proj
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |sort|query|string|false|none|
-|limit|query|number|false|none|
+|limit|query|integer|false|none|
 |cursor|query|string|false|none|
 |projectId|query|string|true|none|
-|startTimestamp|query|number|false|none|
-|endTimestamp|query|number|false|none|
+|startTimestamp|query|integer|false|none|
+|endTimestamp|query|integer|false|none|
 |hosts|query|string|false|none|
 |ip|query|[string]|false|none|
 |isActive|query|boolean|false|none|
@@ -121057,8 +124792,8 @@ Aggregate counts over the firewall actions matched by the same filters as `GET /
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |projectId|query|string|true|none|
-|startTimestamp|query|number|false|none|
-|endTimestamp|query|number|false|none|
+|startTimestamp|query|integer|false|none|
+|endTimestamp|query|integer|false|none|
 |hosts|query|string|false|none|
 |ip|query|[string]|false|none|
 |isActive|query|boolean|false|none|
@@ -121980,8 +125715,10 @@ Get a paginated list of team members for the provided team.
         "repoId": "string",
         "repoPath": "string",
         "ssoConnectedAt": 0,
+        "ssoIdFingerprint": "string",
         "ssoUserId": "string"
       },
+      "membershipSource": "direct",
       "name": "Jane Doe",
       "projects": [
         {
@@ -122060,7 +125797,9 @@ Status Code **200**
 |» » repoId|string|false|none|none|
 |» » repoPath|string|false|none|none|
 |» » ssoConnectedAt|number|false|none|none|
+|» » ssoIdFingerprint|string|false|none|How `ssoUserId` and `idpUserId` were made; absent when unknown.|
 |» » ssoUserId|string|false|none|none|
+|» membershipSource|string|true|none|The source controlling this member's team access and roles. Individual permissions may have a different source. This does not replace authorization checks.|
 |» name|string|false|none|The name of this user.|
 |» projects|[object]|false|none|Array of project memberships|
 |» » id|string|true|none|none|
@@ -122145,6 +125884,9 @@ Status Code **200**
 |» » origin|organization-teams|
 |» » origin|saml|
 |» » origin|teams|
+|» membershipSource|direct|
+|» membershipSource|organization-directory|
+|» membershipSource|team-directory|
 |» » role|ADMIN|
 |» » role|PROJECT_DEVELOPER|
 |» » role|PROJECT_GUEST|
@@ -122304,7 +126046,7 @@ curl https://api.vercel.com/v1/teams/team_1a2b3c4d5e6f7g8h9i0j1k2l/request \
 
 `POST /v1/teams/{teamId}/request`
 
-Request access to a team as a member. An owner has to approve the request. Only 100 users can request access to a team at the same time.
+Request access to a team as a member. An owner has to approve the request. Only 100 users can request access to a team at the same time. Organization-directory access must be granted through the directory administrator.
 
 > Body parameter
 
@@ -122377,6 +126119,7 @@ Request access to a team as a member. An owner has to approve the request. Only 
     "repoId": "string",
     "repoPath": "string",
     "ssoConnectedAt": 0,
+    "ssoIdFingerprint": "string",
     "ssoUserId": "string"
   },
   "teamName": "string",
@@ -122424,6 +126167,7 @@ Status Code **200**
 |» repoId|string|false|none|none|
 |» repoPath|string|false|none|none|
 |» ssoConnectedAt|number|false|none|none|
+|» ssoIdFingerprint|string|false|none|How `ssoUserId` and `idpUserId` were made; absent when unknown.|
 |» ssoUserId|string|false|none|none|
 |teamName|string|true|none|none|
 |teamSlug|string|true|none|none|
@@ -122474,7 +126218,7 @@ curl https://api.vercel.com/v1/teams/team_1a2b3c4d5e6f7g8h9i0j1k2l/request/strin
 
 `GET /v1/teams/{teamId}/request/{userId}`
 
-Check the status of a join request. It'll respond with a 404 if the request has been declined. If no `userId` path segment was provided, this endpoint will instead return the status of the authenticated user.
+Check the status of a join request. It'll respond with a 404 if the request has been declined or enabled directory reads suppress access. If no `userId` path segment was provided, this endpoint will instead return the status of the authenticated user.
 
 <h3 id="get-access-request-status-parameters">Parameters</h3>
 
@@ -122511,6 +126255,7 @@ Check the status of a join request. It'll respond with a 404 if the request has 
     "repoId": "string",
     "repoPath": "string",
     "ssoConnectedAt": 0,
+    "ssoIdFingerprint": "string",
     "ssoUserId": "string"
   },
   "teamName": "My Team",
@@ -122556,6 +126301,7 @@ Status Code **200**
 |» repoId|string|false|none|none|
 |» repoPath|string|false|none|none|
 |» ssoConnectedAt|number|false|none|none|
+|» ssoIdFingerprint|string|false|none|How `ssoUserId` and `idpUserId` were made; absent when unknown.|
 |» ssoUserId|string|false|none|none|
 |teamName|string|true|none|The name of the team.|
 |teamSlug|string|true|none|The slug of the team.|
@@ -122686,7 +126432,7 @@ curl https://api.vercel.com/v1/teams/team_1a2b3c4d5e6f7g8h9i0j1k2l/members/ndlgr
 
 `DELETE /v1/teams/{teamId}/members/{uid}`
 
-Remove a Team Member from the Team, or dismiss a user that requested access, or leave a team. Directory Sync members can be removed when their directory email is absent or does not match the user's primary or verified secondary emails.
+Remove a Team Member from the Team, or dismiss a user that requested access, or leave a team. Organization-directory-managed access must be removed through the organization's identity provider; local removal returns `organization_directory_managed`. Directory Sync members can be removed when their directory email is absent or does not match the user's primary or verified secondary emails. Removing or leaving is refused when it would leave the Team's organization without an organization admin.
 
 <h3 id="remove-a-team-member-parameters">Parameters</h3>
 
@@ -122715,6 +126461,7 @@ Remove a Team Member from the Team, or dismiss a user that requested access, or 
 |401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.<br>Not authorized to update the team.|None|
 |404|Not Found||None|
+|409|Conflict||None|
 |410|Gone||None|
 |503|Service Unavailable||None|
 
@@ -122764,7 +126511,7 @@ curl https://api.vercel.com/v1/teams/team_1a2b3c4d5e6f7g8h9i0j1k2l/members/ndfas
 
 `PATCH /v1/teams/{teamId}/members/{uid}`
 
-Update the membership of a Team Member on the Team specified by `teamId`, such as changing the _role_ of the member, or confirming a request to join the Team for an unconfirmed member. The authenticated user must be an `OWNER` of the Team.
+Update the membership of a Team Member on the Team specified by `teamId`, such as changing the _role_ of the member, or confirming a request to join the Team for an unconfirmed member. Organization-directory-managed team access and roles must be changed through the organization's identity provider. Unsupported changes return `organization_directory_managed`; supported local assignments remain editable. The authenticated user must be an `OWNER` of the Team. An update that would leave the Team's organization without an organization admin is refused.
 
 > Body parameter
 
@@ -122797,7 +126544,7 @@ Update the membership of a Team Member on the Team specified by `teamId`, such a
 |body|body|object|true|none|
 |» confirmed|body|boolean|false|Accept a user who requested access to the team.|
 |» role|body|string|false|The role in the team of the member.|
-|» teamPermissions|body|[string]|false|The team permissions to set for the member. Permissions must be compatible with the team roles assigned to the member.|
+|» teamPermissions|body|[string]|false|The team permissions to set for the member. Permissions must be available to the team and compatible with the team roles assigned to the member.|
 |» projects|body|[object]|false|none|
 |» » projectId|body|string|true|The ID of the project.|
 |» » role|body|string \| null|true|The project role of the member that will be added. \"null\" will remove this project level role.|
@@ -122936,6 +126683,11 @@ Get information for the Team specified by the `teamId` parameter.
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -123002,7 +126754,8 @@ Get information for the Team specified by the `teamId` parameter.
     "retentionOptOutAt": 0
   },
   "description": "Our mission is to make cloud computing accessible to everyone.",
-  "disableHardAutoBlocks": 0,
+  "directorySyncSource": "none",
+  "directorySyncType": "string",
   "disableRepositoryDispatchEvents": false,
   "disjunctiveProductionSecretPolicy": "default",
   "dpAccessRequestsMode": "all",
@@ -123044,6 +126797,7 @@ Get information for the Team specified by the `teamId` parameter.
       "repoId": "string",
       "repoPath": "string",
       "ssoConnectedAt": 0,
+      "ssoIdFingerprint": "string",
       "ssoUserId": "string"
     },
     "organizationId": "string",
@@ -123416,7 +127170,7 @@ Update the information of a Team specified by the `teamId` parameter. The reques
 |slug|query|string|false|The Team slug to perform the request on behalf of.|
 |body|body|object|true|none|
 |» avatar|body|string \| null|false|The hash value of an uploaded image, or `null` to clear the avatar.|
-|» description|body|string|false|A short text that describes the team.|
+|» description|body|string|false|A short text that describes the team. Set to an empty string to clear the description. Omit to keep the current description.|
 |» emailDomain|body|string(regex) \| null|false|none|
 |» name|body|string|false|The name of the team.|
 |» previewDeploymentSuffix|body|string(hostname) \| null|false|Suffix that will be used for all preview deployments.|
@@ -123650,6 +127404,11 @@ Update the information of a Team specified by the `teamId` parameter. The reques
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -123716,7 +127475,8 @@ Update the information of a Team specified by the `teamId` parameter. The reques
     "retentionOptOutAt": 0
   },
   "description": "Our mission is to make cloud computing accessible to everyone.",
-  "disableHardAutoBlocks": 0,
+  "directorySyncSource": "none",
+  "directorySyncType": "string",
   "disableRepositoryDispatchEvents": false,
   "disjunctiveProductionSecretPolicy": "default",
   "dpAccessRequestsMode": "all",
@@ -123758,6 +127518,7 @@ Update the information of a Team specified by the `teamId` parameter. The reques
       "repoId": "string",
       "repoPath": "string",
       "ssoConnectedAt": 0,
+      "ssoIdFingerprint": "string",
       "ssoUserId": "string"
     },
     "organizationId": "string",
@@ -123888,7 +127649,7 @@ curl https://api.vercel.com/v2/teams \
 
 `GET /v2/teams`
 
-Get a paginated list of all the Teams the authenticated User is a member of.
+Get a paginated list of all the Teams the authenticated User is a member of. An app-principal token needs `read:team` and lists only the team it is bound to.
 
 <h3 id="list-all-teams-parameters">Parameters</h3>
 
@@ -123944,6 +127705,11 @@ Get a paginated list of all the Teams the authenticated User is a member of.
       },
       "defaultProjectJobs": {
         "flag-definitions-present": {
+          "targets": [
+            "string"
+          ]
+        },
+        "health-check": {
           "targets": [
             "string"
           ]
@@ -124014,7 +127780,8 @@ Get a paginated list of all the Teams the authenticated User is a member of.
         "retentionOptOutAt": 0
       },
       "description": "Our mission is to make cloud computing accessible to everyone.",
-      "disableHardAutoBlocks": 0,
+      "directorySyncSource": "none",
+      "directorySyncType": "string",
       "disableRepositoryDispatchEvents": false,
       "disjunctiveProductionSecretPolicy": "default",
       "dpAccessRequestsMode": "all",
@@ -124056,6 +127823,7 @@ Get a paginated list of all the Teams the authenticated User is a member of.
           "repoId": "string",
           "repoPath": "string",
           "ssoConnectedAt": 0,
+          "ssoIdFingerprint": "string",
           "ssoUserId": "string"
         },
         "organizationId": "string",
@@ -124159,8 +127927,9 @@ Get a paginated list of all the Teams the authenticated User is a member of.
 |---|---|---|---|
 |200|OK|A paginated list of teams.|Inline|
 |400|Bad Request|One of the provided values in the request query is invalid.|None|
-|401|Unauthorized||None|
+|401|Unauthorized|The request is not authorized.|None|
 |403|Forbidden|You do not have permission to access this resource.|None|
+|404|Not Found||None|
 |410|Gone||None|
 |500|Internal Server Error||None|
 
@@ -124170,6 +127939,10 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|pagination|[Pagination](#schemapagination)|true|none|This object contains information related to the pagination of the current request, including the necessary parameters to get the next or previous page of data.|
+|teams|[[Team](#schemateam)]|true|none|none|
+|*oneOf*|object|false|none|A paginated list of teams.|
 |pagination|[Pagination](#schemapagination)|true|none|This object contains information related to the pagination of the current request, including the necessary parameters to get the next or previous page of data.|
 |teams|[[Team](#schemateam) \| [TeamLimited](#schemateamlimited)]|true|none|none|
 |» *oneOf*|[Team](#schemateam)|false|none|Data representing a Team.|
@@ -124993,7 +128766,7 @@ List images for a container registry repository, including their tags.
       "arch": "amd64",
       "createdAt": "2026-06-30T10:00:00.000Z",
       "id": "img_a1b2c3d4e5f6",
-      "kind": "attestation",
+      "kind": "artifact",
       "manifestDigest": "sha256:2c4e8f3a1b9d0e5c7a6f4b2d8e1c9a0b3d5f7e9c1a2b4d6f8e0c2a4b6d8f0e2c",
       "platform": "linux",
       "pushedBy": "string",
@@ -125433,7 +129206,7 @@ Fetch a single tag from a repository, including the backing image's metadata and
     "arch": "amd64",
     "createdAt": "2026-06-30T10:00:00.000Z",
     "imageId": "img_a1b2c3d4e5f6",
-    "kind": "attestation",
+    "kind": "artifact",
     "manifestDigest": "sha256:2c4e8f3a1b9d0e5c7a6f4b2d8e1c9a0b3d5f7e9c1a2b4d6f8e0c2a4b6d8f0e2c",
     "platform": "linux",
     "pushedBy": "string",
@@ -125505,7 +129278,7 @@ Fetch an individual image from a repository, including its tags and Dockerfile h
     "arch": "amd64",
     "createdAt": "2026-06-30T10:00:00.000Z",
     "id": "img_a1b2c3d4e5f6",
-    "kind": "attestation",
+    "kind": "artifact",
     "layers": [
       {
         "createdBy": "string",
@@ -126672,6 +130445,8 @@ List Invocations
 |provider|bitbucket|
 |provider|vercel|
 |status|new|
+|status|awaiting_admission|
+|status|awaiting_approval|
 |status|skipped|
 |status|bootstrapping|
 |status|bootstrapping_failed|
@@ -126873,6 +130648,8 @@ Status Code **200**
 |» » » *anyOf*|string|false|none|none|
 |» » » *anyOf*|string|false|none|none|
 |» status|string|true|none|none|
+|» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
@@ -127935,6 +131712,8 @@ Status Code **200**
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
 |repositories|object|true|none|none|
 
 Status Code **401**
@@ -128273,6 +132052,8 @@ Status Code **200**
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
 |repositories|object|true|none|none|
 |jobs|[object]|true|none|none|
 |» definition|object|true|none|none|
@@ -128596,6 +132377,8 @@ Status Code **200**
 |» » » *anyOf*|string|false|none|none|
 |» » » *anyOf*|string|false|none|none|
 |» status|string|true|none|none|
+|» » *anyOf*|string|false|none|none|
+|» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
 |» » *anyOf*|string|false|none|none|
@@ -130020,7 +133803,7 @@ curl https://api.vercel.com/v1/vercel-ci/invocations/string/attempts/string/task
 
 `GET /v1/vercel-ci/invocations/{invocationId}/attempts/{attempt}/task-logs`
 
-Returns log lines for the tasks of an invocation attempt in a single request, grouped by task. Tasks can be narrowed by name and by conclusion, for example `conclusion=failed` to fetch only the logs of failed tasks. With `search`, every matching task is searched at once and only tasks with matching lines are returned.
+Returns log lines for the tasks of an invocation attempt in a single request, grouped by task. Tasks can be narrowed by name and by conclusion, for example `conclusion=failed` to fetch only the logs of failed tasks. With `search`, every matching task is searched at once and only tasks with matching lines are returned. Without `search`, a task restored from the remote cache returns the log of the run that produced the cache entry.
 
 <h3 id="get-log-lines-for-the-tasks-of-an-invocation-attempt-parameters">Parameters</h3>
 
@@ -130211,7 +133994,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerToken
 </aside>
 
-## Search the task logs of several invocation attempts
+## Search the setup and task logs of several invocation attempts
 
 <a id="opIdsearchVercelCiLogs"></a>
 
@@ -130225,9 +134008,9 @@ curl 'https://api.vercel.com/v1/vercel-ci/log-search?invocation=string&search=st
 
 `GET /v1/vercel-ci/log-search`
 
-Searches the task logs of up to 50 invocation attempts at once, for example the most recent runs of a branch from `GET /v2/vercel-ci/invocations`. Only invocations and tasks with matching lines are returned. When more than 1000 lines match, the newest are kept.
+Searches the setup and task logs of up to 50 invocation attempts at once, for example the most recent runs of a branch from `GET /v2/vercel-ci/invocations`. Only invocations and tasks with matching lines are returned, and `setup` is present only when a setup line matches. When more than 1000 lines match across setup and task logs, the newest are kept.
 
-<h3 id="search-the-task-logs-of-several-invocation-attempts-parameters">Parameters</h3>
+<h3 id="search-the-setup-and-task-logs-of-several-invocation-attempts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -130279,7 +134062,16 @@ Searches the task logs of up to 50 invocation attempts at once, for example the 
             }
           ]
         }
-      ]
+      ],
+      "setup": {
+        "lines": [
+          {
+            "level": "string",
+            "timestamp": 0,
+            "message": "string"
+          }
+        ]
+      }
     }
   ],
   "hasMore": true
@@ -130332,11 +134124,11 @@ Searches the task logs of up to 50 invocation attempts at once, for example the 
 }
 ```
 
-<h3 id="search-the-task-logs-of-several-invocation-attempts-responses">Responses</h3>
+<h3 id="search-the-setup-and-task-logs-of-several-invocation-attempts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|Successfully searched task logs.|Inline|
+|200|OK|Successfully searched setup and task logs.|Inline|
 |400|Bad Request|One of the provided values in the request query is invalid.|None|
 |401|Unauthorized|The request is not authorized.|Inline|
 |403|Forbidden|You do not have permission to access this resource.|Inline|
@@ -130345,7 +134137,7 @@ Searches the task logs of up to 50 invocation attempts at once, for example the 
 |429|Too Many Requests||Inline|
 |500|Internal Server Error||Inline|
 
-<h3 id="search-the-task-logs-of-several-invocation-attempts-responseschema">Response Schema</h3>
+<h3 id="search-the-setup-and-task-logs-of-several-invocation-attempts-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -130372,6 +134164,11 @@ Status Code **200**
 |» » » *anyOf*|object|false|none|none|
 |» » » result|string|true|none|none|
 |» » » reason|string|true|none|none|
+|» » lines|[object]|true|none|none|
+|» » » level|string|true|none|none|
+|» » » timestamp|number|true|none|none|
+|» » » message|string|true|none|none|
+|» setup|object|false|none|Matching lines from the setup logs. Present only when a setup line matches.|
 |» » lines|[object]|true|none|none|
 |» » » level|string|true|none|none|
 |» » » timestamp|number|true|none|none|
@@ -130601,7 +134398,7 @@ curl https://api.vercel.com/v1/vercel-ci/invocations/string/attempts/string/job-
 
 `GET /v1/vercel-ci/invocations/{invocationId}/attempts/{attempt}/job-definitions/{jobDefinitionId}/runs/{runAttempt}/task-definitions/{taskDefinitionId}/runs/{taskRunAttempt}/logs`
 
-Get Task Run Logs With `follow=1` the response is a newline-delimited JSON stream of log lines that ends once the task run has finished and its logs are flushed, or when the stream reaches its maximum duration.
+Get Task Run Logs With `follow=1` the response is a newline-delimited JSON stream of log lines that ends once the task run has finished and its logs are flushed, or when the stream reaches its maximum duration. A task run restored from the remote cache returns the log of the run that produced the cache entry, timestamped when the cached run completed.
 
 <h3 id="get-log-lines-for-a-specific-task-run-attempt-parameters">Parameters</h3>
 
@@ -131469,6 +135266,7 @@ Status Code **200**
 |---|---|
 |» events|ai-gateway.auto-reload.limit-reached|
 |» events|ai-gateway.balance-depleted|
+|» events|ai-gateway.budget.updated|
 |» events|alerts.triggered|
 |» events|botid.anomaly|
 |» events|budget.reached|
@@ -131558,6 +135356,11 @@ Status Code **200**
 |» events|observability.anomaly-error|
 |» events|observability.error-anomaly|
 |» events|observability.usage-anomaly|
+|» events|page-integrity.connect-src.detected|
+|» events|page-integrity.header.changed|
+|» events|page-integrity.runtime-warning.detected|
+|» events|page-integrity.script.changed|
+|» events|page-integrity.script.detected|
 |» events|project-created|
 |» events|project-removed|
 |» events|project.created|
@@ -131576,6 +135379,9 @@ Status Code **200**
 |» events|project.rolling-release.approved|
 |» events|project.rolling-release.completed|
 |» events|project.rolling-release.started|
+|» events|sandbox.session.expiring|
+|» events|sandbox.session.started|
+|» events|sandbox.session.stopped|
 |» events|test-webhook|
 |» events|thread.resolved|
 |» events|thread.unresolved|
@@ -131656,6 +135462,7 @@ Status Code **200**
 |» » framework|null|
 |» events|ai-gateway.auto-reload.limit-reached|
 |» events|ai-gateway.balance-depleted|
+|» events|ai-gateway.budget.updated|
 |» events|alerts.triggered|
 |» events|botid.anomaly|
 |» events|budget.reached|
@@ -131745,6 +135552,11 @@ Status Code **200**
 |» events|observability.anomaly-error|
 |» events|observability.error-anomaly|
 |» events|observability.usage-anomaly|
+|» events|page-integrity.connect-src.detected|
+|» events|page-integrity.header.changed|
+|» events|page-integrity.runtime-warning.detected|
+|» events|page-integrity.script.changed|
+|» events|page-integrity.script.detected|
 |» events|project-created|
 |» events|project-removed|
 |» events|project.created|
@@ -131763,6 +135575,9 @@ Status Code **200**
 |» events|project.rolling-release.approved|
 |» events|project.rolling-release.completed|
 |» events|project.rolling-release.started|
+|» events|sandbox.session.expiring|
+|» events|sandbox.session.started|
+|» events|sandbox.session.stopped|
 |» events|test-webhook|
 |» events|thread.resolved|
 |» events|thread.unresolved|
@@ -131873,6 +135688,9 @@ Creates a webhook
 |» events|integration-configuration.transferred|
 |» events|integration-resource.project-connected|
 |» events|integration-resource.project-disconnected|
+|» events|sandbox.session.expiring|
+|» events|sandbox.session.started|
+|» events|sandbox.session.stopped|
 |» events|project.created|
 |» events|project.removed|
 |» events|project.renamed|
@@ -131912,6 +135730,12 @@ Creates a webhook
 |» events|marketplace.invoice.refunded|
 |» events|ai-gateway.balance-depleted|
 |» events|ai-gateway.auto-reload.limit-reached|
+|» events|ai-gateway.budget.updated|
+|» events|page-integrity.script.detected|
+|» events|page-integrity.script.changed|
+|» events|page-integrity.connect-src.detected|
+|» events|page-integrity.header.changed|
+|» events|page-integrity.runtime-warning.detected|
 |» events|observability.anomaly|
 |» events|observability.anomaly-error|
 |» events|observability.usage-anomaly|
@@ -131996,6 +135820,7 @@ Status Code **200**
 |---|---|
 |events|ai-gateway.auto-reload.limit-reached|
 |events|ai-gateway.balance-depleted|
+|events|ai-gateway.budget.updated|
 |events|alerts.triggered|
 |events|botid.anomaly|
 |events|budget.reached|
@@ -132085,6 +135910,11 @@ Status Code **200**
 |events|observability.anomaly-error|
 |events|observability.error-anomaly|
 |events|observability.usage-anomaly|
+|events|page-integrity.connect-src.detected|
+|events|page-integrity.header.changed|
+|events|page-integrity.runtime-warning.detected|
+|events|page-integrity.script.changed|
+|events|page-integrity.script.detected|
 |events|project-created|
 |events|project-removed|
 |events|project.created|
@@ -132103,6 +135933,9 @@ Status Code **200**
 |events|project.rolling-release.approved|
 |events|project.rolling-release.completed|
 |events|project.rolling-release.started|
+|events|sandbox.session.expiring|
+|events|sandbox.session.started|
+|events|sandbox.session.stopped|
 |events|test-webhook|
 |events|thread.resolved|
 |events|thread.unresolved|
@@ -132189,6 +136022,7 @@ Status Code **200**
 |---|---|
 |events|ai-gateway.auto-reload.limit-reached|
 |events|ai-gateway.balance-depleted|
+|events|ai-gateway.budget.updated|
 |events|alerts.triggered|
 |events|botid.anomaly|
 |events|budget.reached|
@@ -132278,6 +136112,11 @@ Status Code **200**
 |events|observability.anomaly-error|
 |events|observability.error-anomaly|
 |events|observability.usage-anomaly|
+|events|page-integrity.connect-src.detected|
+|events|page-integrity.header.changed|
+|events|page-integrity.runtime-warning.detected|
+|events|page-integrity.script.changed|
+|events|page-integrity.script.detected|
 |events|project-created|
 |events|project-removed|
 |events|project.created|
@@ -132296,6 +136135,9 @@ Status Code **200**
 |events|project.rolling-release.approved|
 |events|project.rolling-release.completed|
 |events|project.rolling-release.started|
+|events|sandbox.session.expiring|
+|events|sandbox.session.started|
+|events|sandbox.session.stopped|
 |events|test-webhook|
 |events|thread.resolved|
 |events|thread.unresolved|
@@ -133965,6 +137807,65 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |type|deny|
 |type|rewrite|
 
+<h2 id="tocS_AiGatewayRuleListItem">AiGatewayRuleListItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayrulelistitem"></a>
+<a id="schema_AiGatewayRuleListItem"></a>
+<a id="tocSaigatewayrulelistitem"></a>
+<a id="tocsaigatewayrulelistitem"></a>
+
+```json
+{
+  "action": {
+    "reason": "string",
+    "rewriteModel": "string"
+  },
+  "createdAt": 0,
+  "createdBy": "string",
+  "deleted": false,
+  "description": "string",
+  "enabled": false,
+  "match": {
+    "model": "string"
+  },
+  "ownerId": "string",
+  "ruleId": "string",
+  "shadowedBy": "string",
+  "type": "deny",
+  "updatedAt": 0,
+  "updatedBy": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action|object|false|none|none|
+|createdAt|number|true|none|none|
+|createdBy|string|false|none|none|
+|deleted|boolean|false|none|none|
+|description|string|false|none|none|
+|enabled|boolean|true|none|none|
+|match|object|false|none|none|
+|ownerId|string|true|none|none|
+|ruleId|string|true|none|none|
+|shadowedBy|string|false|none|Rule that takes precedence over this enabled rule for the same model, so this one never applies|
+|type|string|true|none|none|
+|updatedAt|number|true|none|none|
+|updatedBy|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|deleted|false|
+|deleted|true|
+|enabled|false|
+|enabled|true|
+|type|deny|
+|type|rewrite|
+
 <h2 id="tocS_AiGatewayRuleList">AiGatewayRuleList</h2>
 <!-- backwards compatibility -->
 <a id="schemaaigatewayrulelist"></a>
@@ -133991,6 +137892,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
       },
       "ownerId": "string",
       "ruleId": "string",
+      "shadowedBy": "string",
       "type": "deny",
       "updatedAt": 0,
       "updatedBy": "string"
@@ -134004,7 +137906,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |nextCursor|string \| null|true|none|none|
-|rules|[[AiGatewayRule](#schemaaigatewayrule)]|true|none|none|
+|rules|[[AiGatewayRuleListItem](#schemaaigatewayrulelistitem)]|true|none|none|
 
 <h2 id="tocS_AiGatewayBudget">AiGatewayBudget</h2>
 <!-- backwards compatibility -->
@@ -134050,7 +137952,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |name|string|false|none|none|
 |quotaEntityId|string|true|none|none|
 |refreshPeriod|string|true|none|none|
-|scopeId|string|true|none|The native Vercel id of the scoped entity. Team/project ids already carry their prefix, so this equals `quotaEntityId` (`team_…` / `prj_…`); for the api-key scope it is the api key id (the `api_key_id_` prefix stripped).|
+|scopeId|string|true|none|The native Vercel id of the scoped entity. Team/project ids already carry their prefix, so this equals `quotaEntityId` (`team_…` / `prj_…`); user and app scopes also use the quota entity id (`usr_<userId>` / `app_<appId>`); for the api-key scope it is the api key id (the `api_key_id_` prefix stripped).|
 |scopeType|string|true|none|none|
 |source|string|false|none|Set when the row is inherited from the team's budget default.|
 |updatedAt|number|true|none|none|
@@ -134070,6 +137972,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |refreshPeriod|none|
 |refreshPeriod|weekly|
 |scopeType|api-key|
+|scopeType|app|
 |scopeType|project|
 |scopeType|team|
 |scopeType|user|
@@ -134107,6 +138010,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
   ],
   "defaultCoveredCounts": {
     "api-key": 0,
+    "app": 0,
     "project": 0,
     "team": 0,
     "user": 0
@@ -134167,6 +138071,7 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |refreshPeriod|none|
 |refreshPeriod|weekly|
 |scopeType|api-key|
+|scopeType|app|
 |scopeType|project|
 |scopeType|team|
 |scopeType|user|
@@ -134217,6 +138122,9 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
   ],
   "awsRegion": "string",
   "cidr": "string",
+  "connectionTesting": {
+    "available": false
+  },
   "createdAt": 0,
   "egressIpAddresses": [
     "string"
@@ -134227,6 +138135,9 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
   "id": "string",
   "name": "string",
   "peeringConnections": {
+    "count": 0
+  },
+  "privateLinks": {
     "count": 0
   },
   "projects": {
@@ -134250,12 +138161,14 @@ Public response shape for AI Gateway routing rules. Used so OpenAPI generation c
 |awsAvailabilityZoneIds|[string]|false|none|The IDs of the AWS Availability Zones in which the network exists.|
 |awsRegion|string|true|none|The AWS Region in which the network exists.|
 |cidr|string|true|none|The CIDR range of the Network.|
+|connectionTesting|object|false|none|Whether both dedicated connection test sources are provisioned and ready. Feature flag access and management permission are checked on submission.|
 |createdAt|number|true|none|The date at which the Network was created, represented as a UNIX timestamp since EPOCH.|
 |egressIpAddresses|[string]|false|none|none|
-|hostedZones|object|false|none|Metadata about any AWS Route53 Hosted Zones associated with the Network.|
+|hostedZones|object|false|none|Metadata about customer-managed AWS Route53 Hosted Zones associated with the Network.|
 |id|string|true|none|The unique identifier of the Network.|
 |name|string|true|none|The name of the network.|
 |peeringConnections|object|false|none|Metadata about any AWS Route53 Hosted Zones associated with the Network.|
+|privateLinks|object|false|none|The number of PrivateLink endpoints on the Network, when listing networks.|
 |projects|object|false|none|Metadata about any projects associated with the Network.|
 |region|string|false|none|The Vercel region in which the Network exists.|
 |status|string|true|none|The status of the Network.|
@@ -134417,7 +138330,7 @@ Incoming trigger configuration. Only present when enabled.
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -134467,7 +138380,7 @@ Incoming trigger configuration. Only present when enabled.
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -134559,7 +138472,7 @@ A connector that defines how Vercel accesses an external service.
 |supportsTriggers|false|
 |supportsTriggers|true|
 |type|api-key|
-|type|aws-alpha|
+|type|aws-oidc|
 |type|custom|
 |type|discord|
 |type|github|
@@ -134629,7 +138542,7 @@ Cursor for the next page.
       "createdAt": 0,
       "createdBy": {
         "id": "string",
-        "type": "user"
+        "type": "app"
       },
       "creationMode": "managed",
       "defaultInstallationId": "string",
@@ -134679,7 +138592,7 @@ Cursor for the next page.
       "updatedAt": 0,
       "updatedBy": {
         "id": "string",
-        "type": "user"
+        "type": "app"
       },
       "userTokens": {
         "crossInstallation": false,
@@ -134742,7 +138655,7 @@ Page of connectors.
   "createdAt": 0,
   "createdBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "creationMode": "managed",
   "defaultInstallationId": "string",
@@ -134792,7 +138705,7 @@ Page of connectors.
   "updatedAt": 0,
   "updatedBy": {
     "id": "string",
-    "type": "user"
+    "type": "app"
   },
   "userTokens": {
     "crossInstallation": false,
@@ -134884,7 +138797,7 @@ Connector created by the request.
 |supportsTriggers|false|
 |supportsTriggers|true|
 |type|api-key|
-|type|aws-alpha|
+|type|aws-oidc|
 |type|custom|
 |type|discord|
 |type|github|
@@ -134983,7 +138896,7 @@ Provider configuration. With type, provide the complete configuration for that t
 |serverConfig|object|false|none|Authorization server metadata. Values override discovered metadata. Empty known string fields remove their stored overrides.|
 |clientId|string|true|none|OAuth client ID assigned by the provider.|
 |clientName|string|false|none|OAuth client name.|
-|clientSecret|string|false|write-only|OAuth client secret.|
+|clientSecret|string|false|write-only|OAuth client secret. An update that changes the authorization server removes the stored secret unless the same update sends a new one.|
 |tokenEndpointAuthMethod|string|false|none|OAuth token endpoint authentication method. Common values are client_secret_post, client_secret_basic, none, and private_key_jwt. If omitted, Vercel selects a supported method from serverConfig and otherwise uses client_secret_post.|
 |responseType|string|false|none|OAuth authorization response type. Defaults to code. Other provider-supported values are accepted. An empty string clears the configured type.|
 |pkceRequired|boolean|false|none|Whether user authorization must use PKCE.|
@@ -135049,6 +138962,7 @@ Provider configuration. With type, provide the complete configuration for that t
 |shortcuts|[object]|false|none|Global and message shortcuts configured for the Slack app.|
 |appHome|object|false|none|App Home settings for the managed Slack app. Updates preserve omitted settings.|
 |richPreviews|object|false|none|Work Object preview settings for the managed Slack app. Updates preserve omitted settings.|
+|codeChannels|object|false|none|Code channel settings for the managed Slack app. Updates preserve omitted settings.|
 |extras|object|false|none|Additional provider metadata stored with the connector.|
 |*anyOf*|object|false|none|none|
 |clientName|string|false|none|Snowflake OAuth client name.|
@@ -135324,7 +139238,7 @@ Provider-side configuration synchronization result.
     "createdAt": 0,
     "createdBy": {
       "id": "string",
-      "type": "user"
+      "type": "app"
     },
     "creationMode": "managed",
     "defaultInstallationId": "string",
@@ -135374,7 +139288,7 @@ Provider-side configuration synchronization result.
     "updatedAt": 0,
     "updatedBy": {
       "id": "string",
-      "type": "user"
+      "type": "app"
     },
     "userTokens": {
       "crossInstallation": false,
@@ -135406,7 +139320,8 @@ Provider-side configuration synchronization result.
       }
     ],
     "status": "done"
-  }
+  },
+  "uninstallNeeded": false
 }
 ```
 
@@ -135420,6 +139335,7 @@ Updated connector and any required provider follow-up actions.
 |reconsentNeeded|[ConnectReconsent](#schemaconnectreconsent)|false|none|Present when affected users must authorize the connector's new permissions.|
 |reinstallNeeded|boolean|false|none|When true, prompt a team owner or administrator to reinstall the connector before relying on the change.|
 |serviceSync|[ConnectServiceSync](#schemaconnectservicesync)|false|none|Result of synchronizing the change with the external service.|
+|uninstallNeeded|boolean|false|none|When true, scopes were removed. The provider keeps scopes it already granted, so remove the app from the provider workspace and install it again before the removal takes effect. Reinstalling alone does not remove scopes.|
 
 #### Enumerated Values
 
@@ -135427,6 +139343,8 @@ Updated connector and any required provider follow-up actions.
 |---|---|
 |reinstallNeeded|false|
 |reinstallNeeded|true|
+|uninstallNeeded|false|
+|uninstallNeeded|true|
 
 <h2 id="tocS_ConnectConnectorUpdateData">ConnectConnectorUpdateData</h2>
 <!-- backwards compatibility -->
@@ -135510,7 +139428,7 @@ Provider configuration fields for the connector type.
 |serverConfig|object|false|none|Authorization server metadata. Values override discovered metadata. Empty known string fields remove their stored overrides.|
 |clientId|string|false|none|OAuth client ID.|
 |clientName|string|false|none|OAuth client name.|
-|clientSecret|string|false|write-only|OAuth client secret.|
+|clientSecret|string|false|write-only|OAuth client secret. An update that changes the authorization server removes the stored secret unless the same update sends a new one.|
 |tokenEndpointAuthMethod|string|false|none|OAuth token endpoint authentication method. Common values are client_secret_post, client_secret_basic, none, and private_key_jwt. If omitted, Vercel selects a supported method from serverConfig and otherwise uses client_secret_post.|
 |responseType|string|false|none|OAuth authorization response type. Defaults to code. Other provider-supported values are accepted. An empty string clears the configured type.|
 |pkceRequired|boolean|false|none|Whether user authorization must use PKCE.|
@@ -135569,6 +139487,7 @@ Provider configuration fields for the connector type.
 |shortcuts|[object]|false|none|Global and message shortcuts configured for the Slack app.|
 |appHome|object|false|none|App Home settings for the managed Slack app. Updates preserve omitted settings.|
 |richPreviews|object|false|none|Work Object preview settings for the managed Slack app. Updates preserve omitted settings.|
+|codeChannels|object|false|none|Code channel settings for the managed Slack app. Updates preserve omitted settings.|
 |extras|object|false|none|Additional provider metadata stored with the connector.|
 |*anyOf*|object|false|none|none|
 |accountIdentifier|string|false|none|Snowflake account identifier.|
@@ -137177,6 +141096,56 @@ The domain was bought too recently to determine verification status.
 |status|400|
 |code|bought_too_recently|
 
+<h2 id="tocS_Drive">Drive</h2>
+<!-- backwards compatibility -->
+<a id="schemadrive"></a>
+<a id="schema_Drive"></a>
+<a id="tocSdrive"></a>
+<a id="tocsdrive"></a>
+
+```json
+{
+  "createdAt": 1750344501629,
+  "currentSandboxName": "my-sandbox",
+  "currentSessionId": "sbx_123",
+  "id": "drive_abc123",
+  "maxSizeBytes": 1099511627776,
+  "name": "workspace",
+  "parentDriveId": "string",
+  "projectId": "prj_abc123",
+  "region": "iad1",
+  "rootDriveId": "string",
+  "updatedAt": 1750344501629,
+  "workloadType": "sandbox"
+}
+```
+
+This object contains information related to a Vercel Sandbox Drive.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|createdAt|number|true|none|The time when the drive was created, in milliseconds since the epoch.|
+|currentSandboxName|string|false|none|Current sandbox name the drive is attached to, if any.|
+|currentSessionId|string|false|none|Current session ID the drive is attached to, if any.|
+|id|string|true|none|The unique drive ID.|
+|maxSizeBytes|number|true|none|The maximum drive size in bytes.|
+|name|string|true|none|The unique drive name within the project.|
+|parentDriveId|string|false|none|The ID of the source drive when this drive is a fork.|
+|projectId|string|true|none|The project that owns the drive.|
+|region|string|true|none|The region where the drive is stored.|
+|rootDriveId|string|false|none|The ID of the original drive at the root of this fork.|
+|updatedAt|number|true|none|The last time the drive was updated, in milliseconds since the epoch.|
+|workloadType|string|false|none|The workload type of this drive.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|workloadType|sandbox|
+|workloadType|v0|
+
 <h2 id="tocS_GlobalConfigItemValue">GlobalConfigItemValue</h2>
 <!-- backwards compatibility -->
 <a id="schemaglobalconfigitemvalue"></a>
@@ -137434,6 +141403,7 @@ Array of events generated by the User.
 |type|access-group-user-added|
 |type|access-group-user-removed|
 |type|admin-agentic-provisioning-account-unlinked|
+|type|admin-observability-disabled|
 |type|admin-plan-updated|
 |type|admin-preview-deployment-suffix-clear|
 |type|admin-saml-idp-material-deleted|
@@ -137454,6 +141424,8 @@ Array of events generated by the User.
 |type|agentic-provisioning-credentials-rotated|
 |type|agentic-provisioning-plan-changed|
 |type|agentic-provisioning-team-created|
+|type|ai-agent-usage-billing|
+|type|ai-agent-usage-billing-consent|
 |type|ai-alert-investigation|
 |type|ai-code-review|
 |type|ai-gateway-access-policy-created|
@@ -137472,8 +141444,19 @@ Array of events generated by the User.
 |type|ai-gateway-byok-model-mappings-updated|
 |type|ai-gateway-credits-purchased|
 |type|ai-gateway-guardrails-updated|
+|type|ai-gateway-headquarters-updated|
 |type|ai-gateway-hipaa-compliance-toggled|
+|type|ai-gateway-inference-hooks-endpoint-updated|
+|type|ai-gateway-inference-hooks-headers-cleared|
+|type|ai-gateway-inference-hooks-headers-updated|
+|type|ai-gateway-inference-hooks-previous-signing-secret-retired|
+|type|ai-gateway-inference-hooks-removed|
+|type|ai-gateway-inference-hooks-settings-updated|
+|type|ai-gateway-inference-hooks-signing-secret-created|
+|type|ai-gateway-inference-hooks-signing-secret-rotated|
+|type|ai-gateway-inference-hooks-toggled|
 |type|ai-gateway-inference-regions-updated|
+|type|ai-gateway-member-budget-changes|
 |type|ai-gateway-model-allowlist-models-updated|
 |type|ai-gateway-model-allowlist-toggled|
 |type|ai-gateway-model-catalog-alert-settings-updated|
@@ -137490,6 +141473,7 @@ Array of events generated by the User.
 |type|ai-gateway-rule-deleted|
 |type|ai-gateway-rule-updated|
 |type|ai-gateway-scope-budget-updated|
+|type|ai-gateway-system-credential-fallback-opt-out-toggled|
 |type|ai-gateway-transcripts-default-disabled|
 |type|ai-gateway-transcripts-default-enabled|
 |type|ai-gateway-transcripts-disabled|
@@ -137502,7 +141486,13 @@ Array of events generated by the User.
 |type|ai-gateway-virtual-model-config-updated|
 |type|ai-gateway-zero-data-retention-toggled|
 |type|ai-omniagent|
+|type|ai-security-review|
+|type|ai-verification|
+|type|alert-group-detected|
+|type|alert-group-investigation-completed|
+|type|alert-group-published|
 |type|alert-investigation-project-allowlist-updated|
+|type|alert-resolved|
 |type|alert-rule-created|
 |type|alert-rule-deleted|
 |type|alert-rule-updated|
@@ -137541,11 +141531,13 @@ Array of events generated by the User.
 |type|cert-renew|
 |type|cert-replace|
 |type|cert-system-create|
+|type|code-owners-assume-owners|
 |type|code-owners-config-updated|
 |type|compliance-document-downloaded|
 |type|compliance-document-previewed|
 |type|compliance-documents-bulk-downloaded|
 |type|concurrent-builds-update|
+|type|connect-approve-connector-request|
 |type|connect-attach-project|
 |type|connect-bitbucket|
 |type|connect-bitbucket-app|
@@ -137560,6 +141552,7 @@ Array of events generated by the User.
 |type|connect-create-connector|
 |type|connect-create-mcp-event-subscription|
 |type|connect-delete-connector|
+|type|connect-delete-connector-request|
 |type|connect-delete-installation|
 |type|connect-detach-project|
 |type|connect-github|
@@ -137568,10 +141561,15 @@ Array of events generated by the User.
 |type|connect-gitlab|
 |type|connect-gitlab-app|
 |type|connect-import-tokens|
+|type|connect-provision-connector-request|
+|type|connect-reject-connector-request|
 |type|connect-revoke-all-tokens|
+|type|connect-submit-connector-request|
 |type|connect-update-connector|
+|type|connect-update-connector-request|
 |type|connect-update-trigger-destinations|
 |type|connect-upsert-installation|
+|type|connect-withdraw-connector-request|
 |type|custom-alert-created|
 |type|custom-alert-deleted|
 |type|custom-alert-updated|
@@ -137633,6 +141631,10 @@ Array of events generated by the User.
 |type|drain-disabled|
 |type|drain-enabled|
 |type|drain-updated|
+|type|drive-created|
+|type|drive-deleted|
+|type|drive-snapshot-created|
+|type|drive-snapshot-deleted|
 |type|edge-cache-dangerously-delete-by-src-images|
 |type|edge-cache-dangerously-delete-by-tags|
 |type|edge-cache-dangerously-delete-immutable-static|
@@ -137679,6 +141681,7 @@ Array of events generated by the User.
 |type|firewall-bypass-deleted|
 |type|firewall-conditional-bypass-created|
 |type|firewall-conditional-bypass-deleted|
+|type|firewall-conditional-bypass-updated|
 |type|firewall-config-modified|
 |type|firewall-config-promoted|
 |type|firewall-config-removed|
@@ -137693,6 +141696,7 @@ Array of events generated by the User.
 |type|flags-connection-created|
 |type|flags-connection-deleted|
 |type|flags-explorer-subscription|
+|type|flags-overrides-signed|
 |type|flags-sdk-key|
 |type|flags-sdk-key-added|
 |type|flags-sdk-key-deleted|
@@ -137701,6 +141705,7 @@ Array of events generated by the User.
 |type|flags-settings|
 |type|flags-transferred|
 |type|flat-rate-cdn-auto-upgrade-consent|
+|type|flat-rate-cdn-migration-opt-out|
 |type|git-integration-repo-push|
 |type|git_account_integration_link_added|
 |type|global-config-backup-restored|
@@ -137715,6 +141720,7 @@ Array of events generated by the User.
 |type|global-config-transfer-out|
 |type|global-config-updated|
 |type|instant-rollback-created|
+|type|integration-access-token-settings-updated|
 |type|integration-configuration-credential-revoked|
 |type|integration-configuration-credential-rotated|
 |type|integration-configuration-owner-changed|
@@ -137726,9 +141732,11 @@ Array of events generated by the User.
 |type|integration-installation-completed|
 |type|integration-installation-permission-updated|
 |type|integration-installation-removed|
+|type|integration-previous-secret-revoked|
 |type|integration-resource-redis-command-executed|
 |type|integration-resource-sql-query-executed|
 |type|integration-scope-changed|
+|type|integration-secret-rotated|
 |type|invoice-modified|
 |type|invoice-refunded|
 |type|kms-issuer-created|
@@ -137756,12 +141764,19 @@ Array of events generated by the User.
 |type|messageboard-channel-created|
 |type|messageboard-channel-updated|
 |type|messageboard-created|
+|type|messageboard-grant-created|
+|type|messageboard-grant-revoked|
+|type|messageboard-grant-updated|
 |type|messageboard-private-channel-created|
 |type|messageboard-private-channel-updated|
 |type|messageboard-private-created|
+|type|messageboard-private-grant-created|
+|type|messageboard-private-grant-revoked|
+|type|messageboard-private-grant-updated|
 |type|messageboard-private-project-granted|
 |type|messageboard-private-project-revoked|
 |type|messageboard-project-channel-created|
+|type|messageboard-project-created|
 |type|messageboard-project-granted|
 |type|messageboard-project-private-channel-created|
 |type|messageboard-project-revoked|
@@ -137793,9 +141808,14 @@ Array of events generated by the User.
 |type|oidc-policy-deleted|
 |type|oidc-policy-updated|
 |type|oidc-policy-used-to-obtain-app-token|
+|type|organization-admin-invite-revoked|
+|type|organization-admin-removed|
 |type|organization-avatar-update|
 |type|organization-create|
 |type|organization-delete|
+|type|organization-domain-verification-created|
+|type|organization-domain-verification-deleted|
+|type|organization-domain-verification-verified|
 |type|organization-dsync-delete|
 |type|organization-dsync-group-delete|
 |type|organization-dsync-group-upsert|
@@ -137807,9 +141827,11 @@ Array of events generated by the User.
 |type|organization-slug-update|
 |type|organization-sso-deleted|
 |type|organization-sso-enforced|
+|type|organization-sso-new-teams-update|
 |type|organization-team-add|
 |type|organization-team-create|
 |type|organization-team-delete|
+|type|organization-team-dsync-update|
 |type|organization-team-sso-update|
 |type|organization-update-account-flow-dismissed|
 |type|organization-update-account-flow-triggered|
@@ -137835,6 +141857,11 @@ Array of events generated by the User.
 |type|payment-method-added|
 |type|payment-method-default-updated|
 |type|payment-method-removed|
+|type|perimeter-created|
+|type|perimeter-deleted|
+|type|perimeter-renamed|
+|type|perimeter-rolled-back|
+|type|perimeter-updated|
 |type|plan|
 |type|preview-deployment-suffix-disabled|
 |type|preview-deployment-suffix-enabled|
@@ -137880,6 +141907,7 @@ Array of events generated by the User.
 |type|project-elastic-concurrency-updated|
 |type|project-expiration-locked|
 |type|project-expiration-reached|
+|type|project-expiration-removed|
 |type|project-expiration-scheduled|
 |type|project-expiration-unlocked|
 |type|project-external-rewrite-caching-updated|
@@ -137904,6 +141932,7 @@ Array of events generated by the User.
 |type|project-git-credential-grant-created|
 |type|project-git-credential-grant-deleted|
 |type|project-git-credential-grant-updated|
+|type|project-git-credential-token-minted|
 |type|project-git-fork-protection-updated|
 |type|project-git-lfs-toggled|
 |type|project-git-pr-comments-toggled|
@@ -137931,11 +141960,13 @@ Array of events generated by the User.
 |type|project-passport-updated|
 |type|project-password-protection|
 |type|project-paused|
+|type|project-perimeters-updated|
 |type|project-preview-deployment-suffix|
 |type|project-preview-environment-branch-tracking-updated|
 |type|project-prioritize-production-builds-updated|
 |type|project-program-enrollment-changed|
 |type|project-protected-sourcemaps-updated|
+|type|project-remove-vercel-request-headers-updated|
 |type|project-rollback-description-updated|
 |type|project-rolling-release-aborted|
 |type|project-rolling-release-approved|
@@ -137946,7 +141977,6 @@ Array of events generated by the User.
 |type|project-rolling-release-enabled|
 |type|project-rolling-release-paused|
 |type|project-rolling-release-started|
-|type|project-rolling-release-suggested-actions-generated|
 |type|project-rolling-release-timer|
 |type|project-root-directory-updated|
 |type|project-routes-version-promoted|
@@ -137975,16 +142005,28 @@ Array of events generated by the User.
 |type|runtime-cache-purge-all|
 |type|saml-connection-created|
 |type|saml-connection-deleted|
+|type|saml-idp-material-deleted|
+|type|saml-idp-material-set|
+|type|saml-idp-material-system-deleted|
+|type|saml-idp-material-system-set|
 |type|sandbox-alias-assigned|
 |type|sandbox-alias-delete|
 |type|sandbox-drive-created|
 |type|sandbox-drive-deleted|
 |type|sandbox-drive-snapshot-created|
 |type|sandbox-drive-snapshot-deleted|
+|type|sandbox-expiry-notification-lead-time-updated|
+|type|sandbox-npm-credentials-configured|
 |type|sandbox-signed-commit-identity-configured|
 |type|sandbox-snapshot-regions-updated|
 |type|scale|
 |type|scale-auto|
+|type|schedule-created|
+|type|schedule-deleted|
+|type|schedule-disabled|
+|type|schedule-enabled|
+|type|schedule-invoked|
+|type|schedule-updated|
 |type|secondary-email-added|
 |type|secondary-email-removed|
 |type|secondary-email-verified|
@@ -138090,6 +142132,7 @@ Array of events generated by the User.
 |type|team-program-enrollment-changed|
 |type|team-remote-caching-purge|
 |type|team-remote-caching-update|
+|type|team-runtime-cache-updated|
 |type|team-saml-enforced|
 |type|team-saml-roles|
 |type|team-slug-update|
@@ -138113,6 +142156,7 @@ Array of events generated by the User.
 |type|user-emu-recovery-email-sent|
 |type|user-emu-recovery-initiated|
 |type|user-emu-toggled|
+|type|user-landing-page-updated|
 |type|user-mfa-challenge-failed|
 |type|user-mfa-challenge-initiated|
 |type|user-mfa-challenge-verified|
@@ -138139,6 +142183,8 @@ Array of events generated by the User.
 |type|v0-chat-message-sent|
 |type|v0-migration-payment-confirmed|
 |type|v0-migration-subscription-completed|
+|type|v0-shared-pool-credit-limit-default-updated|
+|type|v0-shared-pool-credit-limit-updated|
 |type|vcr-image-deleted|
 |type|vcr-image-pushed|
 |type|vcr-repository-created|
@@ -138149,6 +142195,13 @@ Array of events generated by the User.
 |type|vcr-repository-visibility-changed|
 |type|vercel-agent-elevated-permissions-approved|
 |type|vercel-agent-elevated-permissions-requested|
+|type|vercel-agent-security-finding-closed|
+|type|vercel-agent-security-finding-created|
+|type|vercel-agent-security-finding-dismissed|
+|type|vercel-agent-security-finding-reopened|
+|type|vercel-agent-security-finding-resolved|
+|type|vercel-agent-security-review-policy-deleted|
+|type|vercel-agent-security-review-policy-updated|
 |type|vercel-agent-session-created|
 |type|vercel-agent-team-trial-credits-applied|
 |type|vercel-app-installation-request-dismissed|
@@ -138157,13 +142210,16 @@ Array of events generated by the User.
 |type|vercel-app-installed|
 |type|vercel-app-tokens-revoked|
 |type|vercel-app-uninstalled|
+|type|vercel-ci-repository-github-runners-updated|
 |type|vercel-ci-repository-settings-updated|
+|type|vercel-ci-run-approved|
 |type|vercel-toolbar|
 |type|vpc-peering-connection-accepted|
 |type|vpc-peering-connection-deleted|
 |type|vpc-peering-connection-rejected|
 |type|vpc-peering-connection-updated|
 |type|vulnerability-banner-dismissed|
+|type|web-analytics-summary-subscription-updated|
 |type|web-analytics-tier-updated|
 |type|webhook-created|
 |type|webhook-deleted|
@@ -138240,6 +142296,7 @@ A user-facing event type.
 |name|access-group-user-added|
 |name|access-group-user-removed|
 |name|admin-agentic-provisioning-account-unlinked|
+|name|admin-observability-disabled|
 |name|admin-plan-updated|
 |name|admin-preview-deployment-suffix-clear|
 |name|admin-saml-idp-material-deleted|
@@ -138260,6 +142317,8 @@ A user-facing event type.
 |name|agentic-provisioning-credentials-rotated|
 |name|agentic-provisioning-plan-changed|
 |name|agentic-provisioning-team-created|
+|name|ai-agent-usage-billing|
+|name|ai-agent-usage-billing-consent|
 |name|ai-alert-investigation|
 |name|ai-code-review|
 |name|ai-gateway-access-policy-created|
@@ -138278,8 +142337,19 @@ A user-facing event type.
 |name|ai-gateway-byok-model-mappings-updated|
 |name|ai-gateway-credits-purchased|
 |name|ai-gateway-guardrails-updated|
+|name|ai-gateway-headquarters-updated|
 |name|ai-gateway-hipaa-compliance-toggled|
+|name|ai-gateway-inference-hooks-endpoint-updated|
+|name|ai-gateway-inference-hooks-headers-cleared|
+|name|ai-gateway-inference-hooks-headers-updated|
+|name|ai-gateway-inference-hooks-previous-signing-secret-retired|
+|name|ai-gateway-inference-hooks-removed|
+|name|ai-gateway-inference-hooks-settings-updated|
+|name|ai-gateway-inference-hooks-signing-secret-created|
+|name|ai-gateway-inference-hooks-signing-secret-rotated|
+|name|ai-gateway-inference-hooks-toggled|
 |name|ai-gateway-inference-regions-updated|
+|name|ai-gateway-member-budget-changes|
 |name|ai-gateway-model-allowlist-models-updated|
 |name|ai-gateway-model-allowlist-toggled|
 |name|ai-gateway-model-catalog-alert-settings-updated|
@@ -138296,6 +142366,7 @@ A user-facing event type.
 |name|ai-gateway-rule-deleted|
 |name|ai-gateway-rule-updated|
 |name|ai-gateway-scope-budget-updated|
+|name|ai-gateway-system-credential-fallback-opt-out-toggled|
 |name|ai-gateway-transcripts-default-disabled|
 |name|ai-gateway-transcripts-default-enabled|
 |name|ai-gateway-transcripts-disabled|
@@ -138308,7 +142379,13 @@ A user-facing event type.
 |name|ai-gateway-virtual-model-config-updated|
 |name|ai-gateway-zero-data-retention-toggled|
 |name|ai-omniagent|
+|name|ai-security-review|
+|name|ai-verification|
+|name|alert-group-detected|
+|name|alert-group-investigation-completed|
+|name|alert-group-published|
 |name|alert-investigation-project-allowlist-updated|
+|name|alert-resolved|
 |name|alert-rule-created|
 |name|alert-rule-deleted|
 |name|alert-rule-updated|
@@ -138347,11 +142424,13 @@ A user-facing event type.
 |name|cert-renew|
 |name|cert-replace|
 |name|cert-system-create|
+|name|code-owners-assume-owners|
 |name|code-owners-config-updated|
 |name|compliance-document-downloaded|
 |name|compliance-document-previewed|
 |name|compliance-documents-bulk-downloaded|
 |name|concurrent-builds-update|
+|name|connect-approve-connector-request|
 |name|connect-attach-project|
 |name|connect-bitbucket|
 |name|connect-bitbucket-app|
@@ -138366,6 +142445,7 @@ A user-facing event type.
 |name|connect-create-connector|
 |name|connect-create-mcp-event-subscription|
 |name|connect-delete-connector|
+|name|connect-delete-connector-request|
 |name|connect-delete-installation|
 |name|connect-detach-project|
 |name|connect-github|
@@ -138374,10 +142454,15 @@ A user-facing event type.
 |name|connect-gitlab|
 |name|connect-gitlab-app|
 |name|connect-import-tokens|
+|name|connect-provision-connector-request|
+|name|connect-reject-connector-request|
 |name|connect-revoke-all-tokens|
+|name|connect-submit-connector-request|
 |name|connect-update-connector|
+|name|connect-update-connector-request|
 |name|connect-update-trigger-destinations|
 |name|connect-upsert-installation|
+|name|connect-withdraw-connector-request|
 |name|custom-alert-created|
 |name|custom-alert-deleted|
 |name|custom-alert-updated|
@@ -138439,6 +142524,10 @@ A user-facing event type.
 |name|drain-disabled|
 |name|drain-enabled|
 |name|drain-updated|
+|name|drive-created|
+|name|drive-deleted|
+|name|drive-snapshot-created|
+|name|drive-snapshot-deleted|
 |name|edge-cache-dangerously-delete-by-src-images|
 |name|edge-cache-dangerously-delete-by-tags|
 |name|edge-cache-dangerously-delete-immutable-static|
@@ -138485,6 +142574,7 @@ A user-facing event type.
 |name|firewall-bypass-deleted|
 |name|firewall-conditional-bypass-created|
 |name|firewall-conditional-bypass-deleted|
+|name|firewall-conditional-bypass-updated|
 |name|firewall-config-modified|
 |name|firewall-config-promoted|
 |name|firewall-config-removed|
@@ -138499,6 +142589,7 @@ A user-facing event type.
 |name|flags-connection-created|
 |name|flags-connection-deleted|
 |name|flags-explorer-subscription|
+|name|flags-overrides-signed|
 |name|flags-sdk-key|
 |name|flags-sdk-key-added|
 |name|flags-sdk-key-deleted|
@@ -138507,6 +142598,7 @@ A user-facing event type.
 |name|flags-settings|
 |name|flags-transferred|
 |name|flat-rate-cdn-auto-upgrade-consent|
+|name|flat-rate-cdn-migration-opt-out|
 |name|git-integration-repo-push|
 |name|git_account_integration_link_added|
 |name|global-config-backup-restored|
@@ -138521,6 +142613,7 @@ A user-facing event type.
 |name|global-config-transfer-out|
 |name|global-config-updated|
 |name|instant-rollback-created|
+|name|integration-access-token-settings-updated|
 |name|integration-configuration-credential-revoked|
 |name|integration-configuration-credential-rotated|
 |name|integration-configuration-owner-changed|
@@ -138532,9 +142625,11 @@ A user-facing event type.
 |name|integration-installation-completed|
 |name|integration-installation-permission-updated|
 |name|integration-installation-removed|
+|name|integration-previous-secret-revoked|
 |name|integration-resource-redis-command-executed|
 |name|integration-resource-sql-query-executed|
 |name|integration-scope-changed|
+|name|integration-secret-rotated|
 |name|invoice-modified|
 |name|invoice-refunded|
 |name|kms-issuer-created|
@@ -138562,12 +142657,19 @@ A user-facing event type.
 |name|messageboard-channel-created|
 |name|messageboard-channel-updated|
 |name|messageboard-created|
+|name|messageboard-grant-created|
+|name|messageboard-grant-revoked|
+|name|messageboard-grant-updated|
 |name|messageboard-private-channel-created|
 |name|messageboard-private-channel-updated|
 |name|messageboard-private-created|
+|name|messageboard-private-grant-created|
+|name|messageboard-private-grant-revoked|
+|name|messageboard-private-grant-updated|
 |name|messageboard-private-project-granted|
 |name|messageboard-private-project-revoked|
 |name|messageboard-project-channel-created|
+|name|messageboard-project-created|
 |name|messageboard-project-granted|
 |name|messageboard-project-private-channel-created|
 |name|messageboard-project-revoked|
@@ -138599,9 +142701,14 @@ A user-facing event type.
 |name|oidc-policy-deleted|
 |name|oidc-policy-updated|
 |name|oidc-policy-used-to-obtain-app-token|
+|name|organization-admin-invite-revoked|
+|name|organization-admin-removed|
 |name|organization-avatar-update|
 |name|organization-create|
 |name|organization-delete|
+|name|organization-domain-verification-created|
+|name|organization-domain-verification-deleted|
+|name|organization-domain-verification-verified|
 |name|organization-dsync-delete|
 |name|organization-dsync-group-delete|
 |name|organization-dsync-group-upsert|
@@ -138613,9 +142720,11 @@ A user-facing event type.
 |name|organization-slug-update|
 |name|organization-sso-deleted|
 |name|organization-sso-enforced|
+|name|organization-sso-new-teams-update|
 |name|organization-team-add|
 |name|organization-team-create|
 |name|organization-team-delete|
+|name|organization-team-dsync-update|
 |name|organization-team-sso-update|
 |name|organization-update-account-flow-dismissed|
 |name|organization-update-account-flow-triggered|
@@ -138641,6 +142750,11 @@ A user-facing event type.
 |name|payment-method-added|
 |name|payment-method-default-updated|
 |name|payment-method-removed|
+|name|perimeter-created|
+|name|perimeter-deleted|
+|name|perimeter-renamed|
+|name|perimeter-rolled-back|
+|name|perimeter-updated|
 |name|plan|
 |name|preview-deployment-suffix-disabled|
 |name|preview-deployment-suffix-enabled|
@@ -138686,6 +142800,7 @@ A user-facing event type.
 |name|project-elastic-concurrency-updated|
 |name|project-expiration-locked|
 |name|project-expiration-reached|
+|name|project-expiration-removed|
 |name|project-expiration-scheduled|
 |name|project-expiration-unlocked|
 |name|project-external-rewrite-caching-updated|
@@ -138710,6 +142825,7 @@ A user-facing event type.
 |name|project-git-credential-grant-created|
 |name|project-git-credential-grant-deleted|
 |name|project-git-credential-grant-updated|
+|name|project-git-credential-token-minted|
 |name|project-git-fork-protection-updated|
 |name|project-git-lfs-toggled|
 |name|project-git-pr-comments-toggled|
@@ -138737,11 +142853,13 @@ A user-facing event type.
 |name|project-passport-updated|
 |name|project-password-protection|
 |name|project-paused|
+|name|project-perimeters-updated|
 |name|project-preview-deployment-suffix|
 |name|project-preview-environment-branch-tracking-updated|
 |name|project-prioritize-production-builds-updated|
 |name|project-program-enrollment-changed|
 |name|project-protected-sourcemaps-updated|
+|name|project-remove-vercel-request-headers-updated|
 |name|project-rollback-description-updated|
 |name|project-rolling-release-aborted|
 |name|project-rolling-release-approved|
@@ -138752,7 +142870,6 @@ A user-facing event type.
 |name|project-rolling-release-enabled|
 |name|project-rolling-release-paused|
 |name|project-rolling-release-started|
-|name|project-rolling-release-suggested-actions-generated|
 |name|project-rolling-release-timer|
 |name|project-root-directory-updated|
 |name|project-routes-version-promoted|
@@ -138781,16 +142898,28 @@ A user-facing event type.
 |name|runtime-cache-purge-all|
 |name|saml-connection-created|
 |name|saml-connection-deleted|
+|name|saml-idp-material-deleted|
+|name|saml-idp-material-set|
+|name|saml-idp-material-system-deleted|
+|name|saml-idp-material-system-set|
 |name|sandbox-alias-assigned|
 |name|sandbox-alias-delete|
 |name|sandbox-drive-created|
 |name|sandbox-drive-deleted|
 |name|sandbox-drive-snapshot-created|
 |name|sandbox-drive-snapshot-deleted|
+|name|sandbox-expiry-notification-lead-time-updated|
+|name|sandbox-npm-credentials-configured|
 |name|sandbox-signed-commit-identity-configured|
 |name|sandbox-snapshot-regions-updated|
 |name|scale|
 |name|scale-auto|
+|name|schedule-created|
+|name|schedule-deleted|
+|name|schedule-disabled|
+|name|schedule-enabled|
+|name|schedule-invoked|
+|name|schedule-updated|
 |name|secondary-email-added|
 |name|secondary-email-removed|
 |name|secondary-email-verified|
@@ -138896,6 +143025,7 @@ A user-facing event type.
 |name|team-program-enrollment-changed|
 |name|team-remote-caching-purge|
 |name|team-remote-caching-update|
+|name|team-runtime-cache-updated|
 |name|team-saml-enforced|
 |name|team-saml-roles|
 |name|team-slug-update|
@@ -138919,6 +143049,7 @@ A user-facing event type.
 |name|user-emu-recovery-email-sent|
 |name|user-emu-recovery-initiated|
 |name|user-emu-toggled|
+|name|user-landing-page-updated|
 |name|user-mfa-challenge-failed|
 |name|user-mfa-challenge-initiated|
 |name|user-mfa-challenge-verified|
@@ -138945,6 +143076,8 @@ A user-facing event type.
 |name|v0-chat-message-sent|
 |name|v0-migration-payment-confirmed|
 |name|v0-migration-subscription-completed|
+|name|v0-shared-pool-credit-limit-default-updated|
+|name|v0-shared-pool-credit-limit-updated|
 |name|vcr-image-deleted|
 |name|vcr-image-pushed|
 |name|vcr-repository-created|
@@ -138955,6 +143088,13 @@ A user-facing event type.
 |name|vcr-repository-visibility-changed|
 |name|vercel-agent-elevated-permissions-approved|
 |name|vercel-agent-elevated-permissions-requested|
+|name|vercel-agent-security-finding-closed|
+|name|vercel-agent-security-finding-created|
+|name|vercel-agent-security-finding-dismissed|
+|name|vercel-agent-security-finding-reopened|
+|name|vercel-agent-security-finding-resolved|
+|name|vercel-agent-security-review-policy-deleted|
+|name|vercel-agent-security-review-policy-updated|
 |name|vercel-agent-session-created|
 |name|vercel-agent-team-trial-credits-applied|
 |name|vercel-app-installation-request-dismissed|
@@ -138963,13 +143103,16 @@ A user-facing event type.
 |name|vercel-app-installed|
 |name|vercel-app-tokens-revoked|
 |name|vercel-app-uninstalled|
+|name|vercel-ci-repository-github-runners-updated|
 |name|vercel-ci-repository-settings-updated|
+|name|vercel-ci-run-approved|
 |name|vercel-toolbar|
 |name|vpc-peering-connection-accepted|
 |name|vpc-peering-connection-deleted|
 |name|vpc-peering-connection-rejected|
 |name|vpc-peering-connection-updated|
 |name|vulnerability-banner-dismissed|
+|name|web-analytics-summary-subscription-updated|
 |name|web-analytics-tier-updated|
 |name|webhook-created|
 |name|webhook-deleted|
@@ -138983,6 +143126,7 @@ A user-facing event type.
 |replacedBy|access-group-user-added|
 |replacedBy|access-group-user-removed|
 |replacedBy|admin-agentic-provisioning-account-unlinked|
+|replacedBy|admin-observability-disabled|
 |replacedBy|admin-plan-updated|
 |replacedBy|admin-preview-deployment-suffix-clear|
 |replacedBy|admin-saml-idp-material-deleted|
@@ -139003,6 +143147,8 @@ A user-facing event type.
 |replacedBy|agentic-provisioning-credentials-rotated|
 |replacedBy|agentic-provisioning-plan-changed|
 |replacedBy|agentic-provisioning-team-created|
+|replacedBy|ai-agent-usage-billing|
+|replacedBy|ai-agent-usage-billing-consent|
 |replacedBy|ai-alert-investigation|
 |replacedBy|ai-code-review|
 |replacedBy|ai-gateway-access-policy-created|
@@ -139021,8 +143167,19 @@ A user-facing event type.
 |replacedBy|ai-gateway-byok-model-mappings-updated|
 |replacedBy|ai-gateway-credits-purchased|
 |replacedBy|ai-gateway-guardrails-updated|
+|replacedBy|ai-gateway-headquarters-updated|
 |replacedBy|ai-gateway-hipaa-compliance-toggled|
+|replacedBy|ai-gateway-inference-hooks-endpoint-updated|
+|replacedBy|ai-gateway-inference-hooks-headers-cleared|
+|replacedBy|ai-gateway-inference-hooks-headers-updated|
+|replacedBy|ai-gateway-inference-hooks-previous-signing-secret-retired|
+|replacedBy|ai-gateway-inference-hooks-removed|
+|replacedBy|ai-gateway-inference-hooks-settings-updated|
+|replacedBy|ai-gateway-inference-hooks-signing-secret-created|
+|replacedBy|ai-gateway-inference-hooks-signing-secret-rotated|
+|replacedBy|ai-gateway-inference-hooks-toggled|
 |replacedBy|ai-gateway-inference-regions-updated|
+|replacedBy|ai-gateway-member-budget-changes|
 |replacedBy|ai-gateway-model-allowlist-models-updated|
 |replacedBy|ai-gateway-model-allowlist-toggled|
 |replacedBy|ai-gateway-model-catalog-alert-settings-updated|
@@ -139039,6 +143196,7 @@ A user-facing event type.
 |replacedBy|ai-gateway-rule-deleted|
 |replacedBy|ai-gateway-rule-updated|
 |replacedBy|ai-gateway-scope-budget-updated|
+|replacedBy|ai-gateway-system-credential-fallback-opt-out-toggled|
 |replacedBy|ai-gateway-transcripts-default-disabled|
 |replacedBy|ai-gateway-transcripts-default-enabled|
 |replacedBy|ai-gateway-transcripts-disabled|
@@ -139051,7 +143209,13 @@ A user-facing event type.
 |replacedBy|ai-gateway-virtual-model-config-updated|
 |replacedBy|ai-gateway-zero-data-retention-toggled|
 |replacedBy|ai-omniagent|
+|replacedBy|ai-security-review|
+|replacedBy|ai-verification|
+|replacedBy|alert-group-detected|
+|replacedBy|alert-group-investigation-completed|
+|replacedBy|alert-group-published|
 |replacedBy|alert-investigation-project-allowlist-updated|
+|replacedBy|alert-resolved|
 |replacedBy|alert-rule-created|
 |replacedBy|alert-rule-deleted|
 |replacedBy|alert-rule-updated|
@@ -139090,11 +143254,13 @@ A user-facing event type.
 |replacedBy|cert-renew|
 |replacedBy|cert-replace|
 |replacedBy|cert-system-create|
+|replacedBy|code-owners-assume-owners|
 |replacedBy|code-owners-config-updated|
 |replacedBy|compliance-document-downloaded|
 |replacedBy|compliance-document-previewed|
 |replacedBy|compliance-documents-bulk-downloaded|
 |replacedBy|concurrent-builds-update|
+|replacedBy|connect-approve-connector-request|
 |replacedBy|connect-attach-project|
 |replacedBy|connect-bitbucket|
 |replacedBy|connect-bitbucket-app|
@@ -139109,6 +143275,7 @@ A user-facing event type.
 |replacedBy|connect-create-connector|
 |replacedBy|connect-create-mcp-event-subscription|
 |replacedBy|connect-delete-connector|
+|replacedBy|connect-delete-connector-request|
 |replacedBy|connect-delete-installation|
 |replacedBy|connect-detach-project|
 |replacedBy|connect-github|
@@ -139117,10 +143284,15 @@ A user-facing event type.
 |replacedBy|connect-gitlab|
 |replacedBy|connect-gitlab-app|
 |replacedBy|connect-import-tokens|
+|replacedBy|connect-provision-connector-request|
+|replacedBy|connect-reject-connector-request|
 |replacedBy|connect-revoke-all-tokens|
+|replacedBy|connect-submit-connector-request|
 |replacedBy|connect-update-connector|
+|replacedBy|connect-update-connector-request|
 |replacedBy|connect-update-trigger-destinations|
 |replacedBy|connect-upsert-installation|
+|replacedBy|connect-withdraw-connector-request|
 |replacedBy|custom-alert-created|
 |replacedBy|custom-alert-deleted|
 |replacedBy|custom-alert-updated|
@@ -139182,6 +143354,10 @@ A user-facing event type.
 |replacedBy|drain-disabled|
 |replacedBy|drain-enabled|
 |replacedBy|drain-updated|
+|replacedBy|drive-created|
+|replacedBy|drive-deleted|
+|replacedBy|drive-snapshot-created|
+|replacedBy|drive-snapshot-deleted|
 |replacedBy|edge-cache-dangerously-delete-by-src-images|
 |replacedBy|edge-cache-dangerously-delete-by-tags|
 |replacedBy|edge-cache-dangerously-delete-immutable-static|
@@ -139228,6 +143404,7 @@ A user-facing event type.
 |replacedBy|firewall-bypass-deleted|
 |replacedBy|firewall-conditional-bypass-created|
 |replacedBy|firewall-conditional-bypass-deleted|
+|replacedBy|firewall-conditional-bypass-updated|
 |replacedBy|firewall-config-modified|
 |replacedBy|firewall-config-promoted|
 |replacedBy|firewall-config-removed|
@@ -139242,6 +143419,7 @@ A user-facing event type.
 |replacedBy|flags-connection-created|
 |replacedBy|flags-connection-deleted|
 |replacedBy|flags-explorer-subscription|
+|replacedBy|flags-overrides-signed|
 |replacedBy|flags-sdk-key|
 |replacedBy|flags-sdk-key-added|
 |replacedBy|flags-sdk-key-deleted|
@@ -139250,6 +143428,7 @@ A user-facing event type.
 |replacedBy|flags-settings|
 |replacedBy|flags-transferred|
 |replacedBy|flat-rate-cdn-auto-upgrade-consent|
+|replacedBy|flat-rate-cdn-migration-opt-out|
 |replacedBy|git-integration-repo-push|
 |replacedBy|git_account_integration_link_added|
 |replacedBy|global-config-backup-restored|
@@ -139264,6 +143443,7 @@ A user-facing event type.
 |replacedBy|global-config-transfer-out|
 |replacedBy|global-config-updated|
 |replacedBy|instant-rollback-created|
+|replacedBy|integration-access-token-settings-updated|
 |replacedBy|integration-configuration-credential-revoked|
 |replacedBy|integration-configuration-credential-rotated|
 |replacedBy|integration-configuration-owner-changed|
@@ -139275,9 +143455,11 @@ A user-facing event type.
 |replacedBy|integration-installation-completed|
 |replacedBy|integration-installation-permission-updated|
 |replacedBy|integration-installation-removed|
+|replacedBy|integration-previous-secret-revoked|
 |replacedBy|integration-resource-redis-command-executed|
 |replacedBy|integration-resource-sql-query-executed|
 |replacedBy|integration-scope-changed|
+|replacedBy|integration-secret-rotated|
 |replacedBy|invoice-modified|
 |replacedBy|invoice-refunded|
 |replacedBy|kms-issuer-created|
@@ -139305,12 +143487,19 @@ A user-facing event type.
 |replacedBy|messageboard-channel-created|
 |replacedBy|messageboard-channel-updated|
 |replacedBy|messageboard-created|
+|replacedBy|messageboard-grant-created|
+|replacedBy|messageboard-grant-revoked|
+|replacedBy|messageboard-grant-updated|
 |replacedBy|messageboard-private-channel-created|
 |replacedBy|messageboard-private-channel-updated|
 |replacedBy|messageboard-private-created|
+|replacedBy|messageboard-private-grant-created|
+|replacedBy|messageboard-private-grant-revoked|
+|replacedBy|messageboard-private-grant-updated|
 |replacedBy|messageboard-private-project-granted|
 |replacedBy|messageboard-private-project-revoked|
 |replacedBy|messageboard-project-channel-created|
+|replacedBy|messageboard-project-created|
 |replacedBy|messageboard-project-granted|
 |replacedBy|messageboard-project-private-channel-created|
 |replacedBy|messageboard-project-revoked|
@@ -139342,9 +143531,14 @@ A user-facing event type.
 |replacedBy|oidc-policy-deleted|
 |replacedBy|oidc-policy-updated|
 |replacedBy|oidc-policy-used-to-obtain-app-token|
+|replacedBy|organization-admin-invite-revoked|
+|replacedBy|organization-admin-removed|
 |replacedBy|organization-avatar-update|
 |replacedBy|organization-create|
 |replacedBy|organization-delete|
+|replacedBy|organization-domain-verification-created|
+|replacedBy|organization-domain-verification-deleted|
+|replacedBy|organization-domain-verification-verified|
 |replacedBy|organization-dsync-delete|
 |replacedBy|organization-dsync-group-delete|
 |replacedBy|organization-dsync-group-upsert|
@@ -139356,9 +143550,11 @@ A user-facing event type.
 |replacedBy|organization-slug-update|
 |replacedBy|organization-sso-deleted|
 |replacedBy|organization-sso-enforced|
+|replacedBy|organization-sso-new-teams-update|
 |replacedBy|organization-team-add|
 |replacedBy|organization-team-create|
 |replacedBy|organization-team-delete|
+|replacedBy|organization-team-dsync-update|
 |replacedBy|organization-team-sso-update|
 |replacedBy|organization-update-account-flow-dismissed|
 |replacedBy|organization-update-account-flow-triggered|
@@ -139384,6 +143580,11 @@ A user-facing event type.
 |replacedBy|payment-method-added|
 |replacedBy|payment-method-default-updated|
 |replacedBy|payment-method-removed|
+|replacedBy|perimeter-created|
+|replacedBy|perimeter-deleted|
+|replacedBy|perimeter-renamed|
+|replacedBy|perimeter-rolled-back|
+|replacedBy|perimeter-updated|
 |replacedBy|plan|
 |replacedBy|preview-deployment-suffix-disabled|
 |replacedBy|preview-deployment-suffix-enabled|
@@ -139429,6 +143630,7 @@ A user-facing event type.
 |replacedBy|project-elastic-concurrency-updated|
 |replacedBy|project-expiration-locked|
 |replacedBy|project-expiration-reached|
+|replacedBy|project-expiration-removed|
 |replacedBy|project-expiration-scheduled|
 |replacedBy|project-expiration-unlocked|
 |replacedBy|project-external-rewrite-caching-updated|
@@ -139453,6 +143655,7 @@ A user-facing event type.
 |replacedBy|project-git-credential-grant-created|
 |replacedBy|project-git-credential-grant-deleted|
 |replacedBy|project-git-credential-grant-updated|
+|replacedBy|project-git-credential-token-minted|
 |replacedBy|project-git-fork-protection-updated|
 |replacedBy|project-git-lfs-toggled|
 |replacedBy|project-git-pr-comments-toggled|
@@ -139480,11 +143683,13 @@ A user-facing event type.
 |replacedBy|project-passport-updated|
 |replacedBy|project-password-protection|
 |replacedBy|project-paused|
+|replacedBy|project-perimeters-updated|
 |replacedBy|project-preview-deployment-suffix|
 |replacedBy|project-preview-environment-branch-tracking-updated|
 |replacedBy|project-prioritize-production-builds-updated|
 |replacedBy|project-program-enrollment-changed|
 |replacedBy|project-protected-sourcemaps-updated|
+|replacedBy|project-remove-vercel-request-headers-updated|
 |replacedBy|project-rollback-description-updated|
 |replacedBy|project-rolling-release-aborted|
 |replacedBy|project-rolling-release-approved|
@@ -139495,7 +143700,6 @@ A user-facing event type.
 |replacedBy|project-rolling-release-enabled|
 |replacedBy|project-rolling-release-paused|
 |replacedBy|project-rolling-release-started|
-|replacedBy|project-rolling-release-suggested-actions-generated|
 |replacedBy|project-rolling-release-timer|
 |replacedBy|project-root-directory-updated|
 |replacedBy|project-routes-version-promoted|
@@ -139524,16 +143728,28 @@ A user-facing event type.
 |replacedBy|runtime-cache-purge-all|
 |replacedBy|saml-connection-created|
 |replacedBy|saml-connection-deleted|
+|replacedBy|saml-idp-material-deleted|
+|replacedBy|saml-idp-material-set|
+|replacedBy|saml-idp-material-system-deleted|
+|replacedBy|saml-idp-material-system-set|
 |replacedBy|sandbox-alias-assigned|
 |replacedBy|sandbox-alias-delete|
 |replacedBy|sandbox-drive-created|
 |replacedBy|sandbox-drive-deleted|
 |replacedBy|sandbox-drive-snapshot-created|
 |replacedBy|sandbox-drive-snapshot-deleted|
+|replacedBy|sandbox-expiry-notification-lead-time-updated|
+|replacedBy|sandbox-npm-credentials-configured|
 |replacedBy|sandbox-signed-commit-identity-configured|
 |replacedBy|sandbox-snapshot-regions-updated|
 |replacedBy|scale|
 |replacedBy|scale-auto|
+|replacedBy|schedule-created|
+|replacedBy|schedule-deleted|
+|replacedBy|schedule-disabled|
+|replacedBy|schedule-enabled|
+|replacedBy|schedule-invoked|
+|replacedBy|schedule-updated|
 |replacedBy|secondary-email-added|
 |replacedBy|secondary-email-removed|
 |replacedBy|secondary-email-verified|
@@ -139639,6 +143855,7 @@ A user-facing event type.
 |replacedBy|team-program-enrollment-changed|
 |replacedBy|team-remote-caching-purge|
 |replacedBy|team-remote-caching-update|
+|replacedBy|team-runtime-cache-updated|
 |replacedBy|team-saml-enforced|
 |replacedBy|team-saml-roles|
 |replacedBy|team-slug-update|
@@ -139662,6 +143879,7 @@ A user-facing event type.
 |replacedBy|user-emu-recovery-email-sent|
 |replacedBy|user-emu-recovery-initiated|
 |replacedBy|user-emu-toggled|
+|replacedBy|user-landing-page-updated|
 |replacedBy|user-mfa-challenge-failed|
 |replacedBy|user-mfa-challenge-initiated|
 |replacedBy|user-mfa-challenge-verified|
@@ -139688,6 +143906,8 @@ A user-facing event type.
 |replacedBy|v0-chat-message-sent|
 |replacedBy|v0-migration-payment-confirmed|
 |replacedBy|v0-migration-subscription-completed|
+|replacedBy|v0-shared-pool-credit-limit-default-updated|
+|replacedBy|v0-shared-pool-credit-limit-updated|
 |replacedBy|vcr-image-deleted|
 |replacedBy|vcr-image-pushed|
 |replacedBy|vcr-repository-created|
@@ -139698,6 +143918,13 @@ A user-facing event type.
 |replacedBy|vcr-repository-visibility-changed|
 |replacedBy|vercel-agent-elevated-permissions-approved|
 |replacedBy|vercel-agent-elevated-permissions-requested|
+|replacedBy|vercel-agent-security-finding-closed|
+|replacedBy|vercel-agent-security-finding-created|
+|replacedBy|vercel-agent-security-finding-dismissed|
+|replacedBy|vercel-agent-security-finding-reopened|
+|replacedBy|vercel-agent-security-finding-resolved|
+|replacedBy|vercel-agent-security-review-policy-deleted|
+|replacedBy|vercel-agent-security-review-policy-updated|
 |replacedBy|vercel-agent-session-created|
 |replacedBy|vercel-agent-team-trial-credits-applied|
 |replacedBy|vercel-app-installation-request-dismissed|
@@ -139706,13 +143933,16 @@ A user-facing event type.
 |replacedBy|vercel-app-installed|
 |replacedBy|vercel-app-tokens-revoked|
 |replacedBy|vercel-app-uninstalled|
+|replacedBy|vercel-ci-repository-github-runners-updated|
 |replacedBy|vercel-ci-repository-settings-updated|
+|replacedBy|vercel-ci-run-approved|
 |replacedBy|vercel-toolbar|
 |replacedBy|vpc-peering-connection-accepted|
 |replacedBy|vpc-peering-connection-deleted|
 |replacedBy|vpc-peering-connection-rejected|
 |replacedBy|vpc-peering-connection-updated|
 |replacedBy|vulnerability-banner-dismissed|
+|replacedBy|web-analytics-summary-subscription-updated|
 |replacedBy|web-analytics-tier-updated|
 |replacedBy|webhook-created|
 |replacedBy|webhook-deleted|
@@ -140486,7 +144716,7 @@ An org-team link enriched with the linked team's display fields, as returned by 
 |billingPlan|string|false|none|Billing profile of the organization link: how this team settles within the organization. This is not the team's billing.plan or planIteration. Links with `enterprise` billing participate in organization-level billing and usage rollups. This field is optional for legacy links that have no stored profile.|
 |createdAt|string|true|none|ISO timestamp of when the team was linked to the organization.|
 |dsyncMode|string|true|none|Whether the organization's Directory Sync manages the team's memberships.|
-|memberCount|number|false|none|Present only when the request sets `includeMemberCount=true`. Number of members on the Team, including pending memberships. Excludes email invitations that do not have a membership record.|
+|memberCount|number|false|none|Present only when the request sets `includeMemberCount=true`. Number of members on the Team, including pending memberships and organization Directory Sync grants. Excludes suppressed memberships and email invitations that do not have a membership record.|
 |name|string \| null|true|none|The Team's display name, or `null` if none has been set.|
 |organizationId|string|true|none|The ID of the organization the team belongs to.|
 |slug|string|true|none|The Team's slug, unique across Vercel.|
@@ -140547,6 +144777,58 @@ An org-team link enriched with the linked team's display fields, as returned by 
 |ssoMode|organization|
 |ssoMode|team|
 
+<h2 id="tocS_OrganizationDirectorySyncGroup">OrganizationDirectorySyncGroup</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationdirectorysyncgroup"></a>
+<a id="schema_OrganizationDirectorySyncGroup"></a>
+<a id="tocSorganizationdirectorysyncgroup"></a>
+<a id="tocsorganizationdirectorysyncgroup"></a>
+
+```json
+{
+  "assignments": {
+    "organizationPermissions": [
+      "OrgAdmin"
+    ],
+    "teamRoles": [
+      "BILLING"
+    ],
+    "teams": {
+      "property1": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      },
+      "property2": {
+        "teamRoles": [
+          "BILLING"
+        ]
+      }
+    }
+  },
+  "createdAt": "string",
+  "directoryGroupId": "string",
+  "directoryId": "string",
+  "name": "string",
+  "organizationId": "string",
+  "updatedAt": "string"
+}
+```
+
+A group from the organization's Identity Provider directory, joined with its Directory Sync group configuration when one exists.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assignments|object \| null|true|none|`null` when the group has no Directory Sync group configuration.|
+|createdAt|string \| null|true|none|`null` when the group has no Directory Sync group configuration.|
+|directoryGroupId|string|true|none|none|
+|directoryId|string|true|none|none|
+|name|string|true|none|The group's name in the Identity Provider directory.|
+|organizationId|string|true|none|none|
+|updatedAt|string \| null|true|none|`null` when the group has no Directory Sync group configuration.|
+
 <h2 id="tocS_NamedSandbox">NamedSandbox</h2>
 <!-- backwards compatibility -->
 <a id="schemanamedsandbox"></a>
@@ -140562,6 +144844,7 @@ An org-team link enriched with the linked team's display fields, as returned by 
   "currentSnapshotId": "string",
   "cwd": "/vercel/sandbox",
   "expiresAt": 1750344801629,
+  "expiryNotificationLeadTime": 120000,
   "failoverRegions": [
     "sfo1",
     "cle1"
@@ -140633,6 +144916,7 @@ This object contains information related to a Vercel NamedSandbox.
 |currentSnapshotId|string|false|none|Current snapshot ID that the named sandbox is pointing to.|
 |cwd|string|false|none|The working directory of the sandbox.|
 |expiresAt|number|false|none|The time at which the currently running sandbox will time out, in milliseconds since the epoch. Only present while a session is running.|
+|expiryNotificationLeadTime|number|true|none|How long before a session expires, in milliseconds, the `sandbox.session.expiring` webhook is sent. It affects only that webhook. When a deadline is closer than the lead time, the webhook is sent right away: at the start of a session whose timeout is shorter, and after each extension that leaves the deadline within the lead time.|
 |failoverRegions|[string]|false|none|The regions the sandbox fails over to. Empty when it does not fail over.|
 |image|string|false|none|Owner-qualified, digest-pinned reference of the container image the sandbox was created from ("{team}/{project}/{repository}@{manifestDigest}").|
 |keepLastSnapshots|object|false|none|Keep-last snapshot configuration.|
@@ -140723,6 +145007,34 @@ This object represents a public route in a Vercel Sandbox.
 |---|---|
 |system|true|
 
+<h2 id="tocS_SandboxForwardRule">SandboxForwardRule</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxforwardrule"></a>
+<a id="schema_SandboxForwardRule"></a>
+<a id="tocSsandboxforwardrule"></a>
+<a id="tocssandboxforwardrule"></a>
+
+```json
+{
+  "domain": "string",
+  "forwardURL": "string",
+  "matchDimensions": [
+    "path",
+    "method"
+  ]
+}
+```
+
+Rules that forward outgoing requests matching specific domains.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|domain|string|true|none|The domain (or wildcard pattern) that this forwarding rule applies to.|
+|forwardURL|string|true|none|The URL to forward matching requests to.|
+|matchDimensions|[string]|false|none|Request dimensions used to match this rule. Matcher values are omitted.|
+
 <h2 id="tocS_SandboxInjectionRule">SandboxInjectionRule</h2>
 <!-- backwards compatibility -->
 <a id="schemasandboxinjectionrule"></a>
@@ -140736,6 +145048,10 @@ This object represents a public route in a Vercel Sandbox.
   "headerNames": [
     "Authorization",
     "X-API-Key"
+  ],
+  "matchDimensions": [
+    "path",
+    "method"
   ]
 }
 ```
@@ -140748,6 +145064,35 @@ HTTP header injection rules for outgoing requests matching specific domains.
 |---|---|---|---|---|
 |domain|string|true|none|The domain (or pattern) that this injection rule applies to. Supports wildcards like *.vercel.com.|
 |headerNames|[string]|false|none|The names of HTTP headers that have value that will be injected for requests to this domain.|
+|matchDimensions|[string]|false|none|Request dimensions used to match this rule. Matcher values are omitted.|
+
+<h2 id="tocS_SandboxResponseRule">SandboxResponseRule</h2>
+<!-- backwards compatibility -->
+<a id="schemasandboxresponserule"></a>
+<a id="schema_SandboxResponseRule"></a>
+<a id="tocSsandboxresponserule"></a>
+<a id="tocssandboxresponserule"></a>
+
+```json
+{
+  "domain": "string",
+  "matchDimensions": [
+    "path",
+    "method"
+  ],
+  "statusCode": 0
+}
+```
+
+Rules that return custom responses for requests matching specific domains.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|domain|string|true|none|The domain (or wildcard pattern) that this response rule applies to.|
+|matchDimensions|[string]|false|none|Request dimensions used to match this rule. Matcher values are omitted.|
+|statusCode|number|true|none|The HTTP status code returned for matching requests.|
 
 <h2 id="tocS_SandboxNetworkPolicy">SandboxNetworkPolicy</h2>
 <!-- backwards compatibility -->
@@ -140768,16 +145113,40 @@ HTTP header injection rules for outgoing requests matching specific domains.
   "deniedCIDRs": [
     "10.0.0.0/8"
   ],
+  "forwardRules": [
+    {
+      "domain": "string",
+      "forwardURL": "string",
+      "matchDimensions": [
+        "path",
+        "method"
+      ]
+    }
+  ],
   "injectionRules": [
     {
       "domain": "api.vercel.com",
       "headerNames": [
         "Authorization",
         "X-API-Key"
+      ],
+      "matchDimensions": [
+        "path",
+        "method"
       ]
     }
   ],
-  "mode": "custom"
+  "mode": "custom",
+  "responseRules": [
+    {
+      "domain": "string",
+      "matchDimensions": [
+        "path",
+        "method"
+      ],
+      "statusCode": 0
+    }
+  ]
 }
 ```
 
@@ -140790,8 +145159,10 @@ The network policy applied to this sandbox, if any.
 |allowedCIDRs|[string]|false|none|List of IP address ranges (in CIDR notation) the sandbox is allowed to connect to.|
 |allowedDomains|[string]|false|none|List of domain names the sandbox is allowed to connect to. Supports wildcard patterns (e.g., "*.vercel.com" matches all subdomains).|
 |deniedCIDRs|[string]|false|none|List of IP address ranges (in CIDR notation) the sandbox is blocked from connecting to. These rules take precedence over all allowed rules.|
+|forwardRules|[[SandboxForwardRule](#schemasandboxforwardrule)]|false|none|Rules that forward outgoing requests matching specific domains.|
 |injectionRules|[[SandboxInjectionRule](#schemasandboxinjectionrule)]|false|none|HTTP header injection rules for outgoing requests matching specific domains.|
 |mode|string|true|none|The network policy mode. - 'allow-all': All traffic is allowed. - 'deny-all': All traffic is blocked. - 'custom': Traffic is controlled by explicit allow/deny rules.|
+|responseRules|[[SandboxResponseRule](#schemasandboxresponserule)]|false|none|Rules that return custom responses for requests matching specific domains.|
 
 #### Enumerated Values
 
@@ -140829,16 +145200,40 @@ The network policy applied to this sandbox, if any.
     "deniedCIDRs": [
       "10.0.0.0/8"
     ],
+    "forwardRules": [
+      {
+        "domain": "string",
+        "forwardURL": "string",
+        "matchDimensions": [
+          "path",
+          "method"
+        ]
+      }
+    ],
     "injectionRules": [
       {
         "domain": "api.vercel.com",
         "headerNames": [
           "Authorization",
           "X-API-Key"
+        ],
+        "matchDimensions": [
+          "path",
+          "method"
         ]
       }
     ],
-    "mode": "custom"
+    "mode": "custom",
+    "responseRules": [
+      {
+        "domain": "string",
+        "matchDimensions": [
+          "path",
+          "method"
+        ],
+        "statusCode": 0
+      }
+    ]
   },
   "networkTransfer": {
     "in": 12543852,
@@ -140855,6 +145250,7 @@ The network policy applied to this sandbox, if any.
   "startedAt": 1750344501629,
   "status": "running",
   "stoppedAt": 1750344501629,
+  "stopReason": "requested",
   "timeout": 3600000,
   "updatedAt": 1750344501629,
   "vcpus": 2,
@@ -140889,6 +145285,7 @@ This object contains information related to a Vercel Sandbox Session. v2 endpoin
 |startedAt|number|false|none|The time when the sandbox was started, in milliseconds since the epoch.|
 |status|string|true|none|The status of the sandbox.|
 |stoppedAt|number|false|none|The time when the sandbox was stopped, in milliseconds since the epoch.|
+|stopReason|string|false|none|Why the sandbox stopped: `requested` for a stop requested through the API, `snapshot` for a stop to take a snapshot, `timeout` when the sandbox reached its timeout, `exited` when its main process exited on its own, and `error` when it failed or was stopped by the platform.|
 |timeout|number|true|none|The maximum amount of time the sandbox will run for in milliseconds.|
 |updatedAt|number|true|none|The last time the sandbox was updated, in milliseconds since the epoch.|
 |vcpus|number|true|none|Number of vCPUs allocated to this sandbox.|
@@ -140907,56 +145304,11 @@ This object contains information related to a Vercel Sandbox Session. v2 endpoin
 |status|snapshotting|
 |status|stopped|
 |status|stopping|
-|workloadType|sandbox|
-|workloadType|v0|
-
-<h2 id="tocS_Drive">Drive</h2>
-<!-- backwards compatibility -->
-<a id="schemadrive"></a>
-<a id="schema_Drive"></a>
-<a id="tocSdrive"></a>
-<a id="tocsdrive"></a>
-
-```json
-{
-  "createdAt": 1750344501629,
-  "currentSandboxName": "my-sandbox",
-  "currentSessionId": "sbx_123",
-  "id": "drive_abc123",
-  "maxSizeBytes": 1099511627776,
-  "name": "workspace",
-  "parentDriveId": "string",
-  "projectId": "prj_abc123",
-  "region": "iad1",
-  "rootDriveId": "string",
-  "updatedAt": 1750344501629,
-  "workloadType": "sandbox"
-}
-```
-
-This object contains information related to a Vercel Sandbox Drive.
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|createdAt|number|true|none|The time when the drive was created, in milliseconds since the epoch.|
-|currentSandboxName|string|false|none|Current sandbox name the drive is attached to, if any.|
-|currentSessionId|string|false|none|Current session ID the drive is attached to, if any.|
-|id|string|true|none|The unique drive ID.|
-|maxSizeBytes|number|true|none|The maximum drive size in bytes.|
-|name|string|true|none|The unique drive name within the project.|
-|parentDriveId|string|false|none|The ID of the source drive when this drive is a fork.|
-|projectId|string|true|none|The project that owns the drive.|
-|region|string|true|none|The region where the drive is stored.|
-|rootDriveId|string|false|none|The ID of the original drive at the root of this fork.|
-|updatedAt|number|true|none|The last time the drive was updated, in milliseconds since the epoch.|
-|workloadType|string|false|none|The workload type of this drive.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
+|stopReason|error|
+|stopReason|exited|
+|stopReason|requested|
+|stopReason|snapshot|
+|stopReason|timeout|
 |workloadType|sandbox|
 |workloadType|v0|
 
@@ -141056,7 +145408,7 @@ This object represents a command run in a Vercel Sandbox session (v2 API).
 |args|[string]|true|none|The arguments of the command.|
 |cwd|string|true|none|The current working directory of the command.|
 |durationMs|number|false|none|Duration of the command execution in milliseconds.|
-|exitCode|number \| null|true|none|If the command did finish, the exit code.|
+|exitCode|number \| null|true|none|The exit code of the command, or `null` if no exit code has been recorded. The exit code is recorded only when a request waits for the command to finish (`wait=true` when running or getting the command). Polling without `wait=true` returns `null` until such a request records it, even if the command has already finished.|
 |id|string|true|none|The ID of the command.|
 |name|string|true|none|The name of the command.|
 |sessionId|string|true|none|The ID of the session associated with the command.|
@@ -141183,6 +145535,11 @@ The member was successfully added to the team.
         "string"
       ]
     },
+    "health-check": {
+      "targets": [
+        "string"
+      ]
+    },
     "lint": {
       "targets": [
         "string"
@@ -141249,7 +145606,8 @@ The member was successfully added to the team.
     "retentionOptOutAt": 0
   },
   "description": "Our mission is to make cloud computing accessible to everyone.",
-  "disableHardAutoBlocks": 0,
+  "directorySyncSource": "none",
+  "directorySyncType": "string",
   "disableRepositoryDispatchEvents": false,
   "disjunctiveProductionSecretPolicy": "default",
   "dpAccessRequestsMode": "all",
@@ -141291,6 +145649,7 @@ The member was successfully added to the team.
       "repoId": "string",
       "repoPath": "string",
       "ssoConnectedAt": 0,
+      "ssoIdFingerprint": "string",
       "ssoUserId": "string"
     },
     "organizationId": "string",
@@ -141408,7 +145767,8 @@ Data representing a Team.
 |deploymentPolicy|object|false|none|Composable deployment-time policy for the team. Used as the default for every project on the team, with optional per-project overrides on `project.deploymentPolicy`.|
 |deploymentStorageRollout|object|false|none|Pro deployment-storage pricing rollout cohort and milestones. Absent when the team has not been placed in a rollout cohort yet.|
 |description|string \| null|true|none|A short description of the Team.|
-|disableHardAutoBlocks|number \| boolean|false|none|none|
+|directorySyncSource|string|true|none|Directory Sync source, using existing local connection and organization authority rules.|
+|directorySyncType|string|false|none|Provider type of the directory selected by directorySyncSource.|
 |disableRepositoryDispatchEvents|boolean|false|none|Default for projects in the team. When `true`, projects in this team will not emit GitHub repository-dispatch events on deployment events unless the project explicitly overrides this setting via `project.gitProviderOptions.disableRepositoryDispatchEvents`.|
 |disjunctiveProductionSecretPolicy|string \| null|false|none|Require production secrets to use a different value than preview or development.|
 |dpAccessRequestsMode|string|false|none|Controls who can request access to protected deployments.|
@@ -141449,6 +145809,9 @@ Data representing a Team.
 |---|---|
 |defaultContinuousUsageKind|metered|
 |defaultContinuousUsageKind|unmetered|
+|directorySyncSource|none|
+|directorySyncSource|organization|
+|directorySyncSource|team|
 |disableRepositoryDispatchEvents|false|
 |disableRepositoryDispatchEvents|true|
 |disjunctiveProductionSecretPolicy|default|
@@ -141499,6 +145862,8 @@ Data representing a Team.
 {
   "avatar": "6eb07268bcfadd309905ffb1579354084c24655c",
   "createdAt": 1630748523395,
+  "directorySyncSource": "none",
+  "directorySyncType": "string",
   "id": "team_nllPyCtREAqxxdyFKbbMDlxd",
   "limited": true,
   "limitedBy": [
@@ -141526,6 +145891,7 @@ Data representing a Team.
       "repoId": "string",
       "repoPath": "string",
       "ssoConnectedAt": 0,
+      "ssoIdFingerprint": "string",
       "ssoUserId": "string"
     },
     "organizationId": "string",
@@ -141574,6 +145940,8 @@ A limited form of data representing a Team, due to the authentication token miss
 |---|---|---|---|---|
 |avatar|string \| null|true|none|The ID of the file used as avatar for this Team.|
 |createdAt|number|true|none|UNIX timestamp (in milliseconds) when the Team was created.|
+|directorySyncSource|string|true|none|Directory Sync source, using existing local connection and organization authority rules.|
+|directorySyncType|string|false|none|Provider type of the directory selected by directorySyncSource.|
 |id|string|true|none|The Team's unique identifier.|
 |limited|boolean|true|none|Property indicating that this Team data contains only limited information, due to the authentication token missing privileges to read the full Team data or due to team having MFA enforced and the user not having MFA enabled. Re-login with the Team's configured SAML Single Sign-On provider in order to upgrade the authentication token with the necessary privileges.|
 |limitedBy|[string]|true|none|none|
@@ -141588,6 +145956,9 @@ A limited form of data representing a Team, due to the authentication token miss
 
 |Property|Value|
 |---|---|
+|directorySyncSource|none|
+|directorySyncSource|organization|
+|directorySyncSource|team|
 |limited|true|
 |limitedBy|invalidated|
 |limitedBy|mfa|
@@ -141674,6 +146045,12 @@ Authentication token metadata.
       "id": "string",
       "name": "string",
       "slug": "string"
+    },
+    "orphanSsoTeam": {
+      "avatar": "string",
+      "name": "string",
+      "slug": "string",
+      "teamId": "string"
     },
     "verifiedEmuDomains": [
       "string"
@@ -141764,11 +146141,13 @@ Authentication token metadata.
     "edgeFunctionExecutionTimeoutMs": 0,
     "edgeFunctionMaxSizeBytes": 0,
     "elasticConcurrencyEnabled": false,
+    "enableMessageboardPrivateBoards": false,
     "flagsExplorerOverridesThreshold": 0,
     "flagsExplorerUnlimitedOverrides": false,
     "imageOptimizationType": "string",
     "integrationStores": 0,
     "kvDatabases": 0,
+    "messageboardBoards": 0,
     "microfrontendGroupsPerTeam": 0,
     "microfrontendProjectsPerGroup": 0,
     "nodeType": "string",
@@ -141981,7 +146360,7 @@ A paginated list of Vercel Container Registry repositories.
   "arch": "amd64",
   "createdAt": "2026-06-30T10:00:00.000Z",
   "id": "img_a1b2c3d4e5f6",
-  "kind": "attestation",
+  "kind": "artifact",
   "manifestDigest": "sha256:2c4e8f3a1b9d0e5c7a6f4b2d8e1c9a0b3d5f7e9c1a2b4d6f8e0c2a4b6d8f0e2c",
   "platform": "linux",
   "pushedBy": "string",
@@ -142016,6 +146395,7 @@ An image enriched with its tags and VHS-readiness status, as returned when listi
 
 |Property|Value|
 |---|---|
+|kind|artifact|
 |kind|attestation|
 |kind|index|
 |kind|manifest|
@@ -142039,7 +146419,7 @@ An image enriched with its tags and VHS-readiness status, as returned when listi
       "arch": "amd64",
       "createdAt": "2026-06-30T10:00:00.000Z",
       "id": "img_a1b2c3d4e5f6",
-      "kind": "attestation",
+      "kind": "artifact",
       "manifestDigest": "sha256:2c4e8f3a1b9d0e5c7a6f4b2d8e1c9a0b3d5f7e9c1a2b4d6f8e0c2a4b6d8f0e2c",
       "platform": "linux",
       "pushedBy": "string",
@@ -142103,7 +146483,7 @@ A team's access grant to a Vercel Container Registry repository.
   "arch": "amd64",
   "createdAt": "2026-06-30T10:00:00.000Z",
   "imageId": "img_a1b2c3d4e5f6",
-  "kind": "attestation",
+  "kind": "artifact",
   "manifestDigest": "sha256:2c4e8f3a1b9d0e5c7a6f4b2d8e1c9a0b3d5f7e9c1a2b4d6f8e0c2a4b6d8f0e2c",
   "platform": "linux",
   "pushedBy": "string",
@@ -142136,6 +146516,7 @@ A tag pointing at an image in a Vercel Container Registry repository, enriched w
 
 |Property|Value|
 |---|---|
+|kind|artifact|
 |kind|attestation|
 |kind|index|
 |kind|manifest|
@@ -142309,7 +146690,7 @@ A tag pointing at an image in a Vercel Container Registry repository, enriched w
   "arch": "amd64",
   "createdAt": "2026-06-30T10:00:00.000Z",
   "id": "img_a1b2c3d4e5f6",
-  "kind": "attestation",
+  "kind": "artifact",
   "layers": [
     {
       "createdBy": "string",
@@ -142359,6 +146740,7 @@ A single image with its tags, status and resolved Dockerfile layer history.
 
 |Property|Value|
 |---|---|
+|kind|artifact|
 |kind|attestation|
 |kind|index|
 |kind|manifest|

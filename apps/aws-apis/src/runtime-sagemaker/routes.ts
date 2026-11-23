@@ -4,14 +4,10 @@ const BodyBlobSchema = z.string().max(6291456).openapi('BodyBlob')
 
 const InvokeEndpointOutputSchema = z
   .object({
-    Body: BodyBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Includes the inference provided by the model. </p> <p>For information about the format of the response body, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html">Common Data Formats-Inference</a>.</p> <p>If the explainer is activated, the body includes the explanations provided by the model. For more information, see the <b>Response section</b> under <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-invoke-endpoint.html#clarify-online-explainability-response">Invoke the Endpoint</a> in the Developer Guide.</p>',
-        }),
-    ),
+    Body: BodyBlobSchema.openapi({
+      description:
+        '<p>Includes the inference provided by the model. </p> <p>For information about the format of the response body, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html">Common Data Formats-Inference</a>.</p> <p>If the explainer is activated, the body includes the explanations provided by the model. For more information, see the <b>Response section</b> under <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-invoke-endpoint.html#clarify-online-explainability-response">Invoke the Endpoint</a> in the Developer Guide.</p>',
+    }),
   })
   .openapi({ required: ['Body'] })
   .openapi('InvokeEndpointOutput')
@@ -36,14 +32,10 @@ const HeaderSchema = z
 
 const InvokeEndpointAsyncOutputSchema = z
   .object({
-    InferenceId: HeaderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifier for an inference request. This will be the same as the <code>InferenceId</code> specified in the input. Amazon SageMaker will generate an identifier for you if you do not specify one.',
-        }),
-    ).exactOptional(),
+    InferenceId: HeaderSchema.exactOptional().openapi({
+      description:
+        'Identifier for an inference request. This will be the same as the <code>InferenceId</code> specified in the input. Amazon SageMaker will generate an identifier for you if you do not specify one.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InvokeEndpointAsyncOutput')
@@ -90,7 +82,7 @@ const InvocationTimeoutSecondsHeaderSchema = z
 const RequestTTLSecondsHeaderSchema = z.int().min(60).max(21600).openapi('RequestTTLSecondsHeader')
 
 const InvokeEndpointAsyncInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'InvokeEndpointAsyncInput' })
   .openapi('InvokeEndpointAsyncInput')
 
@@ -115,14 +107,10 @@ const TargetContainerHostnameHeaderSchema = z
 
 const InvokeEndpointInputSchema = z
   .object({
-    Body: BodyBlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Provides input data, in the format specified in the <code>ContentType</code> request header. Amazon SageMaker passes all of the data in the body to the model. </p> <p>For information about the format of the request body, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html">Common Data Formats-Inference</a>.</p>',
-        }),
-    ),
+    Body: BodyBlobSchema.openapi({
+      description:
+        '<p>Provides input data, in the format specified in the <code>ContentType</code> request header. Amazon SageMaker passes all of the data in the body to the model. </p> <p>For information about the format of the request body, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html">Common Data Formats-Inference</a>.</p>',
+    }),
   })
   .openapi({ required: ['Body'], title: 'InvokeEndpointInput' })
   .openapi('InvokeEndpointInput')

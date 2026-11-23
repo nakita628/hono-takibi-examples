@@ -1,54 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DiskPartitionListSchema: z.ZodType<DiskPartitionListType> = z
-  .lazy(() =>
-    z
-      .object({
-        entries: z
-          .array(DiskPartitionSchema)
-          .exactOptional()
-          .openapi({ description: 'Partition entries.' }),
-      })
-      .openapi({ description: 'Disk partition list.', required: [] }),
-  )
-  .openapi('DiskPartitionList')
-
-type DiskPartitionType = {
-  capacityBytes?: string
-  fileSystem?: string
-  freeBytes?: string
-  mountPoint?: string
-  subPartitions?: z.infer<typeof DiskPartitionListSchema>
-  type?: string
-  uuid?: string
-}
-
-const DiskPartitionSchema: z.ZodType<DiskPartitionType> = z
-  .lazy(() =>
-    z
-      .object({
-        capacityBytes: z.string().exactOptional().openapi({ description: 'Partition capacity.' }),
-        fileSystem: z.string().exactOptional().openapi({ description: 'Partition file system.' }),
-        freeBytes: z.string().exactOptional().openapi({ description: 'Partition free space.' }),
-        mountPoint: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Mount pount (Linux/Windows) or drive letter (Windows).' }),
-        subPartitions: DiskPartitionListSchema.exactOptional().openapi({
-          description: 'Sub-partitions.',
-        }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Partition type (e.g. BIOS boot).' }),
-        uuid: z.string().exactOptional().openapi({ description: 'Partition UUID.' }),
-      })
-      .openapi({ description: 'Disk Partition details.', required: [] }),
-  )
-  .openapi('DiskPartition')
-
-type DiskPartitionListType = { entries?: z.infer<typeof DiskPartitionSchema>[] }
-
 const ComputeEngineShapeDescriptorSchema = z
   .object({
     logicalCoreCount: z
@@ -92,12 +43,12 @@ const FitDescriptorSchema = z
   .openapi('FitDescriptor')
 
 const GoogleKubernetesEngineMigrationTargetSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'GKE migration target.' })
   .openapi('GoogleKubernetesEngineMigrationTarget')
 
 const VmwareEngineMigrationTargetSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'VMWare engine migration target.' })
   .openapi('VmwareEngineMigrationTarget')
 
@@ -124,328 +75,14 @@ const MigrationInsightSchema = z
   .openapi({ description: 'An insight about potential migrations for an asset.', required: [] })
   .openapi('MigrationInsight')
 
-type InsightType = { migrationInsight?: z.infer<typeof MigrationInsightSchema> }
-
-const AwsEc2PlatformDetailsSchema = z
+const InsightSchema = z
   .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The location of the machine in the AWS format.' }),
-    machineTypeLabel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "AWS platform's machine type label." }),
-  })
-  .openapi({ description: 'AWS EC2 specific details.', required: [] })
-  .openapi('AwsEc2PlatformDetails')
-
-const AzureVmPlatformDetailsSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The location of the machine in the Azure format.' }),
-    machineTypeLabel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Azure platform's machine type label." }),
-    provisioningState: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Azure platform's provisioning state." }),
-  })
-  .openapi({ description: 'Azure VM specific details.', required: [] })
-  .openapi('AzureVmPlatformDetails')
-
-const GenericPlatformDetailsSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free text representation of the machine location. The format of this field should not be relied on. Different VMs in the same location may have different string values for this field.',
-      }),
-  })
-  .openapi({ description: 'Generic platform details.', required: [] })
-  .openapi('GenericPlatformDetails')
-
-const PhysicalPlatformDetailsSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Free text representation of the machine location. The format of this field should not be relied on. Different machines in the same location may have different string values for this field.',
-      }),
-  })
-  .openapi({ description: 'Platform specific details for Physical Machines.', required: [] })
-  .openapi('PhysicalPlatformDetails')
-
-const VmwarePlatformDetailsSchema = z
-  .object({
-    esxVersion: z.string().exactOptional().openapi({ description: 'ESX version.' }),
-    osid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'VMware os enum - https://vdc-repo.vmware.com/vmwb-repository/dcr-public/da47f910-60ac-438b-8b9b-6122f4d14524/16b7274a-bf8b-4b4c-a05e-746f2aa93c8c/doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html.',
-      }),
-    vcenterVersion: z.string().exactOptional().openapi({ description: 'vCenter version.' }),
-  })
-  .openapi({ description: 'VMware specific details.', required: [] })
-  .openapi('VmwarePlatformDetails')
-
-type PlatformDetailsType = {
-  awsEc2Details?: z.infer<typeof AwsEc2PlatformDetailsSchema>
-  azureVmDetails?: z.infer<typeof AzureVmPlatformDetailsSchema>
-  genericDetails?: z.infer<typeof GenericPlatformDetailsSchema>
-  physicalDetails?: z.infer<typeof PhysicalPlatformDetailsSchema>
-  vmwareDetails?: z.infer<typeof VmwarePlatformDetailsSchema>
-}
-
-const ImportErrorSchema = z
-  .object({
-    errorDetails: z.string().exactOptional().openapi({ description: 'The error information.' }),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO'])
-      .exactOptional()
-      .openapi({ description: 'The severity of the error.' }),
-  })
-  .openapi({
-    description: 'A resource that reports the errors encountered while processing an import job.',
-    required: [],
-  })
-  .openapi('ImportError')
-
-const ImportRowErrorSchema = z
-  .object({
-    errors: z
-      .array(ImportErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of errors detected in the row.' }),
-    rowNumber: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'The row number where the error was detected.' }),
-    vmName: z.string().exactOptional().openapi({ description: 'The name of the VM in the row.' }),
-    vmUuid: z.string().exactOptional().openapi({ description: 'The VM UUID.' }),
-  })
-  .openapi({
-    description: 'A resource that reports the import job errors at row level.',
-    required: [],
-  })
-  .openapi('ImportRowError')
-
-const FileValidationReportSchema = z
-  .object({
-    fileErrors: z
-      .array(ImportErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'List of file level errors.' }),
-    fileName: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
-    partialReport: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Flag indicating that processing was aborted due to maximum number of errors.',
-      }),
-    rowErrors: z
-      .array(ImportRowErrorSchema)
-      .exactOptional()
-      .openapi({ description: 'Partial list of rows that encountered validation error.' }),
-  })
-  .openapi({
-    description: 'A resource that aggregates the validation errors found in an import job file.',
-    required: [],
-  })
-  .openapi('FileValidationReport')
-
-type ValidationReportType = {
-  fileValidations?: z.infer<typeof FileValidationReportSchema>[]
-  jobErrors?: z.infer<typeof ImportErrorSchema>[]
-}
-
-const AssetListSchema = z
-  .object({
-    assetIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Required. A list of asset IDs' }),
-  })
-  .openapi({ description: 'Lists the asset IDs of all assets.', required: [] })
-  .openapi('AssetList')
-
-const AddAssetsToGroupRequestSchema = z
-  .object({
-    allowExisting: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When this value is set to `false` and one of the given assets is already an existing member of the group, the operation fails with an `Already Exists` error. When set to `true` this situation is silently ignored by the server. Default value is `false`.',
-      }),
-    assets: AssetListSchema.exactOptional().openapi({
-      description:
-        'Required. List of assets to be added. The maximum number of assets that can be added in a single request is 1000.',
+    migrationInsight: MigrationInsightSchema.exactOptional().openapi({
+      description: 'Output only. An insight about potential migrations for an asset.',
+      readOnly: true,
     }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
-      }),
   })
-  .openapi({ description: 'A request to add assets to a group.', required: [] })
-  .openapi('AddAssetsToGroupRequest')
-
-const AggregationCountSchema = z
-  .object({})
-  .openapi({ description: 'Object count.' })
-  .openapi('AggregationCount')
-
-const AggregationFrequencySchema = z
-  .object({})
-  .openapi({ description: 'Frequency distribution of all field values.' })
-  .openapi('AggregationFrequency')
-
-const AggregationHistogramSchema = z
-  .object({
-    lowerBounds: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({
-        description:
-          'Lower bounds of buckets. The response will contain `n+1` buckets for `n` bounds. The first bucket will count all assets for which the field value is smaller than the first bound. Subsequent buckets will count assets for which the field value is greater or equal to a lower bound and smaller than the next one. The last bucket will count assets for which the field value is greater or equal to the final lower bound. You can define up to 20 lower bounds.',
-      }),
-  })
-  .openapi({ description: 'Histogram of bucketed assets counts by field value.', required: [] })
-  .openapi('AggregationHistogram')
-
-const AggregationSumSchema = z
-  .object({})
-  .openapi({ description: 'Sum of field values.' })
-  .openapi('AggregationSum')
-
-const AggregationSchema = z
-  .object({
-    count: AggregationCountSchema.exactOptional().openapi({
-      description: 'Count the number of matching objects.',
-    }),
-    field: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the field on which to aggregate.' }),
-    frequency: AggregationFrequencySchema.exactOptional().openapi({
-      description: 'Creates a frequency distribution of all field values.',
-    }),
-    histogram: AggregationHistogramSchema.exactOptional().openapi({
-      description: 'Creates a bucketed histogram of field values.',
-    }),
-    sum: AggregationSumSchema.exactOptional().openapi({ description: 'Sum over a numeric field.' }),
-  })
-  .openapi({
-    description:
-      'Message describing an aggregation. The message includes the aggregation type, parameters, and the field on which to perform the aggregation.',
-    required: [],
-  })
-  .openapi('Aggregation')
-
-const AggregateAssetsValuesRequestSchema = z
-  .object({
-    aggregations: z
-      .array(AggregationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Array of aggregations to perform. Up to 25 aggregations can be defined.',
-      }),
-    filter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The aggregation will be performed on assets that match the provided filter.',
-      }),
-  })
-  .openapi({ description: 'A request to aggregate one or more values.', required: [] })
-  .openapi('AggregateAssetsValuesRequest')
-
-const AggregationResultCountSchema = z
-  .object({ value: z.string().exactOptional() })
-  .openapi({ description: 'The result of a count aggregation.', required: [] })
-  .openapi('AggregationResultCount')
-
-const AggregationResultFrequencySchema = z
-  .object({ values: z.record(z.string(), z.string()).exactOptional() })
-  .openapi({ description: 'The result of a frequency distribution aggregation.', required: [] })
-  .openapi('AggregationResultFrequency')
-
-const AggregationResultHistogramBucketSchema = z
-  .object({
-    count: z.string().exactOptional().openapi({ description: 'Count of items in the bucket.' }),
-    lowerBound: z.float64().exactOptional().openapi({ description: 'Lower bound - inclusive.' }),
-    upperBound: z.float64().exactOptional().openapi({ description: 'Upper bound - exclusive.' }),
-  })
-  .openapi({
-    description:
-      'A histogram bucket with a lower and upper bound, and a count of items with a field value between those bounds. The lower bound is inclusive and the upper bound is exclusive. Lower bound may be -infinity and upper bound may be infinity.',
-    required: [],
-  })
-  .openapi('AggregationResultHistogramBucket')
-
-const AggregationResultHistogramSchema = z
-  .object({
-    buckets: z
-      .array(AggregationResultHistogramBucketSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Buckets in the histogram. There will be `n+1` buckets matching `n` lower bounds in the request. The first bucket will be from -infinity to the first bound. Subsequent buckets will be between one bound and the next. The final bucket will be from the final bound to infinity.',
-      }),
-  })
-  .openapi({ description: 'The result of a bucketed histogram aggregation.', required: [] })
-  .openapi('AggregationResultHistogram')
-
-const AggregationResultSumSchema = z
-  .object({ value: z.float64().exactOptional() })
-  .openapi({ description: 'The result of a sum aggregation.', required: [] })
-  .openapi('AggregationResultSum')
-
-const AggregationResultSchema = z
-  .object({
-    count: AggregationResultCountSchema.exactOptional(),
-    field: z.string().exactOptional(),
-    frequency: AggregationResultFrequencySchema.exactOptional(),
-    histogram: AggregationResultHistogramSchema.exactOptional(),
-    sum: AggregationResultSumSchema.exactOptional(),
-  })
-  .openapi({ description: 'Message describing a result of an aggregation.', required: [] })
-  .openapi('AggregationResult')
-
-const AggregateAssetsValuesResponseSchema = z
-  .object({
-    results: z
-      .array(AggregationResultSchema)
-      .exactOptional()
-      .openapi({ description: 'The aggregation results.' }),
-  })
-  .openapi({ description: 'A response to a request to aggregated assets values.', required: [] })
-  .openapi('AggregateAssetsValuesResponse')
-
-const InsightSchema: z.ZodType<InsightType> = z
-  .lazy(() =>
-    z
-      .object({
-        migrationInsight: MigrationInsightSchema.exactOptional().openapi({
-          description: 'Output only. An insight about potential migrations for an asset.',
-          readOnly: true,
-        }),
-      })
-      .openapi({ description: 'An insight about an asset.', required: [] }),
-  )
+  .openapi({ description: 'An insight about an asset.', required: [] })
   .openapi('Insight')
 
 const InsightListSchema = z
@@ -947,28 +584,98 @@ const GuestOsDetailsSchema = z
   .openapi({ description: 'Information from Guest-level collections.', required: [] })
   .openapi('GuestOsDetails')
 
-const PlatformDetailsSchema: z.ZodType<PlatformDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        awsEc2Details: AwsEc2PlatformDetailsSchema.exactOptional().openapi({
-          description: 'AWS EC2 specific details.',
-        }),
-        azureVmDetails: AzureVmPlatformDetailsSchema.exactOptional().openapi({
-          description: 'Azure VM specific details.',
-        }),
-        genericDetails: GenericPlatformDetailsSchema.exactOptional().openapi({
-          description: 'Generic platform details.',
-        }),
-        physicalDetails: PhysicalPlatformDetailsSchema.exactOptional().openapi({
-          description: 'Physical machines platform details.',
-        }),
-        vmwareDetails: VmwarePlatformDetailsSchema.exactOptional().openapi({
-          description: 'VMware specific details.',
-        }),
-      })
-      .openapi({ description: 'Information about the platform.', required: [] }),
-  )
+const AwsEc2PlatformDetailsSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The location of the machine in the AWS format.' }),
+    machineTypeLabel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "AWS platform's machine type label." }),
+  })
+  .openapi({ description: 'AWS EC2 specific details.', required: [] })
+  .openapi('AwsEc2PlatformDetails')
+
+const AzureVmPlatformDetailsSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The location of the machine in the Azure format.' }),
+    machineTypeLabel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Azure platform's machine type label." }),
+    provisioningState: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Azure platform's provisioning state." }),
+  })
+  .openapi({ description: 'Azure VM specific details.', required: [] })
+  .openapi('AzureVmPlatformDetails')
+
+const GenericPlatformDetailsSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free text representation of the machine location. The format of this field should not be relied on. Different VMs in the same location may have different string values for this field.',
+      }),
+  })
+  .openapi({ description: 'Generic platform details.', required: [] })
+  .openapi('GenericPlatformDetails')
+
+const PhysicalPlatformDetailsSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Free text representation of the machine location. The format of this field should not be relied on. Different machines in the same location may have different string values for this field.',
+      }),
+  })
+  .openapi({ description: 'Platform specific details for Physical Machines.', required: [] })
+  .openapi('PhysicalPlatformDetails')
+
+const VmwarePlatformDetailsSchema = z
+  .object({
+    esxVersion: z.string().exactOptional().openapi({ description: 'ESX version.' }),
+    osid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'VMware os enum - https://vdc-repo.vmware.com/vmwb-repository/dcr-public/da47f910-60ac-438b-8b9b-6122f4d14524/16b7274a-bf8b-4b4c-a05e-746f2aa93c8c/doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html.',
+      }),
+    vcenterVersion: z.string().exactOptional().openapi({ description: 'vCenter version.' }),
+  })
+  .openapi({ description: 'VMware specific details.', required: [] })
+  .openapi('VmwarePlatformDetails')
+
+const PlatformDetailsSchema = z
+  .object({
+    awsEc2Details: AwsEc2PlatformDetailsSchema.exactOptional().openapi({
+      description: 'AWS EC2 specific details.',
+    }),
+    azureVmDetails: AzureVmPlatformDetailsSchema.exactOptional().openapi({
+      description: 'Azure VM specific details.',
+    }),
+    genericDetails: GenericPlatformDetailsSchema.exactOptional().openapi({
+      description: 'Generic platform details.',
+    }),
+    physicalDetails: PhysicalPlatformDetailsSchema.exactOptional().openapi({
+      description: 'Physical machines platform details.',
+    }),
+    vmwareDetails: VmwarePlatformDetailsSchema.exactOptional().openapi({
+      description: 'VMware specific details.',
+    }),
+  })
+  .openapi({ description: 'Information about the platform.', required: [] })
   .openapi('PlatformDetails')
 
 const BiosDetailsSchema = z
@@ -1014,6 +721,19 @@ const VirtualMachineArchitectureDetailsSchema = z
   })
   .openapi({ description: 'Details of the VM architecture.', required: [] })
   .openapi('VirtualMachineArchitectureDetails')
+
+const DiskPartitionListSchema: z.ZodType<DiskPartitionListType> = z
+  .lazy(() =>
+    z
+      .object({
+        entries: z
+          .array(DiskPartitionSchema)
+          .exactOptional()
+          .openapi({ description: 'Partition entries.' }),
+      })
+      .openapi({ description: 'Disk partition list.', required: [] }),
+  )
+  .openapi('DiskPartitionList')
 
 const VmwareDiskConfigSchema = z
   .object({
@@ -1172,7 +892,27 @@ const VirtualMachineNetworkDetailsSchema = z
   .openapi({ description: 'Details of network adapters and settings.', required: [] })
   .openapi('VirtualMachineNetworkDetails')
 
-const VirtualMachineDetailsSchema = z
+type VirtualMachineDetailsType = {
+  coreCount?: number
+  createTime?: string
+  guestOs?: z.infer<typeof GuestOsDetailsSchema>
+  memoryMb?: number
+  osFamily?: 'OS_FAMILY_UNKNOWN' | 'OS_FAMILY_WINDOWS' | 'OS_FAMILY_LINUX' | 'OS_FAMILY_UNIX'
+  osName?: string
+  osVersion?: string
+  platform?: z.infer<typeof PlatformDetailsSchema>
+  powerState?: string
+  vcenterFolder?: string
+  vcenterUrl?: string
+  vcenterVmId?: string
+  vmArchitecture?: z.infer<typeof VirtualMachineArchitectureDetailsSchema>
+  vmDisks?: z.infer<typeof VirtualMachineDiskDetailsSchema>
+  vmName?: string
+  vmNetwork?: z.infer<typeof VirtualMachineNetworkDetailsSchema>
+  vmUuid?: string
+}
+
+const VirtualMachineDetailsSchema: z.ZodType<VirtualMachineDetailsType> = z
   .object({
     coreCount: z
       .int32()
@@ -1234,67 +974,18 @@ const VirtualMachineDetailsSchema = z
   .openapi({ description: 'Details of a VirtualMachine.', required: [] })
   .openapi('VirtualMachineDetails')
 
-const AssetSchema = z
-  .object({
-    assignedGroups: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The list of groups that the asset is assigned to.',
-        readOnly: true,
-      }),
-    attributes: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Generic asset attributes.' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the asset was created.',
-        readOnly: true,
-      }),
-    insightList: InsightListSchema.exactOptional().openapi({
-      description: 'Output only. The list of insights associated with the asset.',
-      readOnly: true,
-    }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels as key value pairs.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The full name of the asset.', readOnly: true }),
-    performanceData: AssetPerformanceDataSchema.exactOptional().openapi({
-      description: 'Output only. Performance data for the asset.',
-      readOnly: true,
-    }),
-    sources: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The list of sources contributing to the asset.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the asset was last updated.',
-        readOnly: true,
-      }),
-    virtualMachineDetails: VirtualMachineDetailsSchema.exactOptional().openapi({
-      description: 'Output only. Asset information specific for virtual machines.',
-      readOnly: true,
-    }),
-  })
-  .openapi({
-    description:
-      'An asset represents a resource in your environment. Asset types include virtual machines and databases.',
-    required: [],
-  })
-  .openapi('Asset')
+type AssetType = {
+  assignedGroups?: string[]
+  attributes?: { [key: string]: string }
+  createTime?: string
+  insightList?: z.infer<typeof InsightListSchema>
+  labels?: { [key: string]: string }
+  name?: string
+  performanceData?: z.infer<typeof AssetPerformanceDataSchema>
+  sources?: string[]
+  updateTime?: string
+  virtualMachineDetails?: z.infer<typeof VirtualMachineDetailsSchema>
+}
 
 const CpuUsageSampleSchema = z
   .object({
@@ -1372,7 +1063,228 @@ const PerformanceSampleSchema = z
   .openapi({ description: 'Performance data sample.', required: [] })
   .openapi('PerformanceSample')
 
-const AssetFrameSchema = z
+type AssetFrameType = {
+  attributes?: { [key: string]: string }
+  labels?: { [key: string]: string }
+  performanceSamples?: z.infer<typeof PerformanceSampleSchema>[]
+  reportTime?: string
+  traceToken?: string
+  virtualMachineDetails?: z.infer<typeof VirtualMachineDetailsSchema>
+}
+
+const AssetSchema: z.ZodType<AssetType> = z
+  .object({
+    assignedGroups: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The list of groups that the asset is assigned to.',
+        readOnly: true,
+      }),
+    attributes: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Generic asset attributes.' }),
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the asset was created.',
+        readOnly: true,
+      }),
+    insightList: InsightListSchema.exactOptional().openapi({
+      description: 'Output only. The list of insights associated with the asset.',
+      readOnly: true,
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels as key value pairs.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The full name of the asset.', readOnly: true }),
+    performanceData: AssetPerformanceDataSchema.exactOptional().openapi({
+      description: 'Output only. Performance data for the asset.',
+      readOnly: true,
+    }),
+    sources: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The list of sources contributing to the asset.',
+        readOnly: true,
+      }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the asset was last updated.',
+        readOnly: true,
+      }),
+    virtualMachineDetails: VirtualMachineDetailsSchema.exactOptional().openapi({
+      description: 'Output only. Asset information specific for virtual machines.',
+      readOnly: true,
+    }),
+  })
+  .openapi({
+    description:
+      'An asset represents a resource in your environment. Asset types include virtual machines and databases.',
+    required: [],
+  })
+  .openapi('Asset')
+
+type UpdateAssetRequestType = {
+  asset?: z.infer<typeof AssetSchema>
+  requestId?: string
+  updateMask?: string
+}
+
+const UpdateAssetRequestSchema: z.ZodType<UpdateAssetRequestType> = z
+  .object({
+    asset: AssetSchema.exactOptional().openapi({
+      description: 'Required. The resource being updated.',
+    }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
+      }),
+    updateMask: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Field mask is used to specify the fields to be overwritten in the `Asset` resource by the update. The values specified in the `update_mask` field are relative to the resource, not the full request. A field will be overwritten if it is in the mask. A single * value in the mask lets you to overwrite all fields.',
+      }),
+  })
+  .openapi({ description: 'A request to update an asset.', required: [] })
+  .openapi('UpdateAssetRequest')
+
+type BatchUpdateAssetsRequestType = { requests?: z.infer<typeof UpdateAssetRequestSchema>[] }
+
+type BatchUpdateAssetsResponseType = { assets?: z.infer<typeof AssetSchema>[] }
+
+type DiskPartitionType = {
+  capacityBytes?: string
+  fileSystem?: string
+  freeBytes?: string
+  mountPoint?: string
+  subPartitions?: z.infer<typeof DiskPartitionListSchema>
+  type?: string
+  uuid?: string
+}
+
+const DiskPartitionSchema: z.ZodType<DiskPartitionType> = z
+  .lazy(() =>
+    z
+      .object({
+        capacityBytes: z.string().exactOptional().openapi({ description: 'Partition capacity.' }),
+        fileSystem: z.string().exactOptional().openapi({ description: 'Partition file system.' }),
+        freeBytes: z.string().exactOptional().openapi({ description: 'Partition free space.' }),
+        mountPoint: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Mount pount (Linux/Windows) or drive letter (Windows).' }),
+        subPartitions: DiskPartitionListSchema.exactOptional().openapi({
+          description: 'Sub-partitions.',
+        }),
+        type: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Partition type (e.g. BIOS boot).' }),
+        uuid: z.string().exactOptional().openapi({ description: 'Partition UUID.' }),
+      })
+      .openapi({ description: 'Disk Partition details.', required: [] }),
+  )
+  .openapi('DiskPartition')
+
+type DiskPartitionListType = { entries?: z.infer<typeof DiskPartitionSchema>[] }
+
+const ImportErrorSchema = z
+  .object({
+    errorDetails: z.string().exactOptional().openapi({ description: 'The error information.' }),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'ERROR', 'WARNING', 'INFO'])
+      .exactOptional()
+      .openapi({ description: 'The severity of the error.' }),
+  })
+  .openapi({
+    description: 'A resource that reports the errors encountered while processing an import job.',
+    required: [],
+  })
+  .openapi('ImportError')
+
+const ImportRowErrorSchema = z
+  .object({
+    errors: z
+      .array(ImportErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of errors detected in the row.' }),
+    rowNumber: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'The row number where the error was detected.' }),
+    vmName: z.string().exactOptional().openapi({ description: 'The name of the VM in the row.' }),
+    vmUuid: z.string().exactOptional().openapi({ description: 'The VM UUID.' }),
+  })
+  .openapi({
+    description: 'A resource that reports the import job errors at row level.',
+    required: [],
+  })
+  .openapi('ImportRowError')
+
+const FileValidationReportSchema = z
+  .object({
+    fileErrors: z
+      .array(ImportErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'List of file level errors.' }),
+    fileName: z.string().exactOptional().openapi({ description: 'The name of the file.' }),
+    partialReport: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Flag indicating that processing was aborted due to maximum number of errors.',
+      }),
+    rowErrors: z
+      .array(ImportRowErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'Partial list of rows that encountered validation error.' }),
+  })
+  .openapi({
+    description: 'A resource that aggregates the validation errors found in an import job file.',
+    required: [],
+  })
+  .openapi('FileValidationReport')
+
+const ValidationReportSchema = z
+  .object({
+    fileValidations: z
+      .array(FileValidationReportSchema)
+      .exactOptional()
+      .openapi({ description: 'List of errors found in files.' }),
+    jobErrors: z
+      .array(ImportErrorSchema)
+      .exactOptional()
+      .openapi({ description: 'List of job level errors.' }),
+  })
+  .openapi({
+    description: 'A resource that aggregates errors across import job files.',
+    required: [],
+  })
+  .openapi('ValidationReport')
+
+type ExecutionReportType = {
+  executionErrors?: z.infer<typeof ValidationReportSchema>
+  framesReported?: number
+  jobErrors?: z.infer<typeof ImportErrorSchema>[]
+  totalRowsCount?: number
+}
+
+const AssetFrameSchema: z.ZodType<AssetFrameType> = z
   .object({
     attributes: z
       .record(z.string(), z.string())
@@ -1407,174 +1319,9 @@ const AssetFrameSchema = z
   })
   .openapi('AssetFrame')
 
-const BatchDeleteAssetsRequestSchema = z
-  .object({
-    allowMissing: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When this value is set to `true` the request is a no-op for non-existing assets. See https://google.aip.dev/135#delete-if-existing for additional details. Default value is `false`.',
-      }),
-    names: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The IDs of the assets to delete. A maximum of 10 assets can be deleted in a batch. format: projects/{project}/locations/{location}/asset/{name}.',
-      }),
-  })
-  .openapi({ description: 'A request to delete a list of asset.', required: [] })
-  .openapi('BatchDeleteAssetsRequest')
+type FramesType = { framesData?: z.infer<typeof AssetFrameSchema>[] }
 
-const UpdateAssetRequestSchema = z
-  .object({
-    asset: AssetSchema.exactOptional().openapi({
-      description: 'Required. The resource being updated.',
-    }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes since the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
-      }),
-    updateMask: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Field mask is used to specify the fields to be overwritten in the `Asset` resource by the update. The values specified in the `update_mask` field are relative to the resource, not the full request. A field will be overwritten if it is in the mask. A single * value in the mask lets you to overwrite all fields.',
-      }),
-  })
-  .openapi({ description: 'A request to update an asset.', required: [] })
-  .openapi('UpdateAssetRequest')
-
-const BatchUpdateAssetsRequestSchema = z
-  .object({
-    requests: z
-      .array(UpdateAssetRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The request message specifying the resources to update. A maximum of 1000 assets can be modified in a batch.',
-      }),
-  })
-  .openapi({ description: 'A request to update a list of assets.', required: [] })
-  .openapi('BatchUpdateAssetsRequest')
-
-const BatchUpdateAssetsResponseSchema = z
-  .object({
-    assets: z
-      .array(AssetSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Update asset content. The content only includes values after field mask being applied.',
-      }),
-  })
-  .openapi({ description: 'Response for updating a list of assets.', required: [] })
-  .openapi('BatchUpdateAssetsResponse')
-
-const CancelOperationRequestSchema = z
-  .object({})
-  .openapi({ description: 'The request message for Operations.CancelOperation.' })
-  .openapi('CancelOperationRequest')
-
-const MachineSeriesSchema = z
-  .object({
-    code: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Code to identify a Compute Engine machine series. Consult https://cloud.google.com/compute/docs/machine-resource#machine_type_comparison for more details on the available series.',
-      }),
-  })
-  .openapi({ description: 'A Compute Engine machine series.', required: [] })
-  .openapi('MachineSeries')
-
-const MachinePreferencesSchema = z
-  .object({
-    allowedMachineSeries: z
-      .array(MachineSeriesSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Compute Engine machine series to consider for insights and recommendations. If empty, no restriction is applied on the machine series.',
-      }),
-  })
-  .openapi({
-    description:
-      'The type of machines to consider when calculating virtual machine migration insights and recommendations. Not all machine types are available in all zones and regions.',
-    required: [],
-  })
-  .openapi('MachinePreferences')
-
-const ComputeEnginePreferencesSchema = z
-  .object({
-    licenseType: z
-      .enum([
-        'LICENSE_TYPE_UNSPECIFIED',
-        'LICENSE_TYPE_DEFAULT',
-        'LICENSE_TYPE_BRING_YOUR_OWN_LICENSE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'License type to consider when calculating costs for virtual machine insights and recommendations. If unspecified, costs are calculated based on the default licensing plan.',
-      }),
-    machinePreferences: MachinePreferencesSchema.exactOptional().openapi({
-      description: 'Preferences concerning the machine types to consider on Compute Engine.',
-    }),
-    persistentDiskType: z
-      .enum([
-        'PERSISTENT_DISK_TYPE_UNSPECIFIED',
-        'PERSISTENT_DISK_TYPE_STANDARD',
-        'PERSISTENT_DISK_TYPE_BALANCED',
-        'PERSISTENT_DISK_TYPE_SSD',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Persistent disk type to use. If unspecified (default), all types are considered, based on available usage data.',
-      }),
-  })
-  .openapi({
-    description: 'The user preferences relating to Compute Engine target platform.',
-    required: [],
-  })
-  .openapi('ComputeEnginePreferences')
-
-const EmptySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
-  })
-  .openapi('Empty')
-
-const ValidationReportSchema: z.ZodType<ValidationReportType> = z
-  .lazy(() =>
-    z
-      .object({
-        fileValidations: z
-          .array(FileValidationReportSchema)
-          .exactOptional()
-          .openapi({ description: 'List of errors found in files.' }),
-        jobErrors: z
-          .array(ImportErrorSchema)
-          .exactOptional()
-          .openapi({ description: 'List of job level errors.' }),
-      })
-      .openapi({
-        description: 'A resource that aggregates errors across import job files.',
-        required: [],
-      }),
-  )
-  .openapi('ValidationReport')
-
-const ExecutionReportSchema = z
+const ExecutionReportSchema: z.ZodType<ExecutionReportType> = z
   .object({
     executionErrors: ValidationReportSchema.exactOptional().openapi({
       description: 'Validation errors encountered during the execution of the import job.',
@@ -1601,16 +1348,6 @@ const ExecutionReportSchema = z
   })
   .openapi('ExecutionReport')
 
-const FramesSchema = z
-  .object({
-    framesData: z
-      .array(AssetFrameSchema)
-      .exactOptional()
-      .openapi({ description: 'A repeated field of asset data.' }),
-  })
-  .openapi({ description: 'Collection of frame data.', required: [] })
-  .openapi('Frames')
-
 const GCSPayloadInfoSchema = z
   .object({
     format: z
@@ -1635,114 +1372,6 @@ const GCSPayloadInfoSchema = z
     required: [],
   })
   .openapi('GCSPayloadInfo')
-
-const GroupSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the group was created.',
-        readOnly: true,
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The description of the resource.' }),
-    displayName: z.string().exactOptional().openapi({ description: 'User-friendly display name.' }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({ description: 'Labels as key value pairs.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the group.', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the group was last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'A resource that represents an asset group. The purpose of an asset group is to bundle a set of assets that have something in common, while allowing users to add annotations to the group. An asset can belong to multiple groups.',
-    required: [],
-  })
-  .openapi('Group')
-
-const UploadFileInfoSchema = z
-  .object({
-    headers: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The headers that were used to sign the URL.',
-        readOnly: true,
-      }),
-    signedUri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Upload URI for the file.', readOnly: true }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Upload URI for the file.', readOnly: true }),
-    uriExpirationTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Expiration time of the upload URI.', readOnly: true }),
-  })
-  .openapi({
-    description: 'A resource that contains a URI to which a data file can be uploaded.',
-    required: [],
-  })
-  .openapi('UploadFileInfo')
-
-const ImportDataFileSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the file was created.',
-        readOnly: true,
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-friendly display name. Maximum length is 63 characters.' }),
-    format: z
-      .enum([
-        'IMPORT_JOB_FORMAT_UNSPECIFIED',
-        'IMPORT_JOB_FORMAT_CMDB',
-        'IMPORT_JOB_FORMAT_RVTOOLS_XLSX',
-        'IMPORT_JOB_FORMAT_RVTOOLS_CSV',
-        'IMPORT_JOB_FORMAT_EXPORTED_AWS_CSV',
-        'IMPORT_JOB_FORMAT_EXPORTED_AZURE_CSV',
-        'IMPORT_JOB_FORMAT_MANUAL_CSV',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Required. The payload format.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The name of the file.', readOnly: true }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATING', 'ACTIVE'])
-      .exactOptional()
-      .openapi({ description: 'Output only. The state of the import data file.', readOnly: true }),
-    uploadFileInfo: UploadFileInfoSchema.exactOptional().openapi({
-      description: 'Information about a file that is uploaded to a storage service.',
-    }),
-  })
-  .openapi({
-    description: 'A resource that represents a payload file in an import job.',
-    required: [],
-  })
-  .openapi('ImportDataFile')
 
 const PayloadFileSchema = z
   .object({
@@ -1777,7 +1406,36 @@ const InlinePayloadInfoSchema = z
   })
   .openapi('InlinePayloadInfo')
 
-const ImportJobSchema = z
+type ImportJobType = {
+  assetSource?: string
+  completeTime?: string
+  createTime?: string
+  displayName?: string
+  executionReport?: z.infer<typeof ExecutionReportSchema>
+  gcsPayload?: z.infer<typeof GCSPayloadInfoSchema>
+  inlinePayload?: z.infer<typeof InlinePayloadInfoSchema>
+  labels?: { [key: string]: string }
+  name?: string
+  state?:
+    | 'IMPORT_JOB_STATE_UNSPECIFIED'
+    | 'IMPORT_JOB_STATE_PENDING'
+    | 'IMPORT_JOB_STATE_RUNNING'
+    | 'IMPORT_JOB_STATE_COMPLETED'
+    | 'IMPORT_JOB_STATE_FAILED'
+    | 'IMPORT_JOB_STATE_VALIDATING'
+    | 'IMPORT_JOB_STATE_FAILED_VALIDATION'
+    | 'IMPORT_JOB_STATE_READY'
+  updateTime?: string
+  validationReport?: z.infer<typeof ValidationReportSchema>
+}
+
+type ListAssetsResponseType = {
+  assets?: z.infer<typeof AssetSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const ImportJobSchema: z.ZodType<ImportJobType> = z
   .object({
     assetSource: z
       .string()
@@ -1850,248 +1508,76 @@ const ImportJobSchema = z
   })
   .openapi('ImportJob')
 
-const ListAssetsResponseSchema = z
-  .object({
-    assets: z.array(AssetSchema).exactOptional().openapi({ description: 'A list of assets.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token identifying a page of results the server should return.' }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'Response message for listing assets.', required: [] })
-  .openapi('ListAssetsResponse')
+type ListImportJobsResponseType = {
+  importJobs?: z.infer<typeof ImportJobSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
 
-const ListGroupsResponseSchema = z
-  .object({
-    groups: z.array(GroupSchema).exactOptional().openapi({ description: 'The list of Group' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token identifying a page of results the server should return.' }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'A response for listing groups.', required: [] })
-  .openapi('ListGroupsResponse')
-
-const ListImportDataFilesResponseSchema = z
-  .object({
-    importDataFiles: z
-      .array(ImportDataFileSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of import data files.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token that can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
-      }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'Response for listing payload files of an import job.', required: [] })
-  .openapi('ListImportDataFilesResponse')
-
-const ListImportJobsResponseSchema = z
-  .object({
-    importJobs: z
-      .array(ImportJobSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of import jobs.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token identifying a page of results the server should return.' }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'A response for listing import jobs.', required: [] })
-  .openapi('ListImportJobsResponse')
-
-const LocationSchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The friendly name for this location, typically a nearby city name. For example, "Tokyo".',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Cross-service attributes for the location. For example {"cloud.googleapis.com/region": "us-east1"}',
-      }),
-    locationId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The canonical id for this location. For example: `"us-east1"`.' }),
-    metadata: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Service-specific metadata. For example the available capacity at the given location.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name for the location, which may vary between implementations. For example: `"projects/example-project/locations/us-east1"`',
-      }),
-  })
-  .openapi({
-    description: 'A resource that represents Google Cloud Platform location.',
-    required: [],
-  })
-  .openapi('Location')
-
-const ListLocationsResponseSchema = z
-  .object({
-    locations: z
-      .array(LocationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of locations that matches the specified filter in the request.',
-      }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The standard List next-page token.' }),
-  })
-  .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
-  .openapi('ListLocationsResponse')
-
-const StatusSchema = z
+const MachineSeriesSchema = z
   .object({
     code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+          'Code to identify a Compute Engine machine series. Consult https://cloud.google.com/compute/docs/machine-resource#machine_type_comparison for more details on the available series.',
+      }),
+  })
+  .openapi({ description: 'A Compute Engine machine series.', required: [] })
+  .openapi('MachineSeries')
+
+const MachinePreferencesSchema = z
+  .object({
+    allowedMachineSeries: z
+      .array(MachineSeriesSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Compute Engine machine series to consider for insights and recommendations. If empty, no restriction is applied on the machine series.',
       }),
   })
   .openapi({
     description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+      'The type of machines to consider when calculating virtual machine migration insights and recommendations. Not all machine types are available in all zones and regions.',
     required: [],
   })
-  .openapi('Status')
+  .openapi('MachinePreferences')
 
-const OperationSchema = z
+const ComputeEnginePreferencesSchema = z
   .object({
-    done: z
-      .boolean()
+    licenseType: z
+      .enum([
+        'LICENSE_TYPE_UNSPECIFIED',
+        'LICENSE_TYPE_DEFAULT',
+        'LICENSE_TYPE_BRING_YOUR_OWN_LICENSE',
+      ])
       .exactOptional()
       .openapi({
         description:
-          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
+          'License type to consider when calculating costs for virtual machine insights and recommendations. If unspecified, costs are calculated based on the default licensing plan.',
       }),
-    error: StatusSchema.exactOptional().openapi({
-      description: 'The error result of the operation in case of failure or cancellation.',
+    machinePreferences: MachinePreferencesSchema.exactOptional().openapi({
+      description: 'Preferences concerning the machine types to consider on Compute Engine.',
     }),
-    metadata: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
+    persistentDiskType: z
+      .enum([
+        'PERSISTENT_DISK_TYPE_UNSPECIFIED',
+        'PERSISTENT_DISK_TYPE_STANDARD',
+        'PERSISTENT_DISK_TYPE_BALANCED',
+        'PERSISTENT_DISK_TYPE_SSD',
+      ])
       .exactOptional()
       .openapi({
         description:
-          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
-      }),
-    response: z
-      .record(
-        z.string(),
-        z
-          .any()
-          .openapi({
-            description: 'Properties of the object. Contains field @type with type URL.',
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
+          'Persistent disk type to use. If unspecified (default), all types are considered, based on available usage data.',
       }),
   })
   .openapi({
-    description:
-      'This resource represents a long-running operation that is the result of a network API call.',
+    description: 'The user preferences relating to Compute Engine target platform.',
     required: [],
   })
-  .openapi('Operation')
-
-const ListOperationsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The standard List next-page token.' }),
-    operations: z
-      .array(OperationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of operations that matches the specified filter in the request.',
-      }),
-  })
-  .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
-  .openapi('ListOperationsResponse')
+  .openapi('ComputeEnginePreferences')
 
 const RegionPreferencesSchema = z
   .object({
@@ -2186,93 +1672,11 @@ const PreferenceSetSchema = z
   })
   .openapi('PreferenceSet')
 
-const ListPreferenceSetsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token identifying a page of results the server should return.' }),
-    preferenceSets: z
-      .array(PreferenceSetSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of PreferenceSets' }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'Response message for listing preference sets.', required: [] })
-  .openapi('ListPreferenceSetsResponse')
-
-const ReportConfigGroupPreferenceSetAssignmentSchema = z
-  .object({
-    group: z.string().exactOptional().openapi({ description: 'Required. Name of the group.' }),
-    preferenceSet: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Name of the Preference Set.' }),
-  })
-  .openapi({
-    description: 'Represents a combination of a group with a preference set.',
-    required: [],
-  })
-  .openapi('ReportConfigGroupPreferenceSetAssignment')
-
-const ReportConfigSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    description: z.string().exactOptional().openapi({ description: 'Free-text description.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-friendly display name. Maximum length is 63 characters.' }),
-    groupPreferencesetAssignments: z
-      .array(ReportConfigGroupPreferenceSetAssignmentSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Required. Collection of combinations of groups and preference sets.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Name of resource.', readOnly: true }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the resource was last updated.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'The groups and associated preference sets on which we can generate reports.',
-    required: [],
-  })
-  .openapi('ReportConfig')
-
-const ListReportConfigsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A token identifying a page of results the server should return.' }),
-    reportConfigs: z
-      .array(ReportConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'A list of report configs.' }),
-    unreachable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Locations that could not be reached.' }),
-  })
-  .openapi({ description: 'Response message for listing report configs.', required: [] })
-  .openapi('ListReportConfigsResponse')
+type ListPreferenceSetsResponseType = {
+  nextPageToken?: string
+  preferenceSets?: z.infer<typeof PreferenceSetSchema>[]
+  unreachable?: string[]
+}
 
 const ReportSummaryChartDataDataPointSchema = z
   .object({
@@ -2533,7 +1937,15 @@ const ReportSummaryGroupPreferenceSetFindingSchema = z
   })
   .openapi('ReportSummaryGroupPreferenceSetFinding')
 
-const ReportSummaryGroupFindingSchema = z
+type ReportSummaryGroupFindingType = {
+  assetAggregateStats?: z.infer<typeof ReportSummaryAssetAggregateStatsSchema>
+  description?: string
+  displayName?: string
+  overlappingAssetCount?: string
+  preferenceSetFindings?: z.infer<typeof ReportSummaryGroupPreferenceSetFindingSchema>[]
+}
+
+const ReportSummaryGroupFindingSchema: z.ZodType<ReportSummaryGroupFindingType> = z
   .object({
     assetAggregateStats: ReportSummaryAssetAggregateStatsSchema.exactOptional().openapi({
       description: 'Summary statistics for all the assets in this group.',
@@ -2555,7 +1967,12 @@ const ReportSummaryGroupFindingSchema = z
   .openapi({ description: 'Summary Findings for a specific Group.', required: [] })
   .openapi('ReportSummaryGroupFinding')
 
-const ReportSummarySchema = z
+type ReportSummaryType = {
+  allAssetsStats?: z.infer<typeof ReportSummaryAssetAggregateStatsSchema>
+  groupFindings?: z.infer<typeof ReportSummaryGroupFindingSchema>[]
+}
+
+const ReportSummarySchema: z.ZodType<ReportSummaryType> = z
   .object({
     allAssetsStats: ReportSummaryAssetAggregateStatsSchema.exactOptional().openapi({
       description: 'Aggregate statistics for all the assets across all the groups.',
@@ -2572,7 +1989,18 @@ const ReportSummarySchema = z
   })
   .openapi('ReportSummary')
 
-const ReportSchema = z
+type ReportType = {
+  createTime?: string
+  description?: string
+  displayName?: string
+  name?: string
+  state?: 'STATE_UNSPECIFIED' | 'PENDING' | 'SUCCEEDED' | 'FAILED'
+  summary?: z.infer<typeof ReportSummarySchema>
+  type?: 'TYPE_UNSPECIFIED' | 'TOTAL_COST_OF_OWNERSHIP'
+  updateTime?: string
+}
+
+const ReportSchema: z.ZodType<ReportType> = z
   .object({
     createTime: z
       .string()
@@ -2610,7 +2038,687 @@ const ReportSchema = z
   })
   .openapi('Report')
 
-const ListReportsResponseSchema = z
+type ListReportsResponseType = {
+  nextPageToken?: string
+  reports?: z.infer<typeof ReportSchema>[]
+  unreachable?: string[]
+}
+
+const AssetListSchema = z
+  .object({
+    assetIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Required. A list of asset IDs' }),
+  })
+  .openapi({ description: 'Lists the asset IDs of all assets.', required: [] })
+  .openapi('AssetList')
+
+const AddAssetsToGroupRequestSchema = z
+  .object({
+    allowExisting: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When this value is set to `false` and one of the given assets is already an existing member of the group, the operation fails with an `Already Exists` error. When set to `true` this situation is silently ignored by the server. Default value is `false`.',
+      }),
+    assets: AssetListSchema.exactOptional().openapi({
+      description:
+        'Required. List of assets to be added. The maximum number of assets that can be added in a single request is 1000.',
+    }),
+    requestId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An optional request ID to identify requests. Specify a unique request ID so that if you must retry your request, the server will know to ignore the request if it has already been completed. The server will guarantee that for at least 60 minutes after the first request. For example, consider a situation where you make an initial request and the request times out. If you make the request again with the same request ID, the server can check if original operation with the same request ID was received, and if so, will ignore the second request. This prevents clients from accidentally creating duplicate commitments. The request ID must be a valid UUID with the exception that zero UUID is not supported (00000000-0000-0000-0000-000000000000).',
+      }),
+  })
+  .openapi({ description: 'A request to add assets to a group.', required: [] })
+  .openapi('AddAssetsToGroupRequest')
+
+const AggregationCountSchema = z
+  .looseObject({})
+  .openapi({ description: 'Object count.' })
+  .openapi('AggregationCount')
+
+const AggregationFrequencySchema = z
+  .looseObject({})
+  .openapi({ description: 'Frequency distribution of all field values.' })
+  .openapi('AggregationFrequency')
+
+const AggregationHistogramSchema = z
+  .object({
+    lowerBounds: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({
+        description:
+          'Lower bounds of buckets. The response will contain `n+1` buckets for `n` bounds. The first bucket will count all assets for which the field value is smaller than the first bound. Subsequent buckets will count assets for which the field value is greater or equal to a lower bound and smaller than the next one. The last bucket will count assets for which the field value is greater or equal to the final lower bound. You can define up to 20 lower bounds.',
+      }),
+  })
+  .openapi({ description: 'Histogram of bucketed assets counts by field value.', required: [] })
+  .openapi('AggregationHistogram')
+
+const AggregationSumSchema = z
+  .looseObject({})
+  .openapi({ description: 'Sum of field values.' })
+  .openapi('AggregationSum')
+
+const AggregationSchema = z
+  .object({
+    count: AggregationCountSchema.exactOptional().openapi({
+      description: 'Count the number of matching objects.',
+    }),
+    field: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the field on which to aggregate.' }),
+    frequency: AggregationFrequencySchema.exactOptional().openapi({
+      description: 'Creates a frequency distribution of all field values.',
+    }),
+    histogram: AggregationHistogramSchema.exactOptional().openapi({
+      description: 'Creates a bucketed histogram of field values.',
+    }),
+    sum: AggregationSumSchema.exactOptional().openapi({ description: 'Sum over a numeric field.' }),
+  })
+  .openapi({
+    description:
+      'Message describing an aggregation. The message includes the aggregation type, parameters, and the field on which to perform the aggregation.',
+    required: [],
+  })
+  .openapi('Aggregation')
+
+const AggregateAssetsValuesRequestSchema = z
+  .object({
+    aggregations: z
+      .array(AggregationSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Array of aggregations to perform. Up to 25 aggregations can be defined.',
+      }),
+    filter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The aggregation will be performed on assets that match the provided filter.',
+      }),
+  })
+  .openapi({ description: 'A request to aggregate one or more values.', required: [] })
+  .openapi('AggregateAssetsValuesRequest')
+
+const AggregationResultCountSchema = z
+  .object({ value: z.string().exactOptional() })
+  .openapi({ description: 'The result of a count aggregation.', required: [] })
+  .openapi('AggregationResultCount')
+
+const AggregationResultFrequencySchema = z
+  .object({ values: z.record(z.string(), z.string()).exactOptional() })
+  .openapi({ description: 'The result of a frequency distribution aggregation.', required: [] })
+  .openapi('AggregationResultFrequency')
+
+const AggregationResultHistogramBucketSchema = z
+  .object({
+    count: z.string().exactOptional().openapi({ description: 'Count of items in the bucket.' }),
+    lowerBound: z.float64().exactOptional().openapi({ description: 'Lower bound - inclusive.' }),
+    upperBound: z.float64().exactOptional().openapi({ description: 'Upper bound - exclusive.' }),
+  })
+  .openapi({
+    description:
+      'A histogram bucket with a lower and upper bound, and a count of items with a field value between those bounds. The lower bound is inclusive and the upper bound is exclusive. Lower bound may be -infinity and upper bound may be infinity.',
+    required: [],
+  })
+  .openapi('AggregationResultHistogramBucket')
+
+const AggregationResultHistogramSchema = z
+  .object({
+    buckets: z
+      .array(AggregationResultHistogramBucketSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Buckets in the histogram. There will be `n+1` buckets matching `n` lower bounds in the request. The first bucket will be from -infinity to the first bound. Subsequent buckets will be between one bound and the next. The final bucket will be from the final bound to infinity.',
+      }),
+  })
+  .openapi({ description: 'The result of a bucketed histogram aggregation.', required: [] })
+  .openapi('AggregationResultHistogram')
+
+const AggregationResultSumSchema = z
+  .object({ value: z.float64().exactOptional() })
+  .openapi({ description: 'The result of a sum aggregation.', required: [] })
+  .openapi('AggregationResultSum')
+
+const AggregationResultSchema = z
+  .object({
+    count: AggregationResultCountSchema.exactOptional(),
+    field: z.string().exactOptional(),
+    frequency: AggregationResultFrequencySchema.exactOptional(),
+    histogram: AggregationResultHistogramSchema.exactOptional(),
+    sum: AggregationResultSumSchema.exactOptional(),
+  })
+  .openapi({ description: 'Message describing a result of an aggregation.', required: [] })
+  .openapi('AggregationResult')
+
+const AggregateAssetsValuesResponseSchema = z
+  .object({
+    results: z
+      .array(AggregationResultSchema)
+      .exactOptional()
+      .openapi({ description: 'The aggregation results.' }),
+  })
+  .openapi({ description: 'A response to a request to aggregated assets values.', required: [] })
+  .openapi('AggregateAssetsValuesResponse')
+
+const BatchDeleteAssetsRequestSchema = z
+  .object({
+    allowMissing: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When this value is set to `true` the request is a no-op for non-existing assets. See https://google.aip.dev/135#delete-if-existing for additional details. Default value is `false`.',
+      }),
+    names: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The IDs of the assets to delete. A maximum of 10 assets can be deleted in a batch. format: projects/{project}/locations/{location}/asset/{name}.',
+      }),
+  })
+  .openapi({ description: 'A request to delete a list of asset.', required: [] })
+  .openapi('BatchDeleteAssetsRequest')
+
+const BatchUpdateAssetsRequestSchema: z.ZodType<BatchUpdateAssetsRequestType> = z
+  .object({
+    requests: z
+      .array(UpdateAssetRequestSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The request message specifying the resources to update. A maximum of 1000 assets can be modified in a batch.',
+      }),
+  })
+  .openapi({ description: 'A request to update a list of assets.', required: [] })
+  .openapi('BatchUpdateAssetsRequest')
+
+const BatchUpdateAssetsResponseSchema: z.ZodType<BatchUpdateAssetsResponseType> = z
+  .object({
+    assets: z
+      .array(AssetSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Update asset content. The content only includes values after field mask being applied.',
+      }),
+  })
+  .openapi({ description: 'Response for updating a list of assets.', required: [] })
+  .openapi('BatchUpdateAssetsResponse')
+
+const CancelOperationRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'The request message for Operations.CancelOperation.' })
+  .openapi('CancelOperationRequest')
+
+const EmptySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
+  })
+  .openapi('Empty')
+
+const FramesSchema: z.ZodType<FramesType> = z
+  .object({
+    framesData: z
+      .array(AssetFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'A repeated field of asset data.' }),
+  })
+  .openapi({ description: 'Collection of frame data.', required: [] })
+  .openapi('Frames')
+
+const GroupSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the group was created.',
+        readOnly: true,
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The description of the resource.' }),
+    displayName: z.string().exactOptional().openapi({ description: 'User-friendly display name.' }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels as key value pairs.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the group.', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the group was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description:
+      'A resource that represents an asset group. The purpose of an asset group is to bundle a set of assets that have something in common, while allowing users to add annotations to the group. An asset can belong to multiple groups.',
+    required: [],
+  })
+  .openapi('Group')
+
+const UploadFileInfoSchema = z
+  .object({
+    headers: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The headers that were used to sign the URL.',
+        readOnly: true,
+      }),
+    signedUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Upload URI for the file.', readOnly: true }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Upload URI for the file.', readOnly: true }),
+    uriExpirationTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Expiration time of the upload URI.', readOnly: true }),
+  })
+  .openapi({
+    description: 'A resource that contains a URI to which a data file can be uploaded.',
+    required: [],
+  })
+  .openapi('UploadFileInfo')
+
+const ImportDataFileSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the file was created.',
+        readOnly: true,
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-friendly display name. Maximum length is 63 characters.' }),
+    format: z
+      .enum([
+        'IMPORT_JOB_FORMAT_UNSPECIFIED',
+        'IMPORT_JOB_FORMAT_CMDB',
+        'IMPORT_JOB_FORMAT_RVTOOLS_XLSX',
+        'IMPORT_JOB_FORMAT_RVTOOLS_CSV',
+        'IMPORT_JOB_FORMAT_EXPORTED_AWS_CSV',
+        'IMPORT_JOB_FORMAT_EXPORTED_AZURE_CSV',
+        'IMPORT_JOB_FORMAT_MANUAL_CSV',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Required. The payload format.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The name of the file.', readOnly: true }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATING', 'ACTIVE'])
+      .exactOptional()
+      .openapi({ description: 'Output only. The state of the import data file.', readOnly: true }),
+    uploadFileInfo: UploadFileInfoSchema.exactOptional().openapi({
+      description: 'Information about a file that is uploaded to a storage service.',
+    }),
+  })
+  .openapi({
+    description: 'A resource that represents a payload file in an import job.',
+    required: [],
+  })
+  .openapi('ImportDataFile')
+
+const ListAssetsResponseSchema: z.ZodType<ListAssetsResponseType> = z
+  .object({
+    assets: z.array(AssetSchema).exactOptional().openapi({ description: 'A list of assets.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token identifying a page of results the server should return.' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'Response message for listing assets.', required: [] })
+  .openapi('ListAssetsResponse')
+
+const ListGroupsResponseSchema = z
+  .object({
+    groups: z.array(GroupSchema).exactOptional().openapi({ description: 'The list of Group' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token identifying a page of results the server should return.' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'A response for listing groups.', required: [] })
+  .openapi('ListGroupsResponse')
+
+const ListImportDataFilesResponseSchema = z
+  .object({
+    importDataFiles: z
+      .array(ImportDataFileSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of import data files.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A token that can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+      }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'Response for listing payload files of an import job.', required: [] })
+  .openapi('ListImportDataFilesResponse')
+
+const ListImportJobsResponseSchema: z.ZodType<ListImportJobsResponseType> = z
+  .object({
+    importJobs: z
+      .array(ImportJobSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of import jobs.' }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token identifying a page of results the server should return.' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'A response for listing import jobs.', required: [] })
+  .openapi('ListImportJobsResponse')
+
+const LocationSchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The friendly name for this location, typically a nearby city name. For example, "Tokyo".',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Cross-service attributes for the location. For example {"cloud.googleapis.com/region": "us-east1"}',
+      }),
+    locationId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The canonical id for this location. For example: `"us-east1"`.' }),
+    metadata: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Service-specific metadata. For example the available capacity at the given location.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name for the location, which may vary between implementations. For example: `"projects/example-project/locations/us-east1"`',
+      }),
+  })
+  .openapi({
+    description: 'A resource that represents Google Cloud Platform location.',
+    required: [],
+  })
+  .openapi('Location')
+
+const ListLocationsResponseSchema = z
+  .object({
+    locations: z
+      .array(LocationSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of locations that matches the specified filter in the request.',
+      }),
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The standard List next-page token.' }),
+  })
+  .openapi({ description: 'The response message for Locations.ListLocations.', required: [] })
+  .openapi('ListLocationsResponse')
+
+const StatusSchema = z
+  .object({
+    code: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
+      }),
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
+      }),
+    message: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
+      }),
+  })
+  .openapi({
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
+    required: [],
+  })
+  .openapi('Status')
+
+const OperationSchema = z
+  .object({
+    done: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.',
+      }),
+    error: StatusSchema.exactOptional().openapi({
+      description: 'The error result of the operation in case of failure or cancellation.',
+    }),
+    metadata: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.',
+      }),
+    response: z
+      .record(
+        z.string(),
+        z
+          .any()
+          .openapi({
+            description: 'Properties of the object. Contains field @type with type URL.',
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'The normal response of the operation in case of success. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.',
+      }),
+  })
+  .openapi({
+    description:
+      'This resource represents a long-running operation that is the result of a network API call.',
+    required: [],
+  })
+  .openapi('Operation')
+
+const ListOperationsResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The standard List next-page token.' }),
+    operations: z
+      .array(OperationSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of operations that matches the specified filter in the request.',
+      }),
+  })
+  .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
+  .openapi('ListOperationsResponse')
+
+const ListPreferenceSetsResponseSchema: z.ZodType<ListPreferenceSetsResponseType> = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token identifying a page of results the server should return.' }),
+    preferenceSets: z
+      .array(PreferenceSetSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of PreferenceSets' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'Response message for listing preference sets.', required: [] })
+  .openapi('ListPreferenceSetsResponse')
+
+const ReportConfigGroupPreferenceSetAssignmentSchema = z
+  .object({
+    group: z.string().exactOptional().openapi({ description: 'Required. Name of the group.' }),
+    preferenceSet: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Name of the Preference Set.' }),
+  })
+  .openapi({
+    description: 'Represents a combination of a group with a preference set.',
+    required: [],
+  })
+  .openapi('ReportConfigGroupPreferenceSetAssignment')
+
+const ReportConfigSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was created.',
+        readOnly: true,
+      }),
+    description: z.string().exactOptional().openapi({ description: 'Free-text description.' }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-friendly display name. Maximum length is 63 characters.' }),
+    groupPreferencesetAssignments: z
+      .array(ReportConfigGroupPreferenceSetAssignmentSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Required. Collection of combinations of groups and preference sets.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. Name of resource.', readOnly: true }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. The timestamp when the resource was last updated.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'The groups and associated preference sets on which we can generate reports.',
+    required: [],
+  })
+  .openapi('ReportConfig')
+
+const ListReportConfigsResponseSchema = z
+  .object({
+    nextPageToken: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A token identifying a page of results the server should return.' }),
+    reportConfigs: z
+      .array(ReportConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of report configs.' }),
+    unreachable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Locations that could not be reached.' }),
+  })
+  .openapi({ description: 'Response message for listing report configs.', required: [] })
+  .openapi('ListReportConfigsResponse')
+
+const ListReportsResponseSchema: z.ZodType<ListReportsResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -2776,7 +2884,7 @@ const RemoveAssetsFromGroupRequestSchema = z
   .openapi('RemoveAssetsFromGroupRequest')
 
 const ReportAssetFramesResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A response to a call to `ReportAssetFrame`.' })
   .openapi('ReportAssetFramesResponse')
 

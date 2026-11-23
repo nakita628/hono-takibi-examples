@@ -2719,7 +2719,7 @@ const WorkflowWebhookStepSchema: z.ZodType<WorkflowWebhookStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -2938,7 +2938,7 @@ const WorkflowInAppFeedStepSchema: z.ZodType<WorkflowInAppFeedStepType> = z
     channel_overrides: z
       .union([
         InAppFeedChannelSettingsSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -2958,7 +2958,7 @@ const WorkflowInAppFeedStepSchema: z.ZodType<WorkflowInAppFeedStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3090,7 +3090,7 @@ const WorkflowInAppGuideStepSchema: z.ZodType<WorkflowInAppGuideStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3309,7 +3309,7 @@ const WorkflowChatStepSchema: z.ZodType<WorkflowChatStepType> = z
     channel_overrides: z
       .union([
         ChatChannelSettingsSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3329,7 +3329,7 @@ const WorkflowChatStepSchema: z.ZodType<WorkflowChatStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3467,7 +3467,7 @@ const SmsTemplateSchema = z
             'x-validate': null,
             required: [],
           }),
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3538,7 +3538,7 @@ const WorkflowSmsStepSchema: z.ZodType<WorkflowSmsStepType> = z
     channel_overrides: z
       .union([
         SmsChannelSettingsSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3558,7 +3558,7 @@ const WorkflowSmsStepSchema: z.ZodType<WorkflowSmsStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3767,7 +3767,7 @@ const WorkflowPushStepSchema: z.ZodType<WorkflowPushStepType> = z
     channel_overrides: z
       .union([
         PushChannelSettingsSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -3787,7 +3787,7 @@ const WorkflowPushStepSchema: z.ZodType<WorkflowPushStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -4885,8 +4885,8 @@ const EmailTemplateSchema = z
       }),
     visual_blocks: z
       .union([
-        EmailVisualBlocksSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(EmailVisualBlocksSchema),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -4954,7 +4954,7 @@ const WorkflowEmailStepSchema: z.ZodType<WorkflowEmailStepType> = z
     channel_overrides: z
       .union([
         EmailChannelSettingsSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -4975,7 +4975,7 @@ const WorkflowEmailStepSchema: z.ZodType<WorkflowEmailStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -5073,7 +5073,9 @@ const WorkflowBranchStepSchema: z.ZodType<WorkflowBranchStepType> = z
                 conditions: z
                   .union([
                     ConditionGroupSchema,
-                    z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                    z
+                      .looseObject({})
+                      .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
                   ])
                   .exactOptional()
                   .openapi({
@@ -5202,7 +5204,7 @@ const WorkflowDelayStepSchema: z.ZodType<WorkflowDelayStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -5244,7 +5246,9 @@ const WorkflowDelayStepSchema: z.ZodType<WorkflowDelayStepType> = z
         delay_for: z
           .union([
             DurationSchema,
-            z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+            z
+              .looseObject({})
+              .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
           ])
           .exactOptional()
           .openapi({
@@ -5716,7 +5720,7 @@ const WorkflowAIAgentStepSchema: z.ZodType<WorkflowAIAgentStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -6046,7 +6050,7 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -6092,7 +6096,9 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
             expires_after: z
               .union([
                 DurationSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -6163,7 +6169,9 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
             expires_after: z
               .union([
                 DurationSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -6234,7 +6242,9 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
             expires_after: z
               .union([
                 DurationSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -6305,7 +6315,9 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
             expires_after: z
               .union([
                 DurationSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -6376,7 +6388,9 @@ const WorkflowWaitForEventStepSchema: z.ZodType<WorkflowWaitForEventStepType> = 
             expires_after: z
               .union([
                 DurationSchema,
-                z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+                z
+                  .looseObject({})
+                  .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
               ])
               .exactOptional()
               .openapi({
@@ -6611,7 +6625,9 @@ const WorkflowBatchStepSchema: z.ZodType<WorkflowBatchStepType> = z
         batch_window: z
           .union([
             DurationSchema,
-            z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+            z
+              .looseObject({})
+              .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
           ])
           .exactOptional()
           .openapi({
@@ -6623,7 +6639,9 @@ const WorkflowBatchStepSchema: z.ZodType<WorkflowBatchStepType> = z
         batch_window_extension_limit: z
           .union([
             DurationSchema,
-            z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+            z
+              .looseObject({})
+              .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
           ])
           .exactOptional()
           .openapi({
@@ -6701,46 +6719,54 @@ const RequestTemplateSchema = z
     headers: z
       .xor([
         z
-          .string()
-          .openapi({
-            description:
-              'A template string that should resolve to a JSON object representing the headers.',
-            example: '{{ data.request_headers }}',
-            title: 'RequestTemplateHeadersString',
-            'x-struct': null,
-            'x-validate': null,
-          }),
-        z
-          .array(
+          .looseObject({})
+          .and(
             z
-              .object({
-                key: z
-                  .string()
-                  .openapi({
-                    description: 'The key of the header.',
-                    example: 'X-API-Key',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-                value: z
-                  .string()
-                  .openapi({
-                    description: 'The value of the header.',
-                    example: '1234567890',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-              })
-              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-          )
-          .openapi({
-            description:
-              'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
-            example: [{ key: 'X-API-Key', value: '1234567890' }],
-            title: 'RequestTemplateHeadersArray',
-            'x-struct': null,
-            'x-validate': null,
-          }),
+              .string()
+              .openapi({
+                description:
+                  'A template string that should resolve to a JSON object representing the headers.',
+                example: '{{ data.request_headers }}',
+                title: 'RequestTemplateHeadersString',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .array(
+                z
+                  .object({
+                    key: z
+                      .string()
+                      .openapi({
+                        description: 'The key of the header.',
+                        example: 'X-API-Key',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                    value: z
+                      .string()
+                      .openapi({
+                        description: 'The value of the header.',
+                        example: '1234567890',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                  })
+                  .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+              )
+              .openapi({
+                description:
+                  'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
+                example: [{ key: 'X-API-Key', value: '1234567890' }],
+                title: 'RequestTemplateHeadersArray',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -6762,46 +6788,54 @@ const RequestTemplateSchema = z
     query_params: z
       .xor([
         z
-          .string()
-          .openapi({
-            description:
-              'A template string that should resolve to a JSON object representing the query params.',
-            example: '{{ data.request_query_params }}',
-            title: 'RequestTemplateQueryParamsString',
-            'x-struct': null,
-            'x-validate': null,
-          }),
-        z
-          .array(
+          .looseObject({})
+          .and(
             z
-              .object({
-                key: z
-                  .string()
-                  .openapi({
-                    description: 'The key of the query param.',
-                    example: 'key',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-                value: z
-                  .string()
-                  .openapi({
-                    description: 'The value of the query param.',
-                    example: 'value',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-              })
-              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-          )
-          .openapi({
-            description:
-              'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
-            example: [{ key: 'key', value: 'value' }],
-            title: 'RequestTemplateQueryParamsArray',
-            'x-struct': null,
-            'x-validate': null,
-          }),
+              .string()
+              .openapi({
+                description:
+                  'A template string that should resolve to a JSON object representing the query params.',
+                example: '{{ data.request_query_params }}',
+                title: 'RequestTemplateQueryParamsString',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .array(
+                z
+                  .object({
+                    key: z
+                      .string()
+                      .openapi({
+                        description: 'The key of the query param.',
+                        example: 'key',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                    value: z
+                      .string()
+                      .openapi({
+                        description: 'The value of the query param.',
+                        example: 'value',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                  })
+                  .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+              )
+              .openapi({
+                description:
+                  'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
+                example: [{ key: 'key', value: 'value' }],
+                title: 'RequestTemplateQueryParamsArray',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -6851,7 +6885,7 @@ const WorkflowFetchStepSchema: z.ZodType<WorkflowFetchStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -6926,7 +6960,7 @@ const WorkflowUpdateDataStepSchema: z.ZodType<WorkflowUpdateDataStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7022,7 +7056,7 @@ const WorkflowUpdateObjectStepSchema: z.ZodType<WorkflowUpdateObjectStepType> = 
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7134,7 +7168,7 @@ const WorkflowUpdateTenantStepSchema: z.ZodType<WorkflowUpdateTenantStepType> = 
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7258,7 +7292,7 @@ const WorkflowUpdateUserStepSchema: z.ZodType<WorkflowUpdateUserStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7383,7 +7417,7 @@ const WorkflowThrottleStepSchema: z.ZodType<WorkflowThrottleStepType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7447,7 +7481,9 @@ const WorkflowThrottleStepSchema: z.ZodType<WorkflowThrottleStepType> = z
         throttle_window: z
           .union([
             DurationSchema,
-            z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+            z
+              .looseObject({})
+              .and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
           ])
           .nullable()
           .exactOptional()
@@ -7508,7 +7544,7 @@ const WorkflowTriggerWorkflowStepSchema: z.ZodType<WorkflowTriggerWorkflowStepTy
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -7853,7 +7889,7 @@ const WorkflowRequestSchema: z.ZodType<WorkflowRequestType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -8080,7 +8116,7 @@ const WorkflowSchema: z.ZodType<WorkflowType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -9211,7 +9247,7 @@ const GuideSchema = z
     guide_audience_conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -9272,7 +9308,7 @@ const GuideSchema = z
     target_property_conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -9385,46 +9421,54 @@ const ReusableRequestSettingsSchema = z
     headers: z
       .xor([
         z
-          .string()
-          .openapi({
-            description:
-              'A template string that should resolve to a JSON object representing the headers.',
-            example: '{{ data.request_headers }}',
-            title: 'RequestTemplateHeadersString',
-            'x-struct': null,
-            'x-validate': null,
-          }),
-        z
-          .array(
+          .looseObject({})
+          .and(
             z
-              .object({
-                key: z
-                  .string()
-                  .openapi({
-                    description: 'The key of the header.',
-                    example: 'X-API-Key',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-                value: z
-                  .string()
-                  .openapi({
-                    description: 'The value of the header.',
-                    example: '1234567890',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-              })
-              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-          )
-          .openapi({
-            description:
-              'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
-            example: [{ key: 'X-API-Key', value: '1234567890' }],
-            title: 'RequestTemplateHeadersArray',
-            'x-struct': null,
-            'x-validate': null,
-          }),
+              .string()
+              .openapi({
+                description:
+                  'A template string that should resolve to a JSON object representing the headers.',
+                example: '{{ data.request_headers }}',
+                title: 'RequestTemplateHeadersString',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .array(
+                z
+                  .object({
+                    key: z
+                      .string()
+                      .openapi({
+                        description: 'The key of the header.',
+                        example: 'X-API-Key',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                    value: z
+                      .string()
+                      .openapi({
+                        description: 'The value of the header.',
+                        example: '1234567890',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                  })
+                  .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+              )
+              .openapi({
+                description:
+                  'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
+                example: [{ key: 'X-API-Key', value: '1234567890' }],
+                title: 'RequestTemplateHeadersArray',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -9446,46 +9490,54 @@ const ReusableRequestSettingsSchema = z
     query_params: z
       .xor([
         z
-          .string()
-          .openapi({
-            description:
-              'A template string that should resolve to a JSON object representing the query params.',
-            example: '{{ data.request_query_params }}',
-            title: 'RequestTemplateQueryParamsString',
-            'x-struct': null,
-            'x-validate': null,
-          }),
-        z
-          .array(
+          .looseObject({})
+          .and(
             z
-              .object({
-                key: z
-                  .string()
-                  .openapi({
-                    description: 'The key of the query param.',
-                    example: 'key',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-                value: z
-                  .string()
-                  .openapi({
-                    description: 'The value of the query param.',
-                    example: 'value',
-                    'x-struct': null,
-                    'x-validate': null,
-                  }),
-              })
-              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-          )
-          .openapi({
-            description:
-              'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
-            example: [{ key: 'key', value: 'value' }],
-            title: 'RequestTemplateQueryParamsArray',
-            'x-struct': null,
-            'x-validate': null,
-          }),
+              .string()
+              .openapi({
+                description:
+                  'A template string that should resolve to a JSON object representing the query params.',
+                example: '{{ data.request_query_params }}',
+                title: 'RequestTemplateQueryParamsString',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
+        z
+          .looseObject({})
+          .and(
+            z
+              .array(
+                z
+                  .object({
+                    key: z
+                      .string()
+                      .openapi({
+                        description: 'The key of the query param.',
+                        example: 'key',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                    value: z
+                      .string()
+                      .openapi({
+                        description: 'The value of the query param.',
+                        example: 'value',
+                        'x-struct': null,
+                        'x-validate': null,
+                      }),
+                  })
+                  .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+              )
+              .openapi({
+                description:
+                  'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
+                example: [{ key: 'key', value: 'value' }],
+                title: 'RequestTemplateQueryParamsArray',
+                'x-struct': null,
+                'x-validate': null,
+              }),
+          ),
       ])
       .exactOptional()
       .openapi({
@@ -9547,7 +9599,7 @@ const ReusableRequestSchema = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .nullable()
       .exactOptional()
@@ -10245,14 +10297,18 @@ const PartialRequestSchema = z
 const RecipientReferenceSchema = z
   .xor([
     z
-      .string()
-      .openapi({
-        description: 'A user ID.',
-        example: 'user_1',
-        title: 'UserRecipientReference',
-        'x-struct': null,
-        'x-validate': null,
-      }),
+      .looseObject({})
+      .and(
+        z
+          .string()
+          .openapi({
+            description: 'A user ID.',
+            example: 'user_1',
+            title: 'UserRecipientReference',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      ),
     z
       .object({
         collection: z
@@ -10871,46 +10927,54 @@ const AuditLogSchema = z
 const RequestTemplateHeadersSchema = z
   .xor([
     z
-      .string()
-      .openapi({
-        description:
-          'A template string that should resolve to a JSON object representing the headers.',
-        example: '{{ data.request_headers }}',
-        title: 'RequestTemplateHeadersString',
-        'x-struct': null,
-        'x-validate': null,
-      }),
-    z
-      .array(
+      .looseObject({})
+      .and(
         z
-          .object({
-            key: z
-              .string()
-              .openapi({
-                description: 'The key of the header.',
-                example: 'X-API-Key',
-                'x-struct': null,
-                'x-validate': null,
-              }),
-            value: z
-              .string()
-              .openapi({
-                description: 'The value of the header.',
-                example: '1234567890',
-                'x-struct': null,
-                'x-validate': null,
-              }),
-          })
-          .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-      )
-      .openapi({
-        description:
-          'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
-        example: [{ key: 'X-API-Key', value: '1234567890' }],
-        title: 'RequestTemplateHeadersArray',
-        'x-struct': null,
-        'x-validate': null,
-      }),
+          .string()
+          .openapi({
+            description:
+              'A template string that should resolve to a JSON object representing the headers.',
+            example: '{{ data.request_headers }}',
+            title: 'RequestTemplateHeadersString',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .array(
+            z
+              .object({
+                key: z
+                  .string()
+                  .openapi({
+                    description: 'The key of the header.',
+                    example: 'X-API-Key',
+                    'x-struct': null,
+                    'x-validate': null,
+                  }),
+                value: z
+                  .string()
+                  .openapi({
+                    description: 'The value of the header.',
+                    example: '1234567890',
+                    'x-struct': null,
+                    'x-validate': null,
+                  }),
+              })
+              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+          )
+          .openapi({
+            description:
+              'A list of key-value pairs for the request headers. Each object should contain key and value fields with string values.',
+            example: [{ key: 'X-API-Key', value: '1234567890' }],
+            title: 'RequestTemplateHeadersArray',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      ),
   ])
   .openapi({
     description:
@@ -11451,7 +11515,7 @@ const GuideRequestSchema = z
     guide_audience_conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -11496,7 +11560,7 @@ const GuideRequestSchema = z
     target_property_conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -11639,7 +11703,7 @@ const ShowWorkflowResponseSchema: z.ZodType<ShowWorkflowResponseType> = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -12767,7 +12831,7 @@ const WorkflowBranchStepBranchSchema: z.ZodType<WorkflowBranchStepBranchType> = 
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -13282,46 +13346,54 @@ const PaginatedAudienceResponseSchema = z
 const RequestTemplateQueryParamsSchema = z
   .xor([
     z
-      .string()
-      .openapi({
-        description:
-          'A template string that should resolve to a JSON object representing the query params.',
-        example: '{{ data.request_query_params }}',
-        title: 'RequestTemplateQueryParamsString',
-        'x-struct': null,
-        'x-validate': null,
-      }),
-    z
-      .array(
+      .looseObject({})
+      .and(
         z
-          .object({
-            key: z
-              .string()
-              .openapi({
-                description: 'The key of the query param.',
-                example: 'key',
-                'x-struct': null,
-                'x-validate': null,
-              }),
-            value: z
-              .string()
-              .openapi({
-                description: 'The value of the query param.',
-                example: 'value',
-                'x-struct': null,
-                'x-validate': null,
-              }),
-          })
-          .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
-      )
-      .openapi({
-        description:
-          'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
-        example: [{ key: 'key', value: 'value' }],
-        title: 'RequestTemplateQueryParamsArray',
-        'x-struct': null,
-        'x-validate': null,
-      }),
+          .string()
+          .openapi({
+            description:
+              'A template string that should resolve to a JSON object representing the query params.',
+            example: '{{ data.request_query_params }}',
+            title: 'RequestTemplateQueryParamsString',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      ),
+    z
+      .looseObject({})
+      .and(
+        z
+          .array(
+            z
+              .object({
+                key: z
+                  .string()
+                  .openapi({
+                    description: 'The key of the query param.',
+                    example: 'key',
+                    'x-struct': null,
+                    'x-validate': null,
+                  }),
+                value: z
+                  .string()
+                  .openapi({
+                    description: 'The value of the query param.',
+                    example: 'value',
+                    'x-struct': null,
+                    'x-validate': null,
+                  }),
+              })
+              .openapi({ required: ['key', 'value'], 'x-struct': null, 'x-validate': null }),
+          )
+          .openapi({
+            description:
+              'A list of key-value pairs for the request query params. Each object should contain key and value fields with string values.',
+            example: [{ key: 'key', value: 'value' }],
+            title: 'RequestTemplateQueryParamsArray',
+            'x-struct': null,
+            'x-validate': null,
+          }),
+      ),
   ])
   .openapi({
     description:
@@ -16203,7 +16275,7 @@ const RunWorkflowRequestSchema = z
       .union([
         RecipientReferenceSchema,
         InlineIdentifyUserRequestSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({
@@ -16307,7 +16379,7 @@ const ReusableRequestRequestSchema = z
     conditions: z
       .union([
         ConditionGroupSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .nullable()
       .exactOptional()
@@ -18312,7 +18384,7 @@ const PreviewWorkflowTemplateRequestSchema = z
     actor: z
       .union([
         RecipientReferenceSchema,
-        z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null }),
+        z.looseObject({}).and(z.any().nullable().openapi({ 'x-struct': null, 'x-validate': null })),
       ])
       .exactOptional()
       .openapi({

@@ -1,96 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SignatureSchema = z
-  .object({
-    publicKeyId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier for the public key that verifies this signature. * The `public_key_id` is required. * The `public_key_id` SHOULD be an RFC3986 conformant URI. * When possible, the `public_key_id` SHOULD be an immutable reference, such as a cryptographic digest. Examples of valid `public_key_id`s: OpenPGP V4 public key fingerprint: * "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA" See https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr for more details on this scheme. RFC6920 digest-named SubjectPublicKeyInfo (digest of the DER serialization): * "ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU" * "nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5"',
-      }),
-    signature: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The content of the signature, an opaque bytestring. The payload that this signature verifies MUST be unambiguously provided with the Signature during verification. A wrapper message might provide the payload explicitly. Alternatively, a message might have a canonical serialization that can always be unambiguously computed to derive the payload.',
-      }),
-  })
-  .openapi({
-    description:
-      'Verifiers (e.g. Kritis implementations) MUST verify signatures with respect to the trust anchors defined in policy (e.g. a Kritis policy). Typically this means that the verifier has been configured with a map from `public_key_id` to public key material (and any required parameters, e.g. signing algorithm). In particular, verification implementations MUST NOT treat the signature `public_key_id` as anything more than a key lookup hint. The `public_key_id` DOES NOT validate or authenticate a public key; it only provides a mechanism for quickly selecting a public key ALREADY CONFIGURED on the verifier through a trusted channel. Verification implementations MUST reject signatures in any of the following circumstances: * The `public_key_id` is not recognized by the verifier. * The public key that `public_key_id` refers to does not verify the signature with respect to the payload. The `signature` contents SHOULD NOT be "attached" (where the payload is included with the serialized `signature` bytes). Verifiers MUST ignore any "attached" payload and only verify signatures with respect to explicitly provided payload (e.g. a `payload` field on the proto message that holds this Signature, or the canonical serialization of the proto message that holds this signature).',
-    required: [],
-  })
-  .openapi('Signature')
-
-const GenericSignedAttestationSchema = z
-  .object({
-    contentType: z
-      .enum(['CONTENT_TYPE_UNSPECIFIED', 'SIMPLE_SIGNING_JSON'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type (for example schema) of the attestation payload that was signed. The verifier must ensure that the provided type is one that the verifier supports, and that the attestation payload is a valid instantiation of that type (for example by validating a JSON schema).',
-      }),
-    serializedPayload: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The serialized payload that is verified by one or more `signatures`. The encoding and semantic meaning of this payload must match what is set in `content_type`.',
-      }),
-    signatures: z
-      .array(SignatureSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'One or more signatures over `serialized_payload`. Verifier implementations should consider this attestation message verified if at least one `signature` verifies `serialized_payload`. See `Signature` in common.proto for more details on signature structure and verification.',
-      }),
-  })
-  .openapi({
-    description:
-      'An attestation wrapper that uses the Grafeas `Signature` message. This attestation must define the `serialized_payload` that the `signatures` verify and any metadata necessary to interpret that plaintext. The signatures should always be over the `serialized_payload` bytestring.',
-    required: [],
-  })
-  .openapi('GenericSignedAttestation')
-
-const PgpSignedAttestationSchema = z
-  .object({
-    contentType: z
-      .enum(['CONTENT_TYPE_UNSPECIFIED', 'SIMPLE_SIGNING_JSON'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Type (for example schema) of the attestation payload that was signed. The verifier must ensure that the provided type is one that the verifier supports, and that the attestation payload is a valid instantiation of that type (for example by validating a JSON schema).',
-      }),
-    pgpKeyId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The cryptographic fingerprint of the key used to generate the signature, as output by, e.g. `gpg --list-keys`. This should be the version 4, full 160-bit fingerprint, expressed as a 40 character hexadecimal string. See https://tools.ietf.org/html/rfc4880#section-12.2 for details. Implementations may choose to acknowledge "LONG", "SHORT", or other abbreviated key IDs, but only the full fingerprint is guaranteed to work. In gpg, the full fingerprint can be retrieved from the `fpr` field returned when calling --list-keys with --with-colons. For example: ``` gpg --with-colons --with-fingerprint --force-v4-certs \\ --list-keys attester@example.com tru::1:1513631572:0:3:1:5 pub:...... fpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB: ``` Above, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`.',
-      }),
-    signature: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The raw content of the signature, as output by GNU Privacy Guard (GPG) or equivalent. Since this message only supports attached signatures, the payload that was signed must be attached. While the signature format supported is dependent on the verification implementation, currently only ASCII-armored (`--armor` to gpg), non-clearsigned (`--sign` rather than `--clearsign` to gpg) are supported. Concretely, `gpg --sign --armor --output=signature.gpg payload.json` will create the signature content expected in this field in `signature.gpg` for the `payload.json` attestation payload.',
-      }),
-  })
-  .openapi({
-    description:
-      'An attestation wrapper with a PGP-compatible signature. This message only supports `ATTACHED` signatures, where the payload that is signed is included alongside the signature itself in the same file.',
-    required: [],
-  })
-  .openapi('PgpSignedAttestation')
-
-type AttestationType = {
-  genericSignedAttestation?: z.infer<typeof GenericSignedAttestationSchema>
-  pgpSignedAttestation?: z.infer<typeof PgpSignedAttestationSchema>
-}
-
 const HintSchema = z
   .object({
     humanReadableName: z
@@ -1344,62 +1253,220 @@ const VulnerabilityAssessmentNoteSchema = z
   })
   .openapi('VulnerabilityAssessmentNote')
 
-type NoteType = {
-  attestationAuthority?: z.infer<typeof AuthoritySchema>
-  baseImage?: z.infer<typeof BasisSchema>
-  build?: z.infer<typeof BuildSchema>
-  createTime?: string
-  deployable?: z.infer<typeof DeployableSchema>
-  discovery?: z.infer<typeof DiscoverySchema>
-  expirationTime?: string
-  intoto?: z.infer<typeof InTotoSchema>
-  kind?:
-    | 'NOTE_KIND_UNSPECIFIED'
-    | 'VULNERABILITY'
-    | 'BUILD'
-    | 'IMAGE'
-    | 'PACKAGE'
-    | 'DEPLOYMENT'
-    | 'DISCOVERY'
-    | 'ATTESTATION'
-    | 'INTOTO'
-    | 'SBOM'
-    | 'SPDX_PACKAGE'
-    | 'SPDX_FILE'
-    | 'SPDX_RELATIONSHIP'
-    | 'VULNERABILITY_ASSESSMENT'
-    | 'SBOM_REFERENCE'
-  longDescription?: string
-  name?: string
-  package?: z.infer<typeof PackageSchema>
-  relatedNoteNames?: string[]
-  relatedUrl?: z.infer<typeof RelatedUrlSchema>[]
-  sbom?: z.infer<typeof DocumentNoteSchema>
-  sbomReference?: z.infer<typeof SBOMReferenceNoteSchema>
-  shortDescription?: string
-  spdxFile?: z.infer<typeof FileNoteSchema>
-  spdxPackage?: z.infer<typeof PackageInfoNoteSchema>
-  spdxRelationship?: z.infer<typeof RelationshipNoteSchema>
-  updateTime?: string
-  vulnerability?: z.infer<typeof VulnerabilitySchema>
-  vulnerabilityAssessment?: z.infer<typeof VulnerabilityAssessmentNoteSchema>
-}
-
-const AttestationSchema: z.ZodType<AttestationType> = z
-  .lazy(() =>
-    z
-      .object({
-        genericSignedAttestation: GenericSignedAttestationSchema.exactOptional(),
-        pgpSignedAttestation: PgpSignedAttestationSchema.exactOptional().openapi({
-          description: 'A PGP signed attestation.',
-        }),
-      })
+const NoteSchema = z
+  .object({
+    attestationAuthority: AuthoritySchema.exactOptional().openapi({
+      description: 'A note describing an attestation role.',
+    }),
+    baseImage: BasisSchema.exactOptional().openapi({
+      description: 'A note describing a base image.',
+    }),
+    build: BuildSchema.exactOptional().openapi({
+      description: 'A note describing build provenance for a verifiable build.',
+    }),
+    createTime: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'Occurrence that represents a single "attestation". The authenticity of an attestation can be verified using the attached signature. If the verifier trusts the public key of the signer, then verifying the signature is sufficient to establish trust. In this circumstance, the authority to which this attestation is attached is primarily useful for look-up (how to find this attestation if you already know the authority and artifact to be verified) and intent (which authority was this attestation intended to sign for).',
-        required: [],
+          'Output only. The time this note was created. This field can be used as a filter in list requests.',
       }),
-  )
+    deployable: DeployableSchema.exactOptional().openapi({
+      description: 'A note describing something that can be deployed.',
+    }),
+    discovery: DiscoverySchema.exactOptional().openapi({
+      description: 'A note describing the initial analysis of a resource.',
+    }),
+    expirationTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time of expiration for this note. Empty if note does not expire.' }),
+    intoto: InTotoSchema.exactOptional().openapi({
+      description: 'A note describing an in-toto link.',
+    }),
+    kind: z
+      .enum([
+        'NOTE_KIND_UNSPECIFIED',
+        'VULNERABILITY',
+        'BUILD',
+        'IMAGE',
+        'PACKAGE',
+        'DEPLOYMENT',
+        'DISCOVERY',
+        'ATTESTATION',
+        'INTOTO',
+        'SBOM',
+        'SPDX_PACKAGE',
+        'SPDX_FILE',
+        'SPDX_RELATIONSHIP',
+        'VULNERABILITY_ASSESSMENT',
+        'SBOM_REFERENCE',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The type of analysis. This field can be used as a filter in list requests.',
+      }),
+    longDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A detailed description of this note.' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The name of the note in the form of `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.',
+      }),
+    package: PackageSchema.exactOptional().openapi({
+      description: 'A note describing a package hosted by various package managers.',
+    }),
+    relatedNoteNames: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Other notes related to this note.' }),
+    relatedUrl: z
+      .array(RelatedUrlSchema)
+      .exactOptional()
+      .openapi({ description: 'URLs associated with this note.' }),
+    sbom: DocumentNoteSchema.exactOptional().openapi({
+      description: 'A note describing a software bill of materials.',
+    }),
+    sbomReference: SBOMReferenceNoteSchema.exactOptional().openapi({
+      description: 'A note describing an SBOM reference.',
+    }),
+    shortDescription: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A one sentence description of this note.' }),
+    spdxFile: FileNoteSchema.exactOptional().openapi({
+      description: 'A note describing an SPDX File.',
+    }),
+    spdxPackage: PackageInfoNoteSchema.exactOptional().openapi({
+      description: 'A note describing an SPDX Package.',
+    }),
+    spdxRelationship: RelationshipNoteSchema.exactOptional().openapi({
+      description: 'A note describing an SPDX File.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The time this note was last updated. This field can be used as a filter in list requests.',
+      }),
+    vulnerability: VulnerabilitySchema.exactOptional().openapi({
+      description: 'A note describing a package vulnerability.',
+    }),
+    vulnerabilityAssessment: VulnerabilityAssessmentNoteSchema.exactOptional().openapi({
+      description: 'A note describing a vulnerability assessment.',
+    }),
+  })
+  .openapi({ description: 'A type of analysis that can be done for a resource.', required: [] })
+  .openapi('Note')
+
+type BatchCreateNotesRequestType = { notes?: { [key: string]: z.infer<typeof NoteSchema> } }
+
+type BatchCreateNotesResponseType = { notes?: z.infer<typeof NoteSchema>[] }
+
+const SignatureSchema = z
+  .object({
+    publicKeyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier for the public key that verifies this signature. * The `public_key_id` is required. * The `public_key_id` SHOULD be an RFC3986 conformant URI. * When possible, the `public_key_id` SHOULD be an immutable reference, such as a cryptographic digest. Examples of valid `public_key_id`s: OpenPGP V4 public key fingerprint: * "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA" See https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr for more details on this scheme. RFC6920 digest-named SubjectPublicKeyInfo (digest of the DER serialization): * "ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU" * "nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5"',
+      }),
+    signature: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The content of the signature, an opaque bytestring. The payload that this signature verifies MUST be unambiguously provided with the Signature during verification. A wrapper message might provide the payload explicitly. Alternatively, a message might have a canonical serialization that can always be unambiguously computed to derive the payload.',
+      }),
+  })
+  .openapi({
+    description:
+      'Verifiers (e.g. Kritis implementations) MUST verify signatures with respect to the trust anchors defined in policy (e.g. a Kritis policy). Typically this means that the verifier has been configured with a map from `public_key_id` to public key material (and any required parameters, e.g. signing algorithm). In particular, verification implementations MUST NOT treat the signature `public_key_id` as anything more than a key lookup hint. The `public_key_id` DOES NOT validate or authenticate a public key; it only provides a mechanism for quickly selecting a public key ALREADY CONFIGURED on the verifier through a trusted channel. Verification implementations MUST reject signatures in any of the following circumstances: * The `public_key_id` is not recognized by the verifier. * The public key that `public_key_id` refers to does not verify the signature with respect to the payload. The `signature` contents SHOULD NOT be "attached" (where the payload is included with the serialized `signature` bytes). Verifiers MUST ignore any "attached" payload and only verify signatures with respect to explicitly provided payload (e.g. a `payload` field on the proto message that holds this Signature, or the canonical serialization of the proto message that holds this signature).',
+    required: [],
+  })
+  .openapi('Signature')
+
+const GenericSignedAttestationSchema = z
+  .object({
+    contentType: z
+      .enum(['CONTENT_TYPE_UNSPECIFIED', 'SIMPLE_SIGNING_JSON'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type (for example schema) of the attestation payload that was signed. The verifier must ensure that the provided type is one that the verifier supports, and that the attestation payload is a valid instantiation of that type (for example by validating a JSON schema).',
+      }),
+    serializedPayload: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The serialized payload that is verified by one or more `signatures`. The encoding and semantic meaning of this payload must match what is set in `content_type`.',
+      }),
+    signatures: z
+      .array(SignatureSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'One or more signatures over `serialized_payload`. Verifier implementations should consider this attestation message verified if at least one `signature` verifies `serialized_payload`. See `Signature` in common.proto for more details on signature structure and verification.',
+      }),
+  })
+  .openapi({
+    description:
+      'An attestation wrapper that uses the Grafeas `Signature` message. This attestation must define the `serialized_payload` that the `signatures` verify and any metadata necessary to interpret that plaintext. The signatures should always be over the `serialized_payload` bytestring.',
+    required: [],
+  })
+  .openapi('GenericSignedAttestation')
+
+const PgpSignedAttestationSchema = z
+  .object({
+    contentType: z
+      .enum(['CONTENT_TYPE_UNSPECIFIED', 'SIMPLE_SIGNING_JSON'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Type (for example schema) of the attestation payload that was signed. The verifier must ensure that the provided type is one that the verifier supports, and that the attestation payload is a valid instantiation of that type (for example by validating a JSON schema).',
+      }),
+    pgpKeyId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The cryptographic fingerprint of the key used to generate the signature, as output by, e.g. `gpg --list-keys`. This should be the version 4, full 160-bit fingerprint, expressed as a 40 character hexadecimal string. See https://tools.ietf.org/html/rfc4880#section-12.2 for details. Implementations may choose to acknowledge "LONG", "SHORT", or other abbreviated key IDs, but only the full fingerprint is guaranteed to work. In gpg, the full fingerprint can be retrieved from the `fpr` field returned when calling --list-keys with --with-colons. For example: ``` gpg --with-colons --with-fingerprint --force-v4-certs \\ --list-keys attester@example.com tru::1:1513631572:0:3:1:5 pub:...... fpr:::::::::24FF6481B76AC91E66A00AC657A93A81EF3AE6FB: ``` Above, the fingerprint is `24FF6481B76AC91E66A00AC657A93A81EF3AE6FB`.',
+      }),
+    signature: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The raw content of the signature, as output by GNU Privacy Guard (GPG) or equivalent. Since this message only supports attached signatures, the payload that was signed must be attached. While the signature format supported is dependent on the verification implementation, currently only ASCII-armored (`--armor` to gpg), non-clearsigned (`--sign` rather than `--clearsign` to gpg) are supported. Concretely, `gpg --sign --armor --output=signature.gpg payload.json` will create the signature content expected in this field in `signature.gpg` for the `payload.json` attestation payload.',
+      }),
+  })
+  .openapi({
+    description:
+      'An attestation wrapper with a PGP-compatible signature. This message only supports `ATTACHED` signatures, where the payload that is signed is included alongside the signature itself in the same file.',
+    required: [],
+  })
+  .openapi('PgpSignedAttestation')
+
+const AttestationSchema = z
+  .object({
+    genericSignedAttestation: GenericSignedAttestationSchema.exactOptional(),
+    pgpSignedAttestation: PgpSignedAttestationSchema.exactOptional().openapi({
+      description: 'A PGP signed attestation.',
+    }),
+  })
+  .openapi({
+    description:
+      'Occurrence that represents a single "attestation". The authenticity of an attestation can be verified using the attached signature. If the verifier trusts the public key of the signer, then verifying the signature is sufficient to establish trust. In this circumstance, the authority to which this attestation is attached is primarily useful for look-up (how to find this attestation if you already know the authority and artifact to be verified) and intent (which authority was this attestation intended to sign for).',
+    required: [],
+  })
   .openapi('Attestation')
 
 const DetailsSchema = z
@@ -1480,30 +1547,114 @@ const CommandSchema = z
   })
   .openapi('Command')
 
-const SourceContextSchema: z.ZodType<SourceContextType> = z
-  .lazy(() =>
-    z
-      .object({
-        cloudRepo: CloudRepoSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to a revision in a Google Cloud Source Repo.',
-        }),
-        gerrit: GerritSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to a Gerrit project.',
-        }),
-        git: GitSourceContextSchema.exactOptional().openapi({
-          description: 'A SourceContext referring to any third party Git repo (e.g., GitHub).',
-        }),
-        labels: z
-          .record(z.string(), z.string())
-          .exactOptional()
-          .openapi({ description: 'Labels with user defined metadata.' }),
-      })
+const AliasContextSchema = z
+  .object({
+    kind: z
+      .enum(['KIND_UNSPECIFIED', 'FIXED', 'MOVABLE', 'OTHER'])
+      .exactOptional()
+      .openapi({ description: 'The alias kind.' }),
+    name: z.string().exactOptional().openapi({ description: 'The alias name.' }),
+  })
+  .openapi({ description: 'An alias to a repo revision.', required: [] })
+  .openapi('AliasContext')
+
+const ProjectRepoIdSchema = z
+  .object({
+    projectId: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
+    repoName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The name of the repo. Leave empty for the default repo.' }),
+  })
+  .openapi({
+    description:
+      'Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.',
+    required: [],
+  })
+  .openapi('ProjectRepoId')
+
+const RepoIdSchema = z
+  .object({
+    projectRepoId: ProjectRepoIdSchema.exactOptional().openapi({
+      description: 'A combination of a project ID and a repo name.',
+    }),
+    uid: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A server-assigned, globally unique identifier.' }),
+  })
+  .openapi({ description: 'A unique identifier for a Cloud Repo.', required: [] })
+  .openapi('RepoId')
+
+const CloudRepoSourceContextSchema = z
+  .object({
+    aliasContext: AliasContextSchema.exactOptional().openapi({
+      description: 'An alias, which may be a branch or tag.',
+    }),
+    repoId: RepoIdSchema.exactOptional().openapi({ description: 'The ID of the repo.' }),
+    revisionId: z.string().exactOptional().openapi({ description: 'A revision ID.' }),
+  })
+  .openapi({
+    description:
+      'A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.',
+    required: [],
+  })
+  .openapi('CloudRepoSourceContext')
+
+const GerritSourceContextSchema = z
+  .object({
+    aliasContext: AliasContextSchema.exactOptional().openapi({
+      description: 'An alias, which may be a branch or tag.',
+    }),
+    gerritProject: z
+      .string()
+      .exactOptional()
       .openapi({
         description:
-          'A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.',
-        required: [],
+          'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
       }),
-  )
+    hostUri: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The URI of a running Gerrit instance.' }),
+    revisionId: z.string().exactOptional().openapi({ description: 'A revision (commit) ID.' }),
+  })
+  .openapi({ description: 'A SourceContext referring to a Gerrit project.', required: [] })
+  .openapi('GerritSourceContext')
+
+const GitSourceContextSchema = z
+  .object({
+    revisionId: z.string().exactOptional().openapi({ description: 'Git commit hash.' }),
+    url: z.string().exactOptional().openapi({ description: 'Git repository URL.' }),
+  })
+  .openapi({
+    description:
+      'A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).',
+    required: [],
+  })
+  .openapi('GitSourceContext')
+
+const SourceContextSchema = z
+  .object({
+    cloudRepo: CloudRepoSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to a revision in a Google Cloud Source Repo.',
+    }),
+    gerrit: GerritSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to a Gerrit project.',
+    }),
+    git: GitSourceContextSchema.exactOptional().openapi({
+      description: 'A SourceContext referring to any third party Git repo (e.g., GitHub).',
+    }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({ description: 'Labels with user defined metadata.' }),
+  })
+  .openapi({
+    description:
+      'A SourceContext is a reference to a tree of files. A SourceContext together with a path point to a unique revision of a single file or directory.',
+    required: [],
+  })
   .openapi('SourceContext')
 
 const HashSchema = z
@@ -1632,7 +1783,12 @@ const BuildProvenanceSchema = z
   })
   .openapi('BuildProvenance')
 
-const GrafeasV1beta1BuildDetailsSchema = z
+type GrafeasV1beta1BuildDetailsType = {
+  provenance?: z.infer<typeof BuildProvenanceSchema>
+  provenanceBytes?: string
+}
+
+const GrafeasV1beta1BuildDetailsSchema: z.ZodType<GrafeasV1beta1BuildDetailsType> = z
   .object({
     provenance: BuildProvenanceSchema.exactOptional().openapi({
       description: 'Required. The actual provenance for the build.',
@@ -2668,226 +2824,126 @@ type OccurrenceType = {
   vulnerability?: z.infer<typeof GrafeasV1beta1VulnerabilityDetailsSchema>
 }
 
-const ProjectRepoIdSchema = z
+const OccurrenceSchema: z.ZodType<OccurrenceType> = z
   .object({
-    projectId: z.string().exactOptional().openapi({ description: 'The ID of the project.' }),
-    repoName: z
+    attestation: DetailsSchema.exactOptional().openapi({
+      description: 'Describes an attestation of an artifact.',
+    }),
+    build: GrafeasV1beta1BuildDetailsSchema.exactOptional().openapi({
+      description: 'Describes a verifiable build.',
+    }),
+    createTime: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The name of the repo. Leave empty for the default repo.' }),
-  })
-  .openapi({
-    description:
-      'Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.',
-    required: [],
-  })
-  .openapi('ProjectRepoId')
-
-type RepoIdType = { projectRepoId?: z.infer<typeof ProjectRepoIdSchema>; uid?: string }
-
-const AliasContextSchema = z
-  .object({
+      .openapi({ description: 'Output only. The time this occurrence was created.' }),
+    deployment: GrafeasV1beta1DeploymentDetailsSchema.exactOptional().openapi({
+      description: 'Describes the deployment of an artifact on a runtime.',
+    }),
+    derivedImage: GrafeasV1beta1ImageDetailsSchema.exactOptional().openapi({
+      description: 'Describes how this resource derives from the basis in the associated note.',
+    }),
+    discovered: GrafeasV1beta1DiscoveryDetailsSchema.exactOptional().openapi({
+      description: 'Describes when a resource was discovered.',
+    }),
+    envelope: EnvelopeSchema.exactOptional().openapi({
+      description: 'https://github.com/secure-systems-lab/dsse',
+    }),
+    installation: GrafeasV1beta1PackageDetailsSchema.exactOptional().openapi({
+      description: 'Describes the installation of a package on the linked resource.',
+    }),
+    intoto: GrafeasV1beta1IntotoDetailsSchema.exactOptional().openapi({
+      description: 'Describes a specific in-toto link.',
+    }),
     kind: z
-      .enum(['KIND_UNSPECIFIED', 'FIXED', 'MOVABLE', 'OTHER'])
+      .enum([
+        'NOTE_KIND_UNSPECIFIED',
+        'VULNERABILITY',
+        'BUILD',
+        'IMAGE',
+        'PACKAGE',
+        'DEPLOYMENT',
+        'DISCOVERY',
+        'ATTESTATION',
+        'INTOTO',
+        'SBOM',
+        'SPDX_PACKAGE',
+        'SPDX_FILE',
+        'SPDX_RELATIONSHIP',
+        'VULNERABILITY_ASSESSMENT',
+        'SBOM_REFERENCE',
+      ])
       .exactOptional()
-      .openapi({ description: 'The alias kind.' }),
-    name: z.string().exactOptional().openapi({ description: 'The alias name.' }),
-  })
-  .openapi({ description: 'An alias to a repo revision.', required: [] })
-  .openapi('AliasContext')
-
-const RepoIdSchema: z.ZodType<RepoIdType> = z
-  .lazy(() =>
-    z
-      .object({
-        projectRepoId: ProjectRepoIdSchema.exactOptional().openapi({
-          description: 'A combination of a project ID and a repo name.',
-        }),
-        uid: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A server-assigned, globally unique identifier.' }),
-      })
-      .openapi({ description: 'A unique identifier for a Cloud Repo.', required: [] }),
-  )
-  .openapi('RepoId')
-
-const CloudRepoSourceContextSchema = z
-  .object({
-    aliasContext: AliasContextSchema.exactOptional().openapi({
-      description: 'An alias, which may be a branch or tag.',
-    }),
-    repoId: RepoIdSchema.exactOptional().openapi({ description: 'The ID of the repo.' }),
-    revisionId: z.string().exactOptional().openapi({ description: 'A revision ID.' }),
-  })
-  .openapi({
-    description:
-      'A CloudRepoSourceContext denotes a particular revision in a Google Cloud Source Repo.',
-    required: [],
-  })
-  .openapi('CloudRepoSourceContext')
-
-const GerritSourceContextSchema = z
-  .object({
-    aliasContext: AliasContextSchema.exactOptional().openapi({
-      description: 'An alias, which may be a branch or tag.',
-    }),
-    gerritProject: z
+      .openapi({
+        description:
+          'Output only. This explicitly denotes which of the occurrence details are specified. This field can be used as a filter in list requests.',
+      }),
+    name: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The full project name within the host. Projects may be nested, so "project/subproject" is a valid project name. The "repo name" is the hostURI/project.',
+          'Output only. The name of the occurrence in the form of `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.',
       }),
-    hostUri: z
+    noteName: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The URI of a running Gerrit instance.' }),
-    revisionId: z.string().exactOptional().openapi({ description: 'A revision (commit) ID.' }),
-  })
-  .openapi({ description: 'A SourceContext referring to a Gerrit project.', required: [] })
-  .openapi('GerritSourceContext')
-
-const GitSourceContextSchema = z
-  .object({
-    revisionId: z.string().exactOptional().openapi({ description: 'Git commit hash.' }),
-    url: z.string().exactOptional().openapi({ description: 'Git repository URL.' }),
+      .openapi({
+        description:
+          'Required. Immutable. The analysis note associated with this occurrence, in the form of `projects/[PROVIDER_ID]/notes/[NOTE_ID]`. This field can be used as a filter in list requests.',
+      }),
+    remediation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A description of actions that can be taken to remedy the note.' }),
+    resource: ResourceSchema.exactOptional().openapi({
+      description: 'Required. Immutable. The resource for which the occurrence applies.',
+    }),
+    sbom: DocumentOccurrenceSchema.exactOptional().openapi({
+      description: 'Describes a specific software bill of materials document.',
+    }),
+    sbomReference: SBOMReferenceOccurrenceSchema.exactOptional().openapi({
+      description: 'Describes a specific SBOM reference occurrences.',
+    }),
+    spdxFile: FileOccurrenceSchema.exactOptional().openapi({
+      description: 'Describes a specific SPDX File.',
+    }),
+    spdxPackage: PackageInfoOccurrenceSchema.exactOptional().openapi({
+      description: 'Describes a specific SPDX Package.',
+    }),
+    spdxRelationship: RelationshipOccurrenceSchema.exactOptional().openapi({
+      description: 'Describes a specific SPDX Relationship.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time this occurrence was last updated.' }),
+    vulnerability: GrafeasV1beta1VulnerabilityDetailsSchema.exactOptional().openapi({
+      description: 'Describes a security vulnerability.',
+    }),
   })
   .openapi({
-    description:
-      'A GitSourceContext denotes a particular revision in a third party Git repository (e.g., GitHub).',
+    description: 'An instance of an analysis type that has been found on a resource.',
     required: [],
   })
-  .openapi('GitSourceContext')
+  .openapi('Occurrence')
 
-type SourceContextType = {
-  cloudRepo?: z.infer<typeof CloudRepoSourceContextSchema>
-  gerrit?: z.infer<typeof GerritSourceContextSchema>
-  git?: z.infer<typeof GitSourceContextSchema>
-  labels?: { [key: string]: string }
+type BatchCreateOccurrencesRequestType = { occurrences?: z.infer<typeof OccurrenceSchema>[] }
+
+type BatchCreateOccurrencesResponseType = { occurrences?: z.infer<typeof OccurrenceSchema>[] }
+
+type ListNoteOccurrencesResponseType = {
+  nextPageToken?: string
+  occurrences?: z.infer<typeof OccurrenceSchema>[]
 }
 
-const NoteSchema: z.ZodType<NoteType> = z
-  .lazy(() =>
-    z
-      .object({
-        attestationAuthority: AuthoritySchema.exactOptional().openapi({
-          description: 'A note describing an attestation role.',
-        }),
-        baseImage: BasisSchema.exactOptional().openapi({
-          description: 'A note describing a base image.',
-        }),
-        build: BuildSchema.exactOptional().openapi({
-          description: 'A note describing build provenance for a verifiable build.',
-        }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The time this note was created. This field can be used as a filter in list requests.',
-          }),
-        deployable: DeployableSchema.exactOptional().openapi({
-          description: 'A note describing something that can be deployed.',
-        }),
-        discovery: DiscoverySchema.exactOptional().openapi({
-          description: 'A note describing the initial analysis of a resource.',
-        }),
-        expirationTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'Time of expiration for this note. Empty if note does not expire.',
-          }),
-        intoto: InTotoSchema.exactOptional().openapi({
-          description: 'A note describing an in-toto link.',
-        }),
-        kind: z
-          .enum([
-            'NOTE_KIND_UNSPECIFIED',
-            'VULNERABILITY',
-            'BUILD',
-            'IMAGE',
-            'PACKAGE',
-            'DEPLOYMENT',
-            'DISCOVERY',
-            'ATTESTATION',
-            'INTOTO',
-            'SBOM',
-            'SPDX_PACKAGE',
-            'SPDX_FILE',
-            'SPDX_RELATIONSHIP',
-            'VULNERABILITY_ASSESSMENT',
-            'SBOM_REFERENCE',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The type of analysis. This field can be used as a filter in list requests.',
-          }),
-        longDescription: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A detailed description of this note.' }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The name of the note in the form of `projects/[PROVIDER_ID]/notes/[NOTE_ID]`.',
-          }),
-        package: PackageSchema.exactOptional().openapi({
-          description: 'A note describing a package hosted by various package managers.',
-        }),
-        relatedNoteNames: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'Other notes related to this note.' }),
-        relatedUrl: z
-          .array(RelatedUrlSchema)
-          .exactOptional()
-          .openapi({ description: 'URLs associated with this note.' }),
-        sbom: DocumentNoteSchema.exactOptional().openapi({
-          description: 'A note describing a software bill of materials.',
-        }),
-        sbomReference: SBOMReferenceNoteSchema.exactOptional().openapi({
-          description: 'A note describing an SBOM reference.',
-        }),
-        shortDescription: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A one sentence description of this note.' }),
-        spdxFile: FileNoteSchema.exactOptional().openapi({
-          description: 'A note describing an SPDX File.',
-        }),
-        spdxPackage: PackageInfoNoteSchema.exactOptional().openapi({
-          description: 'A note describing an SPDX Package.',
-        }),
-        spdxRelationship: RelationshipNoteSchema.exactOptional().openapi({
-          description: 'A note describing an SPDX File.',
-        }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The time this note was last updated. This field can be used as a filter in list requests.',
-          }),
-        vulnerability: VulnerabilitySchema.exactOptional().openapi({
-          description: 'A note describing a package vulnerability.',
-        }),
-        vulnerabilityAssessment: VulnerabilityAssessmentNoteSchema.exactOptional().openapi({
-          description: 'A note describing a vulnerability assessment.',
-        }),
-      })
-      .openapi({
-        description: 'A type of analysis that can be done for a resource.',
-        required: [],
-      }),
-  )
-  .openapi('Note')
+type ListNotesResponseType = { nextPageToken?: string; notes?: z.infer<typeof NoteSchema>[] }
 
-const BatchCreateNotesRequestSchema = z
+type ListOccurrencesResponseType = {
+  nextPageToken?: string
+  occurrences?: z.infer<typeof OccurrenceSchema>[]
+}
+
+const BatchCreateNotesRequestSchema: z.ZodType<BatchCreateNotesRequestType> = z
   .object({
     notes: z
       .record(z.string(), NoteSchema)
@@ -2900,7 +2956,7 @@ const BatchCreateNotesRequestSchema = z
   .openapi({ description: 'Request to create notes in batch.', required: [] })
   .openapi('BatchCreateNotesRequest')
 
-const BatchCreateNotesResponseSchema = z
+const BatchCreateNotesResponseSchema: z.ZodType<BatchCreateNotesResponseType> = z
   .object({
     notes: z
       .array(NoteSchema)
@@ -2910,115 +2966,7 @@ const BatchCreateNotesResponseSchema = z
   .openapi({ description: 'Response for creating notes in batch.', required: [] })
   .openapi('BatchCreateNotesResponse')
 
-const OccurrenceSchema: z.ZodType<OccurrenceType> = z
-  .lazy(() =>
-    z
-      .object({
-        attestation: DetailsSchema.exactOptional().openapi({
-          description: 'Describes an attestation of an artifact.',
-        }),
-        build: GrafeasV1beta1BuildDetailsSchema.exactOptional().openapi({
-          description: 'Describes a verifiable build.',
-        }),
-        createTime: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. The time this occurrence was created.' }),
-        deployment: GrafeasV1beta1DeploymentDetailsSchema.exactOptional().openapi({
-          description: 'Describes the deployment of an artifact on a runtime.',
-        }),
-        derivedImage: GrafeasV1beta1ImageDetailsSchema.exactOptional().openapi({
-          description: 'Describes how this resource derives from the basis in the associated note.',
-        }),
-        discovered: GrafeasV1beta1DiscoveryDetailsSchema.exactOptional().openapi({
-          description: 'Describes when a resource was discovered.',
-        }),
-        envelope: EnvelopeSchema.exactOptional().openapi({
-          description: 'https://github.com/secure-systems-lab/dsse',
-        }),
-        installation: GrafeasV1beta1PackageDetailsSchema.exactOptional().openapi({
-          description: 'Describes the installation of a package on the linked resource.',
-        }),
-        intoto: GrafeasV1beta1IntotoDetailsSchema.exactOptional().openapi({
-          description: 'Describes a specific in-toto link.',
-        }),
-        kind: z
-          .enum([
-            'NOTE_KIND_UNSPECIFIED',
-            'VULNERABILITY',
-            'BUILD',
-            'IMAGE',
-            'PACKAGE',
-            'DEPLOYMENT',
-            'DISCOVERY',
-            'ATTESTATION',
-            'INTOTO',
-            'SBOM',
-            'SPDX_PACKAGE',
-            'SPDX_FILE',
-            'SPDX_RELATIONSHIP',
-            'VULNERABILITY_ASSESSMENT',
-            'SBOM_REFERENCE',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. This explicitly denotes which of the occurrence details are specified. This field can be used as a filter in list requests.',
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Output only. The name of the occurrence in the form of `projects/[PROJECT_ID]/occurrences/[OCCURRENCE_ID]`.',
-          }),
-        noteName: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required. Immutable. The analysis note associated with this occurrence, in the form of `projects/[PROVIDER_ID]/notes/[NOTE_ID]`. This field can be used as a filter in list requests.',
-          }),
-        remediation: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'A description of actions that can be taken to remedy the note.',
-          }),
-        resource: ResourceSchema.exactOptional().openapi({
-          description: 'Required. Immutable. The resource for which the occurrence applies.',
-        }),
-        sbom: DocumentOccurrenceSchema.exactOptional().openapi({
-          description: 'Describes a specific software bill of materials document.',
-        }),
-        sbomReference: SBOMReferenceOccurrenceSchema.exactOptional().openapi({
-          description: 'Describes a specific SBOM reference occurrences.',
-        }),
-        spdxFile: FileOccurrenceSchema.exactOptional().openapi({
-          description: 'Describes a specific SPDX File.',
-        }),
-        spdxPackage: PackageInfoOccurrenceSchema.exactOptional().openapi({
-          description: 'Describes a specific SPDX Package.',
-        }),
-        spdxRelationship: RelationshipOccurrenceSchema.exactOptional().openapi({
-          description: 'Describes a specific SPDX Relationship.',
-        }),
-        updateTime: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Output only. The time this occurrence was last updated.' }),
-        vulnerability: GrafeasV1beta1VulnerabilityDetailsSchema.exactOptional().openapi({
-          description: 'Describes a security vulnerability.',
-        }),
-      })
-      .openapi({
-        description: 'An instance of an analysis type that has been found on a resource.',
-        required: [],
-      }),
-  )
-  .openapi('Occurrence')
-
-const BatchCreateOccurrencesRequestSchema = z
+const BatchCreateOccurrencesRequestSchema: z.ZodType<BatchCreateOccurrencesRequestType> = z
   .object({
     occurrences: z
       .array(OccurrenceSchema)
@@ -3028,7 +2976,7 @@ const BatchCreateOccurrencesRequestSchema = z
   .openapi({ description: 'Request to create occurrences in batch.', required: [] })
   .openapi('BatchCreateOccurrencesRequest')
 
-const BatchCreateOccurrencesResponseSchema = z
+const BatchCreateOccurrencesResponseSchema: z.ZodType<BatchCreateOccurrencesResponseType> = z
   .object({
     occurrences: z
       .array(OccurrenceSchema)
@@ -4450,7 +4398,7 @@ const ContaineranalysisGoogleDevtoolsCloudbuildV1BuildSchema = z
   .openapi('ContaineranalysisGoogleDevtoolsCloudbuildV1Build')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -4529,7 +4477,7 @@ const GoogleDevtoolsContaineranalysisV1alpha1OperationMetadataSchema = z
   })
   .openapi('GoogleDevtoolsContaineranalysisV1alpha1OperationMetadata')
 
-const ListNoteOccurrencesResponseSchema = z
+const ListNoteOccurrencesResponseSchema: z.ZodType<ListNoteOccurrencesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -4543,7 +4491,7 @@ const ListNoteOccurrencesResponseSchema = z
   .openapi({ description: 'Response for listing occurrences for a note.', required: [] })
   .openapi('ListNoteOccurrencesResponse')
 
-const ListNotesResponseSchema = z
+const ListNotesResponseSchema: z.ZodType<ListNotesResponseType> = z
   .object({
     nextPageToken: z
       .string()
@@ -4557,7 +4505,7 @@ const ListNotesResponseSchema = z
   .openapi({ description: 'Response for listing notes.', required: [] })
   .openapi('ListNotesResponse')
 
-const ListOccurrencesResponseSchema = z
+const ListOccurrencesResponseSchema: z.ZodType<ListOccurrencesResponseType> = z
   .object({
     nextPageToken: z
       .string()

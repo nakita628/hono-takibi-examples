@@ -8,7 +8,7 @@ Base URLs:
 
 * <a href="http://restful4up.local">http://restful4up.local</a>
 
-* <a href="https://api.apis.guru/v1">https://api.apis.guru/v1</a>
+* <a href="/v1">/v1</a>
 
 <h1 id="restful4up-default">Default</h1>
 

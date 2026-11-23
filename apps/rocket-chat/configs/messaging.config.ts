@@ -6,6 +6,17 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/messaging.yaml',
   output: './src/messaging/routes.ts',
+  template: {},
+  type: { output: './src/messaging/types.ts' },
+  client: { output: './src/messaging/client.ts', baseUrl: '/' },
+  rpc: { output: './src/messaging/rpc.ts', parseResponse: true },
+  swr: { output: './src/messaging/hooks/swr.ts' },
+  'tanstack-query': { output: './src/messaging/hooks/tanstack-query.ts' },
+  'preact-query': { output: './src/messaging/hooks/preact-query.ts' },
+  'solid-query': { output: './src/messaging/hooks/solid-query.ts' },
+  'vue-query': { output: './src/messaging/hooks/vue-query.ts' },
+  'svelte-query': { output: './src/messaging/hooks/svelte-query.ts' },
+  'angular-query': { output: './src/messaging/hooks/angular-query.ts' },
   docs: {
     output: './src/messaging/api.md',
     curl: true,

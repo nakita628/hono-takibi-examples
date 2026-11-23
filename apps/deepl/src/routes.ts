@@ -2508,7 +2508,7 @@ const TagHandlingVersionOptionSchema = z
   .enum(['v2', 'v1'])
   .openapi({
     description:
-      'Sets which version of the tag handling algorithm should be used. Options currently available:\n* `v1`: Traditional algorithm (currently the default, will become deprecated in the future).\n* `v2`: Improved algorithm released in October 2025 (will become the default in the future).',
+      'Sets which version of the tag handling algorithm should be used. Options currently available:\n* `v1`: Traditional algorithm (will become deprecated in the future).\n* `v2`: Improved algorithm released in October 2025. This is the default.\n\nThe `tag_handling_version` field in the response shows which version was applied.',
   })
   .openapi('TagHandlingVersionOption')
 

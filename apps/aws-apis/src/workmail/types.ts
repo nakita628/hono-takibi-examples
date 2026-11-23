@@ -1,0 +1,8537 @@
+type AssociateDelegateToResourceRequest = { OrganizationId: {}; ResourceId: {}; EntityId: {} }
+type AssociateDelegateToResourceResponse = { [x: string]: unknown }
+type EntityNotFoundException = { [x: string]: unknown }
+type EntityStateException = { [x: string]: unknown }
+type InvalidParameterException = { [x: string]: unknown }
+type OrganizationNotFoundException = { [x: string]: unknown }
+type OrganizationStateException = { [x: string]: unknown }
+type AssociateMemberToGroupRequest = { OrganizationId: {}; GroupId: {}; MemberId: {} }
+type AssociateMemberToGroupResponse = { [x: string]: unknown }
+type DirectoryServiceAuthenticationFailedException = { [x: string]: unknown }
+type DirectoryUnavailableException = { [x: string]: unknown }
+type UnsupportedOperationException = { [x: string]: unknown }
+type AssumeImpersonationRoleRequest = { OrganizationId: {}; ImpersonationRoleId: {} }
+type AssumeImpersonationRoleResponse = { Token?: {} | undefined; ExpiresIn?: {} | undefined }
+type ResourceNotFoundException = { [x: string]: unknown }
+type CancelMailboxExportJobRequest = { ClientToken: {}; JobId: {}; OrganizationId: {} }
+type CancelMailboxExportJobResponse = { [x: string]: unknown }
+type CreateAliasRequest = { OrganizationId: {}; EntityId: {}; Alias: {} }
+type CreateAliasResponse = { [x: string]: unknown }
+type EmailAddressInUseException = { [x: string]: unknown }
+type MailDomainNotFoundException = { [x: string]: unknown }
+type MailDomainStateException = { [x: string]: unknown }
+type LimitExceededException = { [x: string]: unknown }
+type CreateAvailabilityConfigurationRequest = {
+  ClientToken?: {} | undefined
+  OrganizationId: {}
+  DomainName: {}
+  EwsProvider?: { EwsEndpoint: {}; EwsUsername: {}; EwsPassword: {} } | undefined
+  LambdaProvider?: { LambdaArn: {} } | undefined
+}
+type CreateAvailabilityConfigurationResponse = { [x: string]: unknown }
+type NameAvailabilityException = { [x: string]: unknown }
+type CreateGroupRequest = { OrganizationId: {}; Name: {} }
+type CreateGroupResponse = { GroupId?: {} | undefined }
+type ReservedNameException = { [x: string]: unknown }
+type CreateImpersonationRoleRequest = {
+  ClientToken?: {} | undefined
+  OrganizationId: {}
+  Name: {}
+  Type: {}
+  Description?: {} | undefined
+  Rules: {}
+}
+type CreateImpersonationRoleResponse = { ImpersonationRoleId?: {} | undefined }
+type CreateMobileDeviceAccessRuleRequest = {
+  OrganizationId: {}
+  ClientToken?: {} | undefined
+  Name: {}
+  Description?: {} | undefined
+  Effect: {}
+  DeviceTypes?: {} | undefined
+  NotDeviceTypes?: {} | undefined
+  DeviceModels?: {} | undefined
+  NotDeviceModels?: {} | undefined
+  DeviceOperatingSystems?: {} | undefined
+  NotDeviceOperatingSystems?: {} | undefined
+  DeviceUserAgents?: {} | undefined
+  NotDeviceUserAgents?: {} | undefined
+}
+type CreateMobileDeviceAccessRuleResponse = { MobileDeviceAccessRuleId?: {} | undefined }
+type CreateOrganizationRequest = {
+  DirectoryId?: {} | undefined
+  Alias: {}
+  ClientToken?: {} | undefined
+  Domains?: {} | undefined
+  KmsKeyArn?: {} | undefined
+  EnableInteroperability?: {} | undefined
+}
+type CreateOrganizationResponse = { OrganizationId?: {} | undefined }
+type DirectoryInUseException = { [x: string]: unknown }
+type CreateResourceRequest = { OrganizationId: {}; Name: {}; Type: {} }
+type CreateResourceResponse = { ResourceId?: {} | undefined }
+type CreateUserRequest = { OrganizationId: {}; Name: {}; DisplayName: {}; Password: {} }
+type CreateUserResponse = { UserId?: {} | undefined }
+type InvalidPasswordException = { [x: string]: unknown }
+type DeleteAccessControlRuleRequest = { OrganizationId: {}; Name: {} }
+type DeleteAccessControlRuleResponse = { [x: string]: unknown }
+type DeleteAliasRequest = { OrganizationId: {}; EntityId: {}; Alias: {} }
+type DeleteAliasResponse = { [x: string]: unknown }
+type DeleteAvailabilityConfigurationRequest = { OrganizationId: {}; DomainName: {} }
+type DeleteAvailabilityConfigurationResponse = { [x: string]: unknown }
+type DeleteEmailMonitoringConfigurationRequest = { OrganizationId: {} }
+type DeleteEmailMonitoringConfigurationResponse = { [x: string]: unknown }
+type DeleteGroupRequest = { OrganizationId: {}; GroupId: {} }
+type DeleteGroupResponse = { [x: string]: unknown }
+type DeleteImpersonationRoleRequest = { OrganizationId: {}; ImpersonationRoleId: {} }
+type DeleteImpersonationRoleResponse = { [x: string]: unknown }
+type DeleteMailboxPermissionsRequest = { OrganizationId: {}; EntityId: {}; GranteeId: {} }
+type DeleteMailboxPermissionsResponse = { [x: string]: unknown }
+type DeleteMobileDeviceAccessOverrideRequest = { OrganizationId: {}; UserId: {}; DeviceId: {} }
+type DeleteMobileDeviceAccessOverrideResponse = { [x: string]: unknown }
+type DeleteMobileDeviceAccessRuleRequest = { OrganizationId: {}; MobileDeviceAccessRuleId: {} }
+type DeleteMobileDeviceAccessRuleResponse = { [x: string]: unknown }
+type DeleteOrganizationRequest = {
+  ClientToken?: {} | undefined
+  OrganizationId: {}
+  DeleteDirectory: {}
+}
+type DeleteOrganizationResponse = { OrganizationId?: {} | undefined; State?: {} | undefined }
+type DeleteResourceRequest = { OrganizationId: {}; ResourceId: {} }
+type DeleteResourceResponse = { [x: string]: unknown }
+type DeleteRetentionPolicyRequest = { OrganizationId: {}; Id: {} }
+type DeleteRetentionPolicyResponse = { [x: string]: unknown }
+type DeleteUserRequest = { OrganizationId: {}; UserId: {} }
+type DeleteUserResponse = { [x: string]: unknown }
+type DeregisterFromWorkMailRequest = { OrganizationId: {}; EntityId: {} }
+type DeregisterFromWorkMailResponse = { [x: string]: unknown }
+type DeregisterMailDomainRequest = { OrganizationId: {}; DomainName: {} }
+type DeregisterMailDomainResponse = { [x: string]: unknown }
+type MailDomainInUseException = { [x: string]: unknown }
+type InvalidCustomSesConfigurationException = { [x: string]: unknown }
+type DescribeEmailMonitoringConfigurationRequest = { OrganizationId: {} }
+type DescribeEmailMonitoringConfigurationResponse = {
+  RoleArn?: {} | undefined
+  LogGroupArn?: {} | undefined
+}
+type DescribeGroupRequest = { OrganizationId: {}; GroupId: {} }
+type DescribeGroupResponse = {
+  GroupId?: {} | undefined
+  Name?: {} | undefined
+  Email?: {} | undefined
+  State?: {} | undefined
+  EnabledDate?: {} | undefined
+  DisabledDate?: {} | undefined
+}
+type DescribeInboundDmarcSettingsRequest = { OrganizationId: {} }
+type DescribeInboundDmarcSettingsResponse = { Enforced?: {} | undefined }
+type DescribeMailboxExportJobRequest = { JobId: {}; OrganizationId: {} }
+type DescribeMailboxExportJobResponse = {
+  EntityId?: {} | undefined
+  Description?: {} | undefined
+  RoleArn?: {} | undefined
+  KmsKeyArn?: {} | undefined
+  S3BucketName?: {} | undefined
+  S3Prefix?: {} | undefined
+  S3Path?: {} | undefined
+  EstimatedProgress?: {} | undefined
+  State?: {} | undefined
+  ErrorInfo?: {} | undefined
+  StartTime?: {} | undefined
+  EndTime?: {} | undefined
+}
+type DescribeOrganizationRequest = { OrganizationId: {} }
+type DescribeOrganizationResponse = {
+  OrganizationId?: {} | undefined
+  Alias?: {} | undefined
+  State?: {} | undefined
+  DirectoryId?: {} | undefined
+  DirectoryType?: {} | undefined
+  DefaultMailDomain?: {} | undefined
+  CompletedDate?: {} | undefined
+  ErrorMessage?: {} | undefined
+  ARN?: {} | undefined
+}
+type DescribeResourceRequest = { OrganizationId: {}; ResourceId: {} }
+type DescribeResourceResponse = {
+  ResourceId?: {} | undefined
+  Email?: {} | undefined
+  Name?: {} | undefined
+  Type?: {} | undefined
+  BookingOptions?:
+    | {
+        AutoAcceptRequests?: {} | undefined
+        AutoDeclineRecurringRequests?: {} | undefined
+        AutoDeclineConflictingRequests?: {} | undefined
+      }
+    | undefined
+  State?: {} | undefined
+  EnabledDate?: {} | undefined
+  DisabledDate?: {} | undefined
+}
+type DescribeUserRequest = { OrganizationId: {}; UserId: {} }
+type DescribeUserResponse = {
+  UserId?: {} | undefined
+  Name?: {} | undefined
+  Email?: {} | undefined
+  DisplayName?: {} | undefined
+  State?: {} | undefined
+  UserRole?: {} | undefined
+  EnabledDate?: {} | undefined
+  DisabledDate?: {} | undefined
+}
+type DisassociateDelegateFromResourceRequest = { OrganizationId: {}; ResourceId: {}; EntityId: {} }
+type DisassociateDelegateFromResourceResponse = { [x: string]: unknown }
+type DisassociateMemberFromGroupRequest = { OrganizationId: {}; GroupId: {}; MemberId: {} }
+type DisassociateMemberFromGroupResponse = { [x: string]: unknown }
+type GetAccessControlEffectRequest = {
+  OrganizationId: {}
+  IpAddress: {}
+  Action: {}
+  UserId?: {} | undefined
+  ImpersonationRoleId?: {} | undefined
+}
+type GetAccessControlEffectResponse = { Effect?: {} | undefined; MatchedRules?: {} | undefined }
+type GetDefaultRetentionPolicyRequest = { OrganizationId: {} }
+type GetDefaultRetentionPolicyResponse = {
+  Id?: {} | undefined
+  Name?: {} | undefined
+  Description?: {} | undefined
+  FolderConfigurations?: {} | undefined
+}
+type GetImpersonationRoleRequest = { OrganizationId: {}; ImpersonationRoleId: {} }
+type GetImpersonationRoleResponse = {
+  ImpersonationRoleId?: {} | undefined
+  Name?: {} | undefined
+  Type?: {} | undefined
+  Description?: {} | undefined
+  Rules?: {} | undefined
+  DateCreated?: {} | undefined
+  DateModified?: {} | undefined
+}
+type GetImpersonationRoleEffectRequest = {
+  OrganizationId: {}
+  ImpersonationRoleId: {}
+  TargetUser: {}
+}
+type GetImpersonationRoleEffectResponse = {
+  Type?: {} | undefined
+  Effect?: {} | undefined
+  MatchedRules?: {} | undefined
+}
+type GetMailDomainRequest = { OrganizationId: {}; DomainName: {} }
+type GetMailDomainResponse = {
+  Records?: {} | undefined
+  IsTestDomain?: {} | undefined
+  IsDefault?: {} | undefined
+  OwnershipVerificationStatus?: {} | undefined
+  DkimVerificationStatus?: {} | undefined
+}
+type GetMailboxDetailsRequest = { OrganizationId: {}; UserId: {} }
+type GetMailboxDetailsResponse = { MailboxQuota?: {} | undefined; MailboxSize?: {} | undefined }
+type GetMobileDeviceAccessEffectRequest = {
+  OrganizationId: {}
+  DeviceType?: {} | undefined
+  DeviceModel?: {} | undefined
+  DeviceOperatingSystem?: {} | undefined
+  DeviceUserAgent?: {} | undefined
+}
+type GetMobileDeviceAccessEffectResponse = {
+  Effect?: {} | undefined
+  MatchedRules?: {} | undefined
+}
+type GetMobileDeviceAccessOverrideRequest = { OrganizationId: {}; UserId: {}; DeviceId: {} }
+type GetMobileDeviceAccessOverrideResponse = {
+  UserId?: {} | undefined
+  DeviceId?: {} | undefined
+  Effect?: {} | undefined
+  Description?: {} | undefined
+  DateCreated?: {} | undefined
+  DateModified?: {} | undefined
+}
+type ListAccessControlRulesRequest = { OrganizationId: {} }
+type ListAccessControlRulesResponse = { Rules?: {} | undefined }
+type ListAliasesRequest = {
+  OrganizationId: {}
+  EntityId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListAliasesResponse = { Aliases?: {} | undefined; NextToken?: {} | undefined }
+type ListAvailabilityConfigurationsRequest = {
+  OrganizationId: {}
+  MaxResults?: {} | undefined
+  NextToken?: {} | undefined
+}
+type ListAvailabilityConfigurationsResponse = {
+  AvailabilityConfigurations?: {} | undefined
+  NextToken?: {} | undefined
+}
+type ListGroupMembersRequest = {
+  OrganizationId: {}
+  GroupId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListGroupMembersResponse = { Members?: {} | undefined; NextToken?: {} | undefined }
+type ListGroupsRequest = {
+  OrganizationId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListGroupsResponse = { Groups?: {} | undefined; NextToken?: {} | undefined }
+type ListImpersonationRolesRequest = {
+  OrganizationId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListImpersonationRolesResponse = { Roles?: {} | undefined; NextToken?: {} | undefined }
+type ListMailDomainsRequest = {
+  OrganizationId: {}
+  MaxResults?: {} | undefined
+  NextToken?: {} | undefined
+}
+type ListMailDomainsResponse = { MailDomains?: {} | undefined; NextToken?: {} | undefined }
+type ListMailboxExportJobsRequest = {
+  OrganizationId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListMailboxExportJobsResponse = { Jobs?: {} | undefined; NextToken?: {} | undefined }
+type ListMailboxPermissionsRequest = {
+  OrganizationId: {}
+  EntityId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListMailboxPermissionsResponse = { Permissions?: {} | undefined; NextToken?: {} | undefined }
+type ListMobileDeviceAccessOverridesRequest = {
+  OrganizationId: {}
+  UserId?: {} | undefined
+  DeviceId?: {} | undefined
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListMobileDeviceAccessOverridesResponse = {
+  Overrides?: {} | undefined
+  NextToken?: {} | undefined
+}
+type ListMobileDeviceAccessRulesRequest = { OrganizationId: {} }
+type ListMobileDeviceAccessRulesResponse = { Rules?: {} | undefined }
+type ListOrganizationsRequest = { NextToken?: {} | undefined; MaxResults?: {} | undefined }
+type ListOrganizationsResponse = {
+  OrganizationSummaries?: {} | undefined
+  NextToken?: {} | undefined
+}
+type ListResourceDelegatesRequest = {
+  OrganizationId: {}
+  ResourceId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListResourceDelegatesResponse = { Delegates?: {} | undefined; NextToken?: {} | undefined }
+type ListResourcesRequest = {
+  OrganizationId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListResourcesResponse = { Resources?: {} | undefined; NextToken?: {} | undefined }
+type ListTagsForResourceRequest = { ResourceARN: {} }
+type ListTagsForResourceResponse = { Tags?: {} | undefined }
+type ListUsersRequest = {
+  OrganizationId: {}
+  NextToken?: {} | undefined
+  MaxResults?: {} | undefined
+}
+type ListUsersResponse = { Users?: {} | undefined; NextToken?: {} | undefined }
+type PutAccessControlRuleRequest = {
+  Name: {}
+  Effect: {}
+  Description: {}
+  IpRanges?: {} | undefined
+  NotIpRanges?: {} | undefined
+  Actions?: {} | undefined
+  NotActions?: {} | undefined
+  UserIds?: {} | undefined
+  NotUserIds?: {} | undefined
+  OrganizationId: {}
+  ImpersonationRoleIds?: {} | undefined
+  NotImpersonationRoleIds?: {} | undefined
+}
+type PutAccessControlRuleResponse = { [x: string]: unknown }
+type PutEmailMonitoringConfigurationRequest = { OrganizationId: {}; RoleArn: {}; LogGroupArn: {} }
+type PutEmailMonitoringConfigurationResponse = { [x: string]: unknown }
+type PutInboundDmarcSettingsRequest = { OrganizationId: {}; Enforced: {} }
+type PutInboundDmarcSettingsResponse = { [x: string]: unknown }
+type PutMailboxPermissionsRequest = {
+  OrganizationId: {}
+  EntityId: {}
+  GranteeId: {}
+  PermissionValues: {}
+}
+type PutMailboxPermissionsResponse = { [x: string]: unknown }
+type PutMobileDeviceAccessOverrideRequest = {
+  OrganizationId: {}
+  UserId: {}
+  DeviceId: {}
+  Effect: {}
+  Description?: {} | undefined
+}
+type PutMobileDeviceAccessOverrideResponse = { [x: string]: unknown }
+type PutRetentionPolicyRequest = {
+  OrganizationId: {}
+  Id?: {} | undefined
+  Name: {}
+  Description?: {} | undefined
+  FolderConfigurations: {}
+}
+type PutRetentionPolicyResponse = { [x: string]: unknown }
+type RegisterMailDomainRequest = {
+  ClientToken?: {} | undefined
+  OrganizationId: {}
+  DomainName: {}
+}
+type RegisterMailDomainResponse = { [x: string]: unknown }
+type RegisterToWorkMailRequest = { OrganizationId: {}; EntityId: {}; Email: {} }
+type RegisterToWorkMailResponse = { [x: string]: unknown }
+type EntityAlreadyRegisteredException = { [x: string]: unknown }
+type ResetPasswordRequest = { OrganizationId: {}; UserId: {}; Password: {} }
+type ResetPasswordResponse = { [x: string]: unknown }
+type StartMailboxExportJobRequest = {
+  ClientToken: {}
+  OrganizationId: {}
+  EntityId: {}
+  Description?: {} | undefined
+  RoleArn: {}
+  KmsKeyArn: {}
+  S3BucketName: {}
+  S3Prefix: {}
+}
+type StartMailboxExportJobResponse = { JobId?: {} | undefined }
+type TagResourceRequest = { ResourceARN: {}; Tags: {} }
+type TagResourceResponse = { [x: string]: unknown }
+type TooManyTagsException = { [x: string]: unknown }
+type EwsAvailabilityProvider = { EwsEndpoint: {}; EwsUsername: {}; EwsPassword: {} }
+type LambdaAvailabilityProvider = { LambdaArn: {} }
+type TestAvailabilityConfigurationRequest = {
+  OrganizationId: {}
+  DomainName?: {} | undefined
+  EwsProvider?: EwsAvailabilityProvider | undefined
+  LambdaProvider?: LambdaAvailabilityProvider | undefined
+}
+type TestAvailabilityConfigurationResponse = {
+  TestPassed?: {} | undefined
+  FailureReason?: {} | undefined
+}
+type UntagResourceRequest = { ResourceARN: {}; TagKeys: {} }
+type UntagResourceResponse = { [x: string]: unknown }
+type UpdateAvailabilityConfigurationRequest = {
+  OrganizationId: {}
+  DomainName: {}
+  EwsProvider?: { EwsEndpoint: {}; EwsUsername: {}; EwsPassword: {} } | undefined
+  LambdaProvider?: { LambdaArn: {} } | undefined
+}
+type UpdateAvailabilityConfigurationResponse = { [x: string]: unknown }
+type UpdateDefaultMailDomainRequest = { OrganizationId: {}; DomainName: {} }
+type UpdateDefaultMailDomainResponse = { [x: string]: unknown }
+type UpdateImpersonationRoleRequest = {
+  OrganizationId: {}
+  ImpersonationRoleId: {}
+  Name: {}
+  Type: {}
+  Description?: {} | undefined
+  Rules: {}
+}
+type UpdateImpersonationRoleResponse = { [x: string]: unknown }
+type UpdateMailboxQuotaRequest = { OrganizationId: {}; UserId: {}; MailboxQuota: {} }
+type UpdateMailboxQuotaResponse = { [x: string]: unknown }
+type UpdateMobileDeviceAccessRuleRequest = {
+  OrganizationId: {}
+  MobileDeviceAccessRuleId: {}
+  Name: {}
+  Description?: {} | undefined
+  Effect: {}
+  DeviceTypes?: {} | undefined
+  NotDeviceTypes?: {} | undefined
+  DeviceModels?: {} | undefined
+  NotDeviceModels?: {} | undefined
+  DeviceOperatingSystems?: {} | undefined
+  NotDeviceOperatingSystems?: {} | undefined
+  DeviceUserAgents?: {} | undefined
+  NotDeviceUserAgents?: {} | undefined
+}
+type UpdateMobileDeviceAccessRuleResponse = { [x: string]: unknown }
+type UpdatePrimaryEmailAddressRequest = { OrganizationId: {}; EntityId: {}; Email: {} }
+type UpdatePrimaryEmailAddressResponse = { [x: string]: unknown }
+type UpdateResourceRequest = {
+  OrganizationId: {}
+  ResourceId: {}
+  Name?: {} | undefined
+  BookingOptions?:
+    | {
+        AutoAcceptRequests?: {} | undefined
+        AutoDeclineRecurringRequests?: {} | undefined
+        AutoDeclineConflictingRequests?: {} | undefined
+      }
+    | undefined
+}
+type UpdateResourceResponse = { [x: string]: unknown }
+type InvalidConfigurationException = { [x: string]: unknown }
+declare const routes: import('@hono/zod-openapi').OpenAPIHono<
+  import('hono/types').Env,
+  {
+    '/#X-Amz-Target=WorkMailService.AssociateDelegateToResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: AssociateDelegateToResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateDelegateToResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateDelegateToResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.AssociateMemberToGroup': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: AssociateMemberToGroupResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssociateMemberToGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssociateMemberToGroupRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 487
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.AssumeImpersonationRole': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssumeImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssumeImpersonationRoleRequest }
+            output: AssumeImpersonationRoleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssumeImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssumeImpersonationRoleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssumeImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssumeImpersonationRoleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssumeImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssumeImpersonationRoleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.AssumeImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: AssumeImpersonationRoleRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CancelMailboxExportJob': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CancelMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CancelMailboxExportJobRequest }
+            output: CancelMailboxExportJobResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CancelMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CancelMailboxExportJobRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CancelMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CancelMailboxExportJobRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CancelMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CancelMailboxExportJobRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CancelMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CancelMailboxExportJobRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateAlias': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: CreateAliasResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: EmailAddressInUseException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: MailDomainStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAliasRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 488
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateAvailabilityConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: CreateAvailabilityConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateAvailabilityConfigurationRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateGroup': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: CreateGroupResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: ReservedNameException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateGroupRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 487
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateImpersonationRole': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: CreateImpersonationRoleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateImpersonationRoleRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 485
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateMobileDeviceAccessRule': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateMobileDeviceAccessRuleRequest }
+            output: CreateMobileDeviceAccessRuleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateMobileDeviceAccessRuleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateMobileDeviceAccessRuleRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateMobileDeviceAccessRuleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateMobileDeviceAccessRuleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateOrganization': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: CreateOrganizationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: DirectoryInUseException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateOrganizationRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: CreateResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateResourceRequest }
+            output: ReservedNameException
+            outputFormat: 'json'
+            status: 486
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.CreateUser': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: CreateUserResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: InvalidPasswordException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: ReservedNameException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.CreateUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: CreateUserRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 488
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteAccessControlRule': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAccessControlRuleRequest }
+            output: DeleteAccessControlRuleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAccessControlRuleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAccessControlRuleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteAlias': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: DeleteAliasResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAlias'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAliasRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteAvailabilityConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAvailabilityConfigurationRequest }
+            output: DeleteAvailabilityConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAvailabilityConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteAvailabilityConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteEmailMonitoringConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteEmailMonitoringConfigurationRequest }
+            output: DeleteEmailMonitoringConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteEmailMonitoringConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteEmailMonitoringConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteEmailMonitoringConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteGroup': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: DeleteGroupResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteGroupRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 486
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteImpersonationRole': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteImpersonationRoleRequest }
+            output: DeleteImpersonationRoleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteImpersonationRoleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteImpersonationRoleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteImpersonationRoleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteMailboxPermissions': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: DeleteMailboxPermissionsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMailboxPermissionsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteMobileDeviceAccessOverride': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessOverrideRequest }
+            output: DeleteMobileDeviceAccessOverrideResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessOverrideRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessOverrideRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessOverrideRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessOverrideRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteMobileDeviceAccessRule': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessRuleRequest }
+            output: DeleteMobileDeviceAccessRuleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessRuleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessRuleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteMobileDeviceAccessRuleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteOrganization': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteOrganizationRequest }
+            output: DeleteOrganizationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteOrganizationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteOrganizationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteOrganizationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteResourceRequest }
+            output: DeleteResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteResourceRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteResourceRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteRetentionPolicy': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteRetentionPolicyRequest }
+            output: DeleteRetentionPolicyResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteRetentionPolicyRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteRetentionPolicyRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteRetentionPolicyRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeleteUser': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: DeleteUserResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeleteUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeleteUserRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 486
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeregisterFromWorkMail': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: DeregisterFromWorkMailResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterFromWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterFromWorkMailRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DeregisterMailDomain': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: DeregisterMailDomainResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: MailDomainInUseException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DeregisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DeregisterMailDomainRequest }
+            output: InvalidCustomSesConfigurationException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeEmailMonitoringConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeEmailMonitoringConfigurationRequest }
+            output: DescribeEmailMonitoringConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeEmailMonitoringConfigurationRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeEmailMonitoringConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeEmailMonitoringConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeEmailMonitoringConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeGroup': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeGroupRequest }
+            output: DescribeGroupResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeGroupRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeGroupRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeGroupRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeGroupRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeInboundDmarcSettings': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeInboundDmarcSettingsRequest }
+            output: DescribeInboundDmarcSettingsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeInboundDmarcSettingsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeInboundDmarcSettingsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeMailboxExportJob': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeMailboxExportJobRequest }
+            output: DescribeMailboxExportJobResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeMailboxExportJobRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeMailboxExportJobRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeMailboxExportJobRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeMailboxExportJobRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeOrganization': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeOrganizationRequest }
+            output: DescribeOrganizationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeOrganizationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeOrganization'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeOrganizationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeResourceRequest }
+            output: DescribeResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeResourceRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeResourceRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DescribeUser': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeUserRequest }
+            output: DescribeUserResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeUserRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeUserRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeUserRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DescribeUser'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DescribeUserRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DisassociateDelegateFromResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: DisassociateDelegateFromResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateDelegateFromResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateDelegateFromResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.DisassociateMemberFromGroup': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: DisassociateMemberFromGroupResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.DisassociateMemberFromGroup'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: DisassociateMemberFromGroupRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 487
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetAccessControlEffect': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: GetAccessControlEffectResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetAccessControlEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetAccessControlEffectRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetDefaultRetentionPolicy': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetDefaultRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetDefaultRetentionPolicyRequest }
+            output: GetDefaultRetentionPolicyResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetDefaultRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetDefaultRetentionPolicyRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetDefaultRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetDefaultRetentionPolicyRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetDefaultRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetDefaultRetentionPolicyRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetDefaultRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetDefaultRetentionPolicyRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetImpersonationRole': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleRequest }
+            output: GetImpersonationRoleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetImpersonationRoleEffect': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: GetImpersonationRoleEffectResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetImpersonationRoleEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetImpersonationRoleEffectRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 485
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetMailDomain': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailDomainRequest }
+            output: GetMailDomainResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailDomainRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailDomainRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailDomainRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailDomainRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetMailboxDetails': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailboxDetails'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailboxDetailsRequest }
+            output: GetMailboxDetailsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailboxDetails'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailboxDetailsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailboxDetails'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailboxDetailsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMailboxDetails'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMailboxDetailsRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetMobileDeviceAccessEffect': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessEffectRequest }
+            output: GetMobileDeviceAccessEffectResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessEffectRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessEffectRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessEffect'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessEffectRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.GetMobileDeviceAccessOverride': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: GetMobileDeviceAccessOverrideResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.GetMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: GetMobileDeviceAccessOverrideRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListAccessControlRules': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAccessControlRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAccessControlRulesRequest }
+            output: ListAccessControlRulesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAccessControlRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAccessControlRulesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAccessControlRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAccessControlRulesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListAliases': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: ListAliasesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAliases'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAliasesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListAvailabilityConfigurations': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAvailabilityConfigurations'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAvailabilityConfigurationsRequest }
+            output: ListAvailabilityConfigurationsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAvailabilityConfigurations'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAvailabilityConfigurationsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListAvailabilityConfigurations'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListAvailabilityConfigurationsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListGroupMembers': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: ListGroupMembersResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroupMembers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupMembersRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListGroups': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroups'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupsRequest }
+            output: ListGroupsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroups'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupsRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroups'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroups'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListGroups'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListGroupsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListImpersonationRoles': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListImpersonationRoles'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListImpersonationRolesRequest }
+            output: ListImpersonationRolesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListImpersonationRoles'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListImpersonationRolesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListImpersonationRoles'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListImpersonationRolesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListImpersonationRoles'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListImpersonationRolesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListMailDomains': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailDomains'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailDomainsRequest }
+            output: ListMailDomainsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailDomains'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailDomainsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailDomains'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailDomainsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailDomains'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailDomainsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListMailboxExportJobs': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxExportJobs'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxExportJobsRequest }
+            output: ListMailboxExportJobsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxExportJobs'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxExportJobsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxExportJobs'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxExportJobsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxExportJobs'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxExportJobsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListMailboxPermissions': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxPermissionsRequest }
+            output: ListMailboxPermissionsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxPermissionsRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxPermissionsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxPermissionsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMailboxPermissionsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListMobileDeviceAccessOverrides': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessOverrides'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessOverridesRequest }
+            output: ListMobileDeviceAccessOverridesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessOverrides'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessOverridesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessOverrides'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessOverridesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessOverrides'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessOverridesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessOverrides'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessOverridesRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListMobileDeviceAccessRules': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessRulesRequest }
+            output: ListMobileDeviceAccessRulesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessRulesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessRulesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListMobileDeviceAccessRules'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListMobileDeviceAccessRulesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListOrganizations': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListOrganizations'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListOrganizationsRequest }
+            output: ListOrganizationsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListOrganizations'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListOrganizationsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListResourceDelegates': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: ListResourceDelegatesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResourceDelegates'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourceDelegatesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListResources': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResources'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourcesRequest }
+            output: ListResourcesResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResources'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourcesRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResources'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourcesRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListResources'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListResourcesRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListTagsForResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListTagsForResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListTagsForResourceRequest }
+            output: ListTagsForResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListTagsForResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListTagsForResourceRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ListUsers': {
+      $post:
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListUsers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListUsersRequest }
+            output: ListUsersResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListUsers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListUsersRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListUsers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListUsersRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+            } & {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ListUsers'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ListUsersRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutAccessControlRule': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: PutAccessControlRuleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutAccessControlRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutAccessControlRuleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 485
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutEmailMonitoringConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutEmailMonitoringConfigurationRequest }
+            output: PutEmailMonitoringConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutEmailMonitoringConfigurationRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutEmailMonitoringConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutEmailMonitoringConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutEmailMonitoringConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutEmailMonitoringConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutInboundDmarcSettings': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutInboundDmarcSettingsRequest }
+            output: PutInboundDmarcSettingsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutInboundDmarcSettingsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutInboundDmarcSettings'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutInboundDmarcSettingsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutMailboxPermissions': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: PutMailboxPermissionsResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMailboxPermissions'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMailboxPermissionsRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutMobileDeviceAccessOverride': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: PutMobileDeviceAccessOverrideResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutMobileDeviceAccessOverride'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutMobileDeviceAccessOverrideRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.PutRetentionPolicy': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutRetentionPolicyRequest }
+            output: PutRetentionPolicyResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutRetentionPolicyRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutRetentionPolicyRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutRetentionPolicyRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.PutRetentionPolicy'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: PutRetentionPolicyRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.RegisterMailDomain': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: RegisterMailDomainResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: MailDomainInUseException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterMailDomainRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.RegisterToWorkMail': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: RegisterToWorkMailResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: EmailAddressInUseException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: EntityAlreadyRegisteredException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: MailDomainStateException
+            outputFormat: 'json'
+            status: 488
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 489
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.RegisterToWorkMail'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: RegisterToWorkMailRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 490
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.ResetPassword': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: ResetPasswordResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: InvalidPasswordException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.ResetPassword'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: ResetPasswordRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 488
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.StartMailboxExportJob': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: StartMailboxExportJobResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.StartMailboxExportJob'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: StartMailboxExportJobRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.TagResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TagResourceRequest }
+            output: TagResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TagResourceRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TagResourceRequest }
+            output: TooManyTagsException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TagResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.TestAvailabilityConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TestAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TestAvailabilityConfigurationRequest }
+            output: TestAvailabilityConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TestAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TestAvailabilityConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TestAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TestAvailabilityConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TestAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TestAvailabilityConfigurationRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.TestAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: TestAvailabilityConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UntagResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UntagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UntagResourceRequest }
+            output: UntagResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UntagResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UntagResourceRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateAvailabilityConfiguration': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateAvailabilityConfigurationRequest }
+            output: UpdateAvailabilityConfigurationResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateAvailabilityConfigurationRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateAvailabilityConfigurationRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateAvailabilityConfigurationRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateAvailabilityConfiguration'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateAvailabilityConfigurationRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateDefaultMailDomain': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: UpdateDefaultMailDomainResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: MailDomainStateException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateDefaultMailDomain'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateDefaultMailDomainRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateImpersonationRole': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: UpdateImpersonationRoleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: ResourceNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateImpersonationRole'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateImpersonationRoleRequest }
+            output: LimitExceededException
+            outputFormat: 'json'
+            status: 486
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateMailboxQuota': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: UpdateMailboxQuotaResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMailboxQuota'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMailboxQuotaRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 484
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateMobileDeviceAccessRule': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMobileDeviceAccessRuleRequest }
+            output: UpdateMobileDeviceAccessRuleResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMobileDeviceAccessRuleRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMobileDeviceAccessRuleRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMobileDeviceAccessRuleRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateMobileDeviceAccessRule'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateMobileDeviceAccessRuleRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 483
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdatePrimaryEmailAddress': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: UpdatePrimaryEmailAddressResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: DirectoryServiceAuthenticationFailedException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: EmailAddressInUseException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: MailDomainStateException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: InvalidParameterException
+            outputFormat: 'json'
+            status: 488
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 489
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 490
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdatePrimaryEmailAddress'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdatePrimaryEmailAddressRequest }
+            output: UnsupportedOperationException
+            outputFormat: 'json'
+            status: 491
+          }
+    }
+  } & {
+    '/#X-Amz-Target=WorkMailService.UpdateResource': {
+      $post:
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: UpdateResourceResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: DirectoryUnavailableException
+            outputFormat: 'json'
+            status: 480
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: EntityNotFoundException
+            outputFormat: 'json'
+            status: 481
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: EntityStateException
+            outputFormat: 'json'
+            status: 482
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: InvalidConfigurationException
+            outputFormat: 'json'
+            status: 483
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: EmailAddressInUseException
+            outputFormat: 'json'
+            status: 484
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: MailDomainNotFoundException
+            outputFormat: 'json'
+            status: 485
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: MailDomainStateException
+            outputFormat: 'json'
+            status: 486
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: NameAvailabilityException
+            outputFormat: 'json'
+            status: 487
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: OrganizationNotFoundException
+            outputFormat: 'json'
+            status: 488
+          }
+        | {
+            input: {
+              header: {
+                'X-Amz-Target': 'WorkMailService.UpdateResource'
+                'X-Amz-Content-Sha256'?: string | undefined
+                'X-Amz-Date'?: string | undefined
+                'X-Amz-Algorithm'?: string | undefined
+                'X-Amz-Credential'?: string | undefined
+                'X-Amz-Security-Token'?: string | undefined
+                'X-Amz-Signature'?: string | undefined
+                'X-Amz-SignedHeaders'?: string | undefined
+              }
+            } & { json: UpdateResourceRequest }
+            output: OrganizationStateException
+            outputFormat: 'json'
+            status: 489
+          }
+    }
+  },
+  '/'
+>
+export default routes

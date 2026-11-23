@@ -19,12 +19,6 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="auth-oauth-advanced">Advanced</h1>
 
 ## OAuth token endpoint
@@ -203,6 +197,7 @@ null
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
+|200|OK|successful operation|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
 <aside class="success">

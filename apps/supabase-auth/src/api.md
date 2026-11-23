@@ -4769,75 +4769,39 @@ APIKeyAuth & AdminAuth
 ```bash
 curl http://localhost:9999/admin/users/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
   -X DELETE \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "apikey: ${API_KEY}" \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "should_soft_delete": false
+  }'
 ```
 
 `DELETE /admin/users/{userId}`
+
+> Body parameter
+
+```json
+{
+  "should_soft_delete": false
+}
+```
 
 <h3 id="delete-a-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |userId|path|string(uuid)|true|none|
+|body|body|object|false|none|
+|» should_soft_delete|body|boolean|false|Soft delete the user instead of permanently deleting their account.|
 
 > Example responses
 
 > 200 Response
 
 ```json
-{
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "aud": "string",
-  "role": "string",
-  "email": "string",
-  "email_confirmed_at": "1970-01-01T00:00:00Z",
-  "phone": "string",
-  "phone_confirmed_at": "1970-01-01T00:00:00Z",
-  "confirmation_sent_at": "1970-01-01T00:00:00Z",
-  "confirmed_at": "1970-01-01T00:00:00Z",
-  "recovery_sent_at": "1970-01-01T00:00:00Z",
-  "new_email": "user@example.com",
-  "email_change_sent_at": "1970-01-01T00:00:00Z",
-  "new_phone": "string",
-  "phone_change_sent_at": "1970-01-01T00:00:00Z",
-  "reauthentication_sent_at": "1970-01-01T00:00:00Z",
-  "last_sign_in_at": "1970-01-01T00:00:00Z",
-  "app_metadata": {},
-  "user_metadata": {},
-  "factors": [
-    {
-      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-      "status": "string",
-      "friendly_name": "string",
-      "factor_type": "string",
-      "webauthn_credential": "string",
-      "phone": "string",
-      "created_at": "1970-01-01T00:00:00Z",
-      "updated_at": "1970-01-01T00:00:00Z",
-      "last_challenged_at": "1970-01-01T00:00:00Z"
-    }
-  ],
-  "identities": [
-    {
-      "identity_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-      "user_id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-      "identity_data": {},
-      "provider": "string",
-      "last_sign_in_at": "1970-01-01T00:00:00Z",
-      "created_at": "1970-01-01T00:00:00Z",
-      "updated_at": "1970-01-01T00:00:00Z",
-      "email": "user@example.com"
-    }
-  ],
-  "banned_until": "1970-01-01T00:00:00Z",
-  "created_at": "1970-01-01T00:00:00Z",
-  "updated_at": "1970-01-01T00:00:00Z",
-  "deleted_at": "1970-01-01T00:00:00Z",
-  "is_anonymous": true
-}
+{}
 ```
 
 > 401 Response
@@ -4895,7 +4859,7 @@ curl http://localhost:9999/admin/users/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|User's account data.|[UserSchema](#schemauserschema)|
+|200|OK|Empty JSON object. No user data is returned after hard or soft deletion.|Inline|
 |401|Unauthorized|HTTP Unauthorized response.<br>|[ErrorSchema](#schemaerrorschema)|
 |403|Forbidden|HTTP Forbidden response.<br>|[ErrorSchema](#schemaerrorschema)|
 |404|Not Found|There is no such user.|[ErrorSchema](#schemaerrorschema)|
@@ -5267,7 +5231,8 @@ curl http://localhost:9999/admin/sso/providers \
         "metadata_url": "string",
         "attribute_mapping": {
           "keys": {}
-        }
+        },
+        "dedicated_scope": true
       }
     }
   ]
@@ -5313,7 +5278,8 @@ curl http://localhost:9999/admin/sso/providers \
     ],
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }'
 ```
 
@@ -5331,7 +5297,8 @@ curl http://localhost:9999/admin/sso/providers \
   ],
   "attribute_mapping": {
     "keys": {}
-  }
+  },
+  "dedicated_scope": true
 }
 ```
 
@@ -5345,6 +5312,7 @@ curl http://localhost:9999/admin/sso/providers \
 |» metadata_xml|body|string|false|none|
 |» domains|body|[string(hostname)]|false|none|
 |» attribute_mapping|body|[SAMLAttributeMappingSchema](#schemasamlattributemappingschema)|false|none|
+|» dedicated_scope|body|boolean|false|When `true`, this provider's SAML ACS URL and entity ID are scoped to its own provider ID instead of the ones shared by all SAML providers in this project. The same signing key is still used. This cannot be changed once the provider is created.<br>|
 
 #### Enumerated Values
 
@@ -5370,7 +5338,8 @@ curl http://localhost:9999/admin/sso/providers \
     "metadata_url": "string",
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }
 }
 ```
@@ -5477,7 +5446,8 @@ curl http://localhost:9999/admin/sso/providers/497f6eca-6276-4993-bfeb-53cbbbba6
     "metadata_url": "string",
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }
 }
 ```
@@ -5572,7 +5542,7 @@ curl http://localhost:9999/admin/sso/providers/497f6eca-6276-4993-bfeb-53cbbbba6
 
 `PUT /admin/sso/providers/{ssoProviderId}`
 
-You can only update only one of `metadata_url` or `metadata_xml` at once. The SAML Metadata represented by these updates must advertize the same Identity Provider EntityID. Do not include the `domains` or `attribute_mapping` property to keep the existing database values.
+You can only update only one of `metadata_url` or `metadata_xml` at once. The SAML Metadata represented by these updates must advertize the same Identity Provider EntityID. Do not include the `domains` or `attribute_mapping` property to keep the existing database values. `dedicated_scope` cannot be changed once the provider is created, and this request fails if it is included.
 
 
 > Body parameter
@@ -5619,7 +5589,8 @@ You can only update only one of `metadata_url` or `metadata_xml` at once. The SA
     "metadata_url": "string",
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }
 }
 ```
@@ -5745,7 +5716,8 @@ curl http://localhost:9999/admin/sso/providers/497f6eca-6276-4993-bfeb-53cbbbba6
     "metadata_url": "string",
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }
 }
 ```
@@ -6670,6 +6642,8 @@ Retrieves a list of all custom OAuth 2.0 and OIDC provider configurations. Optio
       "identifier": "custom:mycompany",
       "name": "My Company SSO",
       "client_id": "string",
+      "client_auth_method": "client_secret",
+      "client_assertion_audience": "string",
       "acceptable_client_ids": [
         "string"
       ],
@@ -6827,7 +6801,9 @@ Creates a new custom OAuth 2.0 or OIDC provider configuration. Required fields d
 |» identifier|body|string|true|Unique identifier (will be prefixed with 'custom:' automatically). Cannot use reserved provider names.|
 |» name|body|string|true|Human-readable display name|
 |» client_id|body|string|true|OAuth client ID from the provider|
-|» client_secret|body|string|true|OAuth client secret (will be encrypted at rest)|
+|» client_secret|body|string|false|OAuth client secret (will be encrypted at rest). Required when client_auth_method is 'client_secret', and must not be set when it is 'private_key_jwt'.|
+|» client_auth_method|body|string|false|How the server authenticates to the provider's token endpoint. 'private_key_jwt' sends a signed client assertion (RFC 7523) instead of a client secret. It is currently only available for OIDC providers, and only when client assertions are enabled on the server; otherwise the request is rejected with 400.<br>|
+|» client_assertion_audience|body|string|false|Overrides the aud claim of client assertions, which defaults to the provider's issuer. Only allowed with client_auth_method 'private_key_jwt'.|
 |» acceptable_client_ids|body|[string]|false|Additional acceptable client IDs for token validation|
 |» scopes|body|[string]|false|OAuth scopes to request (OIDC providers will automatically include 'openid')|
 |» pkce_enabled|body|boolean|false|Enable PKCE (Proof Key for Code Exchange)|
@@ -6851,6 +6827,8 @@ Creates a new custom OAuth 2.0 or OIDC provider configuration. Required fields d
 |---|---|
 |» provider_type|oauth2|
 |» provider_type|oidc|
+|» client_auth_method|client_secret|
+|» client_auth_method|private_key_jwt|
 
 > Example responses
 
@@ -6863,6 +6841,8 @@ Creates a new custom OAuth 2.0 or OIDC provider configuration. Required fields d
   "identifier": "custom:mycompany",
   "name": "My Company SSO",
   "client_id": "string",
+  "client_auth_method": "client_secret",
+  "client_assertion_audience": "string",
   "acceptable_client_ids": [
     "string"
   ],
@@ -6987,6 +6967,8 @@ Retrieves details of a specific custom OIDC/OAuth provider. Only available when 
   "identifier": "custom:mycompany",
   "name": "My Company SSO",
   "client_id": "string",
+  "client_auth_method": "client_secret",
+  "client_assertion_audience": "string",
   "acceptable_client_ids": [
     "string"
   ],
@@ -7125,7 +7107,9 @@ Updates an existing custom OIDC/OAuth provider. All fields are optional. Only pr
 |body|body|object|true|none|
 |» name|body|string|false|Human-readable display name|
 |» client_id|body|string|false|OAuth client ID|
-|» client_secret|body|string|false|OAuth client secret (only provide if changing, will be encrypted)|
+|» client_secret|body|string|false|OAuth client secret (only provide if changing, will be encrypted). Required when switching client_auth_method to 'client_secret', and must not be set for 'private_key_jwt' providers.|
+|» client_auth_method|body|string|false|How the server authenticates to the provider's token endpoint. Switching to 'private_key_jwt' clears the stored client secret, and switching to 'client_secret' clears client_assertion_audience. 'private_key_jwt' is currently only available for OIDC providers, and only when client assertions are enabled on the server.<br>|
+|» client_assertion_audience|body|string|false|Overrides the aud claim of client assertions. An empty string clears the override. Only allowed for 'private_key_jwt' providers.|
 |» acceptable_client_ids|body|[string]|false|Additional acceptable client IDs|
 |» scopes|body|[string]|false|OAuth scopes to request|
 |» pkce_enabled|body|boolean|false|Enable PKCE|
@@ -7143,6 +7127,13 @@ Updates an existing custom OIDC/OAuth provider. All fields are optional. Only pr
 |» userinfo_url|body|string(uri)|false|OAuth 2.0 userinfo endpoint (for OAuth2 providers)|
 |» jwks_uri|body|string(uri)|false|JWKS URI for token validation (for OAuth2 providers)|
 
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» client_auth_method|client_secret|
+|» client_auth_method|private_key_jwt|
+
 > Example responses
 
 > 200 Response
@@ -7154,6 +7145,8 @@ Updates an existing custom OIDC/OAuth provider. All fields are optional. Only pr
   "identifier": "custom:mycompany",
   "name": "My Company SSO",
   "client_id": "string",
+  "client_auth_method": "client_secret",
+  "client_assertion_audience": "string",
   "acceptable_client_ids": [
     "string"
   ],
@@ -7658,7 +7651,8 @@ Object describing the user related to the issued access and refresh tokens.
     "metadata_url": "string",
     "attribute_mapping": {
       "keys": {}
-    }
+    },
+    "dedicated_scope": true
   }
 }
 ```
@@ -8248,6 +8242,8 @@ Represents an OAuth 2.1 client
   "identifier": "custom:mycompany",
   "name": "My Company SSO",
   "client_id": "string",
+  "client_auth_method": "client_secret",
+  "client_assertion_audience": "string",
   "acceptable_client_ids": [
     "string"
   ],
@@ -8293,6 +8289,8 @@ Represents a custom OAuth 2.0 or OIDC provider configuration
 |identifier|string|true|none|Unique identifier for the provider (must start with 'custom:' prefix)|
 |name|string|true|none|Human-readable name of the provider|
 |client_id|string|true|none|OAuth client ID|
+|client_auth_method|string|false|none|How the server authenticates to the provider's token endpoint. The client secret itself is never returned.|
+|client_assertion_audience|string|false|none|Override for the aud claim of client assertions. Omitted when not set.|
 |acceptable_client_ids|[string]|false|none|Additional acceptable client IDs for token validation|
 |scopes|[string]|false|none|OAuth scopes to request (OIDC providers will automatically include 'openid')|
 |pkce_enabled|boolean|false|none|Whether PKCE (Proof Key for Code Exchange) is enabled|
@@ -8317,3 +8315,5 @@ Represents a custom OAuth 2.0 or OIDC provider configuration
 |---|---|
 |provider_type|oauth2|
 |provider_type|oidc|
+|client_auth_method|client_secret|
+|client_auth_method|private_key_jwt|

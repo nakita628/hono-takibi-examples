@@ -1,5 +1,27 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
+
+const CreatedBySchema = z.string().openapi('CreatedBy')
+
+const DatasetNameSchema = z.string().min(1).max(255).openapi('DatasetName')
+
+const EncryptionKeyArnSchema = z.string().min(20).max(2048).openapi('EncryptionKeyArn')
+
+const EncryptionModeSchema = z.enum(['SSE-KMS', 'SSE-S3']).openapi('EncryptionMode')
+
+const JobNameSchema = z.string().min(1).max(240).openapi('JobName')
+
+const JobTypeSchema = z.enum(['PROFILE', 'RECIPE']).openapi('JobType')
+
+const LastModifiedBySchema = z.string().openapi('LastModifiedBy')
+
+const LogSubscriptionSchema = z.enum(['ENABLE', 'DISABLE']).openapi('LogSubscription')
+
+const MaxCapacitySchema = z.int().openapi('MaxCapacity')
+
+const MaxRetriesSchema = z.int().min(0).openapi('MaxRetries')
+
 const CompressionFormatSchema = z
   .enum(['GZIP', 'LZ4', 'SNAPPY', 'BZIP2', 'DEFLATE', 'LZO', 'BROTLI', 'ZSTD', 'ZLIB'])
   .openapi('CompressionFormat')
@@ -24,13 +46,13 @@ const BucketOwnerSchema = z
 
 const S3LocationSchema = z
   .object({
-    Bucket: BucketSchema.and(z.any().openapi({ description: 'The Amazon S3 bucket name.' })),
-    Key: KeySchema.and(
-      z.any().openapi({ description: 'The unique name of the object in the bucket.' }),
-    ).exactOptional(),
-    BucketOwner: BucketOwnerSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID of the bucket owner.' }),
-    ).exactOptional(),
+    Bucket: BucketSchema.openapi({ description: 'The Amazon S3 bucket name.' }),
+    Key: KeySchema.exactOptional().openapi({
+      description: 'The unique name of the object in the bucket.',
+    }),
+    BucketOwner: BucketOwnerSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID of the bucket owner.',
+    }),
   })
   .openapi({
     required: ['Bucket'],
@@ -45,14 +67,9 @@ const DelimiterSchema = z.string().length(1).openapi('Delimiter')
 
 const CsvOutputOptionsSchema = z
   .object({
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character that specifies the delimiter used to create CSV job output.',
-        }),
-    ).exactOptional(),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description: 'A single character that specifies the delimiter used to create CSV job output.',
+    }),
   })
   .openapi({
     description:
@@ -63,14 +80,10 @@ const CsvOutputOptionsSchema = z
 
 const OutputFormatOptionsSchema = z
   .object({
-    Csv: CsvOutputOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a set of options that define the structure of comma-separated value (CSV) job output.',
-        }),
-    ).exactOptional(),
+    Csv: CsvOutputOptionsSchema.exactOptional().openapi({
+      description:
+        'Represents a set of options that define the structure of comma-separated value (CSV) job output.',
+    }),
   })
   .openapi({
     description:
@@ -81,98 +94,461 @@ const OutputFormatOptionsSchema = z
 
 const MaxOutputFilesSchema = z.int().min(1).max(999).openapi('MaxOutputFiles')
 
-type OutputType = {
-  CompressionFormat?: z.infer<typeof CompressionFormatSchema> & { [key: string]: unknown }
-  Format?: z.infer<typeof OutputFormatSchema> & { [key: string]: unknown }
-  PartitionColumns?: z.infer<typeof ColumnNameListSchema> & { [key: string]: unknown }
-  Location: z.infer<typeof S3LocationSchema> & { [key: string]: unknown }
-  Overwrite?: z.infer<typeof OverwriteOutputSchema> & { [key: string]: unknown }
-  FormatOptions?: z.infer<typeof OutputFormatOptionsSchema> & { [key: string]: unknown }
-  MaxOutputFiles?: z.infer<typeof MaxOutputFilesSchema> & { [key: string]: unknown }
-}
-
-const RecipeNameSchema = z.string().min(1).max(255).openapi('RecipeName')
-
-const ErrorCodeSchema = z
-  .string()
-  .regex(/^[1-5][0-9][0-9]$/)
-  .openapi('ErrorCode')
-
-const RecipeErrorMessageSchema = z.string().openapi('RecipeErrorMessage')
-
-const RecipeVersionSchema = z.string().min(1).max(16).openapi('RecipeVersion')
-
-const RecipeVersionErrorDetailSchema = z
+const OutputSchema = z
   .object({
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The HTTP status code for the error.' }),
-    ).exactOptional(),
-    ErrorMessage: RecipeErrorMessageSchema.and(
-      z.any().openapi({ description: 'The text of the error message.' }),
-    ).exactOptional(),
-    RecipeVersion: RecipeVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier for the recipe version associated with this error.',
-        }),
-    ).exactOptional(),
+    CompressionFormat: CompressionFormatSchema.exactOptional().openapi({
+      description: 'The compression algorithm used to compress the output text of the job.',
+    }),
+    Format: OutputFormatSchema.exactOptional().openapi({
+      description: 'The data format of the output of the job.',
+    }),
+    PartitionColumns: ColumnNameListSchema.exactOptional().openapi({
+      description: 'The names of one or more partition columns for the output of the job.',
+    }),
+    Location: S3LocationSchema.openapi({
+      description: 'The location in Amazon S3 where the job writes its output.',
+    }),
+    Overwrite: OverwriteOutputSchema.exactOptional().openapi({
+      description:
+        'A value that, if true, means that any data in the location specified for output is overwritten with new output.',
+    }),
+    FormatOptions: OutputFormatOptionsSchema.exactOptional().openapi({
+      description: 'Represents options that define how DataBrew formats job output files.',
+    }),
+    MaxOutputFiles: MaxOutputFilesSchema.exactOptional().openapi({
+      description:
+        'Maximum number of files to be generated by the job and written to the output folder. For output partitioned by column(s), the MaxOutputFiles value is the maximum number of files per partition.',
+    }),
+  })
+  .openapi({
+    required: ['Location'],
+    description:
+      'Represents options that specify how and where in Amazon S3 DataBrew writes the output generated by recipe jobs or profile jobs.',
+  })
+  .openapi('Output')
+
+const OutputListSchema = z.array(OutputSchema).min(1).openapi('OutputList')
+
+const CatalogIdSchema = z.string().min(1).max(255).openapi('CatalogId')
+
+const DatabaseNameSchema = z.string().min(1).max(255).openapi('DatabaseName')
+
+const TableNameSchema = z.string().min(1).max(255).openapi('TableName')
+
+const S3TableOutputOptionsSchema = z
+  .object({
+    Location: S3LocationSchema.openapi({
+      description:
+        'Represents an Amazon S3 location (bucket name and object key) where DataBrew can write output from a job.',
+    }),
+  })
+  .openapi({
+    required: ['Location'],
+    description:
+      'Represents options that specify how and where DataBrew writes the Amazon S3 output generated by recipe jobs.',
+  })
+  .openapi('S3TableOutputOptions')
+
+const DatabaseTableNameSchema = z.string().min(1).max(255).openapi('DatabaseTableName')
+
+const DatabaseTableOutputOptionsSchema = z
+  .object({
+    TempDirectory: S3LocationSchema.exactOptional().openapi({
+      description:
+        'Represents an Amazon S3 location (bucket name and object key) where DataBrew can store intermediate results.',
+    }),
+    TableName: DatabaseTableNameSchema.openapi({
+      description: 'A prefix for the name of a table DataBrew will create in the database.',
+    }),
+  })
+  .openapi({
+    required: ['TableName'],
+    description:
+      'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
+  })
+  .openapi('DatabaseTableOutputOptions')
+
+const DataCatalogOutputSchema = z
+  .object({
+    CatalogId: CatalogIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.',
+    }),
+    DatabaseName: DatabaseNameSchema.openapi({
+      description: 'The name of a database in the Data Catalog.',
+    }),
+    TableName: TableNameSchema.openapi({ description: 'The name of a table in the Data Catalog.' }),
+    S3Options: S3TableOutputOptionsSchema.exactOptional().openapi({
+      description:
+        'Represents options that specify how and where DataBrew writes the Amazon S3 output generated by recipe jobs.',
+    }),
+    DatabaseOptions: DatabaseTableOutputOptionsSchema.exactOptional().openapi({
+      description:
+        'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
+    }),
+    Overwrite: OverwriteOutputSchema.exactOptional().openapi({
+      description:
+        'A value that, if true, means that any data in the location specified for output is overwritten with new output. Not supported with DatabaseOptions.',
+    }),
+  })
+  .openapi({
+    required: ['DatabaseName', 'TableName'],
+    description:
+      'Represents options that specify how and where in the Glue Data Catalog DataBrew writes the output generated by recipe jobs.',
+  })
+  .openapi('DataCatalogOutput')
+
+const DataCatalogOutputListSchema = z
+  .array(DataCatalogOutputSchema)
+  .min(1)
+  .openapi('DataCatalogOutputList')
+
+const GlueConnectionNameSchema = z.string().min(1).max(255).openapi('GlueConnectionName')
+
+const DatabaseOutputModeSchema = z.literal('NEW_TABLE').openapi('DatabaseOutputMode')
+
+const DatabaseOutputSchema = z
+  .object({
+    GlueConnectionName: GlueConnectionNameSchema.openapi({
+      description:
+        'The Glue connection that stores the connection information for the target database.',
+    }),
+    DatabaseOptions: DatabaseTableOutputOptionsSchema.openapi({
+      description:
+        'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
+    }),
+    DatabaseOutputMode: DatabaseOutputModeSchema.exactOptional().openapi({
+      description:
+        'The output mode to write into the database. Currently supported option: NEW_TABLE.',
+    }),
+  })
+  .openapi({
+    required: ['GlueConnectionName', 'DatabaseOptions'],
+    description:
+      'Represents a JDBC database output object which defines the output destination for a DataBrew recipe job to write into.',
+  })
+  .openapi('DatabaseOutput')
+
+const DatabaseOutputListSchema = z.array(DatabaseOutputSchema).min(1).openapi('DatabaseOutputList')
+
+const ProjectNameSchema = z.string().min(1).max(255).openapi('ProjectName')
+
+const StatisticSchema = z
+  .string()
+  .regex(/^[A-Z\_]+$/)
+  .min(1)
+  .max(128)
+  .openapi('Statistic')
+
+const StatisticListSchema = z.array(StatisticSchema).min(1).openapi('StatisticList')
+
+const ParameterValueSchema = z.string().min(1).max(32768).openapi('ParameterValue')
+
+const ParameterMapSchema = z.record(z.string(), ParameterValueSchema).openapi('ParameterMap')
+
+const StatisticOverrideSchema = z
+  .object({
+    Statistic: StatisticSchema.openapi({ description: 'The name of an evaluation' }),
+    Parameters: ParameterMapSchema.openapi({
+      description: 'A map that includes overrides of an evaluation’s parameters.',
+    }),
+  })
+  .openapi({
+    required: ['Statistic', 'Parameters'],
+    description: 'Override of a particular evaluation for a profile job. ',
+  })
+  .openapi('StatisticOverride')
+
+const StatisticOverrideListSchema = z
+  .array(StatisticOverrideSchema)
+  .min(1)
+  .openapi('StatisticOverrideList')
+
+const StatisticsConfigurationSchema = z
+  .object({
+    IncludedStatistics: StatisticListSchema.exactOptional().openapi({
+      description:
+        'List of included evaluations. When the list is undefined, all supported evaluations will be included.',
+    }),
+    Overrides: StatisticOverrideListSchema.exactOptional().openapi({
+      description: 'List of overrides for evaluations.',
+    }),
   })
   .openapi({
     description:
-      'Represents any errors encountered when attempting to delete multiple recipe versions.',
+      'Configuration of evaluations for a profile job. This configuration can be used to select evaluations and override the parameters of selected evaluations. ',
     required: [],
   })
-  .openapi('RecipeVersionErrorDetail')
+  .openapi('StatisticsConfiguration')
 
-const RecipeErrorListSchema = z.array(RecipeVersionErrorDetailSchema).openapi('RecipeErrorList')
-
-const BatchDeleteRecipeVersionResponseSchema = z
+const ColumnSelectorSchema = z
   .object({
-    Name: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe that was modified.' }),
-    ),
-    Errors: RecipeErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Errors, if any, that occurred while attempting to delete the recipe versions.',
-        }),
-    ).exactOptional(),
+    Regex: ColumnNameSchema.exactOptional().openapi({
+      description: 'A regular expression for selecting a column from a dataset.',
+    }),
+    Name: ColumnNameSchema.exactOptional().openapi({
+      description: 'The name of a column from a dataset.',
+    }),
   })
-  .openapi({ required: ['Name'] })
-  .openapi('BatchDeleteRecipeVersionResponse')
+  .openapi({
+    description:
+      'Selector of a column from a dataset for profile job configuration. One selector includes either a column name or a regular expression.',
+    required: [],
+  })
+  .openapi('ColumnSelector')
 
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
+const ColumnSelectorListSchema = z.array(ColumnSelectorSchema).min(1).openapi('ColumnSelectorList')
 
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const DatasetNameSchema = z.string().min(1).max(255).openapi('DatasetName')
-
-const CreateDatasetResponseSchema = z
+const ColumnStatisticsConfigurationSchema = z
   .object({
-    Name: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset that you created.' }),
-    ),
+    Selectors: ColumnSelectorListSchema.exactOptional().openapi({
+      description:
+        'List of column selectors. Selectors can be used to select columns from the dataset. When selectors are undefined, configuration will be applied to all supported columns. ',
+    }),
+    Statistics: StatisticsConfigurationSchema.openapi({
+      description:
+        'Configuration for evaluations. Statistics can be used to select evaluations and override parameters of evaluations. ',
+    }),
   })
-  .openapi({ required: ['Name'] })
-  .openapi('CreateDatasetResponse')
+  .openapi({
+    required: ['Statistics'],
+    description:
+      'Configuration for column evaluations for a profile job. ColumnStatisticsConfiguration can be used to select evaluations and override parameters of evaluations for particular columns. ',
+  })
+  .openapi('ColumnStatisticsConfiguration')
+
+const ColumnStatisticsConfigurationListSchema = z
+  .array(ColumnStatisticsConfigurationSchema)
+  .min(1)
+  .openapi('ColumnStatisticsConfigurationList')
+
+const EntityTypeSchema = z
+  .string()
+  .regex(/^[A-Z_][A-Z\\d_]*$/)
+  .min(1)
+  .max(128)
+  .openapi('EntityType')
+
+const EntityTypeListSchema = z.array(EntityTypeSchema).min(1).openapi('EntityTypeList')
+
+const AllowedStatisticsSchema = z
+  .object({
+    Statistics: StatisticListSchema.openapi({
+      description:
+        'One or more column statistics to allow for columns that contain detected entities.',
+    }),
+  })
+  .openapi({
+    required: ['Statistics'],
+    description:
+      'Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.',
+  })
+  .openapi('AllowedStatistics')
+
+const AllowedStatisticListSchema = z
+  .array(AllowedStatisticsSchema)
+  .min(1)
+  .openapi('AllowedStatisticList')
+
+const EntityDetectorConfigurationSchema = z
+  .object({
+    EntityTypes: EntityTypeListSchema.openapi({
+      description:
+        '<p>Entity types to detect. Can be any of the following:</p> <ul> <li> <p>USA_SSN</p> </li> <li> <p>EMAIL</p> </li> <li> <p>USA_ITIN</p> </li> <li> <p>USA_PASSPORT_NUMBER</p> </li> <li> <p>PHONE_NUMBER</p> </li> <li> <p>USA_DRIVING_LICENSE</p> </li> <li> <p>BANK_ACCOUNT</p> </li> <li> <p>CREDIT_CARD</p> </li> <li> <p>IP_ADDRESS</p> </li> <li> <p>MAC_ADDRESS</p> </li> <li> <p>USA_DEA_NUMBER</p> </li> <li> <p>USA_HCPCS_CODE</p> </li> <li> <p>USA_NATIONAL_PROVIDER_IDENTIFIER</p> </li> <li> <p>USA_NATIONAL_DRUG_CODE</p> </li> <li> <p>USA_HEALTH_INSURANCE_CLAIM_NUMBER</p> </li> <li> <p>USA_MEDICARE_BENEFICIARY_IDENTIFIER</p> </li> <li> <p>USA_CPT_CODE</p> </li> <li> <p>PERSON_NAME</p> </li> <li> <p>DATE</p> </li> </ul> <p>The Entity type group USA_ALL is also supported, and includes all of the above entity types except PERSON_NAME and DATE.</p>',
+    }),
+    AllowedStatistics: AllowedStatisticListSchema.exactOptional().openapi({
+      description:
+        'Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.',
+    }),
+  })
+  .openapi({
+    required: ['EntityTypes'],
+    description:
+      'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
+  })
+  .openapi('EntityDetectorConfiguration')
+
+const ProfileConfigurationSchema = z
+  .object({
+    DatasetStatisticsConfiguration: StatisticsConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
+    }),
+    ProfileColumns: ColumnSelectorListSchema.exactOptional().openapi({
+      description:
+        'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
+    }),
+    ColumnStatisticsConfigurations: ColumnStatisticsConfigurationListSchema.exactOptional().openapi(
+      {
+        description:
+          'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
+      },
+    ),
+    EntityDetectorConfiguration: EntityDetectorConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configuration for profile jobs. Configuration can be used to select columns, do evaluations, and override default parameters of evaluations. When configuration is undefined, the profile job will apply default settings to all supported columns. ',
+    required: [],
+  })
+  .openapi('ProfileConfiguration')
+
+const ArnSchema = z.string().min(20).max(2048).openapi('Arn')
+
+const ValidationModeSchema = z.literal('CHECK_ALL').openapi('ValidationMode')
+
+const ValidationConfigurationSchema = z
+  .object({
+    RulesetArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the ruleset to be validated in the profile job. The TargetArn of the selected ruleset should be the same as the Amazon Resource Name (ARN) of the dataset that is associated with the profile job.',
+    }),
+    ValidationMode: ValidationModeSchema.exactOptional().openapi({
+      description:
+        'Mode of data quality validation. Default mode is “CHECK_ALL” which verifies all rules defined in the selected ruleset.',
+    }),
+  })
+  .openapi({
+    required: ['RulesetArn'],
+    description:
+      'Configuration for data quality validation. Used to select the Rulesets and Validation Mode to be used in the profile job. When ValidationConfiguration is null, the profile job will run without data quality validation.',
+  })
+  .openapi('ValidationConfiguration')
+
+const ValidationConfigurationListSchema = z
+  .array(ValidationConfigurationSchema)
+  .min(1)
+  .openapi('ValidationConfigurationList')
+
+const RecipeNameSchema = z.string().min(1).max(255).openapi('RecipeName')
+
+const RecipeVersionSchema = z.string().min(1).max(16).openapi('RecipeVersion')
+
+const RecipeReferenceSchema = z
+  .object({
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe.' }),
+    RecipeVersion: RecipeVersionSchema.exactOptional().openapi({
+      description: 'The identifier for the version for the recipe. ',
+    }),
+  })
+  .openapi({
+    required: ['Name'],
+    description: 'Represents the name and version of a DataBrew recipe.',
+  })
+  .openapi('RecipeReference')
+
+const TagValueSchema = z.string().max(256).openapi('TagValue')
+
+const TagMapSchema = z
+  .record(z.string(), TagValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 200)
+  .openapi('TagMap')
+
+const TimeoutSchema = z.int().min(0).openapi('Timeout')
+
+const SampleModeSchema = z.enum(['FULL_DATASET', 'CUSTOM_ROWS']).openapi('SampleMode')
+
+const JobSizeSchema = z.int().openapi('JobSize')
+
+const JobSampleSchema = z
+  .object({
+    Mode: SampleModeSchema.exactOptional().openapi({
+      description:
+        '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
+    }),
+    Size: JobSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
+    }),
+  })
+  .openapi({
+    description:
+      "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
+    required: [],
+  })
+  .openapi('JobSample')
+
+type DescribeJobResponseType = {
+  CreateDate?: z.infer<typeof DateSchema> & unknown
+  CreatedBy?: z.infer<typeof CreatedBySchema> & unknown
+  DatasetName?: z.infer<typeof DatasetNameSchema> & unknown
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
+  Name: z.infer<typeof JobNameSchema> & unknown
+  Type?: z.infer<typeof JobTypeSchema> & unknown
+  LastModifiedBy?: z.infer<typeof LastModifiedBySchema> & unknown
+  LastModifiedDate?: z.infer<typeof DateSchema> & unknown
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
+  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
+  Outputs?: z.infer<typeof OutputListSchema> & unknown
+  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema> & unknown
+  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema> & unknown
+  ProjectName?: z.infer<typeof ProjectNameSchema> & unknown
+  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema> & unknown
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
+  RecipeReference?: z.infer<typeof RecipeReferenceSchema>
+  ResourceArn?: z.infer<typeof ArnSchema> & unknown
+  RoleArn?: z.infer<typeof ArnSchema> & unknown
+  Tags?: z.infer<typeof TagMapSchema> & unknown
+  Timeout?: z.infer<typeof TimeoutSchema> & unknown
+  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+}
+
+const AttemptSchema = z.int().openapi('Attempt')
+
+const JobRunErrorMessageSchema = z.string().openapi('JobRunErrorMessage')
+
+const ExecutionTimeSchema = z.int().openapi('ExecutionTime')
+
+const JobRunIdSchema = z.string().min(1).max(255).openapi('JobRunId')
+
+const JobRunStateSchema = z
+  .enum(['STARTING', 'RUNNING', 'STOPPING', 'STOPPED', 'SUCCEEDED', 'FAILED', 'TIMEOUT'])
+  .openapi('JobRunState')
+
+const LogGroupNameSchema = z.string().min(1).max(512).openapi('LogGroupName')
+
+const StartedBySchema = z.string().openapi('StartedBy')
+
+type DescribeJobRunResponseType = {
+  Attempt?: z.infer<typeof AttemptSchema> & unknown
+  CompletedOn?: z.infer<typeof DateSchema> & unknown
+  DatasetName?: z.infer<typeof DatasetNameSchema> & unknown
+  ErrorMessage?: z.infer<typeof JobRunErrorMessageSchema> & unknown
+  ExecutionTime?: z.infer<typeof ExecutionTimeSchema> & unknown
+  JobName: z.infer<typeof JobNameSchema> & unknown
+  ProfileConfiguration?: z.infer<typeof ProfileConfigurationSchema> & unknown
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
+  RunId?: z.infer<typeof JobRunIdSchema> & unknown
+  State?: z.infer<typeof JobRunStateSchema> & unknown
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
+  LogGroupName?: z.infer<typeof LogGroupNameSchema> & unknown
+  Outputs?: z.infer<typeof OutputListSchema> & unknown
+  DataCatalogOutputs?: z.infer<typeof DataCatalogOutputListSchema> & unknown
+  DatabaseOutputs?: z.infer<typeof DatabaseOutputListSchema> & unknown
+  RecipeReference?: z.infer<typeof RecipeReferenceSchema>
+  StartedBy?: z.infer<typeof StartedBySchema> & unknown
+  StartedOn?: z.infer<typeof DateSchema> & unknown
+  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+}
+
+const AccountIdSchema = z.string().max(255).openapi('AccountId')
+
+const InputFormatSchema = z.enum(['CSV', 'JSON', 'PARQUET', 'EXCEL', 'ORC']).openapi('InputFormat')
 
 const MultiLineSchema = z.boolean().openapi('MultiLine')
 
 const JsonOptionsSchema = z
   .object({
-    MultiLine: MultiLineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies whether JSON input contains embedded new line characters.',
-        }),
-    ).exactOptional(),
+    MultiLine: MultiLineSchema.exactOptional().openapi({
+      description:
+        'A value that specifies whether JSON input contains embedded new line characters.',
+    }),
   })
   .openapi({
     description:
@@ -193,30 +569,18 @@ const HeaderRowSchema = z.boolean().openapi('HeaderRow')
 
 const ExcelOptionsSchema = z
   .object({
-    SheetNames: SheetNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more named sheets in the Excel file that will be included in the dataset.',
-        }),
-    ).exactOptional(),
-    SheetIndexes: SheetIndexListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more sheet numbers in the Excel file that will be included in the dataset.',
-        }),
-    ).exactOptional(),
-    HeaderRow: HeaderRowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.',
-        }),
-    ).exactOptional(),
+    SheetNames: SheetNameListSchema.exactOptional().openapi({
+      description:
+        'One or more named sheets in the Excel file that will be included in the dataset.',
+    }),
+    SheetIndexes: SheetIndexListSchema.exactOptional().openapi({
+      description:
+        'One or more sheet numbers in the Excel file that will be included in the dataset.',
+    }),
+    HeaderRow: HeaderRowSchema.exactOptional().openapi({
+      description:
+        'A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.',
+    }),
   })
   .openapi({
     description:
@@ -227,22 +591,13 @@ const ExcelOptionsSchema = z
 
 const CsvOptionsSchema = z
   .object({
-    Delimiter: DelimiterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A single character that specifies the delimiter being used in the CSV file.',
-        }),
-    ).exactOptional(),
-    HeaderRow: HeaderRowSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.',
-        }),
-    ).exactOptional(),
+    Delimiter: DelimiterSchema.exactOptional().openapi({
+      description: 'A single character that specifies the delimiter being used in the CSV file.',
+    }),
+    HeaderRow: HeaderRowSchema.exactOptional().openapi({
+      description:
+        'A variable that specifies whether the first row in the file is parsed as the header. If this value is false, column names are auto-generated.',
+    }),
   })
   .openapi({
     description:
@@ -251,41 +606,41 @@ const CsvOptionsSchema = z
   })
   .openapi('CsvOptions')
 
-const CatalogIdSchema = z.string().min(1).max(255).openapi('CatalogId')
-
-const DatabaseNameSchema = z.string().min(1).max(255).openapi('DatabaseName')
-
-const TableNameSchema = z.string().min(1).max(255).openapi('TableName')
+const FormatOptionsSchema = z
+  .object({
+    Json: JsonOptionsSchema.exactOptional().openapi({
+      description: 'Options that define how JSON input is to be interpreted by DataBrew.',
+    }),
+    Excel: ExcelOptionsSchema.exactOptional().openapi({
+      description: 'Options that define how Excel input is to be interpreted by DataBrew.',
+    }),
+    Csv: CsvOptionsSchema.exactOptional().openapi({
+      description: 'Options that define how CSV input is to be interpreted by DataBrew.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a set of options that define the structure of either comma-separated value (CSV), Excel, or JSON input.',
+    required: [],
+  })
+  .openapi('FormatOptions')
 
 const DataCatalogInputDefinitionSchema = z
   .object({
-    CatalogId: CatalogIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.',
-        }),
-    ).exactOptional(),
-    DatabaseName: DatabaseNameSchema.and(
-      z.any().openapi({ description: 'The name of a database in the Data Catalog.' }),
-    ),
-    TableName: TableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a database table in the Data Catalog. This table corresponds to a DataBrew dataset.',
-        }),
-    ),
-    TempDirectory: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents an Amazon location where DataBrew can store intermediate results.',
-        }),
-    ).exactOptional(),
+    CatalogId: CatalogIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.',
+    }),
+    DatabaseName: DatabaseNameSchema.openapi({
+      description: 'The name of a database in the Data Catalog.',
+    }),
+    TableName: TableNameSchema.openapi({
+      description:
+        'The name of a database table in the Data Catalog. This table corresponds to a DataBrew dataset.',
+    }),
+    TempDirectory: S3LocationSchema.exactOptional().openapi({
+      description: 'Represents an Amazon location where DataBrew can store intermediate results.',
+    }),
   })
   .openapi({
     required: ['DatabaseName', 'TableName'],
@@ -294,34 +649,22 @@ const DataCatalogInputDefinitionSchema = z
   })
   .openapi('DataCatalogInputDefinition')
 
-const GlueConnectionNameSchema = z.string().min(1).max(255).openapi('GlueConnectionName')
-
-const DatabaseTableNameSchema = z.string().min(1).max(255).openapi('DatabaseTableName')
-
 const QueryStringSchema = z.string().min(1).max(10000).openapi('QueryString')
 
 const DatabaseInputDefinitionSchema = z
   .object({
-    GlueConnectionName: GlueConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Glue Connection that stores the connection information for the target database.',
-        }),
-    ),
-    DatabaseTableName: DatabaseTableNameSchema.and(
-      z.any().openapi({ description: 'The table within the target database.' }),
-    ).exactOptional(),
+    GlueConnectionName: GlueConnectionNameSchema.openapi({
+      description:
+        'The Glue Connection that stores the connection information for the target database.',
+    }),
+    DatabaseTableName: DatabaseTableNameSchema.exactOptional().openapi({
+      description: 'The table within the target database.',
+    }),
     TempDirectory: S3LocationSchema.exactOptional(),
-    QueryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Custom SQL to run against the provided Glue connection. This SQL will be used as the input for DataBrew projects and jobs.',
-        }),
-    ).exactOptional(),
+    QueryString: QueryStringSchema.exactOptional().openapi({
+      description:
+        'Custom SQL to run against the provided Glue connection. This SQL will be used as the input for DataBrew projects and jobs.',
+    }),
   })
   .openapi({
     required: ['GlueConnectionName'],
@@ -329,24 +672,42 @@ const DatabaseInputDefinitionSchema = z
   })
   .openapi('DatabaseInputDefinition')
 
-const ArnSchema = z.string().min(20).max(2048).openapi('Arn')
-
 const MetadataSchema = z
   .object({
-    SourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) associated with the dataset. Currently, DataBrew only supports ARNs from Amazon AppFlow.',
-        }),
-    ).exactOptional(),
+    SourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) associated with the dataset. Currently, DataBrew only supports ARNs from Amazon AppFlow.',
+    }),
   })
   .openapi({
     description: 'Contains additional resource information needed for specific datasets.',
     required: [],
   })
   .openapi('Metadata')
+
+const InputSchema = z
+  .object({
+    S3InputDefinition: S3LocationSchema.exactOptional().openapi({
+      description: 'The Amazon S3 location where the data is stored.',
+    }),
+    DataCatalogInputDefinition: DataCatalogInputDefinitionSchema.exactOptional().openapi({
+      description: 'The Glue Data Catalog parameters for the data.',
+    }),
+    DatabaseInputDefinition: DatabaseInputDefinitionSchema.exactOptional().openapi({
+      description: 'Connection information for dataset input files stored in a database.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'Contains additional resource information needed for specific datasets.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents information on how DataBrew can find data, in either the Glue Data Catalog or Amazon S3.',
+    required: [],
+  })
+  .openapi('Input')
+
+const SourceSchema = z.enum(['S3', 'DATA-CATALOG', 'DATABASE']).openapi('Source')
 
 const ExpressionSchema = z
   .string()
@@ -361,22 +722,14 @@ const ValuesMapSchema = z.record(z.string(), ConditionValueSchema).openapi('Valu
 
 const FilterExpressionSchema = z
   .object({
-    Expression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expression which includes condition names followed by substitution variables, possibly grouped and combined with other conditions. For example, "(starts_with :prefix1 or starts_with :prefix2) and (ends_with :suffix1 or ends_with :suffix2)". Substitution variables should start with \':\' symbol.',
-        }),
-    ),
-    ValuesMap: ValuesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The map of substitution variable names to their values used in this filter expression.',
-        }),
-    ),
+    Expression: ExpressionSchema.openapi({
+      description:
+        'The expression which includes condition names followed by substitution variables, possibly grouped and combined with other conditions. For example, "(starts_with :prefix1 or starts_with :prefix2) and (ends_with :suffix1 or ends_with :suffix2)". Substitution variables should start with \':\' symbol.',
+    }),
+    ValuesMap: ValuesMapSchema.openapi({
+      description:
+        'The map of substitution variable names to their values used in this filter expression.',
+    }),
   })
   .openapi({
     required: ['Expression', 'ValuesMap'],
@@ -393,25 +746,15 @@ const OrderSchema = z.enum(['DESCENDING', 'ASCENDING']).openapi('Order')
 
 const FilesLimitSchema = z
   .object({
-    MaxFiles: MaxFilesSchema.and(
-      z.any().openapi({ description: 'The number of Amazon S3 files to select.' }),
-    ),
-    OrderedBy: OrderedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A criteria to use for Amazon S3 files sorting before their selection. By default uses LAST_MODIFIED_DATE as a sorting criteria. Currently it's the only allowed value.",
-        }),
-    ).exactOptional(),
-    Order: OrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A criteria to use for Amazon S3 files sorting before their selection. By default uses DESCENDING order, i.e. most recent files are selected first. Another possible value is ASCENDING.',
-        }),
-    ).exactOptional(),
+    MaxFiles: MaxFilesSchema.openapi({ description: 'The number of Amazon S3 files to select.' }),
+    OrderedBy: OrderedBySchema.exactOptional().openapi({
+      description:
+        "A criteria to use for Amazon S3 files sorting before their selection. By default uses LAST_MODIFIED_DATE as a sorting criteria. Currently it's the only allowed value.",
+    }),
+    Order: OrderSchema.exactOptional().openapi({
+      description:
+        'A criteria to use for Amazon S3 files sorting before their selection. By default uses DESCENDING order, i.e. most recent files are selected first. Another possible value is ASCENDING.',
+    }),
   })
   .openapi({
     required: ['MaxFiles'],
@@ -442,30 +785,18 @@ const LocaleCodeSchema = z
 
 const DatetimeOptionsSchema = z
   .object({
-    Format: DatetimeFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Required option, that defines the datetime format used for a date parameter in the Amazon S3 path. Should use only supported datetime specifiers and separation characters, all literal a-z or A-Z characters should be escaped with single quotes. E.g. "MM.dd.yyyy-\'at\'-HH:mm".',
-        }),
-    ),
-    TimezoneOffset: TimezoneOffsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Optional value for a timezone offset of the datetime parameter value in the Amazon S3 path. Shouldn't be used if Format for this parameter includes timezone fields. If no offset specified, UTC is assumed.",
-        }),
-    ).exactOptional(),
-    LocaleCode: LocaleCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional value for a non-US locale code, needed for correct interpretation of some date formats.',
-        }),
-    ).exactOptional(),
+    Format: DatetimeFormatSchema.openapi({
+      description:
+        'Required option, that defines the datetime format used for a date parameter in the Amazon S3 path. Should use only supported datetime specifiers and separation characters, all literal a-z or A-Z characters should be escaped with single quotes. E.g. "MM.dd.yyyy-\'at\'-HH:mm".',
+    }),
+    TimezoneOffset: TimezoneOffsetSchema.exactOptional().openapi({
+      description:
+        "Optional value for a timezone offset of the datetime parameter value in the Amazon S3 path. Shouldn't be used if Format for this parameter includes timezone fields. If no offset specified, UTC is assumed.",
+    }),
+    LocaleCode: LocaleCodeSchema.exactOptional().openapi({
+      description:
+        'Optional value for a non-US locale code, needed for correct interpretation of some date formats.',
+    }),
   })
   .openapi({
     required: ['Format'],
@@ -478,45 +809,25 @@ const CreateColumnSchema = z.boolean().openapi('CreateColumn')
 
 const DatasetParameterSchema = z
   .object({
-    Name: PathParameterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of the parameter that is used in the dataset's Amazon S3 path.",
-        }),
-    ),
-    Type: ParameterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The type of the dataset parameter, can be one of a 'String', 'Number' or 'Datetime'.",
-        }),
-    ),
-    DatetimeOptions: DatetimeOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional parameter options such as a format and a timezone. Required for datetime parameters.',
-        }),
-    ).exactOptional(),
-    CreateColumn: CreateColumnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional boolean value that defines whether the captured value of this parameter should be used to create a new column in a dataset.',
-        }),
-    ).exactOptional(),
-    Filter: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional filter expression structure to apply additional matching criteria to the parameter.',
-        }),
-    ).exactOptional(),
+    Name: PathParameterNameSchema.openapi({
+      description: "The name of the parameter that is used in the dataset's Amazon S3 path.",
+    }),
+    Type: ParameterTypeSchema.openapi({
+      description:
+        "The type of the dataset parameter, can be one of a 'String', 'Number' or 'Datetime'.",
+    }),
+    DatetimeOptions: DatetimeOptionsSchema.exactOptional().openapi({
+      description:
+        'Additional parameter options such as a format and a timezone. Required for datetime parameters.',
+    }),
+    CreateColumn: CreateColumnSchema.exactOptional().openapi({
+      description:
+        'Optional boolean value that defines whether the captured value of this parameter should be used to create a new column in a dataset.',
+    }),
+    Filter: FilterExpressionSchema.exactOptional().openapi({
+      description:
+        'The optional filter expression structure to apply additional matching criteria to the parameter.',
+    }),
   })
   .openapi({
     required: ['Name', 'Type'],
@@ -535,225 +846,180 @@ const PathParametersMapSchema = z
   })
   .openapi('PathParametersMap')
 
-const TagValueSchema = z.string().max(256).openapi('TagValue')
+const PathOptionsSchema = z
+  .object({
+    LastModifiedDateCondition: FilterExpressionSchema.exactOptional().openapi({
+      description:
+        'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
+    }),
+    FilesLimit: FilesLimitSchema.exactOptional().openapi({
+      description:
+        'If provided, this structure imposes a limit on a number of files that should be selected.',
+    }),
+    Parameters: PathParametersMapSchema.exactOptional().openapi({
+      description:
+        'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a set of options that define how DataBrew selects files for a given Amazon S3 path in a dataset.',
+    required: [],
+  })
+  .openapi('PathOptions')
+
+const DatasetSchema = z
+  .object({
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the dataset.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the dataset.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the dataset was created.',
+    }),
+    Name: DatasetNameSchema.openapi({ description: 'The unique name of the dataset.' }),
+    Format: InputFormatSchema.exactOptional().openapi({
+      description: 'The file format of a dataset that is created from an Amazon S3 file or folder.',
+    }),
+    FormatOptions: FormatOptionsSchema.exactOptional().openapi({
+      description: 'A set of options that define how DataBrew interprets the data in the dataset.',
+    }),
+    Input: InputSchema.openapi({
+      description:
+        'Information on how DataBrew can find the dataset, in either the Glue Data Catalog or Amazon S3.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The last modification date and time of the dataset.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the dataset.',
+    }),
+    Source: SourceSchema.exactOptional().openapi({
+      description:
+        'The location of the data for the dataset, either Amazon S3 or the Glue Data Catalog.',
+    }),
+    PathOptions: PathOptionsSchema.exactOptional().openapi({
+      description:
+        'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the dataset.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) for the dataset.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'Input'],
+    description: 'Represents a dataset that can be processed by DataBrew.',
+  })
+  .openapi('Dataset')
+
+const DatasetListSchema = z.array(DatasetSchema).openapi('DatasetList')
+
+const NextTokenSchema = z.string().min(1).max(2000).openapi('NextToken')
+
+type ListDatasetsResponseType = {
+  Datasets: z.infer<typeof DatasetListSchema> & unknown
+  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+type CreateProfileJobRequestType = {
+  DatasetName: z.infer<typeof DatasetNameSchema> & unknown
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
+  Name: z.infer<typeof JobNameSchema> & unknown
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
+  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
+  OutputLocation: z.infer<typeof S3LocationSchema>
+  Configuration?: z.infer<typeof ProfileConfigurationSchema> & unknown
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
+  RoleArn: z.infer<typeof ArnSchema> & unknown
+  Tags?: z.infer<typeof TagMapSchema> & unknown
+  Timeout?: z.infer<typeof TimeoutSchema> & unknown
+  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+}
+
+type UpdateProfileJobRequestType = {
+  Configuration?: z.infer<typeof ProfileConfigurationSchema> & unknown
+  EncryptionKeyArn?: z.infer<typeof EncryptionKeyArnSchema> & unknown
+  EncryptionMode?: z.infer<typeof EncryptionModeSchema> & unknown
+  LogSubscription?: z.infer<typeof LogSubscriptionSchema> & unknown
+  MaxCapacity?: z.infer<typeof MaxCapacitySchema> & unknown
+  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
+  OutputLocation: z.infer<typeof S3LocationSchema>
+  ValidationConfigurations?: z.infer<typeof ValidationConfigurationListSchema> & unknown
+  RoleArn: z.infer<typeof ArnSchema> & unknown
+  Timeout?: z.infer<typeof TimeoutSchema> & unknown
+  JobSample?: z.infer<typeof JobSampleSchema> & unknown
+}
+
+const ErrorCodeSchema = z
+  .string()
+  .regex(/^[1-5][0-9][0-9]$/)
+  .openapi('ErrorCode')
+
+const RecipeErrorMessageSchema = z.string().openapi('RecipeErrorMessage')
+
+const RecipeVersionErrorDetailSchema = z
+  .object({
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The HTTP status code for the error.',
+    }),
+    ErrorMessage: RecipeErrorMessageSchema.exactOptional().openapi({
+      description: 'The text of the error message.',
+    }),
+    RecipeVersion: RecipeVersionSchema.exactOptional().openapi({
+      description: 'The identifier for the recipe version associated with this error.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents any errors encountered when attempting to delete multiple recipe versions.',
+    required: [],
+  })
+  .openapi('RecipeVersionErrorDetail')
+
+const RecipeErrorListSchema = z.array(RecipeVersionErrorDetailSchema).openapi('RecipeErrorList')
+
+const BatchDeleteRecipeVersionResponseSchema = z
+  .object({
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe that was modified.' }),
+    Errors: RecipeErrorListSchema.exactOptional().openapi({
+      description: 'Errors, if any, that occurred while attempting to delete the recipe versions.',
+    }),
+  })
+  .openapi({ required: ['Name'] })
+  .openapi('BatchDeleteRecipeVersionResponse')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const CreateDatasetResponseSchema = z
+  .object({
+    Name: DatasetNameSchema.openapi({ description: 'The name of the dataset that you created.' }),
+  })
+  .openapi({ required: ['Name'] })
+  .openapi('CreateDatasetResponse')
 
 const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
 const ServiceQuotaExceededExceptionSchema = z.any().openapi('ServiceQuotaExceededException')
 
-const JobNameSchema = z.string().min(1).max(240).openapi('JobName')
-
 const CreateProfileJobResponseSchema = z
-  .object({
-    Name: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job that was created.' }),
-    ),
-  })
+  .object({ Name: JobNameSchema.openapi({ description: 'The name of the job that was created.' }) })
   .openapi({ required: ['Name'] })
   .openapi('CreateProfileJobResponse')
 
-const StatisticSchema = z
-  .string()
-  .regex(/^[A-Z\_]+$/)
-  .min(1)
-  .max(128)
-  .openapi('Statistic')
-
-const StatisticListSchema = z.array(StatisticSchema).min(1).openapi('StatisticList')
-
-const ParameterValueSchema = z.string().min(1).max(32768).openapi('ParameterValue')
-
-const ParameterMapSchema = z.record(z.string(), ParameterValueSchema).openapi('ParameterMap')
-
-const StatisticOverrideSchema = z
-  .object({
-    Statistic: StatisticSchema.and(z.any().openapi({ description: 'The name of an evaluation' })),
-    Parameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A map that includes overrides of an evaluation’s parameters.' }),
-    ),
-  })
-  .openapi({
-    required: ['Statistic', 'Parameters'],
-    description: 'Override of a particular evaluation for a profile job. ',
-  })
-  .openapi('StatisticOverride')
-
-const StatisticOverrideListSchema = z
-  .array(StatisticOverrideSchema)
-  .min(1)
-  .openapi('StatisticOverrideList')
-
-const StatisticsConfigurationSchema = z
-  .object({
-    IncludedStatistics: StatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of included evaluations. When the list is undefined, all supported evaluations will be included.',
-        }),
-    ).exactOptional(),
-    Overrides: StatisticOverrideListSchema.and(
-      z.any().openapi({ description: 'List of overrides for evaluations.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Configuration of evaluations for a profile job. This configuration can be used to select evaluations and override the parameters of selected evaluations. ',
-    required: [],
-  })
-  .openapi('StatisticsConfiguration')
-
-const ColumnSelectorSchema = z
-  .object({
-    Regex: ColumnNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A regular expression for selecting a column from a dataset.' }),
-    ).exactOptional(),
-    Name: ColumnNameSchema.and(
-      z.any().openapi({ description: 'The name of a column from a dataset.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Selector of a column from a dataset for profile job configuration. One selector includes either a column name or a regular expression.',
-    required: [],
-  })
-  .openapi('ColumnSelector')
-
-const ColumnSelectorListSchema = z.array(ColumnSelectorSchema).min(1).openapi('ColumnSelectorList')
-
-const ColumnStatisticsConfigurationSchema = z
-  .object({
-    Selectors: ColumnSelectorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of column selectors. Selectors can be used to select columns from the dataset. When selectors are undefined, configuration will be applied to all supported columns. ',
-        }),
-    ).exactOptional(),
-    Statistics: StatisticsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for evaluations. Statistics can be used to select evaluations and override parameters of evaluations. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Statistics'],
-    description:
-      'Configuration for column evaluations for a profile job. ColumnStatisticsConfiguration can be used to select evaluations and override parameters of evaluations for particular columns. ',
-  })
-  .openapi('ColumnStatisticsConfiguration')
-
-const ColumnStatisticsConfigurationListSchema = z
-  .array(ColumnStatisticsConfigurationSchema)
-  .min(1)
-  .openapi('ColumnStatisticsConfigurationList')
-
-const EntityTypeSchema = z
-  .string()
-  .regex(/^[A-Z_][A-Z\\d_]*$/)
-  .min(1)
-  .max(128)
-  .openapi('EntityType')
-
-const EntityTypeListSchema = z.array(EntityTypeSchema).min(1).openapi('EntityTypeList')
-
-const AllowedStatisticsSchema = z
-  .object({
-    Statistics: StatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more column statistics to allow for columns that contain detected entities.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Statistics'],
-    description:
-      'Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.',
-  })
-  .openapi('AllowedStatistics')
-
-const AllowedStatisticListSchema = z
-  .array(AllowedStatisticsSchema)
-  .min(1)
-  .openapi('AllowedStatisticList')
-
-const EntityDetectorConfigurationSchema = z
-  .object({
-    EntityTypes: EntityTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Entity types to detect. Can be any of the following:</p> <ul> <li> <p>USA_SSN</p> </li> <li> <p>EMAIL</p> </li> <li> <p>USA_ITIN</p> </li> <li> <p>USA_PASSPORT_NUMBER</p> </li> <li> <p>PHONE_NUMBER</p> </li> <li> <p>USA_DRIVING_LICENSE</p> </li> <li> <p>BANK_ACCOUNT</p> </li> <li> <p>CREDIT_CARD</p> </li> <li> <p>IP_ADDRESS</p> </li> <li> <p>MAC_ADDRESS</p> </li> <li> <p>USA_DEA_NUMBER</p> </li> <li> <p>USA_HCPCS_CODE</p> </li> <li> <p>USA_NATIONAL_PROVIDER_IDENTIFIER</p> </li> <li> <p>USA_NATIONAL_DRUG_CODE</p> </li> <li> <p>USA_HEALTH_INSURANCE_CLAIM_NUMBER</p> </li> <li> <p>USA_MEDICARE_BENEFICIARY_IDENTIFIER</p> </li> <li> <p>USA_CPT_CODE</p> </li> <li> <p>PERSON_NAME</p> </li> <li> <p>DATE</p> </li> </ul> <p>The Entity type group USA_ALL is also supported, and includes all of the above entity types except PERSON_NAME and DATE.</p>',
-        }),
-    ),
-    AllowedStatistics: AllowedStatisticListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of statistics that are allowed to be run on columns that contain detected entities. When undefined, no statistics will be computed on columns that contain detected entities.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['EntityTypes'],
-    description:
-      'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
-  })
-  .openapi('EntityDetectorConfiguration')
-
-const ValidationModeSchema = z.literal('CHECK_ALL').openapi('ValidationMode')
-
-const ValidationConfigurationSchema = z
-  .object({
-    RulesetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the ruleset to be validated in the profile job. The TargetArn of the selected ruleset should be the same as the Amazon Resource Name (ARN) of the dataset that is associated with the profile job.',
-        }),
-    ),
-    ValidationMode: ValidationModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Mode of data quality validation. Default mode is “CHECK_ALL” which verifies all rules defined in the selected ruleset.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['RulesetArn'],
-    description:
-      'Configuration for data quality validation. Used to select the Rulesets and Validation Mode to be used in the profile job. When ValidationConfiguration is null, the profile job will run without data quality validation.',
-  })
-  .openapi('ValidationConfiguration')
-
-const SampleModeSchema = z.enum(['FULL_DATASET', 'CUSTOM_ROWS']).openapi('SampleMode')
-
-const JobSizeSchema = z.int().openapi('JobSize')
-
-const ProjectNameSchema = z.string().min(1).max(255).openapi('ProjectName')
-
 const CreateProjectResponseSchema = z
   .object({
-    Name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that you created.' }),
-    ),
+    Name: ProjectNameSchema.openapi({ description: 'The name of the project that you created.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('CreateProjectResponse')
@@ -766,9 +1032,7 @@ const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
 
 const CreateRecipeResponseSchema = z
   .object({
-    Name: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe that you created.' }),
-    ),
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe that you created.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('CreateRecipeResponse')
@@ -782,16 +1046,12 @@ const OperationSchema = z
 
 const RecipeActionSchema = z
   .object({
-    Operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a valid DataBrew transformation to be performed on the data.',
-        }),
-    ),
-    Parameters: ParameterMapSchema.and(
-      z.any().openapi({ description: 'Contextual parameters for the transformation.' }),
-    ).exactOptional(),
+    Operation: OperationSchema.openapi({
+      description: 'The name of a valid DataBrew transformation to be performed on the data.',
+    }),
+    Parameters: ParameterMapSchema.exactOptional().openapi({
+      description: 'Contextual parameters for the transformation.',
+    }),
   })
   .openapi({
     required: ['Operation'],
@@ -811,24 +1071,16 @@ const TargetColumnSchema = z.string().min(1).max(1024).openapi('TargetColumn')
 
 const ConditionExpressionSchema = z
   .object({
-    Condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A specific condition to apply to a recipe action. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/recipes.html#recipes.structure">Recipe structure</a> in the <i>Glue DataBrew Developer Guide</i>.',
-        }),
-    ),
-    Value: ConditionValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A value that the condition must evaluate to for the condition to succeed.',
-        }),
-    ).exactOptional(),
-    TargetColumn: TargetColumnSchema.and(
-      z.any().openapi({ description: 'A column to apply this condition to.' }),
-    ),
+    Condition: ConditionSchema.openapi({
+      description:
+        'A specific condition to apply to a recipe action. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/recipes.html#recipes.structure">Recipe structure</a> in the <i>Glue DataBrew Developer Guide</i>.',
+    }),
+    Value: ConditionValueSchema.exactOptional().openapi({
+      description: 'A value that the condition must evaluate to for the condition to succeed.',
+    }),
+    TargetColumn: TargetColumnSchema.openapi({
+      description: 'A column to apply this condition to.',
+    }),
   })
   .openapi({
     required: ['Condition', 'TargetColumn'],
@@ -843,17 +1095,13 @@ const ConditionExpressionListSchema = z
 
 const RecipeStepSchema = z
   .object({
-    Action: RecipeActionSchema.and(
-      z.any().openapi({ description: 'The particular action to be performed in the recipe step.' }),
-    ),
-    ConditionExpressions: ConditionExpressionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more conditions that must be met for the recipe step to succeed.</p> <note> <p>All of the conditions in the array must be met. In other words, all of the conditions must be combined using a logical AND operation.</p> </note>',
-        }),
-    ).exactOptional(),
+    Action: RecipeActionSchema.openapi({
+      description: 'The particular action to be performed in the recipe step.',
+    }),
+    ConditionExpressions: ConditionExpressionListSchema.exactOptional().openapi({
+      description:
+        '<p>One or more conditions that must be met for the recipe step to succeed.</p> <note> <p>All of the conditions in the array must be met. In other words, all of the conditions must be combined using a logical AND operation.</p> </note>',
+    }),
   })
   .openapi({
     required: ['Action'],
@@ -862,206 +1110,15 @@ const RecipeStepSchema = z
   .openapi('RecipeStep')
 
 const CreateRecipeJobResponseSchema = z
-  .object({
-    Name: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job that you created.' }),
-    ),
-  })
+  .object({ Name: JobNameSchema.openapi({ description: 'The name of the job that you created.' }) })
   .openapi({ required: ['Name'] })
   .openapi('CreateRecipeJobResponse')
-
-const OutputSchema: z.ZodType<OutputType> = z
-  .lazy(() =>
-    z
-      .object({
-        CompressionFormat: CompressionFormatSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The compression algorithm used to compress the output text of the job.',
-            }),
-        ).exactOptional(),
-        Format: OutputFormatSchema.and(
-          z.any().openapi({ description: 'The data format of the output of the job.' }),
-        ).exactOptional(),
-        PartitionColumns: ColumnNameListSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The names of one or more partition columns for the output of the job.',
-            }),
-        ).exactOptional(),
-        Location: S3LocationSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The location in Amazon S3 where the job writes its output.' }),
-        ),
-        Overwrite: OverwriteOutputSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A value that, if true, means that any data in the location specified for output is overwritten with new output.',
-            }),
-        ).exactOptional(),
-        FormatOptions: OutputFormatOptionsSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Represents options that define how DataBrew formats job output files.',
-            }),
-        ).exactOptional(),
-        MaxOutputFiles: MaxOutputFilesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Maximum number of files to be generated by the job and written to the output folder. For output partitioned by column(s), the MaxOutputFiles value is the maximum number of files per partition.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        required: ['Location'],
-        description:
-          'Represents options that specify how and where in Amazon S3 DataBrew writes the output generated by recipe jobs or profile jobs.',
-      }),
-  )
-  .openapi('Output')
-
-const S3TableOutputOptionsSchema = z
-  .object({
-    Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents an Amazon S3 location (bucket name and object key) where DataBrew can write output from a job.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Location'],
-    description:
-      'Represents options that specify how and where DataBrew writes the Amazon S3 output generated by recipe jobs.',
-  })
-  .openapi('S3TableOutputOptions')
-
-const DatabaseTableOutputOptionsSchema = z
-  .object({
-    TempDirectory: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents an Amazon S3 location (bucket name and object key) where DataBrew can store intermediate results.',
-        }),
-    ).exactOptional(),
-    TableName: DatabaseTableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A prefix for the name of a table DataBrew will create in the database.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['TableName'],
-    description:
-      'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
-  })
-  .openapi('DatabaseTableOutputOptions')
-
-const DataCatalogOutputSchema = z
-  .object({
-    CatalogId: CatalogIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the Amazon Web Services account that holds the Data Catalog that stores the data.',
-        }),
-    ).exactOptional(),
-    DatabaseName: DatabaseNameSchema.and(
-      z.any().openapi({ description: 'The name of a database in the Data Catalog.' }),
-    ),
-    TableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The name of a table in the Data Catalog.' }),
-    ),
-    S3Options: S3TableOutputOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents options that specify how and where DataBrew writes the Amazon S3 output generated by recipe jobs.',
-        }),
-    ).exactOptional(),
-    DatabaseOptions: DatabaseTableOutputOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
-        }),
-    ).exactOptional(),
-    Overwrite: OverwriteOutputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that, if true, means that any data in the location specified for output is overwritten with new output. Not supported with DatabaseOptions.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['DatabaseName', 'TableName'],
-    description:
-      'Represents options that specify how and where in the Glue Data Catalog DataBrew writes the output generated by recipe jobs.',
-  })
-  .openapi('DataCatalogOutput')
-
-const DatabaseOutputModeSchema = z.literal('NEW_TABLE').openapi('DatabaseOutputMode')
-
-const DatabaseOutputSchema = z
-  .object({
-    GlueConnectionName: GlueConnectionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Glue connection that stores the connection information for the target database.',
-        }),
-    ),
-    DatabaseOptions: DatabaseTableOutputOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents options that specify how and where DataBrew writes the database output generated by recipe jobs.',
-        }),
-    ),
-    DatabaseOutputMode: DatabaseOutputModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The output mode to write into the database. Currently supported option: NEW_TABLE.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['GlueConnectionName', 'DatabaseOptions'],
-    description:
-      'Represents a JDBC database output object which defines the output destination for a DataBrew recipe job to write into.',
-  })
-  .openapi('DatabaseOutput')
 
 const RulesetNameSchema = z.string().min(1).max(255).openapi('RulesetName')
 
 const CreateRulesetResponseSchema = z
   .object({
-    Name: RulesetNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the created ruleset.' }),
-    ),
+    Name: RulesetNameSchema.openapi({ description: 'The unique name of the created ruleset.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('CreateRulesetResponse')
@@ -1080,23 +1137,15 @@ const ThresholdUnitSchema = z.enum(['COUNT', 'PERCENTAGE']).openapi('ThresholdUn
 
 const ThresholdSchema = z
   .object({
-    Value: ThresholdValueSchema.and(z.any().openapi({ description: 'The value of a threshold.' })),
-    Type: ThresholdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of a threshold. Used for comparison of an actual count of rows that satisfy the rule to the threshold value.',
-        }),
-    ).exactOptional(),
-    Unit: ThresholdUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unit of threshold value. Can be either a COUNT or PERCENTAGE of the full sample size used for validation.',
-        }),
-    ).exactOptional(),
+    Value: ThresholdValueSchema.openapi({ description: 'The value of a threshold.' }),
+    Type: ThresholdTypeSchema.exactOptional().openapi({
+      description:
+        'The type of a threshold. Used for comparison of an actual count of rows that satisfy the rule to the threshold value.',
+    }),
+    Unit: ThresholdUnitSchema.exactOptional().openapi({
+      description:
+        'Unit of threshold value. Can be either a COUNT or PERCENTAGE of the full sample size used for validation.',
+    }),
   })
   .openapi({
     required: ['Value'],
@@ -1107,47 +1156,27 @@ const ThresholdSchema = z
 
 const RuleSchema = z
   .object({
-    Name: RuleNameSchema.and(z.any().openapi({ description: 'The name of the rule.' })),
-    Disabled: DisabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that specifies whether the rule is disabled. Once a rule is disabled, a profile job will not validate it during a job run. Default value is false.',
-        }),
-    ).exactOptional(),
-    CheckExpression: ExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The expression which includes column references, condition names followed by variable references, possibly grouped and combined with other conditions. For example, <code>(:col1 starts_with :prefix1 or :col1 starts_with :prefix2) and (:col1 ends_with :suffix1 or :col1 ends_with :suffix2)</code>. Column and value references are substitution variables that should start with the ':' symbol. Depending on the context, substitution variables' values can be either an actual value or a column name. These values are defined in the SubstitutionMap. If a CheckExpression starts with a column reference, then ColumnSelectors in the rule should be null. If ColumnSelectors has been defined, then there should be no column reference in the left side of a condition, for example, <code>is_between :val1 and :val2</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/databrew/latest/dg/profile.data-quality-available-checks.html\">Available checks</a> </p>",
-        }),
-    ),
-    SubstitutionMap: ValuesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The map of substitution variable names to their values used in a check expression. Variable names should start with a \':\' (colon). Variable values can either be actual values or column names. To differentiate between the two, column names should be enclosed in backticks, for example, <code>":col1": "`Column A`".</code> ',
-        }),
-    ).exactOptional(),
-    Threshold: ThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The threshold used with a non-aggregate check expression. Non-aggregate check expressions will be applied to each row in a specific column, and the threshold will be used to determine whether the validation succeeds.',
-        }),
-    ).exactOptional(),
-    ColumnSelectors: ColumnSelectorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of column selectors. Selectors can be used to select columns using a name or regular expression from the dataset. Rule will be applied to selected columns.',
-        }),
-    ).exactOptional(),
+    Name: RuleNameSchema.openapi({ description: 'The name of the rule.' }),
+    Disabled: DisabledSchema.exactOptional().openapi({
+      description:
+        'A value that specifies whether the rule is disabled. Once a rule is disabled, a profile job will not validate it during a job run. Default value is false.',
+    }),
+    CheckExpression: ExpressionSchema.openapi({
+      description:
+        "<p>The expression which includes column references, condition names followed by variable references, possibly grouped and combined with other conditions. For example, <code>(:col1 starts_with :prefix1 or :col1 starts_with :prefix2) and (:col1 ends_with :suffix1 or :col1 ends_with :suffix2)</code>. Column and value references are substitution variables that should start with the ':' symbol. Depending on the context, substitution variables' values can be either an actual value or a column name. These values are defined in the SubstitutionMap. If a CheckExpression starts with a column reference, then ColumnSelectors in the rule should be null. If ColumnSelectors has been defined, then there should be no column reference in the left side of a condition, for example, <code>is_between :val1 and :val2</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/databrew/latest/dg/profile.data-quality-available-checks.html\">Available checks</a> </p>",
+    }),
+    SubstitutionMap: ValuesMapSchema.exactOptional().openapi({
+      description:
+        'The map of substitution variable names to their values used in a check expression. Variable names should start with a \':\' (colon). Variable values can either be actual values or column names. To differentiate between the two, column names should be enclosed in backticks, for example, <code>":col1": "`Column A`".</code> ',
+    }),
+    Threshold: ThresholdSchema.exactOptional().openapi({
+      description:
+        'The threshold used with a non-aggregate check expression. Non-aggregate check expressions will be applied to each row in a specific column, and the threshold will be used to determine whether the validation succeeds.',
+    }),
+    ColumnSelectors: ColumnSelectorListSchema.exactOptional().openapi({
+      description:
+        'List of column selectors. Selectors can be used to select columns using a name or regular expression from the dataset. Rule will be applied to selected columns.',
+    }),
   })
   .openapi({
     required: ['Name', 'CheckExpression'],
@@ -1160,634 +1189,248 @@ const ScheduleNameSchema = z.string().min(1).max(255).openapi('ScheduleName')
 
 const CreateScheduleResponseSchema = z
   .object({
-    Name: ScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name of the schedule that was created.' }),
-    ),
+    Name: ScheduleNameSchema.openapi({ description: 'The name of the schedule that was created.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('CreateScheduleResponse')
 
 const DeleteDatasetResponseSchema = z
   .object({
-    Name: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset that you deleted.' }),
-    ),
+    Name: DatasetNameSchema.openapi({ description: 'The name of the dataset that you deleted.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DeleteDatasetResponse')
 
 const DeleteJobResponseSchema = z
-  .object({
-    Name: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job that you deleted.' }),
-    ),
-  })
+  .object({ Name: JobNameSchema.openapi({ description: 'The name of the job that you deleted.' }) })
   .openapi({ required: ['Name'] })
   .openapi('DeleteJobResponse')
 
 const DeleteProjectResponseSchema = z
   .object({
-    Name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that you deleted.' }),
-    ),
+    Name: ProjectNameSchema.openapi({ description: 'The name of the project that you deleted.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DeleteProjectResponse')
 
 const DeleteRecipeVersionResponseSchema = z
   .object({
-    Name: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe that was deleted.' }),
-    ),
-    RecipeVersion: RecipeVersionSchema.and(
-      z.any().openapi({ description: 'The version of the recipe that was deleted.' }),
-    ),
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe that was deleted.' }),
+    RecipeVersion: RecipeVersionSchema.openapi({
+      description: 'The version of the recipe that was deleted.',
+    }),
   })
   .openapi({ required: ['Name', 'RecipeVersion'] })
   .openapi('DeleteRecipeVersionResponse')
 
 const DeleteRulesetResponseSchema = z
-  .object({
-    Name: RulesetNameSchema.and(
-      z.any().openapi({ description: 'The name of the deleted ruleset.' }),
-    ),
-  })
+  .object({ Name: RulesetNameSchema.openapi({ description: 'The name of the deleted ruleset.' }) })
   .openapi({ required: ['Name'] })
   .openapi('DeleteRulesetResponse')
 
 const DeleteScheduleResponseSchema = z
   .object({
-    Name: ScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name of the schedule that was deleted.' }),
-    ),
+    Name: ScheduleNameSchema.openapi({ description: 'The name of the schedule that was deleted.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DeleteScheduleResponse')
 
-const CreatedBySchema = z.string().openapi('CreatedBy')
-
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
-const InputFormatSchema = z.enum(['CSV', 'JSON', 'PARQUET', 'EXCEL', 'ORC']).openapi('InputFormat')
-
-const FormatOptionsSchema = z
-  .object({
-    Json: JsonOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options that define how JSON input is to be interpreted by DataBrew.',
-        }),
-    ).exactOptional(),
-    Excel: ExcelOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options that define how Excel input is to be interpreted by DataBrew.',
-        }),
-    ).exactOptional(),
-    Csv: CsvOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Options that define how CSV input is to be interpreted by DataBrew.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a set of options that define the structure of either comma-separated value (CSV), Excel, or JSON input.',
-    required: [],
-  })
-  .openapi('FormatOptions')
-
-const InputSchema = z
-  .object({
-    S3InputDefinition: S3LocationSchema.and(
-      z.any().openapi({ description: 'The Amazon S3 location where the data is stored.' }),
-    ).exactOptional(),
-    DataCatalogInputDefinition: DataCatalogInputDefinitionSchema.and(
-      z.any().openapi({ description: 'The Glue Data Catalog parameters for the data.' }),
-    ).exactOptional(),
-    DatabaseInputDefinition: DatabaseInputDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Connection information for dataset input files stored in a database.',
-        }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains additional resource information needed for specific datasets.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents information on how DataBrew can find data, in either the Glue Data Catalog or Amazon S3.',
-    required: [],
-  })
-  .openapi('Input')
-
-const LastModifiedBySchema = z.string().openapi('LastModifiedBy')
-
-const SourceSchema = z.enum(['S3', 'DATA-CATALOG', 'DATABASE']).openapi('Source')
-
-const PathOptionsSchema = z
-  .object({
-    LastModifiedDateCondition: FilterExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
-        }),
-    ).exactOptional(),
-    FilesLimit: FilesLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If provided, this structure imposes a limit on a number of files that should be selected.',
-        }),
-    ).exactOptional(),
-    Parameters: PathParametersMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a set of options that define how DataBrew selects files for a given Amazon S3 path in a dataset.',
-    required: [],
-  })
-  .openapi('PathOptions')
-
-const TagMapSchema = z
-  .record(z.string(), TagValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 200)
-  .openapi('TagMap')
-
 const DescribeDatasetResponseSchema = z
   .object({
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who created the dataset.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the dataset was created.' }),
-    ).exactOptional(),
-    Name: DatasetNameSchema.and(z.any().openapi({ description: 'The name of the dataset.' })),
-    Format: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file format of a dataset that is created from an Amazon S3 file or folder.',
-        }),
-    ).exactOptional(),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who created the dataset.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the dataset was created.',
+    }),
+    Name: DatasetNameSchema.openapi({ description: 'The name of the dataset.' }),
+    Format: InputFormatSchema.exactOptional().openapi({
+      description: 'The file format of a dataset that is created from an Amazon S3 file or folder.',
+    }),
     FormatOptions: FormatOptionsSchema.exactOptional(),
     Input: InputSchema,
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the dataset was last modified.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last modified the dataset.',
-        }),
-    ).exactOptional(),
-    Source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data for this dataset, Amazon S3 or the Glue Data Catalog.',
-        }),
-    ).exactOptional(),
-    PathOptions: PathOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags associated with this dataset.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ).exactOptional(),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the dataset was last modified.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last modified the dataset.',
+    }),
+    Source: SourceSchema.exactOptional().openapi({
+      description: 'The location of the data for this dataset, Amazon S3 or the Glue Data Catalog.',
+    }),
+    PathOptions: PathOptionsSchema.exactOptional().openapi({
+      description:
+        'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags associated with this dataset.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
   })
   .openapi({ required: ['Name', 'Input'] })
   .openapi('DescribeDatasetResponse')
 
-const EncryptionKeyArnSchema = z.string().min(20).max(2048).openapi('EncryptionKeyArn')
-
-const EncryptionModeSchema = z.enum(['SSE-KMS', 'SSE-S3']).openapi('EncryptionMode')
-
-const JobTypeSchema = z.enum(['PROFILE', 'RECIPE']).openapi('JobType')
-
-const LogSubscriptionSchema = z.enum(['ENABLE', 'DISABLE']).openapi('LogSubscription')
-
-const MaxCapacitySchema = z.int().openapi('MaxCapacity')
-
-const MaxRetriesSchema = z.int().min(0).openapi('MaxRetries')
-
-const OutputListSchema = z.array(OutputSchema).min(1).openapi('OutputList')
-
-const DataCatalogOutputListSchema = z
-  .array(DataCatalogOutputSchema)
-  .min(1)
-  .openapi('DataCatalogOutputList')
-
-const DatabaseOutputListSchema = z.array(DatabaseOutputSchema).min(1).openapi('DatabaseOutputList')
-
-const ProfileConfigurationSchema = z
+const DescribeJobResponseSchema: z.ZodType<DescribeJobResponseType> = z
   .object({
-    DatasetStatisticsConfiguration: StatisticsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
-        }),
-    ).exactOptional(),
-    ProfileColumns: ColumnSelectorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
-        }),
-    ).exactOptional(),
-    ColumnStatisticsConfigurations: ColumnStatisticsConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
-        }),
-    ).exactOptional(),
-    EntityDetectorConfiguration: EntityDetectorConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Configuration for profile jobs. Configuration can be used to select columns, do evaluations, and override default parameters of evaluations. When configuration is undefined, the profile job will apply default settings to all supported columns. ',
-    required: [],
-  })
-  .openapi('ProfileConfiguration')
-
-const ValidationConfigurationListSchema = z
-  .array(ValidationConfigurationSchema)
-  .min(1)
-  .openapi('ValidationConfigurationList')
-
-const RecipeReferenceSchema = z
-  .object({
-    Name: RecipeNameSchema.and(z.any().openapi({ description: 'The name of the recipe.' })),
-    RecipeVersion: RecipeVersionSchema.and(
-      z.any().openapi({ description: 'The identifier for the version for the recipe. ' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name'],
-    description: 'Represents the name and version of a DataBrew recipe.',
-  })
-  .openapi('RecipeReference')
-
-const TimeoutSchema = z.int().min(0).openapi('Timeout')
-
-const JobSampleSchema = z
-  .object({
-    Mode: SampleModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Size: JobSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
-    required: [],
-  })
-  .openapi('JobSample')
-
-const DescribeJobResponseSchema = z
-  .object({
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the job was created.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier (user name) of the user associated with the creation of the job.',
-        }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The dataset that the job acts upon.' }),
-    ).exactOptional(),
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: JobNameSchema.and(z.any().openapi({ description: 'The name of the job.' })),
-    Type: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The job type, which must be one of the following:</p> <ul> <li> <p> <code>PROFILE</code> - The job analyzes the dataset to determine its size, data types, data distribution, and more.</p> </li> <li> <p> <code>RECIPE</code> - The job applies one or more transformations to a dataset.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last modified the job.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the job was last modified.' }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether Amazon CloudWatch logging is enabled for this job.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of compute nodes that DataBrew can consume when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more artifacts that represent the output from running the job.',
-        }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
-        }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The DataBrew project associated with this job.' }),
-    ).exactOptional(),
-    ProfileConfiguration: ProfileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
-        }),
-    ).exactOptional(),
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job.',
-        }),
-    ).exactOptional(),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the job was created.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description:
+        'The identifier (user name) of the user associated with the creation of the job.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The dataset that the job acts upon.',
+    }),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    Name: JobNameSchema.openapi({ description: 'The name of the job.' }),
+    Type: JobTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The job type, which must be one of the following:</p> <ul> <li> <p> <code>PROFILE</code> - The job analyzes the dataset to determine its size, data types, data distribution, and more.</p> </li> <li> <p> <code>RECIPE</code> - The job applies one or more transformations to a dataset.</p> </li> </ul>',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last modified the job.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the job was last modified.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description: 'Indicates whether Amazon CloudWatch logging is enabled for this job.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description:
+        'The maximum number of compute nodes that DataBrew can consume when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more artifacts that represent the output from running the job.',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The DataBrew project associated with this job.',
+    }),
+    ProfileConfiguration: ProfileConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
+    }),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job.',
+    }),
     RecipeReference: RecipeReferenceSchema.exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the job.' }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags associated with this job.' }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the job.',
+    }),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags associated with this job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DescribeJobResponse')
 
-const AttemptSchema = z.int().openapi('Attempt')
-
-const JobRunErrorMessageSchema = z.string().openapi('JobRunErrorMessage')
-
-const ExecutionTimeSchema = z.int().openapi('ExecutionTime')
-
-const JobRunIdSchema = z.string().min(1).max(255).openapi('JobRunId')
-
-const JobRunStateSchema = z
-  .enum(['STARTING', 'RUNNING', 'STOPPING', 'STOPPED', 'SUCCEEDED', 'FAILED', 'TIMEOUT'])
-  .openapi('JobRunState')
-
-const LogGroupNameSchema = z.string().min(1).max(512).openapi('LogGroupName')
-
-const StartedBySchema = z.string().openapi('StartedBy')
-
-const DescribeJobRunResponseSchema = z
+const DescribeJobRunResponseSchema: z.ZodType<DescribeJobRunResponseType> = z
   .object({
-    Attempt: AttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of times that DataBrew has attempted to run the job.',
-        }),
-    ).exactOptional(),
-    CompletedOn: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job completed processing.' }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset for the job to process.' }),
-    ).exactOptional(),
-    ErrorMessage: JobRunErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message indicating an error (if any) that was encountered when the job ran.',
-        }),
-    ).exactOptional(),
-    ExecutionTime: ExecutionTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time, in seconds, during which the job run consumed resources.',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job being processed during this run.' }),
-    ),
-    ProfileConfiguration: ProfileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
-        }),
-    ).exactOptional(),
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job.',
-        }),
-    ).exactOptional(),
-    RunId: JobRunIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job run.' }),
-    ).exactOptional(),
-    State: JobRunStateSchema.and(
-      z.any().openapi({ description: 'The current state of the job run entity itself.' }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of Amazon CloudWatch logging for the job run.',
-        }),
-    ).exactOptional(),
-    LogGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon CloudWatch log group, where the job writes diagnostic messages when it runs.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z.any().openapi({ description: 'One or more output artifacts from a job run.' }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
-        }),
-    ).exactOptional(),
+    Attempt: AttemptSchema.exactOptional().openapi({
+      description: 'The number of times that DataBrew has attempted to run the job.',
+    }),
+    CompletedOn: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job completed processing.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset for the job to process.',
+    }),
+    ErrorMessage: JobRunErrorMessageSchema.exactOptional().openapi({
+      description: 'A message indicating an error (if any) that was encountered when the job ran.',
+    }),
+    ExecutionTime: ExecutionTimeSchema.exactOptional().openapi({
+      description: 'The amount of time, in seconds, during which the job run consumed resources.',
+    }),
+    JobName: JobNameSchema.openapi({
+      description: 'The name of the job being processed during this run.',
+    }),
+    ProfileConfiguration: ProfileConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
+    }),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job.',
+    }),
+    RunId: JobRunIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the job run.',
+    }),
+    State: JobRunStateSchema.exactOptional().openapi({
+      description: 'The current state of the job run entity itself.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description: 'The current status of Amazon CloudWatch logging for the job run.',
+    }),
+    LogGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon CloudWatch log group, where the job writes diagnostic messages when it runs.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more output artifacts from a job run.',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
+    }),
     RecipeReference: RecipeReferenceSchema.exactOptional(),
-    StartedBy: StartedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who started the job run.',
-        }),
-    ).exactOptional(),
-    StartedOn: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job run began.' }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed. If a JobSample value is not provided, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
-        }),
-    ).exactOptional(),
+    StartedBy: StartedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who started the job run.',
+    }),
+    StartedOn: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job run began.',
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed. If a JobSample value is not provided, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
+    }),
   })
   .openapi({ required: ['JobName'] })
   .openapi('DescribeJobRunResponse')
 
 const SampleSchema = z
   .object({
-    Size: SampleSizeSchema.and(
-      z.any().openapi({ description: 'The number of rows in the sample.' }),
-    ).exactOptional(),
-    Type: SampleTypeSchema.and(
-      z.any().openapi({ description: 'The way in which DataBrew obtains rows from a dataset.' }),
-    ),
+    Size: SampleSizeSchema.exactOptional().openapi({
+      description: 'The number of rows in the sample.',
+    }),
+    Type: SampleTypeSchema.openapi({
+      description: 'The way in which DataBrew obtains rows from a dataset.',
+    }),
   })
   .openapi({
     required: ['Type'],
@@ -1815,66 +1458,46 @@ const OpenedBySchema = z.string().openapi('OpenedBy')
 
 const DescribeProjectResponseSchema = z
   .object({
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the project was created.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who created the project.',
-        }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The dataset associated with the project.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the project was last modified.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last modified the project.',
-        }),
-    ).exactOptional(),
-    Name: ProjectNameSchema.and(z.any().openapi({ description: 'The name of the project.' })),
-    RecipeName: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The recipe associated with this job.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the project.' }),
-    ).exactOptional(),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the project was created.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who created the project.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The dataset associated with the project.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the project was last modified.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last modified the project.',
+    }),
+    Name: ProjectNameSchema.openapi({ description: 'The name of the project.' }),
+    RecipeName: RecipeNameSchema.exactOptional().openapi({
+      description: 'The recipe associated with this job.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the project.',
+    }),
     Sample: SampleSchema.exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags associated with this project.' }),
-    ).exactOptional(),
-    SessionStatus: SessionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes the current state of the session:</p> <ul> <li> <p> <code>PROVISIONING</code> - allocating resources for the session.</p> </li> <li> <p> <code>INITIALIZING</code> - getting the session ready for first use.</p> </li> <li> <p> <code>ASSIGNED</code> - the session is ready for use.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OpenedBy: OpenedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user that opened the project for use. ',
-        }),
-    ).exactOptional(),
-    OpenDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the project was opened. ' }),
-    ).exactOptional(),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags associated with this project.',
+    }),
+    SessionStatus: SessionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>Describes the current state of the session:</p> <ul> <li> <p> <code>PROVISIONING</code> - allocating resources for the session.</p> </li> <li> <p> <code>INITIALIZING</code> - getting the session ready for first use.</p> </li> <li> <p> <code>ASSIGNED</code> - the session is ready for use.</p> </li> </ul>',
+    }),
+    OpenedBy: OpenedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user that opened the project for use. ',
+    }),
+    OpenDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the project was opened. ',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DescribeProjectResponse')
@@ -1887,58 +1510,42 @@ const RecipeStepListSchema = z.array(RecipeStepSchema).openapi('RecipeStepList')
 
 const DescribeRecipeResponseSchema = z
   .object({
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier (user name) of the user who created the recipe.' }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the recipe was created.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last modified the recipe.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the recipe was last modified.' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project associated with this recipe.' }),
-    ).exactOptional(),
-    PublishedBy: PublishedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last published the recipe.',
-        }),
-    ).exactOptional(),
-    PublishedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the recipe was last published.' }),
-    ).exactOptional(),
-    Description: RecipeDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the recipe.' }),
-    ).exactOptional(),
-    Name: RecipeNameSchema.and(z.any().openapi({ description: 'The name of the recipe.' })),
-    Steps: RecipeStepListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more steps to be performed by the recipe. Each step consists of an action, and the conditions under which the action should succeed.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags associated with this project.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the recipe.' }),
-    ).exactOptional(),
-    RecipeVersion: RecipeVersionSchema.and(
-      z.any().openapi({ description: 'The recipe version identifier.' }),
-    ).exactOptional(),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who created the recipe.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the recipe was created.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last modified the recipe.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the recipe was last modified.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project associated with this recipe.',
+    }),
+    PublishedBy: PublishedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last published the recipe.',
+    }),
+    PublishedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the recipe was last published.',
+    }),
+    Description: RecipeDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the recipe.',
+    }),
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe.' }),
+    Steps: RecipeStepListSchema.exactOptional().openapi({
+      description:
+        'One or more steps to be performed by the recipe. Each step consists of an action, and the conditions under which the action should succeed.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags associated with this project.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the recipe.' }),
+    RecipeVersion: RecipeVersionSchema.exactOptional().openapi({
+      description: 'The recipe version identifier.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DescribeRecipeResponse')
@@ -1949,52 +1556,36 @@ const RuleListSchema = z.array(RuleSchema).min(1).openapi('RuleList')
 
 const DescribeRulesetResponseSchema = z
   .object({
-    Name: RulesetNameSchema.and(z.any().openapi({ description: 'The name of the ruleset.' })),
-    Description: RulesetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the ruleset.' }),
-    ).exactOptional(),
-    TargetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
-        }),
-    ).exactOptional(),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the ruleset was created.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the ruleset.',
-        }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the ruleset.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The modification date and time of the ruleset.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the ruleset.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the ruleset.' }),
-    ).exactOptional(),
+    Name: RulesetNameSchema.openapi({ description: 'The name of the ruleset.' }),
+    Description: RulesetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the ruleset.',
+    }),
+    TargetArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
+    }),
+    Rules: RuleListSchema.exactOptional().openapi({
+      description:
+        'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the ruleset was created.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the ruleset.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the ruleset.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The modification date and time of the ruleset.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the ruleset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the ruleset.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DescribeRulesetResponse')
@@ -2005,261 +1596,107 @@ const CronExpressionSchema = z.string().min(1).max(512).openapi('CronExpression'
 
 const DescribeScheduleResponseSchema = z
   .object({
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the schedule was created.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who created the schedule. ',
-        }),
-    ).exactOptional(),
-    JobNames: JobNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or names of one or more jobs to be run by using the schedule.',
-        }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier (user name) of the user who last modified the schedule.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the schedule was last modified.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schedule.' }),
-    ).exactOptional(),
-    CronExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date or dates and time or times when the jobs are to be run for the schedule. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags associated with this schedule.' }),
-    ).exactOptional(),
-    Name: ScheduleNameSchema.and(z.any().openapi({ description: 'The name of the schedule.' })),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the schedule was created.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who created the schedule. ',
+    }),
+    JobNames: JobNameListSchema.exactOptional().openapi({
+      description: 'The name or names of one or more jobs to be run by using the schedule.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The identifier (user name) of the user who last modified the schedule.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the schedule was last modified.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the schedule.',
+    }),
+    CronExpression: CronExpressionSchema.exactOptional().openapi({
+      description:
+        'The date or dates and time or times when the jobs are to be run for the schedule. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags associated with this schedule.',
+    }),
+    Name: ScheduleNameSchema.openapi({ description: 'The name of the schedule.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('DescribeScheduleResponse')
 
-const AccountIdSchema = z.string().max(255).openapi('AccountId')
-
-const DatasetSchema = z
+const ListDatasetsResponseSchema: z.ZodType<ListDatasetsResponseType> = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the dataset.',
-        }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the dataset.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the dataset was created.' }),
-    ).exactOptional(),
-    Name: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The unique name of the dataset.' }),
-    ),
-    Format: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file format of a dataset that is created from an Amazon S3 file or folder.',
-        }),
-    ).exactOptional(),
-    FormatOptions: FormatOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of options that define how DataBrew interprets the data in the dataset.',
-        }),
-    ).exactOptional(),
-    Input: InputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information on how DataBrew can find the dataset, in either the Glue Data Catalog or Amazon S3.',
-        }),
-    ),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The last modification date and time of the dataset.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the dataset.',
-        }),
-    ).exactOptional(),
-    Source: SourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data for the dataset, either Amazon S3 or the Glue Data Catalog.',
-        }),
-    ).exactOptional(),
-    PathOptions: PathOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the dataset.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The unique Amazon Resource Name (ARN) for the dataset.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'Input'],
-    description: 'Represents a dataset that can be processed by DataBrew.',
-  })
-  .openapi('Dataset')
-
-const DatasetListSchema = z.array(DatasetSchema).openapi('DatasetList')
-
-const NextTokenSchema = z.string().min(1).max(2000).openapi('NextToken')
-
-const ListDatasetsResponseSchema = z
-  .object({
-    Datasets: DatasetListSchema.and(
-      z.any().openapi({ description: 'A list of datasets that are defined.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Datasets: DatasetListSchema.openapi({ description: 'A list of datasets that are defined.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Datasets'] })
   .openapi('ListDatasetsResponse')
 
 const JobRunSchema = z
   .object({
-    Attempt: AttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of times that DataBrew has attempted to run the job.',
-        }),
-    ).exactOptional(),
-    CompletedOn: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job completed processing.' }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset for the job to process.' }),
-    ).exactOptional(),
-    ErrorMessage: JobRunErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A message indicating an error (if any) that was encountered when the job ran.',
-        }),
-    ).exactOptional(),
-    ExecutionTime: ExecutionTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount of time, in seconds, during which a job run consumed resources.',
-        }),
-    ).exactOptional(),
-    JobName: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job being processed during this run.' }),
-    ).exactOptional(),
-    RunId: JobRunIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job run.' }),
-    ).exactOptional(),
-    State: JobRunStateSchema.and(
-      z.any().openapi({ description: 'The current state of the job run entity itself.' }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The current status of Amazon CloudWatch logging for the job run.',
-        }),
-    ).exactOptional(),
-    LogGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of an Amazon CloudWatch log group, where the job writes diagnostic messages when it runs.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z.any().openapi({ description: 'One or more output artifacts from a job run.' }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
-        }),
-    ).exactOptional(),
-    RecipeReference: RecipeReferenceSchema.and(
-      z.any().openapi({ description: 'The set of steps processed by the job.' }),
-    ).exactOptional(),
-    StartedBy: StartedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who initiated the job run. ',
-        }),
-    ).exactOptional(),
-    StartedOn: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the job run began. ' }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
-        }),
-    ).exactOptional(),
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job run.',
-        }),
-    ).exactOptional(),
+    Attempt: AttemptSchema.exactOptional().openapi({
+      description: 'The number of times that DataBrew has attempted to run the job.',
+    }),
+    CompletedOn: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job completed processing.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset for the job to process.',
+    }),
+    ErrorMessage: JobRunErrorMessageSchema.exactOptional().openapi({
+      description: 'A message indicating an error (if any) that was encountered when the job ran.',
+    }),
+    ExecutionTime: ExecutionTimeSchema.exactOptional().openapi({
+      description: 'The amount of time, in seconds, during which a job run consumed resources.',
+    }),
+    JobName: JobNameSchema.exactOptional().openapi({
+      description: 'The name of the job being processed during this run.',
+    }),
+    RunId: JobRunIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the job run.',
+    }),
+    State: JobRunStateSchema.exactOptional().openapi({
+      description: 'The current state of the job run entity itself.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description: 'The current status of Amazon CloudWatch logging for the job run.',
+    }),
+    LogGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        'The name of an Amazon CloudWatch log group, where the job writes diagnostic messages when it runs.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more output artifacts from a job run.',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
+    }),
+    RecipeReference: RecipeReferenceSchema.exactOptional().openapi({
+      description: 'The set of steps processed by the job.',
+    }),
+    StartedBy: StartedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who initiated the job run. ',
+    }),
+    StartedOn: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the job run began. ',
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
+    }),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job run.',
+    }),
   })
   .openapi({ description: 'Represents one run of a DataBrew job.', required: [] })
   .openapi('JobRun')
@@ -2268,163 +1705,96 @@ const JobRunListSchema = z.array(JobRunSchema).openapi('JobRunList')
 
 const ListJobRunsResponseSchema = z
   .object({
-    JobRuns: JobRunListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of job runs that have occurred for the specified job.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    JobRuns: JobRunListSchema.openapi({
+      description: 'A list of job runs that have occurred for the specified job.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['JobRuns'] })
   .openapi('ListJobRunsResponse')
 
 const JobSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the Amazon Web Services account that owns the job.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the job.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the job was created.' }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'A dataset that the job is to process.' }),
-    ).exactOptional(),
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job output. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/encryption-security-configuration.html">Encrypting data written by DataBrew jobs</a> ',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: JobNameSchema.and(z.any().openapi({ description: 'The unique name of the job.' })),
-    Type: JobTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The job type of the job, which must be one of the following:</p> <ul> <li> <p> <code>PROFILE</code> - A job to analyze a dataset, to determine its size, data types, data distribution, and more.</p> </li> <li> <p> <code>RECIPE</code> - A job to apply one or more transformations to a dataset.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the job.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The modification date and time of the job.' }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The current status of Amazon CloudWatch logging for the job.' }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of nodes that can be consumed when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more artifacts that represent output from running the job.',
-        }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
-        }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that the job is associated with.' }),
-    ).exactOptional(),
-    RecipeReference: RecipeReferenceSchema.and(
-      z.any().openapi({ description: 'A set of steps that the job runs.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The unique Amazon Resource Name (ARN) for the job.' }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the role to be assumed for this job.',
-        }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the job.' }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default value is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
-        }),
-    ).exactOptional(),
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job.',
-        }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the job.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the job.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the job was created.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'A dataset that the job is to process.',
+    }),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job output. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/encryption-security-configuration.html">Encrypting data written by DataBrew jobs</a> ',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    Name: JobNameSchema.openapi({ description: 'The unique name of the job.' }),
+    Type: JobTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The job type of the job, which must be one of the following:</p> <ul> <li> <p> <code>PROFILE</code> - A job to analyze a dataset, to determine its size, data types, data distribution, and more.</p> </li> <li> <p> <code>RECIPE</code> - A job to apply one or more transformations to a dataset.</p> </li> </ul>',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the job.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The modification date and time of the job.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description: 'The current status of Amazon CloudWatch logging for the job.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description: 'The maximum number of nodes that can be consumed when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more artifacts that represent output from running the job.',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project that the job is associated with.',
+    }),
+    RecipeReference: RecipeReferenceSchema.exactOptional().openapi({
+      description: 'A set of steps that the job runs.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) for the job.',
+    }),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the role to be assumed for this job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the job.',
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        "A sample configuration for profile jobs only, which determines the number of rows on which the profile job is run. If a <code>JobSample</code> value isn't provided, the default value is used. The default value is CUSTOM_ROWS for the mode parameter and 20,000 for the size parameter.",
+    }),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -2436,92 +1806,59 @@ const JobListSchema = z.array(JobSchema).openapi('JobList')
 
 const ListJobsResponseSchema = z
   .object({
-    Jobs: JobListSchema.and(z.any().openapi({ description: 'A list of jobs that are defined.' })),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Jobs: JobListSchema.openapi({ description: 'A list of jobs that are defined.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Jobs'] })
   .openapi('ListJobsResponse')
 
 const ProjectSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the project.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the project was created.' }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who crated the project.',
-        }),
-    ).exactOptional(),
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The dataset that the project is to act upon.' }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The last modification date and time for the project.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the project.',
-        }),
-    ).exactOptional(),
-    Name: ProjectNameSchema.and(z.any().openapi({ description: 'The unique name of a project.' })),
-    RecipeName: RecipeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a recipe that will be developed during a project session.',
-        }),
-    ),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the project.' }),
-    ).exactOptional(),
-    Sample: SampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The sample size and sampling type to apply to the data. If this parameter isn't specified, then the sample consists of the first 500 rows from the dataset.",
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the project.' }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role that will be assumed for this project.',
-        }),
-    ).exactOptional(),
-    OpenedBy: OpenedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the user that opened the project for use.',
-        }),
-    ).exactOptional(),
-    OpenDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the project was opened.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the project.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the project was created.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who crated the project.',
+    }),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The dataset that the project is to act upon.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The last modification date and time for the project.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the project.',
+    }),
+    Name: ProjectNameSchema.openapi({ description: 'The unique name of a project.' }),
+    RecipeName: RecipeNameSchema.openapi({
+      description: 'The name of a recipe that will be developed during a project session.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the project.',
+    }),
+    Sample: SampleSchema.exactOptional().openapi({
+      description:
+        "The sample size and sampling type to apply to the data. If this parameter isn't specified, then the sample consists of the first 500 rows from the dataset.",
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the project.',
+    }),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role that will be assumed for this project.',
+    }),
+    OpenedBy: OpenedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user that opened the project for use.',
+    }),
+    OpenDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the project was opened.',
+    }),
   })
   .openapi({
     required: ['Name', 'RecipeName'],
@@ -2533,79 +1870,55 @@ const ProjectListSchema = z.array(ProjectSchema).openapi('ProjectList')
 
 const ListProjectsResponseSchema = z
   .object({
-    Projects: ProjectListSchema.and(
-      z.any().openapi({ description: 'A list of projects that are defined .' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Projects: ProjectListSchema.openapi({ description: 'A list of projects that are defined .' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Projects'] })
   .openapi('ListProjectsResponse')
 
 const RecipeSchema = z
   .object({
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the recipe.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the recipe was created.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the recipe.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The last modification date and time of the recipe.' }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the project that the recipe is associated with.' }),
-    ).exactOptional(),
-    PublishedBy: PublishedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who published the recipe.',
-        }),
-    ).exactOptional(),
-    PublishedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the recipe was published.' }),
-    ).exactOptional(),
-    Description: RecipeDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the recipe.' }),
-    ).exactOptional(),
-    Name: RecipeNameSchema.and(z.any().openapi({ description: 'The unique name for the recipe.' })),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the recipe.' }),
-    ).exactOptional(),
-    Steps: RecipeStepListSchema.and(
-      z.any().openapi({ description: 'A list of steps that are defined by the recipe.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the recipe.' }),
-    ).exactOptional(),
-    RecipeVersion: RecipeVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the version for the recipe. Must be one of the following:</p> <ul> <li> <p>Numeric version (<code>X.Y</code>) - <code>X</code> and <code>Y</code> stand for major and minor version numbers. The maximum length of each is 6 digits, and neither can be negative values. Both <code>X</code> and <code>Y</code> are required, and "0.0" isn\'t a valid version.</p> </li> <li> <p> <code>LATEST_WORKING</code> - the most recent valid version being developed in a DataBrew project.</p> </li> <li> <p> <code>LATEST_PUBLISHED</code> - the most recent published version.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the recipe.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the recipe was created.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the recipe.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The last modification date and time of the recipe.',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description: 'The name of the project that the recipe is associated with.',
+    }),
+    PublishedBy: PublishedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who published the recipe.',
+    }),
+    PublishedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the recipe was published.',
+    }),
+    Description: RecipeDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the recipe.',
+    }),
+    Name: RecipeNameSchema.openapi({ description: 'The unique name for the recipe.' }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the recipe.',
+    }),
+    Steps: RecipeStepListSchema.exactOptional().openapi({
+      description: 'A list of steps that are defined by the recipe.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the recipe.',
+    }),
+    RecipeVersion: RecipeVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier for the version for the recipe. Must be one of the following:</p> <ul> <li> <p>Numeric version (<code>X.Y</code>) - <code>X</code> and <code>Y</code> stand for major and minor version numbers. The maximum length of each is 6 digits, and neither can be negative values. Both <code>X</code> and <code>Y</code> are required, and "0.0" isn\'t a valid version.</p> </li> <li> <p> <code>LATEST_WORKING</code> - the most recent valid version being developed in a DataBrew project.</p> </li> <li> <p> <code>LATEST_PUBLISHED</code> - the most recent published version.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -2617,34 +1930,24 @@ const RecipeListSchema = z.array(RecipeSchema).openapi('RecipeList')
 
 const ListRecipeVersionsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
-    Recipes: RecipeListSchema.and(
-      z.any().openapi({ description: 'A list of versions for the specified recipe.' }),
-    ),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
+    Recipes: RecipeListSchema.openapi({
+      description: 'A list of versions for the specified recipe.',
+    }),
   })
   .openapi({ required: ['Recipes'] })
   .openapi('ListRecipeVersionsResponse')
 
 const ListRecipesResponseSchema = z
   .object({
-    Recipes: RecipeListSchema.and(
-      z.any().openapi({ description: 'A list of recipes that are defined.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Recipes: RecipeListSchema.openapi({ description: 'A list of recipes that are defined.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Recipes'] })
   .openapi('ListRecipesResponse')
@@ -2653,54 +1956,38 @@ const RuleCountSchema = z.int().min(0).openapi('RuleCount')
 
 const RulesetItemSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the ruleset.',
-        }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the ruleset.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the ruleset was created.' }),
-    ).exactOptional(),
-    Description: RulesetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the ruleset.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the ruleset.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The modification date and time of the ruleset.' }),
-    ).exactOptional(),
-    Name: RulesetNameSchema.and(z.any().openapi({ description: 'The name of the ruleset.' })),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the ruleset.' }),
-    ).exactOptional(),
-    RuleCount: RuleCountSchema.and(
-      z.any().openapi({ description: 'The number of rules that are defined in the ruleset.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the ruleset.' }),
-    ).exactOptional(),
-    TargetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
-        }),
-    ),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the ruleset.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the ruleset.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the ruleset was created.',
+    }),
+    Description: RulesetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the ruleset.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the ruleset.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The modification date and time of the ruleset.',
+    }),
+    Name: RulesetNameSchema.openapi({ description: 'The name of the ruleset.' }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the ruleset.',
+    }),
+    RuleCount: RuleCountSchema.exactOptional().openapi({
+      description: 'The number of rules that are defined in the ruleset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the ruleset.',
+    }),
+    TargetArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
+    }),
   })
   .openapi({ required: ['Name', 'TargetArn'], description: 'Contains metadata about the ruleset.' })
   .openapi('RulesetItem')
@@ -2709,72 +1996,48 @@ const RulesetItemListSchema = z.array(RulesetItemSchema).openapi('RulesetItemLis
 
 const ListRulesetsResponseSchema = z
   .object({
-    Rulesets: RulesetItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of RulesetItem. RulesetItem contains meta data of a ruleset.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Rulesets: RulesetItemListSchema.openapi({
+      description: 'A list of RulesetItem. RulesetItem contains meta data of a ruleset.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Rulesets'] })
   .openapi('ListRulesetsResponse')
 
 const ScheduleSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the schedule.',
-        }),
-    ).exactOptional(),
-    CreatedBy: CreatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who created the schedule.',
-        }),
-    ).exactOptional(),
-    CreateDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the schedule was created.' }),
-    ).exactOptional(),
-    JobNames: JobNameListSchema.and(
-      z.any().openapi({ description: 'A list of jobs to be run, according to the schedule.' }),
-    ).exactOptional(),
-    LastModifiedBy: LastModifiedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the user who last modified the schedule.',
-        }),
-    ).exactOptional(),
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time when the schedule was last modified.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the schedule.' }),
-    ).exactOptional(),
-    CronExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The dates and times when the job is to run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags that have been applied to the schedule.' }),
-    ).exactOptional(),
-    Name: ScheduleNameSchema.and(z.any().openapi({ description: 'The name of the schedule.' })),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the schedule.',
+    }),
+    CreatedBy: CreatedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who created the schedule.',
+    }),
+    CreateDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the schedule was created.',
+    }),
+    JobNames: JobNameListSchema.exactOptional().openapi({
+      description: 'A list of jobs to be run, according to the schedule.',
+    }),
+    LastModifiedBy: LastModifiedBySchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user who last modified the schedule.',
+    }),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time when the schedule was last modified.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the schedule.',
+    }),
+    CronExpression: CronExpressionSchema.exactOptional().openapi({
+      description:
+        'The dates and times when the job is to run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags that have been applied to the schedule.',
+    }),
+    Name: ScheduleNameSchema.openapi({ description: 'The name of the schedule.' }),
   })
   .openapi({
     required: ['Name'],
@@ -2786,35 +2049,27 @@ const ScheduleListSchema = z.array(ScheduleSchema).openapi('ScheduleList')
 
 const ListSchedulesResponseSchema = z
   .object({
-    Schedules: ScheduleListSchema.and(
-      z.any().openapi({ description: 'A list of schedules that are defined.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that you can use in a subsequent call to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Schedules: ScheduleListSchema.openapi({ description: 'A list of schedules that are defined.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that you can use in a subsequent call to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: ['Schedules'] })
   .openapi('ListSchedulesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'A list of tags associated with the DataBrew resource.' }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'A list of tags associated with the DataBrew resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PublishRecipeResponseSchema = z
   .object({
-    Name: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe that you published.' }),
-    ),
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe that you published.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('PublishRecipeResponse')
@@ -2825,15 +2080,15 @@ const ActionIdSchema = z.int().openapi('ActionId')
 
 const SendProjectSessionActionResponseSchema = z
   .object({
-    Result: ResultSchema.and(
-      z.any().openapi({ description: 'A message indicating the result of performing the action.' }),
-    ).exactOptional(),
-    Name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that was affected by the action.' }),
-    ),
-    ActionId: ActionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the action that was performed.' }),
-    ).exactOptional(),
+    Result: ResultSchema.exactOptional().openapi({
+      description: 'A message indicating the result of performing the action.',
+    }),
+    Name: ProjectNameSchema.openapi({
+      description: 'The name of the project that was affected by the action.',
+    }),
+    ActionId: ActionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the action that was performed.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('SendProjectSessionActionResponse')
@@ -2852,11 +2107,9 @@ const AnalyticsModeSchema = z.enum(['ENABLE', 'DISABLE']).openapi('AnalyticsMode
 
 const StartJobRunResponseSchema = z
   .object({
-    RunId: JobRunIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A system-generated identifier for this particular job run.' }),
-    ),
+    RunId: JobRunIdSchema.openapi({
+      description: 'A system-generated identifier for this particular job run.',
+    }),
   })
   .openapi({ required: ['RunId'] })
   .openapi('StartJobRunResponse')
@@ -2870,93 +2123,69 @@ const ClientSessionIdSchema = z
 
 const StartProjectSessionResponseSchema = z
   .object({
-    Name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project to be acted upon.' }),
-    ),
-    ClientSessionId: ClientSessionIdSchema.and(
-      z.any().openapi({ description: 'A system-generated identifier for the session.' }),
-    ).exactOptional(),
+    Name: ProjectNameSchema.openapi({ description: 'The name of the project to be acted upon.' }),
+    ClientSessionId: ClientSessionIdSchema.exactOptional().openapi({
+      description: 'A system-generated identifier for the session.',
+    }),
   })
   .openapi({ required: ['Name'] })
   .openapi('StartProjectSessionResponse')
 
 const StopJobRunResponseSchema = z
   .object({
-    RunId: JobRunIdSchema.and(
-      z.any().openapi({ description: 'The ID of the job run that you stopped.' }),
-    ),
+    RunId: JobRunIdSchema.openapi({ description: 'The ID of the job run that you stopped.' }),
   })
   .openapi({ required: ['RunId'] })
   .openapi('StopJobRunResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
 const UpdateDatasetResponseSchema = z
   .object({
-    Name: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset that you updated.' }),
-    ),
+    Name: DatasetNameSchema.openapi({ description: 'The name of the dataset that you updated.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('UpdateDatasetResponse')
 
 const UpdateProfileJobResponseSchema = z
-  .object({
-    Name: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job that was updated.' }),
-    ),
-  })
+  .object({ Name: JobNameSchema.openapi({ description: 'The name of the job that was updated.' }) })
   .openapi({ required: ['Name'] })
   .openapi('UpdateProfileJobResponse')
 
 const UpdateProjectResponseSchema = z
   .object({
-    LastModifiedDate: DateSchema.and(
-      z.any().openapi({ description: 'The date and time that the project was last modified.' }),
-    ).exactOptional(),
-    Name: ProjectNameSchema.and(
-      z.any().openapi({ description: 'The name of the project that you updated.' }),
-    ),
+    LastModifiedDate: DateSchema.exactOptional().openapi({
+      description: 'The date and time that the project was last modified.',
+    }),
+    Name: ProjectNameSchema.openapi({ description: 'The name of the project that you updated.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('UpdateProjectResponse')
 
 const UpdateRecipeResponseSchema = z
   .object({
-    Name: RecipeNameSchema.and(
-      z.any().openapi({ description: 'The name of the recipe that was updated.' }),
-    ),
+    Name: RecipeNameSchema.openapi({ description: 'The name of the recipe that was updated.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('UpdateRecipeResponse')
 
 const UpdateRecipeJobResponseSchema = z
-  .object({
-    Name: JobNameSchema.and(
-      z.any().openapi({ description: 'The name of the job that you updated.' }),
-    ),
-  })
+  .object({ Name: JobNameSchema.openapi({ description: 'The name of the job that you updated.' }) })
   .openapi({ required: ['Name'] })
   .openapi('UpdateRecipeJobResponse')
 
 const UpdateRulesetResponseSchema = z
-  .object({
-    Name: RulesetNameSchema.and(
-      z.any().openapi({ description: 'The name of the updated ruleset.' }),
-    ),
-  })
+  .object({ Name: RulesetNameSchema.openapi({ description: 'The name of the updated ruleset.' }) })
   .openapi({ required: ['Name'] })
   .openapi('UpdateRulesetResponse')
 
 const UpdateScheduleResponseSchema = z
   .object({
-    Name: ScheduleNameSchema.and(
-      z.any().openapi({ description: 'The name of the schedule that was updated.' }),
-    ),
+    Name: ScheduleNameSchema.openapi({ description: 'The name of the schedule that was updated.' }),
   })
   .openapi({ required: ['Name'] })
   .openapi('UpdateScheduleResponse')
@@ -2971,148 +2200,86 @@ const RecipeVersionListSchema = z
 
 const BatchDeleteRecipeVersionRequestSchema = z
   .object({
-    RecipeVersions: RecipeVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of version identifiers, for the recipe versions to be deleted. You can specify numeric versions (<code>X.Y</code>) or <code>LATEST_WORKING</code>. <code>LATEST_PUBLISHED</code> is not supported.',
-        }),
-    ),
+    RecipeVersions: RecipeVersionListSchema.openapi({
+      description:
+        'An array of version identifiers, for the recipe versions to be deleted. You can specify numeric versions (<code>X.Y</code>) or <code>LATEST_WORKING</code>. <code>LATEST_PUBLISHED</code> is not supported.',
+    }),
   })
   .openapi({ required: ['RecipeVersions'], title: 'BatchDeleteRecipeVersionRequest' })
   .openapi('BatchDeleteRecipeVersionRequest')
 
 const CreateDatasetRequestSchema = z
   .object({
-    Name: DatasetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the dataset to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    Format: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file format of a dataset that is created from an Amazon S3 file or folder.',
-        }),
-    ).exactOptional(),
+    Name: DatasetNameSchema.openapi({
+      description:
+        'The name of the dataset to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    Format: InputFormatSchema.exactOptional().openapi({
+      description: 'The file format of a dataset that is created from an Amazon S3 file or folder.',
+    }),
     FormatOptions: FormatOptionsSchema.exactOptional(),
     Input: InputSchema,
-    PathOptions: PathOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this dataset.' }),
-    ).exactOptional(),
+    PathOptions: PathOptionsSchema.exactOptional().openapi({
+      description:
+        'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this dataset.',
+    }),
   })
   .openapi({ required: ['Name', 'Input'], title: 'CreateDatasetRequest' })
   .openapi('CreateDatasetRequest')
 
-const CreateProfileJobRequestSchema = z
+const CreateProfileJobRequestSchema: z.ZodType<CreateProfileJobRequestType> = z
   .object({
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset that this job is to act upon.' }),
-    ),
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - <code>SSE-KMS</code> - Server-side encryption with KMS-managed keys.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the job to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of nodes that DataBrew can use when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
+    DatasetName: DatasetNameSchema.openapi({
+      description: 'The name of the dataset that this job is to act upon.',
+    }),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - <code>SSE-KMS</code> - Server-side encryption with KMS-managed keys.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    Name: JobNameSchema.openapi({
+      description:
+        'The name of the job to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description:
+        'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description: 'The maximum number of nodes that DataBrew can use when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
     OutputLocation: S3LocationSchema,
-    Configuration: ProfileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
-        }),
-    ).exactOptional(),
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this job.' }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed. If a JobSample value is not provided, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
-        }),
-    ).exactOptional(),
+    Configuration: ProfileConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
+    }),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job.',
+    }),
+    RoleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        'Sample configuration for profile jobs only. Determines the number of rows on which the profile job will be executed. If a JobSample value is not provided, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
+    }),
   })
   .openapi({
     required: ['DatasetName', 'Name', 'OutputLocation', 'RoleArn'],
@@ -3122,38 +2289,24 @@ const CreateProfileJobRequestSchema = z
 
 const CreateProjectRequestSchema = z
   .object({
-    DatasetName: DatasetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of an existing dataset to associate this project with.',
-        }),
-    ),
-    Name: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name for the new project. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    RecipeName: RecipeNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of an existing recipe to associate with the project.' }),
-    ),
+    DatasetName: DatasetNameSchema.openapi({
+      description: 'The name of an existing dataset to associate this project with.',
+    }),
+    Name: ProjectNameSchema.openapi({
+      description:
+        'A unique name for the new project. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    RecipeName: RecipeNameSchema.openapi({
+      description: 'The name of an existing recipe to associate with the project.',
+    }),
     Sample: SampleSchema.exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed for this request.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this project.' }),
-    ).exactOptional(),
+    RoleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed for this request.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this project.',
+    }),
   })
   .openapi({
     required: ['DatasetName', 'Name', 'RecipeName', 'RoleArn'],
@@ -3163,312 +2316,236 @@ const CreateProjectRequestSchema = z
 
 const CreateRecipeJobRequestSchema = z
   .object({
-    DatasetName: DatasetNameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset that this job processes.' }),
-    ).exactOptional(),
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: JobNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name for the job. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of nodes that DataBrew can consume when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more artifacts that represent the output from running the job.',
-        }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write to. ',
-        }),
-    ).exactOptional(),
-    ProjectName: ProjectNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the name of an existing project, or a combination of a recipe and a dataset to associate with the recipe.',
-        }),
-    ).exactOptional(),
+    DatasetName: DatasetNameSchema.exactOptional().openapi({
+      description: 'The name of the dataset that this job processes.',
+    }),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    Name: JobNameSchema.openapi({
+      description:
+        'A unique name for the job. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description:
+        'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description:
+        'The maximum number of nodes that DataBrew can consume when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more artifacts that represent the output from running the job.',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write to. ',
+    }),
+    ProjectName: ProjectNameSchema.exactOptional().openapi({
+      description:
+        'Either the name of an existing project, or a combination of a recipe and a dataset to associate with the recipe.',
+    }),
     RecipeReference: RecipeReferenceSchema.exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this job.' }),
-    ).exactOptional(),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
+    RoleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
   })
   .openapi({ required: ['Name', 'RoleArn'], title: 'CreateRecipeJobRequest' })
   .openapi('CreateRecipeJobRequest')
 
 const CreateRecipeRequestSchema = z
   .object({
-    Description: RecipeDescriptionSchema.and(
-      z.any().openapi({ description: 'A description for the recipe.' }),
-    ).exactOptional(),
-    Name: RecipeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name for the recipe. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    Steps: RecipeStepListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array containing the steps to be performed by the recipe. Each recipe step consists of one recipe action and (optionally) an array of condition expressions.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this recipe.' }),
-    ).exactOptional(),
+    Description: RecipeDescriptionSchema.exactOptional().openapi({
+      description: 'A description for the recipe.',
+    }),
+    Name: RecipeNameSchema.openapi({
+      description:
+        'A unique name for the recipe. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    Steps: RecipeStepListSchema.openapi({
+      description:
+        'An array containing the steps to be performed by the recipe. Each recipe step consists of one recipe action and (optionally) an array of condition expressions.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this recipe.',
+    }),
   })
   .openapi({ required: ['Name', 'Steps'], title: 'CreateRecipeRequest' })
   .openapi('CreateRecipeRequest')
 
 const CreateRulesetRequestSchema = z
   .object({
-    Name: RulesetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the ruleset to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
-    Description: RulesetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the ruleset.' }),
-    ).exactOptional(),
-    TargetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
-        }),
-    ),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to the ruleset.' }),
-    ).exactOptional(),
+    Name: RulesetNameSchema.openapi({
+      description:
+        'The name of the ruleset to be created. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
+    Description: RulesetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the ruleset.',
+    }),
+    TargetArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a resource (dataset) that the ruleset is associated with.',
+    }),
+    Rules: RuleListSchema.openapi({
+      description:
+        'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to the ruleset.',
+    }),
   })
   .openapi({ required: ['Name', 'TargetArn', 'Rules'], title: 'CreateRulesetRequest' })
   .openapi('CreateRulesetRequest')
 
 const CreateScheduleRequestSchema = z
   .object({
-    JobNames: JobNameListSchema.and(
-      z.any().openapi({ description: 'The name or names of one or more jobs to be run.' }),
-    ).exactOptional(),
-    CronExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date or dates and time or times when the jobs are to be run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Metadata tags to apply to this schedule.' }),
-    ).exactOptional(),
-    Name: ScheduleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique name for the schedule. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
-        }),
-    ),
+    JobNames: JobNameListSchema.exactOptional().openapi({
+      description: 'The name or names of one or more jobs to be run.',
+    }),
+    CronExpression: CronExpressionSchema.openapi({
+      description:
+        'The date or dates and time or times when the jobs are to be run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'Metadata tags to apply to this schedule.',
+    }),
+    Name: ScheduleNameSchema.openapi({
+      description:
+        'A unique name for the schedule. Valid characters are alphanumeric (A-Z, a-z, 0-9), hyphen (-), period (.), and space.',
+    }),
   })
   .openapi({ required: ['CronExpression', 'Name'], title: 'CreateScheduleRequest' })
   .openapi('CreateScheduleRequest')
 
 const DeleteDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
 
 const DeleteJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteJobRequest' })
   .openapi('DeleteJobRequest')
 
 const DeleteProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProjectRequest' })
   .openapi('DeleteProjectRequest')
 
 const DeleteRecipeVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRecipeVersionRequest' })
   .openapi('DeleteRecipeVersionRequest')
 
 const DeleteRulesetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRulesetRequest' })
   .openapi('DeleteRulesetRequest')
 
 const DeleteScheduleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteScheduleRequest' })
   .openapi('DeleteScheduleRequest')
 
 const DescribeDatasetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
 const DescribeJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobRequest' })
   .openapi('DescribeJobRequest')
 
 const DescribeJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobRunRequest' })
   .openapi('DescribeJobRunRequest')
 
 const DescribeProjectRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProjectRequest' })
   .openapi('DescribeProjectRequest')
 
 const DescribeRecipeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRecipeRequest' })
   .openapi('DescribeRecipeRequest')
 
 const DescribeRulesetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRulesetRequest' })
   .openapi('DescribeRulesetRequest')
 
 const DescribeScheduleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeScheduleRequest' })
   .openapi('DescribeScheduleRequest')
 
 const MaxResults100Schema = z.int().min(1).max(100).openapi('MaxResults100')
 
 const ListDatasetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDatasetsRequest' })
   .openapi('ListDatasetsRequest')
 
 const ListJobRunsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobRunsRequest' })
   .openapi('ListJobRunsRequest')
 
 const ListJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobsRequest' })
   .openapi('ListJobsRequest')
 
 const ListProjectsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProjectsRequest' })
   .openapi('ListProjectsRequest')
 
 const ListRecipeVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecipeVersionsRequest' })
   .openapi('ListRecipeVersionsRequest')
 
 const ListRecipesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecipesRequest' })
   .openapi('ListRecipesRequest')
 
 const ListRulesetsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRulesetsRequest' })
   .openapi('ListRulesetsRequest')
 
 const ListSchedulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSchedulesRequest' })
   .openapi('ListSchedulesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -3483,14 +2560,9 @@ const PreviewSchema = z.boolean().openapi('Preview')
 
 const PublishRecipeRequestSchema = z
   .object({
-    Description: RecipeDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the recipe to be published, for this version of the recipe.',
-        }),
-    ).exactOptional(),
+    Description: RecipeDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the recipe to be published, for this version of the recipe.',
+    }),
   })
   .openapi({ title: 'PublishRecipeRequest', required: [] })
   .openapi('PublishRecipeRequest')
@@ -3499,47 +2571,26 @@ const StepIndexSchema = z.int().min(0).openapi('StepIndex')
 
 const ViewFrameSchema = z
   .object({
-    StartColumnIndex: StartColumnIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The starting index for the range of columns to return in the view frame.',
-        }),
-    ),
-    ColumnRange: ColumnRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of columns to include in the view frame, beginning with the <code>StartColumnIndex</code> value and ignoring any columns in the <code>HiddenColumns</code> list.',
-        }),
-    ).exactOptional(),
-    HiddenColumns: HiddenColumnListSchema.and(
-      z.any().openapi({ description: 'A list of columns to hide in the view frame.' }),
-    ).exactOptional(),
-    StartRowIndex: StartRowIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The starting index for the range of rows to return in the view frame.',
-        }),
-    ).exactOptional(),
-    RowRange: RowRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of rows to include in the view frame, beginning with the <code>StartRowIndex</code> value.',
-        }),
-    ).exactOptional(),
-    Analytics: AnalyticsModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Controls if analytics computation is enabled or disabled. Enabled by default.',
-        }),
-    ).exactOptional(),
+    StartColumnIndex: StartColumnIndexSchema.openapi({
+      description: 'The starting index for the range of columns to return in the view frame.',
+    }),
+    ColumnRange: ColumnRangeSchema.exactOptional().openapi({
+      description:
+        'The number of columns to include in the view frame, beginning with the <code>StartColumnIndex</code> value and ignoring any columns in the <code>HiddenColumns</code> list.',
+    }),
+    HiddenColumns: HiddenColumnListSchema.exactOptional().openapi({
+      description: 'A list of columns to hide in the view frame.',
+    }),
+    StartRowIndex: StartRowIndexSchema.exactOptional().openapi({
+      description: 'The starting index for the range of rows to return in the view frame.',
+    }),
+    RowRange: RowRangeSchema.exactOptional().openapi({
+      description:
+        'The number of rows to include in the view frame, beginning with the <code>StartRowIndex</code> value.',
+    }),
+    Analytics: AnalyticsModeSchema.exactOptional().openapi({
+      description: 'Controls if analytics computation is enabled or disabled. Enabled by default.',
+    }),
   })
   .openapi({
     required: ['StartColumnIndex'],
@@ -3549,56 +2600,40 @@ const ViewFrameSchema = z
 
 const SendProjectSessionActionRequestSchema = z
   .object({
-    Preview: PreviewSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If true, the result of the recipe step will be returned, but not applied.',
-        }),
-    ).exactOptional(),
+    Preview: PreviewSchema.exactOptional().openapi({
+      description: 'If true, the result of the recipe step will be returned, but not applied.',
+    }),
     RecipeStep: RecipeStepSchema.exactOptional(),
-    StepIndex: StepIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The index from which to preview a step. This index is used to preview the result of steps that have already been applied, so that the resulting view frame is from earlier in the view frame stack.',
-        }),
-    ).exactOptional(),
-    ClientSessionId: ClientSessionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for an interactive session that's currently open and ready for work. The action will be performed on this session.",
-        }),
-    ).exactOptional(),
+    StepIndex: StepIndexSchema.exactOptional().openapi({
+      description:
+        'The index from which to preview a step. This index is used to preview the result of steps that have already been applied, so that the resulting view frame is from earlier in the view frame stack.',
+    }),
+    ClientSessionId: ClientSessionIdSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for an interactive session that's currently open and ready for work. The action will be performed on this session.",
+    }),
     ViewFrame: ViewFrameSchema.exactOptional(),
   })
   .openapi({ title: 'SendProjectSessionActionRequest', required: [] })
   .openapi('SendProjectSessionActionRequest')
 
 const StartJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StartJobRunRequest' })
   .openapi('StartJobRunRequest')
 
 const StartProjectSessionRequestSchema = z
   .object({
-    AssumeControl: AssumeControlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value that, if true, enables you to take control of a session, even if a different client is currently accessing the project.',
-        }),
-    ).exactOptional(),
+    AssumeControl: AssumeControlSchema.exactOptional().openapi({
+      description:
+        'A value that, if true, enables you to take control of a session, even if a different client is currently accessing the project.',
+    }),
   })
   .openapi({ title: 'StartProjectSessionRequest', required: [] })
   .openapi('StartProjectSessionRequest')
 
 const StopJobRunRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopJobRunRequest' })
   .openapi('StopJobRunRequest')
 
@@ -3606,123 +2641,72 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z.any().openapi({ description: 'One or more tags to be assigned to the resource.' }),
-    ),
+    Tags: TagMapSchema.openapi({ description: 'One or more tags to be assigned to the resource.' }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDatasetRequestSchema = z
   .object({
-    Format: InputFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The file format of a dataset that is created from an Amazon S3 file or folder.',
-        }),
-    ).exactOptional(),
+    Format: InputFormatSchema.exactOptional().openapi({
+      description: 'The file format of a dataset that is created from an Amazon S3 file or folder.',
+    }),
     FormatOptions: FormatOptionsSchema.exactOptional(),
     Input: InputSchema,
-    PathOptions: PathOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
-        }),
-    ).exactOptional(),
+    PathOptions: PathOptionsSchema.exactOptional().openapi({
+      description:
+        'A set of options that defines how DataBrew interprets an Amazon S3 path of the dataset.',
+    }),
   })
   .openapi({ required: ['Input'], title: 'UpdateDatasetRequest' })
   .openapi('UpdateDatasetRequest')
 
-const UpdateProfileJobRequestSchema = z
+const UpdateProfileJobRequestSchema: z.ZodType<UpdateProfileJobRequestType> = z
   .object({
-    Configuration: ProfileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
-        }),
-    ).exactOptional(),
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of compute nodes that DataBrew can use when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
+    Configuration: ProfileConfigurationSchema.exactOptional().openapi({
+      description:
+        'Configuration for profile jobs. Used to select columns, do evaluations, and override default parameters of evaluations. When configuration is null, the profile job will run with default settings.',
+    }),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description:
+        'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description:
+        'The maximum number of compute nodes that DataBrew can use when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
     OutputLocation: S3LocationSchema,
-    ValidationConfigurations: ValidationConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of validation configurations that are applied to the profile job.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
-    JobSample: JobSampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Sample configuration for Profile Jobs only. Determines the number of rows on which the Profile job will be executed. If a JobSample value is not provided for profile jobs, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
-        }),
-    ).exactOptional(),
+    ValidationConfigurations: ValidationConfigurationListSchema.exactOptional().openapi({
+      description: 'List of validation configurations that are applied to the profile job.',
+    }),
+    RoleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
+    JobSample: JobSampleSchema.exactOptional().openapi({
+      description:
+        'Sample configuration for Profile Jobs only. Determines the number of rows on which the Profile job will be executed. If a JobSample value is not provided for profile jobs, the default value will be used. The default value is CUSTOM_ROWS for the mode parameter and 20000 for the size parameter.',
+    }),
   })
   .openapi({ required: ['OutputLocation', 'RoleArn'], title: 'UpdateProfileJobRequest' })
   .openapi('UpdateProfileJobRequest')
@@ -3730,153 +2714,92 @@ const UpdateProfileJobRequestSchema = z
 const UpdateProjectRequestSchema = z
   .object({
     Sample: SampleSchema.exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role to be assumed for this request.',
-        }),
-    ),
+    RoleArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the IAM role to be assumed for this request.',
+    }),
   })
   .openapi({ required: ['RoleArn'], title: 'UpdateProjectRequest' })
   .openapi('UpdateProjectRequest')
 
 const UpdateRecipeJobRequestSchema = z
   .object({
-    EncryptionKeyArn: EncryptionKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
-        }),
-    ).exactOptional(),
-    EncryptionMode: EncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LogSubscription: LogSubscriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
-        }),
-    ).exactOptional(),
-    MaxCapacity: MaxCapacitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of nodes that DataBrew can consume when the job processes data.',
-        }),
-    ).exactOptional(),
-    MaxRetries: MaxRetriesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of times to retry the job after a job run fails.',
-        }),
-    ).exactOptional(),
-    Outputs: OutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more artifacts that represent the output from running the job. ',
-        }),
-    ).exactOptional(),
-    DataCatalogOutputs: DataCatalogOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more artifacts that represent the Glue Data Catalog output from running the job.',
-        }),
-    ).exactOptional(),
-    DatabaseOutputs: DatabaseOutputListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
-        }),
-    ),
-    Timeout: TimeoutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
-        }),
-    ).exactOptional(),
+    EncryptionKeyArn: EncryptionKeyArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an encryption key that is used to protect the job.',
+    }),
+    EncryptionMode: EncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>The encryption mode for the job, which can be one of the following:</p> <ul> <li> <p> <code>SSE-KMS</code> - Server-side encryption with keys managed by KMS.</p> </li> <li> <p> <code>SSE-S3</code> - Server-side encryption with keys managed by Amazon S3.</p> </li> </ul>',
+    }),
+    LogSubscription: LogSubscriptionSchema.exactOptional().openapi({
+      description:
+        'Enables or disables Amazon CloudWatch logging for the job. If logging is enabled, CloudWatch writes one log stream for each job run.',
+    }),
+    MaxCapacity: MaxCapacitySchema.exactOptional().openapi({
+      description:
+        'The maximum number of nodes that DataBrew can consume when the job processes data.',
+    }),
+    MaxRetries: MaxRetriesSchema.exactOptional().openapi({
+      description: 'The maximum number of times to retry the job after a job run fails.',
+    }),
+    Outputs: OutputListSchema.exactOptional().openapi({
+      description: 'One or more artifacts that represent the output from running the job. ',
+    }),
+    DataCatalogOutputs: DataCatalogOutputListSchema.exactOptional().openapi({
+      description:
+        'One or more artifacts that represent the Glue Data Catalog output from running the job.',
+    }),
+    DatabaseOutputs: DatabaseOutputListSchema.exactOptional().openapi({
+      description:
+        'Represents a list of JDBC database output objects which defines the output destination for a DataBrew recipe job to write into.',
+    }),
+    RoleArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role to be assumed when DataBrew runs the job.',
+    }),
+    Timeout: TimeoutSchema.exactOptional().openapi({
+      description:
+        "The job's timeout in minutes. A job that attempts to run longer than this timeout period ends with a status of <code>TIMEOUT</code>.",
+    }),
   })
   .openapi({ required: ['RoleArn'], title: 'UpdateRecipeJobRequest' })
   .openapi('UpdateRecipeJobRequest')
 
 const UpdateRecipeRequestSchema = z
   .object({
-    Description: RecipeDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the recipe.' }),
-    ).exactOptional(),
-    Steps: RecipeStepListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more steps to be performed by the recipe. Each step consists of an action, and the conditions under which the action should succeed.',
-        }),
-    ).exactOptional(),
+    Description: RecipeDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the recipe.',
+    }),
+    Steps: RecipeStepListSchema.exactOptional().openapi({
+      description:
+        'One or more steps to be performed by the recipe. Each step consists of an action, and the conditions under which the action should succeed.',
+    }),
   })
   .openapi({ title: 'UpdateRecipeRequest', required: [] })
   .openapi('UpdateRecipeRequest')
 
 const UpdateRulesetRequestSchema = z
   .object({
-    Description: RulesetDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the ruleset.' }),
-    ).exactOptional(),
-    Rules: RuleListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
-        }),
-    ),
+    Description: RulesetDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the ruleset.',
+    }),
+    Rules: RuleListSchema.openapi({
+      description:
+        'A list of rules that are defined with the ruleset. A rule includes one or more checks to be validated on a DataBrew dataset.',
+    }),
   })
   .openapi({ required: ['Rules'], title: 'UpdateRulesetRequest' })
   .openapi('UpdateRulesetRequest')
 
 const UpdateScheduleRequestSchema = z
   .object({
-    JobNames: JobNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or names of one or more jobs to be run for this schedule.',
-        }),
-    ).exactOptional(),
-    CronExpression: CronExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date or dates and time or times when the jobs are to be run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
-        }),
-    ),
+    JobNames: JobNameListSchema.exactOptional().openapi({
+      description: 'The name or names of one or more jobs to be run for this schedule.',
+    }),
+    CronExpression: CronExpressionSchema.openapi({
+      description:
+        'The date or dates and time or times when the jobs are to be run. For more information, see <a href="https://docs.aws.amazon.com/databrew/latest/dg/jobs.cron.html">Cron expressions</a> in the <i>Glue DataBrew Developer Guide</i>.',
+    }),
   })
   .openapi({ required: ['CronExpression'], title: 'UpdateScheduleRequest' })
   .openapi('UpdateScheduleRequest')
@@ -4157,30 +3080,18 @@ export const postDatasetsRoute = createRoute({
                 }),
               FormatOptions: z
                 .object({
-                  Json: JsonOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how JSON input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
-                  Excel: ExcelOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how Excel input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
-                  Csv: CsvOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how CSV input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
+                  Json: JsonOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how JSON input is to be interpreted by DataBrew.',
+                  }),
+                  Excel: ExcelOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how Excel input is to be interpreted by DataBrew.',
+                  }),
+                  Csv: CsvOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how CSV input is to be interpreted by DataBrew.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4190,32 +3101,21 @@ export const postDatasetsRoute = createRoute({
                 }),
               Input: z
                 .object({
-                  S3InputDefinition: S3LocationSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Amazon S3 location where the data is stored.' }),
-                  ).exactOptional(),
-                  DataCatalogInputDefinition: DataCatalogInputDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Glue Data Catalog parameters for the data.' }),
-                  ).exactOptional(),
-                  DatabaseInputDefinition: DatabaseInputDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Connection information for dataset input files stored in a database.',
-                      }),
-                  ).exactOptional(),
-                  Metadata: MetadataSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains additional resource information needed for specific datasets.',
-                      }),
-                  ).exactOptional(),
+                  S3InputDefinition: S3LocationSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 location where the data is stored.',
+                  }),
+                  DataCatalogInputDefinition:
+                    DataCatalogInputDefinitionSchema.exactOptional().openapi({
+                      description: 'The Glue Data Catalog parameters for the data.',
+                    }),
+                  DatabaseInputDefinition: DatabaseInputDefinitionSchema.exactOptional().openapi({
+                    description:
+                      'Connection information for dataset input files stored in a database.',
+                  }),
+                  Metadata: MetadataSchema.exactOptional().openapi({
+                    description:
+                      'Contains additional resource information needed for specific datasets.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4224,30 +3124,18 @@ export const postDatasetsRoute = createRoute({
                 }),
               PathOptions: z
                 .object({
-                  LastModifiedDateCondition: FilterExpressionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  FilesLimit: FilesLimitSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If provided, this structure imposes a limit on a number of files that should be selected.',
-                      }),
-                  ).exactOptional(),
-                  Parameters: PathParametersMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
-                      }),
-                  ).exactOptional(),
+                  LastModifiedDateCondition: FilterExpressionSchema.exactOptional().openapi({
+                    description:
+                      'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
+                  }),
+                  FilesLimit: FilesLimitSchema.exactOptional().openapi({
+                    description:
+                      'If provided, this structure imposes a limit on a number of files that should be selected.',
+                  }),
+                  Parameters: PathParametersMapSchema.exactOptional().openapi({
+                    description:
+                      'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4365,21 +3253,15 @@ export const postProfileJobsRoute = createRoute({
                 }),
               OutputLocation: z
                 .object({
-                  Bucket: BucketSchema.and(
-                    z.any().openapi({ description: 'The Amazon S3 bucket name.' }),
-                  ).exactOptional(),
-                  Key: KeySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The unique name of the object in the bucket.' }),
-                  ).exactOptional(),
-                  BucketOwner: BucketOwnerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The Amazon Web Services account ID of the bucket owner.',
-                      }),
-                  ).exactOptional(),
+                  Bucket: BucketSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 bucket name.',
+                  }),
+                  Key: KeySchema.exactOptional().openapi({
+                    description: 'The unique name of the object in the bucket.',
+                  }),
+                  BucketOwner: BucketOwnerSchema.exactOptional().openapi({
+                    description: 'The Amazon Web Services account ID of the bucket owner.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -4388,38 +3270,25 @@ export const postProfileJobsRoute = createRoute({
                 }),
               Configuration: z
                 .object({
-                  DatasetStatisticsConfiguration: StatisticsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
-                      }),
-                  ).exactOptional(),
-                  ProfileColumns: ColumnSelectorListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
-                      }),
-                  ).exactOptional(),
-                  ColumnStatisticsConfigurations: ColumnStatisticsConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
-                      }),
-                  ).exactOptional(),
-                  EntityDetectorConfiguration: EntityDetectorConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
-                      }),
-                  ).exactOptional(),
+                  DatasetStatisticsConfiguration:
+                    StatisticsConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
+                    }),
+                  ProfileColumns: ColumnSelectorListSchema.exactOptional().openapi({
+                    description:
+                      'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
+                  }),
+                  ColumnStatisticsConfigurations:
+                    ColumnStatisticsConfigurationListSchema.exactOptional().openapi({
+                      description:
+                        'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
+                    }),
+                  EntityDetectorConfiguration:
+                    EntityDetectorConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4459,22 +3328,14 @@ export const postProfileJobsRoute = createRoute({
                 }),
               JobSample: z
                 .object({
-                  Mode: SampleModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Size: JobSizeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
-                      }),
-                  ).exactOptional(),
+                  Mode: SampleModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
+                  }),
+                  Size: JobSizeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4650,16 +3511,12 @@ export const postProjectsRoute = createRoute({
                 }),
               Sample: z
                 .object({
-                  Size: SampleSizeSchema.and(
-                    z.any().openapi({ description: 'The number of rows in the sample.' }),
-                  ).exactOptional(),
-                  Type: SampleTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The way in which DataBrew obtains rows from a dataset.',
-                      }),
-                  ).exactOptional(),
+                  Size: SampleSizeSchema.exactOptional().openapi({
+                    description: 'The number of rows in the sample.',
+                  }),
+                  Type: SampleTypeSchema.exactOptional().openapi({
+                    description: 'The way in which DataBrew obtains rows from a dataset.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4996,14 +3853,12 @@ export const postRecipeJobsRoute = createRoute({
                 }),
               RecipeReference: z
                 .object({
-                  Name: RecipeNameSchema.and(
-                    z.any().openapi({ description: 'The name of the recipe.' }),
-                  ).exactOptional(),
-                  RecipeVersion: RecipeVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The identifier for the version for the recipe. ' }),
-                  ).exactOptional(),
+                  Name: RecipeNameSchema.exactOptional().openapi({
+                    description: 'The name of the recipe.',
+                  }),
+                  RecipeVersion: RecipeVersionSchema.exactOptional().openapi({
+                    description: 'The identifier for the version for the recipe. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5527,30 +4382,18 @@ export const putDatasetsNameRoute = createRoute({
                 }),
               FormatOptions: z
                 .object({
-                  Json: JsonOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how JSON input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
-                  Excel: ExcelOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how Excel input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
-                  Csv: CsvOptionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Options that define how CSV input is to be interpreted by DataBrew.',
-                      }),
-                  ).exactOptional(),
+                  Json: JsonOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how JSON input is to be interpreted by DataBrew.',
+                  }),
+                  Excel: ExcelOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how Excel input is to be interpreted by DataBrew.',
+                  }),
+                  Csv: CsvOptionsSchema.exactOptional().openapi({
+                    description:
+                      'Options that define how CSV input is to be interpreted by DataBrew.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5560,32 +4403,21 @@ export const putDatasetsNameRoute = createRoute({
                 }),
               Input: z
                 .object({
-                  S3InputDefinition: S3LocationSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Amazon S3 location where the data is stored.' }),
-                  ).exactOptional(),
-                  DataCatalogInputDefinition: DataCatalogInputDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The Glue Data Catalog parameters for the data.' }),
-                  ).exactOptional(),
-                  DatabaseInputDefinition: DatabaseInputDefinitionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Connection information for dataset input files stored in a database.',
-                      }),
-                  ).exactOptional(),
-                  Metadata: MetadataSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains additional resource information needed for specific datasets.',
-                      }),
-                  ).exactOptional(),
+                  S3InputDefinition: S3LocationSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 location where the data is stored.',
+                  }),
+                  DataCatalogInputDefinition:
+                    DataCatalogInputDefinitionSchema.exactOptional().openapi({
+                      description: 'The Glue Data Catalog parameters for the data.',
+                    }),
+                  DatabaseInputDefinition: DatabaseInputDefinitionSchema.exactOptional().openapi({
+                    description:
+                      'Connection information for dataset input files stored in a database.',
+                  }),
+                  Metadata: MetadataSchema.exactOptional().openapi({
+                    description:
+                      'Contains additional resource information needed for specific datasets.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5594,30 +4426,18 @@ export const putDatasetsNameRoute = createRoute({
                 }),
               PathOptions: z
                 .object({
-                  LastModifiedDateCondition: FilterExpressionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
-                      }),
-                  ).exactOptional(),
-                  FilesLimit: FilesLimitSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If provided, this structure imposes a limit on a number of files that should be selected.',
-                      }),
-                  ).exactOptional(),
-                  Parameters: PathParametersMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
-                      }),
-                  ).exactOptional(),
+                  LastModifiedDateCondition: FilterExpressionSchema.exactOptional().openapi({
+                    description:
+                      'If provided, this structure defines a date range for matching Amazon S3 objects based on their LastModifiedDate attribute in Amazon S3.',
+                  }),
+                  FilesLimit: FilesLimitSchema.exactOptional().openapi({
+                    description:
+                      'If provided, this structure imposes a limit on a number of files that should be selected.',
+                  }),
+                  Parameters: PathParametersMapSchema.exactOptional().openapi({
+                    description:
+                      'A structure that maps names of parameters used in the Amazon S3 path of a dataset to their definitions.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5885,16 +4705,12 @@ export const putProjectsNameRoute = createRoute({
             .object({
               Sample: z
                 .object({
-                  Size: SampleSizeSchema.and(
-                    z.any().openapi({ description: 'The number of rows in the sample.' }),
-                  ).exactOptional(),
-                  Type: SampleTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The way in which DataBrew obtains rows from a dataset.',
-                      }),
-                  ).exactOptional(),
+                  Size: SampleSizeSchema.exactOptional().openapi({
+                    description: 'The number of rows in the sample.',
+                  }),
+                  Type: SampleTypeSchema.exactOptional().openapi({
+                    description: 'The way in which DataBrew obtains rows from a dataset.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7150,21 +5966,13 @@ export const putProjectsNameSendProjectSessionActionRoute = createRoute({
                 }),
               RecipeStep: z
                 .object({
-                  Action: RecipeActionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The particular action to be performed in the recipe step.',
-                      }),
-                  ).exactOptional(),
-                  ConditionExpressions: ConditionExpressionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>One or more conditions that must be met for the recipe step to succeed.</p> <note> <p>All of the conditions in the array must be met. In other words, all of the conditions must be combined using a logical AND operation.</p> </note>',
-                      }),
-                  ).exactOptional(),
+                  Action: RecipeActionSchema.exactOptional().openapi({
+                    description: 'The particular action to be performed in the recipe step.',
+                  }),
+                  ConditionExpressions: ConditionExpressionListSchema.exactOptional().openapi({
+                    description:
+                      '<p>One or more conditions that must be met for the recipe step to succeed.</p> <note> <p>All of the conditions in the array must be met. In other words, all of the conditions must be combined using a logical AND operation.</p> </note>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7191,51 +5999,29 @@ export const putProjectsNameSendProjectSessionActionRoute = createRoute({
                 }),
               ViewFrame: z
                 .object({
-                  StartColumnIndex: StartColumnIndexSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The starting index for the range of columns to return in the view frame.',
-                      }),
-                  ).exactOptional(),
-                  ColumnRange: ColumnRangeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of columns to include in the view frame, beginning with the <code>StartColumnIndex</code> value and ignoring any columns in the <code>HiddenColumns</code> list.',
-                      }),
-                  ).exactOptional(),
-                  HiddenColumns: HiddenColumnListSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A list of columns to hide in the view frame.' }),
-                  ).exactOptional(),
-                  StartRowIndex: StartRowIndexSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The starting index for the range of rows to return in the view frame.',
-                      }),
-                  ).exactOptional(),
-                  RowRange: RowRangeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The number of rows to include in the view frame, beginning with the <code>StartRowIndex</code> value.',
-                      }),
-                  ).exactOptional(),
-                  Analytics: AnalyticsModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Controls if analytics computation is enabled or disabled. Enabled by default.',
-                      }),
-                  ).exactOptional(),
+                  StartColumnIndex: StartColumnIndexSchema.exactOptional().openapi({
+                    description:
+                      'The starting index for the range of columns to return in the view frame.',
+                  }),
+                  ColumnRange: ColumnRangeSchema.exactOptional().openapi({
+                    description:
+                      'The number of columns to include in the view frame, beginning with the <code>StartColumnIndex</code> value and ignoring any columns in the <code>HiddenColumns</code> list.',
+                  }),
+                  HiddenColumns: HiddenColumnListSchema.exactOptional().openapi({
+                    description: 'A list of columns to hide in the view frame.',
+                  }),
+                  StartRowIndex: StartRowIndexSchema.exactOptional().openapi({
+                    description:
+                      'The starting index for the range of rows to return in the view frame.',
+                  }),
+                  RowRange: RowRangeSchema.exactOptional().openapi({
+                    description:
+                      'The number of rows to include in the view frame, beginning with the <code>StartRowIndex</code> value.',
+                  }),
+                  Analytics: AnalyticsModeSchema.exactOptional().openapi({
+                    description:
+                      'Controls if analytics computation is enabled or disabled. Enabled by default.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7568,38 +6354,25 @@ export const putProfileJobsNameRoute = createRoute({
             .object({
               Configuration: z
                 .object({
-                  DatasetStatisticsConfiguration: StatisticsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
-                      }),
-                  ).exactOptional(),
-                  ProfileColumns: ColumnSelectorListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
-                      }),
-                  ).exactOptional(),
-                  ColumnStatisticsConfigurations: ColumnStatisticsConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
-                      }),
-                  ).exactOptional(),
-                  EntityDetectorConfiguration: EntityDetectorConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
-                      }),
-                  ).exactOptional(),
+                  DatasetStatisticsConfiguration:
+                    StatisticsConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Configuration for inter-column evaluations. Configuration can be used to select evaluations and override parameters of evaluations. When configuration is undefined, the profile job will run all supported inter-column evaluations. ',
+                    }),
+                  ProfileColumns: ColumnSelectorListSchema.exactOptional().openapi({
+                    description:
+                      'List of column selectors. ProfileColumns can be used to select columns from the dataset. When ProfileColumns is undefined, the profile job will profile all supported columns. ',
+                  }),
+                  ColumnStatisticsConfigurations:
+                    ColumnStatisticsConfigurationListSchema.exactOptional().openapi({
+                      description:
+                        'List of configurations for column evaluations. ColumnStatisticsConfigurations are used to select evaluations and override parameters of evaluations for particular columns. When ColumnStatisticsConfigurations is undefined, the profile job will profile all supported columns and run all supported evaluations. ',
+                    }),
+                  EntityDetectorConfiguration:
+                    EntityDetectorConfigurationSchema.exactOptional().openapi({
+                      description:
+                        'Configuration of entity detection for a profile job. When undefined, entity detection is disabled.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7647,21 +6420,15 @@ export const putProfileJobsNameRoute = createRoute({
                 }),
               OutputLocation: z
                 .object({
-                  Bucket: BucketSchema.and(
-                    z.any().openapi({ description: 'The Amazon S3 bucket name.' }),
-                  ).exactOptional(),
-                  Key: KeySchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The unique name of the object in the bucket.' }),
-                  ).exactOptional(),
-                  BucketOwner: BucketOwnerSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The Amazon Web Services account ID of the bucket owner.',
-                      }),
-                  ).exactOptional(),
+                  Bucket: BucketSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 bucket name.',
+                  }),
+                  Key: KeySchema.exactOptional().openapi({
+                    description: 'The unique name of the object in the bucket.',
+                  }),
+                  BucketOwner: BucketOwnerSchema.exactOptional().openapi({
+                    description: 'The Amazon Web Services account ID of the bucket owner.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -7694,22 +6461,14 @@ export const putProfileJobsNameRoute = createRoute({
                 }),
               JobSample: z
                 .object({
-                  Mode: SampleModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  Size: JobSizeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
-                      }),
-                  ).exactOptional(),
+                  Mode: SampleModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>A value that determines whether the profile job is run on the entire dataset or a specified number of rows. This value must be one of the following:</p> <ul> <li> <p>FULL_DATASET - The profile job is run on the entire dataset.</p> </li> <li> <p>CUSTOM_ROWS - The profile job is run on the number of rows specified in the <code>Size</code> parameter.</p> </li> </ul>',
+                  }),
+                  Size: JobSizeSchema.exactOptional().openapi({
+                    description:
+                      '<p>The <code>Size</code> parameter is only required when the mode is CUSTOM_ROWS. The profile job is run on the specified number of rows. The maximum value for size is Long.MAX_VALUE.</p> <p>Long.MAX_VALUE = 9223372036854775807</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

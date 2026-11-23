@@ -1,0 +1,79 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  xAmzTargetAwsServerMigrationServiceV20161024CreateAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024CreateReplicationJobHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteAppLaunchConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteAppReplicationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteAppValidationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteReplicationJobHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DeleteServerCatalogHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024DisassociateConnectorHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GenerateChangeSetHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GenerateTemplateHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetAppLaunchConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetAppReplicationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetAppValidationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetAppValidationOutputHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetConnectorsHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetReplicationJobsHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetReplicationRunsHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024GetServersHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024ImportAppCatalogHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024ImportServerCatalogHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024LaunchAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024ListAppsHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024NotifyAppValidationOutputHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024PutAppLaunchConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024PutAppReplicationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024PutAppValidationConfigurationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024StartAppReplicationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024StartOnDemandAppReplicationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024StartOnDemandReplicationRunHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024StopAppReplicationHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024TerminateAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024UpdateAppHandler,
+  xAmzTargetAwsServerMigrationServiceV20161024UpdateReplicationJobHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024CreateAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024CreateReplicationJobHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteAppLaunchConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteAppReplicationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteAppValidationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteReplicationJobHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DeleteServerCatalogHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024DisassociateConnectorHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GenerateChangeSetHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GenerateTemplateHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetAppLaunchConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetAppReplicationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetAppValidationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetAppValidationOutputHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetConnectorsHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetReplicationJobsHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetReplicationRunsHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024GetServersHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024ImportAppCatalogHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024ImportServerCatalogHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024LaunchAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024ListAppsHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024NotifyAppValidationOutputHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024PutAppLaunchConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024PutAppReplicationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024PutAppValidationConfigurationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024StartAppReplicationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024StartOnDemandAppReplicationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024StartOnDemandReplicationRunHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024StopAppReplicationHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024TerminateAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024UpdateAppHandler)
+  .route('/', xAmzTargetAwsServerMigrationServiceV20161024UpdateReplicationJobHandler)
+
+export default app

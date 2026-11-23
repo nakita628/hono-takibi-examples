@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetFirehose20150804StartDeliveryStreamEncryptionHandler = app.openapi(
+  postXAmzTargetFirehose20150804StartDeliveryStreamEncryptionRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

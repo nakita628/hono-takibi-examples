@@ -6,23 +6,15 @@ const IntegerSchema = z.int().openapi('Integer')
 
 const ClaimDevicesByClaimCodeResponseSchema = z
   .object({
-    ClaimCode: StringMin12Max40Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'claimCode' },
-          description: 'The claim code provided by the device manufacturer.',
-        }),
-    ).exactOptional(),
-    Total: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'total' },
-          description:
-            'The total number of devices associated with the claim code that has been processed in\n the claim request.',
-        }),
-    ).exactOptional(),
+    ClaimCode: StringMin12Max40Schema.exactOptional().openapi({
+      xml: { name: 'claimCode' },
+      description: 'The claim code provided by the device manufacturer.',
+    }),
+    Total: IntegerSchema.exactOptional().openapi({
+      xml: { name: 'total' },
+      description:
+        'The total number of devices associated with the claim code that has been processed in\n the claim request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ClaimDevicesByClaimCodeResponse')
@@ -48,68 +40,46 @@ const MapOfStringSchema = z.record(z.string(), StringSchema).openapi('MapOfStrin
 
 const DeviceDescriptionSchema = z
   .object({
-    Arn: StringSchema.and(
-      z.any().openapi({ xml: { name: 'arn' }, description: 'The ARN of the device.' }),
-    ).exactOptional(),
-    Attributes: DeviceAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributes' },
-          description:
-            'An array of zero or more elements of DeviceAttribute objects providing\n user specified device attributes.',
-        }),
-    ).exactOptional(),
-    DeviceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceId' },
-          description: 'The unique identifier of the device.',
-        }),
-    ).exactOptional(),
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enabled' },
-          description: 'A Boolean value indicating whether or not the device is enabled.',
-        }),
-    ).exactOptional(),
-    RemainingLife: DoubleMin0Max100Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'remainingLife' },
-          description:
-            'A value between 0 and 1 inclusive, representing the fraction of life remaining for the\n device.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'type' },
-          description: 'The type of the device, such as "button".',
-        }),
-    ).exactOptional(),
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description: 'The tags currently associated with the AWS IoT 1-Click device.',
-        }),
-    ).exactOptional(),
+    Arn: StringSchema.exactOptional().openapi({
+      xml: { name: 'arn' },
+      description: 'The ARN of the device.',
+    }),
+    Attributes: DeviceAttributesSchema.exactOptional().openapi({
+      xml: { name: 'attributes' },
+      description:
+        'An array of zero or more elements of DeviceAttribute objects providing\n user specified device attributes.',
+    }),
+    DeviceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceId' },
+      description: 'The unique identifier of the device.',
+    }),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enabled' },
+      description: 'A Boolean value indicating whether or not the device is enabled.',
+    }),
+    RemainingLife: DoubleMin0Max100Schema.exactOptional().openapi({
+      xml: { name: 'remainingLife' },
+      description:
+        'A value between 0 and 1 inclusive, representing the fraction of life remaining for the\n device.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description: 'The type of the device, such as "button".',
+    }),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description: 'The tags currently associated with the AWS IoT 1-Click device.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeviceDescription')
 
 const DescribeDeviceResponseSchema = z
   .object({
-    DeviceDescription: DeviceDescriptionSchema.and(
-      z.any().openapi({ xml: { name: 'deviceDescription' }, description: 'Device details.' }),
-    ).exactOptional(),
+    DeviceDescription: DeviceDescriptionSchema.exactOptional().openapi({
+      xml: { name: 'deviceDescription' },
+      description: 'Device details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDeviceResponse')
@@ -118,9 +88,10 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const FinalizeDeviceClaimResponseSchema = z
   .object({
-    State: StringSchema.and(
-      z.any().openapi({ xml: { name: 'state' }, description: "The device's final claim state." }),
-    ).exactOptional(),
+    State: StringSchema.exactOptional().openapi({
+      xml: { name: 'state' },
+      description: "The device's final claim state.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('FinalizeDeviceClaimResponse')
@@ -131,22 +102,14 @@ const ResourceConflictExceptionSchema = z.any().openapi('ResourceConflictExcepti
 
 const DeviceMethodSchema = z
   .object({
-    DeviceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceType' },
-          description: 'The type of the device, such as "button".',
-        }),
-    ).exactOptional(),
-    MethodName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'methodName' },
-          description: 'The name of the method applicable to the deviceType.',
-        }),
-    ).exactOptional(),
+    DeviceType: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceType' },
+      description: 'The type of the device, such as "button".',
+    }),
+    MethodName: StringSchema.exactOptional().openapi({
+      xml: { name: 'methodName' },
+      description: 'The name of the method applicable to the deviceType.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeviceMethod')
@@ -155,85 +118,66 @@ const ListOfDeviceMethodSchema = z.array(DeviceMethodSchema).openapi('ListOfDevi
 
 const GetDeviceMethodsResponseSchema = z
   .object({
-    DeviceMethods: ListOfDeviceMethodSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'deviceMethods' }, description: 'List of available device APIs.' }),
-    ).exactOptional(),
+    DeviceMethods: ListOfDeviceMethodSchema.exactOptional().openapi({
+      xml: { name: 'deviceMethods' },
+      description: 'List of available device APIs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDeviceMethodsResponse')
 
 const InitiateDeviceClaimResponseSchema = z
   .object({
-    State: StringSchema.and(
-      z.any().openapi({ xml: { name: 'state' }, description: "The device's final claim state." }),
-    ).exactOptional(),
+    State: StringSchema.exactOptional().openapi({
+      xml: { name: 'state' },
+      description: "The device's final claim state.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('InitiateDeviceClaimResponse')
 
 const InvokeDeviceMethodResponseSchema = z
   .object({
-    DeviceMethodResponse: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceMethodResponse' },
-          description: 'A JSON encoded string containing the device method response.',
-        }),
-    ).exactOptional(),
+    DeviceMethodResponse: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceMethodResponse' },
+      description: 'A JSON encoded string containing the device method response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InvokeDeviceMethodResponse')
 
 const RangeNotSatisfiableExceptionSchema = z.any().openapi('RangeNotSatisfiableException')
 
-const AttributesSchema = z.object({}).openapi('Attributes')
+const AttributesSchema = z.looseObject({}).openapi('Attributes')
 
 const DeviceSchema = z
   .object({
-    Attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'attributes' },
-          description: 'The user specified attributes associated with the device for an event.',
-        }),
-    ).exactOptional(),
-    DeviceId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceId' },
-          description: 'The unique identifier of the device.',
-        }),
-    ).exactOptional(),
-    Type: StringSchema.and(
-      z.any().openapi({ xml: { name: 'type' }, description: 'The device type, such as "button".' }),
-    ).exactOptional(),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      xml: { name: 'attributes' },
+      description: 'The user specified attributes associated with the device for an event.',
+    }),
+    DeviceId: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceId' },
+      description: 'The unique identifier of the device.',
+    }),
+    Type: StringSchema.exactOptional().openapi({
+      xml: { name: 'type' },
+      description: 'The device type, such as "button".',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Device')
 
 const DeviceEventSchema = z
   .object({
-    Device: DeviceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'device' },
-          description: 'An object representing the device associated with the event.',
-        }),
-    ).exactOptional(),
-    StdEvent: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'stdEvent' },
-          description: 'A serialized JSON object representing the device-type specific event.',
-        }),
-    ).exactOptional(),
+    Device: DeviceSchema.exactOptional().openapi({
+      xml: { name: 'device' },
+      description: 'An object representing the device associated with the event.',
+    }),
+    StdEvent: StringSchema.exactOptional().openapi({
+      xml: { name: 'stdEvent' },
+      description: 'A serialized JSON object representing the device-type specific event.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeviceEvent')
@@ -242,23 +186,15 @@ const ListOfDeviceEventSchema = z.array(DeviceEventSchema).openapi('ListOfDevice
 
 const ListDeviceEventsResponseSchema = z
   .object({
-    Events: ListOfDeviceEventSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'events' },
-          description:
-            'An array of zero or more elements describing the event(s) associated with the\n device.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Events: ListOfDeviceEventSchema.exactOptional().openapi({
+      xml: { name: 'events' },
+      description:
+        'An array of zero or more elements describing the event(s) associated with the\n device.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDeviceEventsResponse')
@@ -269,97 +205,82 @@ const ListOfDeviceDescriptionSchema = z
 
 const ListDevicesResponseSchema = z
   .object({
-    Devices: ListOfDeviceDescriptionSchema.and(
-      z.any().openapi({ xml: { name: 'devices' }, description: 'A list of devices.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    Devices: ListOfDeviceDescriptionSchema.exactOptional().openapi({
+      xml: { name: 'devices' },
+      description: 'A list of devices.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDevicesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const UnclaimDeviceResponseSchema = z
   .object({
-    State: StringSchema.and(
-      z.any().openapi({ xml: { name: 'state' }, description: "The device's final claim state." }),
-    ).exactOptional(),
+    State: StringSchema.exactOptional().openapi({
+      xml: { name: 'state' },
+      description: "The device's final claim state.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UnclaimDeviceResponse')
 
-const UpdateDeviceStateResponseSchema = z.object({}).openapi('UpdateDeviceStateResponse')
+const UpdateDeviceStateResponseSchema = z.looseObject({}).openapi('UpdateDeviceStateResponse')
 
 const ClaimDevicesByClaimCodeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ClaimDevicesByClaimCodeRequest' })
   .openapi('ClaimDevicesByClaimCodeRequest')
 
 const DescribeDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDeviceRequest' })
   .openapi('DescribeDeviceRequest')
 
 const FinalizeDeviceClaimRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
-        }),
-    ).exactOptional(),
+    Tags: MapOfStringSchema.exactOptional().openapi({
+      xml: { name: 'tags' },
+      description:
+        '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
+    }),
   })
   .openapi({ title: 'FinalizeDeviceClaimRequest', required: [] })
   .openapi('FinalizeDeviceClaimRequest')
 
 const GetDeviceMethodsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeviceMethodsRequest' })
   .openapi('GetDeviceMethodsRequest')
 
 const InitiateDeviceClaimRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'InitiateDeviceClaimRequest' })
   .openapi('InitiateDeviceClaimRequest')
 
 const InvokeDeviceMethodRequestSchema = z
   .object({
-    DeviceMethod: DeviceMethodSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'deviceMethod' }, description: 'The device method to invoke.' }),
-    ).exactOptional(),
-    DeviceMethodParameters: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deviceMethodParameters' },
-          description: 'A JSON encoded string containing the device method request parameters.',
-        }),
-    ).exactOptional(),
+    DeviceMethod: DeviceMethodSchema.exactOptional().openapi({
+      xml: { name: 'deviceMethod' },
+      description: 'The device method to invoke.',
+    }),
+    DeviceMethodParameters: StringSchema.exactOptional().openapi({
+      xml: { name: 'deviceMethodParameters' },
+      description: 'A JSON encoded string containing the device method request parameters.',
+    }),
   })
   .openapi({ title: 'InvokeDeviceMethodRequest', required: [] })
   .openapi('InvokeDeviceMethodRequest')
@@ -369,57 +290,49 @@ const TimestampIso8601Schema = z.iso.datetime({ offset: true }).openapi('Timesta
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListDeviceEventsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeviceEventsRequest' })
   .openapi('ListDeviceEventsRequest')
 
 const ListDevicesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDevicesRequest' })
   .openapi('ListDevicesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: MapOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'tags' },
-          description:
-            '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
-        }),
-    ),
+    Tags: MapOfStringSchema.openapi({
+      xml: { name: 'tags' },
+      description:
+        '<p>A collection of key/value pairs defining the resource tags. For example, {\n "tags": {"key1": "value1", "key2": "value2"} }. For more information, see <a href="https://aws.amazon.com/answers/account-management/aws-tagging-strategies/">AWS\n Tagging Strategies</a>.</p><p>\n \n </p>',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UnclaimDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UnclaimDeviceRequest' })
   .openapi('UnclaimDeviceRequest')
 
 const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDeviceStateRequestSchema = z
   .object({
-    Enabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'enabled' },
-          description: 'If true, the device is enabled. If false, the device is\n disabled.',
-        }),
-    ).exactOptional(),
+    Enabled: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'enabled' },
+      description: 'If true, the device is enabled. If false, the device is\n disabled.',
+    }),
   })
   .openapi({ title: 'UpdateDeviceStateRequest', required: [] })
   .openapi('UpdateDeviceStateRequest')
@@ -758,22 +671,14 @@ export const postDevicesDeviceIdMethodsRoute = createRoute({
             .object({
               deviceMethod: z
                 .object({
-                  DeviceType: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'deviceType' },
-                        description: 'The type of the device, such as "button".',
-                      }),
-                  ).exactOptional(),
-                  MethodName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'methodName' },
-                        description: 'The name of the method applicable to the deviceType.',
-                      }),
-                  ).exactOptional(),
+                  DeviceType: StringSchema.exactOptional().openapi({
+                    xml: { name: 'deviceType' },
+                    description: 'The type of the device, such as "button".',
+                  }),
+                  MethodName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'methodName' },
+                    description: 'The name of the method applicable to the deviceType.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The device method to invoke.', required: [] }),

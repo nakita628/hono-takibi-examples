@@ -1,5 +1,23 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const TelemetryTeamNameSchema = z
+  .object({ name: z.string(), clusterId: z.uuid().exactOptional() })
+  .openapi({ required: ['name'] })
+  .openapi('TelemetryTeamName')
+
+const TelemetryClusterNameSchema = z
+  .object({ id: z.uuid(), name: z.string(), clientId: z.string().exactOptional() })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('TelemetryClusterName')
+
+const TelemetryNamesSchema = z
+  .object({
+    teams: z.record(z.string(), TelemetryTeamNameSchema),
+    clusters: z.array(TelemetryClusterNameSchema),
+  })
+  .openapi({ required: ['teams', 'clusters'] })
+  .openapi('TelemetryNames')
+
 const RigSchema = z
   .object({
     id: z.string().openapi({ description: 'Rig identifier (e.g. "default")' }),
@@ -108,16 +126,6 @@ const RigErrorSchema = z
     required: ['timestamp', 'code', 'message'],
   })
   .openapi('RigError')
-
-const TeamSchema = z
-  .object({
-    teamID: z.string().openapi({ description: 'Identifier of the team' }),
-    name: z.string().openapi({ description: 'Name of the team' }),
-    apiKey: z.string().openapi({ description: 'API key for the team' }),
-    isDefault: z.boolean().openapi({ description: 'Whether the team is the default team' }),
-  })
-  .openapi({ required: ['teamID', 'name', 'apiKey', 'isDefault'] })
-  .openapi('Team')
 
 const TeamUserSchema = z
   .object({
@@ -450,6 +458,14 @@ const SandboxLifecycleSchema = z
   })
   .openapi('SandboxLifecycle')
 
+const EnvdUnresponsiveAtPauseSchema = z
+  .boolean()
+  .openapi({
+    description:
+      'True when the snapshot a paused sandbox would resume from was taken while the sandbox guest agent was not responding. A plain resume of it is refused with 409 and error_code sandbox_snapshot_guest_agent_unresponsive, because restoring that memory would bring the unresponsive agent back; resume it without memory (`memory: false`), which cold-boots the sandbox from its disk. Omitted for a running sandbox and for a snapshot whose agent answered.',
+  })
+  .openapi('EnvdUnresponsiveAtPause')
+
 const SandboxPauseModeSchema = z
   .enum(['full', 'filesystem'])
   .openapi({
@@ -653,6 +669,7 @@ const SandboxDetailSchema = z
       .datetime({ offset: true })
       .openapi({ description: 'Time when the sandbox will expire' }),
     envdVersion: EnvdVersionSchema,
+    envdUnresponsiveAtPause: EnvdUnresponsiveAtPauseSchema.exactOptional(),
     envdAccessToken: z
       .string()
       .exactOptional()
@@ -696,6 +713,56 @@ const SandboxDetailSchema = z
   })
   .openapi('SandboxDetail')
 
+const SandboxRecordSchema = z
+  .object({
+    templateID: z
+      .string()
+      .openapi({ description: 'Identifier of the template from which is the sandbox created' }),
+    alias: z.string().exactOptional().openapi({ description: 'Alias of the template' }),
+    sandboxID: z.string().openapi({ description: 'Identifier of the sandbox' }),
+    startedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time when the sandbox was started' }),
+    stoppedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Time when the sandbox was stopped' }),
+    domain: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Base domain where the sandbox traffic is accessible' }),
+    cpuCount: CPUCountSchema,
+    memoryMB: MemoryMBSchema,
+    diskSizeMB: DiskSizeMBSchema,
+    retentionExpired: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the sandbox ended more than the fixed retention window ago, so its monitoring and logs data is no longer available',
+      }),
+    eventsRetentionExpired: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether the sandbox ended more than the team's events retention window ago, so its events data is no longer available",
+      }),
+  })
+  .openapi({
+    required: [
+      'templateID',
+      'sandboxID',
+      'startedAt',
+      'cpuCount',
+      'memoryMB',
+      'diskSizeMB',
+      'retentionExpired',
+      'eventsRetentionExpired',
+    ],
+  })
+  .openapi('SandboxRecord')
+
 const ListedSandboxSchema = z
   .object({
     templateID: z
@@ -716,6 +783,7 @@ const ListedSandboxSchema = z
     metadata: SandboxMetadataSchema.exactOptional(),
     state: SandboxStateSchema,
     envdVersion: EnvdVersionSchema,
+    envdUnresponsiveAtPause: EnvdUnresponsiveAtPauseSchema.exactOptional(),
     volumeMounts: z.array(SandboxVolumeMountSchema).exactOptional(),
   })
   .openapi({
@@ -774,6 +842,10 @@ const NewSandboxSchema = z
       .default(15)
       .exactOptional()
       .openapi({ description: 'Time to live for the sandbox in seconds.' }),
+    cpuCount: CPUCountSchema.exactOptional().openapi({
+      description:
+        "Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).",
+    }),
     autoPause: z
       .boolean()
       .default(false)
@@ -822,6 +894,10 @@ const NewSandboxV2Schema = z
       .default(300)
       .exactOptional()
       .openapi({ description: 'Time to live for the sandbox in seconds.' }),
+    cpuCount: CPUCountSchema.exactOptional().openapi({
+      description:
+        "Online vCPU target for the sandbox. Defaults to the template's cpuCount; at most its maxCpuCount (fixed-size templates accept only their cpuCount).",
+    }),
     autoPause: z
       .boolean()
       .default(false)
@@ -865,6 +941,10 @@ const ResumedSandboxSchema = z
       .default(15)
       .exactOptional()
       .openapi({ description: 'Time to live for the sandbox in seconds.' }),
+    cpuCount: CPUCountSchema.exactOptional().openapi({
+      description:
+        "Online vCPU target for the resumed sandbox. Defaults to the snapshot's cpuCount; at most the template's maxCpuCount (fixed-size templates accept only their cpuCount).",
+    }),
     autoPause: z
       .boolean()
       .exactOptional()
@@ -877,7 +957,7 @@ const ResumedSandboxSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.',
+          'Defaults to true. When false, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.',
       }),
   })
   .openapi({ required: [] })
@@ -897,7 +977,7 @@ const ConnectSandboxSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.',
+          'Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.',
       }),
   })
   .openapi({ required: ['timeout'] })
@@ -919,7 +999,7 @@ const ConnectSandboxV2Schema = z
       .exactOptional()
       .openapi({
         description:
-          'Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore.',
+          'Defaults to true. When false and the sandbox is paused, resume from disk state only: the sandbox cold-boots fresh and any memory in the snapshot is ignored, never modified or deleted. Disk state has crash-recovery semantics — writes not flushed before the pause may be lost. A no-op for snapshots that contain no memory. Rejected with an error in environments where this capability is not enabled, never silently downgraded to a memory restore. A snapshot taken while the sandbox guest agent was not responding (envdUnresponsiveAtPause) can only be resumed this way, and needs no enablement.',
       }),
   })
   .openapi({ required: [] })
@@ -980,6 +1060,14 @@ const SandboxPauseRequestSchema = z
         description:
           'Whether to capture a full memory snapshot. When false, only the filesystem is persisted and resuming the sandbox cold-boots (reboots) it from disk, losing in-memory state, running processes, and open connections. Resume it with an explicit request (connect or resume); auto-resume, which can be triggered by arbitrary traffic, refuses such a sandbox. Defaults to true.',
       }),
+    requireHealthyGuest: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'The pause checks that the sandbox guest agent answers before it takes the snapshot. By default an unresponsive agent is recorded on the snapshot and the pause proceeds; the sandbox then shows `envdUnresponsiveAtPause` and a later resume must ask for `memory: false`, since restoring that memory would bring the unresponsive agent back. With this true, the pause is instead refused with 503 while the agent does not answer, and the sandbox keeps running. A filesystem-only pause (`memory: false`) is always refused while the agent does not answer, whatever this says.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('SandboxPauseRequest')
@@ -1014,7 +1102,7 @@ const ErrorSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Machine-readable semantic error code. Not a closed set; initial values: sandbox_capacity_unavailable, sandbox_placement_timeout, sandbox_no_compatible_node, sandbox_create_failed (a node could not create the sandbox this time; retry), sandbox_create_refused (a node refused the sandbox for a reason no retry changes, such as a vcpu count out of bounds in the stored build; a server error, since no request field reaches that check), internal_server_error, secret_limit_reached, idempotency_request_mismatch, idempotency_in_progress, idempotency_outcome_unknown.',
+          'Machine-readable semantic error code. Not a closed set; initial values: sandbox_capacity_unavailable, sandbox_placement_timeout, sandbox_no_compatible_node, sandbox_create_failed (a node could not create the sandbox this time; retry), sandbox_create_refused (a node refused the sandbox for a reason no retry changes, such as a vcpu count out of bounds in the stored build; a server error, since no request field reaches that check), internal_server_error, secret_limit_reached, idempotency_request_mismatch, idempotency_in_progress, idempotency_outcome_unknown, cluster_registration_invalid, cluster_registration_conflict, cluster_assignment_invalid, cluster_assignment_project_not_found, cluster_assignment_cluster_not_found, cluster_assignment_already_assigned, cluster_assignment_cluster_deleting, sandbox_snapshot_guest_agent_unresponsive (a plain resume of a snapshot taken while the sandbox guest agent was not responding; resume it with memory: false).',
       }),
     message: z.string().openapi({ description: 'Error' }),
   })
@@ -1264,6 +1352,21 @@ const TeamLimitsSchema = z
         format: 'int64',
         description: 'Requests per second the team may make to delete endpoints',
       }),
+    maxSecrets: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Maximum number of secrets the team may store',
+      }),
   })
   .openapi({
     description: "The team's effective resource limits",
@@ -1279,6 +1382,7 @@ const TeamLimitsSchema = z
       'maxFreeDiskSizeMb',
       'apiTeamRpsList',
       'apiTeamRpsDelete',
+      'maxSecrets',
     ],
   })
   .openapi('TeamLimits')
@@ -1287,6 +1391,186 @@ const TeamLimitsResponseSchema = z
   .object({ limits: TeamLimitsSchema })
   .openapi({ required: ['limits'] })
   .openapi('TeamLimitsResponse')
+
+const ClusterDetailSchema = z
+  .object({
+    id: z.uuid(),
+    name: z.string(),
+    endpoint: z.string(),
+    endpointTls: z.boolean(),
+    sandboxProxyDomain: z.string().nullable().exactOptional(),
+    authOrgId: z.string().nullable().exactOptional(),
+    deletionProtection: z
+      .boolean()
+      .openapi({ description: 'While true, deleting the cluster is refused.' }),
+  })
+  .openapi({
+    description: "A cluster's configuration. The cluster's token is never returned.",
+    required: ['id', 'name', 'endpoint', 'endpointTls', 'deletionProtection'],
+  })
+  .openapi('ClusterDetail')
+
+const ClusterTeamListItemSchema = z
+  .object({
+    id: z.uuid(),
+    email: z.string(),
+    name: z.string().nullable().exactOptional(),
+    slug: z.string().nullable().exactOptional(),
+    isBanned: z.boolean(),
+    createdAt: z.iso.datetime({ offset: true }),
+  })
+  .openapi({ required: ['id', 'email', 'isBanned', 'createdAt'] })
+  .openapi('ClusterTeamListItem')
+
+const ClusterTeamListResponseSchema = z
+  .object({
+    items: z.array(ClusterTeamListItemSchema),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of teams assigned to the cluster, ignoring limit and offset',
+      }),
+  })
+  .openapi({ required: ['items', 'total'] })
+  .openapi('ClusterTeamListResponse')
+
+const ClusterDetailWithTeamsSchema = z
+  .object({
+    cluster: ClusterDetailSchema,
+    teams: ClusterTeamListResponseSchema,
+    teamCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Teams assigned to the cluster. Must be 0 before the cluster can be deleted.',
+      }),
+    templateCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Live templates on the cluster. Deleting the cluster deletes them.',
+      }),
+  })
+  .openapi({ required: ['cluster', 'teams', 'teamCount', 'templateCount'] })
+  .openapi('ClusterDetailWithTeams')
+
+const ClusterListItemSchema = z
+  .object({
+    id: z.uuid(),
+    name: z.string(),
+    endpoint: z.string(),
+    sandboxProxyDomain: z.string().nullable().exactOptional(),
+    teamCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of teams assigned to the cluster.',
+      }),
+  })
+  .openapi({ required: ['id', 'name', 'endpoint', 'teamCount'] })
+  .openapi('ClusterListItem')
+
+const ClusterListResponseSchema = z
+  .object({
+    items: z.array(ClusterListItemSchema),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of clusters matching the search, ignoring limit and offset',
+      }),
+  })
+  .openapi({ required: ['items', 'total'] })
+  .openapi('ClusterListResponse')
+
+const AdminClusterCreateRequestSchema = z
+  .object({
+    cluster_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional stable identifier for idempotent creation. Reuse succeeds only when the immutable configuration is identical.',
+      }),
+    name: z.string().min(1),
+    endpoint: z.string().min(1),
+    endpoint_tls: z.boolean(),
+    token: z.string().min(1),
+    sandbox_proxy_domain: z.string().nullable().exactOptional(),
+    auth_org_id: z.string().nullable().exactOptional(),
+    telemetry_client_id: z.string().min(1).exactOptional(),
+  })
+  .openapi({ required: ['name', 'endpoint', 'endpoint_tls', 'token'] })
+  .openapi('AdminClusterCreateRequest')
+
+const ClusterUpdateRequestSchema = z
+  .object({
+    name: z.string().min(1).exactOptional(),
+    endpoint: z.string().min(1).exactOptional(),
+    endpointTls: z.boolean().exactOptional(),
+    sandboxProxyDomain: z.string().nullable().exactOptional(),
+    authOrgId: z.string().nullable().exactOptional(),
+    deletionProtection: z.boolean().exactOptional(),
+  })
+  .openapi({
+    description:
+      'Partial update; only the properties present are written. An explicit null or an empty string clears `sandboxProxyDomain` or `authOrgId`.',
+    required: [],
+  })
+  .openapi('ClusterUpdateRequest')
+
+const ClusterTokenRotateRequestSchema = z
+  .object({
+    token: z.string().min(1).openapi({ description: 'New cluster access token. Write-only.' }),
+  })
+  .openapi({ required: ['token'] })
+  .openapi('ClusterTokenRotateRequest')
 
 const AdminSandboxKillResultSchema = z
   .object({
@@ -1316,6 +1600,265 @@ const AdminSandboxSchema = z
   })
   .openapi({ required: ['sandboxID', 'teamID', 'state'] })
   .openapi('AdminSandbox')
+
+const AdminSandboxBuildStatusGroupSchema = z
+  .enum(['pending', 'in_progress', 'ready', 'failed'])
+  .openapi({
+    description:
+      'Coarse build state derived from the build status: pending (pending,\nwaiting), in_progress (in_progress, building, snapshotting), ready\n(ready, uploaded, success) or failed (any other status)\n',
+    'x-enum-varnames': [
+      'AdminSandboxBuildStatusGroupPending',
+      'AdminSandboxBuildStatusGroupInProgress',
+      'AdminSandboxBuildStatusGroupReady',
+      'AdminSandboxBuildStatusGroupFailed',
+    ],
+  })
+  .openapi('AdminSandboxBuildStatusGroup')
+
+const AdminSandboxBuildSchema = z
+  .object({
+    buildID: z.uuid().openapi({ description: 'Identifier of the build' }),
+    templateID: z
+      .string()
+      .openapi({ description: 'Identifier of the snapshot template the build is assigned to' }),
+    tag: z.string().openapi({ description: 'Tag the build is assigned under' }),
+    status: z
+      .string()
+      .openapi({
+        deprecated: true,
+        'x-deprecated-reason': 'Use statusGroup',
+        description: 'Same value as statusGroup',
+      }),
+    statusGroup: AdminSandboxBuildStatusGroupSchema,
+    clusterNodeID: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Node that produced the build, null when it was not recorded' }),
+    assignedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the build was assigned to the template under this tag' }),
+    isCurrent: z
+      .boolean()
+      .openapi({
+        description:
+          "Whether this build is the template's newest ready assignment under\nthe tag, the build a resume uses, regardless of the status filter\n",
+      }),
+    restorable: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the restore route would accept this build: it is ready,\nassigned under the default tag, not the current build, and its\nsnapshot template is not deleted\n',
+      }),
+  })
+  .openapi({
+    description: "A build assigned to a sandbox's snapshot template under a tag",
+    required: [
+      'buildID',
+      'templateID',
+      'tag',
+      'status',
+      'statusGroup',
+      'clusterNodeID',
+      'assignedAt',
+      'isCurrent',
+      'restorable',
+    ],
+  })
+  .openapi('AdminSandboxBuild')
+
+const AdminSandboxBuildListSchema = z
+  .object({
+    items: z.array(AdminSandboxBuildSchema),
+    total: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          'Number of assignments matching the tag and status filter, ignoring limit and offset',
+      }),
+    snapshotTemplateID: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "Identifier of the template that holds the sandbox's snapshot, null\nwhen the sandbox has no snapshot\n",
+      }),
+  })
+  .openapi({ required: ['items', 'total', 'snapshotTemplateID'] })
+  .openapi('AdminSandboxBuildList')
+
+const AdminSandboxBuildRestoreRequestSchema = z
+  .object({
+    buildID: z
+      .uuid()
+      .openapi({
+        description:
+          "Build to make current. It must be ready and already assigned to the\nsandbox's snapshot template under the default tag.\n",
+      }),
+  })
+  .openapi({ required: ['buildID'] })
+  .openapi('AdminSandboxBuildRestoreRequest')
+
+const AdminSandboxBuildRestoreResultSchema = z
+  .object({
+    sandboxID: z.string().openapi({ description: 'Identifier of the sandbox' }),
+    templateID: z
+      .string()
+      .openapi({ description: 'Identifier of the snapshot template that received the assignment' }),
+    buildID: z
+      .uuid()
+      .openapi({ description: "Build that is now the template's current default build" }),
+    assignedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the new assignment was written' }),
+    previousBuildID: z
+      .uuid()
+      .nullable()
+      .openapi({
+        description: 'Build that was current before the restore, null when there was none',
+      }),
+  })
+  .openapi({ required: ['sandboxID', 'templateID', 'buildID', 'assignedAt', 'previousBuildID'] })
+  .openapi('AdminSandboxBuildRestoreResult')
+
+const AdminSandboxOverviewTeamSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifier of the team' }),
+    name: z.string().nullable().openapi({ description: 'Name of the team' }),
+    email: z.string().nullable().openapi({ description: 'Contact email of the team' }),
+  })
+  .openapi({ description: 'The team the sandbox belongs to', required: ['id', 'name', 'email'] })
+  .openapi('AdminSandboxOverviewTeam')
+
+const AdminSandboxPauseKindSchema = z
+  .enum(['memory', 'filesystem'])
+  .openapi({
+    description:
+      'What a pause kept: memory is a full snapshot that resumes where the\nsandbox left off, filesystem keeps only the root filesystem and boots\nit again on resume\n',
+    'x-enum-varnames': ['AdminSandboxPauseKindMemory', 'AdminSandboxPauseKindFilesystem'],
+  })
+  .openapi('AdminSandboxPauseKind')
+
+const AdminSandboxLastPauseSchema = z
+  .object({
+    kind: AdminSandboxPauseKindSchema.openapi({
+      description: 'Kind of snapshot the most recent pause took',
+    }),
+    autoPause: z
+      .boolean()
+      .openapi({
+        description:
+          'Whether the sandbox pauses instead of being killed on timeout, as of the most recent pause',
+      }),
+    autoPauseKind: AdminSandboxPauseKindSchema.openapi({
+      description: 'Kind of snapshot an auto-pause takes, as of the most recent pause',
+    }),
+  })
+  .openapi({
+    description:
+      'The snapshot as the most recent pause left it. A resume can change\nwhether the sandbox auto-pauses without rewriting it, and restoring an\nolder build does not change it.\n',
+    required: ['kind', 'autoPause', 'autoPauseKind'],
+  })
+  .openapi('AdminSandboxLastPause')
+
+const AdminSandboxOverviewBuildSchema = z
+  .object({
+    buildId: z.uuid().openapi({ description: 'Identifier of the build' }),
+    templateId: z
+      .string()
+      .openapi({ description: 'Identifier of the snapshot template the build is assigned to' }),
+    tag: z.string().openapi({ description: 'Tag the build is assigned under' }),
+    status: z
+      .string()
+      .openapi({
+        deprecated: true,
+        'x-deprecated-reason': 'Use statusGroup',
+        description: 'Same value as statusGroup',
+      }),
+    statusGroup: AdminSandboxBuildStatusGroupSchema.nullable().openapi({
+      description: 'Coarse build state, null when the stored group is not one of the known values',
+    }),
+    clusterNodeId: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Node that produced the build, null when it was not recorded' }),
+    assignedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'When the build was assigned to the template under the tag' }),
+    isCurrent: z
+      .boolean()
+      .openapi({
+        description: 'Always true, the newest assignment is the one the template resolves to',
+      }),
+    restorable: z
+      .boolean()
+      .openapi({ description: 'Always false, the newest assignment is already current' }),
+  })
+  .openapi({
+    description: "The newest default-tag build assignment of a sandbox's snapshot template",
+    required: [
+      'buildId',
+      'templateId',
+      'tag',
+      'status',
+      'statusGroup',
+      'clusterNodeId',
+      'assignedAt',
+      'isCurrent',
+      'restorable',
+    ],
+  })
+  .openapi('AdminSandboxOverviewBuild')
+
+const AdminSandboxOverviewSchema = z
+  .object({
+    sandboxId: z.string().openapi({ description: 'Identifier of the sandbox' }),
+    team: AdminSandboxOverviewTeamSchema,
+    snapshotTemplateId: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          "Template that holds the sandbox's snapshot, null when the sandbox has no snapshot",
+      }),
+    lastPause: AdminSandboxLastPauseSchema.nullable().openapi({
+      description: 'What the most recent pause recorded, null when the sandbox has no snapshot',
+    }),
+    latestBuild: AdminSandboxOverviewBuildSchema.nullable().openapi({
+      description:
+        'Newest default-tag build assignment of the snapshot template, null\nwhen there is no snapshot or no assignment\n',
+    }),
+    buildCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of default-tag build assignments of the snapshot template',
+      }),
+  })
+  .openapi({
+    description:
+      'Who owns a sandbox and what its snapshot holds, read from the database:\nthe team, the snapshot template and its most recent pause, and the\nnewest default-tag build assignment of that template\n',
+    required: ['sandboxId', 'team', 'snapshotTemplateId', 'lastPause', 'latestBuild', 'buildCount'],
+  })
+  .openapi('AdminSandboxOverview')
 
 const AdminTeamRunningSandboxCountsSchema = z
   .record(
@@ -1526,15 +2069,293 @@ const AdminTeamSchedulingLabelsSchema = z
   .openapi({ required: ['labels'] })
   .openapi('AdminTeamSchedulingLabels')
 
-const VolumeTokenSchema = z
-  .object({ token: z.string() })
-  .openapi({ required: ['token'] })
-  .openapi('VolumeToken')
+const AdminTeamBanResultSchema = z
+  .object({
+    teamID: z.uuid(),
+    sandboxesKilled: z.int().openapi({ description: "Number of the team's sandboxes killed" }),
+    sandboxesFailedToKill: z
+      .int()
+      .openapi({ description: "Number of the team's sandboxes that failed to kill" }),
+    sandboxKillError: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set when the kill step failed or ran out of time; the counts cover what it did until then.',
+      }),
+    buildsCancelled: z.int().openapi({ description: "Number of the team's builds cancelled" }),
+    buildsFailedToCancel: z
+      .int()
+      .openapi({ description: "Number of the team's builds that failed to cancel" }),
+    buildCancelError: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set when the cancel step failed or ran out of time; the counts cover what it did until then.',
+      }),
+  })
+  .openapi({
+    description:
+      "The outcome of banning one team. The ban is stored before the team's\nsandboxes are killed and its builds cancelled, so it holds even when\neither step fails.\n",
+    required: [
+      'teamID',
+      'sandboxesKilled',
+      'sandboxesFailedToKill',
+      'buildsCancelled',
+      'buildsFailedToCancel',
+    ],
+  })
+  .openapi('AdminTeamBanResult')
+
+const AdminTeamsBanRequestSchema = z
+  .object({
+    teamIDs: z
+      .array(z.uuid())
+      .min(1)
+      .max(100)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+  })
+  .openapi({ required: ['teamIDs'] })
+  .openapi('AdminTeamsBanRequest')
+
+const AdminTeamBanFailureSchema = z
+  .object({ teamID: z.uuid(), error: z.string() })
+  .openapi({ required: ['teamID', 'error'] })
+  .openapi('AdminTeamBanFailure')
+
+const AdminTeamsBanResultSchema = z
+  .object({
+    banned: z
+      .array(AdminTeamBanResultSchema)
+      .openapi({
+        description:
+          'Teams whose ban is stored, with the outcome of killing their sandboxes and cancelling their builds',
+      }),
+    notFound: z.array(z.uuid()).openapi({ description: 'Requested teams that do not exist' }),
+    failed: z
+      .array(AdminTeamBanFailureSchema)
+      .openapi({
+        description:
+          'Teams whose ban could not be stored or put into force; retrying repeats every step',
+      }),
+  })
+  .openapi({ required: ['banned', 'notFound', 'failed'] })
+  .openapi('AdminTeamsBanResult')
+
+const AdminTemplateTeamSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifier of the team that owns the template' }),
+    name: z.string().openapi({ description: 'Name of the team' }),
+    email: z.string().openapi({ description: 'Contact email of the team' }),
+  })
+  .openapi({ required: ['id', 'name', 'email'] })
+  .openapi('AdminTemplateTeam')
+
+const AdminTemplateAliasSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifier of the alias' }),
+    templateID: z
+      .string()
+      .openapi({ description: 'Identifier of the template the alias resolves to' }),
+    alias: z.string().openapi({ description: 'The alias' }),
+    namespace: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Namespace of the alias, or null for an alias that resolves for every team',
+      }),
+    isRenamable: z
+      .boolean()
+      .openapi({
+        description: 'Whether building the template under another name replaces the alias',
+      }),
+  })
+  .openapi({ required: ['id', 'templateID', 'alias', 'namespace', 'isRenamable'] })
+  .openapi('AdminTemplateAlias')
+
+const AdminTemplateAliasesSchema = z
+  .object({
+    templateID: z.string().openapi({ description: 'Identifier of the template' }),
+    public: z.boolean().openapi({ description: 'Whether the template is public' }),
+    team: AdminTemplateTeamSchema,
+    aliases: z
+      .array(AdminTemplateAliasSchema)
+      .openapi({ description: 'All aliases of the template, those without a namespace first' }),
+  })
+  .openapi({ required: ['templateID', 'public', 'team', 'aliases'] })
+  .openapi('AdminTemplateAliases')
+
+const AdminTemplateAliasCreateRequestSchema = z
+  .object({
+    templateID: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Identifier of the template the alias resolves to' }),
+    alias: z
+      .string()
+      .min(1)
+      .max(128)
+      .openapi({ description: 'The alias, without a namespace or tag' }),
+  })
+  .openapi({ required: ['templateID', 'alias'] })
+  .openapi('AdminTemplateAliasCreateRequest')
+
+const AdminTemplateAliasDeletedSchema = z
+  .object({
+    aliasID: z.uuid().openapi({ description: 'Identifier of the removed alias' }),
+    templateID: z
+      .string()
+      .openapi({ description: 'Identifier of the template the alias resolved to' }),
+    alias: z.string().openapi({ description: 'The removed alias' }),
+  })
+  .openapi({ required: ['aliasID', 'templateID', 'alias'] })
+  .openapi('AdminTemplateAliasDeleted')
+
+const AdminDefaultTemplateSchema = z
+  .object({
+    templateID: z.string().openapi({ description: 'Identifier of the default template' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Description of the default template' }),
+  })
+  .openapi({ required: ['templateID', 'description'] })
+  .openapi('AdminDefaultTemplate')
+
+const AdminDefaultTemplateCreateRequestSchema = z
+  .object({
+    templateID: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Identifier of the template to make a default template' }),
+    description: z
+      .string()
+      .max(1000)
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Description of the default template; blank is stored as none' }),
+  })
+  .openapi({ required: ['templateID'] })
+  .openapi('AdminDefaultTemplateCreateRequest')
+
+const AdminDefaultTemplateUpdateRequestSchema = z
+  .object({
+    description: z
+      .string()
+      .max(1000)
+      .nullable()
+      .openapi({ description: 'New description of the default template; null or blank clears it' }),
+  })
+  .openapi({ required: ['description'] })
+  .openapi('AdminDefaultTemplateUpdateRequest')
 
 const TemplateBuildStatusSchema = z
   .enum(['building', 'waiting', 'ready', 'error'])
   .openapi({ description: 'Status of the template build' })
   .openapi('TemplateBuildStatus')
+
+const TemplateBuildSchema = z
+  .object({
+    buildID: z.uuid().openapi({ description: 'Identifier of the build' }),
+    status: TemplateBuildStatusSchema,
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time when the build was created' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time when the build was last updated' }),
+    finishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Time when the build was finished' }),
+    cpuCount: CPUCountSchema,
+    maxCpuCount: CPUCountSchema.exactOptional().openapi({
+      description: 'Maximum CPU count for resizable templates; absent for fixed-size templates.',
+    }),
+    memoryMB: MemoryMBSchema,
+    diskSizeMB: DiskSizeMBSchema.exactOptional(),
+    envdVersion: EnvdVersionSchema.exactOptional(),
+  })
+  .openapi({ required: ['buildID', 'status', 'createdAt', 'updatedAt', 'cpuCount', 'memoryMB'] })
+  .openapi('TemplateBuild')
+
+const AdminTemplateLookupSchema = z
+  .object({
+    templateID: z.string().openapi({ description: 'Identifier of the template' }),
+    team: AdminTemplateTeamSchema,
+    names: z
+      .array(z.string())
+      .openapi({ description: 'Names of the template (namespace/alias format when namespaced)' }),
+    public: z.boolean().openapi({ description: 'Whether the template is public' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Time when the template was created' }),
+    lastSpawnedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Time when the template was last used' }),
+    spawnCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of times the template was used',
+      }),
+    isSnapshot: z
+      .boolean()
+      .openapi({ description: 'Whether the template is a snapshot of a sandbox' }),
+    snapshotSandboxID: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The sandbox a snapshot template was taken from' }),
+    matchedBuildID: z
+      .uuid()
+      .nullable()
+      .openapi({ description: 'The build the query matched, when it was a build ID' }),
+    builds: z
+      .array(TemplateBuildSchema)
+      .openapi({
+        description:
+          "The template's newest builds of any tag and status, newest first, at most 100",
+      }),
+  })
+  .openapi({
+    required: [
+      'templateID',
+      'team',
+      'names',
+      'public',
+      'createdAt',
+      'lastSpawnedAt',
+      'spawnCount',
+      'isSnapshot',
+      'snapshotSandboxID',
+      'matchedBuildID',
+      'builds',
+    ],
+  })
+  .openapi('AdminTemplateLookup')
+
+const VolumeTokenSchema = z
+  .object({ token: z.string() })
+  .openapi({ required: ['token'] })
+  .openapi('VolumeToken')
 
 const TemplateSchema = z
   .object({
@@ -1543,6 +2364,9 @@ const TemplateSchema = z
       .string()
       .openapi({ description: 'Identifier of the last successful build for given template' }),
     cpuCount: CPUCountSchema,
+    maxCpuCount: CPUCountSchema.exactOptional().openapi({
+      description: 'Maximum CPU count for resizable templates; absent for fixed-size templates.',
+    }),
     memoryMB: MemoryMBSchema,
     diskSizeMB: DiskSizeMBSchema,
     public: z
@@ -1625,6 +2449,159 @@ const TemplateSearchResponseSchema = z
   .openapi({ required: ['data', 'nextCursor'] })
   .openapi('TemplateSearchResponse')
 
+const BuildStatusSchema = z
+  .enum(['building', 'failed', 'success'])
+  .openapi({ description: 'Build status as the builds list reports it.' })
+  .openapi('BuildStatus')
+
+const ListedBuildSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifier of the build.' }),
+    template: z
+      .string()
+      .openapi({ description: 'Template alias when present, otherwise template ID.' }),
+    templateId: z.string().openapi({ description: 'Identifier of the template.' }),
+    status: BuildStatusSchema,
+    statusMessage: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Failure message when status is `failed`, otherwise `null`.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Build creation timestamp in RFC3339 format.' }),
+    finishedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Build completion timestamp in RFC3339 format, if finished.' }),
+    cpuCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'CPU cores configured for the build.',
+      }),
+    memoryMB: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Memory in MiB configured for the build.',
+      }),
+    diskSizeMB: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .nullable()
+      .openapi({
+        type: ['integer', 'null'],
+        format: 'int64',
+        description: 'Disk size in MiB configured for the build, if recorded.',
+      }),
+    envdVersion: z
+      .string()
+      .nullable()
+      .openapi({ description: 'envd version the build was created with, if recorded.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'template',
+      'templateId',
+      'status',
+      'statusMessage',
+      'createdAt',
+      'finishedAt',
+      'cpuCount',
+      'memoryMB',
+      'diskSizeMB',
+      'envdVersion',
+    ],
+  })
+  .openapi('ListedBuild')
+
+const BuildsListResponseSchema = z
+  .object({
+    data: z.array(ListedBuildSchema),
+    nextCursor: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Cursor to pass to the next list request, or `null` if there is no next page.',
+      }),
+  })
+  .openapi({ required: ['data', 'nextCursor'] })
+  .openapi('BuildsListResponse')
+
+const BuildStatusItemSchema = z
+  .object({
+    id: z.uuid().openapi({ description: 'Identifier of the build.' }),
+    status: BuildStatusSchema,
+    finishedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Build completion timestamp in RFC3339 format, if finished.' }),
+    statusMessage: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Failure message when status is `failed`, otherwise `null`.' }),
+  })
+  .openapi({ required: ['id', 'status', 'finishedAt', 'statusMessage'] })
+  .openapi('BuildStatusItem')
+
+const BuildsStatusesResponseSchema = z
+  .object({
+    buildStatuses: z
+      .array(BuildStatusItemSchema)
+      .openapi({ description: 'List of build statuses' }),
+  })
+  .openapi({ required: ['buildStatuses'] })
+  .openapi('BuildsStatusesResponse')
+
+const BuildInfoSchema = z
+  .object({
+    names: z
+      .array(z.string())
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Template names related to this build, if available.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Build creation timestamp in RFC3339 format.' }),
+    finishedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Build completion timestamp in RFC3339 format, if finished.' }),
+    status: BuildStatusSchema,
+    statusMessage: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Failure message when status is `failed`, otherwise `null`.' }),
+  })
+  .openapi({ required: ['createdAt', 'finishedAt', 'status', 'statusMessage'] })
+  .openapi('BuildInfo')
+
 const TemplateRequestResponseV3Schema = z
   .object({
     templateID: z.string().openapi({ description: 'Identifier of the template' }),
@@ -1643,27 +2620,80 @@ const TemplateRequestResponseV3Schema = z
   .openapi({ required: ['templateID', 'buildID', 'public', 'aliases', 'names', 'tags'] })
   .openapi('TemplateRequestResponseV3')
 
-const TemplateBuildSchema = z
+const TemplateBuildWithTagsSchema = TemplateBuildSchema.and(
+  z
+    .object({
+      tags: z
+        .array(z.string())
+        .openapi({
+          description:
+            'Tags of the template that point at this build. A tag points at the latest ready build it was assigned to, the build a sandbox created with that tag starts from.',
+        }),
+    })
+    .openapi({ required: ['tags'] }),
+).openapi('TemplateBuildWithTags')
+
+const TemplateV2Schema = z
   .object({
-    buildID: z.uuid().openapi({ description: 'Identifier of the build' }),
-    status: TemplateBuildStatusSchema,
+    templateID: z.string().openapi({ description: 'Identifier of the template' }),
+    names: z
+      .array(z.string())
+      .openapi({ description: 'Names of the template (namespace/alias format when namespaced)' }),
+    public: z
+      .boolean()
+      .openapi({ description: 'Whether the template is public or only accessible by the team' }),
     createdAt: z.iso
       .datetime({ offset: true })
-      .openapi({ description: 'Time when the build was created' }),
+      .openapi({ description: 'Time when the template was created' }),
     updatedAt: z.iso
       .datetime({ offset: true })
-      .openapi({ description: 'Time when the build was last updated' }),
-    finishedAt: z.iso
+      .openapi({ description: 'Time when the template was last updated' }),
+    createdBy: TeamUserSchema.nullable(),
+    lastSpawnedAt: z.iso
       .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Time when the build was finished' }),
-    cpuCount: CPUCountSchema,
-    memoryMB: MemoryMBSchema,
-    diskSizeMB: DiskSizeMBSchema.exactOptional(),
-    envdVersion: EnvdVersionSchema.exactOptional(),
+      .nullable()
+      .openapi({ description: 'Time when the template was last used' }),
+    spawnCount: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Number of times the template was used',
+      }),
+    buildCount: z.int32().openapi({ description: 'Number of times the template was built' }),
+    isDefault: z
+      .boolean()
+      .openapi({ description: "Whether the template is one of the platform's default templates" }),
+    description: z.string().exactOptional().openapi({ description: 'Description of the template' }),
+    buildStatus: TemplateBuildStatusSchema,
+    defaultBuild: TemplateBuildSchema.exactOptional(),
   })
-  .openapi({ required: ['buildID', 'status', 'createdAt', 'updatedAt', 'cpuCount', 'memoryMB'] })
-  .openapi('TemplateBuild')
+  .openapi({
+    description:
+      'A template with its default build. `defaultBuild` is the build a sandbox created without a tag starts from, the latest ready build tagged default; it is absent until such a build is ready. `buildStatus` is the status of the latest build tagged default in any state: it is `building` while a rebuild runs, although sandboxes still start from the default build.\n',
+    required: [
+      'templateID',
+      'names',
+      'public',
+      'createdAt',
+      'updatedAt',
+      'createdBy',
+      'lastSpawnedAt',
+      'spawnCount',
+      'buildCount',
+      'isDefault',
+      'buildStatus',
+    ],
+  })
+  .openapi('TemplateV2')
 
 const TemplateWithBuildsSchema = TemplateSchema.and(
   z
@@ -1737,6 +2767,10 @@ const TemplateBuildRequestV3Schema = z
         description: 'Identifier of the team, as its UUID or its public project ID (prj_)',
       }),
     cpuCount: CPUCountSchema.exactOptional(),
+    maxCpuCount: CPUCountSchema.exactOptional().openapi({
+      description:
+        "Maximum CPU count the template's sandboxes can be resized to; makes the template resizable. Must be at least cpuCount.",
+    }),
     memoryMB: MemoryMBSchema.exactOptional(),
     minFreeDiskMb: MinFreeDiskMbSchema.exactOptional(),
   })
@@ -1926,10 +2960,10 @@ const LogsSourceSchema = z
   .openapi('LogsSource')
 
 const NodeStatusSchema = z
-  .enum(['ready', 'draining', 'connecting', 'unhealthy', 'standby', 'shutting_down'])
+  .enum(['ready', 'draining', 'connecting', 'unhealthy', 'standby', 'shutting_down', 'not_ready'])
   .openapi({
     description:
-      'Status of the node.\n- standby: the node is not actively used, but it can return to ready and continue serving traffic.\n',
+      'Status of the node.\n- standby: the node refuses new sandboxes and keeps serving the ones it holds; it can return to ready.\n- not_ready: the node is starting and cannot take new work yet. It becomes ready by itself and cannot be set through the API.\n',
     'x-enum-varnames': [
       'NodeStatusReady',
       'NodeStatusDraining',
@@ -1937,6 +2971,7 @@ const NodeStatusSchema = z
       'NodeStatusUnhealthy',
       'NodeStatusStandby',
       'NodeStatusShuttingDown',
+      'NodeStatusNotReady',
     ],
   })
   .openapi('NodeStatus')
@@ -1945,6 +2980,19 @@ const NodeStatusChangeSchema = z
   .object({
     clusterID: z.uuid().exactOptional().openapi({ description: 'Identifier of the cluster' }),
     status: NodeStatusSchema,
+    owner: z
+      .string()
+      .regex(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/)
+      .min(1)
+      .max(63)
+      .exactOptional()
+      .openapi({
+        description: 'Owner of a standby override; required to release a standby that carries one',
+      }),
+    force: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Apply the status and owner regardless of the recorded owner' }),
   })
   .openapi({ required: ['status'] })
   .openapi('NodeStatusChange')
@@ -2128,6 +3176,14 @@ const NodeSchema = z
     statusChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Time when the node status was last changed' }),
+    statusOwner: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Owner recorded by the current standby override' }),
+    capabilities: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Capabilities of the orchestrator build, for example park-owner' }),
     sandboxCount: z.uint32().openapi({ description: 'Number of sandboxes running on the node' }),
     maxSandboxes: z
       .preprocess(
@@ -2216,6 +3272,45 @@ const NodeSchema = z
   })
   .openapi('Node')
 
+const NodeSandboxSchema = z
+  .object({
+    teamID: z.uuid().openapi({ description: 'Identifier of the team' }),
+    sandboxID: z.string().openapi({ description: 'Identifier of the sandbox' }),
+    executionID: z.uuid().openapi({ description: 'Identifier of the running execution' }),
+    lifecycleHoldUntil: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "Deadline of the operation holding the sandbox's lifecycle, absent when it is not held",
+      }),
+    networkMode: z
+      .string()
+      .openapi({
+        description: 'Network the execution runs on, legacy, egress-router or full-router',
+      }),
+    volumesAttached: z
+      .boolean()
+      .openapi({ description: 'Whether the sandbox runs with managed volumes attached' }),
+  })
+  .openapi({ required: ['teamID', 'sandboxID', 'executionID', 'networkMode', 'volumesAttached'] })
+  .openapi('NodeSandbox')
+
+const NodeSandboxesSchema = z
+  .object({
+    nodeID: z.string().openapi({ description: 'Identifier of the node' }),
+    observedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: "Time the node's sandboxes were read" }),
+    items: z.array(NodeSandboxSchema),
+  })
+  .openapi({
+    description:
+      "The sandboxes the API confirms are running on a node, as the node and the API's records agree on them when read. A guest the node runs for an execution the API records elsewhere, or does not record, is left out.",
+    required: ['nodeID', 'observedAt', 'items'],
+  })
+  .openapi('NodeSandboxes')
+
 const NodeDetailSchema = z
   .object({
     clusterID: z.string().openapi({ description: 'Identifier of the cluster' }),
@@ -2230,6 +3325,14 @@ const NodeDetailSchema = z
     statusChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Time when the node status was last changed' }),
+    statusOwner: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Owner recorded by the current standby override' }),
+    capabilities: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Capabilities of the orchestrator build, for example park-owner' }),
     sandboxCount: z.uint32().openapi({ description: 'Number of sandboxes running on the node' }),
     maxSandboxes: z
       .preprocess(
@@ -2644,7 +3747,7 @@ const SandboxEventSchema = z
           "Label for the specific event type (e.g., 'sandbox_started', 'process_oom', etc.)",
       }),
     eventData: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: 'Optional JSON data associated with the event' }),
@@ -2915,6 +4018,24 @@ const WebhookDeliveriesListPayloadSchema = z
   })
   .openapi('WebhookDeliveriesListPayload')
 
+const ManagementClusterRegistrationRequestSchema = z
+  .object({
+    name: z.string().min(1),
+    endpoint: z.string().min(1),
+    endpoint_tls: z.boolean(),
+    token: z.string().min(1),
+    sandbox_proxy_domain: z.string().nullable().exactOptional(),
+    auth_org_id: z.string().nullable().exactOptional(),
+    telemetry_client_id: z.string().min(1).exactOptional(),
+  })
+  .openapi({ required: ['name', 'endpoint', 'endpoint_tls', 'token'] })
+  .openapi('ManagementClusterRegistrationRequest')
+
+const ManagementClusterProjectsSchema = z
+  .object({ project_ids: z.array(z.uuid()) })
+  .openapi({ required: ['project_ids'] })
+  .openapi('ManagementClusterProjects')
+
 const SandboxSettingsSchema = z
   .object({
     defaultAllowPublicTraffic: z
@@ -2960,6 +4081,353 @@ const ManagementProjectSettingsRequestSchema = z
   .openapi({ required: ['revision', 'settings'] })
   .openapi('ManagementProjectSettingsRequest')
 
+const ManagementProjectUpsertRequestSchema = z
+  .object({
+    cluster_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Cluster assignment to synchronize. Omission preserves the existing assignment.',
+      }),
+    name: z.string().min(1).max(255),
+    slug: z
+      .string()
+      .min(1)
+      .max(63)
+      .openapi({
+        description:
+          'Changing it renames the project, and its template names follow: each name held under an earlier slug is also given under the new one, and the old names keep working. A name the new slug already holds is left as it is. A slug already held on this control plane is a 409, on a rename as much as on a create.',
+      }),
+    email: z
+      .string()
+      .min(1)
+      .max(255)
+      .openapi({ description: 'Contact address recorded on the project.' }),
+  })
+  .openapi({
+    description:
+      "The properties of a project this side stores. Name, slug and email are synchronized on every push. The optional cluster assignment is preserved when omitted.\n\nA project's tier is not among them, and this side assigns none. Limits arrive separately and in full through managementUpsertProjectLimits.",
+    required: ['name', 'slug', 'email'],
+  })
+  .openapi('ManagementProjectUpsertRequest')
+
+const ManagementProjectSchema = ManagementProjectUpsertRequestSchema.and(
+  z.object({ id: z.uuid() }).openapi({ required: ['id'] }),
+).openapi('ManagementProject')
+
+const ManagementProjectMemberIdentitySchema = z
+  .object({ issuer: z.string().min(1).max(2048), subject: z.string().min(1).max(2048) })
+  .openapi({ required: ['issuer', 'subject'] })
+  .openapi('ManagementProjectMemberIdentity')
+
+const ManagementProjectMemberApplyRequestSchema = z
+  .object({
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+    present: z.boolean(),
+    is_default: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          "Whether this membership is the user's default team. Omitted requests from older sources remain non-default.",
+      }),
+    role: z
+      .enum(['owner', 'member', 'viewer'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The member's effective role on the project. A viewer may only read. An omitted role keeps the stored one, and a new member without one is stored as member.",
+      }),
+    identities: z.array(ManagementProjectMemberIdentitySchema).max(16).exactOptional(),
+  })
+  .openapi({ required: ['revision', 'present'] })
+  .openapi('ManagementProjectMemberApplyRequest')
+
+const ManagementDecidedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description:
+      'When the caller decided this revision, in RFC 3339. Stored with the revision and used to measure how long the decision took to apply here. Omit it when the caller does not know; the delivery is then counted as origin unknown rather than as zero lag.',
+  })
+  .openapi('ManagementDecidedAt')
+
+const ManagementProjectBlockRequestSchema = z
+  .object({
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.',
+      }),
+    blocked: z.boolean().openapi({ description: 'Whether the project is refused billable work.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Reason included in blocked-request errors. Cleared when blocked is false.',
+      }),
+    decided_at: ManagementDecidedAtSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Desired project block state. A newer revision replaces the state, including any intervening manual block or unblock.',
+    required: ['revision', 'blocked'],
+  })
+  .openapi('ManagementProjectBlockRequest')
+
+const ManagementProjectBanRequestSchema = z
+  .object({
+    revision: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64().min(1n),
+      )
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        minimum: 1,
+        description:
+          'Monotonic per-project revision. Older or duplicate revisions succeed without changing stored state.',
+      }),
+    banned: z
+      .boolean()
+      .openapi({ description: 'Whether the project is refused at authentication.' }),
+    decided_at: ManagementDecidedAtSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Desired project ban state. A newer revision replaces the state, including any intervening manual ban or unban.',
+    required: ['revision', 'banned'],
+  })
+  .openapi('ManagementProjectBanRequest')
+
+const ManagementProjectLimitsSchema = z
+  .union([
+    z
+      .unknown()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'max_free_disk_size_mb')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .openapi({ required: ['max_free_disk_size_mb'] }),
+    z
+      .unknown()
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'max_disk_size_mb')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .openapi({ required: ['max_disk_size_mb'] }),
+  ])
+  .and(
+    z
+      .object({
+        revision: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 1,
+            description:
+              "The caller's version of this answer, raised whenever the limits it resolved for the project change. Delivery is over a network, so two pushes can be in flight at once and arrive in either order: this side stores the revision it accepted and drops a delivery at or below it, which is what keeps a delayed retry from putting the project back on limits it has already left.\n\nComparable only against earlier revisions for the same project.",
+          }),
+        concurrent_sandboxes: z.int32().min(1),
+        max_sandbox_length_hours: z.int32().min(1),
+        max_vcpu: z.int32().min(1),
+        max_ram_mb: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+        disk_mb: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .openapi({ type: 'integer', format: 'int64', minimum: 1 }),
+        concurrent_template_builds: z.int32().min(1),
+        events_ttl_days: z.int32().min(1),
+        default_free_disk_size_mb: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 0,
+            description:
+              'The default free-space growth target when a template build request omits one. May sit anywhere at or below the maximum free-space growth target, and usually sits well below it; a delivery whose default exceeds the maximum is rejected.',
+          }),
+        max_free_disk_size_mb: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 1,
+            description: 'The most a template build may request as its free-space growth target.',
+          }),
+        max_disk_size_mb: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(1n),
+          )
+          .exactOptional()
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 1,
+            description:
+              'The same ceiling as max_free_disk_size_mb, under the name it was first published with. Kept until every deployed sender and receiver speaks the other name.',
+          }),
+        api_team_rps_list: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 0,
+            description:
+              'Requests per second a project may make to each list endpoint. Zero disables the limit.',
+          }),
+        api_team_rps_delete: z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64().min(0n),
+          )
+          .openapi({
+            type: 'integer',
+            format: 'int64',
+            minimum: 0,
+            description:
+              'Requests per second a project may make to each delete endpoint. Zero disables the limit.',
+          }),
+        max_secrets: z
+          .int32()
+          .min(1)
+          .openapi({ description: 'Live secrets the project may hold.' }),
+        decided_at: ManagementDecidedAtSchema.exactOptional(),
+      })
+      .openapi({
+        required: [
+          'revision',
+          'concurrent_sandboxes',
+          'max_sandbox_length_hours',
+          'max_vcpu',
+          'max_ram_mb',
+          'disk_mb',
+          'concurrent_template_builds',
+          'events_ttl_days',
+          'default_free_disk_size_mb',
+          'api_team_rps_list',
+          'api_team_rps_delete',
+          'max_secrets',
+        ],
+      }),
+  )
+  .openapi({
+    description:
+      "A project's effective limits, already resolved by the caller. Every field is absolute: this side stores what it is given and performs no arithmetic of its own.\n\nThe minimums below are the contract for what a limit may be, at least as strict as the CHECK constraints on default_limits. project_limits stores the same values under looser constraints on purpose — it is a push target, and a floor that only rejects the impossible keeps a future decision about what is allowed a change to this schema rather than a migration.\n\n`max_disk_size_mb` and `max_free_disk_size_mb` are one ceiling under two names, and either name alone carries it. A caller that sends both must send them equal; a caller that sends neither is refused. Sending both is what a caller does while receivers older than the second name are still running.",
+    required: [
+      'revision',
+      'concurrent_sandboxes',
+      'max_sandbox_length_hours',
+      'max_vcpu',
+      'max_ram_mb',
+      'disk_mb',
+      'concurrent_template_builds',
+      'events_ttl_days',
+      'default_free_disk_size_mb',
+      'api_team_rps_list',
+      'api_team_rps_delete',
+      'max_secrets',
+    ],
+  })
+  .openapi('ManagementProjectLimits')
+
 const _400Response = {
   description: 'Bad request',
   content: { 'application/json': { schema: ErrorSchema } },
@@ -2989,19 +4457,15 @@ const _429Response = {
   description: 'Too many requests',
   content: { 'application/json': { schema: ErrorSchema } },
   headers: z.object({
-    'Retry-After': {
-      description: 'When present, the number of seconds to wait before retrying the request.',
-      example: 30,
-      schema: z
-        .int()
-        .min(0)
-        .exactOptional()
-        .openapi({
-          description: 'When present, the number of seconds to wait before retrying the request.',
-          example: 30,
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .min(0)
+      .exactOptional()
+      .openapi({
+        description: 'When present, the number of seconds to wait before retrying the request.',
+        example: 30,
+        param: { required: false },
+      }),
   }),
 }
 
@@ -3087,6 +4551,18 @@ const NodeIDParamsSchema = z
 const ApiKeyIDParamsSchema = z
   .string()
   .openapi({ param: { name: 'apiKeyID', in: 'path', required: true, schema: { type: 'string' } } })
+
+const AliasIDParamsSchema = z
+  .uuid()
+  .openapi({
+    param: {
+      name: 'aliasID',
+      in: 'path',
+      required: true,
+      description: 'Identifier of the alias',
+      schema: { type: 'string', format: 'uuid' },
+    },
+  })
 
 const SnapshotIDParamsSchema = z
   .string()
@@ -3370,6 +4846,157 @@ const TemplatesLimitParamsSchema = z
     },
   })
 
+const BuildIDOrTemplateParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'build_id_or_template',
+      in: 'query',
+      required: false,
+      description: 'Optional filter by build identifier, template identifier, or template alias.',
+      schema: { type: 'string' },
+    },
+  })
+
+const BuildStatusesParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(BuildStatusSchema),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'statuses',
+      in: 'query',
+      required: false,
+      description: 'Comma-separated list of build statuses to include.',
+      style: 'form',
+      explode: false,
+      schema: { type: 'array', items: { $ref: '#/components/schemas/BuildStatus' } },
+    },
+  })
+
+const TemplateBuildStatusesParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(TemplateBuildStatusSchema).superRefine((items, ctx) => {
+      const seen = new Map()
+      for (const [i, val] of items.entries()) {
+        const key = JSON.stringify(val)
+        if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+        else seen.set(key, i)
+      }
+    }),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'statuses',
+      in: 'query',
+      required: false,
+      description: 'Comma-separated list of build statuses to include. Every status when omitted.',
+      style: 'form',
+      explode: false,
+      schema: {
+        type: 'array',
+        uniqueItems: true,
+        items: { $ref: '#/components/schemas/TemplateBuildStatus' },
+      },
+    },
+  })
+
+const TemplateBuildTagsParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(z.string()).max(100),
+  )
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'tags',
+      in: 'query',
+      required: false,
+      description:
+        'Comma-separated list of tags. Only the builds these tags point at are returned. Every build when omitted.',
+      style: 'form',
+      explode: false,
+      schema: { type: 'array', maxItems: 100, items: { type: 'string' } },
+    },
+  })
+
+const BuildsCursorParamsSchema = z
+  .string()
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'cursor',
+      in: 'query',
+      required: false,
+      description: 'Cursor returned by the previous list response in `created_at|build_id` format.',
+      schema: { type: 'string' },
+    },
+  })
+
+const BuildsLimitParamsSchema = z
+  .preprocess(
+    (val) =>
+      typeof val === 'string' &&
+      /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+      (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+        ? Number(val)
+        : val,
+    z.int32().min(1).max(100),
+  )
+  .default(50)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'limit',
+      in: 'query',
+      required: false,
+      description: 'Maximum number of builds to return per page.',
+      schema: { type: 'integer', format: 'int32', minimum: 1, maximum: 100, default: 50 },
+    },
+  })
+
+const BuildIDsParamsSchema = z
+  .preprocess(
+    (val) =>
+      val === undefined
+        ? val
+        : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+            typeof item === 'string' ? item.split(',') : [item],
+          ),
+    z.array(z.uuid()).max(100),
+  )
+  .openapi({
+    param: {
+      name: 'build_ids',
+      in: 'query',
+      required: true,
+      description: 'Comma-separated list of build IDs to get statuses for.',
+      style: 'form',
+      explode: false,
+      schema: { type: 'array', maxItems: 100, items: { type: 'string', format: 'uuid' } },
+    },
+  })
+
 const VolumeIDParamsSchema = z
   .string()
   .openapi({ param: { name: 'volumeID', in: 'path', required: true, schema: { type: 'string' } } })
@@ -3400,14 +5027,27 @@ const WebhookIDParamsSchema = z
     },
   })
 
+const IdempotencyKeyParamsSchema = z
+  .string()
+  .regex(/^[a-z0-9-]+$/)
+  .min(1)
+  .max(255)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'Idempotency-Key',
+      in: 'header',
+      required: false,
+      description:
+        "Optional team-scoped key for retrying the request. Use 1 to 255 lowercase ASCII letters,\ndigits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. The HTTP method, path, query,\nand request content identify the request. When idempotency is enabled, a matching retry of\na completed request replays its status and body, including the IDs of any resources it\ncreated, without repeating the operation. A failure explicitly classified as safe to retry\n(Should-Retry: true) permits a fresh attempt with the same key and request. Only one\nattempt can run at a time. A different request returns 409 with error_code\nidempotency_request_mismatch. A matching request whose original has no recorded response\nyet and is within its expected response window returns 409 with error_code\nidempotency_in_progress. A matching request whose original has no recorded response and\nwhose expected response deadline has passed or is unknown returns 422 with error_code\nidempotency_outcome_unknown. These conflicts and unknown outcomes do not execute the\nrequest again. If the key's record is unavailable or idempotency is misconfigured, the\nrequest returns 503; Should-Retry tells whether to retry with the same key. After the\nretention period expires, the key can start a new operation.\n",
+      schema: { type: 'string', minLength: 1, maxLength: 255, pattern: '^[a-z0-9-]+$' },
+    },
+  })
+
 const ShouldRetryHeaderSchema = z
   .boolean()
   .exactOptional()
-  .openapi({
-    description:
-      'Whether the condition behind this error may clear, so that retrying the request could\nsucceed. true marks a transient failure such as missing capacity, a rate limit, or a\ncreation still in progress: retry after Retry-After when present, otherwise with\nexponential backoff. false marks a failure a retry cannot fix, such as a malformed request\nor a configuration fault, or an outcome that is unknown, where a retry could create a\nsecond sandbox. Successful responses and errors without an explicit classification omit\nthe header.\n',
-    param: { required: false },
-  })
+  .openapi({ param: { required: false } })
 
 const XNextTokenHeaderSchema = z
   .string()
@@ -3448,28 +5088,17 @@ export const getHealthRoute = createRoute({
   summary: 'Health check',
   description: 'Health check',
   responses: {
-    204: { description: 'The service is healthy' },
-    401: _401Response,
-    429: _429Response,
-  },
-})
-
-export const getTeamsRoute = createRoute({
-  method: 'get',
-  path: '/teams',
-  tags: ['auth'],
-  summary: 'List teams',
-  description: 'List all teams',
-  responses: {
     200: {
-      description: 'Successfully returned all teams',
-      content: { 'application/json': { schema: z.array(TeamSchema) } },
+      description: 'The service is healthy',
+      content: { 'text/plain': { schema: z.string() } },
     },
     401: _401Response,
     429: _429Response,
-    500: _500Response,
+    503: {
+      description: 'The service is starting up or draining',
+      content: { 'text/plain': { schema: z.string() } },
+    },
   },
-  security: [{ AuthProviderBearerAuth: [] }],
 })
 
 export const getTeamsTeamIDMetricsRoute = createRoute({
@@ -3690,7 +5319,8 @@ export const getSandboxesRoute = createRoute({
   path: '/sandboxes',
   tags: ['sandboxes'],
   summary: 'List running sandboxes',
-  description: 'List all running sandboxes. Use GET /v2/sandboxes instead.',
+  description:
+    'List all running sandboxes. Returns 400 when more than 5000 running sandboxes match; use GET /v2/sandboxes to page through them.',
   request: {
     query: z.object({
       metadata: z
@@ -3881,7 +5511,7 @@ export const postV2SandboxesRoute = createRoute({
             in: 'header',
             required: false,
             description:
-              'Optional team-scoped key for retrying sandbox creation. Use 1 to 255 lowercase ASCII\nletters, digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. When idempotency is enabled,\nmatching retries replay the original status and body, including errors, for the retention period.\nDifferent request parameters return 409 with error_code idempotency_request_mismatch.\nAn in-progress request returns 409 with error_code idempotency_in_progress; an unknown\noutcome returns 422 with error_code idempotency_outcome_unknown. These retries do not execute the request again.\nRetries do not extend retention. After the key expires, it can start a new creation.\n',
+              "Optional team-scoped key for retrying sandbox creation. Use 1 to 255 lowercase ASCII\nletters, digits, or hyphens (a-z, 0-9, -), such as a lowercase UUID. When idempotency is enabled,\nmatching retries replay a completed status and body for the retention period. A creation\nfailure explicitly classified as safe to retry (Should-Retry: true) permits a fresh\nattempt with the same key and parameters. Only one attempt can run at a time.\nDifferent request parameters return 409 with error_code idempotency_request_mismatch.\nAn in-progress request returns 409 with error_code idempotency_in_progress; an unknown\noutcome returns 422 with error_code idempotency_outcome_unknown. These retries do not execute the request again.\nRetries do not extend retention. If a fresh attempt's request deadline plus response\npersistence budget would exceed the remaining retention, the previous error is replayed.\nAfter the key expires, it can start a new creation.\n",
             schema: { type: 'string', minLength: 1, maxLength: 255, pattern: '^[a-z0-9-]+$' },
           },
         }),
@@ -3926,20 +5556,15 @@ export const postV2SandboxesRoute = createRoute({
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
         'Should-Retry': ShouldRetryHeaderSchema,
-        'Retry-After': {
-          description: 'When present, the number of seconds to wait before retrying the request.',
-          example: 30,
-          schema: z
-            .int()
-            .min(0)
-            .exactOptional()
-            .openapi({
-              description:
-                'When present, the number of seconds to wait before retrying the request.',
-              example: 30,
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description: 'When present, the number of seconds to wait before retrying the request.',
+            example: 30,
+            param: { required: false },
+          }),
       }),
     },
     500: {
@@ -4228,6 +5853,7 @@ export const deleteSandboxesSandboxIDRoute = createRoute({
     204: { description: 'The sandbox was killed successfully' },
     401: _401Response,
     404: _404Response,
+    409: _409Response,
     429: _429Response,
     500: _500Response,
   },
@@ -4313,18 +5939,43 @@ export const getSandboxesSandboxIDMetricsRoute = createRoute({
   ],
 })
 
+export const getUnstableSandboxesSandboxIDRecordRoute = createRoute({
+  method: 'get',
+  path: '/unstable/sandboxes/{sandboxID}/record',
+  tags: ['sandboxes'],
+  summary: 'Sandbox record',
+  description:
+    "Returns the team's latest recorded run of the sandbox, including runs that have already ended, and whether its monitoring, logs and events data are still retained. Returns 404 when the team has no recorded run of the sandbox.",
+  request: { params: z.object({ sandboxID: SandboxIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Successfully returned the sandbox record',
+      content: { 'application/json': { schema: SandboxRecordSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] }],
+})
+
 export const postSandboxesSandboxIDPauseRoute = createRoute({
   method: 'post',
   path: '/sandboxes/{sandboxID}/pause',
   tags: ['sandboxes'],
   summary: 'Pause sandbox',
-  description: 'Pause the sandbox',
+  description:
+    'Pause the sandbox. Answers 503 and leaves the sandbox running when it cannot be paused right now: its node is busy, it is being snapshotted, or `requireHealthyGuest` was set and the sandbox guest agent is not responding; retry later.',
   request: {
     params: z.object({ sandboxID: SandboxIDParamsSchema }),
     body: { content: { 'application/json': { schema: SandboxPauseRequestSchema } } },
   },
   responses: {
     204: { description: 'The sandbox was paused successfully and can be resumed' },
+    400: _400Response,
     401: _401Response,
     404: _404Response,
     409: _409Response,
@@ -4345,7 +5996,8 @@ export const postSandboxesSandboxIDResumeRoute = createRoute({
   path: '/sandboxes/{sandboxID}/resume',
   tags: ['sandboxes'],
   summary: 'Resume sandbox',
-  description: 'Resume the sandbox',
+  description:
+    'Resume the sandbox. Answers 409 when the sandbox is already running, or when its snapshot was taken while the sandbox guest agent was not responding and a plain resume would restore that memory (error_code sandbox_snapshot_guest_agent_unresponsive); resume such a sandbox without memory (`memory: false`).',
   request: {
     params: z.object({ sandboxID: SandboxIDParamsSchema }),
     body: { content: { 'application/json': { schema: ResumedSandboxSchema } } },
@@ -4411,7 +6063,7 @@ export const postSandboxesSandboxIDConnectRoute = createRoute({
   tags: ['sandboxes'],
   summary: 'Connect sandbox',
   description:
-    'Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. Use POST /v2/sandboxes/{sandboxID}/connect instead.',
+    "Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. Use POST /v2/sandboxes/{sandboxID}/connect instead. Answers 409 with error_code sandbox_snapshot_guest_agent_unresponsive when the paused sandbox's snapshot was taken while its guest agent was not responding and the request did not ask for `memory: false`.",
   request: {
     params: z.object({ sandboxID: SandboxIDParamsSchema }),
     body: { content: { 'application/json': { schema: ConnectSandboxSchema } }, required: true },
@@ -4449,7 +6101,7 @@ export const postV2SandboxesSandboxIDConnectRoute = createRoute({
   tags: ['sandboxes'],
   summary: 'Connect sandbox (v2)',
   description:
-    'Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. The request body is optional; an omitted timeout defaults to 300 seconds.',
+    "Returns sandbox details. If the sandbox is paused, it will be resumed. TTL is only extended. The request body is optional; an omitted timeout defaults to 300 seconds. Answers 409 with error_code sandbox_snapshot_guest_agent_unresponsive when the paused sandbox's snapshot was taken while its guest agent was not responding and the request did not ask for `memory: false`.",
   request: {
     params: z.object({ sandboxID: SandboxIDParamsSchema }),
     body: { content: { 'application/json': { schema: ConnectSandboxV2Schema } } },
@@ -4569,6 +6221,7 @@ export const postSandboxesSandboxIDSnapshotsRoute = createRoute({
     "Create a persistent snapshot from the sandbox's current state. Snapshots can be used to create new sandboxes and persist beyond the original sandbox's lifetime.",
   request: {
     params: z.object({ sandboxID: SandboxIDParamsSchema }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
     body: {
       content: { 'application/json': { schema: SandboxSnapshotRequestSchema } },
       required: true,
@@ -4579,11 +6232,68 @@ export const postSandboxesSandboxIDSnapshotsRoute = createRoute({
       description: 'Snapshot created successfully',
       content: { 'application/json': { schema: SnapshotInfoSchema } },
     },
-    400: _400Response,
+    400: {
+      description: 'Bad request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
     401: _401Response,
-    404: _404Response,
+    404: {
+      description: 'Not found',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    422: {
+      description: 'Unprocessable request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
     429: _429Response,
-    500: _500Response,
+    500: {
+      description: 'Server error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    503: {
+      description: 'Service unavailable',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
   },
   security: [
     { ApiKeyAuth: [] },
@@ -4653,8 +6363,9 @@ export const postV3TemplatesRoute = createRoute({
   path: '/v3/templates',
   tags: ['templates'],
   summary: 'Create template (v3)',
-  description: 'Create a new template',
+  description: 'Create a new template.',
   request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
     body: {
       content: { 'application/json': { schema: TemplateBuildRequestV3Schema } },
       required: true,
@@ -4665,12 +6376,95 @@ export const postV3TemplatesRoute = createRoute({
       description: 'The build was requested successfully',
       content: { 'application/json': { schema: TemplateRequestResponseV3Schema } },
     },
-    400: _400Response,
-    401: _401Response,
-    403: _403Response,
-    409: _409Response,
-    429: _429Response,
-    500: _500Response,
+    400: {
+      description: 'Bad request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    401: {
+      description: 'Authentication error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    409: {
+      description: 'Conflict',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    422: {
+      description: 'Unprocessable request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    429: {
+      description: 'Too many requests',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'Retry-After': z
+          .int()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description: 'When present, the number of seconds to wait before retrying the request.',
+            example: 30,
+            param: { required: false },
+          }),
+      }),
+    },
+    500: {
+      description: 'Server error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
+    503: {
+      description: 'Service unavailable',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': z
+          .boolean()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+      }),
+    },
   },
   security: [
     { ApiKeyAuth: [] },
@@ -4778,7 +6572,8 @@ export const getTemplatesRoute = createRoute({
   path: '/templates',
   tags: ['templates'],
   summary: 'List templates',
-  description: 'List all templates',
+  description:
+    'List all templates. Returns 400 when the team has more than 5000 templates; use /v2/templates to page through them.',
   request: {
     query: z.object({
       teamID: z
@@ -4803,6 +6598,7 @@ export const getTemplatesRoute = createRoute({
       description: 'Successfully returned all templates',
       content: { 'application/json': { schema: z.array(TemplateSchema) } },
     },
+    400: _400Response,
     401: _401Response,
     429: _429Response,
     500: _500Response,
@@ -4863,6 +6659,95 @@ export const getUnstableTemplatesSearchRoute = createRoute({
     },
     400: _400Response,
     401: _401Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [
+    { ApiKeyAuth: [] },
+    { AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] },
+    { AdminApiKeyAuth: [], AdminTeamAuth: [] },
+    { AdminJWTAuth: [], AdminTeamAuth: [] },
+  ],
+})
+
+export const getUnstableBuildsRoute = createRoute({
+  method: 'get',
+  path: '/unstable/builds',
+  tags: ['unstable'],
+  summary: 'List team builds',
+  description:
+    "Lists the team's builds, newest first, with an optional filter by build ID, template ID or template alias and by status. `nextCursor` continues the listing. For E2B's own clients: it may change or disappear without notice.\n",
+  request: {
+    query: z.object({
+      build_id_or_template: BuildIDOrTemplateParamsSchema,
+      statuses: BuildStatusesParamsSchema,
+      limit: BuildsLimitParamsSchema,
+      cursor: BuildsCursorParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully returned paginated builds.',
+      content: { 'application/json': { schema: BuildsListResponseSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [
+    { ApiKeyAuth: [] },
+    { AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] },
+    { AdminApiKeyAuth: [], AdminTeamAuth: [] },
+    { AdminJWTAuth: [], AdminTeamAuth: [] },
+  ],
+})
+
+export const getUnstableBuildsStatusesRoute = createRoute({
+  method: 'get',
+  path: '/unstable/builds/statuses',
+  tags: ['unstable'],
+  summary: 'Build statuses',
+  description:
+    "Returns the statuses of the team's builds with the given IDs; IDs of other teams' builds are left out. For E2B's own clients: it may change or disappear without notice.\n",
+  request: { query: z.object({ build_ids: BuildIDsParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Successfully returned build statuses',
+      content: { 'application/json': { schema: BuildsStatusesResponseSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [
+    { ApiKeyAuth: [] },
+    { AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] },
+    { AdminApiKeyAuth: [], AdminTeamAuth: [] },
+    { AdminJWTAuth: [], AdminTeamAuth: [] },
+  ],
+})
+
+export const getUnstableBuildsBuildIDRoute = createRoute({
+  method: 'get',
+  path: '/unstable/builds/{buildID}',
+  tags: ['unstable'],
+  summary: 'Build details',
+  description:
+    "Returns a build of the team with the names of its template. For E2B's own clients: it may change or disappear without notice.\n",
+  request: { params: z.object({ buildID: BuildIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Successfully returned build details.',
+      content: { 'application/json': { schema: BuildInfoSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
     429: _429Response,
     500: _500Response,
   },
@@ -4955,14 +6840,53 @@ export const patchTemplatesTemplateIDRoute = createRoute({
   ],
 })
 
+export const getTemplatesTemplateIDBuildsRoute = createRoute({
+  method: 'get',
+  path: '/templates/{templateID}/builds',
+  tags: ['templates'],
+  summary: "List a template's builds",
+  description:
+    'List the builds of a template, newest first. The template is given by its ID or name. A template named `aliases` is given by its ID or by its name with the team prefix.',
+  request: {
+    params: z.object({ templateID: TemplateIDParamsSchema }),
+    query: z.object({
+      nextToken: PaginationNextTokenParamsSchema,
+      limit: PaginationLimitParamsSchema,
+      statuses: TemplateBuildStatusesParamsSchema,
+      tags: TemplateBuildTagsParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully returned the template builds',
+      content: { 'application/json': { schema: z.array(TemplateBuildWithTagsSchema) } },
+      headers: z.object({ 'X-Next-Token': XNextTokenHeaderSchema }),
+    },
+    400: _400Response,
+    401: _401Response,
+    403: _403Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [
+    { ApiKeyAuth: [] },
+    { AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] },
+    { AdminApiKeyAuth: [], AdminTeamAuth: [] },
+    { AdminJWTAuth: [], AdminTeamAuth: [] },
+  ],
+})
+
 export const postV2TemplatesTemplateIDBuildsBuildIDRoute = createRoute({
   method: 'post',
   path: '/v2/templates/{templateID}/builds/{buildID}',
   tags: ['templates'],
   summary: 'Start template build (v2)',
-  description: 'Start the build',
+  description:
+    'Start the build. With an Idempotency-Key, replays continue to work after the build has left the waiting state.',
   request: {
     params: z.object({ templateID: TemplateIDParamsSchema, buildID: BuildIDParamsSchema }),
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
     body: {
       content: { 'application/json': { schema: TemplateBuildStartV2Schema } },
       required: true,
@@ -4970,8 +6894,75 @@ export const postV2TemplatesTemplateIDBuildsBuildIDRoute = createRoute({
   },
   responses: {
     202: { description: 'The build has started' },
+    400: {
+      description: 'Bad request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    401: {
+      description: 'Authentication error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    404: {
+      description: 'Not found',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    409: {
+      description:
+        'The Idempotency-Key conflicts with a different request (error_code idempotency_request_mismatch), or the matching original request has no recorded response yet and is within its expected response window (error_code idempotency_in_progress); this request was not executed again',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    422: {
+      description:
+        'The matching original request has no recorded response and its expected response deadline has passed or is unknown (error_code idempotency_outcome_unknown); this request was not executed again',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    429: _429Response,
+    500: {
+      description: 'Server error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    503: {
+      description: 'Service unavailable',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+  },
+  security: [
+    { ApiKeyAuth: [] },
+    { AuthProviderBearerAuth: [], AuthProviderTeamAuth: [] },
+    { AdminApiKeyAuth: [], AdminTeamAuth: [] },
+    { AdminJWTAuth: [], AdminTeamAuth: [] },
+  ],
+})
+
+export const getV2TemplatesTemplateIDRoute = createRoute({
+  method: 'get',
+  path: '/v2/templates/{templateID}',
+  tags: ['templates'],
+  summary: 'Template info (v2)',
+  description:
+    'Get a template by its ID or name, with its default build and without its other builds.',
+  request: { params: z.object({ templateID: TemplateIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Successfully returned the template',
+      content: { 'application/json': { schema: TemplateV2Schema } },
+    },
     400: _400Response,
     401: _401Response,
+    403: _403Response,
+    404: _404Response,
     429: _429Response,
     500: _500Response,
   },
@@ -5192,8 +7183,9 @@ export const postTemplatesTagsRoute = createRoute({
   path: '/templates/tags',
   tags: ['tags'],
   summary: 'Assign template tags',
-  description: 'Assign tag(s) to a template build',
+  description: 'Assign tag(s) to a template build.',
   request: {
+    headers: z.object({ 'Idempotency-Key': IdempotencyKeyParamsSchema }),
     body: {
       content: { 'application/json': { schema: AssignTemplateTagsRequestSchema } },
       required: true,
@@ -5204,11 +7196,75 @@ export const postTemplatesTagsRoute = createRoute({
       description: 'Tag assigned successfully',
       content: { 'application/json': { schema: AssignedTemplateTagsSchema } },
     },
-    400: _400Response,
-    401: _401Response,
-    404: _404Response,
-    429: _429Response,
-    500: _500Response,
+    400: {
+      description: 'Bad request',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    401: {
+      description: 'Authentication error',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    403: {
+      description: 'Forbidden',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    404: {
+      description: 'Not found',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    408: {
+      description: 'Request body read timed out before execution',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    409: {
+      description:
+        'The Idempotency-Key conflicts with a different request (error_code idempotency_request_mismatch), or the matching original request has no recorded response yet and is within its expected response window (error_code idempotency_in_progress); this request was not executed again',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    413: {
+      description: 'Request body exceeds the size limit',
+      content: { 'text/plain': { schema: z.string() } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    422: {
+      description:
+        'The matching original request has no recorded response and its expected response deadline has passed or is unknown (error_code idempotency_outcome_unknown); this request was not executed again',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    429: {
+      description: 'Too many requests',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'Should-Retry': ShouldRetryHeaderSchema,
+        'Retry-After': z
+          .int()
+          .min(0)
+          .exactOptional()
+          .openapi({
+            description: 'When present, the number of seconds to wait before retrying the request.',
+            example: 30,
+            param: { required: false },
+          }),
+      }),
+    },
+    500: {
+      description:
+        'Server error. A failed commit has an uncertain outcome and omits Should-Retry; with an Idempotency-Key that error is replayed without executing again.',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
+    503: {
+      description: 'Idempotency is unavailable; the request was not executed',
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({ 'Should-Retry': ShouldRetryHeaderSchema }),
+    },
   },
   security: [
     { ApiKeyAuth: [] },
@@ -5523,9 +7579,46 @@ export const postNodesNodeIDRoute = createRoute({
   },
   responses: {
     204: { description: 'The node status was changed successfully' },
+    400: _400Response,
     401: _401Response,
     404: _404Response,
     409: _409Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getNodesNodeIDSandboxesRoute = createRoute({
+  method: 'get',
+  path: '/nodes/{nodeID}/sandboxes',
+  tags: ['admin'],
+  summary: 'Node sandboxes',
+  description: 'List the sandboxes the API confirms are running on the node',
+  request: {
+    params: z.object({ nodeID: NodeIDParamsSchema }),
+    query: z.object({
+      clusterID: z
+        .uuid()
+        .exactOptional()
+        .openapi({
+          param: {
+            in: 'query',
+            name: 'clusterID',
+            description: 'Identifier of the cluster',
+            required: false,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Successfully returned the node's sandboxes",
+      content: { 'application/json': { schema: NodeSandboxesSchema } },
+    },
+    401: _401Response,
+    404: _404Response,
     429: _429Response,
     500: _500Response,
   },
@@ -5601,6 +7694,173 @@ export const getAdminSandboxesSandboxIDRoute = createRoute({
     400: _400Response,
     401: _401Response,
     404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminSandboxesSandboxIDOverviewRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/sandboxes/{sandboxID}/overview',
+  tags: ['admin'],
+  summary: 'Sandbox overview',
+  description:
+    "Reads a sandbox's team, snapshot template, most recent pause and newest\ndefault-tag build from the database. The team comes from the\nstopped-sandbox log, or from the snapshot when the sandbox has not\nstopped. Returns 404 when neither knows the sandbox. A sandbox without\na snapshot returns null `snapshotTemplateId`, `lastPause` and\n`latestBuild`.\n",
+  request: { params: z.object({ sandboxID: SandboxIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The sandbox overview',
+      content: { 'application/json': { schema: AdminSandboxOverviewSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminSandboxesSandboxIDBuildsRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/sandboxes/{sandboxID}/builds',
+  tags: ['admin'],
+  summary: "List the builds of a sandbox's snapshot template",
+  description:
+    "Lists the build assignments of the template that holds the sandbox's\nsnapshot under one tag. Assignments without a creation time are left\nout. A sandbox without a snapshot returns no items and a null\n`snapshotTemplateID`; this route does not report whether the sandbox\nexists.\n",
+  request: {
+    params: z.object({ sandboxID: SandboxIDParamsSchema }),
+    query: z.object({
+      statusGroup: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(AdminSandboxBuildStatusGroupSchema),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'statusGroup',
+            in: 'query',
+            required: false,
+            description:
+              'Only list builds in these status groups, comma-separated. Omit to list every group.',
+            style: 'form',
+            explode: false,
+            schema: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/AdminSandboxBuildStatusGroup' },
+            },
+          },
+        }),
+      tag: z
+        .string()
+        .min(1)
+        .default('default')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'tag',
+            in: 'query',
+            required: false,
+            description: 'Tag whose assignments are listed',
+            schema: { type: 'string', minLength: 1, default: 'default' },
+          },
+        }),
+      order: OrderDirectionSchema.openapi({
+        param: {
+          name: 'order',
+          in: 'query',
+          required: false,
+          description: 'Direction of the assignment time order',
+          schema: { $ref: '#/components/schemas/OrderDirection' },
+        },
+      }).exactOptional(),
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            description: 'Maximum number of builds to return',
+            schema: { type: 'integer', format: 'int32', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            in: 'query',
+            required: false,
+            description: 'Number of matching builds to skip',
+            schema: { type: 'integer', format: 'int32', minimum: 0, default: 0 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "A page of the snapshot template's build assignments",
+      content: { 'application/json': { schema: AdminSandboxBuildListSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const postUnstableAdminSandboxesSandboxIDBuildsRestoreRoute = createRoute({
+  method: 'post',
+  path: '/unstable/admin/sandboxes/{sandboxID}/builds/restore',
+  tags: ['admin'],
+  summary: "Make a build the current build of a sandbox's snapshot",
+  description:
+    "Assigns a ready build of the sandbox's snapshot template to the template\nagain under the default tag, so the sandbox resumes from that build.\nThe snapshot takes the restored build's kind, filesystem-only or\nmemory.\nAnswers 404 when the sandbox has no snapshot, its snapshot template is\ndeleted, or the build is not assigned to that template under the\ndefault tag, and 409 when the build is not ready or is already the\ncurrent build.\n",
+  request: {
+    params: z.object({ sandboxID: SandboxIDParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: AdminSandboxBuildRestoreRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: "The build is now the snapshot template's current default build",
+      content: { 'application/json': { schema: AdminSandboxBuildRestoreResultSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
     429: _429Response,
     500: _500Response,
   },
@@ -5745,6 +8005,395 @@ export const deleteAdminTeamsTeamIDApiKeysApiKeyIDRoute = createRoute({
   security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
 })
 
+export const getUnstableManagementTelemetryNamesRoute = createRoute({
+  method: 'get',
+  path: '/unstable/management/telemetry/names',
+  tags: ['admin'],
+  summary: 'Read team and cluster names for telemetry.',
+  description:
+    'Requires a direct mutual TLS connection from the configured telemetry reader service identity. Bearer tokens and forwarded identity headers are not accepted. Returns regional team and cluster names without connection credentials. Deleted projects and clusters being deleted are omitted.',
+  operationId: 'managementTelemetryNames',
+  responses: {
+    200: {
+      description: 'Current regional names.',
+      content: { 'application/json': { schema: TelemetryNamesSchema } },
+    },
+    401: _401Response,
+    500: _500Response,
+  },
+  security: [],
+})
+
+export const putUnstableManagementClustersClusterIDRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/clusters/{clusterID}',
+  tags: ['admin'],
+  summary: 'Register a cluster.',
+  description:
+    'A cluster registered here for the first time starts with deletion protection turned off. Registering an existing cluster again with the same auth organization updates its endpoint, TLS setting, sandbox proxy domain and token, while preserving its regional display name and deletion protection, then sets a telemetry client ID the cluster does not have yet. An omitted telemetry client ID preserves the stored one. A different auth organization returns a conflict with error_code cluster_registration_conflict, and so does a telemetry client ID different from the stored one, after the endpoint, TLS setting, sandbox proxy domain and token are updated. An invalid registration returns 400 with error_code cluster_registration_invalid.',
+  operationId: 'managementRegisterCluster',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: ManagementClusterRegistrationRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Cluster registration is present.' },
+    400: _400Response,
+    401: _401Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableManagementClustersClusterIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/management/clusters/{clusterID}',
+  tags: ['admin'],
+  summary: 'Delete a cluster and its environments.',
+  description:
+    "Deletes a cluster after all team assignments are detached. Deletion protection on the cluster rejects the deletion, and so does a live team assignment, before anything changes. In one transaction it then soft-deletes every live template, snapshot template and paused sandbox snapshot on the cluster, releases their aliases, and releases all environment references while preserving environment and build history, and afterwards the cluster service deletes the cluster. A team assigned between those two steps returns a conflict with the templates already deleted; repeating the deletion once that team is detached completes it. The local cluster's nil ID is rejected. Repeating a completed deletion succeeds.",
+  operationId: 'managementDeleteCluster',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    204: { description: 'Cluster is absent.' },
+    400: _400Response,
+    401: _401Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementClustersClusterIDTelemetryRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/clusters/{clusterID}/telemetry',
+  tags: ['admin'],
+  summary: 'Update the telemetry identity of an existing cluster.',
+  description:
+    'Changes only the telemetry client mapping. Missing or deleting clusters are refused; connection settings, credentials and names are preserved.',
+  operationId: 'managementUpdateClusterTelemetry',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .object({ telemetry_client_id: z.string().min(1) })
+            .openapi({ required: ['telemetry_client_id'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Telemetry identity updated.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const getUnstableManagementClustersClusterIDProjectsRoute = createRoute({
+  method: 'get',
+  path: '/unstable/management/clusters/{clusterID}/projects',
+  tags: ['admin'],
+  summary: 'List the projects assigned to a cluster.',
+  description:
+    'Returns the ID of every project whose team is assigned to the cluster, whichever way it was assigned. A deleted project is never assigned. An absent cluster has no projects.',
+  operationId: 'managementListClusterProjects',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The projects assigned to the cluster.',
+      content: { 'application/json': { schema: ManagementClusterProjectsSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementClustersClusterIDDeletionRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/clusters/{clusterID}/deletion',
+  tags: ['admin'],
+  summary: 'Record that a cluster is being deleted.',
+  description:
+    "Records that the caller is deleting the cluster, for a caller that deletes the cluster's teams before the cluster itself. Refused while the cluster has deletion protection turned on; a protection change in flight commits before or after the check, never between. Once recorded, deletion protection cannot be turned on, so the cluster delete that follows is not refused for protection, and no team can be newly assigned to the cluster. An assignment either commits before the deletion is recorded, where the caller's next project listing finds it, or is refused with cluster_assignment_cluster_deleting. Succeeds when the cluster is absent. Repeating the request succeeds. The local cluster's nil ID is rejected.",
+  operationId: 'managementRequestClusterDeletion',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    204: { description: 'The deletion is recorded, or the cluster is absent.' },
+    400: _400Response,
+    401: _401Response,
+    409: {
+      description: 'The cluster has deletion protection turned on.',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const getUnstableManagementClustersClusterIDDestroyReadinessRoute = createRoute({
+  method: 'get',
+  path: '/unstable/management/clusters/{clusterID}/destroy-readiness',
+  tags: ['admin'],
+  summary: 'Check cluster destroy readiness.',
+  description:
+    "Checks whether the cluster has deletion protection turned on, or more than one team uses this exact cluster, either as an assigned team or as the owner of active templates or snapshots on it. One team's own templates and snapshots do not block this check, because deleting the cluster soft-deletes them. Soft-deleted history does not count. Returns success if the cluster is absent. This read does not change resources or prevent later assignments or template creation.",
+  operationId: 'managementClusterDestroyReadiness',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    204: { description: 'At most one team uses the cluster.' },
+    400: _400Response,
+    401: _401Response,
+    409: {
+      description:
+        'The cluster has deletion protection turned on, or more than one team uses it and the other teams and their templates must move off it before destroying the cluster.',
+      content: { 'application/json': { schema: ErrorSchema } },
+    },
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementProjectsProjectIDClusterClusterIDRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}/cluster/{clusterID}',
+  tags: ['admin'],
+  summary: 'Assign a cluster to a project.',
+  description:
+    'Assigns the cluster when the project has no cluster assigned. Replaying the identical assignment succeeds; replacing a different assigned cluster returns a conflict. Answers 404 when the project is missing or deleted.',
+  operationId: 'managementAssignProjectCluster',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      clusterID: ClusterIDParamsSchema,
+    }),
+  },
+  responses: {
+    204: { description: 'Cluster is assigned to the project.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableManagementProjectsProjectIDClusterClusterIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/management/projects/{projectID}/cluster/{clusterID}',
+  tags: ['admin'],
+  summary: 'Detach a cluster assignment from a project.',
+  description: 'Answers 404 when the project is missing or deleted.',
+  operationId: 'managementDetachProjectCluster',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      clusterID: ClusterIDParamsSchema,
+    }),
+  },
+  responses: {
+    204: { description: 'The matching assignment is absent.' },
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementProjectsProjectIDRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}',
+  tags: ['admin'],
+  summary: 'Create or reconcile a project.',
+  operationId: 'managementUpsertProject',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ManagementProjectUpsertRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'Existing project reconciled.',
+      content: { 'application/json': { schema: ManagementProjectSchema } },
+    },
+    201: {
+      description: 'Project created.',
+      content: { 'application/json': { schema: ManagementProjectSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableManagementProjectsProjectIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/management/projects/{projectID}',
+  tags: ['admin'],
+  summary: 'Soft-delete a project.',
+  description:
+    'Marks the project deleted and blocked, releases its cluster assignment, scrubs its name and email to DELETED and its slug to deleted-<project ID>, which releases the old slug for reuse, deletes its memberships and API keys, soft-deletes its templates and snapshots, and enqueues the teardown of its running sandboxes, all in one transaction. The project row remains. Afterwards the project answers 404 to other management writes. Repeating the call answers 204 and repeats every step except the deletion time: it re-blocks and re-scrubs the project, clears a cluster assignment written since, deletes any memberships, keys, templates or snapshots created since, and enqueues the teardown again.',
+  operationId: 'managementDeleteProject',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'Project is deleted and its teardown is enqueued.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementProjectsProjectIDMembersUserIDRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}/members/{userID}',
+  tags: ['admin'],
+  summary: 'Apply one versioned project member projection.',
+  description:
+    'Applies the newest desired presence for one project member. An older or duplicate revision is accepted without changing target state.',
+  operationId: 'managementApplyProjectMember',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+      userID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'userID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ManagementProjectMemberApplyRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Membership projection is applied or already superseded.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementProjectsProjectIDLimitsRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}/limits',
+  tags: ['admin'],
+  summary: 'Reconcile effective limits for a project.',
+  operationId: 'managementUpsertProjectLimits',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ManagementProjectLimitsSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Effective limits are synchronized.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
 export const putUnstableManagementProjectsProjectIDSettingsRoute = createRoute({
   method: 'put',
   path: '/unstable/management/projects/{projectID}/settings',
@@ -5781,6 +8430,78 @@ export const putUnstableManagementProjectsProjectIDSettingsRoute = createRoute({
   security: [{ AdminJWTAuth: [] }],
 })
 
+export const putUnstableManagementProjectsProjectIDBlockRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}/block',
+  tags: ['admin'],
+  summary: "Apply a project's block state.",
+  description:
+    'Records whether the project is refused billable work, which the auth path reads before it lets a sandbox start. An older or duplicate revision is accepted without changing target state. Answers 404 when the project is missing or deleted.',
+  operationId: 'managementApplyProjectBlock',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ManagementProjectBlockRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Block state is applied or already superseded.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
+export const putUnstableManagementProjectsProjectIDBanRoute = createRoute({
+  method: 'put',
+  path: '/unstable/management/projects/{projectID}/ban',
+  tags: ['admin'],
+  summary: "Apply a project's ban state.",
+  description:
+    "Records whether the project is banned. Authentication refuses a banned project's API keys and members. A revision that turns the ban on also kills the project's running sandboxes and cancels its builds in the background, and retries while the project stays banned and any of them remain. The newest revision wins: an older or duplicate revision is accepted without changing target state. Answers 404 when the project is missing or deleted.",
+  operationId: 'managementApplyProjectBan',
+  request: {
+    params: z.object({
+      projectID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'projectID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: ManagementProjectBanRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Ban state is applied or already superseded.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminJWTAuth: [] }],
+})
+
 export const postUnstableAdminTeamsQueryRoute = createRoute({
   method: 'post',
   path: '/unstable/admin/teams/query',
@@ -5798,6 +8519,33 @@ export const postUnstableAdminTeamsQueryRoute = createRoute({
     200: {
       description: 'The page of matching teams and the number of all matching teams',
       content: { 'application/json': { schema: AdminTeamListSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const postUnstableAdminTeamsBansRoute = createRoute({
+  method: 'post',
+  path: '/unstable/admin/teams/bans',
+  tags: ['admin'],
+  summary: 'Ban teams',
+  description:
+    "Bans up to 100 teams at once, as\n`PUT /unstable/admin/teams/{teamID}/ban` does, except that every\nteam's ban is stored before any team's sandboxes are killed or builds\ncancelled, and the kills and cancellations of all teams share one time\nbudget. One team's failure does not stop the others; the response sorts\nevery requested team into banned, not found or failed. The work\ncontinues if the caller disconnects.\n",
+  operationId: 'adminBanTeams',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AdminTeamsBanRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The outcome for every requested team',
+      content: { 'application/json': { schema: AdminTeamsBanResultSchema } },
     },
     400: _400Response,
     401: _401Response,
@@ -5875,6 +8623,687 @@ export const putUnstableAdminTeamsTeamIDSchedulingLabelsRoute = createRoute({
     401: _401Response,
     404: _404Response,
     429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const putUnstableAdminTeamsTeamIDBanRoute = createRoute({
+  method: 'put',
+  path: '/unstable/admin/teams/{teamID}/ban',
+  tags: ['admin'],
+  summary: 'Ban a team',
+  description:
+    'Marks the team as banned so its API keys stop authenticating, then\nkills its sandboxes and cancels its builds. The ban is stored first:\na failure to kill or cancel is reported in the result and does not\nundo it. Killing and cancelling stop after a fixed time budget, and a\nstep cut short is reported as failed. Banning an already banned team\nrepeats the kill and cancel. The work continues if the caller\ndisconnects.\n',
+  operationId: 'adminBanTeam',
+  request: {
+    params: z.object({
+      teamID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'teamID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+            description: 'Team ID',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The team is banned',
+      content: { 'application/json': { schema: AdminTeamBanResultSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableAdminTeamsTeamIDBanRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/admin/teams/{teamID}/ban',
+  tags: ['admin'],
+  summary: 'Unban a team',
+  description: "Clears the team's ban. Idempotent.",
+  operationId: 'adminUnbanTeam',
+  request: {
+    params: z.object({
+      teamID: z
+        .uuid()
+        .openapi({
+          param: {
+            name: 'teamID',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+            description: 'Team ID',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'The team is not banned' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    429: _429Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminClustersRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/clusters',
+  tags: ['admin'],
+  summary: 'List clusters as admin',
+  description:
+    "Lists the registered clusters with the number of teams assigned to each. Never returns a cluster's token. The local cluster is not a registered cluster and is not listed.",
+  operationId: 'adminListClusters',
+  request: {
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            description: 'Maximum number of clusters to return',
+            schema: { type: 'integer', format: 'int32', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            in: 'query',
+            required: false,
+            description: 'Number of matching clusters to skip',
+            schema: { type: 'integer', format: 'int32', minimum: 0, default: 0 },
+          },
+        }),
+      search: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'search',
+            in: 'query',
+            required: false,
+            description: 'Case-insensitive substring match on the cluster name or endpoint',
+            schema: { type: 'string' },
+          },
+        }),
+      sortBy: z
+        .enum(['endpoint', 'name', 'teamCount'])
+        .default('endpoint')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sortBy',
+            in: 'query',
+            required: false,
+            description: 'Column to order by',
+            schema: {
+              type: 'string',
+              enum: ['endpoint', 'name', 'teamCount'],
+              default: 'endpoint',
+            },
+          },
+        }),
+      sortOrder: z
+        .enum(['asc', 'desc'])
+        .default('asc')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sortOrder',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'string',
+              enum: ['asc', 'desc'],
+              default: 'asc',
+              'x-enum-varnames': [
+                'AdminListClustersSortOrderAsc',
+                'AdminListClustersSortOrderDesc',
+              ],
+            },
+          },
+          'x-enum-varnames': ['AdminListClustersSortOrderAsc', 'AdminListClustersSortOrderDesc'],
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The page of matching clusters and the number of all matching clusters',
+      content: { 'application/json': { schema: ClusterListResponseSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const postUnstableAdminClustersRoute = createRoute({
+  method: 'post',
+  path: '/unstable/admin/clusters',
+  tags: ['admin'],
+  summary: 'Create a cluster as admin',
+  description:
+    'Creates a cluster whose configuration cannot be modified through this route. A new cluster starts with deletion protection turned on. Creating a cluster again with the same `cluster_id` and an identical configuration answers 201 with the stored cluster, whose deletionProtection is whatever is stored; a different configuration, or an auth organization another cluster uses, returns 409 with error_code cluster_registration_conflict. An invalid request returns 400 with error_code cluster_registration_invalid.',
+  operationId: 'adminCreateCluster',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AdminClusterCreateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Cluster created.',
+      content: { 'application/json': { schema: ClusterDetailSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminClustersClusterIDRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/clusters/{clusterID}',
+  tags: ['admin'],
+  summary: 'Cluster as admin',
+  description:
+    "Returns a cluster with the first page of its assigned teams, the number of teams assigned to it and the number of live templates on it. Never returns the cluster's token.",
+  operationId: 'adminGetCluster',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    query: z.object({
+      teamsLimit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'teamsLimit',
+            in: 'query',
+            required: false,
+            description: 'Page size for the embedded teams page',
+            schema: { type: 'integer', format: 'int32', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+      teamsOffset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'teamsOffset',
+            in: 'query',
+            required: false,
+            description: 'Offset for the embedded teams page',
+            schema: { type: 'integer', format: 'int32', minimum: 0, default: 0 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The cluster',
+      content: { 'application/json': { schema: ClusterDetailWithTeamsSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableAdminClustersClusterIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/admin/clusters/{clusterID}',
+  tags: ['admin'],
+  summary: 'Delete a cluster and its environments as admin',
+  description:
+    "Deletes a cluster after all team assignments are detached. Deletion protection on the cluster rejects the deletion, and so does a live team assignment, before anything changes. In one transaction it then soft-deletes every live template, snapshot template and paused sandbox snapshot on the cluster, releases their aliases, and releases all environment references while preserving environment and build history, and afterwards the cluster service deletes the cluster. A team assigned between those two steps returns a conflict with the templates already deleted; repeating the deletion once that team is detached completes it. The local cluster's nil ID is rejected. Repeating a completed deletion succeeds.",
+  operationId: 'adminDeleteCluster',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    204: { description: 'Cluster deleted or already absent.' },
+    400: _400Response,
+    401: _401Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const patchUnstableAdminClustersClusterIDRoute = createRoute({
+  method: 'patch',
+  path: '/unstable/admin/clusters/{clusterID}',
+  tags: ['admin'],
+  summary: 'Update a cluster as admin',
+  description:
+    "Writes only the properties present in the body. `endpoint` and `endpointTls` change where orchestration traffic for every team on the cluster goes, `sandboxProxyDomain` changes the public URL of every sandbox on it, and `authOrgId` changes how the cluster authenticates. A body with no property returns 400. Another cluster using the auth organization returns 409, and so does turning deletion protection on after the cluster's deletion is recorded. The token is rotated through `PUT /unstable/admin/clusters/{clusterID}/token`.",
+  operationId: 'adminUpdateCluster',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: ClusterUpdateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The cluster as updated',
+      content: { 'application/json': { schema: ClusterDetailSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminClustersClusterIDMetadataRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/clusters/{clusterID}/metadata',
+  tags: ['admin'],
+  summary: 'Cluster metadata as admin',
+  description:
+    "Returns cluster metadata without reading assigned teams or counting teams and templates. Never returns the cluster's token.",
+  operationId: 'adminGetClusterMetadata',
+  request: { params: z.object({ clusterID: ClusterIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'Cluster metadata',
+      content: { 'application/json': { schema: ClusterDetailSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminClustersClusterIDTeamsRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/clusters/{clusterID}/teams',
+  tags: ['admin'],
+  summary: "List a cluster's teams as admin",
+  description: 'Lists the teams assigned to the cluster.',
+  operationId: 'adminListClusterTeams',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    query: z.object({
+      limit: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(1).max(100),
+        )
+        .default(50)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            description: 'Maximum number of teams to return',
+            schema: { type: 'integer', format: 'int32', minimum: 1, maximum: 100, default: 50 },
+          },
+        }),
+      offset: z
+        .preprocess(
+          (val) =>
+            typeof val === 'string' &&
+            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+            (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+              ? Number(val)
+              : val,
+          z.int32().min(0),
+        )
+        .default(0)
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'offset',
+            in: 'query',
+            required: false,
+            description: 'Number of teams to skip',
+            schema: { type: 'integer', format: 'int32', minimum: 0, default: 0 },
+          },
+        }),
+      sortBy: z
+        .enum(['createdAt', 'name'])
+        .default('createdAt')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sortBy',
+            in: 'query',
+            required: false,
+            description: 'Column to order by',
+            schema: { type: 'string', enum: ['createdAt', 'name'], default: 'createdAt' },
+          },
+        }),
+      sortOrder: z
+        .enum(['asc', 'desc'])
+        .default('desc')
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'sortOrder',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'string',
+              enum: ['asc', 'desc'],
+              default: 'desc',
+              'x-enum-varnames': [
+                'AdminListClusterTeamsSortOrderAsc',
+                'AdminListClusterTeamsSortOrderDesc',
+              ],
+            },
+          },
+          'x-enum-varnames': [
+            'AdminListClusterTeamsSortOrderAsc',
+            'AdminListClusterTeamsSortOrderDesc',
+          ],
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'The page of teams assigned to the cluster',
+      content: { 'application/json': { schema: ClusterTeamListResponseSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const putUnstableAdminClustersClusterIDTokenRoute = createRoute({
+  method: 'put',
+  path: '/unstable/admin/clusters/{clusterID}/token',
+  tags: ['admin'],
+  summary: "Rotate a cluster's token as admin",
+  description:
+    "Replaces the token used to reach the cluster. The previous token stops working at once. No route returns a cluster's token.",
+  operationId: 'adminRotateClusterToken',
+  request: {
+    params: z.object({ clusterID: ClusterIDParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: ClusterTokenRotateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    204: { description: 'Token rotated.' },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+    503: _503Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminTemplatesAliasesRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/templates/aliases',
+  tags: ['admin'],
+  summary: 'Search template aliases as admin',
+  description:
+    "Finds the templates whose ID equals `search`, or that own an alias equal to `search` in any namespace, with their owning team and all their aliases. Deleted templates are left out. Results are ordered by template ID; the next page's token is returned in `X-Next-Token`.\n",
+  request: {
+    query: z.object({
+      search: z
+        .string()
+        .min(1)
+        .openapi({
+          param: {
+            name: 'search',
+            in: 'query',
+            required: true,
+            description: 'Exact template ID or alias',
+            schema: { type: 'string', minLength: 1 },
+          },
+        }),
+      nextToken: PaginationNextTokenParamsSchema,
+      limit: PaginationLimitParamsSchema,
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully returned the matching templates',
+      content: { 'application/json': { schema: z.array(AdminTemplateAliasesSchema) } },
+      headers: z.object({ 'X-Next-Token': XNextTokenHeaderSchema }),
+    },
+    400: _400Response,
+    401: _401Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const postUnstableAdminTemplatesAliasesRoute = createRoute({
+  method: 'post',
+  path: '/unstable/admin/templates/aliases',
+  tags: ['admin'],
+  summary: 'Add a template alias without a namespace as admin',
+  description:
+    'Adds an alias without a namespace to a template, so the template resolves by that name for every team. The alias follows the rules of template names (lowercase letters, digits, `-` and `_`) and cannot equal a template ID. Returns 404 when the template does not exist and 409 when the alias is taken.\n',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AdminTemplateAliasCreateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The alias was added',
+      content: { 'application/json': { schema: AdminTemplateAliasSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableAdminTemplatesAliasesAliasIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/admin/templates/aliases/{aliasID}',
+  tags: ['admin'],
+  summary: 'Remove a template alias without a namespace as admin',
+  description:
+    'Removes an alias without a namespace. A namespaced alias is not removed and answers 404.\n',
+  request: { params: z.object({ aliasID: AliasIDParamsSchema }) },
+  responses: {
+    200: {
+      description: 'The alias was removed',
+      content: { 'application/json': { schema: AdminTemplateAliasDeletedSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const postUnstableAdminTemplatesDefaultsRoute = createRoute({
+  method: 'post',
+  path: '/unstable/admin/templates/defaults',
+  tags: ['admin'],
+  summary: 'Add a default template as admin',
+  description:
+    "Makes a template one of the platform's default templates. Returns 404 when the template does not exist and 409 when it is already a default template.\n",
+  request: {
+    body: {
+      content: { 'application/json': { schema: AdminDefaultTemplateCreateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'The template is now a default template',
+      content: { 'application/json': { schema: AdminDefaultTemplateSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    409: _409Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const deleteUnstableAdminTemplatesDefaultsTemplateIDRoute = createRoute({
+  method: 'delete',
+  path: '/unstable/admin/templates/defaults/{templateID}',
+  tags: ['admin'],
+  summary: 'Remove a default template as admin',
+  description:
+    "Stops a template being one of the platform's default templates. The template itself is not changed. Returns 404 when the template is not a default template.\n",
+  request: { params: z.object({ templateID: TemplateIDParamsSchema }) },
+  responses: {
+    204: { description: 'The template is no longer a default template' },
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const patchUnstableAdminTemplatesDefaultsTemplateIDRoute = createRoute({
+  method: 'patch',
+  path: '/unstable/admin/templates/defaults/{templateID}',
+  tags: ['admin'],
+  summary: 'Update a default template as admin',
+  description:
+    'Updates the description of a default template. Returns 404 when the template is not a default template.',
+  request: {
+    params: z.object({ templateID: TemplateIDParamsSchema }),
+    body: {
+      content: { 'application/json': { schema: AdminDefaultTemplateUpdateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'The default template was updated',
+      content: { 'application/json': { schema: AdminDefaultTemplateSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
+    500: _500Response,
+  },
+  security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],
+})
+
+export const getUnstableAdminTemplatesLookupRoute = createRoute({
+  method: 'get',
+  path: '/unstable/admin/templates/lookup',
+  tags: ['admin'],
+  summary: 'Look up a template as admin',
+  description:
+    "Resolves `query` as, in order: a build ID (a UUID, matched to the template of the build's newest assignment, with no fallback), a template ID, or a template name (`namespace/alias`, or an alias without a namespace). Returns the template with its owning team and its newest builds. Deleted templates are not found.\n",
+  request: {
+    query: z.object({
+      query: z
+        .string()
+        .min(1)
+        .openapi({
+          param: {
+            name: 'query',
+            in: 'query',
+            required: true,
+            description: 'Build ID, template ID, or template name',
+            schema: { type: 'string', minLength: 1 },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Successfully resolved the template',
+      content: { 'application/json': { schema: AdminTemplateLookupSchema } },
+    },
+    400: _400Response,
+    401: _401Response,
+    404: _404Response,
     500: _500Response,
   },
   security: [{ AdminApiKeyAuth: [] }, { AdminJWTAuth: [] }],

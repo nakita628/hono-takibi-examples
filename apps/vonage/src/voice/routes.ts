@@ -212,7 +212,7 @@ const CreateCallRequestNccoSchema = z
     z
       .object({
         ncco: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .exactOptional()
           .openapi({
             description:
@@ -811,7 +811,7 @@ const UpdateCallRequestTransferNccoSchema = z
     destination: z
       .object({
         ncco: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .openapi({
             description:
               'Refer to the [NCCO Guide](https://developer.nexmo.com/voice/voice-api/ncco-reference) for a description of possible NCCO parameters.',

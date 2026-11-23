@@ -85,120 +85,6 @@ const AmpInspectionResultSchema = z
   })
   .openapi('AmpInspectionResult')
 
-const ApiDataRowSchema = z
-  .object({
-    clicks: z.float64().exactOptional(),
-    ctr: z.float64().exactOptional(),
-    impressions: z.float64().exactOptional(),
-    keys: z.array(z.string()).exactOptional(),
-    position: z.float64().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiDataRow')
-
-const ApiDimensionFilterSchema = z
-  .object({
-    dimension: z.enum(['QUERY', 'PAGE', 'COUNTRY', 'DEVICE', 'SEARCH_APPEARANCE']).exactOptional(),
-    expression: z.string().exactOptional(),
-    operator: z
-      .enum([
-        'EQUALS',
-        'NOT_EQUALS',
-        'CONTAINS',
-        'NOT_CONTAINS',
-        'INCLUDING_REGEX',
-        'EXCLUDING_REGEX',
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      "A filter test to be applied to each row in the data set, where a match can return the row. Filters are string comparisons, and values and dimension names are not case-sensitive. Individual filters are either AND'ed or OR'ed within their parent filter group, according to the group's group type. You do not need to group by a specified dimension to filter against it.",
-    required: [],
-  })
-  .openapi('ApiDimensionFilter')
-
-const ApiDimensionFilterGroupSchema = z
-  .object({
-    filters: z.array(ApiDimensionFilterSchema).exactOptional(),
-    groupType: z.literal('AND').exactOptional(),
-  })
-  .openapi({
-    description:
-      "A set of dimension value filters to test against each row. Only rows that pass all filter groups will be returned. All results within a filter group are either AND'ed or OR'ed together, depending on the group type selected. All filter groups are AND'ed together.",
-    required: [],
-  })
-  .openapi('ApiDimensionFilterGroup')
-
-const BlockedResourceSchema = z
-  .object({
-    url: z.string().exactOptional().openapi({ description: 'URL of the blocked resource.' }),
-  })
-  .openapi({ description: 'Blocked resource.', required: [] })
-  .openapi('BlockedResource')
-
-const RichResultsIssueSchema = z
-  .object({
-    issueMessage: z.string().exactOptional().openapi({ description: 'Rich Results issue type.' }),
-    severity: z
-      .enum(['SEVERITY_UNSPECIFIED', 'WARNING', 'ERROR'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Severity of this issue: WARNING, or ERROR. Items with an issue of status ERROR cannot appear with rich result features in Google Search results.',
-      }),
-  })
-  .openapi({
-    description:
-      'Severity and status of a single issue affecting a single rich result instance on a page.',
-    required: [],
-  })
-  .openapi('RichResultsIssue')
-
-const ItemSchema = z
-  .object({
-    issues: z
-      .array(RichResultsIssueSchema)
-      .exactOptional()
-      .openapi({
-        description: 'A list of zero or more rich result issues found for this instance.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The user-provided name of this item.' }),
-  })
-  .openapi({ description: 'A specific rich result found on the page.', required: [] })
-  .openapi('Item')
-
-const DetectedItemsSchema = z
-  .object({
-    items: z
-      .array(ItemSchema)
-      .exactOptional()
-      .openapi({ description: 'List of Rich Results items.' }),
-    richResultType: z.string().exactOptional().openapi({ description: 'Rich Results type' }),
-  })
-  .openapi({ description: 'Rich Results items grouped by type.', required: [] })
-  .openapi('DetectedItems')
-
-const ImageSchema = z
-  .object({
-    data: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Image data in format determined by the mime type. Currently, the format will always be "image/png", but this might change in the future.',
-      }),
-    mimeType: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The mime-type of the image data.' }),
-  })
-  .openapi({ description: 'Describe image data.', required: [] })
-  .openapi('Image')
-
 const IndexStatusInspectionResultSchema = z
   .object({
     coverageState: z
@@ -295,33 +181,6 @@ const IndexStatusInspectionResultSchema = z
   })
   .openapi('IndexStatusInspectionResult')
 
-const InspectUrlIndexRequestSchema = z
-  .object({
-    inspectionUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. URL to inspect. Must be under the property specified in "site_url".',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An [IETF BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language code representing the requested language for translated issue messages, e.g. "en-US", "or "de-CH". Default value is "en-US".',
-      }),
-    siteUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The URL of the property as defined in Search Console. **Examples:** `http://www.example.com/` for a URL-prefix property, or `sc-domain:example.com` for a Domain property.',
-      }),
-  })
-  .openapi({ description: 'Index inspection request.', required: [] })
-  .openapi('InspectUrlIndexRequest')
-
 const MobileUsabilityIssueSchema = z
   .object({
     issueType: z
@@ -364,6 +223,51 @@ const MobileUsabilityInspectionResultSchema = z
   .openapi({ description: 'Mobile-usability inspection results.', required: [] })
   .openapi('MobileUsabilityInspectionResult')
 
+const RichResultsIssueSchema = z
+  .object({
+    issueMessage: z.string().exactOptional().openapi({ description: 'Rich Results issue type.' }),
+    severity: z
+      .enum(['SEVERITY_UNSPECIFIED', 'WARNING', 'ERROR'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Severity of this issue: WARNING, or ERROR. Items with an issue of status ERROR cannot appear with rich result features in Google Search results.',
+      }),
+  })
+  .openapi({
+    description:
+      'Severity and status of a single issue affecting a single rich result instance on a page.',
+    required: [],
+  })
+  .openapi('RichResultsIssue')
+
+const ItemSchema = z
+  .object({
+    issues: z
+      .array(RichResultsIssueSchema)
+      .exactOptional()
+      .openapi({
+        description: 'A list of zero or more rich result issues found for this instance.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The user-provided name of this item.' }),
+  })
+  .openapi({ description: 'A specific rich result found on the page.', required: [] })
+  .openapi('Item')
+
+const DetectedItemsSchema = z
+  .object({
+    items: z
+      .array(ItemSchema)
+      .exactOptional()
+      .openapi({ description: 'List of Rich Results items.' }),
+    richResultType: z.string().exactOptional().openapi({ description: 'Rich Results type' }),
+  })
+  .openapi({ description: 'Rich Results items grouped by type.', required: [] })
+  .openapi('DetectedItems')
+
 const RichResultsInspectionResultSchema = z
   .object({
     detectedItems: z
@@ -384,7 +288,15 @@ const RichResultsInspectionResultSchema = z
   })
   .openapi('RichResultsInspectionResult')
 
-const UrlInspectionResultSchema = z
+type UrlInspectionResultType = {
+  ampResult?: z.infer<typeof AmpInspectionResultSchema>
+  indexStatusResult?: z.infer<typeof IndexStatusInspectionResultSchema>
+  inspectionResultLink?: string
+  mobileUsabilityResult?: z.infer<typeof MobileUsabilityInspectionResultSchema>
+  richResultsResult?: z.infer<typeof RichResultsInspectionResultSchema>
+}
+
+const UrlInspectionResultSchema: z.ZodType<UrlInspectionResultType> = z
   .object({
     ampResult: AmpInspectionResultSchema.exactOptional().openapi({
       description: 'Result of the AMP analysis. Absent if the page is not an AMP page.',
@@ -410,7 +322,105 @@ const UrlInspectionResultSchema = z
   })
   .openapi('UrlInspectionResult')
 
-const InspectUrlIndexResponseSchema = z
+type InspectUrlIndexResponseType = { inspectionResult?: z.infer<typeof UrlInspectionResultSchema> }
+
+const ApiDataRowSchema = z
+  .object({
+    clicks: z.float64().exactOptional(),
+    ctr: z.float64().exactOptional(),
+    impressions: z.float64().exactOptional(),
+    keys: z.array(z.string()).exactOptional(),
+    position: z.float64().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiDataRow')
+
+const ApiDimensionFilterSchema = z
+  .object({
+    dimension: z.enum(['QUERY', 'PAGE', 'COUNTRY', 'DEVICE', 'SEARCH_APPEARANCE']).exactOptional(),
+    expression: z.string().exactOptional(),
+    operator: z
+      .enum([
+        'EQUALS',
+        'NOT_EQUALS',
+        'CONTAINS',
+        'NOT_CONTAINS',
+        'INCLUDING_REGEX',
+        'EXCLUDING_REGEX',
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      "A filter test to be applied to each row in the data set, where a match can return the row. Filters are string comparisons, and values and dimension names are not case-sensitive. Individual filters are either AND'ed or OR'ed within their parent filter group, according to the group's group type. You do not need to group by a specified dimension to filter against it.",
+    required: [],
+  })
+  .openapi('ApiDimensionFilter')
+
+const ApiDimensionFilterGroupSchema = z
+  .object({
+    filters: z.array(ApiDimensionFilterSchema).exactOptional(),
+    groupType: z.literal('AND').exactOptional(),
+  })
+  .openapi({
+    description:
+      "A set of dimension value filters to test against each row. Only rows that pass all filter groups will be returned. All results within a filter group are either AND'ed or OR'ed together, depending on the group type selected. All filter groups are AND'ed together.",
+    required: [],
+  })
+  .openapi('ApiDimensionFilterGroup')
+
+const BlockedResourceSchema = z
+  .object({
+    url: z.string().exactOptional().openapi({ description: 'URL of the blocked resource.' }),
+  })
+  .openapi({ description: 'Blocked resource.', required: [] })
+  .openapi('BlockedResource')
+
+const ImageSchema = z
+  .object({
+    data: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Image data in format determined by the mime type. Currently, the format will always be "image/png", but this might change in the future.',
+      }),
+    mimeType: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The mime-type of the image data.' }),
+  })
+  .openapi({ description: 'Describe image data.', required: [] })
+  .openapi('Image')
+
+const InspectUrlIndexRequestSchema = z
+  .object({
+    inspectionUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. URL to inspect. Must be under the property specified in "site_url".',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An [IETF BCP-47](https://en.wikipedia.org/wiki/IETF_language_tag) language code representing the requested language for translated issue messages, e.g. "en-US", "or "de-CH". Default value is "en-US".',
+      }),
+    siteUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The URL of the property as defined in Search Console. **Examples:** `http://www.example.com/` for a URL-prefix property, or `sc-domain:example.com` for a Domain property.',
+      }),
+  })
+  .openapi({ description: 'Index inspection request.', required: [] })
+  .openapi('InspectUrlIndexRequest')
+
+const InspectUrlIndexResponseSchema: z.ZodType<InspectUrlIndexResponseType> = z
   .object({
     inspectionResult: UrlInspectionResultSchema.exactOptional().openapi({
       description: 'URL inspection results.',

@@ -1,5 +1,30 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AutomaticUpdatePolicySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Security patches are applied automatically to the runtime without requiring the function to be redeployed.',
+  })
+  .openapi('AutomaticUpdatePolicy')
+
+const OnDeployUpdatePolicySchema = z
+  .object({
+    runtimeVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. contains the runtime version which was used during latest function deployment.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'Security patches are only applied when a function is redeployed.',
+    required: [],
+  })
+  .openapi('OnDeployUpdatePolicy')
+
 const RepoSourceSchema = z
   .object({
     branchName: z
@@ -72,167 +97,23 @@ const StorageSourceSchema = z
   })
   .openapi('StorageSource')
 
-type SourceType = {
-  gitUri?: string
-  repoSource?: z.infer<typeof RepoSourceSchema>
-  storageSource?: z.infer<typeof StorageSourceSchema>
-}
-
-const AbortFunctionUpgradeRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request for the `AbortFunctionUpgrade` method.' })
-  .openapi('AbortFunctionUpgradeRequest')
-
-const AuditLogConfigSchema = z
+const SourceSchema = z
   .object({
-    exemptedMembers: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
-      }),
-    logType: z
-      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
-      .exactOptional()
-      .openapi({ description: 'The log type that this config enables.' }),
-  })
-  .openapi({
-    description:
-      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
-    required: [],
-  })
-  .openapi('AuditLogConfig')
-
-const AuditConfigSchema = z
-  .object({
-    auditLogConfigs: z
-      .array(AuditLogConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The configuration for logging of each type of permission.' }),
-    service: z
+    gitUri: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+          'If provided, get the source from GitHub repository. This option is valid only for GCF 1st Gen function. Example: https://github.com///blob//',
       }),
-  })
-  .openapi({
-    description:
-      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
-    required: [],
-  })
-  .openapi('AuditConfig')
-
-const AutomaticUpdatePolicySchema = z
-  .object({})
-  .openapi({
-    description:
-      'Security patches are applied automatically to the runtime without requiring the function to be redeployed.',
-  })
-  .openapi('AutomaticUpdatePolicy')
-
-const ExprSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
-      }),
-    expression: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual representation of an expression in Common Expression Language syntax.',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
-      }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
-    required: [],
-  })
-  .openapi('Expr')
-
-const BindingSchema = z
-  .object({
-    condition: ExprSchema.exactOptional().openapi({
-      description:
-        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    repoSource: RepoSourceSchema.exactOptional().openapi({
+      description: 'If provided, get the source from this location in a Cloud Source Repository.',
     }),
-    members: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. * `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. * `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`.',
-      }),
-    role: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. For an overview of the IAM roles and permissions, see the [IAM documentation](https://cloud.google.com/iam/docs/roles-overview). For a list of the available pre-defined roles, see [here](https://cloud.google.com/iam/docs/understanding-roles).',
-      }),
+    storageSource: StorageSourceSchema.exactOptional().openapi({
+      description: 'If provided, get the source from this location in Google Cloud Storage.',
+    }),
   })
-  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
-  .openapi('Binding')
-
-const OnDeployUpdatePolicySchema = z
-  .object({
-    runtimeVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. contains the runtime version which was used during latest function deployment.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'Security patches are only applied when a function is redeployed.',
-    required: [],
-  })
-  .openapi('OnDeployUpdatePolicy')
-
-const SourceSchema: z.ZodType<SourceType> = z
-  .lazy(() =>
-    z
-      .object({
-        gitUri: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'If provided, get the source from GitHub repository. This option is valid only for GCF 1st Gen function. Example: https://github.com///blob//',
-          }),
-        repoSource: RepoSourceSchema.exactOptional().openapi({
-          description:
-            'If provided, get the source from this location in a Cloud Source Repository.',
-        }),
-        storageSource: StorageSourceSchema.exactOptional().openapi({
-          description: 'If provided, get the source from this location in Google Cloud Storage.',
-        }),
-      })
-      .openapi({ description: 'The location of the function source code.', required: [] }),
-  )
+  .openapi({ description: 'The location of the function source code.', required: [] })
   .openapi('Source')
 
 const SourceProvenanceSchema = z
@@ -336,42 +217,6 @@ const BuildConfigSchema = z
     required: [],
   })
   .openapi('BuildConfig')
-
-const CommitFunctionUpgradeRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request for the `CommitFunctionUpgrade` method.' })
-  .openapi('CommitFunctionUpgradeRequest')
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
 
 const EventFilterSchema = z
   .object({
@@ -825,8 +670,159 @@ const FunctionSchema = z
   })
   .openapi('Function')
 
+type ListFunctionsResponseType = {
+  functions?: z.infer<typeof FunctionSchema>[]
+  nextPageToken?: string
+  unreachable?: string[]
+}
+
+const AbortFunctionUpgradeRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request for the `AbortFunctionUpgrade` method.' })
+  .openapi('AbortFunctionUpgradeRequest')
+
+const AuditLogConfigSchema = z
+  .object({
+    exemptedMembers: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the identities that do not cause logging for this type of permission. Follows the same format of Binding.members.',
+      }),
+    logType: z
+      .enum(['LOG_TYPE_UNSPECIFIED', 'ADMIN_READ', 'DATA_WRITE', 'DATA_READ'])
+      .exactOptional()
+      .openapi({ description: 'The log type that this config enables.' }),
+  })
+  .openapi({
+    description:
+      'Provides the configuration for logging a type of permissions. Example: { "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" } ] } This enables \'DATA_READ\' and \'DATA_WRITE\' logging, while exempting jose@example.com from DATA_READ logging.',
+    required: [],
+  })
+  .openapi('AuditLogConfig')
+
+const AuditConfigSchema = z
+  .object({
+    auditLogConfigs: z
+      .array(AuditLogConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'The configuration for logging of each type of permission.' }),
+    service: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies a service that will be enabled for audit logging. For example, `storage.googleapis.com`, `cloudsql.googleapis.com`. `allServices` is a special value that covers all services.',
+      }),
+  })
+  .openapi({
+    description:
+      'Specifies the audit configuration for a service. The configuration determines which permission types are logged, and what identities, if any, are exempted from logging. An AuditConfig must have one or more AuditLogConfigs. If there are AuditConfigs for both `allServices` and a specific service, the union of the two AuditConfigs is used for that service: the log_types specified in each AuditConfig are enabled, and the exempted_members in each AuditLogConfig are exempted. Example Policy with multiple AuditConfigs: { "audit_configs": [ { "service": "allServices", "audit_log_configs": [ { "log_type": "DATA_READ", "exempted_members": [ "user:jose@example.com" ] }, { "log_type": "DATA_WRITE" }, { "log_type": "ADMIN_READ" } ] }, { "service": "sampleservice.googleapis.com", "audit_log_configs": [ { "log_type": "DATA_READ" }, { "log_type": "DATA_WRITE", "exempted_members": [ "user:aliya@example.com" ] } ] } ] } For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ logging. It also exempts `jose@example.com` from DATA_READ logging, and `aliya@example.com` from DATA_WRITE logging.',
+    required: [],
+  })
+  .openapi('AuditConfig')
+
+const ExprSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.',
+      }),
+    expression: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Textual representation of an expression in Common Expression Language syntax.',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. String indicating the location of the expression for error reporting, e.g. a file name and a position in the file.',
+      }),
+    title: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Title for the expression, i.e. a short string describing its purpose. This can be used e.g. in UIs which allow to enter the expression.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a textual expression in the Common Expression Language (CEL) syntax. CEL is a C-like expression language. The syntax and semantics of CEL are documented at https://github.com/google/cel-spec. Example (Comparison): title: "Summary size limit" description: "Determines if a summary is less than 100 chars" expression: "document.summary.size() < 100" Example (Equality): title: "Requestor is owner" description: "Determines if requestor is the document owner" expression: "document.owner == request.auth.claims.email" Example (Logic): title: "Public documents" description: "Determine whether the document should be publicly visible" expression: "document.type != \'private\' && document.type != \'internal\'" Example (Data Manipulation): title: "Notification string" description: "Create a notification string with a timestamp." expression: "\'New message received at \' + string(document.create_time)" The exact variables and functions that may be referenced within an expression are determined by the service that evaluates it. See the service documentation for additional information.',
+    required: [],
+  })
+  .openapi('Expr')
+
+const BindingSchema = z
+  .object({
+    condition: ExprSchema.exactOptional().openapi({
+      description:
+        'The condition that is associated with this binding. If the condition evaluates to `true`, then this binding applies to the current request. If the condition evaluates to `false`, then this binding does not apply to the current request. However, a different role binding might grant the same role to one or more of the principals in this binding. To learn which resources support conditions in their IAM policies, see the [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).',
+    }),
+    members: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies the principals requesting access for a Google Cloud resource. `members` can have the following values: * `allUsers`: A special identifier that represents anyone who is on the internet; with or without a Google account. * `allAuthenticatedUsers`: A special identifier that represents anyone who is authenticated with a Google account or a service account. Does not include identities that come from external identity providers (IdPs) through identity federation. * `user:{emailid}`: An email address that represents a specific Google account. For example, `alice@example.com` . * `serviceAccount:{emailid}`: An email address that represents a Google service account. For example, `my-other-app@appspot.gserviceaccount.com`. * `serviceAccount:{projectid}.svc.id.goog[{namespace}/{kubernetes-sa}]`: An identifier for a [Kubernetes service account](https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts). For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`. * `group:{emailid}`: An email address that represents a Google group. For example, `admins@example.com`. * `domain:{domain}`: The G Suite domain (primary) that represents all the users of that domain. For example, `google.com` or `example.com`. * `principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workforce identity pool. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/group/{group_id}`: All workforce identities in a group. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All workforce identities with a specific attribute value. * `principalSet://iam.googleapis.com/locations/global/workforcePools/{pool_id}/*`: All identities in a workforce identity pool. * `principal://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/subject/{subject_attribute_value}`: A single identity in a workload identity pool. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/group/{group_id}`: A workload identity pool group. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/attribute.{attribute_name}/{attribute_value}`: All identities in a workload identity pool with a certain attribute. * `principalSet://iam.googleapis.com/projects/{project_number}/locations/global/workloadIdentityPools/{pool_id}/*`: All identities in a workload identity pool. * `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a user that has been recently deleted. For example, `alice@example.com?uid=123456789012345678901`. If the user is recovered, this value reverts to `user:{emailid}` and the recovered user retains the role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a service account that has been recently deleted. For example, `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If the service account is undeleted, this value reverts to `serviceAccount:{emailid}` and the undeleted service account retains the role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique identifier) representing a Google group that has been recently deleted. For example, `admins@example.com?uid=123456789012345678901`. If the group is recovered, this value reverts to `group:{emailid}` and the recovered group retains the role in the binding. * `deleted:principal://iam.googleapis.com/locations/global/workforcePools/{pool_id}/subject/{subject_attribute_value}`: Deleted single identity in a workforce identity pool. For example, `deleted:principal://iam.googleapis.com/locations/global/workforcePools/my-pool-id/subject/my-subject-attribute-value`.',
+      }),
+    role: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Role that is assigned to the list of `members`, or principals. For example, `roles/viewer`, `roles/editor`, or `roles/owner`. For an overview of the IAM roles and permissions, see the [IAM documentation](https://cloud.google.com/iam/docs/roles-overview). For a list of the available pre-defined roles, see [here](https://cloud.google.com/iam/docs/understanding-roles).',
+      }),
+  })
+  .openapi({ description: 'Associates `members`, or principals, with a `role`.', required: [] })
+  .openapi('Binding')
+
+const CommitFunctionUpgradeRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request for the `CommitFunctionUpgrade` method.' })
+  .openapi('CommitFunctionUpgradeRequest')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
 const GenerateDownloadUrlRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request of `GenerateDownloadUrl` method.' })
   .openapi('GenerateDownloadUrlRequest')
 
@@ -1261,7 +1257,7 @@ const GoogleCloudFunctionsV2betaOperationMetadataSchema = z
   .openapi({ description: 'Represents the metadata of the long-running operation.', required: [] })
   .openapi('GoogleCloudFunctionsV2betaOperationMetadata')
 
-const ListFunctionsResponseSchema = z
+const ListFunctionsResponseSchema: z.ZodType<ListFunctionsResponseType> = z
   .object({
     functions: z
       .array(FunctionSchema)
@@ -1606,12 +1602,12 @@ const PolicySchema = z
   .openapi('Policy')
 
 const RedirectFunctionUpgradeTrafficRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `RedirectFunctionUpgradeTraffic` method.' })
   .openapi('RedirectFunctionUpgradeTrafficRequest')
 
 const RollbackFunctionUpgradeTrafficRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `RollbackFunctionUpgradeTraffic` method.' })
   .openapi('RollbackFunctionUpgradeTrafficRequest')
 
@@ -1633,7 +1629,7 @@ const SetIamPolicyRequestSchema = z
   .openapi('SetIamPolicyRequest')
 
 const SetupFunctionUpgradeConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the `SetupFunctionUpgradeConfig` method.' })
   .openapi('SetupFunctionUpgradeConfigRequest')
 

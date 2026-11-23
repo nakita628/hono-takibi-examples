@@ -24,12 +24,6 @@ Base URLs:
 |settings.users.teams.read||
 |settings.users.teams.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="settings-teams-basic">Basic</h1>
 
 ## List teams

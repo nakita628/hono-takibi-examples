@@ -1,4 +1,4 @@
-<h1 id="chargebee-api">Chargebee API v2026-10-30.cb3d093ad931f2f4afcb3dcfd76caf9b6db37f79</h1>
+<h1 id="chargebee-api">Chargebee API v2026-11-12.8ccf0f3db732eac5f7c79ffeda97bd8acdf9e0a7</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -1815,6 +1815,9 @@ curl 'https://{site}.chargebee.com/api/v2/business_entities/string' \
 
 `GET /business_entities/{business-entity-id}`
 
+Retrieves the `business_entity` resource identified by the specified unique identifier.
+
+
 <h3 id="retrieve-a-business-entity-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -1916,7 +1919,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing business_entity|
+|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing `business_entity`<br>.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -1939,6 +1942,9 @@ curl 'https://{site}.chargebee.com/api/v2/business_entities/string' \
 
 `POST /business_entities/{business-entity-id}`
 
+Updates the `business_entity` resource identified by the specified unique identifier. You can change the `name` and the `status` of the business entity.
+
+
 > Body parameter
 
 ```yaml
@@ -1959,8 +1965,8 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |business-entity-id|path|string|true|none|
 |body|body|object|false|none|
-|» name|body|string|false|none|
-|» status|body|string|false|none|
+|» name|body|string|false|A human-friendly name for the business entity.<br>|
+|» status|body|string|false|The status to set for the business entity.<br><br>* active - The business entity is active and can be used.<br>* inactive - The business entity is inactive and cannot be used.<br>|
 
 #### Enumerated Values
 
@@ -2062,7 +2068,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing business_entity|
+|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing `business_entity`<br>.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2083,6 +2089,9 @@ curl 'https://{site}.chargebee.com/api/v2/business_entities' \
 
 `GET /business_entities`
 
+Returns a list of `business_entity` resources configured for the site, meeting all the conditions specified in the filter parameters below. By default, this list is sorted by `id` in ascending order.
+
+
 <h3 id="list-business-entities-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -2092,10 +2101,10 @@ curl 'https://{site}.chargebee.com/api/v2/business_entities' \
 |chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
 |chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
-|limit|query|integer(int32)|false|none|
-|offset|query|string|false|none|
-|include_deleted|query|boolean|false|none|
-|name|query|object|false|none|
+|limit|query|integer(int32)|false|The number of resources to be returned.<br>|
+|offset|query|string|false|Determines your position in the list for pagination. To ensure that the next page is retrieved correctly, always set `offset`<br>to the value of `next_offset`<br>obtained in the previous iteration of the API call.<br>|
+|include_deleted|query|boolean|false|If set to `true`, the list of business entities returned includes those that have been deleted.<br>|
+|name|query|object|false|optional, string filter<br><br>Filter business entities based on their `name`.<br>**Supported operators :**<br>is, is_not, starts_with, in, not_in, is_present<br><br>**Example →**<br>*name\[is\] = "Acme Inc"*<br>|
 
 > Example responses
 
@@ -2189,14 +2198,14 @@ Status Code **200**
 |---|---|---|---|---|
 |list|[object]|true|none|none|
 |» business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing business_entity|
-|next_offset|string|false|none|This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.|
+|next_offset|string|false|none|This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 BasicAuth
 </aside>
 
-## Create a business_entity
+## Create a business entity
 
 <a id="opIdcreate_a_business_entity"></a>
 
@@ -2212,13 +2221,18 @@ curl 'https://{site}.chargebee.com/api/v2/business_entities' \
 
 `POST /business_entities`
 
+Creates a `business_entity` resource for the site. Use this endpoint to set up an additional business unit or brand under your organization, each with its own configuration and data.  
+**Note**
+This endpoint is available only when [multiple business entities](https://www.chargebee.com/docs/2.0/mbe.html) are enabled for your site.
+
+
 > Body parameter
 
 ```yaml
 null
 ```
 
-<h3 id="create-a-businessentity-parameters">Parameters</h3>
+<h3 id="create-a-business-entity-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2231,8 +2245,8 @@ null
 |chargebee-event-webhook|header|string|false| skip only webhooks|
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |body|body|object|false|none|
-|» name|body|string|true|none|
-|» status|body|string|true|none|
+|» name|body|string|true|A human-friendly name for the business entity.<br>|
+|» status|body|string|true|The status to set for the business entity.<br><br>* active - The business entity is active and can be used.<br>* inactive - The business entity is inactive and cannot be used.<br>|
 
 #### Enumerated Values
 
@@ -2312,7 +2326,7 @@ null
 null
 ```
 
-<h3 id="create-a-businessentity-responses">Responses</h3>
+<h3 id="create-a-business-entity-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2328,13 +2342,13 @@ null
 |500|Internal Server Error|on error|[500](#schema500)|
 |503|Service Unavailable|on error|[503](#schema503)|
 
-<h3 id="create-a-businessentity-responseschema">Response Schema</h3>
+<h3 id="create-a-business-entity-responseschema">Response Schema</h3>
 
 Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing business_entity|
+|business_entity|[BusinessEntity](#schemabusinessentity)|true|none|Resource object representing `business_entity`<br>.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6031,7 +6045,7 @@ BasicAuth
 
 <h1 id="chargebee-api-collectionspaymentpromises">collections_payment_promises</h1>
 
-Tracks a customer's commitment to pay a promised amount.
+A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date.
 
 ## List collections payment promises
 
@@ -6047,7 +6061,7 @@ curl 'https://{site}.chargebee.com/api/v2/collections_payment_promises' \
 
 `GET /collections_payment_promises`
 
-Lists collections payment promises for your site. Use filter parameters to narrow results by customer, invoice, or status.
+Lists collections payment promises. All filters are optional; without filters, promises are returned newest first.
 
 
 <h3 id="list-collections-payment-promises-parameters">Parameters</h3>
@@ -6061,8 +6075,8 @@ Lists collections payment promises for your site. Use filter parameters to narro
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |limit|query|integer(int32)|false|The number of resources to be returned.<br>|
 |offset|query|string|false|Determines your position in the list for pagination. To ensure that the next page is retrieved correctly, always set `offset`<br>to the value of `next_offset`<br>obtained in the previous iteration of the API call.<br>|
-|customer_id|query|object|false|optional, string filter<br><br>Filters promises by customer identifier.<br>**Supported operators :**<br>is<br><br>**Example →**<br>*customer_id\[is\] = "cbdemo_alicia"*<br>|
-|invoice_id|query|object|false|optional, string filter<br><br>Filters promises by invoice identifier.<br>**Supported operators :**<br>is<br><br>**Example →**<br>*invoice_id\[is\] = "__demo_inv__4"*<br>|
+|customer_id|query|object|false|optional, string filter<br><br>Filters promises by customer identifier.<br>**Supported operators :**<br>is<br><br>**Example →**<br>*customer_id\[is\] = "Azq8CVnhdtD7C1xD"*<br>|
+|invoice_id|query|object|false|optional, string filter<br><br>Filters promises by invoice identifier.<br>**Supported operators :**<br>is<br><br>**Example →**<br>*invoice_id\[is\] = "inv_123"*<br>|
 |status|query|object|false|optional, enumerated string filter<br><br>Filters promises by status. Possible values are : active, fulfilled, broken, cancelled.<br><br>**Supported operators :**<br>is<br><br>**Example →**<br>*status\[is\] = "active"*<br>|
 
 > Example responses
@@ -6180,7 +6194,11 @@ curl 'https://{site}.chargebee.com/api/v2/collections_payment_promises' \
 
 `POST /collections_payment_promises`
 
-Creates a collections payment promise for a customer, with the promised amount and the date payment was promised. Include `invoice_id` when the promise applies to a specific invoice.
+Creates a collections payment promise that records a customer's commitment to pay by `promised_on`. The response is a list with one promise for each covered invoice.
+
+To cover one invoice, pass `invoice_id` and an `amount` equal to that invoice's amount due. That invoice must not already have an active promise. Without `invoice_id`, open invoices are covered oldest due date first, and invoices that already have an active promise are skipped. `amount` must equal the combined amount due of the invoices covered in that order. Any other amount is rejected. If open invoices span more than one currency, pass `currency_code`.
+
+Each covered invoice's active reminder sequence is paused until you resume it. It does not resume when the promise ends. Without `invoice_id`, the request is rejected when the customer has more than 200 open invoices or active promises.
 
 
 > Body parameter
@@ -6202,13 +6220,13 @@ null
 |chargebee-event-webhook|header|string|false| skip only webhooks|
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |body|body|object|false|none|
-|» customer_id|body|string|true|Identifier of the customer for whom the payment promise is being created. This field is required.<br>|
-|» invoice_id|body|string|false|Identifier of the invoice associated with this promise. This field is optional.<br>|
-|» amount|body|integer(int64)|true|Amount promised by the customer, in the smallest currency unit (for example, cents for USD). This field is required.<br>|
-|» currency_code|body|string|false|Currency code for `amount` in ISO 4217 format. If omitted, the site's base currency is used.<br>|
+|» customer_id|body|string|true|Customer making the promise. This field is required.<br>|
+|» invoice_id|body|string|false|Invoice to cover. Leave out to cover the customer's open invoices, oldest due date first.<br>|
+|» amount|body|integer(int64)|true|Amount the customer promises to pay, in the currency's smallest unit (for example, cents).<br>With `invoice_id`, it must equal that invoice's amount due. Without `invoice_id`, it must equal the combined amount due of whole open invoices, taken oldest due date first. Any other amount is rejected.<br>|
+|» currency_code|body|string|false|ISO 4217 currency code. Without `invoice_id`, only open invoices in this currency are covered, and `currency_code` is required when the customer's open invoices are in more than one currency.<br>Ignored when `invoice_id` is passed.<br>|
 |» promised_on|body|integer(unix-time)|true|Timestamp in UTC seconds for the date on which the customer promised payment. This field is required.<br>|
 |» reason|body|string|false|Optional context about why or how this promise was recorded.<br>|
-|» promised_by|body|string|false|Name or identifier of the person who captured this promise.<br>|
+|» promised_by|body|string|false|Name or identifier of the user or agent who captured this promise.<br>|
 
 #### Enumerated Values
 
@@ -6308,7 +6326,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|collections_payment_promises|[[CollectionsPaymentPromise](#schemacollectionspaymentpromise)]|true|none|none|
+|collections_payment_promises|[[CollectionsPaymentPromise](#schemacollectionspaymentpromise)]|true|none|One `collections_payment_promise` resource for each covered invoice.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6330,7 +6348,9 @@ curl 'https://{site}.chargebee.com/api/v2/collections_payment_promises/string/ca
 
 `POST /collections_payment_promises/{collections-payment-promise-id}/cancel`
 
-Cancels an active collections payment promise that is no longer expected to be fulfilled.
+Cancels an active collections payment promise. Cancelling does not resume the invoice's reminder sequence.
+
+A promise can also end automatically. When the invoice is paid, the promise becomes `fulfilled` or `broken`. When the invoice is voided, written off, or deleted, the promise becomes `cancelled`.
 
 
 <h3 id="cancel-a-collections-payment-promise-parameters">Parameters</h3>
@@ -6466,7 +6486,7 @@ curl 'https://{site}.chargebee.com/api/v2/collections_payment_promises/string' \
 
 `GET /collections_payment_promises/{collections-payment-promise-id}`
 
-Returns a collections payment promise by its ID, including the promised amount, promise date, and current status.
+Retrieves a collections payment promise by ID.
 
 
 <h3 id="retrieve-a-payment-promise-parameters">Parameters</h3>
@@ -6593,7 +6613,7 @@ curl 'https://{site}.chargebee.com/api/v2/collections_payment_promises/string' \
 
 `POST /collections_payment_promises/{collections-payment-promise-id}`
 
-Updates an existing collections payment promise. Use this to revise promise details such as `promised_by`, `promised_on`, or `reason`.
+Updates an active collections payment promise. You can change `promised_on`, `reason`, or `promised_by`; omitted parameters remain unchanged.
 
 
 > Body parameter
@@ -6616,9 +6636,9 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |collections-payment-promise-id|path|string|true|none|
 |body|body|object|false|none|
-|» promised_on|body|integer(unix-time)|false|Updated promised payment date as a UTC timestamp in seconds.<br>|
-|» reason|body|string|false|Optional note describing the reason for this update.<br>|
-|» promised_by|body|string|false|Name or identifier of the user or agent updating this payment promise.<br>|
+|» promised_on|body|integer(unix-time)|false|Updated promised payment date as a UTC timestamp in seconds. Must be in the future.<br>|
+|» reason|body|string|false|Optional note describing the context or reason for capturing this promise. Replaces the stored value. If you leave out `reason`, the stored value is unchanged.<br>|
+|» promised_by|body|string|false|Name or identifier of the user or agent who captured this promise. Replaces the stored value.<br>|
 
 #### Enumerated Values
 
@@ -7023,7 +7043,7 @@ If you want to retrieve the list of comments for an [entity](/docs/api/v2/pcv-1/
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |limit|query|integer(int32)|false|The number of resources to be returned.<br>|
 |offset|query|string|false|Determines your position in the list for pagination. To ensure that the next page is retrieved correctly, always set `offset`<br>to the value of `next_offset`<br>obtained in the previous iteration of the API call.<br>|
-|entity_type|query|string|false|Type of the entity this comment generated for.<br><br>* item - Entity that represents item<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* invoice - Invoice description<br>* business_entity - Entity that represents item of type business entity<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>* quote - Entity that represents a quote<br>|
+|entity_type|query|string|false|Type of the entity this comment generated for.<br><br>* item - Entity that represents item<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* invoice - Invoice description<br>* business_entity - Entity that represents item of type business entity<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* task - Entity that represents a task<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>* quote - Entity that represents a quote<br>|
 |entity_id|query|string|false|Unique identifier of the entity.<br>|
 |created_at|query|object|false|optional, timestamp(UTC) in seconds filter<br><br>The time at which this comment was created.<br>**Supported operators :**<br>after, before, on, between<br><br>**Example →**<br>*created_at\[on\] = "1456332678"*<br>|
 |sort_by|query|object|false|optional, string filter<br><br>Sorts based on the specified attribute.<br>**Supported attributes :**<br>created_at<br><br>**Supported sort-orders :**<br>asc, desc<br><br>**Example →**<br>*sort_by\[asc\] = "created_at"*<br><br>This will sort the result based on the 'created_at' attribute in ascending(earliest first) order.<br>|
@@ -7186,7 +7206,7 @@ null
 |chargebee-event-webhook|header|string|false| skip only webhooks|
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |body|body|object|false|none|
-|» entity_type|body|string|true|Type of the entity to create the comment for.<br><br>* item - Entity that represents item<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* invoice - Invoice description<br>* business_entity - Entity that represents item of type business entity<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>* quote - Entity that represents a quote<br>|
+|» entity_type|body|string|true|Type of the entity to create the comment for.<br><br>* item - Entity that represents item<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* invoice - Invoice description<br>* business_entity - Entity that represents item of type business entity<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* task - Entity that represents a task<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>* quote - Entity that represents a quote<br>|
 |» entity_id|body|string|true|Unique identifier of the entity.<br>|
 |» notes|body|string|true|Actual notes for the comment.<br>|
 |» added_by|body|string|false|The user who created the comment. If created via API, this contains the name given for the API key used.<br>|
@@ -10014,12 +10034,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 
 > Example responses
 
@@ -10142,7 +10156,14 @@ Use this operation during data migration or reconciliation to ensure historical 
 ### Impacts
 
 **Credit Note**  
-The credit note's [`billing_address`](/docs/api/credit_notes/credit-note-object#credit_note_billing_address), [`shipping_address`](/docs/api/credit_notes/credit-note-object#credit_note_shipping_address), and [`vat_number`](/docs/api/credit_notes/credit-note-object#credit_note_vat_number) are copied from the reference invoice.  
+The credit note's [`billing_address`](/docs/api/credit_notes/credit-note-object#credit_note_billing_address), [`shipping_address`](/docs/api/credit_notes/credit-note-object#credit_note_shipping_address), and [`vat_number`](/docs/api/credit_notes/credit-note-object#credit_note_vat_number) are copied from the reference invoice.
+
+`line_items[tax_exempt_reason]` is not accepted. Chargebee copies the tax-exempt reason from the reference invoice.
+
+* When every invoice line has the same tax-exempt reason, that reason applies to the credit note.
+* When `line_items[reference_line_item_id][]` is sent on every credit note line, Chargebee copies each line's reason from that invoice line. If any tax on the invoice line has no exempt reason, the credit note line is not treated as exempt.
+* For `zero_rated`, [`line_items.is_taxed`](/docs/api/credit_notes/credit-note-object#line_items_is_taxed) matches the invoice line when `line_items[reference_line_item_id][]` is sent. A line imported with [`line_items[tax_exempt_reason]`](/docs/api/invoices/import-invoice) of `zero_rated` has `is_taxed` set to `true`. The credit note line that references it does too, including when every invoice line is `zero_rated`. If that reference is omitted, the credit note line is stored with `is_taxed` set to `false`. An invoice imported with `tax_override_reason` of `zero_rated` has `is_taxed` set to `false`, and the credit note line does too.
+* When a copied reason is `reverse_charge`, Chargebee copies `vat_number` from the reference invoice onto the credit note.  
 **Invoices**  
 
 ##### Reference invoice
@@ -10156,7 +10177,13 @@ The credit note's [`billing_address`](/docs/api/credit_notes/credit-note-object#
   * the invoice `status` changes to `paid` if the `amount_due` becomes zero
 * an [applied credit](/docs/api/invoices/invoice-object#applied_credits) record is created to track the allocation.  
 **Transactions**  
-If `linked_refunds[]` are provided, then for each refund provided, a [`transaction`](/docs/api/transactions/transaction-object) of `type` `refund` is created with `status` set to `success`.
+If `linked_refunds[]` are provided, then for each refund provided, a [`transaction`](/docs/api/transactions/transaction-object) of `type` `refund` is created with `status` set to `success`.  
+
+### Implementation Notes
+
+* Pass `line_items[reference_line_item_id][]` on every credit note line to keep each invoice line's tax-exempt reason. By default, import fails when the invoice lines have different reasons and any credit note line omits that reference. When `app.tax.allow_multiple_tax_override_reason_on_cn_import` is enabled, that import is allowed and every credit note line uses the first invoice line's tax-exempt reason.
+* For `zero_rated`, pass `line_items[reference_line_item_id][]` so `line_items.is_taxed` matches the invoice line. Omitting that reference stores `is_taxed` as `false`.
+* This operation does not accept `line_items[tax_exempt_reason]` or `vat_number`. The reference invoice must already have `vat_number` when a copied reason is `reverse_charge`.
 
 
 > Body parameter
@@ -10312,12 +10339,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 
 > Example responses
 
@@ -10455,7 +10476,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |credit-note-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -10926,7 +10947,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |credit-note-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -14649,12 +14670,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 |» » validation_status|not_validated|
 |» » validation_status|valid|
 |» » validation_status|partially_valid|
@@ -14904,6 +14919,7 @@ null
 |» » included_in_mrr|body|[boolean]|false|The discount is included in MRR calculations for your site. This attribute is only applicable when `duration_type`<br>is `one_time`<br>and when the [feature is enabled](https://www.chargebee.com/docs/reporting.html#dashboards_flexible-mrr-calculation)<br>in Chargebee. Also, If the [site-level setting](https://www.chargebee.com/docs/reporting.html#chart_flexible-mrr-calculation)<br>is to exclude one-time discounts from MRR calculations, this value is always returned `false`.<br>|
 |» » item_price_id|body|[string]|false|The [id of the item price](/docs/api/subscriptions/subscription-object#subscription_items_item_price_id)<br>in the subscription to which the discount is to be applied. Relevant only when `apply_on`<br>= `specific_item_price`.<br>|
 |» » quantity|body|[integer(int32)]|false|Specifies the number of free units provided for the item, without affecting the total quantity sold<br>|
+|» » description|body|[string]|false|none|
 |» item_tiers|body|object|false|Parameters for item_tiers<br>|
 |» » item_price_id|body|[string]|false|The id of the item price for which the tier price is being overridden.<br>|
 |» » starting_unit|body|[integer(int32)]|false|The lowest value in the quantity tier.<br>|
@@ -17228,12 +17244,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 
 > Example responses
 
@@ -20791,6 +20801,7 @@ null
 |» » included_in_mrr|body|[boolean]|false|The discount is included in MRR calculations for your site. This attribute is only applicable when `duration_type`<br>is `one_time`<br>and when the [feature is enabled](https://www.chargebee.com/docs/reporting.html#dashboards_flexible-mrr-calculation)<br>in Chargebee. Also, If the [site-level setting](https://www.chargebee.com/docs/reporting.html#chart_flexible-mrr-calculation)<br>is to exclude one-time discounts from MRR calculations, this value is always returned `false`.<br>|
 |» » item_price_id|body|[string]|false|The [id of the item price](/docs/api/subscriptions/subscription-object#subscription_items_item_price_id)<br>in the subscription to which the discount is to be applied. Relevant only when `apply_on`<br>= `specific_item_price`.<br>|
 |» » quantity|body|[integer(int32)]|false|Specifies the number of free units provided for the item, without affecting the total quantity sold<br>|
+|» » description|body|[string]|false|none|
 |» item_tiers|body|object|false|Parameters for item_tiers<br>|
 |» » item_price_id|body|[string]|false|The id of the item price for which the tier price is being overridden.<br>|
 |» » starting_unit|body|[integer(int32)]|false|The lowest value in the quantity tier.<br>|
@@ -23326,6 +23337,7 @@ null
 |» » included_in_mrr|body|[boolean]|false|The discount is included in MRR calculations for your site. This attribute is only applicable when `duration_type`<br>is `one_time`<br>and when the [feature is enabled](https://www.chargebee.com/docs/reporting.html#dashboards_flexible-mrr-calculation)<br>in Chargebee. Also, If the [site-level setting](https://www.chargebee.com/docs/reporting.html#chart_flexible-mrr-calculation)<br>is to exclude one-time discounts from MRR calculations, this value is always returned `false`.<br>|
 |» » item_price_id|body|[string]|false|The [id of the item price](/docs/api/subscriptions/subscription-object#subscription_items_item_price_id)<br>in the subscription to which the discount is to be applied. Relevant only when `apply_on`<br>= `specific_item_price`.<br>|
 |» » quantity|body|[integer(int32)]|false|Specifies the number of free units provided for the item, without affecting the total quantity sold<br>|
+|» » description|body|[string]|false|none|
 |» item_tiers|body|object|false|Parameters for item_tiers<br>|
 |» » item_price_id|body|[string]|false|The id of the item price for which the tier price is being overridden.<br>|
 |» » starting_unit|body|[integer(int32)]|false|The lowest value in the quantity tier.<br>|
@@ -24327,6 +24339,7 @@ null
 |» » quantity|body|[integer(int32)]|false|Specifies the number of free units provided for the item, without affecting the total quantity sold<br>|
 |» » operation_type|body|[string]|true|none|
 |» » id|body|[string]|false|An immutable unique id for the discount. It is always auto-generated.<br>|
+|» » description|body|[string]|false|none|
 |» item_tiers|body|object|false|Parameters for item_tiers<br>|
 |» » item_price_id|body|[string]|false|The id of the item price for which the tier price is being overridden.<br>|
 |» » starting_unit|body|[integer(int32)]|false|The lowest value in the quantity tier.<br>|
@@ -26205,11 +26218,11 @@ null
 |» export_type|body|string|false|Determines the format of the data. Returns the export type based on the selected value.<br><br>* data - Provides the full set of data for the subscription ramps in multiple `.csv` files.<br>* import_friendly_data - Provides a `.csv` file whose columns match the [`ramp`](/docs/api/ramps/ramp-object) schema. This file format can be readily imported through the UI by using [Bulk Operations](https://www.chargebee.com/docs/bulk-operations.html).<br>|
 |» ramp|body|object|false|Parameters for ramp<br>|
 |» » status|body|object|false|The execution status of the ramp. Use this filter to export ramps in a specific status, such as `scheduled`<br>, `succeeded`<br>, `failed`<br>, or `draft`.<br>|
-|» » » in|body|string|false|* `scheduled` - Status of the subscription schedule on creation. <br>* `succeeded` - The execution status of the schedule if success. <br>* `failed` - The execution status of the schedule if failed. <br>* `draft` - Status of the subscription schedule considering as draft|
 |» » » is|body|string|false|* `scheduled` - Status of the subscription schedule on creation. <br>* `succeeded` - The execution status of the schedule if success. <br>* `failed` - The execution status of the schedule if failed. <br>* `draft` - Status of the subscription schedule considering as draft|
+|» » » in|body|string|false|* `scheduled` - Status of the subscription schedule on creation. <br>* `succeeded` - The execution status of the schedule if success. <br>* `failed` - The execution status of the schedule if failed. <br>* `draft` - Status of the subscription schedule considering as draft|
 |» » subscription_id|body|object|false|The ID of the subscription for which the ramp was created. Use this filter to export ramps that belong to specific subscriptions.<br>|
-|» » » in|body|string|false|none|
 |» » » is|body|string|false|none|
+|» » » in|body|string|false|none|
 |» » effective_from|body|object|false|To filter based on `effective_from`<br>, the time when the changes defined in the ramp are applied to the subscription by executing the ramp.<br>|
 |» » » after|body|string(unix-time)|false|none|
 |» » » before|body|string(unix-time)|false|none|
@@ -26230,14 +26243,14 @@ null
 |chargebee-event-webhook|all-disabled|
 |» export_type|data|
 |» export_type|import_friendly_data|
-|» » » in|scheduled|
-|» » » in|succeeded|
-|» » » in|failed|
-|» » » in|draft|
 |» » » is|scheduled|
 |» » » is|succeeded|
 |» » » is|failed|
 |» » » is|draft|
+|» » » in|scheduled|
+|» » » in|succeeded|
+|» » » in|failed|
+|» » » in|draft|
 
 > Example responses
 
@@ -29429,8 +29442,8 @@ null
 |» » in|body|string|false|none|
 |» » not_in|body|string|false|none|
 |» applicable_item_price_ids|body|object|false|optional, string filter<br><br>List of itemPrice ids for which these coupons are applicable.<br><br>**Supported operators :**<br>in, is<br><br>**Example →**<br>*applicable_item_price_ids\[in\] = "day-pass-USD"*<br>|
-|» » in|body|string|false|none|
 |» » is|body|string|false|none|
+|» » in|body|string|false|none|
 |» coupon|body|object|false|Parameters for coupon<br>|
 |» » id|body|object|false|Used to uniquely identify the coupon in your website/application and to integrate with Chargebee.  <br>**Note:**<br><br>When the coupon ID contains a special character; for example: `#`, the API returns an error. Make sure that you [encode](https://www.urlencoder.org/) the coupon ID in the path parameter before making an API call.<br>|
 |» » » is|body|string|false|none|
@@ -32318,6 +32331,541 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
+<h1 id="chargebee-api-gatewayrequestlogs">gateway_request_logs</h1>
+
+Operations on the `gateway_request_logs` resource.
+
+## Retrieve a gateway request log
+
+<a id="opIdretrieve_a_gateway_request_log"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/gateway_request_logs/string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /gateway_request_logs/{gateway-request-log-log-id}`
+
+<h3 id="retrieve-a-gateway-request-log-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|gateway-request-log-log-id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="retrieve-a-gateway-request-log-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="retrieve-a-gateway-request-log-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gateway_request_log|[GatewayRequestLog](#schemagatewayrequestlog)|true|none|Resource object representing gateway_request_log|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## List gateway request logs
+
+<a id="opIdlist_gateway_request_logs"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/gateway_request_logs' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /gateway_request_logs`
+
+<h3 id="list-gateway-request-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|limit|query|integer(int32)|false|none|
+|offset|query|string|false|none|
+|log_id|query|object|false|none|
+|gateway|query|object|false|none|
+|status_code|query|object|false|none|
+|method|query|object|false|none|
+|url|query|object|false|none|
+|customer_handle|query|object|false|none|
+|invoice_handle|query|object|false|none|
+|transaction_handle|query|object|false|none|
+|payment_method_handle|query|object|false|none|
+|gateway_credential_handle|query|object|false|none|
+|payment_attempt_handle|query|object|false|none|
+|payment_intent_handle|query|object|false|none|
+|operation_name|query|object|false|none|
+|operation_type|query|object|false|none|
+|source|query|object|false|none|
+|invocation_time|query|object|false|none|
+|response_received_at|query|object|false|none|
+|sort_by|query|object|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="list-gateway-request-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="list-gateway-request-logs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|list|[object]|true|none|none|
+|» gateway_request_log|[GatewayRequestLog](#schemagatewayrequestlog)|true|none|Resource object representing gateway_request_log|
+|next_offset|string|false|none|This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+<h1 id="chargebee-api-gatewaywebhooklogs">gateway_webhook_logs</h1>
+
+Operations on the `gateway_webhook_logs` resource.
+
+## Retrieve a gateway webhook log
+
+<a id="opIdretrieve_a_gateway_webhook_log"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/gateway_webhook_logs/string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /gateway_webhook_logs/{gateway-webhook-log-webhook-id}`
+
+<h3 id="retrieve-a-gateway-webhook-log-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|gateway-webhook-log-webhook-id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="retrieve-a-gateway-webhook-log-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="retrieve-a-gateway-webhook-log-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|gateway_webhook_log|[GatewayWebhookLog](#schemagatewaywebhooklog)|true|none|Resource object representing gateway_webhook_log|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## List gateway webhook logs
+
+<a id="opIdlist_gateway_webhook_logs"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/gateway_webhook_logs' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /gateway_webhook_logs`
+
+<h3 id="list-gateway-webhook-logs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|limit|query|integer(int32)|false|none|
+|offset|query|string|false|none|
+|webhook_id|query|object|false|none|
+|gateway|query|object|false|none|
+|status_code|query|object|false|none|
+|method|query|object|false|none|
+|url|query|object|false|none|
+|id_at_gateway|query|object|false|none|
+|customer_handle|query|object|false|none|
+|invoice_handle|query|object|false|none|
+|transaction_handle|query|object|false|none|
+|payment_method_handle|query|object|false|none|
+|gateway_credential_handle|query|object|false|none|
+|payment_attempt_handle|query|object|false|none|
+|payment_intent_handle|query|object|false|none|
+|received_at|query|object|false|none|
+|sort_by|query|object|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="list-gateway-webhook-logs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="list-gateway-webhook-logs-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|list|[object]|true|none|none|
+|» gateway_webhook_log|[GatewayWebhookLog](#schemagatewaywebhooklog)|true|none|Resource object representing gateway_webhook_log|
+|next_offset|string|false|none|This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
 <h1 id="chargebee-api-gifts">gifts</h1>
 
 Gift represents a subscription of a customer(**recipient** ) to a 'gift plan' which has been gifted by another customer(**gifter**).
@@ -34075,6 +34623,7 @@ null
 |» brand_id|body|string|false|The unique ID of the [brand](/docs/api/brands) this hosted page should be linked to. Applicable only when multiple brands have been created for the site. Resources created through the hosted page, such as the customer and the subscription, are linked to the same brand. An alternative way of passing this parameter is by means of the `chargebee-brand-id` custom HTTP header; when both are provided, they must specify the same brand.  <br>**Default behavior**<br><br>* When not provided, the brand of the customer or subscription referenced in the request is used, or the default brand defined for the site when the request references neither.<br>|
 |» redirect_url|body|string|false|The customers will be redirected to this URL upon successful checkout. The hosted page id and state will be passed as parameters to this URL.<br><br>**Note** :<br><br>* Although the customer will be redirected to the `redirect_url` after successful checkout, we do not recommend relying on it for completing critical post-checkout actions. This is because redirection may not happen due to unforeseen reasons such as user closing the tab, or exiting the browser, and so on. If there is any synchronization that you are doing after the redirection, you will have to have a backup. Chargebee recommends listening to appropriate webhooks such as [`subscription_created`](/docs/api/events) or [`invoice_generated`](/docs/api/events) to verify a successful checkout.<br>* Redirect URL configured in Settings \> Hosted Pages Settings would be overriden by this redirect URL.<br>* *Eg :* *http://yoursite.com?id=\*\*\&state=succeeded*<br>* This parameter is not applicable for iframe messaging.<br>|
 |» coupon_ids|body|[string]|false|List of coupons to be applied to this subscription. You can provide coupon ids or [coupon codes](/docs/api/coupon_codes)<br>.<br>|
+|» show_billing_frequency_selector|body|boolean|false|none|
 |» gifter|body|object|false|Parameters for gifter<br>|
 |» » customer_id|body|string|false|The customer ID of the gifter. If not provided, the gifter customer resource is created with an autogenerated ID on checkout.  <br>**See also**<br>[Gifter customer resource lookup and creation](/docs/api/hosted_pages)<br>|
 |» » locale|body|string|false|Determines which region-specific language Chargebee uses to communicate with the customer. In the absence of the locale attribute, Chargebee will use your site's default language for customer communication.<br>|
@@ -34092,6 +34641,9 @@ null
 |» » starting_unit_in_decimal|body|[string]|false|The decimal representation of the lowest value of quantity in this tier.  <br>**Constraints**<br><br>* Must be zero for the lowest tier.<br>* For all other tiers, it must be equal to the `ending_unit_in_decimal` of the next lower tier.  <br>**Prerequisite**<br><br>* [Multi-decimal](https://www.chargebee.com/docs/billing/2.0/site-configuration/multi-decimal-support#configuring-multi-decimal-support) pricing is enabled.<br>|
 |» » ending_unit_in_decimal|body|[string]|false|The decimal representation of the highest value of quantity in this tier.  <br>**Constraints**<br><br>* Not applicable for the highest tier.<br>* Must be equal to the `starting_unit_in_decimal` of the next higher tier.  <br>**Prerequisite**<br><br>* [Multi-decimal](https://www.chargebee.com/docs/billing/2.0/site-configuration/multi-decimal-support#configuring-multi-decimal-support) pricing is enabled.<br>|
 |» » price_in_decimal|body|[string]|false|* The decimal representation of the per-unit price for the tier when the [item_price.pricing_model](/docs/api/item_prices/item_price-object#pricing_model) is `tiered` or `volume`.<br>* The decimal representation of the total price for the item when the [item_price.pricing_model](/docs/api/item_prices/item_price-object#pricing_model) is `stairstep`.<br><br>**Constraints**<br><br>* The value must be in major units of the [currency](/docs/api/currencies).  <br>**Prerequisite**<br><br>* [Multi-decimal](https://www.chargebee.com/docs/billing/2.0/site-configuration/multi-decimal-support#configuring-multi-decimal-support) pricing is enabled.<br>|
+|» allowed_billing_frequencies|body|object|false|none|
+|» » period|body|[integer(int32)]|false|none|
+|» » period_unit|body|[string]|false|none|
 
 #### Enumerated Values
 
@@ -34102,6 +34654,10 @@ null
 |chargebee-event-webhook|all-disabled|
 |» layout|in_app|
 |» layout|full_page|
+|» » period_unit|day|
+|» » period_unit|week|
+|» » period_unit|month|
+|» » period_unit|year|
 
 > Example responses
 
@@ -34879,6 +35435,7 @@ null
 |» redirect_url|body|string|false|The customers will be redirected to this URL upon successful checkout. The hosted page id and state will be passed as parameters to this URL.<br><br>**Note** :<br><br>* Although the customer will be redirected to the `redirect_url` after successful checkout, we do not recommend relying on it for completing critical post-checkout actions. This is because redirection may not happen due to unforeseen reasons such as user closing the tab, or exiting the browser, and so on. If there is any synchronization that you are doing after the redirection, you will have to have a backup. Chargebee recommends listening to appropriate webhooks such as [`subscription_created`](/docs/api/events) or [`invoice_generated`](/docs/api/events) to verify a successful checkout.<br>* Redirect URL configured in Settings \> Hosted Pages Settings would be overriden by this redirect URL.<br>* *Eg :* *http://yoursite.com?id=\*\*\&state=succeeded*<br>* This parameter is not applicable for iframe messaging.<br>|
 |» cancel_url|body|string|false|The customers will be redirected to this URL upon canceling checkout. The hosted page id and state will be passed as parameters to this URL.<br><br>**Note**<br>: - Cancel URL configured in Settings \> Hosted Pages Settings would be overriden by this cancel URL.<br><br>*Eg : http://yoursite.com?id=\&state=cancelled*<br><br>* This parameter is not applicable for iframe messaging and [in-app](https://www.chargebee.com/docs/2.0/checkout.html) checkout.<br>|
 |» pass_thru_content|body|string|false|This attribute allows you to store custom information with the `hosted_page` object. You can use it to associate specific data with a hosted page session.<br>For example, you can store the ID of the marketing campaign that initiated the user session. After a successful checkout, when the customer is redirected, you can retrieve the hosted page ID from the [redirect URL](/docs/api/hosted_pages/create-checkout-for-a-new-subscription#redirect_url)'s query parameters. Using this ID, you can fetch the hosted page and perform actions related to the success of the marketing campaign.<br>|
+|» show_billing_frequency_selector|body|boolean|false|none|
 |» allow_offline_payment_methods|body|boolean|false|Allow the customer to select an offline payment method during checkout. The choice of payment methods can be configured via the Chargebee UI.<br>|
 |» subscription|body|object|false|Parameters for subscription<br>|
 |» » id|body|string|false|A unique and immutable identifier for a new subscription. If not provided, it is autogenerated.<br>|
@@ -34978,6 +35535,9 @@ null
 |» » value|body|[string]|false|The value of the `entity_identifier`.<br>This identifies the customer entity on the Peppol network. For example: `10101010-STO-10`<br>.  <br>**Tip:**<br><br>If there is only one entity identifier for the customer and the value is the same as `vat_number`, then there is no need to provide the `entity_identifiers[]` array. See [description for `entity_identifiers[]`](/docs/api/customers/customer-object#entity_identifiers).<br>|
 |» » operation|body|[string]|false|none|
 |» » standard|body|[string]|false|The standard used for specifying the `entity_identifier`<br>`scheme`.<br>Currently, only `iso6523-actorid-upis`<br>is supported and is used by default when not provided.  <br>**Tip:**<br><br>If there is only one entity identifier for the customer and the value is the same as `vat_number`, then there is no need to provide the `entity_identifiers[]` array. See [description for `entity_identifiers[]`](/docs/api/customers/customer-object#entity_identifiers).<br>|
+|» allowed_billing_frequencies|body|object|false|none|
+|» » period|body|[integer(int32)]|false|none|
+|» » period_unit|body|[string]|false|none|
 
 #### Enumerated Values
 
@@ -35044,6 +35604,10 @@ null
 |» » operation|create|
 |» » operation|update|
 |» » operation|delete|
+|» » period_unit|day|
+|» » period_unit|week|
+|» » period_unit|month|
+|» » period_unit|year|
 
 > Example responses
 
@@ -35390,6 +35954,7 @@ null
 |» redirect_url|body|string|false|The customers will be redirected to this URL upon successful checkout. The hosted page id and state will be passed as parameters to this URL.<br><br>**Note** :<br><br>* Although the customer will be redirected to the `redirect_url` after successful checkout, we do not recommend relying on it for completing critical post-checkout actions. This is because redirection may not happen due to unforeseen reasons such as user closing the tab, or exiting the browser, and so on. If there is any synchronization that you are doing after the redirection, you will have to have a backup. Chargebee recommends listening to appropriate webhooks such as [`subscription_created`](/docs/api/events) or [`invoice_generated`](/docs/api/events) to verify a successful checkout.<br>* Redirect URL configured in Settings \> Hosted Pages Settings would be overriden by this redirect URL.<br>* *Eg :* *http://yoursite.com?id=\*\*\&state=succeeded*<br>* This parameter is not applicable for iframe messaging.<br>|
 |» cancel_url|body|string|false|The customers will be redirected to this URL upon canceling checkout. The hosted page id and state will be passed as parameters to this URL.<br><br>**Note**<br>: - Cancel URL configured in Settings \> Hosted Pages Settings would be overriden by this cancel URL.<br><br>*Eg : http://yoursite.com?id=\&state=cancelled*<br><br>* This parameter is not applicable for iframe messaging and [in-app](https://www.chargebee.com/docs/2.0/checkout.html) checkout.<br>|
 |» pass_thru_content|body|string|false|This attribute allows you to store custom information with the `hosted_page` object. You can use it to associate specific data with a hosted page session.<br>For example, you can store the ID of the marketing campaign that initiated the user session. After a successful checkout, when the customer is redirected, you can retrieve the hosted page ID from the [redirect URL](/docs/api/hosted_pages/create-checkout-to-update-a-subscription#redirect_url)'s query parameters. Using this ID, you can fetch the hosted page and perform actions related to the success of the marketing campaign.<br>|
+|» show_billing_frequency_selector|body|boolean|false|none|
 |» allow_offline_payment_methods|body|boolean|false|Allow the customer to select an offline payment method during checkout. The choice of payment methods can be configured via the Chargebee UI.<br>|
 |» subscription|body|object|false|Parameters for subscription<br>|
 |» » id|body|string|true|A unique and immutable identifier for the subscription. If not provided, it is autogenerated.<br>|
@@ -35450,6 +36015,9 @@ null
 |» » value|body|[string]|false|The value of the `entity_identifier`.<br>This identifies the customer entity on the Peppol network. For example: `10101010-STO-10`<br>.  <br>**Tip:**<br><br>If there is only one entity identifier for the customer and the value is the same as `vat_number`, then there is no need to provide the `entity_identifiers[]` array. See [description for `entity_identifiers[]`](/docs/api/customers/customer-object#entity_identifiers).<br>|
 |» » operation|body|[string]|false|none|
 |» » standard|body|[string]|false|The standard used for specifying the `entity_identifier`<br>`scheme`.<br>Currently, only `iso6523-actorid-upis`<br>is supported and is used by default when not provided.  <br>**Tip:**<br><br>If there is only one entity identifier for the customer and the value is the same as `vat_number`, then there is no need to provide the `entity_identifiers[]` array. See [description for `entity_identifiers[]`](/docs/api/customers/customer-object#entity_identifiers).<br>|
+|» allowed_billing_frequencies|body|object|false|none|
+|» » period|body|[integer(int32)]|false|none|
+|» » period_unit|body|[string]|false|none|
 
 #### Enumerated Values
 
@@ -35507,6 +36075,10 @@ null
 |» » operation|create|
 |» » operation|update|
 |» » operation|delete|
+|» » period_unit|day|
+|» » period_unit|week|
+|» » period_unit|month|
+|» » period_unit|year|
 
 > Example responses
 
@@ -38934,7 +39506,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |invoice-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -39933,6 +40505,8 @@ null
 |» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 |» credit_notes|body|object|false|Parameters for credit_notes<br>|
 |» » id|body|[string]|false|The ID of the credit note to be applied to the invoice.  <br>**Constraints**<br><br>* `credit_note.type` must be `refundable`.<br>* The `credit_note.customer_id` must always be the same as `invoice.customer_id` even if `invoice.payment_owner` is different.  <br>**Default behavior**<br><br>When the parameter is not passed, [available refundable credits](/docs/api/customers/customer-object#refundable_credits) with the customer are applied to the invoice.<br>|
+|» » amount|body|[integer(int64)]|false|none|
+|» » applied_at|body|[integer(unix-time)]|false|none|
 
 #### Enumerated Values
 
@@ -40381,6 +40955,7 @@ null
 |» payment_source_id|body|string|false|Payment source to be used for this payment.<br>|
 |» auto_collection|body|string|false|If specified, the customer level auto collection will be overridden.  <br>**Note**<br><br>* When `create_pending_invoice` is `true`, `auto_collection` cannot be passed. When the pending invoice is closed, the [subscription](/docs/api/subscriptions/subscription-object#auto_collection) `auto_collection` setting is used when available; otherwise, the [customer](/docs/api/customers/customer-object#auto_collection) `auto_collection` setting applies.<br><br>* on - Whenever an invoice is created, an automatic attempt will be made to charge.<br>* off - Whenever an invoice is created as payment due.<br>|
 |» net_term_days|body|integer(int32)|false|The [Net D](https://www.chargebee.com/docs/billing/2.0/subscriptions/net_d) value explicitly set for this invoice. Net D is the number of days within which the invoice must be paid. When this value is provided, it overrides the payment terms defined at the subscription or customer level. **Note:** This value is used only for this invoice operation and does not update the customer or subscription records.<br>|
+|» offline_payment_method|body|string|false|none|
 |» invoice_date|body|integer(unix-time)|false|The document date displayed on the invoice PDF. By default, it is the date of creation of the invoice or, when Metered Billing is enabled, it can be the date of closing the invoice. Provide this value to backdate the invoice (set the invoice date to a value in the past). Backdating an invoice is done for reasons such as booking revenue for a previous date or when the non-recurring charge is effective as of a past date.<br>`taxes`<br>and<br>`line_item_taxes`<br>are computed based on the tax configuration as of this date. The date should not be more than one calendar month into the past. For example, if today is 13th January, then you cannot pass a value that is earlier than 13th December.<br>|
 |» create_pending_invoice|body|boolean|false|When set to `true`, the invoice is created with `status` as `pending` and payment is not collected. The invoice can be closed later via the [close a pending invoice](/docs/api/invoices/close-a-pending-invoice) operation.  <br>**Prerequisites**<br><br>* [Usage-based billing](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/setting-up-usage-based-billing) must be enabled for the site.<br>* `subscription_id` must be provided.  <br>**Constraints**<br><br>* Payment collection parameters cannot be passed when this parameter is `true`. This includes `payment_source_id`, `authorization_transaction_id`, `auto_collection`, `payment_method` parameters, `card` parameters, `payment_intent` parameters, and `token_id`.<br>* `auto_collection` cannot be overridden on this request. When the pending invoice is closed, the [subscription](/docs/api/subscriptions/subscription-object#auto_collection) or [customer](/docs/api/customers/customer-object#auto_collection) `auto_collection` setting applies.<br>|
 |» token_id|body|string|false|Token generated by Chargebee.js representing payment method details.<br>|
@@ -40511,6 +41086,19 @@ null
 |chargebee-event-webhook|all-disabled|
 |» auto_collection|on|
 |» auto_collection|off|
+|» offline_payment_method|no_preference|
+|» offline_payment_method|cash|
+|» offline_payment_method|check|
+|» offline_payment_method|bank_transfer|
+|» offline_payment_method|ach_credit|
+|» offline_payment_method|sepa_credit|
+|» offline_payment_method|boleto|
+|» offline_payment_method|us_automated_bank_transfer|
+|» offline_payment_method|eu_automated_bank_transfer|
+|» offline_payment_method|uk_automated_bank_transfer|
+|» offline_payment_method|jp_automated_bank_transfer|
+|» offline_payment_method|mx_automated_bank_transfer|
+|» offline_payment_method|custom|
 |» payment_initiator|customer|
 |» payment_initiator|merchant|
 |» » validation_status|not_validated|
@@ -41054,12 +41642,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 |» » status|success|
 |» » status|failure|
 |» » status|late_failure|
@@ -41393,6 +41975,11 @@ To ensure accurate [proration](https://www.chargebee.com/docs/billing/2.0/subscr
   * `line_items[tax*_name][]`
   * `line_items[tax*_amount][]`
   * `line_items[is_partial_tax_applied][]` and `line_items[taxable_amount][]` when tax applies to only a portion of the line item amount. When `line_items[is_partial_tax_applied][]` is `true`, `line_items[taxable_amount][]` is required.
+* To exempt one line, pass `line_items[tax_exempt_reason][]` and omit taxes for that line. Do not pass it together with `tax_override_reason`. `reverse_charge` requires `vat_number`. Omit this parameter when `status` is `pending`. Do not send `tax_not_configured`.
+* `zero_rated` may include line item taxes only when every matching `taxes[rate]` and `line_items[tax*_amount]` is `0`.
+* `line_items.is_taxed` depends on where `zero_rated` is set:
+  * `line_items[tax_exempt_reason][]` of `zero_rated` stores the line with tax rate `0`, tax amount `0`, and [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `true`.
+  * `tax_override_reason` of `zero_rated` stores each line with [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `false`.
 
 
 > Body parameter
@@ -41420,8 +42007,8 @@ null
 |» subscription_id|body|string|false|The ID of the [subscription](/docs/api/subscriptions) resource to which this invoice belongs.<br>|
 |» po_number|body|string|false|Purchase Order Number for this invoice.<br>|
 |» price_type|body|string|false|The price type of the invoice.<br><br>* tax_inclusive - All amounts in the document are inclusive of tax.<br>* tax_exclusive - All amounts in the document are exclusive of tax.<br>|
-|» tax_override_reason|body|string|false|The reason for exempting the invoice from tax. (Applicable only for exempted invoices.).<br><br>* zero_rated - If the rate of tax is 0% and no Sales/ GST tax is collectable for that line item<br>* export - The customer is from a non-taxable region or the billing address and shipping address are unavailable.<br>* customer_exempt -<br>  The customer is [exempted](/docs/api/customers/customer-object#taxability)<br>  from tax.<br>* tax_not_configured_external_provider - If the tax is not configured for the country in 3rd party tax provider.<br>* id_exempt -<br>  The customer is from a different country than your business and they have a valid VAT number or, the customer is a business entity. (This reason is only applicable when [EU VAT](https://www.chargebee.com/docs/eu-vat.html)<br>  or [UK VAT](https://www.chargebee.com/docs/uk-vat.html)<br>  is enabled.)<br>* high_value_physical_goods - If physical goods are sold from outside Australia to customers in Australia, and the price of all the physical good line items is greater than AUD 1000, then tax will not be applied<br>* product_exempt - If the Plan or Addon is marked as Tax exempt<br>* region_non_taxable - If the product sold is not taxable in this region, but it is taxable in other regions, hence this region is not part of the Taxable jurisdiction<br>* zero_value_item - If the total invoice value/amount is equal to zero. E.g., If the total order value is $10 and a $10 coupon has been applied against that order, the total order value becomes $0. Hence the invoice value also becomes $0.<br>|
-|» vat_number|body|string|false|Vat Number. Required if this invoice is VAT exempted.<br>|
+|» tax_override_reason|body|string|false|The reason for exempting the invoice from tax. The reason applies to every line item. Applicable only for exempt invoices.  <br>**Constraints**<br><br>* Must not be sent when `line_items[tax_exempt_reason]` is sent.<br><br>* zero_rated -<br>  If the rate of tax is 0% and no Sales/ GST tax is collectable for that line item.<br>  Each line is stored with [`line_items.is_taxed`](/docs/api/invoices/invoice-object#line_items_is_taxed) set to `false`.<br>* export - The customer is from a non-taxable region or the billing address and shipping address are unavailable.<br>* customer_exempt -<br>  The customer is [exempted](/docs/api/customers/customer-object#taxability)<br>  from tax.<br>* tax_not_configured_external_provider - If the tax is not configured for the country in 3rd party tax provider.<br>* id_exempt -<br>  The customer is from a different country than your business and they have a valid VAT number or, the customer is a business entity. (This reason is only applicable when [EU VAT](https://www.chargebee.com/docs/eu-vat.html)<br>  or [UK VAT](https://www.chargebee.com/docs/uk-vat.html)<br>  is enabled.)<br>* high_value_physical_goods - If physical goods are sold from outside Australia to customers in Australia, and the price of all the physical good line items is greater than AUD 1000, then tax will not be applied<br>* product_exempt - If the Plan or Addon is marked as Tax exempt<br>* region_non_taxable - If the product sold is not taxable in this region, but it is taxable in other regions, hence this region is not part of the Taxable jurisdiction<br>* zero_value_item - If the total invoice value/amount is equal to zero. E.g., If the total order value is $10 and a $10 coupon has been applied against that order, the total order value becomes $0. Hence the invoice value also becomes $0.<br>|
+|» vat_number|body|string|false|VAT number. Required when `tax_override_reason` is `id_exempt`. Also required when `line_items[tax_exempt_reason]` is `reverse_charge`.<br>|
 |» vat_number_prefix|body|string|false|An overridden value for the first two characters of the [full VAT number](https://en.wikipedia.org/wiki/VAT_identification_number).<br>Only applicable specifically for customers with [billing_address](/docs/api/customers/customer-object#billing_address)<br><br>`country`<br>as `XI`<br>(which is **United Kingdom - Northern Ireland**<br>).<br><br>When you have enabled [EU VAT](https://www.chargebee.com/docs/eu-vat.html)<br>in 2021 or have [manually enabled](https://www.chargebee.com/docs/brexit.html#what-needs-to-be-done-in-chargebee)<br>the Brexit configuration, you have the option of setting [billing_address](/docs/api/customers/customer-object#billing_address)<br><br>`country`<br>as `XI`.<br>That's the code for **United Kingdom - Northern Ireland** .<br>The first two characters of the VAT number in such a case is<br>`XI`<br>by default. However, if the VAT number was registered in UK, the value should be `GB`.<br>Set<br>`vat_number_prefix`<br>to `GB`<br>for such cases.<br>|
 |» date|body|integer(unix-time)|true|Date when invoice raised.<br>|
 |» total|body|integer(int64)|true|Invoice total amount.<br>|
@@ -41507,8 +42094,8 @@ null
 |» » tax9_amount|body|[integer(int64)]|false|Ninth tax amount<br>|
 |» » tax10_name|body|[string]|false|Tenth tax name<br>|
 |» » tax10_amount|body|[integer(int64)]|false|Tenth tax amount<br>|
-|» » is_partial_tax_applied|body|[boolean]|false|Indicates whether tax is applied only to a portion of the line item amount.  <br>**Constraints**<br><br>* Must not be provided when the line item has no taxes.<br>|
-|» » taxable_amount|body|[integer(int64)]|false|The portion of the line item amount, in cents, that is taxable.<br>Chargebee stores this on import so later credit notes tax this amount instead of the full line item amount.  <br>**Required if**<br><br>* `line_items[is_partial_tax_applied]` is `true`.  <br>**Constraints**<br><br>* Must not be provided when the line item has no taxes.<br>|
+|» » is_partial_tax_applied|body|[boolean]|false|Indicates whether tax is applied only to a portion of the line item amount.  <br>**Constraints**<br><br>* Must not be provided when the line item has no taxes.<br>* Must not be sent when `line_items[tax_exempt_reason]` is sent.<br>|
+|» » taxable_amount|body|[integer(int64)]|false|The portion of the line item amount, in cents, that is taxable.<br>Chargebee stores this on import so later credit notes tax this amount instead of the full line item amount.  <br>**Required if**<br><br>* `line_items[is_partial_tax_applied]` is `true`.  <br>**Constraints**<br><br>* Must not be provided when the line item has no taxes.<br>* Must not be sent when `line_items[tax_exempt_reason]` is sent.<br>|
 |» » tax_exempt_reason|body|[string]|false|none|
 |» » proration_mode|body|[string]|false|none|
 |» » created_at|body|[integer(unix-time)]|false|none|
@@ -41639,12 +42226,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 |» » entity_type|coupon|
 |» » entity_type|plan_item_price|
 |» » entity_type|addon_item_price|
@@ -41798,7 +42379,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |invoice-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -42551,7 +43132,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |invoice-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -43269,12 +43850,6 @@ null
 |» » payment_method|bank_transfer|
 |» » payment_method|other|
 |» » payment_method|custom|
-|» » payment_method|tamara|
-|» » payment_method|qpay|
-|» » payment_method|blik|
-|» » payment_method|fpx|
-|» » payment_method|wero|
-|» » payment_method|p24|
 |» » reason_code|chargeback|
 |» » reason_code|product_unsatisfactory|
 |» » reason_code|service_unsatisfactory|
@@ -48806,9 +49381,6 @@ curl 'https://{site}.chargebee.com/api/v2/metered_features/string/reactivate_com
 Restores a previously archived metered feature `status` back to `active`.
 
 The sample responses show metered features with and without group-by attributes.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  
 
 ### Prerequisites \& Constraints
 
@@ -48961,9 +49533,6 @@ curl 'https://{site}.chargebee.com/api/v2/metered_features/string/delete' \
 Permanently deletes a metered feature.
 
 The sample responses show metered features with and without group-by attributes.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  
 
 ### Prerequisites \& Constraints
 
@@ -49116,9 +49685,6 @@ curl 'https://{site}.chargebee.com/api/v2/metered_features' \
 Creates a metered feature.
 
 Use `query` to define how Chargebee measures usage for the metered feature. The result is a single aggregate across all matching usage events. To report grouped usage, include attributes in a `GROUP BY` clause. Each distinct set of values forms one usage group. These attributes are the metered feature's group-by attributes.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  
 
 ### Use Cases
 
@@ -49180,7 +49746,7 @@ null
 |» name|body|string|true|A case-sensitive name for the metered feature. For example: `API Calls`, `Input Tokens`.<br>|
 |» description|body|string|false|A brief description of the metered feature.<br>|
 |» feature_unit|body|string|true|Unit of measure for the metered feature, in singular form. It is pluralized automatically as needed. For example, `request` or `token`.<br>|
-|» query|body|string|true|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in [`group_by`](/docs/api/metered_features/metered-feature-object#group_by), in the same order.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  <br>**Usage reporting and subscription billing**<br><br>For a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.<br><br>For example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.<br>|
+|» query|body|string|true|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in [`group_by`](/docs/api/metered_features/metered-feature-object#group_by), in the same order.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  <br>**Usage reporting and subscription billing**<br><br>For a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.<br><br>For example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.<br>|
 |» column_definitions|body|object|false|Definitions of the columns or properties referenced by the `query`.<br>|
 |» » column_name|body|[string]|true|Name of the column or property used in the `query`.  <br>**Constraint**:<br><br>* Must be one of the [`properties`](/docs/api/usage_events#properties) of a [`usage_event`](/docs/api/usage_events) object in Chargebee.<br>|
 |» » data_type|body|[string]|true|none|
@@ -49310,9 +49876,6 @@ curl 'https://{site}.chargebee.com/api/v2/metered_features/string/archive_comman
 Archives a metered [feature](/docs/api/metered_features) and its associated [meter](/docs/api/meters).
 
 The sample responses show metered features with and without group-by attributes.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  
 
 ### Prerequisites \& Constraints
 
@@ -49467,10 +50030,7 @@ curl 'https://{site}.chargebee.com/api/v2/meters' \
 
 Retrieves the list of meters configured for the site.
 
-The sample responses show meters with and without group-by attributes.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.
+The sample responses show meters with and without group-by attributes.
 
 
 <h3 id="list-all-available-meters-parameters">Parameters</h3>
@@ -53077,6 +53637,414 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |order|[Order](#schemaorder)|true|none|Resource object representing order<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+<h1 id="chargebee-api-organizationdetails">organization_details</h1>
+
+Operations on the `organization_details` resource.
+
+## List organization details
+
+<a id="opIdlist_organization_details"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/organization_details' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /organization_details`
+
+<h3 id="list-organization-details-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|limit|query|integer(int32)|false|none|
+|offset|query|string|false|none|
+|business_entity_id|query|object|false|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="list-organization-details-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="list-organization-details-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|list|[object]|true|none|none|
+|» organization_detail|[OrganizationDetail](#schemaorganizationdetail)|true|none|Resource object representing organization_detail|
+|next_offset|string|false|none|This attribute is returned only if more resources are present. To fetch the next set of resources use this value for the input parameter `offset`.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## Update organization details
+
+<a id="opIdupdate_organization_details"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/organization_details' \
+  -X POST \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`POST /organization_details`
+
+> Body parameter
+
+```yaml
+null
+```
+
+<h3 id="update-organization-details-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-event-actions|header|string|false|skip all actions to be done on the events|
+|chargebee-event-email|header|string|false|skip only emails|
+|chargebee-event-webhook|header|string|false| skip only webhooks|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|body|body|object|false|none|
+|» organization_name|body|string|true|none|
+|» email|body|string(email)|false|none|
+|» address_line1|body|string|true|none|
+|» address_line2|body|string|false|none|
+|» address_line3|body|string|false|none|
+|» city|body|string|true|none|
+|» state_code|body|string|false|none|
+|» state|body|string|true|none|
+|» zip|body|string|true|none|
+|» country_code|body|string|false|none|
+|» phone|body|string|true|none|
+|» fax|body|string|false|none|
+|» website|body|string|false|none|
+|» is_vat_number_present|body|boolean|false|none|
+|» vat_number|body|string|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|chargebee-event-actions|all-disabled|
+|chargebee-event-email|all-disabled|
+|chargebee-event-webhook|all-disabled|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="update-organization-details-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="update-organization-details-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|organization_detail|[OrganizationDetail](#schemaorganizationdetail)|true|none|Resource object representing organization_detail|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth
+</aside>
+
+## Retrieve organization details
+
+<a id="opIdretrieve_organization_details"></a>
+
+> Code samples
+
+```bash
+curl 'https://{site}.chargebee.com/api/v2/organization_details/string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /organization_details/{organization-detail-id}`
+
+<h3 id="retrieve-organization-details-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|chargebee-request-origin-device|header|string|false|The device from which the customer has made the request|
+|chargebee-request-origin-user|header|string(email)|false|The email address of your customer/user. Use this when the email address has only ASCII characters.|
+|chargebee-request-origin-user-encoded|header|string(email)|false|The Base64-encoded email address of your customer/user. Use this if the email address has UTF-8 characters. When this header is provided, the header chargebee-request-origin-user is ignored.|
+|chargebee-request-origin-ip|header|string|false|The IP address of the customer where the request originated|
+|chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
+|organization-detail-id|path|string|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+null
+```
+
+> 400 Response
+
+```json
+null
+```
+
+> 401 Response
+
+```json
+null
+```
+
+> 403 Response
+
+```json
+null
+```
+
+> 404 Response
+
+```json
+null
+```
+
+> 405 Response
+
+```json
+null
+```
+
+> 409 Response
+
+```json
+null
+```
+
+> 422 Response
+
+```json
+null
+```
+
+> 429 Response
+
+```json
+null
+```
+
+> 500 Response
+
+```json
+null
+```
+
+> 503 Response
+
+```json
+null
+```
+
+<h3 id="retrieve-organization-details-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|Inline|
+|400|Bad Request|on error|[400](#schema400)|
+|401|Unauthorized|on error|[401](#schema401)|
+|403|Forbidden|on error|[403](#schema403)|
+|404|Not Found|on error|[404](#schema404)|
+|405|Method Not Allowed|on error|[405](#schema405)|
+|409|Conflict|on error|[409](#schema409)|
+|422|Unprocessable Entity|on error|[422](#schema422)|
+|429|Too Many Requests|on error|[429](#schema429)|
+|500|Internal Server Error|on error|[500](#schema500)|
+|503|Service Unavailable|on error|[503](#schema503)|
+
+<h3 id="retrieve-organization-details-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|organization_detail|[OrganizationDetail](#schemaorganizationdetail)|true|none|Resource object representing organization_detail|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -66623,7 +67591,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |quote-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -70318,6 +71286,7 @@ null
 |» » quantity|body|[integer(int32)]|false|Specifies the number of free units provided for the item, without affecting the total quantity sold<br>|
 |» » operation_type|body|[string]|true|none|
 |» » id|body|[string]|false|The `id`<br>of the `discount`<br>to be removed. This parameter is only relevant when `discounts[operation_type]`<br>is `remove`<br>.<br>|
+|» » description|body|[string]|false|none|
 |» item_tiers|body|object|false|Parameters for item_tiers<br>|
 |» » item_price_id|body|[string]|false|The id of the item price for which the tier price is being overridden.<br>|
 |» » starting_unit|body|[integer(int32)]|false|The lowest value in the quantity tier.<br>|
@@ -76427,7 +77396,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
-## Retrieve a usage
+## retrieve_a_usage
 
 <a id="opIdretrieve_a_usage"></a>
 
@@ -76448,7 +77417,7 @@ For high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.c
 Retrieves a usage record of a specific subscription. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.
 
 
-<h3 id="retrieve-a-usage-parameters">Parameters</h3>
+<h3 id="retrieveausage-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -76528,7 +77497,7 @@ null
 null
 ```
 
-<h3 id="retrieve-a-usage-responses">Responses</h3>
+<h3 id="retrieveausage-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -76544,7 +77513,7 @@ null
 |500|Internal Server Error|on error|[500](#schema500)|
 |503|Service Unavailable|on error|[503](#schema503)|
 
-<h3 id="retrieve-a-usage-responseschema">Response Schema</h3>
+<h3 id="retrieveausage-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -76557,7 +77526,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
-## Create a usage
+## create_a_usage
 
 <a id="opIdcreate_a_usage"></a>
 
@@ -76589,7 +77558,7 @@ Legacy metered billing applies per-subscription usage limits over the subscripti
 null
 ```
 
-<h3 id="create-a-usage-parameters">Parameters</h3>
+<h3 id="createausage-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -76685,7 +77654,7 @@ null
 null
 ```
 
-<h3 id="create-a-usage-responses">Responses</h3>
+<h3 id="createausage-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -76701,7 +77670,7 @@ null
 |500|Internal Server Error|on error|[500](#schema500)|
 |503|Service Unavailable|on error|[503](#schema503)|
 
-<h3 id="create-a-usage-responseschema">Response Schema</h3>
+<h3 id="createausage-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -76714,7 +77683,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
-## Delete a usage
+## delete_a_usage
 
 <a id="opIddelete_a_usage"></a>
 
@@ -76743,7 +77712,7 @@ Deletes a usage record. This operation cannot be invoked for a usage record that
 null
 ```
 
-<h3 id="delete-a-usage-parameters">Parameters</h3>
+<h3 id="deleteausage-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -76835,7 +77804,7 @@ null
 null
 ```
 
-<h3 id="delete-a-usage-responses">Responses</h3>
+<h3 id="deleteausage-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -76851,7 +77820,7 @@ null
 |500|Internal Server Error|on error|[500](#schema500)|
 |503|Service Unavailable|on error|[503](#schema503)|
 
-<h3 id="delete-a-usage-responseschema">Response Schema</h3>
+<h3 id="deleteausage-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -77773,10 +78742,7 @@ That user is counted once in the Jan 1 aggregate and once in the Jan 2 aggregate
 
 **Prerequisites**
 
-* The metered feature's `query` includes a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.
+* The metered feature's `query` includes a `GROUP BY` clause, such as `SELECT SUM(hours) FROM events GROUP BY gpu_type, region`.
 
 Use `group_by` to form one group for each distinct set of group-by attribute values in an aggregation window. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.
 
@@ -77833,7 +78799,7 @@ The `is_not` and `not_in` operators include the null and empty-string groups whe
 |window_size|query|string|false|Specifies the aggregation interval for the reporting window. If omitted,<br>the response includes a single aggregate for the entire reporting window.<br><br>* day - Aggregates usage by day.<br>* minute - Aggregates usage by minute.<br>* hour - Aggregates usage by hour.<br>* month - Aggregates usage by month.<br>* week - Aggregates usage by week.<br>|
 |timeframe_start|query|integer(unix-time)|false|Start of the reporting window, in Unix epoch seconds. If not provided,<br>defaults to the start of the current subscription term.<br>|
 |timeframe_end|query|integer(unix-time)|false|End of the reporting window, in Unix epoch seconds. If not provided,<br>defaults to the current time<br>|
-|group_by|query|[string]|false|The group-by attributes used to group usage in each aggregation window. Each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.<br><br>The order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.<br><br>Use optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Prerequisites**<br><br>* The metered feature's `query` includes a `GROUP BY` clause.  <br>**Constraints**<br><br>* You can specify up to 5 group-by attributes.<br>* Each name is case-sensitive and must match a value in the metered feature's [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.<br>|
+|group_by|query|[string]|false|The group-by attributes used to group usage in each aggregation window. Each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object and identifies it in the `attributes` list.<br><br>The order of names in `group_by` is preserved in each `attributes` list. For example, specifying `region` before `gpu_type` returns `region` first and `gpu_type` second. This does not determine the order of the `usage_summary` objects.<br><br>Use optional `attributes` filters to restrict usage before it is grouped for the response. Attribute filtering is available only for grouped usage requests, so include at least one `group_by` value. Each filtered attribute and each `group_by` attribute must be configured on the metered feature, but they do not have to be the same.  <br>**Prerequisites**<br><br>* The metered feature's `query` includes a `GROUP BY` clause.  <br>**Constraints**<br><br>* You can specify up to 5 group-by attributes.<br>* Each name is case-sensitive and must match a value in the metered feature's [`group_by`](/docs/api/metered_features/metered-feature-object#group_by) attribute.<br>|
 |attributes|query|object|false|none|
 
 #### Enumerated Values
@@ -80108,12 +81074,6 @@ null
 |» payment_method|bank_transfer|
 |» payment_method|other|
 |» payment_method|custom|
-|» payment_method|tamara|
-|» payment_method|qpay|
-|» payment_method|blik|
-|» payment_method|fpx|
-|» payment_method|wero|
-|» payment_method|p24|
 
 > Example responses
 
@@ -80538,7 +81498,7 @@ null
 |chargebee-business-entity-id|header|string|false|If the site has multiple business entities, you can use this custom HTTP header to specify the business entity for which Chargebee should perform the operation.|
 |transaction-id|path|string|true|none|
 |body|body|object|false|none|
-|» comment|body|string|false|Reason for deleting this transaction. This comment will be added to the associated entity.<br>|
+|» comment|body|string|false|An internal [comment](/docs/api/comments)<br>to be added for this operation, to the invoice. This comment is displayed on the Chargebee UI. It is not displayed on any customer-facing [Hosted Page](/docs/api/hosted_pages)<br>or any document such as the [Invoice PDF](/docs/api/invoices/retrieve-invoice-as-pdf)<br>.<br>|
 
 #### Enumerated Values
 
@@ -81884,10 +82844,26 @@ For high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.c
 
 Retrieves usages record for an invoice in PDF file format. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.
 
-For Usage-Based Billing invoices, you can optionally group a metered feature's usage by its configured group-by attributes. Automated Metered Billing continues to render the existing ungrouped usage PDF.  
-**Availability**
+For Usage-Based Billing invoices, you can optionally group a metered feature's usage by its configured group-by attributes and choose daily or full-period aggregation for that feature. Automated Metered Billing continues to render the existing ungrouped usage PDF.
 
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  
+### Aggregation windows in the usage PDF
+
+The invoice period is the reporting range for the PDF, and only usage within the invoice period is included. For each metered feature in `group_by[feature_id]`, `group_by[window_size]` at the same position controls how its usage is aggregated:
+
+* `day` (default): Usage is aggregated into calendar-day windows in UTC. A calendar day runs from `00:00:00 UTC` through `23:59:59 UTC`, so the first and last days can contain usage for only part of the day. Each row displays its date.
+* `none`: Usage is aggregated once for the full invoice period. The table has no date column. Instead, it has one column for each group-by attribute and one row for each distinct set of attribute values.
+
+Metered features that are not listed in `group_by[feature_id]` always use daily aggregation.
+
+#### Daily aggregation example
+
+For an invoice period from `January 12, 2026 10:45:00 UTC` to `January 25, 2026 10:45:00 UTC`, `group_by[window_size][0]=day` assigns the corresponding metered feature's usage to these calendar-day windows:
+
+* `January 12`: usage from `January 12 10:45:00 UTC` through `January 12 23:59:59 UTC`
+* `January 13` through `January 24`: usage from `00:00:00 UTC` through `23:59:59 UTC` on each day
+* `January 25`: usage from `January 25 00:00:00 UTC` through `January 25 10:45:00 UTC`
+
+The PDF displays only the calendar date for each daily total.  
 
 ### Use Cases
 
@@ -81904,14 +82880,14 @@ For example, group the `gpu_cloud` metered feature by `gpu_type` and `region`. S
 -d 'group_by[attributes][0]'='["gpu_type","region"]'
 ```
 
-Each distinct set of selected group-by attribute values forms a separate usage section in the PDF:
+When `group_by[window_size]` is `day` or omitted, each distinct set of selected group-by attribute values forms a separate usage section in the PDF. When it is `none`, the PDF shows a single table with one column for each group-by attribute and one row for each distinct set of values.
 
 ```text
 gpu_type = "h100", region = "us-east"  60 hours
 gpu_type = "a100", region = "eu-west"  40 hours
 ```
 
-The order of names in the `group_by[attributes]` array determines their display order. A metered feature that is not included in `group_by[feature_id]` is displayed with a single usage total.
+The order of names in the `group_by[attributes]` array determines their display order. A metered feature that is not included in `group_by[feature_id]` is displayed without attribute grouping and uses daily aggregation.
 
 **Null and empty group-by attribute values**
 
@@ -81977,8 +82953,9 @@ null
 |» invoice|body|object|false|Parameters for invoice<br>|
 |» » id|body|string|true|The invoice number. Acts as a identifier for invoice and typically generated sequentially.<br>|
 |» group_by|body|object|false|none|
-|» » feature_id|body|[string]|false|The unique identifier of the metered feature whose usage is grouped in the PDF.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Constraints**<br><br>* The identifier must belong to a metered feature billed on the invoice.<br>* Each entry must have a corresponding `group_by[attributes]` entry at the same position.<br>* The same metered feature cannot be listed twice.<br>|
-|» » attributes|body|[[object]]|false|A JSON array of group-by attribute names used to group the metered feature at the corresponding position in `group_by[feature_id]`. The order of the names determines their display order in the PDF.<br><br>Each distinct set of selected group-by attribute values forms a separate usage section in the PDF.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Prerequisites**<br><br>* Usage-Based Billing is enabled for the site.<br>* The metered feature's `query` includes a `GROUP BY` clause.  <br>**Constraints**<br><br>* The array must contain at least one group-by attribute name.<br>* Each name is case-sensitive and must match a value in the metered feature's `group_by` attribute.<br>* Exact duplicate names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.<br>* You can specify up to 5 group-by attributes per metered feature.<br>|
+|» » feature_id|body|[string]|false|The unique identifier of the metered feature whose usage is grouped in the PDF.  <br>**Constraints**<br><br>* The identifier must belong to a metered feature billed on the invoice.<br>* Each entry must have a corresponding `group_by[attributes]` entry at the same position.<br>* The same metered feature cannot be listed twice.<br>|
+|» » attributes|body|[[object]]|false|A JSON array of group-by attribute names used to group the metered feature at the corresponding position in `group_by[feature_id]`. The order of the names determines their display order in the PDF.<br><br>When `group_by[window_size]` is `day` or omitted, each distinct set of selected group-by attribute values forms a separate usage section in the PDF. When it is `none`, the PDF shows a single table with one column for each group-by attribute and one row for each distinct set of values.  <br>**Prerequisites**<br><br>* Usage-Based Billing is enabled for the site.<br>* The metered feature's `query` includes a `GROUP BY` clause.  <br>**Constraints**<br><br>* The array must contain at least one group-by attribute name.<br>* Each name is case-sensitive and must match a value in the metered feature's `group_by` attribute.<br>* Exact duplicate names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.<br>* You can specify up to 5 group-by attributes per metered feature.<br>|
+|» » window_size|body|[string]|false|none|
 
 #### Enumerated Values
 
@@ -81989,6 +82966,8 @@ null
 |chargebee-event-webhook|all-disabled|
 |» disposition_type|attachment|
 |» disposition_type|inline|
+|» » window_size|day|
+|» » window_size|none|
 
 > Example responses
 
@@ -82087,7 +83066,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth
 </aside>
 
-## List usages
+## list_usages
 
 <a id="opIdlist_usages"></a>
 
@@ -82108,7 +83087,7 @@ For high-scale usage ingestion, use [Advanced Usage-Based Billing](https://www.c
 Retrieves the list of usages. This endpoint is part of the [Usages API](/docs/api/usages) for **Automated Metered Billing**.
 
 
-<h3 id="list-usages-parameters">Parameters</h3>
+<h3 id="listusages-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -82196,7 +83175,7 @@ null
 null
 ```
 
-<h3 id="list-usages-responses">Responses</h3>
+<h3 id="listusages-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -82212,7 +83191,7 @@ null
 |500|Internal Server Error|on error|[500](#schema500)|
 |503|Service Unavailable|on error|[503](#schema503)|
 
-<h3 id="list-usages-responseschema">Response Schema</h3>
+<h3 id="listusages-responseschema">Response Schema</h3>
 
 Status Code **200**
 
@@ -84134,6 +85113,8 @@ null
 |» enabled_events|customer_business_entity_changed|
 |» enabled_events|subscription_business_entity_changed|
 |» enabled_events|payment_source_business_entity_changed|
+|» enabled_events|organization_details_created|
+|» enabled_events|organization_details_updated|
 |» enabled_events|purchase_created|
 |» enabled_events|voucher_created|
 |» enabled_events|voucher_expired|
@@ -84679,6 +85660,8 @@ null
 |» enabled_events|customer_business_entity_changed|
 |» enabled_events|subscription_business_entity_changed|
 |» enabled_events|payment_source_business_entity_changed|
+|» enabled_events|organization_details_created|
+|» enabled_events|organization_details_updated|
 |» enabled_events|purchase_created|
 |» enabled_events|voucher_created|
 |» enabled_events|voucher_expired|
@@ -85346,7 +86329,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-items-refund-is-reversed-responses">Responses</h3>
@@ -85387,7 +86370,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
@@ -85596,7 +86579,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-deleted-responses">Responses</h3>
 
@@ -85801,7 +86784,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-is-paused-responses">Responses</h3>
@@ -86789,7 +87772,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
@@ -86954,7 +87937,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
@@ -87322,7 +88305,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br>|
+|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.<br>|
 
 <h3 id="triggered-when-a-business-ruleset-is-updated-responses">Responses</h3>
 
@@ -87562,7 +88545,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-created-responses">Responses</h3>
 
@@ -87716,7 +88699,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
@@ -88025,6 +89008,10 @@ This operation does not require authentication
 
 `POST collections_payment_promise_fulfilled`
 
+Triggered when a collections payment promise is fulfilled.
+The event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).
+
+
 > Body parameter
 
 ```json
@@ -88044,7 +89031,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
+|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:<br><br>* `fulfilled`: the invoice is paid on or before `promised_on`.<br>* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.<br>* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
 
 <h3 id="triggered-when-a-collections-payment-promise-is-fulfilled-responses">Responses</h3>
 
@@ -88167,7 +89154,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
@@ -88210,7 +89197,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-is-resumed-responses">Responses</h3>
@@ -88228,6 +89215,10 @@ This operation does not require authentication
 <a id="opIdonCollections_dispute_resolvedWebhook"></a>
 
 `POST collections_dispute_resolved`
+
+Triggered when a collections dispute is resolved.
+The event content includes `collections_dispute`.
+
 
 > Body parameter
 
@@ -88616,7 +89607,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
@@ -88656,7 +89647,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br>|
+|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.<br>|
 
 <h3 id="triggered-when-a-business-ruleset-is-deactivated-responses">Responses</h3>
 
@@ -88714,6 +89705,10 @@ This operation does not require authentication
 <a id="opIdonCollections_dispute_updatedWebhook"></a>
 
 `POST collections_dispute_updated`
+
+Triggered when a collections dispute is updated.
+The event content includes `collections_dispute`.
+
 
 > Body parameter
 
@@ -88852,7 +89847,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br>|
+|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.<br>|
 
 <h3 id="triggered-when-a-business-ruleset-is-deleted-responses">Responses</h3>
 
@@ -89100,7 +90095,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
@@ -89222,7 +90217,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br>|
+|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.<br>|
 
 <h3 id="triggered-when-a-business-ruleset-is-created-responses">Responses</h3>
 
@@ -89280,6 +90275,10 @@ This operation does not require authentication
 
 `POST collections_payment_promise_updated`
 
+Triggered when a collections payment promise is updated.
+The event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).
+
+
 > Body parameter
 
 ```json
@@ -89299,7 +90298,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
+|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:<br><br>* `fulfilled`: the invoice is paid on or before `promised_on`.<br>* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.<br>* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
 
 <h3 id="triggered-when-a-collections-payment-promise-is-updated-responses">Responses</h3>
 
@@ -89912,7 +90911,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-expires-responses">Responses</h3>
@@ -90009,6 +91008,10 @@ This operation does not require authentication
 <a id="opIdonCollections_reminder_sequence_createdWebhook"></a>
 
 `POST collections_reminder_sequence_created`
+
+Triggered when a collections reminder sequence is created.
+The event content includes `collections_reminder_sequence`.
+
 
 > Body parameter
 
@@ -90155,7 +91158,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription_item_metric|body|[OmnichannelSubscriptionItemMetric](#schemaomnichannelsubscriptionitemmetric)|true|This resource represents the revenue metrics, such as MRR, computed for an [Omnichannel subscription item](/docs/api/omnichannel_subscription_items).<br><br>This resource is available only with [Product Catalog 2.0](https://www.chargebee.com/docs/2.0/product-catalog.html) and the Omnichannel Subscriptions feature. It is not available through any standalone API operation; it is returned only in the [`omnichannel_subscription_item_mrr_updated`](/docs/api/events/webhook/omnichannel_subscription_item_mrr_updated) webhook event payload.<br><br>The event `content` includes the related [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions), [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items), and `omnichannel_subscription_item_metric`.<br>|
 
@@ -90317,7 +91320,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-is-scheduled-for-cancellation-responses">Responses</h3>
@@ -90359,7 +91362,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-items-grace-period-has-expired-responses">Responses</h3>
@@ -90418,6 +91421,10 @@ This operation does not require authentication
 <a id="opIdonEmail_message_receivedWebhook"></a>
 
 `POST email_message_received`
+
+Triggered when an inbound email message is received in Billing Desk.
+The event content includes `email_message`.
+
 
 > Body parameter
 
@@ -90659,6 +91666,10 @@ This operation does not require authentication
 
 `POST collections_payment_promise_broken`
 
+Triggered when a collections payment promise is marked as broken.
+The event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).
+
+
 > Body parameter
 
 ```json
@@ -90678,7 +91689,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
+|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:<br><br>* `fulfilled`: the invoice is paid on or before `promised_on`.<br>* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.<br>* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
 
 <h3 id="triggered-when-a-collections-payment-promise-is-broken-responses">Responses</h3>
 
@@ -90837,7 +91848,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br>|
+|» » business_ruleset|body|[BusinessRuleset](#schemabusinessruleset)|true|A business ruleset groups [business rules](/docs/api/business_rules) so that they can be evaluated together, in the priority order you assign, using the strategy set in `execute_mode`.<br><br>Rulesets let you apply a whole decision at once instead of calling each rule separately. Passing a `ruleset_id` to [Apply business rules](/docs/api/business_rules/apply-business-rules) evaluates the rules the ruleset contains in their priority order and returns a result for each one. The `execute_mode` decides whether evaluation runs through every rule or stops as soon as a rule evaluates to `true` or to `false`, and which of the results are returned.<br><br>Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.<br><br>The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.<br>|
 
 <h3 id="triggered-when-a-business-ruleset-is-activated-responses">Responses</h3>
 
@@ -90877,7 +91888,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
@@ -90977,6 +91988,10 @@ This operation does not require authentication
 
 `POST collections_payment_promise_created`
 
+Triggered when a collections payment promise is created.
+The event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).
+
+
 > Body parameter
 
 ```json
@@ -90996,7 +92011,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
+|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:<br><br>* `fulfilled`: the invoice is paid on or before `promised_on`.<br>* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.<br>* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
 
 <h3 id="triggered-when-a-collections-payment-promise-is-created-responses">Responses</h3>
 
@@ -91078,7 +92093,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-is-cancelled-responses">Responses</h3>
@@ -91176,6 +92191,10 @@ This operation does not require authentication
 <a id="opIdonPrivate_note_addedWebhook"></a>
 
 `POST private_note_added`
+
+Triggered when a private note is added in Billing Desk.
+The event content includes `private_note`.
+
 
 > Body parameter
 
@@ -91690,7 +92709,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
@@ -91869,6 +92888,10 @@ This operation does not require authentication
 <a id="opIdonCollections_dispute_createdWebhook"></a>
 
 `POST collections_dispute_created`
+
+Triggered when a collections dispute is created.
+The event content includes `collections_dispute`.
+
 
 > Body parameter
 
@@ -92361,6 +93384,10 @@ This operation does not require authentication
 
 `POST collections_payment_promise_cancelled`
 
+Triggered when a collections payment promise is cancelled.
+The event content includes [`collections_payment_promise`](/docs/api/collections_payment_promises).
+
+
 > Body parameter
 
 ```json
@@ -92380,7 +93407,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
+|» » collections_payment_promise|body|[CollectionsPaymentPromise](#schemacollectionspaymentpromise)|true|A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:<br><br>* `fulfilled`: the invoice is paid on or before `promised_on`.<br>* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.<br>* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.<br><br>Receivables must be enabled for the site. If it is not, these operations are rejected.<br>|
 
 <h3 id="triggered-when-a-collections-payment-promise-is-cancelled-responses">Responses</h3>
 
@@ -92749,7 +93776,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-downgrade-is-scheduled-responses">Responses</h3>
@@ -93133,6 +94160,43 @@ null
 This operation does not require authentication
 </aside>
 
+## Triggered when an organization address is updated
+
+<a id="opIdonOrganization_details_updatedWebhook"></a>
+
+`POST organization_details_updated`
+
+> Body parameter
+
+```json
+null
+```
+
+<h3 id="triggered-when-an-organization-address-is-updated-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[OrganizationDetailsUpdatedEvent](#schemaorganizationdetailsupdatedevent)|false|Payload for organization_details_updated event|
+|» id|body|string|true|The ID of the event|
+|» occurred_at|body|integer(int64)|true|Timestamp of the event|
+|» source|body|string|true|Source of the event|
+|» object|body|string|true|The object of the event|
+|» api_version|body|string|true|API version|
+|» event_type|body|string|true|Type of the event|
+|» webhook_status|body|string|true|Status of webhook|
+|» content|body|object|true|none|
+|» » organization_detail|body|[OrganizationDetail](#schemaorganizationdetail)|true|none|
+
+<h3 id="triggered-when-an-organization-address-is-updated-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Webhook received successfully|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Triggered after the subscription has been moved from &quot;Trial&quot; to &quot;Active&quot; state.
 
 <a id="opIdonSubscription_activatedWebhook"></a>
@@ -93306,6 +94370,10 @@ This operation does not require authentication
 <a id="opIdonCollections_dispute_withdrawnWebhook"></a>
 
 `POST collections_dispute_withdrawn`
+
+Triggered when a collections dispute is withdrawn.
+The event content includes `collections_dispute`.
+
 
 > Body parameter
 
@@ -93576,7 +94644,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
@@ -93702,7 +94770,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-items-grace-period-has-started-responses">Responses</h3>
@@ -93801,6 +94869,10 @@ This operation does not require authentication
 <a id="opIdonCollections_reminder_sequence_pausedWebhook"></a>
 
 `POST collections_reminder_sequence_paused`
+
+Triggered when a collections reminder sequence is paused.
+The event content includes `collections_reminder_sequence`.
+
 
 > Body parameter
 
@@ -93977,7 +95049,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-deactivated-responses">Responses</h3>
 
@@ -94254,7 +95326,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-released-responses">Responses</h3>
 
@@ -94335,7 +95407,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-items-dunning-has-expired-responses">Responses</h3>
@@ -94457,7 +95529,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-scheduled-cancellation-is-removed-responses">Responses</h3>
@@ -94515,6 +95587,10 @@ This operation does not require authentication
 <a id="opIdonCollections_reminder_sequence_resumedWebhook"></a>
 
 `POST collections_reminder_sequence_resumed`
+
+Triggered when a collections reminder sequence is resumed.
+The event content includes `collections_reminder_sequence`.
+
 
 > Body parameter
 
@@ -94698,7 +95774,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-item-scheduled-downgrade-is-removed-responses">Responses</h3>
@@ -94739,7 +95815,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_transaction|body|[OmnichannelTransaction](#schemaomnichanneltransaction)|true|A unified representation of a store purchase or renewal transaction across Apple App Store and Google Play Store.<br><br>Use `id_at_source` to correlate with the store-native transaction identifier:<br><br>* **Apple App Store** : App Store **Transaction ID**<br>* **Google Play Store** : Google Play **Order ID** (`GPA....`)<br><br>Parent subscription / one-time-order resources use purchase-token semantics for Google `id_at_source`; do not treat those as interchangeable with this transaction Order ID.<br><br>### Apple App Store<br><br>The [price](https://developer.apple.com/documentation/appstoreservernotifications/price) value reflects the price you configured in App Store Connect, which the system records at the time of transaction ([transacted_at](/docs/api/omnichannel_transactions/omnichannel_transaction-object#transacted_at)) after the discount if any offers are applied.  <br>**Important**<br>For financial and accounting purposes, use the App Store Connect reporting tools. For more information, see [Download financial reports](https://developer.apple.com/help/app-store-connect/getting-paid/download-financial-reports) and [Overview of reporting tools](https://developer.apple.com/help/app-store-connect/measure-app-performance/overview-of-reporting-tools).<br>[Learn more](https://developer.apple.com/documentation/appstoreservernotifications/price) about price in Apple App Store.<br><br>### Google Play Store<br><br>Google Play does not always expose a complete transaction amount or purchase time for every notification path. When Google provides price / time data for a transaction, Chargebee records `price_*` and `transacted_at`; otherwise these attributes may be absent. Some Google one-time-order samples include price and `transacted_at` on `purchase_transaction`.<br><br>Transactions can be linked to subscriptions and/or one-time orders via `linked_omnichannel_subscriptions` and `linked_omnichannel_one_time_orders`. Chargebee may also emit [`omnichannel_transaction_created`](/docs/api/events/webhook/omnichannel_transaction_created) when a new transaction row is recorded.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
@@ -94837,6 +95913,43 @@ null
 This operation does not require authentication
 </aside>
 
+## Triggered when an organization address is created
+
+<a id="opIdonOrganization_details_createdWebhook"></a>
+
+`POST organization_details_created`
+
+> Body parameter
+
+```json
+null
+```
+
+<h3 id="triggered-when-an-organization-address-is-created-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[OrganizationDetailsCreatedEvent](#schemaorganizationdetailscreatedevent)|false|Payload for organization_details_created event|
+|» id|body|string|true|The ID of the event|
+|» occurred_at|body|integer(int64)|true|Timestamp of the event|
+|» source|body|string|true|Source of the event|
+|» object|body|string|true|The object of the event|
+|» api_version|body|string|true|API version|
+|» event_type|body|string|true|Type of the event|
+|» webhook_status|body|string|true|Status of webhook|
+|» content|body|object|true|none|
+|» » organization_detail|body|[OrganizationDetail](#schemaorganizationdetail)|true|none|
+
+<h3 id="triggered-when-an-organization-address-is-created-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Webhook received successfully|None|
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
 ## Triggered when a differential price is deleted.
 
 <a id="opIdonDifferential_price_deletedWebhook"></a>
@@ -94902,7 +96015,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-activated-responses">Responses</h3>
 
@@ -95178,7 +96291,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  <br>**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
+|» » business_rule|body|[BusinessRule](#schemabusinessrule)|true|A business rule pairs a condition with the actions to take when that condition is met. You supply the context to evaluate, and Chargebee returns the actions configured in `actions_on_success` when the condition evaluates to `true`.<br><br>Business Rules APIs manage [CPQ Selling Rules](https://www.chargebee.com/docs/cpq/selling-rules).<br><br>The condition is defined in `structured_expression`, a JSON representation of the rule logic that visual editors and dynamic rule builders can both read and write. Chargebee validates and compiles the expression when the rule is created or updated, and evaluates the compiled form when you call [Apply business rules](/docs/api/business_rules/apply-business-rules).<br><br>The `field` of every condition is resolved against the context supplied at evaluation time, so the fields you reference must match the keys of the context the rule is evaluated against. A condition whose `field` is absent from the context never evaluates to `true`, which means the rule never matches.<br><br>Business rules are versioned. Creating a rule releases its first version, so `latest_version` is `1` and `released_at` is set from the outset. Editing a rule leaves that released version untouched: the first edit creates a draft, and every later edit updates the same draft. [Releasing](/docs/api/business_rules/release-a-business-rule) the draft promotes it to the next version number, and that version becomes the latest released version and the one Chargebee evaluates. Until you release it, the previously released version stays in effect, so a rule can keep serving traffic while its next version is being prepared.<br><br>The `active` attribute is an independent switch that controls whether Chargebee evaluates the rule at all. A rule is created inactive, so it has to be [activated](/docs/api/business_rules/activate-a-business-rule) before it takes effect.<br><br>Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.<br><br>For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).<br><br>Expressions<br>-----------<br><br>The `structured_expression` of a rule is a tree of nodes that evaluates to a single `true` or `false`. Every node carries a `type`, which determines the rest of the fields the node takes.<br><br>The following expression matches a quote from a customer whose language contains `en` and whose shipping country is India or the United States:<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "AND",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.language",<br>      "operator": "CONTAINS",<br>      "value": "en"<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.shipping_address_country",<br>      "operator": "ANY_OF",<br>      "values": ["IN", "US"]<br>    }<br>  ]<br>}<br>```<br><br>Every condition is compiled so that it first tests whether the field is present in the context. A condition on a field that the context doesn't carry evaluates to `false` instead of failing, so the rule that holds it never matches and no `error_message` is returned for it.  <br><br>### GROUP node<br><br>Combines the nodes in `children` into a single result. Use a `GROUP` as the root of any expression that has more than one condition, and nest groups to control precedence.<br><br>* `operation`: **Required.** `AND` to match only if every child matches, or `OR` to match if any child matches.<br>* `children`: **Required.** An array holding at least one node. Each entry is itself a `GROUP`, `CONDITION`, or `COLLECTION` node.<br><br>```json<br>{<br>  "type": "GROUP",<br>  "operation": "OR",<br>  "children": [<br>    {<br>      "type": "CONDITION",<br>      "field": "quote.payment_terms",<br>      "operator": "GREATER_THAN",<br>      "value": 30<br>    },<br>    {<br>      "type": "CONDITION",<br>      "field": "customer.billing_address_country",<br>      "operator": "EQUALS",<br>      "value": "US"<br>    }<br>  ]<br>}<br>```<br><br>### CONDITION node<br><br>Compares one field of the context against a value.<br><br>* `field`: **Required.** The path of the field through the context, such as `customer.language`. See [Context](/docs/api/business_rules#context) for the paths available.<br>* `operator`: **Required.** How the comparison is made. See [Operators](/docs/api/business_rules#operators) for the operators available and the field types each one compares.<br>* `value`: The single value to compare against. Required for the single-value operators.<br>* `values`: The array of values to compare against. Required for `BETWEEN`, `ANY_OF`, and `NONE_OF`.<br><br>```json<br>{<br>  "type": "CONDITION",<br>  "field": "quote.contract_duration",<br>  "operator": "BETWEEN",<br>  "values": [12, 36]<br>}<br>```<br><br>### COLLECTION node<br><br>Tests the entries of an array in the context, such as the line items of a quote. All four fields are required.<br><br>* `field`: **Required.** The array to iterate over, such as `items`.<br>* `variable`: **Required.** The name each entry is bound to while the predicate is evaluated.<br>* `mode`: **Required.** `ANY` to match if at least one entry satisfies the predicate, or `NONE` to match only if no entry does.<br>* `predicate`: **Required.** The expression each entry is tested against, usually a `GROUP` node.<br><br>Inside the predicate, address the fields of an entry through the bound `variable`. The following node matches a quote that has at least one item discounted by more than 20:<br><br>```json<br>{<br>  "type": "COLLECTION",<br>  "field": "items",<br>  "variable": "item",<br>  "mode": "ANY",<br>  "predicate": {<br>    "type": "GROUP",<br>    "operation": "AND",<br>    "children": [<br>      {<br>        "type": "CONDITION",<br>        "field": "item.discount",<br>        "operator": "GREATER_THAN",<br>        "value": 20<br>      }<br>    ]<br>  }<br>}<br>```<br><br>### Operators<br><br>The following operators are available. The field type is the type the operator can compare, and the value column shows whether the condition takes `value` or `values`.  <br><br>\|                                   Operator                                   \|       Field type        \|                                        Value                                        \|<br>\|------------------------------------------------------------------------------\|-------------------------\|-------------------------------------------------------------------------------------\|<br>\| `EQUALS`, `NOT_EQUALS`                                                       \| String, number, boolean \| `value`                                                                             \|<br>\| `GREATER_THAN`, `GREATER_THAN_OR_EQUALS`, `LESS_THAN`, `LESS_THAN_OR_EQUALS` \| Number                  \| `value`                                                                             \|<br>\| `BETWEEN`                                                                    \| Number                  \| `values`, holding exactly two entries, read as the inclusive lower and upper bounds \|<br>\| `CONTAINS`, `NOT_CONTAINS`                                                   \| String                  \| `value`                                                                             \|<br>\| `STARTS_WITH`                                                                \| String                  \| `value`                                                                             \|<br>\| `ANY_OF`, `NONE_OF`                                                          \| String, number, boolean \| `values`, holding at least one entry                                                \|<br><br>An operator used on a field of another type isn't rejected when the rule is saved, so the mismatch surfaces only when the rule is evaluated.<br><br>Context<br>-------<br><br>The `context` you pass to [Apply business rules](/docs/api/business_rules/apply-business-rules) isn't a free-form object. Its `type` selects the schema that the rest of the context is read as, and `CPQ` is the only type available, so a condition can reference only the fields of that schema. A key that falls outside the schema is dropped as the context is read, so a condition on it never evaluates to `true`. A misspelled or unsupported key therefore surfaces as an unmet condition rather than as an error.<br><br>A `CPQ` context carries `items`, `quote`, `customer`, `user`, `site`, and `quote_subscription`, each of them optional. Pass only the parts the rules you're evaluating need:<br><br>```json<br>{<br>  "type": "CPQ",<br>  "customer": {<br>    "language": "en",<br>    "billing_address_country": "US"<br>  },<br>  "quote": {<br>    "shipping_address_country": "IN",<br>    "payment_terms": 30,<br>    "custom_fields": { "region": "apac" }<br>  },<br>  "items": [<br>    { "reference_id": "item-1", "amount": 5000, "quantity": 2, "discount": 10 },<br>    { "reference_id": "item-2", "amount": 1200, "quantity": 1, "discount": 0 }<br>  ]<br>}<br>```<br><br>A condition addresses a field by its path through the context, so `customer.language` reads the `language` of the `customer`. A `COLLECTION` node on `items` iterates over the entries of that array.<br><br>Each `custom_fields` object holds your own fields keyed by name, and every value must be a string, a number, or a boolean. A condition reads one through its key, as in `quote.custom_fields.region`.<br><br>The response returns the context back with `rule_ids` filled in on the quote and on each item, so you can see which rules applied where.  <br><br>### quote<br><br>* `type` and `contract_type`: strings.<br>* `contract_duration` and `payment_terms`: numbers.<br>* `billing_address_country` and `shipping_address_country`: strings.<br>* `billing_frequency` and `billing_currency`: strings.<br>* `creator_email` and `creator_role`: strings.<br>* `custom_fields`: object.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to the quote.  <br><br>### customer<br><br>* `billing_address_city`, `billing_address_state`, and `billing_address_country`: strings.<br>* `language`: string.<br>* `payment_terms`: number.<br>* `custom_fields`: object.  <br><br>### items<br><br>An array, with each entry holding the following.<br><br>* `reference_id`: string, identifying the entry within the context.<br>* `type`, `item_name`, and `product_family_name`: strings.<br>* `billing_frequency` and `currency`: strings.<br>* `billing_cycle`, `amount`, `quantity`, and `discount`: numbers.<br>* `start_date` and `end_date`: timestamps.<br>* `rule_ids`: array of strings. Returned in the response rather than passed, recording the rules that applied to that entry.  <br><br>### user<br><br>* `name`, `email`, and `phone`: strings.  <br><br>### site<br><br>* `name`, `domain`, and `currency`: strings.<br>* `sandbox`: boolean.  <br><br>### quote_subscription<br><br>* `custom_fields`: object.<br><br>Actions<br>-------<br><br>Every entry in `actions_on_success` is built from an **action template** , a built-in definition that fixes the kind of change an action makes and the parameters it accepts. An action names its template in `action_template_id` and passes that template's parameters in `input`:<br><br>```json<br>[<br>  {<br>    "action_template_id": "action-apply-discount",<br>    "input": {<br>      "apply_on": "INVOICE_AMOUNT",<br>      "discount": 12.0,<br>      "discount_type": "PERCENTAGE",<br>      "duration_type": "ONE_TIME"<br>    }<br>  }<br>]<br>```<br><br>The `type` of an action is derived from its template, so it's returned with the action but you don't have to pass it. A parameter that the template doesn't define is rejected. The values of enumerated parameters are matched without regard to case, and are returned in the `input` of the action exactly as you passed them.<br><br>An action can also carry a `structured_expression` of its own, written in the same format as the expression of the rule. The rule decides whether the action runs at all, and the action's own expression then narrows it to the items of the context that satisfy that expression. One rule can therefore discount some of the items it matched rather than all of them. Only the apply discount, limit discount, and limit quantity templates accept an action-level expression.  <br><br>### Apply discount<br><br>Applies a discount to the invoice amount or to specific item prices. Built from `action_template_id` `action-apply-discount` and returned with `type` `APPLY_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` to discount the invoice total, or `SPECIFIC_ITEM_PRICE` to discount the item prices the action applies to.<br>* `discount`: **Required.** The discount to apply, such as `12.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `discount` is read.<br>* `duration_type`: **Required.** How long the discount applies, as `ONE_TIME`, `FOREVER`, or `LIMITED_PERIOD`.<br>* `period_unit`: `DAY`, `WEEK`, `MONTH`, or `YEAR`. Required if `duration_type` is `LIMITED_PERIOD`.<br>* `period`: The number of `period_unit`s the discount applies for. Required if `period_unit` is passed.  <br><br>### Apply coupon<br><br>Applies existing [coupons](/docs/api/coupons). Built from `action_template_id` `action-apply-coupon` and returned with `type` `APPLY_COUPON`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `coupon_ids`: **Required.** The coupons to apply, as an array of coupon identifiers. It must hold at least one identifier.  <br><br>### Limit discount<br><br>Caps the discount that can be given. Use this template to enforce a discount ceiling without an approval step.<br><br>Built from `action_template_id` `action-limit-discount` and returned with `type` `LIMIT_DISCOUNT`.<br><br>* `apply_on`: **Required.** `INVOICE_AMOUNT` or `SPECIFIC_ITEM_PRICE`.<br>* `maximum_discount`: **Required.** The largest discount allowed, such as `20.0`.<br>* `discount_type`: **Required.** `PERCENTAGE`, `FLAT_FEE`, or `OFFER_QUANTITY`, which fixes how `maximum_discount` is read.<br>* `disable_price_override`: Pass `true` to disallow overriding the price outright.  <br><br>### Limit quantity<br><br>Constrains the quantities that can be selected. Built from `action_template_id` `action-limit-quantity` and returned with `type` `LIMIT_QUANTITY`. Every parameter is optional, so pass the ones you want to enforce.<br><br>* `minimum_quantity`: The smallest quantity allowed.<br>* `maximum_quantity`: The largest quantity allowed.<br>* `quantity_step_count`: The increment the quantity can be changed in, so `5` allows 5, 10, 15, and so on.  <br><br>### Error<br><br>Returns an error message instead of a change. Use this template to block an operation when the rule matches.<br><br>Built from `action_template_id` `action-error` and returned with `type` `ERROR`.<br><br>* `error_message`: **Required.** The message returned with the action.<br><br>Evaluation results<br>------------------<br><br>[Apply business rules](/docs/api/business_rules/apply-business-rules) returns an `apply_rule` object that echoes back the `context` you passed and carries one entry in `rules` for each rule it evaluated:<br><br>```json<br>{<br>  "apply_rule": {<br>    "context": {<br>      "type": "CPQ",<br>      "customer": { "language": "en" },<br>      "quote": { "shipping_address_country": "IN" }<br>    },<br>    "rules": [<br>      {<br>        "id": "quote-discount-en",<br>        "version": 1,<br>        "name": "Apply 12 percent discount at invoice level",<br>        "evaluation_result": true,<br>        "actions": [<br>          {<br>            "action_template_id": "action-apply-discount",<br>            "type": "APPLY_DISCOUNT",<br>            "input": {<br>              "apply_on": "INVOICE_AMOUNT",<br>              "discount": 12.0,<br>              "discount_type": "PERCENTAGE",<br>              "duration_type": "ONE_TIME"<br>            }<br>          }<br>        ],<br>        "object": "applied_rule"<br>      },<br>      {<br>        "id": "quote-discount-uk",<br>        "version": 1,<br>        "name": "Apply 5 percent discount at invoice level for UK quotes",<br>        "evaluation_result": false,<br>        "object": "applied_rule"<br>      }<br>    ],<br>    "object": "apply_rule"<br>  }<br>}<br>```<br><br>Read the result of each rule from `evaluation_result`, and read what the rule produced from `actions`. Two things about the shape are worth knowing before you write code against it.<br><br>* `actions` is absent, rather than empty, for a rule whose `evaluation_result` is `false`. The second entry above shows a rule that didn't match.<br>* An entry for an ad hoc `structured_expression` carries only `evaluation_result`, because there's no stored rule to report an `id`, `name`, or `actions` for.<br><br>A rule that couldn't be evaluated is returned with `error_message` set instead, but only if you passed `skip_failed_rules` as `true`. Otherwise the request fails. For the full list of fields, see the response of [Apply business rules](/docs/api/business_rules/apply-business-rules).<br>|
 
 <h3 id="triggered-when-a-business-rule-is-updated-responses">Responses</h3>
 
@@ -95299,7 +96412,7 @@ null
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
 |» » omnichannel_subscription|body|[OmnichannelSubscription](#schemaomnichannelsubscription)|true|Represents a subscription purchased and managed in an external app marketplace (`apple_app_store` or `google_play_store`), normalized into Chargebee's omnichannel model.<br><br>Omnichannel subscriptions are typically created when you [record a purchase](/docs/api/recorded_purchases/record-a-purchase) and are kept in sync via store server notifications. They are store-managed: lifecycle changes come from Apple or Google, not from the Chargebee Subscriptions API.<br><br>Use [omnichannel statuses](/docs/api/omnichannel_statuses) for how store statuses map to `omnichannel_subscription_item.status`, and [omnichannel events](/docs/api/omnichannel_events) for notification-to-webhook mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#omnichannel_subscription_items_omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.  <br>**Identifier tip:** Parent `id_at_source` is the Apple **Transaction ID** or Google **purchase token** . Nested `initial_purchase_transaction.id_at_source` is the Apple **Transaction ID** or Google **Order ID** (`GPA....`). See attribute descriptions below.  <br>**Note:**<br>This resource represents in-app subscriptions made on Apple App Store and Google Play Store.<br>|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
 <h3 id="triggered-when-an-omnichannel-subscription-items-dunning-has-started-responses">Responses</h3>
@@ -95340,7 +96453,7 @@ null
 |» event_type|body|string|true|Type of the event|
 |» webhook_status|body|string|true|Status of webhook|
 |» content|body|object|true|none|
-|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
+|» » omnichannel_subscription_item|body|[OmnichannelSubscriptionItem](#schemaomnichannelsubscriptionitem)|true|Represents a product entitlement (item) within an [`omnichannel_subscription`](/docs/api/omnichannel_subscriptions) purchased on Apple App Store or Google Play Store.<br><br>Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.<br><br>When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.<br><br>Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.<br><br>When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  <br>**Note:**<br>This resource represents in-app subscription items made on Apple App Store and Google Play Store.<br>|
 |» » omnichannel_subscription_item_scheduled_change|body|[OmnichannelSubscriptionItemScheduledChange](#schemaomnichannelsubscriptionitemscheduledchange)|true|Represents a future change to an [`omnichannel_subscription_item`](/docs/api/omnichannel_subscription_items) that the store will apply later (typically at the end of the current term).<br><br>**Apple App Store** : Created when the customer schedules a **downgrade** within the same subscription group (`DID_CHANGE_RENEWAL_PREF` / `DOWNGRADE`). `change_type` is typically `downgrade`. Upgrades apply immediately and do **not** create this resource.<br><br>**Google Play Store** : Created when a product change uses the **`DEFERRED`** replacement mode (applied at term end). Immediate changes use `CHARGE_PRORATED_PRICE` and do **not** create this resource. A `change_type` of `pause` may appear for scheduled pause flows; confirm mapping against [omnichannel events](/docs/api/omnichannel_events).<br><br>Retrieve scheduled changes with [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) when [`has_scheduled_changes`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#has_scheduled_changes) is `true`.<br>|
 |» » customer|body|[Customer](#schemacustomer)|true|Represents a customer, which can be an individual or organization that subscribes to your products or services. The customer resource associates with [subscriptions](/docs/api/subscriptions/subscription-object), [card information](/docs/api/cards/card-object), and billing addresses. The customer details include their ID, name, contact information, and any [custom attributes](/docs/api/advanced-features) you'd like to associate with them.  <br>**Breaking Change**:<br><br>* [**Sites**](https://www.chargebee.com/docs/2.0/sites-intro.html) **created before March 1, 2014** : [updating the card](/docs/api/cards/update-card-for-a-customer) deletes the customer's `billing_address` and `vat_number` and replaces them with values from the request.<br>* **Sites created on or after March 1, 2014** : updating the card doesn't change the `billing_address` and `vat_number`.<br>|
 
@@ -95641,6 +96754,10 @@ This operation does not require authentication
 <a id="opIdonCollections_reminder_sequence_completedWebhook"></a>
 
 `POST collections_reminder_sequence_completed`
+
+Triggered when a collections reminder sequence is completed.
+The event content includes `collections_reminder_sequence`.
+
 
 > Body parameter
 
@@ -97229,6 +98346,43 @@ null
 null
 ```
 
+<h2 id="tocS_BillingLineItem">BillingLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemabillinglineitem"></a>
+<a id="schema_BillingLineItem"></a>
+<a id="tocSbillinglineitem"></a>
+<a id="tocsbillinglineitem"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|none|
+|invoice_number|string|false|none|none|
+|quantity|number(decimal)|false|none|none|
+
+<h2 id="tocS_BillingMetadata">BillingMetadata</h2>
+<!-- backwards compatibility -->
+<a id="schemabillingmetadata"></a>
+<a id="schema_BillingMetadata"></a>
+<a id="tocSbillingmetadata"></a>
+<a id="tocsbillingmetadata"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|item_price_id|string|false|none|none|
+|line_items|[object]|false|none|none|
+
 <h2 id="tocS_BillingMetricBreakdown">BillingMetricBreakdown</h2>
 <!-- backwards compatibility -->
 <a id="schemabillingmetricbreakdown"></a>
@@ -97704,8 +98858,7 @@ The `active` attribute is an independent switch that controls whether Chargebee 
 
 Related rules can be grouped into a [business ruleset](/docs/api/business_rulesets), which evaluates its member rules in priority order using the strategy configured in the ruleset's `execute_mode`.
 
-For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).  
-**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.
+For a walkthrough that creates, activates, and applies a rule in three calls, take a look at the [Business Rules quickstart](https://www.chargebee.com/tutorials/business-rules-quickstart/).
 
 Expressions
 -----------
@@ -98205,8 +99358,7 @@ Rulesets let you apply a whole decision at once instead of calling each rule sep
 
 Membership is managed separately from the rules themselves. [Add business rules to a ruleset](/docs/api/business_rulesets/add-business-rules-to-a-ruleset) and [Remove business rules from a ruleset](/docs/api/business_rulesets/remove-business-rules-from-a-ruleset) change membership incrementally, while passing `rules` to [Update a business ruleset](/docs/api/business_rulesets/update-a-business-ruleset) replaces it entirely. A rule can belong to more than one ruleset, and removing it from a ruleset does not delete the rule.
 
-The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.  
-**Note:** Business rules are not enabled by default. Contact [Chargebee Support](https://www.chargebee.com/support/) to enable them for your site. Until they are enabled, these endpoints return an error.
+The `active` attribute controls whether Chargebee evaluates the ruleset. A rule is evaluated through a ruleset only when both the ruleset and the rule are `active`.
 
 ### Properties
 
@@ -99032,7 +100184,11 @@ null
 null
 ```
 
-Tracks a customer's commitment to pay a promised amount. Each payment promise records the amount, currency, promise date, and status (`active`, `fulfilled`, `broken`, or `cancelled`).
+A collections payment promise represents a customer's commitment to pay a specific invoice by a promised date. A promise is `active` until it ends:
+
+* `fulfilled`: the invoice is paid on or before `promised_on`.
+* `broken`: the invoice is paid after `promised_on`, or is still unpaid when `promised_on` passes.
+* `cancelled`: you cancel the promise, or the invoice is voided, written off, or deleted.
 
 Receivables must be enabled for the site. If it is not, these operations are rejected.
 
@@ -99042,11 +100198,11 @@ Receivables must be enabled for the site. If it is not, these operations are rej
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier of the collections payment promise.<br>|
 |customer_id|string|true|none|Identifier of the customer who made this payment promise.<br>|
-|invoice_id|string|true|none|Identifier of the invoice linked to this promise, when the promise is invoice-specific.<br>|
-|status|string|true|none|Current lifecycle state of the payment promise.<br><br>* active - The promise is active and awaiting payment.<br>* cancelled - The payment promise was cancelled.<br>* fulfilled - The promised payment has been received.<br>* broken - The promised payment was not received by the promised date.<br>|
+|invoice_id|string|true|none|Identifier of the invoice this promise covers.<br>|
+|status|string|true|none|Current lifecycle state of the payment promise.<br><br>* active - The promise is active and awaiting payment.<br>* cancelled - The payment promise was cancelled, or its invoice was voided, written off, or deleted.<br>* fulfilled - The invoice was paid by `promised_on`.<br>* broken - The promised payment was not received by the promised date.<br>|
 |reason|string|false|none|Optional note describing the context or reason for capturing this promise.<br>|
 |promised_by|string|false|none|Name or identifier of the user or agent who captured this promise.<br>|
-|promised_on|integer(unix-time)|true|none|Timestamp in UTC seconds representing when the customer committed to pay.<br>|
+|promised_on|integer(unix-time)|true|none|Timestamp in UTC seconds of the date by which the customer promised to pay.<br>|
 |created_at|integer(unix-time)|true|none|Timestamp in UTC seconds when this collections payment promise was created.<br>|
 |updated_at|integer(unix-time)|true|none|Timestamp in UTC seconds when this collections payment promise was last updated.<br>|
 |resource_version|integer(int64)|false|none|Version number of this resource. The `resource_version` is updated with a new timestamp in milliseconds for every change made to the resource.<br>|
@@ -99360,7 +100516,7 @@ Besides the user generated comments, Chargebee also generates "System" comments 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier for the comment.<br>|
-|entity_type|string|true|none|Type of the entity this comment generated for<br><br>* item - Entity that represents item<br>* invoice - Invoice description<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* quote - Entity that represents a quote<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* business_entity - Entity that represents item of type business entity<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>|
+|entity_type|string|true|none|Type of the entity this comment generated for<br><br>* item - Entity that represents item<br>* invoice - Invoice description<br>* plan - Entity that represents a subscription plan<br>* price_variant - Entity that represents a price variant<br>* item_family - Entity that represents item family<br>* transaction - Entity that represents a transaction.<br>* quote - Entity that represents a quote<br>* order - Entity that represents an order<br>* item_price - Entity that represents item price<br>* customer - Entity that represents a customer<br>* business_entity - Entity that represents item of type business entity<br>* coupon - Entity that represents a discount coupon<br>* subscription - Entity that represents a subscription of a customer<br>* task - Entity that represents a task<br>* addon - Entity that represents an addon<br>* credit_note - Credit note description<br>|
 |added_by|string|false|none|The user who created the comment. If created via API, this contains the name given for the API key used.<br>|
 |notes|string|true|none|Actual notes for the comment.<br>|
 |created_at|integer(unix-time)|true|none|The time at which this comment was created<br>|
@@ -101602,6 +102758,7 @@ The above coupons and discount are applied in the following order:
 |---|---|---|---|---|
 |id|string|true|none|An immutable unique id for the discount. It is always auto-generated.<br>|
 |invoice_name|string|false|none|The name of the discount as it should appear on customer-facing pages and documents such as [invoices](/docs/api/invoices)<br>and [hosted pages](/docs/api/hosted_pages).<br>This is auto-generated based on the `type`<br>, `amount`<br>, and `currency_code`<br>of the discount. For example, it can be `10% off`<br>or `10$ off`<br>.<br>|
+|description|string|false|none|none|
 |type|string|true|none|The type of discount.<br>Possible value are:<br><br>* percentage - The specified percentage will be given as discount.<br>* fixed_amount - The specified amount will be given as discount.<br>* offer_quantity -<br>  A specified number of units of the item price are offered for free. The number of free units is specified in [quantity](/docs/api/discounts).<br>  The `offer_quantity`<br>  option is valid only when [apply_on](/docs/api/discounts/discount-object#apply_on)<br>  is set to `each_specified_item`<br>  and the [pricing_model](/docs/api/item_prices/item_price-object#pricing_model)<br>  of the item price is `per_unit`<br>  .<br>|
 |percentage|number(double)|false|none|The percentage of the original amount that should be deducted from it. Only applicable when `discount.type`<br>is `percentage`.<br>|
 |amount|integer(int64)|false|none|The value of the discount. [The format of this value](/docs/api/currencies)<br>depends on the kind of currency. This is only applicable when `discount.type`<br>is `fixed_amount`.<br>|
@@ -102572,7 +103729,7 @@ Webhooks from Chargebee originate from a [specific set of IP addresses](/docs/ap
 |occurred_at|integer(unix-time)|true|none|Timestamp indicating when this event had occurred.<br>|
 |source|string|true|none|Indicates the origin of the operation that triggered the event.<br><br>* admin_console -<br>  The event was triggered by an operation performed through the [Chargebee Billing dashboard](https://app.chargebee.com)<br>  .<br>* external_service - The event was triggered by an operation associated with a webhook.<br>* scheduled_job - The event was triggered by a scheduled job in Chargebee Billing.<br>* bulk_operation -<br>  The event was triggered by a [bulk operation](https://www.chargebee.com/docs/billing/2.0/data-operations/bulk-operations)<br>  initiated by you in Chargebee Billing.<br>* hosted_page -<br>  The event was triggered by an operation performed by the customer through one of the [Chargebee Hosted Pages](/docs/api/hosted_pages)<br>  .<br>* portal -<br>  The event was triggered by an operation performed by a customer through the [Self-Serve Portal](https://www.chargebee.com/docs/2.0/inapp-self-serve-portal.html)<br>  .<br>* system - The event was triggered automatically by Chargebee Billing.<br>* migration -<br>  The event was triggered by the migration of customer data into Chargebee Billing, either from an external system or from another [Chargebee Billing site](https://www.chargebee.com/docs/billing/2.0/getting-started/sites-intro)<br>  (such as test, live, or sandbox).<br>* none - No source can be identified for the event.<br>* api -<br>  The event was triggered by an operation performed through the [public API](/docs/api/getting-started)<br>  .<br>* js_api -<br>  The event was triggered by an operation performed through [Chargebee.js](https://www.chargebee.com/docs/js)<br>  .<br>|
 |user|string|false|none|The "user" that triggered the event. The value depends on the `source`<br><br>* When `source` is `admin_console`: the email address of the user that triggered the event.<br>* When `source` is `api`, `js_api` or `bulk_operation`: the [name](https://www.chargebee.com/docs/api_keys.html#create-an-api-key) of the API key that was used to trigger the event.<br>* When the `source` is `external_service`: the name of the service that called our webhook. Eg. `ADYEN`, `STRIPE`, `AMAZON_PAYMENTS` etc.<br>* When the `source` is `hosted_page` or `portal`: the `user` attribute is not passed.<br>|
-|event_type|string|false|none|The type of event provided by Chargebee. See [event types](/docs/api/events/event-types)<br>for a complete list.<br><br>* card_deleted - Sent when a card is deleted for a customer<br>* rule_created - Triggered when a rule is created.<br>* subscription_cancelled - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.<br>* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.<br>* customer_changed - Sent when a customer is changed<br>* invoice_deleted - Event triggered when an invoice is deleted.<br>* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed<br>* subscription_shipping_address_updated - Triggered when shipping address is added or updated for a subscription.<br>* differential_price_created - Triggered when a differential price is created<br>* subscription_created - Sent when a new subscription is created.<br>* payment_initiated - Sent when a payment is initiated via direct debit<br>* quote_updated - Triggered when quote is updated<br>* payment_source_added - Sent when a payment source is added for a customer.<br>* contract_term_created - Triggered when new contract term is created<br>* subscription_business_entity_changed - Sent when a subscription's business entity is changed.<br>* subscription_deleted - Sent when a subscription has been deleted<br>* differential_price_deleted - Triggered when a differential price is deleted<br>* omnichannel_subscription_created - Triggered when an omnichannel subscription is created<br>* voucher_created - Triggered when a payment voucher is created.<br>* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.<br>* rule_deleted - Triggered when a rule is deleted.<br>* transaction_deleted - Triggered when a transaction is deleted.<br>* item_family_deleted - Triggered when an item family is deleted<br>* payment_failed - Sent when attempt to charge customer's credit card fails<br>* subscription_reactivated_with_backdating - Sent when the subscription is moved from cancelled state to active or in_trial state with past date<br>* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation<br>* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed<br>* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.<br>* payment_schedules_created - Event triggered when new payment schedules are created for an invoice<br>* subscription_entitlements_updated - Triggered when subscription entitlements are updated for a subscription change.<br>* price_variant_updated - Triggered when a price variant is updated.<br>* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired<br>* item_price_updated - Triggered when an item price is updated<br>* order_ready_to_process - Triggered when order reaches its order date<br>* entitlement_overrides_updated - Triggered when an override entitlement is updated<br>* item_updated - Triggered when an item is updated<br>* coupon_set_updated - Sent when a coupon set is changed<br>* subscription_reactivated - Sent when the subscription is moved from cancelled state to active or in_trial state<br>* subscription_scheduled_changes_removed - Sent when scheduled change for the subscription is removed.<br>* customer_business_entity_changed - Sent when a customer's business entity is changed.<br>* payment_refunded - Sent when a payment refund is made<br>* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.<br>* subscription_started - Sent when a 'future' subscription gets started at the scheduled date.<br>* attached_item_created - Triggered when an Attached item is created<br>* token_created - Sent when a Token is created<br>* item_family_created - Triggered when an item family is created<br>* subscription_created_with_backdating - Sent when a new subscription is created with backdating.<br>* unbilled_charges_deleted - Triggered when unbilled charges are deleted.<br>* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed<br>* subscription_ramp_applied - Triggered when a subscription ramp is applied.<br>* promotional_credits_added - Sent when promotional credits are added to a customer.<br>* subscription_canceled_with_backdating - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.<br>* item_entitlements_updated - Triggered when item entitlements are updated to a feature<br>* card_expired - Sent when a card for a customer is expired<br>* payment_intent_created - Sent when a Payment intent is created<br>* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed with backdated date<br>* subscription_scheduled_cancellation_removed - Sent when scheduled cancellation is removed for the subscription.<br>* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed<br>* feature_updated - Triggered when an feature is updated<br>* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created<br>* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported<br>* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.<br>* tax_withheld_refunded - Sent when a tax withheld refund is made<br>* unbilled_charges_voided - Triggered when unbilled charges are voided.<br>* customer_moved_out - Sent when a customer is copied to another site<br>* dunning_updated - Sent when dunning is paused for an invoice.<br>* feature_created - Triggered when a feature is created.<br>* record_purchase_failed - Triggered when an omnichannel record purchase is failed<br>* coupon_codes_deleted - Sent when coupon codes are deleted in coupon set<br>* subscription_paused - Sent when the subscription is paused.<br>* order_updated - Triggered when order is updated<br>* subscription_movement_failed - Triggered when a subscription movement failed<br>* unbilled_charges_created - Triggered when unbilled charges are created.<br>* subscription_moved_in - Triggered when a subscription moved from other customer<br>* feature_archived - Triggered when a feature is archived.<br>* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.<br>* payment_succeeded - Sent when the payment is successfully collected<br>* voucher_expired - Triggered when a payment voucher is expired.<br>* mrr_updated - Sent when either of MRR or CMRR of a subscription changes<br>* subscription_scheduled_resumption_removed - Triggered when scheduled resumption is removed for the subscription.<br>* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.<br>* order_ready_to_ship - Triggered when order reaches its shipping date<br>* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.<br>* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled<br>* payment_due_reminder - Sent after scheduled days of payment failure<br>* purchase_created - Triggered when purchase action completed successfully<br>* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.<br>* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.<br>* subscription_renewed - Sent when the subscription is renewed from the current term.<br>* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.<br>* item_created - Triggered when an item is created<br>* coupon_codes_updated - Sent when coupon codes are updated<br>* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed<br>* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription<br>* subscription_ramp_updated - Triggered when a subscription ramp is updated.<br>* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.<br>* subscription_moved_out - Triggered when a subscription moved to other customer<br>* contract_term_completed - Triggered when contract term is completed<br>* feature_deleted - Triggered when a feature is deleted<br>* subscription_renewal_reminder - Sent before each subscription's renewal based on plan's period<br>* coupon_updated - Sent when a coupon is changed.<br>* token_consumed - Sent when a Token is consumed<br>* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded<br>* transaction_created - Triggered when a transaction is recorded<br>* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted<br>* customer_deleted - Sent when a customer is deleted<br>* subscription_items_renewed - Sent when one or more Subscription Items are renewed<br>* coupon_deleted - Sent when a coupon is deleted.<br>* quote_deleted - Triggered when quote is deleted<br>* card_updated - Sent when the card is updated for a customer.<br>* coupon_created - Sent when a coupon is created.<br>* quote_created - Triggered when quote is created<br>* add_usages_reminder - Sent every month day before renewal date of plan's period<br>* business_entity_updated - Sent when a business entity is updated.<br>* subscription_changed - Sent after the subscription's recurring items have been changed<br>* customer_created - Sent when a new customer is created, either directly or automatically during subscription creation.<br>* price_variant_created - Triggered when a price variant is created.<br>* coupon_set_deleted - Sent when a coupon set is deleted<br>* refund_initiated - Sent when a refund is initiated via direct debit<br>* order_cancelled - Triggered when order is cancelled<br>* entitlement_overrides_removed - Triggered when an override entitlement is removed<br>* coupon_codes_added - Sent when coupon codes are added in coupon set<br>* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused<br>* card_added - Sent when a card is added for a customer.<br>* gift_cancelled - Triggered when a gift is cancelled.<br>* entitlement_overrides_auto_removed - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry<br>* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer<br>* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded<br>* ledger_updated - Triggered when a batch of [ledger_operations](/docs/api/ledger_operations) is persisted for a subscription unit. The event content includes the related `ledger_operations`, `ledger_account_balance`, `grant_blocks`, and `ledger_entries`.<br>* payment_source_deleted - Sent when a payment source is deleted for a customer<br>* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.<br>* grant_blocks_created - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are created for a subscription unit.<br>* credit_note_created - Sent when a credit note is created<br>* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.<br>* item_price_deleted - Triggered when an item price is deleted<br>* subscription_advance_invoice_schedule_updated - Triggered when scheduled advance invoice is updated for a subscription.<br>* item_deleted - Triggered when an item is deleted<br>* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one time order item is cancelled<br>* gift_claimed - Triggered when a gift is claimed<br>* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.<br>* vault_token_updated - Triggered when a vaulted payment method is updated.<br>* subscription_activated - Sent after the subscription has been moved from trial to active state<br>* subscription_resumed - Sent when the subscription is moved from paused state to active state<br>* sales_order_updated - Triggered when a sales order is updated.<br>* credit_note_deleted - Sent when a credit note is deleted<br>* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature<br>* subscription_advance_invoice_schedule_added - Triggered when advance invoice is scheduled for a subscription.<br>* differential_price_updated - Triggered when a differential price is updated<br>* alert_status_changed -<br>  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.<br>  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.<br>* order_deleted - Triggered when order is deleted<br>* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when an omnichannel subscription item scheduled cancellation is removed<br>* token_expired - Sent when a Token is expired<br>* price_variant_deleted - Triggered when a price variant is deleted.<br>* transaction_updated - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.<br>* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.<br>* rule_updated - Triggered when a rule is updated.<br>* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item's refund is reversed<br>* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a "Pending" invoice is closed.<br>* order_delivered - Triggered when order is marked as delivered<br>* pending_invoice_created - Event triggered (in the case of metered billing) when a "Pending" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the "Notify for Pending Invoices" option is enabled.<br>* subscription_ramp_created - Triggered when a subscription ramp is created.<br>* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item is expired<br>* refund_failed - Triggered when a refund attempt fails at the gateway.<br>* authorization_succeeded - Triggered when an authorization transaction is created.<br>* invoice_generated_with_backdating - Event triggered when a new invoice is generated with past date as invoice date.<br>* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled<br>* subscription_cancellation_scheduled - Sent when subscription is scheduled to cancel at end of current term<br>* order_created - Triggered when order is created<br>* hierarchy_deleted - Triggered when a hierarchy is deleted<br>* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.<br>* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice<br>* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).<br>* credit_note_created_with_backdating - Sent when a credit note is created with past date as credit note date<br>* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item scheduled for pause<br>* gift_updated - Triggered when a gift is updated<br>* order_resent - Triggered when order is resent<br>* hierarchy_created - Triggered when a hierarchy is created<br>* voucher_create_failed - Triggered when a payment voucher creation fails.<br>* customer_moved_in - Sent when a customer is copied from another site<br>* customer_entitlements_updated - Triggered when entitlements for the list of customers got updated.<br>* item_price_entitlements_updated - Triggered when item Price entitlements are updated to a feature<br>* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired<br>* attached_item_deleted - Triggered when an Attached item is deleted<br>* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.<br>* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.<br>* order_returned - Triggered when order is marked as returned<br>* payment_source_expired - Sent when a payment source for a customer is expired<br>* contract_term_terminated - Triggered when contract term is terminated<br>* payment_source_updated - Sent when the payment source is updated for a customer or when role is assigned to the payment source.<br>* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.<br>* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started<br>* subscription_advance_invoice_schedule_removed - Triggered when scheduled advance invoice is removed for a subscription.<br>* tax_withheld_deleted - Triggered when a tax withheld is deleted<br>* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started<br>* business_entity_created - Sent when a business entity is created.<br>* sales_order_created - Triggered when a sales order is created.<br>* item_price_created - Triggered when an item price is created<br>* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.<br>* credit_note_updated - Sent when a credit note is updated<br>* subscription_scheduled_pause_removed - Triggered when scheduled pause is removed for the subscription.<br>* card_expiry_reminder - Sent 30 days before the customer's credit card expires.<br>* coupon_set_created - Sent when a coupon set is created<br>* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.<br>* omnichannel_one_time_order_created - Triggered when an omnichannel one time order is created<br>* gift_scheduled - Triggered when a new gift is created<br>* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice<br>* business_entity_deleted - Sent when a business entity is deleted.<br>* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item recovers from a billing issue and is active again.<br>* promotional_credits_deducted - Sent when a customer prmotion credits deducted<br>* ledger_account_balance_updated - Triggered when a [ledger_account_balance](/docs/api/ledger_account_balances) changes for a subscription unit.<br>* contract_term_renewed - Triggered when new contract term is renewed<br>* usage_file_ingested -<br>  Triggered when a [usage_file](/docs/api/usage_files)<br>  is successfully ingested.<br>* subscription_trial_extended - Sent when a subscription trial is extended.<br>* item_entitlements_removed - Triggered when item entitlements are removed for a feature<br>* gift_expired - Triggered when a gift expires<br>* omnichannel_subscription_item_scheduled_change_removed - Triggered when an omnichannel subscription item scheduled change is removed<br>* contract_term_cancelled - Triggered when contract term is cancelled<br>* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.<br>* authorization_voided - Triggered when an authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.<br>* item_family_updated - Triggered when an item family is updated<br>* attached_item_updated - Triggered when an Attached item is updated<br>* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.<br>* grant_blocks_updated - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are updated for a subscription unit.<br>* payment_intent_updated - Sent when a Payment intent is updated<br>* payment_source_locally_deleted - Sent when a payment source for a customer removed from Chargebee<br>|
+|event_type|string|false|none|The type of event provided by Chargebee. See [event types](/docs/api/events/event-types)<br>for a complete list.<br><br>* card_deleted - Sent when a card is deleted for a customer<br>* rule_created - Triggered when a rule is created.<br>* subscription_cancelled - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.<br>* omnichannel_subscription_item_updated - Triggered when an omnichannel subscription item is updated.<br>* customer_changed - Sent when a customer is changed<br>* invoice_deleted - Event triggered when an invoice is deleted.<br>* omnichannel_subscription_item_changed - Triggered when an omnichannel subscription item is changed<br>* subscription_shipping_address_updated - Triggered when shipping address is added or updated for a subscription.<br>* differential_price_created - Triggered when a differential price is created<br>* subscription_created - Sent when a new subscription is created.<br>* collections_dispute_updated - Triggered when a collections dispute is updated.<br>* payment_initiated - Sent when a payment is initiated via direct debit<br>* quote_updated - Triggered when quote is updated<br>* payment_source_added - Sent when a payment source is added for a customer.<br>* contract_term_created - Triggered when new contract term is created<br>* collections_reminder_sequence_completed - Triggered when a collections reminder sequence is completed.<br>* subscription_business_entity_changed - Sent when a subscription's business entity is changed.<br>* subscription_deleted - Sent when a subscription has been deleted<br>* differential_price_deleted - Triggered when a differential price is deleted<br>* omnichannel_subscription_created - Triggered when an omnichannel subscription is created<br>* voucher_created - Triggered when a payment voucher is created.<br>* subscription_ramp_drafted - Triggered when a subscription ramp is moved to draft status.<br>* rule_deleted - Triggered when a rule is deleted.<br>* transaction_deleted - Triggered when a transaction is deleted.<br>* item_family_deleted - Triggered when an item family is deleted<br>* payment_failed - Sent when attempt to charge customer's credit card fails<br>* subscription_reactivated_with_backdating - Sent when the subscription is moved from cancelled state to active or in_trial state with past date<br>* omnichannel_subscription_item_cancellation_scheduled - Triggered when an omnichannel subscription item is scheduled for cancellation<br>* omnichannel_subscription_item_resumed - Triggered when an omnichannel subscription item is resumed<br>* payment_source_expiring - Sent when the customer's payment source is expiring soon. Sent 30 days before the expiry date.<br>* payment_schedules_created - Event triggered when new payment schedules are created for an invoice<br>* subscription_entitlements_updated - Triggered when subscription entitlements are updated for a subscription change.<br>* price_variant_updated - Triggered when a price variant is updated.<br>* omnichannel_subscription_item_dunning_expired - Triggered when an omnichannel subscription item's dunning has expired<br>* item_price_updated - Triggered when an item price is updated<br>* order_ready_to_process - Triggered when order reaches its order date<br>* entitlement_overrides_updated - Triggered when an override entitlement is updated<br>* item_updated - Triggered when an item is updated<br>* coupon_set_updated - Sent when a coupon set is changed<br>* subscription_reactivated - Sent when the subscription is moved from cancelled state to active or in_trial state<br>* collections_payment_promise_created - Triggered when a collections payment promise is created.<br>* subscription_scheduled_changes_removed - Sent when scheduled change for the subscription is removed.<br>* customer_business_entity_changed - Sent when a customer's business entity is changed.<br>* collections_reminder_sequence_created - Triggered when a collections reminder sequence is created.<br>* payment_refunded - Sent when a payment refund is made<br>* omnichannel_subscription_item_mrr_updated - Triggered when an omnichannel subscription item's MRR is updated.<br>* subscription_started - Sent when a 'future' subscription gets started at the scheduled date.<br>* attached_item_created - Triggered when an Attached item is created<br>* token_created - Sent when a Token is created<br>* item_family_created - Triggered when an item family is created<br>* subscription_created_with_backdating - Sent when a new subscription is created with backdating.<br>* unbilled_charges_deleted - Triggered when unbilled charges are deleted.<br>* omnichannel_subscription_item_renewed - Triggered when an omnichannel subscription item is renewed<br>* subscription_ramp_applied - Triggered when a subscription ramp is applied.<br>* promotional_credits_added - Sent when promotional credits are added to a customer.<br>* subscription_canceled_with_backdating - Sent when the subscription gets cancelled. If cancelled due to non payment or card not present, the subscription will have the possible reason as 'cancel_reason'.<br>* item_entitlements_updated - Triggered when item entitlements are updated to a feature<br>* card_expired - Sent when a card for a customer is expired<br>* payment_intent_created - Sent when a Payment intent is created<br>* subscription_changed_with_backdating - Sent after the subscription's recurring items have been changed with backdated date<br>* subscription_scheduled_cancellation_removed - Sent when scheduled cancellation is removed for the subscription.<br>* omnichannel_subscription_item_resubscribed - Triggered when an omnichannel subscription item is resubscribed<br>* feature_updated - Triggered when an feature is updated<br>* payment_schedule_scheme_created - Event triggered when a new payment schedule scheme is created<br>* omnichannel_subscription_imported - Triggered when an omnichannel subscription item is imported<br>* vault_token_created - Triggered when a payment method is tokenized and stored in the vault.<br>* tax_withheld_refunded - Sent when a tax withheld refund is made<br>* unbilled_charges_voided - Triggered when unbilled charges are voided.<br>* customer_moved_out - Sent when a customer is copied to another site<br>* dunning_updated - Sent when dunning is paused for an invoice.<br>* feature_created - Triggered when a feature is created.<br>* record_purchase_failed - Triggered when an omnichannel record purchase is failed<br>* coupon_codes_deleted - Sent when coupon codes are deleted in coupon set<br>* subscription_paused - Sent when the subscription is paused.<br>* order_updated - Triggered when order is updated<br>* subscription_movement_failed - Triggered when a subscription movement failed<br>* unbilled_charges_created - Triggered when unbilled charges are created.<br>* subscription_moved_in - Triggered when a subscription moved from other customer<br>* feature_archived - Triggered when a feature is archived.<br>* subscription_ramp_deleted - Triggered when a subscription ramp is deleted.<br>* collections_reminder_sequence_paused - Triggered when a collections reminder sequence is paused.<br>* payment_succeeded - Sent when the payment is successfully collected<br>* voucher_expired - Triggered when a payment voucher is expired.<br>* mrr_updated - Sent when either of MRR or CMRR of a subscription changes<br>* subscription_scheduled_resumption_removed - Triggered when scheduled resumption is removed for the subscription.<br>* subscription_changes_scheduled - Sent when subscription changes are scheduled for later. Changes will be applied at the end of current term.<br>* order_ready_to_ship - Triggered when order reaches its shipping date<br>* einvoice_created - Triggered when an e-invoice is created for an invoice or credit note.<br>* omnichannel_subscription_item_cancelled - Triggered when an omnichannel subscription item is cancelled<br>* payment_due_reminder - Sent after scheduled days of payment failure<br>* purchase_created - Triggered when purchase action completed successfully<br>* subscription_trial_end_reminder - Sent when the customer's trial period is about to end.<br>* feature_activated - Triggered when a feature `status` transitions to `active` for the first time.<br>* subscription_renewed - Sent when the subscription is renewed from the current term.<br>* vault_token_deleted - Triggered when a vaulted payment method is deleted from the vault.<br>* item_created - Triggered when an item is created<br>* coupon_codes_updated - Sent when coupon codes are updated<br>* gift_unclaimed - Triggered when a new gift is unclaimed and is ready to be claimed<br>* subscription_entitlements_created - Triggered when subscription entitlements are created for a new subscription<br>* subscription_ramp_updated - Triggered when a subscription ramp is updated.<br>* virtual_bank_account_added - Sent when a virtual bank account is added for a customer.<br>* subscription_moved_out - Triggered when a subscription moved to other customer<br>* contract_term_completed - Triggered when contract term is completed<br>* feature_deleted - Triggered when a feature is deleted<br>* subscription_renewal_reminder - Sent before each subscription's renewal based on plan's period<br>* coupon_updated - Sent when a coupon is changed.<br>* token_consumed - Sent when a Token is consumed<br>* omnichannel_subscription_item_upgraded - Triggered when an omnichannel subscription item is upgraded<br>* transaction_created - Triggered when a transaction is recorded<br>* payment_schedule_scheme_deleted - Event triggered when a payment schedule scheme is deleted<br>* customer_deleted - Sent when a customer is deleted<br>* subscription_items_renewed - Sent when one or more Subscription Items are renewed<br>* coupon_deleted - Sent when a coupon is deleted.<br>* collections_payment_promise_broken - Triggered when a collections payment promise is marked as broken.<br>* quote_deleted - Triggered when quote is deleted<br>* card_updated - Sent when the card is updated for a customer.<br>* coupon_created - Sent when a coupon is created.<br>* quote_created - Triggered when quote is created<br>* add_usages_reminder - Sent every month day before renewal date of plan's period<br>* business_entity_updated - Sent when a business entity is updated.<br>* subscription_changed - Sent after the subscription's recurring items have been changed<br>* collections_dispute_resolved - Triggered when a collections dispute is resolved.<br>* customer_created - Sent when a new customer is created, either directly or automatically during subscription creation.<br>* price_variant_created - Triggered when a price variant is created.<br>* collections_dispute_created - Triggered when a collections dispute is created.<br>* coupon_set_deleted - Sent when a coupon set is deleted<br>* refund_initiated - Sent when a refund is initiated via direct debit<br>* order_cancelled - Triggered when order is cancelled<br>* entitlement_overrides_removed - Triggered when an override entitlement is removed<br>* coupon_codes_added - Sent when coupon codes are added in coupon set<br>* omnichannel_subscription_item_paused - Triggered when an omnichannel subscription item is paused<br>* card_added - Sent when a card is added for a customer.<br>* gift_cancelled - Triggered when a gift is cancelled.<br>* entitlement_overrides_auto_removed - Triggered when Subscription entitlements overrides for a feature are auto removed after expiry<br>* omnichannel_subscription_moved_in - Triggered when an omnichannel subscription is moved to another customer<br>* omnichannel_subscription_item_downgraded - Triggered when an omnichannel subscription item is downgraded<br>* ledger_updated - Triggered when a batch of [ledger_operations](/docs/api/ledger_operations) is persisted for a subscription unit. The event content includes the related `ledger_operations`, `ledger_account_balance`, `grant_blocks`, and `ledger_entries`.<br>* payment_source_deleted - Sent when a payment source is deleted for a customer<br>* omnichannel_transaction_created - Triggered when an omnichannel transaction is created.<br>* grant_blocks_created - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are created for a subscription unit.<br>* credit_note_created - Sent when a credit note is created<br>* subscription_resumption_scheduled - Triggered when the subscription resumption is scheduled.<br>* item_price_deleted - Triggered when an item price is deleted<br>* subscription_advance_invoice_schedule_updated - Triggered when scheduled advance invoice is updated for a subscription.<br>* item_deleted - Triggered when an item is deleted<br>* omnichannel_one_time_order_item_cancelled - Triggered when an omnichannel one time order item is cancelled<br>* gift_claimed - Triggered when a gift is claimed<br>* feature_reactivated - Triggered when a feature `status` transitions to `active` for the second time or more.<br>* vault_token_updated - Triggered when a vaulted payment method is updated.<br>* subscription_activated - Sent after the subscription has been moved from trial to active state<br>* subscription_resumed - Sent when the subscription is moved from paused state to active state<br>* sales_order_updated - Triggered when a sales order is updated.<br>* credit_note_deleted - Sent when a credit note is deleted<br>* item_price_entitlements_removed - Triggered when item price entitlements are removed for a feature<br>* subscription_advance_invoice_schedule_added - Triggered when advance invoice is scheduled for a subscription.<br>* differential_price_updated - Triggered when a differential price is updated<br>* alert_status_changed -<br>  Triggered when an alert's runtime status for a subscription changes between IN_ALARM and WITHIN_LIMIT.<br>  This indicates a change in the subscription's usage relative to the alert threshold and applies only to usage-based billing.<br>* order_deleted - Triggered when order is deleted<br>* omnichannel_subscription_item_scheduled_cancellation_removed - Triggered when an omnichannel subscription item scheduled cancellation is removed<br>* token_expired - Sent when a Token is expired<br>* collections_reminder_sequence_resumed - Triggered when a collections reminder sequence is resumed.<br>* price_variant_deleted - Triggered when a price variant is deleted.<br>* transaction_updated - Triggered when a transaction is updated. E.g. (1) When a transaction is removed, (2) or when an excess payment is applied on an invoice, (3) or when amount_capturable gets updated.<br>* email_message_received - Triggered when an email message is received.<br>* subscription_cancellation_reminder - Sent when the customer's subscription is nearing its scheduled cancellation date.<br>* rule_updated - Triggered when a rule is updated.<br>* omnichannel_subscription_item_reactivated - Triggered when an omnichannel subscription item's refund is reversed<br>* invoice_generated - Event triggered when a new invoice is generated. In case of metered billing, this event is triggered when a "Pending" invoice is closed.<br>* order_delivered - Triggered when order is marked as delivered<br>* pending_invoice_created - Event triggered (in the case of metered billing) when a "Pending" invoice is created that has usage related charges or line items to be added, before being closed. This is triggered only when the "Notify for Pending Invoices" option is enabled.<br>* subscription_ramp_created - Triggered when a subscription ramp is created.<br>* omnichannel_subscription_item_expired - Triggered when an omnichannel subscription item is expired<br>* refund_failed - Triggered when a refund attempt fails at the gateway.<br>* authorization_succeeded - Triggered when an authorization transaction is created.<br>* invoice_generated_with_backdating - Event triggered when a new invoice is generated with past date as invoice date.<br>* omnichannel_subscription_item_change_scheduled - Triggered when an omnichannel subscription item change is scheduled<br>* subscription_cancellation_scheduled - Sent when subscription is scheduled to cancel at end of current term<br>* order_created - Triggered when order is created<br>* hierarchy_deleted - Triggered when a hierarchy is deleted<br>* subscription_activated_with_backdating - Sent after the subscription changes to `active` from another `status`, while the change is backdated.<br>* tax_withheld_recorded - Triggered when a tax withheld is recorded for an invoice<br>* einvoice_updated - Triggered when an e-invoice is updated (for example when its status or provider responses change).<br>* credit_note_created_with_backdating - Sent when a credit note is created with past date as credit note date<br>* omnichannel_subscription_item_pause_scheduled - Triggered when an omnichannel subscription item scheduled for pause<br>* gift_updated - Triggered when a gift is updated<br>* order_resent - Triggered when order is resent<br>* hierarchy_created - Triggered when a hierarchy is created<br>* voucher_create_failed - Triggered when a payment voucher creation fails.<br>* customer_moved_in - Sent when a customer is copied from another site<br>* customer_entitlements_updated - Triggered when entitlements for the list of customers got updated.<br>* item_price_entitlements_updated - Triggered when item Price entitlements are updated to a feature<br>* omnichannel_subscription_item_grace_period_expired - Triggered when an omnichannel subscription item's grace period has expired<br>* attached_item_deleted - Triggered when an Attached item is deleted<br>* unbilled_charges_invoiced - Triggered when unbilled charges are invoiced.<br>* subscription_pause_scheduled - Sent when the subscription is scheduled to pause.<br>* collections_payment_promise_fulfilled - Triggered when a collections payment promise is fulfilled.<br>* order_returned - Triggered when order is marked as returned<br>* payment_source_expired - Sent when a payment source for a customer is expired<br>* contract_term_terminated - Triggered when contract term is terminated<br>* payment_source_updated - Sent when the payment source is updated for a customer or when role is assigned to the payment source.<br>* pending_invoice_updated - Triggered when you make the following changes to a pending invoice: add a charge, add a non-recurring addon, or delete a line item.<br>* omnichannel_subscription_item_grace_period_started - Triggered when an omnichannel subscription item's grace period has started<br>* subscription_advance_invoice_schedule_removed - Triggered when scheduled advance invoice is removed for a subscription.<br>* collections_payment_promise_updated - Triggered when a collections payment promise is updated.<br>* tax_withheld_deleted - Triggered when a tax withheld is deleted<br>* omnichannel_subscription_item_dunning_started - Triggered when an omnichannel subscription item's dunning has started<br>* business_entity_created - Sent when a business entity is created.<br>* sales_order_created - Triggered when a sales order is created.<br>* item_price_created - Triggered when an item price is created<br>* virtual_bank_account_updated - Sent when the virtual bank account is updated for a customer.<br>* credit_note_updated - Sent when a credit note is updated<br>* subscription_scheduled_pause_removed - Triggered when scheduled pause is removed for the subscription.<br>* card_expiry_reminder - Sent 30 days before the customer's credit card expires.<br>* private_note_added - Triggered when a private note is added.<br>* coupon_set_created - Sent when a coupon set is created<br>* virtual_bank_account_deleted - Sent when a virtual bank account is deleted for a customer.<br>* omnichannel_one_time_order_created - Triggered when an omnichannel one time order is created<br>* gift_scheduled - Triggered when a new gift is created<br>* payment_schedules_updated - Event triggered when payment schedules are updated for an invoice<br>* business_entity_deleted - Sent when a business entity is deleted.<br>* omnichannel_subscription_item_recovered - Triggered when an omnichannel subscription item recovers from a billing issue and is active again.<br>* promotional_credits_deducted - Sent when a customer prmotion credits deducted<br>* ledger_account_balance_updated - Triggered when a [ledger_account_balance](/docs/api/ledger_account_balances) changes for a subscription unit.<br>* contract_term_renewed - Triggered when new contract term is renewed<br>* usage_file_ingested -<br>  Triggered when a [usage_file](/docs/api/usage_files)<br>  is successfully ingested.<br>* subscription_trial_extended - Sent when a subscription trial is extended.<br>* item_entitlements_removed - Triggered when item entitlements are removed for a feature<br>* gift_expired - Triggered when a gift expires<br>* omnichannel_subscription_item_scheduled_change_removed - Triggered when an omnichannel subscription item scheduled change is removed<br>* contract_term_cancelled - Triggered when contract term is cancelled<br>* payment_schedules_cancelled - Event triggered when remaining unpaid payment schedules are cancelled for an invoice.<br>* authorization_voided - Triggered when an authorization transaction is voided. Authorization can be voided either manually or when blocked funds are released by the gateway after a certain period of time.<br>* item_family_updated - Triggered when an item family is updated<br>* attached_item_updated - Triggered when an Attached item is updated<br>* invoice_updated - Triggered when changes are made to a finalized invoice, including voiding, deletion, invoice address updates, status changes, and payment changes such as applying or removing a payment, applying or removing a credit, and credit note creation. `pending_invoice_updated` is triggered for changes specific to pending invoices; invoice_updated covers all other invoice changes.<br>* grant_blocks_updated - Triggered when one or more [grant_blocks](/docs/api/grant_blocks) are updated for a subscription unit.<br>* payment_intent_updated - Sent when a Payment intent is updated<br>* collections_dispute_withdrawn - Triggered when a collections dispute is withdrawn.<br>* collections_payment_promise_cancelled - Triggered when a collections payment promise is cancelled.<br>* payment_source_locally_deleted - Sent when a payment source for a customer removed from Chargebee<br>|
 |site_id|string|false|none|Unique identifier of the Chargebee [site](https://www.chargebee.com/docs/billing/2.0/getting-started/sites-intro) where this event was created. This value does not change if the site is renamed.<br>|
 |api_version|string|false|none|The Chargebee API version used to render this event content. When processing webhooks, ensure that this version matches the one used by your webhook server's client library.<br><br>* v1 - Chargebee API version V1<br>* v2 - Chargebee API version V2<br>|
 |content|object|true|none|The JSON data associated with this event. Has resources (*subscription*<br>, *invoice*<br>etc) based on the [event type](/docs/api/events/event-types).<br>These resources are structured based on the Chargebee API version indicated by the *api_version*<br>attribute.<br>|
@@ -102762,6 +103919,8 @@ Webhooks from Chargebee originate from a [specific set of IP addresses](/docs/ap
 |event_type|customer_business_entity_changed|
 |event_type|subscription_business_entity_changed|
 |event_type|payment_source_business_entity_changed|
+|event_type|organization_details_created|
+|event_type|organization_details_updated|
 |event_type|purchase_created|
 |event_type|voucher_created|
 |event_type|voucher_expired|
@@ -103509,6 +104668,83 @@ null
 |status|invalid|
 |status|pending_verification|
 
+<h2 id="tocS_GatewayRequestLog">GatewayRequestLog</h2>
+<!-- backwards compatibility -->
+<a id="schemagatewayrequestlog"></a>
+<a id="schema_GatewayRequestLog"></a>
+<a id="tocSgatewayrequestlog"></a>
+<a id="tocsgatewayrequestlog"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|log_id|string|false|none|none|
+|url|string|false|none|none|
+|status_code|string|false|none|none|
+|method|string|false|none|none|
+|request_body|string|false|none|none|
+|response_body|string|false|none|none|
+|request_headers|string|false|none|none|
+|response_headers|string|false|none|none|
+|gateway|string|false|none|none|
+|customer_handle|string|false|none|none|
+|invoice_handle|string|false|none|none|
+|transaction_handle|string|false|none|none|
+|payment_method_handle|string|false|none|none|
+|gateway_credential_handle|string|false|none|none|
+|payment_attempt_handle|string|false|none|none|
+|payment_intent_handle|string|false|none|none|
+|payment_method_name|string|false|none|none|
+|operation_name|string|false|none|none|
+|operation_type|string|false|none|none|
+|action_type|string|false|none|none|
+|source|string|false|none|none|
+|trace_id_hash|string|false|none|none|
+|invocation_time|integer(unix-time)|false|none|none|
+|response_received_at|integer(unix-time)|false|none|none|
+|response_time|integer(int64)|false|none|none|
+
+<h2 id="tocS_GatewayWebhookLog">GatewayWebhookLog</h2>
+<!-- backwards compatibility -->
+<a id="schemagatewaywebhooklog"></a>
+<a id="schema_GatewayWebhookLog"></a>
+<a id="tocSgatewaywebhooklog"></a>
+<a id="tocsgatewaywebhooklog"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|webhook_id|string|false|none|none|
+|url|string|false|none|none|
+|method|string|false|none|none|
+|status_code|string|false|none|none|
+|gateway|string|false|none|none|
+|id_at_gateway|string|false|none|none|
+|customer_handle|string|false|none|none|
+|invoice_handle|string|false|none|none|
+|transaction_handle|string|false|none|none|
+|payment_method_handle|string|false|none|none|
+|gateway_credential_handle|string|false|none|none|
+|payment_attempt_handle|string|false|none|none|
+|payment_intent_handle|string|false|none|none|
+|payment_method_name|string|false|none|none|
+|request_body|string|false|none|none|
+|response_body|string|false|none|none|
+|request_headers|string|false|none|none|
+|response_headers|string|false|none|none|
+|received_at|integer(unix-time)|false|none|none|
+|response_time|integer(int64)|false|none|none|
+
 <h2 id="tocS_Gift">Gift</h2>
 <!-- backwards compatibility -->
 <a id="schemagift"></a>
@@ -103751,13 +104987,14 @@ screenshot\|/images/life_cycle_of_credits.png
 |expires_at|integer(unix-time)|true|none|Unix timestamp (in seconds) indicating when this grant block stops being directly consumable.  <br>**Behavior**<br><br>* At expires_at, the block transitions from available to in_grace_period.<br>* During the grace period, eligible late-arriving operations may still consume credits based on their operation_timestamp.  <br>**Finalization**<br>After the grace period ends, any remaining balance is finalized as expired or rolled over, depending on the configured rollover policy.  <br>**Note**<br><br>expires_at is exclusive (unbounded). Any capture operation with a timestamp exactly equal to expires_at is not eligible to consume credits from this block.<br>|
 |origin_grant_block_id|string|false|none|Identifier of the source (originating) grant block from which this block was derived.  <br>**Behavior**<br><br>* Populated only when this block is created through a rollover.<br>* References the block whose remaining balance was carried forward into this block.  <br>**Usage**<br><br>Enables traceability between original and rollover blocks for audit and reporting purposes.<br>|
 |status|string|true|none|Enumerated string representing the current lifecycle state of the grant block.  <br>**Example**<br><br>A block moves from scheduled → available → in_grace_period → exhausted over its lifecycle.<br><br>* available - The block is effective and credit grants are consumable subject to remaining balance and holds.<br>* exhausted - No usable credit grants remain; the block was fully consumed, expired, voided, or rolled over.<br>* in_grace_period -<br>  Past `expires_at` but within the configured grace period; limited consumption is still allowed for eligible<br>  operations (those whose `operation_timestamp` falls within the original validity window).<br>* scheduled - The block exists but `effective_from` is still in the future, so credit grants are not yet spendable.<br>|
-|grant_source|string|true|none|Enumerated string indicating the event or action that resulted in these credit grants being issued.<br><br>* grant_renewal - Issued when a grant is renewed for the next cycle by the grant renewal process (recurring re-grant of the configured credits).<br>* promotional_grants - Issued from the [allocate](/docs/api/ledger_operations/allocate) operation (for example, marketing offers or goodwill credits).<br>* rollover - Issued by carrying forward unused credit grants from another block at end-of-period processing.<br>* subscription_changed -<br>  Issued in response to a subscription change that triggers a new allocation (for example, a plan or addon<br>  update that adjusts the credit grants).<br>* subscription_created - Issued when the subscription was created (initial allocation as per the plan configuration).<br>* top_up - Issued from a top-up purchase or similar add-on credit-grant purchase made on top of the configured plan.<br>* subscription_renewed - Issued when the subscription renews for a new term, triggering a fresh allocation of the configured credit grants.<br>|
+|grant_source|string|true|none|Enumerated string indicating the event or action that resulted in these credit grants being issued.<br><br>* grant_renewal - Issued when a grant is renewed for the next cycle by the grant renewal process (recurring re-grant of the configured credits).<br>* promotional_grants - Issued from the [allocate](/docs/api/ledger_operations/allocate) operation (for example, marketing offers or goodwill credits).<br>* subscription_changed -<br>  Issued in response to a subscription change that triggers a new allocation (for example, a plan or addon<br>  update that adjusts the credit grants).<br>* subscription_created - Issued when the subscription was created (initial allocation as per the plan configuration).<br>* top_up - Issued from a top-up purchase or similar add-on credit-grant purchase made on top of the configured plan.<br>* rollover - Issued by carrying forward unused credit grants from another block at end-of-period processing.<br>* subscription_renewed - Issued when the subscription renews for a new term, triggering a fresh allocation of the configured credit grants.<br>|
 |created_at|integer(unix-time)|true|none|Unix timestamp (in seconds) indicating when this grant block was recorded in the ledger.  <br>**Behavior**<br><br>* Automatically set by the ledger at creation time.<br>* Immutable and cannot be modified after being written.  <br>**Usage**<br><br>Provides a reliable reference for auditability and chronological ordering of grant blocks.<br>|
 |modified_at|integer(unix-time)|true|none|Unix timestamp (seconds) when the grant block was last updated.<br>|
 |resource_version|integer(int64)|false|none|Version number of this resource. The `resource_version` is updated with a new timestamp for every change made to the resource.<br>|
 |metadata|object|false|none|Optional opaque JSON object carrying additional business context  <br>**Behavior**<br><br>* Stored as-is and returned verbatim by the ledger.<br>* Not interpreted, validated, or indexed by the ledger.<br>|
 |provisioned_block_balance|object|false|none|Balance details for a grant block with provisioned [`account_type`](#account_type).  <br>**Note**<br><br>Populated only for blocks with provisioned `account_type`; `null` for overdraft blocks.<br>|
 |overdraft_block_balance|object|false|none|Balance details for a grant block with overdraft [`account_type`](#account_type).  <br>**Note**<br><br>Populated only for blocks with overdraft `account_type`; `null` for provisioned blocks.<br>|
+|billing_metadata|object|false|none|Billing context for this grant block, such as the associated item price and invoice line items. Separate from the opaque [`metadata`](#metadata) object.  <br>**Note**<br><br>Absent when billing context is unavailable; a grant block does not necessarily have an associated invoice. Any field within the object can also be absent or `null`.<br>|
 
 #### Enumerated Values
 
@@ -104388,6 +105625,7 @@ The refundable amount for an invoice is the (amount paid on the invoice + refund
 |first_invoice|boolean|false|none|Boolean indicating the first invoice raised for the subscription. In the case of a non-recurring invoice, it indicates the first invoice raised for the customer.<br>|
 |new_sales_amount|integer(int64)|false|none|The share of the invoice total due to new sales. When `first_invoice`<br>is `true`<br>, this attribute is the same as total. However, when the invoice is a [consolidated](https://www.chargebee.com/docs/2.0/consolidated-invoicing.html )<br>one, then it is the sum of all `line_items.amount`<br>belonging to a new.<br>|
 |has_advance_charges|boolean|false|none|Indicates whether an [advance charge](https://www.chargebee.com/docs/billing/2.0/invoices-credit-notes-and-quotes/advance-invoices) is present in this invoice.<br>|
+|offline_payment_method|string|false|none|none|
 |term_finalized|boolean|true|none|Boolean indicating this invoice line_items terms are finalized or not.<br>|
 |is_gifted|boolean|true|none|Boolean indicating this invoice is gifted or not.<br>|
 |generated_at|integer(unix-time)|false|none|The date when the invoice is finalized. This is the date in the invoice lifecycle when its `status`<br>becomes any one of the following for the first time: `payment_due`<br>, `posted`<br>, or `paid`.<br>For an invoice with `status`<br>as `pending`<br>, this happens when it gets closed.<br>|
@@ -104443,6 +105681,19 @@ The refundable amount for an invoice is the (amount paid on the invoice + refund
 |dunning_status|exhausted|
 |dunning_status|stopped|
 |dunning_status|success|
+|offline_payment_method|no_preference|
+|offline_payment_method|cash|
+|offline_payment_method|check|
+|offline_payment_method|bank_transfer|
+|offline_payment_method|ach_credit|
+|offline_payment_method|sepa_credit|
+|offline_payment_method|boleto|
+|offline_payment_method|us_automated_bank_transfer|
+|offline_payment_method|eu_automated_bank_transfer|
+|offline_payment_method|uk_automated_bank_transfer|
+|offline_payment_method|jp_automated_bank_transfer|
+|offline_payment_method|mx_automated_bank_transfer|
+|offline_payment_method|custom|
 |channel|web|
 |channel|app_store|
 |channel|play_store|
@@ -105606,10 +106857,7 @@ A **meter** captures the usage measurement configuration of a [metered feature](
 
 ### Meter configuration examples
 
-The following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.
+The following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.
 
 When `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.
 
@@ -105664,10 +106912,10 @@ Group-by attributes used only in the `GROUP BY` clause are returned in `group_by
 |description|string|false|none|A brief description of the meter.<br>|
 |type|string|true|none|The type of meter that determines how usage is measured for the meter.<br><br>* compound - Usage is computed from a mathematical formula combining other meters.<br>* simple - Usage is computed from the SQL `query` over [`usage_event`](/docs/api/usage_events) properties.<br>|
 |status|string|false|none|The current status of the meter.<br><br>* active - The meter is active and **new** entitlements can be created towards it.<br>* deleted - The meter has been permanently deleted.<br>* archived - No **new** entitlements can be created towards the meter. However, any pre-existing entitlements from the time that the meter was `active` remain effective.<br>|
-|query|string|true|none|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.<br>|
+|query|string|true|none|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.<br>|
 |created_at|integer(unix-time)|true|none|When the meter was created.<br>|
 |updated_at|integer(unix-time)|false|none|When the meter was last updated.<br>|
-|group_by|[string]|false|none|An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.<br><br>For example, when `query` is `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.<br>|
+|group_by|[string]|false|none|An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.<br><br>For example, when `query` is `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.<br>|
 |column_definitions|[object]|false|none|Definitions of the columns or properties referenced by the meter's `query`. Each entry describes one column used to measure usage.<br>|
 |features|[object]|false|none|The [feature](/docs/api/features) associated with this meter. This array has only one element since any given meter is associated with only one feature.<br>|
 
@@ -105710,10 +106958,7 @@ A metered feature object represents two things:
 
 ### Meter configuration examples
 
-The following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.  
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.
+The following response excerpts show how `query`, `column_definitions`, and `group_by` represent the metering configuration.
 
 When `query` includes a `GROUP BY` clause, the response includes `group_by` as an ordered list of the group-by attributes. Their order matches the order in the `GROUP BY` clause. The `group_by` attribute is not returned when the query does not include a `GROUP BY` clause.
 
@@ -105768,8 +107013,8 @@ Group-by attributes used only in the `GROUP BY` clause are returned in `group_by
 |description|string|false|none|A brief description of the metered feature.<br>|
 |type|string|false|none|The type of meter. Determines how usage is measured for the metered feature.<br><br>* compound - Usage is computed from a mathematical formula combining other meters.<br>* simple - Usage is computed from a SQL `query` over [`usage_event`](/docs/api/usage_events) properties.<br>|
 |status|string|false|none|The current status of the metered feature.<br><br>* active - The metered feature is active and **new** [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) can be created for it.<br>* deleted - The metered feature has been permanently deleted.<br>* archived - No **new** [entitlements](/docs/api/entitlements) and [subscription entitlements](/docs/api/subscription_entitlements) can be created for the metered feature. However, any pre-existing entitlements and subscription entitlements remain effective.<br>|
-|query|string|false|none|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  <br>**Usage reporting and subscription billing**<br><br>For a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.<br><br>For example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.<br>|
-|group_by|[string]|false|none|An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.<br><br>For example, when `query` is `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.<br>|
+|query|string|false|none|The SQL query used to calculate usage from [`usage_event`](/docs/api/usage_events) properties. For example: `SELECT SUM(api_calls) FROM events WHERE status = 'completed'`.<br><br>To group usage by attribute values, include a `GROUP BY` clause. Each distinct set of group-by attribute values forms a separate usage group. For example: `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`. The response returns the group-by attribute names in `group_by`, in the same order.  <br>**Constraints**<br><br>* Properties used in the aggregate expression or `WHERE` clause must be listed in `column_definitions.column_name`.<br>* A group-by attribute used only in the `GROUP BY` clause does not require a `column_definitions` entry. Its value is treated as a string.<br>* The `GROUP BY` clause can contain up to 5 group-by attributes.<br>* Exact duplicate group-by attribute names are not allowed. Names are case-sensitive, so `region, region` is invalid, while `region, Region` identifies two different attributes.  <br>**Usage reporting and subscription billing**<br><br>For a metered feature whose `query` includes a `GROUP BY` clause, grouped usage is available in [Retrieve usage summary for a subscription](/docs/api/usage_summary/retrieve-usage-summary-for-a-subscription) and [Retrieve usages for an invoice as PDF](/docs/api/usages/retrieve-usages-for-an-invoice-as-pdf). These groups are for reporting only. Subscription billing uses the overall aggregate for the metered feature and does not bill each group separately.<br><br>For example, a `SUM` query can return 60 hours for `region=us-east` and 40 hours for `region=eu-west`. The reporting operations can display both groups. Subscription billing uses the overall aggregate of 100 hours.<br>|
+|group_by|[string]|false|none|An ordered list of the group-by attributes in the `GROUP BY` clause of `query`. This attribute is returned only when `query` includes a `GROUP BY` clause.<br><br>For example, when `query` is `SELECT SUM(hours) FROM events WHERE status = 'completed' GROUP BY gpu_type, region`, `group_by` is `["gpu_type", "region"]`.<br>|
 |column_definitions|[object]|false|none|Definitions of the columns or properties referenced by the metered feature's `query`.<br>|
 |features|[object]|false|none|The [feature](/docs/api/features) associated with this metered feature. This array has only one element since any given metered feature is associated with only one feature.<br>|
 
@@ -106110,7 +107355,7 @@ This resource represents in-app subscriptions made on Apple App Store and Google
 |id|string|true|none|The ID generated by Chargebee for the omnichannel subscription.<br>|
 |id_at_source|string|true|none|The identifier of the subscription in the `source`.<br><br>**Apple App Store** : The original purchase **Transaction ID** (stable for the subscription lifecycle).<br><br>**Google Play Store** : The subscription **purchase token** . This value can change when Google issues a new token after certain subscription changes; Chargebee updates `id_at_source` to the latest token.<br>> **Note:** Do not confuse this with `initial_purchase_transaction.id_at_source`. For Google, the nested transaction uses the **Order ID** (`GPA....`), not the purchase token.<br>|
 |app_id|string|true|none|App Identifier in Chargebee. This is the handle created by Chargebee for your app. To get the `app_id`:<br><br>* For **Apple** , follow [these steps](https://www.chargebee.com/docs/billing/2.0/mobile-subscriptions/omnichannel-app-store#create-an-omnichannel-subscription-for-in-app-purchases).<br>* For **Google** , follow [these steps](https://www.chargebee.com/docs/billing/2.0/mobile-subscriptions/omnichannel-play-store#connect-google-app-to-chargebee-to-generate-unique-app-id-and-notifications-url).<br>|
-|source|string|true|none|The storefront where the purchase is originally made and managed (`apple_app_store` or `google_play_store`).<br><br>* google_play_store - The purchase originated from the Google Play Store.<br>* apple_app_store - The purchase originated from the Apple App Store.<br>|
+|source|string|true|none|The storefront where the purchase is originally made and managed (`apple_app_store` or `google_play_store`).<br><br>* apple_app_store - The purchase originated from the Apple App Store.<br>* google_play_store - The purchase originated from the Google Play Store.<br>|
 |customer_id|string|false|none|The `id`<br>of the [customer](/docs/api/customers/customer-object#id)<br>object that is associated with this purchase.<br>|
 |origin|string|false|none|The two-letter [ISO 3166 alpha-2](https://www.iso.org/iso-3166-country-codes.html) country code of the store where the subscription was purchased, such as `US` for the United States. For Apple App Store, this is the storefront country. For Google Play, this is the subscription region code. The attribute may be absent when the store does not provide a country.<br>|
 |created_at|integer(unix-time)|true|none|Timestamp when the `omnichannel_subscription` was created in Chargebee.<br>|
@@ -106192,6 +107437,8 @@ Represents a product entitlement (item) within an [`omnichannel_subscription`](/
 
 Status, auto-renew, term dates, and cancel/expire reasons live on this resource. See [omnichannel statuses](/docs/api/omnichannel_statuses) for store mappings.
 
+When a source store reports an unmapped cancellation or expiration reason, `cancellation_reason` or `expiration_reason` is `other`. When the store provides its original text or code, it's in `cancellation_reason_at_source` or `expiration_reason_at_source`.
+
 Chargebee records introductory and promotional offers on [`omnichannel_subscription_item_offers`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#omnichannel_subscription_item_offers). Win-back offers and offer codes are not supported.
 
 When `has_scheduled_changes` is `true`, use [List scheduled changes](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve deferred product or pause changes.  
@@ -106210,11 +107457,11 @@ This resource represents in-app subscription items made on Apple App Store and G
 |current_term_start|integer(unix-time)|false|none|Start of the current billing period of the subscription item. Applicable when `status` is `active`.<br>|
 |current_term_end|integer(unix-time)|false|none|End of the current billing period of the subscription item. Applicable when [`status`](/docs/api/omnichannel_subscription_items/omnichannel_subscription_item-object#status) is `active`.<br><br>**Apple App Store** : Closest analogue to [`next_billing_at`](/docs/api/subscriptions/subscription-object#next_billing_at) because Apple does not expose a separate next-renewal timestamp. Apple may renew up to 24 hours before expiry and, in billing retry, may retry for up to 60 days. [Learn more](https://developer.apple.com/documentation/storekit/in-app_purchase/original_api_for_in-app_purchase/subscriptions_and_offers/handling_subscriptions_billing#3221910).<br><br>**Google Play Store** : Corresponds to the subscription expiry / next billing boundary from Play. When the customer has canceled but the term has not ended, `status` remains `active` with `auto_renew_status` = `off` (see [omnichannel statuses](/docs/api/omnichannel_statuses)).<br>|
 |expired_at|integer(unix-time)|false|none|Timestamp when the subscription associated with the `omnichannel_subscription_item` expired in the `source`.<br>|
-|expiration_reason|string|false|none|Specifies the reason for the subscription expiration. Present when `status` is `expired`.<br><br>**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.<br><br>**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.<br><br>* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).<br>* other -<br>  The subscription associated with the item expired for an unspecified reason.<br><br>  **Apple App Store** : Maps from expiration intent `OTHER`.<br>* product_not_available -<br>  The product was unavailable for purchase at the time of renewal.<br><br>  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.<br>* billing_error -<br>  Billing error, such as invalid customer payment information.<br><br>  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.<br>|
-|expiration_reason_at_source|string|false|none|none|
+|expiration_reason|string|false|none|Specifies the reason for the subscription expiration. Present when `status` is `expired`. When the value is `other`, see `expiration_reason_at_source` for the original store value when available.<br><br>**Apple App Store** : Commonly maps from Apple expiration intents such as `BILLING_ERROR`, `PRODUCT_NOT_AVAILABLE`, and `OTHER`.<br><br>**Google Play Store** : User-initiated and merchant-revoked expirations typically map to `cancelled` with a `cancellation_reason` instead of `expired`.<br><br>* subscription_not_found_in_source - Indicates that the subscription expired because it was not found in the [`source`](/docs/api/omnichannel_subscriptions/omnichannel_subscription-object#source).<br>* other -<br>  The subscription associated with the item expired for an unspecified or marketplace-specific reason. See `expiration_reason_at_source` for the original store value when available.<br><br>  **Apple App Store** : Maps from expiration intent `OTHER`.<br>* product_not_available -<br>  The product was unavailable for purchase at the time of renewal.<br><br>  **Apple App Store** : Maps from expiration intent `PRODUCT_NOT_AVAILABLE`.<br>* billing_error -<br>  Billing error, such as invalid customer payment information.<br><br>  **Apple App Store** : Maps from expiration intent `BILLING_ERROR`.<br>|
+|expiration_reason_at_source|string|false|none|Expiration reason as reported by the source store (text or code). Present only when `expiration_reason` is `other`. Maximum length is 500 characters.<br>|
 |cancelled_at|integer(unix-time)|false|none|Timestamp when the subscription associated with the `omnichannel_subscription_item` was cancelled in the `source`.<br>|
-|cancellation_reason|string|false|none|The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value.<br><br>* refunded_for_other_reason -<br>  The subscription was cancelled and refunded for another reason.<br><br>  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* refunded_due_to_app_issue -<br>  The subscription was cancelled and refunded due to an app issue.<br><br>  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* customer_did_not_consent_to_price_increase -<br>  The customer did not consent to a price increase for the subscription item.<br><br>  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* customer_cancelled -<br>  The customer voluntarily cancelled the subscription.<br><br>  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.<br><br>  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.<br>* merchant_revoked -<br>  The merchant revoked access to the subscription.<br><br>  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).<br><br>  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).<br>|
-|cancellation_reason_at_source|string|false|none|none|
+|cancellation_reason|string|false|none|The reason the subscription item was cancelled. Present when `status` is `cancelled`. Store applicability varies by enum value. When the value is `other`, see `cancellation_reason_at_source` for the original store value when available.<br><br>* refunded_for_other_reason -<br>  The subscription was cancelled and refunded for another reason.<br><br>  **Apple App Store**: Commonly set for refund notifications with a non-app-issue refund reason.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* refunded_due_to_app_issue -<br>  The subscription was cancelled and refunded due to an app issue.<br><br>  **Apple App Store**: Commonly set for refund notifications with an app-issue refund reason.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* customer_did_not_consent_to_price_increase -<br>  The customer did not consent to a price increase for the subscription item.<br><br>  **Apple App Store** : Maps from expiration intent `CUSTOMER_DID_NOT_CONSENT_TO_PRICE_INCREASE`.<br><br>  **Google Play Store**: Not typically used for this reason code.<br>* other - The subscription item was cancelled for a marketplace-specific or unmapped reason. See `cancellation_reason_at_source` for the original store value when available.<br>* customer_cancelled -<br>  The customer voluntarily cancelled the subscription.<br><br>  **Apple App Store** : Commonly maps from expiration intent `CUSTOMER_CANCELLED`.<br><br>  **Google Play Store**: Commonly maps from user-initiated cancellation / cancel-at-term-end flows.<br>* merchant_revoked -<br>  The merchant revoked access to the subscription.<br><br>  **Apple App Store** : Can apply when access is revoked (for example, `REVOKED` / related refund revoke flows).<br><br>  **Google Play Store** : Commonly maps from revoke / chargeback-style contexts (for example, `SUBSCRIPTION_REVOKED`).<br>|
+|cancellation_reason_at_source|string|false|none|Cancellation reason as reported by the source store (text or code). Present only when `cancellation_reason` is `other`. Maximum length is 500 characters.<br>|
 |grace_period_expires_at|integer(unix-time)|false|none|Timestamp when the grace period for the `omnichannel_subscription_item` expires in the `source`.<br><br>**Apple App Store** : Present when the item is in `in_grace_period` (Apple billing grace period).<br><br>**Google Play Store** : Present when the item is in `in_grace_period` (`SUBSCRIPTION_STATE_IN_GRACE_PERIOD`).<br>|
 |resumes_at|integer(unix-time)|false|none|Timestamp when the subscription automatically resumes after being set to `paused`.<br><br>**Google Play Store**: Typically present for paused subscriptions.<br><br>**Apple App Store**: Pause is not generally applicable in the same way; this attribute is usually absent.<br>|
 |has_scheduled_changes|boolean|true|none|Indicates whether the `omnichannel_subscription_item` has any scheduled changes. When `true`, use [List scheduled changes for an omnichannel subscription item](/docs/api/omnichannel_subscription_items/list-scheduled-changes-for-omnichannel-subscription-item) to retrieve them.<br>|
@@ -107394,6 +108641,89 @@ null
 <a id="schema_OrderUpdatedEvent"></a>
 <a id="tocSorderupdatedevent"></a>
 <a id="tocsorderupdatedevent"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the event|
+|occurred_at|integer(int64)|true|none|Timestamp of the event|
+|source|string|true|none|Source of the event|
+|object|string|true|none|The object of the event|
+|api_version|string|true|none|API version|
+|event_type|string|true|none|Type of the event|
+|webhook_status|string|true|none|Status of webhook|
+|content|object|true|none|none|
+
+<h2 id="tocS_OrganizationDetail">OrganizationDetail</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationdetail"></a>
+<a id="schema_OrganizationDetail"></a>
+<a id="tocSorganizationdetail"></a>
+<a id="tocsorganizationdetail"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|organization_name|string|false|none|none|
+|email|string(email)|false|none|none|
+|address_line1|string|false|none|none|
+|address_line2|string|false|none|none|
+|address_line3|string|false|none|none|
+|city|string|false|none|none|
+|state_code|string|false|none|none|
+|state|string|false|none|none|
+|country_code|string|false|none|none|
+|zip|string|false|none|none|
+|phone|string|false|none|none|
+|fax|string|false|none|none|
+|website|string|false|none|none|
+|is_vat_number_present|boolean|false|none|none|
+|vat_number|string|false|none|none|
+|resource_version|integer(int64)|false|none|none|
+|updated_at|integer(unix-time)|false|none|none|
+|business_entity_id|string|false|none|none|
+
+<h2 id="tocS_OrganizationDetailsCreatedEvent">OrganizationDetailsCreatedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationdetailscreatedevent"></a>
+<a id="schema_OrganizationDetailsCreatedEvent"></a>
+<a id="tocSorganizationdetailscreatedevent"></a>
+<a id="tocsorganizationdetailscreatedevent"></a>
+
+```json
+null
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The ID of the event|
+|occurred_at|integer(int64)|true|none|Timestamp of the event|
+|source|string|true|none|Source of the event|
+|object|string|true|none|The object of the event|
+|api_version|string|true|none|API version|
+|event_type|string|true|none|Type of the event|
+|webhook_status|string|true|none|Status of webhook|
+|content|object|true|none|none|
+
+<h2 id="tocS_OrganizationDetailsUpdatedEvent">OrganizationDetailsUpdatedEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemaorganizationdetailsupdatedevent"></a>
+<a id="schema_OrganizationDetailsUpdatedEvent"></a>
+<a id="tocSorganizationdetailsupdatedevent"></a>
+<a id="tocsorganizationdetailsupdatedevent"></a>
 
 ```json
 null
@@ -110863,6 +112193,8 @@ Each platform site includes a unique `id`, the associated `site_id`, and a `doma
 |created_at|integer(unix-time)|true|none|Timestamp indicating when this platform site was created.<br>|
 |timezone|string|false|none|none|
 |created_from_ip|string|false|none|none|
+|claim_url|string|false|none|none|
+|claim_expiry_at|integer(unix-time)|false|none|none|
 |linked_sites|[object]|false|none|none|
 
 #### Enumerated Values
@@ -110872,6 +112204,8 @@ Each platform site includes a unique `id`, the associated `site_id`, and a `doma
 |status|active|
 |status|disabled|
 |status|cancelled|
+|status|unclaimed|
+|status|claimed|
 |type|sandbox|
 |type|live|
 |locale|en|
@@ -115017,10 +116351,6 @@ Use this resource to analyze feature-level usage for reporting or analytics purp
 
 ### Group-by attributes
 
-**Availability**
-
-Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.
-
 When usage is grouped, each distinct set of group-by attribute values forms one group. The response returns each group as a separate `usage_summary` object with an `attributes` list containing:
 
 * `name`: The group-by attribute name.
@@ -115056,7 +116386,7 @@ The order of entries in `attributes` matches the order of the names specified in
 |aggregated_value|string|true|none|The total usage aggregated over the reporting window defined by `aggregated_from` and `aggregated_to`. The aggregation is performed based on the [aggregation method](https://www.chargebee.com/docs/billing/2.0/usage-based-billing/defining-metered-features) configured in Billing.<br>|
 |aggregated_from|integer(unix-time)|true|none|The start timestamp (inclusive) of the aggregation window in UTC.<br>|
 |aggregated_to|integer(unix-time)|true|none|The end timestamp (exclusive) of the aggregation window in UTC.<br>|
-|attributes|[object]|false|none|The group-by attributes that identify the usage group. Each entry contains the group-by attribute's `name` and `value`. A null group is returned with `value` set to JSON `null`, while an empty-string group has `value` set to `""`.  <br>**Availability**<br><br>Support for adding `GROUP BY` to metered features and retrieving usage grouped by attributes is an upcoming capability and is not generally available yet. It will be made available in the coming weeks.<br><br>This list is returned only when the request includes `group_by`. Its order matches the group-by attribute order specified in `group_by`.<br>|
+|attributes|[object]|false|none|The group-by attributes that identify the usage group. Each entry contains the group-by attribute's `name` and `value`. A null group is returned with `value` set to JSON `null`, while an empty-string group has `value` set to `""`.<br><br>This list is returned only when the request includes `group_by`. Its order matches the group-by attribute order specified in `group_by`.<br>|
 
 <h2 id="tocS_ValidationStatus">ValidationStatus</h2>
 <!-- backwards compatibility -->
@@ -115749,6 +117079,8 @@ You can create up to five webhook endpoints per site.
 |enabled_events|customer_business_entity_changed|
 |enabled_events|subscription_business_entity_changed|
 |enabled_events|payment_source_business_entity_changed|
+|enabled_events|organization_details_created|
+|enabled_events|organization_details_updated|
 |enabled_events|purchase_created|
 |enabled_events|voucher_created|
 |enabled_events|voucher_expired|

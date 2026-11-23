@@ -6199,12 +6199,12 @@ Dash manifest configuration parameters.
 {}
 ```
 
-<h2 id="tocS_Long">Long</h2>
+<h2 id="tocS_Long2">Long2</h2>
 <!-- backwards compatibility -->
-<a id="schemalong"></a>
-<a id="schema_Long"></a>
-<a id="tocSlong"></a>
-<a id="tocslong"></a>
+<a id="schemalong2"></a>
+<a id="schema_Long2"></a>
+<a id="tocSlong2"></a>
+<a id="tocslong2"></a>
 
 ```json
 0
@@ -6442,12 +6442,12 @@ HLS playlist configuration parameters.
 "DASH"
 ```
 
-<h2 id="tocS_Integer">Integer</h2>
+<h2 id="tocS_Integer2">Integer2</h2>
 <!-- backwards compatibility -->
-<a id="schemainteger"></a>
-<a id="schema_Integer"></a>
-<a id="tocSinteger"></a>
-<a id="tocsinteger"></a>
+<a id="schemainteger2"></a>
+<a id="schema_Integer2"></a>
+<a id="tocSinteger2"></a>
+<a id="tocsinteger2"></a>
 
 ```json
 0
@@ -7209,12 +7209,12 @@ The properties for a schedule.
 |SourceLocationName|object|true|none|none|
 |VodSourceName|object|false|none|none|
 
-<h2 id="tocS_String">String</h2>
+<h2 id="tocS_String2">String2</h2>
 <!-- backwards compatibility -->
-<a id="schemastring"></a>
-<a id="schema_String"></a>
-<a id="tocSstring"></a>
-<a id="tocsstring"></a>
+<a id="schemastring2"></a>
+<a id="schema_String2"></a>
+<a id="tocSstring2"></a>
+<a id="tocsstring2"></a>
 
 ```json
 "string"

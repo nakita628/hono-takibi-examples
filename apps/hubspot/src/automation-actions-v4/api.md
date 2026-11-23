@@ -22,12 +22,9 @@ Base URLs:
 |Scope|Scope Description|
 |---|---|
 |automation||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|workflows.delete||
+|workflows.read||
+|workflows.write||
 
 <h1 id="automation-actions-v4-callbacks">Callbacks</h1>
 
@@ -79,7 +76,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: automation )
+oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
 </aside>
 
 ## Completes a callback
@@ -134,7 +131,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: automation )
+oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
 </aside>
 
 <h1 id="automation-actions-v4-definitions">Definitions</h1>
@@ -2064,6 +2061,7 @@ null
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|allowedObjectTypeIds|[string]|false|none|none|
 |format|string|false|none|Specifies the format of the string, with accepted values: DATE, DATE_TIME, OBJECT_COORDINATE, TIME, URI.|
 |type|string|true|none|Indicates that the type is a string, with the default value being STRING.|
 
@@ -2075,6 +2073,7 @@ null
 |format|DATE_TIME|
 |format|MONTH_AND_DAY|
 |format|OBJECT_COORDINATE|
+|format|OBJECT_PROPERTY|
 |format|OBJECT_TYPE|
 |format|TIME|
 |format|URI|

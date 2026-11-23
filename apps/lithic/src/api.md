@@ -21690,6 +21690,7 @@ List network total records with optional filters. Not available in sandbox.
 
 |Parameter|Value|
 |---|---|
+|network|ALLPOINT|
 |network|AMEX|
 |network|VISA|
 |network|MASTERCARD|
@@ -31815,29 +31816,29 @@ Occurs when a dispute intake claim is created.
 ```json
 {
   "event_type": "claim.created",
-  "token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "reference_id": "string",
+  "token": "3f2a8c1e-5b7d-4e9a-8c2f-1d6e4b9a7c35",
+  "reference_id": null,
   "card_tokens": [
-    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    "78ddee49-4558-4a79-80ce-339e12cc141c"
   ],
-  "account_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "account_holder_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "created": "1970-01-01T00:00:00Z",
-  "updated": "1970-01-01T00:00:00Z",
+  "account_token": "82d7c408-2bbb-4f63-889a-8a2a2b1601af",
+  "account_holder_token": "9b1e5c2a-6f3d-4a8e-b7c4-2e8f1a9d6b03",
+  "created": "2024-02-07T10:00:00Z",
+  "updated": "2024-02-07T10:00:00Z",
   "disputed_transactions": [
     {
-      "transaction_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "transaction_token": "98765432-e89b-12d3-a456-426614174000",
       "event_tokens": [
-        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        "7063f2ae-e806-44dd-9b1f-07e5df61e9e2"
       ]
     }
   ],
-  "reason": "CARD_NOT_PRESENT",
-  "status": "INITIALIZING",
+  "reason": "PRODUCT_NOT_RECEIVED",
+  "status": "AWAITING_INFO",
   "outstanding_requirements": [
     "QUESTIONNAIRE"
   ],
-  "submitted": "1970-01-01T00:00:00Z"
+  "submitted": null
 }
 ```
 
@@ -31916,29 +31917,27 @@ Occurs when a dispute intake claim is updated, such as a status change or a chan
 ```json
 {
   "event_type": "claim.updated",
-  "token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "reference_id": "string",
+  "token": "3f2a8c1e-5b7d-4e9a-8c2f-1d6e4b9a7c35",
+  "reference_id": "ROL12345",
   "card_tokens": [
-    "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+    "78ddee49-4558-4a79-80ce-339e12cc141c"
   ],
-  "account_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "account_holder_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "created": "1970-01-01T00:00:00Z",
-  "updated": "1970-01-01T00:00:00Z",
+  "account_token": "82d7c408-2bbb-4f63-889a-8a2a2b1601af",
+  "account_holder_token": "9b1e5c2a-6f3d-4a8e-b7c4-2e8f1a9d6b03",
+  "created": "2024-02-07T10:00:00Z",
+  "updated": "2024-02-07T10:15:00Z",
   "disputed_transactions": [
     {
-      "transaction_token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "transaction_token": "98765432-e89b-12d3-a456-426614174000",
       "event_tokens": [
-        "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        "7063f2ae-e806-44dd-9b1f-07e5df61e9e2"
       ]
     }
   ],
-  "reason": "CARD_NOT_PRESENT",
-  "status": "INITIALIZING",
-  "outstanding_requirements": [
-    "QUESTIONNAIRE"
-  ],
-  "submitted": "1970-01-01T00:00:00Z"
+  "reason": "PRODUCT_NOT_RECEIVED",
+  "status": "SUBMITTED",
+  "outstanding_requirements": [],
+  "submitted": "2024-02-07T10:15:00Z"
 }
 ```
 
@@ -32017,23 +32016,23 @@ Occurs when a claim document is uploaded and begins validation.
 ```json
 {
   "event_type": "claim_document.uploaded",
-  "token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "created": "1970-01-01T00:00:00Z",
-  "updated": "1970-01-01T00:00:00Z",
-  "requirement_id": "string",
-  "name": "string",
-  "status": "PENDING",
-  "failure_reason": "INVALID_MIME_TYPE",
-  "upload_url": "string",
-  "upload_url_expires_at": "1970-01-01T00:00:00Z",
+  "token": "c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81",
+  "created": "2024-02-07T10:05:00Z",
+  "updated": "2024-02-07T10:06:00Z",
+  "requirement_id": "proof_of_payment",
+  "name": "document.pdf",
+  "status": "VALIDATING",
+  "failure_reason": null,
+  "upload_url": null,
+  "upload_url_expires_at": null,
   "upload_constraints": {
     "accepted_mime_types": [
-      "string"
+      "application/pdf"
     ],
-    "max_size_bytes": 0
+    "max_size_bytes": 10485760
   },
-  "download_url": "string",
-  "download_url_expires_at": "1970-01-01T00:00:00Z"
+  "download_url": "https://example.com/claim-documents/c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81",
+  "download_url_expires_at": "2024-02-07T10:21:00Z"
 }
 ```
 
@@ -32097,23 +32096,23 @@ Occurs when a claim document passes validation and is accepted.
 ```json
 {
   "event_type": "claim_document.accepted",
-  "token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "created": "1970-01-01T00:00:00Z",
-  "updated": "1970-01-01T00:00:00Z",
-  "requirement_id": "string",
-  "name": "string",
-  "status": "PENDING",
-  "failure_reason": "INVALID_MIME_TYPE",
-  "upload_url": "string",
-  "upload_url_expires_at": "1970-01-01T00:00:00Z",
+  "token": "c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81",
+  "created": "2024-02-07T10:05:00Z",
+  "updated": "2024-02-07T10:07:00Z",
+  "requirement_id": "proof_of_payment",
+  "name": "document.pdf",
+  "status": "ACCEPTED",
+  "failure_reason": null,
+  "upload_url": null,
+  "upload_url_expires_at": null,
   "upload_constraints": {
     "accepted_mime_types": [
-      "string"
+      "application/pdf"
     ],
-    "max_size_bytes": 0
+    "max_size_bytes": 10485760
   },
-  "download_url": "string",
-  "download_url_expires_at": "1970-01-01T00:00:00Z"
+  "download_url": "https://example.com/claim-documents/c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81",
+  "download_url_expires_at": "2024-02-07T10:22:00Z"
 }
 ```
 
@@ -32177,23 +32176,23 @@ Occurs when a claim document fails validation and is rejected.
 ```json
 {
   "event_type": "claim_document.rejected",
-  "token": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "created": "1970-01-01T00:00:00Z",
-  "updated": "1970-01-01T00:00:00Z",
-  "requirement_id": "string",
-  "name": "string",
-  "status": "PENDING",
+  "token": "c4e8a2b6-1d3f-4a5c-9e7b-8f0a2c4d6e81",
+  "created": "2024-02-07T10:05:00Z",
+  "updated": "2024-02-07T10:07:00Z",
+  "requirement_id": "proof_of_payment",
+  "name": "document.pdf",
+  "status": "REJECTED",
   "failure_reason": "INVALID_MIME_TYPE",
-  "upload_url": "string",
-  "upload_url_expires_at": "1970-01-01T00:00:00Z",
+  "upload_url": null,
+  "upload_url_expires_at": null,
   "upload_constraints": {
     "accepted_mime_types": [
-      "string"
+      "application/pdf"
     ],
-    "max_size_bytes": 0
+    "max_size_bytes": 10485760
   },
-  "download_url": "string",
-  "download_url_expires_at": "1970-01-01T00:00:00Z"
+  "download_url": null,
+  "download_url_expires_at": null
 }
 ```
 
@@ -34514,7 +34513,7 @@ Occurs when a network total is created.
 |body|body|object|false|none|
 |» event_type|body|string|true|The type of event that occurred.|
 |» token|body|string(uuid)|true|Globally unique identifier.|
-|» network|body|string|true|Card network where the transaction took place. AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
+|» network|body|string|true|Card network where the transaction took place. ALLPOINT, AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
 |» institution_id|body|string|true|The institution that activity occurred on. For Mastercard: ICA (Interbank Card Association). For Maestro: institution ID. For Visa: lowest level SRE (Settlement Reporting Entity).|
 |» settlement_institution_id|body|string|true|The institution responsible for settlement. For Mastercard: same as `institution_id`. For Maestro: billing ICA. For Visa: Funds Transfer SRE (FTSRE).|
 |» settlement_service|body|string|true|Settlement service.|
@@ -34534,6 +34533,7 @@ Occurs when a network total is created.
 
 |Parameter|Value|
 |---|---|
+|» network|ALLPOINT|
 |» network|AMEX|
 |» network|VISA|
 |» network|MASTERCARD|
@@ -34590,7 +34590,7 @@ Occurs when a network total is updated.
 |body|body|object|false|none|
 |» event_type|body|string|true|The type of event that occurred.|
 |» token|body|string(uuid)|true|Globally unique identifier.|
-|» network|body|string|true|Card network where the transaction took place. AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
+|» network|body|string|true|Card network where the transaction took place. ALLPOINT, AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
 |» institution_id|body|string|true|The institution that activity occurred on. For Mastercard: ICA (Interbank Card Association). For Maestro: institution ID. For Visa: lowest level SRE (Settlement Reporting Entity).|
 |» settlement_institution_id|body|string|true|The institution responsible for settlement. For Mastercard: same as `institution_id`. For Maestro: billing ICA. For Visa: Funds Transfer SRE (FTSRE).|
 |» settlement_service|body|string|true|Settlement service.|
@@ -34610,6 +34610,7 @@ Occurs when a network total is updated.
 
 |Parameter|Value|
 |---|---|
+|» network|ALLPOINT|
 |» network|AMEX|
 |» network|VISA|
 |» network|MASTERCARD|
@@ -45852,7 +45853,7 @@ Information about the financial account state
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|amount|integer|true|none|Payment due at the end of the billing period in cents. Negative amount indicates something is owed. If the amount owed is positive there was a net credit. If auto-collections are enabled this is the amount that will be requested on the payment due date|
+|amount|integer|true|none|Payment due at the end of the billing period in cents, excluding any past due amount. A positive amount indicates something is owed. A negative amount indicates a net credit. The minimum payment for the statement is the sum of `amount` and `past_due`. If auto-collections are enabled, this sum is the amount that will be requested on the payment due date|
 |past_due|integer|true|none|Amount past due for statement in cents|
 
 <h2 id="tocS_payoff_details">payoff_details</h2>
@@ -51313,6 +51314,7 @@ Request to return an ACH payment
 
 |Property|Value|
 |---|---|
+|network|ALLPOINT|
 |network|AMEX|
 |network|INTERLINK|
 |network|MAESTRO|
@@ -51367,6 +51369,7 @@ Request to return an ACH payment
 
 |Property|Value|
 |---|---|
+|network|ALLPOINT|
 |network|AMEX|
 |network|INTERLINK|
 |network|MAESTRO|
@@ -51457,7 +51460,7 @@ Request to return an ACH payment
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |token|string(uuid)|true|none|Globally unique identifier.|
-|network|string|true|none|Card network where the transaction took place. AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
+|network|string|true|none|Card network where the transaction took place. ALLPOINT, AMEX, VISA, MASTERCARD, MAESTRO, or INTERLINK.|
 |institution_id|string|true|none|The institution that activity occurred on. For Mastercard: ICA (Interbank Card Association). For Maestro: institution ID. For Visa: lowest level SRE (Settlement Reporting Entity).|
 |settlement_institution_id|string|true|none|The institution responsible for settlement. For Mastercard: same as `institution_id`. For Maestro: billing ICA. For Visa: Funds Transfer SRE (FTSRE).|
 |settlement_service|string|true|none|Settlement service.|
@@ -51473,6 +51476,7 @@ Request to return an ACH payment
 
 |Property|Value|
 |---|---|
+|network|ALLPOINT|
 |network|AMEX|
 |network|VISA|
 |network|MASTERCARD|

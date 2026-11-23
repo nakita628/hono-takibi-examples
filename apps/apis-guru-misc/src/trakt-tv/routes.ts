@@ -538,18 +538,14 @@ export const getCalendarsAllDvdStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -631,18 +627,14 @@ export const getCalendarsAllMoviesStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -724,18 +716,14 @@ export const getCalendarsAllShowsNewStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -817,18 +805,14 @@ export const getCalendarsAllShowsPremieresStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -910,18 +894,14 @@ export const getCalendarsAllShowsStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1004,18 +984,14 @@ export const getCalendarsMyDvdStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1099,18 +1075,14 @@ export const getCalendarsMyMoviesStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1194,18 +1166,14 @@ export const getCalendarsMyShowsNewStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1289,18 +1257,14 @@ export const getCalendarsMyShowsPremieresStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1384,18 +1348,14 @@ export const getCalendarsMyShowsStartDateDaysRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-End-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-End-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1783,30 +1743,22 @@ export const getCommentsRecentCommentTypeTypeRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -1899,30 +1851,22 @@ export const getCommentsTrendingCommentTypeTypeRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2015,30 +1959,22 @@ export const getCommentsUpdatesCommentTypeTypeRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2101,18 +2037,14 @@ export const getCommentsIdRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Item-ID': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Item-Type': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Item-ID': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Item-Type': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2482,30 +2414,22 @@ export const getCommentsIdLikesRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2568,30 +2492,22 @@ export const getCommentsIdRepliesRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2869,30 +2785,22 @@ export const getListsPopularRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -2941,30 +2849,22 @@ export const getListsTrendingRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3035,18 +2935,14 @@ export const getListsIdRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3129,30 +3025,22 @@ export const getListsIdCommentsSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3227,24 +3115,18 @@ export const getListsIdItemsTypeRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Private-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Private-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3306,30 +3188,22 @@ export const getListsIdLikesRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3378,30 +3252,22 @@ export const getMoviesAnticipatedRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3505,30 +3371,22 @@ export const getMoviesCollectedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3591,30 +3449,22 @@ export const getMoviesPlayedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3663,30 +3513,22 @@ export const getMoviesPopularRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3749,30 +3591,22 @@ export const getMoviesRecommendedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3821,36 +3655,26 @@ export const getMoviesTrendingRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Trending-User-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Trending-User-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -3913,36 +3737,26 @@ export const getMoviesUpdatesIdStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4005,36 +3819,26 @@ export const getMoviesUpdatesStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4097,30 +3901,22 @@ export const getMoviesWatchedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4313,30 +4109,22 @@ export const getMoviesIdCommentsSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4429,30 +4217,22 @@ export const getMoviesIdListsTypeSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -4624,30 +4404,22 @@ export const getMoviesIdRelatedRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5255,36 +5027,26 @@ export const getPeopleUpdatesIdStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5347,36 +5109,26 @@ export const getPeopleUpdatesStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5527,30 +5279,22 @@ export const getPeopleIdListsTypeSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5737,18 +5481,14 @@ export const getRecommendationsMoviesRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -5881,18 +5621,14 @@ export const getRecommendationsShowsRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6309,30 +6045,22 @@ export const getSearchIdTypeIdRoute = createRoute({
       description: '```\n/search/trakt/12601?type=movie\n/search/imdb/tt1104001\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6427,30 +6155,22 @@ export const getSearchTypeRoute = createRoute({
       description: '```\n/search/movie,show,episode,person,list?query=tron\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6499,30 +6219,22 @@ export const getShowsAnticipatedRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6585,30 +6297,22 @@ export const getShowsCollectedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6671,30 +6375,22 @@ export const getShowsPlayedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6743,18 +6439,14 @@ export const getShowsPopularRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6817,30 +6509,22 @@ export const getShowsRecommendedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6889,36 +6573,26 @@ export const getShowsTrendingRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Trending-User-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Trending-User-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -6981,36 +6655,26 @@ export const getShowsUpdatesIdStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7073,36 +6737,26 @@ export const getShowsUpdatesStartDateRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Start-Date': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Start-Date': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7165,30 +6819,22 @@ export const getShowsWatchedPeriodRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7444,30 +7090,22 @@ export const getShowsIdCommentsSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -7615,30 +7253,22 @@ export const getShowsIdListsTypeSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8186,30 +7816,22 @@ export const getShowsIdRelatedRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8467,30 +8089,22 @@ export const getShowsIdSeasonsSeasonCommentsSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8709,30 +8323,22 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeCommentsSortRoute = createRou
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -8862,30 +8468,22 @@ export const getShowsIdSeasonsSeasonEpisodesEpisodeListsTypeSortRoute = createRo
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -9485,30 +9083,22 @@ export const getShowsIdSeasonsSeasonListsTypeSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -10942,30 +10532,22 @@ export const getSyncHistoryTypeIdRoute = createRoute({
       description: '```\n/sync/history/episodes\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -11845,18 +11427,14 @@ export const getSyncRecommendationsTypeSortRoute = createRoute({
       description: '```\n/sync/recommendations/shows\n```',
       content: {},
       headers: z.object({
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12109,24 +11687,18 @@ export const postSyncWatchlistRoute = createRoute({
     420: {
       description: '',
       headers: z.object({
-        'X-Account-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Upgrade-URL': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-VIP-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Account-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Upgrade-URL': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-VIP-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12288,18 +11860,14 @@ export const getSyncWatchlistTypeSortRoute = createRoute({
       description: '```\n/sync/watchlist/episodes\n```',
       content: {},
       headers: z.object({
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12394,30 +11962,22 @@ export const getUsersHiddenSectionRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -12802,30 +12362,22 @@ export const getUsersSavedFiltersSectionRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13102,30 +12654,22 @@ export const getUsersIdCommentsCommentTypeTypeRoute = createRoute({
       description: '```\n/users/sean/comments\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13522,30 +13066,22 @@ export const getUsersIdHistoryTypeItemIdRoute = createRoute({
       description: '```\n/users/sean/history/episodes\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13619,30 +13155,22 @@ export const getUsersIdLikesTypeRoute = createRoute({
       description: '```\n/users/sean/likes/lists\n```',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -13789,24 +13317,18 @@ export const postUsersIdListsRoute = createRoute({
     420: {
       description: '',
       headers: z.object({
-        'X-Account-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Upgrade-URL': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-VIP-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Account-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Upgrade-URL': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-VIP-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14002,18 +13524,14 @@ export const getUsersIdListsListIdRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14254,30 +13772,22 @@ export const getUsersIdListsListIdCommentsSortRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14480,24 +13990,18 @@ export const postUsersIdListsListIdItemsRoute = createRoute({
     420: {
       description: '',
       headers: z.object({
-        'X-Account-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Upgrade-URL': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-VIP-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Account-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Upgrade-URL': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-VIP-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -14841,24 +14345,18 @@ export const getUsersIdListsListIdItemsTypeRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Private-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Private-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15065,30 +14563,22 @@ export const getUsersIdListsListIdLikesRoute = createRoute({
       description: 'OK',
       content: {},
       headers: z.object({
-        'X-Pagination-Item-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Limit': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Pagination-Page-Count': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Pagination-Item-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Limit': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Pagination-Page-Count': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15269,18 +14759,14 @@ export const getUsersIdRecommendationsTypeSortRoute = createRoute({
       description: '```\n/users/justin/recommendations/shows\n```',
       content: {},
       headers: z.object({
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },
@@ -15552,24 +15038,18 @@ export const getUsersIdWatchlistTypeSortRoute = createRoute({
       description: '```\n/users/sean/watchlist/episodes\n```',
       content: {},
       headers: z.object({
-        'X-Private-User': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-By': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
-        'X-Sort-How': {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        'X-Private-User': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-By': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
+        'X-Sort-How': z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
   },

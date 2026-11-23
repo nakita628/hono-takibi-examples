@@ -6,7 +6,7 @@ Base URLs:
 
 * <a href="http://mbus.local">http://mbus.local</a>
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 <h1 id="m-bus-httpd-api-default">Default</h1>
 

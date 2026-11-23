@@ -4332,6 +4332,7 @@ export const getBlogsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -4350,6 +4351,7 @@ export const getBlogsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
     }),
   },
@@ -6781,6 +6783,7 @@ export const getDocumentsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -6799,6 +6802,7 @@ export const getDocumentsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
       order_by: z
         .enum(['id', 'updated_at', 'created_at', 'name'])
@@ -7025,6 +7029,7 @@ export const getDocumentsDocumentIdSimilarsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       'with[]': z
         .preprocess(
@@ -7830,6 +7835,7 @@ export const getProjectsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -7848,6 +7854,7 @@ export const getProjectsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
       'status[]': z
         .preprocess(
@@ -8098,6 +8105,7 @@ export const getProjectsVendorRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -8116,6 +8124,7 @@ export const getProjectsVendorRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
     }),
   },
@@ -8824,6 +8833,7 @@ export const postProjectsIdPackageRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
     }),
   },
@@ -8967,6 +8977,7 @@ export const postProjectsIdPackageLanguageRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
     }),
   },
@@ -9467,6 +9478,7 @@ export const getProjectsProjectIdActivitiesRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -9485,6 +9497,7 @@ export const getProjectsProjectIdActivitiesRoute = createRoute({
             schema: { default: 10, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
     }),
   },
@@ -9755,6 +9768,7 @@ export const getProjectsProjectIdCommentsRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -9773,6 +9787,7 @@ export const getProjectsProjectIdCommentsRoute = createRoute({
             schema: { default: 10, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 10,
         }),
     }),
   },
@@ -10934,6 +10949,7 @@ export const postProjectsProjectIdStringsPackageRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       format: z
         .string()
@@ -11070,6 +11086,7 @@ export const postProjectsProjectIdStringsLanguageCodePackageRoute = createRoute(
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       format: z
         .string()
@@ -11919,6 +11936,7 @@ export const getSearchRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -11937,6 +11955,7 @@ export const getSearchRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
     }),
   },
@@ -12129,6 +12148,7 @@ export const getStringsRoute = createRoute({
             required: false,
             schema: { default: 0, format: 'int64', type: 'integer' },
           },
+          default: 0,
         }),
     }),
   },
@@ -12230,6 +12250,7 @@ export const postStringsLanguageCodePackageRoute = createRoute({
             schema: { default: 0, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 0,
         }),
       email: z
         .preprocess((val) => {
@@ -12249,6 +12270,7 @@ export const postStringsLanguageCodePackageRoute = createRoute({
             schema: { default: 1, format: 'int64', type: 'integer' },
             required: false,
           },
+          default: 1,
         }),
     }),
   },
@@ -12625,6 +12647,7 @@ export const getUsersRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -12643,6 +12666,7 @@ export const getUsersRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
       user_type: z
         .enum(['vendor', 'all'])
@@ -13114,6 +13138,7 @@ export const getUserIdDocumentsRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -13132,6 +13157,7 @@ export const getUserIdDocumentsRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
       order_by: z
         .enum(['id', 'updated_at', 'created_at', 'name'])
@@ -13639,6 +13665,7 @@ export const getUserIdProjectsVendorRoute = createRoute({
             required: false,
             schema: { default: 1, format: 'int64', type: 'integer' },
           },
+          default: 1,
         }),
       per_page: z
         .preprocess((val) => {
@@ -13657,6 +13684,7 @@ export const getUserIdProjectsVendorRoute = createRoute({
             required: false,
             schema: { default: 10, format: 'int64', type: 'integer' },
           },
+          default: 10,
         }),
     }),
   },

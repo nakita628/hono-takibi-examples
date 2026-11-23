@@ -1071,27 +1071,72 @@ const OAuthClientSchema = z
 
 const OAuthTokenPasswordSchema = OAuthClientSchema.and(
   z
-    .object({
-      grant_type: z.enum(['password', 'refresh_token']).default('password').exactOptional(),
-      password: PasswordSchema.exactOptional(),
-      username: UsernameSchema.exactOptional(),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'username', 'password'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'client_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'client_secret')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'grant_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'username')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'password')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        grant_type: z.enum(['password', 'refresh_token']).default('password').exactOptional(),
+        password: PasswordSchema.exactOptional(),
+        username: UsernameSchema.exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'username', 'password'] })
   .openapi('OAuthTokenPassword')
 
 const OAuthTokenRefreshTokenSchema = OAuthClientSchema.and(
   z
-    .object({
-      grant_type: z.enum(['password', 'refresh_token']).default('password').exactOptional(),
-      refresh_token: z
-        .string()
-        .exactOptional()
-        .openapi({ example: '2e0d675df9fc96d2e4ec8a3ebbbf45eca9137bb7' }),
-    })
-    .openapi({ required: [] }),
+    .looseObject({})
+    .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'refresh_token'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'client_id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'client_secret')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'grant_type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'refresh_token')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        grant_type: z.enum(['password', 'refresh_token']).default('password').exactOptional(),
+        refresh_token: z
+          .string()
+          .exactOptional()
+          .openapi({ example: '2e0d675df9fc96d2e4ec8a3ebbbf45eca9137bb7' }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['client_id', 'client_secret', 'grant_type', 'refresh_token'] })
   .openapi('OAuthTokenRefreshToken')
 
@@ -1938,14 +1983,27 @@ const VideoChannelEditSchema = z
   .openapi('VideoChannelEdit')
 
 const VideoChannelCreateSchema = VideoChannelEditSchema.and(
-  z
-    .object({
-      name: UsernameChannelSchema.exactOptional().openapi({
-        description: 'username of the channel to create',
-      }),
-    })
-    .openapi({ required: [] }),
+  z.looseObject({}).openapi({ required: ['name', 'displayName'] }),
 )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'displayName')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        name: UsernameChannelSchema.exactOptional().openapi({
+          description: 'username of the channel to create',
+        }),
+      })
+      .openapi({ required: [] }),
+  )
   .openapi({ required: ['name', 'displayName'] })
   .openapi('VideoChannelCreate')
 
@@ -2114,14 +2172,37 @@ const VideoUploadRequestCommonSchema = z
   .openapi({ required: ['channelId', 'name'] })
   .openapi('VideoUploadRequestCommon')
 
-const VideoCreateImportSchema = z
-  .xor([
+const VideoCreateImportSchema = (() => {
+  const Schema = z.xor([
     z.object({ targetUrl: z.lazy(() => VideoImportSchema) }).openapi({ required: ['targetUrl'] }),
     z.object({ magnetUri: z.lazy(() => VideoImportSchema) }).openapi({ required: ['magnetUri'] }),
     z
       .object({ torrentfile: z.lazy(() => VideoImportSchema) })
       .openapi({ required: ['torrentfile'] }),
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .and(z.looseObject({}).openapi({ required: ['channelId', 'name'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'channelId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(VideoUploadRequestCommonSchema)
   .openapi({ required: ['channelId', 'name'] })
   .openapi('VideoCreateImport')
@@ -6325,11 +6406,11 @@ export const postApiV1UsersTokenRoute = createRoute({
             .xor([OAuthTokenPasswordSchema, OAuthTokenRefreshTokenSchema])
             .openapi({
               discriminator: {
+                propertyName: 'grant_type',
                 mapping: {
                   password: '#/components/schemas/OAuthToken-password',
                   refresh_token: '#/components/schemas/OAuthToken-refresh_token',
                 },
-                propertyName: 'grant_type',
               },
             }),
         },
@@ -7432,8 +7513,8 @@ export const postApiV1VideosImportsRoute = createRoute({
     body: {
       content: {
         'multipart/form-data': {
-          schema: z
-            .xor([
+          schema: (() => {
+            const Schema = z.xor([
               z
                 .object({ targetUrl: z.lazy(() => VideoImportSchema) })
                 .openapi({ required: ['targetUrl'] }),
@@ -7444,6 +7525,29 @@ export const postApiV1VideosImportsRoute = createRoute({
                 .object({ torrentfile: z.lazy(() => VideoImportSchema) })
                 .openapi({ required: ['torrentfile'] }),
             ])
+            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+              ;((ctx) => {
+                const o = ctx.value
+                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                for (const k of Object.keys(o)) {
+                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                }
+              })(ctx)
+              return val
+            }, Schema)
+          })()
+            .openapi({ additionalProperties: false })
+            .and(z.looseObject({}).openapi({ required: ['channelId', 'name'] }))
+            .superRefine((val, ctx) => {
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'channelId')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+                if (!Object.hasOwn(val, 'name')) {
+                  ctx.addIssue({ code: 'custom' })
+                }
+              }
+            })
             .and(
               z
                 .object({

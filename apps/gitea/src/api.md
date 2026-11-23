@@ -513,9 +513,11 @@ curl https://gitea.com/api/v1/admin/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -564,6 +566,7 @@ curl https://gitea.com/api/v1/admin/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -756,9 +759,11 @@ curl https://gitea.com/api/v1/admin/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -807,6 +812,7 @@ curl https://gitea.com/api/v1/admin/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -1533,11 +1539,11 @@ curl https://gitea.com/api/v1/admin/hooks/0 \
 |id|path|integer(int64)|true|id of the hook to update|
 |body|body|[EditHookOption](#schemaedithookoption)|false|none|
 |» active|body|boolean|false|Whether the webhook is active and will be triggered|
-|» authorization_header|body|string|false|Authorization header to include in webhook requests|
-|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook|
+|» authorization_header|body|string|false|Authorization header to include in webhook requests, omitted keeps the current value unless the url changes|
+|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value|
 |» config|body|object|false|Configuration settings for the webhook|
 |» » **additionalProperties**|body|string|false|none|
-|» events|body|[string]|false|List of events that trigger this webhook|
+|» events|body|[string]|false|List of events that trigger this webhook, omitted or empty keeps the current events|
 |» name|body|string|false|Optional human-readable name|
 
 > Example responses
@@ -1673,6 +1679,7 @@ curl https://gitea.com/api/v1/admin/packages \
 |Parameter|Value|
 |---|---|
 |type|alpine|
+|type|arch|
 |type|cargo|
 |type|chef|
 |type|composer|
@@ -1693,6 +1700,7 @@ curl https://gitea.com/api/v1/admin/packages \
 |type|rubygems|
 |type|swift|
 |type|terraform|
+|type|terraform-module|
 |type|vagrant|
 
 > Example responses
@@ -1806,9 +1814,11 @@ curl https://gitea.com/api/v1/admin/packages \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -1857,6 +1867,7 @@ curl https://gitea.com/api/v1/admin/packages \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -1987,145 +1998,6 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*anonymous*|[[Package](#schemapackage)]|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|default|message|string||none|
-|default|url|string||none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
-</aside>
-
-## List unadopted repositories
-
-<a id="opIdadminUnadoptedList"></a>
-
-> Code samples
-
-```bash
-curl https://gitea.com/api/v1/admin/unadopted \
-  -H 'Accept: application/json' \
-  -H "Authorization: Basic ${CREDENTIALS}"
-```
-
-`GET /admin/unadopted`
-
-<h3 id="list-unadopted-repositories-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|page|query|integer|false|page number of results to return (1-based)|
-|limit|query|integer|false|page size of results|
-|query|query|string|false|glob pattern of repositories to search for, in the form owner or owner/repo|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  "string"
-]
-```
-
-<h3 id="list-unadopted-repositories-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK|StringSlice|Inline|
-|default|Default|APIError is error format response|None|
-
-<h3 id="list-unadopted-repositories-responseschema">Response Schema</h3>
-
-Status Code **200**
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*anonymous*|[string]|false|none|none|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|default|message|string||none|
-|default|url|string||none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
-</aside>
-
-## Adopt unadopted files as a repository
-
-<a id="opIdadminAdoptRepository"></a>
-
-> Code samples
-
-```bash
-curl https://gitea.com/api/v1/admin/unadopted/string/string \
-  -X POST \
-  -H "Authorization: Basic ${CREDENTIALS}"
-```
-
-`POST /admin/unadopted/{owner}/{repo}`
-
-<h3 id="adopt-unadopted-files-as-a-repository-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|owner|path|string|true|owner of the repo|
-|repo|path|string|true|name of the repo|
-
-<h3 id="adopt-unadopted-files-as-a-repository-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|APIEmpty is an empty response|None|
-|default|Default|APIError is error format response|None|
-
-### Response Headers
-
-|Status|Header|Type|Format|Description|
-|---|---|---|---|---|
-|default|message|string||none|
-|default|url|string||none|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
-</aside>
-
-## Delete unadopted files
-
-<a id="opIdadminDeleteUnadoptedRepository"></a>
-
-> Code samples
-
-```bash
-curl https://gitea.com/api/v1/admin/unadopted/string/string \
-  -X DELETE \
-  -H "Authorization: Basic ${CREDENTIALS}"
-```
-
-`DELETE /admin/unadopted/{owner}/{repo}`
-
-<h3 id="delete-unadopted-files-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|owner|path|string|true|owner of the repo|
-|repo|path|string|true|name of the repo|
-
-<h3 id="delete-unadopted-files-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content|APIEmpty is an empty response|None|
-|default|Default|APIError is error format response|None|
 
 ### Response Headers
 
@@ -3130,9 +3002,11 @@ curl https://gitea.com/api/v1/admin/users/string/repos \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -3181,6 +3055,7 @@ curl https://gitea.com/api/v1/admin/users/string/repos \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -3373,6 +3248,7 @@ curl https://gitea.com/api/v1/repos/issues/search \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -3641,6 +3517,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -3940,6 +3817,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -4181,6 +4059,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -4283,6 +4162,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments/0 \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -4433,6 +4313,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments/0 \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -4526,6 +4407,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments/0/assets \
   {
     "browser_download_url": "http://example.com",
     "created_at": "1970-01-01T00:00:00Z",
+    "digest": "string",
     "download_count": 0,
     "id": 0,
     "name": "string",
@@ -4603,6 +4485,7 @@ attachment: string
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -4661,6 +4544,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -4776,6 +4660,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/comments/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -5104,6 +4989,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0 \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -5439,6 +5325,7 @@ If the version doesn't match the current value, the request fails with 409 Confl
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -5675,6 +5562,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/assets \
   {
     "browser_download_url": "http://example.com",
     "created_at": "1970-01-01T00:00:00Z",
+    "digest": "string",
     "download_count": 0,
     "id": 0,
     "name": "string",
@@ -5752,6 +5640,7 @@ attachment: string
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -5810,6 +5699,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -5925,6 +5815,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -6003,6 +5894,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/assignees \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -6259,6 +6151,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/assignees \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -6540,6 +6433,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/blocks \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -6807,6 +6701,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/blocks \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -7065,6 +6960,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/blocks \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -7305,6 +7201,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/comments \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -7422,6 +7319,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/comments \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -7581,6 +7479,7 @@ This operation is deprecated
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -7744,6 +7643,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/dependencies \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -8011,6 +7911,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/dependencies \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -8269,6 +8170,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/string/dependencies \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -9746,6 +9648,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/timeline \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -9979,6 +9882,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/timeline \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -10025,6 +9929,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/timeline \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -10244,6 +10149,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/timeline \
           {
             "browser_download_url": "http://example.com",
             "created_at": "1970-01-01T00:00:00Z",
+            "digest": "string",
             "download_count": 0,
             "id": 0,
             "name": "string",
@@ -10532,6 +10438,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/times \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -10807,6 +10714,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/0/times \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -12526,9 +12434,11 @@ curl https://gitea.com/api/v1/notifications \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -12577,6 +12487,7 @@ curl https://gitea.com/api/v1/notifications \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -12805,9 +12716,11 @@ curl https://gitea.com/api/v1/notifications \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -12856,6 +12769,7 @@ curl https://gitea.com/api/v1/notifications \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -13114,9 +13028,11 @@ curl https://gitea.com/api/v1/notifications/threads/string \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -13165,6 +13081,7 @@ curl https://gitea.com/api/v1/notifications/threads/string \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -13389,9 +13306,11 @@ curl https://gitea.com/api/v1/notifications/threads/string \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -13440,6 +13359,7 @@ curl https://gitea.com/api/v1/notifications/threads/string \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -13680,9 +13600,11 @@ curl https://gitea.com/api/v1/repos/string/string/notifications \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -13731,6 +13653,7 @@ curl https://gitea.com/api/v1/repos/string/string/notifications \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -13961,9 +13884,11 @@ curl https://gitea.com/api/v1/repos/string/string/notifications \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -14012,6 +13937,7 @@ curl https://gitea.com/api/v1/repos/string/string/notifications \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -14297,9 +14223,11 @@ This operation is deprecated
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -14348,6 +14276,7 @@ This operation is deprecated
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -15312,9 +15241,11 @@ curl https://gitea.com/api/v1/orgs/string/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -15363,6 +15294,7 @@ curl https://gitea.com/api/v1/orgs/string/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -15555,9 +15487,11 @@ curl https://gitea.com/api/v1/orgs/string/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -15606,6 +15540,7 @@ curl https://gitea.com/api/v1/orgs/string/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -16289,6 +16224,7 @@ curl https://gitea.com/api/v1/orgs/string/activities/feeds \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -16386,9 +16322,11 @@ curl https://gitea.com/api/v1/orgs/string/activities/feeds \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -16437,6 +16375,7 @@ curl https://gitea.com/api/v1/orgs/string/activities/feeds \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -17222,11 +17161,11 @@ curl https://gitea.com/api/v1/orgs/string/hooks/0 \
 |id|path|integer(int64)|true|id of the hook to update|
 |body|body|[EditHookOption](#schemaedithookoption)|false|none|
 |» active|body|boolean|false|Whether the webhook is active and will be triggered|
-|» authorization_header|body|string|false|Authorization header to include in webhook requests|
-|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook|
+|» authorization_header|body|string|false|Authorization header to include in webhook requests, omitted keeps the current value unless the url changes|
+|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value|
 |» config|body|object|false|Configuration settings for the webhook|
 |» » **additionalProperties**|body|string|false|none|
-|» events|body|[string]|false|List of events that trigger this webhook|
+|» events|body|[string]|false|List of events that trigger this webhook, omitted or empty keeps the current events|
 |» name|body|string|false|Optional human-readable name|
 
 > Example responses
@@ -18807,6 +18746,7 @@ curl https://gitea.com/api/v1/orgs/string/projects/0/columns/0/issues \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -19950,9 +19890,11 @@ curl https://gitea.com/api/v1/orgs/string/repos \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -20001,6 +19943,7 @@ curl https://gitea.com/api/v1/orgs/string/repos \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -20273,9 +20216,11 @@ curl https://gitea.com/api/v1/orgs/string/repos \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -20324,6 +20269,7 @@ curl https://gitea.com/api/v1/orgs/string/repos \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -20694,7 +20640,7 @@ curl https://gitea.com/api/v1/orgs/string/teams \
 |» units|body|[string]|false|**Deprecated.** Deprecated: This variable should be replaced by UnitsMap and will be dropped in later versions.|
 |» units_map|body|object|false|none|
 |» » **additionalProperties**|body|string|false|none|
-|» visibility|body|object|false|Team visibility within the organization. Defaults to "private".|
+|» visibility|body|object|false|Team visibility within the organization. Defaults to the instance's default team visibility, "private" unless configured.|
 
 > Example responses
 
@@ -21219,6 +21165,7 @@ curl https://gitea.com/api/v1/teams/0/activities/feeds \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -21316,9 +21263,11 @@ curl https://gitea.com/api/v1/teams/0/activities/feeds \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -21367,6 +21316,7 @@ curl https://gitea.com/api/v1/teams/0/activities/feeds \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -21823,9 +21773,11 @@ curl https://gitea.com/api/v1/teams/0/repos \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -21874,6 +21826,7 @@ curl https://gitea.com/api/v1/teams/0/repos \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -22091,9 +22044,11 @@ curl https://gitea.com/api/v1/teams/0/repos/string/string \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -22142,6 +22097,7 @@ curl https://gitea.com/api/v1/teams/0/repos/string/string \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -22585,6 +22541,7 @@ curl https://gitea.com/api/v1/packages/string \
 |Parameter|Value|
 |---|---|
 |type|alpine|
+|type|arch|
 |type|cargo|
 |type|chef|
 |type|composer|
@@ -22605,6 +22562,7 @@ curl https://gitea.com/api/v1/packages/string \
 |type|rubygems|
 |type|swift|
 |type|terraform|
+|type|terraform-module|
 |type|vagrant|
 
 > Example responses
@@ -22718,9 +22676,11 @@ curl https://gitea.com/api/v1/packages/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -22769,6 +22729,7 @@ curl https://gitea.com/api/v1/packages/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -23047,9 +23008,11 @@ curl https://gitea.com/api/v1/packages/string/string/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -23098,6 +23061,7 @@ curl https://gitea.com/api/v1/packages/string/string/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -23414,9 +23378,11 @@ curl https://gitea.com/api/v1/packages/string/string/string/-/latest \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -23465,6 +23431,7 @@ curl https://gitea.com/api/v1/packages/string/string/string/-/latest \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -23815,9 +23782,11 @@ curl https://gitea.com/api/v1/packages/string/string/string/string \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -23866,6 +23835,7 @@ curl https://gitea.com/api/v1/packages/string/string/string/string \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -24287,9 +24257,11 @@ curl https://gitea.com/api/v1/repos/migrate \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -24338,6 +24310,7 @@ curl https://gitea.com/api/v1/repos/migrate \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -24562,9 +24535,11 @@ curl https://gitea.com/api/v1/repos/search \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -24613,6 +24588,7 @@ curl https://gitea.com/api/v1/repos/search \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -24823,9 +24799,11 @@ curl https://gitea.com/api/v1/repos/string/string \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -24874,6 +24852,7 @@ curl https://gitea.com/api/v1/repos/string/string \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -25095,6 +25074,7 @@ curl https://gitea.com/api/v1/repos/string/string \
     "ignore_whitespace_conflicts": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
@@ -25105,6 +25085,7 @@ curl https://gitea.com/api/v1/repos/string/string \
     "name": "string",
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "squash_merge_commit_message": "string",
     "template": true,
     "website": "string"
@@ -25154,6 +25135,7 @@ curl https://gitea.com/api/v1/repos/string/string \
   "ignore_whitespace_conflicts": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
@@ -25164,6 +25146,7 @@ curl https://gitea.com/api/v1/repos/string/string \
   "name": "string",
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "squash_merge_commit_message": "string",
   "template": true,
   "website": "string"
@@ -25213,6 +25196,7 @@ curl https://gitea.com/api/v1/repos/string/string \
 |» name|body|string|false|name of the repository|
 |» private|body|boolean|false|either `true` to make the repository private or `false` to make it public.<br>Note: you will get a 422 error if the organization restricts changing repository visibility to organization<br>owners and a non-owner tries to change the value of private.|
 |» projects_mode|body|string|false|`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both.|
+|» pull_requests_creation_restriction|body|string|false|who is allowed to create pull requests: "reader" (default, any user with read access), "member" (must be a collaborator with read access) or "writer" (must be a collaborator with write access).|
 |» squash_merge_commit_message|body|string|false|set the default squash merge commit message body: "PR_BODY", "COMMIT_MESSAGES", or "BLANK".|
 |» template|body|boolean|false|either `true` to make this repository a template or `false` to make it a normal repository|
 |» website|body|string|false|a URL with more information about the repository.|
@@ -25272,9 +25256,11 @@ curl https://gitea.com/api/v1/repos/string/string \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -25323,6 +25309,7 @@ curl https://gitea.com/api/v1/repos/string/string \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -25577,9 +25564,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts \
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -25628,6 +25617,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts \
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -25820,9 +25810,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts \
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -25871,6 +25863,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts \
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -26161,9 +26154,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -26212,6 +26207,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -26404,9 +26400,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -26455,6 +26453,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/artifacts/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -27318,9 +27317,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -27369,6 +27370,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -27561,9 +27563,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -27612,6 +27616,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -27890,9 +27895,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0 \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -27941,6 +27948,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0 \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -28133,9 +28141,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0 \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -28184,6 +28194,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0 \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -28502,9 +28513,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/approve \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -28553,6 +28566,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/approve \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -28745,9 +28759,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/approve \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -28796,6 +28812,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/approve \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -29085,9 +29102,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/artifacts \
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -29136,6 +29155,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/artifacts \
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -29328,9 +29348,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/artifacts \
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -29379,6 +29401,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/artifacts \
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -29660,9 +29683,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/attempts/0 \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -29711,6 +29736,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/attempts/0 \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -29903,9 +29929,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/attempts/0 \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -29954,6 +29982,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/attempts/0 \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -30319,9 +30348,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/cancel \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -30370,6 +30401,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/cancel \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -30562,9 +30594,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/cancel \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -30613,6 +30647,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/cancel \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -30895,9 +30930,11 @@ Only use this endpoint when the workflow run does not respond to `POST /repos/{o
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -30946,6 +30983,7 @@ Only use this endpoint when the workflow run does not respond to `POST /repos/{o
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -31138,9 +31176,11 @@ Only use this endpoint when the workflow run does not respond to `POST /repos/{o
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -31189,6 +31229,7 @@ Only use this endpoint when the workflow run does not respond to `POST /repos/{o
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -31676,9 +31717,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/rerun \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -31727,6 +31770,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/rerun \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -31919,9 +31963,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/rerun \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -31970,6 +32016,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/runs/0/rerun \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -33118,9 +33165,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/workflows/string/runs 
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -33169,6 +33218,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/workflows/string/runs 
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -33361,9 +33411,11 @@ curl https://gitea.com/api/v1/repos/string/string/actions/workflows/string/runs 
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -33412,6 +33464,7 @@ curl https://gitea.com/api/v1/repos/string/string/actions/workflows/string/runs 
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -33641,6 +33694,7 @@ curl https://gitea.com/api/v1/repos/string/string/activities/feeds \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -33738,9 +33792,11 @@ curl https://gitea.com/api/v1/repos/string/string/activities/feeds \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -33789,6 +33845,7 @@ curl https://gitea.com/api/v1/repos/string/string/activities/feeds \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -34487,7 +34544,7 @@ curl https://gitea.com/api/v1/repos/string/string/branch_protections \
 |» enable_deletion|body|boolean|false|none|
 |» enable_deletion_allowlist|body|boolean|false|none|
 |» enable_force_push|body|boolean|false|none|
-|» enable_force_push_allowlist|body|boolean|false|none|
+|» enable_force_push_allowlist|body|boolean|false|EnableForcePushAllowlist only takes effect when enable_force_push is true|
 |» enable_merge_whitelist|body|boolean|false|none|
 |» enable_push|body|boolean|false|none|
 |» enable_push_whitelist|body|boolean|false|none|
@@ -35581,6 +35638,302 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
 </aside>
 
+## Search the code of a repository
+
+<a id="opIdrepoSearchCode"></a>
+
+> Code samples
+
+```bash
+curl 'https://gitea.com/api/v1/repos/string/string/code/search?q=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /repos/{owner}/{repo}/code/search`
+
+The files of the ref are searched with git grep, which returns at most 50 files. The result window is limited to 1000 files (page * limit).
+
+<h3 id="search-the-code-of-a-repository-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|owner|path|string|true|owner of the repo|
+|repo|path|string|true|name of the repo|
+|q|query|string|true|Terms must all occur in a file. Supports "exact phrases", /regexp/ and path:DIR. Language and repository qualifiers are not supported.|
+|ref|query|string|false|The name of the commit/branch/tag. Default to the repository’s default branch|
+|page|query|integer|false|page number of results to return (1-based)|
+|limit|query|integer|false|page size of results|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "incomplete_results": true,
+  "items": [
+    {
+      "html_url": "http://example.com",
+      "language": "string",
+      "name": "string",
+      "path": "string",
+      "repository": {
+        "allow_fast_forward_only_merge": true,
+        "allow_manual_merge": true,
+        "allow_merge_commits": true,
+        "allow_merge_update": true,
+        "allow_rebase": true,
+        "allow_rebase_explicit": true,
+        "allow_rebase_update": true,
+        "allow_squash_merge": true,
+        "archived": true,
+        "archived_at": "1970-01-01T00:00:00Z",
+        "autodetect_manual_merge": true,
+        "avatar_url": "http://example.com",
+        "branch_count": 0,
+        "clone_url": "http://example.com",
+        "created_at": "1970-01-01T00:00:00Z",
+        "default_allow_maintainer_edit": true,
+        "default_branch": "string",
+        "default_delete_branch_after_merge": true,
+        "default_merge_style": "string",
+        "default_target_branch": "string",
+        "default_update_style": "string",
+        "description": "string",
+        "empty": true,
+        "external_tracker": {
+          "external_tracker_format": "string",
+          "external_tracker_regexp_pattern": "string",
+          "external_tracker_style": "string",
+          "external_tracker_url": "http://example.com"
+        },
+        "external_wiki": {
+          "external_wiki_url": "http://example.com"
+        },
+        "fork": true,
+        "forks_count": 0,
+        "full_name": "string",
+        "has_actions": true,
+        "has_code": true,
+        "has_issues": true,
+        "has_packages": true,
+        "has_projects": true,
+        "has_pull_requests": true,
+        "has_releases": true,
+        "has_wiki": true,
+        "html_url": "http://example.com",
+        "id": 0,
+        "ignore_whitespace_conflicts": true,
+        "internal": true,
+        "internal_tracker": {
+          "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
+          "enable_issue_dependencies": true,
+          "enable_time_tracker": true
+        },
+        "issues_creation_restriction": "string",
+        "language": "string",
+        "languages_url": "http://example.com",
+        "licenses": [
+          "string"
+        ],
+        "link": "string",
+        "mirror": true,
+        "mirror_interval": "string",
+        "mirror_last_sync_at": "1970-01-01T00:00:00Z",
+        "mirror_updated": "1970-01-01T00:00:00Z",
+        "name": "string",
+        "object_format_name": {},
+        "open_issues_count": 0,
+        "open_pr_counter": 0,
+        "original_url": "http://example.com",
+        "owner": {
+          "active": true,
+          "avatar_url": "http://example.com",
+          "created": "1970-01-01T00:00:00Z",
+          "description": "string",
+          "email": "user@example.com",
+          "followers_count": 0,
+          "following_count": 0,
+          "full_name": "string",
+          "html_url": "http://example.com",
+          "id": 0,
+          "is_admin": true,
+          "language": "string",
+          "last_login": "1970-01-01T00:00:00Z",
+          "location": "string",
+          "login": "string",
+          "login_name": "string",
+          "prohibit_login": true,
+          "restricted": true,
+          "source_id": 0,
+          "starred_repos_count": 0,
+          "type": {},
+          "visibility": {},
+          "website": "string"
+        },
+        "parent": {},
+        "permissions": {
+          "admin": true,
+          "pull": true,
+          "push": true
+        },
+        "private": true,
+        "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
+        "release_counter": 0,
+        "repo_transfer": {
+          "doer": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "recipient": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "teams": [
+            {
+              "can_create_org_repo": true,
+              "description": "string",
+              "id": 0,
+              "includes_all_repositories": true,
+              "name": "string",
+              "organization": {
+                "avatar_url": "http://example.com",
+                "description": "string",
+                "email": "string",
+                "full_name": "string",
+                "id": 0,
+                "location": "string",
+                "name": "string",
+                "repo_admin_change_team_access": true,
+                "username": "string",
+                "visibility": {},
+                "website": "string"
+              },
+              "permission": "none",
+              "units": [
+                "repo.code",
+                "repo.issues",
+                "repo.ext_issues",
+                "repo.wiki",
+                "repo.pulls",
+                "repo.releases",
+                "repo.projects",
+                "repo.ext_wiki"
+              ],
+              "units_map": {
+                "repo.code": "read",
+                "repo.ext_issues": "none",
+                "repo.ext_wiki": "none",
+                "repo.issues": "write",
+                "repo.projects": "none",
+                "repo.pulls": "owner",
+                "repo.releases": "none",
+                "repo.wiki": "admin"
+              },
+              "visibility": {}
+            }
+          ]
+        },
+        "size": 0,
+        "squash_merge_commit_message": "string",
+        "ssh_url": "http://example.com",
+        "stars_count": 0,
+        "template": true,
+        "topics": [
+          "string"
+        ],
+        "updated_at": "1970-01-01T00:00:00Z",
+        "url": "http://example.com",
+        "watchers_count": 0,
+        "website": "string"
+      },
+      "text_matches": [
+        {
+          "fragment": "string",
+          "matches": [
+            {
+              "indices": [
+                0
+              ],
+              "text": "string"
+            }
+          ],
+          "object_type": "string",
+          "object_url": "http://example.com",
+          "property": "string"
+        }
+      ],
+      "url": "http://example.com"
+    }
+  ],
+  "total_count": 0
+}
+```
+
+<h3 id="search-the-code-of-a-repository-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|CodeSearchResults|[CodeSearchResults](#schemacodesearchresults)|
+|default|Default|APIError is error format response|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|default|message|string||none|
+|default|url|string||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
+</aside>
+
 ## List a repository's collaborators
 
 <a id="opIdrepoListCollaborators"></a>
@@ -36135,9 +36488,11 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/status \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -36186,6 +36541,7 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/status \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -36553,6 +36909,36 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/pull \
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -36606,9 +36992,11 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/pull \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -36657,6 +37045,7 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/pull \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -36833,9 +37222,11 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/pull \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -36884,6 +37275,7 @@ curl https://gitea.com/api/v1/repos/string/string/commits/string/pull \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -38880,9 +39272,11 @@ curl https://gitea.com/api/v1/repos/string/string/forks \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -38931,6 +39325,7 @@ curl https://gitea.com/api/v1/repos/string/string/forks \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -39165,9 +39560,11 @@ curl https://gitea.com/api/v1/repos/string/string/forks \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -39216,6 +39613,7 @@ curl https://gitea.com/api/v1/repos/string/string/forks \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -40633,11 +41031,11 @@ curl https://gitea.com/api/v1/repos/string/string/hooks/0 \
 |id|path|integer(int64)|true|index of the hook|
 |body|body|[EditHookOption](#schemaedithookoption)|false|none|
 |» active|body|boolean|false|Whether the webhook is active and will be triggered|
-|» authorization_header|body|string|false|Authorization header to include in webhook requests|
-|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook|
+|» authorization_header|body|string|false|Authorization header to include in webhook requests, omitted keeps the current value unless the url changes|
+|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value|
 |» config|body|object|false|Configuration settings for the webhook|
 |» » **additionalProperties**|body|string|false|none|
-|» events|body|[string]|false|List of events that trigger this webhook|
+|» events|body|[string]|false|List of events that trigger this webhook, omitted or empty keeps the current events|
 |» name|body|string|false|Optional human-readable name|
 
 > Example responses
@@ -41110,6 +41508,7 @@ curl https://gitea.com/api/v1/repos/string/string/issues/pinned \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -41413,9 +41812,11 @@ curl https://gitea.com/api/v1/repos/string/string/keys \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -41464,6 +41865,7 @@ curl https://gitea.com/api/v1/repos/string/string/keys \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -41713,9 +42115,11 @@ curl https://gitea.com/api/v1/repos/string/string/keys \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -41764,6 +42168,7 @@ curl https://gitea.com/api/v1/repos/string/string/keys \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -42001,9 +42406,11 @@ curl https://gitea.com/api/v1/repos/string/string/keys/tokens \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -42052,6 +42459,7 @@ curl https://gitea.com/api/v1/repos/string/string/keys/tokens \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -42272,9 +42680,11 @@ curl https://gitea.com/api/v1/repos/string/string/keys/0 \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -42323,6 +42733,7 @@ curl https://gitea.com/api/v1/repos/string/string/keys/0 \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -43873,6 +44284,7 @@ curl https://gitea.com/api/v1/repos/string/string/projects/0/columns/0/issues \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -44796,6 +45208,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
         "website": "string"
       }
     ],
+    "auto_merge": {
+      "commit_message": "string",
+      "commit_title": "string",
+      "enabled_by": {
+        "active": true,
+        "avatar_url": "http://example.com",
+        "created": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "email": "user@example.com",
+        "followers_count": 0,
+        "following_count": 0,
+        "full_name": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "is_admin": true,
+        "language": "string",
+        "last_login": "1970-01-01T00:00:00Z",
+        "location": "string",
+        "login": "string",
+        "login_name": "string",
+        "prohibit_login": true,
+        "restricted": true,
+        "source_id": 0,
+        "starred_repos_count": 0,
+        "type": {},
+        "visibility": {},
+        "website": "string"
+      },
+      "merge_method": "string"
+    },
     "base": {
       "label": "string",
       "ref": "string",
@@ -44849,9 +45291,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -44900,6 +45344,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -45076,9 +45521,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -45127,6 +45574,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -45576,6 +46024,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -45629,9 +46107,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -45680,6 +46160,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -45856,9 +46337,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -45907,6 +46390,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -46366,6 +46850,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/pinned \
         "website": "string"
       }
     ],
+    "auto_merge": {
+      "commit_message": "string",
+      "commit_title": "string",
+      "enabled_by": {
+        "active": true,
+        "avatar_url": "http://example.com",
+        "created": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "email": "user@example.com",
+        "followers_count": 0,
+        "following_count": 0,
+        "full_name": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "is_admin": true,
+        "language": "string",
+        "last_login": "1970-01-01T00:00:00Z",
+        "location": "string",
+        "login": "string",
+        "login_name": "string",
+        "prohibit_login": true,
+        "restricted": true,
+        "source_id": 0,
+        "starred_repos_count": 0,
+        "type": {},
+        "visibility": {},
+        "website": "string"
+      },
+      "merge_method": "string"
+    },
     "base": {
       "label": "string",
       "ref": "string",
@@ -46419,9 +46933,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/pinned \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -46470,6 +46986,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/pinned \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -46646,9 +47163,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/pinned \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -46697,6 +47216,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/pinned \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -47084,6 +47604,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/string/string \
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -47137,9 +47687,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/string/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -47188,6 +47740,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/string/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -47364,9 +47917,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/string/string \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -47415,6 +47970,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/string/string \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -47792,6 +48348,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -47845,9 +48431,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -47896,6 +48484,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -48072,9 +48661,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -48123,6 +48714,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -48556,6 +49148,36 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -48609,9 +49231,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -48660,6 +49284,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -48836,9 +49461,11 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -48887,6 +49514,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0 \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -49740,6 +50368,7 @@ curl https://gitea.com/api/v1/repos/string/string/pulls/0/merge \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|APIEmpty is an empty response|None|
+|201|Created|APIEmpty is an empty response|None|
 |default|Default|APIError is error format response|None|
 
 ### Response Headers
@@ -51496,6 +52125,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -51588,6 +52218,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases \
   -d '{
     "body": "string",
     "draft": true,
+    "make_latest": {},
     "name": "string",
     "prerelease": true,
     "tag_message": "string",
@@ -51604,6 +52235,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases \
 {
   "body": "string",
   "draft": true,
+  "make_latest": {},
   "name": "string",
   "prerelease": true,
   "tag_message": "string",
@@ -51621,6 +52253,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases \
 |body|body|[CreateReleaseOption](#schemacreatereleaseoption)|false|none|
 |» body|body|string|false|The release notes or description|
 |» draft|body|boolean|false|Whether to create the release as a draft|
+|» make_latest|body|object|false|"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date|
 |» name|body|string|false|The display title of the release|
 |» prerelease|body|boolean|false|Whether to mark the release as a prerelease|
 |» tag_message|body|string|false|The message for the git tag|
@@ -51637,6 +52270,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -51705,7 +52339,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
 </aside>
 
-## Gets the most recent non-prerelease, non-draft release of a repository, sorted by created_at
+## Gets the release set as latest, else the most recent non-prerelease, non-draft release of a repository by created_at
 
 <a id="opIdrepoGetLatestRelease"></a>
 
@@ -51719,7 +52353,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/latest \
 
 `GET /repos/{owner}/{repo}/releases/latest`
 
-<h3 id="gets-the-most-recent-non-prerelease-non-draft-release-of-a-repository-sorted-by-createdat-parameters">Parameters</h3>
+<h3 id="gets-the-release-set-as-latest-else-the-most-recent-non-prerelease-non-draft-release-of-a-repository-by-createdat-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -51736,6 +52370,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/latest \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -51785,7 +52420,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/latest \
 }
 ```
 
-<h3 id="gets-the-most-recent-non-prerelease-non-draft-release-of-a-repository-sorted-by-createdat-responses">Responses</h3>
+<h3 id="gets-the-release-set-as-latest-else-the-most-recent-non-prerelease-non-draft-release-of-a-repository-by-createdat-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -51836,6 +52471,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/tags/string \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -51977,6 +52613,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0 \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -52101,6 +52738,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0 \
   -d '{
     "body": "string",
     "draft": true,
+    "make_latest": {},
     "name": "string",
     "prerelease": true,
     "tag_name": "string",
@@ -52116,6 +52754,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0 \
 {
   "body": "string",
   "draft": true,
+  "make_latest": {},
   "name": "string",
   "prerelease": true,
   "tag_name": "string",
@@ -52133,6 +52772,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0 \
 |body|body|[EditReleaseOption](#schemaeditreleaseoption)|false|none|
 |» body|body|string|false|The new release notes or description|
 |» draft|body|boolean|false|Whether to change the draft status|
+|» make_latest|body|object|false|"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date|
 |» name|body|string|false|The new display title of the release|
 |» prerelease|body|boolean|false|Whether to change the prerelease status|
 |» tag_name|body|string|false|The new name of the git tag|
@@ -52148,6 +52788,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0 \
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -52247,6 +52888,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0/assets \
   {
     "browser_download_url": "http://example.com",
     "created_at": "1970-01-01T00:00:00Z",
+    "digest": "string",
     "download_count": 0,
     "id": 0,
     "name": "string",
@@ -52324,6 +52966,7 @@ attachment: string
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -52382,6 +53025,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -52497,6 +53141,7 @@ curl https://gitea.com/api/v1/repos/string/string/releases/0/assets/0 \
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -52907,7 +53552,7 @@ curl https://gitea.com/api/v1/repos/string/string/statuses/string \
 |body|body|[CreateStatusOption](#schemacreatestatusoption)|false|none|
 |» context|body|string|false|Context is the unique context identifier for the status|
 |» description|body|string|false|Description provides a brief description of the status|
-|» state|body|object|false|State represents the status state to set (pending, success, error, failure)|
+|» state|body|object|false|State represents the status state to set (pending, running, success, error, failure, warning, skipped)|
 |» target_url|body|string(uri)|false|TargetURL is the URL to link to for more details|
 
 > Example responses
@@ -54108,6 +54753,7 @@ curl https://gitea.com/api/v1/repos/string/string/times \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -54367,6 +55013,7 @@ This operation is deprecated
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -54878,9 +55525,11 @@ curl https://gitea.com/api/v1/repos/string/string/transfer \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -54929,6 +55578,7 @@ curl https://gitea.com/api/v1/repos/string/string/transfer \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -55137,9 +55787,11 @@ curl https://gitea.com/api/v1/repos/string/string/transfer/accept \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -55188,6 +55840,7 @@ curl https://gitea.com/api/v1/repos/string/string/transfer/accept \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -55396,9 +56049,11 @@ curl https://gitea.com/api/v1/repos/string/string/transfer/reject \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -55447,6 +56102,7 @@ curl https://gitea.com/api/v1/repos/string/string/transfer/reject \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -56143,9 +56799,11 @@ curl https://gitea.com/api/v1/repos/string/string/generate \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -56194,6 +56852,7 @@ curl https://gitea.com/api/v1/repos/string/string/generate \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -56400,9 +57059,11 @@ curl https://gitea.com/api/v1/repositories/0 \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -56451,6 +57112,7 @@ curl https://gitea.com/api/v1/repositories/0 \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -56568,6 +57230,299 @@ curl https://gitea.com/api/v1/repositories/0 \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Repository|[Repository](#schemarepository)|
+|default|Default|APIError is error format response|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|default|message|string||none|
+|default|url|string||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, TOTPHeader
+</aside>
+
+## Search the code of all repositories
+
+<a id="opIdcodeSearch"></a>
+
+> Code samples
+
+```bash
+curl 'https://gitea.com/api/v1/search/code?q=string' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /search/code`
+
+Authentication is required. The default branches are searched with the code indexer. Regular expressions are not supported. The result window is limited to 1000 files (page * limit).
+
+<h3 id="search-the-code-of-all-repositories-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|q|query|string|true|Literal terms and "exact phrases" must all occur in a file, with optional qualifiers:<br>"repo:OWNER/NAME", "user:NAME" and "org:NAME" to only search these repositories (each can be repeated),<br>"path:DIR" to only search the files in a directory, "language:NAME" to only search the files of a language<br>|
+|page|query|integer|false|page number of results to return (1-based)|
+|limit|query|integer|false|page size of results|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "incomplete_results": true,
+  "items": [
+    {
+      "html_url": "http://example.com",
+      "language": "string",
+      "name": "string",
+      "path": "string",
+      "repository": {
+        "allow_fast_forward_only_merge": true,
+        "allow_manual_merge": true,
+        "allow_merge_commits": true,
+        "allow_merge_update": true,
+        "allow_rebase": true,
+        "allow_rebase_explicit": true,
+        "allow_rebase_update": true,
+        "allow_squash_merge": true,
+        "archived": true,
+        "archived_at": "1970-01-01T00:00:00Z",
+        "autodetect_manual_merge": true,
+        "avatar_url": "http://example.com",
+        "branch_count": 0,
+        "clone_url": "http://example.com",
+        "created_at": "1970-01-01T00:00:00Z",
+        "default_allow_maintainer_edit": true,
+        "default_branch": "string",
+        "default_delete_branch_after_merge": true,
+        "default_merge_style": "string",
+        "default_target_branch": "string",
+        "default_update_style": "string",
+        "description": "string",
+        "empty": true,
+        "external_tracker": {
+          "external_tracker_format": "string",
+          "external_tracker_regexp_pattern": "string",
+          "external_tracker_style": "string",
+          "external_tracker_url": "http://example.com"
+        },
+        "external_wiki": {
+          "external_wiki_url": "http://example.com"
+        },
+        "fork": true,
+        "forks_count": 0,
+        "full_name": "string",
+        "has_actions": true,
+        "has_code": true,
+        "has_issues": true,
+        "has_packages": true,
+        "has_projects": true,
+        "has_pull_requests": true,
+        "has_releases": true,
+        "has_wiki": true,
+        "html_url": "http://example.com",
+        "id": 0,
+        "ignore_whitespace_conflicts": true,
+        "internal": true,
+        "internal_tracker": {
+          "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
+          "enable_issue_dependencies": true,
+          "enable_time_tracker": true
+        },
+        "issues_creation_restriction": "string",
+        "language": "string",
+        "languages_url": "http://example.com",
+        "licenses": [
+          "string"
+        ],
+        "link": "string",
+        "mirror": true,
+        "mirror_interval": "string",
+        "mirror_last_sync_at": "1970-01-01T00:00:00Z",
+        "mirror_updated": "1970-01-01T00:00:00Z",
+        "name": "string",
+        "object_format_name": {},
+        "open_issues_count": 0,
+        "open_pr_counter": 0,
+        "original_url": "http://example.com",
+        "owner": {
+          "active": true,
+          "avatar_url": "http://example.com",
+          "created": "1970-01-01T00:00:00Z",
+          "description": "string",
+          "email": "user@example.com",
+          "followers_count": 0,
+          "following_count": 0,
+          "full_name": "string",
+          "html_url": "http://example.com",
+          "id": 0,
+          "is_admin": true,
+          "language": "string",
+          "last_login": "1970-01-01T00:00:00Z",
+          "location": "string",
+          "login": "string",
+          "login_name": "string",
+          "prohibit_login": true,
+          "restricted": true,
+          "source_id": 0,
+          "starred_repos_count": 0,
+          "type": {},
+          "visibility": {},
+          "website": "string"
+        },
+        "parent": {},
+        "permissions": {
+          "admin": true,
+          "pull": true,
+          "push": true
+        },
+        "private": true,
+        "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
+        "release_counter": 0,
+        "repo_transfer": {
+          "doer": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "recipient": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "teams": [
+            {
+              "can_create_org_repo": true,
+              "description": "string",
+              "id": 0,
+              "includes_all_repositories": true,
+              "name": "string",
+              "organization": {
+                "avatar_url": "http://example.com",
+                "description": "string",
+                "email": "string",
+                "full_name": "string",
+                "id": 0,
+                "location": "string",
+                "name": "string",
+                "repo_admin_change_team_access": true,
+                "username": "string",
+                "visibility": {},
+                "website": "string"
+              },
+              "permission": "none",
+              "units": [
+                "repo.code",
+                "repo.issues",
+                "repo.ext_issues",
+                "repo.wiki",
+                "repo.pulls",
+                "repo.releases",
+                "repo.projects",
+                "repo.ext_wiki"
+              ],
+              "units_map": {
+                "repo.code": "read",
+                "repo.ext_issues": "none",
+                "repo.ext_wiki": "none",
+                "repo.issues": "write",
+                "repo.projects": "none",
+                "repo.pulls": "owner",
+                "repo.releases": "none",
+                "repo.wiki": "admin"
+              },
+              "visibility": {}
+            }
+          ]
+        },
+        "size": 0,
+        "squash_merge_commit_message": "string",
+        "ssh_url": "http://example.com",
+        "stars_count": 0,
+        "template": true,
+        "topics": [
+          "string"
+        ],
+        "updated_at": "1970-01-01T00:00:00Z",
+        "url": "http://example.com",
+        "watchers_count": 0,
+        "website": "string"
+      },
+      "text_matches": [
+        {
+          "fragment": "string",
+          "matches": [
+            {
+              "indices": [
+                0
+              ],
+              "text": "string"
+            }
+          ],
+          "object_type": "string",
+          "object_url": "http://example.com",
+          "property": "string"
+        }
+      ],
+      "url": "http://example.com"
+    }
+  ],
+  "total_count": 0
+}
+```
+
+<h3 id="search-the-code-of-all-repositories-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|CodeSearchResults|[CodeSearchResults](#schemacodesearchresults)|
 |default|Default|APIError is error format response|None|
 
 ### Response Headers
@@ -57341,9 +58296,11 @@ curl https://gitea.com/api/v1/user/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -57392,6 +58349,7 @@ curl https://gitea.com/api/v1/user/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -57584,9 +58542,11 @@ curl https://gitea.com/api/v1/user/actions/runs \
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -57635,6 +58595,7 @@ curl https://gitea.com/api/v1/user/actions/runs \
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -59903,11 +60864,11 @@ curl https://gitea.com/api/v1/user/hooks/0 \
 |id|path|integer(int64)|true|id of the hook to update|
 |body|body|[EditHookOption](#schemaedithookoption)|false|none|
 |» active|body|boolean|false|Whether the webhook is active and will be triggered|
-|» authorization_header|body|string|false|Authorization header to include in webhook requests|
-|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook|
+|» authorization_header|body|string|false|Authorization header to include in webhook requests, omitted keeps the current value unless the url changes|
+|» branch_filter|body|string|false|Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value|
 |» config|body|object|false|Configuration settings for the webhook|
 |» » **additionalProperties**|body|string|false|none|
-|» events|body|[string]|false|List of events that trigger this webhook|
+|» events|body|[string]|false|List of events that trigger this webhook, omitted or empty keeps the current events|
 |» name|body|string|false|Optional human-readable name|
 
 > Example responses
@@ -61285,6 +62246,7 @@ curl https://gitea.com/api/v1/user/projects/0/columns/0/issues \
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -62164,9 +63126,11 @@ curl https://gitea.com/api/v1/user/repos \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -62215,6 +63179,7 @@ curl https://gitea.com/api/v1/user/repos \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -62478,9 +63443,11 @@ curl https://gitea.com/api/v1/user/repos \
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -62529,6 +63496,7 @@ curl https://gitea.com/api/v1/user/repos \
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -62784,6 +63752,14 @@ curl https://gitea.com/api/v1/user/settings \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|UserSettings|[UserSettings](#schemausersettings)|
+|default|Default|APIError is error format response|None|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|default|message|string||none|
+|default|url|string||none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -62867,9 +63843,11 @@ curl https://gitea.com/api/v1/user/starred \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -62918,6 +63896,7 @@ curl https://gitea.com/api/v1/user/starred \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -63312,9 +64291,11 @@ curl https://gitea.com/api/v1/user/subscriptions \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -63363,6 +64344,7 @@ curl https://gitea.com/api/v1/user/subscriptions \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -63623,6 +64605,7 @@ curl https://gitea.com/api/v1/user/times \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -64047,6 +65030,7 @@ curl https://gitea.com/api/v1/users/string/activities/feeds \
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -64144,9 +65128,11 @@ curl https://gitea.com/api/v1/users/string/activities/feeds \
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -64195,6 +65181,7 @@ curl https://gitea.com/api/v1/users/string/activities/feeds \
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -64968,9 +65955,11 @@ curl https://gitea.com/api/v1/users/string/repos \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -65019,6 +66008,7 @@ curl https://gitea.com/api/v1/users/string/repos \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -65237,9 +66227,11 @@ curl https://gitea.com/api/v1/users/string/starred \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -65288,6 +66280,7 @@ curl https://gitea.com/api/v1/users/string/starred \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -65506,9 +66499,11 @@ curl https://gitea.com/api/v1/users/string/subscriptions \
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -65557,6 +66552,7 @@ curl https://gitea.com/api/v1/users/string/subscriptions \
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -66051,9 +67047,11 @@ BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, 
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -66102,6 +67100,7 @@ BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, 
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -66294,9 +67293,11 @@ BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, 
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -66345,6 +67346,7 @@ BasicAuth, Token, AccessToken, AuthorizationHeaderToken, SudoParam, SudoHeader, 
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -66613,9 +67615,11 @@ ActionArtifact represents a ActionArtifact
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -66664,6 +67668,7 @@ ActionArtifact represents a ActionArtifact
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -66856,9 +67861,11 @@ ActionArtifact represents a ActionArtifact
           "internal": true,
           "internal_tracker": {
             "allow_only_contributors_to_track_time": true,
+            "creation_restriction": "string",
             "enable_issue_dependencies": true,
             "enable_time_tracker": true
           },
+          "issues_creation_restriction": "string",
           "language": "string",
           "languages_url": "http://example.com",
           "licenses": [
@@ -66907,6 +67914,7 @@ ActionArtifact represents a ActionArtifact
           },
           "private": true,
           "projects_mode": "string",
+          "pull_requests_creation_restriction": "string",
           "release_counter": 0,
           "repo_transfer": {
             "doer": {
@@ -67570,9 +68578,11 @@ ActionWorkflowResponse returns a ActionWorkflow
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -67621,6 +68631,7 @@ ActionWorkflowResponse returns a ActionWorkflow
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -67813,9 +68824,11 @@ ActionWorkflowResponse returns a ActionWorkflow
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -67864,6 +68877,7 @@ ActionWorkflowResponse returns a ActionWorkflow
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -68140,9 +69154,11 @@ ActionWorkflowRun represents a WorkflowRun
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -68191,6 +69207,7 @@ ActionWorkflowRun represents a WorkflowRun
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -68383,9 +69400,11 @@ ActionWorkflowRun represents a WorkflowRun
         "internal": true,
         "internal_tracker": {
           "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
           "enable_issue_dependencies": true,
           "enable_time_tracker": true
         },
+        "issues_creation_restriction": "string",
         "language": "string",
         "languages_url": "http://example.com",
         "licenses": [
@@ -68434,6 +69453,7 @@ ActionWorkflowRun represents a WorkflowRun
         },
         "private": true,
         "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
         "release_counter": 0,
         "repo_transfer": {
           "doer": {
@@ -68662,6 +69682,7 @@ ActionWorkflowStep represents a step of a WorkflowJob
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -68759,9 +69780,11 @@ ActionWorkflowStep represents a step of a WorkflowJob
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -68810,6 +69833,7 @@ ActionWorkflowStep represents a step of a WorkflowJob
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -69155,6 +70179,7 @@ Note: `author` and `committer` are optional (if only one is given, it will be us
 {
   "browser_download_url": "http://example.com",
   "created_at": "1970-01-01T00:00:00Z",
+  "digest": "string",
   "download_count": 0,
   "id": 0,
   "name": "string",
@@ -69171,6 +70196,7 @@ Attachment a generic attachment
 |---|---|---|---|---|
 |browser_download_url|string(uri)|false|none|DownloadURL is the URL to download the attachment|
 |created_at|string(date-time)|false|none|Created is the time when the attachment was uploaded|
+|digest|string|false|none|Digest is the SHA-256 of the content as "sha256:{hex}", omitted when not recorded at upload|
 |download_count|integer(int64)|false|none|DownloadCount is the number of times the attachment has been downloaded|
 |id|integer(int64)|false|none|ID is the unique identifier for the attachment|
 |name|string|false|none|Name is the filename of the attachment|
@@ -69536,6 +70562,583 @@ ChangedFile store information about files affected by the pull request
 |raw_url|string(uri)|false|none|The raw URL to download the file|
 |status|string|false|none|The status of the file change (added, modified, deleted, etc.)|
 
+<h2 id="tocS_CodeSearchResultItem">CodeSearchResultItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacodesearchresultitem"></a>
+<a id="schema_CodeSearchResultItem"></a>
+<a id="tocScodesearchresultitem"></a>
+<a id="tocscodesearchresultitem"></a>
+
+```json
+{
+  "html_url": "http://example.com",
+  "language": "string",
+  "name": "string",
+  "path": "string",
+  "repository": {
+    "allow_fast_forward_only_merge": true,
+    "allow_manual_merge": true,
+    "allow_merge_commits": true,
+    "allow_merge_update": true,
+    "allow_rebase": true,
+    "allow_rebase_explicit": true,
+    "allow_rebase_update": true,
+    "allow_squash_merge": true,
+    "archived": true,
+    "archived_at": "1970-01-01T00:00:00Z",
+    "autodetect_manual_merge": true,
+    "avatar_url": "http://example.com",
+    "branch_count": 0,
+    "clone_url": "http://example.com",
+    "created_at": "1970-01-01T00:00:00Z",
+    "default_allow_maintainer_edit": true,
+    "default_branch": "string",
+    "default_delete_branch_after_merge": true,
+    "default_merge_style": "string",
+    "default_target_branch": "string",
+    "default_update_style": "string",
+    "description": "string",
+    "empty": true,
+    "external_tracker": {
+      "external_tracker_format": "string",
+      "external_tracker_regexp_pattern": "string",
+      "external_tracker_style": "string",
+      "external_tracker_url": "http://example.com"
+    },
+    "external_wiki": {
+      "external_wiki_url": "http://example.com"
+    },
+    "fork": true,
+    "forks_count": 0,
+    "full_name": "string",
+    "has_actions": true,
+    "has_code": true,
+    "has_issues": true,
+    "has_packages": true,
+    "has_projects": true,
+    "has_pull_requests": true,
+    "has_releases": true,
+    "has_wiki": true,
+    "html_url": "http://example.com",
+    "id": 0,
+    "ignore_whitespace_conflicts": true,
+    "internal": true,
+    "internal_tracker": {
+      "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
+      "enable_issue_dependencies": true,
+      "enable_time_tracker": true
+    },
+    "issues_creation_restriction": "string",
+    "language": "string",
+    "languages_url": "http://example.com",
+    "licenses": [
+      "string"
+    ],
+    "link": "string",
+    "mirror": true,
+    "mirror_interval": "string",
+    "mirror_last_sync_at": "1970-01-01T00:00:00Z",
+    "mirror_updated": "1970-01-01T00:00:00Z",
+    "name": "string",
+    "object_format_name": {},
+    "open_issues_count": 0,
+    "open_pr_counter": 0,
+    "original_url": "http://example.com",
+    "owner": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "parent": {},
+    "permissions": {
+      "admin": true,
+      "pull": true,
+      "push": true
+    },
+    "private": true,
+    "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
+    "release_counter": 0,
+    "repo_transfer": {
+      "doer": {
+        "active": true,
+        "avatar_url": "http://example.com",
+        "created": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "email": "user@example.com",
+        "followers_count": 0,
+        "following_count": 0,
+        "full_name": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "is_admin": true,
+        "language": "string",
+        "last_login": "1970-01-01T00:00:00Z",
+        "location": "string",
+        "login": "string",
+        "login_name": "string",
+        "prohibit_login": true,
+        "restricted": true,
+        "source_id": 0,
+        "starred_repos_count": 0,
+        "type": {},
+        "visibility": {},
+        "website": "string"
+      },
+      "recipient": {
+        "active": true,
+        "avatar_url": "http://example.com",
+        "created": "1970-01-01T00:00:00Z",
+        "description": "string",
+        "email": "user@example.com",
+        "followers_count": 0,
+        "following_count": 0,
+        "full_name": "string",
+        "html_url": "http://example.com",
+        "id": 0,
+        "is_admin": true,
+        "language": "string",
+        "last_login": "1970-01-01T00:00:00Z",
+        "location": "string",
+        "login": "string",
+        "login_name": "string",
+        "prohibit_login": true,
+        "restricted": true,
+        "source_id": 0,
+        "starred_repos_count": 0,
+        "type": {},
+        "visibility": {},
+        "website": "string"
+      },
+      "teams": [
+        {
+          "can_create_org_repo": true,
+          "description": "string",
+          "id": 0,
+          "includes_all_repositories": true,
+          "name": "string",
+          "organization": {
+            "avatar_url": "http://example.com",
+            "description": "string",
+            "email": "string",
+            "full_name": "string",
+            "id": 0,
+            "location": "string",
+            "name": "string",
+            "repo_admin_change_team_access": true,
+            "username": "string",
+            "visibility": {},
+            "website": "string"
+          },
+          "permission": "none",
+          "units": [
+            "repo.code",
+            "repo.issues",
+            "repo.ext_issues",
+            "repo.wiki",
+            "repo.pulls",
+            "repo.releases",
+            "repo.projects",
+            "repo.ext_wiki"
+          ],
+          "units_map": {
+            "repo.code": "read",
+            "repo.ext_issues": "none",
+            "repo.ext_wiki": "none",
+            "repo.issues": "write",
+            "repo.projects": "none",
+            "repo.pulls": "owner",
+            "repo.releases": "none",
+            "repo.wiki": "admin"
+          },
+          "visibility": {}
+        }
+      ]
+    },
+    "size": 0,
+    "squash_merge_commit_message": "string",
+    "ssh_url": "http://example.com",
+    "stars_count": 0,
+    "template": true,
+    "topics": [
+      "string"
+    ],
+    "updated_at": "1970-01-01T00:00:00Z",
+    "url": "http://example.com",
+    "watchers_count": 0,
+    "website": "string"
+  },
+  "text_matches": [
+    {
+      "fragment": "string",
+      "matches": [
+        {
+          "indices": [
+            0
+          ],
+          "text": "string"
+        }
+      ],
+      "object_type": "string",
+      "object_url": "http://example.com",
+      "property": "string"
+    }
+  ],
+  "url": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|html_url|string(uri)|false|none|File URL at the searched commit|
+|language|string|false|none|Programming language (Gitea extension)|
+|name|string|false|none|none|
+|path|string|false|none|none|
+|repository|[Repository](#schemarepository)|false|none|Repository represents a repository|
+|text_matches|[[CodeSearchTextMatch](#schemacodesearchtextmatch)]|false|none|none|
+|url|string(uri)|false|none|Contents API URL at the searched commit|
+
+<h2 id="tocS_CodeSearchResults">CodeSearchResults</h2>
+<!-- backwards compatibility -->
+<a id="schemacodesearchresults"></a>
+<a id="schema_CodeSearchResults"></a>
+<a id="tocScodesearchresults"></a>
+<a id="tocscodesearchresults"></a>
+
+```json
+{
+  "incomplete_results": true,
+  "items": [
+    {
+      "html_url": "http://example.com",
+      "language": "string",
+      "name": "string",
+      "path": "string",
+      "repository": {
+        "allow_fast_forward_only_merge": true,
+        "allow_manual_merge": true,
+        "allow_merge_commits": true,
+        "allow_merge_update": true,
+        "allow_rebase": true,
+        "allow_rebase_explicit": true,
+        "allow_rebase_update": true,
+        "allow_squash_merge": true,
+        "archived": true,
+        "archived_at": "1970-01-01T00:00:00Z",
+        "autodetect_manual_merge": true,
+        "avatar_url": "http://example.com",
+        "branch_count": 0,
+        "clone_url": "http://example.com",
+        "created_at": "1970-01-01T00:00:00Z",
+        "default_allow_maintainer_edit": true,
+        "default_branch": "string",
+        "default_delete_branch_after_merge": true,
+        "default_merge_style": "string",
+        "default_target_branch": "string",
+        "default_update_style": "string",
+        "description": "string",
+        "empty": true,
+        "external_tracker": {
+          "external_tracker_format": "string",
+          "external_tracker_regexp_pattern": "string",
+          "external_tracker_style": "string",
+          "external_tracker_url": "http://example.com"
+        },
+        "external_wiki": {
+          "external_wiki_url": "http://example.com"
+        },
+        "fork": true,
+        "forks_count": 0,
+        "full_name": "string",
+        "has_actions": true,
+        "has_code": true,
+        "has_issues": true,
+        "has_packages": true,
+        "has_projects": true,
+        "has_pull_requests": true,
+        "has_releases": true,
+        "has_wiki": true,
+        "html_url": "http://example.com",
+        "id": 0,
+        "ignore_whitespace_conflicts": true,
+        "internal": true,
+        "internal_tracker": {
+          "allow_only_contributors_to_track_time": true,
+          "creation_restriction": "string",
+          "enable_issue_dependencies": true,
+          "enable_time_tracker": true
+        },
+        "issues_creation_restriction": "string",
+        "language": "string",
+        "languages_url": "http://example.com",
+        "licenses": [
+          "string"
+        ],
+        "link": "string",
+        "mirror": true,
+        "mirror_interval": "string",
+        "mirror_last_sync_at": "1970-01-01T00:00:00Z",
+        "mirror_updated": "1970-01-01T00:00:00Z",
+        "name": "string",
+        "object_format_name": {},
+        "open_issues_count": 0,
+        "open_pr_counter": 0,
+        "original_url": "http://example.com",
+        "owner": {
+          "active": true,
+          "avatar_url": "http://example.com",
+          "created": "1970-01-01T00:00:00Z",
+          "description": "string",
+          "email": "user@example.com",
+          "followers_count": 0,
+          "following_count": 0,
+          "full_name": "string",
+          "html_url": "http://example.com",
+          "id": 0,
+          "is_admin": true,
+          "language": "string",
+          "last_login": "1970-01-01T00:00:00Z",
+          "location": "string",
+          "login": "string",
+          "login_name": "string",
+          "prohibit_login": true,
+          "restricted": true,
+          "source_id": 0,
+          "starred_repos_count": 0,
+          "type": {},
+          "visibility": {},
+          "website": "string"
+        },
+        "parent": {},
+        "permissions": {
+          "admin": true,
+          "pull": true,
+          "push": true
+        },
+        "private": true,
+        "projects_mode": "string",
+        "pull_requests_creation_restriction": "string",
+        "release_counter": 0,
+        "repo_transfer": {
+          "doer": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "recipient": {
+            "active": true,
+            "avatar_url": "http://example.com",
+            "created": "1970-01-01T00:00:00Z",
+            "description": "string",
+            "email": "user@example.com",
+            "followers_count": 0,
+            "following_count": 0,
+            "full_name": "string",
+            "html_url": "http://example.com",
+            "id": 0,
+            "is_admin": true,
+            "language": "string",
+            "last_login": "1970-01-01T00:00:00Z",
+            "location": "string",
+            "login": "string",
+            "login_name": "string",
+            "prohibit_login": true,
+            "restricted": true,
+            "source_id": 0,
+            "starred_repos_count": 0,
+            "type": {},
+            "visibility": {},
+            "website": "string"
+          },
+          "teams": [
+            {
+              "can_create_org_repo": true,
+              "description": "string",
+              "id": 0,
+              "includes_all_repositories": true,
+              "name": "string",
+              "organization": {
+                "avatar_url": "http://example.com",
+                "description": "string",
+                "email": "string",
+                "full_name": "string",
+                "id": 0,
+                "location": "string",
+                "name": "string",
+                "repo_admin_change_team_access": true,
+                "username": "string",
+                "visibility": {},
+                "website": "string"
+              },
+              "permission": "none",
+              "units": [
+                "repo.code",
+                "repo.issues",
+                "repo.ext_issues",
+                "repo.wiki",
+                "repo.pulls",
+                "repo.releases",
+                "repo.projects",
+                "repo.ext_wiki"
+              ],
+              "units_map": {
+                "repo.code": "read",
+                "repo.ext_issues": "none",
+                "repo.ext_wiki": "none",
+                "repo.issues": "write",
+                "repo.projects": "none",
+                "repo.pulls": "owner",
+                "repo.releases": "none",
+                "repo.wiki": "admin"
+              },
+              "visibility": {}
+            }
+          ]
+        },
+        "size": 0,
+        "squash_merge_commit_message": "string",
+        "ssh_url": "http://example.com",
+        "stars_count": 0,
+        "template": true,
+        "topics": [
+          "string"
+        ],
+        "updated_at": "1970-01-01T00:00:00Z",
+        "url": "http://example.com",
+        "watchers_count": 0,
+        "website": "string"
+      },
+      "text_matches": [
+        {
+          "fragment": "string",
+          "matches": [
+            {
+              "indices": [
+                0
+              ],
+              "text": "string"
+            }
+          ],
+          "object_type": "string",
+          "object_url": "http://example.com",
+          "property": "string"
+        }
+      ],
+      "url": "http://example.com"
+    }
+  ],
+  "total_count": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|incomplete_results|boolean|false|none|Search stopped early|
+|items|[[CodeSearchResultItem](#schemacodesearchresultitem)]|false|none|none|
+|total_count|integer(int64)|false|none|none|
+
+<h2 id="tocS_CodeSearchTextMatch">CodeSearchTextMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemacodesearchtextmatch"></a>
+<a id="schema_CodeSearchTextMatch"></a>
+<a id="tocScodesearchtextmatch"></a>
+<a id="tocscodesearchtextmatch"></a>
+
+```json
+{
+  "fragment": "string",
+  "matches": [
+    {
+      "indices": [
+        0
+      ],
+      "text": "string"
+    }
+  ],
+  "object_type": "string",
+  "object_url": "http://example.com",
+  "property": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|fragment|string|false|none|none|
+|matches|[[CodeSearchTextMatchTerm](#schemacodesearchtextmatchterm)]|false|none|none|
+|object_type|string|false|none|none|
+|object_url|string(uri)|false|none|none|
+|property|string|false|none|none|
+
+<h2 id="tocS_CodeSearchTextMatchTerm">CodeSearchTextMatchTerm</h2>
+<!-- backwards compatibility -->
+<a id="schemacodesearchtextmatchterm"></a>
+<a id="schema_CodeSearchTextMatchTerm"></a>
+<a id="tocScodesearchtextmatchterm"></a>
+<a id="tocscodesearchtextmatchterm"></a>
+
+```json
+{
+  "indices": [
+    0
+  ],
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|indices|[integer(int64)]|false|none|Start and end UTF-8 byte offsets in the fragment, end-exclusive|
+|text|string|false|none|none|
+
 <h2 id="tocS_CombinedStatus">CombinedStatus</h2>
 <!-- backwards compatibility -->
 <a id="schemacombinedstatus"></a>
@@ -69596,9 +71199,11 @@ ChangedFile store information about files affected by the pull request
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -69647,6 +71252,7 @@ ChangedFile store information about files affected by the pull request
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -69828,6 +71434,7 @@ CombinedStatus holds the combined state of several statuses for a single commit
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -70165,7 +71772,7 @@ CommitStatus holds a single status of a single Commit
 |creator|[User](#schemauser)|false|none|User represents a user|
 |description|string|false|none|Description provides a brief description of the status|
 |id|integer(int64)|false|none|ID is the unique identifier for the commit status|
-|status|object|false|none|State represents the status state (pending, success, error, failure)|
+|status|object|false|none|State represents the status state (pending, running, success, error, failure, warning, skipped)|
 |target_url|string(uri)|false|none|TargetURL is the URL to link to for more details|
 |updated_at|string(date-time)|false|none|none|
 |url|string(uri)|false|none|URL is the API URL for this status|
@@ -70631,7 +72238,7 @@ CreateBranchProtectionOption options for creating a branch protection
 |enable_deletion|boolean|false|none|none|
 |enable_deletion_allowlist|boolean|false|none|none|
 |enable_force_push|boolean|false|none|none|
-|enable_force_push_allowlist|boolean|false|none|none|
+|enable_force_push_allowlist|boolean|false|none|EnableForcePushAllowlist only takes effect when enable_force_push is true|
 |enable_merge_whitelist|boolean|false|none|none|
 |enable_push|boolean|false|none|none|
 |enable_push_whitelist|boolean|false|none|none|
@@ -71292,7 +72899,7 @@ CreatePullReviewComment represent a review comment for creation api
 |body|string|false|none|none|
 |new_position|integer(int64)|false|none|if comment to new file line or 0|
 |old_position|integer(int64)|false|none|if comment to old file line or 0|
-|path|string|false|none|the tree path|
+|path|string|true|none|the tree path|
 
 <h2 id="tocS_CreatePullReviewCommentReplyOptions">CreatePullReviewCommentReplyOptions</h2>
 <!-- backwards compatibility -->
@@ -71397,6 +73004,7 @@ CreatePullReviewOptions are options to create a pull request review
 {
   "body": "string",
   "draft": true,
+  "make_latest": {},
   "name": "string",
   "prerelease": true,
   "tag_message": "string",
@@ -71413,6 +73021,7 @@ CreateReleaseOption options when creating a release
 |---|---|---|---|---|
 |body|string|false|none|The release notes or description|
 |draft|boolean|false|none|Whether to create the release as a draft|
+|make_latest|object|false|none|"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date|
 |name|string|false|none|The display title of the release|
 |prerelease|boolean|false|none|Whether to mark the release as a prerelease|
 |tag_message|string|false|none|The message for the git tag|
@@ -71495,7 +73104,7 @@ CreateStatusOption holds the information needed to create a new CommitStatus for
 |---|---|---|---|---|
 |context|string|false|none|Context is the unique context identifier for the status|
 |description|string|false|none|Description provides a brief description of the status|
-|state|object|false|none|State represents the status state to set (pending, success, error, failure)|
+|state|object|false|none|State represents the status state to set (pending, running, success, error, failure, warning, skipped)|
 |target_url|string(uri)|false|none|TargetURL is the URL to link to for more details|
 
 <h2 id="tocS_CreateTagOption">CreateTagOption</h2>
@@ -71607,7 +73216,7 @@ CreateTeamOption options for creating a team
 |permission|object|false|none|All units have this permission (read/write/admin)|
 |units|[string]|false|none|**Deprecated.** Deprecated: This variable should be replaced by UnitsMap and will be dropped in later versions.|
 |units_map|object|false|none|none|
-|visibility|object|false|none|Team visibility within the organization. Defaults to "private".|
+|visibility|object|false|none|Team visibility within the organization. Defaults to the instance's default team visibility, "private" unless configured.|
 
 <h2 id="tocS_CreateUserOption">CreateUserOption</h2>
 <!-- backwards compatibility -->
@@ -71897,9 +73506,11 @@ Note: `author` and `committer` are optional (if only one is given, it will be us
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -71948,6 +73559,7 @@ Note: `author` and `committer` are optional (if only one is given, it will be us
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -72341,10 +73953,10 @@ EditHookOption options when modify one hook
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |active|boolean|false|none|Whether the webhook is active and will be triggered|
-|authorization_header|string|false|none|Authorization header to include in webhook requests|
-|branch_filter|string|false|none|Branch filter pattern to determine which branches trigger the webhook|
+|authorization_header|string|false|none|Authorization header to include in webhook requests, omitted keeps the current value unless the url changes|
+|branch_filter|string|false|none|Branch filter pattern to determine which branches trigger the webhook, omitted keeps the current value|
 |config|object|false|none|Configuration settings for the webhook|
-|events|[string]|false|none|List of events that trigger this webhook|
+|events|[string]|false|none|List of events that trigger this webhook, omitted or empty keeps the current events|
 |name|string|false|none|Optional human-readable name|
 
 <h2 id="tocS_EditIssueCommentOption">EditIssueCommentOption</h2>
@@ -72681,6 +74293,7 @@ EditReactionOption contain the reaction type
 {
   "body": "string",
   "draft": true,
+  "make_latest": {},
   "name": "string",
   "prerelease": true,
   "tag_name": "string",
@@ -72696,6 +74309,7 @@ EditReleaseOption options when editing a release
 |---|---|---|---|---|
 |body|string|false|none|The new release notes or description|
 |draft|boolean|false|none|Whether to change the draft status|
+|make_latest|object|false|none|"true" sets the release as the latest, "false" keeps the current latest, "legacy" returns to the newest stable release by date. If omitted, a newly published release becomes the latest only if it is the newest by date|
 |name|string|false|none|The new display title of the release|
 |prerelease|boolean|false|none|Whether to change the prerelease status|
 |tag_name|string|false|none|The new name of the git tag|
@@ -72747,6 +74361,7 @@ EditReleaseOption options when editing a release
   "ignore_whitespace_conflicts": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
@@ -72757,6 +74372,7 @@ EditReleaseOption options when editing a release
   "name": "string",
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "squash_merge_commit_message": "string",
   "template": true,
   "website": "string"
@@ -72805,6 +74421,7 @@ EditRepoOption options when editing a repository's properties
 |name|string|false|none|name of the repository|
 |private|boolean|false|none|either `true` to make the repository private or `false` to make it public.<br>Note: you will get a 422 error if the organization restricts changing repository visibility to organization<br>owners and a non-owner tries to change the value of private.|
 |projects_mode|string|false|none|`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both.|
+|pull_requests_creation_restriction|string|false|none|who is allowed to create pull requests: "reader" (default, any user with read access), "member" (must be a collaborator with read access) or "writer" (must be a collaborator with write access).|
 |squash_merge_commit_message|string|false|none|set the default squash merge commit message body: "PR_BODY", "COMMIT_MESSAGES", or "BLANK".|
 |template|boolean|false|none|either `true` to make this repository a template or `false` to make it a normal repository|
 |website|string|false|none|a URL with more information about the repository.|
@@ -73982,6 +75599,7 @@ Identity for a person's identity like an author or committer
 ```json
 {
   "allow_only_contributors_to_track_time": true,
+  "creation_restriction": "string",
   "enable_issue_dependencies": true,
   "enable_time_tracker": true
 }
@@ -73994,6 +75612,7 @@ InternalTracker represents settings for internal tracker
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |allow_only_contributors_to_track_time|boolean|false|none|Let only contributors track time (Built-in issue tracker)|
+|creation_restriction|string|false|none|who is allowed to create issues: "reader" (default, any user with read access), "member" (must be a collaborator with read access) or "writer" (must be a collaborator with write access).|
 |enable_issue_dependencies|boolean|false|none|Enable dependencies for issues and pull requests (Built-in issue tracker)|
 |enable_time_tracker|boolean|false|none|Enable time tracking (Built-in issue tracker)|
 
@@ -74010,6 +75629,7 @@ InternalTracker represents settings for internal tracker
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -74653,6 +76273,17 @@ LockIssueOption options to lock an issue
 |---|---|---|---|---|
 |lock_reason|string|false|none|none|
 
+<h2 id="tocS_MakeLatest">MakeLatest</h2>
+<!-- backwards compatibility -->
+<a id="schemamakelatest"></a>
+<a id="schema_MakeLatest"></a>
+<a id="tocSmakelatest"></a>
+<a id="tocsmakelatest"></a>
+
+```json
+"true"
+```
+
 <h2 id="tocS_MarkdownOption">MarkdownOption</h2>
 <!-- backwards compatibility -->
 <a id="schemamarkdownoption"></a>
@@ -75237,9 +76868,11 @@ NotificationSubject contains the notification subject (Issue/Pull/Commit)
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -75288,6 +76921,7 @@ NotificationSubject contains the notification subject (Issue/Pull/Commit)
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -75604,9 +77238,11 @@ OrganizationPermissions list different users permissions on an organization
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -75655,6 +77291,7 @@ OrganizationPermissions list different users permissions on an organization
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -75895,9 +77532,11 @@ PRBranchInfo information about a branch
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -75946,6 +77585,7 @@ PRBranchInfo information about a branch
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -76645,6 +78285,36 @@ PublicKey publickey is a user key to push code to repository
       "website": "string"
     }
   ],
+  "auto_merge": {
+    "commit_message": "string",
+    "commit_title": "string",
+    "enabled_by": {
+      "active": true,
+      "avatar_url": "http://example.com",
+      "created": "1970-01-01T00:00:00Z",
+      "description": "string",
+      "email": "user@example.com",
+      "followers_count": 0,
+      "following_count": 0,
+      "full_name": "string",
+      "html_url": "http://example.com",
+      "id": 0,
+      "is_admin": true,
+      "language": "string",
+      "last_login": "1970-01-01T00:00:00Z",
+      "location": "string",
+      "login": "string",
+      "login_name": "string",
+      "prohibit_login": true,
+      "restricted": true,
+      "source_id": 0,
+      "starred_repos_count": 0,
+      "type": {},
+      "visibility": {},
+      "website": "string"
+    },
+    "merge_method": "string"
+  },
   "base": {
     "label": "string",
     "ref": "string",
@@ -76698,9 +78368,11 @@ PublicKey publickey is a user key to push code to repository
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -76749,6 +78421,7 @@ PublicKey publickey is a user key to push code to repository
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -76925,9 +78598,11 @@ PublicKey publickey is a user key to push code to repository
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -76976,6 +78651,7 @@ PublicKey publickey is a user key to push code to repository
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -77262,6 +78938,7 @@ PullRequest represents a pull request
 |allow_maintainer_edit|boolean|false|none|Whether maintainers can edit the pull request|
 |assignee|[User](#schemauser)|false|none|User represents a user|
 |assignees|[[User](#schemauser)]|false|none|The list of users assigned to the pull request|
+|auto_merge|[PullRequestAutoMerge](#schemapullrequestautomerge)|false|none|PullRequestAutoMerge represents a pull request scheduled to auto merge when all checks succeed|
 |base|[PRBranchInfo](#schemaprbranchinfo)|false|none|PRBranchInfo information about a branch|
 |body|string|false|none|The description body of the pull request|
 |changed_files|integer(int64)|false|none|The number of files changed in the pull request|
@@ -77296,6 +78973,57 @@ PullRequest represents a pull request
 |updated_at|string(date-time)|false|none|none|
 |url|string(uri)|false|none|The API URL of the pull request|
 |user|[User](#schemauser)|false|none|User represents a user|
+
+<h2 id="tocS_PullRequestAutoMerge">PullRequestAutoMerge</h2>
+<!-- backwards compatibility -->
+<a id="schemapullrequestautomerge"></a>
+<a id="schema_PullRequestAutoMerge"></a>
+<a id="tocSpullrequestautomerge"></a>
+<a id="tocspullrequestautomerge"></a>
+
+```json
+{
+  "commit_message": "string",
+  "commit_title": "string",
+  "enabled_by": {
+    "active": true,
+    "avatar_url": "http://example.com",
+    "created": "1970-01-01T00:00:00Z",
+    "description": "string",
+    "email": "user@example.com",
+    "followers_count": 0,
+    "following_count": 0,
+    "full_name": "string",
+    "html_url": "http://example.com",
+    "id": 0,
+    "is_admin": true,
+    "language": "string",
+    "last_login": "1970-01-01T00:00:00Z",
+    "location": "string",
+    "login": "string",
+    "login_name": "string",
+    "prohibit_login": true,
+    "restricted": true,
+    "source_id": 0,
+    "starred_repos_count": 0,
+    "type": {},
+    "visibility": {},
+    "website": "string"
+  },
+  "merge_method": "string"
+}
+```
+
+PullRequestAutoMerge represents a pull request scheduled to auto merge when all checks succeed
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|commit_message|string|false|none|The message of the resulting merge commit|
+|commit_title|string|false|none|The title of the resulting merge commit|
+|enabled_by|[User](#schemauser)|false|none|User represents a user|
+|merge_method|string|false|none|The merge method that will be used, eg: "merge", "rebase", "rebase-merge", "squash", "fast-forward-only"|
 
 <h2 id="tocS_PullRequestMeta">PullRequestMeta</h2>
 <!-- backwards compatibility -->
@@ -77790,6 +79518,7 @@ Reaction contain one reaction
     {
       "browser_download_url": "http://example.com",
       "created_at": "1970-01-01T00:00:00Z",
+      "digest": "string",
       "download_count": 0,
       "id": 0,
       "name": "string",
@@ -78233,9 +79962,11 @@ RepoTransfer represents a pending repo transfer
   "internal": true,
   "internal_tracker": {
     "allow_only_contributors_to_track_time": true,
+    "creation_restriction": "string",
     "enable_issue_dependencies": true,
     "enable_time_tracker": true
   },
+  "issues_creation_restriction": "string",
   "language": "string",
   "languages_url": "http://example.com",
   "licenses": [
@@ -78326,9 +80057,11 @@ RepoTransfer represents a pending repo transfer
     "internal": true,
     "internal_tracker": {
       "allow_only_contributors_to_track_time": true,
+      "creation_restriction": "string",
       "enable_issue_dependencies": true,
       "enable_time_tracker": true
     },
+    "issues_creation_restriction": "string",
     "language": "string",
     "languages_url": "http://example.com",
     "licenses": [
@@ -78377,6 +80110,7 @@ RepoTransfer represents a pending repo transfer
     },
     "private": true,
     "projects_mode": "string",
+    "pull_requests_creation_restriction": "string",
     "release_counter": 0,
     "repo_transfer": {
       "doer": {
@@ -78494,6 +80228,7 @@ RepoTransfer represents a pending repo transfer
   },
   "private": true,
   "projects_mode": "string",
+  "pull_requests_creation_restriction": "string",
   "release_counter": 0,
   "repo_transfer": {
     "doer": {
@@ -78653,6 +80388,7 @@ Repository represents a repository
 |ignore_whitespace_conflicts|boolean|false|none|none|
 |internal|boolean|false|none|none|
 |internal_tracker|[InternalTracker](#schemainternaltracker)|false|none|InternalTracker represents settings for internal tracker|
+|issues_creation_restriction|string|false|none|who is allowed to create issues: "reader", "member" or "writer"|
 |language|string|false|none|none|
 |languages_url|string(uri)|false|none|none|
 |licenses|[string]|false|none|none|
@@ -78671,6 +80407,7 @@ Repository represents a repository
 |permissions|[Permission](#schemapermission)|false|none|Permission represents a set of permissions|
 |private|boolean|false|none|none|
 |projects_mode|string|false|none|none|
+|pull_requests_creation_restriction|string|false|none|who is allowed to create pull requests: "reader", "member" or "writer"|
 |release_counter|integer(int64)|false|none|none|
 |repo_transfer|[RepoTransfer](#schemarepotransfer)|false|none|RepoTransfer represents a pending repo transfer|
 |size|integer(int64)|false|none|none|
@@ -78807,9 +80544,11 @@ RunDetails returns workflow_dispatch runid and url
       "internal": true,
       "internal_tracker": {
         "allow_only_contributors_to_track_time": true,
+        "creation_restriction": "string",
         "enable_issue_dependencies": true,
         "enable_time_tracker": true
       },
+      "issues_creation_restriction": "string",
       "language": "string",
       "languages_url": "http://example.com",
       "licenses": [
@@ -78858,6 +80597,7 @@ RunDetails returns workflow_dispatch runid and url
       },
       "private": true,
       "projects_mode": "string",
+      "pull_requests_creation_restriction": "string",
       "release_counter": 0,
       "repo_transfer": {
         "doer": {
@@ -79361,6 +81101,7 @@ TimeStamp defines a timestamp
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -79594,6 +81335,7 @@ TimeStamp defines a timestamp
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -79640,6 +81382,7 @@ TimeStamp defines a timestamp
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",
@@ -79859,6 +81602,7 @@ TimeStamp defines a timestamp
         {
           "browser_download_url": "http://example.com",
           "created_at": "1970-01-01T00:00:00Z",
+          "digest": "string",
           "download_count": 0,
           "id": 0,
           "name": "string",
@@ -80211,6 +81955,7 @@ TopicResponse for returning topics
       {
         "browser_download_url": "http://example.com",
         "created_at": "1970-01-01T00:00:00Z",
+        "digest": "string",
         "download_count": 0,
         "id": 0,
         "name": "string",

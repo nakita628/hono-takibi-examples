@@ -4,36 +4,30 @@ const StringSchema = z.string().openapi('String')
 
 const CloneBackendResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CloneBackendResponse')
@@ -48,72 +42,60 @@ const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
 
 const CreateBackendResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackendResponse')
 
 const CreateBackendAPIResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackendAPIResponse')
@@ -126,76 +108,44 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const BackendAPIAppSyncAuthSettingsSchema = z
   .object({
-    CognitoUserPoolId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cognitoUserPoolId' },
-          description:
-            'The Amazon Cognito user pool ID, if Amazon Cognito was used as an authentication setting to access your data models.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'description' },
-          description:
-            'The API key description for API_KEY, if it was used as an authentication mechanism to access your data models.',
-        }),
-    ).exactOptional(),
-    ExpirationTime: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'expirationTime' },
-          description:
-            'The API key expiration time for API_KEY, if it was used as an authentication mechanism to access your data models.',
-        }),
-    ).exactOptional(),
-    OpenIDAuthTTL: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'openIDAuthTTL' },
-          description: 'The expiry time for the OpenID authentication mechanism.',
-        }),
-    ).exactOptional(),
-    OpenIDClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'openIDClientId' },
-          description:
-            'The clientID for openID, if openID was used as an authentication setting to access your data models.',
-        }),
-    ).exactOptional(),
-    OpenIDIatTTL: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'openIDIatTTL' },
-          description: 'The expiry time for the OpenID authentication mechanism.',
-        }),
-    ).exactOptional(),
-    OpenIDIssueURL: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'openIDIssueURL' },
-          description:
-            'The openID issuer URL, if openID was used as an authentication setting to access your data models.',
-        }),
-    ).exactOptional(),
-    OpenIDProviderName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'openIDProviderName' },
-          description:
-            'The OpenID provider name, if OpenID was used as an authentication mechanism to access your data models.',
-        }),
-    ).exactOptional(),
+    CognitoUserPoolId: StringSchema.exactOptional().openapi({
+      xml: { name: 'cognitoUserPoolId' },
+      description:
+        'The Amazon Cognito user pool ID, if Amazon Cognito was used as an authentication setting to access your data models.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      xml: { name: 'description' },
+      description:
+        'The API key description for API_KEY, if it was used as an authentication mechanism to access your data models.',
+    }),
+    ExpirationTime: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'expirationTime' },
+      description:
+        'The API key expiration time for API_KEY, if it was used as an authentication mechanism to access your data models.',
+    }),
+    OpenIDAuthTTL: StringSchema.exactOptional().openapi({
+      xml: { name: 'openIDAuthTTL' },
+      description: 'The expiry time for the OpenID authentication mechanism.',
+    }),
+    OpenIDClientId: StringSchema.exactOptional().openapi({
+      xml: { name: 'openIDClientId' },
+      description:
+        'The clientID for openID, if openID was used as an authentication setting to access your data models.',
+    }),
+    OpenIDIatTTL: StringSchema.exactOptional().openapi({
+      xml: { name: 'openIDIatTTL' },
+      description: 'The expiry time for the OpenID authentication mechanism.',
+    }),
+    OpenIDIssueURL: StringSchema.exactOptional().openapi({
+      xml: { name: 'openIDIssueURL' },
+      description:
+        'The openID issuer URL, if openID was used as an authentication setting to access your data models.',
+    }),
+    OpenIDProviderName: StringSchema.exactOptional().openapi({
+      xml: { name: 'openIDProviderName' },
+      description:
+        'The OpenID provider name, if OpenID was used as an authentication mechanism to access your data models.',
+    }),
   })
   .openapi({
     description:
@@ -206,17 +156,14 @@ const BackendAPIAppSyncAuthSettingsSchema = z
 
 const BackendAPIAuthTypeSchema = z
   .object({
-    Mode: ModeSchema.and(
-      z.any().openapi({ xml: { name: 'mode' }, description: 'Describes the authentication mode.' }),
-    ).exactOptional(),
-    Settings: BackendAPIAppSyncAuthSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'settings' },
-          description: 'Describes settings for the authentication mode.',
-        }),
-    ).exactOptional(),
+    Mode: ModeSchema.exactOptional().openapi({
+      xml: { name: 'mode' },
+      description: 'Describes the authentication mode.',
+    }),
+    Settings: BackendAPIAppSyncAuthSettingsSchema.exactOptional().openapi({
+      xml: { name: 'settings' },
+      description: 'Describes settings for the authentication mode.',
+    }),
   })
   .openapi({
     description: 'Describes the auth types for your configured data models.',
@@ -234,14 +181,10 @@ const ResolutionStrategySchema = z
 
 const BackendAPIConflictResolutionSchema = z
   .object({
-    ResolutionStrategy: ResolutionStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resolutionStrategy' },
-          description: 'The strategy for conflict resolution.',
-        }),
-    ).exactOptional(),
+    ResolutionStrategy: ResolutionStrategySchema.exactOptional().openapi({
+      xml: { name: 'resolutionStrategy' },
+      description: 'The strategy for conflict resolution.',
+    }),
   })
   .openapi({
     description:
@@ -252,36 +195,30 @@ const BackendAPIConflictResolutionSchema = z
 
 const CreateBackendAuthResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackendAuthResponse')
@@ -294,23 +231,15 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CreateBackendAuthIdentityPoolConfigSchema = z
   .object({
-    IdentityPoolName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityPoolName' },
-          description: 'Name of the Amazon Cognito identity pool used for authorization.',
-        }),
-    ),
-    UnauthenticatedLogin: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unauthenticatedLogin' },
-          description:
-            'Set to true or false based on whether you want to enable guest authorization to your Amplify app.',
-        }),
-    ),
+    IdentityPoolName: StringSchema.openapi({
+      xml: { name: 'identityPoolName' },
+      description: 'Name of the Amazon Cognito identity pool used for authorization.',
+    }),
+    UnauthenticatedLogin: BooleanSchema.openapi({
+      xml: { name: 'unauthenticatedLogin' },
+      description:
+        'Set to true or false based on whether you want to enable guest authorization to your Amplify app.',
+    }),
   })
   .openapi({
     required: ['UnauthenticatedLogin', 'IdentityPoolName'],
@@ -328,22 +257,14 @@ const DeliveryMethodSchema = z
 
 const EmailSettingsSchema = z
   .object({
-    EmailMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailMessage' },
-          description: 'The contents of the email message.',
-        }),
-    ).exactOptional(),
-    EmailSubject: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailSubject' },
-          description: 'The contents of the subject line of the email message.',
-        }),
-    ).exactOptional(),
+    EmailMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'emailMessage' },
+      description: 'The contents of the email message.',
+    }),
+    EmailSubject: StringSchema.exactOptional().openapi({
+      xml: { name: 'emailSubject' },
+      description: 'The contents of the subject line of the email message.',
+    }),
   })
   .openapi({
     description: 'The configuration for the email sent when an app user forgets their password.',
@@ -353,44 +274,31 @@ const EmailSettingsSchema = z
 
 const SmsSettingsSchema = z
   .object({
-    SmsMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'smsMessage' }, description: 'The contents of the SMS message.' }),
-    ).exactOptional(),
+    SmsMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'smsMessage' },
+      description: 'The contents of the SMS message.',
+    }),
   })
   .openapi({ description: 'SMS settings for authentication.', required: [] })
   .openapi('SmsSettings')
 
 const CreateBackendAuthForgotPasswordConfigSchema = z
   .object({
-    DeliveryMethod: DeliveryMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deliveryMethod' },
-          description:
-            '<b>(DEPRECATED)</b> Describes which mode to use (either SMS or email) to deliver messages to app users who want to recover their password.',
-        }),
-    ),
-    EmailSettings: EmailSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailSettings' },
-          description:
-            '<b>(DEPRECATED)</b> The configuration for the email sent when an app user forgets their password.',
-        }),
-    ).exactOptional(),
-    SmsSettings: SmsSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smsSettings' },
-          description:
-            '<b>(DEPRECATED)</b> The configuration for the SMS message sent when an app user forgets their password.',
-        }),
-    ).exactOptional(),
+    DeliveryMethod: DeliveryMethodSchema.openapi({
+      xml: { name: 'deliveryMethod' },
+      description:
+        '<b>(DEPRECATED)</b> Describes which mode to use (either SMS or email) to deliver messages to app users who want to recover their password.',
+    }),
+    EmailSettings: EmailSettingsSchema.exactOptional().openapi({
+      xml: { name: 'emailSettings' },
+      description:
+        '<b>(DEPRECATED)</b> The configuration for the email sent when an app user forgets their password.',
+    }),
+    SmsSettings: SmsSettingsSchema.exactOptional().openapi({
+      xml: { name: 'smsSettings' },
+      description:
+        '<b>(DEPRECATED)</b> The configuration for the SMS message sent when an app user forgets their password.',
+    }),
   })
   .openapi({
     required: ['DeliveryMethod'],
@@ -407,12 +315,14 @@ const ListOfMfaTypesElementSchema = z.array(MfaTypesElementSchema).openapi('List
 
 const SettingsSchema = z
   .object({
-    MfaTypes: ListOfMfaTypesElementSchema.and(
-      z.any().openapi({ xml: { name: 'mfaTypes' }, description: 'The supported MFA types.' }),
-    ).exactOptional(),
-    SmsMessage: StringSchema.and(
-      z.any().openapi({ xml: { name: 'smsMessage' }, description: 'The body of the SMS message.' }),
-    ).exactOptional(),
+    MfaTypes: ListOfMfaTypesElementSchema.exactOptional().openapi({
+      xml: { name: 'mfaTypes' },
+      description: 'The supported MFA types.',
+    }),
+    SmsMessage: StringSchema.exactOptional().openapi({
+      xml: { name: 'smsMessage' },
+      description: 'The body of the SMS message.',
+    }),
   })
   .openapi({
     description: 'The settings of your MFA configuration for the backend of your Amplify project.',
@@ -422,23 +332,15 @@ const SettingsSchema = z
 
 const CreateBackendAuthMFAConfigSchema = z
   .object({
-    MFAMode: MFAModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether MFA should be [ON, OFF, or OPTIONAL] for authentication in your Amplify project.',
-        }),
-    ),
-    Settings: SettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'settings' },
-          description:
-            'Describes the configuration settings and methods for your Amplify app users to use MFA.',
-        }),
-    ).exactOptional(),
+    MFAMode: MFAModeSchema.openapi({
+      description:
+        'Describes whether MFA should be [ON, OFF, or OPTIONAL] for authentication in your Amplify project.',
+    }),
+    Settings: SettingsSchema.exactOptional().openapi({
+      xml: { name: 'settings' },
+      description:
+        'Describes the configuration settings and methods for your Amplify app users to use MFA.',
+    }),
   })
   .openapi({
     required: ['MFAMode'],
@@ -461,24 +363,16 @@ const ListOfStringSchema = z.array(StringSchema).openapi('ListOfString')
 
 const BackendAuthSocialProviderConfigSchema = z
   .object({
-    ClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'client_id' },
-          description:
-            'Describes the client_id, which can be obtained from the third-party social federation provider.',
-        }),
-    ).exactOptional(),
-    ClientSecret: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'client_secret' },
-          description:
-            'Describes the client_secret, which can be obtained from third-party social federation providers.',
-        }),
-    ).exactOptional(),
+    ClientId: StringSchema.exactOptional().openapi({
+      xml: { name: 'client_id' },
+      description:
+        'Describes the client_id, which can be obtained from the third-party social federation provider.',
+    }),
+    ClientSecret: StringSchema.exactOptional().openapi({
+      xml: { name: 'client_secret' },
+      description:
+        'Describes the client_secret, which can be obtained from third-party social federation providers.',
+    }),
   })
   .openapi({
     description:
@@ -489,38 +383,22 @@ const BackendAuthSocialProviderConfigSchema = z
 
 const BackendAuthAppleProviderConfigSchema = z
   .object({
-    ClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'client_id' },
-          description: 'Describes the client_id (also called Services ID) that comes from Apple.',
-        }),
-    ).exactOptional(),
-    KeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'key_id' },
-          description: 'Describes the key_id that comes from Apple.',
-        }),
-    ).exactOptional(),
-    PrivateKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'private_key' },
-          description: 'Describes the private_key that comes from Apple.',
-        }),
-    ).exactOptional(),
-    TeamId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'team_id' },
-          description: 'Describes the team_id that comes from Apple.',
-        }),
-    ).exactOptional(),
+    ClientId: StringSchema.exactOptional().openapi({
+      xml: { name: 'client_id' },
+      description: 'Describes the client_id (also called Services ID) that comes from Apple.',
+    }),
+    KeyId: StringSchema.exactOptional().openapi({
+      xml: { name: 'key_id' },
+      description: 'Describes the key_id that comes from Apple.',
+    }),
+    PrivateKey: StringSchema.exactOptional().openapi({
+      xml: { name: 'private_key' },
+      description: 'Describes the private_key that comes from Apple.',
+    }),
+    TeamId: StringSchema.exactOptional().openapi({
+      xml: { name: 'team_id' },
+      description: 'Describes the team_id that comes from Apple.',
+    }),
   })
   .openapi({
     description:
@@ -545,56 +423,32 @@ const SocialProviderSettingsSchema = z
 
 const CreateBackendAuthOAuthConfigSchema = z
   .object({
-    DomainPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainPrefix' },
-          description: 'The domain prefix for your Amplify app.',
-        }),
-    ).exactOptional(),
-    OAuthGrantType: OAuthGrantTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuthGrantType' },
-          description:
-            'The OAuth grant type that you use to allow app users to authenticate from your Amplify app.',
-        }),
-    ),
-    OAuthScopes: ListOfOAuthScopesElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuthScopes' },
-          description:
-            'List of OAuth-related flows used to allow your app users to authenticate from your Amplify app.',
-        }),
-    ),
-    RedirectSignInURIs: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'redirectSignInURIs' },
-          description: 'The redirected URI for signing in to your Amplify app.',
-        }),
-    ),
-    RedirectSignOutURIs: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'redirectSignOutURIs' },
-          description: 'Redirect URLs that OAuth uses when a user signs out of an Amplify app.',
-        }),
-    ),
-    SocialProviderSettings: SocialProviderSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'socialProviderSettings' },
-          description: 'The settings for using social providers to access your Amplify app.',
-        }),
-    ).exactOptional(),
+    DomainPrefix: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainPrefix' },
+      description: 'The domain prefix for your Amplify app.',
+    }),
+    OAuthGrantType: OAuthGrantTypeSchema.openapi({
+      xml: { name: 'oAuthGrantType' },
+      description:
+        'The OAuth grant type that you use to allow app users to authenticate from your Amplify app.',
+    }),
+    OAuthScopes: ListOfOAuthScopesElementSchema.openapi({
+      xml: { name: 'oAuthScopes' },
+      description:
+        'List of OAuth-related flows used to allow your app users to authenticate from your Amplify app.',
+    }),
+    RedirectSignInURIs: ListOfStringSchema.openapi({
+      xml: { name: 'redirectSignInURIs' },
+      description: 'The redirected URI for signing in to your Amplify app.',
+    }),
+    RedirectSignOutURIs: ListOfStringSchema.openapi({
+      xml: { name: 'redirectSignOutURIs' },
+      description: 'Redirect URLs that OAuth uses when a user signs out of an Amplify app.',
+    }),
+    SocialProviderSettings: SocialProviderSettingsSchema.exactOptional().openapi({
+      xml: { name: 'socialProviderSettings' },
+      description: 'The settings for using social providers to access your Amplify app.',
+    }),
   })
   .openapi({
     required: ['RedirectSignOutURIs', 'RedirectSignInURIs', 'OAuthGrantType', 'OAuthScopes'],
@@ -612,24 +466,16 @@ const ListOfAdditionalConstraintsElementSchema = z
 
 const CreateBackendAuthPasswordPolicyConfigSchema = z
   .object({
-    AdditionalConstraints: ListOfAdditionalConstraintsElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConstraints' },
-          description:
-            'Additional constraints for the password used to access the backend of your Amplify project.',
-        }),
-    ).exactOptional(),
-    MinimumLength: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minimumLength' },
-          description:
-            'The minimum length of the password used to access the backend of your Amplify project.',
-        }),
-    ),
+    AdditionalConstraints: ListOfAdditionalConstraintsElementSchema.exactOptional().openapi({
+      xml: { name: 'additionalConstraints' },
+      description:
+        'Additional constraints for the password used to access the backend of your Amplify project.',
+    }),
+    MinimumLength: DoubleSchema.openapi({
+      xml: { name: 'minimumLength' },
+      description:
+        'The minimum length of the password used to access the backend of your Amplify project.',
+    }),
   })
   .openapi({
     required: ['MinimumLength'],
@@ -669,30 +515,18 @@ const SignInMethodSchema = z
 
 const CreateBackendAuthVerificationMessageConfigSchema = z
   .object({
-    DeliveryMethod: DeliveryMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deliveryMethod' },
-          description: 'The type of verification message to send.',
-        }),
-    ),
-    EmailSettings: EmailSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailSettings' },
-          description: 'The settings for the email message.',
-        }),
-    ).exactOptional(),
-    SmsSettings: SmsSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smsSettings' },
-          description: 'The settings for the SMS message.',
-        }),
-    ).exactOptional(),
+    DeliveryMethod: DeliveryMethodSchema.openapi({
+      xml: { name: 'deliveryMethod' },
+      description: 'The type of verification message to send.',
+    }),
+    EmailSettings: EmailSettingsSchema.exactOptional().openapi({
+      xml: { name: 'emailSettings' },
+      description: 'The settings for the email message.',
+    }),
+    SmsSettings: SmsSettingsSchema.exactOptional().openapi({
+      xml: { name: 'smsSettings' },
+      description: 'The settings for the SMS message.',
+    }),
   })
   .openapi({
     required: ['DeliveryMethod'],
@@ -703,76 +537,44 @@ const CreateBackendAuthVerificationMessageConfigSchema = z
 
 const CreateBackendAuthUserPoolConfigSchema = z
   .object({
-    ForgotPassword: CreateBackendAuthForgotPasswordConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'forgotPassword' },
-          description:
-            '<b>(DEPRECATED)</b> Describes the forgotten password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    Mfa: CreateBackendAuthMFAConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mfa' },
-          description:
-            'Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    OAuth: CreateBackendAuthOAuthConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuth' },
-          description:
-            'Describes the OAuth policy and rules for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    PasswordPolicy: CreateBackendAuthPasswordPolicyConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passwordPolicy' },
-          description:
-            'Describes the password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    RequiredSignUpAttributes: ListOfRequiredSignUpAttributesElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'requiredSignUpAttributes' },
-          description: 'The required attributes to sign up new users in the user pool.',
-        }),
-    ),
-    SignInMethod: SignInMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'signInMethod' },
-          description:
-            'Describes the sign-in methods that your Amplify app users use to log in using the Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ),
-    UserPoolName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userPoolName' },
-          description: 'The Amazon Cognito user pool name.',
-        }),
-    ),
-    VerificationMessage: CreateBackendAuthVerificationMessageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'verificationMessage' },
-          description:
-            'Describes the email or SMS verification message for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
+    ForgotPassword: CreateBackendAuthForgotPasswordConfigSchema.exactOptional().openapi({
+      xml: { name: 'forgotPassword' },
+      description:
+        '<b>(DEPRECATED)</b> Describes the forgotten password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    Mfa: CreateBackendAuthMFAConfigSchema.exactOptional().openapi({
+      xml: { name: 'mfa' },
+      description:
+        'Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.',
+    }),
+    OAuth: CreateBackendAuthOAuthConfigSchema.exactOptional().openapi({
+      xml: { name: 'oAuth' },
+      description:
+        'Describes the OAuth policy and rules for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    PasswordPolicy: CreateBackendAuthPasswordPolicyConfigSchema.exactOptional().openapi({
+      xml: { name: 'passwordPolicy' },
+      description:
+        'Describes the password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    RequiredSignUpAttributes: ListOfRequiredSignUpAttributesElementSchema.openapi({
+      xml: { name: 'requiredSignUpAttributes' },
+      description: 'The required attributes to sign up new users in the user pool.',
+    }),
+    SignInMethod: SignInMethodSchema.openapi({
+      xml: { name: 'signInMethod' },
+      description:
+        'Describes the sign-in methods that your Amplify app users use to log in using the Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    UserPoolName: StringSchema.openapi({
+      xml: { name: 'userPoolName' },
+      description: 'The Amazon Cognito user pool name.',
+    }),
+    VerificationMessage: CreateBackendAuthVerificationMessageConfigSchema.exactOptional().openapi({
+      xml: { name: 'verificationMessage' },
+      description:
+        'Describes the email or SMS verification message for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
   })
   .openapi({
     required: ['RequiredSignUpAttributes', 'SignInMethod', 'UserPoolName'],
@@ -783,50 +585,44 @@ const CreateBackendAuthUserPoolConfigSchema = z
 
 const CreateBackendConfigResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackendConfigResponse')
 
 const CreateBackendStorageResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBackendStorageResponse')
@@ -849,24 +645,16 @@ const ListOfUnAuthenticatedElementSchema = z
 
 const BackendStoragePermissionsSchema = z
   .object({
-    Authenticated: ListOfAuthenticatedElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authenticated' },
-          description:
-            'Lists all authenticated user read, write, and delete permissions for your S3 bucket.',
-        }),
-    ),
-    UnAuthenticated: ListOfUnAuthenticatedElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unAuthenticated' },
-          description:
-            'Lists all unauthenticated user read, write, and delete permissions for your S3 bucket.',
-        }),
-    ).exactOptional(),
+    Authenticated: ListOfAuthenticatedElementSchema.openapi({
+      xml: { name: 'authenticated' },
+      description:
+        'Lists all authenticated user read, write, and delete permissions for your S3 bucket.',
+    }),
+    UnAuthenticated: ListOfUnAuthenticatedElementSchema.exactOptional().openapi({
+      xml: { name: 'unAuthenticated' },
+      description:
+        'Lists all unauthenticated user read, write, and delete permissions for your S3 bucket.',
+    }),
   })
   .openapi({
     required: ['Authenticated'],
@@ -879,325 +667,241 @@ const ServiceNameSchema = z.literal('S3').openapi('ServiceName')
 
 const CreateTokenResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    ChallengeCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'challengeCode' },
-          description: 'One-time challenge code for authenticating into the Amplify Admin UI.',
-        }),
-    ).exactOptional(),
-    SessionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sessionId' },
-          description: 'A unique ID provided when creating a new challenge token.',
-        }),
-    ).exactOptional(),
-    Ttl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ttl' },
-          description: 'The expiry time for the one-time generated token code.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    ChallengeCode: StringSchema.exactOptional().openapi({
+      xml: { name: 'challengeCode' },
+      description: 'One-time challenge code for authenticating into the Amplify Admin UI.',
+    }),
+    SessionId: StringSchema.exactOptional().openapi({
+      xml: { name: 'sessionId' },
+      description: 'A unique ID provided when creating a new challenge token.',
+    }),
+    Ttl: StringSchema.exactOptional().openapi({
+      xml: { name: 'ttl' },
+      description: 'The expiry time for the one-time generated token code.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTokenResponse')
 
 const DeleteBackendResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackendResponse')
 
 const DeleteBackendAPIResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackendAPIResponse')
 
 const DeleteBackendAuthResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackendAuthResponse')
 
 const DeleteBackendStorageResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteBackendStorageResponse')
 
 const DeleteTokenResponseSchema = z
   .object({
-    IsSuccess: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'isSuccess' },
-          description: 'Indicates whether the request succeeded or failed.',
-        }),
-    ).exactOptional(),
+    IsSuccess: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'isSuccess' },
+      description: 'Indicates whether the request succeeded or failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteTokenResponse')
 
 const GenerateBackendAPIModelsResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GenerateBackendAPIModelsResponse')
 
 const GetBackendResponseSchema = z
   .object({
-    AmplifyFeatureFlags: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'amplifyFeatureFlags' },
-          description: 'A stringified version of the cli.json file for your Amplify project.',
-        }),
-    ).exactOptional(),
-    AmplifyMetaConfig: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'amplifyMetaConfig' },
-          description: 'A stringified version of the current configs for your Amplify project.',
-        }),
-    ).exactOptional(),
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    AppName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appName' }, description: 'The name of the app.' }),
-    ).exactOptional(),
-    BackendEnvironmentList: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentList' },
-          description: 'A list of backend environments in an array.',
-        }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request failed, this is the returned error.',
-        }),
-    ).exactOptional(),
+    AmplifyFeatureFlags: StringSchema.exactOptional().openapi({
+      xml: { name: 'amplifyFeatureFlags' },
+      description: 'A stringified version of the cli.json file for your Amplify project.',
+    }),
+    AmplifyMetaConfig: StringSchema.exactOptional().openapi({
+      xml: { name: 'amplifyMetaConfig' },
+      description: 'A stringified version of the current configs for your Amplify project.',
+    }),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    AppName: StringSchema.exactOptional().openapi({
+      xml: { name: 'appName' },
+      description: 'The name of the app.',
+    }),
+    BackendEnvironmentList: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentList' },
+      description: 'A list of backend environments in an array.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request failed, this is the returned error.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendResponse')
 
 const BackendAPIResourceConfigSchema = z
   .object({
-    AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalAuthTypes' },
-          description: 'Additional authentication methods used to interact with your data models.',
-        }),
-    ).exactOptional(),
-    ApiName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'apiName' },
-          description:
-            'The API name used to interact with the data model, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    ConflictResolution: BackendAPIConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'conflictResolution' },
-          description: 'The conflict resolution strategy for your data stored in the data models.',
-        }),
-    ).exactOptional(),
-    DefaultAuthType: BackendAPIAuthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'defaultAuthType' },
-          description:
-            'The default authentication type for interacting with the configured data models in your Amplify project.',
-        }),
-    ).exactOptional(),
-    Service: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'service' },
-          description: 'The service used to provision and interact with the data model.',
-        }),
-    ).exactOptional(),
-    TransformSchema: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'transformSchema' },
-          description:
-            'The definition of the data model in the annotated transform of the GraphQL schema.',
-        }),
-    ).exactOptional(),
+    AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.exactOptional().openapi({
+      xml: { name: 'additionalAuthTypes' },
+      description: 'Additional authentication methods used to interact with your data models.',
+    }),
+    ApiName: StringSchema.exactOptional().openapi({
+      xml: { name: 'apiName' },
+      description:
+        'The API name used to interact with the data model, configured as a part of your Amplify project.',
+    }),
+    ConflictResolution: BackendAPIConflictResolutionSchema.exactOptional().openapi({
+      xml: { name: 'conflictResolution' },
+      description: 'The conflict resolution strategy for your data stored in the data models.',
+    }),
+    DefaultAuthType: BackendAPIAuthTypeSchema.exactOptional().openapi({
+      xml: { name: 'defaultAuthType' },
+      description:
+        'The default authentication type for interacting with the configured data models in your Amplify project.',
+    }),
+    Service: StringSchema.exactOptional().openapi({
+      xml: { name: 'service' },
+      description: 'The service used to provision and interact with the data model.',
+    }),
+    TransformSchema: StringSchema.exactOptional().openapi({
+      xml: { name: 'transformSchema' },
+      description:
+        'The definition of the data model in the annotated transform of the GraphQL schema.',
+    }),
   })
   .openapi({
     description:
@@ -1208,36 +912,26 @@ const BackendAPIResourceConfigSchema = z
 
 const GetBackendAPIResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    ResourceConfig: BackendAPIResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for this response object.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    ResourceConfig: BackendAPIResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for this response object.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendAPIResponse')
@@ -1246,70 +940,45 @@ const StatusSchema = z.enum(['LATEST', 'STALE']).openapi('Status')
 
 const GetBackendAPIModelsResponseSchema = z
   .object({
-    Models: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'models' },
-          description: 'Stringified JSON of the datastore model.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
-    ModelIntrospectionSchema: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'modelIntrospectionSchema' },
-          description:
-            'Stringified JSON of the model introspection schema for an existing backend API resource.',
-        }),
-    ).exactOptional(),
+    Models: StringSchema.exactOptional().openapi({
+      xml: { name: 'models' },
+      description: 'Stringified JSON of the datastore model.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
+    ModelIntrospectionSchema: StringSchema.exactOptional().openapi({
+      xml: { name: 'modelIntrospectionSchema' },
+      description:
+        'Stringified JSON of the model introspection schema for an existing backend API resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendAPIModelsResponse')
 
 const CreateBackendAuthResourceConfigSchema = z
   .object({
-    AuthResources: AuthResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authResources' },
-          description:
-            'Defines whether you want to configure only authentication or both authentication and authorization settings.',
-        }),
-    ),
-    IdentityPoolConfigs: CreateBackendAuthIdentityPoolConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityPoolConfigs' },
-          description:
-            'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
-        }),
-    ).exactOptional(),
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'service' },
-          description:
-            'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-        }),
-    ),
-    UserPoolConfigs: CreateBackendAuthUserPoolConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userPoolConfigs' },
-          description:
-            'Describes authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
-        }),
-    ),
+    AuthResources: AuthResourcesSchema.openapi({
+      xml: { name: 'authResources' },
+      description:
+        'Defines whether you want to configure only authentication or both authentication and authorization settings.',
+    }),
+    IdentityPoolConfigs: CreateBackendAuthIdentityPoolConfigSchema.exactOptional().openapi({
+      xml: { name: 'identityPoolConfigs' },
+      description:
+        'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
+    }),
+    Service: ServiceSchema.openapi({
+      xml: { name: 'service' },
+      description:
+        'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+    }),
+    UserPoolConfigs: CreateBackendAuthUserPoolConfigSchema.openapi({
+      xml: { name: 'userPoolConfigs' },
+      description:
+        'Describes authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
+    }),
   })
   .openapi({
     required: ['AuthResources', 'UserPoolConfigs', 'Service'],
@@ -1320,119 +989,87 @@ const CreateBackendAuthResourceConfigSchema = z
 
 const GetBackendAuthResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    ResourceConfig: CreateBackendAuthResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description:
-            'The resource configuration for authorization requests to the backend of your Amplify project.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    ResourceConfig: CreateBackendAuthResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description:
+        'The resource configuration for authorization requests to the backend of your Amplify project.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendAuthResponse')
 
 const GetBackendJobResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    CreateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createTime' },
-          description: 'The time when the job was created.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
-    UpdateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updateTime' },
-          description: 'The time when the job was last updated.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    CreateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'createTime' },
+      description: 'The time when the job was created.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
+    UpdateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'updateTime' },
+      description: 'The time when the job was last updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendJobResponse')
 
 const GetBackendStorageResourceConfigSchema = z
   .object({
-    BucketName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'bucketName' }, description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    Imported: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'imported' },
-          description: 'Returns True if the storage resource has been imported.',
-        }),
-    ),
-    Permissions: BackendStoragePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'permissions' },
-          description: 'The authorization configuration for the storage S3 bucket.',
-        }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'serviceName' }, description: 'The name of the storage service.' }),
-    ),
+    BucketName: StringSchema.exactOptional().openapi({
+      xml: { name: 'bucketName' },
+      description: 'The name of the S3 bucket.',
+    }),
+    Imported: BooleanSchema.openapi({
+      xml: { name: 'imported' },
+      description: 'Returns True if the storage resource has been imported.',
+    }),
+    Permissions: BackendStoragePermissionsSchema.exactOptional().openapi({
+      xml: { name: 'permissions' },
+      description: 'The authorization configuration for the storage S3 bucket.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      xml: { name: 'serviceName' },
+      description: 'The name of the storage service.',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'Imported'],
@@ -1442,179 +1079,131 @@ const GetBackendStorageResourceConfigSchema = z
 
 const GetBackendStorageResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    ResourceConfig: GetBackendStorageResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for the backend storage resource.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceName' },
-          description: 'The name of the storage resource.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    ResourceConfig: GetBackendStorageResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for the backend storage resource.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the storage resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBackendStorageResponse')
 
 const GetTokenResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    ChallengeCode: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'challengeCode' },
-          description: 'The one-time challenge code for authenticating into the Amplify Admin UI.',
-        }),
-    ).exactOptional(),
-    SessionId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'sessionId' },
-          description: 'A unique ID provided when creating a new challenge token.',
-        }),
-    ).exactOptional(),
-    Ttl: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'ttl' },
-          description: 'The expiry time for the one-time generated token code.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    ChallengeCode: StringSchema.exactOptional().openapi({
+      xml: { name: 'challengeCode' },
+      description: 'The one-time challenge code for authenticating into the Amplify Admin UI.',
+    }),
+    SessionId: StringSchema.exactOptional().openapi({
+      xml: { name: 'sessionId' },
+      description: 'A unique ID provided when creating a new challenge token.',
+    }),
+    Ttl: StringSchema.exactOptional().openapi({
+      xml: { name: 'ttl' },
+      description: 'The expiry time for the one-time generated token code.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTokenResponse')
 
 const ImportBackendAuthResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportBackendAuthResponse')
 
 const ImportBackendStorageResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportBackendStorageResponse')
 
 const BackendJobRespObjSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ),
-    CreateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createTime' },
-          description: 'The time when the job was created.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
-    UpdateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updateTime' },
-          description: 'The time when the job was last updated.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
+    BackendEnvironmentName: StringSchema.openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    CreateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'createTime' },
+      description: 'The time when the job was created.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
+    UpdateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'updateTime' },
+      description: 'The time when the job was last updated.',
+    }),
   })
   .openapi({
     required: ['AppId', 'BackendEnvironmentName'],
@@ -1628,36 +1217,28 @@ const ListOfBackendJobRespObjSchema = z
 
 const ListBackendJobsResponseSchema = z
   .object({
-    Jobs: ListOfBackendJobRespObjSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'jobs' }, description: 'An array of jobs and their properties.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token for the next set of results.',
-        }),
-    ).exactOptional(),
+    Jobs: ListOfBackendJobRespObjSchema.exactOptional().openapi({
+      xml: { name: 'jobs' },
+      description: 'An array of jobs and their properties.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBackendJobsResponse')
 
 const S3BucketInfoSchema = z
   .object({
-    CreationDate: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'creationDate' },
-          description: 'The creation date of the S3 bucket.',
-        }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ xml: { name: 'name' }, description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
+    CreationDate: StringSchema.exactOptional().openapi({
+      xml: { name: 'creationDate' },
+      description: 'The creation date of the S3 bucket.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      xml: { name: 'name' },
+      description: 'The name of the S3 bucket.',
+    }),
   })
   .openapi({ description: 'Describes the metadata of the S3 bucket.', required: [] })
   .openapi('S3BucketInfo')
@@ -1666,141 +1247,121 @@ const ListOfS3BucketInfoSchema = z.array(S3BucketInfoSchema).openapi('ListOfS3Bu
 
 const ListS3BucketsResponseSchema = z
   .object({
-    Buckets: ListOfS3BucketInfoSchema.and(
-      z.any().openapi({ xml: { name: 'buckets' }, description: 'The list of S3 buckets.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ xml: { name: 'nextToken' }, description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    Buckets: ListOfS3BucketInfoSchema.exactOptional().openapi({
+      xml: { name: 'buckets' },
+      description: 'The list of S3 buckets.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListS3BucketsResponse')
 
 const RemoveAllBackendsResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveAllBackendsResponse')
 
 const RemoveBackendConfigResponseSchema = z
   .object({
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RemoveBackendConfigResponse')
 
 const UpdateBackendAPIResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackendAPIResponse')
 
 const UpdateBackendAuthResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackendAuthResponse')
 
 const UpdateBackendAuthIdentityPoolConfigSchema = z
   .object({
-    UnauthenticatedLogin: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'unauthenticatedLogin' },
-          description:
-            'A boolean value that can be set to allow or disallow guest-level authorization into your Amplify app.',
-        }),
-    ).exactOptional(),
+    UnauthenticatedLogin: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'unauthenticatedLogin' },
+      description:
+        'A boolean value that can be set to allow or disallow guest-level authorization into your Amplify app.',
+    }),
   })
   .openapi({
     description:
@@ -1811,33 +1372,21 @@ const UpdateBackendAuthIdentityPoolConfigSchema = z
 
 const UpdateBackendAuthForgotPasswordConfigSchema = z
   .object({
-    DeliveryMethod: DeliveryMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deliveryMethod' },
-          description:
-            '<b>(DEPRECATED)</b> Describes which mode to use (either SMS or email) to deliver messages to app users that want to recover their password.',
-        }),
-    ).exactOptional(),
-    EmailSettings: EmailSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailSettings' },
-          description:
-            '<b>(DEPRECATED)</b> The configuration for the email sent when an app user forgets their password.',
-        }),
-    ).exactOptional(),
-    SmsSettings: SmsSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smsSettings' },
-          description:
-            '<b>(DEPRECATED)</b> The configuration for the SMS message sent when an Amplify app user forgets their password.',
-        }),
-    ).exactOptional(),
+    DeliveryMethod: DeliveryMethodSchema.exactOptional().openapi({
+      xml: { name: 'deliveryMethod' },
+      description:
+        '<b>(DEPRECATED)</b> Describes which mode to use (either SMS or email) to deliver messages to app users that want to recover their password.',
+    }),
+    EmailSettings: EmailSettingsSchema.exactOptional().openapi({
+      xml: { name: 'emailSettings' },
+      description:
+        '<b>(DEPRECATED)</b> The configuration for the email sent when an app user forgets their password.',
+    }),
+    SmsSettings: SmsSettingsSchema.exactOptional().openapi({
+      xml: { name: 'smsSettings' },
+      description:
+        '<b>(DEPRECATED)</b> The configuration for the SMS message sent when an Amplify app user forgets their password.',
+    }),
   })
   .openapi({
     description:
@@ -1848,18 +1397,14 @@ const UpdateBackendAuthForgotPasswordConfigSchema = z
 
 const UpdateBackendAuthMFAConfigSchema = z
   .object({
-    MFAMode: MFAModeSchema.and(
-      z.any().openapi({ description: 'The MFA mode for the backend of your Amplify project.' }),
-    ).exactOptional(),
-    Settings: SettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'settings' },
-          description:
-            'The settings of your MFA configuration for the backend of your Amplify project.',
-        }),
-    ).exactOptional(),
+    MFAMode: MFAModeSchema.exactOptional().openapi({
+      description: 'The MFA mode for the backend of your Amplify project.',
+    }),
+    Settings: SettingsSchema.exactOptional().openapi({
+      xml: { name: 'settings' },
+      description:
+        'The settings of your MFA configuration for the backend of your Amplify project.',
+    }),
   })
   .openapi({
     description:
@@ -1870,58 +1415,33 @@ const UpdateBackendAuthMFAConfigSchema = z
 
 const UpdateBackendAuthOAuthConfigSchema = z
   .object({
-    DomainPrefix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'domainPrefix' },
-          description:
-            'The Amazon Cognito domain prefix used to create a hosted UI for authentication.',
-        }),
-    ).exactOptional(),
-    OAuthGrantType: OAuthGrantTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuthGrantType' },
-          description:
-            'The OAuth grant type to allow app users to authenticate from your Amplify app.',
-        }),
-    ).exactOptional(),
-    OAuthScopes: ListOfOAuthScopesElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuthScopes' },
-          description:
-            'The list of OAuth-related flows that can allow users to authenticate from your Amplify app.',
-        }),
-    ).exactOptional(),
-    RedirectSignInURIs: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'redirectSignInURIs' },
-          description: 'Redirect URLs that OAuth uses when a user signs in to an Amplify app.',
-        }),
-    ).exactOptional(),
-    RedirectSignOutURIs: ListOfStringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'redirectSignOutURIs' },
-          description: 'Redirect URLs that OAuth uses when a user signs out of an Amplify app.',
-        }),
-    ).exactOptional(),
-    SocialProviderSettings: SocialProviderSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'socialProviderSettings' },
-          description:
-            'Describes third-party social federation configurations for allowing your users to sign in with OAuth.',
-        }),
-    ).exactOptional(),
+    DomainPrefix: StringSchema.exactOptional().openapi({
+      xml: { name: 'domainPrefix' },
+      description:
+        'The Amazon Cognito domain prefix used to create a hosted UI for authentication.',
+    }),
+    OAuthGrantType: OAuthGrantTypeSchema.exactOptional().openapi({
+      xml: { name: 'oAuthGrantType' },
+      description: 'The OAuth grant type to allow app users to authenticate from your Amplify app.',
+    }),
+    OAuthScopes: ListOfOAuthScopesElementSchema.exactOptional().openapi({
+      xml: { name: 'oAuthScopes' },
+      description:
+        'The list of OAuth-related flows that can allow users to authenticate from your Amplify app.',
+    }),
+    RedirectSignInURIs: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'redirectSignInURIs' },
+      description: 'Redirect URLs that OAuth uses when a user signs in to an Amplify app.',
+    }),
+    RedirectSignOutURIs: ListOfStringSchema.exactOptional().openapi({
+      xml: { name: 'redirectSignOutURIs' },
+      description: 'Redirect URLs that OAuth uses when a user signs out of an Amplify app.',
+    }),
+    SocialProviderSettings: SocialProviderSettingsSchema.exactOptional().openapi({
+      xml: { name: 'socialProviderSettings' },
+      description:
+        'Describes third-party social federation configurations for allowing your users to sign in with OAuth.',
+    }),
   })
   .openapi({
     description: 'The OAuth configurations for authenticating users into your Amplify app.',
@@ -1931,24 +1451,16 @@ const UpdateBackendAuthOAuthConfigSchema = z
 
 const UpdateBackendAuthPasswordPolicyConfigSchema = z
   .object({
-    AdditionalConstraints: ListOfAdditionalConstraintsElementSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'additionalConstraints' },
-          description:
-            'Describes additional constraints on password requirements to sign in to the auth resource, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    MinimumLength: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'minimumLength' },
-          description:
-            'Describes the minimum length of the password required to sign in to the auth resource, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
+    AdditionalConstraints: ListOfAdditionalConstraintsElementSchema.exactOptional().openapi({
+      xml: { name: 'additionalConstraints' },
+      description:
+        'Describes additional constraints on password requirements to sign in to the auth resource, configured as a part of your Amplify project.',
+    }),
+    MinimumLength: DoubleSchema.exactOptional().openapi({
+      xml: { name: 'minimumLength' },
+      description:
+        'Describes the minimum length of the password required to sign in to the auth resource, configured as a part of your Amplify project.',
+    }),
   })
   .openapi({
     description:
@@ -1959,30 +1471,18 @@ const UpdateBackendAuthPasswordPolicyConfigSchema = z
 
 const UpdateBackendAuthVerificationMessageConfigSchema = z
   .object({
-    DeliveryMethod: DeliveryMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'deliveryMethod' },
-          description: 'The type of verification message to send.',
-        }),
-    ),
-    EmailSettings: EmailSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'emailSettings' },
-          description: 'The settings for the email message.',
-        }),
-    ).exactOptional(),
-    SmsSettings: SmsSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'smsSettings' },
-          description: 'The settings for the SMS message.',
-        }),
-    ).exactOptional(),
+    DeliveryMethod: DeliveryMethodSchema.openapi({
+      xml: { name: 'deliveryMethod' },
+      description: 'The type of verification message to send.',
+    }),
+    EmailSettings: EmailSettingsSchema.exactOptional().openapi({
+      xml: { name: 'emailSettings' },
+      description: 'The settings for the email message.',
+    }),
+    SmsSettings: SmsSettingsSchema.exactOptional().openapi({
+      xml: { name: 'smsSettings' },
+      description: 'The settings for the SMS message.',
+    }),
   })
   .openapi({
     required: ['DeliveryMethod'],
@@ -1993,51 +1493,31 @@ const UpdateBackendAuthVerificationMessageConfigSchema = z
 
 const UpdateBackendAuthUserPoolConfigSchema = z
   .object({
-    ForgotPassword: UpdateBackendAuthForgotPasswordConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'forgotPassword' },
-          description:
-            '<b>(DEPRECATED)</b> Describes the forgot password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    Mfa: UpdateBackendAuthMFAConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'mfa' },
-          description:
-            'Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    OAuth: UpdateBackendAuthOAuthConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'oAuth' },
-          description:
-            'Describes the OAuth policy and rules for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    PasswordPolicy: UpdateBackendAuthPasswordPolicyConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'passwordPolicy' },
-          description:
-            'Describes the password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
-    VerificationMessage: UpdateBackendAuthVerificationMessageConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'verificationMessage' },
-          description:
-            'Describes the email or SMS verification message for your Amazon Cognito user pool, configured as a part of your Amplify project.',
-        }),
-    ).exactOptional(),
+    ForgotPassword: UpdateBackendAuthForgotPasswordConfigSchema.exactOptional().openapi({
+      xml: { name: 'forgotPassword' },
+      description:
+        '<b>(DEPRECATED)</b> Describes the forgot password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    Mfa: UpdateBackendAuthMFAConfigSchema.exactOptional().openapi({
+      xml: { name: 'mfa' },
+      description:
+        'Describes whether to apply multi-factor authentication policies for your Amazon Cognito user pool configured as a part of your Amplify project.',
+    }),
+    OAuth: UpdateBackendAuthOAuthConfigSchema.exactOptional().openapi({
+      xml: { name: 'oAuth' },
+      description:
+        'Describes the OAuth policy and rules for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    PasswordPolicy: UpdateBackendAuthPasswordPolicyConfigSchema.exactOptional().openapi({
+      xml: { name: 'passwordPolicy' },
+      description:
+        'Describes the password policy for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
+    VerificationMessage: UpdateBackendAuthVerificationMessageConfigSchema.exactOptional().openapi({
+      xml: { name: 'verificationMessage' },
+      description:
+        'Describes the email or SMS verification message for your Amazon Cognito user pool, configured as a part of your Amplify project.',
+    }),
   })
   .openapi({
     description:
@@ -2048,165 +1528,117 @@ const UpdateBackendAuthUserPoolConfigSchema = z
 
 const LoginAuthConfigReqObjSchema = z
   .object({
-    AwsCognitoIdentityPoolId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'aws_cognito_identity_pool_id' },
-          description:
-            'The Amazon Cognito identity pool ID used for the Amplify Admin UI login authorization.',
-        }),
-    ).exactOptional(),
-    AwsCognitoRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'aws_cognito_region' },
-          description: 'The AWS Region for the Amplify Admin UI login.',
-        }),
-    ).exactOptional(),
-    AwsUserPoolsId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'aws_user_pools_id' },
-          description:
-            'The Amazon Cognito user pool ID used for Amplify Admin UI login authentication.',
-        }),
-    ).exactOptional(),
-    AwsUserPoolsWebClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'aws_user_pools_web_client_id' },
-          description: 'The web client ID for the Amazon Cognito user pools.',
-        }),
-    ).exactOptional(),
+    AwsCognitoIdentityPoolId: StringSchema.exactOptional().openapi({
+      xml: { name: 'aws_cognito_identity_pool_id' },
+      description:
+        'The Amazon Cognito identity pool ID used for the Amplify Admin UI login authorization.',
+    }),
+    AwsCognitoRegion: StringSchema.exactOptional().openapi({
+      xml: { name: 'aws_cognito_region' },
+      description: 'The AWS Region for the Amplify Admin UI login.',
+    }),
+    AwsUserPoolsId: StringSchema.exactOptional().openapi({
+      xml: { name: 'aws_user_pools_id' },
+      description:
+        'The Amazon Cognito user pool ID used for Amplify Admin UI login authentication.',
+    }),
+    AwsUserPoolsWebClientId: StringSchema.exactOptional().openapi({
+      xml: { name: 'aws_user_pools_web_client_id' },
+      description: 'The web client ID for the Amazon Cognito user pools.',
+    }),
   })
   .openapi({ description: 'The request object for this operation.', required: [] })
   .openapi('LoginAuthConfigReqObj')
 
 const UpdateBackendConfigResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendManagerAppId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendManagerAppId' },
-          description: 'The app ID for the backend manager.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    LoginAuthConfig: LoginAuthConfigReqObjSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'loginAuthConfig' },
-          description:
-            'Describes the Amazon Cognito configurations for the Admin UI auth resource to log in with.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendManagerAppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendManagerAppId' },
+      description: 'The app ID for the backend manager.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    LoginAuthConfig: LoginAuthConfigReqObjSchema.exactOptional().openapi({
+      xml: { name: 'loginAuthConfig' },
+      description:
+        'Describes the Amazon Cognito configurations for the Admin UI auth resource to log in with.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackendConfigResponse')
 
 const UpdateBackendJobResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    CreateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'createTime' },
-          description: 'The time when the job was created.',
-        }),
-    ).exactOptional(),
-    Error: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'error' },
-          description: 'If the request fails, this error is returned.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z.any().openapi({ xml: { name: 'operation' }, description: 'The name of the operation.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
-    UpdateTime: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'updateTime' },
-          description: 'The time when the job was last updated.',
-        }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    CreateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'createTime' },
+      description: 'The time when the job was created.',
+    }),
+    Error: StringSchema.exactOptional().openapi({
+      xml: { name: 'error' },
+      description: 'If the request fails, this error is returned.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description: 'The name of the operation.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
+    UpdateTime: StringSchema.exactOptional().openapi({
+      xml: { name: 'updateTime' },
+      description: 'The time when the job was last updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackendJobResponse')
 
 const UpdateBackendStorageResponseSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ).exactOptional(),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'status' }, description: 'The current status of the request.' }),
-    ).exactOptional(),
+    AppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'appId' },
+      description: 'The app ID.',
+    }),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description: 'The current status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBackendStorageResponse')
 
 const CloneBackendRequestSchema = z
   .object({
-    TargetEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'targetEnvironmentName' },
-          description: 'The name of the destination backend environment to be created.',
-        }),
-    ),
+    TargetEnvironmentName: StringSchema.openapi({
+      xml: { name: 'targetEnvironmentName' },
+      description: 'The name of the destination backend environment to be created.',
+    }),
   })
   .openapi({
     required: ['TargetEnvironmentName'],
@@ -2217,25 +1649,18 @@ const CloneBackendRequestSchema = z
 
 const CreateBackendAPIRequestSchema = z
   .object({
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ),
-    ResourceConfig: BackendAPIResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for this request.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    BackendEnvironmentName: StringSchema.openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    ResourceConfig: BackendAPIResourceConfigSchema.openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for this request.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'BackendEnvironmentName', 'ResourceConfig'],
@@ -2246,25 +1671,18 @@ const CreateBackendAPIRequestSchema = z
 
 const CreateBackendAuthRequestSchema = z
   .object({
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ),
-    ResourceConfig: CreateBackendAuthResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for this request object.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    BackendEnvironmentName: StringSchema.openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    ResourceConfig: CreateBackendAuthResourceConfigSchema.openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for this request object.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'BackendEnvironmentName', 'ResourceConfig'],
@@ -2275,14 +1693,10 @@ const CreateBackendAuthRequestSchema = z
 
 const CreateBackendConfigRequestSchema = z
   .object({
-    BackendManagerAppId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendManagerAppId' },
-          description: 'The app ID for the backend manager.',
-        }),
-    ).exactOptional(),
+    BackendManagerAppId: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendManagerAppId' },
+      description: 'The app ID for the backend manager.',
+    }),
   })
   .openapi({
     title: 'CreateBackendConfigRequest',
@@ -2292,7 +1706,7 @@ const CreateBackendConfigRequestSchema = z
   .openapi('CreateBackendConfigRequest')
 
 const ResourceConfigSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description: 'Defines the resource configuration for the data model in your Amplify project.',
   })
@@ -2300,31 +1714,23 @@ const ResourceConfigSchema = z
 
 const CreateBackendRequestSchema = z
   .object({
-    AppId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
-    ),
-    AppName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'appName' }, description: 'The name of the app.' }),
-    ),
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ),
-    ResourceConfig: ResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for creating a backend.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of the resource.' }),
-    ).exactOptional(),
+    AppId: StringSchema.openapi({ xml: { name: 'appId' }, description: 'The app ID.' }),
+    AppName: StringSchema.openapi({
+      xml: { name: 'appName' },
+      description: 'The name of the app.',
+    }),
+    BackendEnvironmentName: StringSchema.openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    ResourceConfig: ResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for creating a backend.',
+    }),
+    ResourceName: StringSchema.exactOptional().openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the resource.',
+    }),
   })
   .openapi({
     required: ['AppId', 'BackendEnvironmentName', 'AppName'],
@@ -2335,22 +1741,18 @@ const CreateBackendRequestSchema = z
 
 const CreateBackendStorageResourceConfigSchema = z
   .object({
-    BucketName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'bucketName' }, description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    Permissions: BackendStoragePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'permissions' },
-          description: 'The authorization configuration for the storage S3 bucket.',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'serviceName' }, description: 'The name of the storage service.' }),
-    ),
+    BucketName: StringSchema.exactOptional().openapi({
+      xml: { name: 'bucketName' },
+      description: 'The name of the S3 bucket.',
+    }),
+    Permissions: BackendStoragePermissionsSchema.openapi({
+      xml: { name: 'permissions' },
+      description: 'The authorization configuration for the storage S3 bucket.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      xml: { name: 'serviceName' },
+      description: 'The name of the storage service.',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'Permissions'],
@@ -2360,30 +1762,18 @@ const CreateBackendStorageResourceConfigSchema = z
 
 const CreateBackendStorageRequestSchema = z
   .object({
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ),
-    ResourceConfig: CreateBackendStorageResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for creating backend storage.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceName' },
-          description: 'The name of the storage resource.',
-        }),
-    ),
+    BackendEnvironmentName: StringSchema.openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
+    ResourceConfig: CreateBackendStorageResourceConfigSchema.openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for creating backend storage.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the storage resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'BackendEnvironmentName', 'ResourceConfig'],
@@ -2393,24 +1783,20 @@ const CreateBackendStorageRequestSchema = z
   .openapi('CreateBackendStorageRequest')
 
 const CreateTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateTokenRequest' })
   .openapi('CreateTokenRequest')
 
 const DeleteBackendAPIRequestSchema = z
   .object({
-    ResourceConfig: BackendAPIResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description:
-            'Defines the resource configuration for the data model in your Amplify project.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceConfig: BackendAPIResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'Defines the resource configuration for the data model in your Amplify project.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2421,9 +1807,10 @@ const DeleteBackendAPIRequestSchema = z
 
 const DeleteBackendAuthRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2433,25 +1820,20 @@ const DeleteBackendAuthRequestSchema = z
   .openapi('DeleteBackendAuthRequest')
 
 const DeleteBackendRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBackendRequest' })
   .openapi('DeleteBackendRequest')
 
 const DeleteBackendStorageRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceName' },
-          description: 'The name of the storage resource.',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'serviceName' }, description: 'The name of the storage service.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the storage resource.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      xml: { name: 'serviceName' },
+      description: 'The name of the storage service.',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'ResourceName'],
@@ -2461,15 +1843,16 @@ const DeleteBackendStorageRequestSchema = z
   .openapi('DeleteBackendStorageRequest')
 
 const DeleteTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTokenRequest' })
   .openapi('DeleteTokenRequest')
 
 const GenerateBackendAPIModelsRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2480,9 +1863,10 @@ const GenerateBackendAPIModelsRequestSchema = z
 
 const GetBackendAPIModelsRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2493,18 +1877,14 @@ const GetBackendAPIModelsRequestSchema = z
 
 const GetBackendAPIRequestSchema = z
   .object({
-    ResourceConfig: BackendAPIResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description:
-            'Defines the resource configuration for the data model in your Amplify project.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceConfig: BackendAPIResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'Defines the resource configuration for the data model in your Amplify project.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2515,9 +1895,10 @@ const GetBackendAPIRequestSchema = z
 
 const GetBackendAuthRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2527,20 +1908,16 @@ const GetBackendAuthRequestSchema = z
   .openapi('GetBackendAuthRequest')
 
 const GetBackendJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBackendJobRequest' })
   .openapi('GetBackendJobRequest')
 
 const GetBackendRequestSchema = z
   .object({
-    BackendEnvironmentName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'backendEnvironmentName' },
-          description: 'The name of the backend environment.',
-        }),
-    ).exactOptional(),
+    BackendEnvironmentName: StringSchema.exactOptional().openapi({
+      xml: { name: 'backendEnvironmentName' },
+      description: 'The name of the backend environment.',
+    }),
   })
   .openapi({
     title: 'GetBackendRequest',
@@ -2551,14 +1928,10 @@ const GetBackendRequestSchema = z
 
 const GetBackendStorageRequestSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceName' },
-          description: 'The name of the storage resource.',
-        }),
-    ),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the storage resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2568,44 +1941,28 @@ const GetBackendStorageRequestSchema = z
   .openapi('GetBackendStorageRequest')
 
 const GetTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTokenRequest' })
   .openapi('GetTokenRequest')
 
 const ImportBackendAuthRequestSchema = z
   .object({
-    IdentityPoolId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityPoolId' },
-          description: 'The ID of the Amazon Cognito identity pool.',
-        }),
-    ).exactOptional(),
-    NativeClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nativeClientId' },
-          description: 'The ID of the Amazon Cognito native client.',
-        }),
-    ),
-    UserPoolId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userPoolId' },
-          description: 'The ID of the Amazon Cognito user pool.',
-        }),
-    ),
-    WebClientId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'webClientId' },
-          description: 'The ID of the Amazon Cognito web client.',
-        }),
-    ),
+    IdentityPoolId: StringSchema.exactOptional().openapi({
+      xml: { name: 'identityPoolId' },
+      description: 'The ID of the Amazon Cognito identity pool.',
+    }),
+    NativeClientId: StringSchema.openapi({
+      xml: { name: 'nativeClientId' },
+      description: 'The ID of the Amazon Cognito native client.',
+    }),
+    UserPoolId: StringSchema.openapi({
+      xml: { name: 'userPoolId' },
+      description: 'The ID of the Amazon Cognito user pool.',
+    }),
+    WebClientId: StringSchema.openapi({
+      xml: { name: 'webClientId' },
+      description: 'The ID of the Amazon Cognito web client.',
+    }),
   })
   .openapi({
     required: ['UserPoolId', 'NativeClientId', 'WebClientId'],
@@ -2616,14 +1973,14 @@ const ImportBackendAuthRequestSchema = z
 
 const ImportBackendStorageRequestSchema = z
   .object({
-    BucketName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'bucketName' }, description: 'The name of the S3 bucket.' }),
-    ).exactOptional(),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'serviceName' }, description: 'The name of the storage service.' }),
-    ),
+    BucketName: StringSchema.exactOptional().openapi({
+      xml: { name: 'bucketName' },
+      description: 'The name of the S3 bucket.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      xml: { name: 'serviceName' },
+      description: 'The name of the storage service.',
+    }),
   })
   .openapi({
     required: ['ServiceName'],
@@ -2636,43 +1993,28 @@ const IntegerMin1Max25Schema = z.int().min(1).max(25).openapi('IntegerMin1Max25'
 
 const ListBackendJobsRequestSchema = z
   .object({
-    JobId: StringSchema.and(
-      z.any().openapi({ xml: { name: 'jobId' }, description: 'The ID for the job.' }),
-    ).exactOptional(),
-    MaxResults: IntegerMin1Max25Schema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'maxResults' },
-          description: 'The maximum number of results that you want in the response.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'nextToken' },
-          description: 'The token for the next set of results.',
-        }),
-    ).exactOptional(),
-    Operation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operation' },
-          description:
-            'Filters the list of response objects to include only those with the specified operation name.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'Filters the list of response objects to include only those with the specified status.',
-        }),
-    ).exactOptional(),
+    JobId: StringSchema.exactOptional().openapi({
+      xml: { name: 'jobId' },
+      description: 'The ID for the job.',
+    }),
+    MaxResults: IntegerMin1Max25Schema.exactOptional().openapi({
+      xml: { name: 'maxResults' },
+      description: 'The maximum number of results that you want in the response.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'The token for the next set of results.',
+    }),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description:
+        'Filters the list of response objects to include only those with the specified operation name.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'Filters the list of response objects to include only those with the specified status.',
+    }),
   })
   .openapi({
     title: 'ListBackendJobsRequest',
@@ -2683,9 +2025,10 @@ const ListBackendJobsRequestSchema = z
 
 const ListS3BucketsRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ xml: { name: 'nextToken' }, description: 'Reserved for future use.' }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      xml: { name: 'nextToken' },
+      description: 'Reserved for future use.',
+    }),
   })
   .openapi({
     title: 'ListS3BucketsRequest',
@@ -2696,14 +2039,10 @@ const ListS3BucketsRequestSchema = z
 
 const RemoveAllBackendsRequestSchema = z
   .object({
-    CleanAmplifyApp: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'cleanAmplifyApp' },
-          description: 'Cleans up the Amplify Console app if this value is set to true.',
-        }),
-    ).exactOptional(),
+    CleanAmplifyApp: BooleanSchema.exactOptional().openapi({
+      xml: { name: 'cleanAmplifyApp' },
+      description: 'Cleans up the Amplify Console app if this value is set to true.',
+    }),
   })
   .openapi({
     title: 'RemoveAllBackendsRequest',
@@ -2713,24 +2052,20 @@ const RemoveAllBackendsRequestSchema = z
   .openapi('RemoveAllBackendsRequest')
 
 const RemoveBackendConfigRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RemoveBackendConfigRequest' })
   .openapi('RemoveBackendConfigRequest')
 
 const UpdateBackendAPIRequestSchema = z
   .object({
-    ResourceConfig: BackendAPIResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description:
-            'Defines the resource configuration for the data model in your Amplify project.',
-        }),
-    ).exactOptional(),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceConfig: BackendAPIResourceConfigSchema.exactOptional().openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'Defines the resource configuration for the data model in your Amplify project.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -2741,42 +2076,26 @@ const UpdateBackendAPIRequestSchema = z
 
 const UpdateBackendAuthResourceConfigSchema = z
   .object({
-    AuthResources: AuthResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'authResources' },
-          description:
-            'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-        }),
-    ),
-    IdentityPoolConfigs: UpdateBackendAuthIdentityPoolConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'identityPoolConfigs' },
-          description:
-            'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
-        }),
-    ).exactOptional(),
-    Service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'service' },
-          description:
-            'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-        }),
-    ),
-    UserPoolConfigs: UpdateBackendAuthUserPoolConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'userPoolConfigs' },
-          description:
-            'Describes the authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
-        }),
-    ),
+    AuthResources: AuthResourcesSchema.openapi({
+      xml: { name: 'authResources' },
+      description:
+        'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+    }),
+    IdentityPoolConfigs: UpdateBackendAuthIdentityPoolConfigSchema.exactOptional().openapi({
+      xml: { name: 'identityPoolConfigs' },
+      description:
+        'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
+    }),
+    Service: ServiceSchema.openapi({
+      xml: { name: 'service' },
+      description:
+        'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+    }),
+    UserPoolConfigs: UpdateBackendAuthUserPoolConfigSchema.openapi({
+      xml: { name: 'userPoolConfigs' },
+      description:
+        'Describes the authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
+    }),
   })
   .openapi({
     required: ['AuthResources', 'UserPoolConfigs', 'Service'],
@@ -2787,17 +2106,14 @@ const UpdateBackendAuthResourceConfigSchema = z
 
 const UpdateBackendAuthRequestSchema = z
   .object({
-    ResourceConfig: UpdateBackendAuthResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for this request object.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z.any().openapi({ xml: { name: 'resourceName' }, description: 'The name of this resource.' }),
-    ),
+    ResourceConfig: UpdateBackendAuthResourceConfigSchema.openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for this request object.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of this resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'ResourceConfig'],
@@ -2808,14 +2124,10 @@ const UpdateBackendAuthRequestSchema = z
 
 const UpdateBackendConfigRequestSchema = z
   .object({
-    LoginAuthConfig: LoginAuthConfigReqObjSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'loginAuthConfig' },
-          description: 'Describes the Amazon Cognito configuration for Admin UI access.',
-        }),
-    ).exactOptional(),
+    LoginAuthConfig: LoginAuthConfigReqObjSchema.exactOptional().openapi({
+      xml: { name: 'loginAuthConfig' },
+      description: 'Describes the Amazon Cognito configuration for Admin UI access.',
+    }),
   })
   .openapi({
     title: 'UpdateBackendConfigRequest',
@@ -2826,24 +2138,16 @@ const UpdateBackendConfigRequestSchema = z
 
 const UpdateBackendJobRequestSchema = z
   .object({
-    Operation: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'operation' },
-          description:
-            'Filters the list of response objects to include only those with the specified operation name.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'status' },
-          description:
-            'Filters the list of response objects to include only those with the specified status.',
-        }),
-    ).exactOptional(),
+    Operation: StringSchema.exactOptional().openapi({
+      xml: { name: 'operation' },
+      description:
+        'Filters the list of response objects to include only those with the specified operation name.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      xml: { name: 'status' },
+      description:
+        'Filters the list of response objects to include only those with the specified status.',
+    }),
   })
   .openapi({
     title: 'UpdateBackendJobRequest',
@@ -2854,19 +2158,14 @@ const UpdateBackendJobRequestSchema = z
 
 const UpdateBackendStorageResourceConfigSchema = z
   .object({
-    Permissions: BackendStoragePermissionsSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'permissions' },
-          description: 'The authorization configuration for the storage S3 bucket.',
-        }),
-    ),
-    ServiceName: ServiceNameSchema.and(
-      z
-        .any()
-        .openapi({ xml: { name: 'serviceName' }, description: 'The name of the storage service.' }),
-    ),
+    Permissions: BackendStoragePermissionsSchema.openapi({
+      xml: { name: 'permissions' },
+      description: 'The authorization configuration for the storage S3 bucket.',
+    }),
+    ServiceName: ServiceNameSchema.openapi({
+      xml: { name: 'serviceName' },
+      description: 'The name of the storage service.',
+    }),
   })
   .openapi({
     required: ['ServiceName', 'Permissions'],
@@ -2876,22 +2175,14 @@ const UpdateBackendStorageResourceConfigSchema = z
 
 const UpdateBackendStorageRequestSchema = z
   .object({
-    ResourceConfig: UpdateBackendStorageResourceConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceConfig' },
-          description: 'The resource configuration for updating backend storage.',
-        }),
-    ),
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          xml: { name: 'resourceName' },
-          description: 'The name of the storage resource.',
-        }),
-    ),
+    ResourceConfig: UpdateBackendStorageResourceConfigSchema.openapi({
+      xml: { name: 'resourceConfig' },
+      description: 'The resource configuration for updating backend storage.',
+    }),
+    ResourceName: StringSchema.openapi({
+      xml: { name: 'resourceName' },
+      description: 'The name of the storage resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'ResourceConfig'],
@@ -3079,7 +2370,7 @@ export const postBackendRoute = createRoute({
                 .string()
                 .openapi({ description: 'The name of the backend environment.' }),
               resourceConfig: z
-                .object({})
+                .looseObject({})
                 .exactOptional()
                 .openapi({
                   description:
@@ -3158,60 +2449,35 @@ export const postBackendAppIdApiRoute = createRoute({
                 .openapi({ description: 'The name of the backend environment.' }),
               resourceConfig: z
                 .object({
-                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'additionalAuthTypes' },
-                        description:
-                          'Additional authentication methods used to interact with your data models.',
-                      }),
-                  ).exactOptional(),
-                  ApiName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'apiName' },
-                        description:
-                          'The API name used to interact with the data model, configured as a part of your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  ConflictResolution: BackendAPIConflictResolutionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'conflictResolution' },
-                        description:
-                          'The conflict resolution strategy for your data stored in the data models.',
-                      }),
-                  ).exactOptional(),
-                  DefaultAuthType: BackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'defaultAuthType' },
-                        description:
-                          'The default authentication type for interacting with the configured data models in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'The service used to provision and interact with the data model.',
-                      }),
-                  ).exactOptional(),
-                  TransformSchema: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'transformSchema' },
-                        description:
-                          'The definition of the data model in the annotated transform of the GraphQL schema.',
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'additionalAuthTypes' },
+                    description:
+                      'Additional authentication methods used to interact with your data models.',
+                  }),
+                  ApiName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'apiName' },
+                    description:
+                      'The API name used to interact with the data model, configured as a part of your Amplify project.',
+                  }),
+                  ConflictResolution: BackendAPIConflictResolutionSchema.exactOptional().openapi({
+                    xml: { name: 'conflictResolution' },
+                    description:
+                      'The conflict resolution strategy for your data stored in the data models.',
+                  }),
+                  DefaultAuthType: BackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'defaultAuthType' },
+                    description:
+                      'The default authentication type for interacting with the configured data models in your Amplify project.',
+                  }),
+                  Service: StringSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description: 'The service used to provision and interact with the data model.',
+                  }),
+                  TransformSchema: StringSchema.exactOptional().openapi({
+                    xml: { name: 'transformSchema' },
+                    description:
+                      'The definition of the data model in the annotated transform of the GraphQL schema.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3288,42 +2554,27 @@ export const postBackendAppIdAuthRoute = createRoute({
                 .openapi({ description: 'The name of the backend environment.' }),
               resourceConfig: z
                 .object({
-                  AuthResources: AuthResourcesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'authResources' },
-                        description:
-                          'Defines whether you want to configure only authentication or both authentication and authorization settings.',
-                      }),
-                  ).exactOptional(),
-                  IdentityPoolConfigs: CreateBackendAuthIdentityPoolConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'identityPoolConfigs' },
-                        description:
-                          'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: ServiceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  UserPoolConfigs: CreateBackendAuthUserPoolConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userPoolConfigs' },
-                        description:
-                          'Describes authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
-                      }),
-                  ).exactOptional(),
+                  AuthResources: AuthResourcesSchema.exactOptional().openapi({
+                    xml: { name: 'authResources' },
+                    description:
+                      'Defines whether you want to configure only authentication or both authentication and authorization settings.',
+                  }),
+                  IdentityPoolConfigs:
+                    CreateBackendAuthIdentityPoolConfigSchema.exactOptional().openapi({
+                      xml: { name: 'identityPoolConfigs' },
+                      description:
+                        'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
+                    }),
+                  Service: ServiceSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description:
+                      'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+                  }),
+                  UserPoolConfigs: CreateBackendAuthUserPoolConfigSchema.exactOptional().openapi({
+                    xml: { name: 'userPoolConfigs' },
+                    description:
+                      'Describes authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -3468,30 +2719,18 @@ export const postBackendAppIdStorageRoute = createRoute({
                 .openapi({ description: 'The name of the backend environment.' }),
               resourceConfig: z
                 .object({
-                  BucketName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'bucketName' },
-                        description: 'The name of the S3 bucket.',
-                      }),
-                  ).exactOptional(),
-                  Permissions: BackendStoragePermissionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'permissions' },
-                        description: 'The authorization configuration for the storage S3 bucket.',
-                      }),
-                  ).exactOptional(),
-                  ServiceName: ServiceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceName' },
-                        description: 'The name of the storage service.',
-                      }),
-                  ).exactOptional(),
+                  BucketName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'bucketName' },
+                    description: 'The name of the S3 bucket.',
+                  }),
+                  Permissions: BackendStoragePermissionsSchema.exactOptional().openapi({
+                    xml: { name: 'permissions' },
+                    description: 'The authorization configuration for the storage S3 bucket.',
+                  }),
+                  ServiceName: ServiceNameSchema.exactOptional().openapi({
+                    xml: { name: 'serviceName' },
+                    description: 'The name of the storage service.',
+                  }),
                 })
                 .openapi({
                   description: 'The resource configuration for creating backend storage.',
@@ -3695,60 +2934,35 @@ export const postBackendAppIdApiBackendEnvironmentNameRemoveRoute = createRoute(
             .object({
               resourceConfig: z
                 .object({
-                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'additionalAuthTypes' },
-                        description:
-                          'Additional authentication methods used to interact with your data models.',
-                      }),
-                  ).exactOptional(),
-                  ApiName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'apiName' },
-                        description:
-                          'The API name used to interact with the data model, configured as a part of your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  ConflictResolution: BackendAPIConflictResolutionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'conflictResolution' },
-                        description:
-                          'The conflict resolution strategy for your data stored in the data models.',
-                      }),
-                  ).exactOptional(),
-                  DefaultAuthType: BackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'defaultAuthType' },
-                        description:
-                          'The default authentication type for interacting with the configured data models in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'The service used to provision and interact with the data model.',
-                      }),
-                  ).exactOptional(),
-                  TransformSchema: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'transformSchema' },
-                        description:
-                          'The definition of the data model in the annotated transform of the GraphQL schema.',
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'additionalAuthTypes' },
+                    description:
+                      'Additional authentication methods used to interact with your data models.',
+                  }),
+                  ApiName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'apiName' },
+                    description:
+                      'The API name used to interact with the data model, configured as a part of your Amplify project.',
+                  }),
+                  ConflictResolution: BackendAPIConflictResolutionSchema.exactOptional().openapi({
+                    xml: { name: 'conflictResolution' },
+                    description:
+                      'The conflict resolution strategy for your data stored in the data models.',
+                  }),
+                  DefaultAuthType: BackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'defaultAuthType' },
+                    description:
+                      'The default authentication type for interacting with the configured data models in your Amplify project.',
+                  }),
+                  Service: StringSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description: 'The service used to provision and interact with the data model.',
+                  }),
+                  TransformSchema: StringSchema.exactOptional().openapi({
+                    xml: { name: 'transformSchema' },
+                    description:
+                      'The definition of the data model in the annotated transform of the GraphQL schema.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4199,60 +3413,35 @@ export const postBackendAppIdApiBackendEnvironmentNameDetailsRoute = createRoute
             .object({
               resourceConfig: z
                 .object({
-                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'additionalAuthTypes' },
-                        description:
-                          'Additional authentication methods used to interact with your data models.',
-                      }),
-                  ).exactOptional(),
-                  ApiName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'apiName' },
-                        description:
-                          'The API name used to interact with the data model, configured as a part of your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  ConflictResolution: BackendAPIConflictResolutionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'conflictResolution' },
-                        description:
-                          'The conflict resolution strategy for your data stored in the data models.',
-                      }),
-                  ).exactOptional(),
-                  DefaultAuthType: BackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'defaultAuthType' },
-                        description:
-                          'The default authentication type for interacting with the configured data models in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'The service used to provision and interact with the data model.',
-                      }),
-                  ).exactOptional(),
-                  TransformSchema: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'transformSchema' },
-                        description:
-                          'The definition of the data model in the annotated transform of the GraphQL schema.',
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'additionalAuthTypes' },
+                    description:
+                      'Additional authentication methods used to interact with your data models.',
+                  }),
+                  ApiName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'apiName' },
+                    description:
+                      'The API name used to interact with the data model, configured as a part of your Amplify project.',
+                  }),
+                  ConflictResolution: BackendAPIConflictResolutionSchema.exactOptional().openapi({
+                    xml: { name: 'conflictResolution' },
+                    description:
+                      'The conflict resolution strategy for your data stored in the data models.',
+                  }),
+                  DefaultAuthType: BackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'defaultAuthType' },
+                    description:
+                      'The default authentication type for interacting with the configured data models in your Amplify project.',
+                  }),
+                  Service: StringSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description: 'The service used to provision and interact with the data model.',
+                  }),
+                  TransformSchema: StringSchema.exactOptional().openapi({
+                    xml: { name: 'transformSchema' },
+                    description:
+                      'The definition of the data model in the annotated transform of the GraphQL schema.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5283,60 +4472,35 @@ export const postBackendAppIdApiBackendEnvironmentNameRoute = createRoute({
             .object({
               resourceConfig: z
                 .object({
-                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'additionalAuthTypes' },
-                        description:
-                          'Additional authentication methods used to interact with your data models.',
-                      }),
-                  ).exactOptional(),
-                  ApiName: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'apiName' },
-                        description:
-                          'The API name used to interact with the data model, configured as a part of your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  ConflictResolution: BackendAPIConflictResolutionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'conflictResolution' },
-                        description:
-                          'The conflict resolution strategy for your data stored in the data models.',
-                      }),
-                  ).exactOptional(),
-                  DefaultAuthType: BackendAPIAuthTypeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'defaultAuthType' },
-                        description:
-                          'The default authentication type for interacting with the configured data models in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'The service used to provision and interact with the data model.',
-                      }),
-                  ).exactOptional(),
-                  TransformSchema: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'transformSchema' },
-                        description:
-                          'The definition of the data model in the annotated transform of the GraphQL schema.',
-                      }),
-                  ).exactOptional(),
+                  AdditionalAuthTypes: ListOfBackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'additionalAuthTypes' },
+                    description:
+                      'Additional authentication methods used to interact with your data models.',
+                  }),
+                  ApiName: StringSchema.exactOptional().openapi({
+                    xml: { name: 'apiName' },
+                    description:
+                      'The API name used to interact with the data model, configured as a part of your Amplify project.',
+                  }),
+                  ConflictResolution: BackendAPIConflictResolutionSchema.exactOptional().openapi({
+                    xml: { name: 'conflictResolution' },
+                    description:
+                      'The conflict resolution strategy for your data stored in the data models.',
+                  }),
+                  DefaultAuthType: BackendAPIAuthTypeSchema.exactOptional().openapi({
+                    xml: { name: 'defaultAuthType' },
+                    description:
+                      'The default authentication type for interacting with the configured data models in your Amplify project.',
+                  }),
+                  Service: StringSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description: 'The service used to provision and interact with the data model.',
+                  }),
+                  TransformSchema: StringSchema.exactOptional().openapi({
+                    xml: { name: 'transformSchema' },
+                    description:
+                      'The definition of the data model in the annotated transform of the GraphQL schema.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5422,42 +4586,27 @@ export const postBackendAppIdAuthBackendEnvironmentNameRoute = createRoute({
             .object({
               resourceConfig: z
                 .object({
-                  AuthResources: AuthResourcesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'authResources' },
-                        description:
-                          'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  IdentityPoolConfigs: UpdateBackendAuthIdentityPoolConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'identityPoolConfigs' },
-                        description:
-                          'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  Service: ServiceSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'service' },
-                        description:
-                          'Defines the service name to use when configuring an authentication resource in your Amplify project.',
-                      }),
-                  ).exactOptional(),
-                  UserPoolConfigs: UpdateBackendAuthUserPoolConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'userPoolConfigs' },
-                        description:
-                          'Describes the authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
-                      }),
-                  ).exactOptional(),
+                  AuthResources: AuthResourcesSchema.exactOptional().openapi({
+                    xml: { name: 'authResources' },
+                    description:
+                      'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+                  }),
+                  IdentityPoolConfigs:
+                    UpdateBackendAuthIdentityPoolConfigSchema.exactOptional().openapi({
+                      xml: { name: 'identityPoolConfigs' },
+                      description:
+                        'Describes the authorization configuration for the Amazon Cognito identity pool, provisioned as a part of your auth resource in the Amplify project.',
+                    }),
+                  Service: ServiceSchema.exactOptional().openapi({
+                    xml: { name: 'service' },
+                    description:
+                      'Defines the service name to use when configuring an authentication resource in your Amplify project.',
+                  }),
+                  UserPoolConfigs: UpdateBackendAuthUserPoolConfigSchema.exactOptional().openapi({
+                    xml: { name: 'userPoolConfigs' },
+                    description:
+                      'Describes the authentication configuration for the Amazon Cognito user pool, provisioned as a part of your auth resource in the Amplify project.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -5531,40 +4680,24 @@ export const postBackendAppIdConfigUpdateRoute = createRoute({
             .object({
               loginAuthConfig: z
                 .object({
-                  AwsCognitoIdentityPoolId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'aws_cognito_identity_pool_id' },
-                        description:
-                          'The Amazon Cognito identity pool ID used for the Amplify Admin UI login authorization.',
-                      }),
-                  ).exactOptional(),
-                  AwsCognitoRegion: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'aws_cognito_region' },
-                        description: 'The AWS Region for the Amplify Admin UI login.',
-                      }),
-                  ).exactOptional(),
-                  AwsUserPoolsId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'aws_user_pools_id' },
-                        description:
-                          'The Amazon Cognito user pool ID used for Amplify Admin UI login authentication.',
-                      }),
-                  ).exactOptional(),
-                  AwsUserPoolsWebClientId: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'aws_user_pools_web_client_id' },
-                        description: 'The web client ID for the Amazon Cognito user pools.',
-                      }),
-                  ).exactOptional(),
+                  AwsCognitoIdentityPoolId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'aws_cognito_identity_pool_id' },
+                    description:
+                      'The Amazon Cognito identity pool ID used for the Amplify Admin UI login authorization.',
+                  }),
+                  AwsCognitoRegion: StringSchema.exactOptional().openapi({
+                    xml: { name: 'aws_cognito_region' },
+                    description: 'The AWS Region for the Amplify Admin UI login.',
+                  }),
+                  AwsUserPoolsId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'aws_user_pools_id' },
+                    description:
+                      'The Amazon Cognito user pool ID used for Amplify Admin UI login authentication.',
+                  }),
+                  AwsUserPoolsWebClientId: StringSchema.exactOptional().openapi({
+                    xml: { name: 'aws_user_pools_web_client_id' },
+                    description: 'The web client ID for the Amazon Cognito user pools.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The request object for this operation.', required: [] }),
@@ -5645,22 +4778,14 @@ export const postBackendAppIdStorageBackendEnvironmentNameRoute = createRoute({
             .object({
               resourceConfig: z
                 .object({
-                  Permissions: BackendStoragePermissionsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'permissions' },
-                        description: 'The authorization configuration for the storage S3 bucket.',
-                      }),
-                  ).exactOptional(),
-                  ServiceName: ServiceNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        xml: { name: 'serviceName' },
-                        description: 'The name of the storage service.',
-                      }),
-                  ).exactOptional(),
+                  Permissions: BackendStoragePermissionsSchema.exactOptional().openapi({
+                    xml: { name: 'permissions' },
+                    description: 'The authorization configuration for the storage S3 bucket.',
+                  }),
+                  ServiceName: ServiceNameSchema.exactOptional().openapi({
+                    xml: { name: 'serviceName' },
+                    description: 'The name of the storage service.',
+                  }),
                 })
                 .openapi({
                   description: 'The resource configuration for updating backend storage.',

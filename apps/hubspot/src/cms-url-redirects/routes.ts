@@ -342,11 +342,8 @@ const Oauth2SecurityScheme = {
       scopes: { content: '' },
     },
   },
+  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsUrlRedirects202609Route = createRoute({
   method: 'get',

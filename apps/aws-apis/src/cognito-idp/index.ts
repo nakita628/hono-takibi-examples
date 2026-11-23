@@ -1,0 +1,215 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  xAmzTargetAwsCognitoIdentityProviderServiceAddCustomAttributesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminAddUserToGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminConfirmSignUpHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminCreateUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminDeleteUserAttributesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminDeleteUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminDisableProviderForUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminDisableUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminEnableUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminForgetDeviceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminGetDeviceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminGetUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminInitiateAuthHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminLinkProviderForUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminListDevicesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminListGroupsForUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminListUserAuthEventsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminRemoveUserFromGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminResetUserPasswordHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminRespondToAuthChallengeHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserMfaPreferenceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserPasswordHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserSettingsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateAuthEventFeedbackHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateDeviceStatusHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateUserAttributesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAdminUserGlobalSignOutHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceAssociateSoftwareTokenHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceChangePasswordHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceConfirmDeviceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceConfirmForgotPasswordHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceConfirmSignUpHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateIdentityProviderHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateResourceServerHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateUserImportJobHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolClientHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolDomainHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteIdentityProviderHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteResourceServerHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserAttributesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolClientHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolDomainHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeIdentityProviderHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeResourceServerHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeRiskConfigurationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserImportJobHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolClientHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolDomainHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceForgetDeviceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceForgotPasswordHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetCsvHeaderHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetDeviceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetIdentityProviderByIdentifierHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetLogDeliveryConfigurationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetSigningCertificateHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetUiCustomizationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetUserAttributeVerificationCodeHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetUserHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGetUserPoolMfaConfigHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceGlobalSignOutHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceInitiateAuthHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListDevicesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListGroupsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListIdentityProvidersHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListResourceServersHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListTagsForResourceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListUserImportJobsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListUserPoolClientsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListUserPoolsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListUsersHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceListUsersInGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceResendConfirmationCodeHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceRespondToAuthChallengeHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceRevokeTokenHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetLogDeliveryConfigurationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetRiskConfigurationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetUiCustomizationHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetUserMfaPreferenceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetUserPoolMfaConfigHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSetUserSettingsHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceSignUpHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceStartUserImportJobHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceStopUserImportJobHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceTagResourceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUntagResourceHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateAuthEventFeedbackHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateDeviceStatusHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateGroupHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateIdentityProviderHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateResourceServerHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserAttributesHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolClientHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolDomainHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceVerifySoftwareTokenHandler,
+  xAmzTargetAwsCognitoIdentityProviderServiceVerifyUserAttributeHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAddCustomAttributesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminAddUserToGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminConfirmSignUpHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminCreateUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminDeleteUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminDeleteUserAttributesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminDisableProviderForUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminDisableUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminEnableUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminForgetDeviceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminGetDeviceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminGetUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminInitiateAuthHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminLinkProviderForUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminListDevicesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminListGroupsForUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminListUserAuthEventsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminRemoveUserFromGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminResetUserPasswordHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminRespondToAuthChallengeHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserMfaPreferenceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserPasswordHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserSettingsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateAuthEventFeedbackHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateDeviceStatusHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminUpdateUserAttributesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAdminUserGlobalSignOutHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceAssociateSoftwareTokenHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceChangePasswordHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceConfirmDeviceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceConfirmForgotPasswordHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceConfirmSignUpHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateIdentityProviderHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateResourceServerHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateUserImportJobHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolClientHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceCreateUserPoolDomainHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteIdentityProviderHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteResourceServerHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserAttributesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolClientHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDeleteUserPoolDomainHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeIdentityProviderHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeResourceServerHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeRiskConfigurationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserImportJobHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolClientHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceDescribeUserPoolDomainHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceForgetDeviceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceForgotPasswordHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetCsvHeaderHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetDeviceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetIdentityProviderByIdentifierHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetLogDeliveryConfigurationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetSigningCertificateHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetUiCustomizationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetUserHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetUserAttributeVerificationCodeHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGetUserPoolMfaConfigHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceGlobalSignOutHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceInitiateAuthHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListDevicesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListGroupsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListIdentityProvidersHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListResourceServersHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListTagsForResourceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListUserImportJobsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListUserPoolClientsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListUserPoolsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListUsersHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceListUsersInGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceResendConfirmationCodeHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceRespondToAuthChallengeHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceRevokeTokenHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetLogDeliveryConfigurationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetRiskConfigurationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetUiCustomizationHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetUserMfaPreferenceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetUserPoolMfaConfigHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSetUserSettingsHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceSignUpHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceStartUserImportJobHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceStopUserImportJobHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceTagResourceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUntagResourceHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateAuthEventFeedbackHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateDeviceStatusHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateGroupHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateIdentityProviderHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateResourceServerHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserAttributesHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolClientHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceUpdateUserPoolDomainHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceVerifySoftwareTokenHandler)
+  .route('/', xAmzTargetAwsCognitoIdentityProviderServiceVerifyUserAttributeHandler)
+
+export default app

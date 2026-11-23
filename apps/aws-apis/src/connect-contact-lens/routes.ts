@@ -1,74 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const CategoryNameSchema = z
-  .string()
-  .regex(/.*\S.*/)
-  .min(1)
-  .max(256)
-  .openapi('CategoryName')
-
-const MatchedCategoriesSchema = z
-  .array(CategoryNameSchema)
-  .min(0)
-  .max(150)
-  .openapi('MatchedCategories')
-
-const OffsetMillisSchema = z.int().min(0).openapi('OffsetMillis')
-
-const PointOfInterestSchema = z
-  .object({
-    BeginOffsetMillis: OffsetMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The beginning offset in milliseconds where the category rule was detected.',
-        }),
-    ),
-    EndOffsetMillis: OffsetMillisSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ending offset in milliseconds where the category rule was detected.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['BeginOffsetMillis', 'EndOffsetMillis'],
-    description: 'The section of the contact audio where that category rule was detected.',
-  })
-  .openapi('PointOfInterest')
-
-const PointsOfInterestSchema = z
-  .array(PointOfInterestSchema)
-  .min(0)
-  .max(20)
-  .openapi('PointsOfInterest')
-
-const CategoryDetailsSchema = z
-  .object({
-    PointsOfInterest: PointsOfInterestSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The section of audio where the category rule was detected.' }),
-    ),
-  })
-  .openapi({
-    required: ['PointsOfInterest'],
-    description: 'Provides information about the category rule that was matched.',
-  })
-  .openapi('CategoryDetails')
-
-const MatchedDetailsSchema = z
-  .record(z.string(), CategoryDetailsSchema)
-  .refine((val) => Object.keys(val).length >= 0)
-  .refine((val) => Object.keys(val).length <= 150)
-  .openapi('MatchedDetails')
-
-type CategoriesType = {
-  MatchedCategories: z.infer<typeof MatchedCategoriesSchema> & { [key: string]: unknown }
-  MatchedDetails: z.infer<typeof MatchedDetailsSchema> & { [key: string]: unknown }
-}
-
 const TranscriptIdSchema = z
   .string()
   .regex(/.*\S.*/)
@@ -96,18 +27,16 @@ const TranscriptContentSchema = z
   .min(1)
   .openapi('TranscriptContent')
 
+const OffsetMillisSchema = z.int().min(0).openapi('OffsetMillis')
+
 const SentimentValueSchema = z.enum(['POSITIVE', 'NEUTRAL', 'NEGATIVE']).openapi('SentimentValue')
 
 const CharacterOffsetSchema = z.int().min(0).openapi('CharacterOffset')
 
 const CharacterOffsetsSchema = z
   .object({
-    BeginOffsetChar: CharacterOffsetSchema.and(
-      z.any().openapi({ description: 'The beginning of the issue.' }),
-    ),
-    EndOffsetChar: CharacterOffsetSchema.and(
-      z.any().openapi({ description: 'The end of the issue.' }),
-    ),
+    BeginOffsetChar: CharacterOffsetSchema.openapi({ description: 'The beginning of the issue.' }),
+    EndOffsetChar: CharacterOffsetSchema.openapi({ description: 'The end of the issue.' }),
   })
   .openapi({
     required: ['BeginOffsetChar', 'EndOffsetChar'],
@@ -117,11 +46,9 @@ const CharacterOffsetsSchema = z
 
 const IssueDetectedSchema = z
   .object({
-    CharacterOffsets: CharacterOffsetsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The offset for when the issue was detected in the segment.' }),
-    ),
+    CharacterOffsets: CharacterOffsetsSchema.openapi({
+      description: 'The offset for when the issue was detected in the segment.',
+    }),
   })
   .openapi({
     required: ['CharacterOffsets'],
@@ -134,40 +61,26 @@ const IssuesDetectedSchema = z.array(IssueDetectedSchema).min(0).max(20).openapi
 
 const TranscriptSchema = z
   .object({
-    Id: TranscriptIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the transcript.' }),
-    ),
-    ParticipantId: ParticipantIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the participant.' }),
-    ),
-    ParticipantRole: ParticipantRoleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The role of participant. For example, is it a customer, agent, or system.',
-        }),
-    ),
-    Content: TranscriptContentSchema.and(
-      z.any().openapi({ description: 'The content of the transcript.' }),
-    ),
-    BeginOffsetMillis: OffsetMillisSchema.and(
-      z.any().openapi({ description: 'The beginning offset in the contact for this transcript.' }),
-    ),
-    EndOffsetMillis: OffsetMillisSchema.and(
-      z.any().openapi({ description: 'The end offset in the contact for this transcript.' }),
-    ),
-    Sentiment: SentimentValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The sentiment of the detected for this piece of transcript.' }),
-    ),
-    IssuesDetected: IssuesDetectedSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List of positions where issues were detected on the transcript.',
-        }),
-    ).exactOptional(),
+    Id: TranscriptIdSchema.openapi({ description: 'The identifier of the transcript.' }),
+    ParticipantId: ParticipantIdSchema.openapi({
+      description: 'The identifier of the participant.',
+    }),
+    ParticipantRole: ParticipantRoleSchema.openapi({
+      description: 'The role of participant. For example, is it a customer, agent, or system.',
+    }),
+    Content: TranscriptContentSchema.openapi({ description: 'The content of the transcript.' }),
+    BeginOffsetMillis: OffsetMillisSchema.openapi({
+      description: 'The beginning offset in the contact for this transcript.',
+    }),
+    EndOffsetMillis: OffsetMillisSchema.openapi({
+      description: 'The end offset in the contact for this transcript.',
+    }),
+    Sentiment: SentimentValueSchema.openapi({
+      description: 'The sentiment of the detected for this piece of transcript.',
+    }),
+    IssuesDetected: IssuesDetectedSchema.exactOptional().openapi({
+      description: 'List of positions where issues were detected on the transcript.',
+    }),
   })
   .openapi({
     required: [
@@ -183,42 +96,82 @@ const TranscriptSchema = z
   })
   .openapi('Transcript')
 
-const CategoriesSchema: z.ZodType<CategoriesType> = z
-  .lazy(() =>
-    z
-      .object({
-        MatchedCategories: MatchedCategoriesSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The category rules that have been matched in the analyzed segment.',
-            }),
-        ),
-        MatchedDetails: MatchedDetailsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The category rule that was matched and when it occurred in the transcript.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['MatchedCategories', 'MatchedDetails'],
-        description:
-          'Provides the category rules that are used to automatically categorize contacts based on uttered keywords and phrases.',
-      }),
-  )
+const CategoryNameSchema = z
+  .string()
+  .regex(/.*\S.*/)
+  .min(1)
+  .max(256)
+  .openapi('CategoryName')
+
+const MatchedCategoriesSchema = z
+  .array(CategoryNameSchema)
+  .min(0)
+  .max(150)
+  .openapi('MatchedCategories')
+
+const PointOfInterestSchema = z
+  .object({
+    BeginOffsetMillis: OffsetMillisSchema.openapi({
+      description: 'The beginning offset in milliseconds where the category rule was detected.',
+    }),
+    EndOffsetMillis: OffsetMillisSchema.openapi({
+      description: 'The ending offset in milliseconds where the category rule was detected.',
+    }),
+  })
+  .openapi({
+    required: ['BeginOffsetMillis', 'EndOffsetMillis'],
+    description: 'The section of the contact audio where that category rule was detected.',
+  })
+  .openapi('PointOfInterest')
+
+const PointsOfInterestSchema = z
+  .array(PointOfInterestSchema)
+  .min(0)
+  .max(20)
+  .openapi('PointsOfInterest')
+
+const CategoryDetailsSchema = z
+  .object({
+    PointsOfInterest: PointsOfInterestSchema.openapi({
+      description: 'The section of audio where the category rule was detected.',
+    }),
+  })
+  .openapi({
+    required: ['PointsOfInterest'],
+    description: 'Provides information about the category rule that was matched.',
+  })
+  .openapi('CategoryDetails')
+
+const MatchedDetailsSchema = z
+  .record(z.string(), CategoryDetailsSchema)
+  .refine((val) => Object.keys(val).length >= 0)
+  .refine((val) => Object.keys(val).length <= 150)
+  .openapi('MatchedDetails')
+
+const CategoriesSchema = z
+  .object({
+    MatchedCategories: MatchedCategoriesSchema.openapi({
+      description: 'The category rules that have been matched in the analyzed segment.',
+    }),
+    MatchedDetails: MatchedDetailsSchema.openapi({
+      description: 'The category rule that was matched and when it occurred in the transcript.',
+    }),
+  })
+  .openapi({
+    required: ['MatchedCategories', 'MatchedDetails'],
+    description:
+      'Provides the category rules that are used to automatically categorize contacts based on uttered keywords and phrases.',
+  })
   .openapi('Categories')
 
 const RealtimeContactAnalysisSegmentSchema = z
   .object({
-    Transcript: TranscriptSchema.and(
-      z.any().openapi({ description: 'The analyzed transcript.' }),
-    ).exactOptional(),
-    Categories: CategoriesSchema.and(
-      z.any().openapi({ description: 'The matched category rules.' }),
-    ).exactOptional(),
+    Transcript: TranscriptSchema.exactOptional().openapi({
+      description: 'The analyzed transcript.',
+    }),
+    Categories: CategoriesSchema.exactOptional().openapi({
+      description: 'The matched category rules.',
+    }),
   })
   .openapi({ description: 'An analyzed segment for a real-time analysis session.', required: [] })
   .openapi('RealtimeContactAnalysisSegment')
@@ -236,22 +189,24 @@ const NextTokenSchema = z
   .max(131070)
   .openapi('NextToken')
 
-const ListRealtimeContactAnalysisSegmentsResponseSchema = z
-  .object({
-    Segments: RealtimeContactAnalysisSegmentsSchema.and(
-      z.any().openapi({ description: 'An analyzed transcript or category.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If there are additional results, this is the token for the next set of results. If response includes <code>nextToken</code> there are two possible scenarios:</p> <ul> <li> <p>There are more segments so another call is required to get them.</p> </li> <li> <p>There are no more segments at this time, but more may be available later (real-time analysis is in progress) so the client should call the operation again to get new segments.</p> </li> </ul> <p>If response does not include <code>nextToken</code>, the analysis is completed (successfully or failed) and there are no more segments to retrieve.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['Segments'] })
-  .openapi('ListRealtimeContactAnalysisSegmentsResponse')
+type ListRealtimeContactAnalysisSegmentsResponseType = {
+  Segments: z.infer<typeof RealtimeContactAnalysisSegmentsSchema> & unknown
+  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+const ListRealtimeContactAnalysisSegmentsResponseSchema: z.ZodType<ListRealtimeContactAnalysisSegmentsResponseType> =
+  z
+    .object({
+      Segments: RealtimeContactAnalysisSegmentsSchema.openapi({
+        description: 'An analyzed transcript or category.',
+      }),
+      NextToken: NextTokenSchema.exactOptional().openapi({
+        description:
+          '<p>If there are additional results, this is the token for the next set of results. If response includes <code>nextToken</code> there are two possible scenarios:</p> <ul> <li> <p>There are more segments so another call is required to get them.</p> </li> <li> <p>There are no more segments at this time, but more may be available later (real-time analysis is in progress) so the client should call the operation again to get new segments.</p> </li> </ul> <p>If response does not include <code>nextToken</code>, the analysis is completed (successfully or failed) and there are no more segments to retrieve.</p>',
+      }),
+    })
+    .openapi({ required: ['Segments'] })
+    .openapi('ListRealtimeContactAnalysisSegmentsResponse')
 
 const InvalidRequestExceptionSchema = z.any().openapi('InvalidRequestException')
 
@@ -281,23 +236,17 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListRealtimeContactAnalysisSegmentsRequestSchema = z
   .object({
-    InstanceId: InstanceIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the Amazon Connect instance.' }),
-    ),
-    ContactId: ContactIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the contact.' }),
-    ),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximimum number of results to return per page.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
-        }),
-    ).exactOptional(),
+    InstanceId: InstanceIdSchema.openapi({
+      description: 'The identifier of the Amazon Connect instance.',
+    }),
+    ContactId: ContactIdSchema.openapi({ description: 'The identifier of the contact.' }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximimum number of results to return per page.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.',
+    }),
   })
   .openapi({
     required: ['InstanceId', 'ContactId'],

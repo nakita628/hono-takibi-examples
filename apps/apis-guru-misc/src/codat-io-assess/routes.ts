@@ -1225,6 +1225,14 @@ const EnhancedInvoicesReportSchema: z.ZodType<EnhancedInvoicesReportType> = z
                               }),
                           })
                           .openapi({ required: [] })
+                          .and(z.looseObject({}).openapi({ required: ['date'] }))
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'date')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
                           .and(
                             z
                               .object({

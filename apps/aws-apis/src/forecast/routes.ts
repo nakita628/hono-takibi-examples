@@ -1,184 +1,29 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const NameSchema = z
+const ArnSchema = z
   .string()
-  .regex(/^[a-zA-Z][a-zA-Z0-9_]*/)
-  .min(1)
-  .max(63)
-  .openapi('Name')
-
-const DoubleSchema = z.float64().openapi('Double')
-
-const BaselineMetricSchema = z
-  .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    Value: DoubleSchema.and(
-      z.any().openapi({ description: 'The value for the metric.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'An individual metric that you can use for comparison as you evaluate your monitoring results.',
-    required: [],
-  })
-  .openapi('BaselineMetric')
-
-const BaselineMetricsSchema = z.array(BaselineMetricSchema).openapi('BaselineMetrics')
-
-const PredictorBaselineSchema = z
-  .object({
-    BaselineMetrics: BaselineMetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The initial <a href="https://docs.aws.amazon.com/forecast/latest/dg/metrics.html">accuracy metrics</a> for the predictor. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.',
-    required: [],
-  })
-  .openapi('PredictorBaseline')
-
-type BaselineType = {
-  PredictorBaseline?: z.infer<typeof PredictorBaselineSchema> & { [key: string]: unknown }
-}
-
-const ValueSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9\_\-]+$/)
+  .regex(/arn:([a-z\d-]+):forecast:.*:.*:.+/)
   .max(256)
-  .openapi('Value')
+  .openapi('Arn')
 
-const ValuesSchema = z.array(ValueSchema).min(1).max(20).openapi('Values')
-
-const CategoricalParameterRangeSchema = z
-  .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the categorical hyperparameter to tune.' }),
-    ),
-    Values: ValuesSchema.and(
-      z.any().openapi({ description: 'A list of the tunable categories for the hyperparameter.' }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'Values'],
-    description:
-      "Specifies a categorical hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
-  })
-  .openapi('CategoricalParameterRange')
-
-const CategoricalParameterRangesSchema = z
-  .array(CategoricalParameterRangeSchema)
-  .min(1)
-  .max(20)
-  .openapi('CategoricalParameterRanges')
-
-const ScalingTypeSchema = z
-  .enum(['Auto', 'Linear', 'Logarithmic', 'ReverseLogarithmic'])
-  .openapi('ScalingType')
-
-const ContinuousParameterRangeSchema = z
-  .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter to tune.' }),
-    ),
-    MaxValue: DoubleSchema.and(
-      z.any().openapi({ description: 'The maximum tunable value of the hyperparameter.' }),
-    ),
-    MinValue: DoubleSchema.and(
-      z.any().openapi({ description: 'The minimum tunable value of the hyperparameter.' }),
-    ),
-    ScalingType: ScalingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale that hyperparameter tuning uses to search the hyperparameter range. Valid values:</p> <dl> <dt>Auto</dt> <dd> <p>Amazon Forecast hyperparameter tuning chooses the best scale for the hyperparameter.</p> </dd> <dt>Linear</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a linear scale.</p> </dd> <dt>Logarithmic</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a logarithmic scale.</p> <p>Logarithmic scaling works only for ranges that have values greater than 0.</p> </dd> <dt>ReverseLogarithmic</dt> <dd> <p>hyperparameter tuning searches the values in the hyperparameter range by using a reverse logarithmic scale.</p> <p>Reverse logarithmic scaling works only for ranges that are entirely within the range 0 &lt;= x &lt; 1.0.</p> </dd> </dl> <p>For information about choosing a hyperparameter scale, see <a href="http://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-ranges.html#scaling-type">Hyperparameter Scaling</a>. One of the following values:</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'MaxValue', 'MinValue'],
-    description:
-      "Specifies a continuous hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
-  })
-  .openapi('ContinuousParameterRange')
-
-const ContinuousParameterRangesSchema = z
-  .array(ContinuousParameterRangeSchema)
-  .min(1)
-  .max(20)
-  .openapi('ContinuousParameterRanges')
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const IntegerSchema = z.int().openapi('Integer')
 
-const IntegerParameterRangeSchema = z
-  .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the hyperparameter to tune.' }),
-    ),
-    MaxValue: IntegerSchema.and(
-      z.any().openapi({ description: 'The maximum tunable value of the hyperparameter.' }),
-    ),
-    MinValue: IntegerSchema.and(
-      z.any().openapi({ description: 'The minimum tunable value of the hyperparameter.' }),
-    ),
-    ScalingType: ScalingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scale that hyperparameter tuning uses to search the hyperparameter range. Valid values:</p> <dl> <dt>Auto</dt> <dd> <p>Amazon Forecast hyperparameter tuning chooses the best scale for the hyperparameter.</p> </dd> <dt>Linear</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a linear scale.</p> </dd> <dt>Logarithmic</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a logarithmic scale.</p> <p>Logarithmic scaling works only for ranges that have values greater than 0.</p> </dd> <dt>ReverseLogarithmic</dt> <dd> <p>Not supported for <code>IntegerParameterRange</code>.</p> <p>Reverse logarithmic scaling works only for ranges that are entirely within the range 0 &lt;= x &lt; 1.0.</p> </dd> </dl> <p>For information about choosing a hyperparameter scale, see <a href="http://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-ranges.html#scaling-type">Hyperparameter Scaling</a>. One of the following values:</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Name', 'MaxValue', 'MinValue'],
-    description:
-      "Specifies an integer hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
-  })
-  .openapi('IntegerParameterRange')
+const EvaluationTypeSchema = z.enum(['SUMMARY', 'COMPUTED']).openapi('EvaluationType')
 
-const IntegerParameterRangesSchema = z
-  .array(IntegerParameterRangeSchema)
-  .min(1)
-  .max(20)
-  .openapi('IntegerParameterRanges')
-
-type ParameterRangesType = {
-  CategoricalParameterRanges?: z.infer<typeof CategoricalParameterRangesSchema> & {
-    [key: string]: unknown
-  }
-  ContinuousParameterRanges?: z.infer<typeof ContinuousParameterRangesSchema> & {
-    [key: string]: unknown
-  }
-  IntegerParameterRanges?: z.infer<typeof IntegerParameterRangesSchema> & { [key: string]: unknown }
-}
+const DoubleSchema = z.float64().openapi('Double')
 
 const WeightedQuantileLossSchema = z
   .object({
-    Quantile: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quantile. Quantiles divide a probability distribution into regions of equal probability. For example, if the distribution was divided into 5 regions of equal probability, the quantiles would be 0.2, 0.4, 0.6, and 0.8.',
-        }),
-    ).exactOptional(),
-    LossValue: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The difference between the predicted value and the actual value over the quantile, weighted (normalized) by dividing by the sum over all quantiles.',
-        }),
-    ).exactOptional(),
+    Quantile: DoubleSchema.exactOptional().openapi({
+      description:
+        'The quantile. Quantiles divide a probability distribution into regions of equal probability. For example, if the distribution was divided into 5 regions of equal probability, the quantiles would be 0.2, 0.4, 0.6, and 0.8.',
+    }),
+    LossValue: DoubleSchema.exactOptional().openapi({
+      description:
+        'The difference between the predicted value and the actual value over the quantile, weighted (normalized) by dividing by the sum over all quantiles.',
+    }),
   })
   .openapi({
     description:
@@ -200,25 +45,21 @@ const ForecastTypeSchema = z
 
 const ErrorMetricSchema = z
   .object({
-    ForecastType: ForecastTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The Forecast type used to compute WAPE, MAPE, MASE, and RMSE. ',
-        }),
-    ).exactOptional(),
-    WAPE: DoubleSchema.and(
-      z.any().openapi({ description: ' The weighted absolute percentage error (WAPE). ' }),
-    ).exactOptional(),
-    RMSE: DoubleSchema.and(
-      z.any().openapi({ description: ' The root-mean-square error (RMSE). ' }),
-    ).exactOptional(),
-    MASE: DoubleSchema.and(
-      z.any().openapi({ description: 'The Mean Absolute Scaled Error (MASE)' }),
-    ).exactOptional(),
-    MAPE: DoubleSchema.and(
-      z.any().openapi({ description: 'The Mean Absolute Percentage Error (MAPE)' }),
-    ).exactOptional(),
+    ForecastType: ForecastTypeSchema.exactOptional().openapi({
+      description: ' The Forecast type used to compute WAPE, MAPE, MASE, and RMSE. ',
+    }),
+    WAPE: DoubleSchema.exactOptional().openapi({
+      description: ' The weighted absolute percentage error (WAPE). ',
+    }),
+    RMSE: DoubleSchema.exactOptional().openapi({
+      description: ' The root-mean-square error (RMSE). ',
+    }),
+    MASE: DoubleSchema.exactOptional().openapi({
+      description: 'The Mean Absolute Scaled Error (MASE)',
+    }),
+    MAPE: DoubleSchema.exactOptional().openapi({
+      description: 'The Mean Absolute Percentage Error (MAPE)',
+    }),
   })
   .openapi({
     description:
@@ -229,72 +70,113 @@ const ErrorMetricSchema = z
 
 const ErrorMetricsSchema = z.array(ErrorMetricSchema).openapi('ErrorMetrics')
 
-type MetricsType = {
-  RMSE?: z.infer<typeof DoubleSchema> & { [key: string]: unknown }
-  WeightedQuantileLosses?: z.infer<typeof WeightedQuantileLossesSchema> & { [key: string]: unknown }
-  ErrorMetrics?: z.infer<typeof ErrorMetricsSchema> & { [key: string]: unknown }
-  AverageWeightedQuantileLoss?: z.infer<typeof DoubleSchema> & { [key: string]: unknown }
-}
-
-const ArnSchema = z
-  .string()
-  .regex(/arn:([a-z\d-]+):forecast:.*:.*:.+/)
-  .max(256)
-  .openapi('Arn')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const StateSchema = z.enum(['Active', 'Deleted']).openapi('State')
-
-const ReferencePredictorSummarySchema = z
+const MetricsSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the reference predictor.' }),
-    ).exactOptional(),
-    State: StateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the reference predictor is <code>Active</code> or <code>Deleted</code>.',
-        }),
-    ).exactOptional(),
+    RMSE: DoubleSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The root-mean-square error (RMSE).This property is deprecated, please refer to ErrorMetrics for both RMSE and WAPE',
+    }),
+    WeightedQuantileLosses: WeightedQuantileLossesSchema.exactOptional().openapi({
+      description:
+        'An array of weighted quantile losses. Quantiles divide a probability distribution into regions of equal probability. The distribution in this case is the loss function.',
+    }),
+    ErrorMetrics: ErrorMetricsSchema.exactOptional().openapi({
+      description:
+        ' Provides detailed error metrics for each forecast type. Metrics include root-mean square-error (RMSE), mean absolute percentage error (MAPE), mean absolute scaled error (MASE), and weighted average percentage error (WAPE). ',
+    }),
+    AverageWeightedQuantileLoss: DoubleSchema.exactOptional().openapi({
+      description: 'The average value of all weighted quantile losses.',
+    }),
   })
   .openapi({
     description:
-      'Provides a summary of the reference predictor used when retraining or upgrading a predictor.',
+      'Provides metrics that are used to evaluate the performance of a predictor. This object is part of the <a>WindowSummary</a> object.',
     required: [],
   })
-  .openapi('ReferencePredictorSummary')
+  .openapi('Metrics')
 
-const StatusSchema = z.string().max(256).openapi('Status')
+const WindowSummarySchema = z
+  .object({
+    TestWindowStart: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp that defines the start of the window.',
+    }),
+    TestWindowEnd: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp that defines the end of the window.',
+    }),
+    ItemCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of data points within the window.',
+    }),
+    EvaluationType: EvaluationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of evaluation.</p> <ul> <li> <p> <code>SUMMARY</code> - The average metrics across all windows.</p> </li> <li> <p> <code>COMPUTED</code> - The metrics for the specified window.</p> </li> </ul>',
+    }),
+    Metrics: MetricsSchema.exactOptional().openapi({
+      description: 'Provides metrics used to evaluate the performance of a predictor.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>The metrics for a time range within the evaluation portion of a dataset. This object is part of the <a>EvaluationResult</a> object.</p> <p>The <code>TestWindowStart</code> and <code>TestWindowEnd</code> parameters are determined by the <code>BackTestWindowOffset</code> parameter of the <a>EvaluationParameters</a> object.</p>',
+    required: [],
+  })
+  .openapi('WindowSummary')
 
-const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+const TestWindowsSchema = z.array(WindowSummarySchema).openapi('TestWindows')
 
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+const EvaluationResultSchema = z
+  .object({
+    AlgorithmArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the algorithm that was evaluated.',
+    }),
+    TestWindows: TestWindowsSchema.exactOptional().openapi({
+      description:
+        'The array of test windows used for evaluating the algorithm. The <code>NumberOfBacktestWindows</code> from the <a>EvaluationParameters</a> object determines the number of windows in the array.',
+    }),
+  })
+  .openapi({
+    description:
+      'The results of evaluating an algorithm. Returned as part of the <a>GetAccuracyMetrics</a> response.',
+    required: [],
+  })
+  .openapi('EvaluationResult')
 
-type PredictorSummaryType = {
-  PredictorArn?: z.infer<typeof ArnSchema> & { [key: string]: unknown }
-  PredictorName?: z.infer<typeof NameSchema> & { [key: string]: unknown }
-  DatasetGroupArn?: z.infer<typeof ArnSchema> & { [key: string]: unknown }
-  IsAutoPredictor?: z.infer<typeof BooleanSchema> & { [key: string]: unknown }
-  ReferencePredictorSummary?: z.infer<typeof ReferencePredictorSummarySchema> & {
-    [key: string]: unknown
-  }
-  Status?: z.infer<typeof StatusSchema> & { [key: string]: unknown }
-  Message?: z.infer<typeof ErrorMessageSchema> & { [key: string]: unknown }
-  CreationTime?: z.infer<typeof TimestampSchema> & { [key: string]: unknown }
-  LastModificationTime?: z.infer<typeof TimestampSchema> & { [key: string]: unknown }
+const PredictorEvaluationResultsSchema = z
+  .array(EvaluationResultSchema)
+  .openapi('PredictorEvaluationResults')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const AutoMLOverrideStrategySchema = z
+  .enum(['LatencyOptimized', 'AccuracyOptimized'])
+  .openapi('AutoMLOverrideStrategy')
+
+const OptimizationMetricSchema = z
+  .enum(['WAPE', 'RMSE', 'AverageWeightedQuantileLoss', 'MASE', 'MAPE'])
+  .openapi('OptimizationMetric')
+
+type GetAccuracyMetricsResponseType = {
+  PredictorEvaluationResults?: z.infer<typeof PredictorEvaluationResultsSchema> & unknown
+  IsAutoPredictor?: z.infer<typeof BooleanSchema> & unknown
+  AutoMLOverrideStrategy?: z.infer<typeof AutoMLOverrideStrategySchema> & unknown
+  OptimizationMetric?: z.infer<typeof OptimizationMetricSchema> & unknown
 }
 
 const CreateAutoPredictorResponseSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the predictor.' }),
-    ).exactOptional(),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAutoPredictorResponse')
+
+const NameSchema = z
+  .string()
+  .regex(/^[a-zA-Z][a-zA-Z0-9_]*/)
+  .min(1)
+  .max(63)
+  .openapi('Name')
 
 const ForecastTypesSchema = z.array(ForecastTypeSchema).min(1).max(20).openapi('ForecastTypes')
 
@@ -307,6 +189,12 @@ const FrequencySchema = z
   .max(5)
   .openapi('Frequency')
 
+const ValueSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9\_\-]+$/)
+  .max(256)
+  .openapi('Value')
+
 const TransformationsSchema = z
   .record(z.string(), ValueSchema)
   .refine((val) => Object.keys(val).length >= 1)
@@ -315,22 +203,14 @@ const TransformationsSchema = z
 
 const AttributeConfigSchema = z
   .object({
-    AttributeName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the attribute as specified in the schema. Amazon Forecast supports the target field of the target time series and the related time series datasets. For example, for the RETAIL domain, the target is <code>demand</code>.',
-        }),
-    ),
-    Transformations: TransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The method parameters (key-value pairs), which are a map of override parameters. Specify these parameters to override the default values. Related Time Series attributes do not accept aggregation parameters.</p> <p>The following list shows the parameters and their valid values for the "filling" featurization method for a <b>Target Time Series</b> dataset. Default values are bolded.</p> <ul> <li> <p> <code>aggregation</code>: <b>sum</b>, <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>frontfill</code>: <b>none</b> </p> </li> <li> <p> <code>middlefill</code>: <b>zero</b>, <code>nan</code> (not a number), <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <b>zero</b>, <code>nan</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>The following list shows the parameters and their valid values for a <b>Related Time Series</b> featurization method (there are no defaults):</p> <ul> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to <code>value</code> and define the value in a corresponding <code>_value</code> parameter. For example, to set backfilling to a value of 2, include the following: <code>"backfill": "value"</code> and <code>"backfill_value":"2"</code>. </p>',
-        }),
-    ),
+    AttributeName: NameSchema.openapi({
+      description:
+        'The name of the attribute as specified in the schema. Amazon Forecast supports the target field of the target time series and the related time series datasets. For example, for the RETAIL domain, the target is <code>demand</code>.',
+    }),
+    Transformations: TransformationsSchema.openapi({
+      description:
+        '<p>The method parameters (key-value pairs), which are a map of override parameters. Specify these parameters to override the default values. Related Time Series attributes do not accept aggregation parameters.</p> <p>The following list shows the parameters and their valid values for the "filling" featurization method for a <b>Target Time Series</b> dataset. Default values are bolded.</p> <ul> <li> <p> <code>aggregation</code>: <b>sum</b>, <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>frontfill</code>: <b>none</b> </p> </li> <li> <p> <code>middlefill</code>: <b>zero</b>, <code>nan</code> (not a number), <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <b>zero</b>, <code>nan</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>The following list shows the parameters and their valid values for a <b>Related Time Series</b> featurization method (there are no defaults):</p> <ul> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to <code>value</code> and define the value in a corresponding <code>_value</code> parameter. For example, to set backfilling to a value of 2, include the following: <code>"backfill": "value"</code> and <code>"backfill_value":"2"</code>. </p>',
+    }),
   })
   .openapi({
     required: ['AttributeName', 'Transformations'],
@@ -345,26 +225,20 @@ const AttributeConfigsSchema = z
   .max(50)
   .openapi('AttributeConfigs')
 
+const ValuesSchema = z.array(ValueSchema).min(1).max(20).openapi('Values')
+
 const ConfigurationSchema = z.record(z.string(), ValuesSchema).openapi('Configuration')
 
 const AdditionalDatasetSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the additional dataset. Valid names: <code>"holiday"</code> and <code>"weather"</code>.',
-        }),
-    ),
-    Configuration: ConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, set <code>CountryCode</code> to one of the following two-letter country codes:</p> <ul> <li> <p>"AL" - ALBANIA</p> </li> <li> <p>"AR" - ARGENTINA</p> </li> <li> <p>"AT" - AUSTRIA</p> </li> <li> <p>"AU" - AUSTRALIA</p> </li> <li> <p>"BA" - BOSNIA HERZEGOVINA</p> </li> <li> <p>"BE" - BELGIUM</p> </li> <li> <p>"BG" - BULGARIA</p> </li> <li> <p>"BO" - BOLIVIA</p> </li> <li> <p>"BR" - BRAZIL</p> </li> <li> <p>"BY" - BELARUS</p> </li> <li> <p>"CA" - CANADA</p> </li> <li> <p>"CL" - CHILE</p> </li> <li> <p>"CO" - COLOMBIA</p> </li> <li> <p>"CR" - COSTA RICA</p> </li> <li> <p>"HR" - CROATIA</p> </li> <li> <p>"CZ" - CZECH REPUBLIC</p> </li> <li> <p>"DK" - DENMARK</p> </li> <li> <p>"EC" - ECUADOR</p> </li> <li> <p>"EE" - ESTONIA</p> </li> <li> <p>"ET" - ETHIOPIA</p> </li> <li> <p>"FI" - FINLAND</p> </li> <li> <p>"FR" - FRANCE</p> </li> <li> <p>"DE" - GERMANY</p> </li> <li> <p>"GR" - GREECE</p> </li> <li> <p>"HU" - HUNGARY</p> </li> <li> <p>"IS" - ICELAND</p> </li> <li> <p>"IN" - INDIA</p> </li> <li> <p>"IE" - IRELAND</p> </li> <li> <p>"IT" - ITALY</p> </li> <li> <p>"JP" - JAPAN</p> </li> <li> <p>"KZ" - KAZAKHSTAN</p> </li> <li> <p>"KR" - KOREA</p> </li> <li> <p>"LV" - LATVIA</p> </li> <li> <p>"LI" - LIECHTENSTEIN</p> </li> <li> <p>"LT" - LITHUANIA</p> </li> <li> <p>"LU" - LUXEMBOURG</p> </li> <li> <p>"MK" - MACEDONIA</p> </li> <li> <p>"MT" - MALTA</p> </li> <li> <p>"MX" - MEXICO</p> </li> <li> <p>"MD" - MOLDOVA</p> </li> <li> <p>"ME" - MONTENEGRO</p> </li> <li> <p>"NL" - NETHERLANDS</p> </li> <li> <p>"NZ" - NEW ZEALAND</p> </li> <li> <p>"NI" - NICARAGUA</p> </li> <li> <p>"NG" - NIGERIA</p> </li> <li> <p>"NO" - NORWAY</p> </li> <li> <p>"PA" - PANAMA</p> </li> <li> <p>"PY" - PARAGUAY</p> </li> <li> <p>"PE" - PERU</p> </li> <li> <p>"PL" - POLAND</p> </li> <li> <p>"PT" - PORTUGAL</p> </li> <li> <p>"RO" - ROMANIA</p> </li> <li> <p>"RU" - RUSSIA</p> </li> <li> <p>"RS" - SERBIA</p> </li> <li> <p>"SK" - SLOVAKIA</p> </li> <li> <p>"SI" - SLOVENIA</p> </li> <li> <p>"ZA" - SOUTH AFRICA</p> </li> <li> <p>"ES" - SPAIN</p> </li> <li> <p>"SE" - SWEDEN</p> </li> <li> <p>"CH" - SWITZERLAND</p> </li> <li> <p>"UA" - UKRAINE</p> </li> <li> <p>"AE" - UNITED ARAB EMIRATES</p> </li> <li> <p>"US" - UNITED STATES</p> </li> <li> <p>"UK" - UNITED KINGDOM</p> </li> <li> <p>"UY" - URUGUAY</p> </li> <li> <p>"VE" - VENEZUELA</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the additional dataset. Valid names: <code>"holiday"</code> and <code>"weather"</code>.',
+    }),
+    Configuration: ConfigurationSchema.exactOptional().openapi({
+      description:
+        '<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, do not specify a value for <code>Configuration</code>.</p> <p> <b>Holidays</b> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, set <code>CountryCode</code> to one of the following two-letter country codes:</p> <ul> <li> <p>"AL" - ALBANIA</p> </li> <li> <p>"AR" - ARGENTINA</p> </li> <li> <p>"AT" - AUSTRIA</p> </li> <li> <p>"AU" - AUSTRALIA</p> </li> <li> <p>"BA" - BOSNIA HERZEGOVINA</p> </li> <li> <p>"BE" - BELGIUM</p> </li> <li> <p>"BG" - BULGARIA</p> </li> <li> <p>"BO" - BOLIVIA</p> </li> <li> <p>"BR" - BRAZIL</p> </li> <li> <p>"BY" - BELARUS</p> </li> <li> <p>"CA" - CANADA</p> </li> <li> <p>"CL" - CHILE</p> </li> <li> <p>"CO" - COLOMBIA</p> </li> <li> <p>"CR" - COSTA RICA</p> </li> <li> <p>"HR" - CROATIA</p> </li> <li> <p>"CZ" - CZECH REPUBLIC</p> </li> <li> <p>"DK" - DENMARK</p> </li> <li> <p>"EC" - ECUADOR</p> </li> <li> <p>"EE" - ESTONIA</p> </li> <li> <p>"ET" - ETHIOPIA</p> </li> <li> <p>"FI" - FINLAND</p> </li> <li> <p>"FR" - FRANCE</p> </li> <li> <p>"DE" - GERMANY</p> </li> <li> <p>"GR" - GREECE</p> </li> <li> <p>"HU" - HUNGARY</p> </li> <li> <p>"IS" - ICELAND</p> </li> <li> <p>"IN" - INDIA</p> </li> <li> <p>"IE" - IRELAND</p> </li> <li> <p>"IT" - ITALY</p> </li> <li> <p>"JP" - JAPAN</p> </li> <li> <p>"KZ" - KAZAKHSTAN</p> </li> <li> <p>"KR" - KOREA</p> </li> <li> <p>"LV" - LATVIA</p> </li> <li> <p>"LI" - LIECHTENSTEIN</p> </li> <li> <p>"LT" - LITHUANIA</p> </li> <li> <p>"LU" - LUXEMBOURG</p> </li> <li> <p>"MK" - MACEDONIA</p> </li> <li> <p>"MT" - MALTA</p> </li> <li> <p>"MX" - MEXICO</p> </li> <li> <p>"MD" - MOLDOVA</p> </li> <li> <p>"ME" - MONTENEGRO</p> </li> <li> <p>"NL" - NETHERLANDS</p> </li> <li> <p>"NZ" - NEW ZEALAND</p> </li> <li> <p>"NI" - NICARAGUA</p> </li> <li> <p>"NG" - NIGERIA</p> </li> <li> <p>"NO" - NORWAY</p> </li> <li> <p>"PA" - PANAMA</p> </li> <li> <p>"PY" - PARAGUAY</p> </li> <li> <p>"PE" - PERU</p> </li> <li> <p>"PL" - POLAND</p> </li> <li> <p>"PT" - PORTUGAL</p> </li> <li> <p>"RO" - ROMANIA</p> </li> <li> <p>"RU" - RUSSIA</p> </li> <li> <p>"RS" - SERBIA</p> </li> <li> <p>"SK" - SLOVAKIA</p> </li> <li> <p>"SI" - SLOVENIA</p> </li> <li> <p>"ZA" - SOUTH AFRICA</p> </li> <li> <p>"ES" - SPAIN</p> </li> <li> <p>"SE" - SWEDEN</p> </li> <li> <p>"CH" - SWITZERLAND</p> </li> <li> <p>"UA" - UKRAINE</p> </li> <li> <p>"AE" - UNITED ARAB EMIRATES</p> </li> <li> <p>"US" - UNITED STATES</p> </li> <li> <p>"UK" - UNITED KINGDOM</p> </li> <li> <p>"UY" - URUGUAY</p> </li> <li> <p>"VE" - VENEZUELA</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -381,23 +255,15 @@ const AdditionalDatasetsSchema = z
 
 const DataConfigSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group used to train the predictor.' }),
-    ),
-    AttributeConfigs: AttributeConfigsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Aggregation and filling options for attributes in your dataset group.',
-        }),
-    ).exactOptional(),
-    AdditionalDatasets: AdditionalDatasetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Additional built-in datasets like Holidays and the Weather Index.',
-        }),
-    ).exactOptional(),
+    DatasetGroupArn: ArnSchema.openapi({
+      description: 'The ARN of the dataset group used to train the predictor.',
+    }),
+    AttributeConfigs: AttributeConfigsSchema.exactOptional().openapi({
+      description: 'Aggregation and filling options for attributes in your dataset group.',
+    }),
+    AdditionalDatasets: AdditionalDatasetsSchema.exactOptional().openapi({
+      description: 'Additional built-in datasets like Holidays and the Weather Index.',
+    }),
   })
   .openapi({
     required: ['DatasetGroupArn'],
@@ -413,17 +279,13 @@ const KMSKeyArnSchema = z
 
 const EncryptionConfigSchema = z
   .object({
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the IAM role that Amazon Forecast can assume to access the KMS key.</p> <p>Passing a role across Amazon Web Services accounts is not allowed. If you pass a role that isn't in your account, you get an <code>InvalidInputException</code> error.</p>",
-        }),
-    ),
-    KMSKeyArn: KMSKeyArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the KMS key.' }),
-    ),
+    RoleArn: ArnSchema.openapi({
+      description:
+        "<p>The ARN of the IAM role that Amazon Forecast can assume to access the KMS key.</p> <p>Passing a role across Amazon Web Services accounts is not allowed. If you pass a role that isn't in your account, you get an <code>InvalidInputException</code> error.</p>",
+    }),
+    KMSKeyArn: KMSKeyArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the KMS key.',
+    }),
   })
   .openapi({
     required: ['RoleArn', 'KMSKeyArn'],
@@ -431,10 +293,6 @@ const EncryptionConfigSchema = z
       'An Key Management Service (KMS) key and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key. You can specify this optional object in the <a>CreateDataset</a> and <a>CreatePredictor</a> requests.',
   })
   .openapi('EncryptionConfig')
-
-const OptimizationMetricSchema = z
-  .enum(['WAPE', 'RMSE', 'AverageWeightedQuantileLoss', 'MASE', 'MAPE'])
-  .openapi('OptimizationMetric')
 
 const TagKeySchema = z
   .string()
@@ -452,22 +310,14 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One part of a key-value pair that makes up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The optional part of a key-value pair that makes up a tag. A <code>value</code> acts as a descriptor within a tag category (key).',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        'One part of a key-value pair that makes up a tag. A <code>key</code> is a general label that acts like a category for more specific tag values.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        'The optional part of a key-value pair that makes up a tag. A <code>value</code> acts as a descriptor within a tag category (key).',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -479,11 +329,7 @@ const TagSchema = z
 const TagsSchema = z.array(TagSchema).min(0).max(200).openapi('Tags')
 
 const MonitorConfigSchema = z
-  .object({
-    MonitorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the monitor resource.' }),
-    ),
-  })
+  .object({ MonitorName: NameSchema.openapi({ description: 'The name of the monitor resource.' }) })
   .openapi({
     required: ['MonitorName'],
     description: 'The configuration details for the predictor monitor.',
@@ -517,34 +363,20 @@ const HourSchema = z.int().min(0).max(23).openapi('Hour')
 
 const TimeAlignmentBoundarySchema = z
   .object({
-    Month: MonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The month to use for time alignment during aggregation. The month must be in uppercase.',
-        }),
-    ).exactOptional(),
-    DayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The day of the month to use for time alignment during aggregation.',
-        }),
-    ).exactOptional(),
-    DayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of week to use for time alignment during aggregation. The day must be in uppercase.',
-        }),
-    ).exactOptional(),
-    Hour: HourSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The hour of day to use for time alignment during aggregation.' }),
-    ).exactOptional(),
+    Month: MonthSchema.exactOptional().openapi({
+      description:
+        'The month to use for time alignment during aggregation. The month must be in uppercase.',
+    }),
+    DayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description: 'The day of the month to use for time alignment during aggregation.',
+    }),
+    DayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of week to use for time alignment during aggregation. The day must be in uppercase.',
+    }),
+    Hour: HourSchema.exactOptional().openapi({
+      description: 'The hour of day to use for time alignment during aggregation.',
+    }),
   })
   .openapi({
     description:
@@ -555,87 +387,49 @@ const TimeAlignmentBoundarySchema = z
 
 const CreateAutoPredictorRequestSchema = z
   .object({
-    PredictorName: NameSchema.and(
-      z.any().openapi({ description: 'A unique name for the predictor' }),
-    ),
-    ForecastHorizon: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.</p> <p>The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the TARGET_TIME_SERIES dataset length. If you are retraining an existing AutoPredictor, then the maximum forecast horizon is the lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length.</p> <p>If you are upgrading to an AutoPredictor or retraining an existing AutoPredictor, you cannot update the forecast horizon parameter. You can meet this requirement by providing longer time-series in the dataset.</p>',
-        }),
-    ).exactOptional(),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forecast types used to train a predictor. You can specify up to five forecast types. Forecast types can be quantiles from 0.01 to 0.99, by increments of 0.01 or higher. You can also specify the mean forecast with <code>mean</code>.',
-        }),
-    ).exactOptional(),
-    ForecastDimensions: ForecastDimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of dimension (field) names that specify how to group the generated forecast.</p> <p>For example, if you are generating forecasts for item sales across all your stores, and your dataset contains a <code>store_id</code> field, you would specify <code>store_id</code> as a dimension to group sales forecasts for each store.</p>',
-        }),
-    ).exactOptional(),
-    ForecastFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p> <p>The frequency must be greater than or equal to the TARGET_TIME_SERIES dataset frequency.</p> <p>When a RELATED_TIME_SERIES dataset is provided, the frequency must be equal to the RELATED_TIME_SERIES dataset frequency.</p>',
-        }),
-    ).exactOptional(),
-    DataConfig: DataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data configuration for your dataset group and any additional datasets.',
-        }),
-    ).exactOptional(),
+    PredictorName: NameSchema.openapi({ description: 'A unique name for the predictor' }),
+    ForecastHorizon: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.</p> <p>The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the TARGET_TIME_SERIES dataset length. If you are retraining an existing AutoPredictor, then the maximum forecast horizon is the lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length.</p> <p>If you are upgrading to an AutoPredictor or retraining an existing AutoPredictor, you cannot update the forecast horizon parameter. You can meet this requirement by providing longer time-series in the dataset.</p>',
+    }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        'The forecast types used to train a predictor. You can specify up to five forecast types. Forecast types can be quantiles from 0.01 to 0.99, by increments of 0.01 or higher. You can also specify the mean forecast with <code>mean</code>.',
+    }),
+    ForecastDimensions: ForecastDimensionsSchema.exactOptional().openapi({
+      description:
+        '<p>An array of dimension (field) names that specify how to group the generated forecast.</p> <p>For example, if you are generating forecasts for item sales across all your stores, and your dataset contains a <code>store_id</code> field, you would specify <code>store_id</code> as a dimension to group sales forecasts for each store.</p>',
+    }),
+    ForecastFrequency: FrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p> <p>The frequency must be greater than or equal to the TARGET_TIME_SERIES dataset frequency.</p> <p>When a RELATED_TIME_SERIES dataset is provided, the frequency must be equal to the RELATED_TIME_SERIES dataset frequency.</p>',
+    }),
+    DataConfig: DataConfigSchema.exactOptional().openapi({
+      description: 'The data configuration for your dataset group and any additional datasets.',
+    }),
     EncryptionConfig: EncryptionConfigSchema.exactOptional(),
-    ReferencePredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the predictor to retrain or upgrade. This parameter is only used when retraining or upgrading a predictor. When creating a new predictor, do not specify a value for this parameter.</p> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. The value for <code>PredictorName</code> must be a unique predictor name.</p>',
-        }),
-    ).exactOptional(),
-    OptimizationMetric: OptimizationMetricSchema.and(
-      z.any().openapi({ description: 'The accuracy metric used to optimize the predictor.' }),
-    ).exactOptional(),
-    ExplainPredictor: BooleanSchema.and(
-      z.any().openapi({ description: 'Create an Explainability resource for the predictor.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional metadata to help you categorize and organize your predictors. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MonitorConfig: MonitorConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration details for predictor monitoring. Provide a name for the monitor resource to enable predictor monitoring.</p> <p>Predictor monitoring allows you to see how your predictor\'s performance changes over time. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html">Predictor Monitoring</a>.</p>',
-        }),
-    ).exactOptional(),
-    TimeAlignmentBoundary: TimeAlignmentBoundarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time boundary Forecast uses to align and aggregate any data that doesn\'t align with your forecast frequency. Provide the unit of time and the time boundary as a key value pair. For more information on specifying a time boundary, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary">Specifying a Time Boundary</a>. If you don\'t provide a time boundary, Forecast uses a set of <a href="https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries">Default Time Boundaries</a>.',
-        }),
-    ).exactOptional(),
+    ReferencePredictorArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the predictor to retrain or upgrade. This parameter is only used when retraining or upgrading a predictor. When creating a new predictor, do not specify a value for this parameter.</p> <p>When upgrading or retraining a predictor, only specify values for the <code>ReferencePredictorArn</code> and <code>PredictorName</code>. The value for <code>PredictorName</code> must be a unique predictor name.</p>',
+    }),
+    OptimizationMetric: OptimizationMetricSchema.exactOptional().openapi({
+      description: 'The accuracy metric used to optimize the predictor.',
+    }),
+    ExplainPredictor: BooleanSchema.exactOptional().openapi({
+      description: 'Create an Explainability resource for the predictor.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Optional metadata to help you categorize and organize your predictors. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
+    }),
+    MonitorConfig: MonitorConfigSchema.exactOptional().openapi({
+      description:
+        '<p>The configuration details for predictor monitoring. Provide a name for the monitor resource to enable predictor monitoring.</p> <p>Predictor monitoring allows you to see how your predictor\'s performance changes over time. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html">Predictor Monitoring</a>.</p>',
+    }),
+    TimeAlignmentBoundary: TimeAlignmentBoundarySchema.exactOptional().openapi({
+      description:
+        'The time boundary Forecast uses to align and aggregate any data that doesn\'t align with your forecast frequency. Provide the unit of time and the time boundary as a key value pair. For more information on specifying a time boundary, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary">Specifying a Time Boundary</a>. If you don\'t provide a time boundary, Forecast uses a set of <a href="https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries">Default Time Boundaries</a>.',
+    }),
   })
   .openapi({ required: ['PredictorName'], title: 'CreateAutoPredictorRequest' })
   .openapi('CreateAutoPredictorRequest')
@@ -652,9 +446,9 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const CreateDatasetResponseSchema = z
   .object({
-    DatasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ).exactOptional(),
+    DatasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetResponse')
@@ -681,17 +475,13 @@ const AttributeTypeSchema = z
 
 const SchemaAttributeSchema = z
   .object({
-    AttributeName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset field.' }),
-    ).exactOptional(),
-    AttributeType: AttributeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The data type of the field.</p> <p>For a related time series dataset, other than date, item_id, and forecast dimensions attributes, all attributes should be of numerical type (integer/float).</p>',
-        }),
-    ).exactOptional(),
+    AttributeName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset field.',
+    }),
+    AttributeType: AttributeTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The data type of the field.</p> <p>For a related time series dataset, other than date, item_id, and forecast dimensions attributes, all attributes should be of numerical type (integer/float).</p>',
+    }),
   })
   .openapi({
     description:
@@ -708,68 +498,40 @@ const SchemaAttributesSchema = z
 
 const SchemaSchema = z
   .object({
-    Attributes: SchemaAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of attributes specifying the name and type of each field in a dataset.',
-        }),
-    ).exactOptional(),
+    Attributes: SchemaAttributesSchema.exactOptional().openapi({
+      description:
+        'An array of attributes specifying the name and type of each field in a dataset.',
+    }),
   })
   .openapi({ description: 'Defines the fields of a dataset.', required: [] })
   .openapi('Schema')
 
 const CreateDatasetRequestSchema = z
   .object({
-    DatasetName: NameSchema.and(z.any().openapi({ description: 'A name for the dataset.' })),
-    Domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The domain associated with the dataset. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html">CreateDatasetGroup</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in the training data that you import to the dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields to be present in your data. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html">Importing datasets</a>.</p>',
-        }),
-    ),
-    DatasetType: DatasetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The dataset type. Valid values depend on the chosen <code>Domain</code>.',
-        }),
-    ),
-    DataFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency of data collection. This parameter is required for RELATED_TIME_SERIES datasets.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p>',
-        }),
-    ).exactOptional(),
-    Schema: SchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The schema for the dataset. The schema attributes and their order must match the fields in your data. The dataset <code>Domain</code> and <code>DatasetType</code> that you choose determine the minimum required fields in your training data. For information about the required fields for a specific dataset domain and type, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-domains-ds-types.html">Dataset Domains and Dataset Types</a>.',
-        }),
-    ),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the dataset to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DatasetName: NameSchema.openapi({ description: 'A name for the dataset.' }),
+    Domain: DomainSchema.openapi({
+      description:
+        '<p>The domain associated with the dataset. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetGroup.html">CreateDatasetGroup</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in the training data that you import to the dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields to be present in your data. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html">Importing datasets</a>.</p>',
+    }),
+    DatasetType: DatasetTypeSchema.openapi({
+      description: 'The dataset type. Valid values depend on the chosen <code>Domain</code>.',
+    }),
+    DataFrequency: FrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The frequency of data collection. This parameter is required for RELATED_TIME_SERIES datasets.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p>',
+    }),
+    Schema: SchemaSchema.openapi({
+      description:
+        'The schema for the dataset. The schema attributes and their order must match the fields in your data. The dataset <code>Domain</code> and <code>DatasetType</code> that you choose determine the minimum required fields in your training data. For information about the required fields for a specific dataset domain and type, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-domains-ds-types.html">Dataset Domains and Dataset Types</a>.',
+    }),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the dataset to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['DatasetName', 'Domain', 'DatasetType', 'Schema'],
@@ -779,9 +541,9 @@ const CreateDatasetRequestSchema = z
 
 const CreateDatasetGroupResponseSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
+    DatasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetGroupResponse')
@@ -790,42 +552,28 @@ const ArnListSchema = z.array(ArnSchema).openapi('ArnList')
 
 const CreateDatasetGroupRequestSchema = z
   .object({
-    DatasetGroupName: NameSchema.and(
-      z.any().openapi({ description: 'A name for the dataset group.' }),
-    ),
-    Domain: DomainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The domain associated with the dataset group. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html">CreateDataset</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in training data that you import to a dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires that <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields are present in your data. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html">Dataset groups</a>.</p>',
-        }),
-    ),
-    DatasetArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) of the datasets that you want to include in the dataset group.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the dataset group to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DatasetGroupName: NameSchema.openapi({ description: 'A name for the dataset group.' }),
+    Domain: DomainSchema.openapi({
+      description:
+        '<p>The domain associated with the dataset group. When you add a dataset to a dataset group, this value and the value specified for the <code>Domain</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html">CreateDataset</a> operation must match.</p> <p>The <code>Domain</code> and <code>DatasetType</code> that you choose determine the fields that must be present in training data that you import to a dataset. For example, if you choose the <code>RETAIL</code> domain and <code>TARGET_TIME_SERIES</code> as the <code>DatasetType</code>, Amazon Forecast requires that <code>item_id</code>, <code>timestamp</code>, and <code>demand</code> fields are present in your data. For more information, see <a href="https://docs.aws.amazon.com/forecast/latest/dg/howitworks-datasets-groups.html">Dataset groups</a>.</p>',
+    }),
+    DatasetArns: ArnListSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) of the datasets that you want to include in the dataset group.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the dataset group to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['DatasetGroupName', 'Domain'], title: 'CreateDatasetGroupRequest' })
   .openapi('CreateDatasetGroupRequest')
 
 const CreateDatasetImportJobResponseSchema = z
   .object({
-    DatasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset import job.' }),
-    ).exactOptional(),
+    DatasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDatasetImportJobResponse')
@@ -839,29 +587,17 @@ const S3PathSchema = z
 
 const S3ConfigSchema = z
   .object({
-    Path: S3PathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to an Amazon Simple Storage Service (Amazon S3) bucket or file(s) in an Amazon S3 bucket.',
-        }),
-    ),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ARN of the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the Amazon S3 bucket or files. If you provide a value for the <code>KMSKeyArn</code> key, the role must allow access to the key.</p> <p>Passing a role across Amazon Web Services accounts is not allowed. If you pass a role that isn't in your account, you get an <code>InvalidInputException</code> error.</p>",
-        }),
-    ),
-    KMSKeyArn: KMSKeyArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of an Key Management Service (KMS) key.',
-        }),
-    ).exactOptional(),
+    Path: S3PathSchema.openapi({
+      description:
+        'The path to an Amazon Simple Storage Service (Amazon S3) bucket or file(s) in an Amazon S3 bucket.',
+    }),
+    RoleArn: ArnSchema.openapi({
+      description:
+        "<p>The ARN of the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the Amazon S3 bucket or files. If you provide a value for the <code>KMSKeyArn</code> key, the role must allow access to the key.</p> <p>Passing a role across Amazon Web Services accounts is not allowed. If you pass a role that isn't in your account, you get an <code>InvalidInputException</code> error.</p>",
+    }),
+    KMSKeyArn: KMSKeyArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of an Key Management Service (KMS) key.',
+    }),
   })
   .openapi({
     required: ['Path', 'RoleArn'],
@@ -872,14 +608,10 @@ const S3ConfigSchema = z
 
 const DataSourceSchema = z
   .object({
-    S3Config: S3ConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the data stored in an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the data.',
-        }),
-    ),
+    S3Config: S3ConfigSchema.openapi({
+      description:
+        'The path to the data stored in an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the data.',
+    }),
   })
   .openapi({
     required: ['S3Config'],
@@ -918,85 +650,45 @@ const ImportModeSchema = z.enum(['FULL', 'INCREMENTAL']).openapi('ImportMode')
 
 const CreateDatasetImportJobRequestSchema = z
   .object({
-    DatasetImportJobName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name for the dataset import job. We recommend including the current timestamp in the name, for example, <code>20190721DatasetImport</code>. This can help you avoid getting a <code>ResourceAlreadyExistsException</code> exception.',
-        }),
-    ),
-    DatasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Amazon Forecast dataset that you want to import data to.',
-        }),
-    ),
-    DataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> must include an Key Management Service (KMS) key and the IAM role must allow Amazon Forecast permission to access the key. The KMS key and IAM role must match those specified in the <code>EncryptionConfig</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html">CreateDataset</a> operation.</p>',
-        }),
-    ),
-    TimestampFormat: TimestampFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of timestamps in the dataset. The format that you specify depends on the <code>DataFrequency</code> specified when the dataset was created. The following formats are supported</p> <ul> <li> <p>"yyyy-MM-dd"</p> <p>For the following data frequencies: Y, M, W, and D</p> </li> <li> <p>"yyyy-MM-dd HH:mm:ss"</p> <p>For the following data frequencies: H, 30min, 15min, and 1min; and optionally, for: Y, M, W, and D</p> </li> </ul> <p>If the format isn\'t specified, Amazon Forecast expects the format to be "yyyy-MM-dd HH:mm:ss".</p>',
-        }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single time zone for every item in your dataset. This option is ideal for datasets with all timestamps within a single time zone, or if all timestamps are normalized to a single time zone. </p> <p>Refer to the <a href="http://joda-time.sourceforge.net/timezones.html">Joda-Time API</a> for a complete list of valid time zone names.</p>',
-        }),
-    ).exactOptional(),
-    UseGeolocationForTimeZone: UseGeolocationForTimeZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Automatically derive time zone information from the geolocation attribute. This option is ideal for datasets that contain timestamps in multiple time zones and those timestamps are expressed in local time.',
-        }),
-    ).exactOptional(),
-    GeolocationFormat: GeolocationFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of the geolocation attribute. The geolocation attribute can be formatted in one of two ways:</p> <ul> <li> <p> <code>LAT_LONG</code> - the latitude and longitude in decimal format (Example: 47.61_-122.33).</p> </li> <li> <p> <code>CC_POSTALCODE</code> (US Only) - the country code (US), followed by the 5-digit ZIP code (Example: US_98121).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the dataset import job to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The format of the imported data, CSV or PARQUET. The default value is CSV.',
-        }),
-    ).exactOptional(),
-    ImportMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the dataset import job is a <code>FULL</code> or <code>INCREMENTAL</code> import. A <code>FULL</code> dataset import replaces all of the existing data with the newly imported data. An <code>INCREMENTAL</code> import appends the imported data to the existing data.',
-        }),
-    ).exactOptional(),
+    DatasetImportJobName: NameSchema.openapi({
+      description:
+        'The name for the dataset import job. We recommend including the current timestamp in the name, for example, <code>20190721DatasetImport</code>. This can help you avoid getting a <code>ResourceAlreadyExistsException</code> exception.',
+    }),
+    DatasetArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Amazon Forecast dataset that you want to import data to.',
+    }),
+    DataSource: DataSourceSchema.openapi({
+      description:
+        '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> must include an Key Management Service (KMS) key and the IAM role must allow Amazon Forecast permission to access the key. The KMS key and IAM role must match those specified in the <code>EncryptionConfig</code> parameter of the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDataset.html">CreateDataset</a> operation.</p>',
+    }),
+    TimestampFormat: TimestampFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of timestamps in the dataset. The format that you specify depends on the <code>DataFrequency</code> specified when the dataset was created. The following formats are supported</p> <ul> <li> <p>"yyyy-MM-dd"</p> <p>For the following data frequencies: Y, M, W, and D</p> </li> <li> <p>"yyyy-MM-dd HH:mm:ss"</p> <p>For the following data frequencies: H, 30min, 15min, and 1min; and optionally, for: Y, M, W, and D</p> </li> </ul> <p>If the format isn\'t specified, Amazon Forecast expects the format to be "yyyy-MM-dd HH:mm:ss".</p>',
+    }),
+    TimeZone: TimeZoneSchema.exactOptional().openapi({
+      description:
+        '<p>A single time zone for every item in your dataset. This option is ideal for datasets with all timestamps within a single time zone, or if all timestamps are normalized to a single time zone. </p> <p>Refer to the <a href="http://joda-time.sourceforge.net/timezones.html">Joda-Time API</a> for a complete list of valid time zone names.</p>',
+    }),
+    UseGeolocationForTimeZone: UseGeolocationForTimeZoneSchema.exactOptional().openapi({
+      description:
+        'Automatically derive time zone information from the geolocation attribute. This option is ideal for datasets that contain timestamps in multiple time zones and those timestamps are expressed in local time.',
+    }),
+    GeolocationFormat: GeolocationFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of the geolocation attribute. The geolocation attribute can be formatted in one of two ways:</p> <ul> <li> <p> <code>LAT_LONG</code> - the latitude and longitude in decimal format (Example: 47.61_-122.33).</p> </li> <li> <p> <code>CC_POSTALCODE</code> (US Only) - the country code (US), followed by the 5-digit ZIP code (Example: US_98121).</p> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the dataset import job to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the imported data, CSV or PARQUET. The default value is CSV.',
+    }),
+    ImportMode: ImportModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the dataset import job is a <code>FULL</code> or <code>INCREMENTAL</code> import. A <code>FULL</code> dataset import replaces all of the existing data with the newly imported data. An <code>INCREMENTAL</code> import appends the imported data to the existing data.',
+    }),
   })
   .openapi({
     required: ['DatasetImportJobName', 'DatasetArn', 'DataSource'],
@@ -1006,9 +698,9 @@ const CreateDatasetImportJobRequestSchema = z
 
 const CreateExplainabilityResponseSchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability.' }),
-    ).exactOptional(),
+    ExplainabilityArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateExplainabilityResponse')
@@ -1019,22 +711,14 @@ const TimePointGranularitySchema = z.enum(['ALL', 'SPECIFIC']).openapi('TimePoin
 
 const ExplainabilityConfigSchema = z
   .object({
-    TimeSeriesGranularity: TimeSeriesGranularitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To create an Explainability for all time series in your datasets, use <code>ALL</code>. To create an Explainability for specific time series in your datasets, use <code>SPECIFIC</code>.</p> <p>Specify time series by uploading a CSV or Parquet file to an Amazon S3 bucket and set the location within the <a>DataDestination</a> data type.</p>',
-        }),
-    ),
-    TimePointGranularity: TimePointGranularitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>To create an Explainability for all time points in your forecast horizon, use <code>ALL</code>. To create an Explainability for specific time points in your forecast horizon, use <code>SPECIFIC</code>.</p> <p>Specify time points with the <code>StartDateTime</code> and <code>EndDateTime</code> parameters within the <a>CreateExplainability</a> operation.</p>',
-        }),
-    ),
+    TimeSeriesGranularity: TimeSeriesGranularitySchema.openapi({
+      description:
+        '<p>To create an Explainability for all time series in your datasets, use <code>ALL</code>. To create an Explainability for specific time series in your datasets, use <code>SPECIFIC</code>.</p> <p>Specify time series by uploading a CSV or Parquet file to an Amazon S3 bucket and set the location within the <a>DataDestination</a> data type.</p>',
+    }),
+    TimePointGranularity: TimePointGranularitySchema.openapi({
+      description:
+        '<p>To create an Explainability for all time points in your forecast horizon, use <code>ALL</code>. To create an Explainability for specific time points in your forecast horizon, use <code>SPECIFIC</code>.</p> <p>Specify time points with the <code>StartDateTime</code> and <code>EndDateTime</code> parameters within the <a>CreateExplainability</a> operation.</p>',
+    }),
   })
   .openapi({
     required: ['TimeSeriesGranularity', 'TimePointGranularity'],
@@ -1051,59 +735,35 @@ const LocalDateTimeSchema = z
 
 const CreateExplainabilityRequestSchema = z
   .object({
-    ExplainabilityName: NameSchema.and(
-      z.any().openapi({ description: 'A unique name for the Explainability.' }),
-    ),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability.',
-        }),
-    ),
-    ExplainabilityConfig: ExplainabilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that define the granularity of time series and time points for the Explainability.',
-        }),
-    ),
+    ExplainabilityName: NameSchema.openapi({
+      description: 'A unique name for the Explainability.',
+    }),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability.',
+    }),
+    ExplainabilityConfig: ExplainabilityConfigSchema.openapi({
+      description:
+        'The configuration settings that define the granularity of time series and time points for the Explainability.',
+    }),
     DataSource: DataSourceSchema.exactOptional(),
     Schema: SchemaSchema.exactOptional(),
-    EnableVisualization: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Create an Explainability visualization that is viewable within the Amazon Web Services console.',
-        }),
-    ).exactOptional(),
-    StartDateTime: LocalDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the first point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>',
-        }),
-    ).exactOptional(),
-    EndDateTime: LocalDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the last time point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional metadata to help you categorize and organize your resources. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    EnableVisualization: BooleanSchema.exactOptional().openapi({
+      description:
+        'Create an Explainability visualization that is viewable within the Amazon Web Services console.',
+    }),
+    StartDateTime: LocalDateTimeSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the first point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>',
+    }),
+    EndDateTime: LocalDateTimeSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, define the last time point for the Explainability.</p> <p>Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example: 2015-01-01T20:00:00)</p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Optional metadata to help you categorize and organize your resources. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ExplainabilityName', 'ResourceArn', 'ExplainabilityConfig'],
@@ -1113,23 +773,19 @@ const CreateExplainabilityRequestSchema = z
 
 const CreateExplainabilityExportResponseSchema = z
   .object({
-    ExplainabilityExportArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the export.' }),
-    ).exactOptional(),
+    ExplainabilityExportArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the export.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateExplainabilityExportResponse')
 
 const DataDestinationSchema = z
   .object({
-    S3Config: S3ConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the bucket.',
-        }),
-    ),
+    S3Config: S3ConfigSchema.openapi({
+      description:
+        'The path to an Amazon Simple Storage Service (Amazon S3) bucket along with the credentials to access the bucket.',
+    }),
   })
   .openapi({
     required: ['S3Config'],
@@ -1140,28 +796,20 @@ const DataDestinationSchema = z
 
 const CreateExplainabilityExportRequestSchema = z
   .object({
-    ExplainabilityExportName: NameSchema.and(
-      z.any().openapi({ description: 'A unique name for the Explainability export.' }),
-    ),
-    ExplainabilityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Explainability to export.',
-        }),
-    ),
+    ExplainabilityExportName: NameSchema.openapi({
+      description: 'A unique name for the Explainability export.',
+    }),
+    ExplainabilityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability to export.',
+    }),
     Destination: DataDestinationSchema,
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional metadata to help you categorize and organize your resources. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Optional metadata to help you categorize and organize your resources. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({
     required: ['ExplainabilityExportName', 'ExplainabilityArn', 'Destination'],
@@ -1171,9 +819,9 @@ const CreateExplainabilityExportRequestSchema = z
 
 const CreateForecastResponseSchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the forecast.' }),
-    ).exactOptional(),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateForecastResponse')
@@ -1182,9 +830,9 @@ const TimeSeriesIdentifiersSchema = z
   .object({
     DataSource: DataSourceSchema.exactOptional(),
     Schema: SchemaSchema.exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the data, either CSV or PARQUET.' }),
-    ).exactOptional(),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the data, either CSV or PARQUET.',
+    }),
   })
   .openapi({
     description:
@@ -1195,14 +843,10 @@ const TimeSeriesIdentifiersSchema = z
 
 const TimeSeriesSelectorSchema = z
   .object({
-    TimeSeriesIdentifiers: TimeSeriesIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the import file that contains the time series for which you want to create forecasts.',
-        }),
-    ).exactOptional(),
+    TimeSeriesIdentifiers: TimeSeriesIdentifiersSchema.exactOptional().openapi({
+      description:
+        'Details about the import file that contains the time series for which you want to create forecasts.',
+    }),
   })
   .openapi({
     description:
@@ -1213,87 +857,55 @@ const TimeSeriesSelectorSchema = z
 
 const CreateForecastRequestSchema = z
   .object({
-    ForecastName: NameSchema.and(z.any().openapi({ description: 'A name for the forecast.' })),
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the predictor to use to generate the forecast.',
-        }),
-    ),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The quantiles at which probabilistic forecasts are generated. <b>You can currently specify up to 5 quantiles per forecast</b>. Accepted values include <code>0.01 to 0.99</code> (increments of .01 only) and <code>mean</code>. The mean forecast is different from the median (0.50) when the distribution is not symmetric (for example, Beta and Negative Binomial). </p> <p>The default quantiles are the quantiles you specified during predictor creation. If you didn\'t specify quantiles, the default values are <code>["0.1", "0.5", "0.9"]</code>. </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the forecast to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TimeSeriesSelector: TimeSeriesSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the set of time series that are used to create the forecasts in a <code>TimeSeriesIdentifiers</code> object.</p> <p>The <code>TimeSeriesIdentifiers</code> object needs the following information:</p> <ul> <li> <p> <code>DataSource</code> </p> </li> <li> <p> <code>Format</code> </p> </li> <li> <p> <code>Schema</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ForecastName: NameSchema.openapi({ description: 'A name for the forecast.' }),
+    PredictorArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the predictor to use to generate the forecast.',
+    }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The quantiles at which probabilistic forecasts are generated. <b>You can currently specify up to 5 quantiles per forecast</b>. Accepted values include <code>0.01 to 0.99</code> (increments of .01 only) and <code>mean</code>. The mean forecast is different from the median (0.50) when the distribution is not symmetric (for example, Beta and Negative Binomial). </p> <p>The default quantiles are the quantiles you specified during predictor creation. If you didn\'t specify quantiles, the default values are <code>["0.1", "0.5", "0.9"]</code>. </p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the forecast to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
+    TimeSeriesSelector: TimeSeriesSelectorSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the set of time series that are used to create the forecasts in a <code>TimeSeriesIdentifiers</code> object.</p> <p>The <code>TimeSeriesIdentifiers</code> object needs the following information:</p> <ul> <li> <p> <code>DataSource</code> </p> </li> <li> <p> <code>Format</code> </p> </li> <li> <p> <code>Schema</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ForecastName', 'PredictorArn'], title: 'CreateForecastRequest' })
   .openapi('CreateForecastRequest')
 
 const CreateForecastExportJobResponseSchema = z
   .object({
-    ForecastExportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the export job.' }),
-    ).exactOptional(),
+    ForecastExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the export job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateForecastExportJobResponse')
 
 const CreateForecastExportJobRequestSchema = z
   .object({
-    ForecastExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name for the forecast export job.' }),
-    ),
-    ForecastArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the forecast that you want to export.',
-        }),
-    ),
-    Destination: DataDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket.</p> <p>If encryption is used, <code>Destination</code> must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.</p>',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the forecast export job to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The format of the exported data, CSV or PARQUET. The default value is CSV.',
-        }),
-    ).exactOptional(),
+    ForecastExportJobName: NameSchema.openapi({
+      description: 'The name for the forecast export job.',
+    }),
+    ForecastArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast that you want to export.',
+    }),
+    Destination: DataDestinationSchema.openapi({
+      description:
+        '<p>The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket.</p> <p>If encryption is used, <code>Destination</code> must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.</p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the forecast export job to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET. The default value is CSV.',
+    }),
   })
   .openapi({
     required: ['ForecastExportJobName', 'ForecastArn', 'Destination'],
@@ -1303,47 +915,35 @@ const CreateForecastExportJobRequestSchema = z
 
 const CreateMonitorResponseSchema = z
   .object({
-    MonitorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the monitor resource.' }),
-    ).exactOptional(),
+    MonitorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMonitorResponse')
 
 const CreateMonitorRequestSchema = z
   .object({
-    MonitorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the monitor resource.' }),
-    ),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the predictor to monitor.' }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the monitor resource.',
-        }),
-    ).exactOptional(),
+    MonitorName: NameSchema.openapi({ description: 'The name of the monitor resource.' }),
+    ResourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor to monitor.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the monitor resource.',
+    }),
   })
   .openapi({ required: ['MonitorName', 'ResourceArn'], title: 'CreateMonitorRequest' })
   .openapi('CreateMonitorRequest')
 
 const CreatePredictorResponseSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the predictor.' }),
-    ).exactOptional(),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePredictorResponse')
-
-const AutoMLOverrideStrategySchema = z
-  .enum(['LatencyOptimized', 'AccuracyOptimized'])
-  .openapi('AutoMLOverrideStrategy')
 
 const ParameterValueSchema = z
   .string()
@@ -1359,22 +959,14 @@ const TrainingParametersSchema = z
 
 const EvaluationParametersSchema = z
   .object({
-    NumberOfBacktestWindows: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of times to split the input data. The default is 1. Valid values are 1 through 5.',
-        }),
-    ).exactOptional(),
-    BackTestWindowOffset: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The point from the end of the dataset where you want to split the data for model training and testing (evaluation). Specify the value as the number of data points. The default is the value of the forecast horizon. <code>BackTestWindowOffset</code> can be used to mimic a past virtual forecast start date. This value must be greater than or equal to the forecast horizon and less than half of the TARGET_TIME_SERIES dataset length.</p> <p> <code>ForecastHorizon</code> &lt;= <code>BackTestWindowOffset</code> &lt; 1/2 * TARGET_TIME_SERIES dataset length</p>',
-        }),
-    ).exactOptional(),
+    NumberOfBacktestWindows: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of times to split the input data. The default is 1. Valid values are 1 through 5.',
+    }),
+    BackTestWindowOffset: IntegerSchema.exactOptional().openapi({
+      description:
+        '<p>The point from the end of the dataset where you want to split the data for model training and testing (evaluation). Specify the value as the number of data points. The default is the value of the forecast horizon. <code>BackTestWindowOffset</code> can be used to mimic a past virtual forecast start date. This value must be greater than or equal to the forecast horizon and less than half of the TARGET_TIME_SERIES dataset length.</p> <p> <code>ForecastHorizon</code> &lt;= <code>BackTestWindowOffset</code> &lt; 1/2 * TARGET_TIME_SERIES dataset length</p>',
+    }),
   })
   .openapi({
     description:
@@ -1383,47 +975,110 @@ const EvaluationParametersSchema = z
   })
   .openapi('EvaluationParameters')
 
-const ParameterRangesSchema: z.ZodType<ParameterRangesType> = z
-  .lazy(() =>
-    z
-      .object({
-        CategoricalParameterRanges: CategoricalParameterRangesSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Specifies the tunable range for each categorical hyperparameter.',
-            }),
-        ).exactOptional(),
-        ContinuousParameterRanges: ContinuousParameterRangesSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Specifies the tunable range for each continuous hyperparameter.',
-            }),
-        ).exactOptional(),
-        IntegerParameterRanges: IntegerParameterRangesSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Specifies the tunable range for each integer hyperparameter.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Specifies the categorical, continuous, and integer hyperparameters, and their ranges of tunable values. The range of tunable values determines which values that a hyperparameter tuning job can choose for the specified hyperparameter. This object is part of the <a>HyperParameterTuningJobConfig</a> object.',
-        required: [],
-      }),
-  )
+const CategoricalParameterRangeSchema = z
+  .object({
+    Name: NameSchema.openapi({
+      description: 'The name of the categorical hyperparameter to tune.',
+    }),
+    Values: ValuesSchema.openapi({
+      description: 'A list of the tunable categories for the hyperparameter.',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'Values'],
+    description:
+      "Specifies a categorical hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
+  })
+  .openapi('CategoricalParameterRange')
+
+const CategoricalParameterRangesSchema = z
+  .array(CategoricalParameterRangeSchema)
+  .min(1)
+  .max(20)
+  .openapi('CategoricalParameterRanges')
+
+const ScalingTypeSchema = z
+  .enum(['Auto', 'Linear', 'Logarithmic', 'ReverseLogarithmic'])
+  .openapi('ScalingType')
+
+const ContinuousParameterRangeSchema = z
+  .object({
+    Name: NameSchema.openapi({ description: 'The name of the hyperparameter to tune.' }),
+    MaxValue: DoubleSchema.openapi({
+      description: 'The maximum tunable value of the hyperparameter.',
+    }),
+    MinValue: DoubleSchema.openapi({
+      description: 'The minimum tunable value of the hyperparameter.',
+    }),
+    ScalingType: ScalingTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The scale that hyperparameter tuning uses to search the hyperparameter range. Valid values:</p> <dl> <dt>Auto</dt> <dd> <p>Amazon Forecast hyperparameter tuning chooses the best scale for the hyperparameter.</p> </dd> <dt>Linear</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a linear scale.</p> </dd> <dt>Logarithmic</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a logarithmic scale.</p> <p>Logarithmic scaling works only for ranges that have values greater than 0.</p> </dd> <dt>ReverseLogarithmic</dt> <dd> <p>hyperparameter tuning searches the values in the hyperparameter range by using a reverse logarithmic scale.</p> <p>Reverse logarithmic scaling works only for ranges that are entirely within the range 0 &lt;= x &lt; 1.0.</p> </dd> </dl> <p>For information about choosing a hyperparameter scale, see <a href="http://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-ranges.html#scaling-type">Hyperparameter Scaling</a>. One of the following values:</p>',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'MaxValue', 'MinValue'],
+    description:
+      "Specifies a continuous hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
+  })
+  .openapi('ContinuousParameterRange')
+
+const ContinuousParameterRangesSchema = z
+  .array(ContinuousParameterRangeSchema)
+  .min(1)
+  .max(20)
+  .openapi('ContinuousParameterRanges')
+
+const IntegerParameterRangeSchema = z
+  .object({
+    Name: NameSchema.openapi({ description: 'The name of the hyperparameter to tune.' }),
+    MaxValue: IntegerSchema.openapi({
+      description: 'The maximum tunable value of the hyperparameter.',
+    }),
+    MinValue: IntegerSchema.openapi({
+      description: 'The minimum tunable value of the hyperparameter.',
+    }),
+    ScalingType: ScalingTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The scale that hyperparameter tuning uses to search the hyperparameter range. Valid values:</p> <dl> <dt>Auto</dt> <dd> <p>Amazon Forecast hyperparameter tuning chooses the best scale for the hyperparameter.</p> </dd> <dt>Linear</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a linear scale.</p> </dd> <dt>Logarithmic</dt> <dd> <p>Hyperparameter tuning searches the values in the hyperparameter range by using a logarithmic scale.</p> <p>Logarithmic scaling works only for ranges that have values greater than 0.</p> </dd> <dt>ReverseLogarithmic</dt> <dd> <p>Not supported for <code>IntegerParameterRange</code>.</p> <p>Reverse logarithmic scaling works only for ranges that are entirely within the range 0 &lt;= x &lt; 1.0.</p> </dd> </dl> <p>For information about choosing a hyperparameter scale, see <a href="http://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-ranges.html#scaling-type">Hyperparameter Scaling</a>. One of the following values:</p>',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'MaxValue', 'MinValue'],
+    description:
+      "Specifies an integer hyperparameter and it's range of tunable values. This object is part of the <a>ParameterRanges</a> object.",
+  })
+  .openapi('IntegerParameterRange')
+
+const IntegerParameterRangesSchema = z
+  .array(IntegerParameterRangeSchema)
+  .min(1)
+  .max(20)
+  .openapi('IntegerParameterRanges')
+
+const ParameterRangesSchema = z
+  .object({
+    CategoricalParameterRanges: CategoricalParameterRangesSchema.exactOptional().openapi({
+      description: 'Specifies the tunable range for each categorical hyperparameter.',
+    }),
+    ContinuousParameterRanges: ContinuousParameterRangesSchema.exactOptional().openapi({
+      description: 'Specifies the tunable range for each continuous hyperparameter.',
+    }),
+    IntegerParameterRanges: IntegerParameterRangesSchema.exactOptional().openapi({
+      description: 'Specifies the tunable range for each integer hyperparameter.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the categorical, continuous, and integer hyperparameters, and their ranges of tunable values. The range of tunable values determines which values that a hyperparameter tuning job can choose for the specified hyperparameter. This object is part of the <a>HyperParameterTuningJobConfig</a> object.',
+    required: [],
+  })
   .openapi('ParameterRanges')
 
 const HyperParameterTuningJobConfigSchema = z
   .object({
-    ParameterRanges: ParameterRangesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the ranges of valid values for the hyperparameters.' }),
-    ).exactOptional(),
+    ParameterRanges: ParameterRangesSchema.exactOptional().openapi({
+      description: 'Specifies the ranges of valid values for the hyperparameters.',
+    }),
   })
   .openapi({
     description:
@@ -1434,22 +1089,14 @@ const HyperParameterTuningJobConfigSchema = z
 
 const SupplementaryFeatureSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the feature. Valid values: <code>"holiday"</code> and <code>"weather"</code>.',
-        }),
-    ),
-    Value: ValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, set the value to <code>"true"</code> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, specify a country with one of the following two-letter country codes:</p> <ul> <li> <p>"AL" - ALBANIA</p> </li> <li> <p>"AR" - ARGENTINA</p> </li> <li> <p>"AT" - AUSTRIA</p> </li> <li> <p>"AU" - AUSTRALIA</p> </li> <li> <p>"BA" - BOSNIA HERZEGOVINA</p> </li> <li> <p>"BE" - BELGIUM</p> </li> <li> <p>"BG" - BULGARIA</p> </li> <li> <p>"BO" - BOLIVIA</p> </li> <li> <p>"BR" - BRAZIL</p> </li> <li> <p>"BY" - BELARUS</p> </li> <li> <p>"CA" - CANADA</p> </li> <li> <p>"CL" - CHILE</p> </li> <li> <p>"CO" - COLOMBIA</p> </li> <li> <p>"CR" - COSTA RICA</p> </li> <li> <p>"HR" - CROATIA</p> </li> <li> <p>"CZ" - CZECH REPUBLIC</p> </li> <li> <p>"DK" - DENMARK</p> </li> <li> <p>"EC" - ECUADOR</p> </li> <li> <p>"EE" - ESTONIA</p> </li> <li> <p>"ET" - ETHIOPIA</p> </li> <li> <p>"FI" - FINLAND</p> </li> <li> <p>"FR" - FRANCE</p> </li> <li> <p>"DE" - GERMANY</p> </li> <li> <p>"GR" - GREECE</p> </li> <li> <p>"HU" - HUNGARY</p> </li> <li> <p>"IS" - ICELAND</p> </li> <li> <p>"IN" - INDIA</p> </li> <li> <p>"IE" - IRELAND</p> </li> <li> <p>"IT" - ITALY</p> </li> <li> <p>"JP" - JAPAN</p> </li> <li> <p>"KZ" - KAZAKHSTAN</p> </li> <li> <p>"KR" - KOREA</p> </li> <li> <p>"LV" - LATVIA</p> </li> <li> <p>"LI" - LIECHTENSTEIN</p> </li> <li> <p>"LT" - LITHUANIA</p> </li> <li> <p>"LU" - LUXEMBOURG</p> </li> <li> <p>"MK" - MACEDONIA</p> </li> <li> <p>"MT" - MALTA</p> </li> <li> <p>"MX" - MEXICO</p> </li> <li> <p>"MD" - MOLDOVA</p> </li> <li> <p>"ME" - MONTENEGRO</p> </li> <li> <p>"NL" - NETHERLANDS</p> </li> <li> <p>"NZ" - NEW ZEALAND</p> </li> <li> <p>"NI" - NICARAGUA</p> </li> <li> <p>"NG" - NIGERIA</p> </li> <li> <p>"NO" - NORWAY</p> </li> <li> <p>"PA" - PANAMA</p> </li> <li> <p>"PY" - PARAGUAY</p> </li> <li> <p>"PE" - PERU</p> </li> <li> <p>"PL" - POLAND</p> </li> <li> <p>"PT" - PORTUGAL</p> </li> <li> <p>"RO" - ROMANIA</p> </li> <li> <p>"RU" - RUSSIA</p> </li> <li> <p>"RS" - SERBIA</p> </li> <li> <p>"SK" - SLOVAKIA</p> </li> <li> <p>"SI" - SLOVENIA</p> </li> <li> <p>"ZA" - SOUTH AFRICA</p> </li> <li> <p>"ES" - SPAIN</p> </li> <li> <p>"SE" - SWEDEN</p> </li> <li> <p>"CH" - SWITZERLAND</p> </li> <li> <p>"UA" - UKRAINE</p> </li> <li> <p>"AE" - UNITED ARAB EMIRATES</p> </li> <li> <p>"US" - UNITED STATES</p> </li> <li> <p>"UK" - UNITED KINGDOM</p> </li> <li> <p>"UY" - URUGUAY</p> </li> <li> <p>"VE" - VENEZUELA</p> </li> </ul>',
-        }),
-    ),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the feature. Valid values: <code>"holiday"</code> and <code>"weather"</code>.',
+    }),
+    Value: ValueSchema.openapi({
+      description:
+        '<p> <b>Weather Index</b> </p> <p>To enable the Weather Index, set the value to <code>"true"</code> </p> <p> <b>Holidays</b> </p> <p>To enable Holidays, specify a country with one of the following two-letter country codes:</p> <ul> <li> <p>"AL" - ALBANIA</p> </li> <li> <p>"AR" - ARGENTINA</p> </li> <li> <p>"AT" - AUSTRIA</p> </li> <li> <p>"AU" - AUSTRALIA</p> </li> <li> <p>"BA" - BOSNIA HERZEGOVINA</p> </li> <li> <p>"BE" - BELGIUM</p> </li> <li> <p>"BG" - BULGARIA</p> </li> <li> <p>"BO" - BOLIVIA</p> </li> <li> <p>"BR" - BRAZIL</p> </li> <li> <p>"BY" - BELARUS</p> </li> <li> <p>"CA" - CANADA</p> </li> <li> <p>"CL" - CHILE</p> </li> <li> <p>"CO" - COLOMBIA</p> </li> <li> <p>"CR" - COSTA RICA</p> </li> <li> <p>"HR" - CROATIA</p> </li> <li> <p>"CZ" - CZECH REPUBLIC</p> </li> <li> <p>"DK" - DENMARK</p> </li> <li> <p>"EC" - ECUADOR</p> </li> <li> <p>"EE" - ESTONIA</p> </li> <li> <p>"ET" - ETHIOPIA</p> </li> <li> <p>"FI" - FINLAND</p> </li> <li> <p>"FR" - FRANCE</p> </li> <li> <p>"DE" - GERMANY</p> </li> <li> <p>"GR" - GREECE</p> </li> <li> <p>"HU" - HUNGARY</p> </li> <li> <p>"IS" - ICELAND</p> </li> <li> <p>"IN" - INDIA</p> </li> <li> <p>"IE" - IRELAND</p> </li> <li> <p>"IT" - ITALY</p> </li> <li> <p>"JP" - JAPAN</p> </li> <li> <p>"KZ" - KAZAKHSTAN</p> </li> <li> <p>"KR" - KOREA</p> </li> <li> <p>"LV" - LATVIA</p> </li> <li> <p>"LI" - LIECHTENSTEIN</p> </li> <li> <p>"LT" - LITHUANIA</p> </li> <li> <p>"LU" - LUXEMBOURG</p> </li> <li> <p>"MK" - MACEDONIA</p> </li> <li> <p>"MT" - MALTA</p> </li> <li> <p>"MX" - MEXICO</p> </li> <li> <p>"MD" - MOLDOVA</p> </li> <li> <p>"ME" - MONTENEGRO</p> </li> <li> <p>"NL" - NETHERLANDS</p> </li> <li> <p>"NZ" - NEW ZEALAND</p> </li> <li> <p>"NI" - NICARAGUA</p> </li> <li> <p>"NG" - NIGERIA</p> </li> <li> <p>"NO" - NORWAY</p> </li> <li> <p>"PA" - PANAMA</p> </li> <li> <p>"PY" - PARAGUAY</p> </li> <li> <p>"PE" - PERU</p> </li> <li> <p>"PL" - POLAND</p> </li> <li> <p>"PT" - PORTUGAL</p> </li> <li> <p>"RO" - ROMANIA</p> </li> <li> <p>"RU" - RUSSIA</p> </li> <li> <p>"RS" - SERBIA</p> </li> <li> <p>"SK" - SLOVAKIA</p> </li> <li> <p>"SI" - SLOVENIA</p> </li> <li> <p>"ZA" - SOUTH AFRICA</p> </li> <li> <p>"ES" - SPAIN</p> </li> <li> <p>"SE" - SWEDEN</p> </li> <li> <p>"CH" - SWITZERLAND</p> </li> <li> <p>"UA" - UKRAINE</p> </li> <li> <p>"AE" - UNITED ARAB EMIRATES</p> </li> <li> <p>"US" - UNITED STATES</p> </li> <li> <p>"UK" - UNITED KINGDOM</p> </li> <li> <p>"UY" - URUGUAY</p> </li> <li> <p>"VE" - VENEZUELA</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['Name', 'Value'],
@@ -1466,17 +1113,13 @@ const SupplementaryFeaturesSchema = z
 
 const InputDataConfigSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ),
-    SupplementaryFeatures: SupplementaryFeaturesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of supplementary features. The only supported feature is a holiday calendar.',
-        }),
-    ).exactOptional(),
+    DatasetGroupArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    SupplementaryFeatures: SupplementaryFeaturesSchema.exactOptional().openapi({
+      description:
+        'An array of supplementary features. The only supported feature is a holiday calendar.',
+    }),
   })
   .openapi({
     required: ['DatasetGroupArn'],
@@ -1495,21 +1138,13 @@ const FeaturizationMethodParametersSchema = z
 
 const FeaturizationMethodSchema = z
   .object({
-    FeaturizationMethodName: FeaturizationMethodNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the method. The "filling" method is the only supported method.',
-        }),
-    ),
-    FeaturizationMethodParameters: FeaturizationMethodParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The method parameters (key-value pairs), which are a map of override parameters. Specify these parameters to override the default values. Related Time Series attributes do not accept aggregation parameters.</p> <p>The following list shows the parameters and their valid values for the "filling" featurization method for a <b>Target Time Series</b> dataset. Bold signifies the default value.</p> <ul> <li> <p> <code>aggregation</code>: <b>sum</b>, <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>frontfill</code>: <b>none</b> </p> </li> <li> <p> <code>middlefill</code>: <b>zero</b>, <code>nan</code> (not a number), <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <b>zero</b>, <code>nan</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>The following list shows the parameters and their valid values for a <b>Related Time Series</b> featurization method (there are no defaults):</p> <ul> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to <code>value</code> and define the value in a corresponding <code>_value</code> parameter. For example, to set backfilling to a value of 2, include the following: <code>"backfill": "value"</code> and <code>"backfill_value":"2"</code>. </p>',
-        }),
-    ).exactOptional(),
+    FeaturizationMethodName: FeaturizationMethodNameSchema.openapi({
+      description: 'The name of the method. The "filling" method is the only supported method.',
+    }),
+    FeaturizationMethodParameters: FeaturizationMethodParametersSchema.exactOptional().openapi({
+      description:
+        '<p>The method parameters (key-value pairs), which are a map of override parameters. Specify these parameters to override the default values. Related Time Series attributes do not accept aggregation parameters.</p> <p>The following list shows the parameters and their valid values for the "filling" featurization method for a <b>Target Time Series</b> dataset. Bold signifies the default value.</p> <ul> <li> <p> <code>aggregation</code>: <b>sum</b>, <code>avg</code>, <code>first</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>frontfill</code>: <b>none</b> </p> </li> <li> <p> <code>middlefill</code>: <b>zero</b>, <code>nan</code> (not a number), <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <b>zero</b>, <code>nan</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>The following list shows the parameters and their valid values for a <b>Related Time Series</b> featurization method (there are no defaults):</p> <ul> <li> <p> <code>middlefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>backfill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> <li> <p> <code>futurefill</code>: <code>zero</code>, <code>value</code>, <code>median</code>, <code>mean</code>, <code>min</code>, <code>max</code> </p> </li> </ul> <p>To set a filling method to a specific value, set the fill parameter to <code>value</code> and define the value in a corresponding <code>_value</code> parameter. For example, to set backfilling to a value of 2, include the following: <code>"backfill": "value"</code> and <code>"backfill_value":"2"</code>. </p>',
+    }),
   })
   .openapi({
     required: ['FeaturizationMethodName'],
@@ -1525,22 +1160,14 @@ const FeaturizationPipelineSchema = z
 
 const FeaturizationSchema = z
   .object({
-    AttributeName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the schema attribute that specifies the data field to be featurized. Amazon Forecast supports the target field of the <code>TARGET_TIME_SERIES</code> and the <code>RELATED_TIME_SERIES</code> datasets. For example, for the <code>RETAIL</code> domain, the target is <code>demand</code>, and for the <code>CUSTOM</code> domain, the target is <code>target_value</code>. For more information, see <a>howitworks-missing-values</a>.',
-        }),
-    ),
-    FeaturizationPipeline: FeaturizationPipelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of one <code>FeaturizationMethod</code> object that specifies the feature transformation method.',
-        }),
-    ).exactOptional(),
+    AttributeName: NameSchema.openapi({
+      description:
+        'The name of the schema attribute that specifies the data field to be featurized. Amazon Forecast supports the target field of the <code>TARGET_TIME_SERIES</code> and the <code>RELATED_TIME_SERIES</code> datasets. For example, for the <code>RETAIL</code> domain, the target is <code>demand</code>, and for the <code>CUSTOM</code> domain, the target is <code>target_value</code>. For more information, see <a>howitworks-missing-values</a>.',
+    }),
+    FeaturizationPipeline: FeaturizationPipelineSchema.exactOptional().openapi({
+      description:
+        'An array of one <code>FeaturizationMethod</code> object that specifies the feature transformation method.',
+    }),
   })
   .openapi({
     required: ['AttributeName'],
@@ -1553,30 +1180,18 @@ const FeaturizationsSchema = z.array(FeaturizationSchema).min(1).max(50).openapi
 
 const FeaturizationConfigSchema = z
   .object({
-    ForecastFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p> <p>The frequency must be greater than or equal to the TARGET_TIME_SERIES dataset frequency.</p> <p>When a RELATED_TIME_SERIES dataset is provided, the frequency must be equal to the TARGET_TIME_SERIES dataset frequency.</p>',
-        }),
-    ),
-    ForecastDimensions: ForecastDimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An array of dimension (field) names that specify how to group the generated forecast.</p> <p>For example, suppose that you are generating a forecast for item sales across all of your stores, and your dataset contains a <code>store_id</code> field. If you want the sales forecast for each item by store, you would specify <code>store_id</code> as the dimension.</p> <p>All forecast dimensions specified in the <code>TARGET_TIME_SERIES</code> dataset don't need to be specified in the <code>CreatePredictor</code> request. All forecast dimensions specified in the <code>RELATED_TIME_SERIES</code> dataset must be specified in the <code>CreatePredictor</code> request.</p>",
-        }),
-    ).exactOptional(),
-    Featurizations: FeaturizationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of featurization (transformation) information for the fields of a dataset.',
-        }),
-    ).exactOptional(),
+    ForecastFrequency: FrequencySchema.openapi({
+      description:
+        '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and "15min" indicates every 15 minutes. You cannot specify a value that would overlap with the next larger frequency. That means, for example, you cannot specify a frequency of 60 minutes, because that is equivalent to 1 hour. The valid values for each frequency are the following:</p> <ul> <li> <p>Minute - 1-59</p> </li> <li> <p>Hour - 1-23</p> </li> <li> <p>Day - 1-6</p> </li> <li> <p>Week - 1-4</p> </li> <li> <p>Month - 1-11</p> </li> <li> <p>Year - 1</p> </li> </ul> <p>Thus, if you want every other week forecasts, specify "2W". Or, if you want quarterly forecasts, you specify "3M".</p> <p>The frequency must be greater than or equal to the TARGET_TIME_SERIES dataset frequency.</p> <p>When a RELATED_TIME_SERIES dataset is provided, the frequency must be equal to the TARGET_TIME_SERIES dataset frequency.</p>',
+    }),
+    ForecastDimensions: ForecastDimensionsSchema.exactOptional().openapi({
+      description:
+        "<p>An array of dimension (field) names that specify how to group the generated forecast.</p> <p>For example, suppose that you are generating a forecast for item sales across all of your stores, and your dataset contains a <code>store_id</code> field. If you want the sales forecast for each item by store, you would specify <code>store_id</code> as the dimension.</p> <p>All forecast dimensions specified in the <code>TARGET_TIME_SERIES</code> dataset don't need to be specified in the <code>CreatePredictor</code> request. All forecast dimensions specified in the <code>RELATED_TIME_SERIES</code> dataset must be specified in the <code>CreatePredictor</code> request.</p>",
+    }),
+    Featurizations: FeaturizationsSchema.exactOptional().openapi({
+      description:
+        'An array of featurization (transformation) information for the fields of a dataset.',
+    }),
   })
   .openapi({
     required: ['ForecastFrequency'],
@@ -1587,109 +1202,61 @@ const FeaturizationConfigSchema = z
 
 const CreatePredictorRequestSchema = z
   .object({
-    PredictorName: NameSchema.and(z.any().openapi({ description: 'A name for the predictor.' })),
-    AlgorithmArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the algorithm to use for model training. Required if <code>PerformAutoML</code> is not set to <code>true</code>.</p> <p class="title"> <b>Supported algorithms:</b> </p> <ul> <li> <p> <code>arn:aws:forecast:::algorithm/ARIMA</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/CNN-QR</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/Deep_AR_Plus</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/ETS</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/NPTS</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/Prophet</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ForecastHorizon: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the number of time-steps that the model is trained to predict. The forecast horizon is also called the prediction length.</p> <p>For example, if you configure a dataset for daily data collection (using the <code>DataFrequency</code> parameter of the <a>CreateDataset</a> operation) and set the forecast horizon to 10, the model returns predictions for 10 days.</p> <p>The maximum forecast horizon is the lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length.</p>',
-        }),
-    ),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the forecast types used to train a predictor. You can specify up to five forecast types. Forecast types can be quantiles from 0.01 to 0.99, by increments of 0.01 or higher. You can also specify the mean forecast with <code>mean</code>. </p> <p>The default value is <code>["0.10", "0.50", "0.9"]</code>.</p>',
-        }),
-    ).exactOptional(),
-    PerformAutoML: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Whether to perform AutoML. When Amazon Forecast performs AutoML, it evaluates the algorithms it provides and chooses the best algorithm and configuration for your training dataset.</p> <p>The default value is <code>false</code>. In this case, you are required to specify an algorithm.</p> <p>Set <code>PerformAutoML</code> to <code>true</code> to have Amazon Forecast perform AutoML. This is a good option if you aren't sure which algorithm is suitable for your training data. In this case, <code>PerformHPO</code> must be false.</p>",
-        }),
-    ).exactOptional(),
-    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>Used to overide the default AutoML strategy, which is to optimize predictor accuracy. To apply an AutoML strategy that minimizes training time, use <code>LatencyOptimized</code>.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
-        }),
-    ).exactOptional(),
-    PerformHPO: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to perform hyperparameter optimization (HPO). HPO finds optimal hyperparameter values for your training data. The process of performing HPO is known as running a hyperparameter tuning job.</p> <p>The default value is <code>false</code>. In this case, Amazon Forecast uses default hyperparameter values from the chosen algorithm.</p> <p>To override the default values, set <code>PerformHPO</code> to <code>true</code> and, optionally, supply the <a>HyperParameterTuningJobConfig</a> object. The tuning job specifies a metric to optimize, which hyperparameters participate in tuning, and the valid range for each tunable hyperparameter. In this case, you are required to specify an algorithm and <code>PerformAutoML</code> must be false.</p> <p>The following algorithms support HPO:</p> <ul> <li> <p>DeepAR+</p> </li> <li> <p>CNN-QR</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TrainingParameters: TrainingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hyperparameters to override for model training. The hyperparameters that you can override are listed in the individual algorithms. For the list of supported algorithms, see <a>aws-forecast-choosing-recipes</a>.',
-        }),
-    ).exactOptional(),
-    EvaluationParameters: EvaluationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to override the default evaluation parameters of the specified algorithm. Amazon Forecast evaluates a predictor by splitting a dataset into training data and testing data. The evaluation parameters define how to perform the split and the number of iterations.',
-        }),
-    ).exactOptional(),
-    HPOConfig: HyperParameterTuningJobConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Provides hyperparameter override values for the algorithm. If you don't provide this parameter, Amazon Forecast uses default values. The individual algorithms specify which hyperparameters support hyperparameter optimization (HPO). For more information, see <a>aws-forecast-choosing-recipes</a>.</p> <p>If you included the <code>HPOConfig</code> object, you must set <code>PerformHPO</code> to true.</p>",
-        }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the dataset group that contains the data to use to train the predictor.',
-        }),
-    ),
-    FeaturizationConfig: FeaturizationConfigSchema.and(
-      z.any().openapi({ description: 'The featurization configuration.' }),
-    ),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The optional metadata that you apply to the predictor to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OptimizationMetric: OptimizationMetricSchema.and(
-      z.any().openapi({ description: 'The accuracy metric used to optimize the predictor.' }),
-    ).exactOptional(),
+    PredictorName: NameSchema.openapi({ description: 'A name for the predictor.' }),
+    AlgorithmArn: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the algorithm to use for model training. Required if <code>PerformAutoML</code> is not set to <code>true</code>.</p> <p class="title"> <b>Supported algorithms:</b> </p> <ul> <li> <p> <code>arn:aws:forecast:::algorithm/ARIMA</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/CNN-QR</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/Deep_AR_Plus</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/ETS</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/NPTS</code> </p> </li> <li> <p> <code>arn:aws:forecast:::algorithm/Prophet</code> </p> </li> </ul>',
+    }),
+    ForecastHorizon: IntegerSchema.openapi({
+      description:
+        '<p>Specifies the number of time-steps that the model is trained to predict. The forecast horizon is also called the prediction length.</p> <p>For example, if you configure a dataset for daily data collection (using the <code>DataFrequency</code> parameter of the <a>CreateDataset</a> operation) and set the forecast horizon to 10, the model returns predictions for 10 days.</p> <p>The maximum forecast horizon is the lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length.</p>',
+    }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the forecast types used to train a predictor. You can specify up to five forecast types. Forecast types can be quantiles from 0.01 to 0.99, by increments of 0.01 or higher. You can also specify the mean forecast with <code>mean</code>. </p> <p>The default value is <code>["0.10", "0.50", "0.9"]</code>.</p>',
+    }),
+    PerformAutoML: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Whether to perform AutoML. When Amazon Forecast performs AutoML, it evaluates the algorithms it provides and chooses the best algorithm and configuration for your training dataset.</p> <p>The default value is <code>false</code>. In this case, you are required to specify an algorithm.</p> <p>Set <code>PerformAutoML</code> to <code>true</code> to have Amazon Forecast perform AutoML. This is a good option if you aren't sure which algorithm is suitable for your training data. In this case, <code>PerformHPO</code> must be false.</p>",
+    }),
+    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.exactOptional().openapi({
+      description:
+        '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>Used to overide the default AutoML strategy, which is to optimize predictor accuracy. To apply an AutoML strategy that minimizes training time, use <code>LatencyOptimized</code>.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
+    }),
+    PerformHPO: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to perform hyperparameter optimization (HPO). HPO finds optimal hyperparameter values for your training data. The process of performing HPO is known as running a hyperparameter tuning job.</p> <p>The default value is <code>false</code>. In this case, Amazon Forecast uses default hyperparameter values from the chosen algorithm.</p> <p>To override the default values, set <code>PerformHPO</code> to <code>true</code> and, optionally, supply the <a>HyperParameterTuningJobConfig</a> object. The tuning job specifies a metric to optimize, which hyperparameters participate in tuning, and the valid range for each tunable hyperparameter. In this case, you are required to specify an algorithm and <code>PerformAutoML</code> must be false.</p> <p>The following algorithms support HPO:</p> <ul> <li> <p>DeepAR+</p> </li> <li> <p>CNN-QR</p> </li> </ul>',
+    }),
+    TrainingParameters: TrainingParametersSchema.exactOptional().openapi({
+      description:
+        'The hyperparameters to override for model training. The hyperparameters that you can override are listed in the individual algorithms. For the list of supported algorithms, see <a>aws-forecast-choosing-recipes</a>.',
+    }),
+    EvaluationParameters: EvaluationParametersSchema.exactOptional().openapi({
+      description:
+        'Used to override the default evaluation parameters of the specified algorithm. Amazon Forecast evaluates a predictor by splitting a dataset into training data and testing data. The evaluation parameters define how to perform the split and the number of iterations.',
+    }),
+    HPOConfig: HyperParameterTuningJobConfigSchema.exactOptional().openapi({
+      description:
+        "<p>Provides hyperparameter override values for the algorithm. If you don't provide this parameter, Amazon Forecast uses default values. The individual algorithms specify which hyperparameters support hyperparameter optimization (HPO). For more information, see <a>aws-forecast-choosing-recipes</a>.</p> <p>If you included the <code>HPOConfig</code> object, you must set <code>PerformHPO</code> to true.</p>",
+    }),
+    InputDataConfig: InputDataConfigSchema.openapi({
+      description:
+        'Describes the dataset group that contains the data to use to train the predictor.',
+    }),
+    FeaturizationConfig: FeaturizationConfigSchema.openapi({
+      description: 'The featurization configuration.',
+    }),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The optional metadata that you apply to the predictor to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
+    OptimizationMetric: OptimizationMetricSchema.exactOptional().openapi({
+      description: 'The accuracy metric used to optimize the predictor.',
+    }),
   })
   .openapi({
     required: ['PredictorName', 'ForecastHorizon', 'InputDataConfig', 'FeaturizationConfig'],
@@ -1699,46 +1266,30 @@ const CreatePredictorRequestSchema = z
 
 const CreatePredictorBacktestExportJobResponseSchema = z
   .object({
-    PredictorBacktestExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the predictor backtest export job that you want to export.',
-        }),
-    ).exactOptional(),
+    PredictorBacktestExportJobArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the predictor backtest export job that you want to export.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePredictorBacktestExportJobResponse')
 
 const CreatePredictorBacktestExportJobRequestSchema = z
   .object({
-    PredictorBacktestExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name for the backtest export job.' }),
-    ),
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor that you want to export.',
-        }),
-    ),
+    PredictorBacktestExportJobName: NameSchema.openapi({
+      description: 'The name for the backtest export job.',
+    }),
+    PredictorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor that you want to export.',
+    }),
     Destination: DataDestinationSchema,
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Optional metadata to help you categorize and organize your backtests. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The format of the exported data, CSV or PARQUET. The default value is CSV.',
-        }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>Optional metadata to help you categorize and organize your backtests. Each tag consists of a key and an optional value, both of which you define. Tag keys and values are case sensitive.</p> <p>The following restrictions apply to tags:</p> <ul> <li> <p>For each resource, each tag key must be unique and each tag key must have one value.</p> </li> <li> <p>Maximum number of tags per resource: 50.</p> </li> <li> <p>Maximum key length: 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length: 256 Unicode characters in UTF-8.</p> </li> <li> <p>Accepted characters: all letters and numbers, spaces representable in UTF-8, and + - = . _ : / @. If your tagging schema is used across other services and resources, the character restrictions of those services also apply. </p> </li> <li> <p>Key prefixes cannot include any upper or lowercase combination of <code>aws:</code> or <code>AWS:</code>. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit. You cannot edit or delete tag keys with this prefix.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET. The default value is CSV.',
+    }),
   })
   .openapi({
     required: ['PredictorBacktestExportJobName', 'PredictorArn', 'Destination'],
@@ -1748,39 +1299,29 @@ const CreatePredictorBacktestExportJobRequestSchema = z
 
 const CreateWhatIfAnalysisResponseSchema = z
   .object({
-    WhatIfAnalysisArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if analysis.' }),
-    ).exactOptional(),
+    WhatIfAnalysisArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if analysis.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWhatIfAnalysisResponse')
 
 const CreateWhatIfAnalysisRequestSchema = z
   .object({
-    WhatIfAnalysisName: NameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the what-if analysis. Each name must be unique.' }),
-    ),
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the baseline forecast.' }),
-    ),
-    TimeSeriesSelector: TimeSeriesSelectorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Defines the set of time series that are used in the what-if analysis with a <code>TimeSeriesIdentifiers</code> object. What-if analyses are performed only for the time series in this object.</p> <p>The <code>TimeSeriesIdentifiers</code> object needs the following information:</p> <ul> <li> <p> <code>DataSource</code> </p> </li> <li> <p> <code>Format</code> </p> </li> <li> <p> <code>Schema</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
-        }),
-    ).exactOptional(),
+    WhatIfAnalysisName: NameSchema.openapi({
+      description: 'The name of the what-if analysis. Each name must be unique.',
+    }),
+    ForecastArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the baseline forecast.',
+    }),
+    TimeSeriesSelector: TimeSeriesSelectorSchema.exactOptional().openapi({
+      description:
+        '<p>Defines the set of time series that are used in the what-if analysis with a <code>TimeSeriesIdentifiers</code> object. What-if analyses are performed only for the time series in this object.</p> <p>The <code>TimeSeriesIdentifiers</code> object needs the following information:</p> <ul> <li> <p> <code>DataSource</code> </p> </li> <li> <p> <code>Format</code> </p> </li> <li> <p> <code>Schema</code> </p> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
+    }),
   })
   .openapi({
     required: ['WhatIfAnalysisName', 'ForecastArn'],
@@ -1796,9 +1337,9 @@ const LongArnSchema = z
 
 const CreateWhatIfForecastResponseSchema = z
   .object({
-    WhatIfForecastArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast.' }),
-    ).exactOptional(),
+    WhatIfForecastArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWhatIfForecastResponse')
@@ -1807,29 +1348,17 @@ const OperationSchema = z.enum(['ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE']).openap
 
 const ActionSchema = z
   .object({
-    AttributeName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The related time series that you are modifying. This value is case insensitive.',
-        }),
-    ),
-    Operation: OperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operation that is applied to the provided attribute. Operations include:</p> <ul> <li> <p> <code>ADD</code> - adds <code>Value</code> to all rows of <code>AttributeName</code>.</p> </li> <li> <p> <code>SUBTRACT</code> - subtracts <code>Value</code> from all rows of <code>AttributeName</code>.</p> </li> <li> <p> <code>MULTIPLY</code> - multiplies all rows of <code>AttributeName</code> by <code>Value</code>.</p> </li> <li> <p> <code>DIVIDE</code> - divides all rows of <code>AttributeName</code> by <code>Value</code>.</p> </li> </ul>',
-        }),
-    ),
-    Value: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that is applied for the chosen <code>Operation</code>.',
-        }),
-    ),
+    AttributeName: NameSchema.openapi({
+      description:
+        'The related time series that you are modifying. This value is case insensitive.',
+    }),
+    Operation: OperationSchema.openapi({
+      description:
+        '<p>The operation that is applied to the provided attribute. Operations include:</p> <ul> <li> <p> <code>ADD</code> - adds <code>Value</code> to all rows of <code>AttributeName</code>.</p> </li> <li> <p> <code>SUBTRACT</code> - subtracts <code>Value</code> from all rows of <code>AttributeName</code>.</p> </li> <li> <p> <code>MULTIPLY</code> - multiplies all rows of <code>AttributeName</code> by <code>Value</code>.</p> </li> <li> <p> <code>DIVIDE</code> - divides all rows of <code>AttributeName</code> by <code>Value</code>.</p> </li> </ul>',
+    }),
+    Value: DoubleSchema.openapi({
+      description: 'The value that is applied for the chosen <code>Operation</code>.',
+    }),
   })
   .openapi({
     required: ['AttributeName', 'Operation', 'Value'],
@@ -1846,28 +1375,16 @@ const ConditionSchema = z
 
 const TimeSeriesConditionSchema = z
   .object({
-    AttributeName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The item_id, dimension name, IM name, or timestamp that you are modifying.',
-        }),
-    ),
-    AttributeValue: AttributeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The value that is applied for the chosen <code>Condition</code>.',
-        }),
-    ),
-    Condition: ConditionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The condition to apply. Valid values are <code>EQUALS</code>, <code>NOT_EQUALS</code>, <code>LESS_THAN</code> and <code>GREATER_THAN</code>.',
-        }),
-    ),
+    AttributeName: NameSchema.openapi({
+      description: 'The item_id, dimension name, IM name, or timestamp that you are modifying.',
+    }),
+    AttributeValue: AttributeValueSchema.openapi({
+      description: 'The value that is applied for the chosen <code>Condition</code>.',
+    }),
+    Condition: ConditionSchema.openapi({
+      description:
+        'The condition to apply. Valid values are <code>EQUALS</code>, <code>NOT_EQUALS</code>, <code>LESS_THAN</code> and <code>GREATER_THAN</code>.',
+    }),
   })
   .openapi({
     required: ['AttributeName', 'AttributeValue', 'Condition'],
@@ -1884,22 +1401,14 @@ const TimeSeriesConditionsSchema = z
 
 const TimeSeriesTransformationSchema = z
   .object({
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of actions that define a time series and how it is transformed. These transformations create a new time series that is used for the what-if analysis.',
-        }),
-    ).exactOptional(),
-    TimeSeriesConditions: TimeSeriesConditionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of conditions that define which members of the related time series are transformed.',
-        }),
-    ).exactOptional(),
+    Action: ActionSchema.exactOptional().openapi({
+      description:
+        'An array of actions that define a time series and how it is transformed. These transformations create a new time series that is used for the what-if analysis.',
+    }),
+    TimeSeriesConditions: TimeSeriesConditionsSchema.exactOptional().openapi({
+      description:
+        'An array of conditions that define which members of the related time series are transformed.',
+    }),
   })
   .openapi({
     description:
@@ -1918,12 +1427,12 @@ const TimeSeriesReplacementsDataSourceSchema = z
   .object({
     S3Config: S3ConfigSchema,
     Schema: SchemaSchema,
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the replacement data, CSV or PARQUET.' }),
-    ).exactOptional(),
-    TimestampFormat: TimestampFormatSchema.and(
-      z.any().openapi({ description: 'The timestamp format of the replacement data.' }),
-    ).exactOptional(),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the replacement data, CSV or PARQUET.',
+    }),
+    TimestampFormat: TimestampFormatSchema.exactOptional().openapi({
+      description: 'The timestamp format of the replacement data.',
+    }),
   })
   .openapi({
     required: ['S3Config', 'Schema'],
@@ -1934,41 +1443,26 @@ const TimeSeriesReplacementsDataSourceSchema = z
 
 const CreateWhatIfForecastRequestSchema = z
   .object({
-    WhatIfForecastName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the what-if forecast. Names must be unique within each what-if analysis.',
-        }),
-    ),
-    WhatIfAnalysisArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if analysis.' }),
-    ),
-    TimeSeriesTransformations: TimeSeriesTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transformations that are applied to the baseline time series. Each transformation contains an action and a set of conditions. An action is applied only when all conditions are met. If no conditions are provided, the action is applied to all items.',
-        }),
-    ).exactOptional(),
-    TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The replacement time series dataset, which contains the rows that you want to change in the related time series dataset. A replacement time series does not need to contain all rows that are in the baseline related time series. Include only the rows (measure-dimension combinations) that you want to include in the what-if forecast.</p> <p>This dataset is merged with the original time series to create a transformed dataset that is used for the what-if analysis.</p> <p>This dataset should contain the items to modify (such as item_id or workforce_type), any relevant dimensions, the timestamp column, and at least one of the related time series columns. This file should not contain duplicate timestamps for the same time series.</p> <p>Timestamps and item_ids not included in this dataset are not included in the what-if analysis. </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
-        }),
-    ).exactOptional(),
+    WhatIfForecastName: NameSchema.openapi({
+      description:
+        'The name of the what-if forecast. Names must be unique within each what-if analysis.',
+    }),
+    WhatIfAnalysisArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if analysis.',
+    }),
+    TimeSeriesTransformations: TimeSeriesTransformationsSchema.exactOptional().openapi({
+      description:
+        'The transformations that are applied to the baseline time series. Each transformation contains an action and a set of conditions. An action is applied only when all conditions are met. If no conditions are provided, the action is applied to all items.',
+    }),
+    TimeSeriesReplacementsDataSource:
+      TimeSeriesReplacementsDataSourceSchema.exactOptional().openapi({
+        description:
+          '<p>The replacement time series dataset, which contains the rows that you want to change in the related time series dataset. A replacement time series does not need to contain all rows that are in the baseline related time series. Include only the rows (measure-dimension combinations) that you want to include in the what-if forecast.</p> <p>This dataset is merged with the original time series to create a transformed dataset that is used for the what-if analysis.</p> <p>This dataset should contain the items to modify (such as item_id or workforce_type), any relevant dimensions, the timestamp column, and at least one of the related time series columns. This file should not contain duplicate timestamps for the same time series.</p> <p>Timestamps and item_ids not included in this dataset are not included in the what-if analysis. </p>',
+      }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
+    }),
   })
   .openapi({
     required: ['WhatIfForecastName', 'WhatIfAnalysisArn'],
@@ -1978,9 +1472,9 @@ const CreateWhatIfForecastRequestSchema = z
 
 const CreateWhatIfForecastExportResponseSchema = z
   .object({
-    WhatIfForecastExportArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast.' }),
-    ).exactOptional(),
+    WhatIfForecastExportArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateWhatIfForecastExportResponse')
@@ -1993,35 +1487,23 @@ const WhatIfForecastArnListForExportSchema = z
 
 const CreateWhatIfForecastExportRequestSchema = z
   .object({
-    WhatIfForecastExportName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if forecast to export.' }),
-    ),
-    WhatIfForecastArns: WhatIfForecastArnListForExportSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of what-if forecast Amazon Resource Names (ARNs) to export.',
-        }),
-    ),
-    Destination: DataDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket.</p> <p>If encryption is used, <code>Destination</code> must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.</p>',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    WhatIfForecastExportName: NameSchema.openapi({
+      description: 'The name of the what-if forecast to export.',
+    }),
+    WhatIfForecastArns: WhatIfForecastArnListForExportSchema.openapi({
+      description: 'The list of what-if forecast Amazon Resource Names (ARNs) to export.',
+    }),
+    Destination: DataDestinationSchema.openapi({
+      description:
+        '<p>The location where you want to save the forecast and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the location. The forecast must be exported to an Amazon S3 bucket.</p> <p>If encryption is used, <code>Destination</code> must include an Key Management Service (KMS) key. The IAM role must allow Amazon Forecast permission to access the key.</p>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of <a href="https://docs.aws.amazon.com/forecast/latest/dg/tagging-forecast-resources.html">tags</a> to apply to the what if forecast.',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({
     required: ['WhatIfForecastExportName', 'WhatIfForecastArns', 'Destination'],
@@ -2031,119 +1513,90 @@ const CreateWhatIfForecastExportRequestSchema = z
 
 const DeleteDatasetRequestSchema = z
   .object({
-    DatasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset to delete.' }),
-    ),
+    DatasetArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset to delete.',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'DeleteDatasetRequest' })
   .openapi('DeleteDatasetRequest')
 
 const DeleteDatasetGroupRequestSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group to delete.' }),
-    ),
+    DatasetGroupArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group to delete.',
+    }),
   })
   .openapi({ required: ['DatasetGroupArn'], title: 'DeleteDatasetGroupRequest' })
   .openapi('DeleteDatasetGroupRequest')
 
 const DeleteDatasetImportJobRequestSchema = z
   .object({
-    DatasetImportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the dataset import job to delete.',
-        }),
-    ),
+    DatasetImportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job to delete.',
+    }),
   })
   .openapi({ required: ['DatasetImportJobArn'], title: 'DeleteDatasetImportJobRequest' })
   .openapi('DeleteDatasetImportJobRequest')
 
 const DeleteExplainabilityRequestSchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Explainability resource to delete.',
-        }),
-    ),
+    ExplainabilityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability resource to delete.',
+    }),
   })
   .openapi({ required: ['ExplainabilityArn'], title: 'DeleteExplainabilityRequest' })
   .openapi('DeleteExplainabilityRequest')
 
 const DeleteExplainabilityExportRequestSchema = z
   .object({
-    ExplainabilityExportArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Explainability export to delete. ',
-        }),
-    ),
+    ExplainabilityExportArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability export to delete. ',
+    }),
   })
   .openapi({ required: ['ExplainabilityExportArn'], title: 'DeleteExplainabilityExportRequest' })
   .openapi('DeleteExplainabilityExportRequest')
 
 const DeleteForecastRequestSchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the forecast to delete.' }),
-    ),
+    ForecastArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast to delete.',
+    }),
   })
   .openapi({ required: ['ForecastArn'], title: 'DeleteForecastRequest' })
   .openapi('DeleteForecastRequest')
 
 const DeleteForecastExportJobRequestSchema = z
   .object({
-    ForecastExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the forecast export job to delete.',
-        }),
-    ),
+    ForecastExportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast export job to delete.',
+    }),
   })
   .openapi({ required: ['ForecastExportJobArn'], title: 'DeleteForecastExportJobRequest' })
   .openapi('DeleteForecastExportJobRequest')
 
 const DeleteMonitorRequestSchema = z
   .object({
-    MonitorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the monitor resource to delete.',
-        }),
-    ),
+    MonitorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource to delete.',
+    }),
   })
   .openapi({ required: ['MonitorArn'], title: 'DeleteMonitorRequest' })
   .openapi('DeleteMonitorRequest')
 
 const DeletePredictorRequestSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the predictor to delete.' }),
-    ),
+    PredictorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor to delete.',
+    }),
   })
   .openapi({ required: ['PredictorArn'], title: 'DeletePredictorRequest' })
   .openapi('DeletePredictorRequest')
 
 const DeletePredictorBacktestExportJobRequestSchema = z
   .object({
-    PredictorBacktestExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the predictor backtest export job to delete.',
-        }),
-    ),
+    PredictorBacktestExportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor backtest export job to delete.',
+    }),
   })
   .openapi({
     required: ['PredictorBacktestExportJobArn'],
@@ -2153,345 +1606,254 @@ const DeletePredictorBacktestExportJobRequestSchema = z
 
 const DeleteResourceTreeRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the parent resource to delete. All child resources of the parent resource will also be deleted.',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the parent resource to delete. All child resources of the parent resource will also be deleted.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'DeleteResourceTreeRequest' })
   .openapi('DeleteResourceTreeRequest')
 
 const DeleteWhatIfAnalysisRequestSchema = z
   .object({
-    WhatIfAnalysisArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if analysis that you want to delete.',
-        }),
-    ),
+    WhatIfAnalysisArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if analysis that you want to delete.',
+    }),
   })
   .openapi({ required: ['WhatIfAnalysisArn'], title: 'DeleteWhatIfAnalysisRequest' })
   .openapi('DeleteWhatIfAnalysisRequest')
 
 const DeleteWhatIfForecastRequestSchema = z
   .object({
-    WhatIfForecastArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if forecast that you want to delete.',
-        }),
-    ),
+    WhatIfForecastArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if forecast that you want to delete.',
+    }),
   })
   .openapi({ required: ['WhatIfForecastArn'], title: 'DeleteWhatIfForecastRequest' })
   .openapi('DeleteWhatIfForecastRequest')
 
 const DeleteWhatIfForecastExportRequestSchema = z
   .object({
-    WhatIfForecastExportArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if forecast export that you want to delete.',
-        }),
-    ),
+    WhatIfForecastExportArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if forecast export that you want to delete.',
+    }),
   })
   .openapi({ required: ['WhatIfForecastExportArn'], title: 'DeleteWhatIfForecastExportRequest' })
   .openapi('DeleteWhatIfForecastExportRequest')
 
+const StateSchema = z.enum(['Active', 'Deleted']).openapi('State')
+
+const ReferencePredictorSummarySchema = z
+  .object({
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the reference predictor.' }),
+    State: StateSchema.exactOptional().openapi({
+      description:
+        'Whether the reference predictor is <code>Active</code> or <code>Deleted</code>.',
+    }),
+  })
+  .openapi({
+    description:
+      'Provides a summary of the reference predictor used when retraining or upgrading a predictor.',
+    required: [],
+  })
+  .openapi('ReferencePredictorSummary')
+
 const LongSchema = z.int().openapi('Long')
+
+const StatusSchema = z.string().max(256).openapi('Status')
 
 const MessageSchema = z.string().openapi('Message')
 
 const ExplainabilityInfoSchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Explainability. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ExplainabilityArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Explainability. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Provides information about the Explainability resource.', required: [] })
   .openapi('ExplainabilityInfo')
 
 const MonitorInfoSchema = z
   .object({
-    MonitorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the monitor resource.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    MonitorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'Provides information about the monitor resource.', required: [] })
   .openapi('MonitorInfo')
 
 const DescribeAutoPredictorResponseSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the predictor' }),
-    ).exactOptional(),
-    PredictorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the predictor.' }),
-    ).exactOptional(),
-    ForecastHorizon: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.',
-        }),
-    ).exactOptional(),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forecast types used during predictor training. Default value is ["0.1","0.5","0.9"].',
-        }),
-    ).exactOptional(),
-    ForecastFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, "Y" indicates every year and "5min" indicates every five minutes.</p>',
-        }),
-    ).exactOptional(),
-    ForecastDimensions: ForecastDimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of dimension (field) names that specify the attributes used to group your time series.',
-        }),
-    ).exactOptional(),
-    DatasetImportJobArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the ARNs of the dataset import jobs used to import training data for the predictor.',
-        }),
-    ).exactOptional(),
-    DataConfig: DataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The data configuration for your dataset group and any additional datasets.',
-        }),
-    ).exactOptional(),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor',
+    }),
+    PredictorName: NameSchema.exactOptional().openapi({
+      description: 'The name of the predictor.',
+    }),
+    ForecastHorizon: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of time-steps that the model predicts. The forecast horizon is also called the prediction length.',
+    }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        'The forecast types used during predictor training. Default value is ["0.1","0.5","0.9"].',
+    }),
+    ForecastFrequency: FrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The frequency of predictions in a forecast.</p> <p>Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, "Y" indicates every year and "5min" indicates every five minutes.</p>',
+    }),
+    ForecastDimensions: ForecastDimensionsSchema.exactOptional().openapi({
+      description:
+        'An array of dimension (field) names that specify the attributes used to group your time series.',
+    }),
+    DatasetImportJobArns: ArnListSchema.exactOptional().openapi({
+      description:
+        'An array of the ARNs of the dataset import jobs used to import training data for the predictor.',
+    }),
+    DataConfig: DataConfigSchema.exactOptional().openapi({
+      description: 'The data configuration for your dataset group and any additional datasets.',
+    }),
     EncryptionConfig: EncryptionConfigSchema.exactOptional(),
-    ReferencePredictorSummary: ReferencePredictorSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN and state of the reference predictor. This parameter is only valid for retrained or upgraded predictors.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated time remaining in minutes for the predictor training job to complete.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the predictor. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'In the event of an error, a message detailing the cause of the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the CreateAutoPredictor request.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OptimizationMetric: OptimizationMetricSchema.and(
-      z.any().openapi({ description: 'The accuracy metric used to optimize the predictor.' }),
-    ).exactOptional(),
-    ExplainabilityInfo: ExplainabilityInfoSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Provides the status and ARN of the Predictor Explainability.' }),
-    ).exactOptional(),
-    MonitorInfo: MonitorInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A object with the Amazon Resource Name (ARN) and status of the monitor resource.',
-        }),
-    ).exactOptional(),
-    TimeAlignmentBoundary: TimeAlignmentBoundarySchema.and(
-      z.any().openapi({ description: 'The time boundary Forecast uses when aggregating data.' }),
-    ).exactOptional(),
+    ReferencePredictorSummary: ReferencePredictorSummarySchema.exactOptional().openapi({
+      description:
+        'The ARN and state of the reference predictor. This parameter is only valid for retrained or upgraded predictors.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The estimated time remaining in minutes for the predictor training job to complete.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the predictor. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'In the event of an error, a message detailing the cause of the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the CreateAutoPredictor request.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    OptimizationMetric: OptimizationMetricSchema.exactOptional().openapi({
+      description: 'The accuracy metric used to optimize the predictor.',
+    }),
+    ExplainabilityInfo: ExplainabilityInfoSchema.exactOptional().openapi({
+      description: 'Provides the status and ARN of the Predictor Explainability.',
+    }),
+    MonitorInfo: MonitorInfoSchema.exactOptional().openapi({
+      description:
+        'A object with the Amazon Resource Name (ARN) and status of the monitor resource.',
+    }),
+    TimeAlignmentBoundary: TimeAlignmentBoundarySchema.exactOptional().openapi({
+      description: 'The time boundary Forecast uses when aggregating data.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAutoPredictorResponse')
 
 const DescribeAutoPredictorRequestSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the predictor.' }),
-    ),
+    PredictorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor.',
+    }),
   })
   .openapi({ required: ['PredictorArn'], title: 'DescribeAutoPredictorRequest' })
   .openapi('DescribeAutoPredictorRequest')
 
 const DescribeDatasetResponseSchema = z
   .object({
-    DatasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ).exactOptional(),
-    DatasetName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    Domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain associated with the dataset.' }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: 'The dataset type.' }),
-    ).exactOptional(),
-    DataFrequency: FrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The frequency of data collection.</p> <p>Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, "M" indicates every month and "30min" indicates every 30 minutes.</p>',
-        }),
-    ).exactOptional(),
-    Schema: SchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>SchemaAttribute</code> objects that specify the dataset fields. Each <code>SchemaAttribute</code> specifies the name and data type of a field.',
-        }),
-    ).exactOptional(),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply while data is imported to the dataset from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation and reflect the status of the dataset import job. For example, when the import job status is <code>CREATE_IN_PROGRESS</code>, the status of the dataset is <code>UPDATE_IN_PROGRESS</code>.</p> <note> <p>The <code>Status</code> of the dataset must be <code>ACTIVE</code> before you can import training data.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>DescribeDataset</code> call. After a <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.',
-        }),
-    ).exactOptional(),
+    DatasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
+    DatasetName: NameSchema.exactOptional().openapi({ description: 'The name of the dataset.' }),
+    Domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain associated with the dataset.',
+    }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({ description: 'The dataset type.' }),
+    DataFrequency: FrequencySchema.exactOptional().openapi({
+      description:
+        '<p>The frequency of data collection.</p> <p>Valid intervals are Y (Year), M (Month), W (Week), D (Day), H (Hour), 30min (30 minutes), 15min (15 minutes), 10min (10 minutes), 5min (5 minutes), and 1min (1 minute). For example, "M" indicates every month and "30min" indicates every 30 minutes.</p>',
+    }),
+    Schema: SchemaSchema.exactOptional().openapi({
+      description:
+        'An array of <code>SchemaAttribute</code> objects that specify the dataset fields. Each <code>SchemaAttribute</code> specifies the name and data type of a field.',
+    }),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'The Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply while data is imported to the dataset from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation and reflect the status of the dataset import job. For example, when the import job status is <code>CREATE_IN_PROGRESS</code>, the status of the dataset is <code>UPDATE_IN_PROGRESS</code>.</p> <note> <p>The <code>Status</code> of the dataset must be <code>ACTIVE</code> before you can import training data.</p> </note>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>DescribeDataset</code> call. After a <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetResponse')
 
 const DescribeDatasetRequestSchema = z
   .object({
-    DatasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ),
+    DatasetArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
   })
   .openapi({ required: ['DatasetArn'], title: 'DescribeDatasetRequest' })
   .openapi('DescribeDatasetRequest')
 
 const DescribeDatasetGroupResponseSchema = z
   .object({
-    DatasetGroupName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset group.' }),
-    ).exactOptional(),
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group.' }),
-    ).exactOptional(),
-    DatasetArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) of the datasets contained in the dataset group.',
-        }),
-    ).exactOptional(),
-    Domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain associated with the dataset group.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset group. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply when you call the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset group was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the dataset group was created or last updated from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>DescribeDatasetGroup</code> call.',
-        }),
-    ).exactOptional(),
+    DatasetGroupName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset group.',
+    }),
+    DatasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset group.',
+    }),
+    DatasetArns: ArnListSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) of the datasets contained in the dataset group.',
+    }),
+    Domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain associated with the dataset group.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset group. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>UPDATE_PENDING</code>, <code>UPDATE_IN_PROGRESS</code>, <code>UPDATE_FAILED</code> </p> </li> </ul> <p>The <code>UPDATE</code> states apply when you call the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation.</p> <note> <p>The <code>Status</code> of the dataset group must be <code>ACTIVE</code> before you can use the dataset group to create a predictor.</p> </note>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset group was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'When the dataset group was created or last updated from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>DescribeDatasetGroup</code> call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetGroupResponse')
 
 const DescribeDatasetGroupRequestSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ),
+    DatasetGroupArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
   })
   .openapi({ required: ['DatasetGroupArn'], title: 'DescribeDatasetGroupRequest' })
   .openapi('DescribeDatasetGroupRequest')
@@ -2504,82 +1866,50 @@ const StringSchema = z
 
 const StatisticsSchema = z
   .object({
-    Count: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of values in the field. If the response value is -1, refer to <code>CountLong</code>.',
-        }),
-    ).exactOptional(),
-    CountDistinct: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of distinct values in the field. If the response value is -1, refer to <code>CountDistinctLong</code>.',
-        }),
-    ).exactOptional(),
-    CountNull: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of null values in the field. If the response value is -1, refer to <code>CountNullLong</code>.',
-        }),
-    ).exactOptional(),
-    CountNan: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of NAN (not a number) values in the field. If the response value is -1, refer to <code>CountNanLong</code>.',
-        }),
-    ).exactOptional(),
-    Min: StringSchema.and(
-      z.any().openapi({ description: 'For a numeric field, the minimum value in the field.' }),
-    ).exactOptional(),
-    Max: StringSchema.and(
-      z.any().openapi({ description: 'For a numeric field, the maximum value in the field.' }),
-    ).exactOptional(),
-    Avg: DoubleSchema.and(
-      z.any().openapi({ description: 'For a numeric field, the average value in the field.' }),
-    ).exactOptional(),
-    Stddev: DoubleSchema.and(
-      z.any().openapi({ description: 'For a numeric field, the standard deviation.' }),
-    ).exactOptional(),
-    CountLong: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of values in the field. <code>CountLong</code> is used instead of <code>Count</code> if the value is greater than 2,147,483,647.',
-        }),
-    ).exactOptional(),
-    CountDistinctLong: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of distinct values in the field. <code>CountDistinctLong</code> is used instead of <code>CountDistinct</code> if the value is greater than 2,147,483,647.',
-        }),
-    ).exactOptional(),
-    CountNullLong: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of null values in the field. <code>CountNullLong</code> is used instead of <code>CountNull</code> if the value is greater than 2,147,483,647.',
-        }),
-    ).exactOptional(),
-    CountNanLong: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of NAN (not a number) values in the field. <code>CountNanLong</code> is used instead of <code>CountNan</code> if the value is greater than 2,147,483,647.',
-        }),
-    ).exactOptional(),
+    Count: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of values in the field. If the response value is -1, refer to <code>CountLong</code>.',
+    }),
+    CountDistinct: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of distinct values in the field. If the response value is -1, refer to <code>CountDistinctLong</code>.',
+    }),
+    CountNull: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of null values in the field. If the response value is -1, refer to <code>CountNullLong</code>.',
+    }),
+    CountNan: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of NAN (not a number) values in the field. If the response value is -1, refer to <code>CountNanLong</code>.',
+    }),
+    Min: StringSchema.exactOptional().openapi({
+      description: 'For a numeric field, the minimum value in the field.',
+    }),
+    Max: StringSchema.exactOptional().openapi({
+      description: 'For a numeric field, the maximum value in the field.',
+    }),
+    Avg: DoubleSchema.exactOptional().openapi({
+      description: 'For a numeric field, the average value in the field.',
+    }),
+    Stddev: DoubleSchema.exactOptional().openapi({
+      description: 'For a numeric field, the standard deviation.',
+    }),
+    CountLong: LongSchema.exactOptional().openapi({
+      description:
+        'The number of values in the field. <code>CountLong</code> is used instead of <code>Count</code> if the value is greater than 2,147,483,647.',
+    }),
+    CountDistinctLong: LongSchema.exactOptional().openapi({
+      description:
+        'The number of distinct values in the field. <code>CountDistinctLong</code> is used instead of <code>CountDistinct</code> if the value is greater than 2,147,483,647.',
+    }),
+    CountNullLong: LongSchema.exactOptional().openapi({
+      description:
+        'The number of null values in the field. <code>CountNullLong</code> is used instead of <code>CountNull</code> if the value is greater than 2,147,483,647.',
+    }),
+    CountNanLong: LongSchema.exactOptional().openapi({
+      description:
+        'The number of NAN (not a number) values in the field. <code>CountNanLong</code> is used instead of <code>CountNan</code> if the value is greater than 2,147,483,647.',
+    }),
   })
   .openapi({
     description:
@@ -2592,531 +1922,383 @@ const FieldStatisticsSchema = z.record(z.string(), StatisticsSchema).openapi('Fi
 
 const DescribeDatasetImportJobResponseSchema = z
   .object({
-    DatasetImportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset import job.' }),
-    ).exactOptional(),
-    DatasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset import job.' }),
-    ).exactOptional(),
-    DatasetArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset that the training data was imported to.',
-        }),
-    ).exactOptional(),
-    TimestampFormat: TimestampFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The format of timestamps in the dataset. The format that you specify depends on the <code>DataFrequency</code> specified when the dataset was created. The following formats are supported</p> <ul> <li> <p>"yyyy-MM-dd"</p> <p>For the following data frequencies: Y, M, W, and D</p> </li> <li> <p>"yyyy-MM-dd HH:mm:ss"</p> <p>For the following data frequencies: H, 30min, 15min, and 1min; and optionally, for: Y, M, W, and D</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TimeZone: TimeZoneSchema.and(
-      z.any().openapi({ description: 'The single time zone applied to every item in the dataset' }),
-    ).exactOptional(),
-    UseGeolocationForTimeZone: UseGeolocationForTimeZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether <code>TimeZone</code> is automatically derived from the geolocation attribute.',
-        }),
-    ).exactOptional(),
-    GeolocationFormat: GeolocationFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of the geolocation attribute. Valid Values:<code>"LAT_LONG"</code> and <code>"CC_POSTALCODE"</code>.',
-        }),
-    ).exactOptional(),
-    DataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data.</p> <p>If encryption is used, <code>DataSource</code> includes an Key Management Service (KMS) key.</p>',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated time remaining in minutes for the dataset import job to complete.',
-        }),
-    ).exactOptional(),
-    FieldStatistics: FieldStatisticsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Statistical information about each field in the input data.' }),
-    ).exactOptional(),
-    DataSize: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The size of the dataset in gigabytes (GB) after the import job has finished.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset import job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset import job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the imported data, CSV or PARQUET.' }),
-    ).exactOptional(),
-    ImportMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The import mode of the dataset import job, FULL or INCREMENTAL.',
-        }),
-    ).exactOptional(),
+    DatasetImportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset import job.',
+    }),
+    DatasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the dataset import job.',
+    }),
+    DatasetArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset that the training data was imported to.',
+    }),
+    TimestampFormat: TimestampFormatSchema.exactOptional().openapi({
+      description:
+        '<p>The format of timestamps in the dataset. The format that you specify depends on the <code>DataFrequency</code> specified when the dataset was created. The following formats are supported</p> <ul> <li> <p>"yyyy-MM-dd"</p> <p>For the following data frequencies: Y, M, W, and D</p> </li> <li> <p>"yyyy-MM-dd HH:mm:ss"</p> <p>For the following data frequencies: H, 30min, 15min, and 1min; and optionally, for: Y, M, W, and D</p> </li> </ul>',
+    }),
+    TimeZone: TimeZoneSchema.exactOptional().openapi({
+      description: 'The single time zone applied to every item in the dataset',
+    }),
+    UseGeolocationForTimeZone: UseGeolocationForTimeZoneSchema.exactOptional().openapi({
+      description:
+        'Whether <code>TimeZone</code> is automatically derived from the geolocation attribute.',
+    }),
+    GeolocationFormat: GeolocationFormatSchema.exactOptional().openapi({
+      description:
+        'The format of the geolocation attribute. Valid Values:<code>"LAT_LONG"</code> and <code>"CC_POSTALCODE"</code>.',
+    }),
+    DataSource: DataSourceSchema.exactOptional().openapi({
+      description:
+        '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data.</p> <p>If encryption is used, <code>DataSource</code> includes an Key Management Service (KMS) key.</p>',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The estimated time remaining in minutes for the dataset import job to complete.',
+    }),
+    FieldStatistics: FieldStatisticsSchema.exactOptional().openapi({
+      description: 'Statistical information about each field in the input data.',
+    }),
+    DataSize: DoubleSchema.exactOptional().openapi({
+      description: 'The size of the dataset in gigabytes (GB) after the import job has finished.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset import job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset import job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the imported data, CSV or PARQUET.',
+    }),
+    ImportMode: ImportModeSchema.exactOptional().openapi({
+      description: 'The import mode of the dataset import job, FULL or INCREMENTAL.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDatasetImportJobResponse')
 
 const DescribeDatasetImportJobRequestSchema = z
   .object({
-    DatasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset import job.' }),
-    ),
+    DatasetImportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job.',
+    }),
   })
   .openapi({ required: ['DatasetImportJobArn'], title: 'DescribeDatasetImportJobRequest' })
   .openapi('DescribeDatasetImportJobRequest')
 
 const DescribeExplainabilityResponseSchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability.' }),
-    ).exactOptional(),
-    ExplainabilityName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the Explainability.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability resource.',
-        }),
-    ).exactOptional(),
-    ExplainabilityConfig: ExplainabilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that define the granularity of time series and time points for the Explainability.',
-        }),
-    ).exactOptional(),
-    EnableVisualization: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the visualization was enabled for the Explainability resource.',
-        }),
-    ).exactOptional(),
+    ExplainabilityArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability.',
+    }),
+    ExplainabilityName: NameSchema.exactOptional().openapi({
+      description: 'The name of the Explainability.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability resource.',
+    }),
+    ExplainabilityConfig: ExplainabilityConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration settings that define the granularity of time series and time points for the Explainability.',
+    }),
+    EnableVisualization: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the visualization was enabled for the Explainability resource.',
+    }),
     DataSource: DataSourceSchema.exactOptional(),
     Schema: SchemaSchema.exactOptional(),
-    StartDateTime: LocalDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, the first time point in the Explainability.',
-        }),
-    ).exactOptional(),
-    EndDateTime: LocalDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, the last time point in the Explainability.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated time remaining in minutes for the <a>CreateExplainability</a> job to complete.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'If an error occurred, a message about the error.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Explainability resource. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the Explainability resource was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StartDateTime: LocalDateTimeSchema.exactOptional().openapi({
+      description:
+        'If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, the first time point in the Explainability.',
+    }),
+    EndDateTime: LocalDateTimeSchema.exactOptional().openapi({
+      description:
+        'If <code>TimePointGranularity</code> is set to <code>SPECIFIC</code>, the last time point in the Explainability.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The estimated time remaining in minutes for the <a>CreateExplainability</a> job to complete.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, a message about the error.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Explainability resource. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the Explainability resource was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeExplainabilityResponse')
 
 const DescribeExplainabilityRequestSchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the Explaianability to describe.',
-        }),
-    ),
+    ExplainabilityArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explaianability to describe.',
+    }),
   })
   .openapi({ required: ['ExplainabilityArn'], title: 'DescribeExplainabilityRequest' })
   .openapi('DescribeExplainabilityRequest')
 
 const DescribeExplainabilityExportResponseSchema = z
   .object({
-    ExplainabilityExportArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability export.' }),
-    ).exactOptional(),
-    ExplainabilityExportName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the Explainability export.' }),
-    ).exactOptional(),
-    ExplainabilityArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability export.' }),
-    ).exactOptional(),
+    ExplainabilityExportArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability export.',
+    }),
+    ExplainabilityExportName: NameSchema.exactOptional().openapi({
+      description: 'The name of the Explainability export.',
+    }),
+    ExplainabilityArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability export.',
+    }),
     Destination: DataDestinationSchema.exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about any errors that occurred during the export.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Explainability export. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the Explainability export was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'Information about any errors that occurred during the export.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Explainability export. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the Explainability export was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeExplainabilityExportResponse')
 
 const DescribeExplainabilityExportRequestSchema = z
   .object({
-    ExplainabilityExportArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability export.' }),
-    ),
+    ExplainabilityExportArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability export.',
+    }),
   })
   .openapi({ required: ['ExplainabilityExportArn'], title: 'DescribeExplainabilityExportRequest' })
   .openapi('DescribeExplainabilityExportRequest')
 
+const ErrorMessageSchema = z.string().openapi('ErrorMessage')
+
 const DescribeForecastResponseSchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The forecast ARN as specified in the request.' }),
-    ).exactOptional(),
-    ForecastName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the forecast.' }),
-    ).exactOptional(),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The quantiles at which probabilistic forecasts were generated.' }),
-    ).exactOptional(),
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the predictor used to generate the forecast.' }),
-    ).exactOptional(),
-    DatasetGroupArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the dataset group that provided the data used to train the predictor.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The estimated time remaining in minutes for the forecast job to complete.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast must be <code>ACTIVE</code> before you can query or export the forecast.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the forecast creation task was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TimeSeriesSelector: TimeSeriesSelectorSchema.and(
-      z.any().openapi({ description: 'The time series to include in the forecast.' }),
-    ).exactOptional(),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description: 'The forecast ARN as specified in the request.',
+    }),
+    ForecastName: NameSchema.exactOptional().openapi({ description: 'The name of the forecast.' }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description: 'The quantiles at which probabilistic forecasts were generated.',
+    }),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the predictor used to generate the forecast.',
+    }),
+    DatasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the dataset group that provided the data used to train the predictor.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description: 'The estimated time remaining in minutes for the forecast job to complete.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast must be <code>ACTIVE</code> before you can query or export the forecast.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the forecast creation task was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    TimeSeriesSelector: TimeSeriesSelectorSchema.exactOptional().openapi({
+      description: 'The time series to include in the forecast.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeForecastResponse')
 
 const DescribeForecastRequestSchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the forecast.' }),
-    ),
+    ForecastArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast.',
+    }),
   })
   .openapi({ required: ['ForecastArn'], title: 'DescribeForecastRequest' })
   .openapi('DescribeForecastRequest')
 
 const DescribeForecastExportJobResponseSchema = z
   .object({
-    ForecastExportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the forecast export job.' }),
-    ).exactOptional(),
-    ForecastExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the forecast export job.' }),
-    ).exactOptional(),
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the exported forecast.' }),
-    ).exactOptional(),
-    Destination: DataDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the forecast export job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast export job must be <code>ACTIVE</code> before you can access the forecast in your S3 bucket.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the forecast export job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    ForecastExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the forecast export job.',
+    }),
+    ForecastExportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the forecast export job.',
+    }),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the exported forecast.',
+    }),
+    Destination: DataDestinationSchema.exactOptional().openapi({
+      description:
+        'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the forecast export job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast export job must be <code>ACTIVE</code> before you can access the forecast in your S3 bucket.</p> </note>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the forecast export job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeForecastExportJobResponse')
 
 const DescribeForecastExportJobRequestSchema = z
   .object({
-    ForecastExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the forecast export job.' }),
-    ),
+    ForecastExportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast export job.',
+    }),
   })
   .openapi({ required: ['ForecastExportJobArn'], title: 'DescribeForecastExportJobRequest' })
   .openapi('DescribeForecastExportJobRequest')
 
 const EvaluationStateSchema = z.string().max(256).openapi('EvaluationState')
 
-const BaselineSchema: z.ZodType<BaselineType> = z
-  .lazy(() =>
-    z
-      .object({
-        PredictorBaseline: PredictorBaselineSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The initial <a href="https://docs.aws.amazon.com/forecast/latest/dg/metrics.html">accuracy metrics</a> for the predictor you are monitoring. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.',
-        required: [],
-      }),
-  )
+const BaselineMetricSchema = z
+  .object({
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the metric.' }),
+    Value: DoubleSchema.exactOptional().openapi({ description: 'The value for the metric.' }),
+  })
+  .openapi({
+    description:
+      'An individual metric that you can use for comparison as you evaluate your monitoring results.',
+    required: [],
+  })
+  .openapi('BaselineMetric')
+
+const BaselineMetricsSchema = z.array(BaselineMetricSchema).openapi('BaselineMetrics')
+
+const PredictorBaselineSchema = z
+  .object({
+    BaselineMetrics: BaselineMetricsSchema.exactOptional().openapi({
+      description:
+        'The initial <a href="https://docs.aws.amazon.com/forecast/latest/dg/metrics.html">accuracy metrics</a> for the predictor. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.',
+    }),
+  })
+  .openapi({
+    description:
+      'Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.',
+    required: [],
+  })
+  .openapi('PredictorBaseline')
+
+const BaselineSchema = z
+  .object({
+    PredictorBaseline: PredictorBaselineSchema.exactOptional().openapi({
+      description:
+        'The initial <a href="https://docs.aws.amazon.com/forecast/latest/dg/metrics.html">accuracy metrics</a> for the predictor you are monitoring. Use these metrics as a baseline for comparison purposes as you use your predictor and the metrics change.',
+    }),
+  })
+  .openapi({
+    description:
+      'Metrics you can use as a baseline for comparison purposes. Use these metrics when you interpret monitoring results for an auto predictor.',
+    required: [],
+  })
   .openapi('Baseline')
 
 const DescribeMonitorResponseSchema = z
   .object({
-    MonitorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the monitor.' }),
-    ).exactOptional(),
-    MonitorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the monitor resource described.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the auto predictor being monitored.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the monitor resource.' }),
-    ).exactOptional(),
-    LastEvaluationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of the latest evaluation completed by the monitor.',
-        }),
-    ).exactOptional(),
-    LastEvaluationState: EvaluationStateSchema.and(
-      z.any().openapi({ description: "The state of the monitor's latest evaluation." }),
-    ).exactOptional(),
-    Baseline: BaselineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metrics you can use as a baseline for comparison purposes. Use these values you interpret monitoring results for an auto predictor.',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'An error message, if any, for the monitor.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for when the monitor resource was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of the latest modification to the monitor.' }),
-    ).exactOptional(),
-    EstimatedEvaluationTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated number of minutes remaining before the monitor resource finishes its current evaluation.',
-        }),
-    ).exactOptional(),
+    MonitorName: NameSchema.exactOptional().openapi({ description: 'The name of the monitor.' }),
+    MonitorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource described.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the auto predictor being monitored.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the monitor resource.',
+    }),
+    LastEvaluationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the latest evaluation completed by the monitor.',
+    }),
+    LastEvaluationState: EvaluationStateSchema.exactOptional().openapi({
+      description: "The state of the monitor's latest evaluation.",
+    }),
+    Baseline: BaselineSchema.exactOptional().openapi({
+      description:
+        'Metrics you can use as a baseline for comparison purposes. Use these values you interpret monitoring results for an auto predictor.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'An error message, if any, for the monitor.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp for when the monitor resource was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the latest modification to the monitor.',
+    }),
+    EstimatedEvaluationTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The estimated number of minutes remaining before the monitor resource finishes its current evaluation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMonitorResponse')
 
 const DescribeMonitorRequestSchema = z
   .object({
-    MonitorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the monitor resource to describe.',
-        }),
-    ),
+    MonitorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource to describe.',
+    }),
   })
   .openapi({ required: ['MonitorArn'], title: 'DescribeMonitorRequest' })
   .openapi('DescribeMonitorRequest')
 
 const TestWindowSummarySchema = z
   .object({
-    TestWindowStart: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the test began.' }),
-    ).exactOptional(),
-    TestWindowEnd: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the test ended.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the test. Possible status values are:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'If the test failed, the reason why it failed.' }),
-    ).exactOptional(),
+    TestWindowStart: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the test began.',
+    }),
+    TestWindowEnd: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the test ended.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the test. Possible status values are:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_FAILED</code> </p> </li> </ul>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If the test failed, the reason why it failed.',
+    }),
   })
   .openapi({
     description:
@@ -3129,17 +2311,13 @@ const TestWindowDetailsSchema = z.array(TestWindowSummarySchema).openapi('TestWi
 
 const PredictorExecutionSchema = z
   .object({
-    AlgorithmArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the algorithm used to test the predictor.' }),
-    ).exactOptional(),
-    TestWindows: TestWindowDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of test windows used to evaluate the algorithm. The <code>NumberOfBacktestWindows</code> from the object determines the number of windows in the array.',
-        }),
-    ).exactOptional(),
+    AlgorithmArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the algorithm used to test the predictor.',
+    }),
+    TestWindows: TestWindowDetailsSchema.exactOptional().openapi({
+      description:
+        'An array of test windows used to evaluate the algorithm. The <code>NumberOfBacktestWindows</code> from the object determines the number of windows in the array.',
+    }),
   })
   .openapi({
     description: 'The algorithm used to perform a backtest and the status of those tests.',
@@ -3155,14 +2333,10 @@ const PredictorExecutionsSchema = z
 
 const PredictorExecutionDetailsSchema = z
   .object({
-    PredictorExecutions: PredictorExecutionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the backtests performed to evaluate the accuracy of the predictor against a particular algorithm. The <code>NumberOfBacktestWindows</code> from the object determines the number of windows in the array.',
-        }),
-    ).exactOptional(),
+    PredictorExecutions: PredictorExecutionsSchema.exactOptional().openapi({
+      description:
+        'An array of the backtests performed to evaluate the accuracy of the predictor against a particular algorithm. The <code>NumberOfBacktestWindows</code> from the object determines the number of windows in the array.',
+    }),
   })
   .openapi({
     description:
@@ -3173,236 +2347,141 @@ const PredictorExecutionDetailsSchema = z
 
 const DescribePredictorResponseSchema = z
   .object({
-    PredictorArn: NameSchema.and(
-      z.any().openapi({ description: 'The ARN of the predictor.' }),
-    ).exactOptional(),
-    PredictorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the predictor.' }),
-    ).exactOptional(),
-    AlgorithmArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the algorithm used for model training.',
-        }),
-    ).exactOptional(),
-    AutoMLAlgorithmArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>PerformAutoML</code> is specified, the ARN of the chosen algorithm.',
-        }),
-    ).exactOptional(),
-    ForecastHorizon: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of time-steps of the forecast. The forecast horizon is also called the prediction length.',
-        }),
-    ).exactOptional(),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The forecast types used during predictor training. Default value is <code>["0.1","0.5","0.9"]</code> ',
-        }),
-    ).exactOptional(),
-    PerformAutoML: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the predictor is set to perform AutoML.' }),
-    ).exactOptional(),
-    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>The AutoML strategy used to train the predictor. Unless <code>LatencyOptimized</code> is specified, the AutoML strategy optimizes predictor accuracy.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
-        }),
-    ).exactOptional(),
-    PerformHPO: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the predictor is set to perform hyperparameter optimization (HPO).',
-        }),
-    ).exactOptional(),
-    TrainingParameters: TrainingParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default training parameters or overrides selected during model training. When running AutoML or choosing HPO with CNN-QR or DeepAR+, the optimized values for the chosen hyperparameters are returned. For more information, see <a>aws-forecast-choosing-recipes</a>.',
-        }),
-    ).exactOptional(),
-    EvaluationParameters: EvaluationParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to override the default evaluation parameters of the specified algorithm. Amazon Forecast evaluates a predictor by splitting a dataset into training data and testing data. The evaluation parameters define how to perform the split and the number of iterations.',
-        }),
-    ).exactOptional(),
-    HPOConfig: HyperParameterTuningJobConfigSchema.and(
-      z.any().openapi({ description: 'The hyperparameter override values for the algorithm.' }),
-    ).exactOptional(),
-    InputDataConfig: InputDataConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the dataset group that contains the data to use to train the predictor.',
-        }),
-    ).exactOptional(),
-    FeaturizationConfig: FeaturizationConfigSchema.and(
-      z.any().openapi({ description: 'The featurization configuration.' }),
-    ).exactOptional(),
-    EncryptionConfig: EncryptionConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
-        }),
-    ).exactOptional(),
-    PredictorExecutionDetails: PredictorExecutionDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details on the the status and results of the backtests performed to evaluate the accuracy of the predictor. You specify the number of backtests to perform when you call the operation.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated time remaining in minutes for the predictor training job to complete.',
-        }),
-    ).exactOptional(),
-    IsAutoPredictor: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the predictor was created with <a>CreateAutoPredictor</a>.',
-        }),
-    ).exactOptional(),
-    DatasetImportJobArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the ARNs of the dataset import jobs used to import training data for the predictor.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the predictor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the predictor must be <code>ACTIVE</code> before you can use the predictor to create a forecast.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the model training task was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OptimizationMetric: OptimizationMetricSchema.and(
-      z.any().openapi({ description: 'The accuracy metric used to optimize the predictor.' }),
-    ).exactOptional(),
+    PredictorArn: NameSchema.exactOptional().openapi({ description: 'The ARN of the predictor.' }),
+    PredictorName: NameSchema.exactOptional().openapi({
+      description: 'The name of the predictor.',
+    }),
+    AlgorithmArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the algorithm used for model training.',
+    }),
+    AutoMLAlgorithmArns: ArnListSchema.exactOptional().openapi({
+      description: 'When <code>PerformAutoML</code> is specified, the ARN of the chosen algorithm.',
+    }),
+    ForecastHorizon: IntegerSchema.exactOptional().openapi({
+      description:
+        'The number of time-steps of the forecast. The forecast horizon is also called the prediction length.',
+    }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        'The forecast types used during predictor training. Default value is <code>["0.1","0.5","0.9"]</code> ',
+    }),
+    PerformAutoML: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the predictor is set to perform AutoML.',
+    }),
+    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.exactOptional().openapi({
+      description:
+        '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>The AutoML strategy used to train the predictor. Unless <code>LatencyOptimized</code> is specified, the AutoML strategy optimizes predictor accuracy.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
+    }),
+    PerformHPO: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the predictor is set to perform hyperparameter optimization (HPO).',
+    }),
+    TrainingParameters: TrainingParametersSchema.exactOptional().openapi({
+      description:
+        'The default training parameters or overrides selected during model training. When running AutoML or choosing HPO with CNN-QR or DeepAR+, the optimized values for the chosen hyperparameters are returned. For more information, see <a>aws-forecast-choosing-recipes</a>.',
+    }),
+    EvaluationParameters: EvaluationParametersSchema.exactOptional().openapi({
+      description:
+        'Used to override the default evaluation parameters of the specified algorithm. Amazon Forecast evaluates a predictor by splitting a dataset into training data and testing data. The evaluation parameters define how to perform the split and the number of iterations.',
+    }),
+    HPOConfig: HyperParameterTuningJobConfigSchema.exactOptional().openapi({
+      description: 'The hyperparameter override values for the algorithm.',
+    }),
+    InputDataConfig: InputDataConfigSchema.exactOptional().openapi({
+      description:
+        'Describes the dataset group that contains the data to use to train the predictor.',
+    }),
+    FeaturizationConfig: FeaturizationConfigSchema.exactOptional().openapi({
+      description: 'The featurization configuration.',
+    }),
+    EncryptionConfig: EncryptionConfigSchema.exactOptional().openapi({
+      description:
+        'An Key Management Service (KMS) key and the Identity and Access Management (IAM) role that Amazon Forecast can assume to access the key.',
+    }),
+    PredictorExecutionDetails: PredictorExecutionDetailsSchema.exactOptional().openapi({
+      description:
+        'Details on the the status and results of the backtests performed to evaluate the accuracy of the predictor. You specify the number of backtests to perform when you call the operation.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The estimated time remaining in minutes for the predictor training job to complete.',
+    }),
+    IsAutoPredictor: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the predictor was created with <a>CreateAutoPredictor</a>.',
+    }),
+    DatasetImportJobArns: ArnListSchema.exactOptional().openapi({
+      description:
+        'An array of the ARNs of the dataset import jobs used to import training data for the predictor.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the predictor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the predictor must be <code>ACTIVE</code> before you can use the predictor to create a forecast.</p> </note>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the model training task was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    OptimizationMetric: OptimizationMetricSchema.exactOptional().openapi({
+      description: 'The accuracy metric used to optimize the predictor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePredictorResponse')
 
 const DescribePredictorRequestSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the predictor that you want information about.',
-        }),
-    ),
+    PredictorArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the predictor that you want information about.',
+    }),
   })
   .openapi({ required: ['PredictorArn'], title: 'DescribePredictorRequest' })
   .openapi('DescribePredictorRequest')
 
 const DescribePredictorBacktestExportJobResponseSchema = z
   .object({
-    PredictorBacktestExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
-        }),
-    ).exactOptional(),
-    PredictorBacktestExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the predictor backtest export job.' }),
-    ).exactOptional(),
-    PredictorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the predictor.' }),
-    ).exactOptional(),
+    PredictorBacktestExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
+    }),
+    PredictorBacktestExportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the predictor backtest export job.',
+    }),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor.',
+    }),
     Destination: DataDestinationSchema.exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about any errors that may have occurred during the backtest export.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the predictor backtest export job. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the predictor backtest export job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'Information about any errors that may have occurred during the backtest export.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the predictor backtest export job. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the predictor backtest export job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePredictorBacktestExportJobResponse')
 
 const DescribePredictorBacktestExportJobRequestSchema = z
   .object({
-    PredictorBacktestExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
-        }),
-    ),
+    PredictorBacktestExportJobArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
+    }),
   })
   .openapi({
     required: ['PredictorBacktestExportJobArn'],
@@ -3412,49 +2491,32 @@ const DescribePredictorBacktestExportJobRequestSchema = z
 
 const DescribeWhatIfAnalysisResponseSchema = z
   .object({
-    WhatIfAnalysisName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if analysis.' }),
-    ).exactOptional(),
-    WhatIfAnalysisArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if analysis.' }),
-    ).exactOptional(),
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast.' }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate time remaining to complete the what-if analysis, in minutes.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if analysis. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if analysis was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    WhatIfAnalysisName: NameSchema.exactOptional().openapi({
+      description: 'The name of the what-if analysis.',
+    }),
+    WhatIfAnalysisArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if analysis.',
+    }),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description: 'The approximate time remaining to complete the what-if analysis, in minutes.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if analysis. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if analysis was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
     TimeSeriesSelector: TimeSeriesSelectorSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -3462,106 +2524,66 @@ const DescribeWhatIfAnalysisResponseSchema = z
 
 const DescribeWhatIfAnalysisRequestSchema = z
   .object({
-    WhatIfAnalysisArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if analysis that you are interested in.',
-        }),
-    ),
+    WhatIfAnalysisArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if analysis that you are interested in.',
+    }),
   })
   .openapi({ required: ['WhatIfAnalysisArn'], title: 'DescribeWhatIfAnalysisRequest' })
   .openapi('DescribeWhatIfAnalysisRequest')
 
 const DescribeWhatIfForecastResponseSchema = z
   .object({
-    WhatIfForecastName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if forecast.' }),
-    ).exactOptional(),
-    WhatIfForecastArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast.' }),
-    ).exactOptional(),
-    WhatIfAnalysisArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if analysis that contains this forecast.',
-        }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate time remaining to complete the what-if forecast, in minutes.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if forecast must be <code>ACTIVE</code> before you can access the forecast.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if forecast was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TimeSeriesTransformations: TimeSeriesTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>Action</code> and <code>TimeSeriesConditions</code> elements that describe what transformations were applied to which time series.',
-        }),
-    ).exactOptional(),
-    TimeSeriesReplacementsDataSource: TimeSeriesReplacementsDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>S3Config</code>, <code>Schema</code>, and <code>Format</code> elements that describe the replacement time series.',
-        }),
-    ).exactOptional(),
-    ForecastTypes: ForecastTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The quantiles at which probabilistic forecasts are generated. You can specify up to five quantiles per what-if forecast in the <a>CreateWhatIfForecast</a> operation. If you didn\'t specify quantiles, the default values are <code>["0.1", "0.5", "0.9"]</code>. ',
-        }),
-    ).exactOptional(),
+    WhatIfForecastName: NameSchema.exactOptional().openapi({
+      description: 'The name of the what-if forecast.',
+    }),
+    WhatIfForecastArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast.',
+    }),
+    WhatIfAnalysisArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if analysis that contains this forecast.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description: 'The approximate time remaining to complete the what-if forecast, in minutes.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if forecast must be <code>ACTIVE</code> before you can access the forecast.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if forecast was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    TimeSeriesTransformations: TimeSeriesTransformationsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>Action</code> and <code>TimeSeriesConditions</code> elements that describe what transformations were applied to which time series.',
+    }),
+    TimeSeriesReplacementsDataSource:
+      TimeSeriesReplacementsDataSourceSchema.exactOptional().openapi({
+        description:
+          'An array of <code>S3Config</code>, <code>Schema</code>, and <code>Format</code> elements that describe the replacement time series.',
+      }),
+    ForecastTypes: ForecastTypesSchema.exactOptional().openapi({
+      description:
+        'The quantiles at which probabilistic forecasts are generated. You can specify up to five quantiles per what-if forecast in the <a>CreateWhatIfForecast</a> operation. If you didn\'t specify quantiles, the default values are <code>["0.1", "0.5", "0.9"]</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWhatIfForecastResponse')
 
 const DescribeWhatIfForecastRequestSchema = z
   .object({
-    WhatIfForecastArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if forecast that you are interested in.',
-        }),
-    ),
+    WhatIfForecastArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if forecast that you are interested in.',
+    }),
   })
   .openapi({ required: ['WhatIfForecastArn'], title: 'DescribeWhatIfForecastRequest' })
   .openapi('DescribeWhatIfForecastRequest')
@@ -3570,245 +2592,95 @@ const LongArnListSchema = z.array(LongArnSchema).openapi('LongArnList')
 
 const DescribeWhatIfForecastExportResponseSchema = z
   .object({
-    WhatIfForecastExportArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast export.' }),
-    ).exactOptional(),
-    WhatIfForecastExportName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if forecast export.' }),
-    ).exactOptional(),
-    WhatIfForecastArns: LongArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) that represent all of the what-if forecasts exported in this resource.',
-        }),
-    ).exactOptional(),
+    WhatIfForecastExportArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast export.',
+    }),
+    WhatIfForecastExportName: NameSchema.exactOptional().openapi({
+      description: 'The name of the what-if forecast export.',
+    }),
+    WhatIfForecastArns: LongArnListSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) that represent all of the what-if forecasts exported in this resource.',
+    }),
     Destination: DataDestinationSchema.exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if forecast export must be <code>ACTIVE</code> before you can access the forecast export.</p> </note>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if forecast export was created.' }),
-    ).exactOptional(),
-    EstimatedTimeRemainingInMinutes: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The approximate time remaining to complete the what-if forecast export, in minutes.',
-        }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Format: FormatSchema.and(
-      z.any().openapi({ description: 'The format of the exported data, CSV or PARQUET.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if forecast export must be <code>ACTIVE</code> before you can access the forecast export.</p> </note>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if forecast export was created.',
+    }),
+    EstimatedTimeRemainingInMinutes: LongSchema.exactOptional().openapi({
+      description:
+        'The approximate time remaining to complete the what-if forecast export, in minutes.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    Format: FormatSchema.exactOptional().openapi({
+      description: 'The format of the exported data, CSV or PARQUET.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeWhatIfForecastExportResponse')
 
 const DescribeWhatIfForecastExportRequestSchema = z
   .object({
-    WhatIfForecastExportArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if forecast export that you are interested in.',
-        }),
-    ),
+    WhatIfForecastExportArn: LongArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if forecast export that you are interested in.',
+    }),
   })
   .openapi({ required: ['WhatIfForecastExportArn'], title: 'DescribeWhatIfForecastExportRequest' })
   .openapi('DescribeWhatIfForecastExportRequest')
 
-const EvaluationTypeSchema = z.enum(['SUMMARY', 'COMPUTED']).openapi('EvaluationType')
-
-const MetricsSchema: z.ZodType<MetricsType> = z
-  .lazy(() =>
-    z
-      .object({
-        RMSE: DoubleSchema.and(
-          z
-            .any()
-            .openapi({
-              deprecated: true,
-              description:
-                'The root-mean-square error (RMSE).This property is deprecated, please refer to ErrorMetrics for both RMSE and WAPE',
-            }),
-        ).exactOptional(),
-        WeightedQuantileLosses: WeightedQuantileLossesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'An array of weighted quantile losses. Quantiles divide a probability distribution into regions of equal probability. The distribution in this case is the loss function.',
-            }),
-        ).exactOptional(),
-        ErrorMetrics: ErrorMetricsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                ' Provides detailed error metrics for each forecast type. Metrics include root-mean square-error (RMSE), mean absolute percentage error (MAPE), mean absolute scaled error (MASE), and weighted average percentage error (WAPE). ',
-            }),
-        ).exactOptional(),
-        AverageWeightedQuantileLoss: DoubleSchema.and(
-          z.any().openapi({ description: 'The average value of all weighted quantile losses.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Provides metrics that are used to evaluate the performance of a predictor. This object is part of the <a>WindowSummary</a> object.',
-        required: [],
-      }),
-  )
-  .openapi('Metrics')
-
-const WindowSummarySchema = z
+const GetAccuracyMetricsResponseSchema: z.ZodType<GetAccuracyMetricsResponseType> = z
   .object({
-    TestWindowStart: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp that defines the start of the window.' }),
-    ).exactOptional(),
-    TestWindowEnd: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp that defines the end of the window.' }),
-    ).exactOptional(),
-    ItemCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of data points within the window.' }),
-    ).exactOptional(),
-    EvaluationType: EvaluationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of evaluation.</p> <ul> <li> <p> <code>SUMMARY</code> - The average metrics across all windows.</p> </li> <li> <p> <code>COMPUTED</code> - The metrics for the specified window.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Metrics: MetricsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides metrics used to evaluate the performance of a predictor.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>The metrics for a time range within the evaluation portion of a dataset. This object is part of the <a>EvaluationResult</a> object.</p> <p>The <code>TestWindowStart</code> and <code>TestWindowEnd</code> parameters are determined by the <code>BackTestWindowOffset</code> parameter of the <a>EvaluationParameters</a> object.</p>',
-    required: [],
-  })
-  .openapi('WindowSummary')
-
-const TestWindowsSchema = z.array(WindowSummarySchema).openapi('TestWindows')
-
-const EvaluationResultSchema = z
-  .object({
-    AlgorithmArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the algorithm that was evaluated.',
-        }),
-    ).exactOptional(),
-    TestWindows: TestWindowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of test windows used for evaluating the algorithm. The <code>NumberOfBacktestWindows</code> from the <a>EvaluationParameters</a> object determines the number of windows in the array.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The results of evaluating an algorithm. Returned as part of the <a>GetAccuracyMetrics</a> response.',
-    required: [],
-  })
-  .openapi('EvaluationResult')
-
-const PredictorEvaluationResultsSchema = z
-  .array(EvaluationResultSchema)
-  .openapi('PredictorEvaluationResults')
-
-const GetAccuracyMetricsResponseSchema = z
-  .object({
-    PredictorEvaluationResults: PredictorEvaluationResultsSchema.and(
-      z.any().openapi({ description: 'An array of results from evaluating the predictor.' }),
-    ).exactOptional(),
-    IsAutoPredictor: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether the predictor was created with <a>CreateAutoPredictor</a>.',
-        }),
-    ).exactOptional(),
-    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>The AutoML strategy used to train the predictor. Unless <code>LatencyOptimized</code> is specified, the AutoML strategy optimizes predictor accuracy.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
-        }),
-    ).exactOptional(),
-    OptimizationMetric: OptimizationMetricSchema.and(
-      z.any().openapi({ description: 'The accuracy metric used to optimize the predictor.' }),
-    ).exactOptional(),
+    PredictorEvaluationResults: PredictorEvaluationResultsSchema.exactOptional().openapi({
+      description: 'An array of results from evaluating the predictor.',
+    }),
+    IsAutoPredictor: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the predictor was created with <a>CreateAutoPredictor</a>.',
+    }),
+    AutoMLOverrideStrategy: AutoMLOverrideStrategySchema.exactOptional().openapi({
+      description:
+        '<note> <p> The <code>LatencyOptimized</code> AutoML override strategy is only available in private beta. Contact Amazon Web Services Support or your account manager to learn more about access privileges. </p> </note> <p>The AutoML strategy used to train the predictor. Unless <code>LatencyOptimized</code> is specified, the AutoML strategy optimizes predictor accuracy.</p> <p>This parameter is only valid for predictors trained using AutoML.</p>',
+    }),
+    OptimizationMetric: OptimizationMetricSchema.exactOptional().openapi({
+      description: 'The accuracy metric used to optimize the predictor.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccuracyMetricsResponse')
 
 const GetAccuracyMetricsRequestSchema = z
   .object({
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor to get metrics for.',
-        }),
-    ),
+    PredictorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor to get metrics for.',
+    }),
   })
   .openapi({ required: ['PredictorArn'], title: 'GetAccuracyMetricsRequest' })
   .openapi('GetAccuracyMetricsRequest')
 
 const DatasetGroupSummarySchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset group.' }),
-    ).exactOptional(),
-    DatasetGroupName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset group.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset group was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the dataset group was created or last updated from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>ListDatasetGroups</code> call.',
-        }),
-    ).exactOptional(),
+    DatasetGroupArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset group.',
+    }),
+    DatasetGroupName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset group.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset group was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'When the dataset group was created or last updated from a call to the <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_UpdateDatasetGroup.html">UpdateDatasetGroup</a> operation. While the dataset group is being updated, <code>LastModificationTime</code> is the current time of the <code>ListDatasetGroups</code> call.',
+    }),
   })
   .openapi({
     description:
@@ -3823,21 +2695,13 @@ const NextTokenSchema = z.string().regex(/.+/).min(1).max(3000).openapi('NextTok
 
 const ListDatasetGroupsResponseSchema = z
   .object({
-    DatasetGroups: DatasetGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of objects that summarize each dataset group's properties.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    DatasetGroups: DatasetGroupsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each dataset group's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetGroupsResponse')
@@ -3846,17 +2710,13 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListDatasetGroupsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
   })
   .openapi({ title: 'ListDatasetGroupsRequest', required: [] })
   .openapi('ListDatasetGroupsRequest')
@@ -3865,53 +2725,33 @@ const InvalidNextTokenExceptionSchema = z.any().openapi('InvalidNextTokenExcepti
 
 const DatasetImportJobSummarySchema = z
   .object({
-    DatasetImportJobArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset import job.' }),
-    ).exactOptional(),
-    DatasetImportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset import job.' }),
-    ).exactOptional(),
-    DataSource: DataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> includes an Key Management Service (KMS) key.</p>',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the dataset import job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset import job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ImportMode: ImportModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The import mode of the dataset import job, FULL or INCREMENTAL.',
-        }),
-    ).exactOptional(),
+    DatasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset import job.',
+    }),
+    DatasetImportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the dataset import job.',
+    }),
+    DataSource: DataSourceSchema.exactOptional().openapi({
+      description:
+        '<p>The location of the training data to import and an Identity and Access Management (IAM) role that Amazon Forecast can assume to access the data. The training data must be stored in an Amazon S3 bucket.</p> <p>If encryption is used, <code>DataSource</code> includes an Key Management Service (KMS) key.</p>',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the dataset import job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset import job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+    ImportMode: ImportModeSchema.exactOptional().openapi({
+      description: 'The import mode of the dataset import job, FULL or INCREMENTAL.',
+    }),
   })
   .openapi({
     description:
@@ -3924,21 +2764,13 @@ const DatasetImportJobsSchema = z.array(DatasetImportJobSummarySchema).openapi('
 
 const ListDatasetImportJobsResponseSchema = z
   .object({
-    DatasetImportJobs: DatasetImportJobsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of objects that summarize each dataset import job's properties.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    DatasetImportJobs: DatasetImportJobsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each dataset import job's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetImportJobsResponse')
@@ -3947,18 +2779,12 @@ const FilterConditionStringSchema = z.enum(['IS', 'IS_NOT']).openapi('FilterCond
 
 const FilterSchema = z
   .object({
-    Key: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter to filter on.' }),
-    ),
-    Value: ArnSchema.and(z.any().openapi({ description: 'The value to match.' })),
-    Condition: FilterConditionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The condition to apply. To include the objects that match the statement, specify <code>IS</code>. To exclude matching objects, specify <code>IS_NOT</code>.',
-        }),
-    ),
+    Key: StringSchema.openapi({ description: 'The name of the parameter to filter on.' }),
+    Value: ArnSchema.openapi({ description: 'The value to match.' }),
+    Condition: FilterConditionStringSchema.openapi({
+      description:
+        'The condition to apply. To include the objects that match the statement, specify <code>IS</code>. To exclude matching objects, specify <code>IS_NOT</code>.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value', 'Condition'],
@@ -3971,54 +2797,38 @@ const FiltersSchema = z.array(FilterSchema).openapi('Filters')
 
 const ListDatasetImportJobsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the datasets that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the datasets that match the statement, specify <code>IS</code>. To exclude matching datasets, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all dataset import jobs whose status is ACTIVE, you specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the datasets that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the datasets that match the statement, specify <code>IS</code>. To exclude matching datasets, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all dataset import jobs whose status is ACTIVE, you specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListDatasetImportJobsRequest', required: [] })
   .openapi('ListDatasetImportJobsRequest')
 
 const DatasetSummarySchema = z
   .object({
-    DatasetArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the dataset.' }),
-    ).exactOptional(),
-    DatasetName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the dataset.' }),
-    ).exactOptional(),
-    DatasetType: DatasetTypeSchema.and(
-      z.any().openapi({ description: 'The dataset type.' }),
-    ).exactOptional(),
-    Domain: DomainSchema.and(
-      z.any().openapi({ description: 'The domain associated with the dataset.' }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the dataset was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>ListDatasets</code> call. After a <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.',
-        }),
-    ).exactOptional(),
+    DatasetArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the dataset.',
+    }),
+    DatasetName: NameSchema.exactOptional().openapi({ description: 'The name of the dataset.' }),
+    DatasetType: DatasetTypeSchema.exactOptional().openapi({ description: 'The dataset type.' }),
+    Domain: DomainSchema.exactOptional().openapi({
+      description: 'The domain associated with the dataset.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the dataset was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'When you create a dataset, <code>LastModificationTime</code> is the same as <code>CreationTime</code>. While data is being imported to the dataset, <code>LastModificationTime</code> is the current time of the <code>ListDatasets</code> call. After a <a href="https://docs.aws.amazon.com/forecast/latest/dg/API_CreateDatasetImportJob.html">CreateDatasetImportJob</a> operation has finished, <code>LastModificationTime</code> is when the import job completed or failed.',
+    }),
   })
   .openapi({
     description:
@@ -4031,91 +2841,61 @@ const DatasetsSchema = z.array(DatasetSummarySchema).openapi('Datasets')
 
 const ListDatasetsResponseSchema = z
   .object({
-    Datasets: DatasetsSchema.and(
-      z
-        .any()
-        .openapi({ description: "An array of objects that summarize each dataset's properties." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    Datasets: DatasetsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each dataset's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDatasetsResponse')
 
 const ListDatasetsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
   })
   .openapi({ title: 'ListDatasetsRequest', required: [] })
   .openapi('ListDatasetsRequest')
 
 const ExplainabilitySummarySchema = z
   .object({
-    ExplainabilityArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability.' }),
-    ).exactOptional(),
-    ExplainabilityName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the Explainability.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability.',
-        }),
-    ).exactOptional(),
-    ExplainabilityConfig: ExplainabilityConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings that define the granularity of time series and time points for the Explainability.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Explainability. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about any errors that may have occurred during the Explainability creation process.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the Explainability was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ExplainabilityArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability.',
+    }),
+    ExplainabilityName: NameSchema.exactOptional().openapi({
+      description: 'The name of the Explainability.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the Predictor or Forecast used to create the Explainability.',
+    }),
+    ExplainabilityConfig: ExplainabilityConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration settings that define the granularity of time series and time points for the Explainability.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Explainability. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'Information about any errors that may have occurred during the Explainability creation process.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the Explainability was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4128,89 +2908,59 @@ const ExplainabilitiesSchema = z.array(ExplainabilitySummarySchema).openapi('Exp
 
 const ListExplainabilitiesResponseSchema = z
   .object({
-    Explainabilities: ExplainabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that summarize the properties of each Explainability resource.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    Explainabilities: ExplainabilitiesSchema.exactOptional().openapi({
+      description:
+        'An array of objects that summarize the properties of each Explainability resource.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListExplainabilitiesResponse')
 
 const ListExplainabilitiesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items returned in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items returned in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListExplainabilitiesRequest', required: [] })
   .openapi('ListExplainabilitiesRequest')
 
 const ExplainabilityExportSummarySchema = z
   .object({
-    ExplainabilityExportArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the Explainability export.' }),
-    ).exactOptional(),
-    ExplainabilityExportName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the Explainability export' }),
-    ).exactOptional(),
+    ExplainabilityExportArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the Explainability export.',
+    }),
+    ExplainabilityExportName: NameSchema.exactOptional().openapi({
+      description: 'The name of the Explainability export',
+    }),
     Destination: DataDestinationSchema.exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Explainability export. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about any errors that may have occurred during the Explainability export.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the Explainability was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Explainability export. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'Information about any errors that may have occurred during the Explainability export.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the Explainability was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4225,95 +2975,61 @@ const ExplainabilityExportsSchema = z
 
 const ListExplainabilityExportsResponseSchema = z
   .object({
-    ExplainabilityExports: ExplainabilityExportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that summarize the properties of each Explainability export.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    ExplainabilityExports: ExplainabilityExportsSchema.exactOptional().openapi({
+      description:
+        'An array of objects that summarize the properties of each Explainability export.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListExplainabilityExportsResponse')
 
 const ListExplainabilityExportsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ResourceArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListExplainabilityExportsRequest', required: [] })
   .openapi('ListExplainabilityExportsRequest')
 
 const ForecastExportJobSummarySchema = z
   .object({
-    ForecastExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the forecast export job.' }),
-    ).exactOptional(),
-    ForecastExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the forecast export job.' }),
-    ).exactOptional(),
-    Destination: DataDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the forecast export job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast export job must be <code>ACTIVE</code> before you can access the forecast in your S3 bucket.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the forecast export job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ForecastExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the forecast export job.',
+    }),
+    ForecastExportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the forecast export job.',
+    }),
+    Destination: DataDestinationSchema.exactOptional().openapi({
+      description:
+        'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the forecast export job. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast export job must be <code>ACTIVE</code> before you can access the forecast in your S3 bucket.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the forecast export job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4328,98 +3044,62 @@ const ForecastExportJobsSchema = z
 
 const ListForecastExportJobsResponseSchema = z
   .object({
-    ForecastExportJobs: ForecastExportJobsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of objects that summarize each export job's properties.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    ForecastExportJobs: ForecastExportJobsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each export job's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListForecastExportJobsResponse')
 
 const ListForecastExportJobsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ForecastArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityforecast</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "ForecastArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityforecast" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>ForecastArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityforecast</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "ForecastArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityforecast" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListForecastExportJobsRequest', required: [] })
   .openapi('ListForecastExportJobsRequest')
 
 const ForecastSummarySchema = z
   .object({
-    ForecastArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the forecast.' }),
-    ).exactOptional(),
-    ForecastName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the forecast.' }),
-    ).exactOptional(),
-    PredictorArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the predictor used to generate the forecast.' }),
-    ).exactOptional(),
-    CreatedUsingAutoPredictor: BooleanSchema.and(
-      z.any().openapi({ description: 'Whether the Forecast was created from an AutoPredictor.' }),
-    ).exactOptional(),
-    DatasetGroupArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset group that provided the data used to train the predictor.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast must be <code>ACTIVE</code> before you can query or export the forecast.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the forecast creation task was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ForecastArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the forecast.' }),
+    ForecastName: NameSchema.exactOptional().openapi({ description: 'The name of the forecast.' }),
+    PredictorArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the predictor used to generate the forecast.',
+    }),
+    CreatedUsingAutoPredictor: BooleanSchema.exactOptional().openapi({
+      description: 'Whether the Forecast was created from an AutoPredictor.',
+    }),
+    DatasetGroupArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that provided the data used to train the predictor.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the forecast must be <code>ACTIVE</code> before you can query or export the forecast.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the forecast creation task was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4432,44 +3112,30 @@ const ForecastsSchema = z.array(ForecastSummarySchema).openapi('Forecasts')
 
 const ListForecastsResponseSchema = z
   .object({
-    Forecasts: ForecastsSchema.and(
-      z
-        .any()
-        .openapi({ description: "An array of objects that summarize each forecast's properties." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    Forecasts: ForecastsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each forecast's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListForecastsResponse')
 
 const ListForecastsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the forecasts that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecasts that match the statement, specify <code>IS</code>. To exclude matching forecasts, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetGroupArn</code>, <code>PredictorArn</code>, and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all forecasts whose status is not ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS_NOT", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the forecasts that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecasts that match the statement, specify <code>IS</code>. To exclude matching forecasts, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetGroupArn</code>, <code>PredictorArn</code>, and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all forecasts whose status is not ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS_NOT", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListForecastsRequest', required: [] })
   .openapi('ListForecastsRequest')
@@ -4478,17 +3144,13 @@ const DetailSchema = z.string().max(256).openapi('Detail')
 
 const PredictorEventSchema = z
   .object({
-    Detail: DetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of event. For example, <code>Retrain</code>. A retraining event denotes the timepoint when a predictor was retrained. Any monitor results from before the <code>Datetime</code> are from the previous predictor. Any new metrics are for the newly retrained predictor.',
-        }),
-    ).exactOptional(),
-    Datetime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp for when the event occurred.' }),
-    ).exactOptional(),
+    Detail: DetailSchema.exactOptional().openapi({
+      description:
+        'The type of event. For example, <code>Retrain</code>. A retraining event denotes the timepoint when a predictor was retrained. Any monitor results from before the <code>Datetime</code> are from the previous predictor. Any new metrics are for the newly retrained predictor.',
+    }),
+    Datetime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp for when the event occurred.',
+    }),
   })
   .openapi({
     description: 'Provides details about a predictor event, such as a retraining.',
@@ -4498,30 +3160,17 @@ const PredictorEventSchema = z
 
 const MonitorDataSourceSchema = z
   .object({
-    DatasetImportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the dataset import job used to import the data that initiated the monitor evaluation.',
-        }),
-    ).exactOptional(),
-    ForecastArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the forecast the monitor used during the evaluation.',
-        }),
-    ).exactOptional(),
-    PredictorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the predictor resource you are monitoring.',
-        }),
-    ).exactOptional(),
+    DatasetImportJobArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset import job used to import the data that initiated the monitor evaluation.',
+    }),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the forecast the monitor used during the evaluation.',
+    }),
+    PredictorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor resource you are monitoring.',
+    }),
   })
   .openapi({
     description: 'The source of the data the monitor used during the evaluation.',
@@ -4533,12 +3182,10 @@ const MetricNameSchema = z.string().max(256).openapi('MetricName')
 
 const MetricResultSchema = z
   .object({
-    MetricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric.' }),
-    ).exactOptional(),
-    MetricValue: DoubleSchema.and(
-      z.any().openapi({ description: 'The value for the metric.' }),
-    ).exactOptional(),
+    MetricName: MetricNameSchema.exactOptional().openapi({
+      description: 'The name of the metric.',
+    }),
+    MetricValue: DoubleSchema.exactOptional().openapi({ description: 'The value for the metric.' }),
   })
   .openapi({
     description:
@@ -4551,78 +3198,44 @@ const MetricResultsSchema = z.array(MetricResultSchema).openapi('MetricResults')
 
 const PredictorMonitorEvaluationSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the resource to monitor.' }),
-    ).exactOptional(),
-    MonitorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the monitor resource.' }),
-    ).exactOptional(),
-    EvaluationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that indicates when the monitor evaluation was started. ',
-        }),
-    ).exactOptional(),
-    EvaluationState: EvaluationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the monitor evaluation. The state can be <code>SUCCESS</code> or <code>FAILURE</code>.',
-        }),
-    ).exactOptional(),
-    WindowStartDatetime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp that indicates the start of the window that is used for monitor evaluation.',
-        }),
-    ).exactOptional(),
-    WindowEndDatetime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp that indicates the end of the window that is used for monitor evaluation.',
-        }),
-    ).exactOptional(),
-    PredictorEvent: PredictorEventSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides details about a predictor event, such as a retraining.',
-        }),
-    ).exactOptional(),
-    MonitorDataSource: MonitorDataSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source of the data the monitor resource used during the evaluation.',
-        }),
-    ).exactOptional(),
-    MetricResults: MetricResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of metrics Forecast calculated when monitoring a predictor. You can compare the value for each metric in the list to the metric's value in the <a>Baseline</a> to see how your predictor's performance is changing.",
-        }),
-    ).exactOptional(),
-    NumItemsEvaluated: LongSchema.and(
-      z.any().openapi({ description: 'The number of items considered during the evaluation.' }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about any errors that may have occurred during the monitor evaluation.',
-        }),
-    ).exactOptional(),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the resource to monitor.',
+    }),
+    MonitorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource.',
+    }),
+    EvaluationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp that indicates when the monitor evaluation was started. ',
+    }),
+    EvaluationState: EvaluationStateSchema.exactOptional().openapi({
+      description:
+        'The status of the monitor evaluation. The state can be <code>SUCCESS</code> or <code>FAILURE</code>.',
+    }),
+    WindowStartDatetime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp that indicates the start of the window that is used for monitor evaluation.',
+    }),
+    WindowEndDatetime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp that indicates the end of the window that is used for monitor evaluation.',
+    }),
+    PredictorEvent: PredictorEventSchema.exactOptional().openapi({
+      description: 'Provides details about a predictor event, such as a retraining.',
+    }),
+    MonitorDataSource: MonitorDataSourceSchema.exactOptional().openapi({
+      description: 'The source of the data the monitor resource used during the evaluation.',
+    }),
+    MetricResults: MetricResultsSchema.exactOptional().openapi({
+      description:
+        "A list of metrics Forecast calculated when monitoring a predictor. You can compare the value for each metric in the list to the metric's value in the <a>Baseline</a> to see how your predictor's performance is changing.",
+    }),
+    NumItemsEvaluated: LongSchema.exactOptional().openapi({
+      description: 'The number of items considered during the evaluation.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({
+      description:
+        'Information about any errors that may have occurred during the monitor evaluation.',
+    }),
   })
   .openapi({ description: 'Describes the results of a monitor evaluation.', required: [] })
   .openapi('PredictorMonitorEvaluation')
@@ -4633,93 +3246,60 @@ const PredictorMonitorEvaluationsSchema = z
 
 const ListMonitorEvaluationsResponseSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    PredictorMonitorEvaluations: PredictorMonitorEvaluationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The monitoring results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html">Viewing Monitoring Results</a>. For more information about retrieving monitoring results see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html">Viewing Monitoring Results</a>.</p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    PredictorMonitorEvaluations: PredictorMonitorEvaluationsSchema.exactOptional().openapi({
+      description:
+        '<p>The monitoring results and predictor events collected by the monitor resource during different windows of time.</p> <p>For information about monitoring see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html">Viewing Monitoring Results</a>. For more information about retrieving monitoring results see <a href="https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring-results.html">Viewing Monitoring Results</a>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMonitorEvaluationsResponse')
 
 const ListMonitorEvaluationsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of monitoring results to return.' }),
-    ).exactOptional(),
-    MonitorArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the monitor resource to get results from.',
-        }),
-    ),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>EvaluationState</code>.</p> </li> <li> <p> <code>Value</code> - The value to match. Valid values are only <code>SUCCESS</code> or <code>FAILURE</code>.</p> </li> </ul> <p>For example, to list only successful monitor evaluations, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "EvaluationState", "Value": "SUCCESS" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of monitoring results to return.',
+    }),
+    MonitorArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource to get results from.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>EvaluationState</code>.</p> </li> <li> <p> <code>Value</code> - The value to match. Valid values are only <code>SUCCESS</code> or <code>FAILURE</code>.</p> </li> </ul> <p>For example, to list only successful monitor evaluations, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "EvaluationState", "Value": "SUCCESS" } ]</code> </p>',
+    }),
   })
   .openapi({ required: ['MonitorArn'], title: 'ListMonitorEvaluationsRequest' })
   .openapi('ListMonitorEvaluationsRequest')
 
 const MonitorSummarySchema = z
   .object({
-    MonitorArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the monitor resource.' }),
-    ).exactOptional(),
-    MonitorName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the monitor resource.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor being monitored.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the monitor resource was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the monitor resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>STOPPED</code> - When the resource stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the monitor creation finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    MonitorArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource.',
+    }),
+    MonitorName: NameSchema.exactOptional().openapi({
+      description: 'The name of the monitor resource.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor being monitored.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the monitor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ACTIVE_STOPPING</code>, <code>ACTIVE_STOPPED</code> </p> </li> <li> <p> <code>UPDATE_IN_PROGRESS</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the monitor resource was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the monitor resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>STOPPED</code> - When the resource stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the monitor creation finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4732,90 +3312,58 @@ const MonitorsSchema = z.array(MonitorSummarySchema).openapi('Monitors')
 
 const ListMonitorsResponseSchema = z
   .object({
-    Monitors: MonitorsSchema.and(
-      z
-        .any()
-        .openapi({ description: "An array of objects that summarize each monitor's properties." }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    Monitors: MonitorsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each monitor's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMonitorsResponse')
 
 const ListMonitorsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of monitors to include in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all monitors who\'s status is ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of monitors to include in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the resources that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. The only valid value is <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all monitors who\'s status is ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListMonitorsRequest', required: [] })
   .openapi('ListMonitorsRequest')
 
 const PredictorBacktestExportJobSummarySchema = z
   .object({
-    PredictorBacktestExportJobArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
-        }),
-    ).exactOptional(),
-    PredictorBacktestExportJobName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the predictor backtest export job.' }),
-    ).exactOptional(),
+    PredictorBacktestExportJobArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the predictor backtest export job.',
+    }),
+    PredictorBacktestExportJobName: NameSchema.exactOptional().openapi({
+      description: 'The name of the predictor backtest export job.',
+    }),
     Destination: DataDestinationSchema.exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the predictor backtest export job. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about any errors that may have occurred during the backtest export.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the predictor backtest export job was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the predictor backtest export job. States include: </p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'Information about any errors that may have occurred during the backtest export.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the predictor backtest export job was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -4830,230 +3378,149 @@ const PredictorBacktestExportJobsSchema = z
 
 const ListPredictorBacktestExportJobsResponseSchema = z
   .object({
-    PredictorBacktestExportJobs: PredictorBacktestExportJobsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects that summarize the properties of each predictor backtest export job.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    PredictorBacktestExportJobs: PredictorBacktestExportJobsSchema.exactOptional().openapi({
+      description:
+        'An array of objects that summarize the properties of each predictor backtest export job.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'Returns this token if the response is truncated. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPredictorBacktestExportJobsResponse')
 
 const ListPredictorBacktestExportJobsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the predictor backtest export jobs that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the predictor backtest export jobs that match the statement, specify <code>IS</code>. To exclude matching predictor backtest export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>PredictorArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the predictor backtest export jobs that match the statement from the list. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the predictor backtest export jobs that match the statement, specify <code>IS</code>. To exclude matching predictor backtest export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>PredictorArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListPredictorBacktestExportJobsRequest', required: [] })
   .openapi('ListPredictorBacktestExportJobsRequest')
 
-const PredictorSummarySchema: z.ZodType<PredictorSummaryType> = z
-  .lazy(() =>
-    z
-      .object({
-        PredictorArn: ArnSchema.and(
-          z.any().openapi({ description: 'The ARN of the predictor.' }),
-        ).exactOptional(),
-        PredictorName: NameSchema.and(
-          z.any().openapi({ description: 'The name of the predictor.' }),
-        ).exactOptional(),
-        DatasetGroupArn: ArnSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The Amazon Resource Name (ARN) of the dataset group that contains the data used to train the predictor.',
-            }),
-        ).exactOptional(),
-        IsAutoPredictor: BooleanSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Whether AutoPredictor was used to create the predictor.' }),
-        ).exactOptional(),
-        ReferencePredictorSummary: ReferencePredictorSummarySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A summary of the reference predictor used if the predictor was retrained or upgraded.',
-            }),
-        ).exactOptional(),
-        Status: StatusSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>The status of the predictor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the predictor must be <code>ACTIVE</code> before you can use the predictor to create a forecast.</p> </note>',
-            }),
-        ).exactOptional(),
-        Message: ErrorMessageSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'If an error occurred, an informational message about the error.',
-            }),
-        ).exactOptional(),
-        CreationTime: TimestampSchema.and(
-          z.any().openapi({ description: 'When the model training task was created.' }),
-        ).exactOptional(),
-        LastModificationTime: TimestampSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Provides a summary of the predictor properties that are used in the <a>ListPredictors</a> operation. To get the complete set of properties, call the <a>DescribePredictor</a> operation, and provide the listed <code>PredictorArn</code>.',
-        required: [],
-      }),
-  )
+const PredictorSummarySchema = z
+  .object({
+    PredictorArn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the predictor.' }),
+    PredictorName: NameSchema.exactOptional().openapi({
+      description: 'The name of the predictor.',
+    }),
+    DatasetGroupArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the dataset group that contains the data used to train the predictor.',
+    }),
+    IsAutoPredictor: BooleanSchema.exactOptional().openapi({
+      description: 'Whether AutoPredictor was used to create the predictor.',
+    }),
+    ReferencePredictorSummary: ReferencePredictorSummarySchema.exactOptional().openapi({
+      description:
+        'A summary of the reference predictor used if the predictor was retrained or upgraded.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the predictor. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the predictor must be <code>ACTIVE</code> before you can use the predictor to create a forecast.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the model training task was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    description:
+      'Provides a summary of the predictor properties that are used in the <a>ListPredictors</a> operation. To get the complete set of properties, call the <a>DescribePredictor</a> operation, and provide the listed <code>PredictorArn</code>.',
+    required: [],
+  })
   .openapi('PredictorSummary')
 
 const PredictorsSchema = z.array(PredictorSummarySchema).openapi('Predictors')
 
 const ListPredictorsResponseSchema = z
   .object({
-    Predictors: PredictorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "An array of objects that summarize each predictor's properties.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    Predictors: PredictorsSchema.exactOptional().openapi({
+      description: "An array of objects that summarize each predictor's properties.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Amazon Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPredictorsResponse')
 
 const ListPredictorsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the predictors that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the predictors that match the statement, specify <code>IS</code>. To exclude matching predictors, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetGroupArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all predictors whose status is ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the predictors that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the predictors that match the statement, specify <code>IS</code>. To exclude matching predictors, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>DatasetGroupArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all predictors whose status is ACTIVE, you would specify:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "Status", "Value": "ACTIVE" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListPredictorsRequest', required: [] })
   .openapi('ListPredictorsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags for the resource.' }),
-    ).exactOptional(),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'The tags for the resource.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const WhatIfAnalysisSummarySchema = z
   .object({
-    WhatIfAnalysisArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if analysis.' }),
-    ).exactOptional(),
-    WhatIfAnalysisName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if analysis.' }),
-    ).exactOptional(),
-    ForecastArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the baseline forecast that is being used in this what-if analysis.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if analysis. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if analysis was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    WhatIfAnalysisArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if analysis.',
+    }),
+    WhatIfAnalysisName: NameSchema.exactOptional().openapi({
+      description: 'The name of the what-if analysis.',
+    }),
+    ForecastArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the baseline forecast that is being used in this what-if analysis.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if analysis. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if analysis was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -5066,103 +3533,65 @@ const WhatIfAnalysesSchema = z.array(WhatIfAnalysisSummarySchema).openapi('WhatI
 
 const ListWhatIfAnalysesResponseSchema = z
   .object({
-    WhatIfAnalyses: WhatIfAnalysesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>WhatIfAnalysisSummary</code> objects that describe the matched analyses.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    WhatIfAnalyses: WhatIfAnalysesSchema.exactOptional().openapi({
+      description:
+        'An array of <code>WhatIfAnalysisSummary</code> objects that describe the matched analyses.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWhatIfAnalysesResponse')
 
 const ListWhatIfAnalysesRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if analysis jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the what-if analysis jobs that match the statement, specify <code>IS</code>. To exclude matching what-if analysis jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfAnalysisArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWhatIf</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfAnalysisArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWhatIf" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if analysis jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the what-if analysis jobs that match the statement, specify <code>IS</code>. To exclude matching what-if analysis jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfAnalysisArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWhatIf</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfAnalysisArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWhatIf" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListWhatIfAnalysesRequest', required: [] })
   .openapi('ListWhatIfAnalysesRequest')
 
 const WhatIfForecastExportSummarySchema = z
   .object({
-    WhatIfForecastExportArn: LongArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast export.' }),
-    ).exactOptional(),
-    WhatIfForecastArns: WhatIfForecastArnListForExportSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of Amazon Resource Names (ARNs) that define the what-if forecasts included in the export.',
-        }),
-    ).exactOptional(),
-    WhatIfForecastExportName: NameSchema.and(
-      z.any().openapi({ description: 'The what-if forecast export name.' }),
-    ).exactOptional(),
-    Destination: DataDestinationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if forecast export. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if forecast export was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    WhatIfForecastExportArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast export.',
+    }),
+    WhatIfForecastArns: WhatIfForecastArnListForExportSchema.exactOptional().openapi({
+      description:
+        'An array of Amazon Resource Names (ARNs) that define the what-if forecasts included in the export.',
+    }),
+    WhatIfForecastExportName: NameSchema.exactOptional().openapi({
+      description: 'The what-if forecast export name.',
+    }),
+    Destination: DataDestinationSchema.exactOptional().openapi({
+      description:
+        'The path to the Amazon Simple Storage Service (Amazon S3) bucket where the forecast is exported.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if forecast export. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if forecast export was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -5177,93 +3606,61 @@ const WhatIfForecastExportsSchema = z
 
 const ListWhatIfForecastExportsResponseSchema = z
   .object({
-    WhatIfForecastExports: WhatIfForecastExportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>WhatIfForecastExports</code> objects that describe the matched forecast exports.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
-        }),
-    ).exactOptional(),
+    WhatIfForecastExports: WhatIfForecastExportsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>WhatIfForecastExports</code> objects that describe the matched forecast exports.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the response is truncated, Forecast returns this token. To retrieve the next set of results, use the token in the next request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWhatIfForecastExportsResponse')
 
 const ListWhatIfForecastExportsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfForecastExportArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWIFExport</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfForecastExportArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWIFExport" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfForecastExportArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWIFExport</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfForecastExportArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWIFExport" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListWhatIfForecastExportsRequest', required: [] })
   .openapi('ListWhatIfForecastExportsRequest')
 
 const WhatIfForecastSummarySchema = z
   .object({
-    WhatIfForecastArn: LongArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the what-if forecast.' }),
-    ).exactOptional(),
-    WhatIfForecastName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the what-if forecast.' }),
-    ).exactOptional(),
-    WhatIfAnalysisArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the what-if analysis that contains this what-if forecast.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
-        }),
-    ).exactOptional(),
-    Message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If an error occurred, an informational message about the error.',
-        }),
-    ).exactOptional(),
-    CreationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'When the what-if forecast was created.' }),
-    ).exactOptional(),
-    LastModificationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    WhatIfForecastArn: LongArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the what-if forecast.',
+    }),
+    WhatIfForecastName: NameSchema.exactOptional().openapi({
+      description: 'The name of the what-if forecast.',
+    }),
+    WhatIfAnalysisArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the what-if analysis that contains this what-if forecast.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the what-if forecast. States include:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>CREATE_PENDING</code>, <code>CREATE_IN_PROGRESS</code>, <code>CREATE_FAILED</code> </p> </li> <li> <p> <code>CREATE_STOPPING</code>, <code>CREATE_STOPPED</code> </p> </li> <li> <p> <code>DELETE_PENDING</code>, <code>DELETE_IN_PROGRESS</code>, <code>DELETE_FAILED</code> </p> </li> </ul> <note> <p>The <code>Status</code> of the what-if analysis must be <code>ACTIVE</code> before you can access the analysis.</p> </note>',
+    }),
+    Message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, an informational message about the error.',
+    }),
+    CreationTime: TimestampSchema.exactOptional().openapi({
+      description: 'When the what-if forecast was created.',
+    }),
+    LastModificationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The last time the resource was modified. The timestamp depends on the status of the job:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - The <code>CreationTime</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPING</code> - The current timestamp.</p> </li> <li> <p> <code>CREATE_STOPPED</code> - When the job stopped.</p> </li> <li> <p> <code>ACTIVE</code> or <code>CREATE_FAILED</code> - When the job finished or failed.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -5276,138 +3673,94 @@ const WhatIfForecastsSchema = z.array(WhatIfForecastSummarySchema).openapi('What
 
 const ListWhatIfForecastsResponseSchema = z
   .object({
-    WhatIfForecasts: WhatIfForecastsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of <code>WhatIfForecasts</code> objects that describe the matched forecasts.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
+    WhatIfForecasts: WhatIfForecastsSchema.exactOptional().openapi({
+      description:
+        'An array of <code>WhatIfForecasts</code> objects that describe the matched forecasts.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWhatIfForecastsResponse')
 
 const ListWhatIfForecastsRequestSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The number of items to return in the response.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfForecastArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWhatIfForecast</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfForecastArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWhatIfForecast" } ]</code> </p>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the result of the previous request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of results, use the token in the next&#x2028; request. Tokens expire after 24 hours.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The number of items to return in the response.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>An array of filters. For each filter, you provide a condition and a match statement. The condition is either <code>IS</code> or <code>IS_NOT</code>, which specifies whether to include or exclude the what-if forecast export jobs that match the statement from the list, respectively. The match statement consists of a key and a value.</p> <p> <b>Filter properties</b> </p> <ul> <li> <p> <code>Condition</code> - The condition to apply. Valid values are <code>IS</code> and <code>IS_NOT</code>. To include the forecast export jobs that match the statement, specify <code>IS</code>. To exclude matching forecast export jobs, specify <code>IS_NOT</code>.</p> </li> <li> <p> <code>Key</code> - The name of the parameter to filter on. Valid values are <code>WhatIfForecastArn</code> and <code>Status</code>.</p> </li> <li> <p> <code>Value</code> - The value to match.</p> </li> </ul> <p>For example, to list all jobs that export a forecast named <i>electricityWhatIfForecast</i>, specify the following filter:</p> <p> <code>"Filters": [ { "Condition": "IS", "Key": "WhatIfForecastArn", "Value": "arn:aws:forecast:us-west-2:&lt;acct-id&gt;:forecast/electricityWhatIfForecast" } ]</code> </p>',
+    }),
   })
   .openapi({ title: 'ListWhatIfForecastsRequest', required: [] })
   .openapi('ListWhatIfForecastsRequest')
 
 const ResumeResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the monitor resource to resume.',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the monitor resource to resume.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ResumeResourceRequest' })
   .openapi('ResumeResourceRequest')
 
 const StopResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource to stop. The supported ARNs are <code>DatasetImportJobArn</code>, <code>PredictorArn</code>, <code>PredictorBacktestExportJobArn</code>, <code>ForecastArn</code>, <code>ForecastExportJobArn</code>, <code>ExplainabilityArn</code>, and <code>ExplainabilityExportArn</code>. ',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource to stop. The supported ARNs are <code>DatasetImportJobArn</code>, <code>PredictorArn</code>, <code>PredictorBacktestExportJobArn</code>, <code>ForecastArn</code>, <code>ForecastExportJobArn</code>, <code>ExplainabilityArn</code>, and <code>ExplainabilityExportArn</code>. ',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'StopResourceRequest' })
   .openapi('StopResourceRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tags to add to the resource. A tag is an array of key-value pairs.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
+    }),
+    Tags: TagsSchema.openapi({
+      description:
+        '<p>The tags to add to the resource. A tag is an array of key-value pairs.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for keys as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has <code>aws</code> as its prefix but the key does not, then Forecast considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of <code>aws</code> do not count against your tags per resource limit.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeysSchema = z.array(TagKeySchema).min(0).max(200).openapi('TagKeys')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
-        }),
-    ),
-    TagKeys: TagKeysSchema.and(
-      z.any().openapi({ description: 'The keys of the tags to be removed.' }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. ',
+    }),
+    TagKeys: TagKeysSchema.openapi({ description: 'The keys of the tags to be removed.' }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateDatasetGroupResponseSchema = z.object({}).openapi('UpdateDatasetGroupResponse')
+const UpdateDatasetGroupResponseSchema = z.looseObject({}).openapi('UpdateDatasetGroupResponse')
 
 const UpdateDatasetGroupRequestSchema = z
   .object({
-    DatasetGroupArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the dataset group.' }),
-    ),
-    DatasetArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of the Amazon Resource Names (ARNs) of the datasets to add to the dataset group.',
-        }),
-    ),
+    DatasetGroupArn: ArnSchema.openapi({ description: 'The ARN of the dataset group.' }),
+    DatasetArns: ArnListSchema.openapi({
+      description:
+        'An array of the Amazon Resource Names (ARNs) of the datasets to add to the dataset group.',
+    }),
   })
   .openapi({ required: ['DatasetGroupArn', 'DatasetArns'], title: 'UpdateDatasetGroupRequest' })
   .openapi('UpdateDatasetGroupRequest')

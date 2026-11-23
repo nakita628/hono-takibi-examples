@@ -1,18 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const S3OneTimeClassificationTypeSchema = z
-  .enum(['FULL', 'NONE'])
-  .openapi('S3OneTimeClassificationType')
-
-const S3ContinuousClassificationTypeSchema = z
-  .literal('FULL')
-  .openapi('S3ContinuousClassificationType')
-
-type ClassificationTypeType = {
-  oneTime: z.infer<typeof S3OneTimeClassificationTypeSchema> & { [key: string]: unknown }
-  continuous: z.infer<typeof S3ContinuousClassificationTypeSchema> & { [key: string]: unknown }
-}
-
 const AWSAccountIdSchema = z
   .string()
   .regex(/[0-9]{12}/)
@@ -20,14 +7,10 @@ const AWSAccountIdSchema = z
 
 const AssociateMemberAccountRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The ID of the Amazon Web Services account that you want to associate with Amazon Macie Classic as a member account.',
-        }),
-    ),
+    memberAccountId: AWSAccountIdSchema.openapi({
+      description:
+        '(Discontinued) The ID of the Amazon Web Services account that you want to associate with Amazon Macie Classic as a member account.',
+    }),
   })
   .openapi({ required: ['memberAccountId'], title: 'AssociateMemberAccountRequest' })
   .openapi('AssociateMemberAccountRequest')
@@ -44,12 +27,12 @@ const PrefixSchema = z.string().max(10000).openapi('Prefix')
 
 const S3ResourceSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z.any().openapi({ description: '(Discontinued) The name of the S3 bucket.' }),
-    ),
-    prefix: PrefixSchema.and(
-      z.any().openapi({ description: '(Discontinued) The prefix of the S3 bucket.' }),
-    ).exactOptional(),
+    bucketName: BucketNameSchema.openapi({
+      description: '(Discontinued) The name of the S3 bucket.',
+    }),
+    prefix: PrefixSchema.exactOptional().openapi({
+      description: '(Discontinued) The prefix of the S3 bucket.',
+    }),
   })
   .openapi({
     required: ['bucketName'],
@@ -68,15 +51,15 @@ const ExceptionMessageSchema = z.string().max(10000).openapi('ExceptionMessage')
 
 const FailedS3ResourceSchema = z
   .object({
-    failedItem: S3ResourceSchema.and(
-      z.any().openapi({ description: '(Discontinued) The failed S3 resources.' }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: '(Discontinued) The status code of a failed item.' }),
-    ).exactOptional(),
-    errorMessage: ExceptionMessageSchema.and(
-      z.any().openapi({ description: '(Discontinued) The error message of a failed item.' }),
-    ).exactOptional(),
+    failedItem: S3ResourceSchema.exactOptional().openapi({
+      description: '(Discontinued) The failed S3 resources.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: '(Discontinued) The status code of a failed item.',
+    }),
+    errorMessage: ExceptionMessageSchema.exactOptional().openapi({
+      description: '(Discontinued) The error message of a failed item.',
+    }),
   })
   .openapi({
     description: '(Discontinued) Includes details about the failed S3 resources.',
@@ -88,73 +71,54 @@ const FailedS3ResourcesSchema = z.array(FailedS3ResourceSchema).openapi('FailedS
 
 const AssociateS3ResourcesResultSchema = z
   .object({
-    failedS3Resources: FailedS3ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Discontinued) S3 resources that couldn't be associated with Amazon Macie Classic. An error code and an error message are provided for each failed item.",
-        }),
-    ).exactOptional(),
+    failedS3Resources: FailedS3ResourcesSchema.exactOptional().openapi({
+      description:
+        "(Discontinued) S3 resources that couldn't be associated with Amazon Macie Classic. An error code and an error message are provided for each failed item.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateS3ResourcesResult')
 
-const ClassificationTypeSchema: z.ZodType<ClassificationTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        oneTime: S3OneTimeClassificationTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '(Discontinued) A one-time classification of all of the existing objects in a specified S3 bucket. ',
-            }),
-        ),
-        continuous: S3ContinuousClassificationTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '(Discontinued) A continuous classification of the objects that are added to a specified S3 bucket. Amazon Macie Classic begins performing continuous classification after a bucket is successfully associated with Macie Classic.',
-            }),
-        ),
-      })
-      .openapi({
-        required: ['oneTime', 'continuous'],
-        description:
-          '(Discontinued) The classification type that Amazon Macie Classic applies to the associated S3 resources.',
-      }),
-  )
+const S3OneTimeClassificationTypeSchema = z
+  .enum(['FULL', 'NONE'])
+  .openapi('S3OneTimeClassificationType')
+
+const S3ContinuousClassificationTypeSchema = z
+  .literal('FULL')
+  .openapi('S3ContinuousClassificationType')
+
+const ClassificationTypeSchema = z
+  .object({
+    oneTime: S3OneTimeClassificationTypeSchema.openapi({
+      description:
+        '(Discontinued) A one-time classification of all of the existing objects in a specified S3 bucket. ',
+    }),
+    continuous: S3ContinuousClassificationTypeSchema.openapi({
+      description:
+        '(Discontinued) A continuous classification of the objects that are added to a specified S3 bucket. Amazon Macie Classic begins performing continuous classification after a bucket is successfully associated with Macie Classic.',
+    }),
+  })
+  .openapi({
+    required: ['oneTime', 'continuous'],
+    description:
+      '(Discontinued) The classification type that Amazon Macie Classic applies to the associated S3 resources.',
+  })
   .openapi('ClassificationType')
 
 const S3ResourceClassificationSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The name of the S3 bucket that you want to associate with Amazon Macie Classic.',
-        }),
-    ),
-    prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The prefix of the S3 bucket that you want to associate with Amazon Macie Classic.',
-        }),
-    ).exactOptional(),
-    classificationType: ClassificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The classification type that you want to specify for the resource associated with Amazon Macie Classic. ',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description:
+        '(Discontinued) The name of the S3 bucket that you want to associate with Amazon Macie Classic.',
+    }),
+    prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The prefix of the S3 bucket that you want to associate with Amazon Macie Classic.',
+    }),
+    classificationType: ClassificationTypeSchema.openapi({
+      description:
+        '(Discontinued) The classification type that you want to specify for the resource associated with Amazon Macie Classic. ',
+    }),
   })
   .openapi({
     required: ['bucketName', 'classificationType'],
@@ -169,22 +133,14 @@ const S3ResourcesClassificationSchema = z
 
 const AssociateS3ResourcesRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The ID of the Amazon Macie Classic member account whose resources you want to associate with Macie Classic.',
-        }),
-    ).exactOptional(),
-    s3Resources: S3ResourcesClassificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The S3 resources that you want to associate with Amazon Macie Classic for monitoring and data classification.',
-        }),
-    ),
+    memberAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The ID of the Amazon Macie Classic member account whose resources you want to associate with Macie Classic.',
+    }),
+    s3Resources: S3ResourcesClassificationSchema.openapi({
+      description:
+        '(Discontinued) The S3 resources that you want to associate with Amazon Macie Classic for monitoring and data classification.',
+    }),
   })
   .openapi({ required: ['s3Resources'], title: 'AssociateS3ResourcesRequest' })
   .openapi('AssociateS3ResourcesRequest')
@@ -193,28 +149,20 @@ const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
 const DisassociateMemberAccountRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The ID of the member account that you want to remove from Amazon Macie Classic.',
-        }),
-    ),
+    memberAccountId: AWSAccountIdSchema.openapi({
+      description:
+        '(Discontinued) The ID of the member account that you want to remove from Amazon Macie Classic.',
+    }),
   })
   .openapi({ required: ['memberAccountId'], title: 'DisassociateMemberAccountRequest' })
   .openapi('DisassociateMemberAccountRequest')
 
 const DisassociateS3ResourcesResultSchema = z
   .object({
-    failedS3Resources: FailedS3ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Discontinued) S3 resources that couldn't be removed from being monitored and classified by Amazon Macie Classic. An error code and an error message are provided for each failed item. ",
-        }),
-    ).exactOptional(),
+    failedS3Resources: FailedS3ResourcesSchema.exactOptional().openapi({
+      description:
+        "(Discontinued) S3 resources that couldn't be removed from being monitored and classified by Amazon Macie Classic. An error code and an error message are provided for each failed item. ",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateS3ResourcesResult')
@@ -223,36 +171,24 @@ const S3ResourcesSchema = z.array(S3ResourceSchema).openapi('S3Resources')
 
 const DisassociateS3ResourcesRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The ID of the Amazon Macie Classic member account whose resources you want to remove from being monitored by Macie Classic.',
-        }),
-    ).exactOptional(),
-    associatedS3Resources: S3ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The S3 resources (buckets or prefixes) that you want to remove from being monitored and classified by Amazon Macie Classic.',
-        }),
-    ),
+    memberAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The ID of the Amazon Macie Classic member account whose resources you want to remove from being monitored by Macie Classic.',
+    }),
+    associatedS3Resources: S3ResourcesSchema.openapi({
+      description:
+        '(Discontinued) The S3 resources (buckets or prefixes) that you want to remove from being monitored and classified by Amazon Macie Classic.',
+    }),
   })
   .openapi({ required: ['associatedS3Resources'], title: 'DisassociateS3ResourcesRequest' })
   .openapi('DisassociateS3ResourcesRequest')
 
 const MemberAccountSchema = z
   .object({
-    accountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The Amazon Web Services account ID of the Amazon Macie Classic member account.',
-        }),
-    ).exactOptional(),
+    accountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The Amazon Web Services account ID of the Amazon Macie Classic member account.',
+    }),
   })
   .openapi({
     description:
@@ -267,22 +203,14 @@ const NextTokenSchema = z.string().max(500).openapi('NextToken')
 
 const ListMemberAccountsResultSchema = z
   .object({
-    memberAccounts: MemberAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) A list of the Amazon Macie Classic member accounts returned by the action. The current Macie Classic administrator account is also included in this list.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the <code>nextToken</code> parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null. ',
-        }),
-    ).exactOptional(),
+    memberAccounts: MemberAccountsSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) A list of the Amazon Macie Classic member accounts returned by the action. The current Macie Classic administrator account is also included in this list.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the <code>nextToken</code> parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMemberAccountsResult')
@@ -291,110 +219,69 @@ const MaxResultsSchema = z.int().max(250).openapi('MaxResults')
 
 const ListMemberAccountsRequestSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) Use this parameter when paginating results. Set the value of this parameter to null on your first call to the <code>ListMemberAccounts</code> action. Subsequent calls to the action fill <code>nextToken</code> in the request with the value of <code>nextToken</code> from the previous response to continue listing data.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) Use this parameter to indicate the maximum number of items that you want in the response. The default value is 250.',
-        }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) Use this parameter when paginating results. Set the value of this parameter to null on your first call to the <code>ListMemberAccounts</code> action. Subsequent calls to the action fill <code>nextToken</code> in the request with the value of <code>nextToken</code> from the previous response to continue listing data.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) Use this parameter to indicate the maximum number of items that you want in the response. The default value is 250.',
+    }),
   })
   .openapi({ title: 'ListMemberAccountsRequest', required: [] })
   .openapi('ListMemberAccountsRequest')
 
 const ListS3ResourcesResultSchema = z
   .object({
-    s3Resources: S3ResourcesClassificationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) A list of the associated S3 resources returned by the action.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the <code>nextToken</code> parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null. ',
-        }),
-    ).exactOptional(),
+    s3Resources: S3ResourcesClassificationSchema.exactOptional().openapi({
+      description: '(Discontinued) A list of the associated S3 resources returned by the action.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) When a response is generated, if there is more data to be listed, this parameter is present in the response and contains the value to use for the <code>nextToken</code> parameter in a subsequent pagination request. If there is no more data to be listed, this parameter is set to null. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListS3ResourcesResult')
 
 const ListS3ResourcesRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The Amazon Macie Classic member account ID whose associated S3 resources you want to list. ',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) Use this parameter when paginating results. Set its value to null on your first call to the <code>ListS3Resources</code> action. Subsequent calls to the action fill <code>nextToken</code> in the request with the value of <code>nextToken</code> from the previous response to continue listing data. ',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) Use this parameter to indicate the maximum number of items that you want in the response. The default value is 250. ',
-        }),
-    ).exactOptional(),
+    memberAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The Amazon Macie Classic member account ID whose associated S3 resources you want to list. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) Use this parameter when paginating results. Set its value to null on your first call to the <code>ListS3Resources</code> action. Subsequent calls to the action fill <code>nextToken</code> in the request with the value of <code>nextToken</code> from the previous response to continue listing data. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) Use this parameter to indicate the maximum number of items that you want in the response. The default value is 250. ',
+    }),
   })
   .openapi({ title: 'ListS3ResourcesRequest', required: [] })
   .openapi('ListS3ResourcesRequest')
 
 const UpdateS3ResourcesResultSchema = z
   .object({
-    failedS3Resources: FailedS3ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Discontinued) The S3 resources whose classification types can't be updated. An error code and an error message are provided for each failed item.",
-        }),
-    ).exactOptional(),
+    failedS3Resources: FailedS3ResourcesSchema.exactOptional().openapi({
+      description:
+        "(Discontinued) The S3 resources whose classification types can't be updated. An error code and an error message are provided for each failed item.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateS3ResourcesResult')
 
 const ClassificationTypeUpdateSchema = z
   .object({
-    oneTime: S3OneTimeClassificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) A one-time classification of all of the existing objects in a specified S3 bucket. ',
-        }),
-    ).exactOptional(),
-    continuous: S3ContinuousClassificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) A continuous classification of the objects that are added to a specified S3 bucket. Amazon Macie Classic begins performing continuous classification after a bucket is successfully associated with Macie Classic. ',
-        }),
-    ).exactOptional(),
+    oneTime: S3OneTimeClassificationTypeSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) A one-time classification of all of the existing objects in a specified S3 bucket. ',
+    }),
+    continuous: S3ContinuousClassificationTypeSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) A continuous classification of the objects that are added to a specified S3 bucket. Amazon Macie Classic begins performing continuous classification after a bucket is successfully associated with Macie Classic. ',
+    }),
   })
   .openapi({
     description:
@@ -405,30 +292,18 @@ const ClassificationTypeUpdateSchema = z
 
 const S3ResourceClassificationUpdateSchema = z
   .object({
-    bucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The name of the S3 bucket whose classification types you want to update.',
-        }),
-    ),
-    prefix: PrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The prefix of the S3 bucket whose classification types you want to update.',
-        }),
-    ).exactOptional(),
-    classificationTypeUpdate: ClassificationTypeUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The classification type that you want to update for the resource associated with Amazon Macie Classic. ',
-        }),
-    ),
+    bucketName: BucketNameSchema.openapi({
+      description:
+        '(Discontinued) The name of the S3 bucket whose classification types you want to update.',
+    }),
+    prefix: PrefixSchema.exactOptional().openapi({
+      description:
+        '(Discontinued) The prefix of the S3 bucket whose classification types you want to update.',
+    }),
+    classificationTypeUpdate: ClassificationTypeUpdateSchema.openapi({
+      description:
+        '(Discontinued) The classification type that you want to update for the resource associated with Amazon Macie Classic. ',
+    }),
   })
   .openapi({
     required: ['bucketName', 'classificationTypeUpdate'],
@@ -443,22 +318,13 @@ const S3ResourcesClassificationUpdateSchema = z
 
 const UpdateS3ResourcesRequestSchema = z
   .object({
-    memberAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "(Discontinued) The Amazon Web Services account ID of the Amazon Macie Classic member account whose S3 resources' classification types you want to update.",
-        }),
-    ).exactOptional(),
-    s3ResourcesUpdate: S3ResourcesClassificationUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Discontinued) The S3 resources whose classification types you want to update.',
-        }),
-    ),
+    memberAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description:
+        "(Discontinued) The Amazon Web Services account ID of the Amazon Macie Classic member account whose S3 resources' classification types you want to update.",
+    }),
+    s3ResourcesUpdate: S3ResourcesClassificationUpdateSchema.openapi({
+      description: '(Discontinued) The S3 resources whose classification types you want to update.',
+    }),
   })
   .openapi({ required: ['s3ResourcesUpdate'], title: 'UpdateS3ResourcesRequest' })
   .openapi('UpdateS3ResourcesRequest')

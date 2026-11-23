@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AcceptPortfolioShareOutputSchema = z.object({}).openapi('AcceptPortfolioShareOutput')
+const AcceptPortfolioShareOutputSchema = z.looseObject({}).openapi('AcceptPortfolioShareOutput')
 
 const AcceptLanguageSchema = z.string().max(100).openapi('AcceptLanguage')
 
@@ -17,23 +17,15 @@ const PortfolioShareTypeSchema = z
 
 const AcceptPortfolioShareInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    PortfolioShareType: PortfolioShareTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of shared portfolios to accept. The default is to accept imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Accept portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Accept imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog accept-portfolio-share --portfolio-id "port-2qwzkwxt3y5fk" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    PortfolioShareType: PortfolioShareTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of shared portfolios to accept. The default is to accept imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Accept portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Accept imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog accept-portfolio-share --portfolio-id "port-2qwzkwxt3y5fk" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'AcceptPortfolioShareInput' })
   .openapi('AcceptPortfolioShareInput')
@@ -45,23 +37,19 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const AssociateBudgetWithResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateBudgetWithResourceOutput')
 
 const BudgetNameSchema = z.string().min(1).max(100).openapi('BudgetName')
 
 const AssociateBudgetWithResourceInputSchema = z
   .object({
-    BudgetName: BudgetNameSchema.and(
-      z.any().openapi({ description: 'The name of the budget you want to associate.' }),
-    ),
-    ResourceId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The resource identifier. Either a portfolio-id or a product-id.',
-        }),
-    ),
+    BudgetName: BudgetNameSchema.openapi({
+      description: 'The name of the budget you want to associate.',
+    }),
+    ResourceId: IdSchema.openapi({
+      description: ' The resource identifier. Either a portfolio-id or a product-id.',
+    }),
   })
   .openapi({ required: ['BudgetName', 'ResourceId'], title: 'AssociateBudgetWithResourceInput' })
   .openapi('AssociateBudgetWithResourceInput')
@@ -69,7 +57,7 @@ const AssociateBudgetWithResourceInputSchema = z
 const DuplicateResourceExceptionSchema = z.any().openapi('DuplicateResourceException')
 
 const AssociatePrincipalWithPortfolioOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociatePrincipalWithPortfolioOutput')
 
 const PrincipalARNSchema = z.string().min(1).max(1000).openapi('PrincipalARN')
@@ -78,31 +66,19 @@ const PrincipalTypeSchema = z.enum(['IAM', 'IAM_PATTERN']).openapi('PrincipalTyp
 
 const AssociatePrincipalWithPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    PrincipalARN: PrincipalARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the principal (user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>. </p> <p>You can associate multiple <code>IAM</code> patterns even if the account has no principal with that name. This is useful in Principal Name Sharing if you want to share a principal without creating it in the account that owns the portfolio. </p>',
-        }),
-    ),
-    PrincipalType: PrincipalTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. ',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    PrincipalARN: PrincipalARNSchema.openapi({
+      description:
+        '<p>The ARN of the principal (user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>. </p> <p>You can associate multiple <code>IAM</code> patterns even if the account has no principal with that name. This is useful in Principal Name Sharing if you want to share a principal without creating it in the account that owns the portfolio. </p>',
+    }),
+    PrincipalType: PrincipalTypeSchema.openapi({
+      description:
+        'The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. ',
+    }),
   })
   .openapi({
     required: ['PortfolioId', 'PrincipalARN', 'PrincipalType'],
@@ -111,65 +87,45 @@ const AssociatePrincipalWithPortfolioInputSchema = z
   .openapi('AssociatePrincipalWithPortfolioInput')
 
 const AssociateProductWithPortfolioOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateProductWithPortfolioOutput')
 
 const AssociateProductWithPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    SourcePortfolioId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the source portfolio.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    SourcePortfolioId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the source portfolio.',
+    }),
   })
   .openapi({ required: ['ProductId', 'PortfolioId'], title: 'AssociateProductWithPortfolioInput' })
   .openapi('AssociateProductWithPortfolioInput')
 
 const AssociateServiceActionWithProvisioningArtifactOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateServiceActionWithProvisioningArtifactOutput')
 
 const AssociateServiceActionWithProvisioningArtifactInputSchema = z
   .object({
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ),
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ProductId: IdSchema.openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
+    ServiceActionId: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ProductId', 'ProvisioningArtifactId', 'ServiceActionId'],
@@ -178,7 +134,7 @@ const AssociateServiceActionWithProvisioningArtifactInputSchema = z
   .openapi('AssociateServiceActionWithProvisioningArtifactInput')
 
 const AssociateTagOptionWithResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateTagOptionWithResourceOutput')
 
 const ResourceIdSchema = z.string().openapi('ResourceId')
@@ -187,10 +143,8 @@ const TagOptionIdSchema = z.string().min(1).max(100).openapi('TagOptionId')
 
 const AssociateTagOptionWithResourceInputSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(z.any().openapi({ description: 'The resource identifier.' })),
-    TagOptionId: TagOptionIdSchema.and(
-      z.any().openapi({ description: 'The TagOption identifier.' }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({ description: 'The resource identifier.' }),
+    TagOptionId: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }),
   })
   .openapi({
     required: ['ResourceId', 'TagOptionId'],
@@ -221,35 +175,23 @@ const ServiceActionAssociationErrorMessageSchema = z
 
 const FailedServiceActionAssociationSchema = z
   .object({
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ).exactOptional(),
-    ErrorCode: ServiceActionAssociationErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code. Valid values are listed below.' }),
-    ).exactOptional(),
-    ErrorMessage: ServiceActionAssociationErrorMessageSchema.and(
-      z.any().openapi({ description: 'A text description of the error.' }),
-    ).exactOptional(),
+    ServiceActionId: IdSchema.exactOptional().openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
+    ErrorCode: ServiceActionAssociationErrorCodeSchema.exactOptional().openapi({
+      description: 'The error code. Valid values are listed below.',
+    }),
+    ErrorMessage: ServiceActionAssociationErrorMessageSchema.exactOptional().openapi({
+      description: 'A text description of the error.',
+    }),
   })
   .openapi({
     description:
@@ -265,43 +207,27 @@ const FailedServiceActionAssociationsSchema = z
 
 const BatchAssociateServiceActionWithProvisioningArtifactOutputSchema = z
   .object({
-    FailedServiceActionAssociations: FailedServiceActionAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains a list of errors, along with information to help you identify the self-service action.',
-        }),
-    ).exactOptional(),
+    FailedServiceActionAssociations: FailedServiceActionAssociationsSchema.exactOptional().openapi({
+      description:
+        'An object that contains a list of errors, along with information to help you identify the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchAssociateServiceActionWithProvisioningArtifactOutput')
 
 const ServiceActionAssociationSchema = z
   .object({
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ),
+    ServiceActionId: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    ProductId: IdSchema.openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
   })
   .openapi({
     required: ['ServiceActionId', 'ProductId', 'ProvisioningArtifactId'],
@@ -318,22 +244,14 @@ const ServiceActionAssociationsSchema = z
 
 const BatchAssociateServiceActionWithProvisioningArtifactInputSchema = z
   .object({
-    ServiceActionAssociations: ServiceActionAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more associations, each consisting of the Action ID, the Product ID, and the Provisioning Artifact ID.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ServiceActionAssociations: ServiceActionAssociationsSchema.openapi({
+      description:
+        'One or more associations, each consisting of the Action ID, the Product ID, and the Provisioning Artifact ID.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ServiceActionAssociations'],
@@ -343,36 +261,24 @@ const BatchAssociateServiceActionWithProvisioningArtifactInputSchema = z
 
 const BatchDisassociateServiceActionFromProvisioningArtifactOutputSchema = z
   .object({
-    FailedServiceActionAssociations: FailedServiceActionAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains a list of errors, along with information to help you identify the self-service action.',
-        }),
-    ).exactOptional(),
+    FailedServiceActionAssociations: FailedServiceActionAssociationsSchema.exactOptional().openapi({
+      description:
+        'An object that contains a list of errors, along with information to help you identify the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDisassociateServiceActionFromProvisioningArtifactOutput')
 
 const BatchDisassociateServiceActionFromProvisioningArtifactInputSchema = z
   .object({
-    ServiceActionAssociations: ServiceActionAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more associations, each consisting of the Action ID, the Product ID, and the Provisioning Artifact ID.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ServiceActionAssociations: ServiceActionAssociationsSchema.openapi({
+      description:
+        'One or more associations, each consisting of the Action ID, the Product ID, and the Provisioning Artifact ID.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ServiceActionAssociations'],
@@ -382,9 +288,9 @@ const BatchDisassociateServiceActionFromProvisioningArtifactInputSchema = z
 
 const CopyProductOutputSchema = z
   .object({
-    CopyProductToken: IdSchema.and(
-      z.any().openapi({ description: 'The token to use to track the progress of the operation.' }),
-    ).exactOptional(),
+    CopyProductToken: IdSchema.exactOptional().openapi({
+      description: 'The token to use to track the progress of the operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CopyProductOutput')
@@ -425,57 +331,32 @@ const IdempotencyTokenSchema = z
 
 const CopyProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SourceProductArn: ProductArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the source product.' }),
-    ),
-    TargetProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the target product. By default, a new product is created.',
-        }),
-    ).exactOptional(),
-    TargetProductName: ProductViewNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the target product. The default is the name of the source product.',
-        }),
-    ).exactOptional(),
-    SourceProvisioningArtifactIdentifiers: SourceProvisioningArtifactPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the provisioning artifacts (also known as versions) of the product to copy. By default, all provisioning artifacts are copied.',
-        }),
-    ).exactOptional(),
-    CopyOptions: CopyOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The copy options. If the value is <code>CopyTags</code>, the tags from the source product are copied to the target product.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request. ',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    SourceProductArn: ProductArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the source product.',
+    }),
+    TargetProductId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the target product. By default, a new product is created.',
+    }),
+    TargetProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'A name for the target product. The default is the name of the source product.',
+    }),
+    SourceProvisioningArtifactIdentifiers:
+      SourceProvisioningArtifactPropertiesSchema.exactOptional().openapi({
+        description:
+          'The identifiers of the provisioning artifacts (also known as versions) of the product to copy. By default, all provisioning artifacts are copied.',
+      }),
+    CopyOptions: CopyOptionsSchema.exactOptional().openapi({
+      description:
+        'The copy options. If the value is <code>CopyTags</code>, the tags from the source product are copied to the target product.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        ' A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request. ',
+    }),
   })
   .openapi({ required: ['SourceProductArn', 'IdempotencyToken'], title: 'CopyProductInput' })
   .openapi('CopyProductInput')
@@ -491,39 +372,25 @@ const AccountIdSchema = z
 
 const ConstraintDetailSchema = z
   .object({
-    ConstraintId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the constraint.' }),
-    ).exactOptional(),
-    Type: ConstraintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p>STACKSET</p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Description: ConstraintDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the constraint.' }),
-    ).exactOptional(),
-    Owner: AccountIdSchema.and(
-      z.any().openapi({ description: 'The owner of the constraint.' }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the product the constraint applies to. Note that a constraint applies to a specific instance of a product within a certain portfolio.',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the portfolio the product resides in. The constraint applies only to the instance of the product that lives within this portfolio.',
-        }),
-    ).exactOptional(),
+    ConstraintId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the constraint.',
+    }),
+    Type: ConstraintTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p>STACKSET</p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
+    }),
+    Description: ConstraintDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the constraint.',
+    }),
+    Owner: AccountIdSchema.exactOptional().openapi({ description: 'The owner of the constraint.' }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the product the constraint applies to. Note that a constraint applies to a specific instance of a product within a certain portfolio.',
+    }),
+    PortfolioId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the portfolio the product resides in. The constraint applies only to the instance of the product that lives within this portfolio.',
+    }),
   })
   .openapi({ description: 'Information about a constraint.', required: [] })
   .openapi('ConstraintDetail')
@@ -534,58 +401,42 @@ const StatusSchema = z.enum(['AVAILABLE', 'CREATING', 'FAILED']).openapi('Status
 
 const CreateConstraintOutputSchema = z
   .object({
-    ConstraintDetail: ConstraintDetailSchema.and(
-      z.any().openapi({ description: 'Information about the constraint.' }),
-    ).exactOptional(),
-    ConstraintParameters: ConstraintParametersSchema.and(
-      z.any().openapi({ description: 'The constraint parameters.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ConstraintDetail: ConstraintDetailSchema.exactOptional().openapi({
+      description: 'Information about the constraint.',
+    }),
+    ConstraintParameters: ConstraintParametersSchema.exactOptional().openapi({
+      description: 'The constraint parameters.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConstraintOutput')
 
 const CreateConstraintInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    Parameters: ConstraintParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can\'t use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{"LocalRoleName": "SCBasicLaunchRole"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{"NotificationArns" : ["arn:aws:sns:us-east-1:123456789012:Topic"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{"Version":"2.0","Properties":{"TagUpdateOnProvisionedProduct":"String"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{"Version": "String", "Properties": {"AccountList": [ "String" ], "RegionList": [ "String" ], "AdminRole": "String", "ExecutionRole": "String"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href="http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html">Template Constraint Rules</a>.</p> </dd> </dl>',
-        }),
-    ),
-    Type: ConstraintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p> <code>RESOURCE_UPDATE</code> </p> </li> <li> <p> <code>STACKSET</code> </p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
-        }),
-    ),
-    Description: ConstraintDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the constraint.' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    Parameters: ConstraintParametersSchema.openapi({
+      description:
+        '<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can\'t use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{"LocalRoleName": "SCBasicLaunchRole"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{"NotificationArns" : ["arn:aws:sns:us-east-1:123456789012:Topic"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{"Version":"2.0","Properties":{"TagUpdateOnProvisionedProduct":"String"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{"Version": "String", "Properties": {"AccountList": [ "String" ], "RegionList": [ "String" ], "AdminRole": "String", "ExecutionRole": "String"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href="http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html">Template Constraint Rules</a>.</p> </dd> </dl>',
+    }),
+    Type: ConstraintTypeSchema.openapi({
+      description:
+        '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p> <code>RESOURCE_UPDATE</code> </p> </li> <li> <p> <code>STACKSET</code> </p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
+    }),
+    Description: ConstraintDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the constraint.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: ['PortfolioId', 'ProductId', 'Parameters', 'Type', 'IdempotencyToken'],
@@ -605,22 +456,22 @@ const ProviderNameSchema = z.string().min(1).max(50).openapi('ProviderName')
 
 const PortfolioDetailSchema = z
   .object({
-    Id: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })).exactOptional(),
-    ARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN assigned to the portfolio.' }),
-    ).exactOptional(),
-    DisplayName: PortfolioDisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to use for display purposes.' }),
-    ).exactOptional(),
-    Description: PortfolioDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the portfolio.' }),
-    ).exactOptional(),
-    CreatedTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    ProviderName: ProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the portfolio provider.' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The portfolio identifier.' }),
+    ARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN assigned to the portfolio.',
+    }),
+    DisplayName: PortfolioDisplayNameSchema.exactOptional().openapi({
+      description: 'The name to use for display purposes.',
+    }),
+    Description: PortfolioDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the portfolio.',
+    }),
+    CreatedTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    ProviderName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The name of the portfolio provider.',
+    }),
   })
   .openapi({ description: 'Information about a portfolio.', required: [] })
   .openapi('PortfolioDetail')
@@ -641,8 +492,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The tag key.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value for this key.' })),
+    Key: TagKeySchema.openapi({ description: 'The tag key.' }),
+    Value: TagValueSchema.openapi({ description: 'The value for this key.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -655,12 +506,12 @@ const TagsSchema = z.array(TagSchema).max(50).openapi('Tags')
 
 const CreatePortfolioOutputSchema = z
   .object({
-    PortfolioDetail: PortfolioDetailSchema.and(
-      z.any().openapi({ description: 'Information about the portfolio.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the portfolio.' }),
-    ).exactOptional(),
+    PortfolioDetail: PortfolioDetailSchema.exactOptional().openapi({
+      description: 'Information about the portfolio.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the portfolio.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePortfolioOutput')
@@ -669,32 +520,24 @@ const AddTagsSchema = z.array(TagSchema).max(20).openapi('AddTags')
 
 const CreatePortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DisplayName: PortfolioDisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to use for display purposes.' }),
-    ),
-    Description: PortfolioDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the portfolio.' }),
-    ).exactOptional(),
-    ProviderName: ProviderNameSchema.and(
-      z.any().openapi({ description: 'The name of the portfolio provider.' }),
-    ),
-    Tags: AddTagsSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    DisplayName: PortfolioDisplayNameSchema.openapi({
+      description: 'The name to use for display purposes.',
+    }),
+    Description: PortfolioDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the portfolio.',
+    }),
+    ProviderName: ProviderNameSchema.openapi({
+      description: 'The name of the portfolio provider.',
+    }),
+    Tags: AddTagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: ['DisplayName', 'ProviderName', 'IdempotencyToken'],
@@ -704,14 +547,10 @@ const CreatePortfolioInputSchema = z
 
 const CreatePortfolioShareOutputSchema = z
   .object({
-    PortfolioShareToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The portfolio shares a unique identifier that only returns if the portfolio is shared to an organization node.',
-        }),
-    ).exactOptional(),
+    PortfolioShareToken: IdSchema.exactOptional().openapi({
+      description:
+        'The portfolio shares a unique identifier that only returns if the portfolio is shared to an organization node.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePortfolioShareOutput')
@@ -729,12 +568,12 @@ const OrganizationNodeValueSchema = z
 
 const OrganizationNodeSchema = z
   .object({
-    Type: OrganizationNodeTypeSchema.and(
-      z.any().openapi({ description: 'The organization node type.' }),
-    ).exactOptional(),
-    Value: OrganizationNodeValueSchema.and(
-      z.any().openapi({ description: 'The identifier of the organization node.' }),
-    ).exactOptional(),
+    Type: OrganizationNodeTypeSchema.exactOptional().openapi({
+      description: 'The organization node type.',
+    }),
+    Value: OrganizationNodeValueSchema.exactOptional().openapi({
+      description: 'The identifier of the organization node.',
+    }),
   })
   .openapi({ description: 'Information about the organization node.', required: [] })
   .openapi('OrganizationNode')
@@ -743,47 +582,26 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const CreatePortfolioShareInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account ID. For example, <code>123456789012</code>.',
-        }),
-    ).exactOptional(),
-    OrganizationNode: OrganizationNodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The organization node to whom you are going to share. When you pass <code>OrganizationNode</code>, it creates <code>PortfolioShare</code> for all of the Amazon Web Services accounts that are associated to the <code>OrganizationNode</code>. The output returns a <code>PortfolioShareToken</code>, which enables the administrator to monitor the status of the <code>PortfolioShare</code> creation process.',
-        }),
-    ).exactOptional(),
-    ShareTagOptions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables <code>TagOptions </code> sharing when creating the portfolio share. If this flag is not provided, TagOptions sharing is disabled.',
-        }),
-    ).exactOptional(),
-    SharePrincipals: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Enables or disables <code>Principal</code> sharing when creating the portfolio share. If this flag is not provided, principal sharing is disabled. </p> <p>When you enable Principal Name Sharing for a portfolio share, the share recipient account end users with a principal that matches any of the associated IAM patterns can provision products from the portfolio. Once shared, the share recipient can view associations of <code>PrincipalType</code>: <code>IAM_PATTERN</code> on their portfolio. You can create the principals in the recipient account before or after creating the share. </p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID. For example, <code>123456789012</code>.',
+    }),
+    OrganizationNode: OrganizationNodeSchema.exactOptional().openapi({
+      description:
+        'The organization node to whom you are going to share. When you pass <code>OrganizationNode</code>, it creates <code>PortfolioShare</code> for all of the Amazon Web Services accounts that are associated to the <code>OrganizationNode</code>. The output returns a <code>PortfolioShareToken</code>, which enables the administrator to monitor the status of the <code>PortfolioShare</code> creation process.',
+    }),
+    ShareTagOptions: BooleanSchema.exactOptional().openapi({
+      description:
+        'Enables or disables <code>TagOptions </code> sharing when creating the portfolio share. If this flag is not provided, TagOptions sharing is disabled.',
+    }),
+    SharePrincipals: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>Enables or disables <code>Principal</code> sharing when creating the portfolio share. If this flag is not provided, principal sharing is disabled. </p> <p>When you enable Principal Name Sharing for a portfolio share, the share recipient account end users with a principal that matches any of the associated IAM patterns can provision products from the portfolio. Once shared, the share recipient can view associations of <code>PrincipalType</code>: <code>IAM_PATTERN</code> on their portfolio. You can create the principals in the recipient account before or after creating the share. </p>',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'CreatePortfolioShareInput' })
   .openapi('CreatePortfolioShareInput')
@@ -813,63 +631,39 @@ const SupportUrlSchema = z.string().max(2083).openapi('SupportUrl')
 
 const ProductViewSummarySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The product view identifier.' }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    Name: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The name of the product.' }),
-    ).exactOptional(),
-    Owner: ProductViewOwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the product. Contact the product administrator for the significance of this value.',
-        }),
-    ).exactOptional(),
-    ShortDescription: ProductViewShortDescriptionSchema.and(
-      z.any().openapi({ description: 'Short description of the product.' }),
-    ).exactOptional(),
-    Type: ProductTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The product type. Contact the product administrator for the significance of this value. If this value is <code>MARKETPLACE</code>, the product was created by Amazon Web Services Marketplace.',
-        }),
-    ).exactOptional(),
-    Distributor: ProductViewDistributorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The distributor of the product. Contact the product administrator for the significance of this value.',
-        }),
-    ).exactOptional(),
-    HasDefaultPath: HasDefaultPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the product has a default path. If the product does not have a default path, call <a>ListLaunchPaths</a> to disambiguate between paths. Otherwise, <a>ListLaunchPaths</a> is not required, and the output of <a>ProductViewSummary</a> can be used directly with <a>DescribeProvisioningParameters</a>.',
-        }),
-    ).exactOptional(),
-    SupportEmail: SupportEmailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The email contact information to obtain support for this Product.',
-        }),
-    ).exactOptional(),
-    SupportDescription: SupportDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the support for this Product.' }),
-    ).exactOptional(),
-    SupportUrl: SupportUrlSchema.and(
-      z.any().openapi({ description: 'The URL information to obtain support for this Product.' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The product view identifier.' }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    Name: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The name of the product.',
+    }),
+    Owner: ProductViewOwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the product. Contact the product administrator for the significance of this value.',
+    }),
+    ShortDescription: ProductViewShortDescriptionSchema.exactOptional().openapi({
+      description: 'Short description of the product.',
+    }),
+    Type: ProductTypeSchema.exactOptional().openapi({
+      description:
+        'The product type. Contact the product administrator for the significance of this value. If this value is <code>MARKETPLACE</code>, the product was created by Amazon Web Services Marketplace.',
+    }),
+    Distributor: ProductViewDistributorSchema.exactOptional().openapi({
+      description:
+        'The distributor of the product. Contact the product administrator for the significance of this value.',
+    }),
+    HasDefaultPath: HasDefaultPathSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the product has a default path. If the product does not have a default path, call <a>ListLaunchPaths</a> to disambiguate between paths. Otherwise, <a>ListLaunchPaths</a> is not required, and the output of <a>ProductViewSummary</a> can be used directly with <a>DescribeProvisioningParameters</a>.',
+    }),
+    SupportEmail: SupportEmailSchema.exactOptional().openapi({
+      description: 'The email contact information to obtain support for this Product.',
+    }),
+    SupportDescription: SupportDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the support for this Product.',
+    }),
+    SupportUrl: SupportUrlSchema.exactOptional().openapi({
+      description: 'The URL information to obtain support for this Product.',
+    }),
   })
   .openapi({ description: 'Summary information about a product view.', required: [] })
   .openapi('ProductViewSummary')
@@ -895,33 +689,21 @@ const RepositoryArtifactPathSchema = z.string().min(1).max(4096).openapi('Reposi
 
 const CodeStarParametersSchema = z
   .object({
-    ConnectionArn: CodeStarConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The CodeStar ARN, which is the connection between Service Catalog and the external repository.',
-        }),
-    ),
-    Repository: RepositorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specific repository where the product’s artifact-to-be-synced resides, formatted as "Account/Repo." ',
-        }),
-    ),
-    Branch: RepositoryBranchSchema.and(
-      z.any().openapi({ description: 'The specific branch where the artifact resides. ' }),
-    ),
-    ArtifactPath: RepositoryArtifactPathSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The absolute path wehre the artifact resides within the repo and branch, formatted as "folder/file.json." ',
-        }),
-    ),
+    ConnectionArn: CodeStarConnectionArnSchema.openapi({
+      description:
+        'The CodeStar ARN, which is the connection between Service Catalog and the external repository.',
+    }),
+    Repository: RepositorySchema.openapi({
+      description:
+        'The specific repository where the product’s artifact-to-be-synced resides, formatted as "Account/Repo." ',
+    }),
+    Branch: RepositoryBranchSchema.openapi({
+      description: 'The specific branch where the artifact resides. ',
+    }),
+    ArtifactPath: RepositoryArtifactPathSchema.openapi({
+      description:
+        'The absolute path wehre the artifact resides within the repo and branch, formatted as "folder/file.json." ',
+    }),
   })
   .openapi({
     required: ['ConnectionArn', 'Repository', 'Branch', 'ArtifactPath'],
@@ -931,9 +713,9 @@ const CodeStarParametersSchema = z
 
 const SourceConnectionParametersSchema = z
   .object({
-    CodeStar: CodeStarParametersSchema.and(
-      z.any().openapi({ description: 'Provides <code>ConnectionType</code> details.' }),
-    ).exactOptional(),
+    CodeStar: CodeStarParametersSchema.exactOptional().openapi({
+      description: 'Provides <code>ConnectionType</code> details.',
+    }),
   })
   .openapi({ description: 'Provides connection details.', required: [] })
   .openapi('SourceConnectionParameters')
@@ -950,41 +732,25 @@ const LastSuccessfulSyncTimeSchema = z.iso
 
 const LastSyncSchema = z
   .object({
-    LastSyncTime: LastSyncTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the last attempted sync from the repository to the Service Catalog product. ',
-        }),
-    ).exactOptional(),
-    LastSyncStatus: LastSyncStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the sync. Responses include <code>SUCCEEDED</code> or <code>FAILED</code>. ',
-        }),
-    ).exactOptional(),
-    LastSyncStatusMessage: LastSyncStatusMessageSchema.and(
-      z.any().openapi({ description: "The sync's status message. " }),
-    ).exactOptional(),
-    LastSuccessfulSyncTime: LastSuccessfulSyncTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the latest successful sync from the source repo artifact to the Service Catalog product.',
-        }),
-    ).exactOptional(),
-    LastSuccessfulSyncProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ProvisioningArtifactID of the ProvisioningArtifact created from the latest successful sync. ',
-        }),
-    ).exactOptional(),
+    LastSyncTime: LastSyncTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the last attempted sync from the repository to the Service Catalog product. ',
+    }),
+    LastSyncStatus: LastSyncStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the sync. Responses include <code>SUCCEEDED</code> or <code>FAILED</code>. ',
+    }),
+    LastSyncStatusMessage: LastSyncStatusMessageSchema.exactOptional().openapi({
+      description: "The sync's status message. ",
+    }),
+    LastSuccessfulSyncTime: LastSuccessfulSyncTimeSchema.exactOptional().openapi({
+      description:
+        'The time of the latest successful sync from the source repo artifact to the Service Catalog product.',
+    }),
+    LastSuccessfulSyncProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description:
+        'The ProvisioningArtifactID of the ProvisioningArtifact created from the latest successful sync. ',
+    }),
   })
   .openapi({
     description:
@@ -995,28 +761,16 @@ const LastSyncSchema = z
 
 const SourceConnectionDetailSchema = z
   .object({
-    Type: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The only supported <code>SourceConnection</code> type is Codestar.',
-        }),
-    ).exactOptional(),
-    ConnectionParameters: SourceConnectionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The connection details based on the connection <code>Type</code>.',
-        }),
-    ).exactOptional(),
-    LastSync: LastSyncSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Provides details about the product's connection sync and contains the following sub-fields. </p> <ul> <li> <p> <code>LastSyncTime</code> </p> </li> <li> <p> <code>LastSyncStatus</code> </p> </li> <li> <p> <code>LastSyncStatusMessage</code> </p> </li> <li> <p> <code>LastSuccessfulSyncTime</code> </p> </li> <li> <p> <code>LastSuccessfulSyncProvisioningArtifactID</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Type: SourceTypeSchema.exactOptional().openapi({
+      description: 'The only supported <code>SourceConnection</code> type is Codestar.',
+    }),
+    ConnectionParameters: SourceConnectionParametersSchema.exactOptional().openapi({
+      description: 'The connection details based on the connection <code>Type</code>.',
+    }),
+    LastSync: LastSyncSchema.exactOptional().openapi({
+      description:
+        "<p>Provides details about the product's connection sync and contains the following sub-fields. </p> <ul> <li> <p> <code>LastSyncTime</code> </p> </li> <li> <p> <code>LastSyncStatus</code> </p> </li> <li> <p> <code>LastSyncStatusMessage</code> </p> </li> <li> <p> <code>LastSuccessfulSyncTime</code> </p> </li> <li> <p> <code>LastSuccessfulSyncProvisioningArtifactID</code> </p> </li> </ul>",
+    }),
   })
   .openapi({
     description: 'Provides details about the configured <code>SourceConnection</code>. ',
@@ -1026,31 +780,23 @@ const SourceConnectionDetailSchema = z
 
 const ProductViewDetailSchema = z
   .object({
-    ProductViewSummary: ProductViewSummarySchema.and(
-      z.any().openapi({ description: 'Summary information about the product view.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the product.</p> <ul> <li> <p> <code>AVAILABLE</code> - The product is ready for use.</p> </li> <li> <p> <code>CREATING</code> - Product creation has started; the product is not ready for use.</p> </li> <li> <p> <code>FAILED</code> - An action failed.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductARN: ResourceARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the product.' }),
-    ).exactOptional(),
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    SourceConnection: SourceConnectionDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A top level <code>ProductViewDetail</code> response containing details about the product’s connection. Service Catalog returns this field for the <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, and <code>SearchProductAsAdmin</code> APIs. This response contains the same fields as the <code>ConnectionParameters</code> request, with the addition of the <code>LastSync</code> response.',
-        }),
-    ).exactOptional(),
+    ProductViewSummary: ProductViewSummarySchema.exactOptional().openapi({
+      description: 'Summary information about the product view.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the product.</p> <ul> <li> <p> <code>AVAILABLE</code> - The product is ready for use.</p> </li> <li> <p> <code>CREATING</code> - Product creation has started; the product is not ready for use.</p> </li> <li> <p> <code>FAILED</code> - An action failed.</p> </li> </ul>',
+    }),
+    ProductARN: ResourceARNSchema.exactOptional().openapi({
+      description: 'The ARN of the product.',
+    }),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    SourceConnection: SourceConnectionDetailSchema.exactOptional().openapi({
+      description:
+        'A top level <code>ProductViewDetail</code> response containing details about the product’s connection. Service Catalog returns this field for the <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, and <code>SearchProductAsAdmin</code> APIs. This response contains the same fields as the <code>ConnectionParameters</code> request, with the addition of the <code>LastSync</code> response.',
+    }),
   })
   .openapi({ description: 'Information about a product view.', required: [] })
   .openapi('ProductViewDetail')
@@ -1071,45 +817,33 @@ const SourceRevisionSchema = z.string().min(1).max(512).openapi('SourceRevision'
 
 const ProvisioningArtifactDetailSchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    Name: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning artifact.' }),
-    ).exactOptional(),
-    Description: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning artifact.' }),
-    ).exactOptional(),
-    Type: ProvisioningArtifactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>MARKETPLACE_AMI</code> - Amazon Web Services Marketplace AMI</p> </li> <li> <p> <code>MARKETPLACE_CAR</code> - Amazon Web Services Marketplace Clusters and Amazon Web Services Resources</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreatedTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    Active: ProvisioningArtifactActiveSchema.and(
-      z.any().openapi({ description: 'Indicates whether the product version is active.' }),
-    ).exactOptional(),
-    Guidance: ProvisioningArtifactGuidanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.',
-        }),
-    ).exactOptional(),
-    SourceRevision: SourceRevisionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the revision of the external artifact that was used to automatically sync the Service Catalog product and create the provisioning artifact. Service Catalog includes this response parameter as a high level field to the existing <code>ProvisioningArtifactDetail</code> type, which is returned as part of the response for <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, <code>DescribeProvisioningArtifact</code>, <code>ListProvisioningArtifact</code>, and <code>UpdateProvisioningArticat</code> APIs. </p> <p>This field only exists for Repo-Synced products. </p>',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    Name: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning artifact.',
+    }),
+    Description: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The description of the provisioning artifact.',
+    }),
+    Type: ProvisioningArtifactTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>MARKETPLACE_AMI</code> - Amazon Web Services Marketplace AMI</p> </li> <li> <p> <code>MARKETPLACE_CAR</code> - Amazon Web Services Marketplace Clusters and Amazon Web Services Resources</p> </li> </ul>',
+    }),
+    CreatedTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    Active: ProvisioningArtifactActiveSchema.exactOptional().openapi({
+      description: 'Indicates whether the product version is active.',
+    }),
+    Guidance: ProvisioningArtifactGuidanceSchema.exactOptional().openapi({
+      description:
+        'Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.',
+    }),
+    SourceRevision: SourceRevisionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the revision of the external artifact that was used to automatically sync the Service Catalog product and create the provisioning artifact. Service Catalog includes this response parameter as a high level field to the existing <code>ProvisioningArtifactDetail</code> type, which is returned as part of the response for <code>CreateProduct</code>, <code>UpdateProduct</code>, <code>DescribeProductAsAdmin</code>, <code>DescribeProvisioningArtifact</code>, <code>ListProvisioningArtifact</code>, and <code>UpdateProvisioningArticat</code> APIs. </p> <p>This field only exists for Repo-Synced products. </p>',
+    }),
   })
   .openapi({
     description:
@@ -1120,15 +854,15 @@ const ProvisioningArtifactDetailSchema = z
 
 const CreateProductOutputSchema = z
   .object({
-    ProductViewDetail: ProductViewDetailSchema.and(
-      z.any().openapi({ description: 'Information about the product view.' }),
-    ).exactOptional(),
-    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.and(
-      z.any().openapi({ description: 'Information about the provisioning artifact. ' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the product.' }),
-    ).exactOptional(),
+    ProductViewDetail: ProductViewDetailSchema.exactOptional().openapi({
+      description: 'Information about the product view.',
+    }),
+    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifact. ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProductOutput')
@@ -1150,46 +884,26 @@ const DisableTemplateValidationSchema = z.boolean().openapi('DisableTemplateVali
 
 const ProvisioningArtifactPropertiesSchema = z
   .object({
-    Name: ProvisioningArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioning artifact (for example, v1 v2beta). No spaces are allowed.',
-        }),
-    ).exactOptional(),
-    Description: ProvisioningArtifactDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the provisioning artifact, including how it differs from the previous provisioning artifact.',
-        }),
-    ).exactOptional(),
-    Info: ProvisioningArtifactInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ]</p> <p>The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. Specify the URL in JSON format as follows:</p> <p> <code>"LoadTemplateFromURL": "https://s3.amazonaws.com/cf-templates-ozkq9d3hgiq2-us-east-1/..."</code> </p> <p> <code>ImportFromPhysicalId</code>: The physical id of the resource that contains the template. Currently only supports CloudFormation stack arn. Specify the physical id in JSON format as follows: <code>ImportFromPhysicalId: “arn:aws:cloudformation:[us-east-1]:[accountId]:stack/[StackName]/[resourceId]</code> </p>',
-        }),
-    ).exactOptional(),
-    Type: ProvisioningArtifactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>MARKETPLACE_AMI</code> - Amazon Web Services Marketplace AMI</p> </li> <li> <p> <code>MARKETPLACE_CAR</code> - Amazon Web Services Marketplace Clusters and Amazon Web Services Resources</p> </li> <li> <p> <code>TERRAFORM_OPEN_SOURCE</code> - Terraform open source configuration file</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DisableTemplateValidation: DisableTemplateValidationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, Service Catalog stops validating the specified provisioning artifact even if it is invalid.',
-        }),
-    ).exactOptional(),
+    Name: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioning artifact (for example, v1 v2beta). No spaces are allowed.',
+    }),
+    Description: ProvisioningArtifactDescriptionSchema.exactOptional().openapi({
+      description:
+        'The description of the provisioning artifact, including how it differs from the previous provisioning artifact.',
+    }),
+    Info: ProvisioningArtifactInfoSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ]</p> <p>The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. Specify the URL in JSON format as follows:</p> <p> <code>"LoadTemplateFromURL": "https://s3.amazonaws.com/cf-templates-ozkq9d3hgiq2-us-east-1/..."</code> </p> <p> <code>ImportFromPhysicalId</code>: The physical id of the resource that contains the template. Currently only supports CloudFormation stack arn. Specify the physical id in JSON format as follows: <code>ImportFromPhysicalId: “arn:aws:cloudformation:[us-east-1]:[accountId]:stack/[StackName]/[resourceId]</code> </p>',
+    }),
+    Type: ProvisioningArtifactTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of provisioning artifact.</p> <ul> <li> <p> <code>CLOUD_FORMATION_TEMPLATE</code> - CloudFormation template</p> </li> <li> <p> <code>MARKETPLACE_AMI</code> - Amazon Web Services Marketplace AMI</p> </li> <li> <p> <code>MARKETPLACE_CAR</code> - Amazon Web Services Marketplace Clusters and Amazon Web Services Resources</p> </li> <li> <p> <code>TERRAFORM_OPEN_SOURCE</code> - Terraform open source configuration file</p> </li> </ul>',
+    }),
+    DisableTemplateValidation: DisableTemplateValidationSchema.exactOptional().openapi({
+      description:
+        'If set to true, Service Catalog stops validating the specified provisioning artifact even if it is invalid.',
+    }),
   })
   .openapi({
     description:
@@ -1200,20 +914,12 @@ const ProvisioningArtifactPropertiesSchema = z
 
 const SourceConnectionSchema = z
   .object({
-    Type: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The only supported <code>SourceConnection</code> type is Codestar. ',
-        }),
-    ).exactOptional(),
-    ConnectionParameters: SourceConnectionParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The connection details based on the connection <code>Type</code>. ',
-        }),
-    ),
+    Type: SourceTypeSchema.exactOptional().openapi({
+      description: 'The only supported <code>SourceConnection</code> type is Codestar. ',
+    }),
+    ConnectionParameters: SourceConnectionParametersSchema.openapi({
+      description: 'The connection details based on the connection <code>Type</code>. ',
+    }),
   })
   .openapi({
     required: ['ConnectionParameters'],
@@ -1224,59 +930,41 @@ const SourceConnectionSchema = z
 
 const CreateProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Name: ProductViewNameSchema.and(z.any().openapi({ description: 'The name of the product.' })),
-    Owner: ProductViewOwnerSchema.and(
-      z.any().openapi({ description: 'The owner of the product.' }),
-    ),
-    Description: ProductViewShortDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the product.' }),
-    ).exactOptional(),
-    Distributor: ProductViewOwnerSchema.and(
-      z.any().openapi({ description: 'The distributor of the product.' }),
-    ).exactOptional(),
-    SupportDescription: SupportDescriptionSchema.and(
-      z.any().openapi({ description: 'The support information about the product.' }),
-    ).exactOptional(),
-    SupportEmail: SupportEmailSchema.and(
-      z.any().openapi({ description: 'The contact email for product support.' }),
-    ).exactOptional(),
-    SupportUrl: SupportUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contact URL for product support.</p> <p> <code>^https?:\\/\\// </code>/ is the pattern used to validate SupportUrl.</p>',
-        }),
-    ).exactOptional(),
-    ProductType: ProductTypeSchema.and(z.any().openapi({ description: 'The type of product.' })),
-    Tags: AddTagsSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
-    ProvisioningArtifactParameters: ProvisioningArtifactPropertiesSchema.and(
-      z.any().openapi({ description: 'The configuration of the provisioning artifact. ' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
-    SourceConnection: SourceConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies connection details for the created product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Name: ProductViewNameSchema.openapi({ description: 'The name of the product.' }),
+    Owner: ProductViewOwnerSchema.openapi({ description: 'The owner of the product.' }),
+    Description: ProductViewShortDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the product.',
+    }),
+    Distributor: ProductViewOwnerSchema.exactOptional().openapi({
+      description: 'The distributor of the product.',
+    }),
+    SupportDescription: SupportDescriptionSchema.exactOptional().openapi({
+      description: 'The support information about the product.',
+    }),
+    SupportEmail: SupportEmailSchema.exactOptional().openapi({
+      description: 'The contact email for product support.',
+    }),
+    SupportUrl: SupportUrlSchema.exactOptional().openapi({
+      description:
+        '<p>The contact URL for product support.</p> <p> <code>^https?:\\/\\// </code>/ is the pattern used to validate SupportUrl.</p>',
+    }),
+    ProductType: ProductTypeSchema.openapi({ description: 'The type of product.' }),
+    Tags: AddTagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    ProvisioningArtifactParameters: ProvisioningArtifactPropertiesSchema.exactOptional().openapi({
+      description: 'The configuration of the provisioning artifact. ',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
+    SourceConnection: SourceConnectionSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies connection details for the created product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['Name', 'Owner', 'ProductType', 'IdempotencyToken'],
@@ -1295,19 +983,19 @@ const ProvisionedProductNameSchema = z
 
 const CreateProvisionedProductPlanOutputSchema = z
   .object({
-    PlanName: ProvisionedProductPlanNameSchema.and(
-      z.any().openapi({ description: 'The name of the plan.' }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })).exactOptional(),
-    ProvisionProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
+    PlanName: ProvisionedProductPlanNameSchema.exactOptional().openapi({
+      description: 'The name of the plan.',
+    }),
+    PlanId: IdSchema.exactOptional().openapi({ description: 'The plan identifier.' }),
+    ProvisionProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier.',
+    }),
+    ProvisionedProductName: ProvisionedProductNameSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProvisionedProductPlanOutput')
@@ -1335,20 +1023,12 @@ const UsePreviousValueSchema = z.boolean().openapi('UsePreviousValue')
 
 const UpdateProvisioningParameterSchema = z
   .object({
-    Key: ParameterKeySchema.and(
-      z.any().openapi({ description: 'The parameter key.' }),
-    ).exactOptional(),
-    Value: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The parameter value.' }),
-    ).exactOptional(),
-    UsePreviousValue: UsePreviousValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, <code>Value</code> is ignored and the previous parameter value is kept.',
-        }),
-    ).exactOptional(),
+    Key: ParameterKeySchema.exactOptional().openapi({ description: 'The parameter key.' }),
+    Value: ParameterValueSchema.exactOptional().openapi({ description: 'The parameter value.' }),
+    UsePreviousValue: UsePreviousValueSchema.exactOptional().openapi({
+      description:
+        'If set to true, <code>Value</code> is ignored and the previous parameter value is kept.',
+    }),
   })
   .openapi({
     description: 'The parameter key-value pair used to update a provisioned product.',
@@ -1362,72 +1042,40 @@ const UpdateProvisioningParametersSchema = z
 
 const CreateProvisionedProductPlanInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PlanName: ProvisionedProductPlanNameSchema.and(
-      z.any().openapi({ description: 'The name of the plan.' }),
-    ),
-    PlanType: ProvisionedProductPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ),
-    NotificationArns: NotificationArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
-        }),
-    ).exactOptional(),
-    PathId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-friendly name for the provisioned product. This value must be unique for the Amazon Web Services account and cannot be updated after the product is provisioned.',
-        }),
-    ),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ),
-    ProvisioningParameters: UpdateProvisioningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters specified by the administrator that are required for provisioning the product.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more tags.</p> <p>If the plan is for an existing provisioned product, the product must have a <code>RESOURCE_UPDATE</code> constraint with <code>TagUpdatesOnProvisionedProduct</code> set to <code>ALLOWED</code> to allow tag updates.</p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PlanName: ProvisionedProductPlanNameSchema.openapi({ description: 'The name of the plan.' }),
+    PlanType: ProvisionedProductPlanTypeSchema.openapi({ description: 'The plan type.' }),
+    NotificationArns: NotificationArnsSchema.exactOptional().openapi({
+      description:
+        'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({
+      description:
+        'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    ProvisionedProductName: ProvisionedProductNameSchema.openapi({
+      description:
+        'A user-friendly name for the provisioned product. This value must be unique for the Amazon Web Services account and cannot be updated after the product is provisioned.',
+    }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    ProvisioningParameters: UpdateProvisioningParametersSchema.exactOptional().openapi({
+      description:
+        'Parameters specified by the administrator that are required for provisioning the product.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more tags.</p> <p>If the plan is for an existing provisioned product, the product must have a <code>RESOURCE_UPDATE</code> constraint with <code>TagUpdatesOnProvisionedProduct</code> set to <code>ALLOWED</code> to allow tag updates.</p>',
+    }),
   })
   .openapi({
     required: [
@@ -1444,46 +1092,34 @@ const CreateProvisionedProductPlanInputSchema = z
 
 const CreateProvisioningArtifactOutputSchema = z
   .object({
-    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.and(
-      z.any().openapi({ description: 'Information about the provisioning artifact.' }),
-    ).exactOptional(),
-    Info: ProvisioningArtifactInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ].</p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. </p> <p> <code>LoadTemplateFromURL</code> </p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.</p> <p> <code>ImportFromPhysicalId</code> </p> <p>Use the physical id of the resource that contains the template; currently supports CloudFormation stack ARN.</p>',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifact.',
+    }),
+    Info: ProvisioningArtifactInfoSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the template source with one of the following options, but not both. Keys accepted: [ <code>LoadTemplateFromURL</code>, <code>ImportFromPhysicalId</code> ].</p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format. </p> <p> <code>LoadTemplateFromURL</code> </p> <p>Use the URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.</p> <p> <code>ImportFromPhysicalId</code> </p> <p>Use the physical id of the resource that contains the template; currently supports CloudFormation stack ARN.</p>',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProvisioningArtifactOutput')
 
 const CreateProvisioningArtifactInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    Parameters: ProvisioningArtifactPropertiesSchema.and(
-      z.any().openapi({ description: 'The configuration for the provisioning artifact.' }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    Parameters: ProvisioningArtifactPropertiesSchema.openapi({
+      description: 'The configuration for the provisioning artifact.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: ['ProductId', 'Parameters', 'IdempotencyToken'],
@@ -1506,23 +1142,17 @@ const ServiceActionDefinitionTypeSchema = z
 
 const ServiceActionSummarySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The self-service action identifier.' }),
-    ).exactOptional(),
-    Name: ServiceActionNameSchema.and(
-      z.any().openapi({ description: 'The self-service action name.' }),
-    ).exactOptional(),
-    Description: ServiceActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The self-service action description.' }),
-    ).exactOptional(),
-    DefinitionType: ServiceActionDefinitionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action definition type. For example, <code>SSM_AUTOMATION</code>.',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The self-service action identifier.' }),
+    Name: ServiceActionNameSchema.exactOptional().openapi({
+      description: 'The self-service action name.',
+    }),
+    Description: ServiceActionDescriptionSchema.exactOptional().openapi({
+      description: 'The self-service action description.',
+    }),
+    DefinitionType: ServiceActionDefinitionTypeSchema.exactOptional().openapi({
+      description:
+        'The self-service action definition type. For example, <code>SSM_AUTOMATION</code>.',
+    }),
   })
   .openapi({ description: 'Detailed information about the self-service action.', required: [] })
   .openapi('ServiceActionSummary')
@@ -1541,12 +1171,12 @@ const ServiceActionDefinitionMapSchema = z
 
 const ServiceActionDetailSchema = z
   .object({
-    ServiceActionSummary: ServiceActionSummarySchema.and(
-      z.any().openapi({ description: 'Summary information about the self-service action.' }),
-    ).exactOptional(),
-    Definition: ServiceActionDefinitionMapSchema.and(
-      z.any().openapi({ description: 'A map that defines the self-service action.' }),
-    ).exactOptional(),
+    ServiceActionSummary: ServiceActionSummarySchema.exactOptional().openapi({
+      description: 'Summary information about the self-service action.',
+    }),
+    Definition: ServiceActionDefinitionMapSchema.exactOptional().openapi({
+      description: 'A map that defines the self-service action.',
+    }),
   })
   .openapi({
     description: 'An object containing detailed information about the self-service action.',
@@ -1556,57 +1186,34 @@ const ServiceActionDetailSchema = z
 
 const CreateServiceActionOutputSchema = z
   .object({
-    ServiceActionDetail: ServiceActionDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object containing information about the self-service action.',
-        }),
-    ).exactOptional(),
+    ServiceActionDetail: ServiceActionDetailSchema.exactOptional().openapi({
+      description: 'An object containing information about the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateServiceActionOutput')
 
 const CreateServiceActionInputSchema = z
   .object({
-    Name: ServiceActionNameSchema.and(
-      z.any().openapi({ description: 'The self-service action name.' }),
-    ),
-    DefinitionType: ServiceActionDefinitionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The service action definition type. For example, <code>SSM_AUTOMATION</code>.',
-        }),
-    ),
-    Definition: ServiceActionDefinitionMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The self-service action definition. Can be one of the following:</p> <dl> <dt>Name</dt> <dd> <p>The name of the Amazon Web Services Systems Manager document (SSM document). For example, <code>AWS-RestartEC2Instance</code>.</p> <p>If you are using a shared SSM document, you must provide the ARN instead of the name.</p> </dd> <dt>Version</dt> <dd> <p>The Amazon Web Services Systems Manager automation document version. For example, <code>"Version": "1"</code> </p> </dd> <dt>AssumeRole</dt> <dd> <p>The Amazon Resource Name (ARN) of the role that performs the self-service actions on your behalf. For example, <code>"AssumeRole": "arn:aws:iam::12345678910:role/ActionRole"</code>.</p> <p>To reuse the provisioned product launch role, set to <code>"AssumeRole": "LAUNCH_ROLE"</code>.</p> </dd> <dt>Parameters</dt> <dd> <p>The list of parameters in JSON format.</p> <p>For example: <code>[{\\"Name\\":\\"InstanceId\\",\\"Type\\":\\"TARGET\\"}]</code> or <code>[{\\"Name\\":\\"InstanceId\\",\\"Type\\":\\"TEXT_VALUE\\"}]</code>.</p> </dd> </dl>',
-        }),
-    ),
-    Description: ServiceActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The self-service action description.' }),
-    ).exactOptional(),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    Name: ServiceActionNameSchema.openapi({ description: 'The self-service action name.' }),
+    DefinitionType: ServiceActionDefinitionTypeSchema.openapi({
+      description: 'The service action definition type. For example, <code>SSM_AUTOMATION</code>.',
+    }),
+    Definition: ServiceActionDefinitionMapSchema.openapi({
+      description:
+        '<p>The self-service action definition. Can be one of the following:</p> <dl> <dt>Name</dt> <dd> <p>The name of the Amazon Web Services Systems Manager document (SSM document). For example, <code>AWS-RestartEC2Instance</code>.</p> <p>If you are using a shared SSM document, you must provide the ARN instead of the name.</p> </dd> <dt>Version</dt> <dd> <p>The Amazon Web Services Systems Manager automation document version. For example, <code>"Version": "1"</code> </p> </dd> <dt>AssumeRole</dt> <dd> <p>The Amazon Resource Name (ARN) of the role that performs the self-service actions on your behalf. For example, <code>"AssumeRole": "arn:aws:iam::12345678910:role/ActionRole"</code>.</p> <p>To reuse the provisioned product launch role, set to <code>"AssumeRole": "LAUNCH_ROLE"</code>.</p> </dd> <dt>Parameters</dt> <dd> <p>The list of parameters in JSON format.</p> <p>For example: <code>[{\\"Name\\":\\"InstanceId\\",\\"Type\\":\\"TARGET\\"}]</code> or <code>[{\\"Name\\":\\"InstanceId\\",\\"Type\\":\\"TEXT_VALUE\\"}]</code>.</p> </dd> </dl>',
+    }),
+    Description: ServiceActionDescriptionSchema.exactOptional().openapi({
+      description: 'The self-service action description.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: ['Name', 'DefinitionType', 'Definition', 'IdempotencyToken'],
@@ -1634,77 +1241,59 @@ const OwnerSchema = z.string().openapi('Owner')
 
 const TagOptionDetailSchema = z
   .object({
-    Key: TagOptionKeySchema.and(
-      z.any().openapi({ description: 'The TagOption key.' }),
-    ).exactOptional(),
-    Value: TagOptionValueSchema.and(
-      z.any().openapi({ description: 'The TagOption value.' }),
-    ).exactOptional(),
-    Active: TagOptionActiveSchema.and(
-      z.any().openapi({ description: 'The TagOption active state.' }),
-    ).exactOptional(),
-    Id: TagOptionIdSchema.and(
-      z.any().openapi({ description: 'The TagOption identifier.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account Id of the owner account that created the TagOption.',
-        }),
-    ).exactOptional(),
+    Key: TagOptionKeySchema.exactOptional().openapi({ description: 'The TagOption key.' }),
+    Value: TagOptionValueSchema.exactOptional().openapi({ description: 'The TagOption value.' }),
+    Active: TagOptionActiveSchema.exactOptional().openapi({
+      description: 'The TagOption active state.',
+    }),
+    Id: TagOptionIdSchema.exactOptional().openapi({ description: 'The TagOption identifier.' }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account Id of the owner account that created the TagOption.',
+    }),
   })
   .openapi({ description: 'Information about a TagOption.', required: [] })
   .openapi('TagOptionDetail')
 
 const CreateTagOptionOutputSchema = z
   .object({
-    TagOptionDetail: TagOptionDetailSchema.and(
-      z.any().openapi({ description: 'Information about the TagOption.' }),
-    ).exactOptional(),
+    TagOptionDetail: TagOptionDetailSchema.exactOptional().openapi({
+      description: 'Information about the TagOption.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTagOptionOutput')
 
 const CreateTagOptionInputSchema = z
   .object({
-    Key: TagOptionKeySchema.and(z.any().openapi({ description: 'The TagOption key.' })),
-    Value: TagOptionValueSchema.and(z.any().openapi({ description: 'The TagOption value.' })),
+    Key: TagOptionKeySchema.openapi({ description: 'The TagOption key.' }),
+    Value: TagOptionValueSchema.openapi({ description: 'The TagOption value.' }),
   })
   .openapi({ required: ['Key', 'Value'], title: 'CreateTagOptionInput' })
   .openapi('CreateTagOptionInput')
 
-const DeleteConstraintOutputSchema = z.object({}).openapi('DeleteConstraintOutput')
+const DeleteConstraintOutputSchema = z.looseObject({}).openapi('DeleteConstraintOutput')
 
 const DeleteConstraintInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The identifier of the constraint.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The identifier of the constraint.' }),
   })
   .openapi({ required: ['Id'], title: 'DeleteConstraintInput' })
   .openapi('DeleteConstraintInput')
 
-const DeletePortfolioOutputSchema = z.object({}).openapi('DeletePortfolioOutput')
+const DeletePortfolioOutputSchema = z.looseObject({}).openapi('DeletePortfolioOutput')
 
 const DeletePortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The portfolio identifier.' }),
   })
   .openapi({ required: ['Id'], title: 'DeletePortfolioInput' })
   .openapi('DeletePortfolioInput')
@@ -1713,105 +1302,79 @@ const ResourceInUseExceptionSchema = z.any().openapi('ResourceInUseException')
 
 const DeletePortfolioShareOutputSchema = z
   .object({
-    PortfolioShareToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The portfolio share unique identifier. This will only be returned if delete is made to an organization node.',
-        }),
-    ).exactOptional(),
+    PortfolioShareToken: IdSchema.exactOptional().openapi({
+      description:
+        'The portfolio share unique identifier. This will only be returned if delete is made to an organization node.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeletePortfolioShareOutput')
 
 const DeletePortfolioShareInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    AccountId: AccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID.' }),
-    ).exactOptional(),
-    OrganizationNode: OrganizationNodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The organization node to whom you are going to stop sharing.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID.',
+    }),
+    OrganizationNode: OrganizationNodeSchema.exactOptional().openapi({
+      description: 'The organization node to whom you are going to stop sharing.',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'DeletePortfolioShareInput' })
   .openapi('DeletePortfolioShareInput')
 
-const DeleteProductOutputSchema = z.object({}).openapi('DeleteProductOutput')
+const DeleteProductOutputSchema = z.looseObject({}).openapi('DeleteProductOutput')
 
 const DeleteProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The product identifier.' }),
   })
   .openapi({ required: ['Id'], title: 'DeleteProductInput' })
   .openapi('DeleteProductInput')
 
 const DeleteProvisionedProductPlanOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteProvisionedProductPlanOutput')
 
 const IgnoreErrorsSchema = z.boolean().openapi('IgnoreErrors')
 
 const DeleteProvisionedProductPlanInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })),
-    IgnoreErrors: IgnoreErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, Service Catalog stops managing the specified provisioned product even if it cannot delete the underlying resources.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PlanId: IdSchema.openapi({ description: 'The plan identifier.' }),
+    IgnoreErrors: IgnoreErrorsSchema.exactOptional().openapi({
+      description:
+        'If set to true, Service Catalog stops managing the specified provisioned product even if it cannot delete the underlying resources.',
+    }),
   })
   .openapi({ required: ['PlanId'], title: 'DeleteProvisionedProductPlanInput' })
   .openapi('DeleteProvisionedProductPlanInput')
 
 const DeleteProvisioningArtifactOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteProvisioningArtifactOutput')
 
 const DeleteProvisioningArtifactInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
   })
   .openapi({
     required: ['ProductId', 'ProvisioningArtifactId'],
@@ -1819,65 +1382,51 @@ const DeleteProvisioningArtifactInputSchema = z
   })
   .openapi('DeleteProvisioningArtifactInput')
 
-const DeleteServiceActionOutputSchema = z.object({}).openapi('DeleteServiceActionOutput')
+const DeleteServiceActionOutputSchema = z.looseObject({}).openapi('DeleteServiceActionOutput')
 
 const DeleteServiceActionInputSchema = z
   .object({
-    Id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Id'], title: 'DeleteServiceActionInput' })
   .openapi('DeleteServiceActionInput')
 
-const DeleteTagOptionOutputSchema = z.object({}).openapi('DeleteTagOptionOutput')
+const DeleteTagOptionOutputSchema = z.looseObject({}).openapi('DeleteTagOptionOutput')
 
 const DeleteTagOptionInputSchema = z
-  .object({
-    Id: TagOptionIdSchema.and(z.any().openapi({ description: 'The TagOption identifier.' })),
-  })
+  .object({ Id: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }) })
   .openapi({ required: ['Id'], title: 'DeleteTagOptionInput' })
   .openapi('DeleteTagOptionInput')
 
 const DescribeConstraintOutputSchema = z
   .object({
-    ConstraintDetail: ConstraintDetailSchema.and(
-      z.any().openapi({ description: 'Information about the constraint.' }),
-    ).exactOptional(),
-    ConstraintParameters: ConstraintParametersSchema.and(
-      z.any().openapi({ description: 'The constraint parameters.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ConstraintDetail: ConstraintDetailSchema.exactOptional().openapi({
+      description: 'Information about the constraint.',
+    }),
+    ConstraintParameters: ConstraintParametersSchema.exactOptional().openapi({
+      description: 'The constraint parameters.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeConstraintOutput')
 
 const DescribeConstraintInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The identifier of the constraint.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The identifier of the constraint.' }),
   })
   .openapi({ required: ['Id'], title: 'DescribeConstraintInput' })
   .openapi('DescribeConstraintInput')
@@ -1890,37 +1439,29 @@ const StatusDetailSchema = z.string().openapi('StatusDetail')
 
 const DescribeCopyProductStatusOutputSchema = z
   .object({
-    CopyProductStatus: CopyProductStatusSchema.and(
-      z.any().openapi({ description: 'The status of the copy product operation.' }),
-    ).exactOptional(),
-    TargetProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the copied product.' }),
-    ).exactOptional(),
-    StatusDetail: StatusDetailSchema.and(
-      z.any().openapi({ description: 'The status message.' }),
-    ).exactOptional(),
+    CopyProductStatus: CopyProductStatusSchema.exactOptional().openapi({
+      description: 'The status of the copy product operation.',
+    }),
+    TargetProductId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the copied product.',
+    }),
+    StatusDetail: StatusDetailSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCopyProductStatusOutput')
 
 const DescribeCopyProductStatusInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CopyProductToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the copy product operation. This token is returned by <a>CopyProduct</a>.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    CopyProductToken: IdSchema.openapi({
+      description:
+        'The token for the copy product operation. This token is returned by <a>CopyProduct</a>.',
+    }),
   })
   .openapi({ required: ['CopyProductToken'], title: 'DescribeCopyProductStatusInput' })
   .openapi('DescribeCopyProductStatusInput')
@@ -1929,9 +1470,9 @@ const TagOptionDetailsSchema = z.array(TagOptionDetailSchema).openapi('TagOption
 
 const BudgetDetailSchema = z
   .object({
-    BudgetName: BudgetNameSchema.and(
-      z.any().openapi({ description: 'Name of the associated budget.' }),
-    ).exactOptional(),
+    BudgetName: BudgetNameSchema.exactOptional().openapi({
+      description: 'Name of the associated budget.',
+    }),
   })
   .openapi({ description: 'Information about a budget.', required: [] })
   .openapi('BudgetDetail')
@@ -1940,37 +1481,29 @@ const BudgetsSchema = z.array(BudgetDetailSchema).openapi('Budgets')
 
 const DescribePortfolioOutputSchema = z
   .object({
-    PortfolioDetail: PortfolioDetailSchema.and(
-      z.any().openapi({ description: 'Information about the portfolio.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the portfolio.' }),
-    ).exactOptional(),
-    TagOptions: TagOptionDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the TagOptions associated with the portfolio.',
-        }),
-    ).exactOptional(),
-    Budgets: BudgetsSchema.and(
-      z.any().openapi({ description: 'Information about the associated budgets.' }),
-    ).exactOptional(),
+    PortfolioDetail: PortfolioDetailSchema.exactOptional().openapi({
+      description: 'Information about the portfolio.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the portfolio.',
+    }),
+    TagOptions: TagOptionDetailsSchema.exactOptional().openapi({
+      description: 'Information about the TagOptions associated with the portfolio.',
+    }),
+    Budgets: BudgetsSchema.exactOptional().openapi({
+      description: 'Information about the associated budgets.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePortfolioOutput')
 
 const DescribePortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The portfolio identifier.' }),
   })
   .openapi({ required: ['Id'], title: 'DescribePortfolioInput' })
   .openapi('DescribePortfolioInput')
@@ -1989,15 +1522,13 @@ const ErrorSchema = z.string().openapi('Error')
 
 const ShareErrorSchema = z
   .object({
-    Accounts: NamespacesSchema.and(
-      z.any().openapi({ description: 'List of accounts impacted by the error.' }),
-    ).exactOptional(),
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'Information about the error.' }),
-    ).exactOptional(),
-    Error: ErrorSchema.and(
-      z.any().openapi({ description: 'Error type that happened when processing the operation.' }),
-    ).exactOptional(),
+    Accounts: NamespacesSchema.exactOptional().openapi({
+      description: 'List of accounts impacted by the error.',
+    }),
+    Message: MessageSchema.exactOptional().openapi({ description: 'Information about the error.' }),
+    Error: ErrorSchema.exactOptional().openapi({
+      description: 'Error type that happened when processing the operation.',
+    }),
   })
   .openapi({
     description: 'Errors that occurred during the portfolio share operation.',
@@ -2009,57 +1540,41 @@ const ShareErrorsSchema = z.array(ShareErrorSchema).openapi('ShareErrors')
 
 const ShareDetailsSchema = z
   .object({
-    SuccessfulShares: SuccessfulSharesSchema.and(
-      z.any().openapi({ description: 'List of accounts for whom the operation succeeded.' }),
-    ).exactOptional(),
-    ShareErrors: ShareErrorsSchema.and(
-      z.any().openapi({ description: 'List of errors.' }),
-    ).exactOptional(),
+    SuccessfulShares: SuccessfulSharesSchema.exactOptional().openapi({
+      description: 'List of accounts for whom the operation succeeded.',
+    }),
+    ShareErrors: ShareErrorsSchema.exactOptional().openapi({ description: 'List of errors.' }),
   })
   .openapi({ description: 'Information about the portfolio share operation.', required: [] })
   .openapi('ShareDetails')
 
 const DescribePortfolioShareStatusOutputSchema = z
   .object({
-    PortfolioShareToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the portfolio share operation. For example, <code>share-6v24abcdefghi</code>.',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(
-      z.any().openapi({ description: 'The portfolio identifier.' }),
-    ).exactOptional(),
-    OrganizationNodeValue: OrganizationNodeValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Organization node identifier. It can be either account id, organizational unit id or organization id.',
-        }),
-    ).exactOptional(),
-    Status: ShareStatusSchema.and(
-      z.any().openapi({ description: 'Status of the portfolio share operation.' }),
-    ).exactOptional(),
-    ShareDetails: ShareDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the portfolio share operation.' }),
-    ).exactOptional(),
+    PortfolioShareToken: IdSchema.exactOptional().openapi({
+      description:
+        'The token for the portfolio share operation. For example, <code>share-6v24abcdefghi</code>.',
+    }),
+    PortfolioId: IdSchema.exactOptional().openapi({ description: 'The portfolio identifier.' }),
+    OrganizationNodeValue: OrganizationNodeValueSchema.exactOptional().openapi({
+      description:
+        'Organization node identifier. It can be either account id, organizational unit id or organization id.',
+    }),
+    Status: ShareStatusSchema.exactOptional().openapi({
+      description: 'Status of the portfolio share operation.',
+    }),
+    ShareDetails: ShareDetailsSchema.exactOptional().openapi({
+      description: 'Information about the portfolio share operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePortfolioShareStatusOutput')
 
 const DescribePortfolioShareStatusInputSchema = z
   .object({
-    PortfolioShareToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the portfolio share operation. This token is returned either by CreatePortfolioShare or by DeletePortfolioShare.',
-        }),
-    ),
+    PortfolioShareToken: IdSchema.openapi({
+      description:
+        'The token for the portfolio share operation. This token is returned either by CreatePortfolioShare or by DeletePortfolioShare.',
+    }),
   })
   .openapi({ required: ['PortfolioShareToken'], title: 'DescribePortfolioShareStatusInput' })
   .openapi('DescribePortfolioShareStatusInput')
@@ -2076,41 +1591,25 @@ const DescribePortfolioShareTypeSchema = z
 
 const PortfolioShareDetailSchema = z
   .object({
-    PrincipalId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the recipient entity that received the portfolio share. The recipient entity can be one of the following:</p> <p>1. An external account.</p> <p>2. An organziation member account.</p> <p>3. An organzational unit (OU).</p> <p>4. The organization itself. (This shares with every account in the organization).</p>',
-        }),
-    ).exactOptional(),
-    Type: DescribePortfolioShareTypeSchema.and(
-      z.any().openapi({ description: 'The type of the portfolio share.' }),
-    ).exactOptional(),
-    Accepted: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the shared portfolio is imported by the recipient account. If the recipient is in an organization node, the share is automatically imported, and the field is always set to true.',
-        }),
-    ).exactOptional(),
-    ShareTagOptions: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether TagOptions sharing is enabled or disabled for the portfolio share.',
-        }),
-    ).exactOptional(),
-    SharePrincipals: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates if <code>Principal</code> sharing is enabled or disabled for the portfolio share. ',
-        }),
-    ).exactOptional(),
+    PrincipalId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the recipient entity that received the portfolio share. The recipient entity can be one of the following:</p> <p>1. An external account.</p> <p>2. An organziation member account.</p> <p>3. An organzational unit (OU).</p> <p>4. The organization itself. (This shares with every account in the organization).</p>',
+    }),
+    Type: DescribePortfolioShareTypeSchema.exactOptional().openapi({
+      description: 'The type of the portfolio share.',
+    }),
+    Accepted: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the shared portfolio is imported by the recipient account. If the recipient is in an organization node, the share is automatically imported, and the field is always set to true.',
+    }),
+    ShareTagOptions: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether TagOptions sharing is enabled or disabled for the portfolio share.',
+    }),
+    SharePrincipals: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates if <code>Principal</code> sharing is enabled or disabled for the portfolio share. ',
+    }),
   })
   .openapi({ description: 'Information about the portfolio share.', required: [] })
   .openapi('PortfolioShareDetail')
@@ -2121,17 +1620,13 @@ const PortfolioShareDetailsSchema = z
 
 const DescribePortfolioSharesOutputSchema = z
   .object({
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
-    PortfolioShareDetails: PortfolioShareDetailsSchema.and(
-      z.any().openapi({ description: 'Summaries about each of the portfolio shares.' }),
-    ).exactOptional(),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
+    PortfolioShareDetails: PortfolioShareDetailsSchema.exactOptional().openapi({
+      description: 'Summaries about each of the portfolio shares.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePortfolioSharesOutput')
@@ -2140,32 +1635,20 @@ const PageSizeMax100Schema = z.int().min(0).max(100).openapi('PageSizeMax100')
 
 const DescribePortfolioSharesInputSchema = z
   .object({
-    PortfolioId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the portfolio for which shares will be retrieved.',
-        }),
-    ),
-    Type: DescribePortfolioShareTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of portfolio share to summarize. This field acts as a filter on the type of portfolio share, which can be one of the following:</p> <p>1. <code>ACCOUNT</code> - Represents an external account to account share.</p> <p>2. <code>ORGANIZATION</code> - Represents a share to an organization. This share is available to every account in the organization.</p> <p>3. <code>ORGANIZATIONAL_UNIT</code> - Represents a share to an organizational unit.</p> <p>4. <code>ORGANIZATION_MEMBER_ACCOUNT</code> - Represents a share to an account in the organization.</p>',
-        }),
-    ),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    PortfolioId: IdSchema.openapi({
+      description: 'The unique identifier of the portfolio for which shares will be retrieved.',
+    }),
+    Type: DescribePortfolioShareTypeSchema.openapi({
+      description:
+        '<p>The type of portfolio share to summarize. This field acts as a filter on the type of portfolio share, which can be one of the following:</p> <p>1. <code>ACCOUNT</code> - Represents an external account to account share.</p> <p>2. <code>ORGANIZATION</code> - Represents a share to an organization. This share is available to every account in the organization.</p> <p>3. <code>ORGANIZATIONAL_UNIT</code> - Represents a share to an organizational unit.</p> <p>4. <code>ORGANIZATION_MEMBER_ACCOUNT</code> - Represents a share to an account in the organization.</p>',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({ required: ['PortfolioId', 'Type'], title: 'DescribePortfolioSharesInput' })
   .openapi('DescribePortfolioSharesInput')
@@ -2176,26 +1659,22 @@ const ProvisioningArtifactCreatedTimeSchema = z.iso
 
 const ProvisioningArtifactSchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    Name: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning artifact.' }),
-    ).exactOptional(),
-    Description: ProvisioningArtifactDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning artifact.' }),
-    ).exactOptional(),
-    CreatedTime: ProvisioningArtifactCreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    Guidance: ProvisioningArtifactGuidanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    Name: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning artifact.',
+    }),
+    Description: ProvisioningArtifactDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning artifact.',
+    }),
+    CreatedTime: ProvisioningArtifactCreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    Guidance: ProvisioningArtifactGuidanceSchema.exactOptional().openapi({
+      description:
+        'Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.',
+    }),
   })
   .openapi({
     description:
@@ -2212,12 +1691,10 @@ const PortfolioNameSchema = z.string().openapi('PortfolioName')
 
 const LaunchPathSchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the launch path.' }),
-    ).exactOptional(),
-    Name: PortfolioNameSchema.and(
-      z.any().openapi({ description: 'The name of the launch path.' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The identifier of the launch path.' }),
+    Name: PortfolioNameSchema.exactOptional().openapi({
+      description: 'The name of the launch path.',
+    }),
   })
   .openapi({ description: 'A launch path object.', required: [] })
   .openapi('LaunchPath')
@@ -2226,66 +1703,52 @@ const LaunchPathsSchema = z.array(LaunchPathSchema).openapi('LaunchPaths')
 
 const DescribeProductOutputSchema = z
   .object({
-    ProductViewSummary: ProductViewSummarySchema.and(
-      z.any().openapi({ description: 'Summary information about the product view.' }),
-    ).exactOptional(),
-    ProvisioningArtifacts: ProvisioningArtifactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the provisioning artifacts for the specified product.',
-        }),
-    ).exactOptional(),
-    Budgets: BudgetsSchema.and(
-      z.any().openapi({ description: 'Information about the associated budgets.' }),
-    ).exactOptional(),
-    LaunchPaths: LaunchPathsSchema.and(
-      z.any().openapi({ description: 'Information about the associated launch paths.' }),
-    ).exactOptional(),
+    ProductViewSummary: ProductViewSummarySchema.exactOptional().openapi({
+      description: 'Summary information about the product view.',
+    }),
+    ProvisioningArtifacts: ProvisioningArtifactsSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifacts for the specified product.',
+    }),
+    Budgets: BudgetsSchema.exactOptional().openapi({
+      description: 'Information about the associated budgets.',
+    }),
+    LaunchPaths: LaunchPathsSchema.exactOptional().openapi({
+      description: 'Information about the associated launch paths.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProductOutput')
 
 const DescribeProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })).exactOptional(),
-    Name: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The product name.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    Name: ProductViewNameSchema.exactOptional().openapi({ description: 'The product name.' }),
   })
   .openapi({ title: 'DescribeProductInput', required: [] })
   .openapi('DescribeProductInput')
 
 const ProvisioningArtifactSummarySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    Name: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning artifact.' }),
-    ).exactOptional(),
-    Description: ProvisioningArtifactDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning artifact.' }),
-    ).exactOptional(),
-    CreatedTime: ProvisioningArtifactCreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    ProvisioningArtifactMetadata: ProvisioningArtifactInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata for the provisioning artifact. This is used with Amazon Web Services Marketplace products.',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    Name: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning artifact.',
+    }),
+    Description: ProvisioningArtifactDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning artifact.',
+    }),
+    CreatedTime: ProvisioningArtifactCreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    ProvisioningArtifactMetadata: ProvisioningArtifactInfoSchema.exactOptional().openapi({
+      description:
+        'The metadata for the provisioning artifact. This is used with Amazon Web Services Marketplace products.',
+    }),
   })
   .openapi({
     description:
@@ -2300,83 +1763,61 @@ const ProvisioningArtifactSummariesSchema = z
 
 const DescribeProductAsAdminOutputSchema = z
   .object({
-    ProductViewDetail: ProductViewDetailSchema.and(
-      z.any().openapi({ description: 'Information about the product view.' }),
-    ).exactOptional(),
-    ProvisioningArtifactSummaries: ProvisioningArtifactSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the provisioning artifacts (also known as versions) for the specified product.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the product.' }),
-    ).exactOptional(),
-    TagOptions: TagOptionDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the TagOptions associated with the product.' }),
-    ).exactOptional(),
-    Budgets: BudgetsSchema.and(
-      z.any().openapi({ description: 'Information about the associated budgets.' }),
-    ).exactOptional(),
+    ProductViewDetail: ProductViewDetailSchema.exactOptional().openapi({
+      description: 'Information about the product view.',
+    }),
+    ProvisioningArtifactSummaries: ProvisioningArtifactSummariesSchema.exactOptional().openapi({
+      description:
+        'Information about the provisioning artifacts (also known as versions) for the specified product.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the product.',
+    }),
+    TagOptions: TagOptionDetailsSchema.exactOptional().openapi({
+      description: 'Information about the TagOptions associated with the product.',
+    }),
+    Budgets: BudgetsSchema.exactOptional().openapi({
+      description: 'Information about the associated budgets.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProductAsAdminOutput')
 
 const DescribeProductAsAdminInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })).exactOptional(),
-    Name: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The product name.' }),
-    ).exactOptional(),
-    SourcePortfolioId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier of the shared portfolio that the specified product is associated with.</p> <p>You can provide this parameter to retrieve the shared TagOptions associated with the product. If this parameter is provided and if TagOptions sharing is enabled in the portfolio share, the API returns both local and shared TagOptions associated with the product. Otherwise only local TagOptions will be returned. </p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    Name: ProductViewNameSchema.exactOptional().openapi({ description: 'The product name.' }),
+    SourcePortfolioId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier of the shared portfolio that the specified product is associated with.</p> <p>You can provide this parameter to retrieve the shared TagOptions associated with the product. If this parameter is provided and if TagOptions sharing is enabled in the portfolio share, the API returns both local and shared TagOptions associated with the product. Otherwise only local TagOptions will be returned. </p>',
+    }),
   })
   .openapi({ title: 'DescribeProductAsAdminInput', required: [] })
   .openapi('DescribeProductAsAdminInput')
 
 const DescribeProductViewOutputSchema = z
   .object({
-    ProductViewSummary: ProductViewSummarySchema.and(
-      z.any().openapi({ description: 'Summary information about the product.' }),
-    ).exactOptional(),
-    ProvisioningArtifacts: ProvisioningArtifactsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the provisioning artifacts for the product.' }),
-    ).exactOptional(),
+    ProductViewSummary: ProductViewSummarySchema.exactOptional().openapi({
+      description: 'Summary information about the product.',
+    }),
+    ProvisioningArtifacts: ProvisioningArtifactsSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifacts for the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProductViewOutput')
 
 const DescribeProductViewInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The product view identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The product view identifier.' }),
   })
   .openapi({ required: ['Id'], title: 'DescribeProductViewInput' })
   .openapi('DescribeProductViewInput')
@@ -2411,91 +1852,55 @@ const RoleArnSchema = z
 
 const ProvisionedProductDetailSchema = z
   .object({
-    Name: ProvisionedProductNameOrArnSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    Arn: ProvisionedProductNameOrArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the provisioned product.' }),
-    ).exactOptional(),
-    Type: ProvisionedProductTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
-        }),
-    ).exactOptional(),
-    Id: ProvisionedProductIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ).exactOptional(),
-    Status: ProvisionedProductStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the provisioned product.</p> <ul> <li> <p> <code>AVAILABLE</code> - Stable state, ready to perform any operation. The most recent operation succeeded and completed.</p> </li> <li> <p> <code>UNDER_CHANGE</code> - Transitive state. Operations performed might not have valid results. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> <li> <p> <code>TAINTED</code> - Stable state, ready to perform any operation. The stack has completed the requested operation but is not exactly what was requested. For example, a request to update to a new version failed and the stack rolled back to the current version.</p> </li> <li> <p> <code>ERROR</code> - An unexpected error occurred. The provisioned product exists but the stack is not running. For example, CloudFormation received a parameter value that was not valid and could not launch the stack.</p> </li> <li> <p> <code>PLAN_IN_PROGRESS</code> - Transitive state. The plan operations were performed to provision a new product, but resources have not yet been created. After reviewing the list of resources to be created, execute the plan. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StatusMessage: ProvisionedProductStatusMessageSchema.and(
-      z.any().openapi({ description: 'The current status message of the provisioned product.' }),
-    ).exactOptional(),
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ).exactOptional(),
-    LastRecordId: LastRequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The record identifier of the last request performed on this provisioned product.',
-        }),
-    ).exactOptional(),
-    LastProvisioningRecordId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastSuccessfulProvisioningRecordId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ).exactOptional(),
-    LaunchRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the launch role associated with the provisioned product.',
-        }),
-    ).exactOptional(),
+    Name: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    Arn: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description: 'The ARN of the provisioned product.',
+    }),
+    Type: ProvisionedProductTypeSchema.exactOptional().openapi({
+      description:
+        'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
+    }),
+    Id: ProvisionedProductIdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    Status: ProvisionedProductStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the provisioned product.</p> <ul> <li> <p> <code>AVAILABLE</code> - Stable state, ready to perform any operation. The most recent operation succeeded and completed.</p> </li> <li> <p> <code>UNDER_CHANGE</code> - Transitive state. Operations performed might not have valid results. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> <li> <p> <code>TAINTED</code> - Stable state, ready to perform any operation. The stack has completed the requested operation but is not exactly what was requested. For example, a request to update to a new version failed and the stack rolled back to the current version.</p> </li> <li> <p> <code>ERROR</code> - An unexpected error occurred. The provisioned product exists but the stack is not running. For example, CloudFormation received a parameter value that was not valid and could not launch the stack.</p> </li> <li> <p> <code>PLAN_IN_PROGRESS</code> - Transitive state. The plan operations were performed to provision a new product, but resources have not yet been created. After reviewing the list of resources to be created, execute the plan. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> </ul>',
+    }),
+    StatusMessage: ProvisionedProductStatusMessageSchema.exactOptional().openapi({
+      description: 'The current status message of the provisioned product.',
+    }),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
+    LastRecordId: LastRequestIdSchema.exactOptional().openapi({
+      description:
+        'The record identifier of the last request performed on this provisioned product.',
+    }),
+    LastProvisioningRecordId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
+    }),
+    LastSuccessfulProvisioningRecordId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
+    LaunchRoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the launch role associated with the provisioned product.',
+    }),
   })
   .openapi({ description: 'Information about a provisioned product.', required: [] })
   .openapi('ProvisionedProductDetail')
@@ -2504,9 +1909,9 @@ const CloudWatchDashboardNameSchema = z.string().openapi('CloudWatchDashboardNam
 
 const CloudWatchDashboardSchema = z
   .object({
-    Name: CloudWatchDashboardNameSchema.and(
-      z.any().openapi({ description: 'The name of the CloudWatch dashboard.' }),
-    ).exactOptional(),
+    Name: CloudWatchDashboardNameSchema.exactOptional().openapi({
+      description: 'The name of the CloudWatch dashboard.',
+    }),
   })
   .openapi({ description: 'Information about a CloudWatch dashboard.', required: [] })
   .openapi('CloudWatchDashboard')
@@ -2517,46 +1922,30 @@ const CloudWatchDashboardsSchema = z
 
 const DescribeProvisionedProductOutputSchema = z
   .object({
-    ProvisionedProductDetail: ProvisionedProductDetailSchema.and(
-      z.any().openapi({ description: 'Information about the provisioned product.' }),
-    ).exactOptional(),
-    CloudWatchDashboards: CloudWatchDashboardsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Any CloudWatch dashboards that were created when provisioning the product.',
-        }),
-    ).exactOptional(),
+    ProvisionedProductDetail: ProvisionedProductDetailSchema.exactOptional().openapi({
+      description: 'Information about the provisioned product.',
+    }),
+    CloudWatchDashboards: CloudWatchDashboardsSchema.exactOptional().openapi({
+      description: 'Any CloudWatch dashboards that were created when provisioning the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisionedProductOutput')
 
 const DescribeProvisionedProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The provisioned product identifier. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>',
-        }),
-    ).exactOptional(),
-    Name: ProvisionedProductNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the provisioned product. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The provisioned product identifier. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>',
+    }),
+    Name: ProvisionedProductNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the provisioned product. You must provide the name or ID, but not both.</p> <p>If you do not provide a name or ID, or you provide both name and ID, an <code>InvalidParametersException</code> will occur.</p>',
+    }),
   })
   .openapi({
     title: 'DescribeProvisionedProductInput',
@@ -2586,62 +1975,48 @@ const StatusMessageSchema = z
 
 const ProvisionedProductPlanDetailsSchema = z
   .object({
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    PathId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    PlanName: ProvisionedProductPlanNameSchema.and(
-      z.any().openapi({ description: 'The name of the plan.' }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })).exactOptional(),
-    ProvisionProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProvisionProductName: ProvisionedProductNameSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    PlanType: ProvisionedProductPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    Status: ProvisionedProductPlanStatusSchema.and(
-      z.any().openapi({ description: 'The status.' }),
-    ).exactOptional(),
-    UpdatedTime: UpdatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp when the plan was last updated.' }),
-    ).exactOptional(),
-    NotificationArns: NotificationArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
-        }),
-    ).exactOptional(),
-    ProvisioningParameters: UpdateProvisioningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters specified by the administrator that are required for provisioning the product.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message.' }),
-    ).exactOptional(),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({
+      description:
+        'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    PlanName: ProvisionedProductPlanNameSchema.exactOptional().openapi({
+      description: 'The name of the plan.',
+    }),
+    PlanId: IdSchema.exactOptional().openapi({ description: 'The plan identifier.' }),
+    ProvisionProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier.',
+    }),
+    ProvisionProductName: ProvisionedProductNameSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    PlanType: ProvisionedProductPlanTypeSchema.exactOptional().openapi({
+      description: 'The plan type.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    Status: ProvisionedProductPlanStatusSchema.exactOptional().openapi({
+      description: 'The status.',
+    }),
+    UpdatedTime: UpdatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp when the plan was last updated.',
+    }),
+    NotificationArns: NotificationArnsSchema.exactOptional().openapi({
+      description:
+        'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
+    }),
+    ProvisioningParameters: UpdateProvisioningParametersSchema.exactOptional().openapi({
+      description:
+        'Parameters specified by the administrator that are required for provisioning the product.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description: 'The status message.',
+    }),
   })
   .openapi({ description: 'Information about a plan.', required: [] })
   .openapi('ProvisionedProductPlanDetails')
@@ -2670,25 +2045,17 @@ const RequiresRecreationSchema = z
 
 const ResourceTargetDefinitionSchema = z
   .object({
-    Attribute: ResourceAttributeSchema.and(
-      z.any().openapi({ description: 'The attribute to be changed.' }),
-    ).exactOptional(),
-    Name: PropertyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the attribute is <code>Properties</code>, the value is the name of the property. Otherwise, the value is null.',
-        }),
-    ).exactOptional(),
-    RequiresRecreation: RequiresRecreationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the attribute is <code>Properties</code>, indicates whether a change to this property causes the resource to be re-created.',
-        }),
-    ).exactOptional(),
+    Attribute: ResourceAttributeSchema.exactOptional().openapi({
+      description: 'The attribute to be changed.',
+    }),
+    Name: PropertyNameSchema.exactOptional().openapi({
+      description:
+        'If the attribute is <code>Properties</code>, the value is the name of the property. Otherwise, the value is null.',
+    }),
+    RequiresRecreation: RequiresRecreationSchema.exactOptional().openapi({
+      description:
+        'If the attribute is <code>Properties</code>, indicates whether a change to this property causes the resource to be re-created.',
+    }),
   })
   .openapi({ description: 'Information about a change to a resource attribute.', required: [] })
   .openapi('ResourceTargetDefinition')
@@ -2699,20 +2066,16 @@ const CausingEntitySchema = z.string().openapi('CausingEntity')
 
 const ResourceChangeDetailSchema = z
   .object({
-    Target: ResourceTargetDefinitionSchema.and(
-      z.any().openapi({ description: 'Information about the resource attribute to be modified.' }),
-    ).exactOptional(),
-    Evaluation: EvaluationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For static evaluations, the value of the resource attribute will change and the new value is known. For dynamic evaluations, the value might change, and any new value will be determined when the plan is updated.',
-        }),
-    ).exactOptional(),
-    CausingEntity: CausingEntitySchema.and(
-      z.any().openapi({ description: 'The ID of the entity that caused the change.' }),
-    ).exactOptional(),
+    Target: ResourceTargetDefinitionSchema.exactOptional().openapi({
+      description: 'Information about the resource attribute to be modified.',
+    }),
+    Evaluation: EvaluationTypeSchema.exactOptional().openapi({
+      description:
+        'For static evaluations, the value of the resource attribute will change and the new value is known. For dynamic evaluations, the value might change, and any new value will be determined when the plan is updated.',
+    }),
+    CausingEntity: CausingEntitySchema.exactOptional().openapi({
+      description: 'The ID of the entity that caused the change.',
+    }),
   })
   .openapi({ description: 'Information about a change to a resource attribute.', required: [] })
   .openapi('ResourceChangeDetail')
@@ -2723,34 +2086,24 @@ const ResourceChangeDetailsSchema = z
 
 const ResourceChangeSchema = z
   .object({
-    Action: ChangeActionSchema.and(
-      z.any().openapi({ description: 'The change action.' }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the resource, as defined in the CloudFormation template.',
-        }),
-    ).exactOptional(),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the resource, if it was already created.' }),
-    ).exactOptional(),
-    ResourceType: PlanResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    Replacement: ReplacementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the change type is <code>Modify</code>, indicates whether the existing resource is deleted and replaced with a new one.',
-        }),
-    ).exactOptional(),
-    Scope: ScopeSchema.and(z.any().openapi({ description: 'The change scope.' })).exactOptional(),
-    Details: ResourceChangeDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the resource changes.' }),
-    ).exactOptional(),
+    Action: ChangeActionSchema.exactOptional().openapi({ description: 'The change action.' }),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource, as defined in the CloudFormation template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description: 'The ID of the resource, if it was already created.',
+    }),
+    ResourceType: PlanResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource.',
+    }),
+    Replacement: ReplacementSchema.exactOptional().openapi({
+      description:
+        'If the change type is <code>Modify</code>, indicates whether the existing resource is deleted and replaced with a new one.',
+    }),
+    Scope: ScopeSchema.exactOptional().openapi({ description: 'The change scope.' }),
+    Details: ResourceChangeDetailsSchema.exactOptional().openapi({
+      description: 'Information about the resource changes.',
+    }),
   })
   .openapi({
     description: 'Information about a resource change that will occur when a plan is executed.',
@@ -2762,25 +2115,17 @@ const ResourceChangesSchema = z.array(ResourceChangeSchema).openapi('ResourceCha
 
 const DescribeProvisionedProductPlanOutputSchema = z
   .object({
-    ProvisionedProductPlanDetails: ProvisionedProductPlanDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the plan.' }),
-    ).exactOptional(),
-    ResourceChanges: ResourceChangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the resource changes that will occur when the plan is executed.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisionedProductPlanDetails: ProvisionedProductPlanDetailsSchema.exactOptional().openapi({
+      description: 'Information about the plan.',
+    }),
+    ResourceChanges: ResourceChangesSchema.exactOptional().openapi({
+      description:
+        'Information about the resource changes that will occur when the plan is executed.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisionedProductPlanOutput')
@@ -2789,46 +2134,33 @@ const PageSizeSchema = z.int().min(0).max(20).openapi('PageSize')
 
 const DescribeProvisionedProductPlanInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PlanId: IdSchema.openapi({ description: 'The plan identifier.' }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['PlanId'], title: 'DescribeProvisionedProductPlanInput' })
   .openapi('DescribeProvisionedProductPlanInput')
 
 const DescribeProvisioningArtifactOutputSchema = z
   .object({
-    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.and(
-      z.any().openapi({ description: 'Information about the provisioning artifact.' }),
-    ).exactOptional(),
-    Info: ProvisioningArtifactInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifact.',
+    }),
+    Info: ProvisioningArtifactInfoSchema.exactOptional().openapi({
+      description: 'The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisioningArtifactOutput')
@@ -2837,29 +2169,23 @@ const VerboseSchema = z.boolean().openapi('Verbose')
 
 const DescribeProvisioningArtifactInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProvisioningArtifactName: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The provisioning artifact name.' }),
-    ).exactOptional(),
-    ProductName: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The product name.' }),
-    ).exactOptional(),
-    Verbose: VerboseSchema.and(
-      z.any().openapi({ description: 'Indicates whether a verbose level of detail is enabled.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    ProvisioningArtifactName: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The provisioning artifact name.',
+    }),
+    ProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The product name.',
+    }),
+    Verbose: VerboseSchema.exactOptional().openapi({
+      description: 'Indicates whether a verbose level of detail is enabled.',
+    }),
   })
   .openapi({ title: 'DescribeProvisioningArtifactInput', required: [] })
   .openapi('DescribeProvisioningArtifactInput')
@@ -2878,61 +2204,33 @@ const AllowedValuesSchema = z.array(StringSchema).openapi('AllowedValues')
 
 const ParameterConstraintsSchema = z
   .object({
-    AllowedValues: AllowedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The values that the administrator has allowed for the parameter.',
-        }),
-    ).exactOptional(),
-    AllowedPattern: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A regular expression that represents the patterns that allow for <code>String</code> types. The pattern must match the entire parameter value provided.',
-        }),
-    ).exactOptional(),
-    ConstraintDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that explains a constraint when the constraint is violated. For example, without a constraint description, a parameter that has an allowed pattern of <code>[A-Za-z0-9]+</code> displays the following error message when the user specifies an invalid value:</p> <p> <code>Malformed input-Parameter MyParameter must match pattern [A-Za-z0-9]+</code> </p> <p>By adding a constraint description, such as must only contain letters (uppercase and lowercase) and numbers, you can display the following customized error message:</p> <p> <code>Malformed input-Parameter MyParameter must only contain uppercase and lowercase letters and numbers.</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxLength: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer value that determines the largest number of characters you want to allow for <code>String</code> types. ',
-        }),
-    ).exactOptional(),
-    MinLength: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer value that determines the smallest number of characters you want to allow for <code>String</code> types.',
-        }),
-    ).exactOptional(),
-    MaxValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A numeric value that determines the largest numeric value you want to allow for <code>Number</code> types.',
-        }),
-    ).exactOptional(),
-    MinValue: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A numeric value that determines the smallest numeric value you want to allow for <code>Number</code> types. ',
-        }),
-    ).exactOptional(),
+    AllowedValues: AllowedValuesSchema.exactOptional().openapi({
+      description: 'The values that the administrator has allowed for the parameter.',
+    }),
+    AllowedPattern: StringSchema.exactOptional().openapi({
+      description:
+        'A regular expression that represents the patterns that allow for <code>String</code> types. The pattern must match the entire parameter value provided.',
+    }),
+    ConstraintDescription: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that explains a constraint when the constraint is violated. For example, without a constraint description, a parameter that has an allowed pattern of <code>[A-Za-z0-9]+</code> displays the following error message when the user specifies an invalid value:</p> <p> <code>Malformed input-Parameter MyParameter must match pattern [A-Za-z0-9]+</code> </p> <p>By adding a constraint description, such as must only contain letters (uppercase and lowercase) and numbers, you can display the following customized error message:</p> <p> <code>Malformed input-Parameter MyParameter must only contain uppercase and lowercase letters and numbers.</code> </p>',
+    }),
+    MaxLength: StringSchema.exactOptional().openapi({
+      description:
+        'An integer value that determines the largest number of characters you want to allow for <code>String</code> types. ',
+    }),
+    MinLength: StringSchema.exactOptional().openapi({
+      description:
+        'An integer value that determines the smallest number of characters you want to allow for <code>String</code> types.',
+    }),
+    MaxValue: StringSchema.exactOptional().openapi({
+      description:
+        'A numeric value that determines the largest numeric value you want to allow for <code>Number</code> types.',
+    }),
+    MinValue: StringSchema.exactOptional().openapi({
+      description:
+        'A numeric value that determines the smallest numeric value you want to allow for <code>Number</code> types. ',
+    }),
   })
   .openapi({
     description: 'The constraints that the administrator has put on the parameter.',
@@ -2942,31 +2240,21 @@ const ParameterConstraintsSchema = z
 
 const ProvisioningArtifactParameterSchema = z
   .object({
-    ParameterKey: ParameterKeySchema.and(
-      z.any().openapi({ description: 'The parameter key.' }),
-    ).exactOptional(),
-    DefaultValue: DefaultValueSchema.and(
-      z.any().openapi({ description: 'The default value.' }),
-    ).exactOptional(),
-    ParameterType: ParameterTypeSchema.and(
-      z.any().openapi({ description: 'The parameter type.' }),
-    ).exactOptional(),
-    IsNoEcho: NoEchoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this value is true, the value for this parameter is obfuscated from view when the parameter is retrieved. This parameter is used to hide sensitive information.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the parameter.' }),
-    ).exactOptional(),
-    ParameterConstraints: ParameterConstraintsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Constraints that the administrator has put on a parameter.' }),
-    ).exactOptional(),
+    ParameterKey: ParameterKeySchema.exactOptional().openapi({ description: 'The parameter key.' }),
+    DefaultValue: DefaultValueSchema.exactOptional().openapi({ description: 'The default value.' }),
+    ParameterType: ParameterTypeSchema.exactOptional().openapi({
+      description: 'The parameter type.',
+    }),
+    IsNoEcho: NoEchoSchema.exactOptional().openapi({
+      description:
+        'If this value is true, the value for this parameter is obfuscated from view when the parameter is retrieved. This parameter is used to hide sensitive information.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the parameter.',
+    }),
+    ParameterConstraints: ParameterConstraintsSchema.exactOptional().openapi({
+      description: 'Constraints that the administrator has put on a parameter.',
+    }),
   })
   .openapi({
     description: 'Information about a parameter used to provision a product.',
@@ -2980,17 +2268,13 @@ const ProvisioningArtifactParametersSchema = z
 
 const ConstraintSummarySchema = z
   .object({
-    Type: ConstraintTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p>STACKSET</p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Description: ConstraintDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the constraint.' }),
-    ).exactOptional(),
+    Type: ConstraintTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of constraint.</p> <ul> <li> <p> <code>LAUNCH</code> </p> </li> <li> <p> <code>NOTIFICATION</code> </p> </li> <li> <p>STACKSET</p> </li> <li> <p> <code>TEMPLATE</code> </p> </li> </ul>',
+    }),
+    Description: ConstraintDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the constraint.',
+    }),
   })
   .openapi({ description: 'Summary information about a constraint.', required: [] })
   .openapi('ConstraintSummary')
@@ -3003,12 +2287,12 @@ const InstructionValueSchema = z.string().openapi('InstructionValue')
 
 const UsageInstructionSchema = z
   .object({
-    Type: InstructionTypeSchema.and(
-      z.any().openapi({ description: 'The usage instruction type for the value.' }),
-    ).exactOptional(),
-    Value: InstructionValueSchema.and(
-      z.any().openapi({ description: 'The usage instruction value for this type.' }),
-    ).exactOptional(),
+    Type: InstructionTypeSchema.exactOptional().openapi({
+      description: 'The usage instruction type for the value.',
+    }),
+    Value: InstructionValueSchema.exactOptional().openapi({
+      description: 'The usage instruction value for this type.',
+    }),
   })
   .openapi({ description: 'Additional information provided by the administrator.', required: [] })
   .openapi('UsageInstruction')
@@ -3019,12 +2303,8 @@ const TagOptionValuesSchema = z.array(TagOptionValueSchema).openapi('TagOptionVa
 
 const TagOptionSummarySchema = z
   .object({
-    Key: TagOptionKeySchema.and(
-      z.any().openapi({ description: 'The TagOption key.' }),
-    ).exactOptional(),
-    Values: TagOptionValuesSchema.and(
-      z.any().openapi({ description: 'The TagOption value.' }),
-    ).exactOptional(),
+    Key: TagOptionKeySchema.exactOptional().openapi({ description: 'The TagOption key.' }),
+    Values: TagOptionValuesSchema.exactOptional().openapi({ description: 'The TagOption value.' }),
   })
   .openapi({ description: 'Summary information about a TagOption.', required: [] })
   .openapi('TagOptionSummary')
@@ -3039,22 +2319,14 @@ const StackSetRegionsSchema = z.array(RegionSchema).openapi('StackSetRegions')
 
 const ProvisioningArtifactPreferencesSchema = z
   .object({
-    StackSetAccounts: StackSetAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services accounts where stack instances are deployed from the stack set. These accounts can be scoped in <code>ProvisioningPreferences$StackSetAccounts</code> and <code>UpdateProvisioningPreferences$StackSetAccounts</code>.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p>',
-        }),
-    ).exactOptional(),
-    StackSetRegions: StackSetRegionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services Regions where stack instances are deployed from the stack set. These Regions can be scoped in <code>ProvisioningPreferences$StackSetRegions</code> and <code>UpdateProvisioningPreferences$StackSetRegions</code>.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p>',
-        }),
-    ).exactOptional(),
+    StackSetAccounts: StackSetAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services accounts where stack instances are deployed from the stack set. These accounts can be scoped in <code>ProvisioningPreferences$StackSetAccounts</code> and <code>UpdateProvisioningPreferences$StackSetAccounts</code>.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p>',
+    }),
+    StackSetRegions: StackSetRegionsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services Regions where stack instances are deployed from the stack set. These Regions can be scoped in <code>ProvisioningPreferences$StackSetRegions</code> and <code>UpdateProvisioningPreferences$StackSetRegions</code>.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p>',
+    }),
   })
   .openapi({
     description:
@@ -3074,12 +2346,12 @@ const OutputDescriptionSchema = z.string().max(1024).openapi('OutputDescription'
 
 const ProvisioningArtifactOutputSchema = z
   .object({
-    Key: ProvisioningArtifactOutputKeySchema.and(
-      z.any().openapi({ description: 'The provisioning artifact output key.' }),
-    ).exactOptional(),
-    Description: OutputDescriptionSchema.and(
-      z.any().openapi({ description: 'Description of the provisioning artifact output key.' }),
-    ).exactOptional(),
+    Key: ProvisioningArtifactOutputKeySchema.exactOptional().openapi({
+      description: 'The provisioning artifact output key.',
+    }),
+    Description: OutputDescriptionSchema.exactOptional().openapi({
+      description: 'Description of the provisioning artifact output key.',
+    }),
   })
   .openapi({ description: 'Provisioning artifact output.', required: [] })
   .openapi('ProvisioningArtifactOutput')
@@ -3091,118 +2363,63 @@ const ProvisioningArtifactOutputsSchema = z
 
 const DescribeProvisioningParametersOutputSchema = z
   .object({
-    ProvisioningArtifactParameters: ProvisioningArtifactParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the parameters used to provision the product.',
-        }),
-    ).exactOptional(),
-    ConstraintSummaries: ConstraintSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the constraints used to provision the product.',
-        }),
-    ).exactOptional(),
-    UsageInstructions: UsageInstructionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Any additional metadata specifically related to the provisioning of the product. For example, see the <code>Version</code> field of the CloudFormation template.',
-        }),
-    ).exactOptional(),
-    TagOptions: TagOptionSummariesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the TagOptions associated with the resource.' }),
-    ).exactOptional(),
-    ProvisioningArtifactPreferences: ProvisioningArtifactPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about preferences, such as Regions and accounts, for the provisioning artifact.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactOutputs: ProvisioningArtifactOutputsSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            'The output of the provisioning artifact.This property is deprecated and returns the Id and Description of the Provisioning Artifact. Use ProvisioningArtifactOutputKeys instead to get the Keys and Descriptions of the outputs.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactOutputKeys: ProvisioningArtifactOutputsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the keys and descriptions of the outputs. These outputs can be referenced from a provisioned product launched from this provisioning artifact.',
-        }),
-    ).exactOptional(),
+    ProvisioningArtifactParameters: ProvisioningArtifactParametersSchema.exactOptional().openapi({
+      description: 'Information about the parameters used to provision the product.',
+    }),
+    ConstraintSummaries: ConstraintSummariesSchema.exactOptional().openapi({
+      description: 'Information about the constraints used to provision the product.',
+    }),
+    UsageInstructions: UsageInstructionsSchema.exactOptional().openapi({
+      description:
+        'Any additional metadata specifically related to the provisioning of the product. For example, see the <code>Version</code> field of the CloudFormation template.',
+    }),
+    TagOptions: TagOptionSummariesSchema.exactOptional().openapi({
+      description: 'Information about the TagOptions associated with the resource.',
+    }),
+    ProvisioningArtifactPreferences: ProvisioningArtifactPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about preferences, such as Regions and accounts, for the provisioning artifact.',
+    }),
+    ProvisioningArtifactOutputs: ProvisioningArtifactOutputsSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        'The output of the provisioning artifact.This property is deprecated and returns the Id and Description of the Provisioning Artifact. Use ProvisioningArtifactOutputKeys instead to get the Keys and Descriptions of the outputs.',
+    }),
+    ProvisioningArtifactOutputKeys: ProvisioningArtifactOutputsSchema.exactOptional().openapi({
+      description:
+        'A list of the keys and descriptions of the outputs. These outputs can be referenced from a provisioned product launched from this provisioning artifact.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisioningParametersOutput')
 
 const DescribeProvisioningParametersInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The product identifier. You must provide the product name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProductName: ProductViewNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the product. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactName: ProvisioningArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioning artifact. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathName: PortfolioDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the path. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier. You must provide the product name or ID, but not both.',
+    }),
+    ProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The name of the product. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioning artifact. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningArtifactName: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioning artifact. You must provide the name or ID, but not both.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({
+      description:
+        'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.',
+    }),
+    PathName: PortfolioDisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the path. You must provide the name or ID, but not both.',
+    }),
   })
   .openapi({ title: 'DescribeProvisioningParametersInput', required: [] })
   .openapi('DescribeProvisioningParametersInput')
@@ -3219,12 +2436,12 @@ const ErrorDescriptionSchema = z.string().openapi('ErrorDescription')
 
 const RecordErrorSchema = z
   .object({
-    Code: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The numeric value of the error.' }),
-    ).exactOptional(),
-    Description: ErrorDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the error.' }),
-    ).exactOptional(),
+    Code: ErrorCodeSchema.exactOptional().openapi({
+      description: 'The numeric value of the error.',
+    }),
+    Description: ErrorDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the error.',
+    }),
   })
   .openapi({
     description: 'The error code and description resulting from an operation.',
@@ -3250,12 +2467,8 @@ const RecordTagValueSchema = z
 
 const RecordTagSchema = z
   .object({
-    Key: RecordTagKeySchema.and(
-      z.any().openapi({ description: 'The key for this tag.' }),
-    ).exactOptional(),
-    Value: RecordTagValueSchema.and(
-      z.any().openapi({ description: 'The value for this tag.' }),
-    ).exactOptional(),
+    Key: RecordTagKeySchema.exactOptional().openapi({ description: 'The key for this tag.' }),
+    Value: RecordTagValueSchema.exactOptional().openapi({ description: 'The value for this tag.' }),
   })
   .openapi({ description: 'Information about a tag, which is a key-value pair.', required: [] })
   .openapi('RecordTag')
@@ -3264,65 +2477,43 @@ const RecordTagsSchema = z.array(RecordTagSchema).max(50).openapi('RecordTags')
 
 const RecordDetailSchema = z
   .object({
-    RecordId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the record.' }),
-    ).exactOptional(),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    Status: RecordStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the provisioned product.</p> <ul> <li> <p> <code>CREATED</code> - The request was created but the operation has not started.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The requested operation is in progress.</p> </li> <li> <p> <code>IN_PROGRESS_IN_ERROR</code> - The provisioned product is under change but the requested operation failed and some remediation is occurring. For example, a rollback.</p> </li> <li> <p> <code>SUCCEEDED</code> - The requested operation has successfully completed.</p> </li> <li> <p> <code>FAILED</code> - The requested operation has unsuccessfully completed. Investigate using the error messages returned.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    UpdatedTime: UpdatedTimeSchema.and(
-      z.any().openapi({ description: 'The time when the record was last updated.' }),
-    ).exactOptional(),
-    ProvisionedProductType: ProvisionedProductTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
-        }),
-    ).exactOptional(),
-    RecordType: RecordTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The record type.</p> <ul> <li> <p> <code>PROVISION_PRODUCT</code> </p> </li> <li> <p> <code>UPDATE_PROVISIONED_PRODUCT</code> </p> </li> <li> <p> <code>TERMINATE_PROVISIONED_PRODUCT</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    PathId: IdSchema.and(z.any().openapi({ description: 'The path identifier.' })).exactOptional(),
-    RecordErrors: RecordErrorsSchema.and(
-      z.any().openapi({ description: 'The errors that occurred.' }),
-    ).exactOptional(),
-    RecordTags: RecordTagsSchema.and(
-      z.any().openapi({ description: 'One or more tags.' }),
-    ).exactOptional(),
-    LaunchRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the launch role associated with the provisioned product.',
-        }),
-    ).exactOptional(),
+    RecordId: IdSchema.exactOptional().openapi({ description: 'The identifier of the record.' }),
+    ProvisionedProductName: ProvisionedProductNameSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    Status: RecordStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the provisioned product.</p> <ul> <li> <p> <code>CREATED</code> - The request was created but the operation has not started.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The requested operation is in progress.</p> </li> <li> <p> <code>IN_PROGRESS_IN_ERROR</code> - The provisioned product is under change but the requested operation failed and some remediation is occurring. For example, a rollback.</p> </li> <li> <p> <code>SUCCEEDED</code> - The requested operation has successfully completed.</p> </li> <li> <p> <code>FAILED</code> - The requested operation has unsuccessfully completed. Investigate using the error messages returned.</p> </li> </ul>',
+    }),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    UpdatedTime: UpdatedTimeSchema.exactOptional().openapi({
+      description: 'The time when the record was last updated.',
+    }),
+    ProvisionedProductType: ProvisionedProductTypeSchema.exactOptional().openapi({
+      description:
+        'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
+    }),
+    RecordType: RecordTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The record type.</p> <ul> <li> <p> <code>PROVISION_PRODUCT</code> </p> </li> <li> <p> <code>UPDATE_PROVISIONED_PRODUCT</code> </p> </li> <li> <p> <code>TERMINATE_PROVISIONED_PRODUCT</code> </p> </li> </ul>',
+    }),
+    ProvisionedProductId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({ description: 'The path identifier.' }),
+    RecordErrors: RecordErrorsSchema.exactOptional().openapi({
+      description: 'The errors that occurred.',
+    }),
+    RecordTags: RecordTagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    LaunchRoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the launch role associated with the provisioned product.',
+    }),
   })
   .openapi({ description: 'Information about a request operation.', required: [] })
   .openapi('RecordDetail')
@@ -3333,15 +2524,11 @@ const OutputValueSchema = z.string().openapi('OutputValue')
 
 const RecordOutputSchema = z
   .object({
-    OutputKey: OutputKeySchema.and(
-      z.any().openapi({ description: 'The output key.' }),
-    ).exactOptional(),
-    OutputValue: OutputValueSchema.and(
-      z.any().openapi({ description: 'The output value.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the output.' }),
-    ).exactOptional(),
+    OutputKey: OutputKeySchema.exactOptional().openapi({ description: 'The output key.' }),
+    OutputValue: OutputValueSchema.exactOptional().openapi({ description: 'The output value.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the output.',
+    }),
   })
   .openapi({
     description:
@@ -3354,82 +2541,58 @@ const RecordOutputsSchema = z.array(RecordOutputSchema).openapi('RecordOutputs')
 
 const DescribeRecordOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z.any().openapi({ description: 'Information about the product.' }),
-    ).exactOptional(),
-    RecordOutputs: RecordOutputsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description: 'Information about the product.',
+    }),
+    RecordOutputs: RecordOutputsSchema.exactOptional().openapi({
+      description:
+        'Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecordOutput')
 
 const DescribeRecordInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The record identifier of the provisioned product. This identifier is returned by the request operation.',
-        }),
-    ),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({
+      description:
+        'The record identifier of the provisioned product. This identifier is returned by the request operation.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({ required: ['Id'], title: 'DescribeRecordInput' })
   .openapi('DescribeRecordInput')
 
 const DescribeServiceActionOutputSchema = z
   .object({
-    ServiceActionDetail: ServiceActionDetailSchema.and(
-      z.any().openapi({ description: 'Detailed information about the self-service action.' }),
-    ).exactOptional(),
+    ServiceActionDetail: ServiceActionDetailSchema.exactOptional().openapi({
+      description: 'Detailed information about the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeServiceActionOutput')
 
 const DescribeServiceActionInputSchema = z
   .object({
-    Id: IdSchema.and(z.any().openapi({ description: 'The self-service action identifier.' })),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.openapi({ description: 'The self-service action identifier.' }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Id'], title: 'DescribeServiceActionInput' })
   .openapi('DescribeServiceActionInput')
@@ -3448,15 +2611,15 @@ const ExecutionParameterValueListSchema = z
 
 const ExecutionParameterSchema = z
   .object({
-    Name: ExecutionParameterKeySchema.and(
-      z.any().openapi({ description: 'The name of the execution parameter.' }),
-    ).exactOptional(),
-    Type: ExecutionParameterTypeSchema.and(
-      z.any().openapi({ description: 'The execution parameter type.' }),
-    ).exactOptional(),
-    DefaultValues: ExecutionParameterValueListSchema.and(
-      z.any().openapi({ description: 'The default values for the execution parameter.' }),
-    ).exactOptional(),
+    Name: ExecutionParameterKeySchema.exactOptional().openapi({
+      description: 'The name of the execution parameter.',
+    }),
+    Type: ExecutionParameterTypeSchema.exactOptional().openapi({
+      description: 'The execution parameter type.',
+    }),
+    DefaultValues: ExecutionParameterValueListSchema.exactOptional().openapi({
+      description: 'The default values for the execution parameter.',
+    }),
   })
   .openapi({
     description:
@@ -3469,29 +2632,23 @@ const ExecutionParametersSchema = z.array(ExecutionParameterSchema).openapi('Exe
 
 const DescribeServiceActionExecutionParametersOutputSchema = z
   .object({
-    ServiceActionParameters: ExecutionParametersSchema.and(
-      z.any().openapi({ description: 'The parameters of the self-service action.' }),
-    ).exactOptional(),
+    ServiceActionParameters: ExecutionParametersSchema.exactOptional().openapi({
+      description: 'The parameters of the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeServiceActionExecutionParametersOutput')
 
 const DescribeServiceActionExecutionParametersInputSchema = z
   .object({
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ),
-    ServiceActionId: IdSchema.and(
-      z.any().openapi({ description: 'The self-service action identifier.' }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ProvisionedProductId: IdSchema.openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    ServiceActionId: IdSchema.openapi({ description: 'The self-service action identifier.' }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ProvisionedProductId', 'ServiceActionId'],
@@ -3501,81 +2658,63 @@ const DescribeServiceActionExecutionParametersInputSchema = z
 
 const DescribeTagOptionOutputSchema = z
   .object({
-    TagOptionDetail: TagOptionDetailSchema.and(
-      z.any().openapi({ description: 'Information about the TagOption.' }),
-    ).exactOptional(),
+    TagOptionDetail: TagOptionDetailSchema.exactOptional().openapi({
+      description: 'Information about the TagOption.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTagOptionOutput')
 
 const DescribeTagOptionInputSchema = z
-  .object({
-    Id: TagOptionIdSchema.and(z.any().openapi({ description: 'The TagOption identifier.' })),
-  })
+  .object({ Id: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }) })
   .openapi({ required: ['Id'], title: 'DescribeTagOptionInput' })
   .openapi('DescribeTagOptionInput')
 
 const DisableAWSOrganizationsAccessOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisableAWSOrganizationsAccessOutput')
 
 const DisableAWSOrganizationsAccessInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisableAWSOrganizationsAccessInput' })
   .openapi('DisableAWSOrganizationsAccessInput')
 
 const DisassociateBudgetFromResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateBudgetFromResourceOutput')
 
 const DisassociateBudgetFromResourceInputSchema = z
   .object({
-    BudgetName: BudgetNameSchema.and(
-      z.any().openapi({ description: 'The name of the budget you want to disassociate.' }),
-    ),
-    ResourceId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource identifier you want to disassociate from. Either a portfolio-id or a product-id.',
-        }),
-    ),
+    BudgetName: BudgetNameSchema.openapi({
+      description: 'The name of the budget you want to disassociate.',
+    }),
+    ResourceId: IdSchema.openapi({
+      description:
+        'The resource identifier you want to disassociate from. Either a portfolio-id or a product-id.',
+    }),
   })
   .openapi({ required: ['BudgetName', 'ResourceId'], title: 'DisassociateBudgetFromResourceInput' })
   .openapi('DisassociateBudgetFromResourceInput')
 
 const DisassociatePrincipalFromPortfolioOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociatePrincipalFromPortfolioOutput')
 
 const DisassociatePrincipalFromPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    PrincipalARN: PrincipalARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the principal (user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>.',
-        }),
-    ),
-    PrincipalType: PrincipalTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use no <code>accountID</code>. ',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    PrincipalARN: PrincipalARNSchema.openapi({
+      description:
+        'The ARN of the principal (user, role, or group). This field allows an ARN with no <code>accountID</code> if <code>PrincipalType</code> is <code>IAM_PATTERN</code>.',
+    }),
+    PrincipalType: PrincipalTypeSchema.exactOptional().openapi({
+      description:
+        'The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use no <code>accountID</code>. ',
+    }),
   })
   .openapi({
     required: ['PortfolioId', 'PrincipalARN'],
@@ -3584,21 +2723,17 @@ const DisassociatePrincipalFromPortfolioInputSchema = z
   .openapi('DisassociatePrincipalFromPortfolioInput')
 
 const DisassociateProductFromPortfolioOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateProductFromPortfolioOutput')
 
 const DisassociateProductFromPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
   })
   .openapi({
     required: ['ProductId', 'PortfolioId'],
@@ -3607,42 +2742,26 @@ const DisassociateProductFromPortfolioInputSchema = z
   .openapi('DisassociateProductFromPortfolioInput')
 
 const DisassociateServiceActionFromProvisioningArtifactOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateServiceActionFromProvisioningArtifactOutput')
 
 const DisassociateServiceActionFromProvisioningArtifactInputSchema = z
   .object({
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ),
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ProductId: IdSchema.openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
+    ServiceActionId: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ProductId', 'ProvisioningArtifactId', 'ServiceActionId'],
@@ -3651,15 +2770,13 @@ const DisassociateServiceActionFromProvisioningArtifactInputSchema = z
   .openapi('DisassociateServiceActionFromProvisioningArtifactInput')
 
 const DisassociateTagOptionFromResourceOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateTagOptionFromResourceOutput')
 
 const DisassociateTagOptionFromResourceInputSchema = z
   .object({
-    ResourceId: ResourceIdSchema.and(z.any().openapi({ description: 'The resource identifier.' })),
-    TagOptionId: TagOptionIdSchema.and(
-      z.any().openapi({ description: 'The TagOption identifier.' }),
-    ),
+    ResourceId: ResourceIdSchema.openapi({ description: 'The resource identifier.' }),
+    TagOptionId: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }),
   })
   .openapi({
     required: ['ResourceId', 'TagOptionId'],
@@ -3668,42 +2785,34 @@ const DisassociateTagOptionFromResourceInputSchema = z
   .openapi('DisassociateTagOptionFromResourceInput')
 
 const EnableAWSOrganizationsAccessOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('EnableAWSOrganizationsAccessOutput')
 
 const EnableAWSOrganizationsAccessInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'EnableAWSOrganizationsAccessInput' })
   .openapi('EnableAWSOrganizationsAccessInput')
 
 const ExecuteProvisionedProductPlanOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z.any().openapi({ description: 'Information about the result of provisioning the product.' }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description: 'Information about the result of provisioning the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExecuteProvisionedProductPlanOutput')
 
 const ExecuteProvisionedProductPlanInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PlanId: IdSchema.openapi({ description: 'The plan identifier.' }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: ['PlanId', 'IdempotencyToken'],
@@ -3713,14 +2822,10 @@ const ExecuteProvisionedProductPlanInputSchema = z
 
 const ExecuteProvisionedProductServiceActionOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object containing detailed information about the result of provisioning the product.',
-        }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description:
+        'An object containing detailed information about the result of provisioning the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExecuteProvisionedProductServiceActionOutput')
@@ -3733,40 +2838,24 @@ const ExecutionParameterMapSchema = z
 
 const ExecuteProvisionedProductServiceActionInputSchema = z
   .object({
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ),
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    ExecuteToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An idempotency token that uniquely identifies the execute request.',
-        }),
-    ),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Parameters: ExecutionParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map of all self-service action parameters and their values. If a provided parameter is of a special type, such as <code>TARGET</code>, the provided value will override the default value generated by Service Catalog. If the parameters field is not provided, no additional parameters are passed and default values will be used for any special parameters such as <code>TARGET</code>.',
-        }),
-    ).exactOptional(),
+    ProvisionedProductId: IdSchema.openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    ServiceActionId: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    ExecuteToken: IdempotencyTokenSchema.openapi({
+      description: 'An idempotency token that uniquely identifies the execute request.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Parameters: ExecutionParameterMapSchema.exactOptional().openapi({
+      description:
+        'A map of all self-service action parameters and their values. If a provided parameter is of a special type, such as <code>TARGET</code>, the provided value will override the default value generated by Service Catalog. If the parameters field is not provided, no additional parameters are passed and default values will be used for any special parameters such as <code>TARGET</code>.',
+    }),
   })
   .openapi({
     required: ['ProvisionedProductId', 'ServiceActionId', 'ExecuteToken'],
@@ -3778,36 +2867,28 @@ const AccessStatusSchema = z.enum(['ENABLED', 'UNDER_CHANGE', 'DISABLED']).opena
 
 const GetAWSOrganizationsAccessStatusOutputSchema = z
   .object({
-    AccessStatus: AccessStatusSchema.and(
-      z.any().openapi({ description: 'The status of the portfolio share feature.' }),
-    ).exactOptional(),
+    AccessStatus: AccessStatusSchema.exactOptional().openapi({
+      description: 'The status of the portfolio share feature.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAWSOrganizationsAccessStatusOutput')
 
 const GetAWSOrganizationsAccessStatusInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAWSOrganizationsAccessStatusInput' })
   .openapi('GetAWSOrganizationsAccessStatusInput')
 
 const GetProvisionedProductOutputsOutputSchema = z
   .object({
-    Outputs: RecordOutputsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL. ',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    Outputs: RecordOutputsSchema.exactOptional().openapi({
+      description:
+        'Information about the product created as the result of a request. For example, the output for a CloudFormation-backed product that creates an S3 bucket would include the S3 bucket URL. ',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProvisionedProductOutputsOutput')
@@ -3816,47 +2897,27 @@ const OutputKeysSchema = z.array(OutputKeySchema).max(60).openapi('OutputKeys')
 
 const GetProvisionedProductOutputsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The identifier of the provisioned product that you want the outputs from.',
-        }),
-    ).exactOptional(),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the provisioned product that you want the outputs from.',
-        }),
-    ).exactOptional(),
-    OutputKeys: OutputKeysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of keys that the API should return with their values. If none are provided, the API will return all outputs of the provisioned product.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisionedProductId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioned product that you want the outputs from.',
+    }),
+    ProvisionedProductName: ProvisionedProductNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioned product that you want the outputs from.',
+    }),
+    OutputKeys: OutputKeysSchema.exactOptional().openapi({
+      description:
+        'The list of keys that the API should return with their values. If none are provided, the API will return all outputs of the provisioned product.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'GetProvisionedProductOutputsInput', required: [] })
   .openapi('GetProvisionedProductOutputsInput')
@@ -3870,42 +2931,26 @@ const PhysicalIdSchema = z.string().openapi('PhysicalId')
 
 const ImportAsProvisionedProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-friendly name of the provisioned product. The value must be unique for the Amazon Web Services account. The name cannot be updated after the product is provisioned. ',
-        }),
-    ),
-    PhysicalId: PhysicalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the resource to be imported. It only currently supports CloudFormation stack IDs.',
-        }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    ProvisionedProductName: ProvisionedProductNameSchema.openapi({
+      description:
+        'The user-friendly name of the provisioned product. The value must be unique for the Amazon Web Services account. The name cannot be updated after the product is provisioned. ',
+    }),
+    PhysicalId: PhysicalIdSchema.openapi({
+      description:
+        'The unique identifier of the resource to be imported. It only currently supports CloudFormation stack IDs.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
   })
   .openapi({
     required: [
@@ -3923,93 +2968,65 @@ const PortfolioDetailsSchema = z.array(PortfolioDetailSchema).openapi('Portfolio
 
 const ListAcceptedPortfolioSharesOutputSchema = z
   .object({
-    PortfolioDetails: PortfolioDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the portfolios.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    PortfolioDetails: PortfolioDetailsSchema.exactOptional().openapi({
+      description: 'Information about the portfolios.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAcceptedPortfolioSharesOutput')
 
 const ListAcceptedPortfolioSharesInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PortfolioShareType: PortfolioShareTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of shared portfolios to list. The default is to list imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - List portfolios accepted and shared via organizational sharing by the management account or delegated administrator of your organization.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Deprecated type.</p> </li> <li> <p> <code>IMPORTED</code> - List imported portfolios that have been accepted and shared through account-to-account sharing.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PortfolioShareType: PortfolioShareTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of shared portfolios to list. The default is to list imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - List portfolios accepted and shared via organizational sharing by the management account or delegated administrator of your organization.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Deprecated type.</p> </li> <li> <p> <code>IMPORTED</code> - List imported portfolios that have been accepted and shared through account-to-account sharing.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListAcceptedPortfolioSharesInput', required: [] })
   .openapi('ListAcceptedPortfolioSharesInput')
 
 const ListBudgetsForResourceOutputSchema = z
   .object({
-    Budgets: BudgetsSchema.and(
-      z.any().openapi({ description: 'Information about the associated budgets.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    Budgets: BudgetsSchema.exactOptional().openapi({
+      description: 'Information about the associated budgets.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBudgetsForResourceOutput')
 
 const ListBudgetsForResourceInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceId: IdSchema.and(z.any().openapi({ description: 'The resource identifier.' })),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ResourceId: IdSchema.openapi({ description: 'The resource identifier.' }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['ResourceId'], title: 'ListBudgetsForResourceInput' })
   .openapi('ListBudgetsForResourceInput')
@@ -4018,64 +3035,48 @@ const ConstraintDetailsSchema = z.array(ConstraintDetailSchema).openapi('Constra
 
 const ListConstraintsForPortfolioOutputSchema = z
   .object({
-    ConstraintDetails: ConstraintDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the constraints.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ConstraintDetails: ConstraintDetailsSchema.exactOptional().openapi({
+      description: 'Information about the constraints.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConstraintsForPortfolioOutput')
 
 const ListConstraintsForPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'ListConstraintsForPortfolioInput' })
   .openapi('ListConstraintsForPortfolioInput')
 
 const LaunchPathSummarySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the product path.' }),
-    ).exactOptional(),
-    ConstraintSummaries: ConstraintSummariesSchema.and(
-      z.any().openapi({ description: 'The constraints on the portfolio-product relationship.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags associated with this product path.' }),
-    ).exactOptional(),
-    Name: PortfolioNameSchema.and(
-      z.any().openapi({ description: 'The name of the portfolio that contains the product. ' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The identifier of the product path.' }),
+    ConstraintSummaries: ConstraintSummariesSchema.exactOptional().openapi({
+      description: 'The constraints on the portfolio-product relationship.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'The tags associated with this product path.',
+    }),
+    Name: PortfolioNameSchema.exactOptional().openapi({
+      description: 'The name of the portfolio that contains the product. ',
+    }),
   })
   .openapi({ description: 'Summary information about a product path for a user.', required: [] })
   .openapi('LaunchPathSummary')
@@ -4084,43 +3085,31 @@ const LaunchPathSummariesSchema = z.array(LaunchPathSummarySchema).openapi('Laun
 
 const ListLaunchPathsOutputSchema = z
   .object({
-    LaunchPathSummaries: LaunchPathSummariesSchema.and(
-      z.any().openapi({ description: 'Information about the launch path.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    LaunchPathSummaries: LaunchPathSummariesSchema.exactOptional().openapi({
+      description: 'Information about the launch path.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLaunchPathsOutput')
 
 const ListLaunchPathsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['ProductId'], title: 'ListLaunchPathsInput' })
   .openapi('ListLaunchPathsInput')
@@ -4129,57 +3118,37 @@ const OrganizationNodesSchema = z.array(OrganizationNodeSchema).openapi('Organiz
 
 const ListOrganizationPortfolioAccessOutputSchema = z
   .object({
-    OrganizationNodes: OrganizationNodesSchema.and(
-      z.any().openapi({ description: 'Displays information about the organization nodes.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    OrganizationNodes: OrganizationNodesSchema.exactOptional().openapi({
+      description: 'Displays information about the organization nodes.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationPortfolioAccessOutput')
 
 const ListOrganizationPortfolioAccessInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The portfolio identifier. For example, <code>port-2abcdext3y5fk</code>.',
-        }),
-    ),
-    OrganizationNodeType: OrganizationNodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The organization node type that will be returned in the output.</p> <ul> <li> <p> <code>ORGANIZATION</code> - Organization that has access to the portfolio. </p> </li> <li> <p> <code>ORGANIZATIONAL_UNIT</code> - Organizational unit that has access to the portfolio within your organization.</p> </li> <li> <p> <code>ACCOUNT</code> - Account that has access to the portfolio within your organization.</p> </li> </ul>',
-        }),
-    ),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({
+      description: 'The portfolio identifier. For example, <code>port-2abcdext3y5fk</code>.',
+    }),
+    OrganizationNodeType: OrganizationNodeTypeSchema.openapi({
+      description:
+        '<p>The organization node type that will be returned in the output.</p> <ul> <li> <p> <code>ORGANIZATION</code> - Organization that has access to the portfolio. </p> </li> <li> <p> <code>ORGANIZATIONAL_UNIT</code> - Organizational unit that has access to the portfolio within your organization.</p> </li> <li> <p> <code>ACCOUNT</code> - Account that has access to the portfolio within your organization.</p> </li> </ul>',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({
     required: ['PortfolioId', 'OrganizationNodeType'],
@@ -4191,163 +3160,111 @@ const AccountIdsSchema = z.array(AccountIdSchema).openapi('AccountIds')
 
 const ListPortfolioAccessOutputSchema = z
   .object({
-    AccountIds: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the Amazon Web Services accounts with access to the portfolio.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    AccountIds: AccountIdsSchema.exactOptional().openapi({
+      description:
+        'Information about the Amazon Web Services accounts with access to the portfolio.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPortfolioAccessOutput')
 
 const ListPortfolioAccessInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    OrganizationParentId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of an organization node the portfolio is shared with. All children of this node with an inherited portfolio share will be returned.',
-        }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    OrganizationParentId: IdSchema.exactOptional().openapi({
+      description:
+        'The ID of an organization node the portfolio is shared with. All children of this node with an inherited portfolio share will be returned.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'ListPortfolioAccessInput' })
   .openapi('ListPortfolioAccessInput')
 
 const ListPortfoliosOutputSchema = z
   .object({
-    PortfolioDetails: PortfolioDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the portfolios.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    PortfolioDetails: PortfolioDetailsSchema.exactOptional().openapi({
+      description: 'Information about the portfolios.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPortfoliosOutput')
 
 const ListPortfoliosInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({ title: 'ListPortfoliosInput', required: [] })
   .openapi('ListPortfoliosInput')
 
 const ListPortfoliosForProductOutputSchema = z
   .object({
-    PortfolioDetails: PortfolioDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the portfolios.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    PortfolioDetails: PortfolioDetailsSchema.exactOptional().openapi({
+      description: 'Information about the portfolios.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPortfoliosForProductOutput')
 
 const ListPortfoliosForProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({ required: ['ProductId'], title: 'ListPortfoliosForProductInput' })
   .openapi('ListPortfoliosForProductInput')
 
 const PrincipalSchema = z
   .object({
-    PrincipalARN: PrincipalARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the principal (user, role, or group). This field allows for an ARN with no <code>accountID</code> if the <code>PrincipalType</code> is an <code>IAM_PATTERN</code>. ',
-        }),
-    ).exactOptional(),
-    PrincipalType: PrincipalTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. ',
-        }),
-    ).exactOptional(),
+    PrincipalARN: PrincipalARNSchema.exactOptional().openapi({
+      description:
+        'The ARN of the principal (user, role, or group). This field allows for an ARN with no <code>accountID</code> if the <code>PrincipalType</code> is an <code>IAM_PATTERN</code>. ',
+    }),
+    PrincipalType: PrincipalTypeSchema.exactOptional().openapi({
+      description:
+        'The principal type. The supported value is <code>IAM</code> if you use a fully defined ARN, or <code>IAM_PATTERN</code> if you use an ARN with no <code>accountID</code>. ',
+    }),
   })
   .openapi({ description: 'Information about a principal.', required: [] })
   .openapi('Principal')
@@ -4356,70 +3273,54 @@ const PrincipalsSchema = z.array(PrincipalSchema).openapi('Principals')
 
 const ListPrincipalsForPortfolioOutputSchema = z
   .object({
-    Principals: PrincipalsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>PrincipalARN</code>s and corresponding <code>PrincipalType</code>s associated with the portfolio.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    Principals: PrincipalsSchema.exactOptional().openapi({
+      description:
+        'The <code>PrincipalARN</code>s and corresponding <code>PrincipalType</code>s associated with the portfolio.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPrincipalsForPortfolioOutput')
 
 const ListPrincipalsForPortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'ListPrincipalsForPortfolioInput' })
   .openapi('ListPrincipalsForPortfolioInput')
 
 const ProvisionedProductPlanSummarySchema = z
   .object({
-    PlanName: ProvisionedProductPlanNameSchema.and(
-      z.any().openapi({ description: 'The name of the plan.' }),
-    ).exactOptional(),
-    PlanId: IdSchema.and(z.any().openapi({ description: 'The plan identifier.' })).exactOptional(),
-    ProvisionProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProvisionProductName: ProvisionedProductNameSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    PlanType: ProvisionedProductPlanTypeSchema.and(
-      z.any().openapi({ description: 'The plan type.' }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
+    PlanName: ProvisionedProductPlanNameSchema.exactOptional().openapi({
+      description: 'The name of the plan.',
+    }),
+    PlanId: IdSchema.exactOptional().openapi({ description: 'The plan identifier.' }),
+    ProvisionProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier.',
+    }),
+    ProvisionProductName: ProvisionedProductNameSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    PlanType: ProvisionedProductPlanTypeSchema.exactOptional().openapi({
+      description: 'The plan type.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
   })
   .openapi({ description: 'Summary information about a plan.', required: [] })
   .openapi('ProvisionedProductPlanSummary')
@@ -4430,17 +3331,13 @@ const ProvisionedProductPlansSchema = z
 
 const ListProvisionedProductPlansOutputSchema = z
   .object({
-    ProvisionedProductPlans: ProvisionedProductPlansSchema.and(
-      z.any().openapi({ description: 'Information about the plans.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisionedProductPlans: ProvisionedProductPlansSchema.exactOptional().openapi({
+      description: 'Information about the plans.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisionedProductPlansOutput')
@@ -4453,58 +3350,37 @@ const AccessLevelFilterValueSchema = z.string().openapi('AccessLevelFilterValue'
 
 const AccessLevelFilterSchema = z
   .object({
-    Key: AccessLevelFilterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The access level.</p> <ul> <li> <p> <code>Account</code> - Filter results based on the account.</p> </li> <li> <p> <code>Role</code> - Filter results based on the federated role of the specified user.</p> </li> <li> <p> <code>User</code> - Filter results based on the specified user.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Value: AccessLevelFilterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user to which the access level applies. The only supported value is <code>Self</code>.',
-        }),
-    ).exactOptional(),
+    Key: AccessLevelFilterKeySchema.exactOptional().openapi({
+      description:
+        '<p>The access level.</p> <ul> <li> <p> <code>Account</code> - Filter results based on the account.</p> </li> <li> <p> <code>Role</code> - Filter results based on the federated role of the specified user.</p> </li> <li> <p> <code>User</code> - Filter results based on the specified user.</p> </li> </ul>',
+    }),
+    Value: AccessLevelFilterValueSchema.exactOptional().openapi({
+      description:
+        'The user to which the access level applies. The only supported value is <code>Self</code>.',
+    }),
   })
   .openapi({ description: 'The access level to use to filter results.', required: [] })
   .openapi('AccessLevelFilter')
 
 const ListProvisionedProductPlansInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    AccessLevelFilter: AccessLevelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access level to use to obtain results. The default is <code>User</code>.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisionProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    AccessLevelFilter: AccessLevelFilterSchema.exactOptional().openapi({
+      description: 'The access level to use to obtain results. The default is <code>User</code>.',
+    }),
   })
   .openapi({ title: 'ListProvisionedProductPlansInput', required: [] })
   .openapi('ListProvisionedProductPlansInput')
@@ -4515,49 +3391,37 @@ const ProvisioningArtifactDetailsSchema = z
 
 const ListProvisioningArtifactsOutputSchema = z
   .object({
-    ProvisioningArtifactDetails: ProvisioningArtifactDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the provisioning artifacts.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisioningArtifactDetails: ProvisioningArtifactDetailsSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifacts.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisioningArtifactsOutput')
 
 const ListProvisioningArtifactsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
   })
   .openapi({ required: ['ProductId'], title: 'ListProvisioningArtifactsInput' })
   .openapi('ListProvisioningArtifactsInput')
 
 const ProvisioningArtifactViewSchema = z
   .object({
-    ProductViewSummary: ProductViewSummarySchema.and(
-      z.any().openapi({ description: 'Summary information about a product view.' }),
-    ).exactOptional(),
-    ProvisioningArtifact: ProvisioningArtifactSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about a provisioning artifact. A provisioning artifact is also known as a product version.',
-        }),
-    ).exactOptional(),
+    ProductViewSummary: ProductViewSummarySchema.exactOptional().openapi({
+      description: 'Summary information about a product view.',
+    }),
+    ProvisioningArtifact: ProvisioningArtifactSchema.exactOptional().openapi({
+      description:
+        'Information about a provisioning artifact. A provisioning artifact is also known as a product version.',
+    }),
   })
   .openapi({
     description:
@@ -4572,55 +3436,35 @@ const ProvisioningArtifactViewsSchema = z
 
 const ListProvisioningArtifactsForServiceActionOutputSchema = z
   .object({
-    ProvisioningArtifactViews: ProvisioningArtifactViewsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of objects with information about product views and provisioning artifacts.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisioningArtifactViews: ProvisioningArtifactViewsSchema.exactOptional().openapi({
+      description:
+        'An array of objects with information about product views and provisioning artifacts.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisioningArtifactsForServiceActionOutput')
 
 const ListProvisioningArtifactsForServiceActionInputSchema = z
   .object({
-    ServiceActionId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
-        }),
-    ),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ServiceActionId: IdSchema.openapi({
+      description:
+        'The self-service action identifier. For example, <code>act-fs7abcd89wxyz</code>.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ServiceActionId'],
@@ -4632,17 +3476,13 @@ const RecordDetailsSchema = z.array(RecordDetailSchema).openapi('RecordDetails')
 
 const ListRecordHistoryOutputSchema = z
   .object({
-    RecordDetails: RecordDetailsSchema.and(
-      z.any().openapi({ description: 'The records, in reverse chronological order.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    RecordDetails: RecordDetailsSchema.exactOptional().openapi({
+      description: 'The records, in reverse chronological order.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecordHistoryOutput')
@@ -4653,53 +3493,34 @@ const SearchFilterValueSchema = z.string().openapi('SearchFilterValue')
 
 const ListRecordHistorySearchFilterSchema = z
   .object({
-    Key: SearchFilterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filter key.</p> <ul> <li> <p> <code>product</code> - Filter results based on the specified product identifier.</p> </li> <li> <p> <code>provisionedproduct</code> - Filter results based on the provisioned product identifier.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Value: SearchFilterValueSchema.and(
-      z.any().openapi({ description: 'The filter value.' }),
-    ).exactOptional(),
+    Key: SearchFilterKeySchema.exactOptional().openapi({
+      description:
+        '<p>The filter key.</p> <ul> <li> <p> <code>product</code> - Filter results based on the specified product identifier.</p> </li> <li> <p> <code>provisionedproduct</code> - Filter results based on the provisioned product identifier.</p> </li> </ul>',
+    }),
+    Value: SearchFilterValueSchema.exactOptional().openapi({ description: 'The filter value.' }),
   })
   .openapi({ description: 'The search filter to use when listing history records.', required: [] })
   .openapi('ListRecordHistorySearchFilter')
 
 const ListRecordHistoryInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AccessLevelFilter: AccessLevelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access level to use to obtain results. The default is <code>User</code>.',
-        }),
-    ).exactOptional(),
-    SearchFilter: ListRecordHistorySearchFilterSchema.and(
-      z.any().openapi({ description: 'The search filter to scope the results.' }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    AccessLevelFilter: AccessLevelFilterSchema.exactOptional().openapi({
+      description: 'The access level to use to obtain results. The default is <code>User</code>.',
+    }),
+    SearchFilter: ListRecordHistorySearchFilterSchema.exactOptional().openapi({
+      description: 'The search filter to scope the results.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'ListRecordHistoryInput', required: [] })
   .openapi('ListRecordHistoryInput')
@@ -4718,21 +3539,21 @@ const ResourceDetailCreatedTimeSchema = z.iso
 
 const ResourceDetailSchema = z
   .object({
-    Id: ResourceDetailIdSchema.and(
-      z.any().openapi({ description: 'The identifier of the resource.' }),
-    ).exactOptional(),
-    ARN: ResourceDetailARNSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    Name: ResourceDetailNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource.' }),
-    ).exactOptional(),
-    Description: ResourceDetailDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the resource.' }),
-    ).exactOptional(),
-    CreatedTime: ResourceDetailCreatedTimeSchema.and(
-      z.any().openapi({ description: 'The creation time of the resource.' }),
-    ).exactOptional(),
+    Id: ResourceDetailIdSchema.exactOptional().openapi({
+      description: 'The identifier of the resource.',
+    }),
+    ARN: ResourceDetailARNSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    Name: ResourceDetailNameSchema.exactOptional().openapi({
+      description: 'The name of the resource.',
+    }),
+    Description: ResourceDetailDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the resource.',
+    }),
+    CreatedTime: ResourceDetailCreatedTimeSchema.exactOptional().openapi({
+      description: 'The creation time of the resource.',
+    }),
   })
   .openapi({ description: 'Information about a resource.', required: [] })
   .openapi('ResourceDetail')
@@ -4741,17 +3562,13 @@ const ResourceDetailsSchema = z.array(ResourceDetailSchema).openapi('ResourceDet
 
 const ListResourcesForTagOptionOutputSchema = z
   .object({
-    ResourceDetails: ResourceDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the resources.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    ResourceDetails: ResourceDetailsSchema.exactOptional().openapi({
+      description: 'Information about the resources.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourcesForTagOptionOutput')
@@ -4760,28 +3577,18 @@ const ResourceTypeSchema = z.string().openapi('ResourceType')
 
 const ListResourcesForTagOptionInputSchema = z
   .object({
-    TagOptionId: TagOptionIdSchema.and(
-      z.any().openapi({ description: 'The TagOption identifier.' }),
-    ),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource type.</p> <ul> <li> <p> <code>Portfolio</code> </p> </li> <li> <p> <code>Product</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    TagOptionId: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The resource type.</p> <ul> <li> <p> <code>Portfolio</code> </p> </li> <li> <p> <code>Product</code> </p> </li> </ul>',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: ['TagOptionId'], title: 'ListResourcesForTagOptionInput' })
   .openapi('ListResourcesForTagOptionInput')
@@ -4792,109 +3599,69 @@ const ServiceActionSummariesSchema = z
 
 const ListServiceActionsOutputSchema = z
   .object({
-    ServiceActionSummaries: ServiceActionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object containing information about the service actions associated with the provisioning artifact.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ServiceActionSummaries: ServiceActionSummariesSchema.exactOptional().openapi({
+      description:
+        'An object containing information about the service actions associated with the provisioning artifact.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceActionsOutput')
 
 const ListServiceActionsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'ListServiceActionsInput', required: [] })
   .openapi('ListServiceActionsInput')
 
 const ListServiceActionsForProvisioningArtifactOutputSchema = z
   .object({
-    ServiceActionSummaries: ServiceActionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object containing information about the self-service actions associated with the provisioning artifact.',
-        }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ServiceActionSummaries: ServiceActionSummariesSchema.exactOptional().openapi({
+      description:
+        'An object containing information about the self-service actions associated with the provisioning artifact.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListServiceActionsForProvisioningArtifactOutput')
 
 const ListServiceActionsForProvisioningArtifactInputSchema = z
   .object({
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
-        }),
-    ),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
-        }),
-    ),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ProductId: IdSchema.openapi({
+      description: 'The product identifier. For example, <code>prod-abcdzk7xy33qa</code>.',
+    }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description:
+        'The identifier of the provisioning artifact. For example, <code>pa-4abcdjnxjj6ne</code>.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['ProductId', 'ProvisioningArtifactId'],
@@ -4908,30 +3675,18 @@ const StackInstanceStatusSchema = z
 
 const StackInstanceSchema = z
   .object({
-    Account: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services account that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services Region that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    StackInstanceStatus: StackInstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the stack instance, in terms of its synchronization with its associated stack set. </p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to true, to delete the stack instance, and then delete the stack manually. </p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because either the associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation, or the stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    Account: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Web Services account that the stack instance is associated with.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Web Services Region that the stack instance is associated with.',
+    }),
+    StackInstanceStatus: StackInstanceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the stack instance, in terms of its synchronization with its associated stack set. </p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to true, to delete the stack instance, and then delete the stack manually. </p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because either the associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation, or the stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -4944,45 +3699,33 @@ const StackInstancesSchema = z.array(StackInstanceSchema).openapi('StackInstance
 
 const ListStackInstancesForProvisionedProductOutputSchema = z
   .object({
-    StackInstances: StackInstancesSchema.and(
-      z.any().openapi({ description: 'List of stack instances.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    StackInstances: StackInstancesSchema.exactOptional().openapi({
+      description: 'List of stack instances.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackInstancesForProvisionedProductOutput')
 
 const ListStackInstancesForProvisionedProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisionedProductId: IdSchema.openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
   })
   .openapi({
     required: ['ProvisionedProductId'],
@@ -4992,63 +3735,45 @@ const ListStackInstancesForProvisionedProductInputSchema = z
 
 const ListTagOptionsOutputSchema = z
   .object({
-    TagOptionDetails: TagOptionDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the TagOptions.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    TagOptionDetails: TagOptionDetailsSchema.exactOptional().openapi({
+      description: 'Information about the TagOptions.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagOptionsOutput')
 
 const ListTagOptionsFiltersSchema = z
   .object({
-    Key: TagOptionKeySchema.and(
-      z.any().openapi({ description: 'The TagOption key.' }),
-    ).exactOptional(),
-    Value: TagOptionValueSchema.and(
-      z.any().openapi({ description: 'The TagOption value.' }),
-    ).exactOptional(),
-    Active: TagOptionActiveSchema.and(
-      z.any().openapi({ description: 'The active state.' }),
-    ).exactOptional(),
+    Key: TagOptionKeySchema.exactOptional().openapi({ description: 'The TagOption key.' }),
+    Value: TagOptionValueSchema.exactOptional().openapi({ description: 'The TagOption value.' }),
+    Active: TagOptionActiveSchema.exactOptional().openapi({ description: 'The active state.' }),
   })
   .openapi({ description: 'Filters to use when listing TagOptions.', required: [] })
   .openapi('ListTagOptionsFilters')
 
 const ListTagOptionsInputSchema = z
   .object({
-    Filters: ListTagOptionsFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The search filters. If no search filters are specified, the output includes all TagOptions.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    Filters: ListTagOptionsFiltersSchema.exactOptional().openapi({
+      description:
+        'The search filters. If no search filters are specified, the output includes all TagOptions.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'ListTagOptionsInput', required: [] })
   .openapi('ListTagOptionsInput')
 
 const NotifyProvisionProductEngineWorkflowResultOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NotifyProvisionProductEngineWorkflowResultOutput')
 
 const EngineWorkflowTokenSchema = z
@@ -5083,12 +3808,12 @@ const UniqueTagValueSchema = z
 
 const UniqueTagResourceIdentifierSchema = z
   .object({
-    Key: UniqueTagKeySchema.and(
-      z.any().openapi({ description: " A unique key that's attached to a resource. " }),
-    ).exactOptional(),
-    Value: UniqueTagValueSchema.and(
-      z.any().openapi({ description: " A unique value that's attached to a resource. " }),
-    ).exactOptional(),
+    Key: UniqueTagKeySchema.exactOptional().openapi({
+      description: " A unique key that's attached to a resource. ",
+    }),
+    Value: UniqueTagValueSchema.exactOptional().openapi({
+      description: " A unique value that's attached to a resource. ",
+    }),
   })
   .openapi({
     description:
@@ -5099,14 +3824,10 @@ const UniqueTagResourceIdentifierSchema = z
 
 const EngineWorkflowResourceIdentifierSchema = z
   .object({
-    UniqueTag: UniqueTagResourceIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The unique key-value pair for a tag that identifies provisioned product resources. ',
-        }),
-    ).exactOptional(),
+    UniqueTag: UniqueTagResourceIdentifierSchema.exactOptional().openapi({
+      description:
+        ' The unique key-value pair for a tag that identifies provisioned product resources. ',
+    }),
   })
   .openapi({
     description:
@@ -5117,41 +3838,27 @@ const EngineWorkflowResourceIdentifierSchema = z
 
 const NotifyProvisionProductEngineWorkflowResultInputSchema = z
   .object({
-    WorkflowToken: EngineWorkflowTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The encrypted contents of the provisioning engine execution payload that Service Catalog sends after the Terraform product provisioning workflow starts. ',
-        }),
-    ),
-    RecordId: IdSchema.and(z.any().openapi({ description: ' The identifier of the record. ' })),
-    Status: EngineWorkflowStatusSchema.and(
-      z.any().openapi({ description: ' The status of the provisioning engine execution. ' }),
-    ),
-    FailureReason: EngineWorkflowFailureReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: ' The reason why the provisioning engine execution failed. ' }),
-    ).exactOptional(),
-    ResourceIdentifier: EngineWorkflowResourceIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The ID for the provisioned product resources that are part of a resource group. ',
-        }),
-    ).exactOptional(),
-    Outputs: RecordOutputsSchema.and(
-      z.any().openapi({ description: ' The output of the provisioning engine execution. ' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The idempotency token that identifies the provisioning engine execution. ',
-        }),
-    ),
+    WorkflowToken: EngineWorkflowTokenSchema.openapi({
+      description:
+        ' The encrypted contents of the provisioning engine execution payload that Service Catalog sends after the Terraform product provisioning workflow starts. ',
+    }),
+    RecordId: IdSchema.openapi({ description: ' The identifier of the record. ' }),
+    Status: EngineWorkflowStatusSchema.openapi({
+      description: ' The status of the provisioning engine execution. ',
+    }),
+    FailureReason: EngineWorkflowFailureReasonSchema.exactOptional().openapi({
+      description: ' The reason why the provisioning engine execution failed. ',
+    }),
+    ResourceIdentifier: EngineWorkflowResourceIdentifierSchema.exactOptional().openapi({
+      description:
+        ' The ID for the provisioned product resources that are part of a resource group. ',
+    }),
+    Outputs: RecordOutputsSchema.exactOptional().openapi({
+      description: ' The output of the provisioning engine execution. ',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description: ' The idempotency token that identifies the provisioning engine execution. ',
+    }),
   })
   .openapi({
     required: ['WorkflowToken', 'RecordId', 'Status', 'IdempotencyToken'],
@@ -5160,33 +3867,25 @@ const NotifyProvisionProductEngineWorkflowResultInputSchema = z
   .openapi('NotifyProvisionProductEngineWorkflowResultInput')
 
 const NotifyTerminateProvisionedProductEngineWorkflowResultOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NotifyTerminateProvisionedProductEngineWorkflowResultOutput')
 
 const NotifyTerminateProvisionedProductEngineWorkflowResultInputSchema = z
   .object({
-    WorkflowToken: EngineWorkflowTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The encrypted contents of the terminate engine execution payload that Service Catalog sends after the Terraform product terminate workflow starts. ',
-        }),
-    ),
-    RecordId: IdSchema.and(z.any().openapi({ description: ' The identifier of the record. ' })),
-    Status: EngineWorkflowStatusSchema.and(
-      z.any().openapi({ description: ' The status of the terminate engine execution. ' }),
-    ),
-    FailureReason: EngineWorkflowFailureReasonSchema.and(
-      z.any().openapi({ description: ' The reason why the terminate engine execution failed. ' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The idempotency token that identifies the terminate engine execution. ',
-        }),
-    ),
+    WorkflowToken: EngineWorkflowTokenSchema.openapi({
+      description:
+        ' The encrypted contents of the terminate engine execution payload that Service Catalog sends after the Terraform product terminate workflow starts. ',
+    }),
+    RecordId: IdSchema.openapi({ description: ' The identifier of the record. ' }),
+    Status: EngineWorkflowStatusSchema.openapi({
+      description: ' The status of the terminate engine execution. ',
+    }),
+    FailureReason: EngineWorkflowFailureReasonSchema.exactOptional().openapi({
+      description: ' The reason why the terminate engine execution failed. ',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description: ' The idempotency token that identifies the terminate engine execution. ',
+    }),
   })
   .openapi({
     required: ['WorkflowToken', 'RecordId', 'Status', 'IdempotencyToken'],
@@ -5195,36 +3894,28 @@ const NotifyTerminateProvisionedProductEngineWorkflowResultInputSchema = z
   .openapi('NotifyTerminateProvisionedProductEngineWorkflowResultInput')
 
 const NotifyUpdateProvisionedProductEngineWorkflowResultOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('NotifyUpdateProvisionedProductEngineWorkflowResultOutput')
 
 const NotifyUpdateProvisionedProductEngineWorkflowResultInputSchema = z
   .object({
-    WorkflowToken: EngineWorkflowTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The encrypted contents of the update engine execution payload that Service Catalog sends after the Terraform product update workflow starts. ',
-        }),
-    ),
-    RecordId: IdSchema.and(z.any().openapi({ description: ' The identifier of the record. ' })),
-    Status: EngineWorkflowStatusSchema.and(
-      z.any().openapi({ description: ' The status of the update engine execution. ' }),
-    ),
-    FailureReason: EngineWorkflowFailureReasonSchema.and(
-      z.any().openapi({ description: ' The reason why the update engine execution failed. ' }),
-    ).exactOptional(),
-    Outputs: RecordOutputsSchema.and(
-      z.any().openapi({ description: ' The output of the update engine execution. ' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The idempotency token that identifies the update engine execution. ',
-        }),
-    ),
+    WorkflowToken: EngineWorkflowTokenSchema.openapi({
+      description:
+        ' The encrypted contents of the update engine execution payload that Service Catalog sends after the Terraform product update workflow starts. ',
+    }),
+    RecordId: IdSchema.openapi({ description: ' The identifier of the record. ' }),
+    Status: EngineWorkflowStatusSchema.openapi({
+      description: ' The status of the update engine execution. ',
+    }),
+    FailureReason: EngineWorkflowFailureReasonSchema.exactOptional().openapi({
+      description: ' The reason why the update engine execution failed. ',
+    }),
+    Outputs: RecordOutputsSchema.exactOptional().openapi({
+      description: ' The output of the update engine execution. ',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description: ' The idempotency token that identifies the update engine execution. ',
+    }),
   })
   .openapi({
     required: ['WorkflowToken', 'RecordId', 'Status', 'IdempotencyToken'],
@@ -5234,21 +3925,17 @@ const NotifyUpdateProvisionedProductEngineWorkflowResultInputSchema = z
 
 const ProvisionProductOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z.any().openapi({ description: 'Information about the result of provisioning the product.' }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description: 'Information about the result of provisioning the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ProvisionProductOutput')
 
 const ProvisioningParameterSchema = z
   .object({
-    Key: ParameterKeySchema.and(
-      z.any().openapi({ description: 'The parameter key.' }),
-    ).exactOptional(),
-    Value: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The parameter value.' }),
-    ).exactOptional(),
+    Key: ParameterKeySchema.exactOptional().openapi({ description: 'The parameter key.' }),
+    Value: ParameterValueSchema.exactOptional().openapi({ description: 'The parameter value.' }),
   })
   .openapi({
     description: 'Information about a parameter used to provision a product.',
@@ -5278,54 +3965,32 @@ const StackSetMaxConcurrencyPercentageSchema = z
 
 const ProvisioningPreferencesSchema = z
   .object({
-    StackSetAccounts: StackSetAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services accounts where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified accounts should be within the list of accounts from the <code>STACKSET</code> constraint. To get the list of accounts in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all acounts from the <code>STACKSET</code> constraint.</p>',
-        }),
-    ).exactOptional(),
-    StackSetRegions: StackSetRegionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services Regions where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified Regions should be within the list of Regions from the <code>STACKSET</code> constraint. To get the list of Regions in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all Regions from the <code>STACKSET</code> constraint.</p>',
-        }),
-    ).exactOptional(),
-    StackSetFailureToleranceCount: StackSetFailureToleranceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p> <p>The default value is <code>0</code> if no value is specified.</p>",
-        }),
-    ).exactOptional(),
-    StackSetFailureTolerancePercentage: StackSetFailureTolerancePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The percentage of accounts, per Region, for which this stack operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p>",
-        }),
-    ).exactOptional(),
-    StackSetMaxConcurrencyCount: StackSetMaxConcurrencyCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>StackSetFailureToleranceCount</code>. <code>StackSetMaxConcurrentCount</code> is at most one more than the <code>StackSetFailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    StackSetMaxConcurrencyPercentage: StackSetMaxConcurrencyPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, Service Catalog sets the number as <code>1</code> instead.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
+    StackSetAccounts: StackSetAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services accounts where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified accounts should be within the list of accounts from the <code>STACKSET</code> constraint. To get the list of accounts in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all acounts from the <code>STACKSET</code> constraint.</p>',
+    }),
+    StackSetRegions: StackSetRegionsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services Regions where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified Regions should be within the list of Regions from the <code>STACKSET</code> constraint. To get the list of Regions in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all Regions from the <code>STACKSET</code> constraint.</p>',
+    }),
+    StackSetFailureToleranceCount: StackSetFailureToleranceCountSchema.exactOptional().openapi({
+      description:
+        "<p>The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p> <p>The default value is <code>0</code> if no value is specified.</p>",
+    }),
+    StackSetFailureTolerancePercentage:
+      StackSetFailureTolerancePercentageSchema.exactOptional().openapi({
+        description:
+          "<p>The percentage of accounts, per Region, for which this stack operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p>",
+      }),
+    StackSetMaxConcurrencyCount: StackSetMaxConcurrencyCountSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>StackSetFailureToleranceCount</code>. <code>StackSetMaxConcurrentCount</code> is at most one more than the <code>StackSetFailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
+    }),
+    StackSetMaxConcurrencyPercentage:
+      StackSetMaxConcurrencyPercentageSchema.exactOptional().openapi({
+        description:
+          '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, Service Catalog sets the number as <code>1</code> instead.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
+      }),
   })
   .openapi({
     description:
@@ -5336,99 +4001,51 @@ const ProvisioningPreferencesSchema = z
 
 const ProvisionProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The product identifier. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProductName: ProductViewNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the product. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioning artifact. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactName: ProvisioningArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioning artifact. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathName: PortfolioDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the path. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisionedProductName: ProvisionedProductNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-friendly name for the provisioned product. This value must be unique for the Amazon Web Services account and cannot be updated after the product is provisioned.',
-        }),
-    ),
-    ProvisioningParameters: ProvisioningParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters specified by the administrator that are required for provisioning the product.',
-        }),
-    ).exactOptional(),
-    ProvisioningPreferences: ProvisioningPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the provisioning preferences for a stack set.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
-    NotificationArns: NotificationArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
-        }),
-    ).exactOptional(),
-    ProvisionToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An idempotency token that uniquely identifies the provisioning request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description: 'The product identifier. You must provide the name or ID, but not both.',
+    }),
+    ProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The name of the product. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioning artifact. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningArtifactName: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioning artifact. You must provide the name or ID, but not both.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({
+      description:
+        'The path identifier of the product. This value is optional if the product has a default path, and required if the product has more than one path. To list the paths for a product, use <a>ListLaunchPaths</a>. You must provide the name or ID, but not both.',
+    }),
+    PathName: PortfolioDisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the path. You must provide the name or ID, but not both.',
+    }),
+    ProvisionedProductName: ProvisionedProductNameSchema.openapi({
+      description:
+        'A user-friendly name for the provisioned product. This value must be unique for the Amazon Web Services account and cannot be updated after the product is provisioned.',
+    }),
+    ProvisioningParameters: ProvisioningParametersSchema.exactOptional().openapi({
+      description:
+        'Parameters specified by the administrator that are required for provisioning the product.',
+    }),
+    ProvisioningPreferences: ProvisioningPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the provisioning preferences for a stack set.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    NotificationArns: NotificationArnsSchema.exactOptional().openapi({
+      description:
+        'Passed to CloudFormation. The SNS topic ARNs to which to publish stack-related events.',
+    }),
+    ProvisionToken: IdempotencyTokenSchema.openapi({
+      description: 'An idempotency token that uniquely identifies the provisioning request.',
+    }),
   })
   .openapi({
     required: ['ProvisionedProductName', 'ProvisionToken'],
@@ -5436,27 +4053,19 @@ const ProvisionProductInputSchema = z
   })
   .openapi('ProvisionProductInput')
 
-const RejectPortfolioShareOutputSchema = z.object({}).openapi('RejectPortfolioShareOutput')
+const RejectPortfolioShareOutputSchema = z.looseObject({}).openapi('RejectPortfolioShareOutput')
 
 const RejectPortfolioShareInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    PortfolioShareType: PortfolioShareTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of shared portfolios to reject. The default is to reject imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Reject portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Reject imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog reject-portfolio-share --portfolio-id "port-2qwzkwxt3y5fk" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    PortfolioShareType: PortfolioShareTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of shared portfolios to reject. The default is to reject imported portfolios.</p> <ul> <li> <p> <code>AWS_ORGANIZATIONS</code> - Reject portfolios shared by the management account of your organization.</p> </li> <li> <p> <code>IMPORTED</code> - Reject imported portfolios.</p> </li> <li> <p> <code>AWS_SERVICECATALOG</code> - Not supported. (Throws ResourceNotFoundException.)</p> </li> </ul> <p>For example, <code>aws servicecatalog reject-portfolio-share --portfolio-id "port-2qwzkwxt3y5fk" --portfolio-share-type AWS_ORGANIZATIONS</code> </p>',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'RejectPortfolioShareInput' })
   .openapi('RejectPortfolioShareInput')
@@ -5467,50 +4076,33 @@ const ProvisionedProductDetailsSchema = z
 
 const ScanProvisionedProductsOutputSchema = z
   .object({
-    ProvisionedProducts: ProvisionedProductDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the provisioned products.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisionedProducts: ProvisionedProductDetailsSchema.exactOptional().openapi({
+      description: 'Information about the provisioned products.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ScanProvisionedProductsOutput')
 
 const ScanProvisionedProductsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AccessLevelFilter: AccessLevelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access level to use to obtain results. The default is <code>User</code>.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    AccessLevelFilter: AccessLevelFilterSchema.exactOptional().openapi({
+      description: 'The access level to use to obtain results. The default is <code>User</code>.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'ScanProvisionedProductsInput', required: [] })
   .openapi('ScanProvisionedProductsInput')
@@ -5523,14 +4115,12 @@ const ApproximateCountSchema = z.int().openapi('ApproximateCount')
 
 const ProductViewAggregationValueSchema = z
   .object({
-    Value: AttributeValueSchema.and(
-      z.any().openapi({ description: 'The value of the product view aggregation.' }),
-    ).exactOptional(),
-    ApproximateCount: ApproximateCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'An approximate count of the products that match the value.' }),
-    ).exactOptional(),
+    Value: AttributeValueSchema.exactOptional().openapi({
+      description: 'The value of the product view aggregation.',
+    }),
+    ApproximateCount: ApproximateCountSchema.exactOptional().openapi({
+      description: 'An approximate count of the products that match the value.',
+    }),
   })
   .openapi({
     description:
@@ -5549,20 +4139,16 @@ const ProductViewAggregationsSchema = z
 
 const SearchProductsOutputSchema = z
   .object({
-    ProductViewSummaries: ProductViewSummariesSchema.and(
-      z.any().openapi({ description: 'Information about the product views.' }),
-    ).exactOptional(),
-    ProductViewAggregations: ProductViewAggregationsSchema.and(
-      z.any().openapi({ description: 'The product view aggregations.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProductViewSummaries: ProductViewSummariesSchema.exactOptional().openapi({
+      description: 'Information about the product views.',
+    }),
+    ProductViewAggregations: ProductViewAggregationsSchema.exactOptional().openapi({
+      description: 'The product view aggregations.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchProductsOutput')
@@ -5585,47 +4171,27 @@ const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const SearchProductsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Filters: ProductViewFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The search filters. If no search filters are specified, the output includes all products to which the caller has access.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeMax100Schema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    SortBy: ProductViewSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sort field. If no value is specified, the results are not sorted.',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sort order. If no value is specified, the results are not sorted.',
-        }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Filters: ProductViewFiltersSchema.exactOptional().openapi({
+      description:
+        'The search filters. If no search filters are specified, the output includes all products to which the caller has access.',
+    }),
+    PageSize: PageSizeMax100Schema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    SortBy: ProductViewSortBySchema.exactOptional().openapi({
+      description: 'The sort field. If no value is specified, the results are not sorted.',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description: 'The sort order. If no value is specified, the results are not sorted.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'SearchProductsInput', required: [] })
   .openapi('SearchProductsInput')
@@ -5634,17 +4200,13 @@ const ProductViewDetailsSchema = z.array(ProductViewDetailSchema).openapi('Produ
 
 const SearchProductsAsAdminOutputSchema = z
   .object({
-    ProductViewDetails: ProductViewDetailsSchema.and(
-      z.any().openapi({ description: 'Information about the product views.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProductViewDetails: ProductViewDetailsSchema.exactOptional().openapi({
+      description: 'Information about the product views.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchProductsAsAdminOutput')
@@ -5653,53 +4215,31 @@ const ProductSourceSchema = z.literal('ACCOUNT').openapi('ProductSource')
 
 const SearchProductsAsAdminInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(
-      z.any().openapi({ description: 'The portfolio identifier.' }),
-    ).exactOptional(),
-    Filters: ProductViewFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The search filters. If no search filters are specified, the output includes all products to which the administrator has access.',
-        }),
-    ).exactOptional(),
-    SortBy: ProductViewSortBySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sort field. If no value is specified, the results are not sorted.',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sort order. If no value is specified, the results are not sorted.',
-        }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
-    PageSize: PageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    ProductSource: ProductSourceSchema.and(
-      z.any().openapi({ description: 'Access level of the source of the product.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.exactOptional().openapi({ description: 'The portfolio identifier.' }),
+    Filters: ProductViewFiltersSchema.exactOptional().openapi({
+      description:
+        'The search filters. If no search filters are specified, the output includes all products to which the administrator has access.',
+    }),
+    SortBy: ProductViewSortBySchema.exactOptional().openapi({
+      description: 'The sort field. If no value is specified, the results are not sorted.',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description: 'The sort order. If no value is specified, the results are not sorted.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
+    PageSize: PageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    ProductSource: ProductSourceSchema.exactOptional().openapi({
+      description: 'Access level of the source of the product.',
+    }),
   })
   .openapi({ title: 'SearchProductsAsAdminInput', required: [] })
   .openapi('SearchProductsAsAdminInput')
@@ -5710,100 +4250,66 @@ const UserArnSessionSchema = z.string().openapi('UserArnSession')
 
 const ProvisionedProductAttributeSchema = z
   .object({
-    Name: ProvisionedProductNameOrArnSchema.and(
-      z.any().openapi({ description: 'The user-friendly name of the provisioned product.' }),
-    ).exactOptional(),
-    Arn: ProvisionedProductNameOrArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the provisioned product.' }),
-    ).exactOptional(),
-    Type: ProvisionedProductTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ).exactOptional(),
-    Status: ProvisionedProductStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the provisioned product.</p> <ul> <li> <p> <code>AVAILABLE</code> - Stable state, ready to perform any operation. The most recent operation succeeded and completed.</p> </li> <li> <p> <code>UNDER_CHANGE</code> - Transitive state. Operations performed might not have valid results. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> <li> <p> <code>TAINTED</code> - Stable state, ready to perform any operation. The stack has completed the requested operation but is not exactly what was requested. For example, a request to update to a new version failed and the stack rolled back to the current version.</p> </li> <li> <p> <code>ERROR</code> - An unexpected error occurred. The provisioned product exists but the stack is not running. For example, CloudFormation received a parameter value that was not valid and could not launch the stack.</p> </li> <li> <p> <code>PLAN_IN_PROGRESS</code> - Transitive state. The plan operations were performed to provision a new product, but resources have not yet been created. After reviewing the list of resources to be created, execute the plan. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StatusMessage: ProvisionedProductStatusMessageSchema.and(
-      z.any().openapi({ description: 'The current status message of the provisioned product.' }),
-    ).exactOptional(),
-    CreatedTime: CreatedTimeSchema.and(
-      z.any().openapi({ description: 'The UTC time stamp of the creation time.' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
-        }),
-    ).exactOptional(),
-    LastRecordId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The record identifier of the last request performed on this provisioned product.',
-        }),
-    ).exactOptional(),
-    LastProvisioningRecordId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastSuccessfulProvisioningRecordId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(z.any().openapi({ description: 'One or more tags.' })).exactOptional(),
-    PhysicalId: PhysicalIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The assigned identifier for the resource, such as an EC2 instance ID or an S3 bucket name.',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z.any().openapi({ description: 'The product identifier.' }),
-    ).exactOptional(),
-    ProductName: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The name of the product.' }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    ProvisioningArtifactName: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning artifact.' }),
-    ).exactOptional(),
-    UserArn: UserArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ).exactOptional(),
-    UserArnSession: UserArnSessionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the user in the session. This ARN might contain a session ID.',
-        }),
-    ).exactOptional(),
+    Name: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description: 'The user-friendly name of the provisioned product.',
+    }),
+    Arn: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description: 'The ARN of the provisioned product.',
+    }),
+    Type: ProvisionedProductTypeSchema.exactOptional().openapi({
+      description:
+        'The type of provisioned product. The supported values are <code>CFN_STACK</code> and <code>CFN_STACKSET</code>.',
+    }),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    Status: ProvisionedProductStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the provisioned product.</p> <ul> <li> <p> <code>AVAILABLE</code> - Stable state, ready to perform any operation. The most recent operation succeeded and completed.</p> </li> <li> <p> <code>UNDER_CHANGE</code> - Transitive state. Operations performed might not have valid results. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> <li> <p> <code>TAINTED</code> - Stable state, ready to perform any operation. The stack has completed the requested operation but is not exactly what was requested. For example, a request to update to a new version failed and the stack rolled back to the current version.</p> </li> <li> <p> <code>ERROR</code> - An unexpected error occurred. The provisioned product exists but the stack is not running. For example, CloudFormation received a parameter value that was not valid and could not launch the stack.</p> </li> <li> <p> <code>PLAN_IN_PROGRESS</code> - Transitive state. The plan operations were performed to provision a new product, but resources have not yet been created. After reviewing the list of resources to be created, execute the plan. Wait for an <code>AVAILABLE</code> status before performing operations.</p> </li> </ul>',
+    }),
+    StatusMessage: ProvisionedProductStatusMessageSchema.exactOptional().openapi({
+      description: 'The current status message of the provisioned product.',
+    }),
+    CreatedTime: CreatedTimeSchema.exactOptional().openapi({
+      description: 'The UTC time stamp of the creation time.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier that you provide to ensure idempotency. If multiple requests differ only by the idempotency token, the same response is returned for each repeated request.',
+    }),
+    LastRecordId: IdSchema.exactOptional().openapi({
+      description:
+        'The record identifier of the last request performed on this provisioned product.',
+    }),
+    LastProvisioningRecordId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The record identifier of the last request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
+    }),
+    LastSuccessfulProvisioningRecordId: IdSchema.exactOptional().openapi({
+      description:
+        '<p>The record identifier of the last successful request performed on this provisioned product of the following types:</p> <ul> <li> <p> ProvisionedProduct </p> </li> <li> <p> UpdateProvisionedProduct </p> </li> <li> <p> ExecuteProvisionedProductPlan </p> </li> <li> <p> TerminateProvisionedProduct </p> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({ description: 'One or more tags.' }),
+    PhysicalId: PhysicalIdSchema.exactOptional().openapi({
+      description:
+        'The assigned identifier for the resource, such as an EC2 instance ID or an S3 bucket name.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({ description: 'The product identifier.' }),
+    ProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The name of the product.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    ProvisioningArtifactName: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning artifact.',
+    }),
+    UserArn: UserArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user.',
+    }),
+    UserArnSession: UserArnSessionSchema.exactOptional().openapi({
+      description: 'The ARN of the user in the session. This ARN might contain a session ID.',
+    }),
   })
   .openapi({ description: 'Information about a provisioned product.', required: [] })
   .openapi('ProvisionedProductAttribute')
@@ -5816,20 +4322,16 @@ const TotalResultsCountSchema = z.int().openapi('TotalResultsCount')
 
 const SearchProvisionedProductsOutputSchema = z
   .object({
-    ProvisionedProducts: ProvisionedProductAttributesSchema.and(
-      z.any().openapi({ description: 'Information about the provisioned products.' }),
-    ).exactOptional(),
-    TotalResultsCount: TotalResultsCountSchema.and(
-      z.any().openapi({ description: 'The number of provisioned products found.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
-        }),
-    ).exactOptional(),
+    ProvisionedProducts: ProvisionedProductAttributesSchema.exactOptional().openapi({
+      description: 'Information about the provisioned products.',
+    }),
+    TotalResultsCount: TotalResultsCountSchema.exactOptional().openapi({
+      description: 'The number of provisioned products found.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token to use to retrieve the next set of results. If there are no additional results, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchProvisionedProductsOutput')
@@ -5856,65 +4358,40 @@ const SearchProvisionedProductsPageSizeSchema = z
 
 const SearchProvisionedProductsInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AccessLevelFilter: AccessLevelFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The access level to use to obtain results. The default is <code>User</code>.',
-        }),
-    ).exactOptional(),
-    Filters: ProvisionedProductFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The search filters.</p> <p>When the key is <code>SearchQuery</code>, the searchable fields are <code>arn</code>, <code>createdTime</code>, <code>id</code>, <code>lastRecordId</code>, <code>idempotencyToken</code>, <code>name</code>, <code>physicalId</code>, <code>productId</code>, <code>provisioningArtifact</code>, <code>type</code>, <code>status</code>, <code>tags</code>, <code>userArn</code>, <code>userArnSession</code>, <code>lastProvisioningRecordId</code>, <code>lastSuccessfulProvisioningRecordId</code>, <code>productName</code>, and <code>provisioningArtifactName</code>.</p> <p>Example: <code>"SearchQuery":["status:AVAILABLE"]</code> </p>',
-        }),
-    ).exactOptional(),
-    SortBy: SortFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The sort field. If no value is specified, the results are not sorted. The valid values are <code>arn</code>, <code>id</code>, <code>name</code>, and <code>lastRecordId</code>.',
-        }),
-    ).exactOptional(),
-    SortOrder: SortOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The sort order. If no value is specified, the results are not sorted.',
-        }),
-    ).exactOptional(),
-    PageSize: SearchProvisionedProductsPageSizeSchema.and(
-      z.any().openapi({ description: 'The maximum number of items to return with this call.' }),
-    ).exactOptional(),
-    PageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The page token for the next set of results. To retrieve the first set of results, use null.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    AccessLevelFilter: AccessLevelFilterSchema.exactOptional().openapi({
+      description: 'The access level to use to obtain results. The default is <code>User</code>.',
+    }),
+    Filters: ProvisionedProductFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>The search filters.</p> <p>When the key is <code>SearchQuery</code>, the searchable fields are <code>arn</code>, <code>createdTime</code>, <code>id</code>, <code>lastRecordId</code>, <code>idempotencyToken</code>, <code>name</code>, <code>physicalId</code>, <code>productId</code>, <code>provisioningArtifact</code>, <code>type</code>, <code>status</code>, <code>tags</code>, <code>userArn</code>, <code>userArnSession</code>, <code>lastProvisioningRecordId</code>, <code>lastSuccessfulProvisioningRecordId</code>, <code>productName</code>, and <code>provisioningArtifactName</code>.</p> <p>Example: <code>"SearchQuery":["status:AVAILABLE"]</code> </p>',
+    }),
+    SortBy: SortFieldSchema.exactOptional().openapi({
+      description:
+        'The sort field. If no value is specified, the results are not sorted. The valid values are <code>arn</code>, <code>id</code>, <code>name</code>, and <code>lastRecordId</code>.',
+    }),
+    SortOrder: SortOrderSchema.exactOptional().openapi({
+      description: 'The sort order. If no value is specified, the results are not sorted.',
+    }),
+    PageSize: SearchProvisionedProductsPageSizeSchema.exactOptional().openapi({
+      description: 'The maximum number of items to return with this call.',
+    }),
+    PageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        'The page token for the next set of results. To retrieve the first set of results, use null.',
+    }),
   })
   .openapi({ title: 'SearchProvisionedProductsInput', required: [] })
   .openapi('SearchProvisionedProductsInput')
 
 const TerminateProvisionedProductOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z.any().openapi({ description: 'Information about the result of this request.' }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description: 'Information about the result of this request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TerminateProvisionedProductOutput')
@@ -5923,107 +4400,75 @@ const RetainPhysicalResourcesSchema = z.boolean().openapi('RetainPhysicalResourc
 
 const TerminateProvisionedProductInputSchema = z
   .object({
-    ProvisionedProductName: ProvisionedProductNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
-        }),
-    ).exactOptional(),
-    TerminateToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An idempotency token that uniquely identifies the termination request. This token is only valid during the termination process. After the provisioned product is terminated, subsequent requests to terminate the same provisioned product always return <b>ResourceNotFound</b>.',
-        }),
-    ),
-    IgnoreErrors: IgnoreErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, Service Catalog stops managing the specified provisioned product even if it cannot delete the underlying resources.',
-        }),
-    ).exactOptional(),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    RetainPhysicalResources: RetainPhysicalResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When this boolean parameter is set to true, the <code>TerminateProvisionedProduct</code> API deletes the Service Catalog provisioned product. However, it does not remove the CloudFormation stack, stack set, or the underlying resources of the deleted provisioned product. The default value is false.',
-        }),
-    ).exactOptional(),
+    ProvisionedProductName: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
+    }),
+    ProvisionedProductId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
+    }),
+    TerminateToken: IdempotencyTokenSchema.openapi({
+      description:
+        'An idempotency token that uniquely identifies the termination request. This token is only valid during the termination process. After the provisioned product is terminated, subsequent requests to terminate the same provisioned product always return <b>ResourceNotFound</b>.',
+    }),
+    IgnoreErrors: IgnoreErrorsSchema.exactOptional().openapi({
+      description:
+        'If set to true, Service Catalog stops managing the specified provisioned product even if it cannot delete the underlying resources.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    RetainPhysicalResources: RetainPhysicalResourcesSchema.exactOptional().openapi({
+      description:
+        'When this boolean parameter is set to true, the <code>TerminateProvisionedProduct</code> API deletes the Service Catalog provisioned product. However, it does not remove the CloudFormation stack, stack set, or the underlying resources of the deleted provisioned product. The default value is false.',
+    }),
   })
   .openapi({ required: ['TerminateToken'], title: 'TerminateProvisionedProductInput' })
   .openapi('TerminateProvisionedProductInput')
 
 const UpdateConstraintOutputSchema = z
   .object({
-    ConstraintDetail: ConstraintDetailSchema.and(
-      z.any().openapi({ description: 'Information about the constraint.' }),
-    ).exactOptional(),
-    ConstraintParameters: ConstraintParametersSchema.and(
-      z.any().openapi({ description: 'The constraint parameters.' }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ConstraintDetail: ConstraintDetailSchema.exactOptional().openapi({
+      description: 'Information about the constraint.',
+    }),
+    ConstraintParameters: ConstraintParametersSchema.exactOptional().openapi({
+      description: 'The constraint parameters.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConstraintOutput')
 
 const UpdateConstraintInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The identifier of the constraint.' })),
-    Description: ConstraintDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the constraint.' }),
-    ).exactOptional(),
-    Parameters: ConstraintParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can\'t use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{"LocalRoleName": "SCBasicLaunchRole"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{"NotificationArns" : ["arn:aws:sns:us-east-1:123456789012:Topic"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{"Version":"2.0","Properties":{"TagUpdateOnProvisionedProduct":"String"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{"Version": "String", "Properties": {"AccountList": [ "String" ], "RegionList": [ "String" ], "AdminRole": "String", "ExecutionRole": "String"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href="http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html">Template Constraint Rules</a>.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The identifier of the constraint.' }),
+    Description: ConstraintDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the constraint.',
+    }),
+    Parameters: ConstraintParametersSchema.exactOptional().openapi({
+      description:
+        '<p>The constraint parameters, in JSON format. The syntax depends on the constraint type as follows:</p> <dl> <dt>LAUNCH</dt> <dd> <p>You are required to specify either the <code>RoleArn</code> or the <code>LocalRoleName</code> but can\'t use both.</p> <p>Specify the <code>RoleArn</code> property as follows:</p> <p> <code>{"RoleArn" : "arn:aws:iam::123456789012:role/LaunchRole"}</code> </p> <p>Specify the <code>LocalRoleName</code> property as follows:</p> <p> <code>{"LocalRoleName": "SCBasicLaunchRole"}</code> </p> <p>If you specify the <code>LocalRoleName</code> property, when an account uses the launch constraint, the IAM role with that name in the account will be used. This allows launch-role constraints to be account-agnostic so the administrator can create fewer resources per shared account.</p> <note> <p>The given role name must exist in the account used to create the launch constraint and the account of the user who launches a product with this launch constraint.</p> </note> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>LAUNCH</code> constraint on a product and portfolio.</p> </dd> <dt>NOTIFICATION</dt> <dd> <p>Specify the <code>NotificationArns</code> property as follows:</p> <p> <code>{"NotificationArns" : ["arn:aws:sns:us-east-1:123456789012:Topic"]}</code> </p> </dd> <dt>RESOURCE_UPDATE</dt> <dd> <p>Specify the <code>TagUpdatesOnProvisionedProduct</code> property as follows:</p> <p> <code>{"Version":"2.0","Properties":{"TagUpdateOnProvisionedProduct":"String"}}</code> </p> <p>The <code>TagUpdatesOnProvisionedProduct</code> property accepts a string value of <code>ALLOWED</code> or <code>NOT_ALLOWED</code>.</p> </dd> <dt>STACKSET</dt> <dd> <p>Specify the <code>Parameters</code> property as follows:</p> <p> <code>{"Version": "String", "Properties": {"AccountList": [ "String" ], "RegionList": [ "String" ], "AdminRole": "String", "ExecutionRole": "String"}}</code> </p> <p>You cannot have both a <code>LAUNCH</code> and a <code>STACKSET</code> constraint.</p> <p>You also cannot have more than one <code>STACKSET</code> constraint on a product and portfolio.</p> <p>Products with a <code>STACKSET</code> constraint will launch an CloudFormation stack set.</p> </dd> <dt>TEMPLATE</dt> <dd> <p>Specify the <code>Rules</code> property. For more information, see <a href="http://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html">Template Constraint Rules</a>.</p> </dd> </dl>',
+    }),
   })
   .openapi({ required: ['Id'], title: 'UpdateConstraintInput' })
   .openapi('UpdateConstraintInput')
 
 const UpdatePortfolioOutputSchema = z
   .object({
-    PortfolioDetail: PortfolioDetailSchema.and(
-      z.any().openapi({ description: 'Information about the portfolio.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the portfolio.' }),
-    ).exactOptional(),
+    PortfolioDetail: PortfolioDetailSchema.exactOptional().openapi({
+      description: 'Information about the portfolio.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the portfolio.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePortfolioOutput')
@@ -6032,52 +4477,36 @@ const TagKeysSchema = z.array(TagKeySchema).openapi('TagKeys')
 
 const UpdatePortfolioInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The portfolio identifier.' })),
-    DisplayName: PortfolioDisplayNameSchema.and(
-      z.any().openapi({ description: 'The name to use for display purposes.' }),
-    ).exactOptional(),
-    Description: PortfolioDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the portfolio.' }),
-    ).exactOptional(),
-    ProviderName: ProviderNameSchema.and(
-      z.any().openapi({ description: 'The updated name of the portfolio provider.' }),
-    ).exactOptional(),
-    AddTags: AddTagsSchema.and(
-      z.any().openapi({ description: 'The tags to add.' }),
-    ).exactOptional(),
-    RemoveTags: TagKeysSchema.and(
-      z.any().openapi({ description: 'The tags to remove.' }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The portfolio identifier.' }),
+    DisplayName: PortfolioDisplayNameSchema.exactOptional().openapi({
+      description: 'The name to use for display purposes.',
+    }),
+    Description: PortfolioDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the portfolio.',
+    }),
+    ProviderName: ProviderNameSchema.exactOptional().openapi({
+      description: 'The updated name of the portfolio provider.',
+    }),
+    AddTags: AddTagsSchema.exactOptional().openapi({ description: 'The tags to add.' }),
+    RemoveTags: TagKeysSchema.exactOptional().openapi({ description: 'The tags to remove.' }),
   })
   .openapi({ required: ['Id'], title: 'UpdatePortfolioInput' })
   .openapi('UpdatePortfolioInput')
 
 const UpdatePortfolioShareOutputSchema = z
   .object({
-    PortfolioShareToken: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token that tracks the status of the <code>UpdatePortfolioShare</code> operation for external account to account or organizational type sharing.',
-        }),
-    ).exactOptional(),
-    Status: ShareStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of <code>UpdatePortfolioShare</code> operation. You can also obtain the operation status using <code>DescribePortfolioShareStatus</code> API. ',
-        }),
-    ).exactOptional(),
+    PortfolioShareToken: IdSchema.exactOptional().openapi({
+      description:
+        'The token that tracks the status of the <code>UpdatePortfolioShare</code> operation for external account to account or organizational type sharing.',
+    }),
+    Status: ShareStatusSchema.exactOptional().openapi({
+      description:
+        'The status of <code>UpdatePortfolioShare</code> operation. You can also obtain the operation status using <code>DescribePortfolioShareStatus</code> API. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePortfolioShareOutput')
@@ -6086,118 +4515,89 @@ const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
 
 const UpdatePortfolioShareInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PortfolioId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier of the portfolio for which the share will be updated.',
-        }),
-    ),
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services account Id of the recipient account. This field is required when updating an external account to account type share.',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    PortfolioId: IdSchema.openapi({
+      description: 'The unique identifier of the portfolio for which the share will be updated.',
+    }),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services account Id of the recipient account. This field is required when updating an external account to account type share.',
+    }),
     OrganizationNode: OrganizationNodeSchema.exactOptional(),
-    ShareTagOptions: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables <code>TagOptions</code> sharing for the portfolio share. If this field is not provided, the current state of TagOptions sharing on the portfolio share will not be modified.',
-        }),
-    ).exactOptional(),
-    SharePrincipals: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag to enables or disables <code>Principals</code> sharing in the portfolio. If this field is not provided, the current state of the <code>Principals</code> sharing on the portfolio share will not be modified. ',
-        }),
-    ).exactOptional(),
+    ShareTagOptions: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Enables or disables <code>TagOptions</code> sharing for the portfolio share. If this field is not provided, the current state of TagOptions sharing on the portfolio share will not be modified.',
+    }),
+    SharePrincipals: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'A flag to enables or disables <code>Principals</code> sharing in the portfolio. If this field is not provided, the current state of the <code>Principals</code> sharing on the portfolio share will not be modified. ',
+    }),
   })
   .openapi({ required: ['PortfolioId'], title: 'UpdatePortfolioShareInput' })
   .openapi('UpdatePortfolioShareInput')
 
 const UpdateProductOutputSchema = z
   .object({
-    ProductViewDetail: ProductViewDetailSchema.and(
-      z.any().openapi({ description: 'Information about the product view.' }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z.any().openapi({ description: 'Information about the tags associated with the product.' }),
-    ).exactOptional(),
+    ProductViewDetail: ProductViewDetailSchema.exactOptional().openapi({
+      description: 'Information about the product view.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'Information about the tags associated with the product.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProductOutput')
 
 const UpdateProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    Name: ProductViewNameSchema.and(
-      z.any().openapi({ description: 'The updated product name.' }),
-    ).exactOptional(),
-    Owner: ProductViewOwnerSchema.and(
-      z.any().openapi({ description: 'The updated owner of the product.' }),
-    ).exactOptional(),
-    Description: ProductViewShortDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the product.' }),
-    ).exactOptional(),
-    Distributor: ProductViewOwnerSchema.and(
-      z.any().openapi({ description: 'The updated distributor of the product.' }),
-    ).exactOptional(),
-    SupportDescription: SupportDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated support description for the product.' }),
-    ).exactOptional(),
-    SupportEmail: SupportEmailSchema.and(
-      z.any().openapi({ description: 'The updated support email for the product.' }),
-    ).exactOptional(),
-    SupportUrl: SupportUrlSchema.and(
-      z.any().openapi({ description: 'The updated support URL for the product.' }),
-    ).exactOptional(),
-    AddTags: AddTagsSchema.and(
-      z.any().openapi({ description: 'The tags to add to the product.' }),
-    ).exactOptional(),
-    RemoveTags: TagKeysSchema.and(
-      z.any().openapi({ description: 'The tags to remove from the product.' }),
-    ).exactOptional(),
-    SourceConnection: SourceConnectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies connection details for the updated product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    Id: IdSchema.openapi({ description: 'The product identifier.' }),
+    Name: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The updated product name.',
+    }),
+    Owner: ProductViewOwnerSchema.exactOptional().openapi({
+      description: 'The updated owner of the product.',
+    }),
+    Description: ProductViewShortDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the product.',
+    }),
+    Distributor: ProductViewOwnerSchema.exactOptional().openapi({
+      description: 'The updated distributor of the product.',
+    }),
+    SupportDescription: SupportDescriptionSchema.exactOptional().openapi({
+      description: 'The updated support description for the product.',
+    }),
+    SupportEmail: SupportEmailSchema.exactOptional().openapi({
+      description: 'The updated support email for the product.',
+    }),
+    SupportUrl: SupportUrlSchema.exactOptional().openapi({
+      description: 'The updated support URL for the product.',
+    }),
+    AddTags: AddTagsSchema.exactOptional().openapi({
+      description: 'The tags to add to the product.',
+    }),
+    RemoveTags: TagKeysSchema.exactOptional().openapi({
+      description: 'The tags to remove from the product.',
+    }),
+    SourceConnection: SourceConnectionSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies connection details for the updated product and syncs the product to the connection source artifact. This automatically manages the product's artifacts based on changes to the source. The <code>SourceConnection</code> parameter consists of the following sub-fields.</p> <ul> <li> <p> <code>Type</code> </p> </li> <li> <p> <code>ConnectionParamters</code> </p> </li> </ul>",
+    }),
   })
   .openapi({ required: ['Id'], title: 'UpdateProductInput' })
   .openapi('UpdateProductInput')
 
 const UpdateProvisionedProductOutputSchema = z
   .object({
-    RecordDetail: RecordDetailSchema.and(
-      z.any().openapi({ description: 'Information about the result of the request.' }),
-    ).exactOptional(),
+    RecordDetail: RecordDetailSchema.exactOptional().openapi({
+      description: 'Information about the result of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProvisionedProductOutput')
@@ -6208,62 +4608,36 @@ const StackSetOperationTypeSchema = z
 
 const UpdateProvisioningPreferencesSchema = z
   .object({
-    StackSetAccounts: StackSetAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services accounts that will have access to the provisioned product.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The Amazon Web Services accounts specified should be within the list of accounts in the <code>STACKSET</code> constraint. To get the list of accounts in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all accounts from the <code>STACKSET</code> constraint.</p>',
-        }),
-    ).exactOptional(),
-    StackSetRegions: StackSetRegionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon Web Services Regions where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified Regions should be within the list of Regions from the <code>STACKSET</code> constraint. To get the list of Regions in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all Regions from the <code>STACKSET</code> constraint.</p>',
-        }),
-    ).exactOptional(),
-    StackSetFailureToleranceCount: StackSetFailureToleranceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p> <p>The default value is <code>0</code> if no value is specified.</p>",
-        }),
-    ).exactOptional(),
-    StackSetFailureTolerancePercentage: StackSetFailureTolerancePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The percentage of accounts, per Region, for which this stack operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p>",
-        }),
-    ).exactOptional(),
-    StackSetMaxConcurrencyCount: StackSetMaxConcurrencyCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>StackSetFailureToleranceCount</code>. <code>StackSetMaxConcurrentCount</code> is at most one more than the <code>StackSetFailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    StackSetMaxConcurrencyPercentage: StackSetMaxConcurrencyPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, Service Catalog sets the number as <code>1</code> instead.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    StackSetOperationType: StackSetOperationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines what action Service Catalog performs to a stack set or a stack instance represented by the provisioned product. The default value is <code>UPDATE</code> if nothing is specified.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <dl> <dt>CREATE</dt> <dd> <p>Creates a new stack instance in the stack set represented by the provisioned product. In this case, only new stack instances are created based on accounts and Regions; if new ProductId or ProvisioningArtifactID are passed, they will be ignored.</p> </dd> <dt>UPDATE</dt> <dd> <p>Updates the stack set represented by the provisioned product and also its stack instances.</p> </dd> <dt>DELETE</dt> <dd> <p>Deletes a stack instance in the stack set represented by the provisioned product.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
+    StackSetAccounts: StackSetAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services accounts that will have access to the provisioned product.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The Amazon Web Services accounts specified should be within the list of accounts in the <code>STACKSET</code> constraint. To get the list of accounts in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all accounts from the <code>STACKSET</code> constraint.</p>',
+    }),
+    StackSetRegions: StackSetRegionsSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon Web Services Regions where the provisioned product will be available.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>The specified Regions should be within the list of Regions from the <code>STACKSET</code> constraint. To get the list of Regions in the <code>STACKSET</code> constraint, use the <code>DescribeProvisioningParameters</code> operation.</p> <p>If no values are specified, the default value is all Regions from the <code>STACKSET</code> constraint.</p>',
+    }),
+    StackSetFailureToleranceCount: StackSetFailureToleranceCountSchema.exactOptional().openapi({
+      description:
+        "<p>The number of accounts, per Region, for which this operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p> <p>The default value is <code>0</code> if no value is specified.</p>",
+    }),
+    StackSetFailureTolerancePercentage:
+      StackSetFailureTolerancePercentageSchema.exactOptional().openapi({
+        description:
+          "<p>The percentage of accounts, per Region, for which this stack operation can fail before Service Catalog stops the operation in that Region. If the operation is stopped in a Region, Service Catalog doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetFailureToleranceCount</code> or <code>StackSetFailureTolerancePercentage</code>, but not both.</p>",
+      }),
+    StackSetMaxConcurrencyCount: StackSetMaxConcurrencyCountSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>StackSetFailureToleranceCount</code>. <code>StackSetMaxConcurrentCount</code> is at most one more than the <code>StackSetFailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
+    }),
+    StackSetMaxConcurrencyPercentage:
+      StackSetMaxConcurrencyPercentageSchema.exactOptional().openapi({
+        description:
+          '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, Service Catalog rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, Service Catalog sets the number as <code>1</code> instead.</p> <p>Note that this setting lets you specify the maximum for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <p>Conditional: You must specify either <code>StackSetMaxConcurrentCount</code> or <code>StackSetMaxConcurrentPercentage</code>, but not both.</p>',
+      }),
+    StackSetOperationType: StackSetOperationTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Determines what action Service Catalog performs to a stack set or a stack instance represented by the provisioned product. The default value is <code>UPDATE</code> if nothing is specified.</p> <p>Applicable only to a <code>CFN_STACKSET</code> provisioned product type.</p> <dl> <dt>CREATE</dt> <dd> <p>Creates a new stack instance in the stack set represented by the provisioned product. In this case, only new stack instances are created based on accounts and Regions; if new ProductId or ProvisioningArtifactID are passed, they will be ignored.</p> </dd> <dt>UPDATE</dt> <dd> <p>Updates the stack set represented by the provisioned product and also its stack instances.</p> </dd> <dt>DELETE</dt> <dd> <p>Deletes a stack instance in the stack set represented by the provisioned product.</p> </dd> </dl>',
+    }),
   })
   .openapi({
     description:
@@ -6274,98 +4648,53 @@ const UpdateProvisioningPreferencesSchema = z
 
 const UpdateProvisionedProductInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionedProductName: ProvisionedProductNameOrArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the provisioned product. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the product. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProductName: ProductViewNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the product. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ).exactOptional(),
-    ProvisioningArtifactName: ProvisioningArtifactNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the provisioning artifact. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathId: IdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The path identifier. This value is optional if the product has a default path, and required if the product has more than one path. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    PathName: PortfolioDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the path. You must provide the name or ID, but not both.',
-        }),
-    ).exactOptional(),
-    ProvisioningParameters: UpdateProvisioningParametersSchema.and(
-      z.any().openapi({ description: 'The new parameters.' }),
-    ).exactOptional(),
-    ProvisioningPreferences: UpdateProvisioningPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An object that contains information about the provisioning preferences for a stack set.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'One or more tags. Requires the product to have <code>RESOURCE_UPDATE</code> constraint with <code>TagUpdatesOnProvisionedProduct</code> set to <code>ALLOWED</code> to allow tag updates.',
-        }),
-    ).exactOptional(),
-    UpdateToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotency token that uniquely identifies the provisioning update request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisionedProductName: ProvisionedProductNameOrArnSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioned product. You cannot specify both <code>ProvisionedProductName</code> and <code>ProvisionedProductId</code>.',
+    }),
+    ProvisionedProductId: IdSchema.exactOptional().openapi({
+      description:
+        'The identifier of the provisioned product. You must provide the name or ID, but not both.',
+    }),
+    ProductId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the product. You must provide the name or ID, but not both.',
+    }),
+    ProductName: ProductViewNameSchema.exactOptional().openapi({
+      description: 'The name of the product. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningArtifactId: IdSchema.exactOptional().openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    ProvisioningArtifactName: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description:
+        'The name of the provisioning artifact. You must provide the name or ID, but not both.',
+    }),
+    PathId: IdSchema.exactOptional().openapi({
+      description:
+        'The path identifier. This value is optional if the product has a default path, and required if the product has more than one path. You must provide the name or ID, but not both.',
+    }),
+    PathName: PortfolioDisplayNameSchema.exactOptional().openapi({
+      description: 'The name of the path. You must provide the name or ID, but not both.',
+    }),
+    ProvisioningParameters: UpdateProvisioningParametersSchema.exactOptional().openapi({
+      description: 'The new parameters.',
+    }),
+    ProvisioningPreferences: UpdateProvisioningPreferencesSchema.exactOptional().openapi({
+      description:
+        'An object that contains information about the provisioning preferences for a stack set.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'One or more tags. Requires the product to have <code>RESOURCE_UPDATE</code> constraint with <code>TagUpdatesOnProvisionedProduct</code> set to <code>ALLOWED</code> to allow tag updates.',
+    }),
+    UpdateToken: IdempotencyTokenSchema.openapi({
+      description:
+        'The idempotency token that uniquely identifies the provisioning update request.',
+    }),
   })
   .openapi({ required: ['UpdateToken'], title: 'UpdateProvisionedProductInput' })
   .openapi('UpdateProvisionedProductInput')
@@ -6380,51 +4709,37 @@ const ProvisionedProductPropertiesSchema = z
 
 const UpdateProvisionedProductPropertiesOutputSchema = z
   .object({
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The provisioned product identifier.' }),
-    ).exactOptional(),
-    ProvisionedProductProperties: ProvisionedProductPropertiesSchema.and(
-      z.any().openapi({ description: 'A map that contains the properties updated.' }),
-    ).exactOptional(),
-    RecordId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the record.' }),
-    ).exactOptional(),
-    Status: RecordStatusSchema.and(
-      z.any().openapi({ description: 'The status of the request.' }),
-    ).exactOptional(),
+    ProvisionedProductId: IdSchema.exactOptional().openapi({
+      description: 'The provisioned product identifier.',
+    }),
+    ProvisionedProductProperties: ProvisionedProductPropertiesSchema.exactOptional().openapi({
+      description: 'A map that contains the properties updated.',
+    }),
+    RecordId: IdSchema.exactOptional().openapi({ description: 'The identifier of the record.' }),
+    Status: RecordStatusSchema.exactOptional().openapi({
+      description: 'The status of the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProvisionedProductPropertiesOutput')
 
 const UpdateProvisionedProductPropertiesInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProvisionedProductId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioned product.' }),
-    ),
-    ProvisionedProductProperties: ProvisionedProductPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map that contains the provisioned product properties to be updated.</p> <p>The <code>LAUNCH_ROLE</code> key accepts role ARNs. This key allows an administrator to call <code>UpdateProvisionedProductProperties</code> to update the launch role that is associated with a provisioned product. This role is used when an end user calls a provisioning operation such as <code>UpdateProvisionedProduct</code>, <code>TerminateProvisionedProduct</code>, or <code>ExecuteProvisionedProductServiceAction</code>. Only a role ARN is valid. A user ARN is invalid. </p> <p>The <code>OWNER</code> key accepts user ARNs, IAM role ARNs, and STS assumed-role ARNs. The owner is the user that has permission to see, update, terminate, and execute service actions in the provisioned product.</p> <p>The administrator can change the owner of a provisioned product to another IAM or STS entity within the same account. Both end user owners and administrators can see ownership history of the provisioned product using the <code>ListRecordHistory</code> API. The new owner can describe all past records for the provisioned product using the <code>DescribeRecord</code> API. The previous owner can no longer use <code>DescribeRecord</code>, but can still see the product's history from when he was an owner using <code>ListRecordHistory</code>.</p> <p>If a provisioned product ownership is assigned to an end user, they can see and perform any action through the API or Service Catalog console such as update, terminate, and execute service actions. If an end user provisions a product and the owner is updated to someone else, they will no longer be able to see or perform any actions through API or the Service Catalog console on that provisioned product.</p>",
-        }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The idempotency token that uniquely identifies the provisioning product update request.',
-        }),
-    ),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProvisionedProductId: IdSchema.openapi({
+      description: 'The identifier of the provisioned product.',
+    }),
+    ProvisionedProductProperties: ProvisionedProductPropertiesSchema.openapi({
+      description:
+        "<p>A map that contains the provisioned product properties to be updated.</p> <p>The <code>LAUNCH_ROLE</code> key accepts role ARNs. This key allows an administrator to call <code>UpdateProvisionedProductProperties</code> to update the launch role that is associated with a provisioned product. This role is used when an end user calls a provisioning operation such as <code>UpdateProvisionedProduct</code>, <code>TerminateProvisionedProduct</code>, or <code>ExecuteProvisionedProductServiceAction</code>. Only a role ARN is valid. A user ARN is invalid. </p> <p>The <code>OWNER</code> key accepts user ARNs, IAM role ARNs, and STS assumed-role ARNs. The owner is the user that has permission to see, update, terminate, and execute service actions in the provisioned product.</p> <p>The administrator can change the owner of a provisioned product to another IAM or STS entity within the same account. Both end user owners and administrators can see ownership history of the provisioned product using the <code>ListRecordHistory</code> API. The new owner can describe all past records for the provisioned product using the <code>DescribeRecord</code> API. The previous owner can no longer use <code>DescribeRecord</code>, but can still see the product's history from when he was an owner using <code>ListRecordHistory</code>.</p> <p>If a provisioned product ownership is assigned to an end user, they can see and perform any action through the API or Service Catalog console such as update, terminate, and execute service actions. If an end user provisions a product and the owner is updated to someone else, they will no longer be able to see or perform any actions through API or the Service Catalog console on that provisioned product.</p>",
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.openapi({
+      description:
+        'The idempotency token that uniquely identifies the provisioning product update request.',
+    }),
   })
   .openapi({
     required: ['ProvisionedProductId', 'ProvisionedProductProperties', 'IdempotencyToken'],
@@ -6434,60 +4749,43 @@ const UpdateProvisionedProductPropertiesInputSchema = z
 
 const UpdateProvisioningArtifactOutputSchema = z
   .object({
-    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.and(
-      z.any().openapi({ description: 'Information about the provisioning artifact.' }),
-    ).exactOptional(),
-    Info: ProvisioningArtifactInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the current request.' }),
-    ).exactOptional(),
+    ProvisioningArtifactDetail: ProvisioningArtifactDetailSchema.exactOptional().openapi({
+      description: 'Information about the provisioning artifact.',
+    }),
+    Info: ProvisioningArtifactInfoSchema.exactOptional().openapi({
+      description: 'The URL of the CloudFormation template in Amazon S3 or GitHub in JSON format.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the current request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProvisioningArtifactOutput')
 
 const UpdateProvisioningArtifactInputSchema = z
   .object({
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ProductId: IdSchema.and(z.any().openapi({ description: 'The product identifier.' })),
-    ProvisioningArtifactId: IdSchema.and(
-      z.any().openapi({ description: 'The identifier of the provisioning artifact.' }),
-    ),
-    Name: ProvisioningArtifactNameSchema.and(
-      z.any().openapi({ description: 'The updated name of the provisioning artifact.' }),
-    ).exactOptional(),
-    Description: ProvisioningArtifactDescriptionSchema.and(
-      z.any().openapi({ description: 'The updated description of the provisioning artifact.' }),
-    ).exactOptional(),
-    Active: ProvisioningArtifactActiveSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates whether the product version is active.</p> <p>Inactive provisioning artifacts are invisible to end users. End users cannot launch or update a provisioned product from an inactive provisioning artifact.</p>',
-        }),
-    ).exactOptional(),
-    Guidance: ProvisioningArtifactGuidanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.</p> <p>The <code>DEFAULT</code> value indicates that the product version is active.</p> <p>The administrator can set the guidance to <code>DEPRECATED</code> to inform users that the product version is deprecated. Users are able to make updates to a provisioned product of a deprecated version but cannot launch new provisioned products using a deprecated version.</p>',
-        }),
-    ).exactOptional(),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
+    ProductId: IdSchema.openapi({ description: 'The product identifier.' }),
+    ProvisioningArtifactId: IdSchema.openapi({
+      description: 'The identifier of the provisioning artifact.',
+    }),
+    Name: ProvisioningArtifactNameSchema.exactOptional().openapi({
+      description: 'The updated name of the provisioning artifact.',
+    }),
+    Description: ProvisioningArtifactDescriptionSchema.exactOptional().openapi({
+      description: 'The updated description of the provisioning artifact.',
+    }),
+    Active: ProvisioningArtifactActiveSchema.exactOptional().openapi({
+      description:
+        '<p>Indicates whether the product version is active.</p> <p>Inactive provisioning artifacts are invisible to end users. End users cannot launch or update a provisioned product from an inactive provisioning artifact.</p>',
+    }),
+    Guidance: ProvisioningArtifactGuidanceSchema.exactOptional().openapi({
+      description:
+        '<p>Information set by the administrator to provide guidance to end users about which provisioning artifacts to use.</p> <p>The <code>DEFAULT</code> value indicates that the product version is active.</p> <p>The administrator can set the guidance to <code>DEPRECATED</code> to inform users that the product version is deprecated. Users are able to make updates to a provisioned product of a deprecated version but cannot launch new provisioned products using a deprecated version.</p>',
+    }),
   })
   .openapi({
     required: ['ProductId', 'ProvisioningArtifactId'],
@@ -6497,55 +4795,49 @@ const UpdateProvisioningArtifactInputSchema = z
 
 const UpdateServiceActionOutputSchema = z
   .object({
-    ServiceActionDetail: ServiceActionDetailSchema.and(
-      z.any().openapi({ description: 'Detailed information about the self-service action.' }),
-    ).exactOptional(),
+    ServiceActionDetail: ServiceActionDetailSchema.exactOptional().openapi({
+      description: 'Detailed information about the self-service action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateServiceActionOutput')
 
 const UpdateServiceActionInputSchema = z
   .object({
-    Id: IdSchema.and(z.any().openapi({ description: 'The self-service action identifier.' })),
-    Name: ServiceActionNameSchema.and(
-      z.any().openapi({ description: 'The self-service action name.' }),
-    ).exactOptional(),
-    Definition: ServiceActionDefinitionMapSchema.and(
-      z.any().openapi({ description: 'A map that defines the self-service action.' }),
-    ).exactOptional(),
-    Description: ServiceActionDescriptionSchema.and(
-      z.any().openapi({ description: 'The self-service action description.' }),
-    ).exactOptional(),
-    AcceptLanguage: AcceptLanguageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.openapi({ description: 'The self-service action identifier.' }),
+    Name: ServiceActionNameSchema.exactOptional().openapi({
+      description: 'The self-service action name.',
+    }),
+    Definition: ServiceActionDefinitionMapSchema.exactOptional().openapi({
+      description: 'A map that defines the self-service action.',
+    }),
+    Description: ServiceActionDescriptionSchema.exactOptional().openapi({
+      description: 'The self-service action description.',
+    }),
+    AcceptLanguage: AcceptLanguageSchema.exactOptional().openapi({
+      description:
+        '<p>The language code.</p> <ul> <li> <p> <code>jp</code> - Japanese</p> </li> <li> <p> <code>zh</code> - Chinese</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Id'], title: 'UpdateServiceActionInput' })
   .openapi('UpdateServiceActionInput')
 
 const UpdateTagOptionOutputSchema = z
   .object({
-    TagOptionDetail: TagOptionDetailSchema.and(
-      z.any().openapi({ description: 'Information about the TagOption.' }),
-    ).exactOptional(),
+    TagOptionDetail: TagOptionDetailSchema.exactOptional().openapi({
+      description: 'Information about the TagOption.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTagOptionOutput')
 
 const UpdateTagOptionInputSchema = z
   .object({
-    Id: TagOptionIdSchema.and(z.any().openapi({ description: 'The TagOption identifier.' })),
-    Value: TagOptionValueSchema.and(
-      z.any().openapi({ description: 'The updated value.' }),
-    ).exactOptional(),
-    Active: TagOptionActiveSchema.and(
-      z.any().openapi({ description: 'The updated active state.' }),
-    ).exactOptional(),
+    Id: TagOptionIdSchema.openapi({ description: 'The TagOption identifier.' }),
+    Value: TagOptionValueSchema.exactOptional().openapi({ description: 'The updated value.' }),
+    Active: TagOptionActiveSchema.exactOptional().openapi({
+      description: 'The updated active state.',
+    }),
   })
   .openapi({ required: ['Id'], title: 'UpdateTagOptionInput' })
   .openapi('UpdateTagOptionInput')

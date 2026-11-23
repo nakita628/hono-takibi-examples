@@ -39276,7 +39276,9 @@ See "Capability handling in federated conversations" in https://github.com/nextc
         "attachments": {
           "allowed": true,
           "folder": "string",
-          "conversation-subfolders": true
+          "conversation-subfolders": true,
+          "default-allow-edit": true,
+          "default-original-quality": true
         },
         "call": {
           "enabled": true,
@@ -43476,6 +43478,9 @@ curl https://cloud.example.com/ocs/v2.php/apps/spreed/api/v3/signaling/settings 
       "federation": {
         "server": "string",
         "nextcloudServer": "string",
+        "joinAuthParams": {
+          "token": "string"
+        },
         "helloAuthParams": {
           "token": "string"
         },
@@ -48287,7 +48292,9 @@ bearer_auth, basic_auth
     "attachments": {
       "allowed": true,
       "folder": "string",
-      "conversation-subfolders": true
+      "conversation-subfolders": true,
+      "default-allow-edit": true,
+      "default-original-quality": true
     },
     "call": {
       "enabled": true,
@@ -49909,7 +49916,9 @@ bearer_auth, basic_auth
       "attachments": {
         "allowed": true,
         "folder": "string",
-        "conversation-subfolders": true
+        "conversation-subfolders": true,
+        "default-allow-edit": true,
+        "default-original-quality": true
       },
       "call": {
         "enabled": true,
@@ -50995,6 +51004,9 @@ bearer_auth, basic_auth
 {
   "server": "string",
   "nextcloudServer": "string",
+  "joinAuthParams": {
+    "token": "string"
+  },
   "helloAuthParams": {
     "token": "string"
   },
@@ -51008,6 +51020,7 @@ bearer_auth, basic_auth
 |---|---|---|---|---|
 |server|string|true|none|URL of the signaling server for federation|
 |nextcloudServer|string|true|none|URL of the Nextcloud server for federation|
+|joinAuthParams|object|false|none|Authentication parameters for the federation join request|
 |helloAuthParams|object|true|none|Authentication parameters for the hello request|
 |roomId|string|true|none|Room id on the federated server|
 
@@ -51056,6 +51069,9 @@ bearer_auth, basic_auth
   "federation": {
     "server": "string",
     "nextcloudServer": "string",
+    "joinAuthParams": {
+      "token": "string"
+    },
     "helloAuthParams": {
       "token": "string"
     },

@@ -1,97 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const PartSchema = z
-  .object({
-    includeInMultiple: z
-      .boolean()
-      .openapi({ description: 'Indicates if the bet can be used in a multiple bet' }),
-    priceDen: z
-      .int()
-      .openapi({
-        description: 'Price denominator - will be ignored for types other than L (Fixed Price)',
-      }),
-    priceNum: z
-      .int()
-      .openapi({
-        description: 'Price numerator - will be ignored for types other than L (Fixed Price)',
-      }),
-    priceType: z
-      .int()
-      .openapi({ description: 'The type of price selected. For example - ‘L’ (Fixed)' }),
-    selectionId: z
-      .int()
-      .openapi({ description: 'The selection identifier', 'x-eg': 'OB_OU00000001' }),
-  })
-  .openapi({ required: ['selectionId', 'priceType', 'priceNum', 'priceDen', 'includeInMultiple'] })
-  .openapi('Part')
-
-const LegSchema = z
-  .object({
-    parts: z.array(PartSchema),
-    sort: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The leg sort. This element is present for complex bets but not for single bets.',
-      }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'The leg type. One of the following values: W - Win or E- Each-way. Even though the priceNum and priceDen are required for the bets with type value W (win), it is just optional from the endpoint point of view. There are requests / bets like outcomes with starting price but do not have a specific price. Generally prices can change, so if the type is win you have to resubmit and thus verify the price that the customer saw on the screen initially. The API will check if it matches the current price of William Hill. Note that if you send a wrong / outdated price you will receive the error message - Price changed.',
-      }),
-  })
-  .openapi({ required: ['type', 'parts'] })
-  .openapi('Leg')
-
-const BetSchema = z
-  .object({
-    delayedBetId: z.string().exactOptional().openapi({ description: 'The delayed bet identifier' }),
-    freeBetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID number of the free bet token if used in conjunction with this bet',
-      }),
-    legs: z.array(LegSchema),
-    number: z.int().openapi({ description: 'The bet number' }),
-    stake: z.float64().openapi({ description: 'The amount of the stake placed on the bet' }),
-    typeCode: z
-      .string()
-      .openapi({ description: 'The bet type code of the bet. For example: TBL (Treble)' }),
-  })
-  .openapi({ required: ['number', 'typeCode', 'stake', 'legs'] })
-  .openapi('Bet')
-
-const BetDelayedSchema = z
-  .object({
-    delayPeriodSeconds: z
-      .int()
-      .openapi({
-        description:
-          'The delay time period of the bet in seconds. The resubmission of the bet has to wait for the length of time (in seconds) returned in the delayPeriod before submitting the second request.',
-      }),
-    delayedBetId: z
-      .string()
-      .openapi({
-        description:
-          'The unique identifier of the delayed bet. After the initial response is received, containing the delayPeriod and the delayBetId, the request is then resubmitted using the same delayBetId token that came in that initial response. Check the example below to see how to resend a delayed bet payload.',
-      }),
-    id: z.string().openapi({ description: 'The number of the bet' }),
-    number: z
-      .number()
-      .exactOptional()
-      .openapi({ description: 'Number of the bet if this is part of a multiple bet' }),
-  })
-  .openapi({ required: ['id', 'delayedBetId', 'delayPeriodSeconds'] })
-  .openapi('BetDelayed')
-
-const BetDelayedResponseSchema = z
-  .array(BetDelayedSchema)
-  .openapi({ title: 'delayedBets' })
-  .openapi('BetDelayedResponse')
-
 const PriceFormattedSchema = z
   .object({
     american: z.string().exactOptional().openapi({ description: 'The price in American format' }),
@@ -299,7 +207,101 @@ const PlacedBetSchema = z
 
 const HistoryBetsSchema = z.array(PlacedBetSchema).openapi('HistoryBets')
 
-const BetHistoryResponseSchema = z
+type BetHistoryResponseType = { bets?: z.infer<typeof HistoryBetsSchema> }
+
+const PartSchema = z
+  .object({
+    includeInMultiple: z
+      .boolean()
+      .openapi({ description: 'Indicates if the bet can be used in a multiple bet' }),
+    priceDen: z
+      .int()
+      .openapi({
+        description: 'Price denominator - will be ignored for types other than L (Fixed Price)',
+      }),
+    priceNum: z
+      .int()
+      .openapi({
+        description: 'Price numerator - will be ignored for types other than L (Fixed Price)',
+      }),
+    priceType: z
+      .int()
+      .openapi({ description: 'The type of price selected. For example - ‘L’ (Fixed)' }),
+    selectionId: z
+      .int()
+      .openapi({ description: 'The selection identifier', 'x-eg': 'OB_OU00000001' }),
+  })
+  .openapi({ required: ['selectionId', 'priceType', 'priceNum', 'priceDen', 'includeInMultiple'] })
+  .openapi('Part')
+
+const LegSchema = z
+  .object({
+    parts: z.array(PartSchema),
+    sort: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The leg sort. This element is present for complex bets but not for single bets.',
+      }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The leg type. One of the following values: W - Win or E- Each-way. Even though the priceNum and priceDen are required for the bets with type value W (win), it is just optional from the endpoint point of view. There are requests / bets like outcomes with starting price but do not have a specific price. Generally prices can change, so if the type is win you have to resubmit and thus verify the price that the customer saw on the screen initially. The API will check if it matches the current price of William Hill. Note that if you send a wrong / outdated price you will receive the error message - Price changed.',
+      }),
+  })
+  .openapi({ required: ['type', 'parts'] })
+  .openapi('Leg')
+
+const BetSchema = z
+  .object({
+    delayedBetId: z.string().exactOptional().openapi({ description: 'The delayed bet identifier' }),
+    freeBetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The ID number of the free bet token if used in conjunction with this bet',
+      }),
+    legs: z.array(LegSchema),
+    number: z.int().openapi({ description: 'The bet number' }),
+    stake: z.float64().openapi({ description: 'The amount of the stake placed on the bet' }),
+    typeCode: z
+      .string()
+      .openapi({ description: 'The bet type code of the bet. For example: TBL (Treble)' }),
+  })
+  .openapi({ required: ['number', 'typeCode', 'stake', 'legs'] })
+  .openapi('Bet')
+
+const BetDelayedSchema = z
+  .object({
+    delayPeriodSeconds: z
+      .int()
+      .openapi({
+        description:
+          'The delay time period of the bet in seconds. The resubmission of the bet has to wait for the length of time (in seconds) returned in the delayPeriod before submitting the second request.',
+      }),
+    delayedBetId: z
+      .string()
+      .openapi({
+        description:
+          'The unique identifier of the delayed bet. After the initial response is received, containing the delayPeriod and the delayBetId, the request is then resubmitted using the same delayBetId token that came in that initial response. Check the example below to see how to resend a delayed bet payload.',
+      }),
+    id: z.string().openapi({ description: 'The number of the bet' }),
+    number: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Number of the bet if this is part of a multiple bet' }),
+  })
+  .openapi({ required: ['id', 'delayedBetId', 'delayPeriodSeconds'] })
+  .openapi('BetDelayed')
+
+const BetDelayedResponseSchema = z
+  .array(BetDelayedSchema)
+  .openapi({ title: 'delayedBets' })
+  .openapi('BetDelayedResponse')
+
+const BetHistoryResponseSchema: z.ZodType<BetHistoryResponseType> = z
   .object({ bets: HistoryBetsSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('BetHistoryResponse')

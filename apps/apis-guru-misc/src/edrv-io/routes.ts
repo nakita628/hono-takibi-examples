@@ -422,7 +422,7 @@ export const postV1ChargestationsRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              chargestation: z.object({}).exactOptional(),
+              chargestation: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -558,7 +558,7 @@ export const patchV1ChargestationsIdRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -662,7 +662,7 @@ export const postV1CommandsCancelreservationRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -711,7 +711,7 @@ export const postV1CommandsChargingscheduleRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              command: z.object({}).exactOptional(),
+              command: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -746,7 +746,7 @@ export const deleteV1CommandsChargingscheduleRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              command: z.object({}).exactOptional(),
+              command: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -789,7 +789,7 @@ export const postV1CommandsRemotestartRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              command: z.object({}).exactOptional(),
+              command: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -863,7 +863,7 @@ export const postV1CommandsReserveRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              command: z.object({}).exactOptional(),
+              command: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -903,7 +903,7 @@ export const postV1CommandsResetRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -942,7 +942,7 @@ export const postV1CommandsUnlockconnectorRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              command: z.object({}).exactOptional(),
+              command: z.looseObject({}).exactOptional(),
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
             })
@@ -1031,7 +1031,7 @@ export const patchV1CommandsIdVariablesRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -1091,7 +1091,7 @@ export const postV1ConfigurationsRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -1185,7 +1185,7 @@ export const postV1ConnectorsRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -1296,7 +1296,7 @@ export const patchV1ConnectorsIdRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -1432,7 +1432,7 @@ export const postV1DriversRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -1894,7 +1894,7 @@ export const postV1LocationsRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -2014,8 +2014,8 @@ export const patchV1OrganizationsIdRoute = createRoute({
                 .openapi({ required: [] }),
               channels: z
                 .object({
-                  slack: z.object({}).exactOptional(),
-                  telegram: z.object({}).exactOptional(),
+                  slack: z.looseObject({}).exactOptional(),
+                  telegram: z.looseObject({}).exactOptional(),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),
@@ -2228,7 +2228,7 @@ export const patchV1ReservationsIdRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -2746,7 +2746,7 @@ export const postV1VehiclesIdChargeRoute = createRoute({
             .object({
               message: z.string().exactOptional(),
               ok: z.boolean().exactOptional(),
-              result: z.object({}).exactOptional(),
+              result: z.looseObject({}).exactOptional(),
             })
             .openapi({ required: [] }),
         },

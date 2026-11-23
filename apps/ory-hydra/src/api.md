@@ -6423,7 +6423,7 @@ From https://go.dev/wiki/CodeReviewComments#receiver-type:
 |---|---|---|---|---|
 |challenge|string|true|none|ID is the identifier ("device challenge") of the device grant request. It is used to<br>identify the session.|
 |client|[oAuth2Client](#schemaoauth2client)|false|none|OAuth 2.0 Clients are used to perform OAuth 2.0 and OpenID Connect flows. Usually, OAuth 2.0 clients are<br>generated for applications which want to consume your OAuth 2.0 or OpenID Connect capabilities.|
-|handled_at|[nullTime](#schemanulltime-1)|false|none|none|
+|handled_at|[nullTime2](#schemanulltime2)|false|none|none|
 |request_url|string|false|none|RequestURL is the original Device Authorization URL requested.|
 |requested_access_token_audience|[string]|false|none|RequestedAudience contains the access token audience as requested by the OAuth 2.0 Client.|
 |requested_scope|[string]|false|none|RequestedScope contains the OAuth 2.0 Scope requested by the OAuth 2.0 Client.|
@@ -7138,12 +7138,12 @@ For details on pagination please head over to the [pagination documentation](htt
 0
 ```
 
-<h2 id="tocS_nullTime">nullTime</h2>
+<h2 id="tocS_nullTime2">nullTime2</h2>
 <!-- backwards compatibility -->
-<a id="schemanulltime-1"></a>
-<a id="schema_nullTime"></a>
-<a id="tocSnulltime-1"></a>
-<a id="tocsnulltime-1"></a>
+<a id="schemanulltime2"></a>
+<a id="schema_nullTime2"></a>
+<a id="tocSnulltime2"></a>
+<a id="tocsnulltime2"></a>
 
 ```json
 "1970-01-01T00:00:00Z"
@@ -7693,7 +7693,7 @@ A completed OAuth 2.0 Consent Session.
 |context|[JSONRawMessage](#schemajsonrawmessage)|false|none|none|
 |grant_access_token_audience|[string]|false|none|Audience Granted<br><br>GrantedAudience sets the audience the user authorized the client to use. Should be a subset of `requested_access_token_audience`.|
 |grant_scope|[string]|false|none|Scope Granted<br><br>GrantScope sets the scope the user authorized the client to use. Should be a subset of `requested_scope`.|
-|handled_at|[nullTime](#schemanulltime-1)|false|none|none|
+|handled_at|[nullTime2](#schemanulltime2)|false|none|none|
 |remember|boolean|false|none|Remember Consent<br><br>Remember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same<br>client asks the same user for the same, or a subset of, scope.|
 |remember_for|integer(int64)|false|none|Remember Consent For<br><br>RememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the<br>authorization will be remembered indefinitely.|
 |session|[acceptOAuth2ConsentRequestSession](#schemaacceptoauth2consentrequestsession)|false|none|none|

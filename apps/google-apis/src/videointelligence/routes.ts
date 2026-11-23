@@ -1,90 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudVideointelligenceV1VideoSegmentSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
-      }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
-      }),
-  })
-  .openapi({ description: 'Video segment.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1VideoSegment')
-
-const GoogleCloudVideointelligenceV1VideoAnnotationProgressSchema = z
-  .object({
-    feature: z
-      .enum([
-        'FEATURE_UNSPECIFIED',
-        'LABEL_DETECTION',
-        'SHOT_CHANGE_DETECTION',
-        'EXPLICIT_CONTENT_DETECTION',
-        'FACE_DETECTION',
-        'SPEECH_TRANSCRIPTION',
-        'TEXT_DETECTION',
-        'OBJECT_TRACKING',
-        'LOGO_RECOGNITION',
-        'PERSON_DETECTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which feature is being tracked if the request contains more than one feature.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    progressPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
-      }),
-    segment: GoogleCloudVideointelligenceV1VideoSegmentSchema.exactOptional().openapi({
-      description:
-        'Specifies which segment is being tracked if the request contains more than one segment.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the request was received.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time of the most recent update.' }),
-  })
-  .openapi({ description: 'Annotation progress for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1VideoAnnotationProgress')
-
-const GoogleCloudVideointelligenceV1AnnotateVideoProgressSchema = z
-  .object({
-    annotationProgress: z
-      .array(GoogleCloudVideointelligenceV1VideoAnnotationProgressSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1AnnotateVideoProgress')
-
 const GoogleRpcStatusSchema = z
   .object({
     code: z
@@ -199,6 +114,26 @@ const GoogleCloudVideointelligenceV1FaceFrameSchema = z
   })
   .openapi({ description: 'Deprecated. No effect.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1FaceFrame')
+
+const GoogleCloudVideointelligenceV1VideoSegmentSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+      }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      }),
+  })
+  .openapi({ description: 'Video segment.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1VideoSegment')
 
 const GoogleCloudVideointelligenceV1FaceSegmentSchema = z
   .object({
@@ -343,20 +278,27 @@ const GoogleCloudVideointelligenceV1TrackSchema = z
   .openapi({ description: 'A track of an object instance.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1Track')
 
-const GoogleCloudVideointelligenceV1FaceDetectionAnnotationSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The thumbnail of a person's face." }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The face tracks with attributes.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Face detection annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1FaceDetectionAnnotation')
+type GoogleCloudVideointelligenceV1FaceDetectionAnnotationType = {
+  thumbnail?: string
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1FaceDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1FaceDetectionAnnotationType> =
+  z
+    .object({
+      thumbnail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The thumbnail of a person's face." }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The face tracks with attributes.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Face detection annotation.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1FaceDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1EntitySchema = z
   .object({
@@ -440,32 +382,39 @@ const GoogleCloudVideointelligenceV1LabelAnnotationSchema = z
   .openapi({ description: 'Label annotation.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1LabelAnnotation')
 
-const GoogleCloudVideointelligenceV1LogoRecognitionAnnotationSchema = z
-  .object({
-    entity: GoogleCloudVideointelligenceV1EntitySchema.exactOptional().openapi({
-      description:
-        'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
-    }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({
+type GoogleCloudVideointelligenceV1LogoRecognitionAnnotationType = {
+  entity?: z.infer<typeof GoogleCloudVideointelligenceV1EntitySchema>
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1VideoSegmentSchema>[]
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1TrackSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1LogoRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1LogoRecognitionAnnotationType> =
+  z
+    .object({
+      entity: GoogleCloudVideointelligenceV1EntitySchema.exactOptional().openapi({
         description:
-          'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+          'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
       }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1TrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
-      }),
-  })
-  .openapi({
-    description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1LogoRecognitionAnnotation')
+      segments: z
+        .array(GoogleCloudVideointelligenceV1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+        }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1TrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
+        }),
+    })
+    .openapi({
+      description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1LogoRecognitionAnnotation')
 
 const GoogleCloudVideointelligenceV1ObjectTrackingFrameSchema = z
   .object({
@@ -517,16 +466,22 @@ const GoogleCloudVideointelligenceV1ObjectTrackingAnnotationSchema = z
   .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1ObjectTrackingAnnotation')
 
-const GoogleCloudVideointelligenceV1PersonDetectionAnnotationSchema = z
-  .object({
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The detected tracks of a person.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Person detection annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1PersonDetectionAnnotation')
+type GoogleCloudVideointelligenceV1PersonDetectionAnnotationType = {
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1PersonDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1PersonDetectionAnnotationType> =
+  z
+    .object({
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The detected tracks of a person.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Person detection annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1PersonDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1WordInfoSchema = z
   .object({
@@ -676,217 +631,158 @@ const GoogleCloudVideointelligenceV1TextSegmentSchema = z
   })
   .openapi('GoogleCloudVideointelligenceV1TextSegment')
 
-const GoogleCloudVideointelligenceV1TextAnnotationSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudVideointelligenceV1TextSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where OCR detected text appears.' }),
-    text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1TextAnnotation')
+type GoogleCloudVideointelligenceV1TextAnnotationType = {
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1TextSegmentSchema>[]
+  text?: string
+  version?: string
+}
 
-const GoogleCloudVideointelligenceV1VideoAnnotationResultsSchema = z
-  .object({
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
+const GoogleCloudVideointelligenceV1TextAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1TextAnnotationType> =
+  z
+    .object({
+      segments: z
+        .array(GoogleCloudVideointelligenceV1TextSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'All video segments where OCR detected text appears.' }),
+      text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({
       description:
-        'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
-    }),
-    explicitAnnotation:
-      GoogleCloudVideointelligenceV1ExplicitContentAnnotationSchema.exactOptional().openapi({
-        description: 'Explicit content annotation.',
-      }),
-    faceAnnotations: z
-      .array(GoogleCloudVideointelligenceV1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
-    faceDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1FaceDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Face detection annotations.' }),
-    frameLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Label annotations on frame level. There is exactly one element for each unique label.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    logoRecognitionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LogoRecognitionAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotations for list of logos detected, tracked and recognized in video.',
-      }),
-    objectAnnotations: z
-      .array(GoogleCloudVideointelligenceV1ObjectTrackingAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
-    personDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1PersonDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Person detection annotations.' }),
-    segment: GoogleCloudVideointelligenceV1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment on which the annotation is run.',
-    }),
-    segmentLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
-      }),
-    segmentPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    shotAnnotations: z
-      .array(GoogleCloudVideointelligenceV1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
-    shotLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on shot level. There is exactly one element for each unique label.',
-      }),
-    shotPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    speechTranscriptions: z
-      .array(GoogleCloudVideointelligenceV1SpeechTranscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Speech transcription.' }),
-    textAnnotations: z
-      .array(GoogleCloudVideointelligenceV1TextAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
-      }),
-  })
-  .openapi({ description: 'Annotation results for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1VideoAnnotationResults')
+        'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1TextAnnotation')
 
-const GoogleCloudVideointelligenceV1AnnotateVideoResponseSchema = z
-  .object({
-    annotationResults: z
-      .array(GoogleCloudVideointelligenceV1VideoAnnotationResultsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1AnnotateVideoResponse')
+type GoogleCloudVideointelligenceV1VideoAnnotationResultsType = {
+  error?: z.infer<typeof GoogleRpcStatusSchema>
+  explicitAnnotation?: z.infer<typeof GoogleCloudVideointelligenceV1ExplicitContentAnnotationSchema>
+  faceAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1FaceAnnotationSchema>[]
+  faceDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1FaceDetectionAnnotationSchema
+  >[]
+  frameLabelAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1LabelAnnotationSchema>[]
+  inputUri?: string
+  logoRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1LogoRecognitionAnnotationSchema
+  >[]
+  objectAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1ObjectTrackingAnnotationSchema>[]
+  personDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1PersonDetectionAnnotationSchema
+  >[]
+  segment?: z.infer<typeof GoogleCloudVideointelligenceV1VideoSegmentSchema>
+  segmentLabelAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1LabelAnnotationSchema>[]
+  segmentPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1LabelAnnotationSchema
+  >[]
+  shotAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1VideoSegmentSchema>[]
+  shotLabelAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1LabelAnnotationSchema>[]
+  shotPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1LabelAnnotationSchema
+  >[]
+  speechTranscriptions?: z.infer<typeof GoogleCloudVideointelligenceV1SpeechTranscriptionSchema>[]
+  textAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1TextAnnotationSchema>[]
+}
 
-const GoogleCloudVideointelligenceV1beta2VideoSegmentSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
+const GoogleCloudVideointelligenceV1VideoAnnotationResultsSchema: z.ZodType<GoogleCloudVideointelligenceV1VideoAnnotationResultsType> =
+  z
+    .object({
+      error: GoogleRpcStatusSchema.exactOptional().openapi({
         description:
-          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+          'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
       }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      explicitAnnotation:
+        GoogleCloudVideointelligenceV1ExplicitContentAnnotationSchema.exactOptional().openapi({
+          description: 'Explicit content annotation.',
+        }),
+      faceAnnotations: z
+        .array(GoogleCloudVideointelligenceV1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
+      faceDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1FaceDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Face detection annotations.' }),
+      frameLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Label annotations on frame level. There is exactly one element for each unique label.',
+        }),
+      inputUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        }),
+      logoRecognitionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LogoRecognitionAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotations for list of logos detected, tracked and recognized in video.',
+        }),
+      objectAnnotations: z
+        .array(GoogleCloudVideointelligenceV1ObjectTrackingAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
+      personDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1PersonDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Person detection annotations.' }),
+      segment: GoogleCloudVideointelligenceV1VideoSegmentSchema.exactOptional().openapi({
+        description: 'Video segment on which the annotation is run.',
       }),
-  })
-  .openapi({ description: 'Video segment.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1beta2VideoSegment')
+      segmentLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
+        }),
+      segmentPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      shotAnnotations: z
+        .array(GoogleCloudVideointelligenceV1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
+      shotLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on shot level. There is exactly one element for each unique label.',
+        }),
+      shotPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      speechTranscriptions: z
+        .array(GoogleCloudVideointelligenceV1SpeechTranscriptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Speech transcription.' }),
+      textAnnotations: z
+        .array(GoogleCloudVideointelligenceV1TextAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+        }),
+    })
+    .openapi({ description: 'Annotation results for a single video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1VideoAnnotationResults')
 
-const GoogleCloudVideointelligenceV1beta2VideoAnnotationProgressSchema = z
-  .object({
-    feature: z
-      .enum([
-        'FEATURE_UNSPECIFIED',
-        'LABEL_DETECTION',
-        'SHOT_CHANGE_DETECTION',
-        'EXPLICIT_CONTENT_DETECTION',
-        'FACE_DETECTION',
-        'SPEECH_TRANSCRIPTION',
-        'TEXT_DETECTION',
-        'OBJECT_TRACKING',
-        'LOGO_RECOGNITION',
-        'PERSON_DETECTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which feature is being tracked if the request contains more than one feature.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    progressPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
-      }),
-    segment: GoogleCloudVideointelligenceV1beta2VideoSegmentSchema.exactOptional().openapi({
-      description:
-        'Specifies which segment is being tracked if the request contains more than one segment.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the request was received.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time of the most recent update.' }),
-  })
-  .openapi({ description: 'Annotation progress for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1beta2VideoAnnotationProgress')
-
-const GoogleCloudVideointelligenceV1beta2AnnotateVideoProgressSchema = z
-  .object({
-    annotationProgress: z
-      .array(GoogleCloudVideointelligenceV1beta2VideoAnnotationProgressSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1beta2AnnotateVideoProgress')
+type GoogleCloudVideointelligenceV1AnnotateVideoResponseType = {
+  annotationResults?: z.infer<typeof GoogleCloudVideointelligenceV1VideoAnnotationResultsSchema>[]
+}
 
 const GoogleCloudVideointelligenceV1beta2ExplicitContentFrameSchema = z
   .object({
@@ -963,6 +859,26 @@ const GoogleCloudVideointelligenceV1beta2FaceFrameSchema = z
   })
   .openapi({ description: 'Deprecated. No effect.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1beta2FaceFrame')
+
+const GoogleCloudVideointelligenceV1beta2VideoSegmentSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+      }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      }),
+  })
+  .openapi({ description: 'Video segment.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1beta2VideoSegment')
 
 const GoogleCloudVideointelligenceV1beta2FaceSegmentSchema = z
   .object({
@@ -1107,20 +1023,27 @@ const GoogleCloudVideointelligenceV1beta2TrackSchema = z
   .openapi({ description: 'A track of an object instance.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1beta2Track')
 
-const GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The thumbnail of a person's face." }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The face tracks with attributes.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Face detection annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotation')
+type GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationType = {
+  thumbnail?: string
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1beta2TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationType> =
+  z
+    .object({
+      thumbnail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The thumbnail of a person's face." }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The face tracks with attributes.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Face detection annotation.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1beta2EntitySchema = z
   .object({
@@ -1204,32 +1127,39 @@ const GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema = z
   .openapi({ description: 'Label annotation.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1beta2LabelAnnotation')
 
-const GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationSchema = z
-  .object({
-    entity: GoogleCloudVideointelligenceV1beta2EntitySchema.exactOptional().openapi({
-      description:
-        'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
-    }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1beta2VideoSegmentSchema)
-      .exactOptional()
-      .openapi({
+type GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationType = {
+  entity?: z.infer<typeof GoogleCloudVideointelligenceV1beta2EntitySchema>
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1beta2VideoSegmentSchema>[]
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1beta2TrackSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationType> =
+  z
+    .object({
+      entity: GoogleCloudVideointelligenceV1beta2EntitySchema.exactOptional().openapi({
         description:
-          'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+          'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
       }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
-      }),
-  })
-  .openapi({
-    description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotation')
+      segments: z
+        .array(GoogleCloudVideointelligenceV1beta2VideoSegmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+        }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
+        }),
+    })
+    .openapi({
+      description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotation')
 
 const GoogleCloudVideointelligenceV1beta2ObjectTrackingFrameSchema = z
   .object({
@@ -1281,16 +1211,22 @@ const GoogleCloudVideointelligenceV1beta2ObjectTrackingAnnotationSchema = z
   .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1beta2ObjectTrackingAnnotation')
 
-const GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationSchema = z
-  .object({
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The detected tracks of a person.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Person detection annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotation')
+type GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationType = {
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1beta2TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationType> =
+  z
+    .object({
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1beta2TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The detected tracks of a person.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Person detection annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1beta2WordInfoSchema = z
   .object({
@@ -1440,217 +1376,168 @@ const GoogleCloudVideointelligenceV1beta2TextSegmentSchema = z
   })
   .openapi('GoogleCloudVideointelligenceV1beta2TextSegment')
 
-const GoogleCloudVideointelligenceV1beta2TextAnnotationSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudVideointelligenceV1beta2TextSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where OCR detected text appears.' }),
-    text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1beta2TextAnnotation')
+type GoogleCloudVideointelligenceV1beta2TextAnnotationType = {
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1beta2TextSegmentSchema>[]
+  text?: string
+  version?: string
+}
 
-const GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsSchema = z
-  .object({
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
+const GoogleCloudVideointelligenceV1beta2TextAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2TextAnnotationType> =
+  z
+    .object({
+      segments: z
+        .array(GoogleCloudVideointelligenceV1beta2TextSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'All video segments where OCR detected text appears.' }),
+      text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({
       description:
-        'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
-    }),
-    explicitAnnotation:
-      GoogleCloudVideointelligenceV1beta2ExplicitContentAnnotationSchema.exactOptional().openapi({
-        description: 'Explicit content annotation.',
-      }),
-    faceAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
-    faceDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Face detection annotations.' }),
-    frameLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Label annotations on frame level. There is exactly one element for each unique label.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    logoRecognitionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotations for list of logos detected, tracked and recognized in video.',
-      }),
-    objectAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2ObjectTrackingAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
-    personDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Person detection annotations.' }),
-    segment: GoogleCloudVideointelligenceV1beta2VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment on which the annotation is run.',
-    }),
-    segmentLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
-      }),
-    segmentPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    shotAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2VideoSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
-    shotLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on shot level. There is exactly one element for each unique label.',
-      }),
-    shotPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    speechTranscriptions: z
-      .array(GoogleCloudVideointelligenceV1beta2SpeechTranscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Speech transcription.' }),
-    textAnnotations: z
-      .array(GoogleCloudVideointelligenceV1beta2TextAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
-      }),
-  })
-  .openapi({ description: 'Annotation results for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1beta2VideoAnnotationResults')
+        'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1beta2TextAnnotation')
 
-const GoogleCloudVideointelligenceV1beta2AnnotateVideoResponseSchema = z
-  .object({
-    annotationResults: z
-      .array(GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1beta2AnnotateVideoResponse')
+type GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsType = {
+  error?: z.infer<typeof GoogleRpcStatusSchema>
+  explicitAnnotation?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2ExplicitContentAnnotationSchema
+  >
+  faceAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1beta2FaceAnnotationSchema>[]
+  faceDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationSchema
+  >[]
+  frameLabelAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema>[]
+  inputUri?: string
+  logoRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationSchema
+  >[]
+  objectAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2ObjectTrackingAnnotationSchema
+  >[]
+  personDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationSchema
+  >[]
+  segment?: z.infer<typeof GoogleCloudVideointelligenceV1beta2VideoSegmentSchema>
+  segmentLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema
+  >[]
+  segmentPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema
+  >[]
+  shotAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1beta2VideoSegmentSchema>[]
+  shotLabelAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema>[]
+  shotPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema
+  >[]
+  speechTranscriptions?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2SpeechTranscriptionSchema
+  >[]
+  textAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1beta2TextAnnotationSchema>[]
+}
 
-const GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
+const GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsType> =
+  z
+    .object({
+      error: GoogleRpcStatusSchema.exactOptional().openapi({
         description:
-          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+          'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
       }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      explicitAnnotation:
+        GoogleCloudVideointelligenceV1beta2ExplicitContentAnnotationSchema.exactOptional().openapi({
+          description: 'Explicit content annotation.',
+        }),
+      faceAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
+      faceDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2FaceDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Face detection annotations.' }),
+      frameLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Label annotations on frame level. There is exactly one element for each unique label.',
+        }),
+      inputUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        }),
+      logoRecognitionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LogoRecognitionAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotations for list of logos detected, tracked and recognized in video.',
+        }),
+      objectAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2ObjectTrackingAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
+      personDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2PersonDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Person detection annotations.' }),
+      segment: GoogleCloudVideointelligenceV1beta2VideoSegmentSchema.exactOptional().openapi({
+        description: 'Video segment on which the annotation is run.',
       }),
-  })
-  .openapi({ description: 'Video segment.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1VideoSegment')
+      segmentLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
+        }),
+      segmentPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      shotAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2VideoSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
+      shotLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on shot level. There is exactly one element for each unique label.',
+        }),
+      shotPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      speechTranscriptions: z
+        .array(GoogleCloudVideointelligenceV1beta2SpeechTranscriptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Speech transcription.' }),
+      textAnnotations: z
+        .array(GoogleCloudVideointelligenceV1beta2TextAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+        }),
+    })
+    .openapi({ description: 'Annotation results for a single video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1beta2VideoAnnotationResults')
 
-const GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgressSchema = z
-  .object({
-    feature: z
-      .enum([
-        'FEATURE_UNSPECIFIED',
-        'LABEL_DETECTION',
-        'SHOT_CHANGE_DETECTION',
-        'EXPLICIT_CONTENT_DETECTION',
-        'FACE_DETECTION',
-        'SPEECH_TRANSCRIPTION',
-        'TEXT_DETECTION',
-        'OBJECT_TRACKING',
-        'LOGO_RECOGNITION',
-        'PERSON_DETECTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which feature is being tracked if the request contains more than one feature.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    progressPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
-      }),
-    segment: GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema.exactOptional().openapi({
-      description:
-        'Specifies which segment is being tracked if the request contains more than one segment.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the request was received.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time of the most recent update.' }),
-  })
-  .openapi({ description: 'Annotation progress for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgress')
-
-const GoogleCloudVideointelligenceV1p1beta1AnnotateVideoProgressSchema = z
-  .object({
-    annotationProgress: z
-      .array(GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgressSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1AnnotateVideoProgress')
+type GoogleCloudVideointelligenceV1beta2AnnotateVideoResponseType = {
+  annotationResults?: z.infer<
+    typeof GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsSchema
+  >[]
+}
 
 const GoogleCloudVideointelligenceV1p1beta1ExplicitContentFrameSchema = z
   .object({
@@ -1727,6 +1614,26 @@ const GoogleCloudVideointelligenceV1p1beta1FaceFrameSchema = z
   })
   .openapi({ description: 'Deprecated. No effect.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p1beta1FaceFrame')
+
+const GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+      }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      }),
+  })
+  .openapi({ description: 'Video segment.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p1beta1VideoSegment')
 
 const GoogleCloudVideointelligenceV1p1beta1FaceSegmentSchema = z
   .object({
@@ -1871,20 +1778,27 @@ const GoogleCloudVideointelligenceV1p1beta1TrackSchema = z
   .openapi({ description: 'A track of an object instance.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p1beta1Track')
 
-const GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The thumbnail of a person's face." }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The face tracks with attributes.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Face detection annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotation')
+type GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationType = {
+  thumbnail?: string
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationType> =
+  z
+    .object({
+      thumbnail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The thumbnail of a person's face." }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The face tracks with attributes.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Face detection annotation.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1p1beta1EntitySchema = z
   .object({
@@ -1968,32 +1882,39 @@ const GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema = z
   .openapi({ description: 'Label annotation.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p1beta1LabelAnnotation')
 
-const GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationSchema = z
-  .object({
-    entity: GoogleCloudVideointelligenceV1p1beta1EntitySchema.exactOptional().openapi({
-      description:
-        'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
-    }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({
+type GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationType = {
+  entity?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1EntitySchema>
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema>[]
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1TrackSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationType> =
+  z
+    .object({
+      entity: GoogleCloudVideointelligenceV1p1beta1EntitySchema.exactOptional().openapi({
         description:
-          'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+          'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
       }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
-      }),
-  })
-  .openapi({
-    description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotation')
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+        }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
+        }),
+    })
+    .openapi({
+      description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotation')
 
 const GoogleCloudVideointelligenceV1p1beta1ObjectTrackingFrameSchema = z
   .object({
@@ -2045,16 +1966,22 @@ const GoogleCloudVideointelligenceV1p1beta1ObjectTrackingAnnotationSchema = z
   .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p1beta1ObjectTrackingAnnotation')
 
-const GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationSchema = z
-  .object({
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The detected tracks of a person.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Person detection annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotation')
+type GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationType = {
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationType> =
+  z
+    .object({
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p1beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The detected tracks of a person.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Person detection annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1p1beta1WordInfoSchema = z
   .object({
@@ -2204,217 +2131,172 @@ const GoogleCloudVideointelligenceV1p1beta1TextSegmentSchema = z
   })
   .openapi('GoogleCloudVideointelligenceV1p1beta1TextSegment')
 
-const GoogleCloudVideointelligenceV1p1beta1TextAnnotationSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p1beta1TextSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where OCR detected text appears.' }),
-    text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1TextAnnotation')
+type GoogleCloudVideointelligenceV1p1beta1TextAnnotationType = {
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1TextSegmentSchema>[]
+  text?: string
+  version?: string
+}
 
-const GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsSchema = z
-  .object({
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
+const GoogleCloudVideointelligenceV1p1beta1TextAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1TextAnnotationType> =
+  z
+    .object({
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p1beta1TextSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'All video segments where OCR detected text appears.' }),
+      text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({
       description:
-        'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
-    }),
-    explicitAnnotation:
-      GoogleCloudVideointelligenceV1p1beta1ExplicitContentAnnotationSchema.exactOptional().openapi({
-        description: 'Explicit content annotation.',
-      }),
-    faceAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
-    faceDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Face detection annotations.' }),
-    frameLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Label annotations on frame level. There is exactly one element for each unique label.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    logoRecognitionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotations for list of logos detected, tracked and recognized in video.',
-      }),
-    objectAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1ObjectTrackingAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
-    personDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Person detection annotations.' }),
-    segment: GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment on which the annotation is run.',
-    }),
-    segmentLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
-      }),
-    segmentPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    shotAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
-    shotLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on shot level. There is exactly one element for each unique label.',
-      }),
-    shotPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    speechTranscriptions: z
-      .array(GoogleCloudVideointelligenceV1p1beta1SpeechTranscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Speech transcription.' }),
-    textAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p1beta1TextAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
-      }),
-  })
-  .openapi({ description: 'Annotation results for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResults')
+        'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1TextAnnotation')
 
-const GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponseSchema = z
-  .object({
-    annotationResults: z
-      .array(GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponse')
+type GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsType = {
+  error?: z.infer<typeof GoogleRpcStatusSchema>
+  explicitAnnotation?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1ExplicitContentAnnotationSchema
+  >
+  faceAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1FaceAnnotationSchema>[]
+  faceDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationSchema
+  >[]
+  frameLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema
+  >[]
+  inputUri?: string
+  logoRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationSchema
+  >[]
+  objectAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1ObjectTrackingAnnotationSchema
+  >[]
+  personDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationSchema
+  >[]
+  segment?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema>
+  segmentLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema
+  >[]
+  segmentPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema
+  >[]
+  shotAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema>[]
+  shotLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema
+  >[]
+  shotPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema
+  >[]
+  speechTranscriptions?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1SpeechTranscriptionSchema
+  >[]
+  textAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p1beta1TextAnnotationSchema>[]
+}
 
-const GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema = z
-  .object({
-    endTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
+const GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsType> =
+  z
+    .object({
+      error: GoogleRpcStatusSchema.exactOptional().openapi({
         description:
-          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+          'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
       }),
-    startTimeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      explicitAnnotation:
+        GoogleCloudVideointelligenceV1p1beta1ExplicitContentAnnotationSchema.exactOptional().openapi(
+          { description: 'Explicit content annotation.' },
+        ),
+      faceAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
+      faceDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1FaceDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Face detection annotations.' }),
+      frameLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Label annotations on frame level. There is exactly one element for each unique label.',
+        }),
+      inputUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        }),
+      logoRecognitionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LogoRecognitionAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotations for list of logos detected, tracked and recognized in video.',
+        }),
+      objectAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1ObjectTrackingAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
+      personDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1PersonDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Person detection annotations.' }),
+      segment: GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema.exactOptional().openapi({
+        description: 'Video segment on which the annotation is run.',
       }),
-  })
-  .openapi({ description: 'Video segment.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1VideoSegment')
+      segmentLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
+        }),
+      segmentPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      shotAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
+      shotLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on shot level. There is exactly one element for each unique label.',
+        }),
+      shotPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      speechTranscriptions: z
+        .array(GoogleCloudVideointelligenceV1p1beta1SpeechTranscriptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Speech transcription.' }),
+      textAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p1beta1TextAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+        }),
+    })
+    .openapi({ description: 'Annotation results for a single video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResults')
 
-const GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgressSchema = z
-  .object({
-    feature: z
-      .enum([
-        'FEATURE_UNSPECIFIED',
-        'LABEL_DETECTION',
-        'SHOT_CHANGE_DETECTION',
-        'EXPLICIT_CONTENT_DETECTION',
-        'FACE_DETECTION',
-        'SPEECH_TRANSCRIPTION',
-        'TEXT_DETECTION',
-        'OBJECT_TRACKING',
-        'LOGO_RECOGNITION',
-        'PERSON_DETECTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Specifies which feature is being tracked if the request contains more than one feature.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    progressPercent: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
-      }),
-    segment: GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema.exactOptional().openapi({
-      description:
-        'Specifies which segment is being tracked if the request contains more than one segment.',
-    }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time when the request was received.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time of the most recent update.' }),
-  })
-  .openapi({ description: 'Annotation progress for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgress')
-
-const GoogleCloudVideointelligenceV1p2beta1AnnotateVideoProgressSchema = z
-  .object({
-    annotationProgress: z
-      .array(GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgressSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1AnnotateVideoProgress')
+type GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponseType = {
+  annotationResults?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsSchema
+  >[]
+}
 
 const GoogleCloudVideointelligenceV1p2beta1ExplicitContentFrameSchema = z
   .object({
@@ -2491,6 +2373,26 @@ const GoogleCloudVideointelligenceV1p2beta1FaceFrameSchema = z
   })
   .openapi({ description: 'Deprecated. No effect.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p2beta1FaceFrame')
+
+const GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema = z
+  .object({
+    endTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the end of the segment (inclusive).',
+      }),
+    startTimeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the start of the segment (inclusive).',
+      }),
+  })
+  .openapi({ description: 'Video segment.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p2beta1VideoSegment')
 
 const GoogleCloudVideointelligenceV1p2beta1FaceSegmentSchema = z
   .object({
@@ -2635,20 +2537,27 @@ const GoogleCloudVideointelligenceV1p2beta1TrackSchema = z
   .openapi({ description: 'A track of an object instance.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p2beta1Track')
 
-const GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The thumbnail of a person's face." }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The face tracks with attributes.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Face detection annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotation')
+type GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationType = {
+  thumbnail?: string
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationType> =
+  z
+    .object({
+      thumbnail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The thumbnail of a person's face." }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The face tracks with attributes.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Face detection annotation.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1p2beta1EntitySchema = z
   .object({
@@ -2732,32 +2641,39 @@ const GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema = z
   .openapi({ description: 'Label annotation.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p2beta1LabelAnnotation')
 
-const GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationSchema = z
-  .object({
-    entity: GoogleCloudVideointelligenceV1p2beta1EntitySchema.exactOptional().openapi({
-      description:
-        'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
-    }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({
+type GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationType = {
+  entity?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1EntitySchema>
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema>[]
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1TrackSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationType> =
+  z
+    .object({
+      entity: GoogleCloudVideointelligenceV1p2beta1EntitySchema.exactOptional().openapi({
         description:
-          'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+          'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
       }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
-      }),
-  })
-  .openapi({
-    description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotation')
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+        }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
+        }),
+    })
+    .openapi({
+      description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotation')
 
 const GoogleCloudVideointelligenceV1p2beta1ObjectTrackingFrameSchema = z
   .object({
@@ -2809,16 +2725,22 @@ const GoogleCloudVideointelligenceV1p2beta1ObjectTrackingAnnotationSchema = z
   .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p2beta1ObjectTrackingAnnotation')
 
-const GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationSchema = z
-  .object({
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The detected tracks of a person.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Person detection annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotation')
+type GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationType = {
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationType> =
+  z
+    .object({
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p2beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The detected tracks of a person.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Person detection annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotation')
 
 const GoogleCloudVideointelligenceV1p2beta1WordInfoSchema = z
   .object({
@@ -2968,132 +2890,233 @@ const GoogleCloudVideointelligenceV1p2beta1TextSegmentSchema = z
   })
   .openapi('GoogleCloudVideointelligenceV1p2beta1TextSegment')
 
-const GoogleCloudVideointelligenceV1p2beta1TextAnnotationSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p2beta1TextSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where OCR detected text appears.' }),
-    text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1TextAnnotation')
+type GoogleCloudVideointelligenceV1p2beta1TextAnnotationType = {
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1TextSegmentSchema>[]
+  text?: string
+  version?: string
+}
 
-const GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsSchema = z
-  .object({
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
+const GoogleCloudVideointelligenceV1p2beta1TextAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1TextAnnotationType> =
+  z
+    .object({
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p2beta1TextSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'All video segments where OCR detected text appears.' }),
+      text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({
       description:
-        'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
-    }),
-    explicitAnnotation:
-      GoogleCloudVideointelligenceV1p2beta1ExplicitContentAnnotationSchema.exactOptional().openapi({
-        description: 'Explicit content annotation.',
-      }),
-    faceAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
-    faceDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Face detection annotations.' }),
-    frameLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
+        'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1TextAnnotation')
+
+type GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsType = {
+  error?: z.infer<typeof GoogleRpcStatusSchema>
+  explicitAnnotation?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1ExplicitContentAnnotationSchema
+  >
+  faceAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1FaceAnnotationSchema>[]
+  faceDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationSchema
+  >[]
+  frameLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema
+  >[]
+  inputUri?: string
+  logoRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationSchema
+  >[]
+  objectAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1ObjectTrackingAnnotationSchema
+  >[]
+  personDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationSchema
+  >[]
+  segment?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema>
+  segmentLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema
+  >[]
+  segmentPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema
+  >[]
+  shotAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema>[]
+  shotLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema
+  >[]
+  shotPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema
+  >[]
+  speechTranscriptions?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1SpeechTranscriptionSchema
+  >[]
+  textAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p2beta1TextAnnotationSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsType> =
+  z
+    .object({
+      error: GoogleRpcStatusSchema.exactOptional().openapi({
         description:
-          'Label annotations on frame level. There is exactly one element for each unique label.',
+          'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
       }),
-    inputUri: z
+      explicitAnnotation:
+        GoogleCloudVideointelligenceV1p2beta1ExplicitContentAnnotationSchema.exactOptional().openapi(
+          { description: 'Explicit content annotation.' },
+        ),
+      faceAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
+      faceDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1FaceDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Face detection annotations.' }),
+      frameLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Label annotations on frame level. There is exactly one element for each unique label.',
+        }),
+      inputUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        }),
+      logoRecognitionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotations for list of logos detected, tracked and recognized in video.',
+        }),
+      objectAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1ObjectTrackingAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
+      personDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Person detection annotations.' }),
+      segment: GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema.exactOptional().openapi({
+        description: 'Video segment on which the annotation is run.',
+      }),
+      segmentLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
+        }),
+      segmentPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      shotAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
+      shotLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on shot level. There is exactly one element for each unique label.',
+        }),
+      shotPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      speechTranscriptions: z
+        .array(GoogleCloudVideointelligenceV1p2beta1SpeechTranscriptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Speech transcription.' }),
+      textAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p2beta1TextAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+        }),
+    })
+    .openapi({ description: 'Annotation results for a single video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResults')
+
+type GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponseType = {
+  annotationResults?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsSchema
+  >[]
+}
+
+const GoogleCloudVideointelligenceV1p3beta1CelebritySchema = z
+  .object({
+    description: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        description:
+          'Textual description of additional information about the celebrity, if applicable.',
       }),
-    logoRecognitionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LogoRecognitionAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotations for list of logos detected, tracked and recognized in video.',
-      }),
-    objectAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1ObjectTrackingAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
-    personDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1PersonDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Person detection annotations.' }),
-    segment: GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment on which the annotation is run.',
-    }),
-    segmentLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
+    displayName: z.string().exactOptional().openapi({ description: 'The celebrity name.' }),
+    name: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
-      }),
-    segmentPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    shotAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
-    shotLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on shot level. There is exactly one element for each unique label.',
-      }),
-    shotPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    speechTranscriptions: z
-      .array(GoogleCloudVideointelligenceV1p2beta1SpeechTranscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Speech transcription.' }),
-    textAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p2beta1TextAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+          'The resource name of the celebrity. Have the format `video-intelligence/kg-mid` indicates a celebrity from preloaded gallery. kg-mid is the id in Google knowledge graph, which is unique for the celebrity.',
       }),
   })
-  .openapi({ description: 'Annotation results for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResults')
+  .openapi({ description: 'Celebrity definition.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1Celebrity')
 
-const GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponseSchema = z
+const GoogleCloudVideointelligenceV1p3beta1RecognizedCelebritySchema = z
   .object({
-    annotationResults: z
-      .array(GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsSchema)
+    celebrity: GoogleCloudVideointelligenceV1p3beta1CelebritySchema.exactOptional().openapi({
+      description: 'The recognized celebrity.',
+    }),
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Recognition confidence. Range [0, 1].' }),
+  })
+  .openapi({ description: 'The recognized celebrity with confidence score.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1RecognizedCelebrity')
+
+const GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Detected attribute confidence. Range [0, 1].' }),
+    name: z
+      .string()
       .exactOptional()
       .openapi({
-        description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        description:
+          'The name of the attribute, for example, glasses, dark_glasses, mouth_open. A full list of supported type names will be provided in the document.',
+      }),
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Text value of the detection result. For example, the value for "HairColor" can be "black", "blonde", etc.',
       }),
   })
   .openapi({
-    description:
-      'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    description: 'A generic detected attribute represented by name in string format.',
     required: [],
   })
-  .openapi('GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponse')
+  .openapi('GoogleCloudVideointelligenceV1p3beta1DetectedAttribute')
 
 const GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema = z
   .object({
@@ -3114,6 +3137,1090 @@ const GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema = z
   })
   .openapi({ description: 'Video segment.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p3beta1VideoSegment')
+
+const GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema = z
+  .object({
+    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
+    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedVertex')
+
+const GoogleCloudVideointelligenceV1p3beta1DetectedLandmarkSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'The confidence score of the detected landmark. Range [0, 1].' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The name of this landmark, for example, left_hand, right_shoulder.',
+      }),
+    point: GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema.exactOptional().openapi({
+      description:
+        'The 2D point of the detected landmark using the normalized image coordindate system. The normalized coordinates have the range from 0 to 1.',
+    }),
+  })
+  .openapi({
+    description:
+      'A generic detected landmark represented by name in string format and a 2D location.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1DetectedLandmark')
+
+const GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema = z
+  .object({
+    bottom: z.float32().exactOptional().openapi({ description: 'Bottom Y coordinate.' }),
+    left: z.float32().exactOptional().openapi({ description: 'Left X coordinate.' }),
+    right: z.float32().exactOptional().openapi({ description: 'Right X coordinate.' }),
+    top: z.float32().exactOptional().openapi({ description: 'Top Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'Normalized bounding box. The normalized vertex coordinates are relative to the original image. Range: [0, 1].',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBox')
+
+const GoogleCloudVideointelligenceV1p3beta1TimestampedObjectSchema = z
+  .object({
+    attributes: z
+      .array(GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. The attributes of the object in the bounding box.' }),
+    landmarks: z
+      .array(GoogleCloudVideointelligenceV1p3beta1DetectedLandmarkSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. The detected landmarks.' }),
+    normalizedBoundingBox:
+      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema.exactOptional().openapi({
+        description: 'Normalized Bounding box in a frame, where the object is located.',
+      }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this object.',
+      }),
+  })
+  .openapi({
+    description:
+      'For tracking related features. An object at time_offset with attributes, and located with normalized_bounding_box.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1TimestampedObject')
+
+const GoogleCloudVideointelligenceV1p3beta1TrackSchema = z
+  .object({
+    attributes: z
+      .array(GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema)
+      .exactOptional()
+      .openapi({ description: 'Optional. Attributes in the track level.' }),
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Optional. The confidence score of the tracked object.' }),
+    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+      description: 'Video segment of a track.',
+    }),
+    timestampedObjects: z
+      .array(GoogleCloudVideointelligenceV1p3beta1TimestampedObjectSchema)
+      .exactOptional()
+      .openapi({ description: 'The object with timestamp and attributes per frame in the track.' }),
+  })
+  .openapi({ description: 'A track of an object instance.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1Track')
+
+const GoogleCloudVideointelligenceV1p3beta1CelebrityTrackSchema = z
+  .object({
+    celebrities: z
+      .array(GoogleCloudVideointelligenceV1p3beta1RecognizedCelebritySchema)
+      .exactOptional()
+      .openapi({ description: 'Top N match of the celebrities for the face in this track.' }),
+    faceTrack: GoogleCloudVideointelligenceV1p3beta1TrackSchema.exactOptional().openapi({
+      description: "A track of a person's face.",
+    }),
+  })
+  .openapi({
+    description:
+      'The annotation result of a celebrity face track. RecognizedCelebrity field could be empty if the face track does not have any matched celebrities.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1CelebrityTrack')
+
+type GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationType = {
+  celebrityTracks?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1CelebrityTrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationType> =
+  z
+    .object({
+      celebrityTracks: z
+        .array(GoogleCloudVideointelligenceV1p3beta1CelebrityTrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The tracks detected from the input video, including recognized celebrities and other detected faces in the video.',
+        }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Celebrity recognition annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotation')
+
+const GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrameSchema = z
+  .object({
+    pornographyLikelihood: z
+      .enum([
+        'LIKELIHOOD_UNSPECIFIED',
+        'VERY_UNLIKELY',
+        'UNLIKELY',
+        'POSSIBLE',
+        'LIKELY',
+        'VERY_LIKELY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Likelihood of the pornography content..' }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
+      }),
+  })
+  .openapi({
+    description: 'Video frame level annotation results for explicit content.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrame')
+
+const GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotationSchema = z
+  .object({
+    frames: z
+      .array(GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'All video frames where explicit content was detected.' }),
+    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+  })
+  .openapi({
+    description:
+      'Explicit content annotation (based on per-frame visual signals only). If no explicit content has been detected in a frame, no annotations are present for that frame.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotation')
+
+const GoogleCloudVideointelligenceV1p3beta1FaceFrameSchema = z
+  .object({
+    normalizedBoundingBoxes: z
+      .array(GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Normalized Bounding boxes in a frame. There can be more than one boxes if the same face is detected in multiple locations within the current frame.',
+      }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
+      }),
+  })
+  .openapi({ description: 'Deprecated. No effect.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceFrame')
+
+const GoogleCloudVideointelligenceV1p3beta1FaceSegmentSchema = z
+  .object({
+    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+      description: 'Video segment where a face was detected.',
+    }),
+  })
+  .openapi({
+    description: 'Video segment level annotation results for face detection.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceSegment')
+
+const GoogleCloudVideointelligenceV1p3beta1FaceAnnotationSchema = z
+  .object({
+    frames: z
+      .array(GoogleCloudVideointelligenceV1p3beta1FaceFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'All video frames where a face was detected.' }),
+    segments: z
+      .array(GoogleCloudVideointelligenceV1p3beta1FaceSegmentSchema)
+      .exactOptional()
+      .openapi({ description: 'All video segments where a face was detected.' }),
+    thumbnail: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Thumbnail of a representative face view (in JPEG format).' }),
+  })
+  .openapi({ description: 'Deprecated. No effect.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceAnnotation')
+
+type GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationType = {
+  thumbnail?: string
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationType> =
+  z
+    .object({
+      thumbnail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The thumbnail of a person's face." }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The face tracks with attributes.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Face detection annotation.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotation')
+
+const GoogleCloudVideointelligenceV1p3beta1EntitySchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Textual description, e.g., `Fixed-gear bicycle`.' }),
+    entityId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Opaque entity ID. Some IDs may be available in [Google Knowledge Graph Search API](https://developers.google.com/knowledge-graph/).',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Language code for `description` in BCP-47 format.' }),
+  })
+  .openapi({ description: 'Detected entity from video analysis.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1Entity')
+
+const GoogleCloudVideointelligenceV1p3beta1LabelFrameSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Confidence that the label is accurate. Range: [0, 1].' }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
+      }),
+  })
+  .openapi({
+    description: 'Video frame level annotation results for label detection.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelFrame')
+
+const GoogleCloudVideointelligenceV1p3beta1LabelSegmentSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: 'Confidence that the label is accurate. Range: [0, 1].' }),
+    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+      description: 'Video segment where a label was detected.',
+    }),
+  })
+  .openapi({
+    description: 'Video segment level annotation results for label detection.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelSegment')
+
+const GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema = z
+  .object({
+    categoryEntities: z
+      .array(GoogleCloudVideointelligenceV1p3beta1EntitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Common categories for the detected entity. For example, when the label is `Terrier`, the category is likely `dog`. And in some cases there might be more than one categories e.g., `Terrier` could also be a `pet`.',
+      }),
+    entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
+      description: 'Detected entity.',
+    }),
+    frames: z
+      .array(GoogleCloudVideointelligenceV1p3beta1LabelFrameSchema)
+      .exactOptional()
+      .openapi({ description: 'All video frames where a label was detected.' }),
+    segments: z
+      .array(GoogleCloudVideointelligenceV1p3beta1LabelSegmentSchema)
+      .exactOptional()
+      .openapi({ description: 'All video segments where a label was detected.' }),
+    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+  })
+  .openapi({ description: 'Label annotation.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelAnnotation')
+
+type GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationType = {
+  entity?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1EntitySchema>
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema>[]
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1TrackSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationType> =
+  z
+    .object({
+      entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
+        description:
+          'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
+      }),
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
+        }),
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
+        }),
+    })
+    .openapi({
+      description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotation')
+
+const GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrameSchema = z
+  .object({
+    normalizedBoundingBox:
+      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema.exactOptional().openapi({
+        description: 'The normalized bounding box location of this object track for the frame.',
+      }),
+    timeOffset: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The timestamp of the frame in microseconds.' }),
+  })
+  .openapi({
+    description:
+      'Video frame level annotations for object detection and tracking. This field stores per frame location, time offset, and confidence.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrame')
+
+const GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotationSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({ description: "Object category's labeling confidence of this track." }),
+    entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
+      description: 'Entity to specify the object category that this track is labeled as.',
+    }),
+    frames: z
+      .array(GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrameSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Information corresponding to all frames where this object track appears. Non-streaming batch mode: it may be one or multiple ObjectTrackingFrame messages in frames. Streaming mode: it can only be one ObjectTrackingFrame message in frames.',
+      }),
+    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+      description:
+        'Non-streaming batch mode ONLY. Each object track corresponds to one video segment where it appears.',
+    }),
+    trackId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Streaming mode ONLY. In streaming mode, we do not know the end time of a tracked object before it is completed. Hence, there is no VideoSegment info returned. Instead, we provide a unique identifiable integer track_id so that the customers can correlate the results of the ongoing ObjectTrackAnnotation of the same track_id over time.',
+      }),
+    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+  })
+  .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotation')
+
+type GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationType = {
+  tracks?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1TrackSchema>[]
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationType> =
+  z
+    .object({
+      tracks: z
+        .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
+        .exactOptional()
+        .openapi({ description: 'The detected tracks of a person.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({ description: 'Person detection annotation per video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotation')
+
+const GoogleCloudVideointelligenceV1p3beta1WordInfoSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The confidence estimate between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. This field is set only for the top alternative. This field is not guaranteed to be accurate and users should not rely on it to be always provided. The default of 0.0 is a sentinel value indicating `confidence` was not set.',
+        readOnly: true,
+      }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time offset relative to the beginning of the audio, and corresponding to the end of the spoken word. This field is only set if `enable_word_time_offsets=true` and only in the top hypothesis. This is an experimental feature and the accuracy of the time offset can vary.',
+      }),
+    speakerTag: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A distinct integer value is assigned for every speaker within the audio. This field specifies which one of those speakers was detected to have spoken this word. Value ranges from 1 up to diarization_speaker_count, and is only set if speaker diarization is enabled.',
+        readOnly: true,
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time offset relative to the beginning of the audio, and corresponding to the start of the spoken word. This field is only set if `enable_word_time_offsets=true` and only in the top hypothesis. This is an experimental feature and the accuracy of the time offset can vary.',
+      }),
+    word: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The word corresponding to this set of information.' }),
+  })
+  .openapi({
+    description:
+      'Word-specific information for recognized words. Word information is only included in the response when certain request parameters are set, such as `enable_word_time_offsets`.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1WordInfo')
+
+const GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternativeSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The confidence estimate between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. This field is set only for the top alternative. This field is not guaranteed to be accurate and users should not rely on it to be always provided. The default of 0.0 is a sentinel value indicating `confidence` was not set.',
+        readOnly: true,
+      }),
+    transcript: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Transcript text representing the words that the user spoke.' }),
+    words: z
+      .array(GoogleCloudVideointelligenceV1p3beta1WordInfoSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. A list of word-specific information for each recognized word. Note: When `enable_speaker_diarization` is set to true, you will see all the words from the beginning of the audio.',
+        readOnly: true,
+      }),
+  })
+  .openapi({ description: 'Alternative hypotheses (a.k.a. n-best list).', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternative')
+
+const GoogleCloudVideointelligenceV1p3beta1SpeechTranscriptionSchema = z
+  .object({
+    alternatives: z
+      .array(GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternativeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'May contain one or more recognition hypotheses (up to the maximum specified in `max_alternatives`). These alternatives are ordered in terms of accuracy, with the top (first) alternative being the most probable, as ranked by the recognizer.',
+      }),
+    languageCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Output only. The [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag of the language in this result. This language code was detected to have the most likelihood of being spoken in the audio.',
+        readOnly: true,
+      }),
+  })
+  .openapi({
+    description: 'A speech recognition result corresponding to a portion of the audio.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1SpeechTranscription')
+
+const GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPolySchema = z
+  .object({
+    vertices: z
+      .array(GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema)
+      .exactOptional()
+      .openapi({ description: 'Normalized vertices of the bounding polygon.' }),
+  })
+  .openapi({
+    description:
+      "Normalized bounding polygon for text (that might not be aligned with axis). Contains list of the corner points in clockwise order starting from top-left corner. For example, for a rectangular bounding box: When the text is horizontal it might look like: 0----1 | | 3----2 When it's clockwise rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3). Note that values can be less than 0, or greater than 1 due to trignometric calculations for location of the box.",
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPoly')
+
+const GoogleCloudVideointelligenceV1p3beta1TextFrameSchema = z
+  .object({
+    rotatedBoundingBox:
+      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPolySchema.exactOptional().openapi({
+        description: 'Bounding polygon of the detected text for this frame.',
+      }),
+    timeOffset: z.string().exactOptional().openapi({ description: 'Timestamp of this frame.' }),
+  })
+  .openapi({
+    description:
+      'Video frame level annotation results for text annotation (OCR). Contains information regarding timestamp and bounding box locations for the frames containing detected OCR text snippets.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1TextFrame')
+
+const GoogleCloudVideointelligenceV1p3beta1TextSegmentSchema = z
+  .object({
+    confidence: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Confidence for the track of detected text. It is calculated as the highest over all frames where OCR detected text appears.',
+      }),
+    frames: z
+      .array(GoogleCloudVideointelligenceV1p3beta1TextFrameSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Information related to the frames where OCR detected text appears.',
+      }),
+    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+      description: 'Video segment where a text snippet was detected.',
+    }),
+  })
+  .openapi({
+    description: 'Video segment level annotation results for text detection.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p3beta1TextSegment')
+
+type GoogleCloudVideointelligenceV1p3beta1TextAnnotationType = {
+  segments?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1TextSegmentSchema>[]
+  text?: string
+  version?: string
+}
+
+const GoogleCloudVideointelligenceV1p3beta1TextAnnotationSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1TextAnnotationType> =
+  z
+    .object({
+      segments: z
+        .array(GoogleCloudVideointelligenceV1p3beta1TextSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'All video segments where OCR detected text appears.' }),
+      text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
+      version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
+    })
+    .openapi({
+      description:
+        'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1TextAnnotation')
+
+type GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsType = {
+  celebrityRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationSchema
+  >
+  error?: z.infer<typeof GoogleRpcStatusSchema>
+  explicitAnnotation?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotationSchema
+  >
+  faceAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1FaceAnnotationSchema>[]
+  faceDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationSchema
+  >[]
+  frameLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema
+  >[]
+  inputUri?: string
+  logoRecognitionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationSchema
+  >[]
+  objectAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotationSchema
+  >[]
+  personDetectionAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationSchema
+  >[]
+  segment?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema>
+  segmentLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema
+  >[]
+  segmentPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema
+  >[]
+  shotAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema>[]
+  shotLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema
+  >[]
+  shotPresenceLabelAnnotations?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema
+  >[]
+  speechTranscriptions?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1SpeechTranscriptionSchema
+  >[]
+  textAnnotations?: z.infer<typeof GoogleCloudVideointelligenceV1p3beta1TextAnnotationSchema>[]
+}
+
+const GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsType> =
+  z
+    .object({
+      celebrityRecognitionAnnotations:
+        GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationSchema.exactOptional().openapi(
+          { description: 'Celebrity recognition annotations.' },
+        ),
+      error: GoogleRpcStatusSchema.exactOptional().openapi({
+        description:
+          'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
+      }),
+      explicitAnnotation:
+        GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotationSchema.exactOptional().openapi(
+          { description: 'Explicit content annotation.' },
+        ),
+      faceAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
+      faceDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Face detection annotations.' }),
+      frameLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Label annotations on frame level. There is exactly one element for each unique label.',
+        }),
+      inputUri: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+        }),
+      logoRecognitionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotations for list of logos detected, tracked and recognized in video.',
+        }),
+      objectAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
+      personDetectionAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'Person detection annotations.' }),
+      segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
+        description: 'Video segment on which the annotation is run.',
+      }),
+      segmentLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
+        }),
+      segmentPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      shotAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema)
+        .exactOptional()
+        .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
+      shotLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Topical label annotations on shot level. There is exactly one element for each unique label.',
+        }),
+      shotPresenceLabelAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
+        }),
+      speechTranscriptions: z
+        .array(GoogleCloudVideointelligenceV1p3beta1SpeechTranscriptionSchema)
+        .exactOptional()
+        .openapi({ description: 'Speech transcription.' }),
+      textAnnotations: z
+        .array(GoogleCloudVideointelligenceV1p3beta1TextAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
+        }),
+    })
+    .openapi({ description: 'Annotation results for a single video.', required: [] })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResults')
+
+type GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponseType = {
+  annotationResults?: z.infer<
+    typeof GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsSchema
+  >[]
+}
+
+const GoogleCloudVideointelligenceV1VideoAnnotationProgressSchema = z
+  .object({
+    feature: z
+      .enum([
+        'FEATURE_UNSPECIFIED',
+        'LABEL_DETECTION',
+        'SHOT_CHANGE_DETECTION',
+        'EXPLICIT_CONTENT_DETECTION',
+        'FACE_DETECTION',
+        'SPEECH_TRANSCRIPTION',
+        'TEXT_DETECTION',
+        'OBJECT_TRACKING',
+        'LOGO_RECOGNITION',
+        'PERSON_DETECTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which feature is being tracked if the request contains more than one feature.',
+      }),
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+      }),
+    progressPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
+      }),
+    segment: GoogleCloudVideointelligenceV1VideoSegmentSchema.exactOptional().openapi({
+      description:
+        'Specifies which segment is being tracked if the request contains more than one segment.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the request was received.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time of the most recent update.' }),
+  })
+  .openapi({ description: 'Annotation progress for a single video.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1VideoAnnotationProgress')
+
+const GoogleCloudVideointelligenceV1AnnotateVideoProgressSchema = z
+  .object({
+    annotationProgress: z
+      .array(GoogleCloudVideointelligenceV1VideoAnnotationProgressSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1AnnotateVideoProgress')
+
+const GoogleCloudVideointelligenceV1AnnotateVideoResponseSchema: z.ZodType<GoogleCloudVideointelligenceV1AnnotateVideoResponseType> =
+  z
+    .object({
+      annotationResults: z
+        .array(GoogleCloudVideointelligenceV1VideoAnnotationResultsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        }),
+    })
+    .openapi({
+      description:
+        'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1AnnotateVideoResponse')
+
+const GoogleCloudVideointelligenceV1beta2VideoAnnotationProgressSchema = z
+  .object({
+    feature: z
+      .enum([
+        'FEATURE_UNSPECIFIED',
+        'LABEL_DETECTION',
+        'SHOT_CHANGE_DETECTION',
+        'EXPLICIT_CONTENT_DETECTION',
+        'FACE_DETECTION',
+        'SPEECH_TRANSCRIPTION',
+        'TEXT_DETECTION',
+        'OBJECT_TRACKING',
+        'LOGO_RECOGNITION',
+        'PERSON_DETECTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which feature is being tracked if the request contains more than one feature.',
+      }),
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+      }),
+    progressPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
+      }),
+    segment: GoogleCloudVideointelligenceV1beta2VideoSegmentSchema.exactOptional().openapi({
+      description:
+        'Specifies which segment is being tracked if the request contains more than one segment.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the request was received.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time of the most recent update.' }),
+  })
+  .openapi({ description: 'Annotation progress for a single video.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1beta2VideoAnnotationProgress')
+
+const GoogleCloudVideointelligenceV1beta2AnnotateVideoProgressSchema = z
+  .object({
+    annotationProgress: z
+      .array(GoogleCloudVideointelligenceV1beta2VideoAnnotationProgressSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1beta2AnnotateVideoProgress')
+
+const GoogleCloudVideointelligenceV1beta2AnnotateVideoResponseSchema: z.ZodType<GoogleCloudVideointelligenceV1beta2AnnotateVideoResponseType> =
+  z
+    .object({
+      annotationResults: z
+        .array(GoogleCloudVideointelligenceV1beta2VideoAnnotationResultsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        }),
+    })
+    .openapi({
+      description:
+        'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1beta2AnnotateVideoResponse')
+
+const GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgressSchema = z
+  .object({
+    feature: z
+      .enum([
+        'FEATURE_UNSPECIFIED',
+        'LABEL_DETECTION',
+        'SHOT_CHANGE_DETECTION',
+        'EXPLICIT_CONTENT_DETECTION',
+        'FACE_DETECTION',
+        'SPEECH_TRANSCRIPTION',
+        'TEXT_DETECTION',
+        'OBJECT_TRACKING',
+        'LOGO_RECOGNITION',
+        'PERSON_DETECTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which feature is being tracked if the request contains more than one feature.',
+      }),
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+      }),
+    progressPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
+      }),
+    segment: GoogleCloudVideointelligenceV1p1beta1VideoSegmentSchema.exactOptional().openapi({
+      description:
+        'Specifies which segment is being tracked if the request contains more than one segment.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the request was received.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time of the most recent update.' }),
+  })
+  .openapi({ description: 'Annotation progress for a single video.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgress')
+
+const GoogleCloudVideointelligenceV1p1beta1AnnotateVideoProgressSchema = z
+  .object({
+    annotationProgress: z
+      .array(GoogleCloudVideointelligenceV1p1beta1VideoAnnotationProgressSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p1beta1AnnotateVideoProgress')
+
+const GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponseSchema: z.ZodType<GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponseType> =
+  z
+    .object({
+      annotationResults: z
+        .array(GoogleCloudVideointelligenceV1p1beta1VideoAnnotationResultsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        }),
+    })
+    .openapi({
+      description:
+        'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p1beta1AnnotateVideoResponse')
+
+const GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgressSchema = z
+  .object({
+    feature: z
+      .enum([
+        'FEATURE_UNSPECIFIED',
+        'LABEL_DETECTION',
+        'SHOT_CHANGE_DETECTION',
+        'EXPLICIT_CONTENT_DETECTION',
+        'FACE_DETECTION',
+        'SPEECH_TRANSCRIPTION',
+        'TEXT_DETECTION',
+        'OBJECT_TRACKING',
+        'LOGO_RECOGNITION',
+        'PERSON_DETECTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Specifies which feature is being tracked if the request contains more than one feature.',
+      }),
+    inputUri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
+      }),
+    progressPercent: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Approximate percentage processed thus far. Guaranteed to be 100 when fully processed.',
+      }),
+    segment: GoogleCloudVideointelligenceV1p2beta1VideoSegmentSchema.exactOptional().openapi({
+      description:
+        'Specifies which segment is being tracked if the request contains more than one segment.',
+    }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time when the request was received.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time of the most recent update.' }),
+  })
+  .openapi({ description: 'Annotation progress for a single video.', required: [] })
+  .openapi('GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgress')
+
+const GoogleCloudVideointelligenceV1p2beta1AnnotateVideoProgressSchema = z
+  .object({
+    annotationProgress: z
+      .array(GoogleCloudVideointelligenceV1p2beta1VideoAnnotationProgressSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Progress metadata for all videos specified in `AnnotateVideoRequest`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Video annotation progress. Included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    required: [],
+  })
+  .openapi('GoogleCloudVideointelligenceV1p2beta1AnnotateVideoProgress')
+
+const GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponseSchema: z.ZodType<GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponseType> =
+  z
+    .object({
+      annotationResults: z
+        .array(GoogleCloudVideointelligenceV1p2beta1VideoAnnotationResultsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        }),
+    })
+    .openapi({
+      description:
+        'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p2beta1AnnotateVideoResponse')
 
 const GoogleCloudVideointelligenceV1p3beta1VideoAnnotationProgressSchema = z
   .object({
@@ -3519,753 +4626,22 @@ const GoogleCloudVideointelligenceV1p3beta1AnnotateVideoRequestSchema = z
   .openapi({ description: 'Video annotation request.', required: [] })
   .openapi('GoogleCloudVideointelligenceV1p3beta1AnnotateVideoRequest')
 
-const GoogleCloudVideointelligenceV1p3beta1CelebritySchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Textual description of additional information about the celebrity, if applicable.',
-      }),
-    displayName: z.string().exactOptional().openapi({ description: 'The celebrity name.' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the celebrity. Have the format `video-intelligence/kg-mid` indicates a celebrity from preloaded gallery. kg-mid is the id in Google knowledge graph, which is unique for the celebrity.',
-      }),
-  })
-  .openapi({ description: 'Celebrity definition.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1Celebrity')
-
-const GoogleCloudVideointelligenceV1p3beta1RecognizedCelebritySchema = z
-  .object({
-    celebrity: GoogleCloudVideointelligenceV1p3beta1CelebritySchema.exactOptional().openapi({
-      description: 'The recognized celebrity.',
-    }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Recognition confidence. Range [0, 1].' }),
-  })
-  .openapi({ description: 'The recognized celebrity with confidence score.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1RecognizedCelebrity')
-
-const GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Detected attribute confidence. Range [0, 1].' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name of the attribute, for example, glasses, dark_glasses, mouth_open. A full list of supported type names will be provided in the document.',
-      }),
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Text value of the detection result. For example, the value for "HairColor" can be "black", "blonde", etc.',
-      }),
-  })
-  .openapi({
-    description: 'A generic detected attribute represented by name in string format.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1DetectedAttribute')
-
-const GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema = z
-  .object({
-    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
-    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedVertex')
-
-const GoogleCloudVideointelligenceV1p3beta1DetectedLandmarkSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'The confidence score of the detected landmark. Range [0, 1].' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of this landmark, for example, left_hand, right_shoulder.',
-      }),
-    point: GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema.exactOptional().openapi({
+const GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponseSchema: z.ZodType<GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponseType> =
+  z
+    .object({
+      annotationResults: z
+        .array(GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
+        }),
+    })
+    .openapi({
       description:
-        'The 2D point of the detected landmark using the normalized image coordindate system. The normalized coordinates have the range from 0 to 1.',
-    }),
-  })
-  .openapi({
-    description:
-      'A generic detected landmark represented by name in string format and a 2D location.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1DetectedLandmark')
-
-const GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema = z
-  .object({
-    bottom: z.float32().exactOptional().openapi({ description: 'Bottom Y coordinate.' }),
-    left: z.float32().exactOptional().openapi({ description: 'Left X coordinate.' }),
-    right: z.float32().exactOptional().openapi({ description: 'Right X coordinate.' }),
-    top: z.float32().exactOptional().openapi({ description: 'Top Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'Normalized bounding box. The normalized vertex coordinates are relative to the original image. Range: [0, 1].',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBox')
-
-const GoogleCloudVideointelligenceV1p3beta1TimestampedObjectSchema = z
-  .object({
-    attributes: z
-      .array(GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. The attributes of the object in the bounding box.' }),
-    landmarks: z
-      .array(GoogleCloudVideointelligenceV1p3beta1DetectedLandmarkSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. The detected landmarks.' }),
-    normalizedBoundingBox:
-      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema.exactOptional().openapi({
-        description: 'Normalized Bounding box in a frame, where the object is located.',
-      }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this object.',
-      }),
-  })
-  .openapi({
-    description:
-      'For tracking related features. An object at time_offset with attributes, and located with normalized_bounding_box.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1TimestampedObject')
-
-const GoogleCloudVideointelligenceV1p3beta1TrackSchema = z
-  .object({
-    attributes: z
-      .array(GoogleCloudVideointelligenceV1p3beta1DetectedAttributeSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Attributes in the track level.' }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Optional. The confidence score of the tracked object.' }),
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment of a track.',
-    }),
-    timestampedObjects: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TimestampedObjectSchema)
-      .exactOptional()
-      .openapi({ description: 'The object with timestamp and attributes per frame in the track.' }),
-  })
-  .openapi({ description: 'A track of an object instance.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1Track')
-
-const GoogleCloudVideointelligenceV1p3beta1CelebrityTrackSchema = z
-  .object({
-    celebrities: z
-      .array(GoogleCloudVideointelligenceV1p3beta1RecognizedCelebritySchema)
-      .exactOptional()
-      .openapi({ description: 'Top N match of the celebrities for the face in this track.' }),
-    faceTrack: GoogleCloudVideointelligenceV1p3beta1TrackSchema.exactOptional().openapi({
-      description: "A track of a person's face.",
-    }),
-  })
-  .openapi({
-    description:
-      'The annotation result of a celebrity face track. RecognizedCelebrity field could be empty if the face track does not have any matched celebrities.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1CelebrityTrack')
-
-const GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationSchema = z
-  .object({
-    celebrityTracks: z
-      .array(GoogleCloudVideointelligenceV1p3beta1CelebrityTrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The tracks detected from the input video, including recognized celebrities and other detected faces in the video.',
-      }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Celebrity recognition annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrameSchema = z
-  .object({
-    pornographyLikelihood: z
-      .enum([
-        'LIKELIHOOD_UNSPECIFIED',
-        'VERY_UNLIKELY',
-        'UNLIKELY',
-        'POSSIBLE',
-        'LIKELY',
-        'VERY_LIKELY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Likelihood of the pornography content..' }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
-      }),
-  })
-  .openapi({
-    description: 'Video frame level annotation results for explicit content.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrame')
-
-const GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotationSchema = z
-  .object({
-    frames: z
-      .array(GoogleCloudVideointelligenceV1p3beta1ExplicitContentFrameSchema)
-      .exactOptional()
-      .openapi({ description: 'All video frames where explicit content was detected.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Explicit content annotation (based on per-frame visual signals only). If no explicit content has been detected in a frame, no annotations are present for that frame.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1FaceFrameSchema = z
-  .object({
-    normalizedBoundingBoxes: z
-      .array(GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Normalized Bounding boxes in a frame. There can be more than one boxes if the same face is detected in multiple locations within the current frame.',
-      }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
-      }),
-  })
-  .openapi({ description: 'Deprecated. No effect.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceFrame')
-
-const GoogleCloudVideointelligenceV1p3beta1FaceSegmentSchema = z
-  .object({
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment where a face was detected.',
-    }),
-  })
-  .openapi({
-    description: 'Video segment level annotation results for face detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceSegment')
-
-const GoogleCloudVideointelligenceV1p3beta1FaceAnnotationSchema = z
-  .object({
-    frames: z
-      .array(GoogleCloudVideointelligenceV1p3beta1FaceFrameSchema)
-      .exactOptional()
-      .openapi({ description: 'All video frames where a face was detected.' }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p3beta1FaceSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where a face was detected.' }),
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Thumbnail of a representative face view (in JPEG format).' }),
-  })
-  .openapi({ description: 'Deprecated. No effect.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationSchema = z
-  .object({
-    thumbnail: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The thumbnail of a person's face." }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The face tracks with attributes.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Face detection annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1EntitySchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Textual description, e.g., `Fixed-gear bicycle`.' }),
-    entityId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Opaque entity ID. Some IDs may be available in [Google Knowledge Graph Search API](https://developers.google.com/knowledge-graph/).',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Language code for `description` in BCP-47 format.' }),
-  })
-  .openapi({ description: 'Detected entity from video analysis.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1Entity')
-
-const GoogleCloudVideointelligenceV1p3beta1LabelFrameSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence that the label is accurate. Range: [0, 1].' }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time-offset, relative to the beginning of the video, corresponding to the video frame for this location.',
-      }),
-  })
-  .openapi({
-    description: 'Video frame level annotation results for label detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelFrame')
-
-const GoogleCloudVideointelligenceV1p3beta1LabelSegmentSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence that the label is accurate. Range: [0, 1].' }),
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment where a label was detected.',
-    }),
-  })
-  .openapi({
-    description: 'Video segment level annotation results for label detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelSegment')
-
-const GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema = z
-  .object({
-    categoryEntities: z
-      .array(GoogleCloudVideointelligenceV1p3beta1EntitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Common categories for the detected entity. For example, when the label is `Terrier`, the category is likely `dog`. And in some cases there might be more than one categories e.g., `Terrier` could also be a `pet`.',
-      }),
-    entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
-      description: 'Detected entity.',
-    }),
-    frames: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelFrameSchema)
-      .exactOptional()
-      .openapi({ description: 'All video frames where a label was detected.' }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where a label was detected.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Label annotation.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1LabelAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationSchema = z
-  .object({
-    entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
-      description:
-        'Entity category information to specify the logo class that all the logo tracks within this LogoRecognitionAnnotation are recognized as.',
-    }),
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All video segments where the recognized logo appears. There might be multiple instances of the same logo class appearing in one VideoSegment.',
-      }),
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'All logo tracks where the recognized logo appears. Each track corresponds to one logo instance appearing in consecutive frames.',
-      }),
-  })
-  .openapi({
-    description: 'Annotation corresponding to one detected, tracked and recognized logo class.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrameSchema = z
-  .object({
-    normalizedBoundingBox:
-      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingBoxSchema.exactOptional().openapi({
-        description: 'The normalized bounding box location of this object track for the frame.',
-      }),
-    timeOffset: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The timestamp of the frame in microseconds.' }),
-  })
-  .openapi({
-    description:
-      'Video frame level annotations for object detection and tracking. This field stores per frame location, time offset, and confidence.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrame')
-
-const GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotationSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: "Object category's labeling confidence of this track." }),
-    entity: GoogleCloudVideointelligenceV1p3beta1EntitySchema.exactOptional().openapi({
-      description: 'Entity to specify the object category that this track is labeled as.',
-    }),
-    frames: z
-      .array(GoogleCloudVideointelligenceV1p3beta1ObjectTrackingFrameSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Information corresponding to all frames where this object track appears. Non-streaming batch mode: it may be one or multiple ObjectTrackingFrame messages in frames. Streaming mode: it can only be one ObjectTrackingFrame message in frames.',
-      }),
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description:
-        'Non-streaming batch mode ONLY. Each object track corresponds to one video segment where it appears.',
-    }),
-    trackId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Streaming mode ONLY. In streaming mode, we do not know the end time of a tracked object before it is completed. Hence, there is no VideoSegment info returned. Instead, we provide a unique identifiable integer track_id so that the customers can correlate the results of the ongoing ObjectTrackAnnotation of the same track_id over time.',
-      }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Annotations corresponding to one tracked object.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationSchema = z
-  .object({
-    tracks: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TrackSchema)
-      .exactOptional()
-      .openapi({ description: 'The detected tracks of a person.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({ description: 'Person detection annotation per video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1WordInfoSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The confidence estimate between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. This field is set only for the top alternative. This field is not guaranteed to be accurate and users should not rely on it to be always provided. The default of 0.0 is a sentinel value indicating `confidence` was not set.',
-        readOnly: true,
-      }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time offset relative to the beginning of the audio, and corresponding to the end of the spoken word. This field is only set if `enable_word_time_offsets=true` and only in the top hypothesis. This is an experimental feature and the accuracy of the time offset can vary.',
-      }),
-    speakerTag: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A distinct integer value is assigned for every speaker within the audio. This field specifies which one of those speakers was detected to have spoken this word. Value ranges from 1 up to diarization_speaker_count, and is only set if speaker diarization is enabled.',
-        readOnly: true,
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time offset relative to the beginning of the audio, and corresponding to the start of the spoken word. This field is only set if `enable_word_time_offsets=true` and only in the top hypothesis. This is an experimental feature and the accuracy of the time offset can vary.',
-      }),
-    word: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The word corresponding to this set of information.' }),
-  })
-  .openapi({
-    description:
-      'Word-specific information for recognized words. Word information is only included in the response when certain request parameters are set, such as `enable_word_time_offsets`.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1WordInfo')
-
-const GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternativeSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The confidence estimate between 0.0 and 1.0. A higher number indicates an estimated greater likelihood that the recognized words are correct. This field is set only for the top alternative. This field is not guaranteed to be accurate and users should not rely on it to be always provided. The default of 0.0 is a sentinel value indicating `confidence` was not set.',
-        readOnly: true,
-      }),
-    transcript: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Transcript text representing the words that the user spoke.' }),
-    words: z
-      .array(GoogleCloudVideointelligenceV1p3beta1WordInfoSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. A list of word-specific information for each recognized word. Note: When `enable_speaker_diarization` is set to true, you will see all the words from the beginning of the audio.',
-        readOnly: true,
-      }),
-  })
-  .openapi({ description: 'Alternative hypotheses (a.k.a. n-best list).', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternative')
-
-const GoogleCloudVideointelligenceV1p3beta1SpeechTranscriptionSchema = z
-  .object({
-    alternatives: z
-      .array(GoogleCloudVideointelligenceV1p3beta1SpeechRecognitionAlternativeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'May contain one or more recognition hypotheses (up to the maximum specified in `max_alternatives`). These alternatives are ordered in terms of accuracy, with the top (first) alternative being the most probable, as ranked by the recognizer.',
-      }),
-    languageCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag of the language in this result. This language code was detected to have the most likelihood of being spoken in the audio.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description: 'A speech recognition result corresponding to a portion of the audio.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1SpeechTranscription')
-
-const GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPolySchema = z
-  .object({
-    vertices: z
-      .array(GoogleCloudVideointelligenceV1p3beta1NormalizedVertexSchema)
-      .exactOptional()
-      .openapi({ description: 'Normalized vertices of the bounding polygon.' }),
-  })
-  .openapi({
-    description:
-      "Normalized bounding polygon for text (that might not be aligned with axis). Contains list of the corner points in clockwise order starting from top-left corner. For example, for a rectangular bounding box: When the text is horizontal it might look like: 0----1 | | 3----2 When it's clockwise rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3). Note that values can be less than 0, or greater than 1 due to trignometric calculations for location of the box.",
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPoly')
-
-const GoogleCloudVideointelligenceV1p3beta1TextFrameSchema = z
-  .object({
-    rotatedBoundingBox:
-      GoogleCloudVideointelligenceV1p3beta1NormalizedBoundingPolySchema.exactOptional().openapi({
-        description: 'Bounding polygon of the detected text for this frame.',
-      }),
-    timeOffset: z.string().exactOptional().openapi({ description: 'Timestamp of this frame.' }),
-  })
-  .openapi({
-    description:
-      'Video frame level annotation results for text annotation (OCR). Contains information regarding timestamp and bounding box locations for the frames containing detected OCR text snippets.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1TextFrame')
-
-const GoogleCloudVideointelligenceV1p3beta1TextSegmentSchema = z
-  .object({
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Confidence for the track of detected text. It is calculated as the highest over all frames where OCR detected text appears.',
-      }),
-    frames: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TextFrameSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Information related to the frames where OCR detected text appears.',
-      }),
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment where a text snippet was detected.',
-    }),
-  })
-  .openapi({
-    description: 'Video segment level annotation results for text detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1TextSegment')
-
-const GoogleCloudVideointelligenceV1p3beta1TextAnnotationSchema = z
-  .object({
-    segments: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TextSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'All video segments where OCR detected text appears.' }),
-    text: z.string().exactOptional().openapi({ description: 'The detected text.' }),
-    version: z.string().exactOptional().openapi({ description: 'Feature version.' }),
-  })
-  .openapi({
-    description:
-      'Annotations related to one detected OCR text snippet. This will contain the corresponding text, confidence value, and frame level information for each detection.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1TextAnnotation')
-
-const GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsSchema = z
-  .object({
-    celebrityRecognitionAnnotations:
-      GoogleCloudVideointelligenceV1p3beta1CelebrityRecognitionAnnotationSchema.exactOptional().openapi(
-        { description: 'Celebrity recognition annotations.' },
-      ),
-    error: GoogleRpcStatusSchema.exactOptional().openapi({
-      description:
-        'If set, indicates an error. Note that for a single `AnnotateVideoRequest` some videos may succeed and some may fail.',
-    }),
-    explicitAnnotation:
-      GoogleCloudVideointelligenceV1p3beta1ExplicitContentAnnotationSchema.exactOptional().openapi({
-        description: 'Explicit content annotation.',
-      }),
-    faceAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Deprecated. Please use `face_detection_annotations` instead.' }),
-    faceDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1FaceDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Face detection annotations.' }),
-    frameLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Label annotations on frame level. There is exactly one element for each unique label.',
-      }),
-    inputUri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Video file location in [Cloud Storage](https://cloud.google.com/storage/).',
-      }),
-    logoRecognitionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LogoRecognitionAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotations for list of logos detected, tracked and recognized in video.',
-      }),
-    objectAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1ObjectTrackingAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Annotations for list of objects detected and tracked in video.' }),
-    personDetectionAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1PersonDetectionAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'Person detection annotations.' }),
-    segment: GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema.exactOptional().openapi({
-      description: 'Video segment on which the annotation is run.',
-    }),
-    segmentLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on video level or user-specified segment level. There is exactly one element for each unique label.',
-      }),
-    segmentPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on video level or user-specified segment level. There is exactly one element for each unique label. Compared to the existing topical `segment_label_annotations`, this field presents more fine-grained, segment-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    shotAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1VideoSegmentSchema)
-      .exactOptional()
-      .openapi({ description: 'Shot annotations. Each shot is represented as a video segment.' }),
-    shotLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Topical label annotations on shot level. There is exactly one element for each unique label.',
-      }),
-    shotPresenceLabelAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1LabelAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Presence label annotations on shot level. There is exactly one element for each unique label. Compared to the existing topical `shot_label_annotations`, this field presents more fine-grained, shot-level labels detected in video content and is made available only when the client sets `LabelDetectionConfig.model` to "builtin/latest" in the request.',
-      }),
-    speechTranscriptions: z
-      .array(GoogleCloudVideointelligenceV1p3beta1SpeechTranscriptionSchema)
-      .exactOptional()
-      .openapi({ description: 'Speech transcription.' }),
-    textAnnotations: z
-      .array(GoogleCloudVideointelligenceV1p3beta1TextAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'OCR text detection and tracking. Annotations for list of detected text snippets. Each will have list of frame information associated with it.',
-      }),
-  })
-  .openapi({ description: 'Annotation results for a single video.', required: [] })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResults')
-
-const GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponseSchema = z
-  .object({
-    annotationResults: z
-      .array(GoogleCloudVideointelligenceV1p3beta1VideoAnnotationResultsSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Annotation results for all videos specified in `AnnotateVideoRequest`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponse')
+        'Video annotation response. Included in the `response` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+      required: [],
+    })
+    .openapi('GoogleCloudVideointelligenceV1p3beta1AnnotateVideoResponse')
 
 const GoogleCloudVideointelligenceV1p3beta1StreamingVideoAnnotationResultsSchema = z
   .object({

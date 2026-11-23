@@ -184,6 +184,38 @@ const AccountSchema = z
     type: AccountTypeSchema.exactOptional(),
   })
   .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({
+        required: ['id', 'name', 'type', 'balance', 'identifiers', 'currency', 'institution'],
+      }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'identifiers')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'institution')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -263,6 +295,20 @@ const AccountBalanceSchema = z
     date: DateTimeSchema.exactOptional().openapi({ description: 'Date of the balance.' }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['accountId', 'balance', 'date'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'accountId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -432,6 +478,20 @@ const TransactionSchema = z
       }),
   })
   .openapi({ required: [] })
+  .and(z.looseObject({}).openapi({ required: ['id', 'accountId', 'currency'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'accountId')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'currency')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:
@@ -486,6 +546,17 @@ const TransactionCategorySchema = z
       .openapi({ 'x-internal': true }),
   })
   .openapi({ description: 'Status of the bank transaction category.', required: [] })
+  .and(z.looseObject({}).openapi({ required: ['id', 'name'] }))
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'id')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'name')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
   .and(ModifiedDatesSchema)
   .openapi({
     description:

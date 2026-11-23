@@ -6,15 +6,11 @@ const TruncatedSchema = z.boolean().openapi('Truncated')
 
 const WorkflowExecutionCountSchema = z
   .object({
-    count: CountSchema.and(z.any().openapi({ description: 'The number of workflow executions.' })),
-    truncated: TruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, indicates that the actual count was more than the maximum supported by this API and the count returned is the truncated value.',
-        }),
-    ).exactOptional(),
+    count: CountSchema.openapi({ description: 'The number of workflow executions.' }),
+    truncated: TruncatedSchema.exactOptional().openapi({
+      description:
+        'If set to true, indicates that the actual count was more than the maximum supported by this API and the count returned is the truncated value.',
+    }),
   })
   .openapi({
     required: ['count'],
@@ -29,16 +25,12 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const ExecutionTimeFilterSchema = z
   .object({
-    oldestDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the oldest start or close date and time to return.' }),
-    ),
-    latestDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the latest start or close date and time to return.' }),
-    ).exactOptional(),
+    oldestDate: TimestampSchema.openapi({
+      description: 'Specifies the oldest start or close date and time to return.',
+    }),
+    latestDate: TimestampSchema.exactOptional().openapi({
+      description: 'Specifies the latest start or close date and time to return.',
+    }),
   })
   .openapi({
     required: ['oldestDate'],
@@ -51,11 +43,9 @@ const WorkflowIdSchema = z.string().min(1).max(256).openapi('WorkflowId')
 
 const WorkflowExecutionFilterSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The workflowId to pass of match the criteria of this filter.' }),
-    ),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The workflowId to pass of match the criteria of this filter.',
+    }),
   })
   .openapi({
     required: ['workflowId'],
@@ -70,10 +60,10 @@ const VersionOptionalSchema = z.string().max(64).openapi('VersionOptional')
 
 const WorkflowTypeFilterSchema = z
   .object({
-    name: NameSchema.and(z.any().openapi({ description: ' Name of the workflow type.' })),
-    version: VersionOptionalSchema.and(
-      z.any().openapi({ description: 'Version of the workflow type.' }),
-    ).exactOptional(),
+    name: NameSchema.openapi({ description: ' Name of the workflow type.' }),
+    version: VersionOptionalSchema.exactOptional().openapi({
+      description: 'Version of the workflow type.',
+    }),
   })
   .openapi({
     required: ['name'],
@@ -86,14 +76,10 @@ const TagSchema = z.string().min(0).max(256).openapi('Tag')
 
 const TagFilterSchema = z
   .object({
-    tag: TagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> Specifies the tag that must be associated with the execution for it to meet the filter criteria.</p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ),
+    tag: TagSchema.openapi({
+      description:
+        '<p> Specifies the tag that must be associated with the execution for it to meet the filter criteria.</p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
   })
   .openapi({
     required: ['tag'],
@@ -107,14 +93,10 @@ const CloseStatusSchema = z
 
 const CloseStatusFilterSchema = z
   .object({
-    status: CloseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The close status that must match the close status of an execution for it to meet the criteria of this filter.',
-        }),
-    ),
+    status: CloseStatusSchema.openapi({
+      description:
+        ' The close status that must match the close status of an execution for it to meet the criteria of this filter.',
+    }),
   })
   .openapi({
     required: ['status'],
@@ -125,61 +107,33 @@ const CloseStatusFilterSchema = z
 
 const CountClosedWorkflowExecutionsInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain containing the workflow executions to count.',
-        }),
-    ),
-    startTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions that meet the start time criteria of the filter are counted.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
-        }),
-    ).exactOptional(),
-    closeTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions that meet the close time criteria of the filter are counted.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
-        }),
-    ).exactOptional(),
-    executionFilter: WorkflowExecutionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions matching the <code>WorkflowId</code> in the filter are counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    typeFilter: WorkflowTypeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, indicates the type of the workflow executions to be counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagFilter: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions that have a tag that matches the filter are counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    closeStatusFilter: CloseStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions that match this close status are counted. This filter has an affect only if <code>executionStatus</code> is specified as <code>CLOSED</code>.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow executions to count.',
+    }),
+    startTimeFilter: ExecutionTimeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions that meet the start time criteria of the filter are counted.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
+    }),
+    closeTimeFilter: ExecutionTimeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions that meet the close time criteria of the filter are counted.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
+    }),
+    executionFilter: WorkflowExecutionFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions matching the <code>WorkflowId</code> in the filter are counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    typeFilter: WorkflowTypeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, indicates the type of the workflow executions to be counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    tagFilter: TagFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions that have a tag that matches the filter are counted.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    closeStatusFilter: CloseStatusFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions that match this close status are counted. This filter has an affect only if <code>executionStatus</code> is specified as <code>CLOSED</code>.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
   })
   .openapi({ required: ['domain'], title: 'CountClosedWorkflowExecutionsInput' })
   .openapi('CountClosedWorkflowExecutionsInput')
@@ -190,87 +144,61 @@ const OperationNotPermittedFaultSchema = z.any().openapi('OperationNotPermittedF
 
 const CountOpenWorkflowExecutionsInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain containing the workflow executions to count.',
-        }),
-    ),
-    startTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the start time criteria that workflow executions must meet in order to be counted.',
-        }),
-    ),
-    typeFilter: WorkflowTypeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the type of the workflow executions to be counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagFilter: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions that have a tag that matches the filter are counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    executionFilter: WorkflowExecutionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions matching the <code>WorkflowId</code> in the filter are counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow executions to count.',
+    }),
+    startTimeFilter: ExecutionTimeFilterSchema.openapi({
+      description:
+        'Specifies the start time criteria that workflow executions must meet in order to be counted.',
+    }),
+    typeFilter: WorkflowTypeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the type of the workflow executions to be counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    tagFilter: TagFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions that have a tag that matches the filter are counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    executionFilter: WorkflowExecutionFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions matching the <code>WorkflowId</code> in the filter are counted.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
   })
   .openapi({ required: ['domain', 'startTimeFilter'], title: 'CountOpenWorkflowExecutionsInput' })
   .openapi('CountOpenWorkflowExecutionsInput')
 
 const PendingTaskCountSchema = z
   .object({
-    count: CountSchema.and(
-      z.any().openapi({ description: 'The number of tasks in the task list.' }),
-    ),
-    truncated: TruncatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to true, indicates that the actual count was more than the maximum supported by this API and the count returned is the truncated value.',
-        }),
-    ).exactOptional(),
+    count: CountSchema.openapi({ description: 'The number of tasks in the task list.' }),
+    truncated: TruncatedSchema.exactOptional().openapi({
+      description:
+        'If set to true, indicates that the actual count was more than the maximum supported by this API and the count returned is the truncated value.',
+    }),
   })
   .openapi({ required: ['count'], description: 'Contains the count of tasks in a task list.' })
   .openapi('PendingTaskCount')
 
 const TaskListSchema = z
-  .object({ name: NameSchema.and(z.any().openapi({ description: 'The name of the task list.' })) })
+  .object({ name: NameSchema.openapi({ description: 'The name of the task list.' }) })
   .openapi({ required: ['name'], description: 'Represents a task list.' })
   .openapi('TaskList')
 
 const CountPendingActivityTasksInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain that contains the task list.' }),
-    ),
-    taskList: TaskListSchema.and(z.any().openapi({ description: 'The name of the task list.' })),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain that contains the task list.',
+    }),
+    taskList: TaskListSchema.openapi({ description: 'The name of the task list.' }),
   })
   .openapi({ required: ['domain', 'taskList'], title: 'CountPendingActivityTasksInput' })
   .openapi('CountPendingActivityTasksInput')
 
 const CountPendingDecisionTasksInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain that contains the task list.' }),
-    ),
-    taskList: TaskListSchema.and(z.any().openapi({ description: 'The name of the task list.' })),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain that contains the task list.',
+    }),
+    taskList: TaskListSchema.openapi({ description: 'The name of the task list.' }),
   })
   .openapi({ required: ['domain', 'taskList'], title: 'CountPendingDecisionTasksInput' })
   .openapi('CountPendingDecisionTasksInput')
@@ -279,38 +207,24 @@ const VersionSchema = z.string().min(1).max(64).openapi('Version')
 
 const ActivityTypeSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of this activity.</p> <note> <p>The combination of activity type name and version must be unique within a domain.</p> </note>',
-        }),
-    ),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of this activity.</p> <note> <p>The combination of activity type name and version must be unique with in a domain.</p> </note>',
-        }),
-    ),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of this activity.</p> <note> <p>The combination of activity type name and version must be unique within a domain.</p> </note>',
+    }),
+    version: VersionSchema.openapi({
+      description:
+        '<p>The version of this activity.</p> <note> <p>The combination of activity type name and version must be unique with in a domain.</p> </note>',
+    }),
   })
   .openapi({ required: ['name', 'version'], description: 'Represents an activity type.' })
   .openapi('ActivityType')
 
 const DeprecateActivityTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the activity type is registered.',
-        }),
-    ),
-    activityType: ActivityTypeSchema.and(
-      z.any().openapi({ description: 'The activity type to deprecate.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the activity type is registered.',
+    }),
+    activityType: ActivityTypeSchema.openapi({ description: 'The activity type to deprecate.' }),
   })
   .openapi({ required: ['domain', 'activityType'], title: 'DeprecateActivityTypeInput' })
   .openapi('DeprecateActivityTypeInput')
@@ -319,9 +233,7 @@ const TypeDeprecatedFaultSchema = z.any().openapi('TypeDeprecatedFault')
 
 const DeprecateDomainInputSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain to deprecate.' }),
-    ),
+    name: DomainNameSchema.openapi({ description: 'The name of the domain to deprecate.' }),
   })
   .openapi({ required: ['name'], title: 'DeprecateDomainInput' })
   .openapi('DeprecateDomainInput')
@@ -330,38 +242,24 @@ const DomainDeprecatedFaultSchema = z.any().openapi('DomainDeprecatedFault')
 
 const WorkflowTypeSchema = z
   .object({
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The name of the workflow type.</p> <note> <p>The combination of workflow type name and version must be unique with in a domain.</p> </note>',
-        }),
-    ),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The version of the workflow type.</p> <note> <p>The combination of workflow type name and version must be unique with in a domain.</p> </note>',
-        }),
-    ),
+    name: NameSchema.openapi({
+      description:
+        '<p> The name of the workflow type.</p> <note> <p>The combination of workflow type name and version must be unique with in a domain.</p> </note>',
+    }),
+    version: VersionSchema.openapi({
+      description:
+        '<p> The version of the workflow type.</p> <note> <p>The combination of workflow type name and version must be unique with in a domain.</p> </note>',
+    }),
   })
   .openapi({ required: ['name', 'version'], description: 'Represents a workflow type.' })
   .openapi('WorkflowType')
 
 const DeprecateWorkflowTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the workflow type is registered.',
-        }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The workflow type to deprecate.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the workflow type is registered.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({ description: 'The workflow type to deprecate.' }),
   })
   .openapi({ required: ['domain', 'workflowType'], title: 'DeprecateWorkflowTypeInput' })
   .openapi('DeprecateWorkflowTypeInput')
@@ -372,39 +270,22 @@ const DescriptionSchema = z.string().max(1024).openapi('Description')
 
 const ActivityTypeInfoSchema = z
   .object({
-    activityType: ActivityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <a>ActivityType</a> type structure representing the activity type.',
-        }),
-    ),
-    status: RegistrationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the activity type.' }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the activity type provided in <a>RegisterActivityType</a>.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time this activity type was created through <a>RegisterActivityType</a>.',
-        }),
-    ),
-    deprecationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If DEPRECATED, the date and time <a>DeprecateActivityType</a> was called.',
-        }),
-    ).exactOptional(),
+    activityType: ActivityTypeSchema.openapi({
+      description: 'The <a>ActivityType</a> type structure representing the activity type.',
+    }),
+    status: RegistrationStatusSchema.openapi({
+      description: 'The current status of the activity type.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the activity type provided in <a>RegisterActivityType</a>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description:
+        'The date and time this activity type was created through <a>RegisterActivityType</a>.',
+    }),
+    deprecationDate: TimestampSchema.exactOptional().openapi({
+      description: 'If DEPRECATED, the date and time <a>DeprecateActivityType</a> was called.',
+    }),
   })
   .openapi({
     required: ['activityType', 'status', 'creationDate'],
@@ -418,54 +299,30 @@ const TaskPrioritySchema = z.string().openapi('TaskPriority')
 
 const ActivityTypeConfigurationSchema = z
   .object({
-    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default maximum duration for tasks of an activity type specified when registering the activity type. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskHeartbeatTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default maximum time, in seconds, before which a worker processing a task must report progress by calling <a>RecordActivityTaskHeartbeat</a>.</p> <p>You can specify this value only when <i>registering</i> an activity type. The registered default value can be overridden when you schedule a task through the <code>ScheduleActivityTask</code> <a>Decision</a>. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an <code>UnknownResource</code> fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The default task list specified for this activity type at registration. This default is used if a task list isn't provided when a task is scheduled through the <code>ScheduleActivityTask</code> <a>Decision</a>. You can override the default registered task list when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.",
-        }),
-    ).exactOptional(),
-    defaultTaskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default task priority for tasks of this activity type, specified at registration. If not set, then <code>0</code> is used as the default priority. This default can be overridden when scheduling an activity task.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskScheduleToStartTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default maximum duration, specified when registering the activity type, that a task of an activity type can wait before being assigned to a worker. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskScheduleToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default maximum duration, specified when registering the activity type, for tasks of this activity type. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
+    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The default maximum duration for tasks of an activity type specified when registering the activity type. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskHeartbeatTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The default maximum time, in seconds, before which a worker processing a task must report progress by calling <a>RecordActivityTaskHeartbeat</a>.</p> <p>You can specify this value only when <i>registering</i> an activity type. The registered default value can be overridden when you schedule a task through the <code>ScheduleActivityTask</code> <a>Decision</a>. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an <code>UnknownResource</code> fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskList: TaskListSchema.exactOptional().openapi({
+      description:
+        " The default task list specified for this activity type at registration. This default is used if a task list isn't provided when a task is scheduled through the <code>ScheduleActivityTask</code> <a>Decision</a>. You can override the default registered task list when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.",
+    }),
+    defaultTaskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> The default task priority for tasks of this activity type, specified at registration. If not set, then <code>0</code> is used as the default priority. This default can be overridden when scheduling an activity task.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    defaultTaskScheduleToStartTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The default maximum duration, specified when registering the activity type, that a task of an activity type can wait before being assigned to a worker. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskScheduleToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The default maximum duration, specified when registering the activity type, for tasks of this activity type. You can override this default when scheduling a task through the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
   })
   .openapi({
     description: 'Configuration settings registered with the activity type.',
@@ -475,19 +332,13 @@ const ActivityTypeConfigurationSchema = z
 
 const ActivityTypeDetailSchema = z
   .object({
-    typeInfo: ActivityTypeInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>General information about the activity type.</p> <p>The status of activity type (returned in the ActivityTypeInfo structure) can be one of the following.</p> <ul> <li> <p> <code>REGISTERED</code> – The type is registered and available. Workers supporting this type should be running. </p> </li> <li> <p> <code>DEPRECATED</code> – The type was deprecated using <a>DeprecateActivityType</a>, but is still in use. You should keep workers supporting this type running. You cannot create new tasks of this type. </p> </li> </ul>',
-        }),
-    ),
-    configuration: ActivityTypeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The configuration settings registered with the activity type.' }),
-    ),
+    typeInfo: ActivityTypeInfoSchema.openapi({
+      description:
+        '<p>General information about the activity type.</p> <p>The status of activity type (returned in the ActivityTypeInfo structure) can be one of the following.</p> <ul> <li> <p> <code>REGISTERED</code> – The type is registered and available. Workers supporting this type should be running. </p> </li> <li> <p> <code>DEPRECATED</code> – The type was deprecated using <a>DeprecateActivityType</a>, but is still in use. You should keep workers supporting this type running. You cannot create new tasks of this type. </p> </li> </ul>',
+    }),
+    configuration: ActivityTypeConfigurationSchema.openapi({
+      description: 'The configuration settings registered with the activity type.',
+    }),
   })
   .openapi({
     required: ['typeInfo', 'configuration'],
@@ -497,21 +348,13 @@ const ActivityTypeDetailSchema = z
 
 const DescribeActivityTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the activity type is registered.',
-        }),
-    ),
-    activityType: ActivityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The activity type to get information about. Activity types are identified by the <code>name</code> and <code>version</code> that were supplied when the activity was registered.',
-        }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the activity type is registered.',
+    }),
+    activityType: ActivityTypeSchema.openapi({
+      description:
+        'The activity type to get information about. Activity types are identified by the <code>name</code> and <code>version</code> that were supplied when the activity was registered.',
+    }),
   })
   .openapi({ required: ['domain', 'activityType'], title: 'DescribeActivityTypeInput' })
   .openapi('DescribeActivityTypeInput')
@@ -520,29 +363,17 @@ const ArnSchema = z.string().min(1).max(1600).openapi('Arn')
 
 const DomainInfoSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain. This name is unique within the account.',
-        }),
-    ),
-    status: RegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the domain:</p> <ul> <li> <p> <code>REGISTERED</code> – The domain is properly registered and available. You can use this domain for registering types and creating new workflow executions. </p> </li> <li> <p> <code>DEPRECATED</code> – The domain was deprecated using <a>DeprecateDomain</a>, but is still in use. You should not create new workflow executions in this domain. </p> </li> </ul>',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the domain provided through <a>RegisterDomain</a>.',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the domain.' })).exactOptional(),
+    name: DomainNameSchema.openapi({
+      description: 'The name of the domain. This name is unique within the account.',
+    }),
+    status: RegistrationStatusSchema.openapi({
+      description:
+        '<p>The status of the domain:</p> <ul> <li> <p> <code>REGISTERED</code> – The domain is properly registered and available. You can use this domain for registering types and creating new workflow executions. </p> </li> <li> <p> <code>DEPRECATED</code> – The domain was deprecated using <a>DeprecateDomain</a>, but is still in use. You should not create new workflow executions in this domain. </p> </li> </ul>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the domain provided through <a>RegisterDomain</a>.',
+    }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of the domain.' }),
   })
   .openapi({
     required: ['name', 'status'],
@@ -554,11 +385,9 @@ const DurationInDaysSchema = z.string().min(1).max(8).openapi('DurationInDays')
 
 const DomainConfigurationSchema = z
   .object({
-    workflowExecutionRetentionPeriodInDays: DurationInDaysSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The retention period for workflow executions in this domain.' }),
-    ),
+    workflowExecutionRetentionPeriodInDays: DurationInDaysSchema.openapi({
+      description: 'The retention period for workflow executions in this domain.',
+    }),
   })
   .openapi({
     required: ['workflowExecutionRetentionPeriodInDays'],
@@ -568,22 +397,14 @@ const DomainConfigurationSchema = z
 
 const DomainDetailSchema = z
   .object({
-    domainInfo: DomainInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The basic information about a domain, such as its name, status, and description.',
-        }),
-    ),
-    configuration: DomainConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The domain configuration. Currently, this includes only the domain's retention period.",
-        }),
-    ),
+    domainInfo: DomainInfoSchema.openapi({
+      description:
+        'The basic information about a domain, such as its name, status, and description.',
+    }),
+    configuration: DomainConfigurationSchema.openapi({
+      description:
+        "The domain configuration. Currently, this includes only the domain's retention period.",
+    }),
   })
   .openapi({
     required: ['domainInfo', 'configuration'],
@@ -593,9 +414,7 @@ const DomainDetailSchema = z
 
 const DescribeDomainInputSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain to describe.' }),
-    ),
+    name: DomainNameSchema.openapi({ description: 'The name of the domain to describe.' }),
   })
   .openapi({ required: ['name'], title: 'DescribeDomainInput' })
   .openapi('DescribeDomainInput')
@@ -604,20 +423,12 @@ const WorkflowRunIdSchema = z.string().min(1).max(64).openapi('WorkflowRunId')
 
 const WorkflowExecutionSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user defined identifier associated with the workflow execution.',
-        }),
-    ),
-    runId: WorkflowRunIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A system-generated unique identifier for the workflow execution.',
-        }),
-    ),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The user defined identifier associated with the workflow execution.',
+    }),
+    runId: WorkflowRunIdSchema.openapi({
+      description: 'A system-generated unique identifier for the workflow execution.',
+    }),
   })
   .openapi({ required: ['workflowId', 'runId'], description: 'Represents a workflow execution.' })
   .openapi('WorkflowExecution')
@@ -630,57 +441,37 @@ const CanceledSchema = z.boolean().openapi('Canceled')
 
 const WorkflowExecutionInfoSchema = z
   .object({
-    execution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The workflow execution this information is about.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the workflow execution.' }),
-    ),
-    startTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time when the execution was started.' }),
-    ),
-    closeTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the workflow execution was closed. Set only if the execution status is CLOSED.',
-        }),
-    ).exactOptional(),
-    executionStatus: ExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the execution.' }),
-    ),
-    closeStatus: CloseStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the execution status is closed then this specifies how the execution was closed:</p> <ul> <li> <p> <code>COMPLETED</code> – the execution was successfully completed.</p> </li> <li> <p> <code>CANCELED</code> – the execution was canceled.Cancellation allows the implementation to gracefully clean up before the execution is closed.</p> </li> <li> <p> <code>TERMINATED</code> – the execution was force terminated.</p> </li> <li> <p> <code>FAILED</code> – the execution failed to complete.</p> </li> <li> <p> <code>TIMED_OUT</code> – the execution did not complete in the alloted time and was automatically timed out.</p> </li> <li> <p> <code>CONTINUED_AS_NEW</code> – the execution is logically continued. This means the current execution was completed and a new execution was started to carry on the workflow.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    parent: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this workflow execution is a child of another execution then contains the workflow execution that started this execution.',
-        }),
-    ).exactOptional(),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags associated with the workflow execution. Tags can be used to identify and list workflow executions of interest through the visibility APIs. A workflow execution can have a maximum of 5 tags.',
-        }),
-    ).exactOptional(),
-    cancelRequested: CanceledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Set to true if a cancellation is requested for this workflow execution.',
-        }),
-    ).exactOptional(),
+    execution: WorkflowExecutionSchema.openapi({
+      description: 'The workflow execution this information is about.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the workflow execution.',
+    }),
+    startTimestamp: TimestampSchema.openapi({
+      description: 'The time when the execution was started.',
+    }),
+    closeTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the workflow execution was closed. Set only if the execution status is CLOSED.',
+    }),
+    executionStatus: ExecutionStatusSchema.openapi({
+      description: 'The current status of the execution.',
+    }),
+    closeStatus: CloseStatusSchema.exactOptional().openapi({
+      description:
+        '<p>If the execution status is closed then this specifies how the execution was closed:</p> <ul> <li> <p> <code>COMPLETED</code> – the execution was successfully completed.</p> </li> <li> <p> <code>CANCELED</code> – the execution was canceled.Cancellation allows the implementation to gracefully clean up before the execution is closed.</p> </li> <li> <p> <code>TERMINATED</code> – the execution was force terminated.</p> </li> <li> <p> <code>FAILED</code> – the execution failed to complete.</p> </li> <li> <p> <code>TIMED_OUT</code> – the execution did not complete in the alloted time and was automatically timed out.</p> </li> <li> <p> <code>CONTINUED_AS_NEW</code> – the execution is logically continued. This means the current execution was completed and a new execution was started to carry on the workflow.</p> </li> </ul>',
+    }),
+    parent: WorkflowExecutionSchema.exactOptional().openapi({
+      description:
+        'If this workflow execution is a child of another execution then contains the workflow execution that started this execution.',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description:
+        'The list of tags associated with the workflow execution. Tags can be used to identify and list workflow executions of interest through the visibility APIs. A workflow execution can have a maximum of 5 tags.',
+    }),
+    cancelRequested: CanceledSchema.exactOptional().openapi({
+      description: 'Set to true if a cancellation is requested for this workflow execution.',
+    }),
   })
   .openapi({
     required: ['execution', 'workflowType', 'startTimestamp', 'executionStatus'],
@@ -694,49 +485,29 @@ const ChildPolicySchema = z.enum(['TERMINATE', 'REQUEST_CANCEL', 'ABANDON']).ope
 
 const WorkflowExecutionConfigurationSchema = z
   .object({
-    taskStartToCloseTimeout: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration allowed for decision tasks for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ),
-    executionStartToCloseTimeout: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total duration for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The task list used for the decision tasks generated for this workflow execution.',
-        }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The priority assigned to decision tasks for this workflow execution. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy to use for the child workflow executions if this workflow execution is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
-    lambdaRole: ArnSchema.and(
-      z.any().openapi({ description: 'The IAM role attached to the child workflow execution.' }),
-    ).exactOptional(),
+    taskStartToCloseTimeout: DurationInSecondsSchema.openapi({
+      description:
+        '<p>The maximum duration allowed for decision tasks for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsSchema.openapi({
+      description:
+        '<p>The total duration for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        'The task list used for the decision tasks generated for this workflow execution.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The priority assigned to decision tasks for this workflow execution. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy to use for the child workflow executions if this workflow execution is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role attached to the child workflow execution.',
+    }),
   })
   .openapi({
     required: [
@@ -754,39 +525,23 @@ const OpenDecisionTasksCountSchema = z.int().min(0).max(1).openapi('OpenDecision
 
 const WorkflowExecutionOpenCountsSchema = z
   .object({
-    openActivityTasks: CountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The count of activity tasks whose status is <code>OPEN</code>.' }),
-    ),
-    openDecisionTasks: OpenDecisionTasksCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of decision tasks whose status is OPEN. A workflow execution can have at most one open decision task.',
-        }),
-    ),
-    openTimers: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of timers started by this workflow execution that have not fired yet.',
-        }),
-    ),
-    openChildWorkflowExecutions: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The count of child workflow executions whose status is <code>OPEN</code>.',
-        }),
-    ),
-    openLambdaFunctions: CountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The count of Lambda tasks whose status is <code>OPEN</code>.' }),
-    ).exactOptional(),
+    openActivityTasks: CountSchema.openapi({
+      description: 'The count of activity tasks whose status is <code>OPEN</code>.',
+    }),
+    openDecisionTasks: OpenDecisionTasksCountSchema.openapi({
+      description:
+        'The count of decision tasks whose status is OPEN. A workflow execution can have at most one open decision task.',
+    }),
+    openTimers: CountSchema.openapi({
+      description:
+        'The count of timers started by this workflow execution that have not fired yet.',
+    }),
+    openChildWorkflowExecutions: CountSchema.openapi({
+      description: 'The count of child workflow executions whose status is <code>OPEN</code>.',
+    }),
+    openLambdaFunctions: CountSchema.exactOptional().openapi({
+      description: 'The count of Lambda tasks whose status is <code>OPEN</code>.',
+    }),
   })
   .openapi({
     required: [
@@ -804,41 +559,25 @@ const DataSchema = z.string().max(32768).openapi('Data')
 
 const WorkflowExecutionDetailSchema = z
   .object({
-    executionInfo: WorkflowExecutionInfoSchema.and(
-      z.any().openapi({ description: 'Information about the workflow execution.' }),
-    ),
-    executionConfiguration: WorkflowExecutionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration settings for this workflow execution including timeout values, tasklist etc.',
-        }),
-    ),
-    openCounts: WorkflowExecutionOpenCountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of tasks for this workflow execution. This includes open and closed tasks of all types.',
-        }),
-    ),
-    latestActivityTaskTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time when the last activity task was scheduled for this workflow execution. You can use this information to determine if the workflow has not made progress for an unusually long period of time and might require a corrective action.',
-        }),
-    ).exactOptional(),
-    latestExecutionContext: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The latest executionContext provided by the decider for this workflow execution. A decider can provide an executionContext (a free-form string) when closing a decision task using <a>RespondDecisionTaskCompleted</a>.',
-        }),
-    ).exactOptional(),
+    executionInfo: WorkflowExecutionInfoSchema.openapi({
+      description: 'Information about the workflow execution.',
+    }),
+    executionConfiguration: WorkflowExecutionConfigurationSchema.openapi({
+      description:
+        'The configuration settings for this workflow execution including timeout values, tasklist etc.',
+    }),
+    openCounts: WorkflowExecutionOpenCountsSchema.openapi({
+      description:
+        'The number of tasks for this workflow execution. This includes open and closed tasks of all types.',
+    }),
+    latestActivityTaskTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time when the last activity task was scheduled for this workflow execution. You can use this information to determine if the workflow has not made progress for an unusually long period of time and might require a corrective action.',
+    }),
+    latestExecutionContext: DataSchema.exactOptional().openapi({
+      description:
+        'The latest executionContext provided by the decider for this workflow execution. A decider can provide an executionContext (a free-form string) when closing a decision task using <a>RespondDecisionTaskCompleted</a>.',
+    }),
   })
   .openapi({
     required: ['executionInfo', 'executionConfiguration', 'openCounts'],
@@ -848,43 +587,34 @@ const WorkflowExecutionDetailSchema = z
 
 const DescribeWorkflowExecutionInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain containing the workflow execution.' }),
-    ),
-    execution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The workflow execution to describe.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow execution.',
+    }),
+    execution: WorkflowExecutionSchema.openapi({
+      description: 'The workflow execution to describe.',
+    }),
   })
   .openapi({ required: ['domain', 'execution'], title: 'DescribeWorkflowExecutionInput' })
   .openapi('DescribeWorkflowExecutionInput')
 
 const WorkflowTypeInfoSchema = z
   .object({
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The workflow type this information is about.' }),
-    ),
-    status: RegistrationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the workflow type.' }),
-    ),
-    description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The description of the type registered through <a>RegisterWorkflowType</a>.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when this type was registered.' }),
-    ),
-    deprecationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the type is in deprecated state, then it is set to the date when the type was deprecated.',
-        }),
-    ).exactOptional(),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The workflow type this information is about.',
+    }),
+    status: RegistrationStatusSchema.openapi({
+      description: 'The current status of the workflow type.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the type registered through <a>RegisterWorkflowType</a>.',
+    }),
+    creationDate: TimestampSchema.openapi({
+      description: 'The date when this type was registered.',
+    }),
+    deprecationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'If the type is in deprecated state, then it is set to the date when the type was deprecated.',
+    }),
   })
   .openapi({
     required: ['workflowType', 'status', 'creationDate'],
@@ -894,76 +624,44 @@ const WorkflowTypeInfoSchema = z
 
 const WorkflowTypeConfigurationSchema = z
   .object({
-    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p> The default maximum duration, specified when registering the workflow type, that a decision task for executions of this workflow type might take before returning completion or failure. If the task doesn'tdo close in the specified time then the task is automatically timed out and rescheduled. If the decider eventually reports a completion or failure, it is ignored. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
-        }),
-    ).exactOptional(),
-    defaultExecutionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default maximum duration, specified when registering the workflow type, for executions of this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The default task list, specified when registering the workflow type, for decisions tasks scheduled for workflow executions of this type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.',
-        }),
-    ).exactOptional(),
-    defaultTaskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default task priority, specified when registering the workflow type, for all decision tasks of this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> decision.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    defaultChildPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    defaultLambdaRole: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default IAM role attached to this workflow type.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t specify an IAM role when starting this workflow type, the default Lambda role is attached to the execution. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
+    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        "<p> The default maximum duration, specified when registering the workflow type, that a decision task for executions of this workflow type might take before returning completion or failure. If the task doesn'tdo close in the specified time then the task is automatically timed out and rescheduled. If the decider eventually reports a completion or failure, it is ignored. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
+    }),
+    defaultExecutionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> The default maximum duration, specified when registering the workflow type, for executions of this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskList: TaskListSchema.exactOptional().openapi({
+      description:
+        ' The default task list, specified when registering the workflow type, for decisions tasks scheduled for workflow executions of this type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.',
+    }),
+    defaultTaskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> The default task priority, specified when registering the workflow type, for all decision tasks of this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> decision.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    defaultChildPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p> The default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    defaultLambdaRole: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The default IAM role attached to this workflow type.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t specify an IAM role when starting this workflow type, the default Lambda role is attached to the execution. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
   })
   .openapi({ description: 'The configuration settings of a workflow type.', required: [] })
   .openapi('WorkflowTypeConfiguration')
 
 const WorkflowTypeDetailSchema = z
   .object({
-    typeInfo: WorkflowTypeInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>General information about the workflow type.</p> <p>The status of the workflow type (returned in the WorkflowTypeInfo structure) can be one of the following.</p> <ul> <li> <p> <code>REGISTERED</code> – The type is registered and available. Workers supporting this type should be running.</p> </li> <li> <p> <code>DEPRECATED</code> – The type was deprecated using <a>DeprecateWorkflowType</a>, but is still in use. You should keep workers supporting this type running. You cannot create new workflow executions of this type.</p> </li> </ul>',
-        }),
-    ),
-    configuration: WorkflowTypeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration settings of the workflow type registered through <a>RegisterWorkflowType</a> ',
-        }),
-    ),
+    typeInfo: WorkflowTypeInfoSchema.openapi({
+      description:
+        '<p>General information about the workflow type.</p> <p>The status of the workflow type (returned in the WorkflowTypeInfo structure) can be one of the following.</p> <ul> <li> <p> <code>REGISTERED</code> – The type is registered and available. Workers supporting this type should be running.</p> </li> <li> <p> <code>DEPRECATED</code> – The type was deprecated using <a>DeprecateWorkflowType</a>, but is still in use. You should keep workers supporting this type running. You cannot create new workflow executions of this type.</p> </li> </ul>',
+    }),
+    configuration: WorkflowTypeConfigurationSchema.openapi({
+      description:
+        'Configuration settings of the workflow type registered through <a>RegisterWorkflowType</a> ',
+    }),
   })
   .openapi({
     required: ['typeInfo', 'configuration'],
@@ -973,16 +671,10 @@ const WorkflowTypeDetailSchema = z
 
 const DescribeWorkflowTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which this workflow type is registered.',
-        }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The workflow type to describe.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which this workflow type is registered.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({ description: 'The workflow type to describe.' }),
   })
   .openapi({ required: ['domain', 'workflowType'], title: 'DescribeWorkflowTypeInput' })
   .openapi('DescribeWorkflowTypeInput')
@@ -1052,84 +744,50 @@ const WorkflowRunIdOptionalSchema = z.string().max(64).openapi('WorkflowRunIdOpt
 
 const WorkflowExecutionStartedEventAttributesSchema = z
   .object({
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the workflow execution.' }),
-    ).exactOptional(),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration of decision tasks for this workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy to use for the child workflow executions if this workflow execution is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the task list for scheduling the decision tasks for this workflow execution.',
-        }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The priority of the decision tasks in the workflow execution.' }),
-    ).exactOptional(),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The workflow type of this execution.' }),
-    ),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags associated with this workflow execution. An execution can have up to 5 tags.',
-        }),
-    ).exactOptional(),
-    continuedExecutionRunId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this workflow execution was started due to a <code>ContinueAsNewWorkflowExecution</code> decision, then it contains the <code>runId</code> of the previous workflow execution that was closed and continued as this execution.',
-        }),
-    ).exactOptional(),
-    parentWorkflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The source workflow execution that started this workflow execution. The member isn't set if the workflow execution was not started by a workflow.",
-        }),
-    ).exactOptional(),
-    parentInitiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this workflow execution. The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ).exactOptional(),
-    lambdaRole: ArnSchema.and(
-      z.any().openapi({ description: 'The IAM role attached to the workflow execution.' }),
-    ).exactOptional(),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input provided to the workflow execution.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum duration for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum duration of decision tasks for this workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy to use for the child workflow executions if this workflow execution is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        'The name of the task list for scheduling the decision tasks for this workflow execution.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description: 'The priority of the decision tasks in the workflow execution.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The workflow type of this execution.',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description:
+        'The list of tags associated with this workflow execution. An execution can have up to 5 tags.',
+    }),
+    continuedExecutionRunId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description:
+        'If this workflow execution was started due to a <code>ContinueAsNewWorkflowExecution</code> decision, then it contains the <code>runId</code> of the previous workflow execution that was closed and continued as this execution.',
+    }),
+    parentWorkflowExecution: WorkflowExecutionSchema.exactOptional().openapi({
+      description:
+        "The source workflow execution that started this workflow execution. The member isn't set if the workflow execution was not started by a workflow.",
+    }),
+    parentInitiatedEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this workflow execution. The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role attached to the workflow execution.',
+    }),
   })
   .openapi({
     required: ['childPolicy', 'taskList', 'workflowType'],
@@ -1139,21 +797,13 @@ const WorkflowExecutionStartedEventAttributesSchema = z
 
 const WorkflowExecutionCompletedEventAttributesSchema = z
   .object({
-    result: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The result produced by the workflow execution upon successful completion.',
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CompleteWorkflowExecution</code> decision to complete this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    result: DataSchema.exactOptional().openapi({
+      description: 'The result produced by the workflow execution upon successful completion.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CompleteWorkflowExecution</code> decision to complete this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['decisionTaskCompletedEventId'],
@@ -1167,22 +817,14 @@ const CompleteWorkflowExecutionFailedCauseSchema = z
 
 const CompleteWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    cause: CompleteWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CompleteWorkflowExecution</code> decision to complete this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    cause: CompleteWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CompleteWorkflowExecution</code> decision to complete this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['cause', 'decisionTaskCompletedEventId'],
@@ -1194,20 +836,14 @@ const FailureReasonSchema = z.string().max(256).openapi('FailureReason')
 
 const WorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    reason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The descriptive reason provided for the failure.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the failure.' }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>FailWorkflowExecution</code> decision to fail this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The descriptive reason provided for the failure.',
+    }),
+    details: DataSchema.exactOptional().openapi({ description: 'The details of the failure.' }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>FailWorkflowExecution</code> decision to fail this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['decisionTaskCompletedEventId'],
@@ -1221,22 +857,14 @@ const FailWorkflowExecutionFailedCauseSchema = z
 
 const FailWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    cause: FailWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>FailWorkflowExecution</code> decision to fail this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    cause: FailWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>FailWorkflowExecution</code> decision to fail this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['cause', 'decisionTaskCompletedEventId'],
@@ -1250,17 +878,13 @@ const WorkflowExecutionTimeoutTypeSchema = z
 
 const WorkflowExecutionTimedOutEventAttributesSchema = z
   .object({
-    timeoutType: WorkflowExecutionTimeoutTypeSchema.and(
-      z.any().openapi({ description: 'The type of timeout that caused this event.' }),
-    ),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy used for the child workflow executions of this workflow execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
+    timeoutType: WorkflowExecutionTimeoutTypeSchema.openapi({
+      description: 'The type of timeout that caused this event.',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy used for the child workflow executions of this workflow execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['timeoutType', 'childPolicy'],
@@ -1270,17 +894,13 @@ const WorkflowExecutionTimedOutEventAttributesSchema = z
 
 const WorkflowExecutionCanceledEventAttributesSchema = z
   .object({
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the cancellation.' }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    details: DataSchema.exactOptional().openapi({
+      description: 'The details of the cancellation.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['decisionTaskCompletedEventId'],
@@ -1294,22 +914,14 @@ const CancelWorkflowExecutionFailedCauseSchema = z
 
 const CancelWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    cause: CancelWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    cause: CancelWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['cause', 'decisionTaskCompletedEventId'],
@@ -1319,75 +931,45 @@ const CancelWorkflowExecutionFailedEventAttributesSchema = z
 
 const WorkflowExecutionContinuedAsNewEventAttributesSchema = z
   .object({
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the new workflow execution.' }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>ContinueAsNewWorkflowExecution</code> decision that started this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    newExecutionRunId: WorkflowRunIdSchema.and(
-      z.any().openapi({ description: 'The <code>runId</code> of the new workflow execution.' }),
-    ),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total duration allowed for the new workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The task list to use for the decisions of the new (continued) workflow execution.',
-        }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority of the task to use for the decisions of the new (continued) workflow execution.',
-        }),
-    ).exactOptional(),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration of decision tasks for the new workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy to use for the child workflow executions of the new execution if it is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of tags associated with the new workflow execution.' }),
-    ).exactOptional(),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The workflow type of this execution.' }),
-    ),
-    lambdaRole: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IAM role to attach to the new (continued) workflow execution.',
-        }),
-    ).exactOptional(),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input provided to the new workflow execution.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>ContinueAsNewWorkflowExecution</code> decision that started this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    newExecutionRunId: WorkflowRunIdSchema.openapi({
+      description: 'The <code>runId</code> of the new workflow execution.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The total duration allowed for the new workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        'The task list to use for the decisions of the new (continued) workflow execution.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        'The priority of the task to use for the decisions of the new (continued) workflow execution.',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum duration of decision tasks for the new workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy to use for the child workflow executions of the new execution if it is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags associated with the new workflow execution.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The workflow type of this execution.',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role to attach to the new (continued) workflow execution.',
+    }),
   })
   .openapi({
     required: [
@@ -1417,22 +999,14 @@ const ContinueAsNewWorkflowExecutionFailedCauseSchema = z
 
 const ContinueAsNewWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    cause: ContinueAsNewWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>ContinueAsNewWorkflowExecution</code> decision that started this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    cause: ContinueAsNewWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>ContinueAsNewWorkflowExecution</code> decision that started this execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['cause', 'decisionTaskCompletedEventId'],
@@ -1449,28 +1023,20 @@ const WorkflowExecutionTerminatedCauseSchema = z
 
 const WorkflowExecutionTerminatedEventAttributesSchema = z
   .object({
-    reason: TerminateReasonSchema.and(
-      z.any().openapi({ description: 'The reason provided for the termination.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details provided for the termination.' }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy used for the child workflow executions of this workflow execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
-    cause: WorkflowExecutionTerminatedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set, indicates that the workflow execution was automatically terminated, and specifies the cause. This happens if the parent workflow execution times out or is terminated and the child policy is set to terminate child executions.',
-        }),
-    ).exactOptional(),
+    reason: TerminateReasonSchema.exactOptional().openapi({
+      description: 'The reason provided for the termination.',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: 'The details provided for the termination.',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy used for the child workflow executions of this workflow execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    cause: WorkflowExecutionTerminatedCauseSchema.exactOptional().openapi({
+      description:
+        'If set, indicates that the workflow execution was automatically terminated, and specifies the cause. This happens if the parent workflow execution times out or is terminated and the child policy is set to terminate child executions.',
+    }),
   })
   .openapi({
     required: ['childPolicy'],
@@ -1484,29 +1050,17 @@ const WorkflowExecutionCancelRequestedCauseSchema = z
 
 const WorkflowExecutionCancelRequestedEventAttributesSchema = z
   .object({
-    externalWorkflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The external workflow execution for which the cancellation was requested.',
-        }),
-    ).exactOptional(),
-    externalInitiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ).exactOptional(),
-    cause: WorkflowExecutionCancelRequestedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set, indicates that the request to cancel the workflow execution was automatically generated, and specifies the cause. This happens if the parent workflow execution times out or is terminated, and the child policy is set to cancel child executions.',
-        }),
-    ).exactOptional(),
+    externalWorkflowExecution: WorkflowExecutionSchema.exactOptional().openapi({
+      description: 'The external workflow execution for which the cancellation was requested.',
+    }),
+    externalInitiatedEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    cause: WorkflowExecutionCancelRequestedCauseSchema.exactOptional().openapi({
+      description:
+        'If set, indicates that the request to cancel the workflow execution was automatically generated, and specifies the cause. This happens if the parent workflow execution times out or is terminated, and the child policy is set to cancel child executions.',
+    }),
   })
   .openapi({
     description: 'Provides the details of the <code>WorkflowExecutionCancelRequested</code> event.',
@@ -1516,29 +1070,17 @@ const WorkflowExecutionCancelRequestedEventAttributesSchema = z
 
 const DecisionTaskScheduledEventAttributesSchema = z
   .object({
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the task list in which the decision task was scheduled.',
-        }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A task priority that, if set, specifies the priority for this decision task. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    startToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum duration for this decision task. The task is considered timed out if it doesn't completed within this duration.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
-        }),
-    ).exactOptional(),
+    taskList: TaskListSchema.openapi({
+      description: 'The name of the task list in which the decision task was scheduled.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> A task priority that, if set, specifies the priority for this decision task. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    startToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum duration for this decision task. The task is considered timed out if it doesn't completed within this duration.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
+    }),
   })
   .openapi({
     required: ['taskList'],
@@ -1550,22 +1092,14 @@ const IdentitySchema = z.string().max(256).openapi('Identity')
 
 const DecisionTaskStartedEventAttributesSchema = z
   .object({
-    identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identity of the decider making the request. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
-        }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    identity: IdentitySchema.exactOptional().openapi({
+      description:
+        'Identity of the decider making the request. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId'],
@@ -1575,25 +1109,17 @@ const DecisionTaskStartedEventAttributesSchema = z
 
 const DecisionTaskCompletedEventAttributesSchema = z
   .object({
-    executionContext: DataSchema.and(
-      z.any().openapi({ description: 'User defined context for the workflow execution.' }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskStarted</code> event recorded when this decision task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    executionContext: DataSchema.exactOptional().openapi({
+      description: 'User defined context for the workflow execution.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskStarted</code> event recorded when this decision task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -1605,30 +1131,17 @@ const DecisionTaskTimeoutTypeSchema = z.literal('START_TO_CLOSE').openapi('Decis
 
 const DecisionTaskTimedOutEventAttributesSchema = z
   .object({
-    timeoutType: DecisionTaskTimeoutTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of timeout that expired before the decision task could be completed.',
-        }),
-    ),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskStarted</code> event recorded when this decision task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timeoutType: DecisionTaskTimeoutTypeSchema.openapi({
+      description: 'The type of timeout that expired before the decision task could be completed.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskScheduled</code> event that was recorded when this decision task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskStarted</code> event recorded when this decision task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timeoutType', 'scheduledEventId', 'startedEventId'],
@@ -1640,70 +1153,40 @@ const ActivityIdSchema = z.string().min(1).max(256).openapi('ActivityId')
 
 const ActivityTaskScheduledEventAttributesSchema = z
   .object({
-    activityType: ActivityTypeSchema.and(
-      z.any().openapi({ description: 'The type of the activity task.' }),
-    ),
-    activityId: ActivityIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the activity task.' }),
-    ),
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the activity task.' }),
-    ).exactOptional(),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the activity.",
-        }),
-    ).exactOptional(),
-    scheduleToStartTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum amount of time the activity task can wait to be assigned to a worker.',
-        }),
-    ).exactOptional(),
-    scheduleToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z.any().openapi({ description: 'The maximum amount of time for this activity task.' }),
-    ).exactOptional(),
-    startToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum amount of time a worker may take to process the activity task.',
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The task list in which the activity task has been scheduled.' }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The priority to assign to the scheduled activity task. If set, this overrides any default priority value that was assigned when the activity type was registered.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision that resulted in the scheduling of this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    heartbeatTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum time before which the worker processing this task must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. If the worker subsequently attempts to record a heartbeat or return a result, it is ignored.',
-        }),
-    ).exactOptional(),
+    activityType: ActivityTypeSchema.openapi({ description: 'The type of the activity task.' }),
+    activityId: ActivityIdSchema.openapi({ description: 'The unique ID of the activity task.' }),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input provided to the activity task.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "Data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the activity.",
+    }),
+    scheduleToStartTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum amount of time the activity task can wait to be assigned to a worker.',
+    }),
+    scheduleToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description: 'The maximum amount of time for this activity task.',
+    }),
+    startToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description: 'The maximum amount of time a worker may take to process the activity task.',
+    }),
+    taskList: TaskListSchema.openapi({
+      description: 'The task list in which the activity task has been scheduled.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> The priority to assign to the scheduled activity task. If set, this overrides any default priority value that was assigned when the activity type was registered.</p> <p>Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision that resulted in the scheduling of this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    heartbeatTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum time before which the worker processing this task must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. If the worker subsequently attempts to record a heartbeat or return a result, it is ignored.',
+    }),
   })
   .openapi({
     required: ['activityType', 'activityId', 'taskList', 'decisionTaskCompletedEventId'],
@@ -1713,22 +1196,14 @@ const ActivityTaskScheduledEventAttributesSchema = z
 
 const ActivityTaskStartedEventAttributesSchema = z
   .object({
-    identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identity of the worker that was assigned this task. This aids diagnostics when problems arise. The form of this identity is user defined.',
-        }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    identity: IdentitySchema.exactOptional().openapi({
+      description:
+        'Identity of the worker that was assigned this task. This aids diagnostics when problems arise. The form of this identity is user defined.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId'],
@@ -1738,25 +1213,17 @@ const ActivityTaskStartedEventAttributesSchema = z
 
 const ActivityTaskCompletedEventAttributesSchema = z
   .object({
-    result: DataSchema.and(
-      z.any().openapi({ description: 'The results of the activity task.' }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    result: DataSchema.exactOptional().openapi({
+      description: 'The results of the activity task.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -1766,28 +1233,18 @@ const ActivityTaskCompletedEventAttributesSchema = z
 
 const ActivityTaskFailedEventAttributesSchema = z
   .object({
-    reason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason provided for the failure.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the failure.' }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason provided for the failure.',
+    }),
+    details: DataSchema.exactOptional().openapi({ description: 'The details of the failure.' }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -1803,33 +1260,21 @@ const LimitedDataSchema = z.string().max(2048).openapi('LimitedData')
 
 const ActivityTaskTimedOutEventAttributesSchema = z
   .object({
-    timeoutType: ActivityTaskTimeoutTypeSchema.and(
-      z.any().openapi({ description: 'The type of the timeout that caused this event.' }),
-    ),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    details: LimitedDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the content of the <code>details</code> parameter for the last call made by the activity to <code>RecordActivityTaskHeartbeat</code>.',
-        }),
-    ).exactOptional(),
+    timeoutType: ActivityTaskTimeoutTypeSchema.openapi({
+      description: 'The type of the timeout that caused this event.',
+    }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    details: LimitedDataSchema.exactOptional().openapi({
+      description:
+        'Contains the content of the <code>details</code> parameter for the last call made by the activity to <code>RecordActivityTaskHeartbeat</code>.',
+    }),
   })
   .openapi({
     required: ['timeoutType', 'scheduledEventId', 'startedEventId'],
@@ -1839,33 +1284,19 @@ const ActivityTaskTimedOutEventAttributesSchema = z
 
 const ActivityTaskCanceledEventAttributesSchema = z
   .object({
-    details: DataSchema.and(
-      z.any().openapi({ description: 'Details of the cancellation.' }),
-    ).exactOptional(),
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    latestCancelRequestedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set, contains the ID of the last <code>ActivityTaskCancelRequested</code> event recorded for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ).exactOptional(),
+    details: DataSchema.exactOptional().openapi({ description: 'Details of the cancellation.' }),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskStarted</code> event recorded when this activity task was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    latestCancelRequestedEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'If set, contains the ID of the last <code>ActivityTaskCancelRequested</code> event recorded for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -1875,17 +1306,11 @@ const ActivityTaskCanceledEventAttributesSchema = z
 
 const ActivityTaskCancelRequestedEventAttributesSchema = z
   .object({
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelActivityTask</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    activityId: ActivityIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the task.' }),
-    ),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelActivityTask</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    activityId: ActivityIdSchema.openapi({ description: 'The unique ID of the task.' }),
   })
   .openapi({
     required: ['decisionTaskCompletedEventId', 'activityId'],
@@ -1897,38 +1322,22 @@ const SignalNameSchema = z.string().min(1).max(256).openapi('SignalName')
 
 const WorkflowExecutionSignaledEventAttributesSchema = z
   .object({
-    signalName: SignalNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the signal received. The decider can use the signal name and inputs to determine how to the process the signal.',
-        }),
-    ),
-    input: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inputs provided with the signal. The decider can use the signal name and inputs to determine how to process the signal.',
-        }),
-    ).exactOptional(),
-    externalWorkflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The workflow execution that sent the signal. This is set only of the signal was sent by another workflow execution.',
-        }),
-    ).exactOptional(),
-    externalInitiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflow</code> decision to signal this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event. This field is set only if the signal was initiated by another workflow execution.',
-        }),
-    ).exactOptional(),
+    signalName: SignalNameSchema.openapi({
+      description:
+        'The name of the signal received. The decider can use the signal name and inputs to determine how to the process the signal.',
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description:
+        'The inputs provided with the signal. The decider can use the signal name and inputs to determine how to process the signal.',
+    }),
+    externalWorkflowExecution: WorkflowExecutionSchema.exactOptional().openapi({
+      description:
+        'The workflow execution that sent the signal. This is set only of the signal was sent by another workflow execution.',
+    }),
+    externalInitiatedEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflow</code> decision to signal this workflow execution.The source event with this ID can be found in the history of the source workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event. This field is set only if the signal was initiated by another workflow execution.',
+    }),
   })
   .openapi({
     required: ['signalName'],
@@ -1940,18 +1349,12 @@ const MarkerNameSchema = z.string().min(1).max(256).openapi('MarkerName')
 
 const MarkerRecordedEventAttributesSchema = z
   .object({
-    markerName: MarkerNameSchema.and(z.any().openapi({ description: 'The name of the marker.' })),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the marker.' }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RecordMarker</code> decision that requested this marker. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    markerName: MarkerNameSchema.openapi({ description: 'The name of the marker.' }),
+    details: DataSchema.exactOptional().openapi({ description: 'The details of the marker.' }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RecordMarker</code> decision that requested this marker. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['markerName', 'decisionTaskCompletedEventId'],
@@ -1965,23 +1368,15 @@ const RecordMarkerFailedCauseSchema = z
 
 const RecordMarkerFailedEventAttributesSchema = z
   .object({
-    markerName: MarkerNameSchema.and(z.any().openapi({ description: "The marker's name." })),
-    cause: RecordMarkerFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RecordMarkerFailed</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    markerName: MarkerNameSchema.openapi({ description: "The marker's name." }),
+    cause: RecordMarkerFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RecordMarkerFailed</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['markerName', 'cause', 'decisionTaskCompletedEventId'],
@@ -1993,33 +1388,19 @@ const TimerIdSchema = z.string().min(1).max(256).openapi('TimerId')
 
 const TimerStartedEventAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the timer that was started.' }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data attached to the event that can be used by the decider in subsequent workflow tasks.',
-        }),
-    ).exactOptional(),
-    startToFireTimeout: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The duration of time after which the timer fires.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>.</p>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartTimer</code> decision for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({ description: 'The unique ID of the timer that was started.' }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'Data attached to the event that can be used by the decider in subsequent workflow tasks.',
+    }),
+    startToFireTimeout: DurationInSecondsSchema.openapi({
+      description:
+        '<p>The duration of time after which the timer fires.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>.</p>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartTimer</code> decision for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timerId', 'startToFireTimeout', 'decisionTaskCompletedEventId'],
@@ -2029,17 +1410,11 @@ const TimerStartedEventAttributesSchema = z
 
 const TimerFiredEventAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the timer that fired.' }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>TimerStarted</code> event that was recorded when this timer was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({ description: 'The unique ID of the timer that fired.' }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>TimerStarted</code> event that was recorded when this timer was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timerId', 'startedEventId'],
@@ -2049,25 +1424,17 @@ const TimerFiredEventAttributesSchema = z
 
 const TimerCanceledEventAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the timer that was canceled.' }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>TimerStarted</code> event that was recorded when this timer was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelTimer</code> decision to cancel this timer. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({
+      description: 'The unique ID of the timer that was canceled.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>TimerStarted</code> event that was recorded when this timer was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelTimer</code> decision to cancel this timer. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timerId', 'startedEventId', 'decisionTaskCompletedEventId'],
@@ -2077,83 +1444,49 @@ const TimerCanceledEventAttributesSchema = z
 
 const StartChildWorkflowExecutionInitiatedEventAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>workflowId</code> of the child workflow execution.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Data attached to the event that can be used by the decider in subsequent decision tasks. This data isn't sent to the activity.",
-        }),
-    ).exactOptional(),
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The inputs provided to the child workflow execution.' }),
-    ).exactOptional(),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The maximum duration for the child workflow execution. If the workflow execution isn't closed within this duration, it is timed out and force-terminated.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the task list used for the decision tasks of the child workflow execution.',
-        }),
-    ),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The priority assigned for the decision tasks for this workflow execution. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartChildWorkflowExecution</code> <a>Decision</a> to request this child workflow execution. This information can be useful for diagnosing problems by tracing back the cause of events.',
-        }),
-    ),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy to use for the child workflow executions if this execution gets terminated by explicitly calling the <a>TerminateWorkflowExecution</a> action or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration allowed for the decision tasks for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of tags to associated with the child workflow execution.',
-        }),
-    ).exactOptional(),
-    lambdaRole: ArnSchema.and(
-      z.any().openapi({ description: 'The IAM role to attach to the child workflow execution.' }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The <code>workflowId</code> of the child workflow execution.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "Data attached to the event that can be used by the decider in subsequent decision tasks. This data isn't sent to the activity.",
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The inputs provided to the child workflow execution.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The maximum duration for the child workflow execution. If the workflow execution isn't closed within this duration, it is timed out and force-terminated.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>",
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        'The name of the task list used for the decision tasks of the child workflow execution.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> The priority assigned for the decision tasks for this workflow execution. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartChildWorkflowExecution</code> <a>Decision</a> to request this child workflow execution. This information can be useful for diagnosing problems by tracing back the cause of events.',
+    }),
+    childPolicy: ChildPolicySchema.openapi({
+      description:
+        '<p>The policy to use for the child workflow executions if this execution gets terminated by explicitly calling the <a>TerminateWorkflowExecution</a> action or due to an expired timeout.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum duration allowed for the decision tasks for this workflow execution.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags to associated with the child workflow execution.',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role to attach to the child workflow execution.',
+    }),
   })
   .openapi({
     required: [
@@ -2170,20 +1503,16 @@ const StartChildWorkflowExecutionInitiatedEventAttributesSchema = z
 
 const ChildWorkflowExecutionStartedEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that was started.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that was started.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'workflowType', 'initiatedEventId'],
@@ -2193,31 +1522,23 @@ const ChildWorkflowExecutionStartedEventAttributesSchema = z
 
 const ChildWorkflowExecutionCompletedEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that was completed.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    result: DataSchema.and(
-      z.any().openapi({ description: 'The result of the child workflow execution.' }),
-    ).exactOptional(),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that was completed.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    result: DataSchema.exactOptional().openapi({
+      description: 'The result of the child workflow execution.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'workflowType', 'initiatedEventId', 'startedEventId'],
@@ -2227,34 +1548,26 @@ const ChildWorkflowExecutionCompletedEventAttributesSchema = z
 
 const ChildWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that failed.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    reason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the failure (if provided).' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the failure (if provided).' }),
-    ).exactOptional(),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that failed.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason for the failure (if provided).',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: 'The details of the failure (if provided).',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'workflowType', 'initiatedEventId', 'startedEventId'],
@@ -2264,36 +1577,23 @@ const ChildWorkflowExecutionFailedEventAttributesSchema = z
 
 const ChildWorkflowExecutionTimedOutEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that timed out.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    timeoutType: WorkflowExecutionTimeoutTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the timeout that caused the child workflow execution to time out.',
-        }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that timed out.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    timeoutType: WorkflowExecutionTimeoutTypeSchema.openapi({
+      description: 'The type of the timeout that caused the child workflow execution to time out.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: [
@@ -2309,31 +1609,23 @@ const ChildWorkflowExecutionTimedOutEventAttributesSchema = z
 
 const ChildWorkflowExecutionCanceledEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that was canceled.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'Details of the cancellation (if provided).' }),
-    ).exactOptional(),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that was canceled.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: 'Details of the cancellation (if provided).',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'workflowType', 'initiatedEventId', 'startedEventId'],
@@ -2343,28 +1635,20 @@ const ChildWorkflowExecutionCanceledEventAttributesSchema = z
 
 const ChildWorkflowExecutionTerminatedEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The child workflow execution that was terminated.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the child workflow execution.' }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The child workflow execution that was terminated.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the child workflow execution.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>StartChildWorkflowExecutionInitiated</code> event corresponding to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ChildWorkflowExecutionStarted</code> event recorded when this child workflow execution was started. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'workflowType', 'initiatedEventId', 'startedEventId'],
@@ -2374,41 +1658,23 @@ const ChildWorkflowExecutionTerminatedEventAttributesSchema = z
 
 const SignalExternalWorkflowExecutionInitiatedEventAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>workflowId</code> of the external workflow execution.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>runId</code> of the external workflow execution to send the signal to.',
-        }),
-    ).exactOptional(),
-    signalName: SignalNameSchema.and(z.any().openapi({ description: 'The name of the signal.' })),
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the signal.' }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>SignalExternalWorkflowExecution</code> decision for this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data attached to the event that can be used by the decider in subsequent decision tasks.',
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The <code>workflowId</code> of the external workflow execution.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description:
+        'The <code>runId</code> of the external workflow execution to send the signal to.',
+    }),
+    signalName: SignalNameSchema.openapi({ description: 'The name of the signal.' }),
+    input: DataSchema.exactOptional().openapi({ description: 'The input provided to the signal.' }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>SignalExternalWorkflowExecution</code> decision for this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'Data attached to the event that can be used by the decider in subsequent decision tasks.',
+    }),
   })
   .openapi({
     required: ['workflowId', 'signalName', 'decisionTaskCompletedEventId'],
@@ -2419,21 +1685,13 @@ const SignalExternalWorkflowExecutionInitiatedEventAttributesSchema = z
 
 const ExternalWorkflowExecutionSignaledEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The external workflow execution that the signal was delivered to.',
-        }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflowExecution</code> decision to request this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The external workflow execution that the signal was delivered to.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflowExecution</code> decision to request this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'initiatedEventId'],
@@ -2452,54 +1710,30 @@ const SignalExternalWorkflowExecutionFailedCauseSchema = z
 
 const SignalExternalWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>workflowId</code> of the external workflow execution that the signal was being delivered to.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>runId</code> of the external workflow execution that the signal was being delivered to.',
-        }),
-    ).exactOptional(),
-    cause: SignalExternalWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflowExecution</code> decision to request this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>SignalExternalWorkflowExecution</code> decision for this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the workflow execution.",
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description:
+        'The <code>workflowId</code> of the external workflow execution that the signal was being delivered to.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description:
+        'The <code>runId</code> of the external workflow execution that the signal was being delivered to.',
+    }),
+    cause: SignalExternalWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>SignalExternalWorkflowExecutionInitiated</code> event corresponding to the <code>SignalExternalWorkflowExecution</code> decision to request this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>SignalExternalWorkflowExecution</code> decision for this signal. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the workflow execution.",
+    }),
   })
   .openapi({
     required: ['workflowId', 'cause', 'initiatedEventId', 'decisionTaskCompletedEventId'],
@@ -2510,22 +1744,14 @@ const SignalExternalWorkflowExecutionFailedEventAttributesSchema = z
 
 const ExternalWorkflowExecutionCancelRequestedEventAttributesSchema = z
   .object({
-    workflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The external workflow execution to which the cancellation request was delivered.',
-        }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this external workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description:
+        'The external workflow execution to which the cancellation request was delivered.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this external workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['workflowExecution', 'initiatedEventId'],
@@ -2536,37 +1762,20 @@ const ExternalWorkflowExecutionCancelRequestedEventAttributesSchema = z
 
 const RequestCancelExternalWorkflowExecutionInitiatedEventAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>workflowId</code> of the external workflow execution to be canceled.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>runId</code> of the external workflow execution to be canceled.',
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelExternalWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data attached to the event that can be used by the decider in subsequent workflow tasks.',
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The <code>workflowId</code> of the external workflow execution to be canceled.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The <code>runId</code> of the external workflow execution to be canceled.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelExternalWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'Data attached to the event that can be used by the decider in subsequent workflow tasks.',
+    }),
   })
   .openapi({
     required: ['workflowId', 'decisionTaskCompletedEventId'],
@@ -2585,51 +1794,29 @@ const RequestCancelExternalWorkflowExecutionFailedCauseSchema = z
 
 const RequestCancelExternalWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>workflowId</code> of the external workflow to which the cancel request was to be delivered.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>runId</code> of the external workflow execution.' }),
-    ).exactOptional(),
-    cause: RequestCancelExternalWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this external workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelExternalWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the workflow execution.",
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description:
+        'The <code>workflowId</code> of the external workflow to which the cancel request was to be delivered.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The <code>runId</code> of the external workflow execution.',
+    }),
+    cause: RequestCancelExternalWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>RequestCancelExternalWorkflowExecutionInitiated</code> event corresponding to the <code>RequestCancelExternalWorkflowExecution</code> decision to cancel this external workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelExternalWorkflowExecution</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the workflow execution.",
+    }),
   })
   .openapi({
     required: ['workflowId', 'cause', 'initiatedEventId', 'decisionTaskCompletedEventId'],
@@ -2656,38 +1843,22 @@ const ScheduleActivityTaskFailedCauseSchema = z
 
 const ScheduleActivityTaskFailedEventAttributesSchema = z
   .object({
-    activityType: ActivityTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The activity type provided in the <code>ScheduleActivityTask</code> decision that failed.',
-        }),
-    ),
-    activityId: ActivityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The activityId provided in the <code>ScheduleActivityTask</code> decision that failed.',
-        }),
-    ),
-    cause: ScheduleActivityTaskFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision that resulted in the scheduling of this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    activityType: ActivityTypeSchema.openapi({
+      description:
+        'The activity type provided in the <code>ScheduleActivityTask</code> decision that failed.',
+    }),
+    activityId: ActivityIdSchema.openapi({
+      description:
+        'The activityId provided in the <code>ScheduleActivityTask</code> decision that failed.',
+    }),
+    cause: ScheduleActivityTaskFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision that resulted in the scheduling of this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['activityType', 'activityId', 'cause', 'decisionTaskCompletedEventId'],
@@ -2701,30 +1872,18 @@ const RequestCancelActivityTaskFailedCauseSchema = z
 
 const RequestCancelActivityTaskFailedEventAttributesSchema = z
   .object({
-    activityId: ActivityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The activityId provided in the <code>RequestCancelActivityTask</code> decision that failed.',
-        }),
-    ),
-    cause: RequestCancelActivityTaskFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelActivityTask</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    activityId: ActivityIdSchema.openapi({
+      description:
+        'The activityId provided in the <code>RequestCancelActivityTask</code> decision that failed.',
+    }),
+    cause: RequestCancelActivityTaskFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>RequestCancelActivityTask</code> decision for this cancellation request. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['activityId', 'cause', 'decisionTaskCompletedEventId'],
@@ -2743,29 +1902,17 @@ const StartTimerFailedCauseSchema = z
 
 const StartTimerFailedEventAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timerId provided in the <code>StartTimer</code> decision that failed.',
-        }),
-    ),
-    cause: StartTimerFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartTimer</code> decision for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({
+      description: 'The timerId provided in the <code>StartTimer</code> decision that failed.',
+    }),
+    cause: StartTimerFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartTimer</code> decision for this activity task. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timerId', 'cause', 'decisionTaskCompletedEventId'],
@@ -2779,29 +1926,17 @@ const CancelTimerFailedCauseSchema = z
 
 const CancelTimerFailedEventAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timerId provided in the <code>CancelTimer</code> decision that failed.',
-        }),
-    ),
-    cause: CancelTimerFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelTimer</code> decision to cancel this timer. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({
+      description: 'The timerId provided in the <code>CancelTimer</code> decision that failed.',
+    }),
+    cause: CancelTimerFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>CancelTimer</code> decision to cancel this timer. This information can be useful for diagnosing problems by tracing back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['timerId', 'cause', 'decisionTaskCompletedEventId'],
@@ -2827,51 +1962,29 @@ const StartChildWorkflowExecutionFailedCauseSchema = z
 
 const StartChildWorkflowExecutionFailedEventAttributesSchema = z
   .object({
-    workflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The workflow type provided in the <code>StartChildWorkflowExecution</code> <a>Decision</a> that failed.',
-        }),
-    ),
-    cause: StartChildWorkflowExecutionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>When <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision fails because it lacks sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html"> Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>workflowId</code> of the child workflow execution.' }),
-    ),
-    initiatedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When the <code>cause</code> is <code>WORKFLOW_ALREADY_RUNNING</code>, <code>initiatedEventId</code> is the ID of the <code>StartChildWorkflowExecutionInitiated</code> event that corresponds to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start the workflow execution. You can use this information to diagnose problems by tracing back the chain of events leading up to this event.</p> <p>When the <code>cause</code> isn't <code>WORKFLOW_ALREADY_RUNNING</code>, <code>initiatedEventId</code> is set to <code>0</code> because the <code>StartChildWorkflowExecutionInitiated</code> event doesn't exist.</p>",
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartChildWorkflowExecution</code> <a>Decision</a> to request this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events.',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the child workflow execution.",
-        }),
-    ).exactOptional(),
+    workflowType: WorkflowTypeSchema.openapi({
+      description:
+        'The workflow type provided in the <code>StartChildWorkflowExecution</code> <a>Decision</a> that failed.',
+    }),
+    cause: StartChildWorkflowExecutionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. This information is generated by the system and can be useful for diagnostic purposes.</p> <note> <p>When <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision fails because it lacks sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html"> Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The <code>workflowId</code> of the child workflow execution.',
+    }),
+    initiatedEventId: EventIdSchema.openapi({
+      description:
+        "<p>When the <code>cause</code> is <code>WORKFLOW_ALREADY_RUNNING</code>, <code>initiatedEventId</code> is the ID of the <code>StartChildWorkflowExecutionInitiated</code> event that corresponds to the <code>StartChildWorkflowExecution</code> <a>Decision</a> to start the workflow execution. You can use this information to diagnose problems by tracing back the chain of events leading up to this event.</p> <p>When the <code>cause</code> isn't <code>WORKFLOW_ALREADY_RUNNING</code>, <code>initiatedEventId</code> is set to <code>0</code> because the <code>StartChildWorkflowExecutionInitiated</code> event doesn't exist.</p>",
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>DecisionTaskCompleted</code> event corresponding to the decision task that resulted in the <code>StartChildWorkflowExecution</code> <a>Decision</a> to request this child workflow execution. This information can be useful for diagnosing problems by tracing back the chain of events.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the child workflow execution.",
+    }),
   })
   .openapi({
     required: [
@@ -2894,36 +2007,22 @@ const FunctionInputSchema = z.string().min(0).max(32768).openapi('FunctionInput'
 
 const LambdaFunctionScheduledEventAttributesSchema = z
   .object({
-    id: FunctionIdSchema.and(z.any().openapi({ description: 'The unique ID of the Lambda task.' })),
-    name: FunctionNameSchema.and(
-      z.any().openapi({ description: 'The name of the Lambda function.' }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.",
-        }),
-    ).exactOptional(),
-    input: FunctionInputSchema.and(
-      z.any().openapi({ description: 'The input provided to the Lambda task.' }),
-    ).exactOptional(),
-    startToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum amount of time a worker can take to process the Lambda task.',
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionCompleted</code> event corresponding to the decision that resulted in scheduling this activity task. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
+    id: FunctionIdSchema.openapi({ description: 'The unique ID of the Lambda task.' }),
+    name: FunctionNameSchema.openapi({ description: 'The name of the Lambda function.' }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "Data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.",
+    }),
+    input: FunctionInputSchema.exactOptional().openapi({
+      description: 'The input provided to the Lambda task.',
+    }),
+    startToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description: 'The maximum amount of time a worker can take to process the Lambda task.',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionCompleted</code> event corresponding to the decision that resulted in scheduling this activity task. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['id', 'name', 'decisionTaskCompletedEventId'],
@@ -2934,14 +2033,10 @@ const LambdaFunctionScheduledEventAttributesSchema = z
 
 const LambdaFunctionStartedEventAttributesSchema = z
   .object({
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId'],
@@ -2952,25 +2047,15 @@ const LambdaFunctionStartedEventAttributesSchema = z
 
 const LambdaFunctionCompletedEventAttributesSchema = z
   .object({
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this Lambda task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionStarted</code> event recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    result: DataSchema.and(
-      z.any().openapi({ description: 'The results of the Lambda task.' }),
-    ).exactOptional(),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this Lambda task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionStarted</code> event recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    result: DataSchema.exactOptional().openapi({ description: 'The results of the Lambda task.' }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -2981,28 +2066,18 @@ const LambdaFunctionCompletedEventAttributesSchema = z
 
 const LambdaFunctionFailedEventAttributesSchema = z
   .object({
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionStarted</code> event recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    reason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'The reason provided for the failure.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: 'The details of the failure.' }),
-    ).exactOptional(),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionStarted</code> event recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'The reason provided for the failure.',
+    }),
+    details: DataSchema.exactOptional().openapi({ description: 'The details of the failure.' }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -3017,25 +2092,17 @@ const LambdaFunctionTimeoutTypeSchema = z
 
 const LambdaFunctionTimedOutEventAttributesSchema = z
   .object({
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event that was recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
-    timeoutType: LambdaFunctionTimeoutTypeSchema.and(
-      z.any().openapi({ description: 'The type of the timeout that caused this event.' }),
-    ).exactOptional(),
+    scheduledEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>ActivityTaskStarted</code> event that was recorded when this activity task started. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    timeoutType: LambdaFunctionTimeoutTypeSchema.exactOptional().openapi({
+      description: 'The type of the timeout that caused this event.',
+    }),
   })
   .openapi({
     required: ['scheduledEventId', 'startedEventId'],
@@ -3054,33 +2121,19 @@ const ScheduleLambdaFunctionFailedCauseSchema = z
 
 const ScheduleLambdaFunctionFailedEventAttributesSchema = z
   .object({
-    id: FunctionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID provided in the <code>ScheduleLambdaFunction</code> decision that failed. ',
-        }),
-    ),
-    name: FunctionNameSchema.and(
-      z.any().openapi({ description: 'The name of the Lambda function.' }),
-    ),
-    cause: ScheduleLambdaFunctionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ),
-    decisionTaskCompletedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>LambdaFunctionCompleted</code> event corresponding to the decision that resulted in scheduling this Lambda task. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ),
+    id: FunctionIdSchema.openapi({
+      description:
+        'The ID provided in the <code>ScheduleLambdaFunction</code> decision that failed. ',
+    }),
+    name: FunctionNameSchema.openapi({ description: 'The name of the Lambda function.' }),
+    cause: ScheduleLambdaFunctionFailedCauseSchema.openapi({
+      description:
+        '<p>The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because it lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    decisionTaskCompletedEventId: EventIdSchema.openapi({
+      description:
+        'The ID of the <code>LambdaFunctionCompleted</code> event corresponding to the decision that resulted in scheduling this Lambda task. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
   })
   .openapi({
     required: ['id', 'name', 'cause', 'decisionTaskCompletedEventId'],
@@ -3097,27 +2150,17 @@ const CauseMessageSchema = z.string().max(1728).openapi('CauseMessage')
 
 const StartLambdaFunctionFailedEventAttributesSchema = z
   .object({
-    scheduledEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
-        }),
-    ).exactOptional(),
-    cause: StartLambdaFunctionFailedCauseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because the IAM role attached to the execution lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">Lambda Tasks</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
-    message: CauseMessageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A description that can help diagnose the cause of the fault.' }),
-    ).exactOptional(),
+    scheduledEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the <code>ActivityTaskScheduled</code> event that was recorded when this activity task was scheduled. To help diagnose issues, use this information to trace back the chain of events leading up to this event.',
+    }),
+    cause: StartLambdaFunctionFailedCauseSchema.exactOptional().openapi({
+      description:
+        '<p>The cause of the failure. To help diagnose issues, use this information to trace back the chain of events leading up to this event.</p> <note> <p>If <code>cause</code> is set to <code>OPERATION_NOT_PERMITTED</code>, the decision failed because the IAM role attached to the execution lacked sufficient permissions. For details and example IAM policies, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">Lambda Tasks</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
+    message: CauseMessageSchema.exactOptional().openapi({
+      description: 'A description that can help diagnose the cause of the fault.',
+    }),
   })
   .openapi({
     description:
@@ -3128,476 +2171,279 @@ const StartLambdaFunctionFailedEventAttributesSchema = z
 
 const HistoryEventSchema = z
   .object({
-    eventTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the event occurred.' }),
-    ),
-    eventType: EventTypeSchema.and(
-      z.any().openapi({ description: 'The type of the history event.' }),
-    ),
-    eventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The system generated ID of the event. This ID uniquely identifies the event with in the workflow execution history.',
-        }),
-    ),
-    workflowExecutionStartedEventAttributes: WorkflowExecutionStartedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    workflowExecutionCompletedEventAttributes: WorkflowExecutionCompletedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+    eventTimestamp: TimestampSchema.openapi({
+      description: 'The date and time when the event occurred.',
+    }),
+    eventType: EventTypeSchema.openapi({ description: 'The type of the history event.' }),
+    eventId: EventIdSchema.openapi({
+      description:
+        'The system generated ID of the event. This ID uniquely identifies the event with in the workflow execution history.',
+    }),
+    workflowExecutionStartedEventAttributes:
+      WorkflowExecutionStartedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    workflowExecutionCompletedEventAttributes:
+      WorkflowExecutionCompletedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     completeWorkflowExecutionFailedEventAttributes:
-      CompleteWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>CompleteWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    workflowExecutionFailedEventAttributes: WorkflowExecutionFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      CompleteWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>CompleteWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    workflowExecutionFailedEventAttributes:
+      WorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     failWorkflowExecutionFailedEventAttributes:
-      FailWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>FailWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    workflowExecutionTimedOutEventAttributes: WorkflowExecutionTimedOutEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    workflowExecutionCanceledEventAttributes: WorkflowExecutionCanceledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      FailWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>FailWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    workflowExecutionTimedOutEventAttributes:
+      WorkflowExecutionTimedOutEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    workflowExecutionCanceledEventAttributes:
+      WorkflowExecutionCanceledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     cancelWorkflowExecutionFailedEventAttributes:
-      CancelWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>CancelWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      CancelWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>CancelWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     workflowExecutionContinuedAsNewEventAttributes:
-      WorkflowExecutionContinuedAsNewEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>WorkflowExecutionContinuedAsNew</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      WorkflowExecutionContinuedAsNewEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionContinuedAsNew</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     continueAsNewWorkflowExecutionFailedEventAttributes:
-      ContinueAsNewWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ContinueAsNewWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ContinueAsNewWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ContinueAsNewWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     workflowExecutionTerminatedEventAttributes:
-      WorkflowExecutionTerminatedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>WorkflowExecutionTerminated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      WorkflowExecutionTerminatedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionTerminated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     workflowExecutionCancelRequestedEventAttributes:
-      WorkflowExecutionCancelRequestedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>WorkflowExecutionCancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    decisionTaskScheduledEventAttributes: DecisionTaskScheduledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>DecisionTaskScheduled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    decisionTaskStartedEventAttributes: DecisionTaskStartedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>DecisionTaskStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    decisionTaskCompletedEventAttributes: DecisionTaskCompletedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>DecisionTaskCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    decisionTaskTimedOutEventAttributes: DecisionTaskTimedOutEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>DecisionTaskTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskScheduledEventAttributes: ActivityTaskScheduledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskScheduled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskStartedEventAttributes: ActivityTaskStartedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskCompletedEventAttributes: ActivityTaskCompletedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskFailedEventAttributes: ActivityTaskFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskTimedOutEventAttributes: ActivityTaskTimedOutEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    activityTaskCanceledEventAttributes: ActivityTaskCanceledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ActivityTaskCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      WorkflowExecutionCancelRequestedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionCancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    decisionTaskScheduledEventAttributes:
+      DecisionTaskScheduledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>DecisionTaskScheduled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    decisionTaskStartedEventAttributes:
+      DecisionTaskStartedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>DecisionTaskStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    decisionTaskCompletedEventAttributes:
+      DecisionTaskCompletedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>DecisionTaskCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    decisionTaskTimedOutEventAttributes:
+      DecisionTaskTimedOutEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>DecisionTaskTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskScheduledEventAttributes:
+      ActivityTaskScheduledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskScheduled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskStartedEventAttributes:
+      ActivityTaskStartedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskCompletedEventAttributes:
+      ActivityTaskCompletedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskFailedEventAttributes:
+      ActivityTaskFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskTimedOutEventAttributes:
+      ActivityTaskTimedOutEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    activityTaskCanceledEventAttributes:
+      ActivityTaskCanceledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     activityTaskCancelRequestedEventAttributes:
-      ActivityTaskCancelRequestedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ActivityTaskcancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    workflowExecutionSignaledEventAttributes: WorkflowExecutionSignaledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>WorkflowExecutionSignaled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    markerRecordedEventAttributes: MarkerRecordedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>MarkerRecorded</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    recordMarkerFailedEventAttributes: RecordMarkerFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>DecisionTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    timerStartedEventAttributes: TimerStartedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>TimerStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    timerFiredEventAttributes: TimerFiredEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>TimerFired</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    timerCanceledEventAttributes: TimerCanceledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>TimerCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      ActivityTaskCancelRequestedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ActivityTaskcancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    workflowExecutionSignaledEventAttributes:
+      WorkflowExecutionSignaledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>WorkflowExecutionSignaled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    markerRecordedEventAttributes: MarkerRecordedEventAttributesSchema.exactOptional().openapi({
+      description:
+        "If the event is of type <code>MarkerRecorded</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+    }),
+    recordMarkerFailedEventAttributes:
+      RecordMarkerFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>DecisionTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    timerStartedEventAttributes: TimerStartedEventAttributesSchema.exactOptional().openapi({
+      description:
+        "If the event is of type <code>TimerStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+    }),
+    timerFiredEventAttributes: TimerFiredEventAttributesSchema.exactOptional().openapi({
+      description:
+        "If the event is of type <code>TimerFired</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+    }),
+    timerCanceledEventAttributes: TimerCanceledEventAttributesSchema.exactOptional().openapi({
+      description:
+        "If the event is of type <code>TimerCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+    }),
     startChildWorkflowExecutionInitiatedEventAttributes:
-      StartChildWorkflowExecutionInitiatedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>StartChildWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      StartChildWorkflowExecutionInitiatedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>StartChildWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionStartedEventAttributes:
-      ChildWorkflowExecutionStartedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionStartedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionStarted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionCompletedEventAttributes:
-      ChildWorkflowExecutionCompletedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionCompletedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionCompleted</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionFailedEventAttributes:
-      ChildWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionTimedOutEventAttributes:
-      ChildWorkflowExecutionTimedOutEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionTimedOutEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionTimedOut</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionCanceledEventAttributes:
-      ChildWorkflowExecutionCanceledEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionCanceledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionCanceled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     childWorkflowExecutionTerminatedEventAttributes:
-      ChildWorkflowExecutionTerminatedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ChildWorkflowExecutionTerminated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ChildWorkflowExecutionTerminatedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ChildWorkflowExecutionTerminated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     signalExternalWorkflowExecutionInitiatedEventAttributes:
-      SignalExternalWorkflowExecutionInitiatedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>SignalExternalWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      SignalExternalWorkflowExecutionInitiatedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>SignalExternalWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     externalWorkflowExecutionSignaledEventAttributes:
-      ExternalWorkflowExecutionSignaledEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ExternalWorkflowExecutionSignaled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      ExternalWorkflowExecutionSignaledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ExternalWorkflowExecutionSignaled</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     signalExternalWorkflowExecutionFailedEventAttributes:
-      SignalExternalWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>SignalExternalWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      SignalExternalWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>SignalExternalWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     externalWorkflowExecutionCancelRequestedEventAttributes:
-      ExternalWorkflowExecutionCancelRequestedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>ExternalWorkflowExecutionCancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types. ",
-          }),
-      ).exactOptional(),
+      ExternalWorkflowExecutionCancelRequestedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ExternalWorkflowExecutionCancelRequested</code> then this member is set and provides detailed information about the event. It isn't set for other event types. ",
+      }),
     requestCancelExternalWorkflowExecutionInitiatedEventAttributes:
-      RequestCancelExternalWorkflowExecutionInitiatedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>RequestCancelExternalWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
+      RequestCancelExternalWorkflowExecutionInitiatedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>RequestCancelExternalWorkflowExecutionInitiated</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     requestCancelExternalWorkflowExecutionFailedEventAttributes:
-      RequestCancelExternalWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>RequestCancelExternalWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    scheduleActivityTaskFailedEventAttributes: ScheduleActivityTaskFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>ScheduleActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      RequestCancelExternalWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>RequestCancelExternalWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    scheduleActivityTaskFailedEventAttributes:
+      ScheduleActivityTaskFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>ScheduleActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     requestCancelActivityTaskFailedEventAttributes:
-      RequestCancelActivityTaskFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>RequestCancelActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    startTimerFailedEventAttributes: StartTimerFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>StartTimerFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    cancelTimerFailedEventAttributes: CancelTimerFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the event is of type <code>CancelTimerFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      RequestCancelActivityTaskFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>RequestCancelActivityTaskFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    startTimerFailedEventAttributes: StartTimerFailedEventAttributesSchema.exactOptional().openapi({
+      description:
+        "If the event is of type <code>StartTimerFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+    }),
+    cancelTimerFailedEventAttributes:
+      CancelTimerFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>CancelTimerFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
     startChildWorkflowExecutionFailedEventAttributes:
-      StartChildWorkflowExecutionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "If the event is of type <code>StartChildWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    lambdaFunctionScheduledEventAttributes: LambdaFunctionScheduledEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>LambdaFunctionScheduled</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    lambdaFunctionStartedEventAttributes: LambdaFunctionStartedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>LambdaFunctionStarted</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    lambdaFunctionCompletedEventAttributes: LambdaFunctionCompletedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>LambdaFunctionCompleted</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    lambdaFunctionFailedEventAttributes: LambdaFunctionFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>LambdaFunctionFailed</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
-    lambdaFunctionTimedOutEventAttributes: LambdaFunctionTimedOutEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>LambdaFunctionTimedOut</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      StartChildWorkflowExecutionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "If the event is of type <code>StartChildWorkflowExecutionFailed</code> then this member is set and provides detailed information about the event. It isn't set for other event types.",
+      }),
+    lambdaFunctionScheduledEventAttributes:
+      LambdaFunctionScheduledEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>LambdaFunctionScheduled</code> event. It isn't set for other event types.",
+      }),
+    lambdaFunctionStartedEventAttributes:
+      LambdaFunctionStartedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>LambdaFunctionStarted</code> event. It isn't set for other event types.",
+      }),
+    lambdaFunctionCompletedEventAttributes:
+      LambdaFunctionCompletedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>LambdaFunctionCompleted</code> event. It isn't set for other event types.",
+      }),
+    lambdaFunctionFailedEventAttributes:
+      LambdaFunctionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>LambdaFunctionFailed</code> event. It isn't set for other event types.",
+      }),
+    lambdaFunctionTimedOutEventAttributes:
+      LambdaFunctionTimedOutEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>LambdaFunctionTimedOut</code> event. It isn't set for other event types.",
+      }),
     scheduleLambdaFunctionFailedEventAttributes:
-      ScheduleLambdaFunctionFailedEventAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>ScheduleLambdaFunctionFailed</code> event. It isn't set for other event types.",
-          }),
-      ).exactOptional(),
-    startLambdaFunctionFailedEventAttributes: StartLambdaFunctionFailedEventAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>StartLambdaFunctionFailed</code> event. It isn't set for other event types.",
-        }),
-    ).exactOptional(),
+      ScheduleLambdaFunctionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>ScheduleLambdaFunctionFailed</code> event. It isn't set for other event types.",
+      }),
+    startLambdaFunctionFailedEventAttributes:
+      StartLambdaFunctionFailedEventAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>StartLambdaFunctionFailed</code> event. It isn't set for other event types.",
+      }),
   })
   .openapi({
     required: ['eventTimestamp', 'eventType', 'eventId'],
@@ -3612,17 +2458,11 @@ const PageTokenSchema = z.string().max(2048).openapi('PageToken')
 
 const HistorySchema = z
   .object({
-    events: HistoryEventListSchema.and(
-      z.any().openapi({ description: 'The list of history events.' }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
+    events: HistoryEventListSchema.openapi({ description: 'The list of history events.' }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
   })
   .openapi({
     required: ['events'],
@@ -3637,40 +2477,24 @@ const ReverseOrderSchema = z.boolean().openapi('ReverseOrder')
 
 const GetWorkflowExecutionHistoryInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain containing the workflow execution.' }),
-    ),
-    execution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the workflow execution for which to return the history.',
-        }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimeStamp</code> of the events.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow execution.',
+    }),
+    execution: WorkflowExecutionSchema.openapi({
+      description: 'Specifies the workflow execution for which to return the history.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimeStamp</code> of the events.',
+    }),
   })
   .openapi({ required: ['domain', 'execution'], title: 'GetWorkflowExecutionHistoryInput' })
   .openapi('GetWorkflowExecutionHistoryInput')
@@ -3679,17 +2503,13 @@ const ActivityTypeInfoListSchema = z.array(ActivityTypeInfoSchema).openapi('Acti
 
 const ActivityTypeInfosSchema = z
   .object({
-    typeInfos: ActivityTypeInfoListSchema.and(
-      z.any().openapi({ description: 'List of activity type information.' }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
+    typeInfos: ActivityTypeInfoListSchema.openapi({
+      description: 'List of activity type information.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
   })
   .openapi({
     required: ['typeInfos'],
@@ -3699,51 +2519,27 @@ const ActivityTypeInfosSchema = z
 
 const ListActivityTypesInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the activity types have been registered.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If specified, only lists the activity types that have this name.',
-        }),
-    ).exactOptional(),
-    registrationStatus: RegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the registration status of the activity types to list.',
-        }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the results in reverse order. By default, the results are returned in ascending alphabetical order by <code>name</code> of the activity types.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the activity types have been registered.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'If specified, only lists the activity types that have this name.',
+    }),
+    registrationStatus: RegistrationStatusSchema.openapi({
+      description: 'Specifies the registration status of the activity types to list.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the results in reverse order. By default, the results are returned in ascending alphabetical order by <code>name</code> of the activity types.',
+    }),
   })
   .openapi({ required: ['domain', 'registrationStatus'], title: 'ListActivityTypesInput' })
   .openapi('ListActivityTypesInput')
@@ -3754,17 +2550,13 @@ const WorkflowExecutionInfoListSchema = z
 
 const WorkflowExecutionInfosSchema = z
   .object({
-    executionInfos: WorkflowExecutionInfoListSchema.and(
-      z.any().openapi({ description: 'The list of workflow information structures.' }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
+    executionInfos: WorkflowExecutionInfoListSchema.openapi({
+      description: 'The list of workflow information structures.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
   })
   .openapi({
     required: ['executionInfos'],
@@ -3774,85 +2566,45 @@ const WorkflowExecutionInfosSchema = z
 
 const ListClosedWorkflowExecutionsInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain that contains the workflow executions to list.',
-        }),
-    ),
-    startTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, the workflow executions are included in the returned results based on whether their start times are within the range specified by this filter. Also, if this parameter is specified, the returned results are ordered by their start times.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
-        }),
-    ).exactOptional(),
-    closeTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, the workflow executions are included in the returned results based on whether their close times are within the range specified by this filter. Also, if this parameter is specified, the returned results are ordered by their close times.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
-        }),
-    ).exactOptional(),
-    executionFilter: WorkflowExecutionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions matching the workflow ID specified in the filter are returned.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    closeStatusFilter: CloseStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions that match this <i>close status</i> are listed. For example, if TERMINATED is specified, then only TERMINATED workflow executions are listed.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    typeFilter: WorkflowTypeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions of the type specified in the filter are returned.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagFilter: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions that have the matching tag are listed.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start or the close time of the executions.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain that contains the workflow executions to list.',
+    }),
+    startTimeFilter: ExecutionTimeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, the workflow executions are included in the returned results based on whether their start times are within the range specified by this filter. Also, if this parameter is specified, the returned results are ordered by their start times.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
+    }),
+    closeTimeFilter: ExecutionTimeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, the workflow executions are included in the returned results based on whether their close times are within the range specified by this filter. Also, if this parameter is specified, the returned results are ordered by their close times.</p> <note> <p> <code>startTimeFilter</code> and <code>closeTimeFilter</code> are mutually exclusive. You must specify one of these in a request but not both.</p> </note>',
+    }),
+    executionFilter: WorkflowExecutionFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions matching the workflow ID specified in the filter are returned.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    closeStatusFilter: CloseStatusFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions that match this <i>close status</i> are listed. For example, if TERMINATED is specified, then only TERMINATED workflow executions are listed.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    typeFilter: WorkflowTypeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions of the type specified in the filter are returned.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    tagFilter: TagFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions that have the matching tag are listed.</p> <note> <p> <code>closeStatusFilter</code>, <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start or the close time of the executions.',
+    }),
   })
   .openapi({ required: ['domain'], title: 'ListClosedWorkflowExecutionsInput' })
   .openapi('ListClosedWorkflowExecutionsInput')
@@ -3861,17 +2613,11 @@ const DomainInfoListSchema = z.array(DomainInfoSchema).openapi('DomainInfoList')
 
 const DomainInfosSchema = z
   .object({
-    domainInfos: DomainInfoListSchema.and(
-      z.any().openapi({ description: 'A list of DomainInfo structures.' }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
+    domainInfos: DomainInfoListSchema.openapi({ description: 'A list of DomainInfo structures.' }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
   })
   .openapi({
     required: ['domainInfos'],
@@ -3881,102 +2627,58 @@ const DomainInfosSchema = z
 
 const ListDomainsInputSchema = z
   .object({
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    registrationStatus: RegistrationStatusSchema.and(
-      z.any().openapi({ description: 'Specifies the registration status of the domains to list.' }),
-    ),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the results in reverse order. By default, the results are returned in ascending alphabetical order by <code>name</code> of the domains.',
-        }),
-    ).exactOptional(),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    registrationStatus: RegistrationStatusSchema.openapi({
+      description: 'Specifies the registration status of the domains to list.',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the results in reverse order. By default, the results are returned in ascending alphabetical order by <code>name</code> of the domains.',
+    }),
   })
   .openapi({ required: ['registrationStatus'], title: 'ListDomainsInput' })
   .openapi('ListDomainsInput')
 
 const ListOpenWorkflowExecutionsInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain that contains the workflow executions to list.',
-        }),
-    ),
-    startTimeFilter: ExecutionTimeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Workflow executions are included in the returned results based on whether their start times are within the range specified by this filter.',
-        }),
-    ),
-    typeFilter: WorkflowTypeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions of the type specified in the filter are returned.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagFilter: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only executions that have the matching tag are listed.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start time of the executions.',
-        }),
-    ).exactOptional(),
-    executionFilter: WorkflowExecutionFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If specified, only workflow executions matching the workflow ID specified in the filter are returned.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain that contains the workflow executions to list.',
+    }),
+    startTimeFilter: ExecutionTimeFilterSchema.openapi({
+      description:
+        'Workflow executions are included in the returned results based on whether their start times are within the range specified by this filter.',
+    }),
+    typeFilter: WorkflowTypeFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions of the type specified in the filter are returned.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    tagFilter: TagFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only executions that have the matching tag are listed.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in descending order of the start time of the executions.',
+    }),
+    executionFilter: WorkflowExecutionFilterSchema.exactOptional().openapi({
+      description:
+        '<p>If specified, only workflow executions matching the workflow ID specified in the filter are returned.</p> <note> <p> <code>executionFilter</code>, <code>typeFilter</code> and <code>tagFilter</code> are mutually exclusive. You can specify at most one of these in a request.</p> </note>',
+    }),
   })
   .openapi({ required: ['domain', 'startTimeFilter'], title: 'ListOpenWorkflowExecutionsInput' })
   .openapi('ListOpenWorkflowExecutionsInput')
@@ -3987,10 +2689,8 @@ const ResourceTagValueSchema = z.string().max(256).openapi('ResourceTagValue')
 
 const ResourceTagSchema = z
   .object({
-    key: ResourceTagKeySchema.and(z.any().openapi({ description: 'The key of a tag.' })),
-    value: ResourceTagValueSchema.and(
-      z.any().openapi({ description: 'The value of a tag.' }),
-    ).exactOptional(),
+    key: ResourceTagKeySchema.openapi({ description: 'The key of a tag.' }),
+    value: ResourceTagValueSchema.exactOptional().openapi({ description: 'The value of a tag.' }),
   })
   .openapi({
     required: ['key'],
@@ -4003,18 +2703,18 @@ const ResourceTagListSchema = z.array(ResourceTagSchema).openapi('ResourceTagLis
 
 const ListTagsForResourceOutputSchema = z
   .object({
-    tags: ResourceTagListSchema.and(
-      z.any().openapi({ description: 'An array of tags associated with the domain.' }),
-    ).exactOptional(),
+    tags: ResourceTagListSchema.exactOptional().openapi({
+      description: 'An array of tags associated with the domain.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceOutput')
 
 const ListTagsForResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceInput' })
   .openapi('ListTagsForResourceInput')
@@ -4025,17 +2725,13 @@ const WorkflowTypeInfoListSchema = z.array(WorkflowTypeInfoSchema).openapi('Work
 
 const WorkflowTypeInfosSchema = z
   .object({
-    typeInfos: WorkflowTypeInfoListSchema.and(
-      z.any().openapi({ description: 'The list of workflow type information.' }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
+    typeInfos: WorkflowTypeInfoListSchema.openapi({
+      description: 'The list of workflow type information.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
   })
   .openapi({
     required: ['typeInfos'],
@@ -4045,47 +2741,27 @@ const WorkflowTypeInfosSchema = z
 
 const ListWorkflowTypesInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the workflow types have been registered.',
-        }),
-    ),
-    name: NameSchema.and(
-      z.any().openapi({ description: 'If specified, lists the workflow type with this name.' }),
-    ).exactOptional(),
-    registrationStatus: RegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the registration status of the workflow types to list.',
-        }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the workflow types.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the workflow types have been registered.',
+    }),
+    name: NameSchema.exactOptional().openapi({
+      description: 'If specified, lists the workflow type with this name.',
+    }),
+    registrationStatus: RegistrationStatusSchema.openapi({
+      description: 'Specifies the registration status of the workflow types to list.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. ',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the results in reverse order. By default the results are returned in ascending alphabetical order of the <code>name</code> of the workflow types.',
+    }),
   })
   .openapi({ required: ['domain', 'registrationStatus'], title: 'ListWorkflowTypesInput' })
   .openapi('ListWorkflowTypesInput')
@@ -4094,39 +2770,22 @@ const TaskTokenSchema = z.string().min(1).max(1024).openapi('TaskToken')
 
 const ActivityTaskSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The opaque string used as a handle on the task. This token is used by workers to communicate progress and response information back to the system about the task.',
-        }),
-    ),
-    activityId: ActivityIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the task.' }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>ActivityTaskStarted</code> event recorded in the history.',
-        }),
-    ),
-    workflowExecution: WorkflowExecutionSchema.and(
-      z.any().openapi({ description: 'The workflow execution that started this activity task.' }),
-    ),
-    activityType: ActivityTypeSchema.and(
-      z.any().openapi({ description: 'The type of this activity task.' }),
-    ),
-    input: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The inputs provided when the activity task was scheduled. The form of the input is user defined and should be meaningful to the activity implementation.',
-        }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        'The opaque string used as a handle on the task. This token is used by workers to communicate progress and response information back to the system about the task.',
+    }),
+    activityId: ActivityIdSchema.openapi({ description: 'The unique ID of the task.' }),
+    startedEventId: EventIdSchema.openapi({
+      description: 'The ID of the <code>ActivityTaskStarted</code> event recorded in the history.',
+    }),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The workflow execution that started this activity task.',
+    }),
+    activityType: ActivityTypeSchema.openapi({ description: 'The type of this activity task.' }),
+    input: DataSchema.exactOptional().openapi({
+      description:
+        'The inputs provided when the activity task was scheduled. The form of the input is user defined and should be meaningful to the activity implementation.',
+    }),
   })
   .openapi({
     required: ['taskToken', 'activityId', 'startedEventId', 'workflowExecution', 'activityType'],
@@ -4136,90 +2795,48 @@ const ActivityTaskSchema = z
 
 const PollForActivityTaskInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain that contains the task lists being polled.',
-        }),
-    ),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the task list to poll for activity tasks.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identity of the worker making the request, recorded in the <code>ActivityTaskStarted</code> event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain that contains the task lists being polled.',
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        '<p>Specifies the task list to poll for activity tasks.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    identity: IdentitySchema.exactOptional().openapi({
+      description:
+        'Identity of the worker making the request, recorded in the <code>ActivityTaskStarted</code> event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
+    }),
   })
   .openapi({ required: ['domain', 'taskList'], title: 'PollForActivityTaskInput' })
   .openapi('PollForActivityTaskInput')
 
 const DecisionTaskSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The opaque string used as a handle on the task. This token is used by workers to communicate progress and response information back to the system about the task.',
-        }),
-    ),
-    startedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the <code>DecisionTaskStarted</code> event recorded in the history.',
-        }),
-    ),
-    workflowExecution: WorkflowExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The workflow execution for which this decision task was created.',
-        }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of the workflow execution for which this decision task was created.',
-        }),
-    ),
-    events: HistoryEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A paginated list of history events of the workflow execution. The decider uses this during the processing of the decision task.',
-        }),
-    ),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
-        }),
-    ).exactOptional(),
-    previousStartedEventId: EventIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the DecisionTaskStarted event of the previous decision task of this workflow execution that was processed by the decider. This can be used to determine the events in the history new since the last decision task received by the decider.',
-        }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        'The opaque string used as a handle on the task. This token is used by workers to communicate progress and response information back to the system about the task.',
+    }),
+    startedEventId: EventIdSchema.openapi({
+      description: 'The ID of the <code>DecisionTaskStarted</code> event recorded in the history.',
+    }),
+    workflowExecution: WorkflowExecutionSchema.openapi({
+      description: 'The workflow execution for which this decision task was created.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of the workflow execution for which this decision task was created.',
+    }),
+    events: HistoryEventListSchema.openapi({
+      description:
+        'A paginated list of history events of the workflow execution. The decider uses this during the processing of the decision task.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If a <code>NextPageToken</code> was returned by a previous call, there are more results available. To retrieve the next page of results, make the call again using the returned token in <code>nextPageToken</code>. Keep all other arguments unchanged.</p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call.</p>',
+    }),
+    previousStartedEventId: EventIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the DecisionTaskStarted event of the previous decision task of this workflow execution that was processed by the decider. This can be used to determine the events in the history new since the last decision task received by the decider.',
+    }),
   })
   .openapi({
     required: ['taskToken', 'startedEventId', 'workflowExecution', 'workflowType', 'events'],
@@ -4230,62 +2847,38 @@ const DecisionTaskSchema = z
 
 const PollForDecisionTaskInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain containing the task lists to poll.' }),
-    ),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the task list to poll for decision tasks.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    identity: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identity of the decider making the request, which is recorded in the DecisionTaskStarted event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
-        }),
-    ).exactOptional(),
-    nextPageToken: PageTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p> <note> <p>The <code>nextPageToken</code> returned by this action cannot be used with <a>GetWorkflowExecutionHistory</a> to get the next page. You must call <a>PollForDecisionTask</a> again (with the <code>nextPageToken</code>) to retrieve the next page of history records. Calling <a>PollForDecisionTask</a> with a <code>nextPageToken</code> doesn\'t return a new decision task.</p> </note>',
-        }),
-    ).exactOptional(),
-    maximumPageSize: PageSizeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. </p> <p>This is an upper limit only; the actual number of results returned per call may be fewer than the specified maximum.</p>',
-        }),
-    ).exactOptional(),
-    reverseOrder: ReverseOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimestamp</code> of the events.',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the task lists to poll.',
+    }),
+    taskList: TaskListSchema.openapi({
+      description:
+        '<p>Specifies the task list to poll for decision tasks.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    identity: IdentitySchema.exactOptional().openapi({
+      description:
+        'Identity of the decider making the request, which is recorded in the DecisionTaskStarted event in the workflow history. This enables diagnostic tracing when problems arise. The form of this identity is user defined.',
+    }),
+    nextPageToken: PageTokenSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>NextPageToken</code> is returned there are more results available. The value of <code>NextPageToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 60 seconds. Using an expired pagination token will return a <code>400</code> error: "<code>Specified token has exceeded its maximum lifetime</code>". </p> <p>The configured <code>maximumPageSize</code> determines how many results can be returned in a single call. </p> <note> <p>The <code>nextPageToken</code> returned by this action cannot be used with <a>GetWorkflowExecutionHistory</a> to get the next page. You must call <a>PollForDecisionTask</a> again (with the <code>nextPageToken</code>) to retrieve the next page of history records. Calling <a>PollForDecisionTask</a> with a <code>nextPageToken</code> doesn\'t return a new decision task.</p> </note>',
+    }),
+    maximumPageSize: PageSizeSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of results that are returned per call. Use <code>nextPageToken</code> to obtain further pages of results. </p> <p>This is an upper limit only; the actual number of results returned per call may be fewer than the specified maximum.</p>',
+    }),
+    reverseOrder: ReverseOrderSchema.exactOptional().openapi({
+      description:
+        'When set to <code>true</code>, returns the events in reverse order. By default the results are returned in ascending order of the <code>eventTimestamp</code> of the events.',
+    }),
   })
   .openapi({ required: ['domain', 'taskList'], title: 'PollForDecisionTaskInput' })
   .openapi('PollForDecisionTaskInput')
 
 const ActivityTaskStatusSchema = z
   .object({
-    cancelRequested: CanceledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Set to <code>true</code> if cancellation of the task is requested.',
-        }),
-    ),
+    cancelRequested: CanceledSchema.openapi({
+      description: 'Set to <code>true</code> if cancellation of the task is requested.',
+    }),
   })
   .openapi({
     required: ['cancelRequested'],
@@ -4295,99 +2888,57 @@ const ActivityTaskStatusSchema = z
 
 const RecordActivityTaskHeartbeatInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results. </p> </important>',
-        }),
-    ),
-    details: LimitedDataSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If specified, contains details about the progress of the task.' }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results. </p> </important>',
+    }),
+    details: LimitedDataSchema.exactOptional().openapi({
+      description: 'If specified, contains details about the progress of the task.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'RecordActivityTaskHeartbeatInput' })
   .openapi('RecordActivityTaskHeartbeatInput')
 
 const RegisterActivityTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which this activity is to be registered.',
-        }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the activity type within the domain.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the activity type.</p> <note> <p>The activity type consists of the name and version, the combination of which must be unique within the domain.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A textual description of the activity type.' }),
-    ).exactOptional(),
-    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum duration that a worker can take to process tasks of this activity type. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskHeartbeatTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum time before which a worker processing a task of this type must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an <code>UnknownResource</code> fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If set, specifies the default task list to use for scheduling tasks of this activity type. This default task list is used if a task list isn't provided when a task is scheduled through the <code>ScheduleActivityTask</code> <a>Decision</a>.",
-        }),
-    ).exactOptional(),
-    defaultTaskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default task priority to assign to the activity type. If not assigned, then <code>0</code> is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>in the <i>Amazon SWF Developer Guide</i>.</i>.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskScheduleToStartTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum duration that a task of this activity type can wait before being assigned to a worker. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskScheduleToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum duration for a task of this activity type. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which this activity is to be registered.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the activity type within the domain.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    version: VersionSchema.openapi({
+      description:
+        '<p>The version of the activity type.</p> <note> <p>The activity type consists of the name and version, the combination of which must be unique within the domain.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A textual description of the activity type.',
+    }),
+    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum duration that a worker can take to process tasks of this activity type. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskHeartbeatTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum time before which a worker processing a task of this type must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>. If the activity worker subsequently attempts to record a heartbeat or returns a result, the activity worker receives an <code>UnknownResource</code> fault. In this case, Amazon SWF no longer considers the activity task to be valid; the activity worker should clean up the activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskList: TaskListSchema.exactOptional().openapi({
+      description:
+        "If set, specifies the default task list to use for scheduling tasks of this activity type. This default task list is used if a task list isn't provided when a task is scheduled through the <code>ScheduleActivityTask</code> <a>Decision</a>.",
+    }),
+    defaultTaskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The default task priority to assign to the activity type. If not assigned, then <code>0</code> is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>in the <i>Amazon SWF Developer Guide</i>.</i>.</p>',
+    }),
+    defaultTaskScheduleToStartTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum duration that a task of this activity type can wait before being assigned to a worker. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultTaskScheduleToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum duration for a task of this activity type. This default can be overridden when scheduling an activity task using the <code>ScheduleActivityTask</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
   })
   .openapi({ required: ['domain', 'name', 'version'], title: 'RegisterActivityTypeInput' })
   .openapi('RegisterActivityTypeInput')
@@ -4396,33 +2947,21 @@ const TypeAlreadyExistsFaultSchema = z.any().openapi('TypeAlreadyExistsFault')
 
 const RegisterDomainInputSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Name of the domain to register. The name must be unique in the region that the domain is registered in.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A text description of the domain.' }),
-    ).exactOptional(),
-    workflowExecutionRetentionPeriodInDays: DurationInDaysSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The duration (in days) that records and histories of workflow executions on the domain should be kept by the service. After the retention period, the workflow execution isn\'t available in the results of visibility calls.</p> <p>If you pass the value <code>NONE</code> or <code>0</code> (zero), then the workflow execution history isn\'t retained. As soon as the workflow execution completes, the execution record and its history are deleted.</p> <p>The maximum workflow execution retention period is 90 days. For more information about Amazon SWF service limits, see: <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-limits.html">Amazon SWF Service Limits</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ),
-    tags: ResourceTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Tags to be added when registering a domain.</p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ).exactOptional(),
+    name: DomainNameSchema.openapi({
+      description:
+        '<p>Name of the domain to register. The name must be unique in the region that the domain is registered in.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'A text description of the domain.',
+    }),
+    workflowExecutionRetentionPeriodInDays: DurationInDaysSchema.openapi({
+      description:
+        '<p>The duration (in days) that records and histories of workflow executions on the domain should be kept by the service. After the retention period, the workflow execution isn\'t available in the results of visibility calls.</p> <p>If you pass the value <code>NONE</code> or <code>0</code> (zero), then the workflow execution history isn\'t retained. As soon as the workflow execution completes, the execution record and its history are deleted.</p> <p>The maximum workflow execution retention period is 90 days. For more information about Amazon SWF service limits, see: <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dg-limits.html">Amazon SWF Service Limits</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    tags: ResourceTagListSchema.exactOptional().openapi({
+      description:
+        '<p>Tags to be added when registering a domain.</p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
   })
   .openapi({
     required: ['name', 'workflowExecutionRetentionPeriodInDays'],
@@ -4436,156 +2975,102 @@ const TooManyTagsFaultSchema = z.any().openapi('TooManyTagsFault')
 
 const RegisterWorkflowTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the domain in which to register the workflow type.' }),
-    ),
-    name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the workflow type.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version of the workflow type.</p> <note> <p>The workflow type consists of the name and version, the combination of which must be unique within the domain. To get a list of all currently registered workflow types, use the <a>ListWorkflowTypes</a> action.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Textual description of the workflow type.' }),
-    ).exactOptional(),
-    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum duration of decision tasks for this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
-    defaultExecutionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default maximum duration for executions of this workflow type. You can override this default when starting an execution through the <a>StartWorkflowExecution</a> Action or <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds; an integer greater than or equal to 0. Unlike some of the other timeout parameters in Amazon SWF, you cannot specify a value of "NONE" for <code>defaultExecutionStartToCloseTimeout</code>; there is a one-year max limit on the time that a workflow execution can run. Exceeding this limit always causes the workflow execution to time out.</p>',
-        }),
-    ).exactOptional(),
-    defaultTaskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If set, specifies the default task list to use for scheduling decision tasks for executions of this workflow type. This default is used only if a task list isn't provided when starting the execution through the <a>StartWorkflowExecution</a> Action or <code>StartChildWorkflowExecution</code> <a>Decision</a>.",
-        }),
-    ).exactOptional(),
-    defaultTaskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default task priority to assign to the workflow type. If not assigned, then <code>0</code> is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    defaultChildPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    defaultLambdaRole: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The default IAM role attached to this workflow type.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t specify an IAM role when you start this workflow type, the default Lambda role is attached to the execution. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which to register the workflow type.',
+    }),
+    name: NameSchema.openapi({
+      description:
+        '<p>The name of the workflow type.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    version: VersionSchema.openapi({
+      description:
+        '<p>The version of the workflow type.</p> <note> <p>The workflow type consists of the name and version, the combination of which must be unique within the domain. To get a list of all currently registered workflow types, use the <a>ListWorkflowTypes</a> action.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'Textual description of the workflow type.',
+    }),
+    defaultTaskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum duration of decision tasks for this workflow type. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
+    defaultExecutionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default maximum duration for executions of this workflow type. You can override this default when starting an execution through the <a>StartWorkflowExecution</a> Action or <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The duration is specified in seconds; an integer greater than or equal to 0. Unlike some of the other timeout parameters in Amazon SWF, you cannot specify a value of "NONE" for <code>defaultExecutionStartToCloseTimeout</code>; there is a one-year max limit on the time that a workflow execution can run. Exceeding this limit always causes the workflow execution to time out.</p>',
+    }),
+    defaultTaskList: TaskListSchema.exactOptional().openapi({
+      description:
+        "If set, specifies the default task list to use for scheduling decision tasks for executions of this workflow type. This default is used only if a task list isn't provided when starting the execution through the <a>StartWorkflowExecution</a> Action or <code>StartChildWorkflowExecution</code> <a>Decision</a>.",
+    }),
+    defaultTaskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The default task priority to assign to the workflow type. If not assigned, then <code>0</code> is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    defaultChildPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the default policy to use for the child workflow executions when a workflow execution of this type is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This default can be overridden when starting a workflow execution using the <a>StartWorkflowExecution</a> action or the <code>StartChildWorkflowExecution</code> <a>Decision</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul>',
+    }),
+    defaultLambdaRole: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The default IAM role attached to this workflow type.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t specify an IAM role when you start this workflow type, the default Lambda role is attached to the execution. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
   })
   .openapi({ required: ['domain', 'name', 'version'], title: 'RegisterWorkflowTypeInput' })
   .openapi('RegisterWorkflowTypeInput')
 
 const RequestCancelWorkflowExecutionInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain containing the workflow execution to cancel.',
-        }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z.any().openapi({ description: 'The workflowId of the workflow execution to cancel.' }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z.any().openapi({ description: 'The runId of the workflow execution to cancel.' }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow execution to cancel.',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The workflowId of the workflow execution to cancel.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The runId of the workflow execution to cancel.',
+    }),
   })
   .openapi({ required: ['domain', 'workflowId'], title: 'RequestCancelWorkflowExecutionInput' })
   .openapi('RequestCancelWorkflowExecutionInput')
 
 const RespondActivityTaskCanceledInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
-        }),
-    ),
-    details: DataSchema.and(
-      z.any().openapi({ description: ' Information about the cancellation.' }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: ' Information about the cancellation.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'RespondActivityTaskCanceledInput' })
   .openapi('RespondActivityTaskCanceledInput')
 
 const RespondActivityTaskCompletedInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
-        }),
-    ),
-    result: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of the activity task. It is a free form string that is implementation specific.',
-        }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
+    }),
+    result: DataSchema.exactOptional().openapi({
+      description:
+        'The result of the activity task. It is a free form string that is implementation specific.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'RespondActivityTaskCompletedInput' })
   .openapi('RespondActivityTaskCompletedInput')
 
 const RespondActivityTaskFailedInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
-        }),
-    ),
-    reason: FailureReasonSchema.and(
-      z.any().openapi({ description: 'Description of the error that may assist in diagnostics.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: ' Detailed information about the failure.' }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        '<p>The <code>taskToken</code> of the <a>ActivityTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
+    }),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'Description of the error that may assist in diagnostics.',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: ' Detailed information about the failure.',
+    }),
   })
   .openapi({ required: ['taskToken'], title: 'RespondActivityTaskFailedInput' })
   .openapi('RespondActivityTaskFailedInput')
@@ -4610,76 +3095,44 @@ const DecisionTypeSchema = z
 
 const ScheduleActivityTaskDecisionAttributesSchema = z
   .object({
-    activityType: ActivityTypeSchema.and(
-      z.any().openapi({ description: ' The type of the activity task to schedule.' }),
-    ),
-    activityId: ActivityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The <code>activityId</code> of the activity task.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the activity.",
-        }),
-    ).exactOptional(),
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the activity task.' }),
-    ).exactOptional(),
-    scheduleToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum duration for this activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A schedule-to-close timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default schedule-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the name of the task list in which to schedule the activity task. If not specified, the <code>defaultTaskList</code> registered with the activity type is used.</p> <note> <p>A task list for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If set, specifies the priority with which the activity task is to be assigned to a worker. This overrides the defaultTaskPriority specified when registering the activity type using <a>RegisterActivityType</a>. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    scheduleToStartTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If set, specifies the maximum duration the activity task can wait to be assigned to a worker. This overrides the default schedule-to-start timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A schedule-to-start timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default schedule-to-start timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    startToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the maximum duration a worker may take to process this activity task. This overrides the default start-to-close timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A start-to-close timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    heartbeatTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the maximum time before which a worker processing a task of this type must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. If the worker subsequently attempts to record a heartbeat or returns a result, it is ignored. This overrides the default heartbeat timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
-        }),
-    ).exactOptional(),
+    activityType: ActivityTypeSchema.openapi({
+      description: ' The type of the activity task to schedule.',
+    }),
+    activityId: ActivityIdSchema.openapi({
+      description:
+        '<p> The <code>activityId</code> of the activity task.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "Data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the activity.",
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input provided to the activity task.',
+    }),
+    scheduleToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum duration for this activity task.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A schedule-to-close timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default schedule-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    taskList: TaskListSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the name of the task list in which to schedule the activity task. If not specified, the <code>defaultTaskList</code> registered with the activity type is used.</p> <note> <p>A task list for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> If set, specifies the priority with which the activity task is to be assigned to a worker. This overrides the defaultTaskPriority specified when registering the activity type using <a>RegisterActivityType</a>. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    scheduleToStartTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p> If set, specifies the maximum duration the activity task can wait to be assigned to a worker. This overrides the default schedule-to-start timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A schedule-to-start timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default schedule-to-start timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    startToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the maximum duration a worker may take to process this activity task. This overrides the default start-to-close timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A start-to-close timeout for this activity task must be specified either as a default for the activity type or through this field. If neither this field is set nor a default start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    heartbeatTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the maximum time before which a worker processing a task of this type must report progress by calling <a>RecordActivityTaskHeartbeat</a>. If the timeout is exceeded, the activity task is automatically timed out. If the worker subsequently attempts to record a heartbeat or returns a result, it is ignored. This overrides the default heartbeat timeout specified when registering the activity type using <a>RegisterActivityType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p>',
+    }),
   })
   .openapi({
     required: ['activityType', 'activityId'],
@@ -4690,13 +3143,9 @@ const ScheduleActivityTaskDecisionAttributesSchema = z
 
 const RequestCancelActivityTaskDecisionAttributesSchema = z
   .object({
-    activityId: ActivityIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>activityId</code> of the activity task to be canceled.',
-        }),
-    ),
+    activityId: ActivityIdSchema.openapi({
+      description: 'The <code>activityId</code> of the activity task to be canceled.',
+    }),
   })
   .openapi({
     required: ['activityId'],
@@ -4707,14 +3156,10 @@ const RequestCancelActivityTaskDecisionAttributesSchema = z
 
 const CompleteWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    result: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of the workflow execution. The form of the result is implementation defined.',
-        }),
-    ).exactOptional(),
+    result: DataSchema.exactOptional().openapi({
+      description:
+        'The result of the workflow execution. The form of the result is implementation defined.',
+    }),
   })
   .openapi({
     description:
@@ -4725,16 +3170,10 @@ const CompleteWorkflowExecutionDecisionAttributesSchema = z
 
 const FailWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    reason: FailureReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A descriptive reason for the failure that may help in diagnostics.',
-        }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: ' Details of the failure.' }),
-    ).exactOptional(),
+    reason: FailureReasonSchema.exactOptional().openapi({
+      description: 'A descriptive reason for the failure that may help in diagnostics.',
+    }),
+    details: DataSchema.exactOptional().openapi({ description: ' Details of the failure.' }),
   })
   .openapi({
     description:
@@ -4745,9 +3184,7 @@ const FailWorkflowExecutionDecisionAttributesSchema = z
 
 const CancelWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    details: DataSchema.and(
-      z.any().openapi({ description: ' Details of the cancellation.' }),
-    ).exactOptional(),
+    details: DataSchema.exactOptional().openapi({ description: ' Details of the cancellation.' }),
   })
   .openapi({
     description:
@@ -4758,63 +3195,39 @@ const CancelWorkflowExecutionDecisionAttributesSchema = z
 
 const ContinueAsNewWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input provided to the new workflow execution.' }),
-    ).exactOptional(),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the total duration for this workflow execution. This overrides the <code>defaultExecutionStartToCloseTimeout</code> specified when registering the workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>An execution start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this field. If neither this field is set nor a default execution start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The task list to use for the decisions of the new (continued) workflow execution.',
-        }),
-    ).exactOptional(),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The task priority that, if set, specifies the priority for the decision tasks for this workflow execution. This overrides the defaultTaskPriority specified when registering the workflow type. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the maximum duration of decision tasks for the new workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for the new workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the policy to use for the child workflow executions of the new execution if it is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags to associate with the new workflow execution. A maximum of 5 tags can be specified. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
-        }),
-    ).exactOptional(),
-    workflowTypeVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the workflow to start.' }),
-    ).exactOptional(),
-    lambdaRole: ArnSchema.and(
-      z.any().openapi({ description: 'The IAM role to attach to the new (continued) execution.' }),
-    ).exactOptional(),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input provided to the new workflow execution.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the total duration for this workflow execution. This overrides the <code>defaultExecutionStartToCloseTimeout</code> specified when registering the workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>An execution start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this field. If neither this field is set nor a default execution start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    taskList: TaskListSchema.exactOptional().openapi({
+      description:
+        'The task list to use for the decisions of the new (continued) workflow execution.',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> The task priority that, if set, specifies the priority for the decision tasks for this workflow execution. This overrides the defaultTaskPriority specified when registering the workflow type. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the maximum duration of decision tasks for the new workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for the new workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    childPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the policy to use for the child workflow executions of the new execution if it is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description:
+        'The list of tags to associate with the new workflow execution. A maximum of 5 tags can be specified. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
+    }),
+    workflowTypeVersion: VersionSchema.exactOptional().openapi({
+      description: 'The version of the workflow to start.',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role to attach to the new (continued) execution.',
+    }),
   })
   .openapi({
     description:
@@ -4825,10 +3238,8 @@ const ContinueAsNewWorkflowExecutionDecisionAttributesSchema = z
 
 const RecordMarkerDecisionAttributesSchema = z
   .object({
-    markerName: MarkerNameSchema.and(z.any().openapi({ description: ' The name of the marker.' })),
-    details: DataSchema.and(
-      z.any().openapi({ description: ' The details of the marker.' }),
-    ).exactOptional(),
+    markerName: MarkerNameSchema.openapi({ description: ' The name of the marker.' }),
+    details: DataSchema.exactOptional().openapi({ description: ' The details of the marker.' }),
   })
   .openapi({
     required: ['markerName'],
@@ -4839,30 +3250,18 @@ const RecordMarkerDecisionAttributesSchema = z
 
 const StartTimerDecisionAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The unique ID of the timer.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data attached to the event that can be used by the decider in subsequent workflow tasks.',
-        }),
-    ).exactOptional(),
-    startToFireTimeout: DurationInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The duration to wait before firing the timer.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>.</p>',
-        }),
-    ),
+    timerId: TimerIdSchema.openapi({
+      description:
+        '<p> The unique ID of the timer.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'The data attached to the event that can be used by the decider in subsequent workflow tasks.',
+    }),
+    startToFireTimeout: DurationInSecondsSchema.openapi({
+      description:
+        '<p> The duration to wait before firing the timer.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>.</p>',
+    }),
   })
   .openapi({
     required: ['timerId', 'startToFireTimeout'],
@@ -4873,9 +3272,7 @@ const StartTimerDecisionAttributesSchema = z
 
 const CancelTimerDecisionAttributesSchema = z
   .object({
-    timerId: TimerIdSchema.and(
-      z.any().openapi({ description: ' The unique ID of the timer to cancel.' }),
-    ),
+    timerId: TimerIdSchema.openapi({ description: ' The unique ID of the timer to cancel.' }),
   })
   .openapi({
     required: ['timerId'],
@@ -4886,44 +3283,24 @@ const CancelTimerDecisionAttributesSchema = z
 
 const SignalExternalWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The <code>workflowId</code> of the workflow execution to be signaled.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>runId</code> of the workflow execution to be signaled.',
-        }),
-    ).exactOptional(),
-    signalName: SignalNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The name of the signal.The target workflow execution uses the signal name and input to process the signal.',
-        }),
-    ),
-    input: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The input data to be provided with the signal. The target workflow execution uses the signal name and input data to process the signal.',
-        }),
-    ).exactOptional(),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data attached to the event that can be used by the decider in subsequent decision tasks.',
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description: ' The <code>workflowId</code> of the workflow execution to be signaled.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The <code>runId</code> of the workflow execution to be signaled.',
+    }),
+    signalName: SignalNameSchema.openapi({
+      description:
+        ' The name of the signal.The target workflow execution uses the signal name and input to process the signal.',
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description:
+        ' The input data to be provided with the signal. The target workflow execution uses the signal name and input data to process the signal.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'The data attached to the event that can be used by the decider in subsequent decision tasks.',
+    }),
   })
   .openapi({
     required: ['workflowId', 'signalName'],
@@ -4934,28 +3311,16 @@ const SignalExternalWorkflowExecutionDecisionAttributesSchema = z
 
 const RequestCancelExternalWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The <code>workflowId</code> of the external workflow execution to cancel.',
-        }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>runId</code> of the external workflow execution to cancel.',
-        }),
-    ).exactOptional(),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data attached to the event that can be used by the decider in subsequent workflow tasks.',
-        }),
-    ).exactOptional(),
+    workflowId: WorkflowIdSchema.openapi({
+      description: ' The <code>workflowId</code> of the external workflow execution to cancel.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The <code>runId</code> of the external workflow execution to cancel.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        'The data attached to the event that can be used by the decider in subsequent workflow tasks.',
+    }),
   })
   .openapi({
     required: ['workflowId'],
@@ -4966,79 +3331,47 @@ const RequestCancelExternalWorkflowExecutionDecisionAttributesSchema = z
 
 const StartChildWorkflowExecutionDecisionAttributesSchema = z
   .object({
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: ' The type of the workflow execution to be started.' }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The <code>workflowId</code> of the workflow execution.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the child workflow execution.",
-        }),
-    ).exactOptional(),
-    input: DataSchema.and(
-      z.any().openapi({ description: 'The input to be provided to the workflow execution.' }),
-    ).exactOptional(),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total duration for this workflow execution. This overrides the defaultExecutionStartToCloseTimeout specified when registering the workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>An execution start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default execution start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the task list to be used for decision tasks of the child workflow execution.</p> <note> <p>A task list for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> A task priority that, if set, specifies the priority for a decision task of this workflow execution. This overrides the defaultTaskPriority specified when registering the workflow type. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the maximum duration of decision tasks for this workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> If set, specifies the policy to use for the child workflow executions if the workflow execution being started is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags to associate with the child workflow execution. A maximum of 5 tags can be specified. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
-        }),
-    ).exactOptional(),
-    lambdaRole: ArnSchema.and(
-      z.any().openapi({ description: 'The IAM role attached to the child workflow execution.' }),
-    ).exactOptional(),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: ' The type of the workflow execution to be started.',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description:
+        '<p> The <code>workflowId</code> of the workflow execution.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "The data attached to the event that can be used by the decider in subsequent workflow tasks. This data isn't sent to the child workflow execution.",
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description: 'The input to be provided to the workflow execution.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The total duration for this workflow execution. This overrides the defaultExecutionStartToCloseTimeout specified when registering the workflow type.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>An execution start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default execution start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    taskList: TaskListSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the task list to be used for decision tasks of the child workflow execution.</p> <note> <p>A task list for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not contain the literal string <code>arn</code>.</p>',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p> A task priority that, if set, specifies the priority for a decision task of this workflow execution. This overrides the defaultTaskPriority specified when registering the workflow type. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the maximum duration of decision tasks for this workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    childPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p> If set, specifies the policy to use for the child workflow executions if the workflow execution being started is terminated by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description:
+        'The list of tags to associate with the child workflow execution. A maximum of 5 tags can be specified. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description: 'The IAM role attached to the child workflow execution.',
+    }),
   })
   .openapi({
     required: ['workflowType', 'workflowId'],
@@ -5049,38 +3382,23 @@ const StartChildWorkflowExecutionDecisionAttributesSchema = z
 
 const ScheduleLambdaFunctionDecisionAttributesSchema = z
   .object({
-    id: FunctionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the Lambda function execution in the event history.',
-        }),
-    ),
-    name: FunctionNameSchema.and(
-      z.any().openapi({ description: 'The name, or ARN, of the Lambda function to schedule.' }),
-    ),
-    control: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.",
-        }),
-    ).exactOptional(),
-    input: FunctionInputSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The optional input data to be supplied to the Lambda function.' }),
-    ).exactOptional(),
-    startToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timeout value, in seconds, after which the Lambda function is considered to be failed once it has started. This can be any integer from 1-300 (1s-5m). If no value is supplied, than a default value of 300s is assumed.',
-        }),
-    ).exactOptional(),
+    id: FunctionIdSchema.openapi({
+      description: 'A string that identifies the Lambda function execution in the event history.',
+    }),
+    name: FunctionNameSchema.openapi({
+      description: 'The name, or ARN, of the Lambda function to schedule.',
+    }),
+    control: DataSchema.exactOptional().openapi({
+      description:
+        "The data attached to the event that the decider can use in subsequent workflow tasks. This data isn't sent to the Lambda task.",
+    }),
+    input: FunctionInputSchema.exactOptional().openapi({
+      description: 'The optional input data to be supplied to the Lambda function.',
+    }),
+    startToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        'The timeout value, in seconds, after which the Lambda function is considered to be failed once it has started. This can be any integer from 1-300 (1s-5m). If no value is supplied, than a default value of 300s is assumed.',
+    }),
   })
   .openapi({
     required: ['id', 'name'],
@@ -5091,119 +3409,71 @@ const ScheduleLambdaFunctionDecisionAttributesSchema = z
 
 const DecisionSchema = z
   .object({
-    decisionType: DecisionTypeSchema.and(
-      z.any().openapi({ description: 'Specifies the type of the decision.' }),
-    ),
-    scheduleActivityTaskDecisionAttributes: ScheduleActivityTaskDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>ScheduleActivityTask</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
+    decisionType: DecisionTypeSchema.openapi({
+      description: 'Specifies the type of the decision.',
+    }),
+    scheduleActivityTaskDecisionAttributes:
+      ScheduleActivityTaskDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>ScheduleActivityTask</code> decision. It isn't set for other decision types.",
+      }),
     requestCancelActivityTaskDecisionAttributes:
-      RequestCancelActivityTaskDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>RequestCancelActivityTask</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
+      RequestCancelActivityTaskDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>RequestCancelActivityTask</code> decision. It isn't set for other decision types.",
+      }),
     completeWorkflowExecutionDecisionAttributes:
-      CompleteWorkflowExecutionDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>CompleteWorkflowExecution</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
-    failWorkflowExecutionDecisionAttributes: FailWorkflowExecutionDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>FailWorkflowExecution</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
-    cancelWorkflowExecutionDecisionAttributes: CancelWorkflowExecutionDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>CancelWorkflowExecution</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
+      CompleteWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>CompleteWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
+    failWorkflowExecutionDecisionAttributes:
+      FailWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>FailWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
+    cancelWorkflowExecutionDecisionAttributes:
+      CancelWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>CancelWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
     continueAsNewWorkflowExecutionDecisionAttributes:
-      ContinueAsNewWorkflowExecutionDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>ContinueAsNewWorkflowExecution</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
-    recordMarkerDecisionAttributes: RecordMarkerDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>RecordMarker</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
-    startTimerDecisionAttributes: StartTimerDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>StartTimer</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
-    cancelTimerDecisionAttributes: CancelTimerDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>CancelTimer</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
+      ContinueAsNewWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>ContinueAsNewWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
+    recordMarkerDecisionAttributes: RecordMarkerDecisionAttributesSchema.exactOptional().openapi({
+      description:
+        "Provides the details of the <code>RecordMarker</code> decision. It isn't set for other decision types.",
+    }),
+    startTimerDecisionAttributes: StartTimerDecisionAttributesSchema.exactOptional().openapi({
+      description:
+        "Provides the details of the <code>StartTimer</code> decision. It isn't set for other decision types.",
+    }),
+    cancelTimerDecisionAttributes: CancelTimerDecisionAttributesSchema.exactOptional().openapi({
+      description:
+        "Provides the details of the <code>CancelTimer</code> decision. It isn't set for other decision types.",
+    }),
     signalExternalWorkflowExecutionDecisionAttributes:
-      SignalExternalWorkflowExecutionDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>SignalExternalWorkflowExecution</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
+      SignalExternalWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>SignalExternalWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
     requestCancelExternalWorkflowExecutionDecisionAttributes:
-      RequestCancelExternalWorkflowExecutionDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>RequestCancelExternalWorkflowExecution</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
+      RequestCancelExternalWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>RequestCancelExternalWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
     startChildWorkflowExecutionDecisionAttributes:
-      StartChildWorkflowExecutionDecisionAttributesSchema.and(
-        z
-          .any()
-          .openapi({
-            description:
-              "Provides the details of the <code>StartChildWorkflowExecution</code> decision. It isn't set for other decision types.",
-          }),
-      ).exactOptional(),
-    scheduleLambdaFunctionDecisionAttributes: ScheduleLambdaFunctionDecisionAttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Provides the details of the <code>ScheduleLambdaFunction</code> decision. It isn't set for other decision types.",
-        }),
-    ).exactOptional(),
+      StartChildWorkflowExecutionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>StartChildWorkflowExecution</code> decision. It isn't set for other decision types.",
+      }),
+    scheduleLambdaFunctionDecisionAttributes:
+      ScheduleLambdaFunctionDecisionAttributesSchema.exactOptional().openapi({
+        description:
+          "Provides the details of the <code>ScheduleLambdaFunction</code> decision. It isn't set for other decision types.",
+      }),
   })
   .openapi({
     required: ['decisionType'],
@@ -5216,25 +3486,17 @@ const DecisionListSchema = z.array(DecisionSchema).openapi('DecisionList')
 
 const RespondDecisionTaskCompletedInputSchema = z
   .object({
-    taskToken: TaskTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The <code>taskToken</code> from the <a>DecisionTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
-        }),
-    ),
-    decisions: DecisionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of decisions (possibly empty) made by the decider while processing this decision task. See the docs for the <a>Decision</a> structure for details.',
-        }),
-    ).exactOptional(),
-    executionContext: DataSchema.and(
-      z.any().openapi({ description: 'User defined context to add to workflow execution.' }),
-    ).exactOptional(),
+    taskToken: TaskTokenSchema.openapi({
+      description:
+        '<p>The <code>taskToken</code> from the <a>DecisionTask</a>.</p> <important> <p> <code>taskToken</code> is generated by the service and should be treated as an opaque value. If the task is passed to another process, its <code>taskToken</code> must also be passed. This enables it to provide its progress and respond with results.</p> </important>',
+    }),
+    decisions: DecisionListSchema.exactOptional().openapi({
+      description:
+        'The list of decisions (possibly empty) made by the decider while processing this decision task. See the docs for the <a>Decision</a> structure for details.',
+    }),
+    executionContext: DataSchema.exactOptional().openapi({
+      description: 'User defined context to add to workflow execution.',
+    }),
   })
   .openapi({
     required: ['taskToken'],
@@ -5245,35 +3507,22 @@ const RespondDecisionTaskCompletedInputSchema = z
 
 const SignalWorkflowExecutionInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain containing the workflow execution to signal.',
-        }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z.any().openapi({ description: 'The workflowId of the workflow execution to signal.' }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z.any().openapi({ description: 'The runId of the workflow execution to signal.' }),
-    ).exactOptional(),
-    signalName: SignalNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the signal. This name must be meaningful to the target workflow.',
-        }),
-    ),
-    input: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Data to attach to the <code>WorkflowExecutionSignaled</code> event in the target workflow execution's history.",
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain containing the workflow execution to signal.',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The workflowId of the workflow execution to signal.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The runId of the workflow execution to signal.',
+    }),
+    signalName: SignalNameSchema.openapi({
+      description: 'The name of the signal. This name must be meaningful to the target workflow.',
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description:
+        "Data to attach to the <code>WorkflowExecutionSignaled</code> event in the target workflow execution's history.",
+    }),
   })
   .openapi({
     required: ['domain', 'workflowId', 'signalName'],
@@ -5283,14 +3532,10 @@ const SignalWorkflowExecutionInputSchema = z
 
 const RunSchema = z
   .object({
-    runId: WorkflowRunIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>runId</code> of a workflow execution. This ID is generated by the service and can be used to uniquely identify the workflow execution within a domain.',
-        }),
-    ).exactOptional(),
+    runId: WorkflowRunIdSchema.exactOptional().openapi({
+      description:
+        'The <code>runId</code> of a workflow execution. This ID is generated by the service and can be used to uniquely identify the workflow execution within a domain.',
+    }),
   })
   .openapi({
     description: 'Specifies the <code>runId</code> of a workflow execution.',
@@ -5300,88 +3545,46 @@ const RunSchema = z
 
 const StartWorkflowExecutionInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the domain in which the workflow execution is created.',
-        }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user defined identifier associated with the workflow execution. You can use this to associate a custom identifier with the workflow execution. You may specify the same identifier if a workflow execution is logically a <i>restart</i> of a previous execution. You cannot have two open workflow executions with the same <code>workflowId</code> at the same time within the same domain.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The type of the workflow to start.' }),
-    ),
-    taskList: TaskListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The task list to use for the decision tasks generated for this workflow execution. This overrides the <code>defaultTaskList</code> specified when registering the workflow type.</p> <note> <p>A task list for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    taskPriority: TaskPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The task priority to use for this workflow execution. This overrides any default priority that was assigned when the workflow type was registered. If not set, then the default task priority for the workflow type is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    input: DataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The input for the workflow execution. This is a free form string which should be meaningful to the workflow you are starting. This <code>input</code> is made available to the new workflow execution in the <code>WorkflowExecutionStarted</code> history event.',
-        }),
-    ).exactOptional(),
-    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total duration for this workflow execution. This overrides the defaultExecutionStartToCloseTimeout specified when registering the workflow type.</p> <p>The duration is specified in seconds; an integer greater than or equal to <code>0</code>. Exceeding this limit causes the workflow execution to time out. Unlike some of the other timeout parameters in Amazon SWF, you cannot specify a value of "NONE" for this timeout; there is a one-year max limit on the time that a workflow execution can run.</p> <note> <p>An execution start-to-close timeout must be specified either through this parameter or as a default when the workflow type is registered. If neither this parameter nor a default execution start-to-close timeout is specified, a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    tagList: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of tags to associate with the workflow execution. You can specify a maximum of 5 tags. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
-        }),
-    ).exactOptional(),
-    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the maximum duration of decision tasks for this workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the policy to use for the child workflow executions of this workflow execution if it is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
-    lambdaRole: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IAM role to attach to this workflow execution.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t attach an IAM role, any attempt to schedule a Lambda task fails. This results in a <code>ScheduleLambdaFunctionFailed</code> history event. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain in which the workflow execution is created.',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description:
+        '<p>The user defined identifier associated with the workflow execution. You can use this to associate a custom identifier with the workflow execution. You may specify the same identifier if a workflow execution is logically a <i>restart</i> of a previous execution. You cannot have two open workflow executions with the same <code>workflowId</code> at the same time within the same domain.</p> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({ description: 'The type of the workflow to start.' }),
+    taskList: TaskListSchema.exactOptional().openapi({
+      description:
+        '<p>The task list to use for the decision tasks generated for this workflow execution. This overrides the <code>defaultTaskList</code> specified when registering the workflow type.</p> <note> <p>A task list for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task list was specified at registration time then a fault is returned.</p> </note> <p>The specified string must not start or end with whitespace. It must not contain a <code>:</code> (colon), <code>/</code> (slash), <code>|</code> (vertical bar), or any control characters (<code>\\u0000-\\u001f</code> | <code>\\u007f-\\u009f</code>). Also, it must not <i>be</i> the literal string <code>arn</code>.</p>',
+    }),
+    taskPriority: TaskPrioritySchema.exactOptional().openapi({
+      description:
+        '<p>The task priority to use for this workflow execution. This overrides any default priority that was assigned when the workflow type was registered. If not set, then the default task priority for the workflow type is used. Valid values are integers that range from Java\'s <code>Integer.MIN_VALUE</code> (-2147483648) to <code>Integer.MAX_VALUE</code> (2147483647). Higher numbers indicate higher priority.</p> <p>For more information about setting task priority, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html">Setting Task Priority</a> in the <i>Amazon SWF Developer Guide</i>.</p>',
+    }),
+    input: DataSchema.exactOptional().openapi({
+      description:
+        'The input for the workflow execution. This is a free form string which should be meaningful to the workflow you are starting. This <code>input</code> is made available to the new workflow execution in the <code>WorkflowExecutionStarted</code> history event.',
+    }),
+    executionStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The total duration for this workflow execution. This overrides the defaultExecutionStartToCloseTimeout specified when registering the workflow type.</p> <p>The duration is specified in seconds; an integer greater than or equal to <code>0</code>. Exceeding this limit causes the workflow execution to time out. Unlike some of the other timeout parameters in Amazon SWF, you cannot specify a value of "NONE" for this timeout; there is a one-year max limit on the time that a workflow execution can run.</p> <note> <p>An execution start-to-close timeout must be specified either through this parameter or as a default when the workflow type is registered. If neither this parameter nor a default execution start-to-close timeout is specified, a fault is returned.</p> </note>',
+    }),
+    tagList: TagListSchema.exactOptional().openapi({
+      description:
+        'The list of tags to associate with the workflow execution. You can specify a maximum of 5 tags. You can list workflow executions with a specific tag by calling <a>ListOpenWorkflowExecutions</a> or <a>ListClosedWorkflowExecutions</a> and specifying a <a>TagFilter</a>.',
+    }),
+    taskStartToCloseTimeout: DurationInSecondsOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the maximum duration of decision tasks for this workflow execution. This parameter overrides the <code>defaultTaskStartToCloseTimout</code> specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The duration is specified in seconds, an integer greater than or equal to <code>0</code>. You can use <code>NONE</code> to specify unlimited duration.</p> <note> <p>A task start-to-close timeout for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default task start-to-close timeout was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    childPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the policy to use for the child workflow executions of this workflow execution if it is terminated, by calling the <a>TerminateWorkflowExecution</a> action explicitly or due to an expired timeout. This policy overrides the default child policy specified when registering the workflow type using <a>RegisterWorkflowType</a>.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
+    }),
+    lambdaRole: ArnSchema.exactOptional().openapi({
+      description:
+        '<p>The IAM role to attach to this workflow execution.</p> <note> <p>Executions of this workflow type need IAM roles to invoke Lambda functions. If you don\'t attach an IAM role, any attempt to schedule a Lambda task fails. This results in a <code>ScheduleLambdaFunctionFailed</code> history event. For more information, see <a href="https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html">https://docs.aws.amazon.com/amazonswf/latest/developerguide/lambda-task.html</a> in the <i>Amazon SWF Developer Guide</i>.</p> </note>',
+    }),
   })
   .openapi({
     required: ['domain', 'workflowId', 'workflowType'],
@@ -5397,81 +3600,69 @@ const DefaultUndefinedFaultSchema = z.any().openapi('DefaultUndefinedFault')
 
 const TagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.' }),
-    ),
-    tags: ResourceTagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of tags to add to a domain. </p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
-        }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.',
+    }),
+    tags: ResourceTagListSchema.openapi({
+      description:
+        '<p>The list of tags to add to a domain. </p> <p>Tags may only contain unicode letters, digits, whitespace, or these symbols: <code>_ . : / = + - @</code>.</p>',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceInput' })
   .openapi('TagResourceInput')
 
 const TerminateWorkflowExecutionInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The domain of the workflow execution to terminate.' }),
-    ),
-    workflowId: WorkflowIdSchema.and(
-      z.any().openapi({ description: 'The workflowId of the workflow execution to terminate.' }),
-    ),
-    runId: WorkflowRunIdOptionalSchema.and(
-      z.any().openapi({ description: 'The runId of the workflow execution to terminate.' }),
-    ).exactOptional(),
-    reason: TerminateReasonSchema.and(
-      z
-        .any()
-        .openapi({ description: ' A descriptive reason for terminating the workflow execution.' }),
-    ).exactOptional(),
-    details: DataSchema.and(
-      z.any().openapi({ description: ' Details for terminating the workflow execution.' }),
-    ).exactOptional(),
-    childPolicy: ChildPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If set, specifies the policy to use for the child workflow executions of the workflow execution being terminated. This policy overrides the child policy specified for the workflow execution at registration time or when starting the execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
-        }),
-    ).exactOptional(),
+    domain: DomainNameSchema.openapi({
+      description: 'The domain of the workflow execution to terminate.',
+    }),
+    workflowId: WorkflowIdSchema.openapi({
+      description: 'The workflowId of the workflow execution to terminate.',
+    }),
+    runId: WorkflowRunIdOptionalSchema.exactOptional().openapi({
+      description: 'The runId of the workflow execution to terminate.',
+    }),
+    reason: TerminateReasonSchema.exactOptional().openapi({
+      description: ' A descriptive reason for terminating the workflow execution.',
+    }),
+    details: DataSchema.exactOptional().openapi({
+      description: ' Details for terminating the workflow execution.',
+    }),
+    childPolicy: ChildPolicySchema.exactOptional().openapi({
+      description:
+        '<p>If set, specifies the policy to use for the child workflow executions of the workflow execution being terminated. This policy overrides the child policy specified for the workflow execution at registration time or when starting the execution.</p> <p>The supported child policies are:</p> <ul> <li> <p> <code>TERMINATE</code> – The child executions are terminated.</p> </li> <li> <p> <code>REQUEST_CANCEL</code> – A request to cancel is attempted for each child execution by recording a <code>WorkflowExecutionCancelRequested</code> event in its history. It is up to the decider to take appropriate actions when it receives an execution history with this event.</p> </li> <li> <p> <code>ABANDON</code> – No action is taken. The child executions continue to run.</p> </li> </ul> <note> <p>A child policy for this workflow execution must be specified either as a default for the workflow type or through this parameter. If neither this parameter is set nor a default child policy was specified at registration time then a fault is returned.</p> </note>',
+    }),
   })
   .openapi({ required: ['domain', 'workflowId'], title: 'TerminateWorkflowExecutionInput' })
   .openapi('TerminateWorkflowExecutionInput')
 
 const UndeprecateActivityTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain of the deprecated activity type.' }),
-    ),
-    activityType: ActivityTypeSchema.and(
-      z.any().openapi({ description: 'The activity type to undeprecate.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain of the deprecated activity type.',
+    }),
+    activityType: ActivityTypeSchema.openapi({ description: 'The activity type to undeprecate.' }),
   })
   .openapi({ required: ['domain', 'activityType'], title: 'UndeprecateActivityTypeInput' })
   .openapi('UndeprecateActivityTypeInput')
 
 const UndeprecateDomainInputSchema = z
   .object({
-    name: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain of the deprecated workflow type.' }),
-    ),
+    name: DomainNameSchema.openapi({
+      description: 'The name of the domain of the deprecated workflow type.',
+    }),
   })
   .openapi({ required: ['name'], title: 'UndeprecateDomainInput' })
   .openapi('UndeprecateDomainInput')
 
 const UndeprecateWorkflowTypeInputSchema = z
   .object({
-    domain: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain of the deprecated workflow type.' }),
-    ),
-    workflowType: WorkflowTypeSchema.and(
-      z.any().openapi({ description: 'The name of the domain of the deprecated workflow type.' }),
-    ),
+    domain: DomainNameSchema.openapi({
+      description: 'The name of the domain of the deprecated workflow type.',
+    }),
+    workflowType: WorkflowTypeSchema.openapi({
+      description: 'The name of the domain of the deprecated workflow type.',
+    }),
   })
   .openapi({ required: ['domain', 'workflowType'], title: 'UndeprecateWorkflowTypeInput' })
   .openapi('UndeprecateWorkflowTypeInput')
@@ -5480,12 +3671,12 @@ const ResourceTagKeyListSchema = z.array(ResourceTagKeySchema).openapi('Resource
 
 const UntagResourceInputSchema = z
   .object({
-    resourceArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.' }),
-    ),
-    tagKeys: ResourceTagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tags to remove from the Amazon SWF domain.' }),
-    ),
+    resourceArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) for the Amazon SWF domain.',
+    }),
+    tagKeys: ResourceTagKeyListSchema.openapi({
+      description: 'The list of tags to remove from the Amazon SWF domain.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceInput' })
   .openapi('UntagResourceInput')

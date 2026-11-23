@@ -48,20 +48,16 @@ const ObjectSchema = z
 
 const ScheduleConfigurationSchema = z
   .object({
-    FirstExecutionFrom: NonBlankStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.',
-        }),
-    ).exactOptional(),
-    Object: ObjectSchema.and(
-      z.any().openapi({ description: 'The name of the object to pull from the data source.' }),
-    ).exactOptional(),
-    ScheduleExpression: NonBlankStringSchema.and(
-      z.any().openapi({ description: 'How often the data should be pulled from data source.' }),
-    ),
+    FirstExecutionFrom: NonBlankStringSchema.exactOptional().openapi({
+      description:
+        'The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.',
+    }),
+    Object: ObjectSchema.exactOptional().openapi({
+      description: 'The name of the object to pull from the data source.',
+    }),
+    ScheduleExpression: NonBlankStringSchema.openapi({
+      description: 'How often the data should be pulled from data source.',
+    }),
   })
   .openapi({
     required: ['ScheduleExpression'],
@@ -101,18 +97,12 @@ const FieldsMapSchema = z.record(z.string(), FieldsListSchema).openapi('FieldsMa
 
 const FileConfigurationSchema = z
   .object({
-    Folders: FolderListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Identifiers for the source folders to pull all files from recursively.',
-        }),
-    ),
-    Filters: FieldsMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Restrictions for what files should be pulled from the source.' }),
-    ).exactOptional(),
+    Folders: FolderListSchema.openapi({
+      description: 'Identifiers for the source folders to pull all files from recursively.',
+    }),
+    Filters: FieldsMapSchema.exactOptional().openapi({
+      description: 'Restrictions for what files should be pulled from the source.',
+    }),
   })
   .openapi({
     required: ['Folders'],
@@ -127,59 +117,35 @@ const ObjectConfigurationSchema = z
 
 const CreateDataIntegrationResponseSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN)' }),
-    ).exactOptional(),
-    Id: UUIDSchema.and(z.any().openapi({ description: 'A unique identifier.' })).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the DataIntegration.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the DataIntegration.' }),
-    ).exactOptional(),
-    KmsKey: NonBlankStringSchema.and(
-      z.any().openapi({ description: 'The KMS key for the DataIntegration.' }),
-    ).exactOptional(),
-    SourceURI: SourceURISchema.and(
-      z.any().openapi({ description: 'The URI of the data source.' }),
-    ).exactOptional(),
-    ScheduleConfiguration: ScheduleConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data and how often it should be pulled from the source.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    ClientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    FileConfiguration: FileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what files should be pulled from the source.',
-        }),
-    ).exactOptional(),
-    ObjectConfiguration: ObjectConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what data should be pulled from the source.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({ description: 'The Amazon Resource Name (ARN)' }),
+    Id: UUIDSchema.exactOptional().openapi({ description: 'A unique identifier.' }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the DataIntegration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the DataIntegration.',
+    }),
+    KmsKey: NonBlankStringSchema.exactOptional().openapi({
+      description: 'The KMS key for the DataIntegration.',
+    }),
+    SourceURI: SourceURISchema.exactOptional().openapi({
+      description: 'The URI of the data source.',
+    }),
+    ScheduleConfiguration: ScheduleConfigurationSchema.exactOptional().openapi({
+      description: 'The name of the data and how often it should be pulled from the source.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    ClientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    FileConfiguration: FileConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what files should be pulled from the source.',
+    }),
+    ObjectConfiguration: ObjectConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what data should be pulled from the source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDataIntegrationResponse')
@@ -198,9 +164,9 @@ const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
 
 const CreateEventIntegrationResponseSchema = z
   .object({
-    EventIntegrationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the event integration. ' }),
-    ).exactOptional(),
+    EventIntegrationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the event integration. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateEventIntegrationResponse')
@@ -212,59 +178,45 @@ const SourceSchema = z
   .max(256)
   .openapi('Source')
 
-const DeleteDataIntegrationResponseSchema = z.object({}).openapi('DeleteDataIntegrationResponse')
+const DeleteDataIntegrationResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteDataIntegrationResponse')
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
 
-const DeleteEventIntegrationResponseSchema = z.object({}).openapi('DeleteEventIntegrationResponse')
+const DeleteEventIntegrationResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteEventIntegrationResponse')
 
 const GetDataIntegrationResponseSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the DataIntegration.' }),
-    ).exactOptional(),
-    Id: UUIDSchema.and(z.any().openapi({ description: 'A unique identifier.' })).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the DataIntegration.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The KMS key for the DataIntegration.' }),
-    ).exactOptional(),
-    KmsKey: NonBlankStringSchema.and(
-      z.any().openapi({ description: 'The KMS key for the DataIntegration.' }),
-    ).exactOptional(),
-    SourceURI: SourceURISchema.and(
-      z.any().openapi({ description: 'The URI of the data source.' }),
-    ).exactOptional(),
-    ScheduleConfiguration: ScheduleConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data and how often it should be pulled from the source.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    FileConfiguration: FileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what files should be pulled from the source.',
-        }),
-    ).exactOptional(),
-    ObjectConfiguration: ObjectConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what data should be pulled from the source.',
-        }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the DataIntegration.',
+    }),
+    Id: UUIDSchema.exactOptional().openapi({ description: 'A unique identifier.' }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the DataIntegration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The KMS key for the DataIntegration.',
+    }),
+    KmsKey: NonBlankStringSchema.exactOptional().openapi({
+      description: 'The KMS key for the DataIntegration.',
+    }),
+    SourceURI: SourceURISchema.exactOptional().openapi({
+      description: 'The URI of the data source.',
+    }),
+    ScheduleConfiguration: ScheduleConfigurationSchema.exactOptional().openapi({
+      description: 'The name of the data and how often it should be pulled from the source.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    FileConfiguration: FileConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what files should be pulled from the source.',
+    }),
+    ObjectConfiguration: ObjectConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what data should be pulled from the source.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataIntegrationResponse')
@@ -277,37 +229,29 @@ const EventBridgeBusSchema = z
   .openapi('EventBridgeBus')
 
 const EventFilterSchema = z
-  .object({
-    Source: SourceSchema.and(z.any().openapi({ description: 'The source of the events.' })),
-  })
+  .object({ Source: SourceSchema.openapi({ description: 'The source of the events.' }) })
   .openapi({ required: ['Source'], description: 'The event filter.' })
   .openapi('EventFilter')
 
 const GetEventIntegrationResponseSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the event integration. ' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the event integration.' }),
-    ).exactOptional(),
-    EventIntegrationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the event integration.' }),
-    ).exactOptional(),
-    EventBridgeBus: EventBridgeBusSchema.and(
-      z.any().openapi({ description: 'The EventBridge bus.' }),
-    ).exactOptional(),
-    EventFilter: EventFilterSchema.and(
-      z.any().openapi({ description: 'The event filter.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the event integration. ',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the event integration.',
+    }),
+    EventIntegrationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the event integration.',
+    }),
+    EventBridgeBus: EventBridgeBusSchema.exactOptional().openapi({
+      description: 'The EventBridge bus.',
+    }),
+    EventFilter: EventFilterSchema.exactOptional().openapi({ description: 'The event filter.' }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEventIntegrationResponse')
@@ -316,24 +260,16 @@ const ClientIdSchema = z.string().regex(/.*/).min(1).max(255).openapi('ClientId'
 
 const DataIntegrationAssociationSummarySchema = z
   .object({
-    DataIntegrationAssociationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the DataIntegration association.',
-        }),
-    ).exactOptional(),
-    DataIntegrationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the DataIntegration.' }),
-    ).exactOptional(),
-    ClientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the client that is associated with the DataIntegration association.',
-        }),
-    ).exactOptional(),
+    DataIntegrationAssociationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the DataIntegration association.',
+    }),
+    DataIntegrationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the DataIntegration.',
+    }),
+    ClientId: ClientIdSchema.exactOptional().openapi({
+      description:
+        'The identifier for the client that is associated with the DataIntegration association.',
+    }),
   })
   .openapi({
     description: 'Summary information about the DataIntegration association.',
@@ -351,37 +287,27 @@ const NextTokenSchema = z.string().regex(/.*/).min(1).max(1000).openapi('NextTok
 
 const ListDataIntegrationAssociationsResponseSchema = z
   .object({
-    DataIntegrationAssociations: DataIntegrationAssociationsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) and unique ID of the DataIntegration association.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    DataIntegrationAssociations: DataIntegrationAssociationsListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) and unique ID of the DataIntegration association.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDataIntegrationAssociationsResponse')
 
 const DataIntegrationSummarySchema = z
   .object({
-    Arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the DataIntegration.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the DataIntegration.' }),
-    ).exactOptional(),
-    SourceURI: SourceURISchema.and(
-      z.any().openapi({ description: 'The URI of the data source.' }),
-    ).exactOptional(),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the DataIntegration.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the DataIntegration.' }),
+    SourceURI: SourceURISchema.exactOptional().openapi({
+      description: 'The URI of the data source.',
+    }),
   })
   .openapi({ description: 'Summary information about the DataIntegration.', required: [] })
   .openapi('DataIntegrationSummary')
@@ -394,17 +320,13 @@ const DataIntegrationsListSchema = z
 
 const ListDataIntegrationsResponseSchema = z
   .object({
-    DataIntegrations: DataIntegrationsListSchema.and(
-      z.any().openapi({ description: 'The DataIntegrations associated with this account.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    DataIntegrations: DataIntegrationsListSchema.exactOptional().openapi({
+      description: 'The DataIntegrations associated with this account.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDataIntegrationsResponse')
@@ -422,33 +344,24 @@ const ClientAssociationMetadataSchema = z
 
 const EventIntegrationAssociationSchema = z
   .object({
-    EventIntegrationAssociationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) for the event integration association.',
-        }),
-    ).exactOptional(),
-    EventIntegrationAssociationId: UUIDSchema.and(
-      z.any().openapi({ description: 'The identifier for the event integration association.' }),
-    ).exactOptional(),
-    EventIntegrationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the event integration.' }),
-    ).exactOptional(),
-    ClientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the client that is associated with the event integration.',
-        }),
-    ).exactOptional(),
-    EventBridgeRuleName: EventBridgeRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the EventBridge rule.' }),
-    ).exactOptional(),
-    ClientAssociationMetadata: ClientAssociationMetadataSchema.and(
-      z.any().openapi({ description: 'The metadata associated with the client.' }),
-    ).exactOptional(),
+    EventIntegrationAssociationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the event integration association.',
+    }),
+    EventIntegrationAssociationId: UUIDSchema.exactOptional().openapi({
+      description: 'The identifier for the event integration association.',
+    }),
+    EventIntegrationName: NameSchema.exactOptional().openapi({
+      description: 'The name of the event integration.',
+    }),
+    ClientId: ClientIdSchema.exactOptional().openapi({
+      description: 'The identifier for the client that is associated with the event integration.',
+    }),
+    EventBridgeRuleName: EventBridgeRuleNameSchema.exactOptional().openapi({
+      description: 'The name of the EventBridge rule.',
+    }),
+    ClientAssociationMetadata: ClientAssociationMetadataSchema.exactOptional().openapi({
+      description: 'The metadata associated with the client.',
+    }),
   })
   .openapi({ description: 'The event integration association.', required: [] })
   .openapi('EventIntegrationAssociation')
@@ -461,46 +374,36 @@ const EventIntegrationAssociationsListSchema = z
 
 const ListEventIntegrationAssociationsResponseSchema = z
   .object({
-    EventIntegrationAssociations: EventIntegrationAssociationsListSchema.and(
-      z.any().openapi({ description: 'The event integration associations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    EventIntegrationAssociations: EventIntegrationAssociationsListSchema.exactOptional().openapi({
+      description: 'The event integration associations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventIntegrationAssociationsResponse')
 
 const EventIntegrationSchema = z
   .object({
-    EventIntegrationArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the event integration.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the event integration.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The event integration description.' }),
-    ).exactOptional(),
-    EventFilter: EventFilterSchema.and(
-      z.any().openapi({ description: 'The event integration filter.' }),
-    ).exactOptional(),
-    EventBridgeBus: EventBridgeBusSchema.and(
-      z.any().openapi({ description: 'The Amazon EventBridge bus for the event integration.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    EventIntegrationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the event integration.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the event integration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The event integration description.',
+    }),
+    EventFilter: EventFilterSchema.exactOptional().openapi({
+      description: 'The event integration filter.',
+    }),
+    EventBridgeBus: EventBridgeBusSchema.exactOptional().openapi({
+      description: 'The Amazon EventBridge bus for the event integration.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ description: 'The event integration.', required: [] })
   .openapi('EventIntegration')
@@ -513,33 +416,27 @@ const EventIntegrationsListSchema = z
 
 const ListEventIntegrationsResponseSchema = z
   .object({
-    EventIntegrations: EventIntegrationsListSchema.and(
-      z.any().openapi({ description: 'The event integrations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    EventIntegrations: EventIntegrationsListSchema.exactOptional().openapi({
+      description: 'The event integrations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListEventIntegrationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({ description: 'Information about the tags.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -548,57 +445,39 @@ const TagKeySchema = z
   .max(128)
   .openapi('TagKey')
 
-const UpdateDataIntegrationResponseSchema = z.object({}).openapi('UpdateDataIntegrationResponse')
+const UpdateDataIntegrationResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateDataIntegrationResponse')
 
-const UpdateEventIntegrationResponseSchema = z.object({}).openapi('UpdateEventIntegrationResponse')
+const UpdateEventIntegrationResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateEventIntegrationResponse')
 
 const CreateDataIntegrationRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the DataIntegration.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the DataIntegration.' }),
-    ).exactOptional(),
-    KmsKey: NonBlankStringSchema.and(
-      z.any().openapi({ description: 'The KMS key for the DataIntegration.' }),
-    ),
-    SourceURI: SourceURISchema.and(z.any().openapi({ description: 'The URI of the data source.' })),
-    ScheduleConfig: ScheduleConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the data and how often it should be pulled from the source.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
-    ClientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    FileConfiguration: FileConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what files should be pulled from the source.',
-        }),
-    ).exactOptional(),
-    ObjectConfiguration: ObjectConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for what data should be pulled from the source.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the DataIntegration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the DataIntegration.',
+    }),
+    KmsKey: NonBlankStringSchema.openapi({ description: 'The KMS key for the DataIntegration.' }),
+    SourceURI: SourceURISchema.openapi({ description: 'The URI of the data source.' }),
+    ScheduleConfig: ScheduleConfigurationSchema.openapi({
+      description: 'The name of the data and how often it should be pulled from the source.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
+    ClientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    FileConfiguration: FileConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what files should be pulled from the source.',
+    }),
+    ObjectConfiguration: ObjectConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for what data should be pulled from the source.',
+    }),
   })
   .openapi({
     required: ['Name', 'KmsKey', 'SourceURI', 'ScheduleConfig'],
@@ -608,30 +487,20 @@ const CreateDataIntegrationRequestSchema = z
 
 const CreateEventIntegrationRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The name of the event integration.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the event integration.' }),
-    ).exactOptional(),
-    EventFilter: EventFilterSchema.and(z.any().openapi({ description: 'The event filter.' })),
-    EventBridgeBus: EventBridgeBusSchema.and(
-      z.any().openapi({ description: 'The EventBridge bus.' }),
-    ),
-    ClientToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'The name of the event integration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the event integration.',
+    }),
+    EventFilter: EventFilterSchema.openapi({ description: 'The event filter.' }),
+    EventBridgeBus: EventBridgeBusSchema.openapi({ description: 'The EventBridge bus.' }),
+    ClientToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">Making retries safe with idempotent APIs</a>.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({
     required: ['Name', 'EventFilter', 'EventBridgeBus'],
@@ -647,49 +516,49 @@ const IdentifierSchema = z
   .openapi('Identifier')
 
 const DeleteDataIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDataIntegrationRequest' })
   .openapi('DeleteDataIntegrationRequest')
 
 const DeleteEventIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEventIntegrationRequest' })
   .openapi('DeleteEventIntegrationRequest')
 
 const GetDataIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDataIntegrationRequest' })
   .openapi('GetDataIntegrationRequest')
 
 const GetEventIntegrationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEventIntegrationRequest' })
   .openapi('GetEventIntegrationRequest')
 
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListDataIntegrationAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDataIntegrationAssociationsRequest' })
   .openapi('ListDataIntegrationAssociationsRequest')
 
 const ListDataIntegrationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDataIntegrationsRequest' })
   .openapi('ListDataIntegrationsRequest')
 
 const ListEventIntegrationAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEventIntegrationAssociationsRequest' })
   .openapi('ListEventIntegrationAssociationsRequest')
 
 const ListEventIntegrationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEventIntegrationsRequest' })
   .openapi('ListEventIntegrationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
@@ -697,40 +566,34 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(200).openapi('TagKeyLi
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description:
+        'The tags used to organize, track, or control access for this resource. For example, { "tags": {"key1":"value1", "key2":"value2"} }.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateDataIntegrationRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the DataIntegration.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the DataIntegration.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the DataIntegration.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the DataIntegration.',
+    }),
   })
   .openapi({ title: 'UpdateDataIntegrationRequest', required: [] })
   .openapi('UpdateDataIntegrationRequest')
 
 const UpdateEventIntegrationRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the event inegration.' }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the event inegration.',
+    }),
   })
   .openapi({ title: 'UpdateEventIntegrationRequest', required: [] })
   .openapi('UpdateEventIntegrationRequest')
@@ -936,28 +799,16 @@ export const postDataIntegrationsRoute = createRoute({
                 .openapi({ description: 'The URI of the data source.' }),
               ScheduleConfig: z
                 .object({
-                  FirstExecutionFrom: NonBlankStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.',
-                      }),
-                  ).exactOptional(),
-                  Object: ObjectSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The name of the object to pull from the data source.',
-                      }),
-                  ).exactOptional(),
-                  ScheduleExpression: NonBlankStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'How often the data should be pulled from data source.',
-                      }),
-                  ).exactOptional(),
+                  FirstExecutionFrom: NonBlankStringSchema.exactOptional().openapi({
+                    description:
+                      'The start date for objects to import in the first flow run as an Unix/epoch timestamp in milliseconds or in ISO-8601 format.',
+                  }),
+                  Object: ObjectSchema.exactOptional().openapi({
+                    description: 'The name of the object to pull from the data source.',
+                  }),
+                  ScheduleExpression: NonBlankStringSchema.exactOptional().openapi({
+                    description: 'How often the data should be pulled from data source.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -985,22 +836,13 @@ export const postDataIntegrationsRoute = createRoute({
                 }),
               FileConfiguration: z
                 .object({
-                  Folders: FolderListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Identifiers for the source folders to pull all files from recursively.',
-                      }),
-                  ).exactOptional(),
-                  Filters: FieldsMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Restrictions for what files should be pulled from the source.',
-                      }),
-                  ).exactOptional(),
+                  Folders: FolderListSchema.exactOptional().openapi({
+                    description:
+                      'Identifiers for the source folders to pull all files from recursively.',
+                  }),
+                  Filters: FieldsMapSchema.exactOptional().openapi({
+                    description: 'Restrictions for what files should be pulled from the source.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1166,9 +1008,9 @@ export const postEventIntegrationsRoute = createRoute({
                 .openapi({ description: 'The description of the event integration.' }),
               EventFilter: z
                 .object({
-                  Source: SourceSchema.and(
-                    z.any().openapi({ description: 'The source of the events.' }),
-                  ).exactOptional(),
+                  Source: SourceSchema.exactOptional().openapi({
+                    description: 'The source of the events.',
+                  }),
                 })
                 .openapi({ description: 'The event filter.', required: [] }),
               EventBridgeBus: z

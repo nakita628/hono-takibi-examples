@@ -26,16 +26,17 @@ const AccelInfoSchema = z
   .strictObject({
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
       .openapi({
         description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+          'The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. \n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
       }),
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
       description:
         'Information regarding the transaction description.\n> You cannot configure the transaction description in the test environment.',
     }),
   })
-  .openapi({ required: ['processingType'] })
+  .openapi({ required: [] })
   .openapi('AccelInfo')
 
 const TransactionDescriptionResponseInfoSchema = z
@@ -62,6 +63,13 @@ const TransactionDescriptionResponseInfoSchema = z
 
 const AccelResponseInfoSchema = z
   .strictObject({
+    networkProcessingMode: z
+      .enum(['auth', 'sale'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the processing flow for the payment method. Possible values:\n- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. \n- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.\n',
+      }),
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
       .exactOptional()
@@ -725,6 +733,50 @@ const BcmcUpdateInfoSchema = z
   })
   .openapi({ required: [] })
   .openapi('BcmcUpdateInfo')
+
+const BoncardInfoSchema = z
+  .strictObject({
+    terminalId: z
+      .string()
+      .regex(/^[A-Za-z0-9]{6,10}$/)
+      .min(6)
+      .max(10)
+      .openapi({
+        description:
+          'The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.\nExample: 5Z6G8PV9.',
+      }),
+  })
+  .openapi({ required: ['terminalId'] })
+  .openapi('BoncardInfo')
+
+const BoncardResponseInfoSchema = z
+  .strictObject({
+    terminalId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.\nExample: 5Z6G8PV9.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BoncardResponseInfo')
+
+const BoncardUpdateInfoSchema = z
+  .strictObject({
+    terminalId: z
+      .string()
+      .regex(/^[A-Za-z0-9]{6,10}$/)
+      .min(6)
+      .max(10)
+      .exactOptional()
+      .openapi({
+        description:
+          'The TerminalID that Boncard assigns to the merchant. Format: 6 to 10 alphanumeric characters.\nExample: 5Z6G8PV9.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('BoncardUpdateInfo')
 
 const BillingEntitySchema = z
   .strictObject({
@@ -2531,6 +2583,62 @@ const JCBResponseInfoSchema = z
 
 const JSONObjectSchema = z.looseObject({}).openapi('JSONObject')
 
+const JapaneseLocalizedAddressFieldsSchema = z
+  .strictObject({
+    building: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The building name, floor, and room number (建物名・階・部屋番号).',
+      }),
+    city: z
+      .string()
+      .openapi({
+        description: 'The city (市区町村).\n\nRequired for both `ja-Hani` and `ja-Kana` addresses.',
+      }),
+    district: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The town or locality  (町域 / 町名).' }),
+    line1: z
+      .string()
+      .openapi({
+        description:
+          'The street address including chōme, block/lot, and house number (丁目・番地・号等).\n\nRequired for both `ja-Hani` and `ja-Kana` addresses.',
+      }),
+    postalCode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The postal code (郵便番号).\n\nRequired for both `ja-Hani` and `ja-Kana` addresses only when `address.postalCode` is omitted. \nOtherwise, the value in `address.postalCode` is used.',
+      }),
+    prefecture: z
+      .string()
+      .openapi({
+        description:
+          'The prefecture, state, or province (都道府県).\n\nRequired for both `ja-Hani` and `ja-Kana` addresses.',
+      }),
+  })
+  .openapi({ required: ['city', 'line1', 'prefecture'] })
+  .openapi('JapaneseLocalizedAddressFields')
+
+const JapaneseLocalizedAddressSchema = z
+  .strictObject({
+    fields: JapaneseLocalizedAddressFieldsSchema.openapi({
+      description: 'The address fields in the specified character set.',
+    }),
+    script: z
+      .enum(['ja-Kana', 'ja-Hani'])
+      .default('ja-Kana')
+      .openapi({
+        description:
+          'The character set of the localized address.\n\nPossible values: **ja-Hani**, **ja-Kana**.',
+      }),
+  })
+  .openapi({ required: ['fields', 'script'] })
+  .openapi('JapaneseLocalizedAddress')
+
 const KeySchema = z
   .strictObject({
     identifier: z
@@ -2894,11 +3002,30 @@ const LocalShopperStatementSchema = z
     value: z
       .string()
       .openapi({
-        description: 'The text of the local shopper statement in the specified character set.',
+        description:
+          'The localized shopper statement in the specified character set.\n\n* For `ja-Hani` the allowed characters are: Full-width kanji including letters, numbers, and symbols.\n\n* For `ja-Kana` the allowed characters are:\n    * `Half-width katakana`\n    * Letters: `a-z`, `A-Z`\n    * Numbers: `0-9`\n    * Symbols: `!`, `"`, `#`, `$`, `%`, `&`, `\'`, `(`, `)`, `*`, `+`, `,`, `-`, `.`, `/`, `:`, `;`, `<`, `=`, `>`, `?`, `@`, `[`, `\\`, `]`, `^`, `_`, `` ` ``, `{`, `|`, `}`, `~`, `｡`, `｢`, `｣`, `､`, `･`, `ｰ`\n',
       }),
   })
   .openapi({ required: ['script', 'value'] })
   .openapi('LocalShopperStatement')
+
+const LocalStoreNameSchema = z
+  .strictObject({
+    script: z
+      .string()
+      .openapi({
+        description:
+          'The character set of the localized store name.\n\nPossible values: **ja-Hani**, **ja-Kana**.',
+      }),
+    value: z
+      .string()
+      .openapi({
+        description:
+          'The text of the localized store name in the specified character set.\n* For `ja-Hani` the allowed characters are: Full-width kanji including letters, numbers and symbols.\n\n* For `ja-Kana` the allowed characters are:\n    * Half-width katakana\n    * Letters: `a-z`, `A-Z`\n    * Numbers: `0-9`\n    * Symbols: `-`,`ｰ`,`･`,`.`\n',
+      }),
+  })
+  .openapi({ required: ['script', 'value'] })
+  .openapi('LocalStoreName')
 
 const LocalizedInformationSchema = z
   .strictObject({
@@ -2907,6 +3034,32 @@ const LocalizedInformationSchema = z
       .openapi({
         description:
           'An array of local shopper statements. Card schemes use this in the bank statement.\n\nFor Japan local shopper statements in both ja-Hani and ja-Kana are required.',
+      }),
+    localStoreName: z
+      .array(LocalStoreNameSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of localized store names. Used for payment method onboarding in Japan.\n\nPossible scripts: **ja-Hani**, **ja-Kana**.',
+      }),
+    localizedAddress: z
+      .array(
+        z
+          .xor([JapaneseLocalizedAddressSchema])
+          .openapi({
+            discriminator: {
+              propertyName: 'script',
+              mapping: {
+                'ja-Kana': '#/components/schemas/JapaneseLocalizedAddress',
+                'ja-Hani': '#/components/schemas/JapaneseLocalizedAddress',
+              },
+            },
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'An array of localized addresses. Used for payment method onboarding in Japan.\n\nThe `script` of each address selects which fields it carries, so each locale sends the fields its addresses have.\n\nFor Japanese stores, both **ja-Hani** and **ja-Kana** addresses are required.',
       }),
   })
   .openapi({ required: ['localShopperStatement'] })
@@ -3006,7 +3159,7 @@ const StoreSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. ",
+          "The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format.",
       }),
     reference: z
       .string()
@@ -3734,20 +3887,28 @@ const NyceInfoSchema = z
   .strictObject({
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
       .openapi({
         description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+          'The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. \n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
       }),
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
       description:
         'Information regarding the transaction description.\n> You cannot configure the transaction description in the test environment.',
     }),
   })
-  .openapi({ required: ['processingType'] })
+  .openapi({ required: [] })
   .openapi('NyceInfo')
 
 const NyceResponseInfoSchema = z
   .strictObject({
+    networkProcessingMode: z
+      .enum(['auth', 'sale'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the processing flow for the payment method. Possible values:\n- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. \n- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.\n',
+      }),
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
       .exactOptional()
@@ -4042,8 +4203,35 @@ const PaymentSchema = z
   .openapi({ required: [] })
   .openapi('Payment')
 
+const PixResponseInfoSchema = z
+  .strictObject({
+    allowRecurring: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the Pix payment method is set up as Pix Recurring (Pix Automático) instead of standard Pix.',
+      }),
+    allowPayByBank: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether the Pix payment method is set up as Pix Pay by Bank instead of standard Pix.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PixResponseInfo')
+
 const PulseResponseInfoSchema = z
   .strictObject({
+    networkProcessingMode: z
+      .enum(['auth', 'sale'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the processing flow for the payment method. Possible values:\n- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. \n- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.\n',
+      }),
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
       .exactOptional()
@@ -4094,6 +4282,13 @@ const SofortResponseInfoSchema = z
 
 const StarResponseInfoSchema = z
   .strictObject({
+    networkProcessingMode: z
+      .enum(['auth', 'sale'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the processing flow for the payment method. Possible values:\n- **auth**: If you have not [configured automatic capture](https://docs.adyen.com/online-payments/capture#types-of-capture) for the transaction, you must manually capture the funds. \n- **sale**: You do not need to separately capture the funds, because capture happens automatically as part of the transaction, together with authorization.\n',
+      }),
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
       .exactOptional()
@@ -4253,6 +4448,9 @@ const PaymentMethodSchema = z
     bcmc: BcmcResponseInfoSchema.exactOptional().openapi({
       description: '**bcmc** (Bancontact) details',
     }),
+    boncard: BoncardResponseInfoSchema.exactOptional().openapi({
+      description: '**boncard** details',
+    }),
     businessLineId: z
       .string()
       .exactOptional()
@@ -4350,9 +4548,13 @@ const PaymentMethodSchema = z
     paybybank_plaid: PayByBankPlaidResponseInfoSchema.exactOptional().openapi({
       description: '**paybybank_plaid** details',
     }),
+    paybybank_plaid_ca: PayByBankPlaidResponseInfoSchema.exactOptional().openapi({
+      description: '**paybybank_plaid_ca** details',
+    }),
     payme: PayMeResponseInfoSchema.exactOptional().openapi({ description: '**payme** details' }),
     paypal: PayPalResponseInfoSchema.exactOptional().openapi({ description: '**paypal** details' }),
     payto: PayToResponseInfoSchema.exactOptional().openapi({ description: '**payto** details' }),
+    pix: PixResponseInfoSchema.exactOptional().openapi({ description: '**pix** details' }),
     pulse: PulseResponseInfoSchema.exactOptional().openapi({ description: '**pulse** details' }),
     reference: z
       .string()
@@ -4468,6 +4670,7 @@ const PaymentMethodResponseSchema = z
           'bcmc',
           'blik',
           'blik_pos',
+          'boncard',
           'br_schemes',
           'carnet',
           'cartebancaire',
@@ -4536,6 +4739,7 @@ const PaymentMethodResponseSchema = z
           'onlineBanking_PL',
           'paybybank',
           'paybybank_plaid',
+          'paybybank_plaid_ca',
           'payme',
           'payme_pos',
           'paynow',
@@ -4545,6 +4749,7 @@ const PaymentMethodResponseSchema = z
           'personal_card',
           'personal_card_credit',
           'personal_card_debit',
+          'pix',
           'pulse',
           'romcard',
           'romcard_credit',
@@ -4593,20 +4798,43 @@ const PaymentMethodResponseSchema = z
   .openapi({ required: ['itemsTotal', 'pagesTotal'] })
   .openapi('PaymentMethodResponse')
 
+const PixInfoSchema = z
+  .strictObject({
+    allowRecurring: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to set up Pix Recurring (Pix Automático) instead of standard Pix. The default value is **false**.',
+      }),
+    allowPayByBank: z
+      .boolean()
+      .default(false)
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates whether to set up Pix Pay by Bank instead of standard Pix. The default value is **false**.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('PixInfo')
+
 const PulseInfoSchema = z
   .strictObject({
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
       .openapi({
         description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+          'The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. \n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
       }),
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
       description:
         'Information regarding the transaction description.\n> You cannot configure the transaction description in the test environment.',
     }),
   })
-  .openapi({ required: ['processingType'] })
+  .openapi({ required: [] })
   .openapi('PulseInfo')
 
 const SepaDirectDebitInfoSchema = z
@@ -4641,16 +4869,17 @@ const StarInfoSchema = z
   .strictObject({
     processingType: z
       .enum(['billpay', 'ecom', 'pos'])
+      .exactOptional()
       .openapi({
         description:
-          'The type of transactions processed over this payment method.\n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
+          'The type of transactions processed over this payment method. The recommended usage is to not specify a processing type. We then set up the payment method to process all transaction types. \n Allowed values:\n- **pos** for in-person payments. \n- **billpay** for subscription payments, both the initial payment and the later recurring payments. These transactions have `recurringProcessingModel` **Subscription**. \n- **ecom** for all other card not present transactions. This includes non-recurring transactions and transactions with `recurringProcessingModel` **CardOnFile** or **UnscheduledCardOnFile**.\n',
       }),
     transactionDescription: TransactionDescriptionInfoSchema.exactOptional().openapi({
       description:
         'Information regarding the transaction description.\n> You cannot configure the transaction description in the test environment.',
     }),
   })
-  .openapi({ required: ['processingType'] })
+  .openapi({ required: [] })
   .openapi('StarInfo')
 
 const SvsInfoSchema = z
@@ -4767,6 +4996,9 @@ const PaymentMethodSetupInfoSchema = z
     bcmc: BcmcInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **bcmc** (Bancontact).',
     }),
+    boncard: BoncardInfoSchema.exactOptional().openapi({
+      description: 'Details to provide if `type` is **boncard**.',
+    }),
     businessLineId: z
       .string()
       .exactOptional()
@@ -4866,6 +5098,9 @@ const PaymentMethodSetupInfoSchema = z
     paybybank_plaid: PayByBankPlaidInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **paybybank_plaid**.',
     }),
+    paybybank_plaid_ca: PayByBankPlaidInfoSchema.exactOptional().openapi({
+      description: 'Details to provide if `type` is **paybybank_plaid_ca**.',
+    }),
     payme: PayMeInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **payme**.',
     }),
@@ -4874,6 +5109,9 @@ const PaymentMethodSetupInfoSchema = z
     }),
     payto: PayToInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **payto**.',
+    }),
+    pix: PixInfoSchema.exactOptional().openapi({
+      description: 'Details to provide if `type` is **pix**.',
     }),
     pulse: PulseInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **pulse**.',
@@ -4966,6 +5204,7 @@ const PaymentMethodSetupInfoSchema = z
         'bcmc',
         'blik',
         'blik_pos',
+        'boncard',
         'br_schemes',
         'carnet',
         'cartebancaire',
@@ -5034,6 +5273,7 @@ const PaymentMethodSetupInfoSchema = z
         'onlineBanking_PL',
         'paybybank',
         'paybybank_plaid',
+        'paybybank_plaid_ca',
         'payme',
         'payme_pos',
         'paynow',
@@ -5043,6 +5283,7 @@ const PaymentMethodSetupInfoSchema = z
         'personal_card',
         'personal_card_credit',
         'personal_card_debit',
+        'pix',
         'pulse',
         'romcard',
         'romcard_credit',
@@ -6049,6 +6290,13 @@ const StandaloneSchema = z
       .boolean()
       .exactOptional()
       .openapi({ description: 'Enable standalone mode.' }),
+    merchantReference: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The merchant reference to be sent with every transaction when the terminal is in standalone mode. Used for reconciliation.\n\nThis property also accepts one or more variables as input, together with plain text. When this property reaches the terminal, the terminal replaces the variables with the values that apply to it. For the list of allowed variables, see [Configure the merchant reference](https://docs.adyen.com/point-of-sale/standalone/standalone-build/set-up-standalone#configure-merchant-reference).\n',
+      }),
   })
   .openapi({ required: [] })
   .openapi('Standalone')
@@ -6141,7 +6389,7 @@ const StoreCreationRequestSchema = z
       .string()
       .openapi({
         description:
-          "The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. ",
+          'The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.\n\nYou can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.\n\nThe phone number can be from a different country than the store address.',
       }),
     reference: z
       .string()
@@ -6199,7 +6447,7 @@ const StoreCreationWithMerchantCodeRequestSchema = z
       .string()
       .openapi({
         description:
-          "The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. ",
+          'The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.\n\nYou can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.\n\nThe phone number can be from a different country than the store address.',
       }),
     reference: z
       .string()
@@ -6567,6 +6815,14 @@ const TerminalSettingsSchema = z
     signature: SignatureSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Settings to skip signature, sign on display, or sign on receipt.' }),
+    skipTipConfirmationOnTerminal: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Skip the tip confirmation step of the Adyen payment app on the terminal. Set to **true** only if your own app that handles tipping is installed on the same terminal. If your app is not installed on the terminal, set to **false**.',
+      }),
     standalone: StandaloneSchema.nullable()
       .exactOptional()
       .openapi({
@@ -7087,6 +7343,9 @@ const UpdatePaymentMethodInfoSchema = z
     bcmc: BcmcUpdateInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **bcmc** (Bancontact).',
     }),
+    boncard: BoncardUpdateInfoSchema.exactOptional().openapi({
+      description: 'Details to provide if `type` is **boncard**.',
+    }),
     carnet: GenericPmWithTdiUpdateInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **carnet**.',
     }),
@@ -7170,6 +7429,9 @@ const UpdatePaymentMethodInfoSchema = z
     }),
     paybybank_plaid: PayByBankPlaidUpdateInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **paybybank_plaid**.',
+    }),
+    paybybank_plaid_ca: PayByBankPlaidUpdateInfoSchema.exactOptional().openapi({
+      description: 'Details to provide if `type` is **paybybank_plaid_ca**.',
     }),
     pulse: PulseUpdateInfoSchema.exactOptional().openapi({
       description: 'Details to provide if `type` is **pulse**.',
@@ -7422,7 +7684,7 @@ const UpdateStoreRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "The phone number of the store, including '+' and country code in the [E.164](https://en.wikipedia.org/wiki/E.164) format. If passed in a different format, we convert and validate the phone number against E.164. ",
+          'The phone number of the store in [E.164](https://en.wikipedia.org/wiki/E.164) format: a plus sign (`+`), the country code, and the phone number. For example, **+13123456789**.\n\nYou can include spaces, hyphens, or brackets, such as **+1 (312) 345-6789**. We reject phone numbers that do not start with `+` and the country code, such as **3123456789** or **0031201234567**.\n\nThe phone number can be from a different country than the store address.',
       }),
     splitConfiguration: StoreSplitConfigurationSchema.exactOptional().openapi({
       description:
@@ -8109,7 +8371,7 @@ const InPersonDonationSettingsUpdateSchema = z
         'The interaction flow for in-person donations. Possible values: \n\n- **oneStep**: The shopper presents their payment method for the payment and the donation in one go, after the donation. \n\n- **twoStep**: The shopper presents their payment method twice: after the payment and after the donation.',
     }),
     donationType: z
-      .xor([DonationTypeSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(DonationTypeSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -8178,7 +8440,7 @@ const OnlineDonationSettingsUpdateSchema = z
       .exactOptional()
       .openapi({ description: 'The default amount for donations.' }),
     donationType: z
-      .xor([DonationTypeSchema, z.null().nullable()])
+      .xor([z.looseObject({}).and(DonationTypeSchema), z.null().nullable()])
       .exactOptional()
       .openapi({
         description:
@@ -12070,6 +12332,57 @@ const PatchCompaniesCompanyIdTerminalSettingsAddEapTlsWifiProfile_200Example = {
   },
 }
 
+const PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasAccount_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to an account specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to an account specified in the request.',
+    requestId: 'MKUDJSF3JGHB3B7L',
+  },
+}
+
+const PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasAccountGroup_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to an account group specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to an account group specified in the request.',
+    requestId: 'MKUDJSF3JGHB3B6K',
+  },
+}
+
+const PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasRole_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to a role specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to a role specified in the request.',
+    requestId: 'MKUDJSF3JGHB3B8M',
+  },
+}
+
+const PatchCompaniesCompanyIdUsersUserIdUsernameAlreadyInUse_409Example = {
+  summary: 'Response code - 409 Conflict. The specified username is already in use.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: "The specified 'username' is already in use.",
+    requestId: 'MKUDJSF3JGHB3B9N',
+  },
+}
+
 const PatchCompaniesCompanyIdWebhooksWebhookIdPatchCompanyWebhookExample = {
   summary: 'Activate the webhook',
   description: 'Example request for activating a webhook configuration.',
@@ -13112,6 +13425,57 @@ const PatchMerchantsMerchantIdTerminalSettingsAddEapTlsWifiProfile_200Example = 
     },
     timeouts: { fromActiveToSleep: 30 },
     hardware: { displayMaximumBackLight: 75 },
+  },
+}
+
+const PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasAccount_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to an account specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to an account specified in the request.',
+    requestId: 'MKUDJSF3JGHB3C7Q',
+  },
+}
+
+const PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasAccountGroup_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to an account group specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to an account group specified in the request.',
+    requestId: 'MKUDJSF3JGHB3C6P',
+  },
+}
+
+const PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasRole_409Example = {
+  summary:
+    'Response code - 409 Conflict. The user already has access to a role specified in the request.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: 'The user already has access to a role specified in the request.',
+    requestId: 'MKUDJSF3JGHB3C8R',
+  },
+}
+
+const PatchMerchantsMerchantIdUsersUserIdUsernameAlreadyInUse_409Example = {
+  summary: 'Response code - 409 Conflict. The specified username is already in use.',
+  value: {
+    type: 'https://docs.adyen.com/development-resources/error-codes',
+    errorCode: '00_409',
+    title: 'Conflict',
+    status: 409,
+    detail: "The specified 'username' is already in use.",
+    requestId: 'MKUDJSF3JGHB3C9S',
   },
 }
 
@@ -18487,6 +18851,25 @@ export const patchCompaniesCompanyIdUsersUserIdRoute = createRoute({
     403: {
       description: 'Forbidden - insufficient permissions to process the request.',
       content: { 'application/json': { schema: RestServiceErrorSchema } },
+    },
+    409: {
+      description:
+        'Conflict - the user already has access to an account, account group, or role specified in the request, or the specified username is already in use.',
+      content: {
+        'application/json': {
+          schema: RestServiceErrorSchema,
+          examples: {
+            'user-already-has-account':
+              PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasAccount_409Example,
+            'user-already-has-account-group':
+              PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasAccountGroup_409Example,
+            'user-already-has-role':
+              PatchCompaniesCompanyIdUsersUserIdUserAlreadyHasRole_409Example,
+            'username-already-in-use':
+              PatchCompaniesCompanyIdUsersUserIdUsernameAlreadyInUse_409Example,
+          },
+        },
+      },
     },
     422: {
       description: 'Unprocessable Entity - a request validation error.',
@@ -24397,6 +24780,25 @@ export const patchMerchantsMerchantIdUsersUserIdRoute = createRoute({
       description: 'Forbidden - insufficient permissions to process the request.',
       content: { 'application/json': { schema: RestServiceErrorSchema } },
     },
+    409: {
+      description:
+        'Conflict - the user already has access to an account, account group, or role specified in the request, or the specified username is already in use.',
+      content: {
+        'application/json': {
+          schema: RestServiceErrorSchema,
+          examples: {
+            'user-already-has-account':
+              PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasAccount_409Example,
+            'user-already-has-account-group':
+              PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasAccountGroup_409Example,
+            'user-already-has-role':
+              PatchMerchantsMerchantIdUsersUserIdUserAlreadyHasRole_409Example,
+            'username-already-in-use':
+              PatchMerchantsMerchantIdUsersUserIdUsernameAlreadyInUse_409Example,
+          },
+        },
+      },
+    },
     422: {
       description: 'Unprocessable Entity - a request validation error.',
       content: { 'application/json': { schema: RestServiceErrorSchema } },
@@ -26694,10 +27096,6 @@ export const getCompaniesCompanyIdClientCertificatesRoute = createRoute({
     },
   },
   security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
-  servers: [
-    { url: 'https://management-live.adyen.com', description: 'Live Environment' },
-    { url: 'https://management-test.adyen.com', description: 'Test Environment' },
-  ],
 })
 
 export const postCompaniesCompanyIdClientCertificatesRoute = createRoute({
@@ -26804,10 +27202,6 @@ export const postCompaniesCompanyIdClientCertificatesRoute = createRoute({
     },
   },
   security: [{ BasicAuth: [] }, { ApiKeyAuth: [] }],
-  servers: [
-    { url: 'https://management-live.adyen.com', description: 'Live Environment' },
-    { url: 'https://management-test.adyen.com', description: 'Test Environment' },
-  ],
 })
 
 export const postCompaniesCompanyIdNonprofitsRoute = createRoute({
@@ -27439,7 +27833,7 @@ export const postCompaniesCompanyIdTerminalThemesIdAssetsRoute = createRoute({
   tags: ['Terminal themes - company level'],
   summary: 'Add an asset to a terminal theme',
   description:
-    "Adds an image or video (an 'asset') to a terminal theme owned by the company specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\n\nAn asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\n\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.\n\nIf the theme already has an asset for the same combination of `type` and `model`, the request fails and you need to upload the new asset using the `/companies/{companyId}/terminalThemes/{id}/assets/replace` endpoint.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
+    "Adds an image or video (an 'asset') to a terminal theme owned by the company specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\n\nAn asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: for all `model` values except **All**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\n\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.\n\nIf the theme already has an asset for the same combination of `type` and `model`, the request fails and you need to upload the new asset using the `/companies/{companyId}/terminalThemes/{id}/assets/replace` endpoint.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
   operationId: 'post-companies-companyId-terminalThemes-id-assets',
   request: {
     params: z.object({
@@ -27702,7 +28096,7 @@ export const postCompaniesCompanyIdTerminalThemesIdAssetsReplaceRoute = createRo
   tags: ['Terminal themes - company level'],
   summary: 'Replace a theme asset',
   description:
-    "Replaces an existing image or video (an 'asset') of a terminal theme owned by the company specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\\n\\n\"\nAn asset is used for a specific screen type or screen element, and a specific Android \nterminal model. You must specify this using the query parameters `type` and `model`. \nThe asset binary itself is uploaded as multipart/form-data with a single file part \ncalled `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** \nand **M450**, or 10 MB for all other `model` values.\n\nYou can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/companies/{companyId}/terminalThemes/{id}/assets` instead.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
+    "Replaces an existing image or video (an 'asset') of a terminal theme owned by the company specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\\n\\n\"\nAn asset is used for a specific screen type or screen element, and a specific Android \nterminal model. You must specify this using the query parameters `type` and `model`. \nThe asset binary itself is uploaded as multipart/form-data with a single file part \ncalled `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: for all `model` values except **All**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** \nand **M450**, or 10 MB for all other `model` values.\n\nYou can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/companies/{companyId}/terminalThemes/{id}/assets` instead.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
   operationId: 'post-companies-companyId-terminalThemes-id-assets-replace',
   request: {
     params: z.object({
@@ -28326,7 +28720,7 @@ export const postMerchantsMerchantIdTerminalThemesIdAssetsRoute = createRoute({
   tags: ['Terminal themes - merchant level'],
   summary: 'Add an asset to a terminal theme',
   description:
-    "Adds an image or video (an 'asset') to a terminal theme owned by the merchant account specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\n\nAn asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\n\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.\n\nIf the theme already has an asset for the same combination of `type` and `model`, the request fails and you need to upload the new asset using the `/merchants/{merchantId}/terminalThemes/{id}/assets/replace` endpoint.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
+    "Adds an image or video (an 'asset') to a terminal theme owned by the merchant account specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\n\nAn asset is used for a specific screen type or screen element, and a specific Android terminal model. You must specify this using the query parameters `type` and `model`. The asset binary itself is uploaded as multipart/form-data with a single file part called `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: for all `model` values except **All**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\n\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** and **M450**, or 10 MB for all other `model` values.\n\nIf the theme already has an asset for the same combination of `type` and `model`, the request fails and you need to upload the new asset using the `/merchants/{merchantId}/terminalThemes/{id}/assets/replace` endpoint.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
   operationId: 'post-merchants-merchantId-terminalThemes-id-assets',
   request: {
     params: z.object({
@@ -28589,7 +28983,7 @@ export const postMerchantsMerchantIdTerminalThemesIdAssetsReplaceRoute = createR
   tags: ['Terminal themes - merchant level'],
   summary: 'Replace a theme asset',
   description:
-    "Replaces an existing image or video (an 'asset') of a terminal theme owned by the merchant account specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\\n\\n\"\nAn asset is used for a specific screen type or screen element, and a specific Android \nterminal model. You must specify this using the query parameters `type` and `model`. \nThe asset binary itself is uploaded as multipart/form-data with a single file part \ncalled `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: only for `model` **SFO1** or **M450**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** \nand **M450**, or 10 MB for all other `model` values.\n\nYou can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/merchants/{merchantId}/terminalThemes/{id}/assets` instead.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
+    "Replaces an existing image or video (an 'asset') of a terminal theme owned by the merchant account specified in the path. This endpoint is [rate limited](https://docs.adyen.com/point-of-sale/automating-terminal-management#rate-limits-in-the-live-environment).\\n\\n\"\nAn asset is used for a specific screen type or screen element, and a specific Android \nterminal model. You must specify this using the query parameters `type` and `model`. \nThe asset binary itself is uploaded as multipart/form-data with a single file part \ncalled `file`, which must declare one of the following supported Content-Type values:\n\n- **image/svg+xml**: only for the combination `type` **logo** with `model` **All**.\n- **video/mp4** or **video/quicktime**: for all `model` values except **All**.\n- **image/jpeg** (or **image/jpg**): for all `model` values except **All**.\n- **image/png**: for all `model` values except **All**.\n- **image/gif**: for all `model` values except **SFO1** and **M450**.\nThe maximum size of the asset depends on the terminal model: 100 MB for `model` **SFO1** \nand **M450**, or 10 MB for all other `model` values.\n\nYou can upload an asset using this endpoint if the theme already has an asset with the specified combination of `type` and `model`. If that is not the case, the request fails and you need to use the endpoint `/merchants/{merchantId}/terminalThemes/{id}/assets` instead.\n\nTo make this request, your API credential must have the following [role](https://docs.adyen.com/development-resources/api-credentials#manage-api-permissions): \n- Management API - Terminal themes read and write",
   operationId: 'post-merchants-merchantId-terminalThemes-id-assets-replace',
   request: {
     params: z.object({

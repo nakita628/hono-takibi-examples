@@ -1174,19 +1174,43 @@ bearerAuth
 ```bash
 curl https://api.resend.com/domains/string/verify \
   -X POST \
+  -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "scope": [
+      "forge"
+    ]
+  }'
 ```
 
 `POST /domains/{domain_id}/verify`
 
-Triggers verification of the domain's DNS records including DKIM, SPF, and the tracking CNAME (if a tracking subdomain is configured).
+Triggers verification of the domain's DNS records including DKIM, SPF, and the tracking CNAME (if a tracking subdomain is configured). Pass `scope` to limit the check to specific records.
+
+> Body parameter
+
+```json
+{
+  "scope": [
+    "forge"
+  ]
+}
+```
 
 <h3 id="verify-an-existing-domain-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |domain_id|path|string|true|The ID of the domain.|
+|body|body|[VerifyDomainOptions](#schemaverifydomainoptions)|false|none|
+|» scope|body|[string]|false|Limit the check to specific records. The only supported value is `forge`: only the Forge record is checked, and the other records keep their current status. Requires Forge to be enabled on the domain, otherwise the endpoint responds with a `forge_not_enabled` error. When omitted, all records are checked.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» scope|forge|
 
 > Example responses
 
@@ -1204,6 +1228,88 @@ Triggers verification of the domain's DNS records including DKIM, SPF, and the t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[VerifyDomainResponse](#schemaverifydomainresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
+## Enable Forge for a domain
+
+<a id="opIddomains/enable-forge"></a>
+
+> Code samples
+
+```bash
+curl https://api.resend.com/domains/string/forge \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "custom_return_path": "string"
+  }'
+```
+
+`POST /domains/{domain_id}/forge`
+
+Put a domain's sending on Resend Forge. The domain must be a sending domain: receive-only domains, domains on a dedicated IP, and domains with legacy DKIM get a `forge_unavailable` error. The response includes the DNS record Forge needs. Add it to your DNS and call the verify domain endpoint with `scope: ["forge"]`, then poll the retrieve domain endpoint until the Forge record's `status` is `verified`. The domain keeps sending through its current records while the Forge record verifies, so there is no interruption. Calling this endpoint again just returns the current state.
+
+> Body parameter
+
+```json
+{
+  "custom_return_path": "string"
+}
+```
+
+<h3 id="enable-forge-for-a-domain-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Idempotency-Key|header|string|false|A unique key for the request, so Forge is enabled only once. A retry with the same key within 24 hours returns the first successful (2xx) response, with the `idempotent-replayed: true` header. A failed request is not stored, so it can be retried with the same key. Reusing the key with a different body, or while the first request is still running, returns a 409. An empty key, or one longer than 256 characters, returns a 400 `invalid_idempotency_key`. [Learn more](https://resend.com/docs/dashboard/emails/idempotency-keys)|
+|domain_id|path|string|true|The ID of the domain.|
+|body|body|[EnableForgeRequest](#schemaenableforgerequest)|false|none|
+|» custom_return_path|body|string|false|The subdomain for the Forge Return-Path address, for example `forge` on `example.com` produces a `CNAME` record for `forge.example.com`. It must start with a letter, end with a letter or digit, and contain only letters, digits, and hyphens, and is stored lowercased. When omitted, Resend picks a subdomain that is free in your DNS. It is set once, when Forge is enabled, and cannot be changed afterwards. It cannot equal the domain's return path on the legacy engine, and the chosen host must not already have DNS records.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "domain",
+  "id": "d91cd9bd-1176-453e-8fc1-35364d380206",
+  "name": "example.com",
+  "status": "not_started",
+  "created_at": "2023-04-26 20:21:26.347412+00",
+  "region": "us-east-1",
+  "open_tracking": true,
+  "click_tracking": true,
+  "tracking_subdomain": "string",
+  "capabilities": {
+    "sending": "enabled",
+    "receiving": "enabled"
+  },
+  "records": [
+    {
+      "record": "SPF",
+      "name": "string",
+      "type": "MX",
+      "ttl": "string",
+      "status": "pending",
+      "value": "string",
+      "priority": 0
+    }
+  ]
+}
+```
+
+<h3 id="enable-forge-for-a-domain-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[Domain](#schemadomain)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -6482,6 +6588,53 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearerAuth
 </aside>
 
+## Cancel an automation run
+
+<a id="opIdautomations/cancel-run"></a>
+
+> Code samples
+
+```bash
+curl https://api.resend.com/automations/497f6eca-6276-4993-bfeb-53cbbbba6f08/runs/497f6eca-6276-4993-bfeb-53cbbbba6f08/cancel \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /automations/{automation_id}/runs/{run_id}/cancel`
+
+Stops a running automation run. Steps that have not started yet are skipped. Returns 422 if the run has already finished.
+
+<h3 id="cancel-an-automation-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|automation_id|path|string(uuid)|true|The ID of the automation.|
+|run_id|path|string(uuid)|true|The ID of the automation run.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "automation_run",
+  "id": "string",
+  "status": "cancelled"
+}
+```
+
+<h3 id="cancel-an-automation-run-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[CancelAutomationRunResponse](#schemacancelautomationrunresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearerAuth
+</aside>
+
 <h1 id="resend-events">Events</h1>
 
 Create and manage Events through the Resend API.
@@ -8697,6 +8850,7 @@ curl https://api.resend.com/inboxes/b3e2b2b6-3f0e-4c8e-9ad3-2f43a1e2c7f1/drafts 
     "attachments": [
       {
         "content": "aGVsbG8gZTJl",
+        "path": "https://example.com/invoice.pdf",
         "filename": "receipt.pdf",
         "content_type": "application/pdf"
       }
@@ -8708,7 +8862,7 @@ curl https://api.resend.com/inboxes/b3e2b2b6-3f0e-4c8e-9ad3-2f43a1e2c7f1/drafts 
 
 `POST /inboxes/{inbox_id}/drafts`
 
-Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` for a draft that starts a new thread. Pass both together for a reply draft in an existing thread. A reply draft without `to` is addressed to the sender of the email it replies to, or to its Reply-To when set. For an email the inbox sent, it defaults to that email's `to` recipients. Send `to: []` to leave it empty. At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` must be non-empty. The combined recipients of `to`, `cc` and `bcc` cannot exceed 50. Attachments are stored on the draft, so each one needs `content`, `filename` and `content_type`. Returns 201 for a new draft. Only one unsent reply draft can target an email, so a reply draft request for an email that already has one returns 200 with the ID of the existing draft. An unknown `thread_id`, or a `reply_to_email_id` that is not in that thread, returns a 404. That request ignores every other field, except `attachments`, which replaces the attachments of the existing draft when sent. A reply draft created without `subject` stores an empty subject. When it is sent, it takes the thread subject, prefixed with `Re:` when it does not already start with it.
+Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` for a draft that starts a new thread. Pass both together for a reply draft in an existing thread. A reply draft without `to` is addressed to the sender of the email it replies to, or to its Reply-To when set. For an email the inbox sent, it defaults to that email's `to` recipients. Send `to: []` to leave it empty. At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` must be non-empty. The combined recipients of `to`, `cc` and `bcc` cannot exceed 50. Attachments are stored on the draft, so a `path` file is downloaded when the request is made. Returns 201 for a new draft. Only one unsent reply draft can target an email, so a reply draft request for an email that already has one returns 200 with the ID of the existing draft. An unknown `thread_id`, or a `reply_to_email_id` that is not in that thread, returns a 404. That request ignores every other field, except `attachments`, which replaces the attachments of the existing draft when sent. A reply draft created without `subject` stores an empty subject. When it is sent, it takes the thread subject, prefixed with `Re:` when it does not already start with it.
 
 > Body parameter
 
@@ -8725,6 +8879,7 @@ Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` f
   "attachments": [
     {
       "content": "aGVsbG8gZTJl",
+      "path": "https://example.com/invoice.pdf",
       "filename": "receipt.pdf",
       "content_type": "application/pdf"
     }
@@ -8756,7 +8911,7 @@ Creates an unsent draft on the inbox. Omit `thread_id` and `reply_to_email_id` f
 |» subject|body|string \| null|false|The subject. Max 2000 characters. A string that is only whitespace, or that contains a line break, is rejected.|
 |» html|body|string \| null|false|The HTML body.|
 |» text|body|string \| null|false|The plain text body.|
-|» attachments|body|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422.|
+|» attachments|body|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422.|
 |» thread_id|body|string(uuid)|false|The Thread ID to reply in. Must be sent with `reply_to_email_id`.|
 |» reply_to_email_id|body|string(uuid)|false|The Email ID to reply to, as returned in `data[].id` by the list thread emails endpoint. Must be sent with `thread_id`.|
 
@@ -8928,6 +9083,7 @@ curl https://api.resend.com/inboxes/b3e2b2b6-3f0e-4c8e-9ad3-2f43a1e2c7f1/drafts/
     "attachments": [
       {
         "content": "aGVsbG8gZTJl",
+        "path": "https://example.com/invoice.pdf",
         "filename": "receipt.pdf",
         "content_type": "application/pdf"
       }
@@ -8954,6 +9110,7 @@ Updates the content of an unsent draft. Omitted fields are left unchanged. Send 
   "attachments": [
     {
       "content": "aGVsbG8gZTJl",
+      "path": "https://example.com/invoice.pdf",
       "filename": "receipt.pdf",
       "content_type": "application/pdf"
     }
@@ -8983,7 +9140,7 @@ Updates the content of an unsent draft. Omitted fields are left unchanged. Send 
 |» subject|body|string \| null|false|The subject. Max 2000 characters. Cannot be only whitespace or contain a line break. Pass `null` to clear.|
 |» html|body|string \| null|false|The HTML body. Pass `null` to clear.|
 |» text|body|string \| null|false|The plain text body. Pass `null` to clear.|
-|» attachments|body|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.|
+|» attachments|body|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.|
 |» *anyOf*|body|object|false|none|
 |» *anyOf*|body|object|false|none|
 |» *anyOf*|body|object|false|none|
@@ -12099,6 +12256,52 @@ Configure the domain capabilities for sending and receiving emails. At least one
 |status|not_started|
 |status|partially_verified|
 |status|partially_failed|
+
+<h2 id="tocS_EnableForgeRequest">EnableForgeRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaenableforgerequest"></a>
+<a id="schema_EnableForgeRequest"></a>
+<a id="tocSenableforgerequest"></a>
+<a id="tocsenableforgerequest"></a>
+
+```json
+{
+  "custom_return_path": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|custom_return_path|string|false|none|The subdomain for the Forge Return-Path address, for example `forge` on `example.com` produces a `CNAME` record for `forge.example.com`. It must start with a letter, end with a letter or digit, and contain only letters, digits, and hyphens, and is stored lowercased. When omitted, Resend picks a subdomain that is free in your DNS. It is set once, when Forge is enabled, and cannot be changed afterwards. It cannot equal the domain's return path on the legacy engine, and the chosen host must not already have DNS records.|
+
+<h2 id="tocS_VerifyDomainOptions">VerifyDomainOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemaverifydomainoptions"></a>
+<a id="schema_VerifyDomainOptions"></a>
+<a id="tocSverifydomainoptions"></a>
+<a id="tocsverifydomainoptions"></a>
+
+```json
+{
+  "scope": [
+    "forge"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|scope|[string]|false|none|Limit the check to specific records. The only supported value is `forge`: only the Forge record is checked, and the other records keep their current status. Requires Forge to be enabled on the domain, otherwise the endpoint responds with a `forge_not_enabled` error. When omitted, all records are checked.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|scope|forge|
 
 <h2 id="tocS_CreateDomainClaimRequest">CreateDomainClaimRequest</h2>
 <!-- backwards compatibility -->
@@ -15343,7 +15546,7 @@ A step in an automation workflow. The `config` object varies based on the step `
 |---|---|---|---|---|
 |key|string|true|none|A unique key for this step within the automation graph.|
 |type|string|true|none|The type of automation step.|
-|config|object|true|none|Configuration for the step. Shape depends on `type`: - **trigger**: `{ event_name: string }` - **send_email**: `{ template: { id: string, variables?: object }, subject?: string, from?: string, reply_to?: string }` - **delay**: `{ duration: string }` — a human-readable duration (e.g. `"30 minutes"`) - **wait_for_event**: `{ event_name: string, timeout?: string, filter_rule?: object }` — `timeout` is a human-readable duration (e.g. `"1 hour"`) - **condition**: A rule tree with `type` (`rule`, `and`, `or`), `field`, `operator`, and `value` - **contact_update**: `{ first_name?: string\|object, last_name?: string\|object, unsubscribed?: boolean\|object, properties?: object }` - **contact_delete**: `{}` - **add_to_segment**: `{ segment_id: string }`<br>|
+|config|object|true|none|Configuration for the step. Shape depends on `type`: - **trigger**: `{ event_name: string }` - **send_email**: `{ template: { id: string, variables?: object }, subject?: string, from?: string, reply_to?: string, topic_id?: string }` - **delay**: `{ duration: string }` — a human-readable duration (e.g. `"30 minutes"`) - **wait_for_event**: `{ event_name: string, timeout?: string, filter_rule?: object }` — `timeout` is a human-readable duration (e.g. `"1 hour"`) - **condition**: A rule tree with `type` (`rule`, `and`, `or`), `field`, `operator`, and `value` - **contact_update**: `{ first_name?: string\|object, last_name?: string\|object, unsubscribed?: boolean\|object, properties?: object }` - **contact_delete**: `{}` - **add_to_segment**: `{ segment_id: string }`<br>|
 
 #### Enumerated Values
 
@@ -15746,6 +15949,29 @@ At least one of `name`, `status`, or `steps` and `connections` must be provided.
 |object|string|false|none|Type of the response object.|
 |id|string|false|none|The ID of the stopped automation.|
 |status|string|false|none|The status of the automation after stopping.|
+
+<h2 id="tocS_CancelAutomationRunResponse">CancelAutomationRunResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacancelautomationrunresponse"></a>
+<a id="schema_CancelAutomationRunResponse"></a>
+<a id="tocScancelautomationrunresponse"></a>
+<a id="tocscancelautomationrunresponse"></a>
+
+```json
+{
+  "object": "automation_run",
+  "id": "string",
+  "status": "cancelled"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|false|none|Type of the response object.|
+|id|string|false|none|The ID of the cancelled automation run.|
+|status|string|false|none|The status of the automation run after cancelling.|
 
 <h2 id="tocS_AutomationRunStep">AutomationRunStep</h2>
 <!-- backwards compatibility -->
@@ -19474,20 +19700,22 @@ At least one of `html` or `text` must contain more than whitespace.
 ```json
 {
   "content": "aGVsbG8gZTJl",
+  "path": "https://example.com/invoice.pdf",
   "filename": "receipt.pdf",
   "content_type": "application/pdf"
 }
 ```
 
-A file to store on a draft. Unlike `POST /emails` attachments, a draft attachment cannot use `path` or `content_id`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored.
+A file to store on a draft. Send either `content` or a `path` URL. Unlike `POST /emails` attachments, a `path` file is downloaded when the request is made, not when the draft is sent, and a draft attachment cannot use `content_id`. When both `content` and `path` are sent, `path` is ignored.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|content|string|true|none|The content of the file, encoded in base64. It cannot be empty.|
+|content|string|false|none|The content of the file, encoded in base64. It cannot be empty. Required without `path`.|
+|path|string|false|none|A URL to download the file from, starting with `http` or `https`. Required without `content`. A file that cannot be downloaded returns a 422, and so does a request whose downloads take more than 20 seconds together.|
 |filename|string|true|none|The filename of the attachment. A blocked file type returns a 422.|
-|content_type|string|true|none|The MIME type of the attachment. It must be a valid MIME type, such as `application/pdf`, or the request returns a 422.|
+|content_type|string|false|none|The MIME type of the attachment. It must be a valid MIME type, such as `application/pdf`, or the request returns a 422. Required with `content`. With `path`, it defaults to the content type of the downloaded file.|
 
 <h2 id="tocS_InboxDraftAttachment">InboxDraftAttachment</h2>
 <!-- backwards compatibility -->
@@ -19700,6 +19928,7 @@ A file stored on a draft.
   "attachments": [
     {
       "content": "aGVsbG8gZTJl",
+      "path": "https://example.com/invoice.pdf",
       "filename": "receipt.pdf",
       "content_type": "application/pdf"
     }
@@ -19721,7 +19950,7 @@ At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` mu
 |subject|string \| null|false|none|The subject. Max 2000 characters. A string that is only whitespace, or that contains a line break, is rejected.|
 |html|string \| null|false|none|The HTML body.|
 |text|string \| null|false|none|The plain text body.|
-|attachments|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|none|Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422.|
+|attachments|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|none|Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422.|
 |thread_id|string(uuid)|false|none|The Thread ID to reply in. Must be sent with `reply_to_email_id`.|
 |reply_to_email_id|string(uuid)|false|none|The Email ID to reply to, as returned in `data[].id` by the list thread emails endpoint. Must be sent with `thread_id`.|
 
@@ -19829,6 +20058,7 @@ At least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachments` mu
   "attachments": [
     {
       "content": "aGVsbG8gZTJl",
+      "path": "https://example.com/invoice.pdf",
       "filename": "receipt.pdf",
       "content_type": "application/pdf"
     }
@@ -19848,7 +20078,7 @@ Send at least one of `to`, `cc`, `bcc`, `subject`, `text`, `html` or `attachment
 |subject|string \| null|false|none|The subject. Max 2000 characters. Cannot be only whitespace or contain a line break. Pass `null` to clear.|
 |html|string \| null|false|none|The HTML body. Pass `null` to clear.|
 |text|string \| null|false|none|The plain text body. Pass `null` to clear.|
-|attachments|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|none|Files to store on the draft. Each one needs `content`, `filename` and `content_type`. A `path` without `content` returns a 422, and when both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft can total at most 25 MB. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.|
+|attachments|[[InboxDraftAttachmentInput](#schemainboxdraftattachmentinput)]|false|none|Files to store on the draft. Each one needs a `filename` and either `content` or a `path` URL. A `path` file is downloaded when the request is made and stored on the draft. When both are sent, `path` is ignored. A `content_id` returns a 422. The files on a draft, downloaded ones included, can total at most 25 MB. A `path` that does not start with `http` or `https`, or that cannot be downloaded, returns a 422, and so does a request whose downloads take more than 20 seconds together. An empty file or a blocked file type returns a 422. Sending the field replaces every attachment on the draft. Send `[]` to remove them all. `null` also removes them all.|
 |*anyOf*|object|false|none|none|
 |*anyOf*|object|false|none|none|
 |*anyOf*|object|false|none|none|

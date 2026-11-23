@@ -232,10 +232,10 @@ Creates an address.
 |» last_name|body|[last_name](#schemalast_name)|true|The last name associated with the address. An address must have either a first last name or a business name.|
 |» locality|body|[locality](#schemalocality)|true|The locality of the address. For US addresses, this corresponds to the city of the address.|
 |» neighborhood|body|[neighborhood](#schemaneighborhood)|false|The neighborhood of the address. This field is not used for addresses in the US but is used for some international addresses.|
-|» phone_number|body|[phone_number](#schemaphone_number)|false|The phone number associated with the address.|
+|» phone_number|body|[phone_number2](#schemaphone_number2)|false|The phone number associated with the address.|
 |» postal_code|body|[postal_code](#schemapostal_code)|false|The postal code of the address.|
 |» street_address|body|[street_address](#schemastreet_address)|true|The primary street address information about the address.|
-|» validate_address|body|[validate_address](#schemavalidate_address)|false|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
+|» validate_address|body|[validate_address2](#schemavalidate_address2)|false|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
 
 > Example responses
 
@@ -695,7 +695,7 @@ Creates an authentication provider.
 |---|---|---|---|---|
 |body|body|[AuthenticationProviderCreate](#schemaauthenticationprovidercreate)|true|Parameters that can be defined during authentication provider creation|
 |» active|body|[active](#schemaactive)|false|The active status of the authentication provider|
-|» name|body|[name](#schemaname-1)|true|The name associated with the authentication provider.|
+|» name|body|[name2](#schemaname2)|true|The name associated with the authentication provider.|
 |» settings|body|[settings](#schemasettings)|true|The settings associated with the authentication provider.|
 |» settings_url|body|[settings_url](#schemasettings_url)|false|The URL for the identity provider metadata file to populate the settings automatically. If the settings attribute is provided, that will be used instead.|
 |» short_name|body|[short_name](#schemashort_name)|true|The short name associated with the authentication provider. This must be unique and URL-friendly, as it's going to be part of the login URL.|
@@ -945,7 +945,7 @@ Updates settings of an existing authentication provider.
 |id|path|string|true|Identifies the resource.|
 |body|body|[UpdateAuthenticationProviderRequest](#schemaupdateauthenticationproviderrequest)|true|Parameters that can be updated in a authentication provider|
 |» active|body|[active](#schemaactive)|false|The active status of the authentication provider|
-|» name|body|[name](#schemaname-1)|false|The name associated with the authentication provider.|
+|» name|body|[name2](#schemaname2)|false|The name associated with the authentication provider.|
 |» settings|body|[settings](#schemasettings)|false|The settings associated with the authentication provider.|
 |» settings_url|body|[settings_url](#schemasettings_url)|false|The URL for the identity provider metadata file to populate the settings automatically. If the settings attribute is provided, that will be used instead.|
 |» short_name|body|[short_name](#schemashort_name)|false|The short name associated with the authentication provider. This must be unique and URL-friendly, as it's going to be part of the login URL.|
@@ -8785,7 +8785,7 @@ Search for any detail record across the Telnyx Platform
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-documents">Documents</h1>
@@ -12202,7 +12202,7 @@ Fetch all Mdr records
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## Fetch message body by id.
@@ -35787,7 +35787,7 @@ Fetch all previous requests for messaging detail reports. Messaging detail repor
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## submitMdrRequest
@@ -35941,7 +35941,7 @@ Submit a request for new messaging detail report. Messaging detail report pulls 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## getMdrRequest
@@ -36015,7 +36015,7 @@ Fetch single messaging detail report by id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## deleteMdrRequest
@@ -36090,7 +36090,7 @@ Delete generated messaging detail report by id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## get/reports/mdrs
@@ -36177,7 +36177,7 @@ Fetch all Mdr records
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-cdr-usage-reports">CDR Usage Reports</h1>
@@ -36252,7 +36252,7 @@ Generate and fetch voice usage report synchronously. This endpoint will both gen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-mdr-usage-reports">MDR Usage Reports</h1>
@@ -36338,7 +36338,7 @@ Fetch all messaging usage reports. Usage reports are aggregated messaging data f
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## submitUsageReport
@@ -36439,7 +36439,7 @@ Submit request for new new messaging usage report. This endpoint will pull and a
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## getUsageReportSync_1
@@ -36525,7 +36525,7 @@ Generate and fetch messaging usage report synchronously. This endpoint will both
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## getUsageReport
@@ -36600,7 +36600,7 @@ Fetch a single messaging usage report by id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## deleteUsageReport
@@ -36676,7 +36676,7 @@ Delete messaging usage report by id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-wdr-detail-reports">WDR Detail Reports</h1>
@@ -36831,7 +36831,7 @@ Fetch all previous requests for WhatsApp detail reports. WhatsApp detail reports
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## submitRequest
@@ -36899,7 +36899,7 @@ Submit a request for new WhatsApp detail report. WhatsApp detail report pulls al
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## getRequest
@@ -36966,7 +36966,7 @@ Fetch single whatsapp detail report by id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 ## deleteRequest
@@ -37018,7 +37018,7 @@ Delete generated WhatsApp detail report by id
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 <h1 id="telnyx-api-whatsapp-usage-aggregations">WhatsApp Usage Aggregations</h1>
@@ -37085,7 +37085,7 @@ Generate and fetch WhatsApp usage aggregations synchronously. This endpoint will
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-bearerAuth
+bearerAuth2
 </aside>
 
 # Schemas
@@ -37151,12 +37151,12 @@ Activation status
 |last_name|[last_name](#schemalast_name)|false|none|The last name associated with the address. An address must have either a first last name or a business name.|
 |locality|[locality](#schemalocality)|false|none|The locality of the address. For US addresses, this corresponds to the city of the address.|
 |neighborhood|[neighborhood](#schemaneighborhood)|false|none|The neighborhood of the address. This field is not used for addresses in the US but is used for some international addresses.|
-|phone_number|[phone_number](#schemaphone_number)|false|none|The phone number associated with the address.|
+|phone_number|[phone_number2](#schemaphone_number2)|false|none|The phone number associated with the address.|
 |postal_code|[postal_code](#schemapostal_code)|false|none|The postal code of the address.|
 |record_type|string|false|none|Identifies the type of the resource.|
 |street_address|[street_address](#schemastreet_address)|false|none|The primary street address information about the address.|
 |updated_at|string|false|none|ISO 8601 formatted date indicating when the resource was updated.|
-|validate_address|[validate_address](#schemavalidate_address)|false|none|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
+|validate_address|[validate_address2](#schemavalidate_address2)|false|none|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
 
 <h2 id="tocS_AddressCreate">AddressCreate</h2>
 <!-- backwards compatibility -->
@@ -37200,10 +37200,10 @@ Activation status
 |last_name|[last_name](#schemalast_name)|true|none|The last name associated with the address. An address must have either a first last name or a business name.|
 |locality|[locality](#schemalocality)|true|none|The locality of the address. For US addresses, this corresponds to the city of the address.|
 |neighborhood|[neighborhood](#schemaneighborhood)|false|none|The neighborhood of the address. This field is not used for addresses in the US but is used for some international addresses.|
-|phone_number|[phone_number](#schemaphone_number)|false|none|The phone number associated with the address.|
+|phone_number|[phone_number2](#schemaphone_number2)|false|none|The phone number associated with the address.|
 |postal_code|[postal_code](#schemapostal_code)|false|none|The postal code of the address.|
 |street_address|[street_address](#schemastreet_address)|true|none|The primary street address information about the address.|
-|validate_address|[validate_address](#schemavalidate_address)|false|none|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
+|validate_address|[validate_address2](#schemavalidate_address2)|false|none|Indicates whether or not the address should be validated for emergency use upon creation or not. This should be left with the default value of `true` unless you have used the `/addresses/actions/validate` endpoint to validate the address separately prior to creation. If an address is not validated for emergency use upon creation and it is not valid, it will not be able to be used for emergency services.|
 
 <h2 id="tocS_AnchorsiteOverride">AnchorsiteOverride</h2>
 <!-- backwards compatibility -->
@@ -37322,7 +37322,7 @@ The media object containing audio details.
 |active|[active](#schemaactive)|false|none|The active status of the authentication provider|
 |created_at|string|false|none|ISO 8601 formatted date indicating when the resource was created.|
 |id|string(uuid)|false|none|Uniquely identifies the authentication provider.|
-|name|[name](#schemaname-1)|false|none|The name associated with the authentication provider.|
+|name|[name2](#schemaname2)|false|none|The name associated with the authentication provider.|
 |organization_id|[organization_id](#schemaorganization_id)|false|none|The id from the Organization the authentication provider belongs to.|
 |record_type|string|false|none|Identifies the type of the resource.|
 |settings|object|false|none|The settings associated with the authentication provider.|
@@ -37356,7 +37356,7 @@ The media object containing audio details.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |active|[active](#schemaactive)|false|none|The active status of the authentication provider|
-|name|[name](#schemaname-1)|true|none|The name associated with the authentication provider.|
+|name|[name2](#schemaname2)|true|none|The name associated with the authentication provider.|
 |settings|[settings](#schemasettings)|true|none|The settings associated with the authentication provider.|
 |settings_url|[settings_url](#schemasettings_url)|false|none|The URL for the identity provider metadata file to populate the settings automatically. If the settings attribute is provided, that will be used instead.|
 |short_name|[short_name](#schemashort_name)|true|none|The short name associated with the authentication provider. This must be unique and URL-friendly, as it's going to be part of the login URL.|
@@ -53399,7 +53399,7 @@ Specifies the type of traffic allowed in this profile.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |active|[active](#schemaactive)|false|none|The active status of the authentication provider|
-|name|[name](#schemaname-1)|false|none|The name associated with the authentication provider.|
+|name|[name2](#schemaname2)|false|none|The name associated with the authentication provider.|
 |settings|[settings](#schemasettings)|false|none|The settings associated with the authentication provider.|
 |settings_url|[settings_url](#schemasettings_url)|false|none|The URL for the identity provider metadata file to populate the settings automatically. If the settings attribute is provided, that will be used instead.|
 |short_name|[short_name](#schemashort_name)|false|none|The short name associated with the authentication provider. This must be unique and URL-friendly, as it's going to be part of the login URL.|
@@ -56068,7 +56068,7 @@ Webhook delivery attempt details.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|errors|[[error](#schemaerror-1)]|false|none|Webhook delivery errors.|
+|errors|[[error2](#schemaerror2)]|false|none|Webhook delivery errors.|
 |finished_at|string(date-time)|false|none|ISO 8601 timestamp indicating when the attempt has finished.|
 |http|[http](#schemahttp)|false|none|HTTP request and response information.|
 |started_at|string(date-time)|false|none|ISO 8601 timestamp indicating when the attempt was initiated.|
@@ -56133,12 +56133,12 @@ The two-character (ISO 3166-1 alpha-2) country code of the address.
 
 A customer reference string for customer look ups.
 
-<h2 id="tocS_error">error</h2>
+<h2 id="tocS_error2">error2</h2>
 <!-- backwards compatibility -->
-<a id="schemaerror-1"></a>
-<a id="schema_error"></a>
-<a id="tocSerror-1"></a>
-<a id="tocserror-1"></a>
+<a id="schemaerror2"></a>
+<a id="schema_error2"></a>
+<a id="tocSerror2"></a>
+<a id="tocserror2"></a>
 
 ```json
 {
@@ -56257,12 +56257,12 @@ The last name associated with the address. An address must have either a first l
 
 The locality of the address. For US addresses, this corresponds to the city of the address.
 
-<h2 id="tocS_name">name</h2>
+<h2 id="tocS_name2">name2</h2>
 <!-- backwards compatibility -->
-<a id="schemaname-1"></a>
-<a id="schema_name"></a>
-<a id="tocSname-1"></a>
-<a id="tocsname-1"></a>
+<a id="schemaname2"></a>
+<a id="schema_name2"></a>
+<a id="tocSname2"></a>
+<a id="tocsname2"></a>
 
 ```json
 "Okta"
@@ -56296,12 +56296,12 @@ The neighborhood of the address. This field is not used for addresses in the US 
 
 The id from the Organization the authentication provider belongs to.
 
-<h2 id="tocS_phone_number">phone_number</h2>
+<h2 id="tocS_phone_number2">phone_number2</h2>
 <!-- backwards compatibility -->
-<a id="schemaphone_number"></a>
-<a id="schema_phone_number"></a>
-<a id="tocSphone_number"></a>
-<a id="tocsphone_number"></a>
+<a id="schemaphone_number2"></a>
+<a id="schema_phone_number2"></a>
+<a id="tocSphone_number2"></a>
+<a id="tocsphone_number2"></a>
 
 ```json
 "+12125559000"
@@ -56397,12 +56397,12 @@ The short name associated with the authentication provider. This must be unique 
 
 The primary street address information about the address.
 
-<h2 id="tocS_validate_address">validate_address</h2>
+<h2 id="tocS_validate_address2">validate_address2</h2>
 <!-- backwards compatibility -->
-<a id="schemavalidate_address"></a>
-<a id="schema_validate_address"></a>
-<a id="tocSvalidate_address"></a>
-<a id="tocsvalidate_address"></a>
+<a id="schemavalidate_address2"></a>
+<a id="schema_validate_address2"></a>
+<a id="tocSvalidate_address2"></a>
+<a id="tocsvalidate_address2"></a>
 
 ```json
 true

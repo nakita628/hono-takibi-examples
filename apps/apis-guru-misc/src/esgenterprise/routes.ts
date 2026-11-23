@@ -40,13 +40,10 @@ export const getSearchRoute = createRoute({
         },
       },
       headers: z.object({
-        'x-next': {
-          description: 'ESG ratings',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'ESG ratings', param: { required: false } }),
-        },
+        'x-next': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'ESG ratings', param: { required: false } }),
       }),
     },
   },

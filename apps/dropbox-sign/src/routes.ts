@@ -480,6 +480,42 @@ type TemplateListResponseType = {
   warnings?: z.infer<typeof WarningResponseSchema>[]
 }
 
+const AccountApiKeyCreateRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .max(25)
+      .openapi({
+        description:
+          'Name for the API key. Must be unique on the account and at most 25 characters.',
+      }),
+  })
+  .openapi({ required: ['name'] })
+  .openapi('AccountApiKeyCreateRequest')
+
+const AccountApiKeyUpdateRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .max(25)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'New name for the API key. Must be unique on the account and at most 25 characters.',
+      }),
+    is_primary: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Set to `true` to make this key the account's primary API key. The previous primary key remains on the account and is no longer primary.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountApiKeyUpdateRequest')
+
 const AccountCreateRequestSchema = z
   .object({
     client_id: z
@@ -509,6 +545,240 @@ const AccountCreateRequestSchema = z
   })
   .openapi({ required: ['email_address'] })
   .openapi('AccountCreateRequest')
+
+const DateFormatSchema = z
+  .enum(['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY/MM/DD'])
+  .openapi({
+    description:
+      'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+  })
+  .openapi('DateFormat')
+
+const RequiredSignatureTypeSchema = z
+  .enum(['draw', 'phone', 'type', 'upload'])
+  .openapi({ description: 'A signature creation method a signer may use.' })
+  .openapi('RequiredSignatureType')
+
+const AccountSettingsUpdateRequestSchema = z
+  .strictObject({
+    set: z
+      .object({
+        company: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Company name associated with this account or team.' }),
+        custom_signing_redirect_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.',
+          }),
+        custom_signing_redirect_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Webpage where signers are redirected after they sign, when custom redirects are enabled.',
+          }),
+        custom_tagline: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Company tagline shown with the account or team branding.' }),
+        date_format: DateFormatSchema.exactOptional().openapi({
+          description:
+            'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+        }),
+        is_signature_reminders_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.',
+          }),
+        request_email_from: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.",
+          }),
+        request_email_signature: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Text appended to the end of signature request emails.' }),
+        required_signature_types: z
+          .array(RequiredSignatureTypeSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({ description: 'Signature creation methods a signer is allowed to use.' }),
+        should_enable_tamper_proof: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether a tamper-proof seal is applied to sent signature requests.',
+          }),
+        should_include_distinct_pdfs: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether completed documents remain as separate PDF files instead of being merged into one PDF.',
+          }),
+        should_offer_signer_access_code: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether senders can require a custom access code before a signer can open a document.',
+          }),
+        should_offer_signer_sms_authentication: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether senders can require a text-message verification code before a signer can open a document.',
+          }),
+        should_remove_document_id: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the document ID is removed from all pages of sent documents.',
+          }),
+        is_notify_on_sign_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to notify the account when someone signs a document it sent.',
+          }),
+        is_notify_on_view_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to notify the account when someone opens a document it sent.',
+          }),
+        should_autocomplete: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether values entered in text fields are saved and suggested for future signature requests.',
+          }),
+        should_include_requested_pdfs: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to email the account a PDF copy when a signature request it sent is completed.',
+          }),
+        should_include_requested_pdfs_for_others: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to email a PDF copy to the other signers and CC recipients when a signature request is completed.',
+          }),
+        should_include_sent_doc_pdfs: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to email the account a PDF copy when it sends a document.',
+          }),
+        should_include_sent_doc_pdfs_for_others: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to email recipients a PDF copy, instead of only a link, when the account sends a document.',
+          }),
+        should_send_daily_summary: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to send the account a daily email summarizing outstanding signature requests.',
+          }),
+        should_send_embedded_signature_conf_emails: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to notify the account when it signs a document on a third-party site.',
+          }),
+        should_send_ordered_sr_email: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to notify all parties when an ordered signature request starts.',
+          }),
+        should_send_outbound_conf_emails: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether to notify the account when it signs and sends a document.',
+          }),
+        template_link_signature_emails_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether to notify the account when someone signs a document sent by its team through a template link.',
+          }),
+      })
+      .catchall(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.',
+        required: [],
+      }),
+    unset: z
+      .array(
+        z.enum([
+          'company',
+          'custom_signing_redirect_enabled',
+          'custom_signing_redirect_url',
+          'custom_tagline',
+          'date_format',
+          'is_signature_reminders_enabled',
+          'request_email_from',
+          'request_email_signature',
+          'required_signature_types',
+          'should_enable_tamper_proof',
+          'should_include_distinct_pdfs',
+          'should_offer_signer_access_code',
+          'should_offer_signer_sms_authentication',
+          'should_remove_document_id',
+          'is_notify_on_sign_enabled',
+          'is_notify_on_view_enabled',
+          'should_autocomplete',
+          'should_include_requested_pdfs',
+          'should_include_requested_pdfs_for_others',
+          'should_include_sent_doc_pdfs',
+          'should_include_sent_doc_pdfs_for_others',
+          'should_send_daily_summary',
+          'should_send_embedded_signature_conf_emails',
+          'should_send_ordered_sr_email',
+          'should_send_outbound_conf_emails',
+          'template_link_signature_emails_enabled',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Any setting that can be set can also be unset. Unset clears the stored value so it is inherited. A listed name cannot also be set or locked in the same request.',
+      }),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
+  .openapi('AccountSettingsUpdateRequest')
 
 const AccountUpdateRequestSchema = z
   .object({
@@ -1128,6 +1398,14 @@ const SubBulkSignerListSchema = z
         description:
           'Add Signers to your Templated-based Signature Request. Allows the requester to specify editor options when a preparing a document.\n\nCurrently only templates with a single role are supported. All signers must have the same `role` value.',
       }),
+    metadata: z
+      .record(z.string(), z.any())
+      .refine((val) => Object.keys(val).length <= 10)
+      .exactOptional()
+      .openapi({
+        description:
+          "Key-value data that should be attached to the signature request. This metadata is included in all API responses and events involving the signature request. For example, use the metadata field to store a signer's order number for look up when receiving events for the signature request.\n\nEach request can include up to 10 metadata keys (or 50 nested metadata keys), with key names up to 40 characters long and values up to 1000 characters long.",
+      }),
   })
   .openapi({ required: [] })
   .openapi('SubBulkSignerList')
@@ -1242,6 +1520,7 @@ const SignatureRequestBulkCreateEmbeddedWithTemplateRequestSchema = z
       }),
     metadata: z
       .record(z.string(), z.any())
+      .refine((val) => Object.keys(val).length <= 10)
       .exactOptional()
       .openapi({
         description:
@@ -1343,6 +1622,7 @@ const SignatureRequestBulkSendWithTemplateRequestSchema = z
       }),
     metadata: z
       .record(z.string(), z.any())
+      .refine((val) => Object.keys(val).length <= 10)
       .exactOptional()
       .openapi({
         description:
@@ -2835,6 +3115,11 @@ const SignatureRequestUpdateRequestSchema = z
   .openapi({ required: ['signature_id'] })
   .openapi('SignatureRequestUpdateRequest')
 
+const DataResidencySchema = z
+  .enum(['us', 'eu', 'au', 'jp', 'uk', 'ca'])
+  .openapi({ description: "Region where the team's documents are stored at rest." })
+  .openapi('DataResidency')
+
 const SubFormFieldsPerDocumentCheckboxSchema = SubFormFieldsPerDocumentBaseSchema.and(
   z
     .object({
@@ -3250,6 +3535,11 @@ const SubFormFieldsPerDocumentFontEnumSchema = z
   ])
   .openapi('SubFormFieldsPerDocumentFontEnum')
 
+const NotifyCCRecipientEventSchema = z
+  .enum(['send', 'complete', 'view', 'decline', 'delegate'])
+  .openapi({ description: 'An event for which CC recipients can receive notifications.' })
+  .openapi('NotifyCCRecipientEvent')
+
 const SubUnclaimedDraftSignerSchema = z
   .object({
     email_address: z.email().openapi({ description: 'The email address of the signer.' }),
@@ -3292,6 +3582,14 @@ const SubTemplateRoleSchema = z
   .openapi({ required: [] })
   .openapi('SubTemplateRole')
 
+const TeamSettingLockSchema = z
+  .enum(['organization_admins', 'team_admins', 'members'])
+  .openapi({
+    description:
+      'Who can change a locked team setting. Every property in `lock` accepts these values. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value.',
+  })
+  .openapi('TeamSettingLock')
+
 const TeamAddMemberRequestSchema = z
   .object({
     account_id: z
@@ -3326,6 +3624,14 @@ const TeamCreateRequestSchema = z
       .default('Untitled Team')
       .exactOptional()
       .openapi({ description: 'The name of your Team.' }),
+    parent_team_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Id of an existing team to create this team under. Omit it to create a root team. Creating a subteam requires an organization admin.',
+        example: '4fea99bfcf2b26bfccf6cea3e127fb8bb74d8d9c',
+      }),
   })
   .openapi({ required: [] })
   .openapi('TeamCreateRequest')
@@ -3364,6 +3670,387 @@ const TeamRemoveMemberRequestSchema = z
   })
   .openapi({ required: [] })
   .openapi('TeamRemoveMemberRequest')
+
+const TeamSettingsUpdateRequestSchema = z
+  .strictObject({
+    set: z
+      .object({
+        company: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Company name associated with this account or team.' }),
+        custom_signing_redirect_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.',
+          }),
+        custom_signing_redirect_url: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Webpage where signers are redirected after they sign, when custom redirects are enabled.',
+          }),
+        custom_tagline: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Company tagline shown with the account or team branding.' }),
+        date_format: DateFormatSchema.exactOptional().openapi({
+          description:
+            'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+        }),
+        is_signature_reminders_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.',
+          }),
+        request_email_from: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              "Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.",
+          }),
+        request_email_signature: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Text appended to the end of signature request emails.' }),
+        required_signature_types: z
+          .array(RequiredSignatureTypeSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({ description: 'Signature creation methods a signer is allowed to use.' }),
+        should_enable_tamper_proof: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether a tamper-proof seal is applied to sent signature requests.',
+          }),
+        should_include_distinct_pdfs: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether completed documents remain as separate PDF files instead of being merged into one PDF.',
+          }),
+        should_offer_signer_access_code: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether senders can require a custom access code before a signer can open a document.',
+          }),
+        should_offer_signer_sms_authentication: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether senders can require a text-message verification code before a signer can open a document.',
+          }),
+        should_remove_document_id: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether the document ID is removed from all pages of sent documents.',
+          }),
+        data_residency: DataResidencySchema.exactOptional().openapi({
+          description: "Region where the team's documents are stored at rest.",
+        }),
+        allow_team_delete_document_for_everyone: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.',
+          }),
+        allow_team_download_csv: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether the sender, in addition to admins, can download document data as a CSV.',
+          }),
+        lock_team_template_creation: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'When enabled, only admins can create and edit templates and template links.',
+          }),
+        lock_team_template_gallery: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'When enabled, only admins can access and use the template gallery.',
+          }),
+        self_sign_message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+          }),
+        self_sign_title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+          }),
+        signature_request_message: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.',
+          }),
+        signature_request_title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.',
+          }),
+        multifactor_auth_app: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.',
+          }),
+        multifactor_auth_sms: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.',
+          }),
+        qualified_esignature_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({
+            description: 'Whether qualified electronic signatures are enabled for the team.',
+          }),
+        sms_signature_delivery: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether signature requests can be delivered by SMS.' }),
+        nom151_enabled: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether NOM-151 compliance is enabled for the team.' }),
+        should_enable_in_person_signing: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether in-person signing is enabled for the team.' }),
+        everyone_has_signed_email: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Email address notified when everyone has signed.' }),
+        timezone: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "The team's time zone identifier." }),
+        notify_cc_recipients_setting: z
+          .array(NotifyCCRecipientEventSchema)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional()
+          .openapi({ description: 'Events for which CC recipients receive notifications.' }),
+      })
+      .catchall(z.any())
+      .exactOptional()
+      .openapi({
+        description:
+          'Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.',
+        required: [],
+      }),
+    lock: z
+      .object({
+        company: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Company name associated with this account or team.',
+        }),
+        custom_signing_redirect_enabled: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.',
+        }),
+        custom_signing_redirect_url: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Webpage where signers are redirected after they sign, when custom redirects are enabled.',
+        }),
+        custom_tagline: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Company tagline shown with the account or team branding.',
+        }),
+        date_format: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+        }),
+        is_signature_reminders_enabled: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.',
+        }),
+        request_email_from: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            "Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.",
+        }),
+        request_email_signature: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Text appended to the end of signature request emails.',
+        }),
+        required_signature_types: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Signature creation methods a signer is allowed to use.',
+        }),
+        should_enable_tamper_proof: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether a tamper-proof seal is applied to sent signature requests.',
+        }),
+        should_include_distinct_pdfs: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether completed documents remain as separate PDF files instead of being merged into one PDF.',
+        }),
+        should_offer_signer_access_code: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether senders can require a custom access code before a signer can open a document.',
+        }),
+        should_offer_signer_sms_authentication: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether senders can require a text-message verification code before a signer can open a document.',
+        }),
+        should_remove_document_id: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether the document ID is removed from all pages of sent documents.',
+        }),
+        data_residency: TeamSettingLockSchema.exactOptional().openapi({
+          description: "Region where the team's documents are stored at rest.",
+        }),
+        allow_team_delete_document_for_everyone: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.',
+        }),
+        allow_team_download_csv: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether the sender, in addition to admins, can download document data as a CSV.',
+        }),
+        lock_team_template_creation: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'When enabled, only admins can create and edit templates and template links.',
+        }),
+        lock_team_template_gallery: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'When enabled, only admins can access and use the template gallery.',
+        }),
+        self_sign_message: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+        }),
+        self_sign_title: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+        }),
+        signature_request_message: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.',
+        }),
+        signature_request_title: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.',
+        }),
+        multifactor_auth_app: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.',
+        }),
+        multifactor_auth_sms: TeamSettingLockSchema.exactOptional().openapi({
+          description:
+            'Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.',
+        }),
+        qualified_esignature_enabled: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether qualified electronic signatures are enabled for the team.',
+        }),
+        sms_signature_delivery: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether signature requests can be delivered by SMS.',
+        }),
+        nom151_enabled: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether NOM-151 compliance is enabled for the team.',
+        }),
+        should_enable_in_person_signing: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Whether in-person signing is enabled for the team.',
+        }),
+        everyone_has_signed_email: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Email address notified when everyone has signed.',
+        }),
+        timezone: TeamSettingLockSchema.exactOptional().openapi({
+          description: "The team's time zone identifier.",
+        }),
+        notify_cc_recipients_setting: TeamSettingLockSchema.exactOptional().openapi({
+          description: 'Events for which CC recipients receive notifications.',
+        }),
+      })
+      .catchall(TeamSettingLockSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Lock a setting to prevent subteams or accounts from overriding it. A team admin can set a lock on their own team. An organization admin can set a lock on the organization or on a subteam. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value. A name in `lock` cannot also appear in `unset`.',
+        required: [],
+      }),
+    unset: z
+      .array(
+        z.enum([
+          'company',
+          'custom_signing_redirect_enabled',
+          'custom_signing_redirect_url',
+          'custom_tagline',
+          'date_format',
+          'is_signature_reminders_enabled',
+          'request_email_from',
+          'request_email_signature',
+          'required_signature_types',
+          'should_enable_tamper_proof',
+          'should_include_distinct_pdfs',
+          'should_offer_signer_access_code',
+          'should_offer_signer_sms_authentication',
+          'should_remove_document_id',
+          'data_residency',
+          'allow_team_delete_document_for_everyone',
+          'allow_team_download_csv',
+          'lock_team_template_creation',
+          'lock_team_template_gallery',
+          'self_sign_message',
+          'self_sign_title',
+          'signature_request_message',
+          'signature_request_title',
+          'multifactor_auth_app',
+          'multifactor_auth_sms',
+          'qualified_esignature_enabled',
+          'sms_signature_delivery',
+          'nom151_enabled',
+          'should_enable_in_person_signing',
+          'everyone_has_signed_email',
+          'timezone',
+          'notify_cc_recipients_setting',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Any setting that can be set can also be unset. Unset clears the stored value and its lock so both are inherited. A listed name cannot also be set or locked in the same request.',
+      }),
+  })
+  .refine((val) => Object.keys(val).length >= 1)
+  .openapi({ required: [] })
+  .openapi('TeamSettingsUpdateRequest')
 
 const TeamUpdateRequestSchema = z
   .object({ name: z.string().exactOptional().openapi({ description: 'The name of your Team.' }) })
@@ -4414,6 +5101,129 @@ const UnclaimedDraftEditAndResendRequestSchema = z
   .openapi({ required: ['client_id'] })
   .openapi('UnclaimedDraftEditAndResendRequest')
 
+const AccountApiKeyResponseSchema = z
+  .object({
+    api_key_id: z
+      .string()
+      .regex(/^[0-9a-fA-F]{40}$/)
+      .length(40)
+      .openapi({ description: 'The ID of the API key.' }),
+    account_id: z.string().openapi({ description: 'The ID of the account that owns the API key.' }),
+    name: z.string().openapi({ description: 'The name of the API key.' }),
+    secret: z
+      .string()
+      .length(64)
+      .openapi({
+        description: 'The API key secret. Returned only when the key is created.',
+        readOnly: true,
+      }),
+    is_primary: z
+      .boolean()
+      .openapi({ description: "Whether this is the account's primary API key." }),
+    last_used_at: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'When the API key was last used, as a Unix timestamp. `null` if the key has not been used.',
+      }),
+    created_at: z
+      .int()
+      .openapi({ description: 'When the API key was created, as a Unix timestamp.' }),
+    updated_at: z
+      .int()
+      .openapi({ description: 'When the API key was last updated, as a Unix timestamp.' }),
+  })
+  .openapi({
+    required: [
+      'api_key_id',
+      'account_id',
+      'name',
+      'secret',
+      'is_primary',
+      'created_at',
+      'updated_at',
+    ],
+    'x-internal-class': true,
+  })
+  .openapi('AccountApiKeyResponse')
+
+const AccountApiKeyCreateResponseSchema = z
+  .object({
+    api_key: AccountApiKeyResponseSchema,
+    warnings: z
+      .array(WarningResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of warnings.' }),
+  })
+  .openapi({ required: ['api_key'], 'x-internal-class': true })
+  .openapi('AccountApiKeyCreateResponse')
+
+const AccountApiKeySummaryResponseSchema = z
+  .object({
+    api_key_id: z
+      .string()
+      .regex(/^[0-9a-fA-F]{40}$/)
+      .length(40)
+      .openapi({ description: 'The ID of the API key.' }),
+    account_id: z.string().openapi({ description: 'The ID of the account that owns the API key.' }),
+    name: z.string().nullable().openapi({ description: 'The name of the API key.' }),
+    is_primary: z
+      .boolean()
+      .openapi({ description: "Whether this is the account's primary API key." }),
+    last_used_at: z
+      .int()
+      .nullable()
+      .openapi({
+        description:
+          'When the API key was last used, as a Unix timestamp. `null` if the key has not been used.',
+      }),
+    created_at: z
+      .int()
+      .openapi({ description: 'When the API key was created, as a Unix timestamp.' }),
+    updated_at: z
+      .int()
+      .openapi({ description: 'When the API key was last updated, as a Unix timestamp.' }),
+  })
+  .openapi({
+    required: [
+      'api_key_id',
+      'account_id',
+      'name',
+      'is_primary',
+      'last_used_at',
+      'created_at',
+      'updated_at',
+    ],
+    'x-internal-class': true,
+  })
+  .openapi('AccountApiKeySummaryResponse')
+
+const AccountApiKeyGetResponseSchema = z
+  .object({
+    api_key: AccountApiKeySummaryResponseSchema,
+    warnings: z
+      .array(WarningResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of warnings.' }),
+  })
+  .openapi({ required: ['api_key'], 'x-internal-class': true })
+  .openapi('AccountApiKeyGetResponse')
+
+const AccountApiKeyListResponseSchema = z
+  .object({
+    api_keys: z
+      .array(AccountApiKeySummaryResponseSchema)
+      .openapi({ description: 'The API keys on the account.' }),
+    warnings: z
+      .array(WarningResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of warnings.' }),
+  })
+  .openapi({ required: ['api_keys'], 'x-internal-class': true })
+  .openapi('AccountApiKeyListResponse')
+
 const AccountResponseQuotasSchema = z
   .object({
     api_signature_requests_left: z
@@ -4586,6 +5396,171 @@ const AccountGetResponseSchema = z
   })
   .openapi({ required: ['account'], 'x-internal-class': true })
   .openapi('AccountGetResponse')
+
+const SettingLockResponseSchema = z
+  .object({ mode: TeamSettingLockSchema, source: z.enum(['team', 'parent_team', 'default']) })
+  .openapi({ required: ['mode', 'source'], 'x-internal-class': true })
+  .openapi('SettingLockResponse')
+
+const SettingResponseSchema = z
+  .object({
+    value: z
+      .any()
+      .nullable()
+      .openapi({
+        description: 'Current value of the setting. Null when the setting has no value.',
+      }),
+    is_inherited: z.boolean(),
+    source: z.enum(['account', 'team', 'parent_team', 'default']),
+    type: z.enum(['boolean', 'integer', 'string', 'array']),
+    writable: z.boolean(),
+    lock: SettingLockResponseSchema,
+  })
+  .openapi({
+    required: ['value', 'is_inherited', 'source', 'type', 'writable', 'lock'],
+    'x-internal-class': true,
+  })
+  .openapi('SettingResponse')
+
+const AccountSettingsResponseSettingsSchema = z
+  .strictObject({
+    company: SettingResponseSchema.openapi({
+      description: 'Company name associated with this account or team.',
+    }),
+    custom_signing_redirect_enabled: SettingResponseSchema.openapi({
+      description:
+        'Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.',
+    }),
+    custom_signing_redirect_url: SettingResponseSchema.openapi({
+      description:
+        'Webpage where signers are redirected after they sign, when custom redirects are enabled.',
+    }),
+    custom_tagline: SettingResponseSchema.openapi({
+      description: 'Company tagline shown with the account or team branding.',
+    }),
+    date_format: SettingResponseSchema.openapi({
+      description:
+        'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+    }),
+    is_signature_reminders_enabled: SettingResponseSchema.openapi({
+      description:
+        'Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.',
+    }),
+    request_email_from: SettingResponseSchema.openapi({
+      description:
+        "Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.",
+    }),
+    request_email_signature: SettingResponseSchema.openapi({
+      description: 'Text appended to the end of signature request emails.',
+    }),
+    required_signature_types: SettingResponseSchema.openapi({
+      description: 'Signature creation methods a signer is allowed to use.',
+    }),
+    should_enable_tamper_proof: SettingResponseSchema.openapi({
+      description: 'Whether a tamper-proof seal is applied to sent signature requests.',
+    }),
+    should_include_distinct_pdfs: SettingResponseSchema.openapi({
+      description:
+        'Whether completed documents remain as separate PDF files instead of being merged into one PDF.',
+    }),
+    should_offer_signer_access_code: SettingResponseSchema.openapi({
+      description:
+        'Whether senders can require a custom access code before a signer can open a document.',
+    }),
+    should_offer_signer_sms_authentication: SettingResponseSchema.openapi({
+      description:
+        'Whether senders can require a text-message verification code before a signer can open a document.',
+    }),
+    should_remove_document_id: SettingResponseSchema.openapi({
+      description: 'Whether the document ID is removed from all pages of sent documents.',
+    }),
+    is_notify_on_sign_enabled: SettingResponseSchema.openapi({
+      description: 'Whether to notify the account when someone signs a document it sent.',
+    }),
+    is_notify_on_view_enabled: SettingResponseSchema.openapi({
+      description: 'Whether to notify the account when someone opens a document it sent.',
+    }),
+    should_autocomplete: SettingResponseSchema.openapi({
+      description:
+        'Whether values entered in text fields are saved and suggested for future signature requests.',
+    }),
+    should_include_requested_pdfs: SettingResponseSchema.openapi({
+      description:
+        'Whether to email the account a PDF copy when a signature request it sent is completed.',
+    }),
+    should_include_requested_pdfs_for_others: SettingResponseSchema.openapi({
+      description:
+        'Whether to email a PDF copy to the other signers and CC recipients when a signature request is completed.',
+    }),
+    should_include_sent_doc_pdfs: SettingResponseSchema.openapi({
+      description: 'Whether to email the account a PDF copy when it sends a document.',
+    }),
+    should_include_sent_doc_pdfs_for_others: SettingResponseSchema.openapi({
+      description:
+        'Whether to email recipients a PDF copy, instead of only a link, when the account sends a document.',
+    }),
+    should_send_daily_summary: SettingResponseSchema.openapi({
+      description:
+        'Whether to send the account a daily email summarizing outstanding signature requests.',
+    }),
+    should_send_embedded_signature_conf_emails: SettingResponseSchema.openapi({
+      description: 'Whether to notify the account when it signs a document on a third-party site.',
+    }),
+    should_send_ordered_sr_email: SettingResponseSchema.openapi({
+      description: 'Whether to notify all parties when an ordered signature request starts.',
+    }),
+    should_send_outbound_conf_emails: SettingResponseSchema.openapi({
+      description: 'Whether to notify the account when it signs and sends a document.',
+    }),
+    template_link_signature_emails_enabled: SettingResponseSchema.openapi({
+      description:
+        'Whether to notify the account when someone signs a document sent by its team through a template link.',
+    }),
+  })
+  .openapi({
+    required: [
+      'company',
+      'custom_signing_redirect_enabled',
+      'custom_signing_redirect_url',
+      'custom_tagline',
+      'date_format',
+      'is_signature_reminders_enabled',
+      'request_email_from',
+      'request_email_signature',
+      'required_signature_types',
+      'should_enable_tamper_proof',
+      'should_include_distinct_pdfs',
+      'should_offer_signer_access_code',
+      'should_offer_signer_sms_authentication',
+      'should_remove_document_id',
+      'is_notify_on_sign_enabled',
+      'is_notify_on_view_enabled',
+      'should_autocomplete',
+      'should_include_requested_pdfs',
+      'should_include_requested_pdfs_for_others',
+      'should_include_sent_doc_pdfs',
+      'should_include_sent_doc_pdfs_for_others',
+      'should_send_daily_summary',
+      'should_send_embedded_signature_conf_emails',
+      'should_send_ordered_sr_email',
+      'should_send_outbound_conf_emails',
+      'template_link_signature_emails_enabled',
+    ],
+    'x-internal-class': true,
+  })
+  .openapi('AccountSettingsResponseSettings')
+
+const AccountSettingsResponseSchema = z
+  .object({
+    account_id: z.string(),
+    settings: AccountSettingsResponseSettingsSchema,
+    warnings: z
+      .array(WarningResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of warnings.' }),
+  })
+  .openapi({ required: ['account_id', 'settings'], 'x-internal-class': true })
+  .openapi('AccountSettingsResponse')
 
 const AccountVerifyResponseAccountSchema = z
   .object({
@@ -5576,23 +6551,33 @@ const SignatureRequestListResponseSchema = z
 
 const SignatureRequestResponseCustomFieldCheckboxSchema =
   SignatureRequestResponseCustomFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('checkbox')
-          .exactOptional()
-          .openapi({
-            description:
-              "The type of this Custom Field. Only 'text' and 'checkbox' are currently supported.",
-          }),
-        value: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'A true/false for checkbox fields' }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('checkbox')
+            .exactOptional()
+            .openapi({
+              description:
+                "The type of this Custom Field. Only 'text' and 'checkbox' are currently supported.",
+            }),
+          value: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'A true/false for checkbox fields' }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `SignatureRequestResponseCustomFieldBase`.',
       required: ['type'],
@@ -5601,20 +6586,33 @@ const SignatureRequestResponseCustomFieldCheckboxSchema =
 
 const SignatureRequestResponseCustomFieldTextSchema =
   SignatureRequestResponseCustomFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('text')
-          .exactOptional()
-          .openapi({
-            description:
-              "The type of this Custom Field. Only 'text' and 'checkbox' are currently supported.",
-          }),
-        value: z.string().exactOptional().openapi({ description: 'A text string for text fields' }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('text')
+            .exactOptional()
+            .openapi({
+              description:
+                "The type of this Custom Field. Only 'text' and 'checkbox' are currently supported.",
+            }),
+          value: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'A text string for text fields' }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `SignatureRequestResponseCustomFieldBase`.',
       required: ['type'],
@@ -5792,6 +6790,14 @@ const TeamResponseSchema = z
         description:
           'A list of email addresses that have an outstanding invitation to join your Team and do not yet have a Dropbox Sign account.',
       }),
+    team_id: z.string().exactOptional().openapi({ description: 'The id of a team' }),
+    parent_team_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: "The id of this team's parent team. `null` when the team has no parent.",
+      }),
   })
   .openapi({
     description: 'Contains information about your team and its members',
@@ -5875,6 +6881,158 @@ const TeamMemberResponseSchema = z
   .openapi({ 'x-internal-class': true, required: [] })
   .openapi('TeamMemberResponse')
 
+const TeamSettingsResponseSettingsSchema = z
+  .strictObject({
+    company: SettingResponseSchema.openapi({
+      description: 'Company name associated with this account or team.',
+    }),
+    custom_signing_redirect_enabled: SettingResponseSchema.openapi({
+      description:
+        'Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.',
+    }),
+    custom_signing_redirect_url: SettingResponseSchema.openapi({
+      description:
+        'Webpage where signers are redirected after they sign, when custom redirects are enabled.',
+    }),
+    custom_tagline: SettingResponseSchema.openapi({
+      description: 'Company tagline shown with the account or team branding.',
+    }),
+    date_format: SettingResponseSchema.openapi({
+      description:
+        'Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.',
+    }),
+    is_signature_reminders_enabled: SettingResponseSchema.openapi({
+      description:
+        'Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.',
+    }),
+    request_email_from: SettingResponseSchema.openapi({
+      description:
+        "Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.",
+    }),
+    request_email_signature: SettingResponseSchema.openapi({
+      description: 'Text appended to the end of signature request emails.',
+    }),
+    required_signature_types: SettingResponseSchema.openapi({
+      description: 'Signature creation methods a signer is allowed to use.',
+    }),
+    should_enable_tamper_proof: SettingResponseSchema.openapi({
+      description: 'Whether a tamper-proof seal is applied to sent signature requests.',
+    }),
+    should_include_distinct_pdfs: SettingResponseSchema.openapi({
+      description:
+        'Whether completed documents remain as separate PDF files instead of being merged into one PDF.',
+    }),
+    should_offer_signer_access_code: SettingResponseSchema.openapi({
+      description:
+        'Whether senders can require a custom access code before a signer can open a document.',
+    }),
+    should_offer_signer_sms_authentication: SettingResponseSchema.openapi({
+      description:
+        'Whether senders can require a text-message verification code before a signer can open a document.',
+    }),
+    should_remove_document_id: SettingResponseSchema.openapi({
+      description: 'Whether the document ID is removed from all pages of sent documents.',
+    }),
+    data_residency: SettingResponseSchema.openapi({
+      description: "Region where the team's documents are stored at rest.",
+    }),
+    allow_team_delete_document_for_everyone: SettingResponseSchema.openapi({
+      description:
+        'Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.',
+    }),
+    allow_team_download_csv: SettingResponseSchema.openapi({
+      description:
+        'Whether the sender, in addition to admins, can download document data as a CSV.',
+    }),
+    lock_team_template_creation: SettingResponseSchema.openapi({
+      description: 'When enabled, only admins can create and edit templates and template links.',
+    }),
+    lock_team_template_gallery: SettingResponseSchema.openapi({
+      description: 'When enabled, only admins can access and use the template gallery.',
+    }),
+    self_sign_message: SettingResponseSchema.openapi({
+      description:
+        'Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+    }),
+    self_sign_title: SettingResponseSchema.openapi({
+      description:
+        'Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.',
+    }),
+    signature_request_message: SettingResponseSchema.openapi({
+      description:
+        'Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.',
+    }),
+    signature_request_title: SettingResponseSchema.openapi({
+      description:
+        'Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.',
+    }),
+    multifactor_auth_app: SettingResponseSchema.openapi({
+      description:
+        'Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.',
+    }),
+    multifactor_auth_sms: SettingResponseSchema.openapi({
+      description:
+        'Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.',
+    }),
+    qualified_esignature_enabled: SettingResponseSchema.openapi({
+      description: 'Whether qualified electronic signatures are enabled for the team.',
+    }),
+    sms_signature_delivery: SettingResponseSchema.openapi({
+      description: 'Whether signature requests can be delivered by SMS.',
+    }),
+    nom151_enabled: SettingResponseSchema.openapi({
+      description: 'Whether NOM-151 compliance is enabled for the team.',
+    }),
+    should_enable_in_person_signing: SettingResponseSchema.openapi({
+      description: 'Whether in-person signing is enabled for the team.',
+    }),
+    everyone_has_signed_email: SettingResponseSchema.openapi({
+      description: 'Email address notified when everyone has signed.',
+    }),
+    timezone: SettingResponseSchema.openapi({ description: "The team's time zone identifier." }),
+    notify_cc_recipients_setting: SettingResponseSchema.openapi({
+      description: 'Events for which CC recipients receive notifications.',
+    }),
+  })
+  .openapi({
+    required: [
+      'company',
+      'custom_signing_redirect_enabled',
+      'custom_signing_redirect_url',
+      'custom_tagline',
+      'date_format',
+      'is_signature_reminders_enabled',
+      'request_email_from',
+      'request_email_signature',
+      'required_signature_types',
+      'should_enable_tamper_proof',
+      'should_include_distinct_pdfs',
+      'should_offer_signer_access_code',
+      'should_offer_signer_sms_authentication',
+      'should_remove_document_id',
+      'data_residency',
+      'allow_team_delete_document_for_everyone',
+      'allow_team_download_csv',
+      'lock_team_template_creation',
+      'lock_team_template_gallery',
+      'self_sign_message',
+      'self_sign_title',
+      'signature_request_message',
+      'signature_request_title',
+      'multifactor_auth_app',
+      'multifactor_auth_sms',
+      'qualified_esignature_enabled',
+      'sms_signature_delivery',
+      'nom151_enabled',
+      'should_enable_in_person_signing',
+      'everyone_has_signed_email',
+      'timezone',
+      'notify_cc_recipients_setting',
+    ],
+    'x-internal-class': true,
+  })
+  .openapi('TeamSettingsResponseSettings')
+
 const SubTeamResponseSchema = z
   .object({
     team_id: z.string().exactOptional().openapi({ description: 'The id of a team' }),
@@ -5913,19 +7071,29 @@ const TemplateCreateResponseTemplateSchema = z
 
 const TemplateResponseDocumentCustomFieldCheckboxSchema =
   TemplateResponseDocumentCustomFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('checkbox')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this Custom Field. Only `text` and `checkbox` are currently supported.\n\n* Text uses `TemplateResponseDocumentCustomFieldText`\n* Checkbox uses `TemplateResponseDocumentCustomFieldCheckbox`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('checkbox')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this Custom Field. Only `text` and `checkbox` are currently supported.\n\n* Text uses `TemplateResponseDocumentCustomFieldText`\n* Checkbox uses `TemplateResponseDocumentCustomFieldCheckbox`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentCustomFieldBase`',
       required: ['type'],
@@ -5949,32 +7117,42 @@ const TemplateResponseFieldAvgTextLengthSchema = z
 
 const TemplateResponseDocumentCustomFieldTextSchema =
   TemplateResponseDocumentCustomFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('text')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this Custom Field. Only `text` and `checkbox` are currently supported.\n\n* Text uses `TemplateResponseDocumentCustomFieldText`\n* Checkbox uses `TemplateResponseDocumentCustomFieldCheckbox`',
-          }),
-        avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
-        isMultiline: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether this form field is multiline text.' }),
-        originalFontSize: z
-          .int()
-          .exactOptional()
-          .openapi({ description: "Original font size used in this form field's text." }),
-        fontFamily: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "Font family used in this form field's text." }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('text')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this Custom Field. Only `text` and `checkbox` are currently supported.\n\n* Text uses `TemplateResponseDocumentCustomFieldText`\n* Checkbox uses `TemplateResponseDocumentCustomFieldCheckbox`',
+            }),
+          avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
+          isMultiline: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'Whether this form field is multiline text.' }),
+          originalFontSize: z
+            .int()
+            .exactOptional()
+            .openapi({ description: "Original font size used in this form field's text." }),
+          fontFamily: z
+            .string()
+            .exactOptional()
+            .openapi({ description: "Font family used in this form field's text." }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentCustomFieldBase`',
       required: ['type'],
@@ -5982,28 +7160,36 @@ const TemplateResponseDocumentCustomFieldTextSchema =
     .openapi('TemplateResponseDocumentCustomFieldText')
 
 const TemplateResponseDocumentFormFieldCheckboxSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('checkbox')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        group: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('checkbox')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type'],
@@ -6011,28 +7197,36 @@ const TemplateResponseDocumentFormFieldCheckboxSchema =
     .openapi('TemplateResponseDocumentFormFieldCheckbox')
 
 const TemplateResponseDocumentFormFieldDateSignedSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('date_signed')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        group: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('date_signed')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type'],
@@ -6040,32 +7234,40 @@ const TemplateResponseDocumentFormFieldDateSignedSchema =
     .openapi('TemplateResponseDocumentFormFieldDateSigned')
 
 const TemplateResponseDocumentFormFieldDropdownSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('dropdown')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        group: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-        options: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'The options available for this dropdown form field.' }),
-      })
-      .openapi({ required: [] }),
-  )
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('dropdown')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+          options: z
+            .array(z.string())
+            .exactOptional()
+            .openapi({ description: 'The options available for this dropdown form field.' }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type'],
@@ -6073,41 +7275,49 @@ const TemplateResponseDocumentFormFieldDropdownSchema =
     .openapi('TemplateResponseDocumentFormFieldDropdown')
 
 const TemplateResponseDocumentFormFieldHyperlinkSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('hyperlink')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
-        isMultiline: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether this form field is multiline text.' }),
-        originalFontSize: z
-          .int()
-          .exactOptional()
-          .openapi({ description: "Original font size used in this form field's text." }),
-        fontFamily: z
-          .string()
-          .exactOptional()
-          .openapi({ description: "Font family used in this form field's text." }),
-        group: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('hyperlink')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
+          isMultiline: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'Whether this form field is multiline text.' }),
+          originalFontSize: z
+            .int()
+            .exactOptional()
+            .openapi({ description: "Original font size used in this form field's text." }),
+          fontFamily: z
+            .string()
+            .exactOptional()
+            .openapi({ description: "Font family used in this form field's text." }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type'],
@@ -6115,28 +7325,36 @@ const TemplateResponseDocumentFormFieldHyperlinkSchema =
     .openapi('TemplateResponseDocumentFormFieldHyperlink')
 
 const TemplateResponseDocumentFormFieldInitialsSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('initials')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        group: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('initials')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type'],
@@ -6145,26 +7363,39 @@ const TemplateResponseDocumentFormFieldInitialsSchema =
 
 const TemplateResponseDocumentFormFieldRadioSchema =
   TemplateResponseDocumentFormFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('radio')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-          }),
-        group: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type', 'group'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+        if (!Object.hasOwn(val, 'group')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('radio')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
       required: ['type', 'group'],
@@ -6172,16 +7403,110 @@ const TemplateResponseDocumentFormFieldRadioSchema =
     .openapi('TemplateResponseDocumentFormFieldRadio')
 
 const TemplateResponseDocumentFormFieldSignatureSchema =
-  TemplateResponseDocumentFormFieldBaseSchema.and(
+  TemplateResponseDocumentFormFieldBaseSchema.and(z.looseObject({}).openapi({ required: ['type'] }))
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('signature')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+            }),
+          group: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description:
+                'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
+    .openapi({
+      description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
+      required: ['type'],
+    })
+    .openapi('TemplateResponseDocumentFormFieldSignature')
+
+const TemplateResponseDocumentFormFieldTextSchema = TemplateResponseDocumentFormFieldBaseSchema.and(
+  z.looseObject({}).openapi({ required: ['type'] }),
+)
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'type')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
     z
       .object({
         type: z
           .string()
-          .default('signature')
+          .default('text')
           .exactOptional()
           .openapi({
             description:
               'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
+          }),
+        avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
+        isMultiline: z
+          .boolean()
+          .exactOptional()
+          .openapi({ description: 'Whether this form field is multiline text.' }),
+        originalFontSize: z
+          .int()
+          .exactOptional()
+          .openapi({ description: "Original font size used in this form field's text." }),
+        fontFamily: z
+          .string()
+          .exactOptional()
+          .openapi({ description: "Font family used in this form field's text." }),
+        validation_type: z
+          .enum([
+            'numbers_only',
+            'letters_only',
+            'phone_number',
+            'bank_routing_number',
+            'bank_account_number',
+            'email_address',
+            'zip_code',
+            'social_security_number',
+            'employer_identification_number',
+            'custom_regex',
+          ])
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Each text field may contain a `validation_type` parameter. Check out the list of [validation types](https://faq.hellosign.com/hc/en-us/articles/217115577) to learn more about the possible values.',
+          }),
+        validation_custom_regex: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'When `validation_type` is set to `custom_regex`, this specifies the custom regular expression pattern that will be used to validate the text field.',
+          }),
+        validation_custom_regex_format_label: z
+          .string()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'When `validation_type` is set to `custom_regex`, this specifies the error message displayed to the signer when the text does not match the provided regex pattern.',
           }),
         group: z
           .string()
@@ -6194,82 +7519,6 @@ const TemplateResponseDocumentFormFieldSignatureSchema =
       })
       .openapi({ required: [] }),
   )
-    .openapi({
-      description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
-      required: ['type'],
-    })
-    .openapi('TemplateResponseDocumentFormFieldSignature')
-
-const TemplateResponseDocumentFormFieldTextSchema = TemplateResponseDocumentFormFieldBaseSchema.and(
-  z
-    .object({
-      type: z
-        .string()
-        .default('text')
-        .exactOptional()
-        .openapi({
-          description:
-            'The type of this form field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentFormFieldText`\n* Dropdown Field uses `TemplateResponseDocumentFormFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentFormFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentFormFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentFormFieldRadio`\n* Signature Field uses `TemplateResponseDocumentFormFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentFormFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentFormFieldInitials`',
-        }),
-      avg_text_length: TemplateResponseFieldAvgTextLengthSchema.exactOptional(),
-      isMultiline: z
-        .boolean()
-        .exactOptional()
-        .openapi({ description: 'Whether this form field is multiline text.' }),
-      originalFontSize: z
-        .int()
-        .exactOptional()
-        .openapi({ description: "Original font size used in this form field's text." }),
-      fontFamily: z
-        .string()
-        .exactOptional()
-        .openapi({ description: "Font family used in this form field's text." }),
-      validation_type: z
-        .enum([
-          'numbers_only',
-          'letters_only',
-          'phone_number',
-          'bank_routing_number',
-          'bank_account_number',
-          'email_address',
-          'zip_code',
-          'social_security_number',
-          'employer_identification_number',
-          'custom_regex',
-        ])
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'Each text field may contain a `validation_type` parameter. Check out the list of [validation types](https://faq.hellosign.com/hc/en-us/articles/217115577) to learn more about the possible values.',
-        }),
-      validation_custom_regex: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'When `validation_type` is set to `custom_regex`, this specifies the custom regular expression pattern that will be used to validate the text field.',
-        }),
-      validation_custom_regex_format_label: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'When `validation_type` is set to `custom_regex`, this specifies the error message displayed to the signer when the text does not match the provided regex pattern.',
-        }),
-      group: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The name of the group this field is in. If this field is not a group, this defaults to `null` except for Radio fields.',
-        }),
-    })
-    .openapi({ required: [] }),
-)
   .openapi({
     description: 'This class extends `TemplateResponseDocumentFormFieldBase`',
     required: ['type'],
@@ -6278,19 +7527,29 @@ const TemplateResponseDocumentFormFieldTextSchema = TemplateResponseDocumentForm
 
 const TemplateResponseDocumentStaticFieldCheckboxSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('checkbox')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('checkbox')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6299,19 +7558,29 @@ const TemplateResponseDocumentStaticFieldCheckboxSchema =
 
 const TemplateResponseDocumentStaticFieldDateSignedSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('date_signed')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('date_signed')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6320,19 +7589,29 @@ const TemplateResponseDocumentStaticFieldDateSignedSchema =
 
 const TemplateResponseDocumentStaticFieldDropdownSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('dropdown')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('dropdown')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6341,19 +7620,29 @@ const TemplateResponseDocumentStaticFieldDropdownSchema =
 
 const TemplateResponseDocumentStaticFieldHyperlinkSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('hyperlink')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('hyperlink')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6362,19 +7651,29 @@ const TemplateResponseDocumentStaticFieldHyperlinkSchema =
 
 const TemplateResponseDocumentStaticFieldInitialsSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('initials')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('initials')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6383,19 +7682,29 @@ const TemplateResponseDocumentStaticFieldInitialsSchema =
 
 const TemplateResponseDocumentStaticFieldRadioSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('radio')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('radio')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6404,19 +7713,29 @@ const TemplateResponseDocumentStaticFieldRadioSchema =
 
 const TemplateResponseDocumentStaticFieldSignatureSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('signature')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('signature')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6425,19 +7744,29 @@ const TemplateResponseDocumentStaticFieldSignatureSchema =
 
 const TemplateResponseDocumentStaticFieldTextSchema =
   TemplateResponseDocumentStaticFieldBaseSchema.and(
-    z
-      .object({
-        type: z
-          .string()
-          .default('text')
-          .exactOptional()
-          .openapi({
-            description:
-              'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
-          }),
-      })
-      .openapi({ required: [] }),
+    z.looseObject({}).openapi({ required: ['type'] }),
   )
+    .superRefine((val, ctx) => {
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'type')) {
+          ctx.addIssue({ code: 'custom' })
+        }
+      }
+    })
+    .and(
+      z
+        .object({
+          type: z
+            .string()
+            .default('text')
+            .exactOptional()
+            .openapi({
+              description:
+                'The type of this static field. See [field types](/api/reference/constants/#field-types).\n\n* Text Field uses `TemplateResponseDocumentStaticFieldText`\n* Dropdown Field uses `TemplateResponseDocumentStaticFieldDropdown`\n* Hyperlink Field uses `TemplateResponseDocumentStaticFieldHyperlink`\n* Checkbox Field uses `TemplateResponseDocumentStaticFieldCheckbox`\n* Radio Field uses `TemplateResponseDocumentStaticFieldRadio`\n* Signature Field uses `TemplateResponseDocumentStaticFieldSignature`\n* Date Signed Field uses `TemplateResponseDocumentStaticFieldDateSigned`\n* Initials Field uses `TemplateResponseDocumentStaticFieldInitials`',
+            }),
+        })
+        .openapi({ required: [] }),
+    )
     .openapi({
       description: 'This class extends `TemplateResponseDocumentStaticFieldBase`',
       required: ['type'],
@@ -6547,6 +7876,18 @@ const TeamMembersResponseSchema = z
   })
   .openapi({ required: ['team_members', 'list_info'], 'x-internal-class': true })
   .openapi('TeamMembersResponse')
+
+const TeamSettingsResponseSchema = z
+  .object({
+    team_id: z.string(),
+    settings: TeamSettingsResponseSettingsSchema,
+    warnings: z
+      .array(WarningResponseSchema)
+      .exactOptional()
+      .openapi({ description: 'A list of warnings.' }),
+  })
+  .openapi({ required: ['team_id', 'settings'], 'x-internal-class': true })
+  .openapi('TeamSettingsResponse')
 
 const TeamSubTeamsResponseSchema = z
   .object({
@@ -7179,6 +8520,32 @@ const EventCallbackPayloadSchema = z
 const EventCallbackResponseResponse = {
   description: 'successful operation',
   content: { 'text/plain': { schema: z.string().default('Hello API Event Received') } },
+}
+
+const IdempotencyKeyParamsSchema = z
+  .string()
+  .min(1)
+  .max(255)
+  .exactOptional()
+  .openapi({
+    param: {
+      name: 'Idempotency-Key',
+      in: 'header',
+      description:
+        'An optional key of 1 to 255 characters used to safely retry a request. Reusing a key with different request parameters returns a conflict.',
+      required: false,
+      schema: { type: 'string', maxLength: 255, minLength: 1 },
+    },
+  })
+
+const AccountApiKeyCreateRequestExample = {
+  summary: 'Default Example',
+  value: { name: 'Production' },
+}
+
+const AccountApiKeyUpdateRequestExample = {
+  summary: 'Default Example',
+  value: { name: 'Billing', is_primary: true },
 }
 
 const AccountCreateRequestExample = {
@@ -8429,6 +9796,57 @@ const UnclaimedDraftCreateEmbeddedWithTemplateRequestExample = {
 const UnclaimedDraftEditAndResendRequestExample = {
   summary: 'Default Example',
   value: { client_id: 'b6b8e7deaf8f0b95c029dca049356d4a2cf9710a', test_mode: false },
+}
+
+const AccountApiKeyCreateResponseExample = {
+  summary: 'Default Example',
+  value: {
+    api_key: {
+      api_key_id: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+      account_id: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+      name: 'Production',
+      is_primary: true,
+      last_used_at: null,
+      created_at: 1735689600,
+      updated_at: 1735689600,
+      secret: '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
+    },
+    warnings: [],
+  },
+}
+
+const AccountApiKeyGetResponseExample = {
+  summary: 'API key',
+  value: {
+    api_key: {
+      api_key_id: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+      account_id: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+      name: 'Production',
+      is_primary: false,
+      last_used_at: null,
+      created_at: 1735689600,
+      updated_at: 1735689600,
+    },
+    warnings: [],
+  },
+}
+
+const AccountApiKeyListResponseExample = {
+  summary: 'API key list',
+  value: {
+    api_keys: [
+      {
+        api_key_id: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+        account_id: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+        name: 'Production',
+        is_primary: false,
+        last_used_at: null,
+        created_at: 1735689600,
+        updated_at: 1735689600,
+      },
+    ],
+    warnings: [],
+  },
 }
 
 const AccountCreateResponseExample = {
@@ -16511,6 +17929,15 @@ const XRatelimitResetHeaderSchema = z
     example: 1430170900,
   })
 
+const IdempotentReplayedHeaderSchema = z
+  .boolean()
+  .exactOptional()
+  .openapi({
+    description:
+      'Indicates that the response was replayed from a previous request with the same idempotency key.',
+    param: { required: false },
+  })
+
 const ApiKeySecurityScheme = {
   type: 'http',
   description:
@@ -16525,6 +17952,376 @@ const Oauth2SecurityScheme = {
   bearerFormat: 'JWT',
   scheme: 'bearer',
 }
+
+export const getApiKeyRoute = createRoute({
+  method: 'get',
+  path: '/api_key',
+  tags: ['API Keys'],
+  summary: 'List API Keys',
+  description: 'Returns the API keys on the specified account. The key secret is not included.',
+  operationId: 'accountApiKeyList',
+  request: {
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'The ID of the account whose API keys to list. Defaults to the authenticated account when omitted.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: AccountApiKeyListResponseSchema,
+          examples: { example: AccountApiKeyListResponseExample },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }],
+})
+
+export const postApiKeyRoute = createRoute({
+  method: 'post',
+  path: '/api_key',
+  tags: ['API Keys'],
+  summary: 'Create API Key',
+  description:
+    'Creates a named API key on the specified account. The secret is returned only in this response.',
+  operationId: 'accountApiKeyCreate',
+  request: {
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'The ID of the account that will own the new API key. Defaults to the authenticated account when omitted.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AccountApiKeyCreateRequestSchema,
+          examples: { example: AccountApiKeyCreateRequestExample },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: AccountApiKeyCreateResponseSchema,
+          examples: { example: AccountApiKeyCreateResponseExample },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '409_example': Error409ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }],
+})
+
+export const getApiKeyApiKeyIdRoute = createRoute({
+  method: 'get',
+  path: '/api_key/{api_key_id}',
+  tags: ['API Keys'],
+  summary: 'Get API Key',
+  description: 'Returns one API key on the specified account. The key secret is not included.',
+  operationId: 'accountApiKeyGet',
+  request: {
+    params: z.object({
+      api_key_id: z
+        .string()
+        .regex(/^[0-9a-fA-F]{40}$/)
+        .length(40)
+        .openapi({
+          param: {
+            name: 'api_key_id',
+            in: 'path',
+            description: 'The ID of the API key.',
+            required: true,
+            schema: { type: 'string', maxLength: 40, minLength: 40, pattern: '^[0-9a-fA-F]{40}$' },
+            example: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+          },
+        }),
+    }),
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'The ID of the account that owns the API key. Defaults to the authenticated account when omitted.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: AccountApiKeyGetResponseSchema,
+          examples: { example: AccountApiKeyGetResponseExample },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }],
+})
+
+export const putApiKeyApiKeyIdRoute = createRoute({
+  method: 'put',
+  path: '/api_key/{api_key_id}',
+  tags: ['API Keys'],
+  summary: 'Update API Key',
+  description:
+    "Updates an API key's name, or promotes it to the primary key. Provide at least one of `name` or `is_primary`. `is_primary` can only be set to `true`.",
+  operationId: 'accountApiKeyUpdate',
+  request: {
+    params: z.object({
+      api_key_id: z
+        .string()
+        .regex(/^[0-9a-fA-F]{40}$/)
+        .length(40)
+        .openapi({
+          param: {
+            name: 'api_key_id',
+            in: 'path',
+            description: 'The ID of the API key to update.',
+            required: true,
+            schema: { type: 'string', maxLength: 40, minLength: 40, pattern: '^[0-9a-fA-F]{40}$' },
+            example: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+          },
+        }),
+    }),
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'The ID of the account that owns the API key. Defaults to the authenticated account when omitted.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: AccountApiKeyUpdateRequestSchema,
+          examples: { example: AccountApiKeyUpdateRequestExample },
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: AccountApiKeyGetResponseSchema,
+          examples: { example: AccountApiKeyGetResponseExample },
+        },
+      },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '409_example': Error409ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }],
+})
+
+export const deleteApiKeyApiKeyIdRoute = createRoute({
+  method: 'delete',
+  path: '/api_key/{api_key_id}',
+  tags: ['API Keys'],
+  summary: 'Delete API Key',
+  description: 'Deletes an API key. The primary key cannot be deleted. Promote another key first.',
+  operationId: 'accountApiKeyDelete',
+  request: {
+    params: z.object({
+      api_key_id: z
+        .string()
+        .regex(/^[0-9a-fA-F]{40}$/)
+        .length(40)
+        .openapi({
+          param: {
+            name: 'api_key_id',
+            in: 'path',
+            description: 'The ID of the API key to delete.',
+            required: true,
+            schema: { type: 'string', maxLength: 40, minLength: 40, pattern: '^[0-9a-fA-F]{40}$' },
+            example: 'c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345',
+          },
+        }),
+    }),
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'The ID of the account that owns the API key. Defaults to the authenticated account when omitted.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+  },
+  responses: {
+    204: {
+      description: 'successful operation',
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '409_example': Error409ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }],
+})
 
 export const postAccountCreateRoute = createRoute({
   method: 'post',
@@ -16703,6 +18500,125 @@ export const putAccountRoute = createRoute({
             '402_example': Error402ResponseExample,
             '403_example': Error403ResponseExample,
             '429_example': Error429ResponseExample,
+            '409_example': Error409ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }, { oauth2: ['account_access'] }],
+})
+
+export const getAccountSettingsRoute = createRoute({
+  method: 'get',
+  path: '/account/settings',
+  tags: ['Account'],
+  summary: 'Get account settings',
+  description:
+    'account_id is an optional query parameter and defaults to the authenticated account. A team admin can specify another account on a team they administer.',
+  operationId: 'accountSettingsGet',
+  request: {
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'Optional account ID. Defaults to the authenticated account. A team admin can specify another account on a team they administer.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: AccountSettingsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }, { oauth2: ['account_access'] }],
+})
+
+export const postAccountSettingsRoute = createRoute({
+  method: 'post',
+  path: '/account/settings',
+  tags: ['Account'],
+  summary: 'Modify account settings',
+  description:
+    'account_id is an optional query parameter and defaults to the authenticated account. A team admin can specify another account on a team they administer.',
+  operationId: 'accountSettingsUpdate',
+  request: {
+    query: z.object({
+      account_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'account_id',
+            in: 'query',
+            description:
+              'Optional account ID. Defaults to the authenticated account. A team admin can specify another account on a team they administer.',
+            required: false,
+            schema: { type: 'string' },
+            example: 'ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: AccountSettingsUpdateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: AccountSettingsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
             '409_example': Error409ResponseExample,
             '4XX_example': Error4XXResponseExample,
           },
@@ -18921,6 +20837,7 @@ export const postSignatureRequestBulkCreateEmbeddedWithTemplateRoute = createRou
                 }),
               metadata: z
                 .record(z.string(), z.any())
+                .refine((val) => Object.keys(val).length <= 10)
                 .exactOptional()
                 .openapi({
                   description:
@@ -19162,6 +21079,7 @@ export const postSignatureRequestBulkSendWithTemplateRoute = createRoute({
                 }),
               metadata: z
                 .record(z.string(), z.any())
+                .refine((val) => Object.keys(val).length <= 10)
                 .exactOptional()
                 .openapi({
                   description:
@@ -25118,6 +27036,125 @@ export const postTeamRemoveMemberRoute = createRoute({
             '403_example': Error403ResponseExample,
             '429_example': Error429ResponseExample,
             '404_example': Error404ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }, { oauth2: ['team_access'] }],
+})
+
+export const getTeamSettingsRoute = createRoute({
+  method: 'get',
+  path: '/team/settings',
+  tags: ['Team'],
+  summary: 'Get team settings',
+  description:
+    "team_id is an optional query parameter and defaults to the authenticated account's team. An organization admin can specify a subteam.",
+  operationId: 'teamSettingsGet',
+  request: {
+    query: z.object({
+      team_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'query',
+            description:
+              "Optional team ID. Defaults to the authenticated account's team. An organization admin can specify a subteam.",
+            required: false,
+            schema: { type: 'string' },
+            example: '4fea99bfcf2b26bfccf6cea3e127fb8bb74d8d9c',
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: TeamSettingsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '4XX_example': Error4XXResponseExample,
+          },
+        },
+      },
+    },
+  },
+  security: [{ api_key: [] }, { oauth2: ['team_access'] }],
+})
+
+export const postTeamSettingsRoute = createRoute({
+  method: 'post',
+  path: '/team/settings',
+  tags: ['Team'],
+  summary: 'Modify team settings',
+  description:
+    "team_id is an optional query parameter and defaults to the authenticated account's team. An organization admin can specify a subteam.",
+  operationId: 'teamSettingsUpdate',
+  request: {
+    query: z.object({
+      team_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'team_id',
+            in: 'query',
+            description:
+              "Optional team ID. Defaults to the authenticated account's team. An organization admin can specify a subteam.",
+            required: false,
+            schema: { type: 'string' },
+            example: '4fea99bfcf2b26bfccf6cea3e127fb8bb74d8d9c',
+          },
+        }),
+    }),
+    body: {
+      content: { 'application/json': { schema: TeamSettingsUpdateRequestSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    200: {
+      description: 'successful operation',
+      content: { 'application/json': { schema: TeamSettingsResponseSchema } },
+      headers: z.object({
+        'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
+        'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
+        'X-Ratelimit-Reset': XRatelimitResetHeaderSchema,
+      }),
+    },
+    '4XX': {
+      description: 'failed_operation',
+      content: {
+        'application/json': {
+          schema: ErrorResponseSchema,
+          examples: {
+            '400_example': Error400ResponseExample,
+            '401_example': Error401ResponseExample,
+            '402_example': Error402ResponseExample,
+            '403_example': Error403ResponseExample,
+            '429_example': Error429ResponseExample,
+            '404_example': Error404ResponseExample,
+            '409_example': Error409ResponseExample,
             '4XX_example': Error4XXResponseExample,
           },
         },

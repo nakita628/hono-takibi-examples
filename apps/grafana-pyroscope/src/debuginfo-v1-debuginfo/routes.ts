@@ -145,8 +145,8 @@ const DebuginfoV1UploadChunkSchema = z
   .openapi({ title: 'UploadChunk', required: [] })
   .openapi('DebuginfoV1UploadChunk')
 
-const DebuginfoV1UploadRequestSchema = z
-  .xor([
+const DebuginfoV1UploadRequestSchema = (() => {
+  const Schema = z.xor([
     z
       .object({ chunk: DebuginfoV1UploadChunkSchema.openapi({ title: 'chunk' }) })
       .openapi({ title: 'chunk', required: ['chunk'] }),
@@ -154,14 +154,38 @@ const DebuginfoV1UploadRequestSchema = z
       .object({ init: DebuginfoV1ShouldInitiateUploadRequestSchema.openapi({ title: 'init' }) })
       .openapi({ title: 'init', required: ['init'] }),
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ title: 'UploadRequest' })
   .openapi('DebuginfoV1UploadRequest')
 
-const DebuginfoV1UploadResponseSchema = z
-  .xor([
+const DebuginfoV1UploadResponseSchema = (() => {
+  const Schema = z.xor([
     z
       .object({ init: DebuginfoV1ShouldInitiateUploadResponseSchema.openapi({ title: 'init' }) })
       .openapi({ title: 'init', required: ['init'] }),
   ])
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
   .openapi({ title: 'UploadResponse' })
   .openapi('DebuginfoV1UploadResponse')

@@ -9,60 +9,6 @@ const BasicJoinPolicySchema = z
   .openapi({ required: ['measurements'] })
   .openapi('BasicJoinPolicy')
 
-const StringToStringSchema = z.record(z.string(), StringSchema).openapi('StringToString')
-
-const Uint32Schema = z.int().min(0).max(4294967295).openapi('Uint32')
-
-const TcbVersionPolicySchema = z
-  .object({
-    boot_loader: Uint32Schema.exactOptional(),
-    fmc: Uint32Schema.exactOptional(),
-    hexstring: StringSchema.exactOptional(),
-    microcode: Uint32Schema.exactOptional(),
-    snp: Uint32Schema.exactOptional(),
-    tee: Uint32Schema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TcbVersionPolicy')
-
-const StringToTcbVersionPolicySchema = z
-  .record(z.string(), TcbVersionPolicySchema)
-  .openapi('StringToTcbVersionPolicy')
-
-const UVMEndorsementsDataSchema = z
-  .object({ svn: StringSchema })
-  .openapi({ required: ['svn'] })
-  .openapi('UVMEndorsementsData')
-
-const StringToUVMEndorsementsDataSchema = z
-  .record(z.string(), UVMEndorsementsDataSchema)
-  .openapi('StringToUVMEndorsementsData')
-
-const StringToStringToUVMEndorsementsDataSchema = z
-  .record(z.string(), StringToUVMEndorsementsDataSchema)
-  .openapi('StringToStringToUVMEndorsementsData')
-
-const SnpJoinPolicySchema = z
-  .object({
-    hostData: StringToStringSchema,
-    measurements: StringArraySchema,
-    tcbVersions: StringToTcbVersionPolicySchema,
-    uvmEndorsements: StringToStringToUVMEndorsementsDataSchema,
-  })
-  .openapi({ required: ['measurements', 'hostData', 'uvmEndorsements', 'tcbVersions'] })
-  .openapi('SnpJoinPolicy')
-
-const VirtualJoinPolicySchema = z
-  .object({ hostData: StringArraySchema, measurements: StringArraySchema })
-  .openapi({ required: ['measurements', 'hostData'] })
-  .openapi('VirtualJoinPolicy')
-
-type JoinPolicyType = {
-  sgx: z.infer<typeof BasicJoinPolicySchema>
-  snp: z.infer<typeof SnpJoinPolicySchema>
-  virtual: z.infer<typeof VirtualJoinPolicySchema>
-}
-
 const CCFErrorSchema = z
   .object({
     error: z
@@ -85,8 +31,9 @@ const CCFErrorSchema = z
 const CoseSchema = z.file().openapi({ type: 'string', format: 'binary' }).openapi('Cose')
 
 const MemberIdSchema = z
-  .hex()
-  .regex(/^[a-f0-9]{64}$/)
+  .string()
+  .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+  .max(104)
   .openapi('MemberId')
 
 const EncryptedRecoveryShareSchema = z
@@ -144,16 +91,61 @@ const JavascriptModulesSchema = z
   .openapi({ required: ['value'] })
   .openapi('JavascriptModules')
 
-const JoinPolicySchema: z.ZodType<JoinPolicyType> = z
-  .lazy(() =>
-    z
-      .object({
-        sgx: BasicJoinPolicySchema,
-        snp: SnpJoinPolicySchema,
-        virtual: VirtualJoinPolicySchema,
-      })
-      .openapi({ required: ['sgx', 'virtual', 'snp'] }),
-  )
+const StringToStringSchema = z.record(z.string(), StringSchema).openapi('StringToString')
+
+const Uint32Schema = z.int().min(0).max(4294967295).openapi('Uint32')
+
+const TcbVersionPolicySchema = z
+  .object({
+    boot_loader: Uint32Schema.exactOptional(),
+    fmc: Uint32Schema.exactOptional(),
+    hexstring: StringSchema.exactOptional(),
+    microcode: Uint32Schema.exactOptional(),
+    snp: Uint32Schema.exactOptional(),
+    tee: Uint32Schema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TcbVersionPolicy')
+
+const StringToTcbVersionPolicySchema = z
+  .record(z.string(), TcbVersionPolicySchema)
+  .openapi('StringToTcbVersionPolicy')
+
+const UVMEndorsementsDataSchema = z
+  .object({ svn: StringSchema })
+  .openapi({ required: ['svn'] })
+  .openapi('UVMEndorsementsData')
+
+const StringToUVMEndorsementsDataSchema = z
+  .record(z.string(), UVMEndorsementsDataSchema)
+  .openapi('StringToUVMEndorsementsData')
+
+const StringToStringToUVMEndorsementsDataSchema = z
+  .record(z.string(), StringToUVMEndorsementsDataSchema)
+  .openapi('StringToStringToUVMEndorsementsData')
+
+const SnpJoinPolicySchema = z
+  .object({
+    hostData: StringToStringSchema,
+    measurements: StringArraySchema,
+    tcbVersions: StringToTcbVersionPolicySchema,
+    uvmEndorsements: StringToStringToUVMEndorsementsDataSchema,
+  })
+  .openapi({ required: ['measurements', 'hostData', 'uvmEndorsements', 'tcbVersions'] })
+  .openapi('SnpJoinPolicy')
+
+const VirtualJoinPolicySchema = z
+  .object({ hostData: StringArraySchema, measurements: StringArraySchema })
+  .openapi({ required: ['measurements', 'hostData'] })
+  .openapi('VirtualJoinPolicy')
+
+const JoinPolicySchema = z
+  .object({
+    sgx: BasicJoinPolicySchema,
+    snp: SnpJoinPolicySchema,
+    virtual: VirtualJoinPolicySchema,
+  })
+  .openapi({ required: ['sgx', 'virtual', 'snp'] })
   .openapi('JoinPolicy')
 
 const JwkSchema = z
@@ -220,8 +212,9 @@ const NetworkInterfaceSchema = z
   .openapi('NetworkInterface')
 
 const NodeIdSchema = z
-  .hex()
-  .regex(/^[a-f0-9]{64}$/)
+  .string()
+  .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+  .max(104)
   .openapi('NodeId')
 
 const StringToNetworkInterfaceSchema = z
@@ -317,6 +310,7 @@ const ServiceInfoSchema = z
     certificate: StringSchema,
     configuration: ServiceConfigurationSchema.exactOptional(),
     creationTransactionId: TransactionIdSchema.exactOptional(),
+    pqCertificate: StringSchema.exactOptional(),
     previousServiceCreationTransactionId: TransactionIdSchema.exactOptional(),
     recoveryCount: Uint64Schema,
     serviceData: JsonSchema,
@@ -336,13 +330,14 @@ const TransactionSchema = z
   .openapi('Transaction')
 
 const UserIdSchema = z
-  .hex()
-  .regex(/^[a-f0-9]{64}$/)
+  .string()
+  .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+  .max(104)
   .openapi('UserId')
 
 const UserSchema = z
-  .object({ certificate: StringSchema, userData: JsonSchema, userId: UserIdSchema })
-  .openapi({ required: ['userId', 'certificate', 'userData'] })
+  .object({ certificate: StringSchema.exactOptional(), userData: JsonSchema, userId: UserIdSchema })
+  .openapi({ required: ['userId', 'userData'] })
   .openapi('User')
 
 const UserArraySchema = z.array(UserSchema).openapi('UserArray')
@@ -598,13 +593,18 @@ export const getGovMembersProposalsProposalIdBallotsMemberIdRoute = createRoute(
         }),
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -654,13 +654,18 @@ export const postGovMembersProposalsProposalIdBallotsMemberIdSubmitRoute = creat
         }),
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -792,13 +797,18 @@ export const getGovMembersStateDigestsMemberIdRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -837,13 +847,18 @@ export const postGovMembersStateDigestsMemberIdAckRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -881,13 +896,18 @@ export const postGovMembersStateDigestsMemberIdUpdateRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -1024,13 +1044,18 @@ export const getGovRecoveryEncryptedSharesMemberIdRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -1069,13 +1094,18 @@ export const postGovRecoveryMembersMemberIdRecoverRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -1390,13 +1420,18 @@ export const getGovServiceMembersMemberIdRoute = createRoute({
     params: z.object({
       memberId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'memberId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -1467,13 +1502,18 @@ export const getGovServiceNodesNodeIdRoute = createRoute({
     params: z.object({
       nodeId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'nodeId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),
@@ -1621,13 +1661,18 @@ export const getGovServiceUsersUserIdRoute = createRoute({
     params: z.object({
       userId: z
         .string()
-        .regex(/^[a-f0-9]{64}$/)
+        .regex(/^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$/)
+        .max(104)
         .openapi({
           param: {
             in: 'path',
             name: 'userId',
             required: true,
-            schema: { pattern: '^[a-f0-9]{64}$', type: 'string' },
+            schema: {
+              maxLength: 104,
+              pattern: '^([a-f0-9]{64}|did:key:z[1-9A-HJ-NP-Za-km-z]+)$',
+              type: 'string',
+            },
           },
         }),
     }),

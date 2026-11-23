@@ -1,5 +1,151 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CheermoteImageFormatSchema = z
+  .object({
+    '1': z.string().exactOptional(),
+    '2': z.string().exactOptional(),
+    '3': z.string().exactOptional(),
+    '4': z.string().exactOptional(),
+    '1.5': z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CheermoteImageFormat')
+
+const CheermoteImageThemeSchema = z
+  .object({
+    animated: CheermoteImageFormatSchema.exactOptional(),
+    static: CheermoteImageFormatSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CheermoteImageTheme')
+
+const CheermoteImagesSchema = z
+  .object({
+    light: CheermoteImageThemeSchema.exactOptional(),
+    dark: CheermoteImageThemeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CheermoteImages')
+
+const CheermoteSchema = z
+  .object({
+    prefix: z
+      .string()
+      .openapi({
+        description:
+          'The name portion of the Cheermote string that you use in chat to cheer Bits. The full Cheermote string is the concatenation of {prefix} + {number of Bits}. For example, if the prefix is “Cheer” and you want to cheer 100 Bits, the full Cheermote string is Cheer100\\. When the Cheermote string is entered in chat, Twitch converts it to the image associated with the Bits tier that was cheered.',
+      }),
+    tiers: z
+      .array(
+        z
+          .object({
+            min_bits: z
+              .int32()
+              .openapi({
+                description:
+                  'The minimum number of Bits that you must cheer at this tier level. The maximum number of Bits that you can cheer at this level is determined by the required minimum Bits of the next tier level minus 1\\. For example, if `min_bits` is 1 and `min_bits` for the next tier is 100, the Bits range for this tier level is 1 through 99\\. The minimum Bits value of the last tier is the maximum number of Bits you can cheer using this Cheermote. For example, 10000.',
+              }),
+            id: z
+              .enum(['1', '100', '500', '1000', '5000', '10000', '100000'])
+              .openapi({
+                description:
+                  'The tier level. Possible tiers are:  \n  \n* 1\n* 100\n* 500\n* 1000\n* 5000\n* 10000\n* 100000',
+              }),
+            color: z
+              .string()
+              .openapi({
+                description:
+                  'The hex code of the color associated with this tier level (for example, #979797).',
+              }),
+            images: CheermoteImagesSchema,
+            can_cheer: z
+              .boolean()
+              .openapi({
+                description:
+                  'A Boolean value that determines whether users can cheer at this tier level.',
+              }),
+            show_in_bits_card: z
+              .boolean()
+              .openapi({
+                description:
+                  'A Boolean value that determines whether this tier level is shown in the Bits card. Is **true** if this tier level is shown in the Bits card.',
+              }),
+          })
+          .openapi({
+            required: ['min_bits', 'id', 'color', 'images', 'can_cheer', 'show_in_bits_card'],
+          }),
+      )
+      .openapi({
+        description:
+          'A list of tier levels that the Cheermote supports. Each tier identifies the range of Bits that you can cheer at that tier level and an image that graphically identifies the tier level.',
+      }),
+    type: z
+      .enum([
+        'global_first_party',
+        'global_third_party',
+        'channel_custom',
+        'display_only',
+        'sponsored',
+      ])
+      .openapi({
+        description:
+          "The type of Cheermote. Possible values are:  \n  \n* global\\_first\\_party — A Twitch-defined Cheermote that is shown in the Bits card.\n* global\\_third\\_party — A Twitch-defined Cheermote that is not shown in the Bits card.\n* channel\\_custom — A broadcaster-defined Cheermote.\n* display\\_only — Do not use; for internal use only.\n* sponsored — A sponsor-defined Cheermote. When used, the sponsor adds additional Bits to the amount that the user cheered. For example, if the user cheered Terminator100, the broadcaster might receive 110 Bits, which includes the sponsor's 10 Bits contribution.",
+      }),
+    order: z
+      .int32()
+      .openapi({
+        description:
+          'The order that the Cheermotes are shown in the Bits card. The numbers may not be consecutive. For example, the numbers may jump from 1 to 7 to 13\\. The order numbers are unique within a Cheermote type (for example, global\\_first\\_party) but may not be unique amongst all Cheermotes in the response.',
+      }),
+    last_updated: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'The date and time, in RFC3339 format, when this Cheermote was last updated.',
+      }),
+    is_charitable: z
+      .boolean()
+      .openapi({
+        description:
+          'A Boolean value that indicates whether this Cheermote provides a charitable contribution match during charity campaigns.',
+      }),
+  })
+  .openapi({ required: ['prefix', 'tiers', 'type', 'order', 'last_updated', 'is_charitable'] })
+  .openapi('Cheermote')
+
+type GetCheermotesResponseType = { data: z.infer<typeof CheermoteSchema>[] }
+
+type GetHypeTrainStatusResponseType = {
+  data: {
+    current: {
+      id: string
+      broadcaster_user_id: string
+      broadcaster_user_login: string
+      broadcaster_user_name: string
+      level: number
+      total: number
+      progress: number
+      goal: number
+      top_contributions: {
+        user_id: string
+        user_login: string
+        user_name: string
+        type: 'treasure' | 'golden_kappa' | 'regular'
+        total: number
+        shared_train_participants: {
+          broadcaster_user_id: string
+          broadcaster_user_login: string
+          broadcaster_user_name: string
+        }[]
+        started_at: string
+        expires_at: string
+        is_shared_train: boolean
+      }[]
+    }
+  }[]
+  all_time_high: { level: number; total: number; achieved_at: string }
+  shared_all_time_high: { level: number; total: number; achieved_at: string }
+}
+
 const StartCommercialBodySchema = z
   .object({
     broadcaster_id: z
@@ -352,119 +498,7 @@ const GetBitsLeaderboardResponseSchema = z
   .openapi({ required: ['data', 'date_range', 'total'] })
   .openapi('GetBitsLeaderboardResponse')
 
-const CheermoteImageFormatSchema = z
-  .object({
-    '1': z.string().exactOptional(),
-    '2': z.string().exactOptional(),
-    '3': z.string().exactOptional(),
-    '4': z.string().exactOptional(),
-    '1.5': z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CheermoteImageFormat')
-
-const CheermoteImageThemeSchema = z
-  .object({
-    animated: CheermoteImageFormatSchema.exactOptional(),
-    static: CheermoteImageFormatSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CheermoteImageTheme')
-
-const CheermoteImagesSchema = z
-  .object({
-    light: CheermoteImageThemeSchema.exactOptional(),
-    dark: CheermoteImageThemeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CheermoteImages')
-
-const CheermoteSchema = z
-  .object({
-    prefix: z
-      .string()
-      .openapi({
-        description:
-          'The name portion of the Cheermote string that you use in chat to cheer Bits. The full Cheermote string is the concatenation of {prefix} + {number of Bits}. For example, if the prefix is “Cheer” and you want to cheer 100 Bits, the full Cheermote string is Cheer100\\. When the Cheermote string is entered in chat, Twitch converts it to the image associated with the Bits tier that was cheered.',
-      }),
-    tiers: z
-      .array(
-        z
-          .object({
-            min_bits: z
-              .int32()
-              .openapi({
-                description:
-                  'The minimum number of Bits that you must cheer at this tier level. The maximum number of Bits that you can cheer at this level is determined by the required minimum Bits of the next tier level minus 1\\. For example, if `min_bits` is 1 and `min_bits` for the next tier is 100, the Bits range for this tier level is 1 through 99\\. The minimum Bits value of the last tier is the maximum number of Bits you can cheer using this Cheermote. For example, 10000.',
-              }),
-            id: z
-              .enum(['1', '100', '500', '1000', '5000', '10000', '100000'])
-              .openapi({
-                description:
-                  'The tier level. Possible tiers are:  \n  \n* 1\n* 100\n* 500\n* 1000\n* 5000\n* 10000\n* 100000',
-              }),
-            color: z
-              .string()
-              .openapi({
-                description:
-                  'The hex code of the color associated with this tier level (for example, #979797).',
-              }),
-            images: CheermoteImagesSchema,
-            can_cheer: z
-              .boolean()
-              .openapi({
-                description:
-                  'A Boolean value that determines whether users can cheer at this tier level.',
-              }),
-            show_in_bits_card: z
-              .boolean()
-              .openapi({
-                description:
-                  'A Boolean value that determines whether this tier level is shown in the Bits card. Is **true** if this tier level is shown in the Bits card.',
-              }),
-          })
-          .openapi({
-            required: ['min_bits', 'id', 'color', 'images', 'can_cheer', 'show_in_bits_card'],
-          }),
-      )
-      .openapi({
-        description:
-          'A list of tier levels that the Cheermote supports. Each tier identifies the range of Bits that you can cheer at that tier level and an image that graphically identifies the tier level.',
-      }),
-    type: z
-      .enum([
-        'global_first_party',
-        'global_third_party',
-        'channel_custom',
-        'display_only',
-        'sponsored',
-      ])
-      .openapi({
-        description:
-          "The type of Cheermote. Possible values are:  \n  \n* global\\_first\\_party — A Twitch-defined Cheermote that is shown in the Bits card.\n* global\\_third\\_party — A Twitch-defined Cheermote that is not shown in the Bits card.\n* channel\\_custom — A broadcaster-defined Cheermote.\n* display\\_only — Do not use; for internal use only.\n* sponsored — A sponsor-defined Cheermote. When used, the sponsor adds additional Bits to the amount that the user cheered. For example, if the user cheered Terminator100, the broadcaster might receive 110 Bits, which includes the sponsor's 10 Bits contribution.",
-      }),
-    order: z
-      .int32()
-      .openapi({
-        description:
-          'The order that the Cheermotes are shown in the Bits card. The numbers may not be consecutive. For example, the numbers may jump from 1 to 7 to 13\\. The order numbers are unique within a Cheermote type (for example, global\\_first\\_party) but may not be unique amongst all Cheermotes in the response.',
-      }),
-    last_updated: z.iso
-      .datetime({ offset: true })
-      .openapi({
-        description: 'The date and time, in RFC3339 format, when this Cheermote was last updated.',
-      }),
-    is_charitable: z
-      .boolean()
-      .openapi({
-        description:
-          'A Boolean value that indicates whether this Cheermote provides a charitable contribution match during charity campaigns.',
-      }),
-  })
-  .openapi({ required: ['prefix', 'tiers', 'type', 'order', 'last_updated', 'is_charitable'] })
-  .openapi('Cheermote')
-
-const GetCheermotesResponseSchema = z
+const GetCheermotesResponseSchema: z.ZodType<GetCheermotesResponseType> = z
   .object({
     data: z
       .array(CheermoteSchema)
@@ -2827,7 +2861,7 @@ const GetPinnedChatMessageResponseSchema = z
                           }),
                         text: z.string().openapi({ description: 'Fragment text.' }),
                         cheermote: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Cheermote metadata. Null if not a cheermote fragment.',
                           }),
@@ -2835,7 +2869,7 @@ const GetPinnedChatMessageResponseSchema = z
                         bits: z.int32().openapi({ description: 'The number of bits cheered.' }),
                         tier: z.int32().openapi({ description: 'The cheermote tier.' }),
                         emote: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Emote metadata. Null if not an emote fragment.',
                           }),
@@ -2846,7 +2880,7 @@ const GetPinnedChatMessageResponseSchema = z
                           .array(z.string())
                           .openapi({ description: 'The emote formats available.' }),
                         mention: z
-                          .object({})
+                          .looseObject({})
                           .openapi({
                             description: 'Mention metadata. Null if not a mention fragment.',
                           }),
@@ -4330,7 +4364,7 @@ const CreateEventSubSubscriptionBodySchema = z
           'The version number that identifies the definition of the subscription type that you want the response to use.',
       }),
     condition: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'A JSON object that contains the parameter values that are specific to the specified subscription type. For the object’s required and optional fields, see the subscription type’s documentation.',
@@ -4500,7 +4534,7 @@ const EventSubSubscriptionSchema = z
           "The version number that identifies this definition of the subscription's data.",
       }),
     condition: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "The subscription's parameter values. This is a string-encoded JSON object whose contents are determined by the subscription type.",
@@ -5035,7 +5069,7 @@ const GetGuestStarInvitesResponseSchema = z
   .openapi({ required: ['data'] })
   .openapi('GetGuestStarInvitesResponse')
 
-const GetHypeTrainStatusResponseSchema = z
+const GetHypeTrainStatusResponseSchema: z.ZodType<GetHypeTrainStatusResponseType> = z
   .object({
     data: z
       .array(

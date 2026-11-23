@@ -419,16 +419,13 @@ const _200FundsConfirmationConsentsConsentIdReadResponse = {
     'application/json; charset=utf-8': { schema: OBFundsConfirmationConsentResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -438,16 +435,13 @@ const _201FundsConfirmationConsentsCreatedResponse = {
     'application/json; charset=utf-8': { schema: OBFundsConfirmationConsentResponse1Schema },
   },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -455,32 +449,26 @@ const _201FundsConfirmationsCreatedResponse = {
   description: 'Funds Confirmation Created',
   content: { 'application/json; charset=utf-8': { schema: OBFundsConfirmationResponse1Schema } },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _204FundsConfirmationConsentsConsentIdDeletedResponse = {
   description: 'Funds Confirmation Consent Deleted',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -488,32 +476,26 @@ const _400ErrorResponse = {
   description: 'Bad request',
   content: { 'application/json; charset=utf-8': { schema: OBErrorResponse1Schema } },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _401ErrorResponse = {
   description: 'Unauthorized',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -521,103 +503,82 @@ const _403ErrorResponse = {
   description: 'Forbidden',
   content: { 'application/json; charset=utf-8': { schema: OBErrorResponse1Schema } },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _404ErrorResponse = {
   description: 'Not found',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _405ErrorResponse = {
   description: 'Method Not Allowed',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _406ErrorResponse = {
   description: 'Not Acceptable',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _415ErrorResponse = {
   description: 'Unsupported Media Type',
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
 const _429ErrorResponse = {
   description: 'Too Many Requests',
   headers: z.object({
-    'Retry-After': {
-      description: 'Number in seconds to wait',
-      schema: z
-        .int()
-        .exactOptional()
-        .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
-    },
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'Retry-After': z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number in seconds to wait', param: { required: false } }),
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 
@@ -625,16 +586,13 @@ const _500ErrorResponse = {
   description: 'Internal Server Error',
   content: { 'application/json; charset=utf-8': { schema: OBErrorResponse1Schema } },
   headers: z.object({
-    'x-fapi-interaction-id': {
-      description: 'An RFC4122 UID used as a correlation id.',
-      schema: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description: 'An RFC4122 UID used as a correlation id.',
-          param: { required: false },
-        }),
-    },
+    'x-fapi-interaction-id': z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'An RFC4122 UID used as a correlation id.',
+        param: { required: false },
+      }),
   }),
 }
 

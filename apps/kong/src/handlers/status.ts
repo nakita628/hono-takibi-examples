@@ -1,0 +1,12 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { getStatusDnsRoute, getStatusRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const statusHandler = app
+  .openapi(getStatusRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getStatusDnsRoute, (c) => {
+    throw new Error('Not implemented')
+  })

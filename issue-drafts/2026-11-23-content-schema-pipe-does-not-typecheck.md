@@ -1,5 +1,7 @@
 ---
-status: draft (add_repo for nakita628/hono-takibi was denied in the 2026-11-23 session, so this was not filed)
+status: filed (the 2026-11-23 session could not attach nakita628/hono-takibi; filed from another session the same day)
+issue: 522
+filed: https://github.com/nakita628/hono-takibi/issues/522
 target: nakita628/hono-takibi
 labels: [bug]
 related: []

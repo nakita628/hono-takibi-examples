@@ -335,7 +335,7 @@ const V2LookupKeyResponseSchema = z
   .openapi('V2LookupKeyResponse')
 
 const V2UndeleteKeyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request message for `UndeleteKey` method.' })
   .openapi('V2UndeleteKeyRequest')
 

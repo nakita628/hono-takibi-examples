@@ -2,11 +2,45 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const StringSchema = z.string().openapi('String')
 
+const IntegerSchema = z.int().openapi('Integer')
+
+const EndpointSchema = z
+  .object({
+    Address: StringSchema.exactOptional().openapi({
+      description: 'The DNS hostname of the cache node.',
+    }),
+    Port: IntegerSchema.exactOptional().openapi({
+      description: 'The port number that the cache engine is listening on.',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents the information required for client programs to connect to a cache node.',
+    required: [],
+  })
+  .openapi('Endpoint')
+
+const IntegerOptionalSchema = z.int().openapi('IntegerOptional')
+
+const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
+
+const CacheNodeIdsListSchema = z
+  .array(StringSchema.openapi({ xml: { name: 'CacheNodeId' } }))
+  .openapi('CacheNodeIdsList')
+
+const AuthTokenUpdateStatusSchema = z.enum(['SETTING', 'ROTATING']).openapi('AuthTokenUpdateStatus')
+
+const LogTypeSchema = z.enum(['slow-log', 'engine-log']).openapi('LogType')
+
+const DestinationTypeSchema = z
+  .enum(['cloudwatch-logs', 'kinesis-firehose'])
+  .openapi('DestinationType')
+
 const CloudWatchLogsDestinationDetailsSchema = z
   .object({
-    LogGroup: StringSchema.and(
-      z.any().openapi({ description: 'The name of the CloudWatch Logs log group.' }),
-    ).exactOptional(),
+    LogGroup: StringSchema.exactOptional().openapi({
+      description: 'The name of the CloudWatch Logs log group.',
+    }),
   })
   .openapi({
     description: 'The configuration details of the CloudWatch Logs destination.',
@@ -16,9 +50,9 @@ const CloudWatchLogsDestinationDetailsSchema = z
 
 const KinesisFirehoseDestinationDetailsSchema = z
   .object({
-    DeliveryStream: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Kinesis Data Firehose delivery stream.' }),
-    ).exactOptional(),
+    DeliveryStream: StringSchema.exactOptional().openapi({
+      description: 'The name of the Kinesis Data Firehose delivery stream.',
+    }),
   })
   .openapi({
     description: 'The configuration details of the Kinesis Data Firehose destination.',
@@ -26,23 +60,705 @@ const KinesisFirehoseDestinationDetailsSchema = z
   })
   .openapi('KinesisFirehoseDestinationDetails')
 
-type DestinationDetailsType = {
-  CloudWatchLogsDetails?: z.infer<typeof CloudWatchLogsDestinationDetailsSchema> & {
-    [key: string]: unknown
-  }
-  KinesisFirehoseDetails?: z.infer<typeof KinesisFirehoseDestinationDetailsSchema> & {
-    [key: string]: unknown
-  }
+const DestinationDetailsSchema = z
+  .object({
+    CloudWatchLogsDetails: CloudWatchLogsDestinationDetailsSchema.exactOptional().openapi({
+      description: 'The configuration details of the CloudWatch Logs destination.',
+    }),
+    KinesisFirehoseDetails: KinesisFirehoseDestinationDetailsSchema.exactOptional().openapi({
+      description: 'The configuration details of the Kinesis Data Firehose destination.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+    required: [],
+  })
+  .openapi('DestinationDetails')
+
+const LogFormatSchema = z.enum(['text', 'json']).openapi('LogFormat')
+
+const PendingLogDeliveryConfigurationSchema = z
+  .object({
+    LogType: LogTypeSchema.exactOptional().openapi({
+      description:
+        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+    }),
+    DestinationType: DestinationTypeSchema.exactOptional().openapi({
+      description: 'Returns the destination type, either CloudWatch Logs or Kinesis Data Firehose.',
+    }),
+    DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+      description:
+        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+    }),
+    LogFormat: LogFormatSchema.exactOptional().openapi({
+      description: 'Returns the log format, either JSON or TEXT',
+    }),
+  })
+  .openapi({ description: 'The log delivery configurations being modified ', required: [] })
+  .openapi('PendingLogDeliveryConfiguration')
+
+const PendingLogDeliveryConfigurationListSchema = z
+  .array(PendingLogDeliveryConfigurationSchema)
+  .openapi('PendingLogDeliveryConfigurationList')
+
+const BooleanOptionalSchema = z.boolean().openapi('BooleanOptional')
+
+const TransitEncryptionModeSchema = z
+  .enum(['preferred', 'required'])
+  .openapi('TransitEncryptionMode')
+
+const PendingModifiedValuesSchema = z
+  .object({
+    NumCacheNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The new number of cache nodes for the cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
+    }),
+    CacheNodeIdsToRemove: CacheNodeIdsListSchema.exactOptional().openapi({
+      description:
+        'A list of cache node IDs that are being removed (or will be removed) from the cluster. A node ID is a 4-digit numeric identifier (0001, 0002, etc.).',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The new cache engine version that the cluster runs.',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'The cache node type that this cluster or replication group is scaled to.',
+    }),
+    AuthTokenStatus: AuthTokenUpdateStatusSchema.exactOptional().openapi({
+      description: 'The auth token status',
+    }),
+    LogDeliveryConfigurations: PendingLogDeliveryConfigurationListSchema.exactOptional().openapi({
+      description: 'The log delivery configurations being modified ',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A flag that enables in-transit encryption when set to true.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
+    }),
+  })
+  .openapi({
+    description:
+      'A group of settings that are applied to the cluster in the future, or that are currently being applied.',
+    required: [],
+  })
+  .openapi('PendingModifiedValues')
+
+const NotificationConfigurationSchema = z
+  .object({
+    TopicArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) that identifies the topic.',
+    }),
+    TopicStatus: StringSchema.exactOptional().openapi({
+      description: 'The current state of the topic.',
+    }),
+  })
+  .openapi({
+    description:
+      'Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS).',
+    required: [],
+  })
+  .openapi('NotificationConfiguration')
+
+const CacheSecurityGroupMembershipSchema = z
+  .object({
+    CacheSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The membership status in the cache security group. The status changes when a cache security group is modified, or when the cache security groups assigned to a cluster are modified.',
+    }),
+  })
+  .openapi({
+    description: "Represents a cluster's status within a particular cache security group.",
+    required: [],
+  })
+  .openapi('CacheSecurityGroupMembership')
+
+const CacheSecurityGroupMembershipListSchema = z
+  .array(CacheSecurityGroupMembershipSchema.openapi({ xml: { name: 'CacheSecurityGroup' } }))
+  .openapi('CacheSecurityGroupMembershipList')
+
+const CacheParameterGroupStatusSchema = z
+  .object({
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache parameter group.',
+    }),
+    ParameterApplyStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of parameter updates.',
+    }),
+    CacheNodeIdsToReboot: CacheNodeIdsListSchema.exactOptional().openapi({
+      description:
+        'A list of the cache node IDs which need to be rebooted for parameter changes to be applied. A node ID is a numeric identifier (0001, 0002, etc.).',
+    }),
+  })
+  .openapi({ description: 'Status of the cache parameter group.', required: [] })
+  .openapi('CacheParameterGroupStatus')
+
+const CacheNodeSchema = z
+  .object({
+    CacheNodeId: StringSchema.exactOptional().openapi({
+      description:
+        "The cache node identifier. A node ID is a numeric identifier (0001, 0002, etc.). The combination of cluster ID and node ID uniquely identifies every cache node used in a customer's Amazon account.",
+    }),
+    CacheNodeStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The current state of this cache node, one of the following values: <code>available</code>, <code>creating</code>, <code>rebooting</code>, or <code>deleting</code>.',
+    }),
+    CacheNodeCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the cache node was created.',
+    }),
+    Endpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The hostname for connecting to this cache node.',
+    }),
+    ParameterGroupStatus: StringSchema.exactOptional().openapi({
+      description: 'The status of the parameter group applied to this cache node.',
+    }),
+    SourceCacheNodeId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the primary node to which this read replica node is synchronized. If this field is empty, this node is not associated with a primary cluster.',
+    }),
+    CustomerAvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The Availability Zone where this node was created and now resides.',
+    }),
+    CustomerOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The customer outpost ARN of the cache node.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Represents an individual cache node within a cluster. Each cache node runs its own instance of the cluster\'s protocol-compliant caching software - either Memcached or Redis.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    required: [],
+  })
+  .openapi('CacheNode')
+
+const CacheNodeListSchema = z
+  .array(CacheNodeSchema.openapi({ xml: { name: 'CacheNode' } }))
+  .openapi('CacheNodeList')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const SecurityGroupMembershipSchema = z
+  .object({
+    SecurityGroupId: StringSchema.exactOptional().openapi({
+      description: 'The identifier of the cache security group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the cache security group membership. The status changes whenever a cache security group is modified, or when the cache security groups assigned to a cluster are modified.',
+    }),
+  })
+  .openapi({
+    description: 'Represents a single cache security group and its status.',
+    required: [],
+  })
+  .openapi('SecurityGroupMembership')
+
+const SecurityGroupMembershipListSchema = z
+  .array(SecurityGroupMembershipSchema)
+  .openapi('SecurityGroupMembershipList')
+
+const LogDeliveryConfigurationStatusSchema = z
+  .enum(['active', 'enabling', 'modifying', 'disabling', 'error'])
+  .openapi('LogDeliveryConfigurationStatus')
+
+const LogDeliveryConfigurationSchema = z
+  .object({
+    LogType: LogTypeSchema.exactOptional().openapi({
+      description:
+        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log.',
+    }),
+    DestinationType: DestinationTypeSchema.exactOptional().openapi({
+      description:
+        'Returns the destination type, either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code>.',
+    }),
+    DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+      description:
+        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+    }),
+    LogFormat: LogFormatSchema.exactOptional().openapi({
+      description: 'Returns the log format, either JSON or TEXT.',
+    }),
+    Status: LogDeliveryConfigurationStatusSchema.exactOptional().openapi({
+      description:
+        'Returns the log delivery configuration status. Values are one of <code>enabling</code> | <code>disabling</code> | <code>modifying</code> | <code>active</code> | <code>error</code> ',
+    }),
+    Message: StringSchema.exactOptional().openapi({
+      description: 'Returns an error message for the log delivery configuration.',
+    }),
+  })
+  .openapi({ description: 'Returns the destination, format and type of the logs. ', required: [] })
+  .openapi('LogDeliveryConfiguration')
+
+const LogDeliveryConfigurationListSchema = z
+  .array(LogDeliveryConfigurationSchema.openapi({ xml: { name: 'LogDeliveryConfiguration' } }))
+  .openapi('LogDeliveryConfigurationList')
+
+const NetworkTypeSchema = z.enum(['ipv4', 'ipv6', 'dual_stack']).openapi('NetworkType')
+
+const IpDiscoverySchema = z.enum(['ipv4', 'ipv6']).openapi('IpDiscovery')
+
+const CacheClusterSchema = z
+  .object({
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The user-supplied identifier of the cluster. This identifier is a unique key that identifies a cluster.',
+    }),
+    ConfigurationEndpoint: EndpointSchema.exactOptional().openapi({
+      description:
+        '<p>Represents a Memcached cluster endpoint which can be used by an application to connect to any node in the cluster. The configuration endpoint will always have <code>.cfg</code> in it.</p> <p>Example: <code>mem-3.9dvc4r<u>.cfg</u>.usw2.cache.amazonaws.com:11211</code> </p>',
+    }),
+    ClientDownloadLandingPage: StringSchema.exactOptional().openapi({
+      description:
+        'The URL of the web page where you can download the latest ElastiCache client library.',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the compute and memory capacity node type for the cluster.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache engine (<code>memcached</code> or <code>redis</code>) to be used for this cluster.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the cache engine that is used in this cluster.',
+    }),
+    CacheClusterStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The current state of this cluster, one of the following values: <code>available</code>, <code>creating</code>, <code>deleted</code>, <code>deleting</code>, <code>incompatible-network</code>, <code>modifying</code>, <code>rebooting cluster nodes</code>, <code>restore-failed</code>, or <code>snapshotting</code>.',
+    }),
+    NumCacheNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of cache nodes in the cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
+    }),
+    PreferredAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the Availability Zone in which the cluster is located or "Multiple" if the cache nodes are located in different Availability Zones.',
+    }),
+    PreferredOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The outpost ARN in which the cache cluster is created.',
+    }),
+    CacheClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster was created.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
+    }),
+    PendingModifiedValues: PendingModifiedValuesSchema.exactOptional(),
+    NotificationConfiguration: NotificationConfigurationSchema.exactOptional().openapi({
+      description:
+        'Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS). ',
+    }),
+    CacheSecurityGroups: CacheSecurityGroupMembershipListSchema.exactOptional().openapi({
+      description:
+        'A list of cache security group elements, composed of name and status sub-elements.',
+    }),
+    CacheParameterGroup: CacheParameterGroupStatusSchema.exactOptional().openapi({
+      description: 'Status of the cache parameter group.',
+    }),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache subnet group associated with the cluster.',
+    }),
+    CacheNodes: CacheNodeListSchema.exactOptional().openapi({
+      description: 'A list of cache nodes that are members of the cluster.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SecurityGroups: SecurityGroupMembershipListSchema.exactOptional().openapi({
+      description: 'A list of VPC Security Groups associated with the cluster.',
+    }),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        'The replication group to which this cluster belongs. If this field is empty, the cluster is not associated with any replication group.',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <important> <p> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p> </important>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your cluster.</p> <p>Example: <code>05:00-09:00</code> </p>',
+    }),
+    AuthTokenEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
+    }),
+    AuthTokenLastModifiedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date the auth token was last modified',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
+    }),
+    AtRestEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables encryption at-rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the cluster is created. To enable at-rest encryption on a cluster you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the cache cluster.',
+    }),
+    ReplicationGroupLogDeliveryEnabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'A boolean value indicating whether log delivery is enabled for the replication group.',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationListSchema.exactOptional().openapi({
+      description: 'Returns the destination, format and type of the logs.',
+    }),
+    NetworkType: NetworkTypeSchema.exactOptional().openapi({
+      description:
+        'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type associated with the cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
+    }),
+  })
+  .openapi({ description: 'Contains all of the attributes of a specific cluster.', required: [] })
+  .openapi('CacheCluster')
+
+const CacheClusterListSchema = z
+  .array(CacheClusterSchema.openapi({ xml: { name: 'CacheCluster' } }))
+  .openapi('CacheClusterList')
+
+type CacheClusterMessageType = {
+  Marker?: z.infer<typeof StringSchema> & unknown
+  CacheClusters?: z.infer<typeof CacheClusterListSchema> & unknown
+}
+
+const GlobalReplicationGroupInfoSchema = z
+  .object({
+    GlobalReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the Global datastore',
+    }),
+    GlobalReplicationGroupMemberRole: StringSchema.exactOptional().openapi({
+      description:
+        'The role of the replication group in a Global datastore. Can be primary or secondary.',
+    }),
+  })
+  .openapi({
+    description:
+      'The name of the Global datastore and role of this replication group in the Global datastore.',
+    required: [],
+  })
+  .openapi('GlobalReplicationGroupInfo')
+
+const PendingAutomaticFailoverStatusSchema = z
+  .enum(['enabled', 'disabled'])
+  .openapi('PendingAutomaticFailoverStatus')
+
+const DoubleSchema = z.float64().openapi('Double')
+
+const SlotMigrationSchema = z
+  .object({
+    ProgressPercentage: DoubleSchema.exactOptional().openapi({
+      description: 'The percentage of the slot migration that is complete.',
+    }),
+  })
+  .openapi({
+    description: 'Represents the progress of an online resharding operation.',
+    required: [],
+  })
+  .openapi('SlotMigration')
+
+const ReshardingStatusSchema = z
+  .object({
+    SlotMigration: SlotMigrationSchema.exactOptional().openapi({
+      description: 'Represents the progress of an online resharding operation.',
+    }),
+  })
+  .openapi({ description: 'The status of an online resharding operation.', required: [] })
+  .openapi('ReshardingStatus')
+
+const UserGroupIdSchema = z
+  .string()
+  .regex(/[a-zA-Z][a-zA-Z0-9\-]*/)
+  .min(1)
+  .openapi('UserGroupId')
+
+const UserGroupIdListSchema = z.array(UserGroupIdSchema).openapi('UserGroupIdList')
+
+const UserGroupsUpdateStatusSchema = z
+  .object({
+    UserGroupIdsToAdd: UserGroupIdListSchema.exactOptional().openapi({
+      description: 'The ID of the user group to add.',
+    }),
+    UserGroupIdsToRemove: UserGroupIdListSchema.exactOptional().openapi({
+      description: 'The ID of the user group to remove.',
+    }),
+  })
+  .openapi({ description: 'The status of the user group update.', required: [] })
+  .openapi('UserGroupsUpdateStatus')
+
+const ClusterModeSchema = z.enum(['enabled', 'disabled', 'compatible']).openapi('ClusterMode')
+
+const ReplicationGroupPendingModifiedValuesSchema = z
+  .object({
+    PrimaryClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The primary cluster ID that is applied immediately (if <code>--apply-immediately</code> was specified), or during the next maintenance window.',
+    }),
+    AutomaticFailoverStatus: PendingAutomaticFailoverStatusSchema.exactOptional().openapi({
+      description: 'Indicates the status of automatic failover for this Redis replication group.',
+    }),
+    Resharding: ReshardingStatusSchema.exactOptional().openapi({
+      description: 'The status of an online resharding operation.',
+    }),
+    AuthTokenStatus: AuthTokenUpdateStatusSchema.exactOptional().openapi({
+      description: 'The auth token status',
+    }),
+    UserGroups: UserGroupsUpdateStatusSchema.exactOptional().openapi({
+      description: 'The user group being modified.',
+    }),
+    LogDeliveryConfigurations: PendingLogDeliveryConfigurationListSchema.exactOptional().openapi({
+      description: 'The log delivery configurations being modified ',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A flag that enables in-transit encryption when set to true.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
+    }),
+    ClusterMode: ClusterModeSchema.exactOptional().openapi({
+      description:
+        'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
+    }),
+  })
+  .openapi({
+    description:
+      'The settings to be applied to the Redis replication group, either immediately or during the next maintenance window.',
+    required: [],
+  })
+  .openapi('ReplicationGroupPendingModifiedValues')
+
+const ClusterIdListSchema = z
+  .array(StringSchema.openapi({ xml: { name: 'ClusterId' } }))
+  .openapi('ClusterIdList')
+
+const NodeGroupMemberSchema = z
+  .object({
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the cluster to which the node belongs.',
+    }),
+    CacheNodeId: StringSchema.exactOptional().openapi({
+      description:
+        'The ID of the node within its cluster. A node ID is a numeric identifier (0001, 0002, etc.).',
+    }),
+    ReadEndpoint: EndpointSchema.exactOptional().openapi({
+      description:
+        'The information required for client programs to connect to a node for read operations. The read endpoint is only applicable on Redis (cluster mode disabled) clusters.',
+    }),
+    PreferredAvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The name of the Availability Zone in which the node is located.',
+    }),
+    PreferredOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The outpost ARN of the node group member.',
+    }),
+    CurrentRole: StringSchema.exactOptional().openapi({
+      description:
+        'The role that is currently assigned to the node - <code>primary</code> or <code>replica</code>. This member is only applicable for Redis (cluster mode disabled) replication groups.',
+    }),
+  })
+  .openapi({ description: 'Represents a single node within a node group (shard).', required: [] })
+  .openapi('NodeGroupMember')
+
+const NodeGroupMemberListSchema = z
+  .array(NodeGroupMemberSchema.openapi({ xml: { name: 'NodeGroupMember' } }))
+  .openapi('NodeGroupMemberList')
+
+const NodeGroupSchema = z
+  .object({
+    NodeGroupId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the node group (shard). A Redis (cluster mode disabled) replication group contains only 1 node group; therefore, the node group ID is 0001. A Redis (cluster mode enabled) replication group contains 1 to 90 node groups numbered 0001 to 0090. Optionally, the user can provide the id for a node group. ',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current state of this replication group - <code>creating</code>, <code>available</code>, <code>modifying</code>, <code>deleting</code>.',
+    }),
+    PrimaryEndpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The endpoint of the primary node in this node group (shard).',
+    }),
+    ReaderEndpoint: EndpointSchema.exactOptional().openapi({
+      description: 'The endpoint of the replica nodes in this node group (shard).',
+    }),
+    Slots: StringSchema.exactOptional().openapi({
+      description: 'The keyspace for this node group (shard).',
+    }),
+    NodeGroupMembers: NodeGroupMemberListSchema.exactOptional().openapi({
+      description:
+        'A list containing information about individual nodes within the node group (shard).',
+    }),
+  })
+  .openapi({
+    description:
+      'Represents a collection of cache nodes in a replication group. One node in the node group is the read/write primary node. All the other nodes are read-only Replica nodes.',
+    required: [],
+  })
+  .openapi('NodeGroup')
+
+const NodeGroupListSchema = z
+  .array(NodeGroupSchema.openapi({ xml: { name: 'NodeGroup' } }))
+  .openapi('NodeGroupList')
+
+const AutomaticFailoverStatusSchema = z
+  .enum(['enabled', 'disabled', 'enabling', 'disabling'])
+  .openapi('AutomaticFailoverStatus')
+
+const MultiAZStatusSchema = z.enum(['enabled', 'disabled']).openapi('MultiAZStatus')
+
+const ReplicationGroupOutpostArnListSchema = z
+  .array(StringSchema.openapi({ xml: { name: 'ReplicationGroupOutpostArn' } }))
+  .openapi('ReplicationGroupOutpostArnList')
+
+const DataTieringStatusSchema = z.enum(['enabled', 'disabled']).openapi('DataTieringStatus')
+
+const ReplicationGroupSchema = z
+  .object({
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The identifier for the replication group.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The user supplied description of the replication group.',
+    }),
+    GlobalReplicationGroupInfo: GlobalReplicationGroupInfoSchema.exactOptional().openapi({
+      description:
+        'The name of the Global datastore and role of this replication group in the Global datastore.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'The current state of this replication group - <code>creating</code>, <code>available</code>, <code>modifying</code>, <code>deleting</code>, <code>create-failed</code>, <code>snapshotting</code>.',
+    }),
+    PendingModifiedValues: ReplicationGroupPendingModifiedValuesSchema.exactOptional().openapi({
+      description:
+        'A group of settings to be applied to the replication group, either immediately or during the next maintenance window.',
+    }),
+    MemberClusters: ClusterIdListSchema.exactOptional().openapi({
+      description: 'The names of all the cache clusters that are part of this replication group.',
+    }),
+    NodeGroups: NodeGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of node groups in this replication group. For Redis (cluster mode disabled) replication groups, this is a single-element list. For Redis (cluster mode enabled) replication groups, the list contains an entry for each node group (shard).',
+    }),
+    SnapshottingClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The cluster ID that is used as the daily snapshot source for the replication group.',
+    }),
+    AutomaticFailover: AutomaticFailoverStatusSchema.exactOptional().openapi({
+      description: 'Indicates the status of automatic failover for this Redis replication group.',
+    }),
+    MultiAZ: MultiAZStatusSchema.exactOptional().openapi({
+      description:
+        'A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html">Minimizing Downtime: Multi-AZ</a> ',
+    }),
+    ConfigurationEndpoint: EndpointSchema.exactOptional().openapi({
+      description:
+        'The configuration endpoint for this replication group. Use the configuration endpoint to connect to this replication group.',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <important> <p> If the value of <code>SnapshotRetentionLimit</code> is set to zero (0), backups are turned off.</p> </important>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
+    }),
+    ClusterEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag indicating whether or not this replication group is cluster enabled; i.e., whether its data can be partitioned across multiple shards (API/CLI: node groups).</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the compute and memory capacity node type for each node in the replication group.',
+    }),
+    AuthTokenEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
+    }),
+    AuthTokenLastModifiedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date the auth token was last modified',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
+    }),
+    AtRestEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables encryption at-rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the cluster is created. To enable encryption at-rest on a cluster you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
+    }),
+    MemberClustersOutpostArns: ReplicationGroupOutpostArnListSchema.exactOptional().openapi({
+      description: "The outpost ARNs of the replication group's member clusters.",
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used to encrypt the disk in the cluster.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the replication group.',
+    }),
+    UserGroupIds: UserGroupIdListSchema.exactOptional().openapi({
+      description: 'The ID of the user group associated to the replication group.',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationListSchema.exactOptional().openapi({
+      description: 'Returns the destination, format and type of the logs. ',
+    }),
+    ReplicationGroupCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the cluster was created.',
+    }),
+    DataTiering: DataTieringStatusSchema.exactOptional().openapi({
+      description:
+        'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        'If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions. ',
+    }),
+    NetworkType: NetworkTypeSchema.exactOptional().openapi({
+      description:
+        'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
+    }),
+    ClusterMode: ClusterModeSchema.exactOptional().openapi({
+      description:
+        'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
+    }),
+  })
+  .openapi({
+    description: 'Contains all of the attributes of a specific Redis replication group.',
+    required: [],
+  })
+  .openapi('ReplicationGroup')
+
+const ReplicationGroupListSchema = z
+  .array(ReplicationGroupSchema.openapi({ xml: { name: 'ReplicationGroup' } }))
+  .openapi('ReplicationGroupList')
+
+type ReplicationGroupMessageType = {
+  Marker?: z.infer<typeof StringSchema> & unknown
+  ReplicationGroups?: z.infer<typeof ReplicationGroupListSchema> & unknown
 }
 
 const TagSchema = z
   .object({
-    Key: StringSchema.and(
-      z.any().openapi({ description: 'The key for the tag. May not be null.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: "The tag's value. May be null." }),
-    ).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({
+      description: 'The key for the tag. May not be null.',
+    }),
+    Value: StringSchema.exactOptional().openapi({ description: "The tag's value. May be null." }),
   })
   .openapi({
     description:
@@ -51,15 +767,13 @@ const TagSchema = z
   })
   .openapi('Tag')
 
-const TagListSchema = z
-  .array(TagSchema.and(z.any().openapi({ xml: { name: 'Tag' } })))
-  .openapi('TagList')
+const TagListSchema = z.array(TagSchema.openapi({ xml: { name: 'Tag' } })).openapi('TagList')
 
 const TagListMessageSchema = z
   .object({
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags as key-value pairs.' }),
-    ).exactOptional(),
+    TagList: TagListSchema.exactOptional().openapi({
+      description: 'A list of tags as key-value pairs.',
+    }),
   })
   .openapi({
     description:
@@ -94,17 +808,15 @@ const InvalidARNFaultSchema = z.any().openapi('InvalidARNFault')
 
 const EC2SecurityGroupSchema = z
   .object({
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the Amazon EC2 security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon EC2 security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon account ID of the Amazon EC2 security group owner.' }),
-    ).exactOptional(),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the Amazon EC2 security group.',
+    }),
+    EC2SecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the Amazon EC2 security group.',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.exactOptional().openapi({
+      description: 'The Amazon account ID of the Amazon EC2 security group owner.',
+    }),
   })
   .openapi({
     description: 'Provides ownership and status information for an Amazon EC2 security group.',
@@ -113,31 +825,27 @@ const EC2SecurityGroupSchema = z
   .openapi('EC2SecurityGroup')
 
 const EC2SecurityGroupListSchema = z
-  .array(EC2SecurityGroupSchema.and(z.any().openapi({ xml: { name: 'EC2SecurityGroup' } })))
+  .array(EC2SecurityGroupSchema.openapi({ xml: { name: 'EC2SecurityGroup' } }))
   .openapi('EC2SecurityGroupList')
 
 const CacheSecurityGroupSchema = z
   .object({
-    OwnerId: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon account ID of the cache security group owner.' }),
-    ).exactOptional(),
-    CacheSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache security group.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cache security group.' }),
-    ).exactOptional(),
-    EC2SecurityGroups: EC2SecurityGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Amazon EC2 security groups that are associated with this cache security group.',
-        }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN of the cache security group,' }),
-    ).exactOptional(),
+    OwnerId: StringSchema.exactOptional().openapi({
+      description: 'The Amazon account ID of the cache security group owner.',
+    }),
+    CacheSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache security group.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description of the cache security group.',
+    }),
+    EC2SecurityGroups: EC2SecurityGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of Amazon EC2 security groups that are associated with this cache security group.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN of the cache security group,',
+    }),
   })
   .openapi({
     description:
@@ -179,18 +887,18 @@ const UpdateActionStatusSchema = z
 
 const ProcessedUpdateActionSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the replication group' }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the cache cluster' }),
-    ).exactOptional(),
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    UpdateActionStatus: UpdateActionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the update action on the Redis cluster' }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the replication group',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the cache cluster',
+    }),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    UpdateActionStatus: UpdateActionStatusSchema.exactOptional().openapi({
+      description: 'The status of the update action on the Redis cluster',
+    }),
   })
   .openapi({
     description: 'Update action that has been processed for the corresponding apply/stop request',
@@ -199,32 +907,26 @@ const ProcessedUpdateActionSchema = z
   .openapi('ProcessedUpdateAction')
 
 const ProcessedUpdateActionListSchema = z
-  .array(
-    ProcessedUpdateActionSchema.and(z.any().openapi({ xml: { name: 'ProcessedUpdateAction' } })),
-  )
+  .array(ProcessedUpdateActionSchema.openapi({ xml: { name: 'ProcessedUpdateAction' } }))
   .openapi('ProcessedUpdateActionList')
 
 const UnprocessedUpdateActionSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The replication group ID' }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the cache cluster' }),
-    ).exactOptional(),
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    ErrorType: StringSchema.and(
-      z.any().openapi({ description: 'The error type for requests that are not processed' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The error message that describes the reason the request was not processed',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The replication group ID',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the cache cluster',
+    }),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    ErrorType: StringSchema.exactOptional().openapi({
+      description: 'The error type for requests that are not processed',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message that describes the reason the request was not processed',
+    }),
   })
   .openapi({
     description:
@@ -234,655 +936,22 @@ const UnprocessedUpdateActionSchema = z
   .openapi('UnprocessedUpdateAction')
 
 const UnprocessedUpdateActionListSchema = z
-  .array(
-    UnprocessedUpdateActionSchema.and(
-      z.any().openapi({ xml: { name: 'UnprocessedUpdateAction' } }),
-    ),
-  )
+  .array(UnprocessedUpdateActionSchema.openapi({ xml: { name: 'UnprocessedUpdateAction' } }))
   .openapi('UnprocessedUpdateActionList')
 
 const UpdateActionResultsMessageSchema = z
   .object({
-    ProcessedUpdateActions: ProcessedUpdateActionListSchema.and(
-      z.any().openapi({ description: 'Update actions that have been processed successfully' }),
-    ).exactOptional(),
-    UnprocessedUpdateActions: UnprocessedUpdateActionListSchema.and(
-      z.any().openapi({ description: "Update actions that haven't been processed successfully" }),
-    ).exactOptional(),
+    ProcessedUpdateActions: ProcessedUpdateActionListSchema.exactOptional().openapi({
+      description: 'Update actions that have been processed successfully',
+    }),
+    UnprocessedUpdateActions: UnprocessedUpdateActionListSchema.exactOptional().openapi({
+      description: "Update actions that haven't been processed successfully",
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateActionResultsMessage')
 
 const ServiceUpdateNotFoundFaultSchema = z.any().openapi('ServiceUpdateNotFoundFault')
-
-const GlobalReplicationGroupInfoSchema = z
-  .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ).exactOptional(),
-    GlobalReplicationGroupMemberRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role of the replication group in a Global datastore. Can be primary or secondary.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The name of the Global datastore and role of this replication group in the Global datastore.',
-    required: [],
-  })
-  .openapi('GlobalReplicationGroupInfo')
-
-const PendingAutomaticFailoverStatusSchema = z
-  .enum(['enabled', 'disabled'])
-  .openapi('PendingAutomaticFailoverStatus')
-
-const DoubleSchema = z.float64().openapi('Double')
-
-const SlotMigrationSchema = z
-  .object({
-    ProgressPercentage: DoubleSchema.and(
-      z.any().openapi({ description: 'The percentage of the slot migration that is complete.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Represents the progress of an online resharding operation.',
-    required: [],
-  })
-  .openapi('SlotMigration')
-
-const ReshardingStatusSchema = z
-  .object({
-    SlotMigration: SlotMigrationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Represents the progress of an online resharding operation.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The status of an online resharding operation.', required: [] })
-  .openapi('ReshardingStatus')
-
-const AuthTokenUpdateStatusSchema = z.enum(['SETTING', 'ROTATING']).openapi('AuthTokenUpdateStatus')
-
-const UserGroupIdSchema = z
-  .string()
-  .regex(/[a-zA-Z][a-zA-Z0-9\-]*/)
-  .min(1)
-  .openapi('UserGroupId')
-
-const UserGroupIdListSchema = z.array(UserGroupIdSchema).openapi('UserGroupIdList')
-
-const UserGroupsUpdateStatusSchema = z
-  .object({
-    UserGroupIdsToAdd: UserGroupIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the user group to add.' }),
-    ).exactOptional(),
-    UserGroupIdsToRemove: UserGroupIdListSchema.and(
-      z.any().openapi({ description: 'The ID of the user group to remove.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The status of the user group update.', required: [] })
-  .openapi('UserGroupsUpdateStatus')
-
-const LogTypeSchema = z.enum(['slow-log', 'engine-log']).openapi('LogType')
-
-const DestinationTypeSchema = z
-  .enum(['cloudwatch-logs', 'kinesis-firehose'])
-  .openapi('DestinationType')
-
-const DestinationDetailsSchema: z.ZodType<DestinationDetailsType> = z
-  .lazy(() =>
-    z
-      .object({
-        CloudWatchLogsDetails: CloudWatchLogsDestinationDetailsSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The configuration details of the CloudWatch Logs destination.',
-            }),
-        ).exactOptional(),
-        KinesisFirehoseDetails: KinesisFirehoseDestinationDetailsSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The configuration details of the Kinesis Data Firehose destination.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-        required: [],
-      }),
-  )
-  .openapi('DestinationDetails')
-
-const LogFormatSchema = z.enum(['text', 'json']).openapi('LogFormat')
-
-const PendingLogDeliveryConfigurationSchema = z
-  .object({
-    LogType: LogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-        }),
-    ).exactOptional(),
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the destination type, either CloudWatch Logs or Kinesis Data Firehose.',
-        }),
-    ).exactOptional(),
-    DestinationDetails: DestinationDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-        }),
-    ).exactOptional(),
-    LogFormat: LogFormatSchema.and(
-      z.any().openapi({ description: 'Returns the log format, either JSON or TEXT' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The log delivery configurations being modified ', required: [] })
-  .openapi('PendingLogDeliveryConfiguration')
-
-const PendingLogDeliveryConfigurationListSchema = z
-  .array(PendingLogDeliveryConfigurationSchema)
-  .openapi('PendingLogDeliveryConfigurationList')
-
-const BooleanOptionalSchema = z.boolean().openapi('BooleanOptional')
-
-const TransitEncryptionModeSchema = z
-  .enum(['preferred', 'required'])
-  .openapi('TransitEncryptionMode')
-
-const ClusterModeSchema = z.enum(['enabled', 'disabled', 'compatible']).openapi('ClusterMode')
-
-const ReplicationGroupPendingModifiedValuesSchema = z
-  .object({
-    PrimaryClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The primary cluster ID that is applied immediately (if <code>--apply-immediately</code> was specified), or during the next maintenance window.',
-        }),
-    ).exactOptional(),
-    AutomaticFailoverStatus: PendingAutomaticFailoverStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the status of automatic failover for this Redis replication group.',
-        }),
-    ).exactOptional(),
-    Resharding: ReshardingStatusSchema.and(
-      z.any().openapi({ description: 'The status of an online resharding operation.' }),
-    ).exactOptional(),
-    AuthTokenStatus: AuthTokenUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The auth token status' }),
-    ).exactOptional(),
-    UserGroups: UserGroupsUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The user group being modified.' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: PendingLogDeliveryConfigurationListSchema.and(
-      z.any().openapi({ description: 'The log delivery configurations being modified ' }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A flag that enables in-transit encryption when set to true.' }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
-        }),
-    ).exactOptional(),
-    ClusterMode: ClusterModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The settings to be applied to the Redis replication group, either immediately or during the next maintenance window.',
-    required: [],
-  })
-  .openapi('ReplicationGroupPendingModifiedValues')
-
-const ClusterIdListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ClusterId' } })))
-  .openapi('ClusterIdList')
-
-const IntegerSchema = z.int().openapi('Integer')
-
-const EndpointSchema = z
-  .object({
-    Address: StringSchema.and(
-      z.any().openapi({ description: 'The DNS hostname of the cache node.' }),
-    ).exactOptional(),
-    Port: IntegerSchema.and(
-      z.any().openapi({ description: 'The port number that the cache engine is listening on.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents the information required for client programs to connect to a cache node.',
-    required: [],
-  })
-  .openapi('Endpoint')
-
-const NodeGroupMemberSchema = z
-  .object({
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the cluster to which the node belongs.' }),
-    ).exactOptional(),
-    CacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the node within its cluster. A node ID is a numeric identifier (0001, 0002, etc.).',
-        }),
-    ).exactOptional(),
-    ReadEndpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The information required for client programs to connect to a node for read operations. The read endpoint is only applicable on Redis (cluster mode disabled) clusters.',
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Availability Zone in which the node is located.',
-        }),
-    ).exactOptional(),
-    PreferredOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The outpost ARN of the node group member.' }),
-    ).exactOptional(),
-    CurrentRole: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role that is currently assigned to the node - <code>primary</code> or <code>replica</code>. This member is only applicable for Redis (cluster mode disabled) replication groups.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Represents a single node within a node group (shard).', required: [] })
-  .openapi('NodeGroupMember')
-
-const NodeGroupMemberListSchema = z
-  .array(NodeGroupMemberSchema.and(z.any().openapi({ xml: { name: 'NodeGroupMember' } })))
-  .openapi('NodeGroupMemberList')
-
-const NodeGroupSchema = z
-  .object({
-    NodeGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the node group (shard). A Redis (cluster mode disabled) replication group contains only 1 node group; therefore, the node group ID is 0001. A Redis (cluster mode enabled) replication group contains 1 to 90 node groups numbered 0001 to 0090. Optionally, the user can provide the id for a node group. ',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this replication group - <code>creating</code>, <code>available</code>, <code>modifying</code>, <code>deleting</code>.',
-        }),
-    ).exactOptional(),
-    PrimaryEndpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The endpoint of the primary node in this node group (shard).' }),
-    ).exactOptional(),
-    ReaderEndpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The endpoint of the replica nodes in this node group (shard).' }),
-    ).exactOptional(),
-    Slots: StringSchema.and(
-      z.any().openapi({ description: 'The keyspace for this node group (shard).' }),
-    ).exactOptional(),
-    NodeGroupMembers: NodeGroupMemberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing information about individual nodes within the node group (shard).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Represents a collection of cache nodes in a replication group. One node in the node group is the read/write primary node. All the other nodes are read-only Replica nodes.',
-    required: [],
-  })
-  .openapi('NodeGroup')
-
-const NodeGroupListSchema = z
-  .array(NodeGroupSchema.and(z.any().openapi({ xml: { name: 'NodeGroup' } })))
-  .openapi('NodeGroupList')
-
-const AutomaticFailoverStatusSchema = z
-  .enum(['enabled', 'disabled', 'enabling', 'disabling'])
-  .openapi('AutomaticFailoverStatus')
-
-const MultiAZStatusSchema = z.enum(['enabled', 'disabled']).openapi('MultiAZStatus')
-
-const IntegerOptionalSchema = z.int().openapi('IntegerOptional')
-
-const TStampSchema = z.iso.datetime({ offset: true }).openapi('TStamp')
-
-const ReplicationGroupOutpostArnListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'ReplicationGroupOutpostArn' } })))
-  .openapi('ReplicationGroupOutpostArnList')
-
-const LogDeliveryConfigurationStatusSchema = z
-  .enum(['active', 'enabling', 'modifying', 'disabling', 'error'])
-  .openapi('LogDeliveryConfigurationStatus')
-
-const LogDeliveryConfigurationSchema = z
-  .object({
-    LogType: LogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log.',
-        }),
-    ).exactOptional(),
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the destination type, either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code>.',
-        }),
-    ).exactOptional(),
-    DestinationDetails: DestinationDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-        }),
-    ).exactOptional(),
-    LogFormat: LogFormatSchema.and(
-      z.any().openapi({ description: 'Returns the log format, either JSON or TEXT.' }),
-    ).exactOptional(),
-    Status: LogDeliveryConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the log delivery configuration status. Values are one of <code>enabling</code> | <code>disabling</code> | <code>modifying</code> | <code>active</code> | <code>error</code> ',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns an error message for the log delivery configuration.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Returns the destination, format and type of the logs. ', required: [] })
-  .openapi('LogDeliveryConfiguration')
-
-const LogDeliveryConfigurationListSchema = z
-  .array(
-    LogDeliveryConfigurationSchema.and(
-      z.any().openapi({ xml: { name: 'LogDeliveryConfiguration' } }),
-    ),
-  )
-  .openapi('LogDeliveryConfigurationList')
-
-const DataTieringStatusSchema = z.enum(['enabled', 'disabled']).openapi('DataTieringStatus')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const NetworkTypeSchema = z.enum(['ipv4', 'ipv6', 'dual_stack']).openapi('NetworkType')
-
-const IpDiscoverySchema = z.enum(['ipv4', 'ipv6']).openapi('IpDiscovery')
-
-const ReplicationGroupSchema = z
-  .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier for the replication group.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The user supplied description of the replication group.' }),
-    ).exactOptional(),
-    GlobalReplicationGroupInfo: GlobalReplicationGroupInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Global datastore and role of this replication group in the Global datastore.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this replication group - <code>creating</code>, <code>available</code>, <code>modifying</code>, <code>deleting</code>, <code>create-failed</code>, <code>snapshotting</code>.',
-        }),
-    ).exactOptional(),
-    PendingModifiedValues: ReplicationGroupPendingModifiedValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A group of settings to be applied to the replication group, either immediately or during the next maintenance window.',
-        }),
-    ).exactOptional(),
-    MemberClusters: ClusterIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of all the cache clusters that are part of this replication group.',
-        }),
-    ).exactOptional(),
-    NodeGroups: NodeGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of node groups in this replication group. For Redis (cluster mode disabled) replication groups, this is a single-element list. For Redis (cluster mode enabled) replication groups, the list contains an entry for each node group (shard).',
-        }),
-    ).exactOptional(),
-    SnapshottingClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster ID that is used as the daily snapshot source for the replication group.',
-        }),
-    ).exactOptional(),
-    AutomaticFailover: AutomaticFailoverStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the status of automatic failover for this Redis replication group.',
-        }),
-    ).exactOptional(),
-    MultiAZ: MultiAZStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html">Minimizing Downtime: Multi-AZ</a> ',
-        }),
-    ).exactOptional(),
-    ConfigurationEndpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration endpoint for this replication group. Use the configuration endpoint to connect to this replication group.',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <important> <p> If the value of <code>SnapshotRetentionLimit</code> is set to zero (0), backups are turned off.</p> </important>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    ClusterEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag indicating whether or not this replication group is cluster enabled; i.e., whether its data can be partitioned across multiple shards (API/CLI: node groups).</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the compute and memory capacity node type for each node in the replication group.',
-        }),
-    ).exactOptional(),
-    AuthTokenEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AuthTokenLastModifiedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date the auth token was last modified' }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AtRestEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables encryption at-rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the cluster is created. To enable encryption at-rest on a cluster you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    MemberClustersOutpostArns: ReplicationGroupOutpostArnListSchema.and(
-      z
-        .any()
-        .openapi({ description: "The outpost ARNs of the replication group's member clusters." }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the KMS key used to encrypt the disk in the cluster.' }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the replication group.' }),
-    ).exactOptional(),
-    UserGroupIds: UserGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the user group associated to the replication group.' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationListSchema.and(
-      z.any().openapi({ description: 'Returns the destination, format and type of the logs. ' }),
-    ).exactOptional(),
-    ReplicationGroupCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time when the cluster was created.' }),
-    ).exactOptional(),
-    DataTiering: DataTieringStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions. ',
-        }),
-    ).exactOptional(),
-    NetworkType: NetworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
-        }),
-    ).exactOptional(),
-    ClusterMode: ClusterModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Contains all of the attributes of a specific Redis replication group.',
-    required: [],
-  })
-  .openapi('ReplicationGroup')
 
 const CompleteMigrationResponseSchema = z
   .object({ ReplicationGroup: ReplicationGroupSchema.exactOptional() })
@@ -896,58 +965,40 @@ const ReplicationGroupNotUnderMigrationFaultSchema = z
 const AllowedNodeGroupIdSchema = z.string().regex(/\d+/).min(1).max(4).openapi('AllowedNodeGroupId')
 
 const AvailabilityZonesListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'AvailabilityZone' } })))
+  .array(StringSchema.openapi({ xml: { name: 'AvailabilityZone' } }))
   .openapi('AvailabilityZonesList')
 
 const OutpostArnsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'OutpostArn' } })))
+  .array(StringSchema.openapi({ xml: { name: 'OutpostArn' } }))
   .openapi('OutpostArnsList')
 
 const NodeGroupConfigurationSchema = z
   .object({
-    NodeGroupId: AllowedNodeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
-        }),
-    ).exactOptional(),
-    Slots: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string that specifies the keyspace for a particular node group. Keyspaces range from 0 to 16,383. The string is in the format <code>startkey-endkey</code>.</p> <p>Example: <code>"0-3999"</code> </p>',
-        }),
-    ).exactOptional(),
-    ReplicaCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of read replica nodes in this node group (shard).' }),
-    ).exactOptional(),
-    PrimaryAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Availability Zone where the primary node of this node group (shard) is launched.',
-        }),
-    ).exactOptional(),
-    ReplicaAvailabilityZones: AvailabilityZonesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of Availability Zones to be used for the read replicas. The number of Availability Zones in this list must match the value of <code>ReplicaCount</code> or <code>ReplicasPerNodeGroup</code> if not specified.',
-        }),
-    ).exactOptional(),
-    PrimaryOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The outpost ARN of the primary node.' }),
-    ).exactOptional(),
-    ReplicaOutpostArns: OutpostArnsListSchema.and(
-      z.any().openapi({ description: 'The outpost ARN of the node replicas.' }),
-    ).exactOptional(),
+    NodeGroupId: AllowedNodeGroupIdSchema.exactOptional().openapi({
+      description:
+        'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
+    }),
+    Slots: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A string that specifies the keyspace for a particular node group. Keyspaces range from 0 to 16,383. The string is in the format <code>startkey-endkey</code>.</p> <p>Example: <code>"0-3999"</code> </p>',
+    }),
+    ReplicaCount: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of read replica nodes in this node group (shard).',
+    }),
+    PrimaryAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        'The Availability Zone where the primary node of this node group (shard) is launched.',
+    }),
+    ReplicaAvailabilityZones: AvailabilityZonesListSchema.exactOptional().openapi({
+      description:
+        'A list of Availability Zones to be used for the read replicas. The number of Availability Zones in this list must match the value of <code>ReplicaCount</code> or <code>ReplicasPerNodeGroup</code> if not specified.',
+    }),
+    PrimaryOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The outpost ARN of the primary node.',
+    }),
+    ReplicaOutpostArns: OutpostArnsListSchema.exactOptional().openapi({
+      description: 'The outpost ARN of the node replicas.',
+    }),
   })
   .openapi({
     description:
@@ -958,38 +1009,28 @@ const NodeGroupConfigurationSchema = z
 
 const NodeSnapshotSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the source cluster.' }),
-    ).exactOptional(),
-    NodeGroupId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the source node group (shard).' }),
-    ).exactOptional(),
-    CacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The cache node identifier for the node in the source cluster.' }),
-    ).exactOptional(),
-    NodeGroupConfiguration: NodeGroupConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration for the source node group (shard).' }),
-    ).exactOptional(),
-    CacheSize: StringSchema.and(
-      z.any().openapi({ description: 'The size of the cache on the source cache node.' }),
-    ).exactOptional(),
-    CacheNodeCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the cache node was created in the source cluster.',
-        }),
-    ).exactOptional(),
-    SnapshotCreateTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The date and time when the source node's metadata and cache data set was obtained for the snapshot.",
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the source cluster.',
+    }),
+    NodeGroupId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the source node group (shard).',
+    }),
+    CacheNodeId: StringSchema.exactOptional().openapi({
+      description: 'The cache node identifier for the node in the source cluster.',
+    }),
+    NodeGroupConfiguration: NodeGroupConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for the source node group (shard).',
+    }),
+    CacheSize: StringSchema.exactOptional().openapi({
+      description: 'The size of the cache on the source cache node.',
+    }),
+    CacheNodeCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the cache node was created in the source cluster.',
+    }),
+    SnapshotCreateTime: TStampSchema.exactOptional().openapi({
+      description:
+        "The date and time when the source node's metadata and cache data set was obtained for the snapshot.",
+    }),
   })
   .openapi({
     description: 'Represents an individual cache node in a snapshot of a cluster.',
@@ -998,191 +1039,110 @@ const NodeSnapshotSchema = z
   .openapi('NodeSnapshot')
 
 const NodeSnapshotListSchema = z
-  .array(NodeSnapshotSchema.and(z.any().openapi({ xml: { name: 'NodeSnapshot' } })))
+  .array(NodeSnapshotSchema.openapi({ xml: { name: 'NodeSnapshot' } }))
   .openapi('NodeSnapshotList')
 
 const SnapshotSchema = z
   .object({
-    SnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a snapshot. For an automatic snapshot, the name is system-generated. For a manual snapshot, this is the user-provided name.',
-        }),
-    ).exactOptional(),
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the source replication group.' }),
-    ).exactOptional(),
-    ReplicationGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the source replication group.' }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The user-supplied identifier of the source cluster.' }),
-    ).exactOptional(),
-    SnapshotStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the snapshot. Valid values: <code>creating</code> | <code>available</code> | <code>restoring</code> | <code>copying</code> | <code>deleting</code>.',
-        }),
-    ).exactOptional(),
-    SnapshotSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the snapshot is from an automatic backup (<code>automated</code>) or was created manually (<code>manual</code>).',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the compute and memory capacity node type for the source cluster.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache engine (<code>memcached</code> or <code>redis</code>) used by the source cluster.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the cache engine version that is used by the source cluster.',
-        }),
-    ).exactOptional(),
-    NumCacheNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of cache nodes in the source cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Availability Zone in which the source cluster is located.',
-        }),
-    ).exactOptional(),
-    PreferredOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the preferred outpost.' }),
-    ).exactOptional(),
-    CacheClusterCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time when the source cluster was created.' }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
-        }),
-    ).exactOptional(),
-    TopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the topic used by the source cluster for publishing notifications.',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The port number used by each cache nodes in the source cluster.',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cache parameter group that is associated with the source cluster.',
-        }),
-    ).exactOptional(),
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the cache subnet group associated with the source cluster.',
-        }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Virtual Private Cloud identifier (VPC ID) of the cache subnet group for the source cluster.',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For an automatic snapshot, the number of days for which ElastiCache retains the snapshot before deleting it.</p> <p>For manual snapshots, this field reflects the <code>SnapshotRetentionLimit</code> for the source cluster when the snapshot was created. This field is otherwise ignored: Manual snapshots do not expire, and can only be deleted using the <code>DeleteSnapshot</code> operation. </p> <p> <b>Important</b> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The daily time range during which ElastiCache takes daily snapshots of the source cluster.',
-        }),
-    ).exactOptional(),
-    NumNodeGroups: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of node groups (shards) in this snapshot. When restoring from a snapshot, the number of node groups (shards) in the snapshot and in the restored replication group must be the same.',
-        }),
-    ).exactOptional(),
-    AutomaticFailover: AutomaticFailoverStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the status of automatic failover for the source Redis replication group.',
-        }),
-    ).exactOptional(),
-    NodeSnapshots: NodeSnapshotListSchema.and(
-      z.any().openapi({ description: 'A list of the cache nodes in the source cluster.' }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the KMS key used to encrypt the snapshot.' }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the snapshot.' }),
-    ).exactOptional(),
-    DataTiering: DataTieringStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
-        }),
-    ).exactOptional(),
+    SnapshotName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of a snapshot. For an automatic snapshot, the name is system-generated. For a manual snapshot, this is the user-provided name.',
+    }),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier of the source replication group.',
+    }),
+    ReplicationGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the source replication group.',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'The user-supplied identifier of the source cluster.',
+    }),
+    SnapshotStatus: StringSchema.exactOptional().openapi({
+      description:
+        'The status of the snapshot. Valid values: <code>creating</code> | <code>available</code> | <code>restoring</code> | <code>copying</code> | <code>deleting</code>.',
+    }),
+    SnapshotSource: StringSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the snapshot is from an automatic backup (<code>automated</code>) or was created manually (<code>manual</code>).',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the compute and memory capacity node type for the source cluster.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache engine (<code>memcached</code> or <code>redis</code>) used by the source cluster.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version of the cache engine version that is used by the source cluster.',
+    }),
+    NumCacheNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of cache nodes in the source cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
+    }),
+    PreferredAvailabilityZone: StringSchema.exactOptional().openapi({
+      description: 'The name of the Availability Zone in which the source cluster is located.',
+    }),
+    PreferredOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the preferred outpost.',
+    }),
+    CacheClusterCreateTime: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the source cluster was created.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
+    }),
+    TopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the topic used by the source cluster for publishing notifications.',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The port number used by each cache nodes in the source cluster.',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The cache parameter group that is associated with the source cluster.',
+    }),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache subnet group associated with the source cluster.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Virtual Private Cloud identifier (VPC ID) of the cache subnet group for the source cluster.',
+    }),
+    AutoMinorVersionUpgrade: BooleanSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>For an automatic snapshot, the number of days for which ElastiCache retains the snapshot before deleting it.</p> <p>For manual snapshots, this field reflects the <code>SnapshotRetentionLimit</code> for the source cluster when the snapshot was created. This field is otherwise ignored: Manual snapshots do not expire, and can only be deleted using the <code>DeleteSnapshot</code> operation. </p> <p> <b>Important</b> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        'The daily time range during which ElastiCache takes daily snapshots of the source cluster.',
+    }),
+    NumNodeGroups: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The number of node groups (shards) in this snapshot. When restoring from a snapshot, the number of node groups (shards) in the snapshot and in the restored replication group must be the same.',
+    }),
+    AutomaticFailover: AutomaticFailoverStatusSchema.exactOptional().openapi({
+      description:
+        'Indicates the status of automatic failover for the source Redis replication group.',
+    }),
+    NodeSnapshots: NodeSnapshotListSchema.exactOptional().openapi({
+      description: 'A list of the cache nodes in the source cluster.',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used to encrypt the snapshot.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the snapshot.',
+    }),
+    DataTiering: DataTieringStatusSchema.exactOptional().openapi({
+      description:
+        'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
+    }),
   })
   .openapi({
     description:
@@ -1202,433 +1162,6 @@ const SnapshotQuotaExceededFaultSchema = z.any().openapi('SnapshotQuotaExceededF
 
 const InvalidSnapshotStateFaultSchema = z.any().openapi('InvalidSnapshotStateFault')
 
-const CacheNodeIdsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'CacheNodeId' } })))
-  .openapi('CacheNodeIdsList')
-
-const PendingModifiedValuesSchema = z
-  .object({
-    NumCacheNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The new number of cache nodes for the cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
-        }),
-    ).exactOptional(),
-    CacheNodeIdsToRemove: CacheNodeIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache node IDs that are being removed (or will be removed) from the cluster. A node ID is a 4-digit numeric identifier (0001, 0002, etc.).',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The new cache engine version that the cluster runs.' }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cache node type that this cluster or replication group is scaled to.',
-        }),
-    ).exactOptional(),
-    AuthTokenStatus: AuthTokenUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The auth token status' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: PendingLogDeliveryConfigurationListSchema.and(
-      z.any().openapi({ description: 'The log delivery configurations being modified ' }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A flag that enables in-transit encryption when set to true.' }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A group of settings that are applied to the cluster in the future, or that are currently being applied.',
-    required: [],
-  })
-  .openapi('PendingModifiedValues')
-
-const NotificationConfigurationSchema = z
-  .object({
-    TopicArn: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) that identifies the topic.' }),
-    ).exactOptional(),
-    TopicStatus: StringSchema.and(
-      z.any().openapi({ description: 'The current state of the topic.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS).',
-    required: [],
-  })
-  .openapi('NotificationConfiguration')
-
-const CacheSecurityGroupMembershipSchema = z
-  .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The membership status in the cache security group. The status changes when a cache security group is modified, or when the cache security groups assigned to a cluster are modified.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: "Represents a cluster's status within a particular cache security group.",
-    required: [],
-  })
-  .openapi('CacheSecurityGroupMembership')
-
-const CacheSecurityGroupMembershipListSchema = z
-  .array(
-    CacheSecurityGroupMembershipSchema.and(
-      z.any().openapi({ xml: { name: 'CacheSecurityGroup' } }),
-    ),
-  )
-  .openapi('CacheSecurityGroupMembershipList')
-
-const CacheParameterGroupStatusSchema = z
-  .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache parameter group.' }),
-    ).exactOptional(),
-    ParameterApplyStatus: StringSchema.and(
-      z.any().openapi({ description: 'The status of parameter updates.' }),
-    ).exactOptional(),
-    CacheNodeIdsToReboot: CacheNodeIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the cache node IDs which need to be rebooted for parameter changes to be applied. A node ID is a numeric identifier (0001, 0002, etc.).',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Status of the cache parameter group.', required: [] })
-  .openapi('CacheParameterGroupStatus')
-
-const CacheNodeSchema = z
-  .object({
-    CacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The cache node identifier. A node ID is a numeric identifier (0001, 0002, etc.). The combination of cluster ID and node ID uniquely identifies every cache node used in a customer's Amazon account.",
-        }),
-    ).exactOptional(),
-    CacheNodeStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this cache node, one of the following values: <code>available</code>, <code>creating</code>, <code>rebooting</code>, or <code>deleting</code>.',
-        }),
-    ).exactOptional(),
-    CacheNodeCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time when the cache node was created.' }),
-    ).exactOptional(),
-    Endpoint: EndpointSchema.and(
-      z.any().openapi({ description: 'The hostname for connecting to this cache node.' }),
-    ).exactOptional(),
-    ParameterGroupStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The status of the parameter group applied to this cache node.' }),
-    ).exactOptional(),
-    SourceCacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the primary node to which this read replica node is synchronized. If this field is empty, this node is not associated with a primary cluster.',
-        }),
-    ).exactOptional(),
-    CustomerAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Availability Zone where this node was created and now resides.',
-        }),
-    ).exactOptional(),
-    CustomerOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The customer outpost ARN of the cache node.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Represents an individual cache node within a cluster. Each cache node runs its own instance of the cluster\'s protocol-compliant caching software - either Memcached or Redis.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-    required: [],
-  })
-  .openapi('CacheNode')
-
-const CacheNodeListSchema = z
-  .array(CacheNodeSchema.and(z.any().openapi({ xml: { name: 'CacheNode' } })))
-  .openapi('CacheNodeList')
-
-const SecurityGroupMembershipSchema = z
-  .object({
-    SecurityGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the cache security group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the cache security group membership. The status changes whenever a cache security group is modified, or when the cache security groups assigned to a cluster are modified.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Represents a single cache security group and its status.',
-    required: [],
-  })
-  .openapi('SecurityGroupMembership')
-
-const SecurityGroupMembershipListSchema = z
-  .array(SecurityGroupMembershipSchema)
-  .openapi('SecurityGroupMembershipList')
-
-const CacheClusterSchema = z
-  .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-supplied identifier of the cluster. This identifier is a unique key that identifies a cluster.',
-        }),
-    ).exactOptional(),
-    ConfigurationEndpoint: EndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Represents a Memcached cluster endpoint which can be used by an application to connect to any node in the cluster. The configuration endpoint will always have <code>.cfg</code> in it.</p> <p>Example: <code>mem-3.9dvc4r<u>.cfg</u>.usw2.cache.amazonaws.com:11211</code> </p>',
-        }),
-    ).exactOptional(),
-    ClientDownloadLandingPage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the web page where you can download the latest ElastiCache client library.',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the compute and memory capacity node type for the cluster.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache engine (<code>memcached</code> or <code>redis</code>) to be used for this cluster.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The version of the cache engine that is used in this cluster.' }),
-    ).exactOptional(),
-    CacheClusterStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current state of this cluster, one of the following values: <code>available</code>, <code>creating</code>, <code>deleted</code>, <code>deleting</code>, <code>incompatible-network</code>, <code>modifying</code>, <code>rebooting cluster nodes</code>, <code>restore-failed</code>, or <code>snapshotting</code>.',
-        }),
-    ).exactOptional(),
-    NumCacheNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of cache nodes in the cluster.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p>',
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Availability Zone in which the cluster is located or "Multiple" if the cache nodes are located in different Availability Zones.',
-        }),
-    ).exactOptional(),
-    PreferredOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The outpost ARN in which the cache cluster is created.' }),
-    ).exactOptional(),
-    CacheClusterCreateTime: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time when the cluster was created.' }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
-        }),
-    ).exactOptional(),
-    PendingModifiedValues: PendingModifiedValuesSchema.exactOptional(),
-    NotificationConfiguration: NotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes a notification topic and its status. Notification topics are used for publishing ElastiCache events to subscribers using Amazon Simple Notification Service (SNS). ',
-        }),
-    ).exactOptional(),
-    CacheSecurityGroups: CacheSecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache security group elements, composed of name and status sub-elements.',
-        }),
-    ).exactOptional(),
-    CacheParameterGroup: CacheParameterGroupStatusSchema.and(
-      z.any().openapi({ description: 'Status of the cache parameter group.' }),
-    ).exactOptional(),
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the cache subnet group associated with the cluster.',
-        }),
-    ).exactOptional(),
-    CacheNodes: CacheNodeListSchema.and(
-      z.any().openapi({ description: 'A list of cache nodes that are members of the cluster.' }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SecurityGroups: SecurityGroupMembershipListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of VPC Security Groups associated with the cluster.' }),
-    ).exactOptional(),
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The replication group to which this cluster belongs. If this field is empty, the cluster is not associated with any replication group.',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <important> <p> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p> </important>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your cluster.</p> <p>Example: <code>05:00-09:00</code> </p>',
-        }),
-    ).exactOptional(),
-    AuthTokenEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AuthTokenLastModifiedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date the auth token was last modified' }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    AtRestEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables encryption at-rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the cluster is created. To enable at-rest encryption on a cluster you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create a cluster.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the cache cluster.' }),
-    ).exactOptional(),
-    ReplicationGroupLogDeliveryEnabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A boolean value indicating whether log delivery is enabled for the replication group.',
-        }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationListSchema.and(
-      z.any().openapi({ description: 'Returns the destination, format and type of the logs.' }),
-    ).exactOptional(),
-    NetworkType: NetworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type associated with the cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Contains all of the attributes of a specific cluster.', required: [] })
-  .openapi('CacheCluster')
-
 const CreateCacheClusterResultSchema = z
   .object({ CacheCluster: CacheClusterSchema.exactOptional() })
   .openapi({ required: [] })
@@ -1636,38 +1169,24 @@ const CreateCacheClusterResultSchema = z
 
 const LogDeliveryConfigurationRequestSchema = z
   .object({
-    LogType: LogTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-        }),
-    ).exactOptional(),
-    DestinationType: DestinationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
-        }),
-    ).exactOptional(),
-    DestinationDetails: DestinationDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-        }),
-    ).exactOptional(),
-    LogFormat: LogFormatSchema.and(
-      z.any().openapi({ description: 'Specifies either JSON or TEXT' }),
-    ).exactOptional(),
-    Enabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specify if log delivery is enabled. Default <code>true</code>.' }),
-    ).exactOptional(),
+    LogType: LogTypeSchema.exactOptional().openapi({
+      description:
+        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+    }),
+    DestinationType: DestinationTypeSchema.exactOptional().openapi({
+      description:
+        'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
+    }),
+    DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+      description:
+        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+    }),
+    LogFormat: LogFormatSchema.exactOptional().openapi({
+      description: 'Specifies either JSON or TEXT',
+    }),
+    Enabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Specify if log delivery is enabled. Default <code>true</code>.',
+    }),
   })
   .openapi({
     description: 'Specifies the destination, format and type of the logs. ',
@@ -1693,33 +1212,22 @@ const InvalidVPCNetworkStateFaultSchema = z.any().openapi('InvalidVPCNetworkStat
 
 const CacheParameterGroupSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache parameter group.' }),
-    ).exactOptional(),
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache parameter group family that this cache parameter group is compatible with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'The description for this cache parameter group.' }),
-    ).exactOptional(),
-    IsGlobal: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the parameter group is associated with a Global datastore',
-        }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN (Amazon Resource Name) of the cache parameter group.' }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache parameter group.',
+    }),
+    CacheParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cache parameter group family that this cache parameter group is compatible with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'The description for this cache parameter group.',
+    }),
+    IsGlobal: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether the parameter group is associated with a Global datastore',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the cache parameter group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>CreateCacheParameterGroup</code> operation.',
@@ -1759,9 +1267,9 @@ const CacheSecurityGroupQuotaExceededFaultSchema = z
 
 const AvailabilityZoneSchema = z
   .object({
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Availability Zone.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'The name of the Availability Zone.',
+    }),
   })
   .openapi({
     description: 'Describes an Availability Zone in which the cluster is launched.',
@@ -1771,9 +1279,9 @@ const AvailabilityZoneSchema = z
 
 const SubnetOutpostSchema = z
   .object({
-    SubnetOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The outpost ARN of the subnet.' }),
-    ).exactOptional(),
+    SubnetOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The outpost ARN of the subnet.',
+    }),
   })
   .openapi({ description: 'The ID of the outpost subnet.', required: [] })
   .openapi('SubnetOutpost')
@@ -1782,23 +1290,19 @@ const NetworkTypeListSchema = z.array(NetworkTypeSchema).openapi('NetworkTypeLis
 
 const SubnetSchema = z
   .object({
-    SubnetIdentifier: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the subnet.' }),
-    ).exactOptional(),
-    SubnetAvailabilityZone: AvailabilityZoneSchema.and(
-      z.any().openapi({ description: 'The Availability Zone associated with the subnet.' }),
-    ).exactOptional(),
-    SubnetOutpost: SubnetOutpostSchema.and(
-      z.any().openapi({ description: 'The outpost ARN of the subnet.' }),
-    ).exactOptional(),
-    SupportedNetworkTypes: NetworkTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
+    SubnetIdentifier: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the subnet.',
+    }),
+    SubnetAvailabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description: 'The Availability Zone associated with the subnet.',
+    }),
+    SubnetOutpost: SubnetOutpostSchema.exactOptional().openapi({
+      description: 'The outpost ARN of the subnet.',
+    }),
+    SupportedNetworkTypes: NetworkTypeListSchema.exactOptional().openapi({
+      description:
+        'Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
   })
   .openapi({
     description:
@@ -1808,39 +1312,31 @@ const SubnetSchema = z
   .openapi('Subnet')
 
 const SubnetListSchema = z
-  .array(SubnetSchema.and(z.any().openapi({ xml: { name: 'Subnet' } })))
+  .array(SubnetSchema.openapi({ xml: { name: 'Subnet' } }))
   .openapi('SubnetList')
 
 const CacheSubnetGroupSchema = z
   .object({
-    CacheSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache subnet group.' }),
-    ).exactOptional(),
-    CacheSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cache subnet group.' }),
-    ).exactOptional(),
-    VpcId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Virtual Private Cloud identifier (VPC ID) of the cache subnet group.',
-        }),
-    ).exactOptional(),
-    Subnets: SubnetListSchema.and(
-      z.any().openapi({ description: 'A list of subnets associated with the cache subnet group.' }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The ARN (Amazon Resource Name) of the cache subnet group.' }),
-    ).exactOptional(),
-    SupportedNetworkTypes: NetworkTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache subnet group.',
+    }),
+    CacheSubnetGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the cache subnet group.',
+    }),
+    VpcId: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Virtual Private Cloud identifier (VPC ID) of the cache subnet group.',
+    }),
+    Subnets: SubnetListSchema.exactOptional().openapi({
+      description: 'A list of subnets associated with the cache subnet group.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the cache subnet group.',
+    }),
+    SupportedNetworkTypes: NetworkTypeListSchema.exactOptional().openapi({
+      description:
+        'Either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
   })
   .openapi({
     description:
@@ -1870,29 +1366,21 @@ const SubnetNotAllowedFaultSchema = z.any().openapi('SubnetNotAllowedFault')
 
 const GlobalReplicationGroupMemberSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The replication group id of the Global datastore member.' }),
-    ).exactOptional(),
-    ReplicationGroupRegion: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon region of the Global datastore member.' }),
-    ).exactOptional(),
-    Role: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the role of the replication group, primary or secondary.',
-        }),
-    ).exactOptional(),
-    AutomaticFailover: AutomaticFailoverStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether automatic failover is enabled for the replication group.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the membership of the replication group.' }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The replication group id of the Global datastore member.',
+    }),
+    ReplicationGroupRegion: StringSchema.exactOptional().openapi({
+      description: 'The Amazon region of the Global datastore member.',
+    }),
+    Role: StringSchema.exactOptional().openapi({
+      description: 'Indicates the role of the replication group, primary or secondary.',
+    }),
+    AutomaticFailover: AutomaticFailoverStatusSchema.exactOptional().openapi({
+      description: 'Indicates whether automatic failover is enabled for the replication group.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the membership of the replication group.',
+    }),
   })
   .openapi({
     description:
@@ -1903,20 +1391,18 @@ const GlobalReplicationGroupMemberSchema = z
 
 const GlobalReplicationGroupMemberListSchema = z
   .array(
-    GlobalReplicationGroupMemberSchema.and(
-      z.any().openapi({ xml: { name: 'GlobalReplicationGroupMember' } }),
-    ),
+    GlobalReplicationGroupMemberSchema.openapi({ xml: { name: 'GlobalReplicationGroupMember' } }),
   )
   .openapi('GlobalReplicationGroupMemberList')
 
 const GlobalNodeGroupSchema = z
   .object({
-    GlobalNodeGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the global node group' }),
-    ).exactOptional(),
-    Slots: StringSchema.and(
-      z.any().openapi({ description: 'The keyspace for this node group' }),
-    ).exactOptional(),
+    GlobalNodeGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the global node group',
+    }),
+    Slots: StringSchema.exactOptional().openapi({
+      description: 'The keyspace for this node group',
+    }),
   })
   .openapi({
     description: 'Indicates the slot configuration and global identifier for a slice group.',
@@ -1925,80 +1411,53 @@ const GlobalNodeGroupSchema = z
   .openapi('GlobalNodeGroup')
 
 const GlobalNodeGroupListSchema = z
-  .array(GlobalNodeGroupSchema.and(z.any().openapi({ xml: { name: 'GlobalNodeGroup' } })))
+  .array(GlobalNodeGroupSchema.openapi({ xml: { name: 'GlobalNodeGroup' } }))
   .openapi('GlobalNodeGroupList')
 
 const GlobalReplicationGroupSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ).exactOptional(),
-    GlobalReplicationGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'The optional description of the Global datastore' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'The status of the Global datastore' }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z.any().openapi({ description: 'The cache node type of the Global datastore' }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The Elasticache engine. For Redis only.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The Elasticache Redis engine version.' }),
-    ).exactOptional(),
-    Members: GlobalReplicationGroupMemberListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The replication groups that comprise the Global datastore.' }),
-    ).exactOptional(),
-    ClusterEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A flag that indicates whether the Global datastore is cluster enabled.',
-        }),
-    ).exactOptional(),
-    GlobalNodeGroups: GlobalNodeGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the slot configuration and global identifier for each slice group.',
-        }),
-    ).exactOptional(),
-    AuthTokenEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables in-transit encryption when set to true.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>',
-        }),
-    ).exactOptional(),
-    AtRestEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>',
-        }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN (Amazon Resource Name) of the global replication group.',
-        }),
-    ).exactOptional(),
+    GlobalReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the Global datastore',
+    }),
+    GlobalReplicationGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'The optional description of the Global datastore',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'The status of the Global datastore',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'The cache node type of the Global datastore',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The Elasticache engine. For Redis only.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The Elasticache Redis engine version.',
+    }),
+    Members: GlobalReplicationGroupMemberListSchema.exactOptional().openapi({
+      description: 'The replication groups that comprise the Global datastore.',
+    }),
+    ClusterEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A flag that indicates whether the Global datastore is cluster enabled.',
+    }),
+    GlobalNodeGroups: GlobalNodeGroupListSchema.exactOptional().openapi({
+      description: 'Indicates the slot configuration and global identifier for each slice group.',
+    }),
+    AuthTokenEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables using an <code>AuthToken</code> (password) when issuing Redis commands.</p> <p>Default: <code>false</code> </p>',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables in-transit encryption when set to true.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>',
+    }),
+    AtRestEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p>',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The ARN (Amazon Resource Name) of the global replication group.',
+    }),
   })
   .openapi({
     description:
@@ -2061,20 +1520,12 @@ const AuthenticationTypeSchema = z
 
 const AuthenticationSchema = z
   .object({
-    Type: AuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether the user requires a password to authenticate.',
-        }),
-    ).exactOptional(),
-    PasswordCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of passwords belonging to the user. The maximum is two.',
-        }),
-    ).exactOptional(),
+    Type: AuthenticationTypeSchema.exactOptional().openapi({
+      description: 'Indicates whether the user requires a password to authenticate.',
+    }),
+    PasswordCount: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of passwords belonging to the user. The maximum is two.',
+    }),
   })
   .openapi({
     description: 'Indicates whether the user requires a password to authenticate.',
@@ -2084,39 +1535,29 @@ const AuthenticationSchema = z
 
 const UserSchema = z
   .object({
-    UserId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the user.' }),
-    ).exactOptional(),
-    UserName: StringSchema.and(
-      z.any().openapi({ description: 'The username of the user.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates the user status. Can be "active", "modifying" or "deleting".',
-        }),
-    ).exactOptional(),
-    Engine: EngineTypeSchema.and(
-      z.any().openapi({ description: 'The current supported value is Redis.' }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The minimum engine version required, which is Redis 6.0' }),
-    ).exactOptional(),
-    AccessString: StringSchema.and(
-      z.any().openapi({ description: 'Access permissions string used for this user.' }),
-    ).exactOptional(),
-    UserGroupIds: UserGroupIdListSchema.and(
-      z.any().openapi({ description: 'Returns a list of the user group IDs the user belongs to.' }),
-    ).exactOptional(),
-    Authentication: AuthenticationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Denotes whether the user requires a password to authenticate.' }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user.' }),
-    ).exactOptional(),
+    UserId: StringSchema.exactOptional().openapi({ description: 'The ID of the user.' }),
+    UserName: StringSchema.exactOptional().openapi({ description: 'The username of the user.' }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Indicates the user status. Can be "active", "modifying" or "deleting".',
+    }),
+    Engine: EngineTypeSchema.exactOptional().openapi({
+      description: 'The current supported value is Redis.',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The minimum engine version required, which is Redis 6.0',
+    }),
+    AccessString: StringSchema.exactOptional().openapi({
+      description: 'Access permissions string used for this user.',
+    }),
+    UserGroupIds: UserGroupIdListSchema.exactOptional().openapi({
+      description: 'Returns a list of the user group IDs the user belongs to.',
+    }),
+    Authentication: AuthenticationSchema.exactOptional().openapi({
+      description: 'Denotes whether the user requires a password to authenticate.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('User')
@@ -2143,12 +1584,12 @@ const UserIdListSchema = z.array(UserIdSchema).openapi('UserIdList')
 
 const UserGroupPendingChangesSchema = z
   .object({
-    UserIdsToRemove: UserIdListSchema.and(
-      z.any().openapi({ description: 'The list of user IDs to remove.' }),
-    ).exactOptional(),
-    UserIdsToAdd: UserIdListSchema.and(
-      z.any().openapi({ description: 'The list of user IDs to add.' }),
-    ).exactOptional(),
+    UserIdsToRemove: UserIdListSchema.exactOptional().openapi({
+      description: 'The list of user IDs to remove.',
+    }),
+    UserIdsToAdd: UserIdListSchema.exactOptional().openapi({
+      description: 'The list of user IDs to add.',
+    }),
   })
   .openapi({ description: 'Returns the updates being applied to the user group.', required: [] })
   .openapi('UserGroupPendingChanges')
@@ -2157,37 +1598,29 @@ const UGReplicationGroupIdListSchema = z.array(StringSchema).openapi('UGReplicat
 
 const UserGroupSchema = z
   .object({
-    UserGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the user group.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates user group status. Can be "creating", "active", "modifying", "deleting".',
-        }),
-    ).exactOptional(),
-    Engine: EngineTypeSchema.and(
-      z.any().openapi({ description: 'The current supported value is Redis. ' }),
-    ).exactOptional(),
-    UserIds: UserIdListSchema.and(
-      z.any().openapi({ description: 'The list of user IDs that belong to the user group.' }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The minimum engine version required, which is Redis 6.0' }),
-    ).exactOptional(),
-    PendingChanges: UserGroupPendingChangesSchema.and(
-      z.any().openapi({ description: 'A list of updates being applied to the user group.' }),
-    ).exactOptional(),
-    ReplicationGroups: UGReplicationGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of replication groups that the user group can access.' }),
-    ).exactOptional(),
-    ARN: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the user group.' }),
-    ).exactOptional(),
+    UserGroupId: StringSchema.exactOptional().openapi({ description: 'The ID of the user group.' }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'Indicates user group status. Can be "creating", "active", "modifying", "deleting".',
+    }),
+    Engine: EngineTypeSchema.exactOptional().openapi({
+      description: 'The current supported value is Redis. ',
+    }),
+    UserIds: UserIdListSchema.exactOptional().openapi({
+      description: 'The list of user IDs that belong to the user group.',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The minimum engine version required, which is Redis 6.0',
+    }),
+    PendingChanges: UserGroupPendingChangesSchema.exactOptional().openapi({
+      description: 'A list of updates being applied to the user group.',
+    }),
+    ReplicationGroups: UGReplicationGroupIdListSchema.exactOptional().openapi({
+      description: 'A list of replication groups that the user group can access.',
+    }),
+    ARN: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the user group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UserGroup')
@@ -2209,42 +1642,30 @@ const DecreaseReplicaCountResultSchema = z
   .openapi('DecreaseReplicaCountResult')
 
 const PreferredAvailabilityZoneListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'PreferredAvailabilityZone' } })))
+  .array(StringSchema.openapi({ xml: { name: 'PreferredAvailabilityZone' } }))
   .openapi('PreferredAvailabilityZoneList')
 
 const PreferredOutpostArnListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'PreferredOutpostArn' } })))
+  .array(StringSchema.openapi({ xml: { name: 'PreferredOutpostArn' } }))
   .openapi('PreferredOutpostArnList')
 
 const ConfigureShardSchema = z
   .object({
-    NodeGroupId: AllowedNodeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
-        }),
-    ),
-    NewReplicaCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
-        }),
-    ),
-    PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
-        }),
-    ).exactOptional(),
-    PreferredOutpostArns: PreferredOutpostArnListSchema.and(
-      z.any().openapi({ description: 'The outpost ARNs in which the cache cluster is created.' }),
-    ).exactOptional(),
+    NodeGroupId: AllowedNodeGroupIdSchema.openapi({
+      description:
+        "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
+    }),
+    NewReplicaCount: IntegerSchema.openapi({
+      description:
+        '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
+    }),
+    PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.exactOptional().openapi({
+      description:
+        "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
+    }),
+    PreferredOutpostArns: PreferredOutpostArnListSchema.exactOptional().openapi({
+      description: 'The outpost ARNs in which the cache cluster is created.',
+    }),
   })
   .openapi({
     required: ['NodeGroupId', 'NewReplicaCount'],
@@ -2283,27 +1704,15 @@ const DefaultUserAssociatedToUserGroupFaultSchema = z
   .any()
   .openapi('DefaultUserAssociatedToUserGroupFault')
 
-const CacheClusterListSchema = z
-  .array(CacheClusterSchema.and(z.any().openapi({ xml: { name: 'CacheCluster' } })))
-  .openapi('CacheClusterList')
-
-const CacheClusterMessageSchema = z
+const CacheClusterMessageSchema: z.ZodType<CacheClusterMessageType> = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    CacheClusters: CacheClusterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of clusters. Each item in the list contains detailed information about one cluster.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    CacheClusters: CacheClusterListSchema.exactOptional().openapi({
+      description:
+        'A list of clusters. Each item in the list contains detailed information about one cluster.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeCacheClusters</code> operation.',
@@ -2313,26 +1722,20 @@ const CacheClusterMessageSchema = z
 
 const CacheEngineVersionSchema = z
   .object({
-    Engine: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache engine.' }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z.any().openapi({ description: 'The version number of the cache engine.' }),
-    ).exactOptional(),
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache parameter group family associated with this cache engine.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
-        }),
-    ).exactOptional(),
-    CacheEngineDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cache engine.' }),
-    ).exactOptional(),
-    CacheEngineVersionDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the cache engine version.' }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({ description: 'The name of the cache engine.' }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The version number of the cache engine.',
+    }),
+    CacheParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cache parameter group family associated with this cache engine.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
+    }),
+    CacheEngineDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the cache engine.',
+    }),
+    CacheEngineVersionDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the cache engine version.',
+    }),
   })
   .openapi({
     description: 'Provides all of the details about a particular cache engine version.',
@@ -2341,26 +1744,18 @@ const CacheEngineVersionSchema = z
   .openapi('CacheEngineVersion')
 
 const CacheEngineVersionListSchema = z
-  .array(CacheEngineVersionSchema.and(z.any().openapi({ xml: { name: 'CacheEngineVersion' } })))
+  .array(CacheEngineVersionSchema.openapi({ xml: { name: 'CacheEngineVersion' } }))
   .openapi('CacheEngineVersionList')
 
 const CacheEngineVersionMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    CacheEngineVersions: CacheEngineVersionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache engine version details. Each element in the list contains detailed information about one cache engine version.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    CacheEngineVersions: CacheEngineVersionListSchema.exactOptional().openapi({
+      description:
+        'A list of cache engine version details. Each element in the list contains detailed information about one cache engine version.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <a>DescribeCacheEngineVersions</a> operation.',
@@ -2369,26 +1764,18 @@ const CacheEngineVersionMessageSchema = z
   .openapi('CacheEngineVersionMessage')
 
 const CacheParameterGroupListSchema = z
-  .array(CacheParameterGroupSchema.and(z.any().openapi({ xml: { name: 'CacheParameterGroup' } })))
+  .array(CacheParameterGroupSchema.openapi({ xml: { name: 'CacheParameterGroup' } }))
   .openapi('CacheParameterGroupList')
 
 const CacheParameterGroupsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    CacheParameterGroups: CacheParameterGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache parameter groups. Each element in the list contains detailed information about one cache parameter group.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    CacheParameterGroups: CacheParameterGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of cache parameter groups. Each element in the list contains detailed information about one cache parameter group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeCacheParameterGroups</code> operation.',
@@ -2400,47 +1787,33 @@ const ChangeTypeSchema = z.enum(['immediate', 'requires-reboot']).openapi('Chang
 
 const ParameterSchema = z
   .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    ParameterValue: StringSchema.and(
-      z.any().openapi({ description: 'The value of the parameter.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the parameter.' }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z.any().openapi({ description: 'The source of the parameter.' }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z.any().openapi({ description: 'The valid data type for the parameter.' }),
-    ).exactOptional(),
-    AllowedValues: StringSchema.and(
-      z.any().openapi({ description: 'The valid range of values for the parameter.' }),
-    ).exactOptional(),
-    IsModifiable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-        }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The earliest cache engine version to which the parameter can apply.',
-        }),
-    ).exactOptional(),
-    ChangeType: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a change to the parameter is applied immediately or requires a reboot for the change to be applied. You can force a reboot or wait until the next maintenance window\'s reboot. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html">Rebooting a Cluster</a>.',
-        }),
-    ).exactOptional(),
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    ParameterValue: StringSchema.exactOptional().openapi({
+      description: 'The value of the parameter.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description of the parameter.',
+    }),
+    Source: StringSchema.exactOptional().openapi({ description: 'The source of the parameter.' }),
+    DataType: StringSchema.exactOptional().openapi({
+      description: 'The valid data type for the parameter.',
+    }),
+    AllowedValues: StringSchema.exactOptional().openapi({
+      description: 'The valid range of values for the parameter.',
+    }),
+    IsModifiable: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The earliest cache engine version to which the parameter can apply.',
+    }),
+    ChangeType: ChangeTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a change to the parameter is applied immediately or requires a reboot for the change to be applied. You can force a reboot or wait until the next maintenance window\'s reboot. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html">Rebooting a Cluster</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2450,77 +1823,56 @@ const ParameterSchema = z
   .openapi('Parameter')
 
 const ParametersListSchema = z
-  .array(ParameterSchema.and(z.any().openapi({ xml: { name: 'Parameter' } })))
+  .array(ParameterSchema.openapi({ xml: { name: 'Parameter' } }))
   .openapi('ParametersList')
 
 const CacheNodeTypeSpecificValueSchema = z
   .object({
-    CacheNodeType: StringSchema.and(
-      z.any().openapi({ description: 'The cache node type for which this value applies.' }),
-    ).exactOptional(),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'The value for the cache node type.' }),
-    ).exactOptional(),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'The cache node type for which this value applies.',
+    }),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'The value for the cache node type.',
+    }),
   })
   .openapi({ description: 'A value that applies only to a certain cache node type.', required: [] })
   .openapi('CacheNodeTypeSpecificValue')
 
 const CacheNodeTypeSpecificValueListSchema = z
-  .array(
-    CacheNodeTypeSpecificValueSchema.and(
-      z.any().openapi({ xml: { name: 'CacheNodeTypeSpecificValue' } }),
-    ),
-  )
+  .array(CacheNodeTypeSpecificValueSchema.openapi({ xml: { name: 'CacheNodeTypeSpecificValue' } }))
   .openapi('CacheNodeTypeSpecificValueList')
 
 const CacheNodeTypeSpecificParameterSchema = z
   .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description of the parameter.' }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z.any().openapi({ description: 'The source of the parameter value.' }),
-    ).exactOptional(),
-    DataType: StringSchema.and(
-      z.any().openapi({ description: 'The valid data type for the parameter.' }),
-    ).exactOptional(),
-    AllowedValues: StringSchema.and(
-      z.any().openapi({ description: 'The valid range of values for the parameter.' }),
-    ).exactOptional(),
-    IsModifiable: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
-        }),
-    ).exactOptional(),
-    MinimumEngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The earliest cache engine version to which the parameter can apply.',
-        }),
-    ).exactOptional(),
-    CacheNodeTypeSpecificValues: CacheNodeTypeSpecificValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache node types and their corresponding values for this parameter.',
-        }),
-    ).exactOptional(),
-    ChangeType: ChangeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a change to the parameter is applied immediately or requires a reboot for the change to be applied. You can force a reboot or wait until the next maintenance window\'s reboot. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html">Rebooting a Cluster</a>.',
-        }),
-    ).exactOptional(),
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'A description of the parameter.',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description: 'The source of the parameter value.',
+    }),
+    DataType: StringSchema.exactOptional().openapi({
+      description: 'The valid data type for the parameter.',
+    }),
+    AllowedValues: StringSchema.exactOptional().openapi({
+      description: 'The valid range of values for the parameter.',
+    }),
+    IsModifiable: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether (<code>true</code>) or not (<code>false</code>) the parameter can be modified. Some parameters have security or operational implications that prevent them from being changed.',
+    }),
+    MinimumEngineVersion: StringSchema.exactOptional().openapi({
+      description: 'The earliest cache engine version to which the parameter can apply.',
+    }),
+    CacheNodeTypeSpecificValues: CacheNodeTypeSpecificValueListSchema.exactOptional().openapi({
+      description: 'A list of cache node types and their corresponding values for this parameter.',
+    }),
+    ChangeType: ChangeTypeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a change to the parameter is applied immediately or requires a reboot for the change to be applied. You can force a reboot or wait until the next maintenance window\'s reboot. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Clusters.Rebooting.html">Rebooting a Cluster</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2531,32 +1883,25 @@ const CacheNodeTypeSpecificParameterSchema = z
 
 const CacheNodeTypeSpecificParametersListSchema = z
   .array(
-    CacheNodeTypeSpecificParameterSchema.and(
-      z.any().openapi({ xml: { name: 'CacheNodeTypeSpecificParameter' } }),
-    ),
+    CacheNodeTypeSpecificParameterSchema.openapi({
+      xml: { name: 'CacheNodeTypeSpecificParameter' },
+    }),
   )
   .openapi('CacheNodeTypeSpecificParametersList')
 
 const CacheParameterGroupDetailsSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z.any().openapi({ description: 'A list of <a>Parameter</a> instances.' }),
-    ).exactOptional(),
-    CacheNodeTypeSpecificParameters: CacheNodeTypeSpecificParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'A list of <a>Parameter</a> instances.',
+    }),
+    CacheNodeTypeSpecificParameters:
+      CacheNodeTypeSpecificParametersListSchema.exactOptional().openapi({
+        description:
+          'A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.',
+      }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeCacheParameters</code> operation.',
@@ -2565,26 +1910,18 @@ const CacheParameterGroupDetailsSchema = z
   .openapi('CacheParameterGroupDetails')
 
 const CacheSecurityGroupsSchema = z
-  .array(CacheSecurityGroupSchema.and(z.any().openapi({ xml: { name: 'CacheSecurityGroup' } })))
+  .array(CacheSecurityGroupSchema.openapi({ xml: { name: 'CacheSecurityGroup' } }))
   .openapi('CacheSecurityGroups')
 
 const CacheSecurityGroupMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    CacheSecurityGroups: CacheSecurityGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache security groups. Each element in the list contains detailed information about one group.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    CacheSecurityGroups: CacheSecurityGroupsSchema.exactOptional().openapi({
+      description:
+        'A list of cache security groups. Each element in the list contains detailed information about one group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeCacheSecurityGroups</code> operation.',
@@ -2593,26 +1930,18 @@ const CacheSecurityGroupMessageSchema = z
   .openapi('CacheSecurityGroupMessage')
 
 const CacheSubnetGroupsSchema = z
-  .array(CacheSubnetGroupSchema.and(z.any().openapi({ xml: { name: 'CacheSubnetGroup' } })))
+  .array(CacheSubnetGroupSchema.openapi({ xml: { name: 'CacheSubnetGroup' } }))
   .openapi('CacheSubnetGroups')
 
 const CacheSubnetGroupMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    CacheSubnetGroups: CacheSubnetGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache subnet groups. Each element in the list contains detailed information about one group.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    CacheSubnetGroups: CacheSubnetGroupsSchema.exactOptional().openapi({
+      description:
+        'A list of cache subnet groups. Each element in the list contains detailed information about one group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeCacheSubnetGroups</code> operation.',
@@ -2622,32 +1951,21 @@ const CacheSubnetGroupMessageSchema = z
 
 const EngineDefaultsSchema = z
   .object({
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the name of the cache parameter group family to which the engine default parameters apply.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersListSchema.and(
-      z.any().openapi({ description: 'Contains a list of engine default parameters.' }),
-    ).exactOptional(),
-    CacheNodeTypeSpecificParameters: CacheNodeTypeSpecificParametersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the name of the cache parameter group family to which the engine default parameters apply.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    Parameters: ParametersListSchema.exactOptional().openapi({
+      description: 'Contains a list of engine default parameters.',
+    }),
+    CacheNodeTypeSpecificParameters:
+      CacheNodeTypeSpecificParametersListSchema.exactOptional().openapi({
+        description:
+          'A list of parameters specific to a particular cache node type. Each element in the list contains detailed information about one parameter.',
+      }),
   })
   .openapi({
     description:
@@ -2675,28 +1993,18 @@ const SourceTypeSchema = z
 
 const EventSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the source of the event. For example, if the event occurred at the cluster level, the identifier would be the name of the cluster.',
-        }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the origin of this event - a cluster, a parameter group, a security group, etc.',
-        }),
-    ).exactOptional(),
-    Message: StringSchema.and(
-      z.any().openapi({ description: 'The text of the event.' }),
-    ).exactOptional(),
-    Date: TStampSchema.and(
-      z.any().openapi({ description: 'The date and time when the event occurred.' }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier for the source of the event. For example, if the event occurred at the cluster level, the identifier would be the name of the cluster.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies the origin of this event - a cluster, a parameter group, a security group, etc.',
+    }),
+    Message: StringSchema.exactOptional().openapi({ description: 'The text of the event.' }),
+    Date: TStampSchema.exactOptional().openapi({
+      description: 'The date and time when the event occurred.',
+    }),
   })
   .openapi({
     description:
@@ -2706,26 +2014,18 @@ const EventSchema = z
   .openapi('Event')
 
 const EventListSchema = z
-  .array(EventSchema.and(z.any().openapi({ xml: { name: 'Event' } })))
+  .array(EventSchema.openapi({ xml: { name: 'Event' } }))
   .openapi('EventList')
 
 const EventsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    Events: EventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of events. Each element in the list contains detailed information about one event.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    Events: EventListSchema.exactOptional().openapi({
+      description:
+        'A list of events. Each element in the list contains detailed information about one event.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeEvents</code> operation.',
@@ -2734,54 +2034,31 @@ const EventsMessageSchema = z
   .openapi('EventsMessage')
 
 const GlobalReplicationGroupListSchema = z
-  .array(
-    GlobalReplicationGroupSchema.and(z.any().openapi({ xml: { name: 'GlobalReplicationGroup' } })),
-  )
+  .array(GlobalReplicationGroupSchema.openapi({ xml: { name: 'GlobalReplicationGroup' } }))
   .openapi('GlobalReplicationGroupList')
 
 const DescribeGlobalReplicationGroupsResultSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
-        }),
-    ).exactOptional(),
-    GlobalReplicationGroups: GlobalReplicationGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates the slot configuration and global identifier for each slice group.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
+    }),
+    GlobalReplicationGroups: GlobalReplicationGroupListSchema.exactOptional().openapi({
+      description: 'Indicates the slot configuration and global identifier for each slice group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGlobalReplicationGroupsResult')
 
-const ReplicationGroupListSchema = z
-  .array(ReplicationGroupSchema.and(z.any().openapi({ xml: { name: 'ReplicationGroup' } })))
-  .openapi('ReplicationGroupList')
-
-const ReplicationGroupMessageSchema = z
+const ReplicationGroupMessageSchema: z.ZodType<ReplicationGroupMessageType> = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    ReplicationGroups: ReplicationGroupListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of replication groups. Each item in the list contains detailed information about one replication group.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    ReplicationGroups: ReplicationGroupListSchema.exactOptional().openapi({
+      description:
+        'A list of replication groups. Each item in the list contains detailed information about one replication group.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeReplicationGroups</code> operation.',
@@ -2791,12 +2068,12 @@ const ReplicationGroupMessageSchema = z
 
 const RecurringChargeSchema = z
   .object({
-    RecurringChargeAmount: DoubleSchema.and(
-      z.any().openapi({ description: 'The monetary amount of the recurring charge.' }),
-    ).exactOptional(),
-    RecurringChargeFrequency: StringSchema.and(
-      z.any().openapi({ description: 'The frequency of the recurring charge.' }),
-    ).exactOptional(),
+    RecurringChargeAmount: DoubleSchema.exactOptional().openapi({
+      description: 'The monetary amount of the recurring charge.',
+    }),
+    RecurringChargeFrequency: StringSchema.exactOptional().openapi({
+      description: 'The frequency of the recurring charge.',
+    }),
   })
   .openapi({
     description:
@@ -2806,62 +2083,52 @@ const RecurringChargeSchema = z
   .openapi('RecurringCharge')
 
 const RecurringChargeListSchema = z
-  .array(RecurringChargeSchema.and(z.any().openapi({ xml: { name: 'RecurringCharge' } })))
+  .array(RecurringChargeSchema.openapi({ xml: { name: 'RecurringCharge' } }))
   .openapi('RecurringChargeList')
 
 const ReservedCacheNodeSchema = z
   .object({
-    ReservedCacheNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the reservation.' }),
-    ).exactOptional(),
-    ReservedCacheNodesOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'The offering identifier.' }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cache node type for the reserved cache nodes.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z.any().openapi({ description: 'The time the reservation started.' }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z.any().openapi({ description: 'The duration of the reservation in seconds.' }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z.any().openapi({ description: 'The fixed price charged for this reserved cache node.' }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z.any().openapi({ description: 'The hourly price charged for this reserved cache node.' }),
-    ).exactOptional(),
-    CacheNodeCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of cache nodes that have been reserved.' }),
-    ).exactOptional(),
-    ProductDescription: StringSchema.and(
-      z.any().openapi({ description: 'The description of the reserved cache node.' }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z.any().openapi({ description: 'The offering type of this reserved cache node.' }),
-    ).exactOptional(),
-    State: StringSchema.and(
-      z.any().openapi({ description: 'The state of the reserved cache node.' }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The recurring price charged to run this reserved cache node.' }),
-    ).exactOptional(),
-    ReservationARN: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the reserved cache node.</p> <p>Example: <code>arn:aws:elasticache:us-east-1:123456789012:reserved-instance:ri-2017-03-27-08-33-25-582</code> </p>',
-        }),
-    ).exactOptional(),
+    ReservedCacheNodeId: StringSchema.exactOptional().openapi({
+      description: 'The unique identifier for the reservation.',
+    }),
+    ReservedCacheNodesOfferingId: StringSchema.exactOptional().openapi({
+      description: 'The offering identifier.',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cache node type for the reserved cache nodes.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description: 'The time the reservation started.',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description: 'The duration of the reservation in seconds.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description: 'The fixed price charged for this reserved cache node.',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description: 'The hourly price charged for this reserved cache node.',
+    }),
+    CacheNodeCount: IntegerSchema.exactOptional().openapi({
+      description: 'The number of cache nodes that have been reserved.',
+    }),
+    ProductDescription: StringSchema.exactOptional().openapi({
+      description: 'The description of the reserved cache node.',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({
+      description: 'The offering type of this reserved cache node.',
+    }),
+    State: StringSchema.exactOptional().openapi({
+      description: 'The state of the reserved cache node.',
+    }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description: 'The recurring price charged to run this reserved cache node.',
+    }),
+    ReservationARN: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the reserved cache node.</p> <p>Example: <code>arn:aws:elasticache:us-east-1:123456789012:reserved-instance:ri-2017-03-27-08-33-25-582</code> </p>',
+    }),
   })
   .openapi({
     description:
@@ -2871,26 +2138,18 @@ const ReservedCacheNodeSchema = z
   .openapi('ReservedCacheNode')
 
 const ReservedCacheNodeListSchema = z
-  .array(ReservedCacheNodeSchema.and(z.any().openapi({ xml: { name: 'ReservedCacheNode' } })))
+  .array(ReservedCacheNodeSchema.openapi({ xml: { name: 'ReservedCacheNode' } }))
   .openapi('ReservedCacheNodeList')
 
 const ReservedCacheNodeMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    ReservedCacheNodes: ReservedCacheNodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of reserved cache nodes. Each element in the list contains detailed information about one node.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    ReservedCacheNodes: ReservedCacheNodeListSchema.exactOptional().openapi({
+      description:
+        'A list of reserved cache nodes. Each element in the list contains detailed information about one node.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeReservedCacheNodes</code> operation.',
@@ -2900,37 +2159,29 @@ const ReservedCacheNodeMessageSchema = z
 
 const ReservedCacheNodesOfferingSchema = z
   .object({
-    ReservedCacheNodesOfferingId: StringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the reserved cache node offering.' }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cache node type for the reserved cache node.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Duration: IntegerSchema.and(
-      z.any().openapi({ description: 'The duration of the offering. in seconds.' }),
-    ).exactOptional(),
-    FixedPrice: DoubleSchema.and(
-      z.any().openapi({ description: 'The fixed price charged for this offering.' }),
-    ).exactOptional(),
-    UsagePrice: DoubleSchema.and(
-      z.any().openapi({ description: 'The hourly price charged for this offering.' }),
-    ).exactOptional(),
-    ProductDescription: StringSchema.and(
-      z.any().openapi({ description: 'The cache engine used by the offering.' }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z.any().openapi({ description: 'The offering type.' }),
-    ).exactOptional(),
-    RecurringCharges: RecurringChargeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The recurring price charged to run this reserved cache node.' }),
-    ).exactOptional(),
+    ReservedCacheNodesOfferingId: StringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the reserved cache node offering.',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cache node type for the reserved cache node.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Duration: IntegerSchema.exactOptional().openapi({
+      description: 'The duration of the offering. in seconds.',
+    }),
+    FixedPrice: DoubleSchema.exactOptional().openapi({
+      description: 'The fixed price charged for this offering.',
+    }),
+    UsagePrice: DoubleSchema.exactOptional().openapi({
+      description: 'The hourly price charged for this offering.',
+    }),
+    ProductDescription: StringSchema.exactOptional().openapi({
+      description: 'The cache engine used by the offering.',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({ description: 'The offering type.' }),
+    RecurringCharges: RecurringChargeListSchema.exactOptional().openapi({
+      description: 'The recurring price charged to run this reserved cache node.',
+    }),
   })
   .openapi({
     description: 'Describes all of the attributes of a reserved cache node offering.',
@@ -2939,30 +2190,18 @@ const ReservedCacheNodesOfferingSchema = z
   .openapi('ReservedCacheNodesOffering')
 
 const ReservedCacheNodesOfferingListSchema = z
-  .array(
-    ReservedCacheNodesOfferingSchema.and(
-      z.any().openapi({ xml: { name: 'ReservedCacheNodesOffering' } }),
-    ),
-  )
+  .array(ReservedCacheNodesOfferingSchema.openapi({ xml: { name: 'ReservedCacheNodesOffering' } }))
   .openapi('ReservedCacheNodesOfferingList')
 
 const ReservedCacheNodesOfferingMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Provides an identifier to allow retrieval of paginated results.',
-        }),
-    ).exactOptional(),
-    ReservedCacheNodesOfferings: ReservedCacheNodesOfferingListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of reserved cache node offerings. Each element in the list contains detailed information about one offering.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description: 'Provides an identifier to allow retrieval of paginated results.',
+    }),
+    ReservedCacheNodesOfferings: ReservedCacheNodesOfferingListSchema.exactOptional().openapi({
+      description:
+        'A list of reserved cache node offerings. Each element in the list contains detailed information about one offering.',
+    }),
   })
   .openapi({
     description:
@@ -2987,111 +2226,80 @@ const ServiceUpdateTypeSchema = z.literal('security-update').openapi('ServiceUpd
 
 const ServiceUpdateSchema = z
   .object({
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateReleaseDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the service update is initially available' }),
-    ).exactOptional(),
-    ServiceUpdateEndDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date after which the service update is no longer available' }),
-    ).exactOptional(),
-    ServiceUpdateSeverity: ServiceUpdateSeveritySchema.and(
-      z.any().openapi({ description: 'The severity of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateRecommendedApplyByDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendend date to apply the service update in order to ensure compliance. For information on compliance, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-compliance.html#elasticache-compliance-self-service">Self-Service Security Updates for Compliance</a>.',
-        }),
-    ).exactOptional(),
-    ServiceUpdateStatus: ServiceUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateDescription: StringSchema.and(
-      z.any().openapi({ description: 'Provides details of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateType: ServiceUpdateTypeSchema.and(
-      z.any().openapi({ description: 'Reflects the nature of the service update' }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elasticache engine to which the update applies. Either Redis or Memcached',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elasticache engine version to which the update applies. Either Redis or Memcached engine version',
-        }),
-    ).exactOptional(),
-    AutoUpdateAfterRecommendedApplyByDate: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the service update will be automatically applied once the recommended apply-by date has expired. ',
-        }),
-    ).exactOptional(),
-    EstimatedUpdateTime: StringSchema.and(
-      z.any().openapi({ description: 'The estimated length of time the service update will take' }),
-    ).exactOptional(),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    ServiceUpdateReleaseDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the service update is initially available',
+    }),
+    ServiceUpdateEndDate: TStampSchema.exactOptional().openapi({
+      description: 'The date after which the service update is no longer available',
+    }),
+    ServiceUpdateSeverity: ServiceUpdateSeveritySchema.exactOptional().openapi({
+      description: 'The severity of the service update',
+    }),
+    ServiceUpdateRecommendedApplyByDate: TStampSchema.exactOptional().openapi({
+      description:
+        'The recommendend date to apply the service update in order to ensure compliance. For information on compliance, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-compliance.html#elasticache-compliance-self-service">Self-Service Security Updates for Compliance</a>.',
+    }),
+    ServiceUpdateStatus: ServiceUpdateStatusSchema.exactOptional().openapi({
+      description: 'The status of the service update',
+    }),
+    ServiceUpdateDescription: StringSchema.exactOptional().openapi({
+      description: 'Provides details of the service update',
+    }),
+    ServiceUpdateType: ServiceUpdateTypeSchema.exactOptional().openapi({
+      description: 'Reflects the nature of the service update',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The Elasticache engine to which the update applies. Either Redis or Memcached',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The Elasticache engine version to which the update applies. Either Redis or Memcached engine version',
+    }),
+    AutoUpdateAfterRecommendedApplyByDate: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the service update will be automatically applied once the recommended apply-by date has expired. ',
+    }),
+    EstimatedUpdateTime: StringSchema.exactOptional().openapi({
+      description: 'The estimated length of time the service update will take',
+    }),
   })
   .openapi({ description: 'An update that you can apply to your Redis clusters.', required: [] })
   .openapi('ServiceUpdate')
 
 const ServiceUpdateListSchema = z
-  .array(ServiceUpdateSchema.and(z.any().openapi({ xml: { name: 'ServiceUpdate' } })))
+  .array(ServiceUpdateSchema.openapi({ xml: { name: 'ServiceUpdate' } }))
   .openapi('ServiceUpdateList')
 
 const ServiceUpdatesMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    ServiceUpdates: ServiceUpdateListSchema.and(
-      z.any().openapi({ description: 'A list of service updates' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    ServiceUpdates: ServiceUpdateListSchema.exactOptional().openapi({
+      description: 'A list of service updates',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ServiceUpdatesMessage')
 
 const SnapshotListSchema = z
-  .array(SnapshotSchema.and(z.any().openapi({ xml: { name: 'Snapshot' } })))
+  .array(SnapshotSchema.openapi({ xml: { name: 'Snapshot' } }))
   .openapi('SnapshotList')
 
 const DescribeSnapshotsListMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    Snapshots: SnapshotListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of snapshots. Each item in the list contains detailed information about one snapshot.',
-        }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    Snapshots: SnapshotListSchema.exactOptional().openapi({
+      description:
+        'A list of snapshots. Each item in the list contains detailed information about one snapshot.',
+    }),
   })
   .openapi({
     description: 'Represents the output of a <code>DescribeSnapshots</code> operation.',
@@ -3109,38 +2317,32 @@ const NodeUpdateInitiatedBySchema = z.enum(['system', 'customer']).openapi('Node
 
 const NodeGroupMemberUpdateStatusSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The cache cluster ID' }),
-    ).exactOptional(),
-    CacheNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The node ID of the cache cluster' }),
-    ).exactOptional(),
-    NodeUpdateStatus: NodeUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The update status of the node' }),
-    ).exactOptional(),
-    NodeDeletionDate: TStampSchema.and(
-      z.any().openapi({ description: 'The deletion date of the node' }),
-    ).exactOptional(),
-    NodeUpdateStartDate: TStampSchema.and(
-      z.any().openapi({ description: 'The start date of the update for a node' }),
-    ).exactOptional(),
-    NodeUpdateEndDate: TStampSchema.and(
-      z.any().openapi({ description: 'The end date of the update for a node' }),
-    ).exactOptional(),
-    NodeUpdateInitiatedBy: NodeUpdateInitiatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reflects whether the update was initiated by the customer or automatically applied',
-        }),
-    ).exactOptional(),
-    NodeUpdateInitiatedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the update is triggered' }),
-    ).exactOptional(),
-    NodeUpdateStatusModifiedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the NodeUpdateStatus was last modified' }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.exactOptional().openapi({ description: 'The cache cluster ID' }),
+    CacheNodeId: StringSchema.exactOptional().openapi({
+      description: 'The node ID of the cache cluster',
+    }),
+    NodeUpdateStatus: NodeUpdateStatusSchema.exactOptional().openapi({
+      description: 'The update status of the node',
+    }),
+    NodeDeletionDate: TStampSchema.exactOptional().openapi({
+      description: 'The deletion date of the node',
+    }),
+    NodeUpdateStartDate: TStampSchema.exactOptional().openapi({
+      description: 'The start date of the update for a node',
+    }),
+    NodeUpdateEndDate: TStampSchema.exactOptional().openapi({
+      description: 'The end date of the update for a node',
+    }),
+    NodeUpdateInitiatedBy: NodeUpdateInitiatedBySchema.exactOptional().openapi({
+      description:
+        'Reflects whether the update was initiated by the customer or automatically applied',
+    }),
+    NodeUpdateInitiatedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the update is triggered',
+    }),
+    NodeUpdateStatusModifiedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the NodeUpdateStatus was last modified',
+    }),
   })
   .openapi({
     description: 'The status of the service update on the node group member ',
@@ -3150,145 +2352,114 @@ const NodeGroupMemberUpdateStatusSchema = z
 
 const NodeGroupMemberUpdateStatusListSchema = z
   .array(
-    NodeGroupMemberUpdateStatusSchema.and(
-      z.any().openapi({ xml: { name: 'NodeGroupMemberUpdateStatus' } }),
-    ),
+    NodeGroupMemberUpdateStatusSchema.openapi({ xml: { name: 'NodeGroupMemberUpdateStatus' } }),
   )
   .openapi('NodeGroupMemberUpdateStatusList')
 
 const NodeGroupUpdateStatusSchema = z
   .object({
-    NodeGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the node group' }),
-    ).exactOptional(),
-    NodeGroupMemberUpdateStatus: NodeGroupMemberUpdateStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the service update on the node group member' }),
-    ).exactOptional(),
+    NodeGroupId: StringSchema.exactOptional().openapi({ description: 'The ID of the node group' }),
+    NodeGroupMemberUpdateStatus: NodeGroupMemberUpdateStatusListSchema.exactOptional().openapi({
+      description: 'The status of the service update on the node group member',
+    }),
   })
   .openapi({ description: 'The status of the service update on the node group ', required: [] })
   .openapi('NodeGroupUpdateStatus')
 
 const NodeGroupUpdateStatusListSchema = z
-  .array(
-    NodeGroupUpdateStatusSchema.and(z.any().openapi({ xml: { name: 'NodeGroupUpdateStatus' } })),
-  )
+  .array(NodeGroupUpdateStatusSchema.openapi({ xml: { name: 'NodeGroupUpdateStatus' } }))
   .openapi('NodeGroupUpdateStatusList')
 
 const CacheNodeUpdateStatusSchema = z
   .object({
-    CacheNodeId: StringSchema.and(
-      z.any().openapi({ description: 'The node ID of the cache cluster' }),
-    ).exactOptional(),
-    NodeUpdateStatus: NodeUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The update status of the node' }),
-    ).exactOptional(),
-    NodeDeletionDate: TStampSchema.and(
-      z.any().openapi({ description: 'The deletion date of the node' }),
-    ).exactOptional(),
-    NodeUpdateStartDate: TStampSchema.and(
-      z.any().openapi({ description: 'The start date of the update for a node' }),
-    ).exactOptional(),
-    NodeUpdateEndDate: TStampSchema.and(
-      z.any().openapi({ description: 'The end date of the update for a node' }),
-    ).exactOptional(),
-    NodeUpdateInitiatedBy: NodeUpdateInitiatedBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reflects whether the update was initiated by the customer or automatically applied',
-        }),
-    ).exactOptional(),
-    NodeUpdateInitiatedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the update is triggered' }),
-    ).exactOptional(),
-    NodeUpdateStatusModifiedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the NodeUpdateStatus was last modified&gt;' }),
-    ).exactOptional(),
+    CacheNodeId: StringSchema.exactOptional().openapi({
+      description: 'The node ID of the cache cluster',
+    }),
+    NodeUpdateStatus: NodeUpdateStatusSchema.exactOptional().openapi({
+      description: 'The update status of the node',
+    }),
+    NodeDeletionDate: TStampSchema.exactOptional().openapi({
+      description: 'The deletion date of the node',
+    }),
+    NodeUpdateStartDate: TStampSchema.exactOptional().openapi({
+      description: 'The start date of the update for a node',
+    }),
+    NodeUpdateEndDate: TStampSchema.exactOptional().openapi({
+      description: 'The end date of the update for a node',
+    }),
+    NodeUpdateInitiatedBy: NodeUpdateInitiatedBySchema.exactOptional().openapi({
+      description:
+        'Reflects whether the update was initiated by the customer or automatically applied',
+    }),
+    NodeUpdateInitiatedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the update is triggered',
+    }),
+    NodeUpdateStatusModifiedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the NodeUpdateStatus was last modified&gt;',
+    }),
   })
   .openapi({ description: 'The status of the service update on the cache node', required: [] })
   .openapi('CacheNodeUpdateStatus')
 
 const CacheNodeUpdateStatusListSchema = z
-  .array(
-    CacheNodeUpdateStatusSchema.and(z.any().openapi({ xml: { name: 'CacheNodeUpdateStatus' } })),
-  )
+  .array(CacheNodeUpdateStatusSchema.openapi({ xml: { name: 'CacheNodeUpdateStatus' } }))
   .openapi('CacheNodeUpdateStatusList')
 
 const UpdateActionSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the replication group' }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the cache cluster' }),
-    ).exactOptional(),
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateReleaseDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date the update is first available' }),
-    ).exactOptional(),
-    ServiceUpdateSeverity: ServiceUpdateSeveritySchema.and(
-      z.any().openapi({ description: 'The severity of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateStatus: ServiceUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateRecommendedApplyByDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommended date to apply the service update to ensure compliance. For information on compliance, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-compliance.html#elasticache-compliance-self-service">Self-Service Security Updates for Compliance</a>.',
-        }),
-    ).exactOptional(),
-    ServiceUpdateType: ServiceUpdateTypeSchema.and(
-      z.any().openapi({ description: 'Reflects the nature of the service update ' }),
-    ).exactOptional(),
-    UpdateActionAvailableDate: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date that the service update is available to a replication group',
-        }),
-    ).exactOptional(),
-    UpdateActionStatus: UpdateActionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the update action' }),
-    ).exactOptional(),
-    NodesUpdated: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The progress of the service update on the replication group' }),
-    ).exactOptional(),
-    UpdateActionStatusModifiedDate: TStampSchema.and(
-      z.any().openapi({ description: 'The date when the UpdateActionStatus was last modified' }),
-    ).exactOptional(),
-    SlaMet: SlaMetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If yes, all nodes in the replication group have been updated by the recommended apply-by date. If no, at least one node in the replication group have not been updated by the recommended apply-by date. If N/A, the replication group was created after the recommended apply-by date.',
-        }),
-    ).exactOptional(),
-    NodeGroupUpdateStatus: NodeGroupUpdateStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the service update on the node group' }),
-    ).exactOptional(),
-    CacheNodeUpdateStatus: CacheNodeUpdateStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the service update on the cache node' }),
-    ).exactOptional(),
-    EstimatedUpdateTime: StringSchema.and(
-      z.any().openapi({ description: 'The estimated length of time for the update to complete' }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elasticache engine to which the update applies. Either Redis or Memcached',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the replication group',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the cache cluster',
+    }),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    ServiceUpdateReleaseDate: TStampSchema.exactOptional().openapi({
+      description: 'The date the update is first available',
+    }),
+    ServiceUpdateSeverity: ServiceUpdateSeveritySchema.exactOptional().openapi({
+      description: 'The severity of the service update',
+    }),
+    ServiceUpdateStatus: ServiceUpdateStatusSchema.exactOptional().openapi({
+      description: 'The status of the service update',
+    }),
+    ServiceUpdateRecommendedApplyByDate: TStampSchema.exactOptional().openapi({
+      description:
+        'The recommended date to apply the service update to ensure compliance. For information on compliance, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/elasticache-compliance.html#elasticache-compliance-self-service">Self-Service Security Updates for Compliance</a>.',
+    }),
+    ServiceUpdateType: ServiceUpdateTypeSchema.exactOptional().openapi({
+      description: 'Reflects the nature of the service update ',
+    }),
+    UpdateActionAvailableDate: TStampSchema.exactOptional().openapi({
+      description: 'The date that the service update is available to a replication group',
+    }),
+    UpdateActionStatus: UpdateActionStatusSchema.exactOptional().openapi({
+      description: 'The status of the update action',
+    }),
+    NodesUpdated: StringSchema.exactOptional().openapi({
+      description: 'The progress of the service update on the replication group',
+    }),
+    UpdateActionStatusModifiedDate: TStampSchema.exactOptional().openapi({
+      description: 'The date when the UpdateActionStatus was last modified',
+    }),
+    SlaMet: SlaMetSchema.exactOptional().openapi({
+      description:
+        'If yes, all nodes in the replication group have been updated by the recommended apply-by date. If no, at least one node in the replication group have not been updated by the recommended apply-by date. If N/A, the replication group was created after the recommended apply-by date.',
+    }),
+    NodeGroupUpdateStatus: NodeGroupUpdateStatusListSchema.exactOptional().openapi({
+      description: 'The status of the service update on the node group',
+    }),
+    CacheNodeUpdateStatus: CacheNodeUpdateStatusListSchema.exactOptional().openapi({
+      description: 'The status of the service update on the cache node',
+    }),
+    EstimatedUpdateTime: StringSchema.exactOptional().openapi({
+      description: 'The estimated length of time for the update to complete',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The Elasticache engine to which the update applies. Either Redis or Memcached',
+    }),
   })
   .openapi({
     description: 'The status of the service update for a specific replication group',
@@ -3297,22 +2468,18 @@ const UpdateActionSchema = z
   .openapi('UpdateAction')
 
 const UpdateActionListSchema = z
-  .array(UpdateActionSchema.and(z.any().openapi({ xml: { name: 'UpdateAction' } })))
+  .array(UpdateActionSchema.openapi({ xml: { name: 'UpdateAction' } }))
   .openapi('UpdateActionList')
 
 const UpdateActionsMessageSchema = z
   .object({
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    UpdateActions: UpdateActionListSchema.and(
-      z.any().openapi({ description: 'Returns a list of update actions' }),
-    ).exactOptional(),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    UpdateActions: UpdateActionListSchema.exactOptional().openapi({
+      description: 'Returns a list of update actions',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateActionsMessage')
@@ -3321,17 +2488,13 @@ const UserGroupListSchema = z.array(UserGroupSchema).openapi('UserGroupList')
 
 const DescribeUserGroupsResultSchema = z
   .object({
-    UserGroups: UserGroupListSchema.and(
-      z.any().openapi({ description: 'Returns a list of user groups.' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
-        }),
-    ).exactOptional(),
+    UserGroups: UserGroupListSchema.exactOptional().openapi({
+      description: 'Returns a list of user groups.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUserGroupsResult')
@@ -3340,15 +2503,11 @@ const UserListSchema = z.array(UserSchema).openapi('UserList')
 
 const DescribeUsersResultSchema = z
   .object({
-    Users: UserListSchema.and(z.any().openapi({ description: 'A list of users.' })).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
-        }),
-    ).exactOptional(),
+    Users: UserListSchema.exactOptional().openapi({ description: 'A list of users.' }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeUsersResult')
@@ -3367,14 +2526,12 @@ const FilterValueListSchema = z.array(FilterValueSchema).min(1).openapi('FilterV
 
 const FilterSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z.any().openapi({ description: 'The property being filtered. For example, UserId.' }),
-    ),
-    Values: FilterValueListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The property values to filter on. For example, "user-123".' }),
-    ),
+    Name: FilterNameSchema.openapi({
+      description: 'The property being filtered. For example, UserId.',
+    }),
+    Values: FilterValueListSchema.openapi({
+      description: 'The property values to filter on. For example, "user-123".',
+    }),
   })
   .openapi({
     required: ['Name', 'Values'],
@@ -3399,21 +2556,13 @@ const IncreaseNodeGroupsInGlobalReplicationGroupResultSchema = z
 
 const ReshardingConfigurationSchema = z
   .object({
-    NodeGroupId: AllowedNodeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZones: AvailabilityZonesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of preferred availability zones for the nodes in this cluster.',
-        }),
-    ).exactOptional(),
+    NodeGroupId: AllowedNodeGroupIdSchema.exactOptional().openapi({
+      description:
+        'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
+    }),
+    PreferredAvailabilityZones: AvailabilityZonesListSchema.exactOptional().openapi({
+      description: 'A list of preferred availability zones for the nodes in this cluster.',
+    }),
   })
   .openapi({
     description:
@@ -3423,29 +2572,19 @@ const ReshardingConfigurationSchema = z
   .openapi('ReshardingConfiguration')
 
 const ReshardingConfigurationListSchema = z
-  .array(
-    ReshardingConfigurationSchema.and(
-      z.any().openapi({ xml: { name: 'ReshardingConfiguration' } }),
-    ),
-  )
+  .array(ReshardingConfigurationSchema.openapi({ xml: { name: 'ReshardingConfiguration' } }))
   .openapi('ReshardingConfigurationList')
 
 const RegionalConfigurationSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the secondary cluster' }),
-    ),
-    ReplicationGroupRegion: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon region where the cluster is stored' }),
-    ),
-    ReshardingConfiguration: ReshardingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>PreferredAvailabilityZones</code> objects that specifies the configuration of a node group in the resharded cluster. ',
-        }),
-    ),
+    ReplicationGroupId: StringSchema.openapi({ description: 'The name of the secondary cluster' }),
+    ReplicationGroupRegion: StringSchema.openapi({
+      description: 'The Amazon region where the cluster is stored',
+    }),
+    ReshardingConfiguration: ReshardingConfigurationListSchema.openapi({
+      description:
+        'A list of <code>PreferredAvailabilityZones</code> objects that specifies the configuration of a node group in the resharded cluster. ',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'ReplicationGroupRegion', 'ReshardingConfiguration'],
@@ -3464,22 +2603,14 @@ const NodeTypeListSchema = z.array(StringSchema).openapi('NodeTypeList')
 
 const AllowedNodeTypeModificationsMessageSchema = z
   .object({
-    ScaleUpModifications: NodeTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group.</p> <p>When scaling up a Redis cluster or replication group using <code>ModifyCacheCluster</code> or <code>ModifyReplicationGroup</code>, use a value from this list for the <code>CacheNodeType</code> parameter.</p>',
-        }),
-    ).exactOptional(),
-    ScaleDownModifications: NodeTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling down a Redis cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter. ',
-        }),
-    ).exactOptional(),
+    ScaleUpModifications: NodeTypeListSchema.exactOptional().openapi({
+      description:
+        '<p>A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group.</p> <p>When scaling up a Redis cluster or replication group using <code>ModifyCacheCluster</code> or <code>ModifyReplicationGroup</code>, use a value from this list for the <code>CacheNodeType</code> parameter.</p>',
+    }),
+    ScaleDownModifications: NodeTypeListSchema.exactOptional().openapi({
+      description:
+        'A string list, each element of which specifies a cache node type which you can use to scale your cluster or replication group. When scaling down a Redis cluster or replication group using ModifyCacheCluster or ModifyReplicationGroup, use a value from this list for the CacheNodeType parameter. ',
+    }),
   })
   .openapi({
     description:
@@ -3495,9 +2626,9 @@ const ModifyCacheClusterResultSchema = z
 
 const CacheParameterGroupNameMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache parameter group.' }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache parameter group.',
+    }),
   })
   .openapi({
     description:
@@ -3508,12 +2639,12 @@ const CacheParameterGroupNameMessageSchema = z
 
 const ParameterNameValueSchema = z
   .object({
-    ParameterName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the parameter.' }),
-    ).exactOptional(),
-    ParameterValue: StringSchema.and(
-      z.any().openapi({ description: 'The value of the parameter.' }),
-    ).exactOptional(),
+    ParameterName: StringSchema.exactOptional().openapi({
+      description: 'The name of the parameter.',
+    }),
+    ParameterValue: StringSchema.exactOptional().openapi({
+      description: 'The value of the parameter.',
+    }),
   })
   .openapi({
     description: 'Describes a name-value pair that is used to update the value of a parameter.',
@@ -3582,12 +2713,12 @@ const StartMigrationResponseSchema = z
 
 const CustomerNodeEndpointSchema = z
   .object({
-    Address: StringSchema.and(
-      z.any().openapi({ description: 'The address of the node endpoint' }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'The port of the node endpoint' }),
-    ).exactOptional(),
+    Address: StringSchema.exactOptional().openapi({
+      description: 'The address of the node endpoint',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The port of the node endpoint',
+    }),
   })
   .openapi({ description: 'The endpoint from which data should be migrated.', required: [] })
   .openapi('CustomerNodeEndpoint')
@@ -3618,22 +2749,14 @@ const AccessStringSchema = z
 
 const AddTagsToResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be added, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>. ElastiCache resources are <i>cluster</i> and <i>snapshot</i>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Service Namespaces</a>.</p>',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be added, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>. ElastiCache resources are <i>cluster</i> and <i>snapshot</i>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Service Namespaces</a>.</p>',
+    }),
+    Tags: TagListSchema.openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'Tags'],
@@ -3648,47 +2771,31 @@ const AuthTokenUpdateStrategyTypeSchema = z
 
 const AuthenticationModeSchema = z
   .object({
-    Type: InputAuthenticationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
-        }),
-    ).exactOptional(),
-    Passwords: PasswordListInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
-        }),
-    ).exactOptional(),
+    Type: InputAuthenticationTypeSchema.exactOptional().openapi({
+      description:
+        'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
+    }),
+    Passwords: PasswordListInputSchema.exactOptional().openapi({
+      description:
+        'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
+    }),
   })
   .openapi({ description: 'Specifies the authentication mode to use.', required: [] })
   .openapi('AuthenticationMode')
 
 const AuthorizeCacheSecurityGroupIngressMessageSchema = z
   .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The cache security group that allows network ingress.' }),
-    ),
-    EC2SecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon EC2 security group to be authorized for ingress to the cache security group.',
-        }),
-    ),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon account number of the Amazon EC2 security group owner. Note that this is not the same thing as an Amazon access key ID - you must provide a valid Amazon account number for this parameter.',
-        }),
-    ),
+    CacheSecurityGroupName: StringSchema.openapi({
+      description: 'The cache security group that allows network ingress.',
+    }),
+    EC2SecurityGroupName: StringSchema.openapi({
+      description:
+        'The Amazon EC2 security group to be authorized for ingress to the cache security group.',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.openapi({
+      description:
+        'The Amazon account number of the Amazon EC2 security group owner. Note that this is not the same thing as an Amazon access key ID - you must provide a valid Amazon account number for this parameter.',
+    }),
   })
   .openapi({
     required: ['CacheSecurityGroupName', 'EC2SecurityGroupName', 'EC2SecurityGroupOwnerId'],
@@ -3703,95 +2810,67 @@ const CacheClusterIdListSchema = z.array(StringSchema).max(20).openapi('CacheClu
 
 const BatchApplyUpdateActionMessageSchema = z
   .object({
-    ReplicationGroupIds: ReplicationGroupIdListSchema.and(
-      z.any().openapi({ description: 'The replication group IDs' }),
-    ).exactOptional(),
-    CacheClusterIds: CacheClusterIdListSchema.and(
-      z.any().openapi({ description: 'The cache cluster IDs' }),
-    ).exactOptional(),
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ),
+    ReplicationGroupIds: ReplicationGroupIdListSchema.exactOptional().openapi({
+      description: 'The replication group IDs',
+    }),
+    CacheClusterIds: CacheClusterIdListSchema.exactOptional().openapi({
+      description: 'The cache cluster IDs',
+    }),
+    ServiceUpdateName: StringSchema.openapi({ description: 'The unique ID of the service update' }),
   })
   .openapi({ required: ['ServiceUpdateName'], title: 'BatchApplyUpdateActionMessage' })
   .openapi('BatchApplyUpdateActionMessage')
 
 const BatchStopUpdateActionMessageSchema = z
   .object({
-    ReplicationGroupIds: ReplicationGroupIdListSchema.and(
-      z.any().openapi({ description: 'The replication group IDs' }),
-    ).exactOptional(),
-    CacheClusterIds: CacheClusterIdListSchema.and(
-      z.any().openapi({ description: 'The cache cluster IDs' }),
-    ).exactOptional(),
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ),
+    ReplicationGroupIds: ReplicationGroupIdListSchema.exactOptional().openapi({
+      description: 'The replication group IDs',
+    }),
+    CacheClusterIds: CacheClusterIdListSchema.exactOptional().openapi({
+      description: 'The cache cluster IDs',
+    }),
+    ServiceUpdateName: StringSchema.openapi({ description: 'The unique ID of the service update' }),
   })
   .openapi({ required: ['ServiceUpdateName'], title: 'BatchStopUpdateActionMessage' })
   .openapi('BatchStopUpdateActionMessage')
 
 const CacheSecurityGroupNameListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'CacheSecurityGroupName' } })))
+  .array(StringSchema.openapi({ xml: { name: 'CacheSecurityGroupName' } }))
   .openapi('CacheSecurityGroupNameList')
 
 const CompleteMigrationMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the replication group to which data is being migrated.',
-        }),
-    ),
-    Force: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Forces the migration to stop without ensuring that data is in sync. It is recommended to use this option only to abort the migration and not recommended when application wants to continue migration to ElastiCache.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The ID of the replication group to which data is being migrated.',
+    }),
+    Force: BooleanSchema.exactOptional().openapi({
+      description:
+        'Forces the migration to stop without ensuring that data is in sync. It is recommended to use this option only to abort the migration and not recommended when application wants to continue migration to ElastiCache.',
+    }),
   })
   .openapi({ required: ['ReplicationGroupId'], title: 'CompleteMigrationMessage' })
   .openapi('CompleteMigrationMessage')
 
 const CopySnapshotMessageSchema = z
   .object({
-    SourceSnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of an existing snapshot from which to make a copy.' }),
-    ),
-    TargetSnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the snapshot copy. ElastiCache does not permit overwriting a snapshot, therefore this name must be unique within its context - ElastiCache or an Amazon S3 bucket if exporting.',
-        }),
-    ),
-    TargetBucket: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 bucket to which the snapshot is exported. This parameter is used only when exporting a snapshot for external access.</p> <p>When using this parameter to export a snapshot, be sure Amazon ElastiCache has the needed permissions to this S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-grant-access">Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket</a> in the <i>Amazon ElastiCache User Guide</i>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html">Exporting a Snapshot</a> in the <i>Amazon ElastiCache User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the KMS key used to encrypt the target snapshot.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    SourceSnapshotName: StringSchema.openapi({
+      description: 'The name of an existing snapshot from which to make a copy.',
+    }),
+    TargetSnapshotName: StringSchema.openapi({
+      description:
+        'A name for the snapshot copy. ElastiCache does not permit overwriting a snapshot, therefore this name must be unique within its context - ElastiCache or an Amazon S3 bucket if exporting.',
+    }),
+    TargetBucket: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 bucket to which the snapshot is exported. This parameter is used only when exporting a snapshot for external access.</p> <p>When using this parameter to export a snapshot, be sure Amazon ElastiCache has the needed permissions to this S3 bucket. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html#backups-exporting-grant-access">Step 2: Grant ElastiCache Access to Your Amazon S3 Bucket</a> in the <i>Amazon ElastiCache User Guide</i>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-exporting.html">Exporting a Snapshot</a> in the <i>Amazon ElastiCache User Guide</i>.</p>',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used to encrypt the target snapshot.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['SourceSnapshotName', 'TargetSnapshotName'],
@@ -3801,241 +2880,139 @@ const CopySnapshotMessageSchema = z
   .openapi('CopySnapshotMessage')
 
 const SecurityGroupIdsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SecurityGroupId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SecurityGroupId' } }))
   .openapi('SecurityGroupIdsList')
 
 const SnapshotArnsListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SnapshotArn' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SnapshotArn' } }))
   .openapi('SnapshotArnsList')
 
 const OutpostModeSchema = z.enum(['single-outpost', 'cross-outpost']).openapi('OutpostMode')
 
 const LogDeliveryConfigurationRequestListSchema = z
   .array(
-    LogDeliveryConfigurationRequestSchema.and(
-      z.any().openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
-    ),
+    LogDeliveryConfigurationRequestSchema.openapi({
+      xml: { name: 'LogDeliveryConfigurationRequest' },
+    }),
   )
   .openapi('LogDeliveryConfigurationRequestList')
 
 const CreateCacheClusterMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The node group (shard) identifier. This parameter is stored as a lowercase string.</p> <p> <b>Constraints:</b> </p> <ul> <li> <p>A name must contain from 1 to 50 alphanumeric characters or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>A name cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ),
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the replication group to which this cluster should belong. If this parameter is specified, the cluster is added to the specified replication group as a read replica; otherwise, the cluster is a standalone primary that is not part of any replication group.</p> <p>If the specified replication group is Multi-AZ enabled and the Availability Zone is not specified, the cluster is created in Availability Zones that provide the best spread of read replicas across Availability Zones.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    AZMode: AZModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies whether the nodes in this Memcached cluster are created in a single Availability Zone or created across multiple Availability Zones in the cluster's region.</p> <p>This parameter is only supported for Memcached clusters.</p> <p>If the <code>AZMode</code> and <code>PreferredAvailabilityZones</code> are not specified, ElastiCache assumes <code>single-az</code> mode.</p>",
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZone: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The EC2 Availability Zone in which the cluster is created.</p> <p>All nodes belonging to this cluster are placed in the preferred Availability Zone. If you want to create your nodes across multiple Availability Zones, use <code>PreferredAvailabilityZones</code>.</p> <p>Default: System chosen Availability Zone.</p>',
-        }),
-    ).exactOptional(),
-    PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of the Availability Zones in which cache nodes are created. The order of the zones in the list is not important.</p> <p>This option is only supported on Memcached.</p> <note> <p>If you are creating your cluster in an Amazon VPC (recommended) you can only locate nodes in Availability Zones that are associated with the subnets in the selected subnet group.</p> <p>The number of Availability Zones listed must equal the value of <code>NumCacheNodes</code>.</p> </note> <p>If you want all the nodes in the same Availability Zone, use <code>PreferredAvailabilityZone</code> instead, or repeat the Availability Zone multiple times in the list.</p> <p>Default: System chosen Availability Zones.</p>',
-        }),
-    ).exactOptional(),
-    NumCacheNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The initial number of cache nodes that the cluster has.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p> <p>If you need more than 40 nodes for your Memcached cluster, please fill out the ElastiCache Limit Increase Request form at <a href="http://aws.amazon.com/contact-us/elasticache-node-limit-request/">http://aws.amazon.com/contact-us/elasticache-node-limit-request/</a>.</p>',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The compute and memory capacity of the nodes in the node group (shard).</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache engine to be used for this cluster.</p> <p>Valid values for this parameter are: <code>memcached</code> | <code>redis</code> </p>',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of the cache engine to be used for this cluster. To view the supported cache engine versions, use the DescribeCacheEngineVersions operation.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster or replication group and create it anew with the earlier engine version. </p>',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of the parameter group to associate with this cluster. If this argument is omitted, the default parameter group for the specified engine is used. You cannot use any parameter group which has <code>cluster-enabled='yes'</code> when creating a cluster.",
-        }),
-    ).exactOptional(),
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the subnet group to be used for the cluster.</p> <p>Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (Amazon VPC).</p> <important> <p>If you\'re going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html">Subnets and Subnet Groups</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of security group names to associate with this cluster.</p> <p>Use this parameter only when you are creating a cluster outside of an Amazon Virtual Private Cloud (Amazon VPC).</p>',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more VPC security groups associated with the cluster.</p> <p>Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tags to be added to this resource.' }),
-    ).exactOptional(),
-    SnapshotArns: SnapshotArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A single-element string list containing an Amazon Resource Name (ARN) that uniquely identifies a Redis RDB snapshot file stored in Amazon S3. The snapshot file is used to populate the node group (shard). The Amazon S3 object name in the ARN cannot contain any commas.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note> <p>Example of an Amazon S3 ARN: <code>arn:aws:s3:::my_bucket/snapshot1.rdb</code> </p>',
-        }),
-    ).exactOptional(),
-    SnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a Redis snapshot from which to restore data into the new node group (shard). The snapshot status changes to <code>restoring</code> while the new node group (shard) is being created.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period. ',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The port number on which each of the cache nodes accepts connections.',
-        }),
-    ).exactOptional(),
-    NotificationTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be the same as the cluster owner.</p> </note>',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot taken today is retained for 5 days before being deleted.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note> <p>Default: 0 (i.e., automatic backups are disabled for this cache cluster).</p>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    AuthToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <b>Reserved parameter.</b> The password used to access a password protected server.</p> <p>Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters.</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length.</p> </li> <li> <p>The only permitted printable special characters are !, &amp;, #, $, ^, &lt;, &gt;, and -. Other printable special characters cannot be used in the AUTH token.</p> </li> </ul> <p>For more information, see <a href="http://redis.io/commands/AUTH">AUTH password</a> at http://redis.io/commands/AUTH.</p>',
-        }),
-    ).exactOptional(),
-    OutpostMode: OutpostModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the nodes in the cluster are created in a single outpost or across multiple outposts.',
-        }),
-    ).exactOptional(),
-    PreferredOutpostArn: StringSchema.and(
-      z.any().openapi({ description: 'The outpost ARN in which the cache cluster is created.' }),
-    ).exactOptional(),
-    PreferredOutpostArns: PreferredOutpostArnListSchema.and(
-      z.any().openapi({ description: 'The outpost ARNs in which the cache cluster is created.' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.and(
-      z.any().openapi({ description: 'Specifies the destination, format and type of the logs. ' }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A flag that enables in-transit encryption when set to true.' }),
-    ).exactOptional(),
-    NetworkType: NetworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>. ',
-        }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.openapi({
+      description:
+        '<p>The node group (shard) identifier. This parameter is stored as a lowercase string.</p> <p> <b>Constraints:</b> </p> <ul> <li> <p>A name must contain from 1 to 50 alphanumeric characters or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>A name cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the replication group to which this cluster should belong. If this parameter is specified, the cluster is added to the specified replication group as a read replica; otherwise, the cluster is a standalone primary that is not part of any replication group.</p> <p>If the specified replication group is Multi-AZ enabled and the Availability Zone is not specified, the cluster is created in Availability Zones that provide the best spread of read replicas across Availability Zones.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
+    }),
+    AZMode: AZModeSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies whether the nodes in this Memcached cluster are created in a single Availability Zone or created across multiple Availability Zones in the cluster's region.</p> <p>This parameter is only supported for Memcached clusters.</p> <p>If the <code>AZMode</code> and <code>PreferredAvailabilityZones</code> are not specified, ElastiCache assumes <code>single-az</code> mode.</p>",
+    }),
+    PreferredAvailabilityZone: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The EC2 Availability Zone in which the cluster is created.</p> <p>All nodes belonging to this cluster are placed in the preferred Availability Zone. If you want to create your nodes across multiple Availability Zones, use <code>PreferredAvailabilityZones</code>.</p> <p>Default: System chosen Availability Zone.</p>',
+    }),
+    PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of the Availability Zones in which cache nodes are created. The order of the zones in the list is not important.</p> <p>This option is only supported on Memcached.</p> <note> <p>If you are creating your cluster in an Amazon VPC (recommended) you can only locate nodes in Availability Zones that are associated with the subnets in the selected subnet group.</p> <p>The number of Availability Zones listed must equal the value of <code>NumCacheNodes</code>.</p> </note> <p>If you want all the nodes in the same Availability Zone, use <code>PreferredAvailabilityZone</code> instead, or repeat the Availability Zone multiple times in the list.</p> <p>Default: System chosen Availability Zones.</p>',
+    }),
+    NumCacheNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The initial number of cache nodes that the cluster has.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p> <p>If you need more than 40 nodes for your Memcached cluster, please fill out the ElastiCache Limit Increase Request form at <a href="http://aws.amazon.com/contact-us/elasticache-node-limit-request/">http://aws.amazon.com/contact-us/elasticache-node-limit-request/</a>.</p>',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The compute and memory capacity of the nodes in the node group (shard).</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cache engine to be used for this cluster.</p> <p>Valid values for this parameter are: <code>memcached</code> | <code>redis</code> </p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the cache engine to be used for this cluster. To view the supported cache engine versions, use the DescribeCacheEngineVersions operation.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster or replication group and create it anew with the earlier engine version. </p>',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        "The name of the parameter group to associate with this cluster. If this argument is omitted, the default parameter group for the specified engine is used. You cannot use any parameter group which has <code>cluster-enabled='yes'</code> when creating a cluster.",
+    }),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the subnet group to be used for the cluster.</p> <p>Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (Amazon VPC).</p> <important> <p>If you\'re going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html">Subnets and Subnet Groups</a>.</p> </important>',
+    }),
+    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of security group names to associate with this cluster.</p> <p>Use this parameter only when you are creating a cluster outside of an Amazon Virtual Private Cloud (Amazon VPC).</p>',
+    }),
+    SecurityGroupIds: SecurityGroupIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>One or more VPC security groups associated with the cluster.</p> <p>Use this parameter only when you are creating a cluster in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'A list of tags to be added to this resource.',
+    }),
+    SnapshotArns: SnapshotArnsListSchema.exactOptional().openapi({
+      description:
+        '<p>A single-element string list containing an Amazon Resource Name (ARN) that uniquely identifies a Redis RDB snapshot file stored in Amazon S3. The snapshot file is used to populate the node group (shard). The Amazon S3 object name in the ARN cannot contain any commas.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note> <p>Example of an Amazon S3 ARN: <code>arn:aws:s3:::my_bucket/snapshot1.rdb</code> </p>',
+    }),
+    SnapshotName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a Redis snapshot from which to restore data into the new node group (shard). The snapshot status changes to <code>restoring</code> while the new node group (shard) is being created.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        'Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period. ',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The port number on which each of the cache nodes accepts connections.',
+    }),
+    NotificationTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be the same as the cluster owner.</p> </note>',
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot taken today is retained for 5 days before being deleted.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note> <p>Default: 0 (i.e., automatic backups are disabled for this cache cluster).</p>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p> <note> <p>This parameter is only valid if the <code>Engine</code> parameter is <code>redis</code>.</p> </note>',
+    }),
+    AuthToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p> <b>Reserved parameter.</b> The password used to access a password protected server.</p> <p>Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters.</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length.</p> </li> <li> <p>The only permitted printable special characters are !, &amp;, #, $, ^, &lt;, &gt;, and -. Other printable special characters cannot be used in the AUTH token.</p> </li> </ul> <p>For more information, see <a href="http://redis.io/commands/AUTH">AUTH password</a> at http://redis.io/commands/AUTH.</p>',
+    }),
+    OutpostMode: OutpostModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the nodes in the cluster are created in a single outpost or across multiple outposts.',
+    }),
+    PreferredOutpostArn: StringSchema.exactOptional().openapi({
+      description: 'The outpost ARN in which the cache cluster is created.',
+    }),
+    PreferredOutpostArns: PreferredOutpostArnListSchema.exactOptional().openapi({
+      description: 'The outpost ARNs in which the cache cluster is created.',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.exactOptional().openapi({
+      description: 'Specifies the destination, format and type of the logs. ',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A flag that enables in-transit encryption when set to true.',
+    }),
+    NetworkType: NetworkTypeSchema.exactOptional().openapi({
+      description:
+        'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>. ',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
   })
   .openapi({
     required: ['CacheClusterId'],
@@ -4046,30 +3023,20 @@ const CreateCacheClusterMessageSchema = z
 
 const CreateCacheParameterGroupMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'A user-specified name for the cache parameter group.' }),
-    ),
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache parameter group family that the cache parameter group can be used with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A user-specified description for the cache parameter group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.openapi({
+      description: 'A user-specified name for the cache parameter group.',
+    }),
+    CacheParameterGroupFamily: StringSchema.openapi({
+      description:
+        '<p>The name of the cache parameter group family that the cache parameter group can be used with.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis7</code> </p>',
+    }),
+    Description: StringSchema.openapi({
+      description: 'A user-specified description for the cache parameter group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupName', 'CacheParameterGroupFamily', 'Description'],
@@ -4080,25 +3047,17 @@ const CreateCacheParameterGroupMessageSchema = z
 
 const CreateCacheSecurityGroupMessageSchema = z
   .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A name for the cache security group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Cannot be the word "Default".</p> <p>Example: <code>mysecuritygroup</code> </p>',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'A description for the cache security group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    CacheSecurityGroupName: StringSchema.openapi({
+      description:
+        '<p>A name for the cache security group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Cannot be the word "Default".</p> <p>Example: <code>mysecuritygroup</code> </p>',
+    }),
+    Description: StringSchema.openapi({
+      description: 'A description for the cache security group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['CacheSecurityGroupName', 'Description'],
@@ -4108,33 +3067,25 @@ const CreateCacheSecurityGroupMessageSchema = z
   .openapi('CreateCacheSecurityGroupMessage')
 
 const SubnetIdentifierListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'SubnetIdentifier' } })))
+  .array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } }))
   .openapi('SubnetIdentifierList')
 
 const CreateCacheSubnetGroupMessageSchema = z
   .object({
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A name for the cache subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p> <p>Example: <code>mysubnetgroup</code> </p>',
-        }),
-    ),
-    CacheSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description for the cache subnet group.' }),
-    ),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z.any().openapi({ description: 'A list of VPC subnet IDs for the cache subnet group.' }),
-    ),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    CacheSubnetGroupName: StringSchema.openapi({
+      description:
+        '<p>A name for the cache subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p> <p>Example: <code>mysubnetgroup</code> </p>',
+    }),
+    CacheSubnetGroupDescription: StringSchema.openapi({
+      description: 'A description for the cache subnet group.',
+    }),
+    SubnetIds: SubnetIdentifierListSchema.openapi({
+      description: 'A list of VPC subnet IDs for the cache subnet group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['CacheSubnetGroupName', 'CacheSubnetGroupDescription', 'SubnetIds'],
@@ -4145,25 +3096,17 @@ const CreateCacheSubnetGroupMessageSchema = z
 
 const CreateGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupIdSuffix: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The suffix name of a Global datastore. Amazon ElastiCache automatically applies a prefix to the Global datastore ID when it is created. Each Amazon Region has its own prefix. For instance, a Global datastore ID created in the US-West-1 region will begin with "dsdfu" along with the suffix name you provide. The suffix, combined with the auto-generated prefix, guarantees uniqueness of the Global datastore name across multiple regions. </p> <p>For a full list of Amazon Regions and their respective Global datastore iD prefixes, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastores-CLI.html">Using the Amazon CLI with Global datastores </a>.</p>',
-        }),
-    ),
-    GlobalReplicationGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'Provides details of the Global datastore' }),
-    ).exactOptional(),
-    PrimaryReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the primary cluster that accepts writes and will replicate updates to the secondary cluster.',
-        }),
-    ),
+    GlobalReplicationGroupIdSuffix: StringSchema.openapi({
+      description:
+        '<p>The suffix name of a Global datastore. Amazon ElastiCache automatically applies a prefix to the Global datastore ID when it is created. Each Amazon Region has its own prefix. For instance, a Global datastore ID created in the US-West-1 region will begin with "dsdfu" along with the suffix name you provide. The suffix, combined with the auto-generated prefix, guarantees uniqueness of the Global datastore name across multiple regions. </p> <p>For a full list of Amazon Regions and their respective Global datastore iD prefixes, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Redis-Global-Datastores-CLI.html">Using the Amazon CLI with Global datastores </a>.</p>',
+    }),
+    GlobalReplicationGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'Provides details of the Global datastore',
+    }),
+    PrimaryReplicationGroupId: StringSchema.openapi({
+      description:
+        'The name of the primary cluster that accepts writes and will replicate updates to the secondary cluster.',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupIdSuffix', 'PrimaryReplicationGroupId'],
@@ -4172,296 +3115,159 @@ const CreateGlobalReplicationGroupMessageSchema = z
   .openapi('CreateGlobalReplicationGroupMessage')
 
 const NodeGroupConfigurationListSchema = z
-  .array(
-    NodeGroupConfigurationSchema.and(z.any().openapi({ xml: { name: 'NodeGroupConfiguration' } })),
-  )
+  .array(NodeGroupConfigurationSchema.openapi({ xml: { name: 'NodeGroupConfiguration' } }))
   .openapi('NodeGroupConfigurationList')
 
 const UserGroupIdListInputSchema = z.array(UserGroupIdSchema).min(1).openapi('UserGroupIdListInput')
 
 const CreateReplicationGroupMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The replication group identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>A name must contain from 1 to 40 alphanumeric characters or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>A name cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
-        }),
-    ),
-    ReplicationGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A user-created description for the replication group.' }),
-    ),
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ).exactOptional(),
-    PrimaryClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier of the cluster that serves as the primary for this replication group. This cluster must already exist and have a status of <code>available</code>.</p> <p>This parameter is not required if <code>NumCacheClusters</code>, <code>NumNodeGroups</code>, or <code>ReplicasPerNodeGroup</code> is specified.</p>',
-        }),
-    ).exactOptional(),
-    AutomaticFailoverEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether a read-only replica is automatically promoted to read/write primary if the existing primary fails.</p> <p> <code>AutomaticFailoverEnabled</code> must be enabled for Redis (cluster mode enabled) replication groups.</p> <p>Default: false</p>',
-        }),
-    ).exactOptional(),
-    MultiAZEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html">Minimizing Downtime: Multi-AZ</a>.',
-        }),
-    ).exactOptional(),
-    NumCacheClusters: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of clusters this replication group initially has.</p> <p>This parameter is not used if there is more than one node group (shard). You should use <code>ReplicasPerNodeGroup</code> instead.</p> <p>If <code>AutomaticFailoverEnabled</code> is <code>true</code>, the value of this parameter must be at least 2. If <code>AutomaticFailoverEnabled</code> is <code>false</code> you can omit this parameter (it will default to 1), or you can explicitly set it to a value between 2 and 6.</p> <p>The maximum permitted value for <code>NumCacheClusters</code> is 6 (1 primary plus 5 replicas).</p>',
-        }),
-    ).exactOptional(),
-    PreferredCacheClusterAZs: AvailabilityZonesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of EC2 Availability Zones in which the replication group's clusters are created. The order of the Availability Zones in the list is the order in which clusters are allocated. The primary cluster is created in the first AZ in the list.</p> <p>This parameter is not used if there is more than one node group (shard). You should use <code>NodeGroupConfiguration</code> instead.</p> <note> <p>If you are creating your replication group in an Amazon VPC (recommended), you can only locate clusters in Availability Zones associated with the subnets in the selected subnet group.</p> <p>The number of Availability Zones listed must equal the value of <code>NumCacheClusters</code>.</p> </note> <p>Default: system chosen Availability Zones.</p>",
-        }),
-    ).exactOptional(),
-    NumNodeGroups: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional parameter that specifies the number of node groups (shards) for this Redis (cluster mode enabled) replication group. For Redis (cluster mode disabled) either omit this parameter or set it to 1.</p> <p>Default: 1</p>',
-        }),
-    ).exactOptional(),
-    ReplicasPerNodeGroup: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional parameter that specifies the number of replica nodes in each node group (shard). Valid values are 0 to 5.',
-        }),
-    ).exactOptional(),
-    NodeGroupConfiguration: NodeGroupConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of node group (shard) configuration options. Each node group (shard) configuration has the following members: <code>PrimaryAvailabilityZone</code>, <code>ReplicaAvailabilityZones</code>, <code>ReplicaCount</code>, and <code>Slots</code>.</p> <p>If you're creating a Redis (cluster mode disabled) or a Redis (cluster mode enabled) replication group, you can use this parameter to individually configure each node group (shard), or you can omit this parameter. However, it is required when seeding a Redis (cluster mode enabled) cluster from a S3 rdb file. You must configure each node group (shard) using this parameter because you must specify the slots for each node group.</p>",
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The compute and memory capacity of the nodes in the node group (shard).</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache engine to be used for the clusters in this replication group. The value must be set to <code>Redis</code>.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of the cache engine to be used for the clusters in this replication group. To view the supported cache engine versions, use the <code>DescribeCacheEngineVersions</code> operation.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>) in the <i>ElastiCache User Guide</i>, but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster or replication group and create it anew with the earlier engine version. </p>',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the parameter group to associate with this replication group. If this argument is omitted, the default cache parameter group for the specified engine is used.</p> <p>If you are running Redis version 3.2.4 or later, only one node group (shard), and want to use a default parameter group, we recommend that you specify the parameter group by name. </p> <ul> <li> <p>To create a Redis (cluster mode disabled) replication group, use <code>CacheParameterGroupName=default.redis3.2</code>.</p> </li> <li> <p>To create a Redis (cluster mode enabled) replication group, use <code>CacheParameterGroupName=default.redis3.2.cluster.on</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache subnet group to be used for the replication group.</p> <important> <p>If you\'re going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html">Subnets and Subnet Groups</a>.</p> </important>',
-        }),
-    ).exactOptional(),
-    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache security group names to associate with this replication group.',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>One or more Amazon VPC security groups associated with this replication group.</p> <p>Use this parameter only when you are creating a replication group in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. Tags are comma-separated key,value pairs (e.g. Key=<code>myKey</code>, Value=<code>myKeyValue</code>. You can include multiple tags as shown following: Key=<code>myKey</code>, Value=<code>myKeyValue</code> Key=<code>mySecondKey</code>, Value=<code>mySecondKeyValue</code>. Tags on replication groups will be replicated to all nodes.',
-        }),
-    ).exactOptional(),
-    SnapshotArns: SnapshotArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of Amazon Resource Names (ARN) that uniquely identify the Redis RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new replication group. The Amazon S3 object name in the ARN cannot contain any commas. The new replication group will have the number of node groups (console: shards) specified by the parameter <i>NumNodeGroups</i> or the number of node groups configured by <i>NodeGroupConfiguration</i> regardless of the number of ARNs specified here.</p> <p>Example of an Amazon S3 ARN: <code>arn:aws:s3:::my_bucket/snapshot1.rdb</code> </p>',
-        }),
-    ).exactOptional(),
-    SnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a snapshot from which to restore data into the new replication group. The snapshot status changes to <code>restoring</code> while the new replication group is being created.',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period. Valid values for <code>ddd</code> are:</p> <p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
-        }),
-    ).exactOptional(),
-    Port: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The port number on which each member of the replication group accepts connections.',
-        }),
-    ).exactOptional(),
-    NotificationTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be the same as the cluster owner.</p> </note>',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <p>Default: 0 (i.e., automatic backups are disabled for this cluster).</p>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p>',
-        }),
-    ).exactOptional(),
-    AuthToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <b>Reserved parameter.</b> The password used to access a password protected server.</p> <p> <code>AuthToken</code> can be specified only on replication groups where <code>TransitEncryptionEnabled</code> is <code>true</code>.</p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important> <p>Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters.</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length.</p> </li> <li> <p>The only permitted printable special characters are !, &amp;, #, $, ^, &lt;, &gt;, and -. Other printable special characters cannot be used in the AUTH token.</p> </li> </ul> <p>For more information, see <a href="http://redis.io/commands/AUTH">AUTH password</a> at http://redis.io/commands/AUTH.</p>',
-        }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>This parameter is valid only if the <code>Engine</code> parameter is <code>redis</code>, the <code>EngineVersion</code> parameter is <code>3.2.6</code>, <code>4.x</code> or later, and the cluster is being created in an Amazon VPC.</p> <p>If you enable in-transit encryption, you must also specify a value for <code>CacheSubnetGroup</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important>',
-        }),
-    ).exactOptional(),
-    AtRestEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    KmsKeyId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the KMS key used to encrypt the disk in the cluster.' }),
-    ).exactOptional(),
-    UserGroupIds: UserGroupIdListInputSchema.and(
-      z.any().openapi({ description: 'The user group to associate with the replication group.' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.and(
-      z.any().openapi({ description: 'Specifies the destination, format and type of the logs.' }),
-    ).exactOptional(),
-    DataTieringEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
-        }),
-    ).exactOptional(),
-    NetworkType: NetworkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type you choose when creating a replication group, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>When setting <code>TransitEncryptionEnabled</code> to <code>true</code>, you can set your <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can modify the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>.</p> <p>This process will not trigger the replacement of the replication group.</p>',
-        }),
-    ).exactOptional(),
-    ClusterMode: ClusterModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.openapi({
+      description:
+        '<p>The replication group identifier. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>A name must contain from 1 to 40 alphanumeric characters or hyphens.</p> </li> <li> <p>The first character must be a letter.</p> </li> <li> <p>A name cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>',
+    }),
+    ReplicationGroupDescription: StringSchema.openapi({
+      description: 'A user-created description for the replication group.',
+    }),
+    GlobalReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the Global datastore',
+    }),
+    PrimaryClusterId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier of the cluster that serves as the primary for this replication group. This cluster must already exist and have a status of <code>available</code>.</p> <p>This parameter is not required if <code>NumCacheClusters</code>, <code>NumNodeGroups</code>, or <code>ReplicasPerNodeGroup</code> is specified.</p>',
+    }),
+    AutomaticFailoverEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether a read-only replica is automatically promoted to read/write primary if the existing primary fails.</p> <p> <code>AutomaticFailoverEnabled</code> must be enabled for Redis (cluster mode enabled) replication groups.</p> <p>Default: false</p>',
+    }),
+    MultiAZEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A flag indicating if you have Multi-AZ enabled to enhance fault tolerance. For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/AutoFailover.html">Minimizing Downtime: Multi-AZ</a>.',
+    }),
+    NumCacheClusters: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of clusters this replication group initially has.</p> <p>This parameter is not used if there is more than one node group (shard). You should use <code>ReplicasPerNodeGroup</code> instead.</p> <p>If <code>AutomaticFailoverEnabled</code> is <code>true</code>, the value of this parameter must be at least 2. If <code>AutomaticFailoverEnabled</code> is <code>false</code> you can omit this parameter (it will default to 1), or you can explicitly set it to a value between 2 and 6.</p> <p>The maximum permitted value for <code>NumCacheClusters</code> is 6 (1 primary plus 5 replicas).</p>',
+    }),
+    PreferredCacheClusterAZs: AvailabilityZonesListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of EC2 Availability Zones in which the replication group's clusters are created. The order of the Availability Zones in the list is the order in which clusters are allocated. The primary cluster is created in the first AZ in the list.</p> <p>This parameter is not used if there is more than one node group (shard). You should use <code>NodeGroupConfiguration</code> instead.</p> <note> <p>If you are creating your replication group in an Amazon VPC (recommended), you can only locate clusters in Availability Zones associated with the subnets in the selected subnet group.</p> <p>The number of Availability Zones listed must equal the value of <code>NumCacheClusters</code>.</p> </note> <p>Default: system chosen Availability Zones.</p>",
+    }),
+    NumNodeGroups: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>An optional parameter that specifies the number of node groups (shards) for this Redis (cluster mode enabled) replication group. For Redis (cluster mode disabled) either omit this parameter or set it to 1.</p> <p>Default: 1</p>',
+    }),
+    ReplicasPerNodeGroup: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'An optional parameter that specifies the number of replica nodes in each node group (shard). Valid values are 0 to 5.',
+    }),
+    NodeGroupConfiguration: NodeGroupConfigurationListSchema.exactOptional().openapi({
+      description:
+        "<p>A list of node group (shard) configuration options. Each node group (shard) configuration has the following members: <code>PrimaryAvailabilityZone</code>, <code>ReplicaAvailabilityZones</code>, <code>ReplicaCount</code>, and <code>Slots</code>.</p> <p>If you're creating a Redis (cluster mode disabled) or a Redis (cluster mode enabled) replication group, you can use this parameter to individually configure each node group (shard), or you can omit this parameter. However, it is required when seeding a Redis (cluster mode enabled) cluster from a S3 rdb file. You must configure each node group (shard) using this parameter because you must specify the slots for each node group.</p>",
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The compute and memory capacity of the nodes in the node group (shard).</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache engine to be used for the clusters in this replication group. The value must be set to <code>Redis</code>.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of the cache engine to be used for the clusters in this replication group. To view the supported cache engine versions, use the <code>DescribeCacheEngineVersions</code> operation.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>) in the <i>ElastiCache User Guide</i>, but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster or replication group and create it anew with the earlier engine version. </p>',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the parameter group to associate with this replication group. If this argument is omitted, the default cache parameter group for the specified engine is used.</p> <p>If you are running Redis version 3.2.4 or later, only one node group (shard), and want to use a default parameter group, we recommend that you specify the parameter group by name. </p> <ul> <li> <p>To create a Redis (cluster mode disabled) replication group, use <code>CacheParameterGroupName=default.redis3.2</code>.</p> </li> <li> <p>To create a Redis (cluster mode enabled) replication group, use <code>CacheParameterGroupName=default.redis3.2.cluster.on</code>.</p> </li> </ul>',
+    }),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cache subnet group to be used for the replication group.</p> <important> <p>If you\'re going to launch your cluster in an Amazon VPC, you need to create a subnet group before you start creating a cluster. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html">Subnets and Subnet Groups</a>.</p> </important>',
+    }),
+    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.exactOptional().openapi({
+      description: 'A list of cache security group names to associate with this replication group.',
+    }),
+    SecurityGroupIds: SecurityGroupIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>One or more Amazon VPC security groups associated with this replication group.</p> <p>Use this parameter only when you are creating a replication group in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. Tags are comma-separated key,value pairs (e.g. Key=<code>myKey</code>, Value=<code>myKeyValue</code>. You can include multiple tags as shown following: Key=<code>myKey</code>, Value=<code>myKeyValue</code> Key=<code>mySecondKey</code>, Value=<code>mySecondKeyValue</code>. Tags on replication groups will be replicated to all nodes.',
+    }),
+    SnapshotArns: SnapshotArnsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of Amazon Resource Names (ARN) that uniquely identify the Redis RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new replication group. The Amazon S3 object name in the ARN cannot contain any commas. The new replication group will have the number of node groups (console: shards) specified by the parameter <i>NumNodeGroups</i> or the number of node groups configured by <i>NodeGroupConfiguration</i> regardless of the number of ARNs specified here.</p> <p>Example of an Amazon S3 ARN: <code>arn:aws:s3:::my_bucket/snapshot1.rdb</code> </p>',
+    }),
+    SnapshotName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of a snapshot from which to restore data into the new replication group. The snapshot status changes to <code>restoring</code> while the new replication group is being created.',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period. Valid values for <code>ddd</code> are:</p> <p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
+    }),
+    Port: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The port number on which each member of the replication group accepts connections.',
+    }),
+    NotificationTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be the same as the cluster owner.</p> </note>',
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <p>Default: 0 (i.e., automatic backups are disabled for this cluster).</p>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your node group (shard).</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p>',
+    }),
+    AuthToken: StringSchema.exactOptional().openapi({
+      description:
+        '<p> <b>Reserved parameter.</b> The password used to access a password protected server.</p> <p> <code>AuthToken</code> can be specified only on replication groups where <code>TransitEncryptionEnabled</code> is <code>true</code>.</p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important> <p>Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters.</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length.</p> </li> <li> <p>The only permitted printable special characters are !, &amp;, #, $, ^, &lt;, &gt;, and -. Other printable special characters cannot be used in the AUTH token.</p> </li> </ul> <p>For more information, see <a href="http://redis.io/commands/AUTH">AUTH password</a> at http://redis.io/commands/AUTH.</p>',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables in-transit encryption when set to <code>true</code>.</p> <p>This parameter is valid only if the <code>Engine</code> parameter is <code>redis</code>, the <code>EngineVersion</code> parameter is <code>3.2.6</code>, <code>4.x</code> or later, and the cluster is being created in an Amazon VPC.</p> <p>If you enable in-transit encryption, you must also specify a value for <code>CacheSubnetGroup</code>.</p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p> <important> <p>For HIPAA compliance, you must specify <code>TransitEncryptionEnabled</code> as <code>true</code>, an <code>AuthToken</code>, and a <code>CacheSubnetGroup</code>.</p> </important>',
+    }),
+    AtRestEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>A flag that enables encryption at rest when set to <code>true</code>.</p> <p>You cannot modify the value of <code>AtRestEncryptionEnabled</code> after the replication group is created. To enable encryption at rest on a replication group you must set <code>AtRestEncryptionEnabled</code> to <code>true</code> when you create the replication group. </p> <p> <b>Required:</b> Only available when creating a replication group in an Amazon VPC using redis version <code>3.2.6</code>, <code>4.x</code> or later.</p> <p>Default: <code>false</code> </p>',
+    }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used to encrypt the disk in the cluster.',
+    }),
+    UserGroupIds: UserGroupIdListInputSchema.exactOptional().openapi({
+      description: 'The user group to associate with the replication group.',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.exactOptional().openapi({
+      description: 'Specifies the destination, format and type of the logs.',
+    }),
+    DataTieringEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Enables data tiering. Data tiering is only supported for replication groups using the r6gd node type. This parameter must be set to true when using r6gd nodes. For more information, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/data-tiering.html">Data tiering</a>.',
+    }),
+    NetworkType: NetworkTypeSchema.exactOptional().openapi({
+      description:
+        'Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type you choose when creating a replication group, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>When setting <code>TransitEncryptionEnabled</code> to <code>true</code>, you can set your <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request, to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can modify the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>.</p> <p>This process will not trigger the replacement of the replication group.</p>',
+    }),
+    ClusterMode: ClusterModeSchema.exactOptional().openapi({
+      description:
+        'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'ReplicationGroupDescription'],
@@ -4472,36 +3278,22 @@ const CreateReplicationGroupMessageSchema = z
 
 const CreateSnapshotMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an existing replication group. The snapshot is created from this replication group.',
-        }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of an existing cluster. The snapshot is created from this cluster.',
-        }),
-    ).exactOptional(),
-    SnapshotName: StringSchema.and(
-      z.any().openapi({ description: 'A name for the snapshot being created.' }),
-    ),
-    KmsKeyId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the KMS key used to encrypt the snapshot.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of an existing replication group. The snapshot is created from this replication group.',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of an existing cluster. The snapshot is created from this cluster.',
+    }),
+    SnapshotName: StringSchema.openapi({ description: 'A name for the snapshot being created.' }),
+    KmsKeyId: StringSchema.exactOptional().openapi({
+      description: 'The ID of the KMS key used to encrypt the snapshot.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['SnapshotName'],
@@ -4514,21 +3306,15 @@ const UserIdListInputSchema = z.array(UserIdSchema).min(1).openapi('UserIdListIn
 
 const CreateUserGroupMessageSchema = z
   .object({
-    UserGroupId: StringSchema.and(z.any().openapi({ description: 'The ID of the user group.' })),
-    Engine: EngineTypeSchema.and(
-      z.any().openapi({ description: 'The current supported value is Redis. ' }),
-    ),
-    UserIds: UserIdListInputSchema.and(
-      z.any().openapi({ description: 'The list of user IDs that belong to the user group.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    UserGroupId: StringSchema.openapi({ description: 'The ID of the user group.' }),
+    Engine: EngineTypeSchema.openapi({ description: 'The current supported value is Redis. ' }),
+    UserIds: UserIdListInputSchema.exactOptional().openapi({
+      description: 'The list of user IDs that belong to the user group.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({ required: ['UserGroupId', 'Engine'], title: 'CreateUserGroupMessage' })
   .openapi('CreateUserGroupMessage')
@@ -4537,36 +3323,26 @@ const UserNameSchema = z.string().min(1).openapi('UserName')
 
 const CreateUserMessageSchema = z
   .object({
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'The ID of the user.' })),
-    UserName: UserNameSchema.and(z.any().openapi({ description: 'The username of the user.' })),
-    Engine: EngineTypeSchema.and(
-      z.any().openapi({ description: 'The current supported value is Redis. ' }),
-    ),
-    Passwords: PasswordListInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Passwords used for this user. You can create up to two passwords for each user.',
-        }),
-    ).exactOptional(),
-    AccessString: AccessStringSchema.and(
-      z.any().openapi({ description: 'Access permissions string used for this user.' }),
-    ),
-    NoPasswordRequired: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'Indicates a password is not required for this user.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
-    AuthenticationMode: AuthenticationModeSchema.and(
-      z.any().openapi({ description: 'Specifies how to authenticate the user.' }),
-    ).exactOptional(),
+    UserId: UserIdSchema.openapi({ description: 'The ID of the user.' }),
+    UserName: UserNameSchema.openapi({ description: 'The username of the user.' }),
+    Engine: EngineTypeSchema.openapi({ description: 'The current supported value is Redis. ' }),
+    Passwords: PasswordListInputSchema.exactOptional().openapi({
+      description:
+        'Passwords used for this user. You can create up to two passwords for each user.',
+    }),
+    AccessString: AccessStringSchema.openapi({
+      description: 'Access permissions string used for this user.',
+    }),
+    NoPasswordRequired: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Indicates a password is not required for this user.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
+    AuthenticationMode: AuthenticationModeSchema.exactOptional().openapi({
+      description: 'Specifies how to authenticate the user.',
+    }),
   })
   .openapi({
     required: ['UserId', 'UserName', 'Engine', 'AccessString'],
@@ -4579,46 +3355,30 @@ const CustomerNodeEndpointListSchema = z
   .openapi('CustomerNodeEndpointList')
 
 const GlobalNodeGroupIdListSchema = z
-  .array(StringSchema.and(z.any().openapi({ xml: { name: 'GlobalNodeGroupId' } })))
+  .array(StringSchema.openapi({ xml: { name: 'GlobalNodeGroupId' } }))
   .openapi('GlobalNodeGroupIdList')
 
 const DecreaseNodeGroupsInGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    NodeGroupCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of node groups (shards) that results from the modification of the shard configuration',
-        }),
-    ),
-    GlobalNodeGroupsToRemove: GlobalNodeGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache for Redis will attempt to remove all node groups listed by GlobalNodeGroupsToRemove from the cluster. ',
-        }),
-    ).exactOptional(),
-    GlobalNodeGroupsToRetain: GlobalNodeGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRetain is a list of NodeGroupIds to retain from the cluster. ElastiCache for Redis will attempt to retain all node groups listed by GlobalNodeGroupsToRetain from the cluster. ',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is true. ',
-        }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    NodeGroupCount: IntegerSchema.openapi({
+      description:
+        'The number of node groups (shards) that results from the modification of the shard configuration',
+    }),
+    GlobalNodeGroupsToRemove: GlobalNodeGroupIdListSchema.exactOptional().openapi({
+      description:
+        'If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRemove is a list of NodeGroupIds to remove from the cluster. ElastiCache for Redis will attempt to remove all node groups listed by GlobalNodeGroupsToRemove from the cluster. ',
+    }),
+    GlobalNodeGroupsToRetain: GlobalNodeGroupIdListSchema.exactOptional().openapi({
+      description:
+        'If the value of NodeGroupCount is less than the current number of node groups (shards), then either NodeGroupsToRemove or NodeGroupsToRetain is required. GlobalNodeGroupsToRetain is a list of NodeGroupIds to retain from the cluster. ElastiCache for Redis will attempt to retain all node groups listed by GlobalNodeGroupsToRetain from the cluster. ',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        'Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is true. ',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'NodeGroupCount', 'ApplyImmediately'],
@@ -4627,53 +3387,32 @@ const DecreaseNodeGroupsInGlobalReplicationGroupMessageSchema = z
   .openapi('DecreaseNodeGroupsInGlobalReplicationGroupMessage')
 
 const ReplicaConfigurationListSchema = z
-  .array(ConfigureShardSchema.and(z.any().openapi({ xml: { name: 'ConfigureShard' } })))
+  .array(ConfigureShardSchema.openapi({ xml: { name: 'ConfigureShard' } }))
   .openapi('ReplicaConfigurationList')
 
 const RemoveReplicasListSchema = z.array(StringSchema).openapi('RemoveReplicasList')
 
 const DecreaseReplicaCountMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The id of the replication group from which you want to remove replica nodes.',
-        }),
-    ),
-    NewReplicaCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of read replica nodes you want at the completion of this operation. For Redis (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ is enabled: 1</p> </li> <li> <p>If Multi-AZ is not enabled: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    ReplicaConfiguration: ReplicaConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ConfigureShard</code> objects that can be used to configure each shard in a Redis (cluster mode enabled) replication group. The <code>ConfigureShard</code> has three members: <code>NewReplicaCount</code>, <code>NodeGroupId</code>, and <code>PreferredAvailabilityZones</code>.',
-        }),
-    ).exactOptional(),
-    ReplicasToRemove: RemoveReplicasListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the node ids to remove from the replication group or node group (shard).',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>True</code>, the number of replica nodes is decreased immediately. <code>ApplyImmediately=False</code> is not currently supported.',
-        }),
-    ),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The id of the replication group from which you want to remove replica nodes.',
+    }),
+    NewReplicaCount: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The number of read replica nodes you want at the completion of this operation. For Redis (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ is enabled: 1</p> </li> <li> <p>If Multi-AZ is not enabled: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>",
+    }),
+    ReplicaConfiguration: ReplicaConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ConfigureShard</code> objects that can be used to configure each shard in a Redis (cluster mode enabled) replication group. The <code>ConfigureShard</code> has three members: <code>NewReplicaCount</code>, <code>NodeGroupId</code>, and <code>PreferredAvailabilityZones</code>.',
+    }),
+    ReplicasToRemove: RemoveReplicasListSchema.exactOptional().openapi({
+      description:
+        'A list of the node ids to remove from the replication group or node group (shard).',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        'If <code>True</code>, the number of replica nodes is decreased immediately. <code>ApplyImmediately=False</code> is not currently supported.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'ApplyImmediately'],
@@ -4683,22 +3422,14 @@ const DecreaseReplicaCountMessageSchema = z
 
 const DeleteCacheClusterMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster identifier for the cluster to be deleted. This parameter is not case sensitive.',
-        }),
-    ),
-    FinalSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user-supplied name of a final cluster snapshot. This is the unique name that identifies the snapshot. ElastiCache creates the snapshot, and then deletes the cluster immediately afterward.',
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.openapi({
+      description:
+        'The cluster identifier for the cluster to be deleted. This parameter is not case sensitive.',
+    }),
+    FinalSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The user-supplied name of a final cluster snapshot. This is the unique name that identifies the snapshot. ElastiCache creates the snapshot, and then deletes the cluster immediately afterward.',
+    }),
   })
   .openapi({
     required: ['CacheClusterId'],
@@ -4709,14 +3440,10 @@ const DeleteCacheClusterMessageSchema = z
 
 const DeleteCacheParameterGroupMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache parameter group to delete.</p> <note> <p>The specified cache security group must not be associated with any clusters.</p> </note>',
-        }),
-    ),
+    CacheParameterGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the cache parameter group to delete.</p> <note> <p>The specified cache security group must not be associated with any clusters.</p> </note>',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupName'],
@@ -4727,14 +3454,10 @@ const DeleteCacheParameterGroupMessageSchema = z
 
 const DeleteCacheSecurityGroupMessageSchema = z
   .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache security group to delete.</p> <note> <p>You cannot delete the default security group.</p> </note>',
-        }),
-    ),
+    CacheSecurityGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the cache security group to delete.</p> <note> <p>You cannot delete the default security group.</p> </note>',
+    }),
   })
   .openapi({
     required: ['CacheSecurityGroupName'],
@@ -4745,14 +3468,10 @@ const DeleteCacheSecurityGroupMessageSchema = z
 
 const DeleteCacheSubnetGroupMessageSchema = z
   .object({
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache subnet group to delete.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p>',
-        }),
-    ),
+    CacheSubnetGroupName: StringSchema.openapi({
+      description:
+        '<p>The name of the cache subnet group to delete.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p>',
+    }),
   })
   .openapi({
     required: ['CacheSubnetGroupName'],
@@ -4763,17 +3482,12 @@ const DeleteCacheSubnetGroupMessageSchema = z
 
 const DeleteGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    RetainPrimaryReplicationGroup: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The primary replication group is retained as a standalone replication group. ',
-        }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    RetainPrimaryReplicationGroup: BooleanSchema.openapi({
+      description: 'The primary replication group is retained as a standalone replication group. ',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'RetainPrimaryReplicationGroup'],
@@ -4783,30 +3497,18 @@ const DeleteGlobalReplicationGroupMessageSchema = z
 
 const DeleteReplicationGroupMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier for the cluster to be deleted. This parameter is not case sensitive.',
-        }),
-    ),
-    RetainPrimaryCluster: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, all of the read replicas are deleted, but the primary node is retained.',
-        }),
-    ).exactOptional(),
-    FinalSnapshotIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of a final node group (shard) snapshot. ElastiCache creates the snapshot from the primary node in the cluster, rather than one of the replicas; this is to ensure that it captures the freshest data. After the final snapshot is taken, the replication group is immediately deleted.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.openapi({
+      description:
+        'The identifier for the cluster to be deleted. This parameter is not case sensitive.',
+    }),
+    RetainPrimaryCluster: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, all of the read replicas are deleted, but the primary node is retained.',
+    }),
+    FinalSnapshotIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The name of a final node group (shard) snapshot. ElastiCache creates the snapshot from the primary node in the cluster, rather than one of the replicas; this is to ensure that it captures the freshest data. After the final snapshot is taken, the replication group is immediately deleted.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId'],
@@ -4817,9 +3519,7 @@ const DeleteReplicationGroupMessageSchema = z
 
 const DeleteSnapshotMessageSchema = z
   .object({
-    SnapshotName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the snapshot to be deleted.' }),
-    ),
+    SnapshotName: StringSchema.openapi({ description: 'The name of the snapshot to be deleted.' }),
   })
   .openapi({
     required: ['SnapshotName'],
@@ -4829,59 +3529,37 @@ const DeleteSnapshotMessageSchema = z
   .openapi('DeleteSnapshotMessage')
 
 const DeleteUserGroupMessageSchema = z
-  .object({
-    UserGroupId: StringSchema.and(z.any().openapi({ description: 'The ID of the user group.' })),
-  })
+  .object({ UserGroupId: StringSchema.openapi({ description: 'The ID of the user group.' }) })
   .openapi({ required: ['UserGroupId'], title: 'DeleteUserGroupMessage' })
   .openapi('DeleteUserGroupMessage')
 
 const DeleteUserMessageSchema = z
-  .object({ UserId: UserIdSchema.and(z.any().openapi({ description: 'The ID of the user.' })) })
+  .object({ UserId: UserIdSchema.openapi({ description: 'The ID of the user.' }) })
   .openapi({ required: ['UserId'], title: 'DeleteUserMessage' })
   .openapi('DeleteUserMessage')
 
 const DescribeCacheClustersMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The user-supplied cluster identifier. If this parameter is specified, only information about that specific cluster is returned. This parameter isn't case sensitive.",
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    ShowCacheNodeInfo: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional flag that can be included in the <code>DescribeCacheCluster</code> request to retrieve information about the individual cache nodes.',
-        }),
-    ).exactOptional(),
-    ShowCacheClustersNotInReplicationGroups: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional flag that can be included in the <code>DescribeCacheCluster</code> request to show only nodes (API/CLI: clusters) that are not members of a replication group. In practice, this mean Memcached and single node Redis clusters.',
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description:
+        "The user-supplied cluster identifier. If this parameter is specified, only information about that specific cluster is returned. This parameter isn't case sensitive.",
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    ShowCacheNodeInfo: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'An optional flag that can be included in the <code>DescribeCacheCluster</code> request to retrieve information about the individual cache nodes.',
+    }),
+    ShowCacheClustersNotInReplicationGroups: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'An optional flag that can be included in the <code>DescribeCacheCluster</code> request to show only nodes (API/CLI: clusters) that are not members of a replication group. In practice, this mean Memcached and single node Redis clusters.',
+    }),
   })
   .openapi({
     title: 'DescribeCacheClustersMessage',
@@ -4892,54 +3570,30 @@ const DescribeCacheClustersMessageSchema = z
 
 const DescribeCacheEngineVersionsMessageSchema = z
   .object({
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cache engine to return. Valid values: <code>memcached</code> | <code>redis</code> ',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cache engine version to return.</p> <p>Example: <code>1.4.14</code> </p>',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of a specific cache parameter group family to return details for.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    DefaultOnly: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>true</code>, specifies that only the default version of the specified engine or engine and major version combination is to be returned.',
-        }),
-    ).exactOptional(),
+    Engine: StringSchema.exactOptional().openapi({
+      description:
+        'The cache engine to return. Valid values: <code>memcached</code> | <code>redis</code> ',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cache engine version to return.</p> <p>Example: <code>1.4.14</code> </p>',
+    }),
+    CacheParameterGroupFamily: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of a specific cache parameter group family to return details for.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 alphanumeric characters</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens</p> </li> </ul>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    DefaultOnly: BooleanSchema.exactOptional().openapi({
+      description:
+        'If <code>true</code>, specifies that only the default version of the specified engine or engine and major version combination is to be returned.',
+    }),
   })
   .openapi({
     title: 'DescribeCacheEngineVersionsMessage',
@@ -4950,29 +3604,17 @@ const DescribeCacheEngineVersionsMessageSchema = z
 
 const DescribeCacheParameterGroupsMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a specific cache parameter group to return details for.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of a specific cache parameter group to return details for.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeCacheParameterGroupsMessage',
@@ -4983,37 +3625,21 @@ const DescribeCacheParameterGroupsMessageSchema = z
 
 const DescribeCacheParametersMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of a specific cache parameter group to return details for.',
-        }),
-    ),
-    Source: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The parameter types to return.</p> <p>Valid values: <code>user</code> | <code>system</code> | <code>engine-default</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.openapi({
+      description: 'The name of a specific cache parameter group to return details for.',
+    }),
+    Source: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The parameter types to return.</p> <p>Valid values: <code>user</code> | <code>system</code> | <code>engine-default</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupName'],
@@ -5024,27 +3650,17 @@ const DescribeCacheParametersMessageSchema = z
 
 const DescribeCacheSecurityGroupsMessageSchema = z
   .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the cache security group to return details for.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    CacheSecurityGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache security group to return details for.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeCacheSecurityGroupsMessage',
@@ -5055,25 +3671,17 @@ const DescribeCacheSecurityGroupsMessageSchema = z
 
 const DescribeCacheSubnetGroupsMessageSchema = z
   .object({
-    CacheSubnetGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache subnet group to return details for.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    CacheSubnetGroupName: StringSchema.exactOptional().openapi({
+      description: 'The name of the cache subnet group to return details for.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeCacheSubnetGroupsMessage',
@@ -5084,30 +3692,18 @@ const DescribeCacheSubnetGroupsMessageSchema = z
 
 const DescribeEngineDefaultParametersMessageSchema = z
   .object({
-    CacheParameterGroupFamily: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cache parameter group family.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p>',
-        }),
-    ),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupFamily: StringSchema.openapi({
+      description:
+        '<p>The name of the cache parameter group family.</p> <p>Valid values are: <code>memcached1.4</code> | <code>memcached1.5</code> | <code>memcached1.6</code> | <code>redis2.6</code> | <code>redis2.8</code> | <code>redis3.2</code> | <code>redis4.0</code> | <code>redis5.0</code> | <code>redis6.x</code> | <code>redis6.2</code> | <code>redis7</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupFamily'],
@@ -5119,57 +3715,33 @@ const DescribeEngineDefaultParametersMessageSchema = z
 
 const DescribeEventsMessageSchema = z
   .object({
-    SourceIdentifier: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifier of the event source for which events are returned. If not specified, all sources are included in the response.',
-        }),
-    ).exactOptional(),
-    SourceType: SourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The event source to retrieve events for. If no value is specified, all events are returned.',
-        }),
-    ).exactOptional(),
-    StartTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The beginning of the time interval to retrieve events for, specified in ISO 8601 format.</p> <p> <b>Example:</b> 2017-03-30T07:03:49.555Z</p>',
-        }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end of the time interval for which to retrieve events, specified in ISO 8601 format.</p> <p> <b>Example:</b> 2017-03-30T07:03:49.555Z</p>',
-        }),
-    ).exactOptional(),
-    Duration: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'The number of minutes worth of events to retrieve.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    SourceIdentifier: StringSchema.exactOptional().openapi({
+      description:
+        'The identifier of the event source for which events are returned. If not specified, all sources are included in the response.',
+    }),
+    SourceType: SourceTypeSchema.exactOptional().openapi({
+      description:
+        'The event source to retrieve events for. If no value is specified, all events are returned.',
+    }),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>The beginning of the time interval to retrieve events for, specified in ISO 8601 format.</p> <p> <b>Example:</b> 2017-03-30T07:03:49.555Z</p>',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description:
+        '<p>The end of the time interval for which to retrieve events, specified in ISO 8601 format.</p> <p> <b>Example:</b> 2017-03-30T07:03:49.555Z</p>',
+    }),
+    Duration: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The number of minutes worth of events to retrieve.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeEventsMessage',
@@ -5180,62 +3752,38 @@ const DescribeEventsMessageSchema = z
 
 const DescribeGlobalReplicationGroupsMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
-        }),
-    ).exactOptional(),
-    ShowMemberInfo: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns the list of members that comprise the Global datastore.',
-        }),
-    ).exactOptional(),
+    GlobalReplicationGroupId: StringSchema.exactOptional().openapi({
+      description: 'The name of the Global datastore',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. ',
+    }),
+    ShowMemberInfo: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Returns the list of members that comprise the Global datastore.',
+    }),
   })
   .openapi({ title: 'DescribeGlobalReplicationGroupsMessage', required: [] })
   .openapi('DescribeGlobalReplicationGroupsMessage')
 
 const DescribeReplicationGroupsMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for the replication group to be described. This parameter is not case sensitive.</p> <p>If you do not specify this parameter, information about all replication groups is returned.</p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier for the replication group to be described. This parameter is not case sensitive.</p> <p>If you do not specify this parameter, information about all replication groups is returned.</p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeReplicationGroupsMessage',
@@ -5246,70 +3794,38 @@ const DescribeReplicationGroupsMessageSchema = z
 
 const DescribeReservedCacheNodesMessageSchema = z
   .object({
-    ReservedCacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reserved cache node identifier filter value. Use this parameter to show only the reservation that matches the specified reservation ID.',
-        }),
-    ).exactOptional(),
-    ReservedCacheNodesOfferingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The offering identifier filter value. Use this parameter to show only purchased reservations matching the specified offering identifier.',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cache node type filter value. Use this parameter to show only those reservations matching the specified cache node type.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Duration: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The duration filter value, specified in years or seconds. Use this parameter to show only reservations for this duration.</p> <p>Valid Values: <code>1 | 3 | 31536000 | 94608000</code> </p>',
-        }),
-    ).exactOptional(),
-    ProductDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The product description filter value. Use this parameter to show only those reservations matching the specified product description.',
-        }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type.</p> <p>Valid values: <code>"Light Utilization"|"Medium Utilization"|"Heavy Utilization"|"All Upfront"|"Partial Upfront"| "No Upfront"</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    ReservedCacheNodeId: StringSchema.exactOptional().openapi({
+      description:
+        'The reserved cache node identifier filter value. Use this parameter to show only the reservation that matches the specified reservation ID.',
+    }),
+    ReservedCacheNodesOfferingId: StringSchema.exactOptional().openapi({
+      description:
+        'The offering identifier filter value. Use this parameter to show only purchased reservations matching the specified offering identifier.',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cache node type filter value. Use this parameter to show only those reservations matching the specified cache node type.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Duration: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The duration filter value, specified in years or seconds. Use this parameter to show only reservations for this duration.</p> <p>Valid Values: <code>1 | 3 | 31536000 | 94608000</code> </p>',
+    }),
+    ProductDescription: StringSchema.exactOptional().openapi({
+      description:
+        'The product description filter value. Use this parameter to show only those reservations matching the specified product description.',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type.</p> <p>Valid values: <code>"Light Utilization"|"Medium Utilization"|"Heavy Utilization"|"All Upfront"|"Partial Upfront"| "No Upfront"</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeReservedCacheNodesMessage',
@@ -5320,62 +3836,34 @@ const DescribeReservedCacheNodesMessageSchema = z
 
 const DescribeReservedCacheNodesOfferingsMessageSchema = z
   .object({
-    ReservedCacheNodesOfferingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The offering identifier filter value. Use this parameter to show only the available offering that matches the specified reservation identifier.</p> <p>Example: <code>438012d3-4052-4cc7-b2e3-8d3372e0e706</code> </p>',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The cache node type filter value. Use this parameter to show only the available offerings matching the specified cache node type.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Duration: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Duration filter value, specified in years or seconds. Use this parameter to show only reservations for a given duration.</p> <p>Valid Values: <code>1 | 3 | 31536000 | 94608000</code> </p>',
-        }),
-    ).exactOptional(),
-    ProductDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The product description filter value. Use this parameter to show only the available offerings matching the specified product description.',
-        }),
-    ).exactOptional(),
-    OfferingType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type.</p> <p>Valid Values: <code>"Light Utilization"|"Medium Utilization"|"Heavy Utilization" |"All Upfront"|"Partial Upfront"| "No Upfront"</code> </p>',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    ReservedCacheNodesOfferingId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The offering identifier filter value. Use this parameter to show only the available offering that matches the specified reservation identifier.</p> <p>Example: <code>438012d3-4052-4cc7-b2e3-8d3372e0e706</code> </p>',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The cache node type filter value. Use this parameter to show only the available offerings matching the specified cache node type.</p> <p>The following node types are supported by ElastiCache. Generally speaking, the current generation types provide more memory and computational power at lower cost when compared to their equivalent previous generation counterparts.</p> <ul> <li> <p>General purpose:</p> <ul> <li> <p>Current generation: </p> <p> <b>M6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward): <code>cache.m6g.large</code>, <code>cache.m6g.xlarge</code>, <code>cache.m6g.2xlarge</code>, <code>cache.m6g.4xlarge</code>, <code>cache.m6g.8xlarge</code>, <code>cache.m6g.12xlarge</code>, <code>cache.m6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>M5 node types:</b> <code>cache.m5.large</code>, <code>cache.m5.xlarge</code>, <code>cache.m5.2xlarge</code>, <code>cache.m5.4xlarge</code>, <code>cache.m5.12xlarge</code>, <code>cache.m5.24xlarge</code> </p> <p> <b>M4 node types:</b> <code>cache.m4.large</code>, <code>cache.m4.xlarge</code>, <code>cache.m4.2xlarge</code>, <code>cache.m4.4xlarge</code>, <code>cache.m4.10xlarge</code> </p> <p> <b>T4g node types</b> (available only for Redis engine version 5.0.6 onward and Memcached engine version 1.5.16 onward): <code>cache.t4g.micro</code>, <code>cache.t4g.small</code>, <code>cache.t4g.medium</code> </p> <p> <b>T3 node types:</b> <code>cache.t3.micro</code>, <code>cache.t3.small</code>, <code>cache.t3.medium</code> </p> <p> <b>T2 node types:</b> <code>cache.t2.micro</code>, <code>cache.t2.small</code>, <code>cache.t2.medium</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>T1 node types:</b> <code>cache.t1.micro</code> </p> <p> <b>M1 node types:</b> <code>cache.m1.small</code>, <code>cache.m1.medium</code>, <code>cache.m1.large</code>, <code>cache.m1.xlarge</code> </p> <p> <b>M3 node types:</b> <code>cache.m3.medium</code>, <code>cache.m3.large</code>, <code>cache.m3.xlarge</code>, <code>cache.m3.2xlarge</code> </p> </li> </ul> </li> <li> <p>Compute optimized:</p> <ul> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>C1 node types:</b> <code>cache.c1.xlarge</code> </p> </li> </ul> </li> <li> <p>Memory optimized:</p> <ul> <li> <p>Current generation: </p> <p> <b>R6g node types</b> (available only for Redis engine version 5.0.6 onward and for Memcached engine version 1.5.16 onward).</p> <p> <code>cache.r6g.large</code>, <code>cache.r6g.xlarge</code>, <code>cache.r6g.2xlarge</code>, <code>cache.r6g.4xlarge</code>, <code>cache.r6g.8xlarge</code>, <code>cache.r6g.12xlarge</code>, <code>cache.r6g.16xlarge</code> </p> <note> <p>For region availability, see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion">Supported Node Types</a> </p> </note> <p> <b>R5 node types:</b> <code>cache.r5.large</code>, <code>cache.r5.xlarge</code>, <code>cache.r5.2xlarge</code>, <code>cache.r5.4xlarge</code>, <code>cache.r5.12xlarge</code>, <code>cache.r5.24xlarge</code> </p> <p> <b>R4 node types:</b> <code>cache.r4.large</code>, <code>cache.r4.xlarge</code>, <code>cache.r4.2xlarge</code>, <code>cache.r4.4xlarge</code>, <code>cache.r4.8xlarge</code>, <code>cache.r4.16xlarge</code> </p> </li> <li> <p>Previous generation: (not recommended. Existing clusters are still supported but creation of new clusters is not supported for these types.)</p> <p> <b>M2 node types:</b> <code>cache.m2.xlarge</code>, <code>cache.m2.2xlarge</code>, <code>cache.m2.4xlarge</code> </p> <p> <b>R3 node types:</b> <code>cache.r3.large</code>, <code>cache.r3.xlarge</code>, <code>cache.r3.2xlarge</code>, <code>cache.r3.4xlarge</code>, <code>cache.r3.8xlarge</code> </p> </li> </ul> </li> </ul> <p> <b>Additional node type info</b> </p> <ul> <li> <p>All current generation instance types are created in Amazon VPC by default.</p> </li> <li> <p>Redis append-only files (AOF) are not supported for T1 or T2 instances.</p> </li> <li> <p>Redis Multi-AZ with automatic failover is not supported on T1 instances.</p> </li> <li> <p>Redis configuration variables <code>appendonly</code> and <code>appendfsync</code> are not supported on Redis version 2.8.22 and later.</p> </li> </ul>',
+    }),
+    Duration: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Duration filter value, specified in years or seconds. Use this parameter to show only reservations for a given duration.</p> <p>Valid Values: <code>1 | 3 | 31536000 | 94608000</code> </p>',
+    }),
+    ProductDescription: StringSchema.exactOptional().openapi({
+      description:
+        'The product description filter value. Use this parameter to show only the available offerings matching the specified product description.',
+    }),
+    OfferingType: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The offering type filter value. Use this parameter to show only the available offerings matching the specified offering type.</p> <p>Valid Values: <code>"Light Utilization"|"Medium Utilization"|"Heavy Utilization" |"All Upfront"|"Partial Upfront"| "No Upfront"</code> </p>',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: minimum 20; maximum 100.</p>',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({
     title: 'DescribeReservedCacheNodesOfferingsMessage',
@@ -5392,85 +3880,53 @@ const ServiceUpdateStatusListSchema = z
 
 const DescribeServiceUpdatesMessageSchema = z
   .object({
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateStatus: ServiceUpdateStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the service update' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'The maximum number of records to include in the response' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    ServiceUpdateStatus: ServiceUpdateStatusListSchema.exactOptional().openapi({
+      description: 'The status of the service update',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The maximum number of records to include in the response',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeServiceUpdatesMessage', required: [] })
   .openapi('DescribeServiceUpdatesMessage')
 
 const DescribeSnapshotsMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied replication group identifier. If this parameter is specified, only snapshots associated with that specific replication group are described.',
-        }),
-    ).exactOptional(),
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied cluster identifier. If this parameter is specified, only snapshots associated with that specific cluster are described.',
-        }),
-    ).exactOptional(),
-    SnapshotName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A user-supplied name of the snapshot. If this parameter is specified, only this snapshot are described.',
-        }),
-    ).exactOptional(),
-    SnapshotSource: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>system</code>, the output shows snapshots that were automatically created by ElastiCache. If set to <code>user</code> the output shows snapshots that were manually created. If omitted, the output shows both automatically and manually created snapshots.',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 50</p> <p>Constraints: minimum 20; maximum 50.</p>',
-        }),
-    ).exactOptional(),
-    ShowNodeGroupConfig: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value which if true, the node group (shard) configuration is included in the snapshot description.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        'A user-supplied replication group identifier. If this parameter is specified, only snapshots associated with that specific replication group are described.',
+    }),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'A user-supplied cluster identifier. If this parameter is specified, only snapshots associated with that specific cluster are described.',
+    }),
+    SnapshotName: StringSchema.exactOptional().openapi({
+      description:
+        'A user-supplied name of the snapshot. If this parameter is specified, only this snapshot are described.',
+    }),
+    SnapshotSource: StringSchema.exactOptional().openapi({
+      description:
+        'If set to <code>system</code>, the output shows snapshots that were automatically created by ElastiCache. If set to <code>user</code> the output shows snapshots that were manually created. If omitted, the output shows both automatically and manually created snapshots.',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 50</p> <p>Constraints: minimum 20; maximum 50.</p>',
+    }),
+    ShowNodeGroupConfig: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A Boolean value which if true, the node group (shard) configuration is included in the snapshot description.',
+    }),
   })
   .openapi({
     title: 'DescribeSnapshotsMessage',
@@ -5481,12 +3937,12 @@ const DescribeSnapshotsMessageSchema = z
 
 const TimeRangeFilterSchema = z
   .object({
-    StartTime: TStampSchema.and(
-      z.any().openapi({ description: 'The start time of the time range filter' }),
-    ).exactOptional(),
-    EndTime: TStampSchema.and(
-      z.any().openapi({ description: 'The end time of the time range filter' }),
-    ).exactOptional(),
+    StartTime: TStampSchema.exactOptional().openapi({
+      description: 'The start time of the time range filter',
+    }),
+    EndTime: TStampSchema.exactOptional().openapi({
+      description: 'The end time of the time range filter',
+    }),
   })
   .openapi({
     description:
@@ -5502,80 +3958,53 @@ const UpdateActionStatusListSchema = z
 
 const DescribeUpdateActionsMessageSchema = z
   .object({
-    ServiceUpdateName: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the service update' }),
-    ).exactOptional(),
-    ReplicationGroupIds: ReplicationGroupIdListSchema.and(
-      z.any().openapi({ description: 'The replication group IDs' }),
-    ).exactOptional(),
-    CacheClusterIds: CacheClusterIdListSchema.and(
-      z.any().openapi({ description: 'The cache cluster IDs' }),
-    ).exactOptional(),
-    Engine: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Elasticache engine to which the update applies. Either Redis or Memcached ',
-        }),
-    ).exactOptional(),
-    ServiceUpdateStatus: ServiceUpdateStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the service update' }),
-    ).exactOptional(),
-    ServiceUpdateTimeRange: TimeRangeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The range of time specified to search for service updates that are in available status',
-        }),
-    ).exactOptional(),
-    UpdateActionStatus: UpdateActionStatusListSchema.and(
-      z.any().openapi({ description: 'The status of the update action.' }),
-    ).exactOptional(),
-    ShowNodeLevelUpdateStatus: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Dictates whether to include node level update status in the response ',
-        }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z.any().openapi({ description: 'The maximum number of records to include in the response' }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
-        }),
-    ).exactOptional(),
+    ServiceUpdateName: StringSchema.exactOptional().openapi({
+      description: 'The unique ID of the service update',
+    }),
+    ReplicationGroupIds: ReplicationGroupIdListSchema.exactOptional().openapi({
+      description: 'The replication group IDs',
+    }),
+    CacheClusterIds: CacheClusterIdListSchema.exactOptional().openapi({
+      description: 'The cache cluster IDs',
+    }),
+    Engine: StringSchema.exactOptional().openapi({
+      description: 'The Elasticache engine to which the update applies. Either Redis or Memcached ',
+    }),
+    ServiceUpdateStatus: ServiceUpdateStatusListSchema.exactOptional().openapi({
+      description: 'The status of the service update',
+    }),
+    ServiceUpdateTimeRange: TimeRangeFilterSchema.exactOptional().openapi({
+      description:
+        'The range of time specified to search for service updates that are in available status',
+    }),
+    UpdateActionStatus: UpdateActionStatusListSchema.exactOptional().openapi({
+      description: 'The status of the update action.',
+    }),
+    ShowNodeLevelUpdateStatus: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Dictates whether to include node level update status in the response ',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description: 'The maximum number of records to include in the response',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.',
+    }),
   })
   .openapi({ title: 'DescribeUpdateActionsMessage', required: [] })
   .openapi('DescribeUpdateActionsMessage')
 
 const DescribeUserGroupsMessageSchema = z
   .object({
-    UserGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The ID of the user group.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
-        }),
-    ).exactOptional(),
+    UserGroupId: StringSchema.exactOptional().openapi({ description: 'The ID of the user group.' }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
+    }),
   })
   .openapi({ title: 'DescribeUserGroupsMessage', required: [] })
   .openapi('DescribeUserGroupsMessage')
@@ -5584,56 +4013,35 @@ const FilterListSchema = z.array(FilterSchema).openapi('FilterList')
 
 const DescribeUsersMessageSchema = z
   .object({
-    Engine: EngineTypeSchema.and(
-      z.any().openapi({ description: 'The Redis engine. ' }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z.any().openapi({ description: 'The ID of the user.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z.any().openapi({ description: 'Filter to determine the list of User IDs to return.' }),
-    ).exactOptional(),
-    MaxRecords: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
-        }),
-    ).exactOptional(),
-    Marker: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
-        }),
-    ).exactOptional(),
+    Engine: EngineTypeSchema.exactOptional().openapi({ description: 'The Redis engine. ' }),
+    UserId: UserIdSchema.exactOptional().openapi({ description: 'The ID of the user.' }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description: 'Filter to determine the list of User IDs to return.',
+    }),
+    MaxRecords: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        'The maximum number of records to include in the response. If more records exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved. ',
+    }),
+    Marker: StringSchema.exactOptional().openapi({
+      description:
+        'An optional marker returned from a prior request. Use this marker for pagination of results from this operation. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords. &gt;',
+    }),
   })
   .openapi({ title: 'DescribeUsersMessage', required: [] })
   .openapi('DescribeUsersMessage')
 
 const DisassociateGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the secondary cluster you wish to remove from the Global datastore',
-        }),
-    ),
-    ReplicationGroupRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon region of secondary cluster you wish to remove from the Global datastore',
-        }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the secondary cluster you wish to remove from the Global datastore',
+    }),
+    ReplicationGroupRegion: StringSchema.openapi({
+      description:
+        'The Amazon region of secondary cluster you wish to remove from the Global datastore',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'ReplicationGroupId', 'ReplicationGroupRegion'],
@@ -5643,19 +4051,15 @@ const DisassociateGlobalReplicationGroupMessageSchema = z
 
 const FailoverGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    PrimaryRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon region of the primary cluster of the Global datastore',
-        }),
-    ),
-    PrimaryReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the primary replication group' }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    PrimaryRegion: StringSchema.openapi({
+      description: 'The Amazon region of the primary cluster of the Global datastore',
+    }),
+    PrimaryReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the primary replication group',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'PrimaryRegion', 'PrimaryReplicationGroupId'],
@@ -5664,35 +4068,25 @@ const FailoverGlobalReplicationGroupMessageSchema = z
   .openapi('FailoverGlobalReplicationGroupMessage')
 
 const RegionalConfigurationListSchema = z
-  .array(
-    RegionalConfigurationSchema.and(z.any().openapi({ xml: { name: 'RegionalConfiguration' } })),
-  )
+  .array(RegionalConfigurationSchema.openapi({ xml: { name: 'RegionalConfiguration' } }))
   .openapi('RegionalConfigurationList')
 
 const IncreaseNodeGroupsInGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    NodeGroupCount: IntegerSchema.and(
-      z.any().openapi({ description: 'The number of node groups you wish to add' }),
-    ),
-    RegionalConfigurations: RegionalConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the replication group IDs, the Amazon regions where they are stored and the shard configuration for each that comprise the Global datastore',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates that the process begins immediately. At present, the only permitted value for this parameter is true.',
-        }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    NodeGroupCount: IntegerSchema.openapi({
+      description: 'The number of node groups you wish to add',
+    }),
+    RegionalConfigurations: RegionalConfigurationListSchema.exactOptional().openapi({
+      description:
+        'Describes the replication group IDs, the Amazon regions where they are stored and the shard configuration for each that comprise the Global datastore',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        'Indicates that the process begins immediately. At present, the only permitted value for this parameter is true.',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'NodeGroupCount', 'ApplyImmediately'],
@@ -5702,37 +4096,21 @@ const IncreaseNodeGroupsInGlobalReplicationGroupMessageSchema = z
 
 const IncreaseReplicaCountMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The id of the replication group to which you want to add replica nodes.',
-        }),
-    ),
-    NewReplicaCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of read replica nodes you want at the completion of this operation. For Redis (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.",
-        }),
-    ).exactOptional(),
-    ReplicaConfiguration: ReplicaConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ConfigureShard</code> objects that can be used to configure each shard in a Redis (cluster mode enabled) replication group. The <code>ConfigureShard</code> has three members: <code>NewReplicaCount</code>, <code>NodeGroupId</code>, and <code>PreferredAvailabilityZones</code>.',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>True</code>, the number of replica nodes is increased immediately. <code>ApplyImmediately=False</code> is not currently supported.',
-        }),
-    ),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The id of the replication group to which you want to add replica nodes.',
+    }),
+    NewReplicaCount: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "The number of read replica nodes you want at the completion of this operation. For Redis (cluster mode disabled) replication groups, this is the number of replica nodes in the replication group. For Redis (cluster mode enabled) replication groups, this is the number of replica nodes in each of the replication group's node groups.",
+    }),
+    ReplicaConfiguration: ReplicaConfigurationListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ConfigureShard</code> objects that can be used to configure each shard in a Redis (cluster mode enabled) replication group. The <code>ConfigureShard</code> has three members: <code>NewReplicaCount</code>, <code>NodeGroupId</code>, and <code>PreferredAvailabilityZones</code>.',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        'If <code>True</code>, the number of replica nodes is increased immediately. <code>ApplyImmediately=False</code> is not currently supported.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'ApplyImmediately'],
@@ -5744,22 +4122,14 @@ const KeyListSchema = z.array(StringSchema).openapi('KeyList')
 
 const ListAllowedNodeTypeModificationsMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the cluster you want to scale up to a larger node instanced type. ElastiCache uses the cluster id to identify the current node type of this cluster and from that to create a list of node types you can scale up to.</p> <important> <p>You must provide a value for either the <code>CacheClusterId</code> or the <code>ReplicationGroupId</code>.</p> </important>',
-        }),
-    ).exactOptional(),
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the replication group want to scale up to a larger node type. ElastiCache uses the replication group id to identify the current node type being used by this replication group, and from that to create a list of node types you can scale up to.</p> <important> <p>You must provide a value for either the <code>CacheClusterId</code> or the <code>ReplicationGroupId</code>.</p> </important>',
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the cluster you want to scale up to a larger node instanced type. ElastiCache uses the cluster id to identify the current node type of this cluster and from that to create a list of node types you can scale up to.</p> <important> <p>You must provide a value for either the <code>CacheClusterId</code> or the <code>ReplicationGroupId</code>.</p> </important>',
+    }),
+    ReplicationGroupId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the replication group want to scale up to a larger node type. ElastiCache uses the replication group id to identify the current node type being used by this replication group, and from that to create a list of node types you can scale up to.</p> <important> <p>You must provide a value for either the <code>CacheClusterId</code> or the <code>ReplicationGroupId</code>.</p> </important>',
+    }),
   })
   .openapi({
     title: 'ListAllowedNodeTypeModificationsMessage',
@@ -5771,14 +4141,10 @@ const ListAllowedNodeTypeModificationsMessageSchema = z
 
 const ListTagsForResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource for which you want the list of tags, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p>',
-        }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource for which you want the list of tags, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p>',
+    }),
   })
   .openapi({
     required: ['ResourceName'],
@@ -5789,167 +4155,87 @@ const ListTagsForResourceMessageSchema = z
 
 const ModifyCacheClusterMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cluster identifier. This value is stored as a lowercase string.',
-        }),
-    ),
-    NumCacheNodes: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of cache nodes that the cluster should have. If the value for <code>NumCacheNodes</code> is greater than the sum of the number of current cache nodes and the number of cache nodes pending creation (which may be zero), more nodes are added. If the value is less than the number of existing cache nodes, nodes are removed. If the value is equal to the number of current cache nodes, any pending add or remove requests are canceled.</p> <p>If you are removing cache nodes, you must use the <code>CacheNodeIdsToRemove</code> parameter to provide the IDs of the specific cache nodes to remove.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p> <note> <p>Adding or removing Memcached cache nodes can be applied immediately or as a pending operation (see <code>ApplyImmediately</code>).</p> <p>A pending operation to modify the number of cache nodes in a cluster during its maintenance window, whether by adding or removing nodes in accordance with the scale out architecture, is not queued. The customer's latest request to add or remove nodes to the cluster overrides any previous pending operations to modify the number of cache nodes in the cluster. For example, a request to remove 2 nodes would override a previous pending operation to remove 3 nodes. Similarly, a request to add 2 nodes would override a previous pending operation to remove 3 nodes and vice versa. As Memcached cache nodes may now be provisioned in different Availability Zones with flexible cache node placement, a request to add nodes does not automatically override a previous pending operation to add nodes. The customer can modify the previous pending operation to add more nodes or explicitly cancel the pending request and retry the new request. To cancel pending operations to modify the number of cache nodes in a cluster, use the <code>ModifyCacheCluster</code> request and set <code>NumCacheNodes</code> equal to the number of cache nodes currently in the cluster.</p> </note>",
-        }),
-    ).exactOptional(),
-    CacheNodeIdsToRemove: CacheNodeIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of cache node IDs to be removed. A node ID is a numeric identifier (0001, 0002, etc.). This parameter is only valid when <code>NumCacheNodes</code> is less than the existing number of cache nodes. The number of cache node IDs supplied in this parameter must match the difference between the existing number of cache nodes in the cluster or pending cache nodes, whichever is greater, and the value of <code>NumCacheNodes</code> in the request.</p> <p>For example: If you have 3 active cache nodes, 7 pending cache nodes, and the number of cache nodes in this <code>ModifyCacheCluster</code> call is 5, you must list 2 (7 - 5) cache node IDs to remove.</p>',
-        }),
-    ).exactOptional(),
-    AZMode: AZModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the new nodes in this Memcached cluster are all created in a single Availability Zone or created across multiple Availability Zones.</p> <p>Valid values: <code>single-az</code> | <code>cross-az</code>.</p> <p>This option is only supported for Memcached clusters.</p> <note> <p>You cannot specify <code>single-az</code> if the Memcached cluster already has cache nodes in different Availability Zones. If <code>cross-az</code> is specified, existing Memcached nodes remain in their current Availability Zone.</p> <p>Only newly created nodes are located in different Availability Zones. </p> </note>',
-        }),
-    ).exactOptional(),
-    NewAvailabilityZones: PreferredAvailabilityZoneListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>This option is only supported on Memcached clusters.</p> </note> <p>The list of Availability Zones where the new Memcached cache nodes are created.</p> <p>This parameter is only valid when <code>NumCacheNodes</code> in the request is greater than the sum of the number of active cache nodes and the number of cache nodes pending creation (which may be zero). The number of Availability Zones supplied in this list must match the cache nodes being added in this request.</p> <p>Scenarios:</p> <ul> <li> <p> <b>Scenario 1:</b> You have 3 active nodes and wish to add 2 nodes. Specify <code>NumCacheNodes=5</code> (3 + 2) and optionally specify two Availability Zones for the two new nodes.</p> </li> <li> <p> <b>Scenario 2:</b> You have 3 active nodes and 2 nodes pending creation (from the scenario 1 call) and want to add 1 more node. Specify <code>NumCacheNodes=6</code> ((3 + 2) + 1) and optionally specify an Availability Zone for the new node.</p> </li> <li> <p> <b>Scenario 3:</b> You want to cancel all pending operations. Specify <code>NumCacheNodes=3</code> to cancel all pending operations.</p> </li> </ul> <p>The Availability Zone placement of nodes pending creation cannot be modified. If you wish to cancel any nodes pending creation, add 0 nodes by setting <code>NumCacheNodes</code> to the number of current nodes.</p> <p>If <code>cross-az</code> is specified, existing Memcached nodes remain in their current Availability Zone. Only newly created nodes can be located in different Availability Zones. For guidance on how to move existing Memcached nodes to different Availability Zones, see the <b>Availability Zone Considerations</b> section of <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/CacheNodes.SupportedTypes.html">Cache Node Considerations for Memcached</a>.</p> <p> <b>Impact of new add/remove requests upon pending requests</b> </p> <ul> <li> <p>Scenario-1</p> <ul> <li> <p>Pending Action: Delete</p> </li> <li> <p>New Request: Delete</p> </li> <li> <p>Result: The new delete, pending or immediate, replaces the pending delete.</p> </li> </ul> </li> <li> <p>Scenario-2</p> <ul> <li> <p>Pending Action: Delete</p> </li> <li> <p>New Request: Create</p> </li> <li> <p>Result: The new create, pending or immediate, replaces the pending delete.</p> </li> </ul> </li> <li> <p>Scenario-3</p> <ul> <li> <p>Pending Action: Create</p> </li> <li> <p>New Request: Delete</p> </li> <li> <p>Result: The new delete, pending or immediate, replaces the pending create.</p> </li> </ul> </li> <li> <p>Scenario-4</p> <ul> <li> <p>Pending Action: Create</p> </li> <li> <p>New Request: Create</p> </li> <li> <p>Result: The new create is added to the pending create.</p> <important> <p> <b>Important:</b> If the new create request is <b>Apply Immediately - Yes</b>, all creates are performed immediately. If the new create request is <b>Apply Immediately - No</b>, all creates are pending.</p> </important> </li> </ul> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of cache security group names to authorize on this cluster. This change is asynchronously applied as soon as possible.</p> <p>You can use this parameter only with clusters that are created outside of an Amazon Virtual Private Cloud (Amazon VPC).</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default".</p>',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the VPC Security Groups associated with the cluster.</p> <p>This parameter can be used only with clusters that are created in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
-        }),
-    ).exactOptional(),
-    NotificationTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be same as the cluster owner.</p> </note>',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache parameter group to apply to this cluster. This change is asynchronously applied as soon as possible for parameters when the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request.',
-        }),
-    ).exactOptional(),
-    NotificationTopicStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Amazon SNS notification topic. Notifications are sent only if the status is <code>active</code>.</p> <p>Valid values: <code>active</code> | <code>inactive</code> </p>',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the cluster.</p> <p>If <code>false</code>, changes to the cluster are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first.</p> <important> <p>If you perform a <code>ModifyCacheCluster</code> before a pending modification is applied, the pending modification is replaced by the newer modification.</p> </important> <p>Valid values: <code>true</code> | <code>false</code> </p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The upgraded version of the cache engine to be run on the cache nodes.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster and create it anew with the earlier engine version. </p>',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <note> <p>If the value of <code>SnapshotRetentionLimit</code> is set to zero (0), backups are turned off.</p> </note>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your cluster. ',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A valid cache node type that you want to scale this cluster up to.',
-        }),
-    ).exactOptional(),
-    AuthToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Reserved parameter. The password used to access a password protected server. This parameter must be specified with the <code>auth-token-update</code> parameter. Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length</p> </li> <li> <p>Cannot contain any of the following characters: '/', '\"', or '@', '%'</p> </li> </ul> <p> For more information, see AUTH password at <a href=\"http://redis.io/commands/AUTH\">AUTH</a>.</p>",
-        }),
-    ).exactOptional(),
-    AuthTokenUpdateStrategy: AuthTokenUpdateStrategyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the strategy to use to update the AUTH token. This parameter must be specified with the <code>auth-token</code> parameter. Possible values:</p> <ul> <li> <p>Rotate</p> </li> <li> <p>Set</p> </li> </ul> <p> For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html">Authenticating Users with Redis AUTH</a> </p>',
-        }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.and(
-      z.any().openapi({ description: 'Specifies the destination, format and type of the logs.' }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
+    CacheClusterId: StringSchema.openapi({
+      description: 'The cluster identifier. This value is stored as a lowercase string.',
+    }),
+    NumCacheNodes: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        "<p>The number of cache nodes that the cluster should have. If the value for <code>NumCacheNodes</code> is greater than the sum of the number of current cache nodes and the number of cache nodes pending creation (which may be zero), more nodes are added. If the value is less than the number of existing cache nodes, nodes are removed. If the value is equal to the number of current cache nodes, any pending add or remove requests are canceled.</p> <p>If you are removing cache nodes, you must use the <code>CacheNodeIdsToRemove</code> parameter to provide the IDs of the specific cache nodes to remove.</p> <p>For clusters running Redis, this value must be 1. For clusters running Memcached, this value must be between 1 and 40.</p> <note> <p>Adding or removing Memcached cache nodes can be applied immediately or as a pending operation (see <code>ApplyImmediately</code>).</p> <p>A pending operation to modify the number of cache nodes in a cluster during its maintenance window, whether by adding or removing nodes in accordance with the scale out architecture, is not queued. The customer's latest request to add or remove nodes to the cluster overrides any previous pending operations to modify the number of cache nodes in the cluster. For example, a request to remove 2 nodes would override a previous pending operation to remove 3 nodes. Similarly, a request to add 2 nodes would override a previous pending operation to remove 3 nodes and vice versa. As Memcached cache nodes may now be provisioned in different Availability Zones with flexible cache node placement, a request to add nodes does not automatically override a previous pending operation to add nodes. The customer can modify the previous pending operation to add more nodes or explicitly cancel the pending request and retry the new request. To cancel pending operations to modify the number of cache nodes in a cluster, use the <code>ModifyCacheCluster</code> request and set <code>NumCacheNodes</code> equal to the number of cache nodes currently in the cluster.</p> </note>",
+    }),
+    CacheNodeIdsToRemove: CacheNodeIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of cache node IDs to be removed. A node ID is a numeric identifier (0001, 0002, etc.). This parameter is only valid when <code>NumCacheNodes</code> is less than the existing number of cache nodes. The number of cache node IDs supplied in this parameter must match the difference between the existing number of cache nodes in the cluster or pending cache nodes, whichever is greater, and the value of <code>NumCacheNodes</code> in the request.</p> <p>For example: If you have 3 active cache nodes, 7 pending cache nodes, and the number of cache nodes in this <code>ModifyCacheCluster</code> call is 5, you must list 2 (7 - 5) cache node IDs to remove.</p>',
+    }),
+    AZMode: AZModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the new nodes in this Memcached cluster are all created in a single Availability Zone or created across multiple Availability Zones.</p> <p>Valid values: <code>single-az</code> | <code>cross-az</code>.</p> <p>This option is only supported for Memcached clusters.</p> <note> <p>You cannot specify <code>single-az</code> if the Memcached cluster already has cache nodes in different Availability Zones. If <code>cross-az</code> is specified, existing Memcached nodes remain in their current Availability Zone.</p> <p>Only newly created nodes are located in different Availability Zones. </p> </note>',
+    }),
+    NewAvailabilityZones: PreferredAvailabilityZoneListSchema.exactOptional().openapi({
+      description:
+        '<note> <p>This option is only supported on Memcached clusters.</p> </note> <p>The list of Availability Zones where the new Memcached cache nodes are created.</p> <p>This parameter is only valid when <code>NumCacheNodes</code> in the request is greater than the sum of the number of active cache nodes and the number of cache nodes pending creation (which may be zero). The number of Availability Zones supplied in this list must match the cache nodes being added in this request.</p> <p>Scenarios:</p> <ul> <li> <p> <b>Scenario 1:</b> You have 3 active nodes and wish to add 2 nodes. Specify <code>NumCacheNodes=5</code> (3 + 2) and optionally specify two Availability Zones for the two new nodes.</p> </li> <li> <p> <b>Scenario 2:</b> You have 3 active nodes and 2 nodes pending creation (from the scenario 1 call) and want to add 1 more node. Specify <code>NumCacheNodes=6</code> ((3 + 2) + 1) and optionally specify an Availability Zone for the new node.</p> </li> <li> <p> <b>Scenario 3:</b> You want to cancel all pending operations. Specify <code>NumCacheNodes=3</code> to cancel all pending operations.</p> </li> </ul> <p>The Availability Zone placement of nodes pending creation cannot be modified. If you wish to cancel any nodes pending creation, add 0 nodes by setting <code>NumCacheNodes</code> to the number of current nodes.</p> <p>If <code>cross-az</code> is specified, existing Memcached nodes remain in their current Availability Zone. Only newly created nodes can be located in different Availability Zones. For guidance on how to move existing Memcached nodes to different Availability Zones, see the <b>Availability Zone Considerations</b> section of <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/CacheNodes.SupportedTypes.html">Cache Node Considerations for Memcached</a>.</p> <p> <b>Impact of new add/remove requests upon pending requests</b> </p> <ul> <li> <p>Scenario-1</p> <ul> <li> <p>Pending Action: Delete</p> </li> <li> <p>New Request: Delete</p> </li> <li> <p>Result: The new delete, pending or immediate, replaces the pending delete.</p> </li> </ul> </li> <li> <p>Scenario-2</p> <ul> <li> <p>Pending Action: Delete</p> </li> <li> <p>New Request: Create</p> </li> <li> <p>Result: The new create, pending or immediate, replaces the pending delete.</p> </li> </ul> </li> <li> <p>Scenario-3</p> <ul> <li> <p>Pending Action: Create</p> </li> <li> <p>New Request: Delete</p> </li> <li> <p>Result: The new delete, pending or immediate, replaces the pending create.</p> </li> </ul> </li> <li> <p>Scenario-4</p> <ul> <li> <p>Pending Action: Create</p> </li> <li> <p>New Request: Create</p> </li> <li> <p>Result: The new create is added to the pending create.</p> <important> <p> <b>Important:</b> If the new create request is <b>Apply Immediately - Yes</b>, all creates are performed immediately. If the new create request is <b>Apply Immediately - No</b>, all creates are pending.</p> </important> </li> </ul> </li> </ul>',
+    }),
+    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of cache security group names to authorize on this cluster. This change is asynchronously applied as soon as possible.</p> <p>You can use this parameter only with clusters that are created outside of an Amazon Virtual Private Cloud (Amazon VPC).</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Must not be "Default".</p>',
+    }),
+    SecurityGroupIds: SecurityGroupIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the VPC Security Groups associated with the cluster.</p> <p>This parameter can be used only with clusters that are created in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
+    }),
+    NotificationTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be same as the cluster owner.</p> </note>',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache parameter group to apply to this cluster. This change is asynchronously applied as soon as possible for parameters when the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request.',
+    }),
+    NotificationTopicStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Amazon SNS notification topic. Notifications are sent only if the status is <code>active</code>.</p> <p>Valid values: <code>active</code> | <code>inactive</code> </p>',
+    }),
+    ApplyImmediately: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the cluster.</p> <p>If <code>false</code>, changes to the cluster are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first.</p> <important> <p>If you perform a <code>ModifyCacheCluster</code> before a pending modification is applied, the pending modification is replaced by the newer modification.</p> </important> <p>Valid values: <code>true</code> | <code>false</code> </p> <p>Default: <code>false</code> </p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The upgraded version of the cache engine to be run on the cache nodes.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster and create it anew with the earlier engine version. </p>',
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic cluster snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <note> <p>If the value of <code>SnapshotRetentionLimit</code> is set to zero (0), backups are turned off.</p> </note>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        'The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of your cluster. ',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'A valid cache node type that you want to scale this cluster up to.',
+    }),
+    AuthToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Reserved parameter. The password used to access a password protected server. This parameter must be specified with the <code>auth-token-update</code> parameter. Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length</p> </li> <li> <p>Cannot contain any of the following characters: '/', '\"', or '@', '%'</p> </li> </ul> <p> For more information, see AUTH password at <a href=\"http://redis.io/commands/AUTH\">AUTH</a>.</p>",
+    }),
+    AuthTokenUpdateStrategy: AuthTokenUpdateStrategyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the strategy to use to update the AUTH token. This parameter must be specified with the <code>auth-token</code> parameter. Possible values:</p> <ul> <li> <p>Rotate</p> </li> <li> <p>Set</p> </li> </ul> <p> For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html">Authenticating Users with Redis AUTH</a> </p>',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.exactOptional().openapi({
+      description: 'Specifies the destination, format and type of the logs.',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
   })
   .openapi({
     required: ['CacheClusterId'],
@@ -5959,22 +4245,18 @@ const ModifyCacheClusterMessageSchema = z
   .openapi('ModifyCacheClusterMessage')
 
 const ParameterNameValueListSchema = z
-  .array(ParameterNameValueSchema.and(z.any().openapi({ xml: { name: 'ParameterNameValue' } })))
+  .array(ParameterNameValueSchema.openapi({ xml: { name: 'ParameterNameValue' } }))
   .openapi('ParameterNameValueList')
 
 const ModifyCacheParameterGroupMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache parameter group to modify.' }),
-    ),
-    ParameterNameValues: ParameterNameValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of parameter names and values for the parameter update. You must supply at least one parameter name and value; subsequent arguments are optional. A maximum of 20 parameters may be modified per request.',
-        }),
-    ),
+    CacheParameterGroupName: StringSchema.openapi({
+      description: 'The name of the cache parameter group to modify.',
+    }),
+    ParameterNameValues: ParameterNameValueListSchema.openapi({
+      description:
+        'An array of parameter names and values for the parameter update. You must supply at least one parameter name and value; subsequent arguments are optional. A maximum of 20 parameters may be modified per request.',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupName', 'ParameterNameValues'],
@@ -5985,20 +4267,16 @@ const ModifyCacheParameterGroupMessageSchema = z
 
 const ModifyCacheSubnetGroupMessageSchema = z
   .object({
-    CacheSubnetGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name for the cache subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p> <p>Example: <code>mysubnetgroup</code> </p>',
-        }),
-    ),
-    CacheSubnetGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the cache subnet group.' }),
-    ).exactOptional(),
-    SubnetIds: SubnetIdentifierListSchema.and(
-      z.any().openapi({ description: 'The EC2 subnet IDs for the cache subnet group.' }),
-    ).exactOptional(),
+    CacheSubnetGroupName: StringSchema.openapi({
+      description:
+        '<p>The name for the cache subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters or hyphens.</p> <p>Example: <code>mysubnetgroup</code> </p>',
+    }),
+    CacheSubnetGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the cache subnet group.',
+    }),
+    SubnetIds: SubnetIdentifierListSchema.exactOptional().openapi({
+      description: 'The EC2 subnet IDs for the cache subnet group.',
+    }),
   })
   .openapi({
     required: ['CacheSubnetGroupName'],
@@ -6009,51 +4287,31 @@ const ModifyCacheSubnetGroupMessageSchema = z
 
 const ModifyGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible. Modifications to Global Replication Groups cannot be requested to be applied in PreferredMaintenceWindow. ',
-        }),
-    ),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A valid cache node type that you want to scale this Global datastore to.',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The upgraded version of the cache engine to be run on the clusters in the Global datastore. ',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache parameter group to use with the Global datastore. It must be compatible with the major engine version used by the Global datastore.',
-        }),
-    ).exactOptional(),
-    GlobalReplicationGroupDescription: StringSchema.and(
-      z.any().openapi({ description: 'A description of the Global datastore' }),
-    ).exactOptional(),
-    AutomaticFailoverEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Determines whether a read replica is automatically promoted to read/write primary if the existing primary encounters a failure. ',
-        }),
-    ).exactOptional(),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        'This parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible. Modifications to Global Replication Groups cannot be requested to be applied in PreferredMaintenceWindow. ',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'A valid cache node type that you want to scale this Global datastore to.',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        'The upgraded version of the cache engine to be run on the clusters in the Global datastore. ',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache parameter group to use with the Global datastore. It must be compatible with the major engine version used by the Global datastore.',
+    }),
+    GlobalReplicationGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'A description of the Global datastore',
+    }),
+    AutomaticFailoverEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'Determines whether a read replica is automatically promoted to read/write primary if the existing primary encounters a failure. ',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'ApplyImmediately'],
@@ -6063,212 +4321,115 @@ const ModifyGlobalReplicationGroupMessageSchema = z
 
 const ModifyReplicationGroupMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The identifier of the replication group to modify.' }),
-    ),
-    ReplicationGroupDescription: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description for the replication group. Maximum length is 255 characters.',
-        }),
-    ).exactOptional(),
-    PrimaryClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For replication groups with a single primary, if this parameter is specified, ElastiCache promotes the specified cluster in the specified replication group to the primary role. The nodes of all other clusters in the replication group are read replicas.',
-        }),
-    ).exactOptional(),
-    SnapshottingClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The cluster ID that is used as the daily snapshot source for the replication group. This parameter cannot be set for Redis (cluster mode enabled) replication groups.',
-        }),
-    ).exactOptional(),
-    AutomaticFailoverEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines whether a read replica is automatically promoted to read/write primary if the existing primary encounters a failure.</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    MultiAZEnabled: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'A flag to indicate MultiAZ is enabled.' }),
-    ).exactOptional(),
-    NodeGroupId: StringSchema.and(
-      z.any().openapi({ deprecated: true, description: 'Deprecated. This parameter is not used.' }),
-    ).exactOptional(),
-    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of cache security group names to authorize for the clusters in this replication group. This change is asynchronously applied as soon as possible.</p> <p>This parameter can be used only with replication group containing clusters running outside of an Amazon Virtual Private Cloud (Amazon VPC).</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Must not be <code>Default</code>.</p>',
-        }),
-    ).exactOptional(),
-    SecurityGroupIds: SecurityGroupIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the VPC Security Groups associated with the clusters in the replication group.</p> <p>This parameter can be used only with replication group containing clusters running in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
-        }),
-    ).exactOptional(),
-    PreferredMaintenanceWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
-        }),
-    ).exactOptional(),
-    NotificationTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be same as the replication group owner. </p> </note>',
-        }),
-    ).exactOptional(),
-    CacheParameterGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the cache parameter group to apply to all of the clusters in this replication group. This change is asynchronously applied as soon as possible for parameters when the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request.',
-        }),
-    ).exactOptional(),
-    NotificationTopicStatus: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the Amazon SNS notification topic for the replication group. Notifications are sent only if the status is <code>active</code>.</p> <p>Valid values: <code>active</code> | <code>inactive</code> </p>',
-        }),
-    ).exactOptional(),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the replication group.</p> <p>If <code>false</code>, changes to the nodes in the replication group are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first.</p> <p>Valid values: <code>true</code> | <code>false</code> </p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    EngineVersion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The upgraded version of the cache engine to be run on the clusters in the replication group.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing replication group and create it anew with the earlier engine version. </p>',
-        }),
-    ).exactOptional(),
-    AutoMinorVersionUpgrade: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
-        }),
-    ).exactOptional(),
-    SnapshotRetentionLimit: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of days for which ElastiCache retains automatic node group (shard) snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <p> <b>Important</b> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p>',
-        }),
-    ).exactOptional(),
-    SnapshotWindow: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of the node group (shard) specified by <code>SnapshottingClusterId</code>.</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p>',
-        }),
-    ).exactOptional(),
-    CacheNodeType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A valid cache node type that you want to scale this replication group to.',
-        }),
-    ).exactOptional(),
-    AuthToken: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Reserved parameter. The password used to access a password protected server. This parameter must be specified with the <code>auth-token-update-strategy </code> parameter. Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length</p> </li> <li> <p>Cannot contain any of the following characters: '/', '\"', or '@', '%'</p> </li> </ul> <p> For more information, see AUTH password at <a href=\"http://redis.io/commands/AUTH\">AUTH</a>.</p>",
-        }),
-    ).exactOptional(),
-    AuthTokenUpdateStrategy: AuthTokenUpdateStrategyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the strategy to use to update the AUTH token. This parameter must be specified with the <code>auth-token</code> parameter. Possible values:</p> <ul> <li> <p>Rotate</p> </li> <li> <p>Set</p> </li> </ul> <p> For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html">Authenticating Users with Redis AUTH</a> </p>',
-        }),
-    ).exactOptional(),
-    UserGroupIdsToAdd: UserGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the user group you are associating with the replication group.',
-        }),
-    ).exactOptional(),
-    UserGroupIdsToRemove: UserGroupIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the user group to disassociate from the replication group, meaning the users in the group no longer can access the replication group.',
-        }),
-    ).exactOptional(),
-    RemoveUserGroups: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Removes the user group associated with this replication group.' }),
-    ).exactOptional(),
-    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.and(
-      z.any().openapi({ description: 'Specifies the destination, format and type of the logs.' }),
-    ).exactOptional(),
-    IpDiscovery: IpDiscoverySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
-        }),
-    ).exactOptional(),
-    TransitEncryptionEnabled: BooleanOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A flag that enables in-transit encryption when set to true. If you are enabling in-transit encryption for an existing cluster, you must also set <code>TransitEncryptionMode</code> to <code>preferred</code>.',
-        }),
-    ).exactOptional(),
-    TransitEncryptionMode: TransitEncryptionModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>You must set <code>TransitEncryptionEnabled</code> to <code>true</code>, for your existing cluster, and set <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can set the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>',
-        }),
-    ).exactOptional(),
-    ClusterMode: ClusterModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The identifier of the replication group to modify.',
+    }),
+    ReplicationGroupDescription: StringSchema.exactOptional().openapi({
+      description: 'A description for the replication group. Maximum length is 255 characters.',
+    }),
+    PrimaryClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'For replication groups with a single primary, if this parameter is specified, ElastiCache promotes the specified cluster in the specified replication group to the primary role. The nodes of all other clusters in the replication group are read replicas.',
+    }),
+    SnapshottingClusterId: StringSchema.exactOptional().openapi({
+      description:
+        'The cluster ID that is used as the daily snapshot source for the replication group. This parameter cannot be set for Redis (cluster mode enabled) replication groups.',
+    }),
+    AutomaticFailoverEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>Determines whether a read replica is automatically promoted to read/write primary if the existing primary encounters a failure.</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
+    }),
+    MultiAZEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'A flag to indicate MultiAZ is enabled.',
+    }),
+    NodeGroupId: StringSchema.exactOptional().openapi({
+      deprecated: true,
+      description: 'Deprecated. This parameter is not used.',
+    }),
+    CacheSecurityGroupNames: CacheSecurityGroupNameListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of cache security group names to authorize for the clusters in this replication group. This change is asynchronously applied as soon as possible.</p> <p>This parameter can be used only with replication group containing clusters running outside of an Amazon Virtual Private Cloud (Amazon VPC).</p> <p>Constraints: Must contain no more than 255 alphanumeric characters. Must not be <code>Default</code>.</p>',
+    }),
+    SecurityGroupIds: SecurityGroupIdsListSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the VPC Security Groups associated with the clusters in the replication group.</p> <p>This parameter can be used only with replication group containing clusters running in an Amazon Virtual Private Cloud (Amazon VPC).</p>',
+    }),
+    PreferredMaintenanceWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period.</p> <p>Valid values for <code>ddd</code> are:</p> <ul> <li> <p> <code>sun</code> </p> </li> <li> <p> <code>mon</code> </p> </li> <li> <p> <code>tue</code> </p> </li> <li> <p> <code>wed</code> </p> </li> <li> <p> <code>thu</code> </p> </li> <li> <p> <code>fri</code> </p> </li> <li> <p> <code>sat</code> </p> </li> </ul> <p>Example: <code>sun:23:00-mon:01:30</code> </p>',
+    }),
+    NotificationTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to which notifications are sent.</p> <note> <p>The Amazon SNS topic owner must be same as the replication group owner. </p> </note>',
+    }),
+    CacheParameterGroupName: StringSchema.exactOptional().openapi({
+      description:
+        'The name of the cache parameter group to apply to all of the clusters in this replication group. This change is asynchronously applied as soon as possible for parameters when the <code>ApplyImmediately</code> parameter is specified as <code>true</code> for this request.',
+    }),
+    NotificationTopicStatus: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the Amazon SNS notification topic for the replication group. Notifications are sent only if the status is <code>active</code>.</p> <p>Valid values: <code>active</code> | <code>inactive</code> </p>',
+    }),
+    ApplyImmediately: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, this parameter causes the modifications in this request and any pending modifications to be applied, asynchronously and as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the replication group.</p> <p>If <code>false</code>, changes to the nodes in the replication group are applied on the next maintenance reboot, or the next failure reboot, whichever occurs first.</p> <p>Valid values: <code>true</code> | <code>false</code> </p> <p>Default: <code>false</code> </p>',
+    }),
+    EngineVersion: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The upgraded version of the cache engine to be run on the clusters in the replication group.</p> <p> <b>Important:</b> You can upgrade to a newer engine version (see <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement">Selecting a Cache Engine and Version</a>), but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing replication group and create it anew with the earlier engine version. </p>',
+    }),
+    AutoMinorVersionUpgrade: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        ' If you are running Redis engine version 6.0 or later, set this parameter to yes if you want to opt-in to the next auto minor version upgrade campaign. This parameter is disabled for previous versions.  ',
+    }),
+    SnapshotRetentionLimit: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of days for which ElastiCache retains automatic node group (shard) snapshots before deleting them. For example, if you set <code>SnapshotRetentionLimit</code> to 5, a snapshot that was taken today is retained for 5 days before being deleted.</p> <p> <b>Important</b> If the value of SnapshotRetentionLimit is set to zero (0), backups are turned off.</p>',
+    }),
+    SnapshotWindow: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The daily time range (in UTC) during which ElastiCache begins taking a daily snapshot of the node group (shard) specified by <code>SnapshottingClusterId</code>.</p> <p>Example: <code>05:00-09:00</code> </p> <p>If you do not specify this parameter, ElastiCache automatically chooses an appropriate time range.</p>',
+    }),
+    CacheNodeType: StringSchema.exactOptional().openapi({
+      description: 'A valid cache node type that you want to scale this replication group to.',
+    }),
+    AuthToken: StringSchema.exactOptional().openapi({
+      description:
+        "<p>Reserved parameter. The password used to access a password protected server. This parameter must be specified with the <code>auth-token-update-strategy </code> parameter. Password constraints:</p> <ul> <li> <p>Must be only printable ASCII characters</p> </li> <li> <p>Must be at least 16 characters and no more than 128 characters in length</p> </li> <li> <p>Cannot contain any of the following characters: '/', '\"', or '@', '%'</p> </li> </ul> <p> For more information, see AUTH password at <a href=\"http://redis.io/commands/AUTH\">AUTH</a>.</p>",
+    }),
+    AuthTokenUpdateStrategy: AuthTokenUpdateStrategyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the strategy to use to update the AUTH token. This parameter must be specified with the <code>auth-token</code> parameter. Possible values:</p> <ul> <li> <p>Rotate</p> </li> <li> <p>Set</p> </li> </ul> <p> For more information, see <a href="http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html">Authenticating Users with Redis AUTH</a> </p>',
+    }),
+    UserGroupIdsToAdd: UserGroupIdListSchema.exactOptional().openapi({
+      description: 'The ID of the user group you are associating with the replication group.',
+    }),
+    UserGroupIdsToRemove: UserGroupIdListSchema.exactOptional().openapi({
+      description:
+        'The ID of the user group to disassociate from the replication group, meaning the users in the group no longer can access the replication group.',
+    }),
+    RemoveUserGroups: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Removes the user group associated with this replication group.',
+    }),
+    LogDeliveryConfigurations: LogDeliveryConfigurationRequestListSchema.exactOptional().openapi({
+      description: 'Specifies the destination, format and type of the logs.',
+    }),
+    IpDiscovery: IpDiscoverySchema.exactOptional().openapi({
+      description:
+        'The network type you choose when modifying a cluster, either <code>ipv4</code> | <code>ipv6</code>. IPv6 is supported for workloads using Redis engine version 6.2 onward or Memcached engine version 1.6.6 on all instances built on the <a href="http://aws.amazon.com/ec2/nitro/">Nitro system</a>.',
+    }),
+    TransitEncryptionEnabled: BooleanOptionalSchema.exactOptional().openapi({
+      description:
+        'A flag that enables in-transit encryption when set to true. If you are enabling in-transit encryption for an existing cluster, you must also set <code>TransitEncryptionMode</code> to <code>preferred</code>.',
+    }),
+    TransitEncryptionMode: TransitEncryptionModeSchema.exactOptional().openapi({
+      description:
+        '<p>A setting that allows you to migrate your clients to use in-transit encryption, with no downtime.</p> <p>You must set <code>TransitEncryptionEnabled</code> to <code>true</code>, for your existing cluster, and set <code>TransitEncryptionMode</code> to <code>preferred</code> in the same request to allow both encrypted and unencrypted connections at the same time. Once you migrate all your Redis clients to use encrypted connections you can set the value to <code>required</code> to allow encrypted connections only.</p> <p>Setting <code>TransitEncryptionMode</code> to <code>required</code> is a two-step process that requires you to first set the <code>TransitEncryptionMode</code> to <code>preferred</code>, after that you can set <code>TransitEncryptionMode</code> to <code>required</code>. </p>',
+    }),
+    ClusterMode: ClusterModeSchema.exactOptional().openapi({
+      description:
+        'Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must first set the cluster mode to Compatible. Compatible mode allows your Redis clients to connect using both cluster mode enabled and cluster mode disabled. After you migrate all Redis clients to use cluster mode enabled, you can then complete cluster mode configuration and set the cluster mode to Enabled.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId'],
@@ -6278,63 +4439,39 @@ const ModifyReplicationGroupMessageSchema = z
   .openapi('ModifyReplicationGroupMessage')
 
 const NodeGroupsToRemoveListSchema = z
-  .array(AllowedNodeGroupIdSchema.and(z.any().openapi({ xml: { name: 'NodeGroupToRemove' } })))
+  .array(AllowedNodeGroupIdSchema.openapi({ xml: { name: 'NodeGroupToRemove' } }))
   .openapi('NodeGroupsToRemoveList')
 
 const NodeGroupsToRetainListSchema = z
-  .array(AllowedNodeGroupIdSchema.and(z.any().openapi({ xml: { name: 'NodeGroupToRetain' } })))
+  .array(AllowedNodeGroupIdSchema.openapi({ xml: { name: 'NodeGroupToRetain' } }))
   .openapi('NodeGroupsToRetainList')
 
 const ModifyReplicationGroupShardConfigurationMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Redis (cluster mode enabled) cluster (replication group) on which the shards are to be configured.',
-        }),
-    ),
-    NodeGroupCount: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of node groups (shards) that results from the modification of the shard configuration.',
-        }),
-    ),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is <code>true</code>.</p> <p>Value: true</p>',
-        }),
-    ),
-    ReshardingConfiguration: ReshardingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies the preferred availability zones for each node group in the cluster. If the value of <code>NodeGroupCount</code> is greater than the current number of node groups (shards), you can use this parameter to specify the preferred availability zones of the cluster's shards. If you omit this parameter ElastiCache selects availability zones for you.</p> <p>You can specify this parameter only if the value of <code>NodeGroupCount</code> is greater than the current number of node groups (shards).</p>",
-        }),
-    ).exactOptional(),
-    NodeGroupsToRemove: NodeGroupsToRemoveListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the value of <code>NodeGroupCount</code> is less than the current number of node groups (shards), then either <code>NodeGroupsToRemove</code> or <code>NodeGroupsToRetain</code> is required. <code>NodeGroupsToRemove</code> is a list of <code>NodeGroupId</code>s to remove from the cluster.</p> <p>ElastiCache for Redis will attempt to remove all node groups listed by <code>NodeGroupsToRemove</code> from the cluster.</p>',
-        }),
-    ).exactOptional(),
-    NodeGroupsToRetain: NodeGroupsToRetainListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the value of <code>NodeGroupCount</code> is less than the current number of node groups (shards), then either <code>NodeGroupsToRemove</code> or <code>NodeGroupsToRetain</code> is required. <code>NodeGroupsToRetain</code> is a list of <code>NodeGroupId</code>s to retain in the cluster.</p> <p>ElastiCache for Redis will attempt to remove all node groups except those listed by <code>NodeGroupsToRetain</code> from the cluster.</p>',
-        }),
-    ).exactOptional(),
+    ReplicationGroupId: StringSchema.openapi({
+      description:
+        'The name of the Redis (cluster mode enabled) cluster (replication group) on which the shards are to be configured.',
+    }),
+    NodeGroupCount: IntegerSchema.openapi({
+      description:
+        'The number of node groups (shards) that results from the modification of the shard configuration.',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description:
+        '<p>Indicates that the shard reconfiguration process begins immediately. At present, the only permitted value for this parameter is <code>true</code>.</p> <p>Value: true</p>',
+    }),
+    ReshardingConfiguration: ReshardingConfigurationListSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies the preferred availability zones for each node group in the cluster. If the value of <code>NodeGroupCount</code> is greater than the current number of node groups (shards), you can use this parameter to specify the preferred availability zones of the cluster's shards. If you omit this parameter ElastiCache selects availability zones for you.</p> <p>You can specify this parameter only if the value of <code>NodeGroupCount</code> is greater than the current number of node groups (shards).</p>",
+    }),
+    NodeGroupsToRemove: NodeGroupsToRemoveListSchema.exactOptional().openapi({
+      description:
+        '<p>If the value of <code>NodeGroupCount</code> is less than the current number of node groups (shards), then either <code>NodeGroupsToRemove</code> or <code>NodeGroupsToRetain</code> is required. <code>NodeGroupsToRemove</code> is a list of <code>NodeGroupId</code>s to remove from the cluster.</p> <p>ElastiCache for Redis will attempt to remove all node groups listed by <code>NodeGroupsToRemove</code> from the cluster.</p>',
+    }),
+    NodeGroupsToRetain: NodeGroupsToRetainListSchema.exactOptional().openapi({
+      description:
+        '<p>If the value of <code>NodeGroupCount</code> is less than the current number of node groups (shards), then either <code>NodeGroupsToRemove</code> or <code>NodeGroupsToRetain</code> is required. <code>NodeGroupsToRetain</code> is a list of <code>NodeGroupId</code>s to retain in the cluster.</p> <p>ElastiCache for Redis will attempt to remove all node groups except those listed by <code>NodeGroupsToRetain</code> from the cluster.</p>',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'NodeGroupCount', 'ApplyImmediately'],
@@ -6346,77 +4483,57 @@ const ModifyReplicationGroupShardConfigurationMessageSchema = z
 
 const ModifyUserGroupMessageSchema = z
   .object({
-    UserGroupId: StringSchema.and(z.any().openapi({ description: 'The ID of the user group.' })),
-    UserIdsToAdd: UserIdListInputSchema.and(
-      z.any().openapi({ description: 'The list of user IDs to add to the user group.' }),
-    ).exactOptional(),
-    UserIdsToRemove: UserIdListInputSchema.and(
-      z.any().openapi({ description: 'The list of user IDs to remove from the user group.' }),
-    ).exactOptional(),
+    UserGroupId: StringSchema.openapi({ description: 'The ID of the user group.' }),
+    UserIdsToAdd: UserIdListInputSchema.exactOptional().openapi({
+      description: 'The list of user IDs to add to the user group.',
+    }),
+    UserIdsToRemove: UserIdListInputSchema.exactOptional().openapi({
+      description: 'The list of user IDs to remove from the user group.',
+    }),
   })
   .openapi({ required: ['UserGroupId'], title: 'ModifyUserGroupMessage' })
   .openapi('ModifyUserGroupMessage')
 
 const ModifyUserMessageSchema = z
   .object({
-    UserId: UserIdSchema.and(z.any().openapi({ description: 'The ID of the user.' })),
-    AccessString: AccessStringSchema.and(
-      z.any().openapi({ description: 'Access permissions string used for this user.' }),
-    ).exactOptional(),
-    AppendAccessString: AccessStringSchema.and(
-      z.any().openapi({ description: 'Adds additional user permissions to the access string.' }),
-    ).exactOptional(),
-    Passwords: PasswordListInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The passwords belonging to the user. You are allowed up to two.',
-        }),
-    ).exactOptional(),
-    NoPasswordRequired: BooleanOptionalSchema.and(
-      z.any().openapi({ description: 'Indicates no password is required for the user.' }),
-    ).exactOptional(),
-    AuthenticationMode: AuthenticationModeSchema.and(
-      z.any().openapi({ description: 'Specifies how to authenticate the user.' }),
-    ).exactOptional(),
+    UserId: UserIdSchema.openapi({ description: 'The ID of the user.' }),
+    AccessString: AccessStringSchema.exactOptional().openapi({
+      description: 'Access permissions string used for this user.',
+    }),
+    AppendAccessString: AccessStringSchema.exactOptional().openapi({
+      description: 'Adds additional user permissions to the access string.',
+    }),
+    Passwords: PasswordListInputSchema.exactOptional().openapi({
+      description: 'The passwords belonging to the user. You are allowed up to two.',
+    }),
+    NoPasswordRequired: BooleanOptionalSchema.exactOptional().openapi({
+      description: 'Indicates no password is required for the user.',
+    }),
+    AuthenticationMode: AuthenticationModeSchema.exactOptional().openapi({
+      description: 'Specifies how to authenticate the user.',
+    }),
   })
   .openapi({ required: ['UserId'], title: 'ModifyUserMessage' })
   .openapi('ModifyUserMessage')
 
 const PurchaseReservedCacheNodesOfferingMessageSchema = z
   .object({
-    ReservedCacheNodesOfferingId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the reserved cache node offering to purchase.</p> <p>Example: <code>438012d3-4052-4cc7-b2e3-8d3372e0e706</code> </p>',
-        }),
-    ),
-    ReservedCacheNodeId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A customer-specified identifier to track this reservation.</p> <note> <p>The Reserved Cache Node ID is an unique customer-specified identifier to track this reservation. If this parameter is not specified, ElastiCache automatically generates an identifier for the reservation.</p> </note> <p>Example: myreservationID</p>',
-        }),
-    ).exactOptional(),
-    CacheNodeCount: IntegerOptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of cache node instances to reserve.</p> <p>Default: <code>1</code> </p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
-        }),
-    ).exactOptional(),
+    ReservedCacheNodesOfferingId: StringSchema.openapi({
+      description:
+        '<p>The ID of the reserved cache node offering to purchase.</p> <p>Example: <code>438012d3-4052-4cc7-b2e3-8d3372e0e706</code> </p>',
+    }),
+    ReservedCacheNodeId: StringSchema.exactOptional().openapi({
+      description:
+        '<p>A customer-specified identifier to track this reservation.</p> <note> <p>The Reserved Cache Node ID is an unique customer-specified identifier to track this reservation. If this parameter is not specified, ElastiCache automatically generates an identifier for the reservation.</p> </note> <p>Example: myreservationID</p>',
+    }),
+    CacheNodeCount: IntegerOptionalSchema.exactOptional().openapi({
+      description:
+        '<p>The number of cache node instances to reserve.</p> <p>Default: <code>1</code> </p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description:
+        'A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.',
+    }),
   })
   .openapi({
     required: ['ReservedCacheNodesOfferingId'],
@@ -6428,14 +4545,12 @@ const PurchaseReservedCacheNodesOfferingMessageSchema = z
 
 const RebalanceSlotsInGlobalReplicationGroupMessageSchema = z
   .object({
-    GlobalReplicationGroupId: StringSchema.and(
-      z.any().openapi({ description: 'The name of the Global datastore' }),
-    ),
-    ApplyImmediately: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If <code>True</code>, redistribution is applied immediately.' }),
-    ),
+    GlobalReplicationGroupId: StringSchema.openapi({
+      description: 'The name of the Global datastore',
+    }),
+    ApplyImmediately: BooleanSchema.openapi({
+      description: 'If <code>True</code>, redistribution is applied immediately.',
+    }),
   })
   .openapi({
     required: ['GlobalReplicationGroupId', 'ApplyImmediately'],
@@ -6445,21 +4560,13 @@ const RebalanceSlotsInGlobalReplicationGroupMessageSchema = z
 
 const RebootCacheClusterMessageSchema = z
   .object({
-    CacheClusterId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The cluster identifier. This parameter is stored as a lowercase string.',
-        }),
-    ),
-    CacheNodeIdsToReboot: CacheNodeIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of cache node IDs to reboot. A node ID is a numeric identifier (0001, 0002, etc.). To reboot an entire cluster, specify all of the cache node IDs.',
-        }),
-    ),
+    CacheClusterId: StringSchema.openapi({
+      description: 'The cluster identifier. This parameter is stored as a lowercase string.',
+    }),
+    CacheNodeIdsToReboot: CacheNodeIdsListSchema.openapi({
+      description:
+        'A list of cache node IDs to reboot. A node ID is a numeric identifier (0001, 0002, etc.). To reboot an entire cluster, specify all of the cache node IDs.',
+    }),
   })
   .openapi({
     required: ['CacheClusterId', 'CacheNodeIdsToReboot'],
@@ -6470,22 +4577,14 @@ const RebootCacheClusterMessageSchema = z
 
 const RemoveTagsFromResourceMessageSchema = z
   .object({
-    ResourceName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the resource from which you want the tags removed, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Service Namespaces</a>.</p>',
-        }),
-    ),
-    TagKeys: KeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>TagKeys</code> identifying the tags you want removed from the named resource.',
-        }),
-    ),
+    ResourceName: StringSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the resource from which you want the tags removed, for example <code>arn:aws:elasticache:us-west-2:0123456789:cluster:myCluster</code> or <code>arn:aws:elasticache:us-west-2:0123456789:snapshot:mySnapshot</code>.</p> <p>For more information about ARNs, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html">Amazon Resource Names (ARNs) and Amazon Service Namespaces</a>.</p>',
+    }),
+    TagKeys: KeyListSchema.openapi({
+      description:
+        'A list of <code>TagKeys</code> identifying the tags you want removed from the named resource.',
+    }),
   })
   .openapi({
     required: ['ResourceName', 'TagKeys'],
@@ -6496,25 +4595,17 @@ const RemoveTagsFromResourceMessageSchema = z
 
 const ResetCacheParameterGroupMessageSchema = z
   .object({
-    CacheParameterGroupName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the cache parameter group to reset.' }),
-    ),
-    ResetAllParameters: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If <code>true</code>, all parameters in the cache parameter group are reset to their default values. If <code>false</code>, only the parameters listed by <code>ParameterNameValues</code> are reset to their default values.</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    ParameterNameValues: ParameterNameValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of parameter names to reset to their default values. If <code>ResetAllParameters</code> is <code>true</code>, do not use <code>ParameterNameValues</code>. If <code>ResetAllParameters</code> is <code>false</code>, you must specify the name of at least one parameter to reset.',
-        }),
-    ).exactOptional(),
+    CacheParameterGroupName: StringSchema.openapi({
+      description: 'The name of the cache parameter group to reset.',
+    }),
+    ResetAllParameters: BooleanSchema.exactOptional().openapi({
+      description:
+        '<p>If <code>true</code>, all parameters in the cache parameter group are reset to their default values. If <code>false</code>, only the parameters listed by <code>ParameterNameValues</code> are reset to their default values.</p> <p>Valid values: <code>true</code> | <code>false</code> </p>',
+    }),
+    ParameterNameValues: ParameterNameValueListSchema.exactOptional().openapi({
+      description:
+        'An array of parameter names to reset to their default values. If <code>ResetAllParameters</code> is <code>true</code>, do not use <code>ParameterNameValues</code>. If <code>ResetAllParameters</code> is <code>false</code>, you must specify the name of at least one parameter to reset.',
+    }),
   })
   .openapi({
     required: ['CacheParameterGroupName'],
@@ -6525,26 +4616,16 @@ const ResetCacheParameterGroupMessageSchema = z
 
 const RevokeCacheSecurityGroupIngressMessageSchema = z
   .object({
-    CacheSecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the cache security group to revoke ingress from.' }),
-    ),
-    EC2SecurityGroupName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon EC2 security group to revoke access from.',
-        }),
-    ),
-    EC2SecurityGroupOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon account number of the Amazon EC2 security group owner. Note that this is not the same thing as an Amazon access key ID - you must provide a valid Amazon account number for this parameter.',
-        }),
-    ),
+    CacheSecurityGroupName: StringSchema.openapi({
+      description: 'The name of the cache security group to revoke ingress from.',
+    }),
+    EC2SecurityGroupName: StringSchema.openapi({
+      description: 'The name of the Amazon EC2 security group to revoke access from.',
+    }),
+    EC2SecurityGroupOwnerId: StringSchema.openapi({
+      description:
+        'The Amazon account number of the Amazon EC2 security group owner. Note that this is not the same thing as an Amazon access key ID - you must provide a valid Amazon account number for this parameter.',
+    }),
   })
   .openapi({
     required: ['CacheSecurityGroupName', 'EC2SecurityGroupName', 'EC2SecurityGroupOwnerId'],
@@ -6556,21 +4637,13 @@ const RevokeCacheSecurityGroupIngressMessageSchema = z
 
 const StartMigrationMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the replication group to which data should be migrated.',
-        }),
-    ),
-    CustomerNodeEndpointList: CustomerNodeEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of endpoints from which data should be migrated. For Redis (cluster mode disabled), list should have only one element.',
-        }),
-    ),
+    ReplicationGroupId: StringSchema.openapi({
+      description: 'The ID of the replication group to which data should be migrated.',
+    }),
+    CustomerNodeEndpointList: CustomerNodeEndpointListSchema.openapi({
+      description:
+        'List of endpoints from which data should be migrated. For Redis (cluster mode disabled), list should have only one element.',
+    }),
   })
   .openapi({
     required: ['ReplicationGroupId', 'CustomerNodeEndpointList'],
@@ -6580,22 +4653,14 @@ const StartMigrationMessageSchema = z
 
 const TestFailoverMessageSchema = z
   .object({
-    ReplicationGroupId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the replication group (console: cluster) whose automatic failover is being tested by this operation.',
-        }),
-    ),
-    NodeGroupId: AllowedNodeGroupIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the node group (called shard in the console) in this replication group on which automatic failover is to be tested. You may test automatic failover on up to 5 node groups in any rolling 24-hour period.',
-        }),
-    ),
+    ReplicationGroupId: StringSchema.openapi({
+      description:
+        'The name of the replication group (console: cluster) whose automatic failover is being tested by this operation.',
+    }),
+    NodeGroupId: AllowedNodeGroupIdSchema.openapi({
+      description:
+        'The name of the node group (called shard in the console) in this replication group on which automatic failover is to be tested. You may test automatic failover on up to 5 node groups in any rolling 24-hour period.',
+    }),
   })
   .openapi({ required: ['ReplicationGroupId', 'NodeGroupId'], title: 'TestFailoverMessage' })
   .openapi('TestFailoverMessage')
@@ -6704,14 +4769,7 @@ export const getActionAddTagsToResourceRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .openapi({
           param: {
@@ -7577,14 +5635,7 @@ export const getActionCopySnapshotRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -7799,14 +5850,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       PreferredAvailabilityZones: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'PreferredAvailabilityZone' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'PreferredAvailabilityZone' } })),
         )
         .exactOptional()
         .openapi({
@@ -7916,14 +5960,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       CacheSecurityGroupNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -7947,14 +5984,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       SecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -7978,14 +6008,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -8003,14 +6026,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       SnapshotArns: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SnapshotArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SnapshotArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -8175,14 +6191,7 @@ export const getActionCreateCacheClusterRoute = createRoute({
       PreferredOutpostArns: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'PreferredOutpostArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'PreferredOutpostArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -8208,33 +6217,21 @@ export const getActionCreateCacheClusterRoute = createRoute({
           z.array(
             z
               .object({
-                LogType: LogTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-                    }),
-                ).exactOptional(),
-                DestinationType: DestinationTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
-                    }),
-                ).exactOptional(),
-                DestinationDetails: DestinationDetailsSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-                    }),
-                ).exactOptional(),
-                LogFormat: LogFormatSchema.and(
-                  z.any().openapi({ description: 'Specifies either JSON or TEXT' }),
-                ).exactOptional(),
+                LogType: LogTypeSchema.exactOptional().openapi({
+                  description:
+                    'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+                }),
+                DestinationType: DestinationTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
+                }),
+                DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+                  description:
+                    'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+                }),
+                LogFormat: LogFormatSchema.exactOptional().openapi({
+                  description: 'Specifies either JSON or TEXT',
+                }),
                 Enabled: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -8243,26 +6240,16 @@ export const getActionCreateCacheClusterRoute = createRoute({
                     })(z.stringbool()),
                     BooleanOptionalSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if log delivery is enabled. Default <code>true</code>.',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: 'Specify if log delivery is enabled. Default <code>true</code>.',
+                  }),
               })
               .openapi({
                 description: 'Specifies the destination, format and type of the logs. ',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
-              ),
+              .openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
           ),
         )
         .exactOptional()
@@ -8612,14 +6599,7 @@ export const getActionCreateCacheParameterGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -8804,14 +6784,7 @@ export const getActionCreateCacheSecurityGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -8988,14 +6961,7 @@ export const getActionCreateCacheSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .openapi({
           param: {
@@ -9017,14 +6983,7 @@ export const getActionCreateCacheSubnetGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -9446,14 +7405,7 @@ export const getActionCreateReplicationGroupRoute = createRoute({
       PreferredCacheClusterAZs: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'AvailabilityZone' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'AvailabilityZone' } })),
         )
         .exactOptional()
         .openapi({
@@ -9522,22 +7474,14 @@ export const getActionCreateReplicationGroupRoute = createRoute({
           z.array(
             z
               .object({
-                NodeGroupId: AllowedNodeGroupIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
-                    }),
-                ).exactOptional(),
-                Slots: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>A string that specifies the keyspace for a particular node group. Keyspaces range from 0 to 16,383. The string is in the format <code>startkey-endkey</code>.</p> <p>Example: <code>"0-3999"</code> </p>',
-                    }),
-                ).exactOptional(),
+                NodeGroupId: AllowedNodeGroupIdSchema.exactOptional().openapi({
+                  description:
+                    'Either the ElastiCache for Redis supplied 4-digit id or a user supplied id for the node group these configuration values apply to.',
+                }),
+                Slots: StringSchema.exactOptional().openapi({
+                  description:
+                    '<p>A string that specifies the keyspace for a particular node group. Keyspaces range from 0 to 16,383. The string is in the format <code>startkey-endkey</code>.</p> <p>Example: <code>"0-3999"</code> </p>',
+                }),
                 ReplicaCount: z
                   .preprocess(
                     (val) =>
@@ -9548,48 +7492,31 @@ export const getActionCreateReplicationGroupRoute = createRoute({
                         : val,
                     IntegerOptionalSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The number of read replica nodes in this node group (shard).',
-                      }),
-                  )
-                  .exactOptional(),
-                PrimaryAvailabilityZone: StringSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'The Availability Zone where the primary node of this node group (shard) is launched.',
-                    }),
-                ).exactOptional(),
-                ReplicaAvailabilityZones: AvailabilityZonesListSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'A list of Availability Zones to be used for the read replicas. The number of Availability Zones in this list must match the value of <code>ReplicaCount</code> or <code>ReplicasPerNodeGroup</code> if not specified.',
-                    }),
-                ).exactOptional(),
-                PrimaryOutpostArn: StringSchema.and(
-                  z.any().openapi({ description: 'The outpost ARN of the primary node.' }),
-                ).exactOptional(),
-                ReplicaOutpostArns: OutpostArnsListSchema.and(
-                  z.any().openapi({ description: 'The outpost ARN of the node replicas.' }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: 'The number of read replica nodes in this node group (shard).',
+                  }),
+                PrimaryAvailabilityZone: StringSchema.exactOptional().openapi({
+                  description:
+                    'The Availability Zone where the primary node of this node group (shard) is launched.',
+                }),
+                ReplicaAvailabilityZones: AvailabilityZonesListSchema.exactOptional().openapi({
+                  description:
+                    'A list of Availability Zones to be used for the read replicas. The number of Availability Zones in this list must match the value of <code>ReplicaCount</code> or <code>ReplicasPerNodeGroup</code> if not specified.',
+                }),
+                PrimaryOutpostArn: StringSchema.exactOptional().openapi({
+                  description: 'The outpost ARN of the primary node.',
+                }),
+                ReplicaOutpostArns: OutpostArnsListSchema.exactOptional().openapi({
+                  description: 'The outpost ARN of the node replicas.',
+                }),
               })
               .openapi({
                 description:
                   'Node group (shard) configuration options. Each node group (shard) configuration has the following: <code>Slots</code>, <code>PrimaryAvailabilityZone</code>, <code>ReplicaAvailabilityZones</code>, <code>ReplicaCount</code>.',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'NodeGroupConfiguration' } }),
-              ),
+              .openapi({ xml: { name: 'NodeGroupConfiguration' } }),
           ),
         )
         .exactOptional()
@@ -9742,14 +7669,7 @@ export const getActionCreateReplicationGroupRoute = createRoute({
       CacheSecurityGroupNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -9773,14 +7693,7 @@ export const getActionCreateReplicationGroupRoute = createRoute({
       SecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -9804,14 +7717,7 @@ export const getActionCreateReplicationGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -9830,14 +7736,7 @@ export const getActionCreateReplicationGroupRoute = createRoute({
       SnapshotArns: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SnapshotArn' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SnapshotArn' } })),
         )
         .exactOptional()
         .openapi({
@@ -10038,33 +7937,21 @@ export const getActionCreateReplicationGroupRoute = createRoute({
           z.array(
             z
               .object({
-                LogType: LogTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-                    }),
-                ).exactOptional(),
-                DestinationType: DestinationTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
-                    }),
-                ).exactOptional(),
-                DestinationDetails: DestinationDetailsSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-                    }),
-                ).exactOptional(),
-                LogFormat: LogFormatSchema.and(
-                  z.any().openapi({ description: 'Specifies either JSON or TEXT' }),
-                ).exactOptional(),
+                LogType: LogTypeSchema.exactOptional().openapi({
+                  description:
+                    'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+                }),
+                DestinationType: DestinationTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
+                }),
+                DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+                  description:
+                    'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+                }),
+                LogFormat: LogFormatSchema.exactOptional().openapi({
+                  description: 'Specifies either JSON or TEXT',
+                }),
                 Enabled: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -10073,26 +7960,16 @@ export const getActionCreateReplicationGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanOptionalSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if log delivery is enabled. Default <code>true</code>.',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: 'Specify if log delivery is enabled. Default <code>true</code>.',
+                  }),
               })
               .openapi({
                 description: 'Specifies the destination, format and type of the logs. ',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
-              ),
+              .openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
           ),
         )
         .exactOptional()
@@ -10524,14 +8401,7 @@ export const getActionCreateSnapshotRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -10832,15 +8702,7 @@ export const getActionCreateUserRoute = createRoute({
           Tags: z
             .preprocess(
               (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-              z.array(
-                TagSchema.and(
-                  ((schema) =>
-                    z.union([
-                      schema,
-                      z.preprocess((val) => (val === 'null' ? null : val), schema),
-                    ]))(z.any()).openapi({ xml: { name: 'Tag' } }),
-                ),
-              ),
+              z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
             )
             .exactOptional()
             .openapi({
@@ -10860,22 +8722,14 @@ export const getActionCreateUserRoute = createRoute({
             }),
           AuthenticationMode: z
             .object({
-              Type: InputAuthenticationTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
-                  }),
-              ).exactOptional(),
-              Passwords: PasswordListInputSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
-                  }),
-              ).exactOptional(),
+              Type: InputAuthenticationTypeSchema.exactOptional().openapi({
+                description:
+                  'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
+              }),
+              Passwords: PasswordListInputSchema.exactOptional().openapi({
+                description:
+                  'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -11099,14 +8953,7 @@ export const getActionCreateUserGroupRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -11308,14 +9155,7 @@ export const getActionDecreaseNodeGroupsInGlobalReplicationGroupRoute = createRo
       GlobalNodeGroupsToRemove: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'GlobalNodeGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'GlobalNodeGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -11339,14 +9179,7 @@ export const getActionDecreaseNodeGroupsInGlobalReplicationGroupRoute = createRo
       GlobalNodeGroupsToRetain: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'GlobalNodeGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'GlobalNodeGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -11546,14 +9379,10 @@ export const getActionDecreaseReplicaCountRoute = createRoute({
           z.array(
             z
               .object({
-                NodeGroupId: AllowedNodeGroupIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
-                    }),
-                ),
+                NodeGroupId: AllowedNodeGroupIdSchema.openapi({
+                  description:
+                    "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
+                }),
                 NewReplicaCount: z
                   .preprocess(
                     (val) =>
@@ -11564,41 +9393,25 @@ export const getActionDecreaseReplicaCountRoute = createRoute({
                         : val,
                     IntegerSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
-                      }),
-                  ),
-                PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
-                    }),
-                ).exactOptional(),
-                PreferredOutpostArns: PreferredOutpostArnListSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The outpost ARNs in which the cache cluster is created.',
-                    }),
-                ).exactOptional(),
+                  .openapi({
+                    description:
+                      '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
+                  }),
+                PreferredAvailabilityZones:
+                  PreferredAvailabilityZoneListSchema.exactOptional().openapi({
+                    description:
+                      "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
+                  }),
+                PreferredOutpostArns: PreferredOutpostArnListSchema.exactOptional().openapi({
+                  description: 'The outpost ARNs in which the cache cluster is created.',
+                }),
               })
               .openapi({
                 required: ['NodeGroupId', 'NewReplicaCount'],
                 description:
                   'Node group (shard) configuration options when adding or removing replicas. Each node group (shard) configuration has the following members: NodeGroupId, NewReplicaCount, and PreferredAvailabilityZones. ',
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'ConfigureShard' } }),
-              ),
+              .openapi({ xml: { name: 'ConfigureShard' } }),
           ),
         )
         .exactOptional()
@@ -16234,12 +14047,12 @@ export const getActionDescribeUpdateActionsRoute = createRoute({
             }),
           ServiceUpdateTimeRange: z
             .object({
-              StartTime: TStampSchema.and(
-                z.any().openapi({ description: 'The start time of the time range filter' }),
-              ).exactOptional(),
-              EndTime: TStampSchema.and(
-                z.any().openapi({ description: 'The end time of the time range filter' }),
-              ).exactOptional(),
+              StartTime: TStampSchema.exactOptional().openapi({
+                description: 'The start time of the time range filter',
+              }),
+              EndTime: TStampSchema.exactOptional().openapi({
+                description: 'The end time of the time range filter',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -17225,14 +15038,7 @@ export const getActionIncreaseNodeGroupsInGlobalReplicationGroupRoute = createRo
       RegionalConfigurations: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            RegionalConfigurationSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'RegionalConfiguration' } }),
-            ),
-          ),
+          z.array(RegionalConfigurationSchema.openapi({ xml: { name: 'RegionalConfiguration' } })),
         )
         .exactOptional()
         .openapi({
@@ -17423,14 +15229,10 @@ export const getActionIncreaseReplicaCountRoute = createRoute({
           z.array(
             z
               .object({
-                NodeGroupId: AllowedNodeGroupIdSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
-                    }),
-                ),
+                NodeGroupId: AllowedNodeGroupIdSchema.openapi({
+                  description:
+                    "The 4-digit id for the node group you are configuring. For Redis (cluster mode disabled) replication groups, the node group id is always 0001. To find a Redis (cluster mode enabled)'s node group's (shard's) id, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/shard-find-id.html\">Finding a Shard's Id</a>.",
+                }),
                 NewReplicaCount: z
                   .preprocess(
                     (val) =>
@@ -17441,41 +15243,25 @@ export const getActionIncreaseReplicaCountRoute = createRoute({
                         : val,
                     IntegerSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
-                      }),
-                  ),
-                PreferredAvailabilityZones: PreferredAvailabilityZoneListSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
-                    }),
-                ).exactOptional(),
-                PreferredOutpostArns: PreferredOutpostArnListSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description: 'The outpost ARNs in which the cache cluster is created.',
-                    }),
-                ).exactOptional(),
+                  .openapi({
+                    description:
+                      '<p>The number of replicas you want in this node group at the end of this operation. The maximum value for <code>NewReplicaCount</code> is 5. The minimum value depends upon the type of Redis replication group you are working with.</p> <p>The minimum number of replicas in a shard or replication group is:</p> <ul> <li> <p>Redis (cluster mode disabled)</p> <ul> <li> <p>If Multi-AZ: 1</p> </li> <li> <p>If Multi-AZ: 0</p> </li> </ul> </li> <li> <p>Redis (cluster mode enabled): 0 (though you will not be able to failover to a replica if your primary node fails)</p> </li> </ul>',
+                  }),
+                PreferredAvailabilityZones:
+                  PreferredAvailabilityZoneListSchema.exactOptional().openapi({
+                    description:
+                      "A list of <code>PreferredAvailabilityZone</code> strings that specify which availability zones the replication group's nodes are to be in. The nummber of <code>PreferredAvailabilityZone</code> values must equal the value of <code>NewReplicaCount</code> plus 1 to account for the primary node. If this member of <code>ReplicaConfiguration</code> is omitted, ElastiCache for Redis selects the availability zone for each of the replicas.",
+                  }),
+                PreferredOutpostArns: PreferredOutpostArnListSchema.exactOptional().openapi({
+                  description: 'The outpost ARNs in which the cache cluster is created.',
+                }),
               })
               .openapi({
                 required: ['NodeGroupId', 'NewReplicaCount'],
                 description:
                   'Node group (shard) configuration options when adding or removing replicas. Each node group (shard) configuration has the following members: NodeGroupId, NewReplicaCount, and PreferredAvailabilityZones. ',
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'ConfigureShard' } }),
-              ),
+              .openapi({ xml: { name: 'ConfigureShard' } }),
           ),
         )
         .exactOptional()
@@ -18119,14 +15905,7 @@ export const getActionModifyCacheClusterRoute = createRoute({
       CacheNodeIdsToRemove: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheNodeId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheNodeId' } })),
         )
         .exactOptional()
         .openapi({
@@ -18160,14 +15939,7 @@ export const getActionModifyCacheClusterRoute = createRoute({
       NewAvailabilityZones: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'PreferredAvailabilityZone' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'PreferredAvailabilityZone' } })),
         )
         .exactOptional()
         .openapi({
@@ -18191,14 +15963,7 @@ export const getActionModifyCacheClusterRoute = createRoute({
       CacheSecurityGroupNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -18222,14 +15987,7 @@ export const getActionModifyCacheClusterRoute = createRoute({
       SecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -18419,33 +16177,21 @@ export const getActionModifyCacheClusterRoute = createRoute({
           z.array(
             z
               .object({
-                LogType: LogTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-                    }),
-                ).exactOptional(),
-                DestinationType: DestinationTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
-                    }),
-                ).exactOptional(),
-                DestinationDetails: DestinationDetailsSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-                    }),
-                ).exactOptional(),
-                LogFormat: LogFormatSchema.and(
-                  z.any().openapi({ description: 'Specifies either JSON or TEXT' }),
-                ).exactOptional(),
+                LogType: LogTypeSchema.exactOptional().openapi({
+                  description:
+                    'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+                }),
+                DestinationType: DestinationTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
+                }),
+                DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+                  description:
+                    'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+                }),
+                LogFormat: LogFormatSchema.exactOptional().openapi({
+                  description: 'Specifies either JSON or TEXT',
+                }),
                 Enabled: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -18454,26 +16200,16 @@ export const getActionModifyCacheClusterRoute = createRoute({
                     })(z.stringbool()),
                     BooleanOptionalSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if log delivery is enabled. Default <code>true</code>.',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: 'Specify if log delivery is enabled. Default <code>true</code>.',
+                  }),
               })
               .openapi({
                 description: 'Specifies the destination, format and type of the logs. ',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
-              ),
+              .openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
           ),
         )
         .exactOptional()
@@ -18751,14 +16487,7 @@ export const getActionModifyCacheParameterGroupRoute = createRoute({
       ParameterNameValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            ParameterNameValueSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ParameterNameValue' } }),
-            ),
-          ),
+          z.array(ParameterNameValueSchema.openapi({ xml: { name: 'ParameterNameValue' } })),
         )
         .openapi({
           param: {
@@ -18939,14 +16668,7 @@ export const getActionModifyCacheSubnetGroupRoute = createRoute({
       SubnetIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SubnetIdentifier' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SubnetIdentifier' } })),
         )
         .exactOptional()
         .openapi({
@@ -19381,14 +17103,7 @@ export const getActionModifyReplicationGroupRoute = createRoute({
       CacheSecurityGroupNames: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheSecurityGroupName' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheSecurityGroupName' } })),
         )
         .exactOptional()
         .openapi({
@@ -19412,14 +17127,7 @@ export const getActionModifyReplicationGroupRoute = createRoute({
       SecurityGroupIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'SecurityGroupId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'SecurityGroupId' } })),
         )
         .exactOptional()
         .openapi({
@@ -19653,33 +17361,21 @@ export const getActionModifyReplicationGroupRoute = createRoute({
           z.array(
             z
               .object({
-                LogType: LogTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
-                    }),
-                ).exactOptional(),
-                DestinationType: DestinationTypeSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
-                    }),
-                ).exactOptional(),
-                DestinationDetails: DestinationDetailsSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
-                    }),
-                ).exactOptional(),
-                LogFormat: LogFormatSchema.and(
-                  z.any().openapi({ description: 'Specifies either JSON or TEXT' }),
-                ).exactOptional(),
+                LogType: LogTypeSchema.exactOptional().openapi({
+                  description:
+                    'Refers to <a href="https://redis.io/commands/slowlog">slow-log</a> or engine-log..',
+                }),
+                DestinationType: DestinationTypeSchema.exactOptional().openapi({
+                  description:
+                    'Specify either <code>cloudwatch-logs</code> or <code>kinesis-firehose</code> as the destination type.',
+                }),
+                DestinationDetails: DestinationDetailsSchema.exactOptional().openapi({
+                  description:
+                    'Configuration details of either a CloudWatch Logs destination or Kinesis Data Firehose destination.',
+                }),
+                LogFormat: LogFormatSchema.exactOptional().openapi({
+                  description: 'Specifies either JSON or TEXT',
+                }),
                 Enabled: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -19688,26 +17384,16 @@ export const getActionModifyReplicationGroupRoute = createRoute({
                     })(z.stringbool()),
                     BooleanOptionalSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specify if log delivery is enabled. Default <code>true</code>.',
-                      }),
-                  )
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description: 'Specify if log delivery is enabled. Default <code>true</code>.',
+                  }),
               })
               .openapi({
                 description: 'Specifies the destination, format and type of the logs. ',
                 required: [],
               })
-              .and(
-                ((schema) =>
-                  z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                  z.any(),
-                ).openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
-              ),
+              .openapi({ xml: { name: 'LogDeliveryConfigurationRequest' } }),
           ),
         )
         .exactOptional()
@@ -20098,12 +17784,7 @@ export const getActionModifyReplicationGroupShardConfigurationRoute = createRout
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
           z.array(
-            ReshardingConfigurationSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ReshardingConfiguration' } }),
-            ),
+            ReshardingConfigurationSchema.openapi({ xml: { name: 'ReshardingConfiguration' } }),
           ),
         )
         .exactOptional()
@@ -20128,14 +17809,7 @@ export const getActionModifyReplicationGroupShardConfigurationRoute = createRout
       NodeGroupsToRemove: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            AllowedNodeGroupIdSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'NodeGroupToRemove' } }),
-            ),
-          ),
+          z.array(AllowedNodeGroupIdSchema.openapi({ xml: { name: 'NodeGroupToRemove' } })),
         )
         .exactOptional()
         .openapi({
@@ -20159,14 +17833,7 @@ export const getActionModifyReplicationGroupShardConfigurationRoute = createRout
       NodeGroupsToRetain: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            AllowedNodeGroupIdSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'NodeGroupToRetain' } }),
-            ),
-          ),
+          z.array(AllowedNodeGroupIdSchema.openapi({ xml: { name: 'NodeGroupToRetain' } })),
         )
         .exactOptional()
         .openapi({
@@ -20461,22 +18128,14 @@ export const getActionModifyUserRoute = createRoute({
             }),
           AuthenticationMode: z
             .object({
-              Type: InputAuthenticationTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
-                  }),
-              ).exactOptional(),
-              Passwords: PasswordListInputSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
-                  }),
-              ).exactOptional(),
+              Type: InputAuthenticationTypeSchema.exactOptional().openapi({
+                description:
+                  'Specifies the authentication type. Possible options are IAM authentication, password and no password.',
+              }),
+              Passwords: PasswordListInputSchema.exactOptional().openapi({
+                description:
+                  'Specifies the passwords to use for authentication if <code>Type</code> is set to <code>password</code>.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -20883,14 +18542,7 @@ export const getActionPurchaseReservedCacheNodesOfferingRoute = createRoute({
       Tags: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            TagSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'Tag' } }),
-            ),
-          ),
+          z.array(TagSchema.openapi({ xml: { name: 'Tag' } })),
         )
         .exactOptional()
         .openapi({
@@ -21206,14 +18858,7 @@ export const getActionRebootCacheClusterRoute = createRoute({
       CacheNodeIdsToReboot: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            StringSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'CacheNodeId' } }),
-            ),
-          ),
+          z.array(StringSchema.openapi({ xml: { name: 'CacheNodeId' } })),
         )
         .openapi({
           param: {
@@ -21580,14 +19225,7 @@ export const getActionResetCacheParameterGroupRoute = createRoute({
       ParameterNameValues: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(
-            ParameterNameValueSchema.and(
-              ((schema) =>
-                z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
-                z.any(),
-              ).openapi({ xml: { name: 'ParameterNameValue' } }),
-            ),
-          ),
+          z.array(ParameterNameValueSchema.openapi({ xml: { name: 'ParameterNameValue' } })),
         )
         .exactOptional()
         .openapi({
@@ -21928,9 +19566,9 @@ export const getActionStartMigrationRoute = createRoute({
           z.array(
             z
               .object({
-                Address: StringSchema.and(
-                  z.any().openapi({ description: 'The address of the node endpoint' }),
-                ).exactOptional(),
+                Address: StringSchema.exactOptional().openapi({
+                  description: 'The address of the node endpoint',
+                }),
                 Port: z
                   .preprocess(
                     (val) =>
@@ -21941,8 +19579,8 @@ export const getActionStartMigrationRoute = createRoute({
                         : val,
                     IntegerOptionalSchema,
                   )
-                  .and(z.any().openapi({ description: 'The port of the node endpoint' }))
-                  .exactOptional(),
+                  .exactOptional()
+                  .openapi({ description: 'The port of the node endpoint' }),
               })
               .openapi({
                 description: 'The endpoint from which data should be migrated.',

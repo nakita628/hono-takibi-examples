@@ -12248,12 +12248,12 @@ Provides the error of the batch get variable API.
 "string"
 ```
 
-<h2 id="tocS_Integer">Integer</h2>
+<h2 id="tocS_Integer2">Integer2</h2>
 <!-- backwards compatibility -->
-<a id="schemainteger-1"></a>
-<a id="schema_Integer"></a>
-<a id="tocSinteger-1"></a>
-<a id="tocsinteger-1"></a>
+<a id="schemainteger2"></a>
+<a id="schema_Integer2"></a>
+<a id="tocSinteger2"></a>
+<a id="tocsinteger2"></a>
 
 ```json
 0

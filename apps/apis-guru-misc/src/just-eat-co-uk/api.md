@@ -379,7 +379,7 @@ This webhook will be invoked whenever acceptance has been requested for the orde
 |» » PhoneNumber|body|string|false|Customer phone number (will be phone masking number if enabled)|
 |» » PreparationTime|body|string(timespan)|false|none|
 |» IsTest|body|boolean|false|none|
-|» Items|body|[order-item](#schemaorder-item)|false|none|
+|» Items|body|[order-item2](#schemaorder-item2)|false|none|
 |» OrderId|body|string|false|none|
 |» Payment|body|object|false|none|
 |» » Lines|body|[object]|false|none|
@@ -504,7 +504,7 @@ This webhook will be invoked whenever the order was cancelled.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[order-cancelled](#schemaorder-cancelled)|true|none|
+|body|body|[order-cancelled2](#schemaorder-cancelled2)|true|none|
 |» Event|body|string|false|none|
 |» OrderId|body|string|false|none|
 |» Reason|body|string|false|The reason the order was cancelled.|
@@ -4707,7 +4707,7 @@ This webhook will be invoked when a late order compensation query has been raise
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[late-order-compensation-query](#schemalate-order-compensation-query)|true|none|
+|body|body|[late-order-compensation-query2](#schemalate-order-compensation-query2)|true|none|
 |» compensationOptions|body|[late-order-compensation-options](#schemalate-order-compensation-options)|false|List of possible options for compensation|
 |» orderId|body|string|false|Just Eat order identifier|
 |» restaurantId|body|string|false|Just Eat restaurant identifier|
@@ -13586,7 +13586,7 @@ Update the restaurant's delivery and collection lead times
 |dayOfWeek|path|string|true|Day of week for order time|
 |serviceType|path|string|true|Service type of the order time|
 |Authorization|header|string|true|OAuth2 token issued for logged in restaurant OR API token for third party, in the format `Bearer {api_key}`|
-|body|body|[updateOrderTimeRequest](#schemaupdateordertimerequest-1)|true|none|
+|body|body|[updateOrderTimeRequest2](#schemaupdateordertimerequest2)|true|none|
 |» lowerBoundMinutes|body|integer(int32)|false|Order time lower bound value, in minutes.|
 |» upperBoundMinutes|body|integer(int32)|false|Order time upper bound value, in minutes.|
 
@@ -38729,7 +38729,7 @@ The zone profile object for a given delivery zone.
 |FriendlyOrderReference|string|false|none|none|
 |Fulfilment|object|false|none|none|
 |IsTest|boolean|false|none|none|
-|Items|[order-item](#schemaorder-item)|false|none|none|
+|Items|[order-item2](#schemaorder-item2)|false|none|none|
 |OrderId|string|false|none|none|
 |Payment|object|false|none|none|
 |PlacedDate|string(date-time)|false|none|none|
@@ -38738,12 +38738,12 @@ The zone profile object for a given delivery zone.
 |Restrictions|[[order-item-restriction](#schemaorder-item-restriction)]|false|none|This is a list of types of restricted items contained in the order.|
 |TotalPrice|number(money)|false|none|none|
 
-<h2 id="tocS_address">address</h2>
+<h2 id="tocS_address2">address2</h2>
 <!-- backwards compatibility -->
-<a id="schemaaddress-1"></a>
-<a id="schema_address"></a>
-<a id="tocSaddress-1"></a>
-<a id="tocsaddress-1"></a>
+<a id="schemaaddress2"></a>
+<a id="schema_address2"></a>
+<a id="tocSaddress2"></a>
+<a id="tocsaddress2"></a>
 
 ```json
 {
@@ -39566,7 +39566,7 @@ Denotes the type of segmentation status that restaurant can have
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Address|[address](#schemaaddress-1)|false|none|none|
+|Address|[address2](#schemaaddress2)|false|none|none|
 |CustomerReference|string|false|none|none|
 |Email|string|false|none|none|
 |Location|[location](#schemalocation)|false|none|GeoLocation object containing latitude and longitude values.|
@@ -40372,12 +40372,12 @@ The type of the document
 {}
 ```
 
-<h2 id="tocS_fee">fee</h2>
+<h2 id="tocS_fee2">fee2</h2>
 <!-- backwards compatibility -->
-<a id="schemafee-1"></a>
-<a id="schema_fee"></a>
-<a id="tocSfee-1"></a>
-<a id="tocsfee-1"></a>
+<a id="schemafee2"></a>
+<a id="schema_fee2"></a>
+<a id="tocSfee2"></a>
+<a id="tocsfee2"></a>
 
 ```json
 {
@@ -40534,12 +40534,12 @@ Details of hygiene rating experience score has contributed to get the segmentati
 |name|string|true|none|The name of the restaurant|
 |owner|object|true|none|The owner of the restaurant|
 
-<h2 id="tocS_item">item</h2>
+<h2 id="tocS_item2">item2</h2>
 <!-- backwards compatibility -->
-<a id="schemaitem-1"></a>
-<a id="schema_item"></a>
-<a id="tocSitem-1"></a>
-<a id="tocsitem-1"></a>
+<a id="schemaitem2"></a>
+<a id="schema_item2"></a>
+<a id="tocSitem2"></a>
+<a id="tocsitem2"></a>
 
 ```json
 {
@@ -40566,7 +40566,7 @@ Details of hygiene rating experience score has contributed to get the segmentati
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |Description|string|false|none|none|
-|Items|[[item](#schemaitem-1)]|false|none|none|
+|Items|[[item2](#schemaitem2)]|false|none|none|
 |OptionReference|string|false|none|none|
 |Quantity|number(int32)|false|none|none|
 |Reference|string|false|none|none|
@@ -40663,12 +40663,12 @@ Details of hygiene rating experience score has contributed to get the segmentati
 ]
 ```
 
-<h2 id="tocS_late-order-compensation-query">late-order-compensation-query</h2>
+<h2 id="tocS_late-order-compensation-query2">late-order-compensation-query2</h2>
 <!-- backwards compatibility -->
-<a id="schemalate-order-compensation-query"></a>
-<a id="schema_late-order-compensation-query"></a>
-<a id="tocSlate-order-compensation-query"></a>
-<a id="tocslate-order-compensation-query"></a>
+<a id="schemalate-order-compensation-query2"></a>
+<a id="schema_late-order-compensation-query2"></a>
+<a id="tocSlate-order-compensation-query2"></a>
+<a id="tocslate-order-compensation-query2"></a>
 
 ```json
 {
@@ -41045,12 +41045,12 @@ Details of how on its way experience score has contributed to get the segmentati
 |---|---|---|---|---|
 |Message|string|false|none|Reason why this order is being cancelled.|
 
-<h2 id="tocS_order-cancelled">order-cancelled</h2>
+<h2 id="tocS_order-cancelled2">order-cancelled2</h2>
 <!-- backwards compatibility -->
-<a id="schemaorder-cancelled"></a>
-<a id="schema_order-cancelled"></a>
-<a id="tocSorder-cancelled"></a>
-<a id="tocsorder-cancelled"></a>
+<a id="schemaorder-cancelled2"></a>
+<a id="schema_order-cancelled2"></a>
+<a id="tocSorder-cancelled2"></a>
+<a id="tocsorder-cancelled2"></a>
 
 ```json
 {
@@ -41107,12 +41107,12 @@ Details of how on its way experience score has contributed to get the segmentati
 |---|---|---|---|---|
 |DueDate|string(date-time)|false|none|The updated ETA for the order|
 
-<h2 id="tocS_order-item">order-item</h2>
+<h2 id="tocS_order-item2">order-item2</h2>
 <!-- backwards compatibility -->
-<a id="schemaorder-item"></a>
-<a id="schema_order-item"></a>
-<a id="tocSorder-item"></a>
-<a id="tocsorder-item"></a>
+<a id="schemaorder-item2"></a>
+<a id="schema_order-item2"></a>
+<a id="tocSorder-item2"></a>
+<a id="tocsorder-item2"></a>
 
 ```json
 [
@@ -41804,7 +41804,7 @@ The object representing order time entry
 |CashOnDelivery|boolean|false|none|none|
 |DeliveryCharge|number(money)|false|none|none|
 |DriverTipValue|number(money)|false|none|none|
-|Fees|[[fee](#schemafee-1)]|false|none|none|
+|Fees|[[fee2](#schemafee2)]|false|none|none|
 |RestaurantTipValue|number(money)|false|none|none|
 |Total|number(money)|false|none|none|
 
@@ -41849,11 +41849,11 @@ The object representing order time entry
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Fees|[[fee](#schemafee-1)]|false|none|none|
+|Fees|[[fee2](#schemafee2)]|false|none|none|
 |Lines|[[lines-v2](#schemalines-v2)]|true|none|none|
 |PaidDate|string(date-time)|false|none|none|
 |Taxes|[[tax-v2](#schematax-v2)]|false|none|none|
-|Tips|[[fee](#schemafee-1)]|false|none|none|
+|Tips|[[fee2](#schemafee2)]|false|none|none|
 
 <h2 id="tocS_product-id-list">product-id-list</h2>
 <!-- backwards compatibility -->
@@ -42230,12 +42230,12 @@ The object representing order time entry
 |---|---|
 |event|RestaurantInformationUpdated|
 
-<h2 id="tocS_restaurant-offline-status">restaurant-offline-status</h2>
+<h2 id="tocS_restaurant-offline-status2">restaurant-offline-status2</h2>
 <!-- backwards compatibility -->
-<a id="schemarestaurant-offline-status"></a>
-<a id="schema_restaurant-offline-status"></a>
-<a id="tocSrestaurant-offline-status"></a>
-<a id="tocsrestaurant-offline-status"></a>
+<a id="schemarestaurant-offline-status2"></a>
+<a id="schema_restaurant-offline-status2"></a>
+<a id="tocSrestaurant-offline-status2"></a>
+<a id="tocsrestaurant-offline-status2"></a>
 
 ```json
 {
@@ -42380,12 +42380,12 @@ The address of the restaurant
 |Longitude|number(double)|false|none|Longitude of the restaurant|
 |Postcode|string|false|none|Postcode of the restaurant|
 
-<h2 id="tocS_search-restaurant">search-restaurant</h2>
+<h2 id="tocS_search-restaurant2">search-restaurant2</h2>
 <!-- backwards compatibility -->
-<a id="schemasearch-restaurant"></a>
-<a id="schema_search-restaurant"></a>
-<a id="tocSsearch-restaurant"></a>
-<a id="tocssearch-restaurant"></a>
+<a id="schemasearch-restaurant2"></a>
+<a id="schema_search-restaurant2"></a>
+<a id="tocSsearch-restaurant2"></a>
+<a id="tocssearch-restaurant2"></a>
 
 ```json
 {
@@ -42464,7 +42464,7 @@ The address of the restaurant
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|Restaurants|[[search-restaurant](#schemasearch-restaurant)]|false|none|A list of restaurants matching the search criteria|
+|Restaurants|[[search-restaurant2](#schemasearch-restaurant2)]|false|none|A list of restaurants matching the search criteria|
 
 <h2 id="tocS_segmentationHistory">segmentationHistory</h2>
 <!-- backwards compatibility -->
@@ -42654,12 +42654,12 @@ Represent the details of segmentation status sub-scores
 |---|---|---|---|---|
 |OrderId|string|false|none|none|
 
-<h2 id="tocS_supportRequest">supportRequest</h2>
+<h2 id="tocS_supportRequest2">supportRequest2</h2>
 <!-- backwards compatibility -->
-<a id="schemasupportrequest-1"></a>
-<a id="schema_supportRequest"></a>
-<a id="tocSsupportrequest-1"></a>
-<a id="tocssupportrequest-1"></a>
+<a id="schemasupportrequest2"></a>
+<a id="schema_supportRequest2"></a>
+<a id="tocSsupportrequest2"></a>
+<a id="tocssupportrequest2"></a>
 
 ```json
 {
@@ -42711,12 +42711,12 @@ Represent the details of segmentation status sub-scores
 "au"
 ```
 
-<h2 id="tocS_updateOrderTimeRequest">updateOrderTimeRequest</h2>
+<h2 id="tocS_updateOrderTimeRequest2">updateOrderTimeRequest2</h2>
 <!-- backwards compatibility -->
-<a id="schemaupdateordertimerequest-1"></a>
-<a id="schema_updateOrderTimeRequest"></a>
-<a id="tocSupdateordertimerequest-1"></a>
-<a id="tocsupdateordertimerequest-1"></a>
+<a id="schemaupdateordertimerequest2"></a>
+<a id="schema_updateOrderTimeRequest2"></a>
+<a id="tocSupdateordertimerequest2"></a>
+<a id="tocsupdateordertimerequest2"></a>
 
 ```json
 {

@@ -4,12 +4,12 @@ const IntentSchema = z
   .object({ class: z.string(), identifier: z.string() })
   .openapi({
     discriminator: {
+      propertyName: 'class',
       mapping: {
         AddMediaIntent: '#/components/schemas/AddMediaIntent',
         PlayMediaIntent: '#/components/schemas/PlayMediaIntent',
         UpdateMediaAffinityIntent: '#/components/schemas/UpdateMediaAffinityIntent',
       },
-      propertyName: 'class',
     },
     required: ['class', 'identifier'],
   })
@@ -19,11 +19,11 @@ const MediaDestinationSchema = z
   .object({ mediaDestinationType: z.enum(['library', 'playlist']) })
   .openapi({
     discriminator: {
+      propertyName: 'mediaDestinationType',
       mapping: {
         library: '#/components/schemas/MediaDestinationLibrary',
         playlist: '#/components/schemas/MediaDestinationPlaylist',
       },
-      propertyName: 'mediaDestinationType',
     },
     required: ['mediaDestinationType'],
   })
@@ -165,6 +165,7 @@ const InvocationResponseSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'AddMediaIntentHandling.confirm':
           '#/components/schemas/AddMediaIntentHandlingConfirmInvocationResponse',
@@ -194,7 +195,6 @@ const InvocationResponseSchema = z
         'UpdateMediaAffinityIntentHandling.resolveMediaItems':
           '#/components/schemas/UpdateMediaAffinityIntentHandlingResolveMediaItemsInvocationResponse',
       },
-      propertyName: 'method',
     },
     required: ['method', 'result'],
   })
@@ -219,12 +219,12 @@ const IntentResponseSchema = z
   .object({ class: z.string(), userActivity: UserActivitySchema })
   .openapi({
     discriminator: {
+      propertyName: 'class',
       mapping: {
         AddMediaIntentResponse: '#/components/schemas/AddMediaIntentResponse',
         PlayMediaIntentResponse: '#/components/schemas/PlayMediaIntentResponse',
         UpdateMediaAffinityIntentResponse: '#/components/schemas/UpdateMediaAffinityIntentResponse',
       },
-      propertyName: 'class',
     },
     required: ['class', 'userActivity'],
   })
@@ -333,6 +333,7 @@ const InvocationSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'AddMediaIntentHandling.confirm': '#/components/schemas/AddMediaIntentHandlingInvocation',
         'AddMediaIntentHandling.handle': '#/components/schemas/AddMediaIntentHandlingInvocation',
@@ -358,7 +359,6 @@ const InvocationSchema = z
         'UpdateMediaAffinityIntentHandling.resolveMediaItems':
           '#/components/schemas/UpdateMediaAffinityIntentHandlingInvocation',
       },
-      propertyName: 'method',
     },
     required: ['method', 'params'],
   })
@@ -379,6 +379,7 @@ const AddMediaIntentHandlingInvocationSchema = InvocationSchema.and(
 )
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'AddMediaIntentHandling.confirm': '#/components/schemas/AddMediaIntentHandlingInvocation',
         'AddMediaIntentHandling.handle': '#/components/schemas/AddMediaIntentHandlingInvocation',
@@ -387,7 +388,6 @@ const AddMediaIntentHandlingInvocationSchema = InvocationSchema.and(
         'AddMediaIntentHandling.resolveMediaItems':
           '#/components/schemas/AddMediaIntentHandlingInvocation',
       },
-      propertyName: 'method',
     },
     required: ['method', 'params'],
   })
@@ -402,6 +402,7 @@ const IntentResolutionResultSchema = z
   })
   .openapi({
     discriminator: {
+      propertyName: 'class',
       mapping: {
         AddMediaMediaItemResolutionResult: '#/components/schemas/AddMediaMediaItemResolutionResult',
         BooleanResolutionResult: '#/components/schemas/BooleanResolutionResult',
@@ -413,7 +414,6 @@ const IntentResolutionResultSchema = z
         UpdateMediaAffinityMediaItemResolutionResult:
           '#/components/schemas/UpdateMediaAffinityMediaItemResolutionResult',
       },
-      propertyName: 'class',
     },
     required: ['class'],
   })
@@ -575,6 +575,7 @@ const AddMediaIntentHandlingInvocationResponseSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'AddMediaIntentHandling.confirm':
           '#/components/schemas/AddMediaIntentHandlingConfirmInvocationResponse',
@@ -586,7 +587,6 @@ const AddMediaIntentHandlingInvocationResponseSchema = z
           '#/components/schemas/AddMediaIntentHandlingResolveMediaItemsInvocationResponse',
         ProtocolException: '#/components/schemas/ProtocolExceptionInvocationResponse',
       },
-      propertyName: 'method',
     },
   })
   .openapi('AddMediaIntentHandlingInvocationResponse')
@@ -1076,6 +1076,7 @@ const PlayMediaIntentHandlingInvocationResponseSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'PlayMediaIntentHandling.handle':
           '#/components/schemas/PlayMediaIntentHandlingHandleInvocationResponse',
@@ -1091,7 +1092,6 @@ const PlayMediaIntentHandlingInvocationResponseSchema = z
           '#/components/schemas/PlayMediaIntentHandlingResolveResumePlaybackInvocationResponse',
         ProtocolException: '#/components/schemas/ProtocolExceptionInvocationResponse',
       },
-      propertyName: 'method',
     },
   })
   .openapi('PlayMediaIntentHandlingInvocationResponse')
@@ -1255,6 +1255,7 @@ const UpdateMediaAffinityIntentHandlingInvocationSchema = InvocationSchema.and(
 )
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         'UpdateMediaAffinityIntentHandling.handle':
           '#/components/schemas/UpdateMediaAffinityIntentHandlingInvocation',
@@ -1263,7 +1264,6 @@ const UpdateMediaAffinityIntentHandlingInvocationSchema = InvocationSchema.and(
         'UpdateMediaAffinityIntentHandling.resolveMediaItems':
           '#/components/schemas/UpdateMediaAffinityIntentHandlingInvocation',
       },
-      propertyName: 'method',
     },
     required: ['method', 'params'],
   })
@@ -1339,6 +1339,7 @@ const UpdateMediaAffinityIntentHandlingInvocationResponseSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'method',
       mapping: {
         ProtocolException: '#/components/schemas/ProtocolExceptionInvocationResponse',
         'UpdateMediaAffinityIntentHandling.handle':
@@ -1348,7 +1349,6 @@ const UpdateMediaAffinityIntentHandlingInvocationResponseSchema = z
         'UpdateMediaAffinityIntentHandling.resolveMediaItems':
           '#/components/schemas/UpdateMediaAffinityIntentHandlingResolveMediaItemsInvocationResponse',
       },
-      propertyName: 'method',
     },
   })
   .openapi('UpdateMediaAffinityIntentHandlingInvocationResponse')

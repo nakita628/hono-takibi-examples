@@ -35,6 +35,340 @@ License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a>
 |manage_data_retention|Manage data retention polices|
 |manage_legal_hold|Manage Legal Holds|
 
+<h1 id="box-platform-api-ai-sessions">AI Sessions</h1>
+
+Endpoints for listing and deleting AI sessions, which hold the conversation
+state for interactions with Box AI agents.
+
+## List AI sessions
+
+<a id="opIdget_ai_sessions_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl 'https://api.box.com/2.0/ai_sessions?source=api' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`GET /ai_sessions`
+
+Returns a marker-paginated list of the AI sessions that the authenticated
+user can read and that were created through the Box public API. Entries are
+ordered by `sort` and `direction`, defaulting to `updated_at` descending so
+the most recently active session appears first.
+
+The access token must have both the `ai.readwrite` and `root_readwrite`
+scopes.
+
+A page may contain fewer than `limit` entries while further pages remain.
+Treat a non-null `next_marker` as the only signal that more results exist.
+
+<h3 id="list-ai-sessions-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|source|query|string|true|Restricts the list to AI sessions with this origin. The only supported<br>value is `api`.|
+|marker|query|string|false|The position marker at which to begin returning results, as returned in<br>`next_marker` by the previous page. Omit it for the first page. All other<br>parameters must match the request that returned the marker.|
+|sort|query|string|false|The field to sort results by. Possible values are `created_at`,<br>`updated_at`, and `name`. Default is `updated_at`, which advances on each<br>turn of session activity.|
+|direction|query|string|false|The direction to sort results in, either ascending (`asc`) or<br>descending (`desc`). Default is `desc`.|
+|limit|query|integer(int32)|false|The maximum number of AI sessions to return per page. The maximum is<br>`100`; larger values are treated as `100`. The server may return fewer<br>entries than requested.|
+|client_ids|query|[string]|false|A comma-separated list of OAuth client IDs. Restricts the list to AI<br>sessions created by any of these applications. Client IDs that match no<br>application are ignored, so the response is an empty list if none of them<br>match. Empty entries are ignored, and an empty value is treated as if the<br>parameter were not provided.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+|source|api|
+|sort|created_at|
+|sort|updated_at|
+|sort|name|
+|direction|asc|
+|direction|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "entries": [
+    {
+      "type": "ai_session",
+      "id": "23489723",
+      "name": "a2a-126bda90-ae78-4c81-b55f-c7ed9b678a8f",
+      "source": "api",
+      "client_id": "ly1nj6n11vionaie65emwzk575hnnmrk",
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "updated_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "created_at": "2026-09-01T10:30:00Z",
+      "updated_at": "2026-09-18T14:22:00Z"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="list-ai-sessions-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Returns a paginated list of AI sessions.|[AiSessions](#schemaaisessions)|
+|400|Bad Request|Returned with the `bad_request` code when `source` is missing, or when<br>`source`, `marker`, `sort`, `direction`, or `limit` holds an unsupported<br>value.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned with the `insufficient_scope` code when the access token does<br>not have both the `ai.readwrite` and `root_readwrite` scopes.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned with the `too_many_requests` code when the user has sent too<br>many requests in a given amount of time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
+## Delete AI session
+
+<a id="opIddelete_ai_sessions_id_v2026.0"></a>
+
+> Code samples
+
+```bash
+curl https://api.box.com/2.0/ai_sessions/23489723 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -H 'box-version: 2026.0'
+```
+
+`DELETE /ai_sessions/{ai_session_id}`
+
+Deletes an AI session created through the Box public API, together with its
+agent tasks. The session's agent-generated files and uploaded files are
+moved to the trash. Files attached as sources from elsewhere in Box are not
+affected. Deleting a session does not stop a running task or notify the
+agent.
+
+The access token must have both the `ai.readwrite` and `root_readwrite`
+scopes.
+
+<h3 id="delete-ai-session-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|box-version|header|string|true|Version header.|
+|ai_session_id|path|string|true|The unique identifier of the AI session. This is the same value returned as<br>`id` by the list endpoint and used as the A2A `contextId`.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|box-version|2026.0|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> 429 Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+> default Response
+
+```json
+{
+  "type": "error",
+  "status": 400,
+  "code": "item_name_invalid",
+  "message": "Method Not Allowed",
+  "context_info": {
+    "message": "Something went wrong"
+  },
+  "help_url": "https://developer.box.com/guides/api-calls/permissions-and-errors/common-errors/",
+  "request_id": "abcdef123456"
+}
+```
+
+<h3 id="delete-ai-session-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|Returns an empty response when the AI session was successfully deleted.|None|
+|400|Bad Request|Returned with the `bad_request` code when `ai_session_id` is empty or<br>malformed.|[ClientError](#schemaclienterror)|
+|401|Unauthorized|Returned when the access token provided in the `Authorization` header<br>is not recognized or not provided.|[ClientError](#schemaclienterror)|
+|403|Forbidden|Returned with the `insufficient_scope` code when the access token does<br>not have both the `ai.readwrite` and `root_readwrite` scopes, or with the<br>`forbidden` code when the user can read the AI session but is not<br>permitted to delete it.|[ClientError](#schemaclienterror)|
+|404|Not Found|Returned with the `not_found` code when the AI session does not exist,<br>is not visible to the user, was not created through the Box public API,<br>or was already deleted.|[ClientError](#schemaclienterror)|
+|429|Too Many Requests|Returned with the `too_many_requests` code when the user has sent too<br>many requests in a given amount of time.|[ClientError](#schemaclienterror)|
+|default|Default|An unexpected client error.|[ClientError](#schemaclienterror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2Security
+</aside>
+
 <h1 id="box-platform-api-automate-workflows">Automate Workflows</h1>
 
 Endpoints for listing and manually starting Automate workflow actions.
@@ -8507,6 +8841,101 @@ OAuth2Security
 </aside>
 
 # Schemas
+
+<h2 id="tocS_AiSession">AiSession</h2>
+<!-- backwards compatibility -->
+<a id="schemaaisession"></a>
+<a id="schema_AiSession"></a>
+<a id="tocSaisession"></a>
+<a id="tocsaisession"></a>
+
+```json
+{
+  "type": "ai_session",
+  "id": "23489723",
+  "name": "a2a-126bda90-ae78-4c81-b55f-c7ed9b678a8f",
+  "source": "api",
+  "client_id": "ly1nj6n11vionaie65emwzk575hnnmrk",
+  "created_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "updated_by": {
+    "id": "11446498",
+    "type": "user"
+  },
+  "created_at": "2026-09-01T10:30:00Z",
+  "updated_at": "2026-09-18T14:22:00Z"
+}
+```
+
+A standard representation of an AI session. An AI session holds the
+conversation state for a series of interactions with a Box AI agent. Its `id`
+is the A2A context identifier for that conversation.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The value is always `ai_session`.|
+|id|string|true|none|The unique identifier for the AI session. This is also the A2A<br>`contextId` for the conversation. Treat the value as opaque.|
+|name|string \| null|true|none|The display name of the AI session. Sessions created through the A2A API<br>are named automatically. The value is `null` only when no name was<br>recorded.|
+|source|string|true|none|The origin of the AI session. Currently always `api`. New values<br>may be added, so clients must tolerate values they do not recognize.|
+|client_id|string \| null|true|none|The OAuth client ID of the application that created the AI session, as<br>shown in the Developer Console. The value is `null` if the application is<br>not known.|
+|created_by|object|true|none|none|
+|updated_by|object|true|none|none|
+|created_at|string(date-time)|true|none|The date and time when the AI session was created.|
+|updated_at|string(date-time)|true|none|The date and time when the AI session was last updated. It advances on<br>each turn of session activity, so it also serves as the most recently<br>used ordering.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|ai_session|
+|source|api|
+
+<h2 id="tocS_AiSessions">AiSessions</h2>
+<!-- backwards compatibility -->
+<a id="schemaaisessions"></a>
+<a id="schema_AiSessions"></a>
+<a id="tocSaisessions"></a>
+<a id="tocsaisessions"></a>
+
+```json
+{
+  "entries": [
+    {
+      "type": "ai_session",
+      "id": "23489723",
+      "name": "a2a-126bda90-ae78-4c81-b55f-c7ed9b678a8f",
+      "source": "api",
+      "client_id": "ly1nj6n11vionaie65emwzk575hnnmrk",
+      "created_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "updated_by": {
+        "id": "11446498",
+        "type": "user"
+      },
+      "created_at": "2026-09-01T10:30:00Z",
+      "updated_at": "2026-09-18T14:22:00Z"
+    }
+  ],
+  "limit": 1000,
+  "next_marker": "JV9IRGZmieiBasejOG9yDCRNgd2ymoZIbjsxbJMjIs3kioVii"
+}
+```
+
+A paginated list of AI sessions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|entries|[[AiSession](#schemaaisession)]|true|none|A list of AI sessions. The list is empty when there are no results.|
+|limit|integer(int64)|true|none|The limit that was used for these entries. This will be the same as the<br>`limit` query parameter unless that value exceeded the maximum value<br>allowed. The maximum value varies by API.|
+|next_marker|string \| null|true|none|The marker for the start of the next page of results.|
 
 <h2 id="tocS_AutomateWorkflowAction">AutomateWorkflowAction</h2>
 <!-- backwards compatibility -->

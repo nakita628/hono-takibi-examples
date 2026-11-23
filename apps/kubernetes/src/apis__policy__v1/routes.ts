@@ -9,7 +9,7 @@ const IoK8sApimachineryPkgApisMetaV1TimeSchema = z.iso
   .openapi('IoK8sApimachineryPkgApisMetaV1Time')
 
 const IoK8sApimachineryPkgApisMetaV1FieldsV1Schema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       "FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.\n\nEach key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.\n\nThe exact format is defined in sigs.k8s.io/structured-merge-diff",
@@ -570,40 +570,48 @@ const IoK8sApimachineryPkgApisMetaV1ListMetaSchema = z
   })
   .openapi('IoK8sApimachineryPkgApisMetaV1ListMeta')
 
-const IoK8sApiPolicyV1PodDisruptionBudgetListSchema = z
-  .object({
-    apiVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
-      }),
-    items: z
-      .array(IoK8sApiPolicyV1PodDisruptionBudgetSchema)
-      .openapi({ description: 'Items is a list of PodDisruptionBudgets' }),
-    kind: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
-      }),
-    metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
-      .exactOptional()
-      .openapi({
-        description:
-          "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
-      }),
-  })
-  .openapi({
-    description: 'PodDisruptionBudgetList is a collection of PodDisruptionBudgets.',
-    required: ['items'],
-    'x-kubernetes-group-version-kind': [
-      { group: 'policy', kind: 'PodDisruptionBudgetList', version: 'v1' },
-    ],
-  })
-  .openapi('IoK8sApiPolicyV1PodDisruptionBudgetList')
+type IoK8sApiPolicyV1PodDisruptionBudgetListType = {
+  apiVersion?: string
+  items: z.infer<typeof IoK8sApiPolicyV1PodDisruptionBudgetSchema>[]
+  kind?: string
+  metadata?: z.infer<typeof IoK8sApimachineryPkgApisMetaV1ListMetaSchema>
+}
+
+const IoK8sApiPolicyV1PodDisruptionBudgetListSchema: z.ZodType<IoK8sApiPolicyV1PodDisruptionBudgetListType> =
+  z
+    .object({
+      apiVersion: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources',
+        }),
+      items: z
+        .array(IoK8sApiPolicyV1PodDisruptionBudgetSchema)
+        .openapi({ description: 'Items is a list of PodDisruptionBudgets' }),
+      kind: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds',
+        }),
+      metadata: IoK8sApimachineryPkgApisMetaV1ListMetaSchema.default({})
+        .exactOptional()
+        .openapi({
+          description:
+            "Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
+        }),
+    })
+    .openapi({
+      description: 'PodDisruptionBudgetList is a collection of PodDisruptionBudgets.',
+      required: ['items'],
+      'x-kubernetes-group-version-kind': [
+        { group: 'policy', kind: 'PodDisruptionBudgetList', version: 'v1' },
+      ],
+    })
+    .openapi('IoK8sApiPolicyV1PodDisruptionBudgetList')
 
 const IoK8sApimachineryPkgApisMetaV1APIResourceSchema = z
   .object({
@@ -808,7 +816,7 @@ const IoK8sApimachineryPkgApisMetaV1DeleteOptionsSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1DeleteOptions')
 
 const IoK8sApimachineryPkgApisMetaV1PatchSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.',
@@ -955,7 +963,7 @@ const IoK8sApimachineryPkgApisMetaV1StatusSchema = z
   .openapi('IoK8sApimachineryPkgApisMetaV1Status')
 
 const IoK8sApimachineryPkgRuntimeRawExtensionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'RawExtension is used to hold extensions in external versions.\n\nTo use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.\n\n// Internal package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.Object `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// External package:\n\n\ttype MyAPIObject struct {\n\t\truntime.TypeMeta `json:""`\n\t\tMyPlugin runtime.RawExtension `json:"myPlugin"`\n\t}\n\n\ttype PluginA struct {\n\t\tAOption string `json:"aOption"`\n\t}\n\n// On the wire, the JSON will look something like this:\n\n\t{\n\t\t"kind":"MyAPIObject",\n\t\t"apiVersion":"v1",\n\t\t"myPlugin": {\n\t\t\t"kind":"PluginA",\n\t\t\t"aOption":"foo",\n\t\t},\n\t}\n\nSo what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package\'s DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)',

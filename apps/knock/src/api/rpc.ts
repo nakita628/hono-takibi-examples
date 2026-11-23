@@ -79,18 +79,26 @@ export async function deleteV1UsersUserIdGuidesMessagesArchived(
   )
 }
 
-export async function putV1UsersUserIdPreferencesIdChannelTypes(options?: ClientRequestOptions) {
+export async function putV1UsersUserIdPreferencesIdChannelTypes(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types']['$put']
+  >,
+  options?: ClientRequestOptions,
+) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].channel_types.$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].channel_types.$put(args, options),
   )
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdCategories(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.v1.objects[':collection'][':object_id'].preferences[':id'].categories.$put(
-      undefined,
+      args,
       options,
     ),
   )
@@ -104,10 +112,13 @@ export async function getV1Messages(
 }
 
 export async function putV1UsersUserIdPreferencesIdChannelTypesType(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['channel_types'][':type']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].channel_types[':type'].$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].channel_types[':type'].$put(args, options),
   )
 }
 
@@ -161,9 +172,14 @@ export async function postV1ObjectsCollectionBulkDelete(
   return await parseResponse(client.v1.objects[':collection'].bulk.delete.$post(args, options))
 }
 
-export async function putV1UsersUserIdPreferencesIdWorkflows(options?: ClientRequestOptions) {
+export async function putV1UsersUserIdPreferencesIdWorkflows(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows']['$put']
+  >,
+  options?: ClientRequestOptions,
+) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].workflows.$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].workflows.$put(args, options),
   )
 }
 
@@ -182,19 +198,27 @@ export async function getV1UsersUserIdSchedules(
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdCategoriesKey(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['categories'][':key']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.v1.objects[':collection'][':object_id'].preferences[':id'].categories[':key'].$put(
-      undefined,
+      args,
       options,
     ),
   )
 }
 
-export async function putV1UsersUserIdPreferencesIdCategoriesKey(options?: ClientRequestOptions) {
+export async function putV1UsersUserIdPreferencesIdCategoriesKey(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['categories'][':key']['$put']
+  >,
+  options?: ClientRequestOptions,
+) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].categories[':key'].$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].categories[':key'].$put(args, options),
   )
 }
 
@@ -271,13 +295,13 @@ export async function getV1Tenants(
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdWorkflows(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows.$put(
-      undefined,
-      options,
-    ),
+    client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows.$put(args, options),
   )
 }
 
@@ -343,9 +367,14 @@ export async function postV1ObjectsCollectionBulkSubscriptionsDelete(
   )
 }
 
-export async function putV1UsersUserIdPreferencesIdCategories(options?: ClientRequestOptions) {
+export async function putV1UsersUserIdPreferencesIdCategories(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['categories']['$put']
+  >,
+  options?: ClientRequestOptions,
+) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].categories.$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].categories.$put(args, options),
   )
 }
 
@@ -408,22 +437,28 @@ export async function postV1NotifyCancel(
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesType(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types'][':type']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types[':type'].$put(
-      undefined,
+      args,
       options,
     ),
   )
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdChannelTypes(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['channel_types']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.v1.objects[':collection'][':object_id'].preferences[':id'].channel_types.$put(
-      undefined,
+      args,
       options,
     ),
   )
@@ -609,11 +644,14 @@ export async function deleteV1ObjectsCollectionObjectIdSubscriptions(
 }
 
 export async function putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKey(
+  args: InferRequestType<
+    (typeof client.v1.objects)[':collection'][':object_id']['preferences'][':id']['workflows'][':key']['$put']
+  >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.v1.objects[':collection'][':object_id'].preferences[':id'].workflows[':key'].$put(
-      undefined,
+      args,
       options,
     ),
   )
@@ -677,9 +715,14 @@ export async function deleteV1UsersUserIdChannelDataChannelId(
   )
 }
 
-export async function putV1UsersUserIdPreferencesIdWorkflowsKey(options?: ClientRequestOptions) {
+export async function putV1UsersUserIdPreferencesIdWorkflowsKey(
+  args: InferRequestType<
+    (typeof client.v1.users)[':user_id']['preferences'][':id']['workflows'][':key']['$put']
+  >,
+  options?: ClientRequestOptions,
+) {
   return await parseResponse(
-    client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(undefined, options),
+    client.v1.users[':user_id'].preferences[':id'].workflows[':key'].$put(args, options),
   )
 }
 

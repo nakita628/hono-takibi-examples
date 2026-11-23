@@ -1102,7 +1102,7 @@ const DocumentDataResponse = {
     'application/json': {
       schema: z.array(
         DocumentSchema.and(
-          z.object({ Extend: z.object({}).exactOptional() }).openapi({ required: [] }),
+          z.object({ Extend: z.looseObject({}).exactOptional() }).openapi({ required: [] }),
         ),
       ),
     },
@@ -1677,7 +1677,7 @@ const OneSpaceWithExtendResponse = {
       schema: z
         .object({
           Extend: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({ example: { test: 'test' } }),
           Id: z.string().exactOptional().openapi({ example: 'P12345' }),
@@ -2204,6 +2204,14 @@ const AccountingYearRequestBody = {
           Turnover: z.number().exactOptional().openapi({ example: 1025.36 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['End'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'End')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['End'] }),
     },
   },
@@ -2231,6 +2239,14 @@ const BSpaceRequestBody = {
             .openapi({ example: 'company' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Type'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Type')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Type'] }),
     },
   },
@@ -2270,63 +2286,104 @@ const BankStatementRequestBody = {
     'Bank statement to add (either DocumentId,StatementDate either (File,Name,Content64Encoded,Title,StatementDate) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Balance: z.number().exactOptional().openapi({ example: 1352.63 }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              Number: z.number().exactOptional().openapi({ example: '10015848' }),
-              StatementDate: z.string().exactOptional().openapi({ example: '20160801' }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Balance: z.number().exactOptional().openapi({ example: 1352.63 }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Number: z.number().exactOptional().openapi({ example: '10015848' }),
-              StatementDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({
-          required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId', 'StatementDate'],
-        }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Balance: z.number().exactOptional().openapi({ example: 1352.63 }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                Number: z.number().exactOptional().openapi({ example: '10015848' }),
+                StatementDate: z.string().exactOptional().openapi({ example: '20160801' }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Balance: z.number().exactOptional().openapi({ example: 1352.63 }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Number: z.number().exactOptional().openapi({ example: '10015848' }),
+                StatementDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({
+                required: [
+                  'Title',
+                  'File',
+                  'Name',
+                  'Content64Encoded',
+                  'DocumentId',
+                  'StatementDate',
+                ],
+              }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'StatementDate')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({
+        required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId', 'StatementDate'],
+      }),
     },
     'multipart/form-data': {
       schema: z
@@ -2385,6 +2442,23 @@ const BankStatementRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name', 'StatementDate'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'StatementDate')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name', 'StatementDate'] }),
     },
   },
@@ -2398,6 +2472,14 @@ const BusinessGroupRequestBody = {
       schema: z
         .object({ Name: z.string().exactOptional().openapi({ example: 'Client Durand' }) })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name'] }),
     },
   },
@@ -2447,6 +2529,17 @@ const CollectiveDecisionRequestBody = {
             .openapi({ example: 'confidential' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Event', 'Date'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Event')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Date')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Event', 'Date'] }),
     },
   },
@@ -2474,6 +2567,14 @@ const CommonFolderRequestBody = {
           Rights: z.boolean().exactOptional().openapi({ example: true }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name'] }),
     },
   },
@@ -2497,6 +2598,17 @@ const CompanyEntityRequestBody = {
           VatNumber: z.string().exactOptional().openapi({ example: '46546847864' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name', 'LegalName'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'LegalName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'LegalName'] }),
     },
   },
@@ -2508,87 +2620,116 @@ const ContractualDocumentRequestBody = {
     'Document to add (either DocumentId either (File,Name,Content64Encoded,Title) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Amount: z.string().exactOptional().openapi({ example: '1001.36' }),
-              Designation: z.string().exactOptional().openapi({ example: 'contrat client' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              Reference: z.string().exactOptional().openapi({ example: '151465AFHIA' }),
-              StartDate: z.string().exactOptional().openapi({ example: '20181128' }),
-              Type: z
-                .enum([
-                  'contract',
-                  'engagement-letter',
-                  'amendment',
-                  'purchase-order',
-                  'delivery-order',
-                  'quotation',
-                  'other',
-                ])
-                .exactOptional()
-                .openapi({ example: 'quotation' }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Amount: z.string().exactOptional().openapi({ example: '1001.36' }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              Designation: z.string().exactOptional().openapi({ example: 'contrat client' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Reference: z.string().exactOptional().openapi({ example: '151465AFHIA' }),
-              StartDate: z.string().exactOptional().openapi({ example: '20181128' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              Type: z
-                .enum([
-                  'contract',
-                  'engagement-letter',
-                  'amendment',
-                  'purchase-order',
-                  'delivery-order',
-                  'quotation',
-                  'other',
-                ])
-                .exactOptional()
-                .openapi({ example: 'quotation' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Amount: z.string().exactOptional().openapi({ example: '1001.36' }),
+                Designation: z.string().exactOptional().openapi({ example: 'contrat client' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                Reference: z.string().exactOptional().openapi({ example: '151465AFHIA' }),
+                StartDate: z.string().exactOptional().openapi({ example: '20181128' }),
+                Type: z
+                  .enum([
+                    'contract',
+                    'engagement-letter',
+                    'amendment',
+                    'purchase-order',
+                    'delivery-order',
+                    'quotation',
+                    'other',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: 'quotation' }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Amount: z.string().exactOptional().openapi({ example: '1001.36' }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                Designation: z.string().exactOptional().openapi({ example: 'contrat client' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Reference: z.string().exactOptional().openapi({ example: '151465AFHIA' }),
+                StartDate: z.string().exactOptional().openapi({ example: '20181128' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                Type: z
+                  .enum([
+                    'contract',
+                    'engagement-letter',
+                    'amendment',
+                    'purchase-order',
+                    'delivery-order',
+                    'quotation',
+                    'other',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: 'quotation' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -2638,6 +2779,20 @@ const ContractualDocumentRequestBody = {
             .openapi({ example: 'quotation' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -2649,83 +2804,112 @@ const CorporateTaxDeclarationRequestBody = {
     'Corporate tax declaration to add (either (DeclarationDate,DocumentId) either (File,Name,Content64Encoded,Title,DeclarationDate) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              Order: z
-                .enum([
-                  '1st advance',
-                  '2nd advance',
-                  '3rd advance',
-                  '4th advance',
-                  'regularization',
-                ])
-                .exactOptional()
-                .openapi({ example: '1st advance' }),
-              Rate: z.float32().exactOptional().openapi({ example: 10.63 }),
-              TaxBase: z.float32().exactOptional().openapi({ example: 123.36 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Order: z
-                .enum([
-                  '1st advance',
-                  '2nd advance',
-                  '3rd advance',
-                  '4th advance',
-                  'regularization',
-                ])
-                .exactOptional()
-                .openapi({ example: '1st advance' }),
-              Rate: z.float32().exactOptional().openapi({ example: 10.63 }),
-              TaxBase: z.float32().exactOptional().openapi({ example: 123.36 }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                Order: z
+                  .enum([
+                    '1st advance',
+                    '2nd advance',
+                    '3rd advance',
+                    '4th advance',
+                    'regularization',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: '1st advance' }),
+                Rate: z.float32().exactOptional().openapi({ example: 10.63 }),
+                TaxBase: z.float32().exactOptional().openapi({ example: 123.36 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Order: z
+                  .enum([
+                    '1st advance',
+                    '2nd advance',
+                    '3rd advance',
+                    '4th advance',
+                    'regularization',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: '1st advance' }),
+                Rate: z.float32().exactOptional().openapi({ example: 10.63 }),
+                TaxBase: z.float32().exactOptional().openapi({ example: 123.36 }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -2800,6 +2984,20 @@ const CorporateTaxDeclarationRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -2890,6 +3088,14 @@ const DetailsRequestBody = {
           Phone: z.array(z.string().openapi({ example: ['+33606060606'] })).exactOptional(),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Designation'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Designation')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Designation'] }),
     },
   },
@@ -2901,55 +3107,79 @@ const DocumentRequestBody = {
     'Document to add (either DocumentId either (File,Name,Content64Encoded,Title) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z.looseObject({}).openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -2983,6 +3213,20 @@ const DocumentRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -3106,79 +3350,108 @@ const ExpenseProofRequestBody = {
     'Expense proof to add (either DocumentId, ExpenseDate either (File,Name,Content64Encoded,Title,ExpenseDate) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Account: z
-                .enum(['CAB', 'IKM', 'PRK', 'TXI', 'VOY', 'PTT', 'FHR', 'DIV', 'RES'])
-                .exactOptional()
-                .openapi({ example: 'CAB' }),
-              ArchivalDate: z.string().exactOptional().openapi({ example: 20211231 }),
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              ExpenseReportId: z.string().exactOptional().openapi({ example: 'PFOIAHF874984' }),
-              Provider: z.string().exactOptional().openapi({ example: 'G7' }),
-              Reason: z.string().exactOptional().openapi({ example: 'taxi' }),
-              Status: z.enum(['R', 'V', 'W']).exactOptional().openapi({ example: 'R' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Account: z
-                .enum(['CAB', 'IKM', 'PRK', 'TXI', 'VOY', 'PTT', 'FHR', 'DIV', 'RES'])
-                .exactOptional()
-                .openapi({ example: 'CAB' }),
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              ArchivalDate: z.string().exactOptional().openapi({ example: 20211231 }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              ExpenseReportId: z.string().exactOptional().openapi({ example: 'PFOIAHF874984' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Provider: z.string().exactOptional().openapi({ example: 'G7' }),
-              Reason: z.string().exactOptional().openapi({ example: 'taxi' }),
-              Status: z.enum(['R', 'V', 'W']).exactOptional().openapi({ example: 'R' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Account: z
+                  .enum(['CAB', 'IKM', 'PRK', 'TXI', 'VOY', 'PTT', 'FHR', 'DIV', 'RES'])
+                  .exactOptional()
+                  .openapi({ example: 'CAB' }),
+                ArchivalDate: z.string().exactOptional().openapi({ example: 20211231 }),
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                ExpenseReportId: z.string().exactOptional().openapi({ example: 'PFOIAHF874984' }),
+                Provider: z.string().exactOptional().openapi({ example: 'G7' }),
+                Reason: z.string().exactOptional().openapi({ example: 'taxi' }),
+                Status: z.enum(['R', 'V', 'W']).exactOptional().openapi({ example: 'R' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Account: z
+                  .enum(['CAB', 'IKM', 'PRK', 'TXI', 'VOY', 'PTT', 'FHR', 'DIV', 'RES'])
+                  .exactOptional()
+                  .openapi({ example: 'CAB' }),
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                ArchivalDate: z.string().exactOptional().openapi({ example: 20211231 }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                ExpenseReportId: z.string().exactOptional().openapi({ example: 'PFOIAHF874984' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Provider: z.string().exactOptional().openapi({ example: 'G7' }),
+                Reason: z.string().exactOptional().openapi({ example: 'taxi' }),
+                Status: z.enum(['R', 'V', 'W']).exactOptional().openapi({ example: 'R' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -3246,6 +3519,20 @@ const ExpenseProofRequestBody = {
             .openapi({ example: 19.5 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -3257,66 +3544,95 @@ const ExpenseReportRequestBody = {
     'expense proof to add (either DocumentId, ExpenseDate either (File,Name,Content64Encoded,Title,ExpenseDate) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
-              ProcessingDate: z.string().exactOptional().openapi({ example: '20200203' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
-              ProcessingDate: z.string().exactOptional().openapi({ example: '20200203' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
+                ProcessingDate: z.string().exactOptional().openapi({ example: '20200203' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                ExpenseDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
+                ProcessingDate: z.string().exactOptional().openapi({ example: '20200203' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -3388,6 +3704,20 @@ const ExpenseReportRequestBody = {
             .openapi({ example: 19.5 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -3414,6 +3744,14 @@ const FolderRequestBody = {
           Name: z.string().exactOptional().openapi({ example: 'Dupond' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name'] }),
     },
   },
@@ -3430,6 +3768,17 @@ const GroupRequestBody = {
           Name: z.string().exactOptional().openapi({ example: 'RH' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name', 'LegalName'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'LegalName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'LegalName'] }),
     },
   },
@@ -3550,94 +3899,123 @@ const InvoiceRequestBody = {
     'Invoice to add (either DocumentId, InvoiceDate either (File,Name,Content64Encoded,Title,InvoiceDate) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              DueDate: z.string().exactOptional().openapi({ example: 20190130 }),
-              InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
-              InvoiceDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              Number: z.string().exactOptional().openapi({ example: '036459879874' }),
-              PaymentDate: z.string().exactOptional().openapi({ example: 20190131 }),
-              Type: z
-                .enum([
-                  'commercial-invoice',
-                  'credit-note',
-                  'amending-invoice',
-                  'self-billing',
-                  'credit-self-billing',
-                  'down-payment-invoice',
-                  'informations-invoice',
-                ])
-                .exactOptional()
-                .openapi({ example: 'commercial-invoice' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DueDate: z.string().exactOptional().openapi({ example: 20190130 }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
-              InvoiceDate: z.string().exactOptional().openapi({ example: '20200202' }),
-              Number: z.string().exactOptional().openapi({ example: '036459879874' }),
-              PaymentDate: z.string().exactOptional().openapi({ example: 20190131 }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              Type: z
-                .enum([
-                  'commercial-invoice',
-                  'credit-note',
-                  'amending-invoice',
-                  'self-billing',
-                  'credit-self-billing',
-                  'down-payment-invoice',
-                  'informations-invoice',
-                ])
-                .exactOptional()
-                .openapi({ example: 'commercial-invoice' }),
-              VAT: z.number().exactOptional().openapi({ example: 19.5 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                DueDate: z.string().exactOptional().openapi({ example: 20190130 }),
+                InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
+                InvoiceDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                Number: z.string().exactOptional().openapi({ example: '036459879874' }),
+                PaymentDate: z.string().exactOptional().openapi({ example: 20190131 }),
+                Type: z
+                  .enum([
+                    'commercial-invoice',
+                    'credit-note',
+                    'amending-invoice',
+                    'self-billing',
+                    'credit-self-billing',
+                    'down-payment-invoice',
+                    'informations-invoice',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: 'commercial-invoice' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                BeforeVAT: z.number().exactOptional().openapi({ example: 1000 }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DueDate: z.string().exactOptional().openapi({ example: 20190130 }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                InclVAT: z.number().exactOptional().openapi({ example: 1200 }),
+                InvoiceDate: z.string().exactOptional().openapi({ example: '20200202' }),
+                Number: z.string().exactOptional().openapi({ example: '036459879874' }),
+                PaymentDate: z.string().exactOptional().openapi({ example: 20190131 }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                Type: z
+                  .enum([
+                    'commercial-invoice',
+                    'credit-note',
+                    'amending-invoice',
+                    'self-billing',
+                    'credit-self-billing',
+                    'down-payment-invoice',
+                    'informations-invoice',
+                  ])
+                  .exactOptional()
+                  .openapi({ example: 'commercial-invoice' }),
+                VAT: z.number().exactOptional().openapi({ example: 19.5 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -3723,6 +4101,20 @@ const InvoiceRequestBody = {
             .openapi({ example: 19.5 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -3868,6 +4260,14 @@ const MessageRequestBody = {
           Text: z.string().exactOptional().openapi({ example: '<p> hello world </p>' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Text'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Text')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Text'] }),
     },
   },
@@ -4360,6 +4760,14 @@ const ModifyFolderGroupRequestBody = {
       schema: z
         .object({ Right: z.enum(['read', 'write']).exactOptional().openapi({ example: 'read' }) })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Right'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Right')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Right'] }),
     },
   },
@@ -4975,61 +5383,90 @@ const OtherTaxRequestBody = {
     'Other tax declaration to add (either (Reference,DocumentId) either (File,Name,Content64Encoded,Title,Reference) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              Reference: z.string().exactOptional().openapi({ example: 'décla CFE' }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Reference: z.string().exactOptional().openapi({ example: 'décla CFE' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                Reference: z.string().exactOptional().openapi({ example: 'décla CFE' }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Reference: z.string().exactOptional().openapi({ example: 'décla CFE' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -5077,6 +5514,20 @@ const OtherTaxRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -5099,6 +5550,14 @@ const PSpaceRequestBody = {
             .openapi({ example: 'collaborator' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Role'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Role')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Role'] }),
     },
   },
@@ -5118,6 +5577,14 @@ const PasswordRequestBody = {
           Password: z.string().exactOptional().openapi({ example: 'azerty' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Designation'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Designation')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Designation'] }),
     },
   },
@@ -5129,73 +5596,102 @@ const PaySlipRequestBody = {
     'Payslip to add (either DocumentId either (File,Name,Content64Encoded,Title) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              EmployeeContributions: z.float32().exactOptional().openapi({ example: 2000.5 }),
-              EmployerContributions: z.float32().exactOptional().openapi({ example: 400.5 }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              FixedGrossAmount: z.float32().exactOptional().openapi({ example: 1352.63 }),
-              NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
-              TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
-              Vacation: z.float32().exactOptional().openapi({ example: 20.5 }),
-              VariableGrossAmount: z.float32().exactOptional().openapi({ example: 132.63 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              EmployeeContributions: z.float32().exactOptional().openapi({ example: 2000.5 }),
-              EmployerContributions: z.float32().exactOptional().openapi({ example: 400.5 }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              FixedGrossAmount: z.float32().exactOptional().openapi({ example: 1352.63 }),
-              NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
-              Vacation: z.float32().exactOptional().openapi({ example: 20.5 }),
-              VariableGrossAmount: z.float32().exactOptional().openapi({ example: 132.63 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                EmployeeContributions: z.float32().exactOptional().openapi({ example: 2000.5 }),
+                EmployerContributions: z.float32().exactOptional().openapi({ example: 400.5 }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                FixedGrossAmount: z.float32().exactOptional().openapi({ example: 1352.63 }),
+                NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
+                TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
+                Vacation: z.float32().exactOptional().openapi({ example: 20.5 }),
+                VariableGrossAmount: z.float32().exactOptional().openapi({ example: 132.63 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                EmployeeContributions: z.float32().exactOptional().openapi({ example: 2000.5 }),
+                EmployerContributions: z.float32().exactOptional().openapi({ example: 400.5 }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                FixedGrossAmount: z.float32().exactOptional().openapi({ example: 1352.63 }),
+                NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
+                Vacation: z.float32().exactOptional().openapi({ example: 20.5 }),
+                VariableGrossAmount: z.float32().exactOptional().openapi({ example: 132.63 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -5315,6 +5811,20 @@ const PaySlipRequestBody = {
             .openapi({ example: 132.63 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -5461,67 +5971,96 @@ const PayrollRequestBody = {
   description: 'Payroll to add or to generate',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              EmployeeContributions: z.float32().exactOptional().openapi({ example: 1352.63 }),
-              EmployerContributions: z.float32().exactOptional().openapi({ example: 132.63 }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
-              TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              EmployeeContributions: z.float32().exactOptional().openapi({ example: 1352.63 }),
-              EmployerContributions: z.float32().exactOptional().openapi({ example: 132.63 }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                EmployeeContributions: z.float32().exactOptional().openapi({ example: 1352.63 }),
+                EmployerContributions: z.float32().exactOptional().openapi({ example: 132.63 }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
+                TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                EmployeeContributions: z.float32().exactOptional().openapi({ example: 1352.63 }),
+                EmployerContributions: z.float32().exactOptional().openapi({ example: 132.63 }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                NetAmount: z.float32().exactOptional().openapi({ example: 1005.63 }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                TotalGrossAmount: z.float32().exactOptional().openapi({ example: 1548.63 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -5605,6 +6144,20 @@ const PayrollRequestBody = {
             .openapi({ example: 1548.63 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -5643,6 +6196,20 @@ const PersonRequestBody = {
           Sex: z.enum(['male', 'female']).exactOptional().openapi({ example: 'male' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name', 'FirstName', 'Sex'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'FirstName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Sex')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'FirstName', 'Sex'] }),
     },
   },
@@ -5703,6 +6270,14 @@ const ProfessionalVehicleRequestBody = {
           Value: z.number().exactOptional().openapi({ example: 1500.23 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Designation'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Designation')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Designation'] }),
     },
   },
@@ -5738,6 +6313,38 @@ const ProfileRequestBody = {
           Sex: z.enum(['male', 'female']).exactOptional(),
         })
         .openapi({ required: [] })
+        .and(
+          z
+            .looseObject({})
+            .openapi({
+              required: ['Name', 'FirstName', 'Email', 'Sex', 'File', 'BirthName', 'Birth'],
+            }),
+        )
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'FirstName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Email')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Sex')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'BirthName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Birth')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'FirstName', 'Email', 'Sex', 'File', 'BirthName', 'Birth'] }),
     },
     'multipart/form-data': {
@@ -5760,6 +6367,38 @@ const ProfileRequestBody = {
           Sex: z.enum(['male', 'female']).exactOptional(),
         })
         .openapi({ required: [] })
+        .and(
+          z
+            .looseObject({})
+            .openapi({
+              required: ['Name', 'FirstName', 'Email', 'Sex', 'File', 'BirthName', 'Birth'],
+            }),
+        )
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'FirstName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Email')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Sex')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'BirthName')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Birth')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'FirstName', 'Email', 'Sex', 'File', 'BirthName', 'Birth'] }),
     },
   },
@@ -5827,6 +6466,20 @@ const RequiredDocumentRequestBody = {
             .openapi({ required: [] }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['File', 'Name', 'Content64Encoded'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Content64Encoded')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['File', 'Name', 'Content64Encoded'] }),
     },
     'multipart/form-data': {
@@ -5836,6 +6489,17 @@ const RequiredDocumentRequestBody = {
           Name: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name', 'File'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'File'] }),
     },
   },
@@ -5867,65 +6531,94 @@ const SocialContractRequestBody = {
     'Social contract to add (either DocumentId either (File,Name,Content64Encoded,Title) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              ContractDate: z.string().exactOptional().openapi({ example: '20190202' }),
-              ContractDuration: z.string().exactOptional().openapi({ example: '6 mois' }),
-              ContractualChange: z.string().exactOptional().openapi({ example: 'augmentation' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              Position: z.string().exactOptional().openapi({ example: 'cadre' }),
-              WageDevelopments: z.float32().exactOptional().openapi({ example: 1548.63 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              ContractDate: z.string().exactOptional().openapi({ example: '20190202' }),
-              ContractDuration: z.string().exactOptional().openapi({ example: '6 mois' }),
-              ContractualChange: z.string().exactOptional().openapi({ example: 'augmentation' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Position: z.string().exactOptional().openapi({ example: 'cadre' }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-              WageDevelopments: z.float32().exactOptional().openapi({ example: 1548.63 }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                ContractDate: z.string().exactOptional().openapi({ example: '20190202' }),
+                ContractDuration: z.string().exactOptional().openapi({ example: '6 mois' }),
+                ContractualChange: z.string().exactOptional().openapi({ example: 'augmentation' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                Position: z.string().exactOptional().openapi({ example: 'cadre' }),
+                WageDevelopments: z.float32().exactOptional().openapi({ example: 1548.63 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                ContractDate: z.string().exactOptional().openapi({ example: '20190202' }),
+                ContractDuration: z.string().exactOptional().openapi({ example: '6 mois' }),
+                ContractualChange: z.string().exactOptional().openapi({ example: 'augmentation' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Position: z.string().exactOptional().openapi({ example: 'cadre' }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+                WageDevelopments: z.float32().exactOptional().openapi({ example: 1548.63 }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -5975,6 +6668,20 @@ const SocialContractRequestBody = {
             .openapi({ example: 1548.63 }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -5986,59 +6693,88 @@ const SocialDeclarationRequestBody = {
     'Social declaration to add (either (Reference,DocumentId) either (File,Name,Content64Encoded,Title,Reference) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Amount: z.float32().exactOptional().openapi({ example: 132.63 }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DeclarationDate: z.string().exactOptional().openapi({ example: '20160801' }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId'] }),
     },
     'multipart/form-data': {
       schema: z
@@ -6085,6 +6821,20 @@ const SocialDeclarationRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -6121,6 +6871,14 @@ const SocialRegimeRequestBody = {
             .openapi({ example: 'mandatory' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name'] }),
     },
   },
@@ -6150,6 +6908,17 @@ const SpaceRequestBody = {
             .openapi({ example: 'company' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Name', 'Type'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Type')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Name', 'Type'] }),
     },
   },
@@ -6167,6 +6936,17 @@ const StatusRequestBody = {
           Label: z.string().exactOptional().openapi({ example: 'code 1' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Code', 'Label'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Code')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Label')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Code', 'Label'] }),
     },
   },
@@ -6195,6 +6975,14 @@ const TaxContractRequestBody = {
           Start: z.string().exactOptional().openapi({ example: '20180101' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Designation'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Designation')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Designation'] }),
     },
   },
@@ -6206,73 +6994,109 @@ const VATDeclarationRequestBody = {
     'VATDeclaration to add (either (DocumentId,End) either (File,Name,Content64Encoded,Title,End) is mandatory)',
   content: {
     'application/json': {
-      schema: z
-        .xor([
-          z
-            .object({
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              CollectedVAT: z.float32().exactOptional().openapi({ example: 1548.63 }),
-              CreditVAT: z.float32().exactOptional().openapi({ example: 400.5 }),
-              DeductibleVAT: z.float32().exactOptional().openapi({ example: 20.5 }),
-              DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              ExemptTurnover: z.float32().exactOptional().openapi({ example: 132.63 }),
-              Number: z.string().exactOptional().openapi({ example: '153126' }),
-              PayableVAT: z.float32().exactOptional().openapi({ example: 2000.5 }),
-              TaxableTurnover: z.float32().exactOptional().openapi({ example: 1352.63 }),
-            })
-            .openapi({ required: [] }),
-          z
-            .object({
-              Accounting: z
-                .object({
-                  AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
-                  Workbook: z
-                    .enum([
-                      'customer',
-                      'provider',
-                      'bank',
-                      'cashWoucher',
-                      'fiscal',
-                      'insurance',
-                      'social',
-                      'other',
-                      'permanent',
-                    ])
-                    .exactOptional()
-                    .openapi({ example: 'fiscal' }),
-                  YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
-              Begin: z.string().exactOptional().openapi({ example: '20160801' }),
-              Code: z.string().exactOptional().openapi({ example: 'COD' }),
-              CollectedVAT: z.float32().exactOptional().openapi({ example: 1548.63 }),
-              Comment: z.string().exactOptional().openapi({ example: 'my document' }),
-              CreditVAT: z.float32().exactOptional().openapi({ example: 400.5 }),
-              Date: z.string().exactOptional().openapi({ example: '20161203' }),
-              DeductibleVAT: z.float32().exactOptional().openapi({ example: 20.5 }),
-              End: z.string().exactOptional().openapi({ example: '20160831' }),
-              ExemptTurnover: z.float32().exactOptional().openapi({ example: 132.63 }),
-              File: z
-                .object({
-                  Content64Encoded: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
-                  Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
-                })
-                .exactOptional()
-                .openapi({ required: [] }),
-              Number: z.string().exactOptional().openapi({ example: '153126' }),
-              PayableVAT: z.float32().exactOptional().openapi({ example: 2000.5 }),
-              TaxableTurnover: z.float32().exactOptional().openapi({ example: 1352.63 }),
-              Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
-            })
-            .openapi({ required: [] }),
-        ])
-        .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId', 'End'] }),
+      schema: (() => {
+        const Schema = z
+          .xor([
+            z
+              .object({
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                CollectedVAT: z.float32().exactOptional().openapi({ example: 1548.63 }),
+                CreditVAT: z.float32().exactOptional().openapi({ example: 400.5 }),
+                DeductibleVAT: z.float32().exactOptional().openapi({ example: 20.5 }),
+                DocumentId: z.string().exactOptional().openapi({ example: 'PBUFBAUBF1531' }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                ExemptTurnover: z.float32().exactOptional().openapi({ example: 132.63 }),
+                Number: z.string().exactOptional().openapi({ example: '153126' }),
+                PayableVAT: z.float32().exactOptional().openapi({ example: 2000.5 }),
+                TaxableTurnover: z.float32().exactOptional().openapi({ example: 1352.63 }),
+              })
+              .openapi({ required: [] }),
+            z
+              .object({
+                Accounting: z
+                  .object({
+                    AccountedOn: z.string().exactOptional().openapi({ example: '20181202' }),
+                    Workbook: z
+                      .enum([
+                        'customer',
+                        'provider',
+                        'bank',
+                        'cashWoucher',
+                        'fiscal',
+                        'insurance',
+                        'social',
+                        'other',
+                        'permanent',
+                      ])
+                      .exactOptional()
+                      .openapi({ example: 'fiscal' }),
+                    YearMonth: z.string().exactOptional().openapi({ example: 201902 }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Author: z.string().exactOptional().openapi({ example: 'Antoine Dupond' }),
+                Begin: z.string().exactOptional().openapi({ example: '20160801' }),
+                Code: z.string().exactOptional().openapi({ example: 'COD' }),
+                CollectedVAT: z.float32().exactOptional().openapi({ example: 1548.63 }),
+                Comment: z.string().exactOptional().openapi({ example: 'my document' }),
+                CreditVAT: z.float32().exactOptional().openapi({ example: 400.5 }),
+                Date: z.string().exactOptional().openapi({ example: '20161203' }),
+                DeductibleVAT: z.float32().exactOptional().openapi({ example: 20.5 }),
+                End: z.string().exactOptional().openapi({ example: '20160831' }),
+                ExemptTurnover: z.float32().exactOptional().openapi({ example: 132.63 }),
+                File: z
+                  .object({
+                    Content64Encoded: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ example: 'gjgjJ9FJA829H9HA18B' }),
+                    Name: z.string().exactOptional().openapi({ example: 'MonDocument.pdf' }),
+                  })
+                  .exactOptional()
+                  .openapi({ required: [] }),
+                Number: z.string().exactOptional().openapi({ example: '153126' }),
+                PayableVAT: z.float32().exactOptional().openapi({ example: 2000.5 }),
+                TaxableTurnover: z.float32().exactOptional().openapi({ example: 1352.63 }),
+                Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
+              })
+              .openapi({ required: [] }),
+          ])
+          .and(
+            z
+              .looseObject({})
+              .openapi({
+                required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId', 'End'],
+              }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const val = ctx.value
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'Title')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'File')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Name')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'Content64Encoded')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'DocumentId')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+              if (!Object.hasOwn(val, 'End')) {
+                ctx.issues.push({ ...{ code: 'custom' }, input: val })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })().openapi({
+        required: ['Title', 'File', 'Name', 'Content64Encoded', 'DocumentId', 'End'],
+      }),
     },
     'multipart/form-data': {
       schema: z
@@ -6381,6 +7205,23 @@ const VATDeclarationRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name', 'End'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'End')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name', 'End'] }),
     },
   },
@@ -6410,6 +7251,23 @@ const VersionRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Content64Encoded')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name', 'Content64Encoded'] }),
     },
     'multipart/form-data': {
@@ -6423,6 +7281,20 @@ const VersionRequestBody = {
           Title: z.string().exactOptional().openapi({ example: 'Facture décembre' }),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['Title', 'File', 'Name'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'Title')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'File')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+            if (!Object.hasOwn(val, 'Name')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['Title', 'File', 'Name'] }),
     },
   },
@@ -6438,6 +7310,14 @@ const ZipRequestBody = {
           DocumentId: z.array(z.string().openapi({ example: 'POFA872498' })).exactOptional(),
         })
         .openapi({ required: [] })
+        .and(z.looseObject({}).openapi({ required: ['DocumentId'] }))
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'DocumentId')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
         .openapi({ required: ['DocumentId'] }),
     },
   },
@@ -6515,16 +7395,14 @@ export const postBusinessGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the group created',
-              example: '/business-groups/P64684',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the group created',
+            example: '/business-groups/P64684',
+          }),
       }),
     },
   },
@@ -6762,16 +7640,14 @@ export const postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFold
           },
         },
         headers: z.object({
-          Location: {
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                param: { required: false },
-                description: 'path of the space created',
-                example: '/business-groups/P468486/spaces/P64684',
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: { required: false },
+              description: 'path of the space created',
+              example: '/business-groups/P468486/spaces/P64684',
+            }),
         }),
       },
     },
@@ -6847,16 +7723,14 @@ export const postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFold
           },
         },
         headers: z.object({
-          Location: {
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                param: { required: false },
-                description: 'path of the space created',
-                example: '/business-groups/P468486/spaces/P64684',
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: { required: false },
+              description: 'path of the space created',
+              example: '/business-groups/P468486/spaces/P64684',
+            }),
         }),
       },
     },
@@ -6905,16 +7779,14 @@ export const postHubDocumentsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the documents created',
-              example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the documents created',
+            example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -6955,16 +7827,14 @@ export const postHubPayslipsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the documents created',
-              example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the documents created',
+            example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -7004,16 +7874,14 @@ export const postHubSpacesSpaceIdDocumentsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the documents created',
-              example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the documents created',
+            example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -7076,16 +7944,14 @@ export const postHubSpacesSpaceIdPayslipsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the documents created',
-              example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the documents created',
+            example: '/hub/spaces/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -7126,7 +7992,7 @@ export const postMenusMenuIdDocumentsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ Report: z.object({}).exactOptional().openapi({ example: 'T1234' }) })
+            .object({ Report: z.looseObject({}).exactOptional().openapi({ example: 'T1234' }) })
             .openapi({ required: [] }),
         },
       },
@@ -7351,16 +8217,14 @@ export const postSpacesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the space created',
-              example: '/spaces/P64684',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the space created',
+            example: '/spaces/P64684',
+          }),
       }),
     },
   },
@@ -7562,16 +8426,14 @@ export const postSpacesIdAccountingYearRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the accounting year created',
-              example: '/spaces/P468486/accounting-year/T6JFH4FGFGGz84/',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the accounting year created',
+            example: '/spaces/P468486/accounting-year/T6JFH4FGFGGz84/',
+          }),
       }),
     },
   },
@@ -7726,16 +8588,14 @@ export const postSpacesIdCollectiveDecisionRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the collective decision created',
-              example: '/spaces/P468486/collective-decision/T6JFH4FGFGGz84/',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the collective decision created',
+            example: '/spaces/P468486/collective-decision/T6JFH4FGFGGz84/',
+          }),
       }),
     },
   },
@@ -7838,16 +8698,14 @@ export const postSpacesIdCompanyEntitiesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the company entity created',
-              example: '/spaces/P468486/company-entities/P6JFH4FGFGGz84',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the company entity created',
+            example: '/spaces/P468486/company-entities/P6JFH4FGFGGz84',
+          }),
       }),
     },
   },
@@ -8133,16 +8991,14 @@ export const postSpacesIdDocumentsDownloadRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the person created',
-              example: '/spaces/P468486/zip/P6JFH4684',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the person created',
+            example: '/spaces/P468486/zip/P6JFH4684',
+          }),
       }),
     },
   },
@@ -8461,16 +9317,14 @@ export const postSpacesIdGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the group created',
-              example: '/spaces/P468486/groups/P6JFH4FGFGGz84',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the group created',
+            example: '/spaces/P468486/groups/P6JFH4FGFGGz84',
+          }),
       }),
     },
   },
@@ -8967,16 +9821,14 @@ export const postSpacesIdPersonsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the person created',
-              example: '/spaces/P468486/persons/P6JFH4684',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the person created',
+            example: '/spaces/P468486/persons/P6JFH4684',
+          }),
       }),
     },
   },
@@ -9497,16 +10349,14 @@ export const postSpacesIdPersonsPersonIdPortfoliosRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the portfolio created',
-              example: '/spaces/P468486/persons/P6JFH4FGFGGz84/portfolios/PM6965TUGA',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the portfolio created',
+            example: '/spaces/P468486/persons/P6JFH4FGFGGz84/portfolios/PM6965TUGA',
+          }),
       }),
     },
   },
@@ -9631,16 +10481,14 @@ export const postSpacesIdProfessionalVehiclesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the professional vehicle created',
-              example: '/spaces/P468486/professionalvehicles/T6JFH4FGFGGz84/',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the professional vehicle created',
+            example: '/spaces/P468486/professionalvehicles/T6JFH4FGFGGz84/',
+          }),
       }),
     },
   },
@@ -9833,16 +10681,14 @@ export const postSpacesIdTaxContractsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the tax contract created',
-              example: '/spaces/P468486/taxcontract/T6JFH4FGFGGz84/',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the tax contract created',
+            example: '/spaces/P468486/taxcontract/T6JFH4FGFGGz84/',
+          }),
       }),
     },
   },
@@ -10315,7 +11161,7 @@ export const postSpacesSpaceIdDocumentsDocumentIdExtendRoute = createRoute({
           example: 'P156HUFHA476',
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     201: {
@@ -10328,16 +11174,14 @@ export const postSpacesSpaceIdDocumentsDocumentIdExtendRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -10531,16 +11375,14 @@ export const postSpacesSpaceIdDocumentsDocumentIdVersionsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -10949,7 +11791,7 @@ export const postSpacesSpaceIdExtendRoute = createRoute({
           example: 'P156HUFHA476',
         }),
     }),
-    body: { content: { 'application/json': { schema: z.object({}) } }, required: true },
+    body: { content: { 'application/json': { schema: z.looseObject({}) } }, required: true },
   },
   responses: {
     201: {
@@ -10962,16 +11804,14 @@ export const postSpacesSpaceIdExtendRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -13057,16 +13897,14 @@ export const postSpacesSpaceIdFoldersIdBankStatementsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/bankstatements/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/bankstatements/P48548FDAF',
+          }),
       }),
     },
   },
@@ -13217,16 +14055,14 @@ export const postSpacesSpaceIdFoldersIdCommonFoldersRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: 'spaces/P464864/folders/PFJOJAF14546/common-folders/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: 'spaces/P464864/folders/PFJOJAF14546/common-folders/P48548FDAF',
+          }),
       }),
     },
   },
@@ -13519,16 +14355,14 @@ export const postSpacesSpaceIdFoldersIdContractualDocumentsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/contractual-documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/contractual-documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -13677,16 +14511,14 @@ export const postSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRoute = createRout
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/coporatetaxdeclarations/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/coporatetaxdeclarations/P48548FDAF',
+          }),
       }),
     },
   },
@@ -14056,16 +14888,14 @@ export const postSpacesSpaceIdFoldersIdDocumentsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -14373,16 +15203,14 @@ export const postSpacesSpaceIdFoldersIdExpenseProofsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the expense proof created',
-              example: '/folders/PFJOJAF14546/expenseproofs/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the expense proof created',
+            example: '/folders/PFJOJAF14546/expenseproofs/P48548FDAF',
+          }),
       }),
     },
   },
@@ -14578,16 +15406,14 @@ export const postSpacesSpaceIdFoldersIdExpenseReportsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the expense report created',
-              example: '/folders/PFJOJAF14546/expensereports/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the expense report created',
+            example: '/folders/PFJOJAF14546/expensereports/P48548FDAF',
+          }),
       }),
     },
   },
@@ -15094,16 +15920,14 @@ export const postSpacesSpaceIdFoldersIdInvoicesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the invoice created',
-              example: '/folders/PFJOJAF14546/invoices/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the invoice created',
+            example: '/folders/PFJOJAF14546/invoices/P48548FDAF',
+          }),
       }),
     },
   },
@@ -15631,16 +16455,14 @@ export const postSpacesSpaceIdFoldersIdOtherTaxesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/othertaxes/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/othertaxes/P48548FDAF',
+          }),
       }),
     },
   },
@@ -15994,16 +16816,14 @@ export const postSpacesSpaceIdFoldersIdPayrollsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/payrolls/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/payrolls/P48548FDAF',
+          }),
       }),
     },
   },
@@ -16067,17 +16887,15 @@ export const postSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarat
           },
         },
         headers: z.object({
-          Location: {
-            schema: z
-              .string()
-              .exactOptional()
-              .openapi({
-                param: { required: false },
-                description: 'path of the document created',
-                example:
-                  '/folders/PFJOJAF14546/payrolls/P48548FDAF/nominativesocialdeclaration/PFJAIFJ',
-              }),
-          },
+          Location: z
+            .string()
+            .exactOptional()
+            .openapi({
+              param: { required: false },
+              description: 'path of the document created',
+              example:
+                '/folders/PFJOJAF14546/payrolls/P48548FDAF/nominativesocialdeclaration/PFJAIFJ',
+            }),
         }),
       },
     },
@@ -16240,16 +17058,14 @@ export const postSpacesSpaceIdFoldersIdPayslipsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/payslips/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/payslips/P48548FDAF',
+          }),
       }),
     },
   },
@@ -16573,16 +17389,14 @@ export const postSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRoute 
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -16840,16 +17654,14 @@ export const postSpacesSpaceIdFoldersIdSocialContractsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/socialcontracts/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/socialcontracts/P48548FDAF',
+          }),
       }),
     },
   },
@@ -16963,16 +17775,14 @@ export const postSpacesSpaceIdFoldersIdSocialDeclarationsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/socialdeclarations/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/socialdeclarations/P48548FDAF',
+          }),
       }),
     },
   },
@@ -17398,16 +18208,14 @@ export const postSpacesSpaceIdFoldersIdVatDeclarationsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/vatdeclarations/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/vatdeclarations/P48548FDAF',
+          }),
       }),
     },
   },
@@ -17517,16 +18325,14 @@ export const postSpacesSpaceIdFoldersIdDocumentClassRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the document created',
-              example: '/folders/PFJOJAF14546/documents/P48548FDAF',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the document created',
+            example: '/folders/PFJOJAF14546/documents/P48548FDAF',
+          }),
       }),
     },
   },
@@ -17659,16 +18465,14 @@ export const postSpacesSpaceIdLegalEntitiesIdBanksRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -17894,16 +18698,14 @@ export const postSpacesSpaceIdLegalEntitiesIdCustomersRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -18024,16 +18826,14 @@ export const postSpacesSpaceIdLegalEntitiesIdInsurancesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -18154,16 +18954,14 @@ export const postSpacesSpaceIdLegalEntitiesIdLoansRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -18284,16 +19082,14 @@ export const postSpacesSpaceIdLegalEntitiesIdProvidersRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -18414,16 +19210,14 @@ export const postSpacesSpaceIdLegalEntitiesIdSocialRegimesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },
@@ -18559,16 +19353,14 @@ export const postSpacesSpaceIdPersonsIdCallForDocumentRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder of the person',
-              example: '/persons/PFJOFJOAJHZ4546',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder of the person',
+            example: '/persons/PFJOFJOAJHZ4546',
+          }),
       }),
     },
   },
@@ -18695,16 +19487,14 @@ export const postSpacesSpaceIdPersonsIdEmployeesRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              param: { required: false },
-              description: 'path of the folder created',
-              example: '/folders/KJF64988',
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            param: { required: false },
+            description: 'path of the folder created',
+            example: '/folders/KJF64988',
+          }),
       }),
     },
   },

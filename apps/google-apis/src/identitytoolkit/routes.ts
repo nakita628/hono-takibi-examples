@@ -974,12 +974,12 @@ const GoogleCloudIdentitytoolkitAdminV2InheritanceSchema = z
   .openapi('GoogleCloudIdentitytoolkitAdminV2Inheritance')
 
 const GoogleCloudIdentitytoolkitAdminV2InitializeIdentityPlatformRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for InitializeIdentityPlatform.' })
   .openapi('GoogleCloudIdentitytoolkitAdminV2InitializeIdentityPlatformRequest')
 
 const GoogleCloudIdentitytoolkitAdminV2InitializeIdentityPlatformResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for InitializeIdentityPlatform. Empty for now.' })
   .openapi('GoogleCloudIdentitytoolkitAdminV2InitializeIdentityPlatformResponse')
 
@@ -1400,7 +1400,7 @@ const GoogleCloudIdentitytoolkitV2FinalizeMfaPhoneResponseInfoSchema = z
   .openapi('GoogleCloudIdentitytoolkitV2FinalizeMfaPhoneResponseInfo')
 
 const GoogleCloudIdentitytoolkitV2FinalizeMfaTotpEnrollmentResponseInfoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Mfa response info specific to TOTP auth for FinalizeMfa.' })
   .openapi('GoogleCloudIdentitytoolkitV2FinalizeMfaTotpEnrollmentResponseInfo')
 
@@ -1723,7 +1723,7 @@ const GoogleCloudIdentitytoolkitV2RevokeTokenRequestSchema = z
   .openapi('GoogleCloudIdentitytoolkitV2RevokeTokenRequest')
 
 const GoogleCloudIdentitytoolkitV2RevokeTokenResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response message for RevokeToken. Empty for now.' })
   .openapi('GoogleCloudIdentitytoolkitV2RevokeTokenResponse')
 
@@ -1768,7 +1768,7 @@ const GoogleCloudIdentitytoolkitV2StartMfaPhoneRequestInfoSchema = z
   .openapi('GoogleCloudIdentitytoolkitV2StartMfaPhoneRequestInfo')
 
 const GoogleCloudIdentitytoolkitV2StartMfaTotpEnrollmentRequestInfoSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Mfa request info specific to TOTP auth for StartMfa.' })
   .openapi('GoogleCloudIdentitytoolkitV2StartMfaTotpEnrollmentRequestInfo')
 
@@ -2190,7 +2190,7 @@ const GoogleIamV1TestIamPermissionsResponseSchema = z
   .openapi('GoogleIamV1TestIamPermissionsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

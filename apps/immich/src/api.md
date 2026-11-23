@@ -10,13 +10,13 @@ Base URLs:
 
 # Authentication
 
+* API Key (api_key)
+    - Parameter Name: **x-api-key**, in: header.
+
 - HTTP Authentication, scheme: bearer
 
 * API Key (cookie)
     - Parameter Name: **immich_access_token**, in: cookie.
-
-* API Key (api_key)
-    - Parameter Name: **x-api-key**, in: header.
 
 <h1 id="immich-activities">Activities</h1>
 
@@ -2813,7 +2813,7 @@ Update information of a specific asset.
 |» description|body|string|false|Asset description|
 |» isFavorite|body|boolean|false|Mark as favorite|
 |» latitude|body|number(double)|false|Latitude coordinate|
-|» livePhotoVideoId|body|string(uuid) \| null|false|Live photo video ID|
+|» livePhotoVideoId|body|string \| null(uuid)|false|Live photo video ID|
 |» longitude|body|number(double)|false|Longitude coordinate|
 |» rating|body|integer \| null|false|Rating in range [1-5] (starred), -1 (rejected), or null (unrated)|
 |» visibility|body|[AssetVisibility](#schemaassetvisibility)|false|Asset visibility|
@@ -4832,2997 +4832,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer, cookie, api_key
 </aside>
 
-<h1 id="immich-backups">Backups</h1>
-
-FUTO Backups.
-
-## Connect a FUTO Backups account
-
-<a id="opIdfutoBackupsConnectDeviceFlow"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/auth/oidc/device \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/auth/oidc/device`
-
-Connect an existing FUTO Backups account to this server.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "backendId": "string",
-  "reason": "NOT_CONNECTED",
-  "token": "string",
-  "type": "START",
-  "userCode": "string",
-  "verificationUri": "string"
-}
-```
-
-<h3 id="connect-a-futo-backups-account-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[DeviceFlowEventDto](#schemadevicefloweventdto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Create session
-
-<a id="opIdfutoBackupsCreateSession"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/auth/session \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "token": "string"
-  }'
-```
-
-`POST /futo-backups/auth/session`
-
-Use existing session token to create a session on your device.
-
-> Body parameter
-
-```json
-{
-  "token": "string"
-}
-```
-
-<h3 id="create-session-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[CreateSessionRequestDto](#schemacreatesessionrequestdto)|true|none|
-|» token|body|string|true|none|
-
-<h3 id="create-session-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Sign in with FUTO Backups account
-
-<a id="opIdfutoBackupsSessionDeviceFlow"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/auth/session/device \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/auth/session/device`
-
-Log into standalone backups app using the associated cloud account.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "backendId": "string",
-  "reason": "NOT_CONNECTED",
-  "token": "string",
-  "type": "START",
-  "userCode": "string",
-  "verificationUri": "string"
-}
-```
-
-<h3 id="sign-in-with-futo-backups-account-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[DeviceFlowEventDto](#schemadevicefloweventdto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Create a ticket
-
-<a id="opIdfutoBackupsCreateTicket"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/auth/ticket \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "action": "repository.delete",
-    "repositoryId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
-  }'
-```
-
-`POST /futo-backups/auth/ticket`
-
-Create a ticket to perform a protected repository action.
-
-> Body parameter
-
-```json
-{
-  "action": "repository.delete",
-  "repositoryId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
-}
-```
-
-<h3 id="create-a-ticket-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[TicketCreateRequestDto](#schematicketcreaterequestdto)|true|none|
-|» action|body|[TicketAction](#schematicketaction)|true|none|
-|» repositoryId|body|string(uuid)|true|Repository the ticket is bound to|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» action|repository.delete|
-|» action|repository.disable-worm|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "redirectTo": "string"
-}
-```
-
-<h3 id="create-a-ticket-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[TicketCreateResponseDto](#schematicketcreateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List backends
-
-<a id="opIdfutoBackupsGetBackends"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/backend \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/backend`
-
-List the storage backends configured on this server.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "backends": [
-    {
-      "description": "string",
-      "error": "string",
-      "id": "string",
-      "isOnline": true,
-      "type": "yucca"
-    }
-  ]
-}
-```
-
-<h3 id="list-backends-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[BackendsResponseDto](#schemabackendsresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Create a local backend
-
-<a id="opIdfutoBackupsCreateLocalBackend"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/backend/local \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "path": "string"
-  }'
-```
-
-`POST /futo-backups/backend/local`
-
-Add a storage backend that writes to a local path on this server.
-
-> Body parameter
-
-```json
-{
-  "path": "string"
-}
-```
-
-<h3 id="create-a-local-backend-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[CreateLocalBackendRequestDto](#schemacreatelocalbackendrequestdto)|true|none|
-|» path|body|string|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "backend": {
-    "description": "string",
-    "error": "string",
-    "id": "string",
-    "isOnline": true,
-    "type": "yucca"
-  }
-}
-```
-
-<h3 id="create-a-local-backend-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[BackendResponseDto](#schemabackendresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get backups orchestrator configuration
-
-<a id="opIdfutoBackupsGetConfig"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/config \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/config`
-
-Retrieve the current backups orchestrator configuration.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "bandwidth": {
-    "bytesPerSec": 0,
-    "quietHours": "string"
-  }
-}
-```
-
-<h3 id="get-backups-orchestrator-configuration-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ConfigResponseDto](#schemaconfigresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Update backups orchestrator configuration
-
-<a id="opIdfutoBackupsUpdateConfig"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/config \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "bandwidth": {
-      "bytesPerSec": 0,
-      "quietHours": "string"
-    }
-  }'
-```
-
-`PUT /futo-backups/config`
-
-Update the backups orchestrator configuration.
-
-> Body parameter
-
-```json
-{
-  "bandwidth": {
-    "bytesPerSec": 0,
-    "quietHours": "string"
-  }
-}
-```
-
-<h3 id="update-backups-orchestrator-configuration-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ConfigUpdateRequestDto](#schemaconfigupdaterequestdto)|true|none|
-|» bandwidth|body|[BandwidthDto](#schemabandwidthdto)|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "bandwidth": {
-    "bytesPerSec": 0,
-    "quietHours": "string"
-  }
-}
-```
-
-<h3 id="update-backups-orchestrator-configuration-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ConfigResponseDto](#schemaconfigresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Reset the backups orchestrator
-
-<a id="opIdfutoBackupsResetOrchestrator"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/debug/reset \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/debug/reset`
-
-Delete all orchestrator state. Only available in development mode.
-
-<h3 id="reset-the-backups-orchestrator-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List files
-
-<a id="opIdfutoBackupsGetFileListing"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/fs \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/fs`
-
-List the files and folders at a path on this server.
-
-<h3 id="list-files-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|path|query|string|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "items": [
-    {
-      "isDirectory": true,
-      "path": "string"
-    }
-  ],
-  "parent": "string",
-  "path": "string"
-}
-```
-
-<h3 id="list-files-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[FilesystemListingResponseDto](#schemafilesystemlistingresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get backup integrations
-
-<a id="opIdfutoBackupsGetIntegrations"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/integrations`
-
-Retrieve the configuration and state of each integration.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "immichIntegration": {
-    "configuration": {
-      "backupConfiguration": true,
-      "dataFolders": [
-        "string"
-      ],
-      "libraries": [
-        "string"
-      ]
-    },
-    "id": "string",
-    "scheduleId": "string"
-  },
-  "immichState": {
-    "dataFolders": [
-      "string"
-    ],
-    "dataPath": "string",
-    "libraries": [
-      {
-        "exclusionPatterns": [
-          "string"
-        ],
-        "id": "string",
-        "importPaths": [
-          "string"
-        ],
-        "name": "string"
-      }
-    ]
-  }
-}
-```
-
-<h3 id="get-backup-integrations-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[IntegrationsResponseDto](#schemaintegrationsresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Configure the Immich backup integration
-
-<a id="opIdfutoBackupsConfigureImmichIntegration"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations/immich \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "backupConfiguration": true,
-    "cron": "string",
-    "dataFolders": [
-      "string"
-    ],
-    "libraries": [
-      "string"
-    ],
-    "name": "string",
-    "paused": true,
-    "repositoryId": "string",
-    "retentionPolicy": {
-      "keepLast": -9007199254740000,
-      "keepWithin": "string",
-      "keepWithinDaily": "string",
-      "keepWithinHourly": "string",
-      "keepWithinMonthly": "string",
-      "keepWithinWeekly": "string",
-      "keepWithinYearly": "string"
-    },
-    "worm": true
-  }'
-```
-
-`POST /futo-backups/integrations/immich`
-
-Set up backups for the Immich backup integration.
-
-> Body parameter
-
-```json
-{
-  "backupConfiguration": true,
-  "cron": "string",
-  "dataFolders": [
-    "string"
-  ],
-  "libraries": [
-    "string"
-  ],
-  "name": "string",
-  "paused": true,
-  "repositoryId": "string",
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "worm": true
-}
-```
-
-<h3 id="configure-the-immich-backup-integration-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ConfigureImmichIntegrationRequestDto](#schemaconfigureimmichintegrationrequestdto)|true|none|
-|» backupConfiguration|body|boolean|true|none|
-|» cron|body|string|true|none|
-|» dataFolders|body|[string]|true|none|
-|» libraries|body|[string]|true|IDs of the external libraries to back up. Use ["all"] to back up every library, including ones added later.|
-|» name|body|string|true|none|
-|» paused|body|boolean|false|none|
-|» repositoryId|body|string|false|none|
-|» retentionPolicy|body|object \| null|false|none|
-|» » keepLast|body|integer|false|none|
-|» » keepWithin|body|string|false|none|
-|» » keepWithinDaily|body|string|false|none|
-|» » keepWithinHourly|body|string|false|none|
-|» » keepWithinMonthly|body|string|false|none|
-|» » keepWithinWeekly|body|string|false|none|
-|» » keepWithinYearly|body|string|false|none|
-|» worm|body|boolean|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "repositoryId": "string"
-}
-```
-
-<h3 id="configure-the-immich-backup-integration-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[ConfigureImmichIntegrationResponseDto](#schemaconfigureimmichintegrationresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Configure Immich database dumps
-
-<a id="opIdfutoBackupsConfigureImmichDatabaseDump"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations/immich/database-dump \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "enabled": true,
-    "keepLastAmount": 1
-  }'
-```
-
-`POST /futo-backups/integrations/immich/database-dump`
-
-Configure the Immich database dumps included in backups.
-
-> Body parameter
-
-```json
-{
-  "enabled": true,
-  "keepLastAmount": 1
-}
-```
-
-<h3 id="configure-immich-database-dumps-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ConfigureImmichDatabaseDumpRequestDto](#schemaconfigureimmichdatabasedumprequestdto)|true|none|
-|» enabled|body|boolean|false|none|
-|» keepLastAmount|body|integer|false|none|
-
-<h3 id="configure-immich-database-dumps-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Ignore the Immich database dump warning
-
-<a id="opIdfutoBackupsIgnoreImmichDatabaseDumpWarning"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations/immich/database-dump/ignore-warning \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/integrations/immich/database-dump/ignore-warning`
-
-Stop warning that Immich database dumps are not configured.
-
-<h3 id="ignore-the-immich-database-dump-warning-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Roll Immich back to a snapshot
-
-<a id="opIdfutoBackupsStartImmichRollback"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations/immich/rollback \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "backupFileName": "string",
-    "repositoryId": "string",
-    "snapshotId": "string"
-  }'
-```
-
-`POST /futo-backups/integrations/immich/rollback`
-
-Put Immich into maintenance mode and restore it from a snapshot.
-
-> Body parameter
-
-```json
-{
-  "backupFileName": "string",
-  "repositoryId": "string",
-  "snapshotId": "string"
-}
-```
-
-<h3 id="roll-immich-back-to-a-snapshot-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ImmichRollbackRequestDto](#schemaimmichrollbackrequestdto)|true|none|
-|» backupFileName|body|string|false|none|
-|» repositoryId|body|string|true|none|
-|» snapshotId|body|string|true|none|
-
-<h3 id="roll-immich-back-to-a-snapshot-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get Immich backup status
-
-<a id="opIdfutoBackupsGetImmichBackupStatus"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/integrations/immich/status \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/integrations/immich/status`
-
-Retrieve the backup status of the Immich integration.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "backend": {
-    "description": "string",
-    "error": "string",
-    "id": "string",
-    "isOnline": true,
-    "type": "yucca"
-  },
-  "databaseDump": {
-    "enabled": true,
-    "keepLastAmount": 1
-  },
-  "databaseDumpWarningIgnored": true,
-  "integration": {
-    "configuration": {
-      "backupConfiguration": true,
-      "dataFolders": [
-        "string"
-      ],
-      "libraries": [
-        "string"
-      ]
-    },
-    "id": "string",
-    "scheduleId": "string"
-  },
-  "latestBackupJob": {
-    "end": "string",
-    "id": "string",
-    "name": "repository-backup",
-    "outcome": {
-      "errors": [
-        "string"
-      ],
-      "summary": {
-        "type": "backup",
-        "filesNew": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "totalFilesProcessed": -9007199254740000,
-        "totalBytesProcessed": -9007199254740000,
-        "snapshotId": "string"
-      },
-      "support": {
-        "droppedLines": -9007199254740000,
-        "localDroppedLines": -9007199254740000,
-        "sessionId": "string"
-      }
-    },
-    "progress": {
-      "bytesDone": -9007199254740000,
-      "currentFiles": [
-        "string"
-      ],
-      "estimatedEndAt": "string",
-      "percentDone": 0,
-      "scanning": true,
-      "totalBytes": -9007199254740000
-    },
-    "queuedAt": "string",
-    "repositoryId": "string",
-    "start": "string",
-    "status": "queued"
-  },
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  },
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-<h3 id="get-immich-backup-status-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ImmichBackupStatusDto](#schemaimmichbackupstatusdto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List jobs
-
-<a id="opIdfutoBackupsGetJobs"></a>
-
-> Code samples
-
-```bash
-curl 'http://localhost:2283/api/futo-backups/jobs?repositoryId=string' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/jobs`
-
-List the jobs for a repository, newest first.
-
-<h3 id="list-jobs-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|repositoryId|query|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "jobs": [
-    {
-      "end": "string",
-      "id": "string",
-      "name": "repository-backup",
-      "outcome": {
-        "errors": [
-          "string"
-        ],
-        "summary": {
-          "type": "backup",
-          "filesNew": -9007199254740000,
-          "filesChanged": -9007199254740000,
-          "totalFilesProcessed": -9007199254740000,
-          "totalBytesProcessed": -9007199254740000,
-          "snapshotId": "string"
-        },
-        "support": {
-          "droppedLines": -9007199254740000,
-          "localDroppedLines": -9007199254740000,
-          "sessionId": "string"
-        }
-      },
-      "progress": {
-        "bytesDone": -9007199254740000,
-        "currentFiles": [
-          "string"
-        ],
-        "estimatedEndAt": "string",
-        "percentDone": 0,
-        "scanning": true,
-        "totalBytes": -9007199254740000
-      },
-      "queuedAt": "string",
-      "repositoryId": "string",
-      "start": "string",
-      "status": "queued"
-    }
-  ]
-}
-```
-
-<h3 id="list-jobs-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[JobListResponseDto](#schemajoblistresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get a job
-
-<a id="opIdfutoBackupsGetJob"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/jobs/string \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/jobs/{id}`
-
-Get the status of a job.
-
-<h3 id="get-a-job-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "end": "string",
-  "id": "string",
-  "name": "repository-backup",
-  "outcome": {
-    "errors": [
-      "string"
-    ],
-    "summary": {
-      "type": "backup",
-      "filesNew": -9007199254740000,
-      "filesChanged": -9007199254740000,
-      "totalFilesProcessed": -9007199254740000,
-      "totalBytesProcessed": -9007199254740000,
-      "snapshotId": "string"
-    },
-    "support": {
-      "droppedLines": -9007199254740000,
-      "localDroppedLines": -9007199254740000,
-      "sessionId": "string"
-    }
-  },
-  "progress": {
-    "bytesDone": -9007199254740000,
-    "currentFiles": [
-      "string"
-    ],
-    "estimatedEndAt": "string",
-    "percentDone": 0,
-    "scanning": true,
-    "totalBytes": -9007199254740000
-  },
-  "queuedAt": "string",
-  "repositoryId": "string",
-  "start": "string",
-  "status": "queued"
-}
-```
-
-<h3 id="get-a-job-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[JobDto](#schemajobdto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Cancel a job
-
-<a id="opIdfutoBackupsCancelJob"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/jobs/string \
-  -X DELETE \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /futo-backups/jobs/{id}`
-
-Cancel a queued job, or stop it if it is already running.
-
-<h3 id="cancel-a-job-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-<h3 id="cancel-a-job-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|204|No Content||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Download a job log
-
-<a id="opIdfutoBackupsDownloadJobLog"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/jobs/string/download \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/jobs/{id}/download`
-
-Download the full log of a job as JSON lines.
-
-<h3 id="download-a-job-log-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-<h3 id="download-a-job-log-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||Inline|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Download a job support log
-
-<a id="opIdfutoBackupsDownloadJobSupportLog"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/jobs/string/support-log/download \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/jobs/{id}/support-log/download`
-
-Download the verbose restic output recorded while the job ran in support mode, as JSON lines.
-
-<h3 id="download-a-job-support-log-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-<h3 id="download-a-job-support-log-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||Inline|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get backup onboarding status
-
-<a id="opIdfutoBackupsOnboardingStatus"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/onboarding`
-
-Retrieve which onboarding steps this server has completed.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "error": "string",
-  "hasBackend": true,
-  "hasBackup": true,
-  "hasOnboardedKey": true,
-  "hasSchedule": true,
-  "hasSkippedExtraConfig": true,
-  "hasTelemetry": "full",
-  "isAuthenticated": true,
-  "requiresAuthentication": true,
-  "status": "not-ready"
-}
-```
-
-<h3 id="get-backup-onboarding-status-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[OnboardingStatusResponseDto](#schemaonboardingstatusresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get the backup recovery key
-
-<a id="opIdfutoBackupsCurrentRecoveryKey"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/recovery-key \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/onboarding/recovery-key`
-
-Retrieve the recovery key that encrypts the backups of this server.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "recoveryKey": "string"
-}
-```
-
-<h3 id="get-the-backup-recovery-key-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[CurrentRecoveryKeyResponse](#schemacurrentrecoverykeyresponse)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Import a backup recovery key
-
-<a id="opIdfutoBackupsImportRecoveryKey"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/recovery-key \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "recoveryKey": "string"
-  }'
-```
-
-`PUT /futo-backups/onboarding/recovery-key`
-
-Replace the recovery key with one from an earlier installation.
-
-> Body parameter
-
-```json
-{
-  "recoveryKey": "string"
-}
-```
-
-<h3 id="import-a-backup-recovery-key-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ImportRecoveryKeyRequest](#schemaimportrecoverykeyrequest)|true|none|
-|» recoveryKey|body|string|true|none|
-
-<h3 id="import-a-backup-recovery-key-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Confirm the backup recovery key
-
-<a id="opIdfutoBackupsConfirmRecoveryKey"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/recovery-key \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/onboarding/recovery-key`
-
-Record that the user has saved the recovery key.
-
-<h3 id="confirm-the-backup-recovery-key-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Report a startup error
-
-<a id="opIdfutoBackupsReportError"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/report-error \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/onboarding/report-error`
-
-Send the current startup error to telemetry.
-
-<h3 id="report-a-startup-error-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Skip optional backup onboarding
-
-<a id="opIdfutoBackupsSkipOnboardingExtraConfig"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/skip \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/onboarding/skip`
-
-Skip the optional configuration steps of onboarding.
-
-<h3 id="skip-optional-backup-onboarding-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Enable FUTO Backups telemetry
-
-<a id="opIdfutoBackupsEnableTelemetry"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/onboarding/telemetry \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/onboarding/telemetry`
-
-Record that the user consents to sending telemetry.
-
-<h3 id="enable-futo-backups-telemetry-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List backups
-
-<a id="opIdfutoBackupsGetRepositories"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/repository`
-
-List the backup repositories known to this server.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "repositories": [
-    {
-      "backends": {
-        "primary": {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        },
-        "secondary": [
-          {
-            "id": "string",
-            "online": true,
-            "type": "yucca"
-          }
-        ]
-      },
-      "configuration": {
-        "paths": [
-          "string"
-        ],
-        "retentionPolicy": {
-          "keepLast": -9007199254740000,
-          "keepWithin": "string",
-          "keepWithinDaily": "string",
-          "keepWithinHourly": "string",
-          "keepWithinMonthly": "string",
-          "keepWithinWeekly": "string",
-          "keepWithinYearly": "string"
-        }
-      },
-      "id": "string",
-      "meter": {
-        "lastUpdated": "string",
-        "objectCount": -9007199254740000,
-        "sizeBytes": -9007199254740000
-      },
-      "metrics": {
-        "lastBackup": "string",
-        "lastBackupDuration": -9007199254740000,
-        "lastBackupStatus": {},
-        "lastStarted": "string",
-        "sizeBytes": -9007199254740000
-      },
-      "name": "string",
-      "siteCode": "string",
-      "storageClusterCode": "string",
-      "worm": true
-    }
-  ]
-}
-```
-
-<h3 id="list-backups-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[RepositoryListResponseDto](#schemarepositorylistresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Create a new backup
-
-<a id="opIdfutoBackupsCreateRepository"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "name": "string",
-    "paths": [
-      "string"
-    ],
-    "retentionPolicy": {
-      "keepLast": -9007199254740000,
-      "keepWithin": "string",
-      "keepWithinDaily": "string",
-      "keepWithinHourly": "string",
-      "keepWithinMonthly": "string",
-      "keepWithinWeekly": "string",
-      "keepWithinYearly": "string"
-    },
-    "site": "string",
-    "worm": true
-  }'
-```
-
-`POST /futo-backups/repository`
-
-Create a backup repository on a backend.
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "paths": [
-    "string"
-  ],
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "site": "string",
-  "worm": true
-}
-```
-
-<h3 id="create-a-new-backup-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|false|none|
-|body|body|[RepositoryCreateRequestDto](#schemarepositorycreaterequestdto)|true|none|
-|» name|body|string|true|none|
-|» paths|body|[string]|false|none|
-|» retentionPolicy|body|object \| null|false|none|
-|» » keepLast|body|integer|false|none|
-|» » keepWithin|body|string|false|none|
-|» » keepWithinDaily|body|string|false|none|
-|» » keepWithinHourly|body|string|false|none|
-|» » keepWithinMonthly|body|string|false|none|
-|» » keepWithinWeekly|body|string|false|none|
-|» » keepWithinYearly|body|string|false|none|
-|» site|body|string|false|Internal site code from environment metadata|
-|» worm|body|boolean|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-<h3 id="create-a-new-backup-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[RepositoryCreateResponseDto](#schemarepositorycreateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List remote backups
-
-<a id="opIdfutoBackupsInspectRepositories"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/inspect \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/repository/inspect`
-
-List repositories on a backend that are not configured on this server.
-
-<h3 id="list-remote-backups-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "repositories": [
-    {
-      "backends": {
-        "primary": {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        },
-        "secondary": [
-          {
-            "id": "string",
-            "online": true,
-            "type": "yucca"
-          }
-        ]
-      },
-      "configuration": {
-        "paths": [
-          "string"
-        ],
-        "retentionPolicy": {
-          "keepLast": -9007199254740000,
-          "keepWithin": "string",
-          "keepWithinDaily": "string",
-          "keepWithinHourly": "string",
-          "keepWithinMonthly": "string",
-          "keepWithinWeekly": "string",
-          "keepWithinYearly": "string"
-        }
-      },
-      "id": "string",
-      "meter": {
-        "lastUpdated": "string",
-        "objectCount": -9007199254740000,
-        "sizeBytes": -9007199254740000
-      },
-      "metrics": {
-        "lastBackup": "string",
-        "lastBackupDuration": -9007199254740000,
-        "lastBackupStatus": {},
-        "lastStarted": "string",
-        "sizeBytes": -9007199254740000
-      },
-      "name": "string",
-      "siteCode": "string",
-      "snapshots": [
-        {
-          "id": "string",
-          "paths": [
-            "string"
-          ],
-          "summary": {
-            "dataAdded": -9007199254740000,
-            "filesChanged": -9007199254740000,
-            "filesNew": -9007199254740000,
-            "filesUnmodified": -9007199254740000,
-            "totalBytes": -9007199254740000,
-            "totalFiles": -9007199254740000
-          },
-          "tags": [
-            "string"
-          ],
-          "time": "string"
-        }
-      ],
-      "storageClusterCode": "string",
-      "worm": true
-    }
-  ]
-}
-```
-
-<h3 id="list-remote-backups-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[RepositoryInspectResponseDto](#schemarepositoryinspectresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Start a backup
-
-<a id="opIdfutoBackupsCreateBackup"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/repository/{id}`
-
-Queue a backup to a repository and return the ID of its job.
-
-<h3 id="start-a-backup-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "jobId": "string"
-}
-```
-
-<h3 id="start-a-backup-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[JobResponseDto](#schemajobresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Remove a backup
-
-<a id="opIdfutoBackupsDeleteRepository"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string \
-  -X DELETE \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /futo-backups/repository/{id}`
-
-Remove a repository from this server.
-
-<h3 id="remove-a-backup-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-<h3 id="remove-a-backup-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Update a backup
-
-<a id="opIdfutoBackupsUpdateRepository"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string \
-  -X PATCH \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "name": "string",
-    "paths": [
-      "string"
-    ],
-    "retentionPolicy": {
-      "keepLast": -9007199254740000,
-      "keepWithin": "string",
-      "keepWithinDaily": "string",
-      "keepWithinHourly": "string",
-      "keepWithinMonthly": "string",
-      "keepWithinWeekly": "string",
-      "keepWithinYearly": "string"
-    },
-    "worm": true
-  }'
-```
-
-`PATCH /futo-backups/repository/{id}`
-
-Update the settings of a repository.
-
-> Body parameter
-
-```json
-{
-  "name": "string",
-  "paths": [
-    "string"
-  ],
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "worm": true
-}
-```
-
-<h3 id="update-a-backup-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|false|none|
-|id|path|string|true|none|
-|body|body|[RepositoryUpdateRequestDto](#schemarepositoryupdaterequestdto)|true|none|
-|» name|body|string|false|none|
-|» paths|body|[string]|false|none|
-|» retentionPolicy|body|object \| null|false|none|
-|» » keepLast|body|integer|false|none|
-|» » keepWithin|body|string|false|none|
-|» » keepWithinDaily|body|string|false|none|
-|» » keepWithinHourly|body|string|false|none|
-|» » keepWithinMonthly|body|string|false|none|
-|» » keepWithinWeekly|body|string|false|none|
-|» » keepWithinYearly|body|string|false|none|
-|» worm|body|boolean|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-<h3 id="update-a-backup-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[RepositoryUpdateResponseDto](#schemarepositoryupdateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Change the primary backend
-
-<a id="opIdfutoBackupsReconfigureRepositoryPrimaryBackend"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/backend \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "backendId": "string"
-  }'
-```
-
-`PUT /futo-backups/repository/{id}/backend`
-
-Create a new empty repository on the selected backend and redirect future backups to it. Existing snapshots are not migrated.
-
-> Body parameter
-
-```json
-{
-  "backendId": "string"
-}
-```
-
-<h3 id="change-the-primary-backend-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-|body|body|[RepositoryPrimaryBackendReconfigureRequestDto](#schemarepositoryprimarybackendreconfigurerequestdto)|true|none|
-|» backendId|body|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-<h3 id="change-the-primary-backend-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[RepositoryCreateResponseDto](#schemarepositorycreateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Check a repository import
-
-<a id="opIdfutoBackupsCheckImportRepository"></a>
-
-> Code samples
-
-```bash
-curl 'http://localhost:2283/api/futo-backups/repository/string/import?backend=string' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/repository/{id}/import`
-
-Check that an existing repository on a backend can be opened with the recovery key.
-
-<h3 id="check-a-repository-import-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|true|none|
-|id|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "readable": true
-}
-```
-
-<h3 id="check-a-repository-import-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[RepositoryCheckImportResponseDto](#schemarepositorycheckimportresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Import a repository
-
-<a id="opIdfutoBackupsImportRepository"></a>
-
-> Code samples
-
-```bash
-curl 'http://localhost:2283/api/futo-backups/repository/string/import?backend=string' \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/repository/{id}/import`
-
-Add an existing repository on a backend to this server.
-
-<h3 id="import-a-repository-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|true|none|
-|id|path|string|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-<h3 id="import-a-repository-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[RepositoryCreateResponseDto](#schemarepositorycreateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List snapshots
-
-<a id="opIdfutoBackupsGetSnapshots"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/snapshots \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/repository/{id}/snapshots`
-
-List the snapshots in a repository.
-
-<h3 id="list-snapshots-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "snapshots": [
-    {
-      "id": "string",
-      "paths": [
-        "string"
-      ],
-      "summary": {
-        "dataAdded": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "filesNew": -9007199254740000,
-        "filesUnmodified": -9007199254740000,
-        "totalBytes": -9007199254740000,
-        "totalFiles": -9007199254740000
-      },
-      "tags": [
-        "string"
-      ],
-      "time": "string"
-    }
-  ]
-}
-```
-
-<h3 id="list-snapshots-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ListSnapshotsResponseDto](#schemalistsnapshotsresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Prune a repository
-
-<a id="opIdfutoBackupsPruneRepository"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/snapshots/prune \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/repository/{id}/snapshots/prune`
-
-Queue the removal of snapshots outside the retention policy and return the ID of its job.
-
-<h3 id="prune-a-repository-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "jobId": "string"
-}
-```
-
-<h3 id="prune-a-repository-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[JobResponseDto](#schemajobresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Restore a snapshot
-
-<a id="opIdfutoBackupsRestoreSnapshot"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/snapshots/string \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "include": [
-      "string"
-    ],
-    "target": "string"
-  }'
-```
-
-`POST /futo-backups/repository/{id}/snapshots/{snapshot}`
-
-Queue a restore of files from a snapshot and return the ID of its job.
-
-> Body parameter
-
-```json
-{
-  "include": [
-    "string"
-  ],
-  "target": "string"
-}
-```
-
-<h3 id="restore-a-snapshot-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-|snapshot|path|string|true|none|
-|body|body|[RepositorySnapshotRestoreRequestDto](#schemarepositorysnapshotrestorerequestdto)|true|none|
-|» include|body|[string]|false|none|
-|» target|body|string|false|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "jobId": "string"
-}
-```
-
-<h3 id="restore-a-snapshot-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[JobResponseDto](#schemajobresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Delete a snapshot
-
-<a id="opIdfutoBackupsForgetSnapshot"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/snapshots/string \
-  -X DELETE \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /futo-backups/repository/{id}/snapshots/{snapshot}`
-
-Remove a snapshot from a repository.
-
-<h3 id="delete-a-snapshot-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-|snapshot|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "snapshots": [
-    {
-      "id": "string",
-      "paths": [
-        "string"
-      ],
-      "summary": {
-        "dataAdded": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "filesNew": -9007199254740000,
-        "filesUnmodified": -9007199254740000,
-        "totalBytes": -9007199254740000,
-        "totalFiles": -9007199254740000
-      },
-      "tags": [
-        "string"
-      ],
-      "time": "string"
-    }
-  ]
-}
-```
-
-<h3 id="delete-a-snapshot-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ListSnapshotsResponseDto](#schemalistsnapshotsresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List snapshot files
-
-<a id="opIdfutoBackupsGetSnapshotListing"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/snapshots/string/listing \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/repository/{id}/snapshots/{snapshot}/listing`
-
-List the files and folders at a path in a snapshot.
-
-<h3 id="list-snapshot-files-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-|path|query|string|false|none|
-|snapshot|path|string|true|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "items": [
-    {
-      "isDirectory": true,
-      "path": "string"
-    }
-  ],
-  "parent": "string",
-  "path": "string"
-}
-```
-
-<h3 id="list-snapshot-files-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[FilesystemListingResponseDto](#schemafilesystemlistingresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Restore from snapshot
-
-<a id="opIdfutoBackupsRestoreFromPoint"></a>
-
-> Code samples
-
-```bash
-curl 'http://localhost:2283/api/futo-backups/repository/string/snapshots/string/restore-from-point?backend=string' \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "include": [
-      "string"
-    ],
-    "yuccaConfig": "string"
-  }'
-```
-
-`POST /futo-backups/repository/{id}/snapshots/{snapshot}/restore-from-point`
-
-Restore the orchestrator to a previous state, wiping the current state.
-
-> Body parameter
-
-```json
-{
-  "include": [
-    "string"
-  ],
-  "yuccaConfig": "string"
-}
-```
-
-<h3 id="restore-from-snapshot-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|backend|query|string|true|none|
-|id|path|string|true|none|
-|snapshot|path|string|true|none|
-|body|body|[RepositorySnapshotRestoreFromPointRequestDto](#schemarepositorysnapshotrestorefrompointrequestdto)|true|none|
-|» include|body|[string]|false|none|
-|» yuccaConfig|body|string|false|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "jobId": "string"
-}
-```
-
-<h3 id="restore-from-snapshot-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[JobResponseDto](#schemajobresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Sync a remote deletion
-
-<a id="opIdfutoBackupsSyncRepositoryDeletion"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/repository/string/sync-deletion \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /futo-backups/repository/{id}/sync-deletion`
-
-Remove a repository from this server once it has been deleted from its backend.
-
-<h3 id="sync-a-remote-deletion-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "deleted": true
-}
-```
-
-<h3 id="sync-a-remote-deletion-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[RepositorySyncDeletionResponseDto](#schemarepositorysyncdeletionresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## List schedules
-
-<a id="opIdfutoBackupsGetSchedules"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/schedule \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/schedule`
-
-List the backup schedules.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "schedules": [
-    {
-      "cron": "string",
-      "id": "string",
-      "lastFinished": "string",
-      "lastRun": "string",
-      "name": "string",
-      "paused": true,
-      "repositories": [
-        "string"
-      ]
-    }
-  ]
-}
-```
-
-<h3 id="list-schedules-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ScheduleListResponseDto](#schemaschedulelistresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Create a schedule
-
-<a id="opIdfutoBackupsCreateSchedule"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/schedule \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "cron": "string",
-    "name": "string",
-    "paused": false,
-    "repositories": [
-      "string"
-    ]
-  }'
-```
-
-`POST /futo-backups/schedule`
-
-Create a backup schedule for one or more repositories.
-
-> Body parameter
-
-```json
-{
-  "cron": "string",
-  "name": "string",
-  "paused": false,
-  "repositories": [
-    "string"
-  ]
-}
-```
-
-<h3 id="create-a-schedule-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[ScheduleCreateRequestDto](#schemaschedulecreaterequestdto)|true|none|
-|» cron|body|string|true|none|
-|» name|body|string|true|none|
-|» paused|body|boolean|false|none|
-|» repositories|body|[string]|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-<h3 id="create-a-schedule-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[ScheduleCreateResponseDto](#schemaschedulecreateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Delete a schedule
-
-<a id="opIdfutoBackupsRemoveSchedule"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/schedule/string \
-  -X DELETE \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`DELETE /futo-backups/schedule/{id}`
-
-Delete a backup schedule.
-
-<h3 id="delete-a-schedule-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-
-<h3 id="delete-a-schedule-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||None|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Update a schedule
-
-<a id="opIdfutoBackupsUpdateSchedule"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/schedule/string \
-  -X PATCH \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "cron": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }'
-```
-
-`PATCH /futo-backups/schedule/{id}`
-
-Update a backup schedule.
-
-> Body parameter
-
-```json
-{
-  "cron": "string",
-  "name": "string",
-  "paused": true,
-  "repositories": [
-    "string"
-  ]
-}
-```
-
-<h3 id="update-a-schedule-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string|true|none|
-|body|body|[ScheduleUpdateRequestDto](#schemascheduleupdaterequestdto)|true|none|
-|» cron|body|string|false|none|
-|» name|body|string|false|none|
-|» paused|body|boolean|false|none|
-|» repositories|body|[string]|false|none|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-<h3 id="update-a-schedule-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[ScheduleUpdateResponseDto](#schemascheduleupdateresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Get support mode
-
-<a id="opIdfutoBackupsGetSupportMode"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/support-mode \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /futo-backups/support-mode`
-
-Retrieve how many upcoming runs use verbose restic logging, and whether they stream to FUTO.
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "includePaths": true,
-  "remainingRuns": 0,
-  "streamToFuto": true,
-  "streamingAvailable": true
-}
-```
-
-<h3 id="get-support-mode-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[SupportModeResponseDto](#schemasupportmoderesponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
-## Update support mode
-
-<a id="opIdfutoBackupsUpdateSupportMode"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/futo-backups/support-mode \
-  -X PUT \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{
-    "includePaths": true,
-    "remainingRuns": 0,
-    "streamToFuto": true
-  }'
-```
-
-`PUT /futo-backups/support-mode`
-
-Set how many upcoming runs use verbose restic logging, and whether they stream to FUTO.
-
-> Body parameter
-
-```json
-{
-  "includePaths": true,
-  "remainingRuns": 0,
-  "streamToFuto": true
-}
-```
-
-<h3 id="update-support-mode-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|body|body|[SupportModeUpdateRequestDto](#schemasupportmodeupdaterequestdto)|true|none|
-|» includePaths|body|boolean|true|Send file paths as-is instead of redacted placeholders|
-|» remainingRuns|body|integer|true|How many more backup, cleanup, restore and delete runs use verbose restic logging|
-|» streamToFuto|body|boolean|true|Stream those runs’ logs to FUTO; requires the support-log-streaming feature|
-
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "includePaths": true,
-  "remainingRuns": 0,
-  "streamToFuto": true,
-  "streamingAvailable": true
-}
-```
-
-<h3 id="update-support-mode-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|200|OK||[SupportModeResponseDto](#schemasupportmoderesponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
 <h1 id="immich-cluster-groups">Cluster groups</h1>
 
 A cluster group is a set of users whose faces are clustered together, so that a person can be shared between them.
@@ -8486,18 +5495,21 @@ Retrieve admin configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -8791,18 +5803,21 @@ curl http://localhost:2283/api/admin/config \
       "colorspace": "srgb",
       "extractEmbedded": true,
       "fullsize": {
+        "effort": "low",
         "enabled": true,
         "format": "jpeg",
         "progressive": true,
         "quality": 1
       },
       "preview": {
+        "effort": "low",
         "format": "jpeg",
         "progressive": true,
         "quality": 1,
         "size": 1
       },
       "thumbnail": {
+        "effort": "low",
         "format": "jpeg",
         "progressive": true,
         "quality": 1,
@@ -9080,18 +6095,21 @@ Update the system configuration with a new system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -9396,18 +6414,21 @@ Update the system configuration with a new system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -9710,18 +6731,21 @@ Retrieve the default value of every system configuration property.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -9946,6 +6970,126 @@ Retrieve the default value of every system configuration property.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[AdminConfigDto](#schemaadminconfigdto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer, cookie, api_key
+</aside>
+
+## Get storage template options
+
+<a id="opIdgetAdminStorageTemplateOptions"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:2283/api/admin/config/storage-template \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /admin/config/storage-template`
+
+Retrieve the storage template variables and the preset templates, each with an example path.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "dayOptions": [
+    "string"
+  ],
+  "hourOptions": [
+    "string"
+  ],
+  "minuteOptions": [
+    "string"
+  ],
+  "monthOptions": [
+    "string"
+  ],
+  "presets": [
+    {
+      "preview": "string",
+      "template": "string"
+    }
+  ],
+  "secondOptions": [
+    "string"
+  ],
+  "weekOptions": [
+    "string"
+  ],
+  "yearOptions": [
+    "string"
+  ]
+}
+```
+
+<h3 id="get-storage-template-options-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[StorageTemplateOptionsResponseDto](#schemastoragetemplateoptionsresponsedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer, cookie, api_key
+</aside>
+
+## Preview a storage template
+
+<a id="opIdpreviewStorageTemplate"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:2283/api/admin/config/storage-template/preview \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "template": "string"
+  }'
+```
+
+`POST /admin/config/storage-template/preview`
+
+Render an example path from the provided storage template.
+
+> Body parameter
+
+```json
+{
+  "template": "string"
+}
+```
+
+<h3 id="preview-a-storage-template-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[StorageTemplatePreviewDto](#schemastoragetemplatepreviewdto)|true|none|
+|» template|body|string|true|Storage template|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "preview": "string"
+}
+```
+
+<h3 id="preview-a-storage-template-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||[StorageTemplatePreviewResponseDto](#schemastoragetemplatepreviewresponsedto)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -13757,7 +10901,7 @@ Update a list of notifications. Allows to bulk-set the read status of notificati
 |---|---|---|---|---|
 |body|body|[NotificationUpdateAllDto](#schemanotificationupdatealldto)|true|none|
 |» ids|body|[string(uuid)]|true|Notification IDs to update|
-|» readAt|body|string(date-time) \| null|false|Date when notifications were read|
+|» readAt|body|string \| null(date-time)|false|Date when notifications were read|
 
 <h3 id="update-notifications-responses">Responses</h3>
 
@@ -13908,7 +11052,7 @@ Update a specific notification to set its read status.
 |---|---|---|---|---|
 |id|path|string(uuid)|true|none|
 |body|body|[NotificationUpdateDto](#schemanotificationupdatedto)|true|none|
-|» readAt|body|string(date-time) \| null|false|Date when notification was read|
+|» readAt|body|string \| null(date-time)|false|Date when notification was read|
 
 > Example responses
 
@@ -14034,7 +11178,7 @@ Create a new notification for a specific user.
 |» » **additionalProperties**|body|object|false|none|
 |» description|body|string \| null|false|Notification description|
 |» level|body|[NotificationLevel](#schemanotificationlevel)|false|Notification level|
-|» readAt|body|string(date-time) \| null|false|Date when notification was read|
+|» readAt|body|string \| null(date-time)|false|Date when notification was read|
 |» title|body|string|true|Notification title|
 |» type|body|[NotificationType](#schemanotificationtype)|false|Notification type|
 |» userId|body|string(uuid)|true|User ID to send notification to|
@@ -14105,6 +11249,10 @@ curl http://localhost:2283/api/admin/notifications/templates/string \
 
 `POST /admin/notifications/templates/{name}`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Retrieve a preview of the provided email template.
 
 > Body parameter
@@ -14139,6 +11287,63 @@ Retrieve a preview of the provided email template.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK||[TemplateResponseDto](#schematemplateresponsedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer, cookie, api_key
+</aside>
+
+## Preview email template
+
+<a id="opIdpreviewNotificationTemplateAdmin"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:2283/api/admin/notifications/templates/test/preview \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "template": "string"
+  }'
+```
+
+`POST /admin/notifications/templates/{name}/preview`
+
+Render the provided email template as an HTML document.
+
+> Body parameter
+
+```json
+{
+  "template": "string"
+}
+```
+
+<h3 id="preview-email-template-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|name|path|[EmailTemplate](#schemaemailtemplate)|true|none|
+|body|body|[TemplateDto](#schematemplatedto)|true|none|
+|» template|body|string|true|Template name|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|name|test|
+|name|welcome|
+|name|reset-password|
+|name|album-invite|
+|name|album-update|
+
+<h3 id="preview-email-template-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK||Inline|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -15171,7 +12376,7 @@ Create a new person that can have multiple faces assigned to them.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[PersonCreateDto](#schemapersoncreatedto)|true|none|
-|» birthDate|body|string(date) \| null|false|Person date of birth|
+|» birthDate|body|string \| null(date)|false|Person date of birth|
 |» color|body|string \| null|false|Person color (hex)|
 |» isFavorite|body|boolean|false|Mark as favorite|
 |» isHidden|body|boolean|false|Person visibility (hidden)|
@@ -15695,7 +12900,7 @@ Update an individual person.
 |---|---|---|---|---|
 |id|path|string(uuid)|true|none|
 |body|body|[PersonUpdateDto](#schemapersonupdatedto)|true|none|
-|» birthDate|body|string(date) \| null|false|Person date of birth|
+|» birthDate|body|string \| null(date)|false|Person date of birth|
 |» color|body|string \| null|false|Person color (hex)|
 |» featureFaceAssetId|body|string(uuid)|false|Asset ID used for feature face thumbnail|
 |» isFavorite|body|boolean|false|Mark as favorite|
@@ -17132,7 +14337,7 @@ Search for assets that are considered large based on specified criteria.
 |isNotInAlbum|query|boolean|false|**Deprecated.** Filter assets not in any album|
 |isOffline|query|boolean|false|**Deprecated.** Filter by offline status|
 |lensModel|query|string \| null|false|**Deprecated.** Filter by lens model|
-|libraryId|query|string(uuid) \| null|false|**Deprecated.** Library ID to filter by|
+|libraryId|query|string \| null(uuid)|false|**Deprecated.** Library ID to filter by|
 |make|query|string \| null|false|**Deprecated.** Filter by camera make|
 |minFileSize|query|integer|false|Minimum file size in bytes|
 |model|query|string \| null|false|**Deprecated.** Filter by camera model|
@@ -18550,7 +15755,7 @@ Search for assets based on various metadata criteria.
 |» isNotInAlbum|body|boolean|false|**Deprecated.** Filter assets not in any album|
 |» isOffline|body|boolean|false|**Deprecated.** Filter by offline status|
 |» lensModel|body|string \| null|false|**Deprecated.** Filter by lens model|
-|» libraryId|body|string(uuid) \| null|false|**Deprecated.** Library ID to filter by|
+|» libraryId|body|string \| null(uuid)|false|**Deprecated.** Library ID to filter by|
 |» make|body|string \| null|false|**Deprecated.** Filter by camera make|
 |» model|body|string \| null|false|**Deprecated.** Filter by camera model|
 |» ocr|body|string|false|**Deprecated.** Filter by OCR text content|
@@ -20152,7 +17357,7 @@ Retrieve a random selection of assets based on the provided criteria.
 |» isNotInAlbum|body|boolean|false|**Deprecated.** Filter assets not in any album|
 |» isOffline|body|boolean|false|**Deprecated.** Filter by offline status|
 |» lensModel|body|string \| null|false|**Deprecated.** Filter by lens model|
-|» libraryId|body|string(uuid) \| null|false|**Deprecated.** Library ID to filter by|
+|» libraryId|body|string \| null(uuid)|false|**Deprecated.** Library ID to filter by|
 |» make|body|string \| null|false|**Deprecated.** Filter by camera make|
 |» model|body|string \| null|false|**Deprecated.** Filter by camera model|
 |» ocr|body|string|false|**Deprecated.** Filter by OCR text content|
@@ -21539,7 +18744,7 @@ Perform a smart search for assets by using machine learning vectors to determine
 |» isOffline|body|boolean|false|**Deprecated.** Filter by offline status|
 |» language|body|string|false|Search language code|
 |» lensModel|body|string \| null|false|**Deprecated.** Filter by lens model|
-|» libraryId|body|string(uuid) \| null|false|**Deprecated.** Library ID to filter by|
+|» libraryId|body|string \| null(uuid)|false|**Deprecated.** Library ID to filter by|
 |» make|body|string \| null|false|**Deprecated.** Filter by camera make|
 |» model|body|string \| null|false|**Deprecated.** Filter by camera model|
 |» ocr|body|string|false|**Deprecated.** Filter by OCR text content|
@@ -22978,7 +20183,7 @@ Retrieve statistical data about assets based on search criteria, such as the tot
 |» isNotInAlbum|body|boolean|false|**Deprecated.** Filter assets not in any album|
 |» isOffline|body|boolean|false|**Deprecated.** Filter by offline status|
 |» lensModel|body|string \| null|false|**Deprecated.** Filter by lens model|
-|» libraryId|body|string(uuid) \| null|false|**Deprecated.** Library ID to filter by|
+|» libraryId|body|string \| null(uuid)|false|**Deprecated.** Library ID to filter by|
 |» make|body|string \| null|false|**Deprecated.** Filter by camera make|
 |» model|body|string \| null|false|**Deprecated.** Filter by camera model|
 |» ocr|body|string|false|**Deprecated.** Filter by OCR text content|
@@ -24261,7 +21466,7 @@ curl http://localhost:2283/api/shared-links \
   -d '{
     "albumId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
     "allowDownload": true,
-    "allowUpload": true,
+    "allowUpload": false,
     "assetIds": [
       "497f6eca-6276-4993-bfeb-53cbbbba6f08"
     ],
@@ -24284,7 +21489,7 @@ Create a new shared link.
 {
   "albumId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "allowDownload": true,
-  "allowUpload": true,
+  "allowUpload": false,
   "assetIds": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -24307,7 +21512,7 @@ Create a new shared link.
 |» allowUpload|body|boolean|false|Allow uploads|
 |» assetIds|body|[string(uuid)]|false|Asset IDs (for individual assets)|
 |» description|body|string \| null|false|Link description|
-|» expiresAt|body|string(date-time) \| null|false|Expiration date|
+|» expiresAt|body|string \| null(date-time)|false|Expiration date|
 |» password|body|string \| null|false|Link password|
 |» showMetadata|body|boolean|false|Show metadata|
 |» slug|body|string \| null|false|Custom URL slug|
@@ -25238,7 +22443,7 @@ Update an existing shared link by its ID.
 |» allowDownload|body|boolean|false|Allow downloads|
 |» allowUpload|body|boolean|false|Allow uploads|
 |» description|body|string \| null|false|Link description|
-|» expiresAt|body|string(date-time) \| null|false|Expiration date|
+|» expiresAt|body|string \| null(date-time)|false|Expiration date|
 |» password|body|string \| null|false|Link password|
 |» showMetadata|body|boolean|false|Show metadata|
 |» slug|body|string \| null|false|Custom URL slug|
@@ -26794,18 +23999,21 @@ Retrieve the current system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -27099,18 +24307,21 @@ curl http://localhost:2283/api/system-config \
       "colorspace": "srgb",
       "extractEmbedded": true,
       "fullsize": {
+        "effort": "low",
         "enabled": true,
         "format": "jpeg",
         "progressive": true,
         "quality": 1
       },
       "preview": {
+        "effort": "low",
         "format": "jpeg",
         "progressive": true,
         "quality": 1,
         "size": 1
       },
       "thumbnail": {
+        "effort": "low",
         "format": "jpeg",
         "progressive": true,
         "quality": 1,
@@ -27392,18 +24603,21 @@ Update the system configuration with a new system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -27708,18 +24922,21 @@ Update the system configuration with a new system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -28026,18 +25243,21 @@ Retrieve the default values for the system configuration.
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -28282,6 +25502,10 @@ curl http://localhost:2283/api/system-config/storage-template-options \
 
 `GET /system-config/storage-template-options`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Retrieve exemplary storage template options.
 
 > Example responses
@@ -28317,7 +25541,7 @@ Retrieve exemplary storage template options.
 }
 ```
 
-<h3 id="get-storage-template-options-responses">Responses</h3>
+<h3 id="get-storage-template-options-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -28665,7 +25889,7 @@ Create a new tag by providing a name and optional color.
 |body|body|[TagCreateDto](#schematagcreatedto)|true|none|
 |» color|body|string \| null|false|Tag color (hex)|
 |» name|body|string|true|Tag name|
-|» parentId|body|string(uuid) \| null|false|Parent tag ID|
+|» parentId|body|string \| null(uuid)|false|Parent tag ID|
 
 > Example responses
 
@@ -29509,7 +26733,7 @@ curl http://localhost:2283/api/admin/users \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "avatarColor": {},
+    "avatarColor": "primary",
     "email": "user@example.com",
     "isAdmin": true,
     "name": "string",
@@ -29530,7 +26754,7 @@ Create a new user.
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "isAdmin": true,
   "name": "string",
@@ -29548,7 +26772,9 @@ Create a new user.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[UserAdminCreateDto](#schemauseradmincreatedto)|true|none|
-|» avatarColor|body|object \| null|false|none|
+|» avatarColor|body|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|
+|» » *anyOf*|body|[UserAvatarColor](#schemauseravatarcolor)|false|User avatar color|
+|» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|true|User email|
 |» isAdmin|body|boolean|false|Grant admin privileges|
 |» name|body|string|true|User name|
@@ -29558,6 +26784,21 @@ Create a new user.
 |» quotaSizeInBytes|body|integer \| null|false|Storage quota in bytes|
 |» shouldChangePassword|body|boolean|false|Require password change on next login|
 |» storageLabel|body|string \| null|false|Storage label|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » *anyOf*|primary|
+|» » *anyOf*|pink|
+|» » *anyOf*|red|
+|» » *anyOf*|yellow|
+|» » *anyOf*|blue|
+|» » *anyOf*|green|
+|» » *anyOf*|purple|
+|» » *anyOf*|orange|
+|» » *anyOf*|gray|
+|» » *anyOf*|amber|
 
 > Example responses
 
@@ -29678,7 +26919,7 @@ curl http://localhost:2283/api/admin/users/497f6eca-6276-4993-bfeb-53cbbbba6f08 
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "avatarColor": {},
+    "avatarColor": "primary",
     "email": "user@example.com",
     "isAdmin": true,
     "name": "string",
@@ -29698,7 +26939,7 @@ Update an existing user.
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "isAdmin": true,
   "name": "string",
@@ -29716,7 +26957,9 @@ Update an existing user.
 |---|---|---|---|---|
 |id|path|string(uuid)|true|none|
 |body|body|[UserAdminUpdateDto](#schemauseradminupdatedto)|true|none|
-|» avatarColor|body|object \| null|false|none|
+|» avatarColor|body|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|
+|» » *anyOf*|body|[UserAvatarColor](#schemauseravatarcolor)|false|User avatar color|
+|» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|false|User email|
 |» isAdmin|body|boolean|false|Grant admin privileges|
 |» name|body|string|false|User name|
@@ -29725,6 +26968,21 @@ Update an existing user.
 |» quotaSizeInBytes|body|integer \| null|false|Storage quota in bytes|
 |» shouldChangePassword|body|boolean|false|Require password change on next login|
 |» storageLabel|body|string \| null|false|Storage label|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » *anyOf*|primary|
+|» » *anyOf*|pink|
+|» » *anyOf*|red|
+|» » *anyOf*|yellow|
+|» » *anyOf*|blue|
+|» » *anyOf*|green|
+|» » *anyOf*|purple|
+|» » *anyOf*|orange|
+|» » *anyOf*|gray|
+|» » *anyOf*|amber|
 
 > Example responses
 
@@ -30525,7 +27783,7 @@ curl http://localhost:2283/api/users/me \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "avatarColor": {},
+    "avatarColor": "primary",
     "email": "user@example.com",
     "name": "string"
   }'
@@ -30539,7 +27797,7 @@ Update the current user making the API request.
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "name": "string"
 }
@@ -30550,9 +27808,26 @@ Update the current user making the API request.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[UserUpdateMeDto](#schemauserupdatemedto)|true|none|
-|» avatarColor|body|object \| null|false|none|
+|» avatarColor|body|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|
+|» » *anyOf*|body|[UserAvatarColor](#schemauseravatarcolor)|false|User avatar color|
+|» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|false|User email|
 |» name|body|string|false|User name|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » *anyOf*|primary|
+|» » *anyOf*|pink|
+|» » *anyOf*|red|
+|» » *anyOf*|yellow|
+|» » *anyOf*|blue|
+|» » *anyOf*|green|
+|» » *anyOf*|purple|
+|» » *anyOf*|orange|
+|» » *anyOf*|gray|
+|» » *anyOf*|amber|
 
 > Example responses
 
@@ -32239,7 +29514,7 @@ Activity create
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|assetId|string(uuid) \| null|true|none|Asset ID (if activity is for an asset)|
+|assetId|string \| null(uuid)|true|none|Asset ID (if activity is for an asset)|
 |comment|string \| null|false|none|Comment text (for comment activities)|
 |createdAt|string(date-time)|true|none|Creation date|
 |id|string(uuid)|true|none|Activity ID|
@@ -32426,18 +29701,21 @@ Activity create
     "colorspace": "srgb",
     "extractEmbedded": true,
     "fullsize": {
+      "effort": "low",
       "enabled": true,
       "format": "jpeg",
       "progressive": true,
       "quality": 1
     },
     "preview": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
       "size": 1
     },
     "thumbnail": {
+      "effort": "low",
       "format": "jpeg",
       "progressive": true,
       "quality": 1,
@@ -32921,6 +30199,7 @@ Configuration properties that are visible to the admin
 
 ```json
 {
+  "effort": "low",
   "enabled": true,
   "format": "jpeg",
   "progressive": true,
@@ -32932,6 +30211,7 @@ Configuration properties that are visible to the admin
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|effort|[ImageEffort](#schemaimageeffort)|true|none|Image effort|
 |enabled|boolean|true|none|Enabled|
 |format|[ImageFormat](#schemaimageformat)|true|none|Image format|
 |progressive|boolean|false|none|Progressive|
@@ -32941,6 +30221,10 @@ Configuration properties that are visible to the admin
 
 |Property|Value|
 |---|---|
+|effort|low|
+|effort|medium|
+|effort|high|
+|effort|max|
 |format|jpeg|
 |format|jxl|
 |format|webp|
@@ -32954,6 +30238,7 @@ Configuration properties that are visible to the admin
 
 ```json
 {
+  "effort": "low",
   "format": "jpeg",
   "progressive": true,
   "quality": 1,
@@ -32965,6 +30250,7 @@ Configuration properties that are visible to the admin
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|effort|[ImageEffort](#schemaimageeffort)|true|none|Image effort|
 |format|[ImageFormat](#schemaimageformat)|true|none|Image format|
 |progressive|boolean|false|none|Progressive|
 |quality|integer|true|none|Quality|
@@ -32974,6 +30260,10 @@ Configuration properties that are visible to the admin
 
 |Property|Value|
 |---|---|
+|effort|low|
+|effort|medium|
+|effort|high|
+|effort|max|
 |format|jpeg|
 |format|jxl|
 |format|webp|
@@ -32990,18 +30280,21 @@ Configuration properties that are visible to the admin
   "colorspace": "srgb",
   "extractEmbedded": true,
   "fullsize": {
+    "effort": "low",
     "enabled": true,
     "format": "jpeg",
     "progressive": true,
     "quality": 1
   },
   "preview": {
+    "effort": "low",
     "format": "jpeg",
     "progressive": true,
     "quality": 1,
     "size": 1
   },
   "thumbnail": {
+    "effort": "low",
     "format": "jpeg",
     "progressive": true,
     "quality": 1,
@@ -33634,7 +30927,7 @@ Integrity job config
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |additionalDomains|[string(uri)]|true|none|Additional domains|
-|domain|string(uri) \| null|true|none|Passkey domain|
+|domain|string \| null(uri)|true|none|Passkey domain|
 |enabled|boolean|true|none|Enabled|
 
 <h2 id="tocS_AdminConfigPasswordLoginDto">AdminConfigPasswordLoginDto</h2>
@@ -33956,7 +31249,7 @@ Integrity job config
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |albumName|string|true|none|Album name|
-|albumThumbnailAssetId|string(uuid) \| null|true|none|Thumbnail asset ID|
+|albumThumbnailAssetId|string \| null(uuid)|true|none|Thumbnail asset ID|
 |albumUsers|[[AlbumUserResponseDto](#schemaalbumuserresponsedto)]|true|none|First entry is always the album owner. Second entry is the auth user, if it differs from the owner. The rest are ordered alphabetically.|
 |assetCount|integer|true|none|Number of assets|
 |contributorCounts|[[ContributorCountResponseDto](#schemacontributorcountresponsedto)]|false|none|none|
@@ -35526,7 +32819,7 @@ Asset face with person
 |id|string(uuid)|true|none|Face ID|
 |imageHeight|integer|true|none|Image height in pixels|
 |imageWidth|integer|true|none|Image width in pixels|
-|person|object \| null|true|none|none|
+|person|[PersonResponseDto](#schemapersonresponsedto) \| null|true|none|none|
 |sourceType|[SourceType](#schemasourcetype)|false|none|Face detection source type|
 
 #### Enumerated Values
@@ -36280,7 +33573,7 @@ Rejection reason if rejected
 |---|---|---|---|---|
 |checksum|string|true|none|Base64 encoded SHA1 hash|
 |createdAt|string(date-time)|true|none|The UTC timestamp when the asset was originally uploaded to Immich.|
-|duplicateId|string(uuid) \| null|false|none|Duplicate group ID|
+|duplicateId|string \| null(uuid)|false|none|Duplicate group ID|
 |duration|integer \| null|true|none|Video/gif duration in milliseconds (null for static images)|
 |exifInfo|[ExifResponseDto](#schemaexifresponsedto)|false|none|EXIF response|
 |fileCreatedAt|string(date-time)|true|none|The actual UTC timestamp when the file was created/captured, preserving timezone information. This is the authoritative timestamp for chronological sorting within timeline groups. Combined with timezone data, this can be used to determine the exact moment the photo was taken.|
@@ -36293,7 +33586,7 @@ Rejection reason if rejected
 |isFavorite|boolean|true|none|Is favorite|
 |isOffline|boolean|true|none|Is offline|
 |isTrashed|boolean|true|none|Is trashed|
-|libraryId|string(uuid) \| null|false|none|Library ID|
+|libraryId|string \| null(uuid)|false|none|Library ID|
 |livePhotoVideoId|string \| null|false|none|Live photo video ID|
 |localDateTime|string(date-time)|true|none|The local date and time when the photo/video was taken, derived from EXIF metadata. This represents the photographer's local time regardless of timezone, stored as a timezone-agnostic timestamp. Used for timeline grouping by "local" days and months.|
 |originalFileName|string|true|none|Original file name|
@@ -36303,7 +33596,7 @@ Rejection reason if rejected
 |ownerId|string(uuid)|true|none|Owner user ID|
 |people|[[PersonResponseDto](#schemapersonresponsedto)]|false|none|none|
 |resized|boolean|false|none|Is resized|
-|stack|object \| null|false|none|none|
+|stack|[AssetStackResponseDto](#schemaassetstackresponsedto) \| null|false|none|none|
 |tags|[[TagResponseDto](#schematagresponsedto)]|false|none|none|
 |thumbhash|string \| null|true|none|Thumbhash for thumbnail generation (base64) also used as the c query param for thumbnail cache busting.|
 |type|[AssetTypeEnum](#schemaassettypeenum)|true|none|Asset type|
@@ -36483,136 +33776,6 @@ Target audio codec
 |color|gray|
 |color|amber|
 
-<h2 id="tocS_BackendDto">BackendDto</h2>
-<!-- backwards compatibility -->
-<a id="schemabackenddto"></a>
-<a id="schema_BackendDto"></a>
-<a id="tocSbackenddto"></a>
-<a id="tocsbackenddto"></a>
-
-```json
-{
-  "description": "string",
-  "error": "string",
-  "id": "string",
-  "isOnline": true,
-  "type": "yucca"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|description|string|true|none|none|
-|error|string|false|none|none|
-|id|string|true|none|none|
-|isOnline|boolean|true|none|none|
-|type|[BackendType](#schemabackendtype)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|yucca|
-|type|local|
-|type|s3|
-
-<h2 id="tocS_BackendResponseDto">BackendResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemabackendresponsedto"></a>
-<a id="schema_BackendResponseDto"></a>
-<a id="tocSbackendresponsedto"></a>
-<a id="tocsbackendresponsedto"></a>
-
-```json
-{
-  "backend": {
-    "description": "string",
-    "error": "string",
-    "id": "string",
-    "isOnline": true,
-    "type": "yucca"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backend|[BackendDto](#schemabackenddto)|true|none|none|
-
-<h2 id="tocS_BackendType">BackendType</h2>
-<!-- backwards compatibility -->
-<a id="schemabackendtype"></a>
-<a id="schema_BackendType"></a>
-<a id="tocSbackendtype"></a>
-<a id="tocsbackendtype"></a>
-
-```json
-"yucca"
-```
-
-<h2 id="tocS_BackendsResponseDto">BackendsResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemabackendsresponsedto"></a>
-<a id="schema_BackendsResponseDto"></a>
-<a id="tocSbackendsresponsedto"></a>
-<a id="tocsbackendsresponsedto"></a>
-
-```json
-{
-  "backends": [
-    {
-      "description": "string",
-      "error": "string",
-      "id": "string",
-      "isOnline": true,
-      "type": "yucca"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backends|[[BackendDto](#schemabackenddto)]|true|none|none|
-
-<h2 id="tocS_BackupStatus">BackupStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemabackupstatus"></a>
-<a id="schema_BackupStatus"></a>
-<a id="tocSbackupstatus"></a>
-<a id="tocsbackupstatus"></a>
-
-```json
-"incomplete"
-```
-
-<h2 id="tocS_BandwidthDto">BandwidthDto</h2>
-<!-- backwards compatibility -->
-<a id="schemabandwidthdto"></a>
-<a id="schema_BandwidthDto"></a>
-<a id="tocSbandwidthdto"></a>
-<a id="tocsbandwidthdto"></a>
-
-```json
-{
-  "bytesPerSec": 0,
-  "quietHours": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|bytesPerSec|integer|true|none|none|
-|quietHours|string|false|none|none|
-
 <h2 id="tocS_BoolFilter">BoolFilter</h2>
 <!-- backwards compatibility -->
 <a id="schemaboolfilter"></a>
@@ -36631,17 +33794,6 @@ Target audio codec
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |eq|boolean|true|none|none|
-
-<h2 id="tocS_BootstrapStatus">BootstrapStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemabootstrapstatus"></a>
-<a id="schema_BootstrapStatus"></a>
-<a id="tocSbootstrapstatus"></a>
-<a id="tocsbootstrapstatus"></a>
-
-```json
-"not-ready"
-```
 
 <h2 id="tocS_BulkIdErrorReason">BulkIdErrorReason</h2>
 <!-- backwards compatibility -->
@@ -36886,137 +34038,6 @@ Type of calendar heatmap
 
 Colorspace
 
-<h2 id="tocS_ConfigResponseDto">ConfigResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigresponsedto"></a>
-<a id="schema_ConfigResponseDto"></a>
-<a id="tocSconfigresponsedto"></a>
-<a id="tocsconfigresponsedto"></a>
-
-```json
-{
-  "bandwidth": {
-    "bytesPerSec": 0,
-    "quietHours": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|bandwidth|[BandwidthDto](#schemabandwidthdto)|true|none|none|
-
-<h2 id="tocS_ConfigUpdateRequestDto">ConfigUpdateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigupdaterequestdto"></a>
-<a id="schema_ConfigUpdateRequestDto"></a>
-<a id="tocSconfigupdaterequestdto"></a>
-<a id="tocsconfigupdaterequestdto"></a>
-
-```json
-{
-  "bandwidth": {
-    "bytesPerSec": 0,
-    "quietHours": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|bandwidth|[BandwidthDto](#schemabandwidthdto)|true|none|none|
-
-<h2 id="tocS_ConfigureImmichDatabaseDumpRequestDto">ConfigureImmichDatabaseDumpRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigureimmichdatabasedumprequestdto"></a>
-<a id="schema_ConfigureImmichDatabaseDumpRequestDto"></a>
-<a id="tocSconfigureimmichdatabasedumprequestdto"></a>
-<a id="tocsconfigureimmichdatabasedumprequestdto"></a>
-
-```json
-{
-  "enabled": true,
-  "keepLastAmount": 1
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|enabled|boolean|false|none|none|
-|keepLastAmount|integer|false|none|none|
-
-<h2 id="tocS_ConfigureImmichIntegrationRequestDto">ConfigureImmichIntegrationRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigureimmichintegrationrequestdto"></a>
-<a id="schema_ConfigureImmichIntegrationRequestDto"></a>
-<a id="tocSconfigureimmichintegrationrequestdto"></a>
-<a id="tocsconfigureimmichintegrationrequestdto"></a>
-
-```json
-{
-  "backupConfiguration": true,
-  "cron": "string",
-  "dataFolders": [
-    "string"
-  ],
-  "libraries": [
-    "string"
-  ],
-  "name": "string",
-  "paused": true,
-  "repositoryId": "string",
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "worm": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backupConfiguration|boolean|true|none|none|
-|cron|string|true|none|none|
-|dataFolders|[string]|true|none|none|
-|libraries|[string]|true|none|IDs of the external libraries to back up. Use ["all"] to back up every library, including ones added later.|
-|name|string|true|none|none|
-|paused|boolean|false|none|none|
-|repositoryId|string|false|none|none|
-|retentionPolicy|object \| null|false|none|none|
-|worm|boolean|true|none|none|
-
-<h2 id="tocS_ConfigureImmichIntegrationResponseDto">ConfigureImmichIntegrationResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaconfigureimmichintegrationresponsedto"></a>
-<a id="schema_ConfigureImmichIntegrationResponseDto"></a>
-<a id="tocSconfigureimmichintegrationresponsedto"></a>
-<a id="tocsconfigureimmichintegrationresponsedto"></a>
-
-```json
-{
-  "repositoryId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|repositoryId|string|true|none|none|
-
 <h2 id="tocS_ContributorCountResponseDto">ContributorCountResponseDto</h2>
 <!-- backwards compatibility -->
 <a id="schemacontributorcountresponsedto"></a>
@@ -37099,25 +34120,6 @@ Colorspace
 |name|string|false|none|Library name|
 |ownerId|string(uuid)|true|none|Owner user ID|
 
-<h2 id="tocS_CreateLocalBackendRequestDto">CreateLocalBackendRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemacreatelocalbackendrequestdto"></a>
-<a id="schema_CreateLocalBackendRequestDto"></a>
-<a id="tocScreatelocalbackendrequestdto"></a>
-<a id="tocscreatelocalbackendrequestdto"></a>
-
-```json
-{
-  "path": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|path|string|true|none|none|
-
 <h2 id="tocS_CreateProfileImageDto">CreateProfileImageDto</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateprofileimagedto"></a>
@@ -37160,25 +34162,6 @@ Colorspace
 |profileImagePath|string|true|none|Profile image file path|
 |userId|string(uuid)|true|none|User ID|
 
-<h2 id="tocS_CreateSessionRequestDto">CreateSessionRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemacreatesessionrequestdto"></a>
-<a id="schema_CreateSessionRequestDto"></a>
-<a id="tocScreatesessionrequestdto"></a>
-<a id="tocscreatesessionrequestdto"></a>
-
-```json
-{
-  "token": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|token|string|true|none|none|
-
 <h2 id="tocS_CropParameters">CropParameters</h2>
 <!-- backwards compatibility -->
 <a id="schemacropparameters"></a>
@@ -37203,25 +34186,6 @@ Colorspace
 |width|integer|true|none|Width of the crop|
 |x|integer|true|none|Top-Left X coordinate of crop|
 |y|integer|true|none|Top-Left Y coordinate of crop|
-
-<h2 id="tocS_CurrentRecoveryKeyResponse">CurrentRecoveryKeyResponse</h2>
-<!-- backwards compatibility -->
-<a id="schemacurrentrecoverykeyresponse"></a>
-<a id="schema_CurrentRecoveryKeyResponse"></a>
-<a id="tocScurrentrecoverykeyresponse"></a>
-<a id="tocscurrentrecoverykeyresponse"></a>
-
-```json
-{
-  "recoveryKey": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|recoveryKey|string|true|none|none|
 
 <h2 id="tocS_DatabaseBackupDeleteDto">DatabaseBackupDeleteDto</h2>
 <!-- backwards compatibility -->
@@ -37362,75 +34326,12 @@ Colorspace
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|eq|string(date-time) \| null|false|none|none|
+|eq|string \| null(date-time)|false|none|none|
 |gt|string(date-time)|false|none|none|
 |gte|string(date-time)|false|none|none|
 |lt|string(date-time)|false|none|none|
 |lte|string(date-time)|false|none|none|
-|ne|string(date-time) \| null|false|none|none|
-
-<h2 id="tocS_DeviceFlowEventDto">DeviceFlowEventDto</h2>
-<!-- backwards compatibility -->
-<a id="schemadevicefloweventdto"></a>
-<a id="schema_DeviceFlowEventDto"></a>
-<a id="tocSdevicefloweventdto"></a>
-<a id="tocsdevicefloweventdto"></a>
-
-```json
-{
-  "backendId": "string",
-  "reason": "NOT_CONNECTED",
-  "token": "string",
-  "type": "START",
-  "userCode": "string",
-  "verificationUri": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backendId|string|false|none|none|
-|reason|[DeviceFlowFailureReason](#schemadeviceflowfailurereason)|false|none|none|
-|token|string|false|none|none|
-|type|[DeviceFlowEventType](#schemadevicefloweventtype)|true|none|none|
-|userCode|string|false|none|none|
-|verificationUri|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|reason|NOT_CONNECTED|
-|reason|DEVICE_FLOW_FAILED|
-|reason|WRONG_ACCOUNT|
-|reason|UNKNOWN|
-|type|START|
-|type|SUCCESS|
-|type|FAILURE|
-
-<h2 id="tocS_DeviceFlowEventType">DeviceFlowEventType</h2>
-<!-- backwards compatibility -->
-<a id="schemadevicefloweventtype"></a>
-<a id="schema_DeviceFlowEventType"></a>
-<a id="tocSdevicefloweventtype"></a>
-<a id="tocsdevicefloweventtype"></a>
-
-```json
-"START"
-```
-
-<h2 id="tocS_DeviceFlowFailureReason">DeviceFlowFailureReason</h2>
-<!-- backwards compatibility -->
-<a id="schemadeviceflowfailurereason"></a>
-<a id="schema_DeviceFlowFailureReason"></a>
-<a id="tocSdeviceflowfailurereason"></a>
-<a id="tocsdeviceflowfailurereason"></a>
-
-```json
-"NOT_CONNECTED"
-```
+|ne|string \| null(date-time)|false|none|none|
 
 <h2 id="tocS_DownloadArchiveDto">DownloadArchiveDto</h2>
 <!-- backwards compatibility -->
@@ -37824,6 +34725,19 @@ Colorspace
 |albumUpdate|boolean|false|none|Whether to receive email notifications for album updates|
 |enabled|boolean|false|none|Whether email notifications are enabled|
 
+<h2 id="tocS_EmailTemplate">EmailTemplate</h2>
+<!-- backwards compatibility -->
+<a id="schemaemailtemplate"></a>
+<a id="schema_EmailTemplate"></a>
+<a id="tocSemailtemplate"></a>
+<a id="tocsemailtemplate"></a>
+
+```json
+"test"
+```
+
+Email template name
+
 <h2 id="tocS_EnumFilterAssetType">EnumFilterAssetType</h2>
 <!-- backwards compatibility -->
 <a id="schemaenumfilterassettype"></a>
@@ -37966,21 +34880,21 @@ EXIF response
 |---|---|---|---|---|
 |city|string \| null|false|none|City name|
 |country|string \| null|false|none|Country name|
-|dateTimeOriginal|string(date-time) \| null|false|none|Original date/time|
+|dateTimeOriginal|string \| null(date-time)|false|none|Original date/time|
 |description|string \| null|false|none|Image description|
 |exifImageHeight|integer \| null|false|none|Image height in pixels|
 |exifImageWidth|integer \| null|false|none|Image width in pixels|
 |exposureTime|string \| null|false|none|Exposure time|
-|fNumber|number(double) \| null|false|none|F-number (aperture)|
+|fNumber|number \| null(double)|false|none|F-number (aperture)|
 |fileSizeInByte|integer \| null|false|none|File size in bytes|
-|focalLength|number(double) \| null|false|none|Focal length in mm|
+|focalLength|number \| null(double)|false|none|Focal length in mm|
 |iso|integer \| null|false|none|ISO sensitivity|
-|latitude|number(double) \| null|false|none|GPS latitude|
+|latitude|number \| null(double)|false|none|GPS latitude|
 |lensModel|string \| null|false|none|Lens model|
-|longitude|number(double) \| null|false|none|GPS longitude|
+|longitude|number \| null(double)|false|none|GPS longitude|
 |make|string \| null|false|none|Camera make|
 |model|string \| null|false|none|Camera model|
-|modifyDate|string(date-time) \| null|false|none|Modification date/time|
+|modifyDate|string \| null(date-time)|false|none|Modification date/time|
 |orientation|string \| null|false|none|Image orientation|
 |projectionType|string \| null|false|none|Projection type|
 |rating|integer \| null|false|none|Rating|
@@ -38005,55 +34919,6 @@ EXIF response
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string(uuid)|true|none|Face ID|
-
-<h2 id="tocS_FilesystemListingItemDto">FilesystemListingItemDto</h2>
-<!-- backwards compatibility -->
-<a id="schemafilesystemlistingitemdto"></a>
-<a id="schema_FilesystemListingItemDto"></a>
-<a id="tocSfilesystemlistingitemdto"></a>
-<a id="tocsfilesystemlistingitemdto"></a>
-
-```json
-{
-  "isDirectory": true,
-  "path": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|isDirectory|boolean|true|none|none|
-|path|string|true|none|none|
-
-<h2 id="tocS_FilesystemListingResponseDto">FilesystemListingResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemafilesystemlistingresponsedto"></a>
-<a id="schema_FilesystemListingResponseDto"></a>
-<a id="tocSfilesystemlistingresponsedto"></a>
-<a id="tocsfilesystemlistingresponsedto"></a>
-
-```json
-{
-  "items": [
-    {
-      "isDirectory": true,
-      "path": "string"
-    }
-  ],
-  "parent": "string",
-  "path": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|items|[[FilesystemListingItemDto](#schemafilesystemlistingitemdto)]|true|none|none|
-|parent|string|true|none|none|
-|path|string|true|none|none|
 
 <h2 id="tocS_FoldersResponse">FoldersResponse</h2>
 <!-- backwards compatibility -->
@@ -38149,8 +35014,8 @@ HLS video resolution
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|eq|string(uuid) \| null|false|none|none|
-|ne|string(uuid) \| null|false|none|none|
+|eq|string \| null(uuid)|false|none|none|
+|ne|string \| null(uuid)|false|none|none|
 
 <h2 id="tocS_IdsFilter">IdsFilter</h2>
 <!-- backwards compatibility -->
@@ -38181,6 +35046,19 @@ HLS video resolution
 |any|[string(uuid)]|false|none|none|
 |none|[string(uuid)]|false|none|none|
 
+<h2 id="tocS_ImageEffort">ImageEffort</h2>
+<!-- backwards compatibility -->
+<a id="schemaimageeffort"></a>
+<a id="schema_ImageEffort"></a>
+<a id="tocSimageeffort"></a>
+<a id="tocsimageeffort"></a>
+
+```json
+"low"
+```
+
+Image effort
+
 <h2 id="tocS_ImageFormat">ImageFormat</h2>
 <!-- backwards compatibility -->
 <a id="schemaimageformat"></a>
@@ -38193,478 +35071,6 @@ HLS video resolution
 ```
 
 Image format
-
-<h2 id="tocS_ImmichBackupStatusDto">ImmichBackupStatusDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichbackupstatusdto"></a>
-<a id="schema_ImmichBackupStatusDto"></a>
-<a id="tocSimmichbackupstatusdto"></a>
-<a id="tocsimmichbackupstatusdto"></a>
-
-```json
-{
-  "backend": {
-    "description": "string",
-    "error": "string",
-    "id": "string",
-    "isOnline": true,
-    "type": "yucca"
-  },
-  "databaseDump": {
-    "enabled": true,
-    "keepLastAmount": 1
-  },
-  "databaseDumpWarningIgnored": true,
-  "integration": {
-    "configuration": {
-      "backupConfiguration": true,
-      "dataFolders": [
-        "string"
-      ],
-      "libraries": [
-        "string"
-      ]
-    },
-    "id": "string",
-    "scheduleId": "string"
-  },
-  "latestBackupJob": {
-    "end": "string",
-    "id": "string",
-    "name": "repository-backup",
-    "outcome": {
-      "errors": [
-        "string"
-      ],
-      "summary": {
-        "type": "backup",
-        "filesNew": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "totalFilesProcessed": -9007199254740000,
-        "totalBytesProcessed": -9007199254740000,
-        "snapshotId": "string"
-      },
-      "support": {
-        "droppedLines": -9007199254740000,
-        "localDroppedLines": -9007199254740000,
-        "sessionId": "string"
-      }
-    },
-    "progress": {
-      "bytesDone": -9007199254740000,
-      "currentFiles": [
-        "string"
-      ],
-      "estimatedEndAt": "string",
-      "percentDone": 0,
-      "scanning": true,
-      "totalBytes": -9007199254740000
-    },
-    "queuedAt": "string",
-    "repositoryId": "string",
-    "start": "string",
-    "status": "queued"
-  },
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  },
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backend|[BackendDto](#schemabackenddto)|false|none|none|
-|databaseDump|[ImmichDatabaseDumpConfigDto](#schemaimmichdatabasedumpconfigdto)|false|none|none|
-|databaseDumpWarningIgnored|boolean|false|none|none|
-|integration|[ImmichIntegrationDto](#schemaimmichintegrationdto)|false|none|none|
-|latestBackupJob|[JobDto](#schemajobdto)|false|none|none|
-|repository|[LocalRepositoryDto](#schemalocalrepositorydto)|false|none|none|
-|schedule|[ScheduleDto](#schemascheduledto)|false|none|none|
-
-<h2 id="tocS_ImmichDatabaseDumpConfigDto">ImmichDatabaseDumpConfigDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichdatabasedumpconfigdto"></a>
-<a id="schema_ImmichDatabaseDumpConfigDto"></a>
-<a id="tocSimmichdatabasedumpconfigdto"></a>
-<a id="tocsimmichdatabasedumpconfigdto"></a>
-
-```json
-{
-  "enabled": true,
-  "keepLastAmount": 1
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|enabled|boolean|true|none|none|
-|keepLastAmount|integer|true|none|none|
-
-<h2 id="tocS_ImmichIntegrationConfigurationDto">ImmichIntegrationConfigurationDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichintegrationconfigurationdto"></a>
-<a id="schema_ImmichIntegrationConfigurationDto"></a>
-<a id="tocSimmichintegrationconfigurationdto"></a>
-<a id="tocsimmichintegrationconfigurationdto"></a>
-
-```json
-{
-  "backupConfiguration": true,
-  "dataFolders": [
-    "string"
-  ],
-  "libraries": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backupConfiguration|boolean|true|none|none|
-|dataFolders|[string]|true|none|none|
-|libraries|[string]|true|none|IDs of the external libraries to back up. Use ["all"] to back up every library, including ones added later.|
-
-<h2 id="tocS_ImmichIntegrationDto">ImmichIntegrationDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichintegrationdto"></a>
-<a id="schema_ImmichIntegrationDto"></a>
-<a id="tocSimmichintegrationdto"></a>
-<a id="tocsimmichintegrationdto"></a>
-
-```json
-{
-  "configuration": {
-    "backupConfiguration": true,
-    "dataFolders": [
-      "string"
-    ],
-    "libraries": [
-      "string"
-    ]
-  },
-  "id": "string",
-  "scheduleId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|configuration|[ImmichIntegrationConfigurationDto](#schemaimmichintegrationconfigurationdto)|true|none|none|
-|id|string|true|none|none|
-|scheduleId|string|true|none|none|
-
-<h2 id="tocS_ImmichLibraryDto">ImmichLibraryDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichlibrarydto"></a>
-<a id="schema_ImmichLibraryDto"></a>
-<a id="tocSimmichlibrarydto"></a>
-<a id="tocsimmichlibrarydto"></a>
-
-```json
-{
-  "exclusionPatterns": [
-    "string"
-  ],
-  "id": "string",
-  "importPaths": [
-    "string"
-  ],
-  "name": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|exclusionPatterns|[string]|true|none|none|
-|id|string|true|none|none|
-|importPaths|[string]|true|none|none|
-|name|string|true|none|none|
-
-<h2 id="tocS_ImmichRollbackRequestDto">ImmichRollbackRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichrollbackrequestdto"></a>
-<a id="schema_ImmichRollbackRequestDto"></a>
-<a id="tocSimmichrollbackrequestdto"></a>
-<a id="tocsimmichrollbackrequestdto"></a>
-
-```json
-{
-  "backupFileName": "string",
-  "repositoryId": "string",
-  "snapshotId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backupFileName|string|false|none|none|
-|repositoryId|string|true|none|none|
-|snapshotId|string|true|none|none|
-
-<h2 id="tocS_ImmichStateDto">ImmichStateDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaimmichstatedto"></a>
-<a id="schema_ImmichStateDto"></a>
-<a id="tocSimmichstatedto"></a>
-<a id="tocsimmichstatedto"></a>
-
-```json
-{
-  "dataFolders": [
-    "string"
-  ],
-  "dataPath": "string",
-  "libraries": [
-    {
-      "exclusionPatterns": [
-        "string"
-      ],
-      "id": "string",
-      "importPaths": [
-        "string"
-      ],
-      "name": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|dataFolders|[string]|true|none|none|
-|dataPath|string|true|none|none|
-|libraries|[[ImmichLibraryDto](#schemaimmichlibrarydto)]|true|none|none|
-
-<h2 id="tocS_ImportRecoveryKeyRequest">ImportRecoveryKeyRequest</h2>
-<!-- backwards compatibility -->
-<a id="schemaimportrecoverykeyrequest"></a>
-<a id="schema_ImportRecoveryKeyRequest"></a>
-<a id="tocSimportrecoverykeyrequest"></a>
-<a id="tocsimportrecoverykeyrequest"></a>
-
-```json
-{
-  "recoveryKey": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|recoveryKey|string|true|none|none|
-
-<h2 id="tocS_InspectedLocalRepositoryDto">InspectedLocalRepositoryDto</h2>
-<!-- backwards compatibility -->
-<a id="schemainspectedlocalrepositorydto"></a>
-<a id="schema_InspectedLocalRepositoryDto"></a>
-<a id="tocSinspectedlocalrepositorydto"></a>
-<a id="tocsinspectedlocalrepositorydto"></a>
-
-```json
-{
-  "backends": {
-    "primary": {
-      "id": "string",
-      "online": true,
-      "type": "yucca"
-    },
-    "secondary": [
-      {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      }
-    ]
-  },
-  "configuration": {
-    "paths": [
-      "string"
-    ],
-    "retentionPolicy": {
-      "keepLast": -9007199254740000,
-      "keepWithin": "string",
-      "keepWithinDaily": "string",
-      "keepWithinHourly": "string",
-      "keepWithinMonthly": "string",
-      "keepWithinWeekly": "string",
-      "keepWithinYearly": "string"
-    }
-  },
-  "id": "string",
-  "meter": {
-    "lastUpdated": "string",
-    "objectCount": -9007199254740000,
-    "sizeBytes": -9007199254740000
-  },
-  "metrics": {
-    "lastBackup": "string",
-    "lastBackupDuration": -9007199254740000,
-    "lastBackupStatus": {},
-    "lastStarted": "string",
-    "sizeBytes": -9007199254740000
-  },
-  "name": "string",
-  "siteCode": "string",
-  "snapshots": [
-    {
-      "id": "string",
-      "paths": [
-        "string"
-      ],
-      "summary": {
-        "dataAdded": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "filesNew": -9007199254740000,
-        "filesUnmodified": -9007199254740000,
-        "totalBytes": -9007199254740000,
-        "totalFiles": -9007199254740000
-      },
-      "tags": [
-        "string"
-      ],
-      "time": "string"
-    }
-  ],
-  "storageClusterCode": "string",
-  "worm": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backends|[RepositoryBackendsDto](#schemarepositorybackendsdto)|false|none|none|
-|configuration|[RepositoryConfigurationDto](#schemarepositoryconfigurationdto)|false|none|none|
-|id|string|true|none|none|
-|meter|[RepositoryMeterDto](#schemarepositorymeterdto)|false|none|none|
-|metrics|[RepositoryMetricsDto](#schemarepositorymetricsdto)|true|none|none|
-|name|string|true|none|none|
-|siteCode|string \| null|true|none|none|
-|snapshots|[[SnapshotDto](#schemasnapshotdto)]|false|none|none|
-|storageClusterCode|string \| null|true|none|none|
-|worm|boolean|true|none|none|
-
-<h2 id="tocS_IntegrationsResponseDto">IntegrationsResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaintegrationsresponsedto"></a>
-<a id="schema_IntegrationsResponseDto"></a>
-<a id="tocSintegrationsresponsedto"></a>
-<a id="tocsintegrationsresponsedto"></a>
-
-```json
-{
-  "immichIntegration": {
-    "configuration": {
-      "backupConfiguration": true,
-      "dataFolders": [
-        "string"
-      ],
-      "libraries": [
-        "string"
-      ]
-    },
-    "id": "string",
-    "scheduleId": "string"
-  },
-  "immichState": {
-    "dataFolders": [
-      "string"
-    ],
-    "dataPath": "string",
-    "libraries": [
-      {
-        "exclusionPatterns": [
-          "string"
-        ],
-        "id": "string",
-        "importPaths": [
-          "string"
-        ],
-        "name": "string"
-      }
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|immichIntegration|[ImmichIntegrationDto](#schemaimmichintegrationdto)|false|none|none|
-|immichState|[ImmichStateDto](#schemaimmichstatedto)|false|none|none|
 
 <h2 id="tocS_IntegrityReport">IntegrityReport</h2>
 <!-- backwards compatibility -->
@@ -38768,142 +35174,6 @@ Integrity report type
 |name|integrity-untracked-files-delete-all|
 |name|integrity-checksum-mismatch-delete-all|
 
-<h2 id="tocS_JobDto">JobDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajobdto"></a>
-<a id="schema_JobDto"></a>
-<a id="tocSjobdto"></a>
-<a id="tocsjobdto"></a>
-
-```json
-{
-  "end": "string",
-  "id": "string",
-  "name": "repository-backup",
-  "outcome": {
-    "errors": [
-      "string"
-    ],
-    "summary": {
-      "type": "backup",
-      "filesNew": -9007199254740000,
-      "filesChanged": -9007199254740000,
-      "totalFilesProcessed": -9007199254740000,
-      "totalBytesProcessed": -9007199254740000,
-      "snapshotId": "string"
-    },
-    "support": {
-      "droppedLines": -9007199254740000,
-      "localDroppedLines": -9007199254740000,
-      "sessionId": "string"
-    }
-  },
-  "progress": {
-    "bytesDone": -9007199254740000,
-    "currentFiles": [
-      "string"
-    ],
-    "estimatedEndAt": "string",
-    "percentDone": 0,
-    "scanning": true,
-    "totalBytes": -9007199254740000
-  },
-  "queuedAt": "string",
-  "repositoryId": "string",
-  "start": "string",
-  "status": "queued"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|end|string|false|none|none|
-|id|string|true|none|none|
-|name|[YuccaJobName](#schemayuccajobname)|true|none|none|
-|outcome|[JobOutcomeDto](#schemajoboutcomedto)|false|none|none|
-|progress|[JobProgressDto](#schemajobprogressdto)|false|none|none|
-|queuedAt|string|true|none|none|
-|repositoryId|string|true|none|none|
-|start|string|false|none|none|
-|status|[YuccaJobStatus](#schemayuccajobstatus)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|name|repository-backup|
-|name|repository-prune|
-|name|repository-restore|
-|name|repository-restore-from-point|
-|name|repository-snapshot-forget|
-|name|repository-sync-metrics|
-|status|queued|
-|status|running|
-|status|complete|
-|status|warn|
-|status|failed|
-|status|cancelled|
-|status|incomplete|
-
-<h2 id="tocS_JobListResponseDto">JobListResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajoblistresponsedto"></a>
-<a id="schema_JobListResponseDto"></a>
-<a id="tocSjoblistresponsedto"></a>
-<a id="tocsjoblistresponsedto"></a>
-
-```json
-{
-  "jobs": [
-    {
-      "end": "string",
-      "id": "string",
-      "name": "repository-backup",
-      "outcome": {
-        "errors": [
-          "string"
-        ],
-        "summary": {
-          "type": "backup",
-          "filesNew": -9007199254740000,
-          "filesChanged": -9007199254740000,
-          "totalFilesProcessed": -9007199254740000,
-          "totalBytesProcessed": -9007199254740000,
-          "snapshotId": "string"
-        },
-        "support": {
-          "droppedLines": -9007199254740000,
-          "localDroppedLines": -9007199254740000,
-          "sessionId": "string"
-        }
-      },
-      "progress": {
-        "bytesDone": -9007199254740000,
-        "currentFiles": [
-          "string"
-        ],
-        "estimatedEndAt": "string",
-        "percentDone": 0,
-        "scanning": true,
-        "totalBytes": -9007199254740000
-      },
-      "queuedAt": "string",
-      "repositoryId": "string",
-      "start": "string",
-      "status": "queued"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|jobs|[[JobDto](#schemajobdto)]|true|none|none|
-
 <h2 id="tocS_JobName">JobName</h2>
 <!-- backwards compatibility -->
 <a id="schemajobname"></a>
@@ -38916,162 +35186,6 @@ Integrity report type
 ```
 
 Job name
-
-<h2 id="tocS_JobOutcomeDto">JobOutcomeDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajoboutcomedto"></a>
-<a id="schema_JobOutcomeDto"></a>
-<a id="tocSjoboutcomedto"></a>
-<a id="tocsjoboutcomedto"></a>
-
-```json
-{
-  "errors": [
-    "string"
-  ],
-  "summary": {
-    "type": "backup",
-    "filesNew": -9007199254740000,
-    "filesChanged": -9007199254740000,
-    "totalFilesProcessed": -9007199254740000,
-    "totalBytesProcessed": -9007199254740000,
-    "snapshotId": "string"
-  },
-  "support": {
-    "droppedLines": -9007199254740000,
-    "localDroppedLines": -9007199254740000,
-    "sessionId": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|errors|[string]|true|none|none|
-|summary|[JobSummaryDto](#schemajobsummarydto)|false|none|none|
-|support|[JobSupportDto](#schemajobsupportdto)|false|none|none|
-
-<h2 id="tocS_JobProgressDto">JobProgressDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajobprogressdto"></a>
-<a id="schema_JobProgressDto"></a>
-<a id="tocSjobprogressdto"></a>
-<a id="tocsjobprogressdto"></a>
-
-```json
-{
-  "bytesDone": -9007199254740000,
-  "currentFiles": [
-    "string"
-  ],
-  "estimatedEndAt": "string",
-  "percentDone": 0,
-  "scanning": true,
-  "totalBytes": -9007199254740000
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|bytesDone|integer|false|none|none|
-|currentFiles|[string]|true|none|none|
-|estimatedEndAt|string|false|none|none|
-|percentDone|number(double)|true|none|none|
-|scanning|boolean|true|none|none|
-|totalBytes|integer|false|none|none|
-
-<h2 id="tocS_JobResponseDto">JobResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajobresponsedto"></a>
-<a id="schema_JobResponseDto"></a>
-<a id="tocSjobresponsedto"></a>
-<a id="tocsjobresponsedto"></a>
-
-```json
-{
-  "jobId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|jobId|string|true|none|none|
-
-<h2 id="tocS_JobSummaryDto">JobSummaryDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajobsummarydto"></a>
-<a id="schema_JobSummaryDto"></a>
-<a id="tocSjobsummarydto"></a>
-<a id="tocsjobsummarydto"></a>
-
-```json
-{
-  "type": "backup",
-  "filesNew": -9007199254740000,
-  "filesChanged": -9007199254740000,
-  "totalFilesProcessed": -9007199254740000,
-  "totalBytesProcessed": -9007199254740000,
-  "snapshotId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|*oneOf*|object|false|none|none|
-|type|string|true|none|none|
-|filesNew|integer|true|none|none|
-|filesChanged|integer|true|none|none|
-|totalFilesProcessed|integer|true|none|none|
-|totalBytesProcessed|integer|true|none|none|
-|snapshotId|string|false|none|none|
-|*oneOf*|object|false|none|none|
-|type|string|true|none|none|
-|filesRestored|integer|true|none|none|
-|filesSkipped|integer|true|none|none|
-|bytesRestored|integer|true|none|none|
-|*oneOf*|object|false|none|none|
-|type|string|true|none|none|
-|kept|integer|true|none|none|
-|removed|integer|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|backup|
-|type|restore|
-|type|prune|
-
-<h2 id="tocS_JobSupportDto">JobSupportDto</h2>
-<!-- backwards compatibility -->
-<a id="schemajobsupportdto"></a>
-<a id="schema_JobSupportDto"></a>
-<a id="tocSjobsupportdto"></a>
-<a id="tocsjobsupportdto"></a>
-
-```json
-{
-  "droppedLines": -9007199254740000,
-  "localDroppedLines": -9007199254740000,
-  "sessionId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|droppedLines|integer|true|none|Log lines that could not be streamed in time|
-|localDroppedLines|integer|true|none|Log lines that could not be written to the local support log|
-|sessionId|string|false|none|Support code to share with FUTO when the logs were streamed|
 
 <h2 id="tocS_LibraryResponseDto">LibraryResponseDto</h2>
 <!-- backwards compatibility -->
@@ -39109,7 +35223,7 @@ Job name
 |importPaths|[string]|true|none|Import paths|
 |name|string|true|none|Library name|
 |ownerId|string(uuid)|true|none|Owner user ID|
-|refreshedAt|string(date-time) \| null|true|none|Last refresh date|
+|refreshedAt|string \| null(date-time)|true|none|Last refresh date|
 |updatedAt|string(date-time)|true|none|Last update date|
 
 <h2 id="tocS_LibraryStatsResponseDto">LibraryStatsResponseDto</h2>
@@ -39180,115 +35294,6 @@ Job name
 |activatedAt|string(date-time)|true|none|Activation date|
 |activationKey|string|true|none|Activation key|
 |licenseKey|string|true|none|License key (format: /^IM(SV\|CL)(-[\dA-Za-z]{4}){8}$/)|
-
-<h2 id="tocS_ListSnapshotsResponseDto">ListSnapshotsResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemalistsnapshotsresponsedto"></a>
-<a id="schema_ListSnapshotsResponseDto"></a>
-<a id="tocSlistsnapshotsresponsedto"></a>
-<a id="tocslistsnapshotsresponsedto"></a>
-
-```json
-{
-  "snapshots": [
-    {
-      "id": "string",
-      "paths": [
-        "string"
-      ],
-      "summary": {
-        "dataAdded": -9007199254740000,
-        "filesChanged": -9007199254740000,
-        "filesNew": -9007199254740000,
-        "filesUnmodified": -9007199254740000,
-        "totalBytes": -9007199254740000,
-        "totalFiles": -9007199254740000
-      },
-      "tags": [
-        "string"
-      ],
-      "time": "string"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|snapshots|[[SnapshotDto](#schemasnapshotdto)]|true|none|none|
-
-<h2 id="tocS_LocalRepositoryDto">LocalRepositoryDto</h2>
-<!-- backwards compatibility -->
-<a id="schemalocalrepositorydto"></a>
-<a id="schema_LocalRepositoryDto"></a>
-<a id="tocSlocalrepositorydto"></a>
-<a id="tocslocalrepositorydto"></a>
-
-```json
-{
-  "backends": {
-    "primary": {
-      "id": "string",
-      "online": true,
-      "type": "yucca"
-    },
-    "secondary": [
-      {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      }
-    ]
-  },
-  "configuration": {
-    "paths": [
-      "string"
-    ],
-    "retentionPolicy": {
-      "keepLast": -9007199254740000,
-      "keepWithin": "string",
-      "keepWithinDaily": "string",
-      "keepWithinHourly": "string",
-      "keepWithinMonthly": "string",
-      "keepWithinWeekly": "string",
-      "keepWithinYearly": "string"
-    }
-  },
-  "id": "string",
-  "meter": {
-    "lastUpdated": "string",
-    "objectCount": -9007199254740000,
-    "sizeBytes": -9007199254740000
-  },
-  "metrics": {
-    "lastBackup": "string",
-    "lastBackupDuration": -9007199254740000,
-    "lastBackupStatus": {},
-    "lastStarted": "string",
-    "sizeBytes": -9007199254740000
-  },
-  "name": "string",
-  "siteCode": "string",
-  "storageClusterCode": "string",
-  "worm": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backends|[RepositoryBackendsDto](#schemarepositorybackendsdto)|false|none|none|
-|configuration|[RepositoryConfigurationDto](#schemarepositoryconfigurationdto)|false|none|none|
-|id|string|true|none|none|
-|meter|[RepositoryMeterDto](#schemarepositorymeterdto)|false|none|none|
-|metrics|[RepositoryMetricsDto](#schemarepositorymetricsdto)|true|none|none|
-|name|string|true|none|none|
-|siteCode|string \| null|true|none|none|
-|storageClusterCode|string \| null|true|none|none|
-|worm|boolean|true|none|none|
 
 <h2 id="tocS_LogLevel">LogLevel</h2>
 <!-- backwards compatibility -->
@@ -40610,7 +36615,7 @@ Memory type
 |isNotInAlbum|boolean|false|none|**Deprecated.** Filter assets not in any album|
 |isOffline|boolean|false|none|**Deprecated.** Filter by offline status|
 |lensModel|string \| null|false|none|**Deprecated.** Filter by lens model|
-|libraryId|string(uuid) \| null|false|none|**Deprecated.** Library ID to filter by|
+|libraryId|string \| null(uuid)|false|none|**Deprecated.** Library ID to filter by|
 |make|string \| null|false|none|**Deprecated.** Filter by camera make|
 |model|string \| null|false|none|**Deprecated.** Filter by camera model|
 |ocr|string|false|none|**Deprecated.** Filter by OCR text content|
@@ -40722,7 +36727,7 @@ Axis to mirror along
 |data|object|false|none|Additional notification data|
 |description|string \| null|false|none|Notification description|
 |level|[NotificationLevel](#schemanotificationlevel)|false|none|Notification level|
-|readAt|string(date-time) \| null|false|none|Date when notification was read|
+|readAt|string \| null(date-time)|false|none|Date when notification was read|
 |title|string|true|none|Notification title|
 |type|[NotificationType](#schemanotificationtype)|false|none|Notification type|
 |userId|string(uuid)|true|none|User ID to send notification to|
@@ -40863,7 +36868,7 @@ Notification type
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |ids|[string(uuid)]|true|none|Notification IDs to update|
-|readAt|string(date-time) \| null|false|none|Date when notifications were read|
+|readAt|string \| null(date-time)|false|none|Date when notifications were read|
 
 <h2 id="tocS_NotificationUpdateDto">NotificationUpdateDto</h2>
 <!-- backwards compatibility -->
@@ -40882,7 +36887,7 @@ Notification type
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|readAt|string(date-time) \| null|false|none|Date when notification was read|
+|readAt|string \| null(date-time)|false|none|Date when notification was read|
 
 <h2 id="tocS_NumberFilter">NumberFilter</h2>
 <!-- backwards compatibility -->
@@ -40949,13 +36954,13 @@ Notification type
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|eq|number(double) \| null|false|none|none|
+|eq|number \| null(double)|false|none|none|
 |gt|number(double)|false|none|none|
 |gte|number(double)|false|none|none|
 |in|[number(double)]|false|none|none|
 |lt|number(double)|false|none|none|
 |lte|number(double)|false|none|none|
-|ne|number(double) \| null|false|none|none|
+|ne|number \| null(double)|false|none|none|
 |notIn|[number(double)]|false|none|none|
 
 <h2 id="tocS_OAuthAuthorizeResponseDto">OAuthAuthorizeResponseDto</h2>
@@ -41092,53 +37097,6 @@ OAuth token endpoint auth method
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |isOnboarded|boolean|true|none|Is user onboarded|
-
-<h2 id="tocS_OnboardingStatusResponseDto">OnboardingStatusResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaonboardingstatusresponsedto"></a>
-<a id="schema_OnboardingStatusResponseDto"></a>
-<a id="tocSonboardingstatusresponsedto"></a>
-<a id="tocsonboardingstatusresponsedto"></a>
-
-```json
-{
-  "error": "string",
-  "hasBackend": true,
-  "hasBackup": true,
-  "hasOnboardedKey": true,
-  "hasSchedule": true,
-  "hasSkippedExtraConfig": true,
-  "hasTelemetry": "full",
-  "isAuthenticated": true,
-  "requiresAuthentication": true,
-  "status": "not-ready"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|error|string|false|none|none|
-|hasBackend|boolean|true|none|none|
-|hasBackup|boolean|true|none|none|
-|hasOnboardedKey|boolean|true|none|none|
-|hasSchedule|boolean|true|none|none|
-|hasSkippedExtraConfig|boolean|true|none|none|
-|hasTelemetry|[TelemetryLevel](#schematelemetrylevel)|true|none|none|
-|isAuthenticated|boolean|true|none|none|
-|requiresAuthentication|boolean|true|none|none|
-|status|[BootstrapStatus](#schemabootstrapstatus)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|hasTelemetry|full|
-|hasTelemetry|none|
-|status|not-ready|
-|status|ready|
-|status|error|
 
 <h2 id="tocS_PartnerCreateDto">PartnerCreateDto</h2>
 <!-- backwards compatibility -->
@@ -41357,7 +37315,7 @@ Response returned by @simplewebauthn/server's `generateRegistrationOptions`
 |id|string(uuid)|true|none|Passkey ID|
 |name|string \| null|true|none|Passkey name|
 |updatedAt|string(date-time)|true|none|Last update date|
-|usedAt|string(date-time) \| null|true|none|Last used date|
+|usedAt|string \| null(date-time)|true|none|Last used date|
 
 <h2 id="tocS_PasskeyUpdateDto">PasskeyUpdateDto</h2>
 <!-- backwards compatibility -->
@@ -41587,7 +37545,7 @@ People response
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string(date) \| null|false|none|Person date of birth|
+|birthDate|string \| null(date)|false|none|Person date of birth|
 |color|string \| null|false|none|Person color (hex)|
 |featureFaceAssetId|string(uuid)|false|none|Asset ID used for feature face thumbnail|
 |id|string(uuid)|true|none|Person ID|
@@ -41730,7 +37688,7 @@ List of permissions
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string(date) \| null|false|none|Person date of birth|
+|birthDate|string \| null(date)|false|none|Person date of birth|
 |color|string \| null|false|none|Person color (hex)|
 |isFavorite|boolean|false|none|Mark as favorite|
 |isHidden|boolean|false|none|Person visibility (hidden)|
@@ -41840,7 +37798,7 @@ List of permissions
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string(date) \| null|true|none|Person date of birth|
+|birthDate|string \| null(date)|true|none|Person date of birth|
 |color|string|false|none|Person color (hex)|
 |id|string(uuid)|true|none|Person ID|
 |isFavorite|boolean|false|none|Is favorite|
@@ -41894,7 +37852,7 @@ List of permissions
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string(date) \| null|false|none|Person date of birth|
+|birthDate|string \| null(date)|false|none|Person date of birth|
 |color|string \| null|false|none|Person color (hex)|
 |featureFaceAssetId|string(uuid)|false|none|Asset ID used for feature face thumbnail|
 |isFavorite|boolean|false|none|Mark as favorite|
@@ -43722,7 +39680,7 @@ Queue name
 |isNotInAlbum|boolean|false|none|**Deprecated.** Filter assets not in any album|
 |isOffline|boolean|false|none|**Deprecated.** Filter by offline status|
 |lensModel|string \| null|false|none|**Deprecated.** Filter by lens model|
-|libraryId|string(uuid) \| null|false|none|**Deprecated.** Library ID to filter by|
+|libraryId|string \| null(uuid)|false|none|**Deprecated.** Library ID to filter by|
 |make|string \| null|false|none|**Deprecated.** Filter by camera make|
 |model|string \| null|false|none|**Deprecated.** Filter by camera model|
 |ocr|string|false|none|**Deprecated.** Filter by OCR text content|
@@ -43909,19 +39867,7 @@ Release channel
 |isAvailable|boolean|true|none|Whether a new version is available|
 |releaseVersion|[ServerVersionResponseDto](#schemaserverversionresponsedto)|true|none|none|
 |serverVersion|[ServerVersionResponseDto](#schemaserverversionresponsedto)|true|none|none|
-|type|[ReleaseType](#schemareleasetype)|true|none|Release type|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|major|
-|type|premajor|
-|type|minor|
-|type|preminor|
-|type|patch|
-|type|prepatch|
-|type|prerelease|
+|type|[ReleaseType](#schemareleasetype) \| null|true|none|Release type|
 
 <h2 id="tocS_ReleaseType">ReleaseType</h2>
 <!-- backwards compatibility -->
@@ -43933,639 +39879,6 @@ Release channel
 ```json
 "major"
 ```
-
-<h2 id="tocS_RepositoryBackendDto">RepositoryBackendDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorybackenddto"></a>
-<a id="schema_RepositoryBackendDto"></a>
-<a id="tocSrepositorybackenddto"></a>
-<a id="tocsrepositorybackenddto"></a>
-
-```json
-{
-  "id": "string",
-  "online": true,
-  "type": "yucca"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|online|boolean|true|none|none|
-|type|[BackendType](#schemabackendtype)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|yucca|
-|type|local|
-|type|s3|
-
-<h2 id="tocS_RepositoryBackendsDto">RepositoryBackendsDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorybackendsdto"></a>
-<a id="schema_RepositoryBackendsDto"></a>
-<a id="tocSrepositorybackendsdto"></a>
-<a id="tocsrepositorybackendsdto"></a>
-
-```json
-{
-  "primary": {
-    "id": "string",
-    "online": true,
-    "type": "yucca"
-  },
-  "secondary": [
-    {
-      "id": "string",
-      "online": true,
-      "type": "yucca"
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|primary|[RepositoryBackendDto](#schemarepositorybackenddto)|true|none|none|
-|secondary|[[RepositoryBackendDto](#schemarepositorybackenddto)]|true|none|none|
-
-<h2 id="tocS_RepositoryCheckImportResponseDto">RepositoryCheckImportResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorycheckimportresponsedto"></a>
-<a id="schema_RepositoryCheckImportResponseDto"></a>
-<a id="tocSrepositorycheckimportresponsedto"></a>
-<a id="tocsrepositorycheckimportresponsedto"></a>
-
-```json
-{
-  "readable": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|readable|boolean|true|none|none|
-
-<h2 id="tocS_RepositoryConfigurationDto">RepositoryConfigurationDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositoryconfigurationdto"></a>
-<a id="schema_RepositoryConfigurationDto"></a>
-<a id="tocSrepositoryconfigurationdto"></a>
-<a id="tocsrepositoryconfigurationdto"></a>
-
-```json
-{
-  "paths": [
-    "string"
-  ],
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|paths|[string]|true|none|none|
-|retentionPolicy|object \| null|false|none|none|
-
-<h2 id="tocS_RepositoryCreateRequestDto">RepositoryCreateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorycreaterequestdto"></a>
-<a id="schema_RepositoryCreateRequestDto"></a>
-<a id="tocSrepositorycreaterequestdto"></a>
-<a id="tocsrepositorycreaterequestdto"></a>
-
-```json
-{
-  "name": "string",
-  "paths": [
-    "string"
-  ],
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "site": "string",
-  "worm": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|true|none|none|
-|paths|[string]|false|none|none|
-|retentionPolicy|object \| null|false|none|none|
-|site|string|false|none|Internal site code from environment metadata|
-|worm|boolean|true|none|none|
-
-<h2 id="tocS_RepositoryCreateResponseDto">RepositoryCreateResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorycreateresponsedto"></a>
-<a id="schema_RepositoryCreateResponseDto"></a>
-<a id="tocSrepositorycreateresponsedto"></a>
-<a id="tocsrepositorycreateresponsedto"></a>
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|repository|[LocalRepositoryDto](#schemalocalrepositorydto)|true|none|none|
-
-<h2 id="tocS_RepositoryInspectResponseDto">RepositoryInspectResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositoryinspectresponsedto"></a>
-<a id="schema_RepositoryInspectResponseDto"></a>
-<a id="tocSrepositoryinspectresponsedto"></a>
-<a id="tocsrepositoryinspectresponsedto"></a>
-
-```json
-{
-  "repositories": [
-    {
-      "backends": {
-        "primary": {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        },
-        "secondary": [
-          {
-            "id": "string",
-            "online": true,
-            "type": "yucca"
-          }
-        ]
-      },
-      "configuration": {
-        "paths": [
-          "string"
-        ],
-        "retentionPolicy": {
-          "keepLast": -9007199254740000,
-          "keepWithin": "string",
-          "keepWithinDaily": "string",
-          "keepWithinHourly": "string",
-          "keepWithinMonthly": "string",
-          "keepWithinWeekly": "string",
-          "keepWithinYearly": "string"
-        }
-      },
-      "id": "string",
-      "meter": {
-        "lastUpdated": "string",
-        "objectCount": -9007199254740000,
-        "sizeBytes": -9007199254740000
-      },
-      "metrics": {
-        "lastBackup": "string",
-        "lastBackupDuration": -9007199254740000,
-        "lastBackupStatus": {},
-        "lastStarted": "string",
-        "sizeBytes": -9007199254740000
-      },
-      "name": "string",
-      "siteCode": "string",
-      "snapshots": [
-        {
-          "id": "string",
-          "paths": [
-            "string"
-          ],
-          "summary": {
-            "dataAdded": -9007199254740000,
-            "filesChanged": -9007199254740000,
-            "filesNew": -9007199254740000,
-            "filesUnmodified": -9007199254740000,
-            "totalBytes": -9007199254740000,
-            "totalFiles": -9007199254740000
-          },
-          "tags": [
-            "string"
-          ],
-          "time": "string"
-        }
-      ],
-      "storageClusterCode": "string",
-      "worm": true
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|repositories|[[InspectedLocalRepositoryDto](#schemainspectedlocalrepositorydto)]|true|none|none|
-
-<h2 id="tocS_RepositoryListResponseDto">RepositoryListResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorylistresponsedto"></a>
-<a id="schema_RepositoryListResponseDto"></a>
-<a id="tocSrepositorylistresponsedto"></a>
-<a id="tocsrepositorylistresponsedto"></a>
-
-```json
-{
-  "repositories": [
-    {
-      "backends": {
-        "primary": {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        },
-        "secondary": [
-          {
-            "id": "string",
-            "online": true,
-            "type": "yucca"
-          }
-        ]
-      },
-      "configuration": {
-        "paths": [
-          "string"
-        ],
-        "retentionPolicy": {
-          "keepLast": -9007199254740000,
-          "keepWithin": "string",
-          "keepWithinDaily": "string",
-          "keepWithinHourly": "string",
-          "keepWithinMonthly": "string",
-          "keepWithinWeekly": "string",
-          "keepWithinYearly": "string"
-        }
-      },
-      "id": "string",
-      "meter": {
-        "lastUpdated": "string",
-        "objectCount": -9007199254740000,
-        "sizeBytes": -9007199254740000
-      },
-      "metrics": {
-        "lastBackup": "string",
-        "lastBackupDuration": -9007199254740000,
-        "lastBackupStatus": {},
-        "lastStarted": "string",
-        "sizeBytes": -9007199254740000
-      },
-      "name": "string",
-      "siteCode": "string",
-      "storageClusterCode": "string",
-      "worm": true
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|repositories|[[LocalRepositoryDto](#schemalocalrepositorydto)]|true|none|none|
-
-<h2 id="tocS_RepositoryMeterDto">RepositoryMeterDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorymeterdto"></a>
-<a id="schema_RepositoryMeterDto"></a>
-<a id="tocSrepositorymeterdto"></a>
-<a id="tocsrepositorymeterdto"></a>
-
-```json
-{
-  "lastUpdated": "string",
-  "objectCount": -9007199254740000,
-  "sizeBytes": -9007199254740000
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|lastUpdated|string \| null|false|none|none|
-|objectCount|integer|true|none|none|
-|sizeBytes|integer|true|none|none|
-
-<h2 id="tocS_RepositoryMetricsDto">RepositoryMetricsDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorymetricsdto"></a>
-<a id="schema_RepositoryMetricsDto"></a>
-<a id="tocSrepositorymetricsdto"></a>
-<a id="tocsrepositorymetricsdto"></a>
-
-```json
-{
-  "lastBackup": "string",
-  "lastBackupDuration": -9007199254740000,
-  "lastBackupStatus": {},
-  "lastStarted": "string",
-  "sizeBytes": -9007199254740000
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|lastBackup|string \| null|false|none|none|
-|lastBackupDuration|integer \| null|false|none|none|
-|lastBackupStatus|object \| null|false|none|none|
-|lastStarted|string \| null|false|none|none|
-|sizeBytes|integer|true|none|none|
-
-<h2 id="tocS_RepositoryPrimaryBackendReconfigureRequestDto">RepositoryPrimaryBackendReconfigureRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositoryprimarybackendreconfigurerequestdto"></a>
-<a id="schema_RepositoryPrimaryBackendReconfigureRequestDto"></a>
-<a id="tocSrepositoryprimarybackendreconfigurerequestdto"></a>
-<a id="tocsrepositoryprimarybackendreconfigurerequestdto"></a>
-
-```json
-{
-  "backendId": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|backendId|string|true|none|none|
-
-<h2 id="tocS_RepositorySnapshotRestoreFromPointRequestDto">RepositorySnapshotRestoreFromPointRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorysnapshotrestorefrompointrequestdto"></a>
-<a id="schema_RepositorySnapshotRestoreFromPointRequestDto"></a>
-<a id="tocSrepositorysnapshotrestorefrompointrequestdto"></a>
-<a id="tocsrepositorysnapshotrestorefrompointrequestdto"></a>
-
-```json
-{
-  "include": [
-    "string"
-  ],
-  "yuccaConfig": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|include|[string]|false|none|none|
-|yuccaConfig|string|false|none|none|
-
-<h2 id="tocS_RepositorySnapshotRestoreRequestDto">RepositorySnapshotRestoreRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorysnapshotrestorerequestdto"></a>
-<a id="schema_RepositorySnapshotRestoreRequestDto"></a>
-<a id="tocSrepositorysnapshotrestorerequestdto"></a>
-<a id="tocsrepositorysnapshotrestorerequestdto"></a>
-
-```json
-{
-  "include": [
-    "string"
-  ],
-  "target": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|include|[string]|false|none|none|
-|target|string|false|none|none|
-
-<h2 id="tocS_RepositorySyncDeletionResponseDto">RepositorySyncDeletionResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositorysyncdeletionresponsedto"></a>
-<a id="schema_RepositorySyncDeletionResponseDto"></a>
-<a id="tocSrepositorysyncdeletionresponsedto"></a>
-<a id="tocsrepositorysyncdeletionresponsedto"></a>
-
-```json
-{
-  "deleted": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|deleted|boolean|true|none|Whether the repository was deleted remotely and removed from this server|
-
-<h2 id="tocS_RepositoryUpdateRequestDto">RepositoryUpdateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositoryupdaterequestdto"></a>
-<a id="schema_RepositoryUpdateRequestDto"></a>
-<a id="tocSrepositoryupdaterequestdto"></a>
-<a id="tocsrepositoryupdaterequestdto"></a>
-
-```json
-{
-  "name": "string",
-  "paths": [
-    "string"
-  ],
-  "retentionPolicy": {
-    "keepLast": -9007199254740000,
-    "keepWithin": "string",
-    "keepWithinDaily": "string",
-    "keepWithinHourly": "string",
-    "keepWithinMonthly": "string",
-    "keepWithinWeekly": "string",
-    "keepWithinYearly": "string"
-  },
-  "worm": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|name|string|false|none|none|
-|paths|[string]|false|none|none|
-|retentionPolicy|object \| null|false|none|none|
-|worm|boolean|false|none|none|
-
-<h2 id="tocS_RepositoryUpdateResponseDto">RepositoryUpdateResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemarepositoryupdateresponsedto"></a>
-<a id="schema_RepositoryUpdateResponseDto"></a>
-<a id="tocSrepositoryupdateresponsedto"></a>
-<a id="tocsrepositoryupdateresponsedto"></a>
-
-```json
-{
-  "repository": {
-    "backends": {
-      "primary": {
-        "id": "string",
-        "online": true,
-        "type": "yucca"
-      },
-      "secondary": [
-        {
-          "id": "string",
-          "online": true,
-          "type": "yucca"
-        }
-      ]
-    },
-    "configuration": {
-      "paths": [
-        "string"
-      ],
-      "retentionPolicy": {
-        "keepLast": -9007199254740000,
-        "keepWithin": "string",
-        "keepWithinDaily": "string",
-        "keepWithinHourly": "string",
-        "keepWithinMonthly": "string",
-        "keepWithinWeekly": "string",
-        "keepWithinYearly": "string"
-      }
-    },
-    "id": "string",
-    "meter": {
-      "lastUpdated": "string",
-      "objectCount": -9007199254740000,
-      "sizeBytes": -9007199254740000
-    },
-    "metrics": {
-      "lastBackup": "string",
-      "lastBackupDuration": -9007199254740000,
-      "lastBackupStatus": {},
-      "lastStarted": "string",
-      "sizeBytes": -9007199254740000
-    },
-    "name": "string",
-    "siteCode": "string",
-    "storageClusterCode": "string",
-    "worm": true
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|repository|[LocalRepositoryDto](#schemalocalrepositorydto)|true|none|none|
-
-<h2 id="tocS_RetentionPolicyDto">RetentionPolicyDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaretentionpolicydto"></a>
-<a id="schema_RetentionPolicyDto"></a>
-<a id="tocSretentionpolicydto"></a>
-<a id="tocsretentionpolicydto"></a>
-
-```json
-{
-  "keepLast": -9007199254740000,
-  "keepWithin": "string",
-  "keepWithinDaily": "string",
-  "keepWithinHourly": "string",
-  "keepWithinMonthly": "string",
-  "keepWithinWeekly": "string",
-  "keepWithinYearly": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|keepLast|integer|false|none|none|
-|keepWithin|string|false|none|none|
-|keepWithinDaily|string|false|none|none|
-|keepWithinHourly|string|false|none|none|
-|keepWithinMonthly|string|false|none|none|
-|keepWithinWeekly|string|false|none|none|
-|keepWithinYearly|string|false|none|none|
 
 <h2 id="tocS_ReverseGeocodingStateResponseDto">ReverseGeocodingStateResponseDto</h2>
 <!-- backwards compatibility -->
@@ -44606,182 +39919,6 @@ Release channel
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |angle|integer|true|none|Rotation angle in degrees|
-
-<h2 id="tocS_ScheduleCreateRequestDto">ScheduleCreateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaschedulecreaterequestdto"></a>
-<a id="schema_ScheduleCreateRequestDto"></a>
-<a id="tocSschedulecreaterequestdto"></a>
-<a id="tocsschedulecreaterequestdto"></a>
-
-```json
-{
-  "cron": "string",
-  "name": "string",
-  "paused": false,
-  "repositories": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|cron|string|true|none|none|
-|name|string|true|none|none|
-|paused|boolean|false|none|none|
-|repositories|[string]|true|none|none|
-
-<h2 id="tocS_ScheduleCreateResponseDto">ScheduleCreateResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaschedulecreateresponsedto"></a>
-<a id="schema_ScheduleCreateResponseDto"></a>
-<a id="tocSschedulecreateresponsedto"></a>
-<a id="tocsschedulecreateresponsedto"></a>
-
-```json
-{
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schedule|[ScheduleDto](#schemascheduledto)|true|none|none|
-
-<h2 id="tocS_ScheduleDto">ScheduleDto</h2>
-<!-- backwards compatibility -->
-<a id="schemascheduledto"></a>
-<a id="schema_ScheduleDto"></a>
-<a id="tocSscheduledto"></a>
-<a id="tocsscheduledto"></a>
-
-```json
-{
-  "cron": "string",
-  "id": "string",
-  "lastFinished": "string",
-  "lastRun": "string",
-  "name": "string",
-  "paused": true,
-  "repositories": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|cron|string|true|none|none|
-|id|string|true|none|none|
-|lastFinished|string|false|none|none|
-|lastRun|string|false|none|none|
-|name|string|true|none|none|
-|paused|boolean|true|none|none|
-|repositories|[string]|true|none|none|
-
-<h2 id="tocS_ScheduleListResponseDto">ScheduleListResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemaschedulelistresponsedto"></a>
-<a id="schema_ScheduleListResponseDto"></a>
-<a id="tocSschedulelistresponsedto"></a>
-<a id="tocsschedulelistresponsedto"></a>
-
-```json
-{
-  "schedules": [
-    {
-      "cron": "string",
-      "id": "string",
-      "lastFinished": "string",
-      "lastRun": "string",
-      "name": "string",
-      "paused": true,
-      "repositories": [
-        "string"
-      ]
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schedules|[[ScheduleDto](#schemascheduledto)]|true|none|none|
-
-<h2 id="tocS_ScheduleUpdateRequestDto">ScheduleUpdateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemascheduleupdaterequestdto"></a>
-<a id="schema_ScheduleUpdateRequestDto"></a>
-<a id="tocSscheduleupdaterequestdto"></a>
-<a id="tocsscheduleupdaterequestdto"></a>
-
-```json
-{
-  "cron": "string",
-  "name": "string",
-  "paused": true,
-  "repositories": [
-    "string"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|cron|string|false|none|none|
-|name|string|false|none|none|
-|paused|boolean|false|none|none|
-|repositories|[string]|false|none|none|
-
-<h2 id="tocS_ScheduleUpdateResponseDto">ScheduleUpdateResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemascheduleupdateresponsedto"></a>
-<a id="schema_ScheduleUpdateResponseDto"></a>
-<a id="tocSscheduleupdateresponsedto"></a>
-<a id="tocsscheduleupdateresponsedto"></a>
-
-```json
-{
-  "schedule": {
-    "cron": "string",
-    "id": "string",
-    "lastFinished": "string",
-    "lastRun": "string",
-    "name": "string",
-    "paused": true,
-    "repositories": [
-      "string"
-    ]
-  }
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|schedule|[ScheduleDto](#schemascheduledto)|true|none|none|
 
 <h2 id="tocS_SearchAlbumResponseDto">SearchAlbumResponseDto</h2>
 <!-- backwards compatibility -->
@@ -47072,7 +42209,7 @@ Server feature level
 {
   "albumId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
   "allowDownload": true,
-  "allowUpload": true,
+  "allowUpload": false,
   "assetIds": [
     "497f6eca-6276-4993-bfeb-53cbbbba6f08"
   ],
@@ -47094,7 +42231,7 @@ Server feature level
 |allowUpload|boolean|false|none|Allow uploads|
 |assetIds|[string(uuid)]|false|none|Asset IDs (for individual assets)|
 |description|string \| null|false|none|Link description|
-|expiresAt|string(date-time) \| null|false|none|Expiration date|
+|expiresAt|string \| null(date-time)|false|none|Expiration date|
 |password|string \| null|false|none|Link password|
 |showMetadata|boolean|false|none|Show metadata|
 |slug|string \| null|false|none|Custom URL slug|
@@ -47133,7 +42270,7 @@ Server feature level
 |allowDownload|boolean|false|none|Allow downloads|
 |allowUpload|boolean|false|none|Allow uploads|
 |description|string \| null|false|none|Link description|
-|expiresAt|string(date-time) \| null|false|none|Expiration date|
+|expiresAt|string \| null(date-time)|false|none|Expiration date|
 |password|string \| null|false|none|Link password|
 |showMetadata|boolean|false|none|Show metadata|
 |slug|string \| null|false|none|Custom URL slug|
@@ -47349,7 +42486,7 @@ Shared link response
 |assets|[[AssetResponseDto](#schemaassetresponsedto)]|true|none|none|
 |createdAt|string(date-time)|true|none|Creation date|
 |description|string \| null|true|none|Link description|
-|expiresAt|string(date-time) \| null|true|none|Expiration date|
+|expiresAt|string \| null(date-time)|true|none|Expiration date|
 |id|string(uuid)|true|none|Shared link ID|
 |key|string|true|none|Encryption key (base64url)|
 |password|string \| null|true|none|Has password|
@@ -48065,7 +43202,7 @@ Sharing direction
 |isOffline|boolean|false|none|**Deprecated.** Filter by offline status|
 |language|string|false|none|Search language code|
 |lensModel|string \| null|false|none|**Deprecated.** Filter by lens model|
-|libraryId|string(uuid) \| null|false|none|**Deprecated.** Library ID to filter by|
+|libraryId|string \| null(uuid)|false|none|**Deprecated.** Library ID to filter by|
 |make|string \| null|false|none|**Deprecated.** Filter by camera make|
 |model|string \| null|false|none|**Deprecated.** Filter by camera model|
 |ocr|string|false|none|**Deprecated.** Filter by OCR text content|
@@ -48100,73 +43237,6 @@ Sharing direction
 |visibility|timeline|
 |visibility|hidden|
 |visibility|locked|
-
-<h2 id="tocS_SnapshotDto">SnapshotDto</h2>
-<!-- backwards compatibility -->
-<a id="schemasnapshotdto"></a>
-<a id="schema_SnapshotDto"></a>
-<a id="tocSsnapshotdto"></a>
-<a id="tocssnapshotdto"></a>
-
-```json
-{
-  "id": "string",
-  "paths": [
-    "string"
-  ],
-  "summary": {
-    "dataAdded": -9007199254740000,
-    "filesChanged": -9007199254740000,
-    "filesNew": -9007199254740000,
-    "filesUnmodified": -9007199254740000,
-    "totalBytes": -9007199254740000,
-    "totalFiles": -9007199254740000
-  },
-  "tags": [
-    "string"
-  ],
-  "time": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|id|string|true|none|none|
-|paths|[string]|true|none|none|
-|summary|[SnapshotSummaryDto](#schemasnapshotsummarydto)|false|none|none|
-|tags|[string]|false|none|none|
-|time|string|true|none|none|
-
-<h2 id="tocS_SnapshotSummaryDto">SnapshotSummaryDto</h2>
-<!-- backwards compatibility -->
-<a id="schemasnapshotsummarydto"></a>
-<a id="schema_SnapshotSummaryDto"></a>
-<a id="tocSsnapshotsummarydto"></a>
-<a id="tocssnapshotsummarydto"></a>
-
-```json
-{
-  "dataAdded": -9007199254740000,
-  "filesChanged": -9007199254740000,
-  "filesNew": -9007199254740000,
-  "filesUnmodified": -9007199254740000,
-  "totalBytes": -9007199254740000,
-  "totalFiles": -9007199254740000
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|dataAdded|integer|true|none|none|
-|filesChanged|integer|true|none|none|
-|filesNew|integer|true|none|none|
-|filesUnmodified|integer|true|none|none|
-|totalBytes|integer|true|none|none|
-|totalFiles|integer|true|none|none|
 
 <h2 id="tocS_SourceType">SourceType</h2>
 <!-- backwards compatibility -->
@@ -48970,7 +44040,7 @@ Stack response
 |isNotInAlbum|boolean|false|none|**Deprecated.** Filter assets not in any album|
 |isOffline|boolean|false|none|**Deprecated.** Filter by offline status|
 |lensModel|string \| null|false|none|**Deprecated.** Filter by lens model|
-|libraryId|string(uuid) \| null|false|none|**Deprecated.** Library ID to filter by|
+|libraryId|string \| null(uuid)|false|none|**Deprecated.** Library ID to filter by|
 |make|string \| null|false|none|**Deprecated.** Filter by camera make|
 |model|string \| null|false|none|**Deprecated.** Filter by camera model|
 |ocr|string|false|none|**Deprecated.** Filter by OCR text content|
@@ -49012,6 +44082,117 @@ Stack response
 ```
 
 Storage folder
+
+<h2 id="tocS_StorageTemplateOptionsResponseDto">StorageTemplateOptionsResponseDto</h2>
+<!-- backwards compatibility -->
+<a id="schemastoragetemplateoptionsresponsedto"></a>
+<a id="schema_StorageTemplateOptionsResponseDto"></a>
+<a id="tocSstoragetemplateoptionsresponsedto"></a>
+<a id="tocsstoragetemplateoptionsresponsedto"></a>
+
+```json
+{
+  "dayOptions": [
+    "string"
+  ],
+  "hourOptions": [
+    "string"
+  ],
+  "minuteOptions": [
+    "string"
+  ],
+  "monthOptions": [
+    "string"
+  ],
+  "presets": [
+    {
+      "preview": "string",
+      "template": "string"
+    }
+  ],
+  "secondOptions": [
+    "string"
+  ],
+  "weekOptions": [
+    "string"
+  ],
+  "yearOptions": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dayOptions|[string]|true|none|Available day format options for storage template|
+|hourOptions|[string]|true|none|Available hour format options for storage template|
+|minuteOptions|[string]|true|none|Available minute format options for storage template|
+|monthOptions|[string]|true|none|Available month format options for storage template|
+|presets|[[StorageTemplatePresetDto](#schemastoragetemplatepresetdto)]|true|none|Preset storage templates with an example path|
+|secondOptions|[string]|true|none|Available second format options for storage template|
+|weekOptions|[string]|true|none|Available week format options for storage template|
+|yearOptions|[string]|true|none|Available year format options for storage template|
+
+<h2 id="tocS_StorageTemplatePresetDto">StorageTemplatePresetDto</h2>
+<!-- backwards compatibility -->
+<a id="schemastoragetemplatepresetdto"></a>
+<a id="schema_StorageTemplatePresetDto"></a>
+<a id="tocSstoragetemplatepresetdto"></a>
+<a id="tocsstoragetemplatepresetdto"></a>
+
+```json
+{
+  "preview": "string",
+  "template": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|preview|string|true|none|Example path rendered from the preset|
+|template|string|true|none|Preset storage template|
+
+<h2 id="tocS_StorageTemplatePreviewDto">StorageTemplatePreviewDto</h2>
+<!-- backwards compatibility -->
+<a id="schemastoragetemplatepreviewdto"></a>
+<a id="schema_StorageTemplatePreviewDto"></a>
+<a id="tocSstoragetemplatepreviewdto"></a>
+<a id="tocsstoragetemplatepreviewdto"></a>
+
+```json
+{
+  "template": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|template|string|true|none|Storage template|
+
+<h2 id="tocS_StorageTemplatePreviewResponseDto">StorageTemplatePreviewResponseDto</h2>
+<!-- backwards compatibility -->
+<a id="schemastoragetemplatepreviewresponsedto"></a>
+<a id="schema_StorageTemplatePreviewResponseDto"></a>
+<a id="tocSstoragetemplatepreviewresponsedto"></a>
+<a id="tocsstoragetemplatepreviewresponsedto"></a>
+
+```json
+{
+  "preview": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|preview|string|true|none|Example path rendered from the template|
 
 <h2 id="tocS_StringFilter">StringFilter</h2>
 <!-- backwards compatibility -->
@@ -49126,54 +44307,6 @@ Storage folder
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |matches|string|true|none|none|
-
-<h2 id="tocS_SupportModeResponseDto">SupportModeResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schemasupportmoderesponsedto"></a>
-<a id="schema_SupportModeResponseDto"></a>
-<a id="tocSsupportmoderesponsedto"></a>
-<a id="tocssupportmoderesponsedto"></a>
-
-```json
-{
-  "includePaths": true,
-  "remainingRuns": 0,
-  "streamToFuto": true,
-  "streamingAvailable": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|includePaths|boolean|true|none|Send file paths as-is instead of redacted placeholders|
-|remainingRuns|integer|true|none|How many more backup, cleanup, restore and delete runs use verbose restic logging|
-|streamToFuto|boolean|true|none|Stream those runs’ logs to FUTO; requires the support-log-streaming feature|
-|streamingAvailable|boolean|true|none|Whether this account may stream support logs to FUTO|
-
-<h2 id="tocS_SupportModeUpdateRequestDto">SupportModeUpdateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schemasupportmodeupdaterequestdto"></a>
-<a id="schema_SupportModeUpdateRequestDto"></a>
-<a id="tocSsupportmodeupdaterequestdto"></a>
-<a id="tocssupportmodeupdaterequestdto"></a>
-
-```json
-{
-  "includePaths": true,
-  "remainingRuns": 0,
-  "streamToFuto": true
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|includePaths|boolean|true|none|Send file paths as-is instead of redacted placeholders|
-|remainingRuns|integer|true|none|How many more backup, cleanup, restore and delete runs use verbose restic logging|
-|streamToFuto|boolean|true|none|Stream those runs’ logs to FUTO; requires the support-log-streaming feature|
 
 <h2 id="tocS_SyncAckDeleteDto">SyncAckDeleteDto</h2>
 <!-- backwards compatibility -->
@@ -49700,22 +44833,22 @@ Storage folder
 |assetId|string(uuid)|true|none|Asset ID|
 |city|string \| null|true|none|City|
 |country|string \| null|true|none|Country|
-|dateTimeOriginal|string(date-time) \| null|true|none|Date time original|
+|dateTimeOriginal|string \| null(date-time)|true|none|Date time original|
 |description|string \| null|true|none|Description|
 |exifImageHeight|integer \| null|true|none|Exif image height|
 |exifImageWidth|integer \| null|true|none|Exif image width|
 |exposureTime|string \| null|true|none|Exposure time|
-|fNumber|number(double) \| null|true|none|F number|
+|fNumber|number \| null(double)|true|none|F number|
 |fileSizeInByte|integer \| null|true|none|File size in byte|
-|focalLength|number(double) \| null|true|none|Focal length|
-|fps|number(double) \| null|true|none|FPS|
+|focalLength|number \| null(double)|true|none|Focal length|
+|fps|number \| null(double)|true|none|FPS|
 |iso|integer \| null|true|none|ISO|
-|latitude|number(double) \| null|true|none|Latitude|
+|latitude|number \| null(double)|true|none|Latitude|
 |lensModel|string \| null|true|none|Lens model|
-|longitude|number(double) \| null|true|none|Longitude|
+|longitude|number \| null(double)|true|none|Longitude|
 |make|string \| null|true|none|Make|
 |model|string \| null|true|none|Model|
-|modifyDate|string(date-time) \| null|true|none|Modify date|
+|modifyDate|string \| null(date-time)|true|none|Modify date|
 |orientation|string \| null|true|none|Orientation|
 |profileDescription|string \| null|true|none|Profile description|
 |projectionType|string \| null|true|none|Projection type|
@@ -49812,7 +44945,7 @@ Storage folder
 |boundingBoxX2|integer|true|none|Bounding box X2|
 |boundingBoxY1|integer|true|none|Bounding box Y1|
 |boundingBoxY2|integer|true|none|Bounding box Y2|
-|deletedAt|string(date-time) \| null|true|none|Face deleted at|
+|deletedAt|string \| null(date-time)|true|none|Face deleted at|
 |id|string(uuid)|true|none|Asset face ID|
 |imageHeight|integer|true|none|Image height|
 |imageWidth|integer|true|none|Image width|
@@ -49972,18 +45105,18 @@ Storage folder
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |checksum|string|true|none|Checksum|
-|createdAt|string(date-time) \| null|true|none|Uploaded to Immich at|
-|deletedAt|string(date-time) \| null|true|none|Deleted at|
+|createdAt|string \| null(date-time)|true|none|Uploaded to Immich at|
+|deletedAt|string \| null(date-time)|true|none|Deleted at|
 |duration|string \| null|true|none|Duration|
-|fileCreatedAt|string(date-time) \| null|true|none|File created at|
-|fileModifiedAt|string(date-time) \| null|true|none|File modified at|
+|fileCreatedAt|string \| null(date-time)|true|none|File created at|
+|fileModifiedAt|string \| null(date-time)|true|none|File modified at|
 |height|integer \| null|true|none|Asset height|
 |id|string(uuid)|true|none|Asset ID|
 |isEdited|boolean|true|none|Is edited|
 |isFavorite|boolean|true|none|Is favorite|
 |libraryId|string \| null|true|none|Library ID|
 |livePhotoVideoId|string \| null|true|none|Live photo video ID|
-|localDateTime|string(date-time) \| null|true|none|Local date time|
+|localDateTime|string \| null(date-time)|true|none|Local date time|
 |originalFileName|string|true|none|Original file name|
 |ownerId|string(uuid)|true|none|Owner ID|
 |stackId|string \| null|true|none|Stack ID|
@@ -50042,18 +45175,18 @@ Storage folder
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |checksum|string|true|none|Checksum|
-|createdAt|string(date-time) \| null|true|none|Uploaded to Immich at|
-|deletedAt|string(date-time) \| null|true|none|Deleted at|
+|createdAt|string \| null(date-time)|true|none|Uploaded to Immich at|
+|deletedAt|string \| null(date-time)|true|none|Deleted at|
 |duration|integer \| null|true|none|Duration|
-|fileCreatedAt|string(date-time) \| null|true|none|File created at|
-|fileModifiedAt|string(date-time) \| null|true|none|File modified at|
+|fileCreatedAt|string \| null(date-time)|true|none|File created at|
+|fileModifiedAt|string \| null(date-time)|true|none|File modified at|
 |height|integer \| null|true|none|Asset height|
 |id|string(uuid)|true|none|Asset ID|
 |isEdited|boolean|true|none|Is edited|
 |isFavorite|boolean|true|none|Is favorite|
 |libraryId|string \| null|true|none|Library ID|
 |livePhotoVideoId|string \| null|true|none|Live photo video ID|
-|localDateTime|string(date-time) \| null|true|none|Local date time|
+|localDateTime|string \| null(date-time)|true|none|Local date time|
 |originalFileName|string|true|none|Original file name|
 |ownerId|string(uuid)|true|none|Owner ID|
 |stackId|string \| null|true|none|Stack ID|
@@ -50084,7 +45217,7 @@ Storage folder
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "deletedAt": "2024-01-01T00:00:00.000Z",
   "email": "string",
   "hasProfileImage": true,
@@ -50104,8 +45237,8 @@ Storage folder
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
-|deletedAt|string(date-time) \| null|true|none|User deleted at|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
+|deletedAt|string \| null(date-time)|true|none|User deleted at|
 |email|string|true|none|User email|
 |hasProfileImage|boolean|true|none|User has profile image|
 |id|string(uuid)|true|none|User ID|
@@ -50127,7 +45260,7 @@ Storage folder
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "deletedAt": "2024-01-01T00:00:00.000Z",
   "email": "string",
   "hasProfileImage": true,
@@ -50147,8 +45280,8 @@ Storage folder
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
-|deletedAt|string(date-time) \| null|true|none|User deleted at|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
+|deletedAt|string \| null(date-time)|true|none|User deleted at|
 |email|string|true|none|User email|
 |hasProfileImage|boolean|true|none|User has profile image|
 |id|string(uuid)|true|none|User ID|
@@ -50279,14 +45412,14 @@ Sync entity type
 |---|---|---|---|---|
 |createdAt|string(date-time)|true|none|Created at|
 |data|object|true|none|Data|
-|deletedAt|string(date-time) \| null|true|none|Deleted at|
-|hideAt|string(date-time) \| null|true|none|Hide at|
+|deletedAt|string \| null(date-time)|true|none|Deleted at|
+|hideAt|string \| null(date-time)|true|none|Hide at|
 |id|string(uuid)|true|none|Memory ID|
 |isSaved|boolean|true|none|Is saved|
 |memoryAt|string(date-time)|true|none|Memory at|
 |ownerId|string(uuid)|true|none|Owner ID|
-|seenAt|string(date-time) \| null|true|none|Seen at|
-|showAt|string(date-time) \| null|true|none|Show at|
+|seenAt|string \| null(date-time)|true|none|Seen at|
+|showAt|string \| null(date-time)|true|none|Show at|
 |type|[MemoryTypeV1](#schemamemorytypev1)|true|none|none|
 |updatedAt|string(date-time)|true|none|Updated at|
 
@@ -50329,14 +45462,14 @@ Sync entity type
 |---|---|---|---|---|
 |createdAt|string(date-time)|true|none|Created at|
 |data|object|true|none|Data|
-|deletedAt|string(date-time) \| null|true|none|Deleted at|
-|hideAt|string(date-time) \| null|true|none|Hide at|
+|deletedAt|string \| null(date-time)|true|none|Deleted at|
+|hideAt|string \| null(date-time)|true|none|Hide at|
 |id|string(uuid)|true|none|Memory ID|
 |isSaved|boolean|true|none|Is saved|
 |memoryAt|string(date-time)|true|none|Memory at|
 |ownerId|string(uuid)|true|none|Owner ID|
-|seenAt|string(date-time) \| null|true|none|Seen at|
-|showAt|string(date-time) \| null|true|none|Show at|
+|seenAt|string \| null(date-time)|true|none|Seen at|
+|showAt|string \| null(date-time)|true|none|Show at|
 |type|[MemoryType](#schemamemorytype)|true|none|Memory type|
 |updatedAt|string(date-time)|true|none|Updated at|
 
@@ -50436,7 +45569,7 @@ Sync entity type
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|birthDate|string(date-time) \| null|true|none|Birth date|
+|birthDate|string \| null(date-time)|true|none|Birth date|
 |color|string \| null|true|none|Color|
 |createdAt|string(date-time)|true|none|Created at|
 |faceAssetId|string \| null|true|none|Face asset ID|
@@ -50667,7 +45800,7 @@ Sync request type
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "deletedAt": "2024-01-01T00:00:00.000Z",
   "email": "string",
   "hasProfileImage": true,
@@ -50681,8 +45814,8 @@ Sync request type
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
-|deletedAt|string(date-time) \| null|true|none|User deleted at|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
+|deletedAt|string \| null(date-time)|true|none|User deleted at|
 |email|string|true|none|User email|
 |hasProfileImage|boolean|true|none|User has profile image|
 |id|string(uuid)|true|none|User ID|
@@ -50803,7 +45936,7 @@ Sync request type
 |---|---|---|---|---|
 |color|string \| null|false|none|Tag color (hex)|
 |name|string|true|none|Tag name|
-|parentId|string(uuid) \| null|false|none|Parent tag ID|
+|parentId|string \| null(uuid)|false|none|Parent tag ID|
 
 <h2 id="tocS_TagResponseDto">TagResponseDto</h2>
 <!-- backwards compatibility -->
@@ -50920,17 +46053,6 @@ Sync request type
 |enabled|boolean|false|none|Whether tags are enabled|
 |sidebarWeb|boolean|false|none|Whether tags appear in web sidebar|
 
-<h2 id="tocS_TelemetryLevel">TelemetryLevel</h2>
-<!-- backwards compatibility -->
-<a id="schematelemetrylevel"></a>
-<a id="schema_TelemetryLevel"></a>
-<a id="tocStelemetrylevel"></a>
-<a id="tocstelemetrylevel"></a>
-
-```json
-"full"
-```
-
 <h2 id="tocS_TemplateDto">TemplateDto</h2>
 <!-- backwards compatibility -->
 <a id="schematemplatedto"></a>
@@ -50989,64 +46111,6 @@ Sync request type
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |messageId|string|true|none|Email message ID|
-
-<h2 id="tocS_TicketAction">TicketAction</h2>
-<!-- backwards compatibility -->
-<a id="schematicketaction"></a>
-<a id="schema_TicketAction"></a>
-<a id="tocSticketaction"></a>
-<a id="tocsticketaction"></a>
-
-```json
-"repository.delete"
-```
-
-<h2 id="tocS_TicketCreateRequestDto">TicketCreateRequestDto</h2>
-<!-- backwards compatibility -->
-<a id="schematicketcreaterequestdto"></a>
-<a id="schema_TicketCreateRequestDto"></a>
-<a id="tocSticketcreaterequestdto"></a>
-<a id="tocsticketcreaterequestdto"></a>
-
-```json
-{
-  "action": "repository.delete",
-  "repositoryId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|action|[TicketAction](#schematicketaction)|true|none|none|
-|repositoryId|string(uuid)|true|none|Repository the ticket is bound to|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|action|repository.delete|
-|action|repository.disable-worm|
-
-<h2 id="tocS_TicketCreateResponseDto">TicketCreateResponseDto</h2>
-<!-- backwards compatibility -->
-<a id="schematicketcreateresponsedto"></a>
-<a id="schema_TicketCreateResponseDto"></a>
-<a id="tocSticketcreateresponsedto"></a>
-<a id="tocsticketcreateresponsedto"></a>
-
-```json
-{
-  "redirectTo": "string"
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|redirectTo|string|true|none|Identity provider URL the browser must be sent to|
 
 <h2 id="tocS_TimeBucketAssetResponseDto">TimeBucketAssetResponseDto</h2>
 <!-- backwards compatibility -->
@@ -51133,10 +46197,10 @@ Sync request type
 |isFavorite|[boolean]|true|none|Array indicating whether each asset is favorited|
 |isImage|[boolean]|true|none|Array indicating whether each asset is an image (false for videos)|
 |isTrashed|[boolean]|true|none|Array indicating whether each asset is in the trash|
-|latitude|[number(double) \| null]|false|none|Array of latitude coordinates extracted from EXIF GPS data|
+|latitude|[number \| null(double)]|false|none|Array of latitude coordinates extracted from EXIF GPS data|
 |livePhotoVideoId|[string \| null]|true|none|Array of live photo video asset IDs (null for non-live photos)|
 |localOffsetHours|[number(double)]|true|none|Array of UTC offset hours at the time each photo was taken. Positive values are east of UTC, negative values are west of UTC. Values may be fractional (e.g., 5.5 for +05:30, -9.75 for -09:45). Applying this offset to 'fileCreatedAt' will give you the time the photo was taken from the photographer's perspective.|
-|longitude|[number(double) \| null]|false|none|Array of longitude coordinates extracted from EXIF GPS data|
+|longitude|[number \| null(double)]|false|none|Array of longitude coordinates extracted from EXIF GPS data|
 |ownerId|[string]|true|none|Array of owner IDs for each asset|
 |projectionType|[string \| null]|true|none|Array of projection types for 360° content (e.g., "EQUIRECTANGULAR", "CUBEFACE", "CYLINDRICAL")|
 |ratio|[number(double)]|true|none|Array of aspect ratios (width/height) for each asset|
@@ -51321,7 +46385,7 @@ Transcode policy
 |description|string|false|none|Asset description|
 |isFavorite|boolean|false|none|Mark as favorite|
 |latitude|number(double)|false|none|Latitude coordinate|
-|livePhotoVideoId|string(uuid) \| null|false|none|Live photo video ID|
+|livePhotoVideoId|string \| null(uuid)|false|none|Live photo video ID|
 |longitude|number(double)|false|none|Longitude coordinate|
 |rating|integer \| null|false|none|Rating in range [1-5] (starred), -1 (rejected), or null (unrated)|
 |visibility|[AssetVisibility](#schemaassetvisibility)|false|none|Asset visibility|
@@ -51404,7 +46468,7 @@ Transcode policy
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "isAdmin": true,
   "name": "string",
@@ -51421,7 +46485,7 @@ Transcode policy
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|true|none|User email|
 |isAdmin|boolean|false|none|Grant admin privileges|
 |name|string|true|none|User name|
@@ -51492,11 +46556,11 @@ Transcode policy
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor)|true|none|User avatar color|
 |clusterGroupId|string(uuid)|true|none|Cluster group the user is a member of|
 |createdAt|string(date-time)|true|none|Creation date|
-|deletedAt|string(date-time) \| null|true|none|Deletion date|
+|deletedAt|string \| null(date-time)|true|none|Deletion date|
 |email|string(email)|true|none|User email|
 |id|string(uuid)|true|none|User ID|
 |isAdmin|boolean|true|none|Is admin user|
-|license|object \| null|true|none|none|
+|license|[UserLicense](#schemauserlicense) \| null|true|none|none|
 |name|string|true|none|User name|
 |oauthId|string|true|none|OAuth ID|
 |profileChangedAt|string(date-time)|true|none|Profile change date|
@@ -51535,7 +46599,7 @@ Transcode policy
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "isAdmin": true,
   "name": "string",
@@ -51551,7 +46615,7 @@ Transcode policy
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|false|none|User email|
 |isAdmin|boolean|false|none|Grant admin privileges|
 |name|string|false|none|User name|
@@ -52397,7 +47461,7 @@ User status
 
 ```json
 {
-  "avatarColor": {},
+  "avatarColor": "primary",
   "email": "user@example.com",
   "name": "string"
 }
@@ -52407,7 +47471,7 @@ User status
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|avatarColor|object \| null|false|none|none|
+|avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|false|none|User email|
 |name|string|false|none|User name|
 
@@ -52901,25 +47965,3 @@ Workflow type
 |trigger|AssetMetadataExtraction|
 |trigger|AssetOcrExtraction|
 |trigger|AssetTagged|
-
-<h2 id="tocS_YuccaJobName">YuccaJobName</h2>
-<!-- backwards compatibility -->
-<a id="schemayuccajobname"></a>
-<a id="schema_YuccaJobName"></a>
-<a id="tocSyuccajobname"></a>
-<a id="tocsyuccajobname"></a>
-
-```json
-"repository-backup"
-```
-
-<h2 id="tocS_YuccaJobStatus">YuccaJobStatus</h2>
-<!-- backwards compatibility -->
-<a id="schemayuccajobstatus"></a>
-<a id="schema_YuccaJobStatus"></a>
-<a id="tocSyuccajobstatus"></a>
-<a id="tocsyuccajobstatus"></a>
-
-```json
-"queued"
-```

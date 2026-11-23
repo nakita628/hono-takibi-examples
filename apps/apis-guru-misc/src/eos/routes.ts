@@ -41,7 +41,7 @@ export const postNetConnectionsRoute = createRoute({
   summary: 'connections',
   description: 'Returns an array of all peer connection statuses.',
   operationId: 'connections',
-  request: { body: { content: { 'application/json': { schema: z.object({}) } } } },
+  request: { body: { content: { 'application/json': { schema: z.looseObject({}) } } } },
   responses: {
     200: {
       description: 'OK',

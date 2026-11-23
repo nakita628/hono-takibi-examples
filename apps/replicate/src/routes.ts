@@ -17,7 +17,7 @@ const SchemasModelResponseSchema = z
       .exactOptional()
       .openapi({ description: "A URL for the model's cover image" }),
     default_example: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: "The model's default example prediction" }),
@@ -39,7 +39,7 @@ const SchemasModelResponseSchema = z
           'Boolean indicating whether the model is officially maintained by Replicate. Official models are always on, have stable API interfaces, and predictable pricing.',
       }),
     latest_version: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: "The model's latest version" }),
@@ -194,7 +194,7 @@ const SchemasFileResponseSchema = z
         example: 'cneqzikepnug6xezperrr4z55o',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'Metadata provided by user when the file was created',
         example: { customer_reference_id: 123 },
@@ -423,7 +423,7 @@ const SchemasVersionResponseSchema = z
       .openapi({ description: 'The date and time the version was created' }),
     id: z.string().exactOptional().openapi({ description: 'The ID of the version' }),
     openapi_schema: z
-      .object({})
+      .looseObject({})
       .nullable()
       .exactOptional()
       .openapi({ description: "The OpenAPI schema for the model's inputs and outputs" }),
@@ -454,7 +454,7 @@ const SchemasPaginatedVersionResponseSchema = z
 const SchemasPredictionRequestSchema = z
   .strictObject({
     input: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "The model's input as a JSON object. The input schema depends on what model you are running. To see the available inputs, click the \"API\" tab on the model you are running or [get the model version](#models.versions.get) and look at its `openapi_schema` property. For example, [stability-ai/sdxl](https://replicate.com/stability-ai/sdxl) takes `prompt` as an input.\n\nFiles should be passed as HTTP URLs or data URLs.\n\nUse an HTTP URL when:\n\n- you have a large file > 256kb\n- you want to be able to use the file multiple times\n- you want your prediction metadata to be associable with your input files\n\nUse a data URL when:\n\n- you have a small file <= 256kb\n- you don't want to upload and host the file somewhere\n- you don't need to use the file again (Replicate will not store it)\n",
@@ -554,7 +554,7 @@ const SchemasTrainingRequestSchema = z
           'A string representing the desired model to push to in the format `{destination_model_owner}/{destination_model_name}`. This should be an existing model owned by the user or organization making the API request. If the destination is invalid, the server will return an appropriate 4XX response.\n',
       }),
     input: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: "An object containing inputs to the Cog model's `train()` function.\n",
       }),
@@ -665,7 +665,7 @@ const SchemasTrainingResponseSchema = z
 const SchemasVersionPredictionRequestSchema = z
   .strictObject({
     input: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           "The model's input as a JSON object. The input schema depends on what model you are running. To see the available inputs, click the \"API\" tab on the model you are running or [get the model version](#models.versions.get) and look at its `openapi_schema` property. For example, [stability-ai/sdxl](https://replicate.com/stability-ai/sdxl) takes `prompt` as an input.\n\nFiles should be passed as HTTP URLs or data URLs.\n\nUse an HTTP URL when:\n\n- you have a large file > 256kb\n- you want to be able to use the file multiple times\n- you want your prediction metadata to be associable with your input files\n\nUse a data URL when:\n\n- you have a small file <= 256kb\n- you don't want to upload and host the file somewhere\n- you don't need to use the file again (Replicate will not store it)\n",
@@ -1173,7 +1173,7 @@ export const postFilesRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'The filename' }),
               metadata: z
-                .object({})
+                .looseObject({})
                 .default({})
                 .exactOptional()
                 .openapi({ description: 'User-provided metadata associated with the file' }),
@@ -1586,7 +1586,7 @@ export const queryModelsRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "A URL for the model's cover image" }),
                       default_example: z
-                        .object({})
+                        .looseObject({})
                         .nullable()
                         .exactOptional()
                         .openapi({ description: "The model's default example prediction" }),
@@ -1600,7 +1600,7 @@ export const queryModelsRoute = createRoute({
                         .exactOptional()
                         .openapi({ description: "A URL for the model's source code on GitHub" }),
                       latest_version: z
-                        .object({})
+                        .looseObject({})
                         .nullable()
                         .exactOptional()
                         .openapi({ description: "The model's latest version" }),

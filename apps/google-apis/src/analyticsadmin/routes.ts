@@ -170,223 +170,6 @@ type GoogleAnalyticsAdminV1betaAccessFilterExpressionListType = {
   expressions?: z.infer<typeof GoogleAnalyticsAdminV1betaAccessFilterExpressionSchema>[]
 }
 
-const GoogleAnalyticsAdminV1betaAccessDateRangeSchema = z
-  .object({
-    endDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The inclusive end date for the query in the format `YYYY-MM-DD`. Cannot be before `startDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the current time in the request's time zone.",
-      }),
-    startDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The inclusive start date for the query in the format `YYYY-MM-DD`. Cannot be after `endDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the current time in the request's time zone.",
-      }),
-  })
-  .openapi({
-    description: 'A contiguous range of days: startDate, startDate + 1, ..., endDate.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessDateRange')
-
-const GoogleAnalyticsAdminV1betaAccessDimensionSchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The API name of the dimension. See [Data Access Schema](https://developers.google.com/analytics/devguides/config/admin/v1/access-api-schema) for the list of dimensions supported in this API. Dimensions are referenced by name in `dimensionFilter` and `orderBys`.',
-      }),
-  })
-  .openapi({
-    description:
-      'Dimensions are attributes of your data. For example, the dimension `userEmail` indicates the email of the user that accessed reporting data. Dimension values in report responses are strings.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessDimension')
-
-const GoogleAnalyticsAdminV1betaAccessDimensionHeaderSchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The dimension's name; for example 'userEmail'." }),
-  })
-  .openapi({
-    description:
-      'Describes a dimension column in the report. Dimensions requested in a report produce column entries within rows and DimensionHeaders. However, dimensions used exclusively within filters or expressions do not produce columns in a report; correspondingly, those dimensions do not produce headers.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessDimensionHeader')
-
-const GoogleAnalyticsAdminV1betaAccessDimensionValueSchema = z
-  .object({
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The dimension value. For example, this value may be 'France' for the 'country' dimension.",
-      }),
-  })
-  .openapi({ description: 'The value of a dimension.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessDimensionValue')
-
-const GoogleAnalyticsAdminV1betaAccessMetricSchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The API name of the metric. See [Data Access Schema](https://developers.google.com/analytics/devguides/config/admin/v1/access-api-schema) for the list of metrics supported in this API. Metrics are referenced by name in `metricFilter` & `orderBys`.',
-      }),
-  })
-  .openapi({
-    description:
-      'The quantitative measurements of a report. For example, the metric `accessCount` is the total number of data access records.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessMetric')
-
-const GoogleAnalyticsAdminV1betaAccessMetricHeaderSchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The metric's name; for example 'accessCount'." }),
-  })
-  .openapi({
-    description:
-      'Describes a metric column in the report. Visible metrics requested in a report produce column entries within rows and MetricHeaders. However, metrics used exclusively within filters or expressions do not produce columns in a report; correspondingly, those metrics do not produce headers.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessMetricHeader')
-
-const GoogleAnalyticsAdminV1betaAccessMetricValueSchema = z
-  .object({
-    value: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The measurement value. For example, this value may be '13'." }),
-  })
-  .openapi({ description: 'The value of a metric.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessMetricValue')
-
-const GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBySchema = z
-  .object({
-    dimensionName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A dimension name in the request to order by.' }),
-    orderType: z
-      .enum(['ORDER_TYPE_UNSPECIFIED', 'ALPHANUMERIC', 'CASE_INSENSITIVE_ALPHANUMERIC', 'NUMERIC'])
-      .exactOptional()
-      .openapi({ description: 'Controls the rule for dimension value ordering.' }),
-  })
-  .openapi({ description: 'Sorts by dimension values.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBy')
-
-const GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBySchema = z
-  .object({
-    metricName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A metric name in the request to order by.' }),
-  })
-  .openapi({ description: 'Sorts by metric values.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBy')
-
-const GoogleAnalyticsAdminV1betaAccessOrderBySchema = z
-  .object({
-    desc: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, sorts by descending order. If false or unspecified, sorts in ascending order.',
-      }),
-    dimension:
-      GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBySchema.exactOptional().openapi({
-        description: "Sorts results by a dimension's values.",
-      }),
-    metric: GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBySchema.exactOptional().openapi({
-      description: "Sorts results by a metric's values.",
-    }),
-  })
-  .openapi({
-    description:
-      'Order bys define how rows will be sorted in the response. For example, ordering rows by descending access count is one ordering, and ordering rows by the country string is a different ordering.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessOrderBy')
-
-const GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema = z
-  .object({
-    consumed: z.int32().exactOptional().openapi({ description: 'Quota consumed by this request.' }),
-    remaining: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Quota remaining after this request.' }),
-  })
-  .openapi({ description: 'Current state for a particular quota group.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessQuotaStatus')
-
-const GoogleAnalyticsAdminV1betaAccessQuotaSchema = z
-  .object({
-    concurrentRequests: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
-      description: 'Properties can use up to 50 concurrent requests.',
-    }),
-    serverErrorsPerProjectPerHour:
-      GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
-        description: 'Properties and cloud project pairs can have up to 50 server errors per hour.',
-      }),
-    tokensPerDay: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
-      description:
-        'Properties can use 250,000 tokens per day. Most requests consume fewer than 10 tokens.',
-    }),
-    tokensPerHour: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
-      description:
-        'Properties can use 50,000 tokens per hour. An API request consumes a single number of tokens, and that number is deducted from all of the hourly, daily, and per project hourly quotas.',
-    }),
-    tokensPerProjectPerHour:
-      GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
-        description:
-          'Properties can use up to 25% of their tokens per project per hour. This amounts to Analytics 360 Properties can use 12,500 tokens per project per hour. An API request consumes a single number of tokens, and that number is deducted from all of the hourly, daily, and per project hourly quotas.',
-      }),
-  })
-  .openapi({
-    description:
-      'Current state of all quotas for this Analytics property. If any quota for a property is exhausted, all requests to that property will return Resource Exhausted errors.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccessQuota')
-
-const GoogleAnalyticsAdminV1betaAccessRowSchema = z
-  .object({
-    dimensionValues: z
-      .array(GoogleAnalyticsAdminV1betaAccessDimensionValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of dimension values. These values are in the same order as specified in the request.',
-      }),
-    metricValues: z
-      .array(GoogleAnalyticsAdminV1betaAccessMetricValueSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of metric values. These values are in the same order as specified in the request.',
-      }),
-  })
-  .openapi({ description: 'Access report data for each row.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAccessRow')
-
 const GoogleAnalyticsAdminV1betaAccountSchema = z
   .object({
     createTime: z
@@ -433,106 +216,6 @@ const GoogleAnalyticsAdminV1betaAccountSchema = z
     required: [],
   })
   .openapi('GoogleAnalyticsAdminV1betaAccount')
-
-const GoogleAnalyticsAdminV1betaPropertySummarySchema = z
-  .object({
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Display name for the property referred to in this property summary.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of this property\'s logical parent. Note: The Property-Moving UI can be used to change the parent. Format: accounts/{account}, properties/{property} Example: "accounts/100", "properties/200"',
-      }),
-    property: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of property referred to by this property summary Format: properties/{property_id} Example: "properties/1000"',
-      }),
-    propertyType: z
-      .enum([
-        'PROPERTY_TYPE_UNSPECIFIED',
-        'PROPERTY_TYPE_ORDINARY',
-        'PROPERTY_TYPE_SUBPROPERTY',
-        'PROPERTY_TYPE_ROLLUP',
-      ])
-      .exactOptional()
-      .openapi({ description: "The property's property type." }),
-  })
-  .openapi({
-    description: 'A virtual resource representing metadata for a GA4 property.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaPropertySummary')
-
-const GoogleAnalyticsAdminV1betaAccountSummarySchema = z
-  .object({
-    account: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of account referred to by this account summary Format: accounts/{account_id} Example: "accounts/1000"',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Display name for the account referred to in this account summary.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name for this account summary. Format: accountSummaries/{account_id} Example: "accountSummaries/1000"',
-      }),
-    propertySummaries: z
-      .array(GoogleAnalyticsAdminV1betaPropertySummarySchema)
-      .exactOptional()
-      .openapi({ description: 'List of summaries for child accounts of this account.' }),
-  })
-  .openapi({
-    description:
-      'A virtual resource representing an overview of an account and all its child GA4 properties.',
-    required: [],
-  })
-  .openapi('GoogleAnalyticsAdminV1betaAccountSummary')
-
-const GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionRequestSchema = z
-  .object({
-    acknowledgement: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. An acknowledgement that the caller of this method understands the terms of user data collection. This field must contain the exact value: "I acknowledge that I have the necessary privacy disclosures and rights from my end users for the collection and processing of their data, including the association of such data with the visitation information Google Analytics collects from my site and/or app property."',
-      }),
-  })
-  .openapi({ description: 'Request message for AcknowledgeUserDataCollection RPC.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionRequest')
-
-const GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionResponseSchema = z
-  .object({})
-  .openapi({ description: 'Response message for AcknowledgeUserDataCollection RPC.' })
-  .openapi('GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionResponse')
-
-const GoogleAnalyticsAdminV1betaArchiveCustomDimensionRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for ArchiveCustomDimension RPC.' })
-  .openapi('GoogleAnalyticsAdminV1betaArchiveCustomDimensionRequest')
-
-const GoogleAnalyticsAdminV1betaArchiveCustomMetricRequestSchema = z
-  .object({})
-  .openapi({ description: 'Request message for ArchiveCustomMetric RPC.' })
-  .openapi('GoogleAnalyticsAdminV1betaArchiveCustomMetricRequest')
 
 const GoogleAnalyticsAdminV1betaConversionEventSchema = z
   .object({
@@ -1098,6 +781,328 @@ const GoogleAnalyticsAdminV1betaChangeHistoryEventSchema = z
   })
   .openapi('GoogleAnalyticsAdminV1betaChangeHistoryEvent')
 
+type GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponseType = {
+  changeHistoryEvents?: z.infer<typeof GoogleAnalyticsAdminV1betaChangeHistoryEventSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleAnalyticsAdminV1betaAccessDateRangeSchema = z
+  .object({
+    endDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The inclusive end date for the query in the format `YYYY-MM-DD`. Cannot be before `startDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the current time in the request's time zone.",
+      }),
+    startDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The inclusive start date for the query in the format `YYYY-MM-DD`. Cannot be after `endDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the current time in the request's time zone.",
+      }),
+  })
+  .openapi({
+    description: 'A contiguous range of days: startDate, startDate + 1, ..., endDate.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessDateRange')
+
+const GoogleAnalyticsAdminV1betaAccessDimensionSchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The API name of the dimension. See [Data Access Schema](https://developers.google.com/analytics/devguides/config/admin/v1/access-api-schema) for the list of dimensions supported in this API. Dimensions are referenced by name in `dimensionFilter` and `orderBys`.',
+      }),
+  })
+  .openapi({
+    description:
+      'Dimensions are attributes of your data. For example, the dimension `userEmail` indicates the email of the user that accessed reporting data. Dimension values in report responses are strings.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessDimension')
+
+const GoogleAnalyticsAdminV1betaAccessDimensionHeaderSchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The dimension's name; for example 'userEmail'." }),
+  })
+  .openapi({
+    description:
+      'Describes a dimension column in the report. Dimensions requested in a report produce column entries within rows and DimensionHeaders. However, dimensions used exclusively within filters or expressions do not produce columns in a report; correspondingly, those dimensions do not produce headers.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessDimensionHeader')
+
+const GoogleAnalyticsAdminV1betaAccessDimensionValueSchema = z
+  .object({
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The dimension value. For example, this value may be 'France' for the 'country' dimension.",
+      }),
+  })
+  .openapi({ description: 'The value of a dimension.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessDimensionValue')
+
+const GoogleAnalyticsAdminV1betaAccessMetricSchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The API name of the metric. See [Data Access Schema](https://developers.google.com/analytics/devguides/config/admin/v1/access-api-schema) for the list of metrics supported in this API. Metrics are referenced by name in `metricFilter` & `orderBys`.',
+      }),
+  })
+  .openapi({
+    description:
+      'The quantitative measurements of a report. For example, the metric `accessCount` is the total number of data access records.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessMetric')
+
+const GoogleAnalyticsAdminV1betaAccessMetricHeaderSchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The metric's name; for example 'accessCount'." }),
+  })
+  .openapi({
+    description:
+      'Describes a metric column in the report. Visible metrics requested in a report produce column entries within rows and MetricHeaders. However, metrics used exclusively within filters or expressions do not produce columns in a report; correspondingly, those metrics do not produce headers.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessMetricHeader')
+
+const GoogleAnalyticsAdminV1betaAccessMetricValueSchema = z
+  .object({
+    value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The measurement value. For example, this value may be '13'." }),
+  })
+  .openapi({ description: 'The value of a metric.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessMetricValue')
+
+const GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBySchema = z
+  .object({
+    dimensionName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A dimension name in the request to order by.' }),
+    orderType: z
+      .enum(['ORDER_TYPE_UNSPECIFIED', 'ALPHANUMERIC', 'CASE_INSENSITIVE_ALPHANUMERIC', 'NUMERIC'])
+      .exactOptional()
+      .openapi({ description: 'Controls the rule for dimension value ordering.' }),
+  })
+  .openapi({ description: 'Sorts by dimension values.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBy')
+
+const GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBySchema = z
+  .object({
+    metricName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A metric name in the request to order by.' }),
+  })
+  .openapi({ description: 'Sorts by metric values.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBy')
+
+const GoogleAnalyticsAdminV1betaAccessOrderBySchema = z
+  .object({
+    desc: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, sorts by descending order. If false or unspecified, sorts in ascending order.',
+      }),
+    dimension:
+      GoogleAnalyticsAdminV1betaAccessOrderByDimensionOrderBySchema.exactOptional().openapi({
+        description: "Sorts results by a dimension's values.",
+      }),
+    metric: GoogleAnalyticsAdminV1betaAccessOrderByMetricOrderBySchema.exactOptional().openapi({
+      description: "Sorts results by a metric's values.",
+    }),
+  })
+  .openapi({
+    description:
+      'Order bys define how rows will be sorted in the response. For example, ordering rows by descending access count is one ordering, and ordering rows by the country string is a different ordering.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessOrderBy')
+
+const GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema = z
+  .object({
+    consumed: z.int32().exactOptional().openapi({ description: 'Quota consumed by this request.' }),
+    remaining: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Quota remaining after this request.' }),
+  })
+  .openapi({ description: 'Current state for a particular quota group.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessQuotaStatus')
+
+const GoogleAnalyticsAdminV1betaAccessQuotaSchema = z
+  .object({
+    concurrentRequests: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
+      description: 'Properties can use up to 50 concurrent requests.',
+    }),
+    serverErrorsPerProjectPerHour:
+      GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
+        description: 'Properties and cloud project pairs can have up to 50 server errors per hour.',
+      }),
+    tokensPerDay: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
+      description:
+        'Properties can use 250,000 tokens per day. Most requests consume fewer than 10 tokens.',
+    }),
+    tokensPerHour: GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
+      description:
+        'Properties can use 50,000 tokens per hour. An API request consumes a single number of tokens, and that number is deducted from all of the hourly, daily, and per project hourly quotas.',
+    }),
+    tokensPerProjectPerHour:
+      GoogleAnalyticsAdminV1betaAccessQuotaStatusSchema.exactOptional().openapi({
+        description:
+          'Properties can use up to 25% of their tokens per project per hour. This amounts to Analytics 360 Properties can use 12,500 tokens per project per hour. An API request consumes a single number of tokens, and that number is deducted from all of the hourly, daily, and per project hourly quotas.',
+      }),
+  })
+  .openapi({
+    description:
+      'Current state of all quotas for this Analytics property. If any quota for a property is exhausted, all requests to that property will return Resource Exhausted errors.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccessQuota')
+
+const GoogleAnalyticsAdminV1betaAccessRowSchema = z
+  .object({
+    dimensionValues: z
+      .array(GoogleAnalyticsAdminV1betaAccessDimensionValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of dimension values. These values are in the same order as specified in the request.',
+      }),
+    metricValues: z
+      .array(GoogleAnalyticsAdminV1betaAccessMetricValueSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'List of metric values. These values are in the same order as specified in the request.',
+      }),
+  })
+  .openapi({ description: 'Access report data for each row.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAccessRow')
+
+const GoogleAnalyticsAdminV1betaPropertySummarySchema = z
+  .object({
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Display name for the property referred to in this property summary.',
+      }),
+    parent: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of this property\'s logical parent. Note: The Property-Moving UI can be used to change the parent. Format: accounts/{account}, properties/{property} Example: "accounts/100", "properties/200"',
+      }),
+    property: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of property referred to by this property summary Format: properties/{property_id} Example: "properties/1000"',
+      }),
+    propertyType: z
+      .enum([
+        'PROPERTY_TYPE_UNSPECIFIED',
+        'PROPERTY_TYPE_ORDINARY',
+        'PROPERTY_TYPE_SUBPROPERTY',
+        'PROPERTY_TYPE_ROLLUP',
+      ])
+      .exactOptional()
+      .openapi({ description: "The property's property type." }),
+  })
+  .openapi({
+    description: 'A virtual resource representing metadata for a GA4 property.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaPropertySummary')
+
+const GoogleAnalyticsAdminV1betaAccountSummarySchema = z
+  .object({
+    account: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name of account referred to by this account summary Format: accounts/{account_id} Example: "accounts/1000"',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Display name for the account referred to in this account summary.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Resource name for this account summary. Format: accountSummaries/{account_id} Example: "accountSummaries/1000"',
+      }),
+    propertySummaries: z
+      .array(GoogleAnalyticsAdminV1betaPropertySummarySchema)
+      .exactOptional()
+      .openapi({ description: 'List of summaries for child accounts of this account.' }),
+  })
+  .openapi({
+    description:
+      'A virtual resource representing an overview of an account and all its child GA4 properties.',
+    required: [],
+  })
+  .openapi('GoogleAnalyticsAdminV1betaAccountSummary')
+
+const GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionRequestSchema = z
+  .object({
+    acknowledgement: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. An acknowledgement that the caller of this method understands the terms of user data collection. This field must contain the exact value: "I acknowledge that I have the necessary privacy disclosures and rights from my end users for the collection and processing of their data, including the association of such data with the visitation information Google Analytics collects from my site and/or app property."',
+      }),
+  })
+  .openapi({ description: 'Request message for AcknowledgeUserDataCollection RPC.', required: [] })
+  .openapi('GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionRequest')
+
+const GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionResponseSchema = z
+  .looseObject({})
+  .openapi({ description: 'Response message for AcknowledgeUserDataCollection RPC.' })
+  .openapi('GoogleAnalyticsAdminV1betaAcknowledgeUserDataCollectionResponse')
+
+const GoogleAnalyticsAdminV1betaArchiveCustomDimensionRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for ArchiveCustomDimension RPC.' })
+  .openapi('GoogleAnalyticsAdminV1betaArchiveCustomDimensionRequest')
+
+const GoogleAnalyticsAdminV1betaArchiveCustomMetricRequestSchema = z
+  .looseObject({})
+  .openapi({ description: 'Request message for ArchiveCustomMetric RPC.' })
+  .openapi('GoogleAnalyticsAdminV1betaArchiveCustomMetricRequest')
+
 const GoogleAnalyticsAdminV1betaCustomDimensionSchema = z
   .object({
     description: z
@@ -1639,25 +1644,26 @@ const GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsRequestSchema = z
   .openapi({ description: 'Request message for SearchChangeHistoryEvents RPC.', required: [] })
   .openapi('GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsRequest')
 
-const GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponseSchema = z
-  .object({
-    changeHistoryEvents: z
-      .array(GoogleAnalyticsAdminV1betaChangeHistoryEventSchema)
-      .exactOptional()
-      .openapi({ description: 'Results that were accessible to the caller.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
-      }),
-  })
-  .openapi({ description: 'Response message for SearchAccounts RPC.', required: [] })
-  .openapi('GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponse')
+const GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponseSchema: z.ZodType<GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponseType> =
+  z
+    .object({
+      changeHistoryEvents: z
+        .array(GoogleAnalyticsAdminV1betaChangeHistoryEventSchema)
+        .exactOptional()
+        .openapi({ description: 'Results that were accessible to the caller.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+        }),
+    })
+    .openapi({ description: 'Response message for SearchAccounts RPC.', required: [] })
+    .openapi('GoogleAnalyticsAdminV1betaSearchChangeHistoryEventsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

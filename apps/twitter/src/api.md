@@ -1,4 +1,4 @@
-<h1 id="x-api-v2">X API v2 v2.173</h1>
+<h1 id="x-api-v2">X API v2 v2.175</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -69,7 +69,7 @@ Endpoints for managing the authenticated user's X Developer Platform account
 
 <a href="https://docs.x.com/x-api/introduction">Find out more</a>
 
-## Get developer account
+## Get Developer Account
 
 <a id="opIdgetDeveloperAccount"></a>
 
@@ -83,7 +83,7 @@ curl https://api.x.com/2/account \
 
 `GET /2/account`
 
-Returns the authenticated user's X Developer Platform account. A user without an account gets a resource-not-found error entry.
+Returns the X Developer Platform account that is billed for the authenticated user's API access. A user with no such account gets a resource-not-found error entry.
 
 > Example responses
 
@@ -132,7 +132,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: developer.read )
 </aside>
 
-## Ensure developer account
+## Ensure Developer Account
 
 <a id="opIdensureAccount"></a>
 
@@ -220,7 +220,7 @@ Endpoints relating to retrieving, managing Account Activity subscriptions
 
 <a href="https://docs.x.com/x-api/enterprise-gnip-2.0/fundamentals/account-activity">Find out more</a>
 
-## Get Account Activity Subscription Count
+## Get Subscription Count
 
 <a id="opIdgetAccountActivitySubscriptionCount"></a>
 
@@ -233,6 +233,8 @@ curl https://api.x.com/2/account_activity/subscriptions/count \
 ```
 
 `GET /2/account_activity/subscriptions/count`
+
+Retrieves a count of currently active Account Activity subscriptions.
 
 > Example responses
 
@@ -270,7 +272,7 @@ curl https://api.x.com/2/account_activity/subscriptions/count \
 }
 ```
 
-<h3 id="get-account-activity-subscription-count-responses">Responses</h3>
+<h3 id="get-subscription-count-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -282,7 +284,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Validate Account Activity Subscription
+## Validate Subscription
 
 <a id="opIdvalidateAccountActivitySubscription"></a>
 
@@ -296,7 +298,9 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all \
 
 `GET /2/account_activity/webhooks/{webhook_id}/subscriptions/all`
 
-<h3 id="validate-account-activity-subscription-parameters">Parameters</h3>
+Checks a user's Account Activity subscription for a given webhook.
+
+<h3 id="validate-subscription-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -335,7 +339,7 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all \
 }
 ```
 
-<h3 id="validate-account-activity-subscription-responses">Responses</h3>
+<h3 id="validate-subscription-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -344,10 +348,10 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read dm.write ), UserToken
 </aside>
 
-## Create subscription
+## Create Subscription
 
 <a id="opIdcreateAccountActivitySubscription"></a>
 
@@ -423,10 +427,10 @@ Creates an Account Activity subscription for the user and the given webhook.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read dm.read ), UserToken
 </aside>
 
-## Get Account Activity Subscriptions
+## Get Subscriptions
 
 <a id="opIdgetAccountActivitySubscriptions"></a>
 
@@ -440,7 +444,9 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all/list
 
 `GET /2/account_activity/webhooks/{webhook_id}/subscriptions/all/list`
 
-<h3 id="get-account-activity-subscriptions-parameters">Parameters</h3>
+Retrieves a list of all active subscriptions for a given webhook.
+
+<h3 id="get-subscriptions-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -486,7 +492,7 @@ curl https://api.x.com/2/account_activity/webhooks/string/subscriptions/all/list
 }
 ```
 
-<h3 id="get-account-activity-subscriptions-responses">Responses</h3>
+<h3 id="get-subscriptions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -498,7 +504,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Delete subscription
+## Delete Subscription
 
 <a id="opIddeleteAccountActivitySubscription"></a>
 
@@ -575,7 +581,7 @@ Endpoints relating to retrieving, managing activity subscriptions
 
 <a href="https://docs.x.com/x-api/enterprise-gnip-2.0/fundamentals/account-activity">Find out more</a>
 
-## Get X activity subscriptions
+## Get X Activity Subscriptions
 
 <a id="opIdgetActivitySubscriptions"></a>
 
@@ -660,7 +666,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: like.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Create X activity subscription
+## Create X Activity Subscription
 
 <a id="opIdcreateActivitySubscription"></a>
 
@@ -688,7 +694,7 @@ curl https://api.x.com/2/activity/subscriptions \
 
 `POST /2/activity/subscriptions`
 
-Creates a subscription for an X activity event. OAuth2 user-context tokens must hold the scope matching the requested event_type: dm.read for chat.* and dm.* events, like.read for like.* events, mute.read for mute.* events, block.read for block.* events, follows.read for subscriptions.* events, and tweet.read for all other event types. Mute and block subscriptions are actor-only: filter.user_id must identify the authenticated user and direction is not supported. subscriptions.* events require a user-context token and filter.user_id must identify the authenticated user. Optional filter.qualifiers further narrow supported chat, follow, unfollow, like, and subscriptions events.
+Creates a subscription for an X activity event. OAuth2 user-context tokens must hold the scope matching the requested event_type: dm.read for chat.* and dm.* events, like.read for like.* events, mute.read for mute.* events, block.read for block.* events, follows.read for subscriptions.* events, and tweet.read for all other event types. Mute and block subscriptions are actor-only: filter.user_id must identify the authenticated user and direction is not supported. subscriptions.* events require a user-context token and filter.user_id must identify the authenticated user. Optional filter.qualifiers further narrow supported chat, follow, unfollow, like, subscriptions, and trends events.
 
 <a href="https://docs.x.com/x-api/activity/create-x-activity-subscription">External documentation</a>
 
@@ -733,6 +739,7 @@ Creates a subscription for an X activity event. OAuth2 user-context tokens must 
 |» event_type|profile.update.verified_badge|
 |» event_type|profile.update.affiliate_badge|
 |» event_type|profile.update.handle|
+|» event_type|trends.new|
 |» event_type|news.new|
 |» event_type|follow.follow|
 |» event_type|follow.unfollow|
@@ -829,7 +836,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, UserToken, BearerToken
 </aside>
 
-## Delete X activity subscriptions by IDs
+## Delete X Activity Subscriptions by IDs
 
 <a id="opIddeleteActivitySubscriptionsByIds"></a>
 
@@ -900,7 +907,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Update X activity subscription
+## Update X Activity Subscription
 
 <a id="opIdupdateActivitySubscription"></a>
 
@@ -1002,7 +1009,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, UserToken, BearerToken
 </aside>
 
-## Deletes X activity subscription
+## Delete X Activity Subscription
 
 <a id="opIddeleteActivitySubscription"></a>
 
@@ -1021,7 +1028,7 @@ Deletes a subscription for an X activity event
 
 <a href="https://docs.x.com/x-api/activity/deletes-x-activity-subscription">External documentation</a>
 
-<h3 id="deletes-x-activity-subscription-parameters">Parameters</h3>
+<h3 id="delete-x-activity-subscription-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1060,7 +1067,7 @@ Deletes a subscription for an X activity event
 }
 ```
 
-<h3 id="deletes-x-activity-subscription-responses">Responses</h3>
+<h3 id="delete-x-activity-subscription-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1078,7 +1085,7 @@ Endpoints related to retrieving, creating & modifying Articles
 
 <a href="https://docs.x.com/x-api/articles/introduction">Find out more</a>
 
-## Create draft Article
+## Create Draft Article
 
 <a id="opIdarticleCreateDraft"></a>
 
@@ -1270,7 +1277,7 @@ Creates a new Article draft that can later be published.
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[ArticleCreateDraftRequest](#schemaarticlecreatedraftrequest)|true|none|
-|» content_state|body|[ArticleCreateDraftContentState](#schemaarticlecreatedraftcontentstate)|true|DraftJS content state representing the article body. Special formatting          (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic          blocks with entity_ranges pointing into entities.|
+|» content_state|body|[ArticleCreateDraftContentState](#schemaarticlecreatedraftcontentstate)|true|DraftJS content state representing the article body. Special formatting (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic blocks with entity_ranges pointing into entities.|
 |» cover_media|body|[ArticleCreateDraftCoverMedia](#schemaarticlecreatedraftcovermedia)|false|Optional cover media for the Article.|
 |» title|body|string|true|The title of the Article.|
 
@@ -1390,6 +1397,10 @@ OAuth2UserToken ( Scopes: tweet.write ), UserToken
 
 <h1 id="x-api-v2-bots">Bots</h1>
 
+Endpoints related to creating and managing bot accounts and their tokens
+
+<a href="https://docs.x.com/x-api/introduction">Find out more</a>
+
 ## Get Bots
 
 <a id="opIdgetBots"></a>
@@ -1403,6 +1414,8 @@ curl https://api.x.com/2/bots \
 ```
 
 `GET /2/bots`
+
+Retrieves the bot accounts in the calling app's project. meta.max_bots is the most bots the project can have.
 
 <h3 id="get-bots-parameters">Parameters</h3>
 
@@ -1426,11 +1439,13 @@ curl https://api.x.com/2/bots \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -1575,6 +1590,7 @@ curl https://api.x.com/2/bots \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -1588,6 +1604,7 @@ curl https://api.x.com/2/bots \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -1648,12 +1665,15 @@ curl https://api.x.com/2/bots \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -1666,6 +1686,10 @@ curl https://api.x.com/2/bots \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -2021,6 +2045,7 @@ curl https://api.x.com/2/bots \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -2034,6 +2059,7 @@ curl https://api.x.com/2/bots \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -2083,7 +2109,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Create a bot
+## Create a Bot
 
 <a id="opIdcreateBot"></a>
 
@@ -2098,6 +2124,7 @@ curl https://api.x.com/2/bots \
   -d '{
     "display_name": "string",
     "handle": "string",
+    "org_only": true,
     "scopes": [
       "string"
     ]
@@ -2106,7 +2133,7 @@ curl https://api.x.com/2/bots \
 
 `POST /2/bots`
 
-Creates a bot account in the calling app's project and returns its bearer token. Idempotent on handle: repeating the request for a handle that already names one of the project's bots returns that bot with a freshly minted token, revoking the previous one — safe to retry when a response was lost, since the replaced token was never seen.
+Creates a bot account in the calling app's project and returns its bearer token. Idempotent on handle: repeating the request for a handle that already names one of the project's bots returns that bot with a freshly minted token, revoking the previous one — safe to retry when a response was lost, since the replaced token was never seen. With an OAuth 2.0 user token, the user must be an admin of the project's developer account. On API Connect, where the request bills the user's own account, the bot is created in the user's project instead; its token is still minted for the calling app.
 
 > Body parameter
 
@@ -2114,6 +2141,7 @@ Creates a bot account in the calling app's project and returns its bearer token.
 {
   "display_name": "string",
   "handle": "string",
+  "org_only": true,
   "scopes": [
     "string"
   ]
@@ -2127,6 +2155,7 @@ Creates a bot account in the calling app's project and returns its bearer token.
 |body|body|[CreateBotRequest](#schemacreatebotrequest)|true|none|
 |» display_name|body|string|false|The bot's display name; defaults to the handle.|
 |» handle|body|string|true|The bot's handle (X screen name): 5-15 characters, letters, numbers, or underscores.|
+|» org_only|body|boolean|false|Whether only members of the bot's developer account can add it to group chats. An org-only bot has no public profile and doesn't appear in public search. Everyone in its developer account should be able to message it, so leave its Direct Messages open to everyone rather than premium senders only. Defaults to false. Applies only when the request creates the bot: a handle that already names one of the project's bots keeps that bot's setting, which the response's org_only reports.|
 |» scopes|body|[string]|false|Scopes for the bot's bearer token. Broadcast moderation additionally supports broadcast.read and broadcast.write. Defaults to the XChat scope set (dm.read, dm.write, tweet.read, users.read, media.write).|
 
 > Example responses
@@ -2138,6 +2167,7 @@ Creates a bot account in the calling app's project and returns its bearer token.
   "data": {
     "id": "string",
     "name": "string",
+    "org_only": true,
     "scopes": [
       "string"
     ],
@@ -2178,7 +2208,7 @@ Creates a bot account in the calling app's project and returns its bearer token.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-BearerToken
+OAuth2UserToken, BearerToken
 </aside>
 
 ## Update Bot
@@ -2202,6 +2232,8 @@ curl https://api.x.com/2/bots/string \
 
 `PUT /2/bots/{id}`
 
+Updates a bot's handle, display name, or who may send it Direct Messages.
+
 > Body parameter
 
 ```json
@@ -2219,7 +2251,7 @@ curl https://api.x.com/2/bots/string \
 |id|path|string|true|none|
 |body|body|[UpdateBotRequest](#schemaupdatebotrequest)|true|none|
 |» display_name|body|string|false|New display name.|
-|» dm_permission|body|string|false|Who may send Direct Messages to the bot.|
+|» dm_permission|body|string|false|Who may send the bot Direct Messages: everyone, or premium for verified senders only. Premium isn't meant for org-only bots, since everyone in an org-only bot's developer account should be able to message it, verified or not; requesting premium for one may be refused with a 400. The no_one value is deprecated and kept only so bots that already use it can keep it; choosing it for any other bot may be refused with a 400.|
 |» handle|body|string|false|New handle (X screen name): 5-15 characters, letters, numbers, or underscores.|
 
 #### Enumerated Values
@@ -2290,6 +2322,8 @@ curl https://api.x.com/2/bots/string \
 
 `DELETE /2/bots/{id}`
 
+Deletes a bot account from the calling app's project. With an OAuth 2.0 user token, the user must be an admin of the project's developer account. On API Connect, where the request bills the user's own account, the bot is deleted from the user's project instead.
+
 <h3 id="delete-bot-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -2338,7 +2372,7 @@ curl https://api.x.com/2/bots/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-BearerToken
+OAuth2UserToken, BearerToken
 </aside>
 
 ## Rotate Bot Token
@@ -2361,6 +2395,8 @@ curl https://api.x.com/2/bots/string/token \
 ```
 
 `POST /2/bots/{id}/token`
+
+Mints a new bearer token for a bot and invalidates every token previously issued for it. The new token is returned only once.
 
 > Body parameter
 
@@ -2429,7 +2465,7 @@ curl https://api.x.com/2/bots/string/token \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-BearerToken
+OAuth2UserToken, BearerToken
 </aside>
 
 ## Revoke Bot Token
@@ -2446,6 +2482,8 @@ curl https://api.x.com/2/bots/string/token \
 ```
 
 `DELETE /2/bots/{id}/token`
+
+Revokes a bot's bearer token. The bot account is kept, and rotating its token mints a new one.
 
 <h3 id="revoke-bot-token-parameters">Parameters</h3>
 
@@ -2504,7 +2542,7 @@ Endpoints related to live broadcasts and their chat
 
 <a href="https://developer.x.com/">Find out more</a>
 
-## List broadcasts
+## List Broadcasts
 
 <a id="opIdlistBroadcasts"></a>
 
@@ -2547,6 +2585,7 @@ At most one of `ids`, `max_results` may be provided. At most one of `ids`, `pagi
 |broadcast.fields|image_url_small|
 |broadcast.fields|is_high_latency|
 |broadcast.fields|language|
+|broadcast.fields|live_category_id|
 |broadcast.fields|media_key|
 |broadcast.fields|scheduled_end_ms|
 |broadcast.fields|scheduled_start_ms|
@@ -2582,6 +2621,7 @@ At most one of `ids`, `max_results` may be provided. At most one of `ids`, `pagi
       "image_url_small": "string",
       "is_high_latency": true,
       "language": "string",
+      "live_category_id": "string",
       "media_key": "string",
       "scheduled_end_ms": "string",
       "scheduled_start_ms": "string",
@@ -2638,7 +2678,187 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Get chat moderators
+## Go Live on a Source
+
+<a id="opIdcreateBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "additional_source_ids": [
+      "string"
+    ],
+    "chat_option": 0,
+    "live_category_id": "string",
+    "locale": "string",
+    "should_not_tweet": true,
+    "source_id": "string",
+    "title": "string"
+  }'
+```
+
+`POST /2/broadcasts`
+
+Takes one or more of the authenticated user's sources live and returns 201 with the new broadcast. Several sources (`source_id` plus `additional_source_ids`, one per video format) go live together as one broadcast; they must all be RTMP sources in one region, and when one of them is already live its broadcast is returned only if it holds every listed source. The broadcast goes live immediately (state `RUNNING`), even before the encoder sends video, and is ended (`TIMED_OUT`) if no video arrives within 5 minutes. It is announced in a Post unless `should_not_tweet` is true. When the source already has a live broadcast, returns 200 with that broadcast unchanged and ignores the request's `title`, `locale`, `chat_option` and `should_not_tweet`. A missing `tweet_id` means the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created; read it later with GET /2/broadcasts/:id. A 409 `conflict` means the source can't go live right now: either it can't take video before the encoder connects (external HLS sources, or regions where this isn't available), so retry once video is flowing, or another broadcast is live on it, so END that broadcast first. The `detail` says which, and names the live broadcast when known.
+
+> Body parameter
+
+```json
+{
+  "additional_source_ids": [
+    "string"
+  ],
+  "chat_option": 0,
+  "live_category_id": "string",
+  "locale": "string",
+  "should_not_tweet": true,
+  "source_id": "string",
+  "title": "string"
+}
+```
+
+<h3 id="go-live-on-a-source-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CreateBroadcastRequest](#schemacreatebroadcastrequest)|true|none|
+|» additional_source_ids|body|[string]|false|Ids of further sources to go live on together with `source_id`, one per video format, at most 2, each a source's `id` from GET /2/sources. `source_id` comes first; duplicates are ignored.|
+|» chat_option|body|integer|false|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|» live_category_id|body|string|false|The live category the host picked, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. Ignored when the source already has a live broadcast.|
+|» locale|body|string|false|Broadcast language, e.g. `en`.|
+|» should_not_tweet|body|boolean|false|Skip the Post announcing the broadcast. Defaults to false.|
+|» source_id|body|string|true|Id of the source to go live on: a source's `id` (19 digits) from GET /2/sources.|
+|» title|body|string|false|Broadcast title. Defaults to the user's display name.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "id": "string",
+    "language": "string",
+    "live_category_id": "string",
+    "media_key": "string",
+    "share_url": "string",
+    "start_ms": "string",
+    "state": "string",
+    "title": "string",
+    "tweet_id": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="go-live-on-a-source-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The request has succeeded.|[CreateBroadcastResponse](#schemacreatebroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## List Live Categories
+
+<a id="opIdlistLiveCategories"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/categories \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/broadcasts/categories`
+
+Returns the live categories a host can pick when going live, in display order. Pass a category's `id` as `live_category_id` on POST /2/broadcasts. Ids are permanent; names can change, so store the id and show the current name. The whole list is returned in one response, without paging.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "meta": {
+    "result_count": 0
+  }
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="list-live-categories-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[ListLiveCategoriesResponse](#schemalistlivecategoriesresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read ), UserToken
+</aside>
+
+## Get Chat Moderators
 
 <a id="opIdgetChatModerators"></a>
 
@@ -2676,11 +2896,13 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -2825,6 +3047,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -2838,6 +3061,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -2898,12 +3122,15 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -2916,6 +3143,10 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -3271,6 +3502,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -3284,6 +3516,7 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -3329,10 +3562,10 @@ Returns the authenticated broadcaster's persistent moderators as User resources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: users.read broadcast.read tweet.read ), UserToken
 </aside>
 
-## Add a chat moderator
+## Add a Chat Moderator
 
 <a id="opIdaddChatModerator"></a>
 
@@ -3415,7 +3648,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Remove a chat moderator
+## Remove a Chat Moderator
 
 <a id="opIdremoveChatModerator"></a>
 
@@ -3482,10 +3715,10 @@ Removes a moderator from the authenticated broadcaster's persistent list and ret
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Get muted chat users
+## Get Muted Chat Users
 
 <a id="opIdgetChatMutedUsers"></a>
 
@@ -3527,11 +3760,13 @@ Returns the users muted in the authenticated broadcaster's chat, with the expiry
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -3596,12 +3831,15 @@ Returns the users muted in the authenticated broadcaster's chat, with the expiry
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -3614,6 +3852,10 @@ Returns the users muted in the authenticated broadcaster's chat, with the expiry
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -3969,6 +4211,7 @@ Returns the users muted in the authenticated broadcaster's chat, with the expiry
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -3982,6 +4225,7 @@ Returns the users muted in the authenticated broadcaster's chat, with the expiry
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -4031,7 +4275,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Mute or time out a user in chat
+## Mute or Time Out a User in Chat
 
 <a id="opIdmuteChatUser"></a>
 
@@ -4121,7 +4365,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Unmute a user in chat
+## Unmute a User in Chat
 
 <a id="opIdunmuteChatUser"></a>
 
@@ -4190,7 +4434,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## List scheduled broadcasts
+## List Scheduled Broadcasts
 
 <a id="opIdlistScheduledBroadcasts"></a>
 
@@ -4276,7 +4520,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Create a scheduled broadcast
+## Create a Scheduled Broadcast
 
 <a id="opIdcreateScheduledBroadcast"></a>
 
@@ -4310,7 +4554,7 @@ curl https://api.x.com/2/broadcasts/scheduled \
 
 `POST /2/broadcasts/scheduled`
 
-Schedules a broadcast for the authenticated user. A `source_id` (ingest) is required at create time.
+Schedules a broadcast for the authenticated user on one of their sources: `source_id` is required. Passing a stream key as `source_id` is deprecated and stops working when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027; pass the source's `id` from GET /2/sources instead.
 
 > Body parameter
 
@@ -4349,7 +4593,7 @@ Schedules a broadcast for the authenticated user. A `source_id` (ingest) is requ
 |» recurrence|body|[CreateScheduledBroadcastRecurrence](#schemacreatescheduledbroadcastrecurrence)|false|Deprecated: recurring schedules are being retired and requests that include `recurrence` will be rejected. Create each occurrence as its own scheduled broadcast.|
 |» scheduled_end_ms|body|string|false|Optional end time, ms since Unix epoch (decimal string). Omit for an open-ended broadcast.|
 |» scheduled_start_ms|body|string|true|Start time, ms since Unix epoch (decimal string).|
-|» source_id|body|string|true|Ingest / source id to bind (same as sources `rtmp_stream_key`).|
+|» source_id|body|string|true|Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.|
 |» telecast_id|body|string|false|Deprecated: telecast associations are being retired and this field will be ignored.|
 |» thumbnail_media_id|body|string|false|Pre-live slate media id (numeric string).|
 |» title|body|string|false|Title / status text.|
@@ -4410,10 +4654,10 @@ Schedules a broadcast for the authenticated user. A `source_id` (ingest) is requ
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Get a scheduled broadcast
+## Get a Scheduled Broadcast
 
 <a id="opIdgetScheduledBroadcast"></a>
 
@@ -4494,7 +4738,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Update a scheduled broadcast
+## Update a Scheduled Broadcast
 
 <a id="opIdupdateScheduledBroadcast"></a>
 
@@ -4525,7 +4769,7 @@ curl https://api.x.com/2/broadcasts/scheduled/string \
 
 `PUT /2/broadcasts/scheduled/{id}`
 
-Updates a scheduled broadcast. Path `:id` is the broadcast id; the body must include `scheduled_broadcast_id`. Re-send every field that should be kept.
+Updates a scheduled broadcast. Path `:id` is the broadcast id; the body must include `scheduled_broadcast_id`. Re-send every field that should be kept. Passing a stream key as `source_id` is deprecated and stops working when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027; pass the source's `id` from GET /2/sources instead.
 
 > Body parameter
 
@@ -4563,7 +4807,7 @@ Updates a scheduled broadcast. Path `:id` is the broadcast id; the body must inc
 |» scheduled_broadcast_id|body|string|true|Numeric scheduler id from create/list/get.|
 |» scheduled_end_ms|body|string|true|End time, ms since Unix epoch (decimal string).|
 |» scheduled_start_ms|body|string|true|Start time, ms since Unix epoch (decimal string).|
-|» source_id|body|string|false|Ingest / source id.|
+|» source_id|body|string|false|Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.|
 |» thumbnail_media_id|body|string|false|Pre-live slate media id (numeric string).|
 |» title|body|string|false|Title / status text.|
 
@@ -4626,7 +4870,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Delete a scheduled broadcast
+## Delete a Scheduled Broadcast
 
 <a id="opIddeleteScheduledBroadcast"></a>
 
@@ -4692,10 +4936,10 @@ Deletes a scheduled broadcast by its alphanumeric broadcast id.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Go live on a scheduled broadcast
+## Go Live on a Scheduled Broadcast
 
 <a id="opIdgoLiveScheduledBroadcast"></a>
 
@@ -4774,10 +5018,10 @@ Publishes a schedule that was created or updated with `manual_publish: true`. Wi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Get a broadcast
+## Get a Broadcast
 
 <a id="opIdgetBroadcast"></a>
 
@@ -4816,6 +5060,7 @@ Returns a broadcast owned by the authenticated user.
 |broadcast.fields|image_url_small|
 |broadcast.fields|is_high_latency|
 |broadcast.fields|language|
+|broadcast.fields|live_category_id|
 |broadcast.fields|media_key|
 |broadcast.fields|scheduled_end_ms|
 |broadcast.fields|scheduled_start_ms|
@@ -4850,6 +5095,7 @@ Returns a broadcast owned by the authenticated user.
     "image_url_small": "string",
     "is_high_latency": true,
     "language": "string",
+    "live_category_id": "string",
     "media_key": "string",
     "scheduled_end_ms": "string",
     "scheduled_start_ms": "string",
@@ -4901,7 +5147,105 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Delete a broadcast
+## Update a Broadcast
+
+<a id="opIdupdateBroadcast"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/broadcasts/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "chat_option": 0,
+    "live_category_id": "string",
+    "title": "string"
+  }'
+```
+
+`PUT /2/broadcasts/{id}`
+
+Changes the title, chat option or live category of one of the authenticated user's broadcasts and returns the broadcast. Send at least one of `title`, `chat_option` and `live_category_id`; fields left out keep their values. A broadcast can be updated before it starts, while it is live and after it has ended. A 409 `conflict` means the broadcast can't be edited, for example because it was deleted or moderated.
+
+> Body parameter
+
+```json
+{
+  "chat_option": 0,
+  "live_category_id": "string",
+  "title": "string"
+}
+```
+
+<h3 id="update-a-broadcast-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|none|
+|body|body|[UpdateBroadcastRequest](#schemaupdatebroadcastrequest)|true|none|
+|» chat_option|body|integer|false|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|» live_category_id|body|string|false|New live category, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. An empty string removes the broadcast's category.|
+|» title|body|string|false|New broadcast title.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "id": "string",
+    "language": "string",
+    "live_category_id": "string",
+    "media_key": "string",
+    "share_url": "string",
+    "start_ms": "string",
+    "state": "string",
+    "title": "string",
+    "tweet_id": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="update-a-broadcast-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UpdateBroadcastResponse](#schemaupdatebroadcastresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+</aside>
+
+## Delete a Broadcast
 
 <a id="opIddeleteBroadcast"></a>
 
@@ -4969,7 +5313,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Get broadcast chat history
+## Get Broadcast Chat History
 
 <a id="opIdgetBroadcastChat"></a>
 
@@ -5005,6 +5349,7 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
 |broadcast_chat_message.fields|broadcast_id|
 |broadcast_chat_message.fields|created_at_ms|
 |broadcast_chat_message.fields|id|
+|broadcast_chat_message.fields|relay_source|
 |broadcast_chat_message.fields|reply_to|
 |broadcast_chat_message.fields|text|
 |expansions|author_id|
@@ -5018,11 +5363,13 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -5049,6 +5396,7 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
       "broadcast_id": "string",
       "created_at_ms": "string",
       "id": "string",
+      "relay_source": "string",
       "reply_to": "string",
       "text": "string"
     }
@@ -5093,12 +5441,15 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -5111,6 +5462,10 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -5466,6 +5821,7 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -5479,6 +5835,7 @@ Returns newest-first chat messages for a broadcast owned by the authenticated us
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -5528,7 +5885,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Send a chat message to a live broadcast
+## Send a Chat Message to a Live Broadcast
 
 <a id="opIdsendBroadcastChat"></a>
 
@@ -5541,6 +5898,7 @@ curl https://api.x.com/2/broadcasts/string/chat \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "relay_source": "string",
     "reply_to": "string",
     "text": "string"
   }'
@@ -5554,6 +5912,7 @@ Posts a chat message to a running broadcast, attributed to the authenticated use
 
 ```json
 {
+  "relay_source": "string",
   "reply_to": "string",
   "text": "string"
 }
@@ -5565,6 +5924,7 @@ Posts a chat message to a running broadcast, attributed to the authenticated use
 |---|---|---|---|---|
 |id|path|string|true|none|
 |body|body|[SendBroadcastChatRequest](#schemasendbroadcastchatrequest)|true|none|
+|» relay_source|body|string|false|The platform this message was relayed from, shown as that platform's icon next to the message: `youtube`, `twitch`, `kick`, `facebook`, `rumble`, `tiktok` or `instagram`. Only apps approved for chat relay may set it.|
 |» reply_to|body|string|false|Message id to reply to, returned as timestamp when sent.|
 |» text|body|string|true|The chat message text.|
 
@@ -5611,10 +5971,10 @@ Posts a chat message to a running broadcast, attributed to the authenticated use
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Mute or time out a user in a broadcast chat
+## Mute or Time Out a User in a Broadcast Chat
 
 <a id="opIdmuteBroadcastChatUser"></a>
 
@@ -5702,7 +6062,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Unmute a user in a broadcast chat
+## Unmute a User in a Broadcast Chat
 
 <a id="opIdunmuteBroadcastChatUser"></a>
 
@@ -5768,10 +6128,10 @@ Allows a muted user to post messages in a running broadcast chat again. The auth
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## Remove a chat message from a live broadcast
+## Remove a Chat Message from a Live Broadcast
 
 <a id="opIddeleteBroadcastChatMessage"></a>
 
@@ -5840,7 +6200,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 </aside>
 
-## End a broadcast
+## End a Broadcast
 
 <a id="opIdupdateBroadcastState"></a>
 
@@ -5932,10 +6292,10 @@ Ends one of the authenticated user's broadcasts. Only `state: END` is supported.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Get the ingest region
+## Get the Ingest Region
 
 <a id="opIdgetRegion"></a>
 
@@ -5982,7 +6342,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## List stream sources
+## List Stream Sources
 
 <a id="opIdlistSources"></a>
 
@@ -5996,7 +6356,7 @@ curl https://api.x.com/2/sources \
 
 `GET /2/sources`
 
-Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` a scheduled broadcast binds to.
+Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Stream keys are not included; read one with GET /2/sources/:id/stream_key.
 
 > Example responses
 
@@ -6012,8 +6372,7 @@ Returns the authenticated user's RTMP/RTMPS stream sources. A source's `id` is t
       "name": "string",
       "region": "string",
       "rtmp_url": "string",
-      "rtmps_url": "string",
-      "stream_key": "string"
+      "rtmps_url": "string"
     }
   ],
   "errors": [
@@ -6055,7 +6414,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Create a stream source
+## Create a Stream Source
 
 <a id="opIdcreateSource"></a>
 
@@ -6075,7 +6434,7 @@ curl https://api.x.com/2/sources \
 
 `POST /2/sources`
 
-Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the source's stream key.
+Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an encoder to `rtmps_url` with the returned `stream_key`. This is the only response that includes the stream key; read it later with GET /2/sources/:id/stream_key.
 
 > Body parameter
 
@@ -6092,7 +6451,7 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an
 |---|---|---|---|---|
 |body|body|[CreateSourceRequest](#schemacreatesourcerequest)|true|none|
 |» name|body|string|true|Label for the source.|
-|» region|body|string|true|Ingest region: us-east-1, us-east-2, us-west-1, us-west-2, ca-central-1, sa-east-1, eu-west-1, eu-west-3, eu-central-1, ap-south-1, ap-southeast-1, ap-southeast-2, ap-northeast-1 or ap-northeast-2.|
+|» region|body|string|true|Ingest region, as returned by GET /2/region. us-west-1 and us-west-2 ingest in US West; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 ingest in US East. The response's `region` is the serving location (`us-east-1` or `us-west-2`).|
 
 > Example responses
 
@@ -6143,10 +6502,10 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. Push an
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Get a stream source
+## Get a Stream Source
 
 <a id="opIdgetSource"></a>
 
@@ -6160,13 +6519,13 @@ curl https://api.x.com/2/sources/string \
 
 `GET /2/sources/{id}`
 
-Returns one of the authenticated user's stream sources.
+Returns one of the authenticated user's stream sources. Poll it after starting an encoder and wait for `is_stream_active` before going live. The stream key is not included; read it with GET /2/sources/:id/stream_key.
 
 <h3 id="get-a-stream-source-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|Source id (19 digits), from GET /2/sources.|
 
 > Example responses
 
@@ -6181,8 +6540,7 @@ Returns one of the authenticated user's stream sources.
     "name": "string",
     "region": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string",
-    "stream_key": "string"
+    "rtmps_url": "string"
   },
   "errors": [
     {
@@ -6220,7 +6578,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Rename a stream source
+## Rename a Stream Source
 
 <a id="opIdupdateSource"></a>
 
@@ -6253,7 +6611,7 @@ Renames one of the authenticated user's stream sources.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|Source id (19 digits), from GET /2/sources.|
 |body|body|[UpdateSourceRequest](#schemaupdatesourcerequest)|true|none|
 |» name|body|string|true|New label for the source.|
 
@@ -6270,8 +6628,7 @@ Renames one of the authenticated user's stream sources.
     "name": "string",
     "region": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string",
-    "stream_key": "string"
+    "rtmps_url": "string"
   },
   "errors": [
     {
@@ -6309,7 +6666,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Delete a stream source
+## Delete a Stream Source
 
 <a id="opIddeleteSource"></a>
 
@@ -6330,7 +6687,7 @@ Deletes one of the authenticated user's stream sources.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|Source id (19 digits), from GET /2/sources.|
 
 > Example responses
 
@@ -6374,10 +6731,78 @@ Deletes one of the authenticated user's stream sources.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## List a user's broadcasts
+## Get a Stream Source's Stream Key
+
+<a id="opIdgetSourceStreamKey"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/sources/string/stream_key \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/sources/{id}/stream_key`
+
+Returns the stream key of one of the authenticated user's stream sources. The stream key is a credential: anyone with it can stream to the source, so keep it out of logs, URLs and client-side code.
+
+<h3 id="get-a-stream-sources-stream-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Source id (19 digits), from GET /2/sources.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "id": "string",
+    "stream_key": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-a-stream-sources-stream-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetSourceStreamKeyResponse](#schemagetsourcestreamkeyresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
+</aside>
+
+## List a User's Broadcasts
 
 <a id="opIdlistUserBroadcasts"></a>
 
@@ -6398,7 +6823,7 @@ Returns the authenticated user's broadcasts, 100 per page. `id` must be the auth
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|[UserId](#schemauserid)|true|none|
-|pagination_token|query|string|false|`next_token.offset` from the previous page.|
+|pagination_token|query|string|false|`next_token.offset` from the previous page. Empty reads the first page.|
 
 > Example responses
 
@@ -6476,7 +6901,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Create a broadcast on a user's source
+## Create a Broadcast on a User's Source
 
 <a id="opIdcreateUserBroadcast"></a>
 
@@ -6515,7 +6940,10 @@ Creates a broadcast on one of the authenticated user's sources. `id` must be the
 |---|---|---|---|---|
 |id|path|[UserId](#schemauserid)|true|none|
 |body|body|[CreateUserBroadcastRequest](#schemacreateuserbroadcastrequest)|true|none|
-|» is_low_latency|body|boolean|false|Ignored.|
+|» is_low_latency|body|boolean \| string \| integer|false|Ignored.|
+|» » *anyOf*|body|boolean|false|none|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|integer|false|none|
 |» region|body|string|false|Ignored: the source sets the region.|
 |» source_id|body|string|true|The source's `rtmp_stream_key`.|
 
@@ -6589,10 +7017,10 @@ Creates a broadcast on one of the authenticated user's sources. `id` must be the
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Get a user's broadcast
+## Get a User's Broadcast
 
 <a id="opIdgetUserBroadcast"></a>
 
@@ -6686,7 +7114,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Delete a user's broadcast
+## Delete a User's Broadcast
 
 <a id="opIddeleteUserBroadcast"></a>
 
@@ -6752,10 +7180,10 @@ Deletes one of the authenticated user's broadcasts. `id` must be the authenticat
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Publish or end a user's broadcast
+## Publish or End a User's Broadcast
 
 <a id="opIdupdateUserBroadcastState"></a>
 
@@ -6799,9 +7227,14 @@ Publishes or ends one of the authenticated user's broadcasts. `id` must be the a
 |id|path|[UserId](#schemauserid)|true|none|
 |broadcast_id|path|string|true|none|
 |body|body|[UpdateUserBroadcastStateRequest](#schemaupdateuserbroadcaststaterequest)|true|none|
-|» chat_option|body|integer|false|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.|
+|» chat_option|body|integer \| string|false|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. A numeric string is also accepted. `PUBLISH` only.|
+|» » *anyOf*|body|integer|false|none|
+|» » *anyOf*|body|string|false|none|
 |» locale|body|string|false|Broadcast language. `PUBLISH` only.|
-|» should_not_tweet|body|boolean|false|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.|
+|» should_not_tweet|body|boolean \| string \| integer|false|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `"true"`, `"false"`, `1` and `0` are also accepted. `PUBLISH` only.|
+|» » *anyOf*|body|boolean|false|none|
+|» » *anyOf*|body|string|false|none|
+|» » *anyOf*|body|integer|false|none|
 |» state|body|string|true|`PUBLISH` or `END`.|
 |» title|body|string|false|Broadcast title. `PUBLISH` only.|
 
@@ -6878,7 +7311,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## List a user's stream sources
+## List a User's Stream Sources
 
 <a id="opIdlistUserSources"></a>
 
@@ -6968,7 +7401,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Create a stream source for a user
+## Create a Stream Source for a User
 
 <a id="opIdcreateUserSource"></a>
 
@@ -7071,10 +7504,10 @@ Creates a persistent RTMP/RTMPS ingest point for the authenticated user. `id` mu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
+OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Get a user's stream source
+## Get a User's Stream Source
 
 <a id="opIdgetUserSource"></a>
 
@@ -7163,7 +7596,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.read ), UserToken
 </aside>
 
-## Rename a user's stream source
+## Rename a User's Stream Source
 
 <a id="opIdupdateUserSource"></a>
 
@@ -7267,7 +7700,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: broadcast.write broadcast.read ), UserToken
 </aside>
 
-## Delete a user's stream source
+## Delete a User's Stream Source
 
 <a id="opIddeleteUserSource"></a>
 
@@ -7336,7 +7769,11 @@ OAuth2UserToken ( Scopes: broadcast.read broadcast.write ), UserToken
 
 <h1 id="x-api-v2-calls">Calls</h1>
 
-## Create a call
+Endpoints related to starting, scheduling, and joining X calls
+
+<a href="https://docs.x.com/x-api/introduction">Find out more</a>
+
+## Create a Call
 
 <a id="opIdcreateCall"></a>
 
@@ -7442,7 +7879,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.write ), UserToken
 </aside>
 
-## List scheduled calls
+## List Scheduled Calls
 
 <a id="opIdlistScheduledCalls"></a>
 
@@ -7509,11 +7946,13 @@ When both are provided, `start_time` must be earlier than `end_time`.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -7595,12 +8034,15 @@ When both are provided, `start_time` must be earlier than `end_time`.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -7613,6 +8055,10 @@ When both are provided, `start_time` must be earlier than `end_time`.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -7968,6 +8414,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -7981,6 +8428,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -8029,7 +8477,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.read ), UserToken
 </aside>
 
-## Schedule a call
+## Schedule a Call
 
 <a id="opIdscheduleCall"></a>
 
@@ -8153,7 +8601,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.write ), UserToken
 </aside>
 
-## Get a scheduled call
+## Get a Scheduled Call
 
 <a id="opIdgetScheduledCall"></a>
 
@@ -8216,11 +8664,13 @@ Returns a scheduled call the authenticated user organizes or is invited to, at i
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -8300,12 +8750,15 @@ Returns a scheduled call the authenticated user organizes or is invited to, at i
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -8318,6 +8771,10 @@ Returns a scheduled call the authenticated user organizes or is invited to, at i
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -8673,6 +9130,7 @@ Returns a scheduled call the authenticated user organizes or is invited to, at i
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -8686,6 +9144,7 @@ Returns a scheduled call the authenticated user organizes or is invited to, at i
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -8731,7 +9190,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.read ), UserToken
 </aside>
 
-## Update a scheduled call
+## Update a Scheduled Call
 
 <a id="opIdupdateScheduledCall"></a>
 
@@ -8859,7 +9318,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.write ), UserToken
 </aside>
 
-## Cancel a scheduled call
+## Cancel a Scheduled Call
 
 <a id="opIdcancelScheduledCall"></a>
 
@@ -8938,7 +9397,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.write ), UserToken
 </aside>
 
-## Respond to a scheduled call
+## Respond to a Scheduled Call
 
 <a id="opIdrespondToScheduledCall"></a>
 
@@ -9037,7 +9496,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.write ), UserToken
 </aside>
 
-## Get a call
+## Get a Call
 
 <a id="opIdgetCall"></a>
 
@@ -9085,11 +9544,13 @@ Returns a call's title, join policy, host and participant count, and whether the
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -9159,12 +9620,15 @@ Returns a call's title, join policy, host and participant count, and whether the
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -9177,6 +9641,10 @@ Returns a call's title, join policy, host and participant count, and whether the
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -9532,6 +10000,7 @@ Returns a call's title, join policy, host and participant count, and whether the
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -9545,6 +10014,7 @@ Returns a call's title, join policy, host and participant count, and whether the
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -9590,7 +10060,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.read ), UserToken
 </aside>
 
-## Join a call
+## Join a Call
 
 <a id="opIdjoinCall"></a>
 
@@ -9700,7 +10170,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: calls.join )
 </aside>
 
-## Leave a call
+## Leave a Call
 
 <a id="opIdleaveCall"></a>
 
@@ -9774,7 +10244,7 @@ Endpoints related to Chat encrypted messaging
 
 <a href="https://developer.x.com/">Find out more</a>
 
-## Get Chat Conversations, newest first. All filters must match (AND). A page can hold fewer than max_results while meta.next_token is set: keep paging. Read state: chat_conversation.fields=unread,last_read_event_id,newest_event_id
+## Get Chat Conversations
 
 <a id="opIdgetChatConversations"></a>
 
@@ -9788,17 +10258,17 @@ curl https://api.x.com/2/chat/conversations \
 
 `GET /2/chat/conversations`
 
-Retrieves a list of Chat conversations for the authenticated user's inbox, most recently active first. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message.
+Retrieves a list of Chat conversations for the authenticated user's inbox, newest first: the most recently active conversation comes first. To find the chat with a particular person, start with participant_query set to their @username or name; with expansions=participant_ids, user.fields=receives_your_chat says how you can message each match. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and each conversation's latest notifying message. Request them with chat_conversation.fields=unread,last_read_event_id,newest_event_id.
 
-The filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional and combine with AND. participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message. Each page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while has_more is true: keep paging with next_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false.
+The filters unread_only, type, is_archived, is_muted, participant_ids, participant_query, start_time and end_time are optional, and all filters must match (AND). participant_query keeps conversations where another participant's username, or a word of their display name, starts with the query, ignoring case and accents; with a leading @ it matches usernames only. It considers the 100 people who best match the query, uses only public profile information, and never matches group names, nicknames or messages. start_time and end_time apply to the time of each conversation's latest message.
 
-A pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.
+Each page covers max_results conversations and returns those that match, so a page can hold fewer than max_results, or none, while meta.next_token is set and has_more is true: keep paging, passing meta.next_token as pagination_token. Once a page reaches a conversation whose latest message is older than start_time, has_more is false. A pagination_token only works with the same filters as the request that returned it; with other filters, the request fails with a 400.
 
 When both are provided, `start_time` must be earlier than `end_time`.
 
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-chat-conversations-newest-first-all-filters-must-match-and-a-page-can-hold-fewer-than-maxresults-while-metanexttoken-is-set-keep-paging-read-state-chatconversationfieldsunreadlastreadeventidnewesteventid-parameters">Parameters</h3>
+<h3 id="get-chat-conversations-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -9809,7 +10279,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
 |is_archived|query|boolean|false|true: only archived; false: only not archived. Omit for both.|
 |is_muted|query|boolean|false|true: only muted; false: only not muted. Omit for both.|
 |participant_ids|query|[string]|false|Comma-separated numeric user IDs (1-10), all in the chat. Names or @handles: use participant_query.|
-|participant_query|query|string|false|Name or @username prefix (1-50 chars); keeps chats where any other participant matches it.|
+|participant_query|query|string|false|Start here to find someone's chat: their @username or a word of their name (1-50 chars).|
 |start_time|query|string(date-time)|false|ISO 8601, e.g. 2026-10-16T00:00:00Z. Chats whose latest message is at or after this time.|
 |end_time|query|string(date-time)|false|ISO 8601, e.g. 2026-10-17T00:00:00Z. Chats whose latest message is before this time.|
 |chat_conversation.fields|query|[string]|false|A comma separated list of ChatConversation fields to display.|
@@ -9854,11 +10324,13 @@ When both are provided, `start_time` must be earlier than `end_time`.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -9964,12 +10436,15 @@ When both are provided, `start_time` must be earlier than `end_time`.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -9982,6 +10457,10 @@ When both are provided, `start_time` must be earlier than `end_time`.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -10337,6 +10816,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -10350,6 +10830,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -10389,7 +10870,7 @@ When both are provided, `start_time` must be earlier than `end_time`.
 }
 ```
 
-<h3 id="get-chat-conversations-newest-first-all-filters-must-match-and-a-page-can-hold-fewer-than-maxresults-while-metanexttoken-is-set-keep-paging-read-state-chatconversationfieldsunreadlastreadeventidnewesteventid-responses">Responses</h3>
+<h3 id="get-chat-conversations-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -10570,7 +11051,7 @@ Creates a new encrypted Chat group conversation on behalf of the authenticated u
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 ## Initialize Chat Group
@@ -10637,7 +11118,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: dm.write ), UserToken
 </aside>
 
-## Get Chat Conversation; unread state via chat_conversation.fields=unread,last_read_event_id,newest_event_id
+## Get Chat Conversation
 
 <a id="opIdgetChatConversation"></a>
 
@@ -10651,11 +11132,11 @@ curl https://api.x.com/2/chat/conversations/string \
 
 `GET /2/chat/conversations/{id}`
 
-Returns metadata for a Chat conversation including type, muted status, and group details. Use chat_conversation.fields to select which fields are returned. Use expansions to hydrate member, admin, or participant user objects. Use user.fields to control which profile fields are returned for expanded users. The unread, last_read_event_id and newest_event_id fields give your read state, computed from your latest read receipt and the conversation's latest notifying message.
+Returns metadata for a Chat conversation including type, muted status, group details, and your unread state. For the unread state, request chat_conversation.fields=unread,last_read_event_id,newest_event_id: those fields give your read state, computed from your latest read receipt and the conversation's latest notifying message. Use chat_conversation.fields to select which fields are returned. Use expansions to hydrate member, admin, or participant user objects. Use user.fields to control which profile fields are returned for expanded users; in a 1:1 chat, user.fields=receives_your_chat on the participant says how you can message them: encrypted, unencrypted, or none.
 
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-chat-conversation-unread-state-via-chatconversationfieldsunreadlastreadeventidnewesteventid-parameters">Parameters</h3>
+<h3 id="get-chat-conversation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -10700,11 +11181,13 @@ Returns metadata for a Chat conversation including type, muted status, and group
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -10808,12 +11291,15 @@ Returns metadata for a Chat conversation including type, muted status, and group
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -10826,6 +11312,10 @@ Returns metadata for a Chat conversation including type, muted status, and group
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -11181,6 +11671,7 @@ Returns metadata for a Chat conversation including type, muted status, and group
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -11194,6 +11685,7 @@ Returns metadata for a Chat conversation including type, muted status, and group
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -11227,7 +11719,7 @@ Returns metadata for a Chat conversation including type, muted status, and group
 }
 ```
 
-<h3 id="get-chat-conversation-unread-state-via-chatconversationfieldsunreadlastreadeventidnewesteventid-responses">Responses</h3>
+<h3 id="get-chat-conversation-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -11239,7 +11731,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
-## Update a Chat group conversation
+## Update a Chat Group Conversation
 
 <a id="opIdupdateChatGroup"></a>
 
@@ -11422,7 +11914,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
-## Delete a Chat conversation
+## Delete a Chat Conversation
 
 <a id="opIddeleteChatConversation"></a>
 
@@ -11541,10 +12033,10 @@ Deletes a Chat conversation for the authenticated user only; other participants 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
-## Get pending admin requests for a Chat group conversation
+## Get Pending Admin Requests for a Chat Group Conversation
 
 <a id="opIdgetChatGroupAdminRequests"></a>
 
@@ -11586,11 +12078,13 @@ Returns the users who have asked to become admins of an encrypted Chat group con
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -11735,6 +12229,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -11748,6 +12243,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -11808,12 +12304,15 @@ Returns the users who have asked to become admins of an encrypted Chat group con
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -11826,6 +12325,10 @@ Returns the users who have asked to become admins of an encrypted Chat group con
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -12181,6 +12684,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -12194,6 +12698,7 @@ Returns the users who have asked to become admins of an encrypted Chat group con
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -12244,7 +12749,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
-## Request admin permissions in a Chat group conversation
+## Request Admin Permissions in a Chat Group Conversation
 
 <a id="opIdcreateChatGroupAdminRequest"></a>
 
@@ -12363,10 +12868,10 @@ Asks the admins of an encrypted Chat group conversation to make the authenticate
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
-## Approve an admin request in a Chat group conversation
+## Approve an Admin Request in a Chat Group Conversation
 
 <a id="opIdapproveChatGroupAdminRequest"></a>
 
@@ -12489,7 +12994,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Reject an admin request in a Chat group conversation
+## Reject an Admin Request in a Chat Group Conversation
 
 <a id="opIdrejectChatGroupAdminRequest"></a>
 
@@ -12609,10 +13114,10 @@ Declines a user's pending request for admin permissions in an encrypted Chat gro
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
-## Update the admin-only settings of a Chat group conversation
+## Update the Admin-Only Settings of a Chat Group Conversation
 
 <a id="opIdupdateChatGroupAdminSettings"></a>
 
@@ -12755,10 +13260,10 @@ Sets which actions only admins can perform in an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Add admins to a Chat group conversation
+## Add Admins to a Chat Group Conversation
 
 <a id="opIdaddChatGroupAdmins"></a>
 
@@ -12884,10 +13389,10 @@ Grants admin rights to one or more members of an existing encrypted Chat group c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Remove admins from a Chat group conversation
+## Remove Admins from a Chat Group Conversation
 
 <a id="opIdremoveChatGroupAdmins"></a>
 
@@ -13013,10 +13518,10 @@ Revokes admin rights from one or more admins of an existing encrypted Chat group
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Archive a Chat conversation
+## Archive a Chat Conversation
 
 <a id="opIdarchiveChatConversation"></a>
 
@@ -13138,7 +13643,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
-## Unarchive a Chat conversation
+## Unarchive a Chat Conversation
 
 <a id="opIdunarchiveChatConversation"></a>
 
@@ -13257,10 +13762,10 @@ Unarchives a Chat conversation for the authenticated user only. Unarchiving a co
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
-## Get Chat Conversation Events, newest first; unread ones have an id above last_read_event_id
+## Get Chat Conversation Events
 
 <a id="opIdgetChatConversationEvents"></a>
 
@@ -13274,11 +13779,11 @@ curl https://api.x.com/2/chat/conversations/string/events \
 
 `GET /2/chat/conversations/{id}/events`
 
-Retrieves the events of a specific Chat conversation, newest first, with pagination support: messages, key changes, group changes, and read receipts. Events with an id above the conversation's last_read_event_id come after the point you read up to; to collect them, page until an event's id is at or below it. Only `id` and `encoded_event` are always present. Events are either end-to-end encrypted or unencrypted, such as messages sent before the conversation was encrypted. Encrypted events carry `conversation_key_version`, and usually `conversation_token` and `message_event_signature`; treat an encrypted event without `message_event_signature` as unverified. An event without `conversation_key_version` is unencrypted. Decode each `encoded_event` client-side, and decrypt it with the conversation key named by `conversation_key_version` when that is present. A page holds up to `max_results` events and can hold fewer while `has_more` is true. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.
+Retrieves the events of a specific Chat conversation, newest first, with pagination support: messages, key changes, group changes, and read receipts. Events with an id above the conversation's last_read_event_id are unread: they come after the point you read up to. To collect them, page until an event's id is at or below it. Only `id` and `encoded_event` are always present. Events are either end-to-end encrypted or unencrypted, such as messages sent before the conversation was encrypted. Encrypted events carry `conversation_key_version`, and usually `conversation_token` and `message_event_signature`; treat an encrypted event without `message_event_signature` as unverified. An event without `conversation_key_version` is unencrypted. Decode each `encoded_event` client-side, and decrypt it with the conversation key named by `conversation_key_version` when that is present. A page holds up to `max_results` events and can hold fewer while `has_more` is true. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient.
 
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-chat-conversation-events-newest-first-unread-ones-have-an-id-above-lastreadeventid-parameters">Parameters</h3>
+<h3 id="get-chat-conversation-events-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -13354,7 +13859,7 @@ Retrieves the events of a specific Chat conversation, newest first, with paginat
 }
 ```
 
-<h3 id="get-chat-conversation-events-newest-first-unread-ones-have-an-id-above-lastreadeventid-responses">Responses</h3>
+<h3 id="get-chat-conversation-events-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -13366,7 +13871,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
-## Enable a Chat group invite link
+## Enable a Chat Group Invite Link
 
 <a id="opIdenableChatGroupInvite"></a>
 
@@ -13512,10 +14017,10 @@ Turns on the invite link for an encrypted Chat group conversation and returns th
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Disable a Chat group invite link
+## Disable a Chat Group Invite Link
 
 <a id="opIddisableChatGroupInvite"></a>
 
@@ -13637,7 +14142,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
-## Get a Chat group invite link
+## Get a Chat Group Invite Link
 
 <a id="opIdgetChatGroupInvite"></a>
 
@@ -13727,10 +14232,10 @@ Returns the preview of an encrypted Chat group conversation from its invite link
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
-## Request to join a Chat group
+## Request to Join a Chat Group
 
 <a id="opIdcreateChatGroupJoinRequest"></a>
 
@@ -13852,10 +14357,10 @@ Asks to join an encrypted Chat group conversation through its invite link. The r
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Reject join requests for a Chat group conversation
+## Reject Join Requests for a Chat Group Conversation
 
 <a id="opIdrejectChatGroupJoinRequests"></a>
 
@@ -13981,7 +14486,7 @@ Rejects pending requests to join an encrypted Chat group conversation. Only grou
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Add Conversation Keys
@@ -14128,7 +14633,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Add members to a Chat group conversation
+## Add Members to a Chat Group Conversation
 
 <a id="opIdaddChatGroupMembers"></a>
 
@@ -14481,7 +14986,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Remove members from a Chat group conversation
+## Remove Members from a Chat Group Conversation
 
 <a id="opIdremoveChatGroupMembers"></a>
 
@@ -14653,7 +15158,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Turn on disappearing messages in a Chat conversation
+## Turn On Disappearing Messages in a Chat Conversation
 
 <a id="opIdupdateChatConversationMessageTtl"></a>
 
@@ -14775,10 +15280,10 @@ Sets how long new messages in a 1:1 or group Chat conversation last before they 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
-## Turn off disappearing messages in a Chat conversation
+## Turn Off Disappearing Messages in a Chat Conversation
 
 <a id="opIddeleteChatConversationMessageTtl"></a>
 
@@ -14897,7 +15402,7 @@ Stops new messages in a 1:1 or group Chat conversation from disappearing, for ev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
 ## Send Chat Message
@@ -14913,6 +15418,19 @@ curl https://api.x.com/2/chat/conversations/string/messages \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "content": {
+      "message": {
+        "text": "string"
+      },
+      "reaction_add": {
+        "emoji": "string",
+        "event_id": "string"
+      },
+      "reaction_remove": {
+        "emoji": "string",
+        "event_id": "string"
+      }
+    },
     "conversation_token": "string",
     "encoded_message_create_event": "string",
     "encoded_message_event_signature": "string",
@@ -14923,7 +15441,7 @@ curl https://api.x.com/2/chat/conversations/string/messages \
 
 `POST /2/chat/conversations/{id}/messages`
 
-Sends an encrypted message to a specific Chat conversation. For 1:1 conversations, provide the recipient's user ID; the server constructs the canonical conversation ID from the authenticated user and recipient. A recipient who cannot be messaged (closed inbox, system/notification account, or a 1:1 block) returns HTTP 403 with type https://api.x.com/2/problems/recipient-not-messageable.
+Sends a message or reaction to a Chat conversation, which you can find with `participant_query` on Get Chat Conversations. Send it end-to-end encrypted by default: `encoded_message_create_event`, built with the Chat XDK. Plaintext `content` is only a fallback for a 1:1 chat that X Chat can't encrypt: use it only when the recipient's `receives_your_chat` user field (`user.fields=receives_your_chat`) is `unencrypted`. When `content` is refused, nothing is sent and the problem's `detail` says why; HTTP 400 https://api.x.com/2/problems/encryption-required means the chat can be encrypted or is a group, so send it encrypted instead. A recipient you can't message (closed inbox, system account, or a block) returns HTTP 403 https://api.x.com/2/problems/recipient-not-messageable.
 
 <a href="https://developer.x.com/">External documentation</a>
 
@@ -14931,6 +15449,19 @@ Sends an encrypted message to a specific Chat conversation. For 1:1 conversation
 
 ```json
 {
+  "content": {
+    "message": {
+      "text": "string"
+    },
+    "reaction_add": {
+      "emoji": "string",
+      "event_id": "string"
+    },
+    "reaction_remove": {
+      "emoji": "string",
+      "event_id": "string"
+    }
+  },
   "conversation_token": "string",
   "encoded_message_create_event": "string",
   "encoded_message_event_signature": "string",
@@ -14943,13 +15474,16 @@ Sends an encrypted message to a specific Chat conversation. For 1:1 conversation
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|A conversation's id from Get Chat Conversations, or the recipient's user ID for a 1:1 chat.|
 |body|body|[SendChatMessageRequest](#schemasendchatmessagerequest)|true|none|
+|» content|body|[SendChatMessageContent](#schemasendchatmessagecontent)|false|Unencrypted fallback: use only when the recipient's `receives_your_chat` is `unencrypted`.|
 |» conversation_token|body|string|false|Optional conversation token.|
-|» encoded_message_create_event|body|string|true|Base64-encoded Thrift MessageCreateEvent containing encrypted message contents.|
+|» encoded_message_create_event|body|string|false|Default. The end-to-end encrypted message: a base64 Thrift MessageCreateEvent from the Chat XDK.|
 |» encoded_message_event_signature|body|string|false|Base64-encoded Thrift MessageEventSignature for message verification.|
 |» message_id|body|string|true|Unique identifier for this message.|
 |» xdk_version|body|string|false|Version of the Chat XDK that produced the payload.|
+|» *anyOf*|body|object|false|none|
+|» *anyOf*|body|object|false|none|
 
 > Example responses
 
@@ -14993,10 +15527,10 @@ Sends an encrypted message to a specific Chat conversation. For 1:1 conversation
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
-## Delete Chat messages
+## Delete Chat Messages
 
 <a id="opIddeleteChatMessages"></a>
 
@@ -15139,10 +15673,10 @@ Deletes one or more messages from a Chat conversation. For 1:1 conversations, pr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
-## Mute a Chat conversation
+## Mute a Chat Conversation
 
 <a id="opIdmuteChatConversation"></a>
 
@@ -15261,10 +15795,10 @@ Mutes notifications for a Chat conversation for the authenticated user only. Wor
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
 </aside>
 
-## Unmute a Chat conversation
+## Unmute a Chat Conversation
 
 <a id="opIdunmuteChatConversation"></a>
 
@@ -15383,7 +15917,7 @@ Unmutes notifications for a Chat conversation for the authenticated user only. W
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
 ## Get Chat Conversation Pinned Messages
@@ -15466,7 +16000,7 @@ Retrieves the pinned message events of a Chat conversation with pagination suppo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Mark Conversation as Read
@@ -15588,10 +16122,10 @@ Marks a specific Chat conversation as read on behalf of the authenticated user. 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Update screen capture settings for a Chat conversation
+## Update Screen Capture Settings for a Chat Conversation
 
 <a id="opIdupdateChatConversationScreenCapture"></a>
 
@@ -15760,7 +16294,7 @@ Turns screenshot blocking or screenshot detection on or off in a Chat conversati
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
 </aside>
 
 ## Send Typing Indicator
@@ -15830,7 +16364,7 @@ Sends a typing indicator to a specific Chat conversation on behalf of the authen
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
 </aside>
 
 ## Mark Conversation as Unread
@@ -15900,7 +16434,7 @@ Marks a specific Chat conversation as unread on behalf of the authenticated user
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
 ## Initialize Chat Media Upload
@@ -16196,7 +16730,7 @@ curl https://api.x.com/2/chat/media/string/string \
 
 `GET /2/chat/media/{id}/{media_hash_key}`
 
-Downloads encrypted media bytes from an XChat conversation. The response body contains raw binary bytes.
+Downloads encrypted media bytes from an XChat conversation. The response body contains raw binary bytes. A media item too large to return in one response fails with a 413 problem of type `https://api.x.com/2/problems/response-too-large`, and a retry fails the same way.
 
 <h3 id="download-chat-media-parameters">Parameters</h3>
 
@@ -16332,7 +16866,7 @@ Retrieves the authenticated user's pending Chat message requests from one inbox.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read users.read tweet.read ), UserToken
 </aside>
 
 ## Get Chat Message Request
@@ -16422,10 +16956,10 @@ Retrieves the message request state of a 1:1 Chat conversation and its newest me
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
-## Accept a Chat message request
+## Accept a Chat Message Request
 
 <a id="opIdacceptChatMessageRequest"></a>
 
@@ -16492,10 +17026,10 @@ Accepts the other user's pending message request in a 1:1 Chat conversation, whi
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Get Chat settings
+## Get Chat Settings
 
 <a id="opIdgetChatSettings"></a>
 
@@ -16584,10 +17118,10 @@ Returns the authenticated user's Chat privacy settings: who can message them, re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
-## Update Chat settings
+## Update Chat Settings
 
 <a id="opIdupdateChatSettings"></a>
 
@@ -16649,7 +17183,7 @@ Updates the authenticated user's Chat privacy settings: who can message them, re
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[UpdateChatSettingsRequest](#schemaupdatechatsettingsrequest)|true|none|
-|» allow_dms_from|body|string|false|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows).|
+|» allow_dms_from|body|string|false|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.|
 |» always_allow_dms_from_subscribers|body|boolean|false|Whether the user's subscribers can always message them regardless of allow_dms_from.|
 |» av_settings|body|[UpdateChatSettingsAvSettings](#schemaupdatechatsettingsavsettings)|false|Audio and video call settings.|
 |» dm_quality_filter|body|string|false|Low-quality message request filter: `enabled` (low-quality requests go to a separate folder) or `disabled` (all requests stay in the main inbox).|
@@ -16727,10 +17261,10 @@ Updates the authenticated user's Chat privacy settings: who can message them, re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Add public key
+## Add Public Key
 
 <a id="opIdaddUserPublicKey"></a>
 
@@ -16826,7 +17360,7 @@ Registers a user's public key for X Chat encryption.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-communities">Communities</h1>
@@ -16848,6 +17382,8 @@ curl 'https://api.x.com/2/communities/search?query=string' \
 ```
 
 `GET /2/communities/search`
+
+Retrieves a list of Communities matching the specified search query.
 
 <h3 id="search-communities-parameters">Parameters</h3>
 
@@ -16924,10 +17460,10 @@ curl 'https://api.x.com/2/communities/search?query=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
 </aside>
 
-## Get Communities by ID
+## Get Community by ID
 
 <a id="opIdgetCommunitiesById"></a>
 
@@ -16941,7 +17477,9 @@ curl https://api.x.com/2/communities/string \
 
 `GET /2/communities/{id}`
 
-<h3 id="get-communities-by-id-parameters">Parameters</h3>
+Retrieves details of a specific Community by its ID.
+
+<h3 id="get-community-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -16999,7 +17537,7 @@ curl https://api.x.com/2/communities/string \
 }
 ```
 
-<h3 id="get-communities-by-id-responses">Responses</h3>
+<h3 id="get-community-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -17017,7 +17555,7 @@ Endpoints related to retrieving, searching, and modifying Community Notes
 
 <a href="https://docs.x.com/x-api/community-notes/introduction">Find out more</a>
 
-## Create Community Notes
+## Create a Community Note
 
 <a id="opIdcreateCommunityNotes"></a>
 
@@ -17046,6 +17584,8 @@ curl https://api.x.com/2/notes \
 
 `POST /2/notes`
 
+Creates a Community Note on a Post. With test_mode set to true, the note is only for testing and is not publicly visible.
+
 > Body parameter
 
 ```json
@@ -17064,7 +17604,7 @@ curl https://api.x.com/2/notes \
 }
 ```
 
-<h3 id="create-community-notes-parameters">Parameters</h3>
+<h3 id="create-a-community-note-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -17106,7 +17646,7 @@ curl https://api.x.com/2/notes \
 }
 ```
 
-<h3 id="create-community-notes-responses">Responses</h3>
+<h3 id="create-a-community-note-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -17118,7 +17658,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.write ), UserToken
 </aside>
 
-## Evaluate Community Notes
+## Evaluate a Community Note
 
 <a id="opIdevaluateCommunityNotes"></a>
 
@@ -17138,6 +17678,8 @@ curl https://api.x.com/2/notes/evaluate \
 
 `POST /2/notes/evaluate`
 
+Evaluates the text of a proposed Community Note on a Post and returns its claim-opinion score.
+
 > Body parameter
 
 ```json
@@ -17147,7 +17689,7 @@ curl https://api.x.com/2/notes/evaluate \
 }
 ```
 
-<h3 id="evaluate-community-notes-parameters">Parameters</h3>
+<h3 id="evaluate-a-community-note-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -17188,7 +17730,7 @@ curl https://api.x.com/2/notes/evaluate \
 }
 ```
 
-<h3 id="evaluate-community-notes-responses">Responses</h3>
+<h3 id="evaluate-a-community-note-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -17200,7 +17742,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.write ), UserToken
 </aside>
 
-## Search Community Notes Written
+## Search for Community Notes Written
 
 <a id="opIdsearchCommunityNotesWritten"></a>
 
@@ -17214,7 +17756,9 @@ curl 'https://api.x.com/2/notes/search/notes_written?test_mode=true' \
 
 `GET /2/notes/search/notes_written`
 
-<h3 id="search-community-notes-written-parameters">Parameters</h3>
+Retrieves the Community Notes written by the authenticated user.
+
+<h3 id="search-for-community-notes-written-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -17352,7 +17896,7 @@ curl 'https://api.x.com/2/notes/search/notes_written?test_mode=true' \
 }
 ```
 
-<h3 id="search-community-notes-written-responses">Responses</h3>
+<h3 id="search-for-community-notes-written-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -17364,7 +17908,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read ), UserToken
 </aside>
 
-## Search Eligible Posts
+## Search for Posts Eligible for Community Notes
 
 <a id="opIdsearchEligiblePosts"></a>
 
@@ -17378,7 +17922,9 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
 
 `GET /2/notes/search/posts_eligible_for_notes`
 
-<h3 id="search-eligible-posts-parameters">Parameters</h3>
+Retrieves Posts that are eligible for Community Notes.
+
+<h3 id="search-for-posts-eligible-for-community-notes-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -17450,11 +17996,13 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -17475,6 +18023,7 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -17744,12 +18293,15 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -17762,6 +18314,10 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -18117,6 +18673,7 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -18130,6 +18687,7 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -18167,7 +18725,7 @@ curl 'https://api.x.com/2/notes/search/posts_eligible_for_notes?test_mode=true' 
 }
 ```
 
-<h3 id="search-eligible-posts-responses">Responses</h3>
+<h3 id="search-for-posts-eligible-for-community-notes-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -18945,7 +19503,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Terminate multiple connections
+## Terminate Multiple Connections
 
 <a id="opIddeleteConnectionsByUuids"></a>
 
@@ -19038,7 +19596,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Terminate all connections
+## Terminate All Connections
 
 <a id="opIddeleteAllConnections"></a>
 
@@ -19110,7 +19668,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Terminate connections by endpoint
+## Terminate Connections by Endpoint
 
 <a id="opIddeleteConnectionsByEndpoint"></a>
 
@@ -19211,7 +19769,7 @@ Endpoints related to retrieving, managing Direct Messages
 
 <a href="https://docs.x.com/x-api/direct-messages/introduction">Find out more</a>
 
-## Create DM conversation
+## Create DM Conversation
 
 <a id="opIdcreateDirectMessagesConversation"></a>
 
@@ -19372,7 +19930,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: dm.read )
 </aside>
 
-## Get Direct Messages Events by Participant ID
+## Get DM Events by Participant ID
 
 <a id="opIdgetDirectMessagesEventsByParticipantId"></a>
 
@@ -19386,7 +19944,9 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
 
 `GET /2/dm_conversations/with/{participant_id}/dm_events`
 
-<h3 id="get-direct-messages-events-by-participant-id-parameters">Parameters</h3>
+Retrieves direct message events for the one-to-one conversation between the authenticated user and a specific participant.
+
+<h3 id="get-dm-events-by-participant-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -19429,11 +19989,13 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -19485,6 +20047,7 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -19595,12 +20158,15 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -19613,6 +20179,10 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -19968,6 +20538,7 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -19981,6 +20552,7 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -20019,7 +20591,7 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
 }
 ```
 
-<h3 id="get-direct-messages-events-by-participant-id-responses">Responses</h3>
+<h3 id="get-dm-events-by-participant-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -20028,10 +20600,10 @@ curl https://api.x.com/2/dm_conversations/with/string/dm_events \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
 </aside>
 
-## Create DM message by participant ID
+## Create DM Message by Participant ID
 
 <a id="opIdcreateDirectMessagesByParticipantId"></a>
 
@@ -20124,10 +20696,10 @@ Sends a new direct message to a specific participant by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.write users.read ), UserToken
 </aside>
 
-## Create Direct Messages by Conversation ID
+## Create DM Message by Conversation ID
 
 <a id="opIdcreateDirectMessagesByConversationId"></a>
 
@@ -20151,6 +20723,8 @@ curl https://api.x.com/2/dm_conversations/string/messages \
 
 `POST /2/dm_conversations/{dm_conversation_id}/messages`
 
+Sends a new direct message to a specific conversation by its ID.
+
 > Body parameter
 
 ```json
@@ -20164,7 +20738,7 @@ curl https://api.x.com/2/dm_conversations/string/messages \
 }
 ```
 
-<h3 id="create-direct-messages-by-conversation-id-parameters">Parameters</h3>
+<h3 id="create-dm-message-by-conversation-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -20209,7 +20783,7 @@ curl https://api.x.com/2/dm_conversations/string/messages \
 }
 ```
 
-<h3 id="create-direct-messages-by-conversation-id-responses">Responses</h3>
+<h3 id="create-dm-message-by-conversation-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -20218,10 +20792,10 @@ curl https://api.x.com/2/dm_conversations/string/messages \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Get Direct Messages Events by Conversation ID
+## Get DM Events by Conversation ID
 
 <a id="opIdgetDirectMessagesEventsByConversationId"></a>
 
@@ -20235,7 +20809,9 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 
 `GET /2/dm_conversations/{id}/dm_events`
 
-<h3 id="get-direct-messages-events-by-conversation-id-parameters">Parameters</h3>
+Retrieves direct message events for a specific conversation by its ID.
+
+<h3 id="get-dm-events-by-conversation-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -20278,11 +20854,13 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -20334,6 +20912,7 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -20444,12 +21023,15 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -20462,6 +21044,10 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -20817,6 +21403,7 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -20830,6 +21417,7 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -20868,7 +21456,7 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 }
 ```
 
-<h3 id="get-direct-messages-events-by-conversation-id-responses">Responses</h3>
+<h3 id="get-dm-events-by-conversation-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -20877,10 +21465,10 @@ curl https://api.x.com/2/dm_conversations/string/dm_events \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
 </aside>
 
-## Get Direct Messages Events
+## Get DM Events
 
 <a id="opIdgetDirectMessagesEvents"></a>
 
@@ -20894,7 +21482,9 @@ curl https://api.x.com/2/dm_events \
 
 `GET /2/dm_events`
 
-<h3 id="get-direct-messages-events-parameters">Parameters</h3>
+Retrieves a list of recent direct message events across all conversations.
+
+<h3 id="get-dm-events-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -20936,11 +21526,13 @@ curl https://api.x.com/2/dm_events \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -20992,6 +21584,7 @@ curl https://api.x.com/2/dm_events \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -21102,12 +21695,15 @@ curl https://api.x.com/2/dm_events \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -21120,6 +21716,10 @@ curl https://api.x.com/2/dm_events \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -21475,6 +22075,7 @@ curl https://api.x.com/2/dm_events \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -21488,6 +22089,7 @@ curl https://api.x.com/2/dm_events \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -21526,7 +22128,7 @@ curl https://api.x.com/2/dm_events \
 }
 ```
 
-<h3 id="get-direct-messages-events-responses">Responses</h3>
+<h3 id="get-dm-events-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -21535,10 +22137,10 @@ curl https://api.x.com/2/dm_events \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
 </aside>
 
-## Get Direct Messages Events by ID
+## Get DM Event by ID
 
 <a id="opIdgetDirectMessagesEventsById"></a>
 
@@ -21552,7 +22154,9 @@ curl https://api.x.com/2/dm_events/string \
 
 `GET /2/dm_events/{event_id}`
 
-<h3 id="get-direct-messages-events-by-id-parameters">Parameters</h3>
+Retrieves details of a specific direct message event by its ID.
+
+<h3 id="get-dm-event-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -21589,11 +22193,13 @@ curl https://api.x.com/2/dm_events/string \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -21645,6 +22251,7 @@ curl https://api.x.com/2/dm_events/string \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -21753,12 +22360,15 @@ curl https://api.x.com/2/dm_events/string \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -21771,6 +22381,10 @@ curl https://api.x.com/2/dm_events/string \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -22126,6 +22740,7 @@ curl https://api.x.com/2/dm_events/string \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -22139,6 +22754,7 @@ curl https://api.x.com/2/dm_events/string \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -22172,7 +22788,7 @@ curl https://api.x.com/2/dm_events/string \
 }
 ```
 
-<h3 id="get-direct-messages-events-by-id-responses">Responses</h3>
+<h3 id="get-dm-event-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -22181,10 +22797,10 @@ curl https://api.x.com/2/dm_events/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
-## Delete DM event
+## Delete DM Event
 
 <a id="opIddeleteDirectMessagesEvents"></a>
 
@@ -22258,7 +22874,7 @@ Miscellaneous endpoints for general API functionality
 
 <a href="https://docs.x.com/x-api/introduction">Find out more</a>
 
-## Get OpenAPI Spec.
+## Get OpenAPI Spec
 
 <a id="opIdgetOpenApiSpec"></a>
 
@@ -22297,7 +22913,7 @@ Endpoints related to retrieving, managing Lists
 
 <a href="https://docs.x.com/x-api/lists/introduction">Find out more</a>
 
-## Create Lists
+## Create List
 
 <a id="opIdcreateLists"></a>
 
@@ -22318,6 +22934,8 @@ curl https://api.x.com/2/lists \
 
 `POST /2/lists`
 
+Creates a new List for the authenticated user.
+
 > Body parameter
 
 ```json
@@ -22328,7 +22946,7 @@ curl https://api.x.com/2/lists \
 }
 ```
 
-<h3 id="create-lists-parameters">Parameters</h3>
+<h3 id="create-list-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -22371,7 +22989,7 @@ curl https://api.x.com/2/lists \
 }
 ```
 
-<h3 id="create-lists-responses">Responses</h3>
+<h3 id="create-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -22380,10 +22998,10 @@ curl https://api.x.com/2/lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read list.read list.write users.read ), UserToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read list.write ), UserToken
 </aside>
 
-## Get Lists by ID
+## Get List by ID
 
 <a id="opIdgetListsById"></a>
 
@@ -22397,7 +23015,9 @@ curl https://api.x.com/2/lists/1146654567674912769 \
 
 `GET /2/lists/{id}`
 
-<h3 id="get-lists-by-id-parameters">Parameters</h3>
+Retrieves details of a specific List by its ID.
+
+<h3 id="get-list-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -22428,11 +23048,13 @@ curl https://api.x.com/2/lists/1146654567674912769 \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -22501,12 +23123,15 @@ curl https://api.x.com/2/lists/1146654567674912769 \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -22519,6 +23144,10 @@ curl https://api.x.com/2/lists/1146654567674912769 \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -22874,6 +23503,7 @@ curl https://api.x.com/2/lists/1146654567674912769 \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -22887,6 +23517,7 @@ curl https://api.x.com/2/lists/1146654567674912769 \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -22920,7 +23551,7 @@ curl https://api.x.com/2/lists/1146654567674912769 \
 }
 ```
 
-<h3 id="get-lists-by-id-responses">Responses</h3>
+<h3 id="get-list-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -23089,10 +23720,10 @@ Deletes a specific List owned by the authenticated user by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read list.write tweet.read ), UserToken
 </aside>
 
-## Get Lists Followers
+## Get List Followers
 
 <a id="opIdgetListsFollowers"></a>
 
@@ -23106,7 +23737,9 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
 
 `GET /2/lists/{id}/followers`
 
-<h3 id="get-lists-followers-parameters">Parameters</h3>
+Retrieves a list of Users who follow a specific List by its ID.
+
+<h3 id="get-list-followers-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -23131,11 +23764,13 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -23280,6 +23915,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -23293,6 +23929,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -23353,12 +23990,15 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -23371,6 +24011,10 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -23726,6 +24370,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -23739,6 +24384,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -23777,7 +24423,7 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
 }
 ```
 
-<h3 id="get-lists-followers-responses">Responses</h3>
+<h3 id="get-list-followers-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -23786,10 +24432,10 @@ curl https://api.x.com/2/lists/1146654567674912769/followers \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read list.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Lists Members
+## Get List Members
 
 <a id="opIdgetListsMembers"></a>
 
@@ -23803,7 +24449,9 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 
 `GET /2/lists/{id}/members`
 
-<h3 id="get-lists-members-parameters">Parameters</h3>
+Retrieves a list of Users who are members of a specific List by its ID.
+
+<h3 id="get-list-members-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -23828,11 +24476,13 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -23977,6 +24627,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -23990,6 +24641,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -24050,12 +24702,15 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -24068,6 +24723,10 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -24423,6 +25082,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -24436,6 +25096,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -24474,7 +25135,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 }
 ```
 
-<h3 id="get-lists-members-responses">Responses</h3>
+<h3 id="get-list-members-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -24483,10 +25144,10 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
 </aside>
 
-## Add Lists Member
+## Add List Member
 
 <a id="opIdaddListsMember"></a>
 
@@ -24505,6 +25166,8 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 
 `POST /2/lists/{id}/members`
 
+Adds a User to a specific List by its ID.
+
 > Body parameter
 
 ```json
@@ -24513,7 +25176,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 }
 ```
 
-<h3 id="add-lists-member-parameters">Parameters</h3>
+<h3 id="add-list-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -24554,7 +25217,7 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 }
 ```
 
-<h3 id="add-lists-member-responses">Responses</h3>
+<h3 id="add-list-member-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -24563,10 +25226,10 @@ curl https://api.x.com/2/lists/1146654567674912769/members \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: list.write users.read tweet.read ), UserToken
 </aside>
 
-## Remove a List member
+## Remove List Member
 
 <a id="opIdremoveListsMemberByUserId"></a>
 
@@ -24585,7 +25248,7 @@ Removes a User from a List by their ID.
 
 <a href="https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/delete-lists-id-members-user_id">External documentation</a>
 
-<h3 id="remove-a-list-member-parameters">Parameters</h3>
+<h3 id="remove-list-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -24625,7 +25288,7 @@ Removes a User from a List by their ID.
 }
 ```
 
-<h3 id="remove-a-list-member-responses">Responses</h3>
+<h3 id="remove-list-member-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -24634,10 +25297,10 @@ Removes a User from a List by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
+OAuth2UserToken ( Scopes: list.write tweet.read users.read ), UserToken
 </aside>
 
-## Get Lists Posts
+## Get List Posts
 
 <a id="opIdgetListsPosts"></a>
 
@@ -24651,7 +25314,9 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
 
 `GET /2/lists/{id}/tweets`
 
-<h3 id="get-lists-posts-parameters">Parameters</h3>
+Retrieves a list of Posts associated with a specific List by its ID.
+
+<h3 id="get-list-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -24722,11 +25387,13 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -24747,6 +25414,7 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -25016,12 +25684,15 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -25034,6 +25705,10 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -25389,6 +26064,7 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -25402,6 +26078,7 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -25440,7 +26117,7 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
 }
 ```
 
-<h3 id="get-lists-posts-responses">Responses</h3>
+<h3 id="get-list-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -25449,7 +26126,7 @@ curl https://api.x.com/2/lists/1146654567674912769/tweets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-media">Media</h1>
@@ -25458,7 +26135,7 @@ Endpoints related to retrieving and uploading Media
 
 <a href="https://docs.x.com/x-api/media/introduction">Find out more</a>
 
-## Get Media by media keys
+## Get Media by Media Keys
 
 <a id="opIdgetMediaByMediaKeys"></a>
 
@@ -25471,6 +26148,8 @@ curl 'https://api.x.com/2/media?media_keys=string' \
 ```
 
 `GET /2/media`
+
+Retrieves details of Media files by their media keys.
 
 <h3 id="get-media-by-media-keys-parameters">Parameters</h3>
 
@@ -25492,6 +26171,7 @@ curl 'https://api.x.com/2/media?media_keys=string' \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -25517,12 +26197,15 @@ curl 'https://api.x.com/2/media?media_keys=string' \
         "playback_75_count": 0
       },
       "organic_metrics": {
+        "cta_url_click_count": 0,
+        "cta_watch_click_count": 0,
         "playback_0_count": 0,
         "playback_100_count": 0,
         "playback_25_count": 0,
         "playback_50_count": 0,
         "playback_75_count": 0,
-        "view_count": 0
+        "view_count": 0,
+        "watch_time_ms": 0
       },
       "preview_image_url": "string",
       "promoted_metrics": {
@@ -25535,6 +26218,10 @@ curl 'https://api.x.com/2/media?media_keys=string' \
       },
       "public_metrics": {
         "view_count": 0
+      },
+      "revenue": {
+        "amount_micros": 0,
+        "currency_code": "string"
       },
       "type": "string",
       "url": "string",
@@ -25584,7 +26271,322 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Media analytics
+## Add Post to Amplify Programs
+
+<a id="opIdaddPostToAmplifyPrograms"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/amplify/posts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "blocked_advertiser_ids": [
+      "string"
+    ],
+    "post_id": "string",
+    "program_ids": [
+      "string"
+    ],
+    "promotion_ends_at": "string"
+  }'
+```
+
+`POST /2/media/amplify/posts`
+
+Publishes one of the authenticated user's video posts into one or more active Amplify pre-roll programs the user is enrolled in as a publisher.
+
+> Body parameter
+
+```json
+{
+  "blocked_advertiser_ids": [
+    "string"
+  ],
+  "post_id": "string",
+  "program_ids": [
+    "string"
+  ],
+  "promotion_ends_at": "string"
+}
+```
+
+<h3 id="add-post-to-amplify-programs-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AddPostToAmplifyProgramsRequest](#schemaaddposttoamplifyprogramsrequest)|true|none|
+|» blocked_advertiser_ids|body|[string]|false|Advertiser account ids whose pre-rolls may not run on this post.|
+|» post_id|body|string|true|The post to publish. It must belong to the user.|
+|» program_ids|body|[string]|true|The programs to publish the post into.|
+|» promotion_ends_at|body|string|false|When promotion of the post ends (ISO 8601).|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "added": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="add-post-to-amplify-programs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[AddPostToAmplifyProgramsResponse](#schemaaddposttoamplifyprogramsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.write ), UserToken
+</aside>
+
+## Get Amplify Programs
+
+<a id="opIdgetAmplifyPrograms"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/amplify/programs \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/media/amplify/programs`
+
+Returns the Amplify pre-roll programs the authenticated user is enrolled in as a publisher.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "advertiser_ids": [
+        "string"
+      ],
+      "id": "string",
+      "name": "string",
+      "publisher_ids": [
+        "string"
+      ],
+      "state": "active"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-amplify-programs-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetAmplifyProgramsResponse](#schemagetamplifyprogramsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.read ), UserToken
+</aside>
+
+## Get Amplify Program
+
+<a id="opIdgetAmplifyProgram"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/amplify/programs/string \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/media/amplify/programs/{program_id}`
+
+Returns one Amplify pre-roll program the authenticated user is enrolled in as a publisher. A program the user is not enrolled in is reported as not found.
+
+<h3 id="get-amplify-program-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|program_id|path|string|true|Identifier of the program.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "advertiser_ids": [
+      "string"
+    ],
+    "id": "string",
+    "name": "string",
+    "publisher_ids": [
+      "string"
+    ],
+    "state": "active"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-amplify-program-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetAmplifyProgramResponse](#schemagetamplifyprogramresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.read ), UserToken
+</aside>
+
+## Get Amplify Program Posts
+
+<a id="opIdgetAmplifyProgramPosts"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/amplify/programs/string/posts \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/media/amplify/programs/{program_id}/posts`
+
+Returns the posts published into an Amplify pre-roll program the authenticated user is enrolled in as a publisher.
+
+<h3 id="get-amplify-program-posts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|program_id|path|string|true|Identifier of the program.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "added_at": "string",
+      "post_id": "string",
+      "promotion_ends_at": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-amplify-program-posts-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetAmplifyProgramPostsResponse](#schemagetamplifyprogrampostsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.read ), UserToken
+</aside>
+
+## Get Media Analytics
 
 <a id="opIdgetMediaAnalytics"></a>
 
@@ -25597,6 +26599,8 @@ curl 'https://api.x.com/2/media/analytics?media_keys=string&start_time=1970-01-0
 ```
 
 `GET /2/media/analytics`
+
+Retrieves analytics data for media.
 
 <h3 id="get-media-analytics-parameters">Parameters</h3>
 
@@ -25704,7 +26708,412 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read ), UserToken
 </aside>
 
-## Create Media metadata
+## Add Media to Library
+
+<a id="opIdaddMediaToLibrary"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/library \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "description": "string",
+    "label": "string",
+    "media_key": "string",
+    "monetization": {
+      "allowed_countries": [
+        "string"
+      ],
+      "blocked_advertiser_category_ids": [
+        0
+      ],
+      "blocked_advertiser_ids": [
+        "string"
+      ],
+      "enabled": true,
+      "program_id": "string",
+      "video_category_ids": [
+        0
+      ]
+    },
+    "name": "string",
+    "title": "string"
+  }'
+```
+
+`POST /2/media/library`
+
+Adds previously uploaded media to the authenticated user's Media Library with its library metadata. The user must own the media. Geo restrictions, content expiry, the preview image and the audience policy are set with the Media metadata endpoint.
+
+> Body parameter
+
+```json
+{
+  "description": "string",
+  "label": "string",
+  "media_key": "string",
+  "monetization": {
+    "allowed_countries": [
+      "string"
+    ],
+    "blocked_advertiser_category_ids": [
+      0
+    ],
+    "blocked_advertiser_ids": [
+      "string"
+    ],
+    "enabled": true,
+    "program_id": "string",
+    "video_category_ids": [
+      0
+    ]
+  },
+  "name": "string",
+  "title": "string"
+}
+```
+
+<h3 id="add-media-to-library-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AddMediaToLibraryRequest](#schemaaddmediatolibraryrequest)|true|none|
+|» description|body|string|false|Description shown with the video in the player card.|
+|» label|body|string|false|Label of the item in the library.|
+|» media_key|body|string|true|The media key of the uploaded image, GIF or video to add.|
+|» monetization|body|[AddMediaToLibraryMonetization](#schemaaddmediatolibrarymonetization)|false|Monetization settings. Videos only.|
+|» name|body|string|false|Name of the item in the library.|
+|» title|body|string|false|Title shown with the video in the player card.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "media_key": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="add-media-to-library-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The request has succeeded.|[AddMediaToLibraryResponse](#schemaaddmediatolibraryresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.write ), UserToken
+</aside>
+
+## Get Media Library Categories
+
+<a id="opIdgetMediaLibraryCategories"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/library/categories \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/media/library/categories`
+
+Returns the video categories a publisher can assign to a media library item and the advertiser categories whose ads can be blocked from running against it.
+
+<h3 id="get-media-library-categories-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|lang|query|string|false|Language tag for category descriptions, e.g. `en` or `pt-BR`.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "advertiser_categories": [
+      {
+        "description": "string",
+        "id": 0
+      }
+    ],
+    "video_categories": [
+      {
+        "description": "string",
+        "id": 0
+      }
+    ]
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-media-library-categories-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetMediaLibraryCategoriesResponse](#schemagetmedialibrarycategoriesresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.read ), UserToken
+</aside>
+
+## Update Media Library Item
+
+<a id="opIdupdateMediaInLibrary"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/library/string \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "description": "string",
+    "label": "string",
+    "monetization": {
+      "allowed_countries": [
+        "string"
+      ],
+      "blocked_advertiser_category_ids": [
+        0
+      ],
+      "blocked_advertiser_ids": [
+        "string"
+      ],
+      "enabled": true,
+      "program_id": "string",
+      "video_category_ids": [
+        0
+      ]
+    },
+    "name": "string",
+    "title": "string"
+  }'
+```
+
+`PUT /2/media/library/{media_key}`
+
+Updates the library metadata of an item in the authenticated user's Media Library. Only the fields sent are changed; the others keep their values. Geo restrictions, content expiry, the preview image and the audience policy are set with the Media metadata endpoint.
+
+> Body parameter
+
+```json
+{
+  "description": "string",
+  "label": "string",
+  "monetization": {
+    "allowed_countries": [
+      "string"
+    ],
+    "blocked_advertiser_category_ids": [
+      0
+    ],
+    "blocked_advertiser_ids": [
+      "string"
+    ],
+    "enabled": true,
+    "program_id": "string",
+    "video_category_ids": [
+      0
+    ]
+  },
+  "name": "string",
+  "title": "string"
+}
+```
+
+<h3 id="update-media-library-item-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|media_key|path|string|true|The media key of the library item to update.|
+|body|body|[UpdateMediaInLibraryRequest](#schemaupdatemediainlibraryrequest)|true|none|
+|» description|body|string|false|Description shown with the video in the player card.|
+|» label|body|string|false|Label of the item in the library.|
+|» monetization|body|[UpdateMediaInLibraryMonetization](#schemaupdatemediainlibrarymonetization)|false|Monetization settings. Videos only.|
+|» name|body|string|false|Name of the item in the library.|
+|» title|body|string|false|Title shown with the video in the player card.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "updated": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="update-media-library-item-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[UpdateMediaInLibraryResponse](#schemaupdatemediainlibraryresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.write ), UserToken
+</aside>
+
+## Remove Media Library Item
+
+<a id="opIdremoveMediaFromLibrary"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/media/library/string \
+  -X DELETE \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{}'
+```
+
+`DELETE /2/media/library/{media_key}`
+
+Removes an item from the authenticated user's Media Library. Posts scheduled through the API that have not yet been published and still use the media are cancelled. Published posts and the underlying media are not affected.
+
+> Body parameter
+
+```json
+{}
+```
+
+<h3 id="remove-media-library-item-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|media_key|path|string|true|The media key of the library item to remove.|
+|body|body|[RemoveMediaFromLibraryRequest](#schemaremovemediafromlibraryrequest)|true|none|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="remove-media-library-item-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[RemoveMediaFromLibraryResponse](#schemaremovemediafromlibraryresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: media.library.write ), UserToken
+</aside>
+
+## Create Media Metadata
 
 <a id="opIdcreateMediaMetadata"></a>
 
@@ -25869,7 +27278,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Create Media subtitles
+## Create Media Subtitles
 
 <a id="opIdcreateMediaSubtitles"></a>
 
@@ -25975,7 +27384,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Delete Media subtitles
+## Delete Media Subtitles
 
 <a id="opIddeleteMediaSubtitles"></a>
 
@@ -26064,7 +27473,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Get Media upload status
+## Get Media Upload Status
 
 <a id="opIdgetMediaUploadStatus"></a>
 
@@ -26078,7 +27487,7 @@ curl 'https://api.x.com/2/media/upload?media_id=string' \
 
 `GET /2/media/upload`
 
-Retrieves the status of a Media upload by its ID.
+Returns how far X has processed an uploaded media file, in processing_info.state: pending, in_progress, succeeded or failed. Call it after Finalize Media Upload returns processing_info, waiting check_after_secs between calls, until the state is succeeded. A failed state means the media can't be used.
 
 <a href="https://docs.x.com/x-api/media/media-upload-status#media-upload-status">External documentation</a>
 
@@ -26086,8 +27495,8 @@ Retrieves the status of a Media upload by its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|media_id|query|[MediaId](#schemamediaid)|true|none|
-|command|query|string|false|none|
+|media_id|query|[MediaId](#schemamediaid)|true|The media id from Initialize Media Upload.|
+|command|query|string|false|Always STATUS; can be left out.|
 
 #### Enumerated Values
 
@@ -26156,7 +27565,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Upload media
+## Upload Media
 
 <a id="opIdmediaUpload"></a>
 
@@ -26177,7 +27586,7 @@ curl https://api.x.com/2/media/upload \
 
 `POST /2/media/upload`
 
-Uploads a media file for use in posts, direct messages, or ads. The response carries the media identifiers, including the media_key used to reference the asset in later calls. The media field carries the file content base64-encoded in JSON bodies (raw bytes in multipart bodies); media_category is tweet_image, tweet_video, or tweet_gif for posts and ads, dm_image/dm_video/dm_gif for DMs, or subtitles. For X Ads accounts, register the returned media_key via create_media_library_item to add it to the account's media library and use it in campaigns.
+Uploads a media file in one request and returns its id. Send the file base64-encoded in media (raw bytes in multipart bodies). For a Post, set media_category to tweet_image (JPG, PNG, GIF or WEBP, up to 5 MB) or tweet_gif, then pass the returned id in media.media_ids on Create or Edit Post. DM media uses dm_image or dm_gif. For video, use Initialize Media Upload.
 
 <a href="https://docs.x.com/x-api/media/media-upload">External documentation</a>
 
@@ -26275,7 +27684,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Initialize media upload
+## Initialize Media Upload
 
 <a id="opIdinitializeMediaUpload"></a>
 
@@ -26300,7 +27709,7 @@ curl https://api.x.com/2/media/upload/initialize \
 
 `POST /2/media/upload/initialize`
 
-Initializes a media upload.
+Starts a chunked media upload and returns its id. Use it for video and for other files too large for one request. For a video on a Post, set media_category to tweet_video, media_type to the file's type (for example video/mp4) and total_bytes to the file's size. Send the file with Append Media Upload, call Finalize Media Upload, then pass the id in media.media_ids on Create or Edit Post.
 
 <a href="https://docs.x.com/x-api/media/media-upload">External documentation</a>
 
@@ -26424,6 +27833,8 @@ curl https://api.x.com/2/media/upload/string/append \
 
 `POST /2/media/upload/{id}/append`
 
+Appends one segment of the file to a chunked upload. Send the segment base64-encoded in media (raw bytes in multipart bodies) and its position in the file in segment_index, counting from 0. A segment can be up to 8 MB; in a JSON body keep it to 4 MB or less, because base64 adds a third. After the last segment, call Finalize Media Upload.
+
 > Body parameter
 
 ```json
@@ -26437,12 +27848,12 @@ curl https://api.x.com/2/media/upload/string/append \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|The upload id from Initialize Media Upload.|
 |body|body|[AppendMediaUploadRequest](#schemaappendmediauploadrequest)|true|none|
-|» media|body|string(binary) \| string(byte)|true|The media chunk to upload.|
+|» media|body|string(binary) \| string(byte)|true|One segment of the file: base64-encoded in JSON bodies, raw bytes in multipart bodies.|
 |» » *anyOf*|body|string(binary)|false|none|
 |» » *anyOf*|body|string(byte)|false|none|
-|» segment_index|body|integer|true|The index of this segment in the upload sequence.|
+|» segment_index|body|integer|true|The segment's position in the file, counting from 0.|
 
 > Example responses
 
@@ -26489,7 +27900,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Finalize Media upload
+## Finalize Media Upload
 
 <a id="opIdfinalizeMediaUpload"></a>
 
@@ -26504,7 +27915,7 @@ curl https://api.x.com/2/media/upload/string/finalize \
 
 `POST /2/media/upload/{id}/finalize`
 
-Finalizes a Media upload request.
+Completes a chunked upload once every segment is appended. For video the result carries processing_info: the media can go on a Post only when its state is succeeded, so call Get Media Upload Status until it is. A result without processing_info is ready to use.
 
 <a href="https://docs.x.com/x-api/media/media-upload">External documentation</a>
 
@@ -26512,7 +27923,7 @@ Finalizes a Media upload request.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|string|true|none|
+|id|path|string|true|The upload id from Initialize Media Upload.|
 
 > Example responses
 
@@ -26575,7 +27986,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: media.write ), UserToken
 </aside>
 
-## Get Media by media key
+## Get Media by Media Key
 
 <a id="opIdgetMediaByMediaKey"></a>
 
@@ -26588,6 +27999,8 @@ curl https://api.x.com/2/media/string \
 ```
 
 `GET /2/media/{media_key}`
+
+Retrieves details of a specific Media file by its media key.
 
 <h3 id="get-media-by-media-key-parameters">Parameters</h3>
 
@@ -26609,6 +28022,7 @@ curl https://api.x.com/2/media/string \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -26633,12 +28047,15 @@ curl https://api.x.com/2/media/string \
       "playback_75_count": 0
     },
     "organic_metrics": {
+      "cta_url_click_count": 0,
+      "cta_watch_click_count": 0,
       "playback_0_count": 0,
       "playback_100_count": 0,
       "playback_25_count": 0,
       "playback_50_count": 0,
       "playback_75_count": 0,
-      "view_count": 0
+      "view_count": 0,
+      "watch_time_ms": 0
     },
     "preview_image_url": "string",
     "promoted_metrics": {
@@ -26651,6 +28068,10 @@ curl https://api.x.com/2/media/string \
     },
     "public_metrics": {
       "view_count": 0
+    },
+    "revenue": {
+      "amount_micros": 0,
+      "currency_code": "string"
     },
     "type": "string",
     "url": "string",
@@ -26718,6 +28139,8 @@ curl 'https://api.x.com/2/news/search?query=string' \
 ```
 
 `GET /2/news/search`
+
+Retrieves a list of News stories matching the specified search query.
 
 <h3 id="search-news-parameters">Parameters</h3>
 
@@ -26809,7 +28232,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get news stories by ID
+## Get News Stories by ID
 
 <a id="opIdgetNews"></a>
 
@@ -26907,7 +28330,7 @@ Retrieves news story by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 <h1 id="x-api-v2-posts">Posts</h1>
@@ -26915,6 +28338,414 @@ OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 Endpoints related to retrieving, searching, and modifying Posts
 
 <a href="https://docs.x.com/x-api/posts/introduction">Find out more</a>
+
+## Get Post Drafts
+
+<a id="opIdgetPostDrafts"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/posts/drafts \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/posts/drafts`
+
+Returns the authenticated user's Post drafts, newest first, in the fields of the Create or Edit Post body. thread holds the Posts after the first. A draft with unsupported_content is not listed in full: do not publish it from this list or delete it unless the user asks. Needs the tweet.write scope.
+
+<h3 id="get-post-drafts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|max_results|query|integer(int32)|false|The maximum number of drafts to return.|
+|pagination_token|query|string|false|The meta.next_token of the previous page.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "created_at": "string",
+      "id": "string",
+      "made_with_ai": true,
+      "media": {
+        "media_ids": [
+          "string"
+        ],
+        "tagged_user_ids": [
+          "string"
+        ]
+      },
+      "paid_partnership": true,
+      "quote_tweet_id": "string",
+      "reply": {
+        "exclude_reply_user_ids": [
+          "string"
+        ],
+        "in_reply_to_tweet_id": "string"
+      },
+      "text": "string",
+      "thread": [
+        {
+          "media": {
+            "media_ids": [
+              "string"
+            ],
+            "tagged_user_ids": [
+              "string"
+            ]
+          },
+          "quote_tweet_id": "string",
+          "text": "string"
+        }
+      ],
+      "unsupported_content": [
+        "text_formatting"
+      ],
+      "updated_at": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "meta": {
+    "next_token": "string",
+    "result_count": 0
+  }
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-post-drafts-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetPostDraftsResponse](#schemagetpostdraftsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: tweet.read users.read tweet.write ), UserToken
+</aside>
+
+## Create Post Draft
+
+<a id="opIdcreatePostDraft"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/posts/drafts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "card_uri": "string",
+    "clip": {
+      "end_seconds": 1,
+      "post_id": "string",
+      "start_seconds": 0
+    },
+    "community_id": "string",
+    "direct_message_deep_link": "string",
+    "edit_options": {
+      "previous_post_id": "string"
+    },
+    "for_super_followers_only": true,
+    "geo": {
+      "place_id": "string"
+    },
+    "made_with_ai": true,
+    "media": {
+      "call_to_actions": {
+        "app_install": {
+          "app_store_id": "string",
+          "ipad_app_store_id": "string",
+          "play_store_id": "string"
+        },
+        "visit_site": {
+          "url": "string"
+        },
+        "watch_now": {
+          "url": "string"
+        }
+      },
+      "description": "string",
+      "embeddable": true,
+      "media_ids": [
+        "string"
+      ],
+      "preview_media_id": "string",
+      "tagged_user_ids": [
+        "string"
+      ],
+      "title": "string"
+    },
+    "nullcast": true,
+    "paid_partnership": true,
+    "poll": {
+      "duration_minutes": 5,
+      "options": [
+        "string",
+        "string"
+      ],
+      "reply_settings": "following"
+    },
+    "quote_tweet_id": "string",
+    "reply": {
+      "auto_populate_reply_metadata": true,
+      "exclude_reply_user_ids": [
+        "string"
+      ],
+      "in_reply_to_tweet_id": "string"
+    },
+    "reply_settings": "following",
+    "share_with_followers": true,
+    "text": ""
+  }'
+```
+
+`POST /2/posts/drafts`
+
+Saves a Post draft to the authenticated user's X account without publishing it. Takes the body of Create or Edit Post, of which a draft stores text, media with tagged users, a reply and the AI and paid partnership disclosures. Any other field that is set is a 400 that names it.
+
+> Body parameter
+
+```json
+{
+  "card_uri": "string",
+  "clip": {
+    "end_seconds": 1,
+    "post_id": "string",
+    "start_seconds": 0
+  },
+  "community_id": "string",
+  "direct_message_deep_link": "string",
+  "edit_options": {
+    "previous_post_id": "string"
+  },
+  "for_super_followers_only": true,
+  "geo": {
+    "place_id": "string"
+  },
+  "made_with_ai": true,
+  "media": {
+    "call_to_actions": {
+      "app_install": {
+        "app_store_id": "string",
+        "ipad_app_store_id": "string",
+        "play_store_id": "string"
+      },
+      "visit_site": {
+        "url": "string"
+      },
+      "watch_now": {
+        "url": "string"
+      }
+    },
+    "description": "string",
+    "embeddable": true,
+    "media_ids": [
+      "string"
+    ],
+    "preview_media_id": "string",
+    "tagged_user_ids": [
+      "string"
+    ],
+    "title": "string"
+  },
+  "nullcast": true,
+  "paid_partnership": true,
+  "poll": {
+    "duration_minutes": 5,
+    "options": [
+      "string",
+      "string"
+    ],
+    "reply_settings": "following"
+  },
+  "quote_tweet_id": "string",
+  "reply": {
+    "auto_populate_reply_metadata": true,
+    "exclude_reply_user_ids": [
+      "string"
+    ],
+    "in_reply_to_tweet_id": "string"
+  },
+  "reply_settings": "following",
+  "share_with_followers": true,
+  "text": ""
+}
+```
+
+<h3 id="create-post-draft-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[CreatePostDraftRequest](#schemacreatepostdraftrequest)|true|none|
+|» card_uri|body|string|false|Card URI parameter.|
+|» clip|body|[CreatePostDraftClip](#schemacreatepostdraftclip)|false|Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.|
+|» community_id|body|string|false|Community to post the tweet to.|
+|» direct_message_deep_link|body|string|false|Direct message deep link.|
+|» edit_options|body|[CreatePostDraftEditOptions](#schemacreatepostdrafteditoptions)|false|Edit an existing tweet rather than creating a new one.|
+|» for_super_followers_only|body|boolean|false|Restrict tweet to super followers.|
+|» geo|body|[CreatePostDraftGeo](#schemacreatepostdraftgeo)|false|Geo location for the tweet.|
+|» made_with_ai|body|boolean|false|Disclose that the tweet contains AI-generated media.|
+|» media|body|[CreatePostDraftMedia](#schemacreatepostdraftmedia)|false|Media attachments.|
+|» nullcast|body|boolean|false|If true, the tweet is not shown in the public timeline.|
+|» paid_partnership|body|boolean|false|Disclose that the tweet is a paid partnership.|
+|» poll|body|[CreatePostDraftPoll](#schemacreatepostdraftpoll)|false|Poll configuration.|
+|» quote_tweet_id|body|string|false|Tweet ID to quote.|
+|» reply|body|[CreatePostDraftReply](#schemacreatepostdraftreply)|false|Tweet reply configuration.|
+|» reply_settings|body|string|false|Who can reply to this tweet.|
+|» share_with_followers|body|boolean|false|Share an exclusive (super-follower) tweet with all followers.|
+|» text|body|string|false|Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» reply_settings|following|
+|» reply_settings|mentionedUsers|
+|» reply_settings|subscribers|
+|» reply_settings|verified|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "id": "string",
+    "text": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="create-post-draft-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|The request has succeeded.|[CreatePostDraftResponse](#schemacreatepostdraftresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: tweet.write users.read tweet.read ), UserToken
+</aside>
+
+## Delete Post Draft
+
+<a id="opIddeletePostDraft"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/posts/drafts/string \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /2/posts/drafts/{id}`
+
+Deletes one of the authenticated user's Post drafts by its ID. The whole draft is deleted, including any part Get Post Drafts does not list, and cannot be restored. An ID that is not one of the user's drafts also returns deleted: true.
+
+<h3 id="delete-post-draft-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The ID of the draft to delete.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="delete-post-draft-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[DeletePostDraftResponse](#schemadeletepostdraftresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken ( Scopes: tweet.write users.read tweet.read ), UserToken
+</aside>
 
 ## Get Posts by IDs
 
@@ -26929,6 +28760,8 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
 ```
 
 `GET /2/tweets`
+
+Retrieves details of multiple Posts by their IDs.
 
 <h3 id="get-posts-by-ids-parameters">Parameters</h3>
 
@@ -26999,11 +28832,13 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -27024,6 +28859,7 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -27293,12 +29129,15 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -27311,6 +29150,10 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -27666,6 +29509,7 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -27679,6 +29523,7 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -27724,10 +29569,10 @@ curl 'https://api.x.com/2/tweets?ids=1346889436626259968' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Create Posts
+## Create or Edit Post
 
 <a id="opIdcreatePosts"></a>
 
@@ -27741,6 +29586,11 @@ curl https://api.x.com/2/tweets \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
     "card_uri": "string",
+    "clip": {
+      "end_seconds": 1,
+      "post_id": "string",
+      "start_seconds": 0
+    },
     "community_id": "string",
     "direct_message_deep_link": "string",
     "edit_options": {
@@ -27802,11 +29652,18 @@ curl https://api.x.com/2/tweets \
 
 `POST /2/tweets`
 
+Creates a new Post for the authenticated user, or edits an existing Post when edit_options are provided. Media in media.media_ids is attached in the order given; get the ids by uploading each image with Upload Media, or a video with Initialize Media Upload. Supports paid partnership disclosure via the paid_partnership field. To share a clip of another Post's video, set clip to that Post's id and a range of 5 to 60 seconds.
+
 > Body parameter
 
 ```json
 {
   "card_uri": "string",
+  "clip": {
+    "end_seconds": 1,
+    "post_id": "string",
+    "start_seconds": 0
+  },
   "community_id": "string",
   "direct_message_deep_link": "string",
   "edit_options": {
@@ -27866,12 +29723,13 @@ curl https://api.x.com/2/tweets \
 }
 ```
 
-<h3 id="create-posts-parameters">Parameters</h3>
+<h3 id="create-or-edit-post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreatePostsRequest](#schemacreatepostsrequest)|true|none|
 |» card_uri|body|string|false|Card URI parameter.|
+|» clip|body|[CreatePostsClip](#schemacreatepostsclip)|false|Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.|
 |» community_id|body|string|false|Community to post the tweet to.|
 |» direct_message_deep_link|body|string|false|Direct message deep link.|
 |» edit_options|body|[CreatePostsEditOptions](#schemacreatepostseditoptions)|false|Edit an existing tweet rather than creating a new one.|
@@ -27886,7 +29744,7 @@ curl https://api.x.com/2/tweets \
 |» reply|body|[CreatePostsReply](#schemacreatepostsreply)|false|Tweet reply configuration.|
 |» reply_settings|body|string|false|Who can reply to this tweet.|
 |» share_with_followers|body|boolean|false|Share an exclusive (super-follower) tweet with all followers.|
-|» text|body|string|false|Text of the tweet. Required unless media is provided.  Defaulted to an empty string so it is always sent: the backend's `tweet_text` variable is non-null and rejects an absent value.|
+|» text|body|string|false|Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.|
 
 #### Enumerated Values
 
@@ -27934,7 +29792,7 @@ curl https://api.x.com/2/tweets \
 }
 ```
 
-<h3 id="create-posts-responses">Responses</h3>
+<h3 id="create-or-edit-post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -27946,7 +29804,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
 </aside>
 
-## Get Posts Analytics
+## Get Post Analytics
 
 <a id="opIdgetPostsAnalytics"></a>
 
@@ -27960,7 +29818,9 @@ curl 'https://api.x.com/2/tweets/analytics?ids=string&start_time=1970-01-01T00%3
 
 `GET /2/tweets/analytics`
 
-<h3 id="get-posts-analytics-parameters">Parameters</h3>
+Retrieves analytics data for specified Posts within a defined time range.
+
+<h3 id="get-post-analytics-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -28085,7 +29945,7 @@ curl 'https://api.x.com/2/tweets/analytics?ids=string&start_time=1970-01-01T00%3
 }
 ```
 
-<h3 id="get-posts-analytics-responses">Responses</h3>
+<h3 id="get-post-analytics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -28097,7 +29957,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
 </aside>
 
-## Get Posts Counts All
+## Get Count of All Posts
 
 <a id="opIdgetPostsCountsAll"></a>
 
@@ -28111,9 +29971,11 @@ curl 'https://api.x.com/2/tweets/counts/all?query=string' \
 
 `GET /2/tweets/counts/all`
 
+Retrieves the count of Posts matching a search query from the full archive.
+
 At most one of `pagination_token`, `next_token` may be provided.
 
-<h3 id="get-posts-counts-all-parameters">Parameters</h3>
+<h3 id="get-count-of-all-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -28176,7 +30038,7 @@ At most one of `pagination_token`, `next_token` may be provided.
 }
 ```
 
-<h3 id="get-posts-counts-all-responses">Responses</h3>
+<h3 id="get-count-of-all-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -28188,7 +30050,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Get Posts Counts Recent
+## Get Count of Recent Posts
 
 <a id="opIdgetPostsCountsRecent"></a>
 
@@ -28202,9 +30064,11 @@ curl 'https://api.x.com/2/tweets/counts/recent?query=string' \
 
 `GET /2/tweets/counts/recent`
 
+Retrieves the count of Posts from the last 7 days matching a search query.
+
 At most one of `pagination_token`, `next_token` may be provided.
 
-<h3 id="get-posts-counts-recent-parameters">Parameters</h3>
+<h3 id="get-count-of-recent-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -28267,7 +30131,7 @@ At most one of `pagination_token`, `next_token` may be provided.
 }
 ```
 
-<h3 id="get-posts-counts-recent-responses">Responses</h3>
+<h3 id="get-count-of-recent-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -28279,7 +30143,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, BearerToken
 </aside>
 
-## Search Posts All
+## Search All Posts
 
 <a id="opIdsearchPostsAll"></a>
 
@@ -28293,9 +30157,11 @@ curl 'https://api.x.com/2/tweets/search/all?query=string' \
 
 `GET /2/tweets/search/all`
 
+Retrieves Posts from the full archive matching a search query.
+
 At most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.
 
-<h3 id="search-posts-all-parameters">Parameters</h3>
+<h3 id="search-all-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -28374,11 +30240,13 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -28399,6 +30267,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -28668,12 +30537,15 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -28686,6 +30558,10 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -29041,6 +30917,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -29054,6 +30931,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -29094,7 +30972,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 }
 ```
 
-<h3 id="search-posts-all-responses">Responses</h3>
+<h3 id="search-all-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -29106,7 +30984,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Search Posts Recent
+## Search Recent Posts
 
 <a id="opIdsearchPostsRecent"></a>
 
@@ -29120,9 +30998,11 @@ curl 'https://api.x.com/2/tweets/search/recent?query=string' \
 
 `GET /2/tweets/search/recent`
 
+Retrieves Posts from the last 7 days matching a search query.
+
 At most one of `start_time`, `since_id` may be provided. At most one of `end_time`, `until_id` may be provided. At most one of `pagination_token`, `next_token` may be provided.
 
-<h3 id="search-posts-recent-parameters">Parameters</h3>
+<h3 id="search-recent-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -29201,11 +31081,13 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -29226,6 +31108,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -29495,12 +31378,15 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -29513,6 +31399,10 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -29868,6 +31758,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -29881,6 +31772,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -29921,7 +31813,7 @@ At most one of `start_time`, `since_id` may be provided. At most one of `end_tim
 }
 ```
 
-<h3 id="search-posts-recent-responses">Responses</h3>
+<h3 id="search-recent-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -29933,7 +31825,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Posts by ID
+## Get Post by ID
 
 <a id="opIdgetPostsById"></a>
 
@@ -29947,7 +31839,9 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 `GET /2/tweets/{id}`
 
-<h3 id="get-posts-by-id-parameters">Parameters</h3>
+Retrieves details of a specific Post by its ID.
+
+<h3 id="get-post-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -30016,11 +31910,13 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -30041,6 +31937,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -30308,12 +32205,15 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -30326,6 +32226,10 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -30681,6 +32585,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -30694,6 +32599,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -30727,7 +32633,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 }
 ```
 
-<h3 id="get-posts-by-id-responses">Responses</h3>
+<h3 id="get-post-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -30736,10 +32642,10 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Delete Posts
+## Delete Post
 
 <a id="opIddeletePosts"></a>
 
@@ -30754,7 +32660,9 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 `DELETE /2/tweets/{id}`
 
-<h3 id="delete-posts-parameters">Parameters</h3>
+Deletes a specific Post by its ID, if owned by the authenticated user.
+
+<h3 id="delete-post-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -30793,7 +32701,7 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 }
 ```
 
-<h3 id="delete-posts-responses">Responses</h3>
+<h3 id="delete-post-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -30802,10 +32710,10 @@ curl https://api.x.com/2/tweets/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read tweet.write users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read tweet.write ), UserToken
 </aside>
 
-## Get Posts Liking Users
+## Get Liking Users
 
 <a id="opIdgetPostsLikingUsers"></a>
 
@@ -30819,7 +32727,9 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
 
 `GET /2/tweets/{id}/liking_users`
 
-<h3 id="get-posts-liking-users-parameters">Parameters</h3>
+Retrieves a list of Users who liked a specific Post by its ID.
+
+<h3 id="get-liking-users-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -30844,11 +32754,13 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -30993,6 +32905,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -31006,6 +32919,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -31066,12 +32980,15 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -31084,6 +33001,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -31439,6 +33360,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -31452,6 +33374,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -31490,7 +33413,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
 }
 ```
 
-<h3 id="get-posts-liking-users-responses">Responses</h3>
+<h3 id="get-liking-users-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -31499,10 +33422,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/liking_users \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read like.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: like.read users.read tweet.read ), UserToken
 </aside>
 
-## Get Posts Quoted Posts
+## Get Quoted Posts
 
 <a id="opIdgetPostsQuotedPosts"></a>
 
@@ -31516,7 +33439,9 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
 
 `GET /2/tweets/{id}/quote_tweets`
 
-<h3 id="get-posts-quoted-posts-parameters">Parameters</h3>
+Retrieves a list of Posts that quote a specific Post by its ID.
+
+<h3 id="get-quoted-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -31590,11 +33515,13 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -31615,6 +33542,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -31884,12 +33812,15 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -31902,6 +33833,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -32257,6 +34192,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -32270,6 +34206,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -32307,7 +34244,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/quote_tweets \
 }
 ```
 
-<h3 id="get-posts-quoted-posts-responses">Responses</h3>
+<h3 id="get-quoted-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -32319,7 +34256,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Posts Reposted by
+## Get Reposted By
 
 <a id="opIdgetPostsRepostedBy"></a>
 
@@ -32333,7 +34270,9 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
 
 `GET /2/tweets/{id}/retweeted_by`
 
-<h3 id="get-posts-reposted-by-parameters">Parameters</h3>
+Retrieves a list of Users who reposted a specific Post by its ID.
+
+<h3 id="get-reposted-by-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -32358,11 +34297,13 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -32507,6 +34448,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -32520,6 +34462,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -32580,12 +34523,15 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -32598,6 +34544,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -32953,6 +34903,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -32966,6 +34917,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -33004,7 +34956,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
 }
 ```
 
-<h3 id="get-posts-reposted-by-responses">Responses</h3>
+<h3 id="get-reposted-by-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -33013,10 +34965,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweeted_by \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Posts Reposts
+## Get Reposts
 
 <a id="opIdgetPostsReposts"></a>
 
@@ -33030,7 +34982,9 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
 
 `GET /2/tweets/{id}/retweets`
 
-<h3 id="get-posts-reposts-parameters">Parameters</h3>
+Retrieves a list of Posts that repost a specific Post by its ID.
+
+<h3 id="get-reposts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -33101,11 +35055,13 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -33126,6 +35082,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -33395,12 +35352,15 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -33413,6 +35373,10 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -33768,6 +35732,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -33781,6 +35746,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -33819,7 +35785,7 @@ curl https://api.x.com/2/tweets/1346889436626259968/retweets \
 }
 ```
 
-<h3 id="get-posts-reposts-responses">Responses</h3>
+<h3 id="get-reposts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -33831,7 +35797,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Hide reply
+## Hide Reply
 
 <a id="opIdhidePostsReply"></a>
 
@@ -33912,7 +35878,7 @@ Hides or unhides a reply to a conversation owned by the authenticated user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.moderate.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read tweet.moderate.write users.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-spaces">Spaces</h1>
@@ -33934,6 +35900,8 @@ curl 'https://api.x.com/2/spaces?ids=string' \
 ```
 
 `GET /2/spaces`
+
+Retrieves details of multiple Spaces by their IDs.
 
 <h3 id="get-spaces-by-ids-parameters">Parameters</h3>
 
@@ -33976,11 +35944,13 @@ curl 'https://api.x.com/2/spaces?ids=string' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -34071,12 +36041,15 @@ curl 'https://api.x.com/2/spaces?ids=string' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -34089,6 +36062,10 @@ curl 'https://api.x.com/2/spaces?ids=string' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -34444,6 +36421,7 @@ curl 'https://api.x.com/2/spaces?ids=string' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -34457,6 +36435,7 @@ curl 'https://api.x.com/2/spaces?ids=string' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -34499,7 +36478,7 @@ curl 'https://api.x.com/2/spaces?ids=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: space.read users.read tweet.read ), BearerToken
+OAuth2UserToken ( Scopes: tweet.read space.read users.read ), BearerToken
 </aside>
 
 ## Get Spaces by Creator IDs
@@ -34515,6 +36494,8 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
 ```
 
 `GET /2/spaces/by/creator_ids`
+
+Retrieves details of Spaces created by specified User IDs.
 
 <h3 id="get-spaces-by-creator-ids-parameters">Parameters</h3>
 
@@ -34557,11 +36538,13 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -34652,12 +36635,15 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -34670,6 +36656,10 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -35025,6 +37015,7 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -35038,6 +37029,7 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -35083,7 +37075,7 @@ curl 'https://api.x.com/2/spaces/by/creator_ids?user_ids=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: space.read tweet.read users.read ), BearerToken
 </aside>
 
 ## Search Spaces
@@ -35150,11 +37142,13 @@ Retrieves a list of Spaces matching the specified search query.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -35245,12 +37239,15 @@ Retrieves a list of Spaces matching the specified search query.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -35263,6 +37260,10 @@ Retrieves a list of Spaces matching the specified search query.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -35618,6 +37619,7 @@ Retrieves a list of Spaces matching the specified search query.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -35631,6 +37633,7 @@ Retrieves a list of Spaces matching the specified search query.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -35676,10 +37679,10 @@ Retrieves a list of Spaces matching the specified search query.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read space.read tweet.read ), BearerToken
+OAuth2UserToken ( Scopes: space.read users.read tweet.read ), BearerToken
 </aside>
 
-## Get Spaces by ID
+## Get Space by ID
 
 <a id="opIdgetSpacesById"></a>
 
@@ -35693,7 +37696,9 @@ curl https://api.x.com/2/spaces/string \
 
 `GET /2/spaces/{id}`
 
-<h3 id="get-spaces-by-id-parameters">Parameters</h3>
+Retrieves details of a specific Space by its ID.
+
+<h3 id="get-space-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -35734,11 +37739,13 @@ curl https://api.x.com/2/spaces/string \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -35827,12 +37834,15 @@ curl https://api.x.com/2/spaces/string \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -35845,6 +37855,10 @@ curl https://api.x.com/2/spaces/string \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -36200,6 +38214,7 @@ curl https://api.x.com/2/spaces/string \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -36213,6 +38228,7 @@ curl https://api.x.com/2/spaces/string \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -36246,7 +38262,7 @@ curl https://api.x.com/2/spaces/string \
 }
 ```
 
-<h3 id="get-spaces-by-id-responses">Responses</h3>
+<h3 id="get-space-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -36255,10 +38271,10 @@ curl https://api.x.com/2/spaces/string \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
 </aside>
 
-## Get Space ticket buyers
+## Get Space Ticket Buyers
 
 <a id="opIdgetSpacesBuyers"></a>
 
@@ -36301,11 +38317,13 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -36450,6 +38468,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -36463,6 +38482,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -36523,12 +38543,15 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -36541,6 +38564,10 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -36896,6 +38923,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -36909,6 +38937,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -36956,7 +38985,7 @@ Retrieves a list of Users who purchased tickets to a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: space.read tweet.read users.read )
+OAuth2UserToken ( Scopes: tweet.read space.read users.read )
 </aside>
 
 ## Get Space Posts
@@ -37048,11 +39077,13 @@ Retrieves a list of Posts shared in a specific Space by its ID.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -37073,6 +39104,7 @@ Retrieves a list of Posts shared in a specific Space by its ID.
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -37342,12 +39374,15 @@ Retrieves a list of Posts shared in a specific Space by its ID.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -37360,6 +39395,10 @@ Retrieves a list of Posts shared in a specific Space by its ID.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -37715,6 +39754,7 @@ Retrieves a list of Posts shared in a specific Space by its ID.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -37728,6 +39768,7 @@ Retrieves a list of Posts shared in a specific Space by its ID.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -37775,7 +39816,7 @@ Retrieves a list of Posts shared in a specific Space by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read space.read ), BearerToken
+OAuth2UserToken ( Scopes: space.read tweet.read users.read ), BearerToken
 </aside>
 
 <h1 id="x-api-v2-stream">Stream</h1>
@@ -37823,6 +39864,10 @@ Stream of X Activities
     "filter": {
       "direction": "inbound",
       "keyword": "The President",
+      "qualifiers": {
+        "property1": "string",
+        "property2": "string"
+      },
       "user_id": "2244994945"
     },
     "includes": {
@@ -37853,12 +39898,15 @@ Stream of X Activities
             "playback_75_count": 0
           },
           "organic_metrics": {
+            "cta_url_click_count": 0,
+            "cta_watch_click_count": 0,
             "playback_0_count": 0,
             "playback_100_count": 0,
             "playback_25_count": 0,
             "playback_50_count": 0,
             "playback_75_count": 0,
-            "view_count": 0
+            "view_count": 0,
+            "watch_time_ms": 0
           },
           "preview_image_url": "string",
           "promoted_metrics": {
@@ -37871,6 +39919,10 @@ Stream of X Activities
           },
           "public_metrics": {
             "view_count": 0
+          },
+          "revenue": {
+            "amount_micros": 0,
+            "currency_code": "string"
           },
           "type": "string",
           "url": "string",
@@ -38226,6 +40278,7 @@ Stream of X Activities
           "location": "string",
           "most_recent_post_id": "string",
           "name": "string",
+          "org_only": true,
           "parody": true,
           "pinned_post_id": "string",
           "profile_banner_url": "string",
@@ -38239,6 +40292,7 @@ Stream of X Activities
             "media_count": 0,
             "post_count": 0
           },
+          "receives_your_chat": "string",
           "receives_your_dm": true,
           "subscriber_count": 0,
           "subscribes_to_you": true,
@@ -38302,7 +40356,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream Likes compliance data
+## Stream Likes Compliance Data
 
 <a id="opIdstreamLikesCompliance"></a>
 
@@ -38365,7 +40419,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream all Likes
+## Stream All Likes
 
 <a id="opIdstreamLikesFirehose"></a>
 
@@ -38535,12 +40589,15 @@ Streams all public Likes in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -38553,6 +40610,10 @@ Streams all public Likes in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -38908,6 +40969,7 @@ Streams all public Likes in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -38921,6 +40983,7 @@ Streams all public Likes in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -38966,7 +41029,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream sampled Likes
+## Stream Sampled Likes
 
 <a id="opIdstreamLikesSample10"></a>
 
@@ -39136,12 +41199,15 @@ Streams a 10% sample of public Likes in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -39154,6 +41220,10 @@ Streams a 10% sample of public Likes in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -39509,6 +41579,7 @@ Streams a 10% sample of public Likes in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -39522,6 +41593,7 @@ Streams a 10% sample of public Likes in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -39567,7 +41639,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream Posts compliance data
+## Stream Posts Compliance Data
 
 <a id="opIdstreamPostsCompliance"></a>
 
@@ -39632,7 +41704,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream all Posts
+## Stream All Posts
 
 <a id="opIdstreamPostsFirehose"></a>
 
@@ -40017,12 +42089,15 @@ Streams all public Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -40035,6 +42110,10 @@ Streams all public Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -40390,6 +42469,7 @@ Streams all public Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -40403,6 +42483,7 @@ Streams all public Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -40833,12 +42914,15 @@ Streams all public English-language Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -40851,6 +42935,10 @@ Streams all public English-language Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -41206,6 +43294,7 @@ Streams all public English-language Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -41219,6 +43308,7 @@ Streams all public English-language Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -41649,12 +43739,15 @@ Streams all public Japanese-language Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -41667,6 +43760,10 @@ Streams all public Japanese-language Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -42022,6 +44119,7 @@ Streams all public Japanese-language Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -42035,6 +44133,7 @@ Streams all public Japanese-language Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -42465,12 +44564,15 @@ Streams all public Korean-language Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -42483,6 +44585,10 @@ Streams all public Korean-language Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -42838,6 +44944,7 @@ Streams all public Korean-language Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -42851,6 +44958,7 @@ Streams all public Korean-language Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -43281,12 +45389,15 @@ Streams all public Portuguese-language Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -43299,6 +45410,10 @@ Streams all public Portuguese-language Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -43654,6 +45769,7 @@ Streams all public Portuguese-language Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -43667,6 +45783,7 @@ Streams all public Portuguese-language Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -43712,7 +45829,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream Post labels
+## Stream Post Labels
 
 <a id="opIdstreamLabelsCompliance"></a>
 
@@ -43780,7 +45897,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream sampled Posts
+## Stream Sampled Posts
 
 <a id="opIdstreamPostsSample"></a>
 
@@ -44164,12 +46281,15 @@ Streams a 1% sample of public Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -44182,6 +46302,10 @@ Streams a 1% sample of public Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -44537,6 +46661,7 @@ Streams a 1% sample of public Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -44550,6 +46675,7 @@ Streams a 1% sample of public Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -44595,7 +46721,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream 10% sampled Posts
+## Stream 10% Sampled Posts
 
 <a id="opIdstreamPostsSample10"></a>
 
@@ -44980,12 +47106,15 @@ Streams a 10% sample of public Posts in real-time.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -44998,6 +47127,10 @@ Streams a 10% sample of public Posts in real-time.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -45353,6 +47486,7 @@ Streams a 10% sample of public Posts in real-time.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -45366,6 +47500,7 @@ Streams a 10% sample of public Posts in real-time.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -45411,7 +47546,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream filtered Posts
+## Stream Filtered Posts
 
 <a id="opIdstreamPosts"></a>
 
@@ -45797,12 +47932,15 @@ Streams Posts in real-time matching the active rule set.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -45815,6 +47953,10 @@ Streams Posts in real-time matching the active rule set.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -46170,6 +48312,7 @@ Streams Posts in real-time matching the active rule set.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -46183,6 +48326,7 @@ Streams Posts in real-time matching the active rule set.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -46234,7 +48378,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Get filtered-stream rules
+## Get Stream Rules
 
 <a id="opIdgetRules"></a>
 
@@ -46252,7 +48396,7 @@ Returns the active filtered-stream rules for the authenticated app. Provide `ids
 
 <a href="https://docs.x.com/x-api/posts/rules-lookup">External documentation</a>
 
-<h3 id="get-filtered-stream-rules-parameters">Parameters</h3>
+<h3 id="get-stream-rules-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -46301,7 +48445,7 @@ Returns the active filtered-stream rules for the authenticated app. Provide `ids
 }
 ```
 
-<h3 id="get-filtered-stream-rules-responses">Responses</h3>
+<h3 id="get-stream-rules-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -46313,7 +48457,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Update stream rules
+## Update Stream Rules
 
 <a id="opIdupdateRules"></a>
 
@@ -46433,7 +48577,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Get Rule Counts
+## Get Stream Rule Counts
 
 <a id="opIdgetRuleCounts"></a>
 
@@ -46447,7 +48591,9 @@ curl https://api.x.com/2/tweets/search/stream/rules/counts \
 
 `GET /2/tweets/search/stream/rules/counts`
 
-<h3 id="get-rule-counts-parameters">Parameters</h3>
+Retrieves the count of rules in the active rule set for the filtered stream.
+
+<h3 id="get-stream-rule-counts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -46498,7 +48644,7 @@ curl https://api.x.com/2/tweets/search/stream/rules/counts \
 }
 ```
 
-<h3 id="get-rule-counts-responses">Responses</h3>
+<h3 id="get-stream-rule-counts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -46510,7 +48656,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Stream Users compliance data
+## Stream Users Compliance Data
 
 <a id="opIdstreamUsersCompliance"></a>
 
@@ -46579,7 +48725,7 @@ Endpoint for retrieving trends
 
 <a href="https://docs.x.com/x-api/trends/introduction">Find out more</a>
 
-## Get Trends by Woeid
+## Get Trends by WOEID
 
 <a id="opIdgetTrendsByWoeid"></a>
 
@@ -46592,6 +48738,8 @@ curl https://api.x.com/2/trends/by/woeid/0 \
 ```
 
 `GET /2/trends/by/woeid/{woeid}`
+
+Retrieves trending topics for a specific location identified by its WOEID. `meta.location` describes that location: its `woeid` and `name`, and when they are known its `country`, `country_code`, `place_type` (`town`, `country` or `supername`) and `parent_id`, the WOEID of the place that contains it.
 
 <h3 id="get-trends-by-woeid-parameters">Parameters</h3>
 
@@ -46631,7 +48779,10 @@ curl https://api.x.com/2/trends/by/woeid/0 \
       "type": "https://api.x.com/2/problems/resource-not-found",
       "value": "string"
     }
-  ]
+  ],
+  "meta": {
+    "location": {}
+  }
 }
 ```
 
@@ -46656,7 +48807,92 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, BearerToken
 </aside>
 
-## Get Trends Personalized Trends
+## Get Trend Locations
+
+<a id="opIdgetTrendsLocations"></a>
+
+> Code samples
+
+```bash
+curl https://api.x.com/2/trends/locations \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /2/trends/locations`
+
+Retrieves every location that has trends. Each location has a WOEID to pass to `GET /2/trends/by/woeid/{woeid}`. The list is short and is returned whole, so the route takes no paging parameters.
+
+<h3 id="get-trend-locations-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|trend_location.fields|query|[string]|false|A comma separated list of TrendLocation fields to display.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|trend_location.fields|country|
+|trend_location.fields|country_code|
+|trend_location.fields|name|
+|trend_location.fields|parent_id|
+|trend_location.fields|place_type|
+|trend_location.fields|woeid|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "data": [
+    {
+      "country": "string",
+      "country_code": "string",
+      "name": "string",
+      "parent_id": 0,
+      "place_type": "string",
+      "woeid": 0
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "code": 0,
+  "message": "string"
+}
+```
+
+<h3 id="get-trend-locations-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|The request has succeeded.|[GetTrendsLocationsResponse](#schemagettrendslocationsresponse)|
+|default|Default|The request has failed.|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+OAuth2UserToken, BearerToken
+</aside>
+
+## Get Personalized Trends
 
 <a id="opIdgetTrendsPersonalizedTrends"></a>
 
@@ -46670,7 +48906,9 @@ curl https://api.x.com/2/users/personalized_trends \
 
 `GET /2/users/personalized_trends`
 
-<h3 id="get-trends-personalized-trends-parameters">Parameters</h3>
+Retrieves personalized trending topics for the authenticated user.
+
+<h3 id="get-personalized-trends-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -46723,7 +48961,7 @@ curl https://api.x.com/2/users/personalized_trends \
 }
 ```
 
-<h3 id="get-trends-personalized-trends-responses">Responses</h3>
+<h3 id="get-personalized-trends-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -46741,7 +48979,7 @@ Endpoints related to retrieving usage
 
 <a href="https://docs.x.com/x-api/usage/introduction">Find out more</a>
 
-## Get usage credits
+## Get Usage Credits
 
 <a id="opIdgetUsageCredits"></a>
 
@@ -46823,6 +49061,8 @@ curl https://api.x.com/2/usage/tweets \
 ```
 
 `GET /2/usage/tweets`
+
+Retrieves usage statistics for Posts over a specified number of days.
 
 <h3 id="get-usage-parameters">Parameters</h3>
 
@@ -46931,6 +49171,8 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
 
 `GET /2/users`
 
+Retrieves details of multiple Users by their IDs.
+
 <h3 id="get-users-by-ids-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -46954,11 +49196,13 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -47103,6 +49347,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -47116,6 +49361,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -47176,12 +49422,15 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -47194,6 +49443,10 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -47549,6 +49802,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -47562,6 +49816,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -47604,7 +49859,7 @@ curl 'https://api.x.com/2/users?ids=2244994945' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Get Users by Usernames
@@ -47620,6 +49875,8 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
 ```
 
 `GET /2/users/by`
+
+Retrieves details of multiple Users by their usernames.
 
 <h3 id="get-users-by-usernames-parameters">Parameters</h3>
 
@@ -47644,11 +49901,13 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -47793,6 +50052,7 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -47806,6 +50066,7 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -47866,12 +50127,15 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -47884,6 +50148,10 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -48239,6 +50507,7 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -48252,6 +50521,7 @@ curl 'https://api.x.com/2/users/by?usernames=string' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -48297,7 +50567,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Users by Username
+## Get User by Username
 
 <a id="opIdgetUsersByUsername"></a>
 
@@ -48311,7 +50581,9 @@ curl https://api.x.com/2/users/by/username/string \
 
 `GET /2/users/by/username/{username}`
 
-<h3 id="get-users-by-username-parameters">Parameters</h3>
+Retrieves details of a specific User by their username.
+
+<h3 id="get-user-by-username-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -48334,11 +50606,13 @@ curl https://api.x.com/2/users/by/username/string \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -48482,6 +50756,7 @@ curl https://api.x.com/2/users/by/username/string \
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -48495,6 +50770,7 @@ curl https://api.x.com/2/users/by/username/string \
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -48554,12 +50830,15 @@ curl https://api.x.com/2/users/by/username/string \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -48572,6 +50851,10 @@ curl https://api.x.com/2/users/by/username/string \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -48927,6 +51210,7 @@ curl https://api.x.com/2/users/by/username/string \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -48940,6 +51224,7 @@ curl https://api.x.com/2/users/by/username/string \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -48973,7 +51258,7 @@ curl https://api.x.com/2/users/by/username/string \
 }
 ```
 
-<h3 id="get-users-by-username-responses">Responses</h3>
+<h3 id="get-user-by-username-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -48985,7 +51270,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Me
+## Get My User
 
 <a id="opIdgetUsersMe"></a>
 
@@ -48999,7 +51284,9 @@ curl https://api.x.com/2/users/me \
 
 `GET /2/users/me`
 
-<h3 id="get-users-me-parameters">Parameters</h3>
+Retrieves details of the authenticated user.
+
+<h3 id="get-my-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -49021,11 +51308,13 @@ curl https://api.x.com/2/users/me \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -49169,6 +51458,7 @@ curl https://api.x.com/2/users/me \
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -49182,6 +51472,7 @@ curl https://api.x.com/2/users/me \
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -49241,12 +51532,15 @@ curl https://api.x.com/2/users/me \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -49259,6 +51553,10 @@ curl https://api.x.com/2/users/me \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -49614,6 +51912,7 @@ curl https://api.x.com/2/users/me \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -49627,6 +51926,7 @@ curl https://api.x.com/2/users/me \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -49660,7 +51960,7 @@ curl https://api.x.com/2/users/me \
 }
 ```
 
-<h3 id="get-users-me-responses">Responses</h3>
+<h3 id="get-my-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -49669,10 +51969,10 @@ curl https://api.x.com/2/users/me \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
 </aside>
 
-## Get the authenticated user's followers
+## Get the Authenticated User's Followers
 
 <a id="opIdgetUsersMeFollowers"></a>
 
@@ -49686,7 +51986,7 @@ curl https://api.x.com/2/users/me/followers \
 
 `GET /2/users/me/followers`
 
-Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
+Returns the Users who follow the authenticated user. Same results as `GET /2/users/{id}/followers` with your own user ID, without looking it up.
 
 <h3 id="get-the-authenticated-users-followers-parameters">Parameters</h3>
 
@@ -49712,11 +52012,13 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -49861,6 +52163,7 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -49874,6 +52177,7 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -49934,12 +52238,15 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -49952,6 +52259,10 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -50307,6 +52618,7 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -50320,6 +52632,7 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -50367,10 +52680,10 @@ Same results as `GET /2/users/{id}/followers` with the authenticated user's ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read follows.read ), UserToken
 </aside>
 
-## Get the users the authenticated user follows
+## Get the Users the Authenticated User Follows
 
 <a id="opIdgetUsersMeFollowing"></a>
 
@@ -50384,7 +52697,7 @@ curl https://api.x.com/2/users/me/following \
 
 `GET /2/users/me/following`
 
-Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
+Returns the Users the authenticated user follows. Same results as `GET /2/users/{id}/following` with your own user ID, without looking it up.
 
 <h3 id="get-the-users-the-authenticated-user-follows-parameters">Parameters</h3>
 
@@ -50410,11 +52723,13 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -50559,6 +52874,7 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -50572,6 +52888,7 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -50632,12 +52949,15 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -50650,6 +52970,10 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -51005,6 +53329,7 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -51018,6 +53343,7 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -51065,10 +53391,10 @@ Same results as `GET /2/users/{id}/following` with the authenticated user's ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read follows.read ), UserToken
+OAuth2UserToken ( Scopes: follows.read tweet.read users.read ), UserToken
 </aside>
 
-## Get public keys
+## Get Public Keys for Multiple Users
 
 <a id="opIdgetUsersPublicKeys"></a>
 
@@ -51082,15 +53408,17 @@ curl 'https://api.x.com/2/users/public_keys?ids=string' \
 
 `GET /2/users/public_keys`
 
-Returns registered public keys for X Chat encryption for the specified users.
+Returns the public keys that up to 100 users registered for X Chat encryption, looked up by numeric user ID. Each key carries the user_id of the user it belongs to.
+
+Every key field is returned by default, so public_key.fields can be left out. It takes public_key, signing_public_key, identity_public_key_signature, public_key_version, juicebox_config and user_id.
 
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-public-keys-parameters">Parameters</h3>
+<h3 id="get-public-keys-for-multiple-users-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|ids|query|[[PublicKeyId](#schemapublickeyid)]|true|none|
+|ids|query|[[PublicKeyId](#schemapublickeyid)]|true|Comma-separated numeric user IDs (1-100), not @usernames.|
 |public_key.fields|query|[string]|false|A comma separated list of PublicKey fields to display.|
 
 #### Enumerated Values
@@ -51102,6 +53430,7 @@ Returns registered public keys for X Chat encryption for the specified users.
 |public_key.fields|public_key|
 |public_key.fields|public_key_version|
 |public_key.fields|signing_public_key|
+|public_key.fields|user_id|
 
 > Example responses
 
@@ -51115,7 +53444,8 @@ Returns registered public keys for X Chat encryption for the specified users.
       "juicebox_config": {},
       "public_key": "string",
       "public_key_version": "string",
-      "signing_public_key": "string"
+      "signing_public_key": "string",
+      "user_id": "string"
     }
   ],
   "errors": [
@@ -51142,7 +53472,7 @@ Returns registered public keys for X Chat encryption for the specified users.
 }
 ```
 
-<h3 id="get-public-keys-responses">Responses</h3>
+<h3 id="get-public-keys-for-multiple-users-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -51151,10 +53481,10 @@ Returns registered public keys for X Chat encryption for the specified users.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read dm.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read dm.read users.read ), UserToken
 </aside>
 
-## Get Users Reposts of Me
+## Get Reposts of Me
 
 <a id="opIdgetUsersRepostsOfMe"></a>
 
@@ -51168,7 +53498,9 @@ curl https://api.x.com/2/users/reposts_of_me \
 
 `GET /2/users/reposts_of_me`
 
-<h3 id="get-users-reposts-of-me-parameters">Parameters</h3>
+Retrieves a list of Posts that repost content from the authenticated user.
+
+<h3 id="get-reposts-of-me-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -51238,11 +53570,13 @@ curl https://api.x.com/2/users/reposts_of_me \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -51263,6 +53597,7 @@ curl https://api.x.com/2/users/reposts_of_me \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -51532,12 +53867,15 @@ curl https://api.x.com/2/users/reposts_of_me \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -51550,6 +53888,10 @@ curl https://api.x.com/2/users/reposts_of_me \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -51905,6 +54247,7 @@ curl https://api.x.com/2/users/reposts_of_me \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -51918,6 +54261,7 @@ curl https://api.x.com/2/users/reposts_of_me \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -51956,7 +54300,7 @@ curl https://api.x.com/2/users/reposts_of_me \
 }
 ```
 
-<h3 id="get-users-reposts-of-me-responses">Responses</h3>
+<h3 id="get-reposts-of-me-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -51965,7 +54309,7 @@ curl https://api.x.com/2/users/reposts_of_me \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: timeline.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read timeline.read ), UserToken
 </aside>
 
 ## Search Users
@@ -51982,11 +54326,13 @@ curl 'https://api.x.com/2/users/search?query=string' \
 
 `GET /2/users/search`
 
+Retrieves a list of Users matching a search query.
+
 <h3 id="search-users-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|query|query|string|true|none|
+|query|query|string|true|A name or @username (1-50 chars): letters and digits in any language, spaces, and _ ' . - @ & "|
 |max_results|query|integer(int32)|false|none|
 |next_token|query|string|false|none|
 |user.fields|query|[string]|false|A comma separated list of User fields to display.|
@@ -52007,11 +54353,13 @@ curl 'https://api.x.com/2/users/search?query=string' \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -52156,6 +54504,7 @@ curl 'https://api.x.com/2/users/search?query=string' \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -52169,6 +54518,7 @@ curl 'https://api.x.com/2/users/search?query=string' \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -52229,12 +54579,15 @@ curl 'https://api.x.com/2/users/search?query=string' \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -52247,6 +54600,10 @@ curl 'https://api.x.com/2/users/search?query=string' \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -52602,6 +54959,7 @@ curl 'https://api.x.com/2/users/search?query=string' \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -52615,6 +54973,7 @@ curl 'https://api.x.com/2/users/search?query=string' \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -52661,10 +55020,10 @@ curl 'https://api.x.com/2/users/search?query=string' \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users by ID
+## Get User by ID
 
 <a id="opIdgetUsersById"></a>
 
@@ -52678,7 +55037,9 @@ curl https://api.x.com/2/users/2244994945 \
 
 `GET /2/users/{id}`
 
-<h3 id="get-users-by-id-parameters">Parameters</h3>
+Retrieves details of a specific User by their ID.
+
+<h3 id="get-user-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -52701,11 +55062,13 @@ curl https://api.x.com/2/users/2244994945 \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -52849,6 +55212,7 @@ curl https://api.x.com/2/users/2244994945 \
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -52862,6 +55226,7 @@ curl https://api.x.com/2/users/2244994945 \
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -52921,12 +55286,15 @@ curl https://api.x.com/2/users/2244994945 \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -52939,6 +55307,10 @@ curl https://api.x.com/2/users/2244994945 \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -53294,6 +55666,7 @@ curl https://api.x.com/2/users/2244994945 \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -53307,6 +55680,7 @@ curl https://api.x.com/2/users/2244994945 \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -53340,7 +55714,7 @@ curl https://api.x.com/2/users/2244994945 \
 }
 ```
 
-<h3 id="get-users-by-id-responses">Responses</h3>
+<h3 id="get-user-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -53349,10 +55723,10 @@ curl https://api.x.com/2/users/2244994945 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Affiliates
+## Get Affiliates
 
 <a id="opIdgetUsersAffiliates"></a>
 
@@ -53366,7 +55740,9 @@ curl https://api.x.com/2/users/2244994945/affiliates \
 
 `GET /2/users/{id}/affiliates`
 
-<h3 id="get-users-affiliates-parameters">Parameters</h3>
+Retrieves a list of Users who are affiliated with a specific organization User by their ID.
+
+<h3 id="get-affiliates-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -53391,11 +55767,13 @@ curl https://api.x.com/2/users/2244994945/affiliates \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -53540,6 +55918,7 @@ curl https://api.x.com/2/users/2244994945/affiliates \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -53553,6 +55932,7 @@ curl https://api.x.com/2/users/2244994945/affiliates \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -53613,12 +55993,15 @@ curl https://api.x.com/2/users/2244994945/affiliates \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -53631,6 +56014,10 @@ curl https://api.x.com/2/users/2244994945/affiliates \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -53986,6 +56373,7 @@ curl https://api.x.com/2/users/2244994945/affiliates \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -53999,6 +56387,7 @@ curl https://api.x.com/2/users/2244994945/affiliates \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -54037,7 +56426,7 @@ curl https://api.x.com/2/users/2244994945/affiliates \
 }
 ```
 
-<h3 id="get-users-affiliates-responses">Responses</h3>
+<h3 id="get-affiliates-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -54049,7 +56438,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get blocked Users
+## Get Blocked Users
 
 <a id="opIdgetUsersBlocking"></a>
 
@@ -54090,11 +56479,13 @@ Returns the Users that the given User is blocking.
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -54239,6 +56630,7 @@ Returns the Users that the given User is blocking.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -54252,6 +56644,7 @@ Returns the Users that the given User is blocking.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -54312,12 +56705,15 @@ Returns the Users that the given User is blocking.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -54330,6 +56726,10 @@ Returns the Users that the given User is blocking.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -54685,6 +57085,7 @@ Returns the Users that the given User is blocking.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -54698,6 +57099,7 @@ Returns the Users that the given User is blocking.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -54745,7 +57147,7 @@ Returns the Users that the given User is blocking.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: block.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: block.read users.read tweet.read ), UserToken
 </aside>
 
 ## Block User
@@ -54767,7 +57169,7 @@ curl https://api.x.com/2/users/2244994945/blocking \
 
 `POST /2/users/{id}/blocking`
 
-Causes the source User to block the target User.
+Causes the source User to block the target User. A block also removes any follow between the two Users, in both directions, and unblocking does not restore it. Each call blocks one account: block only accounts the authenticated User named or approved, because finding or reviewing accounts is not approval to block them.
 
 > Body parameter
 
@@ -54827,10 +57229,10 @@ Causes the source User to block the target User.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: block.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read block.write ), UserToken
 </aside>
 
-## Get Users Bookmarks
+## Get Bookmarks
 
 <a id="opIdgetUsersBookmarks"></a>
 
@@ -54844,11 +57246,13 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 
 `GET /2/users/{id}/bookmarks`
 
-<h3 id="get-users-bookmarks-parameters">Parameters</h3>
+Retrieves a list of Posts bookmarked by the authenticated user.
+
+<h3 id="get-bookmarks-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |max_results|query|integer(int32)|false|none|
 |pagination_token|query|string|false|A base32hex-encoded pagination token.|
 |post.fields|query|[string]|false|A comma separated list of Post fields to display.|
@@ -54915,11 +57319,13 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -54940,6 +57346,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -55209,12 +57616,15 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -55227,6 +57637,10 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -55582,6 +57996,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -55595,6 +58010,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -55633,7 +58049,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 }
 ```
 
-<h3 id="get-users-bookmarks-responses">Responses</h3>
+<h3 id="get-bookmarks-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -55642,7 +58058,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read bookmark.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read bookmark.read users.read ), UserToken
 </aside>
 
 ## Create Bookmark
@@ -55686,7 +58102,7 @@ Adds one or more Posts to the authenticated user's Bookmarks. Supply `tweet_id` 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |body|body|[CreateUsersBookmarkRequest](#schemacreateusersbookmarkrequest)|true|none|
 |» folder_id|body|string|false|Optional ID of the Bookmark folder to add the Post(s) to. When omitted, Posts are added to the user's top-level Bookmarks only. A bulk request uses this one folder for every ID.|
 |» tweet_id|body|string|false|The ID of the Post to add to the user's Bookmarks. Mutually exclusive with `tweet_ids`.|
@@ -55724,10 +58140,10 @@ Adds one or more Posts to the authenticated user's Bookmarks. Supply `tweet_id` 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: bookmark.write tweet.read users.read )
+OAuth2UserToken ( Scopes: users.read bookmark.write tweet.read )
 </aside>
 
-## Get Users Bookmark Folders
+## Get Bookmark Folders
 
 <a id="opIdgetUsersBookmarkFolders"></a>
 
@@ -55741,11 +58157,13 @@ curl https://api.x.com/2/users/2244994945/bookmarks/folders \
 
 `GET /2/users/{id}/bookmarks/folders`
 
-<h3 id="get-users-bookmark-folders-parameters">Parameters</h3>
+Retrieves a list of Bookmark folders created by the authenticated user.
+
+<h3 id="get-bookmark-folders-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |max_results|query|integer(int32)|false|none|
 |pagination_token|query|string|false|A base32hex-encoded pagination token.|
 
@@ -55785,7 +58203,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks/folders \
 }
 ```
 
-<h3 id="get-users-bookmark-folders-responses">Responses</h3>
+<h3 id="get-bookmark-folders-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -55830,7 +58248,7 @@ Creates a new Bookmark folder for the authenticated user.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |body|body|[CreateUsersBookmarkFolderRequest](#schemacreateusersbookmarkfolderrequest)|true|none|
 |» name|body|string|true|Name of the Bookmark folder (1-25 characters).|
 
@@ -55880,7 +58298,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: bookmark.write users.read )
 </aside>
 
-## Get Users Bookmarks by Folder ID
+## Get Bookmarks by Folder ID
 
 <a id="opIdgetUsersBookmarksByFolderId"></a>
 
@@ -55894,11 +58312,13 @@ curl https://api.x.com/2/users/2244994945/bookmarks/folders/string \
 
 `GET /2/users/{id}/bookmarks/folders/{folder_id}`
 
-<h3 id="get-users-bookmarks-by-folder-id-parameters">Parameters</h3>
+Retrieves Posts in a specific Bookmark folder by its ID for the authenticated user.
+
+<h3 id="get-bookmarks-by-folder-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |folder_id|path|string|true|none|
 |max_results|query|integer(int32)|false|none|
 |pagination_token|query|string|false|A base32hex-encoded pagination token.|
@@ -55938,7 +58358,7 @@ curl https://api.x.com/2/users/2244994945/bookmarks/folders/string \
 }
 ```
 
-<h3 id="get-users-bookmarks-by-folder-id-responses">Responses</h3>
+<h3 id="get-bookmarks-by-folder-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -55973,7 +58393,7 @@ Removes a Post from the authenticated user's Bookmarks by its ID.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|The authenticated user's numeric ID, not `me`: the `id` from Get My User (`GET /2/users/me`).|
 |tweet_id|path|[PostId](#schemapostid)|true|none|
 
 > Example responses
@@ -56018,10 +58438,10 @@ Removes a Post from the authenticated user's Bookmarks by its ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read bookmark.write users.read )
+OAuth2UserToken ( Scopes: users.read tweet.read bookmark.write )
 </aside>
 
-## Block Users Dms
+## Block DMs
 
 <a id="opIdblockUsersDms"></a>
 
@@ -56036,7 +58456,9 @@ curl https://api.x.com/2/users/2244994945/dm/block \
 
 `POST /2/users/{id}/dm/block`
 
-<h3 id="block-users-dms-parameters">Parameters</h3>
+Blocks direct messages to or from a specific User by their ID for the authenticated user.
+
+<h3 id="block-dms-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -56075,7 +58497,7 @@ curl https://api.x.com/2/users/2244994945/dm/block \
 }
 ```
 
-<h3 id="block-users-dms-responses">Responses</h3>
+<h3 id="block-dms-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -56084,10 +58506,10 @@ curl https://api.x.com/2/users/2244994945/dm/block \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read dm.write tweet.read ), UserToken
 </aside>
 
-## Unblock Users Dms
+## Unblock DMs
 
 <a id="opIdunblockUsersDms"></a>
 
@@ -56102,7 +58524,9 @@ curl https://api.x.com/2/users/2244994945/dm/unblock \
 
 `POST /2/users/{id}/dm/unblock`
 
-<h3 id="unblock-users-dms-parameters">Parameters</h3>
+Unblocks direct messages to or from a specific User by their ID for the authenticated user.
+
+<h3 id="unblock-dms-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -56141,7 +58565,7 @@ curl https://api.x.com/2/users/2244994945/dm/unblock \
 }
 ```
 
-<h3 id="unblock-users-dms-responses">Responses</h3>
+<h3 id="unblock-dms-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -56150,10 +58574,10 @@ curl https://api.x.com/2/users/2244994945/dm/unblock \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read dm.write ), UserToken
+OAuth2UserToken ( Scopes: dm.write users.read tweet.read ), UserToken
 </aside>
 
-## Get Users Followed Lists
+## Get Followed Lists
 
 <a id="opIdgetUsersFollowedLists"></a>
 
@@ -56167,7 +58591,9 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 
 `GET /2/users/{id}/followed_lists`
 
-<h3 id="get-users-followed-lists-parameters">Parameters</h3>
+Retrieves a list of Lists followed by a specific User by their ID.
+
+<h3 id="get-followed-lists-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -56200,11 +58626,13 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -56275,12 +58703,15 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -56293,6 +58724,10 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -56648,6 +59083,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -56661,6 +59097,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -56699,7 +59136,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 }
 ```
 
-<h3 id="get-users-followed-lists-responses">Responses</h3>
+<h3 id="get-followed-lists-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -56708,7 +59145,7 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: list.read tweet.read users.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read tweet.read list.read ), UserToken, BearerToken
 </aside>
 
 ## Follow List
@@ -56729,6 +59166,8 @@ curl https://api.x.com/2/users/2244994945/followed_lists \
 ```
 
 `POST /2/users/{id}/followed_lists`
+
+Causes the authenticated user to follow a specific List by its ID.
 
 > Body parameter
 
@@ -56791,7 +59230,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: list.write users.read tweet.read ), UserToken
 </aside>
 
-## Unfollow a List
+## Unfollow List
 
 <a id="opIdunfollowList"></a>
 
@@ -56810,7 +59249,7 @@ Causes the authenticated user to unfollow a List by its ID.
 
 <a href="https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/delete-users-id-followed-lists-list_id">External documentation</a>
 
-<h3 id="unfollow-a-list-parameters">Parameters</h3>
+<h3 id="unfollow-list-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -56850,7 +59289,7 @@ Causes the authenticated user to unfollow a List by its ID.
 }
 ```
 
-<h3 id="unfollow-a-list-responses">Responses</h3>
+<h3 id="unfollow-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -56862,7 +59301,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read list.write ), UserToken
 </aside>
 
-## Get Users Followers
+## Get Followers
 
 <a id="opIdgetUsersFollowers"></a>
 
@@ -56876,7 +59315,9 @@ curl https://api.x.com/2/users/2244994945/followers \
 
 `GET /2/users/{id}/followers`
 
-<h3 id="get-users-followers-parameters">Parameters</h3>
+Retrieves a list of Users who follow a specific User by their ID.
+
+<h3 id="get-followers-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -56901,11 +59342,13 @@ curl https://api.x.com/2/users/2244994945/followers \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -57050,6 +59493,7 @@ curl https://api.x.com/2/users/2244994945/followers \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -57063,6 +59507,7 @@ curl https://api.x.com/2/users/2244994945/followers \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -57123,12 +59568,15 @@ curl https://api.x.com/2/users/2244994945/followers \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -57141,6 +59589,10 @@ curl https://api.x.com/2/users/2244994945/followers \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -57496,6 +59948,7 @@ curl https://api.x.com/2/users/2244994945/followers \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -57509,6 +59962,7 @@ curl https://api.x.com/2/users/2244994945/followers \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -57547,7 +60001,7 @@ curl https://api.x.com/2/users/2244994945/followers \
 }
 ```
 
-<h3 id="get-users-followers-responses">Responses</h3>
+<h3 id="get-followers-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -57556,10 +60010,10 @@ curl https://api.x.com/2/users/2244994945/followers \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read follows.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: follows.read tweet.read users.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Following
+## Get Following
 
 <a id="opIdgetUsersFollowing"></a>
 
@@ -57573,7 +60027,9 @@ curl https://api.x.com/2/users/2244994945/following \
 
 `GET /2/users/{id}/following`
 
-<h3 id="get-users-following-parameters">Parameters</h3>
+Retrieves a list of Users followed by a specific User by their ID.
+
+<h3 id="get-following-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -57598,11 +60054,13 @@ curl https://api.x.com/2/users/2244994945/following \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -57747,6 +60205,7 @@ curl https://api.x.com/2/users/2244994945/following \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -57760,6 +60219,7 @@ curl https://api.x.com/2/users/2244994945/following \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -57820,12 +60280,15 @@ curl https://api.x.com/2/users/2244994945/following \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -57838,6 +60301,10 @@ curl https://api.x.com/2/users/2244994945/following \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -58193,6 +60660,7 @@ curl https://api.x.com/2/users/2244994945/following \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -58206,6 +60674,7 @@ curl https://api.x.com/2/users/2244994945/following \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -58244,7 +60713,7 @@ curl https://api.x.com/2/users/2244994945/following \
 }
 ```
 
-<h3 id="get-users-following-responses">Responses</h3>
+<h3 id="get-following-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -58253,7 +60722,7 @@ curl https://api.x.com/2/users/2244994945/following \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read follows.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read follows.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Follow User
@@ -58274,6 +60743,8 @@ curl https://api.x.com/2/users/2244994945/following \
 ```
 
 `POST /2/users/{id}/following`
+
+Causes the authenticated user to follow a specific User by their ID.
 
 > Body parameter
 
@@ -58334,10 +60805,10 @@ curl https://api.x.com/2/users/2244994945/following \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read follows.write users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read follows.write ), UserToken
 </aside>
 
-## Get Users Liked Posts
+## Get Liked Posts
 
 <a id="opIdgetUsersLikedPosts"></a>
 
@@ -58351,7 +60822,9 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 
 `GET /2/users/{id}/liked_tweets`
 
-<h3 id="get-users-liked-posts-parameters">Parameters</h3>
+Retrieves a list of Posts liked by a specific User by their ID.
+
+<h3 id="get-liked-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -58422,11 +60895,13 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -58447,6 +60922,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -58716,12 +61192,15 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -58734,6 +61213,10 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -59089,6 +61572,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -59102,6 +61586,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -59140,7 +61625,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 }
 ```
 
-<h3 id="get-users-liked-posts-responses">Responses</h3>
+<h3 id="get-liked-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -59149,7 +61634,7 @@ curl https://api.x.com/2/users/2244994945/liked_tweets \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read like.read ), UserToken
+OAuth2UserToken ( Scopes: like.read tweet.read users.read ), UserToken
 </aside>
 
 ## Like Post
@@ -59170,6 +61655,8 @@ curl https://api.x.com/2/users/2244994945/likes \
 ```
 
 `POST /2/users/{id}/likes`
+
+Causes the authenticated user to like a specific Post by its ID.
 
 > Body parameter
 
@@ -59229,7 +61716,7 @@ curl https://api.x.com/2/users/2244994945/likes \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read like.write ), UserToken
+OAuth2UserToken ( Scopes: like.write users.read tweet.read ), UserToken
 </aside>
 
 ## Unlike Post
@@ -59246,6 +61733,8 @@ curl https://api.x.com/2/users/2244994945/likes/1346889436626259968 \
 ```
 
 `DELETE /2/users/{id}/likes/{tweet_id}`
+
+Causes the authenticated user to unlike a specific Post by its ID.
 
 <h3 id="unlike-post-parameters">Parameters</h3>
 
@@ -59296,10 +61785,10 @@ curl https://api.x.com/2/users/2244994945/likes/1346889436626259968 \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read like.write ), UserToken
+OAuth2UserToken ( Scopes: tweet.read like.write users.read ), UserToken
 </aside>
 
-## Get Users List Memberships
+## Get List Memberships
 
 <a id="opIdgetUsersListMemberships"></a>
 
@@ -59313,7 +61802,9 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
 
 `GET /2/users/{id}/list_memberships`
 
-<h3 id="get-users-list-memberships-parameters">Parameters</h3>
+Retrieves a list of Lists that a specific User is a member of by their ID.
+
+<h3 id="get-list-memberships-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -59346,11 +61837,13 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -59421,12 +61914,15 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -59439,6 +61935,10 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -59794,6 +62294,7 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -59807,6 +62308,7 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -59845,7 +62347,7 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
 }
 ```
 
-<h3 id="get-users-list-memberships-responses">Responses</h3>
+<h3 id="get-list-memberships-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -59854,10 +62356,10 @@ curl https://api.x.com/2/users/2244994945/list_memberships \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: list.read users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Mentions
+## Get Mentions
 
 <a id="opIdgetUsersMentions"></a>
 
@@ -59871,9 +62373,11 @@ curl https://api.x.com/2/users/2244994945/mentions \
 
 `GET /2/users/{id}/mentions`
 
+Retrieves a list of Posts that mention a specific User by their ID.
+
 When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.
 
-<h3 id="get-users-mentions-parameters">Parameters</h3>
+<h3 id="get-mentions-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -59948,11 +62452,13 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -59973,6 +62479,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -60242,12 +62749,15 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -60260,6 +62770,10 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -60615,6 +63129,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -60628,6 +63143,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -60668,7 +63184,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 }
 ```
 
-<h3 id="get-users-mentions-responses">Responses</h3>
+<h3 id="get-mentions-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -60680,7 +63196,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Muting
+## Get Muting
 
 <a id="opIdgetUsersMuting"></a>
 
@@ -60694,7 +63210,9 @@ curl https://api.x.com/2/users/2244994945/muting \
 
 `GET /2/users/{id}/muting`
 
-<h3 id="get-users-muting-parameters">Parameters</h3>
+Retrieves a list of Users muted by the authenticated user.
+
+<h3 id="get-muting-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -60719,11 +63237,13 @@ curl https://api.x.com/2/users/2244994945/muting \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -60868,6 +63388,7 @@ curl https://api.x.com/2/users/2244994945/muting \
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -60881,6 +63402,7 @@ curl https://api.x.com/2/users/2244994945/muting \
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -60941,12 +63463,15 @@ curl https://api.x.com/2/users/2244994945/muting \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -60959,6 +63484,10 @@ curl https://api.x.com/2/users/2244994945/muting \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -61314,6 +63843,7 @@ curl https://api.x.com/2/users/2244994945/muting \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -61327,6 +63857,7 @@ curl https://api.x.com/2/users/2244994945/muting \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -61365,7 +63896,7 @@ curl https://api.x.com/2/users/2244994945/muting \
 }
 ```
 
-<h3 id="get-users-muting-responses">Responses</h3>
+<h3 id="get-muting-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -61374,7 +63905,7 @@ curl https://api.x.com/2/users/2244994945/muting \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: mute.read users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read mute.read tweet.read ), UserToken
 </aside>
 
 ## Mute User
@@ -61395,6 +63926,8 @@ curl https://api.x.com/2/users/2244994945/muting \
 ```
 
 `POST /2/users/{id}/muting`
+
+Causes the authenticated user to mute a specific User by their ID.
 
 > Body parameter
 
@@ -61454,10 +63987,10 @@ curl https://api.x.com/2/users/2244994945/muting \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read mute.write tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read tweet.read mute.write ), UserToken
 </aside>
 
-## Get Users Owned Lists
+## Get Owned Lists
 
 <a id="opIdgetUsersOwnedLists"></a>
 
@@ -61471,7 +64004,9 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
 
 `GET /2/users/{id}/owned_lists`
 
-<h3 id="get-users-owned-lists-parameters">Parameters</h3>
+Retrieves a list of Lists owned by a specific User by their ID.
+
+<h3 id="get-owned-lists-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -61504,11 +64039,13 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -61579,12 +64116,15 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -61597,6 +64137,10 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -61952,6 +64496,7 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -61965,6 +64510,7 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -62003,7 +64549,7 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
 }
 ```
 
-<h3 id="get-users-owned-lists-responses">Responses</h3>
+<h3 id="get-owned-lists-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -62012,10 +64558,10 @@ curl https://api.x.com/2/users/2244994945/owned_lists \
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read users.read list.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: users.read list.read tweet.read ), UserToken, BearerToken
 </aside>
 
-## Get Users Pinned Lists
+## Get Pinned Lists
 
 <a id="opIdgetUsersPinnedLists"></a>
 
@@ -62029,7 +64575,9 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
 
 `GET /2/users/{id}/pinned_lists`
 
-<h3 id="get-users-pinned-lists-parameters">Parameters</h3>
+Retrieves a list of Lists pinned by the authenticated user.
+
+<h3 id="get-pinned-lists-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -62060,11 +64608,13 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -62135,12 +64685,15 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -62153,6 +64706,10 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -62508,6 +65065,7 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -62521,6 +65079,7 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -62557,7 +65116,7 @@ curl https://api.x.com/2/users/2244994945/pinned_lists \
 }
 ```
 
-<h3 id="get-users-pinned-lists-responses">Responses</h3>
+<h3 id="get-pinned-lists-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -62653,7 +65212,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
 </aside>
 
-## Unpin a List
+## Unpin List
 
 <a id="opIdunpinList"></a>
 
@@ -62672,7 +65231,7 @@ Causes the authenticated user to unpin a List by its ID.
 
 <a href="https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/delete-users-id-pinned-lists-list_id">External documentation</a>
 
-<h3 id="unpin-a-list-parameters">Parameters</h3>
+<h3 id="unpin-list-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -62712,7 +65271,7 @@ Causes the authenticated user to unpin a List by its ID.
 }
 ```
 
-<h3 id="unpin-a-list-responses">Responses</h3>
+<h3 id="unpin-list-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -62724,7 +65283,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: tweet.read users.read list.write ), UserToken
 </aside>
 
-## Get public keys
+## Get User Public Keys
 
 <a id="opIdgetUsersPublicKey"></a>
 
@@ -62740,13 +65299,15 @@ curl https://api.x.com/2/users/2244994945/public_keys \
 
 Returns a user's registered public keys for X Chat encryption.
 
+Every key field is returned by default, so public_key.fields can be left out. It takes public_key, signing_public_key, identity_public_key_signature, public_key_version and juicebox_config.
+
 <a href="https://developer.x.com/">External documentation</a>
 
-<h3 id="get-public-keys-1-parameters">Parameters</h3>
+<h3 id="get-user-public-keys-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|id|path|[UserId](#schemauserid)|true|none|
+|id|path|[UserId](#schemauserid)|true|Numeric user ID, not `me`. For your own keys, use the `id` from Get My User (`GET /2/users/me`).|
 |public_key.fields|query|[string]|false|A comma separated list of PublicKey fields to display.|
 
 #### Enumerated Values
@@ -62758,6 +65319,7 @@ Returns a user's registered public keys for X Chat encryption.
 |public_key.fields|public_key|
 |public_key.fields|public_key_version|
 |public_key.fields|signing_public_key|
+|public_key.fields|user_id|
 
 > Example responses
 
@@ -62771,7 +65333,8 @@ Returns a user's registered public keys for X Chat encryption.
       "juicebox_config": {},
       "public_key": "string",
       "public_key_version": "string",
-      "signing_public_key": "string"
+      "signing_public_key": "string",
+      "user_id": "string"
     }
   ],
   "errors": [
@@ -62798,7 +65361,7 @@ Returns a user's registered public keys for X Chat encryption.
 }
 ```
 
-<h3 id="get-public-keys-1-responses">Responses</h3>
+<h3 id="get-user-public-keys-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -62807,7 +65370,7 @@ Returns a user's registered public keys for X Chat encryption.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: dm.read tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read dm.read ), UserToken
 </aside>
 
 ## Repost Post
@@ -62966,7 +65529,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken ( Scopes: users.read tweet.read tweet.write ), UserToken
 </aside>
 
-## Get Users Timeline
+## Get Timeline
 
 <a id="opIdgetUsersTimeline"></a>
 
@@ -62980,9 +65543,11 @@ curl https://api.x.com/2/users/2244994945/timelines/reverse_chronological \
 
 `GET /2/users/{id}/timelines/reverse_chronological`
 
+Retrieves a reverse chronological list of Posts in the authenticated user's Timeline.
+
 When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.
 
-<h3 id="get-users-timeline-parameters">Parameters</h3>
+<h3 id="get-timeline-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -63060,11 +65625,13 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -63085,6 +65652,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -63354,12 +65922,15 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -63372,6 +65943,10 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -63727,6 +66302,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -63740,6 +66316,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -63780,7 +66357,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 }
 ```
 
-<h3 id="get-users-timeline-responses">Responses</h3>
+<h3 id="get-timeline-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -63789,10 +66366,10 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken
 </aside>
 
-## Get Users Posts
+## Get Posts
 
 <a id="opIdgetUsersPosts"></a>
 
@@ -63806,9 +66383,11 @@ curl https://api.x.com/2/users/2244994945/tweets \
 
 `GET /2/users/{id}/tweets`
 
+Retrieves a list of Posts authored by a specific User by their ID.
+
 When both are provided, `start_time` must be earlier than `end_time`. When both are provided, `since_id` must be less than `until_id`.
 
-<h3 id="get-users-posts-parameters">Parameters</h3>
+<h3 id="get-posts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -63886,11 +66465,13 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |user.fields|is_identity_verified|
 |user.fields|location|
 |user.fields|name|
+|user.fields|org_only|
 |user.fields|parody|
 |user.fields|profile_banner_url|
 |user.fields|profile_image_url|
 |user.fields|protected|
 |user.fields|public_metrics|
+|user.fields|receives_your_chat|
 |user.fields|receives_your_dm|
 |user.fields|subscriber_count|
 |user.fields|subscribes_to_you|
@@ -63911,6 +66492,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 |media.fields|preview_image_url|
 |media.fields|promoted_metrics|
 |media.fields|public_metrics|
+|media.fields|revenue|
 |media.fields|type|
 |media.fields|url|
 |media.fields|variants|
@@ -64180,12 +66762,15 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -64198,6 +66783,10 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -64553,6 +67142,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -64566,6 +67156,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -64606,7 +67197,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 }
 ```
 
-<h3 id="get-users-posts-responses">Responses</h3>
+<h3 id="get-posts-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -64615,7 +67206,7 @@ When both are provided, `start_time` must be earlier than `end_time`. When both 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: users.read tweet.read ), UserToken, BearerToken
+OAuth2UserToken ( Scopes: tweet.read users.read ), UserToken, BearerToken
 </aside>
 
 ## Unblock User
@@ -64633,7 +67224,7 @@ curl https://api.x.com/2/users/2244994945/blocking/2244994945 \
 
 `DELETE /2/users/{source_user_id}/blocking/{target_user_id}`
 
-Causes the source User to unblock the target User.
+Causes the source User to unblock the target User. Unblocking does not restore any follow the block removed, so blocking and then unblocking a follower removes them as a follower: do that only for followers the authenticated User approved removing.
 
 <a href="https://developer.twitter.com/en/docs/twitter-api/users/blocks/api-reference/delete-users-user_id-blocking">External documentation</a>
 
@@ -64686,7 +67277,7 @@ Causes the source User to unblock the target User.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: tweet.read block.write users.read ), UserToken
+OAuth2UserToken ( Scopes: block.write tweet.read users.read ), UserToken
 </aside>
 
 ## Unfollow User
@@ -64757,7 +67348,7 @@ Causes the authenticated user to unfollow a specific user by their ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: follows.write users.read tweet.read ), UserToken
+OAuth2UserToken ( Scopes: users.read follows.write tweet.read ), UserToken
 </aside>
 
 ## Unmute User
@@ -64828,7 +67419,7 @@ Causes the authenticated user to unmute the target user.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-OAuth2UserToken ( Scopes: mute.write tweet.read users.read ), UserToken
+OAuth2UserToken ( Scopes: users.read mute.write tweet.read ), UserToken
 </aside>
 
 <h1 id="x-api-v2-webhooks">Webhooks</h1>
@@ -64837,7 +67428,7 @@ Endpoints relating to retrieving, managing webhooks and webhook configs
 
 <a href="https://docs.x.com/x-api/enterprise-gnip-2.0/fundamentals/account-activity">Find out more</a>
 
-## Get stream links
+## Get Stream Links
 
 <a id="opIdgetWebhooksStreamLinks"></a>
 
@@ -64909,7 +67500,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Create stream link
+## Create Stream Link
 
 <a id="opIdcreateWebhooksStreamLink"></a>
 
@@ -64979,7 +67570,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Delete stream link
+## Delete Stream Link
 
 <a id="opIddeleteWebhooksStreamLink"></a>
 
@@ -65049,7 +67640,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Get webhook
+## Get Webhook
 
 <a id="opIdgetWebhooks"></a>
 
@@ -65135,7 +67726,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, UserToken, BearerToken
 </aside>
 
-## Create webhook
+## Create Webhook
 
 <a id="opIdcreateWebhooks"></a>
 
@@ -65221,7 +67812,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, UserToken, BearerToken
 </aside>
 
-## Create replay job for webhook
+## Create Replay Job for Webhook
 
 <a id="opIdcreateWebhookReplayJob"></a>
 
@@ -65311,7 +67902,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 BearerToken
 </aside>
 
-## Validate webhook
+## Validate Webhook
 
 <a id="opIdvalidateWebhooks"></a>
 
@@ -65381,7 +67972,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 OAuth2UserToken, UserToken, BearerToken
 </aside>
 
-## Delete webhook
+## Delete Webhook
 
 <a id="opIddeleteWebhooks"></a>
 
@@ -65535,6 +68126,10 @@ The unique identifier of an Activity event.
     "filter": {
       "direction": "inbound",
       "keyword": "The President",
+      "qualifiers": {
+        "property1": "string",
+        "property2": "string"
+      },
       "user_id": "2244994945"
     },
     "includes": {
@@ -65565,12 +68160,15 @@ The unique identifier of an Activity event.
             "playback_75_count": 0
           },
           "organic_metrics": {
+            "cta_url_click_count": 0,
+            "cta_watch_click_count": 0,
             "playback_0_count": 0,
             "playback_100_count": 0,
             "playback_25_count": 0,
             "playback_50_count": 0,
             "playback_75_count": 0,
-            "view_count": 0
+            "view_count": 0,
+            "watch_time_ms": 0
           },
           "preview_image_url": "string",
           "promoted_metrics": {
@@ -65583,6 +68181,10 @@ The unique identifier of an Activity event.
           },
           "public_metrics": {
             "view_count": 0
+          },
+          "revenue": {
+            "amount_micros": 0,
+            "currency_code": "string"
           },
           "type": "string",
           "url": "string",
@@ -65938,6 +68540,7 @@ The unique identifier of an Activity event.
           "location": "string",
           "most_recent_post_id": "string",
           "name": "string",
+          "org_only": true,
           "parody": true,
           "pinned_post_id": "string",
           "profile_banner_url": "string",
@@ -65951,6 +68554,7 @@ The unique identifier of an Activity event.
             "media_count": 0,
             "post_count": 0
           },
+          "receives_your_chat": "string",
           "receives_your_dm": true,
           "subscriber_count": 0,
           "subscribes_to_you": true,
@@ -66022,6 +68626,7 @@ An activity event or error that can be returned by the x activity streaming API.
 |---|---|---|---|---|
 |*oneOf*|[ProfileUpdateActivityResponsePayload](#schemaprofileupdateactivityresponsepayload)|false|none|none|
 |*oneOf*|[NewsActivityResponsePayload](#schemanewsactivityresponsepayload)|false|none|none|
+|*oneOf*|[TrendActivityResponsePayload](#schematrendactivityresponsepayload)|false|none|A newly surfaced trend in a WOEID location.|
 |*oneOf*|[FollowActivityResponsePayload](#schemafollowactivityresponsepayload)|false|none|none|
 |*oneOf*|[Post](#schemapost)|false|none|none|
 |*oneOf*|[PostDeleteActivityResponsePayload](#schemapostdeleteactivityresponsepayload)|false|none|The identity of a deleted Post.|
@@ -66038,6 +68643,10 @@ An activity event or error that can be returned by the x activity streaming API.
 {
   "direction": "inbound",
   "keyword": "The President",
+  "qualifiers": {
+    "property1": "string",
+    "property2": "string"
+  },
   "user_id": "2244994945"
 }
 ```
@@ -66050,6 +68659,7 @@ An XAA subscription filter.
 |---|---|---|---|---|
 |direction|string|false|none|Optional direction filter for directional events.|
 |keyword|[Keyword](#schemakeyword)|false|none|A keyword to filter on.|
+|qualifiers|object|false|none|Event-specific string predicates applied to the subscription.|
 |user_id|[UserId](#schemauserid)|false|none|Unique identifier of a User|
 
 #### Enumerated Values
@@ -66359,9 +68969,9 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
-|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
-|user_id|string|false|none|Participant user ID.|
+|encrypted_conversation_key|string|true|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|true|none|Version of the participant's public key used for encryption.|
+|user_id|string|true|none|Participant user ID.|
 
 <h2 id="tocS_AddChatGroupMembersRequest">AddChatGroupMembersRequest</h2>
 <!-- backwards compatibility -->
@@ -66841,9 +69451,9 @@ An XAA subscription filter.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
-|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
-|user_id|string|false|none|Participant user ID.|
+|encrypted_conversation_key|string|true|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|true|none|Version of the participant's public key used for encryption.|
+|user_id|string|true|none|Participant user ID.|
 
 <h2 id="tocS_AddConversationKeysRequest">AddConversationKeysRequest</h2>
 <!-- backwards compatibility -->
@@ -67022,6 +69632,222 @@ An XAA subscription filter.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |is_member|boolean|true|none|Indicates whether the user is a member of the List.|
+
+<h2 id="tocS_AddMediaToLibraryMonetization">AddMediaToLibraryMonetization</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddmediatolibrarymonetization"></a>
+<a id="schema_AddMediaToLibraryMonetization"></a>
+<a id="tocSaddmediatolibrarymonetization"></a>
+<a id="tocsaddmediatolibrarymonetization"></a>
+
+```json
+{
+  "allowed_countries": [
+    "string"
+  ],
+  "blocked_advertiser_category_ids": [
+    0
+  ],
+  "blocked_advertiser_ids": [
+    "string"
+  ],
+  "enabled": true,
+  "program_id": "string",
+  "video_category_ids": [
+    0
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowed_countries|[string]|false|none|ISO 3166-1 alpha-2 codes of the only countries the video is monetized in. Omit to monetize everywhere.|
+|blocked_advertiser_category_ids|[integer]|false|none|Advertiser categories (from the categories endpoint) whose ads may not run against the video.|
+|blocked_advertiser_ids|[string]|false|none|Advertiser account ids whose ads may not run against the video.|
+|enabled|boolean|false|none|Whether ads may run against the video. Requires the account to be enrolled in video monetization.|
+|program_id|string|false|none|Amplify program to monetize the video through, instead of `video_category_ids`.|
+|video_category_ids|[integer]|false|none|Video category ids (from the categories endpoint) describing the content; at most one when creating. Required when enabled, unless `program_id` is set.|
+
+<h2 id="tocS_AddMediaToLibraryRequest">AddMediaToLibraryRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddmediatolibraryrequest"></a>
+<a id="schema_AddMediaToLibraryRequest"></a>
+<a id="tocSaddmediatolibraryrequest"></a>
+<a id="tocsaddmediatolibraryrequest"></a>
+
+```json
+{
+  "description": "string",
+  "label": "string",
+  "media_key": "string",
+  "monetization": {
+    "allowed_countries": [
+      "string"
+    ],
+    "blocked_advertiser_category_ids": [
+      0
+    ],
+    "blocked_advertiser_ids": [
+      "string"
+    ],
+    "enabled": true,
+    "program_id": "string",
+    "video_category_ids": [
+      0
+    ]
+  },
+  "name": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|Description shown with the video in the player card.|
+|label|string|false|none|Label of the item in the library.|
+|media_key|string|true|none|The media key of the uploaded image, GIF or video to add.|
+|monetization|[AddMediaToLibraryMonetization](#schemaaddmediatolibrarymonetization)|false|none|Monetization settings. Videos only.|
+|name|string|false|none|Name of the item in the library.|
+|title|string|false|none|Title shown with the video in the player card.|
+
+<h2 id="tocS_AddMediaToLibraryResponse">AddMediaToLibraryResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddmediatolibraryresponse"></a>
+<a id="schema_AddMediaToLibraryResponse"></a>
+<a id="tocSaddmediatolibraryresponse"></a>
+<a id="tocsaddmediatolibraryresponse"></a>
+
+```json
+{
+  "data": {
+    "media_key": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AddMediaToLibraryResponseData](#schemaaddmediatolibraryresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_AddMediaToLibraryResponseData">AddMediaToLibraryResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddmediatolibraryresponsedata"></a>
+<a id="schema_AddMediaToLibraryResponseData"></a>
+<a id="tocSaddmediatolibraryresponsedata"></a>
+<a id="tocsaddmediatolibraryresponsedata"></a>
+
+```json
+{
+  "media_key": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|media_key|string|true|none|The media key of the library item.|
+
+<h2 id="tocS_AddPostToAmplifyProgramsRequest">AddPostToAmplifyProgramsRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddposttoamplifyprogramsrequest"></a>
+<a id="schema_AddPostToAmplifyProgramsRequest"></a>
+<a id="tocSaddposttoamplifyprogramsrequest"></a>
+<a id="tocsaddposttoamplifyprogramsrequest"></a>
+
+```json
+{
+  "blocked_advertiser_ids": [
+    "string"
+  ],
+  "post_id": "string",
+  "program_ids": [
+    "string"
+  ],
+  "promotion_ends_at": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|blocked_advertiser_ids|[string]|false|none|Advertiser account ids whose pre-rolls may not run on this post.|
+|post_id|string|true|none|The post to publish. It must belong to the user.|
+|program_ids|[string]|true|none|The programs to publish the post into.|
+|promotion_ends_at|string|false|none|When promotion of the post ends (ISO 8601).|
+
+<h2 id="tocS_AddPostToAmplifyProgramsResponse">AddPostToAmplifyProgramsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddposttoamplifyprogramsresponse"></a>
+<a id="schema_AddPostToAmplifyProgramsResponse"></a>
+<a id="tocSaddposttoamplifyprogramsresponse"></a>
+<a id="tocsaddposttoamplifyprogramsresponse"></a>
+
+```json
+{
+  "data": {
+    "added": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[AddPostToAmplifyProgramsResponseData](#schemaaddposttoamplifyprogramsresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_AddPostToAmplifyProgramsResponseData">AddPostToAmplifyProgramsResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaaddposttoamplifyprogramsresponsedata"></a>
+<a id="schema_AddPostToAmplifyProgramsResponseData"></a>
+<a id="tocSaddposttoamplifyprogramsresponsedata"></a>
+<a id="tocsaddposttoamplifyprogramsresponsedata"></a>
+
+```json
+{
+  "added": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|added|boolean|true|none|Whether the post was published into the programs.|
 
 <h2 id="tocS_AddUserPublicKeyPublicKey">AddUserPublicKeyPublicKey</h2>
 <!-- backwards compatibility -->
@@ -67293,8 +70119,8 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|media|string(binary) \| string(byte)|true|none|The media chunk to upload.|
-|segment_index|integer|true|none|The index of this segment in the upload sequence.|
+|media|string(binary) \| string(byte)|true|none|One segment of the file: base64-encoded in JSON bodies, raw bytes in multipart bodies.|
+|segment_index|integer|true|none|The segment's position in the file, counting from 0.|
 
 <h2 id="tocS_AppendMediaUploadResponse">AppendMediaUploadResponse</h2>
 <!-- backwards compatibility -->
@@ -67807,7 +70633,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |blocks|[[ArticleCreateDraftContentStateBlocks](#schemaarticlecreatedraftcontentstateblocks)]|true|none|The text blocks that make up the article body.|
-|entities|[[ArticleCreateDraftContentStateEntities](#schemaarticlecreatedraftcontentstateentities)]|true|none|Non-text entities referenced by blocks (links, embedded posts, images, emoji,          markdown/code/tables, dividers, LaTeX). Full set matches article storage.|
+|entities|[[ArticleCreateDraftContentStateEntities](#schemaarticlecreatedraftcontentstateentities)]|true|none|Non-text entities referenced by blocks (links, embedded posts, images, emoji, markdown/code/tables, dividers, LaTeX). Full set matches article storage.|
 
 <h2 id="tocS_ArticleCreateDraftContentStateBlocks">ArticleCreateDraftContentStateBlocks</h2>
 <!-- backwards compatibility -->
@@ -67873,11 +70699,11 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[ArticleCreateDraftContentStateBlocksData](#schemaarticlecreatedraftcontentstateblocksdata)|false|none|Block-level metadata for mentions, hashtags, cashtags, and URLs.|
-|entity_ranges|[[ArticleCreateDraftContentStateBlocksEntityRanges](#schemaarticlecreatedraftcontentstateblocksentityranges)]|false|none|References to entries in entities.|
-|inline_style_ranges|[[ArticleCreateDraftContentStateBlocksInlineStyleRanges](#schemaarticlecreatedraftcontentstateblocksinlinestyleranges)]|false|none|Inline formatting ranges.|
+|entity_ranges|[[ArticleCreateDraftContentStateBlocksEntityRanges](#schemaarticlecreatedraftcontentstateblocksentityranges)]|false|none|Entity references. Each item has offset, length and key, the entity's key as an integer (0 for "0").|
+|inline_style_ranges|[[ArticleCreateDraftContentStateBlocksInlineStyleRanges](#schemaarticlecreatedraftcontentstateblocksinlinestyleranges)]|false|none|Inline styles. Each item has offset, length and style: bold, italic or strikethrough, in lowercase.|
 |key|string|false|none|Optional block key.|
-|text|string|true|none|The text content of this block. For latex entities, this holds the LaTeX source;          for divider/markdown/image/post atomic placeholders, typically a single space.|
-|type|string|true|none|The block type. Use atomic for non-text embeds (image, post, markdown, divider, latex).|
+|text|string|true|none|The text content of this block. For latex entities, this holds the LaTeX source; for divider/markdown/image/post atomic placeholders, typically a single space.|
+|type|string|true|none|The block type. Articles have two heading levels, header-one and header-two. Use atomic for non-text embeds (image, post, markdown, divider, latex).|
 
 #### Enumerated Values
 
@@ -67886,7 +70712,6 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 |type|unstyled|
 |type|header-one|
 |type|header-two|
-|type|header-three|
 |type|unordered-list-item|
 |type|ordered-list-item|
 |type|blockquote|
@@ -68052,7 +70877,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|key|integer|true|none|Index into the entities array.|
+|key|integer|true|none|The key of the referenced entity, as an integer.|
 |length|integer|true|none|Length of the entity range.|
 |offset|integer|true|none|Start offset in the text.|
 
@@ -68121,7 +70946,7 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|key|string|true|none|The entity key referenced by entity_ranges.|
+|key|string|true|none|The entity's key, a string such as "0". entity_ranges refer to it as an integer.|
 |value|[ArticleCreateDraftContentStateEntitiesValue](#schemaarticlecreatedraftcontentstateentitiesvalue)|true|none|none|
 
 <h2 id="tocS_ArticleCreateDraftContentStateEntitiesValue">ArticleCreateDraftContentStateEntitiesValue</h2>
@@ -68155,9 +70980,9 @@ Time-bucketed engagement metrics for the Post, one entry per granularity bucket.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data|[ArticleCreateDraftContentStateEntitiesValueData](#schemaarticlecreatedraftcontentstateentitiesvaluedata)|true|none|Entity payload. Fields depend on the entity type: post_id (post), url (link),          media_items (image), entity_key (emoji and other opaque keys), markdown (markdown /          code blocks / GFM tables). divider and latex use an empty data object; latex source          is the block text; emoji uses block text for the character(s). There is no separate          table entity type in article storage; tables are markdown.|
+|data|[ArticleCreateDraftContentStateEntitiesValueData](#schemaarticlecreatedraftcontentstateentitiesvaluedata)|true|none|Fields: post_id (post), url (link), media_items (image), markdown (markdown), entity_key (emoji). divider and latex use an empty data object; latex source is the block text, and emoji uses the block text for the character(s). Tables are markdown; article storage has no table entity type.|
 |mutability|string|true|none|Whether the entity can be edited. Recommended: immutable for post, image, divider, latex; mutable for link and markdown (matches the in-app Articles composer).|
-|type|string|true|none|The entity type. markdown carries code blocks, GFM tables, and other Markdown;          emoji maps to backend TWEMOJI (Twemoji is internal); divider is a horizontal rule;          latex renders TeX from the block text. Tables are not a separate enum value — use          type markdown with a pipe table in data.markdown.|
+|type|string|true|none|The entity type. markdown carries code blocks, GFM tables, and other Markdown; emoji maps to backend TWEMOJI (Twemoji is internal); divider is a horizontal rule; latex renders TeX from the block text. Tables are not a separate enum value — use type markdown with a pipe table in data.markdown.|
 
 #### Enumerated Values
 
@@ -68348,7 +71173,7 @@ Create a draft Article.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|content_state|[ArticleCreateDraftContentState](#schemaarticlecreatedraftcontentstate)|true|none|DraftJS content state representing the article body. Special formatting          (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic          blocks with entity_ranges pointing into entities.|
+|content_state|[ArticleCreateDraftContentState](#schemaarticlecreatedraftcontentstate)|true|none|DraftJS content state representing the article body. Special formatting (markdown/code/tables, dividers, LaTeX, emoji, images, embedded posts) uses atomic blocks with entity_ranges pointing into entities.|
 |cover_media|[ArticleCreateDraftCoverMedia](#schemaarticlecreatedraftcovermedia)|false|none|Optional cover media for the Article.|
 |title|string|true|none|The title of the Article.|
 
@@ -68535,6 +71360,7 @@ Create a draft Article.
   "image_url_small": "string",
   "is_high_latency": true,
   "language": "string",
+  "live_category_id": "string",
   "media_key": "string",
   "scheduled_end_ms": "string",
   "scheduled_start_ms": "string",
@@ -68568,11 +71394,12 @@ Create a draft Article.
 |image_url_small|string|false|none|none|
 |is_high_latency|boolean|false|none|none|
 |language|string|false|none|none|
+|live_category_id|string|false|none|Id of the live category the host picked for the broadcast, as listed by GET /2/broadcasts/categories. Omitted when the broadcast has none.|
 |media_key|string|false|none|none|
 |scheduled_end_ms|string|false|none|none|
 |scheduled_start_ms|string|false|none|none|
 |share_url|string|false|none|none|
-|source_id|string|false|none|none|
+|source_id|string|false|none|Id of the source the broadcast streams from, as returned by GET /2/sources.|
 |start_ms|string|false|none|none|
 |state|string|false|none|none|
 |title|string|false|none|none|
@@ -68598,6 +71425,7 @@ Create a draft Article.
   "broadcast_id": "string",
   "created_at_ms": "string",
   "id": "string",
+  "relay_source": "string",
   "reply_to": "string",
   "text": "string"
 }
@@ -68613,6 +71441,7 @@ Create a draft Article.
 |broadcast_id|string|false|none|none|
 |created_at_ms|string|false|none|none|
 |id|string|false|none|none|
+|relay_source|string|false|none|none|
 |reply_to|string|false|none|none|
 |text|string|false|none|none|
 
@@ -69339,6 +72168,37 @@ The conversation's latest message events, newest first, as encoded message event
 
 IDs of users the authenticated user follows who also follow the sender.
 
+<h2 id="tocS_ChatPermissionsUnavailableProblem">ChatPermissionsUnavailableProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemachatpermissionsunavailableproblem"></a>
+<a id="schema_ChatPermissionsUnavailableProblem"></a>
+<a id="tocSchatpermissionsunavailableproblem"></a>
+<a id="tocschatpermissionsunavailableproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/chat-permissions-unavailable"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/chat-permissions-unavailable|
+
 <h2 id="tocS_ChatPinnedMessage">ChatPinnedMessage</h2>
 <!-- backwards compatibility -->
 <a id="schemachatpinnedmessage"></a>
@@ -69688,6 +72548,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 |event_type|profile.update.verified_badge|
 |event_type|profile.update.affiliate_badge|
 |event_type|profile.update.handle|
+|event_type|trends.new|
 |event_type|news.new|
 |event_type|follow.follow|
 |event_type|follow.unfollow|
@@ -69880,6 +72741,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 {
   "display_name": "string",
   "handle": "string",
+  "org_only": true,
   "scopes": [
     "string"
   ]
@@ -69892,6 +72754,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 |---|---|---|---|---|
 |display_name|string|false|none|The bot's display name; defaults to the handle.|
 |handle|string|true|none|The bot's handle (X screen name): 5-15 characters, letters, numbers, or underscores.|
+|org_only|boolean|false|none|Whether only members of the bot's developer account can add it to group chats. An org-only bot has no public profile and doesn't appear in public search. Everyone in its developer account should be able to message it, so leave its Direct Messages open to everyone rather than premium senders only. Defaults to false. Applies only when the request creates the bot: a handle that already names one of the project's bots keeps that bot's setting, which the response's org_only reports.|
 |scopes|[string]|false|none|Scopes for the bot's bearer token. Broadcast moderation additionally supports broadcast.read and broadcast.write. Defaults to the XChat scope set (dm.read, dm.write, tweet.read, users.read, media.write).|
 
 <h2 id="tocS_CreateBotResponse">CreateBotResponse</h2>
@@ -69906,6 +72769,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
   "data": {
     "id": "string",
     "name": "string",
+    "org_only": true,
     "scopes": [
       "string"
     ],
@@ -69946,6 +72810,7 @@ A two-letter ISO 3166-1 alpha-2 country code.
 {
   "id": "string",
   "name": "string",
+  "org_only": true,
   "scopes": [
     "string"
   ],
@@ -69961,10 +72826,127 @@ A two-letter ISO 3166-1 alpha-2 country code.
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier of the bot's User account.|
 |name|string|false|none|The bot's display name.|
+|org_only|boolean|false|none|Whether the bot is org only. For a handle that already names one of the project's bots, this is that bot's current setting. Absent when X couldn't read the setting back.|
 |scopes|[string]|false|none|Scopes granted to the bot's bearer token.|
 |token|string|true|none|The bot's bearer token. Returned exactly once; store it securely.|
 |token_expires_at_ms|integer|false|none|Expiry of the bot's bearer token, in epoch milliseconds.|
 |username|string|false|none|The bot's X handle (screen name).|
+
+<h2 id="tocS_CreateBroadcastRequest">CreateBroadcastRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatebroadcastrequest"></a>
+<a id="schema_CreateBroadcastRequest"></a>
+<a id="tocScreatebroadcastrequest"></a>
+<a id="tocscreatebroadcastrequest"></a>
+
+```json
+{
+  "additional_source_ids": [
+    "string"
+  ],
+  "chat_option": 0,
+  "live_category_id": "string",
+  "locale": "string",
+  "should_not_tweet": true,
+  "source_id": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|additional_source_ids|[string]|false|none|Ids of further sources to go live on together with `source_id`, one per video format, at most 2, each a source's `id` from GET /2/sources. `source_id` comes first; duplicates are ignored.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|live_category_id|string|false|none|The live category the host picked, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. Ignored when the source already has a live broadcast.|
+|locale|string|false|none|Broadcast language, e.g. `en`.|
+|should_not_tweet|boolean|false|none|Skip the Post announcing the broadcast. Defaults to false.|
+|source_id|string|true|none|Id of the source to go live on: a source's `id` (19 digits) from GET /2/sources.|
+|title|string|false|none|Broadcast title. Defaults to the user's display name.|
+
+<h2 id="tocS_CreateBroadcastResponse">CreateBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatebroadcastresponse"></a>
+<a id="schema_CreateBroadcastResponse"></a>
+<a id="tocScreatebroadcastresponse"></a>
+<a id="tocscreatebroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "id": "string",
+    "language": "string",
+    "live_category_id": "string",
+    "media_key": "string",
+    "share_url": "string",
+    "start_ms": "string",
+    "state": "string",
+    "title": "string",
+    "tweet_id": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CreateBroadcastResponseData](#schemacreatebroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_CreateBroadcastResponseData">CreateBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatebroadcastresponsedata"></a>
+<a id="schema_CreateBroadcastResponseData"></a>
+<a id="tocScreatebroadcastresponsedata"></a>
+<a id="tocscreatebroadcastresponsedata"></a>
+
+```json
+{
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "id": "string",
+  "language": "string",
+  "live_category_id": "string",
+  "media_key": "string",
+  "share_url": "string",
+  "start_ms": "string",
+  "state": "string",
+  "title": "string",
+  "tweet_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast_id|string|true|none|Broadcast id; the same as `id`.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|id|string|true|none|Broadcast id.|
+|language|string|false|none|Broadcast language.|
+|live_category_id|string|false|none|The broadcast's live category. Missing when it has none.|
+|media_key|string|false|none|Media key of the broadcast.|
+|share_url|string|true|none|The broadcast's watch page.|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|true|none|Broadcast state, `RUNNING` once live.|
+|title|string|false|none|Broadcast title.|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast. Missing when the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created.|
 
 <h2 id="tocS_CreateCallRequest">CreateCallRequest</h2>
 <!-- backwards compatibility -->
@@ -70188,9 +73170,9 @@ A two-letter ISO 3166-1 alpha-2 country code.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
-|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
-|user_id|string|false|none|Participant user ID.|
+|encrypted_conversation_key|string|true|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|true|none|Version of the participant's public key used for encryption.|
+|user_id|string|true|none|Participant user ID.|
 
 <h2 id="tocS_CreateChatConversationRequest">CreateChatConversationRequest</h2>
 <!-- backwards compatibility -->
@@ -71819,6 +74801,450 @@ At least one of `text`, `attachments` is required.
 |id|string|false|none|The media id of the subtitle track.|
 |language_code|string|false|none|BCP47 language code of the subtitle track.|
 
+<h2 id="tocS_CreatePostDraftClip">CreatePostDraftClip</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftclip"></a>
+<a id="schema_CreatePostDraftClip"></a>
+<a id="tocScreatepostdraftclip"></a>
+<a id="tocscreatepostdraftclip"></a>
+
+```json
+{
+  "end_seconds": 1,
+  "post_id": "string",
+  "start_seconds": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|end_seconds|integer|true|none|Second of the video at which the clip ends. A clip is 5 to 60 seconds long and at most 30% of the video.|
+|post_id|string|true|none|The ID of the Post whose video is clipped. The Post must have exactly one video, longer than 2 minutes.|
+|start_seconds|integer|true|none|Second of the video at which the clip starts.|
+
+<h2 id="tocS_CreatePostDraftEditOptions">CreatePostDraftEditOptions</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdrafteditoptions"></a>
+<a id="schema_CreatePostDraftEditOptions"></a>
+<a id="tocScreatepostdrafteditoptions"></a>
+<a id="tocscreatepostdrafteditoptions"></a>
+
+```json
+{
+  "previous_post_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previous_post_id|string|true|none|The ID of the Post being edited.|
+
+<h2 id="tocS_CreatePostDraftGeo">CreatePostDraftGeo</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftgeo"></a>
+<a id="schema_CreatePostDraftGeo"></a>
+<a id="tocScreatepostdraftgeo"></a>
+<a id="tocscreatepostdraftgeo"></a>
+
+```json
+{
+  "place_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|place_id|string|true|none|Place ID for geo tagging.|
+
+<h2 id="tocS_CreatePostDraftMedia">CreatePostDraftMedia</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftmedia"></a>
+<a id="schema_CreatePostDraftMedia"></a>
+<a id="tocScreatepostdraftmedia"></a>
+<a id="tocscreatepostdraftmedia"></a>
+
+```json
+{
+  "call_to_actions": {
+    "app_install": {
+      "app_store_id": "string",
+      "ipad_app_store_id": "string",
+      "play_store_id": "string"
+    },
+    "visit_site": {
+      "url": "string"
+    },
+    "watch_now": {
+      "url": "string"
+    }
+  },
+  "description": "string",
+  "embeddable": true,
+  "media_ids": [
+    "string"
+  ],
+  "preview_media_id": "string",
+  "tagged_user_ids": [
+    "string"
+  ],
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|call_to_actions|[CreatePostDraftMediaCallToActions](#schemacreatepostdraftmediacalltoactions)|false|none|Call-to-action button rendered on the media entity.|
+|description|string|false|none|Description for the media, rendered on the Post card for video and Amplify content.|
+|embeddable|boolean|false|none|When true, the media's asset URLs do not expire and external syndicated playback is allowed.|
+|media_ids|[string]|true|none|Media IDs to attach to the Post, in the order given.|
+|preview_media_id|string|false|none|Media id whose asset is used as the preview image.|
+|tagged_user_ids|[string]|false|none|User IDs tagged in the media.|
+|title|string|false|none|Title for the media, rendered on the Post card for video and Amplify content.|
+
+<h2 id="tocS_CreatePostDraftMediaCallToActions">CreatePostDraftMediaCallToActions</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftmediacalltoactions"></a>
+<a id="schema_CreatePostDraftMediaCallToActions"></a>
+<a id="tocScreatepostdraftmediacalltoactions"></a>
+<a id="tocscreatepostdraftmediacalltoactions"></a>
+
+```json
+{
+  "app_install": {
+    "app_store_id": "string",
+    "ipad_app_store_id": "string",
+    "play_store_id": "string"
+  },
+  "visit_site": {
+    "url": "string"
+  },
+  "watch_now": {
+    "url": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|app_install|[CreatePostDraftMediaCallToActionsAppInstall](#schemacreatepostdraftmediacalltoactionsappinstall)|false|none|App Install CTA. At least one store id should be provided.|
+|visit_site|[CreatePostDraftMediaCallToActionsVisitSite](#schemacreatepostdraftmediacalltoactionsvisitsite)|false|none|Visit Site CTA.|
+|watch_now|[CreatePostDraftMediaCallToActionsWatchNow](#schemacreatepostdraftmediacalltoactionswatchnow)|false|none|Watch Now CTA.|
+
+<h2 id="tocS_CreatePostDraftMediaCallToActionsAppInstall">CreatePostDraftMediaCallToActionsAppInstall</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftmediacalltoactionsappinstall"></a>
+<a id="schema_CreatePostDraftMediaCallToActionsAppInstall"></a>
+<a id="tocScreatepostdraftmediacalltoactionsappinstall"></a>
+<a id="tocscreatepostdraftmediacalltoactionsappinstall"></a>
+
+```json
+{
+  "app_store_id": "string",
+  "ipad_app_store_id": "string",
+  "play_store_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|app_store_id|string|false|none|Apple App Store iPhone app id.|
+|ipad_app_store_id|string|false|none|Apple App Store iPad app id.|
+|play_store_id|string|false|none|Google Play Store app id.|
+
+<h2 id="tocS_CreatePostDraftMediaCallToActionsVisitSite">CreatePostDraftMediaCallToActionsVisitSite</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftmediacalltoactionsvisitsite"></a>
+<a id="schema_CreatePostDraftMediaCallToActionsVisitSite"></a>
+<a id="tocScreatepostdraftmediacalltoactionsvisitsite"></a>
+<a id="tocscreatepostdraftmediacalltoactionsvisitsite"></a>
+
+```json
+{
+  "url": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string|true|none|HTTPS URL the CTA links to.|
+
+<h2 id="tocS_CreatePostDraftMediaCallToActionsWatchNow">CreatePostDraftMediaCallToActionsWatchNow</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftmediacalltoactionswatchnow"></a>
+<a id="schema_CreatePostDraftMediaCallToActionsWatchNow"></a>
+<a id="tocScreatepostdraftmediacalltoactionswatchnow"></a>
+<a id="tocscreatepostdraftmediacalltoactionswatchnow"></a>
+
+```json
+{
+  "url": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|url|string|true|none|HTTPS URL the CTA links to.|
+
+<h2 id="tocS_CreatePostDraftPoll">CreatePostDraftPoll</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftpoll"></a>
+<a id="schema_CreatePostDraftPoll"></a>
+<a id="tocScreatepostdraftpoll"></a>
+<a id="tocscreatepostdraftpoll"></a>
+
+```json
+{
+  "duration_minutes": 5,
+  "options": [
+    "string",
+    "string"
+  ],
+  "reply_settings": "following"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|duration_minutes|integer|true|none|Duration of the poll in minutes.|
+|options|[string]|true|none|Poll options (2-4 choices, 1-25 characters each).|
+|reply_settings|string|false|none|Who can reply to the poll Tweet. Accepted for compatibility; it carries no backend argument and is dropped before the mutation is issued (see `translate_body`).|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|reply_settings|following|
+|reply_settings|mentionedUsers|
+|reply_settings|subscribers|
+|reply_settings|verified|
+
+<h2 id="tocS_CreatePostDraftReply">CreatePostDraftReply</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftreply"></a>
+<a id="schema_CreatePostDraftReply"></a>
+<a id="tocScreatepostdraftreply"></a>
+<a id="tocscreatepostdraftreply"></a>
+
+```json
+{
+  "auto_populate_reply_metadata": true,
+  "exclude_reply_user_ids": [
+    "string"
+  ],
+  "in_reply_to_tweet_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|auto_populate_reply_metadata|boolean|false|none|If true, reply metadata is automatically populated. Accepted for compatibility; it carries no backend argument and is dropped before the mutation is issued (see `translate_body`).|
+|exclude_reply_user_ids|[string]|false|none|User IDs to exclude from the reply thread.|
+|in_reply_to_tweet_id|string|true|none|The ID of the tweet being replied to.|
+
+<h2 id="tocS_CreatePostDraftRequest">CreatePostDraftRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftrequest"></a>
+<a id="schema_CreatePostDraftRequest"></a>
+<a id="tocScreatepostdraftrequest"></a>
+<a id="tocscreatepostdraftrequest"></a>
+
+```json
+{
+  "card_uri": "string",
+  "clip": {
+    "end_seconds": 1,
+    "post_id": "string",
+    "start_seconds": 0
+  },
+  "community_id": "string",
+  "direct_message_deep_link": "string",
+  "edit_options": {
+    "previous_post_id": "string"
+  },
+  "for_super_followers_only": true,
+  "geo": {
+    "place_id": "string"
+  },
+  "made_with_ai": true,
+  "media": {
+    "call_to_actions": {
+      "app_install": {
+        "app_store_id": "string",
+        "ipad_app_store_id": "string",
+        "play_store_id": "string"
+      },
+      "visit_site": {
+        "url": "string"
+      },
+      "watch_now": {
+        "url": "string"
+      }
+    },
+    "description": "string",
+    "embeddable": true,
+    "media_ids": [
+      "string"
+    ],
+    "preview_media_id": "string",
+    "tagged_user_ids": [
+      "string"
+    ],
+    "title": "string"
+  },
+  "nullcast": true,
+  "paid_partnership": true,
+  "poll": {
+    "duration_minutes": 5,
+    "options": [
+      "string",
+      "string"
+    ],
+    "reply_settings": "following"
+  },
+  "quote_tweet_id": "string",
+  "reply": {
+    "auto_populate_reply_metadata": true,
+    "exclude_reply_user_ids": [
+      "string"
+    ],
+    "in_reply_to_tweet_id": "string"
+  },
+  "reply_settings": "following",
+  "share_with_followers": true,
+  "text": ""
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|card_uri|string|false|none|Card URI parameter.|
+|clip|[CreatePostDraftClip](#schemacreatepostdraftclip)|false|none|Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.|
+|community_id|string|false|none|Community to post the tweet to.|
+|direct_message_deep_link|string|false|none|Direct message deep link.|
+|edit_options|[CreatePostDraftEditOptions](#schemacreatepostdrafteditoptions)|false|none|Edit an existing tweet rather than creating a new one.|
+|for_super_followers_only|boolean|false|none|Restrict tweet to super followers.|
+|geo|[CreatePostDraftGeo](#schemacreatepostdraftgeo)|false|none|Geo location for the tweet.|
+|made_with_ai|boolean|false|none|Disclose that the tweet contains AI-generated media.|
+|media|[CreatePostDraftMedia](#schemacreatepostdraftmedia)|false|none|Media attachments.|
+|nullcast|boolean|false|none|If true, the tweet is not shown in the public timeline.|
+|paid_partnership|boolean|false|none|Disclose that the tweet is a paid partnership.|
+|poll|[CreatePostDraftPoll](#schemacreatepostdraftpoll)|false|none|Poll configuration.|
+|quote_tweet_id|string|false|none|Tweet ID to quote.|
+|reply|[CreatePostDraftReply](#schemacreatepostdraftreply)|false|none|Tweet reply configuration.|
+|reply_settings|string|false|none|Who can reply to this tweet.|
+|share_with_followers|boolean|false|none|Share an exclusive (super-follower) tweet with all followers.|
+|text|string|false|none|Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|reply_settings|following|
+|reply_settings|mentionedUsers|
+|reply_settings|subscribers|
+|reply_settings|verified|
+
+<h2 id="tocS_CreatePostDraftResponse">CreatePostDraftResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftresponse"></a>
+<a id="schema_CreatePostDraftResponse"></a>
+<a id="tocScreatepostdraftresponse"></a>
+<a id="tocscreatepostdraftresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "text": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CreatePostDraftResponseData](#schemacreatepostdraftresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_CreatePostDraftResponseData">CreatePostDraftResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostdraftresponsedata"></a>
+<a id="schema_CreatePostDraftResponseData"></a>
+<a id="tocScreatepostdraftresponsedata"></a>
+<a id="tocscreatepostdraftresponsedata"></a>
+
+```json
+{
+  "id": "string",
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Unique identifier of the saved draft.|
+|text|string|true|none|The text of the saved draft.|
+
+<h2 id="tocS_CreatePostsClip">CreatePostsClip</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatepostsclip"></a>
+<a id="schema_CreatePostsClip"></a>
+<a id="tocScreatepostsclip"></a>
+<a id="tocscreatepostsclip"></a>
+
+```json
+{
+  "end_seconds": 1,
+  "post_id": "string",
+  "start_seconds": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|end_seconds|integer|true|none|Second of the video at which the clip ends. A clip is 5 to 60 seconds long and at most 30% of the video.|
+|post_id|string|true|none|The ID of the Post whose video is clipped. The Post must have exactly one video, longer than 2 minutes.|
+|start_seconds|integer|true|none|Second of the video at which the clip starts.|
+
 <h2 id="tocS_CreatePostsEditOptions">CreatePostsEditOptions</h2>
 <!-- backwards compatibility -->
 <a id="schemacreatepostseditoptions"></a>
@@ -71899,7 +75325,7 @@ At least one of `text`, `attachments` is required.
 |call_to_actions|[CreatePostsMediaCallToActions](#schemacreatepostsmediacalltoactions)|false|none|Call-to-action button rendered on the media entity.|
 |description|string|false|none|Description for the media, rendered on the Post card for video and Amplify content.|
 |embeddable|boolean|false|none|When true, the media's asset URLs do not expire and external syndicated playback is allowed.|
-|media_ids|[string]|true|none|Media IDs to attach to the tweet.|
+|media_ids|[string]|true|none|Media IDs to attach to the Post, in the order given.|
 |preview_media_id|string|false|none|Media id whose asset is used as the preview image.|
 |tagged_user_ids|[string]|false|none|User IDs tagged in the media.|
 |title|string|false|none|Title for the media, rendered on the Post card for video and Amplify content.|
@@ -72066,6 +75492,11 @@ At least one of `text`, `attachments` is required.
 ```json
 {
   "card_uri": "string",
+  "clip": {
+    "end_seconds": 1,
+    "post_id": "string",
+    "start_seconds": 0
+  },
   "community_id": "string",
   "direct_message_deep_link": "string",
   "edit_options": {
@@ -72130,6 +75561,7 @@ At least one of `text`, `attachments` is required.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |card_uri|string|false|none|Card URI parameter.|
+|clip|[CreatePostsClip](#schemacreatepostsclip)|false|none|Clip of another Post's video to share. Cannot be combined with media, a poll, a card, a quoted Post or a direct message deep link.|
 |community_id|string|false|none|Community to post the tweet to.|
 |direct_message_deep_link|string|false|none|Direct message deep link.|
 |edit_options|[CreatePostsEditOptions](#schemacreatepostseditoptions)|false|none|Edit an existing tweet rather than creating a new one.|
@@ -72144,7 +75576,7 @@ At least one of `text`, `attachments` is required.
 |reply|[CreatePostsReply](#schemacreatepostsreply)|false|none|Tweet reply configuration.|
 |reply_settings|string|false|none|Who can reply to this tweet.|
 |share_with_followers|boolean|false|none|Share an exclusive (super-follower) tweet with all followers.|
-|text|string|false|none|Text of the tweet. Required unless media is provided.  Defaulted to an empty string so it is always sent: the backend's `tweet_text` variable is non-null and rejects an absent value.|
+|text|string|false|none|Text of the Post. Required unless media is provided. At most 280 characters unless the account has X Premium.|
 
 #### Enumerated Values
 
@@ -72287,7 +75719,7 @@ At least one of `text`, `attachments` is required.
 |recurrence|[CreateScheduledBroadcastRecurrence](#schemacreatescheduledbroadcastrecurrence)|false|none|Deprecated: recurring schedules are being retired and requests that include `recurrence` will be rejected. Create each occurrence as its own scheduled broadcast.|
 |scheduled_end_ms|string|false|none|Optional end time, ms since Unix epoch (decimal string). Omit for an open-ended broadcast.|
 |scheduled_start_ms|string|true|none|Start time, ms since Unix epoch (decimal string).|
-|source_id|string|true|none|Ingest / source id to bind (same as sources `rtmp_stream_key`).|
+|source_id|string|true|none|Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.|
 |telecast_id|string|false|none|Deprecated: telecast associations are being retired and this field will be ignored.|
 |thumbnail_media_id|string|false|none|Pre-live slate media id (numeric string).|
 |title|string|false|none|Title / status text.|
@@ -72381,7 +75813,7 @@ At least one of `text`, `attachments` is required.
 |scheduled_broadcast_id|string|false|none|Numeric scheduler id. Required in the update request body.|
 |scheduled_end_ms|string|false|none|Scheduled end, milliseconds since Unix epoch (decimal string).|
 |scheduled_start_ms|string|false|none|Scheduled start, milliseconds since Unix epoch (decimal string).|
-|source_id|string|false|none|Bound ingest / source id (`rtmp_stream_key`).|
+|source_id|string|false|none|Id of the bound source, as returned by GET /2/sources. Omitted when unknown.|
 |state|string|false|none|Scheduler state: `Created` or `Scheduled` before start, then `Running`, `Ended`, or `Error`.|
 |telecast_id|string|false|none|Deprecated: always null for new schedules.|
 |thumbnail_media_id|string|false|none|Optional pre-live slate media id.|
@@ -72406,7 +75838,7 @@ At least one of `text`, `attachments` is required.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|true|none|Label for the source.|
-|region|string|true|none|Ingest region: us-east-1, us-east-2, us-west-1, us-west-2, ca-central-1, sa-east-1, eu-west-1, eu-west-3, eu-central-1, ap-south-1, ap-southeast-1, ap-southeast-2, ap-northeast-1 or ap-northeast-2.|
+|region|string|true|none|Ingest region, as returned by GET /2/region. us-west-1 and us-west-2 ingest in US West; us-east-1, us-east-2, ca-central-1, sa-east-1, eu-west-1, eu-west-2, eu-west-3, eu-central-1, eu-north-1, ap-south-1, ap-northeast-1, ap-northeast-2, ap-southeast-1 and ap-southeast-2 ingest in US East. The response's `region` is the serving location (`us-east-1` or `us-west-2`).|
 
 <h2 id="tocS_CreateSourceResponse">CreateSourceResponse</h2>
 <!-- backwards compatibility -->
@@ -72474,13 +75906,13 @@ At least one of `text`, `attachments` is required.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
-|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
-|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|id|string|true|none|Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
-|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
-|rtmp_url|string|false|none|RTMP ingest URL.|
-|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
-|stream_key|string|false|none|RTMP stream key.|
+|region|string|false|none|Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.|
+|rtmp_url|string|false|none|Ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.|
+|stream_key|string|true|none|Stream key. A credential: anyone with it can stream to the source.|
 
 <h2 id="tocS_CreateUserBroadcastRequest">CreateUserBroadcastRequest</h2>
 <!-- backwards compatibility -->
@@ -72501,7 +75933,7 @@ At least one of `text`, `attachments` is required.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|is_low_latency|boolean|false|none|Ignored.|
+|is_low_latency|boolean \| string \| integer|false|none|Ignored.|
 |region|string|false|none|Ignored: the source sets the region.|
 |source_id|string|true|none|The source's `rtmp_stream_key`.|
 
@@ -74697,6 +78129,59 @@ At least one of `tweet_id`, `tweet_ids` is required.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |deleted|boolean|true|none|Indicates whether the subtitles were deleted.|
+
+<h2 id="tocS_DeletePostDraftResponse">DeletePostDraftResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemadeletepostdraftresponse"></a>
+<a id="schema_DeletePostDraftResponse"></a>
+<a id="tocSdeletepostdraftresponse"></a>
+<a id="tocsdeletepostdraftresponse"></a>
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[DeletePostDraftResponseData](#schemadeletepostdraftresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_DeletePostDraftResponseData">DeletePostDraftResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemadeletepostdraftresponsedata"></a>
+<a id="schema_DeletePostDraftResponseData"></a>
+<a id="tocSdeletepostdraftresponsedata"></a>
+<a id="tocsdeletepostdraftresponsedata"></a>
+
+```json
+{
+  "deleted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deleted|boolean|true|none|Whether the draft is gone from the user's drafts.|
 
 <h2 id="tocS_DeletePostsResponse">DeletePostsResponse</h2>
 <!-- backwards compatibility -->
@@ -77093,6 +80578,37 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |token|string|false|none|Invite token. Together with the conversation ID it identifies the link.|
 |welcome_message|string|false|none|Message shown to people who open the link.|
 
+<h2 id="tocS_EncryptionRequiredProblem">EncryptionRequiredProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemaencryptionrequiredproblem"></a>
+<a id="schema_EncryptionRequiredProblem"></a>
+<a id="tocSencryptionrequiredproblem"></a>
+<a id="tocsencryptionrequiredproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/encryption-required"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/encryption-required|
+
 <h2 id="tocS_EnsureAccountRequest">EnsureAccountRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaensureaccountrequest"></a>
@@ -77299,12 +80815,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "playback_75_count": 0
       },
       "organic_metrics": {
+        "cta_url_click_count": 0,
+        "cta_watch_click_count": 0,
         "playback_0_count": 0,
         "playback_100_count": 0,
         "playback_25_count": 0,
         "playback_50_count": 0,
         "playback_75_count": 0,
-        "view_count": 0
+        "view_count": 0,
+        "watch_time_ms": 0
       },
       "preview_image_url": "string",
       "promoted_metrics": {
@@ -77317,6 +80836,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       },
       "public_metrics": {
         "view_count": 0
+      },
+      "revenue": {
+        "amount_micros": 0,
+        "currency_code": "string"
       },
       "type": "string",
       "url": "string",
@@ -77672,6 +81195,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -77685,6 +81209,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -78050,6 +81575,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -78063,6 +81589,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -78173,6 +81700,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -78186,6 +81714,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -78624,6 +82153,231 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |qualifiers|object|false|none|Event-specific string predicates applied to the subscription.|
 |user_id|string|false|none|User the subscription is scoped to.|
 
+<h2 id="tocS_GetAmplifyProgramPostsResponse">GetAmplifyProgramPostsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogrampostsresponse"></a>
+<a id="schema_GetAmplifyProgramPostsResponse"></a>
+<a id="tocSgetamplifyprogrampostsresponse"></a>
+<a id="tocsgetamplifyprogrampostsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "added_at": "string",
+      "post_id": "string",
+      "promotion_ends_at": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[GetAmplifyProgramPostsResponseData](#schemagetamplifyprogrampostsresponsedata)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetAmplifyProgramPostsResponseData">GetAmplifyProgramPostsResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogrampostsresponsedata"></a>
+<a id="schema_GetAmplifyProgramPostsResponseData"></a>
+<a id="tocSgetamplifyprogrampostsresponsedata"></a>
+<a id="tocsgetamplifyprogrampostsresponsedata"></a>
+
+```json
+{
+  "added_at": "string",
+  "post_id": "string",
+  "promotion_ends_at": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|added_at|string|true|none|When the post was published into the program (ISO 8601).|
+|post_id|string|true|none|Identifier of the post.|
+|promotion_ends_at|string|false|none|When promotion of the post ends (ISO 8601), when one was set.|
+
+<h2 id="tocS_GetAmplifyProgramResponse">GetAmplifyProgramResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogramresponse"></a>
+<a id="schema_GetAmplifyProgramResponse"></a>
+<a id="tocSgetamplifyprogramresponse"></a>
+<a id="tocsgetamplifyprogramresponse"></a>
+
+```json
+{
+  "data": {
+    "advertiser_ids": [
+      "string"
+    ],
+    "id": "string",
+    "name": "string",
+    "publisher_ids": [
+      "string"
+    ],
+    "state": "active"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[GetAmplifyProgramResponseData](#schemagetamplifyprogramresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetAmplifyProgramResponseData">GetAmplifyProgramResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogramresponsedata"></a>
+<a id="schema_GetAmplifyProgramResponseData"></a>
+<a id="tocSgetamplifyprogramresponsedata"></a>
+<a id="tocsgetamplifyprogramresponsedata"></a>
+
+```json
+{
+  "advertiser_ids": [
+    "string"
+  ],
+  "id": "string",
+  "name": "string",
+  "publisher_ids": [
+    "string"
+  ],
+  "state": "active"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|advertiser_ids|[string]|true|none|Advertiser account ids sponsoring the program.|
+|id|string|true|none|Identifier of the program.|
+|name|string|true|none|Display name of the program.|
+|publisher_ids|[string]|true|none|User ids of the publishers enrolled in the program.|
+|state|string|true|none|Lifecycle state of the program. Only `active` programs accept posts.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|active|
+|state|inactive|
+|state|deleted|
+
+<h2 id="tocS_GetAmplifyProgramsResponse">GetAmplifyProgramsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogramsresponse"></a>
+<a id="schema_GetAmplifyProgramsResponse"></a>
+<a id="tocSgetamplifyprogramsresponse"></a>
+<a id="tocsgetamplifyprogramsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "advertiser_ids": [
+        "string"
+      ],
+      "id": "string",
+      "name": "string",
+      "publisher_ids": [
+        "string"
+      ],
+      "state": "active"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[GetAmplifyProgramsResponseData](#schemagetamplifyprogramsresponsedata)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetAmplifyProgramsResponseData">GetAmplifyProgramsResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetamplifyprogramsresponsedata"></a>
+<a id="schema_GetAmplifyProgramsResponseData"></a>
+<a id="tocSgetamplifyprogramsresponsedata"></a>
+<a id="tocsgetamplifyprogramsresponsedata"></a>
+
+```json
+{
+  "advertiser_ids": [
+    "string"
+  ],
+  "id": "string",
+  "name": "string",
+  "publisher_ids": [
+    "string"
+  ],
+  "state": "active"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|advertiser_ids|[string]|true|none|Advertiser account ids sponsoring the program.|
+|id|string|true|none|Identifier of the program.|
+|name|string|true|none|Display name of the program.|
+|publisher_ids|[string]|true|none|User ids of the publishers enrolled in the program.|
+|state|string|true|none|Lifecycle state of the program. Only `active` programs accept posts.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|active|
+|state|inactive|
+|state|deleted|
+
 <h2 id="tocS_GetBotsResponse">GetBotsResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemagetbotsresponse"></a>
@@ -78725,6 +82479,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -78738,6 +82493,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -78798,12 +82554,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -78816,6 +82575,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -79171,6 +82934,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -79184,6 +82948,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -79238,6 +83003,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "broadcast_id": "string",
       "created_at_ms": "string",
       "id": "string",
+      "relay_source": "string",
       "reply_to": "string",
       "text": "string"
     }
@@ -79282,12 +83048,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -79300,6 +83069,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -79655,6 +83428,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -79668,6 +83442,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -79727,6 +83502,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "image_url_small": "string",
     "is_high_latency": true,
     "language": "string",
+    "live_category_id": "string",
     "media_key": "string",
     "scheduled_end_ms": "string",
     "scheduled_start_ms": "string",
@@ -79824,12 +83600,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -79842,6 +83621,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -80197,6 +83980,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -80210,6 +83994,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -80431,12 +84216,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -80449,6 +84237,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -80804,6 +84596,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -80817,6 +84610,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -80945,12 +84739,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -80963,6 +84760,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -81318,6 +85119,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -81331,6 +85133,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -81471,6 +85274,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -81484,6 +85288,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -81544,12 +85349,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -81562,6 +85370,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -81917,6 +85729,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -81930,6 +85743,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -82209,6 +86023,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -82222,6 +86037,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -82282,12 +86098,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -82300,6 +86119,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -82655,6 +86478,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -82668,6 +86492,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -82759,12 +86584,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -82777,6 +86605,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -83132,6 +86964,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -83145,6 +86978,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -83574,12 +87408,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -83592,6 +87429,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -83947,6 +87788,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -83960,6 +87802,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -84104,12 +87947,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -84122,6 +87968,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -84477,6 +88327,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -84490,6 +88341,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -84630,12 +88482,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -84648,6 +88503,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -85003,6 +88862,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -85016,6 +88876,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -85162,12 +89023,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -85180,6 +89044,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -85535,6 +89403,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -85548,6 +89417,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -85645,12 +89515,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -85663,6 +89536,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -86018,6 +89895,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -86031,6 +89909,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -86164,6 +90043,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -86177,6 +90057,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -86237,12 +90118,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -86255,6 +90139,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -86610,6 +90498,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -86623,6 +90512,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -86762,6 +90652,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -86775,6 +90666,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -86835,12 +90727,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -86853,6 +90748,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -87208,6 +91107,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -87221,6 +91121,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -87513,12 +91414,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -87531,6 +91435,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -87886,6 +91794,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -87899,6 +91808,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -88023,12 +91933,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "playback_75_count": 0
     },
     "organic_metrics": {
+      "cta_url_click_count": 0,
+      "cta_watch_click_count": 0,
       "playback_0_count": 0,
       "playback_100_count": 0,
       "playback_25_count": 0,
       "playback_50_count": 0,
       "playback_75_count": 0,
-      "view_count": 0
+      "view_count": 0,
+      "watch_time_ms": 0
     },
     "preview_image_url": "string",
     "promoted_metrics": {
@@ -88041,6 +91954,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     },
     "public_metrics": {
       "view_count": 0
+    },
+    "revenue": {
+      "amount_micros": 0,
+      "currency_code": "string"
     },
     "type": "string",
     "url": "string",
@@ -88098,12 +92015,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "playback_75_count": 0
       },
       "organic_metrics": {
+        "cta_url_click_count": 0,
+        "cta_watch_click_count": 0,
         "playback_0_count": 0,
         "playback_100_count": 0,
         "playback_25_count": 0,
         "playback_50_count": 0,
         "playback_75_count": 0,
-        "view_count": 0
+        "view_count": 0,
+        "watch_time_ms": 0
       },
       "preview_image_url": "string",
       "promoted_metrics": {
@@ -88116,6 +92036,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       },
       "public_metrics": {
         "view_count": 0
+      },
+      "revenue": {
+        "amount_micros": 0,
+        "currency_code": "string"
       },
       "type": "string",
       "url": "string",
@@ -88150,6 +92074,124 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |---|---|---|---|---|
 |data|[[Media](#schemamedia)]|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetMediaLibraryCategoriesResponse">GetMediaLibraryCategoriesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetmedialibrarycategoriesresponse"></a>
+<a id="schema_GetMediaLibraryCategoriesResponse"></a>
+<a id="tocSgetmedialibrarycategoriesresponse"></a>
+<a id="tocsgetmedialibrarycategoriesresponse"></a>
+
+```json
+{
+  "data": {
+    "advertiser_categories": [
+      {
+        "description": "string",
+        "id": 0
+      }
+    ],
+    "video_categories": [
+      {
+        "description": "string",
+        "id": 0
+      }
+    ]
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[GetMediaLibraryCategoriesResponseData](#schemagetmedialibrarycategoriesresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetMediaLibraryCategoriesResponseData">GetMediaLibraryCategoriesResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetmedialibrarycategoriesresponsedata"></a>
+<a id="schema_GetMediaLibraryCategoriesResponseData"></a>
+<a id="tocSgetmedialibrarycategoriesresponsedata"></a>
+<a id="tocsgetmedialibrarycategoriesresponsedata"></a>
+
+```json
+{
+  "advertiser_categories": [
+    {
+      "description": "string",
+      "id": 0
+    }
+  ],
+  "video_categories": [
+    {
+      "description": "string",
+      "id": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|advertiser_categories|[[GetMediaLibraryCategoriesResponseDataAdvertiserCategories](#schemagetmedialibrarycategoriesresponsedataadvertisercategories)]|true|none|Advertiser categories that can be blocked.|
+|video_categories|[[GetMediaLibraryCategoriesResponseDataVideoCategories](#schemagetmedialibrarycategoriesresponsedatavideocategories)]|true|none|Video categories a library item can be assigned.|
+
+<h2 id="tocS_GetMediaLibraryCategoriesResponseDataAdvertiserCategories">GetMediaLibraryCategoriesResponseDataAdvertiserCategories</h2>
+<!-- backwards compatibility -->
+<a id="schemagetmedialibrarycategoriesresponsedataadvertisercategories"></a>
+<a id="schema_GetMediaLibraryCategoriesResponseDataAdvertiserCategories"></a>
+<a id="tocSgetmedialibrarycategoriesresponsedataadvertisercategories"></a>
+<a id="tocsgetmedialibrarycategoriesresponsedataadvertisercategories"></a>
+
+```json
+{
+  "description": "string",
+  "id": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|true|none|Human readable name, localized to `lang` when a translation exists.|
+|id|integer|true|none|Identifier used in `monetization.video_category_ids` / `monetization.blocked_advertiser_category_ids`.|
+
+<h2 id="tocS_GetMediaLibraryCategoriesResponseDataVideoCategories">GetMediaLibraryCategoriesResponseDataVideoCategories</h2>
+<!-- backwards compatibility -->
+<a id="schemagetmedialibrarycategoriesresponsedatavideocategories"></a>
+<a id="schema_GetMediaLibraryCategoriesResponseDataVideoCategories"></a>
+<a id="tocSgetmedialibrarycategoriesresponsedatavideocategories"></a>
+<a id="tocsgetmedialibrarycategoriesresponsedatavideocategories"></a>
+
+```json
+{
+  "description": "string",
+  "id": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|true|none|Human readable name, localized to `lang` when a translation exists.|
+|id|integer|true|none|Identifier used in `monetization.video_category_ids` / `monetization.blocked_advertiser_category_ids`.|
 
 <h2 id="tocS_GetMediaUploadStatusResponse">GetMediaUploadStatusResponse</h2>
 <!-- backwards compatibility -->
@@ -88353,6 +92395,264 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |---|---|---|---|---|
 |data|[News](#schemanews)|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetPostDraftsResponse">GetPostDraftsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponse"></a>
+<a id="schema_GetPostDraftsResponse"></a>
+<a id="tocSgetpostdraftsresponse"></a>
+<a id="tocsgetpostdraftsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "created_at": "string",
+      "id": "string",
+      "made_with_ai": true,
+      "media": {
+        "media_ids": [
+          "string"
+        ],
+        "tagged_user_ids": [
+          "string"
+        ]
+      },
+      "paid_partnership": true,
+      "quote_tweet_id": "string",
+      "reply": {
+        "exclude_reply_user_ids": [
+          "string"
+        ],
+        "in_reply_to_tweet_id": "string"
+      },
+      "text": "string",
+      "thread": [
+        {
+          "media": {
+            "media_ids": [
+              "string"
+            ],
+            "tagged_user_ids": [
+              "string"
+            ]
+          },
+          "quote_tweet_id": "string",
+          "text": "string"
+        }
+      ],
+      "unsupported_content": [
+        "text_formatting"
+      ],
+      "updated_at": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "meta": {
+    "next_token": "string",
+    "result_count": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[GetPostDraftsResponseData](#schemagetpostdraftsresponsedata)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+|meta|object|false|none|none|
+
+<h2 id="tocS_GetPostDraftsResponseData">GetPostDraftsResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponsedata"></a>
+<a id="schema_GetPostDraftsResponseData"></a>
+<a id="tocSgetpostdraftsresponsedata"></a>
+<a id="tocsgetpostdraftsresponsedata"></a>
+
+```json
+{
+  "created_at": "string",
+  "id": "string",
+  "made_with_ai": true,
+  "media": {
+    "media_ids": [
+      "string"
+    ],
+    "tagged_user_ids": [
+      "string"
+    ]
+  },
+  "paid_partnership": true,
+  "quote_tweet_id": "string",
+  "reply": {
+    "exclude_reply_user_ids": [
+      "string"
+    ],
+    "in_reply_to_tweet_id": "string"
+  },
+  "text": "string",
+  "thread": [
+    {
+      "media": {
+        "media_ids": [
+          "string"
+        ],
+        "tagged_user_ids": [
+          "string"
+        ]
+      },
+      "quote_tweet_id": "string",
+      "text": "string"
+    }
+  ],
+  "unsupported_content": [
+    "text_formatting"
+  ],
+  "updated_at": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at|string|false|none|When the draft was saved (RFC 3339).|
+|id|string|true|none|Unique identifier of the draft.|
+|made_with_ai|boolean|false|none|Whether the draft discloses AI-generated media.|
+|media|[GetPostDraftsResponseDataMedia](#schemagetpostdraftsresponsedatamedia)|false|none|Media attached to the Post.|
+|paid_partnership|boolean|false|none|Whether the draft discloses a paid partnership.|
+|quote_tweet_id|string|false|none|The ID of the Post this Post quotes.|
+|reply|[GetPostDraftsResponseDataReply](#schemagetpostdraftsresponsedatareply)|false|none|Present when the draft is a reply.|
+|text|string|true|none|The text of the draft. Empty for a draft that only has media.|
+|thread|[[GetPostDraftsResponseDataThread](#schemagetpostdraftsresponsedatathread)]|false|none|For a draft that is a thread, the Posts after the first one, in order. Each replies to the Post before it.|
+|unsupported_content|[string]|false|none|Parts of the draft that the other fields do not carry. Present only when the draft holds more than is listed.|
+|updated_at|string|false|none|When the draft last changed (RFC 3339).|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|unsupported_content|text_formatting|
+|unsupported_content|inline_media|
+|unsupported_content|media_tags|
+|unsupported_content|possibly_sensitive|
+|unsupported_content|attachment|
+|unsupported_content|cashtag_attachment|
+
+<h2 id="tocS_GetPostDraftsResponseDataMedia">GetPostDraftsResponseDataMedia</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponsedatamedia"></a>
+<a id="schema_GetPostDraftsResponseDataMedia"></a>
+<a id="tocSgetpostdraftsresponsedatamedia"></a>
+<a id="tocsgetpostdraftsresponsedatamedia"></a>
+
+```json
+{
+  "media_ids": [
+    "string"
+  ],
+  "tagged_user_ids": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|media_ids|[string]|true|none|Media IDs attached to the Post, in order.|
+|tagged_user_ids|[string]|false|none|IDs of the users tagged in any of the media.|
+
+<h2 id="tocS_GetPostDraftsResponseDataReply">GetPostDraftsResponseDataReply</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponsedatareply"></a>
+<a id="schema_GetPostDraftsResponseDataReply"></a>
+<a id="tocSgetpostdraftsresponsedatareply"></a>
+<a id="tocsgetpostdraftsresponsedatareply"></a>
+
+```json
+{
+  "exclude_reply_user_ids": [
+    "string"
+  ],
+  "in_reply_to_tweet_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|exclude_reply_user_ids|[string]|false|none|IDs of the users the reply does not mention.|
+|in_reply_to_tweet_id|string|true|none|The ID of the Post the draft replies to.|
+
+<h2 id="tocS_GetPostDraftsResponseDataThread">GetPostDraftsResponseDataThread</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponsedatathread"></a>
+<a id="schema_GetPostDraftsResponseDataThread"></a>
+<a id="tocSgetpostdraftsresponsedatathread"></a>
+<a id="tocsgetpostdraftsresponsedatathread"></a>
+
+```json
+{
+  "media": {
+    "media_ids": [
+      "string"
+    ],
+    "tagged_user_ids": [
+      "string"
+    ]
+  },
+  "quote_tweet_id": "string",
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|media|[GetPostDraftsResponseDataThreadMedia](#schemagetpostdraftsresponsedatathreadmedia)|false|none|Media attached to the Post.|
+|quote_tweet_id|string|false|none|The ID of the Post this Post quotes.|
+|text|string|true|none|The text of the Post. Empty when it only has media.|
+
+<h2 id="tocS_GetPostDraftsResponseDataThreadMedia">GetPostDraftsResponseDataThreadMedia</h2>
+<!-- backwards compatibility -->
+<a id="schemagetpostdraftsresponsedatathreadmedia"></a>
+<a id="schema_GetPostDraftsResponseDataThreadMedia"></a>
+<a id="tocSgetpostdraftsresponsedatathreadmedia"></a>
+<a id="tocsgetpostdraftsresponsedatathreadmedia"></a>
+
+```json
+{
+  "media_ids": [
+    "string"
+  ],
+  "tagged_user_ids": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|media_ids|[string]|true|none|Media IDs attached to the Post, in order.|
+|tagged_user_ids|[string]|false|none|IDs of the users tagged in any of the media.|
 
 <h2 id="tocS_GetPostsAnalyticsResponse">GetPostsAnalyticsResponse</h2>
 <!-- backwards compatibility -->
@@ -88690,12 +92990,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -88708,6 +93011,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -89063,6 +93370,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -89076,6 +93384,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -89362,12 +93671,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -89380,6 +93692,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -89735,6 +94051,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -89748,6 +94065,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -90017,6 +94335,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -90030,6 +94349,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -90090,12 +94410,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -90108,6 +94431,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -90463,6 +94790,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -90476,6 +94804,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -90768,12 +95097,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -90786,6 +95118,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -91141,6 +95477,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -91154,6 +95491,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -91292,6 +95630,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -91305,6 +95644,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -91365,12 +95705,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -91383,6 +95726,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -91738,6 +96085,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -91751,6 +96099,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -92043,12 +96392,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -92061,6 +96413,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -92416,6 +96772,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -92429,6 +96786,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -92771,7 +97129,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |scheduled_broadcast_id|string|false|none|Numeric scheduler id. Required in the update request body.|
 |scheduled_end_ms|string|false|none|Scheduled end, milliseconds since Unix epoch (decimal string).|
 |scheduled_start_ms|string|false|none|Scheduled start, milliseconds since Unix epoch (decimal string).|
-|source_id|string|false|none|Bound ingest / source id (`rtmp_stream_key`).|
+|source_id|string|false|none|Id of the bound source, as returned by GET /2/sources. Omitted when unknown.|
 |state|string|false|none|Scheduler state: `Created` or `Scheduled` before start, then `Running`, `Ended`, or `Error`.|
 |telecast_id|string|false|none|Deprecated: always null for new schedules.|
 |thumbnail_media_id|string|false|none|Optional pre-live slate media id.|
@@ -92847,12 +97205,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -92865,6 +97226,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -93220,6 +97585,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -93233,6 +97599,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -93281,8 +97648,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "name": "string",
     "region": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string",
-    "stream_key": "string"
+    "rtmps_url": "string"
   },
   "errors": [
     {
@@ -93321,8 +97687,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
   "name": "string",
   "region": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string",
-  "stream_key": "string"
+  "rtmps_url": "string"
 }
 ```
 
@@ -93331,13 +97696,68 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
-|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
-|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|id|string|true|none|Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
-|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
-|rtmp_url|string|false|none|RTMP ingest URL.|
-|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
-|stream_key|string|false|none|RTMP stream key.|
+|region|string|false|none|Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.|
+|rtmp_url|string|false|none|Ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.|
+
+<h2 id="tocS_GetSourceStreamKeyResponse">GetSourceStreamKeyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagetsourcestreamkeyresponse"></a>
+<a id="schema_GetSourceStreamKeyResponse"></a>
+<a id="tocSgetsourcestreamkeyresponse"></a>
+<a id="tocsgetsourcestreamkeyresponse"></a>
+
+```json
+{
+  "data": {
+    "id": "string",
+    "stream_key": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[GetSourceStreamKeyResponseData](#schemagetsourcestreamkeyresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_GetSourceStreamKeyResponseData">GetSourceStreamKeyResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemagetsourcestreamkeyresponsedata"></a>
+<a id="schema_GetSourceStreamKeyResponseData"></a>
+<a id="tocSgetsourcestreamkeyresponsedata"></a>
+<a id="tocsgetsourcestreamkeyresponsedata"></a>
+
+```json
+{
+  "id": "string",
+  "stream_key": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Source id.|
+|stream_key|string|true|none|Stream key. A credential: anyone with it can stream to the source.|
 
 <h2 id="tocS_GetSpacesBuyersResponse">GetSpacesBuyersResponse</h2>
 <!-- backwards compatibility -->
@@ -93440,6 +97860,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -93453,6 +97874,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -93513,12 +97935,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -93531,6 +97956,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -93886,6 +98315,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -93899,6 +98329,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -94015,12 +98446,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -94033,6 +98467,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -94388,6 +98826,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -94401,6 +98840,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -94513,12 +98953,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -94531,6 +98974,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -94886,6 +99333,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -94899,6 +99347,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -95009,12 +99458,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -95027,6 +99479,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -95382,6 +99838,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -95395,6 +99852,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -95681,12 +100139,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -95699,6 +100160,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -96054,6 +100519,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -96067,6 +100533,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -96131,7 +100598,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "type": "https://api.x.com/2/problems/resource-not-found",
       "value": "string"
     }
-  ]
+  ],
+  "meta": {
+    "location": {}
+  }
 }
 ```
 
@@ -96140,6 +100610,48 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[[Trend](#schematrend)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+|meta|object|false|none|none|
+
+<h2 id="tocS_GetTrendsLocationsResponse">GetTrendsLocationsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemagettrendslocationsresponse"></a>
+<a id="schema_GetTrendsLocationsResponse"></a>
+<a id="tocSgettrendslocationsresponse"></a>
+<a id="tocsgettrendslocationsresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "country": "string",
+      "country_code": "string",
+      "name": "string",
+      "parent_id": 0,
+      "place_type": "string",
+      "woeid": 0
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[TrendLocation](#schematrendlocation)]|false|none|none|
 |errors|[[Problem](#schemaproblem)]|false|none|none|
 
 <h2 id="tocS_GetTrendsPersonalizedTrendsResponse">GetTrendsPersonalizedTrendsResponse</h2>
@@ -96795,6 +101307,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -96808,6 +101321,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -96868,12 +101382,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -96886,6 +101403,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -97241,6 +101762,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -97254,6 +101776,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -97393,6 +101916,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -97406,6 +101930,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -97466,12 +101991,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -97484,6 +102012,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -97839,6 +102371,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -97852,6 +102385,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -98238,12 +102772,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -98256,6 +102793,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -98611,6 +103152,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -98624,6 +103166,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -98762,6 +103305,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -98775,6 +103319,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -98834,12 +103379,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -98852,6 +103400,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -99207,6 +103759,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -99220,6 +103773,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -99353,6 +103907,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -99366,6 +103921,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -99426,12 +103982,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -99444,6 +104003,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -99799,6 +104362,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -99812,6 +104376,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -99944,6 +104509,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -99957,6 +104523,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -100016,12 +104583,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -100034,6 +104604,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -100389,6 +104963,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -100402,6 +104977,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -100535,6 +105111,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -100548,6 +105125,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -100608,12 +105186,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -100626,6 +105207,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -100981,6 +105566,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -100994,6 +105580,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -101087,12 +105674,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -101105,6 +105695,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -101460,6 +106054,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -101473,6 +106068,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -101612,6 +106208,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -101625,6 +106222,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -101685,12 +106283,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -101703,6 +106304,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -102058,6 +106663,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -102071,6 +106677,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -102210,6 +106817,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -102223,6 +106831,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -102283,12 +106892,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -102301,6 +106913,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -102656,6 +107272,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -102669,6 +107286,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -102961,12 +107579,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -102979,6 +107600,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -103334,6 +107959,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -103347,6 +107973,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -103446,12 +108073,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -103464,6 +108094,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -103819,6 +108453,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -103832,6 +108467,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -103971,6 +108607,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -103984,6 +108621,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -104044,12 +108682,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -104062,6 +108703,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -104417,6 +109062,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -104430,6 +109076,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -104569,6 +109216,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -104582,6 +109230,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -104642,12 +109291,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -104660,6 +109312,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -105015,6 +109671,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -105028,6 +109685,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -105166,6 +109824,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
     "location": "string",
     "most_recent_post_id": "string",
     "name": "string",
+    "org_only": true,
     "parody": true,
     "pinned_post_id": "string",
     "profile_banner_url": "string",
@@ -105179,6 +109838,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "media_count": 0,
       "post_count": 0
     },
+    "receives_your_chat": "string",
     "receives_your_dm": true,
     "subscriber_count": 0,
     "subscribes_to_you": true,
@@ -105238,12 +109898,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -105256,6 +109919,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -105611,6 +110278,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -105624,6 +110292,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -105910,12 +110579,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -105928,6 +110600,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -106283,6 +110959,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -106296,6 +110973,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -106437,6 +111115,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -106450,6 +111129,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -106510,12 +111190,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -106528,6 +111211,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -106883,6 +111570,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -106896,6 +111584,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -106995,12 +111684,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -107013,6 +111705,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -107368,6 +112064,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -107381,6 +112078,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -107480,12 +112178,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -107498,6 +112199,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -107853,6 +112558,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -107866,6 +112572,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -108156,12 +112863,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -108174,6 +112884,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -108529,6 +113243,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -108542,6 +113257,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -108597,7 +113313,8 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "juicebox_config": {},
       "public_key": "string",
       "public_key_version": "string",
-      "signing_public_key": "string"
+      "signing_public_key": "string",
+      "user_id": "string"
     }
   ],
   "errors": [
@@ -108637,7 +113354,8 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
       "juicebox_config": {},
       "public_key": "string",
       "public_key_version": "string",
-      "signing_public_key": "string"
+      "signing_public_key": "string",
+      "user_id": "string"
     }
   ],
   "errors": [
@@ -108916,12 +113634,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -108934,6 +113655,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -109289,6 +114014,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -109302,6 +114028,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -109594,12 +114321,15 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -109612,6 +114342,10 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -109967,6 +114701,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -109980,6 +114715,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -110226,7 +114962,7 @@ A list of metadata entities (hashtags, cashtags, mentions, URLs) found in the Di
 |scheduled_broadcast_id|string|false|none|Numeric scheduler id. Required in the update request body.|
 |scheduled_end_ms|string|false|none|Scheduled end, milliseconds since Unix epoch (decimal string).|
 |scheduled_start_ms|string|false|none|Scheduled start, milliseconds since Unix epoch (decimal string).|
-|source_id|string|false|none|Bound ingest / source id (`rtmp_stream_key`).|
+|source_id|string|false|none|Id of the bound source, as returned by GET /2/sources. Omitted when unknown.|
 |state|string|false|none|Scheduler state: `Created` or `Scheduled` before start, then `Running`, `Ended`, or `Error`.|
 |telecast_id|string|false|none|Deprecated: always null for new schedules.|
 |thumbnail_media_id|string|false|none|Optional pre-live slate media id.|
@@ -111043,6 +115779,7 @@ A Like event, with the tweet author user and the tweet being liked
       "image_url_small": "string",
       "is_high_latency": true,
       "language": "string",
+      "live_category_id": "string",
       "media_key": "string",
       "scheduled_end_ms": "string",
       "scheduled_start_ms": "string",
@@ -111111,6 +115848,68 @@ The number of users who follow this List.
 ```
 
 Unique identifier of a List
+
+<h2 id="tocS_ListLiveCategoriesResponse">ListLiveCategoriesResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemalistlivecategoriesresponse"></a>
+<a id="schema_ListLiveCategoriesResponse"></a>
+<a id="tocSlistlivecategoriesresponse"></a>
+<a id="tocslistlivecategoriesresponse"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ],
+  "meta": {
+    "result_count": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[ListLiveCategoriesResponseData](#schemalistlivecategoriesresponsedata)]|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+|meta|object|false|none|none|
+
+<h2 id="tocS_ListLiveCategoriesResponseData">ListLiveCategoriesResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemalistlivecategoriesresponsedata"></a>
+<a id="schema_ListLiveCategoriesResponseData"></a>
+<a id="tocSlistlivecategoriesresponsedata"></a>
+<a id="tocslistlivecategoriesresponsedata"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Category id, e.g. `gaming`. Permanent. Pass it as `live_category_id` on POST /2/broadcasts.|
+|name|string|true|none|Display name, e.g. `Gaming`. Can change.|
 
 <h2 id="tocS_ListMemberCount">ListMemberCount</h2>
 <!-- backwards compatibility -->
@@ -111216,7 +116015,7 @@ The number of members in this List.
 |scheduled_broadcast_id|string|false|none|Numeric scheduler id. Required in the update request body.|
 |scheduled_end_ms|string|false|none|Scheduled end, milliseconds since Unix epoch (decimal string).|
 |scheduled_start_ms|string|false|none|Scheduled start, milliseconds since Unix epoch (decimal string).|
-|source_id|string|false|none|Bound ingest / source id (`rtmp_stream_key`).|
+|source_id|string|false|none|Id of the bound source, as returned by GET /2/sources. Omitted when unknown.|
 |state|string|false|none|Scheduler state: `Created` or `Scheduled` before start, then `Running`, `Ended`, or `Error`.|
 |telecast_id|string|false|none|Deprecated: always null for new schedules.|
 |thumbnail_media_id|string|false|none|Optional pre-live slate media id.|
@@ -111294,12 +116093,15 @@ The number of members in this List.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -111312,6 +116114,10 @@ The number of members in this List.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -111667,6 +116473,7 @@ The number of members in this List.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -111680,6 +116487,7 @@ The number of members in this List.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -111733,8 +116541,7 @@ The number of members in this List.
       "name": "string",
       "region": "string",
       "rtmp_url": "string",
-      "rtmps_url": "string",
-      "stream_key": "string"
+      "rtmps_url": "string"
     }
   ],
   "errors": [
@@ -111778,8 +116585,7 @@ The number of members in this List.
   "name": "string",
   "region": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string",
-  "stream_key": "string"
+  "rtmps_url": "string"
 }
 ```
 
@@ -111788,13 +116594,12 @@ The number of members in this List.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
-|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
-|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|id|string|true|none|Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
-|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
-|rtmp_url|string|false|none|RTMP ingest URL.|
-|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
-|stream_key|string|false|none|RTMP stream key.|
+|region|string|false|none|Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.|
+|rtmp_url|string|false|none|Ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.|
 
 <h2 id="tocS_ListUserBroadcastsResponse">ListUserBroadcastsResponse</h2>
 <!-- backwards compatibility -->
@@ -112450,12 +117255,15 @@ The number of members in this List.
     "playback_75_count": 0
   },
   "organic_metrics": {
+    "cta_url_click_count": 0,
+    "cta_watch_click_count": 0,
     "playback_0_count": 0,
     "playback_100_count": 0,
     "playback_25_count": 0,
     "playback_50_count": 0,
     "playback_75_count": 0,
-    "view_count": 0
+    "view_count": 0,
+    "watch_time_ms": 0
   },
   "preview_image_url": "string",
   "promoted_metrics": {
@@ -112468,6 +117276,10 @@ The number of members in this List.
   },
   "public_metrics": {
     "view_count": 0
+  },
+  "revenue": {
+    "amount_micros": 0,
+    "currency_code": "string"
   },
   "type": "string",
   "url": "string",
@@ -112491,10 +117303,11 @@ The number of members in this List.
 |height|integer|false|none|none|
 |media_key|string|false|none|none|
 |non_public_metrics|[MediaNonPublicMetrics](#schemamedianonpublicmetrics)|false|none|Nonpublic engagement metrics for the media at the time of the request.|
-|organic_metrics|[MediaOrganicMetrics](#schemamediaorganicmetrics)|false|none|Organic nonpublic engagement metrics for the media at the time of the request.|
+|organic_metrics|[MediaOrganicMetrics](#schemamediaorganicmetrics)|false|none|Lifetime organic engagement metrics for the media at the time of the request.<br>Only available to the user who uploaded the video.|
 |preview_image_url|string|false|none|none|
 |promoted_metrics|[MediaPromotedMetrics](#schemamediapromotedmetrics)|false|none|Promoted nonpublic engagement metrics for the media at the time of the request.|
 |public_metrics|[MediaPublicMetrics](#schemamediapublicmetrics)|false|none|Public engagement metrics for the media at the time of the request.|
+|revenue|[MediaRevenue](#schemamediarevenue)|false|none|Lifetime revenue earned by the media. Only available to the user who<br>uploaded the video, and only to apps holding the `media.library.read` scope.|
 |type|string|false|none|none|
 |url|string|false|none|none|
 |variants|[MediaVariants](#schemamediavariants)|false|none|Each media object may have multiple display or playback variants, with different resolutions or formats.|
@@ -112639,27 +117452,34 @@ Nonpublic engagement metrics for the media at the time of the request.
 
 ```json
 {
+  "cta_url_click_count": 0,
+  "cta_watch_click_count": 0,
   "playback_0_count": 0,
   "playback_100_count": 0,
   "playback_25_count": 0,
   "playback_50_count": 0,
   "playback_75_count": 0,
-  "view_count": 0
+  "view_count": 0,
+  "watch_time_ms": 0
 }
 ```
 
-Organic nonpublic engagement metrics for the media at the time of the request.
+Lifetime organic engagement metrics for the media at the time of the request.
+Only available to the user who uploaded the video.
 
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|cta_url_click_count|integer(int64) \| null|false|none|Number of clicks on the video's call-to-action URL.|
+|cta_watch_click_count|integer(int64) \| null|false|none|Number of clicks on the video's "watch" call to action.|
 |playback_0_count|integer(int64) \| null|false|none|Number of users who started playback (0% quartile) of this video.|
 |playback_100_count|integer(int64) \| null|false|none|Number of users who completed playback (100% quartile) of this video.|
 |playback_25_count|integer(int64) \| null|false|none|Number of users who watched at least 25% of this video.|
 |playback_50_count|integer(int64) \| null|false|none|Number of users who watched at least 50% of this video.|
 |playback_75_count|integer(int64) \| null|false|none|Number of users who watched at least 75% of this video.|
-|view_count|integer(int64) \| null|false|none|The number of organic views of this video. Null when the backend returns quartile data without a view count.|
+|view_count|integer(int64) \| null|false|none|The number of organic views of this video.|
+|watch_time_ms|integer(int64) \| null|false|none|Total time this video has been watched, in milliseconds.|
 
 <h2 id="tocS_MediaPromotedMetrics">MediaPromotedMetrics</h2>
 <!-- backwards compatibility -->
@@ -112712,6 +117532,30 @@ Public engagement metrics for the media at the time of the request.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |view_count|integer(int64)|true|none|The number of times this video has been viewed.|
+
+<h2 id="tocS_MediaRevenue">MediaRevenue</h2>
+<!-- backwards compatibility -->
+<a id="schemamediarevenue"></a>
+<a id="schema_MediaRevenue"></a>
+<a id="tocSmediarevenue"></a>
+<a id="tocsmediarevenue"></a>
+
+```json
+{
+  "amount_micros": 0,
+  "currency_code": "string"
+}
+```
+
+Lifetime revenue earned by the media. Only available to the user who
+uploaded the video, and only to apps holding the `media.library.read` scope.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount_micros|integer(int64)|true|none|Revenue earned by this video, in micro-units (1/1,000,000) of `currency_code`.|
+|currency_code|string|true|none|ISO 4217 code of the currency `amount_micros` is denominated in.|
 
 <h2 id="tocS_MediaUploadRequest">MediaUploadRequest</h2>
 <!-- backwards compatibility -->
@@ -112922,6 +117766,37 @@ Public engagement metrics for the media at the time of the request.
 ```
 
 Each media object may have multiple display or playback variants, with different resolutions or formats.
+
+<h2 id="tocS_MessageRequestNotSupportedProblem">MessageRequestNotSupportedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemamessagerequestnotsupportedproblem"></a>
+<a id="schema_MessageRequestNotSupportedProblem"></a>
+<a id="tocSmessagerequestnotsupportedproblem"></a>
+<a id="tocsmessagerequestnotsupportedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/message-request-not-supported"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/message-request-not-supported|
 
 <h2 id="tocS_MuteBroadcastChatUserRequest">MuteBroadcastChatUserRequest</h2>
 <!-- backwards compatibility -->
@@ -115158,6 +120033,12 @@ Withholding details for withheld content.
 |*oneOf*|[DisallowedResourceProblem](#schemadisallowedresourceproblem)|false|none|none|
 |*oneOf*|[RecipientNotMessageableProblem](#schemarecipientnotmessageableproblem)|false|none|none|
 |*oneOf*|[InternalErrorProblem](#schemainternalerrorproblem)|false|none|none|
+|*oneOf*|[ChatPermissionsUnavailableProblem](#schemachatpermissionsunavailableproblem)|false|none|none|
+|*oneOf*|[EncryptionRequiredProblem](#schemaencryptionrequiredproblem)|false|none|none|
+|*oneOf*|[MessageRequestNotSupportedProblem](#schemamessagerequestnotsupportedproblem)|false|none|none|
+|*oneOf*|[RecipientXchatSetupRequiredProblem](#schemarecipientxchatsetuprequiredproblem)|false|none|none|
+|*oneOf*|[UnencryptedSendNotAllowedProblem](#schemaunencryptedsendnotallowedproblem)|false|none|none|
+|*oneOf*|[XchatSetupRequiredProblem](#schemaxchatsetuprequiredproblem)|false|none|none|
 |*oneOf*|[DmBadAttachmentProblem](#schemadmbadattachmentproblem)|false|none|none|
 |*oneOf*|[DmBadCtaProblem](#schemadmbadctaproblem)|false|none|none|
 |*oneOf*|[DmBadCustomProfileProblem](#schemadmbadcustomprofileproblem)|false|none|none|
@@ -115238,7 +120119,8 @@ Withholding details for withheld content.
   "juicebox_config": {},
   "public_key": "string",
   "public_key_version": "string",
-  "signing_public_key": "string"
+  "signing_public_key": "string",
+  "user_id": "string"
 }
 ```
 
@@ -115251,6 +120133,7 @@ Withholding details for withheld content.
 |public_key|string|false|none|none|
 |public_key_version|string|false|none|none|
 |signing_public_key|string|false|none|none|
+|user_id|string|false|none|ID of the user the key belongs to. Returned by Get Public Keys for Multiple Users.|
 
 <h2 id="tocS_PublicKeyId">PublicKeyId</h2>
 <!-- backwards compatibility -->
@@ -115295,6 +120178,37 @@ Unique identifier of a PublicKey
 |Property|Value|
 |---|---|
 |type|https://api.x.com/2/problems/recipient-not-messageable|
+
+<h2 id="tocS_RecipientXchatSetupRequiredProblem">RecipientXchatSetupRequiredProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemarecipientxchatsetuprequiredproblem"></a>
+<a id="schema_RecipientXchatSetupRequiredProblem"></a>
+<a id="tocSrecipientxchatsetuprequiredproblem"></a>
+<a id="tocsrecipientxchatsetuprequiredproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/recipient-xchat-setup-required"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/recipient-xchat-setup-required|
 
 <h2 id="tocS_RejectChatGroupAdminRequestActionSignatures">RejectChatGroupAdminRequestActionSignatures</h2>
 <!-- backwards compatibility -->
@@ -116011,9 +120925,9 @@ Unique identifier of a PublicKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
-|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
-|user_id|string|false|none|Participant user ID.|
+|encrypted_conversation_key|string|true|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|true|none|Version of the participant's public key used for encryption.|
+|user_id|string|true|none|Participant user ID.|
 
 <h2 id="tocS_RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle">RemoveChatGroupMembersGroupKeyRotationDataRotatedPmkBundle</h2>
 <!-- backwards compatibility -->
@@ -116264,6 +121178,70 @@ Unique identifier of a PublicKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |is_member|boolean|true|none|Indicates whether the user is a member of the List.|
+
+<h2 id="tocS_RemoveMediaFromLibraryRequest">RemoveMediaFromLibraryRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovemediafromlibraryrequest"></a>
+<a id="schema_RemoveMediaFromLibraryRequest"></a>
+<a id="tocSremovemediafromlibraryrequest"></a>
+<a id="tocsremovemediafromlibraryrequest"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_RemoveMediaFromLibraryResponse">RemoveMediaFromLibraryResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovemediafromlibraryresponse"></a>
+<a id="schema_RemoveMediaFromLibraryResponse"></a>
+<a id="tocSremovemediafromlibraryresponse"></a>
+<a id="tocsremovemediafromlibraryresponse"></a>
+
+```json
+{
+  "data": {
+    "deleted": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[RemoveMediaFromLibraryResponseData](#schemaremovemediafromlibraryresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_RemoveMediaFromLibraryResponseData">RemoveMediaFromLibraryResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovemediafromlibraryresponsedata"></a>
+<a id="schema_RemoveMediaFromLibraryResponseData"></a>
+<a id="tocSremovemediafromlibraryresponsedata"></a>
+<a id="tocsremovemediafromlibraryresponsedata"></a>
+
+```json
+{
+  "deleted": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deleted|boolean|true|none|Whether the library item was removed.|
 
 <h2 id="tocS_RepostPostRequest">RepostPostRequest</h2>
 <!-- backwards compatibility -->
@@ -116641,11 +121619,11 @@ Unique identifier of a PublicKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|string|true|none|Unique identifier of the bot's User account.|
-|name|string|false|none|The bot's display name.|
+|name|string|false|none|The bot's display name. May be absent for an org-only bot.|
 |scopes|[string]|false|none|Scopes granted to the new bearer token.|
 |token|string|true|none|The bot's new bearer token. Returned exactly once; store it securely. Every previously issued token for this bot is invalidated.|
 |token_expires_at_ms|integer|false|none|Expiry of the new bearer token, in epoch milliseconds.|
-|username|string|false|none|The bot's X handle (screen name).|
+|username|string|false|none|The bot's X handle (screen name). May be absent for an org-only bot.|
 
 <h2 id="tocS_RuleId">RuleId</h2>
 <!-- backwards compatibility -->
@@ -117394,12 +122372,15 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -117412,6 +122393,10 @@ Everyone invited, except the organizer. Not set for linked calendars.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -117767,6 +122752,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -117780,6 +122766,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -118124,12 +123111,15 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -118142,6 +123132,10 @@ Everyone invited, except the organizer. Not set for linked calendars.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -118497,6 +123491,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -118510,6 +123505,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -118804,12 +123800,15 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -118822,6 +123821,10 @@ Everyone invited, except the organizer. Not set for linked calendars.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -119177,6 +124180,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -119190,6 +124194,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -119308,12 +124313,15 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -119326,6 +124334,10 @@ Everyone invited, except the organizer. Not set for linked calendars.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -119681,6 +124693,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -119694,6 +124707,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -119831,6 +124845,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
       "location": "string",
       "most_recent_post_id": "string",
       "name": "string",
+      "org_only": true,
       "parody": true,
       "pinned_post_id": "string",
       "profile_banner_url": "string",
@@ -119844,6 +124859,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "media_count": 0,
         "post_count": 0
       },
+      "receives_your_chat": "string",
       "receives_your_dm": true,
       "subscriber_count": 0,
       "subscribes_to_you": true,
@@ -119904,12 +124920,15 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -119922,6 +124941,10 @@ Everyone invited, except the organizer. Not set for linked calendars.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -120277,6 +125300,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -120290,6 +125314,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -120336,6 +125361,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
 
 ```json
 {
+  "relay_source": "string",
   "reply_to": "string",
   "text": "string"
 }
@@ -120345,6 +125371,7 @@ Everyone invited, except the organizer. Not set for linked calendars.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|relay_source|string|false|none|The platform this message was relayed from, shown as that platform's icon next to the message: `youtube`, `twitch`, `kick`, `facebook`, `rumble`, `tiktok` or `instagram`. Only apps approved for chat relay may set it.|
 |reply_to|string|false|none|Message id to reply to, returned as timestamp when sent.|
 |text|string|true|none|The chat message text.|
 
@@ -120404,6 +125431,98 @@ Everyone invited, except the organizer. Not set for linked calendars.
 |success|boolean|true|none|Whether the chat message was sent.|
 |timestamp|string|true|none|Server timestamp of the message, in nanoseconds.|
 
+<h2 id="tocS_SendChatMessageContent">SendChatMessageContent</h2>
+<!-- backwards compatibility -->
+<a id="schemasendchatmessagecontent"></a>
+<a id="schema_SendChatMessageContent"></a>
+<a id="tocSsendchatmessagecontent"></a>
+<a id="tocssendchatmessagecontent"></a>
+
+```json
+{
+  "message": {
+    "text": "string"
+  },
+  "reaction_add": {
+    "emoji": "string",
+    "event_id": "string"
+  },
+  "reaction_remove": {
+    "emoji": "string",
+    "event_id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|[SendChatMessageContentMessage](#schemasendchatmessagecontentmessage)|false|none|A text message.|
+|reaction_add|[SendChatMessageContentReactionAdd](#schemasendchatmessagecontentreactionadd)|false|none|Adds a reaction to a message.|
+|reaction_remove|[SendChatMessageContentReactionRemove](#schemasendchatmessagecontentreactionremove)|false|none|Removes a reaction from a message.|
+
+<h2 id="tocS_SendChatMessageContentMessage">SendChatMessageContentMessage</h2>
+<!-- backwards compatibility -->
+<a id="schemasendchatmessagecontentmessage"></a>
+<a id="schema_SendChatMessageContentMessage"></a>
+<a id="tocSsendchatmessagecontentmessage"></a>
+<a id="tocssendchatmessagecontentmessage"></a>
+
+```json
+{
+  "text": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|text|string|true|none|Text of the message.|
+
+<h2 id="tocS_SendChatMessageContentReactionAdd">SendChatMessageContentReactionAdd</h2>
+<!-- backwards compatibility -->
+<a id="schemasendchatmessagecontentreactionadd"></a>
+<a id="schema_SendChatMessageContentReactionAdd"></a>
+<a id="tocSsendchatmessagecontentreactionadd"></a>
+<a id="tocssendchatmessagecontentreactionadd"></a>
+
+```json
+{
+  "emoji": "string",
+  "event_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|emoji|string|true|none|Emoji of the reaction.|
+|event_id|string|true|none|ID of the message event the reaction is on.|
+
+<h2 id="tocS_SendChatMessageContentReactionRemove">SendChatMessageContentReactionRemove</h2>
+<!-- backwards compatibility -->
+<a id="schemasendchatmessagecontentreactionremove"></a>
+<a id="schema_SendChatMessageContentReactionRemove"></a>
+<a id="tocSsendchatmessagecontentreactionremove"></a>
+<a id="tocssendchatmessagecontentreactionremove"></a>
+
+```json
+{
+  "emoji": "string",
+  "event_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|emoji|string|true|none|Emoji of the reaction.|
+|event_id|string|true|none|ID of the message event the reaction is on.|
+
 <h2 id="tocS_SendChatMessageRequest">SendChatMessageRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemasendchatmessagerequest"></a>
@@ -120413,6 +125532,19 @@ Everyone invited, except the organizer. Not set for linked calendars.
 
 ```json
 {
+  "content": {
+    "message": {
+      "text": "string"
+    },
+    "reaction_add": {
+      "emoji": "string",
+      "event_id": "string"
+    },
+    "reaction_remove": {
+      "emoji": "string",
+      "event_id": "string"
+    }
+  },
   "conversation_token": "string",
   "encoded_message_create_event": "string",
   "encoded_message_event_signature": "string",
@@ -120421,15 +125553,20 @@ Everyone invited, except the organizer. Not set for linked calendars.
 }
 ```
 
+At least one of `encoded_message_create_event`, `content` is required.
+
 ### Properties
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|content|[SendChatMessageContent](#schemasendchatmessagecontent)|false|none|Unencrypted fallback: use only when the recipient's `receives_your_chat` is `unencrypted`.|
 |conversation_token|string|false|none|Optional conversation token.|
-|encoded_message_create_event|string|true|none|Base64-encoded Thrift MessageCreateEvent containing encrypted message contents.|
+|encoded_message_create_event|string|false|none|Default. The end-to-end encrypted message: a base64 Thrift MessageCreateEvent from the Chat XDK.|
 |encoded_message_event_signature|string|false|none|Base64-encoded Thrift MessageEventSignature for message verification.|
 |message_id|string|true|none|Unique identifier for this message.|
 |xdk_version|string|false|none|Version of the Chat XDK that produced the payload.|
+|*anyOf*|object|false|none|none|
+|*anyOf*|object|false|none|none|
 
 <h2 id="tocS_SendChatMessageResponse">SendChatMessageResponse</h2>
 <!-- backwards compatibility -->
@@ -120781,12 +125918,15 @@ Likes compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -120799,6 +125939,10 @@ Likes compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -121154,6 +126298,7 @@ Likes compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -121167,6 +126312,7 @@ Likes compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -121255,12 +126401,15 @@ Likes compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -121273,6 +126422,10 @@ Likes compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -121628,6 +126781,7 @@ Likes compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -121641,6 +126795,7 @@ Likes compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -121958,12 +127113,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -121976,6 +127134,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -122331,6 +127493,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -122344,6 +127507,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -122628,12 +127792,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -122646,6 +127813,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -123001,6 +128172,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -123014,6 +128186,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -123298,12 +128471,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -123316,6 +128492,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -123671,6 +128851,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -123684,6 +128865,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -123968,12 +129150,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -123986,6 +129171,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -124341,6 +129530,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -124354,6 +129544,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -124638,12 +129829,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -124656,6 +129850,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -125011,6 +130209,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -125024,6 +130223,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -125308,12 +130508,15 @@ Tweet compliance stream events.
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -125326,6 +130529,10 @@ Tweet compliance stream events.
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -125681,6 +130888,7 @@ Tweet compliance stream events.
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -125694,6 +130902,7 @@ Tweet compliance stream events.
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -125987,12 +131196,15 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -126005,6 +131217,10 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -126360,6 +131576,7 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -126373,6 +131590,7 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -126657,12 +131875,15 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
           "playback_75_count": 0
         },
         "organic_metrics": {
+          "cta_url_click_count": 0,
+          "cta_watch_click_count": 0,
           "playback_0_count": 0,
           "playback_100_count": 0,
           "playback_25_count": 0,
           "playback_50_count": 0,
           "playback_75_count": 0,
-          "view_count": 0
+          "view_count": 0,
+          "watch_time_ms": 0
         },
         "preview_image_url": "string",
         "promoted_metrics": {
@@ -126675,6 +131896,10 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
         },
         "public_metrics": {
           "view_count": 0
+        },
+        "revenue": {
+          "amount_micros": 0,
+          "currency_code": "string"
         },
         "type": "string",
         "url": "string",
@@ -127030,6 +132255,7 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
         "location": "string",
         "most_recent_post_id": "string",
         "name": "string",
+        "org_only": true,
         "parody": true,
         "pinned_post_id": "string",
         "profile_banner_url": "string",
@@ -127043,6 +132269,7 @@ A Tweet or error that can be returned by the streaming Tweet API. The values ret
           "media_count": 0,
           "post_count": 0
         },
+        "receives_your_chat": "string",
         "receives_your_dm": true,
         "subscriber_count": 0,
         "subscribes_to_you": true,
@@ -127149,6 +132376,106 @@ User compliance stream events.
 |---|---|---|---|---|
 |trend_name|string|false|none|none|
 |tweet_count|integer|false|none|none|
+
+<h2 id="tocS_TrendActivityLocation">TrendActivityLocation</h2>
+<!-- backwards compatibility -->
+<a id="schematrendactivitylocation"></a>
+<a id="schema_TrendActivityLocation"></a>
+<a id="tocStrendactivitylocation"></a>
+<a id="tocstrendactivitylocation"></a>
+
+```json
+{
+  "country": "string",
+  "country_code": "string",
+  "name": "string",
+  "parent_id": 0,
+  "place_type": "town",
+  "woeid": 0
+}
+```
+
+The location where the trend surfaced.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|country|string|false|none|none|
+|country_code|string|false|none|none|
+|name|string|true|none|none|
+|parent_id|integer|false|none|none|
+|place_type|string|false|none|none|
+|woeid|integer|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|place_type|town|
+|place_type|country|
+|place_type|supername|
+
+<h2 id="tocS_TrendActivityResponsePayload">TrendActivityResponsePayload</h2>
+<!-- backwards compatibility -->
+<a id="schematrendactivityresponsepayload"></a>
+<a id="schema_TrendActivityResponsePayload"></a>
+<a id="tocStrendactivityresponsepayload"></a>
+<a id="tocstrendactivityresponsepayload"></a>
+
+```json
+{
+  "location": {
+    "country": "string",
+    "country_code": "string",
+    "name": "string",
+    "parent_id": 0,
+    "place_type": "town",
+    "woeid": 0
+  },
+  "trend_name": "string",
+  "tweet_count": 0
+}
+```
+
+A newly surfaced trend in a WOEID location.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|location|[TrendActivityLocation](#schematrendactivitylocation)|true|none|The location where the trend surfaced.|
+|trend_name|string|true|none|none|
+|tweet_count|integer|false|none|none|
+
+<h2 id="tocS_TrendLocation">TrendLocation</h2>
+<!-- backwards compatibility -->
+<a id="schematrendlocation"></a>
+<a id="schema_TrendLocation"></a>
+<a id="tocStrendlocation"></a>
+<a id="tocstrendlocation"></a>
+
+```json
+{
+  "country": "string",
+  "country_code": "string",
+  "name": "string",
+  "parent_id": 0,
+  "place_type": "string",
+  "woeid": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|country|string|false|none|The country the location is in. Omitted for a location that is not in one country, such as Worldwide.|
+|country_code|string|false|none|The two-letter code of the location's country, such as `US`. Omitted when `country` is.|
+|name|string|false|none|The location's name.|
+|parent_id|integer|false|none|The WOEID of the location that contains this one, such as a town's country. Omitted for a location with no parent.|
+|place_type|string|false|none|The kind of place: `town`, `country`, or `supername` (Worldwide). Omitted for a location whose kind is not known.|
+|woeid|integer|false|none|The location's WOEID. Pass it to `GET /2/trends/by/woeid/{woeid}`.|
 
 <h2 id="tocS_UnarchiveChatConversationActionSignatures">UnarchiveChatConversationActionSignatures</h2>
 <!-- backwards compatibility -->
@@ -127386,6 +132713,37 @@ User compliance stream events.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |blocked|boolean|true|none|Indicates whether the target user is DM-blocked.|
+
+<h2 id="tocS_UnencryptedSendNotAllowedProblem">UnencryptedSendNotAllowedProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemaunencryptedsendnotallowedproblem"></a>
+<a id="schema_UnencryptedSendNotAllowedProblem"></a>
+<a id="tocSunencryptedsendnotallowedproblem"></a>
+<a id="tocsunencryptedsendnotallowedproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/unencrypted-send-not-allowed"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/unencrypted-send-not-allowed|
 
 <h2 id="tocS_UnfollowListResponse">UnfollowListResponse</h2>
 <!-- backwards compatibility -->
@@ -128207,7 +133565,7 @@ User compliance stream events.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |display_name|string|false|none|New display name.|
-|dm_permission|string|false|none|Who may send Direct Messages to the bot.|
+|dm_permission|string|false|none|Who may send the bot Direct Messages: everyone, or premium for verified senders only. Premium isn't meant for org-only bots, since everyone in an org-only bot's developer account should be able to message it, verified or not; requesting premium for one may be refused with a 400. The no_one value is deprecated and kept only so bots that already use it can keep it; choosing it for any other bot may be refused with a 400.|
 |handle|string|false|none|New handle (X screen name): 5-15 characters, letters, numbers, or underscores.|
 
 #### Enumerated Values
@@ -128270,6 +133628,112 @@ User compliance stream events.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |updated|boolean|true|none|Whether the bot was updated.|
+
+<h2 id="tocS_UpdateBroadcastRequest">UpdateBroadcastRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcastrequest"></a>
+<a id="schema_UpdateBroadcastRequest"></a>
+<a id="tocSupdatebroadcastrequest"></a>
+<a id="tocsupdatebroadcastrequest"></a>
+
+```json
+{
+  "chat_option": 0,
+  "live_category_id": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|live_category_id|string|false|none|New live category, e.g. `gaming`. Ids come from GET /2/broadcasts/categories; an unknown id is a 400. An empty string removes the broadcast's category.|
+|title|string|false|none|New broadcast title.|
+
+<h2 id="tocS_UpdateBroadcastResponse">UpdateBroadcastResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcastresponse"></a>
+<a id="schema_UpdateBroadcastResponse"></a>
+<a id="tocSupdatebroadcastresponse"></a>
+<a id="tocsupdatebroadcastresponse"></a>
+
+```json
+{
+  "data": {
+    "broadcast_id": "string",
+    "chat_option": 0,
+    "id": "string",
+    "language": "string",
+    "live_category_id": "string",
+    "media_key": "string",
+    "share_url": "string",
+    "start_ms": "string",
+    "state": "string",
+    "title": "string",
+    "tweet_id": "string"
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UpdateBroadcastResponseData](#schemaupdatebroadcastresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UpdateBroadcastResponseData">UpdateBroadcastResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatebroadcastresponsedata"></a>
+<a id="schema_UpdateBroadcastResponseData"></a>
+<a id="tocSupdatebroadcastresponsedata"></a>
+<a id="tocsupdatebroadcastresponsedata"></a>
+
+```json
+{
+  "broadcast_id": "string",
+  "chat_option": 0,
+  "id": "string",
+  "language": "string",
+  "live_category_id": "string",
+  "media_key": "string",
+  "share_url": "string",
+  "start_ms": "string",
+  "state": "string",
+  "title": "string",
+  "tweet_id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|broadcast_id|string|true|none|Broadcast id; the same as `id`.|
+|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows.|
+|id|string|true|none|Broadcast id.|
+|language|string|false|none|Broadcast language.|
+|live_category_id|string|false|none|The broadcast's live category. Missing when it has none.|
+|media_key|string|false|none|Media key of the broadcast.|
+|share_url|string|true|none|The broadcast's watch page.|
+|start_ms|string|false|none|Start time, milliseconds since Unix epoch (decimal string).|
+|state|string|true|none|Broadcast state, `RUNNING` once live.|
+|title|string|false|none|Broadcast title.|
+|tweet_id|string|false|none|Id of the Post announcing the broadcast. Missing when the Post hasn't been created yet, was suppressed with `should_not_tweet`, or could not be created.|
 
 <h2 id="tocS_UpdateBroadcastStateRequest">UpdateBroadcastStateRequest</h2>
 <!-- backwards compatibility -->
@@ -129165,9 +134629,9 @@ At least one of `add_member`, `edit_group_info`, `send_message`, `start_call`, `
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|encrypted_conversation_key|string|false|none|Conversation key encrypted with this participant's public key.|
-|public_key_version|string|false|none|Version of the participant's public key used for encryption.|
-|user_id|string|false|none|Participant user ID.|
+|encrypted_conversation_key|string|true|none|Conversation key encrypted with this participant's public key.|
+|public_key_version|string|true|none|Version of the participant's public key used for encryption.|
+|user_id|string|true|none|Participant user ID.|
 
 <h2 id="tocS_UpdateChatGroupRequest">UpdateChatGroupRequest</h2>
 <!-- backwards compatibility -->
@@ -129409,7 +134873,7 @@ At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quali
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_dms_from|string|false|none|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows).|
+|allow_dms_from|string|false|none|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.|
 |always_allow_dms_from_subscribers|boolean|false|none|Whether the user's subscribers can always message them regardless of allow_dms_from.|
 |av_settings|[UpdateChatSettingsAvSettings](#schemaupdatechatsettingsavsettings)|false|none|Audio and video call settings.|
 |dm_quality_filter|string|false|none|Low-quality message request filter: `enabled` (low-quality requests go to a separate folder) or `disabled` (all requests stay in the main inbox).|
@@ -129509,7 +134973,7 @@ At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quali
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|allow_dms_from|string|false|none|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows).|
+|allow_dms_from|string|false|none|Who can send the user messages: `all` (anyone), `verified` (verified accounts only), or `following` (accounts the user follows). A bot may get a 400 for choosing `following` when it doesn't already have it, and an org-only bot for choosing `verified`.|
 |always_allow_dms_from_subscribers|boolean|false|none|Whether the user's subscribers can always message them regardless of allow_dms_from.|
 |av_settings|[UpdateChatSettingsResponseDataAvSettings](#schemaupdatechatsettingsresponsedataavsettings)|false|none|Audio and video call settings.|
 |dm_quality_filter|string|false|none|Low-quality message request filter: `enabled` (low-quality requests go to a separate folder) or `disabled` (all requests stay in the main inbox).|
@@ -129655,6 +135119,138 @@ At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quali
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |updated|boolean|true|none|Indicates whether the List was updated.|
+
+<h2 id="tocS_UpdateMediaInLibraryMonetization">UpdateMediaInLibraryMonetization</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatemediainlibrarymonetization"></a>
+<a id="schema_UpdateMediaInLibraryMonetization"></a>
+<a id="tocSupdatemediainlibrarymonetization"></a>
+<a id="tocsupdatemediainlibrarymonetization"></a>
+
+```json
+{
+  "allowed_countries": [
+    "string"
+  ],
+  "blocked_advertiser_category_ids": [
+    0
+  ],
+  "blocked_advertiser_ids": [
+    "string"
+  ],
+  "enabled": true,
+  "program_id": "string",
+  "video_category_ids": [
+    0
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allowed_countries|[string]|false|none|ISO 3166-1 alpha-2 codes of the only countries the video is monetized in. Omit to monetize everywhere.|
+|blocked_advertiser_category_ids|[integer]|false|none|Advertiser categories (from the categories endpoint) whose ads may not run against the video.|
+|blocked_advertiser_ids|[string]|false|none|Advertiser account ids whose ads may not run against the video.|
+|enabled|boolean|false|none|Whether ads may run against the video. Requires the account to be enrolled in video monetization.|
+|program_id|string|false|none|Amplify program to monetize the video through, instead of `video_category_ids`.|
+|video_category_ids|[integer]|false|none|Video category ids (from the categories endpoint) describing the content; at most one when creating. Required when enabled, unless `program_id` is set.|
+
+<h2 id="tocS_UpdateMediaInLibraryRequest">UpdateMediaInLibraryRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatemediainlibraryrequest"></a>
+<a id="schema_UpdateMediaInLibraryRequest"></a>
+<a id="tocSupdatemediainlibraryrequest"></a>
+<a id="tocsupdatemediainlibraryrequest"></a>
+
+```json
+{
+  "description": "string",
+  "label": "string",
+  "monetization": {
+    "allowed_countries": [
+      "string"
+    ],
+    "blocked_advertiser_category_ids": [
+      0
+    ],
+    "blocked_advertiser_ids": [
+      "string"
+    ],
+    "enabled": true,
+    "program_id": "string",
+    "video_category_ids": [
+      0
+    ]
+  },
+  "name": "string",
+  "title": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|Description shown with the video in the player card.|
+|label|string|false|none|Label of the item in the library.|
+|monetization|[UpdateMediaInLibraryMonetization](#schemaupdatemediainlibrarymonetization)|false|none|Monetization settings. Videos only.|
+|name|string|false|none|Name of the item in the library.|
+|title|string|false|none|Title shown with the video in the player card.|
+
+<h2 id="tocS_UpdateMediaInLibraryResponse">UpdateMediaInLibraryResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatemediainlibraryresponse"></a>
+<a id="schema_UpdateMediaInLibraryResponse"></a>
+<a id="tocSupdatemediainlibraryresponse"></a>
+<a id="tocsupdatemediainlibraryresponse"></a>
+
+```json
+{
+  "data": {
+    "updated": true
+  },
+  "errors": [
+    {
+      "detail": "string",
+      "parameter": "string",
+      "resource_id": "string",
+      "resource_type": "string",
+      "status": 0,
+      "title": "string",
+      "type": "https://api.x.com/2/problems/resource-not-found",
+      "value": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[UpdateMediaInLibraryResponseData](#schemaupdatemediainlibraryresponsedata)|false|none|none|
+|errors|[[Problem](#schemaproblem)]|false|none|none|
+
+<h2 id="tocS_UpdateMediaInLibraryResponseData">UpdateMediaInLibraryResponseData</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatemediainlibraryresponsedata"></a>
+<a id="schema_UpdateMediaInLibraryResponseData"></a>
+<a id="tocSupdatemediainlibraryresponsedata"></a>
+<a id="tocsupdatemediainlibraryresponsedata"></a>
+
+```json
+{
+  "updated": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|updated|boolean|true|none|Whether the library item was updated.|
 
 <h2 id="tocS_UpdateRulesAdd">UpdateRulesAdd</h2>
 <!-- backwards compatibility -->
@@ -129840,7 +135436,7 @@ At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quali
 |scheduled_broadcast_id|string|true|none|Numeric scheduler id from create/list/get.|
 |scheduled_end_ms|string|true|none|End time, ms since Unix epoch (decimal string).|
 |scheduled_start_ms|string|true|none|Start time, ms since Unix epoch (decimal string).|
-|source_id|string|false|none|Ingest / source id.|
+|source_id|string|false|none|Source to bind: a source's `id` from GET /2/sources. A stream key is also accepted but deprecated; stream keys stop being accepted when the /2/users/:id/sources and /2/users/:id/broadcasts routes reach end of life on January 1, 2027.|
 |thumbnail_media_id|string|false|none|Pre-live slate media id (numeric string).|
 |title|string|false|none|Title / status text.|
 
@@ -129933,7 +135529,7 @@ At least one of `allow_dms_from`, `always_allow_dms_from_subscribers`, `dm_quali
 |scheduled_broadcast_id|string|false|none|Numeric scheduler id. Required in the update request body.|
 |scheduled_end_ms|string|false|none|Scheduled end, milliseconds since Unix epoch (decimal string).|
 |scheduled_start_ms|string|false|none|Scheduled start, milliseconds since Unix epoch (decimal string).|
-|source_id|string|false|none|Bound ingest / source id (`rtmp_stream_key`).|
+|source_id|string|false|none|Id of the bound source, as returned by GET /2/sources. Omitted when unknown.|
 |state|string|false|none|Scheduler state: `Created` or `Scheduled` before start, then `Running`, `Ended`, or `Error`.|
 |telecast_id|string|false|none|Deprecated: always null for new schedules.|
 |thumbnail_media_id|string|false|none|Optional pre-live slate media id.|
@@ -130083,8 +135679,7 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
     "name": "string",
     "region": "string",
     "rtmp_url": "string",
-    "rtmps_url": "string",
-    "stream_key": "string"
+    "rtmps_url": "string"
   },
   "errors": [
     {
@@ -130123,8 +135718,7 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
   "name": "string",
   "region": "string",
   "rtmp_url": "string",
-  "rtmps_url": "string",
-  "stream_key": "string"
+  "rtmps_url": "string"
 }
 ```
 
@@ -130133,13 +135727,12 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |created_at_ms|string|false|none|Creation time, milliseconds since Unix epoch (decimal string).|
-|id|string|true|none|Source id; the `source_id` a scheduled broadcast binds to. Currently equal to `stream_key`.|
-|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source. Publishing a broadcast on the source needs it.|
+|id|string|true|none|Source id, 19 decimal digits; the `source_id` that POST /2/broadcasts and scheduled broadcasts take. Not a credential: read the stream key with GET /2/sources/:id/stream_key.|
+|is_stream_active|boolean|false|none|Whether an encoder is currently sending video to the source.|
 |name|string|false|none|Label for the source.|
-|region|string|false|none|Ingest region: `atla` or `pdxa` for on-prem sources, the AWS region (e.g. `us-east-1`) for sources created before the move to on-prem.|
-|rtmp_url|string|false|none|RTMP ingest URL.|
-|rtmps_url|string|false|none|RTMPS ingest URL (port 443).|
-|stream_key|string|false|none|RTMP stream key.|
+|region|string|false|none|Region of the ingest location serving the source: `us-east-1` or `us-west-2`. Sources created before October 31, 2026 keep the AWS region they were created in.|
+|rtmp_url|string|false|none|Ingest URL.|
+|rtmps_url|string|false|none|RTMPS ingest URL (port 443). Configure your encoder with this URL and the source's stream key.|
 
 <h2 id="tocS_UpdateUserBroadcastStateRequest">UpdateUserBroadcastStateRequest</h2>
 <!-- backwards compatibility -->
@@ -130162,9 +135755,9 @@ At least one of `start_time`, `duration_minutes`, `title`, `description`, `invit
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|chat_option|integer|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. `PUBLISH` only.|
+|chat_option|integer \| string|false|none|Who can chat: 0 default, 1 chat off, 2 everyone, 3 verified accounts, 4 accounts the host follows, 5 the host's subscribers, 6 accounts followed by an account the host follows. A numeric string is also accepted. `PUBLISH` only.|
 |locale|string|false|none|Broadcast language. `PUBLISH` only.|
-|should_not_tweet|boolean|false|none|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `PUBLISH` only.|
+|should_not_tweet|boolean \| string \| integer|false|none|Skip the announcing Post. Unset keeps the broadcast's setting, which defaults to posting. `"true"`, `"false"`, `1` and `0` are also accepted. `PUBLISH` only.|
 |state|string|true|none|`PUBLISH` or `END`.|
 |title|string|false|none|Broadcast title. `PUBLISH` only.|
 
@@ -130816,6 +136409,7 @@ Project-level daily Post usage for the caller's project.
   "location": "string",
   "most_recent_post_id": "string",
   "name": "string",
+  "org_only": true,
   "parody": true,
   "pinned_post_id": "string",
   "profile_banner_url": "string",
@@ -130829,6 +136423,7 @@ Project-level daily Post usage for the caller's project.
     "media_count": 0,
     "post_count": 0
   },
+  "receives_your_chat": "string",
   "receives_your_dm": true,
   "subscriber_count": 0,
   "subscribes_to_you": true,
@@ -130866,13 +136461,15 @@ Project-level daily Post usage for the caller's project.
 |location|string|false|none|The location specified in the User's profile, if the User provided one. As this is a freeform value, it may not indicate a valid location.|
 |most_recent_post_id|string|false|none|Unique identifier of this User's most recent Post.|
 |name|string|false|none|The friendly name of this User, as shown on their profile.|
+|org_only|boolean|false|none|Indicates if this User is an org-only bot, which only members of its developer account can add to group chats. Omitted when it can't be determined for you, so it is never reported as false in that case. A bot can read its own value with its own token.|
 |parody|boolean|false|none|Indicates if this User is a parody account.|
 |pinned_post_id|string|false|none|Unique identifier of this User's pinned Post.|
 |profile_banner_url|string|false|none|The URL to the profile banner for this User.|
 |profile_image_url|string|false|none|The URL to the profile image for this User.|
 |protected|boolean|false|none|Indicates if this User has chosen to protect their Posts (in other words, if this User's Posts are private).|
 |public_metrics|[UserPublicMetrics](#schemauserpublicmetrics)|false|none|A list of metrics for this User.|
-|receives_your_dm|boolean|false|none|Indicates if you can send a DM to this User.|
+|receives_your_chat|string|false|none|How you can send a Chat message to this User: encrypted (end-to-end, the default), unencrypted (X Chat can't encrypt your 1:1 chat, so send plaintext `content` instead), or none (you can't message them).|
+|receives_your_dm|boolean|false|none|Indicates if you can send a DM to this User. Omitted when the DM permission can't be determined, so it is never reported as false in that case.|
 |subscriber_count|integer|false|none|The number of Premium subscribers of this User.|
 |subscribes_to_you|boolean|false|none|Indicates if this User subscribes to you.|
 |subscription|[UserSubscription](#schemausersubscription)|false|none|The subscription relationship between this User and you.|
@@ -131750,3 +137347,34 @@ Withholding details for withheld content.
 ```
 
 Unique identifier of a WebhookConfig
+
+<h2 id="tocS_XchatSetupRequiredProblem">XchatSetupRequiredProblem</h2>
+<!-- backwards compatibility -->
+<a id="schemaxchatsetuprequiredproblem"></a>
+<a id="schema_XchatSetupRequiredProblem"></a>
+<a id="tocSxchatsetuprequiredproblem"></a>
+<a id="tocsxchatsetuprequiredproblem"></a>
+
+```json
+{
+  "detail": "string",
+  "status": 0,
+  "title": "string",
+  "type": "https://api.x.com/2/problems/xchat-setup-required"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detail|string|true|none|none|
+|status|integer|false|none|none|
+|title|string|true|none|none|
+|type|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|https://api.x.com/2/problems/xchat-setup-required|

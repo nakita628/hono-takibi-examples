@@ -153,7 +153,7 @@ A failed API response returns a HTTP code greater or equal to 400. Additionally,
 }
 ```
 
-> For information on errors' properties and error codes, check [Errors](/doc/openapi/openapi-description#errors).
+> For information on errors' properties and error codes, check [Errors](/aiven/openapi_docs/openapi-description#errors).
 
 # Get started
 
@@ -219,7 +219,7 @@ In an API response, one or more errors may be included in the ``errors`` array o
   * 500 - Internal Server Error
 
 * ``message`` (required) is human-readable information on the error.
-* ``error_code`` is a machine-readable information on the error (see [Error codes](/doc/openapi/openapi-description#error-codes)).
+* ``error_code`` is a machine-readable information on the error (see [Error codes](/aiven/openapi_docs/openapi-description#error-codes)).
 
 ## Error codes
 
@@ -250,8 +250,17 @@ Machine-readable ``error_code`` fields are progressively added to Aiven endpoint
 - `address_already_belongs_to_organization`
 - `address_in_use`
 - `address_not_found`
+- `ai_gateway_budget_setup_required`
+- `ai_gateway_invalid_key_owner`
+- `ai_gateway_key_budget_above_default`
+- `ai_gateway_key_budget_exception_needs_organization_admin`
+- `ai_gateway_key_budget_reset_needs_organization_admin`
+- `ai_gateway_key_budget_unlimited_needs_organization_admin`
+- `ai_gateway_key_default_monthly_required`
 - `ai_gateway_key_not_active`
 - `ai_gateway_key_not_found`
+- `ai_gateway_project_budget_needs_organization_admin`
+- `ai_gateway_project_in_other_organization`
 - `ai_gateway_unavailable`
 - `api_client_ip_allowlist_blocks_caller`
 - `application_environment_secrets_read_forbidden`
@@ -264,6 +273,7 @@ Machine-readable ``error_code`` fields are progressively added to Aiven endpoint
 - `authentication_method_not_found`
 - `backup_failed`
 - `bad_request`
+- `base_not_in_head`
 - `billing_address_not_found`
 - `billing_customer_id_not_found`
 - `billing_group_not_found`
@@ -366,10 +376,11 @@ Machine-readable ``error_code`` fields are progressively added to Aiven endpoint
 - `marketplace_subscription_no_access`
 - `metadata_validation_failed`
 - `mfa_required_by_organization`
-- `mp_account_with_active_subscription_deleted`
-- `mp_account_with_commitment_deleted`
+- `missing_repository_source`
+- `missing_vcs_integration_id`
 - `mp_account_with_support_contract_deleted`
 - `mp_subscription_not_found`
+- `mysql_free_tier_discontinued`
 - `nested_account_cannot_have_authentication_method`
 - `nested_account_cannot_have_user_groups`
 - `new_subnet_id_required`
@@ -433,11 +444,15 @@ Machine-readable ``error_code`` fields are progressively added to Aiven endpoint
 - `project_not_found`
 - `project_without_billing_group_must_be_assigned_from_account`
 - `query_validation_failed`
+- `ref_not_found`
 - `replication_already_exists`
 - `replication_config_invalid`
 - `replication_not_found`
 - `replication_service_not_found`
+- `repository_lookup_failed`
+- `repository_not_accessible`
 - `repository_not_found`
+- `repository_url_has_credentials`
 - `request_already_exists`
 - `request_forbidden`
 - `request_not_found`
@@ -534,6 +549,7 @@ Machine-readable ``error_code`` fields are progressively added to Aiven endpoint
 - `user_personal_tokens_cannot_be_disabled`
 - `user_role_not_allowed_to_perform_operation`
 - `user_saml_authentication_method_not_allowed`
+- `user_suspended_restricted_access`
 - `user_weblink_action_expired`
 - `username_is_invalid`
 - `username_is_reserved`
@@ -617,7 +633,7 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 
 <p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
 
-<p>Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. Keys are listed newest first and one page at a time; follow <code>next</code> until it comes back null to read the whole list.</p>
+<p>Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. Keys are listed newest first and one page at a time; follow <code>next</code> until it comes back null to read the whole list. With an owner-type filter, a page may be empty while <code>next</code> is set; keep following that cursor.</p>
 
 <h3 id="list-the-ai-gateway-keys-of-a-project-parameters">Parameters</h3>
 
@@ -629,6 +645,8 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 |cursor|query|string|false|Pagination cursor|
 |limit|query|integer|false|Limit results to this number|
 |order_by|query|string|false|Order by creation time, newest first by default|
+|owner_user_id|query|string|false|Filter keys by owner user ID|
+|owner_type|query|string|false|Filter keys by owner type; deleted owners match neither type|
 
 #### Enumerated Values
 
@@ -636,6 +654,8 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 |---|---|
 |order_by|asc|
 |order_by|desc|
+|owner_type|human|
+|owner_type|application_user|
 
 > Example responses
 
@@ -643,16 +663,43 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 
 ```json
 {
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
   "first": "string",
   "keys": [
     {
+      "budget": {},
       "create_time": "string",
       "description": "string",
       "expiry_time": "string",
       "key_id": "stringstringstringstringstringstring",
       "key_suffix": "strin",
       "name": "string",
-      "revocation_time": "string"
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "revocation_time": "string",
+      "spend": {
+        "daily_spent_usd": "string",
+        "metered_until": "string",
+        "monthly_spent_usd": "string"
+      }
     }
   ],
   "last": "string",
@@ -708,9 +755,9 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Response|[AIGatewayKeyListResponse](#schemaaigatewaykeylistresponse)|
-|400|Bad Request|The cursor, limit or order_by is not valid|Inline|
+|400|Bad Request|The cursor, limit, order_by, owner_user_id or owner_type is not valid|Inline|
 |403|Forbidden|AI Gateway is not enabled for this organization|Inline|
-|503|Service Unavailable|AI Gateway keys are unavailable|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
 
 <h3 id="list-the-ai-gateway-keys-of-a-project-responseschema">Response Schema</h3>
 
@@ -777,9 +824,14 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "budget": {
+      "daily": null,
+      "monthly": null
+    },
     "description": "Support chatbot",
     "expiry_time": "2026-12-31T23:59:59Z",
-    "name": "chatbot"
+    "name": "chatbot",
+    "owner_user_id": "u123456"
   }'
 ```
 
@@ -793,9 +845,14 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 
 ```json
 {
+  "budget": {
+    "daily": null,
+    "monthly": null
+  },
   "description": "Support chatbot",
   "expiry_time": "2026-12-31T23:59:59Z",
-  "name": "chatbot"
+  "name": "chatbot",
+  "owner_user_id": "u123456"
 }
 ```
 
@@ -805,9 +862,11 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 |---|---|---|---|---|
 |project|path|string|true|Project name|
 |body|body|[AIGatewayKeyCreateRequestBody](#schemaaigatewaykeycreaterequestbody)|false|none|
+|» budget|body|object|false|Caps on the key's spend, unless left as they are|
 |» description|body|string|false|Longer description on how the key is used|
 |» expiry_time|body|string|false|Time the key expires, or null for a key that never expires|
 |» name|body|string|true|Short human readable identifier for the key|
+|» owner_user_id|body|string|false|User ID of the key owner; defaults to the calling user|
 
 > Example responses
 
@@ -815,6 +874,7 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 
 ```json
 {
+  "budget": {},
   "create_time": "string",
   "description": "string",
   "expiry_time": "string",
@@ -822,7 +882,19 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
   "key_id": "stringstringstringstringstringstring",
   "key_suffix": "strin",
   "name": "string",
-  "revocation_time": "string"
+  "owner": {
+    "is_application_user": true,
+    "real_name": "string",
+    "user_email": "string",
+    "user_id": "string"
+  },
+  "owner_user_id": "string",
+  "revocation_time": "string",
+  "spend": {
+    "daily_spent_usd": "string",
+    "metered_until": "string",
+    "monthly_spent_usd": "string"
+  }
 }
 ```
 
@@ -848,7 +920,21 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
   "errors": [
     {
       "message": "string",
-      "error_code": "feature_not_enabled"
+      "error_code": "request_forbidden"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_budget_setup_required"
     }
   ]
 }
@@ -873,9 +959,10 @@ curl https://api.aiven.io/project/string/ai-gateway/keys \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Response|[AIGatewayKeyCreateResponse](#schemaaigatewaykeycreateresponse)|
-|400|Bad Request|The name is blank, the expiry time is unreadable or in the past, or the project has reached its AI Gateway key limit|Inline|
-|403|Forbidden|AI Gateway is not enabled for this organization|Inline|
-|503|Service Unavailable|AI Gateway keys are unavailable|Inline|
+|400|Bad Request|The name is blank, the expiry time is unreadable or in the past, a budget period is not valid, the project has reached its AI Gateway key limit, or the owner lacks an active account, active organization membership or effective access to this project|Inline|
+|403|Forbidden|Administrator access is required to assign another owner, AI Gateway is not enabled for this organization, or the budget needs an organization admin|Inline|
+|409|Conflict|The budget sets a limit only an organization admin may set before the organization's AI Gateway budgets are set up|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
 
 <h3 id="create-an-ai-gateway-key-responseschema">Response Schema</h3>
 
@@ -886,13 +973,14 @@ Status Code **400**
 |message|string|false|none|none|
 |errors|[object]|false|none|none|
 |» message|string|false|none|none|
-|» error_code|string|false|none|bad_request: Bad request|
+|» error_code|string|false|none|bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |» error_code|bad_request|
+|» error_code|ai_gateway_invalid_key_owner|
 
 Status Code **403**
 
@@ -901,13 +989,33 @@ Status Code **403**
 |message|string|false|none|none|
 |errors|[object]|false|none|none|
 |» message|string|false|none|none|
-|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it|
+|» error_code|string|false|none|request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_key_budget_above_default: Only an organization admin can set an AI Gateway key budget above the organization's default key budget. ai_gateway_key_budget_unlimited_needs_organization_admin: Only an organization admin can exempt an AI Gateway key from the organization's default key budget. ai_gateway_key_budget_exception_needs_organization_admin: Only an organization admin can change an AI Gateway key budget that an organization admin set. ai_gateway_key_budget_reset_needs_organization_admin: Only an organization admin can reset an AI Gateway key budget to the organization's default|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
+|» error_code|request_forbidden|
 |» error_code|feature_not_enabled|
+|» error_code|ai_gateway_key_budget_above_default|
+|» error_code|ai_gateway_key_budget_unlimited_needs_organization_admin|
+|» error_code|ai_gateway_key_budget_exception_needs_organization_admin|
+|» error_code|ai_gateway_key_budget_reset_needs_organization_admin|
+
+Status Code **409**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_budget_setup_required|
 
 Status Code **503**
 
@@ -961,13 +1069,26 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 ```json
 {
   "key": {
+    "budget": {},
     "create_time": "string",
     "description": "string",
     "expiry_time": "string",
     "key_id": "stringstringstringstringstringstring",
     "key_suffix": "strin",
     "name": "string",
-    "revocation_time": "string"
+    "owner": {
+      "is_application_user": true,
+      "real_name": "string",
+      "user_email": "string",
+      "user_id": "string"
+    },
+    "owner_user_id": "string",
+    "revocation_time": "string",
+    "spend": {
+      "daily_spent_usd": "string",
+      "metered_until": "string",
+      "monthly_spent_usd": "string"
+    }
   }
 }
 ```
@@ -1021,7 +1142,7 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 |200|OK|Response|[AIGatewayKeyGetResponse](#schemaaigatewaykeygetresponse)|
 |403|Forbidden|AI Gateway is not enabled for this organization|Inline|
 |404|Not Found|Key not found|Inline|
-|503|Service Unavailable|AI Gateway keys are unavailable|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
 
 <h3 id="get-the-ai-gateway-key-of-a-project-responseschema">Response Schema</h3>
 
@@ -1167,7 +1288,7 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 |403|Forbidden|AI Gateway is not enabled for this organization|Inline|
 |404|Not Found|Key not found|Inline|
 |409|Conflict|The key has expired or has already been revoked|Inline|
-|503|Service Unavailable|AI Gateway keys are unavailable|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
 
 <h3 id="revoke-an-ai-gateway-key-responseschema">Response Schema</h3>
 
@@ -1249,8 +1370,13 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "budget": {
+      "daily": null,
+      "monthly": null
+    },
     "description": "Support chatbot",
-    "name": "chatbot"
+    "name": "chatbot",
+    "owner_user_id": "u123456"
   }'
 ```
 
@@ -1258,14 +1384,19 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 
 <p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
 
-<p>Only the description can be changed, and only while the key is usable. A key's expiry time cannot be extended; mint a new key instead.</p>
+<p>Only the name, description, owner and budget can be changed, and only while the key is usable. A key's expiry time cannot be extended; mint a new key instead. Only project or organization administrators may supply an owner field. Owners require an active account, active organization membership and effective access to this project. Usage attribution can retain the former owner until a cached key verdict expires; the delay depends on the frontend cache configuration. A successful assignment confirms eligibility, while refusals hide its reason.</p>
 
 > Body parameter
 
 ```json
 {
+  "budget": {
+    "daily": null,
+    "monthly": null
+  },
   "description": "Support chatbot",
-  "name": "chatbot"
+  "name": "chatbot",
+  "owner_user_id": "u123456"
 }
 ```
 
@@ -1276,8 +1407,10 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 |project|path|string|true|Project name|
 |key_id|path|string|true|AI Gateway key ID|
 |body|body|[AIGatewayKeyUpdateRequestBody](#schemaaigatewaykeyupdaterequestbody)|false|none|
+|» budget|body|object|false|Caps on the key's spend, unless left as they are|
 |» description|body|string|false|Longer description on how the key is used|
 |» name|body|string|false|Short human readable identifier for the key|
+|» owner_user_id|body|string|false|User ID of the new key owner|
 
 > Example responses
 
@@ -1285,13 +1418,26 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 
 ```json
 {
+  "budget": {},
   "create_time": "string",
   "description": "string",
   "expiry_time": "string",
   "key_id": "stringstringstringstringstringstring",
   "key_suffix": "strin",
   "name": "string",
-  "revocation_time": "string"
+  "owner": {
+    "is_application_user": true,
+    "real_name": "string",
+    "user_email": "string",
+    "user_id": "string"
+  },
+  "owner_user_id": "string",
+  "revocation_time": "string",
+  "spend": {
+    "daily_spent_usd": "string",
+    "metered_until": "string",
+    "monthly_spent_usd": "string"
+  }
 }
 ```
 
@@ -1317,7 +1463,7 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
   "errors": [
     {
       "message": "string",
-      "error_code": "feature_not_enabled"
+      "error_code": "request_forbidden"
     }
   ]
 }
@@ -1370,11 +1516,11 @@ curl https://api.aiven.io/project/string/ai-gateway/keys/string \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Response|[AIGatewayKeyUpdateResponse](#schemaaigatewaykeyupdateresponse)|
-|400|Bad Request|The name is blank|Inline|
-|403|Forbidden|AI Gateway is not enabled for this organization|Inline|
+|400|Bad Request|The name is blank, a budget period is not valid, or the owner lacks an active account, active organization membership or effective access to this project|Inline|
+|403|Forbidden|Administrator access is required to supply an owner field, AI Gateway is not enabled for this organization, or the budget needs an organization admin|Inline|
 |404|Not Found|Key not found|Inline|
-|409|Conflict|The key has expired or has been revoked|Inline|
-|503|Service Unavailable|AI Gateway keys are unavailable|Inline|
+|409|Conflict|The key has expired or has been revoked, or the budget sets a limit only an organization admin may set before the organization's AI Gateway budgets are set up|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
 
 <h3 id="update-an-ai-gateway-key-responseschema">Response Schema</h3>
 
@@ -1385,13 +1531,14 @@ Status Code **400**
 |message|string|false|none|none|
 |errors|[object]|false|none|none|
 |» message|string|false|none|none|
-|» error_code|string|false|none|bad_request: Bad request|
+|» error_code|string|false|none|bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |» error_code|bad_request|
+|» error_code|ai_gateway_invalid_key_owner|
 
 Status Code **403**
 
@@ -1400,13 +1547,18 @@ Status Code **403**
 |message|string|false|none|none|
 |errors|[object]|false|none|none|
 |» message|string|false|none|none|
-|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it|
+|» error_code|string|false|none|request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_key_budget_above_default: Only an organization admin can set an AI Gateway key budget above the organization's default key budget. ai_gateway_key_budget_unlimited_needs_organization_admin: Only an organization admin can exempt an AI Gateway key from the organization's default key budget. ai_gateway_key_budget_exception_needs_organization_admin: Only an organization admin can change an AI Gateway key budget that an organization admin set. ai_gateway_key_budget_reset_needs_organization_admin: Only an organization admin can reset an AI Gateway key budget to the organization's default|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
+|» error_code|request_forbidden|
 |» error_code|feature_not_enabled|
+|» error_code|ai_gateway_key_budget_above_default|
+|» error_code|ai_gateway_key_budget_unlimited_needs_organization_admin|
+|» error_code|ai_gateway_key_budget_exception_needs_organization_admin|
+|» error_code|ai_gateway_key_budget_reset_needs_organization_admin|
 
 Status Code **404**
 
@@ -1430,13 +1582,14 @@ Status Code **409**
 |message|string|false|none|none|
 |errors|[object]|false|none|none|
 |» message|string|false|none|none|
-|» error_code|string|false|none|ai_gateway_key_not_active: The AI Gateway key has expired or has been revoked|
+|» error_code|string|false|none|ai_gateway_key_not_active: The AI Gateway key has expired or has been revoked. ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |» error_code|ai_gateway_key_not_active|
+|» error_code|ai_gateway_budget_setup_required|
 
 Status Code **503**
 
@@ -1456,6 +1609,135 @@ Status Code **503**
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 tokenAuth & oauth2 ( Scopes: projects:write )
+</aside>
+
+## List eligible AI Gateway key owners
+
+<a id="opIdAIGatewayKeyOwnerList"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/project/string/ai-gateway/key-owners \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /project/{project}/ai-gateway/key-owners`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>Active organization members with effective project access. Only project and organization administrators may select an owner other than themselves.</p>
+
+<h3 id="list-eligible-ai-gateway-key-owners-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|project|path|string|true|Project name|
+|cursor|query|string|false|Pagination cursor|
+|limit|query|integer|false|Maximum owners to return|
+|order_by|query|string|false|Order by user ID|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|order_by|asc|
+|order_by|desc|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "first": "string",
+  "last": "string",
+  "next": "string",
+  "owners": [
+    {
+      "is_application_user": true,
+      "real_name": "string",
+      "user_email": "string",
+      "user_id": "string"
+    }
+  ],
+  "prev": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "request_forbidden"
+    }
+  ]
+}
+```
+
+<h3 id="list-eligible-ai-gateway-key-owners-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayKeyOwnerListResponse](#schemaaigatewaykeyownerlistresponse)|
+|400|Bad Request|Invalid pagination|Inline|
+|403|Forbidden|Administrator access is required or AI Gateway is disabled|Inline|
+
+<h3 id="list-eligible-ai-gateway-key-owners-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|request_forbidden: Not authorized to view the request. feature_not_enabled: This feature is not enabled in your context, please contact support to enable it|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|request_forbidden|
+|» error_code|feature_not_enabled|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: projects:read )
 </aside>
 
 ## List the models the AI Gateway serves
@@ -1575,6 +1857,1233 @@ Status Code **503**
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 tokenAuth & oauth2 ( Scopes: projects:read )
+</aside>
+
+## Set the AI Gateway budget of an organization
+
+<a id="opIdAIGatewayOrganizationBudgetSet"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/organization/string/ai-gateway/budget \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "default_key_budget": {
+      "daily": null,
+      "monthly": null
+    },
+    "default_owner_budget": {
+      "daily": null,
+      "monthly": null
+    },
+    "default_project_budget": {
+      "daily": null,
+      "monthly": null
+    },
+    "organization_budget": {
+      "daily": null,
+      "monthly": null
+    }
+  }'
+```
+
+`PUT /organization/{organization_id}/ai-gateway/budget`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>The caps on the whole organization, and the defaults for keys, key owners and projects that have none of their own. A scope or period left out stays as it is. Each period is a <code>limit</code>, where 0 refuses every request, or <code>unlimited</code>. The first update must give the default key budget a monthly limit, which sets the organization's budgets up; that limit can never be removed.</p>
+
+> Body parameter
+
+```json
+{
+  "default_key_budget": {
+    "daily": null,
+    "monthly": null
+  },
+  "default_owner_budget": {
+    "daily": null,
+    "monthly": null
+  },
+  "default_project_budget": {
+    "daily": null,
+    "monthly": null
+  },
+  "organization_budget": {
+    "daily": null,
+    "monthly": null
+  }
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|ID of an organization|
+|body|body|[AIGatewayOrganizationBudgetSetRequestBody](#schemaaigatewayorganizationbudgetsetrequestbody)|false|none|
+|» default_key_budget|body|object|false|Caps on each key without its own, unless left as they are|
+|» default_owner_budget|body|object|false|Caps on each key owner without their own, unless left as they are|
+|» default_project_budget|body|object|false|Caps on each project without its own, unless left as they are|
+|» organization_budget|body|object|false|Caps on the whole organization's spend, unless left as they are|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "configured": true,
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
+  "default_owner_budget": {},
+  "default_project_budget": {},
+  "organization_budget": {}
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_key_default_monthly_required"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayOrganizationBudgetSetResponse](#schemaaigatewayorganizationbudgetsetresponse)|
+|400|Bad Request|A period is not valid|Inline|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|422|Unprocessable Entity|The default key budget's monthly cap is left out on the first update, or set unlimited|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="set-the-ai-gateway-budget-of-an-organization-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|user_not_organization_admin|
+
+Status Code **422**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_key_default_monthly_required: The default AI Gateway key budget needs a finite monthly cap|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_key_default_monthly_required|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: accounts:write )
+</aside>
+
+## Get the AI Gateway budgets of an organization
+
+<a id="opIdAIGatewayOrganizationBudgetsGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/organization/string/ai-gateway/budgets \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organization/{organization_id}/ai-gateway/budgets`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>The caps on the organization, its projects, and its human members and existing key owners, and what each has spent in the current UTC day and month.</p>
+
+<h3 id="get-the-ai-gateway-budgets-of-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|ID of an organization|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "configured": true,
+  "credits": {
+    "charged_usd": "string",
+    "granted_usd": "string",
+    "remaining_usd": "string"
+  },
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
+  "default_owner_budget": {},
+  "default_project_budget": {},
+  "metered_until": "string",
+  "organization_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "daily_spent_usd": "string",
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly_spent_usd": "string"
+  },
+  "owners": [
+    {
+      "active_key_count": 0,
+      "daily": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "daily_spent_usd": "string",
+      "monthly": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "monthly_spent_usd": "string",
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "project_ids": [
+        "string"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "active_key_count": 0,
+      "billing_group_id": "string",
+      "daily": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "daily_spent_usd": "string",
+      "monthly": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "monthly_spent_usd": "string",
+      "project_id": "stringstringstringstringstringstring",
+      "project_name": "string"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="get-the-ai-gateway-budgets-of-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayOrganizationBudgetsGetResponse](#schemaaigatewayorganizationbudgetsgetresponse)|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="get-the-ai-gateway-budgets-of-an-organization-responseschema">Response Schema</h3>
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|user_not_organization_admin|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: accounts:read )
+</aside>
+
+## Set the AI Gateway budget of many keys
+
+<a id="opIdAIGatewayOrganizationKeyBudgetsUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/organization/string/ai-gateway/keys/budgets \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "daily": null,
+    "key_ids": [
+      "adcf7194-d877-4505-a47a-91fefd96e3b8"
+    ],
+    "monthly": null,
+    "owner_user_id": "u123456"
+  }'
+```
+
+`PATCH /organization/{organization_id}/ai-gateway/keys/budgets`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>Sets the same periods on each of <code>key_ids</code>, or on each key of <code>owner_user_id</code>, in one go. A period left out stays as it is; one that inherits uses the default key budget. An organization admin's <code>limit</code> is an exception that a lower default does not clip.</p>
+
+> Body parameter
+
+```json
+{
+  "daily": null,
+  "key_ids": [
+    "adcf7194-d877-4505-a47a-91fefd96e3b8"
+  ],
+  "monthly": null,
+  "owner_user_id": "u123456"
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-many-keys-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|ID of an organization|
+|body|body|[AIGatewayOrganizationKeyBudgetsUpdateRequestBody](#schemaaigatewayorganizationkeybudgetsupdaterequestbody)|false|none|
+|» key_ids|body|[string]|false|Keys to update, unless owner_user_id is given|
+|» owner_user_id|body|string|false|Update every key of this owner instead|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "key_ids": [
+    "string"
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-many-keys-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayOrganizationKeyBudgetsUpdateResponse](#schemaaigatewayorganizationkeybudgetsupdateresponse)|
+|400|Bad Request|Neither or both of key_ids and owner_user_id are given, or a period is not valid|Inline|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="set-the-ai-gateway-budget-of-many-keys-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|user_not_organization_admin|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: accounts:write )
+</aside>
+
+## List the AI Gateway keys of an organization
+
+<a id="opIdAIGatewayOrganizationKeyList"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/organization/string/ai-gateway/keys \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organization/{organization_id}/ai-gateway/keys`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>The keys of every project in the organization, with their caps and spend, newest first. Expired keys are not listed, unless <code>include_expired</code> is set. Revoked keys are not listed, unless <code>include_revoked</code> is set. The answer is not paginated and holds every matching key, so it grows with the organization's keys.</p>
+
+<h3 id="list-the-ai-gateway-keys-of-an-organization-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|ID of an organization|
+|project_name|query|string|false|Filter keys by project name|
+|owner_user_id|query|string|false|Filter keys by owner user ID|
+|owner_type|query|string|false|Filter keys by owner type; deleted owners match neither type|
+|include_revoked|query|boolean|false|Also list revoked keys|
+|include_expired|query|boolean|false|Also list expired keys|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|owner_type|human|
+|owner_type|application_user|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "keys": [
+    {
+      "budget": {},
+      "create_time": "string",
+      "description": "string",
+      "expiry_time": "string",
+      "key_id": "stringstringstringstringstringstring",
+      "key_suffix": "strin",
+      "name": "string",
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "project_id": "stringstringstringstringstringstring",
+      "project_name": "string",
+      "revocation_time": "string",
+      "spend": {
+        "daily_spent_usd": "string",
+        "metered_until": "string",
+        "monthly_spent_usd": "string"
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="list-the-ai-gateway-keys-of-an-organization-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayOrganizationKeyListResponse](#schemaaigatewayorganizationkeylistresponse)|
+|400|Bad Request|A filter is not valid|Inline|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="list-the-ai-gateway-keys-of-an-organization-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|user_not_organization_admin|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: accounts:read )
+</aside>
+
+## Set the AI Gateway budget of a key owner
+
+<a id="opIdAIGatewayOrganizationOwnerBudgetSet"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/organization/string/ai-gateway/owner/string/budget \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /organization/{organization_id}/ai-gateway/owner/{owner_user_id}/budget`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>Caps the spend of all the owner's keys together. A period left out stays as it is; one that inherits uses the default owner budget. Both periods inheriting drop the owner's own budget.</p>
+
+<h3 id="set-the-ai-gateway-budget-of-a-key-owner-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|ID of an organization|
+|owner_user_id|path|string|true|User ID of the key owner|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "owner_user_id": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-a-key-owner-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayOrganizationOwnerBudgetSetResponse](#schemaaigatewayorganizationownerbudgetsetresponse)|
+|400|Bad Request|A period is not valid, or the owner is not a member of this organization|Inline|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="set-the-ai-gateway-budget-of-a-key-owner-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request. ai_gateway_invalid_key_owner: The user is not an active member of this organization|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+|» error_code|ai_gateway_invalid_key_owner|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. user_not_organization_admin: User is not organization administrator.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|user_not_organization_admin|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: accounts:write )
+</aside>
+
+## Get the AI Gateway budget of a project
+
+<a id="opIdAIGatewayProjectBudgetGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/project/string/ai-gateway/budget \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /project/{project}/ai-gateway/budget`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>The project's daily and monthly caps, and what it has spent in the current UTC day and month.</p>
+
+<h3 id="get-the-ai-gateway-budget-of-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|project|path|string|true|Project name|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "daily_spent_usd": "string",
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly_spent_usd": "string"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="get-the-ai-gateway-budget-of-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayProjectBudgetGetResponse](#schemaaigatewayprojectbudgetgetresponse)|
+|403|Forbidden|AI Gateway is not enabled for this organization|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="get-the-ai-gateway-budget-of-a-project-responseschema">Response Schema</h3>
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: projects:read )
+</aside>
+
+## Set the AI Gateway budget of a project
+
+<a id="opIdAIGatewayProjectBudgetSet"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/project/string/ai-gateway/budget \
+  -X PUT \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /project/{project}/ai-gateway/budget`
+
+<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
+
+<p>Only an organization admin sets a project's caps, and only once the organization's budgets are set up. A period left out stays as it is. Each period is <code>inherit</code> (uses the default project budget), <code>unlimited</code> (exempts the project from the default), or <code>limit</code> (an exception that a lower default does not reduce, where 0 refuses every request). Both periods inheriting drop the project's own budget.</p>
+
+<h3 id="set-the-ai-gateway-budget-of-a-project-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|project|path|string|true|Project name|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "daily_spent_usd": "string",
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly_spent_usd": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
+  ]
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "feature_not_enabled"
+    }
+  ]
+}
+```
+
+> 409 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_budget_setup_required"
+    }
+  ]
+}
+```
+
+> 503 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "ai_gateway_unavailable"
+    }
+  ]
+}
+```
+
+<h3 id="set-the-ai-gateway-budget-of-a-project-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[AIGatewayProjectBudgetSetResponse](#schemaaigatewayprojectbudgetsetresponse)|
+|400|Bad Request|A period is not valid|Inline|
+|403|Forbidden|AI Gateway is not enabled for this organization, or the user is not an organization admin|Inline|
+|409|Conflict|The organization's AI Gateway budgets are not set up, or the project still has an AI Gateway budget in the organization it belonged to before|Inline|
+|503|Service Unavailable|AI Gateway is unavailable|Inline|
+
+<h3 id="set-the-ai-gateway-budget-of-a-project-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
+
+Status Code **403**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|feature_not_enabled: This feature is not enabled in your context, please contact support to enable it. ai_gateway_project_budget_needs_organization_admin: Only an organization admin can set an AI Gateway project budget|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|feature_not_enabled|
+|» error_code|ai_gateway_project_budget_needs_organization_admin|
+
+Status Code **409**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_budget_setup_required: The organization's AI Gateway budgets are not set up: an organization admin must set a monthly default key budget first. ai_gateway_project_in_other_organization: The project still has an AI Gateway budget in the organization it belonged to before|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_budget_setup_required|
+|» error_code|ai_gateway_project_in_other_organization|
+
+Status Code **503**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|ai_gateway_unavailable: The AI Gateway cannot answer right now, try again later|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|ai_gateway_unavailable|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: projects:write )
 </aside>
 
 ## Get how many tokens a project has spent on the AI Gateway, per key, minute, hour or day, and model
@@ -11956,11 +13465,15 @@ curl https://api.aiven.io/organization/string/billing-groups \
 
 `GET /organization/{organization_id}/billing-groups`
 
+<p>Without <code>limit</code> or <code>cursor</code> all billing groups are returned in a single response. Billing groups are ordered by <code>billing_group_id</code> when paginating; follow <code>next</code> until it is absent.</p>
+
 <h3 id="list-billing-groups-in-an-organization-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organization_id|path|string|true|ID of an organization|
+|cursor|query|string|false|Pagination cursor|
+|limit|query|integer|false|Limit results to this number|
 
 > Example responses
 
@@ -11993,6 +13506,22 @@ curl https://api.aiven.io/organization/string/billing-groups \
       "shipping_address_id": "string",
       "vat_id": "string"
     }
+  ],
+  "next": "string",
+  "prev": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "bad_request"
+    }
   ]
 }
 ```
@@ -12016,9 +13545,25 @@ curl https://api.aiven.io/organization/string/billing-groups \
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|Response|[OrganizationBillingGroupListResponse](#schemaorganizationbillinggrouplistresponse)|
+|400|Bad Request|The cursor or limit is not valid|Inline|
 |404|Not Found|Resource not found|Inline|
 
 <h3 id="list-billing-groups-in-an-organization-responseschema">Response Schema</h3>
+
+Status Code **400**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|bad_request: Bad request|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|bad_request|
 
 Status Code **404**
 
@@ -16091,8 +17636,6 @@ curl https://api.aiven.io/organization/string/event-logs/download \
 
 `POST /organization/{organization_id}/event-logs/download`
 
-<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
-
 > Body parameter
 
 ```json
@@ -16303,8 +17846,6 @@ curl https://api.aiven.io/organization/string/event-logs \
 ```
 
 `POST /organization/{organization_id}/event-logs`
-
-<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
 
 > Body parameter
 
@@ -18071,8 +19612,13 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
+    "component": "postgresql-16.service",
     "from_time": "2026-04-23T10:00:00Z",
+    "hostname": "my-pg-service-1",
     "interval_seconds": 150,
+    "log_type": "application-build",
+    "node_role": "master",
     "severity": "warning",
     "to_time": "2026-04-23T11:00:00Z"
   }'
@@ -18086,8 +19632,13 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 
 ```json
 {
+  "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
+  "component": "postgresql-16.service",
   "from_time": "2026-04-23T10:00:00Z",
+  "hostname": "my-pg-service-1",
   "interval_seconds": 150,
+  "log_type": "application-build",
+  "node_role": "master",
   "severity": "warning",
   "to_time": "2026-04-23T11:00:00Z"
 }
@@ -18101,8 +19652,13 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 |project_id|path|string|true|Project Id|
 |service_id|path|string|true|Service name|
 |body|body|[OrganizationServiceLogCountsGetRequestBody](#schemaorganizationservicelogcountsgetrequestbody)|false|none|
+|» build_id|body|string|false|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
+|» component|body|string|false|Filter to entries from this component, as in the entries' 'component'.|
 |» from_time|body|string|false|Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.|
+|» hostname|body|string|false|Filter to entries from the node with this hostname, as in the entries' 'hostname'.|
 |» interval_seconds|body|integer|false|Width of each time bucket in seconds, from 1 to 86400. Defaults to the time window split into 24 buckets, rounded up to whole seconds. A time window needing more than 300 buckets is rejected.|
+|» log_type|body|string|false|Values of the log_type filter on the project-level and organization-level service logs APIs.|
+|» node_role|body|string|false|Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.|
 |» severity|body|string|false|Filter to entries with severity at least as severe as this value.|
 |» to_time|body|string|false|End of the time window (ISO 8601 UTC). A later time than now is treated as now. Defaults to now.|
 
@@ -18110,6 +19666,8 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 
 |Parameter|Value|
 |---|---|
+|» log_type|application-build|
+|» log_type|application-run|
 |» severity|emergency|
 |» severity|alert|
 |» severity|critical|
@@ -18332,9 +19890,14 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
+    "component": "postgresql-16.service",
     "cursor": "dhx9xu6vwDjcknJVkK76pyEIgNbDVQhqaSaYTypojfGT8op0PttdBQgSCbSijatNLCKY2rzJeEzC208dUluuVQga7JSgF0DviWXv8Rl00vWEtqEvsUytsj1x4KqWbQcSGst3tZMvXxASsukIVteLJpCIp75jZO8BVdwSUTTkhXjzUgOlliZxHatnEaxxc5Uyp6iubvhFuHzT0w==",
     "from_time": "2026-04-23T10:00:00Z",
+    "hostname": "my-pg-service-1",
     "limit": 100,
+    "log_type": "application-build",
+    "node_role": "master",
     "order_by": "log_time:desc",
     "severity": "warning",
     "to_time": "2026-04-23T11:00:00Z"
@@ -18349,9 +19912,14 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 
 ```json
 {
+  "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
+  "component": "postgresql-16.service",
   "cursor": "dhx9xu6vwDjcknJVkK76pyEIgNbDVQhqaSaYTypojfGT8op0PttdBQgSCbSijatNLCKY2rzJeEzC208dUluuVQga7JSgF0DviWXv8Rl00vWEtqEvsUytsj1x4KqWbQcSGst3tZMvXxASsukIVteLJpCIp75jZO8BVdwSUTTkhXjzUgOlliZxHatnEaxxc5Uyp6iubvhFuHzT0w==",
   "from_time": "2026-04-23T10:00:00Z",
+  "hostname": "my-pg-service-1",
   "limit": 100,
+  "log_type": "application-build",
+  "node_role": "master",
   "order_by": "log_time:desc",
   "severity": "warning",
   "to_time": "2026-04-23T11:00:00Z"
@@ -18366,9 +19934,14 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 |project_id|path|string|true|Project Id|
 |service_id|path|string|true|Service name|
 |body|body|[OrganizationServiceLogsGetRequestBody](#schemaorganizationservicelogsgetrequestbody)|false|none|
-|» cursor|body|string|false|Pagination cursor from a previous response. The cursor already encodes the time range, severity and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity' and 'order_by' ('limit' may still be supplied).|
+|» build_id|body|string|false|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
+|» component|body|string|false|Filter to entries from this component, as in the entries' 'component'.|
+|» cursor|body|string|false|Pagination cursor from a previous response. The cursor already encodes the time range, filters and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity', 'log_type', 'build_id', 'hostname', 'node_role', 'component' and 'order_by' ('limit' may still be supplied).|
 |» from_time|body|string|false|Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.|
+|» hostname|body|string|false|Filter to entries from the node with this hostname, as in the entries' 'hostname'.|
 |» limit|body|integer|false|Number of entries per page.|
+|» log_type|body|string|false|Values of the log_type filter on the project-level and organization-level service logs APIs.|
+|» node_role|body|string|false|Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.|
 |» order_by|body|string|false|Sort order in 'column:direction' form. Only 'log_time:asc' and 'log_time:desc' are supported. Defaults to 'log_time:desc'. Mutually exclusive with 'cursor'.|
 |» severity|body|string|false|Filter to entries with severity at least as severe as this value.|
 |» to_time|body|string|false|End of the time window (ISO 8601 UTC). A later time than now is treated as now. Defaults to now.|
@@ -18377,6 +19950,8 @@ curl https://api.aiven.io/organization/string/project/string/service/string/logs
 
 |Parameter|Value|
 |---|---|
+|» log_type|application-build|
+|» log_type|application-run|
 |» order_by|log_time:asc|
 |» order_by|log_time:desc|
 |» severity|emergency|
@@ -18781,8 +20356,6 @@ curl https://api.aiven.io/organization/string/project/string/event-logs/download
 
 `POST /organization/{organization_id}/project/{project_id}/event-logs/download`
 
-<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
-
 > Body parameter
 
 ```json
@@ -18985,8 +20558,6 @@ curl https://api.aiven.io/organization/string/project/string/event-logs \
 ```
 
 `POST /organization/{organization_id}/project/{project_id}/event-logs`
-
-<p><blockquote>This endpoint <b>may be changed or removed at any time</b>. Don't use it in production environments.</blockquote><p>
 
 > Body parameter
 
@@ -34551,6 +36122,7 @@ curl https://api.aiven.io/organization/string/project/string/managed-agents/agen
   "agent_id": "string",
   "created_at": "string",
   "cron_expr": "string",
+  "disabled_reason": "string",
   "enabled": true,
   "id": "string",
   "name": "string",
@@ -34728,6 +36300,7 @@ curl https://api.aiven.io/organization/string/project/string/managed-agents/agen
   "agent_id": "string",
   "created_at": "string",
   "cron_expr": "string",
+  "disabled_reason": "string",
   "enabled": true,
   "id": "string",
   "name": "string",
@@ -41957,6 +43530,7 @@ curl https://api.aiven.io/project/string/service/string/logs \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
+    "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
     "limit": 100,
     "log_type": "application-run",
     "offset": "23425325",
@@ -41971,6 +43545,7 @@ curl https://api.aiven.io/project/string/service/string/logs \
 
 ```json
 {
+  "build_id": "01984214-5ea7-7573-9229-f62c10f68b4e",
   "limit": 100,
   "log_type": "application-run",
   "offset": "23425325",
@@ -41986,6 +43561,7 @@ curl https://api.aiven.io/project/string/service/string/logs \
 |project|path|string|true|Project name|
 |service_name|path|string|true|Service name|
 |body|body|[ProjectGetServiceLogsRequestBody](#schemaprojectgetservicelogsrequestbody)|false|none|
+|» build_id|body|string|false|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
 |» limit|body|integer|false|How many log entries to receive at most|
 |» log_type|body|string|false|Filter to entries of a specific application log type. Only supported for application services. When omitted on application services, runtime logs (application-run) are returned.|
 |» offset|body|string|false|Opaque offset identifier|
@@ -42591,10 +44167,15 @@ curl https://api.aiven.io/project/string/service \
           "host": "string",
           "kafka_authentication_method": "certificate",
           "kafka_ssl_ca": "project_ca",
+          "node_position": 1,
           "path": "string",
           "port": 0,
           "privatelink_connection_id": "string",
           "route": "dynamic",
+          "security_redirect_uris": [
+            "string"
+          ],
+          "shard_position": 1,
           "ssl": true,
           "usage": "disaster_recovery"
         }
@@ -42800,6 +44381,9 @@ curl https://api.aiven.io/project/string/service \
               "string"
             ],
             "valkey_acl_commands": [
+              "string"
+            ],
+            "valkey_acl_databases": [
               "string"
             ],
             "valkey_acl_keys": [
@@ -43066,10 +44650,15 @@ curl https://api.aiven.io/project/string/service \
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -43275,6 +44864,9 @@ curl https://api.aiven.io/project/string/service \
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -43908,10 +45500,15 @@ curl https://api.aiven.io/project/string/service/string \
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -44117,6 +45714,9 @@ curl https://api.aiven.io/project/string/service/string \
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -44301,10 +45901,15 @@ curl https://api.aiven.io/project/string/service/string \
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -44510,6 +46115,9 @@ curl https://api.aiven.io/project/string/service/string \
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -45617,6 +47225,58 @@ To perform this operation, you must be authenticated by means of one of the foll
 tokenAuth & oauth2 ( Scopes: privatelink:write )
 </aside>
 
+## Refresh the list of Azure private endpoint connections
+
+<a id="opIdServicePrivatelinkAzureRefresh"></a>
+
+> Code samples
+
+```bash
+curl https://api.aiven.io/project/string/service/string/privatelink/azure/refresh \
+  -X POST \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /project/{project}/service/{service_name}/privatelink/azure/refresh`
+
+<p>Updates the connection list with the private endpoints currently connected to the Private Link service. Call this after creating a private endpoint, then list the connections to get its connection ID. The update runs in the background, so a new connection may take a moment to appear in the list.</p>
+
+<h3 id="refresh-the-list-of-azure-private-endpoint-connections-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|project|path|string|true|Project name|
+|service_name|path|string|true|Service name|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "more_info": "string",
+      "status": 0
+    }
+  ],
+  "message": "string"
+}
+```
+
+<h3 id="refresh-the-list-of-azure-private-endpoint-connections-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Response|[ServicePrivatelinkAzureRefreshResponse](#schemaserviceprivatelinkazurerefreshresponse)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+tokenAuth & oauth2 ( Scopes: privatelink:write )
+</aside>
+
 ## Approve a new Google Private Service Connect connection
 
 <a id="opIdServicePrivatelinkGoogleConnectionCreate"></a>
@@ -46135,6 +47795,12 @@ curl https://api.aiven.io/project/string/service/string/service_type \
 
 `PATCH /project/{project}/service/{service_name}/service_type`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
+<p>The API endpoint /v1/project/{project}/service/{service_name}/service_type is deprecated and will be removed on 2026-11-05.</p>
+
 > Body parameter
 
 ```json
@@ -46203,10 +47869,15 @@ curl https://api.aiven.io/project/string/service/string/service_type \
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -46414,6 +48085,9 @@ curl https://api.aiven.io/project/string/service/string/service_type \
           "valkey_acl_commands": [
             "string"
           ],
+          "valkey_acl_databases": [
+            "string"
+          ],
           "valkey_acl_keys": [
             "string"
           ]
@@ -46474,6 +48148,20 @@ curl https://api.aiven.io/project/string/service/string/service_type \
 }
 ```
 
+> 410 Response
+
+```json
+{
+  "message": "string",
+  "errors": [
+    {
+      "message": "string",
+      "error_code": "retired_api_endpoint"
+    }
+  ]
+}
+```
+
 <h3 id="update-the-service-type-of-a-service-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -46482,6 +48170,7 @@ curl https://api.aiven.io/project/string/service/string/service_type \
 |400|Bad Request|Invalid request parameters|Inline|
 |404|Not Found|Resource not found|Inline|
 |409|Conflict|Request conflict|Inline|
+|410|Gone|URI no longer exists and has been permanently removed|Inline|
 
 <h3 id="update-the-service-type-of-a-service-responseschema">Response Schema</h3>
 
@@ -46529,6 +48218,21 @@ Status Code **409**
 |Property|Value|
 |---|---|
 |» error_code|service_maintenance_required|
+
+Status Code **410**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|errors|[object]|false|none|none|
+|» message|string|false|none|none|
+|» error_code|string|false|none|retired_api_endpoint: This endpoint has been removed.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» error_code|retired_api_endpoint|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -46622,7 +48326,7 @@ curl https://api.aiven.io/project/string/service/string/task \
 |» migration_check|body|object|false|Payload to be used with migration_check|
 |» » ignore_dbs|body|string|false|Comma-separated list of databases, which should be ignored during migration (supported by MySQL and PostgreSQL only at the moment)|
 |» » ignore_roles|body|string|false|Comma-separated list of database roles, which should be ignored during migration (supported by PostgreSQL only at the moment)|
-|» » method|body|string|false|The migration method to be used (currently supported only by Redis, Dragonfly, MySQL and PostgreSQL service types)|
+|» » method|body|string|false|The migration method to be used (currently supported only by Redis, MySQL and PostgreSQL service types)|
 |» » source_project_name|body|string|false|Project name|
 |» » source_service_name|body|string|false|Service name|
 |» » source_service_uri|body|string|false|Service URI of the source MySQL or PostgreSQL database with admin credentials. Used with migration_check.|
@@ -46785,6 +48489,9 @@ curl https://api.aiven.io/project/string/service/string/user \
       "valkey_acl_commands": [
         "-acl"
       ],
+      "valkey_acl_databases": [
+        "0"
+      ],
       "valkey_acl_keys": [
         "prefix_*"
       ]
@@ -46827,6 +48534,9 @@ curl https://api.aiven.io/project/string/service/string/user \
     "valkey_acl_commands": [
       "-acl"
     ],
+    "valkey_acl_databases": [
+      "0"
+    ],
     "valkey_acl_keys": [
       "prefix_*"
     ]
@@ -46856,6 +48566,7 @@ curl https://api.aiven.io/project/string/service/string/user \
 |» » valkey_acl_categories|body|[string]|false|Command category rules|
 |» » valkey_acl_channels|body|[string]|false|Glob-style patterns defining which pub/sub channels can be accessed. If array is not defined, the default policy is used (allchannels).|
 |» » valkey_acl_commands|body|[string]|false|Rules for individual commands|
+|» » valkey_acl_databases|body|[string]|false|Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.|
 |» » valkey_acl_keys|body|[string]|false|Key access rules|
 |» authentication|body|string|false|Service specific authentication details. Currently only used for MySQL where accepted options are 'mysql_native_password' and 'caching_sha2_password', latter being default when this is not explicitly set.|
 |» mysql_grants|body|[string]|false|MySQL grants for the service user|
@@ -46907,6 +48618,9 @@ curl https://api.aiven.io/project/string/service/string/user \
         "string"
       ],
       "valkey_acl_commands": [
+        "string"
+      ],
+      "valkey_acl_databases": [
         "string"
       ],
       "valkey_acl_keys": [
@@ -46999,6 +48713,9 @@ curl https://api.aiven.io/project/string/service/string/user/string \
       "valkey_acl_commands": [
         "string"
       ],
+      "valkey_acl_databases": [
+        "string"
+      ],
       "valkey_acl_keys": [
         "string"
       ]
@@ -47062,6 +48779,9 @@ curl https://api.aiven.io/project/string/service/string/user/string \
       "valkey_acl_commands": [
         "-acl"
       ],
+      "valkey_acl_databases": [
+        "0"
+      ],
       "valkey_acl_keys": [
         "prefix_*"
       ]
@@ -47101,6 +48821,9 @@ curl https://api.aiven.io/project/string/service/string/user/string \
     "valkey_acl_commands": [
       "-acl"
     ],
+    "valkey_acl_databases": [
+      "0"
+    ],
     "valkey_acl_keys": [
       "prefix_*"
     ]
@@ -47128,6 +48851,7 @@ curl https://api.aiven.io/project/string/service/string/user/string \
 |» » valkey_acl_categories|body|[string]|false|Command category rules|
 |» » valkey_acl_channels|body|[string]|false|Glob-style patterns defining which pub/sub channels can be accessed. If array is not defined, the default policy is used (allchannels).|
 |» » valkey_acl_commands|body|[string]|false|Rules for individual commands|
+|» » valkey_acl_databases|body|[string]|false|Database ids the user can access, Valkey 9.1 and later only. An empty array or 'alldbs' grants all databases, 'resetdbs' grants none. If array is not defined, all databases are permitted.|
 |» » valkey_acl_keys|body|[string]|false|Key access rules|
 |» authentication|body|string|false|Service specific authentication details. Currently only used for MySQL where accepted options are 'mysql_native_password' and 'caching_sha2_password', latter being default when this is not explicitly set.|
 |» new_password|body|string|false|New password|
@@ -47195,10 +48919,15 @@ curl https://api.aiven.io/project/string/service/string/user/string \
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -47404,6 +49133,9 @@ curl https://api.aiven.io/project/string/service/string/user/string \
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -47560,10 +49292,15 @@ curl https://api.aiven.io/project/string/service/string/user/string/credentials/
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -47769,6 +49506,9 @@ curl https://api.aiven.io/project/string/service/string/user/string/credentials/
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -49485,7 +51225,7 @@ tokenAuth & oauth2 ( Scopes: accounts:read projects:write )
 > Code samples
 
 ```bash
-curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e29b-41d4-a716-446655440000 \
+curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/stringstringstringstringstringstring \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -49499,13 +51239,7 @@ curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e2
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organization_id|path|string|true|ID of an organization|
-|step_id|path|string|true|Upgrade step ID|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|step_id|550e8400-e29b-41d4-a716-446655440000|
+|step_id|path|string|true|Upgrade step ID (UUIDv4, e.g. 550e8400-e29b-41d4-a716-446655440000)|
 
 > Example responses
 
@@ -49577,7 +51311,7 @@ tokenAuth & oauth2 ( Scopes: accounts:read projects:read )
 > Code samples
 
 ```bash
-curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e29b-41d4-a716-446655440000 \
+curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/stringstringstringstringstringstring \
   -X DELETE \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -49592,13 +51326,7 @@ curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e2
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organization_id|path|string|true|ID of an organization|
-|step_id|path|string|true|Upgrade step ID|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|step_id|550e8400-e29b-41d4-a716-446655440000|
+|step_id|path|string|true|Upgrade step ID (UUIDv4, e.g. 550e8400-e29b-41d4-a716-446655440000)|
 
 > Example responses
 
@@ -49652,7 +51380,7 @@ tokenAuth & oauth2 ( Scopes: accounts:read projects:write )
 > Code samples
 
 ```bash
-curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e29b-41d4-a716-446655440000 \
+curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/stringstringstringstringstringstring \
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -49679,15 +51407,9 @@ curl https://api.aiven.io/organization/string/upgrade-pipeline/steps/550e8400-e2
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |organization_id|path|string|true|ID of an organization|
-|step_id|path|string|true|Upgrade step ID|
+|step_id|path|string|true|Upgrade step ID (UUIDv4, e.g. 550e8400-e29b-41d4-a716-446655440000)|
 |body|body|[UpgradePipelineStepUpdateRequestBody](#schemaupgradepipelinestepupdaterequestbody)|false|none|
 |» auto_validation_delay_days|body|integer|false|Days before automatic validation|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|step_id|550e8400-e29b-41d4-a716-446655440000|
 
 > Example responses
 
@@ -50523,6 +52245,7 @@ curl https://api.aiven.io/organization/string/user/string \
   "is_super_admin": true,
   "join_time": "string",
   "last_activity_time": "string",
+  "state": "active",
   "user_id": "string",
   "user_info": {
     "city": "string",
@@ -50720,6 +52443,7 @@ curl https://api.aiven.io/organization/string/user/string \
   "is_super_admin": true,
   "join_time": "string",
   "last_activity_time": "string",
+  "state": "active",
   "user_id": "string",
   "user_info": {
     "city": "string",
@@ -50780,6 +52504,7 @@ curl https://api.aiven.io/organization/string/user \
       "is_super_admin": true,
       "join_time": "string",
       "last_activity_time": "string",
+      "state": "active",
       "user_id": "string",
       "user_info": {
         "city": "string",
@@ -52246,9 +53971,11 @@ This operation does not require authentication
 
 ```json
 {
+  "budget": {},
   "description": "string",
   "expiry_time": "string",
-  "name": "string"
+  "name": "string",
+  "owner_user_id": "string"
 }
 ```
 
@@ -52258,9 +53985,11 @@ AIGatewayKeyCreateRequestBody
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|budget|object|false|none|Caps on the key's spend, unless left as they are|
 |description|string|false|none|Longer description on how the key is used|
 |expiry_time|string|false|none|Time the key expires, or null for a key that never expires|
 |name|string|true|none|Short human readable identifier for the key|
+|owner_user_id|string|false|none|User ID of the key owner; defaults to the calling user|
 
 <h2 id="tocS_AIGatewayKeyCreateResponse">AIGatewayKeyCreateResponse</h2>
 <!-- backwards compatibility -->
@@ -52271,6 +54000,7 @@ AIGatewayKeyCreateRequestBody
 
 ```json
 {
+  "budget": {},
   "create_time": "string",
   "description": "string",
   "expiry_time": "string",
@@ -52278,7 +54008,19 @@ AIGatewayKeyCreateRequestBody
   "key_id": "stringstringstringstringstringstring",
   "key_suffix": "strin",
   "name": "string",
-  "revocation_time": "string"
+  "owner": {
+    "is_application_user": true,
+    "real_name": "string",
+    "user_email": "string",
+    "user_id": "string"
+  },
+  "owner_user_id": "string",
+  "revocation_time": "string",
+  "spend": {
+    "daily_spent_usd": "string",
+    "metered_until": "string",
+    "monthly_spent_usd": "string"
+  }
 }
 ```
 
@@ -52288,6 +54030,7 @@ AIGatewayKeyCreateResponse
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|budget|object|false|none|Caps on the key's spend|
 |create_time|string|true|none|Time the key was created|
 |description|string|false|none|Longer description on how the key is used|
 |expiry_time|string|false|none|Time the key expires|
@@ -52295,7 +54038,10 @@ AIGatewayKeyCreateResponse
 |key_id|string|true|none|Key ID|
 |key_suffix|string|true|none|Last characters of the key|
 |name|string|true|none|Short human readable identifier for the key|
+|owner|object|true|none|Owner of the key|
+|owner_user_id|string|true|none|User ID of the key owner|
 |revocation_time|string|false|none|Time the key was revoked|
+|spend|object|false|none|Spend of the key|
 
 <h2 id="tocS_AIGatewayKeyGetResponse">AIGatewayKeyGetResponse</h2>
 <!-- backwards compatibility -->
@@ -52307,13 +54053,26 @@ AIGatewayKeyCreateResponse
 ```json
 {
   "key": {
+    "budget": {},
     "create_time": "string",
     "description": "string",
     "expiry_time": "string",
     "key_id": "stringstringstringstringstringstring",
     "key_suffix": "strin",
     "name": "string",
-    "revocation_time": "string"
+    "owner": {
+      "is_application_user": true,
+      "real_name": "string",
+      "user_email": "string",
+      "user_id": "string"
+    },
+    "owner_user_id": "string",
+    "revocation_time": "string",
+    "spend": {
+      "daily_spent_usd": "string",
+      "metered_until": "string",
+      "monthly_spent_usd": "string"
+    }
   }
 }
 ```
@@ -52335,16 +54094,43 @@ AIGatewayKeyGetResponse
 
 ```json
 {
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
   "first": "string",
   "keys": [
     {
+      "budget": {},
       "create_time": "string",
       "description": "string",
       "expiry_time": "string",
       "key_id": "stringstringstringstringstringstring",
       "key_suffix": "strin",
       "name": "string",
-      "revocation_time": "string"
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "revocation_time": "string",
+      "spend": {
+        "daily_spent_usd": "string",
+        "metered_until": "string",
+        "monthly_spent_usd": "string"
+      }
     }
   ],
   "last": "string",
@@ -52359,10 +54145,47 @@ AIGatewayKeyListResponse
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|default_key_budget|object|false|none|The organization's default key budget, or null if its budgets were never set up|
 |first|string|false|none|First page|
 |keys|[object]|true|none|List of AI Gateway keys|
 |last|string|false|none|Last page|
 |next|string|false|none|Next page|
+|prev|string|false|none|Previous page|
+
+<h2 id="tocS_AIGatewayKeyOwnerListResponse">AIGatewayKeyOwnerListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewaykeyownerlistresponse"></a>
+<a id="schema_AIGatewayKeyOwnerListResponse"></a>
+<a id="tocSaigatewaykeyownerlistresponse"></a>
+<a id="tocsaigatewaykeyownerlistresponse"></a>
+
+```json
+{
+  "first": "string",
+  "last": "string",
+  "next": "string",
+  "owners": [
+    {
+      "is_application_user": true,
+      "real_name": "string",
+      "user_email": "string",
+      "user_id": "string"
+    }
+  ],
+  "prev": "string"
+}
+```
+
+AIGatewayKeyOwnerListResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|first|string|false|none|First page|
+|last|string|false|none|Last page|
+|next|string|false|none|Next page|
+|owners|[object]|true|none|Eligible AI Gateway key owners|
 |prev|string|false|none|Previous page|
 
 <h2 id="tocS_AIGatewayKeyUpdateRequestBody">AIGatewayKeyUpdateRequestBody</h2>
@@ -52374,8 +54197,10 @@ AIGatewayKeyListResponse
 
 ```json
 {
+  "budget": {},
   "description": "string",
-  "name": "string"
+  "name": "string",
+  "owner_user_id": "string"
 }
 ```
 
@@ -52385,8 +54210,10 @@ AIGatewayKeyUpdateRequestBody
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|budget|object|false|none|Caps on the key's spend, unless left as they are|
 |description|string|false|none|Longer description on how the key is used|
 |name|string|false|none|Short human readable identifier for the key|
+|owner_user_id|string|false|none|User ID of the new key owner|
 
 <h2 id="tocS_AIGatewayKeyUpdateResponse">AIGatewayKeyUpdateResponse</h2>
 <!-- backwards compatibility -->
@@ -52397,13 +54224,26 @@ AIGatewayKeyUpdateRequestBody
 
 ```json
 {
+  "budget": {},
   "create_time": "string",
   "description": "string",
   "expiry_time": "string",
   "key_id": "stringstringstringstringstringstring",
   "key_suffix": "strin",
   "name": "string",
-  "revocation_time": "string"
+  "owner": {
+    "is_application_user": true,
+    "real_name": "string",
+    "user_email": "string",
+    "user_id": "string"
+  },
+  "owner_user_id": "string",
+  "revocation_time": "string",
+  "spend": {
+    "daily_spent_usd": "string",
+    "metered_until": "string",
+    "monthly_spent_usd": "string"
+  }
 }
 ```
 
@@ -52413,13 +54253,17 @@ AIGatewayKeyUpdateResponse
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|budget|object|false|none|Caps on the key's spend|
 |create_time|string|true|none|Time the key was created|
 |description|string|false|none|Longer description on how the key is used|
 |expiry_time|string|false|none|Time the key expires|
 |key_id|string|true|none|Key ID|
 |key_suffix|string|true|none|Last characters of the key|
 |name|string|true|none|Short human readable identifier for the key|
+|owner|object|true|none|Owner of the key|
+|owner_user_id|string|true|none|User ID of the key owner|
 |revocation_time|string|false|none|Time the key was revoked|
+|spend|object|false|none|Spend of the key|
 
 <h2 id="tocS_AIGatewayModelListResponse">AIGatewayModelListResponse</h2>
 <!-- backwards compatibility -->
@@ -52453,6 +54297,396 @@ AIGatewayModelListResponse
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |models|[object]|true|none|List of AI Gateway models|
+
+<h2 id="tocS_AIGatewayOrganizationBudgetSetRequestBody">AIGatewayOrganizationBudgetSetRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationbudgetsetrequestbody"></a>
+<a id="schema_AIGatewayOrganizationBudgetSetRequestBody"></a>
+<a id="tocSaigatewayorganizationbudgetsetrequestbody"></a>
+<a id="tocsaigatewayorganizationbudgetsetrequestbody"></a>
+
+```json
+{
+  "default_key_budget": {},
+  "default_owner_budget": {},
+  "default_project_budget": {},
+  "organization_budget": {}
+}
+```
+
+AIGatewayOrganizationBudgetSetRequestBody
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|default_key_budget|object|false|none|Caps on each key without its own, unless left as they are|
+|default_owner_budget|object|false|none|Caps on each key owner without their own, unless left as they are|
+|default_project_budget|object|false|none|Caps on each project without its own, unless left as they are|
+|organization_budget|object|false|none|Caps on the whole organization's spend, unless left as they are|
+
+<h2 id="tocS_AIGatewayOrganizationBudgetSetResponse">AIGatewayOrganizationBudgetSetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationbudgetsetresponse"></a>
+<a id="schema_AIGatewayOrganizationBudgetSetResponse"></a>
+<a id="tocSaigatewayorganizationbudgetsetresponse"></a>
+<a id="tocsaigatewayorganizationbudgetsetresponse"></a>
+
+```json
+{
+  "configured": true,
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
+  "default_owner_budget": {},
+  "default_project_budget": {},
+  "organization_budget": {}
+}
+```
+
+AIGatewayOrganizationBudgetSetResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configured|boolean|true|none|Whether the organization's budgets are set up, by setting a monthly default key budget. Until then no cap is enforced|
+|default_key_budget|object|true|none|Caps on each key without its own|
+|default_owner_budget|object|true|none|Caps on each key owner without their own|
+|default_project_budget|object|true|none|Caps on each project without its own|
+|organization_budget|object|true|none|Caps on the whole organization's spend|
+
+<h2 id="tocS_AIGatewayOrganizationBudgetsGetResponse">AIGatewayOrganizationBudgetsGetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationbudgetsgetresponse"></a>
+<a id="schema_AIGatewayOrganizationBudgetsGetResponse"></a>
+<a id="tocSaigatewayorganizationbudgetsgetresponse"></a>
+<a id="tocsaigatewayorganizationbudgetsgetresponse"></a>
+
+```json
+{
+  "configured": true,
+  "credits": {
+    "charged_usd": "string",
+    "granted_usd": "string",
+    "remaining_usd": "string"
+  },
+  "default_key_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    }
+  },
+  "default_owner_budget": {},
+  "default_project_budget": {},
+  "metered_until": "string",
+  "organization_budget": {
+    "daily": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "daily_spent_usd": "string",
+    "monthly": {
+      "amount_usd": "string",
+      "effective_usd": "string",
+      "mode": "limit",
+      "source": "own"
+    },
+    "monthly_spent_usd": "string"
+  },
+  "owners": [
+    {
+      "active_key_count": 0,
+      "daily": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "daily_spent_usd": "string",
+      "monthly": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "monthly_spent_usd": "string",
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "project_ids": [
+        "string"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "active_key_count": 0,
+      "billing_group_id": "string",
+      "daily": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "daily_spent_usd": "string",
+      "monthly": {
+        "amount_usd": "string",
+        "effective_usd": "string",
+        "mode": "limit",
+        "source": "own"
+      },
+      "monthly_spent_usd": "string",
+      "project_id": "stringstringstringstringstringstring",
+      "project_name": "string"
+    }
+  ]
+}
+```
+
+AIGatewayOrganizationBudgetsGetResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|configured|boolean|true|none|Whether the organization's budgets are set up, by setting a monthly default key budget. Until then no cap is enforced|
+|credits|object|false|none|AI Gateway credits, or null if none were granted|
+|default_key_budget|object|true|none|Caps on each key without its own|
+|default_owner_budget|object|true|none|Caps on each key owner without their own|
+|default_project_budget|object|true|none|Caps on each project without its own|
+|metered_until|string|false|none|Time up to which spend is counted|
+|organization_budget|object|true|none|Caps on and spend of the whole organization|
+|owners|[object]|true|none|Caps on and spend of each human organization member and existing key owner|
+|projects|[object]|true|none|Caps on and spend of each project|
+
+<h2 id="tocS_AIGatewayOrganizationKeyBudgetsUpdateRequestBody">AIGatewayOrganizationKeyBudgetsUpdateRequestBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationkeybudgetsupdaterequestbody"></a>
+<a id="schema_AIGatewayOrganizationKeyBudgetsUpdateRequestBody"></a>
+<a id="tocSaigatewayorganizationkeybudgetsupdaterequestbody"></a>
+<a id="tocsaigatewayorganizationkeybudgetsupdaterequestbody"></a>
+
+```json
+{
+  "key_ids": [
+    "string"
+  ],
+  "owner_user_id": "string"
+}
+```
+
+AIGatewayOrganizationKeyBudgetsUpdateRequestBody
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key_ids|[string]|false|none|Keys to update, unless owner_user_id is given|
+|owner_user_id|string|false|none|Update every key of this owner instead|
+
+<h2 id="tocS_AIGatewayOrganizationKeyBudgetsUpdateResponse">AIGatewayOrganizationKeyBudgetsUpdateResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationkeybudgetsupdateresponse"></a>
+<a id="schema_AIGatewayOrganizationKeyBudgetsUpdateResponse"></a>
+<a id="tocSaigatewayorganizationkeybudgetsupdateresponse"></a>
+<a id="tocsaigatewayorganizationkeybudgetsupdateresponse"></a>
+
+```json
+{
+  "key_ids": [
+    "string"
+  ]
+}
+```
+
+AIGatewayOrganizationKeyBudgetsUpdateResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key_ids|[string]|true|none|Keys whose budget was updated|
+
+<h2 id="tocS_AIGatewayOrganizationKeyListResponse">AIGatewayOrganizationKeyListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationkeylistresponse"></a>
+<a id="schema_AIGatewayOrganizationKeyListResponse"></a>
+<a id="tocSaigatewayorganizationkeylistresponse"></a>
+<a id="tocsaigatewayorganizationkeylistresponse"></a>
+
+```json
+{
+  "keys": [
+    {
+      "budget": {},
+      "create_time": "string",
+      "description": "string",
+      "expiry_time": "string",
+      "key_id": "stringstringstringstringstringstring",
+      "key_suffix": "strin",
+      "name": "string",
+      "owner": {
+        "is_application_user": true,
+        "real_name": "string",
+        "user_email": "string",
+        "user_id": "string"
+      },
+      "owner_user_id": "string",
+      "project_id": "stringstringstringstringstringstring",
+      "project_name": "string",
+      "revocation_time": "string",
+      "spend": {
+        "daily_spent_usd": "string",
+        "metered_until": "string",
+        "monthly_spent_usd": "string"
+      }
+    }
+  ]
+}
+```
+
+AIGatewayOrganizationKeyListResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|keys|[object]|true|none|List of AI Gateway keys of the organization|
+
+<h2 id="tocS_AIGatewayOrganizationOwnerBudgetSetResponse">AIGatewayOrganizationOwnerBudgetSetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayorganizationownerbudgetsetresponse"></a>
+<a id="schema_AIGatewayOrganizationOwnerBudgetSetResponse"></a>
+<a id="tocSaigatewayorganizationownerbudgetsetresponse"></a>
+<a id="tocsaigatewayorganizationownerbudgetsetresponse"></a>
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "owner_user_id": "string"
+}
+```
+
+AIGatewayOrganizationOwnerBudgetSetResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|daily|object|true|none|Daily policy, in UTC days|
+|monthly|object|true|none|Monthly policy, in UTC months|
+|owner_user_id|string|true|none|User ID of the key owner|
+
+<h2 id="tocS_AIGatewayProjectBudgetGetResponse">AIGatewayProjectBudgetGetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayprojectbudgetgetresponse"></a>
+<a id="schema_AIGatewayProjectBudgetGetResponse"></a>
+<a id="tocSaigatewayprojectbudgetgetresponse"></a>
+<a id="tocsaigatewayprojectbudgetgetresponse"></a>
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "daily_spent_usd": "string",
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly_spent_usd": "string"
+}
+```
+
+AIGatewayProjectBudgetGetResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|daily|object|true|none|Daily policy, in UTC days|
+|daily_spent_usd|string|true|none|USD spent since the start of the UTC day|
+|monthly|object|true|none|Monthly policy, in UTC months|
+|monthly_spent_usd|string|true|none|USD spent since the start of the UTC month|
+
+<h2 id="tocS_AIGatewayProjectBudgetSetResponse">AIGatewayProjectBudgetSetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaigatewayprojectbudgetsetresponse"></a>
+<a id="schema_AIGatewayProjectBudgetSetResponse"></a>
+<a id="tocSaigatewayprojectbudgetsetresponse"></a>
+<a id="tocsaigatewayprojectbudgetsetresponse"></a>
+
+```json
+{
+  "daily": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "daily_spent_usd": "string",
+  "monthly": {
+    "amount_usd": "string",
+    "effective_usd": "string",
+    "mode": "limit",
+    "source": "own"
+  },
+  "monthly_spent_usd": "string"
+}
+```
+
+AIGatewayProjectBudgetSetResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|daily|object|true|none|Daily policy, in UTC days|
+|daily_spent_usd|string|true|none|USD spent since the start of the UTC day|
+|monthly|object|true|none|Monthly policy, in UTC months|
+|monthly_spent_usd|string|true|none|USD spent since the start of the UTC month|
 
 <h2 id="tocS_AIGatewayUsageGetResponse">AIGatewayUsageGetResponse</h2>
 <!-- backwards compatibility -->
@@ -58208,7 +60442,9 @@ OrganizationBillingGroupGetResponse
       "shipping_address_id": "string",
       "vat_id": "string"
     }
-  ]
+  ],
+  "next": "string",
+  "prev": "string"
 }
 ```
 
@@ -58219,6 +60455,8 @@ OrganizationBillingGroupListResponse
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |billing_groups|[object]|true|none|A list of all billing groups belonging to the organization|
+|next|string|false|none|Cursor for the next page. Only set when limit or cursor was given and more results exist|
+|prev|string|false|none|Cursor for the previous page. Only set when limit or cursor was given and an earlier page exists|
 
 <h2 id="tocS_OrganizationBillingGroupUpdateRequestBody">OrganizationBillingGroupUpdateRequestBody</h2>
 <!-- backwards compatibility -->
@@ -60904,8 +63142,13 @@ OrganizationProjectsUpdateResponse
 
 ```json
 {
+  "build_id": "stringstringstringstringstringstring",
+  "component": "string",
   "from_time": "string",
+  "hostname": "string",
   "interval_seconds": 1,
+  "log_type": "application-build",
+  "node_role": "string",
   "severity": "emergency",
   "to_time": "string"
 }
@@ -60917,8 +63160,13 @@ OrganizationServiceLogCountsGetRequestBody
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|build_id|string|false|none|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
+|component|string|false|none|Filter to entries from this component, as in the entries' 'component'.|
 |from_time|string|false|none|Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.|
+|hostname|string|false|none|Filter to entries from the node with this hostname, as in the entries' 'hostname'.|
 |interval_seconds|integer|false|none|Width of each time bucket in seconds, from 1 to 86400. Defaults to the time window split into 24 buckets, rounded up to whole seconds. A time window needing more than 300 buckets is rejected.|
+|log_type|string|false|none|Values of the log_type filter on the project-level and organization-level service logs APIs.|
+|node_role|string|false|none|Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.|
 |severity|string|false|none|Filter to entries with severity at least as severe as this value.|
 |to_time|string|false|none|End of the time window (ISO 8601 UTC). A later time than now is treated as now. Defaults to now.|
 
@@ -60926,6 +63174,8 @@ OrganizationServiceLogCountsGetRequestBody
 
 |Property|Value|
 |---|---|
+|log_type|application-build|
+|log_type|application-run|
 |severity|emergency|
 |severity|alert|
 |severity|critical|
@@ -60996,9 +63246,14 @@ OrganizationServiceLogCountsGetResponse
 
 ```json
 {
+  "build_id": "stringstringstringstringstringstring",
+  "component": "string",
   "cursor": "string",
   "from_time": "string",
+  "hostname": "string",
   "limit": 100,
+  "log_type": "application-build",
+  "node_role": "string",
   "order_by": "log_time:asc",
   "severity": "emergency",
   "to_time": "string"
@@ -61011,9 +63266,14 @@ OrganizationServiceLogsGetRequestBody
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|cursor|string|false|none|Pagination cursor from a previous response. The cursor already encodes the time range, severity and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity' and 'order_by' ('limit' may still be supplied).|
+|build_id|string|false|none|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
+|component|string|false|none|Filter to entries from this component, as in the entries' 'component'.|
+|cursor|string|false|none|Pagination cursor from a previous response. The cursor already encodes the time range, filters and sort order, so it is mutually exclusive with 'from_time', 'to_time', 'severity', 'log_type', 'build_id', 'hostname', 'node_role', 'component' and 'order_by' ('limit' may still be supplied).|
 |from_time|string|false|none|Start of the time window (ISO 8601 UTC). Cannot be in the future. Defaults to one hour before 'to_time' when set, otherwise one hour before now.|
+|hostname|string|false|none|Filter to entries from the node with this hostname, as in the entries' 'hostname'.|
 |limit|integer|false|none|Number of entries per page.|
+|log_type|string|false|none|Values of the log_type filter on the project-level and organization-level service logs APIs.|
+|node_role|string|false|none|Filter to entries from nodes with this role, as in the entries' 'metadata.node_role'.|
 |order_by|string|false|none|Sort order in 'column:direction' form. Only 'log_time:asc' and 'log_time:desc' are supported. Defaults to 'log_time:desc'. Mutually exclusive with 'cursor'.|
 |severity|string|false|none|Filter to entries with severity at least as severe as this value.|
 |to_time|string|false|none|End of the time window (ISO 8601 UTC). A later time than now is treated as now. Defaults to now.|
@@ -61022,6 +63282,8 @@ OrganizationServiceLogsGetRequestBody
 
 |Property|Value|
 |---|---|
+|log_type|application-build|
+|log_type|application-run|
 |order_by|log_time:asc|
 |order_by|log_time:desc|
 |severity|emergency|
@@ -71170,6 +73432,7 @@ ManagedAgentsAgentScheduleCreateRequestBody
   "agent_id": "string",
   "created_at": "string",
   "cron_expr": "string",
+  "disabled_reason": "string",
   "enabled": true,
   "id": "string",
   "name": "string",
@@ -71189,6 +73452,7 @@ ManagedAgentsAgentScheduleCreateResponse
 |agent_id|string|true|none|Agent ID the schedule runs against|
 |created_at|string|false|none|Created At|
 |cron_expr|string|true|none|Cron expression (5-field)|
+|disabled_reason|string|false|none|Set when the runtime turned the schedule off itself, e.g. daily_run_limit while the free tier's daily run limit is spent. It stays disabled until the user enables it again. Not set for schedules a user disabled.|
 |enabled|boolean|false|none|Whether the schedule is active|
 |id|string|true|none|Schedule ID|
 |name|string|true|none|Schedule name|
@@ -71240,6 +73504,7 @@ ManagedAgentsAgentScheduleUpdateRequestBody
   "agent_id": "string",
   "created_at": "string",
   "cron_expr": "string",
+  "disabled_reason": "string",
   "enabled": true,
   "id": "string",
   "name": "string",
@@ -71259,6 +73524,7 @@ ManagedAgentsAgentScheduleUpdateResponse
 |agent_id|string|true|none|Agent ID the schedule runs against|
 |created_at|string|false|none|Created At|
 |cron_expr|string|true|none|Cron expression (5-field)|
+|disabled_reason|string|false|none|Set when the runtime turned the schedule off itself, e.g. daily_run_limit while the free tier's daily run limit is spent. It stays disabled until the user enables it again. Not set for schedules a user disabled.|
 |enabled|boolean|false|none|Whether the schedule is active|
 |id|string|true|none|Schedule ID|
 |name|string|true|none|Schedule name|
@@ -74687,6 +76953,7 @@ PgAvailableExtensionsResponse
 
 ```json
 {
+  "build_id": "string",
   "limit": 100,
   "log_type": "application-build",
   "offset": "string",
@@ -74701,6 +76968,7 @@ ProjectGetServiceLogsRequestBody
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|build_id|string|false|none|Filter to entries of a specific application build. Only supported for application services. Only build logs carry a build ID, so when log_type is omitted, the filter alone selects build logs. Cannot be combined with log_type application-run.|
 |limit|integer|false|none|How many log entries to receive at most|
 |log_type|string|false|none|Filter to entries of a specific application log type. Only supported for application services. When omitted on application services, runtime logs (application-run) are returned.|
 |offset|string|false|none|Opaque offset identifier|
@@ -75252,10 +77520,15 @@ ServiceCreateRequestBody
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -75461,6 +77734,9 @@ ServiceCreateRequestBody
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -75824,10 +78100,15 @@ ServiceEnableWritesResponse
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -76035,6 +78316,9 @@ ServiceEnableWritesResponse
           "valkey_acl_commands": [
             "string"
           ],
+          "valkey_acl_databases": [
+            "string"
+          ],
           "valkey_acl_keys": [
             "string"
           ]
@@ -76165,10 +78449,15 @@ ServiceGetMigrationStatusResponse
           "host": "string",
           "kafka_authentication_method": "certificate",
           "kafka_ssl_ca": "project_ca",
+          "node_position": 1,
           "path": "string",
           "port": 0,
           "privatelink_connection_id": "string",
           "route": "dynamic",
+          "security_redirect_uris": [
+            "string"
+          ],
+          "shard_position": 1,
           "ssl": true,
           "usage": "disaster_recovery"
         }
@@ -76374,6 +78663,9 @@ ServiceGetMigrationStatusResponse
               "string"
             ],
             "valkey_acl_commands": [
+              "string"
+            ],
+            "valkey_acl_databases": [
               "string"
             ],
             "valkey_acl_keys": [
@@ -76827,7 +79119,7 @@ ServicePrivatelinkAzureConnectionApprovalResponse
 |errors|[object]|false|none|List of errors occurred during request processing|
 |message|string|false|none|Printable result of the request|
 |private_endpoint_id|string|true|none|Azure private endpoint ID|
-|privatelink_connection_id|string|false|none|Privatelink connection ID|
+|privatelink_connection_id|string|true|none|Privatelink connection ID|
 |state|string|true|none|The Aiven connection state. The Azure connection status has a separate value|
 |user_ip_address|string|true|none|(Private) IP address of Privatelink endpoint|
 
@@ -76932,7 +79224,7 @@ ServicePrivatelinkAzureConnectionUpdateResponse
 |errors|[object]|false|none|List of errors occurred during request processing|
 |message|string|false|none|Printable result of the request|
 |private_endpoint_id|string|true|none|Azure private endpoint ID|
-|privatelink_connection_id|string|false|none|Privatelink connection ID|
+|privatelink_connection_id|string|true|none|Privatelink connection ID|
 |state|string|true|none|The Aiven connection state. The Azure connection status has a separate value|
 |user_ip_address|string|true|none|(Private) IP address of Privatelink endpoint|
 
@@ -77108,6 +79400,35 @@ ServicePrivatelinkAzureGetResponse
 |state|creating|
 |state|active|
 |state|deleting|
+
+<h2 id="tocS_ServicePrivatelinkAzureRefreshResponse">ServicePrivatelinkAzureRefreshResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaserviceprivatelinkazurerefreshresponse"></a>
+<a id="schema_ServicePrivatelinkAzureRefreshResponse"></a>
+<a id="tocSserviceprivatelinkazurerefreshresponse"></a>
+<a id="tocsserviceprivatelinkazurerefreshresponse"></a>
+
+```json
+{
+  "errors": [
+    {
+      "message": "string",
+      "more_info": "string",
+      "status": 0
+    }
+  ],
+  "message": "string"
+}
+```
+
+ServicePrivatelinkAzureRefreshResponse
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|false|none|List of errors occurred during request processing|
+|message|string|false|none|Printable result of the request|
 
 <h2 id="tocS_ServicePrivatelinkAzureUpdateRequestBody">ServicePrivatelinkAzureUpdateRequestBody</h2>
 <!-- backwards compatibility -->
@@ -77644,10 +79965,15 @@ ServiceServiceTypeUpdateRequestBody
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -77853,6 +80179,9 @@ ServiceServiceTypeUpdateRequestBody
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -78134,10 +80463,15 @@ ServiceUpdateRequestBody
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -78345,6 +80679,9 @@ ServiceUpdateRequestBody
           "valkey_acl_commands": [
             "string"
           ],
+          "valkey_acl_databases": [
+            "string"
+          ],
           "valkey_acl_keys": [
             "string"
           ]
@@ -78403,6 +80740,9 @@ ServiceUpdateResponse
       "string"
     ],
     "valkey_acl_commands": [
+      "string"
+    ],
+    "valkey_acl_databases": [
       "string"
     ],
     "valkey_acl_keys": [
@@ -78479,6 +80819,9 @@ ServiceUserCreateRequestBody
       "valkey_acl_commands": [
         "string"
       ],
+      "valkey_acl_databases": [
+        "string"
+      ],
       "valkey_acl_keys": [
         "string"
       ]
@@ -78535,6 +80878,9 @@ ServiceUserCreateResponse
       "string"
     ],
     "valkey_acl_commands": [
+      "string"
+    ],
+    "valkey_acl_databases": [
       "string"
     ],
     "valkey_acl_keys": [
@@ -78623,10 +80969,15 @@ ServiceUserCredentialsModifyRequestBody
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -78832,6 +81183,9 @@ ServiceUserCredentialsModifyRequestBody
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -78916,10 +81270,15 @@ ServiceUserCredentialsModifyResponse
         "host": "string",
         "kafka_authentication_method": "certificate",
         "kafka_ssl_ca": "project_ca",
+        "node_position": 1,
         "path": "string",
         "port": 0,
         "privatelink_connection_id": "string",
         "route": "dynamic",
+        "security_redirect_uris": [
+          "string"
+        ],
+        "shard_position": 1,
         "ssl": true,
         "usage": "disaster_recovery"
       }
@@ -79125,6 +81484,9 @@ ServiceUserCredentialsModifyResponse
             "string"
           ],
           "valkey_acl_commands": [
+            "string"
+          ],
+          "valkey_acl_databases": [
             "string"
           ],
           "valkey_acl_keys": [
@@ -79225,6 +81587,9 @@ ServiceUserDeleteResponse
         "string"
       ],
       "valkey_acl_commands": [
+        "string"
+      ],
+      "valkey_acl_databases": [
         "string"
       ],
       "valkey_acl_keys": [
@@ -81082,6 +83447,7 @@ OrganizationUserAuthenticationMethodsListResponse
   "is_super_admin": true,
   "join_time": "string",
   "last_activity_time": "string",
+  "state": "active",
   "user_id": "string",
   "user_info": {
     "city": "string",
@@ -81108,8 +83474,17 @@ OrganizationUserGetResponse
 |is_super_admin|boolean|true|none|Super admin state of the organization user|
 |join_time|string|true|none|Join time|
 |last_activity_time|string|true|none|Last activity time|
+|state|string|true|none|An enumeration.|
 |user_id|string|true|none|User ID|
 |user_info|object|true|none|OrganizationUserInfo|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|active|
+|state|deactivated|
+|state|deleted|
 
 <h2 id="tocS_OrganizationUserListResponse">OrganizationUserListResponse</h2>
 <!-- backwards compatibility -->
@@ -81125,6 +83500,7 @@ OrganizationUserGetResponse
       "is_super_admin": true,
       "join_time": "string",
       "last_activity_time": "string",
+      "state": "active",
       "user_id": "string",
       "user_info": {
         "city": "string",
@@ -81237,6 +83613,7 @@ OrganizationUserUpdateRequestBody
   "is_super_admin": true,
   "join_time": "string",
   "last_activity_time": "string",
+  "state": "active",
   "user_id": "string",
   "user_info": {
     "city": "string",
@@ -81263,8 +83640,17 @@ OrganizationUserUpdateResponse
 |is_super_admin|boolean|true|none|Super admin state of the organization user|
 |join_time|string|true|none|Join time|
 |last_activity_time|string|true|none|Last activity time|
+|state|string|true|none|An enumeration.|
 |user_id|string|true|none|User ID|
 |user_info|object|true|none|OrganizationUserInfo|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|active|
+|state|deactivated|
+|state|deleted|
 
 <h2 id="tocS_TwoFactorAuthConfigureRequestBody">TwoFactorAuthConfigureRequestBody</h2>
 <!-- backwards compatibility -->

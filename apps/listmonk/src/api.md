@@ -330,6 +330,7 @@ returns settings from DB
       "string"
     ],
     "app.enable_public_subscription_page": true,
+    "app.enable_public_subscription_api": false,
     "app.enable_public_archive": true,
     "app.send_optin_confirmation": true,
     "app.check_updates": true,
@@ -353,18 +354,24 @@ returns settings from DB
     "privacy.domain_blocklist": [
       {}
     ],
+    "upload.max_file_size": 25000,
     "upload.provider": "string",
-    "upload.filesystem.upload_path": "string",
-    "upload.filesystem.upload_uri": "string",
-    "upload.s3.url": "string",
-    "upload.s3.public_url": "string",
-    "upload.s3.aws_access_key_id": "string",
-    "upload.s3.aws_default_region": "string",
-    "upload.s3.bucket": "string",
-    "upload.s3.bucket_domain": "string",
-    "upload.s3.bucket_path": "string",
-    "upload.s3.bucket_type": "string",
-    "upload.s3.expiry": "string",
+    "upload.filesystem": {
+      "upload_path": "string",
+      "upload_uri": "string"
+    },
+    "upload.s3": {
+      "url": "string",
+      "public_url": "string",
+      "aws_access_key_id": "string",
+      "aws_secret_access_key": "string",
+      "aws_default_region": "string",
+      "bucket": "string",
+      "bucket_domain": "string",
+      "bucket_path": "string",
+      "bucket_type": "string",
+      "expiry": "string"
+    },
     "smtp": [
       {
         "uuid": "string",
@@ -392,17 +399,34 @@ returns settings from DB
     "bounce.webhooks_enabled": true,
     "bounce.count": 0,
     "bounce.action": "string",
-    "bounce.ses_enabled": true,
-    "bounce.azure.enabled": true,
-    "bounce.azure.shared_secret": "string",
-    "bounce.azure.shared_secret_header": "string",
-    "bounce.sendgrid_enabled": true,
-    "bounce.sendgrid_key": "string",
-    "bounce.forwardemail_enabled": true,
-    "bounce.forwardemail_key": "string",
-    "bounce.postmark_enabled": true,
-    "bounce.postmark_username": "string",
-    "bounce.postmark_password": "string",
+    "bounce.ses": {
+      "enabled": true,
+      "topic_arns": [
+        "string"
+      ]
+    },
+    "bounce.azure": {
+      "enabled": true,
+      "shared_secret": "string",
+      "shared_secret_header": "string"
+    },
+    "bounce.sendgrid": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.forwardemail": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.postmark": {
+      "enabled": true,
+      "username": "string",
+      "password": "string"
+    },
+    "bounce.lettermint": {
+      "enabled": true,
+      "key": "string"
+    },
     "bounce.mailboxes": [
       {
         "uuid": "string",
@@ -467,6 +491,7 @@ curl http://localhost:9000/api/settings \
       "string"
     ],
     "app.enable_public_subscription_page": true,
+    "app.enable_public_subscription_api": false,
     "app.enable_public_archive": true,
     "app.send_optin_confirmation": true,
     "app.check_updates": true,
@@ -490,18 +515,24 @@ curl http://localhost:9000/api/settings \
     "privacy.domain_blocklist": [
       {}
     ],
+    "upload.max_file_size": 25000,
     "upload.provider": "string",
-    "upload.filesystem.upload_path": "string",
-    "upload.filesystem.upload_uri": "string",
-    "upload.s3.url": "string",
-    "upload.s3.public_url": "string",
-    "upload.s3.aws_access_key_id": "string",
-    "upload.s3.aws_default_region": "string",
-    "upload.s3.bucket": "string",
-    "upload.s3.bucket_domain": "string",
-    "upload.s3.bucket_path": "string",
-    "upload.s3.bucket_type": "string",
-    "upload.s3.expiry": "string",
+    "upload.filesystem": {
+      "upload_path": "string",
+      "upload_uri": "string"
+    },
+    "upload.s3": {
+      "url": "string",
+      "public_url": "string",
+      "aws_access_key_id": "string",
+      "aws_secret_access_key": "string",
+      "aws_default_region": "string",
+      "bucket": "string",
+      "bucket_domain": "string",
+      "bucket_path": "string",
+      "bucket_type": "string",
+      "expiry": "string"
+    },
     "smtp": [
       {
         "uuid": "string",
@@ -529,17 +560,34 @@ curl http://localhost:9000/api/settings \
     "bounce.webhooks_enabled": true,
     "bounce.count": 0,
     "bounce.action": "string",
-    "bounce.ses_enabled": true,
-    "bounce.azure.enabled": true,
-    "bounce.azure.shared_secret": "string",
-    "bounce.azure.shared_secret_header": "string",
-    "bounce.sendgrid_enabled": true,
-    "bounce.sendgrid_key": "string",
-    "bounce.forwardemail_enabled": true,
-    "bounce.forwardemail_key": "string",
-    "bounce.postmark_enabled": true,
-    "bounce.postmark_username": "string",
-    "bounce.postmark_password": "string",
+    "bounce.ses": {
+      "enabled": true,
+      "topic_arns": [
+        "string"
+      ]
+    },
+    "bounce.azure": {
+      "enabled": true,
+      "shared_secret": "string",
+      "shared_secret_header": "string"
+    },
+    "bounce.sendgrid": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.forwardemail": {
+      "enabled": true,
+      "key": "string"
+    },
+    "bounce.postmark": {
+      "enabled": true,
+      "username": "string",
+      "password": "string"
+    },
+    "bounce.lettermint": {
+      "enabled": true,
+      "key": "string"
+    },
     "bounce.mailboxes": [
       {
         "uuid": "string",
@@ -581,6 +629,7 @@ returns updated settings from the DB.
     "string"
   ],
   "app.enable_public_subscription_page": true,
+  "app.enable_public_subscription_api": false,
   "app.enable_public_archive": true,
   "app.send_optin_confirmation": true,
   "app.check_updates": true,
@@ -604,18 +653,24 @@ returns updated settings from the DB.
   "privacy.domain_blocklist": [
     {}
   ],
+  "upload.max_file_size": 25000,
   "upload.provider": "string",
-  "upload.filesystem.upload_path": "string",
-  "upload.filesystem.upload_uri": "string",
-  "upload.s3.url": "string",
-  "upload.s3.public_url": "string",
-  "upload.s3.aws_access_key_id": "string",
-  "upload.s3.aws_default_region": "string",
-  "upload.s3.bucket": "string",
-  "upload.s3.bucket_domain": "string",
-  "upload.s3.bucket_path": "string",
-  "upload.s3.bucket_type": "string",
-  "upload.s3.expiry": "string",
+  "upload.filesystem": {
+    "upload_path": "string",
+    "upload_uri": "string"
+  },
+  "upload.s3": {
+    "url": "string",
+    "public_url": "string",
+    "aws_access_key_id": "string",
+    "aws_secret_access_key": "string",
+    "aws_default_region": "string",
+    "bucket": "string",
+    "bucket_domain": "string",
+    "bucket_path": "string",
+    "bucket_type": "string",
+    "expiry": "string"
+  },
   "smtp": [
     {
       "uuid": "string",
@@ -643,17 +698,34 @@ returns updated settings from the DB.
   "bounce.webhooks_enabled": true,
   "bounce.count": 0,
   "bounce.action": "string",
-  "bounce.ses_enabled": true,
-  "bounce.azure.enabled": true,
-  "bounce.azure.shared_secret": "string",
-  "bounce.azure.shared_secret_header": "string",
-  "bounce.sendgrid_enabled": true,
-  "bounce.sendgrid_key": "string",
-  "bounce.forwardemail_enabled": true,
-  "bounce.forwardemail_key": "string",
-  "bounce.postmark_enabled": true,
-  "bounce.postmark_username": "string",
-  "bounce.postmark_password": "string",
+  "bounce.ses": {
+    "enabled": true,
+    "topic_arns": [
+      "string"
+    ]
+  },
+  "bounce.azure": {
+    "enabled": true,
+    "shared_secret": "string",
+    "shared_secret_header": "string"
+  },
+  "bounce.sendgrid": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.forwardemail": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.postmark": {
+    "enabled": true,
+    "username": "string",
+    "password": "string"
+  },
+  "bounce.lettermint": {
+    "enabled": true,
+    "key": "string"
+  },
   "bounce.mailboxes": [
     {
       "uuid": "string",
@@ -688,6 +760,7 @@ returns updated settings from the DB.
 |» app.from_email|body|[string]|false|Sender addresses. The first must be a literal email address and is the default for campaigns and system emails.|
 |» app.notify_emails|body|[string]|false|none|
 |» app.enable_public_subscription_page|body|boolean|false|none|
+|» app.enable_public_subscription_api|body|boolean|false|none|
 |» app.enable_public_archive|body|boolean|false|none|
 |» app.send_optin_confirmation|body|boolean|false|none|
 |» app.check_updates|body|boolean|false|none|
@@ -707,35 +780,48 @@ returns updated settings from the DB.
 |» privacy.allow_wipe|body|boolean|false|none|
 |» privacy.exportable|body|[string]|false|none|
 |» privacy.domain_blocklist|body|[object]|false|none|
+|» upload.max_file_size|body|integer(int64)|false|Maximum size of each uploaded file in KB (1024 bytes).|
 |» upload.provider|body|string|false|none|
-|» upload.filesystem.upload_path|body|string|false|none|
-|» upload.filesystem.upload_uri|body|string|false|none|
-|» upload.s3.url|body|string|false|none|
-|» upload.s3.public_url|body|string|false|none|
-|» upload.s3.aws_access_key_id|body|string|false|none|
-|» upload.s3.aws_default_region|body|string|false|none|
-|» upload.s3.bucket|body|string|false|none|
-|» upload.s3.bucket_domain|body|string|false|none|
-|» upload.s3.bucket_path|body|string|false|none|
-|» upload.s3.bucket_type|body|string|false|none|
-|» upload.s3.expiry|body|string|false|none|
+|» upload.filesystem|body|object|false|none|
+|» » upload_path|body|string|false|none|
+|» » upload_uri|body|string|false|none|
+|» upload.s3|body|object|false|none|
+|» » url|body|string|false|none|
+|» » public_url|body|string|false|none|
+|» » aws_access_key_id|body|string|false|none|
+|» » aws_secret_access_key|body|string|false|none|
+|» » aws_default_region|body|string|false|none|
+|» » bucket|body|string|false|none|
+|» » bucket_domain|body|string|false|none|
+|» » bucket_path|body|string|false|none|
+|» » bucket_type|body|string|false|none|
+|» » expiry|body|string|false|none|
 |» smtp|body|[[SMTPSettings](#schemasmtpsettings)]|false|none|
 |» messengers|body|[object]|false|none|
 |» bounce.enabled|body|boolean|false|none|
 |» bounce.webhooks_enabled|body|boolean|false|none|
 |» bounce.count|body|integer|false|none|
 |» bounce.action|body|string|false|none|
-|» bounce.ses_enabled|body|boolean|false|none|
-|» bounce.azure.enabled|body|boolean|false|none|
-|» bounce.azure.shared_secret|body|string|false|none|
-|» bounce.azure.shared_secret_header|body|string|false|none|
-|» bounce.sendgrid_enabled|body|boolean|false|none|
-|» bounce.sendgrid_key|body|string|false|none|
-|» bounce.forwardemail_enabled|body|boolean|false|none|
-|» bounce.forwardemail_key|body|string|false|none|
-|» bounce.postmark_enabled|body|boolean|false|none|
-|» bounce.postmark_username|body|string|false|none|
-|» bounce.postmark_password|body|string|false|none|
+|» bounce.ses|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » topic_arns|body|[string]|false|none|
+|» bounce.azure|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » shared_secret|body|string|false|none|
+|» » shared_secret_header|body|string|false|none|
+|» bounce.sendgrid|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
+|» bounce.forwardemail|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
+|» bounce.postmark|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » username|body|string|false|none|
+|» » password|body|string|false|none|
+|» bounce.lettermint|body|object|false|none|
+|» » enabled|body|boolean|false|none|
+|» » key|body|string|false|none|
 |» bounce.mailboxes|body|[[MailBoxBounces](#schemamailboxbounces)]|false|none|
 |» appearance.admin.custom_css|body|string|false|none|
 |» appearance.admin.custom_js|body|string|false|none|
@@ -5559,7 +5645,7 @@ curl http://localhost:9000/api/public/subscription \
 
 `POST /public/subscription`
 
-handles subscription requests coming from public API calls.
+Requires app.enable_public_subscription_api (disabled by default). Independent of the public subscription page and does not enforce CAPTCHA. Configure rate limits or access restrictions at your reverse proxy as needed.
 
 > Body parameter
 
@@ -5898,6 +5984,7 @@ This operation does not require authentication
     "string"
   ],
   "app.enable_public_subscription_page": true,
+  "app.enable_public_subscription_api": false,
   "app.enable_public_archive": true,
   "app.send_optin_confirmation": true,
   "app.check_updates": true,
@@ -5921,18 +6008,24 @@ This operation does not require authentication
   "privacy.domain_blocklist": [
     {}
   ],
+  "upload.max_file_size": 25000,
   "upload.provider": "string",
-  "upload.filesystem.upload_path": "string",
-  "upload.filesystem.upload_uri": "string",
-  "upload.s3.url": "string",
-  "upload.s3.public_url": "string",
-  "upload.s3.aws_access_key_id": "string",
-  "upload.s3.aws_default_region": "string",
-  "upload.s3.bucket": "string",
-  "upload.s3.bucket_domain": "string",
-  "upload.s3.bucket_path": "string",
-  "upload.s3.bucket_type": "string",
-  "upload.s3.expiry": "string",
+  "upload.filesystem": {
+    "upload_path": "string",
+    "upload_uri": "string"
+  },
+  "upload.s3": {
+    "url": "string",
+    "public_url": "string",
+    "aws_access_key_id": "string",
+    "aws_secret_access_key": "string",
+    "aws_default_region": "string",
+    "bucket": "string",
+    "bucket_domain": "string",
+    "bucket_path": "string",
+    "bucket_type": "string",
+    "expiry": "string"
+  },
   "smtp": [
     {
       "uuid": "string",
@@ -5960,17 +6053,34 @@ This operation does not require authentication
   "bounce.webhooks_enabled": true,
   "bounce.count": 0,
   "bounce.action": "string",
-  "bounce.ses_enabled": true,
-  "bounce.azure.enabled": true,
-  "bounce.azure.shared_secret": "string",
-  "bounce.azure.shared_secret_header": "string",
-  "bounce.sendgrid_enabled": true,
-  "bounce.sendgrid_key": "string",
-  "bounce.forwardemail_enabled": true,
-  "bounce.forwardemail_key": "string",
-  "bounce.postmark_enabled": true,
-  "bounce.postmark_username": "string",
-  "bounce.postmark_password": "string",
+  "bounce.ses": {
+    "enabled": true,
+    "topic_arns": [
+      "string"
+    ]
+  },
+  "bounce.azure": {
+    "enabled": true,
+    "shared_secret": "string",
+    "shared_secret_header": "string"
+  },
+  "bounce.sendgrid": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.forwardemail": {
+    "enabled": true,
+    "key": "string"
+  },
+  "bounce.postmark": {
+    "enabled": true,
+    "username": "string",
+    "password": "string"
+  },
+  "bounce.lettermint": {
+    "enabled": true,
+    "key": "string"
+  },
   "bounce.mailboxes": [
     {
       "uuid": "string",
@@ -6004,6 +6114,7 @@ This operation does not require authentication
 |app.from_email|[string]|false|none|Sender addresses. The first must be a literal email address and is the default for campaigns and system emails.|
 |app.notify_emails|[string]|false|none|none|
 |app.enable_public_subscription_page|boolean|false|none|none|
+|app.enable_public_subscription_api|boolean|false|none|none|
 |app.enable_public_archive|boolean|false|none|none|
 |app.send_optin_confirmation|boolean|false|none|none|
 |app.check_updates|boolean|false|none|none|
@@ -6023,35 +6134,22 @@ This operation does not require authentication
 |privacy.allow_wipe|boolean|false|none|none|
 |privacy.exportable|[string]|false|none|none|
 |privacy.domain_blocklist|[object]|false|none|none|
+|upload.max_file_size|integer(int64)|false|none|Maximum size of each uploaded file in KB (1024 bytes).|
 |upload.provider|string|false|none|none|
-|upload.filesystem.upload_path|string|false|none|none|
-|upload.filesystem.upload_uri|string|false|none|none|
-|upload.s3.url|string|false|none|none|
-|upload.s3.public_url|string|false|none|none|
-|upload.s3.aws_access_key_id|string|false|none|none|
-|upload.s3.aws_default_region|string|false|none|none|
-|upload.s3.bucket|string|false|none|none|
-|upload.s3.bucket_domain|string|false|none|none|
-|upload.s3.bucket_path|string|false|none|none|
-|upload.s3.bucket_type|string|false|none|none|
-|upload.s3.expiry|string|false|none|none|
+|upload.filesystem|object|false|none|none|
+|upload.s3|object|false|none|none|
 |smtp|[[SMTPSettings](#schemasmtpsettings)]|false|none|none|
 |messengers|[object]|false|none|none|
 |bounce.enabled|boolean|false|none|none|
 |bounce.webhooks_enabled|boolean|false|none|none|
 |bounce.count|integer|false|none|none|
 |bounce.action|string|false|none|none|
-|bounce.ses_enabled|boolean|false|none|none|
-|bounce.azure.enabled|boolean|false|none|none|
-|bounce.azure.shared_secret|string|false|none|none|
-|bounce.azure.shared_secret_header|string|false|none|none|
-|bounce.sendgrid_enabled|boolean|false|none|none|
-|bounce.sendgrid_key|string|false|none|none|
-|bounce.forwardemail_enabled|boolean|false|none|none|
-|bounce.forwardemail_key|string|false|none|none|
-|bounce.postmark_enabled|boolean|false|none|none|
-|bounce.postmark_username|string|false|none|none|
-|bounce.postmark_password|string|false|none|none|
+|bounce.ses|object|false|none|none|
+|bounce.azure|object|false|none|none|
+|bounce.sendgrid|object|false|none|none|
+|bounce.forwardemail|object|false|none|none|
+|bounce.postmark|object|false|none|none|
+|bounce.lettermint|object|false|none|none|
 |bounce.mailboxes|[[MailBoxBounces](#schemamailboxbounces)]|false|none|none|
 |appearance.admin.custom_css|string|false|none|none|
 |appearance.admin.custom_js|string|false|none|none|

@@ -205,7 +205,7 @@ Call verify domain validations once all validation values are in place. It might
 
 Base URLs:
 
-* <a href="https://api.apis.guru/v2">https://api.apis.guru/v2</a>
+* <a href="/v2">/v2</a>
 
 <h1 id="public-api-accounts">Accounts</h1>
 

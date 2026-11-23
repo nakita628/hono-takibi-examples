@@ -1,0 +1,6 @@
+export * from './x-amz-target-performance-insightsv20180227-describe-dimension-keys'
+export * from './x-amz-target-performance-insightsv20180227-get-dimension-key-details'
+export * from './x-amz-target-performance-insightsv20180227-get-resource-metadata'
+export * from './x-amz-target-performance-insightsv20180227-get-resource-metrics'
+export * from './x-amz-target-performance-insightsv20180227-list-available-resource-dimensions'
+export * from './x-amz-target-performance-insightsv20180227-list-available-resource-metrics'

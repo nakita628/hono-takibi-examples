@@ -1,5 +1,129 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const FunctionRouteSchema = z
+  .object({
+    pattern: z.string().exactOptional(),
+    literal: z.string().exactOptional(),
+    expression: z.string().exactOptional(),
+    methods: z.array(z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])).exactOptional(),
+    prefer_static: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FunctionRoute')
+
+const ExcludedFunctionRouteSchema = z
+  .object({
+    pattern: z.string().exactOptional(),
+    literal: z.string().exactOptional(),
+    expression: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ExcludedFunctionRoute')
+
+const FunctionScheduleSchema = z
+  .object({ name: z.string().exactOptional(), cron: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('FunctionSchedule')
+
+const TrafficRulesRateLimitConfigSchema = z
+  .object({
+    algorithm: z.literal('sliding_window').exactOptional(),
+    window_size: z.int().exactOptional(),
+    window_limit: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrafficRulesRateLimitConfig')
+
+const TrafficRulesAggregateConfigSchema = z
+  .object({
+    keys: z
+      .array(z.object({ type: z.enum(['ip', 'domain']).exactOptional() }).openapi({ required: [] }))
+      .exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrafficRulesAggregateConfig')
+
+const TrafficRulesConfigSchema = z
+  .object({
+    action: z
+      .object({
+        type: z.string().exactOptional(),
+        config: z
+          .object({
+            to: z.string().exactOptional(),
+            rate_limit_config: TrafficRulesRateLimitConfigSchema.exactOptional(),
+            aggregate: TrafficRulesAggregateConfigSchema.exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: [] }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: [] })
+  .openapi('TrafficRulesConfig')
+
+const FunctionConfigSchema = z
+  .object({
+    display_name: z.string().exactOptional(),
+    generator: z.string().exactOptional(),
+    build_data: z.looseObject({}).exactOptional(),
+    memory: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description: "The function's memory allocation in MB. Mutually exclusive with `vcpu`.\n",
+      }),
+    routes: z.array(FunctionRouteSchema).exactOptional(),
+    excluded_routes: z.array(ExcludedFunctionRouteSchema).exactOptional(),
+    priority: z.int().exactOptional(),
+    region: z.string().exactOptional(),
+    traffic_rules: TrafficRulesConfigSchema.exactOptional(),
+    vcpu: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description: 'Number of vCPUs to provision for the function. Allowed range is\n0.5–2.\n',
+      }),
+    event_subscriptions: z.array(z.string()).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('FunctionConfig')
+
+const DeployEnvironmentVariableSchema = z
+  .object({
+    key: z.string(),
+    value: z.string(),
+    is_secret: z.boolean(),
+    scopes: z.array(z.enum(['builds', 'functions', 'runtime', 'post-processing'])),
+  })
+  .openapi({ required: ['key', 'value', 'scopes', 'is_secret'] })
+  .openapi('DeployEnvironmentVariable')
+
+type DeployFilesType = {
+  files?: { [key: string]: unknown }
+  zip?: File
+  draft?: boolean
+  async?: boolean
+  functions?: { [key: string]: unknown }
+  edge_functions?: { [key: string]: unknown }
+  server?: {
+    sha: string
+    region?: string
+    instance_size?: 'small' | 'medium' | 'large'
+    routes?: z.infer<typeof FunctionRouteSchema>[]
+    excluded_routes?: z.infer<typeof ExcludedFunctionRouteSchema>[]
+    runtime_version?: string
+    scale?: { min?: bigint | null; max?: bigint | null }
+  }
+  function_schedules?: z.infer<typeof FunctionScheduleSchema>[]
+  functions_config?: { [key: string]: z.infer<typeof FunctionConfigSchema> }
+  branch?: string
+  framework?: string
+  framework_version?: string
+  environment?: z.infer<typeof DeployEnvironmentVariableSchema>[]
+}
+
 const CreateDatabaseRequestSchema = z
   .object({
     region: z
@@ -438,7 +562,7 @@ const DeployValidationsReportSchema = z
   .openapi('DeployValidationsReport')
 
 const SplitTestSetupSchema = z
-  .object({ branch_tests: z.object({}).exactOptional() })
+  .object({ branch_tests: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('SplitTestSetup')
 
@@ -448,7 +572,7 @@ const SplitTestSchema = z
     site_id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     path: z.string().exactOptional(),
-    branches: z.array(z.object({})).exactOptional(),
+    branches: z.array(z.looseObject({})).exactOptional(),
     active: z.boolean().exactOptional(),
     created_at: z.string().exactOptional(),
     updated_at: z.string().exactOptional(),
@@ -463,13 +587,13 @@ const ServiceInstanceSchema = z
   .object({
     id: z.string().exactOptional(),
     url: z.string().exactOptional(),
-    config: z.object({}).exactOptional(),
-    external_attributes: z.object({}).exactOptional(),
+    config: z.looseObject({}).exactOptional(),
+    external_attributes: z.looseObject({}).exactOptional(),
     service_slug: z.string().exactOptional(),
     service_path: z.string().exactOptional(),
     service_name: z.string().exactOptional(),
-    env: z.object({}).exactOptional(),
-    snippets: z.array(z.object({})).exactOptional(),
+    env: z.looseObject({}).exactOptional(),
+    snippets: z.array(z.looseObject({})).exactOptional(),
     auth_url: z.string().exactOptional(),
     created_at: z.string().exactOptional(),
     updated_at: z.string().exactOptional(),
@@ -485,7 +609,7 @@ const ServiceSchema = z
     service_path: z.string().exactOptional(),
     long_description: z.string().exactOptional(),
     description: z.string().exactOptional(),
-    events: z.array(z.object({})).exactOptional(),
+    events: z.array(z.looseObject({})).exactOptional(),
     tags: z.array(z.string()).exactOptional(),
     icon: z.string().exactOptional(),
     manifest_url: z.string().exactOptional(),
@@ -495,11 +619,6 @@ const ServiceSchema = z
   })
   .openapi({ required: [] })
   .openapi('Service')
-
-const FunctionScheduleSchema = z
-  .object({ name: z.string().exactOptional(), cron: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('FunctionSchedule')
 
 const DeploySchema = z
   .object({
@@ -636,7 +755,7 @@ const SiteSchema = z
     account_slug: z.string().exactOptional(),
     git_provider: z.string().exactOptional(),
     deploy_hook: z.string().exactOptional(),
-    capabilities: z.record(z.string(), z.object({})).exactOptional(),
+    capabilities: z.record(z.string(), z.looseObject({})).exactOptional(),
     processing_settings: z
       .object({
         html: z
@@ -675,7 +794,7 @@ const SubmissionSchema = z
     company: z.string().exactOptional(),
     summary: z.string().exactOptional(),
     body: z.string().exactOptional(),
-    data: z.object({}).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
     created_at: z.string().exactOptional(),
     site_url: z.string().exactOptional(),
   })
@@ -790,17 +909,40 @@ const FormSchema = z
     name: z.string().exactOptional(),
     paths: z.array(z.string()).exactOptional(),
     submission_count: z.int32().exactOptional(),
-    fields: z.array(z.object({})).exactOptional(),
+    fields: z.array(z.looseObject({})).exactOptional(),
     created_at: z.string().exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Form')
 
+const IdentityUserSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    email: z.string().exactOptional(),
+    aud: z.string().exactOptional(),
+    role: z.string().exactOptional(),
+    confirmed_at: z.string().exactOptional(),
+    invited_at: z.string().exactOptional(),
+    confirmation_sent_at: z.string().exactOptional(),
+    recovery_sent_at: z.string().exactOptional(),
+    email_change_sent_at: z.string().exactOptional(),
+    last_sign_in_at: z.string().exactOptional(),
+    app_metadata: z
+      .object({ provider: z.string().exactOptional(), roles: z.array(z.string()).exactOptional() })
+      .exactOptional()
+      .openapi({ required: [] }),
+    user_metadata: z.looseObject({}).exactOptional(),
+    created_at: z.string().exactOptional(),
+    updated_at: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('IdentityUser')
+
 const HookTypeSchema = z
   .object({
     name: z.string().exactOptional(),
     events: z.array(z.string()).exactOptional(),
-    fields: z.array(z.object({})).exactOptional(),
+    fields: z.array(z.looseObject({})).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('HookType')
@@ -811,7 +953,7 @@ const HookSchema = z
     site_id: z.string().exactOptional(),
     type: z.string().exactOptional(),
     event: z.string().exactOptional(),
-    data: z.object({}).exactOptional(),
+    data: z.looseObject({}).exactOptional(),
     created_at: z.string().exactOptional(),
     updated_at: z.string().exactOptional(),
     disabled: z.boolean().exactOptional(),
@@ -873,105 +1015,10 @@ const PurgeSchema = z
   .openapi({ required: [] })
   .openapi('Purge')
 
-const DeployEnvironmentVariableSchema = z
-  .object({
-    key: z.string(),
-    value: z.string(),
-    is_secret: z.boolean(),
-    scopes: z.array(z.enum(['builds', 'functions', 'runtime', 'post-processing'])),
-  })
-  .openapi({ required: ['key', 'value', 'scopes', 'is_secret'] })
-  .openapi('DeployEnvironmentVariable')
-
-const FunctionRouteSchema = z
-  .object({
-    pattern: z.string().exactOptional(),
-    literal: z.string().exactOptional(),
-    expression: z.string().exactOptional(),
-    methods: z.array(z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'])).exactOptional(),
-    prefer_static: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FunctionRoute')
-
-const ExcludedFunctionRouteSchema = z
-  .object({
-    pattern: z.string().exactOptional(),
-    literal: z.string().exactOptional(),
-    expression: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ExcludedFunctionRoute')
-
-const TrafficRulesRateLimitConfigSchema = z
-  .object({
-    algorithm: z.literal('sliding_window').exactOptional(),
-    window_size: z.int().exactOptional(),
-    window_limit: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrafficRulesRateLimitConfig')
-
-const TrafficRulesAggregateConfigSchema = z
-  .object({
-    keys: z
-      .array(z.object({ type: z.enum(['ip', 'domain']).exactOptional() }).openapi({ required: [] }))
-      .exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrafficRulesAggregateConfig')
-
-const TrafficRulesConfigSchema = z
-  .object({
-    action: z
-      .object({
-        type: z.string().exactOptional(),
-        config: z
-          .object({
-            to: z.string().exactOptional(),
-            rate_limit_config: TrafficRulesRateLimitConfigSchema.exactOptional(),
-            aggregate: TrafficRulesAggregateConfigSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: [] })
-  .openapi('TrafficRulesConfig')
-
-const FunctionConfigSchema = z
-  .object({
-    display_name: z.string().exactOptional(),
-    generator: z.string().exactOptional(),
-    build_data: z.object({}).exactOptional(),
-    memory: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description: "The function's memory allocation in MB. Mutually exclusive with `vcpu`.\n",
-      }),
-    routes: z.array(FunctionRouteSchema).exactOptional(),
-    excluded_routes: z.array(ExcludedFunctionRouteSchema).exactOptional(),
-    priority: z.int().exactOptional(),
-    region: z.string().exactOptional(),
-    traffic_rules: TrafficRulesConfigSchema.exactOptional(),
-    vcpu: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description: 'Number of vCPUs to provision for the function. Allowed range is\n0.5–2.\n',
-      }),
-    event_subscriptions: z.array(z.string()).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('FunctionConfig')
-
-const DeployFilesSchema = z
+const DeployFilesSchema: z.ZodType<DeployFilesType> = z
   .object({
     files: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A hash mapping file paths to SHA1 digests of the file contents.' }),
     zip: z
@@ -985,9 +1032,9 @@ const DeployFilesSchema = z
       }),
     draft: z.boolean().exactOptional(),
     async: z.boolean().exactOptional(),
-    functions: z.object({}).exactOptional(),
+    functions: z.looseObject({}).exactOptional(),
     edge_functions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1171,7 +1218,7 @@ const PluginRunSchema = PluginRunDataSchema.and(
   z.object({ deploy_id: z.string().exactOptional() }).openapi({ required: [] }),
 ).openapi('PluginRun')
 
-const MetadataSchema = z.object({}).openapi('Metadata')
+const MetadataSchema = z.looseObject({}).openapi('Metadata')
 
 const DnsZoneSetupSchema = z
   .object({
@@ -1441,7 +1488,7 @@ const AccountTypeSchema = z
     id: z.string().exactOptional(),
     name: z.string().exactOptional(),
     description: z.string().exactOptional(),
-    capabilities: z.object({}).exactOptional(),
+    capabilities: z.looseObject({}).exactOptional(),
     monthly_dollar_price: z.int().exactOptional(),
     yearly_dollar_price: z.int().exactOptional(),
     monthly_seats_addon_dollar_price: z.int().exactOptional(),
@@ -1537,8 +1584,9 @@ const AuditLogSchema = z
         timestamp: z.string().exactOptional(),
         log_type: z.string().exactOptional(),
       })
-      .catchall(z.object({}))
-      .exactOptional(),
+      .catchall(z.looseObject({}))
+      .exactOptional()
+      .openapi({ required: [] }),
   })
   .openapi({ required: [] })
   .openapi('AuditLog')
@@ -1929,7 +1977,7 @@ const SiteFunctionSchema = z
   .object({
     branch: z.string().exactOptional(),
     created_at: z.string().exactOptional(),
-    functions: z.array(z.object({})).exactOptional(),
+    functions: z.array(z.looseObject({})).exactOptional(),
     id: z.string().exactOptional(),
     log_type: z.string().exactOptional(),
     provider: z.string().exactOptional(),
@@ -2079,7 +2127,7 @@ const DevServerHookSetupRequestBody = {
 }
 
 const CreateServiceInstanceConfigRequestBody = {
-  content: { 'application/json': { schema: z.object({}) } },
+  content: { 'application/json': { schema: z.looseObject({}) } },
   required: true,
 }
 
@@ -6455,6 +6503,95 @@ export const deleteSitesSiteIdServicesAddonInstancesInstanceIdRoute = createRout
   responses: { 204: { description: 'Deleted' }, default: ErrorResponse },
 })
 
+export const getSitesSiteIdIdentityIdentityIdUsersUserIdRoute = createRoute({
+  method: 'get',
+  path: '/sites/{site_id}/identity/{identity_id}/users/{user_id}',
+  tags: ['identityUser'],
+  summary: 'Get an Identity user',
+  description:
+    "Returns one Identity user by ID. Agent runner tokens receive only the user's ID, email, confirmation, invitation, sign-in, password-reset and email-change timestamps, and the `provider` and `roles` fields of `app_metadata`.",
+  operationId: 'getIdentityUser',
+  request: {
+    params: z.object({
+      site_id: z
+        .string()
+        .openapi({
+          param: { name: 'site_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      identity_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'identity_id',
+            in: 'path',
+            required: true,
+            description:
+              "The site's Identity instance ID, returned as `identity_instance_id` by `getSite`.",
+            schema: { type: 'string' },
+          },
+        }),
+      user_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'user_id',
+            in: 'path',
+            required: true,
+            description: "The Identity user's UUID.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: IdentityUserSchema } } },
+    default: ErrorResponse,
+  },
+})
+
+export const postSitesSiteIdIdentityIdentityIdUsersLookupRoute = createRoute({
+  method: 'post',
+  path: '/sites/{site_id}/identity/{identity_id}/users/lookup',
+  tags: ['identityUser'],
+  summary: 'Look up an Identity user by email',
+  description:
+    'Returns the one Identity user with this exact email. Matching ignores case and trailing spaces. Partial matches and pagination are not supported, and an unknown email returns 404. Agent runner tokens receive the same restricted fields as `getIdentityUser`.',
+  operationId: 'lookupIdentityUser',
+  request: {
+    params: z.object({
+      site_id: z
+        .string()
+        .openapi({
+          param: { name: 'site_id', in: 'path', required: true, schema: { type: 'string' } },
+        }),
+      identity_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'identity_id',
+            in: 'path',
+            required: true,
+            description:
+              "The site's Identity instance ID, returned as `identity_instance_id` by `getSite`.",
+            schema: { type: 'string' },
+          },
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({ email: z.string() }).openapi({ required: ['email'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: IdentityUserSchema } } },
+    default: ErrorResponse,
+  },
+})
+
 export const getServicesIndexRoute = createRoute({
   method: 'get',
   path: '/services/',
@@ -6519,7 +6656,7 @@ export const getServicesAddonNameManifestRoute = createRoute({
   responses: {
     201: {
       description: 'retrieving from provider',
-      content: { 'application/json': { schema: z.object({}) } },
+      content: { 'application/json': { schema: z.looseObject({}) } },
     },
     default: ErrorResponse,
   },

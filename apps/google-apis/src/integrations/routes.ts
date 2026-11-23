@@ -68,7 +68,7 @@ type EnterpriseCrmEventbusProtoParameterValueTypeType = {
   intArray?: z.infer<typeof EnterpriseCrmEventbusProtoIntParameterArraySchema>
   intValue?: string
   protoArray?: z.infer<typeof EnterpriseCrmEventbusProtoProtoParameterArraySchema>
-  protoValue?: { [key: string]: { [key: string]: unknown } }
+  protoValue?: { [key: string]: unknown }
   serializedObjectValue?: z.infer<typeof EnterpriseCrmEventbusProtoSerializedObjectParameterSchema>
   stringArray?: z.infer<typeof EnterpriseCrmEventbusProtoStringParameterArraySchema>
   stringValue?: string
@@ -110,6 +110,429 @@ type EnterpriseCrmEventbusProtoBaseValueType = {
   baseFunction?: z.infer<typeof EnterpriseCrmEventbusProtoFunctionSchema>
   literalValue?: z.infer<typeof EnterpriseCrmEventbusProtoParameterValueTypeSchema>
   referenceValue?: string
+}
+
+const EnterpriseCrmEventbusProtoParameterEntrySchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
+      }),
+    value: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+      description:
+        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
+    }),
+  })
+  .openapi({ description: 'Key-value pair of EventBus parameters.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParameterEntry')
+
+const EnterpriseCrmEventbusProtoEventParametersSchema = z
+  .object({
+    parameters: z
+      .array(EnterpriseCrmEventbusProtoParameterEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+      }),
+  })
+  .openapi({
+    description:
+      'LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoEventParameters')
+
+type GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestType = {
+  clientId?: string
+  ignoreErrorIfNoActiveWorkflow?: boolean
+  parameters?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  priority?: 'UNSPCIFIED' | 'SHEDDABLE' | 'SHEDDABLE_PLUS' | 'CRITICAL' | 'CRITICAL_PLUS'
+  requestId?: string
+  scheduledTime?: string
+  testMode?: boolean
+  triggerId?: string
+  workflowName?: string
+}
+
+const GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestSchema: z.ZodType<GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestType> =
+  z
+    .object({
+      clientId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. If the client id is provided, then the combination of trigger id and client id is matched across all the workflows. If the client id is not provided, then workflows with matching trigger id are executed for each client id in the {@link TriggerConfig}. For Api Trigger, the client id is required and will be validated against the allowed clients.',
+        }),
+      ignoreErrorIfNoActiveWorkflow: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Flag to determine whether clients would suppress a warning when no ACTIVE workflows are not found. If this flag is set to be true, an error will not be thrown if the requested trigger_id or client_id is not found in any ACTIVE workflow. Otherwise, the error is always thrown. The flag is set to be false by default.',
+        }),
+      parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Passed in as parameters to each workflow execution. Optional.',
+      }),
+      priority: z
+        .enum(['UNSPCIFIED', 'SHEDDABLE', 'SHEDDABLE_PLUS', 'CRITICAL', 'CRITICAL_PLUS'])
+        .exactOptional()
+        .openapi({
+          description:
+            'The request priority this request should be processed at. For internal users:',
+        }),
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned. Must have no more than 36 characters and contain only alphanumeric characters and hyphens.',
+        }),
+      scheduledTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Time in milliseconds since epoch when the given event would be scheduled.',
+        }),
+      testMode: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Sets test mode in {@link enterprise/crm/eventbus/event_message.proto}.',
+        }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Matched against all {@link TriggerConfig}s across all workflows. i.e. TriggerConfig.trigger_id.equals(trigger_id) Required.',
+        }),
+      workflowName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. If provided, the workflow_name is used to filter all the matched workflows having same trigger_id+client_id. A combination of trigger_id, client_id and workflow_name identifies a unique workflow.',
+        }),
+    })
+    .openapi({
+      description:
+        'Use this request to post all workflows associated with a given trigger id. Next available id: 10',
+      required: [],
+    })
+    .openapi('GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequest')
+
+type EnterpriseCrmEventbusProtoCustomSuspensionRequestType = {
+  postToQueueWithTriggerIdRequest?: z.infer<
+    typeof GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestSchema
+  >
+  suspensionInfoEventParameterKey?: string
+}
+
+const EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The end time of the event execution for current attempt.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The start time of the event execution for current attempt. This could be in the future if it's been scheduled.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStats')
+
+const EnterpriseCrmEventbusProtoConditionResultSchema = z
+  .object({
+    currentTaskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the current task number.' }),
+    nextTaskNumber: z.string().exactOptional().openapi({ description: 'the next task number.' }),
+    result: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "the result comes out after evaluate the combined condition. True if there's no combined condition specified.",
+      }),
+  })
+  .openapi({ description: 'Contains the combined condition calculation results.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoConditionResult')
+
+const EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema = z
+  .object({
+    eventAttemptNum: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'the event attempt number this snapshot belongs to.' }),
+    taskAttemptNum: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'the task attempt number this snapshot belongs to. Could be empty.',
+      }),
+    taskLabel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the task label associated with this snapshot. Could be empty.' }),
+    taskName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the task name associated with this snapshot. Could be empty.' }),
+    taskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The task number associated with this snapshot. Could be empty.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadata')
+
+const EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStatsSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The end time of the task execution for current attempt.' }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The start time of the task execution for current attempt. This could be in the future if it's been scheduled.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStats')
+
+const EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema = z
+  .object({
+    taskAttemptStats: z
+      .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStatsSchema)
+      .exactOptional(),
+    taskExecutionState: z
+      .enum([
+        'UNSPECIFIED',
+        'PENDING_EXECUTION',
+        'IN_PROCESS',
+        'SUCCEED',
+        'FAILED',
+        'FATAL',
+        'RETRY_ON_HOLD',
+        'SKIPPED',
+        'CANCELED',
+        'PENDING_ROLLBACK',
+        'ROLLBACK_IN_PROCESS',
+        'ROLLEDBACK',
+        'SUSPENDED',
+      ])
+      .exactOptional(),
+    taskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pointer to the task config it used for execution.' }),
+  })
+  .openapi({
+    description: 'Contains the details of the execution of this task. Next available id: 11',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoTaskExecutionDetails')
+
+type EnterpriseCrmEventbusProtoEventExecutionSnapshotType = {
+  checkpointTaskNumber?: string
+  conditionResults?: z.infer<typeof EnterpriseCrmEventbusProtoConditionResultSchema>[]
+  diffParams?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  eventExecutionInfoId?: string
+  eventExecutionSnapshotId?: string
+  eventExecutionSnapshotMetadata?: z.infer<
+    typeof EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema
+  >
+  eventParams?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  exceedMaxSize?: boolean
+  snapshotTime?: string
+  taskExecutionDetails?: z.infer<typeof EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema>[]
+  taskName?: string
+}
+
+const EnterpriseCrmEventbusProtoEventExecutionSnapshotSchema: z.ZodType<EnterpriseCrmEventbusProtoEventExecutionSnapshotType> =
+  z
+    .object({
+      checkpointTaskNumber: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates "right after which checkpoint task\'s execution" this snapshot is taken.',
+        }),
+      conditionResults: z
+        .array(EnterpriseCrmEventbusProtoConditionResultSchema)
+        .exactOptional()
+        .openapi({ description: 'All of the computed conditions that been calculated.' }),
+      diffParams: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'The parameters in Event object that differs from last snapshot.',
+      }),
+      eventExecutionInfoId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Points to the event execution info this snapshot belongs to.' }),
+      eventExecutionSnapshotId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Auto-generated. Used as primary key for EventExecutionSnapshots table.',
+        }),
+      eventExecutionSnapshotMetadata:
+        EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema.exactOptional(),
+      eventParams: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'The parameters in Event object.',
+      }),
+      exceedMaxSize: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'indicate whether snapshot exceeded maximum size before clean up',
+        }),
+      snapshotTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Indicates when this snapshot is taken.' }),
+      taskExecutionDetails: z
+        .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema)
+        .exactOptional()
+        .openapi({ description: 'All of the task execution details at the given point of time.' }),
+      taskName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The task name associated with this snapshot. Could be empty.' }),
+    })
+    .openapi({
+      description:
+        'Contains the snapshot of the event execution for a given checkpoint. Next available id: 13',
+      required: [],
+    })
+    .openapi('EnterpriseCrmEventbusProtoEventExecutionSnapshot')
+
+type EnterpriseCrmEventbusProtoEventExecutionDetailsType = {
+  eventAttemptStats?: z.infer<
+    typeof EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema
+  >[]
+  eventExecutionSnapshot?: z.infer<typeof EnterpriseCrmEventbusProtoEventExecutionSnapshotSchema>[]
+  eventExecutionState?:
+    | 'UNSPECIFIED'
+    | 'ON_HOLD'
+    | 'IN_PROCESS'
+    | 'SUCCEEDED'
+    | 'FAILED'
+    | 'CANCELED'
+    | 'RETRY_ON_HOLD'
+    | 'SUSPENDED'
+  eventRetriesFromBeginningCount?: number
+  logFilePath?: string
+  networkAddress?: string
+  nextExecutionTime?: string
+  ryeLockUnheldCount?: number
+}
+
+const EnterpriseCrmEventbusProtoTransformExpressionSchema: z.ZodType<EnterpriseCrmEventbusProtoTransformExpressionType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          initialValue: EnterpriseCrmEventbusProtoBaseValueSchema.exactOptional().openapi({
+            description: 'Initial value upon which to perform transformations.',
+          }),
+          transformationFunctions: z
+            .array(EnterpriseCrmEventbusProtoFunctionSchema)
+            .exactOptional()
+            .openapi({ description: 'Transformations to be applied sequentially.' }),
+        })
+        .openapi({ required: [] }),
+    )
+    .openapi('EnterpriseCrmEventbusProtoTransformExpression')
+
+const EnterpriseCrmEventbusProtoFieldSchema = z
+  .object({
+    cardinality: z
+      .enum(['UNSPECIFIED', 'OPTIONAL'])
+      .exactOptional()
+      .openapi({
+        description:
+          'By default, if the cardinality is unspecified the field is considered required while mapping.',
+      }),
+    defaultValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+      description:
+        'This holds the default values for the fields. This value is supplied by user so may or may not contain PII or SPII data.',
+    }),
+    fieldType: z
+      .enum([
+        'DATA_TYPE_UNSPECIFIED',
+        'STRING_VALUE',
+        'INT_VALUE',
+        'DOUBLE_VALUE',
+        'BOOLEAN_VALUE',
+        'PROTO_VALUE',
+        'SERIALIZED_OBJECT_VALUE',
+        'STRING_ARRAY',
+        'INT_ARRAY',
+        'DOUBLE_ARRAY',
+        'PROTO_ARRAY',
+        'PROTO_ENUM',
+        'BOOLEAN_ARRAY',
+        'PROTO_ENUM_ARRAY',
+        'BYTES',
+        'BYTES_ARRAY',
+        'NON_SERIALIZABLE_OBJECT',
+        'JSON_VALUE',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Specifies the data type of the field.' }),
+    protoDefPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The fully qualified proto name (e.g. enterprise.crm.storage.Account). Required for output field of type PROTO_VALUE or PROTO_ARRAY. For e.g., if input field_type is BYTES and output field_type is PROTO_VALUE, then fully qualified proto type url should be provided to parse the input bytes. If field_type is *_ARRAY, then all the converted protos are of the same type.',
+      }),
+    referenceKey: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This holds the reference key of the workflow or task parameter. 1. Any workflow parameter, for e.g. $workflowParam1$. 2. Any task input or output parameter, for e.g. $task1_param1$. 3. Any workflow or task parameters with subfield references, for e.g., $task1_param1.employee.id$',
+      }),
+    transformExpression:
+      EnterpriseCrmEventbusProtoTransformExpressionSchema.exactOptional().openapi({
+        description:
+          "This is the transform expression to fetch the input field value. for e.g. $param1$.CONCAT('test'). Keep points - 1. Only input field can have a transform expression. 2. If a transform expression is provided, reference_key will be ignored. 3. If no value is returned after evaluation of transform expression, default_value can be mapped if provided. 4. The field_type should be the type of the final object returned after the transform expression is evaluated. Scrubs the transform expression before logging as value provided by user so may or may not contain PII or SPII data.",
+      }),
+  })
+  .openapi({ description: 'Information about the value and type of the field.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoField')
+
+const EnterpriseCrmEventbusProtoMappedFieldSchema = z
+  .object({
+    inputField: EnterpriseCrmEventbusProtoFieldSchema.exactOptional().openapi({
+      description: 'The input field being mapped from.',
+    }),
+    outputField: EnterpriseCrmEventbusProtoFieldSchema.exactOptional().openapi({
+      description: 'The output field being mapped to.',
+    }),
+  })
+  .openapi({ description: 'Mapped field is a pair of input field and output field.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoMappedField')
+
+type EnterpriseCrmEventbusProtoFieldMappingConfigType = {
+  mappedFields?: z.infer<typeof EnterpriseCrmEventbusProtoMappedFieldSchema>[]
 }
 
 const EnterpriseCrmEventbusProtoBaseFunctionSchema = z
@@ -454,52 +877,9 @@ const EnterpriseCrmEventbusProtoFunctionTypeSchema: z.ZodType<EnterpriseCrmEvent
     .openapi({ required: [] })
     .openapi('EnterpriseCrmEventbusProtoFunctionType')
 
-const EnterpriseCrmEventbusProtoTransformExpressionSchema: z.ZodType<EnterpriseCrmEventbusProtoTransformExpressionType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          initialValue: EnterpriseCrmEventbusProtoBaseValueSchema.exactOptional().openapi({
-            description: 'Initial value upon which to perform transformations.',
-          }),
-          transformationFunctions: z
-            .array(EnterpriseCrmEventbusProtoFunctionSchema)
-            .exactOptional()
-            .openapi({ description: 'Transformations to be applied sequentially.' }),
-        })
-        .openapi({ required: [] }),
-    )
-    .openapi('EnterpriseCrmEventbusProtoTransformExpression')
-
 type EnterpriseCrmEventbusProtoFunctionType = {
   functionType?: z.infer<typeof EnterpriseCrmEventbusProtoFunctionTypeSchema>
   parameters?: z.infer<typeof EnterpriseCrmEventbusProtoTransformExpressionSchema>[]
-}
-
-const EnterpriseCrmEventbusProtoBaseValueSchema: z.ZodType<EnterpriseCrmEventbusProtoBaseValueType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          baseFunction: EnterpriseCrmEventbusProtoFunctionSchema.exactOptional().openapi({
-            description:
-              'Start with a function that does not build on existing values. Eg. CurrentTime, Min, Max, Exists, etc.',
-          }),
-          literalValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-            description: 'Start with a literal value.',
-          }),
-          referenceValue: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Start with a reference value to dereference.' }),
-        })
-        .openapi({ required: [] }),
-    )
-    .openapi('EnterpriseCrmEventbusProtoBaseValue')
-
-type EnterpriseCrmEventbusProtoTransformExpressionType = {
-  initialValue?: z.infer<typeof EnterpriseCrmEventbusProtoBaseValueSchema>
-  transformationFunctions?: z.infer<typeof EnterpriseCrmEventbusProtoFunctionSchema>[]
 }
 
 const EnterpriseCrmEventbusProtoDoubleArraySchema = z
@@ -544,149 +924,492 @@ const EnterpriseCrmEventbusProtoValueTypeSchema = z
   })
   .openapi('EnterpriseCrmEventbusProtoValueType')
 
-const EnterpriseCrmLoggingGwsSanitizeOptionsSchema = z
+const EnterpriseCrmEventbusProtoConditionSchema = z
   .object({
-    isAlreadySanitized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If true, the value has already been sanitized and needs no further sanitization. For instance, a D3 customer id is already an obfuscated entity and *might not* need further sanitization.',
-      }),
-    logType: z
-      .array(z.enum(['LOG_TYPE_UNSPECIFIED', 'GWS', 'GTS', 'ALL']))
-      .exactOptional()
-      .openapi({ description: 'To which type(s) of logs the sanitize options apply.' }),
-    privacy: z
-      .enum(['PRIVACY_TYPE_UNSPECIFIED', 'NOT_PII', 'PII', 'SPII', 'UNSURE'])
-      .exactOptional(),
-    sanitizeType: z
-      .enum([
-        'SANITIZE_TYPE_UNSPECIFIED',
-        'SCRUB',
-        'ANONYMIZE',
-        'ANONYMIZE_LIMITED_REPEATABLE',
-        'OBFUSCATE',
-        'ENCRYPT',
-        'DO_NOT_SANITIZE',
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      "Identifies whether a field contains, or may contain, PII or sensitive data, and how to sanitize the field if it does. If a field's privacy type cannot be determined then it is sanitized (e.g., scrubbed). The specific sanitizer implementation is determined by run-time configuration and environment options (e.g., prod vs. qa). next_id: 5",
-    required: [],
-  })
-  .openapi('EnterpriseCrmLoggingGwsSanitizeOptions')
-
-const EnterpriseCrmLoggingGwsFieldLimitsSchema = z
-  .object({
-    logAction: z.enum(['LOG_ACTION_UNSPECIFIED', 'DONT_LOG', 'LOG']).exactOptional(),
-    logType: z
-      .array(z.enum(['LOG_TYPE_UNSPECIFIED', 'GWS', 'GTS', 'ALL']))
-      .exactOptional()
-      .openapi({ description: 'To which type(s) of logs the limits apply.' }),
-    maxArraySize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'maximum array size. If the array exceds this size, the field (list) is truncated.',
-      }),
-    maxStringLength: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'maximum string length. If the field exceeds this amount the field is shortened.',
-      }),
-    shortenerType: z
-      .enum([
-        'SHORTENER_TYPE_UNSPECIFIED',
-        'SHORTEN',
-        'HASH',
-        'SHORTEN_WITH_HASH',
-        'SHORTEN_EMAIL',
-        'SHORTEN_EMAIL_WITH_HASH',
-        'SHORTEN_DOMAIN',
-      ])
-      .exactOptional(),
-  })
-  .openapi({
-    description:
-      'Describes string and array limits when writing to logs. When a limit is exceeded the *shortener_type* describes how to shorten the field. next_id: 6',
-    required: [],
-  })
-  .openapi('EnterpriseCrmLoggingGwsFieldLimits')
-
-const EnterpriseCrmEventbusProtoLogSettingsSchema = z
-  .object({
-    logFieldName: z
+    eventPropertyKey: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'The name of corresponding logging field of the event property. If omitted, assumes the same name as the event property key.',
+          "Key that's evaluated against the `value`. Please note the data type of the runtime value associated with the key should match the data type of `value`, else an IllegalArgumentException is thrown.",
       }),
-    sanitizeOptions: EnterpriseCrmLoggingGwsSanitizeOptionsSchema.exactOptional().openapi({
-      description: 'Contains the scrubbing options, such as whether to scrub, obfuscate, etc.',
-    }),
-    seedPeriod: z.enum(['SEED_PERIOD_UNSPECIFIED', 'DAY', 'WEEK', 'MONTH']).exactOptional(),
-    seedScope: z
-      .enum(['SEED_SCOPE_UNSPECIFIED', 'EVENT_NAME', 'TIME_PERIOD', 'PARAM_NAME'])
-      .exactOptional(),
-    shorteningLimits: EnterpriseCrmLoggingGwsFieldLimitsSchema.exactOptional().openapi({
-      description:
-        'Contains the field limits for shortening, such as max string length and max array length.',
+    operator: z
+      .enum([
+        'UNSET',
+        'EQUALS',
+        'CONTAINS',
+        'LESS_THAN',
+        'GREATER_THAN',
+        'EXISTS',
+        'DOES_NOT_EXIST',
+        'IS_EMPTY',
+        'IS_NOT_EMPTY',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Operator used to evaluate the condition. Please note that an operator with an inappropriate key/value operand will result in IllegalArgumentException, e.g. CONTAINS with boolean key/value pair.',
+      }),
+    value: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
+      description: "Value that's checked for the key.",
     }),
   })
   .openapi({
-    description:
-      'The LogSettings define the logging attributes for an event property. These attributes are used to map the property to the parameter in the log proto. Also used to define scrubbing/truncation behavior and PII information.',
+    description: 'Condition that uses `operator` to evaluate the key against the value.',
     required: [],
   })
-  .openapi('EnterpriseCrmEventbusProtoLogSettings')
+  .openapi('EnterpriseCrmEventbusProtoCondition')
 
-const EnterpriseCrmEventbusProtoAttributesSchema = z
+const EnterpriseCrmEventbusProtoCombinedConditionSchema = z
   .object({
-    dataType: z
-      .enum(['DATA_TYPE_UNSPECIFIED', 'EMAIL', 'URL', 'CURRENCY', 'TIMESTAMP', 'DOMAIN_NAME'])
+    conditions: z
+      .array(EnterpriseCrmEventbusProtoConditionSchema)
+      .exactOptional()
+      .openapi({ description: 'A set of individual constituent conditions.' }),
+  })
+  .openapi({
+    description: 'This message recursively combines constituent conditions using logical AND.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoCombinedCondition')
+
+type EnterpriseCrmEventbusProtoNextTaskType = {
+  combinedConditions?: z.infer<typeof EnterpriseCrmEventbusProtoCombinedConditionSchema>[]
+  condition?: string
+  description?: string
+  label?: string
+  taskConfigId?: string
+  taskNumber?: string
+}
+
+const EnterpriseCrmEventbusProtoBuganizerNotificationSchema = z
+  .object({
+    assigneeEmailAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Whom to assign the new bug. Optional.' }),
+    componentId: z
+      .string()
       .exactOptional()
       .openapi({
-        description: 'Things like URL, Email, Currency, Timestamp (rather than string, int64...)',
+        description: 'ID of the buganizer component within which to create a new issue. Required.',
       }),
-    defaultValue: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
-      description: 'Used to define defaults.',
-    }),
-    isRequired: z
-      .boolean()
+    templateId: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Required for event execution. The validation will be done by the event bus when the event is triggered.',
-      }),
-    isSearchable: z
-      .boolean()
+      .openapi({ description: 'ID of the buganizer template to use. Optional.' }),
+    title: z
+      .string()
       .exactOptional()
-      .openapi({
-        description:
-          'Used to indicate if a ParameterEntry should be converted to ParamIndexes for ST-Spanner full-text search. DEPRECATED: use searchable.',
-      }),
-    logSettings: EnterpriseCrmEventbusProtoLogSettingsSchema.exactOptional().openapi({
-      description: 'See',
-    }),
-    searchable: z.enum(['UNSPECIFIED', 'YES', 'NO']).exactOptional(),
-    taskVisibility: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'List of tasks that can view this property, if empty then all.' }),
+      .openapi({ description: 'Title of the issue to be created. Required.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoBuganizerNotification')
+
+const EnterpriseCrmEventbusProtoTokenSchema = z
+  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoToken')
+
+const EnterpriseCrmEventbusProtoAddressSchema = z
+  .object({
+    email: z.string().exactOptional().openapi({ description: 'Required.' }),
+    name: z.string().exactOptional(),
+    tokens: z.array(EnterpriseCrmEventbusProtoTokenSchema).exactOptional(),
   })
   .openapi({
     description:
-      'Attributes are additional options that can be associated with each event property. For more information, see',
+      'Email address along with optional name and tokens. These tokens will be substituted for the variables in the form of [{var_name}], where var_name could be any string of no more than 32 bytes.',
     required: [],
   })
-  .openapi('EnterpriseCrmEventbusProtoAttributes')
+  .openapi('EnterpriseCrmEventbusProtoAddress')
+
+const EnterpriseCrmEventbusProtoCustomSuspensionRequestSchema: z.ZodType<EnterpriseCrmEventbusProtoCustomSuspensionRequestType> =
+  z
+    .object({
+      postToQueueWithTriggerIdRequest:
+        GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestSchema.exactOptional().openapi(
+          { description: 'Request to fire an event containing the SuspensionInfo message.' },
+        ),
+      suspensionInfoEventParameterKey: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'In the fired event, set the SuspensionInfo message as the value for this key.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoCustomSuspensionRequest')
+
+type EnterpriseCrmEventbusProtoNotificationType = {
+  buganizerNotification?: z.infer<typeof EnterpriseCrmEventbusProtoBuganizerNotificationSchema>
+  emailAddress?: z.infer<typeof EnterpriseCrmEventbusProtoAddressSchema>
+  escalatorQueue?: string
+  pubsubTopic?: string
+  request?: z.infer<typeof EnterpriseCrmEventbusProtoCustomSuspensionRequestSchema>
+}
+
+const EnterpriseCrmEventbusProtoParameterMapFieldSchema = z
+  .object({
+    literalValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+      description: 'Passing a literal value.',
+    }),
+    referenceKey: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Referencing one of the WF variables.' }),
+  })
+  .openapi({ description: 'Field represents either the key or value in an entry.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParameterMapField')
+
+const EnterpriseCrmEventbusProtoParameterMapEntrySchema = z
+  .object({
+    key: EnterpriseCrmEventbusProtoParameterMapFieldSchema.exactOptional(),
+    value: EnterpriseCrmEventbusProtoParameterMapFieldSchema.exactOptional(),
+  })
+  .openapi({ description: 'Entry is a pair of key and value.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParameterMapEntry')
+
+type EnterpriseCrmEventbusProtoParameterMapType = {
+  entries?: z.infer<typeof EnterpriseCrmEventbusProtoParameterMapEntrySchema>[]
+  keyType?:
+    | 'DATA_TYPE_UNSPECIFIED'
+    | 'STRING_VALUE'
+    | 'INT_VALUE'
+    | 'DOUBLE_VALUE'
+    | 'BOOLEAN_VALUE'
+    | 'PROTO_VALUE'
+    | 'SERIALIZED_OBJECT_VALUE'
+    | 'STRING_ARRAY'
+    | 'INT_ARRAY'
+    | 'DOUBLE_ARRAY'
+    | 'PROTO_ARRAY'
+    | 'PROTO_ENUM'
+    | 'BOOLEAN_ARRAY'
+    | 'PROTO_ENUM_ARRAY'
+    | 'BYTES'
+    | 'BYTES_ARRAY'
+    | 'NON_SERIALIZABLE_OBJECT'
+    | 'JSON_VALUE'
+  valueType?:
+    | 'DATA_TYPE_UNSPECIFIED'
+    | 'STRING_VALUE'
+    | 'INT_VALUE'
+    | 'DOUBLE_VALUE'
+    | 'BOOLEAN_VALUE'
+    | 'PROTO_VALUE'
+    | 'SERIALIZED_OBJECT_VALUE'
+    | 'STRING_ARRAY'
+    | 'INT_ARRAY'
+    | 'DOUBLE_ARRAY'
+    | 'PROTO_ARRAY'
+    | 'PROTO_ENUM'
+    | 'BOOLEAN_ARRAY'
+    | 'PROTO_ENUM_ARRAY'
+    | 'BYTES'
+    | 'BYTES_ARRAY'
+    | 'NON_SERIALIZABLE_OBJECT'
+    | 'JSON_VALUE'
+}
+
+const EnterpriseCrmEventbusProtoNotificationSchema: z.ZodType<EnterpriseCrmEventbusProtoNotificationType> =
+  z
+    .object({
+      buganizerNotification: EnterpriseCrmEventbusProtoBuganizerNotificationSchema.exactOptional(),
+      emailAddress: EnterpriseCrmEventbusProtoAddressSchema.exactOptional(),
+      escalatorQueue: z.string().exactOptional(),
+      pubsubTopic: z.string().exactOptional(),
+      request: EnterpriseCrmEventbusProtoCustomSuspensionRequestSchema.exactOptional().openapi({
+        description:
+          'If the out-of-the-box email/pubsub notifications are not suitable and custom logic is required, fire a workflow containing all info needed to notify users to resume execution.',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoNotification')
+
+const EnterpriseCrmEventbusProtoSuspensionExpirationSchema = z
+  .object({
+    expireAfterMs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Milliseconds after which the suspension expires, if no action taken.',
+      }),
+    liftWhenExpired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the suspension will be REJECTED or LIFTED upon expiration. REJECTED is the default behavior.',
+      }),
+    remindAfterMs: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Milliseconds after which the previous suspension action reminder, if any, is sent using the selected notification option, for a suspension which is still PENDING_UNSPECIFIED.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoSuspensionExpiration')
+
+const EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema = z
+  .object({ emailAddress: z.string().exactOptional(), gaiaId: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentity')
+
+const EnterpriseCrmEventbusProtoSuspensionAuthPermissionsSchema = z
+  .object({
+    gaiaIdentity:
+      EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema.exactOptional().openapi(
+        { description: 'Represents a Gaia identity for a person or service account.' },
+      ),
+    googleGroup:
+      EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema.exactOptional(),
+    loasRole: z.string().exactOptional(),
+    mdbGroup: z.string().exactOptional(),
+  })
+  .openapi({ description: 'LINT.IfChange', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoSuspensionAuthPermissions')
+
+type EnterpriseCrmEventbusProtoSuspensionConfigType = {
+  customMessage?: string
+  notifications?: z.infer<typeof EnterpriseCrmEventbusProtoNotificationSchema>[]
+  suspensionExpiration?: z.infer<typeof EnterpriseCrmEventbusProtoSuspensionExpirationSchema>
+  whoMayResolve?: z.infer<typeof EnterpriseCrmEventbusProtoSuspensionAuthPermissionsSchema>[]
+}
+
+const EnterpriseCrmEventbusProtoSuspensionResolutionInfoAuditSchema = z
+  .object({
+    resolvedBy: z.string().exactOptional(),
+    resolvedByCpi: z.string().exactOptional(),
+    timestamp: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoSuspensionResolutionInfoAudit')
+
+const EnterpriseCrmEventbusProtoCloudKmsConfigSchema = z
+  .object({
+    gcpProjectId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The id of GCP project where the KMS key is stored. If not provided, assume the key is stored in the same GCP project defined in Client (tag 14).',
+      }),
+    keyName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A Cloud KMS key is a named object containing one or more key versions, along with metadata for the key. A key exists on exactly one key ring tied to a specific location.',
+      }),
+    keyRingName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "A key ring organizes keys in a specific Google Cloud location and allows you to manage access control on groups of keys. A key ring's name does not need to be unique across a Google Cloud project, but must be unique within a given location.",
+      }),
+    keyVersionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Optional. Each version of a key contains key material used for encryption or signing. A key's version is represented by an integer, starting at 1. To decrypt data or verify a signature, you must use the same key version that was used to encrypt or sign the data.",
+      }),
+    locationName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Location name of the key ring, e.g. "us-west1".' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoCloudKmsConfig')
+
+const EnterpriseCrmEventbusProtoExternalTrafficSchema = z
+  .object({
+    gcpProjectId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User’s GCP project id the traffic is referring to.' }),
+    gcpProjectNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User’s GCP project number the traffic is referring to.' }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "Location for the user's request." }),
+    source: z
+      .enum(['SOURCE_UNSPECIFIED', 'APIGEE', 'SECURITY'])
+      .exactOptional()
+      .openapi({
+        description:
+          'LINT.ThenChange(//depot/google3/enterprise/crm/eventbus/proto/product.proto:product, //depot/google3/java/com/google/enterprise/crm/integrationplatform/api/utils/ConverterUtils.java:source_to_product)',
+      }),
+  })
+  .openapi({ description: 'Represents external traffic type and id.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoExternalTraffic')
+
+const EnterpriseCrmEventbusProtoSuspensionConfigSchema: z.ZodType<EnterpriseCrmEventbusProtoSuspensionConfigType> =
+  z
+    .object({
+      customMessage: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional information to provide recipients of the suspension in addition to the resolution URL, typically containing relevant parameter values from the originating workflow.',
+        }),
+      notifications: z.array(EnterpriseCrmEventbusProtoNotificationSchema).exactOptional(),
+      suspensionExpiration:
+        EnterpriseCrmEventbusProtoSuspensionExpirationSchema.exactOptional().openapi({
+          description:
+            'Indicates the next steps when no external actions happen on the suspension.',
+        }),
+      whoMayResolve: z
+        .array(EnterpriseCrmEventbusProtoSuspensionAuthPermissionsSchema)
+        .exactOptional()
+        .openapi({ description: 'Identities able to resolve this suspension.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoSuspensionConfig')
+
+type EnterpriseCrmEventbusProtoSuspensionResolutionInfoType = {
+  audit?: z.infer<typeof EnterpriseCrmEventbusProtoSuspensionResolutionInfoAuditSchema>
+  clientId?: string
+  cloudKmsConfig?: z.infer<typeof EnterpriseCrmEventbusProtoCloudKmsConfigSchema>
+  createdTimestamp?: string
+  encryptedSuspensionResolutionInfo?: string
+  eventExecutionInfoId?: string
+  externalTraffic?: z.infer<typeof EnterpriseCrmEventbusProtoExternalTrafficSchema>
+  lastModifiedTimestamp?: string
+  product?: 'UNSPECIFIED_PRODUCT' | 'IP' | 'APIGEE' | 'SECURITY'
+  status?: 'PENDING_UNSPECIFIED' | 'REJECTED' | 'LIFTED' | 'CANCELED'
+  suspensionConfig?: z.infer<typeof EnterpriseCrmEventbusProtoSuspensionConfigSchema>
+  suspensionId?: string
+  taskNumber?: string
+  workflowName?: string
+  wrappedDek?: string
+}
+
+const EnterpriseCrmEventbusProtoNextTeardownTaskSchema = z
+  .object({
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. Name of the next teardown task.' }),
+  })
+  .openapi({
+    description:
+      'The teardown task that is next in line to be executed. We support only sequential execution of teardown tasks (i.e. no branching).',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoNextTeardownTask')
+
+const EnterpriseCrmEventbusProtoPropertyEntrySchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Key is used to retrieve the corresponding property value. This should be unique for a given fired event. The Tasks should be aware of the keys used while firing the events for them to be able to retrieve the values.',
+      }),
+    value: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
+      description:
+        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
+    }),
+  })
+  .openapi({ description: 'Key-value pair of EventBus property.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoPropertyEntry')
+
+const EnterpriseCrmEventbusProtoEventBusPropertiesSchema = z
+  .object({
+    properties: z
+      .array(EnterpriseCrmEventbusProtoPropertyEntrySchema)
+      .exactOptional()
+      .openapi({ description: 'An unordered list of property entries.' }),
+  })
+  .openapi({
+    description:
+      'LINT.IfChange This message is used for storing key value pair properties for each Event / Task in the EventBus.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoEventBusProperties')
+
+type EnterpriseCrmEventbusProtoTeardownTaskConfigType = {
+  creatorEmail?: string
+  name?: string
+  nextTeardownTask?: z.infer<typeof EnterpriseCrmEventbusProtoNextTeardownTaskSchema>
+  parameters?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  properties?: z.infer<typeof EnterpriseCrmEventbusProtoEventBusPropertiesSchema>
+  teardownTaskImplementationClassName?: string
+}
+
+const EnterpriseCrmEventbusProtoTeardownTaskConfigSchema: z.ZodType<EnterpriseCrmEventbusProtoTeardownTaskConfigType> =
+  z
+    .object({
+      creatorEmail: z
+        .string()
+        .exactOptional()
+        .openapi({ description: "The creator's email address." }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Unique identifier of the teardown task within this Config. We use this field as the identifier to find next teardown tasks.',
+        }),
+      nextTeardownTask: EnterpriseCrmEventbusProtoNextTeardownTaskSchema.exactOptional(),
+      parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'The parameters the user can pass to this task.',
+      }),
+      properties: EnterpriseCrmEventbusProtoEventBusPropertiesSchema.exactOptional(),
+      teardownTaskImplementationClassName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. Implementation class name.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoTeardownTaskConfig')
+
+type EnterpriseCrmEventbusProtoTeardownType = {
+  teardownTaskConfigs?: z.infer<typeof EnterpriseCrmEventbusProtoTeardownTaskConfigSchema>[]
+}
+
+const EnterpriseCrmEventbusProtoBaseValueSchema: z.ZodType<EnterpriseCrmEventbusProtoBaseValueType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          baseFunction: EnterpriseCrmEventbusProtoFunctionSchema.exactOptional().openapi({
+            description:
+              'Start with a function that does not build on existing values. Eg. CurrentTime, Min, Max, Exists, etc.',
+          }),
+          literalValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+            description: 'Start with a literal value.',
+          }),
+          referenceValue: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Start with a reference value to dereference.' }),
+        })
+        .openapi({ required: [] }),
+    )
+    .openapi('EnterpriseCrmEventbusProtoBaseValue')
+
+type EnterpriseCrmEventbusProtoTransformExpressionType = {
+  initialValue?: z.infer<typeof EnterpriseCrmEventbusProtoBaseValueSchema>
+  transformationFunctions?: z.infer<typeof EnterpriseCrmEventbusProtoFunctionSchema>[]
+}
+
+type EnterpriseCrmEventbusProtoTriggerCriteriaType = {
+  condition?: string
+  parameters?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  triggerCriteriaTaskImplementationClassName?: string
+}
 
 const EnterpriseCrmFrontendsEventbusProtoBooleanParameterArraySchema = z
   .object({ booleanValues: z.array(z.boolean()).exactOptional() })
@@ -762,511 +1485,6 @@ const EnterpriseCrmFrontendsEventbusProtoParameterValueTypeSchema = z
   })
   .openapi('EnterpriseCrmFrontendsEventbusProtoParameterValueType')
 
-const EnterpriseCrmEventbusProtoNodeIdentifierSchema = z
-  .object({
-    elementIdentifier: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Configuration of the edge.' }),
-    elementType: z
-      .enum(['UNKNOWN_TYPE', 'TASK_CONFIG', 'TRIGGER_CONFIG'])
-      .exactOptional()
-      .openapi({
-        description: 'Destination node where the edge ends. It can only be a task config.',
-      }),
-  })
-  .openapi({
-    description: 'Represents a node identifier (type + id). Next highest id: 3',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoNodeIdentifier')
-
-type EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntryType = {
-  attributes?: z.infer<typeof EnterpriseCrmEventbusProtoAttributesSchema>
-  children?: EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntryType[]
-  dataType?:
-    | 'DATA_TYPE_UNSPECIFIED'
-    | 'STRING_VALUE'
-    | 'INT_VALUE'
-    | 'DOUBLE_VALUE'
-    | 'BOOLEAN_VALUE'
-    | 'PROTO_VALUE'
-    | 'SERIALIZED_OBJECT_VALUE'
-    | 'STRING_ARRAY'
-    | 'INT_ARRAY'
-    | 'DOUBLE_ARRAY'
-    | 'PROTO_ARRAY'
-    | 'PROTO_ENUM'
-    | 'BOOLEAN_ARRAY'
-    | 'PROTO_ENUM_ARRAY'
-    | 'BYTES'
-    | 'BYTES_ARRAY'
-    | 'NON_SERIALIZABLE_OBJECT'
-    | 'JSON_VALUE'
-  defaultValue?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterValueTypeSchema>
-  inOutType?: 'IN_OUT_TYPE_UNSPECIFIED' | 'IN' | 'OUT' | 'IN_OUT'
-  isTransient?: boolean
-  jsonSchema?: string
-  key?: string
-  name?: string
-  producedBy?: z.infer<typeof EnterpriseCrmEventbusProtoNodeIdentifierSchema>
-  producer?: string
-  protoDefName?: string
-  protoDefPath?: string
-}
-
-const EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The end time of the event execution for current attempt.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The start time of the event execution for current attempt. This could be in the future if it's been scheduled.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStats')
-
-const EnterpriseCrmEventbusProtoConditionResultSchema = z
-  .object({
-    currentTaskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the current task number.' }),
-    nextTaskNumber: z.string().exactOptional().openapi({ description: 'the next task number.' }),
-    result: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "the result comes out after evaluate the combined condition. True if there's no combined condition specified.",
-      }),
-  })
-  .openapi({ description: 'Contains the combined condition calculation results.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoConditionResult')
-
-const EnterpriseCrmEventbusProtoParameterEntrySchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
-      }),
-    value: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-      description:
-        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
-    }),
-  })
-  .openapi({ description: 'Key-value pair of EventBus parameters.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParameterEntry')
-
-const EnterpriseCrmEventbusProtoEventParametersSchema = z
-  .object({
-    parameters: z
-      .array(EnterpriseCrmEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
-      }),
-  })
-  .openapi({
-    description:
-      'LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoEventParameters')
-
-const EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema = z
-  .object({
-    eventAttemptNum: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'the event attempt number this snapshot belongs to.' }),
-    taskAttemptNum: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'the task attempt number this snapshot belongs to. Could be empty.',
-      }),
-    taskLabel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the task label associated with this snapshot. Could be empty.' }),
-    taskName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the task name associated with this snapshot. Could be empty.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The task number associated with this snapshot. Could be empty.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadata')
-
-const EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStatsSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The end time of the task execution for current attempt.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The start time of the task execution for current attempt. This could be in the future if it's been scheduled.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStats')
-
-const EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema = z
-  .object({
-    taskAttemptStats: z
-      .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsTaskAttemptStatsSchema)
-      .exactOptional(),
-    taskExecutionState: z
-      .enum([
-        'UNSPECIFIED',
-        'PENDING_EXECUTION',
-        'IN_PROCESS',
-        'SUCCEED',
-        'FAILED',
-        'FATAL',
-        'RETRY_ON_HOLD',
-        'SKIPPED',
-        'CANCELED',
-        'PENDING_ROLLBACK',
-        'ROLLBACK_IN_PROCESS',
-        'ROLLEDBACK',
-        'SUSPENDED',
-      ])
-      .exactOptional(),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pointer to the task config it used for execution.' }),
-  })
-  .openapi({
-    description: 'Contains the details of the execution of this task. Next available id: 11',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoTaskExecutionDetails')
-
-const EnterpriseCrmEventbusProtoEventExecutionSnapshotSchema = z
-  .object({
-    checkpointTaskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates "right after which checkpoint task\'s execution" this snapshot is taken.',
-      }),
-    conditionResults: z
-      .array(EnterpriseCrmEventbusProtoConditionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the computed conditions that been calculated.' }),
-    diffParams: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'The parameters in Event object that differs from last snapshot.',
-    }),
-    eventExecutionInfoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Points to the event execution info this snapshot belongs to.' }),
-    eventExecutionSnapshotId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Auto-generated. Used as primary key for EventExecutionSnapshots table.',
-      }),
-    eventExecutionSnapshotMetadata:
-      EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema.exactOptional(),
-    eventParams: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'The parameters in Event object.',
-    }),
-    exceedMaxSize: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'indicate whether snapshot exceeded maximum size before clean up' }),
-    snapshotTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates when this snapshot is taken.' }),
-    taskExecutionDetails: z
-      .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the task execution details at the given point of time.' }),
-    taskName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The task name associated with this snapshot. Could be empty.' }),
-  })
-  .openapi({
-    description:
-      'Contains the snapshot of the event execution for a given checkpoint. Next available id: 13',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoEventExecutionSnapshot')
-
-const EnterpriseCrmEventbusProtoEventExecutionDetailsSchema = z
-  .object({
-    eventAttemptStats: z
-      .array(EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema)
-      .exactOptional(),
-    eventExecutionSnapshot: z
-      .array(EnterpriseCrmEventbusProtoEventExecutionSnapshotSchema)
-      .exactOptional(),
-    eventExecutionState: z
-      .enum([
-        'UNSPECIFIED',
-        'ON_HOLD',
-        'IN_PROCESS',
-        'SUCCEEDED',
-        'FAILED',
-        'CANCELED',
-        'RETRY_ON_HOLD',
-        'SUSPENDED',
-      ])
-      .exactOptional(),
-    eventRetriesFromBeginningCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the number of times the execution has restarted from the beginning.',
-      }),
-    logFilePath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The log file path (aka. cns address) for this event.' }),
-    networkAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The network address (aka. bns address) that indicates where the event executor is running.',
-      }),
-    nextExecutionTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Next scheduled execution time in case the execution status was RETRY_ON_HOLD.',
-      }),
-    ryeLockUnheldCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Used internally and shouldn't be exposed to users. A counter for the cron job to record how many times this event is in in_process state but don't have a lock consecutively/",
-      }),
-  })
-  .openapi({
-    description:
-      'Contains the details of the execution info of this event: this includes the tasks execution details plus the event execution statistics. Next available id: 10',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoEventExecutionDetails')
-
-const GoogleCloudIntegrationsV1alphaAttemptStatsSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The end time of the event execution for current attempt.' }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The start time of the event execution for current attempt. This could be in the future if it's been scheduled.",
-      }),
-  })
-  .openapi({ description: 'Status for the execution attempt.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaAttemptStats')
-
-const GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadataSchema = z
-  .object({
-    executionAttempt: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'the execution attempt number this snapshot belongs to.' }),
-    task: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the task name associated with this snapshot.' }),
-    taskAttempt: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'the task attempt number this snapshot belongs to.' }),
-    taskLabel: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'the task label associated with this snapshot. Could be empty.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The task number associated with this snapshot.' }),
-  })
-  .openapi({ description: 'Metadata of the execution snapshot.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadata')
-
-const GoogleCloudIntegrationsV1alphaBooleanParameterArraySchema = z
-  .object({
-    booleanValues: z.array(z.boolean()).exactOptional().openapi({ description: 'Boolean array.' }),
-  })
-  .openapi({ description: 'This message only contains a field of boolean array.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaBooleanParameterArray')
-
-const GoogleCloudIntegrationsV1alphaDoubleParameterArraySchema = z
-  .object({
-    doubleValues: z
-      .array(z.float64())
-      .exactOptional()
-      .openapi({ description: 'Double number array.' }),
-  })
-  .openapi({
-    description: 'This message only contains a field of double number array.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaDoubleParameterArray')
-
-const GoogleCloudIntegrationsV1alphaIntParameterArraySchema = z
-  .object({
-    intValues: z.array(z.string()).exactOptional().openapi({ description: 'Integer array.' }),
-  })
-  .openapi({ description: 'This message only contains a field of integer array.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaIntParameterArray')
-
-const GoogleCloudIntegrationsV1alphaStringParameterArraySchema = z
-  .object({
-    stringValues: z.array(z.string()).exactOptional().openapi({ description: 'String array.' }),
-  })
-  .openapi({ description: 'This message only contains a field of string array.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaStringParameterArray')
-
-const GoogleCloudIntegrationsV1alphaValueTypeSchema = z
-  .object({
-    booleanArray: GoogleCloudIntegrationsV1alphaBooleanParameterArraySchema.exactOptional().openapi(
-      { description: 'Boolean Array.' },
-    ),
-    booleanValue: z.boolean().exactOptional().openapi({ description: 'Boolean.' }),
-    doubleArray: GoogleCloudIntegrationsV1alphaDoubleParameterArraySchema.exactOptional().openapi({
-      description: 'Double Number Array.',
-    }),
-    doubleValue: z.float64().exactOptional().openapi({ description: 'Double Number.' }),
-    intArray: GoogleCloudIntegrationsV1alphaIntParameterArraySchema.exactOptional().openapi({
-      description: 'Integer Array.',
-    }),
-    intValue: z.string().exactOptional().openapi({ description: 'Integer.' }),
-    jsonValue: z.string().exactOptional().openapi({ description: 'Json.' }),
-    stringArray: GoogleCloudIntegrationsV1alphaStringParameterArraySchema.exactOptional().openapi({
-      description: 'String Array.',
-    }),
-    stringValue: z.string().exactOptional().openapi({ description: 'String.' }),
-  })
-  .openapi({ description: 'The type of the parameter.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaValueType')
-
-const GoogleCloudIntegrationsV1alphaTaskExecutionDetailsSchema = z
-  .object({
-    taskAttemptStats: z
-      .array(GoogleCloudIntegrationsV1alphaAttemptStatsSchema)
-      .exactOptional()
-      .openapi({ description: 'Status for the current task execution attempt.' }),
-    taskExecutionState: z
-      .enum([
-        'TASK_EXECUTION_STATE_UNSPECIFIED',
-        'PENDING_EXECUTION',
-        'IN_PROCESS',
-        'SUCCEED',
-        'FAILED',
-        'FATAL',
-        'RETRY_ON_HOLD',
-        'SKIPPED',
-        'CANCELLED',
-        'PENDING_ROLLBACK',
-        'ROLLBACK_IN_PROCESS',
-        'ROLLEDBACK',
-        'SUSPENDED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The execution state of this task.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Pointer to the task config it used for execution.' }),
-  })
-  .openapi({ description: 'Contains the details of the execution of this task.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaTaskExecutionDetails')
-
-const GoogleCloudIntegrationsV1alphaExecutionSnapshotSchema = z
-  .object({
-    checkpointTaskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Indicates "after which checkpoint task\'s execution" this snapshot is taken.',
-      }),
-    executionSnapshotMetadata:
-      GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadataSchema.exactOptional().openapi(
-        { description: 'Metadata of the execution snapshot.' },
-      ),
-    params: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Parameters used during the execution.' }),
-    taskExecutionDetails: z
-      .array(GoogleCloudIntegrationsV1alphaTaskExecutionDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the task execution details at the given point of time.' }),
-  })
-  .openapi({
-    description: 'Contains the snapshot of the execution for a given checkpoint.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaExecutionSnapshot')
-
-const GoogleCloudIntegrationsV1alphaExecutionDetailsSchema = z
-  .object({
-    attemptStats: z
-      .array(GoogleCloudIntegrationsV1alphaAttemptStatsSchema)
-      .exactOptional()
-      .openapi({ description: 'List of Start and end time of the execution attempts.' }),
-    executionSnapshots: z
-      .array(GoogleCloudIntegrationsV1alphaExecutionSnapshotSchema)
-      .exactOptional()
-      .openapi({ description: 'List of snapshots taken during the execution.' }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'PENDING',
-        'PROCESSING',
-        'SUCCEEDED',
-        'FAILED',
-        'CANCELLED',
-        'RETRY_ON_HOLD',
-        'SUSPENDED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Status of the execution.' }),
-  })
-  .openapi({
-    description:
-      'Contains the details of the execution info: this includes the tasks execution details plus the event execution statistics.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaExecutionDetails')
-
 const EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema = z
   .object({
     dataType: z
@@ -1307,23 +1525,107 @@ const EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema = z
   .openapi({ description: 'Key-value pair of EventBus parameters.', required: [] })
   .openapi('EnterpriseCrmFrontendsEventbusProtoParameterEntry')
 
-type GoogleCloudIntegrationsV1alphaExecutionType = {
-  createTime?: string
-  directSubExecutions?: GoogleCloudIntegrationsV1alphaExecutionType[]
-  eventExecutionDetails?: z.infer<typeof EnterpriseCrmEventbusProtoEventExecutionDetailsSchema>
-  executionDetails?: z.infer<typeof GoogleCloudIntegrationsV1alphaExecutionDetailsSchema>
-  executionMethod?: 'EXECUTION_METHOD_UNSPECIFIED' | 'POST' | 'POST_TO_QUEUE' | 'SCHEDULE'
-  name?: string
-  requestParameters?: {
-    [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema>
-  }
-  requestParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
-  responseParameters?: {
-    [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema>
-  }
-  responseParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
-  triggerId?: string
-  updateTime?: string
+const EnterpriseCrmFrontendsEventbusProtoEventParametersSchema = z
+  .object({
+    parameters: z
+      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same workflow execution.',
+      }),
+  })
+  .openapi({
+    description:
+      'LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see',
+    required: [],
+  })
+  .openapi('EnterpriseCrmFrontendsEventbusProtoEventParameters')
+
+type EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotType = {
+  checkpointTaskNumber?: string
+  conditionResults?: z.infer<typeof EnterpriseCrmEventbusProtoConditionResultSchema>[]
+  diffParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  eventExecutionInfoId?: string
+  eventExecutionSnapshotId?: string
+  eventExecutionSnapshotMetadata?: z.infer<
+    typeof EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema
+  >
+  eventParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  snapshotTime?: string
+  taskExecutionDetails?: z.infer<typeof EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema>[]
+  taskName?: string
+}
+
+const EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotType> =
+  z
+    .object({
+      checkpointTaskNumber: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates "right after which checkpoint task\'s execution" this snapshot is taken.',
+        }),
+      conditionResults: z
+        .array(EnterpriseCrmEventbusProtoConditionResultSchema)
+        .exactOptional()
+        .openapi({ description: 'All of the computed conditions that been calculated.' }),
+      diffParams: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'The parameters in Event object that differs from last snapshot.',
+      }),
+      eventExecutionInfoId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Points to the event execution info this snapshot belongs to.' }),
+      eventExecutionSnapshotId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Auto-generated. Used as primary key for EventExecutionSnapshots table.',
+        }),
+      eventExecutionSnapshotMetadata:
+        EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema.exactOptional(),
+      eventParams: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi(
+        { description: 'The parameters in Event object.' },
+      ),
+      snapshotTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Indicates when this snapshot is taken.' }),
+      taskExecutionDetails: z
+        .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema)
+        .exactOptional()
+        .openapi({ description: 'All of the task execution details at the given point of time.' }),
+      taskName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The task name associated with this snapshot. Could be empty.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshot')
+
+type EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsType = {
+  eventAttemptStats?: z.infer<
+    typeof EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema
+  >[]
+  eventExecutionSnapshot?: z.infer<
+    typeof EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotSchema
+  >[]
+  eventExecutionState?:
+    | 'UNSPECIFIED'
+    | 'ON_HOLD'
+    | 'IN_PROCESS'
+    | 'SUCCEEDED'
+    | 'FAILED'
+    | 'CANCELED'
+    | 'RETRY_ON_HOLD'
+    | 'SUSPENDED'
+  eventRetriesFromBeginningCount?: number
+  logFilePath?: string
+  networkAddress?: string
+  nextExecutionTime?: string
+  ryeLockUnheldCount?: number
 }
 
 const CrmlogErrorCodeSchema = z
@@ -1402,356 +1704,6 @@ const CrmlogErrorCodeSchema = z
   })
   .openapi('CrmlogErrorCode')
 
-const EnterpriseCrmEventbusAuthconfigAuthConfigTaskParamSchema = z
-  .object({
-    allowedCredentialTypes: z
-      .array(
-        z.enum([
-          'CREDENTIAL_TYPE_UNSPECIFIED',
-          'USERNAME_AND_PASSWORD',
-          'API_KEY',
-          'OAUTH2_AUTHORIZATION_CODE',
-          'OAUTH2_IMPLICIT',
-          'OAUTH2_CLIENT_CREDENTIALS',
-          'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
-          'JWT',
-          'AUTH_TOKEN',
-          'SERVICE_ACCOUNT',
-          'CLIENT_CERTIFICATE_ONLY',
-          'OIDC_TOKEN',
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Defines the credential types to be supported as Task may restrict specific types to use, e.g. Cloud SQL Task will use username/password type only.',
-      }),
-    allowedServiceAccountInContext: z.boolean().exactOptional(),
-    authConfigId: z.string().exactOptional().openapi({ description: 'UUID of the AuthConfig.' }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
-    useServiceAccountInContext: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusAuthconfigAuthConfigTaskParam')
-
-const EnterpriseCrmEventbusProtoTokenSchema = z
-  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoToken')
-
-const EnterpriseCrmEventbusProtoAddressSchema = z
-  .object({
-    email: z.string().exactOptional().openapi({ description: 'Required.' }),
-    name: z.string().exactOptional(),
-    tokens: z.array(EnterpriseCrmEventbusProtoTokenSchema).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Email address along with optional name and tokens. These tokens will be substituted for the variables in the form of [{var_name}], where var_name could be any string of no more than 32 bytes.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoAddress')
-
-const EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema = z
-  .object({
-    enumStrings: z.array(z.string()).exactOptional(),
-    filterType: z.enum(['DEFAULT_INCLUSIVE', 'EXCLUSIVE']).exactOptional(),
-  })
-  .openapi({ description: 'List of error enums for alerts.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumList')
-
-const EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValueSchema = z
-  .object({ absolute: z.string().exactOptional(), percentage: z.int32().exactOptional() })
-  .openapi({
-    description:
-      'The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValue')
-
-const EnterpriseCrmEventbusProtoBuganizerNotificationSchema = z
-  .object({
-    assigneeEmailAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Whom to assign the new bug. Optional.' }),
-    componentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'ID of the buganizer component within which to create a new issue. Required.',
-      }),
-    templateId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID of the buganizer template to use. Optional.' }),
-    title: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Title of the issue to be created. Required.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoBuganizerNotification')
-
-const EnterpriseCrmEventbusProtoCloudKmsConfigSchema = z
-  .object({
-    gcpProjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The id of GCP project where the KMS key is stored. If not provided, assume the key is stored in the same GCP project defined in Client (tag 14).',
-      }),
-    keyName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A Cloud KMS key is a named object containing one or more key versions, along with metadata for the key. A key exists on exactly one key ring tied to a specific location.',
-      }),
-    keyRingName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "A key ring organizes keys in a specific Google Cloud location and allows you to manage access control on groups of keys. A key ring's name does not need to be unique across a Google Cloud project, but must be unique within a given location.",
-      }),
-    keyVersionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Each version of a key contains key material used for encryption or signing. A key's version is represented by an integer, starting at 1. To decrypt data or verify a signature, you must use the same key version that was used to encrypt or sign the data.",
-      }),
-    locationName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Location name of the key ring, e.g. "us-west1".' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoCloudKmsConfig')
-
-const EnterpriseCrmEventbusProtoCloudSchedulerConfigSchema = z
-  .object({
-    cronTab: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The cron tab of cloud scheduler trigger.' }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When the job was deleted from Pantheon UI, error_message will be populated when Get/List integrations',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The location where associated cloud scheduler job will be created',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Service account used by Cloud Scheduler to trigger the integration at scheduled time',
-      }),
-  })
-  .openapi({ description: 'Cloud Scheduler Trigger configuration', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoCloudSchedulerConfig')
-
-const EnterpriseCrmEventbusProtoConditionSchema = z
-  .object({
-    eventPropertyKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Key that's evaluated against the `value`. Please note the data type of the runtime value associated with the key should match the data type of `value`, else an IllegalArgumentException is thrown.",
-      }),
-    operator: z
-      .enum([
-        'UNSET',
-        'EQUALS',
-        'CONTAINS',
-        'LESS_THAN',
-        'GREATER_THAN',
-        'EXISTS',
-        'DOES_NOT_EXIST',
-        'IS_EMPTY',
-        'IS_NOT_EMPTY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Operator used to evaluate the condition. Please note that an operator with an inappropriate key/value operand will result in IllegalArgumentException, e.g. CONTAINS with boolean key/value pair.',
-      }),
-    value: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
-      description: "Value that's checked for the key.",
-    }),
-  })
-  .openapi({
-    description: 'Condition that uses `operator` to evaluate the key against the value.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoCondition')
-
-const EnterpriseCrmEventbusProtoCombinedConditionSchema = z
-  .object({
-    conditions: z
-      .array(EnterpriseCrmEventbusProtoConditionSchema)
-      .exactOptional()
-      .openapi({ description: 'A set of individual constituent conditions.' }),
-  })
-  .openapi({
-    description: 'This message recursively combines constituent conditions using logical AND.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoCombinedCondition')
-
-const EnterpriseCrmEventbusProtoConnectorsConnectionSchema = z
-  .object({
-    connectionName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Connection name Format: projects/{project}/locations/{location}/connections/{connection}',
-      }),
-    connectorVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Connector version Format: projects/{project}/locations/{location}/providers/{provider}/connectors/{connector}/versions/{version}',
-      }),
-    serviceName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Service name Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoConnectorsConnection')
-
-const EnterpriseCrmEventbusProtoConnectorsGenericConnectorTaskConfigSchema = z
-  .object({
-    connection: EnterpriseCrmEventbusProtoConnectorsConnectionSchema.exactOptional().openapi({
-      description: 'User-selected connection.',
-    }),
-    operation: z
-      .enum([
-        'OPERATION_UNSPECIFIED',
-        'EXECUTE_ACTION',
-        'LIST_ENTITIES',
-        'GET_ENTITY',
-        'CREATE_ENTITY',
-        'UPDATE_ENTITY',
-        'DELETE_ENTITY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Operation to perform using the configured connection.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoConnectorsGenericConnectorTaskConfig')
-
-const EnterpriseCrmEventbusProtoCoordinateSchema = z
-  .object({ x: z.int32().exactOptional(), y: z.int32().exactOptional() })
-  .openapi({ description: 'Represents two-dimensional positions.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoCoordinate')
-
-const GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestSchema = z
-  .object({
-    clientId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If the client id is provided, then the combination of trigger id and client id is matched across all the workflows. If the client id is not provided, then workflows with matching trigger id are executed for each client id in the {@link TriggerConfig}. For Api Trigger, the client id is required and will be validated against the allowed clients.',
-      }),
-    ignoreErrorIfNoActiveWorkflow: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Flag to determine whether clients would suppress a warning when no ACTIVE workflows are not found. If this flag is set to be true, an error will not be thrown if the requested trigger_id or client_id is not found in any ACTIVE workflow. Otherwise, the error is always thrown. The flag is set to be false by default.',
-      }),
-    parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Passed in as parameters to each workflow execution. Optional.',
-    }),
-    priority: z
-      .enum(['UNSPCIFIED', 'SHEDDABLE', 'SHEDDABLE_PLUS', 'CRITICAL', 'CRITICAL_PLUS'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The request priority this request should be processed at. For internal users:',
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned. Must have no more than 36 characters and contain only alphanumeric characters and hyphens.',
-      }),
-    scheduledTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Time in milliseconds since epoch when the given event would be scheduled.',
-      }),
-    testMode: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Sets test mode in {@link enterprise/crm/eventbus/event_message.proto}.',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Matched against all {@link TriggerConfig}s across all workflows. i.e. TriggerConfig.trigger_id.equals(trigger_id) Required.',
-      }),
-    workflowName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If provided, the workflow_name is used to filter all the matched workflows having same trigger_id+client_id. A combination of trigger_id, client_id and workflow_name identifies a unique workflow.',
-      }),
-  })
-  .openapi({
-    description:
-      'Use this request to post all workflows associated with a given trigger id. Next available id: 10',
-    required: [],
-  })
-  .openapi('GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequest')
-
-const EnterpriseCrmEventbusProtoCustomSuspensionRequestSchema = z
-  .object({
-    postToQueueWithTriggerIdRequest:
-      GoogleInternalCloudCrmEventbusV3PostToQueueWithTriggerIdRequestSchema.exactOptional().openapi(
-        { description: 'Request to fire an event containing the SuspensionInfo message.' },
-      ),
-    suspensionInfoEventParameterKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'In the fired event, set the SuspensionInfo message as the value for this key.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoCustomSuspensionRequest')
-
 const EnterpriseCrmEventbusProtoErrorDetailSchema = z
   .object({
     errorCode: CrmlogErrorCodeSchema.exactOptional().openapi({
@@ -1782,36 +1734,71 @@ const EnterpriseCrmEventbusProtoErrorDetailSchema = z
   })
   .openapi('EnterpriseCrmEventbusProtoErrorDetail')
 
-const EnterpriseCrmEventbusProtoPropertyEntrySchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Key is used to retrieve the corresponding property value. This should be unique for a given fired event. The Tasks should be aware of the keys used while firing the events for them to be able to retrieve the values.',
-      }),
-    value: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
+const EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsType> =
+  z
+    .object({
+      eventAttemptStats: z
+        .array(EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema)
+        .exactOptional(),
+      eventExecutionSnapshot: z
+        .array(EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'After snapshot migration, this field will no longer be populated, but old execution snapshots will still be accessible.',
+        }),
+      eventExecutionState: z
+        .enum([
+          'UNSPECIFIED',
+          'ON_HOLD',
+          'IN_PROCESS',
+          'SUCCEEDED',
+          'FAILED',
+          'CANCELED',
+          'RETRY_ON_HOLD',
+          'SUSPENDED',
+        ])
+        .exactOptional()
+        .openapi({ description: 'The execution state of this event.' }),
+      eventRetriesFromBeginningCount: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates the number of times the execution has restarted from the beginning.',
+        }),
+      logFilePath: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The log file path (aka. cns address) for this event.' }),
+      networkAddress: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The network address (aka. bns address) that indicates where the event executor is running.',
+        }),
+      nextExecutionTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Next scheduled execution time in case the execution status was RETRY_ON_HOLD.',
+        }),
+      ryeLockUnheldCount: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            "Used internally and shouldn't be exposed to users. A counter for the cron job to record how many times this event is in in_process state but don't have a lock consecutively/",
+        }),
+    })
+    .openapi({
       description:
-        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
-    }),
-  })
-  .openapi({ description: 'Key-value pair of EventBus property.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoPropertyEntry')
-
-const EnterpriseCrmEventbusProtoEventBusPropertiesSchema = z
-  .object({
-    properties: z
-      .array(EnterpriseCrmEventbusProtoPropertyEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'An unordered list of property entries.' }),
-  })
-  .openapi({
-    description:
-      'LINT.IfChange This message is used for storing key value pair properties for each Event / Task in the EventBus.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoEventBusProperties')
+        'Contains the details of the execution info of this event: this includes the tasks execution details plus the event execution statistics. Next available id: 10',
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionDetails')
 
 const EnterpriseCrmEventbusProtoExecutionTraceInfoSchema = z
   .object({
@@ -1834,628 +1821,122 @@ const EnterpriseCrmEventbusProtoExecutionTraceInfoSchema = z
   })
   .openapi('EnterpriseCrmEventbusProtoExecutionTraceInfo')
 
-const EnterpriseCrmEventbusProtoExternalTrafficSchema = z
-  .object({
-    gcpProjectId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User’s GCP project id the traffic is referring to.' }),
-    gcpProjectNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User’s GCP project number the traffic is referring to.' }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Location for the user's request." }),
-    source: z
-      .enum(['SOURCE_UNSPECIFIED', 'APIGEE', 'SECURITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'LINT.ThenChange(//depot/google3/enterprise/crm/eventbus/proto/product.proto:product, //depot/google3/java/com/google/enterprise/crm/integrationplatform/api/utils/ConverterUtils.java:source_to_product)',
-      }),
-  })
-  .openapi({ description: 'Represents external traffic type and id.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoExternalTraffic')
+type EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoType = {
+  clientId?: string
+  createTime?: string
+  errorCode?: z.infer<typeof CrmlogErrorCodeSchema>
+  errors?: z.infer<typeof EnterpriseCrmEventbusProtoErrorDetailSchema>[]
+  eventExecutionDetails?: z.infer<
+    typeof EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsSchema
+  >
+  eventExecutionInfoId?: string
+  executionTraceInfo?: z.infer<typeof EnterpriseCrmEventbusProtoExecutionTraceInfoSchema>
+  lastModifiedTime?: string
+  postMethod?:
+    | 'UNSPECIFIED'
+    | 'POST'
+    | 'POST_TO_QUEUE'
+    | 'SCHEDULE'
+    | 'POST_BY_EVENT_CONFIG_ID'
+    | 'POST_WITH_EVENT_DETAILS'
+  product?: 'UNSPECIFIED_PRODUCT' | 'IP' | 'APIGEE' | 'SECURITY'
+  requestId?: string
+  requestParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  responseParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  snapshotNumber?: string
+  tenant?: string
+  triggerId?: string
+  workflowId?: string
+  workflowName?: string
+  workflowRetryBackoffIntervalSeconds?: string
+}
 
-const EnterpriseCrmEventbusProtoFailurePolicySchema = z
+const EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema = z
   .object({
-    intervalInSeconds: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_WORKFLOW_WITH_BACKOFF. Defines the initial interval for backoff.',
+    literalValue:
+      EnterpriseCrmFrontendsEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+        description: 'Passing a literal value.',
       }),
-    maxNumRetries: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_WORKFLOW_WITH_BACKOFF. Defines the number of times the task will be retried if failed.',
-      }),
-    retryStrategy: z
-      .enum([
-        'UNSPECIFIED',
-        'IGNORE',
-        'NONE',
-        'FATAL',
-        'FIXED_INTERVAL',
-        'LINEAR_BACKOFF',
-        'EXPONENTIAL_BACKOFF',
-        'RESTART_WORKFLOW_WITH_BACKOFF',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Defines what happens to the task upon failure.' }),
-  })
-  .openapi({
-    description:
-      'Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoFailurePolicy')
-
-const EnterpriseCrmEventbusProtoFieldSchema = z
-  .object({
-    cardinality: z
-      .enum(['UNSPECIFIED', 'OPTIONAL'])
-      .exactOptional()
-      .openapi({
-        description:
-          'By default, if the cardinality is unspecified the field is considered required while mapping.',
-      }),
-    defaultValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-      description:
-        'This holds the default values for the fields. This value is supplied by user so may or may not contain PII or SPII data.',
-    }),
-    fieldType: z
-      .enum([
-        'DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'PROTO_VALUE',
-        'SERIALIZED_OBJECT_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'PROTO_ARRAY',
-        'PROTO_ENUM',
-        'BOOLEAN_ARRAY',
-        'PROTO_ENUM_ARRAY',
-        'BYTES',
-        'BYTES_ARRAY',
-        'NON_SERIALIZABLE_OBJECT',
-        'JSON_VALUE',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Specifies the data type of the field.' }),
-    protoDefPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The fully qualified proto name (e.g. enterprise.crm.storage.Account). Required for output field of type PROTO_VALUE or PROTO_ARRAY. For e.g., if input field_type is BYTES and output field_type is PROTO_VALUE, then fully qualified proto type url should be provided to parse the input bytes. If field_type is *_ARRAY, then all the converted protos are of the same type.',
-      }),
-    referenceKey: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This holds the reference key of the workflow or task parameter. 1. Any workflow parameter, for e.g. $workflowParam1$. 2. Any task input or output parameter, for e.g. $task1_param1$. 3. Any workflow or task parameters with subfield references, for e.g., $task1_param1.employee.id$',
-      }),
-    transformExpression:
-      EnterpriseCrmEventbusProtoTransformExpressionSchema.exactOptional().openapi({
-        description:
-          "This is the transform expression to fetch the input field value. for e.g. $param1$.CONCAT('test'). Keep points - 1. Only input field can have a transform expression. 2. If a transform expression is provided, reference_key will be ignored. 3. If no value is returned after evaluation of transform expression, default_value can be mapped if provided. 4. The field_type should be the type of the final object returned after the transform expression is evaluated. Scrubs the transform expression before logging as value provided by user so may or may not contain PII or SPII data.",
-      }),
-  })
-  .openapi({ description: 'Information about the value and type of the field.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoField')
-
-const EnterpriseCrmEventbusProtoMappedFieldSchema = z
-  .object({
-    inputField: EnterpriseCrmEventbusProtoFieldSchema.exactOptional().openapi({
-      description: 'The input field being mapped from.',
-    }),
-    outputField: EnterpriseCrmEventbusProtoFieldSchema.exactOptional().openapi({
-      description: 'The output field being mapped to.',
-    }),
-  })
-  .openapi({ description: 'Mapped field is a pair of input field and output field.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoMappedField')
-
-const EnterpriseCrmEventbusProtoFieldMappingConfigSchema = z
-  .object({ mappedFields: z.array(EnterpriseCrmEventbusProtoMappedFieldSchema).exactOptional() })
-  .openapi({
-    description:
-      'Field Mapping Config to map multiple output fields values from input fields values.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoFieldMappingConfig')
-
-const EnterpriseCrmEventbusProtoLoopMetadataSchema = z
-  .object({
-    currentIterationCount: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Starting from 1, not 0.' }),
-    currentIterationDetail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Needs to be set by the loop impl class before each iteration. The abstract loop class will append the request and response to it. Eg. The foreach Loop will clean up and set it as the current iteration element at the start of each loop. The post request and response will be appended to the value once they are available.',
-      }),
-    errorMsg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Add the error message when loops fail.' }),
-    failureLocation: z
-      .enum([
-        'UNKNOWN',
-        'SUBWORKFLOW',
-        'PARAM_OVERRIDING',
-        'PARAM_AGGREGATING',
-        'SETTING_ITERATION_ELEMENT',
-        'GETTING_LIST_TO_ITERATE',
-        'CONDITION_EVALUATION',
-        'BUILDING_REQUEST',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Indicates where in the loop logic did it error out.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoLoopMetadata')
-
-const EnterpriseCrmEventbusProtoNextTaskSchema = z
-  .object({
-    combinedConditions: z
-      .array(EnterpriseCrmEventbusProtoCombinedConditionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Combined condition for this task to become an eligible next task. Each of these combined_conditions are joined with logical OR. DEPRECATED: use `condition`',
-      }),
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Standard filter expression for this task to become an eligible next task.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User-provided description intended to give more business context about the next task edge or condition.',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-provided label that is attached to this edge in the UI.' }),
-    taskConfigId: z.string().exactOptional().openapi({ description: 'ID of the next task.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Task number of the next task.' }),
-  })
-  .openapi({
-    description:
-      'The task that is next in line to be executed, if the condition specified evaluated to true.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoNextTask')
-
-const EnterpriseCrmEventbusProtoNextTeardownTaskSchema = z
-  .object({
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Name of the next teardown task.' }),
-  })
-  .openapi({
-    description:
-      'The teardown task that is next in line to be executed. We support only sequential execution of teardown tasks (i.e. no branching).',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoNextTeardownTask')
-
-const EnterpriseCrmEventbusProtoNotificationSchema = z
-  .object({
-    buganizerNotification: EnterpriseCrmEventbusProtoBuganizerNotificationSchema.exactOptional(),
-    emailAddress: EnterpriseCrmEventbusProtoAddressSchema.exactOptional(),
-    escalatorQueue: z.string().exactOptional(),
-    pubsubTopic: z.string().exactOptional(),
-    request: EnterpriseCrmEventbusProtoCustomSuspensionRequestSchema.exactOptional().openapi({
-      description:
-        'If the out-of-the-box email/pubsub notifications are not suitable and custom logic is required, fire a workflow containing all info needed to notify users to resume execution.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoNotification')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryConfigSchema = z
-  .object({
-    descriptivePhrase: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A short phrase to describe what this parameter contains.' }),
-    helpText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Detailed help text for this parameter containing information not provided elsewhere. For example, instructions on how to migrate from a deprecated parameter.',
-      }),
-    hideDefaultValue: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the default value is hidden in the UI.' }),
-    inputDisplayOption: z
-      .enum(['DEFAULT', 'STRING_MULTI_LINE', 'NUMBER_SLIDER', 'BOOLEAN_TOGGLE'])
-      .exactOptional(),
-    isHidden: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this field is hidden in the UI.' }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A user-friendly label for the parameter.' }),
-    parameterNameOption: z
-      .enum([
-        'DEFAULT_NOT_PARAMETER_NAME',
-        'IS_PARAMETER_NAME',
-        'KEY_IS_PARAMETER_NAME',
-        'VALUE_IS_PARAMETER_NAME',
-      ])
-      .exactOptional(),
-    subSectionLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A user-friendly label for subSection under which the parameter will be displayed.',
-      }),
-    uiPlaceholderText: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Placeholder text which will appear in the UI input form for this parameter.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryConfig')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryProtoDefinitionSchema = z
-  .object({
-    fullName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The fully-qualified proto name. This message, for example, would be "enterprise.crm.eventbus.proto.ParamSpecEntry.ProtoDefinition".',
-      }),
-    path: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "Path to the proto file that contains the message type's definition.",
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryProtoDefinition')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRangeSchema = z
-  .object({
-    max: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The inclusive maximum of the acceptable range.' }),
-    min: z
-      .float64()
-      .exactOptional()
-      .openapi({ description: 'The inclusive minimum of the acceptable range.' }),
-  })
-  .openapi({ description: 'Range used to validate doubles and floats.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRange')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRangeSchema = z
-  .object({
-    max: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The inclusive maximum of the acceptable range.' }),
-    min: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The inclusive minimum of the acceptable range.' }),
-  })
-  .openapi({ description: 'Range used to validate longs and ints.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRange')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegexSchema = z
-  .object({
-    exclusive: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the regex matcher is applied exclusively (if true, matching values will be rejected).',
-      }),
-    regex: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The regex applied to the input value(s).' }),
-  })
-  .openapi({ description: 'Rule used to validate strings.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegex')
-
-const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleSchema = z
-  .object({
-    doubleRange:
-      EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRangeSchema.exactOptional(),
-    intRange: EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRangeSchema.exactOptional(),
-    stringRegex:
-      EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegexSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRule')
-
-const EnterpriseCrmEventbusProtoParameterMapFieldSchema = z
-  .object({
-    literalValue: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-      description: 'Passing a literal value.',
-    }),
     referenceKey: z
       .string()
       .exactOptional()
       .openapi({ description: 'Referencing one of the WF variables.' }),
   })
   .openapi({ description: 'Field represents either the key or value in an entry.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParameterMapField')
+  .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMapField')
 
-const EnterpriseCrmEventbusProtoParameterMapEntrySchema = z
+const EnterpriseCrmFrontendsEventbusProtoParameterMapEntrySchema = z
   .object({
-    key: EnterpriseCrmEventbusProtoParameterMapFieldSchema.exactOptional(),
-    value: EnterpriseCrmEventbusProtoParameterMapFieldSchema.exactOptional(),
+    key: EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema.exactOptional(),
+    value: EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema.exactOptional(),
   })
   .openapi({ description: 'Entry is a pair of key and value.', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoParameterMapEntry')
+  .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMapEntry')
 
-const EnterpriseCrmEventbusProtoParameterMapSchema = z
+type EnterpriseCrmFrontendsEventbusProtoParameterMapType = {
+  entries?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterMapEntrySchema>[]
+  keyType?:
+    | 'DATA_TYPE_UNSPECIFIED'
+    | 'STRING_VALUE'
+    | 'INT_VALUE'
+    | 'DOUBLE_VALUE'
+    | 'BOOLEAN_VALUE'
+    | 'PROTO_VALUE'
+    | 'SERIALIZED_OBJECT_VALUE'
+    | 'STRING_ARRAY'
+    | 'INT_ARRAY'
+    | 'DOUBLE_ARRAY'
+    | 'PROTO_ARRAY'
+    | 'PROTO_ENUM'
+    | 'BOOLEAN_ARRAY'
+    | 'PROTO_ENUM_ARRAY'
+    | 'BYTES'
+    | 'BYTES_ARRAY'
+    | 'NON_SERIALIZABLE_OBJECT'
+    | 'JSON_VALUE'
+  valueType?:
+    | 'DATA_TYPE_UNSPECIFIED'
+    | 'STRING_VALUE'
+    | 'INT_VALUE'
+    | 'DOUBLE_VALUE'
+    | 'BOOLEAN_VALUE'
+    | 'PROTO_VALUE'
+    | 'SERIALIZED_OBJECT_VALUE'
+    | 'STRING_ARRAY'
+    | 'INT_ARRAY'
+    | 'DOUBLE_ARRAY'
+    | 'PROTO_ARRAY'
+    | 'PROTO_ENUM'
+    | 'BOOLEAN_ARRAY'
+    | 'PROTO_ENUM_ARRAY'
+    | 'BYTES'
+    | 'BYTES_ARRAY'
+    | 'NON_SERIALIZABLE_OBJECT'
+    | 'JSON_VALUE'
+}
+
+type EnterpriseCrmFrontendsEventbusProtoRollbackStrategyType = {
+  parameters?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  rollbackTaskImplementationClassName?: string
+  taskNumbersToRollback?: string[]
+}
+
+const EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema = z
   .object({
-    entries: z.array(EnterpriseCrmEventbusProtoParameterMapEntrySchema).exactOptional(),
-    keyType: z
-      .enum([
-        'DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'PROTO_VALUE',
-        'SERIALIZED_OBJECT_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'PROTO_ARRAY',
-        'PROTO_ENUM',
-        'BOOLEAN_ARRAY',
-        'PROTO_ENUM_ARRAY',
-        'BYTES',
-        'BYTES_ARRAY',
-        'NON_SERIALIZABLE_OBJECT',
-        'JSON_VALUE',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Option to specify key value type for all entries of the map. If provided then field types for all entries must conform to this.',
-      }),
-    valueType: z
-      .enum([
-        'DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'PROTO_VALUE',
-        'SERIALIZED_OBJECT_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'PROTO_ARRAY',
-        'PROTO_ENUM',
-        'BOOLEAN_ARRAY',
-        'PROTO_ENUM_ARRAY',
-        'BYTES',
-        'BYTES_ARRAY',
-        'NON_SERIALIZABLE_OBJECT',
-        'JSON_VALUE',
-      ])
-      .exactOptional(),
+    enumStrings: z.array(z.string()).exactOptional(),
+    filterType: z.enum(['DEFAULT_INCLUSIVE', 'EXCLUSIVE']).exactOptional(),
   })
+  .openapi({ description: 'List of error enums for alerts.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumList')
+
+const EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValueSchema = z
+  .object({ absolute: z.string().exactOptional(), percentage: z.int32().exactOptional() })
   .openapi({
     description:
-      'A generic multi-map that holds key value pairs. They keys and values can be of any type, unless specified.',
+      'The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.',
     required: [],
   })
-  .openapi('EnterpriseCrmEventbusProtoParameterMap')
-
-const EnterpriseCrmEventbusProtoScatterResponseSchema = z
-  .object({
-    errorMsg: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The error message of the failure if applicable.' }),
-    executionIds: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'The execution ids of each Subworkflow fired by this scatter.' }),
-    isSuccessful: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If execution is sync, this is true if the execution passed and false if it failed. If the execution is async, this is true if the WF was fired off successfully, and false if it failed to execute. The success or failure of the subworkflows executed are not captured.',
-      }),
-    responseParams: z
-      .array(EnterpriseCrmEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of all the response parameters in the aggregtorMap stored with the remapped key.',
-      }),
-    scatterElement: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-      description: 'The element that was scattered for this execution.',
-    }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoScatterResponse')
-
-const EnterpriseCrmEventbusProtoSuccessPolicySchema = z
-  .object({
-    finalState: z
-      .enum(['UNSPECIFIED', 'SUCCEEDED', 'SUSPENDED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'State to which the execution snapshot status will be set if the task succeeds.',
-      }),
-  })
-  .openapi({
-    description: 'Policy that dictates the behavior for the task after it completes successfully.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoSuccessPolicy')
-
-const EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema = z
-  .object({ emailAddress: z.string().exactOptional(), gaiaId: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentity')
-
-const EnterpriseCrmEventbusProtoSuspensionAuthPermissionsSchema = z
-  .object({
-    gaiaIdentity:
-      EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema.exactOptional().openapi(
-        { description: 'Represents a Gaia identity for a person or service account.' },
-      ),
-    googleGroup:
-      EnterpriseCrmEventbusProtoSuspensionAuthPermissionsGaiaIdentitySchema.exactOptional(),
-    loasRole: z.string().exactOptional(),
-    mdbGroup: z.string().exactOptional(),
-  })
-  .openapi({ description: 'LINT.IfChange', required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionAuthPermissions')
-
-const EnterpriseCrmEventbusProtoSuspensionExpirationSchema = z
-  .object({
-    expireAfterMs: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Milliseconds after which the suspension expires, if no action taken.',
-      }),
-    liftWhenExpired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the suspension will be REJECTED or LIFTED upon expiration. REJECTED is the default behavior.',
-      }),
-    remindAfterMs: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Milliseconds after which the previous suspension action reminder, if any, is sent using the selected notification option, for a suspension which is still PENDING_UNSPECIFIED.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionExpiration')
-
-const EnterpriseCrmEventbusProtoSuspensionConfigSchema = z
-  .object({
-    customMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional information to provide recipients of the suspension in addition to the resolution URL, typically containing relevant parameter values from the originating workflow.',
-      }),
-    notifications: z.array(EnterpriseCrmEventbusProtoNotificationSchema).exactOptional(),
-    suspensionExpiration:
-      EnterpriseCrmEventbusProtoSuspensionExpirationSchema.exactOptional().openapi({
-        description: 'Indicates the next steps when no external actions happen on the suspension.',
-      }),
-    whoMayResolve: z
-      .array(EnterpriseCrmEventbusProtoSuspensionAuthPermissionsSchema)
-      .exactOptional()
-      .openapi({ description: 'Identities able to resolve this suspension.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionConfig')
-
-const EnterpriseCrmEventbusProtoSuspensionResolutionInfoAuditSchema = z
-  .object({
-    resolvedBy: z.string().exactOptional(),
-    resolvedByCpi: z.string().exactOptional(),
-    timestamp: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionResolutionInfoAudit')
-
-const EnterpriseCrmEventbusProtoSuspensionResolutionInfoSchema = z
-  .object({
-    audit: EnterpriseCrmEventbusProtoSuspensionResolutionInfoAuditSchema.exactOptional(),
-    clientId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The event data user sends as request.' }),
-    cloudKmsConfig: EnterpriseCrmEventbusProtoCloudKmsConfigSchema.exactOptional().openapi({
-      description: 'KMS info, used by cmek/gmek integration',
-    }),
-    createdTimestamp: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    encryptedSuspensionResolutionInfo: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Encrypted SuspensionResolutionInfo' }),
-    eventExecutionInfoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. ID of the associated execution.' }),
-    externalTraffic: EnterpriseCrmEventbusProtoExternalTrafficSchema.exactOptional().openapi({
-      description: 'The origin of the suspension for periodic notifications.',
-    }),
-    lastModifiedTimestamp: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    product: z
-      .enum(['UNSPECIFIED_PRODUCT', 'IP', 'APIGEE', 'SECURITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Which Google product the suspension belongs to. If not set, the suspension belongs to Integration Platform by default.',
-      }),
-    status: z.enum(['PENDING_UNSPECIFIED', 'REJECTED', 'LIFTED', 'CANCELED']).exactOptional(),
-    suspensionConfig: EnterpriseCrmEventbusProtoSuspensionConfigSchema.exactOptional(),
-    suspensionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Primary key for the SuspensionResolutionInfoTable.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Task number of the associated SuspensionTask.' }),
-    workflowName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the originating workflow.' }),
-    wrappedDek: z.string().exactOptional().openapi({ description: 'Wrapped dek' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoSuspensionResolutionInfo')
+  .openapi('EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValue')
 
 const EnterpriseCrmEventbusProtoTaskAlertConfigSchema = z
   .object({
@@ -2541,6 +2022,128 @@ const EnterpriseCrmEventbusProtoTaskAlertConfigSchema = z
     required: [],
   })
   .openapi('EnterpriseCrmEventbusProtoTaskAlertConfig')
+
+const EnterpriseCrmEventbusProtoFailurePolicySchema = z
+  .object({
+    intervalInSeconds: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_WORKFLOW_WITH_BACKOFF. Defines the initial interval for backoff.',
+      }),
+    maxNumRetries: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_WORKFLOW_WITH_BACKOFF. Defines the number of times the task will be retried if failed.',
+      }),
+    retryStrategy: z
+      .enum([
+        'UNSPECIFIED',
+        'IGNORE',
+        'NONE',
+        'FATAL',
+        'FIXED_INTERVAL',
+        'LINEAR_BACKOFF',
+        'EXPONENTIAL_BACKOFF',
+        'RESTART_WORKFLOW_WITH_BACKOFF',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Defines what happens to the task upon failure.' }),
+  })
+  .openapi({
+    description:
+      'Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoFailurePolicy')
+
+const EnterpriseCrmEventbusProtoNextTaskSchema: z.ZodType<EnterpriseCrmEventbusProtoNextTaskType> =
+  z
+    .object({
+      combinedConditions: z
+        .array(EnterpriseCrmEventbusProtoCombinedConditionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Combined condition for this task to become an eligible next task. Each of these combined_conditions are joined with logical OR. DEPRECATED: use `condition`',
+        }),
+      condition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Standard filter expression for this task to become an eligible next task.',
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'User-provided description intended to give more business context about the next task edge or condition.',
+        }),
+      label: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'User-provided label that is attached to this edge in the UI.' }),
+      taskConfigId: z.string().exactOptional().openapi({ description: 'ID of the next task.' }),
+      taskNumber: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Task number of the next task.' }),
+    })
+    .openapi({
+      description:
+        'The task that is next in line to be executed, if the condition specified evaluated to true.',
+      required: [],
+    })
+    .openapi('EnterpriseCrmEventbusProtoNextTask')
+
+const EnterpriseCrmEventbusProtoCoordinateSchema = z
+  .object({ x: z.int32().exactOptional(), y: z.int32().exactOptional() })
+  .openapi({ description: 'Represents two-dimensional positions.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoCoordinate')
+
+const EnterpriseCrmFrontendsEventbusProtoRollbackStrategySchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoRollbackStrategyType> =
+  z
+    .object({
+      parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Optional. The customized parameters the user can pass to this task.',
+      }),
+      rollbackTaskImplementationClassName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. This is the name of the task that needs to be executed upon rollback of this task.',
+        }),
+      taskNumbersToRollback: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. These are the tasks numbers of the tasks whose `rollback_strategy.rollback_task_implementation_class_name` needs to be executed upon failure of this task.',
+        }),
+    })
+    .openapi({ description: 'Next available id: 4', required: [] })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoRollbackStrategy')
+
+const EnterpriseCrmEventbusProtoSuccessPolicySchema = z
+  .object({
+    finalState: z
+      .enum(['UNSPECIFIED', 'SUCCEEDED', 'SUSPENDED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'State to which the execution snapshot status will be set if the task succeeds.',
+      }),
+  })
+  .openapi({
+    description: 'Policy that dictates the behavior for the task after it completes successfully.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoSuccessPolicy')
 
 const EnterpriseCrmEventbusProtoTaskMetadataAdminSchema = z
   .object({ googleGroupEmail: z.string().exactOptional(), userEmail: z.string().exactOptional() })
@@ -2707,471 +2310,133 @@ const EnterpriseCrmEventbusProtoTaskMetadataSchema = z
   })
   .openapi('EnterpriseCrmEventbusProtoTaskMetadata')
 
-const EnterpriseCrmEventbusProtoTaskUiModuleConfigSchema = z
+const EnterpriseCrmEventbusProtoParamSpecEntryConfigSchema = z
   .object({
-    moduleId: z
-      .enum([
-        'UNSPECIFIED_TASK_MODULE',
-        'LABEL',
-        'ERROR_HANDLING',
-        'TASK_PARAM_TABLE',
-        'TASK_PARAM_FORM',
-        'PRECONDITION',
-        'SCRIPT_EDITOR',
-        'RPC',
-        'TASK_SUMMARY',
-        'SUSPENSION',
-        'RPC_TYPED',
-        'SUB_WORKFLOW',
-        'APPS_SCRIPT_NAVIGATOR',
-        'SUB_WORKFLOW_FOR_EACH_LOOP',
-        'FIELD_MAPPING',
-        'README',
-        'REST_CALLER',
-        'SUB_WORKFLOW_SCATTER_GATHER',
-        'CLOUD_SQL',
-        'GENERIC_CONNECTOR_TASK',
-      ])
-      .exactOptional()
-      .openapi({ description: 'ID of the config module.' }),
-  })
-  .openapi({
-    description: 'Task author would use this type to configure a config module.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoTaskUiModuleConfig')
-
-const EnterpriseCrmEventbusProtoTaskUiConfigSchema = z
-  .object({
-    taskUiModuleConfigs: z
-      .array(EnterpriseCrmEventbusProtoTaskUiModuleConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Configurations of included config modules.' }),
-  })
-  .openapi({
-    description:
-      'Task authors would use this type to configure the UI for a particular task by specifying what UI config modules should be included to compose the UI. Learn more about config module framework:',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoTaskUiConfig')
-
-const EnterpriseCrmEventbusProtoTeardownTaskConfigSchema = z
-  .object({
-    creatorEmail: z
+    descriptivePhrase: z
       .string()
       .exactOptional()
-      .openapi({ description: "The creator's email address." }),
-    name: z
+      .openapi({ description: 'A short phrase to describe what this parameter contains.' }),
+    helpText: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. Unique identifier of the teardown task within this Config. We use this field as the identifier to find next teardown tasks.',
+          'Detailed help text for this parameter containing information not provided elsewhere. For example, instructions on how to migrate from a deprecated parameter.',
       }),
-    nextTeardownTask: EnterpriseCrmEventbusProtoNextTeardownTaskSchema.exactOptional(),
-    parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'The parameters the user can pass to this task.',
-    }),
-    properties: EnterpriseCrmEventbusProtoEventBusPropertiesSchema.exactOptional(),
-    teardownTaskImplementationClassName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Implementation class name.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoTeardownTaskConfig')
-
-const EnterpriseCrmEventbusProtoTeardownSchema = z
-  .object({
-    teardownTaskConfigs: z
-      .array(EnterpriseCrmEventbusProtoTeardownTaskConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Required.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoTeardown')
-
-const EnterpriseCrmEventbusProtoTriggerCriteriaSchema = z
-  .object({
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Required. Standard filter expression, when true the workflow will be executed. If there's no trigger_criteria_task_implementation_class_name specified, the condition will be validated directly.",
-      }),
-    parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Optional. To be used in TaskConfig for the implementation class.',
-    }),
-    triggerCriteriaTaskImplementationClassName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Implementation class name. The class should implement the “TypedTask” interface.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusProtoTriggerCriteria')
-
-const EnterpriseCrmEventbusProtoWorkflowAlertConfigSchema = z
-  .object({
-    aggregationPeriod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'For an EXPECTED_MIN threshold, this aggregation_period must be lesser than 24 hours.',
-      }),
-    alertDisabled: z
+    hideDefaultValue: z
       .boolean()
       .exactOptional()
-      .openapi({
-        description:
-          'Set to false by default. When set to true, the metrics are not aggregated or pushed to Monarch for this workflow alert.',
-      }),
-    alertName: z
+      .openapi({ description: 'Whether the default value is hidden in the UI.' }),
+    inputDisplayOption: z
+      .enum(['DEFAULT', 'STRING_MULTI_LINE', 'NUMBER_SLIDER', 'BOOLEAN_TOGGLE'])
+      .exactOptional(),
+    isHidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this field is hidden in the UI.' }),
+    label: z
       .string()
       .exactOptional()
-      .openapi({
-        description:
-          'A name to identify this alert. This will be displayed in the alert subject. If set, this name should be unique within the scope of the workflow.',
-      }),
-    clientId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Client associated with this alert configuration.' }),
-    durationThresholdMs: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Should be specified only for *AVERAGE_DURATION and *PERCENTILE_DURATION metrics. This member should be used to specify what duration value the metrics should exceed for the alert to trigger.',
-      }),
-    errorEnumList: EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema.exactOptional(),
-    metricType: z
+      .openapi({ description: 'A user-friendly label for the parameter.' }),
+    parameterNameOption: z
       .enum([
-        'METRIC_TYPE_UNSPECIFIED',
-        'EVENT_ERROR_RATE',
-        'EVENT_WARNING_RATE',
-        'TASK_ERROR_RATE',
-        'TASK_WARNING_RATE',
-        'TASK_RATE',
-        'EVENT_RATE',
-        'EVENT_AVERAGE_DURATION',
-        'EVENT_PERCENTILE_DURATION',
-        'TASK_AVERAGE_DURATION',
-        'TASK_PERCENTILE_DURATION',
+        'DEFAULT_NOT_PARAMETER_NAME',
+        'IS_PARAMETER_NAME',
+        'KEY_IS_PARAMETER_NAME',
+        'VALUE_IS_PARAMETER_NAME',
       ])
       .exactOptional(),
-    numAggregationPeriods: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'For how many contiguous aggregation periods should the expected min or max be violated for the alert to be fired.',
-      }),
-    onlyFinalAttempt: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'For either events or tasks, depending on the type of alert, count only final attempts, not retries.',
-      }),
-    playbookUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Link to a playbook for resolving the issue that triggered this alert.',
-      }),
-    thresholdType: z
-      .enum(['UNSPECIFIED_THRESHOLD_TYPE', 'EXPECTED_MIN', 'EXPECTED_MAX'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.',
-      }),
-    thresholdValue:
-      EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValueSchema.exactOptional().openapi({
-        description: 'The metric value, above or below which the alert should be triggered.',
-      }),
-    warningEnumList: EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Message to be used to configure custom alerting in the {@code EventConfig} protos for an event.',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusProtoWorkflowAlertConfig')
-
-const EnterpriseCrmEventbusStatsDimensionsSchema = z
-  .object({
-    clientId: z.string().exactOptional(),
-    enumFilterType: z
-      .enum(['DEFAULT_INCLUSIVE', 'EXCLUSIVE'])
-      .exactOptional()
-      .openapi({ description: 'Whether to include or exclude the enums matching the regex.' }),
-    errorEnumString: z.string().exactOptional(),
-    retryAttempt: z.enum(['UNSPECIFIED', 'FINAL', 'RETRYABLE', 'CANCELED']).exactOptional(),
-    taskName: z.string().exactOptional(),
-    taskNumber: z.string().exactOptional(),
-    triggerId: z
+    subSectionLabel: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Stats have been or will be aggregated on set fields for any semantically-meaningful combination.',
+          'A user-friendly label for subSection under which the parameter will be displayed.',
       }),
-    warningEnumString: z.string().exactOptional(),
-    workflowId: z.string().exactOptional(),
-    workflowName: z.string().exactOptional(),
+    uiPlaceholderText: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Placeholder text which will appear in the UI input form for this parameter.',
+      }),
   })
   .openapi({ required: [] })
-  .openapi('EnterpriseCrmEventbusStatsDimensions')
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryConfig')
 
-const EnterpriseCrmEventbusStatsSchema = z
+const EnterpriseCrmEventbusProtoParamSpecEntryProtoDefinitionSchema = z
   .object({
-    dimensions: EnterpriseCrmEventbusStatsDimensionsSchema.exactOptional().openapi({
-      description: 'Dimensions that these stats have been aggregated on.',
-    }),
-    durationInSeconds: z
+    fullName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The fully-qualified proto name. This message, for example, would be "enterprise.crm.eventbus.proto.ParamSpecEntry.ProtoDefinition".',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "Path to the proto file that contains the message type's definition.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryProtoDefinition')
+
+const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRangeSchema = z
+  .object({
+    max: z
       .float64()
       .exactOptional()
-      .openapi({ description: 'Average duration in seconds.' }),
-    errorRate: z.float64().exactOptional().openapi({ description: 'Average error rate.' }),
-    qps: z.float64().exactOptional().openapi({ description: 'Queries per second.' }),
-    warningRate: z.float64().exactOptional().openapi({ description: 'Average warning rate.' }),
+      .openapi({ description: 'The inclusive maximum of the acceptable range.' }),
+    min: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'The inclusive minimum of the acceptable range.' }),
   })
-  .openapi({
-    description: 'Stats for the requested dimensions: QPS, duration, and error/warning rate',
-    required: [],
-  })
-  .openapi('EnterpriseCrmEventbusStats')
+  .openapi({ description: 'Range used to validate doubles and floats.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRange')
 
-const EnterpriseCrmFrontendsEventbusProtoEventParametersSchema = z
+const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRangeSchema = z
   .object({
-    parameters: z
-      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+    max: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The inclusive maximum of the acceptable range.' }),
+    min: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The inclusive minimum of the acceptable range.' }),
+  })
+  .openapi({ description: 'Range used to validate longs and ints.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRange')
+
+const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegexSchema = z
+  .object({
+    exclusive: z
+      .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same workflow execution.',
+          'Whether the regex matcher is applied exclusively (if true, matching values will be rejected).',
       }),
+    regex: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The regex applied to the input value(s).' }),
   })
-  .openapi({
-    description:
-      'LINT.IfChange This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus. Please see',
-    required: [],
-  })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoEventParameters')
+  .openapi({ description: 'Rule used to validate strings.', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegex')
 
-const EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotSchema = z
+const EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleSchema = z
   .object({
-    checkpointTaskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates "right after which checkpoint task\'s execution" this snapshot is taken.',
-      }),
-    conditionResults: z
-      .array(EnterpriseCrmEventbusProtoConditionResultSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the computed conditions that been calculated.' }),
-    diffParams: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'The parameters in Event object that differs from last snapshot.',
-    }),
-    eventExecutionInfoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Points to the event execution info this snapshot belongs to.' }),
-    eventExecutionSnapshotId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Auto-generated. Used as primary key for EventExecutionSnapshots table.',
-      }),
-    eventExecutionSnapshotMetadata:
-      EnterpriseCrmEventbusProtoEventExecutionSnapshotEventExecutionSnapshotMetadataSchema.exactOptional(),
-    eventParams: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'The parameters in Event object.',
-    }),
-    snapshotTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Indicates when this snapshot is taken.' }),
-    taskExecutionDetails: z
-      .array(EnterpriseCrmEventbusProtoTaskExecutionDetailsSchema)
-      .exactOptional()
-      .openapi({ description: 'All of the task execution details at the given point of time.' }),
-    taskName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The task name associated with this snapshot. Could be empty.' }),
+    doubleRange:
+      EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleDoubleRangeSchema.exactOptional(),
+    intRange: EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleIntRangeSchema.exactOptional(),
+    stringRegex:
+      EnterpriseCrmEventbusProtoParamSpecEntryValidationRuleStringRegexSchema.exactOptional(),
   })
   .openapi({ required: [] })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshot')
-
-const EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsSchema = z
-  .object({
-    eventAttemptStats: z
-      .array(EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema)
-      .exactOptional(),
-    eventExecutionSnapshot: z
-      .array(EnterpriseCrmFrontendsEventbusProtoEventExecutionSnapshotSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'After snapshot migration, this field will no longer be populated, but old execution snapshots will still be accessible.',
-      }),
-    eventExecutionState: z
-      .enum([
-        'UNSPECIFIED',
-        'ON_HOLD',
-        'IN_PROCESS',
-        'SUCCEEDED',
-        'FAILED',
-        'CANCELED',
-        'RETRY_ON_HOLD',
-        'SUSPENDED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The execution state of this event.' }),
-    eventRetriesFromBeginningCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the number of times the execution has restarted from the beginning.',
-      }),
-    logFilePath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The log file path (aka. cns address) for this event.' }),
-    networkAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The network address (aka. bns address) that indicates where the event executor is running.',
-      }),
-    nextExecutionTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Next scheduled execution time in case the execution status was RETRY_ON_HOLD.',
-      }),
-    ryeLockUnheldCount: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Used internally and shouldn't be exposed to users. A counter for the cron job to record how many times this event is in in_process state but don't have a lock consecutively/",
-      }),
-  })
-  .openapi({
-    description:
-      'Contains the details of the execution info of this event: this includes the tasks execution details plus the event execution statistics. Next available id: 10',
-    required: [],
-  })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionDetails')
-
-const EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoSchema = z
-  .object({
-    clientId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The event data user sends as request.' }),
-    createTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    errorCode: CrmlogErrorCodeSchema.exactOptional().openapi({
-      description: 'Final error-code if event failed.',
-    }),
-    errors: z
-      .array(EnterpriseCrmEventbusProtoErrorDetailSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Errors, warnings, and informationals associated with the workflow/task. The order in which the errors were added by the workflow/task is maintained.',
-      }),
-    eventExecutionDetails:
-      EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsSchema.exactOptional().openapi({
-        description: 'The execution info about this event.',
-      }),
-    eventExecutionInfoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Auto-generated primary key.' }),
-    executionTraceInfo: EnterpriseCrmEventbusProtoExecutionTraceInfoSchema.exactOptional().openapi({
-      description: 'Execution trace info to aggregate parent-child executions.',
-    }),
-    lastModifiedTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    postMethod: z
-      .enum([
-        'UNSPECIFIED',
-        'POST',
-        'POST_TO_QUEUE',
-        'SCHEDULE',
-        'POST_BY_EVENT_CONFIG_ID',
-        'POST_WITH_EVENT_DETAILS',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The ways user posts this event.' }),
-    product: z
-      .enum(['UNSPECIFIED_PRODUCT', 'IP', 'APIGEE', 'SECURITY'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Which Google product the execution_info belongs to. If not set, the execution_info belongs to Integration Platform by default.',
-      }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. This is used to de-dup incoming request.' }),
-    requestParams: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi(
-      { description: 'Event parameters come in as part of the request.' },
-    ),
-    responseParams:
-      EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-        description: 'Event parameters come out as part of the response.',
-      }),
-    snapshotNumber: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Workflow snapshot number.' }),
-    tenant: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Tenant this event is created. Used to reschedule the event to correct tenant.',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The trigger id of the workflow trigger config. If both trigger_id and client_id is present, the workflow is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
-      }),
-    workflowId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Pointer to the workflow it is executing.' }),
-    workflowName: z.string().exactOptional().openapi({ description: 'Name of the workflow.' }),
-    workflowRetryBackoffIntervalSeconds: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time interval in seconds to schedule retry of workflow in manifold when workflow is already running',
-      }),
-  })
-  .openapi({
-    description:
-      'Contains all the execution details for a workflow instance. Next available id: 24',
-    required: [],
-  })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionInfo')
+  .openapi('EnterpriseCrmEventbusProtoParamSpecEntryValidationRule')
 
 const EnterpriseCrmFrontendsEventbusProtoParamSpecEntrySchema = z
   .object({
@@ -3264,394 +2529,1494 @@ const EnterpriseCrmFrontendsEventbusProtoParamSpecsMessageSchema = z
   .openapi({ required: [] })
   .openapi('EnterpriseCrmFrontendsEventbusProtoParamSpecsMessage')
 
-const EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema = z
+const EnterpriseCrmEventbusStatsDimensionsSchema = z
   .object({
-    literalValue:
-      EnterpriseCrmFrontendsEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
-        description: 'Passing a literal value.',
+    clientId: z.string().exactOptional(),
+    enumFilterType: z
+      .enum(['DEFAULT_INCLUSIVE', 'EXCLUSIVE'])
+      .exactOptional()
+      .openapi({ description: 'Whether to include or exclude the enums matching the regex.' }),
+    errorEnumString: z.string().exactOptional(),
+    retryAttempt: z.enum(['UNSPECIFIED', 'FINAL', 'RETRYABLE', 'CANCELED']).exactOptional(),
+    taskName: z.string().exactOptional(),
+    taskNumber: z.string().exactOptional(),
+    triggerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Stats have been or will be aggregated on set fields for any semantically-meaningful combination.',
       }),
+    warningEnumString: z.string().exactOptional(),
+    workflowId: z.string().exactOptional(),
+    workflowName: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusStatsDimensions')
+
+const EnterpriseCrmEventbusStatsSchema = z
+  .object({
+    dimensions: EnterpriseCrmEventbusStatsDimensionsSchema.exactOptional().openapi({
+      description: 'Dimensions that these stats have been aggregated on.',
+    }),
+    durationInSeconds: z
+      .float64()
+      .exactOptional()
+      .openapi({ description: 'Average duration in seconds.' }),
+    errorRate: z.float64().exactOptional().openapi({ description: 'Average error rate.' }),
+    qps: z.float64().exactOptional().openapi({ description: 'Queries per second.' }),
+    warningRate: z.float64().exactOptional().openapi({ description: 'Average warning rate.' }),
+  })
+  .openapi({
+    description: 'Stats for the requested dimensions: QPS, duration, and error/warning rate',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusStats')
+
+const EnterpriseCrmEventbusProtoTaskUiModuleConfigSchema = z
+  .object({
+    moduleId: z
+      .enum([
+        'UNSPECIFIED_TASK_MODULE',
+        'LABEL',
+        'ERROR_HANDLING',
+        'TASK_PARAM_TABLE',
+        'TASK_PARAM_FORM',
+        'PRECONDITION',
+        'SCRIPT_EDITOR',
+        'RPC',
+        'TASK_SUMMARY',
+        'SUSPENSION',
+        'RPC_TYPED',
+        'SUB_WORKFLOW',
+        'APPS_SCRIPT_NAVIGATOR',
+        'SUB_WORKFLOW_FOR_EACH_LOOP',
+        'FIELD_MAPPING',
+        'README',
+        'REST_CALLER',
+        'SUB_WORKFLOW_SCATTER_GATHER',
+        'CLOUD_SQL',
+        'GENERIC_CONNECTOR_TASK',
+      ])
+      .exactOptional()
+      .openapi({ description: 'ID of the config module.' }),
+  })
+  .openapi({
+    description: 'Task author would use this type to configure a config module.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoTaskUiModuleConfig')
+
+const EnterpriseCrmEventbusProtoTaskUiConfigSchema = z
+  .object({
+    taskUiModuleConfigs: z
+      .array(EnterpriseCrmEventbusProtoTaskUiModuleConfigSchema)
+      .exactOptional()
+      .openapi({ description: 'Configurations of included config modules.' }),
+  })
+  .openapi({
+    description:
+      'Task authors would use this type to configure the UI for a particular task by specifying what UI config modules should be included to compose the UI. Learn more about config module framework:',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoTaskUiConfig')
+
+type EnterpriseCrmFrontendsEventbusProtoTaskEntityType = {
+  disabledForVpcSc?: boolean
+  metadata?: z.infer<typeof EnterpriseCrmEventbusProtoTaskMetadataSchema>
+  paramSpecs?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParamSpecsMessageSchema>
+  stats?: z.infer<typeof EnterpriseCrmEventbusStatsSchema>
+  taskType?: 'TASK' | 'ASIS_TEMPLATE' | 'IO_TEMPLATE'
+  uiConfig?: z.infer<typeof EnterpriseCrmEventbusProtoTaskUiConfigSchema>
+}
+
+const EnterpriseCrmFrontendsEventbusProtoTaskEntitySchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoTaskEntityType> =
+  z
+    .object({
+      disabledForVpcSc: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'True if the task has conflict with vpcsc' }),
+      metadata: EnterpriseCrmEventbusProtoTaskMetadataSchema.exactOptional().openapi({
+        description: 'Metadata inclueds the task name, author and so on.',
+      }),
+      paramSpecs:
+        EnterpriseCrmFrontendsEventbusProtoParamSpecsMessageSchema.exactOptional().openapi({
+          description:
+            'Declarations for inputs/outputs for a TypedTask. This is also associated with the METADATA mask.',
+        }),
+      stats: EnterpriseCrmEventbusStatsSchema.exactOptional().openapi({
+        description: 'Deprecated - statistics from the Monarch query.',
+      }),
+      taskType: z
+        .enum(['TASK', 'ASIS_TEMPLATE', 'IO_TEMPLATE'])
+        .exactOptional()
+        .openapi({ description: 'Defines the type of the task' }),
+      uiConfig: EnterpriseCrmEventbusProtoTaskUiConfigSchema.exactOptional().openapi({
+        description: 'UI configuration for this task Also associated with the METADATA mask.',
+      }),
+    })
+    .openapi({
+      description: "Contains a task's metadata and associated information. Next available id: 7",
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoTaskEntity')
+
+type EnterpriseCrmFrontendsEventbusProtoTaskConfigType = {
+  alertConfigs?: z.infer<typeof EnterpriseCrmEventbusProtoTaskAlertConfigSchema>[]
+  createTime?: string
+  creatorEmail?: string
+  description?: string
+  disableStrictTypeValidation?: boolean
+  errorCatcherId?: string
+  externalTaskType?: 'EXTERNAL_TASK_TYPE_UNSPECIFIED' | 'NORMAL_TASK' | 'ERROR_TASK'
+  failurePolicy?: z.infer<typeof EnterpriseCrmEventbusProtoFailurePolicySchema>
+  incomingEdgeCount?: number
+  jsonValidationOption?:
+    | 'UNSPECIFIED_JSON_VALIDATION_OPTION'
+    | 'SKIP'
+    | 'PRE_EXECUTION'
+    | 'POST_EXECUTION'
+    | 'PRE_POST_EXECUTION'
+  label?: string
+  lastModifiedTime?: string
+  nextTasks?: z.infer<typeof EnterpriseCrmEventbusProtoNextTaskSchema>[]
+  nextTasksExecutionPolicy?: 'UNSPECIFIED' | 'RUN_ALL_MATCH' | 'RUN_FIRST_MATCH'
+  parameters?: {
+    [key: string]: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>
+  }
+  position?: z.infer<typeof EnterpriseCrmEventbusProtoCoordinateSchema>
+  precondition?: string
+  preconditionLabel?: string
+  rollbackStrategy?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoRollbackStrategySchema>
+  successPolicy?: z.infer<typeof EnterpriseCrmEventbusProtoSuccessPolicySchema>
+  synchronousCallFailurePolicy?: z.infer<typeof EnterpriseCrmEventbusProtoFailurePolicySchema>
+  taskEntity?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoTaskEntitySchema>
+  taskExecutionStrategy?:
+    | 'WHEN_ALL_SUCCEED'
+    | 'WHEN_ANY_SUCCEED'
+    | 'WHEN_ALL_TASKS_AND_CONDITIONS_SUCCEED'
+  taskName?: string
+  taskNumber?: string
+  taskSpec?: string
+  taskTemplateName?: string
+  taskType?: 'TASK' | 'ASIS_TEMPLATE' | 'IO_TEMPLATE'
+}
+
+const EnterpriseCrmEventbusProtoWorkflowAlertConfigSchema = z
+  .object({
+    aggregationPeriod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'For an EXPECTED_MIN threshold, this aggregation_period must be lesser than 24 hours.',
+      }),
+    alertDisabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to false by default. When set to true, the metrics are not aggregated or pushed to Monarch for this workflow alert.',
+      }),
+    alertName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'A name to identify this alert. This will be displayed in the alert subject. If set, this name should be unique within the scope of the workflow.',
+      }),
+    clientId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Client associated with this alert configuration.' }),
+    durationThresholdMs: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Should be specified only for *AVERAGE_DURATION and *PERCENTILE_DURATION metrics. This member should be used to specify what duration value the metrics should exceed for the alert to trigger.',
+      }),
+    errorEnumList: EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema.exactOptional(),
+    metricType: z
+      .enum([
+        'METRIC_TYPE_UNSPECIFIED',
+        'EVENT_ERROR_RATE',
+        'EVENT_WARNING_RATE',
+        'TASK_ERROR_RATE',
+        'TASK_WARNING_RATE',
+        'TASK_RATE',
+        'EVENT_RATE',
+        'EVENT_AVERAGE_DURATION',
+        'EVENT_PERCENTILE_DURATION',
+        'TASK_AVERAGE_DURATION',
+        'TASK_PERCENTILE_DURATION',
+      ])
+      .exactOptional(),
+    numAggregationPeriods: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'For how many contiguous aggregation periods should the expected min or max be violated for the alert to be fired.',
+      }),
+    onlyFinalAttempt: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'For either events or tasks, depending on the type of alert, count only final attempts, not retries.',
+      }),
+    playbookUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Link to a playbook for resolving the issue that triggered this alert.',
+      }),
+    thresholdType: z
+      .enum(['UNSPECIFIED_THRESHOLD_TYPE', 'EXPECTED_MIN', 'EXPECTED_MAX'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.',
+      }),
+    thresholdValue:
+      EnterpriseCrmEventbusProtoBaseAlertConfigThresholdValueSchema.exactOptional().openapi({
+        description: 'The metric value, above or below which the alert should be triggered.',
+      }),
+    warningEnumList: EnterpriseCrmEventbusProtoBaseAlertConfigErrorEnumListSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Message to be used to configure custom alerting in the {@code EventConfig} protos for an event.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoWorkflowAlertConfig')
+
+const EnterpriseCrmEventbusProtoCloudSchedulerConfigSchema = z
+  .object({
+    cronTab: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The cron tab of cloud scheduler trigger.' }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When the job was deleted from Pantheon UI, error_message will be populated when Get/List integrations',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The location where associated cloud scheduler job will be created',
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Service account used by Cloud Scheduler to trigger the integration at scheduled time',
+      }),
+  })
+  .openapi({ description: 'Cloud Scheduler Trigger configuration', required: [] })
+  .openapi('EnterpriseCrmEventbusProtoCloudSchedulerConfig')
+
+const EnterpriseCrmEventbusProtoTriggerCriteriaSchema: z.ZodType<EnterpriseCrmEventbusProtoTriggerCriteriaType> =
+  z
+    .object({
+      condition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Required. Standard filter expression, when true the workflow will be executed. If there's no trigger_criteria_task_implementation_class_name specified, the condition will be validated directly.",
+        }),
+      parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Optional. To be used in TaskConfig for the implementation class.',
+      }),
+      triggerCriteriaTaskImplementationClassName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Implementation class name. The class should implement the “TypedTask” interface.',
+        }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoTriggerCriteria')
+
+type EnterpriseCrmFrontendsEventbusProtoTriggerConfigType = {
+  alertConfig?: z.infer<typeof EnterpriseCrmEventbusProtoWorkflowAlertConfigSchema>[]
+  cloudSchedulerConfig?: z.infer<typeof EnterpriseCrmEventbusProtoCloudSchedulerConfigSchema>
+  description?: string
+  enabledClients?: string[]
+  errorCatcherId?: string
+  label?: string
+  nextTasksExecutionPolicy?: 'UNSPECIFIED' | 'RUN_ALL_MATCH' | 'RUN_FIRST_MATCH'
+  pauseWorkflowExecutions?: boolean
+  position?: z.infer<typeof EnterpriseCrmEventbusProtoCoordinateSchema>
+  properties?: { [key: string]: string }
+  startTasks?: z.infer<typeof EnterpriseCrmEventbusProtoNextTaskSchema>[]
+  triggerCriteria?: z.infer<typeof EnterpriseCrmEventbusProtoTriggerCriteriaSchema>
+  triggerId?: string
+  triggerNumber?: string
+  triggerType?:
+    | 'UNKNOWN'
+    | 'CLOUD_PUBSUB'
+    | 'GOOPS'
+    | 'SFDC_SYNC'
+    | 'CRON'
+    | 'API'
+    | 'MANIFOLD_TRIGGER'
+    | 'DATALAYER_DATA_CHANGE'
+    | 'SFDC_CHANNEL'
+    | 'CLOUD_PUBSUB_EXTERNAL'
+    | 'SFDC_CDC_CHANNEL'
+    | 'SFDC_PLATFORM_EVENTS_CHANNEL'
+    | 'CLOUD_SCHEDULER'
+}
+
+const EnterpriseCrmLoggingGwsSanitizeOptionsSchema = z
+  .object({
+    isAlreadySanitized: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the value has already been sanitized and needs no further sanitization. For instance, a D3 customer id is already an obfuscated entity and *might not* need further sanitization.',
+      }),
+    logType: z
+      .array(z.enum(['LOG_TYPE_UNSPECIFIED', 'GWS', 'GTS', 'ALL']))
+      .exactOptional()
+      .openapi({ description: 'To which type(s) of logs the sanitize options apply.' }),
+    privacy: z
+      .enum(['PRIVACY_TYPE_UNSPECIFIED', 'NOT_PII', 'PII', 'SPII', 'UNSURE'])
+      .exactOptional(),
+    sanitizeType: z
+      .enum([
+        'SANITIZE_TYPE_UNSPECIFIED',
+        'SCRUB',
+        'ANONYMIZE',
+        'ANONYMIZE_LIMITED_REPEATABLE',
+        'OBFUSCATE',
+        'ENCRYPT',
+        'DO_NOT_SANITIZE',
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      "Identifies whether a field contains, or may contain, PII or sensitive data, and how to sanitize the field if it does. If a field's privacy type cannot be determined then it is sanitized (e.g., scrubbed). The specific sanitizer implementation is determined by run-time configuration and environment options (e.g., prod vs. qa). next_id: 5",
+    required: [],
+  })
+  .openapi('EnterpriseCrmLoggingGwsSanitizeOptions')
+
+const EnterpriseCrmLoggingGwsFieldLimitsSchema = z
+  .object({
+    logAction: z.enum(['LOG_ACTION_UNSPECIFIED', 'DONT_LOG', 'LOG']).exactOptional(),
+    logType: z
+      .array(z.enum(['LOG_TYPE_UNSPECIFIED', 'GWS', 'GTS', 'ALL']))
+      .exactOptional()
+      .openapi({ description: 'To which type(s) of logs the limits apply.' }),
+    maxArraySize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'maximum array size. If the array exceds this size, the field (list) is truncated.',
+      }),
+    maxStringLength: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'maximum string length. If the field exceeds this amount the field is shortened.',
+      }),
+    shortenerType: z
+      .enum([
+        'SHORTENER_TYPE_UNSPECIFIED',
+        'SHORTEN',
+        'HASH',
+        'SHORTEN_WITH_HASH',
+        'SHORTEN_EMAIL',
+        'SHORTEN_EMAIL_WITH_HASH',
+        'SHORTEN_DOMAIN',
+      ])
+      .exactOptional(),
+  })
+  .openapi({
+    description:
+      'Describes string and array limits when writing to logs. When a limit is exceeded the *shortener_type* describes how to shorten the field. next_id: 6',
+    required: [],
+  })
+  .openapi('EnterpriseCrmLoggingGwsFieldLimits')
+
+const EnterpriseCrmEventbusProtoLogSettingsSchema = z
+  .object({
+    logFieldName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The name of corresponding logging field of the event property. If omitted, assumes the same name as the event property key.',
+      }),
+    sanitizeOptions: EnterpriseCrmLoggingGwsSanitizeOptionsSchema.exactOptional().openapi({
+      description: 'Contains the scrubbing options, such as whether to scrub, obfuscate, etc.',
+    }),
+    seedPeriod: z.enum(['SEED_PERIOD_UNSPECIFIED', 'DAY', 'WEEK', 'MONTH']).exactOptional(),
+    seedScope: z
+      .enum(['SEED_SCOPE_UNSPECIFIED', 'EVENT_NAME', 'TIME_PERIOD', 'PARAM_NAME'])
+      .exactOptional(),
+    shorteningLimits: EnterpriseCrmLoggingGwsFieldLimitsSchema.exactOptional().openapi({
+      description:
+        'Contains the field limits for shortening, such as max string length and max array length.',
+    }),
+  })
+  .openapi({
+    description:
+      'The LogSettings define the logging attributes for an event property. These attributes are used to map the property to the parameter in the log proto. Also used to define scrubbing/truncation behavior and PII information.',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoLogSettings')
+
+const EnterpriseCrmEventbusProtoAttributesSchema = z
+  .object({
+    dataType: z
+      .enum(['DATA_TYPE_UNSPECIFIED', 'EMAIL', 'URL', 'CURRENCY', 'TIMESTAMP', 'DOMAIN_NAME'])
+      .exactOptional()
+      .openapi({
+        description: 'Things like URL, Email, Currency, Timestamp (rather than string, int64...)',
+      }),
+    defaultValue: EnterpriseCrmEventbusProtoValueTypeSchema.exactOptional().openapi({
+      description: 'Used to define defaults.',
+    }),
+    isRequired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required for event execution. The validation will be done by the event bus when the event is triggered.',
+      }),
+    isSearchable: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Used to indicate if a ParameterEntry should be converted to ParamIndexes for ST-Spanner full-text search. DEPRECATED: use searchable.',
+      }),
+    logSettings: EnterpriseCrmEventbusProtoLogSettingsSchema.exactOptional().openapi({
+      description: 'See',
+    }),
+    searchable: z.enum(['UNSPECIFIED', 'YES', 'NO']).exactOptional(),
+    taskVisibility: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'List of tasks that can view this property, if empty then all.' }),
+  })
+  .openapi({
+    description:
+      'Attributes are additional options that can be associated with each event property. For more information, see',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoAttributes')
+
+const EnterpriseCrmEventbusProtoNodeIdentifierSchema = z
+  .object({
+    elementIdentifier: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Configuration of the edge.' }),
+    elementType: z
+      .enum(['UNKNOWN_TYPE', 'TASK_CONFIG', 'TRIGGER_CONFIG'])
+      .exactOptional()
+      .openapi({
+        description: 'Destination node where the edge ends. It can only be a task config.',
+      }),
+  })
+  .openapi({
+    description: 'Represents a node identifier (type + id). Next highest id: 3',
+    required: [],
+  })
+  .openapi('EnterpriseCrmEventbusProtoNodeIdentifier')
+
+type EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntryType = {
+  attributes?: z.infer<typeof EnterpriseCrmEventbusProtoAttributesSchema>
+  children?: EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntryType[]
+  dataType?:
+    | 'DATA_TYPE_UNSPECIFIED'
+    | 'STRING_VALUE'
+    | 'INT_VALUE'
+    | 'DOUBLE_VALUE'
+    | 'BOOLEAN_VALUE'
+    | 'PROTO_VALUE'
+    | 'SERIALIZED_OBJECT_VALUE'
+    | 'STRING_ARRAY'
+    | 'INT_ARRAY'
+    | 'DOUBLE_ARRAY'
+    | 'PROTO_ARRAY'
+    | 'PROTO_ENUM'
+    | 'BOOLEAN_ARRAY'
+    | 'PROTO_ENUM_ARRAY'
+    | 'BYTES'
+    | 'BYTES_ARRAY'
+    | 'NON_SERIALIZABLE_OBJECT'
+    | 'JSON_VALUE'
+  defaultValue?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterValueTypeSchema>
+  inOutType?: 'IN_OUT_TYPE_UNSPECIFIED' | 'IN' | 'OUT' | 'IN_OUT'
+  isTransient?: boolean
+  jsonSchema?: string
+  key?: string
+  name?: string
+  producedBy?: z.infer<typeof EnterpriseCrmEventbusProtoNodeIdentifierSchema>
+  producer?: string
+  protoDefName?: string
+  protoDefPath?: string
+}
+
+const GoogleCloudIntegrationsV1alphaAuthTokenSchema = z
+  .object({
+    token: z.string().exactOptional().openapi({ description: 'The token for the auth type.' }),
+    type: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Authentication type, e.g. "Basic", "Bearer", etc.' }),
+  })
+  .openapi({
+    description:
+      'The credentials to authenticate a user agent with a server that is put in HTTP Authorization request header.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaAuthToken')
+
+const GoogleCloudIntegrationsV1alphaJwtSchema = z
+  .object({
+    jwt: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The token calculated by the header, payload and signature.' }),
+    jwtHeader: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Identifies which algorithm is used to generate the signature.' }),
+    jwtPayload: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Contains a set of claims. The JWT specification defines seven Registered Claim Names which are the standard fields commonly included in tokens. Custom claims are usually also included, depending on the purpose of the token.',
+      }),
+    secret: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "User's pre-shared secret to sign the token." }),
+  })
+  .openapi({
+    description:
+      'Represents JSON web token(JWT), which is a compact, URL-safe means of representing claims to be transferred between two parties, enabling the claims to be digitally signed or integrity protected.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaJwt')
+
+const GoogleCloudIntegrationsV1alphaAccessTokenSchema = z
+  .object({
+    accessToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The access token encapsulating the security identity of a process or thread.',
+      }),
+    accessTokenExpireTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The approximate time until the access token retrieved is valid.',
+      }),
+    refreshToken: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'If the access token will expire, use the refresh token to obtain another access token.',
+      }),
+    refreshTokenExpireTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The approximate time until the refresh token retrieved is valid.' }),
+    tokenType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Only support "bearer" token in v1 as bearer token is the predominant type used with OAuth 2.0.',
+      }),
+  })
+  .openapi({
+    description:
+      'The access token represents the authorization of a specific application to access specific parts of a user’s data.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaAccessToken')
+
+const GoogleCloudIntegrationsV1alphaBooleanParameterArraySchema = z
+  .object({
+    booleanValues: z.array(z.boolean()).exactOptional().openapi({ description: 'Boolean array.' }),
+  })
+  .openapi({ description: 'This message only contains a field of boolean array.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaBooleanParameterArray')
+
+const GoogleCloudIntegrationsV1alphaDoubleParameterArraySchema = z
+  .object({
+    doubleValues: z
+      .array(z.float64())
+      .exactOptional()
+      .openapi({ description: 'Double number array.' }),
+  })
+  .openapi({
+    description: 'This message only contains a field of double number array.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaDoubleParameterArray')
+
+const GoogleCloudIntegrationsV1alphaIntParameterArraySchema = z
+  .object({
+    intValues: z.array(z.string()).exactOptional().openapi({ description: 'Integer array.' }),
+  })
+  .openapi({ description: 'This message only contains a field of integer array.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaIntParameterArray')
+
+const GoogleCloudIntegrationsV1alphaStringParameterArraySchema = z
+  .object({
+    stringValues: z.array(z.string()).exactOptional().openapi({ description: 'String array.' }),
+  })
+  .openapi({ description: 'This message only contains a field of string array.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaStringParameterArray')
+
+const GoogleCloudIntegrationsV1alphaValueTypeSchema = z
+  .object({
+    booleanArray: GoogleCloudIntegrationsV1alphaBooleanParameterArraySchema.exactOptional().openapi(
+      { description: 'Boolean Array.' },
+    ),
+    booleanValue: z.boolean().exactOptional().openapi({ description: 'Boolean.' }),
+    doubleArray: GoogleCloudIntegrationsV1alphaDoubleParameterArraySchema.exactOptional().openapi({
+      description: 'Double Number Array.',
+    }),
+    doubleValue: z.float64().exactOptional().openapi({ description: 'Double Number.' }),
+    intArray: GoogleCloudIntegrationsV1alphaIntParameterArraySchema.exactOptional().openapi({
+      description: 'Integer Array.',
+    }),
+    intValue: z.string().exactOptional().openapi({ description: 'Integer.' }),
+    jsonValue: z.string().exactOptional().openapi({ description: 'Json.' }),
+    stringArray: GoogleCloudIntegrationsV1alphaStringParameterArraySchema.exactOptional().openapi({
+      description: 'String Array.',
+    }),
+    stringValue: z.string().exactOptional().openapi({ description: 'String.' }),
+  })
+  .openapi({ description: 'The type of the parameter.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaValueType')
+
+const GoogleCloudIntegrationsV1alphaParameterMapFieldSchema = z
+  .object({
+    literalValue: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
+      description: 'Passing a literal value.',
+    }),
     referenceKey: z
       .string()
       .exactOptional()
-      .openapi({ description: 'Referencing one of the WF variables.' }),
+      .openapi({ description: 'Referencing one of the Integration variables.' }),
   })
   .openapi({ description: 'Field represents either the key or value in an entry.', required: [] })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMapField')
+  .openapi('GoogleCloudIntegrationsV1alphaParameterMapField')
 
-const EnterpriseCrmFrontendsEventbusProtoParameterMapEntrySchema = z
+const GoogleCloudIntegrationsV1alphaParameterMapEntrySchema = z
   .object({
-    key: EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema.exactOptional(),
-    value: EnterpriseCrmFrontendsEventbusProtoParameterMapFieldSchema.exactOptional(),
+    key: GoogleCloudIntegrationsV1alphaParameterMapFieldSchema.exactOptional().openapi({
+      description: 'Key of the map entry.',
+    }),
+    value: GoogleCloudIntegrationsV1alphaParameterMapFieldSchema.exactOptional().openapi({
+      description: 'Value of the map entry.',
+    }),
   })
   .openapi({ description: 'Entry is a pair of key and value.', required: [] })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMapEntry')
+  .openapi('GoogleCloudIntegrationsV1alphaParameterMapEntry')
 
-const EnterpriseCrmFrontendsEventbusProtoParameterMapSchema = z
+const GoogleCloudIntegrationsV1alphaParameterMapSchema = z
   .object({
-    entries: z.array(EnterpriseCrmFrontendsEventbusProtoParameterMapEntrySchema).exactOptional(),
+    entries: z
+      .array(GoogleCloudIntegrationsV1alphaParameterMapEntrySchema)
+      .exactOptional()
+      .openapi({ description: 'A list of parameter map entries.' }),
     keyType: z
       .enum([
-        'DATA_TYPE_UNSPECIFIED',
+        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
         'STRING_VALUE',
         'INT_VALUE',
         'DOUBLE_VALUE',
         'BOOLEAN_VALUE',
-        'PROTO_VALUE',
-        'SERIALIZED_OBJECT_VALUE',
         'STRING_ARRAY',
         'INT_ARRAY',
         'DOUBLE_ARRAY',
-        'PROTO_ARRAY',
-        'PROTO_ENUM',
         'BOOLEAN_ARRAY',
-        'PROTO_ENUM_ARRAY',
-        'BYTES',
-        'BYTES_ARRAY',
-        'NON_SERIALIZABLE_OBJECT',
         'JSON_VALUE',
+        'PROTO_VALUE',
+        'PROTO_ARRAY',
       ])
       .exactOptional()
       .openapi({
         description:
-          'Option to specify key value type for all entries of the map. If provided then field types for all entries must conform to this.',
+          'Option to specify key type for all entries of the map. If provided then field types for all entries must conform to this.',
       }),
     valueType: z
       .enum([
-        'DATA_TYPE_UNSPECIFIED',
+        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
         'STRING_VALUE',
         'INT_VALUE',
         'DOUBLE_VALUE',
         'BOOLEAN_VALUE',
-        'PROTO_VALUE',
-        'SERIALIZED_OBJECT_VALUE',
         'STRING_ARRAY',
         'INT_ARRAY',
         'DOUBLE_ARRAY',
-        'PROTO_ARRAY',
-        'PROTO_ENUM',
         'BOOLEAN_ARRAY',
-        'PROTO_ENUM_ARRAY',
-        'BYTES',
-        'BYTES_ARRAY',
-        'NON_SERIALIZABLE_OBJECT',
         'JSON_VALUE',
+        'PROTO_VALUE',
+        'PROTO_ARRAY',
       ])
-      .exactOptional(),
+      .exactOptional()
+      .openapi({
+        description:
+          'Option to specify value type for all entries of the map. If provided then field types for all entries must conform to this.',
+      }),
   })
   .openapi({
     description:
       'A generic multi-map that holds key value pairs. They keys and values can be of any type, unless specified.',
     required: [],
   })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMap')
+  .openapi('GoogleCloudIntegrationsV1alphaParameterMap')
 
-const EnterpriseCrmFrontendsEventbusProtoRollbackStrategySchema = z
-  .object({
-    parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Optional. The customized parameters the user can pass to this task.',
-    }),
-    rollbackTaskImplementationClassName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. This is the name of the task that needs to be executed upon rollback of this task.',
-      }),
-    taskNumbersToRollback: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. These are the tasks numbers of the tasks whose `rollback_strategy.rollback_task_implementation_class_name` needs to be executed upon failure of this task.',
-      }),
-  })
-  .openapi({ description: 'Next available id: 4', required: [] })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoRollbackStrategy')
+type GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeType = {
+  accessToken?: z.infer<typeof GoogleCloudIntegrationsV1alphaAccessTokenSchema>
+  applyReauthPolicy?: boolean
+  authCode?: string
+  authEndpoint?: string
+  authParams?: z.infer<typeof GoogleCloudIntegrationsV1alphaParameterMapSchema>
+  clientId?: string
+  clientSecret?: string
+  requestType?: 'REQUEST_TYPE_UNSPECIFIED' | 'REQUEST_BODY' | 'QUERY_PARAMETERS' | 'ENCODED_HEADER'
+  scope?: string
+  tokenEndpoint?: string
+  tokenParams?: z.infer<typeof GoogleCloudIntegrationsV1alphaParameterMapSchema>
+}
 
-const EnterpriseCrmFrontendsEventbusProtoTaskEntitySchema = z
-  .object({
-    disabledForVpcSc: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'True if the task has conflict with vpcsc' }),
-    metadata: EnterpriseCrmEventbusProtoTaskMetadataSchema.exactOptional().openapi({
-      description: 'Metadata inclueds the task name, author and so on.',
-    }),
-    paramSpecs: EnterpriseCrmFrontendsEventbusProtoParamSpecsMessageSchema.exactOptional().openapi({
+const GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeSchema: z.ZodType<GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeType> =
+  z
+    .object({
+      accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
+        description: 'The access token received from the token endpoint.',
+      }),
+      applyReauthPolicy: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates if the user has opted in Google Reauth Policy. If opted in, the refresh token will be valid for 20 hours, after which time users must re-authenticate in order to obtain a new one.',
+        }),
+      authCode: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The Auth Code that is used to initially retrieve the access token.',
+        }),
+      authEndpoint: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The auth url endpoint to send the auth code request to.' }),
+      authParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
+        description: 'The auth parameters sent along with the auth code request.',
+      }),
+      clientId: z.string().exactOptional().openapi({ description: "The client's id." }),
+      clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
+      requestType: z
+        .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
+        .exactOptional()
+        .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
+      scope: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
+      tokenEndpoint: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The token url endpoint to send the token request to.' }),
+      tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
+        description: 'The token parameters sent along with the token request.',
+      }),
+    })
+    .openapi({
       description:
-        'Declarations for inputs/outputs for a TypedTask. This is also associated with the METADATA mask.',
-    }),
-    stats: EnterpriseCrmEventbusStatsSchema.exactOptional().openapi({
-      description: 'Deprecated - statistics from the Monarch query.',
-    }),
-    taskType: z
-      .enum(['TASK', 'ASIS_TEMPLATE', 'IO_TEMPLATE'])
-      .exactOptional()
-      .openapi({ description: 'Defines the type of the task' }),
-    uiConfig: EnterpriseCrmEventbusProtoTaskUiConfigSchema.exactOptional().openapi({
-      description: 'UI configuration for this task Also associated with the METADATA mask.',
-    }),
-  })
-  .openapi({
-    description: "Contains a task's metadata and associated information. Next available id: 7",
-    required: [],
-  })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoTaskEntity')
+        'The OAuth Type where the client sends request with the client id and requested scopes to auth endpoint. User sees a consent screen and auth code is received at specified redirect url afterwards. The auth code is then combined with the client id and secret and sent to the token endpoint in exchange for the access and refresh token. The refresh token can be used to fetch new access tokens.',
+      required: [],
+    })
+    .openapi('GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCode')
 
-const EnterpriseCrmFrontendsEventbusProtoTaskConfigSchema = z
+type GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsType = {
+  accessToken?: z.infer<typeof GoogleCloudIntegrationsV1alphaAccessTokenSchema>
+  clientId?: string
+  clientSecret?: string
+  requestType?: 'REQUEST_TYPE_UNSPECIFIED' | 'REQUEST_BODY' | 'QUERY_PARAMETERS' | 'ENCODED_HEADER'
+  scope?: string
+  tokenEndpoint?: string
+  tokenParams?: z.infer<typeof GoogleCloudIntegrationsV1alphaParameterMapSchema>
+}
+
+const GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsSchema: z.ZodType<GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsType> =
+  z
+    .object({
+      accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
+        description: 'Access token fetched from the authorization server.',
+      }),
+      clientId: z.string().exactOptional().openapi({ description: "The client's ID." }),
+      clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
+      requestType: z
+        .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
+        .exactOptional()
+        .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
+      scope: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
+      tokenEndpoint: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The token endpoint is used by the client to obtain an access token by presenting its authorization grant or refresh token.',
+        }),
+      tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
+        description: 'Token parameters for the auth request.',
+      }),
+    })
+    .openapi({
+      description:
+        "For client credentials grant, the client sends a POST request with grant_type as 'client_credentials' to the authorization server. The authorization server will respond with a JSON object containing the access token.",
+      required: [],
+    })
+    .openapi('GoogleCloudIntegrationsV1alphaOAuth2ClientCredentials')
+
+type GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsType = {
+  accessToken?: z.infer<typeof GoogleCloudIntegrationsV1alphaAccessTokenSchema>
+  clientId?: string
+  clientSecret?: string
+  password?: string
+  requestType?: 'REQUEST_TYPE_UNSPECIFIED' | 'REQUEST_BODY' | 'QUERY_PARAMETERS' | 'ENCODED_HEADER'
+  scope?: string
+  tokenEndpoint?: string
+  tokenParams?: z.infer<typeof GoogleCloudIntegrationsV1alphaParameterMapSchema>
+  username?: string
+}
+
+const GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsSchema: z.ZodType<GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsType> =
+  z
+    .object({
+      accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
+        description: 'Access token fetched from the authorization server.',
+      }),
+      clientId: z.string().exactOptional().openapi({ description: "The client's ID." }),
+      clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
+      password: z.string().exactOptional().openapi({ description: "The user's password." }),
+      requestType: z
+        .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
+        .exactOptional()
+        .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
+      scope: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
+      tokenEndpoint: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The token endpoint is used by the client to obtain an access token by presenting its authorization grant or refresh token.',
+        }),
+      tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
+        description: 'Token parameters for the auth request.',
+      }),
+      username: z.string().exactOptional().openapi({ description: "The user's username." }),
+    })
+    .openapi({
+      description:
+        'For resource owner credentials grant, the client will ask the user for their authorization credentials (ususally a username and password) and send a POST request to the authorization server. The authorization server will respond with a JSON object containing the access token.',
+      required: [],
+    })
+    .openapi('GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentials')
+
+const GoogleCloudIntegrationsV1alphaOidcTokenSchema = z
   .object({
-    alertConfigs: z
-      .array(EnterpriseCrmEventbusProtoTaskAlertConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Alert configurations on error rate, warning rate, number of runs, durations, etc.',
-      }),
-    createTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    creatorEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The creator's email address. Auto-generated from the user's email.",
-      }),
-    description: z
+    audience: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'User-provided description intended to give more business context about the task.',
+          'Audience to be used when generating OIDC token. The audience claim identifies the recipients that the JWT is intended for.',
       }),
-    disableStrictTypeValidation: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'If this config contains a TypedTask, allow validation to succeed if an input is read from the output of another TypedTask whose output type is declared as a superclass of the requested input type. For instance, if the previous task declares an output of type Message, any task with this flag enabled will pass validation when attempting to read any proto Message type from the resultant Event parameter.',
-      }),
-    errorCatcherId: z
+    serviceAccountEmail: z
       .string()
       .exactOptional()
       .openapi({
-        description:
-          'Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+        description: 'The service account email to be used as the identity for the token.',
       }),
-    externalTaskType: z
-      .enum(['EXTERNAL_TASK_TYPE_UNSPECIFIED', 'NORMAL_TASK', 'ERROR_TASK'])
-      .exactOptional(),
-    failurePolicy: EnterpriseCrmEventbusProtoFailurePolicySchema.exactOptional().openapi({
-      description:
-        'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for asynchronous calls to Eventbus alone (Post To Queue, Schedule etc.).',
-    }),
-    incomingEdgeCount: z
-      .int32()
+    token: z
+      .string()
       .exactOptional()
-      .openapi({ description: 'The number of edges leading into this TaskConfig.' }),
-    jsonValidationOption: z
-      .enum([
-        'UNSPECIFIED_JSON_VALIDATION_OPTION',
-        'SKIP',
-        'PRE_EXECUTION',
-        'POST_EXECUTION',
-        'PRE_POST_EXECUTION',
-      ])
+      .openapi({ description: 'ID token obtained for the service account' }),
+    tokenExpireTime: z
+      .string()
       .exactOptional()
-      .openapi({
-        description: 'If set, overrides the option configured in the Task implementation class.',
-      }),
-    label: z
+      .openapi({ description: 'The approximate time until the token retrieved is valid.' }),
+  })
+  .openapi({ description: 'OIDC Token', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaOidcToken')
+
+const GoogleCloudIntegrationsV1alphaServiceAccountCredentialsSchema = z
+  .object({
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
+    serviceAccount: z
       .string()
       .exactOptional()
       .openapi({
-        description: 'User-provided label that is attached to this TaskConfig in the UI.',
+        description: 'Name of the service account that has the permission to make the request.',
       }),
-    lastModifiedTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
-    nextTasks: z
-      .array(EnterpriseCrmEventbusProtoNextTaskSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.',
-      }),
-    nextTasksExecutionPolicy: z
-      .enum(['UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The policy dictating the execution of the next set of tasks for the current task.',
-      }),
-    parameters: z
-      .record(z.string(), EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'The customized parameters the user can pass to this task.' }),
-    position: EnterpriseCrmEventbusProtoCoordinateSchema.exactOptional().openapi({
-      description:
-        'Optional. Informs the front-end application where to draw this task config on the UI.',
-    }),
-    precondition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Standard filter expression evaluated before execution. Independent of other conditions and tasks. Can be used to enable rollout. e.g. "rollout(5)" will only allow 5% of incoming traffic to task.',
-      }),
-    preconditionLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. User-provided label that is attached to precondition in the UI.',
-      }),
-    rollbackStrategy:
-      EnterpriseCrmFrontendsEventbusProtoRollbackStrategySchema.exactOptional().openapi({
-        description:
-          'Optional. Contains information about what needs to be done upon failure (either a permanent error or after it has been retried too many times).',
-      }),
-    successPolicy: EnterpriseCrmEventbusProtoSuccessPolicySchema.exactOptional().openapi({
-      description: 'Determines what action to take upon successful task completion.',
-    }),
-    synchronousCallFailurePolicy:
-      EnterpriseCrmEventbusProtoFailurePolicySchema.exactOptional().openapi({
-        description:
-          'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for synchronous calls to Eventbus alone (Post).',
-      }),
-    taskEntity: EnterpriseCrmFrontendsEventbusProtoTaskEntitySchema.exactOptional().openapi({
-      description: 'Copy of the task entity that this task config is an instance of.',
-    }),
-    taskExecutionStrategy: z
-      .enum(['WHEN_ALL_SUCCEED', 'WHEN_ANY_SUCCEED', 'WHEN_ALL_TASKS_AND_CONDITIONS_SUCCEED'])
-      .exactOptional()
-      .openapi({ description: 'The policy dictating the execution strategy of this task.' }),
-    taskName: z.string().exactOptional().openapi({ description: 'The name for the task.' }),
-    taskNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'REQUIRED: the identifier of this task within its parent event config, specified by the client. This should be unique among all the tasks belong to the same event config. We use this field as the identifier to find next tasks (via field `next_tasks.task_number`).',
-      }),
-    taskSpec: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A string template that allows user to configure task parameters (with either literal default values or tokens which will be resolved at execution time) for the task. It will eventually replace the old "parameters" field.',
-      }),
-    taskTemplateName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Used to define task-template name if task is of type task-template',
-      }),
-    taskType: z
-      .enum(['TASK', 'ASIS_TEMPLATE', 'IO_TEMPLATE'])
-      .exactOptional()
-      .openapi({ description: 'Defines the type of the task' }),
   })
   .openapi({
     description:
-      'The task configuration details. This is not the implementation of Task. There might be multiple TaskConfigs for the same Task.',
+      'Represents the service account which can be used to generate access token for authenticating the service call.',
     required: [],
   })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoTaskConfig')
+  .openapi('GoogleCloudIntegrationsV1alphaServiceAccountCredentials')
 
-const EnterpriseCrmFrontendsEventbusProtoTriggerConfigSchema = z
+const GoogleCloudIntegrationsV1alphaUsernameAndPasswordSchema = z
   .object({
-    alertConfig: z
-      .array(EnterpriseCrmEventbusProtoWorkflowAlertConfigSchema)
+    password: z.string().exactOptional().openapi({ description: 'Password to be used' }),
+    username: z.string().exactOptional().openapi({ description: 'Username to be used' }),
+  })
+  .openapi({ description: 'Username and password pair.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaUsernameAndPassword')
+
+type GoogleCloudIntegrationsV1alphaCredentialType = {
+  authToken?: z.infer<typeof GoogleCloudIntegrationsV1alphaAuthTokenSchema>
+  credentialType?:
+    | 'CREDENTIAL_TYPE_UNSPECIFIED'
+    | 'USERNAME_AND_PASSWORD'
+    | 'API_KEY'
+    | 'OAUTH2_AUTHORIZATION_CODE'
+    | 'OAUTH2_IMPLICIT'
+    | 'OAUTH2_CLIENT_CREDENTIALS'
+    | 'OAUTH2_RESOURCE_OWNER_CREDENTIALS'
+    | 'JWT'
+    | 'AUTH_TOKEN'
+    | 'SERVICE_ACCOUNT'
+    | 'CLIENT_CERTIFICATE_ONLY'
+    | 'OIDC_TOKEN'
+  jwt?: z.infer<typeof GoogleCloudIntegrationsV1alphaJwtSchema>
+  oauth2AuthorizationCode?: z.infer<
+    typeof GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeSchema
+  >
+  oauth2ClientCredentials?: z.infer<
+    typeof GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsSchema
+  >
+  oauth2ResourceOwnerCredentials?: z.infer<
+    typeof GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsSchema
+  >
+  oidcToken?: z.infer<typeof GoogleCloudIntegrationsV1alphaOidcTokenSchema>
+  serviceAccountCredentials?: z.infer<
+    typeof GoogleCloudIntegrationsV1alphaServiceAccountCredentialsSchema
+  >
+  usernameAndPassword?: z.infer<typeof GoogleCloudIntegrationsV1alphaUsernameAndPasswordSchema>
+}
+
+const GoogleCloudIntegrationsV1alphaCredentialSchema: z.ZodType<GoogleCloudIntegrationsV1alphaCredentialType> =
+  z
+    .object({
+      authToken: GoogleCloudIntegrationsV1alphaAuthTokenSchema.exactOptional().openapi({
+        description: 'Auth token credential',
+      }),
+      credentialType: z
+        .enum([
+          'CREDENTIAL_TYPE_UNSPECIFIED',
+          'USERNAME_AND_PASSWORD',
+          'API_KEY',
+          'OAUTH2_AUTHORIZATION_CODE',
+          'OAUTH2_IMPLICIT',
+          'OAUTH2_CLIENT_CREDENTIALS',
+          'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
+          'JWT',
+          'AUTH_TOKEN',
+          'SERVICE_ACCOUNT',
+          'CLIENT_CERTIFICATE_ONLY',
+          'OIDC_TOKEN',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Credential type associated with auth config.' }),
+      jwt: GoogleCloudIntegrationsV1alphaJwtSchema.exactOptional().openapi({
+        description: 'JWT credential',
+      }),
+      oauth2AuthorizationCode:
+        GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeSchema.exactOptional().openapi({
+          description:
+            'The api_key and oauth2_implicit are not covered in v1 and will be picked up once v1 is implemented. ApiKey api_key = 3; OAuth2 authorization code credential',
+        }),
+      oauth2ClientCredentials:
+        GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsSchema.exactOptional().openapi({
+          description: 'OAuth2Implicit oauth2_implicit = 5; OAuth2 client credentials',
+        }),
+      oauth2ResourceOwnerCredentials:
+        GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsSchema.exactOptional().openapi({
+          description: 'OAuth2 resource owner credentials',
+        }),
+      oidcToken: GoogleCloudIntegrationsV1alphaOidcTokenSchema.exactOptional().openapi({
+        description: 'Google OIDC ID Token',
+      }),
+      serviceAccountCredentials:
+        GoogleCloudIntegrationsV1alphaServiceAccountCredentialsSchema.exactOptional().openapi({
+          description: 'Service account credential',
+        }),
+      usernameAndPassword:
+        GoogleCloudIntegrationsV1alphaUsernameAndPasswordSchema.exactOptional().openapi({
+          description: 'Username and password credential',
+        }),
+    })
+    .openapi({
+      description: 'Defines parameters for a single, canonical credential.',
+      required: [],
+    })
+    .openapi('GoogleCloudIntegrationsV1alphaCredential')
+
+type GoogleCloudIntegrationsV1alphaAuthConfigType = {
+  certificateId?: string
+  createTime?: string
+  creatorEmail?: string
+  credentialType?:
+    | 'CREDENTIAL_TYPE_UNSPECIFIED'
+    | 'USERNAME_AND_PASSWORD'
+    | 'API_KEY'
+    | 'OAUTH2_AUTHORIZATION_CODE'
+    | 'OAUTH2_IMPLICIT'
+    | 'OAUTH2_CLIENT_CREDENTIALS'
+    | 'OAUTH2_RESOURCE_OWNER_CREDENTIALS'
+    | 'JWT'
+    | 'AUTH_TOKEN'
+    | 'SERVICE_ACCOUNT'
+    | 'CLIENT_CERTIFICATE_ONLY'
+    | 'OIDC_TOKEN'
+  decryptedCredential?: z.infer<typeof GoogleCloudIntegrationsV1alphaCredentialSchema>
+  description?: string
+  displayName?: string
+  encryptedCredential?: string
+  expiryNotificationDuration?: string[]
+  lastModifierEmail?: string
+  name?: string
+  overrideValidTime?: string
+  reason?: string
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'VALID'
+    | 'INVALID'
+    | 'SOFT_DELETED'
+    | 'EXPIRED'
+    | 'UNAUTHORIZED'
+    | 'UNSUPPORTED'
+  updateTime?: string
+  validTime?: string
+  visibility?: 'AUTH_CONFIG_VISIBILITY_UNSPECIFIED' | 'PRIVATE' | 'CLIENT_VISIBLE'
+}
+
+type GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequestType = {
+  doNotPropagateError?: boolean
+  executionId?: string
+  inputParameters?: { [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema> }
+  parameterEntries?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+  parameters?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  requestId?: string
+  triggerId?: string
+}
+
+type GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponseType = {
+  eventParameters?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  executionFailed?: boolean
+  executionId?: string
+  outputParameters?: { [key: string]: unknown }
+  parameterEntries?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+}
+
+const EnterpriseCrmEventbusProtoEventExecutionDetailsSchema: z.ZodType<EnterpriseCrmEventbusProtoEventExecutionDetailsType> =
+  z
+    .object({
+      eventAttemptStats: z
+        .array(EnterpriseCrmEventbusProtoEventExecutionDetailsEventAttemptStatsSchema)
+        .exactOptional(),
+      eventExecutionSnapshot: z
+        .array(EnterpriseCrmEventbusProtoEventExecutionSnapshotSchema)
+        .exactOptional(),
+      eventExecutionState: z
+        .enum([
+          'UNSPECIFIED',
+          'ON_HOLD',
+          'IN_PROCESS',
+          'SUCCEEDED',
+          'FAILED',
+          'CANCELED',
+          'RETRY_ON_HOLD',
+          'SUSPENDED',
+        ])
+        .exactOptional(),
+      eventRetriesFromBeginningCount: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates the number of times the execution has restarted from the beginning.',
+        }),
+      logFilePath: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The log file path (aka. cns address) for this event.' }),
+      networkAddress: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The network address (aka. bns address) that indicates where the event executor is running.',
+        }),
+      nextExecutionTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Next scheduled execution time in case the execution status was RETRY_ON_HOLD.',
+        }),
+      ryeLockUnheldCount: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            "Used internally and shouldn't be exposed to users. A counter for the cron job to record how many times this event is in in_process state but don't have a lock consecutively/",
+        }),
+    })
+    .openapi({
+      description:
+        'Contains the details of the execution info of this event: this includes the tasks execution details plus the event execution statistics. Next available id: 10',
+      required: [],
+    })
+    .openapi('EnterpriseCrmEventbusProtoEventExecutionDetails')
+
+const GoogleCloudIntegrationsV1alphaAttemptStatsSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The end time of the event execution for current attempt.' }),
+    startTime: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'An alert threshold configuration for the [trigger + client + workflow] tuple. If these values are not specified in the trigger config, default values will be populated by the system. Note that there must be exactly one alert threshold configured per [client + trigger + workflow] when published.',
+          "The start time of the event execution for current attempt. This could be in the future if it's been scheduled.",
       }),
-    cloudSchedulerConfig: EnterpriseCrmEventbusProtoCloudSchedulerConfigSchema.exactOptional(),
+  })
+  .openapi({ description: 'Status for the execution attempt.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaAttemptStats')
+
+const GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadataSchema = z
+  .object({
+    executionAttempt: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'the execution attempt number this snapshot belongs to.' }),
+    task: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the task name associated with this snapshot.' }),
+    taskAttempt: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'the task attempt number this snapshot belongs to.' }),
+    taskLabel: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'the task label associated with this snapshot. Could be empty.' }),
+    taskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The task number associated with this snapshot.' }),
+  })
+  .openapi({ description: 'Metadata of the execution snapshot.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadata')
+
+const GoogleCloudIntegrationsV1alphaTaskExecutionDetailsSchema = z
+  .object({
+    taskAttemptStats: z
+      .array(GoogleCloudIntegrationsV1alphaAttemptStatsSchema)
+      .exactOptional()
+      .openapi({ description: 'Status for the current task execution attempt.' }),
+    taskExecutionState: z
+      .enum([
+        'TASK_EXECUTION_STATE_UNSPECIFIED',
+        'PENDING_EXECUTION',
+        'IN_PROCESS',
+        'SUCCEED',
+        'FAILED',
+        'FATAL',
+        'RETRY_ON_HOLD',
+        'SKIPPED',
+        'CANCELLED',
+        'PENDING_ROLLBACK',
+        'ROLLBACK_IN_PROCESS',
+        'ROLLEDBACK',
+        'SUSPENDED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The execution state of this task.' }),
+    taskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Pointer to the task config it used for execution.' }),
+  })
+  .openapi({ description: 'Contains the details of the execution of this task.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaTaskExecutionDetails')
+
+const GoogleCloudIntegrationsV1alphaExecutionSnapshotSchema = z
+  .object({
+    checkpointTaskNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Indicates "after which checkpoint task\'s execution" this snapshot is taken.',
+      }),
+    executionSnapshotMetadata:
+      GoogleCloudIntegrationsV1alphaExecutionSnapshotExecutionSnapshotMetadataSchema.exactOptional().openapi(
+        { description: 'Metadata of the execution snapshot.' },
+      ),
+    params: z
+      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+      .exactOptional()
+      .openapi({ description: 'Parameters used during the execution.' }),
+    taskExecutionDetails: z
+      .array(GoogleCloudIntegrationsV1alphaTaskExecutionDetailsSchema)
+      .exactOptional()
+      .openapi({ description: 'All of the task execution details at the given point of time.' }),
+  })
+  .openapi({
+    description: 'Contains the snapshot of the execution for a given checkpoint.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaExecutionSnapshot')
+
+const GoogleCloudIntegrationsV1alphaExecutionDetailsSchema = z
+  .object({
+    attemptStats: z
+      .array(GoogleCloudIntegrationsV1alphaAttemptStatsSchema)
+      .exactOptional()
+      .openapi({ description: 'List of Start and end time of the execution attempts.' }),
+    executionSnapshots: z
+      .array(GoogleCloudIntegrationsV1alphaExecutionSnapshotSchema)
+      .exactOptional()
+      .openapi({ description: 'List of snapshots taken during the execution.' }),
+    state: z
+      .enum([
+        'STATE_UNSPECIFIED',
+        'PENDING',
+        'PROCESSING',
+        'SUCCEEDED',
+        'FAILED',
+        'CANCELLED',
+        'RETRY_ON_HOLD',
+        'SUSPENDED',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Status of the execution.' }),
+  })
+  .openapi({
+    description:
+      'Contains the details of the execution info: this includes the tasks execution details plus the event execution statistics.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaExecutionDetails')
+
+type GoogleCloudIntegrationsV1alphaExecutionType = {
+  createTime?: string
+  directSubExecutions?: GoogleCloudIntegrationsV1alphaExecutionType[]
+  eventExecutionDetails?: z.infer<typeof EnterpriseCrmEventbusProtoEventExecutionDetailsSchema>
+  executionDetails?: z.infer<typeof GoogleCloudIntegrationsV1alphaExecutionDetailsSchema>
+  executionMethod?: 'EXECUTION_METHOD_UNSPECIFIED' | 'POST' | 'POST_TO_QUEUE' | 'SCHEDULE'
+  name?: string
+  requestParameters?: {
+    [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema>
+  }
+  requestParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+  responseParameters?: {
+    [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema>
+  }
+  responseParams?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+  triggerId?: string
+  updateTime?: string
+}
+
+const GoogleCloudIntegrationsV1alphaCoordinateSchema = z
+  .object({
+    x: z.int32().exactOptional().openapi({ description: 'Required. X axis of the coordinate' }),
+    y: z.int32().exactOptional().openapi({ description: 'Required. Y axis of the coordinate' }),
+  })
+  .openapi({ description: 'Configuration detail of coordinate, it used for UI', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaCoordinate')
+
+const GoogleCloudIntegrationsV1alphaNextTaskSchema = z
+  .object({
+    condition: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Standard filter expression for this task to become an eligible next task.',
+      }),
     description: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'User-provided description intended to give more business context about the task.',
+          'User-provided description intended to give additional business context about the task.',
       }),
-    enabledClients: z
-      .array(z.string())
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'User-provided label that is attached to this edge in the UI.' }),
+    taskConfigId: z.string().exactOptional().openapi({ description: 'ID of the next task.' }),
+    taskId: z.string().exactOptional().openapi({ description: 'Task number of the next task.' }),
+  })
+  .openapi({
+    description:
+      'The task that is next in line to be executed, if the condition specified evaluated to true.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaNextTask')
+
+const GoogleCloudIntegrationsV1alphaErrorCatcherConfigSchema = z
+  .object({
+    description: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. The list of client ids which are enabled to execute the workflow using this trigger. In other words, these clients have the workflow execution privledges for this trigger. For API trigger, the client id in the incoming request is validated against the list of enabled clients. For non-API triggers, one workflow execution is triggered on behalf of each enabled client.',
+          'Optional. User-provided description intended to give more business context about the error catcher config.',
       }),
     errorCatcherId: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+          'Required. An error catcher id is string representation for the error catcher config. Within a workflow, error_catcher_id uniquely identifies an error catcher config among all error catcher configs for the workflow',
+      }),
+    errorCatcherNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A number to uniquely identify each error catcher config within the workflow on UI.',
       }),
     label: z
       .string()
       .exactOptional()
-      .openapi({ description: 'The user created label for a particular trigger.' }),
-    nextTasksExecutionPolicy: z
-      .enum(['UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
-      .exactOptional()
-      .openapi({ description: 'Dictates how next tasks will be executed.' }),
-    pauseWorkflowExecutions: z
-      .boolean()
-      .exactOptional()
       .openapi({
-        description:
-          'Optional. If set to true, any upcoming requests for this trigger config will be paused and the executions will be resumed later when the flag is reset. The workflow to which this trigger config belongs has to be in ACTIVE status for the executions to be paused or resumed.',
+        description: 'Optional. The user created label for a particular error catcher. Optional.',
       }),
-    position: EnterpriseCrmEventbusProtoCoordinateSchema.exactOptional().openapi({
+    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
       description:
-        'Optional. Informs the front-end application where to draw this trigger config on the UI.',
+        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
     }),
-    properties: z
-      .record(z.string(), z.string())
+    startErrorTasks: z
+      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
       .exactOptional()
       .openapi({
         description:
-          'Configurable properties of the trigger, not to be confused with workflow parameters. E.g. "name" is a property for API triggers and "subscription" is a property for Cloud Pubsub triggers.',
+          'Required. The set of start tasks that are to be executed for the error catch flow',
       }),
-    startTasks: z
-      .array(EnterpriseCrmEventbusProtoNextTaskSchema)
+  })
+  .openapi({ description: 'Configuration detail of a error catch task', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaErrorCatcherConfig')
+
+const GoogleCloudIntegrationsV1alphaIntegrationParameterSchema = z
+  .object({
+    dataType: z
+      .enum([
+        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
+        'STRING_VALUE',
+        'INT_VALUE',
+        'DOUBLE_VALUE',
+        'BOOLEAN_VALUE',
+        'STRING_ARRAY',
+        'INT_ARRAY',
+        'DOUBLE_ARRAY',
+        'BOOLEAN_ARRAY',
+        'JSON_VALUE',
+        'PROTO_VALUE',
+        'PROTO_ARRAY',
+      ])
       .exactOptional()
-      .openapi({
-        description:
-          'Set of tasks numbers from where the workflow execution is started by this trigger. If this is empty, then workflow is executed with default start tasks. In the list of start tasks, none of two tasks can have direct ancestor-descendant relationships (i.e. in a same workflow execution graph).',
-      }),
-    triggerCriteria: EnterpriseCrmEventbusProtoTriggerCriteriaSchema.exactOptional().openapi({
+      .openapi({ description: 'Type of the parameter.' }),
+    defaultValue: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
       description:
-        'Optional. When set, Eventbus will run the task specified in the trigger_criteria and validate the result using the trigger_criteria.condition, and only execute the workflow when result is true.',
+        'Default values for the defined keys. Each value can either be string, int, double or any proto message or a serialized object.',
     }),
-    triggerId: z.string().exactOptional().openapi({ description: 'The backend trigger ID.' }),
-    triggerNumber: z
+    displayName: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. A number to uniquely identify each trigger config within the workflow on UI.',
+          'The name (without prefix) to be displayed in the UI for this parameter. E.g. if the key is "foo.bar.myName", then the name would be "myName".',
       }),
-    triggerType: z
-      .enum([
-        'UNKNOWN',
-        'CLOUD_PUBSUB',
-        'GOOPS',
-        'SFDC_SYNC',
-        'CRON',
-        'API',
-        'MANIFOLD_TRIGGER',
-        'DATALAYER_DATA_CHANGE',
-        'SFDC_CHANNEL',
-        'CLOUD_PUBSUB_EXTERNAL',
-        'SFDC_CDC_CHANNEL',
-        'SFDC_PLATFORM_EVENTS_CHANNEL',
-        'CLOUD_SCHEDULER',
-      ])
-      .exactOptional(),
+    inputOutputType: z
+      .enum(['IN_OUT_TYPE_UNSPECIFIED', 'IN', 'OUT', 'IN_OUT'])
+      .exactOptional()
+      .openapi({ description: 'Specifies the input/output type for the parameter.' }),
+    isTransient: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether this parameter is a transient parameter.' }),
+    jsonSchema: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'This schema will be used to validate runtime JSON-typed values of this parameter.',
+      }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
+      }),
+    producer: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The identifier of the node (TaskConfig/TriggerConfig) this parameter was produced by, if it is a transient param or a copy of an input param.',
+      }),
+    searchable: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Searchable in the execution log or not.' }),
   })
   .openapi({
-    description: 'Configuration detail of a trigger. Next available id: 19',
+    description:
+      'Integration Parameter is defined in the integration config and are used to provide information about data types of the expected parameters and provide any default values if needed. They can also be used to add custom attributes. These are static in nature and should not be used for dynamic event definition.',
     required: [],
   })
-  .openapi('EnterpriseCrmFrontendsEventbusProtoTriggerConfig')
+  .openapi('GoogleCloudIntegrationsV1alphaIntegrationParameter')
 
 const EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntrySchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoWorkflowParameterEntryType> =
   z
@@ -3765,6 +4130,1624 @@ const EnterpriseCrmFrontendsEventbusProtoWorkflowParametersSchema = z
     required: [],
   })
   .openapi('EnterpriseCrmFrontendsEventbusProtoWorkflowParameters')
+
+const GoogleCloudIntegrationsV1alphaFailurePolicySchema = z
+  .object({
+    intervalTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.',
+      }),
+    maxRetries: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.',
+      }),
+    retryStrategy: z
+      .enum([
+        'RETRY_STRATEGY_UNSPECIFIED',
+        'IGNORE',
+        'NONE',
+        'FATAL',
+        'FIXED_INTERVAL',
+        'LINEAR_BACKOFF',
+        'EXPONENTIAL_BACKOFF',
+        'RESTART_INTEGRATION_WITH_BACKOFF',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Defines what happens to the task upon failure.' }),
+  })
+  .openapi({
+    description:
+      'Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaFailurePolicy')
+
+const GoogleCloudIntegrationsV1alphaEventParameterSchema = z
+  .object({
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
+      }),
+    value: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
+      description:
+        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
+    }),
+  })
+  .openapi({
+    description:
+      'This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaEventParameter')
+
+const GoogleCloudIntegrationsV1alphaSuccessPolicySchema = z
+  .object({
+    finalState: z
+      .enum(['FINAL_STATE_UNSPECIFIED', 'SUCCEEDED', 'SUSPENDED'])
+      .exactOptional()
+      .openapi({
+        description:
+          'State to which the execution snapshot status will be set if the task succeeds.',
+      }),
+  })
+  .openapi({
+    description: 'Policy that dictates the behavior for the task after it completes successfully.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaSuccessPolicy')
+
+const GoogleCloudIntegrationsV1alphaTaskConfigSchema = z
+  .object({
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User-provided description intended to give additional business context about the task.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. User-provided label that is attached to this TaskConfig in the UI.',
+      }),
+    errorCatcherId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+      }),
+    externalTaskType: z
+      .enum(['EXTERNAL_TASK_TYPE_UNSPECIFIED', 'NORMAL_TASK', 'ERROR_TASK'])
+      .exactOptional()
+      .openapi({ description: 'Optional. External task type of the task' }),
+    failurePolicy: GoogleCloudIntegrationsV1alphaFailurePolicySchema.exactOptional().openapi({
+      description:
+        'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for asynchronous calls to Eventbus alone (Post To Queue, Schedule etc.).',
+    }),
+    jsonValidationOption: z
+      .enum([
+        'JSON_VALIDATION_OPTION_UNSPECIFIED',
+        'SKIP',
+        'PRE_EXECUTION',
+        'POST_EXECUTION',
+        'PRE_POST_EXECUTION',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. If set, overrides the option configured in the Task implementation class.',
+      }),
+    nextTasks: z
+      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.',
+      }),
+    nextTasksExecutionPolicy: z
+      .enum(['NEXT_TASKS_EXECUTION_POLICY_UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. The policy dictating the execution of the next set of tasks for the current task.',
+      }),
+    parameters: z
+      .record(z.string(), GoogleCloudIntegrationsV1alphaEventParameterSchema)
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The customized parameters the user can pass to this task.',
+      }),
+    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
+      description:
+        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
+    }),
+    successPolicy: GoogleCloudIntegrationsV1alphaSuccessPolicySchema.exactOptional().openapi({
+      description: 'Optional. Determines what action to take upon successful task completion.',
+    }),
+    synchronousCallFailurePolicy:
+      GoogleCloudIntegrationsV1alphaFailurePolicySchema.exactOptional().openapi({
+        description:
+          'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for synchronous calls to Eventbus alone (Post).',
+      }),
+    task: z.string().exactOptional().openapi({ description: 'Optional. The name for the task.' }),
+    taskExecutionStrategy: z
+      .enum([
+        'TASK_EXECUTION_STRATEGY_UNSPECIFIED',
+        'WHEN_ALL_SUCCEED',
+        'WHEN_ANY_SUCCEED',
+        'WHEN_ALL_TASKS_AND_CONDITIONS_SUCCEED',
+      ])
+      .exactOptional()
+      .openapi({
+        description: 'Optional. The policy dictating the execution strategy of this task.',
+      }),
+    taskId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The identifier of this task within its parent event config, specified by the client. This should be unique among all the tasks belong to the same event config. We use this field as the identifier to find next tasks (via field `next_tasks.task_id`).',
+      }),
+    taskTemplate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Optional. Used to define task-template name if task is of type task-template',
+      }),
+  })
+  .openapi({
+    description:
+      'The task configuration details. This is not the implementation of Task. There might be multiple TaskConfigs for the same Task.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaTaskConfig')
+
+const EnterpriseCrmFrontendsEventbusProtoTaskConfigSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoTaskConfigType> =
+  z
+    .object({
+      alertConfigs: z
+        .array(EnterpriseCrmEventbusProtoTaskAlertConfigSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Alert configurations on error rate, warning rate, number of runs, durations, etc.',
+        }),
+      createTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      creatorEmail: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: "The creator's email address. Auto-generated from the user's email.",
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'User-provided description intended to give more business context about the task.',
+        }),
+      disableStrictTypeValidation: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'If this config contains a TypedTask, allow validation to succeed if an input is read from the output of another TypedTask whose output type is declared as a superclass of the requested input type. For instance, if the previous task declares an output of type Message, any task with this flag enabled will pass validation when attempting to read any proto Message type from the resultant Event parameter.',
+        }),
+      errorCatcherId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+        }),
+      externalTaskType: z
+        .enum(['EXTERNAL_TASK_TYPE_UNSPECIFIED', 'NORMAL_TASK', 'ERROR_TASK'])
+        .exactOptional(),
+      failurePolicy: EnterpriseCrmEventbusProtoFailurePolicySchema.exactOptional().openapi({
+        description:
+          'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for asynchronous calls to Eventbus alone (Post To Queue, Schedule etc.).',
+      }),
+      incomingEdgeCount: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'The number of edges leading into this TaskConfig.' }),
+      jsonValidationOption: z
+        .enum([
+          'UNSPECIFIED_JSON_VALIDATION_OPTION',
+          'SKIP',
+          'PRE_EXECUTION',
+          'POST_EXECUTION',
+          'PRE_POST_EXECUTION',
+        ])
+        .exactOptional()
+        .openapi({
+          description: 'If set, overrides the option configured in the Task implementation class.',
+        }),
+      label: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'User-provided label that is attached to this TaskConfig in the UI.',
+        }),
+      lastModifiedTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      nextTasks: z
+        .array(EnterpriseCrmEventbusProtoNextTaskSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.',
+        }),
+      nextTasksExecutionPolicy: z
+        .enum(['UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
+        .exactOptional()
+        .openapi({
+          description:
+            'The policy dictating the execution of the next set of tasks for the current task.',
+        }),
+      parameters: z
+        .record(z.string(), EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+        .exactOptional()
+        .openapi({ description: 'The customized parameters the user can pass to this task.' }),
+      position: EnterpriseCrmEventbusProtoCoordinateSchema.exactOptional().openapi({
+        description:
+          'Optional. Informs the front-end application where to draw this task config on the UI.',
+      }),
+      precondition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Standard filter expression evaluated before execution. Independent of other conditions and tasks. Can be used to enable rollout. e.g. "rollout(5)" will only allow 5% of incoming traffic to task.',
+        }),
+      preconditionLabel: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Optional. User-provided label that is attached to precondition in the UI.',
+        }),
+      rollbackStrategy:
+        EnterpriseCrmFrontendsEventbusProtoRollbackStrategySchema.exactOptional().openapi({
+          description:
+            'Optional. Contains information about what needs to be done upon failure (either a permanent error or after it has been retried too many times).',
+        }),
+      successPolicy: EnterpriseCrmEventbusProtoSuccessPolicySchema.exactOptional().openapi({
+        description: 'Determines what action to take upon successful task completion.',
+      }),
+      synchronousCallFailurePolicy:
+        EnterpriseCrmEventbusProtoFailurePolicySchema.exactOptional().openapi({
+          description:
+            'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for synchronous calls to Eventbus alone (Post).',
+        }),
+      taskEntity: EnterpriseCrmFrontendsEventbusProtoTaskEntitySchema.exactOptional().openapi({
+        description: 'Copy of the task entity that this task config is an instance of.',
+      }),
+      taskExecutionStrategy: z
+        .enum(['WHEN_ALL_SUCCEED', 'WHEN_ANY_SUCCEED', 'WHEN_ALL_TASKS_AND_CONDITIONS_SUCCEED'])
+        .exactOptional()
+        .openapi({ description: 'The policy dictating the execution strategy of this task.' }),
+      taskName: z.string().exactOptional().openapi({ description: 'The name for the task.' }),
+      taskNumber: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'REQUIRED: the identifier of this task within its parent event config, specified by the client. This should be unique among all the tasks belong to the same event config. We use this field as the identifier to find next tasks (via field `next_tasks.task_number`).',
+        }),
+      taskSpec: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A string template that allows user to configure task parameters (with either literal default values or tokens which will be resolved at execution time) for the task. It will eventually replace the old "parameters" field.',
+        }),
+      taskTemplateName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Used to define task-template name if task is of type task-template',
+        }),
+      taskType: z
+        .enum(['TASK', 'ASIS_TEMPLATE', 'IO_TEMPLATE'])
+        .exactOptional()
+        .openapi({ description: 'Defines the type of the task' }),
+    })
+    .openapi({
+      description:
+        'The task configuration details. This is not the implementation of Task. There might be multiple TaskConfigs for the same Task.',
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoTaskConfig')
+
+const EnterpriseCrmEventbusProtoTeardownSchema: z.ZodType<EnterpriseCrmEventbusProtoTeardownType> =
+  z
+    .object({
+      teardownTaskConfigs: z
+        .array(EnterpriseCrmEventbusProtoTeardownTaskConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'Required.' }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoTeardown')
+
+const GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValueSchema = z
+  .object({
+    absolute: z.string().exactOptional().openapi({ description: 'Absolute value threshold.' }),
+    percentage: z.int32().exactOptional().openapi({ description: 'Percentage threshold.' }),
+  })
+  .openapi({
+    description:
+      'The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValue')
+
+const GoogleCloudIntegrationsV1alphaIntegrationAlertConfigSchema = z
+  .object({
+    aggregationPeriod: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The period over which the metric value should be aggregated and evaluated. Format is , where integer should be a positive integer and unit should be one of (s,m,h,d,w) meaning (second, minute, hour, day, week). For an EXPECTED_MIN threshold, this aggregation_period must be lesser than 24 hours.',
+      }),
+    alertThreshold: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'For how many contiguous aggregation periods should the expected min or max be violated for the alert to be fired.',
+      }),
+    disableAlert: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set to false by default. When set to true, the metrics are not aggregated or pushed to Monarch for this integration alert.',
+      }),
+    displayName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the alert. This will be displayed in the alert subject. If set, this name should be unique within the scope of the integration.',
+      }),
+    durationThreshold: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Should be specified only for *AVERAGE_DURATION and *PERCENTILE_DURATION metrics. This member should be used to specify what duration value the metrics should exceed for the alert to trigger.',
+      }),
+    metricType: z
+      .enum([
+        'METRIC_TYPE_UNSPECIFIED',
+        'EVENT_ERROR_RATE',
+        'EVENT_WARNING_RATE',
+        'TASK_ERROR_RATE',
+        'TASK_WARNING_RATE',
+        'TASK_RATE',
+        'EVENT_RATE',
+        'EVENT_AVERAGE_DURATION',
+        'EVENT_PERCENTILE_DURATION',
+        'TASK_AVERAGE_DURATION',
+        'TASK_PERCENTILE_DURATION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The type of metric.' }),
+    onlyFinalAttempt: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'For either events or tasks, depending on the type of alert, count only final attempts, not retries.',
+      }),
+    thresholdType: z
+      .enum(['THRESHOLD_TYPE_UNSPECIFIED', 'EXPECTED_MIN', 'EXPECTED_MAX'])
+      .exactOptional()
+      .openapi({
+        description:
+          'The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.',
+      }),
+    thresholdValue:
+      GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValueSchema.exactOptional().openapi(
+        { description: 'The metric value, above or below which the alert should be triggered.' },
+      ),
+  })
+  .openapi({
+    description:
+      'Message to be used to configure custom alerting in the {@code EventConfig} protos for an event.',
+    required: [],
+  })
+  .openapi('GoogleCloudIntegrationsV1alphaIntegrationAlertConfig')
+
+const GoogleCloudIntegrationsV1alphaCloudSchedulerConfigSchema = z
+  .object({
+    cronTab: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Required. The cron tab of cloud scheduler trigger.' }),
+    errorMessage: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. When the job was deleted from Pantheon UI, error_message will be populated when Get/List integrations',
+      }),
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Required. The location where associated cloud scheduler job will be created',
+      }),
+    serviceAccountEmail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. Service account used by Cloud Scheduler to trigger the integration at scheduled time',
+      }),
+  })
+  .openapi({ description: 'Cloud Scheduler Trigger configuration', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaCloudSchedulerConfig')
+
+const GoogleCloudIntegrationsV1alphaTriggerConfigSchema = z
+  .object({
+    alertConfig: z
+      .array(GoogleCloudIntegrationsV1alphaIntegrationAlertConfigSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. An alert threshold configuration for the [trigger + client + integration] tuple. If these values are not specified in the trigger config, default values will be populated by the system. Note that there must be exactly one alert threshold configured per [client + trigger + integration] when published.',
+      }),
+    cloudSchedulerConfig:
+      GoogleCloudIntegrationsV1alphaCloudSchedulerConfigSchema.exactOptional().openapi({
+        description: 'Optional. Cloud Scheduler Trigger related metadata',
+      }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. User-provided description intended to give additional business context about the task.',
+      }),
+    errorCatcherId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The user created label for a particular trigger.' }),
+    nextTasksExecutionPolicy: z
+      .enum(['NEXT_TASKS_EXECUTION_POLICY_UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Dictates how next tasks will be executed.' }),
+    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
+      description:
+        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
+    }),
+    properties: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Configurable properties of the trigger, not to be confused with integration parameters. E.g. "name" is a property for API triggers and "subscription" is a property for Pub/sub triggers.',
+      }),
+    startTasks: z
+      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Set of tasks numbers from where the integration execution is started by this trigger. If this is empty, then integration is executed with default start tasks. In the list of start tasks, none of two tasks can have direct ancestor-descendant relationships (i.e. in a same integration execution graph).',
+      }),
+    triggerId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Optional. The backend trigger ID.' }),
+    triggerNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. A number to uniquely identify each trigger config within the integration on UI.',
+      }),
+    triggerType: z
+      .enum([
+        'TRIGGER_TYPE_UNSPECIFIED',
+        'CRON',
+        'API',
+        'SFDC_CHANNEL',
+        'CLOUD_PUBSUB_EXTERNAL',
+        'SFDC_CDC_CHANNEL',
+        'CLOUD_SCHEDULER',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Optional. Type of trigger' }),
+  })
+  .openapi({ description: 'Configuration detail of a trigger.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaTriggerConfig')
+
+const EnterpriseCrmFrontendsEventbusProtoTriggerConfigSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoTriggerConfigType> =
+  z
+    .object({
+      alertConfig: z
+        .array(EnterpriseCrmEventbusProtoWorkflowAlertConfigSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An alert threshold configuration for the [trigger + client + workflow] tuple. If these values are not specified in the trigger config, default values will be populated by the system. Note that there must be exactly one alert threshold configured per [client + trigger + workflow] when published.',
+        }),
+      cloudSchedulerConfig: EnterpriseCrmEventbusProtoCloudSchedulerConfigSchema.exactOptional(),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'User-provided description intended to give more business context about the task.',
+        }),
+      enabledClients: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The list of client ids which are enabled to execute the workflow using this trigger. In other words, these clients have the workflow execution privledges for this trigger. For API trigger, the client id in the incoming request is validated against the list of enabled clients. For non-API triggers, one workflow execution is triggered on behalf of each enabled client.',
+        }),
+      errorCatcherId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
+        }),
+      label: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user created label for a particular trigger.' }),
+      nextTasksExecutionPolicy: z
+        .enum(['UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
+        .exactOptional()
+        .openapi({ description: 'Dictates how next tasks will be executed.' }),
+      pauseWorkflowExecutions: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. If set to true, any upcoming requests for this trigger config will be paused and the executions will be resumed later when the flag is reset. The workflow to which this trigger config belongs has to be in ACTIVE status for the executions to be paused or resumed.',
+        }),
+      position: EnterpriseCrmEventbusProtoCoordinateSchema.exactOptional().openapi({
+        description:
+          'Optional. Informs the front-end application where to draw this trigger config on the UI.',
+      }),
+      properties: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Configurable properties of the trigger, not to be confused with workflow parameters. E.g. "name" is a property for API triggers and "subscription" is a property for Cloud Pubsub triggers.',
+        }),
+      startTasks: z
+        .array(EnterpriseCrmEventbusProtoNextTaskSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Set of tasks numbers from where the workflow execution is started by this trigger. If this is empty, then workflow is executed with default start tasks. In the list of start tasks, none of two tasks can have direct ancestor-descendant relationships (i.e. in a same workflow execution graph).',
+        }),
+      triggerCriteria: EnterpriseCrmEventbusProtoTriggerCriteriaSchema.exactOptional().openapi({
+        description:
+          'Optional. When set, Eventbus will run the task specified in the trigger_criteria and validate the result using the trigger_criteria.condition, and only execute the workflow when result is true.',
+      }),
+      triggerId: z.string().exactOptional().openapi({ description: 'The backend trigger ID.' }),
+      triggerNumber: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. A number to uniquely identify each trigger config within the workflow on UI.',
+        }),
+      triggerType: z
+        .enum([
+          'UNKNOWN',
+          'CLOUD_PUBSUB',
+          'GOOPS',
+          'SFDC_SYNC',
+          'CRON',
+          'API',
+          'MANIFOLD_TRIGGER',
+          'DATALAYER_DATA_CHANGE',
+          'SFDC_CHANNEL',
+          'CLOUD_PUBSUB_EXTERNAL',
+          'SFDC_CDC_CHANNEL',
+          'SFDC_PLATFORM_EVENTS_CHANNEL',
+          'CLOUD_SCHEDULER',
+        ])
+        .exactOptional(),
+    })
+    .openapi({
+      description: 'Configuration detail of a trigger. Next available id: 19',
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoTriggerConfig')
+
+type GoogleCloudIntegrationsV1alphaIntegrationVersionType = {
+  createTime?: string
+  databasePersistencePolicy?:
+    | 'DATABASE_PERSISTENCE_POLICY_UNSPECIFIED'
+    | 'DATABASE_PERSISTENCE_DISABLED'
+  description?: string
+  errorCatcherConfigs?: z.infer<typeof GoogleCloudIntegrationsV1alphaErrorCatcherConfigSchema>[]
+  integrationParameters?: z.infer<typeof GoogleCloudIntegrationsV1alphaIntegrationParameterSchema>[]
+  integrationParametersInternal?: z.infer<
+    typeof EnterpriseCrmFrontendsEventbusProtoWorkflowParametersSchema
+  >
+  lastModifierEmail?: string
+  lockHolder?: string
+  name?: string
+  origin?: 'UNSPECIFIED' | 'UI' | 'PIPER_V2' | 'PIPER_V3' | 'APPLICATION_IP_PROVISIONING'
+  parentTemplateId?: string
+  runAsServiceAccount?: string
+  snapshotNumber?: string
+  state?: 'INTEGRATION_STATE_UNSPECIFIED' | 'DRAFT' | 'ACTIVE' | 'ARCHIVED' | 'SNAPSHOT'
+  status?: 'UNKNOWN' | 'DRAFT' | 'ACTIVE' | 'ARCHIVED' | 'SNAPSHOT'
+  taskConfigs?: z.infer<typeof GoogleCloudIntegrationsV1alphaTaskConfigSchema>[]
+  taskConfigsInternal?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoTaskConfigSchema>[]
+  teardown?: z.infer<typeof EnterpriseCrmEventbusProtoTeardownSchema>
+  triggerConfigs?: z.infer<typeof GoogleCloudIntegrationsV1alphaTriggerConfigSchema>[]
+  triggerConfigsInternal?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoTriggerConfigSchema>[]
+  updateTime?: string
+  userLabel?: string
+}
+
+const GoogleCloudIntegrationsV1alphaAuthConfigSchema: z.ZodType<GoogleCloudIntegrationsV1alphaAuthConfigType> =
+  z
+    .object({
+      certificateId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Certificate id for client certificate' }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The timestamp when the auth config is created.',
+          readOnly: true,
+        }),
+      creatorEmail: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The creator's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
+        }),
+      credentialType: z
+        .enum([
+          'CREDENTIAL_TYPE_UNSPECIFIED',
+          'USERNAME_AND_PASSWORD',
+          'API_KEY',
+          'OAUTH2_AUTHORIZATION_CODE',
+          'OAUTH2_IMPLICIT',
+          'OAUTH2_CLIENT_CREDENTIALS',
+          'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
+          'JWT',
+          'AUTH_TOKEN',
+          'SERVICE_ACCOUNT',
+          'CLIENT_CERTIFICATE_ONLY',
+          'OIDC_TOKEN',
+        ])
+        .exactOptional()
+        .openapi({ description: 'Credential type of the encrypted credential.' }),
+      decryptedCredential: GoogleCloudIntegrationsV1alphaCredentialSchema.exactOptional().openapi({
+        description: 'Raw auth credentials.',
+      }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A description of the auth config.' }),
+      displayName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the auth config.' }),
+      encryptedCredential: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Auth credential encrypted by Cloud KMS. Can be decrypted as Credential with proper KMS key.',
+        }),
+      expiryNotificationDuration: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'User can define the time to receive notification after which the auth config becomes invalid. Support up to 30 days. Support granularity in hours.',
+        }),
+      lastModifierEmail: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The last modifier's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Resource name of the SFDC instance projects/{project}/locations/{location}/authConfigs/{authConfig}.',
+        }),
+      overrideValidTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'User provided expiry time to override. For the example of Salesforce, username/password credentials can be valid for 6 months depending on the instance settings.',
+        }),
+      reason: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The reason / details of the current status.' }),
+      state: z
+        .enum([
+          'STATE_UNSPECIFIED',
+          'VALID',
+          'INVALID',
+          'SOFT_DELETED',
+          'EXPIRED',
+          'UNAUTHORIZED',
+          'UNSUPPORTED',
+        ])
+        .exactOptional()
+        .openapi({ description: 'The status of the auth config.' }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. The timestamp when the auth config is modified.',
+          readOnly: true,
+        }),
+      validTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The time until the auth config is valid. Empty or max value is considered the auth config won't expire.",
+        }),
+      visibility: z
+        .enum(['AUTH_CONFIG_VISIBILITY_UNSPECIFIED', 'PRIVATE', 'CLIENT_VISIBLE'])
+        .exactOptional()
+        .openapi({ description: 'The visibility of the auth config.' }),
+    })
+    .openapi({
+      description: 'The AuthConfig resource use to hold channels and connection config data.',
+      required: [],
+    })
+    .openapi('GoogleCloudIntegrationsV1alphaAuthConfig')
+
+type GoogleCloudIntegrationsV1alphaListAuthConfigsResponseType = {
+  authConfigs?: z.infer<typeof GoogleCloudIntegrationsV1alphaAuthConfigSchema>[]
+  nextPageToken?: string
+}
+
+const EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoType> =
+  z
+    .object({
+      clientId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The event data user sends as request.' }),
+      createTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      errorCode: CrmlogErrorCodeSchema.exactOptional().openapi({
+        description: 'Final error-code if event failed.',
+      }),
+      errors: z
+        .array(EnterpriseCrmEventbusProtoErrorDetailSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Errors, warnings, and informationals associated with the workflow/task. The order in which the errors were added by the workflow/task is maintained.',
+        }),
+      eventExecutionDetails:
+        EnterpriseCrmFrontendsEventbusProtoEventExecutionDetailsSchema.exactOptional().openapi({
+          description: 'The execution info about this event.',
+        }),
+      eventExecutionInfoId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Auto-generated primary key.' }),
+      executionTraceInfo:
+        EnterpriseCrmEventbusProtoExecutionTraceInfoSchema.exactOptional().openapi({
+          description: 'Execution trace info to aggregate parent-child executions.',
+        }),
+      lastModifiedTime: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      postMethod: z
+        .enum([
+          'UNSPECIFIED',
+          'POST',
+          'POST_TO_QUEUE',
+          'SCHEDULE',
+          'POST_BY_EVENT_CONFIG_ID',
+          'POST_WITH_EVENT_DETAILS',
+        ])
+        .exactOptional()
+        .openapi({ description: 'The ways user posts this event.' }),
+      product: z
+        .enum(['UNSPECIFIED_PRODUCT', 'IP', 'APIGEE', 'SECURITY'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Which Google product the execution_info belongs to. If not set, the execution_info belongs to Integration Platform by default.',
+        }),
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. This is used to de-dup incoming request.' }),
+      requestParams:
+        EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+          description: 'Event parameters come in as part of the request.',
+        }),
+      responseParams:
+        EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+          description: 'Event parameters come out as part of the response.',
+        }),
+      snapshotNumber: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Workflow snapshot number.' }),
+      tenant: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Tenant this event is created. Used to reschedule the event to correct tenant.',
+        }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The trigger id of the workflow trigger config. If both trigger_id and client_id is present, the workflow is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
+        }),
+      workflowId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. Pointer to the workflow it is executing.' }),
+      workflowName: z.string().exactOptional().openapi({ description: 'Name of the workflow.' }),
+      workflowRetryBackoffIntervalSeconds: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Time interval in seconds to schedule retry of workflow in manifold when workflow is already running',
+        }),
+    })
+    .openapi({
+      description:
+        'Contains all the execution details for a workflow instance. Next available id: 24',
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoEventExecutionInfo')
+
+const GoogleCloudIntegrationsV1alphaExecutionSchema: z.ZodType<GoogleCloudIntegrationsV1alphaExecutionType> =
+  z
+    .lazy(() =>
+      z
+        .object({
+          createTime: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Output only. Created time of the execution.',
+              readOnly: true,
+            }),
+          directSubExecutions: z
+            .array(GoogleCloudIntegrationsV1alphaExecutionSchema)
+            .exactOptional()
+            .openapi({ description: 'Direct sub executions of the following Execution.' }),
+          eventExecutionDetails:
+            EnterpriseCrmEventbusProtoEventExecutionDetailsSchema.exactOptional().openapi({
+              description: 'The execution info about this event.',
+            }),
+          executionDetails:
+            GoogleCloudIntegrationsV1alphaExecutionDetailsSchema.exactOptional().openapi({
+              description: 'Detailed info of this execution.',
+            }),
+          executionMethod: z
+            .enum(['EXECUTION_METHOD_UNSPECIFIED', 'POST', 'POST_TO_QUEUE', 'SCHEDULE'])
+            .exactOptional()
+            .openapi({ description: 'The ways user posts this event.' }),
+          name: z.string().exactOptional().openapi({ description: 'Auto-generated primary key.' }),
+          requestParameters: z
+            .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+            .exactOptional()
+            .openapi({ description: 'Event parameters come in as part of the request.' }),
+          requestParams: z
+            .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+            .exactOptional()
+            .openapi({ description: 'Event parameters come in as part of the request.' }),
+          responseParameters: z
+            .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+            .exactOptional()
+            .openapi({ description: 'Event parameters returned as part of the response.' }),
+          responseParams: z
+            .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+            .exactOptional()
+            .openapi({ description: 'Event parameters come out as part of the response.' }),
+          triggerId: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The trigger id of the integration trigger config. If both trigger_id and client_id is present, the integration is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
+            }),
+          updateTime: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'Output only. Last modified time of the execution.',
+              readOnly: true,
+            }),
+        })
+        .openapi({
+          description:
+            'The Execution resource contains detailed information of an individual integration execution.',
+          required: [],
+        }),
+    )
+    .openapi('GoogleCloudIntegrationsV1alphaExecution')
+
+type GoogleCloudIntegrationsV1alphaListExecutionsResponseType = {
+  executionInfos?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoSchema>[]
+  executions?: z.infer<typeof GoogleCloudIntegrationsV1alphaExecutionSchema>[]
+  nextPageToken?: string
+}
+
+const GoogleCloudIntegrationsV1alphaIntegrationVersionSchema: z.ZodType<GoogleCloudIntegrationsV1alphaIntegrationVersionType> =
+  z
+    .object({
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
+      databasePersistencePolicy: z
+        .enum(['DATABASE_PERSISTENCE_POLICY_UNSPECIFIED', 'DATABASE_PERSISTENCE_DISABLED'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Flag to disable database persistence for execution data, including event execution info, execution export info, execution metadata index and execution param index.',
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. The integration description.' }),
+      errorCatcherConfigs: z
+        .array(GoogleCloudIntegrationsV1alphaErrorCatcherConfigSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Error Catch Task configuration for the integration. It's optional.",
+        }),
+      integrationParameters: z
+        .array(GoogleCloudIntegrationsV1alphaIntegrationParameterSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Parameters that are expected to be passed to the integration when an event is triggered. This consists of all the parameters that are expected in the integration execution. This gives the user the ability to provide default values, add information like PII and also provide data types of each parameter.',
+        }),
+      integrationParametersInternal:
+        EnterpriseCrmFrontendsEventbusProtoWorkflowParametersSchema.exactOptional().openapi({
+          description:
+            'Optional. Parameters that are expected to be passed to the integration when an event is triggered. This consists of all the parameters that are expected in the integration execution. This gives the user the ability to provide default values, add information like PII and also provide data types of each parameter.',
+        }),
+      lastModifierEmail: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. The last modifier's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
+        }),
+      lockHolder: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. The edit lock holder's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
+        }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Auto-generated primary key.', readOnly: true }),
+      origin: z
+        .enum(['UNSPECIFIED', 'UI', 'PIPER_V2', 'PIPER_V3', 'APPLICATION_IP_PROVISIONING'])
+        .exactOptional()
+        .openapi({
+          description: 'Optional. The origin that indicates where this integration is coming from.',
+        }),
+      parentTemplateId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The id of the template which was used to create this integration_version.',
+        }),
+      runAsServiceAccount: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The run-as service account email, if set and auth config is not configured, that will be used to generate auth token to be used in Connector task, Rest caller task and Cloud function task.',
+        }),
+      snapshotNumber: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. An increasing sequence that is set when a new snapshot is created. The last created snapshot can be identified by [workflow_name, org_id latest(snapshot_number)]. However, last created snapshot need not be same as the HEAD. So users should always use "HEAD" tag to identify the head.',
+        }),
+      state: z
+        .enum(['INTEGRATION_STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'ARCHIVED', 'SNAPSHOT'])
+        .exactOptional()
+        .openapi({
+          description: 'Output only. User should not set it as an input.',
+          readOnly: true,
+        }),
+      status: z
+        .enum(['UNKNOWN', 'DRAFT', 'ACTIVE', 'ARCHIVED', 'SNAPSHOT'])
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Generated by eventbus. User should not set it as an input.',
+          readOnly: true,
+        }),
+      taskConfigs: z
+        .array(GoogleCloudIntegrationsV1alphaTaskConfigSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Task configuration for the integration. It's optional, but the integration doesn't do anything without task_configs.",
+        }),
+      taskConfigsInternal: z
+        .array(EnterpriseCrmFrontendsEventbusProtoTaskConfigSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. Task configuration for the integration. It's optional, but the integration doesn't do anything without task_configs.",
+        }),
+      teardown: EnterpriseCrmEventbusProtoTeardownSchema.exactOptional().openapi({
+        description:
+          'Optional. Contains a graph of tasks that will be executed before putting the event in a terminal state (SUCCEEDED/FAILED/FATAL), regardless of success or failure, similar to "finally" in code.',
+      }),
+      triggerConfigs: z
+        .array(GoogleCloudIntegrationsV1alphaTriggerConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'Optional. Trigger configurations.' }),
+      triggerConfigsInternal: z
+        .array(EnterpriseCrmFrontendsEventbusProtoTriggerConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'Optional. Trigger configurations.' }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
+      userLabel: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. A user-defined label that annotates an integration version. Typically, this is only set when the integration version is created.',
+        }),
+    })
+    .openapi({ description: 'The integration version definition.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaIntegrationVersion')
+
+type GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponseType = {
+  integrationVersions?: z.infer<typeof GoogleCloudIntegrationsV1alphaIntegrationVersionSchema>[]
+  nextPageToken?: string
+  noPermission?: boolean
+}
+
+const GoogleCloudIntegrationsV1alphaSuspensionApprovalExpirationSchema = z
+  .object({
+    expireTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Time after which the suspension expires, if no action taken.',
+        readOnly: true,
+      }),
+    liftWhenExpired: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the suspension will be REJECTED or LIFTED upon expiration. REJECTED is the default behavior.',
+      }),
+    remindTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Time after the previous suspension action reminder, if any, is sent using the selected notification option, for a suspension which is still PENDING_UNSPECIFIED.',
+      }),
+  })
+  .openapi({ description: 'Expiration configs for the approval request.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaSuspensionApprovalExpiration')
+
+const GoogleCloudIntegrationsV1alphaSuspensionApprovalConfigSchema = z
+  .object({
+    customMessage: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Information to provide for recipients.' }),
+    emailAddresses: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Email addresses to send approval request to.' }),
+    expiration:
+      GoogleCloudIntegrationsV1alphaSuspensionApprovalExpirationSchema.exactOptional().openapi({
+        description: 'Indicates the next steps when no external actions happen on the suspension.',
+      }),
+  })
+  .openapi({ description: 'Configurations for approving the Suspension.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaSuspensionApprovalConfig')
+
+const GoogleCloudIntegrationsV1alphaSuspensionAuditSchema = z
+  .object({
+    resolveTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Time at which this suspension was resolved.' }),
+    resolver: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Email address of the person who resolved this suspension.' }),
+  })
+  .openapi({ description: 'Contains when and by whom the suspension was resolved.', required: [] })
+  .openapi('GoogleCloudIntegrationsV1alphaSuspensionAudit')
+
+type GoogleCloudIntegrationsV1alphaSuspensionType = {
+  approvalConfig?: z.infer<typeof GoogleCloudIntegrationsV1alphaSuspensionApprovalConfigSchema>
+  audit?: z.infer<typeof GoogleCloudIntegrationsV1alphaSuspensionAuditSchema>
+  createTime?: string
+  eventExecutionInfoId?: string
+  integration?: string
+  lastModifyTime?: string
+  name?: string
+  state?: 'RESOLUTION_STATE_UNSPECIFIED' | 'PENDING' | 'REJECTED' | 'LIFTED'
+  suspensionConfig?: z.infer<typeof EnterpriseCrmEventbusProtoSuspensionConfigSchema>
+  taskId?: string
+}
+
+const GoogleCloudIntegrationsV1alphaSuspensionSchema: z.ZodType<GoogleCloudIntegrationsV1alphaSuspensionType> =
+  z
+    .object({
+      approvalConfig:
+        GoogleCloudIntegrationsV1alphaSuspensionApprovalConfigSchema.exactOptional().openapi({
+          description: 'Controls the notifications and approval permissions for this suspension.',
+        }),
+      audit: GoogleCloudIntegrationsV1alphaSuspensionAuditSchema.exactOptional().openapi({
+        description: 'Metadata pertaining to the resolution of this suspension.',
+      }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
+      eventExecutionInfoId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. ID of the associated execution.' }),
+      integration: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The name of the originating integration.' }),
+      lastModifyTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Resource name for suspensions suspension/{suspension_id}' }),
+      state: z
+        .enum(['RESOLUTION_STATE_UNSPECIFIED', 'PENDING', 'REJECTED', 'LIFTED'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. State of this suspension, indicating what action a resolver has taken.',
+        }),
+      suspensionConfig: EnterpriseCrmEventbusProtoSuspensionConfigSchema.exactOptional().openapi({
+        description: 'Controls the notifications and resolver permissions for this suspension.',
+      }),
+      taskId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. Task id of the associated SuspensionTask.' }),
+    })
+    .openapi({ description: 'A record representing a suspension.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaSuspension')
+
+type GoogleCloudIntegrationsV1alphaListSuspensionsResponseType = {
+  nextPageToken?: string
+  suspensions?: z.infer<typeof GoogleCloudIntegrationsV1alphaSuspensionSchema>[]
+}
+
+type GoogleCloudIntegrationsV1alphaResolveSuspensionRequestType = {
+  suspension?: z.infer<typeof GoogleCloudIntegrationsV1alphaSuspensionSchema>
+}
+
+type GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequestType = {
+  inputParameters?: { [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema> }
+  parameterEntries?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+  parameters?: z.infer<typeof EnterpriseCrmEventbusProtoEventParametersSchema>
+  requestId?: string
+  scheduleTime?: string
+  triggerId?: string
+}
+
+type GoogleCloudIntegrationsV1alphaTakeoverEditLockResponseType = {
+  integrationVersion?: z.infer<typeof GoogleCloudIntegrationsV1alphaIntegrationVersionSchema>
+}
+
+type GoogleCloudIntegrationsV1alphaTestIntegrationsRequestType = {
+  clientId?: string
+  deadlineSecondsTime?: string
+  inputParameters?: { [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema> }
+  integrationVersion?: z.infer<typeof GoogleCloudIntegrationsV1alphaIntegrationVersionSchema>
+  parameters?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  testMode?: boolean
+  triggerId?: string
+}
+
+type GoogleCloudIntegrationsV1alphaTestIntegrationsResponseType = {
+  eventParameters?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoEventParametersSchema>
+  executionFailed?: boolean
+  executionId?: string
+  parameterEntries?: z.infer<typeof EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema>[]
+  parameters?: { [key: string]: z.infer<typeof GoogleCloudIntegrationsV1alphaValueTypeSchema> }
+}
+
+type GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponseType = {
+  integrationVersion?: z.infer<typeof GoogleCloudIntegrationsV1alphaIntegrationVersionSchema>
+}
+
+const EnterpriseCrmEventbusAuthconfigAuthConfigTaskParamSchema = z
+  .object({
+    allowedCredentialTypes: z
+      .array(
+        z.enum([
+          'CREDENTIAL_TYPE_UNSPECIFIED',
+          'USERNAME_AND_PASSWORD',
+          'API_KEY',
+          'OAUTH2_AUTHORIZATION_CODE',
+          'OAUTH2_IMPLICIT',
+          'OAUTH2_CLIENT_CREDENTIALS',
+          'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
+          'JWT',
+          'AUTH_TOKEN',
+          'SERVICE_ACCOUNT',
+          'CLIENT_CERTIFICATE_ONLY',
+          'OIDC_TOKEN',
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Defines the credential types to be supported as Task may restrict specific types to use, e.g. Cloud SQL Task will use username/password type only.',
+      }),
+    allowedServiceAccountInContext: z.boolean().exactOptional(),
+    authConfigId: z.string().exactOptional().openapi({ description: 'UUID of the AuthConfig.' }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
+    useServiceAccountInContext: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusAuthconfigAuthConfigTaskParam')
+
+const EnterpriseCrmEventbusProtoConnectorsConnectionSchema = z
+  .object({
+    connectionName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Connection name Format: projects/{project}/locations/{location}/connections/{connection}',
+      }),
+    connectorVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Connector version Format: projects/{project}/locations/{location}/providers/{provider}/connectors/{connector}/versions/{version}',
+      }),
+    serviceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Service name Format: projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoConnectorsConnection')
+
+const EnterpriseCrmEventbusProtoConnectorsGenericConnectorTaskConfigSchema = z
+  .object({
+    connection: EnterpriseCrmEventbusProtoConnectorsConnectionSchema.exactOptional().openapi({
+      description: 'User-selected connection.',
+    }),
+    operation: z
+      .enum([
+        'OPERATION_UNSPECIFIED',
+        'EXECUTE_ACTION',
+        'LIST_ENTITIES',
+        'GET_ENTITY',
+        'CREATE_ENTITY',
+        'UPDATE_ENTITY',
+        'DELETE_ENTITY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Operation to perform using the configured connection.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoConnectorsGenericConnectorTaskConfig')
+
+const EnterpriseCrmEventbusProtoFieldMappingConfigSchema: z.ZodType<EnterpriseCrmEventbusProtoFieldMappingConfigType> =
+  z
+    .object({ mappedFields: z.array(EnterpriseCrmEventbusProtoMappedFieldSchema).exactOptional() })
+    .openapi({
+      description:
+        'Field Mapping Config to map multiple output fields values from input fields values.',
+      required: [],
+    })
+    .openapi('EnterpriseCrmEventbusProtoFieldMappingConfig')
+
+const EnterpriseCrmEventbusProtoLoopMetadataSchema = z
+  .object({
+    currentIterationCount: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Starting from 1, not 0.' }),
+    currentIterationDetail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Needs to be set by the loop impl class before each iteration. The abstract loop class will append the request and response to it. Eg. The foreach Loop will clean up and set it as the current iteration element at the start of each loop. The post request and response will be appended to the value once they are available.',
+      }),
+    errorMsg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Add the error message when loops fail.' }),
+    failureLocation: z
+      .enum([
+        'UNKNOWN',
+        'SUBWORKFLOW',
+        'PARAM_OVERRIDING',
+        'PARAM_AGGREGATING',
+        'SETTING_ITERATION_ELEMENT',
+        'GETTING_LIST_TO_ITERATE',
+        'CONDITION_EVALUATION',
+        'BUILDING_REQUEST',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Indicates where in the loop logic did it error out.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoLoopMetadata')
+
+const EnterpriseCrmEventbusProtoParameterMapSchema: z.ZodType<EnterpriseCrmEventbusProtoParameterMapType> =
+  z
+    .object({
+      entries: z.array(EnterpriseCrmEventbusProtoParameterMapEntrySchema).exactOptional(),
+      keyType: z
+        .enum([
+          'DATA_TYPE_UNSPECIFIED',
+          'STRING_VALUE',
+          'INT_VALUE',
+          'DOUBLE_VALUE',
+          'BOOLEAN_VALUE',
+          'PROTO_VALUE',
+          'SERIALIZED_OBJECT_VALUE',
+          'STRING_ARRAY',
+          'INT_ARRAY',
+          'DOUBLE_ARRAY',
+          'PROTO_ARRAY',
+          'PROTO_ENUM',
+          'BOOLEAN_ARRAY',
+          'PROTO_ENUM_ARRAY',
+          'BYTES',
+          'BYTES_ARRAY',
+          'NON_SERIALIZABLE_OBJECT',
+          'JSON_VALUE',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Option to specify key value type for all entries of the map. If provided then field types for all entries must conform to this.',
+        }),
+      valueType: z
+        .enum([
+          'DATA_TYPE_UNSPECIFIED',
+          'STRING_VALUE',
+          'INT_VALUE',
+          'DOUBLE_VALUE',
+          'BOOLEAN_VALUE',
+          'PROTO_VALUE',
+          'SERIALIZED_OBJECT_VALUE',
+          'STRING_ARRAY',
+          'INT_ARRAY',
+          'DOUBLE_ARRAY',
+          'PROTO_ARRAY',
+          'PROTO_ENUM',
+          'BOOLEAN_ARRAY',
+          'PROTO_ENUM_ARRAY',
+          'BYTES',
+          'BYTES_ARRAY',
+          'NON_SERIALIZABLE_OBJECT',
+          'JSON_VALUE',
+        ])
+        .exactOptional(),
+    })
+    .openapi({
+      description:
+        'A generic multi-map that holds key value pairs. They keys and values can be of any type, unless specified.',
+      required: [],
+    })
+    .openapi('EnterpriseCrmEventbusProtoParameterMap')
+
+const EnterpriseCrmEventbusProtoScatterResponseSchema = z
+  .object({
+    errorMsg: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The error message of the failure if applicable.' }),
+    executionIds: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'The execution ids of each Subworkflow fired by this scatter.' }),
+    isSuccessful: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If execution is sync, this is true if the execution passed and false if it failed. If the execution is async, this is true if the WF was fired off successfully, and false if it failed to execute. The success or failure of the subworkflows executed are not captured.',
+      }),
+    responseParams: z
+      .array(EnterpriseCrmEventbusProtoParameterEntrySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of all the response parameters in the aggregtorMap stored with the remapped key.',
+      }),
+    scatterElement: EnterpriseCrmEventbusProtoParameterValueTypeSchema.exactOptional().openapi({
+      description: 'The element that was scattered for this execution.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('EnterpriseCrmEventbusProtoScatterResponse')
+
+const EnterpriseCrmEventbusProtoSuspensionResolutionInfoSchema: z.ZodType<EnterpriseCrmEventbusProtoSuspensionResolutionInfoType> =
+  z
+    .object({
+      audit: EnterpriseCrmEventbusProtoSuspensionResolutionInfoAuditSchema.exactOptional(),
+      clientId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The event data user sends as request.' }),
+      cloudKmsConfig: EnterpriseCrmEventbusProtoCloudKmsConfigSchema.exactOptional().openapi({
+        description: 'KMS info, used by cmek/gmek integration',
+      }),
+      createdTimestamp: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      encryptedSuspensionResolutionInfo: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Encrypted SuspensionResolutionInfo' }),
+      eventExecutionInfoId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. ID of the associated execution.' }),
+      externalTraffic: EnterpriseCrmEventbusProtoExternalTrafficSchema.exactOptional().openapi({
+        description: 'The origin of the suspension for periodic notifications.',
+      }),
+      lastModifiedTimestamp: z.string().exactOptional().openapi({ description: 'Auto-generated.' }),
+      product: z
+        .enum(['UNSPECIFIED_PRODUCT', 'IP', 'APIGEE', 'SECURITY'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Which Google product the suspension belongs to. If not set, the suspension belongs to Integration Platform by default.',
+        }),
+      status: z.enum(['PENDING_UNSPECIFIED', 'REJECTED', 'LIFTED', 'CANCELED']).exactOptional(),
+      suspensionConfig: EnterpriseCrmEventbusProtoSuspensionConfigSchema.exactOptional(),
+      suspensionId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Primary key for the SuspensionResolutionInfoTable.' }),
+      taskNumber: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. Task number of the associated SuspensionTask.' }),
+      workflowName: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Required. The name of the originating workflow.' }),
+      wrappedDek: z.string().exactOptional().openapi({ description: 'Wrapped dek' }),
+    })
+    .openapi({ required: [] })
+    .openapi('EnterpriseCrmEventbusProtoSuspensionResolutionInfo')
+
+const EnterpriseCrmFrontendsEventbusProtoParameterMapSchema: z.ZodType<EnterpriseCrmFrontendsEventbusProtoParameterMapType> =
+  z
+    .object({
+      entries: z.array(EnterpriseCrmFrontendsEventbusProtoParameterMapEntrySchema).exactOptional(),
+      keyType: z
+        .enum([
+          'DATA_TYPE_UNSPECIFIED',
+          'STRING_VALUE',
+          'INT_VALUE',
+          'DOUBLE_VALUE',
+          'BOOLEAN_VALUE',
+          'PROTO_VALUE',
+          'SERIALIZED_OBJECT_VALUE',
+          'STRING_ARRAY',
+          'INT_ARRAY',
+          'DOUBLE_ARRAY',
+          'PROTO_ARRAY',
+          'PROTO_ENUM',
+          'BOOLEAN_ARRAY',
+          'PROTO_ENUM_ARRAY',
+          'BYTES',
+          'BYTES_ARRAY',
+          'NON_SERIALIZABLE_OBJECT',
+          'JSON_VALUE',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Option to specify key value type for all entries of the map. If provided then field types for all entries must conform to this.',
+        }),
+      valueType: z
+        .enum([
+          'DATA_TYPE_UNSPECIFIED',
+          'STRING_VALUE',
+          'INT_VALUE',
+          'DOUBLE_VALUE',
+          'BOOLEAN_VALUE',
+          'PROTO_VALUE',
+          'SERIALIZED_OBJECT_VALUE',
+          'STRING_ARRAY',
+          'INT_ARRAY',
+          'DOUBLE_ARRAY',
+          'PROTO_ARRAY',
+          'PROTO_ENUM',
+          'BOOLEAN_ARRAY',
+          'PROTO_ENUM_ARRAY',
+          'BYTES',
+          'BYTES_ARRAY',
+          'NON_SERIALIZABLE_OBJECT',
+          'JSON_VALUE',
+        ])
+        .exactOptional(),
+    })
+    .openapi({
+      description:
+        'A generic multi-map that holds key value pairs. They keys and values can be of any type, unless specified.',
+      required: [],
+    })
+    .openapi('EnterpriseCrmFrontendsEventbusProtoParameterMap')
 
 const GoogleCloudConnectorsV1SecretSchema = z
   .object({
@@ -4205,521 +6188,8 @@ const GoogleCloudConnectorsV1ConnectionSchema = z
   .openapi({ description: 'Connection represents an instance of connector.', required: [] })
   .openapi('GoogleCloudConnectorsV1Connection')
 
-const GoogleCloudIntegrationsV1alphaAccessTokenSchema = z
-  .object({
-    accessToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The access token encapsulating the security identity of a process or thread.',
-      }),
-    accessTokenExpireTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The approximate time until the access token retrieved is valid.',
-      }),
-    refreshToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'If the access token will expire, use the refresh token to obtain another access token.',
-      }),
-    refreshTokenExpireTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The approximate time until the refresh token retrieved is valid.' }),
-    tokenType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Only support "bearer" token in v1 as bearer token is the predominant type used with OAuth 2.0.',
-      }),
-  })
-  .openapi({
-    description:
-      'The access token represents the authorization of a specific application to access specific parts of a user’s data.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaAccessToken')
-
-const GoogleCloudIntegrationsV1alphaAuthTokenSchema = z
-  .object({
-    token: z.string().exactOptional().openapi({ description: 'The token for the auth type.' }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Authentication type, e.g. "Basic", "Bearer", etc.' }),
-  })
-  .openapi({
-    description:
-      'The credentials to authenticate a user agent with a server that is put in HTTP Authorization request header.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaAuthToken')
-
-const GoogleCloudIntegrationsV1alphaJwtSchema = z
-  .object({
-    jwt: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token calculated by the header, payload and signature.' }),
-    jwtHeader: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Identifies which algorithm is used to generate the signature.' }),
-    jwtPayload: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Contains a set of claims. The JWT specification defines seven Registered Claim Names which are the standard fields commonly included in tokens. Custom claims are usually also included, depending on the purpose of the token.',
-      }),
-    secret: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "User's pre-shared secret to sign the token." }),
-  })
-  .openapi({
-    description:
-      'Represents JSON web token(JWT), which is a compact, URL-safe means of representing claims to be transferred between two parties, enabling the claims to be digitally signed or integrity protected.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaJwt')
-
-const GoogleCloudIntegrationsV1alphaParameterMapFieldSchema = z
-  .object({
-    literalValue: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
-      description: 'Passing a literal value.',
-    }),
-    referenceKey: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Referencing one of the Integration variables.' }),
-  })
-  .openapi({ description: 'Field represents either the key or value in an entry.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaParameterMapField')
-
-const GoogleCloudIntegrationsV1alphaParameterMapEntrySchema = z
-  .object({
-    key: GoogleCloudIntegrationsV1alphaParameterMapFieldSchema.exactOptional().openapi({
-      description: 'Key of the map entry.',
-    }),
-    value: GoogleCloudIntegrationsV1alphaParameterMapFieldSchema.exactOptional().openapi({
-      description: 'Value of the map entry.',
-    }),
-  })
-  .openapi({ description: 'Entry is a pair of key and value.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaParameterMapEntry')
-
-const GoogleCloudIntegrationsV1alphaParameterMapSchema = z
-  .object({
-    entries: z
-      .array(GoogleCloudIntegrationsV1alphaParameterMapEntrySchema)
-      .exactOptional()
-      .openapi({ description: 'A list of parameter map entries.' }),
-    keyType: z
-      .enum([
-        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'BOOLEAN_ARRAY',
-        'JSON_VALUE',
-        'PROTO_VALUE',
-        'PROTO_ARRAY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Option to specify key type for all entries of the map. If provided then field types for all entries must conform to this.',
-      }),
-    valueType: z
-      .enum([
-        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'BOOLEAN_ARRAY',
-        'JSON_VALUE',
-        'PROTO_VALUE',
-        'PROTO_ARRAY',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Option to specify value type for all entries of the map. If provided then field types for all entries must conform to this.',
-      }),
-  })
-  .openapi({
-    description:
-      'A generic multi-map that holds key value pairs. They keys and values can be of any type, unless specified.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaParameterMap')
-
-const GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeSchema = z
-  .object({
-    accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
-      description: 'The access token received from the token endpoint.',
-    }),
-    applyReauthPolicy: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates if the user has opted in Google Reauth Policy. If opted in, the refresh token will be valid for 20 hours, after which time users must re-authenticate in order to obtain a new one.',
-      }),
-    authCode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The Auth Code that is used to initially retrieve the access token.',
-      }),
-    authEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The auth url endpoint to send the auth code request to.' }),
-    authParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
-      description: 'The auth parameters sent along with the auth code request.',
-    }),
-    clientId: z.string().exactOptional().openapi({ description: "The client's id." }),
-    clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
-    requestType: z
-      .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
-      .exactOptional()
-      .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
-    tokenEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token url endpoint to send the token request to.' }),
-    tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
-      description: 'The token parameters sent along with the token request.',
-    }),
-  })
-  .openapi({
-    description:
-      'The OAuth Type where the client sends request with the client id and requested scopes to auth endpoint. User sees a consent screen and auth code is received at specified redirect url afterwards. The auth code is then combined with the client id and secret and sent to the token endpoint in exchange for the access and refresh token. The refresh token can be used to fetch new access tokens.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCode')
-
-const GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsSchema = z
-  .object({
-    accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
-      description: 'Access token fetched from the authorization server.',
-    }),
-    clientId: z.string().exactOptional().openapi({ description: "The client's ID." }),
-    clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
-    requestType: z
-      .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
-      .exactOptional()
-      .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
-    tokenEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token endpoint is used by the client to obtain an access token by presenting its authorization grant or refresh token.',
-      }),
-    tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
-      description: 'Token parameters for the auth request.',
-    }),
-  })
-  .openapi({
-    description:
-      "For client credentials grant, the client sends a POST request with grant_type as 'client_credentials' to the authorization server. The authorization server will respond with a JSON object containing the access token.",
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaOAuth2ClientCredentials')
-
-const GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsSchema = z
-  .object({
-    accessToken: GoogleCloudIntegrationsV1alphaAccessTokenSchema.exactOptional().openapi({
-      description: 'Access token fetched from the authorization server.',
-    }),
-    clientId: z.string().exactOptional().openapi({ description: "The client's ID." }),
-    clientSecret: z.string().exactOptional().openapi({ description: "The client's secret." }),
-    password: z.string().exactOptional().openapi({ description: "The user's password." }),
-    requestType: z
-      .enum(['REQUEST_TYPE_UNSPECIFIED', 'REQUEST_BODY', 'QUERY_PARAMETERS', 'ENCODED_HEADER'])
-      .exactOptional()
-      .openapi({ description: 'Represent how to pass parameters to fetch access token' }),
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
-    tokenEndpoint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The token endpoint is used by the client to obtain an access token by presenting its authorization grant or refresh token.',
-      }),
-    tokenParams: GoogleCloudIntegrationsV1alphaParameterMapSchema.exactOptional().openapi({
-      description: 'Token parameters for the auth request.',
-    }),
-    username: z.string().exactOptional().openapi({ description: "The user's username." }),
-  })
-  .openapi({
-    description:
-      'For resource owner credentials grant, the client will ask the user for their authorization credentials (ususally a username and password) and send a POST request to the authorization server. The authorization server will respond with a JSON object containing the access token.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentials')
-
-const GoogleCloudIntegrationsV1alphaOidcTokenSchema = z
-  .object({
-    audience: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Audience to be used when generating OIDC token. The audience claim identifies the recipients that the JWT is intended for.',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The service account email to be used as the identity for the token.',
-      }),
-    token: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'ID token obtained for the service account' }),
-    tokenExpireTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The approximate time until the token retrieved is valid.' }),
-  })
-  .openapi({ description: 'OIDC Token', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaOidcToken')
-
-const GoogleCloudIntegrationsV1alphaServiceAccountCredentialsSchema = z
-  .object({
-    scope: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A space-delimited list of requested scope permissions.' }),
-    serviceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Name of the service account that has the permission to make the request.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents the service account which can be used to generate access token for authenticating the service call.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaServiceAccountCredentials')
-
-const GoogleCloudIntegrationsV1alphaUsernameAndPasswordSchema = z
-  .object({
-    password: z.string().exactOptional().openapi({ description: 'Password to be used' }),
-    username: z.string().exactOptional().openapi({ description: 'Username to be used' }),
-  })
-  .openapi({ description: 'Username and password pair.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaUsernameAndPassword')
-
-const GoogleCloudIntegrationsV1alphaCredentialSchema = z
-  .object({
-    authToken: GoogleCloudIntegrationsV1alphaAuthTokenSchema.exactOptional().openapi({
-      description: 'Auth token credential',
-    }),
-    credentialType: z
-      .enum([
-        'CREDENTIAL_TYPE_UNSPECIFIED',
-        'USERNAME_AND_PASSWORD',
-        'API_KEY',
-        'OAUTH2_AUTHORIZATION_CODE',
-        'OAUTH2_IMPLICIT',
-        'OAUTH2_CLIENT_CREDENTIALS',
-        'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
-        'JWT',
-        'AUTH_TOKEN',
-        'SERVICE_ACCOUNT',
-        'CLIENT_CERTIFICATE_ONLY',
-        'OIDC_TOKEN',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Credential type associated with auth config.' }),
-    jwt: GoogleCloudIntegrationsV1alphaJwtSchema.exactOptional().openapi({
-      description: 'JWT credential',
-    }),
-    oauth2AuthorizationCode:
-      GoogleCloudIntegrationsV1alphaOAuth2AuthorizationCodeSchema.exactOptional().openapi({
-        description:
-          'The api_key and oauth2_implicit are not covered in v1 and will be picked up once v1 is implemented. ApiKey api_key = 3; OAuth2 authorization code credential',
-      }),
-    oauth2ClientCredentials:
-      GoogleCloudIntegrationsV1alphaOAuth2ClientCredentialsSchema.exactOptional().openapi({
-        description: 'OAuth2Implicit oauth2_implicit = 5; OAuth2 client credentials',
-      }),
-    oauth2ResourceOwnerCredentials:
-      GoogleCloudIntegrationsV1alphaOAuth2ResourceOwnerCredentialsSchema.exactOptional().openapi({
-        description: 'OAuth2 resource owner credentials',
-      }),
-    oidcToken: GoogleCloudIntegrationsV1alphaOidcTokenSchema.exactOptional().openapi({
-      description: 'Google OIDC ID Token',
-    }),
-    serviceAccountCredentials:
-      GoogleCloudIntegrationsV1alphaServiceAccountCredentialsSchema.exactOptional().openapi({
-        description: 'Service account credential',
-      }),
-    usernameAndPassword:
-      GoogleCloudIntegrationsV1alphaUsernameAndPasswordSchema.exactOptional().openapi({
-        description: 'Username and password credential',
-      }),
-  })
-  .openapi({ description: 'Defines parameters for a single, canonical credential.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaCredential')
-
-const GoogleCloudIntegrationsV1alphaAuthConfigSchema = z
-  .object({
-    certificateId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Certificate id for client certificate' }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the auth config is created.',
-        readOnly: true,
-      }),
-    creatorEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The creator's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
-      }),
-    credentialType: z
-      .enum([
-        'CREDENTIAL_TYPE_UNSPECIFIED',
-        'USERNAME_AND_PASSWORD',
-        'API_KEY',
-        'OAUTH2_AUTHORIZATION_CODE',
-        'OAUTH2_IMPLICIT',
-        'OAUTH2_CLIENT_CREDENTIALS',
-        'OAUTH2_RESOURCE_OWNER_CREDENTIALS',
-        'JWT',
-        'AUTH_TOKEN',
-        'SERVICE_ACCOUNT',
-        'CLIENT_CERTIFICATE_ONLY',
-        'OIDC_TOKEN',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Credential type of the encrypted credential.' }),
-    decryptedCredential: GoogleCloudIntegrationsV1alphaCredentialSchema.exactOptional().openapi({
-      description: 'Raw auth credentials.',
-    }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'A description of the auth config.' }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of the auth config.' }),
-    encryptedCredential: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Auth credential encrypted by Cloud KMS. Can be decrypted as Credential with proper KMS key.',
-      }),
-    expiryNotificationDuration: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'User can define the time to receive notification after which the auth config becomes invalid. Support up to 30 days. Support granularity in hours.',
-      }),
-    lastModifierEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The last modifier's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Resource name of the SFDC instance projects/{project}/locations/{location}/authConfigs/{authConfig}.',
-      }),
-    overrideValidTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User provided expiry time to override. For the example of Salesforce, username/password credentials can be valid for 6 months depending on the instance settings.',
-      }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The reason / details of the current status.' }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'VALID',
-        'INVALID',
-        'SOFT_DELETED',
-        'EXPIRED',
-        'UNAUTHORIZED',
-        'UNSUPPORTED',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The status of the auth config.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. The timestamp when the auth config is modified.',
-        readOnly: true,
-      }),
-    validTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The time until the auth config is valid. Empty or max value is considered the auth config won't expire.",
-      }),
-    visibility: z
-      .enum(['AUTH_CONFIG_VISIBILITY_UNSPECIFIED', 'PRIVATE', 'CLIENT_VISIBLE'])
-      .exactOptional()
-      .openapi({ description: 'The visibility of the auth config.' }),
-  })
-  .openapi({
-    description: 'The AuthConfig resource use to hold channels and connection config data.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaAuthConfig')
-
 const GoogleCloudIntegrationsV1alphaCancelExecutionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for cancelling an execution.' })
   .openapi('GoogleCloudIntegrationsV1alphaCancelExecutionRequest')
 
@@ -4916,36 +6386,6 @@ const GoogleCloudIntegrationsV1alphaClientConfigSchema = z
   .openapi({ description: 'The configuration information for the Client', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaClientConfig')
 
-const GoogleCloudIntegrationsV1alphaCloudSchedulerConfigSchema = z
-  .object({
-    cronTab: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The cron tab of cloud scheduler trigger.' }),
-    errorMessage: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. When the job was deleted from Pantheon UI, error_message will be populated when Get/List integrations',
-      }),
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Required. The location where associated cloud scheduler job will be created',
-      }),
-    serviceAccountEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Service account used by Cloud Scheduler to trigger the integration at scheduled time',
-      }),
-  })
-  .openapi({ description: 'Cloud Scheduler Trigger configuration', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaCloudSchedulerConfig')
-
 const GoogleCloudIntegrationsV1alphaConnectionSchemaMetadataSchema = z
   .object({
     actions: z.array(z.string()).exactOptional().openapi({ description: 'List of actions.' }),
@@ -4953,14 +6393,6 @@ const GoogleCloudIntegrationsV1alphaConnectionSchemaMetadataSchema = z
   })
   .openapi({ description: 'Metadata of runtime connection schema.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaConnectionSchemaMetadata')
-
-const GoogleCloudIntegrationsV1alphaCoordinateSchema = z
-  .object({
-    x: z.int32().exactOptional().openapi({ description: 'Required. X axis of the coordinate' }),
-    y: z.int32().exactOptional().openapi({ description: 'Required. Y axis of the coordinate' }),
-  })
-  .openapi({ description: 'Configuration detail of coordinate, it used for UI', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaCoordinate')
 
 const GoogleCloudIntegrationsV1alphaCreateAppsScriptProjectRequestSchema = z
   .object({
@@ -5020,7 +6452,7 @@ const GoogleCloudIntegrationsV1alphaCreateCloudFunctionResponseSchema = z
   .openapi('GoogleCloudIntegrationsV1alphaCreateCloudFunctionResponse')
 
 const GoogleCloudIntegrationsV1alphaDeprovisionClientRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for the Deprovision rpc' })
   .openapi('GoogleCloudIntegrationsV1alphaDeprovisionClientRequest')
 
@@ -5057,285 +6489,88 @@ const GoogleCloudIntegrationsV1alphaEnumerateConnectorPlatformRegionsResponseSch
   })
   .openapi('GoogleCloudIntegrationsV1alphaEnumerateConnectorPlatformRegionsResponse')
 
-const GoogleCloudIntegrationsV1alphaNextTaskSchema = z
-  .object({
-    condition: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Standard filter expression for this task to become an eligible next task.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User-provided description intended to give additional business context about the task.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'User-provided label that is attached to this edge in the UI.' }),
-    taskConfigId: z.string().exactOptional().openapi({ description: 'ID of the next task.' }),
-    taskId: z.string().exactOptional().openapi({ description: 'Task number of the next task.' }),
-  })
-  .openapi({
-    description:
-      'The task that is next in line to be executed, if the condition specified evaluated to true.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaNextTask')
-
-const GoogleCloudIntegrationsV1alphaErrorCatcherConfigSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-provided description intended to give more business context about the error catcher config.',
-      }),
-    errorCatcherId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. An error catcher id is string representation for the error catcher config. Within a workflow, error_catcher_id uniquely identifies an error catcher config among all error catcher configs for the workflow',
-      }),
-    errorCatcherNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A number to uniquely identify each error catcher config within the workflow on UI.',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The user created label for a particular error catcher. Optional.',
-      }),
-    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
-      description:
-        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
-    }),
-    startErrorTasks: z
-      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The set of start tasks that are to be executed for the error catch flow',
-      }),
-  })
-  .openapi({ description: 'Configuration detail of a error catch task', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaErrorCatcherConfig')
-
-const GoogleCloudIntegrationsV1alphaEventParameterSchema = z
-  .object({
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
-      }),
-    value: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
-      description:
-        'Values for the defined keys. Each value can either be string, int, double or any proto message.',
-    }),
-  })
-  .openapi({
-    description:
-      'This message is used for processing and persisting (when applicable) key value pair parameters for each event in the event bus.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaEventParameter')
-
-const GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequestSchema = z
-  .object({
-    doNotPropagateError: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Flag to determine how to should propagate errors. If this flag is set to be true, it will not throw an exception. Instead, it will return a {@link ExecuteIntegrationsResponse} with an execution id and error messages as PostWithTriggerIdExecutionException in {@link EventParameters}. The flag is set to be false by default.',
-      }),
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The id of the ON_HOLD execution to be resumed.' }),
-    inputParameters: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Input parameters used by integration execution.' }),
-    parameterEntries: z
-      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
-      }),
-    parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Optional. Passed in as parameters to each integration execution. Redacted',
-    }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned.',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. Matched against all {@link TriggerConfig}s across all integrations. i.e. TriggerConfig.trigger_id.equals(trigger_id). The trigger_id is in the format of `api_trigger/TRIGGER_NAME`.',
-      }),
-  })
-  .openapi({ description: 'The request for executing an integration.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequest')
-
-const GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponseSchema = z
-  .object({
-    eventParameters:
-      EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-        description: 'Details for the integration that were executed.',
-      }),
-    executionFailed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is true if any execution in the integration failed. False otherwise.',
-      }),
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the execution corresponding to this run of integration.',
-      }),
-    outputParameters: z
-      .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
-      .exactOptional()
-      .openapi({
-        description:
-          'OUTPUT parameters in format of Map. Where Key is the name of the parameter. Note: Name of the system generated parameters are wrapped by backtick(`) to distinguish them from the user defined parameters.',
-      }),
-    parameterEntries: z
-      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
-      }),
-  })
-  .openapi({ description: 'The response for executing an integration.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponse')
-
-const GoogleCloudIntegrationsV1alphaExecutionSchema: z.ZodType<GoogleCloudIntegrationsV1alphaExecutionType> =
+const GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequestSchema: z.ZodType<GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequestType> =
   z
-    .lazy(() =>
-      z
-        .object({
-          createTime: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Output only. Created time of the execution.',
-              readOnly: true,
-            }),
-          directSubExecutions: z
-            .array(GoogleCloudIntegrationsV1alphaExecutionSchema)
-            .exactOptional()
-            .openapi({ description: 'Direct sub executions of the following Execution.' }),
-          eventExecutionDetails:
-            EnterpriseCrmEventbusProtoEventExecutionDetailsSchema.exactOptional().openapi({
-              description: 'The execution info about this event.',
-            }),
-          executionDetails:
-            GoogleCloudIntegrationsV1alphaExecutionDetailsSchema.exactOptional().openapi({
-              description: 'Detailed info of this execution.',
-            }),
-          executionMethod: z
-            .enum(['EXECUTION_METHOD_UNSPECIFIED', 'POST', 'POST_TO_QUEUE', 'SCHEDULE'])
-            .exactOptional()
-            .openapi({ description: 'The ways user posts this event.' }),
-          name: z.string().exactOptional().openapi({ description: 'Auto-generated primary key.' }),
-          requestParameters: z
-            .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-            .exactOptional()
-            .openapi({ description: 'Event parameters come in as part of the request.' }),
-          requestParams: z
-            .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-            .exactOptional()
-            .openapi({ description: 'Event parameters come in as part of the request.' }),
-          responseParameters: z
-            .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-            .exactOptional()
-            .openapi({ description: 'Event parameters returned as part of the response.' }),
-          responseParams: z
-            .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-            .exactOptional()
-            .openapi({ description: 'Event parameters come out as part of the response.' }),
-          triggerId: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'The trigger id of the integration trigger config. If both trigger_id and client_id is present, the integration is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
-            }),
-          updateTime: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Output only. Last modified time of the execution.',
-              readOnly: true,
-            }),
-        })
+    .object({
+      doNotPropagateError: z
+        .boolean()
+        .exactOptional()
         .openapi({
           description:
-            'The Execution resource contains detailed information of an individual integration execution.',
-          required: [],
+            'Optional. Flag to determine how to should propagate errors. If this flag is set to be true, it will not throw an exception. Instead, it will return a {@link ExecuteIntegrationsResponse} with an execution id and error messages as PostWithTriggerIdExecutionException in {@link EventParameters}. The flag is set to be false by default.',
         }),
-    )
-    .openapi('GoogleCloudIntegrationsV1alphaExecution')
+      executionId: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. The id of the ON_HOLD execution to be resumed.' }),
+      inputParameters: z
+        .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+        .exactOptional()
+        .openapi({ description: 'Optional. Input parameters used by integration execution.' }),
+      parameterEntries: z
+        .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+        }),
+      parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Optional. Passed in as parameters to each integration execution. Redacted',
+      }),
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned.',
+        }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. Matched against all {@link TriggerConfig}s across all integrations. i.e. TriggerConfig.trigger_id.equals(trigger_id). The trigger_id is in the format of `api_trigger/TRIGGER_NAME`.',
+        }),
+    })
+    .openapi({ description: 'The request for executing an integration.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequest')
 
-const GoogleCloudIntegrationsV1alphaFailurePolicySchema = z
-  .object({
-    intervalTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the initial interval in seconds for backoff.',
-      }),
-    maxRetries: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required if retry_strategy is FIXED_INTERVAL or LINEAR/EXPONENTIAL_BACKOFF/RESTART_INTEGRATION_WITH_BACKOFF. Defines the number of times the task will be retried if failed.',
-      }),
-    retryStrategy: z
-      .enum([
-        'RETRY_STRATEGY_UNSPECIFIED',
-        'IGNORE',
-        'NONE',
-        'FATAL',
-        'FIXED_INTERVAL',
-        'LINEAR_BACKOFF',
-        'EXPONENTIAL_BACKOFF',
-        'RESTART_INTEGRATION_WITH_BACKOFF',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Defines what happens to the task upon failure.' }),
-  })
-  .openapi({
-    description:
-      'Policy that defines the task retry logic and failure type. If no FailurePolicy is defined for a task, all its dependent tasks will not be executed (i.e, a `retry_strategy` of NONE will be applied).',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaFailurePolicy')
+const GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponseType> =
+  z
+    .object({
+      eventParameters:
+        EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+          description: 'Details for the integration that were executed.',
+        }),
+      executionFailed: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Is true if any execution in the integration failed. False otherwise.',
+        }),
+      executionId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The id of the execution corresponding to this run of integration.',
+        }),
+      outputParameters: z
+        .record(z.string(), z.any().openapi({ description: 'Properties of the object.' }))
+        .exactOptional()
+        .openapi({
+          description:
+            'OUTPUT parameters in format of Map. Where Key is the name of the parameter. Note: Name of the system generated parameters are wrapped by backtick(`) to distinguish them from the user defined parameters.',
+        }),
+      parameterEntries: z
+        .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+        }),
+    })
+    .openapi({ description: 'The response for executing an integration.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaExecuteIntegrationsResponse')
 
 const GoogleCloudIntegrationsV1alphaGenerateTokenResponseSchema = z
   .object({
@@ -5407,504 +6642,6 @@ const GoogleCloudIntegrationsV1alphaIntegrationSchema = z
   .openapi({ description: 'The integration definition.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaIntegration')
 
-const GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValueSchema = z
-  .object({
-    absolute: z.string().exactOptional().openapi({ description: 'Absolute value threshold.' }),
-    percentage: z.int32().exactOptional().openapi({ description: 'Percentage threshold.' }),
-  })
-  .openapi({
-    description:
-      'The threshold value of the metric, above or below which the alert should be triggered. See EventAlertConfig or TaskAlertConfig for the different alert metric types in each case. For the *RATE metrics, one or both of these fields may be set. Zero is the default value and can be left at that. For *PERCENTILE_DURATION metrics, one or both of these fields may be set, and also, the duration threshold value should be specified in the threshold_duration_ms member below. For *AVERAGE_DURATION metrics, these fields should not be set at all. A different member, threshold_duration_ms, must be set in the EventAlertConfig or the TaskAlertConfig.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValue')
-
-const GoogleCloudIntegrationsV1alphaIntegrationAlertConfigSchema = z
-  .object({
-    aggregationPeriod: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The period over which the metric value should be aggregated and evaluated. Format is , where integer should be a positive integer and unit should be one of (s,m,h,d,w) meaning (second, minute, hour, day, week). For an EXPECTED_MIN threshold, this aggregation_period must be lesser than 24 hours.',
-      }),
-    alertThreshold: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'For how many contiguous aggregation periods should the expected min or max be violated for the alert to be fired.',
-      }),
-    disableAlert: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set to false by default. When set to true, the metrics are not aggregated or pushed to Monarch for this integration alert.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the alert. This will be displayed in the alert subject. If set, this name should be unique within the scope of the integration.',
-      }),
-    durationThreshold: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Should be specified only for *AVERAGE_DURATION and *PERCENTILE_DURATION metrics. This member should be used to specify what duration value the metrics should exceed for the alert to trigger.',
-      }),
-    metricType: z
-      .enum([
-        'METRIC_TYPE_UNSPECIFIED',
-        'EVENT_ERROR_RATE',
-        'EVENT_WARNING_RATE',
-        'TASK_ERROR_RATE',
-        'TASK_WARNING_RATE',
-        'TASK_RATE',
-        'EVENT_RATE',
-        'EVENT_AVERAGE_DURATION',
-        'EVENT_PERCENTILE_DURATION',
-        'TASK_AVERAGE_DURATION',
-        'TASK_PERCENTILE_DURATION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The type of metric.' }),
-    onlyFinalAttempt: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'For either events or tasks, depending on the type of alert, count only final attempts, not retries.',
-      }),
-    thresholdType: z
-      .enum(['THRESHOLD_TYPE_UNSPECIFIED', 'EXPECTED_MIN', 'EXPECTED_MAX'])
-      .exactOptional()
-      .openapi({
-        description:
-          'The threshold type, whether lower(expected_min) or upper(expected_max), for which this alert is being configured. If value falls below expected_min or exceeds expected_max, an alert will be fired.',
-      }),
-    thresholdValue:
-      GoogleCloudIntegrationsV1alphaIntegrationAlertConfigThresholdValueSchema.exactOptional().openapi(
-        { description: 'The metric value, above or below which the alert should be triggered.' },
-      ),
-  })
-  .openapi({
-    description:
-      'Message to be used to configure custom alerting in the {@code EventConfig} protos for an event.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaIntegrationAlertConfig')
-
-const GoogleCloudIntegrationsV1alphaIntegrationParameterSchema = z
-  .object({
-    dataType: z
-      .enum([
-        'INTEGRATION_PARAMETER_DATA_TYPE_UNSPECIFIED',
-        'STRING_VALUE',
-        'INT_VALUE',
-        'DOUBLE_VALUE',
-        'BOOLEAN_VALUE',
-        'STRING_ARRAY',
-        'INT_ARRAY',
-        'DOUBLE_ARRAY',
-        'BOOLEAN_ARRAY',
-        'JSON_VALUE',
-        'PROTO_VALUE',
-        'PROTO_ARRAY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Type of the parameter.' }),
-    defaultValue: GoogleCloudIntegrationsV1alphaValueTypeSchema.exactOptional().openapi({
-      description:
-        'Default values for the defined keys. Each value can either be string, int, double or any proto message or a serialized object.',
-    }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The name (without prefix) to be displayed in the UI for this parameter. E.g. if the key is "foo.bar.myName", then the name would be "myName".',
-      }),
-    inputOutputType: z
-      .enum(['IN_OUT_TYPE_UNSPECIFIED', 'IN', 'OUT', 'IN_OUT'])
-      .exactOptional()
-      .openapi({ description: 'Specifies the input/output type for the parameter.' }),
-    isTransient: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether this parameter is a transient parameter.' }),
-    jsonSchema: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This schema will be used to validate runtime JSON-typed values of this parameter.',
-      }),
-    key: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Key is used to retrieve the corresponding parameter value. This should be unique for a given fired event. These parameters must be predefined in the integration definition.',
-      }),
-    producer: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The identifier of the node (TaskConfig/TriggerConfig) this parameter was produced by, if it is a transient param or a copy of an input param.',
-      }),
-    searchable: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Searchable in the execution log or not.' }),
-  })
-  .openapi({
-    description:
-      'Integration Parameter is defined in the integration config and are used to provide information about data types of the expected parameters and provide any default values if needed. They can also be used to add custom attributes. These are static in nature and should not be used for dynamic event definition.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaIntegrationParameter')
-
-const GoogleCloudIntegrationsV1alphaSuccessPolicySchema = z
-  .object({
-    finalState: z
-      .enum(['FINAL_STATE_UNSPECIFIED', 'SUCCEEDED', 'SUSPENDED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'State to which the execution snapshot status will be set if the task succeeds.',
-      }),
-  })
-  .openapi({
-    description: 'Policy that dictates the behavior for the task after it completes successfully.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaSuccessPolicy')
-
-const GoogleCloudIntegrationsV1alphaTaskConfigSchema = z
-  .object({
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-provided description intended to give additional business context about the task.',
-      }),
-    displayName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. User-provided label that is attached to this TaskConfig in the UI.',
-      }),
-    errorCatcherId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
-      }),
-    externalTaskType: z
-      .enum(['EXTERNAL_TASK_TYPE_UNSPECIFIED', 'NORMAL_TASK', 'ERROR_TASK'])
-      .exactOptional()
-      .openapi({ description: 'Optional. External task type of the task' }),
-    failurePolicy: GoogleCloudIntegrationsV1alphaFailurePolicySchema.exactOptional().openapi({
-      description:
-        'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for asynchronous calls to Eventbus alone (Post To Queue, Schedule etc.).',
-    }),
-    jsonValidationOption: z
-      .enum([
-        'JSON_VALIDATION_OPTION_UNSPECIFIED',
-        'SKIP',
-        'PRE_EXECUTION',
-        'POST_EXECUTION',
-        'PRE_POST_EXECUTION',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If set, overrides the option configured in the Task implementation class.',
-      }),
-    nextTasks: z
-      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The set of tasks that are next in line to be executed as per the execution graph defined for the parent event, specified by `event_config_id`. Each of these next tasks are executed only if the condition associated with them evaluates to true.',
-      }),
-    nextTasksExecutionPolicy: z
-      .enum(['NEXT_TASKS_EXECUTION_POLICY_UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The policy dictating the execution of the next set of tasks for the current task.',
-      }),
-    parameters: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaEventParameterSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The customized parameters the user can pass to this task.',
-      }),
-    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
-      description:
-        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
-    }),
-    successPolicy: GoogleCloudIntegrationsV1alphaSuccessPolicySchema.exactOptional().openapi({
-      description: 'Optional. Determines what action to take upon successful task completion.',
-    }),
-    synchronousCallFailurePolicy:
-      GoogleCloudIntegrationsV1alphaFailurePolicySchema.exactOptional().openapi({
-        description:
-          'Optional. Determines the number of times the task will be retried on failure and with what retry strategy. This is applicable for synchronous calls to Eventbus alone (Post).',
-      }),
-    task: z.string().exactOptional().openapi({ description: 'Optional. The name for the task.' }),
-    taskExecutionStrategy: z
-      .enum([
-        'TASK_EXECUTION_STRATEGY_UNSPECIFIED',
-        'WHEN_ALL_SUCCEED',
-        'WHEN_ANY_SUCCEED',
-        'WHEN_ALL_TASKS_AND_CONDITIONS_SUCCEED',
-      ])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The policy dictating the execution strategy of this task.',
-      }),
-    taskId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The identifier of this task within its parent event config, specified by the client. This should be unique among all the tasks belong to the same event config. We use this field as the identifier to find next tasks (via field `next_tasks.task_id`).',
-      }),
-    taskTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Optional. Used to define task-template name if task is of type task-template',
-      }),
-  })
-  .openapi({
-    description:
-      'The task configuration details. This is not the implementation of Task. There might be multiple TaskConfigs for the same Task.',
-    required: [],
-  })
-  .openapi('GoogleCloudIntegrationsV1alphaTaskConfig')
-
-const GoogleCloudIntegrationsV1alphaTriggerConfigSchema = z
-  .object({
-    alertConfig: z
-      .array(GoogleCloudIntegrationsV1alphaIntegrationAlertConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An alert threshold configuration for the [trigger + client + integration] tuple. If these values are not specified in the trigger config, default values will be populated by the system. Note that there must be exactly one alert threshold configured per [client + trigger + integration] when published.',
-      }),
-    cloudSchedulerConfig:
-      GoogleCloudIntegrationsV1alphaCloudSchedulerConfigSchema.exactOptional().openapi({
-        description: 'Optional. Cloud Scheduler Trigger related metadata',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. User-provided description intended to give additional business context about the task.',
-      }),
-    errorCatcherId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Optional Error catcher id of the error catch flow which will be executed when execution error happens in the task',
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The user created label for a particular trigger.' }),
-    nextTasksExecutionPolicy: z
-      .enum(['NEXT_TASKS_EXECUTION_POLICY_UNSPECIFIED', 'RUN_ALL_MATCH', 'RUN_FIRST_MATCH'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Dictates how next tasks will be executed.' }),
-    position: GoogleCloudIntegrationsV1alphaCoordinateSchema.exactOptional().openapi({
-      description:
-        'Optional. Informs the front-end application where to draw this error catcher config on the UI.',
-    }),
-    properties: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Configurable properties of the trigger, not to be confused with integration parameters. E.g. "name" is a property for API triggers and "subscription" is a property for Pub/sub triggers.',
-      }),
-    startTasks: z
-      .array(GoogleCloudIntegrationsV1alphaNextTaskSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Set of tasks numbers from where the integration execution is started by this trigger. If this is empty, then integration is executed with default start tasks. In the list of start tasks, none of two tasks can have direct ancestor-descendant relationships (i.e. in a same integration execution graph).',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The backend trigger ID.' }),
-    triggerNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. A number to uniquely identify each trigger config within the integration on UI.',
-      }),
-    triggerType: z
-      .enum([
-        'TRIGGER_TYPE_UNSPECIFIED',
-        'CRON',
-        'API',
-        'SFDC_CHANNEL',
-        'CLOUD_PUBSUB_EXTERNAL',
-        'SFDC_CDC_CHANNEL',
-        'CLOUD_SCHEDULER',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Optional. Type of trigger' }),
-  })
-  .openapi({ description: 'Configuration detail of a trigger.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaTriggerConfig')
-
-const GoogleCloudIntegrationsV1alphaIntegrationVersionSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
-    databasePersistencePolicy: z
-      .enum(['DATABASE_PERSISTENCE_POLICY_UNSPECIFIED', 'DATABASE_PERSISTENCE_DISABLED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Flag to disable database persistence for execution data, including event execution info, execution export info, execution metadata index and execution param index.',
-      }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. The integration description.' }),
-    errorCatcherConfigs: z
-      .array(GoogleCloudIntegrationsV1alphaErrorCatcherConfigSchema)
-      .exactOptional()
-      .openapi({
-        description: "Optional. Error Catch Task configuration for the integration. It's optional.",
-      }),
-    integrationParameters: z
-      .array(GoogleCloudIntegrationsV1alphaIntegrationParameterSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Parameters that are expected to be passed to the integration when an event is triggered. This consists of all the parameters that are expected in the integration execution. This gives the user the ability to provide default values, add information like PII and also provide data types of each parameter.',
-      }),
-    integrationParametersInternal:
-      EnterpriseCrmFrontendsEventbusProtoWorkflowParametersSchema.exactOptional().openapi({
-        description:
-          'Optional. Parameters that are expected to be passed to the integration when an event is triggered. This consists of all the parameters that are expected in the integration execution. This gives the user the ability to provide default values, add information like PII and also provide data types of each parameter.',
-      }),
-    lastModifierEmail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The last modifier's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
-      }),
-    lockHolder: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The edit lock holder's email address. Generated based on the End User Credentials/LOAS role of the user making the call.",
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Auto-generated primary key.', readOnly: true }),
-    origin: z
-      .enum(['UNSPECIFIED', 'UI', 'PIPER_V2', 'PIPER_V3', 'APPLICATION_IP_PROVISIONING'])
-      .exactOptional()
-      .openapi({
-        description: 'Optional. The origin that indicates where this integration is coming from.',
-      }),
-    parentTemplateId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The id of the template which was used to create this integration_version.',
-      }),
-    runAsServiceAccount: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The run-as service account email, if set and auth config is not configured, that will be used to generate auth token to be used in Connector task, Rest caller task and Cloud function task.',
-      }),
-    snapshotNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. An increasing sequence that is set when a new snapshot is created. The last created snapshot can be identified by [workflow_name, org_id latest(snapshot_number)]. However, last created snapshot need not be same as the HEAD. So users should always use "HEAD" tag to identify the head.',
-      }),
-    state: z
-      .enum(['INTEGRATION_STATE_UNSPECIFIED', 'DRAFT', 'ACTIVE', 'ARCHIVED', 'SNAPSHOT'])
-      .exactOptional()
-      .openapi({ description: 'Output only. User should not set it as an input.', readOnly: true }),
-    status: z
-      .enum(['UNKNOWN', 'DRAFT', 'ACTIVE', 'ARCHIVED', 'SNAPSHOT'])
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Generated by eventbus. User should not set it as an input.',
-        readOnly: true,
-      }),
-    taskConfigs: z
-      .array(GoogleCloudIntegrationsV1alphaTaskConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Task configuration for the integration. It's optional, but the integration doesn't do anything without task_configs.",
-      }),
-    taskConfigsInternal: z
-      .array(EnterpriseCrmFrontendsEventbusProtoTaskConfigSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. Task configuration for the integration. It's optional, but the integration doesn't do anything without task_configs.",
-      }),
-    teardown: EnterpriseCrmEventbusProtoTeardownSchema.exactOptional().openapi({
-      description:
-        'Optional. Contains a graph of tasks that will be executed before putting the event in a terminal state (SUCCEEDED/FAILED/FATAL), regardless of success or failure, similar to "finally" in code.',
-    }),
-    triggerConfigs: z
-      .array(GoogleCloudIntegrationsV1alphaTriggerConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Trigger configurations.' }),
-    triggerConfigsInternal: z
-      .array(EnterpriseCrmFrontendsEventbusProtoTriggerConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Trigger configurations.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
-    userLabel: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. A user-defined label that annotates an integration version. Typically, this is only set when the integration version is created.',
-      }),
-  })
-  .openapi({ description: 'The integration version definition.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaIntegrationVersion')
-
 const GoogleCloudIntegrationsV1alphaLiftSuspensionRequestSchema = z
   .object({
     suspensionResult: z
@@ -5948,19 +6685,20 @@ const GoogleCloudIntegrationsV1alphaLinkAppsScriptProjectResponseSchema = z
   .openapi({ description: 'Response for LinkAppsScriptProject rpc call.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaLinkAppsScriptProjectResponse')
 
-const GoogleCloudIntegrationsV1alphaListAuthConfigsResponseSchema = z
-  .object({
-    authConfigs: z
-      .array(GoogleCloudIntegrationsV1alphaAuthConfigSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of AuthConfigs retrieved.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token used to retrieve the next page of results.' }),
-  })
-  .openapi({ description: 'Response to list AuthConfigs.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaListAuthConfigsResponse')
+const GoogleCloudIntegrationsV1alphaListAuthConfigsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaListAuthConfigsResponseType> =
+  z
+    .object({
+      authConfigs: z
+        .array(GoogleCloudIntegrationsV1alphaAuthConfigSchema)
+        .exactOptional()
+        .openapi({ description: 'The list of AuthConfigs retrieved.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The token used to retrieve the next page of results.' }),
+    })
+    .openapi({ description: 'Response to list AuthConfigs.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaListAuthConfigsResponse')
 
 const GoogleCloudIntegrationsV1alphaListCertificatesResponseSchema = z
   .object({
@@ -5987,44 +6725,46 @@ const GoogleCloudIntegrationsV1alphaListConnectionsResponseSchema = z
   .openapi({ description: 'Response containing Connections listed by region.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaListConnectionsResponse')
 
-const GoogleCloudIntegrationsV1alphaListExecutionsResponseSchema = z
-  .object({
-    executionInfos: z
-      .array(EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. The detailed information of requested executions.' }),
-    executions: z
-      .array(GoogleCloudIntegrationsV1alphaExecutionSchema)
-      .exactOptional()
-      .openapi({ description: 'The detailed information of requested executions' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The token used to retrieve the next page results.' }),
-  })
-  .openapi({ description: 'Response for listing the integration execution data.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaListExecutionsResponse')
+const GoogleCloudIntegrationsV1alphaListExecutionsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaListExecutionsResponseType> =
+  z
+    .object({
+      executionInfos: z
+        .array(EnterpriseCrmFrontendsEventbusProtoEventExecutionInfoSchema)
+        .exactOptional()
+        .openapi({ description: 'Required. The detailed information of requested executions.' }),
+      executions: z
+        .array(GoogleCloudIntegrationsV1alphaExecutionSchema)
+        .exactOptional()
+        .openapi({ description: 'The detailed information of requested executions' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The token used to retrieve the next page results.' }),
+    })
+    .openapi({ description: 'Response for listing the integration execution data.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaListExecutionsResponse')
 
-const GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponseSchema = z
-  .object({
-    integrationVersions: z
-      .array(GoogleCloudIntegrationsV1alphaIntegrationVersionSchema)
-      .exactOptional()
-      .openapi({ description: 'The integrations which match the request.' }),
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
-      }),
-    noPermission: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether the user has no permission on the version or not.' }),
-  })
-  .openapi({ description: 'Response for ListIntegrationVersions.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponse')
+const GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponseType> =
+  z
+    .object({
+      integrationVersions: z
+        .array(GoogleCloudIntegrationsV1alphaIntegrationVersionSchema)
+        .exactOptional()
+        .openapi({ description: 'The integrations which match the request.' }),
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no subsequent pages.',
+        }),
+      noPermission: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether the user has no permission on the version or not.' }),
+    })
+    .openapi({ description: 'Response for ListIntegrationVersions.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaListIntegrationVersionsResponse')
 
 const GoogleCloudIntegrationsV1alphaListIntegrationsResponseSchema = z
   .object({
@@ -6250,128 +6990,23 @@ const GoogleCloudIntegrationsV1alphaListSfdcInstancesResponseSchema = z
   .openapi({ description: 'Response to list SfdcInstances.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaListSfdcInstancesResponse')
 
-const GoogleCloudIntegrationsV1alphaSuspensionApprovalExpirationSchema = z
-  .object({
-    expireTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Time after which the suspension expires, if no action taken.',
-        readOnly: true,
-      }),
-    liftWhenExpired: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Whether the suspension will be REJECTED or LIFTED upon expiration. REJECTED is the default behavior.',
-      }),
-    remindTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Time after the previous suspension action reminder, if any, is sent using the selected notification option, for a suspension which is still PENDING_UNSPECIFIED.',
-      }),
-  })
-  .openapi({ description: 'Expiration configs for the approval request.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaSuspensionApprovalExpiration')
-
-const GoogleCloudIntegrationsV1alphaSuspensionApprovalConfigSchema = z
-  .object({
-    customMessage: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Information to provide for recipients.' }),
-    emailAddresses: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Email addresses to send approval request to.' }),
-    expiration:
-      GoogleCloudIntegrationsV1alphaSuspensionApprovalExpirationSchema.exactOptional().openapi({
-        description: 'Indicates the next steps when no external actions happen on the suspension.',
-      }),
-  })
-  .openapi({ description: 'Configurations for approving the Suspension.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaSuspensionApprovalConfig')
-
-const GoogleCloudIntegrationsV1alphaSuspensionAuditSchema = z
-  .object({
-    resolveTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Time at which this suspension was resolved.' }),
-    resolver: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Email address of the person who resolved this suspension.' }),
-  })
-  .openapi({ description: 'Contains when and by whom the suspension was resolved.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaSuspensionAudit')
-
-const GoogleCloudIntegrationsV1alphaSuspensionSchema = z
-  .object({
-    approvalConfig:
-      GoogleCloudIntegrationsV1alphaSuspensionApprovalConfigSchema.exactOptional().openapi({
-        description: 'Controls the notifications and approval permissions for this suspension.',
-      }),
-    audit: GoogleCloudIntegrationsV1alphaSuspensionAuditSchema.exactOptional().openapi({
-      description: 'Metadata pertaining to the resolution of this suspension.',
-    }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
-    eventExecutionInfoId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. ID of the associated execution.' }),
-    integration: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. The name of the originating integration.' }),
-    lastModifyTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. Auto-generated.', readOnly: true }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Resource name for suspensions suspension/{suspension_id}' }),
-    state: z
-      .enum(['RESOLUTION_STATE_UNSPECIFIED', 'PENDING', 'REJECTED', 'LIFTED'])
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. State of this suspension, indicating what action a resolver has taken.',
-      }),
-    suspensionConfig: EnterpriseCrmEventbusProtoSuspensionConfigSchema.exactOptional().openapi({
-      description: 'Controls the notifications and resolver permissions for this suspension.',
-    }),
-    taskId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Required. Task id of the associated SuspensionTask.' }),
-  })
-  .openapi({ description: 'A record representing a suspension.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaSuspension')
-
-const GoogleCloudIntegrationsV1alphaListSuspensionsResponseSchema = z
-  .object({
-    nextPageToken: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Token to retrieve the next page of results.' }),
-    suspensions: z
-      .array(GoogleCloudIntegrationsV1alphaSuspensionSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The suspensions for the relevant execution which the caller has permissions to view and resolve.',
-      }),
-  })
-  .openapi({ description: 'Response for Suspensions.ListSuspensions.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaListSuspensionsResponse')
+const GoogleCloudIntegrationsV1alphaListSuspensionsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaListSuspensionsResponseType> =
+  z
+    .object({
+      nextPageToken: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Token to retrieve the next page of results.' }),
+      suspensions: z
+        .array(GoogleCloudIntegrationsV1alphaSuspensionSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The suspensions for the relevant execution which the caller has permissions to view and resolve.',
+        }),
+    })
+    .openapi({ description: 'Response for Suspensions.ListSuspensions.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaListSuspensionsResponse')
 
 const GoogleCloudIntegrationsV1alphaProvisionClientRequestSchema = z
   .object({
@@ -6395,70 +7030,72 @@ const GoogleCloudIntegrationsV1alphaProvisionClientRequestSchema = z
   .openapi('GoogleCloudIntegrationsV1alphaProvisionClientRequest')
 
 const GoogleCloudIntegrationsV1alphaPublishIntegrationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for PublishIntegrationVersion.' })
   .openapi('GoogleCloudIntegrationsV1alphaPublishIntegrationVersionRequest')
 
 const GoogleCloudIntegrationsV1alphaPublishIntegrationVersionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for PublishIntegrationVersion.' })
   .openapi('GoogleCloudIntegrationsV1alphaPublishIntegrationVersionResponse')
 
-const GoogleCloudIntegrationsV1alphaResolveSuspensionRequestSchema = z
-  .object({
-    suspension: GoogleCloudIntegrationsV1alphaSuspensionSchema.exactOptional().openapi({
-      description:
-        'Suspension, containing the event_execution_info_id, task_id, and state to set on the corresponding suspension record.',
-    }),
-  })
-  .openapi({ description: 'Request for [Suspensions.ResolveSuspensions].', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaResolveSuspensionRequest')
+const GoogleCloudIntegrationsV1alphaResolveSuspensionRequestSchema: z.ZodType<GoogleCloudIntegrationsV1alphaResolveSuspensionRequestType> =
+  z
+    .object({
+      suspension: GoogleCloudIntegrationsV1alphaSuspensionSchema.exactOptional().openapi({
+        description:
+          'Suspension, containing the event_execution_info_id, task_id, and state to set on the corresponding suspension record.',
+      }),
+    })
+    .openapi({ description: 'Request for [Suspensions.ResolveSuspensions].', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaResolveSuspensionRequest')
 
 const GoogleCloudIntegrationsV1alphaResolveSuspensionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for Suspensions.ResolveSuspensions.' })
   .openapi('GoogleCloudIntegrationsV1alphaResolveSuspensionResponse')
 
-const GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequestSchema = z
-  .object({
-    inputParameters: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Input parameters used by integration execution.' }),
-    parameterEntries: z
-      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+const GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequestSchema: z.ZodType<GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequestType> =
+  z
+    .object({
+      inputParameters: z
+        .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+        .exactOptional()
+        .openapi({ description: 'Optional. Input parameters used by integration execution.' }),
+      parameterEntries: z
+        .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+        }),
+      parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Passed in as parameters to each integration execution.',
       }),
-    parameters: EnterpriseCrmEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Passed in as parameters to each integration execution.',
-    }),
-    requestId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned.',
-      }),
-    scheduleTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time that the integration should be executed. If the time is less or equal to the current time, the integration is executed immediately.',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Matched against all {@link TriggerConfig}s across all integrations. i.e. TriggerConfig.trigger_id.equals(trigger_id)',
-      }),
-  })
-  .openapi({ description: 'The request for scheduling an integration.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequest')
+      requestId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'This is used to de-dup incoming request: if the duplicate request was detected, the response from the previous execution is returned.',
+        }),
+      scheduleTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The time that the integration should be executed. If the time is less or equal to the current time, the integration is executed immediately.',
+        }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Matched against all {@link TriggerConfig}s across all integrations. i.e. TriggerConfig.trigger_id.equals(trigger_id)',
+        }),
+    })
+    .openapi({ description: 'The request for scheduling an integration.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaScheduleIntegrationsRequest')
 
 const GoogleCloudIntegrationsV1alphaScheduleIntegrationsResponseSchema = z
   .object({
@@ -6481,100 +7118,103 @@ const GoogleCloudIntegrationsV1alphaSwitchEncryptionRequestSchema = z
   .openapi('GoogleCloudIntegrationsV1alphaSwitchEncryptionRequest')
 
 const GoogleCloudIntegrationsV1alphaTakeoverEditLockRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for TakeoverEditLock.' })
   .openapi('GoogleCloudIntegrationsV1alphaTakeoverEditLockRequest')
 
-const GoogleCloudIntegrationsV1alphaTakeoverEditLockResponseSchema = z
-  .object({
-    integrationVersion:
-      GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
-        description: 'Version after the lock is acquired by the new user.',
-      }),
-  })
-  .openapi({ description: 'Response for TakeoverEditLock.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaTakeoverEditLockResponse')
+const GoogleCloudIntegrationsV1alphaTakeoverEditLockResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaTakeoverEditLockResponseType> =
+  z
+    .object({
+      integrationVersion:
+        GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
+          description: 'Version after the lock is acquired by the new user.',
+        }),
+    })
+    .openapi({ description: 'Response for TakeoverEditLock.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaTakeoverEditLockResponse')
 
-const GoogleCloudIntegrationsV1alphaTestIntegrationsRequestSchema = z
-  .object({
-    clientId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. This is used to identify the client on whose behalf the event will be executed.',
+const GoogleCloudIntegrationsV1alphaTestIntegrationsRequestSchema: z.ZodType<GoogleCloudIntegrationsV1alphaTestIntegrationsRequestType> =
+  z
+    .object({
+      clientId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. This is used to identify the client on whose behalf the event will be executed.',
+        }),
+      deadlineSecondsTime: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Optional. custom deadline of the rpc' }),
+      inputParameters: z
+        .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+        .exactOptional()
+        .openapi({ description: 'Optional. Input parameters used during integration execution.' }),
+      integrationVersion:
+        GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
+          description: 'Required. integration config to execute the workflow',
+        }),
+      parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+        description: 'Optional. Passed in as parameters to each integration execution.',
       }),
-    deadlineSecondsTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Optional. custom deadline of the rpc' }),
-    inputParameters: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-      .exactOptional()
-      .openapi({ description: 'Optional. Input parameters used during integration execution.' }),
-    integrationVersion:
-      GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
-        description: 'Required. integration config to execute the workflow',
-      }),
-    parameters: EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-      description: 'Optional. Passed in as parameters to each integration execution.',
-    }),
-    testMode: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Can be specified in the event request, otherwise false (default). If true, enables tasks with condition "test_mode = true". If false, disables tasks with condition "test_mode = true" if global test mode (set by platform) is also false {@link EventBusConfig}.',
-      }),
-    triggerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The trigger id of the integration trigger config. If both trigger_id and client_id is present, the integration is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
-      }),
-  })
-  .openapi({ description: 'The request for testing an integration.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaTestIntegrationsRequest')
+      testMode: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Can be specified in the event request, otherwise false (default). If true, enables tasks with condition "test_mode = true". If false, disables tasks with condition "test_mode = true" if global test mode (set by platform) is also false {@link EventBusConfig}.',
+        }),
+      triggerId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The trigger id of the integration trigger config. If both trigger_id and client_id is present, the integration is executed from the start tasks provided by the matching trigger config otherwise it is executed from the default start tasks.',
+        }),
+    })
+    .openapi({ description: 'The request for testing an integration.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaTestIntegrationsRequest')
 
-const GoogleCloudIntegrationsV1alphaTestIntegrationsResponseSchema = z
-  .object({
-    eventParameters:
-      EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
-        description: 'Details for the integration that were executed.',
-      }),
-    executionFailed: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is true if any execution in the integration failed. False otherwise.',
-      }),
-    executionId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the execution corresponding to this run of integration.',
-      }),
-    parameterEntries: z
-      .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
-      }),
-    parameters: z
-      .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
-      }),
-  })
-  .openapi({ description: 'The response for testing an integration.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaTestIntegrationsResponse')
+const GoogleCloudIntegrationsV1alphaTestIntegrationsResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaTestIntegrationsResponseType> =
+  z
+    .object({
+      eventParameters:
+        EnterpriseCrmFrontendsEventbusProtoEventParametersSchema.exactOptional().openapi({
+          description: 'Details for the integration that were executed.',
+        }),
+      executionFailed: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Is true if any execution in the integration failed. False otherwise.',
+        }),
+      executionId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The id of the execution corresponding to this run of integration.',
+        }),
+      parameterEntries: z
+        .array(EnterpriseCrmFrontendsEventbusProtoParameterEntrySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+        }),
+      parameters: z
+        .record(z.string(), GoogleCloudIntegrationsV1alphaValueTypeSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Parameters are a part of Event and can be used to communicate between different tasks that are part of the same integration execution.',
+        }),
+    })
+    .openapi({ description: 'The response for testing an integration.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaTestIntegrationsResponse')
 
 const GoogleCloudIntegrationsV1alphaUnpublishIntegrationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Request for UnpublishIntegrationVersion.' })
   .openapi('GoogleCloudIntegrationsV1alphaUnpublishIntegrationVersionRequest')
 
@@ -6592,18 +7232,19 @@ const GoogleCloudIntegrationsV1alphaUploadIntegrationVersionRequestSchema = z
   .openapi({ description: 'Request for UploadIntegrationVersion.', required: [] })
   .openapi('GoogleCloudIntegrationsV1alphaUploadIntegrationVersionRequest')
 
-const GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponseSchema = z
-  .object({
-    integrationVersion:
-      GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
-        description: 'The uploaded integration.',
-      }),
-  })
-  .openapi({ description: 'Response for UploadIntegrationVersion.', required: [] })
-  .openapi('GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponse')
+const GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponseSchema: z.ZodType<GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponseType> =
+  z
+    .object({
+      integrationVersion:
+        GoogleCloudIntegrationsV1alphaIntegrationVersionSchema.exactOptional().openapi({
+          description: 'The uploaded integration.',
+        }),
+    })
+    .openapi({ description: 'Response for UploadIntegrationVersion.', required: [] })
+    .openapi('GoogleCloudIntegrationsV1alphaUploadIntegrationVersionResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

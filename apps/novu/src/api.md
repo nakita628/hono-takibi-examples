@@ -1,4 +1,4 @@
-<h1 id="novu-api">Novu API v3.19.2</h1>
+<h1 id="novu-api">Novu API v3.20.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -11288,6 +11288,472 @@ Status Code **200**
 |200|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
 |200|Idempotency-Key|string||The idempotency key used to evaluate the request.|
 |200|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|400|Content-Type|string||The MIME type of the response body.|
+|400|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|400|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|400|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|400|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|400|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|400|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|401|Content-Type|string||The MIME type of the response body.|
+|401|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|401|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|401|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|401|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|401|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|401|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|403|Content-Type|string||The MIME type of the response body.|
+|403|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|403|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|403|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|403|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|403|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|403|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|404|Content-Type|string||The MIME type of the response body.|
+|404|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|404|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|404|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|404|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|404|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|404|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|405|Content-Type|string||The MIME type of the response body.|
+|405|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|405|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|405|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|405|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|405|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|405|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|409|Content-Type|string||The MIME type of the response body.|
+|409|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|409|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|409|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|409|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|409|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|409|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|413|Content-Type|string||The MIME type of the response body.|
+|413|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|413|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|413|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|413|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|413|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|413|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|415|Content-Type|string||The MIME type of the response body.|
+|415|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|415|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|415|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|415|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|415|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|415|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|422|Content-Type|string||The MIME type of the response body.|
+|422|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|422|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|422|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|422|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|422|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|422|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|429|Content-Type|string||The MIME type of the response body.|
+|429|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|429|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|429|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|429|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|429|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|429|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|429|Retry-After|string||The number of seconds after which the client may retry the request that was previously rejected.|
+|500|Content-Type|string||The MIME type of the response body.|
+|500|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|500|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|500|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|500|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|500|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|500|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|503|Content-Type|string||The MIME type of the response body.|
+|503|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|503|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|503|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|503|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|503|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|503|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
+|503|Retry-After|string||The number of seconds after which the client may retry the request that was previously rejected.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+secretKey
+</aside>
+
+## Create a subscriber login token
+
+<a id="opIdSubscribersController_createSubscriberToken"></a>
+
+> Code samples
+
+```bash
+curl https://api.novu.co/v2/subscribers/string/tokens \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: ${API_KEY}" \
+  -d '{
+    "context": {
+      "property1": "org-acme",
+      "property2": "org-acme"
+    },
+    "subscriber": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "+1234567890",
+      "avatar": "https://example.com/avatar.jpg",
+      "locale": "en-US",
+      "timezone": "America/New_York",
+      "data": {}
+    },
+    "scope": [
+      "channels:shared"
+    ],
+    "expiresIn": 600
+  }'
+```
+
+`POST /v2/subscribers/{subscriberId}/tokens`
+
+Create a short-lived, Novu-signed login token for the subscriber identified by **subscriberId**.
+    Call it from your backend with your secret key, then pass the token to the browser, which exchanges it for an Inbox session.
+    Creating a token does not read or change the subscriber, so the subscriber does not need to exist yet.
+
+> Body parameter
+
+```json
+{
+  "context": {
+    "property1": "org-acme",
+    "property2": "org-acme"
+  },
+  "subscriber": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1234567890",
+    "avatar": "https://example.com/avatar.jpg",
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "data": {}
+  },
+  "scope": [
+    "channels:shared"
+  ],
+  "expiresIn": 600
+}
+```
+
+<h3 id="create-a-subscriber-login-token-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|subscriberId|path|string|true|The identifier of the subscriber|
+|body|body|[CreateSubscriberTokenRequestDto](#schemacreatesubscribertokenrequestdto)|true|none|
+|» context|body|object|false|none|
+|» » **additionalProperties**|body|string \| object|false|none|
+|» » » *oneOf*|body|string|false|Simple context id|
+|» » » *oneOf*|body|object|false|Rich context object with id and optional data|
+|» » » id|body|string|true|none|
+|» » » data|body|object|false|Optional additional context data|
+|» subscriber|body|object|false|Profile fields saved on the subscriber when the token is exchanged for an Inbox session. The subscriberId comes from the path.|
+|» » firstName|body|string \| null|false|First name of the subscriber|
+|» » lastName|body|string \| null|false|Last name of the subscriber|
+|» » email|body|string(email) \| null|false|Email address of the subscriber|
+|» » phone|body|string \| null|false|Phone number of the subscriber|
+|» » avatar|body|string \| null|false|Avatar URL or identifier|
+|» » locale|body|string \| null|false|Locale of the subscriber|
+|» » timezone|body|string \| null|false|Timezone of the subscriber|
+|» » data|body|object \| null|false|Additional custom data associated with the subscriber|
+|» scope|body|[[SubscriberTokenScopeEnum](#schemasubscribertokenscopeenum)]|false|Extra permissions granted to the session the token is exchanged for. Defaults to none.|
+|» expiresIn|body|integer|false|Token lifetime in seconds, from 1 to 3600.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» scope|channels:shared|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "data": {
+    "token": "string",
+    "expiresAt": "2025-01-01T00:10:00.000Z"
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 401 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 403 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 405 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 413 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 414 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 415 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123",
+  "errors": {
+    "fieldName1": {
+      "messages": [
+        "Field is required",
+        "Must be a valid email address"
+      ],
+      "value": "invalidEmail"
+    },
+    "fieldName2": {
+      "messages": [
+        "Must be at least 18 years old"
+      ],
+      "value": 17
+    },
+    "fieldName3": {
+      "messages": [
+        "Must be a boolean value"
+      ],
+      "value": true
+    },
+    "fieldName4": {
+      "messages": [
+        "Must be a valid object"
+      ],
+      "value": {
+        "key": "value"
+      }
+    },
+    "fieldName5": {
+      "messages": [
+        "Field is missing"
+      ],
+      "value": null
+    },
+    "fieldName6": {
+      "messages": [
+        "Undefined value"
+      ]
+    }
+  }
+}
+```
+
+> 429 Response
+
+```json
+"API rate limit exceeded"
+```
+
+> 500 Response
+
+```json
+{
+  "statusCode": 404,
+  "timestamp": "2024-12-12T13:00:00Z",
+  "path": "/api/v1/resource",
+  "message": "xx xx xx ",
+  "ctx": {
+    "workflowId": "some_wf_id",
+    "stepId": "some_wf_id"
+  },
+  "errorId": "abc123"
+}
+```
+
+> 503 Response
+
+```json
+"Please wait some time, then try again."
+```
+
+<h3 id="create-a-subscriber-login-token-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Created|Inline|
+|400|Bad Request|Bad Request|[ErrorDto](#schemaerrordto)|
+|401|Unauthorized|Unauthorized|[ErrorDto](#schemaerrordto)|
+|403|Forbidden|Forbidden|[ErrorDto](#schemaerrordto)|
+|404|Not Found|Not Found|[ErrorDto](#schemaerrordto)|
+|405|Method Not Allowed|Method Not Allowed|[ErrorDto](#schemaerrordto)|
+|409|Conflict|Conflict|[ErrorDto](#schemaerrordto)|
+|413|Payload Too Large|Payload Too Large|[ErrorDto](#schemaerrordto)|
+|414|URI Too Long|URI Too Long|[ErrorDto](#schemaerrordto)|
+|415|Unsupported Media Type|Unsupported Media Type|[ErrorDto](#schemaerrordto)|
+|422|Unprocessable Entity|Unprocessable Entity|[ValidationErrorDto](#schemavalidationerrordto)|
+|429|Too Many Requests|The client has sent too many requests in a given amount of time. |Inline|
+|500|Internal Server Error|Internal Server Error|[ErrorDto](#schemaerrordto)|
+|503|Service Unavailable|The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay.|Inline|
+
+<h3 id="create-a-subscriber-login-token-responseschema">Response Schema</h3>
+
+Status Code **201**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[CreateSubscriberTokenResponseDto](#schemacreatesubscribertokenresponsedto)|false|none|none|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|201|Content-Type|string||The MIME type of the response body.|
+|201|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
+|201|RateLimit-Remaining|string||The number of requests remaining until the next window.|
+|201|RateLimit-Reset|string||The remaining seconds until a request of the same cost will be refreshed.|
+|201|RateLimit-Policy|string||The rate limit policy that was used to evaluate the request.|
+|201|Idempotency-Key|string||The idempotency key used to evaluate the request.|
+|201|Idempotency-Replay|string||Whether the request was a replay of a previous request.|
 |400|Content-Type|string||The MIME type of the response body.|
 |400|RateLimit-Limit|string||The number of requests that the client is permitted to make per second. The actual maximum may differ when burst is enabled.|
 |400|RateLimit-Remaining|string||The number of requests remaining until the next window.|
@@ -23152,6 +23618,7 @@ List all the channels integrations created in the organization. Only integration
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -23626,6 +24093,7 @@ curl https://api.novu.co/v1/integrations \
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -23733,6 +24201,7 @@ Create an integration for the current environment the user is based on the API k
     "user": "string",
     "secretKey": "string",
     "hmacSecretKeyEncoding": "text",
+    "authMethod": "apiKey",
     "domain": "string",
     "password": "string",
     "host": "string",
@@ -23836,6 +24305,7 @@ Create an integration for the current environment the user is based on the API k
 |» » user|body|string|false|none|
 |» » secretKey|body|string|false|none|
 |» » hmacSecretKeyEncoding|body|string|false|Email webhook: how `secretKey` is interpreted when signing webhook calls. `text` signs with the raw UTF-8 bytes; `base64`/`hex` decode it to binary first (e.g. for AWS KMS).|
+|» » authMethod|body|string|false|Twilio: `apiKey` authenticates with `apiKey` (API Key SID) and `secretKey` (API Key Secret) on behalf of `accountSid`. When omitted, `token` (Auth Token) is used.|
 |» » domain|body|string|false|none|
 |» » password|body|string|false|none|
 |» » host|body|string|false|none|
@@ -23912,6 +24382,7 @@ Create an integration for the current environment the user is based on the API k
 |» » hmacSecretKeyEncoding|text|
 |» » hmacSecretKeyEncoding|base64|
 |» » hmacSecretKeyEncoding|hex|
+|» » authMethod|apiKey|
 
 > Example responses
 
@@ -23933,6 +24404,7 @@ Create an integration for the current environment the user is based on the API k
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -24419,6 +24891,7 @@ List all the active integrations created in the organization. Only integration m
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -24891,6 +25364,7 @@ curl https://api.novu.co/v1/integrations/string \
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -24995,6 +25469,7 @@ Update an integration by its unique key identifier **integrationId**.
     "user": "string",
     "secretKey": "string",
     "hmacSecretKeyEncoding": "text",
+    "authMethod": "apiKey",
     "domain": "string",
     "password": "string",
     "host": "string",
@@ -25118,6 +25593,7 @@ Update an integration by its unique key identifier **integrationId**.
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -25597,6 +26073,7 @@ Delete an integration by its unique key identifier **integrationId**.
         "user": "string",
         "secretKey": "string",
         "hmacSecretKeyEncoding": "text",
+        "authMethod": "apiKey",
         "domain": "string",
         "password": "string",
         "host": "string",
@@ -26474,6 +26951,7 @@ Update an integration as **primary** by its unique key identifier **integrationI
       "user": "string",
       "secretKey": "string",
       "hmacSecretKeyEncoding": "text",
+      "authMethod": "apiKey",
       "domain": "string",
       "password": "string",
       "host": "string",
@@ -37531,7 +38009,7 @@ curl https://api.novu.co/v1/environments \
   -d '{
     "name": "Production Environment",
     "parentId": "60d5ecb8b3b3a30015f3e1a1",
-    "color": "#3498db"
+    "color": "#3498DB"
   }'
 ```
 
@@ -37547,7 +38025,7 @@ Creates a new environment within the current organization.
 {
   "name": "Production Environment",
   "parentId": "60d5ecb8b3b3a30015f3e1a1",
-  "color": "#3498db"
+  "color": "#3498DB"
 }
 ```
 
@@ -39682,7 +40160,8 @@ Compares workflows and other resources between the development and target enviro
             "_id": "string",
             "firstName": "string",
             "lastName": "string",
-            "externalId": "string"
+            "externalId": "string",
+            "email": "string"
           },
           "updatedAt": "2024-01-15T10:30:00.000Z"
         },
@@ -39693,7 +40172,8 @@ Compares workflows and other resources between the development and target enviro
             "_id": "string",
             "firstName": "string",
             "lastName": "string",
-            "externalId": "string"
+            "externalId": "string",
+            "email": "string"
           },
           "updatedAt": "2024-01-15T10:30:00.000Z"
         },
@@ -39706,7 +40186,8 @@ Compares workflows and other resources between the development and target enviro
                 "_id": "string",
                 "firstName": "string",
                 "lastName": "string",
-                "externalId": "string"
+                "externalId": "string",
+                "email": "string"
               },
               "updatedAt": "2024-01-15T10:30:00.000Z"
             },
@@ -39717,7 +40198,8 @@ Compares workflows and other resources between the development and target enviro
                 "_id": "string",
                 "firstName": "string",
                 "lastName": "string",
-                "externalId": "string"
+                "externalId": "string",
+                "email": "string"
               },
               "updatedAt": "2024-01-15T10:30:00.000Z"
             },
@@ -41939,7 +42421,7 @@ secretKey
 
 ## Delete a layout
 
-<a id="opIdLayoutsController__delete"></a>
+<a id="opIdLayoutsController_delete"></a>
 
 > Code samples
 
@@ -50614,6 +51096,17 @@ Retrieve a cursor-paginated list of agents for the current environment. Use **af
           "acknowledgeOnReceived": true,
           "reactionOnResolved": "check",
           "subscriberAccess": "open",
+          "accessRule": {
+            "in": [
+              {
+                "var": "context.tenant.data.plan"
+              },
+              [
+                "pro",
+                "enterprise"
+              ]
+            ]
+          },
           "replyPolicy": "auto_reply"
         },
         "active": true,
@@ -51152,6 +51645,17 @@ Create an agent scoped to the current environment. The identifier must be unique
       "acknowledgeOnReceived": true,
       "reactionOnResolved": "check",
       "subscriberAccess": "open",
+      "accessRule": {
+        "in": [
+          {
+            "var": "context.tenant.data.plan"
+          },
+          [
+            "pro",
+            "enterprise"
+          ]
+        ]
+      },
       "replyPolicy": "auto_reply"
     },
     "active": true,
@@ -51620,6 +52124,17 @@ Update the bridge URL configuration for an agent. Used by the CLI to register de
       "acknowledgeOnReceived": true,
       "reactionOnResolved": "check",
       "subscriberAccess": "open",
+      "accessRule": {
+        "in": [
+          {
+            "var": "context.tenant.data.plan"
+          },
+          [
+            "pro",
+            "enterprise"
+          ]
+        ]
+      },
       "replyPolicy": "auto_reply"
     },
     "active": true,
@@ -52051,6 +52566,17 @@ Retrieve an agent by its external identifier (not the internal MongoDB id).
       "acknowledgeOnReceived": true,
       "reactionOnResolved": "check",
       "subscriberAccess": "open",
+      "accessRule": {
+        "in": [
+          {
+            "var": "context.tenant.data.plan"
+          },
+          [
+            "pro",
+            "enterprise"
+          ]
+        ]
+      },
       "replyPolicy": "auto_reply"
     },
     "active": true,
@@ -52825,6 +53351,17 @@ curl https://api.novu.co/v1/agents/string \
       "acknowledgeOnReceived": true,
       "reactionOnResolved": "check",
       "subscriberAccess": "open",
+      "accessRule": {
+        "in": [
+          {
+            "var": "context.tenant.data.plan"
+          },
+          [
+            "pro",
+            "enterprise"
+          ]
+        ]
+      },
       "replyPolicy": "auto_reply"
     },
     "bridgeUrl": "http://example.com",
@@ -52848,6 +53385,17 @@ Update an agent by its external identifier.
     "acknowledgeOnReceived": true,
     "reactionOnResolved": "check",
     "subscriberAccess": "open",
+    "accessRule": {
+      "in": [
+        {
+          "var": "context.tenant.data.plan"
+        },
+        [
+          "pro",
+          "enterprise"
+        ]
+      ]
+    },
     "replyPolicy": "auto_reply"
   },
   "bridgeUrl": "http://example.com",
@@ -52885,6 +53433,17 @@ Update an agent by its external identifier.
       "acknowledgeOnReceived": true,
       "reactionOnResolved": "check",
       "subscriberAccess": "open",
+      "accessRule": {
+        "in": [
+          {
+            "var": "context.tenant.data.plan"
+          },
+          [
+            "pro",
+            "enterprise"
+          ]
+        ]
+      },
       "replyPolicy": "auto_reply"
     },
     "active": true,
@@ -55543,6 +56102,7 @@ List all notification events (triggered events) for the current environment.
         }
       ],
       "payload": {},
+      "overrides": {},
       "tags": [
         "string"
       ],
@@ -56074,6 +56634,7 @@ Retrieve an event by its unique key identifier **notificationId**.
       }
     ],
     "payload": {},
+    "overrides": {},
     "tags": [
       "string"
     ],
@@ -65671,7 +66232,7 @@ secretKey
 {
   "name": "Production Environment",
   "parentId": "60d5ecb8b3b3a30015f3e1a1",
-  "color": "#3498db"
+  "color": "#3498DB"
 }
 ```
 
@@ -66442,12 +67003,12 @@ Channels of the notification
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|firstName|string|false|none|First name of the subscriber|
+|firstName|string \| null|false|none|First name of the subscriber|
 |subscriberId|string|true|none|External unique identifier of the subscriber|
 |_id|string|true|none|Internal to Novu unique identifier of the subscriber|
-|lastName|string|false|none|Last name of the subscriber|
-|email|string|false|none|Email address of the subscriber|
-|phone|string|false|none|Phone number of the subscriber|
+|lastName|string \| null|false|none|Last name of the subscriber|
+|email|string \| null|false|none|Email address of the subscriber|
+|phone|string \| null|false|none|Phone number of the subscriber|
 
 <h2 id="tocS_ResourceOriginEnum">ResourceOriginEnum</h2>
 <!-- backwards compatibility -->
@@ -67287,6 +67848,7 @@ Source of the execution detail
     }
   ],
   "payload": {},
+  "overrides": {},
   "tags": [
     "string"
   ],
@@ -67324,6 +67886,7 @@ Source of the execution detail
 |template|object|false|none|Template of the notification|
 |jobs|[[ActivityNotificationJobResponseDto](#schemaactivitynotificationjobresponsedto)]|false|none|Jobs of the notification|
 |payload|object|false|none|Payload of the notification|
+|overrides|object|false|none|Trigger overrides of the notification, as passed to the original workflow trigger|
 |tags|[string]|false|none|Tags associated with the notification|
 |controls|object|false|none|Controls associated with the notification|
 |to|object|false|none|To field for subscriber definition|
@@ -67488,6 +68051,7 @@ Source of the execution detail
         }
       ],
       "payload": {},
+      "overrides": {},
       "tags": [
         "string"
       ],
@@ -67847,6 +68411,7 @@ Source of the execution detail
       "updatedAt": "2023-08-15T00:00:00.000Z"
     }
   ],
+  "digestedWorkflowRunId": "string",
   "steps": [
     {
       "id": "string",
@@ -67881,6 +68446,7 @@ Source of the execution detail
 |critical|boolean|true|none|Critical flag|
 |contextKeys|[string]|false|none|Context (single or multi) in which the workflow run was executed|
 |topics|[[TopicResponseDto](#schematopicresponsedto)]|false|none|Topics|
+|digestedWorkflowRunId|string|false|none|Workflow run whose active digest this run was merged into|
 |steps|[[WorkflowRunStepsDetailsDto](#schemaworkflowrunstepsdetailsdto)]|true|none|Workflow run steps|
 
 #### Enumerated Values
@@ -67945,6 +68511,7 @@ Source of the execution detail
           "updatedAt": "2023-08-15T00:00:00.000Z"
         }
       ],
+      "digestedWorkflowRunId": "string",
       "steps": [
         {
           "id": "string",
@@ -68125,6 +68692,7 @@ Source of the execution detail
       "updatedAt": "2023-08-15T00:00:00.000Z"
     }
   ],
+  "digestedWorkflowRunId": "string",
   "steps": [
     {
       "stepRunId": "string",
@@ -68200,6 +68768,7 @@ Source of the execution detail
 |critical|boolean|true|none|Critical flag|
 |contextKeys|[string]|false|none|Context (single or multi) in which the workflow run was executed|
 |topics|[[TopicResponseDto](#schematopicresponsedto)]|false|none|Topics|
+|digestedWorkflowRunId|string|false|none|Workflow run whose active digest this run was merged into|
 |steps|[[StepRunDto](#schemasteprundto)]|true|none|Step runs|
 |payload|object|true|none|Trigger payload|
 |overrides|object|false|none|Trigger overrides passed to the original workflow trigger|
@@ -68255,6 +68824,17 @@ Source of the execution detail
   "acknowledgeOnReceived": true,
   "reactionOnResolved": "check",
   "subscriberAccess": "open",
+  "accessRule": {
+    "in": [
+      {
+        "var": "context.tenant.data.plan"
+      },
+      [
+        "pro",
+        "enterprise"
+      ]
+    ]
+  },
   "replyPolicy": "auto_reply"
 }
 ```
@@ -68264,8 +68844,9 @@ Source of the execution detail
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |acknowledgeOnReceived|boolean|false|none|Acknowledge incoming messages. On platforms that support a native typing indicator (e.g. Slack, WhatsApp, Microsoft Teams, Telegram), shows a "Typing…" indicator while the agent processes the message. On platforms that do not (e.g. Email), reacts with an "eyes" emoji to the first inbound message in a thread. Default: true|
-|reactionOnResolved|object \| null|false|none|Cross-platform emoji name for resolved conversations (e.g. "check", "star"). Set to null to disable. Default: "check"|
-|subscriberAccess|string|false|none|Controls whether the agent accepts inbound messages from senders not yet linked to a subscriber, across all channels. "open" on managed agents auto-creates a lightweight subscriber so the agent can reply; on custom-code / self-hosted agents, the turn is forwarded to the bridge with a null subscriber. "restricted" rejects unknown senders with a managed denial reply (any runtime). Optional on update (partial PATCH). Persisted agents always have a value — managed create defaults to "open"; self-hosted create defaults to "restricted".|
+|reactionOnResolved|string \| null|false|none|Cross-platform emoji name for resolved conversations (e.g. "check", "star"). Set to null to disable. Default: "check"|
+|subscriberAccess|string|false|none|Controls whether the agent accepts inbound messages from senders not yet linked to a subscriber, across all channels. "open" on managed agents auto-creates a lightweight subscriber so the agent can reply; on custom-code / self-hosted agents, the turn is forwarded to the bridge with a null subscriber. "restricted" rejects unknown senders with a managed denial reply (any runtime). "rule" requires a known subscriber and accessRule must evaluate truthy for every message, edit, delete, click and reaction; unknown senders, an invalid rule and an evaluation error are refused; a missing field evaluates as JSON Logic says. Optional on update (partial PATCH). Persisted agents always have a value — managed create defaults to "open"; self-hosted create defaults to "restricted".|
+|accessRule|object|false|none|JSON Logic rule evaluated over subscriber.* and context.* when subscriberAccess is "rule". Present only when subscriberAccess is "rule". A missing field evaluates as JSON Logic says, so `null` is less than any positive number. "==" and "!=" compare strictly, without type coercion. At most 16 KB, with objects and arrays nested at most 32 levels deep.|
 |replyPolicy|string|false|none|How the agent replies in shared rooms. "mention_only" requires an @mention in every shared room. "auto_reply" replies to unmentioned follow-ups in a nested Slack or Teams thread after the agent has joined. "smart" behaves like auto_reply while one person is talking to the agent in a thread, then requires an @mention there once someone else or another agent joins, or the incumbent @mentions another teammate. Create persists "smart". An omitted field on existing agents still means "auto_reply". DMs always reply without a mention. Optional on update (partial PATCH).|
 
 #### Enumerated Values
@@ -68274,6 +68855,7 @@ Source of the execution detail
 |---|---|
 |subscriberAccess|open|
 |subscriberAccess|restricted|
+|subscriberAccess|rule|
 |replyPolicy|mention_only|
 |replyPolicy|auto_reply|
 |replyPolicy|smart|
@@ -68427,6 +69009,17 @@ Source of the execution detail
     "acknowledgeOnReceived": true,
     "reactionOnResolved": "check",
     "subscriberAccess": "open",
+    "accessRule": {
+      "in": [
+        {
+          "var": "context.tenant.data.plan"
+        },
+        [
+          "pro",
+          "enterprise"
+        ]
+      ]
+    },
     "replyPolicy": "auto_reply"
   },
   "active": true,
@@ -68703,6 +69296,17 @@ Source of the execution detail
         "acknowledgeOnReceived": true,
         "reactionOnResolved": "check",
         "subscriberAccess": "open",
+        "accessRule": {
+          "in": [
+            {
+              "var": "context.tenant.data.plan"
+            },
+            [
+              "pro",
+              "enterprise"
+            ]
+          ]
+        },
         "replyPolicy": "auto_reply"
       },
       "active": true,
@@ -68817,6 +69421,17 @@ Source of the execution detail
     "acknowledgeOnReceived": true,
     "reactionOnResolved": "check",
     "subscriberAccess": "open",
+    "accessRule": {
+      "in": [
+        {
+          "var": "context.tenant.data.plan"
+        },
+        [
+          "pro",
+          "enterprise"
+        ]
+      ]
+    },
     "replyPolicy": "auto_reply"
   },
   "bridgeUrl": "http://example.com",
@@ -69278,7 +69893,7 @@ Source of the execution detail
 |type|string|true|none|none|
 |action|string|false|none|Defaults to `set` when omitted.|
 |key|string|true|none|Metadata key (1–128 chars; letters, digits, and `-` `_` `:` separators).|
-|value|object|true|none|JSON-serializable value to store.|
+|value|string \| number \| boolean \| object \| [object]|true|none|JSON-serializable value to store.|
 
 #### Enumerated Values
 
@@ -70369,6 +70984,7 @@ Source of the execution detail
   "user": "string",
   "secretKey": "string",
   "hmacSecretKeyEncoding": "text",
+  "authMethod": "apiKey",
   "domain": "string",
   "password": "string",
   "host": "string",
@@ -70434,6 +71050,7 @@ Source of the execution detail
 |user|string|false|none|none|
 |secretKey|string|false|none|none|
 |hmacSecretKeyEncoding|string|false|none|Email webhook: how `secretKey` is interpreted when signing webhook calls. `text` signs with the raw UTF-8 bytes; `base64`/`hex` decode it to binary first (e.g. for AWS KMS).|
+|authMethod|string|false|none|Twilio: `apiKey` authenticates with `apiKey` (API Key SID) and `secretKey` (API Key Secret) on behalf of `accountSid`. When omitted, `token` (Auth Token) is used.|
 |domain|string|false|none|none|
 |password|string|false|none|none|
 |host|string|false|none|none|
@@ -70496,6 +71113,7 @@ Source of the execution detail
 |hmacSecretKeyEncoding|text|
 |hmacSecretKeyEncoding|base64|
 |hmacSecretKeyEncoding|hex|
+|authMethod|apiKey|
 
 <h2 id="tocS_ConfigurationsDto">ConfigurationsDto</h2>
 <!-- backwards compatibility -->
@@ -70542,6 +71160,7 @@ Source of the execution detail
     "user": "string",
     "secretKey": "string",
     "hmacSecretKeyEncoding": "text",
+    "authMethod": "apiKey",
     "domain": "string",
     "password": "string",
     "host": "string",
@@ -70688,6 +71307,7 @@ Source of the execution detail
     "user": "string",
     "secretKey": "string",
     "hmacSecretKeyEncoding": "text",
+    "authMethod": "apiKey",
     "domain": "string",
     "password": "string",
     "host": "string",
@@ -70823,6 +71443,7 @@ Source of the execution detail
     "user": "string",
     "secretKey": "string",
     "hmacSecretKeyEncoding": "text",
+    "authMethod": "apiKey",
     "domain": "string",
     "password": "string",
     "host": "string",
@@ -74579,6 +75200,118 @@ The level of the preference (global or template)
 |previous|string \| null|true|none|The cursor for the previous page of results, or null if this is the first page.|
 |totalCount|number|true|none|The total count of items (up to 50,000)|
 |totalCountCapped|boolean|true|none|Whether there are more than 50,000 results available|
+
+<h2 id="tocS_CreateSubscriberTokenResponseDto">CreateSubscriberTokenResponseDto</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatesubscribertokenresponsedto"></a>
+<a id="schema_CreateSubscriberTokenResponseDto"></a>
+<a id="tocScreatesubscribertokenresponsedto"></a>
+<a id="tocscreatesubscribertokenresponsedto"></a>
+
+```json
+{
+  "token": "string",
+  "expiresAt": "2025-01-01T00:10:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|token|string|true|none|Novu-signed login token for the subscriber. Exchange it in the browser for an Inbox session.|
+|expiresAt|string(date-time)|true|none|When the token expires, in ISO 8601.|
+
+<h2 id="tocS_BaseSubscriberFieldsDto">BaseSubscriberFieldsDto</h2>
+<!-- backwards compatibility -->
+<a id="schemabasesubscriberfieldsdto"></a>
+<a id="schema_BaseSubscriberFieldsDto"></a>
+<a id="tocSbasesubscriberfieldsdto"></a>
+<a id="tocsbasesubscriberfieldsdto"></a>
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+1234567890",
+  "avatar": "https://example.com/avatar.jpg",
+  "locale": "en-US",
+  "timezone": "America/New_York",
+  "data": {}
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|firstName|string \| null|false|none|First name of the subscriber|
+|lastName|string \| null|false|none|Last name of the subscriber|
+|email|string(email) \| null|false|none|Email address of the subscriber|
+|phone|string \| null|false|none|Phone number of the subscriber|
+|avatar|string \| null|false|none|Avatar URL or identifier|
+|locale|string \| null|false|none|Locale of the subscriber|
+|timezone|string \| null|false|none|Timezone of the subscriber|
+|data|object \| null|false|none|Additional custom data associated with the subscriber|
+
+<h2 id="tocS_SubscriberTokenScopeEnum">SubscriberTokenScopeEnum</h2>
+<!-- backwards compatibility -->
+<a id="schemasubscribertokenscopeenum"></a>
+<a id="schema_SubscriberTokenScopeEnum"></a>
+<a id="tocSsubscribertokenscopeenum"></a>
+<a id="tocssubscribertokenscopeenum"></a>
+
+```json
+"channels:shared"
+```
+
+Extra permissions granted to the session the token is exchanged for. Defaults to none.
+
+<h2 id="tocS_CreateSubscriberTokenRequestDto">CreateSubscriberTokenRequestDto</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatesubscribertokenrequestdto"></a>
+<a id="schema_CreateSubscriberTokenRequestDto"></a>
+<a id="tocScreatesubscribertokenrequestdto"></a>
+<a id="tocscreatesubscribertokenrequestdto"></a>
+
+```json
+{
+  "context": {
+    "property1": "org-acme",
+    "property2": "org-acme"
+  },
+  "subscriber": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1234567890",
+    "avatar": "https://example.com/avatar.jpg",
+    "locale": "en-US",
+    "timezone": "America/New_York",
+    "data": {}
+  },
+  "scope": [
+    "channels:shared"
+  ],
+  "expiresIn": 600
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|context|object|false|none|none|
+|subscriber|object|false|none|Profile fields saved on the subscriber when the token is exchanged for an Inbox session. The subscriberId comes from the path.|
+|scope|[[SubscriberTokenScopeEnum](#schemasubscribertokenscopeenum)]|false|none|Extra permissions granted to the session the token is exchanged for. Defaults to none.|
+|expiresIn|integer|false|none|Token lifetime in seconds, from 1 to 3600.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|scope|channels:shared|
 
 <h2 id="tocS_InboxSubscriberResponseDto">InboxSubscriberResponseDto</h2>
 <!-- backwards compatibility -->
@@ -84002,7 +84735,8 @@ Sync action performed
   "_id": "string",
   "firstName": "string",
   "lastName": "string",
-  "externalId": "string"
+  "externalId": "string",
+  "email": "string"
 }
 ```
 
@@ -84014,6 +84748,7 @@ Sync action performed
 |firstName|string|true|none|User first name|
 |lastName|string \| null|false|none|User last name|
 |externalId|string|false|none|User external ID|
+|email|string \| null|false|none|User email, used when the user has no name|
 
 <h2 id="tocS_ResourceInfoDto">ResourceInfoDto</h2>
 <!-- backwards compatibility -->
@@ -84030,7 +84765,8 @@ Sync action performed
     "_id": "string",
     "firstName": "string",
     "lastName": "string",
-    "externalId": "string"
+    "externalId": "string",
+    "email": "string"
   },
   "updatedAt": "2024-01-15T10:30:00.000Z"
 }
@@ -84074,7 +84810,8 @@ Type of change
       "_id": "string",
       "firstName": "string",
       "lastName": "string",
-      "externalId": "string"
+      "externalId": "string",
+      "email": "string"
     },
     "updatedAt": "2024-01-15T10:30:00.000Z"
   },
@@ -84085,7 +84822,8 @@ Type of change
       "_id": "string",
       "firstName": "string",
       "lastName": "string",
-      "externalId": "string"
+      "externalId": "string",
+      "email": "string"
     },
     "updatedAt": "2024-01-15T10:30:00.000Z"
   },
@@ -84196,7 +84934,8 @@ Reason for the dependency
       "_id": "string",
       "firstName": "string",
       "lastName": "string",
-      "externalId": "string"
+      "externalId": "string",
+      "email": "string"
     },
     "updatedAt": "2024-01-15T10:30:00.000Z"
   },
@@ -84207,7 +84946,8 @@ Reason for the dependency
       "_id": "string",
       "firstName": "string",
       "lastName": "string",
-      "externalId": "string"
+      "externalId": "string",
+      "email": "string"
     },
     "updatedAt": "2024-01-15T10:30:00.000Z"
   },
@@ -84220,7 +84960,8 @@ Reason for the dependency
           "_id": "string",
           "firstName": "string",
           "lastName": "string",
-          "externalId": "string"
+          "externalId": "string",
+          "email": "string"
         },
         "updatedAt": "2024-01-15T10:30:00.000Z"
       },
@@ -84231,7 +84972,8 @@ Reason for the dependency
           "_id": "string",
           "firstName": "string",
           "lastName": "string",
-          "externalId": "string"
+          "externalId": "string",
+          "email": "string"
         },
         "updatedAt": "2024-01-15T10:30:00.000Z"
       },
@@ -84319,7 +85061,8 @@ Reason for the dependency
           "_id": "string",
           "firstName": "string",
           "lastName": "string",
-          "externalId": "string"
+          "externalId": "string",
+          "email": "string"
         },
         "updatedAt": "2024-01-15T10:30:00.000Z"
       },
@@ -84330,7 +85073,8 @@ Reason for the dependency
           "_id": "string",
           "firstName": "string",
           "lastName": "string",
-          "externalId": "string"
+          "externalId": "string",
+          "email": "string"
         },
         "updatedAt": "2024-01-15T10:30:00.000Z"
       },
@@ -84343,7 +85087,8 @@ Reason for the dependency
               "_id": "string",
               "firstName": "string",
               "lastName": "string",
-              "externalId": "string"
+              "externalId": "string",
+              "email": "string"
             },
             "updatedAt": "2024-01-15T10:30:00.000Z"
           },
@@ -84354,7 +85099,8 @@ Reason for the dependency
               "_id": "string",
               "firstName": "string",
               "lastName": "string",
-              "externalId": "string"
+              "externalId": "string",
+              "email": "string"
             },
             "updatedAt": "2024-01-15T10:30:00.000Z"
           },

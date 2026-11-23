@@ -21,14 +21,12 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|files||
+|files.delete||
+|files.read||
 |files.ui_hidden.read||
 |files.ui_hidden.write||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|files.write||
 
 <h1 id="files-files-files">Files</h1>
 
@@ -96,7 +94,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Import File
@@ -181,7 +179,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Retrieve status
@@ -229,7 +227,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Search files
@@ -312,7 +310,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Retrieve file stats
@@ -361,7 +359,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Retrieve file
@@ -410,7 +408,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Update file
@@ -469,7 +467,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Delete file
@@ -511,7 +509,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.delete )
 </aside>
 
 ## Update file
@@ -589,7 +587,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Download file
@@ -629,7 +627,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## GDPR Delete file
@@ -671,7 +669,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.delete )
 </aside>
 
 ## Generate signed URL
@@ -731,7 +729,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 <h1 id="files-files-folders">Folders</h1>
@@ -799,7 +797,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Search folders
@@ -863,7 +861,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Retrieve folder
@@ -912,7 +910,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Delete folder by ID
@@ -954,7 +952,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.delete )
 </aside>
 
 ## Update folder
@@ -1014,7 +1012,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.write )
 </aside>
 
 ## Retrieve folder by path
@@ -1063,7 +1061,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.read )
+oauth2 ( Scopes: files ), oauth2 ( Scopes: files.read ), oauth2 ( Scopes: files.ui_hidden.read )
 </aside>
 
 ## Delete folder by path
@@ -1105,7 +1103,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: files.ui_hidden.write )
+oauth2 ( Scopes: files.ui_hidden.write ), oauth2 ( Scopes: files ), oauth2 ( Scopes: files.delete )
 </aside>
 
 # Schemas

@@ -21,6 +21,97 @@ type IndexingSectionType = {
   title?: string
 }
 
+const ServingPerformanceMetricsSchema = z
+  .object({
+    queryEncodeMs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'How long it took to encode the query.',
+      }),
+    rerankMs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'How long it took to rerank the results.',
+      }),
+    retrievalMs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'How long it took to retrieve relevant results.',
+      }),
+    userdataRetrievalMs: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'How long it took to retrieve user data.',
+      }),
+  })
+  .openapi({
+    description: 'Basic performance metrics that can be attached to a server response.',
+    required: [],
+  })
+  .openapi('ServingPerformanceMetrics')
+
+const ServingAttributeSchema = z
+  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('ServingAttribute')
+
+const ServingResponseSetDocumentSchema = z
+  .object({
+    id: z.string().exactOptional(),
+    metadata: z.array(ServingAttributeSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ServingResponseSetDocument')
+
+const VectaraservingCustomDimensionSchema = z
+  .object({ name: z.string().exactOptional(), weight: z.float64().exactOptional() })
+  .openapi({ description: 'Defined the weight of a custom dimension at query time.', required: [] })
+  .openapi('VectaraservingCustomDimension')
+
 const CorpusKeySemanticsSchema = z
   .enum(['DEFAULT', 'QUERY', 'RESPONSE'])
   .default('DEFAULT')
@@ -29,6 +120,220 @@ const CorpusKeySemanticsSchema = z
       'Semantics controls the interpretation of the query string by the\nserver, and can be used to override the default semantics assigned\nin the corpus definition.\n\n\n\n\n - DEFAULT: Use corpus-assigned semantics.  This is the most common setting.\n - QUERY: Use query semantics.  This is also common.\n - RESPONSE: Use response semantics.  Usage of this is rare.',
   })
   .openapi('CorpusKeySemantics')
+
+const ServingCorpusKeySchema = z
+  .object({
+    corpusId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The Corpus ID.' }),
+    customerId: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'The Customer ID.' }),
+    dim: z
+      .array(VectaraservingCustomDimensionSchema)
+      .exactOptional()
+      .openapi({ description: 'Weights on custom dimensions for the corpus.' }),
+    metadataFilter: z.string().exactOptional(),
+    semantics: CorpusKeySemanticsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ServingCorpusKey')
+
+const ServingResponseSchema = z
+  .object({
+    corpusKey: ServingCorpusKeySchema.exactOptional(),
+    documentIndex: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'Use this ID to find the document in the ResponseSet.',
+      }),
+    metadata: z.array(ServingAttributeSchema).exactOptional(),
+    score: z
+      .float32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The score used for ranking results.  The higher the score, the better the match.',
+      }),
+    text: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ServingResponse')
+
+const VectaraStatusCodeSchema = z
+  .enum([
+    'OK',
+    'FAILURE',
+    'UNKNOWN',
+    'INVALID_ARGUMENT',
+    'DEADLINE_EXCEEDED',
+    'ALREADY_EXISTS',
+    'PERMISSION_DENIED',
+    'RESOURCE_EXHAUSTED',
+    'FAILED_PRECONDITION',
+    'ABORTED',
+    'OUT_OF_RANGE',
+    'UNIMPLEMENTED',
+    'INTERNAL',
+    'UNAVAILABLE',
+    'DATA_LOSS',
+    'UNAUTHENTICATED',
+    'BAD_REQUEST',
+    'UNAUTHORIZED',
+    'FORBIDDEN',
+    'NOT_FOUND',
+    'METHOD_NOT_ALLOWED',
+    'CONFLICT',
+    'UNSUPPORTED_MEDIA_TYPE',
+    'TOO_MANY_REQUESTS',
+    'INTERNAL_SERVER_ERROR',
+    'NOT_IMPLEMENTED',
+    'SERVICE_UNAVAILABLE',
+    'INSUFFICIENT_STORAGE',
+    'UNPARSEABLE_RESPONSE',
+    'DISABLED_CUSTOMER',
+    'INVALID_CUSTOMER_ID',
+    'DISABLED_CORPUS',
+    'INVALID_CORPUS_ID',
+    'DISABLED_API_KEY',
+    'EXPIRED_API_KEY',
+    'INVALID_API_KEY',
+    'CMK_INACCESSIBLE',
+    'QRY__DISABLED_CORPUS',
+    'QRY__DOCUMENT_DB_FAILURE',
+    'QRY__ENCODER_FAILURE',
+    'QRY__INTERRUPTED',
+    'QRY__INVALID_CORPUS',
+    'QRY__INVALID_START',
+    'QRY__INVALID_NUM_RESULTS',
+    'QRY__INVALID_CONTEXT',
+    'QRY__MISSING_QUERY',
+    'QRY__MISSING_CORPUS',
+    'QRY__TIMEOUT',
+    'QRY__TOO_MANY_CORPORA',
+    'QRY__TOO_MANY_QUERIES',
+    'QRY__VECTOR_INDEX_FAILURE',
+    'QRY__INVALID_DIMENSION',
+    'QRY__INVALID_CLIENTKEY',
+    'QRY__DECRYPTION_FAILURE',
+    'QRY__INVALID_RERANKER',
+    'QRY__PARTIAL_RERANK',
+    'QRY__RERANK_FAILURE',
+    'QRY__TOO_MANY_RESULT_ROWS',
+    'QRY__PARTIAL_RETRIEVAL',
+    'CX_SPECS__INVALID_JSON',
+    'CX_SPECS__UNREGISTERED_TYPE',
+    'CX_SPECS__MISSING_SPEC',
+    'CX_SPECS__MISSING_TYPE',
+    'CX_SPECS__UNPARSEABLE_SPEC',
+    'ADM__INVALID_CUSTOMER_ID',
+    'ADM__INVALID_CORPUS_ID',
+    'ADM__INVALID_ENCODER_ID',
+    'ADM__INVALID_ROLE_ID',
+    'ADM__ROLE_ALREADY_EXISTS',
+    'ADM__ONLY_ONE_OWNER_SUPPORTED',
+    'ADM__INVALID_PERMISSION',
+    'ADM__ROLECREATION_FAILURE',
+    'ADM__USER_EMAIL_NOT_AVAIALBLE',
+    'ADM__USERNAME_NOT_AVAILABLE',
+    'ADM__SIGNUP_MISSING_NAME',
+    'ADM__SIGNUP_MISSING_ORG',
+    'ADM__SIGNUP_MISSING_EMAIL',
+    'ADM__SIGNUP_MISSING_PAYMENT',
+    'ADM__SIGNUP_MISSING_PLAN',
+    'ADM__SIGNUP_MISSING_PASSWORD',
+    'ADM__SIGNUP_INVALID_NAME',
+    'ADM__SIGNUP_INVALID_ORG',
+    'ADM__SIGNUP_INVALID_EMAIL',
+    'ADM__SIGNUP_INVALID_PAYMENT',
+    'ADM__SIGNUP_INVALID_PLAN',
+    'ADM__SIGNUP_INVALID_PASSWORD',
+    'ADM__SIGNUP_INVALID_ACCOUNT_ALIAS',
+    'ADM__SIGNUP_INVALID_EMAIL_VALIDATION_CODE',
+    'ADM__SIGNUP_MISSING_COUNTRY_CODE',
+    'ADM__SIGNUP_ROOT_EMAIL_NOT_AVAILABLE',
+    'ADM__CUST_MARK_DELETE_FAILED',
+    'ADM__CUST_FAISS_DEALLOC_FAILED',
+    'ADM__CORPUS_LIMIT_REACHED',
+    'ADM__STRIPE_CARD_DECLINED',
+    'ADM__STRIPE_PROCESSING_ERROR',
+    'ADM__EMAIL_VALIDATION_REQUEST_NOT_FOUND',
+    'ADM__EMAIL_NOT_VALIDATED',
+    'ADM__CHANGE_PLAN__NO_CURRENT_PLAN',
+    'ADM__CHANGE_PLAN__REQUIRES_MANUAL_CHANGE',
+    'ADM__CHANGE_PLAN__INVALID_PLAN_ID',
+    'ADM__CHANGE_PLAN__NO_PAYMENT_SOURCE',
+    'ADM__CHANGE_PLAN__INVALID_EFFECTIVE_DATE',
+    'ADM__CHANGE_PLAN__CONFLICTING_CHANGE',
+    'SCM__MISCONFIGURED_CONNECTION',
+    'STATS_DB_READ_FAILURE',
+    'VDB__TEXT_READ_FAILURE',
+    'REBUILD__LOW_RECALL',
+    'REBUILD__INDEX_UPLOAD_FAILURE',
+    'REBUILD__UPDATE_JOURNAL_FAILURE',
+    'REBUILD__UPDATE_FAISSPARAMS_FAILURE',
+    'REBUILD__NO_DATA',
+    'REBUILD__EVALUATION',
+    'IDX__TRANSIENT_PARTIAL_DELETION_FAILURE',
+    'IDX__PERMANENT_PARTIAL_DELETION_FAILURE',
+  ])
+  .default('OK')
+  .openapi('VectaraStatusCode')
+
+const ComvectaraStatusSchema = z
+  .object({
+    code: VectaraStatusCodeSchema.exactOptional(),
+    statusDetail: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ComvectaraStatus')
+
+const ServingResponseSetSchema = z
+  .object({
+    document: z.array(ServingResponseSetDocumentSchema).exactOptional(),
+    response: z.array(ServingResponseSchema).exactOptional(),
+    status: z
+      .array(ComvectaraStatusSchema)
+      .exactOptional()
+      .openapi({ description: 'Potentially multiple warnings.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServingResponseSet')
+
+type ServingBatchQueryResponseType = {
+  metrics?: z.infer<typeof ServingPerformanceMetricsSchema>
+  responseSet?: z.infer<typeof ServingResponseSetSchema>[]
+  status?: z.infer<typeof ComvectaraStatusSchema>[]
+}
 
 const QueryRequestRerankingConfigSchema = z
   .object({
@@ -212,134 +517,6 @@ const AdminCreateCorpusRequestSchema = z
   .object({ corpus: AdminCorpusSchema.exactOptional() })
   .openapi({ required: [] })
   .openapi('AdminCreateCorpusRequest')
-
-const VectaraStatusCodeSchema = z
-  .enum([
-    'OK',
-    'FAILURE',
-    'UNKNOWN',
-    'INVALID_ARGUMENT',
-    'DEADLINE_EXCEEDED',
-    'ALREADY_EXISTS',
-    'PERMISSION_DENIED',
-    'RESOURCE_EXHAUSTED',
-    'FAILED_PRECONDITION',
-    'ABORTED',
-    'OUT_OF_RANGE',
-    'UNIMPLEMENTED',
-    'INTERNAL',
-    'UNAVAILABLE',
-    'DATA_LOSS',
-    'UNAUTHENTICATED',
-    'BAD_REQUEST',
-    'UNAUTHORIZED',
-    'FORBIDDEN',
-    'NOT_FOUND',
-    'METHOD_NOT_ALLOWED',
-    'CONFLICT',
-    'UNSUPPORTED_MEDIA_TYPE',
-    'TOO_MANY_REQUESTS',
-    'INTERNAL_SERVER_ERROR',
-    'NOT_IMPLEMENTED',
-    'SERVICE_UNAVAILABLE',
-    'INSUFFICIENT_STORAGE',
-    'UNPARSEABLE_RESPONSE',
-    'DISABLED_CUSTOMER',
-    'INVALID_CUSTOMER_ID',
-    'DISABLED_CORPUS',
-    'INVALID_CORPUS_ID',
-    'DISABLED_API_KEY',
-    'EXPIRED_API_KEY',
-    'INVALID_API_KEY',
-    'CMK_INACCESSIBLE',
-    'QRY__DISABLED_CORPUS',
-    'QRY__DOCUMENT_DB_FAILURE',
-    'QRY__ENCODER_FAILURE',
-    'QRY__INTERRUPTED',
-    'QRY__INVALID_CORPUS',
-    'QRY__INVALID_START',
-    'QRY__INVALID_NUM_RESULTS',
-    'QRY__INVALID_CONTEXT',
-    'QRY__MISSING_QUERY',
-    'QRY__MISSING_CORPUS',
-    'QRY__TIMEOUT',
-    'QRY__TOO_MANY_CORPORA',
-    'QRY__TOO_MANY_QUERIES',
-    'QRY__VECTOR_INDEX_FAILURE',
-    'QRY__INVALID_DIMENSION',
-    'QRY__INVALID_CLIENTKEY',
-    'QRY__DECRYPTION_FAILURE',
-    'QRY__INVALID_RERANKER',
-    'QRY__PARTIAL_RERANK',
-    'QRY__RERANK_FAILURE',
-    'QRY__TOO_MANY_RESULT_ROWS',
-    'QRY__PARTIAL_RETRIEVAL',
-    'CX_SPECS__INVALID_JSON',
-    'CX_SPECS__UNREGISTERED_TYPE',
-    'CX_SPECS__MISSING_SPEC',
-    'CX_SPECS__MISSING_TYPE',
-    'CX_SPECS__UNPARSEABLE_SPEC',
-    'ADM__INVALID_CUSTOMER_ID',
-    'ADM__INVALID_CORPUS_ID',
-    'ADM__INVALID_ENCODER_ID',
-    'ADM__INVALID_ROLE_ID',
-    'ADM__ROLE_ALREADY_EXISTS',
-    'ADM__ONLY_ONE_OWNER_SUPPORTED',
-    'ADM__INVALID_PERMISSION',
-    'ADM__ROLECREATION_FAILURE',
-    'ADM__USER_EMAIL_NOT_AVAIALBLE',
-    'ADM__USERNAME_NOT_AVAILABLE',
-    'ADM__SIGNUP_MISSING_NAME',
-    'ADM__SIGNUP_MISSING_ORG',
-    'ADM__SIGNUP_MISSING_EMAIL',
-    'ADM__SIGNUP_MISSING_PAYMENT',
-    'ADM__SIGNUP_MISSING_PLAN',
-    'ADM__SIGNUP_MISSING_PASSWORD',
-    'ADM__SIGNUP_INVALID_NAME',
-    'ADM__SIGNUP_INVALID_ORG',
-    'ADM__SIGNUP_INVALID_EMAIL',
-    'ADM__SIGNUP_INVALID_PAYMENT',
-    'ADM__SIGNUP_INVALID_PLAN',
-    'ADM__SIGNUP_INVALID_PASSWORD',
-    'ADM__SIGNUP_INVALID_ACCOUNT_ALIAS',
-    'ADM__SIGNUP_INVALID_EMAIL_VALIDATION_CODE',
-    'ADM__SIGNUP_MISSING_COUNTRY_CODE',
-    'ADM__SIGNUP_ROOT_EMAIL_NOT_AVAILABLE',
-    'ADM__CUST_MARK_DELETE_FAILED',
-    'ADM__CUST_FAISS_DEALLOC_FAILED',
-    'ADM__CORPUS_LIMIT_REACHED',
-    'ADM__STRIPE_CARD_DECLINED',
-    'ADM__STRIPE_PROCESSING_ERROR',
-    'ADM__EMAIL_VALIDATION_REQUEST_NOT_FOUND',
-    'ADM__EMAIL_NOT_VALIDATED',
-    'ADM__CHANGE_PLAN__NO_CURRENT_PLAN',
-    'ADM__CHANGE_PLAN__REQUIRES_MANUAL_CHANGE',
-    'ADM__CHANGE_PLAN__INVALID_PLAN_ID',
-    'ADM__CHANGE_PLAN__NO_PAYMENT_SOURCE',
-    'ADM__CHANGE_PLAN__INVALID_EFFECTIVE_DATE',
-    'ADM__CHANGE_PLAN__CONFLICTING_CHANGE',
-    'SCM__MISCONFIGURED_CONNECTION',
-    'STATS_DB_READ_FAILURE',
-    'VDB__TEXT_READ_FAILURE',
-    'REBUILD__LOW_RECALL',
-    'REBUILD__INDEX_UPLOAD_FAILURE',
-    'REBUILD__UPDATE_JOURNAL_FAILURE',
-    'REBUILD__UPDATE_FAISSPARAMS_FAILURE',
-    'REBUILD__NO_DATA',
-    'REBUILD__EVALUATION',
-    'IDX__TRANSIENT_PARTIAL_DELETION_FAILURE',
-    'IDX__PERMANENT_PARTIAL_DELETION_FAILURE',
-  ])
-  .default('OK')
-  .openapi('VectaraStatusCode')
-
-const ComvectaraStatusSchema = z
-  .object({
-    code: VectaraStatusCodeSchema.exactOptional(),
-    statusDetail: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ComvectaraStatus')
 
 const AdminCreateCorpusResponseSchema = z
   .object({
@@ -557,52 +734,6 @@ const IndexingSectionSchema: z.ZodType<IndexingSectionType> = z
   )
   .openapi('IndexingSection')
 
-const ServingAttributeSchema = z
-  .object({ name: z.string().exactOptional(), value: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('ServingAttribute')
-
-const VectaraservingCustomDimensionSchema = z
-  .object({ name: z.string().exactOptional(), weight: z.float64().exactOptional() })
-  .openapi({ description: 'Defined the weight of a custom dimension at query time.', required: [] })
-  .openapi('VectaraservingCustomDimension')
-
-const ServingCorpusKeySchema = z
-  .object({
-    corpusId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The Corpus ID.' }),
-    customerId: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', description: 'The Customer ID.' }),
-    dim: z
-      .array(VectaraservingCustomDimensionSchema)
-      .exactOptional()
-      .openapi({ description: 'Weights on custom dimensions for the corpus.' }),
-    metadataFilter: z.string().exactOptional(),
-    semantics: CorpusKeySemanticsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ServingCorpusKey')
-
 const ServingQueryRequestSchema = z
   .object({
     corpusKey: z.array(ServingCorpusKeySchema).exactOptional(),
@@ -648,132 +779,7 @@ const ServingBatchQueryRequestSchema = z
   .openapi({ required: [] })
   .openapi('ServingBatchQueryRequest')
 
-const ServingPerformanceMetricsSchema = z
-  .object({
-    queryEncodeMs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'How long it took to encode the query.',
-      }),
-    rerankMs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'How long it took to rerank the results.',
-      }),
-    retrievalMs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'How long it took to retrieve relevant results.',
-      }),
-    userdataRetrievalMs: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'How long it took to retrieve user data.',
-      }),
-  })
-  .openapi({
-    description: 'Basic performance metrics that can be attached to a server response.',
-    required: [],
-  })
-  .openapi('ServingPerformanceMetrics')
-
-const ServingResponseSetDocumentSchema = z
-  .object({
-    id: z.string().exactOptional(),
-    metadata: z.array(ServingAttributeSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ServingResponseSetDocument')
-
-const ServingResponseSchema = z
-  .object({
-    corpusKey: ServingCorpusKeySchema.exactOptional(),
-    documentIndex: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description: 'Use this ID to find the document in the ResponseSet.',
-      }),
-    metadata: z.array(ServingAttributeSchema).exactOptional(),
-    score: z
-      .float32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The score used for ranking results.  The higher the score, the better the match.',
-      }),
-    text: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ServingResponse')
-
-const ServingResponseSetSchema = z
-  .object({
-    document: z.array(ServingResponseSetDocumentSchema).exactOptional(),
-    response: z.array(ServingResponseSchema).exactOptional(),
-    status: z
-      .array(ComvectaraStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'Potentially multiple warnings.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ServingResponseSet')
-
-const ServingBatchQueryResponseSchema = z
+const ServingBatchQueryResponseSchema: z.ZodType<ServingBatchQueryResponseType> = z
   .object({
     metrics: ServingPerformanceMetricsSchema.exactOptional(),
     responseSet: z.array(ServingResponseSetSchema).exactOptional(),
@@ -800,7 +806,9 @@ const VectaraDeleteDocumentRequestSchema = z
   .openapi({ description: 'Request to delete a document from an index.', required: [] })
   .openapi('VectaraDeleteDocumentRequest')
 
-const VectaraDeleteDocumentResponseSchema = z.object({}).openapi('VectaraDeleteDocumentResponse')
+const VectaraDeleteDocumentResponseSchema = z
+  .looseObject({})
+  .openapi('VectaraDeleteDocumentResponse')
 
 const VectaraindexingDocumentSchema = z
   .object({
@@ -1236,7 +1244,7 @@ export const postV1UploadRoute = createRoute({
                     })
                     .exactOptional()
                     .openapi({ required: [] }),
-                  status: z.object({}).exactOptional(),
+                  status: z.looseObject({}).exactOptional(),
                 })
                 .exactOptional()
                 .openapi({ required: [] }),

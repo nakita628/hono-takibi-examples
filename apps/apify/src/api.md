@@ -1,4 +1,4 @@
-<h1 id="apify-api">Apify API v2-2026-11-09T143926Z</h1>
+<h1 id="apify-api">Apify API v2-2026-11-18T151559Z</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -44,9 +44,11 @@ platform.
 ## Authentication
 <span id="/introduction/authentication"></span>
 
-**You can find your API token on the
+**You can create an API token on the
 [Integrations](https://console.apify.com/settings/integrations) page in the
-Apify Console.**
+Apify Console.** The Console shows the token only once, right after you create
+or rotate it, so copy it and store it somewhere safe. For details, see
+[API token](https://docs.apify.com/integrations/api#api-token).
 
 To use your token in a request, either:
 
@@ -524,7 +526,7 @@ License: <a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</
 
 - HTTP Authentication, scheme: bearer Bearer token provided in the `Authorization` header (e.g., `Authorization: Bearer your_token`—recommended). For details, see the [`Authorization` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) on MDN.
 
-Use your API token to authenticate requests. You can find it on the [Integrations page](https://console.apify.com/account#/integrations) in Apify Console. This method is more secure than query parameters, as headers are not logged in browser history or server logs.
+Use your API token to authenticate requests. You can create one on the [Integrations page](https://console.apify.com/settings/integrations) in Apify Console. The Console shows the token only once, right after you create or rotate it, so copy it and store it somewhere safe. This method is more secure than query parameters, as headers are not logged in browser history or server logs.
 
 :::danger Security
 
@@ -542,7 +544,7 @@ For more information, see our [integrations documentation](https://docs.apify.co
 * API Key (apiKey)
     - Parameter Name: **token**, in: query. API token provided as a query parameter (e.g., `?token=your_token`—less secure).
 
-Use your API token to authenticate requests. You can find it on the [Integrations page](https://console.apify.com/account#/integrations) in Apify Console.
+Use your API token to authenticate requests. You can create one on the [Integrations page](https://console.apify.com/settings/integrations) in Apify Console. The Console shows the token only once, right after you create or rotate it, so copy it and store it somewhere safe.
 
 :::danger Security
 
@@ -3014,7 +3016,7 @@ use the [Update Actor](/api/v2/actor-put) endpoint.
 |» » forcePermissionLevel|body|string \| null|false|none|
 |» » » *anyOf*|body|string|false|Determines the permission level that the Actor requires to run. For details, see [Actor permissions](https://docs.apify.com/platform/actors/development/permissions).<br>|
 |» » » *anyOf*|body|null|false|none|
-|» actorStandby|body|object \| null|false|The configuration of the Actor's standby mode. For details, see [Standby mode](https://docs.apify.com/platform/actors/development/programming-interface/standby).|
+|» actorStandby|body|object \| null|false|The configuration of the Actor's standby mode. For details, see [Develop Server Actors](https://docs.apify.com/platform/actors/development/programming-interface/server-actors).|
 |» » *anyOf*|body|object|false|none|
 |» » isEnabled|body|boolean \| null|false|Whether standby mode is enabled for the Actor.|
 |» » desiredRequestsPerActorRun|body|integer \| null|false|Target number of concurrent HTTP requests a single run is configured to handle.|
@@ -9523,7 +9525,7 @@ and removes `beta`, while preserving other existing tags:
 |» taggedBuilds|body|object \| null|false|A dictionary that maps tag names to specific builds. For details, see [Update build tags](#update-build-tags).|
 |» » **additionalProperties**|body|object \| null|false|The name of the build tag.|
 |» » » buildId|body|string|true|The ID of the build to assign to the tag.|
-|» actorStandby|body|object \| null|false|The configuration of the Actor's standby mode. For details, see [Standby mode](https://docs.apify.com/platform/actors/development/programming-interface/standby).|
+|» actorStandby|body|object \| null|false|The configuration of the Actor's standby mode. For details, see [Develop Server Actors](https://docs.apify.com/platform/actors/development/programming-interface/server-actors).|
 |» » *anyOf*|body|object|false|none|
 |» » isEnabled|body|boolean \| null|false|Whether standby mode is enabled for the Actor.|
 |» » desiredRequestsPerActorRun|body|integer \| null|false|Target number of concurrent HTTP requests a single run is configured to handle.|
@@ -63815,7 +63817,7 @@ This operation does not require authentication
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/compass~google-maps-extractor/builds/{buildId}/openapi.json' \
+curl https://api.apify.com/v2/actors/compass~google-maps-extractor/builds/string/openapi.json \
   -H 'Accept: application/json'
 ```
 
@@ -63844,6 +63846,7 @@ You can also use the [Get OpenAPI definition of Actor build](/api/v2/actor-build
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
+|buildId|path|string|true|none|
 
 > Example responses
 
@@ -75018,7 +75021,7 @@ Status Code **201**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -93173,7 +93176,7 @@ Status Code **200**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -96253,7 +96256,7 @@ Status Code **200**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -112824,7 +112827,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-builds/{buildId}/openapi.json' \
+curl https://api.apify.com/v2/actor-builds/string/openapi.json \
   -H 'Accept: application/json'
 ```
 
@@ -112844,6 +112847,12 @@ You can also use the [Get OpenAPI definition of Actor build](/api/v2/actor-opena
 
 :::
 
+
+<h3 id="get-openapi-definition-of-actor-build-1-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|buildId|path|string|true|none|
 
 > Example responses
 
@@ -117451,7 +117460,7 @@ Status Code **200**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -121009,7 +121018,7 @@ Status Code **200**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -127207,7 +127216,10 @@ curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/charge \
 
 Charge for events in the run of your [pay-per-event Actor](/actors/monetize/pay-per-event).
 The event you are charging for must be one of the configured events in your Actor. If the Actor is not set up as pay per event, or if the event is not configured,
-the endpoint will return an error. The endpoint must be called from the Actor run itself, with the same API token that the run was started with.
+the endpoint will return an error. The endpoint must be called from the Actor run itself, with the API token provided to the run at startup in the `APIFY_TOKEN` environment variable.
+
+To charge a request to a multi-tenant Server Actor, set `requestId` to the request's `X-Actor-Request-ID` header value.
+See [Charge for a request](/actors/monetize/server-actors#charge-for-a-request).
 
 
 > Body parameter
@@ -127228,7 +127240,7 @@ the endpoint will return an error. The endpoint must be called from the Actor ru
 |body|body|object|true|Define which event, and how many times, you want to charge for.|
 |» eventName|body|string|true|none|
 |» count|body|integer|true|none|
-|» requestId|body|string|false|ID of the Server Actor request being charged, from the `X-Actor-Request-ID` header of the incoming request. Required for multi-tenant Server Actor runs, where it identifies the request the charge belongs to.|
+|» requestId|body|string|false|ID of the Server Actor request being charged, from the `X-Actor-Request-ID` header of the incoming request. Required for multi-tenant Server Actor runs, where it identifies the request the charge belongs to. Runs of single-tenant Server Actors ignore it.|
 
 > Example responses
 
@@ -158978,7 +158990,7 @@ Status Code **201**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -178792,7 +178804,7 @@ Status Code **200**
 |» » PROXY_UNBLOCKER_UNITS|number \| null|false|none|none|
 |» » *anyOf*|null|false|none|none|
 |» usageTotalUsd|number \| null|false|none|Total cost in USD for this run. Represents what you actually pay. For run owners: includes platform usage (compute units) and/or event costs depending on the Actor's pricing model. For run non-owners: only available for pay-per-event Actors (event costs only). Requires authentication token to access.|
-|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay-per-usage or pay-per-event with usage costs like Standby Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
+|» usageUsd|object \| null|false|none|Platform usage costs breakdown in USD. Only present if you own the run and are paying for platform usage (pay per usage, or pay per event with usage costs, such as runs of single-tenant Server Actors). Not available for standard pay-per-event Actors. Requires authentication token to access.|
 |» » *anyOf*|object|false|none|Resource usage costs in USD. All values are monetary amounts in US dollars.|
 |» » ACTOR_COMPUTE_UNITS|number \| null|false|none|none|
 |» » DATASET_READS|number \| null|false|none|none|
@@ -186064,6 +186076,235 @@ Status Code **429**
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
 |201|Location|string||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Get dataset items
+
+<a id="opIddataset_items_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/datasets/string/items \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/datasets/{datasetId}/items`
+
+Returns data stored in the dataset in a desired format.
+
+### Response format
+
+The format of the response depends on <code>format</code> query parameter.
+
+The <code>format</code> parameter can have one of the following values:
+<code>json</code>, <code>jsonl</code>, <code>xml</code>, <code>html</code>,
+<code>csv</code>, <code>xlsx</code> and <code>rss</code>.
+
+The following table describes how each format is treated.
+
+<table>
+  <tr>
+    <th>Format</th>
+    <th>Items</th>
+  </tr>
+  <tr>
+    <td><code>json</code></td>
+    <td rowspan="3">The response is a JSON, JSONL or XML array of raw item objects.</td>
+  </tr>
+  <tr>
+    <td><code>jsonl</code></td>
+  </tr>
+  <tr>
+    <td><code>xml</code></td>
+  </tr>
+  <tr>
+    <td><code>html</code></td>
+    <td rowspan="3">The response is a HTML, CSV or XLSX table, where columns correspond to the
+    properties of the item and rows correspond to each dataset item.</td>
+  </tr>
+  <tr>
+    <td><code>csv</code></td>
+  </tr>
+  <tr>
+    <td><code>xlsx</code></td>
+  </tr>
+  <tr>
+    <td><code>rss</code></td>
+    <td colspan="2">The response is a RSS file. Each item is displayed as child elements of one
+    <code>&lt;item&gt;</code>.</td>
+  </tr>
+</table>
+
+Note that CSV, XLSX and HTML tables are limited to 2000 columns and the column names cannot be longer than 200 characters.
+JSON, XML and RSS formats do not have such restrictions.
+
+### Hidden fields
+
+The top-level fields starting with the `#` character are considered hidden.
+These are useful to store debugging information and can be omitted from the output by providing the `skipHidden=1` or `clean=1` query parameters.
+For example, if you store the following object to the dataset:
+
+```
+{
+    productName: "iPhone Xs",
+    description: "Welcome to the big screens."
+    #debug: {
+        url: "https://www.apple.com/lae/iphone-xs/",
+        crawledAt: "2019-01-21T16:06:03.683Z"
+    }
+}
+```
+
+The `#debug` field will be considered as hidden and can be omitted from the
+results. This is useful to
+provide nice cleaned data to end users, while keeping debugging info
+available if needed. The Dataset object
+returned by the API contains the number of such clean items in the`dataset.cleanItemCount` property.
+
+### XML format extension
+
+When exporting results to XML or RSS formats, the names of object properties become XML tags and the corresponding values become tag's children. For example, the following JavaScript object:
+
+```
+{
+    name: "Paul Newman",
+    address: [
+        { type: "home", street: "21st", city: "Chicago" },
+        { type: "office", street: null, city: null }
+    ]
+}
+```
+
+will be transformed to the following XML snippet:
+
+```
+<name>Paul Newman</name>
+<address>
+  <type>home</type>
+  <street>21st</street>
+  <city>Chicago</city>
+</address>
+<address>
+  <type>office</type>
+  <street/>
+  <city/>
+</address>
+```
+
+If the JavaScript object contains a property named `@` then its sub-properties are exported as attributes of the parent XML
+element.
+If the parent XML element does not have any child elements then its value is taken from a JavaScript object property named `#`.
+
+For example, the following JavaScript object:
+
+```
+{
+  "address": [{
+    "@": {
+      "type": "home"
+    },
+    "street": "21st",
+    "city": "Chicago"
+  },
+  {
+    "@": {
+      "type": "office"
+    },
+    "#": 'unknown'
+  }]
+}
+```
+
+will be transformed to the following XML snippet:
+
+```
+<address type="home">
+  <street>21st</street>
+  <city>Chicago</city>
+</address>
+<address type="office">unknown</address>
+```
+
+This feature is also useful to customize your RSS feeds generated for various websites.
+
+By default the whole result is wrapped in a `<items>` element and each page object is wrapped in a `<item>` element.
+You can change this using <code>xmlRoot</code> and <code>xmlRow</code> url parameters.
+
+### Pagination
+
+The generated response supports [pagination](#/introduction/pagination).
+The pagination is always performed with the granularity of a single item, regardless whether <code>unwind</code> parameter was provided.
+By default, the **Items** in the response are sorted by the time they were stored to the database, therefore you can use pagination to incrementally fetch the items as they are being added.
+No limit exists to how many items can be returned in one response.
+
+If you specify `desc=1` query parameter, the results are returned in the reverse order than they were stored (i.e. from newest to oldest items).
+Note that only the order of **Items** is reversed, but not the order of the `unwind` array elements.
+
+
+<h3 id="get-dataset-items-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Store items in dataset
+
+<a id="opIddataset_items_post"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/datasets/WkzbQMuFYuamGv3YF/items \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v2/datasets/{datasetId}/items`
+
+Appends an item or an array of items to the end of the dataset.
+The POST payload is a JSON object or a JSON array of objects to save into the dataset.
+
+If the data you attempt to store in the dataset is invalid (meaning any of the items received by the API fails the validation), the whole request is discarded and the API will return a response with status code 400.
+For more information about dataset schema validation, see [Dataset schema](https://docs.apify.com/platform/actors/development/actor-definition/dataset-schema/validation).
+
+**IMPORTANT:** The limit of request payload size for the dataset is 5 MB. If the array exceeds the size, you'll need to split it into a number of smaller arrays.
+
+To save bandwidth and speed up your upload, you can send the request payload compressed and set the `Content-Encoding` header accordingly.
+
+Below is a list of supported `Content-Encoding` types.
+
+* Brotli: `Content-Encoding: br`
+* Gzip: `Content-Encoding: gzip`
+* Zstandard: `Content-Encoding: zstd`
+* Deflate: `Content-Encoding: deflate`
+
+
+<h3 id="store-items-in-dataset-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetId|path|string|true|Dataset ID or `username~dataset-name`.|
+|Content-Encoding|header|string|false|Compression encoding of the request body.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|Content-Encoding|br|
+|Content-Encoding|gzip|
+|Content-Encoding|zstd|
+|Content-Encoding|deflate|
+|Content-Encoding|identity|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -195427,6 +195668,124 @@ Status Code **429**
 |Status|Header|Type|Format|Description|
 |---|---|---|---|---|
 |201|Location|string||none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Batch add requests to request queue
+
+<a id="opIdrequestQueue_requests_batch_post"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/batch \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v2/request-queues/{queueId}/requests/batch`
+
+Adds requests to the queue in batch. The maximum requests in batch is limited
+to 25. The response contains an array of unprocessed and processed requests.
+If any add operation fails because the request queue rate limit is exceeded
+or an internal failure occurs,
+the failed request is returned in the unprocessedRequests response
+parameter.
+You can resend these requests to add. It is recommended to use an
+exponential backoff algorithm for these retries.
+If a request with the same `uniqueKey` was already present in the queue,
+then it returns an ID of the existing request.
+
+
+<h3 id="batch-add-requests-to-request-queue-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queueId|path|string|true|Queue ID or `username~queue-name`.|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+<h1 id="apify-api-storagerequest-queuesrequests">Storage/Request queues/Requests</h1>
+
+This section describes API endpoints to create, manage, and delete requests within request queues.
+
+Request queue is a storage for a queue of HTTP URLs to crawl, which is typically
+used for deep crawling of websites where you
+start with several URLs and then recursively follow links to other pages.
+The storage supports both breadth-first and depth-first crawling orders.
+
+For more information, see the [Request queue documentation](https://docs.apify.com/platform/storage/request-queue).
+
+:::note
+
+Some of the endpoints do not require the authentication token, the calls
+are authenticated using the hard-to-guess ID of the queue.
+
+:::
+
+
+## Get request from request queue
+
+<a id="opIdrequestQueue_request_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/xpsmkDlspokDSmklS \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/request-queues/{queueId}/requests/{requestId}`
+
+Returns request from queue.
+
+<h3 id="get-request-from-request-queue-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queueId|path|string|true|Queue ID or `username~queue-name`.|
+|requestId|path|string|true|Request ID.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Update request in request queue
+
+<a id="opIdrequestQueue_request_put"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/xpsmkDlspokDSmklS \
+  -X PUT \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v2/request-queues/{queueId}/requests/{requestId}`
+
+Updates a request in a queue. Mark request as handled by setting
+`request.handledAt = new Date()`.
+If `handledAt` is set, the request will be removed from head of the queue (and unlocked, if applicable).
+
+
+<h3 id="update-request-in-request-queue-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queueId|path|string|true|Queue ID or `username~queue-name`.|
+|requestId|path|string|true|Request ID.|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -224220,7 +224579,7 @@ Status Code **201**
 |» title|string \| null|false|none|none|
 |» notifications|object|false|none|Notification settings for this schedule.|
 |» » email|boolean|false|none|none|
-|» uiState|object|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.|
+|» uiState|object \| null|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.|
 |» » version|integer|false|none|Version of the editor state format.|
 |» » data|object|false|none|Editor form values, such as the frequency settings the cron expression was built from.|
 |» » » cronExpression|string|false|none|none|
@@ -228222,7 +228581,7 @@ Status Code **200**
 |» title|string \| null|false|none|none|
 |» notifications|object|false|none|Notification settings for this schedule.|
 |» » email|boolean|false|none|none|
-|» uiState|object|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.|
+|» uiState|object \| null|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.|
 |» » version|integer|false|none|Version of the editor state format.|
 |» » data|object|false|none|Editor form values, such as the frequency settings the cron expression was built from.|
 |» » » cronExpression|string|false|none|none|
@@ -231129,7 +231488,7 @@ Status Code **200**
 |» title|string \| null|false|none|none|
 |» notifications|object|false|none|Notification settings for this schedule.|
 |» » email|boolean|false|none|none|
-|» uiState|object|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`.|
+|» uiState|object \| null|false|none|State of the schedule editor in Apify Console. It's removed when an API update changes `cronExpression` or `timezone`, after which it is `null`.|
 |» » version|integer|false|none|Version of the editor state format.|
 |» » data|object|false|none|Editor form values, such as the frequency settings the cron expression was built from.|
 |» » » cronExpression|string|false|none|none|
@@ -245110,6 +245469,73 @@ Status Code **200**
 |» createdAt|string(date-time)|false|none|none|
 |» isPaying|boolean|false|none|none|
 |» organizationOwnerUserId|string \| null|false|none|ID of the user who owns the organization. Present only for organization accounts.|
+|*anyOf*|object|false|none|none|
+|data|object|true|none|Reduced user data with only the fields Apify Proxy reads.|
+|» plan|object|true|none|none|
+|» » availableProxyGroups|object|true|none|A dictionary mapping proxy group names to the number of available proxies in each group.<br>The keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are<br>the count of available proxies.<br>|
+|» » » **additionalProperties**|integer|false|none|The number of available proxies in this group.|
+|» effectivePlatformFeatures|object|true|none|none|
+|» » ACTORS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » STORAGE|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » SCHEDULER|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_EXTERNAL_ACCESS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_RESIDENTIAL|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_SERPS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » WEBHOOKS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » ACTORS_PUBLIC_ALL|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » ACTORS_PUBLIC_DEVELOPER|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» isPaying|boolean|true|none|none|
 
 #### Enumerated Values
 
@@ -247464,6 +247890,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|*anyOf*|object|false|none|none|
 |data|object|true|none|none|
 |» id|string|false|none|none|
 |» username|string|true|none|none|
@@ -247585,6 +248012,73 @@ Status Code **200**
 |» createdAt|string(date-time)|false|none|none|
 |» isPaying|boolean|false|none|none|
 |» organizationOwnerUserId|string \| null|false|none|ID of the user who owns the organization. Present only for organization accounts.|
+|*anyOf*|object|false|none|none|
+|data|object|true|none|Reduced user data with only the fields Apify Proxy reads.|
+|» plan|object|true|none|none|
+|» » availableProxyGroups|object|true|none|A dictionary mapping proxy group names to the number of available proxies in each group.<br>The keys are proxy group names (e.g., "RESIDENTIAL", "DATACENTER") and values are<br>the count of available proxies.<br>|
+|» » » **additionalProperties**|integer|false|none|The number of available proxies in this group.|
+|» effectivePlatformFeatures|object|true|none|none|
+|» » ACTORS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » STORAGE|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » SCHEDULER|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_EXTERNAL_ACCESS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_RESIDENTIAL|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » PROXY_SERPS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » WEBHOOKS|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » ACTORS_PUBLIC_ALL|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» » ACTORS_PUBLIC_DEVELOPER|object|true|none|none|
+|» » » isEnabled|boolean|true|none|none|
+|» » » disabledReason|string \| null|true|none|none|
+|» » » disabledReasonType|string \| null|true|none|none|
+|» » » isTrial|boolean|true|none|none|
+|» » » trialExpirationAt|string \| null(date-time)|true|none|none|
+|» isPaying|boolean|true|none|none|
 
 #### Enumerated Values
 
@@ -280873,6 +281367,36 @@ The API endpoints described in this section are convenience endpoints that provi
 Subset of functionality described in: [Datasets](/api/v2/storage-datasets)
 
 
+## Get the default dataset of an Actor run
+
+<a id="opIdactorRun_dataset_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/string/dataset \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-runs/{runId}/dataset`
+
+Returns the default dataset associated with an Actor run.
+
+This endpoint is a shortcut for getting the run's `defaultDatasetId` and then using the
+[Get dataset](/api/v2/dataset-get) endpoint.
+
+
+<h3 id="get-the-default-dataset-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 ## Get the default dataset statistics for an Actor run
 
 <a id="opIdactorRun_dataset_statistics_get"></a>
@@ -280903,12 +281427,178 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
+<h1 id="apify-api-default-key-value-store">Default key-value store</h1>
+
+The API endpoints described in this section are convenience endpoints that provide access to Actor run's default key-value store without the need to resolve the key-value store ID first.
+
+Subset of functionality described in: [Key-value stores](/api/v2/storage-key-value-stores)
+
+
+## Get the default key-value store of an Actor run
+
+<a id="opIdactorRun_keyValueStore_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/string/key-value-store \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-runs/{runId}/key-value-store`
+
+Gets an object that contains all the details about the default key-value
+store.
+
+This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
+[Get key-value store](/api/v2/key-value-store-get) endpoint.
+
+
+<h3 id="get-the-default-key-value-store-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 <h1 id="apify-api-default-request-queue">Default request queue</h1>
 
 The API endpoints described in this section are convenience endpoints that provide access to Actor run's default request queue without the need to resolve the request queue ID first.
 
 Subset of functionality described in: [Request queues](/api/v2/storage-request-queues)
 
+
+## Get the default request queue of an Actor run
+
+<a id="opIdactorRun_requestQueue_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/string/request-queue \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-runs/{runId}/request-queue`
+
+Returns the default request queue associated with an Actor run.
+
+This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
+[Get request queue](/api/v2/request-queue-get) endpoint.
+
+
+<h3 id="get-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Batch add requests to the default request queue of an Actor run
+
+<a id="opIdactorRun_requestQueue_requests_batch_post"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/batch \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v2/actor-runs/{runId}/request-queue/requests/batch`
+
+Adds requests to the default request queue of the Actor run in batch.
+
+This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
+[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
+
+
+<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|Actor run ID.|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Get request from the default request queue of an Actor run
+
+<a id="opIdactorRun_requestQueue_request_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/xpsmkDlspokDSmklS \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-runs/{runId}/request-queue/requests/{requestId}`
+
+Returns a request from the default request queue of the Actor run.
+
+This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
+[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
+
+
+<h3 id="get-request-from-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|Actor run ID.|
+|requestId|path|string|true|Request ID.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Update request in the default request queue of an Actor run
+
+<a id="opIdactorRun_requestQueue_request_put"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/xpsmkDlspokDSmklS \
+  -X PUT \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v2/actor-runs/{runId}/request-queue/requests/{requestId}`
+
+Updates a request in the default request queue of the Actor run.
+
+This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
+[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
+
+
+<h3 id="update-request-in-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|Actor run ID.|
+|requestId|path|string|true|Request ID.|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
 
 ## Get and lock the default request queue head for an Actor run
 
@@ -280951,6 +281641,36 @@ The API endpoints described in this section are convenience endpoints that provi
 
 Subset of functionality described in: [Datasets](/api/v2/storage-datasets)
 
+
+## Get the default dataset of an Actor's last run
+
+<a id="opIdactor_runs_last_dataset_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/string/runs/last/dataset \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actors/{actorId}/runs/last/dataset`
+
+Returns the default dataset associated with the last Actor run.
+
+This endpoint is a shortcut for getting the last run's `defaultDatasetId` and then using the
+[Get dataset](/api/v2/dataset-get) endpoint.
+
+
+<h3 id="get-the-default-dataset-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
 
 ## Get the default dataset statistics for an Actor's last run
 
@@ -281000,12 +281720,231 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
+<h1 id="apify-api-last-actor-runs-default-key-value-store">Last Actor run's default key-value store</h1>
+
+The API endpoints described in this section are convenience endpoints that provide access to Actor's last run's default key-value store without the need to resolve the key-value store ID first.
+
+Subset of functionality described in: [Key-value stores](/api/v2/storage-key-value-stores)
+
+
+## Get the default key-value store of an Actor's last run
+
+<a id="opIdactor_runs_last_keyValueStore_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/string/runs/last/key-value-store \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actors/{actorId}/runs/last/key-value-store`
+
+Gets an object that contains all the details about the default key-value store associated with the last Actor run.
+
+This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
+[Get key-value store](/api/v2/key-value-store-get) endpoint.
+
+
+<h3 id="get-the-default-key-value-store-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 <h1 id="apify-api-last-actor-runs-default-request-queue">Last Actor run's default request queue</h1>
 
 The API endpoints described in this section are convenience endpoints that provide access to Actor's last run's default request queue without the need to resolve the request queue ID first.
 
 Subset of functionality described in: [Request queues](/api/v2/storage-request-queues)
 
+
+## Get the default request queue of an Actor's last run
+
+<a id="opIdactor_runs_last_requestQueue_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/string/runs/last/request-queue \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actors/{actorId}/runs/last/request-queue`
+
+Returns the default request queue associated with the last Actor run.
+
+This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
+[Get request queue](/api/v2/request-queue-get) endpoint.
+
+
+<h3 id="get-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Batch add requests to the default request queue of an Actor's last run
+
+<a id="opIdactor_runs_last_requestQueue_requests_batch_post"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/batch \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v2/actors/{actorId}/runs/last/request-queue/requests/batch`
+
+Adds requests to the default request queue of the last Actor run in batch.
+
+This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
+[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
+
+
+<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Get request from the default request queue of an Actor's last run
+
+<a id="opIdactor_runs_last_requestQueue_request_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actors/{actorId}/runs/last/request-queue/requests/{requestId}`
+
+Returns a request from the default request queue of the last Actor run.
+
+This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
+[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
+
+
+<h3 id="get-request-from-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|requestId|path|string|true|Request ID.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Update request in the default request queue of an Actor's last run
+
+<a id="opIdactor_runs_last_requestQueue_request_put"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
+  -X PUT \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v2/actors/{actorId}/runs/last/request-queue/requests/{requestId}`
+
+Updates a request in the default request queue of the last Actor run.
+
+This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
+[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
+
+
+<h3 id="update-request-in-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|requestId|path|string|true|Request ID.|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
 
 ## Get and lock the default request queue head for an Actor's last run
 
@@ -281537,6 +282476,36 @@ The API endpoints described in this section are convenience endpoints that provi
 Subset of functionality described in: [Datasets](/api/v2/storage-datasets)
 
 
+## Get the default dataset of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_dataset_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/dataset \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-tasks/{actorTaskId}/runs/last/dataset`
+
+Returns the default dataset associated with the last Actor task run.
+
+This endpoint is a shortcut for getting the last task run's `defaultDatasetId` and then using the
+[Get dataset](/api/v2/dataset-get) endpoint.
+
+
+<h3 id="get-the-default-dataset-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 ## Get the default dataset statistics for an Actor task's last run
 
 <a id="opIdactorTask_runs_last_dataset_statistics_get"></a>
@@ -281585,12 +282554,79 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
+<h1 id="apify-api-last-actor-task-runs-default-key-value-store">Last Actor task run's default key-value store</h1>
+
+The API endpoints described in this section are convenience endpoints that provide access to Actor task's last run's default key-value store without the need to resolve the key-value store ID first.
+
+Subset of functionality described in: [Key-value stores](/api/v2/storage-key-value-stores)
+
+
+## Get the default key-value store of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_keyValueStore_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/key-value-store \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-tasks/{actorTaskId}/runs/last/key-value-store`
+
+Gets an object that contains all the details about the default key-value store of the last Actor task run.
+
+This endpoint is a shortcut for getting the last task run's `defaultKeyValueStoreId` and then using the
+[Get key-value store](/api/v2/key-value-store-get) endpoint.
+
+
+<h3 id="get-the-default-key-value-store-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 <h1 id="apify-api-last-actor-task-runs-default-request-queue">Last Actor task run's default request queue</h1>
 
 The API endpoints described in this section are convenience endpoints that provide access to Actor task's last run's default request queue without the need to resolve the request queue ID first.
 
 Subset of functionality described in: [Request queues](/api/v2/storage-request-queues)
 
+
+## Get the default request queue of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_requestQueue_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/request-queue \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-tasks/{actorTaskId}/runs/last/request-queue`
+
+Returns the default request queue associated with the last Actor task run.
+
+This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
+[Get request queue](/api/v2/request-queue-get) endpoint.
+
+
+<h3 id="get-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
 
 ## Get and lock the default request queue head for an Actor task's last run
 
@@ -281645,6 +282681,158 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
+## Batch add requests to the default request queue of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_requestQueue_requests_batch_post"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/batch \
+  -X POST \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`POST /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/batch`
+
+Adds requests to the default request queue of the last Actor task run in batch.
+
+This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
+[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
+
+
+<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Get request from the default request queue of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_requestQueue_request_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/{requestId}`
+
+Returns a request from the default request queue of the last Actor task run.
+
+This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
+[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
+
+
+<h3 id="get-request-from-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|requestId|path|string|true|Request ID.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
+## Update request in the default request queue of an Actor task's last run
+
+<a id="opIdactorTask_runs_last_requestQueue_request_put"></a>
+
+> Code samples
+
+```bash
+curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
+  -X PUT \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`PUT /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/{requestId}`
+
+Updates a request in the default request queue of the last Actor task run.
+
+This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
+[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
+
+
+<h3 id="update-request-in-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
+|status|query|string|false|Filter for the run status.|
+|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
+|requestId|path|string|true|Request ID.|
+|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|origin|DEVELOPMENT|
+|origin|WEB|
+|origin|API|
+|origin|SCHEDULER|
+|origin|TEST|
+|origin|WEBHOOK|
+|origin|ACTOR|
+|origin|CLI|
+|origin|CI|
+|origin|STANDBY|
+|origin|MCP|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+httpBearer, apiKey
+</aside>
+
 <h1 id="apify-api-default">Default</h1>
 
 ## Update Actor version
@@ -281654,7 +282842,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/versions/{versionNumber}' \
+curl https://api.apify.com/v2/actors/string/versions/string \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281681,6 +282869,13 @@ The response is the `Version` object as
 returned by the [Get Actor version](/api/v2/actor-version-get) endpoint.
 
 
+<h3 id="update-actor-version-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+|versionNumber|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -281693,7 +282888,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/versions/{versionNumber}' \
+curl https://api.apify.com/v2/actors/string/versions/string \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281703,6 +282898,13 @@ curl 'https://api.apify.com/v2/actors/{actorId}/versions/{versionNumber}' \
 Updates Actor version using values specified by a `Version` object passed as JSON in the POST payload.
 This endpoint is an alias for the [Update Actor version](/api/v2/actor-version-put) endpoint and behaves identically.
 
+
+<h3 id="update-actor-version-post-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+|versionNumber|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -281716,7 +282918,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/versions/{versionNumber}/env-vars/{envVarName}' \
+curl https://api.apify.com/v2/actors/string/versions/string/env-vars/string \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281741,6 +282943,14 @@ The response is the `EnvVar` object as returned by the
 endpoint.
 
 
+<h3 id="update-environment-variable-in-actor-version-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+|versionNumber|path|string|true|none|
+|envVarName|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -281753,7 +282963,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/versions/{versionNumber}/env-vars/{envVarName}' \
+curl https://api.apify.com/v2/actors/string/versions/string/env-vars/string \
   -X POST \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281766,29 +282976,13 @@ passed as JSON in the POST payload.
 This endpoint is an alias for the [Update environment variable in Actor version](/api/v2/actor-version-env-var-put) endpoint and behaves identically.
 
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
+<h3 id="update-environment-variable-in-actor-version-post-parameters">Parameters</h3>
 
-## Get the default dataset of an Actor's last run
-
-<a id="opIdactor_runs_last_dataset_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/dataset' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actors/{actorId}/runs/last/dataset`
-
-Returns the default dataset associated with the last Actor run.
-
-This endpoint is a shortcut for getting the last run's `defaultDatasetId` and then using the
-[Get dataset](/api/v2/dataset-get) endpoint.
-
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+|versionNumber|path|string|true|none|
+|envVarName|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -281802,7 +282996,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/dataset' \
+curl https://api.apify.com/v2/actors/string/runs/last/dataset \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281814,6 +283008,12 @@ Updates the default dataset associated with the last Actor run.
 This endpoint is a shortcut for getting the last run's `defaultDatasetId` and then using the
 [Update dataset](/api/v2/dataset-put) endpoint.
 
+
+<h3 id="update-the-default-dataset-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -281827,7 +283027,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/dataset' \
+curl https://api.apify.com/v2/actors/string/runs/last/dataset \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -281839,6 +283039,12 @@ Deletes the default dataset associated with the last Actor run.
 This endpoint is a shortcut for getting the last run's `defaultDatasetId` and then using the
 [Delete dataset](/api/v2/dataset-delete) endpoint.
 
+
+<h3 id="delete-the-default-dataset-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -281981,30 +283187,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default key-value store of an Actor's last run
-
-<a id="opIdactor_runs_last_keyValueStore_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/key-value-store' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actors/{actorId}/runs/last/key-value-store`
-
-Gets an object that contains all the details about the default key-value store associated with the last Actor run.
-
-This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
-[Get key-value store](/api/v2/key-value-store-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default key-value store of an Actor's last run
 
 <a id="opIdactor_runs_last_keyValueStore_put"></a>
@@ -282012,7 +283194,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/key-value-store' \
+curl https://api.apify.com/v2/actors/string/runs/last/key-value-store \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -282026,6 +283208,12 @@ This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and t
 [Update key-value store](/api/v2/key-value-store-put) endpoint.
 
 
+<h3 id="update-the-default-key-value-store-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -282038,7 +283226,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/key-value-store' \
+curl https://api.apify.com/v2/actors/string/runs/last/key-value-store \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -282050,6 +283238,12 @@ Deletes the last Actor run key-value store.
 This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
 [Delete key-value store](/api/v2/key-value-store-delete) endpoint.
 
+
+<h3 id="delete-the-default-key-value-store-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -282373,30 +283567,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default request queue of an Actor's last run
-
-<a id="opIdactor_runs_last_requestQueue_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/request-queue' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actors/{actorId}/runs/last/request-queue`
-
-Returns the default request queue associated with the last Actor run.
-
-This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
-[Get request queue](/api/v2/request-queue-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default request queue of an Actor's last run
 
 <a id="opIdactor_runs_last_requestQueue_put"></a>
@@ -282404,7 +283574,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/request-queue' \
+curl https://api.apify.com/v2/actors/string/runs/last/request-queue \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -282416,6 +283586,12 @@ Updates the default request queue associated with the last Actor run.
 This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
 [Update request queue](/api/v2/request-queue-put) endpoint.
 
+
+<h3 id="update-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -282429,7 +283605,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actors/{actorId}/runs/last/request-queue' \
+curl https://api.apify.com/v2/actors/string/runs/last/request-queue \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -282441,6 +283617,12 @@ Deletes the default request queue associated with the last Actor run.
 This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
 [Delete request queue](/api/v2/request-queue-delete) endpoint.
 
+
+<h3 id="delete-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -282553,57 +283735,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Batch add requests to the default request queue of an Actor's last run
-
-<a id="opIdactor_runs_last_requestQueue_requests_batch_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/batch \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /v2/actors/{actorId}/runs/last/request-queue/requests/batch`
-
-Adds requests to the default request queue of the last Actor run in batch.
-
-This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
-[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
-
-
-<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Batch delete requests from the default request queue of an Actor's last run
 
 <a id="opIdactor_runs_last_requestQueue_requests_batch_delete"></a>
@@ -282682,107 +283813,6 @@ This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` a
 |actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
 |status|query|string|false|Filter for the run status.|
 |origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Get request from the default request queue of an Actor's last run
-
-<a id="opIdactor_runs_last_requestQueue_request_get"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actors/{actorId}/runs/last/request-queue/requests/{requestId}`
-
-Returns a request from the default request queue of the last Actor run.
-
-This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
-[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
-
-
-<h3 id="get-request-from-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|requestId|path|string|true|Request ID.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Update request in the default request queue of an Actor's last run
-
-<a id="opIdactor_runs_last_requestQueue_request_put"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actors/compass~google-maps-extractor/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
-  -X PUT \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`PUT /v2/actors/{actorId}/runs/last/request-queue/requests/{requestId}`
-
-Updates a request in the default request queue of the last Actor run.
-
-This endpoint is a shortcut for getting the last run's `defaultRequestQueueId` and then using the
-[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
-
-
-<h3 id="update-request-in-the-default-request-queue-of-an-actors-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorId|path|string|true|Actor ID or the username of the Actor owner and the Actor name, separated by a tilde (`~`).|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|requestId|path|string|true|Request ID.|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
 |clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 
 #### Enumerated Values
@@ -283012,30 +284042,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default dataset of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_dataset_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/dataset' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-tasks/{actorTaskId}/runs/last/dataset`
-
-Returns the default dataset associated with the last Actor task run.
-
-This endpoint is a shortcut for getting the last task run's `defaultDatasetId` and then using the
-[Get dataset](/api/v2/dataset-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default dataset of an Actor task's last run
 
 <a id="opIdactorTask_runs_last_dataset_put"></a>
@@ -283043,7 +284049,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/dataset' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/dataset \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283055,6 +284061,12 @@ Updates the default dataset associated with the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultDatasetId` and then using the
 [Update dataset](/api/v2/dataset-put) endpoint.
 
+
+<h3 id="update-the-default-dataset-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283068,7 +284080,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/dataset' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/dataset \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283080,6 +284092,12 @@ Deletes the default dataset associated with the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultDatasetId` and then using the
 [Delete dataset](/api/v2/dataset-delete) endpoint.
 
+
+<h3 id="delete-the-default-dataset-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283222,30 +284240,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default key-value store of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_keyValueStore_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/key-value-store' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-tasks/{actorTaskId}/runs/last/key-value-store`
-
-Gets an object that contains all the details about the default key-value store of the last Actor task run.
-
-This endpoint is a shortcut for getting the last task run's `defaultKeyValueStoreId` and then using the
-[Get key-value store](/api/v2/key-value-store-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default key-value store of an Actor task's last run
 
 <a id="opIdactorTask_runs_last_keyValueStore_put"></a>
@@ -283253,7 +284247,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/key-value-store' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/key-value-store \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283265,6 +284259,12 @@ Updates the default key-value store associated with the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultKeyValueStoreId` and then using the
 [Update key-value store](/api/v2/key-value-store-put) endpoint.
 
+
+<h3 id="update-the-default-key-value-store-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283278,7 +284278,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/key-value-store' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/key-value-store \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283290,6 +284290,12 @@ Deletes the default key-value store of the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultKeyValueStoreId` and then using the
 [Delete key-value store](/api/v2/key-value-store-delete) endpoint.
 
+
+<h3 id="delete-the-default-key-value-store-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283613,30 +284619,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default request queue of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_requestQueue_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/request-queue' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-tasks/{actorTaskId}/runs/last/request-queue`
-
-Returns the default request queue associated with the last Actor task run.
-
-This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
-[Get request queue](/api/v2/request-queue-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default request queue of an Actor task's last run
 
 <a id="opIdactorTask_runs_last_requestQueue_put"></a>
@@ -283644,7 +284626,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/request-queue' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/request-queue \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283656,6 +284638,12 @@ Updates the default request queue associated with the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
 [Update request queue](/api/v2/request-queue-put) endpoint.
 
+
+<h3 id="update-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283669,7 +284657,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-tasks/{actorTaskId}/runs/last/request-queue' \
+curl https://api.apify.com/v2/actor-tasks/string/runs/last/request-queue \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -283681,6 +284669,12 @@ Deletes the default request queue associated with the last Actor task run.
 This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
 [Delete request queue](/api/v2/request-queue-delete) endpoint.
 
+
+<h3 id="delete-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|actorTaskId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -283843,57 +284837,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Batch add requests to the default request queue of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_requestQueue_requests_batch_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/batch \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/batch`
-
-Adds requests to the default request queue of the last Actor task run in batch.
-
-This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
-[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
-
-
-<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Batch delete requests from the default request queue of an Actor task's last run
 
 <a id="opIdactorTask_runs_last_requestQueue_requests_batch_delete"></a>
@@ -283972,107 +284915,6 @@ This endpoint is a shortcut for getting the last task run's `defaultRequestQueue
 |actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
 |status|query|string|false|Filter for the run status.|
 |origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Get request from the default request queue of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_requestQueue_request_get"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/{requestId}`
-
-Returns a request from the default request queue of the last Actor task run.
-
-This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
-[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
-
-
-<h3 id="get-request-from-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|requestId|path|string|true|Request ID.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|origin|DEVELOPMENT|
-|origin|WEB|
-|origin|API|
-|origin|SCHEDULER|
-|origin|TEST|
-|origin|WEBHOOK|
-|origin|ACTOR|
-|origin|CLI|
-|origin|CI|
-|origin|STANDBY|
-|origin|MCP|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Update request in the default request queue of an Actor task's last run
-
-<a id="opIdactorTask_runs_last_requestQueue_request_put"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-tasks/janedoe~my-task/runs/last/request-queue/requests/xpsmkDlspokDSmklS \
-  -X PUT \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`PUT /v2/actor-tasks/{actorTaskId}/runs/last/request-queue/requests/{requestId}`
-
-Updates a request in the default request queue of the last Actor task run.
-
-This endpoint is a shortcut for getting the last task run's `defaultRequestQueueId` and then using the
-[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
-
-
-<h3 id="update-request-in-the-default-request-queue-of-an-actor-tasks-last-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|actorTaskId|path|string|true|Task ID or a tilde-separated owner's username and task's name.|
-|status|query|string|false|Filter for the run status.|
-|origin|query|string|false|Filter for the run origin, i.e. the means by which the run was started.|
-|requestId|path|string|true|Request ID.|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
 |clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 
 #### Enumerated Values
@@ -284252,30 +285094,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default dataset of an Actor run
-
-<a id="opIdactorRun_dataset_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/dataset' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-runs/{runId}/dataset`
-
-Returns the default dataset associated with an Actor run.
-
-This endpoint is a shortcut for getting the run's `defaultDatasetId` and then using the
-[Get dataset](/api/v2/dataset-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default dataset of an Actor run
 
 <a id="opIdactorRun_dataset_put"></a>
@@ -284283,7 +285101,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/dataset' \
+curl https://api.apify.com/v2/actor-runs/string/dataset \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284295,6 +285113,12 @@ Updates the default dataset associated with an Actor run.
 This endpoint is a shortcut for getting the run's `defaultDatasetId` and then using the
 [Update dataset](/api/v2/dataset-put) endpoint.
 
+
+<h3 id="update-the-default-dataset-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -284308,7 +285132,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/dataset' \
+curl https://api.apify.com/v2/actor-runs/string/dataset \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284320,6 +285144,12 @@ Deletes default dataset associated with an Actor run.
 This endpoint is a shortcut for getting the last run's `defaultDatasetId` and then using the
 [Delete dataset](/api/v2/dataset-delete) endpoint.
 
+
+<h3 id="delete-the-default-dataset-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -284431,31 +285261,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default key-value store of an Actor run
-
-<a id="opIdactorRun_keyValueStore_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/key-value-store' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-runs/{runId}/key-value-store`
-
-Gets an object that contains all the details about the default key-value
-store.
-
-This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
-[Get key-value store](/api/v2/key-value-store-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default key-value store of an Actor run
 
 <a id="opIdactorRun_keyValueStore_put"></a>
@@ -284463,7 +285268,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/key-value-store' \
+curl https://api.apify.com/v2/actor-runs/string/key-value-store \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284477,6 +285282,12 @@ This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and t
 [Update key-value store](/api/v2/key-value-store-put) endpoint.
 
 
+<h3 id="update-the-default-key-value-store-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -284489,7 +285300,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/key-value-store' \
+curl https://api.apify.com/v2/actor-runs/string/key-value-store \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284501,6 +285312,12 @@ Delete the default key-value store.
 This endpoint is a shortcut for getting the run's `defaultKeyValueStoreId` and then using the
 [Delete key-value store](/api/v2/key-value-store-delete) endpoint.
 
+
+<h3 id="delete-the-default-key-value-store-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -284726,30 +285543,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Get the default request queue of an Actor run
-
-<a id="opIdactorRun_requestQueue_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/request-queue' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-runs/{runId}/request-queue`
-
-Returns the default request queue associated with an Actor run.
-
-This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
-[Get request queue](/api/v2/request-queue-get) endpoint.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Update the default request queue of an Actor run
 
 <a id="opIdactorRun_requestQueue_put"></a>
@@ -284757,7 +285550,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/request-queue' \
+curl https://api.apify.com/v2/actor-runs/string/request-queue \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284769,6 +285562,12 @@ Updates the default request queue associated with an Actor run.
 This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
 [Update request queue](/api/v2/request-queue-put) endpoint.
 
+
+<h3 id="update-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -284782,7 +285581,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/actor-runs/{runId}/request-queue' \
+curl https://api.apify.com/v2/actor-runs/string/request-queue \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -284794,6 +285593,12 @@ Deletes the default request queue associated with an Actor run.
 This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
 [Delete request queue](/api/v2/request-queue-delete) endpoint.
 
+
+<h3 id="delete-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|runId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -284875,39 +285680,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 httpBearer, apiKey
 </aside>
 
-## Batch add requests to the default request queue of an Actor run
-
-<a id="opIdactorRun_requestQueue_requests_batch_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/batch \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /v2/actor-runs/{runId}/request-queue/requests/batch`
-
-Adds requests to the default request queue of the Actor run in batch.
-
-This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
-[Batch add requests to request queue](/api/v2/request-queue-requests-batch-post) endpoint.
-
-
-<h3 id="batch-add-requests-to-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|runId|path|string|true|Actor run ID.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
 ## Batch delete requests from the default request queue of an Actor run
 
 <a id="opIdactorRun_requestQueue_requests_batch_delete"></a>
@@ -284966,71 +285738,6 @@ This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and th
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |runId|path|string|true|Actor run ID.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Get request from the default request queue of an Actor run
-
-<a id="opIdactorRun_requestQueue_request_get"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/xpsmkDlspokDSmklS \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/actor-runs/{runId}/request-queue/requests/{requestId}`
-
-Returns a request from the default request queue of the Actor run.
-
-This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
-[Get request from request queue](/api/v2/request-queue-request-get) endpoint.
-
-
-<h3 id="get-request-from-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|runId|path|string|true|Actor run ID.|
-|requestId|path|string|true|Request ID.|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Update request in the default request queue of an Actor run
-
-<a id="opIdactorRun_requestQueue_request_put"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/actor-runs/3KH8gEpp4d8uQSe8T/request-queue/requests/xpsmkDlspokDSmklS \
-  -X PUT \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`PUT /v2/actor-runs/{runId}/request-queue/requests/{requestId}`
-
-Updates a request in the default request queue of the Actor run.
-
-This endpoint is a shortcut for getting the run's `defaultRequestQueueId` and then using the
-[Update request in request queue](/api/v2/request-queue-request-put) endpoint.
-
-
-<h3 id="update-request-in-the-default-request-queue-of-an-actor-run-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|runId|path|string|true|Actor run ID.|
-|requestId|path|string|true|Request ID.|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
 |clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 
 <aside class="warning">
@@ -285179,7 +285886,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/key-value-stores/{storeId}' \
+curl https://api.apify.com/v2/key-value-stores/string \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -285188,6 +285895,12 @@ curl 'https://api.apify.com/v2/key-value-stores/{storeId}' \
 Gets an object that contains all the details about a specific key-value
 store.
 
+
+<h3 id="get-key-value-store-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|storeId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -285201,7 +285914,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/key-value-stores/{storeId}' \
+curl https://api.apify.com/v2/key-value-stores/string \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -285213,6 +285926,12 @@ passed in the PUT payload.
 
 The response is the updated key-value store object, as returned by the [Get key-value store](/api/v2/key-value-store-get) API endpoint.
 
+
+<h3 id="update-key-value-store-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|storeId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -285226,7 +285945,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/key-value-stores/{storeId}' \
+curl https://api.apify.com/v2/key-value-stores/string \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -285234,6 +285953,12 @@ curl 'https://api.apify.com/v2/key-value-stores/{storeId}' \
 `DELETE /v2/key-value-stores/{storeId}`
 
 Deletes a key-value store.
+
+<h3 id="delete-key-value-store-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|storeId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -285522,7 +286247,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/datasets/{datasetId}' \
+curl https://api.apify.com/v2/datasets/string \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -285542,6 +286267,12 @@ Keep in mind that attributes `itemCount` and `cleanItemCount` are not propagated
 There is a short period (up to 5 seconds) during which these counters may not match with exact counts in dataset items.
 
 
+<h3 id="get-dataset-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetId|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -285554,7 +286285,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/datasets/{datasetId}' \
+curl https://api.apify.com/v2/datasets/string \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -285564,6 +286295,12 @@ curl 'https://api.apify.com/v2/datasets/{datasetId}' \
 Updates a dataset's name and general resource access level using a value specified by a JSON object passed in the PUT payload.
 The response is the updated dataset object, as returned by the [Get dataset](/api/v2/dataset-get) API endpoint.
 
+
+<h3 id="update-dataset-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -285577,7 +286314,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/datasets/{datasetId}' \
+curl https://api.apify.com/v2/datasets/string \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -285586,228 +286323,11 @@ curl 'https://api.apify.com/v2/datasets/{datasetId}' \
 
 Deletes a specific dataset.
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Get dataset items
-
-<a id="opIddataset_items_get"></a>
-
-> Code samples
-
-```bash
-curl 'https://api.apify.com/v2/datasets/{datasetId}/items' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/datasets/{datasetId}/items`
-
-Returns data stored in the dataset in a desired format.
-
-### Response format
-
-The format of the response depends on <code>format</code> query parameter.
-
-The <code>format</code> parameter can have one of the following values:
-<code>json</code>, <code>jsonl</code>, <code>xml</code>, <code>html</code>,
-<code>csv</code>, <code>xlsx</code> and <code>rss</code>.
-
-The following table describes how each format is treated.
-
-<table>
-  <tr>
-    <th>Format</th>
-    <th>Items</th>
-  </tr>
-  <tr>
-    <td><code>json</code></td>
-    <td rowspan="3">The response is a JSON, JSONL or XML array of raw item objects.</td>
-  </tr>
-  <tr>
-    <td><code>jsonl</code></td>
-  </tr>
-  <tr>
-    <td><code>xml</code></td>
-  </tr>
-  <tr>
-    <td><code>html</code></td>
-    <td rowspan="3">The response is a HTML, CSV or XLSX table, where columns correspond to the
-    properties of the item and rows correspond to each dataset item.</td>
-  </tr>
-  <tr>
-    <td><code>csv</code></td>
-  </tr>
-  <tr>
-    <td><code>xlsx</code></td>
-  </tr>
-  <tr>
-    <td><code>rss</code></td>
-    <td colspan="2">The response is a RSS file. Each item is displayed as child elements of one
-    <code>&lt;item&gt;</code>.</td>
-  </tr>
-</table>
-
-Note that CSV, XLSX and HTML tables are limited to 2000 columns and the column names cannot be longer than 200 characters.
-JSON, XML and RSS formats do not have such restrictions.
-
-### Hidden fields
-
-The top-level fields starting with the `#` character are considered hidden.
-These are useful to store debugging information and can be omitted from the output by providing the `skipHidden=1` or `clean=1` query parameters.
-For example, if you store the following object to the dataset:
-
-```
-{
-    productName: "iPhone Xs",
-    description: "Welcome to the big screens."
-    #debug: {
-        url: "https://www.apple.com/lae/iphone-xs/",
-        crawledAt: "2019-01-21T16:06:03.683Z"
-    }
-}
-```
-
-The `#debug` field will be considered as hidden and can be omitted from the
-results. This is useful to
-provide nice cleaned data to end users, while keeping debugging info
-available if needed. The Dataset object
-returned by the API contains the number of such clean items in the`dataset.cleanItemCount` property.
-
-### XML format extension
-
-When exporting results to XML or RSS formats, the names of object properties become XML tags and the corresponding values become tag's children. For example, the following JavaScript object:
-
-```
-{
-    name: "Paul Newman",
-    address: [
-        { type: "home", street: "21st", city: "Chicago" },
-        { type: "office", street: null, city: null }
-    ]
-}
-```
-
-will be transformed to the following XML snippet:
-
-```
-<name>Paul Newman</name>
-<address>
-  <type>home</type>
-  <street>21st</street>
-  <city>Chicago</city>
-</address>
-<address>
-  <type>office</type>
-  <street/>
-  <city/>
-</address>
-```
-
-If the JavaScript object contains a property named `@` then its sub-properties are exported as attributes of the parent XML
-element.
-If the parent XML element does not have any child elements then its value is taken from a JavaScript object property named `#`.
-
-For example, the following JavaScript object:
-
-```
-{
-  "address": [{
-    "@": {
-      "type": "home"
-    },
-    "street": "21st",
-    "city": "Chicago"
-  },
-  {
-    "@": {
-      "type": "office"
-    },
-    "#": 'unknown'
-  }]
-}
-```
-
-will be transformed to the following XML snippet:
-
-```
-<address type="home">
-  <street>21st</street>
-  <city>Chicago</city>
-</address>
-<address type="office">unknown</address>
-```
-
-This feature is also useful to customize your RSS feeds generated for various websites.
-
-By default the whole result is wrapped in a `<items>` element and each page object is wrapped in a `<item>` element.
-You can change this using <code>xmlRoot</code> and <code>xmlRow</code> url parameters.
-
-### Pagination
-
-The generated response supports [pagination](#/introduction/pagination).
-The pagination is always performed with the granularity of a single item, regardless whether <code>unwind</code> parameter was provided.
-By default, the **Items** in the response are sorted by the time they were stored to the database, therefore you can use pagination to incrementally fetch the items as they are being added.
-No limit exists to how many items can be returned in one response.
-
-If you specify `desc=1` query parameter, the results are returned in the reverse order than they were stored (i.e. from newest to oldest items).
-Note that only the order of **Items** is reversed, but not the order of the `unwind` array elements.
-
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Store items in dataset
-
-<a id="opIddataset_items_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/datasets/WkzbQMuFYuamGv3YF/items \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /v2/datasets/{datasetId}/items`
-
-Appends an item or an array of items to the end of the dataset.
-The POST payload is a JSON object or a JSON array of objects to save into the dataset.
-
-If the data you attempt to store in the dataset is invalid (meaning any of the items received by the API fails the validation), the whole request is discarded and the API will return a response with status code 400.
-For more information about dataset schema validation, see [Dataset schema](https://docs.apify.com/platform/actors/development/actor-definition/dataset-schema/validation).
-
-**IMPORTANT:** The limit of request payload size for the dataset is 5 MB. If the array exceeds the size, you'll need to split it into a number of smaller arrays.
-
-To save bandwidth and speed up your upload, you can send the request payload compressed and set the `Content-Encoding` header accordingly.
-
-Below is a list of supported `Content-Encoding` types.
-
-* Brotli: `Content-Encoding: br`
-* Gzip: `Content-Encoding: gzip`
-* Zstandard: `Content-Encoding: zstd`
-* Deflate: `Content-Encoding: deflate`
-
-
-<h3 id="store-items-in-dataset-parameters">Parameters</h3>
+<h3 id="delete-dataset-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|datasetId|path|string|true|Dataset ID or `username~dataset-name`.|
-|Content-Encoding|header|string|false|Compression encoding of the request body.|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|Content-Encoding|br|
-|Content-Encoding|gzip|
-|Content-Encoding|zstd|
-|Content-Encoding|deflate|
-|Content-Encoding|identity|
+|datasetId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -285821,7 +286341,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/datasets/{datasetId}/items' \
+curl https://api.apify.com/v2/datasets/string/items \
   -X HEAD \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -285832,6 +286352,12 @@ curl 'https://api.apify.com/v2/datasets/{datasetId}/items' \
 Returns only the HTTP headers for the dataset items endpoint, without the response body.
 This is useful to check pagination metadata or verify access without downloading the full dataset.
 
+
+<h3 id="get-dataset-items-headers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|datasetId|path|string|true|none|
 
 > Example responses
 
@@ -286296,13 +286822,19 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/request-queues/{queueId}' \
+curl https://api.apify.com/v2/request-queues/string \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /v2/request-queues/{queueId}`
 
 Returns queue object for given queue ID.
+
+<h3 id="get-request-queue-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queueId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -286316,7 +286848,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/request-queues/{queueId}' \
+curl https://api.apify.com/v2/request-queues/string \
   -X PUT \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -286330,6 +286862,12 @@ The response is the updated request queue object, as returned by the
 [Get request queue](/api/v2/request-queue-get) API endpoint.
 
 
+<h3 id="update-request-queue-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|queueId|path|string|true|none|
+
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 httpBearer, apiKey
@@ -286342,7 +286880,7 @@ httpBearer, apiKey
 > Code samples
 
 ```bash
-curl 'https://api.apify.com/v2/request-queues/{queueId}' \
+curl https://api.apify.com/v2/request-queues/string \
   -X DELETE \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
@@ -286351,44 +286889,11 @@ curl 'https://api.apify.com/v2/request-queues/{queueId}' \
 
 Deletes given queue.
 
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Batch add requests to request queue
-
-<a id="opIdrequestQueue_requests_batch_post"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/batch \
-  -X POST \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /v2/request-queues/{queueId}/requests/batch`
-
-Adds requests to the queue in batch. The maximum requests in batch is limited
-to 25. The response contains an array of unprocessed and processed requests.
-If any add operation fails because the request queue rate limit is exceeded
-or an internal failure occurs,
-the failed request is returned in the unprocessedRequests response
-parameter.
-You can resend these requests to add. It is recommended to use an
-exponential backoff algorithm for these retries.
-If a request with the same `uniqueKey` was already present in the queue,
-then it returns an ID of the existing request.
-
-
-<h3 id="batch-add-requests-to-request-queue-parameters">Parameters</h3>
+<h3 id="delete-request-queue-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|queueId|path|string|true|Queue ID or `username~queue-name`.|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
+|queueId|path|string|true|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -286535,66 +287040,6 @@ returns an ID of existing request.
 |queueId|path|string|true|Queue ID or `username~queue-name`.|
 |clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 |forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Get request from request queue
-
-<a id="opIdrequestQueue_request_get"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/xpsmkDlspokDSmklS \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`GET /v2/request-queues/{queueId}/requests/{requestId}`
-
-Returns request from queue.
-
-<h3 id="get-request-from-request-queue-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|queueId|path|string|true|Queue ID or `username~queue-name`.|
-|requestId|path|string|true|Request ID.|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-httpBearer, apiKey
-</aside>
-
-## Update request in request queue
-
-<a id="opIdrequestQueue_request_put"></a>
-
-> Code samples
-
-```bash
-curl https://api.apify.com/v2/request-queues/WkzbQMuFYuamGv3YF/requests/xpsmkDlspokDSmklS \
-  -X PUT \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`PUT /v2/request-queues/{queueId}/requests/{requestId}`
-
-Updates a request in a queue. Mark request as handled by setting
-`request.handledAt = new Date()`.
-If `handledAt` is set, the request will be removed from head of the queue (and unlocked, if applicable).
-
-
-<h3 id="update-request-in-request-queue-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|queueId|path|string|true|Queue ID or `username~queue-name`.|
-|requestId|path|string|true|Request ID.|
-|forefront|query|string|false|Determines if request should be added to the head of the queue or to the<br>end. Default value is `false` (end of queue).<br>|
-|clientKey|query|string|false|A unique identifier of the client accessing the request queue. It must<br>be a string between 1 and 32 characters long. This identifier is used to<br>determine whether the queue was accessed by multiple clients. If<br>`clientKey` is not provided,<br>the system considers this API call to come from a new client. For<br>details, see the `hadMultipleClients` field returned by the [Get request queue head](/api/v2/request-queue-head-get) endpoint.<br>|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:

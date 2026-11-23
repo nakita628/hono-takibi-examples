@@ -1464,6 +1464,217 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key_header, bearer_auth, basic_auth, api_key_query
 </aside>
 
+## Get summary metrics and trends for a project across its workflows and branches, with the filters in the request body
+
+<a id="opIdgetProjectWorkflowsPageDataByFilters"></a>
+
+> Code samples
+
+```bash
+curl https://circleci.com/api/v2/insights/pages/gh%2FCircleCI-Public%2Fapi-preview-docs/summary \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Circle-Token: ${API_KEY}" \
+  -d '{
+    "reporting-window": "last-90-days",
+    "branches": [
+      "main",
+      "feature"
+    ],
+    "workflow-names": [
+      "build",
+      "test-and-deploy"
+    ]
+  }'
+```
+
+`POST /insights/pages/{project-slug}/summary`
+
+Same as getProjectWorkflowsPageData, but takes reporting-window, branches and workflow-names in a JSON request body instead of the query string.
+             Workflow runs going back at most 90 days are included in the aggregation window.
+             Trends are only supported upto last 30 days.
+             Please note that Insights is not a financial reporting tool and should not be used for precise credit reporting.  Credit reporting from Insights does not use the same source of truth as the billing information that is found in the Plan Overview page in the CircleCI UI, nor does the underlying data have the same data accuracy guarantees as the billing information in the CircleCI UI.  This may lead to discrepancies between credits reported from Insights and the billing information in the Plan Overview page of the CircleCI UI.  For precise credit reporting, always use the Plan Overview page in the CircleCI UI.
+
+> Body parameter
+
+```json
+{
+  "reporting-window": "last-90-days",
+  "branches": [
+    "main",
+    "feature"
+  ],
+  "workflow-names": [
+    "build",
+    "test-and-deploy"
+  ]
+}
+```
+
+<h3 id="get-summary-metrics-and-trends-for-a-project-across-its-workflows-and-branches-with-the-filters-in-the-request-body-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|project-slug|path|string|true|Project slug in the form `vcs-slug/org-name/repo-name`. The `/` characters may be URL-escaped. For projects that use GitLab or GitHub App, use `circleci` as the `vcs-slug`, replace `org-name` with the organization ID (found in Organization Settings), and replace `repo-name` with the project ID (found in Project Settings).|
+|body|body|object|false|none|
+|» reporting-window|body|string|false|The time window used to calculate summary metrics. If not provided, defaults to last-90-days|
+|» branches|body|[string]|false|The names of VCS branches to include in branch-level workflow metrics. If empty or not provided, defaults to the project's default branch.|
+|» workflow-names|body|[string]|false|The names of workflows to include in workflow-level metrics. If empty or not provided, includes all workflows.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» reporting-window|last-7-days|
+|» reporting-window|last-90-days|
+|» reporting-window|last-24-hours|
+|» reporting-window|last-30-days|
+|» reporting-window|last-60-days|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "org_id": null,
+  "project_id": null,
+  "project_data": {
+    "metrics": {
+      "total_runs": 0,
+      "total_duration_secs": 0,
+      "total_credits_used": 0,
+      "success_rate": 0,
+      "throughput": 0
+    },
+    "trends": {
+      "total_runs": 0,
+      "total_duration_secs": 0,
+      "total_credits_used": 0,
+      "success_rate": 0,
+      "throughput": 0
+    }
+  },
+  "project_workflow_data": [
+    {
+      "workflow_name": "build-and-test",
+      "metrics": {
+        "total_credits_used": 0,
+        "p95_duration_secs": 0,
+        "total_runs": 0,
+        "success_rate": 0
+      },
+      "trends": {
+        "total_credits_used": 0,
+        "p95_duration_secs": 0,
+        "total_runs": 0,
+        "success_rate": 0
+      }
+    }
+  ],
+  "project_workflow_branch_data": [
+    {
+      "workflow_name": "build-and-test",
+      "branch": "main",
+      "metrics": {
+        "total_credits_used": 0,
+        "p95_duration_secs": 0,
+        "total_runs": 0,
+        "success_rate": 0
+      },
+      "trends": {
+        "total_credits_used": 0,
+        "p95_duration_secs": 0,
+        "total_runs": 0,
+        "success_rate": 0
+      }
+    }
+  ],
+  "all_branches": [
+    "main"
+  ],
+  "all_workflows": [
+    "build-and-test"
+  ]
+}
+```
+
+> default Response
+
+```json
+{
+  "message": "string"
+}
+```
+
+<h3 id="get-summary-metrics-and-trends-for-a-project-across-its-workflows-and-branches-with-the-filters-in-the-request-body-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Aggregated summary metrics and trends by workflow and branches|Inline|
+|default|Default|Error response.|Inline|
+
+<h3 id="get-summary-metrics-and-trends-for-a-project-across-its-workflows-and-branches-with-the-filters-in-the-request-body-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|org_id|object|false|none|The unique ID of the organization|
+|project_id|object|false|none|The unique ID of the project|
+|project_data|object|false|none|Metrics and trends data aggregated for a given project.|
+|» metrics|object|true|none|Metrics aggregated across all workflows and branches for a project.|
+|» » total_runs|integer(int64)|true|none|The total number of runs, including runs that are still on-hold or running.|
+|» » total_duration_secs|integer(int64)|true|none|Total duration, in seconds.|
+|» » total_credits_used|integer(int64)|true|none|The total credits consumed over the current timeseries interval.|
+|» » success_rate|number(float)|true|none|none|
+|» » throughput|number(float)|true|none|The average number of runs per day.|
+|» trends|object|true|none|Metric trends aggregated across all workflows and branches for a project.|
+|» » total_runs|number(float)|true|none|The trend value for total number of runs.|
+|» » total_duration_secs|number(float)|true|none|Trend value for total duration.|
+|» » total_credits_used|number(float)|true|none|The trend value for total credits consumed.|
+|» » success_rate|number(float)|true|none|The trend value for the success rate.|
+|» » throughput|number(float)|true|none|Trend value for the average number of runs per day.|
+|project_workflow_data|[object]|false|none|A list of metrics and trends data for workflows for a given project.|
+|» workflow_name|string|true|none|The name of the workflow.|
+|» metrics|object|true|none|Metrics aggregated across a workflow or branchfor a project.|
+|» » total_credits_used|integer(int64)|true|none|The total credits consumed over the current timeseries interval.|
+|» » p95_duration_secs|number(float)|true|none|The 95th percentile duration among a group of workflow runs.|
+|» » total_runs|integer(int64)|true|none|The total number of runs, including runs that are still on-hold or running.|
+|» » success_rate|number(float)|true|none|none|
+|» trends|object|true|none|Trends aggregated across a workflow or branch for a project.|
+|» » total_credits_used|number(float)|true|none|The trend value for total credits consumed.|
+|» » p95_duration_secs|number(float)|true|none|The 95th percentile duration among a group of workflow runs.|
+|» » total_runs|number(float)|true|none|The trend value for total number of runs.|
+|» » success_rate|number(float)|true|none|The trend value for the success rate.|
+|project_workflow_branch_data|[object]|false|none|A list of metrics and trends data for branches for a given project.|
+|» workflow_name|string|true|none|The name of the workflow.|
+|» branch|string|true|none|The VCS branch of a workflow's trigger.|
+|» metrics|object|true|none|Metrics aggregated across a workflow or branchfor a project.|
+|» » total_credits_used|integer(int64)|true|none|The total credits consumed over the current timeseries interval.|
+|» » p95_duration_secs|number(float)|true|none|The 95th percentile duration among a group of workflow runs.|
+|» » total_runs|integer(int64)|true|none|The total number of runs, including runs that are still on-hold or running.|
+|» » success_rate|number(float)|true|none|none|
+|» trends|object|true|none|Trends aggregated across a workflow or branch for a project.|
+|» » total_credits_used|number(float)|true|none|The trend value for total credits consumed.|
+|» » p95_duration_secs|number(float)|true|none|The 95th percentile duration among a group of workflow runs.|
+|» » total_runs|number(float)|true|none|The trend value for total number of runs.|
+|» » success_rate|number(float)|true|none|The trend value for the success rate.|
+|all_branches|[string]|false|none|A list of all the branches for a given project.|
+|all_workflows|[string]|false|none|A list of all the workflows for a given project.|
+
+Status Code **default**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key_header, bearer_auth, basic_auth, api_key_query
+</aside>
+
 ## Job timeseries data
 
 <a id="opIdgetJobTimeseries"></a>
@@ -4039,7 +4250,7 @@ curl https://circleci.com/api/v2/project/gh/CircleCI-Public/api-preview-docs/pip
 
 `POST /project/{provider}/{organization}/{project}/pipeline/run`
 
-Trigger a pipeline given a pipeline definition ID. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_dc`, or `bitbucket_oauth`.
+Trigger a pipeline given a pipeline definition ID. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, or `bitbucket_oauth`.
 
 The slash-separated project slug is shown in Project Settings > Overview.
 
@@ -4898,13 +5109,10 @@ curl https://circleci.com/api/v2/workflow/5034460f-c7c4-4c43-9457-de07e2029e7b/r
   -H 'Accept: application/json' \
   -H "Circle-Token: ${API_KEY}" \
   -d '{
-    "enable_ssh": false,
-    "from_failed": false,
+    "enable_ssh": true,
     "jobs": [
-      "c65b68ef-e73b-4bf2-be9a-7a322a9df150",
-      "5e957edd-5e8c-4985-9178-5d0d69561822"
-    ],
-    "sparse_tree": false
+      "c65b68ef-e73b-4bf2-be9a-7a322a9df150"
+    ]
   }'
 ```
 
@@ -4916,13 +5124,10 @@ Reruns a workflow.
 
 ```json
 {
-  "enable_ssh": false,
-  "from_failed": false,
+  "enable_ssh": true,
   "jobs": [
-    "c65b68ef-e73b-4bf2-be9a-7a322a9df150",
-    "5e957edd-5e8c-4985-9178-5d0d69561822"
-  ],
-  "sparse_tree": false
+    "c65b68ef-e73b-4bf2-be9a-7a322a9df150"
+  ]
 }
 ```
 
@@ -8210,7 +8415,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/p
 
 `GET /projects/{project_id}/pipeline-definitions/{pipeline_definition_id}`
 
-Get details for a pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_dc`, `bitbucket_oauth` or `gitlab`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Get details for a pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, `github_oauth`, `bitbucket_oauth` or `gitlab`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 <h3 id="get-pipeline-definition-parameters">Parameters</h3>
 
@@ -8335,7 +8540,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/p
 
 `DELETE /projects/{project_id}/pipeline-definitions/{pipeline_definition_id}`
 
-Delete pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, or `bitbucket_dc`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Delete pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app` or `github_server`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 <h3 id="delete-pipeline-definition-parameters">Parameters</h3>
 
@@ -8456,7 +8661,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/p
 
 `PATCH /projects/{project_id}/pipeline-definitions/{pipeline_definition_id}`
 
-Update pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app`, `github_server`, or `bitbucket_dc`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Update pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_app` or `github_server`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 > Body parameter
 
@@ -10031,7 +10236,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/p
 
 `GET /projects/{project_id}/pipeline-definitions/{pipeline_definition_id}/triggers`
 
-List all triggers for a given pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+List all triggers for a given pipeline definition. Currently only supported for pipeline definitions where `config_source.provider` is `github_oauth`, `github_app`, `github_server`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 <h3 id="list-pipeline-definition-triggers-parameters">Parameters</h3>
 
@@ -10332,7 +10537,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/t
 
 `GET /projects/{project_id}/triggers/{trigger_id}`
 
-Get details for a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Get details for a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 <h3 id="get-trigger-parameters">Parameters</h3>
 
@@ -10464,7 +10669,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/t
 
 `DELETE /projects/{project_id}/triggers/{trigger_id}`
 
-Delete a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Delete a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 <h3 id="delete-trigger-parameters">Parameters</h3>
 
@@ -10591,7 +10796,7 @@ curl https://circleci.com/api/v2/projects/39723015-b399-4601-9ff6-bd1bfbed8fa8/t
 
 `PATCH /projects/{project_id}/triggers/{trigger_id}`
 
-Update a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `bitbucket_dc`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
+Update a trigger. Currently only supported for triggers where `event_source.provider` is `github_oauth`, `github_app`, `github_server`, `webhook`, or `schedule`. [Share feedback](https://circleci.canny.io/cloud-feature-requests/p/project-administration-apis) about our Project Administration APIs.
 
 > Body parameter
 
@@ -10838,6 +11043,7 @@ __Report Fields__
 |                                       | lease_credits                 | The lease credits consumed by this job run instance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 |                                       | lease_overage_credits         | The lease overage credits consumed by this job run instance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 |                                       | ipranges_credits              | The IP ranges credits consumed by this job run instance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                                       | smarter_testing_run_batch_credits | Smarter Testing credits triggered via this job run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 |                                       | total_credits                 | The total credits consumed by this job run instance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 

@@ -1,0 +1,12909 @@
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteApiUnstableFleetSchedulesIdRoute,
+  deleteApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute,
+  deleteApiV2ActionsAppKeyRegistrationsAppKeyIdRoute,
+  deleteApiV2ActionsConnectionsConnectionIdRoute,
+  deleteApiV2ActionsDatastoresDatastoreIdItemsBulkRoute,
+  deleteApiV2ActionsDatastoresDatastoreIdItemsRoute,
+  deleteApiV2ActionsDatastoresDatastoreIdRoute,
+  deleteApiV2ActionsExecutionPoliciesPolicyIdRoute,
+  deleteApiV2AgentlessScanningAccountsAwsAccountIdRoute,
+  deleteApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute,
+  deleteApiV2AgentlessScanningAccountsGcpProjectIdRoute,
+  deleteApiV2AnnotationAnnotationIdRoute,
+  deleteApiV2ApicatalogApiIdRoute,
+  deleteApiV2ApiKeysApiKeyIdRoute,
+  deleteApiV2ApmConfigMetricsMetricIdRoute,
+  deleteApiV2ApmConfigRetentionFiltersFilterIdRoute,
+  deleteApiV2AppBuilderAppsAppIdDeploymentRoute,
+  deleteApiV2AppBuilderAppsAppIdRoute,
+  deleteApiV2AppBuilderAppsRoute,
+  deleteApiV2ApplicationKeysAppKeyIdRoute,
+  deleteApiV2AuthnMappingsAuthnMappingIdRoute,
+  deleteApiV2BudgetsIdRoute,
+  deleteApiV2CasesCaseIdCommentCellIdRoute,
+  deleteApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRoute,
+  deleteApiV2CasesCaseIdInsightsRoute,
+  deleteApiV2CasesCaseIdRelationshipsJiraIssuesRoute,
+  deleteApiV2CasesCaseIdWatchersUserUuidRoute,
+  deleteApiV2CasesLinkLinkIdRoute,
+  deleteApiV2CasesProjectsProjectIdFavoritesRoute,
+  deleteApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRoute,
+  deleteApiV2CasesProjectsProjectIdRoute,
+  deleteApiV2CasesProjectsProjectIdRulesRuleIdRoute,
+  deleteApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRoute,
+  deleteApiV2CasesTypesCaseTypeIdRoute,
+  deleteApiV2CasesViewsViewIdRoute,
+  deleteApiV2CatalogEntityEntityIdRoute,
+  deleteApiV2CatalogKindKindIdRoute,
+  deleteApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRoute,
+  deleteApiV2CiTestOptimizationSettingsServiceRoute,
+  deleteApiV2CloudinventoryserviceSyncconfigsIdRoute,
+  deleteApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute,
+  deleteApiV2CostArbitraryRuleRuleIdRoute,
+  deleteApiV2CostAwsCurConfigCloudAccountIdRoute,
+  deleteApiV2CostAzureUcConfigCloudAccountIdRoute,
+  deleteApiV2CostBudgetBudgetIdCustomForecastRoute,
+  deleteApiV2CostBudgetBudgetIdRoute,
+  deleteApiV2CostCustomCostsFileIdRoute,
+  deleteApiV2CostGcpUcConfigCloudAccountIdRoute,
+  deleteApiV2CostTagDescriptionsTagKeyRoute,
+  deleteApiV2CostUnitCostsUnitCostIdRoute,
+  deleteApiV2CurrentUserApplicationKeysAppKeyIdRoute,
+  deleteApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute,
+  deleteApiV2DashboardListsManualDashboardListIdDashboardsRoute,
+  deleteApiV2DataCaptureOverridesIdRoute,
+  deleteApiV2DatasetsDatasetIdRoute,
+  deleteApiV2DemJourneysInferredIgnoredJourneyIdRoute,
+  deleteApiV2DemJourneysJourneyIdRoute,
+  deleteApiV2DemJourneysVariantsVariantIdRoute,
+  deleteApiV2DeploymentGatesGateIdRulesIdRoute,
+  deleteApiV2DeploymentGatesIdRoute,
+  deleteApiV2DoraDeploymentDeploymentIdRoute,
+  deleteApiV2DoraFailureFailureIdRoute,
+  deleteApiV2DowntimeDowntimeIdRoute,
+  deleteApiV2ErrorTrackingIssuesIssueIdAssigneeRoute,
+  deleteApiV2ExperimentsBanditsBanditIdRoute,
+  deleteApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRoute,
+  deleteApiV2ExperimentsExperimentIdRoute,
+  deleteApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute,
+  deleteApiV2ExperimentsMetricsMetricIdRoute,
+  deleteApiV2ExperimentsProtocolsProtocolIdRoute,
+  deleteApiV2ExperimentsSubjectTypesSubjectTypeIdRoute,
+  deleteApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute,
+  deleteApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRoute,
+  deleteApiV2FormsFormIdRoute,
+  deleteApiV2GovernanceTagRulesRuleIdRoute,
+  deleteApiV2IdpEntityIntegrationsIntegrationIdRoute,
+  deleteApiV2IncidentsConfigGlobalIncidentHandlesRoute,
+  deleteApiV2IncidentsConfigImpactFieldsFieldIdRoute,
+  deleteApiV2IncidentsConfigNotificationRulesIdRoute,
+  deleteApiV2IncidentsConfigNotificationTemplatesIdRoute,
+  deleteApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute,
+  deleteApiV2IncidentsConfigRulesRuleIdRoute,
+  deleteApiV2IncidentsConfigTypesIncidentTypeIdRoute,
+  deleteApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute,
+  deleteApiV2IncidentsConfigUserDefinedRolesRoleIdRoute,
+  deleteApiV2IncidentsIncidentIdAttachmentsAttachmentIdRoute,
+  deleteApiV2IncidentsIncidentIdImpactsImpactIdRoute,
+  deleteApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute,
+  deleteApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute,
+  deleteApiV2IncidentsIncidentIdRespondersResponderIdRoute,
+  deleteApiV2IncidentsIncidentIdRoute,
+  deleteApiV2IncidentsIncidentIdTimestampOverridesIdRoute,
+  deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute,
+  deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute,
+  deleteApiV2IntegrationAwsEventBridgeRoute,
+  deleteApiV2IntegrationGcpAccountsAccountIdRoute,
+  deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRoute,
+  deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute,
+  deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRoute,
+  deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute,
+  deleteApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute,
+  deleteApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute,
+  deleteApiV2IntegrationJiraAccountsAccountIdRoute,
+  deleteApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute,
+  deleteApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute,
+  deleteApiV2IntegrationMsTeamsConfigurationUserBindingTenantIdRoute,
+  deleteApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute,
+  deleteApiV2IntegrationOciTenanciesTenancyOcidRoute,
+  deleteApiV2IntegrationOpsgenieAccountsAccountIdRoute,
+  deleteApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute,
+  deleteApiV2IntegrationsCloudflareAccountsAccountIdRoute,
+  deleteApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute,
+  deleteApiV2IntegrationsConfluentCloudAccountsAccountIdRoute,
+  deleteApiV2IntegrationServicenowHandlesTemplateIdRoute,
+  deleteApiV2IntegrationsFastlyAccountsAccountIdRoute,
+  deleteApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute,
+  deleteApiV2IntegrationsOktaAccountsAccountIdRoute,
+  deleteApiV2IntegrationStatuspageAccountRoute,
+  deleteApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRoute,
+  deleteApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute,
+  deleteApiV2LlmObsV1AnnotationQueuesQueueIdRoute,
+  deleteApiV2LlmObsV1PromptsPromptIdRoute,
+  deleteApiV2LlmObsV1TopicDiscoveryConfigsConfigIdRoute,
+  deleteApiV2LogsConfigArchivesArchiveIdReadersRoute,
+  deleteApiV2LogsConfigArchivesArchiveIdRoute,
+  deleteApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute,
+  deleteApiV2LogsConfigMetricsMetricIdRoute,
+  deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute,
+  deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute,
+  deleteApiV2MaintenanceWindowsMaintenanceWindowIdRoute,
+  deleteApiV2MetricsDerivedMetricsMetricNameRoute,
+  deleteApiV2MetricsHistoricalMetricsConfigurationsMetricNameRoute,
+  deleteApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute,
+  deleteApiV2MetricsMetricNameTagsRoute,
+  deleteApiV2MetricsTagIndexingRulesIdRoute,
+  deleteApiV2ModelGroupsIdRoute,
+  deleteApiV2ModelLabApiProjectsProjectIdOwnersUserIdRoute,
+  deleteApiV2ModelLabApiProjectsProjectIdStarRoute,
+  deleteApiV2ModelLabApiRunsRunIdPinRoute,
+  deleteApiV2ModelLabApiRunsRunIdRoute,
+  deleteApiV2MonitorNotificationRuleRuleIdRoute,
+  deleteApiV2MonitorPolicyPolicyIdRoute,
+  deleteApiV2MonitorTemplateTemplateIdRoute,
+  deleteApiV2Oauth2ClientsClientUuidScopesRestrictionRoute,
+  deleteApiV2ObsPipelinesPipelinesPipelineIdRoute,
+  deleteApiV2OnCallEscalationPoliciesPolicyIdRoute,
+  deleteApiV2OnCallSchedulesScheduleIdOverridesOverrideIdRoute,
+  deleteApiV2OnCallSchedulesScheduleIdRoute,
+  deleteApiV2OnCallUsersUserIdNotificationChannelsChannelIdRoute,
+  deleteApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute,
+  deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute,
+  deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsUserAuthorizedClientIdRoute,
+  deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserUserIdRoute,
+  deleteApiV2OrgConnectionsConnectionIdRoute,
+  deleteApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute,
+  deleteApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute,
+  deleteApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute,
+  deleteApiV2OrgGroupsOrgGroupIdRoute,
+  deleteApiV2PersonalAccessTokensTokenIdRoute,
+  deleteApiV2PoliciesInboundRoute,
+  deleteApiV2PowerpacksPowerpackIdRoute,
+  deleteApiV2ProductAnalyticsEntityMappingConnectionIdRoute,
+  deleteApiV2ProductAnalyticsUsersUserIdRoute,
+  deleteApiV2ProvidersIdRoute,
+  deleteApiV2ProvidersProviderIdModelsCanonicalPricingRoute,
+  deleteApiV2ProvidersProviderIdModelsCanonicalRoute,
+  deleteApiV2RateLimitsIdRoute,
+  deleteApiV2ReferenceTablesTablesIdRoute,
+  deleteApiV2ReferenceTablesTablesIdRowsRoute,
+  deleteApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute,
+  deleteApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute,
+  deleteApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute,
+  deleteApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute,
+  deleteApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute,
+  deleteApiV2ReplayHeatmapSnapshotsSnapshotIdRoute,
+  deleteApiV2ReportingScheduleScheduleUuidRoute,
+  deleteApiV2RestrictionPolicyResourceIdRoute,
+  deleteApiV2RolesRoleIdPermissionsRoute,
+  deleteApiV2RolesRoleIdRoute,
+  deleteApiV2RolesRoleIdUsersRoute,
+  deleteApiV2RoutingRulesRoute,
+  deleteApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute,
+  deleteApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute,
+  deleteApiV2RumApplicationsIdRoute,
+  deleteApiV2RumConfigArchiveAppIdRoute,
+  deleteApiV2RumConfigMetricsMetricIdRoute,
+  deleteApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute,
+  deleteApiV2RumConfigTeamsOwnershipMappingsIdRoute,
+  deleteApiV2RumOperationsRumOperationIdRoute,
+  deleteApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRoute,
+  deleteApiV2RumReplayPlaylistsPlaylistIdRoute,
+  deleteApiV2RumReplayPlaylistsPlaylistIdSessionsRoute,
+  deleteApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRoute,
+  deleteApiV2RumReplaySessionsSessionIdWatchesRoute,
+  deleteApiV2ScorecardCampaignsCampaignIdRoute,
+  deleteApiV2ScorecardRulesRuleIdRoute,
+  deleteApiV2SeatsUsersRoute,
+  deleteApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute,
+  deleteApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute,
+  deleteApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute,
+  deleteApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute,
+  deleteApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute,
+  deleteApiV2SecurityFindingsCasesRoute,
+  deleteApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute,
+  deleteApiV2SecurityMonitoringBatchMigrationsBatchIdRoute,
+  deleteApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute,
+  deleteApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute,
+  deleteApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute,
+  deleteApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute,
+  deleteApiV2SecurityMonitoringDatasetsDatasetIdRoute,
+  deleteApiV2SecurityMonitoringRulesBulkDeleteRoute,
+  deleteApiV2SecurityMonitoringRulesRuleIdRoute,
+  deleteApiV2SecurityMonitoringSampleLogGenerationSubscriptionsContentPackIdRoute,
+  deleteApiV2SecuritySignalsNotificationRulesIdRoute,
+  deleteApiV2SecurityVulnerabilitiesNotificationRulesIdRoute,
+  deleteApiV2SensitiveDataScannerConfigGroupsGroupIdRoute,
+  deleteApiV2SensitiveDataScannerConfigRulesRuleIdRoute,
+  deleteApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute,
+  deleteApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute,
+  deleteApiV2ServicesDefinitionsServiceNameRoute,
+  deleteApiV2SiemHistoricalDetectionsJobsJobIdRoute,
+  deleteApiV2SourcemapsRoute,
+  deleteApiV2StaticAnalysisAiMemoryIdRoute,
+  deleteApiV2StaticAnalysisAiRulesetsRulesetNameRoute,
+  deleteApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRoute,
+  deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRoute,
+  deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRoute,
+  deleteApiV2StatuspagesPageIdAccessPoliciesEmailPolicyIdRoute,
+  deleteApiV2StatuspagesPageIdComponentsComponentIdRoute,
+  deleteApiV2StatuspagesPageIdDegradationsDegradationIdRoute,
+  deleteApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRoute,
+  deleteApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute,
+  deleteApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute,
+  deleteApiV2StatuspagesPageIdRoute,
+  deleteApiV2SyntheticsDowntimesDowntimeIdRoute,
+  deleteApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRoute,
+  deleteApiV2TagsEnrichmentRulesetIdRoute,
+  deleteApiV2TeamConnectionsRoute,
+  deleteApiV2TeamHierarchyLinksLinkIdRoute,
+  deleteApiV2TeamSuperTeamIdMemberTeamsMemberTeamIdRoute,
+  deleteApiV2TeamTeamIdLinksLinkIdRoute,
+  deleteApiV2TeamTeamIdMembershipsUserIdRoute,
+  deleteApiV2TeamTeamIdNotificationRulesRuleIdRoute,
+  deleteApiV2TeamTeamIdRoute,
+  deleteApiV2UsageAdminTemporaryGrantRequestsRequestIdGrantRoute,
+  deleteApiV2UsageQuotasQuotaNamespaceIdPendingRoute,
+  deleteApiV2UsageQuotasQuotaNamespaceIdRoute,
+  deleteApiV2UsageTemporaryGrantRequestsRequestIdRoute,
+  deleteApiV2UserAuthorizedClientsClientClientIdRoute,
+  deleteApiV2UserAuthorizedClientsUserAuthorizedClientIdRoute,
+  deleteApiV2UsersUserIdInvitationsRoute,
+  deleteApiV2UsersUserIdRoute,
+  deleteApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute,
+  deleteApiV2WidgetsExperienceTypeUuidRoute,
+  deleteApiV2WifAwsIntakeMappingIntakeMappingIdRoute,
+  deleteApiV2WifAwsPersonaMappingPersonaMappingIdRoute,
+  deleteApiV2WifGithubIntakeMappingIntakeMappingIdRoute,
+  deleteApiV2WifGithubPersonaMappingPersonaMappingIdRoute,
+  deleteApiV2WifOidcPersonaMappingPersonaMappingIdRoute,
+  deleteApiV2WifOidcProviderProviderIdRoute,
+  deleteApiV2WifTerraformPersonaMappingPersonaMappingIdRoute,
+  deleteApiV2WorkflowsWorkflowIdRoute,
+  getApiUnstableFleetAgentsAgentKeyTracersRoute,
+  getApiUnstableFleetTracersRoute,
+  getApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute,
+  getApiUnstableLlmObsConfigEvaluatorsCustomRoute,
+  getApiV2ActionsAppKeyRegistrationsAppKeyIdRoute,
+  getApiV2ActionsAppKeyRegistrationsRoute,
+  getApiV2ActionsConnectionsConnectionIdRoute,
+  getApiV2ActionsDatastoresDatastoreIdItemsRoute,
+  getApiV2ActionsDatastoresDatastoreIdRoute,
+  getApiV2ActionsDatastoresRoute,
+  getApiV2ActionsExecutionPoliciesPolicyIdRoute,
+  getApiV2ActionsExecutionPoliciesRoute,
+  getApiV2AgenthealthHostsResourceIdIssuesRoute,
+  getApiV2AgenthealthIssuesIssueIdRoute,
+  getApiV2AgenthealthIssuesRoute,
+  getApiV2AgentlessScanningAccountsAwsAccountIdRoute,
+  getApiV2AgentlessScanningAccountsAwsRoute,
+  getApiV2AgentlessScanningAccountsAzureRoute,
+  getApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute,
+  getApiV2AgentlessScanningAccountsGcpProjectIdRoute,
+  getApiV2AgentlessScanningAccountsGcpRoute,
+  getApiV2AgentlessScanningOndemandAwsRoute,
+  getApiV2AgentlessScanningOndemandAwsTaskIdRoute,
+  getApiV2AnnotationPagePageIdRoute,
+  getApiV2AnnotationRoute,
+  getApiV2ApicatalogApiIdOpenapiRoute,
+  getApiV2ApicatalogApiRoute,
+  getApiV2ApiKeysApiKeyIdRoute,
+  getApiV2ApiKeysRoute,
+  getApiV2ApmConfigMetricsMetricIdRoute,
+  getApiV2ApmConfigMetricsRoute,
+  getApiV2ApmConfigRetentionFiltersFilterIdRoute,
+  getApiV2ApmConfigRetentionFiltersRoute,
+  getApiV2ApmServicesRoute,
+  getApiV2AppBuilderAppsAppIdRoute,
+  getApiV2AppBuilderAppsAppIdVersionsRoute,
+  getApiV2AppBuilderAppsRoute,
+  getApiV2AppBuilderBlueprintBlueprintIdRoute,
+  getApiV2AppBuilderBlueprintsIntegrationIdIntegrationIdRoute,
+  getApiV2AppBuilderBlueprintsRoute,
+  getApiV2AppBuilderBlueprintsSlugsSlugsRoute,
+  getApiV2AppBuilderTagsRoute,
+  getApiV2ApplicationKeysAppKeyIdRoute,
+  getApiV2ApplicationKeysRoute,
+  getApiV2AuditEventsRoute,
+  getApiV2AuthnMappingsAuthnMappingIdRoute,
+  getApiV2AuthnMappingsRoute,
+  getApiV2BitsAiInvestigationsIdRoute,
+  getApiV2BitsAiInvestigationsRoute,
+  getApiV2BudgetsIdCurrentPeriodRoute,
+  getApiV2BudgetsIdInstancesDimensionsRoute,
+  getApiV2BudgetsIdInstancesRoute,
+  getApiV2BudgetsIdInstancesSummaryRoute,
+  getApiV2BudgetsIdRoute,
+  getApiV2BudgetsRoute,
+  getApiV2CasesCaseIdRoute,
+  getApiV2CasesCaseIdTimelinesRoute,
+  getApiV2CasesCaseIdWatchersRoute,
+  getApiV2CasesCountRoute,
+  getApiV2CasesLinkRoute,
+  getApiV2CasesProjectsFavoritesRoute,
+  getApiV2CasesProjectsProjectIdNotificationRulesRoute,
+  getApiV2CasesProjectsProjectIdRoute,
+  getApiV2CasesProjectsProjectIdRulesRoute,
+  getApiV2CasesProjectsProjectIdRulesRuleIdRoute,
+  getApiV2CasesProjectsRoute,
+  getApiV2CasesRoute,
+  getApiV2CasesTypesCaseTypeIdCustomAttributesRoute,
+  getApiV2CasesTypesCustomAttributesRoute,
+  getApiV2CasesTypesRoute,
+  getApiV2CasesViewsRoute,
+  getApiV2CasesViewsViewIdRoute,
+  getApiV2CatalogEntityRoute,
+  getApiV2CatalogKindRoute,
+  getApiV2CatalogRelationRoute,
+  getApiV2ChangeManagementChangeRequestChangeRequestIdRoute,
+  getApiV2CiGithubAccountsRoute,
+  getApiV2CiPipelinesEventsRoute,
+  getApiV2CiTestsEventsRoute,
+  getApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute,
+  getApiV2CloudSecurityManagementResourceFiltersRoute,
+  getApiV2ComplianceFindingsRuleBasedViewRoute,
+  getApiV2ContainerImagesRoute,
+  getApiV2ContainersRoute,
+  getApiV2CostAccountFiltersCloudAccountIdRoute,
+  getApiV2CostAnomaliesAnomalyIdRoute,
+  getApiV2CostAnomaliesRoute,
+  getApiV2CostArbitraryRuleRoute,
+  getApiV2CostArbitraryRuleRuleIdRoute,
+  getApiV2CostArbitraryRuleStatusRoute,
+  getApiV2CostAwsCurConfigCloudAccountIdRoute,
+  getApiV2CostAwsCurConfigRoute,
+  getApiV2CostAzureUcConfigCloudAccountIdRoute,
+  getApiV2CostAzureUcConfigRoute,
+  getApiV2CostBudgetBudgetIdCustomForecastRoute,
+  getApiV2CostBudgetBudgetIdRoute,
+  getApiV2CostBudgetsRoute,
+  getApiV2CostByTagActiveBillingDimensionsRoute,
+  getApiV2CostByTagMonthlyCostAttributionRoute,
+  getApiV2CostCloudAccountsRoute,
+  getApiV2CostCommitmentsCommitmentListRoute,
+  getApiV2CostCommitmentsCoverageScalarRoute,
+  getApiV2CostCommitmentsCoverageTimeseriesRoute,
+  getApiV2CostCommitmentsOnDemandHotSpotsScalarRoute,
+  getApiV2CostCommitmentsSavingsScalarRoute,
+  getApiV2CostCommitmentsSavingsTimeseriesRoute,
+  getApiV2CostCommitmentsUtilizationScalarRoute,
+  getApiV2CostCommitmentsUtilizationTimeseriesRoute,
+  getApiV2CostCustomCostsFileIdRoute,
+  getApiV2CostCustomCostsRoute,
+  getApiV2CostGcpUcConfigCloudAccountIdRoute,
+  getApiV2CostGcpUcConfigRoute,
+  getApiV2CostOciConfigRoute,
+  getApiV2CostTagDescriptionsRoute,
+  getApiV2CostTagDescriptionsTagKeyGenerateRoute,
+  getApiV2CostTagDescriptionsTagKeyRoute,
+  getApiV2CostTagKeysRoute,
+  getApiV2CostTagKeysTagKeyRoute,
+  getApiV2CostTagMetadataCurrencyRoute,
+  getApiV2CostTagMetadataMetricsRoute,
+  getApiV2CostTagMetadataMonthsRoute,
+  getApiV2CostTagMetadataOrchestratorsRoute,
+  getApiV2CostTagMetadataRoute,
+  getApiV2CostTagMetadataTagSourcesRoute,
+  getApiV2CostTagsRoute,
+  getApiV2CostUnitCostsRoute,
+  getApiV2CostUnitCostsUnitCostIdRoute,
+  getApiV2CsmOnboardingAgentsRoute,
+  getApiV2CsmOnboardingCoverageAnalysisCloudAccountsRoute,
+  getApiV2CsmOnboardingCoverageAnalysisHostsAndContainersRoute,
+  getApiV2CsmOnboardingCoverageAnalysisServerlessRoute,
+  getApiV2CsmOnboardingServerlessAgentsRoute,
+  getApiV2CsmOwnershipSettingsRoute,
+  getApiV2CsmOwnershipSettingsUntaggedRoute,
+  getApiV2CsmSettingsAgentlessHostsFacetInfoRoute,
+  getApiV2CsmSettingsAgentlessHostsFacetsRoute,
+  getApiV2CsmSettingsAgentlessHostsRoute,
+  getApiV2CsmSettingsHostsFacetInfoRoute,
+  getApiV2CsmSettingsHostsFacetsRoute,
+  getApiV2CsmSettingsHostsRoute,
+  getApiV2CurrentUserApplicationKeysAppKeyIdRoute,
+  getApiV2CurrentUserApplicationKeysRoute,
+  getApiV2CurrentUserRoute,
+  getApiV2DashboardDashboardIdSharedRoute,
+  getApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute,
+  getApiV2DashboardListsManualDashboardListIdDashboardsRoute,
+  getApiV2DashboardsDashboardIdUsageRoute,
+  getApiV2DashboardsUsageRoute,
+  getApiV2DataCaptureConfigurationRoute,
+  getApiV2DataObservabilityMonitorsRunsRunIdStatusRoute,
+  getApiV2DatasetsDatasetIdRoute,
+  getApiV2DatasetsRoute,
+  getApiV2DeletionRequestsRoute,
+  getApiV2DemJourneysInferredSearchRoute,
+  getApiV2DemJourneysJourneyIdRecommendedTestsRoute,
+  getApiV2DemJourneysJourneyIdRoute,
+  getApiV2DemJourneysSearchRoute,
+  getApiV2DeploymentGatesEvaluationsRoute,
+  getApiV2DeploymentGatesEvaluationsRulesRoute,
+  getApiV2DeploymentGatesGateIdRulesIdRoute,
+  getApiV2DeploymentGatesGateIdRulesRoute,
+  getApiV2DeploymentGatesIdRoute,
+  getApiV2DeploymentGatesRoute,
+  getApiV2DeploymentsGatesEvaluationIdRoute,
+  getApiV2DomainAllowlistRoute,
+  getApiV2DoraDeploymentsDeploymentIdRoute,
+  getApiV2DoraFailuresFailureIdRoute,
+  getApiV2DowntimeDowntimeIdRoute,
+  getApiV2DowntimeRoute,
+  getApiV2ErrorTrackingIssuesIssueIdImpactRoute,
+  getApiV2ErrorTrackingIssuesIssueIdRoute,
+  getApiV2EudmDevicesDeviceIdRoute,
+  getApiV2EudmDevicesRoute,
+  getApiV2EventsEventIdRoute,
+  getApiV2EventsRoute,
+  getApiV2ExperimentsBanditsBanditIdPoliciesRoute,
+  getApiV2ExperimentsBanditsBanditIdResultsRoute,
+  getApiV2ExperimentsBanditsBanditIdRoute,
+  getApiV2ExperimentsBanditsBanditIdTrafficSummaryRoute,
+  getApiV2ExperimentsBanditsRoute,
+  getApiV2ExperimentsExperimentIdAnalysisPlanRoute,
+  getApiV2ExperimentsExperimentIdDiagnosticsRoute,
+  getApiV2ExperimentsExperimentIdHoldoutsRoute,
+  getApiV2ExperimentsExperimentIdMetricGroupsRoute,
+  getApiV2ExperimentsExperimentIdResultsRoute,
+  getApiV2ExperimentsExperimentIdRoute,
+  getApiV2ExperimentsExperimentIdTrafficSummaryRoute,
+  getApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRoute,
+  getApiV2ExperimentsExposureSqlModelsRoute,
+  getApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute,
+  getApiV2ExperimentsMetricCollectionsRoute,
+  getApiV2ExperimentsMetricsMetricIdRoute,
+  getApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRoute,
+  getApiV2ExperimentsMetricSqlModelsRoute,
+  getApiV2ExperimentsMetricsRoute,
+  getApiV2ExperimentsProtocolsProtocolIdRoute,
+  getApiV2ExperimentsProtocolsRoute,
+  getApiV2ExperimentsRoute,
+  getApiV2ExperimentsSubjectTypesRoute,
+  getApiV2ExperimentsSubjectTypesSubjectTypeIdRoute,
+  getApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute,
+  getApiV2FeatureFlagsEnvironmentsRoute,
+  getApiV2FeatureFlagsFeatureFlagIdRoute,
+  getApiV2FeatureFlagsHistoryExportRoute,
+  getApiV2FeatureFlagsHistoryRoute,
+  getApiV2FeatureFlagsRoute,
+  getApiV2FeatureFlagsSavedFiltersSavedFilterIdRoute,
+  getApiV2FleetAgentsAgentKeyRoute,
+  getApiV2FleetAgentsRoute,
+  getApiV2FleetAgentVersionsRoute,
+  getApiV2FleetDeploymentsDeploymentIdRoute,
+  getApiV2FleetDeploymentsRoute,
+  getApiV2FleetSchedulesIdRoute,
+  getApiV2FleetSchedulesRoute,
+  getApiV2FormsFormIdRoute,
+  getApiV2FormsRoute,
+  getApiV2GlobalOrgsRoute,
+  getApiV2GovernanceConfigRoute,
+  getApiV2GovernanceControlDetectionTypeDetectionsRoute,
+  getApiV2GovernanceControlDetectionTypeNotificationSettingsRoute,
+  getApiV2GovernanceControlDetectionTypeRoute,
+  getApiV2GovernanceControlRoute,
+  getApiV2GovernanceDetectionsDetectionIdRoute,
+  getApiV2GovernanceInsightsRoute,
+  getApiV2GovernanceNotificationSettingsRoute,
+  getApiV2GovernanceRoute,
+  getApiV2GovernanceTagRulesRoute,
+  getApiV2GovernanceTagRulesRuleIdRoute,
+  getApiV2GovernanceTagRulesRuleIdScoreRoute,
+  getApiV2HamrRoute,
+  getApiV2IdentityProvidersIdpIdUsersRoute,
+  getApiV2IdentityProvidersRoute,
+  getApiV2IdpEntityIntegrationsIntegrationIdRoute,
+  getApiV2IncidentsConfigGlobalIncidentHandlesRoute,
+  getApiV2IncidentsConfigGlobalSettingsRoute,
+  getApiV2IncidentsConfigImpactFieldsRoute,
+  getApiV2IncidentsConfigNotificationRulesIdRoute,
+  getApiV2IncidentsConfigNotificationRulesRoute,
+  getApiV2IncidentsConfigNotificationTemplatesIdRoute,
+  getApiV2IncidentsConfigNotificationTemplatesRoute,
+  getApiV2IncidentsConfigPostmortemTemplatesRoute,
+  getApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute,
+  getApiV2IncidentsConfigRulesRoute,
+  getApiV2IncidentsConfigRulesRuleIdRoute,
+  getApiV2IncidentsConfigTypesIncidentTypeIdOrgSettingsRoute,
+  getApiV2IncidentsConfigTypesIncidentTypeIdRoute,
+  getApiV2IncidentsConfigTypesOrgSettingsRoute,
+  getApiV2IncidentsConfigTypesRoute,
+  getApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute,
+  getApiV2IncidentsConfigUserDefinedFieldsRoute,
+  getApiV2IncidentsConfigUserDefinedRolesRoleIdRoute,
+  getApiV2IncidentsConfigUserDefinedRolesRoute,
+  getApiV2IncidentsIncidentIdAttachmentsRoute,
+  getApiV2IncidentsIncidentIdImpactsRoute,
+  getApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute,
+  getApiV2IncidentsIncidentIdRelationshipsIntegrationsRoute,
+  getApiV2IncidentsIncidentIdRelationshipsTodosRoute,
+  getApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute,
+  getApiV2IncidentsIncidentIdRespondersResponderIdRoute,
+  getApiV2IncidentsIncidentIdRespondersRoute,
+  getApiV2IncidentsIncidentIdRoute,
+  getApiV2IncidentsIncidentIdTimestampOverridesRoute,
+  getApiV2IncidentsRoute,
+  getApiV2IncidentsSearchRoute,
+  getApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute,
+  getApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRoute,
+  getApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute,
+  getApiV2IntegrationAwsAccountsRoute,
+  getApiV2IntegrationAwsAvailableNamespacesRoute,
+  getApiV2IntegrationAwsEventBridgeRoute,
+  getApiV2IntegrationAwsIamPermissionsResourceCollectionRoute,
+  getApiV2IntegrationAwsIamPermissionsRoute,
+  getApiV2IntegrationAwsIamPermissionsStandardRoute,
+  getApiV2IntegrationAwsLogsServicesRoute,
+  getApiV2IntegrationGcpAccountsRoute,
+  getApiV2IntegrationGcpStsDelegateRoute,
+  getApiV2IntegrationGoogleChatOrganizationsAppNamedSpacesDomainNameSpaceDisplayNameRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRoute,
+  getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute,
+  getApiV2IntegrationGoogleChatOrganizationsRoute,
+  getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRoute,
+  getApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesChatgptEnterpriseAccountsRoute,
+  getApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesClaudeComplianceAccountsRoute,
+  getApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesCoreweaveCloudAccountsRoute,
+  getApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesDatabricksAccountsRoute,
+  getApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesElasticCloudAccountsRoute,
+  getApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesNebiusCloudAccountsRoute,
+  getApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesOpenaiCodexAccountsRoute,
+  getApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesSnowflakeAccountsRoute,
+  getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRoute,
+  getApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute,
+  getApiV2IntegrationInterfacesTwilioAccountsRoute,
+  getApiV2IntegrationJiraAccountsRoute,
+  getApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute,
+  getApiV2IntegrationJiraIssueTemplatesRoute,
+  getApiV2IntegrationMsTeamsConfigurationChannelTenantNameTeamNameChannelNameRoute,
+  getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute,
+  getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRoute,
+  getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute,
+  getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRoute,
+  getApiV2IntegrationOciProductsRoute,
+  getApiV2IntegrationOciTenanciesRoute,
+  getApiV2IntegrationOciTenanciesTenancyOcidRoute,
+  getApiV2IntegrationOpsgenieAccountsRoute,
+  getApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute,
+  getApiV2IntegrationOpsgenieServicesRoute,
+  getApiV2IntegrationsCloudflareAccountsAccountIdRoute,
+  getApiV2IntegrationsCloudflareAccountsRoute,
+  getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute,
+  getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRoute,
+  getApiV2IntegrationsConfluentCloudAccountsAccountIdRoute,
+  getApiV2IntegrationsConfluentCloudAccountsRoute,
+  getApiV2IntegrationServicenowAssignmentGroupsInstanceIdRoute,
+  getApiV2IntegrationServicenowBusinessServicesInstanceIdRoute,
+  getApiV2IntegrationServicenowHandlesRoute,
+  getApiV2IntegrationServicenowHandlesTemplateIdRoute,
+  getApiV2IntegrationServicenowInstancesRoute,
+  getApiV2IntegrationServicenowUsersInstanceIdRoute,
+  getApiV2IntegrationsFastlyAccountsAccountIdRoute,
+  getApiV2IntegrationsFastlyAccountsAccountIdServicesRoute,
+  getApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute,
+  getApiV2IntegrationsFastlyAccountsRoute,
+  getApiV2IntegrationSlackUserBindingsRoute,
+  getApiV2IntegrationsOktaAccountsAccountIdRoute,
+  getApiV2IntegrationsOktaAccountsRoute,
+  getApiV2IntegrationsRoute,
+  getApiV2IntegrationStatuspageAccountRoute,
+  getApiV2IntegrationStatuspageUrlSettingsRoute,
+  getApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute,
+  getApiV2IntegrationWebhooksConfigurationAuthMethodRoute,
+  getApiV2IpAllowlistRoute,
+  getApiV2LlmObsV1AnnotatedInteractionsRoute,
+  getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsInteractionIdRoute,
+  getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsRoute,
+  getApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRoute,
+  getApiV2LlmObsV1AnnotationQueuesRoute,
+  getApiV2LlmObsV1ExperimentsExperimentIdEventsRoute,
+  getApiV2LlmObsV1ExperimentsRoute,
+  getApiV2LlmObsV1IntegrationsIntegrationAccountIdModelsRoute,
+  getApiV2LlmObsV1IntegrationsIntegrationAccountsRoute,
+  getApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateRoute,
+  getApiV2LlmObsV1ProjectIdDatasetsDatasetIdExportRoute,
+  getApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute,
+  getApiV2LlmObsV1ProjectIdDatasetsDatasetIdVersionsRoute,
+  getApiV2LlmObsV1ProjectIdDatasetsRoute,
+  getApiV2LlmObsV1ProjectsRoute,
+  getApiV2LlmObsV1PromptsPromptIdRoute,
+  getApiV2LlmObsV1PromptsPromptIdVersionsRoute,
+  getApiV2LlmObsV1PromptsPromptIdVersionsVersionRoute,
+  getApiV2LlmObsV1PromptsRoute,
+  getApiV2LlmObsV1SpansEventsRoute,
+  getApiV2LlmObsV1TopicDiscoveryClusteredPointsRoute,
+  getApiV2LlmObsV1TopicDiscoveryConfigsLatestRoute,
+  getApiV2LlmObsV1TopicDiscoveryConfigsRoute,
+  getApiV2LlmObsV1TopicDiscoveryRunsRoute,
+  getApiV2LlmObsV1TopicDiscoveryRunsStatusRoute,
+  getApiV2LlmObsV1TopicDiscoveryTemplatesRoute,
+  getApiV2LlmObsV1TopicDiscoveryTopicsRoute,
+  getApiV2LlmObsV1TopicDiscoveryTopicsWithClusterPointsRoute,
+  getApiV2LlmObsV2ExperimentsExperimentIdEventsRoute,
+  getApiV2LlmObsV3ExperimentsExperimentIdEventsRoute,
+  getApiV2LogsArchiveSearchesArchiveSearchIdRoute,
+  getApiV2LogsArchiveSearchesRoute,
+  getApiV2LogsConfigArchiveOrderRoute,
+  getApiV2LogsConfigArchivesArchiveIdReadersRoute,
+  getApiV2LogsConfigArchivesArchiveIdRoute,
+  getApiV2LogsConfigArchivesRoute,
+  getApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute,
+  getApiV2LogsConfigCustomDestinationsRoute,
+  getApiV2LogsConfigMetricsMetricIdRoute,
+  getApiV2LogsConfigMetricsRoute,
+  getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute,
+  getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute,
+  getApiV2LogsConfigRestrictionQueriesRoleRoleIdRoute,
+  getApiV2LogsConfigRestrictionQueriesRoute,
+  getApiV2LogsConfigRestrictionQueriesUserUserIdRoute,
+  getApiV2LogsEventsRoute,
+  getApiV2MaintenanceWindowsRoute,
+  getApiV2MetricsDerivedMetricsMetricNameRoute,
+  getApiV2MetricsHistoricalMetricsConfigurationsMetricNameRoute,
+  getApiV2MetricsListTagIndexingRuleExemptionsRoute,
+  getApiV2MetricsMetricNameActiveConfigurationsRoute,
+  getApiV2MetricsMetricNameAllTagsRoute,
+  getApiV2MetricsMetricNameAssetsRoute,
+  getApiV2MetricsMetricNameEstimateRoute,
+  getApiV2MetricsMetricNameTagCardinalitiesRoute,
+  getApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute,
+  getApiV2MetricsMetricNameTagIndexingRulesRoute,
+  getApiV2MetricsMetricNameTagsRoute,
+  getApiV2MetricsMetricNameVolumesRoute,
+  getApiV2MetricsRoute,
+  getApiV2MetricsTagIndexingRulesIdRoute,
+  getApiV2MetricsTagIndexingRulesRoute,
+  getApiV2ModelGroupsIdRoute,
+  getApiV2ModelGroupsRoute,
+  getApiV2ModelLabApiArtifactsContentRoute,
+  getApiV2ModelLabApiFacetKeysRoute,
+  getApiV2ModelLabApiFacetValuesRoute,
+  getApiV2ModelLabApiProjectFacetKeysRoute,
+  getApiV2ModelLabApiProjectFacetValuesRoute,
+  getApiV2ModelLabApiProjectsProjectIdArtifactsRoute,
+  getApiV2ModelLabApiProjectsProjectIdRoute,
+  getApiV2ModelLabApiProjectsRoute,
+  getApiV2ModelLabApiRunsRoute,
+  getApiV2ModelLabApiRunsRunIdArtifactsRoute,
+  getApiV2ModelLabApiRunsRunIdRoute,
+  getApiV2ModelsRoute,
+  getApiV2MonitorMonitorIdDowntimeMatchesRoute,
+  getApiV2MonitorNotificationRuleRoute,
+  getApiV2MonitorNotificationRuleRuleIdRoute,
+  getApiV2MonitorPolicyPolicyIdRoute,
+  getApiV2MonitorPolicyRoute,
+  getApiV2MonitorTemplateRoute,
+  getApiV2MonitorTemplateTemplateIdRoute,
+  getApiV2NdmDevicesDeviceIdRoute,
+  getApiV2NdmDevicesRoute,
+  getApiV2NdmInterfacesRoute,
+  getApiV2NdmTagsDevicesDeviceIdRoute,
+  getApiV2NdmTagsInterfacesInterfaceIdRoute,
+  getApiV2NetworkConnectionsAggregateRoute,
+  getApiV2NetworkDnsAggregateRoute,
+  getApiV2Oauth2ClientsClientUuidScopesRestrictionRoute,
+  getApiV2Oauth2WellKnownOpenidConfigurationRoute,
+  getApiV2Oauth2WellKnownSitesRoute,
+  getApiV2ObsPipelinesPipelinesPipelineIdRoute,
+  getApiV2ObsPipelinesPipelinesRoute,
+  getApiV2OnCallEscalationPoliciesPolicyIdRoute,
+  getApiV2OnCallEscalationPoliciesRoute,
+  getApiV2OnCallPagesPageIdRoute,
+  getApiV2OnCallPagesRoute,
+  getApiV2OnCallSchedulesRoute,
+  getApiV2OnCallSchedulesScheduleIdOnCallRoute,
+  getApiV2OnCallSchedulesScheduleIdOverridesRoute,
+  getApiV2OnCallSchedulesScheduleIdRespondersRoute,
+  getApiV2OnCallSchedulesScheduleIdRoute,
+  getApiV2OnCallTeamsTeamIdOnCallRoute,
+  getApiV2OnCallTeamsTeamIdRoutingRulesRoute,
+  getApiV2OnCallUsersUserIdNotificationChannelsChannelIdRoute,
+  getApiV2OnCallUsersUserIdNotificationChannelsRoute,
+  getApiV2OnCallUsersUserIdNotificationRulesRoute,
+  getApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute,
+  getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute,
+  getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsRoute,
+  getApiV2OrgAuthorizedClientsRoute,
+  getApiV2OrgConfigsOrgConfigNameRoute,
+  getApiV2OrgConfigsRoute,
+  getApiV2OrgConnectionsRoute,
+  getApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute,
+  getApiV2OrgGroupMembershipsRoute,
+  getApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute,
+  getApiV2OrgGroupPoliciesRoute,
+  getApiV2OrgGroupPolicyConfigsRoute,
+  getApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute,
+  getApiV2OrgGroupPolicyOverridesRoute,
+  getApiV2OrgGroupPolicySuggestionsRoute,
+  getApiV2OrgGroupsOrgGroupIdRoute,
+  getApiV2OrgGroupsRoute,
+  getApiV2OrgRoute,
+  getApiV2PermissionsRoute,
+  getApiV2PersonalAccessTokensRoute,
+  getApiV2PersonalAccessTokensTokenIdRoute,
+  getApiV2PoliciesInboundRoute,
+  getApiV2PoliciesRoute,
+  getApiV2PostureManagementFindingsFindingIdRoute,
+  getApiV2PostureManagementFindingsRoute,
+  getApiV2PowerpacksPowerpackIdRoute,
+  getApiV2PowerpacksRoute,
+  getApiV2ProcessesRoute,
+  getApiV2ProductAnalyticsEntityMappingConnectionsRoute,
+  getApiV2ProductAnalyticsEntityMappingRoute,
+  getApiV2ProductCatalogSkusRoute,
+  getApiV2ProviderModelsRoute,
+  getApiV2ProvidersIdRoute,
+  getApiV2ProvidersProviderIdModelsCanonicalPricingRoute,
+  getApiV2ProvidersProviderIdModelsRoute,
+  getApiV2ProvidersRoute,
+  getApiV2PrunedTraceTraceIdRoute,
+  getApiV2RateLimitsIdInstancesRoute,
+  getApiV2RateLimitsIdInstancesSummaryRoute,
+  getApiV2RateLimitsIdRoute,
+  getApiV2RateLimitsInstancesSummaryRoute,
+  getApiV2RateLimitsRoute,
+  getApiV2RateLimitsUsageRoute,
+  getApiV2ReferenceTablesTablesIdRoute,
+  getApiV2ReferenceTablesTablesIdRowsListRoute,
+  getApiV2ReferenceTablesTablesIdRowsRoute,
+  getApiV2ReferenceTablesTablesRoute,
+  getApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute,
+  getApiV2RemoteConfigProductsAsmWafCustomRulesRoute,
+  getApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute,
+  getApiV2RemoteConfigProductsAsmWafExclusionFiltersRoute,
+  getApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute,
+  getApiV2RemoteConfigProductsAsmWafPoliciesRoute,
+  getApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute,
+  getApiV2RemoteConfigProductsCwsAgentRulesRoute,
+  getApiV2RemoteConfigProductsCwsPolicyDownloadRoute,
+  getApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute,
+  getApiV2RemoteConfigProductsCwsPolicyRoute,
+  getApiV2RemoteConfigProductsRumConfigsConfigIdRoute,
+  getApiV2ReplayHeatmapSnapshotsRoute,
+  getApiV2ReportingDatasetDatasetIdSchedulesRoute,
+  getApiV2ReportingScheduleListRoute,
+  getApiV2ReportingScheduleResourceTypeResourceIdRoute,
+  getApiV2ReportingScheduleScheduleUuidRoute,
+  getApiV2RestrictionPolicyResourceIdRoute,
+  getApiV2RolesRoleIdPermissionsRoute,
+  getApiV2RolesRoleIdRoute,
+  getApiV2RolesRoleIdUsersRoute,
+  getApiV2RolesRoute,
+  getApiV2RolesTemplatesRoute,
+  getApiV2RoutingRulesGetRoute,
+  getApiV2RoutingRulesRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersExclusionRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersPermanentRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute,
+  getApiV2RumApplicationsAppIdRetentionFiltersRoute,
+  getApiV2RumApplicationsIdRoute,
+  getApiV2RumApplicationsRoute,
+  getApiV2RumConfigArchiveAppIdRoute,
+  getApiV2RumConfigArchiveRoute,
+  getApiV2RumConfigMetricsMetricIdRoute,
+  getApiV2RumConfigMetricsRoute,
+  getApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute,
+  getApiV2RumConfigRoute,
+  getApiV2RumConfigTeamsOwnershipMappingsIdRoute,
+  getApiV2RumConfigTeamsOwnershipMappingsRoute,
+  getApiV2RumConfigTeamsOwnershipRulesRoute,
+  getApiV2RumEventsRoute,
+  getApiV2RumOperationsByNameNameRoute,
+  getApiV2RumOperationsRumOperationIdRoute,
+  getApiV2RumOperationsSearchRoute,
+  getApiV2RumOperationsStrongLinksRoute,
+  getApiV2RumRecoverRequestsRequestIdRoute,
+  getApiV2RumRecoverRequestsRoute,
+  getApiV2RumReplayPlaylistsPlaylistIdRoute,
+  getApiV2RumReplayPlaylistsPlaylistIdSessionsRoute,
+  getApiV2RumReplayPlaylistsRoute,
+  getApiV2RumReplaySessionsSessionIdViewsViewIdSegmentsRoute,
+  getApiV2RumReplaySessionsSessionIdWatchersRoute,
+  getApiV2RumReplayViewershipHistorySessionsRoute,
+  getApiV2SamlConfigurationsRoute,
+  getApiV2SamlConfigurationsSamlConfigUuidRoute,
+  getApiV2ScorecardCampaignsCampaignIdRoute,
+  getApiV2ScorecardCampaignsRoute,
+  getApiV2ScorecardOutcomesRoute,
+  getApiV2ScorecardRulesRoute,
+  getApiV2ScorecardScorecardsRoute,
+  getApiV2ScorecardScoresAggregationRoute,
+  getApiV2SeatsUsersRoute,
+  getApiV2SecurityAsmServicesServiceFilterRoute,
+  getApiV2SecurityEntitiesRiskScoresEntityIdRoute,
+  getApiV2SecurityEntitiesRiskScoresRoute,
+  getApiV2SecurityFindingsAutomationDefaultInboxRulesRoute,
+  getApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdRoute,
+  getApiV2SecurityFindingsAutomationDueDateRulesRoute,
+  getApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute,
+  getApiV2SecurityFindingsAutomationInboxRulesRoute,
+  getApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute,
+  getApiV2SecurityFindingsAutomationMuteRulesRoute,
+  getApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute,
+  getApiV2SecurityFindingsAutomationSeverityModifierRulesRoute,
+  getApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute,
+  getApiV2SecurityFindingsAutomationTicketCreationRulesRoute,
+  getApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute,
+  getApiV2SecurityFindingsRoute,
+  getApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute,
+  getApiV2SecurityMonitoringBatchMigrationsRoute,
+  getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesAgentRuleIdRoute,
+  getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesRoute,
+  getApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute,
+  getApiV2SecurityMonitoringConfigurationCriticalAssetsRoute,
+  getApiV2SecurityMonitoringConfigurationCriticalAssetsRulesRuleIdRoute,
+  getApiV2SecurityMonitoringConfigurationIntegrationConfigEntraIdAzureAppRegistrationsRoute,
+  getApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute,
+  getApiV2SecurityMonitoringConfigurationIntegrationConfigRoute,
+  getApiV2SecurityMonitoringConfigurationSecurityFiltersRoute,
+  getApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute,
+  getApiV2SecurityMonitoringConfigurationSecurityFiltersVersionsRoute,
+  getApiV2SecurityMonitoringConfigurationSuppressionsRoute,
+  getApiV2SecurityMonitoringConfigurationSuppressionsRulesRuleIdRoute,
+  getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute,
+  getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdVersionHistoryRoute,
+  getApiV2SecurityMonitoringContentPacksStatesRoute,
+  getApiV2SecurityMonitoringDatasetsDatasetIdRoute,
+  getApiV2SecurityMonitoringDatasetsDatasetIdVersionHistoryRoute,
+  getApiV2SecurityMonitoringDatasetsDatasetIdVersionVersionRoute,
+  getApiV2SecurityMonitoringDatasetsRoute,
+  getApiV2SecurityMonitoringEntityContextIdRoute,
+  getApiV2SecurityMonitoringEntityContextRecentlyUpdatedRoute,
+  getApiV2SecurityMonitoringEntityContextRoute,
+  getApiV2SecurityMonitoringEventsEventIdMatchingSignalsRoute,
+  getApiV2SecurityMonitoringRulesProposalsProposalIdRoute,
+  getApiV2SecurityMonitoringRulesRoute,
+  getApiV2SecurityMonitoringRulesRuleIdConvertRoute,
+  getApiV2SecurityMonitoringRulesRuleIdRoute,
+  getApiV2SecurityMonitoringRulesRuleIdVersionHistoryRoute,
+  getApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRoute,
+  getApiV2SecurityMonitoringSecurityAgentInvestigationsCountRoute,
+  getApiV2SecurityMonitoringSecurityAgentInvestigationsInvestigationIdRoute,
+  getApiV2SecurityMonitoringSecurityAgentInvestigationsRoute,
+  getApiV2SecurityMonitoringSignalsRoute,
+  getApiV2SecurityMonitoringSignalsSignalIdEntitiesRoute,
+  getApiV2SecurityMonitoringSignalsSignalIdInvestigationQueriesRoute,
+  getApiV2SecurityMonitoringSignalsSignalIdRoute,
+  getApiV2SecurityMonitoringSignalsSignalIdSuggestedActionsRoute,
+  getApiV2SecurityMonitoringTerraformResourceTypeResourceIdRoute,
+  getApiV2SecurityOwnershipResourceIdHistoryRoute,
+  getApiV2SecurityOwnershipResourceIdOwnerTypeEvidenceRoute,
+  getApiV2SecurityOwnershipResourceIdOwnerTypeHistoryRoute,
+  getApiV2SecurityOwnershipResourceIdOwnerTypeRoute,
+  getApiV2SecurityOwnershipResourceIdRoute,
+  getApiV2SecurityRemediationGroupsRoute,
+  getApiV2SecuritySbomsAssetTypeRoute,
+  getApiV2SecuritySbomsRoute,
+  getApiV2SecurityScannedAssetsMetadataRoute,
+  getApiV2SecuritySiemIocExplorerIndicatorRoute,
+  getApiV2SecuritySiemIocExplorerRoute,
+  getApiV2SecuritySignalsNotificationRulesIdRoute,
+  getApiV2SecuritySignalsNotificationRulesRoute,
+  getApiV2SecurityVulnerabilitiesNotificationRulesIdRoute,
+  getApiV2SecurityVulnerabilitiesNotificationRulesRoute,
+  getApiV2SecurityVulnerabilitiesRoute,
+  getApiV2SecurityVulnerableAssetsRoute,
+  getApiV2SensitiveDataScannerConfigRoute,
+  getApiV2SensitiveDataScannerConfigStandardPatternsRoute,
+  getApiV2ServiceAccountsServiceAccountIdAccessTokensRoute,
+  getApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute,
+  getApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute,
+  getApiV2ServiceAccountsServiceAccountIdApplicationKeysRoute,
+  getApiV2ServicesDefinitionsRoute,
+  getApiV2ServicesDefinitionsServiceNameRoute,
+  getApiV2SiemHistoricalDetectionsHistsignalsHistsignalIdRoute,
+  getApiV2SiemHistoricalDetectionsHistsignalsRoute,
+  getApiV2SiemHistoricalDetectionsJobsJobIdHistsignalsRoute,
+  getApiV2SiemHistoricalDetectionsJobsJobIdRoute,
+  getApiV2SiemHistoricalDetectionsJobsRoute,
+  getApiV2SloReportReportIdDownloadRoute,
+  getApiV2SloReportReportIdStatusRoute,
+  getApiV2SloSloIdStatusRoute,
+  getApiV2SourcemapsListRoute,
+  getApiV2SourcemapsRoute,
+  getApiV2SpansEventsRoute,
+  getApiV2StaticAnalysisAiMemoryRoute,
+  getApiV2StaticAnalysisAiPromptsRoute,
+  getApiV2StaticAnalysisAiRulesetsRoute,
+  getApiV2StaticAnalysisAiRulesetsRulesetNameRoute,
+  getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsIdRoute,
+  getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRoute,
+  getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRoute,
+  getApiV2StaticAnalysisCodegenRulesetsRoute,
+  getApiV2StaticAnalysisCustomRulesetsRoute,
+  getApiV2StaticAnalysisCustomRulesetsRulesetNameRoute,
+  getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsIdRoute,
+  getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRoute,
+  getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRoute,
+  getApiV2StaticAnalysisDefaultRulesetsLanguageRoute,
+  getApiV2StaticAnalysisRulesetsRulesetNameRoute,
+  getApiV2StaticAnalysisScaDependenciesScanJobIdRoute,
+  getApiV2StaticAnalysisScaLicensesListRoute,
+  getApiV2StaticAnalysisSecretsRulesRoute,
+  getApiV2StaticAnalysisStaticAnalysisServerNodeTypesLanguageRoute,
+  getApiV2StaticAnalysisStaticAnalysisServerTreeSitterWasmFileRoute,
+  getApiV2StatuspagesDegradationsRoute,
+  getApiV2StatuspagesMaintenancesRoute,
+  getApiV2StatuspagesPageIdAccessPoliciesEmailRoute,
+  getApiV2StatuspagesPageIdComponentsComponentIdRoute,
+  getApiV2StatuspagesPageIdComponentsRoute,
+  getApiV2StatuspagesPageIdDegradationsDegradationIdRoute,
+  getApiV2StatuspagesPageIdDegradationTemplatesRoute,
+  getApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute,
+  getApiV2StatuspagesPageIdMaintenancesMaintenanceIdRoute,
+  getApiV2StatuspagesPageIdMaintenanceTemplatesRoute,
+  getApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute,
+  getApiV2StatuspagesPageIdRoute,
+  getApiV2StatuspagesRoute,
+  getApiV2SyntheticsApiMultistepSubtestsPublicIdParentsRoute,
+  getApiV2SyntheticsApiMultistepSubtestsPublicIdRoute,
+  getApiV2SyntheticsDowntimesDowntimeIdRoute,
+  getApiV2SyntheticsDowntimesRoute,
+  getApiV2SyntheticsSettingsOnDemandConcurrencyCapRoute,
+  getApiV2SyntheticsSuitesPublicIdRoute,
+  getApiV2SyntheticsSuitesSearchRoute,
+  getApiV2SyntheticsTestsBrowserPublicIdResultsResultIdRoute,
+  getApiV2SyntheticsTestsBrowserPublicIdResultsRoute,
+  getApiV2SyntheticsTestsFastIdRoute,
+  getApiV2SyntheticsTestsNetworkPublicIdRoute,
+  getApiV2SyntheticsTestsPollResultsRoute,
+  getApiV2SyntheticsTestsPublicIdParentSuitesRoute,
+  getApiV2SyntheticsTestsPublicIdResultsResultIdRoute,
+  getApiV2SyntheticsTestsPublicIdResultsRoute,
+  getApiV2SyntheticsTestsPublicIdVersionHistoryRoute,
+  getApiV2SyntheticsTestsPublicIdVersionHistoryVersionNumberRoute,
+  getApiV2TagsEnrichmentRoute,
+  getApiV2TagsEnrichmentRulesetIdRoute,
+  getApiV2TagsEnrichmentStatusRoute,
+  getApiV2TeamConnectionsRoute,
+  getApiV2TeamHierarchyLinksLinkIdRoute,
+  getApiV2TeamHierarchyLinksRoute,
+  getApiV2TeamRoute,
+  getApiV2TeamSuperTeamIdMemberTeamsRoute,
+  getApiV2TeamSyncRoute,
+  getApiV2TeamTeamIdLinksLinkIdRoute,
+  getApiV2TeamTeamIdLinksRoute,
+  getApiV2TeamTeamIdMembershipsRoute,
+  getApiV2TeamTeamIdMembersRoute,
+  getApiV2TeamTeamIdNotificationRulesRoute,
+  getApiV2TeamTeamIdNotificationRulesRuleIdRoute,
+  getApiV2TeamTeamIdPermissionSettingsRoute,
+  getApiV2TeamTeamIdRoute,
+  getApiV2TraceTraceIdRoute,
+  getApiV2UsageAdminTemporaryGrantRequestsRequestIdRoute,
+  getApiV2UsageAdminTemporaryGrantRequestsRoute,
+  getApiV2UsageApplicationSecurityRoute,
+  getApiV2UsageBillingDimensionMappingRoute,
+  getApiV2UsageCostByOrgRoute,
+  getApiV2UsageEstimatedCostRoute,
+  getApiV2UsageHistoricalCostRoute,
+  getApiV2UsageHourlyUsageRoute,
+  getApiV2UsageLambdaTracedInvocationsRoute,
+  getApiV2UsageMonthlyResourcesRoute,
+  getApiV2UsageObservabilityPipelinesRoute,
+  getApiV2UsageProjectedCostRoute,
+  getApiV2UsageQuotasQuotaNamespaceIdRoute,
+  getApiV2UsageQuotasQuotaNamespaceRoute,
+  getApiV2UsageSummaryAvailableFieldsRoute,
+  getApiV2UsageTemporaryGrantRequestsRequestIdRoute,
+  getApiV2UsageTemporaryGrantRequestsRoute,
+  getApiV2UsageUsageAttributionTypesRoute,
+  getApiV2UserAuthorizedClientsRoute,
+  getApiV2UserAuthorizedClientsUserAuthorizedClientIdRoute,
+  getApiV2UserInvitationsUserInvitationUuidRoute,
+  getApiV2UsersRoute,
+  getApiV2UsersUserIdIdentityProvidersRoute,
+  getApiV2UsersUserIdOrgsRoute,
+  getApiV2UsersUserIdPermissionsRoute,
+  getApiV2UsersUserIdRoute,
+  getApiV2UsersUserUuidMembershipsRoute,
+  getApiV2ValidateKeysRoute,
+  getApiV2ValidateRoute,
+  getApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute,
+  getApiV2WebIntegrationsIntegrationNameAccountsRoute,
+  getApiV2WidgetsExperienceTypeRoute,
+  getApiV2WidgetsExperienceTypeUuidRoute,
+  getApiV2WifAwsIntakeMappingIntakeMappingIdRoute,
+  getApiV2WifAwsIntakeMappingRoute,
+  getApiV2WifAwsPersonaMappingPersonaMappingIdRoute,
+  getApiV2WifAwsPersonaMappingRoute,
+  getApiV2WifGithubIntakeMappingIntakeMappingIdRoute,
+  getApiV2WifGithubIntakeMappingRoute,
+  getApiV2WifGithubPersonaMappingPersonaMappingIdRoute,
+  getApiV2WifGithubPersonaMappingRoute,
+  getApiV2WifOidcPersonaMappingPersonaMappingIdRoute,
+  getApiV2WifOidcPersonaMappingRoute,
+  getApiV2WifOidcProviderProviderIdRoute,
+  getApiV2WifOidcProviderRoute,
+  getApiV2WifTerraformPersonaMappingPersonaMappingIdRoute,
+  getApiV2WifTerraformPersonaMappingRoute,
+  getApiV2WorkflowsRoute,
+  getApiV2WorkflowsWorkflowIdInstancesInstanceIdRoute,
+  getApiV2WorkflowsWorkflowIdInstancesRoute,
+  getApiV2WorkflowsWorkflowIdRoute,
+  patchApiUnstableFleetSchedulesIdRoute,
+  patchApiV2ActionsConnectionsConnectionIdRoute,
+  patchApiV2ActionsDatastoresDatastoreIdItemsRoute,
+  patchApiV2ActionsDatastoresDatastoreIdRoute,
+  patchApiV2AgentlessScanningAccountsAwsAccountIdRoute,
+  patchApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute,
+  patchApiV2AgentlessScanningAccountsGcpProjectIdRoute,
+  patchApiV2ApiKeysApiKeyIdRoute,
+  patchApiV2ApmConfigMetricsMetricIdRoute,
+  patchApiV2AppBuilderAppsAppIdFavoriteRoute,
+  patchApiV2AppBuilderAppsAppIdProtectionLevelRoute,
+  patchApiV2AppBuilderAppsAppIdRoute,
+  patchApiV2AppBuilderAppsAppIdSelfServiceRoute,
+  patchApiV2AppBuilderAppsAppIdTagsRoute,
+  patchApiV2AppBuilderAppsAppIdVersionNameRoute,
+  patchApiV2ApplicationKeysAppKeyIdRoute,
+  patchApiV2AuthnMappingsAuthnMappingIdRoute,
+  patchApiV2BudgetsIdRoute,
+  patchApiV2CasesCaseIdRelationshipsJiraIssuesRoute,
+  patchApiV2CasesCaseIdRelationshipsProjectRoute,
+  patchApiV2CasesProjectsProjectIdRoute,
+  patchApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRoute,
+  patchApiV2ChangeManagementChangeRequestChangeRequestIdRoute,
+  patchApiV2CiGithubAccountsRoute,
+  patchApiV2CiTestOptimizationSettingsPoliciesRoute,
+  patchApiV2CiTestOptimizationSettingsServiceRoute,
+  patchApiV2CostAccountFiltersCloudAccountIdRoute,
+  patchApiV2CostArbitraryRuleRuleIdRoute,
+  patchApiV2CostAwsCurConfigCloudAccountIdRoute,
+  patchApiV2CostAzureUcConfigCloudAccountIdRoute,
+  patchApiV2CostCustomCostsFileIdRoute,
+  patchApiV2CostGcpUcConfigCloudAccountIdRoute,
+  patchApiV2CurrentUserApplicationKeysAppKeyIdRoute,
+  patchApiV2CurrentUserRoute,
+  patchApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute,
+  patchApiV2DomainAllowlistRoute,
+  patchApiV2DoraDeploymentsDeploymentIdRoute,
+  patchApiV2DoraDeploymentsRoute,
+  patchApiV2DowntimeDowntimeIdRoute,
+  patchApiV2ExperimentsBanditsBanditIdRoute,
+  patchApiV2ExperimentsExperimentIdAnalysisPlanRoute,
+  patchApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRoute,
+  patchApiV2ExperimentsExperimentIdRoute,
+  patchApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute,
+  patchApiV2ExperimentsMetricsMetricIdRoute,
+  patchApiV2ExperimentsProtocolsProtocolIdRoute,
+  patchApiV2ExperimentsSubjectTypesSubjectTypeIdRoute,
+  patchApiV2FeatureFlagsSavedFiltersSavedFilterIdRoute,
+  patchApiV2FormsFormIdRoute,
+  patchApiV2GovernanceControlDetectionTypeRoute,
+  patchApiV2GovernanceDetectionsDetectionIdRoute,
+  patchApiV2GovernanceNotificationSettingsRoute,
+  patchApiV2GovernanceTagRulesRuleIdRoute,
+  patchApiV2IdentityProvidersIdpIdRoute,
+  patchApiV2IncidentsConfigGlobalSettingsRoute,
+  patchApiV2IncidentsConfigGoogleChatConfigurationsIdRoute,
+  patchApiV2IncidentsConfigGoogleMeetConfigurationsIdRoute,
+  patchApiV2IncidentsConfigNotificationTemplatesIdRoute,
+  patchApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute,
+  patchApiV2IncidentsConfigRulesRuleIdRoute,
+  patchApiV2IncidentsConfigTypesIncidentTypeIdRoute,
+  patchApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute,
+  patchApiV2IncidentsConfigUserDefinedRolesRoleIdRoute,
+  patchApiV2IncidentsIncidentIdAttachmentsAttachmentIdRoute,
+  patchApiV2IncidentsIncidentIdConfigurationsRoute,
+  patchApiV2IncidentsIncidentIdImpactsImpactIdRoute,
+  patchApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute,
+  patchApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute,
+  patchApiV2IncidentsIncidentIdRoute,
+  patchApiV2IncidentsIncidentIdTimestampOverridesIdRoute,
+  patchApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute,
+  patchApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute,
+  patchApiV2IntegrationGcpAccountsAccountIdRoute,
+  patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute,
+  patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute,
+  patchApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute,
+  patchApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute,
+  patchApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute,
+  patchApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute,
+  patchApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute,
+  patchApiV2IntegrationOciTenanciesTenancyOcidRoute,
+  patchApiV2IntegrationOpsgenieAccountsAccountIdRoute,
+  patchApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute,
+  patchApiV2IntegrationsCloudflareAccountsAccountIdRoute,
+  patchApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute,
+  patchApiV2IntegrationsConfluentCloudAccountsAccountIdRoute,
+  patchApiV2IntegrationsFastlyAccountsAccountIdRoute,
+  patchApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute,
+  patchApiV2IntegrationsOktaAccountsAccountIdRoute,
+  patchApiV2IntegrationStatuspageAccountRoute,
+  patchApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRoute,
+  patchApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute,
+  patchApiV2IpAllowlistRoute,
+  patchApiV2LlmObsV1AnnotationQueuesQueueIdRoute,
+  patchApiV2LlmObsV1ExperimentsExperimentIdRoute,
+  patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateLockRoute,
+  patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateUnlockRoute,
+  patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute,
+  patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRoute,
+  patchApiV2LlmObsV1ProjectsProjectIdRoute,
+  patchApiV2LlmObsV1PromptsPromptIdRoute,
+  patchApiV2LlmObsV1PromptsPromptIdVersionsVersionRoute,
+  patchApiV2LogsArchiveSearchesArchiveSearchIdRoute,
+  patchApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute,
+  patchApiV2LogsConfigMetricsMetricIdRoute,
+  patchApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute,
+  patchApiV2MetricsMetricNameTagsRoute,
+  patchApiV2ModelGroupsIdRoute,
+  patchApiV2MonitorNotificationRuleRuleIdRoute,
+  patchApiV2MonitorPolicyPolicyIdRoute,
+  patchApiV2NdmTagsDevicesDeviceIdRoute,
+  patchApiV2NdmTagsInterfacesInterfaceIdRoute,
+  patchApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute,
+  patchApiV2OrgConfigsOrgConfigNameRoute,
+  patchApiV2OrgConnectionsConnectionIdRoute,
+  patchApiV2OrgGroupMembershipsBulkRoute,
+  patchApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute,
+  patchApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute,
+  patchApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute,
+  patchApiV2OrgGroupsOrgGroupIdRoute,
+  patchApiV2OrgSamlConfigurationsRoute,
+  patchApiV2PersonalAccessTokensTokenIdRoute,
+  patchApiV2PowerpacksPowerpackIdRoute,
+  patchApiV2ProvidersIdRoute,
+  patchApiV2ProvidersProviderIdModelsCanonicalRoute,
+  patchApiV2RateLimitsIdRoute,
+  patchApiV2ReferenceTablesTablesIdRoute,
+  patchApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute,
+  patchApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute,
+  patchApiV2ReplayHeatmapSnapshotsSnapshotIdRoute,
+  patchApiV2ReportingScheduleScheduleUuidRoute,
+  patchApiV2ReportingScheduleScheduleUuidToggleRoute,
+  patchApiV2RolesRoleIdRoute,
+  patchApiV2RumApplicationsAppIdRelationshipsRetentionFiltersRoute,
+  patchApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute,
+  patchApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRoute,
+  patchApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute,
+  patchApiV2RumApplicationsIdRoute,
+  patchApiV2RumConfigMetricsMetricIdRoute,
+  patchApiV2RumConfigRoute,
+  patchApiV2RumRecoverRequestsRequestIdRoute,
+  patchApiV2SamlConfigurationsSamlConfigUuidRoute,
+  patchApiV2SecurityFindingsAssigneeRoute,
+  patchApiV2SecurityFindingsCasesCaseIdRoute,
+  patchApiV2SecurityFindingsJiraIssuesRoute,
+  patchApiV2SecurityFindingsLinearIssuesRoute,
+  patchApiV2SecurityFindingsMuteRoute,
+  patchApiV2SecurityFindingsServicenowTicketsRoute,
+  patchApiV2SecurityFindingsSeverityRoute,
+  patchApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesResourceIdRoute,
+  patchApiV2SecurityMonitoringBatchMigrationsBatchIdRoute,
+  patchApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute,
+  patchApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute,
+  patchApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute,
+  patchApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute,
+  patchApiV2SecurityMonitoringDatasetsDatasetIdRoute,
+  patchApiV2SecurityMonitoringSignalsBulkAssigneeRoute,
+  patchApiV2SecurityMonitoringSignalsBulkStateRoute,
+  patchApiV2SecurityMonitoringSignalsBulkUpdateRoute,
+  patchApiV2SecurityMonitoringSignalsSignalIdAssigneeRoute,
+  patchApiV2SecurityMonitoringSignalsSignalIdIncidentsRoute,
+  patchApiV2SecurityMonitoringSignalsSignalIdStateRoute,
+  patchApiV2SecurityMonitoringSignalsSignalIdUpdateRoute,
+  patchApiV2SecuritySignalsNotificationRulesIdRoute,
+  patchApiV2SecurityVulnerabilitiesNotificationRulesIdRoute,
+  patchApiV2SensitiveDataScannerConfigGroupsGroupIdRoute,
+  patchApiV2SensitiveDataScannerConfigRoute,
+  patchApiV2SensitiveDataScannerConfigRulesRuleIdRoute,
+  patchApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute,
+  patchApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute,
+  patchApiV2SiemHistoricalDetectionsJobsJobIdCancelRoute,
+  patchApiV2SourcemapsRestoreRoute,
+  patchApiV2StaticAnalysisAiRulesetsRulesetNameRoute,
+  patchApiV2StaticAnalysisCustomRulesetsRulesetNameRoute,
+  patchApiV2StatuspagesPageIdComponentsComponentIdRoute,
+  patchApiV2StatuspagesPageIdDegradationsDegradationIdRoute,
+  patchApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRoute,
+  patchApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute,
+  patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdRoute,
+  patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdUpdatesUpdateIdRoute,
+  patchApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute,
+  patchApiV2StatuspagesPageIdRoute,
+  patchApiV2SyntheticsSuitesPublicIdJsonpatchRoute,
+  patchApiV2SyntheticsVariablesVariableIdJsonpatchRoute,
+  patchApiV2TagsEnrichmentRulesetIdRoute,
+  patchApiV2TeamTeamIdLinksLinkIdRoute,
+  patchApiV2TeamTeamIdMembershipsUserIdRoute,
+  patchApiV2TeamTeamIdRoute,
+  patchApiV2TestFlakyTestManagementTestsRoute,
+  patchApiV2UsageQuotasQuotaNamespaceIdRoute,
+  patchApiV2UsersUserIdRelationshipsIdentityProvidersRoute,
+  patchApiV2UsersUserIdRoute,
+  patchApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute,
+  patchApiV2WorkflowsWorkflowIdRoute,
+  postApiUnstableFleetSchedulesIdTriggerRoute,
+  postApiUnstableFleetSchedulesRoute,
+  postApiV2ActionsConnectionsRoute,
+  postApiV2ActionsDatastoresDatastoreIdItemsBulkRoute,
+  postApiV2ActionsDatastoresRoute,
+  postApiV2ActionsExecutionPoliciesRoute,
+  postApiV2AgentlessScanningAccountsAwsRoute,
+  postApiV2AgentlessScanningAccountsAzureRoute,
+  postApiV2AgentlessScanningAccountsGcpRoute,
+  postApiV2AgentlessScanningOndemandAwsRoute,
+  postApiV2AiGuardEvaluateRoute,
+  postApiV2AiImpactUserActivityRoute,
+  postApiV2AnnotationRoute,
+  postApiV2ApicatalogOpenapiRoute,
+  postApiV2ApiKeysRoute,
+  postApiV2ApmConfigMetricsRoute,
+  postApiV2ApmConfigRetentionFiltersRoute,
+  postApiV2AppBuilderAppsAppIdDeploymentRoute,
+  postApiV2AppBuilderAppsAppIdPublishRequestRoute,
+  postApiV2AppBuilderAppsAppIdRevertRoute,
+  postApiV2AppBuilderAppsRoute,
+  postApiV2AuditEventsSearchRoute,
+  postApiV2AuthnMappingsRoute,
+  postApiV2BitsAiInvestigationsRoute,
+  postApiV2BudgetsIdInstancesCapacityRoute,
+  postApiV2BudgetsIdInstancesResetRoute,
+  postApiV2BudgetsRoute,
+  postApiV2CasesAggregateRoute,
+  postApiV2CasesBulkRoute,
+  postApiV2CasesCaseIdArchiveRoute,
+  postApiV2CasesCaseIdAssignRoute,
+  postApiV2CasesCaseIdAttributesRoute,
+  postApiV2CasesCaseIdCommentRoute,
+  postApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRoute,
+  postApiV2CasesCaseIdDescriptionRoute,
+  postApiV2CasesCaseIdDueDateRoute,
+  postApiV2CasesCaseIdPriorityRoute,
+  postApiV2CasesCaseIdRelationshipsIncidentsRoute,
+  postApiV2CasesCaseIdRelationshipsJiraIssuesRoute,
+  postApiV2CasesCaseIdRelationshipsNotebookRoute,
+  postApiV2CasesCaseIdRelationshipsServicenowTicketsRoute,
+  postApiV2CasesCaseIdResolvedReasonRoute,
+  postApiV2CasesCaseIdStatusRoute,
+  postApiV2CasesCaseIdTitleRoute,
+  postApiV2CasesCaseIdUnarchiveRoute,
+  postApiV2CasesCaseIdUnassignRoute,
+  postApiV2CasesCaseIdWatchersUserUuidRoute,
+  postApiV2CasesLinkRoute,
+  postApiV2CasesProjectsProjectIdFavoritesRoute,
+  postApiV2CasesProjectsProjectIdNotificationRulesRoute,
+  postApiV2CasesProjectsProjectIdRulesRoute,
+  postApiV2CasesProjectsProjectIdRulesRuleIdDisableRoute,
+  postApiV2CasesProjectsProjectIdRulesRuleIdEnableRoute,
+  postApiV2CasesProjectsRoute,
+  postApiV2CasesRoute,
+  postApiV2CasesTypesCaseTypeIdCustomAttributesRoute,
+  postApiV2CasesTypesRoute,
+  postApiV2CasesViewsRoute,
+  postApiV2CatalogEntityPreviewRoute,
+  postApiV2CatalogEntityRoute,
+  postApiV2CatalogKindRoute,
+  postApiV2ChangeManagementChangeRequestChangeRequestIdBranchRoute,
+  postApiV2ChangeManagementChangeRequestRoute,
+  postApiV2CilogsRoute,
+  postApiV2CiPipelineRoute,
+  postApiV2CiPipelinesAnalyticsAggregateRoute,
+  postApiV2CiPipelinesEventsSearchRoute,
+  postApiV2CiTestOptimizationSettingsPoliciesRoute,
+  postApiV2CiTestOptimizationSettingsServiceRoute,
+  postApiV2CiTestsAnalyticsAggregateRoute,
+  postApiV2CiTestsEventsSearchRoute,
+  postApiV2CloudSecurityManagementCustomFrameworksRoute,
+  postApiV2CodeCoverageBranchSummaryRoute,
+  postApiV2CodeCoverageCommitSummaryRoute,
+  postApiV2CodeCoverageFilesRoute,
+  postApiV2CodeCoveragePrSummaryRoute,
+  postApiV2CostArbitraryRuleReorderRoute,
+  postApiV2CostArbitraryRuleRoute,
+  postApiV2CostAwsCurConfigRoute,
+  postApiV2CostAzureUcConfigRoute,
+  postApiV2CostBudgetCsvValidateRoute,
+  postApiV2CostBudgetValidateRoute,
+  postApiV2CostGcpUcConfigRoute,
+  postApiV2CostRecommendationsRoute,
+  postApiV2CostUnitCostsRoute,
+  postApiV2CsmOwnershipSettingsRoute,
+  postApiV2CurrentUserApplicationKeysRoute,
+  postApiV2DashboardDashboardIdSharedSecureEmbedRoute,
+  postApiV2DashboardListsManualDashboardListIdDashboardsRoute,
+  postApiV2DataCaptureOverridesRoute,
+  postApiV2DataObservabilityMonitorsMonitorIdRunRoute,
+  postApiV2DatasetsRoute,
+  postApiV2DdsqlQueryTabularFetchRoute,
+  postApiV2DdsqlQueryTabularRoute,
+  postApiV2DeletionDataProductRoute,
+  postApiV2DemJourneysInferredJourneyIdIgnoreRoute,
+  postApiV2DemJourneysJourneyIdVariantsRoute,
+  postApiV2DemJourneysPublicJourneyIdSuiteRoute,
+  postApiV2DemJourneysRoute,
+  postApiV2DemJourneysSuitesBatchRoute,
+  postApiV2DeploymentGatesGateIdRulesRoute,
+  postApiV2DeploymentGatesRoute,
+  postApiV2DeploymentsGatesEvaluationRoute,
+  postApiV2DoraDeploymentRoute,
+  postApiV2DoraDeploymentsRoute,
+  postApiV2DoraFailureRoute,
+  postApiV2DoraFailuresRoute,
+  postApiV2DoraIncidentRoute,
+  postApiV2DowntimeRoute,
+  postApiV2ErrorTrackingIssuesIssueIdSnoozeRoute,
+  postApiV2ErrorTrackingIssuesSearchRoute,
+  postApiV2EventsRoute,
+  postApiV2EventsSearchRoute,
+  postApiV2ExperimentsBanditsBanditIdPauseRoute,
+  postApiV2ExperimentsBanditsBanditIdRefreshRoute,
+  postApiV2ExperimentsBanditsBanditIdResumeRoute,
+  postApiV2ExperimentsBanditsBanditIdStartRoute,
+  postApiV2ExperimentsBanditsBanditIdStopRoute,
+  postApiV2ExperimentsBanditsRoute,
+  postApiV2ExperimentsExperimentIdCancelRoute,
+  postApiV2ExperimentsExperimentIdConcludeRoute,
+  postApiV2ExperimentsExperimentIdMetricGroupsFromCollectionMetricCollectionIdRoute,
+  postApiV2ExperimentsExperimentIdMetricGroupsRoute,
+  postApiV2ExperimentsExperimentIdResultsRefreshRoute,
+  postApiV2ExperimentsExperimentIdStartRoute,
+  postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdArchiveRoute,
+  postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdUnarchiveRoute,
+  postApiV2ExperimentsExposureSqlModelsRoute,
+  postApiV2ExperimentsMetricCollectionsRoute,
+  postApiV2ExperimentsMetricSqlModelsRoute,
+  postApiV2ExperimentsMetricsRoute,
+  postApiV2ExperimentsProtocolsProtocolIdArchiveRoute,
+  postApiV2ExperimentsProtocolsProtocolIdPublishRoute,
+  postApiV2ExperimentsProtocolsRoute,
+  postApiV2ExperimentsResultsRefreshRoute,
+  postApiV2ExperimentsRoute,
+  postApiV2ExperimentsSubjectTypesRoute,
+  postApiV2ExperimentsSubjectTypesSubjectTypeIdDefaultRoute,
+  postApiV2FeatureFlagsEnvironmentsRoute,
+  postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdPauseRoute,
+  postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdResumeRoute,
+  postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStartRoute,
+  postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStopRoute,
+  postApiV2FeatureFlagsFeatureFlagIdArchiveRoute,
+  postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRoute,
+  postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdDisableRoute,
+  postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdEnableRoute,
+  postApiV2FeatureFlagsFeatureFlagIdUnarchiveRoute,
+  postApiV2FeatureFlagsFeatureFlagIdVariantsRoute,
+  postApiV2FeatureFlagsRoute,
+  postApiV2FleetDeploymentsConfigureRoute,
+  postApiV2FleetDeploymentsDeploymentIdCancelRoute,
+  postApiV2FleetDeploymentsUpgradeRoute,
+  postApiV2FormsCreateAndPublishRoute,
+  postApiV2FormsFormIdCloneRoute,
+  postApiV2FormsFormIdPublishRoute,
+  postApiV2FormsFormIdVersionsRoute,
+  postApiV2FormsFormIdVersionsUpsertAndPublishRoute,
+  postApiV2FormsRoute,
+  postApiV2GovernanceDetectionsMitigateRoute,
+  postApiV2GovernanceTagRulesRoute,
+  postApiV2HamrRoute,
+  postApiV2IncidentsConfigGlobalIncidentHandlesRoute,
+  postApiV2IncidentsConfigGoogleChatConfigurationsRoute,
+  postApiV2IncidentsConfigGoogleMeetConfigurationsRoute,
+  postApiV2IncidentsConfigImpactFieldsRoute,
+  postApiV2IncidentsConfigNotificationRulesRoute,
+  postApiV2IncidentsConfigNotificationTemplatesRoute,
+  postApiV2IncidentsConfigPostmortemTemplatesRoute,
+  postApiV2IncidentsConfigRulesRoute,
+  postApiV2IncidentsConfigTypesRoute,
+  postApiV2IncidentsConfigUserDefinedFieldsRoute,
+  postApiV2IncidentsConfigUserDefinedRolesRoute,
+  postApiV2IncidentsImportRoute,
+  postApiV2IncidentsIncidentIdAiPostmortemRoute,
+  postApiV2IncidentsIncidentIdAttachmentsPostmortemsRoute,
+  postApiV2IncidentsIncidentIdAttachmentsRoute,
+  postApiV2IncidentsIncidentIdCasesPageRoute,
+  postApiV2IncidentsIncidentIdConfigurationsRoute,
+  postApiV2IncidentsIncidentIdImpactsRoute,
+  postApiV2IncidentsIncidentIdPageRoute,
+  postApiV2IncidentsIncidentIdPagesLinkRoute,
+  postApiV2IncidentsIncidentIdRelationshipsIntegrationsRoute,
+  postApiV2IncidentsIncidentIdRelationshipsTodosRoute,
+  postApiV2IncidentsIncidentIdRespondersRoute,
+  postApiV2IncidentsIncidentIdServicenowRecordsRoute,
+  postApiV2IncidentsIncidentIdTimestampOverridesRoute,
+  postApiV2IncidentsRoute,
+  postApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute,
+  postApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRoute,
+  postApiV2IntegrationAwsAccountsRoute,
+  postApiV2IntegrationAwsEventBridgeRoute,
+  postApiV2IntegrationAwsGenerateNewExternalIdRoute,
+  postApiV2IntegrationAwsValidateCcmConfigRoute,
+  postApiV2IntegrationGcpAccountsRoute,
+  postApiV2IntegrationGcpStsDelegateRoute,
+  postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRoute,
+  postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRoute,
+  postApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRoute,
+  postApiV2IntegrationInterfacesChatgptEnterpriseAccountsRoute,
+  postApiV2IntegrationInterfacesClaudeComplianceAccountsRoute,
+  postApiV2IntegrationInterfacesCoreweaveCloudAccountsRoute,
+  postApiV2IntegrationInterfacesDatabricksAccountsRoute,
+  postApiV2IntegrationInterfacesElasticCloudAccountsRoute,
+  postApiV2IntegrationInterfacesNebiusCloudAccountsRoute,
+  postApiV2IntegrationInterfacesOpenaiCodexAccountsRoute,
+  postApiV2IntegrationInterfacesSnowflakeAccountsRoute,
+  postApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRoute,
+  postApiV2IntegrationInterfacesTwilioAccountsRoute,
+  postApiV2IntegrationJiraIssueTemplatesRoute,
+  postApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRoute,
+  postApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRoute,
+  postApiV2IntegrationOciTenanciesRoute,
+  postApiV2IntegrationOpsgenieAccountsRoute,
+  postApiV2IntegrationOpsgenieServicesRoute,
+  postApiV2IntegrationsCloudflareAccountsRoute,
+  postApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRoute,
+  postApiV2IntegrationsConfluentCloudAccountsRoute,
+  postApiV2IntegrationServicenowHandlesRoute,
+  postApiV2IntegrationsFastlyAccountsAccountIdServicesRoute,
+  postApiV2IntegrationsFastlyAccountsRoute,
+  postApiV2IntegrationsOktaAccountsRoute,
+  postApiV2IntegrationStatuspageAccountRoute,
+  postApiV2IntegrationStatuspageUrlSettingsRoute,
+  postApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsRoute,
+  postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsDeleteRoute,
+  postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsRoute,
+  postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsDeleteRoute,
+  postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsRoute,
+  postApiV2LlmObsV1AnnotationQueuesRoute,
+  postApiV2LlmObsV1ExperimentationAnalyticsRoute,
+  postApiV2LlmObsV1ExperimentationSearchRoute,
+  postApiV2LlmObsV1ExperimentationSimpleSearchRoute,
+  postApiV2LlmObsV1ExperimentsDeleteRoute,
+  postApiV2LlmObsV1ExperimentsExperimentIdEventsRoute,
+  postApiV2LlmObsV1ExperimentsRoute,
+  postApiV2LlmObsV1IntegrationsIntegrationAccountIdInferenceRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDatasetIdBatchUpdateRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDatasetIdCloneRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsDeleteRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRestoreRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsDeleteRoute,
+  postApiV2LlmObsV1ProjectIdDatasetsRoute,
+  postApiV2LlmObsV1ProjectsDeleteRoute,
+  postApiV2LlmObsV1ProjectsRoute,
+  postApiV2LlmObsV1PromptsPromptIdVersionsRoute,
+  postApiV2LlmObsV1PromptsRoute,
+  postApiV2LlmObsV1SpansEventsSearchRoute,
+  postApiV2LlmObsV1TopicDiscoveryRunsRoute,
+  postApiV2LlmObsV2ProjectIdDatasetsDatasetIdRecordsUploadRoute,
+  postApiV2LogsAnalyticsAggregateRoute,
+  postApiV2LogsArchiveSearchesArchiveSearchIdCancelRoute,
+  postApiV2LogsArchiveSearchesRoute,
+  postApiV2LogsConfigArchivesArchiveIdReadersRoute,
+  postApiV2LogsConfigArchivesRoute,
+  postApiV2LogsConfigCustomDestinationsRoute,
+  postApiV2LogsConfigMetricsRoute,
+  postApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute,
+  postApiV2LogsConfigRestrictionQueriesRoute,
+  postApiV2LogsEventsSearchRoute,
+  postApiV2LogsRoute,
+  postApiV2MaintenanceWindowsRoute,
+  postApiV2MetricsDerivedMetricsRoute,
+  postApiV2MetricsHistoricalMetricsConfigurationsRoute,
+  postApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute,
+  postApiV2MetricsMetricNameTagsRoute,
+  postApiV2MetricsTagIndexingRulesOrderRoute,
+  postApiV2MetricsTagIndexingRulesRoute,
+  postApiV2ModelGroupsRoute,
+  postApiV2ModelLabApiProjectsProjectIdOwnersUserIdRoute,
+  postApiV2ModelLabApiProjectsProjectIdStarRoute,
+  postApiV2ModelLabApiRunsRunIdPinRoute,
+  postApiV2MonitorNotificationRuleRoute,
+  postApiV2MonitorPolicyRoute,
+  postApiV2MonitorTemplateRoute,
+  postApiV2MonitorTemplateTemplateIdValidateRoute,
+  postApiV2MonitorTemplateValidateRoute,
+  postApiV2Oauth2ClientsClientUuidScopesRestrictionRoute,
+  postApiV2Oauth2RegisterRoute,
+  postApiV2ObsPipelinesPipelinesRoute,
+  postApiV2ObsPipelinesPipelinesValidateRoute,
+  postApiV2OnCallEscalationPoliciesRoute,
+  postApiV2OnCallPagesPageIdAcknowledgeRoute,
+  postApiV2OnCallPagesPageIdCommentsRoute,
+  postApiV2OnCallPagesPageIdEscalateRoute,
+  postApiV2OnCallPagesPageIdRerouteRoute,
+  postApiV2OnCallPagesPageIdResolveRoute,
+  postApiV2OnCallPagesRoute,
+  postApiV2OnCallSchedulesRoute,
+  postApiV2OnCallSchedulesScheduleIdOverridesRoute,
+  postApiV2OnCallUsersUserIdNotificationChannelsRoute,
+  postApiV2OnCallUsersUserIdNotificationRulesRoute,
+  postApiV2OrgConnectionsRoute,
+  postApiV2OrgDisableRoute,
+  postApiV2OrgGroupMembershipsBulkDeleteRoute,
+  postApiV2OrgGroupMembershipsRoute,
+  postApiV2OrgGroupPoliciesRoute,
+  postApiV2OrgGroupPolicyOverridesRoute,
+  postApiV2OrgGroupsRoute,
+  postApiV2PersonalAccessTokensRoute,
+  postApiV2PoliciesRoute,
+  postApiV2PowerpacksRoute,
+  postApiV2ProdlyticsRoute,
+  postApiV2ProductAnalyticsAccountsFacetInfoRoute,
+  postApiV2ProductAnalyticsAccountsQueryRoute,
+  postApiV2ProductAnalyticsAnalyticsListRoute,
+  postApiV2ProductAnalyticsAnalyticsScalarRoute,
+  postApiV2ProductAnalyticsAnalyticsTimeseriesRoute,
+  postApiV2ProductAnalyticsEntityMappingConnectionRoute,
+  postApiV2ProductAnalyticsJourneyFunnelRoute,
+  postApiV2ProductAnalyticsJourneyListRoute,
+  postApiV2ProductAnalyticsJourneyScalarRoute,
+  postApiV2ProductAnalyticsJourneyTimeseriesRoute,
+  postApiV2ProductAnalyticsRetentionGridRoute,
+  postApiV2ProductAnalyticsRetentionListRoute,
+  postApiV2ProductAnalyticsRetentionScalarRoute,
+  postApiV2ProductAnalyticsRetentionTimeseriesRoute,
+  postApiV2ProductAnalyticsSankeyRoute,
+  postApiV2ProductAnalyticsUsersEventFilteredQueryRoute,
+  postApiV2ProductAnalyticsUsersFacetInfoRoute,
+  postApiV2ProductAnalyticsUsersQueryRoute,
+  postApiV2ProvidersProviderIdModelsBulkRoute,
+  postApiV2ProvidersProviderIdModelsRoute,
+  postApiV2ProvidersRoute,
+  postApiV2QueryScalarRoute,
+  postApiV2QueryTimeseriesRoute,
+  postApiV2RateLimitsRoute,
+  postApiV2ReferenceTablesQueriesBatchRowsRoute,
+  postApiV2ReferenceTablesTablesIdRowsRoute,
+  postApiV2ReferenceTablesTablesRoute,
+  postApiV2ReferenceTablesUploadsRoute,
+  postApiV2RemoteConfigProductsAsmWafCustomRulesRoute,
+  postApiV2RemoteConfigProductsAsmWafExclusionFiltersRoute,
+  postApiV2RemoteConfigProductsAsmWafPoliciesRoute,
+  postApiV2RemoteConfigProductsCwsAgentRulesRoute,
+  postApiV2RemoteConfigProductsCwsPolicyRoute,
+  postApiV2ReplayHeatmapSnapshotsRoute,
+  postApiV2ReportingPrintRoute,
+  postApiV2ReportingScheduleRoute,
+  postApiV2RestrictionPolicyResourceIdRoute,
+  postApiV2RolesRoleIdCloneRoute,
+  postApiV2RolesRoleIdPermissionsRoute,
+  postApiV2RolesRoleIdUsersRoute,
+  postApiV2RolesRoute,
+  postApiV2RoutingRulesRoute,
+  postApiV2RumAnalyticsAggregateRoute,
+  postApiV2RumApplicationsAppIdRetentionFiltersExclusionRoute,
+  postApiV2RumApplicationsAppIdRetentionFiltersRoute,
+  postApiV2RumApplicationsRoute,
+  postApiV2RumConfigMetricsRoute,
+  postApiV2RumConfigRoute,
+  postApiV2RumConfigTeamsOwnershipMappingsOperationsRoute,
+  postApiV2RumConfigTeamsOwnershipMappingsRoute,
+  postApiV2RumEventsSearchRoute,
+  postApiV2RumOperationsRoute,
+  postApiV2RumOperationsStrongLinksRoute,
+  postApiV2RumQueryInsightAggregatedLongTasksRoute,
+  postApiV2RumQueryInsightAggregatedWaterfallRoute,
+  postApiV2RumRecoverCountRoute,
+  postApiV2RumRecoverRequestsRoute,
+  postApiV2RumRecoverSessionsRoute,
+  postApiV2RumReplayPlaylistsRoute,
+  postApiV2RumReplaySessionsSessionIdWatchesRoute,
+  postApiV2SamlConfigurationsIdpMetadataRoute,
+  postApiV2ScorecardCampaignsRoute,
+  postApiV2ScorecardOutcomesBatchRoute,
+  postApiV2ScorecardOutcomesRoute,
+  postApiV2ScorecardRulesRoute,
+  postApiV2SeatsUsersRoute,
+  postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdDisableRoute,
+  postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdEnableRoute,
+  postApiV2SecurityFindingsAutomationDueDateRulesReorderRoute,
+  postApiV2SecurityFindingsAutomationDueDateRulesRoute,
+  postApiV2SecurityFindingsAutomationInboxRulesReorderRoute,
+  postApiV2SecurityFindingsAutomationInboxRulesRoute,
+  postApiV2SecurityFindingsAutomationMuteRulesReorderRoute,
+  postApiV2SecurityFindingsAutomationMuteRulesRoute,
+  postApiV2SecurityFindingsAutomationSeverityModifierRulesReorderRoute,
+  postApiV2SecurityFindingsAutomationSeverityModifierRulesRoute,
+  postApiV2SecurityFindingsAutomationTicketCreationRulesReorderRoute,
+  postApiV2SecurityFindingsAutomationTicketCreationRulesRoute,
+  postApiV2SecurityFindingsCasesRoute,
+  postApiV2SecurityFindingsJiraIssuesRoute,
+  postApiV2SecurityFindingsLinearIssuesRoute,
+  postApiV2SecurityFindingsSearchRoute,
+  postApiV2SecurityFindingsServicenowTicketsRoute,
+  postApiV2SecurityMonitoringBatchMigrationsBatchIdCancelRoute,
+  postApiV2SecurityMonitoringBatchMigrationsBatchIdPublishRoute,
+  postApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute,
+  postApiV2SecurityMonitoringBatchMigrationsBatchIdStartRoute,
+  postApiV2SecurityMonitoringBatchMigrationsRoute,
+  postApiV2SecurityMonitoringConfigurationCriticalAssetsRoute,
+  postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdValidateRoute,
+  postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeActivateRoute,
+  postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeDeactivateRoute,
+  postApiV2SecurityMonitoringConfigurationIntegrationConfigRoute,
+  postApiV2SecurityMonitoringConfigurationIntegrationConfigValidateRoute,
+  postApiV2SecurityMonitoringConfigurationNotificationRulesSendNotificationPreviewRoute,
+  postApiV2SecurityMonitoringConfigurationSecurityFiltersRoute,
+  postApiV2SecurityMonitoringConfigurationSuppressionsRoute,
+  postApiV2SecurityMonitoringConfigurationSuppressionsRulesRoute,
+  postApiV2SecurityMonitoringConfigurationSuppressionsValidationRoute,
+  postApiV2SecurityMonitoringDatasetsDependenciesRoute,
+  postApiV2SecurityMonitoringDatasetsRoute,
+  postApiV2SecurityMonitoringRulesBulkExportRoute,
+  postApiV2SecurityMonitoringRulesConvertBulkRoute,
+  postApiV2SecurityMonitoringRulesConvertRoute,
+  postApiV2SecurityMonitoringRulesProposalsRoute,
+  postApiV2SecurityMonitoringRulesRoute,
+  postApiV2SecurityMonitoringRulesRuleIdRestoreVersionRoute,
+  postApiV2SecurityMonitoringRulesRuleIdTestRoute,
+  postApiV2SecurityMonitoringRulesTestRoute,
+  postApiV2SecurityMonitoringRulesValidationRoute,
+  postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsBulkRoute,
+  postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRoute,
+  postApiV2SecurityMonitoringSignalsSearchRoute,
+  postApiV2SecurityMonitoringTerraformResourceTypeBulkRoute,
+  postApiV2SecurityMonitoringTerraformResourceTypeConvertRoute,
+  postApiV2SecurityOwnershipResourceIdOwnerTypeFeedbackRoute,
+  postApiV2SecuritySiemIocExplorerTriageRoute,
+  postApiV2SecuritySignalsNotificationRulesRoute,
+  postApiV2SecurityThreatIntelStixRoute,
+  postApiV2SecurityVulnerabilitiesNotificationRulesRoute,
+  postApiV2SecurityVulnerabilitiesRoute,
+  postApiV2SensitiveDataScannerConfigGroupsRoute,
+  postApiV2SensitiveDataScannerConfigRulesRoute,
+  postApiV2SeriesRoute,
+  postApiV2ServiceAccountsRoute,
+  postApiV2ServiceAccountsServiceAccountIdAccessTokensRoute,
+  postApiV2ServiceAccountsServiceAccountIdApplicationKeysRoute,
+  postApiV2ServicesDefinitionsRoute,
+  postApiV2SiemHistoricalDetectionsHistsignalsSearchRoute,
+  postApiV2SiemHistoricalDetectionsJobsRoute,
+  postApiV2SiemHistoricalDetectionsJobsSignalConvertRoute,
+  postApiV2SloReportRoute,
+  postApiV2SnapshotRoute,
+  postApiV2SourcemapsServiceRepositoryInfoRoute,
+  postApiV2SpansAnalyticsAggregateRoute,
+  postApiV2SpansEventsSearchRoute,
+  postApiV2StaticAnalysisAiMemoryRoute,
+  postApiV2StaticAnalysisAiRulesetsRoute,
+  postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRoute,
+  postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRoute,
+  postApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRevertRoute,
+  postApiV2StaticAnalysisRulesetsRoute,
+  postApiV2StaticAnalysisScaDependenciesRoute,
+  postApiV2StaticAnalysisScaDependenciesScanRoute,
+  postApiV2StaticAnalysisScaVulnerabilitiesResolveVulnerableSymbolsRoute,
+  postApiV2StaticAnalysisStaticAnalysisServerAnalyzeRoute,
+  postApiV2StaticAnalysisStaticAnalysisServerGetAstRoute,
+  postApiV2StatuspagesPageIdAccessPoliciesEmailRoute,
+  postApiV2StatuspagesPageIdComponentsRoute,
+  postApiV2StatuspagesPageIdDegradationsBackfillRoute,
+  postApiV2StatuspagesPageIdDegradationsRoute,
+  postApiV2StatuspagesPageIdDegradationTemplatesRoute,
+  postApiV2StatuspagesPageIdMaintenancesBackfillRoute,
+  postApiV2StatuspagesPageIdMaintenancesRoute,
+  postApiV2StatuspagesPageIdMaintenanceTemplatesRoute,
+  postApiV2StatuspagesPageIdPublishRoute,
+  postApiV2StatuspagesPageIdUnpublishRoute,
+  postApiV2StatuspagesRoute,
+  postApiV2StegadographyGetWidgetsRoute,
+  postApiV2SyntheticsDowntimesRoute,
+  postApiV2SyntheticsSettingsOnDemandConcurrencyCapRoute,
+  postApiV2SyntheticsSuitesBulkDeleteRoute,
+  postApiV2SyntheticsSuitesRoute,
+  postApiV2SyntheticsTestsBulkDeleteRoute,
+  postApiV2SyntheticsTestsNetworkRoute,
+  postApiV2SyntheticsTestsPublicIdFilesDownloadRoute,
+  postApiV2SyntheticsTestsPublicIdFilesMultipartPresignedUrlsRoute,
+  postApiV2SyntheticsTestsPublicIdFilesMultipartUploadAbortRoute,
+  postApiV2SyntheticsTestsPublicIdFilesMultipartUploadCompleteRoute,
+  postApiV2TagsEnrichmentReorderRoute,
+  postApiV2TagsEnrichmentRoute,
+  postApiV2TagsEnrichmentValidateQueryRoute,
+  postApiV2TeamConnectionsRoute,
+  postApiV2TeamHierarchyLinksRoute,
+  postApiV2TeamRoute,
+  postApiV2TeamSuperTeamIdMemberTeamsRoute,
+  postApiV2TeamSyncRoute,
+  postApiV2TeamTeamIdLinksRoute,
+  postApiV2TeamTeamIdMembershipsRoute,
+  postApiV2TeamTeamIdNotificationRulesRoute,
+  postApiV2TestFlakyTestManagementTestsRoute,
+  postApiV2TimeseriesAnomalyInvestigationsRoute,
+  postApiV2UsageAdminTemporaryGrantRequestsRequestIdDecisionRoute,
+  postApiV2UsageQuotasQuotaNamespaceRoute,
+  postApiV2UsageTemporaryGrantRequestsRoute,
+  postApiV2UserInvitationsRoute,
+  postApiV2UsersRoute,
+  postApiV2WebIntegrationsIntegrationNameAccountsRoute,
+  postApiV2WidgetsExperienceTypeRoute,
+  postApiV2WifAwsIntakeMappingRoute,
+  postApiV2WifAwsPersonaMappingRoute,
+  postApiV2WifGithubIntakeMappingRoute,
+  postApiV2WifGithubPersonaMappingRoute,
+  postApiV2WifOidcPersonaMappingRoute,
+  postApiV2WifOidcProviderRoute,
+  postApiV2WifTerraformPersonaMappingRoute,
+  postApiV2WorkflowsRoute,
+  postApiV2WorkflowsWorkflowIdInstancesRoute,
+  putApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute,
+  putApiV2ActionsAppKeyRegistrationsAppKeyIdRoute,
+  putApiV2ActionsExecutionPoliciesPolicyIdRoute,
+  putApiV2AnnotationAnnotationIdRoute,
+  putApiV2AnonymizeUsersRoute,
+  putApiV2ApicatalogApiIdOpenapiRoute,
+  putApiV2ApmConfigRetentionFiltersExecutionOrderRoute,
+  putApiV2ApmConfigRetentionFiltersFilterIdRoute,
+  putApiV2CasesCaseIdCommentCellIdRoute,
+  putApiV2CasesCaseIdInsightsRoute,
+  putApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRoute,
+  putApiV2CasesProjectsProjectIdRulesRuleIdRoute,
+  putApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRoute,
+  putApiV2CasesTypesCaseTypeIdRoute,
+  putApiV2CasesViewsViewIdRoute,
+  putApiV2CloudinventoryserviceSyncconfigsRoute,
+  putApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute,
+  putApiV2CloudSecurityManagementResourceFiltersRoute,
+  putApiV2CostBudgetCustomForecastRoute,
+  putApiV2CostBudgetRoute,
+  putApiV2CostCustomCostsRoute,
+  putApiV2CostTagDescriptionsTagKeyRoute,
+  putApiV2CostUnitCostsUnitCostIdRoute,
+  putApiV2DashboardListsManualDashboardListIdDashboardsRoute,
+  putApiV2DataCaptureOverridesIdRoute,
+  putApiV2DatasetsDatasetIdRoute,
+  putApiV2DeletionRequestsIdCancelRoute,
+  putApiV2DemJourneysJourneyIdRoute,
+  putApiV2DemJourneysVariantsVariantIdRoute,
+  putApiV2DeploymentGatesGateIdRulesIdRoute,
+  putApiV2DeploymentGatesIdRoute,
+  putApiV2ErrorTrackingIssuesIssueIdAssigneeRoute,
+  putApiV2ErrorTrackingIssuesIssueIdStateRoute,
+  putApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRoute,
+  putApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRoute,
+  putApiV2ExperimentsProtocolsProtocolIdRoute,
+  putApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute,
+  putApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRoute,
+  putApiV2FeatureFlagsFeatureFlagIdRoute,
+  putApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRoute,
+  putApiV2GovernanceControlDetectionTypeNotificationSettingsRoute,
+  putApiV2GovernanceRoute,
+  putApiV2IdpEntityIntegrationsIntegrationIdRoute,
+  putApiV2IncidentsConfigGlobalIncidentHandlesRoute,
+  putApiV2IncidentsConfigImpactFieldsFieldIdRoute,
+  putApiV2IncidentsConfigNotificationRulesIdRoute,
+  putApiV2IntegrationServicenowHandlesTemplateIdRoute,
+  putApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRoute,
+  putApiV2LlmObsV1TopicDiscoveryConfigsRoute,
+  putApiV2LoginOrgConfigsMaxSessionDurationRoute,
+  putApiV2LogsConfigArchiveOrderRoute,
+  putApiV2LogsConfigArchivesArchiveIdRoute,
+  putApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute,
+  putApiV2MaintenanceWindowsMaintenanceWindowIdRoute,
+  putApiV2MetricsDerivedMetricsMetricNameRoute,
+  putApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute,
+  putApiV2MetricsTagIndexingRulesIdRoute,
+  putApiV2MonitorTemplateTemplateIdRoute,
+  putApiV2ObsPipelinesPipelinesPipelineIdRoute,
+  putApiV2OnCallEscalationPoliciesPolicyIdRoute,
+  putApiV2OnCallSchedulesScheduleIdRoute,
+  putApiV2OnCallTeamsTeamIdRoutingRulesRoute,
+  putApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute,
+  putApiV2ProductAnalyticsEntityMappingConnectionRoute,
+  putApiV2ProvidersProviderIdModelsCanonicalPricingRoute,
+  putApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute,
+  putApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute,
+  putApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute,
+  putApiV2RemoteConfigProductsRumConfigsConfigIdRoute,
+  putApiV2RoutingRulesRoute,
+  putApiV2RumConfigArchiveAppIdRoute,
+  putApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute,
+  putApiV2RumOperationsRumOperationIdRoute,
+  putApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRoute,
+  putApiV2RumReplayPlaylistsPlaylistIdRoute,
+  putApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRoute,
+  putApiV2ScorecardCampaignsCampaignIdRoute,
+  putApiV2ScorecardRulesRuleIdRoute,
+  putApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute,
+  putApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute,
+  putApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute,
+  putApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute,
+  putApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute,
+  putApiV2SecurityMonitoringContentPacksContentPackIdActivateRoute,
+  putApiV2SecurityMonitoringContentPacksContentPackIdDeactivateRoute,
+  putApiV2SecurityMonitoringRulesRuleIdRoute,
+  putApiV2StaticAnalysisCustomRulesetsRoute,
+  putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRoute,
+  putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRoute,
+  putApiV2SyntheticsDowntimesDowntimeIdRoute,
+  putApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRoute,
+  putApiV2SyntheticsSuitesPublicIdRoute,
+  putApiV2SyntheticsTestsNetworkPublicIdRoute,
+  putApiV2TeamTeamIdNotificationRulesRuleIdRoute,
+  putApiV2TeamTeamIdPermissionSettingsActionRoute,
+  putApiV2WidgetsExperienceTypeUuidRoute,
+  putApiV2WorkflowsWorkflowIdInstancesInstanceIdCancelRoute,
+} from '../routes'
+
+export const getApiUnstableFleetAgentsAgentKeyTracersRouteHandler: RouteHandler<
+  typeof getApiUnstableFleetAgentsAgentKeyTracersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUnstableFleetSchedulesRouteHandler: RouteHandler<
+  typeof postApiUnstableFleetSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiUnstableFleetSchedulesIdRouteHandler: RouteHandler<
+  typeof deleteApiUnstableFleetSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiUnstableFleetSchedulesIdRouteHandler: RouteHandler<
+  typeof patchApiUnstableFleetSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUnstableFleetSchedulesIdTriggerRouteHandler: RouteHandler<
+  typeof postApiUnstableFleetSchedulesIdTriggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUnstableFleetTracersRouteHandler: RouteHandler<
+  typeof getApiUnstableFleetTracersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUnstableLlmObsConfigEvaluatorsCustomRouteHandler: RouteHandler<
+  typeof getApiUnstableLlmObsConfigEvaluatorsCustomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRouteHandler: RouteHandler<
+  typeof deleteApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRouteHandler: RouteHandler<
+  typeof getApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRouteHandler: RouteHandler<
+  typeof putApiUnstableLlmObsConfigEvaluatorsCustomEvalNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsDatastoresRouteHandler: RouteHandler<
+  typeof getApiV2ActionsDatastoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ActionsDatastoresRouteHandler: RouteHandler<
+  typeof postApiV2ActionsDatastoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsDatastoresDatastoreIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsDatastoresDatastoreIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsDatastoresDatastoreIdRouteHandler: RouteHandler<
+  typeof getApiV2ActionsDatastoresDatastoreIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ActionsDatastoresDatastoreIdRouteHandler: RouteHandler<
+  typeof patchApiV2ActionsDatastoresDatastoreIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsDatastoresDatastoreIdItemsRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsDatastoresDatastoreIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsDatastoresDatastoreIdItemsRouteHandler: RouteHandler<
+  typeof getApiV2ActionsDatastoresDatastoreIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ActionsDatastoresDatastoreIdItemsRouteHandler: RouteHandler<
+  typeof patchApiV2ActionsDatastoresDatastoreIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsDatastoresDatastoreIdItemsBulkRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsDatastoresDatastoreIdItemsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ActionsDatastoresDatastoreIdItemsBulkRouteHandler: RouteHandler<
+  typeof postApiV2ActionsDatastoresDatastoreIdItemsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsAppKeyRegistrationsRouteHandler: RouteHandler<
+  typeof getApiV2ActionsAppKeyRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsAppKeyRegistrationsAppKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsAppKeyRegistrationsAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsAppKeyRegistrationsAppKeyIdRouteHandler: RouteHandler<
+  typeof getApiV2ActionsAppKeyRegistrationsAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ActionsAppKeyRegistrationsAppKeyIdRouteHandler: RouteHandler<
+  typeof putApiV2ActionsAppKeyRegistrationsAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ActionsConnectionsRouteHandler: RouteHandler<
+  typeof postApiV2ActionsConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof getApiV2ActionsConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ActionsConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof patchApiV2ActionsConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsExecutionPoliciesRouteHandler: RouteHandler<
+  typeof getApiV2ActionsExecutionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ActionsExecutionPoliciesRouteHandler: RouteHandler<
+  typeof postApiV2ActionsExecutionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ActionsExecutionPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ActionsExecutionPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ActionsExecutionPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2ActionsExecutionPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ActionsExecutionPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof putApiV2ActionsExecutionPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgenthealthHostsResourceIdIssuesRouteHandler: RouteHandler<
+  typeof getApiV2AgenthealthHostsResourceIdIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgenthealthIssuesRouteHandler: RouteHandler<
+  typeof getApiV2AgenthealthIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgenthealthIssuesIssueIdRouteHandler: RouteHandler<
+  typeof getApiV2AgenthealthIssuesIssueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsAwsRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AgentlessScanningAccountsAwsRouteHandler: RouteHandler<
+  typeof postApiV2AgentlessScanningAccountsAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AgentlessScanningAccountsAwsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AgentlessScanningAccountsAwsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsAwsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsAwsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AgentlessScanningAccountsAwsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2AgentlessScanningAccountsAwsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsAzureRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsAzureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AgentlessScanningAccountsAzureRouteHandler: RouteHandler<
+  typeof postApiV2AgentlessScanningAccountsAzureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AgentlessScanningAccountsAzureSubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsAzureSubscriptionIdRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AgentlessScanningAccountsAzureSubscriptionIdRouteHandler: RouteHandler<
+  typeof patchApiV2AgentlessScanningAccountsAzureSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsGcpRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsGcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AgentlessScanningAccountsGcpRouteHandler: RouteHandler<
+  typeof postApiV2AgentlessScanningAccountsGcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AgentlessScanningAccountsGcpProjectIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AgentlessScanningAccountsGcpProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningAccountsGcpProjectIdRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningAccountsGcpProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AgentlessScanningAccountsGcpProjectIdRouteHandler: RouteHandler<
+  typeof patchApiV2AgentlessScanningAccountsGcpProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningOndemandAwsRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningOndemandAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AgentlessScanningOndemandAwsRouteHandler: RouteHandler<
+  typeof postApiV2AgentlessScanningOndemandAwsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgentlessScanningOndemandAwsTaskIdRouteHandler: RouteHandler<
+  typeof getApiV2AgentlessScanningOndemandAwsTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AiGuardEvaluateRouteHandler: RouteHandler<
+  typeof postApiV2AiGuardEvaluateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AiImpactUserActivityRouteHandler: RouteHandler<
+  typeof postApiV2AiImpactUserActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AnnotationRouteHandler: RouteHandler<typeof getApiV2AnnotationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AnnotationRouteHandler: RouteHandler<
+  typeof postApiV2AnnotationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AnnotationPagePageIdRouteHandler: RouteHandler<
+  typeof getApiV2AnnotationPagePageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AnnotationAnnotationIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AnnotationAnnotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2AnnotationAnnotationIdRouteHandler: RouteHandler<
+  typeof putApiV2AnnotationAnnotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2AnonymizeUsersRouteHandler: RouteHandler<
+  typeof putApiV2AnonymizeUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApiKeysRouteHandler: RouteHandler<typeof getApiV2ApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ApiKeysRouteHandler: RouteHandler<typeof postApiV2ApiKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof getApiV2ApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ApiKeysApiKeyIdRouteHandler: RouteHandler<
+  typeof patchApiV2ApiKeysApiKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApicatalogApiRouteHandler: RouteHandler<
+  typeof getApiV2ApicatalogApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ApicatalogApiIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ApicatalogApiIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApicatalogApiIdOpenapiRouteHandler: RouteHandler<
+  typeof getApiV2ApicatalogApiIdOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ApicatalogApiIdOpenapiRouteHandler: RouteHandler<
+  typeof putApiV2ApicatalogApiIdOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ApicatalogOpenapiRouteHandler: RouteHandler<
+  typeof postApiV2ApicatalogOpenapiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApmConfigMetricsRouteHandler: RouteHandler<
+  typeof getApiV2ApmConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ApmConfigMetricsRouteHandler: RouteHandler<
+  typeof postApiV2ApmConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ApmConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ApmConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApmConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof getApiV2ApmConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ApmConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof patchApiV2ApmConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApmConfigRetentionFiltersRouteHandler: RouteHandler<
+  typeof getApiV2ApmConfigRetentionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ApmConfigRetentionFiltersRouteHandler: RouteHandler<
+  typeof postApiV2ApmConfigRetentionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ApmConfigRetentionFiltersExecutionOrderRouteHandler: RouteHandler<
+  typeof putApiV2ApmConfigRetentionFiltersExecutionOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ApmConfigRetentionFiltersFilterIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ApmConfigRetentionFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApmConfigRetentionFiltersFilterIdRouteHandler: RouteHandler<
+  typeof getApiV2ApmConfigRetentionFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ApmConfigRetentionFiltersFilterIdRouteHandler: RouteHandler<
+  typeof putApiV2ApmConfigRetentionFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApmServicesRouteHandler: RouteHandler<
+  typeof getApiV2ApmServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AppBuilderAppsRouteHandler: RouteHandler<
+  typeof deleteApiV2AppBuilderAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderAppsRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AppBuilderAppsRouteHandler: RouteHandler<
+  typeof postApiV2AppBuilderAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AppBuilderAppsAppIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AppBuilderAppsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderAppsAppIdRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderAppsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AppBuilderAppsAppIdDeploymentRouteHandler: RouteHandler<
+  typeof deleteApiV2AppBuilderAppsAppIdDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AppBuilderAppsAppIdDeploymentRouteHandler: RouteHandler<
+  typeof postApiV2AppBuilderAppsAppIdDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdFavoriteRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdProtectionLevelRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdProtectionLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AppBuilderAppsAppIdPublishRequestRouteHandler: RouteHandler<
+  typeof postApiV2AppBuilderAppsAppIdPublishRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AppBuilderAppsAppIdRevertRouteHandler: RouteHandler<
+  typeof postApiV2AppBuilderAppsAppIdRevertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdSelfServiceRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdSelfServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdTagsRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AppBuilderAppsAppIdVersionNameRouteHandler: RouteHandler<
+  typeof patchApiV2AppBuilderAppsAppIdVersionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderAppsAppIdVersionsRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderAppsAppIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderBlueprintBlueprintIdRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderBlueprintBlueprintIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderBlueprintsRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderBlueprintsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderBlueprintsIntegrationIdIntegrationIdRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderBlueprintsIntegrationIdIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderBlueprintsSlugsSlugsRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderBlueprintsSlugsSlugsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AppBuilderTagsRouteHandler: RouteHandler<
+  typeof getApiV2AppBuilderTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApplicationKeysRouteHandler: RouteHandler<
+  typeof getApiV2ApplicationKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof getApiV2ApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof patchApiV2ApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AuditEventsRouteHandler: RouteHandler<
+  typeof getApiV2AuditEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AuditEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2AuditEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AuthnMappingsRouteHandler: RouteHandler<
+  typeof getApiV2AuthnMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AuthnMappingsRouteHandler: RouteHandler<
+  typeof postApiV2AuthnMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AuthnMappingsAuthnMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2AuthnMappingsAuthnMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AuthnMappingsAuthnMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2AuthnMappingsAuthnMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2AuthnMappingsAuthnMappingIdRouteHandler: RouteHandler<
+  typeof patchApiV2AuthnMappingsAuthnMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BitsAiInvestigationsRouteHandler: RouteHandler<
+  typeof getApiV2BitsAiInvestigationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2BitsAiInvestigationsRouteHandler: RouteHandler<
+  typeof postApiV2BitsAiInvestigationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BitsAiInvestigationsIdRouteHandler: RouteHandler<
+  typeof getApiV2BitsAiInvestigationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsRouteHandler: RouteHandler<typeof getApiV2BudgetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2BudgetsRouteHandler: RouteHandler<typeof postApiV2BudgetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2BudgetsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2BudgetsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsIdRouteHandler: RouteHandler<typeof getApiV2BudgetsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2BudgetsIdRouteHandler: RouteHandler<
+  typeof patchApiV2BudgetsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsIdCurrentPeriodRouteHandler: RouteHandler<
+  typeof getApiV2BudgetsIdCurrentPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsIdInstancesRouteHandler: RouteHandler<
+  typeof getApiV2BudgetsIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2BudgetsIdInstancesCapacityRouteHandler: RouteHandler<
+  typeof postApiV2BudgetsIdInstancesCapacityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsIdInstancesDimensionsRouteHandler: RouteHandler<
+  typeof getApiV2BudgetsIdInstancesDimensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2BudgetsIdInstancesResetRouteHandler: RouteHandler<
+  typeof postApiV2BudgetsIdInstancesResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BudgetsIdInstancesSummaryRouteHandler: RouteHandler<
+  typeof getApiV2BudgetsIdInstancesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesRouteHandler: RouteHandler<typeof getApiV2CasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesRouteHandler: RouteHandler<typeof postApiV2CasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesAggregateRouteHandler: RouteHandler<
+  typeof postApiV2CasesAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesBulkRouteHandler: RouteHandler<typeof postApiV2CasesBulkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesCountRouteHandler: RouteHandler<typeof getApiV2CasesCountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesLinkRouteHandler: RouteHandler<typeof getApiV2CasesLinkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesLinkRouteHandler: RouteHandler<typeof postApiV2CasesLinkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesLinkLinkIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesLinkLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsFavoritesRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsFavoritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesProjectsProjectIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsProjectIdRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CasesProjectsProjectIdRouteHandler: RouteHandler<
+  typeof patchApiV2CasesProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesProjectsProjectIdFavoritesRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesProjectsProjectIdFavoritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsProjectIdFavoritesRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsProjectIdFavoritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsProjectIdNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsProjectIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsProjectIdNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsProjectIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesProjectsProjectIdNotificationRulesNotificationRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsProjectIdRulesRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsProjectIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsProjectIdRulesRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsProjectIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesProjectsProjectIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesProjectsProjectIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesProjectsProjectIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2CasesProjectsProjectIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesProjectsProjectIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesProjectsProjectIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsProjectIdRulesRuleIdDisableRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsProjectIdRulesRuleIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesProjectsProjectIdRulesRuleIdEnableRouteHandler: RouteHandler<
+  typeof postApiV2CasesProjectsProjectIdRulesRuleIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesTypesRouteHandler: RouteHandler<typeof getApiV2CasesTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesTypesRouteHandler: RouteHandler<
+  typeof postApiV2CasesTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesTypesCustomAttributesRouteHandler: RouteHandler<
+  typeof getApiV2CasesTypesCustomAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesTypesCaseTypeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesTypesCaseTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesTypesCaseTypeIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesTypesCaseTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesTypesCaseTypeIdCustomAttributesRouteHandler: RouteHandler<
+  typeof getApiV2CasesTypesCaseTypeIdCustomAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesTypesCaseTypeIdCustomAttributesRouteHandler: RouteHandler<
+  typeof postApiV2CasesTypesCaseTypeIdCustomAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesTypesCaseTypeIdCustomAttributesCustomAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesViewsRouteHandler: RouteHandler<typeof getApiV2CasesViewsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesViewsRouteHandler: RouteHandler<
+  typeof postApiV2CasesViewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesViewsViewIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesViewsViewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesViewsViewIdRouteHandler: RouteHandler<
+  typeof getApiV2CasesViewsViewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesViewsViewIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesViewsViewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesCaseIdRouteHandler: RouteHandler<
+  typeof getApiV2CasesCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdArchiveRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdAssignRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdAttributesRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdCommentRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdCommentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesCaseIdCommentCellIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesCaseIdCommentCellIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesCaseIdCommentCellIdRouteHandler: RouteHandler<
+  typeof putApiV2CasesCaseIdCommentCellIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdCustomAttributesCustomAttributeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdDescriptionRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdDueDateRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdDueDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesCaseIdInsightsRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesCaseIdInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CasesCaseIdInsightsRouteHandler: RouteHandler<
+  typeof putApiV2CasesCaseIdInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdPriorityRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdPriorityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdRelationshipsIncidentsRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdRelationshipsIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesCaseIdRelationshipsJiraIssuesRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesCaseIdRelationshipsJiraIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CasesCaseIdRelationshipsJiraIssuesRouteHandler: RouteHandler<
+  typeof patchApiV2CasesCaseIdRelationshipsJiraIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdRelationshipsJiraIssuesRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdRelationshipsJiraIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdRelationshipsNotebookRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdRelationshipsNotebookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CasesCaseIdRelationshipsProjectRouteHandler: RouteHandler<
+  typeof patchApiV2CasesCaseIdRelationshipsProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdRelationshipsServicenowTicketsRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdRelationshipsServicenowTicketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdResolvedReasonRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdResolvedReasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdStatusRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesCaseIdTimelinesRouteHandler: RouteHandler<
+  typeof getApiV2CasesCaseIdTimelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdTitleRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdUnarchiveRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdUnassignRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdUnassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CasesCaseIdWatchersRouteHandler: RouteHandler<
+  typeof getApiV2CasesCaseIdWatchersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CasesCaseIdWatchersUserUuidRouteHandler: RouteHandler<
+  typeof deleteApiV2CasesCaseIdWatchersUserUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CasesCaseIdWatchersUserUuidRouteHandler: RouteHandler<
+  typeof postApiV2CasesCaseIdWatchersUserUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CatalogEntityRouteHandler: RouteHandler<
+  typeof getApiV2CatalogEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CatalogEntityRouteHandler: RouteHandler<
+  typeof postApiV2CatalogEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CatalogEntityPreviewRouteHandler: RouteHandler<
+  typeof postApiV2CatalogEntityPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CatalogEntityEntityIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CatalogEntityEntityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CatalogKindRouteHandler: RouteHandler<
+  typeof getApiV2CatalogKindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CatalogKindRouteHandler: RouteHandler<
+  typeof postApiV2CatalogKindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CatalogKindKindIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CatalogKindKindIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CatalogRelationRouteHandler: RouteHandler<
+  typeof getApiV2CatalogRelationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ChangeManagementChangeRequestRouteHandler: RouteHandler<
+  typeof postApiV2ChangeManagementChangeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ChangeManagementChangeRequestChangeRequestIdRouteHandler: RouteHandler<
+  typeof getApiV2ChangeManagementChangeRequestChangeRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ChangeManagementChangeRequestChangeRequestIdRouteHandler: RouteHandler<
+  typeof patchApiV2ChangeManagementChangeRequestChangeRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ChangeManagementChangeRequestChangeRequestIdBranchRouteHandler: RouteHandler<
+  typeof postApiV2ChangeManagementChangeRequestChangeRequestIdBranchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRouteHandler: RouteHandler<
+  typeof patchApiV2ChangeManagementChangeRequestChangeRequestIdDecisionsDecisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CiGithubAccountsRouteHandler: RouteHandler<
+  typeof getApiV2CiGithubAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CiGithubAccountsRouteHandler: RouteHandler<
+  typeof patchApiV2CiGithubAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiPipelineRouteHandler: RouteHandler<
+  typeof postApiV2CiPipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiPipelinesAnalyticsAggregateRouteHandler: RouteHandler<
+  typeof postApiV2CiPipelinesAnalyticsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CiPipelinesEventsRouteHandler: RouteHandler<
+  typeof getApiV2CiPipelinesEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiPipelinesEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2CiPipelinesEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CiTestOptimizationSettingsPoliciesRouteHandler: RouteHandler<
+  typeof patchApiV2CiTestOptimizationSettingsPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiTestOptimizationSettingsPoliciesRouteHandler: RouteHandler<
+  typeof postApiV2CiTestOptimizationSettingsPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CiTestOptimizationSettingsServiceRouteHandler: RouteHandler<
+  typeof deleteApiV2CiTestOptimizationSettingsServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CiTestOptimizationSettingsServiceRouteHandler: RouteHandler<
+  typeof patchApiV2CiTestOptimizationSettingsServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiTestOptimizationSettingsServiceRouteHandler: RouteHandler<
+  typeof postApiV2CiTestOptimizationSettingsServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiTestsAnalyticsAggregateRouteHandler: RouteHandler<
+  typeof postApiV2CiTestsAnalyticsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CiTestsEventsRouteHandler: RouteHandler<
+  typeof getApiV2CiTestsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CiTestsEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2CiTestsEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CilogsRouteHandler: RouteHandler<typeof postApiV2CilogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CloudSecurityManagementCustomFrameworksRouteHandler: RouteHandler<
+  typeof postApiV2CloudSecurityManagementCustomFrameworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CloudSecurityManagementCustomFrameworksHandleVersionRouteHandler: RouteHandler<
+  typeof deleteApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CloudSecurityManagementCustomFrameworksHandleVersionRouteHandler: RouteHandler<
+  typeof getApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CloudSecurityManagementCustomFrameworksHandleVersionRouteHandler: RouteHandler<
+  typeof putApiV2CloudSecurityManagementCustomFrameworksHandleVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CloudSecurityManagementResourceFiltersRouteHandler: RouteHandler<
+  typeof getApiV2CloudSecurityManagementResourceFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CloudSecurityManagementResourceFiltersRouteHandler: RouteHandler<
+  typeof putApiV2CloudSecurityManagementResourceFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CloudinventoryserviceSyncconfigsRouteHandler: RouteHandler<
+  typeof putApiV2CloudinventoryserviceSyncconfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CloudinventoryserviceSyncconfigsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CloudinventoryserviceSyncconfigsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CodeCoverageBranchSummaryRouteHandler: RouteHandler<
+  typeof postApiV2CodeCoverageBranchSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CodeCoverageCommitSummaryRouteHandler: RouteHandler<
+  typeof postApiV2CodeCoverageCommitSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CodeCoverageFilesRouteHandler: RouteHandler<
+  typeof postApiV2CodeCoverageFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CodeCoveragePrSummaryRouteHandler: RouteHandler<
+  typeof postApiV2CodeCoveragePrSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ComplianceFindingsRuleBasedViewRouteHandler: RouteHandler<
+  typeof getApiV2ComplianceFindingsRuleBasedViewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContainerImagesRouteHandler: RouteHandler<
+  typeof getApiV2ContainerImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContainersRouteHandler: RouteHandler<typeof getApiV2ContainersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAccountFiltersCloudAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2CostAccountFiltersCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostAccountFiltersCloudAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostAccountFiltersCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAnomaliesRouteHandler: RouteHandler<
+  typeof getApiV2CostAnomaliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAnomaliesAnomalyIdRouteHandler: RouteHandler<
+  typeof getApiV2CostAnomaliesAnomalyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostArbitraryRuleRouteHandler: RouteHandler<
+  typeof getApiV2CostArbitraryRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostArbitraryRuleRouteHandler: RouteHandler<
+  typeof postApiV2CostArbitraryRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostArbitraryRuleReorderRouteHandler: RouteHandler<
+  typeof postApiV2CostArbitraryRuleReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostArbitraryRuleStatusRouteHandler: RouteHandler<
+  typeof getApiV2CostArbitraryRuleStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostArbitraryRuleRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostArbitraryRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostArbitraryRuleRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2CostArbitraryRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostArbitraryRuleRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostArbitraryRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAwsCurConfigRouteHandler: RouteHandler<
+  typeof getApiV2CostAwsCurConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostAwsCurConfigRouteHandler: RouteHandler<
+  typeof postApiV2CostAwsCurConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostAwsCurConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostAwsCurConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAwsCurConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2CostAwsCurConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostAwsCurConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostAwsCurConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAzureUcConfigRouteHandler: RouteHandler<
+  typeof getApiV2CostAzureUcConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostAzureUcConfigRouteHandler: RouteHandler<
+  typeof postApiV2CostAzureUcConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostAzureUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostAzureUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostAzureUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2CostAzureUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostAzureUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostAzureUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CostBudgetRouteHandler: RouteHandler<typeof putApiV2CostBudgetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostBudgetCsvValidateRouteHandler: RouteHandler<
+  typeof postApiV2CostBudgetCsvValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CostBudgetCustomForecastRouteHandler: RouteHandler<
+  typeof putApiV2CostBudgetCustomForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostBudgetValidateRouteHandler: RouteHandler<
+  typeof postApiV2CostBudgetValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostBudgetBudgetIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostBudgetBudgetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostBudgetBudgetIdRouteHandler: RouteHandler<
+  typeof getApiV2CostBudgetBudgetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostBudgetBudgetIdCustomForecastRouteHandler: RouteHandler<
+  typeof deleteApiV2CostBudgetBudgetIdCustomForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostBudgetBudgetIdCustomForecastRouteHandler: RouteHandler<
+  typeof getApiV2CostBudgetBudgetIdCustomForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostBudgetsRouteHandler: RouteHandler<
+  typeof getApiV2CostBudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2CostCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsCommitmentListRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsCommitmentListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsCoverageScalarRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsCoverageScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsCoverageTimeseriesRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsCoverageTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsOnDemandHotSpotsScalarRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsOnDemandHotSpotsScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsSavingsScalarRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsSavingsScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsSavingsTimeseriesRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsSavingsTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsUtilizationScalarRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsUtilizationScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCommitmentsUtilizationTimeseriesRouteHandler: RouteHandler<
+  typeof getApiV2CostCommitmentsUtilizationTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCustomCostsRouteHandler: RouteHandler<
+  typeof getApiV2CostCustomCostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CostCustomCostsRouteHandler: RouteHandler<
+  typeof putApiV2CostCustomCostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostCustomCostsFileIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostCustomCostsFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostCustomCostsFileIdRouteHandler: RouteHandler<
+  typeof getApiV2CostCustomCostsFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostCustomCostsFileIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostCustomCostsFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostGcpUcConfigRouteHandler: RouteHandler<
+  typeof getApiV2CostGcpUcConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostGcpUcConfigRouteHandler: RouteHandler<
+  typeof postApiV2CostGcpUcConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostGcpUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostGcpUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostGcpUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2CostGcpUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CostGcpUcConfigCloudAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2CostGcpUcConfigCloudAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostOciConfigRouteHandler: RouteHandler<
+  typeof getApiV2CostOciConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostRecommendationsRouteHandler: RouteHandler<
+  typeof postApiV2CostRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagDescriptionsRouteHandler: RouteHandler<
+  typeof getApiV2CostTagDescriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostTagDescriptionsTagKeyRouteHandler: RouteHandler<
+  typeof deleteApiV2CostTagDescriptionsTagKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagDescriptionsTagKeyRouteHandler: RouteHandler<
+  typeof getApiV2CostTagDescriptionsTagKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CostTagDescriptionsTagKeyRouteHandler: RouteHandler<
+  typeof putApiV2CostTagDescriptionsTagKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagDescriptionsTagKeyGenerateRouteHandler: RouteHandler<
+  typeof getApiV2CostTagDescriptionsTagKeyGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagKeysRouteHandler: RouteHandler<
+  typeof getApiV2CostTagKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagKeysTagKeyRouteHandler: RouteHandler<
+  typeof getApiV2CostTagKeysTagKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataCurrencyRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataCurrencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataMetricsRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataMonthsRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataMonthsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataOrchestratorsRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataOrchestratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagMetadataTagSourcesRouteHandler: RouteHandler<
+  typeof getApiV2CostTagMetadataTagSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostTagsRouteHandler: RouteHandler<typeof getApiV2CostTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostUnitCostsRouteHandler: RouteHandler<
+  typeof getApiV2CostUnitCostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CostUnitCostsRouteHandler: RouteHandler<
+  typeof postApiV2CostUnitCostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CostUnitCostsUnitCostIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CostUnitCostsUnitCostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostUnitCostsUnitCostIdRouteHandler: RouteHandler<
+  typeof getApiV2CostUnitCostsUnitCostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2CostUnitCostsUnitCostIdRouteHandler: RouteHandler<
+  typeof putApiV2CostUnitCostsUnitCostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostByTagActiveBillingDimensionsRouteHandler: RouteHandler<
+  typeof getApiV2CostByTagActiveBillingDimensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CostByTagMonthlyCostAttributionRouteHandler: RouteHandler<
+  typeof getApiV2CostByTagMonthlyCostAttributionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOnboardingAgentsRouteHandler: RouteHandler<
+  typeof getApiV2CsmOnboardingAgentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOnboardingCoverageAnalysisCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2CsmOnboardingCoverageAnalysisCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOnboardingCoverageAnalysisHostsAndContainersRouteHandler: RouteHandler<
+  typeof getApiV2CsmOnboardingCoverageAnalysisHostsAndContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOnboardingCoverageAnalysisServerlessRouteHandler: RouteHandler<
+  typeof getApiV2CsmOnboardingCoverageAnalysisServerlessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOnboardingServerlessAgentsRouteHandler: RouteHandler<
+  typeof getApiV2CsmOnboardingServerlessAgentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOwnershipSettingsRouteHandler: RouteHandler<
+  typeof getApiV2CsmOwnershipSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CsmOwnershipSettingsRouteHandler: RouteHandler<
+  typeof postApiV2CsmOwnershipSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmOwnershipSettingsUntaggedRouteHandler: RouteHandler<
+  typeof getApiV2CsmOwnershipSettingsUntaggedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsAgentlessHostsRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsAgentlessHostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsAgentlessHostsFacetInfoRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsAgentlessHostsFacetInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsAgentlessHostsFacetsRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsAgentlessHostsFacetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsHostsRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsHostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsHostsFacetInfoRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsHostsFacetInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CsmSettingsHostsFacetsRouteHandler: RouteHandler<
+  typeof getApiV2CsmSettingsHostsFacetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CurrentUserRouteHandler: RouteHandler<
+  typeof getApiV2CurrentUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CurrentUserRouteHandler: RouteHandler<
+  typeof patchApiV2CurrentUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CurrentUserApplicationKeysRouteHandler: RouteHandler<
+  typeof getApiV2CurrentUserApplicationKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2CurrentUserApplicationKeysRouteHandler: RouteHandler<
+  typeof postApiV2CurrentUserApplicationKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2CurrentUserApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2CurrentUserApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CurrentUserApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof getApiV2CurrentUserApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2CurrentUserApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof patchApiV2CurrentUserApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DashboardListsManualDashboardListIdDashboardsRouteHandler: RouteHandler<
+  typeof deleteApiV2DashboardListsManualDashboardListIdDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DashboardListsManualDashboardListIdDashboardsRouteHandler: RouteHandler<
+  typeof getApiV2DashboardListsManualDashboardListIdDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DashboardListsManualDashboardListIdDashboardsRouteHandler: RouteHandler<
+  typeof postApiV2DashboardListsManualDashboardListIdDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DashboardListsManualDashboardListIdDashboardsRouteHandler: RouteHandler<
+  typeof putApiV2DashboardListsManualDashboardListIdDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DashboardDashboardIdSharedRouteHandler: RouteHandler<
+  typeof getApiV2DashboardDashboardIdSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DashboardDashboardIdSharedSecureEmbedRouteHandler: RouteHandler<
+  typeof postApiV2DashboardDashboardIdSharedSecureEmbedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DashboardDashboardIdSharedSecureEmbedTokenRouteHandler: RouteHandler<
+  typeof deleteApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DashboardDashboardIdSharedSecureEmbedTokenRouteHandler: RouteHandler<
+  typeof getApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2DashboardDashboardIdSharedSecureEmbedTokenRouteHandler: RouteHandler<
+  typeof patchApiV2DashboardDashboardIdSharedSecureEmbedTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DashboardsUsageRouteHandler: RouteHandler<
+  typeof getApiV2DashboardsUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DashboardsDashboardIdUsageRouteHandler: RouteHandler<
+  typeof getApiV2DashboardsDashboardIdUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DataCaptureConfigurationRouteHandler: RouteHandler<
+  typeof getApiV2DataCaptureConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DataCaptureOverridesRouteHandler: RouteHandler<
+  typeof postApiV2DataCaptureOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DataCaptureOverridesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DataCaptureOverridesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DataCaptureOverridesIdRouteHandler: RouteHandler<
+  typeof putApiV2DataCaptureOverridesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DataObservabilityMonitorsRunsRunIdStatusRouteHandler: RouteHandler<
+  typeof getApiV2DataObservabilityMonitorsRunsRunIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DataObservabilityMonitorsMonitorIdRunRouteHandler: RouteHandler<
+  typeof postApiV2DataObservabilityMonitorsMonitorIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DatasetsRouteHandler: RouteHandler<typeof getApiV2DatasetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DatasetsRouteHandler: RouteHandler<typeof postApiV2DatasetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getApiV2DatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof putApiV2DatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DdsqlQueryTabularRouteHandler: RouteHandler<
+  typeof postApiV2DdsqlQueryTabularRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DdsqlQueryTabularFetchRouteHandler: RouteHandler<
+  typeof postApiV2DdsqlQueryTabularFetchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DeletionDataProductRouteHandler: RouteHandler<
+  typeof postApiV2DeletionDataProductRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeletionRequestsRouteHandler: RouteHandler<
+  typeof getApiV2DeletionRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DeletionRequestsIdCancelRouteHandler: RouteHandler<
+  typeof putApiV2DeletionRequestsIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DemJourneysRouteHandler: RouteHandler<
+  typeof postApiV2DemJourneysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DemJourneysInferredIgnoredJourneyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DemJourneysInferredIgnoredJourneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DemJourneysInferredSearchRouteHandler: RouteHandler<
+  typeof getApiV2DemJourneysInferredSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DemJourneysInferredJourneyIdIgnoreRouteHandler: RouteHandler<
+  typeof postApiV2DemJourneysInferredJourneyIdIgnoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DemJourneysSearchRouteHandler: RouteHandler<
+  typeof getApiV2DemJourneysSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DemJourneysSuitesBatchRouteHandler: RouteHandler<
+  typeof postApiV2DemJourneysSuitesBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DemJourneysVariantsVariantIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DemJourneysVariantsVariantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DemJourneysVariantsVariantIdRouteHandler: RouteHandler<
+  typeof putApiV2DemJourneysVariantsVariantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DemJourneysJourneyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DemJourneysJourneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DemJourneysJourneyIdRouteHandler: RouteHandler<
+  typeof getApiV2DemJourneysJourneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DemJourneysJourneyIdRouteHandler: RouteHandler<
+  typeof putApiV2DemJourneysJourneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DemJourneysJourneyIdRecommendedTestsRouteHandler: RouteHandler<
+  typeof getApiV2DemJourneysJourneyIdRecommendedTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DemJourneysJourneyIdVariantsRouteHandler: RouteHandler<
+  typeof postApiV2DemJourneysJourneyIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DemJourneysPublicJourneyIdSuiteRouteHandler: RouteHandler<
+  typeof postApiV2DemJourneysPublicJourneyIdSuiteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DeploymentGatesRouteHandler: RouteHandler<
+  typeof postApiV2DeploymentGatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesEvaluationsRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesEvaluationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesEvaluationsRulesRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesEvaluationsRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesGateIdRulesRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesGateIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DeploymentGatesGateIdRulesRouteHandler: RouteHandler<
+  typeof postApiV2DeploymentGatesGateIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DeploymentGatesGateIdRulesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DeploymentGatesGateIdRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesGateIdRulesIdRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesGateIdRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DeploymentGatesGateIdRulesIdRouteHandler: RouteHandler<
+  typeof putApiV2DeploymentGatesGateIdRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DeploymentGatesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DeploymentGatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentGatesIdRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentGatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2DeploymentGatesIdRouteHandler: RouteHandler<
+  typeof putApiV2DeploymentGatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DeploymentsGatesEvaluationRouteHandler: RouteHandler<
+  typeof postApiV2DeploymentsGatesEvaluationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DeploymentsGatesEvaluationIdRouteHandler: RouteHandler<
+  typeof getApiV2DeploymentsGatesEvaluationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DomainAllowlistRouteHandler: RouteHandler<
+  typeof getApiV2DomainAllowlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2DomainAllowlistRouteHandler: RouteHandler<
+  typeof patchApiV2DomainAllowlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DoraDeploymentRouteHandler: RouteHandler<
+  typeof postApiV2DoraDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DoraDeploymentDeploymentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DoraDeploymentDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2DoraDeploymentsRouteHandler: RouteHandler<
+  typeof patchApiV2DoraDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DoraDeploymentsRouteHandler: RouteHandler<
+  typeof postApiV2DoraDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DoraDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof getApiV2DoraDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2DoraDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof patchApiV2DoraDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DoraFailureRouteHandler: RouteHandler<
+  typeof postApiV2DoraFailureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DoraFailureFailureIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DoraFailureFailureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DoraFailuresRouteHandler: RouteHandler<
+  typeof postApiV2DoraFailuresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DoraFailuresFailureIdRouteHandler: RouteHandler<
+  typeof getApiV2DoraFailuresFailureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DoraIncidentRouteHandler: RouteHandler<
+  typeof postApiV2DoraIncidentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DowntimeRouteHandler: RouteHandler<typeof getApiV2DowntimeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2DowntimeRouteHandler: RouteHandler<typeof postApiV2DowntimeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2DowntimeDowntimeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2DowntimeDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2DowntimeDowntimeIdRouteHandler: RouteHandler<
+  typeof getApiV2DowntimeDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2DowntimeDowntimeIdRouteHandler: RouteHandler<
+  typeof patchApiV2DowntimeDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ErrorTrackingIssuesSearchRouteHandler: RouteHandler<
+  typeof postApiV2ErrorTrackingIssuesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ErrorTrackingIssuesIssueIdRouteHandler: RouteHandler<
+  typeof getApiV2ErrorTrackingIssuesIssueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ErrorTrackingIssuesIssueIdAssigneeRouteHandler: RouteHandler<
+  typeof deleteApiV2ErrorTrackingIssuesIssueIdAssigneeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ErrorTrackingIssuesIssueIdAssigneeRouteHandler: RouteHandler<
+  typeof putApiV2ErrorTrackingIssuesIssueIdAssigneeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ErrorTrackingIssuesIssueIdImpactRouteHandler: RouteHandler<
+  typeof getApiV2ErrorTrackingIssuesIssueIdImpactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ErrorTrackingIssuesIssueIdSnoozeRouteHandler: RouteHandler<
+  typeof postApiV2ErrorTrackingIssuesIssueIdSnoozeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ErrorTrackingIssuesIssueIdStateRouteHandler: RouteHandler<
+  typeof putApiV2ErrorTrackingIssuesIssueIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EudmDevicesRouteHandler: RouteHandler<
+  typeof getApiV2EudmDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EudmDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getApiV2EudmDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EventsRouteHandler: RouteHandler<typeof getApiV2EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2EventsRouteHandler: RouteHandler<typeof postApiV2EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2EventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2EventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EventsEventIdRouteHandler: RouteHandler<
+  typeof getApiV2EventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsBanditsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsBanditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsBanditsBanditIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsBanditsBanditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsBanditsBanditIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsBanditsBanditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsBanditsBanditIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsBanditsBanditIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsBanditIdPauseRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsBanditIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsBanditsBanditIdPoliciesRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsBanditsBanditIdPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsBanditIdRefreshRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsBanditIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsBanditsBanditIdResultsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsBanditsBanditIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsBanditIdResumeRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsBanditIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsBanditIdStartRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsBanditIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsBanditsBanditIdStopRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsBanditsBanditIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsBanditsBanditIdTrafficSummaryRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsBanditsBanditIdTrafficSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExposureSqlModelsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExposureSqlModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExposureSqlModelsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExposureSqlModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRouteHandler: RouteHandler<
+  typeof putApiV2ExperimentsExposureSqlModelsExposureSqlModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdArchiveRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdUnarchiveRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExposureSqlModelsExposureSqlModelIdUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricCollectionsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsMetricCollectionsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsMetricCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsMetricCollectionsMetricCollectionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricCollectionsMetricCollectionIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsMetricCollectionsMetricCollectionIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsMetricCollectionsMetricCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricSqlModelsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricSqlModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsMetricSqlModelsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsMetricSqlModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRouteHandler: RouteHandler<
+  typeof putApiV2ExperimentsMetricSqlModelsMetricSqlModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsMetricsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsMetricsMetricIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsMetricsMetricIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsMetricsMetricIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsProtocolsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsProtocolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsProtocolsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsProtocolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsProtocolsProtocolIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsProtocolsProtocolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsProtocolsProtocolIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsProtocolsProtocolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsProtocolsProtocolIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsProtocolsProtocolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ExperimentsProtocolsProtocolIdRouteHandler: RouteHandler<
+  typeof putApiV2ExperimentsProtocolsProtocolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsProtocolsProtocolIdArchiveRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsProtocolsProtocolIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsProtocolsProtocolIdPublishRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsProtocolsProtocolIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsResultsRefreshRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsResultsRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsSubjectTypesRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsSubjectTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsSubjectTypesRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsSubjectTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsSubjectTypesSubjectTypeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsSubjectTypesSubjectTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsSubjectTypesSubjectTypeIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsSubjectTypesSubjectTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsSubjectTypesSubjectTypeIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsSubjectTypesSubjectTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsSubjectTypesSubjectTypeIdDefaultRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsSubjectTypesSubjectTypeIdDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdAnalysisPlanRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdAnalysisPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsExperimentIdAnalysisPlanRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsExperimentIdAnalysisPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdCancelRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdConcludeRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdConcludeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdDiagnosticsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdDiagnosticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdHoldoutsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdHoldoutsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdMetricGroupsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdMetricGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdMetricGroupsRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdMetricGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdMetricGroupsFromCollectionMetricCollectionIdRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdMetricGroupsFromCollectionMetricCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRouteHandler: RouteHandler<
+  typeof patchApiV2ExperimentsExperimentIdMetricGroupsMetricGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdResultsRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdResultsRefreshRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdResultsRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ExperimentsExperimentIdStartRouteHandler: RouteHandler<
+  typeof postApiV2ExperimentsExperimentIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ExperimentsExperimentIdTrafficSummaryRouteHandler: RouteHandler<
+  typeof getApiV2ExperimentsExperimentIdTrafficSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsEnvironmentsRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsEnvironmentsRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2FeatureFlagsEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2FeatureFlagsEnvironmentsEnvironmentIdRouteHandler: RouteHandler<
+  typeof putApiV2FeatureFlagsEnvironmentsEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdPauseRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdResumeRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStartRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStopRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsExposureSchedulesExposureScheduleIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsHistoryRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsHistoryExportRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsHistoryExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsSavedFiltersSavedFilterIdRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsSavedFiltersSavedFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2FeatureFlagsSavedFiltersSavedFilterIdRouteHandler: RouteHandler<
+  typeof patchApiV2FeatureFlagsSavedFiltersSavedFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FeatureFlagsFeatureFlagIdRouteHandler: RouteHandler<
+  typeof getApiV2FeatureFlagsFeatureFlagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2FeatureFlagsFeatureFlagIdRouteHandler: RouteHandler<
+  typeof putApiV2FeatureFlagsFeatureFlagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdArchiveRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRouteHandler: RouteHandler<
+  typeof putApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdDisableRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdEnableRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdEnvironmentsEnvironmentIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdUnarchiveRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FeatureFlagsFeatureFlagIdVariantsRouteHandler: RouteHandler<
+  typeof postApiV2FeatureFlagsFeatureFlagIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRouteHandler: RouteHandler<
+  typeof deleteApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRouteHandler: RouteHandler<
+  typeof putApiV2FeatureFlagsFeatureFlagIdVariantsVariantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetAgentVersionsRouteHandler: RouteHandler<
+  typeof getApiV2FleetAgentVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetAgentsRouteHandler: RouteHandler<
+  typeof getApiV2FleetAgentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetAgentsAgentKeyRouteHandler: RouteHandler<
+  typeof getApiV2FleetAgentsAgentKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetDeploymentsRouteHandler: RouteHandler<
+  typeof getApiV2FleetDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FleetDeploymentsConfigureRouteHandler: RouteHandler<
+  typeof postApiV2FleetDeploymentsConfigureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FleetDeploymentsUpgradeRouteHandler: RouteHandler<
+  typeof postApiV2FleetDeploymentsUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof getApiV2FleetDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FleetDeploymentsDeploymentIdCancelRouteHandler: RouteHandler<
+  typeof postApiV2FleetDeploymentsDeploymentIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetSchedulesRouteHandler: RouteHandler<
+  typeof getApiV2FleetSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FleetSchedulesIdRouteHandler: RouteHandler<
+  typeof getApiV2FleetSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FormsRouteHandler: RouteHandler<typeof getApiV2FormsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsRouteHandler: RouteHandler<typeof postApiV2FormsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsCreateAndPublishRouteHandler: RouteHandler<
+  typeof postApiV2FormsCreateAndPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2FormsFormIdRouteHandler: RouteHandler<
+  typeof deleteApiV2FormsFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2FormsFormIdRouteHandler: RouteHandler<
+  typeof getApiV2FormsFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2FormsFormIdRouteHandler: RouteHandler<
+  typeof patchApiV2FormsFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsFormIdCloneRouteHandler: RouteHandler<
+  typeof postApiV2FormsFormIdCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsFormIdPublishRouteHandler: RouteHandler<
+  typeof postApiV2FormsFormIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsFormIdVersionsRouteHandler: RouteHandler<
+  typeof postApiV2FormsFormIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2FormsFormIdVersionsUpsertAndPublishRouteHandler: RouteHandler<
+  typeof postApiV2FormsFormIdVersionsUpsertAndPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GlobalOrgsRouteHandler: RouteHandler<typeof getApiV2GlobalOrgsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceRouteHandler: RouteHandler<typeof getApiV2GovernanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2GovernanceRouteHandler: RouteHandler<typeof putApiV2GovernanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceConfigRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceControlRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceControlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceControlDetectionTypeRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceControlDetectionTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2GovernanceControlDetectionTypeRouteHandler: RouteHandler<
+  typeof patchApiV2GovernanceControlDetectionTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceControlDetectionTypeDetectionsRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceControlDetectionTypeDetectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceControlDetectionTypeNotificationSettingsRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceControlDetectionTypeNotificationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2GovernanceControlDetectionTypeNotificationSettingsRouteHandler: RouteHandler<
+  typeof putApiV2GovernanceControlDetectionTypeNotificationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2GovernanceDetectionsMitigateRouteHandler: RouteHandler<
+  typeof postApiV2GovernanceDetectionsMitigateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceDetectionsDetectionIdRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceDetectionsDetectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2GovernanceDetectionsDetectionIdRouteHandler: RouteHandler<
+  typeof patchApiV2GovernanceDetectionsDetectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceInsightsRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceNotificationSettingsRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceNotificationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2GovernanceNotificationSettingsRouteHandler: RouteHandler<
+  typeof patchApiV2GovernanceNotificationSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceTagRulesRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceTagRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2GovernanceTagRulesRouteHandler: RouteHandler<
+  typeof postApiV2GovernanceTagRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2GovernanceTagRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2GovernanceTagRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceTagRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceTagRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2GovernanceTagRulesRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2GovernanceTagRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GovernanceTagRulesRuleIdScoreRouteHandler: RouteHandler<
+  typeof getApiV2GovernanceTagRulesRuleIdScoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2HamrRouteHandler: RouteHandler<typeof getApiV2HamrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2HamrRouteHandler: RouteHandler<typeof postApiV2HamrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IdentityProvidersRouteHandler: RouteHandler<
+  typeof getApiV2IdentityProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IdentityProvidersIdpIdRouteHandler: RouteHandler<
+  typeof patchApiV2IdentityProvidersIdpIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IdentityProvidersIdpIdUsersRouteHandler: RouteHandler<
+  typeof getApiV2IdentityProvidersIdpIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IdpEntityIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IdpEntityIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IdpEntityIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof getApiV2IdpEntityIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2IdpEntityIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof putApiV2IdpEntityIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsRouteHandler: RouteHandler<typeof getApiV2IncidentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsRouteHandler: RouteHandler<typeof postApiV2IncidentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigGlobalIncidentHandlesRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigGlobalIncidentHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigGlobalIncidentHandlesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigGlobalIncidentHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigGlobalIncidentHandlesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigGlobalIncidentHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2IncidentsConfigGlobalIncidentHandlesRouteHandler: RouteHandler<
+  typeof putApiV2IncidentsConfigGlobalIncidentHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigGlobalSettingsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigGlobalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigGlobalSettingsRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigGlobalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigGoogleChatConfigurationsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigGoogleChatConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigGoogleChatConfigurationsIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigGoogleChatConfigurationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigGoogleMeetConfigurationsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigGoogleMeetConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigGoogleMeetConfigurationsIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigGoogleMeetConfigurationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigImpactFieldsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigImpactFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigImpactFieldsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigImpactFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigImpactFieldsFieldIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigImpactFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2IncidentsConfigImpactFieldsFieldIdRouteHandler: RouteHandler<
+  typeof putApiV2IncidentsConfigImpactFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigNotificationRulesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigNotificationRulesIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2IncidentsConfigNotificationRulesIdRouteHandler: RouteHandler<
+  typeof putApiV2IncidentsConfigNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigNotificationTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigNotificationTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigNotificationTemplatesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigNotificationTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigNotificationTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigNotificationTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigNotificationTemplatesIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigNotificationTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigNotificationTemplatesIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigNotificationTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigPostmortemTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigPostmortemTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigPostmortemTemplatesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigPostmortemTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigPostmortemTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigPostmortemTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigPostmortemTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigPostmortemTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigRulesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigRulesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigRulesRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigTypesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigTypesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigTypesOrgSettingsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigTypesOrgSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigTypesIncidentTypeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigTypesIncidentTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigTypesIncidentTypeIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigTypesIncidentTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigTypesIncidentTypeIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigTypesIncidentTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigTypesIncidentTypeIdOrgSettingsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigTypesIncidentTypeIdOrgSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigUserDefinedFieldsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigUserDefinedFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigUserDefinedFieldsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigUserDefinedFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigUserDefinedFieldsFieldIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigUserDefinedFieldsFieldIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigUserDefinedFieldsFieldIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigUserDefinedFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigUserDefinedRolesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigUserDefinedRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsConfigUserDefinedRolesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsConfigUserDefinedRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsConfigUserDefinedRolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsConfigUserDefinedRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsConfigUserDefinedRolesRoleIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsConfigUserDefinedRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsConfigUserDefinedRolesRoleIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsConfigUserDefinedRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsImportRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsSearchRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdAiPostmortemRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdAiPostmortemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdAttachmentsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdAttachmentsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdAttachmentsPostmortemsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdAttachmentsPostmortemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdCasesPageRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdCasesPageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdConfigurationsRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdConfigurationsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdImpactsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdImpactsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdImpactsImpactIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdImpactsImpactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdImpactsImpactIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdImpactsImpactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdPageRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdPageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdPagesLinkRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdPagesLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRelationshipsIntegrationsRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRelationshipsIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdRelationshipsIntegrationsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdRelationshipsIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdRelationshipsIntegrationsIntegrationMetadataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRelationshipsTodosRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRelationshipsTodosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdRelationshipsTodosRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdRelationshipsTodosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdRelationshipsTodosTodoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRespondersRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRespondersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdRespondersRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdRespondersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdRespondersResponderIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdRespondersResponderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdRespondersResponderIdRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdRespondersResponderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdServicenowRecordsRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdServicenowRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IncidentsIncidentIdTimestampOverridesRouteHandler: RouteHandler<
+  typeof getApiV2IncidentsIncidentIdTimestampOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IncidentsIncidentIdTimestampOverridesRouteHandler: RouteHandler<
+  typeof postApiV2IncidentsIncidentIdTimestampOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IncidentsIncidentIdTimestampOverridesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IncidentsIncidentIdTimestampOverridesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IncidentsIncidentIdTimestampOverridesIdRouteHandler: RouteHandler<
+  typeof patchApiV2IncidentsIncidentIdTimestampOverridesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesAnthropicUsageAndCostsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesChatgptEnterpriseAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesChatgptEnterpriseAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesChatgptEnterpriseAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesChatgptEnterpriseAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesChatgptEnterpriseAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesClaudeComplianceAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesClaudeComplianceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesClaudeComplianceAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesClaudeComplianceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesClaudeComplianceAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesCoreweaveCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesCoreweaveCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesCoreweaveCloudAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesCoreweaveCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesCoreweaveCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesDatabricksAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesDatabricksAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesDatabricksAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesDatabricksAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesDatabricksAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesDatabricksAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesDatabricksAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesDatabricksAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesElasticCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesElasticCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesElasticCloudAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesElasticCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesElasticCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesNebiusCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesNebiusCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesNebiusCloudAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesNebiusCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesNebiusCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesOpenaiCodexAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesOpenaiCodexAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesOpenaiCodexAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesOpenaiCodexAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesOpenaiCodexAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesSnowflakeAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesSnowflakeAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesSnowflakeAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesSnowflakeAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesSnowflakeAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesTemporalCloudOpenmetricsAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesTwilioAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesTwilioAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationInterfacesTwilioAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationInterfacesTwilioAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationInterfacesTwilioAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationInterfacesTwilioAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationInterfacesTwilioAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationInterfacesTwilioAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsAccountsAwsAccountConfigIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationAwsAccountsAwsAccountConfigIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationAwsAccountsAwsAccountConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsAccountsAwsAccountConfigIdCcmConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsAccountsAwsAccountConfigIdMetricNameFilterPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsAvailableNamespacesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsAvailableNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationAwsEventBridgeRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationAwsEventBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsEventBridgeRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsEventBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsEventBridgeRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsEventBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsGenerateNewExternalIdRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsGenerateNewExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsIamPermissionsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsIamPermissionsResourceCollectionRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsIamPermissionsResourceCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsIamPermissionsStandardRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsIamPermissionsStandardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationAwsLogsServicesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationAwsLogsServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationAwsValidateCcmConfigRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationAwsValidateCcmConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGcpAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGcpAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationGcpAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationGcpAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationGcpAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationGcpAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationGcpAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationGcpAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGcpStsDelegateRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGcpStsDelegateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationGcpStsDelegateRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationGcpStsDelegateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsAppNamedSpacesDomainNameSpaceDisplayNameRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsAppNamedSpacesDomainNameSpaceDisplayNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdDelegatedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdOrganizationHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationGoogleChatOrganizationsOrganizationBindingIdTargetAudiencesTargetAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationJiraAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationJiraAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationJiraAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationJiraAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationJiraIssueTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationJiraIssueTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationJiraIssueTemplatesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationJiraIssueTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationJiraIssueTemplatesIssueTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationMsTeamsConfigurationChannelTenantNameTeamNameChannelNameRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationMsTeamsConfigurationChannelTenantNameTeamNameChannelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationMsTeamsConfigurationTenantBasedHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationMsTeamsConfigurationUserBindingTenantIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationMsTeamsConfigurationUserBindingTenantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationMsTeamsConfigurationWorkflowsWebhookHandlesHandleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOciProductsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOciProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOciTenanciesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOciTenanciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationOciTenanciesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationOciTenanciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationOciTenanciesTenancyOcidRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationOciTenanciesTenancyOcidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOciTenanciesTenancyOcidRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOciTenanciesTenancyOcidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationOciTenanciesTenancyOcidRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationOciTenanciesTenancyOcidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOpsgenieAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOpsgenieAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationOpsgenieAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationOpsgenieAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationOpsgenieAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationOpsgenieAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationOpsgenieAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationOpsgenieAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOpsgenieServicesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOpsgenieServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationOpsgenieServicesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationOpsgenieServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationOpsgenieServicesIntegrationServiceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationOpsgenieServicesIntegrationServiceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationOpsgenieServicesIntegrationServiceIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationOpsgenieServicesIntegrationServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowAssignmentGroupsInstanceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowAssignmentGroupsInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowBusinessServicesInstanceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowBusinessServicesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowHandlesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationServicenowHandlesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationServicenowHandlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationServicenowHandlesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationServicenowHandlesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowHandlesTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowHandlesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2IntegrationServicenowHandlesTemplateIdRouteHandler: RouteHandler<
+  typeof putApiV2IntegrationServicenowHandlesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowInstancesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationServicenowUsersInstanceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationServicenowUsersInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationSlackUserBindingsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationSlackUserBindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationStatuspageAccountRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationStatuspageAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationStatuspageAccountRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationStatuspageAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationStatuspageAccountRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationStatuspageAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationStatuspageAccountRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationStatuspageAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationStatuspageUrlSettingsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationStatuspageUrlSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationStatuspageUrlSettingsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationStatuspageUrlSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationStatuspageUrlSettingsStatuspageUrlSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationWebhooksConfigurationAuthMethodRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationWebhooksConfigurationAuthMethodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationWebhooksConfigurationAuthMethodOauth2ClientCredentialsAuthMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsCloudflareAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsCloudflareAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsCloudflareAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsCloudflareAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsCloudflareAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsCloudflareAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsCloudflareAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsCloudflareAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsCloudflareAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsCloudflareAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsConfluentCloudAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsConfluentCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsConfluentCloudAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsConfluentCloudAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsConfluentCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsConfluentCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsConfluentCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsConfluentCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsConfluentCloudAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsConfluentCloudAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsConfluentCloudAccountsAccountIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsFastlyAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsFastlyAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsFastlyAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsFastlyAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsFastlyAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsFastlyAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsFastlyAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsFastlyAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsFastlyAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsFastlyAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsFastlyAccountsAccountIdServicesRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsFastlyAccountsAccountIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsFastlyAccountsAccountIdServicesRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsFastlyAccountsAccountIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsFastlyAccountsAccountIdServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsOktaAccountsRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsOktaAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2IntegrationsOktaAccountsRouteHandler: RouteHandler<
+  typeof postApiV2IntegrationsOktaAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2IntegrationsOktaAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2IntegrationsOktaAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IntegrationsOktaAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2IntegrationsOktaAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IntegrationsOktaAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2IntegrationsOktaAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2IpAllowlistRouteHandler: RouteHandler<
+  typeof getApiV2IpAllowlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2IpAllowlistRouteHandler: RouteHandler<
+  typeof patchApiV2IpAllowlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1AnnotatedInteractionsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1AnnotatedInteractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1AnnotationQueuesRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1AnnotationQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1AnnotationQueuesRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1AnnotationQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LlmObsV1AnnotationQueuesQueueIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LlmObsV1AnnotationQueuesQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1AnnotationQueuesQueueIdRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1AnnotationQueuesQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsInteractionIdRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1AnnotationQueuesQueueIdAnnotatedInteractionsInteractionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1AnnotationQueuesQueueIdAnnotationsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1AnnotationQueuesQueueIdInteractionsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRouteHandler: RouteHandler<
+  typeof putApiV2LlmObsV1AnnotationQueuesQueueIdLabelSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentationAnalyticsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentationAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentationSearchRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentationSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentationSimpleSearchRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentationSimpleSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ExperimentsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ExperimentsExperimentIdEventsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ExperimentsExperimentIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ExperimentsExperimentIdEventsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ExperimentsExperimentIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1IntegrationsIntegrationAccountsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1IntegrationsIntegrationAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1IntegrationsIntegrationAccountIdInferenceRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1IntegrationsIntegrationAccountIdInferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1IntegrationsIntegrationAccountIdModelsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1IntegrationsIntegrationAccountIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ProjectsProjectIdRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1PromptsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1PromptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1PromptsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1PromptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LlmObsV1PromptsPromptIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LlmObsV1PromptsPromptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1PromptsPromptIdRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1PromptsPromptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1PromptsPromptIdRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1PromptsPromptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1PromptsPromptIdVersionsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1PromptsPromptIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1PromptsPromptIdVersionsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1PromptsPromptIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1PromptsPromptIdVersionsVersionRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1PromptsPromptIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1PromptsPromptIdVersionsVersionRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1PromptsPromptIdVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1SpansEventsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1SpansEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1SpansEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1SpansEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryClusteredPointsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryClusteredPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryConfigsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LlmObsV1TopicDiscoveryConfigsRouteHandler: RouteHandler<
+  typeof putApiV2LlmObsV1TopicDiscoveryConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryConfigsLatestRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryConfigsLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LlmObsV1TopicDiscoveryConfigsConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LlmObsV1TopicDiscoveryConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryRunsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1TopicDiscoveryRunsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1TopicDiscoveryRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryRunsStatusRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryRunsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryTopicsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1TopicDiscoveryTopicsWithClusterPointsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1TopicDiscoveryTopicsWithClusterPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectIdDatasetsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectIdDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDatasetIdBatchUpdateRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDatasetIdBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDatasetIdCloneRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDatasetIdCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateLockRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateUnlockRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdDraftStateUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectIdDatasetsDatasetIdExportRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectIdDatasetsDatasetIdExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRouteHandler: RouteHandler<
+  typeof patchApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsDeleteRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRecordsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRestoreRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV1ProjectIdDatasetsDatasetIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV1ProjectIdDatasetsDatasetIdVersionsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV1ProjectIdDatasetsDatasetIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV2ExperimentsExperimentIdEventsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV2ExperimentsExperimentIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LlmObsV2ProjectIdDatasetsDatasetIdRecordsUploadRouteHandler: RouteHandler<
+  typeof postApiV2LlmObsV2ProjectIdDatasetsDatasetIdRecordsUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LlmObsV3ExperimentsExperimentIdEventsRouteHandler: RouteHandler<
+  typeof getApiV2LlmObsV3ExperimentsExperimentIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LoginOrgConfigsMaxSessionDurationRouteHandler: RouteHandler<
+  typeof putApiV2LoginOrgConfigsMaxSessionDurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsRouteHandler: RouteHandler<typeof postApiV2LogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsAnalyticsAggregateRouteHandler: RouteHandler<
+  typeof postApiV2LogsAnalyticsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsArchiveSearchesRouteHandler: RouteHandler<
+  typeof getApiV2LogsArchiveSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsArchiveSearchesRouteHandler: RouteHandler<
+  typeof postApiV2LogsArchiveSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsArchiveSearchesArchiveSearchIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsArchiveSearchesArchiveSearchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LogsArchiveSearchesArchiveSearchIdRouteHandler: RouteHandler<
+  typeof patchApiV2LogsArchiveSearchesArchiveSearchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsArchiveSearchesArchiveSearchIdCancelRouteHandler: RouteHandler<
+  typeof postApiV2LogsArchiveSearchesArchiveSearchIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigArchiveOrderRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigArchiveOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LogsConfigArchiveOrderRouteHandler: RouteHandler<
+  typeof putApiV2LogsConfigArchiveOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigArchivesRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigArchivesRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LogsConfigArchivesArchiveIdRouteHandler: RouteHandler<
+  typeof putApiV2LogsConfigArchivesArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigArchivesArchiveIdReadersRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigArchivesArchiveIdReadersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigArchivesArchiveIdReadersRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigArchivesArchiveIdReadersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigArchivesArchiveIdReadersRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigArchivesArchiveIdReadersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigCustomDestinationsRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigCustomDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigCustomDestinationsRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigCustomDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigCustomDestinationsCustomDestinationIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigCustomDestinationsCustomDestinationIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LogsConfigCustomDestinationsCustomDestinationIdRouteHandler: RouteHandler<
+  typeof patchApiV2LogsConfigCustomDestinationsCustomDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigMetricsRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigMetricsRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LogsConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof patchApiV2LogsConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigRestrictionQueriesRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigRestrictionQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigRestrictionQueriesRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigRestrictionQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigRestrictionQueriesRoleRoleIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigRestrictionQueriesRoleRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigRestrictionQueriesUserUserIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigRestrictionQueriesUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRouteHandler: RouteHandler<
+  typeof patchApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRouteHandler: RouteHandler<
+  typeof putApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRouteHandler: RouteHandler<
+  typeof deleteApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRouteHandler: RouteHandler<
+  typeof getApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRouteHandler: RouteHandler<
+  typeof postApiV2LogsConfigRestrictionQueriesRestrictionQueryIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LogsEventsRouteHandler: RouteHandler<typeof getApiV2LogsEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2LogsEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2LogsEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MaintenanceWindowsRouteHandler: RouteHandler<
+  typeof getApiV2MaintenanceWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MaintenanceWindowsRouteHandler: RouteHandler<
+  typeof postApiV2MaintenanceWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MaintenanceWindowsMaintenanceWindowIdRouteHandler: RouteHandler<
+  typeof deleteApiV2MaintenanceWindowsMaintenanceWindowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2MaintenanceWindowsMaintenanceWindowIdRouteHandler: RouteHandler<
+  typeof putApiV2MaintenanceWindowsMaintenanceWindowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsRouteHandler: RouteHandler<typeof getApiV2MetricsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsDerivedMetricsRouteHandler: RouteHandler<
+  typeof postApiV2MetricsDerivedMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MetricsDerivedMetricsMetricNameRouteHandler: RouteHandler<
+  typeof deleteApiV2MetricsDerivedMetricsMetricNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsDerivedMetricsMetricNameRouteHandler: RouteHandler<
+  typeof getApiV2MetricsDerivedMetricsMetricNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2MetricsDerivedMetricsMetricNameRouteHandler: RouteHandler<
+  typeof putApiV2MetricsDerivedMetricsMetricNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsHistoricalMetricsConfigurationsRouteHandler: RouteHandler<
+  typeof postApiV2MetricsHistoricalMetricsConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MetricsHistoricalMetricsConfigurationsMetricNameRouteHandler: RouteHandler<
+  typeof deleteApiV2MetricsHistoricalMetricsConfigurationsMetricNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsHistoricalMetricsConfigurationsMetricNameRouteHandler: RouteHandler<
+  typeof getApiV2MetricsHistoricalMetricsConfigurationsMetricNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsListTagIndexingRuleExemptionsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsListTagIndexingRuleExemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsTagIndexingRulesRouteHandler: RouteHandler<
+  typeof getApiV2MetricsTagIndexingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsTagIndexingRulesRouteHandler: RouteHandler<
+  typeof postApiV2MetricsTagIndexingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsTagIndexingRulesOrderRouteHandler: RouteHandler<
+  typeof postApiV2MetricsTagIndexingRulesOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MetricsTagIndexingRulesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2MetricsTagIndexingRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsTagIndexingRulesIdRouteHandler: RouteHandler<
+  typeof getApiV2MetricsTagIndexingRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2MetricsTagIndexingRulesIdRouteHandler: RouteHandler<
+  typeof putApiV2MetricsTagIndexingRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameActiveConfigurationsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameActiveConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameAllTagsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameAllTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameAssetsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameEstimateRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameTagCardinalitiesRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameTagCardinalitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MetricsMetricNameTagIndexingRuleExemptionsRouteHandler: RouteHandler<
+  typeof deleteApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameTagIndexingRuleExemptionsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsMetricNameTagIndexingRuleExemptionsRouteHandler: RouteHandler<
+  typeof postApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2MetricsMetricNameTagIndexingRuleExemptionsRouteHandler: RouteHandler<
+  typeof putApiV2MetricsMetricNameTagIndexingRuleExemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameTagIndexingRulesRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameTagIndexingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MetricsMetricNameTagsRouteHandler: RouteHandler<
+  typeof deleteApiV2MetricsMetricNameTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameTagsRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2MetricsMetricNameTagsRouteHandler: RouteHandler<
+  typeof patchApiV2MetricsMetricNameTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MetricsMetricNameTagsRouteHandler: RouteHandler<
+  typeof postApiV2MetricsMetricNameTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MetricsMetricNameVolumesRouteHandler: RouteHandler<
+  typeof getApiV2MetricsMetricNameVolumesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelGroupsRouteHandler: RouteHandler<
+  typeof getApiV2ModelGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ModelGroupsRouteHandler: RouteHandler<
+  typeof postApiV2ModelGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ModelGroupsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ModelGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelGroupsIdRouteHandler: RouteHandler<
+  typeof getApiV2ModelGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ModelGroupsIdRouteHandler: RouteHandler<
+  typeof patchApiV2ModelGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiArtifactsContentRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiArtifactsContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiFacetKeysRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiFacetKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiFacetValuesRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiFacetValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiProjectFacetKeysRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiProjectFacetKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiProjectFacetValuesRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiProjectFacetValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiProjectsRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiProjectsProjectIdRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiProjectsProjectIdArtifactsRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiProjectsProjectIdArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ModelLabApiProjectsProjectIdOwnersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ModelLabApiProjectsProjectIdOwnersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ModelLabApiProjectsProjectIdOwnersUserIdRouteHandler: RouteHandler<
+  typeof postApiV2ModelLabApiProjectsProjectIdOwnersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ModelLabApiProjectsProjectIdStarRouteHandler: RouteHandler<
+  typeof deleteApiV2ModelLabApiProjectsProjectIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ModelLabApiProjectsProjectIdStarRouteHandler: RouteHandler<
+  typeof postApiV2ModelLabApiProjectsProjectIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiRunsRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ModelLabApiRunsRunIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ModelLabApiRunsRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiRunsRunIdRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiRunsRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelLabApiRunsRunIdArtifactsRouteHandler: RouteHandler<
+  typeof getApiV2ModelLabApiRunsRunIdArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ModelLabApiRunsRunIdPinRouteHandler: RouteHandler<
+  typeof deleteApiV2ModelLabApiRunsRunIdPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ModelLabApiRunsRunIdPinRouteHandler: RouteHandler<
+  typeof postApiV2ModelLabApiRunsRunIdPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ModelsRouteHandler: RouteHandler<typeof getApiV2ModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorNotificationRuleRouteHandler: RouteHandler<
+  typeof getApiV2MonitorNotificationRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MonitorNotificationRuleRouteHandler: RouteHandler<
+  typeof postApiV2MonitorNotificationRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MonitorNotificationRuleRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2MonitorNotificationRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorNotificationRuleRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2MonitorNotificationRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2MonitorNotificationRuleRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2MonitorNotificationRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorPolicyRouteHandler: RouteHandler<
+  typeof getApiV2MonitorPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MonitorPolicyRouteHandler: RouteHandler<
+  typeof postApiV2MonitorPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MonitorPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2MonitorPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2MonitorPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2MonitorPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof patchApiV2MonitorPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorTemplateRouteHandler: RouteHandler<
+  typeof getApiV2MonitorTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MonitorTemplateRouteHandler: RouteHandler<
+  typeof postApiV2MonitorTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MonitorTemplateValidateRouteHandler: RouteHandler<
+  typeof postApiV2MonitorTemplateValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2MonitorTemplateTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2MonitorTemplateTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorTemplateTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2MonitorTemplateTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2MonitorTemplateTemplateIdRouteHandler: RouteHandler<
+  typeof putApiV2MonitorTemplateTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2MonitorTemplateTemplateIdValidateRouteHandler: RouteHandler<
+  typeof postApiV2MonitorTemplateTemplateIdValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MonitorMonitorIdDowntimeMatchesRouteHandler: RouteHandler<
+  typeof getApiV2MonitorMonitorIdDowntimeMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NdmDevicesRouteHandler: RouteHandler<typeof getApiV2NdmDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NdmDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getApiV2NdmDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NdmInterfacesRouteHandler: RouteHandler<
+  typeof getApiV2NdmInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NdmTagsDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getApiV2NdmTagsDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2NdmTagsDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof patchApiV2NdmTagsDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NdmTagsInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof getApiV2NdmTagsInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2NdmTagsInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof patchApiV2NdmTagsInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NetworkConnectionsAggregateRouteHandler: RouteHandler<
+  typeof getApiV2NetworkConnectionsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NetworkDnsAggregateRouteHandler: RouteHandler<
+  typeof getApiV2NetworkDnsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2Oauth2WellKnownOpenidConfigurationRouteHandler: RouteHandler<
+  typeof getApiV2Oauth2WellKnownOpenidConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2Oauth2WellKnownSitesRouteHandler: RouteHandler<
+  typeof getApiV2Oauth2WellKnownSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2Oauth2ClientsClientUuidScopesRestrictionRouteHandler: RouteHandler<
+  typeof deleteApiV2Oauth2ClientsClientUuidScopesRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2Oauth2ClientsClientUuidScopesRestrictionRouteHandler: RouteHandler<
+  typeof getApiV2Oauth2ClientsClientUuidScopesRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2Oauth2ClientsClientUuidScopesRestrictionRouteHandler: RouteHandler<
+  typeof postApiV2Oauth2ClientsClientUuidScopesRestrictionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2Oauth2RegisterRouteHandler: RouteHandler<
+  typeof postApiV2Oauth2RegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ObsPipelinesPipelinesRouteHandler: RouteHandler<
+  typeof getApiV2ObsPipelinesPipelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ObsPipelinesPipelinesRouteHandler: RouteHandler<
+  typeof postApiV2ObsPipelinesPipelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ObsPipelinesPipelinesValidateRouteHandler: RouteHandler<
+  typeof postApiV2ObsPipelinesPipelinesValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ObsPipelinesPipelinesPipelineIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ObsPipelinesPipelinesPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ObsPipelinesPipelinesPipelineIdRouteHandler: RouteHandler<
+  typeof getApiV2ObsPipelinesPipelinesPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ObsPipelinesPipelinesPipelineIdRouteHandler: RouteHandler<
+  typeof putApiV2ObsPipelinesPipelinesPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallEscalationPoliciesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallEscalationPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallEscalationPoliciesRouteHandler: RouteHandler<
+  typeof postApiV2OnCallEscalationPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OnCallEscalationPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OnCallEscalationPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallEscalationPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2OnCallEscalationPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2OnCallEscalationPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof putApiV2OnCallEscalationPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallPagesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallPagesPageIdRouteHandler: RouteHandler<
+  typeof getApiV2OnCallPagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesPageIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesPageIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesPageIdCommentsRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesPageIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesPageIdEscalateRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesPageIdEscalateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesPageIdRerouteRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesPageIdRerouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallPagesPageIdResolveRouteHandler: RouteHandler<
+  typeof postApiV2OnCallPagesPageIdResolveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallSchedulesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallSchedulesRouteHandler: RouteHandler<
+  typeof postApiV2OnCallSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OnCallSchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OnCallSchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallSchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof getApiV2OnCallSchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2OnCallSchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof putApiV2OnCallSchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallSchedulesScheduleIdOnCallRouteHandler: RouteHandler<
+  typeof getApiV2OnCallSchedulesScheduleIdOnCallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallSchedulesScheduleIdOverridesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallSchedulesScheduleIdOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallSchedulesScheduleIdOverridesRouteHandler: RouteHandler<
+  typeof postApiV2OnCallSchedulesScheduleIdOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OnCallSchedulesScheduleIdOverridesOverrideIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OnCallSchedulesScheduleIdOverridesOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallSchedulesScheduleIdRespondersRouteHandler: RouteHandler<
+  typeof getApiV2OnCallSchedulesScheduleIdRespondersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallTeamsTeamIdOnCallRouteHandler: RouteHandler<
+  typeof getApiV2OnCallTeamsTeamIdOnCallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallTeamsTeamIdRoutingRulesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallTeamsTeamIdRoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2OnCallTeamsTeamIdRoutingRulesRouteHandler: RouteHandler<
+  typeof putApiV2OnCallTeamsTeamIdRoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallUsersUserIdNotificationChannelsRouteHandler: RouteHandler<
+  typeof getApiV2OnCallUsersUserIdNotificationChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallUsersUserIdNotificationChannelsRouteHandler: RouteHandler<
+  typeof postApiV2OnCallUsersUserIdNotificationChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OnCallUsersUserIdNotificationChannelsChannelIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OnCallUsersUserIdNotificationChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallUsersUserIdNotificationChannelsChannelIdRouteHandler: RouteHandler<
+  typeof getApiV2OnCallUsersUserIdNotificationChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallUsersUserIdNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2OnCallUsersUserIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OnCallUsersUserIdNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2OnCallUsersUserIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OnCallUsersUserIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OnCallUsersUserIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2OnCallUsersUserIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2OnCallUsersUserIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgRouteHandler: RouteHandler<typeof getApiV2OrgRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgDisableRouteHandler: RouteHandler<
+  typeof postApiV2OrgDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgSamlConfigurationsRouteHandler: RouteHandler<
+  typeof patchApiV2OrgSamlConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgAuthorizedClientsRouteHandler: RouteHandler<
+  typeof getApiV2OrgAuthorizedClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgAuthorizedClientsOrgAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserUserIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsRouteHandler: RouteHandler<
+  typeof getApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsUserAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgAuthorizedClientsOrgAuthorizedClientIdUserAuthorizedClientsUserAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgConfigsRouteHandler: RouteHandler<typeof getApiV2OrgConfigsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgConfigsOrgConfigNameRouteHandler: RouteHandler<
+  typeof getApiV2OrgConfigsOrgConfigNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgConfigsOrgConfigNameRouteHandler: RouteHandler<
+  typeof patchApiV2OrgConfigsOrgConfigNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgConnectionsRouteHandler: RouteHandler<
+  typeof getApiV2OrgConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgConnectionsRouteHandler: RouteHandler<
+  typeof postApiV2OrgConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupMembershipsRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgGroupMembershipsRouteHandler: RouteHandler<
+  typeof postApiV2OrgGroupMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgGroupMembershipsBulkRouteHandler: RouteHandler<
+  typeof patchApiV2OrgGroupMembershipsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgGroupMembershipsBulkDeleteRouteHandler: RouteHandler<
+  typeof postApiV2OrgGroupMembershipsBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgGroupMembershipsOrgGroupMembershipIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupMembershipsOrgGroupMembershipIdRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgGroupMembershipsOrgGroupMembershipIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgGroupMembershipsOrgGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPoliciesRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgGroupPoliciesRouteHandler: RouteHandler<
+  typeof postApiV2OrgGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgGroupPoliciesOrgGroupPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPoliciesOrgGroupPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgGroupPoliciesOrgGroupPolicyIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgGroupPoliciesOrgGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPolicyConfigsRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPolicyConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPolicyOverridesRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPolicyOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgGroupPolicyOverridesRouteHandler: RouteHandler<
+  typeof postApiV2OrgGroupPolicyOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgGroupPolicyOverridesOrgGroupPolicyOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupPolicySuggestionsRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupPolicySuggestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupsRouteHandler: RouteHandler<typeof getApiV2OrgGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2OrgGroupsRouteHandler: RouteHandler<typeof postApiV2OrgGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2OrgGroupsOrgGroupIdRouteHandler: RouteHandler<
+  typeof deleteApiV2OrgGroupsOrgGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OrgGroupsOrgGroupIdRouteHandler: RouteHandler<
+  typeof getApiV2OrgGroupsOrgGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2OrgGroupsOrgGroupIdRouteHandler: RouteHandler<
+  typeof patchApiV2OrgGroupsOrgGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PermissionsRouteHandler: RouteHandler<
+  typeof getApiV2PermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PersonalAccessTokensRouteHandler: RouteHandler<
+  typeof getApiV2PersonalAccessTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2PersonalAccessTokensRouteHandler: RouteHandler<
+  typeof postApiV2PersonalAccessTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2PersonalAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof deleteApiV2PersonalAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PersonalAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof getApiV2PersonalAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2PersonalAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof patchApiV2PersonalAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PoliciesRouteHandler: RouteHandler<typeof getApiV2PoliciesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2PoliciesRouteHandler: RouteHandler<typeof postApiV2PoliciesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2PoliciesInboundRouteHandler: RouteHandler<
+  typeof deleteApiV2PoliciesInboundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PoliciesInboundRouteHandler: RouteHandler<
+  typeof getApiV2PoliciesInboundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PostureManagementFindingsRouteHandler: RouteHandler<
+  typeof getApiV2PostureManagementFindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PostureManagementFindingsFindingIdRouteHandler: RouteHandler<
+  typeof getApiV2PostureManagementFindingsFindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PowerpacksRouteHandler: RouteHandler<typeof getApiV2PowerpacksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2PowerpacksRouteHandler: RouteHandler<
+  typeof postApiV2PowerpacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2PowerpacksPowerpackIdRouteHandler: RouteHandler<
+  typeof deleteApiV2PowerpacksPowerpackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PowerpacksPowerpackIdRouteHandler: RouteHandler<
+  typeof getApiV2PowerpacksPowerpackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2PowerpacksPowerpackIdRouteHandler: RouteHandler<
+  typeof patchApiV2PowerpacksPowerpackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProcessesRouteHandler: RouteHandler<typeof getApiV2ProcessesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProdlyticsRouteHandler: RouteHandler<
+  typeof postApiV2ProdlyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsAccountsFacetInfoRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsAccountsFacetInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsAccountsQueryRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsAccountsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsAnalyticsListRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsAnalyticsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsAnalyticsScalarRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsAnalyticsScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsAnalyticsTimeseriesRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsAnalyticsTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsJourneyFunnelRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsJourneyFunnelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsJourneyListRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsJourneyListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsJourneyScalarRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsJourneyScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsJourneyTimeseriesRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsJourneyTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsRetentionGridRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsRetentionGridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsRetentionListRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsRetentionListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsRetentionScalarRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsRetentionScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsRetentionTimeseriesRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsRetentionTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsSankeyRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsSankeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsUsersEventFilteredQueryRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsUsersEventFilteredQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsUsersFacetInfoRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsUsersFacetInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsUsersQueryRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsUsersQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ProductAnalyticsUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ProductAnalyticsUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProductAnalyticsEntityMappingRouteHandler: RouteHandler<
+  typeof getApiV2ProductAnalyticsEntityMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProductAnalyticsEntityMappingConnectionRouteHandler: RouteHandler<
+  typeof postApiV2ProductAnalyticsEntityMappingConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ProductAnalyticsEntityMappingConnectionRouteHandler: RouteHandler<
+  typeof putApiV2ProductAnalyticsEntityMappingConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ProductAnalyticsEntityMappingConnectionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ProductAnalyticsEntityMappingConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProductAnalyticsEntityMappingConnectionsRouteHandler: RouteHandler<
+  typeof getApiV2ProductAnalyticsEntityMappingConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProductCatalogSkusRouteHandler: RouteHandler<
+  typeof getApiV2ProductCatalogSkusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProviderModelsRouteHandler: RouteHandler<
+  typeof getApiV2ProviderModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProvidersRouteHandler: RouteHandler<typeof getApiV2ProvidersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProvidersRouteHandler: RouteHandler<typeof postApiV2ProvidersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ProvidersIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProvidersIdRouteHandler: RouteHandler<
+  typeof getApiV2ProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ProvidersIdRouteHandler: RouteHandler<
+  typeof patchApiV2ProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProvidersProviderIdModelsRouteHandler: RouteHandler<
+  typeof getApiV2ProvidersProviderIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProvidersProviderIdModelsRouteHandler: RouteHandler<
+  typeof postApiV2ProvidersProviderIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ProvidersProviderIdModelsBulkRouteHandler: RouteHandler<
+  typeof postApiV2ProvidersProviderIdModelsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ProvidersProviderIdModelsCanonicalRouteHandler: RouteHandler<
+  typeof deleteApiV2ProvidersProviderIdModelsCanonicalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ProvidersProviderIdModelsCanonicalRouteHandler: RouteHandler<
+  typeof patchApiV2ProvidersProviderIdModelsCanonicalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ProvidersProviderIdModelsCanonicalPricingRouteHandler: RouteHandler<
+  typeof deleteApiV2ProvidersProviderIdModelsCanonicalPricingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ProvidersProviderIdModelsCanonicalPricingRouteHandler: RouteHandler<
+  typeof getApiV2ProvidersProviderIdModelsCanonicalPricingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ProvidersProviderIdModelsCanonicalPricingRouteHandler: RouteHandler<
+  typeof putApiV2ProvidersProviderIdModelsCanonicalPricingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PrunedTraceTraceIdRouteHandler: RouteHandler<
+  typeof getApiV2PrunedTraceTraceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2QueryScalarRouteHandler: RouteHandler<
+  typeof postApiV2QueryScalarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2QueryTimeseriesRouteHandler: RouteHandler<
+  typeof postApiV2QueryTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsRouteHandler: RouteHandler<typeof getApiV2RateLimitsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RateLimitsRouteHandler: RouteHandler<
+  typeof postApiV2RateLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsInstancesSummaryRouteHandler: RouteHandler<
+  typeof getApiV2RateLimitsInstancesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsUsageRouteHandler: RouteHandler<
+  typeof getApiV2RateLimitsUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RateLimitsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RateLimitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsIdRouteHandler: RouteHandler<
+  typeof getApiV2RateLimitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RateLimitsIdRouteHandler: RouteHandler<
+  typeof patchApiV2RateLimitsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsIdInstancesRouteHandler: RouteHandler<
+  typeof getApiV2RateLimitsIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RateLimitsIdInstancesSummaryRouteHandler: RouteHandler<
+  typeof getApiV2RateLimitsIdInstancesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReferenceTablesQueriesBatchRowsRouteHandler: RouteHandler<
+  typeof postApiV2ReferenceTablesQueriesBatchRowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReferenceTablesTablesRouteHandler: RouteHandler<
+  typeof getApiV2ReferenceTablesTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReferenceTablesTablesRouteHandler: RouteHandler<
+  typeof postApiV2ReferenceTablesTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ReferenceTablesTablesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ReferenceTablesTablesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReferenceTablesTablesIdRouteHandler: RouteHandler<
+  typeof getApiV2ReferenceTablesTablesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ReferenceTablesTablesIdRouteHandler: RouteHandler<
+  typeof patchApiV2ReferenceTablesTablesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ReferenceTablesTablesIdRowsRouteHandler: RouteHandler<
+  typeof deleteApiV2ReferenceTablesTablesIdRowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReferenceTablesTablesIdRowsRouteHandler: RouteHandler<
+  typeof getApiV2ReferenceTablesTablesIdRowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReferenceTablesTablesIdRowsRouteHandler: RouteHandler<
+  typeof postApiV2ReferenceTablesTablesIdRowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReferenceTablesTablesIdRowsListRouteHandler: RouteHandler<
+  typeof getApiV2ReferenceTablesTablesIdRowsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReferenceTablesUploadsRouteHandler: RouteHandler<
+  typeof postApiV2ReferenceTablesUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafCustomRulesRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafCustomRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RemoteConfigProductsAsmWafCustomRulesRouteHandler: RouteHandler<
+  typeof postApiV2RemoteConfigProductsAsmWafCustomRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2RemoteConfigProductsAsmWafCustomRulesCustomRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafExclusionFiltersRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafExclusionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RemoteConfigProductsAsmWafExclusionFiltersRouteHandler: RouteHandler<
+  typeof postApiV2RemoteConfigProductsAsmWafExclusionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRouteHandler: RouteHandler<
+  typeof putApiV2RemoteConfigProductsAsmWafExclusionFiltersExclusionFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafPoliciesRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RemoteConfigProductsAsmWafPoliciesRouteHandler: RouteHandler<
+  typeof postApiV2RemoteConfigProductsAsmWafPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRouteHandler: RouteHandler<
+  typeof putApiV2RemoteConfigProductsAsmWafPoliciesPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsCwsAgentRulesRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsCwsAgentRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RemoteConfigProductsCwsAgentRulesRouteHandler: RouteHandler<
+  typeof postApiV2RemoteConfigProductsCwsAgentRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2RemoteConfigProductsCwsAgentRulesAgentRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsCwsPolicyRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsCwsPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RemoteConfigProductsCwsPolicyRouteHandler: RouteHandler<
+  typeof postApiV2RemoteConfigProductsCwsPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsCwsPolicyDownloadRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsCwsPolicyDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RemoteConfigProductsCwsPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsCwsPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RemoteConfigProductsCwsPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof patchApiV2RemoteConfigProductsCwsPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RemoteConfigProductsRumConfigsConfigIdRouteHandler: RouteHandler<
+  typeof getApiV2RemoteConfigProductsRumConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RemoteConfigProductsRumConfigsConfigIdRouteHandler: RouteHandler<
+  typeof putApiV2RemoteConfigProductsRumConfigsConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReplayHeatmapSnapshotsRouteHandler: RouteHandler<
+  typeof getApiV2ReplayHeatmapSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReplayHeatmapSnapshotsRouteHandler: RouteHandler<
+  typeof postApiV2ReplayHeatmapSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ReplayHeatmapSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ReplayHeatmapSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ReplayHeatmapSnapshotsSnapshotIdRouteHandler: RouteHandler<
+  typeof patchApiV2ReplayHeatmapSnapshotsSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReportingDatasetDatasetIdSchedulesRouteHandler: RouteHandler<
+  typeof getApiV2ReportingDatasetDatasetIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReportingPrintRouteHandler: RouteHandler<
+  typeof postApiV2ReportingPrintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ReportingScheduleRouteHandler: RouteHandler<
+  typeof postApiV2ReportingScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReportingScheduleListRouteHandler: RouteHandler<
+  typeof getApiV2ReportingScheduleListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReportingScheduleResourceTypeResourceIdRouteHandler: RouteHandler<
+  typeof getApiV2ReportingScheduleResourceTypeResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ReportingScheduleScheduleUuidRouteHandler: RouteHandler<
+  typeof deleteApiV2ReportingScheduleScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ReportingScheduleScheduleUuidRouteHandler: RouteHandler<
+  typeof getApiV2ReportingScheduleScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ReportingScheduleScheduleUuidRouteHandler: RouteHandler<
+  typeof patchApiV2ReportingScheduleScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ReportingScheduleScheduleUuidToggleRouteHandler: RouteHandler<
+  typeof patchApiV2ReportingScheduleScheduleUuidToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RestrictionPolicyResourceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RestrictionPolicyResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RestrictionPolicyResourceIdRouteHandler: RouteHandler<
+  typeof getApiV2RestrictionPolicyResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RestrictionPolicyResourceIdRouteHandler: RouteHandler<
+  typeof postApiV2RestrictionPolicyResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RolesRouteHandler: RouteHandler<typeof getApiV2RolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RolesRouteHandler: RouteHandler<typeof postApiV2RolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RolesTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2RolesTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RolesRoleIdRouteHandler: RouteHandler<
+  typeof getApiV2RolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RolesRoleIdRouteHandler: RouteHandler<
+  typeof patchApiV2RolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RolesRoleIdCloneRouteHandler: RouteHandler<
+  typeof postApiV2RolesRoleIdCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RolesRoleIdPermissionsRouteHandler: RouteHandler<
+  typeof deleteApiV2RolesRoleIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RolesRoleIdPermissionsRouteHandler: RouteHandler<
+  typeof getApiV2RolesRoleIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RolesRoleIdPermissionsRouteHandler: RouteHandler<
+  typeof postApiV2RolesRoleIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RolesRoleIdUsersRouteHandler: RouteHandler<
+  typeof deleteApiV2RolesRoleIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RolesRoleIdUsersRouteHandler: RouteHandler<
+  typeof getApiV2RolesRoleIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RolesRoleIdUsersRouteHandler: RouteHandler<
+  typeof postApiV2RolesRoleIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RoutingRulesRouteHandler: RouteHandler<
+  typeof deleteApiV2RoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RoutingRulesRouteHandler: RouteHandler<
+  typeof getApiV2RoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RoutingRulesRouteHandler: RouteHandler<
+  typeof postApiV2RoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RoutingRulesRouteHandler: RouteHandler<
+  typeof putApiV2RoutingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RoutingRulesGetRouteHandler: RouteHandler<
+  typeof getApiV2RoutingRulesGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumAnalyticsAggregateRouteHandler: RouteHandler<
+  typeof postApiV2RumAnalyticsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumApplicationsRouteHandler: RouteHandler<
+  typeof postApiV2RumApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumApplicationsAppIdRelationshipsRetentionFiltersRouteHandler: RouteHandler<
+  typeof patchApiV2RumApplicationsAppIdRelationshipsRetentionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumApplicationsAppIdRetentionFiltersRouteHandler: RouteHandler<
+  typeof postApiV2RumApplicationsAppIdRetentionFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersExclusionRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersExclusionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumApplicationsAppIdRetentionFiltersExclusionRouteHandler: RouteHandler<
+  typeof postApiV2RumApplicationsAppIdRetentionFiltersExclusionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumApplicationsAppIdRetentionFiltersExclusionEfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersPermanentRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersPermanentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumApplicationsAppIdRetentionFiltersPermanentPermanentRfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumApplicationsAppIdRetentionFiltersRfIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsAppIdRetentionFiltersRfIdRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumApplicationsAppIdRetentionFiltersRfIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumApplicationsAppIdRetentionFiltersRfIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumApplicationsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumApplicationsIdRouteHandler: RouteHandler<
+  typeof getApiV2RumApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumApplicationsIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigRouteHandler: RouteHandler<typeof getApiV2RumConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumConfigRouteHandler: RouteHandler<
+  typeof patchApiV2RumConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumConfigRouteHandler: RouteHandler<typeof postApiV2RumConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigArchiveRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumConfigArchiveAppIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumConfigArchiveAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigArchiveAppIdRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigArchiveAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumConfigArchiveAppIdRouteHandler: RouteHandler<
+  typeof putApiV2RumConfigArchiveAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigMetricsRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumConfigMetricsRouteHandler: RouteHandler<
+  typeof postApiV2RumConfigMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumConfigMetricsMetricIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumConfigMetricsMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumConfigRetentionQuotaScopeTypeScopeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigRetentionQuotaScopeTypeScopeIdRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumConfigRetentionQuotaScopeTypeScopeIdRouteHandler: RouteHandler<
+  typeof putApiV2RumConfigRetentionQuotaScopeTypeScopeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigTeamsOwnershipMappingsRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigTeamsOwnershipMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumConfigTeamsOwnershipMappingsRouteHandler: RouteHandler<
+  typeof postApiV2RumConfigTeamsOwnershipMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumConfigTeamsOwnershipMappingsOperationsRouteHandler: RouteHandler<
+  typeof postApiV2RumConfigTeamsOwnershipMappingsOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumConfigTeamsOwnershipMappingsIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumConfigTeamsOwnershipMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigTeamsOwnershipMappingsIdRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigTeamsOwnershipMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumConfigTeamsOwnershipRulesRouteHandler: RouteHandler<
+  typeof getApiV2RumConfigTeamsOwnershipRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumEventsRouteHandler: RouteHandler<typeof getApiV2RumEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2RumEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumOperationsRouteHandler: RouteHandler<
+  typeof postApiV2RumOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumOperationsByNameNameRouteHandler: RouteHandler<
+  typeof getApiV2RumOperationsByNameNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumOperationsSearchRouteHandler: RouteHandler<
+  typeof getApiV2RumOperationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumOperationsStrongLinksRouteHandler: RouteHandler<
+  typeof getApiV2RumOperationsStrongLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumOperationsStrongLinksRouteHandler: RouteHandler<
+  typeof postApiV2RumOperationsStrongLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRouteHandler: RouteHandler<
+  typeof putApiV2RumOperationsStrongLinksRumOperationIdFeatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumOperationsRumOperationIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumOperationsRumOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumOperationsRumOperationIdRouteHandler: RouteHandler<
+  typeof getApiV2RumOperationsRumOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumOperationsRumOperationIdRouteHandler: RouteHandler<
+  typeof putApiV2RumOperationsRumOperationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumQueryInsightAggregatedLongTasksRouteHandler: RouteHandler<
+  typeof postApiV2RumQueryInsightAggregatedLongTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumQueryInsightAggregatedWaterfallRouteHandler: RouteHandler<
+  typeof postApiV2RumQueryInsightAggregatedWaterfallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumRecoverCountRouteHandler: RouteHandler<
+  typeof postApiV2RumRecoverCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumRecoverRequestsRouteHandler: RouteHandler<
+  typeof getApiV2RumRecoverRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumRecoverRequestsRouteHandler: RouteHandler<
+  typeof postApiV2RumRecoverRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumRecoverRequestsRequestIdRouteHandler: RouteHandler<
+  typeof getApiV2RumRecoverRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2RumRecoverRequestsRequestIdRouteHandler: RouteHandler<
+  typeof patchApiV2RumRecoverRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumRecoverSessionsRouteHandler: RouteHandler<
+  typeof postApiV2RumRecoverSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplayPlaylistsRouteHandler: RouteHandler<
+  typeof getApiV2RumReplayPlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumReplayPlaylistsRouteHandler: RouteHandler<
+  typeof postApiV2RumReplayPlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumReplayPlaylistsPlaylistIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumReplayPlaylistsPlaylistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplayPlaylistsPlaylistIdRouteHandler: RouteHandler<
+  typeof getApiV2RumReplayPlaylistsPlaylistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumReplayPlaylistsPlaylistIdRouteHandler: RouteHandler<
+  typeof putApiV2RumReplayPlaylistsPlaylistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumReplayPlaylistsPlaylistIdSessionsRouteHandler: RouteHandler<
+  typeof deleteApiV2RumReplayPlaylistsPlaylistIdSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplayPlaylistsPlaylistIdSessionsRouteHandler: RouteHandler<
+  typeof getApiV2RumReplayPlaylistsPlaylistIdSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRouteHandler: RouteHandler<
+  typeof putApiV2RumReplayPlaylistsPlaylistIdSessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplaySessionsSessionIdViewsViewIdSegmentsRouteHandler: RouteHandler<
+  typeof getApiV2RumReplaySessionsSessionIdViewsViewIdSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplaySessionsSessionIdWatchersRouteHandler: RouteHandler<
+  typeof getApiV2RumReplaySessionsSessionIdWatchersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RumReplaySessionsSessionIdWatchesRouteHandler: RouteHandler<
+  typeof deleteApiV2RumReplaySessionsSessionIdWatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RumReplaySessionsSessionIdWatchesRouteHandler: RouteHandler<
+  typeof postApiV2RumReplaySessionsSessionIdWatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RumReplayViewershipHistorySessionsRouteHandler: RouteHandler<
+  typeof getApiV2RumReplayViewershipHistorySessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SamlConfigurationsRouteHandler: RouteHandler<
+  typeof getApiV2SamlConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SamlConfigurationsIdpMetadataRouteHandler: RouteHandler<
+  typeof postApiV2SamlConfigurationsIdpMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SamlConfigurationsSamlConfigUuidRouteHandler: RouteHandler<
+  typeof getApiV2SamlConfigurationsSamlConfigUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SamlConfigurationsSamlConfigUuidRouteHandler: RouteHandler<
+  typeof patchApiV2SamlConfigurationsSamlConfigUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardCampaignsRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ScorecardCampaignsRouteHandler: RouteHandler<
+  typeof postApiV2ScorecardCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ScorecardCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ScorecardCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ScorecardCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof putApiV2ScorecardCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardOutcomesRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ScorecardOutcomesRouteHandler: RouteHandler<
+  typeof postApiV2ScorecardOutcomesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ScorecardOutcomesBatchRouteHandler: RouteHandler<
+  typeof postApiV2ScorecardOutcomesBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardRulesRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ScorecardRulesRouteHandler: RouteHandler<
+  typeof postApiV2ScorecardRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ScorecardRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ScorecardRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2ScorecardRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2ScorecardRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardScorecardsRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardScorecardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ScorecardScoresAggregationRouteHandler: RouteHandler<
+  typeof getApiV2ScorecardScoresAggregationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SeatsUsersRouteHandler: RouteHandler<
+  typeof deleteApiV2SeatsUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SeatsUsersRouteHandler: RouteHandler<typeof getApiV2SeatsUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SeatsUsersRouteHandler: RouteHandler<
+  typeof postApiV2SeatsUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityEntitiesRiskScoresRouteHandler: RouteHandler<
+  typeof getApiV2SecurityEntitiesRiskScoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityEntitiesRiskScoresEntityIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityEntitiesRiskScoresEntityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityAsmServicesServiceFilterRouteHandler: RouteHandler<
+  typeof getApiV2SecurityAsmServicesServiceFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsAssigneeRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsAssigneeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationDefaultInboxRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationDefaultInboxRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdDisableRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdEnableRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationDefaultInboxRulesRuleIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationDueDateRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationDueDateRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationDueDateRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationDueDateRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationDueDateRulesReorderRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationDueDateRulesReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsAutomationDueDateRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationDueDateRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityFindingsAutomationDueDateRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityFindingsAutomationDueDateRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationInboxRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationInboxRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationInboxRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationInboxRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationInboxRulesReorderRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationInboxRulesReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsAutomationInboxRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationInboxRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityFindingsAutomationInboxRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityFindingsAutomationInboxRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationMuteRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationMuteRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationMuteRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationMuteRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationMuteRulesReorderRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationMuteRulesReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsAutomationMuteRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationMuteRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityFindingsAutomationMuteRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityFindingsAutomationMuteRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationSeverityModifierRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationSeverityModifierRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationSeverityModifierRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationSeverityModifierRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationSeverityModifierRulesReorderRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationSeverityModifierRulesReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityFindingsAutomationSeverityModifierRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationTicketCreationRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationTicketCreationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationTicketCreationRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationTicketCreationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsAutomationTicketCreationRulesReorderRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsAutomationTicketCreationRulesReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityFindingsAutomationTicketCreationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityFindingsCasesRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityFindingsCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsCasesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsCasesCaseIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsCasesCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsJiraIssuesRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsJiraIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsJiraIssuesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsJiraIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsLinearIssuesRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsLinearIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsLinearIssuesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsLinearIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsMuteRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsMuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsSearchRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsServicenowTicketsRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsServicenowTicketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityFindingsServicenowTicketsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityFindingsServicenowTicketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityFindingsSeverityRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityFindingsSeverityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityOwnershipResourceIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityOwnershipResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityOwnershipResourceIdHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SecurityOwnershipResourceIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityOwnershipResourceIdOwnerTypeRouteHandler: RouteHandler<
+  typeof getApiV2SecurityOwnershipResourceIdOwnerTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityOwnershipResourceIdOwnerTypeEvidenceRouteHandler: RouteHandler<
+  typeof getApiV2SecurityOwnershipResourceIdOwnerTypeEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityOwnershipResourceIdOwnerTypeFeedbackRouteHandler: RouteHandler<
+  typeof postApiV2SecurityOwnershipResourceIdOwnerTypeFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityOwnershipResourceIdOwnerTypeHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SecurityOwnershipResourceIdOwnerTypeHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityRemediationGroupsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityRemediationGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySbomsRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySbomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySbomsAssetTypeRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySbomsAssetTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityScannedAssetsMetadataRouteHandler: RouteHandler<
+  typeof getApiV2SecurityScannedAssetsMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySiemIocExplorerRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySiemIocExplorerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySiemIocExplorerIndicatorRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySiemIocExplorerIndicatorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecuritySiemIocExplorerTriageRouteHandler: RouteHandler<
+  typeof postApiV2SecuritySiemIocExplorerTriageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySignalsNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySignalsNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecuritySignalsNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecuritySignalsNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecuritySignalsNotificationRulesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecuritySignalsNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecuritySignalsNotificationRulesIdRouteHandler: RouteHandler<
+  typeof getApiV2SecuritySignalsNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecuritySignalsNotificationRulesIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecuritySignalsNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityThreatIntelStixRouteHandler: RouteHandler<
+  typeof postApiV2SecurityThreatIntelStixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityVulnerabilitiesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityVulnerabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityVulnerabilitiesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityVulnerabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityVulnerabilitiesNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityVulnerabilitiesNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityVulnerabilitiesNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityVulnerabilitiesNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityVulnerabilitiesNotificationRulesIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityVulnerabilitiesNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityVulnerabilitiesNotificationRulesIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityVulnerabilitiesNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityVulnerabilitiesNotificationRulesIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityVulnerabilitiesNotificationRulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityVulnerableAssetsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityVulnerableAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringBatchMigrationsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringBatchMigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringBatchMigrationsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringBatchMigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringBatchMigrationsBatchIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringBatchMigrationsBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringBatchMigrationsBatchIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringBatchMigrationsBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringBatchMigrationsBatchIdCancelRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringBatchMigrationsBatchIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringBatchMigrationsBatchIdPublishRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringBatchMigrationsBatchIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesResourceIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringBatchMigrationsBatchIdResourcesResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringBatchMigrationsBatchIdStartRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringBatchMigrationsBatchIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesAgentRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringCloudWorkloadSecurityAgentRulesAgentRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationCriticalAssetsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationCriticalAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationCriticalAssetsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationCriticalAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationCriticalAssetsRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationCriticalAssetsRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringConfigurationCriticalAssetsCriticalAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationIntegrationConfigRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationIntegrationConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationIntegrationConfigRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationIntegrationConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationIntegrationConfigEntraIdAzureAppRegistrationsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationIntegrationConfigEntraIdAzureAppRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationIntegrationConfigValidateRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationIntegrationConfigValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdValidateRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationConfigIdValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeActivateRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeDeactivateRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationIntegrationConfigIntegrationTypeDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationNotificationRulesSendNotificationPreviewRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationNotificationRulesSendNotificationPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSecurityFiltersRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSecurityFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationSecurityFiltersRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationSecurityFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSecurityFiltersVersionsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSecurityFiltersVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringConfigurationSecurityFiltersSecurityFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSuppressionsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSuppressionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationSuppressionsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationSuppressionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationSuppressionsRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationSuppressionsRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSuppressionsRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSuppressionsRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringConfigurationSuppressionsValidationRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringConfigurationSuppressionsValidationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdVersionHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringConfigurationSuppressionsSuppressionIdVersionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringContentPacksStatesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringContentPacksStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityMonitoringContentPacksContentPackIdActivateRouteHandler: RouteHandler<
+  typeof putApiV2SecurityMonitoringContentPacksContentPackIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityMonitoringContentPacksContentPackIdDeactivateRouteHandler: RouteHandler<
+  typeof putApiV2SecurityMonitoringContentPacksContentPackIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringDatasetsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringDatasetsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringDatasetsDependenciesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringDatasetsDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringDatasetsDatasetIdVersionVersionRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringDatasetsDatasetIdVersionVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringDatasetsDatasetIdVersionHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringDatasetsDatasetIdVersionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringEntityContextRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringEntityContextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringEntityContextRecentlyUpdatedRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringEntityContextRecentlyUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringEntityContextIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringEntityContextIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringEventsEventIdMatchingSignalsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringEventsEventIdMatchingSignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringRulesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringRulesBulkDeleteRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringRulesBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesBulkExportRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesBulkExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesConvertRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesConvertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesConvertBulkRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesConvertBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesProposalsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesProposalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringRulesProposalsProposalIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringRulesProposalsProposalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesTestRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesValidationRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesValidationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SecurityMonitoringRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2SecurityMonitoringRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringRulesRuleIdConvertRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringRulesRuleIdConvertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesRuleIdRestoreVersionRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesRuleIdRestoreVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringRulesRuleIdTestRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringRulesRuleIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringRulesRuleIdVersionHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringRulesRuleIdVersionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsBulkRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringSampleLogGenerationSubscriptionsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SecurityMonitoringSampleLogGenerationSubscriptionsContentPackIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SecurityMonitoringSampleLogGenerationSubscriptionsContentPackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSecurityAgentInvestigationsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSecurityAgentInvestigationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSecurityAgentInvestigationsCountRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSecurityAgentInvestigationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSecurityAgentInvestigationsInvestigationIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSecurityAgentInvestigationsInvestigationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSignalsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsBulkAssigneeRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsBulkAssigneeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsBulkStateRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsBulkStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsBulkUpdateRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsBulkUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringSignalsSearchRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringSignalsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSignalsSignalIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSignalsSignalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsSignalIdAssigneeRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsSignalIdAssigneeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSignalsSignalIdEntitiesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSignalsSignalIdEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsSignalIdIncidentsRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsSignalIdIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSignalsSignalIdInvestigationQueriesRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSignalsSignalIdInvestigationQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsSignalIdStateRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsSignalIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringSignalsSignalIdSuggestedActionsRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringSignalsSignalIdSuggestedActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SecurityMonitoringSignalsSignalIdUpdateRouteHandler: RouteHandler<
+  typeof patchApiV2SecurityMonitoringSignalsSignalIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringTerraformResourceTypeBulkRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringTerraformResourceTypeBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SecurityMonitoringTerraformResourceTypeConvertRouteHandler: RouteHandler<
+  typeof postApiV2SecurityMonitoringTerraformResourceTypeConvertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SecurityMonitoringTerraformResourceTypeResourceIdRouteHandler: RouteHandler<
+  typeof getApiV2SecurityMonitoringTerraformResourceTypeResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SensitiveDataScannerConfigRouteHandler: RouteHandler<
+  typeof getApiV2SensitiveDataScannerConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SensitiveDataScannerConfigRouteHandler: RouteHandler<
+  typeof patchApiV2SensitiveDataScannerConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SensitiveDataScannerConfigGroupsRouteHandler: RouteHandler<
+  typeof postApiV2SensitiveDataScannerConfigGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SensitiveDataScannerConfigGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SensitiveDataScannerConfigGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SensitiveDataScannerConfigGroupsGroupIdRouteHandler: RouteHandler<
+  typeof patchApiV2SensitiveDataScannerConfigGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SensitiveDataScannerConfigRulesRouteHandler: RouteHandler<
+  typeof postApiV2SensitiveDataScannerConfigRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SensitiveDataScannerConfigRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SensitiveDataScannerConfigRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SensitiveDataScannerConfigRulesRuleIdRouteHandler: RouteHandler<
+  typeof patchApiV2SensitiveDataScannerConfigRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SensitiveDataScannerConfigStandardPatternsRouteHandler: RouteHandler<
+  typeof getApiV2SensitiveDataScannerConfigStandardPatternsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SeriesRouteHandler: RouteHandler<typeof postApiV2SeriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ServiceAccountsRouteHandler: RouteHandler<
+  typeof postApiV2ServiceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServiceAccountsServiceAccountIdAccessTokensRouteHandler: RouteHandler<
+  typeof getApiV2ServiceAccountsServiceAccountIdAccessTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ServiceAccountsServiceAccountIdAccessTokensRouteHandler: RouteHandler<
+  typeof postApiV2ServiceAccountsServiceAccountIdAccessTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof getApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRouteHandler: RouteHandler<
+  typeof patchApiV2ServiceAccountsServiceAccountIdAccessTokensTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServiceAccountsServiceAccountIdApplicationKeysRouteHandler: RouteHandler<
+  typeof getApiV2ServiceAccountsServiceAccountIdApplicationKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ServiceAccountsServiceAccountIdApplicationKeysRouteHandler: RouteHandler<
+  typeof postApiV2ServiceAccountsServiceAccountIdApplicationKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof getApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRouteHandler: RouteHandler<
+  typeof patchApiV2ServiceAccountsServiceAccountIdApplicationKeysAppKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServicesDefinitionsRouteHandler: RouteHandler<
+  typeof getApiV2ServicesDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2ServicesDefinitionsRouteHandler: RouteHandler<
+  typeof postApiV2ServicesDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2ServicesDefinitionsServiceNameRouteHandler: RouteHandler<
+  typeof deleteApiV2ServicesDefinitionsServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ServicesDefinitionsServiceNameRouteHandler: RouteHandler<
+  typeof getApiV2ServicesDefinitionsServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SiemHistoricalDetectionsHistsignalsRouteHandler: RouteHandler<
+  typeof getApiV2SiemHistoricalDetectionsHistsignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SiemHistoricalDetectionsHistsignalsSearchRouteHandler: RouteHandler<
+  typeof postApiV2SiemHistoricalDetectionsHistsignalsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SiemHistoricalDetectionsHistsignalsHistsignalIdRouteHandler: RouteHandler<
+  typeof getApiV2SiemHistoricalDetectionsHistsignalsHistsignalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SiemHistoricalDetectionsJobsRouteHandler: RouteHandler<
+  typeof getApiV2SiemHistoricalDetectionsJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SiemHistoricalDetectionsJobsRouteHandler: RouteHandler<
+  typeof postApiV2SiemHistoricalDetectionsJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SiemHistoricalDetectionsJobsSignalConvertRouteHandler: RouteHandler<
+  typeof postApiV2SiemHistoricalDetectionsJobsSignalConvertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SiemHistoricalDetectionsJobsJobIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SiemHistoricalDetectionsJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SiemHistoricalDetectionsJobsJobIdRouteHandler: RouteHandler<
+  typeof getApiV2SiemHistoricalDetectionsJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SiemHistoricalDetectionsJobsJobIdCancelRouteHandler: RouteHandler<
+  typeof patchApiV2SiemHistoricalDetectionsJobsJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SiemHistoricalDetectionsJobsJobIdHistsignalsRouteHandler: RouteHandler<
+  typeof getApiV2SiemHistoricalDetectionsJobsJobIdHistsignalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SloReportRouteHandler: RouteHandler<typeof postApiV2SloReportRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SloReportReportIdDownloadRouteHandler: RouteHandler<
+  typeof getApiV2SloReportReportIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SloReportReportIdStatusRouteHandler: RouteHandler<
+  typeof getApiV2SloReportReportIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SloSloIdStatusRouteHandler: RouteHandler<
+  typeof getApiV2SloSloIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SnapshotRouteHandler: RouteHandler<typeof postApiV2SnapshotRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SourcemapsRouteHandler: RouteHandler<
+  typeof deleteApiV2SourcemapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SourcemapsRouteHandler: RouteHandler<typeof getApiV2SourcemapsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SourcemapsListRouteHandler: RouteHandler<
+  typeof getApiV2SourcemapsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SourcemapsRestoreRouteHandler: RouteHandler<
+  typeof patchApiV2SourcemapsRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SourcemapsServiceRepositoryInfoRouteHandler: RouteHandler<
+  typeof postApiV2SourcemapsServiceRepositoryInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SpansAnalyticsAggregateRouteHandler: RouteHandler<
+  typeof postApiV2SpansAnalyticsAggregateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SpansEventsRouteHandler: RouteHandler<
+  typeof getApiV2SpansEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SpansEventsSearchRouteHandler: RouteHandler<
+  typeof postApiV2SpansEventsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisScaDependenciesRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisScaDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisScaDependenciesScanRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisScaDependenciesScanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisScaDependenciesScanJobIdRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisScaDependenciesScanJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisScaLicensesListRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisScaLicensesListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisScaVulnerabilitiesResolveVulnerableSymbolsRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisScaVulnerabilitiesResolveVulnerableSymbolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiMemoryRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiMemoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisAiMemoryRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisAiMemoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StaticAnalysisAiMemoryIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StaticAnalysisAiMemoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiPromptsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiPromptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiRulesetsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisAiRulesetsRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisAiRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StaticAnalysisAiRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof deleteApiV2StaticAnalysisAiRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StaticAnalysisAiRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof patchApiV2StaticAnalysisAiRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRouteHandler: RouteHandler<
+  typeof deleteApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsIdRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisAiRulesetsRulesetNameRulesRuleNameRevisionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCodegenRulesetsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCodegenRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCustomRulesetsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCustomRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2StaticAnalysisCustomRulesetsRouteHandler: RouteHandler<
+  typeof putApiV2StaticAnalysisCustomRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCustomRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCustomRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StaticAnalysisCustomRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof patchApiV2StaticAnalysisCustomRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRouteHandler: RouteHandler<
+  typeof putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRouteHandler: RouteHandler<
+  typeof deleteApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRouteHandler: RouteHandler<
+  typeof putApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRevertRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsRevertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsIdRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisCustomRulesetsRulesetNameRulesRuleNameRevisionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisDefaultRulesetsLanguageRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisDefaultRulesetsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisRulesetsRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisRulesetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisRulesetsRulesetNameRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisRulesetsRulesetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisSecretsRulesRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisSecretsRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisStaticAnalysisServerAnalyzeRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisStaticAnalysisServerAnalyzeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StaticAnalysisStaticAnalysisServerGetAstRouteHandler: RouteHandler<
+  typeof postApiV2StaticAnalysisStaticAnalysisServerGetAstRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisStaticAnalysisServerNodeTypesLanguageRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisStaticAnalysisServerNodeTypesLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StaticAnalysisStaticAnalysisServerTreeSitterWasmFileRouteHandler: RouteHandler<
+  typeof getApiV2StaticAnalysisStaticAnalysisServerTreeSitterWasmFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesDegradationsRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesDegradationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesMaintenancesRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesMaintenancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdAccessPoliciesEmailRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdAccessPoliciesEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdAccessPoliciesEmailRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdAccessPoliciesEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdAccessPoliciesEmailPolicyIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdAccessPoliciesEmailPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdComponentsRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdComponentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdComponentsRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdComponentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdComponentsComponentIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdComponentsComponentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdComponentsComponentIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdComponentsComponentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdComponentsComponentIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdComponentsComponentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdDegradationTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdDegradationTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdDegradationTemplatesRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdDegradationTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdDegradationTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdDegradationsRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdDegradationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdDegradationsBackfillRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdDegradationsBackfillRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdDegradationsDegradationIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdDegradationsDegradationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdDegradationsDegradationIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdDegradationsDegradationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdDegradationsDegradationIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdDegradationsDegradationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdDegradationsDegradationIdUpdatesUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdMaintenanceTemplatesRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdMaintenanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdMaintenanceTemplatesRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdMaintenanceTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdMaintenanceTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdMaintenancesRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdMaintenancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdMaintenancesBackfillRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdMaintenancesBackfillRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatuspagesPageIdMaintenancesMaintenanceIdRouteHandler: RouteHandler<
+  typeof getApiV2StatuspagesPageIdMaintenancesMaintenanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdUpdatesUpdateIdRouteHandler: RouteHandler<
+  typeof patchApiV2StatuspagesPageIdMaintenancesMaintenanceIdUpdatesUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdPublishRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StatuspagesPageIdUnpublishRouteHandler: RouteHandler<
+  typeof postApiV2StatuspagesPageIdUnpublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2StegadographyGetWidgetsRouteHandler: RouteHandler<
+  typeof postApiV2StegadographyGetWidgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsApiMultistepSubtestsPublicIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsApiMultistepSubtestsPublicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsApiMultistepSubtestsPublicIdParentsRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsApiMultistepSubtestsPublicIdParentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsDowntimesRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsDowntimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsDowntimesRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsDowntimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SyntheticsDowntimesDowntimeIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SyntheticsDowntimesDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsDowntimesDowntimeIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsDowntimesDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SyntheticsDowntimesDowntimeIdRouteHandler: RouteHandler<
+  typeof putApiV2SyntheticsDowntimesDowntimeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRouteHandler: RouteHandler<
+  typeof deleteApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRouteHandler: RouteHandler<
+  typeof putApiV2SyntheticsDowntimesDowntimeIdTestsTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsSettingsOnDemandConcurrencyCapRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsSettingsOnDemandConcurrencyCapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsSettingsOnDemandConcurrencyCapRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsSettingsOnDemandConcurrencyCapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsSuitesRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsSuitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsSuitesBulkDeleteRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsSuitesBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsSuitesSearchRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsSuitesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsSuitesPublicIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsSuitesPublicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SyntheticsSuitesPublicIdRouteHandler: RouteHandler<
+  typeof putApiV2SyntheticsSuitesPublicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SyntheticsSuitesPublicIdJsonpatchRouteHandler: RouteHandler<
+  typeof patchApiV2SyntheticsSuitesPublicIdJsonpatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsBrowserPublicIdResultsRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsBrowserPublicIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsBrowserPublicIdResultsResultIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsBrowserPublicIdResultsResultIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsBulkDeleteRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsFastIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsFastIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsNetworkRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsNetworkPublicIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsNetworkPublicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2SyntheticsTestsNetworkPublicIdRouteHandler: RouteHandler<
+  typeof putApiV2SyntheticsTestsNetworkPublicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPollResultsRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPollResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsPublicIdFilesDownloadRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsPublicIdFilesDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsPublicIdFilesMultipartPresignedUrlsRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsPublicIdFilesMultipartPresignedUrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsPublicIdFilesMultipartUploadAbortRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsPublicIdFilesMultipartUploadAbortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2SyntheticsTestsPublicIdFilesMultipartUploadCompleteRouteHandler: RouteHandler<
+  typeof postApiV2SyntheticsTestsPublicIdFilesMultipartUploadCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPublicIdParentSuitesRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPublicIdParentSuitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPublicIdResultsRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPublicIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPublicIdResultsResultIdRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPublicIdResultsResultIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPublicIdVersionHistoryRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPublicIdVersionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SyntheticsTestsPublicIdVersionHistoryVersionNumberRouteHandler: RouteHandler<
+  typeof getApiV2SyntheticsTestsPublicIdVersionHistoryVersionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2SyntheticsVariablesVariableIdJsonpatchRouteHandler: RouteHandler<
+  typeof patchApiV2SyntheticsVariablesVariableIdJsonpatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TagsEnrichmentRouteHandler: RouteHandler<
+  typeof getApiV2TagsEnrichmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TagsEnrichmentRouteHandler: RouteHandler<
+  typeof postApiV2TagsEnrichmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TagsEnrichmentReorderRouteHandler: RouteHandler<
+  typeof postApiV2TagsEnrichmentReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TagsEnrichmentStatusRouteHandler: RouteHandler<
+  typeof getApiV2TagsEnrichmentStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TagsEnrichmentValidateQueryRouteHandler: RouteHandler<
+  typeof postApiV2TagsEnrichmentValidateQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TagsEnrichmentRulesetIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TagsEnrichmentRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TagsEnrichmentRulesetIdRouteHandler: RouteHandler<
+  typeof getApiV2TagsEnrichmentRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2TagsEnrichmentRulesetIdRouteHandler: RouteHandler<
+  typeof patchApiV2TagsEnrichmentRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamRouteHandler: RouteHandler<typeof getApiV2TeamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamRouteHandler: RouteHandler<typeof postApiV2TeamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamHierarchyLinksRouteHandler: RouteHandler<
+  typeof getApiV2TeamHierarchyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamHierarchyLinksRouteHandler: RouteHandler<
+  typeof postApiV2TeamHierarchyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamHierarchyLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamHierarchyLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamHierarchyLinksLinkIdRouteHandler: RouteHandler<
+  typeof getApiV2TeamHierarchyLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamConnectionsRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamConnectionsRouteHandler: RouteHandler<
+  typeof getApiV2TeamConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamConnectionsRouteHandler: RouteHandler<
+  typeof postApiV2TeamConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamSyncRouteHandler: RouteHandler<typeof getApiV2TeamSyncRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamSyncRouteHandler: RouteHandler<typeof postApiV2TeamSyncRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamSuperTeamIdMemberTeamsRouteHandler: RouteHandler<
+  typeof getApiV2TeamSuperTeamIdMemberTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamSuperTeamIdMemberTeamsRouteHandler: RouteHandler<
+  typeof postApiV2TeamSuperTeamIdMemberTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamSuperTeamIdMemberTeamsMemberTeamIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamSuperTeamIdMemberTeamsMemberTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamTeamIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdRouteHandler: RouteHandler<typeof getApiV2TeamTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2TeamTeamIdRouteHandler: RouteHandler<
+  typeof patchApiV2TeamTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdLinksRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamTeamIdLinksRouteHandler: RouteHandler<
+  typeof postApiV2TeamTeamIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamTeamIdLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamTeamIdLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdLinksLinkIdRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2TeamTeamIdLinksLinkIdRouteHandler: RouteHandler<
+  typeof patchApiV2TeamTeamIdLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdMembersRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdMembershipsRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamTeamIdMembershipsRouteHandler: RouteHandler<
+  typeof postApiV2TeamTeamIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamTeamIdMembershipsUserIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamTeamIdMembershipsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2TeamTeamIdMembershipsUserIdRouteHandler: RouteHandler<
+  typeof patchApiV2TeamTeamIdMembershipsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdNotificationRulesRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TeamTeamIdNotificationRulesRouteHandler: RouteHandler<
+  typeof postApiV2TeamTeamIdNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2TeamTeamIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteApiV2TeamTeamIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2TeamTeamIdNotificationRulesRuleIdRouteHandler: RouteHandler<
+  typeof putApiV2TeamTeamIdNotificationRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TeamTeamIdPermissionSettingsRouteHandler: RouteHandler<
+  typeof getApiV2TeamTeamIdPermissionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2TeamTeamIdPermissionSettingsActionRouteHandler: RouteHandler<
+  typeof putApiV2TeamTeamIdPermissionSettingsActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2TestFlakyTestManagementTestsRouteHandler: RouteHandler<
+  typeof patchApiV2TestFlakyTestManagementTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TestFlakyTestManagementTestsRouteHandler: RouteHandler<
+  typeof postApiV2TestFlakyTestManagementTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TimeseriesAnomalyInvestigationsRouteHandler: RouteHandler<
+  typeof postApiV2TimeseriesAnomalyInvestigationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TraceTraceIdRouteHandler: RouteHandler<
+  typeof getApiV2TraceTraceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageAdminTemporaryGrantRequestsRouteHandler: RouteHandler<
+  typeof getApiV2UsageAdminTemporaryGrantRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageAdminTemporaryGrantRequestsRequestIdRouteHandler: RouteHandler<
+  typeof getApiV2UsageAdminTemporaryGrantRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2UsageAdminTemporaryGrantRequestsRequestIdDecisionRouteHandler: RouteHandler<
+  typeof postApiV2UsageAdminTemporaryGrantRequestsRequestIdDecisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsageAdminTemporaryGrantRequestsRequestIdGrantRouteHandler: RouteHandler<
+  typeof deleteApiV2UsageAdminTemporaryGrantRequestsRequestIdGrantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageApplicationSecurityRouteHandler: RouteHandler<
+  typeof getApiV2UsageApplicationSecurityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageBillingDimensionMappingRouteHandler: RouteHandler<
+  typeof getApiV2UsageBillingDimensionMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageCostByOrgRouteHandler: RouteHandler<
+  typeof getApiV2UsageCostByOrgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageEstimatedCostRouteHandler: RouteHandler<
+  typeof getApiV2UsageEstimatedCostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageHistoricalCostRouteHandler: RouteHandler<
+  typeof getApiV2UsageHistoricalCostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageHourlyUsageRouteHandler: RouteHandler<
+  typeof getApiV2UsageHourlyUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageLambdaTracedInvocationsRouteHandler: RouteHandler<
+  typeof getApiV2UsageLambdaTracedInvocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageMonthlyResourcesRouteHandler: RouteHandler<
+  typeof getApiV2UsageMonthlyResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageObservabilityPipelinesRouteHandler: RouteHandler<
+  typeof getApiV2UsageObservabilityPipelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageProjectedCostRouteHandler: RouteHandler<
+  typeof getApiV2UsageProjectedCostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageQuotasQuotaNamespaceRouteHandler: RouteHandler<
+  typeof getApiV2UsageQuotasQuotaNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2UsageQuotasQuotaNamespaceRouteHandler: RouteHandler<
+  typeof postApiV2UsageQuotasQuotaNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsageQuotasQuotaNamespaceIdRouteHandler: RouteHandler<
+  typeof deleteApiV2UsageQuotasQuotaNamespaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageQuotasQuotaNamespaceIdRouteHandler: RouteHandler<
+  typeof getApiV2UsageQuotasQuotaNamespaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2UsageQuotasQuotaNamespaceIdRouteHandler: RouteHandler<
+  typeof patchApiV2UsageQuotasQuotaNamespaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsageQuotasQuotaNamespaceIdPendingRouteHandler: RouteHandler<
+  typeof deleteApiV2UsageQuotasQuotaNamespaceIdPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageSummaryAvailableFieldsRouteHandler: RouteHandler<
+  typeof getApiV2UsageSummaryAvailableFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageTemporaryGrantRequestsRouteHandler: RouteHandler<
+  typeof getApiV2UsageTemporaryGrantRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2UsageTemporaryGrantRequestsRouteHandler: RouteHandler<
+  typeof postApiV2UsageTemporaryGrantRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsageTemporaryGrantRequestsRequestIdRouteHandler: RouteHandler<
+  typeof deleteApiV2UsageTemporaryGrantRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageTemporaryGrantRequestsRequestIdRouteHandler: RouteHandler<
+  typeof getApiV2UsageTemporaryGrantRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsageUsageAttributionTypesRouteHandler: RouteHandler<
+  typeof getApiV2UsageUsageAttributionTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UserAuthorizedClientsRouteHandler: RouteHandler<
+  typeof getApiV2UserAuthorizedClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UserAuthorizedClientsClientClientIdRouteHandler: RouteHandler<
+  typeof deleteApiV2UserAuthorizedClientsClientClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UserAuthorizedClientsUserAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof deleteApiV2UserAuthorizedClientsUserAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UserAuthorizedClientsUserAuthorizedClientIdRouteHandler: RouteHandler<
+  typeof getApiV2UserAuthorizedClientsUserAuthorizedClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2UserInvitationsRouteHandler: RouteHandler<
+  typeof postApiV2UserInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UserInvitationsUserInvitationUuidRouteHandler: RouteHandler<
+  typeof getApiV2UserInvitationsUserInvitationUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersRouteHandler: RouteHandler<typeof getApiV2UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2UsersRouteHandler: RouteHandler<typeof postApiV2UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsersUserIdRouteHandler: RouteHandler<
+  typeof deleteApiV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersUserIdRouteHandler: RouteHandler<
+  typeof getApiV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2UsersUserIdRouteHandler: RouteHandler<
+  typeof patchApiV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersUserIdIdentityProvidersRouteHandler: RouteHandler<
+  typeof getApiV2UsersUserIdIdentityProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2UsersUserIdInvitationsRouteHandler: RouteHandler<
+  typeof deleteApiV2UsersUserIdInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersUserIdOrgsRouteHandler: RouteHandler<
+  typeof getApiV2UsersUserIdOrgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersUserIdPermissionsRouteHandler: RouteHandler<
+  typeof getApiV2UsersUserIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2UsersUserIdRelationshipsIdentityProvidersRouteHandler: RouteHandler<
+  typeof patchApiV2UsersUserIdRelationshipsIdentityProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2UsersUserUuidMembershipsRouteHandler: RouteHandler<
+  typeof getApiV2UsersUserUuidMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ValidateRouteHandler: RouteHandler<typeof getApiV2ValidateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ValidateKeysRouteHandler: RouteHandler<
+  typeof getApiV2ValidateKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WebIntegrationsIntegrationNameAccountsRouteHandler: RouteHandler<
+  typeof getApiV2WebIntegrationsIntegrationNameAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WebIntegrationsIntegrationNameAccountsRouteHandler: RouteHandler<
+  typeof postApiV2WebIntegrationsIntegrationNameAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WebIntegrationsIntegrationNameAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WebIntegrationsIntegrationNameAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2WebIntegrationsIntegrationNameAccountsAccountIdRouteHandler: RouteHandler<
+  typeof patchApiV2WebIntegrationsIntegrationNameAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WidgetsExperienceTypeRouteHandler: RouteHandler<
+  typeof getApiV2WidgetsExperienceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WidgetsExperienceTypeRouteHandler: RouteHandler<
+  typeof postApiV2WidgetsExperienceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WidgetsExperienceTypeUuidRouteHandler: RouteHandler<
+  typeof deleteApiV2WidgetsExperienceTypeUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WidgetsExperienceTypeUuidRouteHandler: RouteHandler<
+  typeof getApiV2WidgetsExperienceTypeUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2WidgetsExperienceTypeUuidRouteHandler: RouteHandler<
+  typeof putApiV2WidgetsExperienceTypeUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifAwsIntakeMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifAwsIntakeMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifAwsIntakeMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifAwsIntakeMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifAwsIntakeMappingIntakeMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifAwsIntakeMappingIntakeMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifAwsIntakeMappingIntakeMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifAwsIntakeMappingIntakeMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifAwsPersonaMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifAwsPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifAwsPersonaMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifAwsPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifAwsPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifAwsPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifAwsPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifAwsPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifGithubIntakeMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifGithubIntakeMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifGithubIntakeMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifGithubIntakeMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifGithubIntakeMappingIntakeMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifGithubIntakeMappingIntakeMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifGithubIntakeMappingIntakeMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifGithubIntakeMappingIntakeMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifGithubPersonaMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifGithubPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifGithubPersonaMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifGithubPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifGithubPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifGithubPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifGithubPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifGithubPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifOidcPersonaMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifOidcPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifOidcPersonaMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifOidcPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifOidcPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifOidcPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifOidcPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifOidcPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifOidcProviderRouteHandler: RouteHandler<
+  typeof getApiV2WifOidcProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifOidcProviderRouteHandler: RouteHandler<
+  typeof postApiV2WifOidcProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifOidcProviderProviderIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifOidcProviderProviderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifOidcProviderProviderIdRouteHandler: RouteHandler<
+  typeof getApiV2WifOidcProviderProviderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifTerraformPersonaMappingRouteHandler: RouteHandler<
+  typeof getApiV2WifTerraformPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WifTerraformPersonaMappingRouteHandler: RouteHandler<
+  typeof postApiV2WifTerraformPersonaMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WifTerraformPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WifTerraformPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WifTerraformPersonaMappingPersonaMappingIdRouteHandler: RouteHandler<
+  typeof getApiV2WifTerraformPersonaMappingPersonaMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WorkflowsRouteHandler: RouteHandler<typeof getApiV2WorkflowsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WorkflowsRouteHandler: RouteHandler<typeof postApiV2WorkflowsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2WorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof deleteApiV2WorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof getApiV2WorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiV2WorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof patchApiV2WorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WorkflowsWorkflowIdInstancesRouteHandler: RouteHandler<
+  typeof getApiV2WorkflowsWorkflowIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2WorkflowsWorkflowIdInstancesRouteHandler: RouteHandler<
+  typeof postApiV2WorkflowsWorkflowIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2WorkflowsWorkflowIdInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getApiV2WorkflowsWorkflowIdInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2WorkflowsWorkflowIdInstancesInstanceIdCancelRouteHandler: RouteHandler<
+  typeof putApiV2WorkflowsWorkflowIdInstancesInstanceIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

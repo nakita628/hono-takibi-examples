@@ -1,7 +1,20 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AdministratorSchema = z
+  .looseObject({})
+  .openapi({ description: 'Empty message representing an administrator.' })
+  .openapi('Administrator')
+
+const AnonymousUserSchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'Empty message representing an anonymous user or indicating the authenticated user should be anonymized.',
+  })
+  .openapi('AnonymousUser')
+
 const DeletedUserSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A user whose account has since been deleted.' })
   .openapi('DeletedUser')
 
@@ -23,43 +36,21 @@ const KnownUserSchema = z
   .openapi('KnownUser')
 
 const UnknownUserSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A user about whom nothing is currently known.' })
   .openapi('UnknownUser')
 
-type UserType = {
-  deletedUser?: z.infer<typeof DeletedUserSchema>
-  knownUser?: z.infer<typeof KnownUserSchema>
-  unknownUser?: z.infer<typeof UnknownUserSchema>
-}
-
-const AdministratorSchema = z
-  .object({})
-  .openapi({ description: 'Empty message representing an administrator.' })
-  .openapi('Administrator')
-
-const AnonymousUserSchema = z
-  .object({})
-  .openapi({
-    description:
-      'Empty message representing an anonymous user or indicating the authenticated user should be anonymized.',
+const UserSchema = z
+  .object({
+    deletedUser: DeletedUserSchema.exactOptional().openapi({
+      description: 'A user whose account has since been deleted.',
+    }),
+    knownUser: KnownUserSchema.exactOptional().openapi({ description: 'A known user.' }),
+    unknownUser: UnknownUserSchema.exactOptional().openapi({
+      description: 'A user about whom nothing is currently known.',
+    }),
   })
-  .openapi('AnonymousUser')
-
-const UserSchema: z.ZodType<UserType> = z
-  .lazy(() =>
-    z
-      .object({
-        deletedUser: DeletedUserSchema.exactOptional().openapi({
-          description: 'A user whose account has since been deleted.',
-        }),
-        knownUser: KnownUserSchema.exactOptional().openapi({ description: 'A known user.' }),
-        unknownUser: UnknownUserSchema.exactOptional().openapi({
-          description: 'A user about whom nothing is currently known.',
-        }),
-      })
-      .openapi({ description: 'Information about an end user.', required: [] }),
-  )
+  .openapi({ description: 'Information about an end user.', required: [] })
   .openapi('User')
 
 const ImpersonationSchema = z
@@ -233,7 +224,9 @@ const AppliedLabelChangeDetailSchema = z
   .openapi({ description: 'A change made to a Label on the Target.', required: [] })
   .openapi('AppliedLabelChangeDetail')
 
-const AppliedLabelChangeSchema = z
+type AppliedLabelChangeType = { changes?: z.infer<typeof AppliedLabelChangeDetailSchema>[] }
+
+const AppliedLabelChangeSchema: z.ZodType<AppliedLabelChangeType> = z
   .object({
     changes: z
       .array(AppliedLabelChangeDetailSchema)
@@ -337,7 +330,7 @@ const DriveReferenceSchema = z
   .openapi('DriveReference')
 
 const DriveFileSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'A Drive item which is a file.' })
   .openapi('DriveFile')
 
@@ -352,7 +345,7 @@ const DriveFolderSchema = z
   .openapi('DriveFolder')
 
 const FileSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'This item is deprecated; please see `DriveFile` instead.' })
   .openapi('File')
 
@@ -441,12 +434,12 @@ const CopySchema = z
   .openapi('Copy')
 
 const NewSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An object was created from scratch.' })
   .openapi('New')
 
 const UploadSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An object was uploaded into Drive.' })
   .openapi('Upload')
 
@@ -489,7 +482,7 @@ const DataLeakPreventionChangeSchema = z
   .openapi('DataLeakPreventionChange')
 
 const EditSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An empty message indicating an object was edited.' })
   .openapi('Edit')
 
@@ -508,7 +501,7 @@ const MoveSchema = z
   .openapi('Move')
 
 const AnyoneSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Represents any user (including a logged out user).' })
   .openapi('Anyone')
 
@@ -657,7 +650,22 @@ const SettingsChangeSchema = z
   .openapi({ description: 'Information about settings changes.', required: [] })
   .openapi('SettingsChange')
 
-const ActionDetailSchema = z
+type ActionDetailType = {
+  appliedLabelChange?: z.infer<typeof AppliedLabelChangeSchema>
+  comment?: z.infer<typeof CommentSchema>
+  create?: z.infer<typeof CreateSchema>
+  delete?: z.infer<typeof DeleteSchema>
+  dlpChange?: z.infer<typeof DataLeakPreventionChangeSchema>
+  edit?: z.infer<typeof EditSchema>
+  move?: z.infer<typeof MoveSchema>
+  permissionChange?: z.infer<typeof PermissionChangeSchema>
+  reference?: z.infer<typeof ApplicationReferenceSchema>
+  rename?: z.infer<typeof RenameSchema>
+  restore?: z.infer<typeof RestoreSchema>
+  settingsChange?: z.infer<typeof SettingsChangeSchema>
+}
+
+const ActionDetailSchema: z.ZodType<ActionDetailType> = z
   .object({
     appliedLabelChange: AppliedLabelChangeSchema.exactOptional().openapi({
       description: 'Label was changed.',
@@ -833,7 +841,15 @@ const TimeRangeSchema = z
   .openapi({ description: 'Information about time ranges.', required: [] })
   .openapi('TimeRange')
 
-const ActionSchema = z
+type ActionType = {
+  actor?: z.infer<typeof ActorSchema>
+  detail?: z.infer<typeof ActionDetailSchema>
+  target?: z.infer<typeof TargetSchema>
+  timeRange?: z.infer<typeof TimeRangeSchema>
+  timestamp?: string
+}
+
+const ActionSchema: z.ZodType<ActionType> = z
   .object({
     actor: ActorSchema.exactOptional().openapi({
       description:
@@ -857,36 +873,16 @@ const ActionSchema = z
   .openapi({ description: 'Information about the action.', required: [] })
   .openapi('Action')
 
-const LegacySchema = z
-  .object({})
-  .openapi({
-    description:
-      'A strategy that consolidates activities using the grouping rules from the legacy V1 Activity API. Similar actions occurring within a window of time can be grouped across multiple targets (such as moving a set of files at once) or multiple actors (such as several users editing the same item). Grouping rules for this strategy are specific to each type of action.',
-  })
-  .openapi('Legacy')
+type DriveActivityType = {
+  actions?: z.infer<typeof ActionSchema>[]
+  actors?: z.infer<typeof ActorSchema>[]
+  primaryActionDetail?: z.infer<typeof ActionDetailSchema>
+  targets?: z.infer<typeof TargetSchema>[]
+  timeRange?: z.infer<typeof TimeRangeSchema>
+  timestamp?: string
+}
 
-const NoConsolidationSchema = z
-  .object({})
-  .openapi({ description: 'A strategy that does no consolidation of individual activities.' })
-  .openapi('NoConsolidation')
-
-const ConsolidationStrategySchema = z
-  .object({
-    legacy: LegacySchema.exactOptional().openapi({
-      description: 'The individual activities are consolidated using the legacy strategy.',
-    }),
-    none: NoConsolidationSchema.exactOptional().openapi({
-      description: 'The individual activities are not consolidated.',
-    }),
-  })
-  .openapi({
-    description:
-      'How the individual activities are consolidated. If a set of activities is related they can be consolidated into one combined activity, such as one actor performing the same action on multiple targets, or multiple actors performing the same action on a single target. The strategy defines the rules for which activities are related.',
-    required: [],
-  })
-  .openapi('ConsolidationStrategy')
-
-const DriveActivitySchema = z
+const DriveActivitySchema: z.ZodType<DriveActivityType> = z
   .object({
     actions: z
       .array(ActionSchema)
@@ -921,6 +917,40 @@ const DriveActivitySchema = z
     required: [],
   })
   .openapi('DriveActivity')
+
+type QueryDriveActivityResponseType = {
+  activities?: z.infer<typeof DriveActivitySchema>[]
+  nextPageToken?: string
+}
+
+const LegacySchema = z
+  .looseObject({})
+  .openapi({
+    description:
+      'A strategy that consolidates activities using the grouping rules from the legacy V1 Activity API. Similar actions occurring within a window of time can be grouped across multiple targets (such as moving a set of files at once) or multiple actors (such as several users editing the same item). Grouping rules for this strategy are specific to each type of action.',
+  })
+  .openapi('Legacy')
+
+const NoConsolidationSchema = z
+  .looseObject({})
+  .openapi({ description: 'A strategy that does no consolidation of individual activities.' })
+  .openapi('NoConsolidation')
+
+const ConsolidationStrategySchema = z
+  .object({
+    legacy: LegacySchema.exactOptional().openapi({
+      description: 'The individual activities are consolidated using the legacy strategy.',
+    }),
+    none: NoConsolidationSchema.exactOptional().openapi({
+      description: 'The individual activities are not consolidated.',
+    }),
+  })
+  .openapi({
+    description:
+      'How the individual activities are consolidated. If a set of activities is related they can be consolidated into one combined activity, such as one actor performing the same action on multiple targets, or multiple actors performing the same action on a single target. The strategy defines the rules for which activities are related.',
+    required: [],
+  })
+  .openapi('ConsolidationStrategy')
 
 const QueryDriveActivityRequestSchema = z
   .object({
@@ -966,7 +996,7 @@ const QueryDriveActivityRequestSchema = z
   .openapi({ description: 'The request message for querying Drive activity.', required: [] })
   .openapi('QueryDriveActivityRequest')
 
-const QueryDriveActivityResponseSchema = z
+const QueryDriveActivityResponseSchema: z.ZodType<QueryDriveActivityResponseType> = z
   .object({
     activities: z
       .array(DriveActivitySchema)

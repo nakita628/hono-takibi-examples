@@ -1,4 +1,4 @@
-<h1 id="medusa-admin-api">Medusa Admin API v2.21.2</h1>
+<h1 id="medusa-admin-api">Medusa Admin API v2.23.0</h1>
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
@@ -1072,7 +1072,10 @@ Set the cookie session ID of an admin user. The admin must be previously authent
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -4627,7 +4630,8 @@ Retrieve a list of claims. The claims can be filtered by fields such as `id`. Th
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -4705,7 +4709,8 @@ Retrieve a list of claims. The claims can be filtered by fields such as `id`. Th
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -4719,7 +4724,8 @@ Retrieve a list of claims. The claims can be filtered by fields such as `id`. Th
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -4776,7 +4782,8 @@ Retrieve a list of claims. The claims can be filtered by fields such as `id`. Th
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -6113,7 +6120,8 @@ Create a claim. The claim is still in the request state, and the changes are onl
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -7971,7 +7979,8 @@ Create a claim. The claim is still in the request state, and the changes are onl
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -8049,7 +8058,8 @@ Create a claim. The claim is still in the request state, and the changes are onl
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -8063,7 +8073,8 @@ Create a claim. The claim is still in the request state, and the changes are onl
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -8120,7 +8131,8 @@ Create a claim. The claim is still in the request state, and the changes are onl
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -10991,7 +11003,8 @@ Retrieve a claim by its ID. You can expand the claim's relations or select the f
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -11069,7 +11082,8 @@ Retrieve a claim by its ID. You can expand the claim's relations or select the f
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -11083,7 +11097,8 @@ Retrieve a claim by its ID. You can expand the claim's relations or select the f
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -11140,7 +11155,8 @@ Retrieve a claim by its ID. You can expand the claim's relations or select the f
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -14025,7 +14041,8 @@ Cancel a claim and its associated return.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -14103,7 +14120,8 @@ Cancel a claim and its associated return.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -14117,7 +14135,8 @@ Cancel a claim and its associated return.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -14174,7 +14193,8 @@ Cancel a claim and its associated return.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -15467,7 +15487,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -15545,7 +15566,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -15559,7 +15581,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -15616,7 +15639,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -17664,7 +17688,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -17712,7 +17737,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -20102,7 +20128,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -20180,7 +20207,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -20194,7 +20222,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -20251,7 +20280,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -21393,7 +21423,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -21471,7 +21502,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -21485,7 +21517,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -21542,7 +21575,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -22711,7 +22745,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -22789,7 +22824,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -22803,7 +22839,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -22860,7 +22897,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -24886,7 +24924,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -24964,7 +25003,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -24978,7 +25018,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -25035,7 +25076,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -26933,7 +26975,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -27011,7 +27054,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -27025,7 +27069,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -27082,7 +27127,8 @@ Add order items to a claim as claim items. These claim items will have the actio
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -28352,7 +28398,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -28430,7 +28477,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -28444,7 +28492,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -28501,7 +28550,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -30549,7 +30599,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -30597,7 +30648,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -32987,7 +33039,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -33065,7 +33118,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -33079,7 +33133,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -33136,7 +33191,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -34278,7 +34334,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -34356,7 +34413,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -34370,7 +34428,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -34427,7 +34486,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -35596,7 +35656,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -35674,7 +35735,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -35688,7 +35750,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -35745,7 +35808,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -37771,7 +37835,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -37849,7 +37914,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -37863,7 +37929,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -37920,7 +37987,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -39818,7 +39886,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -39896,7 +39965,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -39910,7 +39980,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -39967,7 +40038,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -41212,7 +41284,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -41290,7 +41363,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -41304,7 +41378,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -41361,7 +41436,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -43409,7 +43485,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -43457,7 +43534,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -45847,7 +45925,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -45925,7 +46004,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -45939,7 +46019,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -45996,7 +46077,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -47138,7 +47220,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -47216,7 +47299,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -47230,7 +47314,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -47287,7 +47372,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -48456,7 +48542,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -48534,7 +48621,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -48548,7 +48636,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -48605,7 +48694,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -50631,7 +50721,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -50709,7 +50800,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -50723,7 +50815,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -50780,7 +50873,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -52678,7 +52772,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -52756,7 +52851,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -52770,7 +52866,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -52827,7 +52924,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -54106,7 +54204,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -54184,7 +54283,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -54198,7 +54298,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -54255,7 +54356,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -56303,7 +56405,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -56351,7 +56454,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -58741,7 +58845,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -58819,7 +58924,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -58833,7 +58939,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -58890,7 +58997,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -60032,7 +60140,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -60110,7 +60219,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -60124,7 +60234,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -60181,7 +60292,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -61350,7 +61462,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -61428,7 +61541,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -61442,7 +61556,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -61499,7 +61614,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -63525,7 +63641,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -63603,7 +63720,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -63617,7 +63735,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -63674,7 +63793,8 @@ Add inbound (or return) items to a claim. These inbound items will have a `RETUR
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -64095,7 +64215,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -64173,7 +64294,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -64187,7 +64309,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -64244,7 +64367,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -66292,7 +66416,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -66340,7 +66465,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -68730,7 +68856,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -68808,7 +68935,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -68822,7 +68950,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -68879,7 +69008,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -70021,7 +70151,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -70099,7 +70230,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -70113,7 +70245,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -70170,7 +70303,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -71339,7 +71473,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -71417,7 +71552,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -71431,7 +71567,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -71488,7 +71625,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -73514,7 +73652,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -73592,7 +73731,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -73606,7 +73746,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -73663,7 +73804,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -74062,7 +74204,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -74140,7 +74283,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -74154,7 +74298,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -74211,7 +74356,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -76259,7 +76405,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -76307,7 +76454,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -78697,7 +78845,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -78775,7 +78924,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -78789,7 +78939,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -78846,7 +78997,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -79988,7 +80140,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -80066,7 +80219,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -80080,7 +80234,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -80137,7 +80292,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -81306,7 +81462,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -81384,7 +81541,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -81398,7 +81556,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -81455,7 +81614,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -83481,7 +83641,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -83559,7 +83720,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -83573,7 +83735,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -83630,7 +83793,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -84051,7 +84215,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -84129,7 +84294,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -84143,7 +84309,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -84200,7 +84367,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -86248,7 +86416,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -86296,7 +86465,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -88686,7 +88856,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -88764,7 +88935,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -88778,7 +88950,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -88835,7 +89008,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -89977,7 +90151,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -90055,7 +90230,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -90069,7 +90245,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -90126,7 +90303,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -91295,7 +91473,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -91373,7 +91552,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -91387,7 +91567,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -91444,7 +91625,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -93470,7 +93652,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -93548,7 +93731,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -93562,7 +93746,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -93619,7 +93804,8 @@ Add an inbound (or return) shipping method to a claim. The inbound shipping meth
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -94043,7 +94229,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -94121,7 +94308,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -94135,7 +94323,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -94192,7 +94381,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -96240,7 +96430,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -96288,7 +96479,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -98678,7 +98870,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -98756,7 +98949,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -98770,7 +98964,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -98827,7 +99022,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -99969,7 +100165,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -100047,7 +100244,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -100061,7 +100259,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -100118,7 +100317,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -101287,7 +101487,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -101365,7 +101566,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -101379,7 +101581,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -101436,7 +101639,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -103462,7 +103666,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -103540,7 +103745,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -103554,7 +103760,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -103611,7 +103818,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -105509,7 +105717,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -105587,7 +105796,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -105601,7 +105811,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -105658,7 +105869,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -106903,7 +107115,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -106981,7 +107194,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -106995,7 +107209,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -107052,7 +107267,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -109100,7 +109316,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -109148,7 +109365,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -111538,7 +111756,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -111616,7 +111835,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -111630,7 +111850,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -111687,7 +111908,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -112829,7 +113051,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -112907,7 +113130,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -112921,7 +113145,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -112978,7 +113203,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -114147,7 +114373,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -114225,7 +114452,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -114239,7 +114467,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -114296,7 +114525,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -116322,7 +116552,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -116400,7 +116631,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -116414,7 +116646,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -116471,7 +116704,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -116907,7 +117141,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -116985,7 +117220,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -116999,7 +117235,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -117056,7 +117293,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -119104,7 +119342,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -119152,7 +119391,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -121542,7 +121782,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -121620,7 +121861,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -121634,7 +121876,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -121691,7 +121934,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -122833,7 +123077,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -122911,7 +123156,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -122925,7 +123171,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -122982,7 +123229,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -124151,7 +124399,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -124229,7 +124478,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -124243,7 +124493,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -124300,7 +124551,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -126326,7 +126578,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -126404,7 +126657,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -126418,7 +126672,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -126475,7 +126730,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -128373,7 +128629,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -128451,7 +128708,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -128465,7 +128723,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -128522,7 +128781,8 @@ Add outbound (or new) items to a claim. These outbound items will have an `ITEM_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -129792,7 +130052,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -129870,7 +130131,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -129884,7 +130146,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -129941,7 +130204,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -131989,7 +132253,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -132037,7 +132302,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -134427,7 +134693,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -134505,7 +134772,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -134519,7 +134787,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -134576,7 +134845,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -135718,7 +135988,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -135796,7 +136067,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -135810,7 +136082,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -135867,7 +136140,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -137036,7 +137310,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -137114,7 +137389,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -137128,7 +137404,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -137185,7 +137462,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -139211,7 +139489,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -139289,7 +139568,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -139303,7 +139583,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -139360,7 +139641,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -141258,7 +141540,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -141336,7 +141619,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -141350,7 +141634,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -141407,7 +141692,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -142652,7 +142938,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -142730,7 +143017,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -142744,7 +143032,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -142801,7 +143090,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -144849,7 +145139,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -144897,7 +145188,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -147287,7 +147579,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -147365,7 +147658,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -147379,7 +147673,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -147436,7 +147731,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -148578,7 +148874,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -148656,7 +148953,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -148670,7 +148968,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -148727,7 +149026,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -149896,7 +150196,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -149974,7 +150275,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -149988,7 +150290,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -150045,7 +150348,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -152071,7 +152375,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -152149,7 +152454,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -152163,7 +152469,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -152220,7 +152527,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -154118,7 +154426,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -154196,7 +154505,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -154210,7 +154520,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -154267,7 +154578,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -155540,7 +155852,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -155618,7 +155931,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -155632,7 +155946,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -155689,7 +156004,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -157737,7 +158053,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -157785,7 +158102,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -160175,7 +160493,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -160253,7 +160572,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -160267,7 +160587,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -160324,7 +160645,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -161466,7 +161788,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -161544,7 +161867,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -161558,7 +161882,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -161615,7 +161940,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -162784,7 +163110,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -162862,7 +163189,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -162876,7 +163204,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -162933,7 +163262,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -164959,7 +165289,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -165037,7 +165368,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -165051,7 +165383,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -165108,7 +165441,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -167006,7 +167340,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -167084,7 +167419,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -167098,7 +167434,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -167155,7 +167492,8 @@ Add an outbound shipping method to a claim. The outbound shipping method will ha
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -168425,7 +168763,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -168503,7 +168842,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -168517,7 +168857,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -168574,7 +168915,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -170622,7 +170964,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -170670,7 +171013,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -173060,7 +173404,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -173138,7 +173483,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -173152,7 +173498,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -173209,7 +173556,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -174351,7 +174699,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -174429,7 +174778,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -174443,7 +174793,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -174500,7 +174851,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -175669,7 +176021,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -175747,7 +176100,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -175761,7 +176115,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -175818,7 +176173,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -177844,7 +178200,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -177922,7 +178279,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -177936,7 +178294,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -177993,7 +178352,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -179891,7 +180251,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -179969,7 +180330,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -179983,7 +180345,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -180040,7 +180403,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -181285,7 +181649,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -181363,7 +181728,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -181377,7 +181743,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -181434,7 +181801,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -183482,7 +183850,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -183530,7 +183899,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -185920,7 +186290,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -185998,7 +186369,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -186012,7 +186384,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -186069,7 +186442,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -187211,7 +187585,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -187289,7 +187664,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -187303,7 +187679,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -187360,7 +187737,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -188529,7 +188907,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -188607,7 +188986,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -188621,7 +189001,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -188678,7 +189059,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -190704,7 +191086,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -190782,7 +191165,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -190796,7 +191180,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -190853,7 +191238,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -192751,7 +193137,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -192829,7 +193216,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -192843,7 +193231,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -192900,7 +193289,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -194176,7 +194566,8 @@ Confirm a claim request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -194254,7 +194645,8 @@ Confirm a claim request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -194268,7 +194660,8 @@ Confirm a claim request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -194325,7 +194718,8 @@ Confirm a claim request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -196373,7 +196767,8 @@ Confirm a claim request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -196421,7 +196816,8 @@ Confirm a claim request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -198811,7 +199207,8 @@ Confirm a claim request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -198889,7 +199286,8 @@ Confirm a claim request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -198903,7 +199301,8 @@ Confirm a claim request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -198960,7 +199359,8 @@ Confirm a claim request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -200102,7 +200502,8 @@ Confirm a claim request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -200180,7 +200581,8 @@ Confirm a claim request, applying its changes on the associated order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -200194,7 +200596,8 @@ Confirm a claim request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -200251,7 +200654,8 @@ Confirm a claim request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -201420,7 +201824,8 @@ Confirm a claim request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -201498,7 +201903,8 @@ Confirm a claim request, applying its changes on the associated order.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -201512,7 +201918,8 @@ Confirm a claim request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -201569,7 +201976,8 @@ Confirm a claim request, applying its changes on the associated order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -203595,7 +204003,8 @@ Confirm a claim request, applying its changes on the associated order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -203673,7 +204082,8 @@ Confirm a claim request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -203687,7 +204097,8 @@ Confirm a claim request, applying its changes on the associated order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -203744,7 +204155,8 @@ Confirm a claim request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -205642,7 +206054,8 @@ Confirm a claim request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -205720,7 +206133,8 @@ Confirm a claim request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -205734,7 +206148,8 @@ Confirm a claim request, applying its changes on the associated order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -205791,7 +206206,8 @@ Confirm a claim request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -209695,56 +210111,58 @@ Retrieve a list of customers. The customers can be filtered by fields such as `i
   "limit": 0,
   "offset": 0,
   "count": 0,
-  "customers": {
-    "id": "string",
-    "has_account": true,
-    "groups": [
-      {
-        "id": "string",
-        "name": "string",
-        "customers": [
-          {}
-        ],
-        "metadata": {},
-        "created_at": "1970-01-01T00:00:00Z",
-        "updated_at": "1970-01-01T00:00:00Z"
-      }
-    ],
-    "email": "user@example.com",
-    "default_billing_address_id": "string",
-    "default_shipping_address_id": "string",
-    "company_name": "string",
-    "first_name": "string",
-    "last_name": "string",
-    "addresses": [
-      {
-        "id": "string",
-        "address_name": "string",
-        "is_default_shipping": true,
-        "is_default_billing": true,
-        "customer_id": "string",
-        "company": "string",
-        "first_name": "string",
-        "last_name": "string",
-        "address_1": "string",
-        "address_2": "string",
-        "city": "string",
-        "country_code": "us",
-        "province": "us-ca",
-        "postal_code": "string",
-        "phone": "string",
-        "metadata": {},
-        "created_at": "1970-01-01T00:00:00Z",
-        "updated_at": "1970-01-01T00:00:00Z"
-      }
-    ],
-    "phone": "string",
-    "metadata": {},
-    "created_by": "string",
-    "created_at": "1970-01-01T00:00:00Z",
-    "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
-  }
+  "customers": [
+    {
+      "id": "string",
+      "has_account": true,
+      "groups": [
+        {
+          "id": "string",
+          "name": "string",
+          "customers": [
+            {}
+          ],
+          "metadata": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "email": "user@example.com",
+      "default_billing_address_id": "string",
+      "default_shipping_address_id": "string",
+      "company_name": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "addresses": [
+        {
+          "id": "string",
+          "address_name": "string",
+          "is_default_shipping": true,
+          "is_default_billing": true,
+          "customer_id": "string",
+          "company": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "address_1": "string",
+          "address_2": "string",
+          "city": "string",
+          "country_code": "us",
+          "province": "us-ca",
+          "postal_code": "string",
+          "phone": "string",
+          "metadata": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "phone": "string",
+      "metadata": {},
+      "created_by": "string",
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "deleted_at": "1970-01-01T00:00:00Z"
+    }
+  ]
 }
 ```
 
@@ -209817,7 +210235,7 @@ Status Code **200**
 |limit|number|true|none|The maximum number of items returned in the list.|
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
-|customers|[AdminCustomer](#schemaadmincustomer)|true|none|The customer's details.|
+|customers|[[AdminCustomer](#schemaadmincustomer)]|true|none|The list of customers.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -209991,6 +210409,153 @@ Create a customer.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[AdminCustomerResponse](#schemaadmincustomerresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, cookie_auth, jwt_token
+</aside>
+
+## Export Customers
+
+<a id="opIdPostCustomersExport"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/customers/export \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "format": "csv",
+    "batch_size": "string"
+  }'
+```
+
+`POST /admin/customers/export`
+
+Start a customer export process to retrieve a file of exported customers. Use the query parameters to filter the exported customers and select the fields to include.
+
+You'll receive in the response the transaction ID of the workflow generating the file. To check the status of the execution, send a GET request to `/admin/workflows-executions/export-customers/:transaction-id`.
+
+Once the execution finishes successfully, a notification is created for the export. You can retrieve the notifications using the `/admin/notification` API route to retrieve the file's download URL.
+
+
+> Body parameter
+
+```json
+{
+  "format": "csv",
+  "batch_size": "string"
+}
+```
+
+<h3 id="export-customers-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|groups|query|string \| [CustomerGroupInCustomerFilters](#schemacustomergroupincustomerfilters) \| [string]|false|none|
+|has_account|query|boolean|false|Filter by whether the customer is registered.|
+|q|query|string|false|Search term to filter the customer's searchable properties by.|
+|id|query|string \| [string] \| object|false|none|
+|email|query|string(email) \| [string(email)] \| object|false|none|
+|company_name|query|string \| [string] \| object|false|none|
+|first_name|query|string \| [string] \| object|false|none|
+|last_name|query|string \| [string] \| object|false|none|
+|created_by|query|string \| [string] \| object|false|none|
+|created_at|query|object|false|Filter by the customer's creation date.|
+|updated_at|query|object|false|Filter by the customer's update date.|
+|deleted_at|query|object|false|Filter by the customer's deletion date.|
+|limit|query|number|false|Limit the number of items returned in the list.|
+|offset|query|number|false|The number of items to skip when retrieving a list.|
+|order|query|string|false|The field to sort the data by. By default, the sort order is ascending. To change the order to descending, prefix the field name with `-`.|
+|with_deleted|query|boolean|false|Whether to include deleted records in the result.|
+|fields|query|string|false|Comma-separated fields that should be included in the returned data. If a field is prefixed with `+` it will be added to the default fields, using `-` will remove it from the default fields. Without prefix it will replace the entire default fields.|
+|$and|query|[object]|false|Join query parameters with an AND condition. Each object's content is the same type as the expected query parameters.|
+|$or|query|[object]|false|Join query parameters with an OR condition. Each object's content is the same type as the expected query parameters.|
+|body|body|[AdminExportCustomerRequest](#schemaadminexportcustomerrequest)|false|none|
+|» format|body|string|false|The format of the exported file. Defaults to `json`.|
+|» batch_size|body|string \| number|false|none|
+|» » *oneOf*|body|string|false|The number of customers to retrieve in each batch while generating the export.|
+|» » *oneOf*|body|number|false|The number of customers to retrieve in each batch while generating the export.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» format|csv|
+|» format|json|
+
+> Example responses
+
+> 202 Response
+
+```json
+{
+  "transaction_id": "string"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="export-customers-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|202|Accepted|OK|[AdminExportCustomerResponse](#schemaadminexportcustomerresponse)|
 |400|Bad Request|Client Error|[Error](#schemaerror)|
 |401|Unauthorized|User is not authorized. Must log in first|Inline|
 |404|Not Found|Not Found Error|[Error](#schemaerror)|
@@ -211576,7 +212141,8 @@ Retrieve a list of draft orders. The draft orders can be filtered by fields such
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -211654,7 +212220,8 @@ Retrieve a list of draft orders. The draft orders can be filtered by fields such
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -211668,7 +212235,8 @@ Retrieve a list of draft orders. The draft orders can be filtered by fields such
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -211725,7 +212293,8 @@ Retrieve a list of draft orders. The draft orders can be filtered by fields such
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -212865,32 +213434,8 @@ curl http://localhost:9000/admin/draft-orders \
     "sales_channel_id": "string",
     "email": "user@example.com",
     "customer_id": "string",
-    "billing_address": {
-      "first_name": "string",
-      "last_name": "string",
-      "phone": "string",
-      "company": "string",
-      "address_1": "string",
-      "address_2": "string",
-      "city": "string",
-      "country_code": "string",
-      "province": "us-ca",
-      "postal_code": "string",
-      "metadata": {}
-    },
-    "shipping_address": {
-      "first_name": "string",
-      "last_name": "string",
-      "phone": "string",
-      "company": "string",
-      "address_1": "string",
-      "address_2": "string",
-      "city": "string",
-      "country_code": "string",
-      "province": "us-ca",
-      "postal_code": "string",
-      "metadata": {}
-    },
+    "billing_address": "string",
+    "shipping_address": "string",
     "items": [
       {
         "title": "string",
@@ -212934,32 +213479,8 @@ Create a draft order. This creates an order with the `is_draft_order` property e
   "sales_channel_id": "string",
   "email": "user@example.com",
   "customer_id": "string",
-  "billing_address": {
-    "first_name": "string",
-    "last_name": "string",
-    "phone": "string",
-    "company": "string",
-    "address_1": "string",
-    "address_2": "string",
-    "city": "string",
-    "country_code": "string",
-    "province": "us-ca",
-    "postal_code": "string",
-    "metadata": {}
-  },
-  "shipping_address": {
-    "first_name": "string",
-    "last_name": "string",
-    "phone": "string",
-    "company": "string",
-    "address_1": "string",
-    "address_2": "string",
-    "city": "string",
-    "country_code": "string",
-    "province": "us-ca",
-    "postal_code": "string",
-    "metadata": {}
-  },
+  "billing_address": "string",
+  "shipping_address": "string",
   "items": [
     {
       "title": "string",
@@ -213001,30 +213522,12 @@ Create a draft order. This creates an order with the `is_draft_order` property e
 |» sales_channel_id|body|string|true|The ID of the associated sales channel.|
 |» email|body|string(email)|true|The email of the draft order's customer.|
 |» customer_id|body|string|true|The ID of the draft order's customer.|
-|» billing_address|body|object|false|The billing address's details.|
-|» » first_name|body|string|true|The billing address's first name.|
-|» » last_name|body|string|true|The billing address's last name.|
-|» » phone|body|string|true|The billing address's phone.|
-|» » company|body|string|true|The billing address's company.|
-|» » address_1|body|string|true|The billing address's first line.|
-|» » address_2|body|string|true|The billing address's second line.|
-|» » city|body|string|true|The billing address's city.|
-|» » country_code|body|string|true|The billing address's country code.|
-|» » province|body|string|true|The billing address's ISO 3166-2 province code. Must be lower-case.|
-|» » postal_code|body|string|true|The billing address's postal code.|
-|» » metadata|body|object|true|The billing address's metadata.|
-|» shipping_address|body|object|false|The draft order's shipping address.|
-|» » first_name|body|string|true|The shipping address's first name.|
-|» » last_name|body|string|true|The shipping address's last name.|
-|» » phone|body|string|true|The shipping address's phone.|
-|» » company|body|string|true|The shipping address's company.|
-|» » address_1|body|string|true|The shipping address's first line.|
-|» » address_2|body|string|true|The shipping address's second line.|
-|» » city|body|string|true|The shipping address's city.|
-|» » country_code|body|string|true|The shipping address's country code.|
-|» » province|body|string|true|The shipping address's ISO 3166-2 province code. Must be lower-case.|
-|» » postal_code|body|string|true|The shipping address's postal code.|
-|» » metadata|body|object|true|The shipping address's metadata.|
+|» billing_address|body|string \| [OrderAddress](#schemaorderaddress)|false|none|
+|» » *oneOf*|body|string|false|The draft order's billing address.|
+|» » *oneOf*|body|[OrderAddress](#schemaorderaddress)|false|The address's details.|
+|» shipping_address|body|string \| [OrderAddress](#schemaorderaddress)|false|none|
+|» » *oneOf*|body|string|false|The draft order's shipping address.|
+|» » *oneOf*|body|[OrderAddress](#schemaorderaddress)|false|The address's details.|
 |» items|body|[object]|false|The draft order's items.|
 |» » title|body|string|true|The item's title.|
 |» » sku|body|string|true|The item's SKU.|
@@ -213142,7 +213645,8 @@ Create a draft order. This creates an order with the `is_draft_order` property e
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -213220,7 +213724,8 @@ Create a draft order. This creates an order with the `is_draft_order` property e
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -213234,7 +213739,8 @@ Create a draft order. This creates an order with the `is_draft_order` property e
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -213291,7 +213797,8 @@ Create a draft order. This creates an order with the `is_draft_order` property e
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -214515,7 +215022,8 @@ Retrieve a draft order by its ID. You can expand the draft order's relations or 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -214593,7 +215101,8 @@ Retrieve a draft order by its ID. You can expand the draft order's relations or 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -214607,7 +215116,8 @@ Retrieve a draft order by its ID. You can expand the draft order's relations or 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -214664,7 +215174,8 @@ Retrieve a draft order by its ID. You can expand the draft order's relations or 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -215985,7 +216496,8 @@ Update a draft order's details. This doesn't include updating the draft order's 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -216063,7 +216575,8 @@ Update a draft order's details. This doesn't include updating the draft order's 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -216077,7 +216590,8 @@ Update a draft order's details. This doesn't include updating the draft order's 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -216134,7 +216648,8 @@ Update a draft order's details. This doesn't include updating the draft order's 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -217462,7 +217977,8 @@ Convert a draft order to an order. This will finalize the draft order and create
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -217540,7 +218056,8 @@ Convert a draft order to an order. This will finalize the draft order and create
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -217554,7 +218071,8 @@ Convert a draft order to an order. This will finalize the draft order and create
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -217611,7 +218129,8 @@ Convert a draft order to an order. This will finalize the draft order and create
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -219595,7 +220114,8 @@ Add promotions to a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -219673,7 +220193,8 @@ Add promotions to a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -219687,7 +220208,8 @@ Add promotions to a draft order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -219744,7 +220266,8 @@ Add promotions to a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -221792,7 +222315,8 @@ Add promotions to a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -221840,7 +222364,8 @@ Add promotions to a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -224230,7 +224755,8 @@ Add promotions to a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -224308,7 +224834,8 @@ Add promotions to a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -224322,7 +224849,8 @@ Add promotions to a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -224379,7 +224907,8 @@ Add promotions to a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -225521,7 +226050,8 @@ Add promotions to a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -225599,7 +226129,8 @@ Add promotions to a draft order edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -225613,7 +226144,8 @@ Add promotions to a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -225670,7 +226202,8 @@ Add promotions to a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -226839,7 +227372,8 @@ Add promotions to a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -226917,7 +227451,8 @@ Add promotions to a draft order edit.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -226931,7 +227466,8 @@ Add promotions to a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -226988,7 +227524,8 @@ Add promotions to a draft order edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -229014,7 +229551,8 @@ Add promotions to a draft order edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -229092,7 +229630,8 @@ Add promotions to a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -229106,7 +229645,8 @@ Add promotions to a draft order edit.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -229163,7 +229703,8 @@ Add promotions to a draft order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -229545,7 +230086,8 @@ Remove specified promotions from a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -229623,7 +230165,8 @@ Remove specified promotions from a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -229637,7 +230180,8 @@ Remove specified promotions from a draft order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -229694,7 +230238,8 @@ Remove specified promotions from a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -231742,7 +232287,8 @@ Remove specified promotions from a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -231790,7 +232336,8 @@ Remove specified promotions from a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -234180,7 +234727,8 @@ Remove specified promotions from a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -234258,7 +234806,8 @@ Remove specified promotions from a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -234272,7 +234821,8 @@ Remove specified promotions from a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -234329,7 +234879,8 @@ Remove specified promotions from a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -235471,7 +236022,8 @@ Remove specified promotions from a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -235549,7 +236101,8 @@ Remove specified promotions from a draft order edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -235563,7 +236116,8 @@ Remove specified promotions from a draft order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -235620,7 +236174,8 @@ Remove specified promotions from a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -236789,7 +237344,8 @@ Remove specified promotions from a draft order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -236867,7 +237423,8 @@ Remove specified promotions from a draft order edit.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -236881,7 +237438,8 @@ Remove specified promotions from a draft order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -236938,7 +237496,8 @@ Remove specified promotions from a draft order edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -238964,7 +239523,8 @@ Remove specified promotions from a draft order edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -239042,7 +239602,8 @@ Remove specified promotions from a draft order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -239056,7 +239617,8 @@ Remove specified promotions from a draft order edit.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -239113,7 +239675,8 @@ Remove specified promotions from a draft order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -241002,7 +241565,8 @@ Retrieve a list of exchanges. The exchanges can be filtered by fields such as `i
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -241050,7 +241614,8 @@ Retrieve a list of exchanges. The exchanges can be filtered by fields such as `i
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -241995,7 +242560,8 @@ Create an exchange request. Its changes aren't applied on the order until the ex
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -243103,7 +243669,8 @@ Create an exchange request. Its changes aren't applied on the order until the ex
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -243151,7 +243718,8 @@ Create an exchange request. Its changes aren't applied on the order until the ex
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -244888,7 +245456,8 @@ Retrieve an exchange by its ID. You can expand the exchange's relations or selec
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -244936,7 +245505,8 @@ Retrieve an exchange by its ID. You can expand the exchange's relations or selec
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -246687,7 +247257,8 @@ Cancel an exchange and its associated return.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -246735,7 +247306,8 @@ Cancel an exchange and its associated return.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -247633,7 +248205,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -247711,7 +248284,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -247725,7 +248299,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -247782,7 +248357,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -249830,7 +250406,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -249878,7 +250455,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -252268,7 +252846,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -252346,7 +252925,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -252360,7 +252940,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -252417,7 +252998,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -253559,7 +254141,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -253637,7 +254220,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -253651,7 +254235,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -253708,7 +254293,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -254877,7 +255463,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -254955,7 +255542,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -254969,7 +255557,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -255026,7 +255615,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -257052,7 +257642,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -257130,7 +257721,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -257144,7 +257736,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -257201,7 +257794,8 @@ Add inbound (or return) items to an exchange. These inbound items will have the 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -257622,7 +258216,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -257700,7 +258295,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -257714,7 +258310,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -257771,7 +258368,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -259819,7 +260417,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -259867,7 +260466,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -262257,7 +262857,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -262335,7 +262936,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -262349,7 +262951,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -262406,7 +263009,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -263548,7 +264152,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -263626,7 +264231,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -263640,7 +264246,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -263697,7 +264304,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -264866,7 +265474,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -264944,7 +265553,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -264958,7 +265568,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -265015,7 +265626,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -267041,7 +267653,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -267119,7 +267732,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -267133,7 +267747,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -267190,7 +267805,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -267589,7 +268205,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -267667,7 +268284,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -267681,7 +268299,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -267738,7 +268357,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -269786,7 +270406,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -269834,7 +270455,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -272224,7 +272846,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -272302,7 +272925,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -272316,7 +272940,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -272373,7 +272998,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -273515,7 +274141,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -273593,7 +274220,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -273607,7 +274235,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -273664,7 +274293,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -274833,7 +275463,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -274911,7 +275542,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -274925,7 +275557,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -274982,7 +275615,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -277008,7 +277642,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -277086,7 +277721,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -277100,7 +277736,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -277157,7 +277794,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -277577,7 +278215,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -277655,7 +278294,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -277669,7 +278309,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -277726,7 +278367,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -279774,7 +280416,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -279822,7 +280465,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -282212,7 +282856,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -282290,7 +282935,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -282304,7 +282950,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -282361,7 +283008,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -283503,7 +284151,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -283581,7 +284230,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -283595,7 +284245,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -283652,7 +284303,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -284821,7 +285473,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -284899,7 +285552,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -284913,7 +285567,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -284970,7 +285625,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -286996,7 +287652,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -287074,7 +287731,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -287088,7 +287746,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -287145,7 +287804,8 @@ Add an inbound (or return) shipping method to an exchange. The inbound shipping 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -287564,7 +288224,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -287642,7 +288303,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -287656,7 +288318,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -287713,7 +288376,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -289761,7 +290425,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -289809,7 +290474,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -292199,7 +292865,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -292277,7 +292944,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -292291,7 +292959,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -292348,7 +293017,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -293490,7 +294160,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -293568,7 +294239,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -293582,7 +294254,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -293639,7 +294312,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -294808,7 +295482,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -294886,7 +295561,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -294900,7 +295576,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -294957,7 +295634,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -296983,7 +297661,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -297061,7 +297740,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -297075,7 +297755,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -297132,7 +297813,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -298280,7 +298962,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -298328,7 +299011,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -299189,7 +299873,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -299267,7 +299952,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -299281,7 +299967,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -299338,7 +300025,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -301386,7 +302074,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -301434,7 +302123,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -303824,7 +304514,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -303902,7 +304593,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -303916,7 +304608,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -303973,7 +304666,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -305115,7 +305809,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -305193,7 +305888,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -305207,7 +305903,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -305264,7 +305961,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -306433,7 +307131,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -306511,7 +307210,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -306525,7 +307225,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -306582,7 +307283,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -308608,7 +309310,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -308686,7 +309389,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -308700,7 +309404,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -308757,7 +309462,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -309190,7 +309896,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -309268,7 +309975,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -309282,7 +309990,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -309339,7 +310048,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -311387,7 +312097,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -311435,7 +312146,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -313825,7 +314537,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -313903,7 +314616,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -313917,7 +314631,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -313974,7 +314689,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -315116,7 +315832,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -315194,7 +315911,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -315208,7 +315926,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -315265,7 +315984,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -316434,7 +317154,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -316512,7 +317233,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -316526,7 +317248,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -316583,7 +317306,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -318609,7 +319333,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -318687,7 +319412,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -318701,7 +319427,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -318758,7 +319485,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -319906,7 +320634,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -319954,7 +320683,8 @@ Add outbound (or new) items to an exchange. These outbound items will have the a
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -320832,7 +321562,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -320910,7 +321641,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -320924,7 +321656,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -320981,7 +321714,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -323029,7 +323763,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -323077,7 +323812,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -325467,7 +326203,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -325545,7 +326282,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -325559,7 +326297,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -325616,7 +326355,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -326758,7 +327498,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -326836,7 +327577,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -326850,7 +327592,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -326907,7 +327650,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -328076,7 +328820,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -328154,7 +328899,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -328168,7 +328914,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -328225,7 +328972,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -330251,7 +330999,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -330329,7 +331078,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -330343,7 +331093,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -330400,7 +331151,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -331548,7 +332300,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -331596,7 +332349,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -332457,7 +333211,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -332535,7 +333290,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -332549,7 +333305,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -332606,7 +333363,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -334654,7 +335412,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -334702,7 +335461,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -337092,7 +337852,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -337170,7 +337931,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -337184,7 +337946,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -337241,7 +338004,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -338383,7 +339147,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -338461,7 +339226,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -338475,7 +339241,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -338532,7 +339299,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -339701,7 +340469,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -339779,7 +340548,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -339793,7 +340563,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -339850,7 +340621,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -341876,7 +342648,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -341954,7 +342727,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -341968,7 +342742,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -342025,7 +342800,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -343173,7 +343949,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -343221,7 +343998,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -344104,7 +344882,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -344182,7 +344961,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -344196,7 +344976,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -344253,7 +345034,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -346301,7 +347083,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -346349,7 +347132,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -348739,7 +349523,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -348817,7 +349602,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -348831,7 +349617,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -348888,7 +349675,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -350030,7 +350818,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -350108,7 +350897,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -350122,7 +350912,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -350179,7 +350970,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -351348,7 +352140,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -351426,7 +352219,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -351440,7 +352234,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -351497,7 +352292,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -353523,7 +354319,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -353601,7 +354398,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -353615,7 +354413,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -353672,7 +354471,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -354820,7 +355620,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -354868,7 +355669,8 @@ Add an outbound shipping method to an exchange. The outbound shipping method wil
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -355749,7 +356551,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -355827,7 +356630,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -355841,7 +356645,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -355898,7 +356703,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -357946,7 +358752,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -357994,7 +358801,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -360384,7 +361192,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -360462,7 +361271,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -360476,7 +361286,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -360533,7 +361344,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -361675,7 +362487,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -361753,7 +362566,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -361767,7 +362581,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -361824,7 +362639,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -362993,7 +363809,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -363071,7 +363888,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -363085,7 +363903,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -363142,7 +363961,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -365168,7 +365988,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -365246,7 +366067,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -365260,7 +366082,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -365317,7 +366140,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -366465,7 +367289,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -366513,7 +367338,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -367374,7 +368200,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -367452,7 +368279,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -367466,7 +368294,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -367523,7 +368352,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -369571,7 +370401,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -369619,7 +370450,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -372009,7 +372841,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -372087,7 +372920,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -372101,7 +372935,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -372158,7 +372993,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -373300,7 +374136,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -373378,7 +374215,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -373392,7 +374230,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -373449,7 +374288,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -374618,7 +375458,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -374696,7 +375537,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -374710,7 +375552,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -374767,7 +375610,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -376793,7 +377637,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -376871,7 +377716,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -376885,7 +377731,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -376942,7 +377789,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -378090,7 +378938,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -378138,7 +378987,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -379025,7 +379875,8 @@ Confirm an exchange request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -379103,7 +379954,8 @@ Confirm an exchange request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -379117,7 +379969,8 @@ Confirm an exchange request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -379174,7 +380027,8 @@ Confirm an exchange request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -381222,7 +382076,8 @@ Confirm an exchange request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -381270,7 +382125,8 @@ Confirm an exchange request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -383660,7 +384516,8 @@ Confirm an exchange request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -383738,7 +384595,8 @@ Confirm an exchange request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -383752,7 +384610,8 @@ Confirm an exchange request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -383809,7 +384668,8 @@ Confirm an exchange request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -384951,7 +385811,8 @@ Confirm an exchange request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -385029,7 +385890,8 @@ Confirm an exchange request, applying its changes on the associated order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -385043,7 +385905,8 @@ Confirm an exchange request, applying its changes on the associated order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -385100,7 +385963,8 @@ Confirm an exchange request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -386269,7 +387133,8 @@ Confirm an exchange request, applying its changes on the associated order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -386347,7 +387212,8 @@ Confirm an exchange request, applying its changes on the associated order.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -386361,7 +387227,8 @@ Confirm an exchange request, applying its changes on the associated order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -386418,7 +387285,8 @@ Confirm an exchange request, applying its changes on the associated order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -388444,7 +389312,8 @@ Confirm an exchange request, applying its changes on the associated order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -388522,7 +389391,8 @@ Confirm an exchange request, applying its changes on the associated order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -388536,7 +389406,8 @@ Confirm an exchange request, applying its changes on the associated order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -388593,7 +389464,8 @@ Confirm an exchange request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -389741,7 +390613,8 @@ Confirm an exchange request, applying its changes on the associated order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -389789,7 +390662,8 @@ Confirm an exchange request, applying its changes on the associated order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -396602,6 +397476,10 @@ curl http://localhost:9000/admin/index/details \
 
 `GET /admin/index/details`
 
+<aside class="warning">
+This operation is deprecated
+</aside>
+
 Retrieve index metadata, including entity type, status, last synced key, and last updated timestamp.
 
 > Example responses
@@ -396708,6 +397586,10 @@ curl http://localhost:9000/admin/index/sync \
 ```
 
 `POST /admin/index/sync`
+
+<aside class="warning">
+This operation is deprecated
+</aside>
 
 Trigger reindexing or re-ingestion of the Index Module.
 
@@ -398718,7 +399600,6 @@ Retrieve a list of invites. The invites can be filtered by fields such as `id`. 
           "id": "string",
           "name": "string",
           "description": "string",
-          "parent_id": "string",
           "metadata": {},
           "policies": [
             {
@@ -398729,7 +399610,6 @@ Retrieve a list of invites. The invites can be filtered by fields such as `id`. 
               "name": "string",
               "description": "string",
               "metadata": {},
-              "inherited_from_role_id": "string",
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "deleted_at": "1970-01-01T00:00:00Z"
@@ -398737,7 +399617,11 @@ Retrieve a list of invites. The invites can be filtered by fields such as `id`. 
           ],
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
-          "deleted_at": "1970-01-01T00:00:00Z"
+          "deleted_at": "1970-01-01T00:00:00Z",
+          "scope": {
+            "type": "string",
+            "id": "string"
+          }
         }
       ]
     }
@@ -398837,7 +399721,15 @@ curl http://localhost:9000/admin/invites \
     "email": "user@example.com",
     "metadata": {},
     "roles": [
-      "string"
+      {
+        "role_id": "string",
+        "scopes": [
+          {
+            "type": "string",
+            "id": "string"
+          }
+        ]
+      }
     ]
   }'
 ```
@@ -398853,7 +399745,15 @@ Create a invite.
   "email": "user@example.com",
   "metadata": {},
   "roles": [
-    "string"
+    {
+      "role_id": "string",
+      "scopes": [
+        {
+          "type": "string",
+          "id": "string"
+        }
+      ]
+    }
   ]
 }
 ```
@@ -398866,7 +399766,11 @@ Create a invite.
 |body|body|object|false|none|
 |» email|body|string(email)|true|The email of the user to invite.|
 |» metadata|body|object|false|The invite's metadata. Can be custom data in key-value pairs.|
-|» roles|body|[string]|false|The invited user's roles.|
+|» roles|body|[object]|false|The RBAC roles to assign to the user when they accept the invite.|
+|» » role_id|body|string|true|The ID of the role to assign.|
+|» » scopes|body|[object]|false|The scopes the role is constrained to. A role assignment is created for each scope.|
+|» » » type|body|string|true|The type of the scope's entity, such as `organization`.|
+|» » » id|body|string|true|The ID of the scope's entity, such as `org_123`.|
 
 > Example responses
 
@@ -398888,7 +399792,6 @@ Create a invite.
         "id": "string",
         "name": "string",
         "description": "string",
-        "parent_id": "string",
         "metadata": {},
         "policies": [
           {
@@ -398899,7 +399802,6 @@ Create a invite.
             "name": "string",
             "description": "string",
             "metadata": {},
-            "inherited_from_role_id": "string",
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "deleted_at": "1970-01-01T00:00:00Z"
@@ -398907,7 +399809,11 @@ Create a invite.
         ],
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
-        "deleted_at": "1970-01-01T00:00:00Z"
+        "deleted_at": "1970-01-01T00:00:00Z",
+        "scope": {
+          "type": "string",
+          "id": "string"
+        }
       }
     ]
   }
@@ -399040,7 +399946,10 @@ Since the user isn't created yet, the JWT token used in the authorization header
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -399164,7 +400073,6 @@ Retrieve an invite by its ID. You can expand the invite's relations or select th
         "id": "string",
         "name": "string",
         "description": "string",
-        "parent_id": "string",
         "metadata": {},
         "policies": [
           {
@@ -399175,7 +400083,6 @@ Retrieve an invite by its ID. You can expand the invite's relations or select th
             "name": "string",
             "description": "string",
             "metadata": {},
-            "inherited_from_role_id": "string",
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "deleted_at": "1970-01-01T00:00:00Z"
@@ -399183,7 +400090,11 @@ Retrieve an invite by its ID. You can expand the invite's relations or select th
         ],
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
-        "deleted_at": "1970-01-01T00:00:00Z"
+        "deleted_at": "1970-01-01T00:00:00Z",
+        "scope": {
+          "type": "string",
+          "id": "string"
+        }
       }
     ]
   }
@@ -399409,7 +400320,6 @@ Refresh the token of an invite.
         "id": "string",
         "name": "string",
         "description": "string",
-        "parent_id": "string",
         "metadata": {},
         "policies": [
           {
@@ -399420,7 +400330,6 @@ Refresh the token of an invite.
             "name": "string",
             "description": "string",
             "metadata": {},
-            "inherited_from_role_id": "string",
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "deleted_at": "1970-01-01T00:00:00Z"
@@ -399428,7 +400337,11 @@ Refresh the token of an invite.
         ],
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
-        "deleted_at": "1970-01-01T00:00:00Z"
+        "deleted_at": "1970-01-01T00:00:00Z",
+        "scope": {
+          "type": "string",
+          "id": "string"
+        }
       }
     ]
   }
@@ -400306,6 +401219,109 @@ Retrieve a locale by its code. You can expand the locale's relations or select t
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[AdminLocaleResponse](#schemaadminlocaleresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_token, cookie_auth, jwt_token
+</aside>
+
+<h1 id="medusa-admin-api-modules">Modules</h1>
+
+A module is a package of reusable commerce or architectural functionality installed in a Medusa application, such as the Product Module or a custom module.
+These API routes allow admin users to retrieve the installed modules, for example to check whether a module, such as the RBAC Module, is installed.
+
+
+<a href="https://docs.medusajs.com/learn/fundamentals/modules">Learn more about modules.</a>
+
+## List Modules
+
+<a id="opIdGetModules"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/modules \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /admin/modules`
+
+Retrieve the modules installed in the Medusa application. You can use this API route to check whether a module, such as the RBAC Module, is installed.
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "modules": [
+    {
+      "key": "string"
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="list-modules-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[AdminModulesListResponse](#schemaadminmoduleslistresponse)|
 |400|Bad Request|Client Error|[Error](#schemaerror)|
 |401|Unauthorized|User is not authorized. Must log in first|Inline|
 |404|Not Found|Not Found Error|[Error](#schemaerror)|
@@ -401240,7 +402256,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -401318,7 +402335,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -401332,7 +402350,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -401389,7 +402408,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -403437,7 +404457,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -403485,7 +404506,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -405875,7 +406897,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -405953,7 +406976,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -405967,7 +406991,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -406024,7 +407049,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -407166,7 +408192,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -407244,7 +408271,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -407258,7 +408286,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -407315,7 +408344,8 @@ Update an order change's details. An order change can be an exchange, claim, or 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -408613,7 +409643,8 @@ Create an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -408691,7 +409722,8 @@ Create an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -408705,7 +409737,8 @@ Create an order edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -408762,7 +409795,8 @@ Create an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -410810,7 +411844,8 @@ Create an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -410858,7 +411893,8 @@ Create an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -413248,7 +414284,8 @@ Create an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -413326,7 +414363,8 @@ Create an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -413340,7 +414378,8 @@ Create an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -413397,7 +414436,8 @@ Create an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -414539,7 +415579,8 @@ Create an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -414617,7 +415658,8 @@ Create an order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -414631,7 +415673,8 @@ Create an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -414688,7 +415731,8 @@ Create an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -416063,7 +417107,8 @@ Confirm an order edit request and apply the changes on the order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -416141,7 +417186,8 @@ Confirm an order edit request and apply the changes on the order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -416155,7 +417201,8 @@ Confirm an order edit request and apply the changes on the order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -416212,7 +417259,8 @@ Confirm an order edit request and apply the changes on the order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -418260,7 +419308,8 @@ Confirm an order edit request and apply the changes on the order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -418308,7 +419357,8 @@ Confirm an order edit request and apply the changes on the order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -420698,7 +421748,8 @@ Confirm an order edit request and apply the changes on the order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -420776,7 +421827,8 @@ Confirm an order edit request and apply the changes on the order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -420790,7 +421842,8 @@ Confirm an order edit request and apply the changes on the order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -420847,7 +421900,8 @@ Confirm an order edit request and apply the changes on the order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -421989,7 +423043,8 @@ Confirm an order edit request and apply the changes on the order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -422067,7 +423122,8 @@ Confirm an order edit request and apply the changes on the order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -422081,7 +423137,8 @@ Confirm an order edit request and apply the changes on the order.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -422138,7 +423195,8 @@ Confirm an order edit request and apply the changes on the order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -423307,7 +424365,8 @@ Confirm an order edit request and apply the changes on the order.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -423385,7 +424444,8 @@ Confirm an order edit request and apply the changes on the order.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -423399,7 +424459,8 @@ Confirm an order edit request and apply the changes on the order.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -423456,7 +424517,8 @@ Confirm an order edit request and apply the changes on the order.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -425482,7 +426544,8 @@ Confirm an order edit request and apply the changes on the order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -425560,7 +426623,8 @@ Confirm an order edit request and apply the changes on the order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -425574,7 +426638,8 @@ Confirm an order edit request and apply the changes on the order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -425631,7 +426696,8 @@ Confirm an order edit request and apply the changes on the order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -426036,7 +427102,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -426114,7 +427181,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -426128,7 +427196,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -426185,7 +427254,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -428233,7 +429303,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -428281,7 +429352,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -430671,7 +431743,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -430749,7 +431822,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -430763,7 +431837,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -430820,7 +431895,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -431962,7 +433038,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -432040,7 +433117,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -432054,7 +433132,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -432111,7 +433190,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -433280,7 +434360,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -433358,7 +434439,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -433372,7 +434454,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -433429,7 +434512,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -435455,7 +436539,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -435533,7 +436618,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -435547,7 +436633,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -435604,7 +436691,8 @@ Add new items to an order edit. These items will have the action `ITEM_ADD`.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -435997,7 +437085,8 @@ You can also use this API route to remove an item from an order by setting its q
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -436075,7 +437164,8 @@ You can also use this API route to remove an item from an order by setting its q
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -436089,7 +437179,8 @@ You can also use this API route to remove an item from an order by setting its q
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -436146,7 +437237,8 @@ You can also use this API route to remove an item from an order by setting its q
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -438194,7 +439286,8 @@ You can also use this API route to remove an item from an order by setting its q
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -438242,7 +439335,8 @@ You can also use this API route to remove an item from an order by setting its q
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -440632,7 +441726,8 @@ You can also use this API route to remove an item from an order by setting its q
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -440710,7 +441805,8 @@ You can also use this API route to remove an item from an order by setting its q
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -440724,7 +441820,8 @@ You can also use this API route to remove an item from an order by setting its q
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -440781,7 +441878,8 @@ You can also use this API route to remove an item from an order by setting its q
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -441923,7 +443021,8 @@ You can also use this API route to remove an item from an order by setting its q
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -442001,7 +443100,8 @@ You can also use this API route to remove an item from an order by setting its q
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -442015,7 +443115,8 @@ You can also use this API route to remove an item from an order by setting its q
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -442072,7 +443173,8 @@ You can also use this API route to remove an item from an order by setting its q
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -443241,7 +444343,8 @@ You can also use this API route to remove an item from an order by setting its q
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -443319,7 +444422,8 @@ You can also use this API route to remove an item from an order by setting its q
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -443333,7 +444437,8 @@ You can also use this API route to remove an item from an order by setting its q
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -443390,7 +444495,8 @@ You can also use this API route to remove an item from an order by setting its q
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -445416,7 +446522,8 @@ You can also use this API route to remove an item from an order by setting its q
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -445494,7 +446601,8 @@ You can also use this API route to remove an item from an order by setting its q
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -445508,7 +446616,8 @@ You can also use this API route to remove an item from an order by setting its q
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -445565,7 +446674,8 @@ You can also use this API route to remove an item from an order by setting its q
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -445956,7 +447066,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -446034,7 +447145,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -446048,7 +447160,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -446105,7 +447218,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -448153,7 +449267,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -448201,7 +449316,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -450591,7 +451707,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -450669,7 +451786,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -450683,7 +451801,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -450740,7 +451859,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -451882,7 +453002,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -451960,7 +453081,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -451974,7 +453096,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -452031,7 +453154,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -453200,7 +454324,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -453278,7 +454403,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -453292,7 +454418,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -453349,7 +454476,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -455375,7 +456503,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -455453,7 +456582,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -455467,7 +456597,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -455524,7 +456655,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -455892,7 +457024,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -455970,7 +457103,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -455984,7 +457118,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -456041,7 +457176,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -458089,7 +459225,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -458137,7 +459274,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -460527,7 +461665,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -460605,7 +461744,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -460619,7 +461759,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -460676,7 +461817,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -461818,7 +462960,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -461896,7 +463039,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -461910,7 +463054,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -461967,7 +463112,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -463136,7 +464282,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -463214,7 +464361,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -463228,7 +464376,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -463285,7 +464434,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -465311,7 +466461,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -465389,7 +466540,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -465403,7 +466555,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -465460,7 +466613,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -465838,7 +466992,8 @@ Change the status of an active order edit to requested.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -465916,7 +467071,8 @@ Change the status of an active order edit to requested.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -465930,7 +467086,8 @@ Change the status of an active order edit to requested.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -465987,7 +467144,8 @@ Change the status of an active order edit to requested.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -468035,7 +469193,8 @@ Change the status of an active order edit to requested.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -468083,7 +469242,8 @@ Change the status of an active order edit to requested.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -470473,7 +471633,8 @@ Change the status of an active order edit to requested.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -470551,7 +471712,8 @@ Change the status of an active order edit to requested.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -470565,7 +471727,8 @@ Change the status of an active order edit to requested.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -470622,7 +471785,8 @@ Change the status of an active order edit to requested.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -471764,7 +472928,8 @@ Change the status of an active order edit to requested.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -471842,7 +473007,8 @@ Change the status of an active order edit to requested.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -471856,7 +473022,8 @@ Change the status of an active order edit to requested.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -471913,7 +473080,8 @@ Change the status of an active order edit to requested.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -473082,7 +474250,8 @@ Change the status of an active order edit to requested.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -473160,7 +474329,8 @@ Change the status of an active order edit to requested.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -473174,7 +474344,8 @@ Change the status of an active order edit to requested.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -473231,7 +474402,8 @@ Change the status of an active order edit to requested.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -475257,7 +476429,8 @@ Change the status of an active order edit to requested.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -475335,7 +476508,8 @@ Change the status of an active order edit to requested.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -475349,7 +476523,8 @@ Change the status of an active order edit to requested.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -475406,7 +476581,8 @@ Change the status of an active order edit to requested.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -475796,7 +476972,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -475874,7 +477051,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -475888,7 +477066,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -475945,7 +477124,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -477993,7 +479173,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -478041,7 +479222,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -480431,7 +481613,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -480509,7 +481692,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -480523,7 +481707,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -480580,7 +481765,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -481722,7 +482908,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -481800,7 +482987,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -481814,7 +483002,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -481871,7 +483060,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -483040,7 +484230,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -483118,7 +484309,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -483132,7 +484324,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -483189,7 +484382,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -485215,7 +486409,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -485293,7 +486488,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -485307,7 +486503,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -485364,7 +486561,8 @@ Add a shipping method to an exchange. The shipping method will have a `SHIPPING_
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -485752,7 +486950,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -485830,7 +487029,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -485844,7 +487044,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -485901,7 +487102,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -487949,7 +489151,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -487997,7 +489200,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -490387,7 +491591,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -490465,7 +491670,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -490479,7 +491685,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -490536,7 +491743,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -491678,7 +492886,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -491756,7 +492965,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -491770,7 +492980,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -491827,7 +493038,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -492996,7 +494208,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -493074,7 +494287,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -493088,7 +494302,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -493145,7 +494360,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -495171,7 +496387,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -495249,7 +496466,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -495263,7 +496481,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -495320,7 +496539,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -495688,7 +496908,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -495766,7 +496987,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -495780,7 +497002,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -495837,7 +497060,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -497885,7 +499109,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -497933,7 +499158,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -500323,7 +501549,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -500401,7 +501628,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -500415,7 +501643,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -500472,7 +501701,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -501614,7 +502844,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -501692,7 +502923,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -501706,7 +502938,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -501763,7 +502996,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -502932,7 +504166,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -503010,7 +504245,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -503024,7 +504260,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -503081,7 +504318,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -505107,7 +506345,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -505185,7 +506424,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -505199,7 +506439,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -505256,7 +506497,8 @@ Every shipping method has an `actions` property, whose value is an array of acti
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -505638,7 +506880,8 @@ Retrieve a list of orders. The orders can be filtered by fields such as `id`. Th
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -505716,7 +506959,8 @@ Retrieve a list of orders. The orders can be filtered by fields such as `id`. Th
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -505730,7 +506974,8 @@ Retrieve a list of orders. The orders can be filtered by fields such as `id`. Th
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -505787,7 +507032,8 @@ Retrieve a list of orders. The orders can be filtered by fields such as `id`. Th
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -507141,7 +508387,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -507219,7 +508466,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -507233,7 +508481,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -507290,7 +508539,8 @@ Retrieve an order by its ID. You can expand the order's relations or select the 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -508608,7 +509858,8 @@ Updating the order's shipping or billing address doesn't recalculate the order's
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -508686,7 +509937,8 @@ Updating the order's shipping or billing address doesn't recalculate the order's
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -508700,7 +509952,8 @@ Updating the order's shipping or billing address doesn't recalculate the order's
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -508757,7 +510010,8 @@ Updating the order's shipping or billing address doesn't recalculate the order's
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -509983,7 +511237,8 @@ Change the status of an order to archived.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -510061,7 +511316,8 @@ Change the status of an order to archived.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -510075,7 +511331,8 @@ Change the status of an order to archived.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -510132,7 +511389,8 @@ Change the status of an order to archived.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -511366,7 +512624,8 @@ Cancel an order. The cancelation fails if:
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -511444,7 +512703,8 @@ Cancel an order. The cancelation fails if:
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -511458,7 +512718,8 @@ Cancel an order. The cancelation fails if:
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -511515,7 +512776,8 @@ Cancel an order. The cancelation fails if:
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -512759,7 +514021,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -512837,7 +514100,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -512851,7 +514115,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -512908,7 +514173,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -514956,7 +516222,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -515004,7 +516271,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -517394,7 +518662,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -517472,7 +518741,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -517486,7 +518756,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -517543,7 +518814,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -518685,7 +519957,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -518763,7 +520036,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -518777,7 +520051,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -518834,7 +520109,8 @@ The changes can be filtered by fields like `created_at`. The changes can also be
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -520106,7 +521382,8 @@ Mark an order as completed.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -520184,7 +521461,8 @@ Mark an order as completed.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -520198,7 +521476,8 @@ Mark an order as completed.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -520255,7 +521534,8 @@ Mark an order as completed.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -521504,7 +522784,8 @@ Create a credit line for an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -521582,7 +522863,8 @@ Create a credit line for an order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -521596,7 +522878,8 @@ Create a credit line for an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -521653,7 +522936,8 @@ Create a credit line for an order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -522944,7 +524228,8 @@ Create a fulfillment for an order. The creation fails if the order is canceled.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -523022,7 +524307,8 @@ Create a fulfillment for an order. The creation fails if the order is canceled.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -523036,7 +524322,8 @@ Create a fulfillment for an order. The creation fails if the order is canceled.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -523093,7 +524380,8 @@ Create a fulfillment for an order. The creation fails if the order is canceled.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -524335,7 +525623,8 @@ Cancel an order's fulfillment. The fulfillment can't be canceled if it's shipped
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -524413,7 +525702,8 @@ Cancel an order's fulfillment. The fulfillment can't be canceled if it's shipped
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -524427,7 +525717,8 @@ Cancel an order's fulfillment. The fulfillment can't be canceled if it's shipped
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -524484,7 +525775,8 @@ Cancel an order's fulfillment. The fulfillment can't be canceled if it's shipped
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -525725,7 +527017,8 @@ Mark an order's fulfillment as delivered.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -525803,7 +527096,8 @@ Mark an order's fulfillment as delivered.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -525817,7 +527111,8 @@ Mark an order's fulfillment as delivered.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -525874,7 +527169,8 @@ Mark an order's fulfillment as delivered.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -527154,7 +528450,8 @@ Create a shipment for an order's fulfillment.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -527232,7 +528529,8 @@ Create a shipment for an order's fulfillment.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -527246,7 +528544,8 @@ Create a shipment for an order's fulfillment.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -527303,7 +528602,8 @@ Create a shipment for an order's fulfillment.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -529408,7 +530708,8 @@ Authorize a payment session for an order. This is useful for orders created from
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -529486,7 +530787,8 @@ Authorize a payment session for an order. This is useful for orders created from
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -529500,7 +530802,8 @@ Authorize a payment session for an order. This is useful for orders created from
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -529557,7 +530860,8 @@ Authorize a payment session for an order. This is useful for orders created from
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -530791,7 +532095,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -530869,7 +532174,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -530883,7 +532189,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -530940,7 +532247,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -532988,7 +534296,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -533036,7 +534345,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -535426,7 +536736,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -535504,7 +536815,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -535518,7 +536830,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -535575,7 +536888,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -536717,7 +538031,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -536795,7 +538110,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -536809,7 +538125,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -536866,7 +538183,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -538035,7 +539353,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -538113,7 +539432,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -538127,7 +539447,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -538184,7 +539505,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -540210,7 +541532,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -540288,7 +541611,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -540302,7 +541626,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -540359,7 +541684,8 @@ Retrieve a preview of an order using its associated change, such as an edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -540845,7 +542171,8 @@ Request an order to be transfered to another customer. The transfer is confirmed
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -540923,7 +542250,8 @@ Request an order to be transfered to another customer. The transfer is confirmed
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -540937,7 +542265,8 @@ Request an order to be transfered to another customer. The transfer is confirmed
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -540994,7 +542323,8 @@ Request an order to be transfered to another customer. The transfer is confirmed
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -542220,7 +543550,8 @@ Cancel a request to transfer an order to another customer.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -542298,7 +543629,8 @@ Cancel a request to transfer an order to another customer.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -542312,7 +543644,8 @@ Cancel a request to transfer an order to another customer.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -542369,7 +543702,8 @@ Cancel a request to transfer an order to another customer.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -543615,7 +544949,8 @@ Transfer an order to a guest customer. This is useful when the order email was i
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -543693,7 +545028,8 @@ Transfer an order to a guest customer. This is useful when the order email was i
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -543707,7 +545043,8 @@ Transfer an order to a guest customer. This is useful when the order email was i
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -543764,7 +545101,8 @@ Transfer an order to a guest customer. This is useful when the order email was i
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -545016,7 +546354,8 @@ Create a payment collection.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -545094,7 +546433,8 @@ Create a payment collection.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -545108,7 +546448,8 @@ Create a payment collection.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -545165,7 +546506,8 @@ Create a payment collection.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -545462,7 +546804,8 @@ Mark a payment collection as paid. This creates and authorizes a payment session
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -545540,7 +546883,8 @@ Mark a payment collection as paid. This creates and authorizes a payment session
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -545554,7 +546898,8 @@ Mark a payment collection as paid. This creates and authorizes a payment session
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -545611,7 +546956,8 @@ Mark a payment collection as paid. This creates and authorizes a payment session
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -545808,7 +547154,8 @@ Initialize a Payment Session in a payment collection. This is useful for orders 
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -545886,7 +547233,8 @@ Initialize a Payment Session in a payment collection. This is useful for orders 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -545900,7 +547248,8 @@ Initialize a Payment Session in a payment collection. This is useful for orders 
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -545957,7 +547306,8 @@ Initialize a Payment Session in a payment collection. This is useful for orders 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -546159,7 +547509,8 @@ Retrieve a list of payments. The payments can be filtered by fields such as `id`
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -546173,7 +547524,8 @@ Retrieve a list of payments. The payments can be filtered by fields such as `id`
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -546230,7 +547582,8 @@ Retrieve a list of payments. The payments can be filtered by fields such as `id`
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -546540,7 +547893,8 @@ Retrieve a payment by its ID. You can expand the payment's relations or select t
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -546554,7 +547908,8 @@ Retrieve a payment by its ID. You can expand the payment's relations or select t
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -546611,7 +547966,8 @@ Retrieve a payment by its ID. You can expand the payment's relations or select t
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -546800,7 +548156,8 @@ Capture an amount of a payment. This uses the `capturePayment` method of the pay
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -546814,7 +548171,8 @@ Capture an amount of a payment. This uses the `capturePayment` method of the pay
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -546871,7 +548229,8 @@ Capture an amount of a payment. This uses the `capturePayment` method of the pay
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -546962,7 +548321,8 @@ curl http://localhost:9000/admin/payments/string/refund \
   -d '{
     "amount": 0,
     "refund_reason_id": "string",
-    "note": "string"
+    "note": "string",
+    "idempotency_key": "string"
   }'
 ```
 
@@ -546976,7 +548336,8 @@ Refund an amount of a payment. This uses the `refundPayment` method of the payme
 {
   "amount": 0,
   "refund_reason_id": "string",
-  "note": "string"
+  "note": "string",
+  "idempotency_key": "string"
 }
 ```
 
@@ -546990,6 +548351,7 @@ Refund an amount of a payment. This uses the `refundPayment` method of the payme
 |» amount|body|number|false|The amount to refund.|
 |» refund_reason_id|body|string|false|The ID of a refund reason.|
 |» note|body|string|false|A note to attach to the refund.|
+|» idempotency_key|body|string|false|The payment's idempotency key.|
 
 > Example responses
 
@@ -547066,7 +548428,8 @@ Refund an amount of a payment. This uses the `refundPayment` method of the payme
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -547080,7 +548443,8 @@ Refund an amount of a payment. This uses the `refundPayment` method of the payme
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -547137,7 +548501,8 @@ Refund an amount of a payment. This uses the `refundPayment` method of the payme
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -553370,7 +554735,7 @@ Retrieve a list of products. The products can be filtered by fields such as `id`
 |order|query|string|false|The field to sort the data by. By default, the sort order is ascending. To change the order to descending, prefix the field name with `-`.|
 |price_list_id|query|string \| [string]|false|none|
 |q|query|string|false|Search term to filter a product's searchable properties.|
-|status|query|string \| [string]|false|none|
+|status|query|[string]|false|none|
 |sales_channel_id|query|string \| [string]|false|none|
 |title|query|string \| [string]|false|none|
 |handle|query|string \| [string]|false|none|
@@ -553390,6 +554755,15 @@ Retrieve a list of products. The products can be filtered by fields such as `id`
 |tag_id|query|string \| [string]|false|none|
 |option_id|query|string \| [string]|false|none|
 |option_value_id|query|string \| [string]|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|draft|
+|status|proposed|
+|status|published|
+|status|rejected|
 
 > Example responses
 
@@ -555913,7 +557287,7 @@ Once the execution finishes successfully, a notification is created for the expo
 |tags|query|object|false|Filter products by their tags.|
 |variants|query|object|false|Filter the products' variants.|
 |title|query|string \| [string]|false|none|
-|status|query|string \| [string]|false|none|
+|status|query|[string]|false|none|
 |id|query|string \| [string]|false|none|
 |sales_channel_id|query|string \| [string]|false|none|
 |created_at|query|object|false|Filter by a product's creation date.|
@@ -555936,6 +557310,15 @@ Once the execution finishes successfully, a notification is created for the expo
 |tag_id|query|string \| [string]|false|none|
 |option_id|query|string \| [string]|false|none|
 |option_value_id|query|string \| [string]|false|none|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|status|draft|
+|status|proposed|
+|status|published|
+|status|rejected|
 
 > Example responses
 
@@ -557166,7 +558549,7 @@ curl http://localhost:9000/admin/products/string \
 
 `POST /admin/products/{id}`
 
-Update a product's details.
+Update a product's details. If you pass `variants` in the request body, they replace the product's full variant list, and existing variants that aren't included are deleted.
 
 > Body parameter
 
@@ -557293,7 +558676,7 @@ Update a product's details.
 |» tags|body|[object]|false|The product's tags.|
 |» » id|body|string|true|The tag's ID.|
 |» options|body|[[AdminUpdateProductOption](#schemaadminupdateproductoption)]|false|The product's options.|
-|» variants|body|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|The product's variants. You can add new variants or update existing ones, passing their IDs in the object.|
+|» variants|body|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|The product's variants. This replaces the product's full variant list, so existing variants that aren't included are deleted. Pass a variant's `id` to update it, or omit the `id` to create a new variant.|
 |» » *oneOf*|body|[AdminCreateProductVariant](#schemaadmincreateproductvariant)|false|The product variant's details.|
 |» » *oneOf*|body|[AdminUpdateProductVariant](#schemaadminupdateproductvariant)|false|The properties to update of a product variant.|
 |» sales_channels|body|[object]|false|The sales channels that the product is available in.|
@@ -563322,7 +564705,8 @@ Retrieve a list of promotions. The promotions can be filtered by fields such as 
         "currency_code": "usd",
         "max_quantity": 0,
         "buy_rules_min_quantity": 0,
-        "apply_to_quantity": 0
+        "apply_to_quantity": 0,
+        "target_selection_strategy": "most_expensive_first"
       },
       "rules": [
         {
@@ -563709,7 +565093,8 @@ Create a promotion.
       "currency_code": "usd",
       "max_quantity": 0,
       "buy_rules_min_quantity": 0,
-      "apply_to_quantity": 0
+      "apply_to_quantity": 0,
+      "target_selection_strategy": "most_expensive_first"
     },
     "rules": [
       {
@@ -564164,7 +565549,8 @@ Retrieve a promotion by its ID. You can expand the promotion's relations or sele
       "currency_code": "usd",
       "max_quantity": 0,
       "buy_rules_min_quantity": 0,
-      "apply_to_quantity": 0
+      "apply_to_quantity": 0,
+      "target_selection_strategy": "most_expensive_first"
     },
     "rules": [
       {
@@ -564417,7 +565803,8 @@ Update a promotion's details.
       "currency_code": "usd",
       "max_quantity": 0,
       "buy_rules_min_quantity": 0,
-      "apply_to_quantity": 0
+      "apply_to_quantity": 0,
+      "target_selection_strategy": "most_expensive_first"
     },
     "rules": [
       {
@@ -569223,7 +570610,8 @@ Create a return. The return can later be requested or confirmed.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -569725,7 +571113,8 @@ Update a return's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -569803,7 +571192,8 @@ Update a return's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -569817,7 +571207,8 @@ Update a return's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -569874,7 +571265,8 @@ Update a return's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -571922,7 +573314,8 @@ Update a return's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -571970,7 +573363,8 @@ Update a return's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -574360,7 +575754,8 @@ Update a return's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -574438,7 +575833,8 @@ Update a return's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -574452,7 +575848,8 @@ Update a return's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -574509,7 +575906,8 @@ Update a return's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -575651,7 +577049,8 @@ Update a return's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -575729,7 +577128,8 @@ Update a return's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -575743,7 +577143,8 @@ Update a return's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -575800,7 +577201,8 @@ Update a return's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -576969,7 +578371,8 @@ Update a return's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -577047,7 +578450,8 @@ Update a return's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -577061,7 +578465,8 @@ Update a return's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -577118,7 +578523,8 @@ Update a return's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -579144,7 +580550,8 @@ Update a return's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -579222,7 +580629,8 @@ Update a return's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -579236,7 +580644,8 @@ Update a return's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -579293,7 +580702,8 @@ Update a return's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -579858,7 +581268,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -579936,7 +581347,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -579950,7 +581362,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -580007,7 +581420,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -582055,7 +583469,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -582103,7 +583518,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -584493,7 +585909,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -584571,7 +585988,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -584585,7 +586003,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -584642,7 +586061,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -585784,7 +587204,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -585862,7 +587283,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -585876,7 +587298,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -585933,7 +587356,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -587102,7 +588526,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -587180,7 +588605,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -587194,7 +588620,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -587251,7 +588678,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -589277,7 +590705,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -589355,7 +590784,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -589369,7 +590799,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -589426,7 +590857,8 @@ Add damaged items, whose quantity is to be dismissed, to a return. These items w
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -589842,7 +591274,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -589920,7 +591353,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -589934,7 +591368,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -589991,7 +591426,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -592039,7 +593475,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -592087,7 +593524,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -594477,7 +595915,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -594555,7 +595994,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -594569,7 +596009,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -594626,7 +596067,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -595768,7 +597210,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -595846,7 +597289,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -595860,7 +597304,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -595917,7 +597362,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -597086,7 +598532,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -597164,7 +598611,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -597178,7 +598626,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -597235,7 +598684,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -599261,7 +600711,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -599339,7 +600790,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -599353,7 +600805,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -599410,7 +600863,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -599818,7 +601272,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -599896,7 +601351,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -599910,7 +601366,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -599967,7 +601424,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -602015,7 +603473,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -602063,7 +603522,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -604453,7 +605913,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -604531,7 +605992,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -604545,7 +606007,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -604602,7 +606065,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -605744,7 +607208,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -605822,7 +607287,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -605836,7 +607302,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -605893,7 +607360,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -607062,7 +608530,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -607140,7 +608609,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -607154,7 +608624,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -607211,7 +608682,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -609237,7 +610709,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -609315,7 +610788,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -609329,7 +610803,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -609386,7 +610861,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -609855,7 +611331,8 @@ Start a return receival process to be later confirmed using the `/admin/returns/
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -610352,7 +611829,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -610430,7 +611908,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -610444,7 +611923,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -610501,7 +611981,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -612549,7 +614030,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -612597,7 +614079,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -614987,7 +616470,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -615065,7 +616549,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -615079,7 +616564,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -615136,7 +616622,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -616278,7 +617765,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -616356,7 +617844,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -616370,7 +617859,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -616427,7 +617917,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -617596,7 +619087,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -617674,7 +619166,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -617688,7 +619181,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -617745,7 +619239,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -619771,7 +621266,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -619849,7 +621345,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -619863,7 +621360,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -619920,7 +621418,8 @@ Add received items in a return. These items will have the action `RECEIVE_RETURN
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -620336,7 +621835,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -620414,7 +621914,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -620428,7 +621929,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -620485,7 +621987,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -622533,7 +624036,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -622581,7 +624085,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -624971,7 +626476,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -625049,7 +626555,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -625063,7 +626570,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -625120,7 +626628,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -626262,7 +627771,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -626340,7 +627850,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -626354,7 +627865,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -626411,7 +627923,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -627580,7 +629093,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -627658,7 +629172,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -627672,7 +629187,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -627729,7 +629245,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -629755,7 +631272,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -629833,7 +631351,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -629847,7 +631366,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -629904,7 +631424,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -630312,7 +631833,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -630390,7 +631912,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -630404,7 +631927,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -630461,7 +631985,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -632509,7 +634034,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -632557,7 +634083,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -634947,7 +636474,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -635025,7 +636553,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -635039,7 +636568,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -635096,7 +636626,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -636238,7 +637769,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -636316,7 +637848,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -636330,7 +637863,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -636387,7 +637921,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -637556,7 +639091,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -637634,7 +639170,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -637648,7 +639185,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -637705,7 +639243,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -639731,7 +641270,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -639809,7 +641349,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -639823,7 +641364,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -639880,7 +641422,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -640290,7 +641833,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -640368,7 +641912,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -640382,7 +641927,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -640439,7 +641985,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -642487,7 +644034,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -642535,7 +644083,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -644925,7 +646474,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -645003,7 +646553,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -645017,7 +646568,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -645074,7 +646626,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -646216,7 +647769,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -646294,7 +647848,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -646308,7 +647863,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -646365,7 +647921,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -647534,7 +649091,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -647612,7 +649170,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -647626,7 +649185,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -647683,7 +649243,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -649709,7 +651270,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -649787,7 +651349,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -649801,7 +651364,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -649858,7 +651422,8 @@ Confirm that a return has been received. This updates the quantity of the items 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -650268,7 +651833,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -650346,7 +651912,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -650360,7 +651927,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -650417,7 +651985,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -652465,7 +654034,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -652513,7 +654083,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -654903,7 +656474,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -654981,7 +656553,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -654995,7 +656568,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -655052,7 +656626,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -656194,7 +657769,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -656272,7 +657848,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -656286,7 +657863,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -656343,7 +657921,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -657512,7 +659091,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -657590,7 +659170,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -657604,7 +659185,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -657661,7 +659243,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -659687,7 +661270,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -659765,7 +661349,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -659779,7 +661364,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -659836,7 +661422,8 @@ Confirm a requested return. The changes are applied on the inventory quantity an
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -660371,7 +661958,8 @@ Add items that are requested to be returned. These items will have the action `R
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -660449,7 +662037,8 @@ Add items that are requested to be returned. These items will have the action `R
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -660463,7 +662052,8 @@ Add items that are requested to be returned. These items will have the action `R
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -660520,7 +662110,8 @@ Add items that are requested to be returned. These items will have the action `R
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -662568,7 +664159,8 @@ Add items that are requested to be returned. These items will have the action `R
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -662616,7 +664208,8 @@ Add items that are requested to be returned. These items will have the action `R
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -665006,7 +666599,8 @@ Add items that are requested to be returned. These items will have the action `R
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -665084,7 +666678,8 @@ Add items that are requested to be returned. These items will have the action `R
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -665098,7 +666693,8 @@ Add items that are requested to be returned. These items will have the action `R
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -665155,7 +666751,8 @@ Add items that are requested to be returned. These items will have the action `R
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -666297,7 +667894,8 @@ Add items that are requested to be returned. These items will have the action `R
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -666375,7 +667973,8 @@ Add items that are requested to be returned. These items will have the action `R
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -666389,7 +667988,8 @@ Add items that are requested to be returned. These items will have the action `R
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -666446,7 +668046,8 @@ Add items that are requested to be returned. These items will have the action `R
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -667615,7 +669216,8 @@ Add items that are requested to be returned. These items will have the action `R
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -667693,7 +669295,8 @@ Add items that are requested to be returned. These items will have the action `R
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -667707,7 +669310,8 @@ Add items that are requested to be returned. These items will have the action `R
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -667764,7 +669368,8 @@ Add items that are requested to be returned. These items will have the action `R
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -669790,7 +671395,8 @@ Add items that are requested to be returned. These items will have the action `R
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -669868,7 +671474,8 @@ Add items that are requested to be returned. These items will have the action `R
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -669882,7 +671489,8 @@ Add items that are requested to be returned. These items will have the action `R
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -669939,7 +671547,8 @@ Add items that are requested to be returned. These items will have the action `R
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -670361,7 +671970,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -670439,7 +672049,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -670453,7 +672064,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -670510,7 +672122,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -672558,7 +674171,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -672606,7 +674220,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -674996,7 +676611,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -675074,7 +676690,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -675088,7 +676705,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -675145,7 +676763,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -676287,7 +677906,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -676365,7 +677985,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -676379,7 +678000,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -676436,7 +678058,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -677605,7 +679228,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -677683,7 +679307,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -677697,7 +679322,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -677754,7 +679380,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -679780,7 +681407,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -679858,7 +681486,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -679872,7 +681501,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -679929,7 +681559,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -680337,7 +681968,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -680415,7 +682047,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -680429,7 +682062,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -680486,7 +682120,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -682534,7 +684169,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -682582,7 +684218,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -684972,7 +686609,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -685050,7 +686688,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -685064,7 +686703,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -685121,7 +686761,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -686263,7 +687904,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -686341,7 +687983,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -686355,7 +687998,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -686412,7 +688056,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -687581,7 +689226,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -687659,7 +689305,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -687673,7 +689320,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -687730,7 +689378,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -689756,7 +691405,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -689834,7 +691484,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -689848,7 +691499,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -689905,7 +691557,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -690326,7 +691979,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -690404,7 +692058,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -690418,7 +692073,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -690475,7 +692131,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -692523,7 +694180,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -692571,7 +694229,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -694961,7 +696620,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -695039,7 +696699,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -695053,7 +696714,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -695110,7 +696772,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -696252,7 +697915,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -696330,7 +697994,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -696344,7 +698009,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -696401,7 +698067,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -697570,7 +699237,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -697648,7 +699316,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -697662,7 +699331,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -697719,7 +699389,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -699745,7 +701416,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -699823,7 +701495,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -699837,7 +701510,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -699894,7 +701568,8 @@ Add a shipping method to a return. The shipping method will have a `SHIPPING_ADD
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -700313,7 +701988,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -700391,7 +702067,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -700405,7 +702082,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -700462,7 +702140,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -702510,7 +704189,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -702558,7 +704238,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -704948,7 +706629,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -705026,7 +706708,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -705040,7 +706723,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -705097,7 +706781,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -706239,7 +707924,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -706317,7 +708003,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -706331,7 +708018,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -706388,7 +708076,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -707557,7 +709246,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -707635,7 +709325,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -707649,7 +709340,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -707706,7 +709398,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -709732,7 +711425,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -709810,7 +711504,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -709824,7 +711519,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -709881,7 +711577,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -710289,7 +711986,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -710367,7 +712065,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -710381,7 +712080,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -710438,7 +712138,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -712486,7 +714187,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -712534,7 +714236,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -714924,7 +716627,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -715002,7 +716706,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -715016,7 +716721,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -715073,7 +716779,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -716215,7 +717922,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -716293,7 +718001,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -716307,7 +718016,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -716364,7 +718074,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -717533,7 +719244,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -717611,7 +719323,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -717625,7 +719338,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -717682,7 +719396,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -719708,7 +721423,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -719786,7 +721502,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -719800,7 +721517,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -719857,7 +721575,8 @@ Every item has an `actions` property, whose value is an array of actions. You ca
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -729831,7 +731550,10 @@ Retrieve a list of users. The users can be filtered by fields such as `id`. The 
       "metadata": {},
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
-      "deleted_at": "1970-01-01T00:00:00Z"
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "roles": [
+        "string"
+      ]
     }
   ],
   "estimate_count": 0
@@ -729940,7 +731662,10 @@ Retrieve the logged-in user's details.
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -730010,6 +731735,139 @@ To perform this operation, you must be authenticated by means of one of the foll
 cookie_auth, jwt_token
 </aside>
 
+## Update Logged-In User
+
+<a id="opIdPostUsersMe"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/users/me \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Cookie: connect.sid=${API_KEY}" \
+  -d '{
+    "first_name": "string",
+    "last_name": "string",
+    "avatar_url": "string",
+    "metadata": {}
+  }'
+```
+
+`POST /admin/users/me`
+
+Update the logged-in user's details. Unlike the Update a User API route, this API route doesn't require the `user:update` permission, so any user can update their own details.
+
+> Body parameter
+
+```json
+{
+  "first_name": "string",
+  "last_name": "string",
+  "avatar_url": "string",
+  "metadata": {}
+}
+```
+
+<h3 id="update-logged-in-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AdminUpdateUser](#schemaadminupdateuser)|false|none|
+|» first_name|body|string|false|The user's first name.|
+|» last_name|body|string|false|The user's last name.|
+|» avatar_url|body|string|false|The URL of the user's avatar.|
+|» metadata|body|object|false|The user's metadata, can hold custom key-value pairs.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "user": {
+    "id": "string",
+    "email": "user@example.com",
+    "first_name": "string",
+    "last_name": "string",
+    "avatar_url": "string",
+    "metadata": {},
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
+  }
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="update-logged-in-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[AdminUserResponse](#schemaadminuserresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+cookie_auth, jwt_token
+</aside>
+
 ## Get a User
 
 <a id="opIdGetUsersId"></a>
@@ -730048,7 +731906,10 @@ Retrieve a user by its ID. You can expand the user's relations or select the fie
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -730180,7 +732041,10 @@ Update a user's details.
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -730535,6 +732399,491 @@ Generate a reset password token for a user. This is useful if another user wants
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|OK|OK|[AdminUserResetPasswordTokenResponse](#schemaadminuserresetpasswordtokenresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+cookie_auth, jwt_token
+</aside>
+
+## List User's Roles
+
+<a id="opIdGetUsersIdRoles"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/users/string/roles \
+  -H 'Accept: application/json' \
+  -H "Cookie: connect.sid=${API_KEY}"
+```
+
+`GET /admin/users/{id}/roles`
+
+Retrieve a list of roles assigned to a user, including the scope of each assignment. The roles can be paginated.
+
+<h3 id="list-users-roles-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The user's ID.|
+|role_id|query|string \| [string]|false|none|
+|scope|query|string \| [string]|false|none|
+|scope_id|query|string \| [string]|false|none|
+|limit|query|number|false|Limit the number of items returned in the list.|
+|offset|query|number|false|The number of items to skip when retrieving a list.|
+|order|query|string|false|The field to sort the data by. By default, the sort order is ascending. To change the order to descending, prefix the field name with `-`.|
+|with_deleted|query|boolean|false|The user's with deleted.|
+|fields|query|string|false|Comma-separated fields that should be included in the returned data. If a field is prefixed with `+` it will be added to the default fields, using `-` will remove it from the default fields. Without prefix it will replace the entire default fields.|
+|$and|query|[object]|false|Join query parameters with an AND condition. Each object's content is the same type as the expected query parameters.|
+|$or|query|[object]|false|Join query parameters with an OR condition. Each object's content is the same type as the expected query parameters.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "estimate_count": 0,
+  "roles": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "metadata": {},
+      "policies": [
+        {
+          "id": "string",
+          "key": "string",
+          "resource": "product",
+          "operation": "create",
+          "name": "string",
+          "description": "string",
+          "metadata": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z",
+          "deleted_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "scope": {
+        "type": "string",
+        "id": "string"
+      }
+    }
+  ]
+}
+```
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="list-users-roles-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[AdminUserRoleListResponse](#schemaadminuserrolelistresponse)|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+cookie_auth, jwt_token
+</aside>
+
+## Add Roles to User
+
+<a id="opIdPostUsersIdRoles"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/users/string/roles \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Cookie: connect.sid=${API_KEY}" \
+  -d '{
+    "assignments": [
+      {
+        "role_id": "string",
+        "scope": "string",
+        "scope_id": "string"
+      }
+    ]
+  }'
+```
+
+`POST /admin/users/{id}/roles`
+
+Assign one or more roles to a user, optionally constrained to a scope. You can only assign roles whose policies you have.
+
+> Body parameter
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+<h3 id="add-roles-to-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The user's ID.|
+|body|body|[AdminAssignUserRoles](#schemaadminassignuserroles)|false|none|
+|» assignments|body|[object]|false|The roles to assign to the user.|
+|» » role_id|body|string|true|The ID of the role to assign to the user.|
+|» » scope|body|string|false|The type of the scope's entity, such as `organization`. Must be passed with `scope_id`.|
+|» » scope_id|body|string|false|The ID of the scope's entity, such as `org_123`. Must be passed with `scope`.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="add-roles-to-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+cookie_auth, jwt_token
+</aside>
+
+## Remove Roles from User
+
+<a id="opIdDeleteUsersIdRoles"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/users/string/roles \
+  -X DELETE \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Cookie: connect.sid=${API_KEY}" \
+  -d '{
+    "assignments": [
+      {
+        "role_id": "string",
+        "scope": "string",
+        "scope_id": "string"
+      }
+    ]
+  }'
+```
+
+`DELETE /admin/users/{id}/roles`
+
+Unassign one or more roles from a user.
+
+> Body parameter
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+<h3 id="remove-roles-from-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The user's ID.|
+|body|body|[AdminUnassignUserRoles](#schemaadminunassignuserroles)|false|none|
+|» assignments|body|[object]|false|The roles to unassign from the user.|
+|» » role_id|body|string|true|The ID of the role to unassign from the user.|
+|» » scope|body|string|false|The type of the scope's entity, such as `organization`. Must be passed with `scope_id`.|
+|» » scope_id|body|string|false|The ID of the scope's entity, such as `org_123`. Must be passed with `scope`.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="remove-roles-from-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
+|400|Bad Request|Client Error|[Error](#schemaerror)|
+|401|Unauthorized|User is not authorized. Must log in first|Inline|
+|404|Not Found|Not Found Error|[Error](#schemaerror)|
+|409|Conflict|Invalid State Error|[Error](#schemaerror)|
+|422|Unprocessable Entity|Invalid Request Error|[Error](#schemaerror)|
+|500|Internal Server Error|Server Error|[Error](#schemaerror)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+cookie_auth, jwt_token
+</aside>
+
+## Remove Role from User
+
+<a id="opIdDeleteUsersIdRolesRole_id"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:9000/admin/users/string/roles/string \
+  -X DELETE \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Cookie: connect.sid=${API_KEY}" \
+  -d '{
+    "scope": "string",
+    "scope_id": "string"
+  }'
+```
+
+`DELETE /admin/users/{id}/roles/{role_id}`
+
+Unassign a role from a user. Pass `scope` and `scope_id` in the request body to remove the role's assignment in that scope.
+
+> Body parameter
+
+```json
+{
+  "scope": "string",
+  "scope_id": "string"
+}
+```
+
+<h3 id="remove-role-from-user-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The user's ID.|
+|role_id|path|string|true|The user's role id.|
+|body|body|[AdminUnassignUserRole](#schemaadminunassignuserrole)|false|none|
+|» scope|body|string|false|The type of the scope's entity, such as `organization`. Must be passed with `scope_id`.|
+|» scope_id|body|string|false|The ID of the scope's entity, such as `org_123`. Must be passed with `scope`.|
+
+> Example responses
+
+> 400 Response
+
+```json
+{
+  "message": "Discount must be set to dynamic",
+  "type": "not_allowed"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Entity with id 1 was not found",
+  "type": "not_found"
+}
+```
+
+> 409 Response
+
+```json
+{
+  "code": "unknown_error",
+  "message": "The request conflicted with another request. You may retry the request with the provided Idempotency-Key.",
+  "type": "QueryRunnerAlreadyReleasedError"
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "invalid_request_error",
+  "message": "Discount with code TEST already exists.",
+  "type": "duplicate_error"
+}
+```
+
+> 500 Response
+
+```json
+{
+  "code": "api_error",
+  "message": "An error occured while hashing password",
+  "type": "database_error"
+}
+```
+
+<h3 id="remove-role-from-user-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|None|
 |400|Bad Request|Client Error|[Error](#schemaerror)|
 |401|Unauthorized|User is not authorized. Must log in first|Inline|
 |404|Not Found|Not Found Error|[Error](#schemaerror)|
@@ -733524,7 +735873,8 @@ The API key's details.
   "currency_code": "usd",
   "max_quantity": 0,
   "buy_rules_min_quantity": 0,
-  "apply_to_quantity": 0
+  "apply_to_quantity": 0,
+  "target_selection_strategy": "most_expensive_first"
 }
 ```
 
@@ -733546,6 +735896,7 @@ The application method's details.
 |max_quantity|number|false|none|The max quantity allowed in the cart for the associated promotion to be applied.|
 |buy_rules_min_quantity|number|false|none|The minimum quantity required for a `buyget` promotion to be applied. For example, if the promotion is a "Buy 2 shirts get 1 free", the value of this attribute is `2`.|
 |apply_to_quantity|number|false|none|The quantity that results from matching the `buyget` promotion's condition. For example, if the promotion is a "Buy 2 shirts get 1 free", the value of this attribute is `1`.|
+|target_selection_strategy|string|false|none|The application method's target selection strategy.|
 
 #### Enumerated Values
 
@@ -733558,6 +735909,35 @@ The application method's details.
 |target_type|order|
 |allocation|each|
 |allocation|across|
+|target_selection_strategy|most_expensive_first|
+|target_selection_strategy|cheapest_first|
+
+<h2 id="tocS_AdminAssignUserRoles">AdminAssignUserRoles</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminassignuserroles"></a>
+<a id="schema_AdminAssignUserRoles"></a>
+<a id="tocSadminassignuserroles"></a>
+<a id="tocsadminassignuserroles"></a>
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+The RBAC roles to assign to a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assignments|[object]|false|none|The roles to assign to the user.|
 
 <h2 id="tocS_AdminAuthorizeOrderPaymentSession">AdminAuthorizeOrderPaymentSession</h2>
 <!-- backwards compatibility -->
@@ -733663,7 +736043,8 @@ The details for authorizing a payment session for an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -733741,7 +736122,8 @@ The details for authorizing a payment session for an order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -733755,7 +736137,8 @@ The details for authorizing a payment session for an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -733812,7 +736195,8 @@ The details for authorizing a payment session for an order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -737292,7 +739676,7 @@ The product's details.
 |collection_id|string|false|none|The ID of the product's collection.|
 |categories|[object]|false|none|The product's categories.|
 |tags|[object]|false|none|The product's tags.|
-|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. You can add new variants or update existing ones, passing their IDs in the object.|
+|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. This replaces the product's full variant list, so existing variants that aren't included are deleted. Pass a variant's `id` to update it, or omit the `id` to create a new variant.|
 |sales_channels|[object]|false|none|The sales channels that the product is available in.|
 |weight|number|false|none|The product's weight.|
 |length|number|false|none|The product's length.|
@@ -739342,7 +741726,8 @@ The payment's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -739420,7 +741805,8 @@ The payment's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -739434,7 +741820,8 @@ The payment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -739491,7 +741878,8 @@ The payment's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -742368,7 +744756,8 @@ The details of the deleted claim.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -742446,7 +744835,8 @@ The details of the deleted claim.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -742460,7 +744850,8 @@ The details of the deleted claim.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -742517,7 +744908,8 @@ The details of the deleted claim.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -743591,7 +745983,7 @@ The paginated list of claims.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |claims|[[AdminClaim](#schemaadminclaim)]|true|none|The list of claims.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminClaimOrderResponse">AdminClaimOrderResponse</h2>
 <!-- backwards compatibility -->
@@ -743740,7 +746132,8 @@ The paginated list of claims.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -745598,7 +747991,8 @@ The paginated list of claims.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -745676,7 +748070,8 @@ The paginated list of claims.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -745690,7 +748085,8 @@ The paginated list of claims.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -745747,7 +748143,8 @@ The paginated list of claims.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -746911,7 +749308,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -746989,7 +749387,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -747003,7 +749402,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -747060,7 +749460,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -749108,7 +751509,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -749156,7 +751558,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -751546,7 +753949,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -751624,7 +754028,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -751638,7 +754043,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -751695,7 +754101,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -752837,7 +755244,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -752915,7 +755323,8 @@ The created claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -752929,7 +755338,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -752986,7 +755396,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -754155,7 +756566,8 @@ The created claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -754233,7 +756645,8 @@ The created claim's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -754247,7 +756660,8 @@ The created claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -754304,7 +756718,8 @@ The created claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -756330,7 +758745,8 @@ The created claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -756408,7 +758824,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -756422,7 +758839,8 @@ The created claim's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -756479,7 +758897,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -758377,7 +760796,8 @@ The created claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -758455,7 +760875,8 @@ The created claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -758469,7 +760890,8 @@ The created claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -758526,7 +760948,8 @@ The created claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -759720,7 +762143,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -759798,7 +762222,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -759812,7 +762237,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -759869,7 +762295,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -761917,7 +764344,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -761965,7 +764393,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -764355,7 +766784,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -764433,7 +766863,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -764447,7 +766878,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -764504,7 +766936,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -765646,7 +768079,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -765724,7 +768158,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -765738,7 +768173,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -765795,7 +768231,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -766964,7 +769401,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -767042,7 +769480,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -767056,7 +769495,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -767113,7 +769553,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -769139,7 +771580,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -769217,7 +771659,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -769231,7 +771674,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -769288,7 +771732,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -771186,7 +773631,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -771264,7 +773710,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -771278,7 +773725,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -771335,7 +773783,8 @@ The details of the claim, as well as a preview of the order when the claim is ap
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -774131,7 +776580,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -774209,7 +776659,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -774223,7 +776674,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -774280,7 +776732,8 @@ The details of the claim, its return, and a preview of the order when the claim 
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -775443,7 +777896,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -775521,7 +777975,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -775535,7 +777990,8 @@ The claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -775592,7 +778048,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -777640,7 +780097,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -777688,7 +780146,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -780078,7 +782537,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -780156,7 +782616,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -780170,7 +782631,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -780227,7 +782689,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -781369,7 +783832,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -781447,7 +783911,8 @@ The claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -781461,7 +783926,8 @@ The claim's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -781518,7 +783984,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -782687,7 +785154,8 @@ The claim's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -782765,7 +785233,8 @@ The claim's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -782779,7 +785248,8 @@ The claim's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -782836,7 +785306,8 @@ The claim's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -784862,7 +787333,8 @@ The claim's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -784940,7 +787412,8 @@ The claim's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -784954,7 +787427,8 @@ The claim's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -785011,7 +787485,8 @@ The claim's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -785746,7 +788221,7 @@ The paginated list of product collections.
 |offset|number|true|none|The number of items skipped before retrieving the returned results.|
 |count|number|true|none|The total number of items.|
 |collections|[[AdminCollection](#schemaadmincollection)]|true|none|The list of product collections.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminCollectionResponse">AdminCollectionResponse</h2>
 <!-- backwards compatibility -->
@@ -787964,7 +790439,7 @@ The paginated list of currencies.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |currencies|[[AdminCurrency](#schemaadmincurrency)]|true|none|The list of currencies.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminCurrencyResponse">AdminCurrencyResponse</h2>
 <!-- backwards compatibility -->
@@ -788608,7 +791083,8 @@ The items details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -788686,7 +791162,8 @@ The items details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -788700,7 +791177,8 @@ The items details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -788757,7 +791235,8 @@ The items details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -789981,7 +792460,8 @@ The draft order's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -790059,7 +792539,8 @@ The draft order's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -790073,7 +792554,8 @@ The draft order's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -790130,7 +792612,8 @@ The draft order's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -791198,7 +793681,7 @@ The list of draft orders with pagination fields.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items available.|
 |draft_orders|[[AdminDraftOrder](#schemaadmindraftorder)]|true|none|The list of draft orders.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminDraftOrderParams">AdminDraftOrderParams</h2>
 <!-- backwards compatibility -->
@@ -791313,7 +793796,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -791391,7 +793875,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -791405,7 +793890,8 @@ The parameters for retrieving draft orders.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -791462,7 +793948,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -793510,7 +795997,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -793558,7 +796046,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -795948,7 +798437,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -796026,7 +798516,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -796040,7 +798531,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -796097,7 +798589,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -797239,7 +799732,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -797317,7 +799811,8 @@ The parameters for retrieving draft orders.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -797331,7 +799826,8 @@ The parameters for retrieving draft orders.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -797388,7 +799884,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -798557,7 +801054,8 @@ The parameters for retrieving draft orders.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -798635,7 +801133,8 @@ The parameters for retrieving draft orders.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -798649,7 +801148,8 @@ The parameters for retrieving draft orders.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -798706,7 +801206,8 @@ The parameters for retrieving draft orders.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -800732,7 +803233,8 @@ The parameters for retrieving draft orders.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -800810,7 +803312,8 @@ The parameters for retrieving draft orders.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -800824,7 +803327,8 @@ The parameters for retrieving draft orders.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -800881,7 +803385,8 @@ The parameters for retrieving draft orders.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -801243,7 +803748,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -801321,7 +803827,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -801335,7 +803842,8 @@ The draft order preview's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -801392,7 +803900,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -803440,7 +805949,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -803488,7 +805998,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -805878,7 +808389,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -805956,7 +808468,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -805970,7 +808483,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -806027,7 +808541,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -807169,7 +809684,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -807247,7 +809763,8 @@ The draft order preview's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -807261,7 +809778,8 @@ The draft order preview's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -807318,7 +809836,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -808487,7 +811006,8 @@ The draft order preview's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -808565,7 +811085,8 @@ The draft order preview's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -808579,7 +811100,8 @@ The draft order preview's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -808636,7 +811158,8 @@ The draft order preview's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -810662,7 +813185,8 @@ The draft order preview's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -810740,7 +813264,8 @@ The draft order preview's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -810754,7 +813279,8 @@ The draft order preview's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -810811,7 +813337,8 @@ The draft order preview's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -811088,7 +813615,8 @@ The details of the preview on the draft order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -811166,7 +813694,8 @@ The details of the preview on the draft order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -811180,7 +813709,8 @@ The details of the preview on the draft order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -811237,7 +813767,8 @@ The details of the preview on the draft order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -813332,7 +815863,8 @@ The list of entities in the view.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -813380,7 +815912,8 @@ The list of entities in the view.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -814285,7 +816818,8 @@ The details of deleting an exchange.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -815393,7 +817927,8 @@ The details of deleting an exchange.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -815441,7 +817976,8 @@ The details of deleting an exchange.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -816221,7 +818757,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -816299,7 +818836,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -816313,7 +818851,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -816370,7 +818909,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -818418,7 +820958,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -818466,7 +821007,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -820856,7 +823398,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -820934,7 +823477,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -820948,7 +823492,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -821005,7 +823550,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -822147,7 +824693,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -822225,7 +824772,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -822239,7 +824787,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -822296,7 +824845,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -823465,7 +826015,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -823543,7 +826094,8 @@ The exchange's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -823557,7 +826109,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -823614,7 +826167,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -825640,7 +828194,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -825718,7 +828273,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -825732,7 +828288,8 @@ The exchange's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -825789,7 +828346,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -826937,7 +829495,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -826985,7 +829544,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -827795,7 +830355,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -827873,7 +830434,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -827887,7 +830449,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -827944,7 +830507,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -829992,7 +832556,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -830040,7 +832605,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -832430,7 +834996,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -832508,7 +835075,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -832522,7 +835090,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -832579,7 +835148,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -833721,7 +836291,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -833799,7 +836370,8 @@ A preview of the order once the exchange is applied.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -833813,7 +836385,8 @@ A preview of the order once the exchange is applied.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -833870,7 +836443,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -835039,7 +837613,8 @@ A preview of the order once the exchange is applied.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -835117,7 +837692,8 @@ A preview of the order once the exchange is applied.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -835131,7 +837707,8 @@ A preview of the order once the exchange is applied.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -835188,7 +837765,8 @@ A preview of the order once the exchange is applied.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -837214,7 +839792,8 @@ A preview of the order once the exchange is applied.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -837292,7 +839871,8 @@ A preview of the order once the exchange is applied.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -837306,7 +839886,8 @@ A preview of the order once the exchange is applied.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -837363,7 +839944,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -838511,7 +841093,8 @@ A preview of the order once the exchange is applied.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -838559,7 +841142,8 @@ A preview of the order once the exchange is applied.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -840221,7 +842805,8 @@ The details of a requested exchange.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -840269,7 +842854,8 @@ The details of a requested exchange.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -841048,7 +843634,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -841126,7 +843713,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -841140,7 +843728,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -841197,7 +843786,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -843245,7 +845835,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -843293,7 +845884,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -845683,7 +848275,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -845761,7 +848354,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -845775,7 +848369,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -845832,7 +848427,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -846974,7 +849570,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -847052,7 +849649,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -847066,7 +849664,8 @@ The exchange's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -847123,7 +849722,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -848292,7 +850892,8 @@ The exchange's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -848370,7 +850971,8 @@ The exchange's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -848384,7 +850986,8 @@ The exchange's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -848441,7 +851044,8 @@ The exchange's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -850467,7 +853071,8 @@ The exchange's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -850545,7 +853150,8 @@ The exchange's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -850559,7 +853165,8 @@ The exchange's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -850616,7 +853223,8 @@ The exchange's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -850890,6 +853498,57 @@ The details of the shipping method to update.
 |custom_amount|number|false|none|The shipping method's custom amount.|
 |internal_note|string|false|none|A note viewed by admin users only.|
 |metadata|object|false|none|The exchange's metadata, can hold custom key-value pairs.|
+
+<h2 id="tocS_AdminExportCustomerRequest">AdminExportCustomerRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminexportcustomerrequest"></a>
+<a id="schema_AdminExportCustomerRequest"></a>
+<a id="tocSadminexportcustomerrequest"></a>
+<a id="tocsadminexportcustomerrequest"></a>
+
+```json
+{
+  "format": "csv",
+  "batch_size": "string"
+}
+```
+
+The details of the customer export.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|format|string|false|none|The format of the exported file. Defaults to `json`.|
+|batch_size|string \| number|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|format|csv|
+|format|json|
+
+<h2 id="tocS_AdminExportCustomerResponse">AdminExportCustomerResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminexportcustomerresponse"></a>
+<a id="schema_AdminExportCustomerResponse"></a>
+<a id="tocSadminexportcustomerresponse"></a>
+<a id="tocsadminexportcustomerresponse"></a>
+
+```json
+{
+  "transaction_id": "string"
+}
+```
+
+The details of the customer export's workflow execution.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transaction_id|string|true|none|The ID of the export customer workflow's transaction.|
 
 <h2 id="tocS_AdminExportInventoryItemResponse">AdminExportInventoryItemResponse</h2>
 <!-- backwards compatibility -->
@@ -851348,7 +854007,7 @@ The paginated list of fulfillment providers.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |fulfillment_providers|[[AdminFulfillmentProvider](#schemaadminfulfillmentprovider)]|true|none|The list of fulfillment providers.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminFulfillmentProviderOption">AdminFulfillmentProviderOption</h2>
 <!-- backwards compatibility -->
@@ -851405,7 +854064,7 @@ The paginated list of fulfillment options.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |fulfillment_options|[[AdminFulfillmentProviderOption](#schemaadminfulfillmentprovideroption)]|true|none|The list of fulfillment options.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminFulfillmentResponse">AdminFulfillmentResponse</h2>
 <!-- backwards compatibility -->
@@ -854452,7 +857111,7 @@ The paginated list of gift cards.
 |offset|number|true|none|The number of gift cards to skip before retrieving the results.|
 |count|number|true|none|The total number of gift cards available.|
 |gift_cards|[[AdminGiftCard](#schemaadmingiftcard)]|true|none|The list of gift cards.|
-|estimate_count|number|false|none|The gift card's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The gift card's estimate count.|
 
 <h2 id="tocS_AdminImportProductRequest">AdminImportProductRequest</h2>
 <!-- backwards compatibility -->
@@ -854862,7 +857521,6 @@ The location level's location levels.
       "id": "string",
       "name": "string",
       "description": "string",
-      "parent_id": "string",
       "metadata": {},
       "policies": [
         {
@@ -854873,7 +857531,6 @@ The location level's location levels.
           "name": "string",
           "description": "string",
           "metadata": {},
-          "inherited_from_role_id": "string",
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "deleted_at": "1970-01-01T00:00:00Z"
@@ -854881,7 +857538,11 @@ The location level's location levels.
       ],
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
-      "deleted_at": "1970-01-01T00:00:00Z"
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "scope": {
+        "type": "string",
+        "id": "string"
+      }
     }
   ]
 }
@@ -854896,7 +857557,7 @@ The invite's details.
 |id|string|true|none|The invite's ID.|
 |email|string(email)|true|none|The invite's email.|
 |accepted|boolean|true|none|Whether the invite has been accepted.|
-|token|string|true|none|The invite's token.|
+|token|string|false|none|The invite's token.|
 |expires_at|string(date-time)|true|none|The invite's expiry date.|
 |metadata|object|false|none|The invite's metadata, can hold custom key-value pairs.|
 |created_at|string(date-time)|true|none|The date the invite was created.|
@@ -854926,7 +857587,6 @@ The invite's details.
         "id": "string",
         "name": "string",
         "description": "string",
-        "parent_id": "string",
         "metadata": {},
         "policies": [
           {
@@ -854937,7 +857597,6 @@ The invite's details.
             "name": "string",
             "description": "string",
             "metadata": {},
-            "inherited_from_role_id": "string",
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "deleted_at": "1970-01-01T00:00:00Z"
@@ -854945,7 +857604,11 @@ The invite's details.
         ],
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
-        "deleted_at": "1970-01-01T00:00:00Z"
+        "deleted_at": "1970-01-01T00:00:00Z",
+        "scope": {
+          "type": "string",
+          "id": "string"
+        }
       }
     ]
   }
@@ -855230,7 +857893,7 @@ The list of locales with pagination details.
 |limit|number|true|none|The maximum number of locales returned.|
 |offset|number|true|none|The number of locales skipped before retrieving the returned locales.|
 |count|number|true|none|The total number of locales matching the query.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |locales|[[AdminLocale](#schemaadminlocale)]|true|none|The list of locales.|
 
 <h2 id="tocS_AdminLocaleResponse">AdminLocaleResponse</h2>
@@ -855303,6 +857966,52 @@ The payment details.
 |---|---|---|---|---|
 |order_id|string|true|none|The ID of the order associated with the payment collection.|
 |provider_id|string|false|none|The ID of the payment provider to use for marking the payment collection as paid. If not provided, the `system` provider will be used.|
+
+<h2 id="tocS_AdminModule">AdminModule</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminmodule"></a>
+<a id="schema_AdminModule"></a>
+<a id="tocSadminmodule"></a>
+<a id="tocsadminmodule"></a>
+
+```json
+{
+  "key": "string"
+}
+```
+
+A module installed in the Medusa application.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|key|string|true|none|The module's key, such as `rbac` or a custom module's name.|
+
+<h2 id="tocS_AdminModulesListResponse">AdminModulesListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminmoduleslistresponse"></a>
+<a id="schema_AdminModulesListResponse"></a>
+<a id="tocSadminmoduleslistresponse"></a>
+<a id="tocsadminmoduleslistresponse"></a>
+
+```json
+{
+  "modules": [
+    {
+      "key": "string"
+    }
+  ]
+}
+```
+
+The list of installed modules.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|modules|[[AdminModule](#schemaadminmodule)]|true|none|The modules installed in the Medusa application.|
 
 <h2 id="tocS_AdminNotification">AdminNotification</h2>
 <!-- backwards compatibility -->
@@ -855392,7 +858101,7 @@ The paginated list of notifications.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |notifications|[[AdminNotification](#schemaadminnotification)]|true|none|The list of notifications.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminNotificationResponse">AdminNotificationResponse</h2>
 <!-- backwards compatibility -->
@@ -855511,7 +858220,8 @@ The notification's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -855589,7 +858299,8 @@ The notification's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -855603,7 +858314,8 @@ The notification's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -855660,7 +858372,8 @@ The notification's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -856945,7 +859658,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -857023,7 +859737,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -857037,7 +859752,8 @@ An order address.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -857094,7 +859810,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -859142,7 +861859,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -859190,7 +861908,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -861580,7 +864299,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -861658,7 +864378,8 @@ An order address.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -861672,7 +864393,8 @@ An order address.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -861729,7 +864451,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -862871,7 +865594,8 @@ An order address.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -862949,7 +865673,8 @@ An order address.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -862963,7 +865688,8 @@ An order address.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -863020,7 +865746,8 @@ An order address.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -864246,7 +866973,8 @@ The order change's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -864324,7 +867052,8 @@ The order change's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -864338,7 +867067,8 @@ The order change's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -864395,7 +867125,8 @@ The order change's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -865600,7 +868331,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -865678,7 +868410,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -865692,7 +868425,8 @@ The order change action's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -865749,7 +868483,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -867797,7 +870532,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -867845,7 +870581,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -870235,7 +872972,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -870313,7 +873051,8 @@ The order change action's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -870327,7 +873066,8 @@ The order change action's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -870384,7 +873124,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -871526,7 +874267,8 @@ The order change action's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -871604,7 +874346,8 @@ The order change action's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -871618,7 +874361,8 @@ The order change action's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -871675,7 +874419,8 @@ The order change action's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -872862,7 +875607,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -872940,7 +875686,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -872954,7 +875701,8 @@ The details of the order change.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -873011,7 +875759,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -875059,7 +877808,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -875107,7 +877857,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -877497,7 +880248,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -877575,7 +880327,8 @@ The details of the order change.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -877589,7 +880342,8 @@ The details of the order change.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -877646,7 +880400,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -878788,7 +881543,8 @@ The details of the order change.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -878866,7 +881622,8 @@ The details of the order change.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -878880,7 +881637,8 @@ The details of the order change.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -878937,7 +881695,8 @@ The details of the order change.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -880126,7 +882885,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -880204,7 +882964,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -880218,7 +882979,8 @@ The details of an order's changes.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -880275,7 +883037,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -882323,7 +885086,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -882371,7 +885135,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -884761,7 +887526,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -884839,7 +887605,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -884853,7 +887620,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -884910,7 +887678,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -886052,7 +888821,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -886130,7 +888900,8 @@ The details of an order's changes.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -886144,7 +888915,8 @@ The details of an order's changes.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -886201,7 +888973,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -887370,7 +890143,8 @@ The details of an order's changes.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -887448,7 +890222,8 @@ The details of an order's changes.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -887462,7 +890237,8 @@ The details of an order's changes.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -887519,7 +890295,8 @@ The details of an order's changes.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -889545,7 +892322,8 @@ The details of an order's changes.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -889623,7 +892401,8 @@ The details of an order's changes.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -889637,7 +892416,8 @@ The details of an order's changes.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -889694,7 +892474,8 @@ The details of an order's changes.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -889979,7 +892760,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -890057,7 +892839,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -890071,7 +892854,8 @@ The preview of an order edit.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -890128,7 +892912,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -892176,7 +894961,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -892224,7 +895010,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -894614,7 +897401,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -894692,7 +897480,8 @@ The preview of an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -894706,7 +897495,8 @@ The preview of an order edit.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -894763,7 +897553,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -895905,7 +898696,8 @@ The preview of an order edit.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -895983,7 +898775,8 @@ The preview of an order edit.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -895997,7 +898790,8 @@ The preview of an order edit.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -896054,7 +898848,8 @@ The preview of an order edit.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -898876,7 +901671,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -898954,7 +901750,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -898968,7 +901765,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -899025,7 +901823,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -900997,7 +903796,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -901075,7 +903875,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -901089,7 +903890,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -901146,7 +903948,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -903194,7 +905997,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -903242,7 +906046,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -905632,7 +908437,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -905710,7 +908516,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -905724,7 +908531,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -905781,7 +908589,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -906923,7 +909732,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -907001,7 +909811,8 @@ The item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -907015,7 +909826,8 @@ The item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -907072,7 +909884,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -908241,7 +911054,8 @@ The item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -908319,7 +911133,8 @@ The item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -908333,7 +911148,8 @@ The item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -908390,7 +911206,8 @@ The item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -910416,7 +913233,8 @@ The item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -910494,7 +913312,8 @@ The item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -910508,7 +913327,8 @@ The item's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -910565,7 +913385,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -910927,7 +913748,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -911005,7 +913827,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -911019,7 +913842,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -911076,7 +913900,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -913124,7 +915949,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -913172,7 +915998,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -915562,7 +918389,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -915640,7 +918468,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -915654,7 +918483,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -915711,7 +918541,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -916853,7 +919684,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -916931,7 +919763,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -916945,7 +919778,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -917002,7 +919836,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -918171,7 +921006,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -918249,7 +921085,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -918263,7 +921100,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -918320,7 +921158,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -920346,7 +923185,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -920424,7 +923264,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -920438,7 +923279,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -920495,7 +923337,8 @@ A preview of an order if a change, such as exchange, return, edit, or claim is a
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -920772,7 +923615,8 @@ The preview of an order.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -920850,7 +923694,8 @@ The preview of an order.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -920864,7 +923709,8 @@ The preview of an order.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -920921,7 +923767,8 @@ The preview of an order.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -922132,7 +924979,8 @@ An order's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -922495,7 +925343,8 @@ The shipping method's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -922509,7 +925358,8 @@ The shipping method's details.
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
         "code": "string"
-      }
+      },
+      "idempotency_key": "string"
     }
   ],
   "payment_collection": {},
@@ -922566,7 +925416,8 @@ The shipping method's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -922679,7 +925530,8 @@ The payment's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -922757,7 +925609,8 @@ The payment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -922771,7 +925624,8 @@ The payment's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -922828,7 +925682,8 @@ The payment's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -922952,7 +925807,8 @@ The payment collection's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -923030,7 +925886,8 @@ The payment collection's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -923044,7 +925901,8 @@ The payment collection's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -923101,7 +925959,8 @@ The payment collection's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -923223,7 +926082,8 @@ The payment provider's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -923237,7 +926097,8 @@ The payment provider's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -923294,7 +926155,8 @@ The payment provider's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -923374,7 +926236,8 @@ The payment's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -924101,7 +926964,7 @@ The paginated list of price lists.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |price_lists|[[AdminPriceList](#schemaadminpricelist)]|true|none|The list of price lists.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminPriceListPrice">AdminPriceListPrice</h2>
 <!-- backwards compatibility -->
@@ -924188,7 +927051,7 @@ The list of prices associated with a price list.
 |limit|number|true|none|The maximum number of prices to return.|
 |offset|number|true|none|The number of items skipped before retrieving the prices.|
 |count|number|true|none|The maximum number of prices available.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |prices|[[AdminPrice](#schemaadminprice)]|true|none|The list of prices associated with the price list.|
 
 <h2 id="tocS_AdminPriceListResponse">AdminPriceListResponse</h2>
@@ -924337,7 +927200,7 @@ The paginated list of price preferences.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |price_preferences|[[AdminPricePreference](#schemaadminpricepreference)]|true|none|The list of price preferences.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminPricePreferenceResponse">AdminPricePreferenceResponse</h2>
 <!-- backwards compatibility -->
@@ -925070,7 +927933,7 @@ The paginated list of product categories.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_categories|[[AdminProductCategory](#schemaadminproductcategory)]|true|none|The list of product categories.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductCategoryResponse">AdminProductCategoryResponse</h2>
 <!-- backwards compatibility -->
@@ -926592,7 +929455,7 @@ The paginated list of product tags.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_tags|[[AdminProductTag](#schemaadminproducttag)]|true|none|The list of product tags.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductTagResponse">AdminProductTagResponse</h2>
 <!-- backwards compatibility -->
@@ -926764,7 +929627,7 @@ The paginated list of product types.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_types|[[AdminProductType](#schemaadminproducttype)]|true|none|The list of product types.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminProductTypeResponse">AdminProductTypeResponse</h2>
 <!-- backwards compatibility -->
@@ -928100,7 +930963,8 @@ The product variant's details.
     "currency_code": "usd",
     "max_quantity": 0,
     "buy_rules_min_quantity": 0,
-    "apply_to_quantity": 0
+    "apply_to_quantity": 0,
+    "target_selection_strategy": "most_expensive_first"
   },
   "rules": [
     {
@@ -928224,7 +931088,8 @@ The promotion's details.
       "currency_code": "usd",
       "max_quantity": 0,
       "buy_rules_min_quantity": 0,
-      "apply_to_quantity": 0
+      "apply_to_quantity": 0,
+      "target_selection_strategy": "most_expensive_first"
     },
     "rules": [
       {
@@ -928465,7 +931330,6 @@ The details of a property label.
   "name": "string",
   "description": "string",
   "metadata": {},
-  "inherited_from_role_id": "string",
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
   "deleted_at": "1970-01-01T00:00:00Z"
@@ -928485,7 +931349,6 @@ The details of an RBAC policy.
 |name|string|true|none|The policy's name. Used for display purposes.|
 |description|string|true|none|The policy's description.|
 |metadata|object|true|none|Key-value pairs that hold additional information about the policy.|
-|inherited_from_role_id|string|false|none|The ID of the role from which the policy is inherited.|
 |created_at|string(date-time)|true|none|The date the policy was created.|
 |updated_at|string(date-time)|true|none|The date the policy was last updated.|
 |deleted_at|string(date-time)|true|none|The date the policy was deleted.|
@@ -928502,7 +931365,6 @@ The details of an RBAC policy.
   "id": "string",
   "name": "string",
   "description": "string",
-  "parent_id": "string",
   "metadata": {},
   "policies": [
     {
@@ -928513,7 +931375,6 @@ The details of an RBAC policy.
       "name": "string",
       "description": "string",
       "metadata": {},
-      "inherited_from_role_id": "string",
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
       "deleted_at": "1970-01-01T00:00:00Z"
@@ -928521,7 +931382,11 @@ The details of an RBAC policy.
   ],
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
-  "deleted_at": "1970-01-01T00:00:00Z"
+  "deleted_at": "1970-01-01T00:00:00Z",
+  "scope": {
+    "type": "string",
+    "id": "string"
+  }
 }
 ```
 
@@ -928534,12 +931399,51 @@ The details of an RBAC role.
 |id|string|true|none|The ID of the RBAC role.|
 |name|string|true|none|The name of the RBAC role.|
 |description|string|true|none|The description of the RBAC role.|
-|parent_id|string|true|none|The ID of the parent RBAC role.|
 |metadata|object|true|none|Key-value pairs that hold additional information about the RBAC role.|
 |policies|[[AdminRbacPolicy](#schemaadminrbacpolicy)]|false|none|The RBAC role's policies.|
 |created_at|string(date-time)|true|none|The date the RBAC role was created.|
 |updated_at|string(date-time)|true|none|The date the RBAC role was last updated.|
 |deleted_at|string(date-time)|true|none|The date the RBAC role was deleted.|
+|scope|object|false|none|The scope the role is constrained to, if any.|
+
+<h2 id="tocS_AdminRbacRoleAssignment">AdminRbacRoleAssignment</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminrbacroleassignment"></a>
+<a id="schema_AdminRbacRoleAssignment"></a>
+<a id="tocSadminrbacroleassignment"></a>
+<a id="tocsadminrbacroleassignment"></a>
+
+```json
+{
+  "id": "string",
+  "role_id": "string",
+  "reference": "string",
+  "reference_id": "string",
+  "scope": "string",
+  "scope_id": "string",
+  "metadata": {},
+  "created_at": "1970-01-01T00:00:00Z",
+  "updated_at": "1970-01-01T00:00:00Z",
+  "deleted_at": "1970-01-01T00:00:00Z"
+}
+```
+
+The assignment of an RBAC role to an entity, such as a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The assignment's ID.|
+|role_id|string|true|none|The ID of the role the assignment is for.|
+|reference|string|true|none|The type of entity the role is assigned to (e.g. `user`, `invite`).|
+|reference_id|string|true|none|The ID of the entity the role is assigned to.|
+|scope|string|true|none|The type of the scope's entity that the assignment is constrained to, such as `organization`.|
+|scope_id|string|true|none|The ID of the scope's entity that the assignment is constrained to, such as `org_123`.|
+|metadata|object|true|none|The assignment's metadata.|
+|created_at|string(date-time)|true|none|The date the assignment was created.|
+|updated_at|string(date-time)|true|none|The date the assignment was updated.|
+|deleted_at|string(date-time)|true|none|The date the assignment was deleted.|
 
 <h2 id="tocS_AdminReceiveItems">AdminReceiveItems</h2>
 <!-- backwards compatibility -->
@@ -928623,7 +931527,8 @@ The items details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -928637,7 +931542,8 @@ The items details.
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
     "code": "string"
-  }
+  },
+  "idempotency_key": "string"
 }
 ```
 
@@ -928655,6 +931561,7 @@ The refund's details.
 |created_by|string|false|none|The ID of the user that created the refund.|
 |payment|[BasePayment](#schemabasepayment)|true|none|The payment's details.|
 |refund_reason|[BaseRefundReason](#schemabaserefundreason)|false|none|The refund reason's details.|
+|idempotency_key|string|false|none|The refund's idempotency key.|
 
 <h2 id="tocS_AdminRefundPayment">AdminRefundPayment</h2>
 <!-- backwards compatibility -->
@@ -928667,7 +931574,8 @@ The refund's details.
 {
   "amount": 0,
   "refund_reason_id": "string",
-  "note": "string"
+  "note": "string",
+  "idempotency_key": "string"
 }
 ```
 
@@ -928680,6 +931588,7 @@ The refund's details.
 |amount|number|false|none|The amount to refund.|
 |refund_reason_id|string|false|none|The ID of a refund reason.|
 |note|string|false|none|A note to attach to the refund.|
+|idempotency_key|string|false|none|The payment's idempotency key.|
 
 <h2 id="tocS_AdminRefundReason">AdminRefundReason</h2>
 <!-- backwards compatibility -->
@@ -929321,7 +932230,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -929399,7 +932309,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -929413,7 +932324,8 @@ The return item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -929470,7 +932382,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -931518,7 +934431,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -931566,7 +934480,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -933956,7 +936871,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -934034,7 +936950,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -934048,7 +936965,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -934105,7 +937023,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -935247,7 +938166,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -935325,7 +938245,8 @@ The return item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -935339,7 +938260,8 @@ The return item's details.
                           "created_at": "1970-01-01T00:00:00Z",
                           "updated_at": "1970-01-01T00:00:00Z",
                           "code": "string"
-                        }
+                        },
+                        "idempotency_key": "string"
                       }
                     ],
                     "payment_collection": {},
@@ -935396,7 +938318,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -936565,7 +939488,8 @@ The return item's details.
                               "created_at": "1970-01-01T00:00:00Z",
                               "updated_at": "1970-01-01T00:00:00Z",
                               "code": "string"
-                            }
+                            },
+                            "idempotency_key": "string"
                           }
                         ],
                         "payment_collection": {},
@@ -936643,7 +939567,8 @@ The return item's details.
                                   "created_at": "1970-01-01T00:00:00Z",
                                   "updated_at": "1970-01-01T00:00:00Z",
                                   "code": "string"
-                                }
+                                },
+                                "idempotency_key": "string"
                               }
                             ],
                             "payment_collection": {},
@@ -936657,7 +939582,8 @@ The return item's details.
                             "created_at": "1970-01-01T00:00:00Z",
                             "updated_at": "1970-01-01T00:00:00Z",
                             "code": "string"
-                          }
+                          },
+                          "idempotency_key": "string"
                         }
                       ],
                       "payment_collection": {},
@@ -936714,7 +939640,8 @@ The return item's details.
                                 "created_at": "1970-01-01T00:00:00Z",
                                 "updated_at": "1970-01-01T00:00:00Z",
                                 "code": "string"
-                              }
+                              },
+                              "idempotency_key": "string"
                             }
                           ],
                           "payment_collection": {},
@@ -938740,7 +941667,8 @@ The return item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -938818,7 +941746,8 @@ The return item's details.
                         "created_at": "1970-01-01T00:00:00Z",
                         "updated_at": "1970-01-01T00:00:00Z",
                         "code": "string"
-                      }
+                      },
+                      "idempotency_key": "string"
                     }
                   ],
                   "payment_collection": {},
@@ -938832,7 +941761,8 @@ The return item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -938889,7 +941819,8 @@ The return item's details.
                       "created_at": "1970-01-01T00:00:00Z",
                       "updated_at": "1970-01-01T00:00:00Z",
                       "code": "string"
-                    }
+                    },
+                    "idempotency_key": "string"
                   }
                 ],
                 "payment_collection": {},
@@ -939209,7 +942140,7 @@ The paginated list of return reasons.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |return_reasons|[[AdminReturnReason](#schemaadminreturnreason)]|true|none|The list of return reasons.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminReturnReasonResponse">AdminReturnReasonResponse</h2>
 <!-- backwards compatibility -->
@@ -940611,7 +943542,7 @@ The paginated list of shipping option types.
 |limit|number|true|none|The maximum number of items returned.|
 |offset|number|true|none|The number of items skipped before returning the results.|
 |count|number|true|none|The total number of items.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 |shipping_option_types|[[AdminShippingOptionType](#schemaadminshippingoptiontype)]|true|none|The list of shipping option types.|
 
 <h2 id="tocS_AdminShippingOptionTypeResponse">AdminShippingOptionTypeResponse</h2>
@@ -940926,7 +943857,7 @@ The paginated list of stock locations.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |stock_locations|[[AdminStockLocation](#schemaadminstocklocation)]|true|none|The list of stock locations.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminStockLocationResponse">AdminStockLocationResponse</h2>
 <!-- backwards compatibility -->
@@ -941325,7 +944256,7 @@ The paginated list of store credit accounts.
 |offset|number|true|none|The number of store credit accounts to skip before retrieving the results.|
 |count|number|true|none|The total number of store credit accounts available.|
 |store_credit_accounts|[[AdminStoreCreditAccount](#schemaadminstorecreditaccount)]|true|none|The list of store credit accounts.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_AdminStoreCurrency">AdminStoreCurrency</h2>
 <!-- backwards compatibility -->
@@ -941449,7 +944380,7 @@ The paginated list of stores.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |stores|[[AdminStore](#schemaadminstore)]|true|none|The list of stores.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminStoreLocale">AdminStoreLocale</h2>
 <!-- backwards compatibility -->
@@ -942082,7 +945013,7 @@ The paginated list of transactions.
 |offset|number|true|none|The number of transactions to skip before retrieving the results.|
 |count|number|true|none|The total number of transactions available.|
 |transactions|[[AdminTransaction](#schemaadmintransaction)]|true|none|The list of transactions.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_AdminTransferOrderToGuest">AdminTransferOrderToGuest</h2>
 <!-- backwards compatibility -->
@@ -942341,6 +945272,56 @@ The batch response for managing translations.
 |created|[[AdminTranslation](#schemaadmintranslation)]|true|none|The created translations.|
 |updated|[[AdminTranslation](#schemaadmintranslation)]|true|none|The updated translations.|
 |deleted|object|true|none|Summary of the deleted translations.|
+
+<h2 id="tocS_AdminUnassignUserRole">AdminUnassignUserRole</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminunassignuserrole"></a>
+<a id="schema_AdminUnassignUserRole"></a>
+<a id="tocSadminunassignuserrole"></a>
+<a id="tocsadminunassignuserrole"></a>
+
+```json
+{
+  "scope": "string",
+  "scope_id": "string"
+}
+```
+
+The scope to unassign the role from the user in.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|scope|string|false|none|The type of the scope's entity, such as `organization`. Must be passed with `scope_id`.|
+|scope_id|string|false|none|The ID of the scope's entity, such as `org_123`. Must be passed with `scope`.|
+
+<h2 id="tocS_AdminUnassignUserRoles">AdminUnassignUserRoles</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminunassignuserroles"></a>
+<a id="schema_AdminUnassignUserRoles"></a>
+<a id="tocSadminunassignuserroles"></a>
+<a id="tocsadminunassignuserroles"></a>
+
+```json
+{
+  "assignments": [
+    {
+      "role_id": "string",
+      "scope": "string",
+      "scope_id": "string"
+    }
+  ]
+}
+```
+
+The RBAC roles to unassign from a user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assignments|[object]|false|none|The roles to unassign from the user.|
 
 <h2 id="tocS_AdminUpdateApiKey">AdminUpdateApiKey</h2>
 <!-- backwards compatibility -->
@@ -943058,7 +946039,7 @@ The product's details.
 |categories|[object]|false|none|The product's categories.|
 |tags|[object]|false|none|The product's tags.|
 |options|[[AdminUpdateProductOption](#schemaadminupdateproductoption)]|false|none|The product's options.|
-|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. You can add new variants or update existing ones, passing their IDs in the object.|
+|variants|[[AdminCreateProductVariant](#schemaadmincreateproductvariant) \| [AdminUpdateProductVariant](#schemaadminupdateproductvariant)]|false|none|The product's variants. This replaces the product's full variant list, so existing variants that aren't included are deleted. Pass a variant's `id` to update it, or omit the `id` to create a new variant.|
 |sales_channels|[object]|false|none|The sales channels that the product is available in.|
 |weight|number|false|none|The product's weight.|
 |length|number|false|none|The product's length.|
@@ -944319,7 +947300,10 @@ The details of the stock location address to create.
   "metadata": {},
   "created_at": "1970-01-01T00:00:00Z",
   "updated_at": "1970-01-01T00:00:00Z",
-  "deleted_at": "1970-01-01T00:00:00Z"
+  "deleted_at": "1970-01-01T00:00:00Z",
+  "roles": [
+    "string"
+  ]
 }
 ```
 
@@ -944338,6 +947322,7 @@ The user's details.
 |created_at|string(date-time)|true|none|The date the user was created.|
 |updated_at|string(date-time)|true|none|The date the user was updated.|
 |deleted_at|string(date-time)|true|none|The date the user was deleted.|
+|roles|[string]|false|none|The user's roles.|
 
 <h2 id="tocS_AdminUserAuthProvidersResponse">AdminUserAuthProvidersResponse</h2>
 <!-- backwards compatibility -->
@@ -944409,7 +947394,10 @@ The details of the deleted user.
       "metadata": {},
       "created_at": "1970-01-01T00:00:00Z",
       "updated_at": "1970-01-01T00:00:00Z",
-      "deleted_at": "1970-01-01T00:00:00Z"
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "roles": [
+        "string"
+      ]
     }
   ],
   "estimate_count": 0
@@ -944426,7 +947414,7 @@ The paginated list of users.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |users|[[AdminUser](#schemaadminuser)]|true|none|The list of users.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_AdminUserResetPasswordTokenResponse">AdminUserResetPasswordTokenResponse</h2>
 <!-- backwards compatibility -->
@@ -944467,7 +947455,10 @@ The response for the reset password token generation for a user. This response c
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -944479,6 +947470,63 @@ The user's details.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |user|[AdminUser](#schemaadminuser)|true|none|The user's details.|
+
+<h2 id="tocS_AdminUserRoleListResponse">AdminUserRoleListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaadminuserrolelistresponse"></a>
+<a id="schema_AdminUserRoleListResponse"></a>
+<a id="tocSadminuserrolelistresponse"></a>
+<a id="tocsadminuserrolelistresponse"></a>
+
+```json
+{
+  "limit": 0,
+  "offset": 0,
+  "count": 0,
+  "estimate_count": 0,
+  "roles": [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "metadata": {},
+      "policies": [
+        {
+          "id": "string",
+          "key": "string",
+          "resource": "product",
+          "operation": "create",
+          "name": "string",
+          "description": "string",
+          "metadata": {},
+          "created_at": "1970-01-01T00:00:00Z",
+          "updated_at": "1970-01-01T00:00:00Z",
+          "deleted_at": "1970-01-01T00:00:00Z"
+        }
+      ],
+      "created_at": "1970-01-01T00:00:00Z",
+      "updated_at": "1970-01-01T00:00:00Z",
+      "deleted_at": "1970-01-01T00:00:00Z",
+      "scope": {
+        "type": "string",
+        "id": "string"
+      }
+    }
+  ]
+}
+```
+
+The paginated list of roles assigned to the user.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|limit|number|true|none|The maximum number of items retrieved.|
+|offset|number|true|none|The number of items to skip before retrieving the returned items.|
+|count|number|true|none|The total number of items.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|roles|[[AdminRbacRole](#schemaadminrbacrole)]|true|none|The list of roles.|
 
 <h2 id="tocS_AdminViewConfiguration">AdminViewConfiguration</h2>
 <!-- backwards compatibility -->
@@ -945039,7 +948087,10 @@ The API key's details.
     "metadata": {},
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
-    "deleted_at": "1970-01-01T00:00:00Z"
+    "deleted_at": "1970-01-01T00:00:00Z",
+    "roles": [
+      "string"
+    ]
   }
 }
 ```
@@ -945460,7 +948511,8 @@ The details of a captured payment.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -945508,7 +948560,8 @@ The details of a captured payment.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -946206,7 +949259,8 @@ The cart's shipping address.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -946254,7 +949308,8 @@ The cart's shipping address.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -948734,7 +951789,8 @@ The adjustment's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -948782,7 +951838,8 @@ The adjustment's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -948948,7 +952005,8 @@ The tax line's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -948996,7 +952054,8 @@ The tax line's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -950878,7 +953937,8 @@ An order transaction's details.
         "created_at": "1970-01-01T00:00:00Z",
         "updated_at": "1970-01-01T00:00:00Z",
         "code": "string"
-      }
+      },
+      "idempotency_key": "string"
     }
   ],
   "payment_collection": {},
@@ -950988,7 +954048,8 @@ The payment's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -951036,7 +954097,8 @@ The payment's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -951161,7 +954223,8 @@ The payment provider's details.
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -952019,7 +955082,8 @@ The rule value's details.
     "created_at": "1970-01-01T00:00:00Z",
     "updated_at": "1970-01-01T00:00:00Z",
     "code": "string"
-  }
+  },
+  "idempotency_key": "string"
 }
 ```
 
@@ -952037,6 +955101,7 @@ The refund's details.
 |created_by|string|false|none|The ID of the user that created the refund.|
 |payment|object|true|none|none|
 |refund_reason|[BaseRefundReason](#schemabaserefundreason)|false|none|The refund reason's details.|
+|idempotency_key|string|false|none|The refund's idempotency key.|
 
 <h2 id="tocS_BaseRefundReason">BaseRefundReason</h2>
 <!-- backwards compatibility -->
@@ -952746,7 +955811,8 @@ The inventory level's details
       "refundable_total_per_unit": 0,
       "product_type_id": "string",
       "is_giftcard": true,
-      "line_item_metadata": {}
+      "line_item_metadata": {},
+      "is_custom_price": true
     }
   ],
   "shipping_methods": [
@@ -954025,7 +957091,8 @@ The address's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -955918,7 +958985,8 @@ The address's details.
               "refundable_total_per_unit": 0,
               "product_type_id": "string",
               "is_giftcard": true,
-              "line_item_metadata": {}
+              "line_item_metadata": {},
+              "is_custom_price": true
             }
           ],
           "shipping_methods": [
@@ -956292,7 +959360,8 @@ The address's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -958189,7 +961258,8 @@ The address's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -958485,7 +961555,8 @@ The address's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -958861,7 +961932,8 @@ The order change's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -960820,7 +963892,8 @@ The order change action's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -962049,7 +965122,8 @@ The credit line's details.
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -963942,7 +967016,8 @@ The credit line's details.
             "refundable_total_per_unit": 0,
             "product_type_id": "string",
             "is_giftcard": true,
-            "line_item_metadata": {}
+            "line_item_metadata": {},
+            "is_custom_price": true
           }
         ],
         "shipping_methods": [
@@ -964316,7 +967391,8 @@ The credit line's details.
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -964643,7 +967719,8 @@ The order item's detail.
   "refundable_total_per_unit": 0,
   "product_type_id": "string",
   "is_giftcard": true,
-  "line_item_metadata": {}
+  "line_item_metadata": {},
+  "is_custom_price": true
 }
 ```
 
@@ -964697,6 +967774,7 @@ The order line item's details.
 |product_type_id|string|false|none|The ID of the associated product's type.|
 |is_giftcard|boolean|true|none|Whether the item is a gift card.|
 |line_item_metadata|object|false|none|Custom key-value pairs on the order's line items.|
+|is_custom_price|boolean|true|none|Indicates whether the line item's unit price is a custom price.|
 
 <h2 id="tocS_OrderLineItemAdjustment">OrderLineItemAdjustment</h2>
 <!-- backwards compatibility -->
@@ -965401,7 +968479,8 @@ The filter's relationship details. Only available if the filter is a relationshi
         "refundable_total_per_unit": 0,
         "product_type_id": "string",
         "is_giftcard": true,
-        "line_item_metadata": {}
+        "line_item_metadata": {},
+        "is_custom_price": true
       }
     ],
     "shipping_methods": [
@@ -967294,7 +970373,8 @@ The filter's relationship details. Only available if the filter is a relationshi
           "refundable_total_per_unit": 0,
           "product_type_id": "string",
           "is_giftcard": true,
-          "line_item_metadata": {}
+          "line_item_metadata": {},
+          "is_custom_price": true
         }
       ],
       "shipping_methods": [
@@ -968495,7 +971575,8 @@ The shipping option's calculated price.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -968543,7 +971624,8 @@ The shipping option's calculated price.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -969972,7 +973054,8 @@ The promotion code to remove from the cart.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -970020,7 +973103,8 @@ The promotion code to remove from the cart.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -971239,7 +974323,7 @@ The paginated list of currencies.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total count of items.|
 |currencies|[[StoreCurrency](#schemastorecurrency)]|true|none|The list of currencies.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreCurrencyResponse">StoreCurrencyResponse</h2>
 <!-- backwards compatibility -->
@@ -971441,7 +974525,7 @@ The paginated list of customer addresses.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |addresses|[[StoreCustomerAddress](#schemastorecustomeraddress)]|true|none|The list of addresses.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreCustomerAddressResponse">StoreCustomerAddressResponse</h2>
 <!-- backwards compatibility -->
@@ -972943,7 +976027,8 @@ The list of supported locales in the store.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -972991,7 +976076,8 @@ The list of supported locales in the store.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -974537,7 +977623,8 @@ The item's details.
                     "created_at": "1970-01-01T00:00:00Z",
                     "updated_at": "1970-01-01T00:00:00Z",
                     "code": "string"
-                  }
+                  },
+                  "idempotency_key": "string"
                 }
               ],
               "payment_collection": {},
@@ -974585,7 +977672,8 @@ The item's details.
                   "created_at": "1970-01-01T00:00:00Z",
                   "updated_at": "1970-01-01T00:00:00Z",
                   "code": "string"
-                }
+                },
+                "idempotency_key": "string"
               }
             ],
             "payment_collection": {},
@@ -974895,7 +977983,8 @@ The shipping method's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -974943,7 +978032,8 @@ The shipping method's details.
             "created_at": "1970-01-01T00:00:00Z",
             "updated_at": "1970-01-01T00:00:00Z",
             "code": "string"
-          }
+          },
+          "idempotency_key": "string"
         }
       ],
       "payment_collection": {},
@@ -975064,7 +978154,8 @@ The payment collection's details.
                 "created_at": "1970-01-01T00:00:00Z",
                 "updated_at": "1970-01-01T00:00:00Z",
                 "code": "string"
-              }
+              },
+              "idempotency_key": "string"
             }
           ],
           "payment_collection": {},
@@ -975112,7 +978203,8 @@ The payment collection's details.
               "created_at": "1970-01-01T00:00:00Z",
               "updated_at": "1970-01-01T00:00:00Z",
               "code": "string"
-            }
+            },
+            "idempotency_key": "string"
           }
         ],
         "payment_collection": {},
@@ -975213,7 +978305,8 @@ The payment provider's details
           "created_at": "1970-01-01T00:00:00Z",
           "updated_at": "1970-01-01T00:00:00Z",
           "code": "string"
-        }
+        },
+        "idempotency_key": "string"
       }
     ],
     "payment_collection": {},
@@ -976472,7 +979565,7 @@ The paginated list of product categories.
 |offset|number|true|none|The number of items skipped before retrieving the returned items.|
 |count|number|true|none|The total number of items.|
 |product_categories|[[StoreProductCategory](#schemastoreproductcategory)]|true|none|The list of product categories.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductCategoryResponse">StoreProductCategoryResponse</h2>
 <!-- backwards compatibility -->
@@ -978121,7 +981214,7 @@ The paginated list of product tags.
 |offset|number|true|none|The number of items to skip before retrieving the returned items.|
 |count|number|true|none|The total number of items available.|
 |product_tags|[[StoreProductTag](#schemastoreproducttag)]|true|none|The list of product tags.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductTagResponse">StoreProductTagResponse</h2>
 <!-- backwards compatibility -->
@@ -978222,7 +981315,7 @@ The paginated list of product types.
 |offset|number|true|none|The number of items to skip before retrieving the returned items.|
 |count|number|true|none|The total number of items available.|
 |product_types|[[StoreProductType](#schemastoreproducttype)]|true|none|The list of product types.|
-|estimate_count|number|false|none|The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
+|estimate_count|number|false|none|**Deprecated.** The estimated count retrieved from the PostgreSQL query planner, which may be inaccurate.|
 
 <h2 id="tocS_StoreProductTypeResponse">StoreProductTypeResponse</h2>
 <!-- backwards compatibility -->
@@ -979226,7 +982319,7 @@ The paginated list of store credit accounts.
 |offset|number|true|none|The number of store credit accounts to skip before retrieving the results.|
 |count|number|true|none|The total number of store credit accounts available.|
 |store_credit_accounts|[[StoreStoreCreditAccount](#schemastorestorecreditaccount)]|true|none|The list of store credit accounts.|
-|estimate_count|number|false|none|The store credit account's estimate count.|
+|estimate_count|number|false|none|**Deprecated.** The store credit account's estimate count.|
 
 <h2 id="tocS_StoreUpdateCustomer">StoreUpdateCustomer</h2>
 <!-- backwards compatibility -->
@@ -979303,6 +982396,27 @@ The properties to update in the address.
 |is_default_shipping|boolean|false|none|Whether the address is used by default for shipping during checkout.|
 |is_default_billing|boolean|false|none|Whether the address is used by default for billing during checkout.|
 |metadata|object|false|none|Holds custom key-value pairs.|
+
+<h2 id="tocS_StoreUpdatePaymentSession">StoreUpdatePaymentSession</h2>
+<!-- backwards compatibility -->
+<a id="schemastoreupdatepaymentsession"></a>
+<a id="schema_StoreUpdatePaymentSession"></a>
+<a id="tocSstoreupdatepaymentsession"></a>
+<a id="tocsstoreupdatepaymentsession"></a>
+
+```json
+{
+  "client_data": {}
+}
+```
+
+The client data to merge into the payment session.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|client_data|object|true|none|Data to merge into the session's `data.client`, such as payment details<br>collected by the provider's checkout component. Set a property to `null` to remove it.|
 
 <h2 id="tocS_UpdateAddress">UpdateAddress</h2>
 <!-- backwards compatibility -->

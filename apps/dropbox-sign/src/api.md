@@ -299,6 +299,868 @@ To perform this operation, you must be authenticated by means of one of the foll
 api_key, oauth2
 </aside>
 
+## Get account settings
+
+<a id="opIdaccountSettingsGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/account/settings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /account/settings`
+
+account_id is an optional query parameter and defaults to the authenticated account. A team admin can specify another account on a team they administer.
+
+<h3 id="get-account-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|query|string|false|Optional account ID. Defaults to the authenticated account. A team admin can specify another account on a team they administer.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "account_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_sign_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_view_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_autocomplete": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_daily_summary": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_embedded_signature_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_ordered_sr_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_outbound_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "template_link_signature_emails_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="get-account-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[AccountSettingsResponse](#schemaaccountsettingsresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key, oauth2
+</aside>
+
+## Modify account settings
+
+<a id="opIdaccountSettingsUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/account/settings \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "set": {
+      "company": "string",
+      "custom_signing_redirect_enabled": true,
+      "custom_signing_redirect_url": "string",
+      "custom_tagline": "string",
+      "date_format": {},
+      "is_signature_reminders_enabled": true,
+      "request_email_from": "string",
+      "request_email_signature": "string",
+      "required_signature_types": [
+        "draw"
+      ],
+      "should_enable_tamper_proof": true,
+      "should_include_distinct_pdfs": true,
+      "should_offer_signer_access_code": true,
+      "should_offer_signer_sms_authentication": true,
+      "should_remove_document_id": true,
+      "is_notify_on_sign_enabled": true,
+      "is_notify_on_view_enabled": true,
+      "should_autocomplete": true,
+      "should_include_requested_pdfs": true,
+      "should_include_requested_pdfs_for_others": true,
+      "should_include_sent_doc_pdfs": true,
+      "should_include_sent_doc_pdfs_for_others": true,
+      "should_send_daily_summary": true,
+      "should_send_embedded_signature_conf_emails": true,
+      "should_send_ordered_sr_email": true,
+      "should_send_outbound_conf_emails": true,
+      "template_link_signature_emails_enabled": true,
+      "property1": null,
+      "property2": null
+    },
+    "unset": [
+      "company"
+    ]
+  }'
+```
+
+`POST /account/settings`
+
+account_id is an optional query parameter and defaults to the authenticated account. A team admin can specify another account on a team they administer.
+
+> Body parameter
+
+```json
+{
+  "set": {
+    "company": "string",
+    "custom_signing_redirect_enabled": true,
+    "custom_signing_redirect_url": "string",
+    "custom_tagline": "string",
+    "date_format": {},
+    "is_signature_reminders_enabled": true,
+    "request_email_from": "string",
+    "request_email_signature": "string",
+    "required_signature_types": [
+      "draw"
+    ],
+    "should_enable_tamper_proof": true,
+    "should_include_distinct_pdfs": true,
+    "should_offer_signer_access_code": true,
+    "should_offer_signer_sms_authentication": true,
+    "should_remove_document_id": true,
+    "is_notify_on_sign_enabled": true,
+    "is_notify_on_view_enabled": true,
+    "should_autocomplete": true,
+    "should_include_requested_pdfs": true,
+    "should_include_requested_pdfs_for_others": true,
+    "should_include_sent_doc_pdfs": true,
+    "should_include_sent_doc_pdfs_for_others": true,
+    "should_send_daily_summary": true,
+    "should_send_embedded_signature_conf_emails": true,
+    "should_send_ordered_sr_email": true,
+    "should_send_outbound_conf_emails": true,
+    "template_link_signature_emails_enabled": true,
+    "property1": null,
+    "property2": null
+  },
+  "unset": [
+    "company"
+  ]
+}
+```
+
+<h3 id="modify-account-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|query|string|false|Optional account ID. Defaults to the authenticated account. A team admin can specify another account on a team they administer.|
+|body|body|[AccountSettingsUpdateRequest](#schemaaccountsettingsupdaterequest)|true|none|
+|» set|body|object|false|Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.|
+|» » company|body|string|false|Company name associated with this account or team.|
+|» » custom_signing_redirect_enabled|body|boolean|false|Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.|
+|» » custom_signing_redirect_url|body|string|false|Webpage where signers are redirected after they sign, when custom redirects are enabled.|
+|» » custom_tagline|body|string|false|Company tagline shown with the account or team branding.|
+|» » date_format|body|object|false|Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.|
+|» » is_signature_reminders_enabled|body|boolean|false|Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.|
+|» » request_email_from|body|string|false|Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.|
+|» » request_email_signature|body|string|false|Text appended to the end of signature request emails.|
+|» » required_signature_types|body|[[RequiredSignatureType](#schemarequiredsignaturetype)]|false|Signature creation methods a signer is allowed to use.|
+|» » should_enable_tamper_proof|body|boolean|false|Whether a tamper-proof seal is applied to sent signature requests.|
+|» » should_include_distinct_pdfs|body|boolean|false|Whether completed documents remain as separate PDF files instead of being merged into one PDF.|
+|» » should_offer_signer_access_code|body|boolean|false|Whether senders can require a custom access code before a signer can open a document.|
+|» » should_offer_signer_sms_authentication|body|boolean|false|Whether senders can require a text-message verification code before a signer can open a document.|
+|» » should_remove_document_id|body|boolean|false|Whether the document ID is removed from all pages of sent documents.|
+|» » is_notify_on_sign_enabled|body|boolean|false|Whether to notify the account when someone signs a document it sent.|
+|» » is_notify_on_view_enabled|body|boolean|false|Whether to notify the account when someone opens a document it sent.|
+|» » should_autocomplete|body|boolean|false|Whether values entered in text fields are saved and suggested for future signature requests.|
+|» » should_include_requested_pdfs|body|boolean|false|Whether to email the account a PDF copy when a signature request it sent is completed.|
+|» » should_include_requested_pdfs_for_others|body|boolean|false|Whether to email a PDF copy to the other signers and CC recipients when a signature request is completed.|
+|» » should_include_sent_doc_pdfs|body|boolean|false|Whether to email the account a PDF copy when it sends a document.|
+|» » should_include_sent_doc_pdfs_for_others|body|boolean|false|Whether to email recipients a PDF copy, instead of only a link, when the account sends a document.|
+|» » should_send_daily_summary|body|boolean|false|Whether to send the account a daily email summarizing outstanding signature requests.|
+|» » should_send_embedded_signature_conf_emails|body|boolean|false|Whether to notify the account when it signs a document on a third-party site.|
+|» » should_send_ordered_sr_email|body|boolean|false|Whether to notify all parties when an ordered signature request starts.|
+|» » should_send_outbound_conf_emails|body|boolean|false|Whether to notify the account when it signs and sends a document.|
+|» » template_link_signature_emails_enabled|body|boolean|false|Whether to notify the account when someone signs a document sent by its team through a template link.|
+|» » **additionalProperties**|body|object|false|none|
+|» unset|body|[string]|false|Any setting that can be set can also be unset. Unset clears the stored value so it is inherited. A listed name cannot also be set or locked in the same request.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » required_signature_types|draw|
+|» » required_signature_types|phone|
+|» » required_signature_types|type|
+|» » required_signature_types|upload|
+|» unset|company|
+|» unset|custom_signing_redirect_enabled|
+|» unset|custom_signing_redirect_url|
+|» unset|custom_tagline|
+|» unset|date_format|
+|» unset|is_signature_reminders_enabled|
+|» unset|request_email_from|
+|» unset|request_email_signature|
+|» unset|required_signature_types|
+|» unset|should_enable_tamper_proof|
+|» unset|should_include_distinct_pdfs|
+|» unset|should_offer_signer_access_code|
+|» unset|should_offer_signer_sms_authentication|
+|» unset|should_remove_document_id|
+|» unset|is_notify_on_sign_enabled|
+|» unset|is_notify_on_view_enabled|
+|» unset|should_autocomplete|
+|» unset|should_include_requested_pdfs|
+|» unset|should_include_requested_pdfs_for_others|
+|» unset|should_include_sent_doc_pdfs|
+|» unset|should_include_sent_doc_pdfs_for_others|
+|» unset|should_send_daily_summary|
+|» unset|should_send_embedded_signature_conf_emails|
+|» unset|should_send_ordered_sr_email|
+|» unset|should_send_outbound_conf_emails|
+|» unset|template_link_signature_emails_enabled|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "account_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_sign_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_view_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_autocomplete": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_daily_summary": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_embedded_signature_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_ordered_sr_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_outbound_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "template_link_signature_emails_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="modify-account-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[AccountSettingsResponse](#schemaaccountsettingsresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key, oauth2
+</aside>
+
 ## Verify Account
 
 <a id="opIdaccountVerify"></a>
@@ -5989,6 +6851,7 @@ Creates a new Team and makes you a member. You must not currently belong to a Te
 |---|---|---|---|---|
 |body|body|[TeamCreateRequest](#schemateamcreaterequest)|true|none|
 |» name|body|string|false|The name of your Team.|
+|» parent_team_id|body|string|false|Id of an existing team to create this team under. Omit it to create a root team. Creating a subteam requires an organization admin.|
 
 > Example responses
 
@@ -6675,6 +7538,1142 @@ Removes the provided user Account from your Team. If the Account had an outstand
 |201|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
 |201|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
 |201|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key, oauth2
+</aside>
+
+## Get team settings
+
+<a id="opIdteamSettingsGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/team/settings \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /team/settings`
+
+team_id is an optional query parameter and defaults to the authenticated account's team. An organization admin can specify a subteam.
+
+<h3 id="get-team-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|team_id|query|string|false|Optional team ID. Defaults to the authenticated account's team. An organization admin can specify a subteam.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "team_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "data_residency": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_delete_document_for_everyone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_download_csv": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_creation": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_gallery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_app": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_sms": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "qualified_esignature_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "sms_signature_delivery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "nom151_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_in_person_signing": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "everyone_has_signed_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "timezone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "notify_cc_recipients_setting": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="get-team-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[TeamSettingsResponse](#schemateamsettingsresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key, oauth2
+</aside>
+
+## Modify team settings
+
+<a id="opIdteamSettingsUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/team/settings \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "set": {
+      "company": "string",
+      "custom_signing_redirect_enabled": true,
+      "custom_signing_redirect_url": "string",
+      "custom_tagline": "string",
+      "date_format": {},
+      "is_signature_reminders_enabled": true,
+      "request_email_from": "string",
+      "request_email_signature": "string",
+      "required_signature_types": [
+        "draw"
+      ],
+      "should_enable_tamper_proof": true,
+      "should_include_distinct_pdfs": true,
+      "should_offer_signer_access_code": true,
+      "should_offer_signer_sms_authentication": true,
+      "should_remove_document_id": true,
+      "data_residency": {},
+      "allow_team_delete_document_for_everyone": true,
+      "allow_team_download_csv": true,
+      "lock_team_template_creation": true,
+      "lock_team_template_gallery": true,
+      "self_sign_message": "string",
+      "self_sign_title": "string",
+      "signature_request_message": "string",
+      "signature_request_title": "string",
+      "multifactor_auth_app": true,
+      "multifactor_auth_sms": true,
+      "qualified_esignature_enabled": true,
+      "sms_signature_delivery": true,
+      "nom151_enabled": true,
+      "should_enable_in_person_signing": true,
+      "everyone_has_signed_email": "string",
+      "timezone": "string",
+      "notify_cc_recipients_setting": [
+        "send"
+      ],
+      "property1": null,
+      "property2": null
+    },
+    "lock": {
+      "company": {},
+      "custom_signing_redirect_enabled": {},
+      "custom_signing_redirect_url": {},
+      "custom_tagline": {},
+      "date_format": {},
+      "is_signature_reminders_enabled": {},
+      "request_email_from": {},
+      "request_email_signature": {},
+      "required_signature_types": {},
+      "should_enable_tamper_proof": {},
+      "should_include_distinct_pdfs": {},
+      "should_offer_signer_access_code": {},
+      "should_offer_signer_sms_authentication": {},
+      "should_remove_document_id": {},
+      "data_residency": {},
+      "allow_team_delete_document_for_everyone": {},
+      "allow_team_download_csv": {},
+      "lock_team_template_creation": {},
+      "lock_team_template_gallery": {},
+      "self_sign_message": {},
+      "self_sign_title": {},
+      "signature_request_message": {},
+      "signature_request_title": {},
+      "multifactor_auth_app": {},
+      "multifactor_auth_sms": {},
+      "qualified_esignature_enabled": {},
+      "sms_signature_delivery": {},
+      "nom151_enabled": {},
+      "should_enable_in_person_signing": {},
+      "everyone_has_signed_email": {},
+      "timezone": {},
+      "notify_cc_recipients_setting": {},
+      "property1": "organization_admins",
+      "property2": "organization_admins"
+    },
+    "unset": [
+      "company"
+    ]
+  }'
+```
+
+`POST /team/settings`
+
+team_id is an optional query parameter and defaults to the authenticated account's team. An organization admin can specify a subteam.
+
+> Body parameter
+
+```json
+{
+  "set": {
+    "company": "string",
+    "custom_signing_redirect_enabled": true,
+    "custom_signing_redirect_url": "string",
+    "custom_tagline": "string",
+    "date_format": {},
+    "is_signature_reminders_enabled": true,
+    "request_email_from": "string",
+    "request_email_signature": "string",
+    "required_signature_types": [
+      "draw"
+    ],
+    "should_enable_tamper_proof": true,
+    "should_include_distinct_pdfs": true,
+    "should_offer_signer_access_code": true,
+    "should_offer_signer_sms_authentication": true,
+    "should_remove_document_id": true,
+    "data_residency": {},
+    "allow_team_delete_document_for_everyone": true,
+    "allow_team_download_csv": true,
+    "lock_team_template_creation": true,
+    "lock_team_template_gallery": true,
+    "self_sign_message": "string",
+    "self_sign_title": "string",
+    "signature_request_message": "string",
+    "signature_request_title": "string",
+    "multifactor_auth_app": true,
+    "multifactor_auth_sms": true,
+    "qualified_esignature_enabled": true,
+    "sms_signature_delivery": true,
+    "nom151_enabled": true,
+    "should_enable_in_person_signing": true,
+    "everyone_has_signed_email": "string",
+    "timezone": "string",
+    "notify_cc_recipients_setting": [
+      "send"
+    ],
+    "property1": null,
+    "property2": null
+  },
+  "lock": {
+    "company": {},
+    "custom_signing_redirect_enabled": {},
+    "custom_signing_redirect_url": {},
+    "custom_tagline": {},
+    "date_format": {},
+    "is_signature_reminders_enabled": {},
+    "request_email_from": {},
+    "request_email_signature": {},
+    "required_signature_types": {},
+    "should_enable_tamper_proof": {},
+    "should_include_distinct_pdfs": {},
+    "should_offer_signer_access_code": {},
+    "should_offer_signer_sms_authentication": {},
+    "should_remove_document_id": {},
+    "data_residency": {},
+    "allow_team_delete_document_for_everyone": {},
+    "allow_team_download_csv": {},
+    "lock_team_template_creation": {},
+    "lock_team_template_gallery": {},
+    "self_sign_message": {},
+    "self_sign_title": {},
+    "signature_request_message": {},
+    "signature_request_title": {},
+    "multifactor_auth_app": {},
+    "multifactor_auth_sms": {},
+    "qualified_esignature_enabled": {},
+    "sms_signature_delivery": {},
+    "nom151_enabled": {},
+    "should_enable_in_person_signing": {},
+    "everyone_has_signed_email": {},
+    "timezone": {},
+    "notify_cc_recipients_setting": {},
+    "property1": "organization_admins",
+    "property2": "organization_admins"
+  },
+  "unset": [
+    "company"
+  ]
+}
+```
+
+<h3 id="modify-team-settings-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|team_id|query|string|false|Optional team ID. Defaults to the authenticated account's team. An organization admin can specify a subteam.|
+|body|body|[TeamSettingsUpdateRequest](#schemateamsettingsupdaterequest)|true|none|
+|» set|body|object|false|Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.|
+|» » company|body|string|false|Company name associated with this account or team.|
+|» » custom_signing_redirect_enabled|body|boolean|false|Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.|
+|» » custom_signing_redirect_url|body|string|false|Webpage where signers are redirected after they sign, when custom redirects are enabled.|
+|» » custom_tagline|body|string|false|Company tagline shown with the account or team branding.|
+|» » date_format|body|object|false|Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.|
+|» » is_signature_reminders_enabled|body|boolean|false|Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.|
+|» » request_email_from|body|string|false|Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.|
+|» » request_email_signature|body|string|false|Text appended to the end of signature request emails.|
+|» » required_signature_types|body|[[RequiredSignatureType](#schemarequiredsignaturetype)]|false|Signature creation methods a signer is allowed to use.|
+|» » should_enable_tamper_proof|body|boolean|false|Whether a tamper-proof seal is applied to sent signature requests.|
+|» » should_include_distinct_pdfs|body|boolean|false|Whether completed documents remain as separate PDF files instead of being merged into one PDF.|
+|» » should_offer_signer_access_code|body|boolean|false|Whether senders can require a custom access code before a signer can open a document.|
+|» » should_offer_signer_sms_authentication|body|boolean|false|Whether senders can require a text-message verification code before a signer can open a document.|
+|» » should_remove_document_id|body|boolean|false|Whether the document ID is removed from all pages of sent documents.|
+|» » data_residency|body|object|false|Region where the team's documents are stored at rest.|
+|» » allow_team_delete_document_for_everyone|body|boolean|false|Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.|
+|» » allow_team_download_csv|body|boolean|false|Whether the sender, in addition to admins, can download document data as a CSV.|
+|» » lock_team_template_creation|body|boolean|false|When enabled, only admins can create and edit templates and template links.|
+|» » lock_team_template_gallery|body|boolean|false|When enabled, only admins can access and use the template gallery.|
+|» » self_sign_message|body|string|false|Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|» » self_sign_title|body|string|false|Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|» » signature_request_message|body|string|false|Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|» » signature_request_title|body|string|false|Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|» » multifactor_auth_app|body|boolean|false|Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.|
+|» » multifactor_auth_sms|body|boolean|false|Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.|
+|» » qualified_esignature_enabled|body|boolean|false|Whether qualified electronic signatures are enabled for the team.|
+|» » sms_signature_delivery|body|boolean|false|Whether signature requests can be delivered by SMS.|
+|» » nom151_enabled|body|boolean|false|Whether NOM-151 compliance is enabled for the team.|
+|» » should_enable_in_person_signing|body|boolean|false|Whether in-person signing is enabled for the team.|
+|» » everyone_has_signed_email|body|string|false|Email address notified when everyone has signed.|
+|» » timezone|body|string|false|The team's time zone identifier.|
+|» » notify_cc_recipients_setting|body|[[NotifyCCRecipientEvent](#schemanotifyccrecipientevent)]|false|Events for which CC recipients receive notifications.|
+|» » **additionalProperties**|body|object|false|none|
+|» lock|body|object|false|Lock a setting to prevent subteams or accounts from overriding it. A team admin can set a lock on their own team. An organization admin can set a lock on the organization or on a subteam. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value. A name in `lock` cannot also appear in `unset`.|
+|» » company|body|object|false|Company name associated with this account or team.|
+|» » custom_signing_redirect_enabled|body|object|false|Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.|
+|» » custom_signing_redirect_url|body|object|false|Webpage where signers are redirected after they sign, when custom redirects are enabled.|
+|» » custom_tagline|body|object|false|Company tagline shown with the account or team branding.|
+|» » date_format|body|object|false|Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.|
+|» » is_signature_reminders_enabled|body|object|false|Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.|
+|» » request_email_from|body|object|false|Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.|
+|» » request_email_signature|body|object|false|Text appended to the end of signature request emails.|
+|» » required_signature_types|body|object|false|Signature creation methods a signer is allowed to use.|
+|» » should_enable_tamper_proof|body|object|false|Whether a tamper-proof seal is applied to sent signature requests.|
+|» » should_include_distinct_pdfs|body|object|false|Whether completed documents remain as separate PDF files instead of being merged into one PDF.|
+|» » should_offer_signer_access_code|body|object|false|Whether senders can require a custom access code before a signer can open a document.|
+|» » should_offer_signer_sms_authentication|body|object|false|Whether senders can require a text-message verification code before a signer can open a document.|
+|» » should_remove_document_id|body|object|false|Whether the document ID is removed from all pages of sent documents.|
+|» » data_residency|body|object|false|Region where the team's documents are stored at rest.|
+|» » allow_team_delete_document_for_everyone|body|object|false|Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.|
+|» » allow_team_download_csv|body|object|false|Whether the sender, in addition to admins, can download document data as a CSV.|
+|» » lock_team_template_creation|body|object|false|When enabled, only admins can create and edit templates and template links.|
+|» » lock_team_template_gallery|body|object|false|When enabled, only admins can access and use the template gallery.|
+|» » self_sign_message|body|object|false|Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|» » self_sign_title|body|object|false|Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|» » signature_request_message|body|object|false|Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|» » signature_request_title|body|object|false|Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|» » multifactor_auth_app|body|object|false|Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.|
+|» » multifactor_auth_sms|body|object|false|Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.|
+|» » qualified_esignature_enabled|body|object|false|Whether qualified electronic signatures are enabled for the team.|
+|» » sms_signature_delivery|body|object|false|Whether signature requests can be delivered by SMS.|
+|» » nom151_enabled|body|object|false|Whether NOM-151 compliance is enabled for the team.|
+|» » should_enable_in_person_signing|body|object|false|Whether in-person signing is enabled for the team.|
+|» » everyone_has_signed_email|body|object|false|Email address notified when everyone has signed.|
+|» » timezone|body|object|false|The team's time zone identifier.|
+|» » notify_cc_recipients_setting|body|object|false|Events for which CC recipients receive notifications.|
+|» » **additionalProperties**|body|[TeamSettingLock](#schemateamsettinglock)|false|Who can change a locked team setting. Every property in `lock` accepts these values. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value.|
+|» unset|body|[string]|false|Any setting that can be set can also be unset. Unset clears the stored value and its lock so both are inherited. A listed name cannot also be set or locked in the same request.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|» » required_signature_types|draw|
+|» » required_signature_types|phone|
+|» » required_signature_types|type|
+|» » required_signature_types|upload|
+|» » notify_cc_recipients_setting|send|
+|» » notify_cc_recipients_setting|complete|
+|» » notify_cc_recipients_setting|view|
+|» » notify_cc_recipients_setting|decline|
+|» » notify_cc_recipients_setting|delegate|
+|» » **additionalProperties**|organization_admins|
+|» » **additionalProperties**|team_admins|
+|» » **additionalProperties**|members|
+|» unset|company|
+|» unset|custom_signing_redirect_enabled|
+|» unset|custom_signing_redirect_url|
+|» unset|custom_tagline|
+|» unset|date_format|
+|» unset|is_signature_reminders_enabled|
+|» unset|request_email_from|
+|» unset|request_email_signature|
+|» unset|required_signature_types|
+|» unset|should_enable_tamper_proof|
+|» unset|should_include_distinct_pdfs|
+|» unset|should_offer_signer_access_code|
+|» unset|should_offer_signer_sms_authentication|
+|» unset|should_remove_document_id|
+|» unset|data_residency|
+|» unset|allow_team_delete_document_for_everyone|
+|» unset|allow_team_download_csv|
+|» unset|lock_team_template_creation|
+|» unset|lock_team_template_gallery|
+|» unset|self_sign_message|
+|» unset|self_sign_title|
+|» unset|signature_request_message|
+|» unset|signature_request_title|
+|» unset|multifactor_auth_app|
+|» unset|multifactor_auth_sms|
+|» unset|qualified_esignature_enabled|
+|» unset|sms_signature_delivery|
+|» unset|nom151_enabled|
+|» unset|should_enable_in_person_signing|
+|» unset|everyone_has_signed_email|
+|» unset|timezone|
+|» unset|notify_cc_recipients_setting|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "team_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "data_residency": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_delete_document_for_everyone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_download_csv": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_creation": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_gallery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_app": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_sms": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "qualified_esignature_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "sms_signature_delivery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "nom151_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_in_person_signing": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "everyone_has_signed_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "timezone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "notify_cc_recipients_setting": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="modify-team-settings-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[TeamSettingsResponse](#schemateamsettingsresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -7995,6 +9994,398 @@ Returns a list of API Apps that are accessible by you. If you are on a team with
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 api_key, oauth2
+</aside>
+
+<h1 id="dropbox-sign-api-api-keys">API Keys</h1>
+
+Create, list, and manage API keys for an account.
+
+## List API Keys
+
+<a id="opIdaccountApiKeyList"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/api_key \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api_key`
+
+Returns the API keys on the specified account. The key secret is not included.
+
+<h3 id="list-api-keys-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|query|string|false|The ID of the account whose API keys to list. Defaults to the authenticated account when omitted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "api_keys": [
+    {
+      "api_key_id": "c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345",
+      "account_id": "ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97",
+      "name": "Production",
+      "is_primary": false,
+      "last_used_at": null,
+      "created_at": 1735689600,
+      "updated_at": 1735689600
+    }
+  ],
+  "warnings": []
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="list-api-keys-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[AccountApiKeyListResponse](#schemaaccountapikeylistresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key
+</aside>
+
+## Create API Key
+
+<a id="opIdaccountApiKeyCreate"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/api_key \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "name": "Production"
+  }'
+```
+
+`POST /api_key`
+
+Creates a named API key on the specified account. The secret is returned only in this response.
+
+> Body parameter
+
+```json
+{
+  "name": "Production"
+}
+```
+
+<h3 id="create-api-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|account_id|query|string|false|The ID of the account that will own the new API key. Defaults to the authenticated account when omitted.|
+|body|body|[AccountApiKeyCreateRequest](#schemaaccountapikeycreaterequest)|true|none|
+|» name|body|string|true|Name for the API key. Must be unique on the account and at most 25 characters.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "api_key": {
+    "api_key_id": "c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345",
+    "account_id": "ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97",
+    "name": "Production",
+    "is_primary": true,
+    "last_used_at": null,
+    "created_at": 1735689600,
+    "updated_at": 1735689600,
+    "secret": "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+  },
+  "warnings": []
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="create-api-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|successful operation|[AccountApiKeyCreateResponse](#schemaaccountapikeycreateresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|201|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|201|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|201|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key
+</aside>
+
+## Get API Key
+
+<a id="opIdaccountApiKeyGet"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/api_key/c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`GET /api_key/{api_key_id}`
+
+Returns one API key on the specified account. The key secret is not included.
+
+<h3 id="get-api-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|api_key_id|path|string|true|The ID of the API key.|
+|account_id|query|string|false|The ID of the account that owns the API key. Defaults to the authenticated account when omitted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "api_key": {
+    "api_key_id": "c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345",
+    "account_id": "ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97",
+    "name": "Production",
+    "is_primary": false,
+    "last_used_at": null,
+    "created_at": 1735689600,
+    "updated_at": 1735689600
+  },
+  "warnings": []
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="get-api-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[AccountApiKeyGetResponse](#schemaaccountapikeygetresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key
+</aside>
+
+## Update API Key
+
+<a id="opIdaccountApiKeyUpdate"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/api_key/c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345 \
+  -X PUT \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}" \
+  -d '{
+    "name": "Billing",
+    "is_primary": true
+  }'
+```
+
+`PUT /api_key/{api_key_id}`
+
+Updates an API key's name, or promotes it to the primary key. Provide at least one of `name` or `is_primary`. `is_primary` can only be set to `true`.
+
+> Body parameter
+
+```json
+{
+  "name": "Billing",
+  "is_primary": true
+}
+```
+
+<h3 id="update-api-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|api_key_id|path|string|true|The ID of the API key to update.|
+|account_id|query|string|false|The ID of the account that owns the API key. Defaults to the authenticated account when omitted.|
+|body|body|[AccountApiKeyUpdateRequest](#schemaaccountapikeyupdaterequest)|true|none|
+|» name|body|string \| null|false|New name for the API key. Must be unique on the account and at most 25 characters.|
+|» is_primary|body|boolean \| null|false|Set to `true` to make this key the account's primary API key. The previous primary key remains on the account and is no longer primary.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "api_key": {
+    "api_key_id": "c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345",
+    "account_id": "ab55cd14a97219e36b5ff5fe23f2f9329b0c1e97",
+    "name": "Production",
+    "is_primary": false,
+    "last_used_at": null,
+    "created_at": 1735689600,
+    "updated_at": 1735689600
+  },
+  "warnings": []
+}
+```
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="update-api-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|successful operation|[AccountApiKeyGetResponse](#schemaaccountapikeygetresponse)|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|200|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|200|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|200|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key
+</aside>
+
+## Delete API Key
+
+<a id="opIdaccountApiKeyDelete"></a>
+
+> Code samples
+
+```bash
+curl https://api.hellosign.com/v3/api_key/c3d4e5f6a7b8490c1d2e3f4a5b6c7d8e9f012345 \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Basic ${CREDENTIALS}"
+```
+
+`DELETE /api_key/{api_key_id}`
+
+Deletes an API key. The primary key cannot be deleted. Promote another key first.
+
+<h3 id="delete-api-key-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|api_key_id|path|string|true|The ID of the API key to delete.|
+|account_id|query|string|false|The ID of the account that owns the API key. Defaults to the authenticated account when omitted.|
+
+> Example responses
+
+> 4XX Response
+
+```json
+{
+  "error": {
+    "error_msg": "This value should not be blank",
+    "error_path": "cc_email_addresses[0]",
+    "error_name": "bad_request"
+  }
+}
+```
+
+<h3 id="delete-api-key-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|successful operation|None|
+|4XX|Client Error|failed_operation|[ErrorResponse](#schemaerrorresponse)|
+
+### Response Headers
+
+|Status|Header|Type|Format|Description|
+|---|---|---|---|---|
+|204|X-RateLimit-Limit|integer|int32|The maximum number of requests per hour that you can make.|
+|204|X-RateLimit-Remaining|integer|int32|The number of requests remaining in the current rate limit window.|
+|204|X-Ratelimit-Reset|integer|int64|The Unix time at which the rate limit will reset to its maximum.|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+api_key
 </aside>
 
 <h1 id="dropbox-sign-api-oauth">OAuth</h1>
@@ -9680,6 +12071,46 @@ api_key, oauth2
 
 # Schemas
 
+<h2 id="tocS_AccountApiKeyCreateRequest">AccountApiKeyCreateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeycreaterequest"></a>
+<a id="schema_AccountApiKeyCreateRequest"></a>
+<a id="tocSaccountapikeycreaterequest"></a>
+<a id="tocsaccountapikeycreaterequest"></a>
+
+```json
+{
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Name for the API key. Must be unique on the account and at most 25 characters.|
+
+<h2 id="tocS_AccountApiKeyUpdateRequest">AccountApiKeyUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeyupdaterequest"></a>
+<a id="schema_AccountApiKeyUpdateRequest"></a>
+<a id="tocSaccountapikeyupdaterequest"></a>
+<a id="tocsaccountapikeyupdaterequest"></a>
+
+```json
+{
+  "name": "string",
+  "is_primary": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|false|none|New name for the API key. Must be unique on the account and at most 25 characters.|
+|is_primary|boolean \| null|false|none|Set to `true` to make this key the account's primary API key. The previous primary key remains on the account and is no longer primary.|
+
 <h2 id="tocS_AccountCreateRequest">AccountCreateRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaaccountcreaterequest"></a>
@@ -9704,6 +12135,91 @@ api_key, oauth2
 |client_secret|string|false|none|Used when creating a new account with OAuth authorization.<br><br>See [OAuth 2.0 Authorization](https://app.hellosign.com/api/oauthWalkthrough#OAuthAuthorization)|
 |email_address|string(email)|true|none|The email address which will be associated with the new Account.|
 |locale|string|false|none|The locale used in this Account. Check out the list of [supported locales](/api/reference/constants/#supported-locales) to learn more about the possible values.|
+
+<h2 id="tocS_AccountSettingsUpdateRequest">AccountSettingsUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountsettingsupdaterequest"></a>
+<a id="schema_AccountSettingsUpdateRequest"></a>
+<a id="tocSaccountsettingsupdaterequest"></a>
+<a id="tocsaccountsettingsupdaterequest"></a>
+
+```json
+{
+  "set": {
+    "company": "string",
+    "custom_signing_redirect_enabled": true,
+    "custom_signing_redirect_url": "string",
+    "custom_tagline": "string",
+    "date_format": {},
+    "is_signature_reminders_enabled": true,
+    "request_email_from": "string",
+    "request_email_signature": "string",
+    "required_signature_types": [
+      "draw"
+    ],
+    "should_enable_tamper_proof": true,
+    "should_include_distinct_pdfs": true,
+    "should_offer_signer_access_code": true,
+    "should_offer_signer_sms_authentication": true,
+    "should_remove_document_id": true,
+    "is_notify_on_sign_enabled": true,
+    "is_notify_on_view_enabled": true,
+    "should_autocomplete": true,
+    "should_include_requested_pdfs": true,
+    "should_include_requested_pdfs_for_others": true,
+    "should_include_sent_doc_pdfs": true,
+    "should_include_sent_doc_pdfs_for_others": true,
+    "should_send_daily_summary": true,
+    "should_send_embedded_signature_conf_emails": true,
+    "should_send_ordered_sr_email": true,
+    "should_send_outbound_conf_emails": true,
+    "template_link_signature_emails_enabled": true,
+    "property1": null,
+    "property2": null
+  },
+  "unset": [
+    "company"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|set|object|false|none|Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.|
+|unset|[string]|false|none|Any setting that can be set can also be unset. Unset clears the stored value so it is inherited. A listed name cannot also be set or locked in the same request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|unset|company|
+|unset|custom_signing_redirect_enabled|
+|unset|custom_signing_redirect_url|
+|unset|custom_tagline|
+|unset|date_format|
+|unset|is_signature_reminders_enabled|
+|unset|request_email_from|
+|unset|request_email_signature|
+|unset|required_signature_types|
+|unset|should_enable_tamper_proof|
+|unset|should_include_distinct_pdfs|
+|unset|should_offer_signer_access_code|
+|unset|should_offer_signer_sms_authentication|
+|unset|should_remove_document_id|
+|unset|is_notify_on_sign_enabled|
+|unset|is_notify_on_view_enabled|
+|unset|should_autocomplete|
+|unset|should_include_requested_pdfs|
+|unset|should_include_requested_pdfs_for_others|
+|unset|should_include_sent_doc_pdfs|
+|unset|should_include_sent_doc_pdfs_for_others|
+|unset|should_send_daily_summary|
+|unset|should_send_embedded_signature_conf_emails|
+|unset|should_send_ordered_sr_email|
+|unset|should_send_outbound_conf_emails|
+|unset|template_link_signature_emails_enabled|
 
 <h2 id="tocS_AccountUpdateRequest">AccountUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -10217,7 +12733,11 @@ api_key, oauth2
           "sms_phone_number": "string",
           "sms_phone_number_type": "authentication"
         }
-      ]
+      ],
+      "metadata": {
+        "property1": null,
+        "property2": null
+      }
     }
   ],
   "allow_decline": false,
@@ -10298,7 +12818,11 @@ api_key, oauth2
           "sms_phone_number": "string",
           "sms_phone_number_type": "authentication"
         }
-      ]
+      ],
+      "metadata": {
+        "property1": null,
+        "property2": null
+      }
     }
   ],
   "allow_decline": false,
@@ -11456,7 +13980,11 @@ api_key, oauth2
       "sms_phone_number": "string",
       "sms_phone_number_type": "authentication"
     }
-  ]
+  ],
+  "metadata": {
+    "property1": null,
+    "property2": null
+  }
 }
 ```
 
@@ -11466,6 +13994,7 @@ api_key, oauth2
 |---|---|---|---|---|
 |custom_fields|[[SubBulkSignerListCustomField](#schemasubbulksignerlistcustomfield)]|false|none|An array of custom field values.|
 |signers|[[SubSignatureRequestTemplateSigner](#schemasubsignaturerequesttemplatesigner)]|false|none|Add Signers to your Templated-based Signature Request. Allows the requester to specify editor options when a preparing a document.<br><br>Currently only templates with a single role are supported. All signers must have the same `role` value.|
+|metadata|object|false|none|Key-value data that should be attached to the signature request. This metadata is included in all API responses and events involving the signature request. For example, use the metadata field to store a signer's order number for look up when receiving events for the signature request.<br><br>Each request can include up to 10 metadata keys (or 50 nested metadata keys), with key names up to 40 characters long and values up to 1000 characters long.|
 
 <h2 id="tocS_SubBulkSignerListCustomField">SubBulkSignerListCustomField</h2>
 <!-- backwards compatibility -->
@@ -11539,6 +14068,32 @@ For using pre-filled on repeatable signature requests, merge fields are added to
 |name|string|true|none|The name of a custom field. When working with pre-filled data, the custom field's name must have a matching merge field name or the field will remain empty on the document during signing.|
 |required|boolean|false|none|Used to set an editable merge field when working with pre-filled data. When `true`, the custom field must specify a signer role in `editor`.|
 |value|string|false|none|The string that resolves (aka "pre-fills") to the merge field on the final document(s) used for signing.|
+
+<h2 id="tocS_DataResidency">DataResidency</h2>
+<!-- backwards compatibility -->
+<a id="schemadataresidency"></a>
+<a id="schema_DataResidency"></a>
+<a id="tocSdataresidency"></a>
+<a id="tocsdataresidency"></a>
+
+```json
+"us"
+```
+
+Region where the team's documents are stored at rest.
+
+<h2 id="tocS_DateFormat">DateFormat</h2>
+<!-- backwards compatibility -->
+<a id="schemadateformat"></a>
+<a id="schema_DateFormat"></a>
+<a id="tocSdateformat"></a>
+<a id="tocsdateformat"></a>
+
+```json
+"MM/DD/YYYY"
+```
+
+Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.
 
 <h2 id="tocS_SubEditorOptions">SubEditorOptions</h2>
 <!-- backwards compatibility -->
@@ -12453,6 +15008,19 @@ The fields that should appear on the document, expressed as an array of objects.
 |type|text|
 |type|checkbox|
 
+<h2 id="tocS_NotifyCCRecipientEvent">NotifyCCRecipientEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemanotifyccrecipientevent"></a>
+<a id="schema_NotifyCCRecipientEvent"></a>
+<a id="tocSnotifyccrecipientevent"></a>
+<a id="tocsnotifyccrecipientevent"></a>
+
+```json
+"send"
+```
+
+An event for which CC recipients can receive notifications.
+
 <h2 id="tocS_SubOAuth">SubOAuth</h2>
 <!-- backwards compatibility -->
 <a id="schemasuboauth"></a>
@@ -12511,6 +15079,19 @@ Additional options supported by API App.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |can_insert_everywhere|boolean|false|none|Determines if signers can use "Insert Everywhere" when signing a document.|
+
+<h2 id="tocS_RequiredSignatureType">RequiredSignatureType</h2>
+<!-- backwards compatibility -->
+<a id="schemarequiredsignaturetype"></a>
+<a id="schema_RequiredSignatureType"></a>
+<a id="tocSrequiredsignaturetype"></a>
+<a id="tocsrequiredsignaturetype"></a>
+
+```json
+"draw"
+```
+
+A signature creation method a signer may use.
 
 <h2 id="tocS_SubSignatureRequestSigner">SubSignatureRequestSigner</h2>
 <!-- backwards compatibility -->
@@ -12695,6 +15276,19 @@ This allows the requester to specify the types allowed for creating a signature 
 |default_type|type|
 |default_type|upload|
 
+<h2 id="tocS_TeamSettingLock">TeamSettingLock</h2>
+<!-- backwards compatibility -->
+<a id="schemateamsettinglock"></a>
+<a id="schema_TeamSettingLock"></a>
+<a id="tocSteamsettinglock"></a>
+<a id="tocsteamsettinglock"></a>
+
+```json
+"organization_admins"
+```
+
+Who can change a locked team setting. Every property in `lock` accepts these values. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value.
+
 <h2 id="tocS_SubWhiteLabelingOptions">SubWhiteLabelingOptions</h2>
 <!-- backwards compatibility -->
 <a id="schemasubwhitelabelingoptions"></a>
@@ -12794,7 +15388,8 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 
 ```json
 {
-  "name": "Untitled Team"
+  "name": "Untitled Team",
+  "parent_team_id": "4fea99bfcf2b26bfccf6cea3e127fb8bb74d8d9c"
 }
 ```
 
@@ -12803,6 +15398,7 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|false|none|The name of your Team.|
+|parent_team_id|string|false|none|Id of an existing team to create this team under. Omit it to create a root team. Creating a subteam requires an organization admin.|
 
 <h2 id="tocS_TeamRemoveMemberRequest">TeamRemoveMemberRequest</h2>
 <!-- backwards compatibility -->
@@ -12839,6 +15435,142 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 |new_role|Developer|
 |new_role|Team Manager|
 |new_role|Admin|
+
+<h2 id="tocS_TeamSettingsUpdateRequest">TeamSettingsUpdateRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemateamsettingsupdaterequest"></a>
+<a id="schema_TeamSettingsUpdateRequest"></a>
+<a id="tocSteamsettingsupdaterequest"></a>
+<a id="tocsteamsettingsupdaterequest"></a>
+
+```json
+{
+  "set": {
+    "company": "string",
+    "custom_signing_redirect_enabled": true,
+    "custom_signing_redirect_url": "string",
+    "custom_tagline": "string",
+    "date_format": {},
+    "is_signature_reminders_enabled": true,
+    "request_email_from": "string",
+    "request_email_signature": "string",
+    "required_signature_types": [
+      "draw"
+    ],
+    "should_enable_tamper_proof": true,
+    "should_include_distinct_pdfs": true,
+    "should_offer_signer_access_code": true,
+    "should_offer_signer_sms_authentication": true,
+    "should_remove_document_id": true,
+    "data_residency": {},
+    "allow_team_delete_document_for_everyone": true,
+    "allow_team_download_csv": true,
+    "lock_team_template_creation": true,
+    "lock_team_template_gallery": true,
+    "self_sign_message": "string",
+    "self_sign_title": "string",
+    "signature_request_message": "string",
+    "signature_request_title": "string",
+    "multifactor_auth_app": true,
+    "multifactor_auth_sms": true,
+    "qualified_esignature_enabled": true,
+    "sms_signature_delivery": true,
+    "nom151_enabled": true,
+    "should_enable_in_person_signing": true,
+    "everyone_has_signed_email": "string",
+    "timezone": "string",
+    "notify_cc_recipients_setting": [
+      "send"
+    ],
+    "property1": null,
+    "property2": null
+  },
+  "lock": {
+    "company": {},
+    "custom_signing_redirect_enabled": {},
+    "custom_signing_redirect_url": {},
+    "custom_tagline": {},
+    "date_format": {},
+    "is_signature_reminders_enabled": {},
+    "request_email_from": {},
+    "request_email_signature": {},
+    "required_signature_types": {},
+    "should_enable_tamper_proof": {},
+    "should_include_distinct_pdfs": {},
+    "should_offer_signer_access_code": {},
+    "should_offer_signer_sms_authentication": {},
+    "should_remove_document_id": {},
+    "data_residency": {},
+    "allow_team_delete_document_for_everyone": {},
+    "allow_team_download_csv": {},
+    "lock_team_template_creation": {},
+    "lock_team_template_gallery": {},
+    "self_sign_message": {},
+    "self_sign_title": {},
+    "signature_request_message": {},
+    "signature_request_title": {},
+    "multifactor_auth_app": {},
+    "multifactor_auth_sms": {},
+    "qualified_esignature_enabled": {},
+    "sms_signature_delivery": {},
+    "nom151_enabled": {},
+    "should_enable_in_person_signing": {},
+    "everyone_has_signed_email": {},
+    "timezone": {},
+    "notify_cc_recipients_setting": {},
+    "property1": "organization_admins",
+    "property2": "organization_admins"
+  },
+  "unset": [
+    "company"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|set|object|false|none|Values to store, keyed by setting name. A name in `set` cannot also appear in `unset`.|
+|lock|object|false|none|Lock a setting to prevent subteams or accounts from overriding it. A team admin can set a lock on their own team. An organization admin can set a lock on the organization or on a subteam. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value. A name in `lock` cannot also appear in `unset`.|
+|unset|[string]|false|none|Any setting that can be set can also be unset. Unset clears the stored value and its lock so both are inherited. A listed name cannot also be set or locked in the same request.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|unset|company|
+|unset|custom_signing_redirect_enabled|
+|unset|custom_signing_redirect_url|
+|unset|custom_tagline|
+|unset|date_format|
+|unset|is_signature_reminders_enabled|
+|unset|request_email_from|
+|unset|request_email_signature|
+|unset|required_signature_types|
+|unset|should_enable_tamper_proof|
+|unset|should_include_distinct_pdfs|
+|unset|should_offer_signer_access_code|
+|unset|should_offer_signer_sms_authentication|
+|unset|should_remove_document_id|
+|unset|data_residency|
+|unset|allow_team_delete_document_for_everyone|
+|unset|allow_team_download_csv|
+|unset|lock_team_template_creation|
+|unset|lock_team_template_gallery|
+|unset|self_sign_message|
+|unset|self_sign_title|
+|unset|signature_request_message|
+|unset|signature_request_title|
+|unset|multifactor_auth_app|
+|unset|multifactor_auth_sms|
+|unset|qualified_esignature_enabled|
+|unset|sms_signature_delivery|
+|unset|nom151_enabled|
+|unset|should_enable_in_person_signing|
+|unset|everyone_has_signed_email|
+|unset|timezone|
+|unset|notify_cc_recipients_setting|
 
 <h2 id="tocS_TeamUpdateRequest">TeamUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -13694,6 +16426,111 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 |signing_redirect_url|string|false|none|The URL you want signers redirected to after they successfully sign.|
 |test_mode|boolean|false|none|Whether this is a test, the signature request created from this draft will not be legally binding if set to `true`. Defaults to `false`.|
 
+<h2 id="tocS_AccountApiKeyCreateResponse">AccountApiKeyCreateResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeycreateresponse"></a>
+<a id="schema_AccountApiKeyCreateResponse"></a>
+<a id="tocSaccountapikeycreateresponse"></a>
+<a id="tocsaccountapikeycreateresponse"></a>
+
+```json
+{
+  "api_key": {
+    "api_key_id": "stringstringstringstringstringstringstri",
+    "account_id": "string",
+    "name": "string",
+    "secret": "stringstringstringstringstringstringstringstringstringstringstri",
+    "is_primary": true,
+    "last_used_at": 0,
+    "created_at": 0,
+    "updated_at": 0
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|api_key|[AccountApiKeyResponse](#schemaaccountapikeyresponse)|true|none|none|
+|warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
+
+<h2 id="tocS_AccountApiKeyGetResponse">AccountApiKeyGetResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeygetresponse"></a>
+<a id="schema_AccountApiKeyGetResponse"></a>
+<a id="tocSaccountapikeygetresponse"></a>
+<a id="tocsaccountapikeygetresponse"></a>
+
+```json
+{
+  "api_key": {
+    "api_key_id": "stringstringstringstringstringstringstri",
+    "account_id": "string",
+    "name": "string",
+    "is_primary": true,
+    "last_used_at": 0,
+    "created_at": 0,
+    "updated_at": 0
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|api_key|[AccountApiKeySummaryResponse](#schemaaccountapikeysummaryresponse)|true|none|none|
+|warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
+
+<h2 id="tocS_AccountApiKeyListResponse">AccountApiKeyListResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeylistresponse"></a>
+<a id="schema_AccountApiKeyListResponse"></a>
+<a id="tocSaccountapikeylistresponse"></a>
+<a id="tocsaccountapikeylistresponse"></a>
+
+```json
+{
+  "api_keys": [
+    {
+      "api_key_id": "stringstringstringstringstringstringstri",
+      "account_id": "string",
+      "name": "string",
+      "is_primary": true,
+      "last_used_at": 0,
+      "created_at": 0,
+      "updated_at": 0
+    }
+  ],
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|api_keys|[[AccountApiKeySummaryResponse](#schemaaccountapikeysummaryresponse)]|true|none|The API keys on the account.|
+|warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
+
 <h2 id="tocS_AccountCreateResponse">AccountCreateResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaaccountcreateresponse"></a>
@@ -13804,6 +16641,321 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |account|[AccountResponse](#schemaaccountresponse)|true|none|none|
+|warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
+
+<h2 id="tocS_AccountSettingsResponse">AccountSettingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountsettingsresponse"></a>
+<a id="schema_AccountSettingsResponse"></a>
+<a id="tocSaccountsettingsresponse"></a>
+<a id="tocsaccountsettingsresponse"></a>
+
+```json
+{
+  "account_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_sign_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_notify_on_view_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_autocomplete": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_requested_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_sent_doc_pdfs_for_others": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_daily_summary": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_embedded_signature_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_ordered_sr_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_send_outbound_conf_emails": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "template_link_signature_emails_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|string|true|none|none|
+|settings|[AccountSettingsResponseSettings](#schemaaccountsettingsresponsesettings)|true|none|none|
 |warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
 
 <h2 id="tocS_AccountVerifyResponse">AccountVerifyResponse</h2>
@@ -14909,6 +18061,70 @@ Take a look at our [white labeling guide](https://developers.hellosign.com/api/r
 |usage|[AccountResponseUsage](#schemaaccountresponseusage)|false|none|Details concerning monthly usage|
 |settings|[AccountResponseSettings](#schemaaccountresponsesettings)|false|none|Subset of configured settings|
 
+<h2 id="tocS_AccountApiKeyResponse">AccountApiKeyResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeyresponse"></a>
+<a id="schema_AccountApiKeyResponse"></a>
+<a id="tocSaccountapikeyresponse"></a>
+<a id="tocsaccountapikeyresponse"></a>
+
+```json
+{
+  "api_key_id": "stringstringstringstringstringstringstri",
+  "account_id": "string",
+  "name": "string",
+  "secret": "stringstringstringstringstringstringstringstringstringstringstri",
+  "is_primary": true,
+  "last_used_at": 0,
+  "created_at": 0,
+  "updated_at": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|api_key_id|string|true|none|The ID of the API key.|
+|account_id|string|true|none|The ID of the account that owns the API key.|
+|name|string|true|none|The name of the API key.|
+|secret|string|true|read-only|The API key secret. Returned only when the key is created.|
+|is_primary|boolean|true|none|Whether this is the account's primary API key.|
+|last_used_at|integer \| null|false|none|When the API key was last used, as a Unix timestamp. `null` if the key has not been used.|
+|created_at|integer|true|none|When the API key was created, as a Unix timestamp.|
+|updated_at|integer|true|none|When the API key was last updated, as a Unix timestamp.|
+
+<h2 id="tocS_AccountApiKeySummaryResponse">AccountApiKeySummaryResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountapikeysummaryresponse"></a>
+<a id="schema_AccountApiKeySummaryResponse"></a>
+<a id="tocSaccountapikeysummaryresponse"></a>
+<a id="tocsaccountapikeysummaryresponse"></a>
+
+```json
+{
+  "api_key_id": "stringstringstringstringstringstringstri",
+  "account_id": "string",
+  "name": "string",
+  "is_primary": true,
+  "last_used_at": 0,
+  "created_at": 0,
+  "updated_at": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|api_key_id|string|true|none|The ID of the API key.|
+|account_id|string|true|none|The ID of the account that owns the API key.|
+|name|string \| null|true|none|The name of the API key.|
+|is_primary|boolean|true|none|Whether this is the account's primary API key.|
+|last_used_at|integer \| null|true|none|When the API key was last used, as a Unix timestamp. `null` if the key has not been used.|
+|created_at|integer|true|none|When the API key was created, as a Unix timestamp.|
+|updated_at|integer|true|none|When the API key was last updated, as a Unix timestamp.|
+
 <h2 id="tocS_OAuthTokenResponse">OAuthTokenResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaoauthtokenresponse"></a>
@@ -14991,6 +18207,335 @@ Subset of configured settings
 |signer_access_codes|boolean|false|none|Returns `true` if _Custom access codes_ is enabled in Admin Console. [Read more](https://developers.hellosign.com/docs/sms-tools/walkthrough).|
 |sms_delivery|boolean|false|none|Returns `true` if _Text message_ is enabled in Admin Console. [Read more](https://developers.hellosign.com/docs/sms-tools/walkthrough).|
 |sms_authentication|boolean|false|none|Returns `true` if _Signer authentication_ is enabled in Admin Console. [Read more](https://developers.hellosign.com/docs/sms-tools/walkthrough).|
+
+<h2 id="tocS_AccountSettingsResponseSettings">AccountSettingsResponseSettings</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountsettingsresponsesettings"></a>
+<a id="schema_AccountSettingsResponseSettings"></a>
+<a id="tocSaccountsettingsresponsesettings"></a>
+<a id="tocsaccountsettingsresponsesettings"></a>
+
+```json
+{
+  "company": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_signing_redirect_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_signing_redirect_url": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_tagline": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "date_format": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "is_signature_reminders_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "request_email_from": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "request_email_signature": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "required_signature_types": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_enable_tamper_proof": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_distinct_pdfs": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_offer_signer_access_code": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_offer_signer_sms_authentication": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_remove_document_id": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "is_notify_on_sign_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "is_notify_on_view_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_autocomplete": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_requested_pdfs": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_requested_pdfs_for_others": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_sent_doc_pdfs": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_sent_doc_pdfs_for_others": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_send_daily_summary": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_send_embedded_signature_conf_emails": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_send_ordered_sr_email": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_send_outbound_conf_emails": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "template_link_signature_emails_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|company|object|true|none|Company name associated with this account or team.|
+|custom_signing_redirect_enabled|object|true|none|Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.|
+|custom_signing_redirect_url|object|true|none|Webpage where signers are redirected after they sign, when custom redirects are enabled.|
+|custom_tagline|object|true|none|Company tagline shown with the account or team branding.|
+|date_format|object|true|none|Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.|
+|is_signature_reminders_enabled|object|true|none|Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.|
+|request_email_from|object|true|none|Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.|
+|request_email_signature|object|true|none|Text appended to the end of signature request emails.|
+|required_signature_types|object|true|none|Signature creation methods a signer is allowed to use.|
+|should_enable_tamper_proof|object|true|none|Whether a tamper-proof seal is applied to sent signature requests.|
+|should_include_distinct_pdfs|object|true|none|Whether completed documents remain as separate PDF files instead of being merged into one PDF.|
+|should_offer_signer_access_code|object|true|none|Whether senders can require a custom access code before a signer can open a document.|
+|should_offer_signer_sms_authentication|object|true|none|Whether senders can require a text-message verification code before a signer can open a document.|
+|should_remove_document_id|object|true|none|Whether the document ID is removed from all pages of sent documents.|
+|is_notify_on_sign_enabled|object|true|none|Whether to notify the account when someone signs a document it sent.|
+|is_notify_on_view_enabled|object|true|none|Whether to notify the account when someone opens a document it sent.|
+|should_autocomplete|object|true|none|Whether values entered in text fields are saved and suggested for future signature requests.|
+|should_include_requested_pdfs|object|true|none|Whether to email the account a PDF copy when a signature request it sent is completed.|
+|should_include_requested_pdfs_for_others|object|true|none|Whether to email a PDF copy to the other signers and CC recipients when a signature request is completed.|
+|should_include_sent_doc_pdfs|object|true|none|Whether to email the account a PDF copy when it sends a document.|
+|should_include_sent_doc_pdfs_for_others|object|true|none|Whether to email recipients a PDF copy, instead of only a link, when the account sends a document.|
+|should_send_daily_summary|object|true|none|Whether to send the account a daily email summarizing outstanding signature requests.|
+|should_send_embedded_signature_conf_emails|object|true|none|Whether to notify the account when it signs a document on a third-party site.|
+|should_send_ordered_sr_email|object|true|none|Whether to notify all parties when an ordered signature request starts.|
+|should_send_outbound_conf_emails|object|true|none|Whether to notify the account when it signs and sends a document.|
+|template_link_signature_emails_enabled|object|true|none|Whether to notify the account when someone signs a document sent by its team through a template link.|
 
 <h2 id="tocS_AccountResponseUsage">AccountResponseUsage</h2>
 <!-- backwards compatibility -->
@@ -15715,6 +19260,83 @@ Contains information about the report request.
 |report_type|sms_activity|
 |report_type|fax_usage|
 
+<h2 id="tocS_SettingResponse">SettingResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasettingresponse"></a>
+<a id="schema_SettingResponse"></a>
+<a id="tocSsettingresponse"></a>
+<a id="tocssettingresponse"></a>
+
+```json
+{
+  "value": null,
+  "is_inherited": true,
+  "source": "account",
+  "type": "boolean",
+  "writable": true,
+  "lock": {
+    "mode": "organization_admins",
+    "source": "team"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|object \| null|true|none|Current value of the setting. Null when the setting has no value.|
+|is_inherited|boolean|true|none|none|
+|source|string|true|none|none|
+|type|string|true|none|none|
+|writable|boolean|true|none|none|
+|lock|[SettingLockResponse](#schemasettinglockresponse)|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|source|account|
+|source|team|
+|source|parent_team|
+|source|default|
+|type|boolean|
+|type|integer|
+|type|string|
+|type|array|
+
+<h2 id="tocS_SettingLockResponse">SettingLockResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemasettinglockresponse"></a>
+<a id="schema_SettingLockResponse"></a>
+<a id="tocSsettinglockresponse"></a>
+<a id="tocssettinglockresponse"></a>
+
+```json
+{
+  "mode": "organization_admins",
+  "source": "team"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|[TeamSettingLock](#schemateamsettinglock)|true|none|Who can change a locked team setting. Every property in `lock` accepts these values. `organization_admins` prevents subteams and accounts from overriding the value. `team_admins` lets admins of that team and its subteams set their own value. `members` lets each account set its own value.|
+|source|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|organization_admins|
+|mode|team_admins|
+|mode|members|
+|source|team|
+|source|parent_team|
+|source|default|
+
 <h2 id="tocS_SignatureRequestResponse">SignatureRequestResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemasignaturerequestresponse"></a>
@@ -16430,7 +20052,9 @@ Configuration options for modifying the settings of the signer application. Supp
   ],
   "invited_emails": [
     "string"
-  ]
+  ],
+  "team_id": "string",
+  "parent_team_id": "string"
 }
 ```
 
@@ -16444,6 +20068,8 @@ Contains information about your team and its members
 |accounts|[[AccountResponse](#schemaaccountresponse)]|false|none|none|
 |invited_accounts|[[AccountResponse](#schemaaccountresponse)]|false|none|A list of all Accounts that have an outstanding invitation to join your Team. Note that this response is a subset of the response parameters found in `GET /account`.|
 |invited_emails|[string]|false|none|A list of email addresses that have an outstanding invitation to join your Team and do not yet have a Dropbox Sign account.|
+|team_id|string|false|none|The id of a team|
+|parent_team_id|string \| null|false|none|The id of this team's parent team. `null` when the team has no parent.|
 
 <h2 id="tocS_TeamInfoResponse">TeamInfoResponse</h2>
 <!-- backwards compatibility -->
@@ -16549,6 +20175,407 @@ Information about the parent team if a team has one, set to `null` otherwise.
 |---|---|---|---|---|
 |team_id|string|false|none|The id of a team|
 |name|string|false|none|The name of a team|
+
+<h2 id="tocS_TeamSettingsResponseSettings">TeamSettingsResponseSettings</h2>
+<!-- backwards compatibility -->
+<a id="schemateamsettingsresponsesettings"></a>
+<a id="schema_TeamSettingsResponseSettings"></a>
+<a id="tocSteamsettingsresponsesettings"></a>
+<a id="tocsteamsettingsresponsesettings"></a>
+
+```json
+{
+  "company": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_signing_redirect_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_signing_redirect_url": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "custom_tagline": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "date_format": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "is_signature_reminders_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "request_email_from": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "request_email_signature": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "required_signature_types": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_enable_tamper_proof": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_include_distinct_pdfs": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_offer_signer_access_code": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_offer_signer_sms_authentication": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_remove_document_id": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "data_residency": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "allow_team_delete_document_for_everyone": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "allow_team_download_csv": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "lock_team_template_creation": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "lock_team_template_gallery": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "self_sign_message": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "self_sign_title": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "signature_request_message": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "signature_request_title": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "multifactor_auth_app": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "multifactor_auth_sms": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "qualified_esignature_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "sms_signature_delivery": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "nom151_enabled": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "should_enable_in_person_signing": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "everyone_has_signed_email": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "timezone": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  },
+  "notify_cc_recipients_setting": {
+    "value": null,
+    "is_inherited": true,
+    "source": "account",
+    "type": "boolean",
+    "writable": true,
+    "lock": {
+      "mode": "organization_admins",
+      "source": "team"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|company|object|true|none|Company name associated with this account or team.|
+|custom_signing_redirect_enabled|object|true|none|Whether signers are redirected to a custom webpage after they sign. Setting this to `false` clears the stored custom signing redirect URL override, reverting it to the inherited value. A URL supplied in the same update is ignored.|
+|custom_signing_redirect_url|object|true|none|Webpage where signers are redirected after they sign, when custom redirects are enabled.|
+|custom_tagline|object|true|none|Company tagline shown with the account or team branding.|
+|date_format|object|true|none|Default date format in the editor and in the audit trail. Senders can still choose a different format for an individual date field.|
+|is_signature_reminders_enabled|object|true|none|Whether reminder emails are sent to signers 3 days and 7 days after a signature request is sent.|
+|request_email_from|object|true|none|Name shown in the From field of signature request emails. When unset, each user's first and last name is shown.|
+|request_email_signature|object|true|none|Text appended to the end of signature request emails.|
+|required_signature_types|object|true|none|Signature creation methods a signer is allowed to use.|
+|should_enable_tamper_proof|object|true|none|Whether a tamper-proof seal is applied to sent signature requests.|
+|should_include_distinct_pdfs|object|true|none|Whether completed documents remain as separate PDF files instead of being merged into one PDF.|
+|should_offer_signer_access_code|object|true|none|Whether senders can require a custom access code before a signer can open a document.|
+|should_offer_signer_sms_authentication|object|true|none|Whether senders can require a text-message verification code before a signer can open a document.|
+|should_remove_document_id|object|true|none|Whether the document ID is removed from all pages of sent documents.|
+|data_residency|object|true|none|Region where the team's documents are stored at rest.|
+|allow_team_delete_document_for_everyone|object|true|none|Whether the sender, in addition to admins, can permanently delete a document from Dropbox Sign and from every participant account.|
+|allow_team_download_csv|object|true|none|Whether the sender, in addition to admins, can download document data as a CSV.|
+|lock_team_template_creation|object|true|none|When enabled, only admins can create and edit templates and template links.|
+|lock_team_template_gallery|object|true|none|When enabled, only admins can access and use the template gallery.|
+|self_sign_message|object|true|none|Default message for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|self_sign_title|object|true|none|Default document title for self-signed documents created by team members. Lock this setting to prevent members from changing it.|
+|signature_request_message|object|true|none|Default email message for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|signature_request_title|object|true|none|Default document title for signature requests created by team members. Lock this setting to prevent members from changing it.|
+|multifactor_auth_app|object|true|none|Whether an authenticator app is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in.|
+|multifactor_auth_sms|object|true|none|Whether SMS verification is an allowed multifactor authentication method for the team. Enabling either method requires members to set it up at their next sign-in. SMS is the fallback when an authenticator app is also enabled.|
+|qualified_esignature_enabled|object|true|none|Whether qualified electronic signatures are enabled for the team.|
+|sms_signature_delivery|object|true|none|Whether signature requests can be delivered by SMS.|
+|nom151_enabled|object|true|none|Whether NOM-151 compliance is enabled for the team.|
+|should_enable_in_person_signing|object|true|none|Whether in-person signing is enabled for the team.|
+|everyone_has_signed_email|object|true|none|Email address notified when everyone has signed.|
+|timezone|object|true|none|The team's time zone identifier.|
+|notify_cc_recipients_setting|object|true|none|Events for which CC recipients receive notifications.|
 
 <h2 id="tocS_SubTeamResponse">SubTeamResponse</h2>
 <!-- backwards compatibility -->
@@ -18082,7 +22109,9 @@ A list of warnings.
     ],
     "invited_emails": [
       "string"
-    ]
+    ],
+    "team_id": "string",
+    "parent_team_id": "string"
   },
   "warnings": [
     {
@@ -18208,6 +22237,387 @@ A list of warnings.
 |team_members|[[TeamMemberResponse](#schemateammemberresponse)]|true|none|Contains a list of team members and their roles for a specific team.|
 |list_info|[ListInfoResponse](#schemalistinforesponse)|true|none|Contains pagination information about the data returned.|
 |warnings|[[WarningResponse](#schemawarningresponse)]|false|none|none|
+
+<h2 id="tocS_TeamSettingsResponse">TeamSettingsResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemateamsettingsresponse"></a>
+<a id="schema_TeamSettingsResponse"></a>
+<a id="tocSteamsettingsresponse"></a>
+<a id="tocsteamsettingsresponse"></a>
+
+```json
+{
+  "team_id": "string",
+  "settings": {
+    "company": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_signing_redirect_url": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "custom_tagline": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "date_format": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "is_signature_reminders_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_from": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "request_email_signature": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "required_signature_types": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_tamper_proof": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_include_distinct_pdfs": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_access_code": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_offer_signer_sms_authentication": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_remove_document_id": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "data_residency": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_delete_document_for_everyone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "allow_team_download_csv": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_creation": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "lock_team_template_gallery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "self_sign_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_message": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "signature_request_title": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_app": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "multifactor_auth_sms": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "qualified_esignature_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "sms_signature_delivery": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "nom151_enabled": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "should_enable_in_person_signing": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "everyone_has_signed_email": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "timezone": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    },
+    "notify_cc_recipients_setting": {
+      "value": null,
+      "is_inherited": true,
+      "source": "account",
+      "type": "boolean",
+      "writable": true,
+      "lock": {
+        "mode": "organization_admins",
+        "source": "team"
+      }
+    }
+  },
+  "warnings": [
+    {
+      "warning_msg": "string",
+      "warning_name": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|team_id|string|true|none|none|
+|settings|[TeamSettingsResponseSettings](#schemateamsettingsresponsesettings)|true|none|none|
+|warnings|[[WarningResponse](#schemawarningresponse)]|false|none|A list of warnings.|
 
 <h2 id="tocS_TeamSubTeamsResponse">TeamSubTeamsResponse</h2>
 <!-- backwards compatibility -->

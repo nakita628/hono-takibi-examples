@@ -1158,10 +1158,10 @@ const IndexedFieldSchema = z
       .openapi({ description: 'Indicates whether the field is a metadata field.', example: null }),
     name: z.string().openapi({ description: 'The name of the indexed field.', example: null }),
     value: z
-      .object({})
+      .looseObject({})
       .openapi({ description: 'The primary value of the indexed field.', example: null }),
     values: z
-      .array(z.object({}).openapi({ example: null }))
+      .array(z.looseObject({}).openapi({ example: null }))
       .openapi({
         description: 'An array of objects representing multiple values for the indexed field.',
         example: null,
@@ -1258,11 +1258,8 @@ const Oauth2SecurityScheme = {
       scopes: { content: '' },
     },
   },
+  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCmsSiteSearch202609IndexedDataContentIdRoute = createRoute({
   method: 'get',

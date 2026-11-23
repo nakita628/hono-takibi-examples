@@ -272,67 +272,81 @@ const RecursivePartialEntityRelationSchema = z
   })
   .openapi('RecursivePartialEntityRelation')
 
-const RecursivePartialEntityMetaSchema = JsonObjectSchema.and(
-  z
-    .object({
-      links: z
-        .array(EntityLinkSchema)
-        .exactOptional()
-        .openapi({ description: 'A list of external hyperlinks related to the entity.' }),
-      tags: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          description:
-            'A list of single-valued strings, to for example classify catalog entities in\nvarious ways.',
-        }),
-      annotations: MapStringStringSchema.exactOptional(),
-      labels: MapStringStringSchema.exactOptional(),
-      description: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'A short (typically relatively few words, on one line) description of the\nentity.',
-        }),
-      title: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'A display name of the entity, to be presented in user interfaces instead\nof the `name` property above, when available.\nThis field is sometimes useful when the `name` is cumbersome or ends up\nbeing perceived as overly technical. The title generally does not have\nas stringent format requirements on it, so it may contain special\ncharacters and be more explanatory. Do keep it very short though, and\navoid situations where a title can be confused with the name of another\nentity, or where two entities share a title.\nNote that this is only for display purposes, and may be ignored by some\nparts of the code. Entity references still always make use of the `name`\nproperty, not the title.',
-        }),
-      namespace: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'The namespace that the entity belongs to.' }),
-      name: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'The name of the entity.\nMust be unique within the catalog at any given point in time, for any\ngiven namespace + kind pair. This value is part of the technical\nidentifier of the entity, and as such it will appear in URLs, database\ntables, entity references, and similar. It is subject to restrictions\nregarding what characters are allowed.\nIf you want to use a different, more human readable string with fewer\nrestrictions on it in user interfaces, see the `title` field below.',
-        }),
-      etag: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'An opaque string that changes for each update operation to any part of\nthe entity, including metadata.\nThis field can not be set by the user at creation time, and the server\nwill reject an attempt to do so. The field will be populated in read\noperations. The field can (optionally) be specified when performing\nupdate or delete operations, and the server will then reject the\noperation if it does not match the current stored value.',
-        }),
-      uid: z
-        .string()
-        .exactOptional()
-        .openapi({
-          description:
-            'A globally unique ID for the entity.\nThis field can not be set by the user at creation time, and the server\nwill reject an attempt to do so. The field will be populated in read\noperations. The field can (optionally) be specified when performing\nupdate or delete operations, but the server is free to reject requests\nthat do so in such a way that it breaks semantics.',
-        }),
-    })
-    .openapi({
-      description: 'Metadata fields common to all versions/kinds of entity.',
-      required: [],
-    }),
-).openapi('RecursivePartialEntityMeta')
+const RecursivePartialEntityMetaSchema = (() => {
+  const Schema = JsonObjectSchema.and(
+    z
+      .object({
+        links: z
+          .array(EntityLinkSchema)
+          .exactOptional()
+          .openapi({ description: 'A list of external hyperlinks related to the entity.' }),
+        tags: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({
+            description:
+              'A list of single-valued strings, to for example classify catalog entities in\nvarious ways.',
+          }),
+        annotations: MapStringStringSchema.exactOptional(),
+        labels: MapStringStringSchema.exactOptional(),
+        description: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A short (typically relatively few words, on one line) description of the\nentity.',
+          }),
+        title: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A display name of the entity, to be presented in user interfaces instead\nof the `name` property above, when available.\nThis field is sometimes useful when the `name` is cumbersome or ends up\nbeing perceived as overly technical. The title generally does not have\nas stringent format requirements on it, so it may contain special\ncharacters and be more explanatory. Do keep it very short though, and\navoid situations where a title can be confused with the name of another\nentity, or where two entities share a title.\nNote that this is only for display purposes, and may be ignored by some\nparts of the code. Entity references still always make use of the `name`\nproperty, not the title.',
+          }),
+        namespace: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'The namespace that the entity belongs to.' }),
+        name: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'The name of the entity.\nMust be unique within the catalog at any given point in time, for any\ngiven namespace + kind pair. This value is part of the technical\nidentifier of the entity, and as such it will appear in URLs, database\ntables, entity references, and similar. It is subject to restrictions\nregarding what characters are allowed.\nIf you want to use a different, more human readable string with fewer\nrestrictions on it in user interfaces, see the `title` field below.',
+          }),
+        etag: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'An opaque string that changes for each update operation to any part of\nthe entity, including metadata.\nThis field can not be set by the user at creation time, and the server\nwill reject an attempt to do so. The field will be populated in read\noperations. The field can (optionally) be specified when performing\nupdate or delete operations, and the server will then reject the\noperation if it does not match the current stored value.',
+          }),
+        uid: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'A globally unique ID for the entity.\nThis field can not be set by the user at creation time, and the server\nwill reject an attempt to do so. The field will be populated in read\noperations. The field can (optionally) be specified when performing\nupdate or delete operations, but the server is free to reject requests\nthat do so in such a way that it breaks semantics.',
+          }),
+      })
+      .openapi({
+        description: 'Metadata fields common to all versions/kinds of entity.',
+        required: [],
+      }),
+  )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        ctx.issues.push({ code: 'custom', path: [k], input: o })
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi('RecursivePartialEntityMeta')
 
 const RecursivePartialEntitySchema = z
   .strictObject({

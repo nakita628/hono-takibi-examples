@@ -17,25 +17,17 @@ const NextTokenSchema = z
 
 const DescribeAffectedAccountsForOrganizationResponseSchema = z
   .object({
-    affectedAccounts: AffectedAccountsListSchema.and(
-      z.any().openapi({ description: 'A JSON set of elements of the affected accounts.' }),
-    ).exactOptional(),
-    eventScopeCode: EventScopeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    affectedAccounts: AffectedAccountsListSchema.exactOptional().openapi({
+      description: 'A JSON set of elements of the affected accounts.',
+    }),
+    eventScopeCode: EventScopeCodeSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAffectedAccountsForOrganizationResponse')
@@ -50,30 +42,18 @@ const MaxResultsSchema = z.int().min(10).max(100).openapi('MaxResults')
 
 const DescribeAffectedAccountsForOrganizationRequestSchema = z
   .object({
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
+    eventArn: EventArnSchema.openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
   })
   .openapi({ required: ['eventArn'], title: 'DescribeAffectedAccountsForOrganizationRequest' })
   .openapi('DescribeAffectedAccountsForOrganizationRequest')
@@ -113,55 +93,35 @@ const TagSetSchema = z
 
 const AffectedEntitySchema = z
   .object({
-    entityArn: EntityArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the entity. Format: <code>arn:aws:health:<i>entity-region</i>:<i>aws-account</i>:entity/<i>entity-id</i> </code>. Example: <code>arn:aws:health:us-east-1:111222333444:entity/AVh5GGT7ul1arKr1sE1K</code> ',
-        }),
-    ).exactOptional(),
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    entityValue: EntityValueSchema.and(
-      z.any().openapi({ description: 'The ID of the affected entity.' }),
-    ).exactOptional(),
-    entityUrl: EntityUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the affected entity.' }),
-    ).exactOptional(),
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit Amazon Web Services account number that contains the affected entity.',
-        }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The most recent time that the entity was updated.' }),
-    ).exactOptional(),
-    statusCode: EntityStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The most recent status of the entity affected by the event. The possible values are <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, and <code>UNKNOWN</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
-        }),
-    ).exactOptional(),
+    entityArn: EntityArnSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the entity. Format: <code>arn:aws:health:<i>entity-region</i>:<i>aws-account</i>:entity/<i>entity-id</i> </code>. Example: <code>arn:aws:health:us-east-1:111222333444:entity/AVh5GGT7ul1arKr1sE1K</code> ',
+    }),
+    eventArn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    entityValue: EntityValueSchema.exactOptional().openapi({
+      description: 'The ID of the affected entity.',
+    }),
+    entityUrl: EntityUrlSchema.exactOptional().openapi({
+      description: 'The URL of the affected entity.',
+    }),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The 12-digit Amazon Web Services account number that contains the affected entity.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The most recent time that the entity was updated.',
+    }),
+    statusCode: EntityStatusCodeSchema.exactOptional().openapi({
+      description:
+        'The most recent status of the entity affected by the event. The possible values are <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, and <code>UNKNOWN</code>.',
+    }),
+    tags: TagSetSchema.exactOptional().openapi({
+      description:
+        "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
+    }),
   })
   .openapi({
     description: 'Information about an entity that is affected by a Health event.',
@@ -173,17 +133,13 @@ const EntityListSchema = z.array(AffectedEntitySchema).openapi('EntityList')
 
 const DescribeAffectedEntitiesResponseSchema = z
   .object({
-    entities: EntityListSchema.and(
-      z.any().openapi({ description: 'The entities that match the filter criteria.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    entities: EntityListSchema.exactOptional().openapi({
+      description: 'The entities that match the filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAffectedEntitiesResponse')
@@ -196,12 +152,12 @@ const EntityValueListSchema = z.array(EntityValueSchema).min(1).max(99).openapi(
 
 const DateTimeRangeSchema = z
   .object({
-    from: TimestampSchema.and(
-      z.any().openapi({ description: 'The starting date and time of a time range.' }),
-    ).exactOptional(),
-    to: TimestampSchema.and(
-      z.any().openapi({ description: 'The ending date and time of a time range.' }),
-    ).exactOptional(),
+    from: TimestampSchema.exactOptional().openapi({
+      description: 'The starting date and time of a time range.',
+    }),
+    to: TimestampSchema.exactOptional().openapi({
+      description: 'The ending date and time of a time range.',
+    }),
   })
   .openapi({
     description:
@@ -226,43 +182,27 @@ const EntityStatusCodeListSchema = z
 
 const EntityFilterSchema = z
   .object({
-    eventArns: EventArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
-        }),
-    ),
-    entityArns: EntityArnListSchema.and(
-      z.any().openapi({ description: 'A list of entity ARNs (unique identifiers).' }),
-    ).exactOptional(),
-    entityValues: EntityValueListSchema.and(
-      z.any().openapi({ description: 'A list of IDs for affected entities.' }),
-    ).exactOptional(),
-    lastUpdatedTimes: DateTimeRangeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the most recent dates and times that the entity was updated.',
-        }),
-    ).exactOptional(),
-    tags: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
-        }),
-    ).exactOptional(),
-    statusCodes: EntityStatusCodeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entity status codes (<code>IMPAIRED</code>, <code>UNIMPAIRED</code>, or <code>UNKNOWN</code>).',
-        }),
-    ).exactOptional(),
+    eventArns: EventArnListSchema.openapi({
+      description:
+        'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
+    }),
+    entityArns: EntityArnListSchema.exactOptional().openapi({
+      description: 'A list of entity ARNs (unique identifiers).',
+    }),
+    entityValues: EntityValueListSchema.exactOptional().openapi({
+      description: 'A list of IDs for affected entities.',
+    }),
+    lastUpdatedTimes: DateTimeRangeListSchema.exactOptional().openapi({
+      description: 'A list of the most recent dates and times that the entity was updated.',
+    }),
+    tags: TagFilterSchema.exactOptional().openapi({
+      description:
+        "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
+    }),
+    statusCodes: EntityStatusCodeListSchema.exactOptional().openapi({
+      description:
+        'A list of entity status codes (<code>IMPAIRED</code>, <code>UNIMPAIRED</code>, or <code>UNKNOWN</code>).',
+    }),
   })
   .openapi({
     required: ['eventArns'],
@@ -280,37 +220,21 @@ const LocaleSchema = z
 
 const DescribeAffectedEntitiesRequestSchema = z
   .object({
-    filter: EntityFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Values to narrow the results returned. At least one event ARN is required.',
-        }),
-    ),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
+    filter: EntityFilterSchema.openapi({
+      description: 'Values to narrow the results returned. At least one event ARN is required.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
   })
   .openapi({ required: ['filter'], title: 'DescribeAffectedEntitiesRequest' })
   .openapi('DescribeAffectedEntitiesRequest')
@@ -321,33 +245,19 @@ const StringSchema = z.string().openapi('String')
 
 const OrganizationAffectedEntitiesErrorItemSchema = z
   .object({
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
-        }),
-    ).exactOptional(),
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    errorName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the error.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the event type. The format is <code>AWS_SERVICE_DESCRIPTION</code>. For example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
-        }),
-    ).exactOptional(),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
+    }),
+    eventArn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    errorName: StringSchema.exactOptional().openapi({ description: 'The name of the error.' }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the event type. The format is <code>AWS_SERVICE_DESCRIPTION</code>. For example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
+    }),
   })
   .openapi({
     description:
@@ -362,52 +272,32 @@ const DescribeAffectedEntitiesForOrganizationFailedSetSchema = z
 
 const DescribeAffectedEntitiesForOrganizationResponseSchema = z
   .object({
-    entities: EntityListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON set of elements including the <code>awsAccountId</code> and its <code>entityArn</code>, <code>entityValue</code> and its <code>entityArn</code>, <code>lastUpdatedTime</code>, and <code>statusCode</code>.',
-        }),
-    ).exactOptional(),
-    failedSet: DescribeAffectedEntitiesForOrganizationFailedSetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON set of elements of the failed response, including the <code>awsAccountId</code>, <code>errorMessage</code>, <code>errorName</code>, and <code>eventArn</code>.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    entities: EntityListSchema.exactOptional().openapi({
+      description:
+        'A JSON set of elements including the <code>awsAccountId</code> and its <code>entityArn</code>, <code>entityValue</code> and its <code>entityArn</code>, <code>lastUpdatedTime</code>, and <code>statusCode</code>.',
+    }),
+    failedSet: DescribeAffectedEntitiesForOrganizationFailedSetSchema.exactOptional().openapi({
+      description:
+        'A JSON set of elements of the failed response, including the <code>awsAccountId</code>, <code>errorMessage</code>, <code>errorName</code>, and <code>eventArn</code>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAffectedEntitiesForOrganizationResponse')
 
 const EventAccountFilterSchema = z
   .object({
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ),
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
-        }),
-    ).exactOptional(),
+    eventArn: EventArnSchema.openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
+    }),
   })
   .openapi({
     required: ['eventArn'],
@@ -426,38 +316,22 @@ const MaxResultsLowerRangeSchema = z.int().min(1).max(100).openapi('MaxResultsLo
 
 const DescribeAffectedEntitiesForOrganizationRequestSchema = z
   .object({
-    organizationEntityFilters: OrganizationEntityFiltersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A JSON set of elements including the <code>awsAccountId</code> and the <code>eventArn</code>.',
-        }),
-    ),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsLowerRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
+    organizationEntityFilters: OrganizationEntityFiltersListSchema.openapi({
+      description:
+        'A JSON set of elements including the <code>awsAccountId</code> and the <code>eventArn</code>.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsLowerRangeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
   })
   .openapi({
     required: ['organizationEntityFilters'],
@@ -469,21 +343,13 @@ const CountSchema = z.int().openapi('Count')
 
 const EntityAggregateSchema = z
   .object({
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    count: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of entities that match the criteria for the specified events.',
-        }),
-    ).exactOptional(),
+    eventArn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    count: CountSchema.exactOptional().openapi({
+      description: 'The number of entities that match the criteria for the specified events.',
+    }),
   })
   .openapi({
     description:
@@ -496,13 +362,9 @@ const EntityAggregateListSchema = z.array(EntityAggregateSchema).openapi('Entity
 
 const DescribeEntityAggregatesResponseSchema = z
   .object({
-    entityAggregates: EntityAggregateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of entities that are affected by each of the specified events.',
-        }),
-    ).exactOptional(),
+    entityAggregates: EntityAggregateListSchema.exactOptional().openapi({
+      description: 'The number of entities that are affected by each of the specified events.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEntityAggregatesResponse')
@@ -511,14 +373,10 @@ const EventArnsListSchema = z.array(EventArnSchema).min(1).max(50).openapi('Even
 
 const DescribeEntityAggregatesRequestSchema = z
   .object({
-    eventArns: EventArnsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
-        }),
-    ).exactOptional(),
+    eventArns: EventArnsListSchema.exactOptional().openapi({
+      description:
+        'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
+    }),
   })
   .openapi({ title: 'DescribeEntityAggregatesRequest', required: [] })
   .openapi('DescribeEntityAggregatesRequest')
@@ -527,12 +385,12 @@ const AggregateValueSchema = z.string().openapi('AggregateValue')
 
 const EventAggregateSchema = z
   .object({
-    aggregateValue: AggregateValueSchema.and(
-      z.any().openapi({ description: 'The issue type for the associated count.' }),
-    ).exactOptional(),
-    count: CountSchema.and(
-      z.any().openapi({ description: 'The number of events of the associated issue type.' }),
-    ).exactOptional(),
+    aggregateValue: AggregateValueSchema.exactOptional().openapi({
+      description: 'The issue type for the associated count.',
+    }),
+    count: CountSchema.exactOptional().openapi({
+      description: 'The number of events of the associated issue type.',
+    }),
   })
   .openapi({
     description:
@@ -545,22 +403,13 @@ const EventAggregateListSchema = z.array(EventAggregateSchema).openapi('EventAgg
 
 const DescribeEventAggregatesResponseSchema = z
   .object({
-    eventAggregates: EventAggregateListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of events in each category that meet the optional filter criteria.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    eventAggregates: EventAggregateListSchema.exactOptional().openapi({
+      description: 'The number of events in each category that meet the optional filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventAggregatesResponse')
@@ -621,77 +470,51 @@ const EventStatusCodeListSchema = z
 
 const EventFilterSchema = z
   .object({
-    eventArns: EventArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
-        }),
-    ).exactOptional(),
-    eventTypeCodes: EventTypeList2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of unique identifiers for event types. For example, <code>"AWS_EC2_SYSTEM_MAINTENANCE_EVENT","AWS_RDS_MAINTENANCE_SCHEDULED".</code> ',
-        }),
-    ).exactOptional(),
-    services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    regions: RegionListSchema.and(
-      z.any().openapi({ description: 'A list of Amazon Web Services Regions.' }),
-    ).exactOptional(),
-    availabilityZones: AvailabilityZonesSchema.and(
-      z.any().openapi({ description: 'A list of Amazon Web Services Availability Zones.' }),
-    ).exactOptional(),
-    startTimes: DateTimeRangeListSchema.and(
-      z.any().openapi({ description: 'A list of dates and times that the event began.' }),
-    ).exactOptional(),
-    endTimes: DateTimeRangeListSchema.and(
-      z.any().openapi({ description: 'A list of dates and times that the event ended.' }),
-    ).exactOptional(),
-    lastUpdatedTimes: DateTimeRangeListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of dates and times that the event was last updated.' }),
-    ).exactOptional(),
-    entityArns: EntityArnListSchema.and(
-      z.any().openapi({ description: 'A list of entity ARNs (unique identifiers).' }),
-    ).exactOptional(),
-    entityValues: EntityValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entity identifiers, such as EC2 instance IDs (<code>i-34ab692e</code>) or EBS volumes (<code>vol-426ab23e</code>).',
-        }),
-    ).exactOptional(),
-    eventTypeCategories: EventTypeCategoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
-    tags: TagFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
-        }),
-    ).exactOptional(),
-    eventStatusCodes: EventStatusCodeListSchema.and(
-      z.any().openapi({ description: 'A list of event status codes.' }),
-    ).exactOptional(),
+    eventArns: EventArnListSchema.exactOptional().openapi({
+      description:
+        'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
+    }),
+    eventTypeCodes: EventTypeList2Schema.exactOptional().openapi({
+      description:
+        'A list of unique identifiers for event types. For example, <code>"AWS_EC2_SYSTEM_MAINTENANCE_EVENT","AWS_RDS_MAINTENANCE_SCHEDULED".</code> ',
+    }),
+    services: ServiceListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
+    }),
+    regions: RegionListSchema.exactOptional().openapi({
+      description: 'A list of Amazon Web Services Regions.',
+    }),
+    availabilityZones: AvailabilityZonesSchema.exactOptional().openapi({
+      description: 'A list of Amazon Web Services Availability Zones.',
+    }),
+    startTimes: DateTimeRangeListSchema.exactOptional().openapi({
+      description: 'A list of dates and times that the event began.',
+    }),
+    endTimes: DateTimeRangeListSchema.exactOptional().openapi({
+      description: 'A list of dates and times that the event ended.',
+    }),
+    lastUpdatedTimes: DateTimeRangeListSchema.exactOptional().openapi({
+      description: 'A list of dates and times that the event was last updated.',
+    }),
+    entityArns: EntityArnListSchema.exactOptional().openapi({
+      description: 'A list of entity ARNs (unique identifiers).',
+    }),
+    entityValues: EntityValueListSchema.exactOptional().openapi({
+      description:
+        'A list of entity identifiers, such as EC2 instance IDs (<code>i-34ab692e</code>) or EBS volumes (<code>vol-426ab23e</code>).',
+    }),
+    eventTypeCategories: EventTypeCategoryListSchema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
+    tags: TagFilterSchema.exactOptional().openapi({
+      description:
+        "<p>A map of entity tags attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>",
+    }),
+    eventStatusCodes: EventStatusCodeListSchema.exactOptional().openapi({
+      description: 'A list of event status codes.',
+    }),
   })
   .openapi({
     description:
@@ -704,32 +527,20 @@ const EventAggregateFieldSchema = z.literal('eventTypeCategory').openapi('EventA
 
 const DescribeEventAggregatesRequestSchema = z
   .object({
-    filter: EventFilterSchema.and(
-      z.any().openapi({ description: 'Values to narrow the results returned.' }),
-    ).exactOptional(),
-    aggregateField: EventAggregateFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The only currently supported value is <code>eventTypeCategory</code>.',
-        }),
-    ),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    filter: EventFilterSchema.exactOptional().openapi({
+      description: 'Values to narrow the results returned.',
+    }),
+    aggregateField: EventAggregateFieldSchema.openapi({
+      description: 'The only currently supported value is <code>eventTypeCategory</code>.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: ['aggregateField'], title: 'DescribeEventAggregatesRequest' })
   .openapi('DescribeEventAggregatesRequest')
@@ -743,74 +554,46 @@ const EventTypeCodeSchema = z
 
 const EventSchema = z
   .object({
-    arn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services service that is affected by the event. For example, <code>EC2</code>, <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    eventTypeCode: EventTypeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the event type. The format is <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
-        }),
-    ).exactOptional(),
-    eventTypeCategory: EventTypeCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region name of the event.' }),
-    ).exactOptional(),
-    availabilityZone: AvailabilityZoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Availability Zone of the event. For example, us-east-1a.',
-        }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the event began.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the event ended.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The most recent date and time that the event was updated.' }),
-    ).exactOptional(),
-    statusCode: EventStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The most recent status of the event. Possible values are <code>open</code>, <code>closed</code>, and <code>upcoming</code>.',
-        }),
-    ).exactOptional(),
-    eventScopeCode: EventScopeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    arn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    service: ServiceSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services service that is affected by the event. For example, <code>EC2</code>, <code>RDS</code>.',
+    }),
+    eventTypeCode: EventTypeCodeSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the event type. The format is <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
+    }),
+    eventTypeCategory: EventTypeCategorySchema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region name of the event.',
+    }),
+    availabilityZone: AvailabilityZoneSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services Availability Zone of the event. For example, us-east-1a.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the event began.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the event ended.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The most recent date and time that the event was updated.',
+    }),
+    statusCode: EventStatusCodeSchema.exactOptional().openapi({
+      description:
+        'The most recent status of the event. Possible values are <code>open</code>, <code>closed</code>, and <code>upcoming</code>.',
+    }),
+    eventScopeCode: EventScopeCodeSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -823,9 +606,9 @@ const EventDescriptionSchema = z.string().openapi('EventDescription')
 
 const EventDescription2Schema = z
   .object({
-    latestDescription: EventDescriptionSchema.and(
-      z.any().openapi({ description: 'The most recent description of the event.' }),
-    ).exactOptional(),
+    latestDescription: EventDescriptionSchema.exactOptional().openapi({
+      description: 'The most recent description of the event.',
+    }),
   })
   .openapi({
     description:
@@ -840,15 +623,15 @@ const EventMetadataSchema = z.record(z.string(), MetadataValueSchema).openapi('E
 
 const EventDetailsSchema = z
   .object({
-    event: EventSchema.and(
-      z.any().openapi({ description: 'Summary information about the event.' }),
-    ).exactOptional(),
-    eventDescription: EventDescription2Schema.and(
-      z.any().openapi({ description: 'The most recent description of the event.' }),
-    ).exactOptional(),
-    eventMetadata: EventMetadataSchema.and(
-      z.any().openapi({ description: 'Additional metadata about the event.' }),
-    ).exactOptional(),
+    event: EventSchema.exactOptional().openapi({
+      description: 'Summary information about the event.',
+    }),
+    eventDescription: EventDescription2Schema.exactOptional().openapi({
+      description: 'The most recent description of the event.',
+    }),
+    eventMetadata: EventMetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata about the event.',
+    }),
   })
   .openapi({
     description:
@@ -863,20 +646,14 @@ const DescribeEventDetailsSuccessfulSetSchema = z
 
 const EventDetailsErrorItemSchema = z
   .object({
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    errorName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the error.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z.any().openapi({ description: 'A message that describes the error.' }),
-    ).exactOptional(),
+    eventArn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    errorName: StringSchema.exactOptional().openapi({ description: 'The name of the error.' }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description: 'A message that describes the error.',
+    }),
   })
   .openapi({
     description:
@@ -891,55 +668,41 @@ const DescribeEventDetailsFailedSetSchema = z
 
 const DescribeEventDetailsResponseSchema = z
   .object({
-    successfulSet: DescribeEventDetailsSuccessfulSetSchema.and(
-      z.any().openapi({ description: 'Information about the events that could be retrieved.' }),
-    ).exactOptional(),
-    failedSet: DescribeEventDetailsFailedSetSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Error messages for any events that could not be retrieved.' }),
-    ).exactOptional(),
+    successfulSet: DescribeEventDetailsSuccessfulSetSchema.exactOptional().openapi({
+      description: 'Information about the events that could be retrieved.',
+    }),
+    failedSet: DescribeEventDetailsFailedSetSchema.exactOptional().openapi({
+      description: 'Error messages for any events that could not be retrieved.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventDetailsResponse')
 
 const DescribeEventDetailsRequestSchema = z
   .object({
-    eventArns: EventArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
-        }),
-    ),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
+    eventArns: EventArnListSchema.openapi({
+      description:
+        'A list of event ARNs (unique identifiers). For example: <code>"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456", "arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101"</code> ',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
   })
   .openapi({ required: ['eventArns'], title: 'DescribeEventDetailsRequest' })
   .openapi('DescribeEventDetailsRequest')
 
 const OrganizationEventDetailsSchema = z
   .object({
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
-        }),
-    ).exactOptional(),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'The 12-digit Amazon Web Services account numbers that contains the affected entities.',
+    }),
     event: EventSchema.exactOptional(),
     eventDescription: EventDescription2Schema.exactOptional(),
-    eventMetadata: EventMetadataSchema.and(
-      z.any().openapi({ description: 'Additional metadata about the event.' }),
-    ).exactOptional(),
+    eventMetadata: EventMetadataSchema.exactOptional().openapi({
+      description: 'Additional metadata about the event.',
+    }),
   })
   .openapi({
     description:
@@ -954,33 +717,19 @@ const DescribeEventDetailsForOrganizationSuccessfulSetSchema = z
 
 const OrganizationEventDetailsErrorItemSchema = z
   .object({
-    awsAccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Error information returned when a <a href="https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html">DescribeEventDetailsForOrganization</a> operation can\'t find a specified event.',
-        }),
-    ).exactOptional(),
-    eventArn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    errorName: StringSchema.and(
-      z.any().openapi({ description: 'The name of the error.' }),
-    ).exactOptional(),
-    errorMessage: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A message that describes the error.</p> <p>If you call the <code>DescribeEventDetailsForOrganization</code> operation and receive one of the following errors, follow the recommendations in the message:</p> <ul> <li> <p>We couldn't find a public event that matches your request. To find an event that is account specific, you must enter an Amazon Web Services account ID in the request.</p> </li> <li> <p>We couldn't find an account specific event for the specified Amazon Web Services account. To find an event that is public, you must enter a null value for the Amazon Web Services account ID in the request.</p> </li> <li> <p>Your Amazon Web Services account doesn't include the Amazon Web Services Support plan required to use the Health API. You must have either a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    awsAccountId: AccountIdSchema.exactOptional().openapi({
+      description:
+        'Error information returned when a <a href="https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html">DescribeEventDetailsForOrganization</a> operation can\'t find a specified event.',
+    }),
+    eventArn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    errorName: StringSchema.exactOptional().openapi({ description: 'The name of the error.' }),
+    errorMessage: StringSchema.exactOptional().openapi({
+      description:
+        "<p>A message that describes the error.</p> <p>If you call the <code>DescribeEventDetailsForOrganization</code> operation and receive one of the following errors, follow the recommendations in the message:</p> <ul> <li> <p>We couldn't find a public event that matches your request. To find an event that is account specific, you must enter an Amazon Web Services account ID in the request.</p> </li> <li> <p>We couldn't find an account specific event for the specified Amazon Web Services account. To find an event that is public, you must enter a null value for the Amazon Web Services account ID in the request.</p> </li> <li> <p>Your Amazon Web Services account doesn't include the Amazon Web Services Support plan required to use the Health API. You must have either a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -995,14 +744,12 @@ const DescribeEventDetailsForOrganizationFailedSetSchema = z
 
 const DescribeEventDetailsForOrganizationResponseSchema = z
   .object({
-    successfulSet: DescribeEventDetailsForOrganizationSuccessfulSetSchema.and(
-      z.any().openapi({ description: 'Information about the events that could be retrieved.' }),
-    ).exactOptional(),
-    failedSet: DescribeEventDetailsForOrganizationFailedSetSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Error messages for any events that could not be retrieved.' }),
-    ).exactOptional(),
+    successfulSet: DescribeEventDetailsForOrganizationSuccessfulSetSchema.exactOptional().openapi({
+      description: 'Information about the events that could be retrieved.',
+    }),
+    failedSet: DescribeEventDetailsForOrganizationFailedSetSchema.exactOptional().openapi({
+      description: 'Error messages for any events that could not be retrieved.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventDetailsForOrganizationResponse')
@@ -1015,22 +762,14 @@ const OrganizationEventDetailFiltersListSchema = z
 
 const DescribeEventDetailsForOrganizationRequestSchema = z
   .object({
-    organizationEventDetailFilters: OrganizationEventDetailFiltersListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of JSON elements that includes the <code>awsAccountId</code> and the <code>eventArn</code>.',
-        }),
-    ),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
+    organizationEventDetailFilters: OrganizationEventDetailFiltersListSchema.openapi({
+      description:
+        'A set of JSON elements that includes the <code>awsAccountId</code> and the <code>eventArn</code>.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
   })
   .openapi({
     required: ['organizationEventDetailFilters'],
@@ -1040,30 +779,18 @@ const DescribeEventDetailsForOrganizationRequestSchema = z
 
 const EventTypeSchema = z
   .object({
-    service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services service that is affected by the event. For example, <code>EC2</code>, <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    code: EventTypeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the event type. The format is <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
-        }),
-    ).exactOptional(),
-    category: EventTypeCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
+    service: ServiceSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services service that is affected by the event. For example, <code>EC2</code>, <code>RDS</code>.',
+    }),
+    code: EventTypeCodeSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the event type. The format is <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
+    }),
+    category: EventTypeCategorySchema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
   })
   .openapi({
     description:
@@ -1076,22 +803,14 @@ const EventTypeListSchema = z.array(EventTypeSchema).openapi('EventTypeList')
 
 const DescribeEventTypesResponseSchema = z
   .object({
-    eventTypes: EventTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of event types that match the filter criteria. Event types have a category (<code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>), a service (for example, <code>EC2</code>, <code>RDS</code>, <code>DATAPIPELINE</code>, <code>BILLING</code>), and a code (in the format <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>).',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    eventTypes: EventTypeListSchema.exactOptional().openapi({
+      description:
+        'A list of event types that match the filter criteria. Event types have a category (<code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>), a service (for example, <code>EC2</code>, <code>RDS</code>, <code>DATAPIPELINE</code>, <code>BILLING</code>), and a code (in the format <code>AWS_<i>SERVICE</i>_<i>DESCRIPTION</i> </code>; for example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>).',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventTypesResponse')
@@ -1110,25 +829,17 @@ const EventTypeCategoryList2Schema = z
 
 const EventTypeFilterSchema = z
   .object({
-    eventTypeCodes: EventTypeCodeListSchema.and(
-      z.any().openapi({ description: 'A list of event type codes.' }),
-    ).exactOptional(),
-    services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    eventTypeCategories: EventTypeCategoryList2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
+    eventTypeCodes: EventTypeCodeListSchema.exactOptional().openapi({
+      description: 'A list of event type codes.',
+    }),
+    services: ServiceListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
+    }),
+    eventTypeCategories: EventTypeCategoryList2Schema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
   })
   .openapi({
     description:
@@ -1139,33 +850,21 @@ const EventTypeFilterSchema = z
 
 const DescribeEventTypesRequestSchema = z
   .object({
-    filter: EventTypeFilterSchema.and(
-      z.any().openapi({ description: 'Values to narrow the results returned.' }),
-    ).exactOptional(),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
+    filter: EventTypeFilterSchema.exactOptional().openapi({
+      description: 'Values to narrow the results returned.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
   })
   .openapi({ title: 'DescribeEventTypesRequest', required: [] })
   .openapi('DescribeEventTypesRequest')
@@ -1174,116 +873,76 @@ const EventListSchema = z.array(EventSchema).openapi('EventList')
 
 const DescribeEventsResponseSchema = z
   .object({
-    events: EventListSchema.and(
-      z.any().openapi({ description: 'The events that match the specified filter criteria.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    events: EventListSchema.exactOptional().openapi({
+      description: 'The events that match the specified filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventsResponse')
 
 const DescribeEventsRequestSchema = z
   .object({
-    filter: EventFilterSchema.and(
-      z.any().openapi({ description: 'Values to narrow the results returned.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
+    filter: EventFilterSchema.exactOptional().openapi({
+      description: 'Values to narrow the results returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
   })
   .openapi({ title: 'DescribeEventsRequest', required: [] })
   .openapi('DescribeEventsRequest')
 
 const OrganizationEventSchema = z
   .object({
-    arn: EventArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
-        }),
-    ).exactOptional(),
-    service: ServiceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services service that is affected by the event, such as EC2 and RDS.',
-        }),
-    ).exactOptional(),
-    eventTypeCode: EventTypeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the event type. The format is <code>AWS_SERVICE_DESCRIPTION</code>. For example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
-        }),
-    ).exactOptional(),
-    eventTypeCategory: EventTypeCategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
-    eventScopeCode: EventScopeCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    region: RegionSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region name of the event.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the event began.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that the event ended.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The most recent date and time that the event was updated.' }),
-    ).exactOptional(),
-    statusCode: EventStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The most recent status of the event. Possible values are <code>open</code>, <code>closed</code>, and <code>upcoming</code>.',
-        }),
-    ).exactOptional(),
+    arn: EventArnSchema.exactOptional().openapi({
+      description:
+        '<p>The unique identifier for the event. The event ARN has the <code>arn:aws:health:<i>event-region</i>::event/<i>SERVICE</i>/<i>EVENT_TYPE_CODE</i>/<i>EVENT_TYPE_PLUS_ID</i> </code> format.</p> <p>For example, an event ARN might look like the following:</p> <p> <code>arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456</code> </p>',
+    }),
+    service: ServiceSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services service that is affected by the event, such as EC2 and RDS.',
+    }),
+    eventTypeCode: EventTypeCodeSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the event type. The format is <code>AWS_SERVICE_DESCRIPTION</code>. For example, <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code>.',
+    }),
+    eventTypeCategory: EventTypeCategorySchema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
+    eventScopeCode: EventScopeCodeSchema.exactOptional().openapi({
+      description:
+        "<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>",
+    }),
+    region: RegionSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region name of the event.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the event began.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that the event ended.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The most recent date and time that the event was updated.',
+    }),
+    statusCode: EventStatusCodeSchema.exactOptional().openapi({
+      description:
+        'The most recent status of the event. Possible values are <code>open</code>, <code>closed</code>, and <code>upcoming</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1298,17 +957,13 @@ const OrganizationEventListSchema = z
 
 const DescribeEventsForOrganizationResponseSchema = z
   .object({
-    events: OrganizationEventListSchema.and(
-      z.any().openapi({ description: 'The events that match the specified filter criteria.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
+    events: OrganizationEventListSchema.exactOptional().openapi({
+      description: 'The events that match the specified filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventsForOrganizationResponse')
@@ -1317,58 +972,38 @@ const AwsAccountIdsListSchema = z.array(AccountIdSchema).min(1).max(50).openapi(
 
 const OrganizationEventFilterSchema = z
   .object({
-    eventTypeCodes: EventTypeList2Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of unique identifiers for event types. For example, <code>"AWS_EC2_SYSTEM_MAINTENANCE_EVENT","AWS_RDS_MAINTENANCE_SCHEDULED".</code> ',
-        }),
-    ).exactOptional(),
-    awsAccountIds: AwsAccountIdsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of 12-digit Amazon Web Services account numbers that contains the affected entities.',
-        }),
-    ).exactOptional(),
-    services: ServiceListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
-        }),
-    ).exactOptional(),
-    regions: RegionListSchema.and(
-      z.any().openapi({ description: 'A list of Amazon Web Services Regions.' }),
-    ).exactOptional(),
+    eventTypeCodes: EventTypeList2Schema.exactOptional().openapi({
+      description:
+        'A list of unique identifiers for event types. For example, <code>"AWS_EC2_SYSTEM_MAINTENANCE_EVENT","AWS_RDS_MAINTENANCE_SCHEDULED".</code> ',
+    }),
+    awsAccountIds: AwsAccountIdsListSchema.exactOptional().openapi({
+      description:
+        'A list of 12-digit Amazon Web Services account numbers that contains the affected entities.',
+    }),
+    services: ServiceListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services services associated with the event. For example, <code>EC2</code>, <code>RDS</code>.',
+    }),
+    regions: RegionListSchema.exactOptional().openapi({
+      description: 'A list of Amazon Web Services Regions.',
+    }),
     startTime: DateTimeRangeSchema.exactOptional(),
     endTime: DateTimeRangeSchema.exactOptional(),
     lastUpdatedTime: DateTimeRangeSchema.exactOptional(),
-    entityArns: EntityArnListSchema.and(
-      z.any().openapi({ description: 'A list of entity ARNs (unique identifiers).' }),
-    ).exactOptional(),
-    entityValues: EntityValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of entity identifiers, such as EC2 instance IDs (i-34ab692e) or EBS volumes (vol-426ab23e).',
-        }),
-    ).exactOptional(),
-    eventTypeCategories: EventTypeCategoryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
-        }),
-    ).exactOptional(),
-    eventStatusCodes: EventStatusCodeListSchema.and(
-      z.any().openapi({ description: 'A list of event status codes.' }),
-    ).exactOptional(),
+    entityArns: EntityArnListSchema.exactOptional().openapi({
+      description: 'A list of entity ARNs (unique identifiers).',
+    }),
+    entityValues: EntityValueListSchema.exactOptional().openapi({
+      description:
+        'A list of entity identifiers, such as EC2 instance IDs (i-34ab692e) or EBS volumes (vol-426ab23e).',
+    }),
+    eventTypeCategories: EventTypeCategoryListSchema.exactOptional().openapi({
+      description:
+        "A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.",
+    }),
+    eventStatusCodes: EventStatusCodeListSchema.exactOptional().openapi({
+      description: 'A list of event status codes.',
+    }),
   })
   .openapi({
     description:
@@ -1379,33 +1014,21 @@ const OrganizationEventFilterSchema = z
 
 const DescribeEventsForOrganizationRequestSchema = z
   .object({
-    filter: OrganizationEventFilterSchema.and(
-      z.any().openapi({ description: 'Values to narrow the results returned.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
-        }),
-    ).exactOptional(),
-    maxResults: MaxResultsLowerRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
-        }),
-    ).exactOptional(),
-    locale: LocaleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
-        }),
-    ).exactOptional(),
+    filter: OrganizationEventFilterSchema.exactOptional().openapi({
+      description: 'Values to narrow the results returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.',
+    }),
+    maxResults: MaxResultsLowerRangeSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return in one batch, between 10 and 100, inclusive.',
+    }),
+    locale: LocaleSchema.exactOptional().openapi({
+      description:
+        'The locale (language) to return information in. English (en) is the default and the only supported value at this time.',
+    }),
   })
   .openapi({ title: 'DescribeEventsForOrganizationRequest', required: [] })
   .openapi('DescribeEventsForOrganizationRequest')
@@ -1416,14 +1039,11 @@ const HealthServiceAccessStatusForOrganizationSchema = z
 
 const DescribeHealthServiceStatusForOrganizationResponseSchema = z
   .object({
-    healthServiceAccessStatusForOrganization: HealthServiceAccessStatusForOrganizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Information about the status of enabling or disabling the Health organizational view feature in your organization.</p> <p>Valid values are <code>ENABLED | DISABLED | PENDING</code>. </p>',
-        }),
-    ).exactOptional(),
+    healthServiceAccessStatusForOrganization:
+      HealthServiceAccessStatusForOrganizationSchema.exactOptional().openapi({
+        description:
+          '<p>Information about the status of enabling or disabling the Health organizational view feature in your organization.</p> <p>Valid values are <code>ENABLED | DISABLED | PENDING</code>. </p>',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DescribeHealthServiceStatusForOrganizationResponse')

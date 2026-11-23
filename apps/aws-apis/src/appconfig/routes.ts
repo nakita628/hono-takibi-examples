@@ -11,11 +11,11 @@ const DescriptionSchema = z.string().min(0).max(1024).openapi('Description')
 
 const ApplicationSchema = z
   .object({
-    Id: IdSchema.and(z.any().openapi({ description: 'The application ID.' })).exactOptional(),
-    Name: NameSchema.and(z.any().openapi({ description: 'The application name.' })).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the application.' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The application ID.' }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The application name.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the application.',
+    }),
   })
   .openapi({
     example: {
@@ -54,22 +54,14 @@ const StringWithLengthBetween0And32768Schema = z
 
 const ValidatorSchema = z
   .object({
-    Type: ValidatorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'AppConfig supports validators of type <code>JSON_SCHEMA</code> and <code>LAMBDA</code> ',
-        }),
-    ),
-    Content: StringWithLengthBetween0And32768Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda function.',
-        }),
-    ),
+    Type: ValidatorTypeSchema.openapi({
+      description:
+        'AppConfig supports validators of type <code>JSON_SCHEMA</code> and <code>LAMBDA</code> ',
+    }),
+    Content: StringWithLengthBetween0And32768Schema.openapi({
+      description:
+        'Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda function.',
+    }),
   })
   .openapi({
     required: ['Type', 'Content'],
@@ -87,40 +79,28 @@ const ConfigurationProfileTypeSchema = z
 
 const ConfigurationProfileSchema = z
   .object({
-    ApplicationId: IdSchema.and(
-      z.any().openapi({ description: 'The application ID.' }),
-    ).exactOptional(),
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The configuration profile ID.' }),
-    ).exactOptional(),
-    Name: LongNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration profile.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The configuration profile description.' }),
-    ).exactOptional(),
-    LocationUri: UriSchema.and(
-      z.any().openapi({ description: 'The URI location of the configuration.' }),
-    ).exactOptional(),
-    RetrievalRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.',
-        }),
-    ).exactOptional(),
-    Validators: ValidatorListSchema.and(
-      z.any().openapi({ description: 'A list of methods for validating the configuration.' }),
-    ).exactOptional(),
-    Type: ConfigurationProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
-        }),
-    ).exactOptional(),
+    ApplicationId: IdSchema.exactOptional().openapi({ description: 'The application ID.' }),
+    Id: IdSchema.exactOptional().openapi({ description: 'The configuration profile ID.' }),
+    Name: LongNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration profile.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The configuration profile description.',
+    }),
+    LocationUri: UriSchema.exactOptional().openapi({
+      description: 'The URI location of the configuration.',
+    }),
+    RetrievalRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.',
+    }),
+    Validators: ValidatorListSchema.exactOptional().openapi({
+      description: 'A list of methods for validating the configuration.',
+    }),
+    Type: ConfigurationProfileTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
+    }),
   })
   .openapi({
     example: {
@@ -151,46 +131,30 @@ const ReplicateToSchema = z.enum(['NONE', 'SSM_DOCUMENT']).openapi('ReplicateTo'
 
 const DeploymentStrategySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The deployment strategy ID.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the deployment strategy.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the deployment strategy.' }),
-    ).exactOptional(),
-    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.and(
-      z.any().openapi({ description: 'Total amount of time the deployment lasted.' }),
-    ).exactOptional(),
-    GrowthType: GrowthTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The algorithm used to define how percentage grew over time.' }),
-    ).exactOptional(),
-    GrowthFactor: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of targets that received a deployed configuration during each interval.',
-        }),
-    ).exactOptional(),
-    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that AppConfig monitored for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
-        }),
-    ).exactOptional(),
-    ReplicateTo: ReplicateToSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Save the deployment strategy to a Systems Manager (SSM) document.',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({ description: 'The deployment strategy ID.' }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the deployment strategy.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the deployment strategy.',
+    }),
+    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description: 'Total amount of time the deployment lasted.',
+    }),
+    GrowthType: GrowthTypeSchema.exactOptional().openapi({
+      description: 'The algorithm used to define how percentage grew over time.',
+    }),
+    GrowthFactor: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of targets that received a deployed configuration during each interval.',
+    }),
+    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description:
+        'The amount of time that AppConfig monitored for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
+    }),
+    ReplicateTo: ReplicateToSchema.exactOptional().openapi({
+      description: 'Save the deployment strategy to a Systems Manager (SSM) document.',
+    }),
   })
   .openapi({
     example: {
@@ -218,19 +182,13 @@ const StringWithLengthBetween1And2048Schema = z
 
 const MonitorSchema = z
   .object({
-    AlarmArn: StringWithLengthBetween1And2048Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon Resource Name (ARN) of the Amazon CloudWatch alarm.' }),
-    ),
-    AlarmRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ARN of an Identity and Access Management (IAM) role for AppConfig to monitor <code>AlarmArn</code>.',
-        }),
-    ).exactOptional(),
+    AlarmArn: StringWithLengthBetween1And2048Schema.openapi({
+      description: 'Amazon Resource Name (ARN) of the Amazon CloudWatch alarm.',
+    }),
+    AlarmRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'ARN of an Identity and Access Management (IAM) role for AppConfig to monitor <code>AlarmArn</code>.',
+    }),
   })
   .openapi({
     required: ['AlarmArn'],
@@ -242,27 +200,19 @@ const MonitorListSchema = z.array(MonitorSchema).min(0).max(5).openapi('MonitorL
 
 const EnvironmentSchema = z
   .object({
-    ApplicationId: IdSchema.and(
-      z.any().openapi({ description: 'The application ID.' }),
-    ).exactOptional(),
-    Id: IdSchema.and(z.any().openapi({ description: 'The environment ID.' })).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the environment.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the environment.' }),
-    ).exactOptional(),
-    State: EnvironmentStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the environment. An environment can be in one of the following states: <code>READY_FOR_DEPLOYMENT</code>, <code>DEPLOYING</code>, <code>ROLLING_BACK</code>, or <code>ROLLED_BACK</code> ',
-        }),
-    ).exactOptional(),
-    Monitors: MonitorListSchema.and(
-      z.any().openapi({ description: 'Amazon CloudWatch alarms monitored during the deployment.' }),
-    ).exactOptional(),
+    ApplicationId: IdSchema.exactOptional().openapi({ description: 'The application ID.' }),
+    Id: IdSchema.exactOptional().openapi({ description: 'The environment ID.' }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the environment.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the environment.',
+    }),
+    State: EnvironmentStateSchema.exactOptional().openapi({
+      description:
+        'The state of the environment. An environment can be in one of the following states: <code>READY_FOR_DEPLOYMENT</code>, <code>DEPLOYING</code>, <code>ROLLING_BACK</code>, or <code>ROLLED_BACK</code> ',
+    }),
+    Monitors: MonitorListSchema.exactOptional().openapi({
+      description: 'Amazon CloudWatch alarms monitored during the deployment.',
+    }),
   })
   .openapi({
     example: {
@@ -289,26 +239,18 @@ const ArnSchema = z
 
 const ActionSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'The action name.' })).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the action.' }),
-    ).exactOptional(),
-    Uri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) for an Identity and Access Management assume role.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The action name.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the action.',
+    }),
+    Uri: UriSchema.exactOptional().openapi({
+      description:
+        'The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.',
+    }),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) for an Identity and Access Management assume role.',
+    }),
   })
   .openapi({
     description:
@@ -329,16 +271,12 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ParameterSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the parameter.' }),
-    ).exactOptional(),
-    Required: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A parameter value must be specified in the extension association.',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the parameter.',
+    }),
+    Required: BooleanSchema.exactOptional().openapi({
+      description: 'A parameter value must be specified in the extension association.',
+    }),
   })
   .openapi({
     description:
@@ -355,34 +293,26 @@ const ParameterMapSchema = z
 
 const ExtensionSchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the extension.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(z.any().openapi({ description: 'The extension name.' })).exactOptional(),
-    VersionNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The extension version number.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the extension.' }),
-    ).exactOptional(),
-    Actions: ActionsMapSchema.and(
-      z.any().openapi({ description: 'The actions defined in the extension.' }),
-    ).exactOptional(),
-    Parameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the <code>CreateExtensionAssociation</code> API action. For Lambda extension actions, these parameters are included in the Lambda request object.',
-        }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the extension.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The extension name.' }),
+    VersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The extension version number.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the extension.',
+    }),
+    Actions: ActionsMapSchema.exactOptional().openapi({
+      description: 'The actions defined in the extension.',
+    }),
+    Parameters: ParameterMapSchema.exactOptional().openapi({
+      description:
+        'The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the <code>CreateExtensionAssociation</code> API action. For Lambda extension actions, these parameters are included in the Lambda request object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Extension')
@@ -401,39 +331,25 @@ const ParameterValueMapSchema = z
 
 const ExtensionAssociationSchema = z
   .object({
-    Id: IdentifierSchema.and(
-      z.any().openapi({ description: 'The system-generated ID for the association.' }),
-    ).exactOptional(),
-    ExtensionArn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the extension defined in the association.' }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs of applications, configuration profiles, or environments defined in the association.',
-        }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
-        }),
-    ).exactOptional(),
-    Parameters: ParameterValueMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The parameter names and values defined in the association.' }),
-    ).exactOptional(),
-    ExtensionVersionNumber: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version number for the extension defined in the association.',
-        }),
-    ).exactOptional(),
+    Id: IdentifierSchema.exactOptional().openapi({
+      description: 'The system-generated ID for the association.',
+    }),
+    ExtensionArn: ArnSchema.exactOptional().openapi({
+      description: 'The ARN of the extension defined in the association.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARNs of applications, configuration profiles, or environments defined in the association.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
+    }),
+    Parameters: ParameterValueMapSchema.exactOptional().openapi({
+      description: 'The parameter names and values defined in the association.',
+    }),
+    ExtensionVersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The version number for the extension defined in the association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExtensionAssociation')
@@ -442,11 +358,9 @@ const BlobSchema = z.string().openapi('Blob')
 
 const HostedConfigurationVersionSchema = z
   .object({
-    Content: BlobSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The content of the configuration or the configuration data.' }),
-    ).exactOptional(),
+    Content: BlobSchema.exactOptional().openapi({
+      description: 'The content of the configuration or the configuration data.',
+    }),
   })
   .openapi({
     example: {
@@ -463,14 +377,10 @@ const PayloadTooLargeExceptionSchema = z.any().openapi('PayloadTooLargeException
 
 const ConfigurationSchema = z
   .object({
-    Content: BlobSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The content of the configuration or the configuration data.</p> <important> <p>The <code>Content</code> attribute only contains data if the system finds new or updated configuration data. If there is no new or updated data and <code>ClientConfigurationVersion</code> matches the version of the current configuration, AppConfig returns a <code>204 No Content</code> HTTP response code and the <code>Content</code> value will be empty.</p> </important>',
-        }),
-    ).exactOptional(),
+    Content: BlobSchema.exactOptional().openapi({
+      description:
+        '<p>The content of the configuration or the configuration data.</p> <important> <p>The <code>Content</code> attribute only contains data if the system finds new or updated configuration data. If there is no new or updated data and <code>ClientConfigurationVersion</code> matches the version of the current configuration, AppConfig returns a <code>204 No Content</code> HTTP response code and the <code>Content</code> value will be empty.</p> </important>',
+    }),
   })
   .openapi({
     example: { ConfigurationVersion: '1', ContentType: 'application/octet-stream' },
@@ -503,41 +413,27 @@ const StringSchema = z.string().openapi('String')
 
 const ActionInvocationSchema = z
   .object({
-    ExtensionIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name, the ID, or the Amazon Resource Name (ARN) of the extension.',
-        }),
-    ).exactOptional(),
-    ActionName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the action.' }),
-    ).exactOptional(),
-    Uri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.',
-        }),
-    ).exactOptional(),
-    RoleArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Resource Name (ARN) for an Identity and Access Management assume role.',
-        }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message when an extension invocation fails.' }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code when an extension invocation fails.' }),
-    ).exactOptional(),
-    InvocationId: IdSchema.and(
-      z.any().openapi({ description: 'A system-generated ID for this invocation.' }),
-    ).exactOptional(),
+    ExtensionIdentifier: IdentifierSchema.exactOptional().openapi({
+      description: 'The name, the ID, or the Amazon Resource Name (ARN) of the extension.',
+    }),
+    ActionName: NameSchema.exactOptional().openapi({ description: 'The name of the action.' }),
+    Uri: UriSchema.exactOptional().openapi({
+      description:
+        'The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.',
+    }),
+    RoleArn: ArnSchema.exactOptional().openapi({
+      description:
+        'An Amazon Resource Name (ARN) for an Identity and Access Management assume role.',
+    }),
+    ErrorMessage: StringSchema.exactOptional().openapi({
+      description: 'The error message when an extension invocation fails.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({
+      description: 'The error code when an extension invocation fails.',
+    }),
+    InvocationId: IdSchema.exactOptional().openapi({
+      description: 'A system-generated ID for this invocation.',
+    }),
   })
   .openapi({
     description: 'An extension that was invoked as part of a deployment event.',
@@ -551,40 +447,24 @@ const Iso8601DateTimeSchema = z.iso.datetime({ offset: true }).openapi('Iso8601D
 
 const DeploymentEventSchema = z
   .object({
-    EventType: DeploymentEventTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of deployment event. Deployment event types include the start, stop, or completion of a deployment; a percentage update; the start or stop of a bake period; and the start or completion of a rollback.',
-        }),
-    ).exactOptional(),
-    TriggeredBy: TriggeredBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The entity that triggered the deployment event. Events can be triggered by a user, AppConfig, an Amazon CloudWatch alarm, or an internal error.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the deployment event. Descriptions include, but are not limited to, the user account or the Amazon CloudWatch alarm ARN that initiated a rollback, the percentage of hosts that received the deployment, or in the case of an internal error, a recommendation to attempt a new deployment.',
-        }),
-    ).exactOptional(),
-    ActionInvocations: ActionInvocationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of extensions that were invoked as part of the deployment.',
-        }),
-    ).exactOptional(),
-    OccurredAt: Iso8601DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the event occurred.' }),
-    ).exactOptional(),
+    EventType: DeploymentEventTypeSchema.exactOptional().openapi({
+      description:
+        'The type of deployment event. Deployment event types include the start, stop, or completion of a deployment; a percentage update; the start or stop of a bake period; and the start or completion of a rollback.',
+    }),
+    TriggeredBy: TriggeredBySchema.exactOptional().openapi({
+      description:
+        'The entity that triggered the deployment event. Events can be triggered by a user, AppConfig, an Amazon CloudWatch alarm, or an internal error.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of the deployment event. Descriptions include, but are not limited to, the user account or the Amazon CloudWatch alarm ARN that initiated a rollback, the percentage of hosts that received the deployment, or in the case of an internal error, a recommendation to attempt a new deployment.',
+    }),
+    ActionInvocations: ActionInvocationsSchema.exactOptional().openapi({
+      description: 'The list of extensions that were invoked as part of the deployment.',
+    }),
+    OccurredAt: Iso8601DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the event occurred.',
+    }),
   })
   .openapi({ description: 'An object that describes a deployment event.', required: [] })
   .openapi('DeploymentEvent')
@@ -593,22 +473,18 @@ const DeploymentEventsSchema = z.array(DeploymentEventSchema).openapi('Deploymen
 
 const AppliedExtensionSchema = z
   .object({
-    ExtensionId: IdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the extension.' }),
-    ).exactOptional(),
-    ExtensionAssociationId: IdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID for the association.' }),
-    ).exactOptional(),
-    VersionNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The extension version number.' }),
-    ).exactOptional(),
-    Parameters: ParameterValueMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more parameters for the actions called by the extension.',
-        }),
-    ).exactOptional(),
+    ExtensionId: IdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the extension.',
+    }),
+    ExtensionAssociationId: IdSchema.exactOptional().openapi({
+      description: 'The system-generated ID for the association.',
+    }),
+    VersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The extension version number.',
+    }),
+    Parameters: ParameterValueMapSchema.exactOptional().openapi({
+      description: 'One or more parameters for the actions called by the extension.',
+    }),
   })
   .openapi({ description: 'An extension that was invoked during a deployment.', required: [] })
   .openapi('AppliedExtension')
@@ -617,107 +493,75 @@ const AppliedExtensionsSchema = z.array(AppliedExtensionSchema).openapi('Applied
 
 const DeploymentSchema = z
   .object({
-    ApplicationId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the application that was deployed.' }),
-    ).exactOptional(),
-    EnvironmentId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the environment that was deployed.' }),
-    ).exactOptional(),
-    DeploymentStrategyId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the deployment strategy that was deployed.' }),
-    ).exactOptional(),
-    ConfigurationProfileId: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the configuration profile that was deployed.' }),
-    ).exactOptional(),
-    DeploymentNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The sequence number of the deployment.' }),
-    ).exactOptional(),
-    ConfigurationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration.' }),
-    ).exactOptional(),
-    ConfigurationLocationUri: UriSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the source location of the configuration.' }),
-    ).exactOptional(),
-    ConfigurationVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The configuration version that was deployed.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the deployment.' }),
-    ).exactOptional(),
-    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.and(
-      z.any().openapi({ description: 'Total amount of time the deployment lasted.' }),
-    ).exactOptional(),
-    GrowthType: GrowthTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The algorithm used to define how percentage grew over time.' }),
-    ).exactOptional(),
-    GrowthFactor: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of targets to receive a deployed configuration during each interval.',
-        }),
-    ).exactOptional(),
-    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that AppConfig monitored for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
-        }),
-    ).exactOptional(),
-    State: DeploymentStateSchema.and(
-      z.any().openapi({ description: 'The state of the deployment.' }),
-    ).exactOptional(),
-    EventLog: DeploymentEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing all events related to a deployment. The most recent events are displayed first.',
-        }),
-    ).exactOptional(),
-    PercentageComplete: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percentage of targets for which the deployment is available.',
-        }),
-    ).exactOptional(),
-    StartedAt: Iso8601DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the deployment started.' }),
-    ).exactOptional(),
-    CompletedAt: Iso8601DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the deployment completed. ' }),
-    ).exactOptional(),
-    AppliedExtensions: AppliedExtensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when <code>StartDeployment</code> was called.',
-        }),
-    ).exactOptional(),
-    KmsKeyArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name of the Key Management Service key used to encrypt configuration data. You can encrypt secrets stored in Secrets Manager, Amazon Simple Storage Service (Amazon S3) objects encrypted with SSE-KMS, or secure string parameters stored in Amazon Web Services Systems Manager Parameter Store. ',
-        }),
-    ).exactOptional(),
-    KmsKeyIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. ',
-        }),
-    ).exactOptional(),
+    ApplicationId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the application that was deployed.',
+    }),
+    EnvironmentId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the environment that was deployed.',
+    }),
+    DeploymentStrategyId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the deployment strategy that was deployed.',
+    }),
+    ConfigurationProfileId: IdSchema.exactOptional().openapi({
+      description: 'The ID of the configuration profile that was deployed.',
+    }),
+    DeploymentNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The sequence number of the deployment.',
+    }),
+    ConfigurationName: NameSchema.exactOptional().openapi({
+      description: 'The name of the configuration.',
+    }),
+    ConfigurationLocationUri: UriSchema.exactOptional().openapi({
+      description: 'Information about the source location of the configuration.',
+    }),
+    ConfigurationVersion: VersionSchema.exactOptional().openapi({
+      description: 'The configuration version that was deployed.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the deployment.',
+    }),
+    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description: 'Total amount of time the deployment lasted.',
+    }),
+    GrowthType: GrowthTypeSchema.exactOptional().openapi({
+      description: 'The algorithm used to define how percentage grew over time.',
+    }),
+    GrowthFactor: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of targets to receive a deployed configuration during each interval.',
+    }),
+    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description:
+        'The amount of time that AppConfig monitored for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
+    }),
+    State: DeploymentStateSchema.exactOptional().openapi({
+      description: 'The state of the deployment.',
+    }),
+    EventLog: DeploymentEventsSchema.exactOptional().openapi({
+      description:
+        'A list containing all events related to a deployment. The most recent events are displayed first.',
+    }),
+    PercentageComplete: PercentageSchema.exactOptional().openapi({
+      description: 'The percentage of targets for which the deployment is available.',
+    }),
+    StartedAt: Iso8601DateTimeSchema.exactOptional().openapi({
+      description: 'The time the deployment started.',
+    }),
+    CompletedAt: Iso8601DateTimeSchema.exactOptional().openapi({
+      description: 'The time the deployment completed. ',
+    }),
+    AppliedExtensions: AppliedExtensionsSchema.exactOptional().openapi({
+      description:
+        'A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when <code>StartDeployment</code> was called.',
+    }),
+    KmsKeyArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name of the Key Management Service key used to encrypt configuration data. You can encrypt secrets stored in Secrets Manager, Amazon Simple Storage Service (Amazon S3) objects encrypted with SSE-KMS, or secure string parameters stored in Amazon Web Services Systems Manager Parameter Store. ',
+    }),
+    KmsKeyIdentifier: IdentifierSchema.exactOptional().openapi({
+      description:
+        'The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. ',
+    }),
   })
   .openapi({
     example: {
@@ -737,17 +581,13 @@ const NextTokenSchema = z.string().min(1).max(2048).openapi('NextToken')
 
 const ApplicationsSchema = z
   .object({
-    Items: ApplicationListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: ApplicationListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -772,29 +612,21 @@ const ValidatorTypeListSchema = z
 
 const ConfigurationProfileSummarySchema = z
   .object({
-    ApplicationId: IdSchema.and(
-      z.any().openapi({ description: 'The application ID.' }),
-    ).exactOptional(),
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The ID of the configuration profile.' }),
-    ).exactOptional(),
-    Name: LongNameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration profile.' }),
-    ).exactOptional(),
-    LocationUri: UriSchema.and(
-      z.any().openapi({ description: 'The URI location of the configuration.' }),
-    ).exactOptional(),
-    ValidatorTypes: ValidatorTypeListSchema.and(
-      z.any().openapi({ description: 'The types of validators in the configuration profile.' }),
-    ).exactOptional(),
-    Type: ConfigurationProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
-        }),
-    ).exactOptional(),
+    ApplicationId: IdSchema.exactOptional().openapi({ description: 'The application ID.' }),
+    Id: IdSchema.exactOptional().openapi({ description: 'The ID of the configuration profile.' }),
+    Name: LongNameSchema.exactOptional().openapi({
+      description: 'The name of the configuration profile.',
+    }),
+    LocationUri: UriSchema.exactOptional().openapi({
+      description: 'The URI location of the configuration.',
+    }),
+    ValidatorTypes: ValidatorTypeListSchema.exactOptional().openapi({
+      description: 'The types of validators in the configuration profile.',
+    }),
+    Type: ConfigurationProfileTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
+    }),
   })
   .openapi({ description: 'A summary of a configuration profile.', required: [] })
   .openapi('ConfigurationProfileSummary')
@@ -805,17 +637,13 @@ const ConfigurationProfileSummaryListSchema = z
 
 const ConfigurationProfilesSchema = z
   .object({
-    Items: ConfigurationProfileSummaryListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: ConfigurationProfileSummaryListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -838,17 +666,13 @@ const DeploymentStrategyListSchema = z
 
 const DeploymentStrategiesSchema = z
   .object({
-    Items: DeploymentStrategyListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: DeploymentStrategyListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -870,55 +694,41 @@ const DeploymentStrategiesSchema = z
 
 const DeploymentSummarySchema = z
   .object({
-    DeploymentNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The sequence number of the deployment.' }),
-    ).exactOptional(),
-    ConfigurationName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration.' }),
-    ).exactOptional(),
-    ConfigurationVersion: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the configuration.' }),
-    ).exactOptional(),
-    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.and(
-      z.any().openapi({ description: 'Total amount of time the deployment lasted.' }),
-    ).exactOptional(),
-    GrowthType: GrowthTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The algorithm used to define how percentage grows over time.' }),
-    ).exactOptional(),
-    GrowthFactor: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of targets to receive a deployed configuration during each interval.',
-        }),
-    ).exactOptional(),
-    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that AppConfig monitors for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
-        }),
-    ).exactOptional(),
-    State: DeploymentStateSchema.and(
-      z.any().openapi({ description: 'The state of the deployment.' }),
-    ).exactOptional(),
-    PercentageComplete: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The percentage of targets for which the deployment is available.',
-        }),
-    ).exactOptional(),
-    StartedAt: Iso8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Time the deployment started.' }),
-    ).exactOptional(),
-    CompletedAt: Iso8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Time the deployment completed.' }),
-    ).exactOptional(),
+    DeploymentNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The sequence number of the deployment.',
+    }),
+    ConfigurationName: NameSchema.exactOptional().openapi({
+      description: 'The name of the configuration.',
+    }),
+    ConfigurationVersion: VersionSchema.exactOptional().openapi({
+      description: 'The version of the configuration.',
+    }),
+    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description: 'Total amount of time the deployment lasted.',
+    }),
+    GrowthType: GrowthTypeSchema.exactOptional().openapi({
+      description: 'The algorithm used to define how percentage grows over time.',
+    }),
+    GrowthFactor: PercentageSchema.exactOptional().openapi({
+      description:
+        'The percentage of targets to receive a deployed configuration during each interval.',
+    }),
+    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description:
+        'The amount of time that AppConfig monitors for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
+    }),
+    State: DeploymentStateSchema.exactOptional().openapi({
+      description: 'The state of the deployment.',
+    }),
+    PercentageComplete: PercentageSchema.exactOptional().openapi({
+      description: 'The percentage of targets for which the deployment is available.',
+    }),
+    StartedAt: Iso8601DateTimeSchema.exactOptional().openapi({
+      description: 'Time the deployment started.',
+    }),
+    CompletedAt: Iso8601DateTimeSchema.exactOptional().openapi({
+      description: 'Time the deployment completed.',
+    }),
   })
   .openapi({ description: 'Information about the deployment.', required: [] })
   .openapi('DeploymentSummary')
@@ -927,17 +737,13 @@ const DeploymentListSchema = z.array(DeploymentSummarySchema).openapi('Deploymen
 
 const DeploymentsSchema = z
   .object({
-    Items: DeploymentListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: DeploymentListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -965,17 +771,13 @@ const EnvironmentListSchema = z.array(EnvironmentSchema).openapi('EnvironmentLis
 
 const EnvironmentsSchema = z
   .object({
-    Items: EnvironmentListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: EnvironmentListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -994,29 +796,17 @@ const EnvironmentsSchema = z
 
 const ExtensionAssociationSummarySchema = z
   .object({
-    Id: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The extension association ID. This ID is used to call other <code>ExtensionAssociation</code> API actions such as <code>GetExtensionAssociation</code> or <code>DeleteExtensionAssociation</code>.',
-        }),
-    ).exactOptional(),
-    ExtensionArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
-        }),
-    ).exactOptional(),
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs of applications, configuration profiles, or environments defined in the association.',
-        }),
-    ).exactOptional(),
+    Id: IdentifierSchema.exactOptional().openapi({
+      description:
+        'The extension association ID. This ID is used to call other <code>ExtensionAssociation</code> API actions such as <code>GetExtensionAssociation</code> or <code>DeleteExtensionAssociation</code>.',
+    }),
+    ExtensionArn: ArnSchema.exactOptional().openapi({
+      description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
+    }),
+    ResourceArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The ARNs of applications, configuration profiles, or environments defined in the association.',
+    }),
   })
   .openapi({
     description:
@@ -1031,45 +821,33 @@ const ExtensionAssociationSummariesSchema = z
 
 const ExtensionAssociationsSchema = z
   .object({
-    Items: ExtensionAssociationSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of extension associations. Each item represents an extension association to an application, environment, or configuration profile. ',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: ExtensionAssociationSummariesSchema.exactOptional().openapi({
+      description:
+        'The list of extension associations. Each item represents an extension association to an application, environment, or configuration profile. ',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExtensionAssociations')
 
 const ExtensionSummarySchema = z
   .object({
-    Id: IdSchema.and(
-      z.any().openapi({ description: 'The system-generated ID of the extension.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(z.any().openapi({ description: 'The extension name.' })).exactOptional(),
-    VersionNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The extension version number.' }),
-    ).exactOptional(),
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the extension.' }),
-    ).exactOptional(),
+    Id: IdSchema.exactOptional().openapi({
+      description: 'The system-generated ID of the extension.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The extension name.' }),
+    VersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The extension version number.',
+    }),
+    Arn: ArnSchema.exactOptional().openapi({
+      description: 'The system-generated Amazon Resource Name (ARN) for the extension.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the extension.',
+    }),
   })
   .openapi({
     description:
@@ -1082,22 +860,14 @@ const ExtensionSummariesSchema = z.array(ExtensionSummarySchema).openapi('Extens
 
 const ExtensionsSchema = z
   .object({
-    Items: ExtensionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of available extensions. The list includes Amazon Web Services authored and user-created extensions.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: ExtensionSummariesSchema.exactOptional().openapi({
+      description:
+        'The list of available extensions. The list includes Amazon Web Services authored and user-created extensions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('Extensions')
@@ -1117,33 +887,23 @@ const VersionLabelSchema = z
 
 const HostedConfigurationVersionSummarySchema = z
   .object({
-    ApplicationId: IdSchema.and(
-      z.any().openapi({ description: 'The application ID.' }),
-    ).exactOptional(),
-    ConfigurationProfileId: IdSchema.and(
-      z.any().openapi({ description: 'The configuration profile ID.' }),
-    ).exactOptional(),
-    VersionNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The configuration version.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the configuration.' }),
-    ).exactOptional(),
-    ContentType: StringWithLengthBetween1And255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A standard MIME type describing the format of the configuration content. For more information, see <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17">Content-Type</a>.',
-        }),
-    ).exactOptional(),
-    VersionLabel: VersionLabelSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A user-defined label for an AppConfig hosted configuration version.',
-        }),
-    ).exactOptional(),
+    ApplicationId: IdSchema.exactOptional().openapi({ description: 'The application ID.' }),
+    ConfigurationProfileId: IdSchema.exactOptional().openapi({
+      description: 'The configuration profile ID.',
+    }),
+    VersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The configuration version.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the configuration.',
+    }),
+    ContentType: StringWithLengthBetween1And255Schema.exactOptional().openapi({
+      description:
+        'A standard MIME type describing the format of the configuration content. For more information, see <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17">Content-Type</a>.',
+    }),
+    VersionLabel: VersionLabelSchema.exactOptional().openapi({
+      description: 'A user-defined label for an AppConfig hosted configuration version.',
+    }),
   })
   .openapi({ description: 'Information about the configuration.', required: [] })
   .openapi('HostedConfigurationVersionSummary')
@@ -1154,17 +914,13 @@ const HostedConfigurationVersionSummaryListSchema = z
 
 const HostedConfigurationVersionsSchema = z
   .object({
-    Items: HostedConfigurationVersionSummaryListSchema.and(
-      z.any().openapi({ description: 'The elements from this collection.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: HostedConfigurationVersionSummaryListSchema.exactOptional().openapi({
+      description: 'The elements from this collection.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({
     example: {
@@ -1189,14 +945,10 @@ const TagMapSchema = z
 
 const ResourceTagsSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to AppConfig resources. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to AppConfig resources. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
   })
   .openapi({ example: { Tags: { group1: '1' } }, required: [] })
   .openapi('ResourceTags')
@@ -1217,65 +969,43 @@ const ActionPointSchema = z
 
 const CreateApplicationRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'A name for the application.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the application.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to the application. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'A name for the application.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the application.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to the application. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateApplicationRequest' })
   .openapi('CreateApplicationRequest')
 
 const CreateConfigurationProfileRequestSchema = z
   .object({
-    Name: LongNameSchema.and(
-      z.any().openapi({ description: 'A name for the configuration profile.' }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the configuration profile.' }),
-    ).exactOptional(),
-    LocationUri: UriSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secrets-manager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://my-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>',
-        }),
-    ),
-    RetrievalRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.</p> <important> <p>A retrieval role ARN is not required for configurations stored in the AppConfig hosted configuration store. It is required for all other sources that store your configuration. </p> </important>',
-        }),
-    ).exactOptional(),
-    Validators: ValidatorListSchema.and(
-      z.any().openapi({ description: 'A list of methods for validating the configuration.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to the configuration profile. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
-    Type: ConfigurationProfileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
-        }),
-    ).exactOptional(),
+    Name: LongNameSchema.openapi({ description: 'A name for the configuration profile.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the configuration profile.',
+    }),
+    LocationUri: UriSchema.openapi({
+      description:
+        '<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secrets-manager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://my-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>',
+    }),
+    RetrievalRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.</p> <important> <p>A retrieval role ARN is not required for configurations stored in the AppConfig hosted configuration store. It is required for all other sources that store your configuration. </p> </important>',
+    }),
+    Validators: ValidatorListSchema.exactOptional().openapi({
+      description: 'A list of methods for validating the configuration.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to the configuration profile. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
+    Type: ConfigurationProfileTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of configurations contained in the profile. AppConfig supports <code>feature flags</code> and <code>freeform</code> configurations. We recommend you create feature flag configurations to enable or disable new features and freeform configurations to distribute configurations to an application. When calling this API, enter one of the following values for <code>Type</code>:</p> <p> <code>AWS.AppConfig.FeatureFlags</code> </p> <p> <code>AWS.Freeform</code> </p>',
+    }),
   })
   .openapi({ required: ['Name', 'LocationUri'], title: 'CreateConfigurationProfileRequest' })
   .openapi('CreateConfigurationProfileRequest')
@@ -1284,52 +1014,32 @@ const GrowthFactorSchema = z.float32().min(1).max(100).openapi('GrowthFactor')
 
 const CreateDeploymentStrategyRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'A name for the deployment strategy.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the deployment strategy.' }),
-    ).exactOptional(),
-    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.and(
-      z.any().openapi({ description: 'Total amount of time for a deployment to last.' }),
-    ),
-    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time AppConfig monitors for Amazon CloudWatch alarms after the configuration has been deployed to 100% of its targets, before considering the deployment to be complete. If an alarm is triggered during this time, AppConfig rolls back the deployment. You must configure permissions for AppConfig to roll back based on CloudWatch alarms. For more information, see <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/getting-started-with-appconfig-cloudwatch-alarms-permissions.html">Configuring permissions for rollback based on Amazon CloudWatch alarms</a> in the <i>AppConfig User Guide</i>.',
-        }),
-    ).exactOptional(),
-    GrowthFactor: GrowthFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of targets to receive a deployed configuration during each interval.',
-        }),
-    ),
-    GrowthType: GrowthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The algorithm used to define how percentage grows over time. AppConfig supports the following growth types:</p> <p> <b>Linear</b>: For this type, AppConfig processes the deployment by dividing the total number of targets by the value specified for <code>Step percentage</code>. For example, a linear deployment that uses a <code>Step percentage</code> of 10 deploys the configuration to 10 percent of the hosts. After those deployments are complete, the system deploys the configuration to the next 10 percent. This continues until 100% of the targets have successfully received the configuration.</p> <p> <b>Exponential</b>: For this type, AppConfig processes the deployment exponentially using the following formula: <code>G*(2^N)</code>. In this formula, <code>G</code> is the growth factor specified by the user and <code>N</code> is the number of steps until the configuration is deployed to all targets. For example, if you specify a growth factor of 2, then the system rolls out the configuration as follows:</p> <p> <code>2*(2^0)</code> </p> <p> <code>2*(2^1)</code> </p> <p> <code>2*(2^2)</code> </p> <p>Expressed numerically, the deployment rolls out as follows: 2% of the targets, 4% of the targets, 8% of the targets, and continues until the configuration has been deployed to all targets.</p>',
-        }),
-    ).exactOptional(),
-    ReplicateTo: ReplicateToSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Save the deployment strategy to a Systems Manager (SSM) document.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to the deployment strategy. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'A name for the deployment strategy.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the deployment strategy.',
+    }),
+    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.openapi({
+      description: 'Total amount of time for a deployment to last.',
+    }),
+    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time AppConfig monitors for Amazon CloudWatch alarms after the configuration has been deployed to 100% of its targets, before considering the deployment to be complete. If an alarm is triggered during this time, AppConfig rolls back the deployment. You must configure permissions for AppConfig to roll back based on CloudWatch alarms. For more information, see <a href="https://docs.aws.amazon.com/appconfig/latest/userguide/getting-started-with-appconfig-cloudwatch-alarms-permissions.html">Configuring permissions for rollback based on Amazon CloudWatch alarms</a> in the <i>AppConfig User Guide</i>.',
+    }),
+    GrowthFactor: GrowthFactorSchema.openapi({
+      description:
+        'The percentage of targets to receive a deployed configuration during each interval.',
+    }),
+    GrowthType: GrowthTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The algorithm used to define how percentage grows over time. AppConfig supports the following growth types:</p> <p> <b>Linear</b>: For this type, AppConfig processes the deployment by dividing the total number of targets by the value specified for <code>Step percentage</code>. For example, a linear deployment that uses a <code>Step percentage</code> of 10 deploys the configuration to 10 percent of the hosts. After those deployments are complete, the system deploys the configuration to the next 10 percent. This continues until 100% of the targets have successfully received the configuration.</p> <p> <b>Exponential</b>: For this type, AppConfig processes the deployment exponentially using the following formula: <code>G*(2^N)</code>. In this formula, <code>G</code> is the growth factor specified by the user and <code>N</code> is the number of steps until the configuration is deployed to all targets. For example, if you specify a growth factor of 2, then the system rolls out the configuration as follows:</p> <p> <code>2*(2^0)</code> </p> <p> <code>2*(2^1)</code> </p> <p> <code>2*(2^2)</code> </p> <p>Expressed numerically, the deployment rolls out as follows: 2% of the targets, 4% of the targets, 8% of the targets, and continues until the configuration has been deployed to all targets.</p>',
+    }),
+    ReplicateTo: ReplicateToSchema.exactOptional().openapi({
+      description: 'Save the deployment strategy to a Systems Manager (SSM) document.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to the deployment strategy. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
   })
   .openapi({
     required: ['Name', 'DeploymentDurationInMinutes', 'GrowthFactor'],
@@ -1339,69 +1049,41 @@ const CreateDeploymentStrategyRequestSchema = z
 
 const CreateEnvironmentRequestSchema = z
   .object({
-    Name: NameSchema.and(z.any().openapi({ description: 'A name for the environment.' })),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment.' }),
-    ).exactOptional(),
-    Monitors: MonitorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon CloudWatch alarms to monitor during the deployment process.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to the environment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({ description: 'A name for the environment.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment.',
+    }),
+    Monitors: MonitorListSchema.exactOptional().openapi({
+      description: 'Amazon CloudWatch alarms to monitor during the deployment process.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to the environment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateEnvironmentRequest' })
   .openapi('CreateEnvironmentRequest')
 
 const CreateExtensionAssociationRequestSchema = z
   .object({
-    ExtensionIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name, the ID, or the Amazon Resource Name (ARN) of the extension.',
-        }),
-    ),
-    ExtensionVersionNumber: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version number of the extension. If not specified, AppConfig uses the maximum version of the extension.',
-        }),
-    ).exactOptional(),
-    ResourceIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of an application, configuration profile, or environment.',
-        }),
-    ),
-    Parameters: ParameterValueMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameter names and values defined in the extensions. Extension parameters marked <code>Required</code> must be entered for this field.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Adds one or more tags for the specified extension association. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. ',
-        }),
-    ).exactOptional(),
+    ExtensionIdentifier: IdentifierSchema.openapi({
+      description: 'The name, the ID, or the Amazon Resource Name (ARN) of the extension.',
+    }),
+    ExtensionVersionNumber: IntegerSchema.exactOptional().openapi({
+      description:
+        'The version number of the extension. If not specified, AppConfig uses the maximum version of the extension.',
+    }),
+    ResourceIdentifier: IdentifierSchema.openapi({
+      description: 'The ARN of an application, configuration profile, or environment.',
+    }),
+    Parameters: ParameterValueMapSchema.exactOptional().openapi({
+      description:
+        'The parameter names and values defined in the extensions. Extension parameters marked <code>Required</code> must be entered for this field.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Adds one or more tags for the specified extension association. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. ',
+    }),
   })
   .openapi({
     required: ['ExtensionIdentifier', 'ResourceIdentifier'],
@@ -1411,58 +1093,42 @@ const CreateExtensionAssociationRequestSchema = z
 
 const CreateExtensionRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the extension. Each extension name in your account must be unique. Extension versions use the same name.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the extension.' }),
-    ).exactOptional(),
-    Actions: ActionsMapSchema.and(
-      z.any().openapi({ description: 'The actions defined in the extension.' }),
-    ),
-    Parameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the <code>CreateExtensionAssociation</code> API action. For Lambda extension actions, these parameters are included in the Lambda request object.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Adds one or more tags for the specified extension. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. ',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'A name for the extension. Each extension name in your account must be unique. Extension versions use the same name.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the extension.',
+    }),
+    Actions: ActionsMapSchema.openapi({ description: 'The actions defined in the extension.' }),
+    Parameters: ParameterMapSchema.exactOptional().openapi({
+      description:
+        'The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the <code>CreateExtensionAssociation</code> API action. For Lambda extension actions, these parameters are included in the Lambda request object.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Adds one or more tags for the specified extension. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. ',
+    }),
   })
   .openapi({ required: ['Name', 'Actions'], title: 'CreateExtensionRequest' })
   .openapi('CreateExtensionRequest')
 
 const CreateHostedConfigurationVersionRequestSchema = z
   .object({
-    Content: BlobSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The content of the configuration or the configuration data.' }),
-    ),
+    Content: BlobSchema.openapi({
+      description: 'The content of the configuration or the configuration data.',
+    }),
   })
   .openapi({ required: ['Content'], title: 'CreateHostedConfigurationVersionRequest' })
   .openapi('CreateHostedConfigurationVersionRequest')
 
 const DeleteApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteApplicationRequest' })
   .openapi('DeleteApplicationRequest')
 
 const DeleteConfigurationProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConfigurationProfileRequest' })
   .openapi('DeleteConfigurationProfileRequest')
 
@@ -1472,37 +1138,37 @@ const DeploymentStrategyIdSchema = z
   .openapi('DeploymentStrategyId')
 
 const DeleteDeploymentStrategyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeploymentStrategyRequest' })
   .openapi('DeleteDeploymentStrategyRequest')
 
 const DeleteEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEnvironmentRequest' })
   .openapi('DeleteEnvironmentRequest')
 
 const DeleteExtensionAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteExtensionAssociationRequest' })
   .openapi('DeleteExtensionAssociationRequest')
 
 const DeleteExtensionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteExtensionRequest' })
   .openapi('DeleteExtensionRequest')
 
 const DeleteHostedConfigurationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteHostedConfigurationVersionRequest' })
   .openapi('DeleteHostedConfigurationVersionRequest')
 
 const GetApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetApplicationRequest' })
   .openapi('GetApplicationRequest')
 
 const GetConfigurationProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConfigurationProfileRequest' })
   .openapi('GetConfigurationProfileRequest')
 
@@ -1513,124 +1179,110 @@ const StringWithLengthBetween1And64Schema = z
   .openapi('StringWithLengthBetween1And64')
 
 const GetConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConfigurationRequest' })
   .openapi('GetConfigurationRequest')
 
 const GetDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentRequest' })
   .openapi('GetDeploymentRequest')
 
 const GetDeploymentStrategyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDeploymentStrategyRequest' })
   .openapi('GetDeploymentStrategyRequest')
 
 const GetEnvironmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEnvironmentRequest' })
   .openapi('GetEnvironmentRequest')
 
 const GetExtensionAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetExtensionAssociationRequest' })
   .openapi('GetExtensionAssociationRequest')
 
 const GetExtensionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetExtensionRequest' })
   .openapi('GetExtensionRequest')
 
 const GetHostedConfigurationVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetHostedConfigurationVersionRequest' })
   .openapi('GetHostedConfigurationVersionRequest')
 
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListApplicationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListApplicationsRequest' })
   .openapi('ListApplicationsRequest')
 
 const ListConfigurationProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConfigurationProfilesRequest' })
   .openapi('ListConfigurationProfilesRequest')
 
 const ListDeploymentStrategiesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeploymentStrategiesRequest' })
   .openapi('ListDeploymentStrategiesRequest')
 
 const ListDeploymentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDeploymentsRequest' })
   .openapi('ListDeploymentsRequest')
 
 const ListEnvironmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListEnvironmentsRequest' })
   .openapi('ListEnvironmentsRequest')
 
 const ListExtensionAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListExtensionAssociationsRequest' })
   .openapi('ListExtensionAssociationsRequest')
 
 const QueryNameSchema = z.string().min(1).max(64).openapi('QueryName')
 
 const ListExtensionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListExtensionsRequest' })
   .openapi('ListExtensionsRequest')
 
 const ListHostedConfigurationVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListHostedConfigurationVersionsRequest' })
   .openapi('ListHostedConfigurationVersionsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const StartDeploymentRequestSchema = z
   .object({
-    DeploymentStrategyId: DeploymentStrategyIdSchema.and(
-      z.any().openapi({ description: 'The deployment strategy ID.' }),
-    ),
-    ConfigurationProfileId: IdSchema.and(
-      z.any().openapi({ description: 'The configuration profile ID.' }),
-    ),
-    ConfigurationVersion: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the deployment.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata to assign to the deployment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
-        }),
-    ).exactOptional(),
-    KmsKeyIdentifier: IdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. ',
-        }),
-    ).exactOptional(),
+    DeploymentStrategyId: DeploymentStrategyIdSchema.openapi({
+      description: 'The deployment strategy ID.',
+    }),
+    ConfigurationProfileId: IdSchema.openapi({ description: 'The configuration profile ID.' }),
+    ConfigurationVersion: VersionSchema.openapi({
+      description:
+        'The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the deployment.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        'Metadata to assign to the deployment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.',
+    }),
+    KmsKeyIdentifier: IdentifierSchema.exactOptional().openapi({
+      description:
+        'The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. ',
+    }),
   })
   .openapi({
     required: ['DeploymentStrategyId', 'ConfigurationProfileId', 'ConfigurationVersion'],
@@ -1639,7 +1291,7 @@ const StartDeploymentRequestSchema = z
   .openapi('StartDeploymentRequest')
 
 const StopDeploymentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopDeploymentRequest' })
   .openapi('StopDeploymentRequest')
 
@@ -1647,146 +1299,114 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The key-value string map. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
-        }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description:
+        'The key-value string map. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateApplicationRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the application.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the application.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the application.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the application.',
+    }),
   })
   .openapi({ title: 'UpdateApplicationRequest', required: [] })
   .openapi('UpdateApplicationRequest')
 
 const UpdateConfigurationProfileRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the configuration profile.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the configuration profile.' }),
-    ).exactOptional(),
-    RetrievalRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.',
-        }),
-    ).exactOptional(),
-    Validators: ValidatorListSchema.and(
-      z.any().openapi({ description: 'A list of methods for validating the configuration.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the configuration profile.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the configuration profile.',
+    }),
+    RetrievalRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of an IAM role with permission to access the configuration at the specified <code>LocationUri</code>.',
+    }),
+    Validators: ValidatorListSchema.exactOptional().openapi({
+      description: 'A list of methods for validating the configuration.',
+    }),
   })
   .openapi({ title: 'UpdateConfigurationProfileRequest', required: [] })
   .openapi('UpdateConfigurationProfileRequest')
 
 const UpdateDeploymentStrategyRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the deployment strategy.' }),
-    ).exactOptional(),
-    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.and(
-      z.any().openapi({ description: 'Total amount of time for a deployment to last.' }),
-    ).exactOptional(),
-    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that AppConfig monitors for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
-        }),
-    ).exactOptional(),
-    GrowthFactor: GrowthFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentage of targets to receive a deployed configuration during each interval.',
-        }),
-    ).exactOptional(),
-    GrowthType: GrowthTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The algorithm used to define how percentage grows over time. AppConfig supports the following growth types:</p> <p> <b>Linear</b>: For this type, AppConfig processes the deployment by increments of the growth factor evenly distributed over the deployment time. For example, a linear deployment that uses a growth factor of 20 initially makes the configuration available to 20 percent of the targets. After 1/5th of the deployment time has passed, the system updates the percentage to 40 percent. This continues until 100% of the targets are set to receive the deployed configuration.</p> <p> <b>Exponential</b>: For this type, AppConfig processes the deployment exponentially using the following formula: <code>G*(2^N)</code>. In this formula, <code>G</code> is the growth factor specified by the user and <code>N</code> is the number of steps until the configuration is deployed to all targets. For example, if you specify a growth factor of 2, then the system rolls out the configuration as follows:</p> <p> <code>2*(2^0)</code> </p> <p> <code>2*(2^1)</code> </p> <p> <code>2*(2^2)</code> </p> <p>Expressed numerically, the deployment rolls out as follows: 2% of the targets, 4% of the targets, 8% of the targets, and continues until the configuration has been deployed to all targets.</p>',
-        }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the deployment strategy.',
+    }),
+    DeploymentDurationInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description: 'Total amount of time for a deployment to last.',
+    }),
+    FinalBakeTimeInMinutes: MinutesBetween0And24HoursSchema.exactOptional().openapi({
+      description:
+        'The amount of time that AppConfig monitors for alarms before considering the deployment to be complete and no longer eligible for automatic rollback.',
+    }),
+    GrowthFactor: GrowthFactorSchema.exactOptional().openapi({
+      description:
+        'The percentage of targets to receive a deployed configuration during each interval.',
+    }),
+    GrowthType: GrowthTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The algorithm used to define how percentage grows over time. AppConfig supports the following growth types:</p> <p> <b>Linear</b>: For this type, AppConfig processes the deployment by increments of the growth factor evenly distributed over the deployment time. For example, a linear deployment that uses a growth factor of 20 initially makes the configuration available to 20 percent of the targets. After 1/5th of the deployment time has passed, the system updates the percentage to 40 percent. This continues until 100% of the targets are set to receive the deployed configuration.</p> <p> <b>Exponential</b>: For this type, AppConfig processes the deployment exponentially using the following formula: <code>G*(2^N)</code>. In this formula, <code>G</code> is the growth factor specified by the user and <code>N</code> is the number of steps until the configuration is deployed to all targets. For example, if you specify a growth factor of 2, then the system rolls out the configuration as follows:</p> <p> <code>2*(2^0)</code> </p> <p> <code>2*(2^1)</code> </p> <p> <code>2*(2^2)</code> </p> <p>Expressed numerically, the deployment rolls out as follows: 2% of the targets, 4% of the targets, 8% of the targets, and continues until the configuration has been deployed to all targets.</p>',
+    }),
   })
   .openapi({ title: 'UpdateDeploymentStrategyRequest', required: [] })
   .openapi('UpdateDeploymentStrategyRequest')
 
 const UpdateEnvironmentRequestSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the environment.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the environment.' }),
-    ).exactOptional(),
-    Monitors: MonitorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon CloudWatch alarms to monitor during the deployment process.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the environment.' }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description of the environment.',
+    }),
+    Monitors: MonitorListSchema.exactOptional().openapi({
+      description: 'Amazon CloudWatch alarms to monitor during the deployment process.',
+    }),
   })
   .openapi({ title: 'UpdateEnvironmentRequest', required: [] })
   .openapi('UpdateEnvironmentRequest')
 
 const UpdateExtensionAssociationRequestSchema = z
   .object({
-    Parameters: ParameterValueMapSchema.and(
-      z.any().openapi({ description: 'The parameter names and values defined in the extension.' }),
-    ).exactOptional(),
+    Parameters: ParameterValueMapSchema.exactOptional().openapi({
+      description: 'The parameter names and values defined in the extension.',
+    }),
   })
   .openapi({ title: 'UpdateExtensionAssociationRequest', required: [] })
   .openapi('UpdateExtensionAssociationRequest')
 
 const UpdateExtensionRequestSchema = z
   .object({
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the extension.' }),
-    ).exactOptional(),
-    Actions: ActionsMapSchema.and(
-      z.any().openapi({ description: 'The actions defined in the extension.' }),
-    ).exactOptional(),
-    Parameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'One or more parameters for the actions called by the extension.',
-        }),
-    ).exactOptional(),
-    VersionNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The extension version number.' }),
-    ).exactOptional(),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the extension.',
+    }),
+    Actions: ActionsMapSchema.exactOptional().openapi({
+      description: 'The actions defined in the extension.',
+    }),
+    Parameters: ParameterMapSchema.exactOptional().openapi({
+      description: 'One or more parameters for the actions called by the extension.',
+    }),
+    VersionNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The extension version number.',
+    }),
   })
   .openapi({ title: 'UpdateExtensionRequest', required: [] })
   .openapi('UpdateExtensionRequest')
 
 const ValidateConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ValidateConfigurationRequest' })
   .openapi('ValidateConfigurationRequest')
 

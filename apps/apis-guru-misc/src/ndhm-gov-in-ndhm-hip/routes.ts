@@ -239,12 +239,12 @@ const HIPConsentNotificationSchema = z
                 .openapi({ required: ['patientReference', 'careContextReference'] }),
             ),
             consentId: z.uuid(),
-            consentManager: OrganizationReferenceSchema.and(
-              z.any().openapi({ xml: { name: 'consentManager' } }),
-            ),
+            consentManager: OrganizationReferenceSchema.openapi({
+              xml: { name: 'consentManager' },
+            }),
             createdAt: z.iso.datetime({ offset: true }),
             hiTypes: z.array(HITypeEnumSchema),
-            hip: OrganizationRepresentationSchema.and(z.any().openapi({ xml: { name: 'hip' } })),
+            hip: OrganizationRepresentationSchema.openapi({ xml: { name: 'hip' } }),
             patient: ConsentManagerPatientIDSchema,
             permission: PermissionSchema,
             purpose: UsePurposeSchema,

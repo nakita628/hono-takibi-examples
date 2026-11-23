@@ -237,7 +237,7 @@ const GoogleCloudRecaptchaenterpriseV1AnnotateAssessmentRequestSchema = z
   .openapi('GoogleCloudRecaptchaenterpriseV1AnnotateAssessmentRequest')
 
 const GoogleCloudRecaptchaenterpriseV1AnnotateAssessmentResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Empty response for AnnotateAssessment.' })
   .openapi('GoogleCloudRecaptchaenterpriseV1AnnotateAssessmentResponse')
 
@@ -571,12 +571,12 @@ const GoogleRpcStatusSchema = z
   .openapi('GoogleRpcStatus')
 
 const GoogleCloudRecaptchaenterpriseV1FirewallActionAllowActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'An allow action continues processing a request unimpeded.' })
   .openapi('GoogleCloudRecaptchaenterpriseV1FirewallActionAllowAction')
 
 const GoogleCloudRecaptchaenterpriseV1FirewallActionBlockActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A block action serves an HTTP error code a prevents the request from hitting the backend.',
@@ -584,7 +584,7 @@ const GoogleCloudRecaptchaenterpriseV1FirewallActionBlockActionSchema = z
   .openapi('GoogleCloudRecaptchaenterpriseV1FirewallActionBlockAction')
 
 const GoogleCloudRecaptchaenterpriseV1FirewallActionRedirectActionSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A redirect action returns a 307 (temporary redirect) response, pointing the user to a ReCaptcha interstitial page to attach a token.',
@@ -1390,7 +1390,7 @@ const GoogleCloudRecaptchaenterpriseV1SearchRelatedAccountGroupMembershipsRespon
   .openapi('GoogleCloudRecaptchaenterpriseV1SearchRelatedAccountGroupMembershipsResponse')
 
 const GoogleProtobufEmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

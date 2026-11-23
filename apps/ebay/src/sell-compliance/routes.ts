@@ -156,6 +156,61 @@ const ComplianceDetailSchema = z
   })
   .openapi('ComplianceDetail')
 
+const ComplianceViolationSchema = z
+  .object({
+    complianceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "This enumeration value indicates the compliance type of listing violation. See ComplianceTypeEnum for more information on each compliance type. This will always be returned for each listing violation that is found. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/compliance/types/com:ComplianceTypeEnum'>eBay API documentation</a>",
+      }),
+    listingId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique identifier of the eBay listing that currently has the corresponding listing violation{s). This field will always be returned for each listing that has one or more violations.',
+      }),
+    offerId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Note: This field is for future use, and will not be returned, even for listings created through the Inventory API. The unique identifier of the offer. This field is only applicable and returned for listings that were created through the Inventory API. To convert an Inventory Item object into an eBay listing, an Offer object must be created and published.',
+      }),
+    sku: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The seller-defined SKU value of the product in the listing with the violation{s). This field is only returned if defined in the listing. SKU values are optional in listings except when creating listings using the Inventory API model.',
+      }),
+    violations: z
+      .array(ComplianceDetailSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'This container consists of an array of one or more listing violations applicable to the eBay listing specified in the listingId field. This array is returned for each eBay listing that has one or more violations. For each returned violation, the fields that are returned and the details that are given will depend on the listing violation.',
+      }),
+  })
+  .openapi({
+    description:
+      'This type is used by each listing violation that is returned under the listingViolations container.',
+    required: [],
+  })
+  .openapi('ComplianceViolation')
+
+type PagedComplianceViolationCollectionType = {
+  href?: string
+  limit?: number
+  listingViolations?: z.infer<typeof ComplianceViolationSchema>[]
+  next?: string
+  offset?: number
+  prev?: string
+  total?: number
+}
+
 const ComplianceSummaryInfoSchema = z
   .object({
     complianceType: z
@@ -203,51 +258,6 @@ const ComplianceSummarySchema = z
     required: [],
   })
   .openapi('ComplianceSummary')
-
-const ComplianceViolationSchema = z
-  .object({
-    complianceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "This enumeration value indicates the compliance type of listing violation. See ComplianceTypeEnum for more information on each compliance type. This will always be returned for each listing violation that is found. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/compliance/types/com:ComplianceTypeEnum'>eBay API documentation</a>",
-      }),
-    listingId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique identifier of the eBay listing that currently has the corresponding listing violation{s). This field will always be returned for each listing that has one or more violations.',
-      }),
-    offerId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Note: This field is for future use, and will not be returned, even for listings created through the Inventory API. The unique identifier of the offer. This field is only applicable and returned for listings that were created through the Inventory API. To convert an Inventory Item object into an eBay listing, an Offer object must be created and published.',
-      }),
-    sku: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The seller-defined SKU value of the product in the listing with the violation{s). This field is only returned if defined in the listing. SKU values are optional in listings except when creating listings using the Inventory API model.',
-      }),
-    violations: z
-      .array(ComplianceDetailSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'This container consists of an array of one or more listing violations applicable to the eBay listing specified in the listingId field. This array is returned for each eBay listing that has one or more violations. For each returned violation, the fields that are returned and the details that are given will depend on the listing violation.',
-      }),
-  })
-  .openapi({
-    description:
-      'This type is used by each listing violation that is returned under the listingViolations container.',
-    required: [],
-  })
-  .openapi('ComplianceViolation')
 
 const ErrorParameterSchema = z
   .object({
@@ -315,63 +325,64 @@ const ErrorSchema = z
   })
   .openapi('Error')
 
-const PagedComplianceViolationCollectionSchema = z
-  .object({
-    href: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The URI of the getListingViolations call request that produced the current page of the result set.',
-      }),
-    limit: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The maximum number of listing violations returned per page of the result set. The limit and offset query parameters are used to control the pagination of the output. Note: If this is the last or only page in the result set, it may contain fewer listing violations than the limit value. To determine the number of pages in the result set, divide this value into the value of total and round up to the next integer. Default: 50 Max: 200',
-      }),
-    listingViolations: z
-      .array(ComplianceViolationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An array of listing violations that match the criteria in the call request, including pagination control {if set). As long as there is at least one listing violation that matches the input criteria, this container will be returned. If no listing violations are found for the seller, an HTTP status code of 204 No Content is returned, and there is no response body.',
-      }),
-    next: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The getListingViolations call URI to use to view the next page of the result set. For example, the following URI returns listing violations 21 thru 30 from the collection of policy violations: path/listing_violation?limit=10&amp;offset=20 This field is only returned if an additional page of listing violations exists.',
-      }),
-    offset: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'This integer value shows the offset of the current page of results. The offset value controls the first listing violation in the result set that will be displayed at the top of the response. The offset and limit query parameters are used to control the pagination of the output. For example, if offset is set to 10 and limit is set to 10, the call retrieves listing violations 11 thru 20 from the resulting collection of violations. Note: This feature employs a zero-based index, where the first item in the list has an offset of 0. Default: 0 {zero)',
-      }),
-    prev: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The getListingViolations call URI to use to view the previous page of the result set. For example, the following URI returns listing violations 1 thru 10 from the collection of policy violations: path/listing_violation?limit=10&amp;offset=0 This field is only returned if an previous page of listing violations exists.',
-      }),
-    total: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The total number of listing violations in the result set. If this value is higher than the limit value, there are multiple pages in the result set to view.',
-      }),
-  })
-  .openapi({
-    description: 'This type is the base response type of the getListingViolations method.',
-    required: [],
-  })
-  .openapi('PagedComplianceViolationCollection')
+const PagedComplianceViolationCollectionSchema: z.ZodType<PagedComplianceViolationCollectionType> =
+  z
+    .object({
+      href: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The URI of the getListingViolations call request that produced the current page of the result set.',
+        }),
+      limit: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The maximum number of listing violations returned per page of the result set. The limit and offset query parameters are used to control the pagination of the output. Note: If this is the last or only page in the result set, it may contain fewer listing violations than the limit value. To determine the number of pages in the result set, divide this value into the value of total and round up to the next integer. Default: 50 Max: 200',
+        }),
+      listingViolations: z
+        .array(ComplianceViolationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An array of listing violations that match the criteria in the call request, including pagination control {if set). As long as there is at least one listing violation that matches the input criteria, this container will be returned. If no listing violations are found for the seller, an HTTP status code of 204 No Content is returned, and there is no response body.',
+        }),
+      next: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The getListingViolations call URI to use to view the next page of the result set. For example, the following URI returns listing violations 21 thru 30 from the collection of policy violations: path/listing_violation?limit=10&amp;offset=20 This field is only returned if an additional page of listing violations exists.',
+        }),
+      offset: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'This integer value shows the offset of the current page of results. The offset value controls the first listing violation in the result set that will be displayed at the top of the response. The offset and limit query parameters are used to control the pagination of the output. For example, if offset is set to 10 and limit is set to 10, the call retrieves listing violations 11 thru 20 from the resulting collection of violations. Note: This feature employs a zero-based index, where the first item in the list has an offset of 0. Default: 0 {zero)',
+        }),
+      prev: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The getListingViolations call URI to use to view the previous page of the result set. For example, the following URI returns listing violations 1 thru 10 from the collection of policy violations: path/listing_violation?limit=10&amp;offset=0 This field is only returned if an previous page of listing violations exists.',
+        }),
+      total: z
+        .int32()
+        .exactOptional()
+        .openapi({
+          description:
+            'The total number of listing violations in the result set. If this value is higher than the limit value, there are multiple pages in the result set to view.',
+        }),
+    })
+    .openapi({
+      description: 'This type is the base response type of the getListingViolations method.',
+      required: [],
+    })
+    .openapi('PagedComplianceViolationCollection')
 
 const SuppressViolationRequestSchema = z
   .object({

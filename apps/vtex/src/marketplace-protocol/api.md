@@ -43,7 +43,7 @@ Base URLs:
 
 * <a href="https://vtex.local">https://vtex.local</a>
 
-* <a href="https://api.apis.guru/">https://api.apis.guru/</a>
+* <a href="/">/</a>
 
 # Authentication
 

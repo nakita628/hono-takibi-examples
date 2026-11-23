@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
 const ResponseSchema = z
-  .object({ data: z.object({}), success: z.boolean() })
+  .object({ data: z.looseObject({}), success: z.boolean() })
   .openapi({ required: ['success', 'data'], title: 'Default response object' })
   .openapi('Response')
 

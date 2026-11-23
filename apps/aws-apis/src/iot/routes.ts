@@ -20,41 +20,31 @@ const PayloadFieldSchema = z.string().openapi('PayloadField')
 
 const DynamoDBActionSchema = z
   .object({
-    tableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The name of the DynamoDB table.' }),
-    ),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that grants access to the DynamoDB table.',
-        }),
-    ),
-    operation: DynamoOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of operation to be performed. This follows the substitution template, so it can be <code>${operation}</code>, but the substitution must result in one of the following: <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code>.',
-        }),
-    ).exactOptional(),
-    hashKeyField: HashKeyFieldSchema.and(z.any().openapi({ description: 'The hash key name.' })),
-    hashKeyValue: HashKeyValueSchema.and(z.any().openapi({ description: 'The hash key value.' })),
-    hashKeyType: DynamoKeyTypeSchema.and(
-      z.any().openapi({ description: 'The hash key type. Valid values are "STRING" or "NUMBER"' }),
-    ).exactOptional(),
-    rangeKeyField: RangeKeyFieldSchema.and(
-      z.any().openapi({ description: 'The range key name.' }),
-    ).exactOptional(),
-    rangeKeyValue: RangeKeyValueSchema.and(
-      z.any().openapi({ description: 'The range key value.' }),
-    ).exactOptional(),
-    rangeKeyType: DynamoKeyTypeSchema.and(
-      z.any().openapi({ description: 'The range key type. Valid values are "STRING" or "NUMBER"' }),
-    ).exactOptional(),
-    payloadField: PayloadFieldSchema.and(
-      z.any().openapi({ description: 'The action payload. This name can be customized.' }),
-    ).exactOptional(),
+    tableName: TableNameSchema.openapi({ description: 'The name of the DynamoDB table.' }),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The ARN of the IAM role that grants access to the DynamoDB table.',
+    }),
+    operation: DynamoOperationSchema.exactOptional().openapi({
+      description:
+        'The type of operation to be performed. This follows the substitution template, so it can be <code>${operation}</code>, but the substitution must result in one of the following: <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code>.',
+    }),
+    hashKeyField: HashKeyFieldSchema.openapi({ description: 'The hash key name.' }),
+    hashKeyValue: HashKeyValueSchema.openapi({ description: 'The hash key value.' }),
+    hashKeyType: DynamoKeyTypeSchema.exactOptional().openapi({
+      description: 'The hash key type. Valid values are "STRING" or "NUMBER"',
+    }),
+    rangeKeyField: RangeKeyFieldSchema.exactOptional().openapi({
+      description: 'The range key name.',
+    }),
+    rangeKeyValue: RangeKeyValueSchema.exactOptional().openapi({
+      description: 'The range key value.',
+    }),
+    rangeKeyType: DynamoKeyTypeSchema.exactOptional().openapi({
+      description: 'The range key type. Valid values are "STRING" or "NUMBER"',
+    }),
+    payloadField: PayloadFieldSchema.exactOptional().openapi({
+      description: 'The action payload. This name can be customized.',
+    }),
   })
   .openapi({
     required: ['tableName', 'roleArn', 'hashKeyField', 'hashKeyValue'],
@@ -65,9 +55,9 @@ const DynamoDBActionSchema = z
 
 const PutItemInputSchema = z
   .object({
-    tableName: TableNameSchema.and(
-      z.any().openapi({ description: 'The table where the message data will be written.' }),
-    ),
+    tableName: TableNameSchema.openapi({
+      description: 'The table where the message data will be written.',
+    }),
   })
   .openapi({
     required: ['tableName'],
@@ -78,21 +68,13 @@ const PutItemInputSchema = z
 
 const DynamoDBv2ActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that grants access to the DynamoDB table.',
-        }),
-    ),
-    putItem: PutItemInputSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the DynamoDB table to which the message data will be written. For example:</p> <p> <code>{ "dynamoDBv2": { "roleArn": "aws:iam:12341251:my-role" "putItem": { "tableName": "my-table" } } }</code> </p> <p>Each attribute in the message payload will be written to a separate column in the DynamoDB database.</p>',
-        }),
-    ),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The ARN of the IAM role that grants access to the DynamoDB table.',
+    }),
+    putItem: PutItemInputSchema.openapi({
+      description:
+        '<p>Specifies the DynamoDB table to which the message data will be written. For example:</p> <p> <code>{ "dynamoDBv2": { "roleArn": "aws:iam:12341251:my-role" "putItem": { "tableName": "my-table" } } }</code> </p> <p>Each attribute in the message payload will be written to a separate column in the DynamoDB database.</p>',
+    }),
   })
   .openapi({
     required: ['roleArn', 'putItem'],
@@ -105,9 +87,7 @@ const FunctionArnSchema = z.string().openapi('FunctionArn')
 
 const LambdaActionSchema = z
   .object({
-    functionArn: FunctionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the Lambda function.' }),
-    ),
+    functionArn: FunctionArnSchema.openapi({ description: 'The ARN of the Lambda function.' }),
   })
   .openapi({
     required: ['functionArn'],
@@ -119,18 +99,12 @@ const MessageFormatSchema = z.enum(['RAW', 'JSON']).openapi('MessageFormat')
 
 const SnsActionSchema = z
   .object({
-    targetArn: AwsArnSchema.and(z.any().openapi({ description: 'The ARN of the SNS topic.' })),
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ),
-    messageFormat: MessageFormatSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The message format of the message to publish. Accepted values are "JSON" and "RAW". The default value of the attribute is "RAW". SNS uses this setting to determine if the payload should be parsed and relevant platform-specific bits of the payload should be extracted. To read more about SNS message formats, see <a href="https://docs.aws.amazon.com/sns/latest/dg/json-formats.html">https://docs.aws.amazon.com/sns/latest/dg/json-formats.html</a> refer to their official documentation.',
-        }),
-    ).exactOptional(),
+    targetArn: AwsArnSchema.openapi({ description: 'The ARN of the SNS topic.' }),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the IAM role that grants access.' }),
+    messageFormat: MessageFormatSchema.exactOptional().openapi({
+      description:
+        '(Optional) The message format of the message to publish. Accepted values are "JSON" and "RAW". The default value of the attribute is "RAW". SNS uses this setting to determine if the payload should be parsed and relevant platform-specific bits of the payload should be extracted. To read more about SNS message formats, see <a href="https://docs.aws.amazon.com/sns/latest/dg/json-formats.html">https://docs.aws.amazon.com/sns/latest/dg/json-formats.html</a> refer to their official documentation.',
+    }),
   })
   .openapi({
     required: ['targetArn', 'roleArn'],
@@ -144,15 +118,11 @@ const UseBase64Schema = z.boolean().openapi('UseBase64')
 
 const SqsActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ),
-    queueUrl: QueueUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the Amazon SQS queue.' }),
-    ),
-    useBase64: UseBase64Schema.and(
-      z.any().openapi({ description: 'Specifies whether to use Base64 encoding.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the IAM role that grants access.' }),
+    queueUrl: QueueUrlSchema.openapi({ description: 'The URL of the Amazon SQS queue.' }),
+    useBase64: UseBase64Schema.exactOptional().openapi({
+      description: 'Specifies whether to use Base64 encoding.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'queueUrl'],
@@ -166,19 +136,11 @@ const PartitionKeySchema = z.string().openapi('PartitionKey')
 
 const KinesisActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that grants access to the Amazon Kinesis stream.',
-        }),
-    ),
-    streamName: StreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Kinesis stream.' }),
-    ),
-    partitionKey: PartitionKeySchema.and(
-      z.any().openapi({ description: 'The partition key.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The ARN of the IAM role that grants access to the Amazon Kinesis stream.',
+    }),
+    streamName: StreamNameSchema.openapi({ description: 'The name of the Amazon Kinesis stream.' }),
+    partitionKey: PartitionKeySchema.exactOptional().openapi({ description: 'The partition key.' }),
   })
   .openapi({
     required: ['roleArn', 'streamName'],
@@ -206,12 +168,12 @@ const UserPropertyValueSchema = z.string().min(0).max(1024).openapi('UserPropert
 
 const UserPropertySchema = z
   .object({
-    key: UserPropertyKeySchema.and(
-      z.any().openapi({ description: 'A key to be specified in <code>UserProperty</code>.' }),
-    ),
-    value: UserPropertyValueSchema.and(
-      z.any().openapi({ description: 'A value to be specified in <code>UserProperty</code>.' }),
-    ),
+    key: UserPropertyKeySchema.openapi({
+      description: 'A key to be specified in <code>UserProperty</code>.',
+    }),
+    value: UserPropertyValueSchema.openapi({
+      description: 'A value to be specified in <code>UserProperty</code>.',
+    }),
   })
   .openapi({
     required: ['key', 'value'],
@@ -224,53 +186,29 @@ const UserPropertiesSchema = z.array(UserPropertySchema).min(1).max(100).openapi
 
 const MqttHeadersSchema = z
   .object({
-    payloadFormatIndicator: PayloadFormatIndicatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An <code>Enum</code> string value that indicates whether the payload is formatted as UTF-8.</p> <p>Valid values are <code>UNSPECIFIED_BYTES</code> and <code>UTF8_DATA</code>.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111"> Payload Format Indicator</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    contentType: ContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A UTF-8 encoded string that describes the content of the publishing message.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118"> Content Type</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    responseTopic: ResponseTopicSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A UTF-8 encoded string that\'s used as the topic name for a response message. The response topic is used to describe the topic which the receiver should publish to as part of the request-response flow. The topic must not contain wildcard characters.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114"> Response Topic</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    correlationData: CorrelationDataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The base64-encoded binary data used by the sender of the request message to identify which request the response message is for when it\'s received.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115"> Correlation Data</a> from the MQTT Version 5.0 specification.</p> <note> <p> This binary data must be based64-encoded. </p> </note> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    messageExpiry: MessageExpirySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A user-defined integer value that will persist a message at the message broker for a specified amount of time to ensure that the message will expire if it\'s no longer relevant to the subscriber. The value of <code>messageExpiry</code> represents the number of seconds before it expires. For more information about the limits of <code>messageExpiry</code>, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html">Amazon Web Services IoT Core message broker and protocol limits and quotas </a> from the Amazon Web Services Reference Guide.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    userProperties: UserPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An array of key-value pairs that you define in the MQTT5 header.',
-        }),
-    ).exactOptional(),
+    payloadFormatIndicator: PayloadFormatIndicatorSchema.exactOptional().openapi({
+      description:
+        '<p>An <code>Enum</code> string value that indicates whether the payload is formatted as UTF-8.</p> <p>Valid values are <code>UNSPECIFIED_BYTES</code> and <code>UTF8_DATA</code>.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111"> Payload Format Indicator</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
+    }),
+    contentType: ContentTypeSchema.exactOptional().openapi({
+      description:
+        '<p>A UTF-8 encoded string that describes the content of the publishing message.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118"> Content Type</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
+    }),
+    responseTopic: ResponseTopicSchema.exactOptional().openapi({
+      description:
+        '<p>A UTF-8 encoded string that\'s used as the topic name for a response message. The response topic is used to describe the topic which the receiver should publish to as part of the request-response flow. The topic must not contain wildcard characters.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114"> Response Topic</a> from the MQTT Version 5.0 specification.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
+    }),
+    correlationData: CorrelationDataSchema.exactOptional().openapi({
+      description:
+        '<p>The base64-encoded binary data used by the sender of the request message to identify which request the response message is for when it\'s received.</p> <p>For more information, see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115"> Correlation Data</a> from the MQTT Version 5.0 specification.</p> <note> <p> This binary data must be based64-encoded. </p> </note> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
+    }),
+    messageExpiry: MessageExpirySchema.exactOptional().openapi({
+      description:
+        '<p>A user-defined integer value that will persist a message at the message broker for a specified amount of time to ensure that the message will expire if it\'s no longer relevant to the subscriber. The value of <code>messageExpiry</code> represents the number of seconds before it expires. For more information about the limits of <code>messageExpiry</code>, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html">Amazon Web Services IoT Core message broker and protocol limits and quotas </a> from the Amazon Web Services Reference Guide.</p> <p>Supports <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html">substitution templates</a>.</p>',
+    }),
+    userProperties: UserPropertiesSchema.exactOptional().openapi({
+      description: 'An array of key-value pairs that you define in the MQTT5 header.',
+    }),
   })
   .openapi({
     description:
@@ -281,26 +219,16 @@ const MqttHeadersSchema = z
 
 const RepublishActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ),
-    topic: TopicPatternSchema.and(z.any().openapi({ description: 'The name of the MQTT topic.' })),
-    qos: QosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Quality of Service (QoS) level to use when republishing messages. The default value is 0.',
-        }),
-    ).exactOptional(),
-    headers: MqttHeadersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'MQTT Version 5.0 headers information. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html"> MQTT</a> from the Amazon Web Services IoT Core Developer Guide.',
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the IAM role that grants access.' }),
+    topic: TopicPatternSchema.openapi({ description: 'The name of the MQTT topic.' }),
+    qos: QosSchema.exactOptional().openapi({
+      description:
+        'The Quality of Service (QoS) level to use when republishing messages. The default value is 0.',
+    }),
+    headers: MqttHeadersSchema.exactOptional().openapi({
+      description:
+        'MQTT Version 5.0 headers information. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html"> MQTT</a> from the Amazon Web Services IoT Core Developer Guide.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'topic'],
@@ -327,26 +255,16 @@ const CannedAccessControlListSchema = z
 
 const S3ActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ),
-    bucketName: BucketNameSchema.and(z.any().openapi({ description: 'The Amazon S3 bucket.' })),
-    key: KeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The object key. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/list_amazons3.html">Actions, resources, and condition keys for Amazon S3</a>.',
-        }),
-    ),
-    cannedAcl: CannedAccessControlListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon S3 canned ACL that controls access to the object identified by the object key. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl">S3 canned ACLs</a>.',
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the IAM role that grants access.' }),
+    bucketName: BucketNameSchema.openapi({ description: 'The Amazon S3 bucket.' }),
+    key: KeySchema.openapi({
+      description:
+        'The object key. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/list_amazons3.html">Actions, resources, and condition keys for Amazon S3</a>.',
+    }),
+    cannedAcl: CannedAccessControlListSchema.exactOptional().openapi({
+      description:
+        'The Amazon S3 canned ACL that controls access to the object identified by the object key. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl">S3 canned ACLs</a>.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'bucketName', 'key'],
@@ -365,32 +283,20 @@ const BatchModeSchema = z.boolean().openapi('BatchMode')
 
 const FirehoseActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IAM role that grants access to the Amazon Kinesis Firehose stream.',
-        }),
-    ),
-    deliveryStreamName: DeliveryStreamNameSchema.and(
-      z.any().openapi({ description: 'The delivery stream name.' }),
-    ),
-    separator: FirehoseSeparatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A character separator that will be used to separate records written to the Firehose stream. Valid values are: '\\n' (newline), '\\t' (tab), '\\r\\n' (Windows newline), ',' (comma).",
-        }),
-    ).exactOptional(),
-    batchMode: BatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to deliver the Kinesis Data Firehose stream as a batch by using <a href="https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html"> <code>PutRecordBatch</code> </a>. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code> and the rule\'s SQL statement evaluates to an Array, each Array element forms one record in the <a href="https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html"> <code>PutRecordBatch</code> </a> request. The resulting array can\'t have more than 500 records.</p>',
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role that grants access to the Amazon Kinesis Firehose stream.',
+    }),
+    deliveryStreamName: DeliveryStreamNameSchema.openapi({
+      description: 'The delivery stream name.',
+    }),
+    separator: FirehoseSeparatorSchema.exactOptional().openapi({
+      description:
+        "A character separator that will be used to separate records written to the Firehose stream. Valid values are: '\\n' (newline), '\\t' (tab), '\\r\\n' (Windows newline), ',' (comma).",
+    }),
+    batchMode: BatchModeSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to deliver the Kinesis Data Firehose stream as a batch by using <a href="https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html"> <code>PutRecordBatch</code> </a>. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code> and the rule\'s SQL statement evaluates to an Array, each Array element forms one record in the <a href="https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html"> <code>PutRecordBatch</code> </a> request. The resulting array can\'t have more than 500 records.</p>',
+    }),
   })
   .openapi({
     required: ['roleArn', 'deliveryStreamName'],
@@ -402,30 +308,20 @@ const StringSchema = z.string().openapi('String')
 
 const CloudwatchMetricActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The IAM role that allows access to the CloudWatch metric.' }),
-    ),
-    metricNamespace: StringSchema.and(
-      z.any().openapi({ description: 'The CloudWatch metric namespace name.' }),
-    ),
-    metricName: StringSchema.and(z.any().openapi({ description: 'The CloudWatch metric name.' })),
-    metricValue: StringSchema.and(z.any().openapi({ description: 'The CloudWatch metric value.' })),
-    metricUnit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Unit">metric unit</a> supported by CloudWatch.',
-        }),
-    ),
-    metricTimestamp: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#about_timestamp">Unix timestamp</a>.',
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role that allows access to the CloudWatch metric.',
+    }),
+    metricNamespace: StringSchema.openapi({ description: 'The CloudWatch metric namespace name.' }),
+    metricName: StringSchema.openapi({ description: 'The CloudWatch metric name.' }),
+    metricValue: StringSchema.openapi({ description: 'The CloudWatch metric value.' }),
+    metricUnit: StringSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Unit">metric unit</a> supported by CloudWatch.',
+    }),
+    metricTimestamp: StringSchema.exactOptional().openapi({
+      description:
+        'An optional <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#about_timestamp">Unix timestamp</a>.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'metricNamespace', 'metricName', 'metricValue', 'metricUnit'],
@@ -441,21 +337,15 @@ const StateValueSchema = z.string().openapi('StateValue')
 
 const CloudwatchAlarmActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The IAM role that allows access to the CloudWatch alarm.' }),
-    ),
-    alarmName: AlarmNameSchema.and(z.any().openapi({ description: 'The CloudWatch alarm name.' })),
-    stateReason: StateReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the alarm change.' }),
-    ),
-    stateValue: StateValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the alarm state. Acceptable values are: OK, ALARM, INSUFFICIENT_DATA.',
-        }),
-    ),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role that allows access to the CloudWatch alarm.',
+    }),
+    alarmName: AlarmNameSchema.openapi({ description: 'The CloudWatch alarm name.' }),
+    stateReason: StateReasonSchema.openapi({ description: 'The reason for the alarm change.' }),
+    stateValue: StateValueSchema.openapi({
+      description:
+        'The value of the alarm state. Acceptable values are: OK, ALARM, INSUFFICIENT_DATA.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'alarmName', 'stateReason', 'stateValue'],
@@ -467,20 +357,16 @@ const LogGroupNameSchema = z.string().openapi('LogGroupName')
 
 const CloudwatchLogsActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The IAM role that allows access to the CloudWatch log.' }),
-    ),
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The CloudWatch log group to which the action sends data.' }),
-    ),
-    batchMode: BatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether batches of log records will be extracted and uploaded into CloudWatch. Values include <code>true</code> or <code>false</code> <i>(default)</i>.',
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role that allows access to the CloudWatch log.',
+    }),
+    logGroupName: LogGroupNameSchema.openapi({
+      description: 'The CloudWatch log group to which the action sends data.',
+    }),
+    batchMode: BatchModeSchema.exactOptional().openapi({
+      description:
+        'Indicates whether batches of log records will be extracted and uploaded into CloudWatch. Values include <code>true</code> or <code>false</code> <i>(default)</i>.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'logGroupName'],
@@ -501,21 +387,19 @@ const ElasticsearchIdSchema = z.string().openapi('ElasticsearchId')
 
 const ElasticsearchActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The IAM role ARN that has access to OpenSearch.' }),
-    ),
-    endpoint: ElasticsearchEndpointSchema.and(
-      z.any().openapi({ description: 'The endpoint of your OpenSearch domain.' }),
-    ),
-    index: ElasticsearchIndexSchema.and(
-      z.any().openapi({ description: 'The index where you want to store your data.' }),
-    ),
-    type: ElasticsearchTypeSchema.and(
-      z.any().openapi({ description: 'The type of document you are storing.' }),
-    ),
-    id: ElasticsearchIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the document you are storing.' }),
-    ),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role ARN that has access to OpenSearch.',
+    }),
+    endpoint: ElasticsearchEndpointSchema.openapi({
+      description: 'The endpoint of your OpenSearch domain.',
+    }),
+    index: ElasticsearchIndexSchema.openapi({
+      description: 'The index where you want to store your data.',
+    }),
+    type: ElasticsearchTypeSchema.openapi({ description: 'The type of document you are storing.' }),
+    id: ElasticsearchIdSchema.openapi({
+      description: 'The unique identifier for the document you are storing.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'endpoint', 'index', 'type', 'id'],
@@ -536,22 +420,14 @@ const SalesforceEndpointSchema = z
 
 const SalesforceActionSchema = z
   .object({
-    token: SalesforceTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to authenticate access to the Salesforce IoT Cloud Input Stream. The token is available from the Salesforce IoT Cloud platform after creation of the Input Stream.',
-        }),
-    ),
-    url: SalesforceEndpointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL exposed by the Salesforce IoT Cloud Input Stream. The URL is available from the Salesforce IoT Cloud platform after creation of the Input Stream.',
-        }),
-    ),
+    token: SalesforceTokenSchema.openapi({
+      description:
+        'The token used to authenticate access to the Salesforce IoT Cloud Input Stream. The token is available from the Salesforce IoT Cloud platform after creation of the Input Stream.',
+    }),
+    url: SalesforceEndpointSchema.openapi({
+      description:
+        'The URL exposed by the Salesforce IoT Cloud Input Stream. The URL is available from the Salesforce IoT Cloud platform after creation of the Input Stream.',
+    }),
   })
   .openapi({
     required: ['token', 'url'],
@@ -563,37 +439,21 @@ const ChannelNameSchema = z.string().openapi('ChannelName')
 
 const IotAnalyticsActionSchema = z
   .object({
-    channelArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(deprecated) The ARN of the IoT Analytics channel to which message data will be sent.',
-        }),
-    ).exactOptional(),
-    channelName: ChannelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IoT Analytics channel to which message data will be sent.',
-        }),
-    ).exactOptional(),
-    batchMode: BatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to process the action as a batch. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code> and the rule SQL statement evaluates to an Array, each Array element is delivered as a separate message when passed by <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_BatchPutMessage.html"> <code>BatchPutMessage</code> </a> to the IoT Analytics channel. The resulting array can\'t have more than 100 messages.</p>',
-        }),
-    ).exactOptional(),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role which has a policy that grants IoT Analytics permission to send message data via IoT Analytics (iotanalytics:BatchPutMessage).',
-        }),
-    ).exactOptional(),
+    channelArn: AwsArnSchema.exactOptional().openapi({
+      description:
+        '(deprecated) The ARN of the IoT Analytics channel to which message data will be sent.',
+    }),
+    channelName: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the IoT Analytics channel to which message data will be sent.',
+    }),
+    batchMode: BatchModeSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to process the action as a batch. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code> and the rule SQL statement evaluates to an Array, each Array element is delivered as a separate message when passed by <a href="https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_BatchPutMessage.html"> <code>BatchPutMessage</code> </a> to the IoT Analytics channel. The resulting array can\'t have more than 100 messages.</p>',
+    }),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role which has a policy that grants IoT Analytics permission to send message data via IoT Analytics (iotanalytics:BatchPutMessage).',
+    }),
   })
   .openapi({ description: 'Sends message data to an IoT Analytics channel.', required: [] })
   .openapi('IotAnalyticsAction')
@@ -604,33 +464,19 @@ const MessageIdSchema = z.string().max(128).openapi('MessageId')
 
 const IotEventsActionSchema = z
   .object({
-    inputName: InputNameSchema.and(
-      z.any().openapi({ description: 'The name of the IoT Events input.' }),
-    ),
-    messageId: MessageIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the message. The default <code>messageId</code> is a new UUID value.</p> <p>When <code>batchMode</code> is <code>true</code>, you can't specify a <code>messageId</code>--a new UUID value will be assigned.</p> <p>Assign a value to this property to ensure that only one input (message) with a given <code>messageId</code> will be processed by an IoT Events detector.</p>",
-        }),
-    ).exactOptional(),
-    batchMode: BatchModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Whether to process the event actions as a batch. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code>, you can't specify a <code>messageId</code>. </p> <p>When <code>batchMode</code> is <code>true</code> and the rule SQL statement evaluates to an Array, each Array element is treated as a separate message when it's sent to IoT Events by calling <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchPutMessage.html\"> <code>BatchPutMessage</code> </a>. The resulting array can't have more than 10 messages.</p>",
-        }),
-    ).exactOptional(),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT permission to send an input to an IoT Events detector. ("Action":"iotevents:BatchPutMessage").',
-        }),
-    ),
+    inputName: InputNameSchema.openapi({ description: 'The name of the IoT Events input.' }),
+    messageId: MessageIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the message. The default <code>messageId</code> is a new UUID value.</p> <p>When <code>batchMode</code> is <code>true</code>, you can't specify a <code>messageId</code>--a new UUID value will be assigned.</p> <p>Assign a value to this property to ensure that only one input (message) with a given <code>messageId</code> will be processed by an IoT Events detector.</p>",
+    }),
+    batchMode: BatchModeSchema.exactOptional().openapi({
+      description:
+        "<p>Whether to process the event actions as a batch. The default value is <code>false</code>.</p> <p>When <code>batchMode</code> is <code>true</code>, you can't specify a <code>messageId</code>. </p> <p>When <code>batchMode</code> is <code>true</code> and the rule SQL statement evaluates to an Array, each Array element is treated as a separate message when it's sent to IoT Events by calling <a href=\"https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchPutMessage.html\"> <code>BatchPutMessage</code> </a>. The resulting array can't have more than 10 messages.</p>",
+    }),
+    roleArn: AwsArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT permission to send an input to an IoT Events detector. ("Action":"iotevents:BatchPutMessage").',
+    }),
   })
   .openapi({
     required: ['inputName', 'roleArn'],
@@ -660,38 +506,21 @@ const AssetPropertyBooleanValueSchema = z.string().openapi('AssetPropertyBoolean
 
 const AssetPropertyVariantSchema = z
   .object({
-    stringValue: AssetPropertyStringValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. The string value of the value entry. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
-    integerValue: AssetPropertyIntegerValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A string that contains the integer value of the value entry. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
-    doubleValue: AssetPropertyDoubleValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A string that contains the double value of the value entry. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
-    booleanValue: AssetPropertyBooleanValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A string that contains the boolean value (<code>true</code> or <code>false</code>) of the value entry. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
+    stringValue: AssetPropertyStringValueSchema.exactOptional().openapi({
+      description: 'Optional. The string value of the value entry. Accepts substitution templates.',
+    }),
+    integerValue: AssetPropertyIntegerValueSchema.exactOptional().openapi({
+      description:
+        'Optional. A string that contains the integer value of the value entry. Accepts substitution templates.',
+    }),
+    doubleValue: AssetPropertyDoubleValueSchema.exactOptional().openapi({
+      description:
+        'Optional. A string that contains the double value of the value entry. Accepts substitution templates.',
+    }),
+    booleanValue: AssetPropertyBooleanValueSchema.exactOptional().openapi({
+      description:
+        'Optional. A string that contains the boolean value (<code>true</code> or <code>false</code>) of the value entry. Accepts substitution templates.',
+    }),
   })
   .openapi({ description: 'Contains an asset property value (of a single type).', required: [] })
   .openapi('AssetPropertyVariant')
@@ -702,22 +531,14 @@ const AssetPropertyOffsetInNanosSchema = z.string().openapi('AssetPropertyOffset
 
 const AssetPropertyTimestampSchema = z
   .object({
-    timeInSeconds: AssetPropertyTimeInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that contains the time in seconds since epoch. Accepts substitution templates.',
-        }),
-    ),
-    offsetInNanos: AssetPropertyOffsetInNanosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A string that contains the nanosecond time offset. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
+    timeInSeconds: AssetPropertyTimeInSecondsSchema.openapi({
+      description:
+        'A string that contains the time in seconds since epoch. Accepts substitution templates.',
+    }),
+    offsetInNanos: AssetPropertyOffsetInNanosSchema.exactOptional().openapi({
+      description:
+        'Optional. A string that contains the nanosecond time offset. Accepts substitution templates.',
+    }),
   })
   .openapi({
     required: ['timeInSeconds'],
@@ -729,20 +550,14 @@ const AssetPropertyQualitySchema = z.string().openapi('AssetPropertyQuality')
 
 const AssetPropertyValueSchema = z
   .object({
-    value: AssetPropertyVariantSchema.and(
-      z.any().openapi({ description: 'The value of the asset property.' }),
-    ),
-    timestamp: AssetPropertyTimestampSchema.and(
-      z.any().openapi({ description: 'The asset property value timestamp.' }),
-    ),
-    quality: AssetPropertyQualitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A string that describes the quality of the value. Accepts substitution templates. Must be <code>GOOD</code>, <code>BAD</code>, or <code>UNCERTAIN</code>.',
-        }),
-    ).exactOptional(),
+    value: AssetPropertyVariantSchema.openapi({ description: 'The value of the asset property.' }),
+    timestamp: AssetPropertyTimestampSchema.openapi({
+      description: 'The asset property value timestamp.',
+    }),
+    quality: AssetPropertyQualitySchema.exactOptional().openapi({
+      description:
+        'Optional. A string that describes the quality of the value. Accepts substitution templates. Must be <code>GOOD</code>, <code>BAD</code>, or <code>UNCERTAIN</code>.',
+    }),
   })
   .openapi({
     required: ['value', 'timestamp'],
@@ -757,46 +572,26 @@ const AssetPropertyValueListSchema = z
 
 const PutAssetPropertyValueEntrySchema = z
   .object({
-    entryId: AssetPropertyEntryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional. A unique identifier for this entry that you can define to better track which message caused an error in case of failure. Accepts substitution templates. Defaults to a new UUID.',
-        }),
-    ).exactOptional(),
-    assetId: AssetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the IoT SiteWise asset. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
-    propertyId: AssetPropertyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the asset's property. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.",
-        }),
-    ).exactOptional(),
-    propertyAlias: AssetPropertyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the property alias associated with your asset property. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.',
-        }),
-    ).exactOptional(),
-    propertyValues: AssetPropertyValueListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of property values to insert that each contain timestamp, quality, and value (TQV) information.',
-        }),
-    ),
+    entryId: AssetPropertyEntryIdSchema.exactOptional().openapi({
+      description:
+        'Optional. A unique identifier for this entry that you can define to better track which message caused an error in case of failure. Accepts substitution templates. Defaults to a new UUID.',
+    }),
+    assetId: AssetIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the IoT SiteWise asset. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.',
+    }),
+    propertyId: AssetPropertyIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the asset's property. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.",
+    }),
+    propertyAlias: AssetPropertyAliasSchema.exactOptional().openapi({
+      description:
+        'The name of the property alias associated with your asset property. You must specify either a <code>propertyAlias</code> or both an <code>aliasId</code> and a <code>propertyId</code>. Accepts substitution templates.',
+    }),
+    propertyValues: AssetPropertyValueListSchema.openapi({
+      description:
+        'A list of property values to insert that each contain timestamp, quality, and value (TQV) information.',
+    }),
   })
   .openapi({
     required: ['propertyValues'],
@@ -811,17 +606,13 @@ const PutAssetPropertyValueEntryListSchema = z
 
 const IotSiteWiseActionSchema = z
   .object({
-    putAssetPropertyValueEntries: PutAssetPropertyValueEntryListSchema.and(
-      z.any().openapi({ description: 'A list of asset property value entries.' }),
-    ),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT permission to send an asset property value to IoT SiteWise. (<code>"Action": "iotsitewise:BatchPutAssetPropertyValue"</code>). The trust policy can restrict access to specific asset hierarchy paths.',
-        }),
-    ),
+    putAssetPropertyValueEntries: PutAssetPropertyValueEntryListSchema.openapi({
+      description: 'A list of asset property value entries.',
+    }),
+    roleArn: AwsArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT permission to send an asset property value to IoT SiteWise. (<code>"Action": "iotsitewise:BatchPutAssetPropertyValue"</code>). The trust policy can restrict access to specific asset hierarchy paths.',
+    }),
   })
   .openapi({
     required: ['putAssetPropertyValueEntries', 'roleArn'],
@@ -836,30 +627,17 @@ const StateMachineNameSchema = z.string().openapi('StateMachineName')
 
 const StepFunctionsActionSchema = z
   .object({
-    executionNamePrefix: ExecutionNamePrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) A name will be given to the state machine execution consisting of this prefix followed by a UUID. Step Functions automatically creates a unique name for each state machine execution if one is not provided.',
-        }),
-    ).exactOptional(),
-    stateMachineName: StateMachineNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Step Functions state machine whose execution will be started.',
-        }),
-    ),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants IoT permission to start execution of a state machine ("Action":"states:StartExecution").',
-        }),
-    ),
+    executionNamePrefix: ExecutionNamePrefixSchema.exactOptional().openapi({
+      description:
+        '(Optional) A name will be given to the state machine execution consisting of this prefix followed by a UUID. Step Functions automatically creates a unique name for each state machine execution if one is not provided.',
+    }),
+    stateMachineName: StateMachineNameSchema.openapi({
+      description: 'The name of the Step Functions state machine whose execution will be started.',
+    }),
+    roleArn: AwsArnSchema.openapi({
+      description:
+        'The ARN of the role that grants IoT permission to start execution of a state machine ("Action":"states:StartExecution").',
+    }),
   })
   .openapi({
     required: ['stateMachineName', 'roleArn'],
@@ -877,17 +655,13 @@ const TimestreamDimensionValueSchema = z.string().openapi('TimestreamDimensionVa
 
 const TimestreamDimensionSchema = z
   .object({
-    name: TimestreamDimensionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The metadata dimension name. This is the name of the column in the Amazon Timestream database table record.</p> <p>Dimensions cannot be named: <code>measure_name</code>, <code>measure_value</code>, or <code>time</code>. These names are reserved. Dimension names cannot start with <code>ts_</code> or <code>measure_value</code> and they cannot contain the colon (<code>:</code>) character.</p>',
-        }),
-    ),
-    value: TimestreamDimensionValueSchema.and(
-      z.any().openapi({ description: 'The value to write in this column of the database record.' }),
-    ),
+    name: TimestreamDimensionNameSchema.openapi({
+      description:
+        '<p>The metadata dimension name. This is the name of the column in the Amazon Timestream database table record.</p> <p>Dimensions cannot be named: <code>measure_name</code>, <code>measure_value</code>, or <code>time</code>. These names are reserved. Dimension names cannot start with <code>ts_</code> or <code>measure_value</code> and they cannot contain the colon (<code>:</code>) character.</p>',
+    }),
+    value: TimestreamDimensionValueSchema.openapi({
+      description: 'The value to write in this column of the database record.',
+    }),
   })
   .openapi({
     required: ['name', 'value'],
@@ -907,17 +681,13 @@ const TimestreamTimestampUnitSchema = z.string().openapi('TimestreamTimestampUni
 
 const TimestreamTimestampSchema = z
   .object({
-    value: TimestreamTimestampValueSchema.and(
-      z.any().openapi({ description: 'An expression that returns a long epoch time value.' }),
-    ),
-    unit: TimestreamTimestampUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The precision of the timestamp value that results from the expression described in <code>value</code>.</p> <p>Valid values: <code>SECONDS</code> | <code>MILLISECONDS</code> | <code>MICROSECONDS</code> | <code>NANOSECONDS</code>. The default is <code>MILLISECONDS</code>.</p>',
-        }),
-    ),
+    value: TimestreamTimestampValueSchema.openapi({
+      description: 'An expression that returns a long epoch time value.',
+    }),
+    unit: TimestreamTimestampUnitSchema.openapi({
+      description:
+        '<p>The precision of the timestamp value that results from the expression described in <code>value</code>.</p> <p>Valid values: <code>SECONDS</code> | <code>MILLISECONDS</code> | <code>MICROSECONDS</code> | <code>NANOSECONDS</code>. The default is <code>MILLISECONDS</code>.</p>',
+    }),
   })
   .openapi({
     required: ['value', 'unit'],
@@ -928,40 +698,24 @@ const TimestreamTimestampSchema = z
 
 const TimestreamActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to write to the Amazon Timestream database table.',
-        }),
-    ),
-    databaseName: TimestreamDatabaseNameSchema.and(
-      z.any().openapi({ description: 'The name of an Amazon Timestream database.' }),
-    ),
-    tableName: TimestreamTableNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the database table into which to write the measure records.',
-        }),
-    ),
-    dimensions: TimestreamDimensionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Metadata attributes of the time series that are written in each measure record.',
-        }),
-    ),
-    timestamp: TimestreamTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies an application-defined value to replace the default value assigned to the Timestream record's timestamp in the <code>time</code> column.</p> <p>You can use this property to specify the value and the precision of the Timestream record's timestamp. You can specify a value from the message payload or a value computed by a substitution template.</p> <p>If omitted, the topic rule action assigns the timestamp, in milliseconds, at the time it processed the rule. </p>",
-        }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to write to the Amazon Timestream database table.',
+    }),
+    databaseName: TimestreamDatabaseNameSchema.openapi({
+      description: 'The name of an Amazon Timestream database.',
+    }),
+    tableName: TimestreamTableNameSchema.openapi({
+      description: 'The name of the database table into which to write the measure records.',
+    }),
+    dimensions: TimestreamDimensionListSchema.openapi({
+      description:
+        'Metadata attributes of the time series that are written in each measure record.',
+    }),
+    timestamp: TimestreamTimestampSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies an application-defined value to replace the default value assigned to the Timestream record's timestamp in the <code>time</code> column.</p> <p>You can use this property to specify the value and the precision of the Timestream record's timestamp. You can specify a value from the message payload or a value computed by a substitution template.</p> <p>If omitted, the topic rule action assigns the timestamp, in milliseconds, at the time it processed the rule. </p>",
+    }),
   })
   .openapi({
     required: ['roleArn', 'databaseName', 'tableName', 'dimensions'],
@@ -978,12 +732,10 @@ const HeaderValueSchema = z.string().openapi('HeaderValue')
 
 const HttpActionHeaderSchema = z
   .object({
-    key: HeaderKeySchema.and(z.any().openapi({ description: 'The HTTP header key.' })),
-    value: HeaderValueSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The HTTP header value. Substitution templates are supported.' }),
-    ),
+    key: HeaderKeySchema.openapi({ description: 'The HTTP header key.' }),
+    value: HeaderValueSchema.openapi({
+      description: 'The HTTP header value. Substitution templates are supported.',
+    }),
   })
   .openapi({ required: ['key', 'value'], description: 'The HTTP action header.' })
   .openapi('HttpActionHeader')
@@ -996,11 +748,11 @@ const ServiceNameSchema = z.string().openapi('ServiceName')
 
 const SigV4AuthorizationSchema = z
   .object({
-    signingRegion: SigningRegionSchema.and(z.any().openapi({ description: 'The signing region.' })),
-    serviceName: ServiceNameSchema.and(
-      z.any().openapi({ description: 'The service name to use while signing with Sig V4.' }),
-    ),
-    roleArn: AwsArnSchema.and(z.any().openapi({ description: 'The ARN of the signing role.' })),
+    signingRegion: SigningRegionSchema.openapi({ description: 'The signing region.' }),
+    serviceName: ServiceNameSchema.openapi({
+      description: 'The service name to use while signing with Sig V4.',
+    }),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the signing role.' }),
   })
   .openapi({
     required: ['signingRegion', 'serviceName', 'roleArn'],
@@ -1011,46 +763,30 @@ const SigV4AuthorizationSchema = z
 
 const HttpAuthorizationSchema = z
   .object({
-    sigv4: SigV4AuthorizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use Sig V4 authorization. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html">Signature Version 4 Signing Process</a>.',
-        }),
-    ).exactOptional(),
+    sigv4: SigV4AuthorizationSchema.exactOptional().openapi({
+      description:
+        'Use Sig V4 authorization. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html">Signature Version 4 Signing Process</a>.',
+    }),
   })
   .openapi({ description: 'The authorization method used to send messages.', required: [] })
   .openapi('HttpAuthorization')
 
 const HttpActionSchema = z
   .object({
-    url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint URL. If substitution templates are used in the URL, you must also specify a <code>confirmationUrl</code>. If this is a new destination, a new <code>TopicRuleDestination</code> is created if possible.',
-        }),
-    ),
-    confirmationUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL to which IoT sends a confirmation message. The value of the confirmation URL must be a prefix of the endpoint URL. If you do not specify a confirmation URL IoT uses the endpoint URL as the confirmation URL. If you use substitution templates in the confirmationUrl, you must create and enable topic rule destinations that match each possible value of the substitution template before traffic is allowed to your endpoint URL.',
-        }),
-    ).exactOptional(),
-    headers: HeaderListSchema.and(
-      z.any().openapi({ description: 'The HTTP headers to send with the message data.' }),
-    ).exactOptional(),
-    auth: HttpAuthorizationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The authentication method to use when sending data to an HTTPS endpoint.',
-        }),
-    ).exactOptional(),
+    url: UrlSchema.openapi({
+      description:
+        'The endpoint URL. If substitution templates are used in the URL, you must also specify a <code>confirmationUrl</code>. If this is a new destination, a new <code>TopicRuleDestination</code> is created if possible.',
+    }),
+    confirmationUrl: UrlSchema.exactOptional().openapi({
+      description:
+        'The URL to which IoT sends a confirmation message. The value of the confirmation URL must be a prefix of the endpoint URL. If you do not specify a confirmation URL IoT uses the endpoint URL as the confirmation URL. If you use substitution templates in the confirmationUrl, you must create and enable topic rule destinations that match each possible value of the substitution template before traffic is allowed to your endpoint URL.',
+    }),
+    headers: HeaderListSchema.exactOptional().openapi({
+      description: 'The HTTP headers to send with the message data.',
+    }),
+    auth: HttpAuthorizationSchema.exactOptional().openapi({
+      description: 'The authentication method to use when sending data to an HTTPS endpoint.',
+    }),
   })
   .openapi({ required: ['url'], description: 'Send data to an HTTPS endpoint.' })
   .openapi('HttpAction')
@@ -1059,27 +795,19 @@ const ClientPropertiesSchema = z.record(z.string(), StringSchema).openapi('Clien
 
 const KafkaActionSchema = z
   .object({
-    destinationArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The ARN of Kafka action's VPC <code>TopicRuleDestination</code>.",
-        }),
-    ),
-    topic: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Kafka topic for messages to be sent to the Kafka broker.' }),
-    ),
-    key: StringSchema.and(
-      z.any().openapi({ description: 'The Kafka message key.' }),
-    ).exactOptional(),
-    partition: StringSchema.and(
-      z.any().openapi({ description: 'The Kafka message partition.' }),
-    ).exactOptional(),
-    clientProperties: ClientPropertiesSchema.and(
-      z.any().openapi({ description: 'Properties of the Apache Kafka producer client.' }),
-    ),
+    destinationArn: AwsArnSchema.openapi({
+      description: "The ARN of Kafka action's VPC <code>TopicRuleDestination</code>.",
+    }),
+    topic: StringSchema.openapi({
+      description: 'The Kafka topic for messages to be sent to the Kafka broker.',
+    }),
+    key: StringSchema.exactOptional().openapi({ description: 'The Kafka message key.' }),
+    partition: StringSchema.exactOptional().openapi({
+      description: 'The Kafka message partition.',
+    }),
+    clientProperties: ClientPropertiesSchema.openapi({
+      description: 'Properties of the Apache Kafka producer client.',
+    }),
   })
   .openapi({
     required: ['destinationArn', 'topic', 'clientProperties'],
@@ -1090,21 +818,19 @@ const KafkaActionSchema = z
 
 const OpenSearchActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The IAM role ARN that has access to OpenSearch.' }),
-    ),
-    endpoint: ElasticsearchEndpointSchema.and(
-      z.any().openapi({ description: 'The endpoint of your OpenSearch domain.' }),
-    ),
-    index: ElasticsearchIndexSchema.and(
-      z.any().openapi({ description: 'The OpenSearch index where you want to store your data.' }),
-    ),
-    type: ElasticsearchTypeSchema.and(
-      z.any().openapi({ description: 'The type of document you are storing.' }),
-    ),
-    id: ElasticsearchIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the document you are storing.' }),
-    ),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role ARN that has access to OpenSearch.',
+    }),
+    endpoint: ElasticsearchEndpointSchema.openapi({
+      description: 'The endpoint of your OpenSearch domain.',
+    }),
+    index: ElasticsearchIndexSchema.openapi({
+      description: 'The OpenSearch index where you want to store your data.',
+    }),
+    type: ElasticsearchTypeSchema.openapi({ description: 'The type of document you are storing.' }),
+    id: ElasticsearchIdSchema.openapi({
+      description: 'The unique identifier for the document you are storing.',
+    }),
   })
   .openapi({
     required: ['roleArn', 'endpoint', 'index', 'type', 'id'],
@@ -1114,17 +840,13 @@ const OpenSearchActionSchema = z
 
 const LocationTimestampSchema = z
   .object({
-    value: StringSchema.and(
-      z.any().openapi({ description: 'An expression that returns a long epoch time value.' }),
-    ),
-    unit: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The precision of the timestamp value that results from the expression described in <code>value</code>.</p> <p>Valid values: <code>SECONDS</code> | <code>MILLISECONDS</code> | <code>MICROSECONDS</code> | <code>NANOSECONDS</code>. The default is <code>MILLISECONDS</code>.</p>',
-        }),
-    ).exactOptional(),
+    value: StringSchema.openapi({
+      description: 'An expression that returns a long epoch time value.',
+    }),
+    unit: StringSchema.exactOptional().openapi({
+      description:
+        '<p>The precision of the timestamp value that results from the expression described in <code>value</code>.</p> <p>Valid values: <code>SECONDS</code> | <code>MILLISECONDS</code> | <code>MICROSECONDS</code> | <code>NANOSECONDS</code>. The default is <code>MILLISECONDS</code>.</p>',
+    }),
   })
   .openapi({
     required: ['value'],
@@ -1135,49 +857,28 @@ const LocationTimestampSchema = z
 
 const LocationActionSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that grants permission to write to the Amazon Location resource.',
-        }),
-    ),
-    trackerName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the tracker resource in Amazon Location in which the location is updated.',
-        }),
-    ),
-    deviceId: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID of the device providing the location data.' }),
-    ),
-    timestamp: LocationTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time that the location data was sampled. The default value is the time the MQTT message was processed.',
-        }),
-    ).exactOptional(),
-    latitude: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A string that evaluates to a double value that represents the latitude of the device's location.",
-        }),
-    ),
-    longitude: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A string that evaluates to a double value that represents the longitude of the device's location.",
-        }),
-    ),
+    roleArn: AwsArnSchema.openapi({
+      description: 'The IAM role that grants permission to write to the Amazon Location resource.',
+    }),
+    trackerName: StringSchema.openapi({
+      description:
+        'The name of the tracker resource in Amazon Location in which the location is updated.',
+    }),
+    deviceId: StringSchema.openapi({
+      description: 'The unique ID of the device providing the location data.',
+    }),
+    timestamp: LocationTimestampSchema.exactOptional().openapi({
+      description:
+        'The time that the location data was sampled. The default value is the time the MQTT message was processed.',
+    }),
+    latitude: StringSchema.openapi({
+      description:
+        "A string that evaluates to a double value that represents the latitude of the device's location.",
+    }),
+    longitude: StringSchema.openapi({
+      description:
+        "A string that evaluates to a double value that represents the longitude of the device's location.",
+    }),
   })
   .openapi({
     required: ['roleArn', 'trackerName', 'deviceId', 'latitude', 'longitude'],
@@ -1186,31 +887,250 @@ const LocationActionSchema = z
   })
   .openapi('LocationAction')
 
-type ActionType = {
-  dynamoDB?: z.infer<typeof DynamoDBActionSchema> & { [key: string]: unknown }
-  dynamoDBv2?: z.infer<typeof DynamoDBv2ActionSchema> & { [key: string]: unknown }
-  lambda?: z.infer<typeof LambdaActionSchema> & { [key: string]: unknown }
-  sns?: z.infer<typeof SnsActionSchema> & { [key: string]: unknown }
-  sqs?: z.infer<typeof SqsActionSchema> & { [key: string]: unknown }
-  kinesis?: z.infer<typeof KinesisActionSchema> & { [key: string]: unknown }
-  republish?: z.infer<typeof RepublishActionSchema> & { [key: string]: unknown }
-  s3?: z.infer<typeof S3ActionSchema> & { [key: string]: unknown }
-  firehose?: z.infer<typeof FirehoseActionSchema> & { [key: string]: unknown }
-  cloudwatchMetric?: z.infer<typeof CloudwatchMetricActionSchema> & { [key: string]: unknown }
-  cloudwatchAlarm?: z.infer<typeof CloudwatchAlarmActionSchema> & { [key: string]: unknown }
-  cloudwatchLogs?: z.infer<typeof CloudwatchLogsActionSchema> & { [key: string]: unknown }
-  elasticsearch?: z.infer<typeof ElasticsearchActionSchema> & { [key: string]: unknown }
-  salesforce?: z.infer<typeof SalesforceActionSchema> & { [key: string]: unknown }
-  iotAnalytics?: z.infer<typeof IotAnalyticsActionSchema> & { [key: string]: unknown }
-  iotEvents?: z.infer<typeof IotEventsActionSchema> & { [key: string]: unknown }
-  iotSiteWise?: z.infer<typeof IotSiteWiseActionSchema> & { [key: string]: unknown }
-  stepFunctions?: z.infer<typeof StepFunctionsActionSchema> & { [key: string]: unknown }
-  timestream?: z.infer<typeof TimestreamActionSchema> & { [key: string]: unknown }
-  http?: z.infer<typeof HttpActionSchema> & { [key: string]: unknown }
-  kafka?: z.infer<typeof KafkaActionSchema> & { [key: string]: unknown }
-  openSearch?: z.infer<typeof OpenSearchActionSchema> & { [key: string]: unknown }
-  location?: z.infer<typeof LocationActionSchema> & { [key: string]: unknown }
-}
+const ActionSchema = z
+  .object({
+    dynamoDB: DynamoDBActionSchema.exactOptional().openapi({
+      description: 'Write to a DynamoDB table.',
+    }),
+    dynamoDBv2: DynamoDBv2ActionSchema.exactOptional().openapi({
+      description:
+        'Write to a DynamoDB table. This is a new version of the DynamoDB action. It allows you to write each attribute in an MQTT message payload into a separate DynamoDB column.',
+    }),
+    lambda: LambdaActionSchema.exactOptional().openapi({
+      description: 'Invoke a Lambda function.',
+    }),
+    sns: SnsActionSchema.exactOptional().openapi({
+      description: 'Publish to an Amazon SNS topic.',
+    }),
+    sqs: SqsActionSchema.exactOptional().openapi({
+      description: 'Publish to an Amazon SQS queue.',
+    }),
+    kinesis: KinesisActionSchema.exactOptional().openapi({
+      description: 'Write data to an Amazon Kinesis stream.',
+    }),
+    republish: RepublishActionSchema.exactOptional().openapi({
+      description: 'Publish to another MQTT topic.',
+    }),
+    s3: S3ActionSchema.exactOptional().openapi({ description: 'Write to an Amazon S3 bucket.' }),
+    firehose: FirehoseActionSchema.exactOptional().openapi({
+      description: 'Write to an Amazon Kinesis Firehose stream.',
+    }),
+    cloudwatchMetric: CloudwatchMetricActionSchema.exactOptional().openapi({
+      description: 'Capture a CloudWatch metric.',
+    }),
+    cloudwatchAlarm: CloudwatchAlarmActionSchema.exactOptional().openapi({
+      description: 'Change the state of a CloudWatch alarm.',
+    }),
+    cloudwatchLogs: CloudwatchLogsActionSchema.exactOptional().openapi({
+      description: 'Send data to CloudWatch Logs.',
+    }),
+    elasticsearch: ElasticsearchActionSchema.exactOptional().openapi({
+      description:
+        '<p>Write data to an Amazon OpenSearch Service domain.</p> <note> <p>The <code>Elasticsearch</code> action can only be used by existing rule actions. To create a new rule action or to update an existing rule action, use the <code>OpenSearch</code> rule action instead. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html">OpenSearchAction</a>.</p> </note>',
+    }),
+    salesforce: SalesforceActionSchema.exactOptional().openapi({
+      description: 'Send a message to a Salesforce IoT Cloud Input Stream.',
+    }),
+    iotAnalytics: IotAnalyticsActionSchema.exactOptional().openapi({
+      description: 'Sends message data to an IoT Analytics channel.',
+    }),
+    iotEvents: IotEventsActionSchema.exactOptional().openapi({
+      description: 'Sends an input to an IoT Events detector.',
+    }),
+    iotSiteWise: IotSiteWiseActionSchema.exactOptional().openapi({
+      description:
+        'Sends data from the MQTT message that triggered the rule to IoT SiteWise asset properties.',
+    }),
+    stepFunctions: StepFunctionsActionSchema.exactOptional().openapi({
+      description: 'Starts execution of a Step Functions state machine.',
+    }),
+    timestream: TimestreamActionSchema.exactOptional().openapi({
+      description:
+        'The Timestream rule action writes attributes (measures) from an MQTT message into an Amazon Timestream table. For more information, see the <a href="https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html">Timestream</a> topic rule action documentation.',
+    }),
+    http: HttpActionSchema.exactOptional().openapi({
+      description: 'Send data to an HTTPS endpoint.',
+    }),
+    kafka: KafkaActionSchema.exactOptional().openapi({
+      description:
+        'Send messages to an Amazon Managed Streaming for Apache Kafka (Amazon MSK) or self-managed Apache Kafka cluster.',
+    }),
+    openSearch: OpenSearchActionSchema.exactOptional().openapi({
+      description: 'Write data to an Amazon OpenSearch Service domain.',
+    }),
+    location: LocationActionSchema.exactOptional().openapi({
+      description:
+        'The Amazon Location Service rule action sends device location updates from an MQTT message to an Amazon Location tracker resource.',
+    }),
+  })
+  .openapi({ description: 'Describes the actions associated with a rule.', required: [] })
+  .openapi('Action')
+
+type ActionListType = z.infer<typeof ActionSchema>[]
+
+const OTAUpdateIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('OTAUpdateId')
+
+const OTAUpdateArnSchema = z.string().openapi('OTAUpdateArn')
+
+const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
+
+const OTAUpdateDescriptionSchema = z
+  .string()
+  .regex(/[^\p{C}]+/u)
+  .max(2028)
+  .openapi('OTAUpdateDescription')
+
+const TargetSchema = z.string().openapi('Target')
+
+const TargetsSchema = z.array(TargetSchema).min(1).openapi('Targets')
+
+const ProtocolSchema = z.enum(['MQTT', 'HTTP']).openapi('Protocol')
+
+const ProtocolsSchema = z.array(ProtocolSchema).min(1).max(2).openapi('Protocols')
+
+const MaximumPerMinuteSchema = z.int().min(1).max(1000).openapi('MaximumPerMinute')
+
+const AwsJobRolloutRatePerMinuteSchema = z
+  .int()
+  .min(1)
+  .max(1000)
+  .openapi('AwsJobRolloutRatePerMinute')
+
+const AwsJobRolloutIncrementFactorSchema = z.float64().openapi('AwsJobRolloutIncrementFactor')
+
+const AwsJobRateIncreaseCriteriaNumberOfThingsSchema = z
+  .int()
+  .min(1)
+  .openapi('AwsJobRateIncreaseCriteriaNumberOfThings')
+
+const AwsJobRateIncreaseCriteriaSchema = z
+  .object({
+    numberOfNotifiedThings: AwsJobRateIncreaseCriteriaNumberOfThingsSchema.exactOptional().openapi({
+      description:
+        'When this number of things have been notified, it will initiate an increase in the rollout rate.',
+    }),
+    numberOfSucceededThings: AwsJobRateIncreaseCriteriaNumberOfThingsSchema.exactOptional().openapi(
+      {
+        description:
+          'When this number of things have succeeded in their job execution, it will initiate an increase in the rollout rate.',
+      },
+    ),
+  })
+  .openapi({
+    description: 'The criteria to initiate the increase in rate of rollout for a job.',
+    required: [],
+  })
+  .openapi('AwsJobRateIncreaseCriteria')
+
+const AwsJobExponentialRolloutRateSchema = z
+  .object({
+    baseRatePerMinute: AwsJobRolloutRatePerMinuteSchema.openapi({
+      description:
+        'The minimum number of things that will be notified of a pending job, per minute, at the start of the job rollout. This is the initial rate of the rollout.',
+    }),
+    incrementFactor: AwsJobRolloutIncrementFactorSchema.openapi({
+      description:
+        'The rate of increase for a job rollout. The number of things notified is multiplied by this factor.',
+    }),
+    rateIncreaseCriteria: AwsJobRateIncreaseCriteriaSchema.openapi({
+      description:
+        '<p>The criteria to initiate the increase in rate of rollout for a job.</p> <p>Amazon Web Services IoT Core supports up to one digit after the decimal (for example, 1.5, but not 1.55).</p>',
+    }),
+  })
+  .openapi({
+    required: ['baseRatePerMinute', 'incrementFactor', 'rateIncreaseCriteria'],
+    description:
+      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
+  })
+  .openapi('AwsJobExponentialRolloutRate')
+
+const AwsJobExecutionsRolloutConfigSchema = z
+  .object({
+    maximumPerMinute: MaximumPerMinuteSchema.exactOptional().openapi({
+      description: 'The maximum number of OTA update job executions started per minute.',
+    }),
+    exponentialRate: AwsJobExponentialRolloutRateSchema.exactOptional().openapi({
+      description:
+        'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
+    }),
+  })
+  .openapi({ description: 'Configuration for the rollout of OTA updates.', required: [] })
+  .openapi('AwsJobExecutionsRolloutConfig')
+
+const ExpiresInSecondsSchema = z.int().openapi('ExpiresInSeconds')
+
+const AwsJobPresignedUrlConfigSchema = z
+  .object({
+    expiresInSec: ExpiresInSecondsSchema.exactOptional().openapi({
+      description:
+        'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 1800 seconds. Pre-signed URLs are generated when a request for the job document is received.',
+    }),
+  })
+  .openapi({
+    description:
+      'Configuration information for pre-signed URLs. Valid when <code>protocols</code> contains HTTP.',
+    required: [],
+  })
+  .openapi('AwsJobPresignedUrlConfig')
+
+const TargetSelectionSchema = z.enum(['CONTINUOUS', 'SNAPSHOT']).openapi('TargetSelection')
+
+const FileNameSchema = z.string().openapi('FileName')
+
+const FileTypeSchema = z.int().min(0).max(255).openapi('FileType')
+
+const OTAUpdateFileVersionSchema = z.string().openapi('OTAUpdateFileVersion')
+
+const StreamIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('StreamId')
+
+const FileIdSchema = z.int().min(0).max(255).openapi('FileId')
+
+const StreamSchema = z
+  .object({
+    streamId: StreamIdSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    fileId: FileIdSchema.exactOptional().openapi({
+      description: 'The ID of a file associated with a stream.',
+    }),
+  })
+  .openapi({ description: 'Describes a group of files that can be streamed.', required: [] })
+  .openapi('Stream')
+
+const S3BucketSchema = z.string().min(1).openapi('S3Bucket')
+
+const S3KeySchema = z.string().min(1).openapi('S3Key')
+
+const S3VersionSchema = z.string().openapi('S3Version')
+
+const S3LocationSchema = z
+  .object({
+    bucket: S3BucketSchema.exactOptional().openapi({ description: 'The S3 bucket.' }),
+    key: S3KeySchema.exactOptional().openapi({ description: 'The S3 key.' }),
+    version: S3VersionSchema.exactOptional().openapi({ description: 'The S3 bucket version.' }),
+  })
+  .openapi({ description: 'The S3 location.', required: [] })
+  .openapi('S3Location')
+
+const FileLocationSchema = z
+  .object({
+    stream: StreamSchema.exactOptional().openapi({
+      description: 'The stream that contains the OTA update.',
+    }),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The location of the updated firmware in S3.',
+    }),
+  })
+  .openapi({ description: 'The location of the OTA update.', required: [] })
+  .openapi('FileLocation')
 
 const SigningJobIdSchema = z.string().openapi('SigningJobId')
 
@@ -1222,46 +1142,53 @@ const CertificatePathOnDeviceSchema = z.string().openapi('CertificatePathOnDevic
 
 const SigningProfileParameterSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'Certificate ARN.' }),
-    ).exactOptional(),
-    platform: PlatformSchema.and(
-      z.any().openapi({ description: 'The hardware platform of your device.' }),
-    ).exactOptional(),
-    certificatePathOnDevice: CertificatePathOnDeviceSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The location of the code-signing certificate on your device.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'Certificate ARN.',
+    }),
+    platform: PlatformSchema.exactOptional().openapi({
+      description: 'The hardware platform of your device.',
+    }),
+    certificatePathOnDevice: CertificatePathOnDeviceSchema.exactOptional().openapi({
+      description: 'The location of the code-signing certificate on your device.',
+    }),
   })
   .openapi({ description: 'Describes the code-signing profile.', required: [] })
   .openapi('SigningProfileParameter')
 
 const SigningProfileNameSchema = z.string().openapi('SigningProfileName')
 
-const DestinationSchema: z.ZodType<DestinationType> = z
-  .lazy(() =>
-    z
-      .object({
-        s3Destination: S3DestinationSchema.and(
-          z.any().openapi({ description: 'Describes the location in S3 of the updated firmware.' }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Describes the location of the updated firmware.', required: [] }),
-  )
+const PrefixSchema = z.string().openapi('Prefix')
+
+const S3DestinationSchema = z
+  .object({
+    bucket: S3BucketSchema.exactOptional().openapi({
+      description: 'The S3 bucket that contains the updated firmware.',
+    }),
+    prefix: PrefixSchema.exactOptional().openapi({ description: 'The S3 prefix.' }),
+  })
+  .openapi({ description: 'Describes the location of updated firmware in S3.', required: [] })
+  .openapi('S3Destination')
+
+const DestinationSchema = z
+  .object({
+    s3Destination: S3DestinationSchema.exactOptional().openapi({
+      description: 'Describes the location in S3 of the updated firmware.',
+    }),
+  })
+  .openapi({ description: 'Describes the location of the updated firmware.', required: [] })
   .openapi('Destination')
 
 const StartSigningJobParameterSchema = z
   .object({
-    signingProfileParameter: SigningProfileParameterSchema.and(
-      z.any().openapi({ description: 'Describes the code-signing profile.' }),
-    ).exactOptional(),
-    signingProfileName: SigningProfileNameSchema.and(
-      z.any().openapi({ description: 'The code-signing profile name.' }),
-    ).exactOptional(),
-    destination: DestinationSchema.and(
-      z.any().openapi({ description: 'The location to write the code-signed file.' }),
-    ).exactOptional(),
+    signingProfileParameter: SigningProfileParameterSchema.exactOptional().openapi({
+      description: 'Describes the code-signing profile.',
+    }),
+    signingProfileName: SigningProfileNameSchema.exactOptional().openapi({
+      description: 'The code-signing profile name.',
+    }),
+    destination: DestinationSchema.exactOptional().openapi({
+      description: 'The location to write the code-signed file.',
+    }),
   })
   .openapi({ description: 'Information required to start a signing job.', required: [] })
   .openapi('StartSigningJobParameter')
@@ -1270,13 +1197,9 @@ const SignatureSchema = z.string().openapi('Signature')
 
 const CodeSigningSignatureSchema = z
   .object({
-    inlineDocument: SignatureSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A base64 encoded binary representation of the code signing signature.',
-        }),
-    ).exactOptional(),
+    inlineDocument: SignatureSchema.exactOptional().openapi({
+      description: 'A base64 encoded binary representation of the code signing signature.',
+    }),
   })
   .openapi({ description: 'Describes the signature for a file.', required: [] })
   .openapi('CodeSigningSignature')
@@ -1287,17 +1210,12 @@ const InlineDocumentSchema = z.string().openapi('InlineDocument')
 
 const CodeSigningCertificateChainSchema = z
   .object({
-    certificateName: CertificateNameSchema.and(
-      z.any().openapi({ description: 'The name of the certificate.' }),
-    ).exactOptional(),
-    inlineDocument: InlineDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A base64 encoded binary representation of the code signing certificate chain.',
-        }),
-    ).exactOptional(),
+    certificateName: CertificateNameSchema.exactOptional().openapi({
+      description: 'The name of the certificate.',
+    }),
+    inlineDocument: InlineDocumentSchema.exactOptional().openapi({
+      description: 'A base64 encoded binary representation of the code signing certificate chain.',
+    }),
   })
   .openapi({
     description: 'Describes the certificate chain being used when code signing a file.',
@@ -1311,56 +1229,593 @@ const SignatureAlgorithmSchema = z.string().openapi('SignatureAlgorithm')
 
 const CustomCodeSigningSchema = z
   .object({
-    signature: CodeSigningSignatureSchema.and(
-      z.any().openapi({ description: 'The signature for the file.' }),
-    ).exactOptional(),
-    certificateChain: CodeSigningCertificateChainSchema.and(
-      z.any().openapi({ description: 'The certificate chain.' }),
-    ).exactOptional(),
-    hashAlgorithm: HashAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The hash algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>SHA256</code> or <code>SHA1</code>, so you can pass either of them based on which was used for generating the signature.',
-        }),
-    ).exactOptional(),
-    signatureAlgorithm: SignatureAlgorithmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The signature algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>ECDSA</code> or <code>RSA</code>, so you can pass either of them based on which was used for generating the signature.',
-        }),
-    ).exactOptional(),
+    signature: CodeSigningSignatureSchema.exactOptional().openapi({
+      description: 'The signature for the file.',
+    }),
+    certificateChain: CodeSigningCertificateChainSchema.exactOptional().openapi({
+      description: 'The certificate chain.',
+    }),
+    hashAlgorithm: HashAlgorithmSchema.exactOptional().openapi({
+      description:
+        'The hash algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>SHA256</code> or <code>SHA1</code>, so you can pass either of them based on which was used for generating the signature.',
+    }),
+    signatureAlgorithm: SignatureAlgorithmSchema.exactOptional().openapi({
+      description:
+        'The signature algorithm used to code sign the file. You can use a string as the algorithm name if the target over-the-air (OTA) update devices are able to verify the signature that was generated using the same signature algorithm. For example, FreeRTOS uses <code>ECDSA</code> or <code>RSA</code>, so you can pass either of them based on which was used for generating the signature.',
+    }),
   })
   .openapi({ description: 'Describes a custom method used to code sign a file.', required: [] })
   .openapi('CustomCodeSigning')
 
-type CodeSigningType = {
-  awsSignerJobId?: z.infer<typeof SigningJobIdSchema> & { [key: string]: unknown }
-  startSigningJobParameter?: z.infer<typeof StartSigningJobParameterSchema> & {
-    [key: string]: unknown
-  }
-  customCodeSigning?: z.infer<typeof CustomCodeSigningSchema> & { [key: string]: unknown }
+const CodeSigningSchema = z
+  .object({
+    awsSignerJobId: SigningJobIdSchema.exactOptional().openapi({
+      description: 'The ID of the <code>AWSSignerJob</code> which was created to sign the file.',
+    }),
+    startSigningJobParameter: StartSigningJobParameterSchema.exactOptional().openapi({
+      description: 'Describes the code-signing job.',
+    }),
+    customCodeSigning: CustomCodeSigningSchema.exactOptional().openapi({
+      description: 'A custom method for code signing a file.',
+    }),
+  })
+  .openapi({ description: 'Describes the method to use when code signing a file.', required: [] })
+  .openapi('CodeSigning')
+
+const ValueSchema = z
+  .string()
+  .regex(/[\s\S]*/)
+  .min(0)
+  .max(4096)
+  .openapi('Value')
+
+const AttributesMapSchema = z.record(z.string(), ValueSchema).openapi('AttributesMap')
+
+const OTAUpdateFileSchema = z
+  .object({
+    fileName: FileNameSchema.exactOptional().openapi({ description: 'The name of the file.' }),
+    fileType: FileTypeSchema.exactOptional().openapi({
+      description:
+        'An integer value you can include in the job document to allow your devices to identify the type of file received from the cloud.',
+    }),
+    fileVersion: OTAUpdateFileVersionSchema.exactOptional().openapi({
+      description: 'The file version.',
+    }),
+    fileLocation: FileLocationSchema.exactOptional().openapi({
+      description: 'The location of the updated firmware.',
+    }),
+    codeSigning: CodeSigningSchema.exactOptional().openapi({
+      description: 'The code signing method of the file.',
+    }),
+    attributes: AttributesMapSchema.exactOptional().openapi({
+      description: 'A list of name/attribute pairs.',
+    }),
+  })
+  .openapi({ description: 'Describes a file to be associated with an OTA update.', required: [] })
+  .openapi('OTAUpdateFile')
+
+const OTAUpdateFilesSchema = z.array(OTAUpdateFileSchema).min(1).openapi('OTAUpdateFiles')
+
+const OTAUpdateStatusSchema = z
+  .enum([
+    'CREATE_PENDING',
+    'CREATE_IN_PROGRESS',
+    'CREATE_COMPLETE',
+    'CREATE_FAILED',
+    'DELETE_IN_PROGRESS',
+    'DELETE_FAILED',
+  ])
+  .openapi('OTAUpdateStatus')
+
+const AwsIotJobIdSchema = z.string().openapi('AwsIotJobId')
+
+const AwsIotJobArnSchema = z.string().openapi('AwsIotJobArn')
+
+const CodeSchema = z.string().openapi('Code')
+
+const OTAUpdateErrorMessageSchema = z.string().openapi('OTAUpdateErrorMessage')
+
+const ErrorInfoSchema = z
+  .object({
+    code: CodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    message: OTAUpdateErrorMessageSchema.exactOptional().openapi({
+      description: 'The error message.',
+    }),
+  })
+  .openapi({ description: 'Error information.', required: [] })
+  .openapi('ErrorInfo')
+
+const AdditionalParameterMapSchema = z
+  .record(z.string(), ValueSchema)
+  .openapi('AdditionalParameterMap')
+
+const OTAUpdateInfoSchema = z
+  .object({
+    otaUpdateId: OTAUpdateIdSchema.exactOptional().openapi({ description: 'The OTA update ID.' }),
+    otaUpdateArn: OTAUpdateArnSchema.exactOptional().openapi({
+      description: 'The OTA update ARN.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the OTA update was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the OTA update was last updated.',
+    }),
+    description: OTAUpdateDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the OTA update.',
+    }),
+    targets: TargetsSchema.exactOptional().openapi({
+      description: 'The targets of the OTA update.',
+    }),
+    protocols: ProtocolsSchema.exactOptional().openapi({
+      description:
+        'The protocol used to transfer the OTA update image. Valid values are [HTTP], [MQTT], [HTTP, MQTT]. When both HTTP and MQTT are specified, the target device can choose the protocol.',
+    }),
+    awsJobExecutionsRolloutConfig: AwsJobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the rollout of OTA updates.',
+    }),
+    awsJobPresignedUrlConfig: AwsJobPresignedUrlConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration information for pre-signed URLs. Valid when <code>protocols</code> contains HTTP.',
+    }),
+    targetSelection: TargetSelectionSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the OTA update will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the OTA update (SNAPSHOT). If continuous, the OTA update may also be run on a thing when a change is detected in a target. For example, an OTA update will run on a thing when the thing is added to a target group, even after the OTA update was completed by all things originally in the group. ',
+    }),
+    otaUpdateFiles: OTAUpdateFilesSchema.exactOptional().openapi({
+      description: 'A list of files associated with the OTA update.',
+    }),
+    otaUpdateStatus: OTAUpdateStatusSchema.exactOptional().openapi({
+      description: 'The status of the OTA update.',
+    }),
+    awsIotJobId: AwsIotJobIdSchema.exactOptional().openapi({
+      description: 'The IoT job ID associated with the OTA update.',
+    }),
+    awsIotJobArn: AwsIotJobArnSchema.exactOptional().openapi({
+      description: 'The IoT job ARN associated with the OTA update.',
+    }),
+    errorInfo: ErrorInfoSchema.exactOptional().openapi({
+      description: 'Error information associated with the OTA update.',
+    }),
+    additionalParameters: AdditionalParameterMapSchema.exactOptional().openapi({
+      description: 'A collection of name/value pairs',
+    }),
+  })
+  .openapi({ description: 'Information about an OTA update.', required: [] })
+  .openapi('OTAUpdateInfo')
+
+type GetOTAUpdateResponseType = { otaUpdateInfo?: z.infer<typeof OTAUpdateInfoSchema> & unknown }
+
+const RuleArnSchema = z.string().openapi('RuleArn')
+
+const RuleNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_]+$/)
+  .min(1)
+  .max(128)
+  .openapi('RuleName')
+
+const SQLSchema = z.string().openapi('SQL')
+
+const DescriptionSchema = z.string().openapi('Description')
+
+const CreatedAtDateSchema = z.iso.datetime({ offset: true }).openapi('CreatedAtDate')
+
+const ActionListSchema: z.ZodType<ActionListType> = z
+  .array(ActionSchema)
+  .min(0)
+  .max(10)
+  .openapi('ActionList')
+
+const IsDisabledSchema = z.boolean().openapi('IsDisabled')
+
+const AwsIotSqlVersionSchema = z.string().openapi('AwsIotSqlVersion')
+
+type TopicRuleType = {
+  ruleName?: z.infer<typeof RuleNameSchema> & unknown
+  sql?: z.infer<typeof SQLSchema> & unknown
+  description?: z.infer<typeof DescriptionSchema> & unknown
+  createdAt?: z.infer<typeof CreatedAtDateSchema> & unknown
+  actions?: z.infer<typeof ActionListSchema> & unknown
+  ruleDisabled?: z.infer<typeof IsDisabledSchema> & unknown
+  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema> & unknown
+  errorAction?: z.infer<typeof ActionSchema> & unknown
 }
 
-const S3BucketSchema = z.string().min(1).openapi('S3Bucket')
-
-const PrefixSchema = z.string().openapi('Prefix')
-
-const S3DestinationSchema = z
+const TopicRuleSchema: z.ZodType<TopicRuleType> = z
   .object({
-    bucket: S3BucketSchema.and(
-      z.any().openapi({ description: 'The S3 bucket that contains the updated firmware.' }),
-    ).exactOptional(),
-    prefix: PrefixSchema.and(z.any().openapi({ description: 'The S3 prefix.' })).exactOptional(),
+    ruleName: RuleNameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
+    sql: SQLSchema.exactOptional().openapi({
+      description:
+        'The SQL statement used to query the topic. When using a SQL query with multiple lines, be sure to escape the newline characters.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the rule.',
+    }),
+    createdAt: CreatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time the rule was created.',
+    }),
+    actions: ActionListSchema.exactOptional().openapi({
+      description: 'The actions associated with the rule.',
+    }),
+    ruleDisabled: IsDisabledSchema.exactOptional().openapi({
+      description: 'Specifies whether the rule is disabled.',
+    }),
+    awsIotSqlVersion: AwsIotSqlVersionSchema.exactOptional().openapi({
+      description: 'The version of the SQL rules engine to use when evaluating the rule.',
+    }),
+    errorAction: ActionSchema.exactOptional().openapi({
+      description: 'The action to perform when an error occurs.',
+    }),
   })
-  .openapi({ description: 'Describes the location of updated firmware in S3.', required: [] })
-  .openapi('S3Destination')
+  .openapi({ description: 'Describes a rule.', required: [] })
+  .openapi('TopicRule')
 
-type DestinationType = {
-  s3Destination?: z.infer<typeof S3DestinationSchema> & { [key: string]: unknown }
+type GetTopicRuleResponseType = {
+  ruleArn?: z.infer<typeof RuleArnSchema> & unknown
+  rule?: z.infer<typeof TopicRuleSchema> & unknown
+}
+
+const MitigationActionsTaskIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('MitigationActionsTaskId')
+
+const DetectMitigationActionsTaskStatusSchema = z
+  .enum(['IN_PROGRESS', 'SUCCESSFUL', 'FAILED', 'CANCELED'])
+  .openapi('DetectMitigationActionsTaskStatus')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const ViolationIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9\-]+/)
+  .min(1)
+  .max(128)
+  .openapi('ViolationId')
+
+const TargetViolationIdsForDetectMitigationActionsSchema = z
+  .array(ViolationIdSchema)
+  .min(1)
+  .max(25)
+  .openapi('TargetViolationIdsForDetectMitigationActions')
+
+const SecurityProfileNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9:_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('SecurityProfileName')
+
+const BehaviorNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9:_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('BehaviorName')
+
+const DetectMitigationActionsTaskTargetSchema = z
+  .object({
+    violationIds: TargetViolationIdsForDetectMitigationActionsSchema.exactOptional().openapi({
+      description: ' The unique identifiers of the violations. ',
+    }),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: ' The name of the security profile. ',
+    }),
+    behaviorName: BehaviorNameSchema.exactOptional().openapi({
+      description: ' The name of the behavior. ',
+    }),
+  })
+  .openapi({ description: ' The target of a mitigation action task. ', required: [] })
+  .openapi('DetectMitigationActionsTaskTarget')
+
+const ViolationEventOccurrenceRangeSchema = z
+  .object({
+    startTime: TimestampSchema.openapi({
+      description: ' The start date and time of a time period in which violation events occurred. ',
+    }),
+    endTime: TimestampSchema.openapi({
+      description: ' The end date and time of a time period in which violation events occurred. ',
+    }),
+  })
+  .openapi({
+    required: ['startTime', 'endTime'],
+    description: ' Specifies the time period of which violation events occurred between. ',
+  })
+  .openapi('ViolationEventOccurrenceRange')
+
+const PrimitiveBooleanSchema = z.boolean().openapi('PrimitiveBoolean')
+
+const MitigationActionNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9_-]+/)
+  .max(128)
+  .openapi('MitigationActionName')
+
+const MitigationActionIdSchema = z.string().openapi('MitigationActionId')
+
+const RoleArnSchema = z.string().min(20).max(2048).openapi('RoleArn')
+
+const DeviceCertificateUpdateActionSchema = z
+  .literal('DEACTIVATE')
+  .openapi('DeviceCertificateUpdateAction')
+
+const UpdateDeviceCertificateParamsSchema = z
+  .object({
+    action: DeviceCertificateUpdateActionSchema.openapi({
+      description:
+        'The action that you want to apply to the device certificate. The only supported value is <code>DEACTIVATE</code>.',
+    }),
+  })
+  .openapi({
+    required: ['action'],
+    description:
+      'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
+  })
+  .openapi('UpdateDeviceCertificateParams')
+
+const CACertificateUpdateActionSchema = z.literal('DEACTIVATE').openapi('CACertificateUpdateAction')
+
+const UpdateCACertificateParamsSchema = z
+  .object({
+    action: CACertificateUpdateActionSchema.openapi({
+      description:
+        'The action that you want to apply to the CA certificate. The only supported value is <code>DEACTIVATE</code>.',
+    }),
+  })
+  .openapi({
+    required: ['action'],
+    description:
+      'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
+  })
+  .openapi('UpdateCACertificateParams')
+
+const ThingGroupNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9:_-]+/)
+  .min(1)
+  .max(128)
+  .openapi('ThingGroupName')
+
+const ThingGroupNamesSchema = z
+  .array(ThingGroupNameSchema)
+  .min(1)
+  .max(10)
+  .openapi('ThingGroupNames')
+
+const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
+
+const AddThingsToThingGroupParamsSchema = z
+  .object({
+    thingGroupNames: ThingGroupNamesSchema.openapi({
+      description:
+        "The list of groups to which you want to add the things that triggered the mitigation action. You can add a thing to a maximum of 10 groups, but you can't add a thing to more than one group in the same hierarchy.",
+    }),
+    overrideDynamicGroups: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'Specifies if this mitigation action can move the things that triggered the mitigation action even if they are part of one or more dynamic thing groups.',
+    }),
+  })
+  .openapi({
+    required: ['thingGroupNames'],
+    description:
+      'Parameters used when defining a mitigation action that move a set of things to a thing group.',
+  })
+  .openapi('AddThingsToThingGroupParams')
+
+const PolicyTemplateNameSchema = z.literal('BLANK_POLICY').openapi('PolicyTemplateName')
+
+const ReplaceDefaultPolicyVersionParamsSchema = z
+  .object({
+    templateName: PolicyTemplateNameSchema.openapi({
+      description:
+        'The name of the template to be applied. The only supported value is <code>BLANK_POLICY</code>.',
+    }),
+  })
+  .openapi({
+    required: ['templateName'],
+    description:
+      'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
+  })
+  .openapi('ReplaceDefaultPolicyVersionParams')
+
+const LogLevelSchema = z.enum(['DEBUG', 'INFO', 'ERROR', 'WARN', 'DISABLED']).openapi('LogLevel')
+
+const EnableIoTLoggingParamsSchema = z
+  .object({
+    roleArnForLogging: RoleArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the IAM role used for logging.',
+    }),
+    logLevel: LogLevelSchema.openapi({
+      description: 'Specifies the type of information to be logged.',
+    }),
+  })
+  .openapi({
+    required: ['roleArnForLogging', 'logLevel'],
+    description:
+      'Parameters used when defining a mitigation action that enable Amazon Web Services IoT Core logging.',
+  })
+  .openapi('EnableIoTLoggingParams')
+
+const SnsTopicArnSchema = z.string().max(350).openapi('SnsTopicArn')
+
+const PublishFindingToSnsParamsSchema = z
+  .object({
+    topicArn: SnsTopicArnSchema.openapi({
+      description: 'The ARN of the topic to which you want to publish the findings.',
+    }),
+  })
+  .openapi({
+    required: ['topicArn'],
+    description:
+      'Parameters to define a mitigation action that publishes findings to Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
+  })
+  .openapi('PublishFindingToSnsParams')
+
+const MitigationActionParamsSchema = z
+  .object({
+    updateDeviceCertificateParams: UpdateDeviceCertificateParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
+    }),
+    updateCACertificateParams: UpdateCACertificateParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
+    }),
+    addThingsToThingGroupParams: AddThingsToThingGroupParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
+    }),
+    replaceDefaultPolicyVersionParams:
+      ReplaceDefaultPolicyVersionParamsSchema.exactOptional().openapi({
+        description:
+          'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
+      }),
+    enableIoTLoggingParams: EnableIoTLoggingParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
+    }),
+    publishFindingToSnsParams: PublishFindingToSnsParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
+    }),
+  })
+  .openapi({
+    description:
+      'The set of parameters for this mitigation action. You can specify only one type of parameter (in other words, you can apply only one action for each defined mitigation action).',
+    required: [],
+  })
+  .openapi('MitigationActionParams')
+
+const MitigationActionSchema = z
+  .object({
+    name: MitigationActionNameSchema.exactOptional().openapi({
+      description: 'A user-friendly name for the mitigation action.',
+    }),
+    id: MitigationActionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the mitigation action.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The IAM role ARN used to apply this mitigation action.',
+    }),
+    actionParams: MitigationActionParamsSchema.exactOptional().openapi({
+      description:
+        'The set of parameters for this mitigation action. The parameters vary, depending on the kind of action you apply.',
+    }),
+  })
+  .openapi({
+    description: 'Describes which changes should be applied as part of a mitigation action.',
+    required: [],
+  })
+  .openapi('MitigationAction')
+
+const MitigationActionListSchema = z.array(MitigationActionSchema).openapi('MitigationActionList')
+
+const GenericLongValueSchema = z.int().openapi('GenericLongValue')
+
+const DetectMitigationActionsTaskStatisticsSchema = z
+  .object({
+    actionsExecuted: GenericLongValueSchema.exactOptional().openapi({
+      description: ' The actions that were performed. ',
+    }),
+    actionsSkipped: GenericLongValueSchema.exactOptional().openapi({
+      description: ' The actions that were skipped. ',
+    }),
+    actionsFailed: GenericLongValueSchema.exactOptional().openapi({
+      description: ' The actions that failed. ',
+    }),
+  })
+  .openapi({ description: ' The statistics of a mitigation action task. ', required: [] })
+  .openapi('DetectMitigationActionsTaskStatistics')
+
+const DetectMitigationActionsTaskSummarySchema = z
+  .object({
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description: ' The unique identifier of the task. ',
+    }),
+    taskStatus: DetectMitigationActionsTaskStatusSchema.exactOptional().openapi({
+      description: ' The status of the task. ',
+    }),
+    taskStartTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date the task started. ',
+    }),
+    taskEndTime: TimestampSchema.exactOptional().openapi({
+      description: ' The date the task ended. ',
+    }),
+    target: DetectMitigationActionsTaskTargetSchema.exactOptional().openapi({
+      description:
+        ' Specifies the ML Detect findings to which the mitigation actions are applied. ',
+    }),
+    violationEventOccurrenceRange: ViolationEventOccurrenceRangeSchema.exactOptional().openapi({
+      description: ' Specifies the time period of which violation events occurred between. ',
+    }),
+    onlyActiveViolationsIncluded: PrimitiveBooleanSchema.exactOptional().openapi({
+      description: ' Includes only active violations. ',
+    }),
+    suppressedAlertsIncluded: PrimitiveBooleanSchema.exactOptional().openapi({
+      description: ' Includes suppressed alerts. ',
+    }),
+    actionsDefinition: MitigationActionListSchema.exactOptional().openapi({
+      description: ' The definition of the actions. ',
+    }),
+    taskStatistics: DetectMitigationActionsTaskStatisticsSchema.exactOptional().openapi({
+      description: ' The statistics of a mitigation action task. ',
+    }),
+  })
+  .openapi({ description: ' The summary of the mitigation action tasks. ', required: [] })
+  .openapi('DetectMitigationActionsTaskSummary')
+
+const DetectMitigationActionsTaskSummaryListSchema = z
+  .array(DetectMitigationActionsTaskSummarySchema)
+  .openapi('DetectMitigationActionsTaskSummaryList')
+
+const NextTokenSchema = z.string().openapi('NextToken')
+
+type ListDetectMitigationActionsTasksResponseType = {
+  tasks?: z.infer<typeof DetectMitigationActionsTaskSummaryListSchema> & unknown
+  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+}
+
+type TopicRulePayloadType = {
+  sql: z.infer<typeof SQLSchema> & unknown
+  description?: z.infer<typeof DescriptionSchema> & unknown
+  actions: z.infer<typeof ActionListSchema> & unknown
+  ruleDisabled?: z.infer<typeof IsDisabledSchema> & unknown
+  awsIotSqlVersion?: z.infer<typeof AwsIotSqlVersionSchema> & unknown
+  errorAction?: z.infer<typeof ActionSchema> & unknown
+}
+
+const TopicRulePayloadSchema: z.ZodType<TopicRulePayloadType> = z
+  .object({
+    sql: SQLSchema.openapi({
+      description:
+        'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
+    }),
+    description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the rule.',
+    }),
+    actions: ActionListSchema.openapi({ description: 'The actions associated with the rule.' }),
+    ruleDisabled: IsDisabledSchema.exactOptional().openapi({
+      description: 'Specifies whether the rule is disabled.',
+    }),
+    awsIotSqlVersion: AwsIotSqlVersionSchema.exactOptional().openapi({
+      description: 'The version of the SQL rules engine to use when evaluating the rule.',
+    }),
+    errorAction: ActionSchema.exactOptional().openapi({
+      description: 'The action to take when an error occurs.',
+    }),
+  })
+  .openapi({ required: ['sql', 'actions'], description: 'Describes a rule.' })
+  .openapi('TopicRulePayload')
+
+type CreateTopicRuleRequestType = {
+  topicRulePayload: z.infer<typeof TopicRulePayloadSchema> & unknown
+}
+
+type ReplaceTopicRuleRequestType = {
+  topicRulePayload: z.infer<typeof TopicRulePayloadSchema> & unknown
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
@@ -1377,9 +1832,11 @@ const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableExc
 
 const InternalFailureExceptionSchema = z.any().openapi('InternalFailureException')
 
-const AddThingToBillingGroupResponseSchema = z.object({}).openapi('AddThingToBillingGroupResponse')
+const AddThingToBillingGroupResponseSchema = z
+  .looseObject({})
+  .openapi('AddThingToBillingGroupResponse')
 
-const AddThingToThingGroupResponseSchema = z.object({}).openapi('AddThingToThingGroupResponse')
+const AddThingToThingGroupResponseSchema = z.looseObject({}).openapi('AddThingToThingGroupResponse')
 
 const JobArnSchema = z.string().openapi('JobArn')
 
@@ -1398,19 +1855,13 @@ const JobDescriptionSchema = z
 
 const AssociateTargetsWithJobResponseSchema = z
   .object({
-    jobArn: JobArnSchema.and(
-      z.any().openapi({ description: 'An ARN identifying the job.' }),
-    ).exactOptional(),
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the job.' }),
-    ).exactOptional(),
+    jobArn: JobArnSchema.exactOptional().openapi({ description: 'An ARN identifying the job.' }),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateTargetsWithJobResponse')
@@ -1419,38 +1870,36 @@ const TargetArnSchema = z.string().max(2048).openapi('TargetArn')
 
 const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
-const AttachSecurityProfileResponseSchema = z.object({}).openapi('AttachSecurityProfileResponse')
+const AttachSecurityProfileResponseSchema = z
+  .looseObject({})
+  .openapi('AttachSecurityProfileResponse')
 
 const VersionConflictExceptionSchema = z.any().openapi('VersionConflictException')
 
 const AttachThingPrincipalResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output from the AttachThingPrincipal operation.' })
   .openapi('AttachThingPrincipalResponse')
 
 const CancelAuditMitigationActionsTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CancelAuditMitigationActionsTaskResponse')
 
-const CancelAuditTaskResponseSchema = z.object({}).openapi('CancelAuditTaskResponse')
+const CancelAuditTaskResponseSchema = z.looseObject({}).openapi('CancelAuditTaskResponse')
 
 const CancelDetectMitigationActionsTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('CancelDetectMitigationActionsTaskResponse')
 
 const CancelJobResponseSchema = z
   .object({
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The job ARN.' })).exactOptional(),
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the job.' }),
-    ).exactOptional(),
+    jobArn: JobArnSchema.exactOptional().openapi({ description: 'The job ARN.' }),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CancelJobResponse')
@@ -1463,10 +1912,12 @@ const DetailsValueSchema = z
 
 const InvalidStateTransitionExceptionSchema = z.any().openapi('InvalidStateTransitionException')
 
-const ClearDefaultAuthorizerResponseSchema = z.object({}).openapi('ClearDefaultAuthorizerResponse')
+const ClearDefaultAuthorizerResponseSchema = z
+  .looseObject({})
+  .openapi('ClearDefaultAuthorizerResponse')
 
 const ConfirmTopicRuleDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ConfirmTopicRuleDestinationResponse')
 
 const InternalExceptionSchema = z.any().openapi('InternalException')
@@ -1475,7 +1926,9 @@ const ConflictingResourceUpdateExceptionSchema = z
   .any()
   .openapi('ConflictingResourceUpdateException')
 
-const CreateAuditSuppressionResponseSchema = z.object({}).openapi('CreateAuditSuppressionResponse')
+const CreateAuditSuppressionResponseSchema = z
+  .looseObject({})
+  .openapi('CreateAuditSuppressionResponse')
 
 const CertificateIdSchema = z
   .string()
@@ -1501,16 +1954,12 @@ const PolicyVersionIdSchema = z
 
 const PolicyVersionIdentifierSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy.' }),
-    ).exactOptional(),
-    policyVersionId: PolicyVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the version of the policy associated with the resource.',
-        }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the policy.',
+    }),
+    policyVersionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The ID of the version of the policy associated with the resource.',
+    }),
   })
   .openapi({
     description: 'Information about the version of the policy associated with the resource.',
@@ -1523,8 +1972,6 @@ const AwsAccountIdSchema = z
   .regex(/[0-9]+/)
   .length(12)
   .openapi('AwsAccountId')
-
-const RoleArnSchema = z.string().min(20).max(2048).openapi('RoleArn')
 
 const RoleAliasArnSchema = z.string().min(1).max(2048).openapi('RoleAliasArn')
 
@@ -1548,15 +1995,13 @@ const IssuerCertificateSerialNumberSchema = z
 
 const IssuerCertificateIdentifierSchema = z
   .object({
-    issuerCertificateSubject: IssuerCertificateSubjectSchema.and(
-      z.any().openapi({ description: 'The subject of the issuer certificate.' }),
-    ).exactOptional(),
-    issuerId: IssuerIdSchema.and(
-      z.any().openapi({ description: 'The issuer ID.' }),
-    ).exactOptional(),
-    issuerCertificateSerialNumber: IssuerCertificateSerialNumberSchema.and(
-      z.any().openapi({ description: 'The issuer certificate serial number.' }),
-    ).exactOptional(),
+    issuerCertificateSubject: IssuerCertificateSubjectSchema.exactOptional().openapi({
+      description: 'The subject of the issuer certificate.',
+    }),
+    issuerId: IssuerIdSchema.exactOptional().openapi({ description: 'The issuer ID.' }),
+    issuerCertificateSerialNumber: IssuerCertificateSerialNumberSchema.exactOptional().openapi({
+      description: 'The issuer certificate serial number.',
+    }),
   })
   .openapi({ description: 'The certificate issuer indentifier.', required: [] })
   .openapi('IssuerCertificateIdentifier')
@@ -1574,12 +2019,12 @@ const AuthorizerArnSchema = z.string().max(2048).openapi('AuthorizerArn')
 
 const CreateAuthorizerResponseSchema = z
   .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: "The authorizer's name." }),
-    ).exactOptional(),
-    authorizerArn: AuthorizerArnSchema.and(
-      z.any().openapi({ description: 'The authorizer ARN.' }),
-    ).exactOptional(),
+    authorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: "The authorizer's name.",
+    }),
+    authorizerArn: AuthorizerArnSchema.exactOptional().openapi({
+      description: 'The authorizer ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAuthorizerResponse')
@@ -1601,8 +2046,8 @@ const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: "The tag's key." })),
-    Value: TagValueSchema.and(z.any().openapi({ description: "The tag's value." })).exactOptional(),
+    Key: TagKeySchema.openapi({ description: "The tag's key." }),
+    Value: TagValueSchema.exactOptional().openapi({ description: "The tag's value." }),
   })
   .openapi({
     required: ['Key'],
@@ -1628,15 +2073,15 @@ const BillingGroupIdSchema = z
 
 const CreateBillingGroupResponseSchema = z
   .object({
-    billingGroupName: BillingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name you gave to the billing group.' }),
-    ).exactOptional(),
-    billingGroupArn: BillingGroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the billing group.' }),
-    ).exactOptional(),
-    billingGroupId: BillingGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the billing group.' }),
-    ).exactOptional(),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description: 'The name you gave to the billing group.',
+    }),
+    billingGroupArn: BillingGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the billing group.',
+    }),
+    billingGroupId: BillingGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the billing group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateBillingGroupResponse')
@@ -1657,25 +2102,17 @@ const CertificatePemSchema = z
 
 const CreateCertificateFromCsrResponseSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the certificate. You can use the ARN as a principal for policy operations.',
-        }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the certificate. Certificate management operations only take a certificateId.',
-        }),
-    ).exactOptional(),
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the certificate. You can use the ARN as a principal for policy operations.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the certificate. Certificate management operations only take a certificateId.',
+    }),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
   })
   .openapi({ description: 'The output from the CreateCertificateFromCsr operation.', required: [] })
   .openapi('CreateCertificateFromCsrResponse')
@@ -1691,21 +2128,13 @@ const CustomMetricArnSchema = z.string().openapi('CustomMetricArn')
 
 const CreateCustomMetricResponseSchema = z
   .object({
-    metricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The name of the custom metric to be used in the metric report. ',
-        }),
-    ).exactOptional(),
-    metricArn: CustomMetricArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The Amazon Resource Number (ARN) of the custom metric. For example, <code>arn:<i>aws-partition</i>:iot:<i>region</i>:<i>accountId</i>:custommetric/<i>metricName</i> </code> ',
-        }),
-    ).exactOptional(),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: ' The name of the custom metric to be used in the metric report. ',
+    }),
+    metricArn: CustomMetricArnSchema.exactOptional().openapi({
+      description:
+        ' The Amazon Resource Number (ARN) of the custom metric. For example, <code>arn:<i>aws-partition</i>:iot:<i>region</i>:<i>accountId</i>:custommetric/<i>metricName</i> </code> ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCustomMetricResponse')
@@ -1721,12 +2150,12 @@ const DimensionArnSchema = z.string().openapi('DimensionArn')
 
 const CreateDimensionResponseSchema = z
   .object({
-    name: DimensionNameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the dimension.' }),
-    ).exactOptional(),
-    arn: DimensionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the created dimension.' }),
-    ).exactOptional(),
+    name: DimensionNameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the dimension.',
+    }),
+    arn: DimensionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the created dimension.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDimensionResponse')
@@ -1744,12 +2173,12 @@ const DomainConfigurationArnSchema = z.string().openapi('DomainConfigurationArn'
 
 const CreateDomainConfigurationResponseSchema = z
   .object({
-    domainConfigurationName: DomainConfigurationNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain configuration.' }),
-    ).exactOptional(),
-    domainConfigurationArn: DomainConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the domain configuration.' }),
-    ).exactOptional(),
+    domainConfigurationName: DomainConfigurationNameSchema.exactOptional().openapi({
+      description: 'The name of the domain configuration.',
+    }),
+    domainConfigurationArn: DomainConfigurationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the domain configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDomainConfigurationResponse')
@@ -1766,13 +2195,6 @@ const AcmCertificateArnSchema = z
 const AllowAuthorizerOverrideSchema = z.boolean().openapi('AllowAuthorizerOverride')
 
 const CertificateValidationExceptionSchema = z.any().openapi('CertificateValidationException')
-
-const ThingGroupNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9:_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('ThingGroupName')
 
 const ThingGroupArnSchema = z.string().openapi('ThingGroupArn')
 
@@ -1796,24 +2218,24 @@ const QueryVersionSchema = z.string().openapi('QueryVersion')
 
 const CreateDynamicThingGroupResponseSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group name.' }),
-    ).exactOptional(),
-    thingGroupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group ARN.' }),
-    ).exactOptional(),
-    thingGroupId: ThingGroupIdSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group ID.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group index name.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group search query string.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group query version.' }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The dynamic thing group name.',
+    }),
+    thingGroupArn: ThingGroupArnSchema.exactOptional().openapi({
+      description: 'The dynamic thing group ARN.',
+    }),
+    thingGroupId: ThingGroupIdSchema.exactOptional().openapi({
+      description: 'The dynamic thing group ID.',
+    }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The dynamic thing group index name.',
+    }),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The dynamic thing group search query string.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description: 'The dynamic thing group query version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateDynamicThingGroupResponse')
@@ -1836,22 +2258,14 @@ const FlagSchema = z.boolean().openapi('Flag')
 
 const AttributePayloadSchema = z
   .object({
-    attributes: AttributesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
-        }),
-    ).exactOptional(),
-    merge: FlagSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
-        }),
-    ).exactOptional(),
+    attributes: AttributesSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
+    }),
+    merge: FlagSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
+    }),
   })
   .openapi({ description: 'The attribute payload.', required: [] })
   .openapi('AttributePayload')
@@ -1869,12 +2283,12 @@ const FleetMetricArnSchema = z.string().openapi('FleetMetricArn')
 
 const CreateFleetMetricResponseSchema = z
   .object({
-    metricName: FleetMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet metric to create.' }),
-    ).exactOptional(),
-    metricArn: FleetMetricArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the new fleet metric.' }),
-    ).exactOptional(),
+    metricName: FleetMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the fleet metric to create.',
+    }),
+    metricArn: FleetMetricArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the new fleet metric.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateFleetMetricResponse')
@@ -1900,13 +2314,13 @@ const IndexNotReadyExceptionSchema = z.any().openapi('IndexNotReadyException')
 
 const CreateJobResponseSchema = z
   .object({
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The job ARN.' })).exactOptional(),
-    jobId: JobIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier you assigned to this job.' }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'The job description.' }),
-    ).exactOptional(),
+    jobArn: JobArnSchema.exactOptional().openapi({ description: 'The job ARN.' }),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'The job description.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateJobResponse')
@@ -1923,22 +2337,14 @@ const NumberOfThingsSchema = z.int().min(1).openapi('NumberOfThings')
 
 const RateIncreaseCriteriaSchema = z
   .object({
-    numberOfNotifiedThings: NumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The threshold for number of notified things that will initiate the increase in rate of rollout.',
-        }),
-    ).exactOptional(),
-    numberOfSucceededThings: NumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The threshold for number of succeeded things that will initiate the increase in rate of rollout.',
-        }),
-    ).exactOptional(),
+    numberOfNotifiedThings: NumberOfThingsSchema.exactOptional().openapi({
+      description:
+        'The threshold for number of notified things that will initiate the increase in rate of rollout.',
+    }),
+    numberOfSucceededThings: NumberOfThingsSchema.exactOptional().openapi({
+      description:
+        'The threshold for number of succeeded things that will initiate the increase in rate of rollout.',
+    }),
   })
   .openapi({
     description:
@@ -1949,29 +2355,17 @@ const RateIncreaseCriteriaSchema = z
 
 const ExponentialRolloutRateSchema = z
   .object({
-    baseRatePerMinute: RolloutRatePerMinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of things that will be notified of a pending job, per minute at the start of job rollout. This parameter allows you to define the initial rate of rollout.',
-        }),
-    ),
-    incrementFactor: IncrementFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The exponential factor to increase the rate of rollout for a job.</p> <p>Amazon Web Services IoT Core supports up to one digit after the decimal (for example, 1.5, but not 1.55).</p>',
-        }),
-    ),
-    rateIncreaseCriteria: RateIncreaseCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The criteria to initiate the increase in rate of rollout for a job.',
-        }),
-    ),
+    baseRatePerMinute: RolloutRatePerMinuteSchema.openapi({
+      description:
+        'The minimum number of things that will be notified of a pending job, per minute at the start of job rollout. This parameter allows you to define the initial rate of rollout.',
+    }),
+    incrementFactor: IncrementFactorSchema.openapi({
+      description:
+        '<p>The exponential factor to increase the rate of rollout for a job.</p> <p>Amazon Web Services IoT Core supports up to one digit after the decimal (for example, 1.5, but not 1.55).</p>',
+    }),
+    rateIncreaseCriteria: RateIncreaseCriteriaSchema.openapi({
+      description: 'The criteria to initiate the increase in rate of rollout for a job.',
+    }),
   })
   .openapi({
     required: ['baseRatePerMinute', 'incrementFactor', 'rateIncreaseCriteria'],
@@ -1991,32 +2385,20 @@ const MinimumNumberOfExecutedThingsSchema = z.int().min(1).openapi('MinimumNumbe
 
 const AbortCriteriaSchema = z
   .object({
-    failureType: JobExecutionFailureTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of job execution failures that can initiate a job abort.',
-        }),
-    ),
-    action: AbortActionSchema.and(
-      z.any().openapi({ description: 'The type of job action to take to initiate the job abort.' }),
-    ),
-    thresholdPercentage: AbortThresholdPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum percentage of job execution failures that must occur to initiate the job abort.</p> <p>Amazon Web Services IoT Core supports up to two digits after the decimal (for example, 10.9 and 10.99, but not 10.999).</p>',
-        }),
-    ),
-    minNumberOfExecutedThings: MinimumNumberOfExecutedThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of things which must receive job execution notifications before the job can be aborted.',
-        }),
-    ),
+    failureType: JobExecutionFailureTypeSchema.openapi({
+      description: 'The type of job execution failures that can initiate a job abort.',
+    }),
+    action: AbortActionSchema.openapi({
+      description: 'The type of job action to take to initiate the job abort.',
+    }),
+    thresholdPercentage: AbortThresholdPercentageSchema.openapi({
+      description:
+        '<p>The minimum percentage of job execution failures that must occur to initiate the job abort.</p> <p>Amazon Web Services IoT Core supports up to two digits after the decimal (for example, 10.9 and 10.99, but not 10.999).</p>',
+    }),
+    minNumberOfExecutedThings: MinimumNumberOfExecutedThingsSchema.openapi({
+      description:
+        'The minimum number of things which must receive job execution notifications before the job can be aborted.',
+    }),
   })
   .openapi({
     required: ['failureType', 'action', 'thresholdPercentage', 'minNumberOfExecutedThings'],
@@ -2036,18 +2418,12 @@ const NumberOfRetriesSchema = z.int().min(0).max(10).openapi('NumberOfRetries')
 
 const RetryCriteriaSchema = z
   .object({
-    failureType: RetryableFailureTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of job execution failures that can initiate a job retry.',
-        }),
-    ),
-    numberOfRetries: NumberOfRetriesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of retries allowed for a failure type for the job.' }),
-    ),
+    failureType: RetryableFailureTypeSchema.openapi({
+      description: 'The type of job execution failures that can initiate a job retry.',
+    }),
+    numberOfRetries: NumberOfRetriesSchema.openapi({
+      description: 'The number of retries allowed for a failure type for the job.',
+    }),
   })
   .openapi({
     required: ['failureType', 'numberOfRetries'],
@@ -2081,12 +2457,12 @@ const DurationInMinutesSchema = z.int().min(30).max(1430).openapi('DurationInMin
 
 const MaintenanceWindowSchema = z
   .object({
-    startTime: CronExpressionSchema.and(
-      z.any().openapi({ description: 'Displays the start time of the next maintenance window.' }),
-    ),
-    durationInMinutes: DurationInMinutesSchema.and(
-      z.any().openapi({ description: 'Displays the duration of the next maintenance window.' }),
-    ),
+    startTime: CronExpressionSchema.openapi({
+      description: 'Displays the start time of the next maintenance window.',
+    }),
+    durationInMinutes: DurationInMinutesSchema.openapi({
+      description: 'Displays the duration of the next maintenance window.',
+    }),
   })
   .openapi({
     required: ['startTime', 'durationInMinutes'],
@@ -2113,12 +2489,12 @@ const JobTemplateIdSchema = z
 
 const CreateJobTemplateResponseSchema = z
   .object({
-    jobTemplateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template.' }),
-    ).exactOptional(),
-    jobTemplateId: JobTemplateIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job template.' }),
-    ).exactOptional(),
+    jobTemplateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template.',
+    }),
+    jobTemplateId: JobTemplateIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the job template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateJobTemplateResponse')
@@ -2131,316 +2507,61 @@ const PrivateKeySchema = z.string().min(1).openapi('PrivateKey')
 
 const KeyPairSchema = z
   .object({
-    PublicKey: PublicKeySchema.and(
-      z.any().openapi({ description: 'The public key.' }),
-    ).exactOptional(),
-    PrivateKey: PrivateKeySchema.and(
-      z.any().openapi({ description: 'The private key.' }),
-    ).exactOptional(),
+    PublicKey: PublicKeySchema.exactOptional().openapi({ description: 'The public key.' }),
+    PrivateKey: PrivateKeySchema.exactOptional().openapi({ description: 'The private key.' }),
   })
   .openapi({ description: 'Describes a key pair.', required: [] })
   .openapi('KeyPair')
 
 const CreateKeysAndCertificateResponseSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the certificate. IoT issues a default subject name for the certificate (for example, IoT Certificate).',
-        }),
-    ).exactOptional(),
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ).exactOptional(),
-    keyPair: KeyPairSchema.and(
-      z.any().openapi({ description: 'The generated key pair.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the certificate. IoT issues a default subject name for the certificate (for example, IoT Certificate).',
+    }),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
+    keyPair: KeyPairSchema.exactOptional().openapi({ description: 'The generated key pair.' }),
   })
   .openapi({ description: 'The output of the CreateKeysAndCertificate operation.', required: [] })
   .openapi('CreateKeysAndCertificateResponse')
 
 const MitigationActionArnSchema = z.string().openapi('MitigationActionArn')
 
-const MitigationActionIdSchema = z.string().openapi('MitigationActionId')
-
 const CreateMitigationActionResponseSchema = z
   .object({
-    actionArn: MitigationActionArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the new mitigation action.' }),
-    ).exactOptional(),
-    actionId: MitigationActionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the new mitigation action.' }),
-    ).exactOptional(),
+    actionArn: MitigationActionArnSchema.exactOptional().openapi({
+      description: 'The ARN for the new mitigation action.',
+    }),
+    actionId: MitigationActionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the new mitigation action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMitigationActionResponse')
 
-const DeviceCertificateUpdateActionSchema = z
-  .literal('DEACTIVATE')
-  .openapi('DeviceCertificateUpdateAction')
-
-const UpdateDeviceCertificateParamsSchema = z
-  .object({
-    action: DeviceCertificateUpdateActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that you want to apply to the device certificate. The only supported value is <code>DEACTIVATE</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['action'],
-    description:
-      'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
-  })
-  .openapi('UpdateDeviceCertificateParams')
-
-const CACertificateUpdateActionSchema = z.literal('DEACTIVATE').openapi('CACertificateUpdateAction')
-
-const UpdateCACertificateParamsSchema = z
-  .object({
-    action: CACertificateUpdateActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action that you want to apply to the CA certificate. The only supported value is <code>DEACTIVATE</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['action'],
-    description:
-      'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
-  })
-  .openapi('UpdateCACertificateParams')
-
-const ThingGroupNamesSchema = z
-  .array(ThingGroupNameSchema)
-  .min(1)
-  .max(10)
-  .openapi('ThingGroupNames')
-
-const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
-
-const AddThingsToThingGroupParamsSchema = z
-  .object({
-    thingGroupNames: ThingGroupNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of groups to which you want to add the things that triggered the mitigation action. You can add a thing to a maximum of 10 groups, but you can't add a thing to more than one group in the same hierarchy.",
-        }),
-    ),
-    overrideDynamicGroups: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies if this mitigation action can move the things that triggered the mitigation action even if they are part of one or more dynamic thing groups.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['thingGroupNames'],
-    description:
-      'Parameters used when defining a mitigation action that move a set of things to a thing group.',
-  })
-  .openapi('AddThingsToThingGroupParams')
-
-const PolicyTemplateNameSchema = z.literal('BLANK_POLICY').openapi('PolicyTemplateName')
-
-const ReplaceDefaultPolicyVersionParamsSchema = z
-  .object({
-    templateName: PolicyTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the template to be applied. The only supported value is <code>BLANK_POLICY</code>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['templateName'],
-    description:
-      'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
-  })
-  .openapi('ReplaceDefaultPolicyVersionParams')
-
-const LogLevelSchema = z.enum(['DEBUG', 'INFO', 'ERROR', 'WARN', 'DISABLED']).openapi('LogLevel')
-
-const EnableIoTLoggingParamsSchema = z
-  .object({
-    roleArnForLogging: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the IAM role used for logging.',
-        }),
-    ),
-    logLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'Specifies the type of information to be logged.' }),
-    ),
-  })
-  .openapi({
-    required: ['roleArnForLogging', 'logLevel'],
-    description:
-      'Parameters used when defining a mitigation action that enable Amazon Web Services IoT Core logging.',
-  })
-  .openapi('EnableIoTLoggingParams')
-
-const SnsTopicArnSchema = z.string().max(350).openapi('SnsTopicArn')
-
-const PublishFindingToSnsParamsSchema = z
-  .object({
-    topicArn: SnsTopicArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the topic to which you want to publish the findings.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['topicArn'],
-    description:
-      'Parameters to define a mitigation action that publishes findings to Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
-  })
-  .openapi('PublishFindingToSnsParams')
-
-const OTAUpdateIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('OTAUpdateId')
-
-const AwsIotJobIdSchema = z.string().openapi('AwsIotJobId')
-
-const OTAUpdateArnSchema = z.string().openapi('OTAUpdateArn')
-
-const AwsIotJobArnSchema = z.string().openapi('AwsIotJobArn')
-
-const OTAUpdateStatusSchema = z
-  .enum([
-    'CREATE_PENDING',
-    'CREATE_IN_PROGRESS',
-    'CREATE_COMPLETE',
-    'CREATE_FAILED',
-    'DELETE_IN_PROGRESS',
-    'DELETE_FAILED',
-  ])
-  .openapi('OTAUpdateStatus')
-
 const CreateOTAUpdateResponseSchema = z
   .object({
-    otaUpdateId: OTAUpdateIdSchema.and(
-      z.any().openapi({ description: 'The OTA update ID.' }),
-    ).exactOptional(),
-    awsIotJobId: AwsIotJobIdSchema.and(
-      z.any().openapi({ description: 'The IoT job ID associated with the OTA update.' }),
-    ).exactOptional(),
-    otaUpdateArn: OTAUpdateArnSchema.and(
-      z.any().openapi({ description: 'The OTA update ARN.' }),
-    ).exactOptional(),
-    awsIotJobArn: AwsIotJobArnSchema.and(
-      z.any().openapi({ description: 'The IoT job ARN associated with the OTA update.' }),
-    ).exactOptional(),
-    otaUpdateStatus: OTAUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The OTA update status.' }),
-    ).exactOptional(),
+    otaUpdateId: OTAUpdateIdSchema.exactOptional().openapi({ description: 'The OTA update ID.' }),
+    awsIotJobId: AwsIotJobIdSchema.exactOptional().openapi({
+      description: 'The IoT job ID associated with the OTA update.',
+    }),
+    otaUpdateArn: OTAUpdateArnSchema.exactOptional().openapi({
+      description: 'The OTA update ARN.',
+    }),
+    awsIotJobArn: AwsIotJobArnSchema.exactOptional().openapi({
+      description: 'The IoT job ARN associated with the OTA update.',
+    }),
+    otaUpdateStatus: OTAUpdateStatusSchema.exactOptional().openapi({
+      description: 'The OTA update status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateOTAUpdateResponse')
-
-const TargetSchema = z.string().openapi('Target')
-
-const ProtocolSchema = z.enum(['MQTT', 'HTTP']).openapi('Protocol')
-
-const MaximumPerMinuteSchema = z.int().min(1).max(1000).openapi('MaximumPerMinute')
-
-const AwsJobRolloutRatePerMinuteSchema = z
-  .int()
-  .min(1)
-  .max(1000)
-  .openapi('AwsJobRolloutRatePerMinute')
-
-const AwsJobRolloutIncrementFactorSchema = z.float64().openapi('AwsJobRolloutIncrementFactor')
-
-const AwsJobRateIncreaseCriteriaNumberOfThingsSchema = z
-  .int()
-  .min(1)
-  .openapi('AwsJobRateIncreaseCriteriaNumberOfThings')
-
-const AwsJobRateIncreaseCriteriaSchema = z
-  .object({
-    numberOfNotifiedThings: AwsJobRateIncreaseCriteriaNumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When this number of things have been notified, it will initiate an increase in the rollout rate.',
-        }),
-    ).exactOptional(),
-    numberOfSucceededThings: AwsJobRateIncreaseCriteriaNumberOfThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When this number of things have succeeded in their job execution, it will initiate an increase in the rollout rate.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The criteria to initiate the increase in rate of rollout for a job.',
-    required: [],
-  })
-  .openapi('AwsJobRateIncreaseCriteria')
-
-const AwsJobExponentialRolloutRateSchema = z
-  .object({
-    baseRatePerMinute: AwsJobRolloutRatePerMinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of things that will be notified of a pending job, per minute, at the start of the job rollout. This is the initial rate of the rollout.',
-        }),
-    ),
-    incrementFactor: AwsJobRolloutIncrementFactorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate of increase for a job rollout. The number of things notified is multiplied by this factor.',
-        }),
-    ),
-    rateIncreaseCriteria: AwsJobRateIncreaseCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The criteria to initiate the increase in rate of rollout for a job.</p> <p>Amazon Web Services IoT Core supports up to one digit after the decimal (for example, 1.5, but not 1.55).</p>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['baseRatePerMinute', 'incrementFactor', 'rateIncreaseCriteria'],
-    description:
-      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
-  })
-  .openapi('AwsJobExponentialRolloutRate')
-
-const ExpiresInSecondsSchema = z.int().openapi('ExpiresInSeconds')
 
 const AwsJobAbortCriteriaFailureTypeSchema = z
   .enum(['FAILED', 'REJECTED', 'TIMED_OUT', 'ALL'])
@@ -2462,32 +2583,20 @@ const AwsJobAbortCriteriaMinimumNumberOfExecutedThingsSchema = z
 
 const AwsJobAbortCriteriaSchema = z
   .object({
-    failureType: AwsJobAbortCriteriaFailureTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of job execution failures that can initiate a job abort.',
-        }),
-    ),
-    action: AwsJobAbortCriteriaAbortActionSchema.and(
-      z.any().openapi({ description: 'The type of job action to take to initiate the job abort.' }),
-    ),
-    thresholdPercentage: AwsJobAbortCriteriaAbortThresholdPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The minimum percentage of job execution failures that must occur to initiate the job abort.</p> <p>Amazon Web Services IoT Core supports up to two digits after the decimal (for example, 10.9 and 10.99, but not 10.999).</p>',
-        }),
-    ),
-    minNumberOfExecutedThings: AwsJobAbortCriteriaMinimumNumberOfExecutedThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The minimum number of things which must receive job execution notifications before the job can be aborted.',
-        }),
-    ),
+    failureType: AwsJobAbortCriteriaFailureTypeSchema.openapi({
+      description: 'The type of job execution failures that can initiate a job abort.',
+    }),
+    action: AwsJobAbortCriteriaAbortActionSchema.openapi({
+      description: 'The type of job action to take to initiate the job abort.',
+    }),
+    thresholdPercentage: AwsJobAbortCriteriaAbortThresholdPercentageSchema.openapi({
+      description:
+        '<p>The minimum percentage of job execution failures that must occur to initiate the job abort.</p> <p>Amazon Web Services IoT Core supports up to two digits after the decimal (for example, 10.9 and 10.99, but not 10.999).</p>',
+    }),
+    minNumberOfExecutedThings: AwsJobAbortCriteriaMinimumNumberOfExecutedThingsSchema.openapi({
+      description:
+        'The minimum number of things which must receive job execution notifications before the job can be aborted.',
+    }),
   })
   .openapi({
     required: ['failureType', 'action', 'thresholdPercentage', 'minNumberOfExecutedThings'],
@@ -2504,124 +2613,6 @@ const AwsJobTimeoutInProgressTimeoutInMinutesSchema = z
   .int()
   .openapi('AwsJobTimeoutInProgressTimeoutInMinutes')
 
-const FileNameSchema = z.string().openapi('FileName')
-
-const FileTypeSchema = z.int().min(0).max(255).openapi('FileType')
-
-const OTAUpdateFileVersionSchema = z.string().openapi('OTAUpdateFileVersion')
-
-const StreamIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('StreamId')
-
-const FileIdSchema = z.int().min(0).max(255).openapi('FileId')
-
-const StreamSchema = z
-  .object({
-    streamId: StreamIdSchema.and(
-      z.any().openapi({ description: 'The stream ID.' }),
-    ).exactOptional(),
-    fileId: FileIdSchema.and(
-      z.any().openapi({ description: 'The ID of a file associated with a stream.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a group of files that can be streamed.', required: [] })
-  .openapi('Stream')
-
-const S3KeySchema = z.string().min(1).openapi('S3Key')
-
-const S3VersionSchema = z.string().openapi('S3Version')
-
-const S3LocationSchema = z
-  .object({
-    bucket: S3BucketSchema.and(z.any().openapi({ description: 'The S3 bucket.' })).exactOptional(),
-    key: S3KeySchema.and(z.any().openapi({ description: 'The S3 key.' })).exactOptional(),
-    version: S3VersionSchema.and(
-      z.any().openapi({ description: 'The S3 bucket version.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The S3 location.', required: [] })
-  .openapi('S3Location')
-
-const FileLocationSchema = z
-  .object({
-    stream: StreamSchema.and(
-      z.any().openapi({ description: 'The stream that contains the OTA update.' }),
-    ).exactOptional(),
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location of the updated firmware in S3.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'The location of the OTA update.', required: [] })
-  .openapi('FileLocation')
-
-const CodeSigningSchema: z.ZodType<CodeSigningType> = z
-  .lazy(() =>
-    z
-      .object({
-        awsSignerJobId: SigningJobIdSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The ID of the <code>AWSSignerJob</code> which was created to sign the file.',
-            }),
-        ).exactOptional(),
-        startSigningJobParameter: StartSigningJobParameterSchema.and(
-          z.any().openapi({ description: 'Describes the code-signing job.' }),
-        ).exactOptional(),
-        customCodeSigning: CustomCodeSigningSchema.and(
-          z.any().openapi({ description: 'A custom method for code signing a file.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Describes the method to use when code signing a file.',
-        required: [],
-      }),
-  )
-  .openapi('CodeSigning')
-
-const ValueSchema = z
-  .string()
-  .regex(/[\s\S]*/)
-  .min(0)
-  .max(4096)
-  .openapi('Value')
-
-const AttributesMapSchema = z.record(z.string(), ValueSchema).openapi('AttributesMap')
-
-const OTAUpdateFileSchema = z
-  .object({
-    fileName: FileNameSchema.and(
-      z.any().openapi({ description: 'The name of the file.' }),
-    ).exactOptional(),
-    fileType: FileTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An integer value you can include in the job document to allow your devices to identify the type of file received from the cloud.',
-        }),
-    ).exactOptional(),
-    fileVersion: OTAUpdateFileVersionSchema.and(
-      z.any().openapi({ description: 'The file version.' }),
-    ).exactOptional(),
-    fileLocation: FileLocationSchema.and(
-      z.any().openapi({ description: 'The location of the updated firmware.' }),
-    ).exactOptional(),
-    codeSigning: CodeSigningSchema.and(
-      z.any().openapi({ description: 'The code signing method of the file.' }),
-    ).exactOptional(),
-    attributes: AttributesMapSchema.and(
-      z.any().openapi({ description: 'A list of name/attribute pairs.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a file to be associated with an OTA update.', required: [] })
-  .openapi('OTAUpdateFile')
-
 const PolicyArnSchema = z.string().openapi('PolicyArn')
 
 const PolicyDocumentSchema = z
@@ -2633,18 +2624,14 @@ const PolicyDocumentSchema = z
 
 const CreatePolicyResponseSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The policy name.' }),
-    ).exactOptional(),
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON document that describes the policy.' }),
-    ).exactOptional(),
-    policyVersionId: PolicyVersionIdSchema.and(
-      z.any().openapi({ description: 'The policy version ID.' }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({ description: 'The policy name.' }),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The JSON document that describes the policy.',
+    }),
+    policyVersionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The policy version ID.',
+    }),
   })
   .openapi({ description: 'The output from the CreatePolicy operation.', required: [] })
   .openapi('CreatePolicyResponse')
@@ -2655,40 +2642,36 @@ const IsDefaultVersionSchema = z.boolean().openapi('IsDefaultVersion')
 
 const CreatePolicyVersionResponseSchema = z
   .object({
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON document that describes the policy.' }),
-    ).exactOptional(),
-    policyVersionId: PolicyVersionIdSchema.and(
-      z.any().openapi({ description: 'The policy version ID.' }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z.any().openapi({ description: 'Specifies whether the policy version is the default.' }),
-    ).exactOptional(),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The JSON document that describes the policy.',
+    }),
+    policyVersionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The policy version ID.',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description: 'Specifies whether the policy version is the default.',
+    }),
   })
   .openapi({ description: 'The output of the CreatePolicyVersion operation.', required: [] })
   .openapi('CreatePolicyVersionResponse')
 
 const VersionsLimitExceededExceptionSchema = z.any().openapi('VersionsLimitExceededException')
 
-const DateTypeSchema = z.iso.datetime({ offset: true }).openapi('DateType')
-
 const CreateProvisioningClaimResponseSchema = z
   .object({
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the certificate.' }),
-    ).exactOptional(),
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The provisioning claim certificate.' }),
-    ).exactOptional(),
-    keyPair: KeyPairSchema.and(
-      z.any().openapi({ description: 'The provisioning claim key pair.' }),
-    ).exactOptional(),
-    expiration: DateTypeSchema.and(
-      z.any().openapi({ description: 'The provisioning claim expiration time.' }),
-    ).exactOptional(),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the certificate.',
+    }),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The provisioning claim certificate.',
+    }),
+    keyPair: KeyPairSchema.exactOptional().openapi({
+      description: 'The provisioning claim key pair.',
+    }),
+    expiration: DateTypeSchema.exactOptional().openapi({
+      description: 'The provisioning claim expiration time.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProvisioningClaimResponse')
@@ -2706,15 +2689,15 @@ const TemplateVersionIdSchema = z.int().openapi('TemplateVersionId')
 
 const CreateProvisioningTemplateResponseSchema = z
   .object({
-    templateArn: TemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN that identifies the provisioning template.' }),
-    ).exactOptional(),
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ).exactOptional(),
-    defaultVersionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The default version of the provisioning template.' }),
-    ).exactOptional(),
+    templateArn: TemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN that identifies the provisioning template.',
+    }),
+    templateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning template.',
+    }),
+    defaultVersionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The default version of the provisioning template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProvisioningTemplateResponse')
@@ -2728,23 +2711,19 @@ const PayloadVersionSchema = z
 
 const CreateProvisioningTemplateVersionResponseSchema = z
   .object({
-    templateArn: TemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN that identifies the provisioning template.' }),
-    ).exactOptional(),
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ).exactOptional(),
-    versionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The version of the provisioning template.' }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the provisioning template version is the default version, otherwise false.',
-        }),
-    ).exactOptional(),
+    templateArn: TemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN that identifies the provisioning template.',
+    }),
+    templateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning template.',
+    }),
+    versionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The version of the provisioning template.',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description:
+        'True if the provisioning template version is the default version, otherwise false.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProvisioningTemplateVersionResponse')
@@ -2758,12 +2737,10 @@ const RoleAliasSchema = z
 
 const CreateRoleAliasResponseSchema = z
   .object({
-    roleAlias: RoleAliasSchema.and(
-      z.any().openapi({ description: 'The role alias.' }),
-    ).exactOptional(),
-    roleAliasArn: RoleAliasArnSchema.and(
-      z.any().openapi({ description: 'The role alias ARN.' }),
-    ).exactOptional(),
+    roleAlias: RoleAliasSchema.exactOptional().openapi({ description: 'The role alias.' }),
+    roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+      description: 'The role alias ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRoleAliasResponse')
@@ -2772,9 +2749,9 @@ const ScheduledAuditArnSchema = z.string().openapi('ScheduledAuditArn')
 
 const CreateScheduledAuditResponseSchema = z
   .object({
-    scheduledAuditArn: ScheduledAuditArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled audit.' }),
-    ).exactOptional(),
+    scheduledAuditArn: ScheduledAuditArnSchema.exactOptional().openapi({
+      description: 'The ARN of the scheduled audit.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateScheduledAuditResponse')
@@ -2787,33 +2764,19 @@ const AuditCheckNameSchema = z
   })
   .openapi('AuditCheckName')
 
-const SecurityProfileNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9:_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('SecurityProfileName')
-
 const SecurityProfileArnSchema = z.string().openapi('SecurityProfileArn')
 
 const CreateSecurityProfileResponseSchema = z
   .object({
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name you gave to the security profile.' }),
-    ).exactOptional(),
-    securityProfileArn: SecurityProfileArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the security profile.' }),
-    ).exactOptional(),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name you gave to the security profile.',
+    }),
+    securityProfileArn: SecurityProfileArnSchema.exactOptional().openapi({
+      description: 'The ARN of the security profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSecurityProfileResponse')
-
-const BehaviorNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9:_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('BehaviorName')
 
 const BehaviorMetricSchema = z.string().openapi('BehaviorMetric')
 
@@ -2821,17 +2784,13 @@ const DimensionValueOperatorSchema = z.enum(['IN', 'NOT_IN']).openapi('Dimension
 
 const MetricDimensionSchema = z
   .object({
-    dimensionName: DimensionNameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the dimension.' }),
-    ),
-    operator: DimensionValueOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Defines how the <code>dimensionValues</code> of a dimension are interpreted. For example, for dimension type TOPIC_FILTER, the <code>IN</code> operator, a message will be counted only if its topic matches one of the topic filters. With <code>NOT_IN</code> operator, a message will be counted only if it doesn't match any of the topic filters. The operator is optional: if it's not provided (is <code>null</code>), it will be interpreted as <code>IN</code>.",
-        }),
-    ).exactOptional(),
+    dimensionName: DimensionNameSchema.openapi({
+      description: 'A unique identifier for the dimension.',
+    }),
+    operator: DimensionValueOperatorSchema.exactOptional().openapi({
+      description:
+        "Defines how the <code>dimensionValues</code> of a dimension are interpreted. For example, for dimension type TOPIC_FILTER, the <code>IN</code> operator, a message will be counted only if its topic matches one of the topic filters. With <code>NOT_IN</code> operator, a message will be counted only if it doesn't match any of the topic filters. The operator is optional: if it's not provided (is <code>null</code>), it will be interpreted as <code>IN</code>.",
+    }),
   })
   .openapi({ required: ['dimensionName'], description: 'The dimension of a metric.' })
   .openapi('MetricDimension')
@@ -2876,39 +2835,27 @@ const StringListSchema = z.array(StringValueSchema).openapi('StringList')
 
 const MetricValueSchema = z
   .object({
-    count: UnsignedLongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>comparisonOperator</code> calls for a numeric value, use this to specify that numeric value to be compared with the <code>metric</code>.',
-        }),
-    ).exactOptional(),
-    cidrs: CidrsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>comparisonOperator</code> calls for a set of CIDRs, use this to specify that set to be compared with the <code>metric</code>.',
-        }),
-    ).exactOptional(),
-    ports: PortsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>comparisonOperator</code> calls for a set of ports, use this to specify that set to be compared with the <code>metric</code>.',
-        }),
-    ).exactOptional(),
-    number: NumberSchema.and(
-      z.any().openapi({ description: ' The numeral value of a metric. ' }),
-    ).exactOptional(),
-    numbers: NumberListSchema.and(
-      z.any().openapi({ description: ' The numeral values of a metric. ' }),
-    ).exactOptional(),
-    strings: StringListSchema.and(
-      z.any().openapi({ description: ' The string values of a metric. ' }),
-    ).exactOptional(),
+    count: UnsignedLongSchema.exactOptional().openapi({
+      description:
+        'If the <code>comparisonOperator</code> calls for a numeric value, use this to specify that numeric value to be compared with the <code>metric</code>.',
+    }),
+    cidrs: CidrsSchema.exactOptional().openapi({
+      description:
+        'If the <code>comparisonOperator</code> calls for a set of CIDRs, use this to specify that set to be compared with the <code>metric</code>.',
+    }),
+    ports: PortsSchema.exactOptional().openapi({
+      description:
+        'If the <code>comparisonOperator</code> calls for a set of ports, use this to specify that set to be compared with the <code>metric</code>.',
+    }),
+    number: NumberSchema.exactOptional().openapi({
+      description: ' The numeral value of a metric. ',
+    }),
+    numbers: NumberListSchema.exactOptional().openapi({
+      description: ' The numeral values of a metric. ',
+    }),
+    strings: StringListSchema.exactOptional().openapi({
+      description: ' The string values of a metric. ',
+    }),
   })
   .openapi({ description: 'The value to be compared with the <code>metric</code>.', required: [] })
   .openapi('MetricValue')
@@ -2934,14 +2881,10 @@ const EvaluationStatisticSchema = z
 
 const StatisticalThresholdSchema = z
   .object({
-    statistic: EvaluationStatisticSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The percentile that resolves to a threshold value by which compliance with a behavior is determined. Metrics are collected over the specified period (<code>durationSeconds</code>) from all reporting devices in your account and statistical ranks are calculated. Then, the measurements from a device are collected over the same period. If the accumulated measurements from the device fall above or below (<code>comparisonOperator</code>) the value associated with the percentile specified, then the device is considered to be in compliance with the behavior, otherwise a violation occurs.',
-        }),
-    ).exactOptional(),
+    statistic: EvaluationStatisticSchema.exactOptional().openapi({
+      description:
+        'The percentile that resolves to a threshold value by which compliance with a behavior is determined. Metrics are collected over the specified period (<code>durationSeconds</code>) from all reporting devices in your account and statistical ranks are calculated. Then, the measurements from a device are collected over the same period. If the accumulated measurements from the device fall above or below (<code>comparisonOperator</code>) the value associated with the percentile specified, then the device is considered to be in compliance with the behavior, otherwise a violation occurs.',
+    }),
   })
   .openapi({
     description:
@@ -2954,14 +2897,10 @@ const ConfidenceLevelSchema = z.enum(['LOW', 'MEDIUM', 'HIGH']).openapi('Confide
 
 const MachineLearningDetectionConfigSchema = z
   .object({
-    confidenceLevel: ConfidenceLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The sensitivity of anomalous behavior evaluation. Can be <code>Low</code>, <code>Medium</code>, or <code>High</code>. ',
-        }),
-    ),
+    confidenceLevel: ConfidenceLevelSchema.openapi({
+      description:
+        ' The sensitivity of anomalous behavior evaluation. Can be <code>Low</code>, <code>Medium</code>, or <code>High</code>. ',
+    }),
   })
   .openapi({
     required: ['confidenceLevel'],
@@ -2971,52 +2910,32 @@ const MachineLearningDetectionConfigSchema = z
 
 const BehaviorCriteriaSchema = z
   .object({
-    comparisonOperator: ComparisonOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The operator that relates the thing measured (<code>metric</code>) to the criteria (containing a <code>value</code> or <code>statisticalThreshold</code>). Valid operators include:</p> <ul> <li> <p> <code>string-list</code>: <code>in-set</code> and <code>not-in-set</code> </p> </li> <li> <p> <code>number-list</code>: <code>in-set</code> and <code>not-in-set</code> </p> </li> <li> <p> <code>ip-address-list</code>: <code>in-cidr-set</code> and <code>not-in-cidr-set</code> </p> </li> <li> <p> <code>number</code>: <code>less-than</code>, <code>less-than-equals</code>, <code>greater-than</code>, and <code>greater-than-equals</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value to be compared with the <code>metric</code>.' }),
-    ).exactOptional(),
-    durationSeconds: DurationSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this to specify the time duration over which the behavior is evaluated, for those criteria that have a time dimension (for example, <code>NUM_MESSAGES_SENT</code>). For a <code>statisticalThreshhold</code> metric comparison, measurements from all devices are accumulated over this time duration before being used to calculate percentiles, and later, measurements from an individual device are also accumulated over this time duration before being given a percentile rank. Cannot be used with list-based metric datatypes.',
-        }),
-    ).exactOptional(),
-    consecutiveDatapointsToAlarm: ConsecutiveDatapointsToAlarmSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If a device is in violation of the behavior for the specified number of consecutive datapoints, an alarm occurs. If not specified, the default is 1.',
-        }),
-    ).exactOptional(),
-    consecutiveDatapointsToClear: ConsecutiveDatapointsToClearSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an alarm has occurred and the offending device is no longer in violation of the behavior for the specified number of consecutive datapoints, the alarm is cleared. If not specified, the default is 1.',
-        }),
-    ).exactOptional(),
-    statisticalThreshold: StatisticalThresholdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A statistical ranking (percentile)that indicates a threshold value by which a behavior is determined to be in compliance or in violation of the behavior.',
-        }),
-    ).exactOptional(),
-    mlDetectionConfig: MachineLearningDetectionConfigSchema.and(
-      z.any().openapi({ description: ' The configuration of an ML Detect ' }),
-    ).exactOptional(),
+    comparisonOperator: ComparisonOperatorSchema.exactOptional().openapi({
+      description:
+        '<p>The operator that relates the thing measured (<code>metric</code>) to the criteria (containing a <code>value</code> or <code>statisticalThreshold</code>). Valid operators include:</p> <ul> <li> <p> <code>string-list</code>: <code>in-set</code> and <code>not-in-set</code> </p> </li> <li> <p> <code>number-list</code>: <code>in-set</code> and <code>not-in-set</code> </p> </li> <li> <p> <code>ip-address-list</code>: <code>in-cidr-set</code> and <code>not-in-cidr-set</code> </p> </li> <li> <p> <code>number</code>: <code>less-than</code>, <code>less-than-equals</code>, <code>greater-than</code>, and <code>greater-than-equals</code> </p> </li> </ul>',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The value to be compared with the <code>metric</code>.',
+    }),
+    durationSeconds: DurationSecondsSchema.exactOptional().openapi({
+      description:
+        'Use this to specify the time duration over which the behavior is evaluated, for those criteria that have a time dimension (for example, <code>NUM_MESSAGES_SENT</code>). For a <code>statisticalThreshhold</code> metric comparison, measurements from all devices are accumulated over this time duration before being used to calculate percentiles, and later, measurements from an individual device are also accumulated over this time duration before being given a percentile rank. Cannot be used with list-based metric datatypes.',
+    }),
+    consecutiveDatapointsToAlarm: ConsecutiveDatapointsToAlarmSchema.exactOptional().openapi({
+      description:
+        'If a device is in violation of the behavior for the specified number of consecutive datapoints, an alarm occurs. If not specified, the default is 1.',
+    }),
+    consecutiveDatapointsToClear: ConsecutiveDatapointsToClearSchema.exactOptional().openapi({
+      description:
+        'If an alarm has occurred and the offending device is no longer in violation of the behavior for the specified number of consecutive datapoints, the alarm is cleared. If not specified, the default is 1.',
+    }),
+    statisticalThreshold: StatisticalThresholdSchema.exactOptional().openapi({
+      description:
+        'A statistical ranking (percentile)that indicates a threshold value by which a behavior is determined to be in compliance or in violation of the behavior.',
+    }),
+    mlDetectionConfig: MachineLearningDetectionConfigSchema.exactOptional().openapi({
+      description: ' The configuration of an ML Detect ',
+    }),
   })
   .openapi({
     description: 'The criteria by which the behavior is determined to be normal.',
@@ -3028,31 +2947,21 @@ const SuppressAlertsSchema = z.boolean().openapi('SuppressAlerts')
 
 const BehaviorSchema = z
   .object({
-    name: BehaviorNameSchema.and(
-      z.any().openapi({ description: "The name you've given to the behavior." }),
-    ),
-    metric: BehaviorMetricSchema.and(
-      z.any().openapi({ description: 'What is measured by the behavior.' }),
-    ).exactOptional(),
-    metricDimension: MetricDimensionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The dimension for a metric in your behavior. For example, using a <code>TOPIC_FILTER</code> dimension, you can narrow down the scope of the metric to only MQTT topics where the name matches the pattern specified in the dimension. This can't be used with custom metrics.",
-        }),
-    ).exactOptional(),
-    criteria: BehaviorCriteriaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The criteria that determine if a device is behaving normally in regard to the <code>metric</code>.',
-        }),
-    ).exactOptional(),
-    suppressAlerts: SuppressAlertsSchema.and(
-      z.any().openapi({ description: ' Suppresses alerts. ' }),
-    ).exactOptional(),
+    name: BehaviorNameSchema.openapi({ description: "The name you've given to the behavior." }),
+    metric: BehaviorMetricSchema.exactOptional().openapi({
+      description: 'What is measured by the behavior.',
+    }),
+    metricDimension: MetricDimensionSchema.exactOptional().openapi({
+      description:
+        "The dimension for a metric in your behavior. For example, using a <code>TOPIC_FILTER</code> dimension, you can narrow down the scope of the metric to only MQTT topics where the name matches the pattern specified in the dimension. This can't be used with custom metrics.",
+    }),
+    criteria: BehaviorCriteriaSchema.exactOptional().openapi({
+      description:
+        'The criteria that determine if a device is behaving normally in regard to the <code>metric</code>.',
+    }),
+    suppressAlerts: SuppressAlertsSchema.exactOptional().openapi({
+      description: ' Suppresses alerts. ',
+    }),
   })
   .openapi({ required: ['name'], description: 'A Device Defender security profile behavior.' })
   .openapi('Behavior')
@@ -3061,22 +2970,14 @@ const AlertTargetArnSchema = z.string().openapi('AlertTargetArn')
 
 const AlertTargetSchema = z
   .object({
-    alertTargetArn: AlertTargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the notification target to which alerts are sent.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to send alerts to the notification target.',
-        }),
-    ),
+    alertTargetArn: AlertTargetArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the notification target to which alerts are sent.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of the role that grants permission to send alerts to the notification target.',
+    }),
   })
   .openapi({
     required: ['alertTargetArn', 'roleArn'],
@@ -3086,16 +2987,10 @@ const AlertTargetSchema = z
 
 const MetricToRetainSchema = z
   .object({
-    metric: BehaviorMetricSchema.and(
-      z.any().openapi({ description: 'What is measured by the behavior.' }),
-    ),
-    metricDimension: MetricDimensionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The dimension of a metric. This can't be used with custom metrics.",
-        }),
-    ).exactOptional(),
+    metric: BehaviorMetricSchema.openapi({ description: 'What is measured by the behavior.' }),
+    metricDimension: MetricDimensionSchema.exactOptional().openapi({
+      description: "The dimension of a metric. This can't be used with custom metrics.",
+    }),
   })
   .openapi({
     required: ['metric'],
@@ -3115,28 +3010,24 @@ const StreamVersionSchema = z.int().min(0).max(65535).openapi('StreamVersion')
 
 const CreateStreamResponseSchema = z
   .object({
-    streamId: StreamIdSchema.and(
-      z.any().openapi({ description: 'The stream ID.' }),
-    ).exactOptional(),
-    streamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The stream ARN.' }),
-    ).exactOptional(),
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the stream.' }),
-    ).exactOptional(),
-    streamVersion: StreamVersionSchema.and(
-      z.any().openapi({ description: 'The version of the stream.' }),
-    ).exactOptional(),
+    streamId: StreamIdSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    streamArn: StreamArnSchema.exactOptional().openapi({ description: 'The stream ARN.' }),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the stream.',
+    }),
+    streamVersion: StreamVersionSchema.exactOptional().openapi({
+      description: 'The version of the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStreamResponse')
 
 const StreamFileSchema = z
   .object({
-    fileId: FileIdSchema.and(z.any().openapi({ description: 'The file ID.' })).exactOptional(),
-    s3Location: S3LocationSchema.and(
-      z.any().openapi({ description: 'The location of the file in S3.' }),
-    ).exactOptional(),
+    fileId: FileIdSchema.exactOptional().openapi({ description: 'The file ID.' }),
+    s3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'The location of the file in S3.',
+    }),
   })
   .openapi({ description: 'Represents a file to stream.', required: [] })
   .openapi('StreamFile')
@@ -3154,28 +3045,26 @@ const ThingIdSchema = z.string().openapi('ThingId')
 
 const CreateThingResponseSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the new thing.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the new thing.' }),
-    ).exactOptional(),
-    thingId: ThingIdSchema.and(z.any().openapi({ description: 'The thing ID.' })).exactOptional(),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the new thing.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({ description: 'The ARN of the new thing.' }),
+    thingId: ThingIdSchema.exactOptional().openapi({ description: 'The thing ID.' }),
   })
   .openapi({ description: 'The output of the CreateThing operation.', required: [] })
   .openapi('CreateThingResponse')
 
 const CreateThingGroupResponseSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The thing group name.' }),
-    ).exactOptional(),
-    thingGroupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The thing group ARN.' }),
-    ).exactOptional(),
-    thingGroupId: ThingGroupIdSchema.and(
-      z.any().openapi({ description: 'The thing group ID.' }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The thing group name.',
+    }),
+    thingGroupArn: ThingGroupArnSchema.exactOptional().openapi({
+      description: 'The thing group ARN.',
+    }),
+    thingGroupId: ThingGroupIdSchema.exactOptional().openapi({
+      description: 'The thing group ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateThingGroupResponse')
@@ -3193,15 +3082,13 @@ const ThingTypeIdSchema = z.string().openapi('ThingTypeId')
 
 const CreateThingTypeResponseSchema = z
   .object({
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing type.' }),
-    ).exactOptional(),
-    thingTypeArn: ThingTypeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the thing type.' }),
-    ).exactOptional(),
-    thingTypeId: ThingTypeIdSchema.and(
-      z.any().openapi({ description: 'The thing type ID.' }),
-    ).exactOptional(),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type.',
+    }),
+    thingTypeArn: ThingTypeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the thing type.',
+    }),
+    thingTypeId: ThingTypeIdSchema.exactOptional().openapi({ description: 'The thing type ID.' }),
   })
   .openapi({ description: 'The output of the CreateThingType operation.', required: [] })
   .openapi('CreateThingTypeResponse')
@@ -3220,143 +3107,19 @@ const AttributeNameSchema = z
 
 const SearchableAttributesSchema = z.array(AttributeNameSchema).openapi('SearchableAttributes')
 
-const SQLSchema = z.string().openapi('SQL')
-
-const DescriptionSchema = z.string().openapi('Description')
-
-const ActionSchema: z.ZodType<ActionType> = z
-  .lazy(() =>
-    z
-      .object({
-        dynamoDB: DynamoDBActionSchema.and(
-          z.any().openapi({ description: 'Write to a DynamoDB table.' }),
-        ).exactOptional(),
-        dynamoDBv2: DynamoDBv2ActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Write to a DynamoDB table. This is a new version of the DynamoDB action. It allows you to write each attribute in an MQTT message payload into a separate DynamoDB column.',
-            }),
-        ).exactOptional(),
-        lambda: LambdaActionSchema.and(
-          z.any().openapi({ description: 'Invoke a Lambda function.' }),
-        ).exactOptional(),
-        sns: SnsActionSchema.and(
-          z.any().openapi({ description: 'Publish to an Amazon SNS topic.' }),
-        ).exactOptional(),
-        sqs: SqsActionSchema.and(
-          z.any().openapi({ description: 'Publish to an Amazon SQS queue.' }),
-        ).exactOptional(),
-        kinesis: KinesisActionSchema.and(
-          z.any().openapi({ description: 'Write data to an Amazon Kinesis stream.' }),
-        ).exactOptional(),
-        republish: RepublishActionSchema.and(
-          z.any().openapi({ description: 'Publish to another MQTT topic.' }),
-        ).exactOptional(),
-        s3: S3ActionSchema.and(
-          z.any().openapi({ description: 'Write to an Amazon S3 bucket.' }),
-        ).exactOptional(),
-        firehose: FirehoseActionSchema.and(
-          z.any().openapi({ description: 'Write to an Amazon Kinesis Firehose stream.' }),
-        ).exactOptional(),
-        cloudwatchMetric: CloudwatchMetricActionSchema.and(
-          z.any().openapi({ description: 'Capture a CloudWatch metric.' }),
-        ).exactOptional(),
-        cloudwatchAlarm: CloudwatchAlarmActionSchema.and(
-          z.any().openapi({ description: 'Change the state of a CloudWatch alarm.' }),
-        ).exactOptional(),
-        cloudwatchLogs: CloudwatchLogsActionSchema.and(
-          z.any().openapi({ description: 'Send data to CloudWatch Logs.' }),
-        ).exactOptional(),
-        elasticsearch: ElasticsearchActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                '<p>Write data to an Amazon OpenSearch Service domain.</p> <note> <p>The <code>Elasticsearch</code> action can only be used by existing rule actions. To create a new rule action or to update an existing rule action, use the <code>OpenSearch</code> rule action instead. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html">OpenSearchAction</a>.</p> </note>',
-            }),
-        ).exactOptional(),
-        salesforce: SalesforceActionSchema.and(
-          z
-            .any()
-            .openapi({ description: 'Send a message to a Salesforce IoT Cloud Input Stream.' }),
-        ).exactOptional(),
-        iotAnalytics: IotAnalyticsActionSchema.and(
-          z.any().openapi({ description: 'Sends message data to an IoT Analytics channel.' }),
-        ).exactOptional(),
-        iotEvents: IotEventsActionSchema.and(
-          z.any().openapi({ description: 'Sends an input to an IoT Events detector.' }),
-        ).exactOptional(),
-        iotSiteWise: IotSiteWiseActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Sends data from the MQTT message that triggered the rule to IoT SiteWise asset properties.',
-            }),
-        ).exactOptional(),
-        stepFunctions: StepFunctionsActionSchema.and(
-          z.any().openapi({ description: 'Starts execution of a Step Functions state machine.' }),
-        ).exactOptional(),
-        timestream: TimestreamActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The Timestream rule action writes attributes (measures) from an MQTT message into an Amazon Timestream table. For more information, see the <a href="https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html">Timestream</a> topic rule action documentation.',
-            }),
-        ).exactOptional(),
-        http: HttpActionSchema.and(
-          z.any().openapi({ description: 'Send data to an HTTPS endpoint.' }),
-        ).exactOptional(),
-        kafka: KafkaActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Send messages to an Amazon Managed Streaming for Apache Kafka (Amazon MSK) or self-managed Apache Kafka cluster.',
-            }),
-        ).exactOptional(),
-        openSearch: OpenSearchActionSchema.and(
-          z.any().openapi({ description: 'Write data to an Amazon OpenSearch Service domain.' }),
-        ).exactOptional(),
-        location: LocationActionSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The Amazon Location Service rule action sends device location updates from an MQTT message to an Amazon Location tracker resource.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Describes the actions associated with a rule.', required: [] }),
-  )
-  .openapi('Action')
-
-const ActionListSchema = z.array(ActionSchema).min(0).max(10).openapi('ActionList')
-
-const IsDisabledSchema = z.boolean().openapi('IsDisabled')
-
-const AwsIotSqlVersionSchema = z.string().openapi('AwsIotSqlVersion')
-
 const SqlParseExceptionSchema = z.any().openapi('SqlParseException')
 
 const TopicRuleDestinationStatusSchema = z
   .enum(['ENABLED', 'IN_PROGRESS', 'DISABLED', 'ERROR', 'DELETING'])
   .openapi('TopicRuleDestinationStatus')
 
-const CreatedAtDateSchema = z.iso.datetime({ offset: true }).openapi('CreatedAtDate')
-
 const LastUpdatedAtDateSchema = z.iso.datetime({ offset: true }).openapi('LastUpdatedAtDate')
 
 const HttpUrlDestinationPropertiesSchema = z
   .object({
-    confirmationUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The URL used to confirm the HTTP topic rule destination URL.' }),
-    ).exactOptional(),
+    confirmationUrl: UrlSchema.exactOptional().openapi({
+      description: 'The URL used to confirm the HTTP topic rule destination URL.',
+    }),
   })
   .openapi({ description: 'HTTP URL destination properties.', required: [] })
   .openapi('HttpUrlDestinationProperties')
@@ -3373,21 +3136,17 @@ const VpcIdSchema = z.string().openapi('VpcId')
 
 const VpcDestinationPropertiesSchema = z
   .object({
-    subnetIds: SubnetIdListSchema.and(
-      z.any().openapi({ description: 'The subnet IDs of the VPC destination.' }),
-    ).exactOptional(),
-    securityGroups: SecurityGroupListSchema.and(
-      z.any().openapi({ description: 'The security groups of the VPC destination.' }),
-    ).exactOptional(),
-    vpcId: VpcIdSchema.and(z.any().openapi({ description: 'The ID of the VPC.' })).exactOptional(),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
-        }),
-    ).exactOptional(),
+    subnetIds: SubnetIdListSchema.exactOptional().openapi({
+      description: 'The subnet IDs of the VPC destination.',
+    }),
+    securityGroups: SecurityGroupListSchema.exactOptional().openapi({
+      description: 'The security groups of the VPC destination.',
+    }),
+    vpcId: VpcIdSchema.exactOptional().openapi({ description: 'The ID of the VPC.' }),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
+    }),
   })
   .openapi({
     description: 'The properties of a virtual private cloud (VPC) destination.',
@@ -3397,66 +3156,46 @@ const VpcDestinationPropertiesSchema = z
 
 const TopicRuleDestinationSchema = z
   .object({
-    arn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The topic rule destination URL.' }),
-    ).exactOptional(),
-    status: TopicRuleDestinationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    createdAt: CreatedAtDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the topic rule destination was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: LastUpdatedAtDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the topic rule destination was last updated.',
-        }),
-    ).exactOptional(),
-    statusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional details or reason why the topic rule destination is in the current status.',
-        }),
-    ).exactOptional(),
-    httpUrlProperties: HttpUrlDestinationPropertiesSchema.and(
-      z.any().openapi({ description: 'Properties of the HTTP URL.' }),
-    ).exactOptional(),
-    vpcProperties: VpcDestinationPropertiesSchema.and(
-      z.any().openapi({ description: 'Properties of the virtual private cloud (VPC) connection.' }),
-    ).exactOptional(),
+    arn: AwsArnSchema.exactOptional().openapi({ description: 'The topic rule destination URL.' }),
+    status: TopicRuleDestinationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
+    }),
+    createdAt: CreatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time when the topic rule destination was created.',
+    }),
+    lastUpdatedAt: LastUpdatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time when the topic rule destination was last updated.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description:
+        'Additional details or reason why the topic rule destination is in the current status.',
+    }),
+    httpUrlProperties: HttpUrlDestinationPropertiesSchema.exactOptional().openapi({
+      description: 'Properties of the HTTP URL.',
+    }),
+    vpcProperties: VpcDestinationPropertiesSchema.exactOptional().openapi({
+      description: 'Properties of the virtual private cloud (VPC) connection.',
+    }),
   })
   .openapi({ description: 'A topic rule destination.', required: [] })
   .openapi('TopicRuleDestination')
 
 const CreateTopicRuleDestinationResponseSchema = z
   .object({
-    topicRuleDestination: TopicRuleDestinationSchema.and(
-      z.any().openapi({ description: 'The topic rule destination.' }),
-    ).exactOptional(),
+    topicRuleDestination: TopicRuleDestinationSchema.exactOptional().openapi({
+      description: 'The topic rule destination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTopicRuleDestinationResponse')
 
 const HttpUrlDestinationConfigurationSchema = z
   .object({
-    confirmationUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL IoT uses to confirm ownership of or access to the topic rule destination URL.',
-        }),
-    ),
+    confirmationUrl: UrlSchema.openapi({
+      description:
+        'The URL IoT uses to confirm ownership of or access to the topic rule destination URL.',
+    }),
   })
   .openapi({
     required: ['confirmationUrl'],
@@ -3466,21 +3205,17 @@ const HttpUrlDestinationConfigurationSchema = z
 
 const VpcDestinationConfigurationSchema = z
   .object({
-    subnetIds: SubnetIdListSchema.and(
-      z.any().openapi({ description: 'The subnet IDs of the VPC destination.' }),
-    ),
-    securityGroups: SecurityGroupListSchema.and(
-      z.any().openapi({ description: 'The security groups of the VPC destination.' }),
-    ).exactOptional(),
-    vpcId: VpcIdSchema.and(z.any().openapi({ description: 'The ID of the VPC.' })),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
-        }),
-    ),
+    subnetIds: SubnetIdListSchema.openapi({
+      description: 'The subnet IDs of the VPC destination.',
+    }),
+    securityGroups: SecurityGroupListSchema.exactOptional().openapi({
+      description: 'The security groups of the VPC destination.',
+    }),
+    vpcId: VpcIdSchema.openapi({ description: 'The ID of the VPC.' }),
+    roleArn: AwsArnSchema.openapi({
+      description:
+        'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
+    }),
   })
   .openapi({
     required: ['subnetIds', 'vpcId', 'roleArn'],
@@ -3489,79 +3224,85 @@ const VpcDestinationConfigurationSchema = z
   .openapi('VpcDestinationConfiguration')
 
 const DeleteAccountAuditConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteAccountAuditConfigurationResponse')
 
-const DeleteAuditSuppressionResponseSchema = z.object({}).openapi('DeleteAuditSuppressionResponse')
+const DeleteAuditSuppressionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteAuditSuppressionResponse')
 
-const DeleteAuthorizerResponseSchema = z.object({}).openapi('DeleteAuthorizerResponse')
+const DeleteAuthorizerResponseSchema = z.looseObject({}).openapi('DeleteAuthorizerResponse')
 
 const DeleteConflictExceptionSchema = z.any().openapi('DeleteConflictException')
 
-const DeleteBillingGroupResponseSchema = z.object({}).openapi('DeleteBillingGroupResponse')
+const DeleteBillingGroupResponseSchema = z.looseObject({}).openapi('DeleteBillingGroupResponse')
 
 const DeleteCACertificateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the DeleteCACertificate operation.' })
   .openapi('DeleteCACertificateResponse')
 
 const CertificateStateExceptionSchema = z.any().openapi('CertificateStateException')
 
-const DeleteCustomMetricResponseSchema = z.object({}).openapi('DeleteCustomMetricResponse')
+const DeleteCustomMetricResponseSchema = z.looseObject({}).openapi('DeleteCustomMetricResponse')
 
-const DeleteDimensionResponseSchema = z.object({}).openapi('DeleteDimensionResponse')
+const DeleteDimensionResponseSchema = z.looseObject({}).openapi('DeleteDimensionResponse')
 
 const DeleteDomainConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteDomainConfigurationResponse')
 
 const DeleteDynamicThingGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteDynamicThingGroupResponse')
 
-const DeleteMitigationActionResponseSchema = z.object({}).openapi('DeleteMitigationActionResponse')
+const DeleteMitigationActionResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteMitigationActionResponse')
 
-const DeleteOTAUpdateResponseSchema = z.object({}).openapi('DeleteOTAUpdateResponse')
+const DeleteOTAUpdateResponseSchema = z.looseObject({}).openapi('DeleteOTAUpdateResponse')
 
 const DeleteProvisioningTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteProvisioningTemplateResponse')
 
 const DeleteProvisioningTemplateVersionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteProvisioningTemplateVersionResponse')
 
 const DeleteRegistrationCodeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the DeleteRegistrationCode operation.' })
   .openapi('DeleteRegistrationCodeResponse')
 
-const DeleteRoleAliasResponseSchema = z.object({}).openapi('DeleteRoleAliasResponse')
+const DeleteRoleAliasResponseSchema = z.looseObject({}).openapi('DeleteRoleAliasResponse')
 
-const DeleteScheduledAuditResponseSchema = z.object({}).openapi('DeleteScheduledAuditResponse')
+const DeleteScheduledAuditResponseSchema = z.looseObject({}).openapi('DeleteScheduledAuditResponse')
 
-const DeleteSecurityProfileResponseSchema = z.object({}).openapi('DeleteSecurityProfileResponse')
+const DeleteSecurityProfileResponseSchema = z
+  .looseObject({})
+  .openapi('DeleteSecurityProfileResponse')
 
-const DeleteStreamResponseSchema = z.object({}).openapi('DeleteStreamResponse')
+const DeleteStreamResponseSchema = z.looseObject({}).openapi('DeleteStreamResponse')
 
 const DeleteThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output of the DeleteThing operation.' })
   .openapi('DeleteThingResponse')
 
-const DeleteThingGroupResponseSchema = z.object({}).openapi('DeleteThingGroupResponse')
+const DeleteThingGroupResponseSchema = z.looseObject({}).openapi('DeleteThingGroupResponse')
 
 const DeleteThingTypeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the DeleteThingType operation.' })
   .openapi('DeleteThingTypeResponse')
 
 const DeleteTopicRuleDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteTopicRuleDestinationResponse')
 
 const DeprecateThingTypeResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the DeprecateThingType operation.' })
   .openapi('DeprecateThingTypeResponse')
 
@@ -3569,24 +3310,16 @@ const EnabledSchema = z.boolean().openapi('Enabled')
 
 const AuditNotificationTargetSchema = z
   .object({
-    targetArn: TargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the target (SNS topic) to which audit notifications are sent.',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role that grants permission to send notifications to the target.',
-        }),
-    ).exactOptional(),
-    enabled: EnabledSchema.and(
-      z.any().openapi({ description: 'True if notifications to the target are enabled.' }),
-    ).exactOptional(),
+    targetArn: TargetArnSchema.exactOptional().openapi({
+      description: 'The ARN of the target (SNS topic) to which audit notifications are sent.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role that grants permission to send notifications to the target.',
+    }),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True if notifications to the target are enabled.',
+    }),
   })
   .openapi({
     description: 'Information about the targets to which audit notifications are sent.',
@@ -3600,9 +3333,9 @@ const AuditNotificationTargetConfigurationsSchema = z
 
 const AuditCheckConfigurationSchema = z
   .object({
-    enabled: EnabledSchema.and(
-      z.any().openapi({ description: 'True if this audit check is enabled for this account.' }),
-    ).exactOptional(),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True if this audit check is enabled for this account.',
+    }),
   })
   .openapi({
     description: 'Which audit checks are enabled and disabled for this account.',
@@ -3616,27 +3349,18 @@ const AuditCheckConfigurationsSchema = z
 
 const DescribeAccountAuditConfigurationResponseSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the role that grants permission to IoT to access information about your devices, policies, certificates, and other items as required when performing an audit.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code>, this parameter is required.</p>',
-        }),
-    ).exactOptional(),
-    auditNotificationTargetConfigurations: AuditNotificationTargetConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the targets to which audit notifications are sent for this account.',
-        }),
-    ).exactOptional(),
-    auditCheckConfigurations: AuditCheckConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Which audit checks are enabled and disabled for this account.' }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of the role that grants permission to IoT to access information about your devices, policies, certificates, and other items as required when performing an audit.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code>, this parameter is required.</p>',
+    }),
+    auditNotificationTargetConfigurations:
+      AuditNotificationTargetConfigurationsSchema.exactOptional().openapi({
+        description:
+          'Information about the targets to which audit notifications are sent for this account.',
+      }),
+    auditCheckConfigurations: AuditCheckConfigurationsSchema.exactOptional().openapi({
+      description: 'Which audit checks are enabled and disabled for this account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountAuditConfigurationResponse')
@@ -3654,8 +3378,6 @@ const AuditTaskIdSchema = z
   .min(1)
   .max(40)
   .openapi('AuditTaskId')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AuditFindingSeveritySchema = z
   .enum(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'])
@@ -3677,44 +3399,34 @@ const ResourceTypeSchema = z
 
 const ResourceIdentifierSchema = z
   .object({
-    deviceCertificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the certificate attached to the resource.' }),
-    ).exactOptional(),
-    caCertificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the CA certificate used to authorize the certificate.',
-        }),
-    ).exactOptional(),
-    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-    ).exactOptional(),
-    clientId: ClientIdSchema.and(
-      z.any().openapi({ description: 'The client ID.' }),
-    ).exactOptional(),
-    policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-      z.any().openapi({ description: 'The version of the policy associated with the resource.' }),
-    ).exactOptional(),
-    account: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The account with which the resource is associated.' }),
-    ).exactOptional(),
-    iamRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the IAM role that has overly permissive actions.' }),
-    ).exactOptional(),
-    roleAliasArn: RoleAliasArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the role alias that has overly permissive actions.' }),
-    ).exactOptional(),
-    issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-      z.any().openapi({ description: 'The issuer certificate identifier.' }),
-    ).exactOptional(),
-    deviceCertificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the identified device certificate.' }),
-    ).exactOptional(),
+    deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the certificate attached to the resource.',
+    }),
+    caCertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the CA certificate used to authorize the certificate.',
+    }),
+    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Cognito identity pool.',
+    }),
+    clientId: ClientIdSchema.exactOptional().openapi({ description: 'The client ID.' }),
+    policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+      description: 'The version of the policy associated with the resource.',
+    }),
+    account: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The account with which the resource is associated.',
+    }),
+    iamRoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role that has overly permissive actions.',
+    }),
+    roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role alias that has overly permissive actions.',
+    }),
+    issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.exactOptional().openapi({
+      description: 'The issuer certificate identifier.',
+    }),
+    deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the identified device certificate.',
+    }),
   })
   .openapi({ description: 'Information that identifies the noncompliant resource.', required: [] })
   .openapi('ResourceIdentifier')
@@ -3723,15 +3435,15 @@ const StringMapSchema = z.record(z.string(), StringSchema).openapi('StringMap')
 
 const NonCompliantResourceSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the noncompliant resource.' }),
-    ).exactOptional(),
-    resourceIdentifier: ResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'Information that identifies the noncompliant resource.' }),
-    ).exactOptional(),
-    additionalInfo: StringMapSchema.and(
-      z.any().openapi({ description: 'Other information about the noncompliant resource.' }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of the noncompliant resource.',
+    }),
+    resourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description: 'Information that identifies the noncompliant resource.',
+    }),
+    additionalInfo: StringMapSchema.exactOptional().openapi({
+      description: 'Other information about the noncompliant resource.',
+    }),
   })
   .openapi({
     description: 'Information about the resource that was noncompliant with the audit check.',
@@ -3741,15 +3453,15 @@ const NonCompliantResourceSchema = z
 
 const RelatedResourceSchema = z
   .object({
-    resourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of resource.' }),
-    ).exactOptional(),
-    resourceIdentifier: ResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'Information that identifies the resource.' }),
-    ).exactOptional(),
-    additionalInfo: StringMapSchema.and(
-      z.any().openapi({ description: 'Other information about the resource.' }),
-    ).exactOptional(),
+    resourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of resource.',
+    }),
+    resourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description: 'Information that identifies the resource.',
+    }),
+    additionalInfo: StringMapSchema.exactOptional().openapi({
+      description: 'Other information about the resource.',
+    }),
   })
   .openapi({ description: 'Information about a related resource.', required: [] })
   .openapi('RelatedResource')
@@ -3764,57 +3476,40 @@ const IsSuppressedSchema = z.boolean().openapi('IsSuppressed')
 
 const AuditFindingSchema = z
   .object({
-    findingId: FindingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for this set of audit findings. This identifier is used to apply mitigation tasks to one or more sets of findings.',
-        }),
-    ).exactOptional(),
-    taskId: AuditTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the audit that generated this result (finding).' }),
-    ).exactOptional(),
-    checkName: AuditCheckNameSchema.and(
-      z.any().openapi({ description: 'The audit check that generated this result.' }),
-    ).exactOptional(),
-    taskStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the audit started.' }),
-    ).exactOptional(),
-    findingTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the result (finding) was discovered.' }),
-    ).exactOptional(),
-    severity: AuditFindingSeveritySchema.and(
-      z.any().openapi({ description: 'The severity of the result (finding).' }),
-    ).exactOptional(),
-    nonCompliantResource: NonCompliantResourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The resource that was found to be noncompliant with the audit check.',
-        }),
-    ).exactOptional(),
-    relatedResources: RelatedResourcesSchema.and(
-      z.any().openapi({ description: 'The list of related resources.' }),
-    ).exactOptional(),
-    reasonForNonCompliance: ReasonForNonComplianceSchema.and(
-      z.any().openapi({ description: 'The reason the resource was noncompliant.' }),
-    ).exactOptional(),
-    reasonForNonComplianceCode: ReasonForNonComplianceCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A code that indicates the reason that the resource was noncompliant.',
-        }),
-    ).exactOptional(),
-    isSuppressed: IsSuppressedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Indicates whether the audit finding was suppressed or not during reporting. ',
-        }),
-    ).exactOptional(),
+    findingId: FindingIdSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for this set of audit findings. This identifier is used to apply mitigation tasks to one or more sets of findings.',
+    }),
+    taskId: AuditTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the audit that generated this result (finding).',
+    }),
+    checkName: AuditCheckNameSchema.exactOptional().openapi({
+      description: 'The audit check that generated this result.',
+    }),
+    taskStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the audit started.',
+    }),
+    findingTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the result (finding) was discovered.',
+    }),
+    severity: AuditFindingSeveritySchema.exactOptional().openapi({
+      description: 'The severity of the result (finding).',
+    }),
+    nonCompliantResource: NonCompliantResourceSchema.exactOptional().openapi({
+      description: 'The resource that was found to be noncompliant with the audit check.',
+    }),
+    relatedResources: RelatedResourcesSchema.exactOptional().openapi({
+      description: 'The list of related resources.',
+    }),
+    reasonForNonCompliance: ReasonForNonComplianceSchema.exactOptional().openapi({
+      description: 'The reason the resource was noncompliant.',
+    }),
+    reasonForNonComplianceCode: ReasonForNonComplianceCodeSchema.exactOptional().openapi({
+      description: 'A code that indicates the reason that the resource was noncompliant.',
+    }),
+    isSuppressed: IsSuppressedSchema.exactOptional().openapi({
+      description: ' Indicates whether the audit finding was suppressed or not during reporting. ',
+    }),
   })
   .openapi({ description: 'The findings (results) of the audit.', required: [] })
   .openapi('AuditFinding')
@@ -3840,43 +3535,25 @@ const CanceledFindingsCountSchema = z.int().openapi('CanceledFindingsCount')
 
 const TaskStatisticsForAuditCheckSchema = z
   .object({
-    totalFindingsCount: TotalFindingsCountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of findings to which a task is being applied.' }),
-    ).exactOptional(),
-    failedFindingsCount: FailedFindingsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of findings for which at least one of the actions failed when applied.',
-        }),
-    ).exactOptional(),
-    succeededFindingsCount: SucceededFindingsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of findings for which all mitigation actions succeeded when applied.',
-        }),
-    ).exactOptional(),
-    skippedFindingsCount: SkippedFindingsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of findings skipped because of filter conditions provided in the parameters to the command.',
-        }),
-    ).exactOptional(),
-    canceledFindingsCount: CanceledFindingsCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of findings to which the mitigation action task was canceled when applied.',
-        }),
-    ).exactOptional(),
+    totalFindingsCount: TotalFindingsCountSchema.exactOptional().openapi({
+      description: 'The total number of findings to which a task is being applied.',
+    }),
+    failedFindingsCount: FailedFindingsCountSchema.exactOptional().openapi({
+      description:
+        'The number of findings for which at least one of the actions failed when applied.',
+    }),
+    succeededFindingsCount: SucceededFindingsCountSchema.exactOptional().openapi({
+      description:
+        'The number of findings for which all mitigation actions succeeded when applied.',
+    }),
+    skippedFindingsCount: SkippedFindingsCountSchema.exactOptional().openapi({
+      description:
+        'The number of findings skipped because of filter conditions provided in the parameters to the command.',
+    }),
+    canceledFindingsCount: CanceledFindingsCountSchema.exactOptional().openapi({
+      description:
+        'The number of findings to which the mitigation action task was canceled when applied.',
+    }),
   })
   .openapi({
     description:
@@ -3903,30 +3580,18 @@ const AuditCheckToReasonCodeFilterSchema = z
 
 const AuditMitigationActionsTaskTargetSchema = z
   .object({
-    auditTaskId: AuditTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the task will apply a mitigation action to findings from a specific audit, this value uniquely identifies the audit.',
-        }),
-    ).exactOptional(),
-    findingIds: FindingIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the task will apply a mitigation action to one or more listed findings, this value uniquely identifies those findings.',
-        }),
-    ).exactOptional(),
-    auditCheckToReasonCodeFilter: AuditCheckToReasonCodeFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies a filter in the form of an audit check and set of reason codes that identify the findings from the audit to which the audit mitigation actions task apply.',
-        }),
-    ).exactOptional(),
+    auditTaskId: AuditTaskIdSchema.exactOptional().openapi({
+      description:
+        'If the task will apply a mitigation action to findings from a specific audit, this value uniquely identifies the audit.',
+    }),
+    findingIds: FindingIdsSchema.exactOptional().openapi({
+      description:
+        'If the task will apply a mitigation action to one or more listed findings, this value uniquely identifies those findings.',
+    }),
+    auditCheckToReasonCodeFilter: AuditCheckToReasonCodeFilterSchema.exactOptional().openapi({
+      description:
+        'Specifies a filter in the form of an audit check and set of reason codes that identify the findings from the audit to which the audit mitigation actions task apply.',
+    }),
   })
   .openapi({
     description:
@@ -3934,12 +3599,6 @@ const AuditMitigationActionsTaskTargetSchema = z
     required: [],
   })
   .openapi('AuditMitigationActionsTaskTarget')
-
-const MitigationActionNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_-]+/)
-  .max(128)
-  .openapi('MitigationActionName')
 
 const MitigationActionNameListSchema = z
   .array(MitigationActionNameSchema)
@@ -3951,137 +3610,33 @@ const AuditCheckToActionsMappingSchema = z
   .record(z.string(), MitigationActionNameListSchema)
   .openapi('AuditCheckToActionsMapping')
 
-const MitigationActionParamsSchema = z
-  .object({
-    updateDeviceCertificateParams: UpdateDeviceCertificateParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
-        }),
-    ).exactOptional(),
-    updateCACertificateParams: UpdateCACertificateParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
-        }),
-    ).exactOptional(),
-    addThingsToThingGroupParams: AddThingsToThingGroupParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
-        }),
-    ).exactOptional(),
-    replaceDefaultPolicyVersionParams: ReplaceDefaultPolicyVersionParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
-        }),
-    ).exactOptional(),
-    enableIoTLoggingParams: EnableIoTLoggingParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
-        }),
-    ).exactOptional(),
-    publishFindingToSnsParams: PublishFindingToSnsParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The set of parameters for this mitigation action. You can specify only one type of parameter (in other words, you can apply only one action for each defined mitigation action).',
-    required: [],
-  })
-  .openapi('MitigationActionParams')
-
-const MitigationActionSchema = z
-  .object({
-    name: MitigationActionNameSchema.and(
-      z.any().openapi({ description: 'A user-friendly name for the mitigation action.' }),
-    ).exactOptional(),
-    id: MitigationActionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the mitigation action.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The IAM role ARN used to apply this mitigation action.' }),
-    ).exactOptional(),
-    actionParams: MitigationActionParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The set of parameters for this mitigation action. The parameters vary, depending on the kind of action you apply.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Describes which changes should be applied as part of a mitigation action.',
-    required: [],
-  })
-  .openapi('MitigationAction')
-
-const MitigationActionListSchema = z.array(MitigationActionSchema).openapi('MitigationActionList')
-
 const DescribeAuditMitigationActionsTaskResponseSchema = z
   .object({
-    taskStatus: AuditMitigationActionsTaskStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the task.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the task was started.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the task was completed or canceled.' }),
-    ).exactOptional(),
-    taskStatistics: AuditMitigationActionsTaskStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Aggregate counts of the results when the mitigation tasks were applied to the findings for this audit mitigation actions task.',
-        }),
-    ).exactOptional(),
-    target: AuditMitigationActionsTaskTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifies the findings to which the mitigation actions are applied. This can be by audit checks, by audit task, or a set of findings.',
-        }),
-    ).exactOptional(),
-    auditCheckToActionsMapping: AuditCheckToActionsMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the mitigation actions that should be applied to specific audit checks.',
-        }),
-    ).exactOptional(),
-    actionsDefinition: MitigationActionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the mitigation actions and their parameters that are applied as part of this task.',
-        }),
-    ).exactOptional(),
+    taskStatus: AuditMitigationActionsTaskStatusSchema.exactOptional().openapi({
+      description: 'The current status of the task.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the task was started.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the task was completed or canceled.',
+    }),
+    taskStatistics: AuditMitigationActionsTaskStatisticsSchema.exactOptional().openapi({
+      description:
+        'Aggregate counts of the results when the mitigation tasks were applied to the findings for this audit mitigation actions task.',
+    }),
+    target: AuditMitigationActionsTaskTargetSchema.exactOptional().openapi({
+      description:
+        'Identifies the findings to which the mitigation actions are applied. This can be by audit checks, by audit task, or a set of findings.',
+    }),
+    auditCheckToActionsMapping: AuditCheckToActionsMappingSchema.exactOptional().openapi({
+      description:
+        'Specifies the mitigation actions that should be applied to specific audit checks.',
+    }),
+    actionsDefinition: MitigationActionListSchema.exactOptional().openapi({
+      description:
+        'Specifies the mitigation actions and their parameters that are applied as part of this task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuditMitigationActionsTaskResponse')
@@ -4098,23 +3653,15 @@ const DescribeAuditSuppressionResponseSchema = z
   .object({
     checkName: AuditCheckNameSchema.exactOptional(),
     resourceIdentifier: ResourceIdentifierSchema.exactOptional(),
-    expirationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The epoch timestamp in seconds at which this suppression expires. ',
-        }),
-    ).exactOptional(),
-    suppressIndefinitely: SuppressIndefinitelySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether a suppression should exist indefinitely or not. ',
-        }),
-    ).exactOptional(),
-    description: AuditDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the audit suppression. ' }),
-    ).exactOptional(),
+    expirationDate: TimestampSchema.exactOptional().openapi({
+      description: ' The epoch timestamp in seconds at which this suppression expires. ',
+    }),
+    suppressIndefinitely: SuppressIndefinitelySchema.exactOptional().openapi({
+      description: ' Indicates whether a suppression should exist indefinitely or not. ',
+    }),
+    description: AuditDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the audit suppression. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuditSuppressionResponse')
@@ -4145,31 +3692,28 @@ const CanceledChecksCountSchema = z.int().openapi('CanceledChecksCount')
 
 const TaskStatisticsSchema = z
   .object({
-    totalChecks: TotalChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks in this audit.' }),
-    ).exactOptional(),
-    inProgressChecks: InProgressChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks in progress.' }),
-    ).exactOptional(),
-    waitingForDataCollectionChecks: WaitingForDataCollectionChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks waiting for data collection.' }),
-    ).exactOptional(),
-    compliantChecks: CompliantChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks that found compliant resources.' }),
-    ).exactOptional(),
-    nonCompliantChecks: NonCompliantChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks that found noncompliant resources.' }),
-    ).exactOptional(),
-    failedChecks: FailedChecksCountSchema.and(
-      z.any().openapi({ description: 'The number of checks.' }),
-    ).exactOptional(),
-    canceledChecks: CanceledChecksCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of checks that did not run because the audit was canceled.',
-        }),
-    ).exactOptional(),
+    totalChecks: TotalChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks in this audit.',
+    }),
+    inProgressChecks: InProgressChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks in progress.',
+    }),
+    waitingForDataCollectionChecks:
+      WaitingForDataCollectionChecksCountSchema.exactOptional().openapi({
+        description: 'The number of checks waiting for data collection.',
+      }),
+    compliantChecks: CompliantChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks that found compliant resources.',
+    }),
+    nonCompliantChecks: NonCompliantChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks that found noncompliant resources.',
+    }),
+    failedChecks: FailedChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks.',
+    }),
+    canceledChecks: CanceledChecksCountSchema.exactOptional().openapi({
+      description: 'The number of checks that did not run because the audit was canceled.',
+    }),
   })
   .openapi({ description: 'Statistics for the checks performed during the audit.', required: [] })
   .openapi('TaskStatistics')
@@ -4208,55 +3752,32 @@ const ErrorMessageSchema = z.string().max(2048).openapi('ErrorMessage')
 
 const AuditCheckDetailsSchema = z
   .object({
-    checkRunStatus: AuditCheckRunStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion status of this check. One of "IN_PROGRESS", "WAITING_FOR_DATA_COLLECTION", "CANCELED", "COMPLETED_COMPLIANT", "COMPLETED_NON_COMPLIANT", or "FAILED".',
-        }),
-    ).exactOptional(),
-    checkCompliant: CheckCompliantSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if the check is complete and found all resources compliant.',
-        }),
-    ).exactOptional(),
-    totalResourcesCount: TotalResourcesCountSchema.and(
-      z.any().openapi({ description: 'The number of resources on which the check was performed.' }),
-    ).exactOptional(),
-    nonCompliantResourcesCount: NonCompliantResourcesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of resources that were found noncompliant during the check.',
-        }),
-    ).exactOptional(),
-    suppressedNonCompliantResourcesCount: SuppressedNonCompliantResourcesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Describes how many of the non-compliant resources created during the evaluation of an audit check were marked as suppressed. ',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The code of any error encountered when this check is performed during this audit. One of "INSUFFICIENT_PERMISSIONS" or "AUDIT_CHECK_DISABLED".',
-        }),
-    ).exactOptional(),
-    message: ErrorMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The message associated with any error encountered when this check is performed during this audit.',
-        }),
-    ).exactOptional(),
+    checkRunStatus: AuditCheckRunStatusSchema.exactOptional().openapi({
+      description:
+        'The completion status of this check. One of "IN_PROGRESS", "WAITING_FOR_DATA_COLLECTION", "CANCELED", "COMPLETED_COMPLIANT", "COMPLETED_NON_COMPLIANT", or "FAILED".',
+    }),
+    checkCompliant: CheckCompliantSchema.exactOptional().openapi({
+      description: 'True if the check is complete and found all resources compliant.',
+    }),
+    totalResourcesCount: TotalResourcesCountSchema.exactOptional().openapi({
+      description: 'The number of resources on which the check was performed.',
+    }),
+    nonCompliantResourcesCount: NonCompliantResourcesCountSchema.exactOptional().openapi({
+      description: 'The number of resources that were found noncompliant during the check.',
+    }),
+    suppressedNonCompliantResourcesCount:
+      SuppressedNonCompliantResourcesCountSchema.exactOptional().openapi({
+        description:
+          ' Describes how many of the non-compliant resources created during the evaluation of an audit check were marked as suppressed. ',
+      }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description:
+        'The code of any error encountered when this check is performed during this audit. One of "INSUFFICIENT_PERMISSIONS" or "AUDIT_CHECK_DISABLED".',
+    }),
+    message: ErrorMessageSchema.exactOptional().openapi({
+      description:
+        'The message associated with any error encountered when this check is performed during this audit.',
+    }),
   })
   .openapi({ description: 'Information about the audit check.', required: [] })
   .openapi('AuditCheckDetails')
@@ -4265,41 +3786,25 @@ const AuditDetailsSchema = z.record(z.string(), AuditCheckDetailsSchema).openapi
 
 const DescribeAuditTaskResponseSchema = z
   .object({
-    taskStatus: AuditTaskStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the audit: one of "IN_PROGRESS", "COMPLETED", "FAILED", or "CANCELED".',
-        }),
-    ).exactOptional(),
-    taskType: AuditTaskTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of audit: "ON_DEMAND_AUDIT_TASK" or "SCHEDULED_AUDIT_TASK".',
-        }),
-    ).exactOptional(),
-    taskStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the audit started.' }),
-    ).exactOptional(),
-    taskStatistics: TaskStatisticsSchema.and(
-      z.any().openapi({ description: 'Statistical information about the audit.' }),
-    ).exactOptional(),
-    scheduledAuditName: ScheduledAuditNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the scheduled audit (only if the audit was a scheduled audit).',
-        }),
-    ).exactOptional(),
-    auditDetails: AuditDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Detailed information about each check performed during this audit.',
-        }),
-    ).exactOptional(),
+    taskStatus: AuditTaskStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the audit: one of "IN_PROGRESS", "COMPLETED", "FAILED", or "CANCELED".',
+    }),
+    taskType: AuditTaskTypeSchema.exactOptional().openapi({
+      description: 'The type of audit: "ON_DEMAND_AUDIT_TASK" or "SCHEDULED_AUDIT_TASK".',
+    }),
+    taskStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the audit started.',
+    }),
+    taskStatistics: TaskStatisticsSchema.exactOptional().openapi({
+      description: 'Statistical information about the audit.',
+    }),
+    scheduledAuditName: ScheduledAuditNameSchema.exactOptional().openapi({
+      description: 'The name of the scheduled audit (only if the audit was a scheduled audit).',
+    }),
+    auditDetails: AuditDetailsSchema.exactOptional().openapi({
+      description: 'Detailed information about each check performed during this audit.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuditTaskResponse')
@@ -4327,62 +3832,48 @@ const EnableCachingForHttpSchema = z.boolean().openapi('EnableCachingForHttp')
 
 const AuthorizerDescriptionSchema = z
   .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: 'The authorizer name.' }),
-    ).exactOptional(),
-    authorizerArn: AuthorizerArnSchema.and(
-      z.any().openapi({ description: 'The authorizer ARN.' }),
-    ).exactOptional(),
-    authorizerFunctionArn: AuthorizerFunctionArnSchema.and(
-      z.any().openapi({ description: "The authorizer's Lambda function ARN." }),
-    ).exactOptional(),
-    tokenKeyName: TokenKeyNameSchema.and(
-      z.any().openapi({ description: 'The key used to extract the token from the HTTP headers.' }),
-    ).exactOptional(),
-    tokenSigningPublicKeys: PublicKeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The public keys used to validate the token signature returned by your custom authentication service.',
-        }),
-    ).exactOptional(),
-    status: AuthorizerStatusSchema.and(
-      z.any().openapi({ description: 'The status of the authorizer.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The UNIX timestamp of when the authorizer was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The UNIX timestamp of when the authorizer was last updated.' }),
-    ).exactOptional(),
-    signingDisabled: BooleanKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IoT validates the token signature in an authorization request.',
-        }),
-    ).exactOptional(),
-    enableCachingForHttp: EnableCachingForHttpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.',
-        }),
-    ).exactOptional(),
+    authorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: 'The authorizer name.',
+    }),
+    authorizerArn: AuthorizerArnSchema.exactOptional().openapi({
+      description: 'The authorizer ARN.',
+    }),
+    authorizerFunctionArn: AuthorizerFunctionArnSchema.exactOptional().openapi({
+      description: "The authorizer's Lambda function ARN.",
+    }),
+    tokenKeyName: TokenKeyNameSchema.exactOptional().openapi({
+      description: 'The key used to extract the token from the HTTP headers.',
+    }),
+    tokenSigningPublicKeys: PublicKeyMapSchema.exactOptional().openapi({
+      description:
+        'The public keys used to validate the token signature returned by your custom authentication service.',
+    }),
+    status: AuthorizerStatusSchema.exactOptional().openapi({
+      description: 'The status of the authorizer.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The UNIX timestamp of when the authorizer was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The UNIX timestamp of when the authorizer was last updated.',
+    }),
+    signingDisabled: BooleanKeySchema.exactOptional().openapi({
+      description:
+        'Specifies whether IoT validates the token signature in an authorization request.',
+    }),
+    enableCachingForHttp: EnableCachingForHttpSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.',
+    }),
   })
   .openapi({ description: 'The authorizer description.', required: [] })
   .openapi('AuthorizerDescription')
 
 const DescribeAuthorizerResponseSchema = z
   .object({
-    authorizerDescription: AuthorizerDescriptionSchema.and(
-      z.any().openapi({ description: 'The authorizer description.' }),
-    ).exactOptional(),
+    authorizerDescription: AuthorizerDescriptionSchema.exactOptional().openapi({
+      description: 'The authorizer description.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAuthorizerResponse')
@@ -4391,9 +3882,9 @@ const VersionSchema = z.int().openapi('Version')
 
 const BillingGroupPropertiesSchema = z
   .object({
-    billingGroupDescription: BillingGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the billing group.' }),
-    ).exactOptional(),
+    billingGroupDescription: BillingGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the billing group.',
+    }),
   })
   .openapi({ description: 'The properties of a billing group.', required: [] })
   .openapi('BillingGroupProperties')
@@ -4402,33 +3893,33 @@ const CreationDateSchema = z.iso.datetime({ offset: true }).openapi('CreationDat
 
 const BillingGroupMetadataSchema = z
   .object({
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The date the billing group was created.' }),
-    ).exactOptional(),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date the billing group was created.',
+    }),
   })
   .openapi({ description: 'Additional information about the billing group.', required: [] })
   .openapi('BillingGroupMetadata')
 
 const DescribeBillingGroupResponseSchema = z
   .object({
-    billingGroupName: BillingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the billing group.' }),
-    ).exactOptional(),
-    billingGroupId: BillingGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the billing group.' }),
-    ).exactOptional(),
-    billingGroupArn: BillingGroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the billing group.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the billing group.' }),
-    ).exactOptional(),
-    billingGroupProperties: BillingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the billing group.' }),
-    ).exactOptional(),
-    billingGroupMetadata: BillingGroupMetadataSchema.and(
-      z.any().openapi({ description: 'Additional information about the billing group.' }),
-    ).exactOptional(),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the billing group.',
+    }),
+    billingGroupId: BillingGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the billing group.',
+    }),
+    billingGroupArn: BillingGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the billing group.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the billing group.',
+    }),
+    billingGroupProperties: BillingGroupPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the billing group.',
+    }),
+    billingGroupMetadata: BillingGroupMetadataSchema.exactOptional().openapi({
+      description: 'Additional information about the billing group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeBillingGroupResponse')
@@ -4443,12 +3934,12 @@ const GenerationIdSchema = z.string().openapi('GenerationId')
 
 const CertificateValiditySchema = z
   .object({
-    notBefore: DateTypeSchema.and(
-      z.any().openapi({ description: 'The certificate is not valid before this date.' }),
-    ).exactOptional(),
-    notAfter: DateTypeSchema.and(
-      z.any().openapi({ description: 'The certificate is not valid after this date.' }),
-    ).exactOptional(),
+    notBefore: DateTypeSchema.exactOptional().openapi({
+      description: 'The certificate is not valid before this date.',
+    }),
+    notAfter: DateTypeSchema.exactOptional().openapi({
+      description: 'The certificate is not valid after this date.',
+    }),
   })
   .openapi({ description: 'When the certificate is valid.', required: [] })
   .openapi('CertificateValidity')
@@ -4457,52 +3948,44 @@ const CertificateModeSchema = z.enum(['DEFAULT', 'SNI_ONLY']).openapi('Certifica
 
 const CACertificateDescriptionSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The CA certificate ARN.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The CA certificate ID.' }),
-    ).exactOptional(),
-    status: CACertificateStatusSchema.and(
-      z.any().openapi({ description: 'The status of a CA certificate.' }),
-    ).exactOptional(),
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The CA certificate data, in PEM format.' }),
-    ).exactOptional(),
-    ownedBy: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The owner of the CA certificate.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the CA certificate was created.' }),
-    ).exactOptional(),
-    autoRegistrationStatus: AutoRegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the CA certificate configured for auto registration of device certificates. Valid values are "ENABLE" and "DISABLE"',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the CA certificate was last modified.' }),
-    ).exactOptional(),
-    customerVersion: CustomerVersionSchema.and(
-      z.any().openapi({ description: 'The customer version of the CA certificate.' }),
-    ).exactOptional(),
-    generationId: GenerationIdSchema.and(
-      z.any().openapi({ description: 'The generation ID of the CA certificate.' }),
-    ).exactOptional(),
-    validity: CertificateValiditySchema.and(
-      z.any().openapi({ description: 'When the CA certificate is valid.' }),
-    ).exactOptional(),
-    certificateMode: CertificateModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The mode of the CA. </p> <p>All the device certificates that are registered using this CA will be registered in the same mode as the CA. For more information about certificate mode for device certificates, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode">certificate mode</a>.</p>',
-        }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The CA certificate ARN.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The CA certificate ID.',
+    }),
+    status: CACertificateStatusSchema.exactOptional().openapi({
+      description: 'The status of a CA certificate.',
+    }),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The CA certificate data, in PEM format.',
+    }),
+    ownedBy: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The owner of the CA certificate.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the CA certificate was created.',
+    }),
+    autoRegistrationStatus: AutoRegistrationStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the CA certificate configured for auto registration of device certificates. Valid values are "ENABLE" and "DISABLE"',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the CA certificate was last modified.',
+    }),
+    customerVersion: CustomerVersionSchema.exactOptional().openapi({
+      description: 'The customer version of the CA certificate.',
+    }),
+    generationId: GenerationIdSchema.exactOptional().openapi({
+      description: 'The generation ID of the CA certificate.',
+    }),
+    validity: CertificateValiditySchema.exactOptional().openapi({
+      description: 'When the CA certificate is valid.',
+    }),
+    certificateMode: CertificateModeSchema.exactOptional().openapi({
+      description:
+        '<p>The mode of the CA. </p> <p>All the device certificates that are registered using this CA will be registered in the same mode as the CA. For more information about certificate mode for device certificates, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode">certificate mode</a>.</p>',
+    }),
   })
   .openapi({ description: 'Describes a CA certificate.', required: [] })
   .openapi('CACertificateDescription')
@@ -4516,27 +3999,23 @@ const TemplateBodySchema = z
 
 const RegistrationConfigSchema = z
   .object({
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: 'The template body.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the role.' }),
-    ).exactOptional(),
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ).exactOptional(),
+    templateBody: TemplateBodySchema.exactOptional().openapi({ description: 'The template body.' }),
+    roleArn: RoleArnSchema.exactOptional().openapi({ description: 'The ARN of the role.' }),
+    templateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning template.',
+    }),
   })
   .openapi({ description: 'The registration configuration.', required: [] })
   .openapi('RegistrationConfig')
 
 const DescribeCACertificateResponseSchema = z
   .object({
-    certificateDescription: CACertificateDescriptionSchema.and(
-      z.any().openapi({ description: 'The CA certificate description.' }),
-    ).exactOptional(),
-    registrationConfig: RegistrationConfigSchema.and(
-      z.any().openapi({ description: 'Information about the registration configuration.' }),
-    ).exactOptional(),
+    certificateDescription: CACertificateDescriptionSchema.exactOptional().openapi({
+      description: 'The CA certificate description.',
+    }),
+    registrationConfig: RegistrationConfigSchema.exactOptional().openapi({
+      description: 'Information about the registration configuration.',
+    }),
   })
   .openapi({ description: 'The output from the DescribeCACertificate operation.', required: [] })
   .openapi('DescribeCACertificateResponse')
@@ -4560,21 +4039,21 @@ const MessageSchema = z
 
 const TransferDataSchema = z
   .object({
-    transferMessage: MessageSchema.and(
-      z.any().openapi({ description: 'The transfer message.' }),
-    ).exactOptional(),
-    rejectReason: MessageSchema.and(
-      z.any().openapi({ description: 'The reason why the transfer was rejected.' }),
-    ).exactOptional(),
-    transferDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the transfer took place.' }),
-    ).exactOptional(),
-    acceptDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the transfer was accepted.' }),
-    ).exactOptional(),
-    rejectDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the transfer was rejected.' }),
-    ).exactOptional(),
+    transferMessage: MessageSchema.exactOptional().openapi({
+      description: 'The transfer message.',
+    }),
+    rejectReason: MessageSchema.exactOptional().openapi({
+      description: 'The reason why the transfer was rejected.',
+    }),
+    transferDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the transfer took place.',
+    }),
+    acceptDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the transfer was accepted.',
+    }),
+    rejectDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the transfer was rejected.',
+    }),
   })
   .openapi({
     description: 'Data used to transfer a certificate to an Amazon Web Services account.',
@@ -4584,75 +4063,57 @@ const TransferDataSchema = z
 
 const CertificateDescriptionSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the certificate.' }),
-    ).exactOptional(),
-    caCertificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The certificate ID of the CA certificate used to sign this certificate.',
-        }),
-    ).exactOptional(),
-    status: CertificateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the certificate.' }),
-    ).exactOptional(),
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ).exactOptional(),
-    ownedBy: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the Amazon Web Services account that owns the certificate.',
-        }),
-    ).exactOptional(),
-    previousOwnedBy: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services account of the previous owner of the certificate.',
-        }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time the certificate was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time the certificate was last modified.' }),
-    ).exactOptional(),
-    customerVersion: CustomerVersionSchema.and(
-      z.any().openapi({ description: 'The customer version of the certificate.' }),
-    ).exactOptional(),
-    transferData: TransferDataSchema.and(
-      z.any().openapi({ description: 'The transfer data.' }),
-    ).exactOptional(),
-    generationId: GenerationIdSchema.and(
-      z.any().openapi({ description: 'The generation ID of the certificate.' }),
-    ).exactOptional(),
-    validity: CertificateValiditySchema.and(
-      z.any().openapi({ description: 'When the certificate is valid.' }),
-    ).exactOptional(),
-    certificateMode: CertificateModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The mode of the certificate.</p> <p> <code>DEFAULT</code>: A certificate in <code>DEFAULT</code> mode is either generated by Amazon Web Services IoT Core or registered with an issuer certificate authority (CA) in <code>DEFAULT</code> mode. Devices with certificates in <code>DEFAULT</code> mode aren\'t required to send the Server Name Indication (SNI) extension when connecting to Amazon Web Services IoT Core. However, to use features such as custom domains and VPC endpoints, we recommend that you use the SNI extension when connecting to Amazon Web Services IoT Core.</p> <p> <code>SNI_ONLY</code>: A certificate in <code>SNI_ONLY</code> mode is registered without an issuer CA. Devices with certificates in <code>SNI_ONLY</code> mode must send the SNI extension when connecting to Amazon Web Services IoT Core. </p> <p>For more information about the value for SNI extension, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html">Transport security in IoT</a>.</p>',
-        }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the certificate.',
+    }),
+    caCertificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The certificate ID of the CA certificate used to sign this certificate.',
+    }),
+    status: CertificateStatusSchema.exactOptional().openapi({
+      description: 'The status of the certificate.',
+    }),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
+    ownedBy: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the Amazon Web Services account that owns the certificate.',
+    }),
+    previousOwnedBy: AwsAccountIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services account of the previous owner of the certificate.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time the certificate was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time the certificate was last modified.',
+    }),
+    customerVersion: CustomerVersionSchema.exactOptional().openapi({
+      description: 'The customer version of the certificate.',
+    }),
+    transferData: TransferDataSchema.exactOptional().openapi({ description: 'The transfer data.' }),
+    generationId: GenerationIdSchema.exactOptional().openapi({
+      description: 'The generation ID of the certificate.',
+    }),
+    validity: CertificateValiditySchema.exactOptional().openapi({
+      description: 'When the certificate is valid.',
+    }),
+    certificateMode: CertificateModeSchema.exactOptional().openapi({
+      description:
+        '<p>The mode of the certificate.</p> <p> <code>DEFAULT</code>: A certificate in <code>DEFAULT</code> mode is either generated by Amazon Web Services IoT Core or registered with an issuer certificate authority (CA) in <code>DEFAULT</code> mode. Devices with certificates in <code>DEFAULT</code> mode aren\'t required to send the Server Name Indication (SNI) extension when connecting to Amazon Web Services IoT Core. However, to use features such as custom domains and VPC endpoints, we recommend that you use the SNI extension when connecting to Amazon Web Services IoT Core.</p> <p> <code>SNI_ONLY</code>: A certificate in <code>SNI_ONLY</code> mode is registered without an issuer CA. Devices with certificates in <code>SNI_ONLY</code> mode must send the SNI extension when connecting to Amazon Web Services IoT Core. </p> <p>For more information about the value for SNI extension, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html">Transport security in IoT</a>.</p>',
+    }),
   })
   .openapi({ description: 'Describes a certificate.', required: [] })
   .openapi('CertificateDescription')
 
 const DescribeCertificateResponseSchema = z
   .object({
-    certificateDescription: CertificateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the certificate.' }),
-    ).exactOptional(),
+    certificateDescription: CertificateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the certificate.',
+    }),
   })
   .openapi({ description: 'The output of the DescribeCertificate operation.', required: [] })
   .openapi('DescribeCertificateResponse')
@@ -4669,189 +4130,44 @@ const CustomMetricDisplayNameSchema = z
 
 const DescribeCustomMetricResponseSchema = z
   .object({
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: ' The name of the custom metric. ' }),
-    ).exactOptional(),
-    metricArn: CustomMetricArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Number (ARN) of the custom metric. ' }),
-    ).exactOptional(),
-    metricType: CustomMetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>',
-        }),
-    ).exactOptional(),
-    displayName: CustomMetricDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Field represents a friendly name in the console for the custom metric; doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. Can be updated. ",
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The creation date of the custom metric in milliseconds since epoch. ',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time the custom metric was last modified in milliseconds since epoch. ',
-        }),
-    ).exactOptional(),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: ' The name of the custom metric. ',
+    }),
+    metricArn: CustomMetricArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Number (ARN) of the custom metric. ',
+    }),
+    metricType: CustomMetricTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>',
+    }),
+    displayName: CustomMetricDisplayNameSchema.exactOptional().openapi({
+      description:
+        " Field represents a friendly name in the console for the custom metric; doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. Can be updated. ",
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: ' The creation date of the custom metric in milliseconds since epoch. ',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: ' The time the custom metric was last modified in milliseconds since epoch. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCustomMetricResponse')
 
 const DescribeDefaultAuthorizerResponseSchema = z
   .object({
-    authorizerDescription: AuthorizerDescriptionSchema.and(
-      z.any().openapi({ description: "The default authorizer's description." }),
-    ).exactOptional(),
+    authorizerDescription: AuthorizerDescriptionSchema.exactOptional().openapi({
+      description: "The default authorizer's description.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDefaultAuthorizerResponse')
 
-const MitigationActionsTaskIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9_-]+/)
-  .min(1)
-  .max(128)
-  .openapi('MitigationActionsTaskId')
-
-const DetectMitigationActionsTaskStatusSchema = z
-  .enum(['IN_PROGRESS', 'SUCCESSFUL', 'FAILED', 'CANCELED'])
-  .openapi('DetectMitigationActionsTaskStatus')
-
-const ViolationIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9\-]+/)
-  .min(1)
-  .max(128)
-  .openapi('ViolationId')
-
-const TargetViolationIdsForDetectMitigationActionsSchema = z
-  .array(ViolationIdSchema)
-  .min(1)
-  .max(25)
-  .openapi('TargetViolationIdsForDetectMitigationActions')
-
-const DetectMitigationActionsTaskTargetSchema = z
-  .object({
-    violationIds: TargetViolationIdsForDetectMitigationActionsSchema.and(
-      z.any().openapi({ description: ' The unique identifiers of the violations. ' }),
-    ).exactOptional(),
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: ' The name of the security profile. ' }),
-    ).exactOptional(),
-    behaviorName: BehaviorNameSchema.and(
-      z.any().openapi({ description: ' The name of the behavior. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The target of a mitigation action task. ', required: [] })
-  .openapi('DetectMitigationActionsTaskTarget')
-
-const ViolationEventOccurrenceRangeSchema = z
-  .object({
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The start date and time of a time period in which violation events occurred. ',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The end date and time of a time period in which violation events occurred. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['startTime', 'endTime'],
-    description: ' Specifies the time period of which violation events occurred between. ',
-  })
-  .openapi('ViolationEventOccurrenceRange')
-
-const PrimitiveBooleanSchema = z.boolean().openapi('PrimitiveBoolean')
-
-const GenericLongValueSchema = z.int().openapi('GenericLongValue')
-
-const DetectMitigationActionsTaskStatisticsSchema = z
-  .object({
-    actionsExecuted: GenericLongValueSchema.and(
-      z.any().openapi({ description: ' The actions that were performed. ' }),
-    ).exactOptional(),
-    actionsSkipped: GenericLongValueSchema.and(
-      z.any().openapi({ description: ' The actions that were skipped. ' }),
-    ).exactOptional(),
-    actionsFailed: GenericLongValueSchema.and(
-      z.any().openapi({ description: ' The actions that failed. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The statistics of a mitigation action task. ', required: [] })
-  .openapi('DetectMitigationActionsTaskStatistics')
-
-const DetectMitigationActionsTaskSummarySchema = z
-  .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier of the task. ' }),
-    ).exactOptional(),
-    taskStatus: DetectMitigationActionsTaskStatusSchema.and(
-      z.any().openapi({ description: ' The status of the task. ' }),
-    ).exactOptional(),
-    taskStartTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date the task started. ' }),
-    ).exactOptional(),
-    taskEndTime: TimestampSchema.and(
-      z.any().openapi({ description: ' The date the task ended. ' }),
-    ).exactOptional(),
-    target: DetectMitigationActionsTaskTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the ML Detect findings to which the mitigation actions are applied. ',
-        }),
-    ).exactOptional(),
-    violationEventOccurrenceRange: ViolationEventOccurrenceRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the time period of which violation events occurred between. ',
-        }),
-    ).exactOptional(),
-    onlyActiveViolationsIncluded: PrimitiveBooleanSchema.and(
-      z.any().openapi({ description: ' Includes only active violations. ' }),
-    ).exactOptional(),
-    suppressedAlertsIncluded: PrimitiveBooleanSchema.and(
-      z.any().openapi({ description: ' Includes suppressed alerts. ' }),
-    ).exactOptional(),
-    actionsDefinition: MitigationActionListSchema.and(
-      z.any().openapi({ description: ' The definition of the actions. ' }),
-    ).exactOptional(),
-    taskStatistics: DetectMitigationActionsTaskStatisticsSchema.and(
-      z.any().openapi({ description: ' The statistics of a mitigation action task. ' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: ' The summary of the mitigation action tasks. ', required: [] })
-  .openapi('DetectMitigationActionsTaskSummary')
-
 const DescribeDetectMitigationActionsTaskResponseSchema = z
   .object({
-    taskSummary: DetectMitigationActionsTaskSummarySchema.and(
-      z.any().openapi({ description: ' The description of a task. ' }),
-    ).exactOptional(),
+    taskSummary: DetectMitigationActionsTaskSummarySchema.exactOptional().openapi({
+      description: ' The description of a task. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDetectMitigationActionsTaskResponse')
@@ -4866,29 +4182,25 @@ const DimensionStringValuesSchema = z
 
 const DescribeDimensionResponseSchema = z
   .object({
-    name: DimensionNameSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the dimension.' }),
-    ).exactOptional(),
-    arn: DimensionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for the dimension.' }),
-    ).exactOptional(),
-    type: DimensionTypeSchema.and(
-      z.any().openapi({ description: 'The type of the dimension.' }),
-    ).exactOptional(),
-    stringValues: DimensionStringValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value or list of values used to scope the dimension. For example, for topic filters, this is the pattern used to match the MQTT topic name.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the dimension was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date the dimension was last modified.' }),
-    ).exactOptional(),
+    name: DimensionNameSchema.exactOptional().openapi({
+      description: 'The unique identifier for the dimension.',
+    }),
+    arn: DimensionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for the dimension.',
+    }),
+    type: DimensionTypeSchema.exactOptional().openapi({
+      description: 'The type of the dimension.',
+    }),
+    stringValues: DimensionStringValuesSchema.exactOptional().openapi({
+      description:
+        'The value or list of values used to scope the dimension. For example, for topic filters, this is the pattern used to match the MQTT topic name.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the dimension was created.',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date the dimension was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDimensionResponse')
@@ -4915,17 +4227,15 @@ const ServerCertificateStatusDetailSchema = z.string().openapi('ServerCertificat
 
 const ServerCertificateSummarySchema = z
   .object({
-    serverCertificateArn: AcmCertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the server certificate.' }),
-    ).exactOptional(),
-    serverCertificateStatus: ServerCertificateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the server certificate.' }),
-    ).exactOptional(),
-    serverCertificateStatusDetail: ServerCertificateStatusDetailSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Details that explain the status of the server certificate.' }),
-    ).exactOptional(),
+    serverCertificateArn: AcmCertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the server certificate.',
+    }),
+    serverCertificateStatus: ServerCertificateStatusSchema.exactOptional().openapi({
+      description: 'The status of the server certificate.',
+    }),
+    serverCertificateStatusDetail: ServerCertificateStatusDetailSchema.exactOptional().openapi({
+      description: 'Details that explain the status of the server certificate.',
+    }),
   })
   .openapi({
     description: 'An object that contains information about a server certificate.',
@@ -4939,21 +4249,13 @@ const ServerCertificatesSchema = z
 
 const AuthorizerConfigSchema = z
   .object({
-    defaultAuthorizerName: AuthorizerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the authorization service for a domain configuration.',
-        }),
-    ).exactOptional(),
-    allowAuthorizerOverride: AllowAuthorizerOverrideSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
-        }),
-    ).exactOptional(),
+    defaultAuthorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: 'The name of the authorization service for a domain configuration.',
+    }),
+    allowAuthorizerOverride: AllowAuthorizerOverrideSchema.exactOptional().openapi({
+      description:
+        "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
+    }),
   })
   .openapi({
     description: 'An object that specifies the authorization service for a domain.',
@@ -4973,51 +4275,34 @@ const DomainTypeSchema = z
 
 const DescribeDomainConfigurationResponseSchema = z
   .object({
-    domainConfigurationName: ReservedDomainConfigurationNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain configuration.' }),
-    ).exactOptional(),
-    domainConfigurationArn: DomainConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the domain configuration.' }),
-    ).exactOptional(),
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain.' }),
-    ).exactOptional(),
-    serverCertificates: ServerCertificatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list containing summary information about the server certificate included in the domain configuration.',
-        }),
-    ).exactOptional(),
-    authorizerConfig: AuthorizerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that specifies the authorization service for a domain.',
-        }),
-    ).exactOptional(),
-    domainConfigurationStatus: DomainConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value that specifies the current state of the domain configuration.',
-        }),
-    ).exactOptional(),
-    serviceType: ServiceTypeSchema.and(
-      z.any().openapi({ description: 'The type of service delivered by the endpoint.' }),
-    ).exactOptional(),
-    domainType: DomainTypeSchema.and(
-      z.any().openapi({ description: 'The type of the domain.' }),
-    ).exactOptional(),
-    lastStatusChangeDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The date and time the domain configuration's status was last changed.",
-        }),
-    ).exactOptional(),
+    domainConfigurationName: ReservedDomainConfigurationNameSchema.exactOptional().openapi({
+      description: 'The name of the domain configuration.',
+    }),
+    domainConfigurationArn: DomainConfigurationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the domain configuration.',
+    }),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The name of the domain.',
+    }),
+    serverCertificates: ServerCertificatesSchema.exactOptional().openapi({
+      description:
+        'A list containing summary information about the server certificate included in the domain configuration.',
+    }),
+    authorizerConfig: AuthorizerConfigSchema.exactOptional().openapi({
+      description: 'An object that specifies the authorization service for a domain.',
+    }),
+    domainConfigurationStatus: DomainConfigurationStatusSchema.exactOptional().openapi({
+      description: 'A Boolean value that specifies the current state of the domain configuration.',
+    }),
+    serviceType: ServiceTypeSchema.exactOptional().openapi({
+      description: 'The type of service delivered by the endpoint.',
+    }),
+    domainType: DomainTypeSchema.exactOptional().openapi({
+      description: 'The type of the domain.',
+    }),
+    lastStatusChangeDate: DateTypeSchema.exactOptional().openapi({
+      description: "The date and time the domain configuration's status was last changed.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeDomainConfigurationResponse')
@@ -5026,23 +4311,19 @@ const EndpointAddressSchema = z.string().openapi('EndpointAddress')
 
 const DescribeEndpointResponseSchema = z
   .object({
-    endpointAddress: EndpointAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The endpoint. The format of the endpoint is as follows: <i>identifier</i>.iot.<i>region</i>.amazonaws.com.',
-        }),
-    ).exactOptional(),
+    endpointAddress: EndpointAddressSchema.exactOptional().openapi({
+      description:
+        'The endpoint. The format of the endpoint is as follows: <i>identifier</i>.iot.<i>region</i>.amazonaws.com.',
+    }),
   })
   .openapi({ description: 'The output from the DescribeEndpoint operation.', required: [] })
   .openapi('DescribeEndpointResponse')
 
 const ConfigurationSchema = z
   .object({
-    Enabled: EnabledSchema.and(
-      z.any().openapi({ description: 'True to enable the configuration.' }),
-    ).exactOptional(),
+    Enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True to enable the configuration.',
+    }),
   })
   .openapi({ description: 'Configuration.', required: [] })
   .openapi('Configuration')
@@ -5055,27 +4336,25 @@ const LastModifiedDateSchema = z.iso.datetime({ offset: true }).openapi('LastMod
 
 const DescribeEventConfigurationsResponseSchema = z
   .object({
-    eventConfigurations: EventConfigurationsSchema.and(
-      z.any().openapi({ description: 'The event configurations.' }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The creation date of the event configuration.' }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z.any().openapi({ description: 'The date the event configurations were last modified.' }),
-    ).exactOptional(),
+    eventConfigurations: EventConfigurationsSchema.exactOptional().openapi({
+      description: 'The event configurations.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The creation date of the event configuration.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date the event configurations were last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeEventConfigurationsResponse')
 
 const AggregationTypeSchema = z
   .object({
-    name: AggregationTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the aggregation type.' }),
-    ),
-    values: AggregationTypeValuesSchema.and(
-      z.any().openapi({ description: 'A list of the values of aggregation types.' }),
-    ).exactOptional(),
+    name: AggregationTypeNameSchema.openapi({ description: 'The name of the aggregation type.' }),
+    values: AggregationTypeValuesSchema.exactOptional().openapi({
+      description: 'A list of the values of aggregation types.',
+    }),
   })
   .openapi({ required: ['name'], description: 'The type of aggregation queries.' })
   .openapi('AggregationType')
@@ -5124,55 +4403,45 @@ const FleetMetricUnitSchema = z
 
 const DescribeFleetMetricResponseSchema = z
   .object({
-    metricName: FleetMetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the fleet metric to describe.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ).exactOptional(),
-    aggregationType: AggregationTypeSchema.and(
-      z.any().openapi({ description: 'The type of the aggregation query.' }),
-    ).exactOptional(),
-    period: FleetMetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
-        }),
-    ).exactOptional(),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The field to aggregate.' }),
-    ).exactOptional(),
-    description: FleetMetricDescriptionSchema.and(
-      z.any().openapi({ description: 'The fleet metric description.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The query version.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The date when the fleet metric is created.' }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z.any().openapi({ description: 'The date when the fleet metric is last modified.' }),
-    ).exactOptional(),
-    unit: FleetMetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>.',
-        }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the fleet metric.' }),
-    ).exactOptional(),
-    metricArn: FleetMetricArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the fleet metric to describe.' }),
-    ).exactOptional(),
+    metricName: FleetMetricNameSchema.exactOptional().openapi({
+      description: 'The name of the fleet metric to describe.',
+    }),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The search query string.',
+    }),
+    aggregationType: AggregationTypeSchema.exactOptional().openapi({
+      description: 'The type of the aggregation query.',
+    }),
+    period: FleetMetricPeriodSchema.exactOptional().openapi({
+      description:
+        'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
+    }),
+    aggregationField: AggregationFieldSchema.exactOptional().openapi({
+      description: 'The field to aggregate.',
+    }),
+    description: FleetMetricDescriptionSchema.exactOptional().openapi({
+      description: 'The fleet metric description.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({ description: 'The query version.' }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date when the fleet metric is created.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date when the fleet metric is last modified.',
+    }),
+    unit: FleetMetricUnitSchema.exactOptional().openapi({
+      description:
+        'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the fleet metric.',
+    }),
+    metricArn: FleetMetricArnSchema.exactOptional().openapi({
+      description: 'The ARN of the fleet metric to describe.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeFleetMetricResponse')
@@ -5183,27 +4452,17 @@ const IndexSchemaSchema = z.string().openapi('IndexSchema')
 
 const DescribeIndexResponseSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The index name.' }),
-    ).exactOptional(),
-    indexStatus: IndexStatusSchema.and(
-      z.any().openapi({ description: 'The index status.' }),
-    ).exactOptional(),
-    schema: IndexSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains a value that specifies the type of indexing performed. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains only registry data.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry data and shadow data.</p> </li> <li> <p>REGISTRY_AND_CONNECTIVITY_STATUS - Your thing index contains registry data and thing connectivity status data.</p> </li> <li> <p>REGISTRY_AND_SHADOW_AND_CONNECTIVITY_STATUS - Your thing index contains registry data, shadow data, and thing connectivity status data.</p> </li> <li> <p>MULTI_INDEXING_MODE - Your thing index contains multiple data sources. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_GetIndexingConfiguration.html">GetIndexingConfiguration</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    indexName: IndexNameSchema.exactOptional().openapi({ description: 'The index name.' }),
+    indexStatus: IndexStatusSchema.exactOptional().openapi({ description: 'The index status.' }),
+    schema: IndexSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>Contains a value that specifies the type of indexing performed. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains only registry data.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry data and shadow data.</p> </li> <li> <p>REGISTRY_AND_CONNECTIVITY_STATUS - Your thing index contains registry data and thing connectivity status data.</p> </li> <li> <p>REGISTRY_AND_SHADOW_AND_CONNECTIVITY_STATUS - Your thing index contains registry data, shadow data, and thing connectivity status data.</p> </li> <li> <p>MULTI_INDEXING_MODE - Your thing index contains multiple data sources. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_GetIndexingConfiguration.html">GetIndexingConfiguration</a>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeIndexResponse')
 
 const JobDocumentSourceSchema = z.string().min(1).max(1350).openapi('JobDocumentSource')
-
-const TargetSelectionSchema = z.enum(['CONTINUOUS', 'SNAPSHOT']).openapi('TargetSelection')
 
 const JobStatusSchema = z
   .enum(['IN_PROGRESS', 'CANCELED', 'COMPLETED', 'DELETION_IN_PROGRESS', 'SCHEDULED'])
@@ -5227,57 +4486,37 @@ const JobTargetsSchema = z.array(TargetArnSchema).min(1).openapi('JobTargets')
 
 const PresignedUrlConfigSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
-        }),
-    ).exactOptional(),
-    expiresInSec: ExpiresInSecSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
-        }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
+    }),
+    expiresInSec: ExpiresInSecSchema.exactOptional().openapi({
+      description:
+        'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
+    }),
   })
   .openapi({ description: 'Configuration for pre-signed S3 URLs.', required: [] })
   .openapi('PresignedUrlConfig')
 
 const JobExecutionsRolloutConfigSchema = z
   .object({
-    maximumPerMinute: MaxJobExecutionsPerMinSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
-        }),
-    ).exactOptional(),
-    exponentialRate: ExponentialRolloutRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
-        }),
-    ).exactOptional(),
+    maximumPerMinute: MaxJobExecutionsPerMinSchema.exactOptional().openapi({
+      description:
+        'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
+    }),
+    exponentialRate: ExponentialRolloutRateSchema.exactOptional().openapi({
+      description:
+        'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
+    }),
   })
   .openapi({ description: 'Allows you to create a staged rollout of a job.', required: [] })
   .openapi('JobExecutionsRolloutConfig')
 
 const AbortConfigSchema = z
   .object({
-    criteriaList: AbortCriteriaListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of criteria that determine when and how to abort the job.',
-        }),
-    ),
+    criteriaList: AbortCriteriaListSchema.openapi({
+      description: 'The list of criteria that determine when and how to abort the job.',
+    }),
   })
   .openapi({
     required: ['criteriaList'],
@@ -5309,65 +4548,45 @@ const TimedOutThingsSchema = z.int().openapi('TimedOutThings')
 
 const JobProcessDetailsSchema = z
   .object({
-    processingTargets: ProcessingTargetNameListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The target devices to which the job execution is being rolled out. This value will be null after the job execution has finished rolling out to all the target devices.',
-        }),
-    ).exactOptional(),
-    numberOfCanceledThings: CanceledThingsSchema.and(
-      z.any().openapi({ description: 'The number of things that cancelled the job.' }),
-    ).exactOptional(),
-    numberOfSucceededThings: SucceededThingsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of things which successfully completed the job.' }),
-    ).exactOptional(),
-    numberOfFailedThings: FailedThingsSchema.and(
-      z.any().openapi({ description: 'The number of things that failed executing the job.' }),
-    ).exactOptional(),
-    numberOfRejectedThings: RejectedThingsSchema.and(
-      z.any().openapi({ description: 'The number of things that rejected the job.' }),
-    ).exactOptional(),
-    numberOfQueuedThings: QueuedThingsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of things that are awaiting execution of the job.' }),
-    ).exactOptional(),
-    numberOfInProgressThings: InProgressThingsSchema.and(
-      z.any().openapi({ description: 'The number of things currently executing the job.' }),
-    ).exactOptional(),
-    numberOfRemovedThings: RemovedThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of things that are no longer scheduled to execute the job because they have been deleted or have been removed from the group that was a target of the job.',
-        }),
-    ).exactOptional(),
-    numberOfTimedOutThings: TimedOutThingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of things whose job execution status is <code>TIMED_OUT</code>.',
-        }),
-    ).exactOptional(),
+    processingTargets: ProcessingTargetNameListSchema.exactOptional().openapi({
+      description:
+        'The target devices to which the job execution is being rolled out. This value will be null after the job execution has finished rolling out to all the target devices.',
+    }),
+    numberOfCanceledThings: CanceledThingsSchema.exactOptional().openapi({
+      description: 'The number of things that cancelled the job.',
+    }),
+    numberOfSucceededThings: SucceededThingsSchema.exactOptional().openapi({
+      description: 'The number of things which successfully completed the job.',
+    }),
+    numberOfFailedThings: FailedThingsSchema.exactOptional().openapi({
+      description: 'The number of things that failed executing the job.',
+    }),
+    numberOfRejectedThings: RejectedThingsSchema.exactOptional().openapi({
+      description: 'The number of things that rejected the job.',
+    }),
+    numberOfQueuedThings: QueuedThingsSchema.exactOptional().openapi({
+      description: 'The number of things that are awaiting execution of the job.',
+    }),
+    numberOfInProgressThings: InProgressThingsSchema.exactOptional().openapi({
+      description: 'The number of things currently executing the job.',
+    }),
+    numberOfRemovedThings: RemovedThingsSchema.exactOptional().openapi({
+      description:
+        'The number of things that are no longer scheduled to execute the job because they have been deleted or have been removed from the group that was a target of the job.',
+    }),
+    numberOfTimedOutThings: TimedOutThingsSchema.exactOptional().openapi({
+      description: 'The number of things whose job execution status is <code>TIMED_OUT</code>.',
+    }),
   })
   .openapi({ description: 'The job process details.', required: [] })
   .openapi('JobProcessDetails')
 
 const TimeoutConfigSchema = z
   .object({
-    inProgressTimeoutInMinutes: InProgressTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-        }),
-    ).exactOptional(),
+    inProgressTimeoutInMinutes: InProgressTimeoutInMinutesSchema.exactOptional().openapi({
+      description:
+        "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+    }),
   })
   .openapi({
     description:
@@ -5383,14 +4602,10 @@ const NamespaceIdSchema = z
 
 const JobExecutionsRetryConfigSchema = z
   .object({
-    criteriaList: RetryCriteriaListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of criteria that determines how many retries are allowed for each failure type for a job.',
-        }),
-    ),
+    criteriaList: RetryCriteriaListSchema.openapi({
+      description:
+        'The list of criteria that determines how many retries are allowed for each failure type for a job.',
+    }),
   })
   .openapi({
     required: ['criteriaList'],
@@ -5405,38 +4620,22 @@ const BooleanWrapperObjectSchema = z.boolean().openapi('BooleanWrapperObject')
 
 const SchedulingConfigSchema = z
   .object({
-    startTime: StringDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time. The date and time format for the <code>startTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
-        }),
-    ).exactOptional(),
-    endTime: StringDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. The date and time format for the <code>endTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
-        }),
-    ).exactOptional(),
-    endBehavior: JobEndBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.',
-        }),
-    ).exactOptional(),
-    maintenanceWindows: MaintenanceWindowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.',
-        }),
-    ).exactOptional(),
+    startTime: StringDateTimeSchema.exactOptional().openapi({
+      description:
+        'The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time. The date and time format for the <code>startTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
+    }),
+    endTime: StringDateTimeSchema.exactOptional().openapi({
+      description:
+        'The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. The date and time format for the <code>endTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
+    }),
+    endBehavior: JobEndBehaviorSchema.exactOptional().openapi({
+      description:
+        'Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.',
+    }),
+    maintenanceWindows: MaintenanceWindowsSchema.exactOptional().openapi({
+      description:
+        'An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.',
+    }),
   })
   .openapi({
     description:
@@ -5447,13 +4646,9 @@ const SchedulingConfigSchema = z
 
 const ScheduledJobRolloutSchema = z
   .object({
-    startTime: StringDateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Displays the start times of the next seven maintenance window occurrences.',
-        }),
-    ).exactOptional(),
+    startTime: StringDateTimeSchema.exactOptional().openapi({
+      description: 'Displays the start times of the next seven maintenance window occurrences.',
+    }),
   })
   .openapi({
     description: 'Displays the next seven maintenance window occurrences and their start times.',
@@ -5467,154 +4662,86 @@ const ScheduledJobRolloutListSchema = z
 
 const JobSchema = z
   .object({
-    jobArn: JobArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An ARN identifying the job with format "arn:aws:iot:region:account:job/jobId".',
-        }),
-    ).exactOptional(),
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    targetSelection: TargetSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a device when the thing representing the device is added to a target group, even after the job was completed by all things originally in the group. </p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
-        }),
-    ).exactOptional(),
-    status: JobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the job, one of <code>IN_PROGRESS</code>, <code>CANCELED</code>, <code>DELETION_IN_PROGRESS</code> or <code>COMPLETED</code>. ',
-        }),
-    ).exactOptional(),
-    forceCanceled: ForcedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Will be <code>true</code> if the job was canceled with the optional <code>force</code> parameter set to <code>true</code>.',
-        }),
-    ).exactOptional(),
-    reasonCode: ReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'If the job was updated, provides the reason code for the update.',
-        }),
-    ).exactOptional(),
-    comment: CommentSchema.and(
-      z
-        .any()
-        .openapi({ description: 'If the job was updated, describes the reason for the update.' }),
-    ).exactOptional(),
-    targets: JobTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of IoT things and thing groups to which the job should be sent.',
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the job.' }),
-    ).exactOptional(),
-    presignedUrlConfig: PresignedUrlConfigSchema.and(
-      z.any().openapi({ description: 'Configuration for pre-signed S3 URLs.' }),
-    ).exactOptional(),
-    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create a staged rollout of a job.' }),
-    ).exactOptional(),
-    abortConfig: AbortConfigSchema.and(
-      z.any().openapi({ description: 'Configuration for criteria to abort the job.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job was last updated.',
-        }),
-    ).exactOptional(),
-    completedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job was completed.',
-        }),
-    ).exactOptional(),
-    jobProcessDetails: JobProcessDetailsSchema.and(
-      z.any().openapi({ description: 'Details about the job process.' }),
-    ).exactOptional(),
-    timeoutConfig: TimeoutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time each device has to finish its execution of the job. A timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the timer expires, it will be automatically set to <code>TIMED_OUT</code>.',
-        }),
-    ).exactOptional(),
-    namespaceId: NamespaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace used to indicate that a job is a customer-managed job.</p> <p>When you specify a value for this parameter, Amazon Web Services IoT Core sends jobs notifications to MQTT topics that contain the value in the following format.</p> <p> <code>$aws/things/<i>THING_NAME</i>/jobs/<i>JOB_ID</i>/notify-namespace-<i>NAMESPACE_ID</i>/</code> </p> <note> <p>The <code>namespaceId</code> feature is in public preview.</p> </note>',
-        }),
-    ).exactOptional(),
-    jobTemplateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template used to create the job.' }),
-    ).exactOptional(),
-    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.and(
-      z.any().openapi({ description: 'The configuration for the criteria to retry the job.' }),
-    ).exactOptional(),
-    documentParameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A key-value map that pairs the patterns that need to be replaced in a managed template job document schema. You can use the description of each key as a guidance to specify the inputs during runtime when creating a job.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
-        }),
-    ).exactOptional(),
-    isConcurrent: BooleanWrapperObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a job is concurrent. Will be true when a job is rolling out new job executions or canceling previously created executions, otherwise false.',
-        }),
-    ).exactOptional(),
-    schedulingConfig: SchedulingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.',
-        }),
-    ).exactOptional(),
-    scheduledJobRollouts: ScheduledJobRolloutListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays the next seven maintenance window occurrences and their start times.',
-        }),
-    ).exactOptional(),
+    jobArn: JobArnSchema.exactOptional().openapi({
+      description: 'An ARN identifying the job with format "arn:aws:iot:region:account:job/jobId".',
+    }),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    targetSelection: TargetSelectionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a device when the thing representing the device is added to a target group, even after the job was completed by all things originally in the group. </p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
+    }),
+    status: JobStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the job, one of <code>IN_PROGRESS</code>, <code>CANCELED</code>, <code>DELETION_IN_PROGRESS</code> or <code>COMPLETED</code>. ',
+    }),
+    forceCanceled: ForcedSchema.exactOptional().openapi({
+      description:
+        'Will be <code>true</code> if the job was canceled with the optional <code>force</code> parameter set to <code>true</code>.',
+    }),
+    reasonCode: ReasonCodeSchema.exactOptional().openapi({
+      description: 'If the job was updated, provides the reason code for the update.',
+    }),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'If the job was updated, describes the reason for the update.',
+    }),
+    targets: JobTargetsSchema.exactOptional().openapi({
+      description: 'A list of IoT things and thing groups to which the job should be sent.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the job.',
+    }),
+    presignedUrlConfig: PresignedUrlConfigSchema.exactOptional().openapi({
+      description: 'Configuration for pre-signed S3 URLs.',
+    }),
+    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create a staged rollout of a job.',
+    }),
+    abortConfig: AbortConfigSchema.exactOptional().openapi({
+      description: 'Configuration for criteria to abort the job.',
+    }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job was created.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job was last updated.',
+    }),
+    completedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job was completed.',
+    }),
+    jobProcessDetails: JobProcessDetailsSchema.exactOptional().openapi({
+      description: 'Details about the job process.',
+    }),
+    timeoutConfig: TimeoutConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time each device has to finish its execution of the job. A timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the timer expires, it will be automatically set to <code>TIMED_OUT</code>.',
+    }),
+    namespaceId: NamespaceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace used to indicate that a job is a customer-managed job.</p> <p>When you specify a value for this parameter, Amazon Web Services IoT Core sends jobs notifications to MQTT topics that contain the value in the following format.</p> <p> <code>$aws/things/<i>THING_NAME</i>/jobs/<i>JOB_ID</i>/notify-namespace-<i>NAMESPACE_ID</i>/</code> </p> <note> <p>The <code>namespaceId</code> feature is in public preview.</p> </note>',
+    }),
+    jobTemplateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template used to create the job.',
+    }),
+    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.exactOptional().openapi({
+      description: 'The configuration for the criteria to retry the job.',
+    }),
+    documentParameters: ParameterMapSchema.exactOptional().openapi({
+      description:
+        "<p>A key-value map that pairs the patterns that need to be replaced in a managed template job document schema. You can use the description of each key as a guidance to specify the inputs during runtime when creating a job.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
+    }),
+    isConcurrent: BooleanWrapperObjectSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a job is concurrent. Will be true when a job is rolling out new job executions or canceling previously created executions, otherwise false.',
+    }),
+    schedulingConfig: SchedulingConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.',
+    }),
+    scheduledJobRollouts: ScheduledJobRolloutListSchema.exactOptional().openapi({
+      description: 'Displays the next seven maintenance window occurrences and their start times.',
+    }),
   })
   .openapi({
     description: 'The <code>Job</code> object contains details about a job.',
@@ -5624,12 +4751,10 @@ const JobSchema = z
 
 const DescribeJobResponseSchema = z
   .object({
-    documentSource: JobDocumentSourceSchema.and(
-      z.any().openapi({ description: 'An S3 link to the job document.' }),
-    ).exactOptional(),
-    job: JobSchema.and(
-      z.any().openapi({ description: 'Information about the job.' }),
-    ).exactOptional(),
+    documentSource: JobDocumentSourceSchema.exactOptional().openapi({
+      description: 'An S3 link to the job document.',
+    }),
+    job: JobSchema.exactOptional().openapi({ description: 'Information about the job.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobResponse')
@@ -5651,9 +4776,9 @@ const DetailsMapSchema = z.record(z.string(), DetailsValueSchema).openapi('Detai
 
 const JobExecutionStatusDetailsSchema = z
   .object({
-    detailsMap: DetailsMapSchema.and(
-      z.any().openapi({ description: 'The job execution status.' }),
-    ).exactOptional(),
+    detailsMap: DetailsMapSchema.exactOptional().openapi({
+      description: 'The job execution status.',
+    }),
   })
   .openapi({ description: 'Details of the job execution status.', required: [] })
   .openapi('JobExecutionStatusDetails')
@@ -5666,88 +4791,46 @@ const ApproximateSecondsBeforeTimedOutSchema = z.int().openapi('ApproximateSecon
 
 const JobExecutionSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to the job when it was created.',
-        }),
-    ).exactOptional(),
-    status: JobExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the job execution (IN_PROGRESS, QUEUED, FAILED, SUCCEEDED, TIMED_OUT, CANCELED, or REJECTED).',
-        }),
-    ).exactOptional(),
-    forceCanceled: ForcedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Will be <code>true</code> if the job execution was canceled with the optional <code>force</code> parameter set to <code>true</code>.',
-        }),
-    ).exactOptional(),
-    statusDetails: JobExecutionStatusDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of name/value pairs that describe the status of the job execution.',
-        }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing on which the job execution is running.' }),
-    ).exactOptional(),
-    queuedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job execution was queued.',
-        }),
-    ).exactOptional(),
-    startedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job execution started.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in seconds since the epoch, when the job execution was last updated.',
-        }),
-    ).exactOptional(),
-    executionNumber: ExecutionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (consisting of the digits "0" through "9") which identifies this particular job execution on this particular device. It can be used in commands which return or update job execution information. ',
-        }),
-    ).exactOptional(),
-    versionNumber: VersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
-        }),
-    ).exactOptional(),
-    approximateSecondsBeforeTimedOut: ApproximateSecondsBeforeTimedOutSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The estimated number of seconds that remain before the job execution status will be changed to <code>TIMED_OUT</code>. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The actual job execution timeout can occur up to 60 seconds later than the estimated duration. This value will not be included if the job execution has reached a terminal status.',
-        }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to the job when it was created.',
+    }),
+    status: JobExecutionStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the job execution (IN_PROGRESS, QUEUED, FAILED, SUCCEEDED, TIMED_OUT, CANCELED, or REJECTED).',
+    }),
+    forceCanceled: ForcedSchema.exactOptional().openapi({
+      description:
+        'Will be <code>true</code> if the job execution was canceled with the optional <code>force</code> parameter set to <code>true</code>.',
+    }),
+    statusDetails: JobExecutionStatusDetailsSchema.exactOptional().openapi({
+      description:
+        'A collection of name/value pairs that describe the status of the job execution.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing on which the job execution is running.',
+    }),
+    queuedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution was queued.',
+    }),
+    startedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution started.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution was last updated.',
+    }),
+    executionNumber: ExecutionNumberSchema.exactOptional().openapi({
+      description:
+        'A string (consisting of the digits "0" through "9") which identifies this particular job execution on this particular device. It can be used in commands which return or update job execution information. ',
+    }),
+    versionNumber: VersionNumberSchema.exactOptional().openapi({
+      description:
+        'The version of the job execution. Job execution versions are incremented each time they are updated by a device.',
+    }),
+    approximateSecondsBeforeTimedOut:
+      ApproximateSecondsBeforeTimedOutSchema.exactOptional().openapi({
+        description:
+          'The estimated number of seconds that remain before the job execution status will be changed to <code>TIMED_OUT</code>. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The actual job execution timeout can occur up to 60 seconds later than the estimated duration. This value will not be included if the job execution has reached a terminal status.',
+      }),
   })
   .openapi({
     description:
@@ -5758,9 +4841,9 @@ const JobExecutionSchema = z
 
 const DescribeJobExecutionResponseSchema = z
   .object({
-    execution: JobExecutionSchema.and(
-      z.any().openapi({ description: 'Information about the job execution.' }),
-    ).exactOptional(),
+    execution: JobExecutionSchema.exactOptional().openapi({
+      description: 'Information about the job execution.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobExecutionResponse')
@@ -5769,48 +4852,34 @@ const JobDocumentSchema = z.string().max(32768).openapi('JobDocument')
 
 const DescribeJobTemplateResponseSchema = z
   .object({
-    jobTemplateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template.' }),
-    ).exactOptional(),
-    jobTemplateId: JobTemplateIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job template.' }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the job template.' }),
-    ).exactOptional(),
-    documentSource: JobDocumentSourceSchema.and(
-      z.any().openapi({ description: 'An S3 link to the job document.' }),
-    ).exactOptional(),
-    document: JobDocumentSchema.and(
-      z.any().openapi({ description: 'The job document.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job template was created.',
-        }),
-    ).exactOptional(),
+    jobTemplateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template.',
+    }),
+    jobTemplateId: JobTemplateIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the job template.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the job template.',
+    }),
+    documentSource: JobDocumentSourceSchema.exactOptional().openapi({
+      description: 'An S3 link to the job document.',
+    }),
+    document: JobDocumentSchema.exactOptional().openapi({ description: 'The job document.' }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job template was created.',
+    }),
     presignedUrlConfig: PresignedUrlConfigSchema.exactOptional(),
     jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.exactOptional(),
     abortConfig: AbortConfigSchema.exactOptional(),
     timeoutConfig: TimeoutConfigSchema.exactOptional(),
-    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that determines how many retries are allowed for each failure type for a job.',
-        }),
-    ).exactOptional(),
-    maintenanceWindows: MaintenanceWindowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.',
-        }),
-    ).exactOptional(),
+    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration that determines how many retries are allowed for each failure type for a job.',
+    }),
+    maintenanceWindows: MaintenanceWindowsSchema.exactOptional().openapi({
+      description:
+        'Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeJobTemplateResponse')
@@ -5847,46 +4916,26 @@ const OptionalSchema = z.boolean().openapi('Optional')
 
 const DocumentParameterSchema = z
   .object({
-    key: ParameterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Key of the map field containing the patterns that need to be replaced in a managed template job document schema.',
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Description of the map field containing the patterns that need to be replaced in a managed template job document schema.',
-        }),
-    ).exactOptional(),
-    regex: RegexSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A regular expression of the patterns that need to be replaced in a managed template job document schema.',
-        }),
-    ).exactOptional(),
-    example: ExampleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An example illustrating a pattern that need to be replaced in a managed template job document schema.',
-        }),
-    ).exactOptional(),
-    optional: OptionalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether a pattern that needs to be replaced in a managed template job document schema is optional or required.',
-        }),
-    ).exactOptional(),
+    key: ParameterKeySchema.exactOptional().openapi({
+      description:
+        'Key of the map field containing the patterns that need to be replaced in a managed template job document schema.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description:
+        'Description of the map field containing the patterns that need to be replaced in a managed template job document schema.',
+    }),
+    regex: RegexSchema.exactOptional().openapi({
+      description:
+        'A regular expression of the patterns that need to be replaced in a managed template job document schema.',
+    }),
+    example: ExampleSchema.exactOptional().openapi({
+      description:
+        'An example illustrating a pattern that need to be replaced in a managed template job document schema.',
+    }),
+    optional: OptionalSchema.exactOptional().openapi({
+      description:
+        'Specifies whether a pattern that needs to be replaced in a managed template job document schema is optional or required.',
+    }),
   })
   .openapi({
     description:
@@ -5899,42 +4948,28 @@ const DocumentParametersSchema = z.array(DocumentParameterSchema).openapi('Docum
 
 const DescribeManagedJobTemplateResponseSchema = z
   .object({
-    templateName: ManagedJobTemplateNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique name of a managed template, such as <code>AWS-Reboot</code>.',
-        }),
-    ).exactOptional(),
-    templateArn: JobTemplateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique Amazon Resource Name (ARN) of the managed template.' }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'The unique description of a managed template.' }),
-    ).exactOptional(),
-    templateVersion: ManagedTemplateVersionSchema.and(
-      z.any().openapi({ description: 'The version for a managed template.' }),
-    ).exactOptional(),
-    environments: EnvironmentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of environments that are supported with the managed job template.',
-        }),
-    ).exactOptional(),
-    documentParameters: DocumentParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A map of key-value pairs that you can use as guidance to specify the inputs for creating a job from a managed template.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
-        }),
-    ).exactOptional(),
-    document: JobDocumentSchema.and(
-      z.any().openapi({ description: 'The document schema for a managed job template.' }),
-    ).exactOptional(),
+    templateName: ManagedJobTemplateNameSchema.exactOptional().openapi({
+      description: 'The unique name of a managed template, such as <code>AWS-Reboot</code>.',
+    }),
+    templateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The unique Amazon Resource Name (ARN) of the managed template.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'The unique description of a managed template.',
+    }),
+    templateVersion: ManagedTemplateVersionSchema.exactOptional().openapi({
+      description: 'The version for a managed template.',
+    }),
+    environments: EnvironmentsSchema.exactOptional().openapi({
+      description: 'A list of environments that are supported with the managed job template.',
+    }),
+    documentParameters: DocumentParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A map of key-value pairs that you can use as guidance to specify the inputs for creating a job from a managed template.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
+    }),
+    document: JobDocumentSchema.exactOptional().openapi({
+      description: 'The document schema for a managed job template.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeManagedJobTemplateResponse')
@@ -5954,46 +4989,32 @@ const MitigationActionTypeSchema = z
 
 const DescribeMitigationActionResponseSchema = z
   .object({
-    actionName: MitigationActionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The friendly name that uniquely identifies the mitigation action.',
-        }),
-    ).exactOptional(),
-    actionType: MitigationActionTypeSchema.and(
-      z.any().openapi({ description: 'The type of mitigation action.' }),
-    ).exactOptional(),
-    actionArn: MitigationActionArnSchema.and(
-      z.any().openapi({ description: 'The ARN that identifies this migration action.' }),
-    ).exactOptional(),
-    actionId: MitigationActionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for this action.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role used to apply this action.' }),
-    ).exactOptional(),
-    actionParams: MitigationActionParamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Parameters that control how the mitigation action is applied, specific to the type of mitigation action.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the mitigation action was added to your Amazon Web Services accounts.',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the mitigation action was last changed.' }),
-    ).exactOptional(),
+    actionName: MitigationActionNameSchema.exactOptional().openapi({
+      description: 'The friendly name that uniquely identifies the mitigation action.',
+    }),
+    actionType: MitigationActionTypeSchema.exactOptional().openapi({
+      description: 'The type of mitigation action.',
+    }),
+    actionArn: MitigationActionArnSchema.exactOptional().openapi({
+      description: 'The ARN that identifies this migration action.',
+    }),
+    actionId: MitigationActionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for this action.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role used to apply this action.',
+    }),
+    actionParams: MitigationActionParamsSchema.exactOptional().openapi({
+      description:
+        'Parameters that control how the mitigation action is applied, specific to the type of mitigation action.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the mitigation action was added to your Amazon Web Services accounts.',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the mitigation action was last changed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeMitigationActionResponse')
@@ -6007,22 +5028,14 @@ const TemplateDescriptionSchema = z
 
 const ProvisioningHookSchema = z
   .object({
-    payloadVersion: PayloadVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-        }),
-    ).exactOptional(),
-    targetArn: TargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-        }),
-    ),
+    payloadVersion: PayloadVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+    }),
+    targetArn: TargetArnSchema.openapi({
+      description:
+        '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+    }),
   })
   .openapi({
     required: ['targetArn'],
@@ -6034,81 +5047,59 @@ const TemplateTypeSchema = z.enum(['FLEET_PROVISIONING', 'JITP']).openapi('Templ
 
 const DescribeProvisioningTemplateResponseSchema = z
   .object({
-    templateArn: TemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the provisioning template.' }),
-    ).exactOptional(),
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ).exactOptional(),
-    description: TemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning template.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the provisioning template was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the provisioning template was last modified.' }),
-    ).exactOptional(),
-    defaultVersionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The default fleet template version ID.' }),
-    ).exactOptional(),
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: 'The JSON formatted contents of the provisioning template.' }),
-    ).exactOptional(),
-    enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({ description: 'True if the provisioning template is enabled, otherwise false.' }),
-    ).exactOptional(),
-    provisioningRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role associated with the provisioning template. This IoT role grants permission to provision a device.',
-        }),
-    ).exactOptional(),
-    preProvisioningHook: ProvisioningHookSchema.and(
-      z.any().openapi({ description: 'Gets information about a pre-provisioned hook.' }),
-    ).exactOptional(),
-    type: TemplateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
-        }),
-    ).exactOptional(),
+    templateArn: TemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the provisioning template.',
+    }),
+    templateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning template.',
+    }),
+    description: TemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning template.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template was last modified.',
+    }),
+    defaultVersionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The default fleet template version ID.',
+    }),
+    templateBody: TemplateBodySchema.exactOptional().openapi({
+      description: 'The JSON formatted contents of the provisioning template.',
+    }),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True if the provisioning template is enabled, otherwise false.',
+    }),
+    provisioningRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role associated with the provisioning template. This IoT role grants permission to provision a device.',
+    }),
+    preProvisioningHook: ProvisioningHookSchema.exactOptional().openapi({
+      description: 'Gets information about a pre-provisioned hook.',
+    }),
+    type: TemplateTypeSchema.exactOptional().openapi({
+      description:
+        'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisioningTemplateResponse')
 
 const DescribeProvisioningTemplateVersionResponseSchema = z
   .object({
-    versionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The provisioning template version ID.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the provisioning template version was created.' }),
-    ).exactOptional(),
-    templateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON formatted contents of the provisioning template version.',
-        }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if the provisioning template version is the default version.',
-        }),
-    ).exactOptional(),
+    versionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The provisioning template version ID.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template version was created.',
+    }),
+    templateBody: TemplateBodySchema.exactOptional().openapi({
+      description: 'The JSON formatted contents of the provisioning template version.',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description: 'True if the provisioning template version is the default version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeProvisioningTemplateVersionResponse')
@@ -6121,36 +5112,30 @@ const CredentialDurationSecondsSchema = z
 
 const RoleAliasDescriptionSchema = z
   .object({
-    roleAlias: RoleAliasSchema.and(
-      z.any().openapi({ description: 'The role alias.' }),
-    ).exactOptional(),
-    roleAliasArn: RoleAliasArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the role alias.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(z.any().openapi({ description: 'The role ARN.' })).exactOptional(),
-    owner: AwsAccountIdSchema.and(
-      z.any().openapi({ description: 'The role alias owner.' }),
-    ).exactOptional(),
-    credentialDurationSeconds: CredentialDurationSecondsSchema.and(
-      z.any().openapi({ description: 'The number of seconds for which the credential is valid.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The UNIX timestamp of when the role alias was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The UNIX timestamp of when the role alias was last modified.' }),
-    ).exactOptional(),
+    roleAlias: RoleAliasSchema.exactOptional().openapi({ description: 'The role alias.' }),
+    roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role alias.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({ description: 'The role ARN.' }),
+    owner: AwsAccountIdSchema.exactOptional().openapi({ description: 'The role alias owner.' }),
+    credentialDurationSeconds: CredentialDurationSecondsSchema.exactOptional().openapi({
+      description: 'The number of seconds for which the credential is valid.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The UNIX timestamp of when the role alias was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The UNIX timestamp of when the role alias was last modified.',
+    }),
   })
   .openapi({ description: 'Role alias description.', required: [] })
   .openapi('RoleAliasDescription')
 
 const DescribeRoleAliasResponseSchema = z
   .object({
-    roleAliasDescription: RoleAliasDescriptionSchema.and(
-      z.any().openapi({ description: 'The role alias description.' }),
-    ).exactOptional(),
+    roleAliasDescription: RoleAliasDescriptionSchema.exactOptional().openapi({
+      description: 'The role alias description.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRoleAliasResponse')
@@ -6172,44 +5157,28 @@ const TargetAuditCheckNamesSchema = z.array(AuditCheckNameSchema).openapi('Targe
 
 const DescribeScheduledAuditResponseSchema = z
   .object({
-    frequency: AuditFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How often the scheduled audit takes place, either one of <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code>, or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
-        }),
-    ).exactOptional(),
-    dayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month on which the scheduled audit takes place. This is will be <code>1</code> through <code>31</code> or <code>LAST</code>. If days <code>29</code>-<code>31</code> are specified, and the month does not have that many days, the audit takes place on the <code>LAST</code> day of the month.',
-        }),
-    ).exactOptional(),
-    dayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the week on which the scheduled audit takes place, either one of <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>.',
-        }),
-    ).exactOptional(),
-    targetCheckNames: TargetAuditCheckNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
-        }),
-    ).exactOptional(),
-    scheduledAuditName: ScheduledAuditNameSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled audit.' }),
-    ).exactOptional(),
-    scheduledAuditArn: ScheduledAuditArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled audit.' }),
-    ).exactOptional(),
+    frequency: AuditFrequencySchema.exactOptional().openapi({
+      description:
+        'How often the scheduled audit takes place, either one of <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code>, or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
+    }),
+    dayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month on which the scheduled audit takes place. This is will be <code>1</code> through <code>31</code> or <code>LAST</code>. If days <code>29</code>-<code>31</code> are specified, and the month does not have that many days, the audit takes place on the <code>LAST</code> day of the month.',
+    }),
+    dayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of the week on which the scheduled audit takes place, either one of <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>.',
+    }),
+    targetCheckNames: TargetAuditCheckNamesSchema.exactOptional().openapi({
+      description:
+        'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
+    }),
+    scheduledAuditName: ScheduledAuditNameSchema.exactOptional().openapi({
+      description: 'The name of the scheduled audit.',
+    }),
+    scheduledAuditArn: ScheduledAuditArnSchema.exactOptional().openapi({
+      description: 'The ARN of the scheduled audit.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeScheduledAuditResponse')
@@ -6234,66 +5203,42 @@ const AdditionalMetricsToRetainV2ListSchema = z
 
 const DescribeSecurityProfileResponseSchema = z
   .object({
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the security profile.' }),
-    ).exactOptional(),
-    securityProfileArn: SecurityProfileArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the security profile.' }),
-    ).exactOptional(),
-    securityProfileDescription: SecurityProfileDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the security profile (associated with the security profile when it was created or updated).',
-        }),
-    ).exactOptional(),
-    behaviors: BehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
-        }),
-    ).exactOptional(),
-    alertTargets: AlertTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<p> <i>Please use <a>DescribeSecurityProfileResponse$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here.</p>Use additionalMetricsToRetainV2.",
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here.",
-        }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The version of the security profile. A new version is generated whenever the security profile is updated.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the security profile was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the security profile was last modified.' }),
-    ).exactOptional(),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the security profile.',
+    }),
+    securityProfileArn: SecurityProfileArnSchema.exactOptional().openapi({
+      description: 'The ARN of the security profile.',
+    }),
+    securityProfileDescription: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of the security profile (associated with the security profile when it was created or updated).',
+    }),
+    behaviors: BehaviorsSchema.exactOptional().openapi({
+      description:
+        'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
+    }),
+    alertTargets: AlertTargetsSchema.exactOptional().openapi({
+      description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
+    }),
+    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<p> <i>Please use <a>DescribeSecurityProfileResponse$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here.</p>Use additionalMetricsToRetainV2.",
+    }),
+    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.exactOptional().openapi({
+      description:
+        "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here.",
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description:
+        'The version of the security profile. A new version is generated whenever the security profile is updated.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The time the security profile was created.',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The time the security profile was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeSecurityProfileResponse')
@@ -6302,103 +5247,81 @@ const StreamFilesSchema = z.array(StreamFileSchema).min(1).max(50).openapi('Stre
 
 const StreamInfoSchema = z
   .object({
-    streamId: StreamIdSchema.and(
-      z.any().openapi({ description: 'The stream ID.' }),
-    ).exactOptional(),
-    streamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The stream ARN.' }),
-    ).exactOptional(),
-    streamVersion: StreamVersionSchema.and(
-      z.any().openapi({ description: 'The stream version.' }),
-    ).exactOptional(),
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the stream.' }),
-    ).exactOptional(),
-    files: StreamFilesSchema.and(
-      z.any().openapi({ description: 'The files to stream.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the stream was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the stream was last updated.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'An IAM role IoT assumes to access your S3 files.' }),
-    ).exactOptional(),
+    streamId: StreamIdSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    streamArn: StreamArnSchema.exactOptional().openapi({ description: 'The stream ARN.' }),
+    streamVersion: StreamVersionSchema.exactOptional().openapi({
+      description: 'The stream version.',
+    }),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the stream.',
+    }),
+    files: StreamFilesSchema.exactOptional().openapi({ description: 'The files to stream.' }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the stream was created.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the stream was last updated.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'An IAM role IoT assumes to access your S3 files.',
+    }),
   })
   .openapi({ description: 'Information about a stream.', required: [] })
   .openapi('StreamInfo')
 
 const DescribeStreamResponseSchema = z
   .object({
-    streamInfo: StreamInfoSchema.and(
-      z.any().openapi({ description: 'Information about the stream.' }),
-    ).exactOptional(),
+    streamInfo: StreamInfoSchema.exactOptional().openapi({
+      description: 'Information about the stream.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStreamResponse')
 
 const DescribeThingResponseSchema = z
   .object({
-    defaultClientId: ClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The default MQTT client ID. For a typical device, the thing name is also used as the default MQTT client ID. Although we don’t require a mapping between a thing's registry name and its use of MQTT client IDs, certificates, or shadow state, we recommend that you choose a thing name and use it as the MQTT client ID for the registry and the Device Shadow service.</p> <p>This lets you better organize your IoT fleet without removing the flexibility of the underlying device certificate model or shadows.</p>",
-        }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing.' }),
-    ).exactOptional(),
-    thingId: ThingIdSchema.and(
-      z.any().openapi({ description: 'The ID of the thing to describe.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing to describe.' }),
-    ).exactOptional(),
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The thing type name.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'The thing attributes.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current version of the thing record in the registry.</p> <note> <p>To avoid unintentional changes to the information in the registry, you can pass the version information in the <code>expectedVersion</code> parameter of the <code>UpdateThing</code> and <code>DeleteThing</code> calls.</p> </note>',
-        }),
-    ).exactOptional(),
-    billingGroupName: BillingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the billing group the thing belongs to.' }),
-    ).exactOptional(),
+    defaultClientId: ClientIdSchema.exactOptional().openapi({
+      description:
+        "<p>The default MQTT client ID. For a typical device, the thing name is also used as the default MQTT client ID. Although we don’t require a mapping between a thing's registry name and its use of MQTT client IDs, certificates, or shadow state, we recommend that you choose a thing name and use it as the MQTT client ID for the registry and the Device Shadow service.</p> <p>This lets you better organize your IoT fleet without removing the flexibility of the underlying device certificate model or shadows.</p>",
+    }),
+    thingName: ThingNameSchema.exactOptional().openapi({ description: 'The name of the thing.' }),
+    thingId: ThingIdSchema.exactOptional().openapi({
+      description: 'The ID of the thing to describe.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing to describe.',
+    }),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The thing type name.',
+    }),
+    attributes: AttributesSchema.exactOptional().openapi({ description: 'The thing attributes.' }),
+    version: VersionSchema.exactOptional().openapi({
+      description:
+        '<p>The current version of the thing record in the registry.</p> <note> <p>To avoid unintentional changes to the information in the registry, you can pass the version information in the <code>expectedVersion</code> parameter of the <code>UpdateThing</code> and <code>DeleteThing</code> calls.</p> </note>',
+    }),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the billing group the thing belongs to.',
+    }),
   })
   .openapi({ description: 'The output from the DescribeThing operation.', required: [] })
   .openapi('DescribeThingResponse')
 
 const ThingGroupPropertiesSchema = z
   .object({
-    thingGroupDescription: ThingGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The thing group description.' }),
-    ).exactOptional(),
-    attributePayload: AttributePayloadSchema.and(
-      z.any().openapi({ description: 'The thing group attributes in JSON format.' }),
-    ).exactOptional(),
+    thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The thing group description.',
+    }),
+    attributePayload: AttributePayloadSchema.exactOptional().openapi({
+      description: 'The thing group attributes in JSON format.',
+    }),
   })
   .openapi({ description: 'Thing group properties.', required: [] })
   .openapi('ThingGroupProperties')
 
 const GroupNameAndArnSchema = z
   .object({
-    groupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The group name.' }),
-    ).exactOptional(),
-    groupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The group ARN.' }),
-    ).exactOptional(),
+    groupName: ThingGroupNameSchema.exactOptional().openapi({ description: 'The group name.' }),
+    groupArn: ThingGroupArnSchema.exactOptional().openapi({ description: 'The group ARN.' }),
   })
   .openapi({ description: 'The name and ARN of a group.', required: [] })
   .openapi('GroupNameAndArn')
@@ -6409,15 +5332,15 @@ const ThingGroupNameAndArnListSchema = z
 
 const ThingGroupMetadataSchema = z
   .object({
-    parentGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The parent thing group name.' }),
-    ).exactOptional(),
-    rootToParentThingGroups: ThingGroupNameAndArnListSchema.and(
-      z.any().openapi({ description: 'The root parent thing group.' }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The UNIX timestamp of when the thing group was created.' }),
-    ).exactOptional(),
+    parentGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The parent thing group name.',
+    }),
+    rootToParentThingGroups: ThingGroupNameAndArnListSchema.exactOptional().openapi({
+      description: 'The root parent thing group.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The UNIX timestamp of when the thing group was created.',
+    }),
   })
   .openapi({ description: 'Thing group metadata.', required: [] })
   .openapi('ThingGroupMetadata')
@@ -6428,36 +5351,36 @@ const DynamicGroupStatusSchema = z
 
 const DescribeThingGroupResponseSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing group.' }),
-    ).exactOptional(),
-    thingGroupId: ThingGroupIdSchema.and(
-      z.any().openapi({ description: 'The thing group ID.' }),
-    ).exactOptional(),
-    thingGroupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The thing group ARN.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the thing group.' }),
-    ).exactOptional(),
-    thingGroupProperties: ThingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The thing group properties.' }),
-    ).exactOptional(),
-    thingGroupMetadata: ThingGroupMetadataSchema.and(
-      z.any().openapi({ description: 'Thing group metadata.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group index name.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group search query string.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group query version.' }),
-    ).exactOptional(),
-    status: DynamicGroupStatusSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group status.' }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the thing group.',
+    }),
+    thingGroupId: ThingGroupIdSchema.exactOptional().openapi({
+      description: 'The thing group ID.',
+    }),
+    thingGroupArn: ThingGroupArnSchema.exactOptional().openapi({
+      description: 'The thing group ARN.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the thing group.',
+    }),
+    thingGroupProperties: ThingGroupPropertiesSchema.exactOptional().openapi({
+      description: 'The thing group properties.',
+    }),
+    thingGroupMetadata: ThingGroupMetadataSchema.exactOptional().openapi({
+      description: 'Thing group metadata.',
+    }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The dynamic thing group index name.',
+    }),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The dynamic thing group search query string.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description: 'The dynamic thing group query version.',
+    }),
+    status: DynamicGroupStatusSchema.exactOptional().openapi({
+      description: 'The dynamic thing group status.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeThingGroupResponse')
@@ -6488,56 +5411,50 @@ const PercentageSchema = z.int().min(0).max(100).openapi('Percentage')
 
 const DescribeThingRegistrationTaskResponseSchema = z
   .object({
-    taskId: TaskIdSchema.and(z.any().openapi({ description: 'The task ID.' })).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The task creation date.' }),
-    ).exactOptional(),
-    lastModifiedDate: LastModifiedDateSchema.and(
-      z.any().openapi({ description: 'The date when the task was last modified.' }),
-    ).exactOptional(),
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: "The task's template." }),
-    ).exactOptional(),
-    inputFileBucket: RegistryS3BucketNameSchema.and(
-      z.any().openapi({ description: 'The S3 bucket that contains the input file.' }),
-    ).exactOptional(),
-    inputFileKey: RegistryS3KeyNameSchema.and(
-      z.any().openapi({ description: 'The input file key.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The role ARN that grants access to the input file bucket.' }),
-    ).exactOptional(),
-    status: StatusSchema.and(
-      z.any().openapi({ description: 'The status of the bulk thing provisioning task.' }),
-    ).exactOptional(),
-    message: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The message.' }),
-    ).exactOptional(),
-    successCount: CountSchema.and(
-      z.any().openapi({ description: 'The number of things successfully provisioned.' }),
-    ).exactOptional(),
-    failureCount: CountSchema.and(
-      z.any().openapi({ description: 'The number of things that failed to be provisioned.' }),
-    ).exactOptional(),
-    percentageProgress: PercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The progress of the bulk provisioning task expressed as a percentage.',
-        }),
-    ).exactOptional(),
+    taskId: TaskIdSchema.exactOptional().openapi({ description: 'The task ID.' }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The task creation date.',
+    }),
+    lastModifiedDate: LastModifiedDateSchema.exactOptional().openapi({
+      description: 'The date when the task was last modified.',
+    }),
+    templateBody: TemplateBodySchema.exactOptional().openapi({
+      description: "The task's template.",
+    }),
+    inputFileBucket: RegistryS3BucketNameSchema.exactOptional().openapi({
+      description: 'The S3 bucket that contains the input file.',
+    }),
+    inputFileKey: RegistryS3KeyNameSchema.exactOptional().openapi({
+      description: 'The input file key.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The role ARN that grants access to the input file bucket.',
+    }),
+    status: StatusSchema.exactOptional().openapi({
+      description: 'The status of the bulk thing provisioning task.',
+    }),
+    message: ErrorMessageSchema.exactOptional().openapi({ description: 'The message.' }),
+    successCount: CountSchema.exactOptional().openapi({
+      description: 'The number of things successfully provisioned.',
+    }),
+    failureCount: CountSchema.exactOptional().openapi({
+      description: 'The number of things that failed to be provisioned.',
+    }),
+    percentageProgress: PercentageSchema.exactOptional().openapi({
+      description: 'The progress of the bulk provisioning task expressed as a percentage.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeThingRegistrationTaskResponse')
 
 const ThingTypePropertiesSchema = z
   .object({
-    thingTypeDescription: ThingTypeDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the thing type.' }),
-    ).exactOptional(),
-    searchableAttributes: SearchableAttributesSchema.and(
-      z.any().openapi({ description: 'A list of searchable thing attribute names.' }),
-    ).exactOptional(),
+    thingTypeDescription: ThingTypeDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the thing type.',
+    }),
+    searchableAttributes: SearchableAttributesSchema.exactOptional().openapi({
+      description: 'A list of searchable thing attribute names.',
+    }),
   })
   .openapi({
     description:
@@ -6552,20 +5469,16 @@ const DeprecationDateSchema = z.iso.datetime({ offset: true }).openapi('Deprecat
 
 const ThingTypeMetadataSchema = z
   .object({
-    deprecated: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the thing type is deprecated. If <b>true</b>, no new things could be associated with this type.',
-        }),
-    ).exactOptional(),
-    deprecationDate: DeprecationDateSchema.and(
-      z.any().openapi({ description: 'The date and time when the thing type was deprecated.' }),
-    ).exactOptional(),
-    creationDate: CreationDateSchema.and(
-      z.any().openapi({ description: 'The date and time when the thing type was created.' }),
-    ).exactOptional(),
+    deprecated: BooleanSchema.exactOptional().openapi({
+      description:
+        'Whether the thing type is deprecated. If <b>true</b>, no new things could be associated with this type.',
+    }),
+    deprecationDate: DeprecationDateSchema.exactOptional().openapi({
+      description: 'The date and time when the thing type was deprecated.',
+    }),
+    creationDate: CreationDateSchema.exactOptional().openapi({
+      description: 'The date and time when the thing type was created.',
+    }),
   })
   .openapi({
     description:
@@ -6576,39 +5489,31 @@ const ThingTypeMetadataSchema = z
 
 const DescribeThingTypeResponseSchema = z
   .object({
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing type.' }),
-    ).exactOptional(),
-    thingTypeId: ThingTypeIdSchema.and(
-      z.any().openapi({ description: 'The thing type ID.' }),
-    ).exactOptional(),
-    thingTypeArn: ThingTypeArnSchema.and(
-      z.any().openapi({ description: 'The thing type ARN.' }),
-    ).exactOptional(),
-    thingTypeProperties: ThingTypePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ThingTypeProperties contains information about the thing type including description, and a list of searchable thing attribute names.',
-        }),
-    ).exactOptional(),
-    thingTypeMetadata: ThingTypeMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ThingTypeMetadata contains additional information about the thing type including: creation date and time, a value indicating whether the thing type is deprecated, and a date and time when it was deprecated.',
-        }),
-    ).exactOptional(),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type.',
+    }),
+    thingTypeId: ThingTypeIdSchema.exactOptional().openapi({ description: 'The thing type ID.' }),
+    thingTypeArn: ThingTypeArnSchema.exactOptional().openapi({
+      description: 'The thing type ARN.',
+    }),
+    thingTypeProperties: ThingTypePropertiesSchema.exactOptional().openapi({
+      description:
+        'The ThingTypeProperties contains information about the thing type including description, and a list of searchable thing attribute names.',
+    }),
+    thingTypeMetadata: ThingTypeMetadataSchema.exactOptional().openapi({
+      description:
+        'The ThingTypeMetadata contains additional information about the thing type including: creation date and time, a value indicating whether the thing type is deprecated, and a date and time when it was deprecated.',
+    }),
   })
   .openapi({ description: 'The output for the DescribeThingType operation.', required: [] })
   .openapi('DescribeThingTypeResponse')
 
-const DetachSecurityProfileResponseSchema = z.object({}).openapi('DetachSecurityProfileResponse')
+const DetachSecurityProfileResponseSchema = z
+  .looseObject({})
+  .openapi('DetachSecurityProfileResponse')
 
 const DetachThingPrincipalResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output from the DetachThingPrincipal operation.' })
   .openapi('DetachThingPrincipalResponse')
 
@@ -6622,24 +5527,24 @@ const DataCollectionPercentageSchema = z
 
 const BehaviorModelTrainingSummarySchema = z
   .object({
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: ' The name of the security profile. ' }),
-    ).exactOptional(),
-    behaviorName: BehaviorNameSchema.and(
-      z.any().openapi({ description: ' The name of the behavior. ' }),
-    ).exactOptional(),
-    trainingDataCollectionStartDate: TimestampSchema.and(
-      z.any().openapi({ description: ' The date a training model started collecting data. ' }),
-    ).exactOptional(),
-    modelStatus: ModelStatusSchema.and(
-      z.any().openapi({ description: ' The status of the behavior model. ' }),
-    ).exactOptional(),
-    datapointsCollectionPercentage: DataCollectionPercentageSchema.and(
-      z.any().openapi({ description: ' The percentage of datapoints collected. ' }),
-    ).exactOptional(),
-    lastModelRefreshDate: TimestampSchema.and(
-      z.any().openapi({ description: ' The date the model was last refreshed. ' }),
-    ).exactOptional(),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: ' The name of the security profile. ',
+    }),
+    behaviorName: BehaviorNameSchema.exactOptional().openapi({
+      description: ' The name of the behavior. ',
+    }),
+    trainingDataCollectionStartDate: TimestampSchema.exactOptional().openapi({
+      description: ' The date a training model started collecting data. ',
+    }),
+    modelStatus: ModelStatusSchema.exactOptional().openapi({
+      description: ' The status of the behavior model. ',
+    }),
+    datapointsCollectionPercentage: DataCollectionPercentageSchema.exactOptional().openapi({
+      description: ' The percentage of datapoints collected. ',
+    }),
+    lastModelRefreshDate: TimestampSchema.exactOptional().openapi({
+      description: ' The date the model was last refreshed. ',
+    }),
   })
   .openapi({ description: ' The summary of an ML Detect behavior model. ', required: [] })
   .openapi('BehaviorModelTrainingSummary')
@@ -6648,26 +5553,16 @@ const BehaviorModelTrainingSummariesSchema = z
   .array(BehaviorModelTrainingSummarySchema)
   .openapi('BehaviorModelTrainingSummaries')
 
-const NextTokenSchema = z.string().openapi('NextToken')
-
 const GetBehaviorModelTrainingSummariesResponseSchema = z
   .object({
-    summaries: BehaviorModelTrainingSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A list of all ML Detect behaviors and their model status for a given Security Profile. ',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
-        }),
-    ).exactOptional(),
+    summaries: BehaviorModelTrainingSummariesSchema.exactOptional().openapi({
+      description:
+        ' A list of all ML Detect behaviors and their model status for a given Security Profile. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBehaviorModelTrainingSummariesResponse')
@@ -6676,17 +5571,12 @@ const BucketKeyValueSchema = z.string().openapi('BucketKeyValue')
 
 const BucketSchema = z
   .object({
-    keyValue: BucketKeyValueSchema.and(
-      z.any().openapi({ description: 'The value counted for the particular bucket.' }),
-    ).exactOptional(),
-    count: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of documents that have the value counted for the particular bucket.',
-        }),
-    ).exactOptional(),
+    keyValue: BucketKeyValueSchema.exactOptional().openapi({
+      description: 'The value counted for the particular bucket.',
+    }),
+    count: CountSchema.exactOptional().openapi({
+      description: 'The number of documents that have the value counted for the particular bucket.',
+    }),
   })
   .openapi({
     description: 'A count of documents that meets a specific aggregation criteria.',
@@ -6698,19 +5588,13 @@ const BucketsSchema = z.array(BucketSchema).openapi('Buckets')
 
 const GetBucketsAggregationResponseSchema = z
   .object({
-    totalCount: CountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The total number of things that fit the query string criteria.' }),
-    ).exactOptional(),
-    buckets: BucketsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The main part of the response with a list of buckets. Each bucket contains a <code>keyValue</code> and a <code>count</code>.</p> <p> <code>keyValue</code>: The aggregation field value counted for the particular bucket.</p> <p> <code>count</code>: The number of documents that have that value.</p>',
-        }),
-    ).exactOptional(),
+    totalCount: CountSchema.exactOptional().openapi({
+      description: 'The total number of things that fit the query string criteria.',
+    }),
+    buckets: BucketsSchema.exactOptional().openapi({
+      description:
+        '<p>The main part of the response with a list of buckets. Each bucket contains a <code>keyValue</code> and a <code>count</code>.</p> <p> <code>keyValue</code>: The aggregation field value counted for the particular bucket.</p> <p> <code>count</code>: The number of documents that have that value.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetBucketsAggregationResponse')
@@ -6719,13 +5603,9 @@ const MaxBucketsSchema = z.int().min(1).max(10000).openapi('MaxBuckets')
 
 const TermsAggregationSchema = z
   .object({
-    maxBuckets: MaxBucketsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of buckets to return in the response. Default to 10.',
-        }),
-    ).exactOptional(),
+    maxBuckets: MaxBucketsSchema.exactOptional().openapi({
+      description: 'The number of buckets to return in the response. Default to 10.',
+    }),
   })
   .openapi({
     description:
@@ -6736,26 +5616,20 @@ const TermsAggregationSchema = z
 
 const GetCardinalityResponseSchema = z
   .object({
-    cardinality: CountSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The approximate count of unique values that match the query.' }),
-    ).exactOptional(),
+    cardinality: CountSchema.exactOptional().openapi({
+      description: 'The approximate count of unique values that match the query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCardinalityResponse')
 
 const EffectivePolicySchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The policy name.' }),
-    ).exactOptional(),
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The IAM policy document.' }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({ description: 'The policy name.' }),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The IAM policy document.',
+    }),
   })
   .openapi({
     description: 'The policy that has the effect on the authorization results.',
@@ -6767,9 +5641,9 @@ const EffectivePoliciesSchema = z.array(EffectivePolicySchema).openapi('Effectiv
 
 const GetEffectivePoliciesResponseSchema = z
   .object({
-    effectivePolicies: EffectivePoliciesSchema.and(
-      z.any().openapi({ description: 'The effective policies.' }),
-    ).exactOptional(),
+    effectivePolicies: EffectivePoliciesSchema.exactOptional().openapi({
+      description: 'The effective policies.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEffectivePoliciesResponse')
@@ -6794,12 +5668,8 @@ const FieldTypeSchema = z.enum(['Number', 'String', 'Boolean']).openapi('FieldTy
 
 const FieldSchema = z
   .object({
-    name: FieldNameSchema.and(
-      z.any().openapi({ description: 'The name of the field.' }),
-    ).exactOptional(),
-    type: FieldTypeSchema.and(
-      z.any().openapi({ description: 'The data type of the field.' }),
-    ).exactOptional(),
+    name: FieldNameSchema.exactOptional().openapi({ description: 'The name of the field.' }),
+    type: FieldTypeSchema.exactOptional().openapi({ description: 'The data type of the field.' }),
   })
   .openapi({ description: 'Describes the name and data type at a field.', required: [] })
   .openapi('Field')
@@ -6817,14 +5687,10 @@ const NamedShadowNamesFilterSchema = z.array(ShadowNameSchema).openapi('NamedSha
 
 const IndexingFilterSchema = z
   .object({
-    namedShadowNames: NamedShadowNamesFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The shadow names that you select to index. The default maximum number of shadow names for indexing is 10. To increase the limit, see <a href="https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>. ',
-        }),
-    ).exactOptional(),
+    namedShadowNames: NamedShadowNamesFilterSchema.exactOptional().openapi({
+      description:
+        'The shadow names that you select to index. The default maximum number of shadow names for indexing is 10. To increase the limit, see <a href="https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>. ',
+    }),
   })
   .openapi({
     description:
@@ -6835,57 +5701,33 @@ const IndexingFilterSchema = z
 
 const ThingIndexingConfigurationSchema = z
   .object({
-    thingIndexingMode: ThingIndexingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Thing indexing mode. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains registry data only.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry and shadow data.</p> </li> <li> <p>OFF - Thing indexing is disabled.</p> </li> </ul>',
-        }),
-    ),
-    thingConnectivityIndexingMode: ThingConnectivityIndexingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Thing connectivity indexing mode. Valid values are: </p> <ul> <li> <p>STATUS – Your thing index contains connectivity status. To enable thing connectivity indexing, <i>thingIndexMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Thing connectivity status indexing is disabled.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    deviceDefenderIndexingMode: DeviceDefenderIndexingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Device Defender indexing mode. Valid values are:</p> <ul> <li> <p>VIOLATIONS – Your thing index contains Device Defender violations. To enable Device Defender indexing, <i>deviceDefenderIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Device Defender indexing is disabled.</p> </li> </ul> <p>For more information about Device Defender violations, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html">Device Defender Detect.</a> </p>',
-        }),
-    ).exactOptional(),
-    namedShadowIndexingMode: NamedShadowIndexingModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Named shadow indexing mode. Valid values are:</p> <ul> <li> <p>ON – Your thing index contains named shadow. To enable thing named shadow indexing, <i>namedShadowIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Named shadow indexing is disabled.</p> </li> </ul> <p>For more information about Shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
-        }),
-    ).exactOptional(),
-    managedFields: FieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains fields that are indexed and whose types are already known by the Fleet Indexing service.',
-        }),
-    ).exactOptional(),
-    customFields: FieldsSchema.and(
-      z.any().openapi({ description: 'Contains custom field names and their data type.' }),
-    ).exactOptional(),
-    filter: IndexingFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.',
-        }),
-    ).exactOptional(),
+    thingIndexingMode: ThingIndexingModeSchema.openapi({
+      description:
+        '<p>Thing indexing mode. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains registry data only.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry and shadow data.</p> </li> <li> <p>OFF - Thing indexing is disabled.</p> </li> </ul>',
+    }),
+    thingConnectivityIndexingMode: ThingConnectivityIndexingModeSchema.exactOptional().openapi({
+      description:
+        '<p>Thing connectivity indexing mode. Valid values are: </p> <ul> <li> <p>STATUS – Your thing index contains connectivity status. To enable thing connectivity indexing, <i>thingIndexMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Thing connectivity status indexing is disabled.</p> </li> </ul>',
+    }),
+    deviceDefenderIndexingMode: DeviceDefenderIndexingModeSchema.exactOptional().openapi({
+      description:
+        '<p>Device Defender indexing mode. Valid values are:</p> <ul> <li> <p>VIOLATIONS – Your thing index contains Device Defender violations. To enable Device Defender indexing, <i>deviceDefenderIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Device Defender indexing is disabled.</p> </li> </ul> <p>For more information about Device Defender violations, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html">Device Defender Detect.</a> </p>',
+    }),
+    namedShadowIndexingMode: NamedShadowIndexingModeSchema.exactOptional().openapi({
+      description:
+        '<p>Named shadow indexing mode. Valid values are:</p> <ul> <li> <p>ON – Your thing index contains named shadow. To enable thing named shadow indexing, <i>namedShadowIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Named shadow indexing is disabled.</p> </li> </ul> <p>For more information about Shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
+    }),
+    managedFields: FieldsSchema.exactOptional().openapi({
+      description:
+        'Contains fields that are indexed and whose types are already known by the Fleet Indexing service.',
+    }),
+    customFields: FieldsSchema.exactOptional().openapi({
+      description: 'Contains custom field names and their data type.',
+    }),
+    filter: IndexingFilterSchema.exactOptional().openapi({
+      description:
+        'Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.',
+    }),
   })
   .openapi({
     required: ['thingIndexingMode'],
@@ -6898,25 +5740,17 @@ const ThingGroupIndexingModeSchema = z.enum(['OFF', 'ON']).openapi('ThingGroupIn
 
 const ThingGroupIndexingConfigurationSchema = z
   .object({
-    thingGroupIndexingMode: ThingGroupIndexingModeSchema.and(
-      z.any().openapi({ description: 'Thing group indexing mode.' }),
-    ),
-    managedFields: FieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.',
-        }),
-    ).exactOptional(),
-    customFields: FieldsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of thing group fields to index. This list cannot contain any managed fields. Use the GetIndexingConfiguration API to get a list of managed fields.</p> <p>Contains custom field names and their data type.</p>',
-        }),
-    ).exactOptional(),
+    thingGroupIndexingMode: ThingGroupIndexingModeSchema.openapi({
+      description: 'Thing group indexing mode.',
+    }),
+    managedFields: FieldsSchema.exactOptional().openapi({
+      description:
+        'Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.',
+    }),
+    customFields: FieldsSchema.exactOptional().openapi({
+      description:
+        '<p>A list of thing group fields to index. This list cannot contain any managed fields. Use the GetIndexingConfiguration API to get a list of managed fields.</p> <p>Contains custom field names and their data type.</p>',
+    }),
   })
   .openapi({
     required: ['thingGroupIndexingMode'],
@@ -6926,180 +5760,40 @@ const ThingGroupIndexingConfigurationSchema = z
 
 const GetIndexingConfigurationResponseSchema = z
   .object({
-    thingIndexingConfiguration: ThingIndexingConfigurationSchema.and(
-      z.any().openapi({ description: 'Thing indexing configuration.' }),
-    ).exactOptional(),
-    thingGroupIndexingConfiguration: ThingGroupIndexingConfigurationSchema.and(
-      z.any().openapi({ description: 'The index configuration.' }),
-    ).exactOptional(),
+    thingIndexingConfiguration: ThingIndexingConfigurationSchema.exactOptional().openapi({
+      description: 'Thing indexing configuration.',
+    }),
+    thingGroupIndexingConfiguration: ThingGroupIndexingConfigurationSchema.exactOptional().openapi({
+      description: 'The index configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIndexingConfigurationResponse')
 
 const GetJobDocumentResponseSchema = z
   .object({
-    document: JobDocumentSchema.and(
-      z.any().openapi({ description: 'The job document content.' }),
-    ).exactOptional(),
+    document: JobDocumentSchema.exactOptional().openapi({
+      description: 'The job document content.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetJobDocumentResponse')
 
 const GetLoggingOptionsResponseSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ).exactOptional(),
-    logLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The logging level.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role that grants access.',
+    }),
+    logLevel: LogLevelSchema.exactOptional().openapi({ description: 'The logging level.' }),
   })
   .openapi({ description: 'The output from the GetLoggingOptions operation.', required: [] })
   .openapi('GetLoggingOptionsResponse')
 
-const OTAUpdateDescriptionSchema = z
-  .string()
-  .regex(/[^\p{C}]+/u)
-  .max(2028)
-  .openapi('OTAUpdateDescription')
-
-const TargetsSchema = z.array(TargetSchema).min(1).openapi('Targets')
-
-const ProtocolsSchema = z.array(ProtocolSchema).min(1).max(2).openapi('Protocols')
-
-const AwsJobExecutionsRolloutConfigSchema = z
+const GetOTAUpdateResponseSchema: z.ZodType<GetOTAUpdateResponseType> = z
   .object({
-    maximumPerMinute: MaximumPerMinuteSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of OTA update job executions started per minute.',
-        }),
-    ).exactOptional(),
-    exponentialRate: AwsJobExponentialRolloutRateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Configuration for the rollout of OTA updates.', required: [] })
-  .openapi('AwsJobExecutionsRolloutConfig')
-
-const AwsJobPresignedUrlConfigSchema = z
-  .object({
-    expiresInSec: ExpiresInSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 1800 seconds. Pre-signed URLs are generated when a request for the job document is received.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Configuration information for pre-signed URLs. Valid when <code>protocols</code> contains HTTP.',
-    required: [],
-  })
-  .openapi('AwsJobPresignedUrlConfig')
-
-const OTAUpdateFilesSchema = z.array(OTAUpdateFileSchema).min(1).openapi('OTAUpdateFiles')
-
-const CodeSchema = z.string().openapi('Code')
-
-const OTAUpdateErrorMessageSchema = z.string().openapi('OTAUpdateErrorMessage')
-
-const ErrorInfoSchema = z
-  .object({
-    code: CodeSchema.and(z.any().openapi({ description: 'The error code.' })).exactOptional(),
-    message: OTAUpdateErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Error information.', required: [] })
-  .openapi('ErrorInfo')
-
-const AdditionalParameterMapSchema = z
-  .record(z.string(), ValueSchema)
-  .openapi('AdditionalParameterMap')
-
-const OTAUpdateInfoSchema = z
-  .object({
-    otaUpdateId: OTAUpdateIdSchema.and(
-      z.any().openapi({ description: 'The OTA update ID.' }),
-    ).exactOptional(),
-    otaUpdateArn: OTAUpdateArnSchema.and(
-      z.any().openapi({ description: 'The OTA update ARN.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the OTA update was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the OTA update was last updated.' }),
-    ).exactOptional(),
-    description: OTAUpdateDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the OTA update.' }),
-    ).exactOptional(),
-    targets: TargetsSchema.and(
-      z.any().openapi({ description: 'The targets of the OTA update.' }),
-    ).exactOptional(),
-    protocols: ProtocolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol used to transfer the OTA update image. Valid values are [HTTP], [MQTT], [HTTP, MQTT]. When both HTTP and MQTT are specified, the target device can choose the protocol.',
-        }),
-    ).exactOptional(),
-    awsJobExecutionsRolloutConfig: AwsJobExecutionsRolloutConfigSchema.and(
-      z.any().openapi({ description: 'Configuration for the rollout of OTA updates.' }),
-    ).exactOptional(),
-    awsJobPresignedUrlConfig: AwsJobPresignedUrlConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for pre-signed URLs. Valid when <code>protocols</code> contains HTTP.',
-        }),
-    ).exactOptional(),
-    targetSelection: TargetSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the OTA update will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the OTA update (SNAPSHOT). If continuous, the OTA update may also be run on a thing when a change is detected in a target. For example, an OTA update will run on a thing when the thing is added to a target group, even after the OTA update was completed by all things originally in the group. ',
-        }),
-    ).exactOptional(),
-    otaUpdateFiles: OTAUpdateFilesSchema.and(
-      z.any().openapi({ description: 'A list of files associated with the OTA update.' }),
-    ).exactOptional(),
-    otaUpdateStatus: OTAUpdateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the OTA update.' }),
-    ).exactOptional(),
-    awsIotJobId: AwsIotJobIdSchema.and(
-      z.any().openapi({ description: 'The IoT job ID associated with the OTA update.' }),
-    ).exactOptional(),
-    awsIotJobArn: AwsIotJobArnSchema.and(
-      z.any().openapi({ description: 'The IoT job ARN associated with the OTA update.' }),
-    ).exactOptional(),
-    errorInfo: ErrorInfoSchema.and(
-      z.any().openapi({ description: 'Error information associated with the OTA update.' }),
-    ).exactOptional(),
-    additionalParameters: AdditionalParameterMapSchema.and(
-      z.any().openapi({ description: 'A collection of name/value pairs' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Information about an OTA update.', required: [] })
-  .openapi('OTAUpdateInfo')
-
-const GetOTAUpdateResponseSchema = z
-  .object({
-    otaUpdateInfo: OTAUpdateInfoSchema.and(
-      z.any().openapi({ description: 'The OTA update info.' }),
-    ).exactOptional(),
+    otaUpdateInfo: OTAUpdateInfoSchema.exactOptional().openapi({
+      description: 'The OTA update info.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetOTAUpdateResponse')
@@ -7110,10 +5804,10 @@ const PercentValueSchema = z.float64().openapi('PercentValue')
 
 const PercentPairSchema = z
   .object({
-    percent: PercentSchema.and(z.any().openapi({ description: 'The percentile.' })).exactOptional(),
-    value: PercentValueSchema.and(
-      z.any().openapi({ description: 'The value of the percentile.' }),
-    ).exactOptional(),
+    percent: PercentSchema.exactOptional().openapi({ description: 'The percentile.' }),
+    value: PercentValueSchema.exactOptional().openapi({
+      description: 'The value of the percentile.',
+    }),
   })
   .openapi({ description: 'Describes the percentile and percentile value.', required: [] })
   .openapi('PercentPair')
@@ -7122,66 +5816,58 @@ const PercentilesSchema = z.array(PercentPairSchema).openapi('Percentiles')
 
 const GetPercentilesResponseSchema = z
   .object({
-    percentiles: PercentilesSchema.and(
-      z.any().openapi({ description: 'The percentile values of the aggregated fields.' }),
-    ).exactOptional(),
+    percentiles: PercentilesSchema.exactOptional().openapi({
+      description: 'The percentile values of the aggregated fields.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPercentilesResponse')
 
 const GetPolicyResponseSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The policy name.' }),
-    ).exactOptional(),
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON document that describes the policy.' }),
-    ).exactOptional(),
-    defaultVersionId: PolicyVersionIdSchema.and(
-      z.any().openapi({ description: 'The default policy version ID.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the policy was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the policy was last modified.' }),
-    ).exactOptional(),
-    generationId: GenerationIdSchema.and(
-      z.any().openapi({ description: 'The generation ID of the policy.' }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({ description: 'The policy name.' }),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The JSON document that describes the policy.',
+    }),
+    defaultVersionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The default policy version ID.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the policy was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the policy was last modified.',
+    }),
+    generationId: GenerationIdSchema.exactOptional().openapi({
+      description: 'The generation ID of the policy.',
+    }),
   })
   .openapi({ description: 'The output from the GetPolicy operation.', required: [] })
   .openapi('GetPolicyResponse')
 
 const GetPolicyVersionResponseSchema = z
   .object({
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The policy name.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON document that describes the policy.' }),
-    ).exactOptional(),
-    policyVersionId: PolicyVersionIdSchema.and(
-      z.any().openapi({ description: 'The policy version ID.' }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z.any().openapi({ description: 'Specifies whether the policy version is the default.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the policy was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the policy was last modified.' }),
-    ).exactOptional(),
-    generationId: GenerationIdSchema.and(
-      z.any().openapi({ description: 'The generation ID of the policy version.' }),
-    ).exactOptional(),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
+    policyName: PolicyNameSchema.exactOptional().openapi({ description: 'The policy name.' }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The JSON document that describes the policy.',
+    }),
+    policyVersionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The policy version ID.',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description: 'Specifies whether the policy version is the default.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the policy was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the policy was last modified.',
+    }),
+    generationId: GenerationIdSchema.exactOptional().openapi({
+      description: 'The generation ID of the policy version.',
+    }),
   })
   .openapi({ description: 'The output from the GetPolicyVersion operation.', required: [] })
   .openapi('GetPolicyVersionResponse')
@@ -7194,9 +5880,9 @@ const RegistrationCodeSchema = z
 
 const GetRegistrationCodeResponseSchema = z
   .object({
-    registrationCode: RegistrationCodeSchema.and(
-      z.any().openapi({ description: 'The CA certificate registration code.' }),
-    ).exactOptional(),
+    registrationCode: RegistrationCodeSchema.exactOptional().openapi({
+      description: 'The CA certificate registration code.',
+    }),
   })
   .openapi({ description: 'The output from the GetRegistrationCode operation.', required: [] })
   .openapi('GetRegistrationCodeResponse')
@@ -7217,35 +5903,31 @@ const StdDeviationSchema = z.float64().openapi('StdDeviation')
 
 const StatisticsSchema = z
   .object({
-    count: CountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The count of things that match the query string criteria and contain a valid aggregation field value.',
-        }),
-    ).exactOptional(),
-    average: AverageSchema.and(
-      z.any().openapi({ description: 'The average of the aggregated field values.' }),
-    ).exactOptional(),
-    sum: SumSchema.and(
-      z.any().openapi({ description: 'The sum of the aggregated field values.' }),
-    ).exactOptional(),
-    minimum: MinimumSchema.and(
-      z.any().openapi({ description: 'The minimum aggregated field value.' }),
-    ).exactOptional(),
-    maximum: MaximumSchema.and(
-      z.any().openapi({ description: 'The maximum aggregated field value.' }),
-    ).exactOptional(),
-    sumOfSquares: SumOfSquaresSchema.and(
-      z.any().openapi({ description: 'The sum of the squares of the aggregated field values.' }),
-    ).exactOptional(),
-    variance: VarianceSchema.and(
-      z.any().openapi({ description: 'The variance of the aggregated field values.' }),
-    ).exactOptional(),
-    stdDeviation: StdDeviationSchema.and(
-      z.any().openapi({ description: 'The standard deviation of the aggregated field values.' }),
-    ).exactOptional(),
+    count: CountSchema.exactOptional().openapi({
+      description:
+        'The count of things that match the query string criteria and contain a valid aggregation field value.',
+    }),
+    average: AverageSchema.exactOptional().openapi({
+      description: 'The average of the aggregated field values.',
+    }),
+    sum: SumSchema.exactOptional().openapi({
+      description: 'The sum of the aggregated field values.',
+    }),
+    minimum: MinimumSchema.exactOptional().openapi({
+      description: 'The minimum aggregated field value.',
+    }),
+    maximum: MaximumSchema.exactOptional().openapi({
+      description: 'The maximum aggregated field value.',
+    }),
+    sumOfSquares: SumOfSquaresSchema.exactOptional().openapi({
+      description: 'The sum of the squares of the aggregated field values.',
+    }),
+    variance: VarianceSchema.exactOptional().openapi({
+      description: 'The variance of the aggregated field values.',
+    }),
+    stdDeviation: StdDeviationSchema.exactOptional().openapi({
+      description: 'The standard deviation of the aggregated field values.',
+    }),
   })
   .openapi({
     description:
@@ -7256,79 +5938,27 @@ const StatisticsSchema = z
 
 const GetStatisticsResponseSchema = z
   .object({
-    statistics: StatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The statistics returned by the Fleet Indexing service based on the query and aggregation field.',
-        }),
-    ).exactOptional(),
+    statistics: StatisticsSchema.exactOptional().openapi({
+      description:
+        'The statistics returned by the Fleet Indexing service based on the query and aggregation field.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetStatisticsResponse')
 
-const RuleArnSchema = z.string().openapi('RuleArn')
-
-const RuleNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9_]+$/)
-  .min(1)
-  .max(128)
-  .openapi('RuleName')
-
-const TopicRuleSchema = z
+const GetTopicRuleResponseSchema: z.ZodType<GetTopicRuleResponseType> = z
   .object({
-    ruleName: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule.' }),
-    ).exactOptional(),
-    sql: SQLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SQL statement used to query the topic. When using a SQL query with multiple lines, be sure to escape the newline characters.',
-        }),
-    ).exactOptional(),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the rule.' }),
-    ).exactOptional(),
-    createdAt: CreatedAtDateSchema.and(
-      z.any().openapi({ description: 'The date and time the rule was created.' }),
-    ).exactOptional(),
-    actions: ActionListSchema.and(
-      z.any().openapi({ description: 'The actions associated with the rule.' }),
-    ).exactOptional(),
-    ruleDisabled: IsDisabledSchema.and(
-      z.any().openapi({ description: 'Specifies whether the rule is disabled.' }),
-    ).exactOptional(),
-    awsIotSqlVersion: AwsIotSqlVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the SQL rules engine to use when evaluating the rule.',
-        }),
-    ).exactOptional(),
-    errorAction: ActionSchema.and(
-      z.any().openapi({ description: 'The action to perform when an error occurs.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes a rule.', required: [] })
-  .openapi('TopicRule')
-
-const GetTopicRuleResponseSchema = z
-  .object({
-    ruleArn: RuleArnSchema.and(z.any().openapi({ description: 'The rule ARN.' })).exactOptional(),
-    rule: TopicRuleSchema.and(z.any().openapi({ description: 'The rule.' })).exactOptional(),
+    ruleArn: RuleArnSchema.exactOptional().openapi({ description: 'The rule ARN.' }),
+    rule: TopicRuleSchema.exactOptional().openapi({ description: 'The rule.' }),
   })
   .openapi({ description: 'The output from the GetTopicRule operation.', required: [] })
   .openapi('GetTopicRuleResponse')
 
 const GetTopicRuleDestinationResponseSchema = z
   .object({
-    topicRuleDestination: TopicRuleDestinationSchema.and(
-      z.any().openapi({ description: 'The topic rule destination.' }),
-    ).exactOptional(),
+    topicRuleDestination: TopicRuleDestinationSchema.exactOptional().openapi({
+      description: 'The topic rule destination.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTopicRuleDestinationResponse')
@@ -7337,17 +5967,15 @@ const DisableAllLogsSchema = z.boolean().openapi('DisableAllLogs')
 
 const GetV2LoggingOptionsResponseSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The IAM role ARN IoT uses to write to your CloudWatch logs.' }),
-    ).exactOptional(),
-    defaultLogLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The default log level.' }),
-    ).exactOptional(),
-    disableAllLogs: DisableAllLogsSchema.and(
-      z.any().openapi({ description: 'Disables all logs.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description: 'The IAM role ARN IoT uses to write to your CloudWatch logs.',
+    }),
+    defaultLogLevel: LogLevelSchema.exactOptional().openapi({
+      description: 'The default log level.',
+    }),
+    disableAllLogs: DisableAllLogsSchema.exactOptional().openapi({
+      description: 'Disables all logs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetV2LoggingOptionsResponse')
@@ -7358,14 +5986,10 @@ const DeviceDefenderThingNameSchema = z.string().min(1).max(128).openapi('Device
 
 const ViolationEventAdditionalInfoSchema = z
   .object({
-    confidenceLevel: ConfidenceLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The sensitivity of anomalous behavior evaluation. Can be <code>Low</code>, <code>Medium</code>, or <code>High</code>. ',
-        }),
-    ).exactOptional(),
+    confidenceLevel: ConfidenceLevelSchema.exactOptional().openapi({
+      description:
+        ' The sensitivity of anomalous behavior evaluation. Can be <code>Low</code>, <code>Medium</code>, or <code>High</code>. ',
+    }),
   })
   .openapi({ description: ' The details of a violation event. ', required: [] })
   .openapi('ViolationEventAdditionalInfo')
@@ -7382,45 +6006,37 @@ const VerificationStateDescriptionSchema = z
 
 const ActiveViolationSchema = z
   .object({
-    violationId: ViolationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the active violation.' }),
-    ).exactOptional(),
-    thingName: DeviceDefenderThingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the thing responsible for the active violation.' }),
-    ).exactOptional(),
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The security profile with the behavior is in violation.' }),
-    ).exactOptional(),
-    behavior: BehaviorSchema.and(
-      z.any().openapi({ description: 'The behavior that is being violated.' }),
-    ).exactOptional(),
-    lastViolationValue: MetricValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the metric (the measurement) that caused the most recent violation.',
-        }),
-    ).exactOptional(),
-    violationEventAdditionalInfo: ViolationEventAdditionalInfoSchema.and(
-      z.any().openapi({ description: ' The details of a violation event. ' }),
-    ).exactOptional(),
-    verificationState: VerificationStateSchema.and(
-      z.any().openapi({ description: 'The verification state of the violation (detect alarm).' }),
-    ).exactOptional(),
-    verificationStateDescription: VerificationStateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the verification state of the violation.' }),
-    ).exactOptional(),
-    lastViolationTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the most recent violation occurred.' }),
-    ).exactOptional(),
-    violationStartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the violation started.' }),
-    ).exactOptional(),
+    violationId: ViolationIdSchema.exactOptional().openapi({
+      description: 'The ID of the active violation.',
+    }),
+    thingName: DeviceDefenderThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing responsible for the active violation.',
+    }),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The security profile with the behavior is in violation.',
+    }),
+    behavior: BehaviorSchema.exactOptional().openapi({
+      description: 'The behavior that is being violated.',
+    }),
+    lastViolationValue: MetricValueSchema.exactOptional().openapi({
+      description:
+        'The value of the metric (the measurement) that caused the most recent violation.',
+    }),
+    violationEventAdditionalInfo: ViolationEventAdditionalInfoSchema.exactOptional().openapi({
+      description: ' The details of a violation event. ',
+    }),
+    verificationState: VerificationStateSchema.exactOptional().openapi({
+      description: 'The verification state of the violation (detect alarm).',
+    }),
+    verificationStateDescription: VerificationStateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the verification state of the violation.',
+    }),
+    lastViolationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the most recent violation occurred.',
+    }),
+    violationStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the violation started.',
+    }),
   })
   .openapi({
     description: 'Information about an active Device Defender security profile behavior violation.',
@@ -7432,29 +6048,21 @@ const ActiveViolationsSchema = z.array(ActiveViolationSchema).openapi('ActiveVio
 
 const ListActiveViolationsResponseSchema = z
   .object({
-    activeViolations: ActiveViolationsSchema.and(
-      z.any().openapi({ description: 'The list of active violations.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    activeViolations: ActiveViolationsSchema.exactOptional().openapi({
+      description: 'The list of active violations.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListActiveViolationsResponse')
 
 const PolicySchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The policy name.' }),
-    ).exactOptional(),
-    policyArn: PolicyArnSchema.and(
-      z.any().openapi({ description: 'The policy ARN.' }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({ description: 'The policy name.' }),
+    policyArn: PolicyArnSchema.exactOptional().openapi({ description: 'The policy ARN.' }),
   })
   .openapi({ description: 'Describes an IoT policy.', required: [] })
   .openapi('Policy')
@@ -7469,15 +6077,11 @@ const MarkerSchema = z
 
 const ListAttachedPoliciesResponseSchema = z
   .object({
-    policies: PoliciesSchema.and(z.any().openapi({ description: 'The policies.' })).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to retrieve the next set of results, or ``null`` if there are no more results.',
-        }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({ description: 'The policies.' }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The token to retrieve the next set of results, or ``null`` if there are no more results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttachedPoliciesResponse')
@@ -7486,17 +6090,13 @@ const AuditFindingsSchema = z.array(AuditFindingSchema).openapi('AuditFindings')
 
 const ListAuditFindingsResponseSchema = z
   .object({
-    findings: AuditFindingsSchema.and(
-      z.any().openapi({ description: 'The findings (results) of the audit.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    findings: AuditFindingsSchema.exactOptional().openapi({
+      description: 'The findings (results) of the audit.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuditFindingsResponse')
@@ -7507,60 +6107,35 @@ const AuditMitigationActionsExecutionStatusSchema = z
 
 const AuditMitigationActionExecutionMetadataSchema = z
   .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier for the task that applies the mitigation action.',
-        }),
-    ).exactOptional(),
-    findingId: FindingIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the findings to which the task and associated mitigation action are applied.',
-        }),
-    ).exactOptional(),
-    actionName: MitigationActionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The friendly name of the mitigation action being applied by the task.',
-        }),
-    ).exactOptional(),
-    actionId: MitigationActionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier for the mitigation action being applied by the task.',
-        }),
-    ).exactOptional(),
-    status: AuditMitigationActionsExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the task being executed.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time when the task was started.' }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time when the task was completed or canceled. Blank if the task is still running.',
-        }),
-    ).exactOptional(),
-    errorCode: ErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If an error occurred, the code that indicates which type of error occurred.',
-        }),
-    ).exactOptional(),
-    message: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'If an error occurred, a message that describes the error.' }),
-    ).exactOptional(),
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the task that applies the mitigation action.',
+    }),
+    findingId: FindingIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the findings to which the task and associated mitigation action are applied.',
+    }),
+    actionName: MitigationActionNameSchema.exactOptional().openapi({
+      description: 'The friendly name of the mitigation action being applied by the task.',
+    }),
+    actionId: MitigationActionIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the mitigation action being applied by the task.',
+    }),
+    status: AuditMitigationActionsExecutionStatusSchema.exactOptional().openapi({
+      description: 'The current status of the task being executed.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time when the task was started.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time when the task was completed or canceled. Blank if the task is still running.',
+    }),
+    errorCode: ErrorCodeSchema.exactOptional().openapi({
+      description: 'If an error occurred, the code that indicates which type of error occurred.',
+    }),
+    message: ErrorMessageSchema.exactOptional().openapi({
+      description: 'If an error occurred, a message that describes the error.',
+    }),
   })
   .openapi({
     description:
@@ -7575,36 +6150,28 @@ const AuditMitigationActionExecutionMetadataListSchema = z
 
 const ListAuditMitigationActionsExecutionsResponseSchema = z
   .object({
-    actionsExecutions: AuditMitigationActionExecutionMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A set of task execution results based on the input parameters. Details include the mitigation action applied, start time, and task status.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
+    actionsExecutions: AuditMitigationActionExecutionMetadataListSchema.exactOptional().openapi({
+      description:
+        'A set of task execution results based on the input parameters. Details include the mitigation action applied, start time, and task status.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuditMitigationActionsExecutionsResponse')
 
 const AuditMitigationActionsTaskMetadataSchema = z
   .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the task.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the audit mitigation actions task was started.',
-        }),
-    ).exactOptional(),
-    taskStatus: AuditMitigationActionsTaskStatusSchema.and(
-      z.any().openapi({ description: 'The current state of the audit mitigation actions task.' }),
-    ).exactOptional(),
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description: 'The unique identifier for the task.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the audit mitigation actions task was started.',
+    }),
+    taskStatus: AuditMitigationActionsTaskStatusSchema.exactOptional().openapi({
+      description: 'The current state of the audit mitigation actions task.',
+    }),
   })
   .openapi({
     description:
@@ -7619,16 +6186,12 @@ const AuditMitigationActionsTaskMetadataListSchema = z
 
 const ListAuditMitigationActionsTasksResponseSchema = z
   .object({
-    tasks: AuditMitigationActionsTaskMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The collection of audit mitigation tasks that matched the filter criteria.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
+    tasks: AuditMitigationActionsTaskMetadataListSchema.exactOptional().openapi({
+      description: 'The collection of audit mitigation tasks that matched the filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuditMitigationActionsTasksResponse')
@@ -7637,24 +6200,16 @@ const AuditSuppressionSchema = z
   .object({
     checkName: AuditCheckNameSchema,
     resourceIdentifier: ResourceIdentifierSchema,
-    expirationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The expiration date (epoch timestamp in seconds) that you want the suppression to adhere to. ',
-        }),
-    ).exactOptional(),
-    suppressIndefinitely: SuppressIndefinitelySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether a suppression should exist indefinitely or not. ',
-        }),
-    ).exactOptional(),
-    description: AuditDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the audit suppression. ' }),
-    ).exactOptional(),
+    expirationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The expiration date (epoch timestamp in seconds) that you want the suppression to adhere to. ',
+    }),
+    suppressIndefinitely: SuppressIndefinitelySchema.exactOptional().openapi({
+      description: ' Indicates whether a suppression should exist indefinitely or not. ',
+    }),
+    description: AuditDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the audit suppression. ',
+    }),
   })
   .openapi({
     required: ['checkName', 'resourceIdentifier'],
@@ -7666,42 +6221,28 @@ const AuditSuppressionListSchema = z.array(AuditSuppressionSchema).openapi('Audi
 
 const ListAuditSuppressionsResponseSchema = z
   .object({
-    suppressions: AuditSuppressionListSchema.and(
-      z.any().openapi({ description: ' List of audit suppressions. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
-        }),
-    ).exactOptional(),
+    suppressions: AuditSuppressionListSchema.exactOptional().openapi({
+      description: ' List of audit suppressions. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuditSuppressionsResponse')
 
 const AuditTaskMetadataSchema = z
   .object({
-    taskId: AuditTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of this audit.' }),
-    ).exactOptional(),
-    taskStatus: AuditTaskStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of this audit. One of "IN_PROGRESS", "COMPLETED", "FAILED", or "CANCELED".',
-        }),
-    ).exactOptional(),
-    taskType: AuditTaskTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of this audit. One of "ON_DEMAND_AUDIT_TASK" or "SCHEDULED_AUDIT_TASK".',
-        }),
-    ).exactOptional(),
+    taskId: AuditTaskIdSchema.exactOptional().openapi({ description: 'The ID of this audit.' }),
+    taskStatus: AuditTaskStatusSchema.exactOptional().openapi({
+      description:
+        'The status of this audit. One of "IN_PROGRESS", "COMPLETED", "FAILED", or "CANCELED".',
+    }),
+    taskType: AuditTaskTypeSchema.exactOptional().openapi({
+      description:
+        'The type of this audit. One of "ON_DEMAND_AUDIT_TASK" or "SCHEDULED_AUDIT_TASK".',
+    }),
   })
   .openapi({ description: 'The audits that were performed.', required: [] })
   .openapi('AuditTaskMetadata')
@@ -7712,33 +6253,25 @@ const AuditTaskMetadataListSchema = z
 
 const ListAuditTasksResponseSchema = z
   .object({
-    tasks: AuditTaskMetadataListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The audits that were performed during the specified time period.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    tasks: AuditTaskMetadataListSchema.exactOptional().openapi({
+      description: 'The audits that were performed during the specified time period.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuditTasksResponse')
 
 const AuthorizerSummarySchema = z
   .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: 'The authorizer name.' }),
-    ).exactOptional(),
-    authorizerArn: AuthorizerArnSchema.and(
-      z.any().openapi({ description: 'The authorizer ARN.' }),
-    ).exactOptional(),
+    authorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: 'The authorizer name.',
+    }),
+    authorizerArn: AuthorizerArnSchema.exactOptional().openapi({
+      description: 'The authorizer ARN.',
+    }),
   })
   .openapi({ description: 'The authorizer summary.', required: [] })
   .openapi('AuthorizerSummary')
@@ -7747,12 +6280,10 @@ const AuthorizersSchema = z.array(AuthorizerSummarySchema).openapi('Authorizers'
 
 const ListAuthorizersResponseSchema = z
   .object({
-    authorizers: AuthorizersSchema.and(
-      z.any().openapi({ description: 'The authorizers.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'A marker used to get the next set of results.' }),
-    ).exactOptional(),
+    authorizers: AuthorizersSchema.exactOptional().openapi({ description: 'The authorizers.' }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'A marker used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAuthorizersResponse')
@@ -7763,40 +6294,32 @@ const BillingGroupNameAndArnListSchema = z
 
 const ListBillingGroupsResponseSchema = z
   .object({
-    billingGroups: BillingGroupNameAndArnListSchema.and(
-      z.any().openapi({ description: 'The list of billing groups.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    billingGroups: BillingGroupNameAndArnListSchema.exactOptional().openapi({
+      description: 'The list of billing groups.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBillingGroupsResponse')
 
 const CACertificateSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the CA certificate.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The ID of the CA certificate.' }),
-    ).exactOptional(),
-    status: CACertificateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the CA certificate.</p> <p>The status value REGISTER_INACTIVE is deprecated and should not be used.</p>',
-        }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the CA certificate was created.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the CA certificate.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The ID of the CA certificate.',
+    }),
+    status: CACertificateStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the CA certificate.</p> <p>The status value REGISTER_INACTIVE is deprecated and should not be used.</p>',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the CA certificate was created.',
+    }),
   })
   .openapi({ description: 'A CA certificate.', required: [] })
   .openapi('CACertificate')
@@ -7805,52 +6328,36 @@ const CACertificatesSchema = z.array(CACertificateSchema).openapi('CACertificate
 
 const ListCACertificatesResponseSchema = z
   .object({
-    certificates: CACertificatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The CA certificates registered in your Amazon Web Services account.',
-        }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'The current position within the list of CA certificates.' }),
-    ).exactOptional(),
+    certificates: CACertificatesSchema.exactOptional().openapi({
+      description: 'The CA certificates registered in your Amazon Web Services account.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'The current position within the list of CA certificates.',
+    }),
   })
   .openapi({ description: 'The output from the ListCACertificates operation.', required: [] })
   .openapi('ListCACertificatesResponse')
 
 const CertificateSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)',
-        }),
-    ).exactOptional(),
-    status: CertificateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the certificate.</p> <p>The status value REGISTER_INACTIVE is deprecated and should not be used.</p>',
-        }),
-    ).exactOptional(),
-    certificateMode: CertificateModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The mode of the certificate.</p> <p> <code>DEFAULT</code>: A certificate in <code>DEFAULT</code> mode is either generated by Amazon Web Services IoT Core or registered with an issuer certificate authority (CA) in <code>DEFAULT</code> mode. Devices with certificates in <code>DEFAULT</code> mode aren't required to send the Server Name Indication (SNI) extension when connecting to Amazon Web Services IoT Core. However, to use features such as custom domains and VPC endpoints, we recommend that you use the SNI extension when connecting to Amazon Web Services IoT Core.</p> <p> <code>SNI_ONLY</code>: A certificate in <code>SNI_ONLY</code> mode is registered without an issuer CA. Devices with certificates in <code>SNI_ONLY</code> mode must send the SNI extension when connecting to Amazon Web Services IoT Core. </p>",
-        }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time the certificate was created.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the certificate. (The last part of the certificate ARN contains the certificate ID.)',
+    }),
+    status: CertificateStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the certificate.</p> <p>The status value REGISTER_INACTIVE is deprecated and should not be used.</p>',
+    }),
+    certificateMode: CertificateModeSchema.exactOptional().openapi({
+      description:
+        "<p>The mode of the certificate.</p> <p> <code>DEFAULT</code>: A certificate in <code>DEFAULT</code> mode is either generated by Amazon Web Services IoT Core or registered with an issuer certificate authority (CA) in <code>DEFAULT</code> mode. Devices with certificates in <code>DEFAULT</code> mode aren't required to send the Server Name Indication (SNI) extension when connecting to Amazon Web Services IoT Core. However, to use features such as custom domains and VPC endpoints, we recommend that you use the SNI extension when connecting to Amazon Web Services IoT Core.</p> <p> <code>SNI_ONLY</code>: A certificate in <code>SNI_ONLY</code> mode is registered without an issuer CA. Devices with certificates in <code>SNI_ONLY</code> mode must send the SNI extension when connecting to Amazon Web Services IoT Core. </p>",
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time the certificate was created.',
+    }),
   })
   .openapi({ description: 'Information about a certificate.', required: [] })
   .openapi('Certificate')
@@ -7859,38 +6366,26 @@ const CertificatesSchema = z.array(CertificateSchema).openapi('Certificates')
 
 const ListCertificatesResponseSchema = z
   .object({
-    certificates: CertificatesSchema.and(
-      z.any().openapi({ description: 'The descriptions of the certificates.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    certificates: CertificatesSchema.exactOptional().openapi({
+      description: 'The descriptions of the certificates.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output of the ListCertificates operation.', required: [] })
   .openapi('ListCertificatesResponse')
 
 const ListCertificatesByCAResponseSchema = z
   .object({
-    certificates: CertificatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The device certificates signed by the specified CA certificate.',
-        }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    certificates: CertificatesSchema.exactOptional().openapi({
+      description: 'The device certificates signed by the specified CA certificate.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output of the ListCertificatesByCA operation.', required: [] })
   .openapi('ListCertificatesByCAResponse')
@@ -7899,17 +6394,13 @@ const MetricNamesSchema = z.array(MetricNameSchema).openapi('MetricNames')
 
 const ListCustomMetricsResponseSchema = z
   .object({
-    metricNames: MetricNamesSchema.and(
-      z.any().openapi({ description: ' The name of the custom metric. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
-        }),
-    ).exactOptional(),
+    metricNames: MetricNamesSchema.exactOptional().openapi({
+      description: ' The name of the custom metric. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCustomMetricsResponse')
@@ -7924,37 +6415,33 @@ const DetectMitigationActionExecutionErrorCodeSchema = z
 
 const DetectMitigationActionExecutionSchema = z
   .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier of the task. ' }),
-    ).exactOptional(),
-    violationId: ViolationIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier of the violation. ' }),
-    ).exactOptional(),
-    actionName: MitigationActionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The friendly name that uniquely identifies the mitigation action. ',
-        }),
-    ).exactOptional(),
-    thingName: DeviceDefenderThingNameSchema.and(
-      z.any().openapi({ description: ' The name of the thing. ' }),
-    ).exactOptional(),
-    executionStartDate: TimestampSchema.and(
-      z.any().openapi({ description: ' The date a mitigation action was started. ' }),
-    ).exactOptional(),
-    executionEndDate: TimestampSchema.and(
-      z.any().openapi({ description: ' The date a mitigation action ended. ' }),
-    ).exactOptional(),
-    status: DetectMitigationActionExecutionStatusSchema.and(
-      z.any().openapi({ description: ' The status of a mitigation action. ' }),
-    ).exactOptional(),
-    errorCode: DetectMitigationActionExecutionErrorCodeSchema.and(
-      z.any().openapi({ description: ' The error code of a mitigation action. ' }),
-    ).exactOptional(),
-    message: ErrorMessageSchema.and(
-      z.any().openapi({ description: ' The message of a mitigation action. ' }),
-    ).exactOptional(),
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description: ' The unique identifier of the task. ',
+    }),
+    violationId: ViolationIdSchema.exactOptional().openapi({
+      description: ' The unique identifier of the violation. ',
+    }),
+    actionName: MitigationActionNameSchema.exactOptional().openapi({
+      description: ' The friendly name that uniquely identifies the mitigation action. ',
+    }),
+    thingName: DeviceDefenderThingNameSchema.exactOptional().openapi({
+      description: ' The name of the thing. ',
+    }),
+    executionStartDate: TimestampSchema.exactOptional().openapi({
+      description: ' The date a mitigation action was started. ',
+    }),
+    executionEndDate: TimestampSchema.exactOptional().openapi({
+      description: ' The date a mitigation action ended. ',
+    }),
+    status: DetectMitigationActionExecutionStatusSchema.exactOptional().openapi({
+      description: ' The status of a mitigation action. ',
+    }),
+    errorCode: DetectMitigationActionExecutionErrorCodeSchema.exactOptional().openapi({
+      description: ' The error code of a mitigation action. ',
+    }),
+    message: ErrorMessageSchema.exactOptional().openapi({
+      description: ' The message of a mitigation action. ',
+    }),
   })
   .openapi({
     description: ' Describes which mitigation actions should be executed. ',
@@ -7968,87 +6455,59 @@ const DetectMitigationActionExecutionListSchema = z
 
 const ListDetectMitigationActionsExecutionsResponseSchema = z
   .object({
-    actionsExecutions: DetectMitigationActionExecutionListSchema.and(
-      z.any().openapi({ description: ' List of actions executions. ' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
-        }),
-    ).exactOptional(),
+    actionsExecutions: DetectMitigationActionExecutionListSchema.exactOptional().openapi({
+      description: ' List of actions executions. ',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDetectMitigationActionsExecutionsResponse')
 
-const DetectMitigationActionsTaskSummaryListSchema = z
-  .array(DetectMitigationActionsTaskSummarySchema)
-  .openapi('DetectMitigationActionsTaskSummaryList')
-
-const ListDetectMitigationActionsTasksResponseSchema = z
-  .object({
-    tasks: DetectMitigationActionsTaskSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The collection of ML Detect mitigation tasks that matched the filter criteria. ',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ListDetectMitigationActionsTasksResponse')
+const ListDetectMitigationActionsTasksResponseSchema: z.ZodType<ListDetectMitigationActionsTasksResponseType> =
+  z
+    .object({
+      tasks: DetectMitigationActionsTaskSummaryListSchema.exactOptional().openapi({
+        description:
+          ' The collection of ML Detect mitigation tasks that matched the filter criteria. ',
+      }),
+      nextToken: NextTokenSchema.exactOptional().openapi({
+        description:
+          ' A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results. ',
+      }),
+    })
+    .openapi({ required: [] })
+    .openapi('ListDetectMitigationActionsTasksResponse')
 
 const DimensionNamesSchema = z.array(DimensionNameSchema).openapi('DimensionNames')
 
 const ListDimensionsResponseSchema = z
   .object({
-    dimensionNames: DimensionNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the names of the defined dimensions. Use <code>DescribeDimension</code> to get details for a dimension.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    dimensionNames: DimensionNamesSchema.exactOptional().openapi({
+      description:
+        'A list of the names of the defined dimensions. Use <code>DescribeDimension</code> to get details for a dimension.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDimensionsResponse')
 
 const DomainConfigurationSummarySchema = z
   .object({
-    domainConfigurationName: ReservedDomainConfigurationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the domain configuration. This value must be unique to a region.',
-        }),
-    ).exactOptional(),
-    domainConfigurationArn: DomainConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the domain configuration.' }),
-    ).exactOptional(),
-    serviceType: ServiceTypeSchema.and(
-      z.any().openapi({ description: 'The type of service delivered by the endpoint.' }),
-    ).exactOptional(),
+    domainConfigurationName: ReservedDomainConfigurationNameSchema.exactOptional().openapi({
+      description: 'The name of the domain configuration. This value must be unique to a region.',
+    }),
+    domainConfigurationArn: DomainConfigurationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the domain configuration.',
+    }),
+    serviceType: ServiceTypeSchema.exactOptional().openapi({
+      description: 'The type of service delivered by the endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -8063,29 +6522,25 @@ const DomainConfigurationsSchema = z
 
 const ListDomainConfigurationsResponseSchema = z
   .object({
-    domainConfigurations: DomainConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of objects that contain summary information about the user's domain configurations.",
-        }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'The marker for the next set of results.' }),
-    ).exactOptional(),
+    domainConfigurations: DomainConfigurationsSchema.exactOptional().openapi({
+      description:
+        "A list of objects that contain summary information about the user's domain configurations.",
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'The marker for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDomainConfigurationsResponse')
 
 const FleetMetricNameAndArnSchema = z
   .object({
-    metricName: FleetMetricNameSchema.and(
-      z.any().openapi({ description: 'The fleet metric name.' }),
-    ).exactOptional(),
-    metricArn: FleetMetricArnSchema.and(
-      z.any().openapi({ description: 'The fleet metric ARN.' }),
-    ).exactOptional(),
+    metricName: FleetMetricNameSchema.exactOptional().openapi({
+      description: 'The fleet metric name.',
+    }),
+    metricArn: FleetMetricArnSchema.exactOptional().openapi({
+      description: 'The fleet metric ARN.',
+    }),
   })
   .openapi({ description: 'The name and ARN of a fleet metric.', required: [] })
   .openapi('FleetMetricNameAndArn')
@@ -8096,17 +6551,13 @@ const FleetMetricNameAndArnListSchema = z
 
 const ListFleetMetricsResponseSchema = z
   .object({
-    fleetMetrics: FleetMetricNameAndArnListSchema.and(
-      z.any().openapi({ description: 'The list of fleet metrics objects.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Will not be returned if the operation has returned all results.',
-        }),
-    ).exactOptional(),
+    fleetMetrics: FleetMetricNameAndArnListSchema.exactOptional().openapi({
+      description: 'The list of fleet metrics objects.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Will not be returned if the operation has returned all results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFleetMetricsResponse')
@@ -8115,17 +6566,11 @@ const IndexNamesListSchema = z.array(IndexNameSchema).openapi('IndexNamesList')
 
 const ListIndicesResponseSchema = z
   .object({
-    indexNames: IndexNamesListSchema.and(
-      z.any().openapi({ description: 'The index names.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    indexNames: IndexNamesListSchema.exactOptional().openapi({ description: 'The index names.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIndicesResponse')
@@ -8134,61 +6579,38 @@ const RetryAttemptSchema = z.int().openapi('RetryAttempt')
 
 const JobExecutionSummarySchema = z
   .object({
-    status: JobExecutionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the job execution.' }),
-    ).exactOptional(),
-    queuedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job execution was queued.',
-        }),
-    ).exactOptional(),
-    startedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job execution started.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in seconds since the epoch, when the job execution was last updated.',
-        }),
-    ).exactOptional(),
-    executionNumber: ExecutionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (consisting of the digits "0" through "9") which identifies this particular job execution on this particular device. It can be used later in commands which return or update job execution information.',
-        }),
-    ).exactOptional(),
-    retryAttempt: RetryAttemptSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number that indicates how many retry attempts have been completed for this job on this device.',
-        }),
-    ).exactOptional(),
+    status: JobExecutionStatusSchema.exactOptional().openapi({
+      description: 'The status of the job execution.',
+    }),
+    queuedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution was queued.',
+    }),
+    startedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution started.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job execution was last updated.',
+    }),
+    executionNumber: ExecutionNumberSchema.exactOptional().openapi({
+      description:
+        'A string (consisting of the digits "0" through "9") which identifies this particular job execution on this particular device. It can be used later in commands which return or update job execution information.',
+    }),
+    retryAttempt: RetryAttemptSchema.exactOptional().openapi({
+      description:
+        'The number that indicates how many retry attempts have been completed for this job on this device.',
+    }),
   })
   .openapi({ description: 'The job execution summary.', required: [] })
   .openapi('JobExecutionSummary')
 
 const JobExecutionSummaryForJobSchema = z
   .object({
-    thingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing on which the job execution is running.' }),
-    ).exactOptional(),
-    jobExecutionSummary: JobExecutionSummarySchema.and(
-      z.any().openapi({ description: 'Contains a subset of information about a job execution.' }),
-    ).exactOptional(),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing on which the job execution is running.',
+    }),
+    jobExecutionSummary: JobExecutionSummarySchema.exactOptional().openapi({
+      description: 'Contains a subset of information about a job execution.',
+    }),
   })
   .openapi({
     description: 'Contains a summary of information about job executions for a specific job.',
@@ -8202,33 +6624,25 @@ const JobExecutionSummaryForJobListSchema = z
 
 const ListJobExecutionsForJobResponseSchema = z
   .object({
-    executionSummaries: JobExecutionSummaryForJobListSchema.and(
-      z.any().openapi({ description: 'A list of job execution summaries.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    executionSummaries: JobExecutionSummaryForJobListSchema.exactOptional().openapi({
+      description: 'A list of job execution summaries.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobExecutionsForJobResponse')
 
 const JobExecutionSummaryForThingSchema = z
   .object({
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    jobExecutionSummary: JobExecutionSummarySchema.and(
-      z.any().openapi({ description: 'Contains a subset of information about a job execution.' }),
-    ).exactOptional(),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    jobExecutionSummary: JobExecutionSummarySchema.exactOptional().openapi({
+      description: 'Contains a subset of information about a job execution.',
+    }),
   })
   .openapi({ description: 'The job execution summary for a thing.', required: [] })
   .openapi('JobExecutionSummaryForThing')
@@ -8239,39 +6653,31 @@ const JobExecutionSummaryForThingListSchema = z
 
 const ListJobExecutionsForThingResponseSchema = z
   .object({
-    executionSummaries: JobExecutionSummaryForThingListSchema.and(
-      z.any().openapi({ description: 'A list of job execution summaries.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    executionSummaries: JobExecutionSummaryForThingListSchema.exactOptional().openapi({
+      description: 'A list of job execution summaries.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobExecutionsForThingResponse')
 
 const JobTemplateSummarySchema = z
   .object({
-    jobTemplateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template.' }),
-    ).exactOptional(),
-    jobTemplateId: JobTemplateIdSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the job template.' }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the job template.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job template was created.',
-        }),
-    ).exactOptional(),
+    jobTemplateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template.',
+    }),
+    jobTemplateId: JobTemplateIdSchema.exactOptional().openapi({
+      description: 'The unique identifier of the job template.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the job template.',
+    }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job template was created.',
+    }),
   })
   .openapi({
     description: 'An object that contains information about the job template.',
@@ -8285,76 +6691,44 @@ const JobTemplateSummaryListSchema = z
 
 const ListJobTemplatesResponseSchema = z
   .object({
-    jobTemplates: JobTemplateSummaryListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of objects that contain information about the job templates.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    jobTemplates: JobTemplateSummaryListSchema.exactOptional().openapi({
+      description: 'A list of objects that contain information about the job templates.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobTemplatesResponse')
 
 const JobSummarySchema = z
   .object({
-    jobArn: JobArnSchema.and(z.any().openapi({ description: 'The job ARN.' })).exactOptional(),
-    jobId: JobIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier you assigned to this job when it was created.',
-        }),
-    ).exactOptional(),
-    thingGroupId: ThingGroupIdSchema.and(
-      z.any().openapi({ description: 'The ID of the thing group.' }),
-    ).exactOptional(),
-    targetSelection: TargetSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a thing when the thing is added to a target group, even after the job was completed by all things originally in the group.</p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
-        }),
-    ).exactOptional(),
-    status: JobStatusSchema.and(
-      z.any().openapi({ description: 'The job summary status.' }),
-    ).exactOptional(),
-    createdAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job was created.',
-        }),
-    ).exactOptional(),
-    lastUpdatedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time, in seconds since the epoch, when the job was last updated.',
-        }),
-    ).exactOptional(),
-    completedAt: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time, in seconds since the epoch, when the job completed.' }),
-    ).exactOptional(),
-    isConcurrent: BooleanWrapperObjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a job is concurrent. Will be true when a job is rolling out new job executions or canceling previously created executions, otherwise false.',
-        }),
-    ).exactOptional(),
+    jobArn: JobArnSchema.exactOptional().openapi({ description: 'The job ARN.' }),
+    jobId: JobIdSchema.exactOptional().openapi({
+      description: 'The unique identifier you assigned to this job when it was created.',
+    }),
+    thingGroupId: ThingGroupIdSchema.exactOptional().openapi({
+      description: 'The ID of the thing group.',
+    }),
+    targetSelection: TargetSelectionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a thing when the thing is added to a target group, even after the job was completed by all things originally in the group.</p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
+    }),
+    status: JobStatusSchema.exactOptional().openapi({ description: 'The job summary status.' }),
+    createdAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job was created.',
+    }),
+    lastUpdatedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job was last updated.',
+    }),
+    completedAt: DateTypeSchema.exactOptional().openapi({
+      description: 'The time, in seconds since the epoch, when the job completed.',
+    }),
+    isConcurrent: BooleanWrapperObjectSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a job is concurrent. Will be true when a job is rolling out new job executions or canceling previously created executions, otherwise false.',
+    }),
   })
   .openapi({ description: 'The job summary.', required: [] })
   .openapi('JobSummary')
@@ -8363,42 +6737,32 @@ const JobSummaryListSchema = z.array(JobSummarySchema).openapi('JobSummaryList')
 
 const ListJobsResponseSchema = z
   .object({
-    jobs: JobSummaryListSchema.and(
-      z.any().openapi({ description: 'A list of jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    jobs: JobSummaryListSchema.exactOptional().openapi({ description: 'A list of jobs.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListJobsResponse')
 
 const ManagedJobTemplateSummarySchema = z
   .object({
-    templateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) for a managed template.' }),
-    ).exactOptional(),
-    templateName: ManagedJobTemplateNameSchema.and(
-      z.any().openapi({ description: 'The unique Name for a managed template.' }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'The description for a managed template.' }),
-    ).exactOptional(),
-    environments: EnvironmentsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of environments that are supported with the managed job template.',
-        }),
-    ).exactOptional(),
-    templateVersion: ManagedTemplateVersionSchema.and(
-      z.any().openapi({ description: 'The version for a managed template.' }),
-    ).exactOptional(),
+    templateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) for a managed template.',
+    }),
+    templateName: ManagedJobTemplateNameSchema.exactOptional().openapi({
+      description: 'The unique Name for a managed template.',
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'The description for a managed template.',
+    }),
+    environments: EnvironmentsSchema.exactOptional().openapi({
+      description: 'A list of environments that are supported with the managed job template.',
+    }),
+    templateVersion: ManagedTemplateVersionSchema.exactOptional().openapi({
+      description: 'The version for a managed template.',
+    }),
   })
   .openapi({
     description: 'An object that contains information about the managed template.',
@@ -8412,24 +6776,24 @@ const ManagedJobTemplatesSummaryListSchema = z
 
 const ListManagedJobTemplatesResponseSchema = z
   .object({
-    managedJobTemplates: ManagedJobTemplatesSummaryListSchema.and(
-      z.any().openapi({ description: 'A list of managed job templates that are returned.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to retrieve the next set of results.' }),
-    ).exactOptional(),
+    managedJobTemplates: ManagedJobTemplatesSummaryListSchema.exactOptional().openapi({
+      description: 'A list of managed job templates that are returned.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListManagedJobTemplatesResponse')
 
 const MetricDatumSchema = z
   .object({
-    timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the metric value was reported.' }),
-    ).exactOptional(),
-    value: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value reported for the metric.' }),
-    ).exactOptional(),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time the metric value was reported.',
+    }),
+    value: MetricValueSchema.exactOptional().openapi({
+      description: 'The value reported for the metric.',
+    }),
   })
   .openapi({ description: 'A metric.', required: [] })
   .openapi('MetricDatum')
@@ -8438,37 +6802,28 @@ const MetricDatumListSchema = z.array(MetricDatumSchema).openapi('MetricDatumLis
 
 const ListMetricValuesResponseSchema = z
   .object({
-    metricDatumList: MetricDatumListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The data the thing reports for the metric during the specified time period.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    metricDatumList: MetricDatumListSchema.exactOptional().openapi({
+      description: 'The data the thing reports for the metric during the specified time period.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMetricValuesResponse')
 
 const MitigationActionIdentifierSchema = z
   .object({
-    actionName: MitigationActionNameSchema.and(
-      z.any().openapi({ description: 'The friendly name of the mitigation action.' }),
-    ).exactOptional(),
-    actionArn: MitigationActionArnSchema.and(
-      z.any().openapi({ description: 'The IAM role ARN used to apply this mitigation action.' }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The date when this mitigation action was created.' }),
-    ).exactOptional(),
+    actionName: MitigationActionNameSchema.exactOptional().openapi({
+      description: 'The friendly name of the mitigation action.',
+    }),
+    actionArn: MitigationActionArnSchema.exactOptional().openapi({
+      description: 'The IAM role ARN used to apply this mitigation action.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The date when this mitigation action was created.',
+    }),
   })
   .openapi({
     description:
@@ -8483,29 +6838,25 @@ const MitigationActionIdentifierListSchema = z
 
 const ListMitigationActionsResponseSchema = z
   .object({
-    actionIdentifiers: MitigationActionIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A set of actions that matched the specified filter criteria.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
+    actionIdentifiers: MitigationActionIdentifierListSchema.exactOptional().openapi({
+      description: 'A set of actions that matched the specified filter criteria.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMitigationActionsResponse')
 
 const OTAUpdateSummarySchema = z
   .object({
-    otaUpdateId: OTAUpdateIdSchema.and(
-      z.any().openapi({ description: 'The OTA update ID.' }),
-    ).exactOptional(),
-    otaUpdateArn: OTAUpdateArnSchema.and(
-      z.any().openapi({ description: 'The OTA update ARN.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date when the OTA update was created.' }),
-    ).exactOptional(),
+    otaUpdateId: OTAUpdateIdSchema.exactOptional().openapi({ description: 'The OTA update ID.' }),
+    otaUpdateArn: OTAUpdateArnSchema.exactOptional().openapi({
+      description: 'The OTA update ARN.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the OTA update was created.',
+    }),
   })
   .openapi({ description: 'An OTA update summary.', required: [] })
   .openapi('OTAUpdateSummary')
@@ -8514,40 +6865,36 @@ const OTAUpdatesSummarySchema = z.array(OTAUpdateSummarySchema).openapi('OTAUpda
 
 const ListOTAUpdatesResponseSchema = z
   .object({
-    otaUpdates: OTAUpdatesSummarySchema.and(
-      z.any().openapi({ description: 'A list of OTA update jobs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token to use to get the next set of results.' }),
-    ).exactOptional(),
+    otaUpdates: OTAUpdatesSummarySchema.exactOptional().openapi({
+      description: 'A list of OTA update jobs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token to use to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOTAUpdatesResponse')
 
 const OutgoingCertificateSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The certificate ARN.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The certificate ID.' }),
-    ).exactOptional(),
-    transferredTo: AwsAccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account to which the transfer was made.',
-        }),
-    ).exactOptional(),
-    transferDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date the transfer was initiated.' }),
-    ).exactOptional(),
-    transferMessage: MessageSchema.and(
-      z.any().openapi({ description: 'The transfer message.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The certificate creation date.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The certificate ARN.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The certificate ID.',
+    }),
+    transferredTo: AwsAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account to which the transfer was made.',
+    }),
+    transferDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date the transfer was initiated.',
+    }),
+    transferMessage: MessageSchema.exactOptional().openapi({
+      description: 'The transfer message.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The certificate creation date.',
+    }),
   })
   .openapi({
     description: 'A certificate that has been transferred but not yet accepted.',
@@ -8561,33 +6908,25 @@ const OutgoingCertificatesSchema = z
 
 const ListOutgoingCertificatesResponseSchema = z
   .object({
-    outgoingCertificates: OutgoingCertificatesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The certificates that are being transferred but not yet accepted.',
-        }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'The marker for the next set of results.' }),
-    ).exactOptional(),
+    outgoingCertificates: OutgoingCertificatesSchema.exactOptional().openapi({
+      description: 'The certificates that are being transferred but not yet accepted.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'The marker for the next set of results.',
+    }),
   })
   .openapi({ description: 'The output from the ListOutgoingCertificates operation.', required: [] })
   .openapi('ListOutgoingCertificatesResponse')
 
 const ListPoliciesResponseSchema = z
   .object({
-    policies: PoliciesSchema.and(
-      z.any().openapi({ description: 'The descriptions of the policies.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({
+      description: 'The descriptions of the policies.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListPolicies operation.', required: [] })
   .openapi('ListPoliciesResponse')
@@ -8598,32 +6937,28 @@ const PrincipalsSchema = z.array(PrincipalArnSchema).openapi('Principals')
 
 const ListPolicyPrincipalsResponseSchema = z
   .object({
-    principals: PrincipalsSchema.and(
-      z.any().openapi({ description: 'The descriptions of the principals.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    principals: PrincipalsSchema.exactOptional().openapi({
+      description: 'The descriptions of the principals.',
+    }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListPolicyPrincipals operation.', required: [] })
   .openapi('ListPolicyPrincipalsResponse')
 
 const PolicyVersionSchema = z
   .object({
-    versionId: PolicyVersionIdSchema.and(
-      z.any().openapi({ description: 'The policy version ID.' }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z.any().openapi({ description: 'Specifies whether the policy version is the default.' }),
-    ).exactOptional(),
-    createDate: DateTypeSchema.and(
-      z.any().openapi({ description: 'The date and time the policy was created.' }),
-    ).exactOptional(),
+    versionId: PolicyVersionIdSchema.exactOptional().openapi({
+      description: 'The policy version ID.',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description: 'Specifies whether the policy version is the default.',
+    }),
+    createDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date and time the policy was created.',
+    }),
   })
   .openapi({ description: 'Describes a policy version.', required: [] })
   .openapi('PolicyVersion')
@@ -8632,24 +6967,20 @@ const PolicyVersionsSchema = z.array(PolicyVersionSchema).openapi('PolicyVersion
 
 const ListPolicyVersionsResponseSchema = z
   .object({
-    policyVersions: PolicyVersionsSchema.and(
-      z.any().openapi({ description: 'The policy versions.' }),
-    ).exactOptional(),
+    policyVersions: PolicyVersionsSchema.exactOptional().openapi({
+      description: 'The policy versions.',
+    }),
   })
   .openapi({ description: 'The output from the ListPolicyVersions operation.', required: [] })
   .openapi('ListPolicyVersionsResponse')
 
 const ListPrincipalPoliciesResponseSchema = z
   .object({
-    policies: PoliciesSchema.and(z.any().openapi({ description: 'The policies.' })).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The marker for the next set of results, or null if there are no additional results.',
-        }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({ description: 'The policies.' }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description:
+        'The marker for the next set of results, or null if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListPrincipalPolicies operation.', required: [] })
   .openapi('ListPrincipalPoliciesResponse')
@@ -8658,39 +6989,27 @@ const ThingNameListSchema = z.array(ThingNameSchema).openapi('ThingNameList')
 
 const ListPrincipalThingsResponseSchema = z
   .object({
-    things: ThingNameListSchema.and(
-      z.any().openapi({ description: 'The things.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    things: ThingNameListSchema.exactOptional().openapi({ description: 'The things.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListPrincipalThings operation.', required: [] })
   .openapi('ListPrincipalThingsResponse')
 
 const ProvisioningTemplateVersionSummarySchema = z
   .object({
-    versionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the fleet provisioning template version.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the provisioning template version was created' }),
-    ).exactOptional(),
-    isDefaultVersion: IsDefaultVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the provisioning template version is the default version, otherwise false.',
-        }),
-    ).exactOptional(),
+    versionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The ID of the fleet provisioning template version.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template version was created',
+    }),
+    isDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description:
+        'True if the provisioning template version is the default version, otherwise false.',
+    }),
   })
   .openapi({
     description: 'A summary of information about a fleet provision template version.',
@@ -8704,54 +7023,40 @@ const ProvisioningTemplateVersionListingSchema = z
 
 const ListProvisioningTemplateVersionsResponseSchema = z
   .object({
-    versions: ProvisioningTemplateVersionListingSchema.and(
-      z.any().openapi({ description: 'The list of provisioning template versions.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token to retrieve the next set of results.' }),
-    ).exactOptional(),
+    versions: ProvisioningTemplateVersionListingSchema.exactOptional().openapi({
+      description: 'The list of provisioning template versions.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisioningTemplateVersionsResponse')
 
 const ProvisioningTemplateSummarySchema = z
   .object({
-    templateArn: TemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the provisioning template.' }),
-    ).exactOptional(),
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ).exactOptional(),
-    description: TemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning template.' }),
-    ).exactOptional(),
-    creationDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date when the provisioning template summary was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: DateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date when the provisioning template summary was last modified.',
-        }),
-    ).exactOptional(),
-    enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'True if the fleet provision template is enabled, otherwise false.',
-        }),
-    ).exactOptional(),
-    type: TemplateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
-        }),
-    ).exactOptional(),
+    templateArn: TemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the provisioning template.',
+    }),
+    templateName: TemplateNameSchema.exactOptional().openapi({
+      description: 'The name of the provisioning template.',
+    }),
+    description: TemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning template.',
+    }),
+    creationDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template summary was created.',
+    }),
+    lastModifiedDate: DateTypeSchema.exactOptional().openapi({
+      description: 'The date when the provisioning template summary was last modified.',
+    }),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True if the fleet provision template is enabled, otherwise false.',
+    }),
+    type: TemplateTypeSchema.exactOptional().openapi({
+      description:
+        'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
+    }),
   })
   .openapi({ description: 'A summary of information about a provisioning template.', required: [] })
   .openapi('ProvisioningTemplateSummary')
@@ -8762,29 +7067,25 @@ const ProvisioningTemplateListingSchema = z
 
 const ListProvisioningTemplatesResponseSchema = z
   .object({
-    templates: ProvisioningTemplateListingSchema.and(
-      z.any().openapi({ description: 'A list of provisioning templates' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token to retrieve the next set of results.' }),
-    ).exactOptional(),
+    templates: ProvisioningTemplateListingSchema.exactOptional().openapi({
+      description: 'A list of provisioning templates',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token to retrieve the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProvisioningTemplatesResponse')
 
 const ListRelatedResourcesForAuditFindingResponseSchema = z
   .object({
-    relatedResources: RelatedResourcesSchema.and(
-      z.any().openapi({ description: 'The related resources.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> for the first API call.',
-        }),
-    ).exactOptional(),
+    relatedResources: RelatedResourcesSchema.exactOptional().openapi({
+      description: 'The related resources.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> for the first API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRelatedResourcesForAuditFindingResponse')
@@ -8793,43 +7094,33 @@ const RoleAliasesSchema = z.array(RoleAliasSchema).openapi('RoleAliases')
 
 const ListRoleAliasesResponseSchema = z
   .object({
-    roleAliases: RoleAliasesSchema.and(
-      z.any().openapi({ description: 'The role aliases.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'A marker used to get the next set of results.' }),
-    ).exactOptional(),
+    roleAliases: RoleAliasesSchema.exactOptional().openapi({ description: 'The role aliases.' }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'A marker used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRoleAliasesResponse')
 
 const ScheduledAuditMetadataSchema = z
   .object({
-    scheduledAuditName: ScheduledAuditNameSchema.and(
-      z.any().openapi({ description: 'The name of the scheduled audit.' }),
-    ).exactOptional(),
-    scheduledAuditArn: ScheduledAuditArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled audit.' }),
-    ).exactOptional(),
-    frequency: AuditFrequencySchema.and(
-      z.any().openapi({ description: 'How often the scheduled audit occurs.' }),
-    ).exactOptional(),
-    dayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month on which the scheduled audit is run (if the <code>frequency</code> is "MONTHLY"). If days 29-31 are specified, and the month does not have that many days, the audit takes place on the "LAST" day of the month.',
-        }),
-    ).exactOptional(),
-    dayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the week on which the scheduled audit is run (if the <code>frequency</code> is "WEEKLY" or "BIWEEKLY").',
-        }),
-    ).exactOptional(),
+    scheduledAuditName: ScheduledAuditNameSchema.exactOptional().openapi({
+      description: 'The name of the scheduled audit.',
+    }),
+    scheduledAuditArn: ScheduledAuditArnSchema.exactOptional().openapi({
+      description: 'The ARN of the scheduled audit.',
+    }),
+    frequency: AuditFrequencySchema.exactOptional().openapi({
+      description: 'How often the scheduled audit occurs.',
+    }),
+    dayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month on which the scheduled audit is run (if the <code>frequency</code> is "MONTHLY"). If days 29-31 are specified, and the month does not have that many days, the audit takes place on the "LAST" day of the month.',
+    }),
+    dayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of the week on which the scheduled audit is run (if the <code>frequency</code> is "WEEKLY" or "BIWEEKLY").',
+    }),
   })
   .openapi({ description: 'Information about the scheduled audit.', required: [] })
   .openapi('ScheduledAuditMetadata')
@@ -8840,29 +7131,23 @@ const ScheduledAuditMetadataListSchema = z
 
 const ListScheduledAuditsResponseSchema = z
   .object({
-    scheduledAudits: ScheduledAuditMetadataListSchema.and(
-      z.any().openapi({ description: 'The list of scheduled audits.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    scheduledAudits: ScheduledAuditMetadataListSchema.exactOptional().openapi({
+      description: 'The list of scheduled audits.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListScheduledAuditsResponse')
 
 const SecurityProfileIdentifierSchema = z
   .object({
-    name: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: "The name you've given to the security profile." }),
-    ),
-    arn: SecurityProfileArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the security profile.' }),
-    ),
+    name: SecurityProfileNameSchema.openapi({
+      description: "The name you've given to the security profile.",
+    }),
+    arn: SecurityProfileArnSchema.openapi({ description: 'The ARN of the security profile.' }),
   })
   .openapi({
     required: ['name', 'arn'],
@@ -8876,17 +7161,13 @@ const SecurityProfileIdentifiersSchema = z
 
 const ListSecurityProfilesResponseSchema = z
   .object({
-    securityProfileIdentifiers: SecurityProfileIdentifiersSchema.and(
-      z.any().openapi({ description: 'A list of security profile identifiers (names and ARNs).' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    securityProfileIdentifiers: SecurityProfileIdentifiersSchema.exactOptional().openapi({
+      description: 'A list of security profile identifiers (names and ARNs).',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityProfilesResponse')
@@ -8895,9 +7176,9 @@ const SecurityProfileTargetArnSchema = z.string().openapi('SecurityProfileTarget
 
 const SecurityProfileTargetSchema = z
   .object({
-    arn: SecurityProfileTargetArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the security profile.' }),
-    ),
+    arn: SecurityProfileTargetArnSchema.openapi({
+      description: 'The ARN of the security profile.',
+    }),
   })
   .openapi({
     required: ['arn'],
@@ -8907,17 +7188,13 @@ const SecurityProfileTargetSchema = z
 
 const SecurityProfileTargetMappingSchema = z
   .object({
-    securityProfileIdentifier: SecurityProfileIdentifierSchema.and(
-      z.any().openapi({ description: 'Information that identifies the security profile.' }),
-    ).exactOptional(),
-    target: SecurityProfileTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the target (thing group) associated with the security profile.',
-        }),
-    ).exactOptional(),
+    securityProfileIdentifier: SecurityProfileIdentifierSchema.exactOptional().openapi({
+      description: 'Information that identifies the security profile.',
+    }),
+    target: SecurityProfileTargetSchema.exactOptional().openapi({
+      description:
+        'Information about the target (thing group) associated with the security profile.',
+    }),
   })
   .openapi({
     description: 'Information about a security profile and the target associated with it.',
@@ -8931,35 +7208,27 @@ const SecurityProfileTargetMappingsSchema = z
 
 const ListSecurityProfilesForTargetResponseSchema = z
   .object({
-    securityProfileTargetMappings: SecurityProfileTargetMappingsSchema.and(
-      z.any().openapi({ description: 'A list of security profiles and their associated targets.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    securityProfileTargetMappings: SecurityProfileTargetMappingsSchema.exactOptional().openapi({
+      description: 'A list of security profiles and their associated targets.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSecurityProfilesForTargetResponse')
 
 const StreamSummarySchema = z
   .object({
-    streamId: StreamIdSchema.and(
-      z.any().openapi({ description: 'The stream ID.' }),
-    ).exactOptional(),
-    streamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The stream ARN.' }),
-    ).exactOptional(),
-    streamVersion: StreamVersionSchema.and(
-      z.any().openapi({ description: 'The stream version.' }),
-    ).exactOptional(),
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the stream.' }),
-    ).exactOptional(),
+    streamId: StreamIdSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    streamArn: StreamArnSchema.exactOptional().openapi({ description: 'The stream ARN.' }),
+    streamVersion: StreamVersionSchema.exactOptional().openapi({
+      description: 'The stream version.',
+    }),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the stream.',
+    }),
   })
   .openapi({ description: 'A summary of a stream.', required: [] })
   .openapi('StreamSummary')
@@ -8968,12 +7237,10 @@ const StreamsSummarySchema = z.array(StreamSummarySchema).openapi('StreamsSummar
 
 const ListStreamsResponseSchema = z
   .object({
-    streams: StreamsSummarySchema.and(
-      z.any().openapi({ description: 'A list of streams.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'A token used to get the next set of results.' }),
-    ).exactOptional(),
+    streams: StreamsSummarySchema.exactOptional().openapi({ description: 'A list of streams.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A token used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStreamsResponse')
@@ -8982,17 +7249,13 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags assigned to the resource.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of tags assigned to the resource.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -9003,12 +7266,10 @@ const PolicyTargetsSchema = z.array(PolicyTargetSchema).openapi('PolicyTargets')
 
 const ListTargetsForPolicyResponseSchema = z
   .object({
-    targets: PolicyTargetsSchema.and(
-      z.any().openapi({ description: 'The policy targets.' }),
-    ).exactOptional(),
-    nextMarker: MarkerSchema.and(
-      z.any().openapi({ description: 'A marker used to get the next set of results.' }),
-    ).exactOptional(),
+    targets: PolicyTargetsSchema.exactOptional().openapi({ description: 'The policy targets.' }),
+    nextMarker: MarkerSchema.exactOptional().openapi({
+      description: 'A marker used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetsForPolicyResponse')
@@ -9019,70 +7280,52 @@ const SecurityProfileTargetsSchema = z
 
 const ListTargetsForSecurityProfileResponseSchema = z
   .object({
-    securityProfileTargets: SecurityProfileTargetsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The thing groups to which the security profile is attached.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    securityProfileTargets: SecurityProfileTargetsSchema.exactOptional().openapi({
+      description: 'The thing groups to which the security profile is attached.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTargetsForSecurityProfileResponse')
 
 const ListThingGroupsResponseSchema = z
   .object({
-    thingGroups: ThingGroupNameAndArnListSchema.and(
-      z.any().openapi({ description: 'The thing groups.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
-        }),
-    ).exactOptional(),
+    thingGroups: ThingGroupNameAndArnListSchema.exactOptional().openapi({
+      description: 'The thing groups.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingGroupsResponse')
 
 const ListThingGroupsForThingResponseSchema = z
   .object({
-    thingGroups: ThingGroupNameAndArnListSchema.and(
-      z.any().openapi({ description: 'The thing groups.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    thingGroups: ThingGroupNameAndArnListSchema.exactOptional().openapi({
+      description: 'The thing groups.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingGroupsForThingResponse')
 
 const ListThingPrincipalsResponseSchema = z
   .object({
-    principals: PrincipalsSchema.and(
-      z.any().openapi({ description: 'The principals associated with the thing.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    principals: PrincipalsSchema.exactOptional().openapi({
+      description: 'The principals associated with the thing.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListThingPrincipals operation.', required: [] })
   .openapi('ListThingPrincipalsResponse')
@@ -9095,20 +7338,16 @@ const ReportTypeSchema = z.enum(['ERRORS', 'RESULTS']).openapi('ReportType')
 
 const ListThingRegistrationTaskReportsResponseSchema = z
   .object({
-    resourceLinks: S3FileUrlListSchema.and(
-      z.any().openapi({ description: 'Links to the task resources.' }),
-    ).exactOptional(),
-    reportType: ReportTypeSchema.and(
-      z.any().openapi({ description: 'The type of task report.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    resourceLinks: S3FileUrlListSchema.exactOptional().openapi({
+      description: 'Links to the task resources.',
+    }),
+    reportType: ReportTypeSchema.exactOptional().openapi({
+      description: 'The type of task report.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingRegistrationTaskReportsResponse')
@@ -9117,40 +7356,32 @@ const TaskIdListSchema = z.array(TaskIdSchema).openapi('TaskIdList')
 
 const ListThingRegistrationTasksResponseSchema = z
   .object({
-    taskIds: TaskIdListSchema.and(
-      z.any().openapi({ description: 'A list of bulk thing provisioning task IDs.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    taskIds: TaskIdListSchema.exactOptional().openapi({
+      description: 'A list of bulk thing provisioning task IDs.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingRegistrationTasksResponse')
 
 const ThingTypeDefinitionSchema = z
   .object({
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing type.' }),
-    ).exactOptional(),
-    thingTypeArn: ThingTypeArnSchema.and(
-      z.any().openapi({ description: 'The thing type ARN.' }),
-    ).exactOptional(),
-    thingTypeProperties: ThingTypePropertiesSchema.and(
-      z.any().openapi({ description: 'The ThingTypeProperties for the thing type.' }),
-    ).exactOptional(),
-    thingTypeMetadata: ThingTypeMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ThingTypeMetadata contains additional information about the thing type including: creation date and time, a value indicating whether the thing type is deprecated, and a date and time when it was deprecated.',
-        }),
-    ).exactOptional(),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type.',
+    }),
+    thingTypeArn: ThingTypeArnSchema.exactOptional().openapi({
+      description: 'The thing type ARN.',
+    }),
+    thingTypeProperties: ThingTypePropertiesSchema.exactOptional().openapi({
+      description: 'The ThingTypeProperties for the thing type.',
+    }),
+    thingTypeMetadata: ThingTypeMetadataSchema.exactOptional().openapi({
+      description:
+        'The ThingTypeMetadata contains additional information about the thing type including: creation date and time, a value indicating whether the thing type is deprecated, and a date and time when it was deprecated.',
+    }),
   })
   .openapi({
     description: 'The definition of the thing type, including thing type name and description.',
@@ -9162,42 +7393,28 @@ const ThingTypeListSchema = z.array(ThingTypeDefinitionSchema).openapi('ThingTyp
 
 const ListThingTypesResponseSchema = z
   .object({
-    thingTypes: ThingTypeListSchema.and(
-      z.any().openapi({ description: 'The thing types.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of results. Will not be returned if operation has returned all results.',
-        }),
-    ).exactOptional(),
+    thingTypes: ThingTypeListSchema.exactOptional().openapi({ description: 'The thing types.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of results. Will not be returned if operation has returned all results.',
+    }),
   })
   .openapi({ description: 'The output for the ListThingTypes operation.', required: [] })
   .openapi('ListThingTypesResponse')
 
 const ThingAttributeSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing.' }),
-    ).exactOptional(),
-    thingTypeName: ThingTypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the thing type, if the thing has been associated with a type.',
-        }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The thing ARN.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'A list of thing attributes which are name-value pairs.' }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the thing record in the registry.' }),
-    ).exactOptional(),
+    thingName: ThingNameSchema.exactOptional().openapi({ description: 'The name of the thing.' }),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type, if the thing has been associated with a type.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({ description: 'The thing ARN.' }),
+    attributes: AttributesSchema.exactOptional().openapi({
+      description: 'A list of thing attributes which are name-value pairs.',
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the thing record in the registry.',
+    }),
   })
   .openapi({
     description:
@@ -9210,86 +7427,64 @@ const ThingAttributeListSchema = z.array(ThingAttributeSchema).openapi('ThingAtt
 
 const ListThingsResponseSchema = z
   .object({
-    things: ThingAttributeListSchema.and(
-      z.any().openapi({ description: 'The things.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
-        }),
-    ).exactOptional(),
+    things: ThingAttributeListSchema.exactOptional().openapi({ description: 'The things.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
+    }),
   })
   .openapi({ description: 'The output from the ListThings operation.', required: [] })
   .openapi('ListThingsResponse')
 
 const ListThingsInBillingGroupResponseSchema = z
   .object({
-    things: ThingNameListSchema.and(
-      z.any().openapi({ description: 'A list of things in the billing group.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
-        }),
-    ).exactOptional(),
+    things: ThingNameListSchema.exactOptional().openapi({
+      description: 'A list of things in the billing group.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results. Will not be returned if operation has returned all results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingsInBillingGroupResponse')
 
 const ListThingsInThingGroupResponseSchema = z
   .object({
-    things: ThingNameListSchema.and(
-      z.any().openapi({ description: 'The things in the specified thing group.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    things: ThingNameListSchema.exactOptional().openapi({
+      description: 'The things in the specified thing group.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListThingsInThingGroupResponse')
 
 const HttpUrlDestinationSummarySchema = z
   .object({
-    confirmationUrl: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL used to confirm ownership of or access to the HTTP topic rule destination URL.',
-        }),
-    ).exactOptional(),
+    confirmationUrl: UrlSchema.exactOptional().openapi({
+      description:
+        'The URL used to confirm ownership of or access to the HTTP topic rule destination URL.',
+    }),
   })
   .openapi({ description: 'Information about an HTTP URL destination.', required: [] })
   .openapi('HttpUrlDestinationSummary')
 
 const VpcDestinationSummarySchema = z
   .object({
-    subnetIds: SubnetIdListSchema.and(
-      z.any().openapi({ description: 'The subnet IDs of the VPC destination.' }),
-    ).exactOptional(),
-    securityGroups: SecurityGroupListSchema.and(
-      z.any().openapi({ description: 'The security groups of the VPC destination.' }),
-    ).exactOptional(),
-    vpcId: VpcIdSchema.and(z.any().openapi({ description: 'The ID of the VPC.' })).exactOptional(),
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
-        }),
-    ).exactOptional(),
+    subnetIds: SubnetIdListSchema.exactOptional().openapi({
+      description: 'The subnet IDs of the VPC destination.',
+    }),
+    securityGroups: SecurityGroupListSchema.exactOptional().openapi({
+      description: 'The security groups of the VPC destination.',
+    }),
+    vpcId: VpcIdSchema.exactOptional().openapi({ description: 'The ID of the VPC.' }),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of a role that has permission to create and attach to elastic network interfaces (ENIs).',
+    }),
   })
   .openapi({
     description: 'The summary of a virtual private cloud (VPC) destination.',
@@ -9299,44 +7494,26 @@ const VpcDestinationSummarySchema = z
 
 const TopicRuleDestinationSummarySchema = z
   .object({
-    arn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The topic rule destination ARN.' }),
-    ).exactOptional(),
-    status: TopicRuleDestinationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
-    createdAt: CreatedAtDateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time when the topic rule destination was created.' }),
-    ).exactOptional(),
-    lastUpdatedAt: LastUpdatedAtDateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time when the topic rule destination was last updated.',
-        }),
-    ).exactOptional(),
-    statusReason: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason the topic rule destination is in the current status.',
-        }),
-    ).exactOptional(),
-    httpUrlSummary: HttpUrlDestinationSummarySchema.and(
-      z.any().openapi({ description: 'Information about the HTTP URL.' }),
-    ).exactOptional(),
-    vpcDestinationSummary: VpcDestinationSummarySchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the virtual private cloud (VPC) connection.' }),
-    ).exactOptional(),
+    arn: AwsArnSchema.exactOptional().openapi({ description: 'The topic rule destination ARN.' }),
+    status: TopicRuleDestinationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
+    }),
+    createdAt: CreatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time when the topic rule destination was created.',
+    }),
+    lastUpdatedAt: LastUpdatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time when the topic rule destination was last updated.',
+    }),
+    statusReason: StringSchema.exactOptional().openapi({
+      description: 'The reason the topic rule destination is in the current status.',
+    }),
+    httpUrlSummary: HttpUrlDestinationSummarySchema.exactOptional().openapi({
+      description: 'Information about the HTTP URL.',
+    }),
+    vpcDestinationSummary: VpcDestinationSummarySchema.exactOptional().openapi({
+      description: 'Information about the virtual private cloud (VPC) connection.',
+    }),
   })
   .openapi({ description: 'Information about the topic rule destination.', required: [] })
   .openapi('TopicRuleDestinationSummary')
@@ -9347,36 +7524,30 @@ const TopicRuleDestinationSummariesSchema = z
 
 const ListTopicRuleDestinationsResponseSchema = z
   .object({
-    destinationSummaries: TopicRuleDestinationSummariesSchema.and(
-      z.any().openapi({ description: 'Information about a topic rule destination.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    destinationSummaries: TopicRuleDestinationSummariesSchema.exactOptional().openapi({
+      description: 'Information about a topic rule destination.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTopicRuleDestinationsResponse')
 
 const TopicRuleListItemSchema = z
   .object({
-    ruleArn: RuleArnSchema.and(z.any().openapi({ description: 'The rule ARN.' })).exactOptional(),
-    ruleName: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule.' }),
-    ).exactOptional(),
-    topicPattern: TopicPatternSchema.and(
-      z.any().openapi({ description: 'The pattern for the topic names that apply.' }),
-    ).exactOptional(),
-    createdAt: CreatedAtDateSchema.and(
-      z.any().openapi({ description: 'The date and time the rule was created.' }),
-    ).exactOptional(),
-    ruleDisabled: IsDisabledSchema.and(
-      z.any().openapi({ description: 'Specifies whether the rule is disabled.' }),
-    ).exactOptional(),
+    ruleArn: RuleArnSchema.exactOptional().openapi({ description: 'The rule ARN.' }),
+    ruleName: RuleNameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
+    topicPattern: TopicPatternSchema.exactOptional().openapi({
+      description: 'The pattern for the topic names that apply.',
+    }),
+    createdAt: CreatedAtDateSchema.exactOptional().openapi({
+      description: 'The date and time the rule was created.',
+    }),
+    ruleDisabled: IsDisabledSchema.exactOptional().openapi({
+      description: 'Specifies whether the rule is disabled.',
+    }),
   })
   .openapi({ description: 'Describes a rule.', required: [] })
   .openapi('TopicRuleListItem')
@@ -9385,15 +7556,11 @@ const TopicRuleListSchema = z.array(TopicRuleListItemSchema).openapi('TopicRuleL
 
 const ListTopicRulesResponseSchema = z
   .object({
-    rules: TopicRuleListSchema.and(z.any().openapi({ description: 'The rules.' })).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    rules: TopicRuleListSchema.exactOptional().openapi({ description: 'The rules.' }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ description: 'The output from the ListTopicRules operation.', required: [] })
   .openapi('ListTopicRulesResponse')
@@ -9406,22 +7573,16 @@ const LogTargetNameSchema = z.string().openapi('LogTargetName')
 
 const LogTargetSchema = z
   .object({
-    targetType: LogTargetTypeSchema.and(z.any().openapi({ description: 'The target type.' })),
-    targetName: LogTargetNameSchema.and(
-      z.any().openapi({ description: 'The target name.' }),
-    ).exactOptional(),
+    targetType: LogTargetTypeSchema.openapi({ description: 'The target type.' }),
+    targetName: LogTargetNameSchema.exactOptional().openapi({ description: 'The target name.' }),
   })
   .openapi({ required: ['targetType'], description: 'A log target.' })
   .openapi('LogTarget')
 
 const LogTargetConfigurationSchema = z
   .object({
-    logTarget: LogTargetSchema.and(
-      z.any().openapi({ description: 'A log target' }),
-    ).exactOptional(),
-    logLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The logging level.' }),
-    ).exactOptional(),
+    logTarget: LogTargetSchema.exactOptional().openapi({ description: 'A log target' }),
+    logLevel: LogLevelSchema.exactOptional().openapi({ description: 'The logging level.' }),
   })
   .openapi({ description: 'The target configuration.', required: [] })
   .openapi('LogTargetConfiguration')
@@ -9432,17 +7593,13 @@ const LogTargetConfigurationsSchema = z
 
 const ListV2LoggingLevelsResponseSchema = z
   .object({
-    logTargetConfigurations: LogTargetConfigurationsSchema.and(
-      z.any().openapi({ description: 'The logging configuration for a target.' }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    logTargetConfigurations: LogTargetConfigurationsSchema.exactOptional().openapi({
+      description: 'The logging configuration for a target.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use to get the next set of results, or <b>null</b> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListV2LoggingLevelsResponse')
@@ -9453,42 +7610,36 @@ const ViolationEventTypeSchema = z
 
 const ViolationEventSchema = z
   .object({
-    violationId: ViolationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the violation event.' }),
-    ).exactOptional(),
-    thingName: DeviceDefenderThingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the thing responsible for the violation event.' }),
-    ).exactOptional(),
-    securityProfileName: SecurityProfileNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the security profile whose behavior was violated.' }),
-    ).exactOptional(),
-    behavior: BehaviorSchema.and(
-      z.any().openapi({ description: 'The behavior that was violated.' }),
-    ).exactOptional(),
-    metricValue: MetricValueSchema.and(
-      z.any().openapi({ description: 'The value of the metric (the measurement).' }),
-    ).exactOptional(),
-    violationEventAdditionalInfo: ViolationEventAdditionalInfoSchema.and(
-      z.any().openapi({ description: ' The details of a violation event. ' }),
-    ).exactOptional(),
-    violationEventType: ViolationEventTypeSchema.and(
-      z.any().openapi({ description: 'The type of violation event.' }),
-    ).exactOptional(),
-    verificationState: VerificationStateSchema.and(
-      z.any().openapi({ description: 'The verification state of the violation (detect alarm).' }),
-    ).exactOptional(),
-    verificationStateDescription: VerificationStateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The description of the verification state of the violation.' }),
-    ).exactOptional(),
-    violationEventTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the violation event occurred.' }),
-    ).exactOptional(),
+    violationId: ViolationIdSchema.exactOptional().openapi({
+      description: 'The ID of the violation event.',
+    }),
+    thingName: DeviceDefenderThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing responsible for the violation event.',
+    }),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the security profile whose behavior was violated.',
+    }),
+    behavior: BehaviorSchema.exactOptional().openapi({
+      description: 'The behavior that was violated.',
+    }),
+    metricValue: MetricValueSchema.exactOptional().openapi({
+      description: 'The value of the metric (the measurement).',
+    }),
+    violationEventAdditionalInfo: ViolationEventAdditionalInfoSchema.exactOptional().openapi({
+      description: ' The details of a violation event. ',
+    }),
+    violationEventType: ViolationEventTypeSchema.exactOptional().openapi({
+      description: 'The type of violation event.',
+    }),
+    verificationState: VerificationStateSchema.exactOptional().openapi({
+      description: 'The verification state of the violation (detect alarm).',
+    }),
+    verificationStateDescription: VerificationStateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the verification state of the violation.',
+    }),
+    violationEventTime: TimestampSchema.exactOptional().openapi({
+      description: 'The time the violation event occurred.',
+    }),
   })
   .openapi({
     description: 'Information about a Device Defender security profile behavior violation.',
@@ -9500,38 +7651,30 @@ const ViolationEventsSchema = z.array(ViolationEventSchema).openapi('ViolationEv
 
 const ListViolationEventsResponseSchema = z
   .object({
-    violationEvents: ViolationEventsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security profile violation alerts issued for this account during the given time period, potentially filtered by security profile, behavior violated, or thing (device) violating.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
+    violationEvents: ViolationEventsSchema.exactOptional().openapi({
+      description:
+        'The security profile violation alerts issued for this account during the given time period, potentially filtered by security profile, behavior violated, or thing (device) violating.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A token that can be used to retrieve the next set of results, or <code>null</code> if there are no additional results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListViolationEventsResponse')
 
 const PutVerificationStateOnViolationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutVerificationStateOnViolationResponse')
 
 const RegisterCACertificateResponseSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The CA certificate ARN.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The CA certificate identifier.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The CA certificate ARN.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The CA certificate identifier.',
+    }),
   })
   .openapi({
     description: 'The output from the RegisterCACertificateResponse operation.',
@@ -9545,12 +7688,12 @@ const RegistrationCodeValidationExceptionSchema = z
 
 const RegisterCertificateResponseSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The certificate ARN.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z.any().openapi({ description: 'The certificate identifier.' }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The certificate ARN.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description: 'The certificate identifier.',
+    }),
   })
   .openapi({ description: 'The output from the RegisterCertificate operation.', required: [] })
   .openapi('RegisterCertificateResponse')
@@ -9559,19 +7702,13 @@ const CertificateConflictExceptionSchema = z.any().openapi('CertificateConflictE
 
 const RegisterCertificateWithoutCAResponseSchema = z
   .object({
-    certificateArn: CertificateArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the registered certificate.' }),
-    ).exactOptional(),
-    certificateId: CertificateIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the registered certificate. (The last part of the certificate ARN contains the certificate ID.',
-        }),
-    ).exactOptional(),
+    certificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the registered certificate.',
+    }),
+    certificateId: CertificateIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the registered certificate. (The last part of the certificate ARN contains the certificate ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterCertificateWithoutCAResponse')
@@ -9582,12 +7719,12 @@ const ResourceArnsSchema = z.record(z.string(), ResourceArnSchema).openapi('Reso
 
 const RegisterThingResponseSchema = z
   .object({
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ).exactOptional(),
-    resourceArns: ResourceArnsSchema.and(
-      z.any().openapi({ description: 'ARNs for the generated resources.' }),
-    ).exactOptional(),
+    certificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
+    resourceArns: ResourceArnsSchema.exactOptional().openapi({
+      description: 'ARNs for the generated resources.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterThingResponse')
@@ -9597,11 +7734,11 @@ const ResourceRegistrationFailureExceptionSchema = z
   .openapi('ResourceRegistrationFailureException')
 
 const RemoveThingFromBillingGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RemoveThingFromBillingGroupResponse')
 
 const RemoveThingFromThingGroupResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RemoveThingFromThingGroupResponse')
 
 const ThingGroupNameListSchema = z.array(ThingGroupNameSchema).openapi('ThingGroupNameList')
@@ -9614,73 +7751,45 @@ const DisconnectReasonSchema = z.string().openapi('DisconnectReason')
 
 const ThingConnectivitySchema = z
   .object({
-    connected: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'True if the thing is connected to the Amazon Web Services IoT Core service; false if it is not connected.',
-        }),
-    ).exactOptional(),
-    timestamp: ConnectivityTimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The epoch time (in milliseconds) when the thing last connected or disconnected. If the thing has been disconnected for approximately an hour, the time value might be missing.',
-        }),
-    ).exactOptional(),
-    disconnectReason: DisconnectReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason why the client is disconnected. If the thing has been disconnected for approximately an hour, the <code>disconnectReason</code> value might be missing.',
-        }),
-    ).exactOptional(),
+    connected: BooleanSchema.exactOptional().openapi({
+      description:
+        'True if the thing is connected to the Amazon Web Services IoT Core service; false if it is not connected.',
+    }),
+    timestamp: ConnectivityTimestampSchema.exactOptional().openapi({
+      description:
+        'The epoch time (in milliseconds) when the thing last connected or disconnected. If the thing has been disconnected for approximately an hour, the time value might be missing.',
+    }),
+    disconnectReason: DisconnectReasonSchema.exactOptional().openapi({
+      description:
+        'The reason why the client is disconnected. If the thing has been disconnected for approximately an hour, the <code>disconnectReason</code> value might be missing.',
+    }),
   })
   .openapi({ description: 'The connectivity status of the thing.', required: [] })
   .openapi('ThingConnectivity')
 
 const ThingDocumentSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The thing name.' }),
-    ).exactOptional(),
-    thingId: ThingIdSchema.and(z.any().openapi({ description: 'The thing ID.' })).exactOptional(),
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The thing type name.' }),
-    ).exactOptional(),
-    thingGroupNames: ThingGroupNameListSchema.and(
-      z.any().openapi({ description: 'Thing group names.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'The attributes.' }),
-    ).exactOptional(),
-    shadow: JsonDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The unnamed shadow and named shadow.</p> <p>For more information about shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
-        }),
-    ).exactOptional(),
-    deviceDefender: JsonDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Contains Device Defender data.</p> <p>For more information about Device Defender, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender.html">Device Defender</a>. </p>',
-        }),
-    ).exactOptional(),
-    connectivity: ThingConnectivitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the thing is connected to the Amazon Web Services IoT Core service.',
-        }),
-    ).exactOptional(),
+    thingName: ThingNameSchema.exactOptional().openapi({ description: 'The thing name.' }),
+    thingId: ThingIdSchema.exactOptional().openapi({ description: 'The thing ID.' }),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The thing type name.',
+    }),
+    thingGroupNames: ThingGroupNameListSchema.exactOptional().openapi({
+      description: 'Thing group names.',
+    }),
+    attributes: AttributesSchema.exactOptional().openapi({ description: 'The attributes.' }),
+    shadow: JsonDocumentSchema.exactOptional().openapi({
+      description:
+        '<p>The unnamed shadow and named shadow.</p> <p>For more information about shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
+    }),
+    deviceDefender: JsonDocumentSchema.exactOptional().openapi({
+      description:
+        '<p>Contains Device Defender data.</p> <p>For more information about Device Defender, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender.html">Device Defender</a>. </p>',
+    }),
+    connectivity: ThingConnectivitySchema.exactOptional().openapi({
+      description:
+        'Indicates whether the thing is connected to the Amazon Web Services IoT Core service.',
+    }),
   })
   .openapi({ description: 'The thing search index document.', required: [] })
   .openapi('ThingDocument')
@@ -9689,21 +7798,21 @@ const ThingDocumentListSchema = z.array(ThingDocumentSchema).openapi('ThingDocum
 
 const ThingGroupDocumentSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The thing group name.' }),
-    ).exactOptional(),
-    thingGroupId: ThingGroupIdSchema.and(
-      z.any().openapi({ description: 'The thing group ID.' }),
-    ).exactOptional(),
-    thingGroupDescription: ThingGroupDescriptionSchema.and(
-      z.any().openapi({ description: 'The thing group description.' }),
-    ).exactOptional(),
-    attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'The thing group attributes.' }),
-    ).exactOptional(),
-    parentGroupNames: ThingGroupNameListSchema.and(
-      z.any().openapi({ description: 'Parent group names.' }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The thing group name.',
+    }),
+    thingGroupId: ThingGroupIdSchema.exactOptional().openapi({
+      description: 'The thing group ID.',
+    }),
+    thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+      description: 'The thing group description.',
+    }),
+    attributes: AttributesSchema.exactOptional().openapi({
+      description: 'The thing group attributes.',
+    }),
+    parentGroupNames: ThingGroupNameListSchema.exactOptional().openapi({
+      description: 'Parent group names.',
+    }),
   })
   .openapi({ description: 'The thing group search index document.', required: [] })
   .openapi('ThingGroupDocument')
@@ -9714,46 +7823,38 @@ const ThingGroupDocumentListSchema = z
 
 const SearchIndexResponseSchema = z
   .object({
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    things: ThingDocumentListSchema.and(
-      z.any().openapi({ description: 'The things that match the search query.' }),
-    ).exactOptional(),
-    thingGroups: ThingGroupDocumentListSchema.and(
-      z.any().openapi({ description: 'The thing groups that match the search query.' }),
-    ).exactOptional(),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
+    }),
+    things: ThingDocumentListSchema.exactOptional().openapi({
+      description: 'The things that match the search query.',
+    }),
+    thingGroups: ThingGroupDocumentListSchema.exactOptional().openapi({
+      description: 'The thing groups that match the search query.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchIndexResponse')
 
 const SetDefaultAuthorizerResponseSchema = z
   .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: 'The authorizer name.' }),
-    ).exactOptional(),
-    authorizerArn: AuthorizerArnSchema.and(
-      z.any().openapi({ description: 'The authorizer ARN.' }),
-    ).exactOptional(),
+    authorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: 'The authorizer name.',
+    }),
+    authorizerArn: AuthorizerArnSchema.exactOptional().openapi({
+      description: 'The authorizer ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetDefaultAuthorizerResponse')
 
 const StartAuditMitigationActionsTaskResponseSchema = z
   .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the audit mitigation task. This matches the <code>taskId</code> that you specified in the request.',
-        }),
-    ).exactOptional(),
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the audit mitigation task. This matches the <code>taskId</code> that you specified in the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartAuditMitigationActionsTaskResponse')
@@ -9762,36 +7863,36 @@ const TaskAlreadyExistsExceptionSchema = z.any().openapi('TaskAlreadyExistsExcep
 
 const StartDetectMitigationActionsTaskResponseSchema = z
   .object({
-    taskId: MitigationActionsTaskIdSchema.and(
-      z.any().openapi({ description: ' The unique identifier of the task. ' }),
-    ).exactOptional(),
+    taskId: MitigationActionsTaskIdSchema.exactOptional().openapi({
+      description: ' The unique identifier of the task. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartDetectMitigationActionsTaskResponse')
 
 const StartOnDemandAuditTaskResponseSchema = z
   .object({
-    taskId: AuditTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the on-demand audit you started.' }),
-    ).exactOptional(),
+    taskId: AuditTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the on-demand audit you started.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartOnDemandAuditTaskResponse')
 
 const StartThingRegistrationTaskResponseSchema = z
   .object({
-    taskId: TaskIdSchema.and(
-      z.any().openapi({ description: 'The bulk thing provisioning task ID.' }),
-    ).exactOptional(),
+    taskId: TaskIdSchema.exactOptional().openapi({
+      description: 'The bulk thing provisioning task ID.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartThingRegistrationTaskResponse')
 
 const StopThingRegistrationTaskResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StopThingRegistrationTaskResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const ActionTypeSchema = z
   .enum(['PUBLISH', 'SUBSCRIBE', 'RECEIVE', 'CONNECT'])
@@ -9807,44 +7908,32 @@ const ResourcesSchema = z.array(ResourceSchema).openapi('Resources')
 
 const AuthInfoSchema = z
   .object({
-    actionType: ActionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of action for which the principal is being authorized.',
-        }),
-    ).exactOptional(),
-    resources: ResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resources for which the principal is being authorized to perform the specified action.',
-        }),
-    ),
+    actionType: ActionTypeSchema.exactOptional().openapi({
+      description: 'The type of action for which the principal is being authorized.',
+    }),
+    resources: ResourcesSchema.openapi({
+      description:
+        'The resources for which the principal is being authorized to perform the specified action.',
+    }),
   })
   .openapi({ required: ['resources'], description: 'A collection of authorization information.' })
   .openapi('AuthInfo')
 
 const AllowedSchema = z
   .object({
-    policies: PoliciesSchema.and(
-      z.any().openapi({ description: 'A list of policies that allowed the authentication.' }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({
+      description: 'A list of policies that allowed the authentication.',
+    }),
   })
   .openapi({ description: 'Contains information that allowed the authorization.', required: [] })
   .openapi('Allowed')
 
 const ImplicitDenySchema = z
   .object({
-    policies: PoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Policies that don't contain a matching allow or deny statement for the specified action on the specified resource. ",
-        }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({
+      description:
+        "Policies that don't contain a matching allow or deny statement for the specified action on the specified resource. ",
+    }),
   })
   .openapi({
     description:
@@ -9855,26 +7944,22 @@ const ImplicitDenySchema = z
 
 const ExplicitDenySchema = z
   .object({
-    policies: PoliciesSchema.and(
-      z.any().openapi({ description: 'The policies that denied the authorization.' }),
-    ).exactOptional(),
+    policies: PoliciesSchema.exactOptional().openapi({
+      description: 'The policies that denied the authorization.',
+    }),
   })
   .openapi({ description: 'Information that explicitly denies authorization.', required: [] })
   .openapi('ExplicitDeny')
 
 const DeniedSchema = z
   .object({
-    implicitDeny: ImplicitDenySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information that implicitly denies the authorization. When a policy doesn't explicitly deny or allow an action on a resource it is considered an implicit deny.",
-        }),
-    ).exactOptional(),
-    explicitDeny: ExplicitDenySchema.and(
-      z.any().openapi({ description: 'Information that explicitly denies the authorization. ' }),
-    ).exactOptional(),
+    implicitDeny: ImplicitDenySchema.exactOptional().openapi({
+      description:
+        "Information that implicitly denies the authorization. When a policy doesn't explicitly deny or allow an action on a resource it is considered an implicit deny.",
+    }),
+    explicitDeny: ExplicitDenySchema.exactOptional().openapi({
+      description: 'Information that explicitly denies the authorization. ',
+    }),
   })
   .openapi({ description: 'Contains information that denied the authorization.', required: [] })
   .openapi('Denied')
@@ -9891,34 +7976,20 @@ const MissingContextValuesSchema = z
 
 const AuthResultSchema = z
   .object({
-    authInfo: AuthInfoSchema.and(
-      z.any().openapi({ description: 'Authorization information.' }),
-    ).exactOptional(),
-    allowed: AllowedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The policies and statements that allowed the specified action.' }),
-    ).exactOptional(),
-    denied: DeniedSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The policies and statements that denied the specified action.' }),
-    ).exactOptional(),
-    authDecision: AuthDecisionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The final authorization decision of this scenario. Multiple statements are taken into account when determining the authorization decision. An explicit deny statement can override multiple allow statements.',
-        }),
-    ).exactOptional(),
-    missingContextValues: MissingContextValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains any missing context values found while evaluating policy.',
-        }),
-    ).exactOptional(),
+    authInfo: AuthInfoSchema.exactOptional().openapi({ description: 'Authorization information.' }),
+    allowed: AllowedSchema.exactOptional().openapi({
+      description: 'The policies and statements that allowed the specified action.',
+    }),
+    denied: DeniedSchema.exactOptional().openapi({
+      description: 'The policies and statements that denied the specified action.',
+    }),
+    authDecision: AuthDecisionSchema.exactOptional().openapi({
+      description:
+        'The final authorization decision of this scenario. Multiple statements are taken into account when determining the authorization decision. An explicit deny statement can override multiple allow statements.',
+    }),
+    missingContextValues: MissingContextValuesSchema.exactOptional().openapi({
+      description: 'Contains any missing context values found while evaluating policy.',
+    }),
   })
   .openapi({ description: 'The authorizer result.', required: [] })
   .openapi('AuthResult')
@@ -9927,9 +7998,9 @@ const AuthResultsSchema = z.array(AuthResultSchema).openapi('AuthResults')
 
 const TestAuthorizationResponseSchema = z
   .object({
-    authResults: AuthResultsSchema.and(
-      z.any().openapi({ description: 'The authentication results.' }),
-    ).exactOptional(),
+    authResults: AuthResultsSchema.exactOptional().openapi({
+      description: 'The authentication results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestAuthorizationResponse')
@@ -9949,29 +8020,19 @@ const SecondsSchema = z.int().openapi('Seconds')
 
 const TestInvokeAuthorizerResponseSchema = z
   .object({
-    isAuthenticated: IsAuthenticatedSchema.and(
-      z.any().openapi({ description: 'True if the token is authenticated, otherwise false.' }),
-    ).exactOptional(),
-    principalId: PrincipalIdSchema.and(
-      z.any().openapi({ description: 'The principal ID.' }),
-    ).exactOptional(),
-    policyDocuments: PolicyDocumentsSchema.and(
-      z.any().openapi({ description: 'IAM policy documents.' }),
-    ).exactOptional(),
-    refreshAfterInSeconds: SecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of seconds after which the temporary credentials are refreshed.',
-        }),
-    ).exactOptional(),
-    disconnectAfterInSeconds: SecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of seconds after which the connection is terminated.',
-        }),
-    ).exactOptional(),
+    isAuthenticated: IsAuthenticatedSchema.exactOptional().openapi({
+      description: 'True if the token is authenticated, otherwise false.',
+    }),
+    principalId: PrincipalIdSchema.exactOptional().openapi({ description: 'The principal ID.' }),
+    policyDocuments: PolicyDocumentsSchema.exactOptional().openapi({
+      description: 'IAM policy documents.',
+    }),
+    refreshAfterInSeconds: SecondsSchema.exactOptional().openapi({
+      description: 'The number of seconds after which the temporary credentials are refreshed.',
+    }),
+    disconnectAfterInSeconds: SecondsSchema.exactOptional().openapi({
+      description: 'The number of seconds after which the connection is terminated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestInvokeAuthorizerResponse')
@@ -10019,290 +8080,245 @@ const InvalidResponseExceptionSchema = z.any().openapi('InvalidResponseException
 
 const TransferCertificateResponseSchema = z
   .object({
-    transferredCertificateArn: CertificateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the certificate.' }),
-    ).exactOptional(),
+    transferredCertificateArn: CertificateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the certificate.',
+    }),
   })
   .openapi({ description: 'The output from the TransferCertificate operation.', required: [] })
   .openapi('TransferCertificateResponse')
 
 const TransferConflictExceptionSchema = z.any().openapi('TransferConflictException')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateAccountAuditConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateAccountAuditConfigurationResponse')
 
-const UpdateAuditSuppressionResponseSchema = z.object({}).openapi('UpdateAuditSuppressionResponse')
+const UpdateAuditSuppressionResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateAuditSuppressionResponse')
 
 const UpdateAuthorizerResponseSchema = z
   .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: 'The authorizer name.' }),
-    ).exactOptional(),
-    authorizerArn: AuthorizerArnSchema.and(
-      z.any().openapi({ description: 'The authorizer ARN.' }),
-    ).exactOptional(),
+    authorizerName: AuthorizerNameSchema.exactOptional().openapi({
+      description: 'The authorizer name.',
+    }),
+    authorizerArn: AuthorizerArnSchema.exactOptional().openapi({
+      description: 'The authorizer ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAuthorizerResponse')
 
 const UpdateBillingGroupResponseSchema = z
   .object({
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The latest version of the billing group.' }),
-    ).exactOptional(),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The latest version of the billing group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateBillingGroupResponse')
 
 const UpdateCustomMetricResponseSchema = z
   .object({
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: ' The name of the custom metric. ' }),
-    ).exactOptional(),
-    metricArn: CustomMetricArnSchema.and(
-      z.any().openapi({ description: ' The Amazon Resource Number (ARN) of the custom metric. ' }),
-    ).exactOptional(),
-    metricType: CustomMetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>',
-        }),
-    ).exactOptional(),
-    displayName: CustomMetricDisplayNameSchema.and(
-      z.any().openapi({ description: ' A friendly name in the console for the custom metric ' }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The creation date of the custom metric in milliseconds since epoch. ',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The time the custom metric was last modified in milliseconds since epoch. ',
-        }),
-    ).exactOptional(),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description: ' The name of the custom metric. ',
+    }),
+    metricArn: CustomMetricArnSchema.exactOptional().openapi({
+      description: ' The Amazon Resource Number (ARN) of the custom metric. ',
+    }),
+    metricType: CustomMetricTypeSchema.exactOptional().openapi({
+      description:
+        '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but while submitting the metrics value in the DeviceMetrics report, it must be passed as an array with a single value.</p> </important>',
+    }),
+    displayName: CustomMetricDisplayNameSchema.exactOptional().openapi({
+      description: ' A friendly name in the console for the custom metric ',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: ' The creation date of the custom metric in milliseconds since epoch. ',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: ' The time the custom metric was last modified in milliseconds since epoch. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCustomMetricResponse')
 
 const UpdateDimensionResponseSchema = z
   .object({
-    name: DimensionNameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the dimension.' }),
-    ).exactOptional(),
-    arn: DimensionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN)of the created dimension.' }),
-    ).exactOptional(),
-    type: DimensionTypeSchema.and(
-      z.any().openapi({ description: 'The type of the dimension.' }),
-    ).exactOptional(),
-    stringValues: DimensionStringValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value or list of values used to scope the dimension. For example, for topic filters, this is the pattern used to match the MQTT topic name.',
-        }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in milliseconds since epoch, when the dimension was initially created.',
-        }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time, in milliseconds since epoch, when the dimension was most recently updated.',
-        }),
-    ).exactOptional(),
+    name: DimensionNameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the dimension.',
+    }),
+    arn: DimensionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN)of the created dimension.',
+    }),
+    type: DimensionTypeSchema.exactOptional().openapi({
+      description: 'The type of the dimension.',
+    }),
+    stringValues: DimensionStringValuesSchema.exactOptional().openapi({
+      description:
+        'The value or list of values used to scope the dimension. For example, for topic filters, this is the pattern used to match the MQTT topic name.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time, in milliseconds since epoch, when the dimension was initially created.',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description:
+        'The date and time, in milliseconds since epoch, when the dimension was most recently updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDimensionResponse')
 
 const UpdateDomainConfigurationResponseSchema = z
   .object({
-    domainConfigurationName: ReservedDomainConfigurationNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain configuration that was updated.' }),
-    ).exactOptional(),
-    domainConfigurationArn: DomainConfigurationArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the domain configuration that was updated.' }),
-    ).exactOptional(),
+    domainConfigurationName: ReservedDomainConfigurationNameSchema.exactOptional().openapi({
+      description: 'The name of the domain configuration that was updated.',
+    }),
+    domainConfigurationArn: DomainConfigurationArnSchema.exactOptional().openapi({
+      description: 'The ARN of the domain configuration that was updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDomainConfigurationResponse')
 
 const UpdateDynamicThingGroupResponseSchema = z
   .object({
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group version.' }),
-    ).exactOptional(),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The dynamic thing group version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDynamicThingGroupResponse')
 
 const UpdateEventConfigurationsResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateEventConfigurationsResponse')
 
 const UpdateIndexingConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateIndexingConfigurationResponse')
 
 const UpdateMitigationActionResponseSchema = z
   .object({
-    actionArn: MitigationActionArnSchema.and(
-      z.any().openapi({ description: 'The ARN for the new mitigation action.' }),
-    ).exactOptional(),
-    actionId: MitigationActionIdSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the mitigation action.' }),
-    ).exactOptional(),
+    actionArn: MitigationActionArnSchema.exactOptional().openapi({
+      description: 'The ARN for the new mitigation action.',
+    }),
+    actionId: MitigationActionIdSchema.exactOptional().openapi({
+      description: 'A unique identifier for the mitigation action.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateMitigationActionResponse')
 
 const UpdateProvisioningTemplateResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateProvisioningTemplateResponse')
 
 const UpdateRoleAliasResponseSchema = z
   .object({
-    roleAlias: RoleAliasSchema.and(
-      z.any().openapi({ description: 'The role alias.' }),
-    ).exactOptional(),
-    roleAliasArn: RoleAliasArnSchema.and(
-      z.any().openapi({ description: 'The role alias ARN.' }),
-    ).exactOptional(),
+    roleAlias: RoleAliasSchema.exactOptional().openapi({ description: 'The role alias.' }),
+    roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+      description: 'The role alias ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRoleAliasResponse')
 
 const UpdateScheduledAuditResponseSchema = z
   .object({
-    scheduledAuditArn: ScheduledAuditArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the scheduled audit.' }),
-    ).exactOptional(),
+    scheduledAuditArn: ScheduledAuditArnSchema.exactOptional().openapi({
+      description: 'The ARN of the scheduled audit.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateScheduledAuditResponse')
 
 const UpdateSecurityProfileResponseSchema = z
   .object({
-    securityProfileName: SecurityProfileNameSchema.and(
-      z.any().openapi({ description: 'The name of the security profile that was updated.' }),
-    ).exactOptional(),
-    securityProfileArn: SecurityProfileArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the security profile that was updated.' }),
-    ).exactOptional(),
-    securityProfileDescription: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the security profile.' }),
-    ).exactOptional(),
-    behaviors: BehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
-        }),
-    ).exactOptional(),
-    alertTargets: AlertTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<p> <i>Please use <a>UpdateSecurityProfileResponse$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the security profile's <code>behaviors</code>, but it is also retained for any metric specified here.</p>Use additionalMetricsToRetainV2.",
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
-        }),
-    ).exactOptional(),
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The updated version of the security profile.' }),
-    ).exactOptional(),
-    creationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the security profile was created.' }),
-    ).exactOptional(),
-    lastModifiedDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The time the security profile was last modified.' }),
-    ).exactOptional(),
+    securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+      description: 'The name of the security profile that was updated.',
+    }),
+    securityProfileArn: SecurityProfileArnSchema.exactOptional().openapi({
+      description: 'The ARN of the security profile that was updated.',
+    }),
+    securityProfileDescription: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the security profile.',
+    }),
+    behaviors: BehaviorsSchema.exactOptional().openapi({
+      description:
+        'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
+    }),
+    alertTargets: AlertTargetsSchema.exactOptional().openapi({
+      description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
+    }),
+    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<p> <i>Please use <a>UpdateSecurityProfileResponse$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the security profile's <code>behaviors</code>, but it is also retained for any metric specified here.</p>Use additionalMetricsToRetainV2.",
+    }),
+    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.exactOptional().openapi({
+      description:
+        "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
+    }),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The updated version of the security profile.',
+    }),
+    creationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The time the security profile was created.',
+    }),
+    lastModifiedDate: TimestampSchema.exactOptional().openapi({
+      description: 'The time the security profile was last modified.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSecurityProfileResponse')
 
 const UpdateStreamResponseSchema = z
   .object({
-    streamId: StreamIdSchema.and(
-      z.any().openapi({ description: 'The stream ID.' }),
-    ).exactOptional(),
-    streamArn: StreamArnSchema.and(
-      z.any().openapi({ description: 'The stream ARN.' }),
-    ).exactOptional(),
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the stream.' }),
-    ).exactOptional(),
-    streamVersion: StreamVersionSchema.and(
-      z.any().openapi({ description: 'The stream version.' }),
-    ).exactOptional(),
+    streamId: StreamIdSchema.exactOptional().openapi({ description: 'The stream ID.' }),
+    streamArn: StreamArnSchema.exactOptional().openapi({ description: 'The stream ARN.' }),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the stream.',
+    }),
+    streamVersion: StreamVersionSchema.exactOptional().openapi({
+      description: 'The stream version.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStreamResponse')
 
 const UpdateThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output from the UpdateThing operation.' })
   .openapi('UpdateThingResponse')
 
 const UpdateThingGroupResponseSchema = z
   .object({
-    version: VersionSchema.and(
-      z.any().openapi({ description: 'The version of the updated thing group.' }),
-    ).exactOptional(),
+    version: VersionSchema.exactOptional().openapi({
+      description: 'The version of the updated thing group.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateThingGroupResponse')
 
 const UpdateThingGroupsForThingResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateThingGroupsForThingResponse')
 
 const UpdateTopicRuleDestinationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateTopicRuleDestinationResponse')
 
 const ValidSchema = z.boolean().openapi('Valid')
 
 const ValidationErrorSchema = z
   .object({
-    errorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The description of an error found in the behaviors.' }),
-    ).exactOptional(),
+    errorMessage: ErrorMessageSchema.exactOptional().openapi({
+      description: 'The description of an error found in the behaviors.',
+    }),
   })
   .openapi({
     description: 'Information about an error found in a behavior specification.',
@@ -10314,12 +8330,12 @@ const ValidationErrorsSchema = z.array(ValidationErrorSchema).openapi('Validatio
 
 const ValidateSecurityProfileBehaviorsResponseSchema = z
   .object({
-    valid: ValidSchema.and(
-      z.any().openapi({ description: 'True if the behaviors were valid.' }),
-    ).exactOptional(),
-    validationErrors: ValidationErrorsSchema.and(
-      z.any().openapi({ description: 'The list of any errors found in the behaviors.' }),
-    ).exactOptional(),
+    valid: ValidSchema.exactOptional().openapi({
+      description: 'True if the behaviors were valid.',
+    }),
+    validationErrors: ValidationErrorsSchema.exactOptional().openapi({
+      description: 'The list of any errors found in the behaviors.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ValidateSecurityProfileBehaviorsResponse')
@@ -10327,7 +8343,7 @@ const ValidateSecurityProfileBehaviorsResponseSchema = z
 const SetAsActiveSchema = z.boolean().openapi('SetAsActive')
 
 const AcceptCertificateTransferRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AcceptCertificateTransferRequest',
     description: 'The input for the AcceptCertificateTransfer operation.',
@@ -10336,23 +8352,19 @@ const AcceptCertificateTransferRequestSchema = z
 
 const AddThingToBillingGroupRequestSchema = z
   .object({
-    billingGroupName: BillingGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the billing group.</p> <note> <p>This call is asynchronous. It might take several seconds for the detachment to propagate.</p> </note>',
-        }),
-    ).exactOptional(),
-    billingGroupArn: BillingGroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the billing group.' }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing to be added to the billing group.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing to be added to the billing group.' }),
-    ).exactOptional(),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the billing group.</p> <note> <p>This call is asynchronous. It might take several seconds for the detachment to propagate.</p> </note>',
+    }),
+    billingGroupArn: BillingGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the billing group.',
+    }),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing to be added to the billing group.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing to be added to the billing group.',
+    }),
   })
   .openapi({ title: 'AddThingToBillingGroupRequest', required: [] })
   .openapi('AddThingToBillingGroupRequest')
@@ -10361,26 +8373,22 @@ const OverrideDynamicGroupsSchema = z.boolean().openapi('OverrideDynamicGroups')
 
 const AddThingToThingGroupRequestSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the group to which you are adding a thing.' }),
-    ).exactOptional(),
-    thingGroupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the group to which you are adding a thing.' }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing to add to a group.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing to add to a group.' }),
-    ).exactOptional(),
-    overrideDynamicGroups: OverrideDynamicGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Override dynamic thing groups with static thing groups when 10-group limit is reached. If a thing belongs to 10 thing groups, and one or more of those groups are dynamic thing groups, adding a thing to a static group removes the thing from the last dynamic group.',
-        }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the group to which you are adding a thing.',
+    }),
+    thingGroupArn: ThingGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the group to which you are adding a thing.',
+    }),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing to add to a group.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing to add to a group.',
+    }),
+    overrideDynamicGroups: OverrideDynamicGroupsSchema.exactOptional().openapi({
+      description:
+        'Override dynamic thing groups with static thing groups when 10-group limit is reached. If a thing belongs to 10 thing groups, and one or more of those groups are dynamic thing groups, adding a thing to a static group removes the thing from the last dynamic group.',
+    }),
   })
   .openapi({ title: 'AddThingToThingGroupRequest', required: [] })
   .openapi('AddThingToThingGroupRequest')
@@ -10396,33 +8404,23 @@ const AscendingOrderSchema = z.boolean().openapi('AscendingOrder')
 
 const AssociateTargetsWithJobRequestSchema = z
   .object({
-    targets: JobTargetsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of thing group ARNs that define the targets of the job.' }),
-    ),
-    comment: CommentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An optional comment string describing why the job was associated with the targets.',
-        }),
-    ).exactOptional(),
+    targets: JobTargetsSchema.openapi({
+      description: 'A list of thing group ARNs that define the targets of the job.',
+    }),
+    comment: CommentSchema.exactOptional().openapi({
+      description:
+        'An optional comment string describing why the job was associated with the targets.',
+    }),
   })
   .openapi({ required: ['targets'], title: 'AssociateTargetsWithJobRequest' })
   .openapi('AssociateTargetsWithJobRequest')
 
 const AttachPolicyRequestSchema = z
   .object({
-    target: PolicyTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <a href="https://docs.aws.amazon.com/iot/latest/developerguide/security-iam.html">identity</a> to which the policy is attached. For example, a thing group or a certificate.',
-        }),
-    ),
+    target: PolicyTargetSchema.openapi({
+      description:
+        'The <a href="https://docs.aws.amazon.com/iot/latest/developerguide/security-iam.html">identity</a> to which the policy is attached. For example, a thing group or a certificate.',
+    }),
   })
   .openapi({ required: ['target'], title: 'AttachPolicyRequest' })
   .openapi('AttachPolicyRequest')
@@ -10430,7 +8428,7 @@ const AttachPolicyRequestSchema = z
 const PrincipalSchema = z.string().openapi('Principal')
 
 const AttachPrincipalPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AttachPrincipalPolicyRequest',
     description: 'The input for the AttachPrincipalPolicy operation.',
@@ -10438,12 +8436,12 @@ const AttachPrincipalPolicyRequestSchema = z
   .openapi('AttachPrincipalPolicyRequest')
 
 const AttachSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AttachSecurityProfileRequest' })
   .openapi('AttachSecurityProfileRequest')
 
 const AttachThingPrincipalRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'AttachThingPrincipalRequest',
     description: 'The input for the AttachThingPrincipal operation.',
@@ -10458,13 +8456,9 @@ const AuthInfosSchema = z.array(AuthInfoSchema).min(1).max(10).openapi('AuthInfo
 
 const AwsJobAbortConfigSchema = z
   .object({
-    abortCriteriaList: AwsJobAbortCriteriaListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of criteria that determine when and how to abort the job.',
-        }),
-    ),
+    abortCriteriaList: AwsJobAbortCriteriaListSchema.openapi({
+      description: 'The list of criteria that determine when and how to abort the job.',
+    }),
   })
   .openapi({
     required: ['abortCriteriaList'],
@@ -10474,14 +8468,11 @@ const AwsJobAbortConfigSchema = z
 
 const AwsJobTimeoutConfigSchema = z
   .object({
-    inProgressTimeoutInMinutes: AwsJobTimeoutInProgressTimeoutInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-        }),
-    ).exactOptional(),
+    inProgressTimeoutInMinutes:
+      AwsJobTimeoutInProgressTimeoutInMinutesSchema.exactOptional().openapi({
+        description:
+          "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+      }),
   })
   .openapi({
     description:
@@ -10496,30 +8487,26 @@ const BehaviorCriteriaTypeSchema = z
 
 const BucketsAggregationTypeSchema = z
   .object({
-    termsAggregation: TermsAggregationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Performs an aggregation that will return a list of buckets. The list of buckets is a ranked list of the number of occurrences of an aggregation field value.',
-        }),
-    ).exactOptional(),
+    termsAggregation: TermsAggregationSchema.exactOptional().openapi({
+      description:
+        'Performs an aggregation that will return a list of buckets. The list of buckets is a ranked list of the number of occurrences of an aggregation field value.',
+    }),
   })
   .openapi({ description: 'The type of bucketed aggregation performed.', required: [] })
   .openapi('BucketsAggregationType')
 
 const CancelAuditMitigationActionsTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelAuditMitigationActionsTaskRequest' })
   .openapi('CancelAuditMitigationActionsTaskRequest')
 
 const CancelAuditTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelAuditTaskRequest' })
   .openapi('CancelAuditTaskRequest')
 
 const CancelCertificateTransferRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'CancelCertificateTransferRequest',
     description: 'The input for the CancelCertificateTransfer operation.',
@@ -10527,7 +8514,7 @@ const CancelCertificateTransferRequestSchema = z
   .openapi('CancelCertificateTransferRequest')
 
 const CancelDetectMitigationActionsTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CancelDetectMitigationActionsTaskRequest' })
   .openapi('CancelDetectMitigationActionsTaskRequest')
 
@@ -10537,42 +8524,26 @@ const ExpectedVersionSchema = z.int().openapi('ExpectedVersion')
 
 const CancelJobExecutionRequestSchema = z
   .object({
-    expectedVersion: ExpectedVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)',
-        }),
-    ).exactOptional(),
-    statusDetails: DetailsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged. You can specify at most 10 name/value pairs.',
-        }),
-    ).exactOptional(),
+    expectedVersion: ExpectedVersionSchema.exactOptional().openapi({
+      description:
+        '(Optional) The expected current version of the job execution. Each time you update the job execution, its version is incremented. If the version of the job execution stored in Jobs does not match, the update is rejected with a VersionMismatch error, and an ErrorResponse that contains the current job execution status data is returned. (This makes it unnecessary to perform a separate DescribeJobExecution request in order to obtain the job execution status data.)',
+    }),
+    statusDetails: DetailsMapSchema.exactOptional().openapi({
+      description:
+        'A collection of name/value pairs that describe the status of the job execution. If not specified, the statusDetails are unchanged. You can specify at most 10 name/value pairs.',
+    }),
   })
   .openapi({ title: 'CancelJobExecutionRequest', required: [] })
   .openapi('CancelJobExecutionRequest')
 
 const CancelJobRequestSchema = z
   .object({
-    reasonCode: ReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: '(Optional)A reason code string that explains why the job was canceled.',
-        }),
-    ).exactOptional(),
-    comment: CommentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An optional comment string describing why the job was canceled.',
-        }),
-    ).exactOptional(),
+    reasonCode: ReasonCodeSchema.exactOptional().openapi({
+      description: '(Optional)A reason code string that explains why the job was canceled.',
+    }),
+    comment: CommentSchema.exactOptional().openapi({
+      description: 'An optional comment string describing why the job was canceled.',
+    }),
   })
   .openapi({ title: 'CancelJobRequest', required: [] })
   .openapi('CancelJobRequest')
@@ -10585,7 +8556,7 @@ const CertificateSigningRequestSchema = z
   .openapi('CertificateSigningRequest')
 
 const ClearDefaultAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ClearDefaultAuthorizerRequest' })
   .openapi('ClearDefaultAuthorizerRequest')
 
@@ -10599,7 +8570,7 @@ const ClientRequestTokenSchema = z
 const ConfirmationTokenSchema = z.string().min(1).max(2048).openapi('ConfirmationToken')
 
 const ConfirmTopicRuleDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ConfirmTopicRuleDestinationRequest' })
   .openapi('ConfirmTopicRuleDestinationRequest')
 
@@ -10607,31 +8578,19 @@ const CreateAuditSuppressionRequestSchema = z
   .object({
     checkName: AuditCheckNameSchema,
     resourceIdentifier: ResourceIdentifierSchema,
-    expirationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The epoch timestamp in seconds at which this suppression expires. ',
-        }),
-    ).exactOptional(),
-    suppressIndefinitely: SuppressIndefinitelySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether a suppression should exist indefinitely or not. ',
-        }),
-    ).exactOptional(),
-    description: AuditDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the audit suppression. ' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Each audit supression must have a unique client request token. If you try to create a new audit suppression with the same token as one that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request.',
-        }),
-    ),
+    expirationDate: TimestampSchema.exactOptional().openapi({
+      description: ' The epoch timestamp in seconds at which this suppression expires. ',
+    }),
+    suppressIndefinitely: SuppressIndefinitelySchema.exactOptional().openapi({
+      description: ' Indicates whether a suppression should exist indefinitely or not. ',
+    }),
+    description: AuditDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the audit suppression. ',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        ' Each audit supression must have a unique client request token. If you try to create a new audit suppression with the same token as one that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request.',
+    }),
   })
   .openapi({
     required: ['checkName', 'resourceIdentifier', 'clientRequestToken'],
@@ -10641,72 +8600,52 @@ const CreateAuditSuppressionRequestSchema = z
 
 const CreateAuthorizerRequestSchema = z
   .object({
-    authorizerFunctionArn: AuthorizerFunctionArnSchema.and(
-      z.any().openapi({ description: "The ARN of the authorizer's Lambda function." }),
-    ),
-    tokenKeyName: TokenKeyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the token key used to extract the token from the HTTP headers.',
-        }),
-    ).exactOptional(),
-    tokenSigningPublicKeys: PublicKeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The public keys used to verify the digital signature returned by your custom authentication service.',
-        }),
-    ).exactOptional(),
-    status: AuthorizerStatusSchema.and(
-      z.any().openapi({ description: 'The status of the create authorizer request.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the custom authorizer.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
-    signingDisabled: BooleanKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether IoT validates the token signature in an authorization request.',
-        }),
-    ).exactOptional(),
-    enableCachingForHttp: EnableCachingForHttpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When <code>true</code>, the result from the authorizer’s Lambda function is cached for clients that use persistent HTTP connections. The results are cached for the time specified by the Lambda function in <code>refreshAfterInSeconds</code>. This value does not affect authorization of clients that use MQTT connections.</p> <p>The default value is <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
+    authorizerFunctionArn: AuthorizerFunctionArnSchema.openapi({
+      description: "The ARN of the authorizer's Lambda function.",
+    }),
+    tokenKeyName: TokenKeyNameSchema.exactOptional().openapi({
+      description: 'The name of the token key used to extract the token from the HTTP headers.',
+    }),
+    tokenSigningPublicKeys: PublicKeyMapSchema.exactOptional().openapi({
+      description:
+        'The public keys used to verify the digital signature returned by your custom authentication service.',
+    }),
+    status: AuthorizerStatusSchema.exactOptional().openapi({
+      description: 'The status of the create authorizer request.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the custom authorizer.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
+    signingDisabled: BooleanKeySchema.exactOptional().openapi({
+      description:
+        'Specifies whether IoT validates the token signature in an authorization request.',
+    }),
+    enableCachingForHttp: EnableCachingForHttpSchema.exactOptional().openapi({
+      description:
+        '<p>When <code>true</code>, the result from the authorizer’s Lambda function is cached for clients that use persistent HTTP connections. The results are cached for the time specified by the Lambda function in <code>refreshAfterInSeconds</code>. This value does not affect authorization of clients that use MQTT connections.</p> <p>The default value is <code>false</code>.</p>',
+    }),
   })
   .openapi({ required: ['authorizerFunctionArn'], title: 'CreateAuthorizerRequest' })
   .openapi('CreateAuthorizerRequest')
 
 const CreateBillingGroupRequestSchema = z
   .object({
-    billingGroupProperties: BillingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the billing group.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the billing group.' }),
-    ).exactOptional(),
+    billingGroupProperties: BillingGroupPropertiesSchema.exactOptional().openapi({
+      description: 'The properties of the billing group.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the billing group.',
+    }),
   })
   .openapi({ title: 'CreateBillingGroupRequest', required: [] })
   .openapi('CreateBillingGroupRequest')
 
 const CreateCertificateFromCsrRequestSchema = z
   .object({
-    certificateSigningRequest: CertificateSigningRequestSchema.and(
-      z.any().openapi({ description: 'The certificate signing request (CSR).' }),
-    ),
+    certificateSigningRequest: CertificateSigningRequestSchema.openapi({
+      description: 'The certificate signing request (CSR).',
+    }),
   })
   .openapi({
     required: ['certificateSigningRequest'],
@@ -10717,66 +8656,41 @@ const CreateCertificateFromCsrRequestSchema = z
 
 const CreateCustomMetricRequestSchema = z
   .object({
-    displayName: CustomMetricDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " The friendly name in the console for the custom metric. This name doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. You can update the friendly name after you define it.",
-        }),
-    ).exactOptional(),
-    metricType: CustomMetricTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but when you submit the metrics value in the DeviceMetrics report, you must pass it as an array with a single value.</p> </important>',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: ' Metadata that can be used to manage the custom metric. ' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each custom metric must have a unique client request token. If you try to create a new custom metric that already exists with a different token, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request. ',
-        }),
-    ),
+    displayName: CustomMetricDisplayNameSchema.exactOptional().openapi({
+      description:
+        " The friendly name in the console for the custom metric. This name doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. You can update the friendly name after you define it.",
+    }),
+    metricType: CustomMetricTypeSchema.openapi({
+      description:
+        '<p> The type of the custom metric. </p> <important> <p>The type <code>number</code> only takes a single metric value as an input, but when you submit the metrics value in the DeviceMetrics report, you must pass it as an array with a single value.</p> </important>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: ' Metadata that can be used to manage the custom metric. ',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'Each custom metric must have a unique client request token. If you try to create a new custom metric that already exists with a different token, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request. ',
+    }),
   })
   .openapi({ required: ['metricType', 'clientRequestToken'], title: 'CreateCustomMetricRequest' })
   .openapi('CreateCustomMetricRequest')
 
 const CreateDimensionRequestSchema = z
   .object({
-    type: DimensionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of dimension. Supported types: <code>TOPIC_FILTER.</code> ',
-        }),
-    ),
-    stringValues: DimensionStringValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the value or list of values for the dimension. For <code>TOPIC_FILTER</code> dimensions, this is a pattern used to match the MQTT topic (for example, "admin/#").',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the dimension.' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each dimension must have a unique client request token. If you try to create a new dimension with the same token as a dimension that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request.',
-        }),
-    ),
+    type: DimensionTypeSchema.openapi({
+      description: 'Specifies the type of dimension. Supported types: <code>TOPIC_FILTER.</code> ',
+    }),
+    stringValues: DimensionStringValuesSchema.openapi({
+      description:
+        'Specifies the value or list of values for the dimension. For <code>TOPIC_FILTER</code> dimensions, this is a pattern used to match the MQTT topic (for example, "admin/#").',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the dimension.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'Each dimension must have a unique client request token. If you try to create a new dimension with the same token as a dimension that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request.',
+    }),
   })
   .openapi({
     required: ['type', 'stringValues', 'clientRequestToken'],
@@ -10792,129 +8706,81 @@ const ServerCertificateArnsSchema = z
 
 const CreateDomainConfigurationRequestSchema = z
   .object({
-    domainName: DomainNameSchema.and(
-      z.any().openapi({ description: 'The name of the domain.' }),
-    ).exactOptional(),
-    serverCertificateArns: ServerCertificateArnsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs of the certificates that IoT passes to the device during the TLS handshake. Currently you can specify only one certificate ARN. This value is not required for Amazon Web Services-managed domains.',
-        }),
-    ).exactOptional(),
-    validationCertificateArn: AcmCertificateArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The certificate used to validate the server certificate and prove domain name ownership. This certificate must be signed by a public certificate authority. This value is not required for Amazon Web Services-managed domains.',
-        }),
-    ).exactOptional(),
-    authorizerConfig: AuthorizerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that specifies the authorization service for a domain.',
-        }),
-    ).exactOptional(),
-    serviceType: ServiceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of service delivered by the endpoint.</p> <note> <p>Amazon Web Services IoT Core currently supports only the <code>DATA</code> service type.</p> </note>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the domain configuration.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
+    domainName: DomainNameSchema.exactOptional().openapi({
+      description: 'The name of the domain.',
+    }),
+    serverCertificateArns: ServerCertificateArnsSchema.exactOptional().openapi({
+      description:
+        'The ARNs of the certificates that IoT passes to the device during the TLS handshake. Currently you can specify only one certificate ARN. This value is not required for Amazon Web Services-managed domains.',
+    }),
+    validationCertificateArn: AcmCertificateArnSchema.exactOptional().openapi({
+      description:
+        'The certificate used to validate the server certificate and prove domain name ownership. This certificate must be signed by a public certificate authority. This value is not required for Amazon Web Services-managed domains.',
+    }),
+    authorizerConfig: AuthorizerConfigSchema.exactOptional().openapi({
+      description: 'An object that specifies the authorization service for a domain.',
+    }),
+    serviceType: ServiceTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of service delivered by the endpoint.</p> <note> <p>Amazon Web Services IoT Core currently supports only the <code>DATA</code> service type.</p> </note>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the domain configuration.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
   })
   .openapi({ title: 'CreateDomainConfigurationRequest', required: [] })
   .openapi('CreateDomainConfigurationRequest')
 
 const CreateDynamicThingGroupRequestSchema = z
   .object({
-    thingGroupProperties: ThingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group properties.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic thing group index name.</p> <note> <p>Currently one index is supported: <code>AWS_Things</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic thing group search query string.</p> <p>See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/query-syntax.html">Query Syntax</a> for information about query string syntax.</p>',
-        }),
-    ),
-    queryVersion: QueryVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic thing group query version.</p> <note> <p>Currently one query version is supported: "2017-09-30". If not specified, the query version defaults to this value.</p> </note>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Metadata which can be used to manage the dynamic thing group.' }),
-    ).exactOptional(),
+    thingGroupProperties: ThingGroupPropertiesSchema.exactOptional().openapi({
+      description: 'The dynamic thing group properties.',
+    }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description:
+        '<p>The dynamic thing group index name.</p> <note> <p>Currently one index is supported: <code>AWS_Things</code>.</p> </note>',
+    }),
+    queryString: QueryStringSchema.openapi({
+      description:
+        '<p>The dynamic thing group search query string.</p> <p>See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/query-syntax.html">Query Syntax</a> for information about query string syntax.</p>',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The dynamic thing group query version.</p> <note> <p>Currently one query version is supported: "2017-09-30". If not specified, the query version defaults to this value.</p> </note>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the dynamic thing group.',
+    }),
   })
   .openapi({ required: ['queryString'], title: 'CreateDynamicThingGroupRequest' })
   .openapi('CreateDynamicThingGroupRequest')
 
 const CreateFleetMetricRequestSchema = z
   .object({
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ),
-    aggregationType: AggregationTypeSchema.and(
-      z.any().openapi({ description: 'The type of the aggregation query.' }),
-    ),
-    period: FleetMetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
-        }),
-    ),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The field to aggregate.' }),
-    ),
-    description: FleetMetricDescriptionSchema.and(
-      z.any().openapi({ description: 'The fleet metric description.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The query version.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ).exactOptional(),
-    unit: FleetMetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>. Default to null.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata, which can be used to manage the fleet metric.' }),
-    ).exactOptional(),
+    queryString: QueryStringSchema.openapi({ description: 'The search query string.' }),
+    aggregationType: AggregationTypeSchema.openapi({
+      description: 'The type of the aggregation query.',
+    }),
+    period: FleetMetricPeriodSchema.openapi({
+      description:
+        'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
+    }),
+    aggregationField: AggregationFieldSchema.openapi({ description: 'The field to aggregate.' }),
+    description: FleetMetricDescriptionSchema.exactOptional().openapi({
+      description: 'The fleet metric description.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({ description: 'The query version.' }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search.',
+    }),
+    unit: FleetMetricUnitSchema.exactOptional().openapi({
+      description:
+        'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>. Default to null.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata, which can be used to manage the fleet metric.',
+    }),
   })
   .openapi({
     required: ['queryString', 'aggregationType', 'period', 'aggregationField'],
@@ -10924,144 +8790,98 @@ const CreateFleetMetricRequestSchema = z
 
 const CreateJobRequestSchema = z
   .object({
-    targets: JobTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of things and thing groups to which the job should be sent.',
-        }),
-    ),
-    documentSource: JobDocumentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An S3 link to the job document. Required if you don't specify a value for <code>document</code>.</p> <note> <p>If the job document resides in an S3 bucket, you must use a placeholder link when specifying the document.</p> <p>The placeholder link is of the following form:</p> <p> <code>${aws:iot:s3-presigned-url:https://s3.amazonaws.com/<i>bucket</i>/<i>key</i>}</code> </p> <p>where <i>bucket</i> is your bucket name and <i>key</i> is the object in the bucket to which you are linking.</p> </note>",
-        }),
-    ).exactOptional(),
-    document: JobDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job document. Required if you don't specify a value for <code>documentSource</code>.",
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the job.' }),
-    ).exactOptional(),
-    presignedUrlConfig: PresignedUrlConfigSchema.and(
-      z.any().openapi({ description: 'Configuration information for pre-signed S3 URLs.' }),
-    ).exactOptional(),
-    targetSelection: TargetSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a thing when the thing is added to a target group, even after the job was completed by all things originally in the group.</p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
-        }),
-    ).exactOptional(),
-    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create a staged rollout of the job.' }),
-    ).exactOptional(),
-    abortConfig: AbortConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create the criteria to abort a job.' }),
-    ).exactOptional(),
-    timeoutConfig: TimeoutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time each device has to finish its execution of the job. The timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the time expires, it will be automatically set to <code>TIMED_OUT</code>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the job.' }),
-    ).exactOptional(),
-    namespaceId: NamespaceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The namespace used to indicate that a job is a customer-managed job.</p> <p>When you specify a value for this parameter, Amazon Web Services IoT Core sends jobs notifications to MQTT topics that contain the value in the following format.</p> <p> <code>$aws/things/<i>THING_NAME</i>/jobs/<i>JOB_ID</i>/notify-namespace-<i>NAMESPACE_ID</i>/</code> </p> <note> <p>The <code>namespaceId</code> feature is in public preview.</p> </note>',
-        }),
-    ).exactOptional(),
-    jobTemplateArn: JobTemplateArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the job template used to create the job.' }),
-    ).exactOptional(),
-    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create the criteria to retry a job.' }),
-    ).exactOptional(),
-    documentParameters: ParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Parameters of an Amazon Web Services managed template that you can specify to create the job document.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
-        }),
-    ).exactOptional(),
-    schedulingConfig: SchedulingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.',
-        }),
-    ).exactOptional(),
+    targets: JobTargetsSchema.openapi({
+      description: 'A list of things and thing groups to which the job should be sent.',
+    }),
+    documentSource: JobDocumentSourceSchema.exactOptional().openapi({
+      description:
+        "<p>An S3 link to the job document. Required if you don't specify a value for <code>document</code>.</p> <note> <p>If the job document resides in an S3 bucket, you must use a placeholder link when specifying the document.</p> <p>The placeholder link is of the following form:</p> <p> <code>${aws:iot:s3-presigned-url:https://s3.amazonaws.com/<i>bucket</i>/<i>key</i>}</code> </p> <p>where <i>bucket</i> is your bucket name and <i>key</i> is the object in the bucket to which you are linking.</p> </note>",
+    }),
+    document: JobDocumentSchema.exactOptional().openapi({
+      description:
+        "The job document. Required if you don't specify a value for <code>documentSource</code>.",
+    }),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the job.',
+    }),
+    presignedUrlConfig: PresignedUrlConfigSchema.exactOptional().openapi({
+      description: 'Configuration information for pre-signed S3 URLs.',
+    }),
+    targetSelection: TargetSelectionSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies whether the job will continue to run (CONTINUOUS), or will be complete after all those things specified as targets have completed the job (SNAPSHOT). If continuous, the job may also be run on a thing when a change is detected in a target. For example, a job will run on a thing when the thing is added to a target group, even after the job was completed by all things originally in the group.</p> <note> <p>We recommend that you use continuous jobs instead of snapshot jobs for dynamic thing group targets. By using continuous jobs, devices that join the group receive the job execution even after the job has been created.</p> </note>',
+    }),
+    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create a staged rollout of the job.',
+    }),
+    abortConfig: AbortConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create the criteria to abort a job.',
+    }),
+    timeoutConfig: TimeoutConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time each device has to finish its execution of the job. The timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the time expires, it will be automatically set to <code>TIMED_OUT</code>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the job.',
+    }),
+    namespaceId: NamespaceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The namespace used to indicate that a job is a customer-managed job.</p> <p>When you specify a value for this parameter, Amazon Web Services IoT Core sends jobs notifications to MQTT topics that contain the value in the following format.</p> <p> <code>$aws/things/<i>THING_NAME</i>/jobs/<i>JOB_ID</i>/notify-namespace-<i>NAMESPACE_ID</i>/</code> </p> <note> <p>The <code>namespaceId</code> feature is in public preview.</p> </note>',
+    }),
+    jobTemplateArn: JobTemplateArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job template used to create the job.',
+    }),
+    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create the criteria to retry a job.',
+    }),
+    documentParameters: ParameterMapSchema.exactOptional().openapi({
+      description:
+        "<p>Parameters of an Amazon Web Services managed template that you can specify to create the job document.</p> <note> <p> <code>documentParameters</code> can only be used when creating jobs from Amazon Web Services managed templates. This parameter can't be used with custom job templates or to create jobs from them.</p> </note>",
+    }),
+    schedulingConfig: SchedulingConfigSchema.exactOptional().openapi({
+      description:
+        'The configuration that allows you to schedule a job for a future date and time in addition to specifying the end behavior for each job execution.',
+    }),
   })
   .openapi({ required: ['targets'], title: 'CreateJobRequest' })
   .openapi('CreateJobRequest')
 
 const CreateJobTemplateRequestSchema = z
   .object({
-    jobArn: JobArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the job to use as the basis for the job template.' }),
-    ).exactOptional(),
-    documentSource: JobDocumentSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>An S3 link to the job document to use in the template. Required if you don't specify a value for <code>document</code>.</p> <note> <p>If the job document resides in an S3 bucket, you must use a placeholder link when specifying the document.</p> <p>The placeholder link is of the following form:</p> <p> <code>${aws:iot:s3-presigned-url:https://s3.amazonaws.com/<i>bucket</i>/<i>key</i>}</code> </p> <p>where <i>bucket</i> is your bucket name and <i>key</i> is the object in the bucket to which you are linking.</p> </note>",
-        }),
-    ).exactOptional(),
-    document: JobDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The job document. Required if you don't specify a value for <code>documentSource</code>.",
-        }),
-    ).exactOptional(),
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the job document.' }),
-    ),
+    jobArn: JobArnSchema.exactOptional().openapi({
+      description: 'The ARN of the job to use as the basis for the job template.',
+    }),
+    documentSource: JobDocumentSourceSchema.exactOptional().openapi({
+      description:
+        "<p>An S3 link to the job document to use in the template. Required if you don't specify a value for <code>document</code>.</p> <note> <p>If the job document resides in an S3 bucket, you must use a placeholder link when specifying the document.</p> <p>The placeholder link is of the following form:</p> <p> <code>${aws:iot:s3-presigned-url:https://s3.amazonaws.com/<i>bucket</i>/<i>key</i>}</code> </p> <p>where <i>bucket</i> is your bucket name and <i>key</i> is the object in the bucket to which you are linking.</p> </note>",
+    }),
+    document: JobDocumentSchema.exactOptional().openapi({
+      description:
+        "The job document. Required if you don't specify a value for <code>documentSource</code>.",
+    }),
+    description: JobDescriptionSchema.openapi({
+      description: 'A description of the job document.',
+    }),
     presignedUrlConfig: PresignedUrlConfigSchema.exactOptional(),
     jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.exactOptional(),
     abortConfig: AbortConfigSchema.exactOptional(),
     timeoutConfig: TimeoutConfigSchema.exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the job template.' }),
-    ).exactOptional(),
-    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create the criteria to retry a job.' }),
-    ).exactOptional(),
-    maintenanceWindows: MaintenanceWindowsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.',
-        }),
-    ).exactOptional(),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the job template.',
+    }),
+    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create the criteria to retry a job.',
+    }),
+    maintenanceWindows: MaintenanceWindowsSchema.exactOptional().openapi({
+      description:
+        'Allows you to configure an optional maintenance window for the rollout of a job document to all devices in the target group for a job.',
+    }),
   })
   .openapi({ required: ['description'], title: 'CreateJobTemplateRequest' })
   .openapi('CreateJobTemplateRequest')
 
 const CreateKeysAndCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'CreateKeysAndCertificateRequest',
     description:
@@ -11071,115 +8891,73 @@ const CreateKeysAndCertificateRequestSchema = z
 
 const CreateMitigationActionRequestSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that is used to apply the mitigation action.',
-        }),
-    ),
-    actionParams: MitigationActionParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Defines the type of action and the parameters for that action.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Metadata that can be used to manage the mitigation action.' }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.openapi({
+      description: 'The ARN of the IAM role that is used to apply the mitigation action.',
+    }),
+    actionParams: MitigationActionParamsSchema.openapi({
+      description: 'Defines the type of action and the parameters for that action.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the mitigation action.',
+    }),
   })
   .openapi({ required: ['roleArn', 'actionParams'], title: 'CreateMitigationActionRequest' })
   .openapi('CreateMitigationActionRequest')
 
 const CreateOTAUpdateRequestSchema = z
   .object({
-    description: OTAUpdateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the OTA update.' }),
-    ).exactOptional(),
-    targets: TargetsSchema.and(
-      z.any().openapi({ description: 'The devices targeted to receive OTA updates.' }),
-    ),
-    protocols: ProtocolsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol used to transfer the OTA update image. Valid values are [HTTP], [MQTT], [HTTP, MQTT]. When both HTTP and MQTT are specified, the target device can choose the protocol.',
-        }),
-    ).exactOptional(),
-    targetSelection: TargetSelectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether the update will continue to run (CONTINUOUS), or will be complete after all the things specified as targets have completed the update (SNAPSHOT). If continuous, the update may also be run on a thing when a change is detected in a target. For example, an update will run on a thing when the thing is added to a target group, even after the update was completed by all things originally in the group. Valid values: CONTINUOUS | SNAPSHOT.',
-        }),
-    ).exactOptional(),
-    awsJobExecutionsRolloutConfig: AwsJobExecutionsRolloutConfigSchema.and(
-      z.any().openapi({ description: 'Configuration for the rollout of OTA updates.' }),
-    ).exactOptional(),
-    awsJobPresignedUrlConfig: AwsJobPresignedUrlConfigSchema.and(
-      z.any().openapi({ description: 'Configuration information for pre-signed URLs.' }),
-    ).exactOptional(),
-    awsJobAbortConfig: AwsJobAbortConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The criteria that determine when and how a job abort takes place.',
-        }),
-    ).exactOptional(),
-    awsJobTimeoutConfig: AwsJobTimeoutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time each device has to finish its execution of the job. A timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the timer expires, it will be automatically set to <code>TIMED_OUT</code>.',
-        }),
-    ).exactOptional(),
-    files: OTAUpdateFilesSchema.and(
-      z.any().openapi({ description: 'The files to be streamed by the OTA update.' }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The IAM role that grants Amazon Web Services IoT Core access to the Amazon S3, IoT jobs and Amazon Web Services Code Signing resources to create an OTA update job.',
-        }),
-    ),
-    additionalParameters: AdditionalParameterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of additional OTA update parameters which are name-value pairs.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage updates.' }),
-    ).exactOptional(),
+    description: OTAUpdateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the OTA update.',
+    }),
+    targets: TargetsSchema.openapi({ description: 'The devices targeted to receive OTA updates.' }),
+    protocols: ProtocolsSchema.exactOptional().openapi({
+      description:
+        'The protocol used to transfer the OTA update image. Valid values are [HTTP], [MQTT], [HTTP, MQTT]. When both HTTP and MQTT are specified, the target device can choose the protocol.',
+    }),
+    targetSelection: TargetSelectionSchema.exactOptional().openapi({
+      description:
+        'Specifies whether the update will continue to run (CONTINUOUS), or will be complete after all the things specified as targets have completed the update (SNAPSHOT). If continuous, the update may also be run on a thing when a change is detected in a target. For example, an update will run on a thing when the thing is added to a target group, even after the update was completed by all things originally in the group. Valid values: CONTINUOUS | SNAPSHOT.',
+    }),
+    awsJobExecutionsRolloutConfig: AwsJobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description: 'Configuration for the rollout of OTA updates.',
+    }),
+    awsJobPresignedUrlConfig: AwsJobPresignedUrlConfigSchema.exactOptional().openapi({
+      description: 'Configuration information for pre-signed URLs.',
+    }),
+    awsJobAbortConfig: AwsJobAbortConfigSchema.exactOptional().openapi({
+      description: 'The criteria that determine when and how a job abort takes place.',
+    }),
+    awsJobTimeoutConfig: AwsJobTimeoutConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time each device has to finish its execution of the job. A timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the timer expires, it will be automatically set to <code>TIMED_OUT</code>.',
+    }),
+    files: OTAUpdateFilesSchema.openapi({
+      description: 'The files to be streamed by the OTA update.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The IAM role that grants Amazon Web Services IoT Core access to the Amazon S3, IoT jobs and Amazon Web Services Code Signing resources to create an OTA update job.',
+    }),
+    additionalParameters: AdditionalParameterMapSchema.exactOptional().openapi({
+      description: 'A list of additional OTA update parameters which are name-value pairs.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage updates.',
+    }),
   })
   .openapi({ required: ['targets', 'files', 'roleArn'], title: 'CreateOTAUpdateRequest' })
   .openapi('CreateOTAUpdateRequest')
 
 const CreatePolicyRequestSchema = z
   .object({
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON document that describes the policy. <b>policyDocument</b> must have a minimum length of 1, with a maximum length of 2048, excluding whitespace.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the policy.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
+    policyDocument: PolicyDocumentSchema.openapi({
+      description:
+        'The JSON document that describes the policy. <b>policyDocument</b> must have a minimum length of 1, with a maximum length of 2048, excluding whitespace.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the policy.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
   })
   .openapi({
     required: ['policyDocument'],
@@ -11192,14 +8970,10 @@ const SetAsDefaultSchema = z.boolean().openapi('SetAsDefault')
 
 const CreatePolicyVersionRequestSchema = z
   .object({
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The JSON document that describes the policy. Minimum length of 1. Maximum length of 2048, excluding whitespace.',
-        }),
-    ),
+    policyDocument: PolicyDocumentSchema.openapi({
+      description:
+        'The JSON document that describes the policy. Minimum length of 1. Maximum length of 2048, excluding whitespace.',
+    }),
   })
   .openapi({
     required: ['policyDocument'],
@@ -11209,58 +8983,40 @@ const CreatePolicyVersionRequestSchema = z
   .openapi('CreatePolicyVersionRequest')
 
 const CreateProvisioningClaimRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'CreateProvisioningClaimRequest' })
   .openapi('CreateProvisioningClaimRequest')
 
 const CreateProvisioningTemplateRequestSchema = z
   .object({
-    templateName: TemplateNameSchema.and(
-      z.any().openapi({ description: 'The name of the provisioning template.' }),
-    ),
-    description: TemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning template.' }),
-    ).exactOptional(),
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: 'The JSON formatted contents of the provisioning template.' }),
-    ),
-    enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({ description: 'True to enable the provisioning template, otherwise false.' }),
-    ).exactOptional(),
-    provisioningRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The role ARN for the role associated with the provisioning template. This IoT role grants permission to provision a device.',
-        }),
-    ),
-    preProvisioningHook: ProvisioningHookSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Creates a pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type">type</a>.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the provisioning template.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
-    type: TemplateTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
-        }),
-    ).exactOptional(),
+    templateName: TemplateNameSchema.openapi({
+      description: 'The name of the provisioning template.',
+    }),
+    description: TemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning template.',
+    }),
+    templateBody: TemplateBodySchema.openapi({
+      description: 'The JSON formatted contents of the provisioning template.',
+    }),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True to enable the provisioning template, otherwise false.',
+    }),
+    provisioningRoleArn: RoleArnSchema.openapi({
+      description:
+        'The role ARN for the role associated with the provisioning template. This IoT role grants permission to provision a device.',
+    }),
+    preProvisioningHook: ProvisioningHookSchema.exactOptional().openapi({
+      description:
+        'Creates a pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type">type</a>.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the provisioning template.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
+    type: TemplateTypeSchema.exactOptional().openapi({
+      description:
+        'The type you define in a provisioning template. You can create a template with only one type. You can\'t change the template type after its creation. The default value is <code>FLEET_PROVISIONING</code>. For more information about provisioning template, see: <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning template</a>. ',
+    }),
   })
   .openapi({
     required: ['templateName', 'templateBody', 'provisioningRoleArn'],
@@ -11270,173 +9026,125 @@ const CreateProvisioningTemplateRequestSchema = z
 
 const CreateProvisioningTemplateVersionRequestSchema = z
   .object({
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: 'The JSON formatted contents of the provisioning template.' }),
-    ),
+    templateBody: TemplateBodySchema.openapi({
+      description: 'The JSON formatted contents of the provisioning template.',
+    }),
   })
   .openapi({ required: ['templateBody'], title: 'CreateProvisioningTemplateVersionRequest' })
   .openapi('CreateProvisioningTemplateVersionRequest')
 
 const CreateRoleAliasRequestSchema = z
   .object({
-    roleArn: RoleArnSchema.and(z.any().openapi({ description: 'The role ARN.' })),
-    credentialDurationSeconds: CredentialDurationSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>How long (in seconds) the credentials will be valid. The default value is 3,600 seconds.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the role alias.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.openapi({ description: 'The role ARN.' }),
+    credentialDurationSeconds: CredentialDurationSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>How long (in seconds) the credentials will be valid. The default value is 3,600 seconds.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the role alias.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
   })
   .openapi({ required: ['roleArn'], title: 'CreateRoleAliasRequest' })
   .openapi('CreateRoleAliasRequest')
 
 const CreateScheduledAuditRequestSchema = z
   .object({
-    frequency: AuditFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How often the scheduled audit takes place, either <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code> or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
-        }),
-    ),
-    dayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month on which the scheduled audit takes place. This can be "1" through "31" or "LAST". This field is required if the "frequency" parameter is set to <code>MONTHLY</code>. If days 29 to 31 are specified, and the month doesn\'t have that many days, the audit takes place on the <code>LAST</code> day of the month.',
-        }),
-    ).exactOptional(),
-    dayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the week on which the scheduled audit takes place, either <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>. This field is required if the <code>frequency</code> parameter is set to <code>WEEKLY</code> or <code>BIWEEKLY</code>.',
-        }),
-    ).exactOptional(),
-    targetCheckNames: TargetAuditCheckNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the scheduled audit.' }),
-    ).exactOptional(),
+    frequency: AuditFrequencySchema.openapi({
+      description:
+        'How often the scheduled audit takes place, either <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code> or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
+    }),
+    dayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month on which the scheduled audit takes place. This can be "1" through "31" or "LAST". This field is required if the "frequency" parameter is set to <code>MONTHLY</code>. If days 29 to 31 are specified, and the month doesn\'t have that many days, the audit takes place on the <code>LAST</code> day of the month.',
+    }),
+    dayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of the week on which the scheduled audit takes place, either <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>. This field is required if the <code>frequency</code> parameter is set to <code>WEEKLY</code> or <code>BIWEEKLY</code>.',
+    }),
+    targetCheckNames: TargetAuditCheckNamesSchema.openapi({
+      description:
+        'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the scheduled audit.',
+    }),
   })
   .openapi({ required: ['frequency', 'targetCheckNames'], title: 'CreateScheduledAuditRequest' })
   .openapi('CreateScheduledAuditRequest')
 
 const CreateSecurityProfileRequestSchema = z
   .object({
-    securityProfileDescription: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the security profile.' }),
-    ).exactOptional(),
-    behaviors: BehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
-        }),
-    ).exactOptional(),
-    alertTargets: AlertTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the destinations to which alerts are sent. (Alerts are always sent to the console.) Alerts are generated when a device (thing) violates a behavior.',
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<p> <i>Please use <a>CreateSecurityProfileRequest$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.</p>Use additionalMetricsToRetainV2.",
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata that can be used to manage the security profile.' }),
-    ).exactOptional(),
+    securityProfileDescription: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the security profile.',
+    }),
+    behaviors: BehaviorsSchema.exactOptional().openapi({
+      description:
+        'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
+    }),
+    alertTargets: AlertTargetsSchema.exactOptional().openapi({
+      description:
+        'Specifies the destinations to which alerts are sent. (Alerts are always sent to the console.) Alerts are generated when a device (thing) violates a behavior.',
+    }),
+    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<p> <i>Please use <a>CreateSecurityProfileRequest$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.</p>Use additionalMetricsToRetainV2.",
+    }),
+    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.exactOptional().openapi({
+      description:
+        "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata that can be used to manage the security profile.',
+    }),
   })
   .openapi({ title: 'CreateSecurityProfileRequest', required: [] })
   .openapi('CreateSecurityProfileRequest')
 
 const CreateStreamRequestSchema = z
   .object({
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the stream.' }),
-    ).exactOptional(),
-    files: StreamFilesSchema.and(z.any().openapi({ description: 'The files to stream.' })),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An IAM role that allows the IoT service principal to access your S3 files.',
-        }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage streams.' }),
-    ).exactOptional(),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the stream.',
+    }),
+    files: StreamFilesSchema.openapi({ description: 'The files to stream.' }),
+    roleArn: RoleArnSchema.openapi({
+      description: 'An IAM role that allows the IoT service principal to access your S3 files.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage streams.',
+    }),
   })
   .openapi({ required: ['files', 'roleArn'], title: 'CreateStreamRequest' })
   .openapi('CreateStreamRequest')
 
 const CreateThingGroupRequestSchema = z
   .object({
-    parentGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the parent thing group.' }),
-    ).exactOptional(),
-    thingGroupProperties: ThingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The thing group properties.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the thing group.' }),
-    ).exactOptional(),
+    parentGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the parent thing group.',
+    }),
+    thingGroupProperties: ThingGroupPropertiesSchema.exactOptional().openapi({
+      description: 'The thing group properties.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the thing group.',
+    }),
   })
   .openapi({ title: 'CreateThingGroupRequest', required: [] })
   .openapi('CreateThingGroupRequest')
 
 const CreateThingRequestSchema = z
   .object({
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing type associated with the new thing.' }),
-    ).exactOptional(),
-    attributePayload: AttributePayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The attribute payload, which consists of up to three name/value pairs in a JSON document. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
-        }),
-    ).exactOptional(),
-    billingGroupName: BillingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the billing group the thing will be added to.' }),
-    ).exactOptional(),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type associated with the new thing.',
+    }),
+    attributePayload: AttributePayloadSchema.exactOptional().openapi({
+      description:
+        '<p>The attribute payload, which consists of up to three name/value pairs in a JSON document. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
+    }),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the billing group the thing will be added to.',
+    }),
   })
   .openapi({
     title: 'CreateThingRequest',
@@ -11447,17 +9155,13 @@ const CreateThingRequestSchema = z
 
 const CreateThingTypeRequestSchema = z
   .object({
-    thingTypeProperties: ThingTypePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ThingTypeProperties for the thing type to create. It contains information about the new thing type including a description, and a list of searchable thing attribute names.',
-        }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'Metadata which can be used to manage the thing type.' }),
-    ).exactOptional(),
+    thingTypeProperties: ThingTypePropertiesSchema.exactOptional().openapi({
+      description:
+        'The ThingTypeProperties for the thing type to create. It contains information about the new thing type including a description, and a list of searchable thing attribute names.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description: 'Metadata which can be used to manage the thing type.',
+    }),
   })
   .openapi({
     title: 'CreateThingTypeRequest',
@@ -11468,65 +9172,28 @@ const CreateThingTypeRequestSchema = z
 
 const TopicRuleDestinationConfigurationSchema = z
   .object({
-    httpUrlConfiguration: HttpUrlDestinationConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration of the HTTP URL.' }),
-    ).exactOptional(),
-    vpcConfiguration: VpcDestinationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Configuration of the virtual private cloud (VPC) connection.' }),
-    ).exactOptional(),
+    httpUrlConfiguration: HttpUrlDestinationConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration of the HTTP URL.',
+    }),
+    vpcConfiguration: VpcDestinationConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration of the virtual private cloud (VPC) connection.',
+    }),
   })
   .openapi({ description: 'Configuration of the topic rule destination.', required: [] })
   .openapi('TopicRuleDestinationConfiguration')
 
 const CreateTopicRuleDestinationRequestSchema = z
   .object({
-    destinationConfiguration: TopicRuleDestinationConfigurationSchema.and(
-      z.any().openapi({ description: 'The topic rule destination configuration.' }),
-    ),
+    destinationConfiguration: TopicRuleDestinationConfigurationSchema.openapi({
+      description: 'The topic rule destination configuration.',
+    }),
   })
   .openapi({ required: ['destinationConfiguration'], title: 'CreateTopicRuleDestinationRequest' })
   .openapi('CreateTopicRuleDestinationRequest')
 
-const TopicRulePayloadSchema = z
+const CreateTopicRuleRequestSchema: z.ZodType<CreateTopicRuleRequestType> = z
   .object({
-    sql: SQLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
-        }),
-    ),
-    description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the rule.' }),
-    ).exactOptional(),
-    actions: ActionListSchema.and(
-      z.any().openapi({ description: 'The actions associated with the rule.' }),
-    ),
-    ruleDisabled: IsDisabledSchema.and(
-      z.any().openapi({ description: 'Specifies whether the rule is disabled.' }),
-    ).exactOptional(),
-    awsIotSqlVersion: AwsIotSqlVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The version of the SQL rules engine to use when evaluating the rule.',
-        }),
-    ).exactOptional(),
-    errorAction: ActionSchema.and(
-      z.any().openapi({ description: 'The action to take when an error occurs.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['sql', 'actions'], description: 'Describes a rule.' })
-  .openapi('TopicRulePayload')
-
-const CreateTopicRuleRequestSchema = z
-  .object({
-    topicRulePayload: TopicRulePayloadSchema.and(
-      z.any().openapi({ description: 'The rule payload.' }),
-    ),
+    topicRulePayload: TopicRulePayloadSchema.openapi({ description: 'The rule payload.' }),
   })
   .openapi({
     required: ['topicRulePayload'],
@@ -11538,7 +9205,7 @@ const CreateTopicRuleRequestSchema = z
 const DeleteScheduledAuditsSchema = z.boolean().openapi('DeleteScheduledAudits')
 
 const DeleteAccountAuditConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAccountAuditConfigurationRequest' })
   .openapi('DeleteAccountAuditConfigurationRequest')
 
@@ -11555,7 +9222,7 @@ const DeleteAuditSuppressionRequestSchema = z
   .openapi('DeleteAuditSuppressionRequest')
 
 const DeleteAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAuthorizerRequest' })
   .openapi('DeleteAuthorizerRequest')
 
@@ -11564,12 +9231,12 @@ const DeleteBehaviorsSchema = z.boolean().openapi('DeleteBehaviors')
 const OptionalVersionSchema = z.int().openapi('OptionalVersion')
 
 const DeleteBillingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteBillingGroupRequest' })
   .openapi('DeleteBillingGroupRequest')
 
 const DeleteCACertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteCACertificateRequest',
     description: 'Input for the DeleteCACertificate operation.',
@@ -11579,7 +9246,7 @@ const DeleteCACertificateRequestSchema = z
 const ForceDeleteSchema = z.boolean().openapi('ForceDelete')
 
 const DeleteCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteCertificateRequest',
     description: 'The input for the DeleteCertificate operation.',
@@ -11587,47 +9254,47 @@ const DeleteCertificateRequestSchema = z
   .openapi('DeleteCertificateRequest')
 
 const DeleteCustomMetricRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCustomMetricRequest' })
   .openapi('DeleteCustomMetricRequest')
 
 const DeleteDimensionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDimensionRequest' })
   .openapi('DeleteDimensionRequest')
 
 const DeleteDomainConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDomainConfigurationRequest' })
   .openapi('DeleteDomainConfigurationRequest')
 
 const DeleteDynamicThingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDynamicThingGroupRequest' })
   .openapi('DeleteDynamicThingGroupRequest')
 
 const DeleteFleetMetricRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteFleetMetricRequest' })
   .openapi('DeleteFleetMetricRequest')
 
 const DeleteJobExecutionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteJobExecutionRequest' })
   .openapi('DeleteJobExecutionRequest')
 
 const DeleteJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteJobRequest' })
   .openapi('DeleteJobRequest')
 
 const DeleteJobTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteJobTemplateRequest' })
   .openapi('DeleteJobTemplateRequest')
 
 const DeleteMitigationActionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMitigationActionRequest' })
   .openapi('DeleteMitigationActionRequest')
 
@@ -11636,12 +9303,12 @@ const DeleteStreamSchema = z.boolean().openapi('DeleteStream')
 const ForceDeleteAWSJobSchema = z.boolean().openapi('ForceDeleteAWSJob')
 
 const DeleteOTAUpdateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteOTAUpdateRequest' })
   .openapi('DeleteOTAUpdateRequest')
 
 const DeletePolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeletePolicyRequest',
     description: 'The input for the DeletePolicy operation.',
@@ -11649,7 +9316,7 @@ const DeletePolicyRequestSchema = z
   .openapi('DeletePolicyRequest')
 
 const DeletePolicyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeletePolicyVersionRequest',
     description: 'The input for the DeletePolicyVersion operation.',
@@ -11657,17 +9324,17 @@ const DeletePolicyVersionRequestSchema = z
   .openapi('DeletePolicyVersionRequest')
 
 const DeleteProvisioningTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProvisioningTemplateRequest' })
   .openapi('DeleteProvisioningTemplateRequest')
 
 const DeleteProvisioningTemplateVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProvisioningTemplateVersionRequest' })
   .openapi('DeleteProvisioningTemplateVersionRequest')
 
 const DeleteRegistrationCodeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteRegistrationCodeRequest',
     description: 'The input for the DeleteRegistrationCode operation.',
@@ -11675,37 +9342,37 @@ const DeleteRegistrationCodeRequestSchema = z
   .openapi('DeleteRegistrationCodeRequest')
 
 const DeleteRoleAliasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRoleAliasRequest' })
   .openapi('DeleteRoleAliasRequest')
 
 const DeleteScheduledAuditRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteScheduledAuditRequest' })
   .openapi('DeleteScheduledAuditRequest')
 
 const DeleteSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSecurityProfileRequest' })
   .openapi('DeleteSecurityProfileRequest')
 
 const DeleteStreamRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteStreamRequest' })
   .openapi('DeleteStreamRequest')
 
 const DeleteThingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteThingGroupRequest' })
   .openapi('DeleteThingGroupRequest')
 
 const DeleteThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteThingRequest', description: 'The input for the DeleteThing operation.' })
   .openapi('DeleteThingRequest')
 
 const DeleteThingTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteThingTypeRequest',
     description: 'The input for the DeleteThingType operation.',
@@ -11713,12 +9380,12 @@ const DeleteThingTypeRequestSchema = z
   .openapi('DeleteThingTypeRequest')
 
 const DeleteTopicRuleDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteTopicRuleDestinationRequest' })
   .openapi('DeleteTopicRuleDestinationRequest')
 
 const DeleteTopicRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DeleteTopicRuleRequest',
     description: 'The input for the DeleteTopicRule operation.',
@@ -11726,7 +9393,7 @@ const DeleteTopicRuleRequestSchema = z
   .openapi('DeleteTopicRuleRequest')
 
 const DeleteV2LoggingLevelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteV2LoggingLevelRequest' })
   .openapi('DeleteV2LoggingLevelRequest')
 
@@ -11734,14 +9401,10 @@ const UndoDeprecateSchema = z.boolean().openapi('UndoDeprecate')
 
 const DeprecateThingTypeRequestSchema = z
   .object({
-    undoDeprecate: UndoDeprecateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether to undeprecate a deprecated thing type. If <b>true</b>, the thing type will not be deprecated anymore and you can associate it with things.',
-        }),
-    ).exactOptional(),
+    undoDeprecate: UndoDeprecateSchema.exactOptional().openapi({
+      description:
+        'Whether to undeprecate a deprecated thing type. If <b>true</b>, the thing type will not be deprecated anymore and you can associate it with things.',
+    }),
   })
   .openapi({
     title: 'DeprecateThingTypeRequest',
@@ -11751,17 +9414,17 @@ const DeprecateThingTypeRequestSchema = z
   .openapi('DeprecateThingTypeRequest')
 
 const DescribeAccountAuditConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAccountAuditConfigurationRequest' })
   .openapi('DescribeAccountAuditConfigurationRequest')
 
 const DescribeAuditFindingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAuditFindingRequest' })
   .openapi('DescribeAuditFindingRequest')
 
 const DescribeAuditMitigationActionsTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAuditMitigationActionsTaskRequest' })
   .openapi('DescribeAuditMitigationActionsTaskRequest')
 
@@ -11774,22 +9437,22 @@ const DescribeAuditSuppressionRequestSchema = z
   .openapi('DescribeAuditSuppressionRequest')
 
 const DescribeAuditTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAuditTaskRequest' })
   .openapi('DescribeAuditTaskRequest')
 
 const DescribeAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAuthorizerRequest' })
   .openapi('DescribeAuthorizerRequest')
 
 const DescribeBillingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeBillingGroupRequest' })
   .openapi('DescribeBillingGroupRequest')
 
 const DescribeCACertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeCACertificateRequest',
     description: 'The input for the DescribeCACertificate operation.',
@@ -11797,7 +9460,7 @@ const DescribeCACertificateRequestSchema = z
   .openapi('DescribeCACertificateRequest')
 
 const DescribeCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeCertificateRequest',
     description: 'The input for the DescribeCertificate operation.',
@@ -11805,27 +9468,27 @@ const DescribeCertificateRequestSchema = z
   .openapi('DescribeCertificateRequest')
 
 const DescribeCustomMetricRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeCustomMetricRequest' })
   .openapi('DescribeCustomMetricRequest')
 
 const DescribeDefaultAuthorizerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDefaultAuthorizerRequest' })
   .openapi('DescribeDefaultAuthorizerRequest')
 
 const DescribeDetectMitigationActionsTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDetectMitigationActionsTaskRequest' })
   .openapi('DescribeDetectMitigationActionsTaskRequest')
 
 const DescribeDimensionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDimensionRequest' })
   .openapi('DescribeDimensionRequest')
 
 const DescribeDomainConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeDomainConfigurationRequest' })
   .openapi('DescribeDomainConfigurationRequest')
 
@@ -11836,7 +9499,7 @@ const EndpointTypeSchema = z
   .openapi('EndpointType')
 
 const DescribeEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeEndpointRequest',
     description: 'The input for the DescribeEndpoint operation.',
@@ -11844,87 +9507,87 @@ const DescribeEndpointRequestSchema = z
   .openapi('DescribeEndpointRequest')
 
 const DescribeEventConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeEventConfigurationsRequest' })
   .openapi('DescribeEventConfigurationsRequest')
 
 const DescribeFleetMetricRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeFleetMetricRequest' })
   .openapi('DescribeFleetMetricRequest')
 
 const DescribeIndexRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeIndexRequest' })
   .openapi('DescribeIndexRequest')
 
 const DescribeJobExecutionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobExecutionRequest' })
   .openapi('DescribeJobExecutionRequest')
 
 const DescribeJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobRequest' })
   .openapi('DescribeJobRequest')
 
 const DescribeJobTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeJobTemplateRequest' })
   .openapi('DescribeJobTemplateRequest')
 
 const DescribeManagedJobTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeManagedJobTemplateRequest' })
   .openapi('DescribeManagedJobTemplateRequest')
 
 const DescribeMitigationActionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeMitigationActionRequest' })
   .openapi('DescribeMitigationActionRequest')
 
 const DescribeProvisioningTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProvisioningTemplateRequest' })
   .openapi('DescribeProvisioningTemplateRequest')
 
 const DescribeProvisioningTemplateVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeProvisioningTemplateVersionRequest' })
   .openapi('DescribeProvisioningTemplateVersionRequest')
 
 const DescribeRoleAliasRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRoleAliasRequest' })
   .openapi('DescribeRoleAliasRequest')
 
 const DescribeScheduledAuditRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeScheduledAuditRequest' })
   .openapi('DescribeScheduledAuditRequest')
 
 const DescribeSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeSecurityProfileRequest' })
   .openapi('DescribeSecurityProfileRequest')
 
 const DescribeStreamRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeStreamRequest' })
   .openapi('DescribeStreamRequest')
 
 const DescribeThingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeThingGroupRequest' })
   .openapi('DescribeThingGroupRequest')
 
 const DescribeThingRegistrationTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeThingRegistrationTaskRequest' })
   .openapi('DescribeThingRegistrationTaskRequest')
 
 const DescribeThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeThingRequest',
     description: 'The input for the DescribeThing operation.',
@@ -11932,7 +9595,7 @@ const DescribeThingRequestSchema = z
   .openapi('DescribeThingRequest')
 
 const DescribeThingTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DescribeThingTypeRequest',
     description: 'The input for the DescribeThingType operation.',
@@ -11941,15 +9604,15 @@ const DescribeThingTypeRequestSchema = z
 
 const DetachPolicyRequestSchema = z
   .object({
-    target: PolicyTargetSchema.and(
-      z.any().openapi({ description: 'The target from which the policy will be detached.' }),
-    ),
+    target: PolicyTargetSchema.openapi({
+      description: 'The target from which the policy will be detached.',
+    }),
   })
   .openapi({ required: ['target'], title: 'DetachPolicyRequest' })
   .openapi('DetachPolicyRequest')
 
 const DetachPrincipalPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DetachPrincipalPolicyRequest',
     description: 'The input for the DetachPrincipalPolicy operation.',
@@ -11957,12 +9620,12 @@ const DetachPrincipalPolicyRequestSchema = z
   .openapi('DetachPrincipalPolicyRequest')
 
 const DetachSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DetachSecurityProfileRequest' })
   .openapi('DetachSecurityProfileRequest')
 
 const DetachThingPrincipalRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DetachThingPrincipalRequest',
     description: 'The input for the DetachThingPrincipal operation.',
@@ -11983,7 +9646,7 @@ const DetectMitigationActionsToExecuteListSchema = z
   .openapi('DetectMitigationActionsToExecuteList')
 
 const DisableTopicRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'DisableTopicRuleRequest',
     description: 'The input for the DisableTopicRuleRequest operation.',
@@ -11991,7 +9654,7 @@ const DisableTopicRuleRequestSchema = z
   .openapi('DisableTopicRuleRequest')
 
 const EnableTopicRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'EnableTopicRuleRequest',
     description: 'The input for the EnableTopicRuleRequest operation.',
@@ -12017,32 +9680,24 @@ const EventTypeSchema = z
 const TinyMaxResultsSchema = z.int().min(1).max(10).openapi('TinyMaxResults')
 
 const GetBehaviorModelTrainingSummariesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBehaviorModelTrainingSummariesRequest' })
   .openapi('GetBehaviorModelTrainingSummariesRequest')
 
 const GetBucketsAggregationRequestSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The aggregation field.' }),
-    ),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The version of the query.' }),
-    ).exactOptional(),
-    bucketsAggregationType: BucketsAggregationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The basic control of the response shape and the bucket aggregation type to perform. ',
-        }),
-    ),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search.',
+    }),
+    queryString: QueryStringSchema.openapi({ description: 'The search query string.' }),
+    aggregationField: AggregationFieldSchema.openapi({ description: 'The aggregation field.' }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description: 'The version of the query.',
+    }),
+    bucketsAggregationType: BucketsAggregationTypeSchema.openapi({
+      description:
+        'The basic control of the response shape and the bucket aggregation type to perform. ',
+    }),
   })
   .openapi({
     required: ['queryString', 'aggregationField', 'bucketsAggregationType'],
@@ -12052,51 +9707,43 @@ const GetBucketsAggregationRequestSchema = z
 
 const GetCardinalityRequestSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The field to aggregate.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The query version.' }),
-    ).exactOptional(),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search.',
+    }),
+    queryString: QueryStringSchema.openapi({ description: 'The search query string.' }),
+    aggregationField: AggregationFieldSchema.exactOptional().openapi({
+      description: 'The field to aggregate.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({ description: 'The query version.' }),
   })
   .openapi({ required: ['queryString'], title: 'GetCardinalityRequest' })
   .openapi('GetCardinalityRequest')
 
 const GetEffectivePoliciesRequestSchema = z
   .object({
-    principal: PrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>), thingGroupArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:thinggroup/<i>groupName</i>) and CognitoId (<i>region</i>:<i>id</i>).',
-        }),
-    ).exactOptional(),
-    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'The Cognito identity pool ID.' }),
-    ).exactOptional(),
+    principal: PrincipalSchema.exactOptional().openapi({
+      description:
+        'The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>), thingGroupArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:thinggroup/<i>groupName</i>) and CognitoId (<i>region</i>:<i>id</i>).',
+    }),
+    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+      description: 'The Cognito identity pool ID.',
+    }),
   })
   .openapi({ title: 'GetEffectivePoliciesRequest', required: [] })
   .openapi('GetEffectivePoliciesRequest')
 
 const GetIndexingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIndexingConfigurationRequest' })
   .openapi('GetIndexingConfigurationRequest')
 
 const GetJobDocumentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetJobDocumentRequest' })
   .openapi('GetJobDocumentRequest')
 
 const GetLoggingOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetLoggingOptionsRequest',
     description: 'The input for the GetLoggingOptions operation.',
@@ -12104,7 +9751,7 @@ const GetLoggingOptionsRequestSchema = z
   .openapi('GetLoggingOptionsRequest')
 
 const GetOTAUpdateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetOTAUpdateRequest' })
   .openapi('GetOTAUpdateRequest')
 
@@ -12112,32 +9759,28 @@ const PercentListSchema = z.array(PercentSchema).openapi('PercentList')
 
 const GetPercentilesRequestSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The field to aggregate.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The query version.' }),
-    ).exactOptional(),
-    percents: PercentListSchema.and(
-      z.any().openapi({ description: 'The percentile groups returned.' }),
-    ).exactOptional(),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search.',
+    }),
+    queryString: QueryStringSchema.openapi({ description: 'The search query string.' }),
+    aggregationField: AggregationFieldSchema.exactOptional().openapi({
+      description: 'The field to aggregate.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({ description: 'The query version.' }),
+    percents: PercentListSchema.exactOptional().openapi({
+      description: 'The percentile groups returned.',
+    }),
   })
   .openapi({ required: ['queryString'], title: 'GetPercentilesRequest' })
   .openapi('GetPercentilesRequest')
 
 const GetPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPolicyRequest', description: 'The input for the GetPolicy operation.' })
   .openapi('GetPolicyRequest')
 
 const GetPolicyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetPolicyVersionRequest',
     description: 'The input for the GetPolicyVersion operation.',
@@ -12145,7 +9788,7 @@ const GetPolicyVersionRequestSchema = z
   .openapi('GetPolicyVersionRequest')
 
 const GetRegistrationCodeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetRegistrationCodeRequest',
     description: 'The input to the GetRegistrationCode operation.',
@@ -12154,39 +9797,30 @@ const GetRegistrationCodeRequestSchema = z
 
 const GetStatisticsRequestSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the index to search. The default value is <code>AWS_Things</code>.',
-        }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query used to search. You can specify "*" for the query string to get the count of all indexed things in your Amazon Web Services account.',
-        }),
-    ),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The aggregation field name.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The version of the query used to search.' }),
-    ).exactOptional(),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description: 'The name of the index to search. The default value is <code>AWS_Things</code>.',
+    }),
+    queryString: QueryStringSchema.openapi({
+      description:
+        'The query used to search. You can specify "*" for the query string to get the count of all indexed things in your Amazon Web Services account.',
+    }),
+    aggregationField: AggregationFieldSchema.exactOptional().openapi({
+      description: 'The aggregation field name.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description: 'The version of the query used to search.',
+    }),
   })
   .openapi({ required: ['queryString'], title: 'GetStatisticsRequest' })
   .openapi('GetStatisticsRequest')
 
 const GetTopicRuleDestinationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTopicRuleDestinationRequest' })
   .openapi('GetTopicRuleDestinationRequest')
 
 const GetTopicRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'GetTopicRuleRequest',
     description: 'The input for the GetTopicRule operation.',
@@ -12194,24 +9828,18 @@ const GetTopicRuleRequestSchema = z
   .openapi('GetTopicRuleRequest')
 
 const GetV2LoggingOptionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetV2LoggingOptionsRequest' })
   .openapi('GetV2LoggingOptionsRequest')
 
 const HttpContextSchema = z
   .object({
-    headers: HttpHeadersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The header keys and values in an HTTP authorization request.' }),
-    ).exactOptional(),
-    queryString: HttpQueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The query string keys and values in an HTTP authorization request.',
-        }),
-    ).exactOptional(),
+    headers: HttpHeadersSchema.exactOptional().openapi({
+      description: 'The header keys and values in an HTTP authorization request.',
+    }),
+    queryString: HttpQueryStringSchema.exactOptional().openapi({
+      description: 'The query string keys and values in an HTTP authorization request.',
+    }),
   })
   .openapi({
     description: 'Specifies the HTTP context to use for the test authorizer request.',
@@ -12240,7 +9868,7 @@ const ListSuppressedAlertsSchema = z.boolean().openapi('ListSuppressedAlerts')
 const MaxResultsSchema = z.int().min(1).max(250).openapi('MaxResults')
 
 const ListActiveViolationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListActiveViolationsRequest' })
   .openapi('ListActiveViolationsRequest')
 
@@ -12249,7 +9877,7 @@ const RecursiveSchema = z.boolean().openapi('Recursive')
 const PageSizeSchema = z.int().min(1).max(250).openapi('PageSize')
 
 const ListAttachedPoliciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttachedPoliciesRequest' })
   .openapi('ListAttachedPoliciesRequest')
 
@@ -12257,69 +9885,45 @@ const ListSuppressedFindingsSchema = z.boolean().openapi('ListSuppressedFindings
 
 const ListAuditFindingsRequestSchema = z
   .object({
-    taskId: AuditTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter to limit results to the audit with the specified ID. You must specify either the taskId or the startTime and endTime, but not both.',
-        }),
-    ).exactOptional(),
-    checkName: AuditCheckNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A filter to limit results to the findings for the specified audit check.',
-        }),
-    ).exactOptional(),
-    resourceIdentifier: ResourceIdentifierSchema.and(
-      z.any().openapi({ description: 'Information identifying the noncompliant resource.' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of results to return at one time. The default is 25.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next set of results.' }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter to limit results to those found after the specified time. You must specify either the startTime and endTime or the taskId, but not both.',
-        }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter to limit results to those found before the specified time. You must specify either the startTime and endTime or the taskId, but not both.',
-        }),
-    ).exactOptional(),
-    listSuppressedFindings: ListSuppressedFindingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Boolean flag indicating whether only the suppressed findings or the unsuppressed findings should be listed. If this parameter isn't provided, the response will list both suppressed and unsuppressed findings. ",
-        }),
-    ).exactOptional(),
+    taskId: AuditTaskIdSchema.exactOptional().openapi({
+      description:
+        'A filter to limit results to the audit with the specified ID. You must specify either the taskId or the startTime and endTime, but not both.',
+    }),
+    checkName: AuditCheckNameSchema.exactOptional().openapi({
+      description: 'A filter to limit results to the findings for the specified audit check.',
+    }),
+    resourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description: 'Information identifying the noncompliant resource.',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return at one time. The default is 25.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next set of results.',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A filter to limit results to those found after the specified time. You must specify either the startTime and endTime or the taskId, but not both.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'A filter to limit results to those found before the specified time. You must specify either the startTime and endTime or the taskId, but not both.',
+    }),
+    listSuppressedFindings: ListSuppressedFindingsSchema.exactOptional().openapi({
+      description:
+        " Boolean flag indicating whether only the suppressed findings or the unsuppressed findings should be listed. If this parameter isn't provided, the response will list both suppressed and unsuppressed findings. ",
+    }),
   })
   .openapi({ title: 'ListAuditFindingsRequest', required: [] })
   .openapi('ListAuditFindingsRequest')
 
 const ListAuditMitigationActionsExecutionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAuditMitigationActionsExecutionsRequest' })
   .openapi('ListAuditMitigationActionsExecutionsRequest')
 
 const ListAuditMitigationActionsTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAuditMitigationActionsTasksRequest' })
   .openapi('ListAuditMitigationActionsTasksRequest')
 
@@ -12327,47 +9931,39 @@ const ListAuditSuppressionsRequestSchema = z
   .object({
     checkName: AuditCheckNameSchema.exactOptional(),
     resourceIdentifier: ResourceIdentifierSchema.exactOptional(),
-    ascendingOrder: AscendingOrderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Determines whether suppressions are listed in ascending order by expiration date or not. If parameter isn't provided, <code>ascendingOrder=true</code>. ",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z.any().openapi({ description: ' The token for the next set of results. ' }),
-    ).exactOptional(),
-    maxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The maximum number of results to return at one time. The default is 25. ',
-        }),
-    ).exactOptional(),
+    ascendingOrder: AscendingOrderSchema.exactOptional().openapi({
+      description:
+        " Determines whether suppressions are listed in ascending order by expiration date or not. If parameter isn't provided, <code>ascendingOrder=true</code>. ",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description: ' The token for the next set of results. ',
+    }),
+    maxResults: MaxResultsSchema.exactOptional().openapi({
+      description: ' The maximum number of results to return at one time. The default is 25. ',
+    }),
   })
   .openapi({ title: 'ListAuditSuppressionsRequest', required: [] })
   .openapi('ListAuditSuppressionsRequest')
 
 const ListAuditTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAuditTasksRequest' })
   .openapi('ListAuditTasksRequest')
 
 const ListAuthorizersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAuthorizersRequest' })
   .openapi('ListAuthorizersRequest')
 
 const RegistryMaxResultsSchema = z.int().min(1).max(250).openapi('RegistryMaxResults')
 
 const ListBillingGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBillingGroupsRequest' })
   .openapi('ListBillingGroupsRequest')
 
 const ListCACertificatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListCACertificatesRequest',
     description: 'Input for the ListCACertificates operation.',
@@ -12375,7 +9971,7 @@ const ListCACertificatesRequestSchema = z
   .openapi('ListCACertificatesRequest')
 
 const ListCertificatesByCARequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListCertificatesByCARequest',
     description: 'The input to the ListCertificatesByCA operation.',
@@ -12383,7 +9979,7 @@ const ListCertificatesByCARequestSchema = z
   .openapi('ListCertificatesByCARequest')
 
 const ListCertificatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListCertificatesRequest',
     description: 'The input for the ListCertificates operation.',
@@ -12391,84 +9987,84 @@ const ListCertificatesRequestSchema = z
   .openapi('ListCertificatesRequest')
 
 const ListCustomMetricsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCustomMetricsRequest' })
   .openapi('ListCustomMetricsRequest')
 
 const ListDetectMitigationActionsExecutionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectMitigationActionsExecutionsRequest' })
   .openapi('ListDetectMitigationActionsExecutionsRequest')
 
 const ListDetectMitigationActionsTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDetectMitigationActionsTasksRequest' })
   .openapi('ListDetectMitigationActionsTasksRequest')
 
 const ListDimensionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDimensionsRequest' })
   .openapi('ListDimensionsRequest')
 
 const ListDomainConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDomainConfigurationsRequest' })
   .openapi('ListDomainConfigurationsRequest')
 
 const ListFleetMetricsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListFleetMetricsRequest' })
   .openapi('ListFleetMetricsRequest')
 
 const QueryMaxResultsSchema = z.int().min(1).max(500).openapi('QueryMaxResults')
 
 const ListIndicesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListIndicesRequest' })
   .openapi('ListIndicesRequest')
 
 const ListJobExecutionsForJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobExecutionsForJobRequest' })
   .openapi('ListJobExecutionsForJobRequest')
 
 const ListJobExecutionsForThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobExecutionsForThingRequest' })
   .openapi('ListJobExecutionsForThingRequest')
 
 const ListJobTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobTemplatesRequest' })
   .openapi('ListJobTemplatesRequest')
 
 const ListJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListJobsRequest' })
   .openapi('ListJobsRequest')
 
 const ListManagedJobTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListManagedJobTemplatesRequest' })
   .openapi('ListManagedJobTemplatesRequest')
 
 const ListMetricValuesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMetricValuesRequest' })
   .openapi('ListMetricValuesRequest')
 
 const ListMitigationActionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMitigationActionsRequest' })
   .openapi('ListMitigationActionsRequest')
 
 const ListOTAUpdatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOTAUpdatesRequest' })
   .openapi('ListOTAUpdatesRequest')
 
 const ListOutgoingCertificatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListOutgoingCertificatesRequest',
     description: 'The input to the ListOutgoingCertificates operation.',
@@ -12476,7 +10072,7 @@ const ListOutgoingCertificatesRequestSchema = z
   .openapi('ListOutgoingCertificatesRequest')
 
 const ListPoliciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPoliciesRequest',
     description: 'The input for the ListPolicies operation.',
@@ -12484,7 +10080,7 @@ const ListPoliciesRequestSchema = z
   .openapi('ListPoliciesRequest')
 
 const ListPolicyPrincipalsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPolicyPrincipalsRequest',
     description: 'The input for the ListPolicyPrincipals operation.',
@@ -12492,7 +10088,7 @@ const ListPolicyPrincipalsRequestSchema = z
   .openapi('ListPolicyPrincipalsRequest')
 
 const ListPolicyVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPolicyVersionsRequest',
     description: 'The input for the ListPolicyVersions operation.',
@@ -12500,7 +10096,7 @@ const ListPolicyVersionsRequestSchema = z
   .openapi('ListPolicyVersionsRequest')
 
 const ListPrincipalPoliciesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPrincipalPoliciesRequest',
     description: 'The input for the ListPrincipalPolicies operation.',
@@ -12508,7 +10104,7 @@ const ListPrincipalPoliciesRequestSchema = z
   .openapi('ListPrincipalPoliciesRequest')
 
 const ListPrincipalThingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListPrincipalThingsRequest',
     description: 'The input for the ListPrincipalThings operation.',
@@ -12516,74 +10112,74 @@ const ListPrincipalThingsRequestSchema = z
   .openapi('ListPrincipalThingsRequest')
 
 const ListProvisioningTemplateVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProvisioningTemplateVersionsRequest' })
   .openapi('ListProvisioningTemplateVersionsRequest')
 
 const ListProvisioningTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProvisioningTemplatesRequest' })
   .openapi('ListProvisioningTemplatesRequest')
 
 const ListRelatedResourcesForAuditFindingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRelatedResourcesForAuditFindingRequest' })
   .openapi('ListRelatedResourcesForAuditFindingRequest')
 
 const ListRoleAliasesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoleAliasesRequest' })
   .openapi('ListRoleAliasesRequest')
 
 const ListScheduledAuditsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListScheduledAuditsRequest' })
   .openapi('ListScheduledAuditsRequest')
 
 const ListSecurityProfilesForTargetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSecurityProfilesForTargetRequest' })
   .openapi('ListSecurityProfilesForTargetRequest')
 
 const ListSecurityProfilesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSecurityProfilesRequest' })
   .openapi('ListSecurityProfilesRequest')
 
 const ListStreamsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListStreamsRequest' })
   .openapi('ListStreamsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListTargetsForPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTargetsForPolicyRequest' })
   .openapi('ListTargetsForPolicyRequest')
 
 const ListTargetsForSecurityProfileRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTargetsForSecurityProfileRequest' })
   .openapi('ListTargetsForSecurityProfileRequest')
 
 const ListThingGroupsForThingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingGroupsForThingRequest' })
   .openapi('ListThingGroupsForThingRequest')
 
 const RecursiveWithoutDefaultSchema = z.boolean().openapi('RecursiveWithoutDefault')
 
 const ListThingGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingGroupsRequest' })
   .openapi('ListThingGroupsRequest')
 
 const ListThingPrincipalsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListThingPrincipalsRequest',
     description: 'The input for the ListThingPrincipal operation.',
@@ -12591,17 +10187,17 @@ const ListThingPrincipalsRequestSchema = z
   .openapi('ListThingPrincipalsRequest')
 
 const ListThingRegistrationTaskReportsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingRegistrationTaskReportsRequest' })
   .openapi('ListThingRegistrationTaskReportsRequest')
 
 const ListThingRegistrationTasksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingRegistrationTasksRequest' })
   .openapi('ListThingRegistrationTasksRequest')
 
 const ListThingTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListThingTypesRequest',
     description: 'The input for the ListThingTypes operation.',
@@ -12609,19 +10205,19 @@ const ListThingTypesRequestSchema = z
   .openapi('ListThingTypesRequest')
 
 const ListThingsInBillingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingsInBillingGroupRequest' })
   .openapi('ListThingsInBillingGroupRequest')
 
 const ListThingsInThingGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingsInThingGroupRequest' })
   .openapi('ListThingsInThingGroupRequest')
 
 const UsePrefixAttributeValueSchema = z.boolean().openapi('UsePrefixAttributeValue')
 
 const ListThingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListThingsRequest', description: 'The input for the ListThings operation.' })
   .openapi('ListThingsRequest')
 
@@ -12632,7 +10228,7 @@ const TopicRuleDestinationMaxResultsSchema = z
   .openapi('TopicRuleDestinationMaxResults')
 
 const ListTopicRuleDestinationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTopicRuleDestinationsRequest' })
   .openapi('ListTopicRuleDestinationsRequest')
 
@@ -12641,7 +10237,7 @@ const TopicSchema = z.string().openapi('Topic')
 const TopicRuleMaxResultsSchema = z.int().min(1).max(10000).openapi('TopicRuleMaxResults')
 
 const ListTopicRulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'ListTopicRulesRequest',
     description: 'The input for the ListTopicRules operation.',
@@ -12651,53 +10247,34 @@ const ListTopicRulesRequestSchema = z
 const SkyfallMaxResultsSchema = z.int().min(1).max(250).openapi('SkyfallMaxResults')
 
 const ListV2LoggingLevelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListV2LoggingLevelsRequest' })
   .openapi('ListV2LoggingLevelsRequest')
 
 const ListViolationEventsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListViolationEventsRequest' })
   .openapi('ListViolationEventsRequest')
 
 const LoggingOptionsPayloadSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-    ),
-    logLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The log level.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.openapi({ description: 'The ARN of the IAM role that grants access.' }),
+    logLevel: LogLevelSchema.exactOptional().openapi({ description: 'The log level.' }),
   })
   .openapi({ required: ['roleArn'], description: 'Describes the logging options payload.' })
   .openapi('LoggingOptionsPayload')
 
 const MqttContextSchema = z
   .object({
-    username: MqttUsernameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the <code>username</code> key in an MQTT authorization request.',
-        }),
-    ).exactOptional(),
-    password: MqttPasswordSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the <code>password</code> key in an MQTT authorization request.',
-        }),
-    ).exactOptional(),
-    clientId: MqttClientIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the <code>clientId</code> key in an MQTT authorization request.',
-        }),
-    ).exactOptional(),
+    username: MqttUsernameSchema.exactOptional().openapi({
+      description: 'The value of the <code>username</code> key in an MQTT authorization request.',
+    }),
+    password: MqttPasswordSchema.exactOptional().openapi({
+      description: 'The value of the <code>password</code> key in an MQTT authorization request.',
+    }),
+    clientId: MqttClientIdSchema.exactOptional().openapi({
+      description: 'The value of the <code>clientId</code> key in an MQTT authorization request.',
+    }),
   })
   .openapi({
     description: 'Specifies the MQTT context to use for the test authorizer request',
@@ -12718,52 +10295,34 @@ const PolicyNamesSchema = z.array(PolicyNameSchema).openapi('PolicyNames')
 
 const PutVerificationStateOnViolationRequestSchema = z
   .object({
-    verificationState: VerificationStateSchema.and(
-      z.any().openapi({ description: 'The verification state of the violation.' }),
-    ),
-    verificationStateDescription: VerificationStateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The description of the verification state of the violation (detect alarm).',
-        }),
-    ).exactOptional(),
+    verificationState: VerificationStateSchema.openapi({
+      description: 'The verification state of the violation.',
+    }),
+    verificationStateDescription: VerificationStateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the verification state of the violation (detect alarm).',
+    }),
   })
   .openapi({ required: ['verificationState'], title: 'PutVerificationStateOnViolationRequest' })
   .openapi('PutVerificationStateOnViolationRequest')
 
 const RegisterCACertificateRequestSchema = z
   .object({
-    caCertificate: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The CA certificate.' }),
-    ),
-    verificationCertificate: CertificatePemSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The private key verification certificate. If <code>certificateMode</code> is <code>SNI_ONLY</code>, the <code>verificationCertificate</code> field must be empty. If <code>certificateMode</code> is <code>DEFAULT</code> or not provided, the <code>verificationCertificate</code> field must not be empty. ',
-        }),
-    ).exactOptional(),
-    registrationConfig: RegistrationConfigSchema.and(
-      z.any().openapi({ description: 'Information about the registration configuration.' }),
-    ).exactOptional(),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Metadata which can be used to manage the CA certificate.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
-        }),
-    ).exactOptional(),
-    certificateMode: CertificateModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes the certificate mode in which the Certificate Authority (CA) will be registered. If the <code>verificationCertificate</code> field is not provided, set <code>certificateMode</code> to be <code>SNI_ONLY</code>. If the <code>verificationCertificate</code> field is provided, set <code>certificateMode</code> to be <code>DEFAULT</code>. When <code>certificateMode</code> is not provided, it defaults to <code>DEFAULT</code>. All the device certificates that are registered using this CA will be registered in the same certificate mode as the CA. For more information about certificate mode for device certificates, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode"> certificate mode</a>. ',
-        }),
-    ).exactOptional(),
+    caCertificate: CertificatePemSchema.openapi({ description: 'The CA certificate.' }),
+    verificationCertificate: CertificatePemSchema.exactOptional().openapi({
+      description:
+        'The private key verification certificate. If <code>certificateMode</code> is <code>SNI_ONLY</code>, the <code>verificationCertificate</code> field must be empty. If <code>certificateMode</code> is <code>DEFAULT</code> or not provided, the <code>verificationCertificate</code> field must not be empty. ',
+    }),
+    registrationConfig: RegistrationConfigSchema.exactOptional().openapi({
+      description: 'Information about the registration configuration.',
+    }),
+    tags: TagListSchema.exactOptional().openapi({
+      description:
+        '<p>Metadata which can be used to manage the CA certificate.</p> <note> <p>For URI Request parameters use format: ...key1=value1&amp;key2=value2...</p> <p>For the CLI command-line parameter use format: &amp;&amp;tags "key1=value1&amp;key2=value2..."</p> <p>For the cli-input-json file use format: "tags": "key1=value1&amp;key2=value2..."</p> </note>',
+    }),
+    certificateMode: CertificateModeSchema.exactOptional().openapi({
+      description:
+        'Describes the certificate mode in which the Certificate Authority (CA) will be registered. If the <code>verificationCertificate</code> field is not provided, set <code>certificateMode</code> to be <code>SNI_ONLY</code>. If the <code>verificationCertificate</code> field is provided, set <code>certificateMode</code> to be <code>DEFAULT</code>. When <code>certificateMode</code> is not provided, it defaults to <code>DEFAULT</code>. All the device certificates that are registered using this CA will be registered in the same certificate mode as the CA. For more information about certificate mode for device certificates, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode"> certificate mode</a>. ',
+    }),
   })
   .openapi({
     required: ['caCertificate'],
@@ -12776,24 +10335,16 @@ const SetAsActiveFlagSchema = z.boolean().openapi('SetAsActiveFlag')
 
 const RegisterCertificateRequestSchema = z
   .object({
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ),
-    caCertificatePem: CertificatePemSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The CA certificate used to sign the device certificate being registered.',
-        }),
-    ).exactOptional(),
-    status: CertificateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the register certificate request. Valid values that you can use include <code>ACTIVE</code>, <code>INACTIVE</code>, and <code>REVOKED</code>.',
-        }),
-    ).exactOptional(),
+    certificatePem: CertificatePemSchema.openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
+    caCertificatePem: CertificatePemSchema.exactOptional().openapi({
+      description: 'The CA certificate used to sign the device certificate being registered.',
+    }),
+    status: CertificateStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the register certificate request. Valid values that you can use include <code>ACTIVE</code>, <code>INACTIVE</code>, and <code>REVOKED</code>.',
+    }),
   })
   .openapi({
     required: ['certificatePem'],
@@ -12804,43 +10355,35 @@ const RegisterCertificateRequestSchema = z
 
 const RegisterCertificateWithoutCARequestSchema = z
   .object({
-    certificatePem: CertificatePemSchema.and(
-      z.any().openapi({ description: 'The certificate data, in PEM format.' }),
-    ),
-    status: CertificateStatusSchema.and(
-      z.any().openapi({ description: 'The status of the register certificate request.' }),
-    ).exactOptional(),
+    certificatePem: CertificatePemSchema.openapi({
+      description: 'The certificate data, in PEM format.',
+    }),
+    status: CertificateStatusSchema.exactOptional().openapi({
+      description: 'The status of the register certificate request.',
+    }),
   })
   .openapi({ required: ['certificatePem'], title: 'RegisterCertificateWithoutCARequest' })
   .openapi('RegisterCertificateWithoutCARequest')
 
 const RegisterThingRequestSchema = z
   .object({
-    templateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The provisioning template. See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-w-cert.html">Provisioning Devices That Have Device Certificates</a> for more information.',
-        }),
-    ),
-    parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The parameters for provisioning a thing. See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning Templates</a> for more information.',
-        }),
-    ).exactOptional(),
+    templateBody: TemplateBodySchema.openapi({
+      description:
+        'The provisioning template. See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-w-cert.html">Provisioning Devices That Have Device Certificates</a> for more information.',
+    }),
+    parameters: ParametersSchema.exactOptional().openapi({
+      description:
+        'The parameters for provisioning a thing. See <a href="https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html">Provisioning Templates</a> for more information.',
+    }),
   })
   .openapi({ required: ['templateBody'], title: 'RegisterThingRequest' })
   .openapi('RegisterThingRequest')
 
 const RejectCertificateTransferRequestSchema = z
   .object({
-    rejectReason: MessageSchema.and(
-      z.any().openapi({ description: 'The reason the certificate transfer was rejected.' }),
-    ).exactOptional(),
+    rejectReason: MessageSchema.exactOptional().openapi({
+      description: 'The reason the certificate transfer was rejected.',
+    }),
   })
   .openapi({
     title: 'RejectCertificateTransferRequest',
@@ -12857,51 +10400,43 @@ const RemoveHookSchema = z.boolean().openapi('RemoveHook')
 
 const RemoveThingFromBillingGroupRequestSchema = z
   .object({
-    billingGroupName: BillingGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the billing group.' }),
-    ).exactOptional(),
-    billingGroupArn: BillingGroupArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the billing group.' }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the thing to be removed from the billing group.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the thing to be removed from the billing group.' }),
-    ).exactOptional(),
+    billingGroupName: BillingGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the billing group.',
+    }),
+    billingGroupArn: BillingGroupArnSchema.exactOptional().openapi({
+      description: 'The ARN of the billing group.',
+    }),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing to be removed from the billing group.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing to be removed from the billing group.',
+    }),
   })
   .openapi({ title: 'RemoveThingFromBillingGroupRequest', required: [] })
   .openapi('RemoveThingFromBillingGroupRequest')
 
 const RemoveThingFromThingGroupRequestSchema = z
   .object({
-    thingGroupName: ThingGroupNameSchema.and(
-      z.any().openapi({ description: 'The group name.' }),
-    ).exactOptional(),
-    thingGroupArn: ThingGroupArnSchema.and(
-      z.any().openapi({ description: 'The group ARN.' }),
-    ).exactOptional(),
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing to remove from the group.' }),
-    ).exactOptional(),
-    thingArn: ThingArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the thing to remove from the group.' }),
-    ).exactOptional(),
+    thingGroupName: ThingGroupNameSchema.exactOptional().openapi({
+      description: 'The group name.',
+    }),
+    thingGroupArn: ThingGroupArnSchema.exactOptional().openapi({ description: 'The group ARN.' }),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The name of the thing to remove from the group.',
+    }),
+    thingArn: ThingArnSchema.exactOptional().openapi({
+      description: 'The ARN of the thing to remove from the group.',
+    }),
   })
   .openapi({ title: 'RemoveThingFromThingGroupRequest', required: [] })
   .openapi('RemoveThingFromThingGroupRequest')
 
 const RemoveThingTypeSchema = z.boolean().openapi('RemoveThingType')
 
-const ReplaceTopicRuleRequestSchema = z
+const ReplaceTopicRuleRequestSchema: z.ZodType<ReplaceTopicRuleRequestType> = z
   .object({
-    topicRulePayload: TopicRulePayloadSchema.and(
-      z.any().openapi({ description: 'The rule payload.' }),
-    ),
+    topicRulePayload: TopicRulePayloadSchema.openapi({ description: 'The rule payload.' }),
   })
   .openapi({
     required: ['topicRulePayload'],
@@ -12914,46 +10449,30 @@ const ResourceLogicalIdSchema = z.string().openapi('ResourceLogicalId')
 
 const SearchIndexRequestSchema = z
   .object({
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The search index name.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The search query string. For more information about the search query syntax, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/query-syntax.html">Query syntax</a>.',
-        }),
-    ),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
-        }),
-    ).exactOptional(),
-    maxResults: QueryMaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of results to return at one time.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The query version.' }),
-    ).exactOptional(),
+    indexName: IndexNameSchema.exactOptional().openapi({ description: 'The search index name.' }),
+    queryString: QueryStringSchema.openapi({
+      description:
+        'The search query string. For more information about the search query syntax, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/query-syntax.html">Query syntax</a>.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token used to get the next set of results, or <code>null</code> if there are no additional results.',
+    }),
+    maxResults: QueryMaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of results to return at one time.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({ description: 'The query version.' }),
   })
   .openapi({ required: ['queryString'], title: 'SearchIndexRequest' })
   .openapi('SearchIndexRequest')
 
 const SetDefaultAuthorizerRequestSchema = z
-  .object({
-    authorizerName: AuthorizerNameSchema.and(
-      z.any().openapi({ description: 'The authorizer name.' }),
-    ),
-  })
+  .object({ authorizerName: AuthorizerNameSchema.openapi({ description: 'The authorizer name.' }) })
   .openapi({ required: ['authorizerName'], title: 'SetDefaultAuthorizerRequest' })
   .openapi('SetDefaultAuthorizerRequest')
 
 const SetDefaultPolicyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'SetDefaultPolicyVersionRequest',
     description: 'The input for the SetDefaultPolicyVersion operation.',
@@ -12962,9 +10481,9 @@ const SetDefaultPolicyVersionRequestSchema = z
 
 const SetLoggingOptionsRequestSchema = z
   .object({
-    loggingOptionsPayload: LoggingOptionsPayloadSchema.and(
-      z.any().openapi({ description: 'The logging options payload.' }),
-    ),
+    loggingOptionsPayload: LoggingOptionsPayloadSchema.openapi({
+      description: 'The logging options payload.',
+    }),
   })
   .openapi({
     required: ['loggingOptionsPayload'],
@@ -12975,57 +10494,41 @@ const SetLoggingOptionsRequestSchema = z
 
 const SetV2LoggingLevelRequestSchema = z
   .object({
-    logTarget: LogTargetSchema.and(z.any().openapi({ description: 'The log target.' })),
-    logLevel: LogLevelSchema.and(z.any().openapi({ description: 'The log level.' })),
+    logTarget: LogTargetSchema.openapi({ description: 'The log target.' }),
+    logLevel: LogLevelSchema.openapi({ description: 'The log level.' }),
   })
   .openapi({ required: ['logTarget', 'logLevel'], title: 'SetV2LoggingLevelRequest' })
   .openapi('SetV2LoggingLevelRequest')
 
 const SetV2LoggingOptionsRequestSchema = z
   .object({
-    roleArn: AwsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the role that allows IoT to write to Cloudwatch logs.',
-        }),
-    ).exactOptional(),
-    defaultLogLevel: LogLevelSchema.and(
-      z.any().openapi({ description: 'The default logging level.' }),
-    ).exactOptional(),
-    disableAllLogs: DisableAllLogsSchema.and(
-      z.any().openapi({ description: 'If true all logs are disabled. The default is false.' }),
-    ).exactOptional(),
+    roleArn: AwsArnSchema.exactOptional().openapi({
+      description: 'The ARN of the role that allows IoT to write to Cloudwatch logs.',
+    }),
+    defaultLogLevel: LogLevelSchema.exactOptional().openapi({
+      description: 'The default logging level.',
+    }),
+    disableAllLogs: DisableAllLogsSchema.exactOptional().openapi({
+      description: 'If true all logs are disabled. The default is false.',
+    }),
   })
   .openapi({ title: 'SetV2LoggingOptionsRequest', required: [] })
   .openapi('SetV2LoggingOptionsRequest')
 
 const StartAuditMitigationActionsTaskRequestSchema = z
   .object({
-    target: AuditMitigationActionsTaskTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the audit findings to which the mitigation actions are applied. You can apply them to a type of audit check, to all findings from an audit, or to a specific set of findings.',
-        }),
-    ),
-    auditCheckToActionsMapping: AuditCheckToActionsMappingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For an audit check, specifies which mitigation actions to apply. Those actions must be defined in your Amazon Web Services accounts.',
-        }),
-    ),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Each audit mitigation task must have a unique client request token. If you try to start a new task with the same token as a task that already exists, an exception occurs. If you omit this value, a unique client request token is generated automatically.',
-        }),
-    ),
+    target: AuditMitigationActionsTaskTargetSchema.openapi({
+      description:
+        'Specifies the audit findings to which the mitigation actions are applied. You can apply them to a type of audit check, to all findings from an audit, or to a specific set of findings.',
+    }),
+    auditCheckToActionsMapping: AuditCheckToActionsMappingSchema.openapi({
+      description:
+        'For an audit check, specifies which mitigation actions to apply. Those actions must be defined in your Amazon Web Services accounts.',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'Each audit mitigation task must have a unique client request token. If you try to start a new task with the same token as a task that already exists, an exception occurs. If you omit this value, a unique client request token is generated automatically.',
+    }),
   })
   .openapi({
     required: ['target', 'auditCheckToActionsMapping', 'clientRequestToken'],
@@ -13035,42 +10538,26 @@ const StartAuditMitigationActionsTaskRequestSchema = z
 
 const StartDetectMitigationActionsTaskRequestSchema = z
   .object({
-    target: DetectMitigationActionsTaskTargetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Specifies the ML Detect findings to which the mitigation actions are applied. ',
-        }),
-    ),
-    actions: DetectMitigationActionsToExecuteListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' The actions to be performed when a device has unexpected behavior. ',
-        }),
-    ),
-    violationEventOccurrenceRange: ViolationEventOccurrenceRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Specifies the time period of which violation events occurred between. ',
-        }),
-    ).exactOptional(),
-    includeOnlyActiveViolations: NullableBooleanSchema.and(
-      z.any().openapi({ description: ' Specifies to list only active violations. ' }),
-    ).exactOptional(),
-    includeSuppressedAlerts: NullableBooleanSchema.and(
-      z.any().openapi({ description: ' Specifies to include suppressed alerts. ' }),
-    ).exactOptional(),
-    clientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Each mitigation action task must have a unique client request token. If you try to create a new task with the same token as a task that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request. ',
-        }),
-    ),
+    target: DetectMitigationActionsTaskTargetSchema.openapi({
+      description:
+        ' Specifies the ML Detect findings to which the mitigation actions are applied. ',
+    }),
+    actions: DetectMitigationActionsToExecuteListSchema.openapi({
+      description: ' The actions to be performed when a device has unexpected behavior. ',
+    }),
+    violationEventOccurrenceRange: ViolationEventOccurrenceRangeSchema.exactOptional().openapi({
+      description: ' Specifies the time period of which violation events occurred between. ',
+    }),
+    includeOnlyActiveViolations: NullableBooleanSchema.exactOptional().openapi({
+      description: ' Specifies to list only active violations. ',
+    }),
+    includeSuppressedAlerts: NullableBooleanSchema.exactOptional().openapi({
+      description: ' Specifies to include suppressed alerts. ',
+    }),
+    clientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        ' Each mitigation action task must have a unique client request token. If you try to create a new task with the same token as a task that already exists, an exception occurs. If you omit this value, Amazon Web Services SDKs will automatically generate a unique client request. ',
+    }),
   })
   .openapi({
     required: ['target', 'actions', 'clientRequestToken'],
@@ -13080,37 +10567,27 @@ const StartDetectMitigationActionsTaskRequestSchema = z
 
 const StartOnDemandAuditTaskRequestSchema = z
   .object({
-    targetCheckNames: TargetAuditCheckNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Which checks are performed during the audit. The checks you specify must be enabled for your account or an exception occurs. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.',
-        }),
-    ),
+    targetCheckNames: TargetAuditCheckNamesSchema.openapi({
+      description:
+        'Which checks are performed during the audit. The checks you specify must be enabled for your account or an exception occurs. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.',
+    }),
   })
   .openapi({ required: ['targetCheckNames'], title: 'StartOnDemandAuditTaskRequest' })
   .openapi('StartOnDemandAuditTaskRequest')
 
 const StartThingRegistrationTaskRequestSchema = z
   .object({
-    templateBody: TemplateBodySchema.and(
-      z.any().openapi({ description: 'The provisioning template.' }),
-    ),
-    inputFileBucket: RegistryS3BucketNameSchema.and(
-      z.any().openapi({ description: 'The S3 bucket that contains the input file.' }),
-    ),
-    inputFileKey: RegistryS3KeyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of input file within the S3 bucket. This file contains a newline delimited JSON file. Each line contains the parameter values to provision one device (thing).',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z.any().openapi({ description: 'The IAM role ARN that grants permission the input file.' }),
-    ),
+    templateBody: TemplateBodySchema.openapi({ description: 'The provisioning template.' }),
+    inputFileBucket: RegistryS3BucketNameSchema.openapi({
+      description: 'The S3 bucket that contains the input file.',
+    }),
+    inputFileKey: RegistryS3KeyNameSchema.openapi({
+      description:
+        'The name of input file within the S3 bucket. This file contains a newline delimited JSON file. Each line contains the parameter values to provision one device (thing).',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description: 'The IAM role ARN that grants permission the input file.',
+    }),
   })
   .openapi({
     required: ['templateBody', 'inputFileBucket', 'inputFileKey', 'roleArn'],
@@ -13119,7 +10596,7 @@ const StartThingRegistrationTaskRequestSchema = z
   .openapi('StartThingRegistrationTaskRequest')
 
 const StopThingRegistrationTaskRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopThingRegistrationTaskRequest' })
   .openapi('StopThingRegistrationTaskRequest')
 
@@ -13127,53 +10604,33 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ),
-    tags: TagListSchema.and(
-      z.any().openapi({ description: 'The new or modified tags for the resource.' }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({ description: 'The ARN of the resource.' }),
+    tags: TagListSchema.openapi({ description: 'The new or modified tags for the resource.' }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const TestAuthorizationRequestSchema = z
   .object({
-    principal: PrincipalSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>), thingGroupArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:thinggroup/<i>groupName</i>) and CognitoId (<i>region</i>:<i>id</i>).',
-        }),
-    ).exactOptional(),
-    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-      z.any().openapi({ description: 'The Cognito identity pool ID.' }),
-    ).exactOptional(),
-    authInfos: AuthInfosSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of authorization info objects. Simulating authorization will create a response for each <code>authInfo</code> object in the list.',
-        }),
-    ),
-    policyNamesToAdd: PolicyNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When testing custom authorization, the policies specified here are treated as if they are attached to the principal being authorized.',
-        }),
-    ).exactOptional(),
-    policyNamesToSkip: PolicyNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When testing custom authorization, the policies specified here are treated as if they are not attached to the principal being authorized.',
-        }),
-    ).exactOptional(),
+    principal: PrincipalSchema.exactOptional().openapi({
+      description:
+        'The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>), thingGroupArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:thinggroup/<i>groupName</i>) and CognitoId (<i>region</i>:<i>id</i>).',
+    }),
+    cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+      description: 'The Cognito identity pool ID.',
+    }),
+    authInfos: AuthInfosSchema.openapi({
+      description:
+        'A list of authorization info objects. Simulating authorization will create a response for each <code>authInfo</code> object in the list.',
+    }),
+    policyNamesToAdd: PolicyNamesSchema.exactOptional().openapi({
+      description:
+        'When testing custom authorization, the policies specified here are treated as if they are attached to the principal being authorized.',
+    }),
+    policyNamesToSkip: PolicyNamesSchema.exactOptional().openapi({
+      description:
+        'When testing custom authorization, the policies specified here are treated as if they are not attached to the principal being authorized.',
+    }),
   })
   .openapi({ required: ['authInfos'], title: 'TestAuthorizationRequest' })
   .openapi('TestAuthorizationRequest')
@@ -13194,14 +10651,9 @@ const TokenSignatureSchema = z
 
 const TlsContextSchema = z
   .object({
-    serverName: ServerNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the <code>serverName</code> key in a TLS authorization request.',
-        }),
-    ).exactOptional(),
+    serverName: ServerNameSchema.exactOptional().openapi({
+      description: 'The value of the <code>serverName</code> key in a TLS authorization request.',
+    }),
   })
   .openapi({
     description: 'Specifies the TLS context to use for the test authorizer request.',
@@ -13211,26 +10663,22 @@ const TlsContextSchema = z
 
 const TestInvokeAuthorizerRequestSchema = z
   .object({
-    token: TokenSchema.and(
-      z.any().openapi({ description: 'The token returned by your custom authentication service.' }),
-    ).exactOptional(),
-    tokenSignature: TokenSignatureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The signature made with the token and your custom authentication service's private key. This value must be Base-64-encoded.",
-        }),
-    ).exactOptional(),
-    httpContext: HttpContextSchema.and(
-      z.any().openapi({ description: 'Specifies a test HTTP authorization request.' }),
-    ).exactOptional(),
-    mqttContext: MqttContextSchema.and(
-      z.any().openapi({ description: 'Specifies a test MQTT authorization request.' }),
-    ).exactOptional(),
-    tlsContext: TlsContextSchema.and(
-      z.any().openapi({ description: 'Specifies a test TLS authorization request.' }),
-    ).exactOptional(),
+    token: TokenSchema.exactOptional().openapi({
+      description: 'The token returned by your custom authentication service.',
+    }),
+    tokenSignature: TokenSignatureSchema.exactOptional().openapi({
+      description:
+        "The signature made with the token and your custom authentication service's private key. This value must be Base-64-encoded.",
+    }),
+    httpContext: HttpContextSchema.exactOptional().openapi({
+      description: 'Specifies a test HTTP authorization request.',
+    }),
+    mqttContext: MqttContextSchema.exactOptional().openapi({
+      description: 'Specifies a test MQTT authorization request.',
+    }),
+    tlsContext: TlsContextSchema.exactOptional().openapi({
+      description: 'Specifies a test TLS authorization request.',
+    }),
   })
   .openapi({ title: 'TestInvokeAuthorizerRequest', required: [] })
   .openapi('TestInvokeAuthorizerRequest')
@@ -13239,9 +10687,9 @@ const ThingGroupListSchema = z.array(ThingGroupNameSchema).openapi('ThingGroupLi
 
 const TransferCertificateRequestSchema = z
   .object({
-    transferMessage: MessageSchema.and(
-      z.any().openapi({ description: 'The transfer message.' }),
-    ).exactOptional(),
+    transferMessage: MessageSchema.exactOptional().openapi({
+      description: 'The transfer message.',
+    }),
   })
   .openapi({
     title: 'TransferCertificateRequest',
@@ -13252,45 +10700,28 @@ const TransferCertificateRequestSchema = z
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of the keys of the tags to be removed from the resource.',
-        }),
-    ),
+    resourceArn: ResourceArnSchema.openapi({ description: 'The ARN of the resource.' }),
+    tagKeys: TagKeyListSchema.openapi({
+      description: 'A list of the keys of the tags to be removed from the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAccountAuditConfigurationRequestSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role that grants permission to IoT to access information about your devices, policies, certificates, and other items as required when performing an audit.',
-        }),
-    ).exactOptional(),
-    auditNotificationTargetConfigurations: AuditNotificationTargetConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the targets to which audit notifications are sent.',
-        }),
-    ).exactOptional(),
-    auditCheckConfigurations: AuditCheckConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specifies which audit checks are enabled and disabled for this account. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are currently enabled.</p> <p>Some data collection might start immediately when certain checks are enabled. When a check is disabled, any data collected so far in relation to the check is deleted.</p> <p>You cannot disable a check if it's used by any scheduled audit. You must first delete the check from the scheduled audit or delete the scheduled audit itself.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code>, this parameter is required and must specify at least one enabled check.</p>",
-        }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role that grants permission to IoT to access information about your devices, policies, certificates, and other items as required when performing an audit.',
+    }),
+    auditNotificationTargetConfigurations:
+      AuditNotificationTargetConfigurationsSchema.exactOptional().openapi({
+        description: 'Information about the targets to which audit notifications are sent.',
+      }),
+    auditCheckConfigurations: AuditCheckConfigurationsSchema.exactOptional().openapi({
+      description:
+        "<p>Specifies which audit checks are enabled and disabled for this account. Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are currently enabled.</p> <p>Some data collection might start immediately when certain checks are enabled. When a check is disabled, any data collected so far in relation to the check is deleted.</p> <p>You cannot disable a check if it's used by any scheduled audit. You must first delete the check from the scheduled audit or delete the scheduled audit itself.</p> <p>On the first call to <code>UpdateAccountAuditConfiguration</code>, this parameter is required and must specify at least one enabled check.</p>",
+    }),
   })
   .openapi({ title: 'UpdateAccountAuditConfigurationRequest', required: [] })
   .openapi('UpdateAccountAuditConfigurationRequest')
@@ -13299,24 +10730,16 @@ const UpdateAuditSuppressionRequestSchema = z
   .object({
     checkName: AuditCheckNameSchema,
     resourceIdentifier: ResourceIdentifierSchema,
-    expirationDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The expiration date (epoch timestamp in seconds) that you want the suppression to adhere to. ',
-        }),
-    ).exactOptional(),
-    suppressIndefinitely: SuppressIndefinitelySchema.and(
-      z
-        .any()
-        .openapi({
-          description: ' Indicates whether a suppression should exist indefinitely or not. ',
-        }),
-    ).exactOptional(),
-    description: AuditDescriptionSchema.and(
-      z.any().openapi({ description: ' The description of the audit suppression. ' }),
-    ).exactOptional(),
+    expirationDate: TimestampSchema.exactOptional().openapi({
+      description:
+        ' The expiration date (epoch timestamp in seconds) that you want the suppression to adhere to. ',
+    }),
+    suppressIndefinitely: SuppressIndefinitelySchema.exactOptional().openapi({
+      description: ' Indicates whether a suppression should exist indefinitely or not. ',
+    }),
+    description: AuditDescriptionSchema.exactOptional().openapi({
+      description: ' The description of the audit suppression. ',
+    }),
   })
   .openapi({
     required: ['checkName', 'resourceIdentifier'],
@@ -13326,55 +10749,47 @@ const UpdateAuditSuppressionRequestSchema = z
 
 const UpdateAuthorizerRequestSchema = z
   .object({
-    authorizerFunctionArn: AuthorizerFunctionArnSchema.and(
-      z.any().openapi({ description: "The ARN of the authorizer's Lambda function." }),
-    ).exactOptional(),
-    tokenKeyName: TokenKeyNameSchema.and(
-      z.any().openapi({ description: 'The key used to extract the token from the HTTP headers. ' }),
-    ).exactOptional(),
-    tokenSigningPublicKeys: PublicKeyMapSchema.and(
-      z.any().openapi({ description: 'The public keys used to verify the token signature.' }),
-    ).exactOptional(),
-    status: AuthorizerStatusSchema.and(
-      z.any().openapi({ description: 'The status of the update authorizer request.' }),
-    ).exactOptional(),
-    enableCachingForHttp: EnableCachingForHttpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.',
-        }),
-    ).exactOptional(),
+    authorizerFunctionArn: AuthorizerFunctionArnSchema.exactOptional().openapi({
+      description: "The ARN of the authorizer's Lambda function.",
+    }),
+    tokenKeyName: TokenKeyNameSchema.exactOptional().openapi({
+      description: 'The key used to extract the token from the HTTP headers. ',
+    }),
+    tokenSigningPublicKeys: PublicKeyMapSchema.exactOptional().openapi({
+      description: 'The public keys used to verify the token signature.',
+    }),
+    status: AuthorizerStatusSchema.exactOptional().openapi({
+      description: 'The status of the update authorizer request.',
+    }),
+    enableCachingForHttp: EnableCachingForHttpSchema.exactOptional().openapi({
+      description:
+        'When <code>true</code>, the result from the authorizer’s Lambda function is cached for the time specified in <code>refreshAfterInSeconds</code>. The cached result is used while the device reuses the same HTTP connection.',
+    }),
   })
   .openapi({ title: 'UpdateAuthorizerRequest', required: [] })
   .openapi('UpdateAuthorizerRequest')
 
 const UpdateBillingGroupRequestSchema = z
   .object({
-    billingGroupProperties: BillingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The properties of the billing group.' }),
-    ),
-    expectedVersion: OptionalVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expected version of the billing group. If the version of the billing group does not match the expected version specified in the request, the <code>UpdateBillingGroup</code> request is rejected with a <code>VersionConflictException</code>.',
-        }),
-    ).exactOptional(),
+    billingGroupProperties: BillingGroupPropertiesSchema.openapi({
+      description: 'The properties of the billing group.',
+    }),
+    expectedVersion: OptionalVersionSchema.exactOptional().openapi({
+      description:
+        'The expected version of the billing group. If the version of the billing group does not match the expected version specified in the request, the <code>UpdateBillingGroup</code> request is rejected with a <code>VersionConflictException</code>.',
+    }),
   })
   .openapi({ required: ['billingGroupProperties'], title: 'UpdateBillingGroupRequest' })
   .openapi('UpdateBillingGroupRequest')
 
 const UpdateCACertificateRequestSchema = z
   .object({
-    registrationConfig: RegistrationConfigSchema.and(
-      z.any().openapi({ description: 'Information about the registration configuration.' }),
-    ).exactOptional(),
-    removeAutoRegistration: RemoveAutoRegistrationSchema.and(
-      z.any().openapi({ description: 'If true, removes auto registration.' }),
-    ).exactOptional(),
+    registrationConfig: RegistrationConfigSchema.exactOptional().openapi({
+      description: 'Information about the registration configuration.',
+    }),
+    removeAutoRegistration: RemoveAutoRegistrationSchema.exactOptional().openapi({
+      description: 'If true, removes auto registration.',
+    }),
   })
   .openapi({
     title: 'UpdateCACertificateRequest',
@@ -13384,7 +10799,7 @@ const UpdateCACertificateRequestSchema = z
   .openapi('UpdateCACertificateRequest')
 
 const UpdateCertificateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     title: 'UpdateCertificateRequest',
     description: 'The input for the UpdateCertificate operation.',
@@ -13393,446 +10808,313 @@ const UpdateCertificateRequestSchema = z
 
 const UpdateCustomMetricRequestSchema = z
   .object({
-    displayName: CustomMetricDisplayNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            " Field represents a friendly name in the console for the custom metric, it doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. Can be updated. ",
-        }),
-    ),
+    displayName: CustomMetricDisplayNameSchema.openapi({
+      description:
+        " Field represents a friendly name in the console for the custom metric, it doesn't have to be unique. Don't use this name as the metric identifier in the device metric report. Can be updated. ",
+    }),
   })
   .openapi({ required: ['displayName'], title: 'UpdateCustomMetricRequest' })
   .openapi('UpdateCustomMetricRequest')
 
 const UpdateDimensionRequestSchema = z
   .object({
-    stringValues: DimensionStringValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the value or list of values for the dimension. For <code>TOPIC_FILTER</code> dimensions, this is a pattern used to match the MQTT topic (for example, "admin/#").',
-        }),
-    ),
+    stringValues: DimensionStringValuesSchema.openapi({
+      description:
+        'Specifies the value or list of values for the dimension. For <code>TOPIC_FILTER</code> dimensions, this is a pattern used to match the MQTT topic (for example, "admin/#").',
+    }),
   })
   .openapi({ required: ['stringValues'], title: 'UpdateDimensionRequest' })
   .openapi('UpdateDimensionRequest')
 
 const UpdateDomainConfigurationRequestSchema = z
   .object({
-    authorizerConfig: AuthorizerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An object that specifies the authorization service for a domain.',
-        }),
-    ).exactOptional(),
-    domainConfigurationStatus: DomainConfigurationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The status to which the domain configuration should be updated.',
-        }),
-    ).exactOptional(),
-    removeAuthorizerConfig: RemoveAuthorizerConfigSchema.and(
-      z.any().openapi({ description: 'Removes the authorization configuration from a domain.' }),
-    ).exactOptional(),
+    authorizerConfig: AuthorizerConfigSchema.exactOptional().openapi({
+      description: 'An object that specifies the authorization service for a domain.',
+    }),
+    domainConfigurationStatus: DomainConfigurationStatusSchema.exactOptional().openapi({
+      description: 'The status to which the domain configuration should be updated.',
+    }),
+    removeAuthorizerConfig: RemoveAuthorizerConfigSchema.exactOptional().openapi({
+      description: 'Removes the authorization configuration from a domain.',
+    }),
   })
   .openapi({ title: 'UpdateDomainConfigurationRequest', required: [] })
   .openapi('UpdateDomainConfigurationRequest')
 
 const UpdateDynamicThingGroupRequestSchema = z
   .object({
-    thingGroupProperties: ThingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group properties to update.' }),
-    ),
-    expectedVersion: OptionalVersionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The expected version of the dynamic thing group to update.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic thing group index to update.</p> <note> <p>Currently one index is supported: <code>AWS_Things</code>.</p> </note>',
-        }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The dynamic thing group search query string to update.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The dynamic thing group query version to update.</p> <note> <p>Currently one query version is supported: "2017-09-30". If not specified, the query version defaults to this value.</p> </note>',
-        }),
-    ).exactOptional(),
+    thingGroupProperties: ThingGroupPropertiesSchema.openapi({
+      description: 'The dynamic thing group properties to update.',
+    }),
+    expectedVersion: OptionalVersionSchema.exactOptional().openapi({
+      description: 'The expected version of the dynamic thing group to update.',
+    }),
+    indexName: IndexNameSchema.exactOptional().openapi({
+      description:
+        '<p>The dynamic thing group index to update.</p> <note> <p>Currently one index is supported: <code>AWS_Things</code>.</p> </note>',
+    }),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The dynamic thing group search query string to update.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The dynamic thing group query version to update.</p> <note> <p>Currently one query version is supported: "2017-09-30". If not specified, the query version defaults to this value.</p> </note>',
+    }),
   })
   .openapi({ required: ['thingGroupProperties'], title: 'UpdateDynamicThingGroupRequest' })
   .openapi('UpdateDynamicThingGroupRequest')
 
 const UpdateEventConfigurationsRequestSchema = z
   .object({
-    eventConfigurations: EventConfigurationsSchema.and(
-      z.any().openapi({ description: 'The new event configuration values.' }),
-    ).exactOptional(),
+    eventConfigurations: EventConfigurationsSchema.exactOptional().openapi({
+      description: 'The new event configuration values.',
+    }),
   })
   .openapi({ title: 'UpdateEventConfigurationsRequest', required: [] })
   .openapi('UpdateEventConfigurationsRequest')
 
 const UpdateFleetMetricRequestSchema = z
   .object({
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The search query string.' }),
-    ).exactOptional(),
-    aggregationType: AggregationTypeSchema.and(
-      z.any().openapi({ description: 'The type of the aggregation query.' }),
-    ).exactOptional(),
-    period: FleetMetricPeriodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
-        }),
-    ).exactOptional(),
-    aggregationField: AggregationFieldSchema.and(
-      z.any().openapi({ description: 'The field to aggregate.' }),
-    ).exactOptional(),
-    description: FleetMetricDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the fleet metric.' }),
-    ).exactOptional(),
-    queryVersion: QueryVersionSchema.and(
-      z.any().openapi({ description: 'The version of the query.' }),
-    ).exactOptional(),
-    indexName: IndexNameSchema.and(
-      z.any().openapi({ description: 'The name of the index to search.' }),
-    ),
-    unit: FleetMetricUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>.',
-        }),
-    ).exactOptional(),
-    expectedVersion: OptionalVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The expected version of the fleet metric record in the registry.',
-        }),
-    ).exactOptional(),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The search query string.',
+    }),
+    aggregationType: AggregationTypeSchema.exactOptional().openapi({
+      description: 'The type of the aggregation query.',
+    }),
+    period: FleetMetricPeriodSchema.exactOptional().openapi({
+      description:
+        'The time in seconds between fleet metric emissions. Range [60(1 min), 86400(1 day)] and must be multiple of 60.',
+    }),
+    aggregationField: AggregationFieldSchema.exactOptional().openapi({
+      description: 'The field to aggregate.',
+    }),
+    description: FleetMetricDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the fleet metric.',
+    }),
+    queryVersion: QueryVersionSchema.exactOptional().openapi({
+      description: 'The version of the query.',
+    }),
+    indexName: IndexNameSchema.openapi({ description: 'The name of the index to search.' }),
+    unit: FleetMetricUnitSchema.exactOptional().openapi({
+      description:
+        'Used to support unit transformation such as milliseconds to seconds. The unit must be supported by <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html">CW metric</a>.',
+    }),
+    expectedVersion: OptionalVersionSchema.exactOptional().openapi({
+      description: 'The expected version of the fleet metric record in the registry.',
+    }),
   })
   .openapi({ required: ['indexName'], title: 'UpdateFleetMetricRequest' })
   .openapi('UpdateFleetMetricRequest')
 
 const UpdateIndexingConfigurationRequestSchema = z
   .object({
-    thingIndexingConfiguration: ThingIndexingConfigurationSchema.and(
-      z.any().openapi({ description: 'Thing indexing configuration.' }),
-    ).exactOptional(),
-    thingGroupIndexingConfiguration: ThingGroupIndexingConfigurationSchema.and(
-      z.any().openapi({ description: 'Thing group indexing configuration.' }),
-    ).exactOptional(),
+    thingIndexingConfiguration: ThingIndexingConfigurationSchema.exactOptional().openapi({
+      description: 'Thing indexing configuration.',
+    }),
+    thingGroupIndexingConfiguration: ThingGroupIndexingConfigurationSchema.exactOptional().openapi({
+      description: 'Thing group indexing configuration.',
+    }),
   })
   .openapi({ title: 'UpdateIndexingConfigurationRequest', required: [] })
   .openapi('UpdateIndexingConfigurationRequest')
 
 const UpdateJobRequestSchema = z
   .object({
-    description: JobDescriptionSchema.and(
-      z.any().openapi({ description: 'A short text description of the job.' }),
-    ).exactOptional(),
-    presignedUrlConfig: PresignedUrlConfigSchema.and(
-      z.any().openapi({ description: 'Configuration information for pre-signed S3 URLs.' }),
-    ).exactOptional(),
-    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create a staged rollout of the job.' }),
-    ).exactOptional(),
-    abortConfig: AbortConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create criteria to abort a job.' }),
-    ).exactOptional(),
-    timeoutConfig: TimeoutConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the amount of time each device has to finish its execution of the job. The timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the time expires, it will be automatically set to <code>TIMED_OUT</code>. ',
-        }),
-    ).exactOptional(),
-    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.and(
-      z.any().openapi({ description: 'Allows you to create the criteria to retry a job.' }),
-    ).exactOptional(),
+    description: JobDescriptionSchema.exactOptional().openapi({
+      description: 'A short text description of the job.',
+    }),
+    presignedUrlConfig: PresignedUrlConfigSchema.exactOptional().openapi({
+      description: 'Configuration information for pre-signed S3 URLs.',
+    }),
+    jobExecutionsRolloutConfig: JobExecutionsRolloutConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create a staged rollout of the job.',
+    }),
+    abortConfig: AbortConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create criteria to abort a job.',
+    }),
+    timeoutConfig: TimeoutConfigSchema.exactOptional().openapi({
+      description:
+        'Specifies the amount of time each device has to finish its execution of the job. The timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the time expires, it will be automatically set to <code>TIMED_OUT</code>. ',
+    }),
+    jobExecutionsRetryConfig: JobExecutionsRetryConfigSchema.exactOptional().openapi({
+      description: 'Allows you to create the criteria to retry a job.',
+    }),
   })
   .openapi({ title: 'UpdateJobRequest', required: [] })
   .openapi('UpdateJobRequest')
 
 const UpdateMitigationActionRequestSchema = z
   .object({
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the IAM role that is used to apply the mitigation action.',
-        }),
-    ).exactOptional(),
-    actionParams: MitigationActionParamsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Defines the type of action and the parameters for that action.' }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The ARN of the IAM role that is used to apply the mitigation action.',
+    }),
+    actionParams: MitigationActionParamsSchema.exactOptional().openapi({
+      description: 'Defines the type of action and the parameters for that action.',
+    }),
   })
   .openapi({ title: 'UpdateMitigationActionRequest', required: [] })
   .openapi('UpdateMitigationActionRequest')
 
 const UpdateProvisioningTemplateRequestSchema = z
   .object({
-    description: TemplateDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the provisioning template.' }),
-    ).exactOptional(),
-    enabled: EnabledSchema.and(
-      z
-        .any()
-        .openapi({ description: 'True to enable the provisioning template, otherwise false.' }),
-    ).exactOptional(),
-    defaultVersionId: TemplateVersionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the default provisioning template version.' }),
-    ).exactOptional(),
-    provisioningRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the role associated with the provisioning template. This IoT role grants permission to provision a device.',
-        }),
-    ).exactOptional(),
-    preProvisioningHook: ProvisioningHookSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Updates the pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type">type</a>.',
-        }),
-    ).exactOptional(),
-    removePreProvisioningHook: RemoveHookSchema.and(
-      z.any().openapi({ description: 'Removes pre-provisioning hook template.' }),
-    ).exactOptional(),
+    description: TemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the provisioning template.',
+    }),
+    enabled: EnabledSchema.exactOptional().openapi({
+      description: 'True to enable the provisioning template, otherwise false.',
+    }),
+    defaultVersionId: TemplateVersionIdSchema.exactOptional().openapi({
+      description: 'The ID of the default provisioning template version.',
+    }),
+    provisioningRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the role associated with the provisioning template. This IoT role grants permission to provision a device.',
+    }),
+    preProvisioningHook: ProvisioningHookSchema.exactOptional().openapi({
+      description:
+        'Updates the pre-provisioning hook template. Only supports template of type <code>FLEET_PROVISIONING</code>. For more information about provisioning template types, see <a href="https://docs.aws.amazon.com/iot/latest/apireference/API_CreateProvisioningTemplate.html#iot-CreateProvisioningTemplate-request-type">type</a>.',
+    }),
+    removePreProvisioningHook: RemoveHookSchema.exactOptional().openapi({
+      description: 'Removes pre-provisioning hook template.',
+    }),
   })
   .openapi({ title: 'UpdateProvisioningTemplateRequest', required: [] })
   .openapi('UpdateProvisioningTemplateRequest')
 
 const UpdateRoleAliasRequestSchema = z
   .object({
-    roleArn: RoleArnSchema.and(z.any().openapi({ description: 'The role ARN.' })).exactOptional(),
-    credentialDurationSeconds: CredentialDurationSecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The number of seconds the credential will be valid.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>',
-        }),
-    ).exactOptional(),
+    roleArn: RoleArnSchema.exactOptional().openapi({ description: 'The role ARN.' }),
+    credentialDurationSeconds: CredentialDurationSecondsSchema.exactOptional().openapi({
+      description:
+        '<p>The number of seconds the credential will be valid.</p> <p>This value must be less than or equal to the maximum session duration of the IAM role that the role alias references.</p>',
+    }),
   })
   .openapi({ title: 'UpdateRoleAliasRequest', required: [] })
   .openapi('UpdateRoleAliasRequest')
 
 const UpdateScheduledAuditRequestSchema = z
   .object({
-    frequency: AuditFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How often the scheduled audit takes place, either <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code>, or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
-        }),
-    ).exactOptional(),
-    dayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the month on which the scheduled audit takes place. This can be <code>1</code> through <code>31</code> or <code>LAST</code>. This field is required if the <code>frequency</code> parameter is set to <code>MONTHLY</code>. If days 29-31 are specified, and the month does not have that many days, the audit takes place on the "LAST" day of the month.',
-        }),
-    ).exactOptional(),
-    dayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day of the week on which the scheduled audit takes place. This can be one of <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>. This field is required if the "frequency" parameter is set to <code>WEEKLY</code> or <code>BIWEEKLY</code>.',
-        }),
-    ).exactOptional(),
-    targetCheckNames: TargetAuditCheckNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
-        }),
-    ).exactOptional(),
+    frequency: AuditFrequencySchema.exactOptional().openapi({
+      description:
+        'How often the scheduled audit takes place, either <code>DAILY</code>, <code>WEEKLY</code>, <code>BIWEEKLY</code>, or <code>MONTHLY</code>. The start time of each audit is determined by the system.',
+    }),
+    dayOfMonth: DayOfMonthSchema.exactOptional().openapi({
+      description:
+        'The day of the month on which the scheduled audit takes place. This can be <code>1</code> through <code>31</code> or <code>LAST</code>. This field is required if the <code>frequency</code> parameter is set to <code>MONTHLY</code>. If days 29-31 are specified, and the month does not have that many days, the audit takes place on the "LAST" day of the month.',
+    }),
+    dayOfWeek: DayOfWeekSchema.exactOptional().openapi({
+      description:
+        'The day of the week on which the scheduled audit takes place. This can be one of <code>SUN</code>, <code>MON</code>, <code>TUE</code>, <code>WED</code>, <code>THU</code>, <code>FRI</code>, or <code>SAT</code>. This field is required if the "frequency" parameter is set to <code>WEEKLY</code> or <code>BIWEEKLY</code>.',
+    }),
+    targetCheckNames: TargetAuditCheckNamesSchema.exactOptional().openapi({
+      description:
+        'Which checks are performed during the scheduled audit. Checks must be enabled for your account. (Use <code>DescribeAccountAuditConfiguration</code> to see the list of all checks, including those that are enabled or use <code>UpdateAccountAuditConfiguration</code> to select which checks are enabled.)',
+    }),
   })
   .openapi({ title: 'UpdateScheduledAuditRequest', required: [] })
   .openapi('UpdateScheduledAuditRequest')
 
 const UpdateSecurityProfileRequestSchema = z
   .object({
-    securityProfileDescription: SecurityProfileDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the security profile.' }),
-    ).exactOptional(),
-    behaviors: BehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
-        }),
-    ).exactOptional(),
-    alertTargets: AlertTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            "<p> <i>Please use <a>UpdateSecurityProfileRequest$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.</p>Use additionalMetricsToRetainV2.",
-        }),
-    ).exactOptional(),
-    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
-        }),
-    ).exactOptional(),
-    deleteBehaviors: DeleteBehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, delete all <code>behaviors</code> defined for this security profile. If any <code>behaviors</code> are defined in the current invocation, an exception occurs.',
-        }),
-    ).exactOptional(),
-    deleteAlertTargets: DeleteAlertTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, delete all <code>alertTargets</code> defined for this security profile. If any <code>alertTargets</code> are defined in the current invocation, an exception occurs.',
-        }),
-    ).exactOptional(),
-    deleteAdditionalMetricsToRetain: DeleteAdditionalMetricsToRetainSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, delete all <code>additionalMetricsToRetain</code> defined for this security profile. If any <code>additionalMetricsToRetain</code> are defined in the current invocation, an exception occurs.',
-        }),
-    ).exactOptional(),
+    securityProfileDescription: SecurityProfileDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the security profile.',
+    }),
+    behaviors: BehaviorsSchema.exactOptional().openapi({
+      description:
+        'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
+    }),
+    alertTargets: AlertTargetsSchema.exactOptional().openapi({
+      description: 'Where the alerts are sent. (Alerts are always sent to the console.)',
+    }),
+    additionalMetricsToRetain: AdditionalMetricsToRetainListSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        "<p> <i>Please use <a>UpdateSecurityProfileRequest$additionalMetricsToRetainV2</a> instead.</i> </p> <p>A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's <code>behaviors</code>, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.</p>Use additionalMetricsToRetainV2.",
+    }),
+    additionalMetricsToRetainV2: AdditionalMetricsToRetainV2ListSchema.exactOptional().openapi({
+      description:
+        "A list of metrics whose data is retained (stored). By default, data is retained for any metric used in the profile's behaviors, but it is also retained for any metric specified here. Can be used with custom metrics; cannot be used with dimensions.",
+    }),
+    deleteBehaviors: DeleteBehaviorsSchema.exactOptional().openapi({
+      description:
+        'If true, delete all <code>behaviors</code> defined for this security profile. If any <code>behaviors</code> are defined in the current invocation, an exception occurs.',
+    }),
+    deleteAlertTargets: DeleteAlertTargetsSchema.exactOptional().openapi({
+      description:
+        'If true, delete all <code>alertTargets</code> defined for this security profile. If any <code>alertTargets</code> are defined in the current invocation, an exception occurs.',
+    }),
+    deleteAdditionalMetricsToRetain: DeleteAdditionalMetricsToRetainSchema.exactOptional().openapi({
+      description:
+        'If true, delete all <code>additionalMetricsToRetain</code> defined for this security profile. If any <code>additionalMetricsToRetain</code> are defined in the current invocation, an exception occurs.',
+    }),
   })
   .openapi({ title: 'UpdateSecurityProfileRequest', required: [] })
   .openapi('UpdateSecurityProfileRequest')
 
 const UpdateStreamRequestSchema = z
   .object({
-    description: StreamDescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the stream.' }),
-    ).exactOptional(),
-    files: StreamFilesSchema.and(
-      z.any().openapi({ description: 'The files associated with the stream.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM role that allows the IoT service principal assumes to access your S3 files.',
-        }),
-    ).exactOptional(),
+    description: StreamDescriptionSchema.exactOptional().openapi({
+      description: 'The description of the stream.',
+    }),
+    files: StreamFilesSchema.exactOptional().openapi({
+      description: 'The files associated with the stream.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        'An IAM role that allows the IoT service principal assumes to access your S3 files.',
+    }),
   })
   .openapi({ title: 'UpdateStreamRequest', required: [] })
   .openapi('UpdateStreamRequest')
 
 const UpdateThingGroupRequestSchema = z
   .object({
-    thingGroupProperties: ThingGroupPropertiesSchema.and(
-      z.any().openapi({ description: 'The thing group properties.' }),
-    ),
-    expectedVersion: OptionalVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expected version of the thing group. If this does not match the version of the thing group being updated, the update will fail.',
-        }),
-    ).exactOptional(),
+    thingGroupProperties: ThingGroupPropertiesSchema.openapi({
+      description: 'The thing group properties.',
+    }),
+    expectedVersion: OptionalVersionSchema.exactOptional().openapi({
+      description:
+        'The expected version of the thing group. If this does not match the version of the thing group being updated, the update will fail.',
+    }),
   })
   .openapi({ required: ['thingGroupProperties'], title: 'UpdateThingGroupRequest' })
   .openapi('UpdateThingGroupRequest')
 
 const UpdateThingGroupsForThingRequestSchema = z
   .object({
-    thingName: ThingNameSchema.and(
-      z.any().openapi({ description: 'The thing whose group memberships will be updated.' }),
-    ).exactOptional(),
-    thingGroupsToAdd: ThingGroupListSchema.and(
-      z.any().openapi({ description: 'The groups to which the thing will be added.' }),
-    ).exactOptional(),
-    thingGroupsToRemove: ThingGroupListSchema.and(
-      z.any().openapi({ description: 'The groups from which the thing will be removed.' }),
-    ).exactOptional(),
-    overrideDynamicGroups: OverrideDynamicGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Override dynamic thing groups with static thing groups when 10-group limit is reached. If a thing belongs to 10 thing groups, and one or more of those groups are dynamic thing groups, adding a thing to a static group removes the thing from the last dynamic group.',
-        }),
-    ).exactOptional(),
+    thingName: ThingNameSchema.exactOptional().openapi({
+      description: 'The thing whose group memberships will be updated.',
+    }),
+    thingGroupsToAdd: ThingGroupListSchema.exactOptional().openapi({
+      description: 'The groups to which the thing will be added.',
+    }),
+    thingGroupsToRemove: ThingGroupListSchema.exactOptional().openapi({
+      description: 'The groups from which the thing will be removed.',
+    }),
+    overrideDynamicGroups: OverrideDynamicGroupsSchema.exactOptional().openapi({
+      description:
+        'Override dynamic thing groups with static thing groups when 10-group limit is reached. If a thing belongs to 10 thing groups, and one or more of those groups are dynamic thing groups, adding a thing to a static group removes the thing from the last dynamic group.',
+    }),
   })
   .openapi({ title: 'UpdateThingGroupsForThingRequest', required: [] })
   .openapi('UpdateThingGroupsForThingRequest')
 
 const UpdateThingRequestSchema = z
   .object({
-    thingTypeName: ThingTypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the thing type.' }),
-    ).exactOptional(),
-    attributePayload: AttributePayloadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of thing attributes, a JSON string containing name-value pairs. For example:</p> <p> <code>{\\"attributes\\":{\\"name1\\":\\"value2\\"}}</code> </p> <p>This data is used to add new attributes or update existing attributes.</p>',
-        }),
-    ).exactOptional(),
-    expectedVersion: OptionalVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expected version of the thing record in the registry. If the version of the record in the registry does not match the expected version specified in the request, the <code>UpdateThing</code> request is rejected with a <code>VersionConflictException</code>.',
-        }),
-    ).exactOptional(),
-    removeThingType: RemoveThingTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Remove a thing type association. If <b>true</b>, the association is removed.',
-        }),
-    ).exactOptional(),
+    thingTypeName: ThingTypeNameSchema.exactOptional().openapi({
+      description: 'The name of the thing type.',
+    }),
+    attributePayload: AttributePayloadSchema.exactOptional().openapi({
+      description:
+        '<p>A list of thing attributes, a JSON string containing name-value pairs. For example:</p> <p> <code>{\\"attributes\\":{\\"name1\\":\\"value2\\"}}</code> </p> <p>This data is used to add new attributes or update existing attributes.</p>',
+    }),
+    expectedVersion: OptionalVersionSchema.exactOptional().openapi({
+      description:
+        'The expected version of the thing record in the registry. If the version of the record in the registry does not match the expected version specified in the request, the <code>UpdateThing</code> request is rejected with a <code>VersionConflictException</code>.',
+    }),
+    removeThingType: RemoveThingTypeSchema.exactOptional().openapi({
+      description: 'Remove a thing type association. If <b>true</b>, the association is removed.',
+    }),
   })
   .openapi({
     title: 'UpdateThingRequest',
@@ -13843,31 +11125,21 @@ const UpdateThingRequestSchema = z
 
 const UpdateTopicRuleDestinationRequestSchema = z
   .object({
-    arn: AwsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the topic rule destination.' }),
-    ),
-    status: TopicRuleDestinationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
-        }),
-    ),
+    arn: AwsArnSchema.openapi({ description: 'The ARN of the topic rule destination.' }),
+    status: TopicRuleDestinationStatusSchema.openapi({
+      description:
+        '<p>The status of the topic rule destination. Valid values are:</p> <dl> <dt>IN_PROGRESS</dt> <dd> <p>A topic rule destination was created but has not been confirmed. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> <dt>ENABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is allowed. You can set <code>status</code> to <code>DISABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>DISABLED</dt> <dd> <p>Confirmation was completed, and traffic to this destination is not allowed. You can set <code>status</code> to <code>ENABLED</code> by calling <code>UpdateTopicRuleDestination</code>.</p> </dd> <dt>ERROR</dt> <dd> <p>Confirmation could not be completed, for example if the confirmation timed out. You can call <code>GetTopicRuleDestination</code> for details about the error. You can set <code>status</code> to <code>IN_PROGRESS</code> by calling <code>UpdateTopicRuleDestination</code>. Calling <code>UpdateTopicRuleDestination</code> causes a new confirmation challenge to be sent to your confirmation endpoint.</p> </dd> </dl>',
+    }),
   })
   .openapi({ required: ['arn', 'status'], title: 'UpdateTopicRuleDestinationRequest' })
   .openapi('UpdateTopicRuleDestinationRequest')
 
 const ValidateSecurityProfileBehaviorsRequestSchema = z
   .object({
-    behaviors: BehaviorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
-        }),
-    ),
+    behaviors: BehaviorsSchema.openapi({
+      description:
+        'Specifies the behaviors that, when violated by a device (thing), cause an alert.',
+    }),
   })
   .openapi({ required: ['behaviors'], title: 'ValidateSecurityProfileBehaviorsRequest' })
   .openapi('ValidateSecurityProfileBehaviorsRequest')
@@ -15622,64 +12894,37 @@ export const postAuditSuppressionsCreateRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .openapi({
                   description: 'Information that identifies the noncompliant resource.',
@@ -16218,9 +13463,9 @@ export const postBillingGroupsBillingGroupNameRoute = createRoute({
             .object({
               billingGroupProperties: z
                 .object({
-                  billingGroupDescription: BillingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The description of the billing group.' }),
-                  ).exactOptional(),
+                  billingGroupDescription: BillingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The description of the billing group.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The properties of a billing group.', required: [] }),
@@ -16380,9 +13625,9 @@ export const patchBillingGroupsBillingGroupNameRoute = createRoute({
             .object({
               billingGroupProperties: z
                 .object({
-                  billingGroupDescription: BillingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The description of the billing group.' }),
-                  ).exactOptional(),
+                  billingGroupDescription: BillingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The description of the billing group.',
+                  }),
                 })
                 .openapi({ description: 'The properties of a billing group.', required: [] }),
               expectedVersion: z
@@ -17277,22 +14522,14 @@ export const putDomainConfigurationsDomainConfigurationNameRoute = createRoute({
             .object({
               authorizerConfig: z
                 .object({
-                  defaultAuthorizerName: AuthorizerNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the authorization service for a domain configuration.',
-                      }),
-                  ).exactOptional(),
-                  allowAuthorizerOverride: AllowAuthorizerOverrideSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
-                      }),
-                  ).exactOptional(),
+                  defaultAuthorizerName: AuthorizerNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the authorization service for a domain configuration.',
+                  }),
+                  allowAuthorizerOverride: AllowAuthorizerOverrideSchema.exactOptional().openapi({
+                    description:
+                      "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -17420,22 +14657,14 @@ export const postDomainConfigurationsDomainConfigurationNameRoute = createRoute(
                 }),
               authorizerConfig: z
                 .object({
-                  defaultAuthorizerName: AuthorizerNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The name of the authorization service for a domain configuration.',
-                      }),
-                  ).exactOptional(),
-                  allowAuthorizerOverride: AllowAuthorizerOverrideSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
-                      }),
-                  ).exactOptional(),
+                  defaultAuthorizerName: AuthorizerNameSchema.exactOptional().openapi({
+                    description:
+                      'The name of the authorization service for a domain configuration.',
+                  }),
+                  allowAuthorizerOverride: AllowAuthorizerOverrideSchema.exactOptional().openapi({
+                    description:
+                      "A Boolean that specifies whether the domain configuration's authorization service can be overridden.",
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -17607,12 +14836,12 @@ export const postDynamicThingGroupsThingGroupNameRoute = createRoute({
             .object({
               thingGroupProperties: z
                 .object({
-                  thingGroupDescription: ThingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The thing group description.' }),
-                  ).exactOptional(),
-                  attributePayload: AttributePayloadSchema.and(
-                    z.any().openapi({ description: 'The thing group attributes in JSON format.' }),
-                  ).exactOptional(),
+                  thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The thing group description.',
+                  }),
+                  attributePayload: AttributePayloadSchema.exactOptional().openapi({
+                    description: 'The thing group attributes in JSON format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Thing group properties.', required: [] }),
@@ -17807,12 +15036,12 @@ export const patchDynamicThingGroupsThingGroupNameRoute = createRoute({
             .object({
               thingGroupProperties: z
                 .object({
-                  thingGroupDescription: ThingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The thing group description.' }),
-                  ).exactOptional(),
-                  attributePayload: AttributePayloadSchema.and(
-                    z.any().openapi({ description: 'The thing group attributes in JSON format.' }),
-                  ).exactOptional(),
+                  thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The thing group description.',
+                  }),
+                  attributePayload: AttributePayloadSchema.exactOptional().openapi({
+                    description: 'The thing group attributes in JSON format.',
+                  }),
                 })
                 .openapi({ description: 'Thing group properties.', required: [] }),
               expectedVersion: z
@@ -17997,12 +15226,12 @@ export const putFleetMetricMetricNameRoute = createRoute({
               queryString: z.string().min(1).openapi({ description: 'The search query string.' }),
               aggregationType: z
                 .object({
-                  name: AggregationTypeNameSchema.and(
-                    z.any().openapi({ description: 'The name of the aggregation type.' }),
-                  ).exactOptional(),
-                  values: AggregationTypeValuesSchema.and(
-                    z.any().openapi({ description: 'A list of the values of aggregation types.' }),
-                  ).exactOptional(),
+                  name: AggregationTypeNameSchema.exactOptional().openapi({
+                    description: 'The name of the aggregation type.',
+                  }),
+                  values: AggregationTypeValuesSchema.exactOptional().openapi({
+                    description: 'A list of the values of aggregation types.',
+                  }),
                 })
                 .openapi({ description: 'The type of aggregation queries.', required: [] }),
               period: z
@@ -18276,12 +15505,12 @@ export const patchFleetMetricMetricNameRoute = createRoute({
                 .openapi({ description: 'The search query string.' }),
               aggregationType: z
                 .object({
-                  name: AggregationTypeNameSchema.and(
-                    z.any().openapi({ description: 'The name of the aggregation type.' }),
-                  ).exactOptional(),
-                  values: AggregationTypeValuesSchema.and(
-                    z.any().openapi({ description: 'A list of the values of aggregation types.' }),
-                  ).exactOptional(),
+                  name: AggregationTypeNameSchema.exactOptional().openapi({
+                    description: 'The name of the aggregation type.',
+                  }),
+                  values: AggregationTypeValuesSchema.exactOptional().openapi({
+                    description: 'A list of the values of aggregation types.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The type of aggregation queries.', required: [] }),
@@ -18536,22 +15765,14 @@ export const putJobsJobIdRoute = createRoute({
                 .openapi({ description: 'A short text description of the job.' }),
               presignedUrlConfig: z
                 .object({
-                  roleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
-                      }),
-                  ).exactOptional(),
-                  expiresInSec: ExpiresInSecSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
-                      }),
-                  ).exactOptional(),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
+                  }),
+                  expiresInSec: ExpiresInSecSchema.exactOptional().openapi({
+                    description:
+                      'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configuration for pre-signed S3 URLs.', required: [] }),
@@ -18564,22 +15785,14 @@ export const putJobsJobIdRoute = createRoute({
                 }),
               jobExecutionsRolloutConfig: z
                 .object({
-                  maximumPerMinute: MaxJobExecutionsPerMinSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
-                      }),
-                  ).exactOptional(),
-                  exponentialRate: ExponentialRolloutRateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
-                      }),
-                  ).exactOptional(),
+                  maximumPerMinute: MaxJobExecutionsPerMinSchema.exactOptional().openapi({
+                    description:
+                      'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
+                  }),
+                  exponentialRate: ExponentialRolloutRateSchema.exactOptional().openapi({
+                    description:
+                      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18588,14 +15801,10 @@ export const putJobsJobIdRoute = createRoute({
                 }),
               abortConfig: z
                 .object({
-                  criteriaList: AbortCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determine when and how to abort the job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: AbortCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determine when and how to abort the job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18604,14 +15813,11 @@ export const putJobsJobIdRoute = createRoute({
                 }),
               timeoutConfig: z
                 .object({
-                  inProgressTimeoutInMinutes: InProgressTimeoutInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-                      }),
-                  ).exactOptional(),
+                  inProgressTimeoutInMinutes:
+                    InProgressTimeoutInMinutesSchema.exactOptional().openapi({
+                      description:
+                        "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18640,14 +15846,10 @@ export const putJobsJobIdRoute = createRoute({
                 .openapi({ description: 'The ARN of the job template used to create the job.' }),
               jobExecutionsRetryConfig: z
                 .object({
-                  criteriaList: RetryCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determines how many retries are allowed for each failure type for a job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: RetryCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determines how many retries are allowed for each failure type for a job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18664,38 +15866,22 @@ export const putJobsJobIdRoute = createRoute({
                 }),
               schedulingConfig: z
                 .object({
-                  startTime: StringDateTimeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time. The date and time format for the <code>startTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
-                      }),
-                  ).exactOptional(),
-                  endTime: StringDateTimeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. The date and time format for the <code>endTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
-                      }),
-                  ).exactOptional(),
-                  endBehavior: JobEndBehaviorSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.',
-                      }),
-                  ).exactOptional(),
-                  maintenanceWindows: MaintenanceWindowsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.',
-                      }),
-                  ).exactOptional(),
+                  startTime: StringDateTimeSchema.exactOptional().openapi({
+                    description:
+                      'The time a job will begin rollout of the job document to all devices in the target group for a job. The <code>startTime</code> can be scheduled up to a year in advance and must be scheduled a minimum of thirty minutes from the current time. The date and time format for the <code>startTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
+                  }),
+                  endTime: StringDateTimeSchema.exactOptional().openapi({
+                    description:
+                      'The time a job will stop rollout of the job document to all devices in the target group for a job. The <code>endTime</code> must take place no later than two years from the current time and be scheduled a minimum of thirty minutes from the current time. The minimum duration between <code>startTime</code> and <code>endTime</code> is thirty minutes. The maximum duration between <code>startTime</code> and <code>endTime</code> is two years. The date and time format for the <code>endTime</code> is YYYY-MM-DD for the date and HH:MM for the time.',
+                  }),
+                  endBehavior: JobEndBehaviorSchema.exactOptional().openapi({
+                    description:
+                      'Specifies the end behavior for all job executions after a job reaches the selected <code>endTime</code>. If <code>endTime</code> is not selected when creating the job, then <code>endBehavior</code> does not apply.',
+                  }),
+                  maintenanceWindows: MaintenanceWindowsSchema.exactOptional().openapi({
+                    description:
+                      'An optional configuration within the <code>SchedulingConfig</code> to setup a recurring maintenance window with a predetermined start time and duration for the rollout of a job document to all devices in a target group for a job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18895,43 +16081,27 @@ export const patchJobsJobIdRoute = createRoute({
                 .openapi({ description: 'A short text description of the job.' }),
               presignedUrlConfig: z
                 .object({
-                  roleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
-                      }),
-                  ).exactOptional(),
-                  expiresInSec: ExpiresInSecSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
-                      }),
-                  ).exactOptional(),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
+                  }),
+                  expiresInSec: ExpiresInSecSchema.exactOptional().openapi({
+                    description:
+                      'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configuration for pre-signed S3 URLs.', required: [] }),
               jobExecutionsRolloutConfig: z
                 .object({
-                  maximumPerMinute: MaxJobExecutionsPerMinSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
-                      }),
-                  ).exactOptional(),
-                  exponentialRate: ExponentialRolloutRateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
-                      }),
-                  ).exactOptional(),
+                  maximumPerMinute: MaxJobExecutionsPerMinSchema.exactOptional().openapi({
+                    description:
+                      'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
+                  }),
+                  exponentialRate: ExponentialRolloutRateSchema.exactOptional().openapi({
+                    description:
+                      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18940,14 +16110,10 @@ export const patchJobsJobIdRoute = createRoute({
                 }),
               abortConfig: z
                 .object({
-                  criteriaList: AbortCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determine when and how to abort the job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: AbortCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determine when and how to abort the job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18956,14 +16122,11 @@ export const patchJobsJobIdRoute = createRoute({
                 }),
               timeoutConfig: z
                 .object({
-                  inProgressTimeoutInMinutes: InProgressTimeoutInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-                      }),
-                  ).exactOptional(),
+                  inProgressTimeoutInMinutes:
+                    InProgressTimeoutInMinutesSchema.exactOptional().openapi({
+                      description:
+                        "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18973,14 +16136,10 @@ export const patchJobsJobIdRoute = createRoute({
                 }),
               jobExecutionsRetryConfig: z
                 .object({
-                  criteriaList: RetryCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determines how many retries are allowed for each failure type for a job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: RetryCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determines how many retries are allowed for each failure type for a job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19140,43 +16299,27 @@ export const putJobTemplatesJobTemplateIdRoute = createRoute({
                 .openapi({ description: 'A description of the job document.' }),
               presignedUrlConfig: z
                 .object({
-                  roleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
-                      }),
-                  ).exactOptional(),
-                  expiresInSec: ExpiresInSecSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
-                      }),
-                  ).exactOptional(),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description:
+                      '<p>The ARN of an IAM role that grants grants permission to download files from the S3 bucket where the job data/updates are stored. The role must also grant permission for IoT to download the files.</p> <important> <p>For information about addressing the confused deputy problem, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html">cross-service confused deputy prevention</a> in the <i>Amazon Web Services IoT Core developer guide</i>.</p> </important>',
+                  }),
+                  expiresInSec: ExpiresInSecSchema.exactOptional().openapi({
+                    description:
+                      'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 3600 seconds. Pre-signed URLs are generated when Jobs receives an MQTT request for the job document.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Configuration for pre-signed S3 URLs.', required: [] }),
               jobExecutionsRolloutConfig: z
                 .object({
-                  maximumPerMinute: MaxJobExecutionsPerMinSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
-                      }),
-                  ).exactOptional(),
-                  exponentialRate: ExponentialRolloutRateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
-                      }),
-                  ).exactOptional(),
+                  maximumPerMinute: MaxJobExecutionsPerMinSchema.exactOptional().openapi({
+                    description:
+                      'The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.',
+                  }),
+                  exponentialRate: ExponentialRolloutRateSchema.exactOptional().openapi({
+                    description:
+                      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate for a job rollout.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19185,14 +16328,10 @@ export const putJobTemplatesJobTemplateIdRoute = createRoute({
                 }),
               abortConfig: z
                 .object({
-                  criteriaList: AbortCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determine when and how to abort the job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: AbortCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determine when and how to abort the job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19201,14 +16340,11 @@ export const putJobTemplatesJobTemplateIdRoute = createRoute({
                 }),
               timeoutConfig: z
                 .object({
-                  inProgressTimeoutInMinutes: InProgressTimeoutInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-                      }),
-                  ).exactOptional(),
+                  inProgressTimeoutInMinutes:
+                    InProgressTimeoutInMinutesSchema.exactOptional().openapi({
+                      description:
+                        "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19222,14 +16358,10 @@ export const putJobTemplatesJobTemplateIdRoute = createRoute({
                 .openapi({ description: 'Metadata that can be used to manage the job template.' }),
               jobExecutionsRetryConfig: z
                 .object({
-                  criteriaList: RetryCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determines how many retries are allowed for each failure type for a job.',
-                      }),
-                  ).exactOptional(),
+                  criteriaList: RetryCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determines how many retries are allowed for each failure type for a job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19498,54 +16630,35 @@ export const postMitigationactionsActionsActionNameRoute = createRoute({
                 }),
               actionParams: z
                 .object({
-                  updateDeviceCertificateParams: UpdateDeviceCertificateParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
-                      }),
-                  ).exactOptional(),
-                  updateCACertificateParams: UpdateCACertificateParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
-                      }),
-                  ).exactOptional(),
-                  addThingsToThingGroupParams: AddThingsToThingGroupParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
-                      }),
-                  ).exactOptional(),
-                  replaceDefaultPolicyVersionParams: ReplaceDefaultPolicyVersionParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
-                      }),
-                  ).exactOptional(),
-                  enableIoTLoggingParams: EnableIoTLoggingParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
-                      }),
-                  ).exactOptional(),
-                  publishFindingToSnsParams: PublishFindingToSnsParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
-                      }),
-                  ).exactOptional(),
+                  updateDeviceCertificateParams:
+                    UpdateDeviceCertificateParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
+                    }),
+                  updateCACertificateParams:
+                    UpdateCACertificateParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
+                    }),
+                  addThingsToThingGroupParams:
+                    AddThingsToThingGroupParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
+                    }),
+                  replaceDefaultPolicyVersionParams:
+                    ReplaceDefaultPolicyVersionParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
+                    }),
+                  enableIoTLoggingParams: EnableIoTLoggingParamsSchema.exactOptional().openapi({
+                    description:
+                      'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
+                  }),
+                  publishFindingToSnsParams:
+                    PublishFindingToSnsParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -19693,54 +16806,35 @@ export const patchMitigationactionsActionsActionNameRoute = createRoute({
                 }),
               actionParams: z
                 .object({
-                  updateDeviceCertificateParams: UpdateDeviceCertificateParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
-                      }),
-                  ).exactOptional(),
-                  updateCACertificateParams: UpdateCACertificateParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
-                      }),
-                  ).exactOptional(),
-                  addThingsToThingGroupParams: AddThingsToThingGroupParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
-                      }),
-                  ).exactOptional(),
-                  replaceDefaultPolicyVersionParams: ReplaceDefaultPolicyVersionParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
-                      }),
-                  ).exactOptional(),
-                  enableIoTLoggingParams: EnableIoTLoggingParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
-                      }),
-                  ).exactOptional(),
-                  publishFindingToSnsParams: PublishFindingToSnsParamsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
-                      }),
-                  ).exactOptional(),
+                  updateDeviceCertificateParams:
+                    UpdateDeviceCertificateParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that changes the state of the device certificate to inactive.',
+                    }),
+                  updateCACertificateParams:
+                    UpdateCACertificateParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that changes the state of the CA certificate to inactive.',
+                    }),
+                  addThingsToThingGroupParams:
+                    AddThingsToThingGroupParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that moves devices associated with a certificate to one or more specified thing groups, typically for quarantine.',
+                    }),
+                  replaceDefaultPolicyVersionParams:
+                    ReplaceDefaultPolicyVersionParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that adds a blank policy to restrict permissions.',
+                    }),
+                  enableIoTLoggingParams: EnableIoTLoggingParamsSchema.exactOptional().openapi({
+                    description:
+                      'Parameters to define a mitigation action that enables Amazon Web Services IoT Core logging at a specified level of detail.',
+                  }),
+                  publishFindingToSnsParams:
+                    PublishFindingToSnsParamsSchema.exactOptional().openapi({
+                      description:
+                        'Parameters to define a mitigation action that publishes findings to Amazon Simple Notification Service (Amazon SNS. You can implement your own custom actions in response to the Amazon SNS messages.',
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19909,22 +17003,14 @@ export const postOtaUpdatesOtaUpdateIdRoute = createRoute({
                 }),
               awsJobExecutionsRolloutConfig: z
                 .object({
-                  maximumPerMinute: MaximumPerMinuteSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The maximum number of OTA update job executions started per minute.',
-                      }),
-                  ).exactOptional(),
-                  exponentialRate: AwsJobExponentialRolloutRateSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
-                      }),
-                  ).exactOptional(),
+                  maximumPerMinute: MaximumPerMinuteSchema.exactOptional().openapi({
+                    description:
+                      'The maximum number of OTA update job executions started per minute.',
+                  }),
+                  exponentialRate: AwsJobExponentialRolloutRateSchema.exactOptional().openapi({
+                    description:
+                      'The rate of increase for a job rollout. This parameter allows you to define an exponential rate increase for a job rollout.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19933,14 +17019,10 @@ export const postOtaUpdatesOtaUpdateIdRoute = createRoute({
                 }),
               awsJobPresignedUrlConfig: z
                 .object({
-                  expiresInSec: ExpiresInSecondsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 1800 seconds. Pre-signed URLs are generated when a request for the job document is received.',
-                      }),
-                  ).exactOptional(),
+                  expiresInSec: ExpiresInSecondsSchema.exactOptional().openapi({
+                    description:
+                      'How long (in seconds) pre-signed URLs are valid. Valid values are 60 - 3600, the default value is 1800 seconds. Pre-signed URLs are generated when a request for the job document is received.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19950,14 +17032,10 @@ export const postOtaUpdatesOtaUpdateIdRoute = createRoute({
                 }),
               awsJobAbortConfig: z
                 .object({
-                  abortCriteriaList: AwsJobAbortCriteriaListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The list of criteria that determine when and how to abort the job.',
-                      }),
-                  ).exactOptional(),
+                  abortCriteriaList: AwsJobAbortCriteriaListSchema.exactOptional().openapi({
+                    description:
+                      'The list of criteria that determine when and how to abort the job.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -19966,14 +17044,11 @@ export const postOtaUpdatesOtaUpdateIdRoute = createRoute({
                 }),
               awsJobTimeoutConfig: z
                 .object({
-                  inProgressTimeoutInMinutes: AwsJobTimeoutInProgressTimeoutInMinutesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
-                      }),
-                  ).exactOptional(),
+                  inProgressTimeoutInMinutes:
+                    AwsJobTimeoutInProgressTimeoutInMinutesSchema.exactOptional().openapi({
+                      description:
+                        "Specifies the amount of time, in minutes, this device has to finish execution of this job. The timeout interval can be anywhere between 1 minute and 7 days (1 to 10080 minutes). The in progress timer can't be updated and will apply to all job executions for the job. Whenever a job execution remains in the IN_PROGRESS status for longer than this interval, the job execution will fail and switch to the terminal <code>TIMED_OUT</code> status.",
+                    }),
                 })
                 .exactOptional()
                 .openapi({
@@ -20746,22 +17821,14 @@ export const postProvisioningTemplatesRoute = createRoute({
                 }),
               preProvisioningHook: z
                 .object({
-                  payloadVersion: PayloadVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-                      }),
-                  ).exactOptional(),
-                  targetArn: TargetArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-                      }),
-                  ).exactOptional(),
+                  payloadVersion: PayloadVersionSchema.exactOptional().openapi({
+                    description:
+                      '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+                  }),
+                  targetArn: TargetArnSchema.exactOptional().openapi({
+                    description:
+                      '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -22511,22 +19578,14 @@ export const postThingsThingNameRoute = createRoute({
                 }),
               attributePayload: z
                 .object({
-                  attributes: AttributesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  merge: FlagSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
-                      }),
-                  ).exactOptional(),
+                  attributes: AttributesSchema.exactOptional().openapi({
+                    description:
+                      '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
+                  }),
+                  merge: FlagSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The attribute payload.', required: [] }),
@@ -22721,22 +19780,14 @@ export const patchThingsThingNameRoute = createRoute({
                 .openapi({ description: 'The name of the thing type.' }),
               attributePayload: z
                 .object({
-                  attributes: AttributesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
-                      }),
-                  ).exactOptional(),
-                  merge: FlagSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
-                      }),
-                  ).exactOptional(),
+                  attributes: AttributesSchema.exactOptional().openapi({
+                    description:
+                      '<p>A JSON string containing up to three key-value pair in JSON format. For example:</p> <p> <code>{\\"attributes\\":{\\"string1\\":\\"string2\\"}}</code> </p>',
+                  }),
+                  merge: FlagSchema.exactOptional().openapi({
+                    description:
+                      '<p>Specifies whether the list of attributes provided in the <code>AttributePayload</code> is merged with the attributes stored in the registry, instead of overwriting them.</p> <p>To remove an attribute, call <code>UpdateThing</code> with an empty attribute value.</p> <note> <p>The <code>merge</code> attribute is only valid when calling <code>UpdateThing</code> or <code>UpdateThingGroup</code>.</p> </note>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The attribute payload.', required: [] }),
@@ -22900,12 +19951,12 @@ export const postThingGroupsThingGroupNameRoute = createRoute({
                 .openapi({ description: 'The name of the parent thing group.' }),
               thingGroupProperties: z
                 .object({
-                  thingGroupDescription: ThingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The thing group description.' }),
-                  ).exactOptional(),
-                  attributePayload: AttributePayloadSchema.and(
-                    z.any().openapi({ description: 'The thing group attributes in JSON format.' }),
-                  ).exactOptional(),
+                  thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The thing group description.',
+                  }),
+                  attributePayload: AttributePayloadSchema.exactOptional().openapi({
+                    description: 'The thing group attributes in JSON format.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Thing group properties.', required: [] }),
@@ -23062,12 +20113,12 @@ export const patchThingGroupsThingGroupNameRoute = createRoute({
             .object({
               thingGroupProperties: z
                 .object({
-                  thingGroupDescription: ThingGroupDescriptionSchema.and(
-                    z.any().openapi({ description: 'The thing group description.' }),
-                  ).exactOptional(),
-                  attributePayload: AttributePayloadSchema.and(
-                    z.any().openapi({ description: 'The thing group attributes in JSON format.' }),
-                  ).exactOptional(),
+                  thingGroupDescription: ThingGroupDescriptionSchema.exactOptional().openapi({
+                    description: 'The thing group description.',
+                  }),
+                  attributePayload: AttributePayloadSchema.exactOptional().openapi({
+                    description: 'The thing group attributes in JSON format.',
+                  }),
                 })
                 .openapi({ description: 'Thing group properties.', required: [] }),
               expectedVersion: z
@@ -23216,12 +20267,12 @@ export const postThingTypesThingTypeNameRoute = createRoute({
             .object({
               thingTypeProperties: z
                 .object({
-                  thingTypeDescription: ThingTypeDescriptionSchema.and(
-                    z.any().openapi({ description: 'The description of the thing type.' }),
-                  ).exactOptional(),
-                  searchableAttributes: SearchableAttributesSchema.and(
-                    z.any().openapi({ description: 'A list of searchable thing attribute names.' }),
-                  ).exactOptional(),
+                  thingTypeDescription: ThingTypeDescriptionSchema.exactOptional().openapi({
+                    description: 'The description of the thing type.',
+                  }),
+                  searchableAttributes: SearchableAttributesSchema.exactOptional().openapi({
+                    description: 'A list of searchable thing attribute names.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -23446,34 +20497,26 @@ export const postRulesRuleNameRoute = createRoute({
             .object({
               topicRulePayload: z
                 .object({
-                  sql: SQLSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
-                  description: DescriptionSchema.and(
-                    z.any().openapi({ description: 'The description of the rule.' }),
-                  ).exactOptional(),
-                  actions: ActionListSchema.and(
-                    z.any().openapi({ description: 'The actions associated with the rule.' }),
-                  ).exactOptional(),
-                  ruleDisabled: IsDisabledSchema.and(
-                    z.any().openapi({ description: 'Specifies whether the rule is disabled.' }),
-                  ).exactOptional(),
-                  awsIotSqlVersion: AwsIotSqlVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The version of the SQL rules engine to use when evaluating the rule.',
-                      }),
-                  ).exactOptional(),
-                  errorAction: ActionSchema.and(
-                    z.any().openapi({ description: 'The action to take when an error occurs.' }),
-                  ).exactOptional(),
+                  sql: SQLSchema.exactOptional().openapi({
+                    description:
+                      'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
+                  }),
+                  description: DescriptionSchema.exactOptional().openapi({
+                    description: 'The description of the rule.',
+                  }),
+                  actions: ActionListSchema.exactOptional().openapi({
+                    description: 'The actions associated with the rule.',
+                  }),
+                  ruleDisabled: IsDisabledSchema.exactOptional().openapi({
+                    description: 'Specifies whether the rule is disabled.',
+                  }),
+                  awsIotSqlVersion: AwsIotSqlVersionSchema.exactOptional().openapi({
+                    description:
+                      'The version of the SQL rules engine to use when evaluating the rule.',
+                  }),
+                  errorAction: ActionSchema.exactOptional().openapi({
+                    description: 'The action to take when an error occurs.',
+                  }),
                 })
                 .openapi({ description: 'Describes a rule.', required: [] }),
             })
@@ -23609,34 +20652,26 @@ export const patchRulesRuleNameRoute = createRoute({
             .object({
               topicRulePayload: z
                 .object({
-                  sql: SQLSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
-                  description: DescriptionSchema.and(
-                    z.any().openapi({ description: 'The description of the rule.' }),
-                  ).exactOptional(),
-                  actions: ActionListSchema.and(
-                    z.any().openapi({ description: 'The actions associated with the rule.' }),
-                  ).exactOptional(),
-                  ruleDisabled: IsDisabledSchema.and(
-                    z.any().openapi({ description: 'Specifies whether the rule is disabled.' }),
-                  ).exactOptional(),
-                  awsIotSqlVersion: AwsIotSqlVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The version of the SQL rules engine to use when evaluating the rule.',
-                      }),
-                  ).exactOptional(),
-                  errorAction: ActionSchema.and(
-                    z.any().openapi({ description: 'The action to take when an error occurs.' }),
-                  ).exactOptional(),
+                  sql: SQLSchema.exactOptional().openapi({
+                    description:
+                      'The SQL statement used to query the topic. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html">IoT SQL Reference</a> in the <i>IoT Developer Guide</i>.',
+                  }),
+                  description: DescriptionSchema.exactOptional().openapi({
+                    description: 'The description of the rule.',
+                  }),
+                  actions: ActionListSchema.exactOptional().openapi({
+                    description: 'The actions associated with the rule.',
+                  }),
+                  ruleDisabled: IsDisabledSchema.exactOptional().openapi({
+                    description: 'Specifies whether the rule is disabled.',
+                  }),
+                  awsIotSqlVersion: AwsIotSqlVersionSchema.exactOptional().openapi({
+                    description:
+                      'The version of the SQL rules engine to use when evaluating the rule.',
+                  }),
+                  errorAction: ActionSchema.exactOptional().openapi({
+                    description: 'The action to take when an error occurs.',
+                  }),
                 })
                 .openapi({ description: 'Describes a rule.', required: [] }),
             })
@@ -23774,16 +20809,13 @@ export const postDestinationsRoute = createRoute({
             .object({
               destinationConfiguration: z
                 .object({
-                  httpUrlConfiguration: HttpUrlDestinationConfigurationSchema.and(
-                    z.any().openapi({ description: 'Configuration of the HTTP URL.' }),
-                  ).exactOptional(),
-                  vpcConfiguration: VpcDestinationConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Configuration of the virtual private cloud (VPC) connection.',
-                      }),
-                  ).exactOptional(),
+                  httpUrlConfiguration:
+                    HttpUrlDestinationConfigurationSchema.exactOptional().openapi({
+                      description: 'Configuration of the HTTP URL.',
+                    }),
+                  vpcConfiguration: VpcDestinationConfigurationSchema.exactOptional().openapi({
+                    description: 'Configuration of the virtual private cloud (VPC) connection.',
+                  }),
                 })
                 .openapi({
                   description: 'Configuration of the topic rule destination.',
@@ -24075,64 +21107,37 @@ export const postAuditSuppressionsDeleteRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .openapi({
                   description: 'Information that identifies the noncompliant resource.',
@@ -24295,15 +21300,15 @@ export const putCacertificateCaCertificateIdRoute = createRoute({
             .object({
               registrationConfig: z
                 .object({
-                  templateBody: TemplateBodySchema.and(
-                    z.any().openapi({ description: 'The template body.' }),
-                  ).exactOptional(),
-                  roleArn: RoleArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the role.' }),
-                  ).exactOptional(),
-                  templateName: TemplateNameSchema.and(
-                    z.any().openapi({ description: 'The name of the provisioning template.' }),
-                  ).exactOptional(),
+                  templateBody: TemplateBodySchema.exactOptional().openapi({
+                    description: 'The template body.',
+                  }),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role.',
+                  }),
+                  templateName: TemplateNameSchema.exactOptional().openapi({
+                    description: 'The name of the provisioning template.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The registration configuration.', required: [] }),
@@ -25112,22 +22117,14 @@ export const patchProvisioningTemplatesTemplateNameRoute = createRoute({
                 }),
               preProvisioningHook: z
                 .object({
-                  payloadVersion: PayloadVersionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-                      }),
-                  ).exactOptional(),
-                  targetArn: TargetArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
-                      }),
-                  ).exactOptional(),
+                  payloadVersion: PayloadVersionSchema.exactOptional().openapi({
+                    description:
+                      '<p>The payload that was sent to the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+                  }),
+                  targetArn: TargetArnSchema.exactOptional().openapi({
+                    description:
+                      '<p>The ARN of the target function.</p> <p> <i>Note:</i> Only Lambda functions are currently supported.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -25846,30 +22843,19 @@ export const postAuditMitigationactionsTasksTaskIdRoute = createRoute({
             .object({
               target: z
                 .object({
-                  auditTaskId: AuditTaskIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If the task will apply a mitigation action to findings from a specific audit, this value uniquely identifies the audit.',
-                      }),
-                  ).exactOptional(),
-                  findingIds: FindingIdsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'If the task will apply a mitigation action to one or more listed findings, this value uniquely identifies those findings.',
-                      }),
-                  ).exactOptional(),
-                  auditCheckToReasonCodeFilter: AuditCheckToReasonCodeFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Specifies a filter in the form of an audit check and set of reason codes that identify the findings from the audit to which the audit mitigation actions task apply.',
-                      }),
-                  ).exactOptional(),
+                  auditTaskId: AuditTaskIdSchema.exactOptional().openapi({
+                    description:
+                      'If the task will apply a mitigation action to findings from a specific audit, this value uniquely identifies the audit.',
+                  }),
+                  findingIds: FindingIdsSchema.exactOptional().openapi({
+                    description:
+                      'If the task will apply a mitigation action to one or more listed findings, this value uniquely identifies those findings.',
+                  }),
+                  auditCheckToReasonCodeFilter:
+                    AuditCheckToReasonCodeFilterSchema.exactOptional().openapi({
+                      description:
+                        'Specifies a filter in the form of an audit check and set of reason codes that identify the findings from the audit to which the audit mitigation actions task apply.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -25954,64 +22940,37 @@ export const postAuditSuppressionsDescribeRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .openapi({
                   description: 'Information that identifies the noncompliant resource.',
@@ -26203,15 +23162,16 @@ export const putDetectMitigationactionsTasksTaskIdRoute = createRoute({
             .object({
               target: z
                 .object({
-                  violationIds: TargetViolationIdsForDetectMitigationActionsSchema.and(
-                    z.any().openapi({ description: ' The unique identifiers of the violations. ' }),
-                  ).exactOptional(),
-                  securityProfileName: SecurityProfileNameSchema.and(
-                    z.any().openapi({ description: ' The name of the security profile. ' }),
-                  ).exactOptional(),
-                  behaviorName: BehaviorNameSchema.and(
-                    z.any().openapi({ description: ' The name of the behavior. ' }),
-                  ).exactOptional(),
+                  violationIds:
+                    TargetViolationIdsForDetectMitigationActionsSchema.exactOptional().openapi({
+                      description: ' The unique identifiers of the violations. ',
+                    }),
+                  securityProfileName: SecurityProfileNameSchema.exactOptional().openapi({
+                    description: ' The name of the security profile. ',
+                  }),
+                  behaviorName: BehaviorNameSchema.exactOptional().openapi({
+                    description: ' The name of the behavior. ',
+                  }),
                 })
                 .openapi({
                   description: ' The target of a mitigation action task. ',
@@ -26227,22 +23187,14 @@ export const putDetectMitigationactionsTasksTaskIdRoute = createRoute({
                 }),
               violationEventOccurrenceRange: z
                 .object({
-                  startTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The start date and time of a time period in which violation events occurred. ',
-                      }),
-                  ).exactOptional(),
-                  endTime: TimestampSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          ' The end date and time of a time period in which violation events occurred. ',
-                      }),
-                  ).exactOptional(),
+                  startTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      ' The start date and time of a time period in which violation events occurred. ',
+                  }),
+                  endTime: TimestampSchema.exactOptional().openapi({
+                    description:
+                      ' The end date and time of a time period in which violation events occurred. ',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -26980,14 +23932,10 @@ export const postIndicesBucketsRoute = createRoute({
                 .openapi({ description: 'The version of the query.' }),
               bucketsAggregationType: z
                 .object({
-                  termsAggregation: TermsAggregationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Performs an aggregation that will return a list of buckets. The list of buckets is a ranked list of the number of occurrences of an aggregation field value.',
-                      }),
-                  ).exactOptional(),
+                  termsAggregation: TermsAggregationSchema.exactOptional().openapi({
+                    description:
+                      'Performs an aggregation that will return a list of buckets. The list of buckets is a ranked list of the number of occurrences of an aggregation field value.',
+                  }),
                 })
                 .openapi({
                   description: 'The type of bucketed aggregation performed.',
@@ -27293,59 +24241,35 @@ export const postIndexingConfigRoute = createRoute({
             .object({
               thingIndexingConfiguration: z
                 .object({
-                  thingIndexingMode: ThingIndexingModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Thing indexing mode. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains registry data only.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry and shadow data.</p> </li> <li> <p>OFF - Thing indexing is disabled.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  thingConnectivityIndexingMode: ThingConnectivityIndexingModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Thing connectivity indexing mode. Valid values are: </p> <ul> <li> <p>STATUS – Your thing index contains connectivity status. To enable thing connectivity indexing, <i>thingIndexMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Thing connectivity status indexing is disabled.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  deviceDefenderIndexingMode: DeviceDefenderIndexingModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Device Defender indexing mode. Valid values are:</p> <ul> <li> <p>VIOLATIONS – Your thing index contains Device Defender violations. To enable Device Defender indexing, <i>deviceDefenderIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Device Defender indexing is disabled.</p> </li> </ul> <p>For more information about Device Defender violations, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html">Device Defender Detect.</a> </p>',
-                      }),
-                  ).exactOptional(),
-                  namedShadowIndexingMode: NamedShadowIndexingModeSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>Named shadow indexing mode. Valid values are:</p> <ul> <li> <p>ON – Your thing index contains named shadow. To enable thing named shadow indexing, <i>namedShadowIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Named shadow indexing is disabled.</p> </li> </ul> <p>For more information about Shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
-                      }),
-                  ).exactOptional(),
-                  managedFields: FieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains fields that are indexed and whose types are already known by the Fleet Indexing service.',
-                      }),
-                  ).exactOptional(),
-                  customFields: FieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'Contains custom field names and their data type.' }),
-                  ).exactOptional(),
-                  filter: IndexingFilterSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.',
-                      }),
-                  ).exactOptional(),
+                  thingIndexingMode: ThingIndexingModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Thing indexing mode. Valid values are:</p> <ul> <li> <p>REGISTRY – Your thing index contains registry data only.</p> </li> <li> <p>REGISTRY_AND_SHADOW - Your thing index contains registry and shadow data.</p> </li> <li> <p>OFF - Thing indexing is disabled.</p> </li> </ul>',
+                  }),
+                  thingConnectivityIndexingMode:
+                    ThingConnectivityIndexingModeSchema.exactOptional().openapi({
+                      description:
+                        '<p>Thing connectivity indexing mode. Valid values are: </p> <ul> <li> <p>STATUS – Your thing index contains connectivity status. To enable thing connectivity indexing, <i>thingIndexMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Thing connectivity status indexing is disabled.</p> </li> </ul>',
+                    }),
+                  deviceDefenderIndexingMode:
+                    DeviceDefenderIndexingModeSchema.exactOptional().openapi({
+                      description:
+                        '<p>Device Defender indexing mode. Valid values are:</p> <ul> <li> <p>VIOLATIONS – Your thing index contains Device Defender violations. To enable Device Defender indexing, <i>deviceDefenderIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Device Defender indexing is disabled.</p> </li> </ul> <p>For more information about Device Defender violations, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html">Device Defender Detect.</a> </p>',
+                    }),
+                  namedShadowIndexingMode: NamedShadowIndexingModeSchema.exactOptional().openapi({
+                    description:
+                      '<p>Named shadow indexing mode. Valid values are:</p> <ul> <li> <p>ON – Your thing index contains named shadow. To enable thing named shadow indexing, <i>namedShadowIndexingMode</i> must not be set to OFF.</p> </li> <li> <p>OFF - Named shadow indexing is disabled.</p> </li> </ul> <p>For more information about Shadows, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html">IoT Device Shadow service.</a> </p>',
+                  }),
+                  managedFields: FieldsSchema.exactOptional().openapi({
+                    description:
+                      'Contains fields that are indexed and whose types are already known by the Fleet Indexing service.',
+                  }),
+                  customFields: FieldsSchema.exactOptional().openapi({
+                    description: 'Contains custom field names and their data type.',
+                  }),
+                  filter: IndexingFilterSchema.exactOptional().openapi({
+                    description:
+                      'Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -27355,25 +24279,17 @@ export const postIndexingConfigRoute = createRoute({
                 }),
               thingGroupIndexingConfiguration: z
                 .object({
-                  thingGroupIndexingMode: ThingGroupIndexingModeSchema.and(
-                    z.any().openapi({ description: 'Thing group indexing mode.' }),
-                  ).exactOptional(),
-                  managedFields: FieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.',
-                      }),
-                  ).exactOptional(),
-                  customFields: FieldsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>A list of thing group fields to index. This list cannot contain any managed fields. Use the GetIndexingConfiguration API to get a list of managed fields.</p> <p>Contains custom field names and their data type.</p>',
-                      }),
-                  ).exactOptional(),
+                  thingGroupIndexingMode: ThingGroupIndexingModeSchema.exactOptional().openapi({
+                    description: 'Thing group indexing mode.',
+                  }),
+                  managedFields: FieldsSchema.exactOptional().openapi({
+                    description:
+                      'Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href="https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.',
+                  }),
+                  customFields: FieldsSchema.exactOptional().openapi({
+                    description:
+                      '<p>A list of thing group fields to index. This list cannot contain any managed fields. Use the GetIndexingConfiguration API to get a list of managed fields.</p> <p>Contains custom field names and their data type.</p>',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Thing group indexing configuration.', required: [] }),
@@ -27529,12 +24445,12 @@ export const postLoggingOptionsRoute = createRoute({
             .object({
               loggingOptionsPayload: z
                 .object({
-                  roleArn: AwsArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the IAM role that grants access.' }),
-                  ).exactOptional(),
-                  logLevel: LogLevelSchema.and(
-                    z.any().openapi({ description: 'The log level.' }),
-                  ).exactOptional(),
+                  roleArn: AwsArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that grants access.',
+                  }),
+                  logLevel: LogLevelSchema.exactOptional().openapi({
+                    description: 'The log level.',
+                  }),
                 })
                 .openapi({ description: 'Describes the logging options payload.', required: [] }),
             })
@@ -28173,64 +25089,37 @@ export const postAuditFindingsRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -28612,64 +25501,37 @@ export const postAuditSuppressionsListRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -33461,12 +30323,12 @@ export const postV2LoggingLevelRoute = createRoute({
             .object({
               logTarget: z
                 .object({
-                  targetType: LogTargetTypeSchema.and(
-                    z.any().openapi({ description: 'The target type.' }),
-                  ).exactOptional(),
-                  targetName: LogTargetNameSchema.and(
-                    z.any().openapi({ description: 'The target name.' }),
-                  ).exactOptional(),
+                  targetType: LogTargetTypeSchema.exactOptional().openapi({
+                    description: 'The target type.',
+                  }),
+                  targetName: LogTargetNameSchema.exactOptional().openapi({
+                    description: 'The target name.',
+                  }),
                 })
                 .openapi({ description: 'A log target.', required: [] }),
               logLevel: z
@@ -33806,15 +30668,15 @@ export const postCacertificateRoute = createRoute({
                 .openapi({ description: 'The PEM of a certificate.' }),
               registrationConfig: z
                 .object({
-                  templateBody: TemplateBodySchema.and(
-                    z.any().openapi({ description: 'The template body.' }),
-                  ).exactOptional(),
-                  roleArn: RoleArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the role.' }),
-                  ).exactOptional(),
-                  templateName: TemplateNameSchema.and(
-                    z.any().openapi({ description: 'The name of the provisioning template.' }),
-                  ).exactOptional(),
+                  templateBody: TemplateBodySchema.exactOptional().openapi({
+                    description: 'The template body.',
+                  }),
+                  roleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role.',
+                  }),
+                  templateName: TemplateNameSchema.exactOptional().openapi({
+                    description: 'The name of the provisioning template.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'The registration configuration.', required: [] }),
@@ -34763,21 +31625,13 @@ export const postAuthorizerAuthorizerNameTestRoute = createRoute({
                 }),
               httpContext: z
                 .object({
-                  headers: HttpHeadersSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The header keys and values in an HTTP authorization request.',
-                      }),
-                  ).exactOptional(),
-                  queryString: HttpQueryStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The query string keys and values in an HTTP authorization request.',
-                      }),
-                  ).exactOptional(),
+                  headers: HttpHeadersSchema.exactOptional().openapi({
+                    description: 'The header keys and values in an HTTP authorization request.',
+                  }),
+                  queryString: HttpQueryStringSchema.exactOptional().openapi({
+                    description:
+                      'The query string keys and values in an HTTP authorization request.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -34786,30 +31640,18 @@ export const postAuthorizerAuthorizerNameTestRoute = createRoute({
                 }),
               mqttContext: z
                 .object({
-                  username: MqttUsernameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The value of the <code>username</code> key in an MQTT authorization request.',
-                      }),
-                  ).exactOptional(),
-                  password: MqttPasswordSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The value of the <code>password</code> key in an MQTT authorization request.',
-                      }),
-                  ).exactOptional(),
-                  clientId: MqttClientIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The value of the <code>clientId</code> key in an MQTT authorization request.',
-                      }),
-                  ).exactOptional(),
+                  username: MqttUsernameSchema.exactOptional().openapi({
+                    description:
+                      'The value of the <code>username</code> key in an MQTT authorization request.',
+                  }),
+                  password: MqttPasswordSchema.exactOptional().openapi({
+                    description:
+                      'The value of the <code>password</code> key in an MQTT authorization request.',
+                  }),
+                  clientId: MqttClientIdSchema.exactOptional().openapi({
+                    description:
+                      'The value of the <code>clientId</code> key in an MQTT authorization request.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -34818,14 +31660,10 @@ export const postAuthorizerAuthorizerNameTestRoute = createRoute({
                 }),
               tlsContext: z
                 .object({
-                  serverName: ServerNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The value of the <code>serverName</code> key in a TLS authorization request.',
-                      }),
-                  ).exactOptional(),
+                  serverName: ServerNameSchema.exactOptional().openapi({
+                    description:
+                      'The value of the <code>serverName</code> key in a TLS authorization request.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -35066,64 +31904,37 @@ export const patchAuditSuppressionsUpdateRoute = createRoute({
                 }),
               resourceIdentifier: z
                 .object({
-                  deviceCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ID of the certificate attached to the resource.',
-                      }),
-                  ).exactOptional(),
-                  caCertificateId: CertificateIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the CA certificate used to authorize the certificate.',
-                      }),
-                  ).exactOptional(),
-                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.and(
-                    z.any().openapi({ description: 'The ID of the Amazon Cognito identity pool.' }),
-                  ).exactOptional(),
-                  clientId: ClientIdSchema.and(
-                    z.any().openapi({ description: 'The client ID.' }),
-                  ).exactOptional(),
-                  policyVersionIdentifier: PolicyVersionIdentifierSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The version of the policy associated with the resource.',
-                      }),
-                  ).exactOptional(),
-                  account: AwsAccountIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The account with which the resource is associated.',
-                      }),
-                  ).exactOptional(),
-                  iamRoleArn: RoleArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The ARN of the IAM role that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  roleAliasArn: RoleAliasArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ARN of the role alias that has overly permissive actions.',
-                      }),
-                  ).exactOptional(),
-                  issuerCertificateIdentifier: IssuerCertificateIdentifierSchema.and(
-                    z.any().openapi({ description: 'The issuer certificate identifier.' }),
-                  ).exactOptional(),
-                  deviceCertificateArn: CertificateArnSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The ARN of the identified device certificate.' }),
-                  ).exactOptional(),
+                  deviceCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the certificate attached to the resource.',
+                  }),
+                  caCertificateId: CertificateIdSchema.exactOptional().openapi({
+                    description: 'The ID of the CA certificate used to authorize the certificate.',
+                  }),
+                  cognitoIdentityPoolId: CognitoIdentityPoolIdSchema.exactOptional().openapi({
+                    description: 'The ID of the Amazon Cognito identity pool.',
+                  }),
+                  clientId: ClientIdSchema.exactOptional().openapi({
+                    description: 'The client ID.',
+                  }),
+                  policyVersionIdentifier: PolicyVersionIdentifierSchema.exactOptional().openapi({
+                    description: 'The version of the policy associated with the resource.',
+                  }),
+                  account: AwsAccountIdSchema.exactOptional().openapi({
+                    description: 'The account with which the resource is associated.',
+                  }),
+                  iamRoleArn: RoleArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the IAM role that has overly permissive actions.',
+                  }),
+                  roleAliasArn: RoleAliasArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the role alias that has overly permissive actions.',
+                  }),
+                  issuerCertificateIdentifier:
+                    IssuerCertificateIdentifierSchema.exactOptional().openapi({
+                      description: 'The issuer certificate identifier.',
+                    }),
+                  deviceCertificateArn: CertificateArnSchema.exactOptional().openapi({
+                    description: 'The ARN of the identified device certificate.',
+                  }),
                 })
                 .openapi({
                   description: 'Information that identifies the noncompliant resource.',

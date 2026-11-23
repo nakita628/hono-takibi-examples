@@ -44,7 +44,15 @@ const EmbedAllRequestSchema = z
           'The name of the prompt that should be used by for encoding. If not set, no prompt\nwill be applied.\n\nMust be a key in the `sentence-transformers` configuration `prompts` dictionary.\n\nFor example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},\nthen the sentence "What is the capital of France?" will be encoded as\n"query: What is the capital of France?" because the prompt text will be prepended before\nany text to encode.',
         example: 'null',
       }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
@@ -80,7 +88,15 @@ const EmbedRequestSchema = z
           'The name of the prompt that should be used by for encoding. If not set, no prompt\nwill be applied.\n\nMust be a key in the `sentence-transformers` configuration `prompts` dictionary.\n\nFor example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},\nthen the sentence "What is the capital of France?" will be encoded as\n"query: What is the capital of France?" because the prompt text will be prepended before\nany text to encode.',
         example: 'null',
       }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
@@ -104,7 +120,15 @@ const EmbedSparseRequestSchema = z
           'The name of the prompt that should be used by for encoding. If not set, no prompt\nwill be applied.\n\nMust be a key in the `sentence-transformers` configuration `prompts` dictionary.\n\nFor example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},\nthen the sentence "What is the capital of France?" will be encoded as\n"query: What is the capital of France?" because the prompt text will be prepended before\nany text to encode.',
         example: 'null',
       }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
@@ -262,7 +286,15 @@ const PredictRequestSchema = z
   .object({
     inputs: PredictInputSchema,
     raw_scores: z.boolean().default(false).exactOptional().openapi({ example: 'false' }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['inputs'] })
@@ -300,7 +332,15 @@ const RerankRequestSchema = z
     raw_scores: z.boolean().default(false).exactOptional().openapi({ example: 'false' }),
     return_text: z.boolean().default(false).exactOptional().openapi({ example: 'false' }),
     texts: z.array(z.string()).openapi({ example: ['Deep Learning is ...'] }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: ['query', 'texts'] })
@@ -339,7 +379,15 @@ const SimilarityParametersSchema = z
           'The name of the prompt that should be used by for encoding. If not set, no prompt\nwill be applied.\n\nMust be a key in the `sentence-transformers` configuration `prompts` dictionary.\n\nFor example if ``prompt_name`` is "query" and the ``prompts`` is {"query": "query: ", ...},\nthen the sentence "What is the capital of France?" will be encoded as\n"query: What is the capital of France?" because the prompt text will be prepended before\nany text to encode.',
         example: 'null',
       }),
-    truncate: z.boolean().nullable().default(false).exactOptional().openapi({ example: 'false' }),
+    truncate: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether to truncate inputs that are longer than the maximum supported size. Defaults to\nthe `--auto-truncate` value of the server, which is `true` unless changed.',
+        example: 'false',
+      }),
     truncation_direction: TruncationDirectionSchema.exactOptional().openapi({ default: 'right' }),
   })
   .openapi({ required: [] })

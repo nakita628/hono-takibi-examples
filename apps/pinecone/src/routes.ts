@@ -50,7 +50,7 @@ const ErrorResponseSchema = z
               'Index name must contain only lowercase alphanumeric characters or hyphens, and must not begin or end with a hyphen.',
           }),
         details: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -152,7 +152,7 @@ const ModelIndexEmbedSchema = z
           "The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.",
       }),
     field_map: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         example: { text: 'your-text-field' },
@@ -160,11 +160,11 @@ const ModelIndexEmbedSchema = z
           'Identifies the name of the text field from your document model that is embedded.',
       }),
     read_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The read parameters for the embedding model.' }),
     write_parameters: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The write parameters for the embedding model.' }),
   })
@@ -275,105 +275,32 @@ const BackupListSchema = z
   .openapi({ description: 'The list of backups that exist in the project.', required: [] })
   .openapi('BackupList')
 
-const IndexSpecSchema = z
-  .xor([
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'serverless')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['serverless'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'pod')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['pod'] }),
-    z
-      .unknown()
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'byoc')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .openapi({ required: ['byoc'] }),
-  ])
-  .openapi({
-    description:
-      'The spec object defines how the index should be deployed.\n\nFor serverless indexes, you set only the [cloud and region](http://docs.pinecone.io/guides/index-data/create-an-index#cloud-regions) where the index should be hosted. For pod-based indexes, you set the [environment](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-environments) where the index should be hosted, the [pod type and size](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-types) to use, and other index characteristics. For [BYOC indexes](http://docs.pinecone.io/guides/production/bring-your-own-cloud), you set the environment name provided to you during onboarding.\n',
-  })
-  .openapi('IndexSpec')
-
-const CreateIndexRequestSchema = z
+const ServerlessSpecSchema = z
   .object({
-    name: z
+    cloud: z
+      .enum(['gcp', 'aws', 'azure'])
+      .openapi({
+        example: 'aws',
+        description: 'The public cloud where you would like your index hosted.',
+      }),
+    region: z
       .string()
-      .min(1)
-      .max(45)
       .openapi({
-        example: 'example-index',
-        description:
-          "The name of the index. Resource name must be 1-45 characters long, start and end with an alphanumeric character, and consist only of lower case alphanumeric characters or '-'.\n",
+        example: 'us-east-1',
+        description: 'The region where you would like your index to be created.',
       }),
-    dimension: z
-      .int32()
-      .min(1)
-      .max(20000)
-      .exactOptional()
-      .openapi({
-        example: 1536,
-        description: 'The dimensions of the vectors to be inserted in the index.',
-      }),
-    metric: z
-      .enum(['cosine', 'euclidean', 'dotproduct'])
-      .exactOptional()
-      .openapi({
-        description:
-          "The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse', the metric must be 'dotproduct'. If the `vector_type` is `dense`, the metric defaults to 'cosine'.",
-      }),
-    deletion_protection: DeletionProtectionSchema.exactOptional(),
-    tags: IndexTagsSchema.exactOptional(),
-    spec: IndexSpecSchema,
-    vector_type: z
+    source_collection: z
       .string()
-      .default('dense')
       .exactOptional()
       .openapi({
-        description:
-          "The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.",
+        description: 'The name of the collection to be used as the source for the index.',
       }),
   })
   .openapi({
-    description: 'The configuration needed to create a Pinecone index.',
-    required: ['name', 'spec'],
+    description: 'Configuration needed to deploy a serverless index.',
+    required: ['cloud', 'region'],
   })
-  .openapi('CreateIndexRequest')
-
-const ByocSpecSchema = z
-  .object({
-    environment: z
-      .string()
-      .openapi({
-        example: 'aws-us-east-1-b921',
-        description: 'The environment where the index is hosted.',
-      }),
-  })
-  .openapi({
-    example: { environment: 'aws-us-east-1-b921' },
-    description: 'Configuration needed to deploy an index in a BYOC environment.',
-    required: ['environment'],
-  })
-  .openapi('ByocSpec')
+  .openapi('ServerlessSpec')
 
 const PodSpecSchema = z
   .object({
@@ -458,32 +385,129 @@ const PodSpecSchema = z
   })
   .openapi('PodSpec')
 
-const ServerlessSpecSchema = z
+const ByocSpecSchema = z
   .object({
-    cloud: z
-      .enum(['gcp', 'aws', 'azure'])
-      .openapi({
-        example: 'aws',
-        description: 'The public cloud where you would like your index hosted.',
-      }),
-    region: z
+    environment: z
       .string()
       .openapi({
-        example: 'us-east-1',
-        description: 'The region where you would like your index to be created.',
-      }),
-    source_collection: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The name of the collection to be used as the source for the index.',
+        example: 'aws-us-east-1-b921',
+        description: 'The environment where the index is hosted.',
       }),
   })
   .openapi({
-    description: 'Configuration needed to deploy a serverless index.',
-    required: ['cloud', 'region'],
+    example: { environment: 'aws-us-east-1-b921' },
+    description: 'Configuration needed to deploy an index in a BYOC environment.',
+    required: ['environment'],
   })
-  .openapi('ServerlessSpec')
+  .openapi('ByocSpec')
+
+const IndexSpecSchema = (() => {
+  const Schema = z
+    .xor([
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'serverless')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['serverless'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'pod')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['pod'] }),
+      z
+        .unknown()
+        .superRefine((val, ctx) => {
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            if (!Object.hasOwn(val, 'byoc')) {
+              ctx.addIssue({ code: 'custom' })
+            }
+          }
+        })
+        .openapi({ required: ['byoc'] }),
+    ])
+    .and(
+      z
+        .object({
+          serverless: ServerlessSpecSchema.exactOptional(),
+          pod: PodSpecSchema.exactOptional(),
+          byoc: ByocSpecSchema.exactOptional(),
+        })
+        .openapi({ required: [] }),
+    )
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const o = ctx.value
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+      for (const k of Object.keys(o)) {
+        if (!['serverless', 'pod', 'byoc'].includes(k)) {
+          ctx.issues.push({ code: 'custom', path: [k], input: o })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
+  .openapi({ additionalProperties: false })
+  .openapi({
+    description:
+      'The spec object defines how the index should be deployed.\n\nFor serverless indexes, you set only the [cloud and region](http://docs.pinecone.io/guides/index-data/create-an-index#cloud-regions) where the index should be hosted. For pod-based indexes, you set the [environment](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-environments) where the index should be hosted, the [pod type and size](http://docs.pinecone.io/guides/indexes/pods/understanding-pod-based-indexes#pod-types) to use, and other index characteristics. For [BYOC indexes](http://docs.pinecone.io/guides/production/bring-your-own-cloud), you set the environment name provided to you during onboarding.\n',
+  })
+  .openapi('IndexSpec')
+
+const CreateIndexRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .max(45)
+      .openapi({
+        example: 'example-index',
+        description:
+          "The name of the index. Resource name must be 1-45 characters long, start and end with an alphanumeric character, and consist only of lower case alphanumeric characters or '-'.\n",
+      }),
+    dimension: z
+      .int32()
+      .min(1)
+      .max(20000)
+      .exactOptional()
+      .openapi({
+        example: 1536,
+        description: 'The dimensions of the vectors to be inserted in the index.',
+      }),
+    metric: z
+      .enum(['cosine', 'euclidean', 'dotproduct'])
+      .exactOptional()
+      .openapi({
+        description:
+          "The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse', the metric must be 'dotproduct'. If the `vector_type` is `dense`, the metric defaults to 'cosine'.",
+      }),
+    deletion_protection: DeletionProtectionSchema.exactOptional(),
+    tags: IndexTagsSchema.exactOptional(),
+    spec: IndexSpecSchema,
+    vector_type: z
+      .string()
+      .default('dense')
+      .exactOptional()
+      .openapi({
+        description:
+          "The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.",
+      }),
+  })
+  .openapi({
+    description: 'The configuration needed to create a Pinecone index.',
+    required: ['name', 'spec'],
+  })
+  .openapi('CreateIndexRequest')
 
 const IndexModelSchema = z
   .object({
@@ -716,7 +740,7 @@ const CreateIndexForModelRequestSchema = z
               "The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric will be defaulted according to the model. Cannot be updated once set.",
           }),
         field_map: z
-          .object({})
+          .looseObject({})
           .openapi({
             example: { text: 'your-text-field' },
             description:
@@ -727,11 +751,11 @@ const CreateIndexForModelRequestSchema = z
           .exactOptional()
           .openapi({ description: 'The dimension of embedding vectors produced for the index.' }),
         read_parameters: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The read parameters for the embedding model.' }),
         write_parameters: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The write parameters for the embedding model.' }),
       })
@@ -795,7 +819,7 @@ const ConfigureIndexRequestSchema = z
               'The name of the embedding model to use with the index. The index dimension and model dimension must match, and the index similarity metric must be supported by the model. The index embedding model cannot be changed once set.',
           }),
         field_map: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             example: { text: 'your-text-field' },
@@ -803,11 +827,11 @@ const ConfigureIndexRequestSchema = z
               'Identifies the name of the text field from your document model that will be embedded.',
           }),
         read_parameters: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The read parameters for the embedding model.' }),
         write_parameters: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({ description: 'The write parameters for the embedding model.' }),
       })

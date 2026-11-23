@@ -11,14 +11,10 @@ const ProcessingTimeMillisecondsSchema = z.int().openapi('ProcessingTimeMillisec
 
 const TimingInformationSchema = z
   .object({
-    ProcessingTimeMilliseconds: ProcessingTimeMillisecondsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that QLDB spent on processing the command, measured in milliseconds.',
-        }),
-    ).exactOptional(),
+    ProcessingTimeMilliseconds: ProcessingTimeMillisecondsSchema.exactOptional().openapi({
+      description:
+        'The amount of time that QLDB spent on processing the command, measured in milliseconds.',
+    }),
   })
   .openapi({
     description:
@@ -29,19 +25,13 @@ const TimingInformationSchema = z
 
 const StartSessionResultSchema = z
   .object({
-    SessionToken: SessionTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Session token of the started session. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.',
-        }),
-    ).exactOptional(),
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
+    SessionToken: SessionTokenSchema.exactOptional().openapi({
+      description:
+        'Session token of the started session. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.',
+    }),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
   })
   .openapi({ description: 'Contains the details of the started session.', required: [] })
   .openapi('StartSessionResult')
@@ -54,25 +44,21 @@ const TransactionIdSchema = z
 
 const StartTransactionResultSchema = z
   .object({
-    TransactionId: TransactionIdSchema.and(
-      z.any().openapi({ description: 'The transaction ID of the started transaction.' }),
-    ).exactOptional(),
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
+    TransactionId: TransactionIdSchema.exactOptional().openapi({
+      description: 'The transaction ID of the started transaction.',
+    }),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
   })
   .openapi({ description: 'Contains the details of the started transaction.', required: [] })
   .openapi('StartTransactionResult')
 
 const EndSessionResultSchema = z
   .object({
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
   })
   .openapi({ description: 'Contains the details of the ended session.', required: [] })
   .openapi('EndSessionResult')
@@ -85,12 +71,12 @@ const WriteIOsSchema = z.int().openapi('WriteIOs')
 
 const IOUsageSchema = z
   .object({
-    ReadIOs: ReadIOsSchema.and(
-      z.any().openapi({ description: 'The number of read I/O requests that the command made.' }),
-    ).exactOptional(),
-    WriteIOs: WriteIOsSchema.and(
-      z.any().openapi({ description: 'The number of write I/O requests that the command made.' }),
-    ).exactOptional(),
+    ReadIOs: ReadIOsSchema.exactOptional().openapi({
+      description: 'The number of read I/O requests that the command made.',
+    }),
+    WriteIOs: WriteIOsSchema.exactOptional().openapi({
+      description: 'The number of write I/O requests that the command made.',
+    }),
   })
   .openapi({
     description: 'Contains I/O usage metrics for a command that was invoked.',
@@ -100,35 +86,27 @@ const IOUsageSchema = z
 
 const CommitTransactionResultSchema = z
   .object({
-    TransactionId: TransactionIdSchema.and(
-      z.any().openapi({ description: 'The transaction ID of the committed transaction.' }),
-    ).exactOptional(),
-    CommitDigest: CommitDigestSchema.and(
-      z.any().openapi({ description: 'The commit digest of the committed transaction.' }),
-    ).exactOptional(),
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
-    ConsumedIOs: IOUsageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains metrics about the number of I/O requests that were consumed.',
-        }),
-    ).exactOptional(),
+    TransactionId: TransactionIdSchema.exactOptional().openapi({
+      description: 'The transaction ID of the committed transaction.',
+    }),
+    CommitDigest: CommitDigestSchema.exactOptional().openapi({
+      description: 'The commit digest of the committed transaction.',
+    }),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
+    ConsumedIOs: IOUsageSchema.exactOptional().openapi({
+      description: 'Contains metrics about the number of I/O requests that were consumed.',
+    }),
   })
   .openapi({ description: 'Contains the details of the committed transaction.', required: [] })
   .openapi('CommitTransactionResult')
 
 const AbortTransactionResultSchema = z
   .object({
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
   })
   .openapi({ description: 'Contains the details of the aborted transaction.', required: [] })
   .openapi('AbortTransactionResult')
@@ -139,22 +117,13 @@ const IonTextSchema = z.string().min(1).max(1048576).openapi('IonText')
 
 const ValueHolderSchema = z
   .object({
-    IonBinary: IonBinarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Ion binary value contained in a <code>ValueHolder</code> structure.',
-        }),
-    ).exactOptional(),
-    IonText: IonTextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Ion plaintext value contained in a <code>ValueHolder</code> structure.',
-        }),
-    ).exactOptional(),
+    IonBinary: IonBinarySchema.exactOptional().openapi({
+      description: 'An Amazon Ion binary value contained in a <code>ValueHolder</code> structure.',
+    }),
+    IonText: IonTextSchema.exactOptional().openapi({
+      description:
+        'An Amazon Ion plaintext value contained in a <code>ValueHolder</code> structure.',
+    }),
   })
   .openapi({
     description: 'A structure that can contain a value in multiple encoding formats.',
@@ -173,88 +142,70 @@ const PageTokenSchema = z
 
 const PageSchema = z
   .object({
-    Values: ValueHoldersSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A structure that contains values in multiple encoding formats.' }),
-    ).exactOptional(),
-    NextPageToken: PageTokenSchema.and(
-      z.any().openapi({ description: 'The token of the next page.' }),
-    ).exactOptional(),
+    Values: ValueHoldersSchema.exactOptional().openapi({
+      description: 'A structure that contains values in multiple encoding formats.',
+    }),
+    NextPageToken: PageTokenSchema.exactOptional().openapi({
+      description: 'The token of the next page.',
+    }),
   })
   .openapi({ description: 'Contains details of the fetched page.', required: [] })
   .openapi('Page')
 
 const ExecuteStatementResultSchema = z
   .object({
-    FirstPage: PageSchema.and(
-      z.any().openapi({ description: 'Contains the details of the first fetched page.' }),
-    ).exactOptional(),
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
-    ConsumedIOs: IOUsageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains metrics about the number of I/O requests that were consumed.',
-        }),
-    ).exactOptional(),
+    FirstPage: PageSchema.exactOptional().openapi({
+      description: 'Contains the details of the first fetched page.',
+    }),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
+    ConsumedIOs: IOUsageSchema.exactOptional().openapi({
+      description: 'Contains metrics about the number of I/O requests that were consumed.',
+    }),
   })
   .openapi({ description: 'Contains the details of the executed statement.', required: [] })
   .openapi('ExecuteStatementResult')
 
 const FetchPageResultSchema = z
   .object({
-    Page: PageSchema.and(
-      z.any().openapi({ description: 'Contains details of the fetched page.' }),
-    ).exactOptional(),
-    TimingInformation: TimingInformationSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains server-side performance information for the command.' }),
-    ).exactOptional(),
-    ConsumedIOs: IOUsageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Contains metrics about the number of I/O requests that were consumed.',
-        }),
-    ).exactOptional(),
+    Page: PageSchema.exactOptional().openapi({
+      description: 'Contains details of the fetched page.',
+    }),
+    TimingInformation: TimingInformationSchema.exactOptional().openapi({
+      description: 'Contains server-side performance information for the command.',
+    }),
+    ConsumedIOs: IOUsageSchema.exactOptional().openapi({
+      description: 'Contains metrics about the number of I/O requests that were consumed.',
+    }),
   })
   .openapi({ description: 'Contains the page that was fetched.', required: [] })
   .openapi('FetchPageResult')
 
 const SendCommandResultSchema = z
   .object({
-    StartSession: StartSessionResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains the details of the started session that includes a session token. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.',
-        }),
-    ).exactOptional(),
-    StartTransaction: StartTransactionResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the started transaction.' }),
-    ).exactOptional(),
-    EndSession: EndSessionResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the ended session.' }),
-    ).exactOptional(),
-    CommitTransaction: CommitTransactionResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the committed transaction.' }),
-    ).exactOptional(),
-    AbortTransaction: AbortTransactionResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the aborted transaction.' }),
-    ).exactOptional(),
-    ExecuteStatement: ExecuteStatementResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the executed statement.' }),
-    ).exactOptional(),
-    FetchPage: FetchPageResultSchema.and(
-      z.any().openapi({ description: 'Contains the details of the fetched page.' }),
-    ).exactOptional(),
+    StartSession: StartSessionResultSchema.exactOptional().openapi({
+      description:
+        'Contains the details of the started session that includes a session token. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.',
+    }),
+    StartTransaction: StartTransactionResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the started transaction.',
+    }),
+    EndSession: EndSessionResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the ended session.',
+    }),
+    CommitTransaction: CommitTransactionResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the committed transaction.',
+    }),
+    AbortTransaction: AbortTransactionResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the aborted transaction.',
+    }),
+    ExecuteStatement: ExecuteStatementResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the executed statement.',
+    }),
+    FetchPage: FetchPageResultSchema.exactOptional().openapi({
+      description: 'Contains the details of the fetched page.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendCommandResult')
@@ -268,38 +219,32 @@ const LedgerNameSchema = z
 
 const StartSessionRequestSchema = z
   .object({
-    LedgerName: LedgerNameSchema.and(
-      z.any().openapi({ description: 'The name of the ledger to start a new session against.' }),
-    ),
+    LedgerName: LedgerNameSchema.openapi({
+      description: 'The name of the ledger to start a new session against.',
+    }),
   })
   .openapi({ required: ['LedgerName'], description: 'Specifies a request to start a new session.' })
   .openapi('StartSessionRequest')
 
 const StartTransactionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Specifies a request to start a transaction.' })
   .openapi('StartTransactionRequest')
 
 const EndSessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Specifies a request to end the session.' })
   .openapi('EndSessionRequest')
 
 const CommitTransactionRequestSchema = z
   .object({
-    TransactionId: TransactionIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the transaction ID of the transaction to commit.' }),
-    ),
-    CommitDigest: CommitDigestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the commit digest for the transaction to commit. For every active transaction, the commit digest must be passed. QLDB validates <code>CommitDigest</code> and rejects the commit with an error if the digest computed on the client does not match the digest computed by QLDB.</p> <p>The purpose of the <code>CommitDigest</code> parameter is to ensure that QLDB commits a transaction if and only if the server has processed the exact set of statements sent by the client, in the same order that client sent them, and with no duplicates.</p>',
-        }),
-    ),
+    TransactionId: TransactionIdSchema.openapi({
+      description: 'Specifies the transaction ID of the transaction to commit.',
+    }),
+    CommitDigest: CommitDigestSchema.openapi({
+      description:
+        '<p>Specifies the commit digest for the transaction to commit. For every active transaction, the commit digest must be passed. QLDB validates <code>CommitDigest</code> and rejects the commit with an error if the digest computed on the client does not match the digest computed by QLDB.</p> <p>The purpose of the <code>CommitDigest</code> parameter is to ensure that QLDB commits a transaction if and only if the server has processed the exact set of statements sent by the client, in the same order that client sent them, and with no duplicates.</p>',
+    }),
   })
   .openapi({
     required: ['TransactionId', 'CommitDigest'],
@@ -308,7 +253,7 @@ const CommitTransactionRequestSchema = z
   .openapi('CommitTransactionRequest')
 
 const AbortTransactionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Contains the details of the transaction to abort.' })
   .openapi('AbortTransactionRequest')
 
@@ -318,19 +263,13 @@ const StatementParametersSchema = z.array(ValueHolderSchema).openapi('StatementP
 
 const ExecuteStatementRequestSchema = z
   .object({
-    TransactionId: TransactionIdSchema.and(
-      z.any().openapi({ description: 'Specifies the transaction ID of the request.' }),
-    ),
-    Statement: StatementSchema.and(
-      z.any().openapi({ description: 'Specifies the statement of the request.' }),
-    ),
-    Parameters: StatementParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the parameters for the parameterized statement in the request.',
-        }),
-    ).exactOptional(),
+    TransactionId: TransactionIdSchema.openapi({
+      description: 'Specifies the transaction ID of the request.',
+    }),
+    Statement: StatementSchema.openapi({ description: 'Specifies the statement of the request.' }),
+    Parameters: StatementParametersSchema.exactOptional().openapi({
+      description: 'Specifies the parameters for the parameterized statement in the request.',
+    }),
   })
   .openapi({
     required: ['TransactionId', 'Statement'],
@@ -340,12 +279,12 @@ const ExecuteStatementRequestSchema = z
 
 const FetchPageRequestSchema = z
   .object({
-    TransactionId: TransactionIdSchema.and(
-      z.any().openapi({ description: 'Specifies the transaction ID of the page to be fetched.' }),
-    ),
-    NextPageToken: PageTokenSchema.and(
-      z.any().openapi({ description: 'Specifies the next page token of the page to be fetched.' }),
-    ),
+    TransactionId: TransactionIdSchema.openapi({
+      description: 'Specifies the transaction ID of the page to be fetched.',
+    }),
+    NextPageToken: PageTokenSchema.openapi({
+      description: 'Specifies the next page token of the page to be fetched.',
+    }),
   })
   .openapi({
     required: ['TransactionId', 'NextPageToken'],
@@ -355,42 +294,32 @@ const FetchPageRequestSchema = z
 
 const SendCommandRequestSchema = z
   .object({
-    SessionToken: SessionTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the session token for the current command. A session token is constant throughout the life of the session.</p> <p>To obtain a session token, run the <code>StartSession</code> command. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.</p>',
-        }),
-    ).exactOptional(),
-    StartSession: StartSessionRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Command to start a new session. A session token is obtained as part of the response.',
-        }),
-    ).exactOptional(),
-    StartTransaction: StartTransactionRequestSchema.and(
-      z.any().openapi({ description: 'Command to start a new transaction.' }),
-    ).exactOptional(),
-    EndSession: EndSessionRequestSchema.and(
-      z.any().openapi({ description: 'Command to end the current session.' }),
-    ).exactOptional(),
-    CommitTransaction: CommitTransactionRequestSchema.and(
-      z.any().openapi({ description: 'Command to commit the specified transaction.' }),
-    ).exactOptional(),
-    AbortTransaction: AbortTransactionRequestSchema.and(
-      z.any().openapi({ description: 'Command to abort the current transaction.' }),
-    ).exactOptional(),
-    ExecuteStatement: ExecuteStatementRequestSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Command to execute a statement in the specified transaction.' }),
-    ).exactOptional(),
-    FetchPage: FetchPageRequestSchema.and(
-      z.any().openapi({ description: 'Command to fetch a page.' }),
-    ).exactOptional(),
+    SessionToken: SessionTokenSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the session token for the current command. A session token is constant throughout the life of the session.</p> <p>To obtain a session token, run the <code>StartSession</code> command. This <code>SessionToken</code> is required for every subsequent command that is issued during the current session.</p>',
+    }),
+    StartSession: StartSessionRequestSchema.exactOptional().openapi({
+      description:
+        'Command to start a new session. A session token is obtained as part of the response.',
+    }),
+    StartTransaction: StartTransactionRequestSchema.exactOptional().openapi({
+      description: 'Command to start a new transaction.',
+    }),
+    EndSession: EndSessionRequestSchema.exactOptional().openapi({
+      description: 'Command to end the current session.',
+    }),
+    CommitTransaction: CommitTransactionRequestSchema.exactOptional().openapi({
+      description: 'Command to commit the specified transaction.',
+    }),
+    AbortTransaction: AbortTransactionRequestSchema.exactOptional().openapi({
+      description: 'Command to abort the current transaction.',
+    }),
+    ExecuteStatement: ExecuteStatementRequestSchema.exactOptional().openapi({
+      description: 'Command to execute a statement in the specified transaction.',
+    }),
+    FetchPage: FetchPageRequestSchema.exactOptional().openapi({
+      description: 'Command to fetch a page.',
+    }),
   })
   .openapi({ title: 'SendCommandRequest', required: [] })
   .openapi('SendCommandRequest')

@@ -62,7 +62,7 @@ const ErrorResponseSchema = z
                   'When applicable, this property value will be the field that generated the error.',
               }),
             help: z
-              .object({})
+              .looseObject({})
               .exactOptional()
               .openapi({
                 description:
@@ -357,7 +357,7 @@ const PostMailSendRequestBody = {
                         'The subject of your email. See line length limits specified in [RFC 2822](https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1) for guidance on subject line character limits.',
                     }),
                   headers: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -372,14 +372,14 @@ const PostMailSendRequestBody = {
                         'A collection property names that will be substituted by their corresponding property values in the `subject`, `reply-to` and `content` portions of your message. Name and value pairs follow the pattern `"substitution_tag":"value to substitute"`. The total collective size of your substitutions may not exceed 100,000 bytes per personalization object. Substitutions allow you to insert data without using SendGrid\'s Dynamic Templates. This property should not be used in combination with a Dynamic Template, which can be identified by a `template_id` starting with `d-`. See [**Substitution Tags**](https://docs.sendgrid.com/for-developers/sending-email/substitution-tags) for more information.',
                     }),
                   dynamic_template_data: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'A collection property names that will be substituted by their corresponding property values in the `subject`, `reply-to` and `content` portions of a SendGrid Dynamic Template. Dynamic template data is available in a template using [Handlebars](https://docs.sendgrid.com/for-developers/sending-email/using-handlebars) syntax. This property should be used in combination with a Dynamic Template, which can be identified by a `template_id` starting with `d-`. See [**How to Send an Email with Dynamic Templates**](https://docs.sendgrid.com/ui/sending-email/how-to-send-an-email-with-dynamic-templates) for more information.',
                     }),
                   custom_args: z
-                    .object({})
+                    .looseObject({})
                     .refine((val) => Object.keys(val).length <= 10000)
                     .exactOptional()
                     .openapi({
@@ -503,7 +503,7 @@ const PostMailSendRequestBody = {
                 'An email template ID. A template that contains a subject and content—either text or html—will override any subject and content values specified at the `personalizations` or message level. If a template ID begins with `d-`, it is a dynamic template and will work with the `dynamic_template_data` property. If the template ID does not begin with `d-`, it is a standard SendGrid template and will work with the `substitutions` property. See [**How to Send an Email with Dynamic Templates**](https://docs.sendgrid.com/ui/sending-email/how-to-send-an-email-with-dynamic-templates) for more information about working with templates.',
             }),
           headers: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               description:

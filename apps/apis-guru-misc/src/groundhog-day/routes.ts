@@ -722,13 +722,10 @@ export const getApiV1PredictionsRoute = createRoute({
     302: {
       description: 'Found',
       headers: z.object({
-        location: {
-          description: '/api/v1/predictions?year=2022',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: '/api/v1/predictions?year=2022', param: { required: false } }),
-        },
+        location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: '/api/v1/predictions?year=2022', param: { required: false } }),
       }),
     },
     400: {
@@ -783,23 +780,17 @@ export const getApiV1SpecRoute = createRoute({
     200: {
       description: 'OK',
       headers: z.object({
-        'content-disposition': {
-          description: 'attachment; filename="Groundhog-Day-API.v1.yaml"',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'attachment; filename="Groundhog-Day-API.v1.yaml"',
-              param: { required: false },
-            }),
-        },
-        'content-type': {
-          description: 'text/yaml; charset=UTF-8',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'text/yaml; charset=UTF-8', param: { required: false } }),
-        },
+        'content-disposition': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'attachment; filename="Groundhog-Day-API.v1.yaml"',
+            param: { required: false },
+          }),
+        'content-type': z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'text/yaml; charset=UTF-8', param: { required: false } }),
       }),
     },
   },

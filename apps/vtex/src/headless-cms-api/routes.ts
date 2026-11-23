@@ -42,7 +42,7 @@ export const getVCmsApiBuilderIdIndexRoute = createRoute({
                               configurations: z
                                 .array(
                                   z
-                                    .object({})
+                                    .looseObject({})
                                     .openapi({
                                       description:
                                         'Object with custom configurations of the Content Type tab.',
@@ -408,7 +408,7 @@ export const getVCmsApiBuilderIdContentTypeRoute = createRoute({
                           description: 'Name of the page created via the CMS interface.',
                         }),
                       parameters: z
-                        .object({})
+                        .looseObject({})
                         .exactOptional()
                         .openapi({
                           description:
@@ -419,7 +419,7 @@ export const getVCmsApiBuilderIdContentTypeRoute = createRoute({
                           z
                             .object({
                               data: z
-                                .object({})
+                                .looseObject({})
                                 .exactOptional()
                                 .openapi({
                                   description:
@@ -648,7 +648,7 @@ export const getVCmsApiBuilderIdContentTypeDocumentIdIndexRoute = createRoute({
                   z
                     .object({
                       data: z
-                        .object({})
+                        .looseObject({})
                         .openapi({
                           description:
                             'Content of the Section. Varies depending on the Section schema defined in the FastStore project.',

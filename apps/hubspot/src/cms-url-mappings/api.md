@@ -23,12 +23,6 @@ Base URLs:
 |---|---|
 |content||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="url-mappings-basic">Basic</h1>
 
 ## List URL mappings
@@ -39,6 +33,7 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/url-mappings/2026-09/url-mappings \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -89,8 +84,9 @@ oauth2 ( Scopes: content )
 ```bash
 curl https://api.hubapi.com/url-mappings/2026-09/url-mappings \
   -X POST \
-  -H 'Content-Type: */*' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d 'null'
 ```
 
 `POST /url-mappings/2026-09/url-mappings`
@@ -193,6 +189,7 @@ null
 |» cosObjectType|SITE_MAP|
 |» cosObjectType|SITE_MENU|
 |» cosObjectType|SITE_SETTINGS|
+|» cosObjectType|STAGED_CONTENT|
 |» cosObjectType|SUBSCRIPTIONS_SETTINGS|
 |» cosObjectType|TAG|
 |» cosObjectType|THEME|
@@ -230,6 +227,7 @@ oauth2 ( Scopes: content )
 
 ```bash
 curl 'https://api.hubapi.com/url-mappings/2026-09/url-mappings/{id}' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -468,6 +466,7 @@ null
 |cosObjectType|SITE_MAP|
 |cosObjectType|SITE_MENU|
 |cosObjectType|SITE_SETTINGS|
+|cosObjectType|STAGED_CONTENT|
 |cosObjectType|SUBSCRIPTIONS_SETTINGS|
 |cosObjectType|TAG|
 |cosObjectType|THEME|

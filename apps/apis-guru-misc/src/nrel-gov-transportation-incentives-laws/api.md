@@ -6,7 +6,7 @@ Query our database of federal and state laws and incentives for alternative fuel
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api/transportation-incentives-laws">https://api.apis.guru/api/transportation-incentives-laws</a>
+* <a href="/api/transportation-incentives-laws">/api/transportation-incentives-laws</a>
 
 <h1 id="transportation-laws-and-incentives-default">Default</h1>
 

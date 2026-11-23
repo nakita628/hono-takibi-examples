@@ -1,6 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AcceptPageResultSchema = z.object({}).openapi('AcceptPageResult')
+const PaginationTokenSchema = z
+  .string()
+  .regex(/^[\\\/a-zA-Z0-9_+=\-]*$/)
+  .max(2048)
+  .openapi('PaginationToken')
 
 const SsmContactsArnSchema = z
   .string()
@@ -8,6 +12,180 @@ const SsmContactsArnSchema = z
   .min(1)
   .max(2048)
   .openapi('SsmContactsArn')
+
+const RotationNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_\-\s\.]*$/)
+  .min(1)
+  .max(255)
+  .openapi('RotationName')
+
+const SsmContactsArnListSchema = z
+  .array(SsmContactsArnSchema)
+  .min(0)
+  .max(25)
+  .openapi('SsmContactsArnList')
+
+const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
+
+const TimeZoneIdSchema = z
+  .string()
+  .regex(/^[:a-zA-Z0-9_\-\s\.\\\/]*$/)
+  .min(1)
+  .max(255)
+  .openapi('TimeZoneId')
+
+const DayOfMonthSchema = z.int().min(1).max(31).openapi('DayOfMonth')
+
+const HourOfDaySchema = z.int().min(0).max(23).openapi('HourOfDay')
+
+const MinuteOfHourSchema = z.int().min(0).max(59).openapi('MinuteOfHour')
+
+const HandOffTimeSchema = z
+  .object({
+    HourOfDay: HourOfDaySchema.openapi({
+      description: 'The hour when an on-call rotation shift begins or ends.',
+    }),
+    MinuteOfHour: MinuteOfHourSchema.openapi({
+      description: 'The minute when an on-call rotation shift begins or ends.',
+    }),
+  })
+  .openapi({
+    required: ['HourOfDay', 'MinuteOfHour'],
+    description: 'Details about when an on-call rotation shift begins or ends.',
+  })
+  .openapi('HandOffTime')
+
+const MonthlySettingSchema = z
+  .object({
+    DayOfMonth: DayOfMonthSchema.openapi({
+      description: 'The day of the month when monthly recurring on-call rotations begin.',
+    }),
+    HandOffTime: HandOffTimeSchema.openapi({
+      description: 'The time of day when a monthly recurring on-call shift rotation begins.',
+    }),
+  })
+  .openapi({
+    required: ['DayOfMonth', 'HandOffTime'],
+    description: 'Information about on-call rotations that recur monthly.',
+  })
+  .openapi('MonthlySetting')
+
+const MonthlySettingsSchema = z.array(MonthlySettingSchema).openapi('MonthlySettings')
+
+const DayOfWeekSchema = z
+  .enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])
+  .openapi('DayOfWeek')
+
+const WeeklySettingSchema = z
+  .object({
+    DayOfWeek: DayOfWeekSchema.openapi({
+      description: 'The day of the week when weekly recurring on-call shift rotations begins.',
+    }),
+    HandOffTime: HandOffTimeSchema.openapi({
+      description: 'The time of day when a weekly recurring on-call shift rotation begins.',
+    }),
+  })
+  .openapi({
+    required: ['DayOfWeek', 'HandOffTime'],
+    description: 'Information about rotations that recur weekly.',
+  })
+  .openapi('WeeklySetting')
+
+const WeeklySettingsSchema = z.array(WeeklySettingSchema).openapi('WeeklySettings')
+
+const DailySettingsSchema = z.array(HandOffTimeSchema).openapi('DailySettings')
+
+const NumberOfOnCallsSchema = z.int().min(1).openapi('NumberOfOnCalls')
+
+const CoverageTimeSchema = z
+  .object({
+    Start: HandOffTimeSchema.exactOptional().openapi({
+      description: 'Information about when the on-call rotation shift begins.',
+    }),
+    End: HandOffTimeSchema.exactOptional().openapi({
+      description: 'Information about when the on-call rotation shift ends.',
+    }),
+  })
+  .openapi({
+    description: 'Information about when an on-call shift begins and ends.',
+    required: [],
+  })
+  .openapi('CoverageTime')
+
+const CoverageTimesSchema = z.array(CoverageTimeSchema).openapi('CoverageTimes')
+
+const ShiftCoveragesMapSchema = z
+  .record(z.string(), CoverageTimesSchema)
+  .openapi('ShiftCoveragesMap')
+
+const RecurrenceMultiplierSchema = z.int().min(1).max(100).openapi('RecurrenceMultiplier')
+
+const RecurrenceSettingsSchema = z
+  .object({
+    MonthlySettings: MonthlySettingsSchema.exactOptional().openapi({
+      description: 'Information about on-call rotations that recur monthly.',
+    }),
+    WeeklySettings: WeeklySettingsSchema.exactOptional().openapi({
+      description: 'Information about on-call rotations that recur weekly.',
+    }),
+    DailySettings: DailySettingsSchema.exactOptional().openapi({
+      description: 'Information about on-call rotations that recur daily.',
+    }),
+    NumberOfOnCalls: NumberOfOnCallsSchema.openapi({
+      description:
+        'The number of contacts, or shift team members designated to be on call concurrently during a shift. For example, in an on-call schedule containing ten contacts, a value of <code>2</code> designates that two of them are on call at any given time.',
+    }),
+    ShiftCoverages: ShiftCoveragesMapSchema.exactOptional().openapi({
+      description: 'Information about the days of the week included in on-call rotation coverage.',
+    }),
+    RecurrenceMultiplier: RecurrenceMultiplierSchema.openapi({
+      description: 'The number of days, weeks, or months a single rotation lasts.',
+    }),
+  })
+  .openapi({
+    required: ['NumberOfOnCalls', 'RecurrenceMultiplier'],
+    description:
+      'Information about when an on-call rotation is in effect and how long the rotation period lasts.',
+  })
+  .openapi('RecurrenceSettings')
+
+const RotationSchema = z
+  .object({
+    RotationArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the rotation.',
+    }),
+    Name: RotationNameSchema.openapi({ description: 'The name of the rotation.' }),
+    ContactIds: SsmContactsArnListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the contacts assigned to the rotation team.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the rotation becomes active.',
+    }),
+    TimeZoneId: TimeZoneIdSchema.exactOptional().openapi({
+      description:
+        'The time zone the rotation’s activity is based on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". ',
+    }),
+    Recurrence: RecurrenceSettingsSchema.exactOptional().openapi({
+      description:
+        'Information about when an on-call rotation is in effect and how long the rotation period lasts.',
+    }),
+  })
+  .openapi({
+    required: ['RotationArn', 'Name'],
+    description: 'Information about a rotation in an on-call schedule.',
+  })
+  .openapi('Rotation')
+
+const RotationsSchema = z.array(RotationSchema).openapi('Rotations')
+
+type ListRotationsResultType = {
+  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
+  Rotations: z.infer<typeof RotationsSchema> & unknown
+}
+
+const AcceptPageResultSchema = z.looseObject({}).openapi('AcceptPageResult')
 
 const AcceptTypeSchema = z.enum(['DELIVERED', 'READ']).openapi('AcceptType')
 
@@ -29,42 +207,26 @@ const AcceptCodeValidationSchema = z.enum(['IGNORE', 'ENFORCE']).openapi('Accept
 
 const AcceptPageRequestSchema = z
   .object({
-    PageId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the engagement to a contact channel.',
-        }),
-    ),
-    ContactChannelId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact channel.' }),
-    ).exactOptional(),
-    AcceptType: AcceptTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type indicates if the page was <code>DELIVERED</code> or <code>READ</code>.',
-        }),
-    ),
-    Note: ReceiptInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information provided by the user when the user acknowledges the page.',
-        }),
-    ).exactOptional(),
-    AcceptCode: AcceptCodeSchema.and(
-      z.any().openapi({ description: 'A 6-digit code used to acknowledge the page.' }),
-    ),
-    AcceptCodeValidation: AcceptCodeValidationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional field that Incident Manager uses to <code>ENFORCE</code> <code>AcceptCode</code> validation when acknowledging an page. Acknowledgement can occur by replying to a page, or when entering the AcceptCode in the console. Enforcing AcceptCode validation causes Incident Manager to verify that the code entered by the user matches the code sent by Incident Manager with the page.</p> <p>Incident Manager can also <code>IGNORE</code> <code>AcceptCode</code> validation. Ignoring <code>AcceptCode</code> validation causes Incident Manager to accept any value entered for the <code>AcceptCode</code>.</p>',
-        }),
-    ).exactOptional(),
+    PageId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement to a contact channel.',
+    }),
+    ContactChannelId: SsmContactsArnSchema.exactOptional().openapi({
+      description: 'The ARN of the contact channel.',
+    }),
+    AcceptType: AcceptTypeSchema.openapi({
+      description:
+        'The type indicates if the page was <code>DELIVERED</code> or <code>READ</code>.',
+    }),
+    Note: ReceiptInfoSchema.exactOptional().openapi({
+      description: 'Information provided by the user when the user acknowledges the page.',
+    }),
+    AcceptCode: AcceptCodeSchema.openapi({
+      description: 'A 6-digit code used to acknowledge the page.',
+    }),
+    AcceptCodeValidation: AcceptCodeValidationSchema.exactOptional().openapi({
+      description:
+        '<p>An optional field that Incident Manager uses to <code>ENFORCE</code> <code>AcceptCode</code> validation when acknowledging an page. Acknowledgement can occur by replying to a page, or when entering the AcceptCode in the console. Enforcing AcceptCode validation causes Incident Manager to verify that the code entered by the user matches the code sent by Incident Manager with the page.</p> <p>Incident Manager can also <code>IGNORE</code> <code>AcceptCode</code> validation. Ignoring <code>AcceptCode</code> validation causes Incident Manager to accept any value entered for the <code>AcceptCode</code>.</p>',
+    }),
   })
   .openapi({ required: ['PageId', 'AcceptType', 'AcceptCode'], title: 'AcceptPageRequest' })
   .openapi('AcceptPageRequest')
@@ -79,7 +241,7 @@ const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
 
 const ValidationExceptionSchema = z.any().openapi('ValidationException')
 
-const ActivateContactChannelResultSchema = z.object({}).openapi('ActivateContactChannelResult')
+const ActivateContactChannelResultSchema = z.looseObject({}).openapi('ActivateContactChannelResult')
 
 const ActivationCodeSchema = z
   .string()
@@ -90,16 +252,12 @@ const ActivationCodeSchema = z
 
 const ActivateContactChannelRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
-    ActivationCode: ActivationCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The code sent to the contact channel when it was created in the contact.',
-        }),
-    ),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
+    ActivationCode: ActivationCodeSchema.openapi({
+      description: 'The code sent to the contact channel when it was created in the contact.',
+    }),
   })
   .openapi({
     required: ['ContactChannelId', 'ActivationCode'],
@@ -109,13 +267,9 @@ const ActivateContactChannelRequestSchema = z
 
 const CreateContactResultSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the created contact or escalation plan.',
-        }),
-    ),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the created contact or escalation plan.',
+    }),
   })
   .openapi({ required: ['ContactArn'] })
   .openapi('CreateContactResult')
@@ -144,17 +298,13 @@ const RetryIntervalInMinutesSchema = z.int().min(0).max(60).openapi('RetryInterv
 
 const ChannelTargetInfoSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
-    RetryIntervalInMinutes: RetryIntervalInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of minutes to wait to retry sending engagement in the case the engagement initially fails.',
-        }),
-    ).exactOptional(),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
+    RetryIntervalInMinutes: RetryIntervalInMinutesSchema.exactOptional().openapi({
+      description:
+        'The number of minutes to wait to retry sending engagement in the case the engagement initially fails.',
+    }),
   })
   .openapi({
     required: ['ContactChannelId'],
@@ -167,17 +317,13 @@ const IsEssentialSchema = z.boolean().openapi('IsEssential')
 
 const ContactTargetInfoSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact.' }),
-    ).exactOptional(),
-    IsEssential: IsEssentialSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A Boolean value determining if the contact's acknowledgement stops the progress of stages in the plan.",
-        }),
-    ),
+    ContactId: SsmContactsArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact.',
+    }),
+    IsEssential: IsEssentialSchema.openapi({
+      description:
+        "A Boolean value determining if the contact's acknowledgement stops the progress of stages in the plan.",
+    }),
   })
   .openapi({
     required: ['IsEssential'],
@@ -187,20 +333,12 @@ const ContactTargetInfoSchema = z
 
 const TargetSchema = z
   .object({
-    ChannelTargetInfo: ChannelTargetInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the contact channel Incident Manager is engaging.',
-        }),
-    ).exactOptional(),
-    ContactTargetInfo: ContactTargetInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the contact that Incident Manager is engaging.',
-        }),
-    ).exactOptional(),
+    ChannelTargetInfo: ChannelTargetInfoSchema.exactOptional().openapi({
+      description: 'Information about the contact channel Incident Manager is engaging.',
+    }),
+    ContactTargetInfo: ContactTargetInfoSchema.exactOptional().openapi({
+      description: 'Information about the contact that Incident Manager is engaging.',
+    }),
   })
   .openapi({ description: "The contact or contact channel that's being engaged.", required: [] })
   .openapi('Target')
@@ -209,22 +347,14 @@ const TargetsListSchema = z.array(TargetSchema).openapi('TargetsList')
 
 const StageSchema = z
   .object({
-    DurationInMinutes: StageDurationInMinsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time to wait until beginning the next stage. The duration can only be set to 0 if a target is specified.',
-        }),
-    ),
-    Targets: TargetsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The contacts or contact methods that the escalation plan or engagement plan is engaging.',
-        }),
-    ),
+    DurationInMinutes: StageDurationInMinsSchema.openapi({
+      description:
+        'The time to wait until beginning the next stage. The duration can only be set to 0 if a target is specified.',
+    }),
+    Targets: TargetsListSchema.openapi({
+      description:
+        'The contacts or contact methods that the escalation plan or engagement plan is engaging.',
+    }),
   })
   .openapi({
     required: ['DurationInMinutes', 'Targets'],
@@ -235,30 +365,16 @@ const StageSchema = z
 
 const StagesListSchema = z.array(StageSchema).openapi('StagesList')
 
-const SsmContactsArnListSchema = z
-  .array(SsmContactsArnSchema)
-  .min(0)
-  .max(25)
-  .openapi('SsmContactsArnList')
-
 const PlanSchema = z
   .object({
-    Stages: StagesListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stages that the escalation plan or engagement plan uses to engage contacts and contact methods.',
-        }),
-    ).exactOptional(),
-    RotationIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the on-call rotations associated with the plan. ',
-        }),
-    ).exactOptional(),
+    Stages: StagesListSchema.exactOptional().openapi({
+      description:
+        'A list of stages that the escalation plan or engagement plan uses to engage contacts and contact methods.',
+    }),
+    RotationIds: SsmContactsArnListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the on-call rotations associated with the plan. ',
+    }),
   })
   .openapi({
     description:
@@ -283,12 +399,8 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z.any().openapi({ description: 'Name of the object key.' }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z.any().openapi({ description: 'Value of the tag.' }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({ description: 'Name of the object key.' }),
+    Value: TagValueSchema.exactOptional().openapi({ description: 'Value of the tag.' }),
   })
   .openapi({ description: 'A container of a key-value name pair.', required: [] })
   .openapi('Tag')
@@ -303,49 +415,29 @@ const IdempotencyTokenSchema = z
 
 const CreateContactRequestSchema = z
   .object({
-    Alias: ContactAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The short name to quickly identify a contact or escalation plan. The contact alias must be unique and identifiable.',
-        }),
-    ),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The full name of the contact or escalation plan.' }),
-    ).exactOptional(),
-    Type: ContactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'To create an escalation plan use <code>ESCALATION</code>. To create a contact use <code>PERSONAL</code>.',
-        }),
-    ),
-    Plan: PlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stages. A contact has an engagement plan with stages that contact specified contact channels. An escalation plan uses stages that contact specified contacts.',
-        }),
-    ),
-    Tags: TagsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Adds a tag to the target. You can only tag resources created in the first Region of your replication set.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    Alias: ContactAliasSchema.openapi({
+      description:
+        'The short name to quickly identify a contact or escalation plan. The contact alias must be unique and identifiable.',
+    }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The full name of the contact or escalation plan.',
+    }),
+    Type: ContactTypeSchema.openapi({
+      description:
+        'To create an escalation plan use <code>ESCALATION</code>. To create a contact use <code>PERSONAL</code>.',
+    }),
+    Plan: PlanSchema.openapi({
+      description:
+        'A list of stages. A contact has an engagement plan with stages that contact specified contact channels. An escalation plan uses stages that contact specified contacts.',
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({
+      description:
+        'Adds a tag to the target. You can only tag resources created in the first Region of your replication set.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({ required: ['Alias', 'Type', 'Plan'], title: 'CreateContactRequest' })
   .openapi('CreateContactRequest')
@@ -358,9 +450,9 @@ const DataEncryptionExceptionSchema = z.any().openapi('DataEncryptionException')
 
 const CreateContactChannelResultSchema = z
   .object({
-    ContactChannelArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
+    ContactChannelArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
   })
   .openapi({ required: ['ContactChannelArn'] })
   .openapi('CreateContactChannelResult')
@@ -378,14 +470,10 @@ const SimpleAddressSchema = z.string().min(1).max(320).openapi('SimpleAddress')
 
 const ContactChannelAddressSchema = z
   .object({
-    SimpleAddress: SimpleAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The format is dependent on the type of the contact channel. The following are the expected formats:</p> <ul> <li> <p>SMS - '+' followed by the country code and phone number</p> </li> <li> <p>VOICE - '+' followed by the country code and phone number</p> </li> <li> <p>EMAIL - any standard email format</p> </li> </ul>",
-        }),
-    ).exactOptional(),
+    SimpleAddress: SimpleAddressSchema.exactOptional().openapi({
+      description:
+        "<p>The format is dependent on the type of the contact channel. The following are the expected formats:</p> <ul> <li> <p>SMS - '+' followed by the country code and phone number</p> </li> <li> <p>VOICE - '+' followed by the country code and phone number</p> </li> <li> <p>EMAIL - any standard email format</p> </li> </ul>",
+    }),
   })
   .openapi({
     description:
@@ -398,49 +486,27 @@ const DeferActivationSchema = z.boolean().openapi('DeferActivation')
 
 const CreateContactChannelRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the contact you are adding the contact channel to.',
-        }),
-    ),
-    Name: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact channel.' }),
-    ),
-    Type: ChannelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Incident Manager supports three types of contact channels:</p> <ul> <li> <p> <code>SMS</code> </p> </li> <li> <p> <code>VOICE</code> </p> </li> <li> <p> <code>EMAIL</code> </p> </li> </ul>',
-        }),
-    ),
-    DeliveryAddress: ContactChannelAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The details that Incident Manager uses when trying to engage the contact channel. The format is dependent on the type of the contact channel. The following are the expected formats:</p> <ul> <li> <p>SMS - '+' followed by the country code and phone number</p> </li> <li> <p>VOICE - '+' followed by the country code and phone number</p> </li> <li> <p>EMAIL - any standard email format</p> </li> </ul>",
-        }),
-    ),
-    DeferActivation: DeferActivationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you want to activate the channel at a later time, you can choose to defer activation. Incident Manager can't engage your contact channel until it has been activated.",
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    ContactId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the contact you are adding the contact channel to.',
+    }),
+    Name: ChannelNameSchema.openapi({ description: 'The name of the contact channel.' }),
+    Type: ChannelTypeSchema.openapi({
+      description:
+        '<p>Incident Manager supports three types of contact channels:</p> <ul> <li> <p> <code>SMS</code> </p> </li> <li> <p> <code>VOICE</code> </p> </li> <li> <p> <code>EMAIL</code> </p> </li> </ul>',
+    }),
+    DeliveryAddress: ContactChannelAddressSchema.openapi({
+      description:
+        "<p>The details that Incident Manager uses when trying to engage the contact channel. The format is dependent on the type of the contact channel. The following are the expected formats:</p> <ul> <li> <p>SMS - '+' followed by the country code and phone number</p> </li> <li> <p>VOICE - '+' followed by the country code and phone number</p> </li> <li> <p>EMAIL - any standard email format</p> </li> </ul>",
+    }),
+    DeferActivation: DeferActivationSchema.exactOptional().openapi({
+      description:
+        "If you want to activate the channel at a later time, you can choose to defer activation. Incident Manager can't engage your contact channel until it has been activated.",
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({
     required: ['ContactId', 'Name', 'Type', 'DeliveryAddress'],
@@ -450,19 +516,12 @@ const CreateContactChannelRequestSchema = z
 
 const CreateRotationResultSchema = z
   .object({
-    RotationArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the created rotation.' }),
-    ),
+    RotationArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the created rotation.',
+    }),
   })
   .openapi({ required: ['RotationArn'] })
   .openapi('CreateRotationResult')
-
-const RotationNameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9_\-\s\.]*$/)
-  .min(1)
-  .max(255)
-  .openapi('RotationName')
 
 const RotationContactsArnListSchema = z
   .array(SsmContactsArnSchema)
@@ -470,203 +529,31 @@ const RotationContactsArnListSchema = z
   .max(30)
   .openapi('RotationContactsArnList')
 
-const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
-
-const TimeZoneIdSchema = z
-  .string()
-  .regex(/^[:a-zA-Z0-9_\-\s\.\\\/]*$/)
-  .min(1)
-  .max(255)
-  .openapi('TimeZoneId')
-
-const DayOfMonthSchema = z.int().min(1).max(31).openapi('DayOfMonth')
-
-const HourOfDaySchema = z.int().min(0).max(23).openapi('HourOfDay')
-
-const MinuteOfHourSchema = z.int().min(0).max(59).openapi('MinuteOfHour')
-
-const HandOffTimeSchema = z
-  .object({
-    HourOfDay: HourOfDaySchema.and(
-      z.any().openapi({ description: 'The hour when an on-call rotation shift begins or ends.' }),
-    ),
-    MinuteOfHour: MinuteOfHourSchema.and(
-      z.any().openapi({ description: 'The minute when an on-call rotation shift begins or ends.' }),
-    ),
-  })
-  .openapi({
-    required: ['HourOfDay', 'MinuteOfHour'],
-    description: 'Details about when an on-call rotation shift begins or ends.',
-  })
-  .openapi('HandOffTime')
-
-const MonthlySettingSchema = z
-  .object({
-    DayOfMonth: DayOfMonthSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The day of the month when monthly recurring on-call rotations begin.',
-        }),
-    ),
-    HandOffTime: HandOffTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time of day when a monthly recurring on-call shift rotation begins.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['DayOfMonth', 'HandOffTime'],
-    description: 'Information about on-call rotations that recur monthly.',
-  })
-  .openapi('MonthlySetting')
-
-const MonthlySettingsSchema = z.array(MonthlySettingSchema).openapi('MonthlySettings')
-
-const DayOfWeekSchema = z
-  .enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'])
-  .openapi('DayOfWeek')
-
-const WeeklySettingSchema = z
-  .object({
-    DayOfWeek: DayOfWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The day of the week when weekly recurring on-call shift rotations begins.',
-        }),
-    ),
-    HandOffTime: HandOffTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time of day when a weekly recurring on-call shift rotation begins.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['DayOfWeek', 'HandOffTime'],
-    description: 'Information about rotations that recur weekly.',
-  })
-  .openapi('WeeklySetting')
-
-const WeeklySettingsSchema = z.array(WeeklySettingSchema).openapi('WeeklySettings')
-
-const DailySettingsSchema = z.array(HandOffTimeSchema).openapi('DailySettings')
-
-const NumberOfOnCallsSchema = z.int().min(1).openapi('NumberOfOnCalls')
-
-const CoverageTimeSchema = z
-  .object({
-    Start: HandOffTimeSchema.and(
-      z.any().openapi({ description: 'Information about when the on-call rotation shift begins.' }),
-    ).exactOptional(),
-    End: HandOffTimeSchema.and(
-      z.any().openapi({ description: 'Information about when the on-call rotation shift ends.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'Information about when an on-call shift begins and ends.',
-    required: [],
-  })
-  .openapi('CoverageTime')
-
-const CoverageTimesSchema = z.array(CoverageTimeSchema).openapi('CoverageTimes')
-
-const ShiftCoveragesMapSchema = z
-  .record(z.string(), CoverageTimesSchema)
-  .openapi('ShiftCoveragesMap')
-
-const RecurrenceMultiplierSchema = z.int().min(1).max(100).openapi('RecurrenceMultiplier')
-
-const RecurrenceSettingsSchema = z
-  .object({
-    MonthlySettings: MonthlySettingsSchema.and(
-      z.any().openapi({ description: 'Information about on-call rotations that recur monthly.' }),
-    ).exactOptional(),
-    WeeklySettings: WeeklySettingsSchema.and(
-      z.any().openapi({ description: 'Information about on-call rotations that recur weekly.' }),
-    ).exactOptional(),
-    DailySettings: DailySettingsSchema.and(
-      z.any().openapi({ description: 'Information about on-call rotations that recur daily.' }),
-    ).exactOptional(),
-    NumberOfOnCalls: NumberOfOnCallsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of contacts, or shift team members designated to be on call concurrently during a shift. For example, in an on-call schedule containing ten contacts, a value of <code>2</code> designates that two of them are on call at any given time.',
-        }),
-    ),
-    ShiftCoverages: ShiftCoveragesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the days of the week included in on-call rotation coverage.',
-        }),
-    ).exactOptional(),
-    RecurrenceMultiplier: RecurrenceMultiplierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of days, weeks, or months a single rotation lasts.' }),
-    ),
-  })
-  .openapi({
-    required: ['NumberOfOnCalls', 'RecurrenceMultiplier'],
-    description:
-      'Information about when an on-call rotation is in effect and how long the rotation period lasts.',
-  })
-  .openapi('RecurrenceSettings')
-
 const CreateRotationRequestSchema = z
   .object({
-    Name: RotationNameSchema.and(z.any().openapi({ description: 'The name of the rotation.' })),
-    ContactIds: RotationContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Names (ARNs) of the contacts to add to the rotation.</p> <p>The order that you list the contacts in is their shift order in the rotation schedule. To change the order of the contact's shifts, use the <a>UpdateRotation</a> operation.</p>",
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the rotation goes into effect.' }),
-    ).exactOptional(),
-    TimeZoneId: TimeZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time zone to base the rotation’s activity on in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". For more information, see the <a href="https://www.iana.org/time-zones">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), are not supported.</p> </note>',
-        }),
-    ),
-    Recurrence: RecurrenceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information about the rule that specifies when a shift's team members rotate.",
-        }),
-    ),
-    Tags: TagsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Optional metadata to assign to the rotation. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For more information, see <a href="https://docs.aws.amazon.com/incident-manager/latest/userguide/tagging.html">Tagging Incident Manager resources</a> in the <i>Incident Manager User Guide</i>.',
-        }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    Name: RotationNameSchema.openapi({ description: 'The name of the rotation.' }),
+    ContactIds: RotationContactsArnListSchema.openapi({
+      description:
+        "<p>The Amazon Resource Names (ARNs) of the contacts to add to the rotation.</p> <p>The order that you list the contacts in is their shift order in the rotation schedule. To change the order of the contact's shifts, use the <a>UpdateRotation</a> operation.</p>",
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the rotation goes into effect.',
+    }),
+    TimeZoneId: TimeZoneIdSchema.openapi({
+      description:
+        '<p>The time zone to base the rotation’s activity on in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". For more information, see the <a href="https://www.iana.org/time-zones">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), are not supported.</p> </note>',
+    }),
+    Recurrence: RecurrenceSettingsSchema.openapi({
+      description: "Information about the rule that specifies when a shift's team members rotate.",
+    }),
+    Tags: TagsListSchema.exactOptional().openapi({
+      description:
+        'Optional metadata to assign to the rotation. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment. For more information, see <a href="https://docs.aws.amazon.com/incident-manager/latest/userguide/tagging.html">Tagging Incident Manager resources</a> in the <i>Incident Manager User Guide</i>.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({
     required: ['Name', 'ContactIds', 'TimeZoneId', 'Recurrence'],
@@ -683,13 +570,9 @@ const UuidSchema = z
 
 const CreateRotationOverrideResultSchema = z
   .object({
-    RotationOverrideId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the created rotation override.',
-        }),
-    ),
+    RotationOverrideId: UuidSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the created rotation override.',
+    }),
   })
   .openapi({ required: ['RotationOverrideId'] })
   .openapi('CreateRotationOverrideResult')
@@ -702,35 +585,21 @@ const RotationOverrideContactsArnListSchema = z
 
 const CreateRotationOverrideRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the rotation to create an override for.',
-        }),
-    ),
-    NewContactIds: RotationOverrideContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Names (ARNs) of the contacts to replace those in the current on-call rotation with.</p> <p>If you want to include any current team members in the override shift, you must include their ARNs in the new contact ID list.</p>',
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the override goes into effect.' }),
-    ),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the override ends.' }),
-    ),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token that ensures that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    RotationId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the rotation to create an override for.',
+    }),
+    NewContactIds: RotationOverrideContactsArnListSchema.openapi({
+      description:
+        '<p>The Amazon Resource Names (ARNs) of the contacts to replace those in the current on-call rotation with.</p> <p>If you want to include any current team members in the override shift, you must include their ARNs in the new contact ID list.</p>',
+    }),
+    StartTime: DateTimeSchema.openapi({
+      description: 'The date and time when the override goes into effect.',
+    }),
+    EndTime: DateTimeSchema.openapi({ description: 'The date and time when the override ends.' }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A token that ensures that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({
     required: ['RotationId', 'NewContactIds', 'StartTime', 'EndTime'],
@@ -738,80 +607,62 @@ const CreateRotationOverrideRequestSchema = z
   })
   .openapi('CreateRotationOverrideRequest')
 
-const DeactivateContactChannelResultSchema = z.object({}).openapi('DeactivateContactChannelResult')
+const DeactivateContactChannelResultSchema = z
+  .looseObject({})
+  .openapi('DeactivateContactChannelResult')
 
 const DeactivateContactChannelRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the contact channel you're deactivating.",
-        }),
-    ),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: "The Amazon Resource Name (ARN) of the contact channel you're deactivating.",
+    }),
   })
   .openapi({ required: ['ContactChannelId'], title: 'DeactivateContactChannelRequest' })
   .openapi('DeactivateContactChannelRequest')
 
-const DeleteContactResultSchema = z.object({}).openapi('DeleteContactResult')
+const DeleteContactResultSchema = z.looseObject({}).openapi('DeleteContactResult')
 
 const DeleteContactRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The Amazon Resource Name (ARN) of the contact that you're deleting.",
-        }),
-    ),
+    ContactId: SsmContactsArnSchema.openapi({
+      description: "The Amazon Resource Name (ARN) of the contact that you're deleting.",
+    }),
   })
   .openapi({ required: ['ContactId'], title: 'DeleteContactRequest' })
   .openapi('DeleteContactRequest')
 
-const DeleteContactChannelResultSchema = z.object({}).openapi('DeleteContactChannelResult')
+const DeleteContactChannelResultSchema = z.looseObject({}).openapi('DeleteContactChannelResult')
 
 const DeleteContactChannelRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
   })
   .openapi({ required: ['ContactChannelId'], title: 'DeleteContactChannelRequest' })
   .openapi('DeleteContactChannelRequest')
 
-const DeleteRotationResultSchema = z.object({}).openapi('DeleteRotationResult')
+const DeleteRotationResultSchema = z.looseObject({}).openapi('DeleteRotationResult')
 
 const DeleteRotationRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the on-call rotation to delete.',
-        }),
-    ),
+    RotationId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the on-call rotation to delete.',
+    }),
   })
   .openapi({ required: ['RotationId'], title: 'DeleteRotationRequest' })
   .openapi('DeleteRotationRequest')
 
-const DeleteRotationOverrideResultSchema = z.object({}).openapi('DeleteRotationOverrideResult')
+const DeleteRotationOverrideResultSchema = z.looseObject({}).openapi('DeleteRotationOverrideResult')
 
 const DeleteRotationOverrideRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the rotation that was overridden.',
-        }),
-    ),
-    RotationOverrideId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the on-call rotation override to delete.',
-        }),
-    ),
+    RotationId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the rotation that was overridden.',
+    }),
+    RotationOverrideId: UuidSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the on-call rotation override to delete.',
+    }),
   })
   .openapi({
     required: ['RotationId', 'RotationOverrideId'],
@@ -861,203 +712,130 @@ const IncidentIdSchema = z
 
 const DescribeEngagementResultSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the escalation plan or contacts involved in the engagement.',
-        }),
-    ),
-    EngagementArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the engagement.' }),
-    ),
-    Sender: SenderSchema.and(
-      z.any().openapi({ description: 'The user that started the engagement.' }),
-    ),
-    Subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
-        }),
-    ),
-    Content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
-        }),
-    ),
-    PublicSubject: PublicSubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    PublicContent: PublicContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    IncidentId: IncidentIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the incident in which the engagement occurred.' }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the engagement started.' }),
-    ).exactOptional(),
-    StopTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the engagement ended.' }),
-    ).exactOptional(),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the escalation plan or contacts involved in the engagement.',
+    }),
+    EngagementArn: SsmContactsArnSchema.openapi({ description: 'The ARN of the engagement.' }),
+    Sender: SenderSchema.openapi({ description: 'The user that started the engagement.' }),
+    Subject: SubjectSchema.openapi({
+      description:
+        'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
+    }),
+    Content: ContentSchema.openapi({
+      description:
+        'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
+    }),
+    PublicSubject: PublicSubjectSchema.exactOptional().openapi({
+      description:
+        'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    PublicContent: PublicContentSchema.exactOptional().openapi({
+      description:
+        'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: 'The ARN of the incident in which the engagement occurred.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the engagement started.',
+    }),
+    StopTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the engagement ended.',
+    }),
   })
   .openapi({ required: ['ContactArn', 'EngagementArn', 'Sender', 'Subject', 'Content'] })
   .openapi('DescribeEngagementResult')
 
 const DescribeEngagementRequestSchema = z
   .object({
-    EngagementId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the engagement you want the details of.',
-        }),
-    ),
+    EngagementId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement you want the details of.',
+    }),
   })
   .openapi({ required: ['EngagementId'], title: 'DescribeEngagementRequest' })
   .openapi('DescribeEngagementRequest')
 
 const DescribePageResultSchema = z
   .object({
-    PageArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the engagement to a contact channel.',
-        }),
-    ),
-    EngagementArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the engagement that engaged the contact channel.' }),
-    ),
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact that was engaged.' }),
-    ),
-    Sender: SenderSchema.and(
-      z.any().openapi({ description: 'The user that started the engagement.' }),
-    ),
-    Subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
-        }),
-    ),
-    Content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
-        }),
-    ),
-    PublicSubject: PublicSubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    PublicContent: PublicContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    IncidentId: IncidentIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the incident that engaged the contact channel.' }),
-    ).exactOptional(),
-    SentTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the engagement was sent to the contact channel.' }),
-    ).exactOptional(),
-    ReadTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the contact channel acknowledged the engagement.' }),
-    ).exactOptional(),
-    DeliveryTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the contact channel received the engagement.' }),
-    ).exactOptional(),
+    PageArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement to a contact channel.',
+    }),
+    EngagementArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the engagement that engaged the contact channel.',
+    }),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact that was engaged.',
+    }),
+    Sender: SenderSchema.openapi({ description: 'The user that started the engagement.' }),
+    Subject: SubjectSchema.openapi({
+      description:
+        'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
+    }),
+    Content: ContentSchema.openapi({
+      description:
+        'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> and <code>EMAIL</code>.',
+    }),
+    PublicSubject: PublicSubjectSchema.exactOptional().openapi({
+      description:
+        'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    PublicContent: PublicContentSchema.exactOptional().openapi({
+      description:
+        'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: 'The ARN of the incident that engaged the contact channel.',
+    }),
+    SentTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the engagement was sent to the contact channel.',
+    }),
+    ReadTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the contact channel acknowledged the engagement.',
+    }),
+    DeliveryTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the contact channel received the engagement.',
+    }),
   })
   .openapi({ required: ['PageArn', 'EngagementArn', 'ContactArn', 'Sender', 'Subject', 'Content'] })
   .openapi('DescribePageResult')
 
 const DescribePageRequestSchema = z
   .object({
-    PageId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ID of the engagement to a contact channel.' }),
-    ),
+    PageId: SsmContactsArnSchema.openapi({
+      description: 'The ID of the engagement to a contact channel.',
+    }),
   })
   .openapi({ required: ['PageId'], title: 'DescribePageRequest' })
   .openapi('DescribePageRequest')
 
 const GetContactResultSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact or escalation plan.' }),
-    ),
-    Alias: ContactAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias of the contact or escalation plan. The alias is unique and identifiable.',
-        }),
-    ),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The full name of the contact or escalation plan.' }),
-    ).exactOptional(),
-    Type: ContactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of contact, either <code>PERSONAL</code> or <code>ESCALATION</code>.',
-        }),
-    ),
-    Plan: PlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the specific timing or stages and targets of the escalation plan or engagement plan.',
-        }),
-    ),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact or escalation plan.',
+    }),
+    Alias: ContactAliasSchema.openapi({
+      description:
+        'The alias of the contact or escalation plan. The alias is unique and identifiable.',
+    }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The full name of the contact or escalation plan.',
+    }),
+    Type: ContactTypeSchema.openapi({
+      description: 'The type of contact, either <code>PERSONAL</code> or <code>ESCALATION</code>.',
+    }),
+    Plan: PlanSchema.openapi({
+      description:
+        'Details about the specific timing or stages and targets of the escalation plan or engagement plan.',
+    }),
   })
   .openapi({ required: ['ContactArn', 'Alias', 'Type', 'Plan'] })
   .openapi('GetContactResult')
 
 const GetContactRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
+    ContactId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
   })
   .openapi({ required: ['ContactId'], title: 'GetContactRequest' })
   .openapi('GetContactRequest')
@@ -1066,53 +844,34 @@ const ActivationStatusSchema = z.enum(['ACTIVATED', 'NOT_ACTIVATED']).openapi('A
 
 const GetContactChannelResultSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact that the channel belongs to.' }),
-    ),
-    ContactChannelArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact channel.' }),
-    ),
-    Name: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact channel' }),
-    ),
-    Type: ChannelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of contact channel. The type is <code>SMS</code>, <code>VOICE</code>, or <code>EMAIL</code>.',
-        }),
-    ),
-    DeliveryAddress: ContactChannelAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details that Incident Manager uses when trying to engage the contact channel.',
-        }),
-    ),
-    ActivationStatus: ActivationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A Boolean value indicating if the contact channel has been activated or not.',
-        }),
-    ).exactOptional(),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact that the channel belongs to.',
+    }),
+    ContactChannelArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact channel.',
+    }),
+    Name: ChannelNameSchema.openapi({ description: 'The name of the contact channel' }),
+    Type: ChannelTypeSchema.openapi({
+      description:
+        'The type of contact channel. The type is <code>SMS</code>, <code>VOICE</code>, or <code>EMAIL</code>.',
+    }),
+    DeliveryAddress: ContactChannelAddressSchema.openapi({
+      description:
+        'The details that Incident Manager uses when trying to engage the contact channel.',
+    }),
+    ActivationStatus: ActivationStatusSchema.exactOptional().openapi({
+      description: 'A Boolean value indicating if the contact channel has been activated or not.',
+    }),
   })
   .openapi({ required: ['ContactArn', 'ContactChannelArn', 'Name', 'Type', 'DeliveryAddress'] })
   .openapi('GetContactChannelResult')
 
 const GetContactChannelRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the contact channel you want information about.',
-        }),
-    ),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the contact channel you want information about.',
+    }),
   })
   .openapi({ required: ['ContactChannelId'], title: 'GetContactChannelRequest' })
   .openapi('GetContactChannelRequest')
@@ -1126,69 +885,46 @@ const PolicySchema = z
 
 const GetContactPolicyResultSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact or escalation plan.' }),
-    ).exactOptional(),
-    Policy: PolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Details about the resource policy attached to the contact or escalation plan.',
-        }),
-    ).exactOptional(),
+    ContactArn: SsmContactsArnSchema.exactOptional().openapi({
+      description: 'The ARN of the contact or escalation plan.',
+    }),
+    Policy: PolicySchema.exactOptional().openapi({
+      description: 'Details about the resource policy attached to the contact or escalation plan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetContactPolicyResult')
 
 const GetContactPolicyRequestSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
   })
   .openapi({ required: ['ContactArn'], title: 'GetContactPolicyRequest' })
   .openapi('GetContactPolicyRequest')
 
 const GetRotationResultSchema = z
   .object({
-    RotationArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the on-call rotation.' }),
-    ),
-    Name: RotationNameSchema.and(
-      z.any().openapi({ description: 'The name of the on-call rotation.' }),
-    ),
-    ContactIds: RotationContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the contacts assigned to the on-call rotation team.',
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The specified start time for the on-call rotation.' }),
-    ),
-    TimeZoneId: TimeZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time zone that the rotation’s activity is based on, in Internet Assigned Numbers Authority (IANA) format.',
-        }),
-    ),
-    Recurrence: RecurrenceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies how long a rotation lasts before restarting at the beginning of the shift order.',
-        }),
-    ),
+    RotationArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the on-call rotation.',
+    }),
+    Name: RotationNameSchema.openapi({ description: 'The name of the on-call rotation.' }),
+    ContactIds: RotationContactsArnListSchema.openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the contacts assigned to the on-call rotation team.',
+    }),
+    StartTime: DateTimeSchema.openapi({
+      description: 'The specified start time for the on-call rotation.',
+    }),
+    TimeZoneId: TimeZoneIdSchema.openapi({
+      description:
+        'The time zone that the rotation’s activity is based on, in Internet Assigned Numbers Authority (IANA) format.',
+    }),
+    Recurrence: RecurrenceSettingsSchema.openapi({
+      description:
+        'Specifies how long a rotation lasts before restarting at the beginning of the shift order.',
+    }),
   })
   .openapi({
     required: ['RotationArn', 'Name', 'ContactIds', 'StartTime', 'TimeZoneId', 'Recurrence'],
@@ -1197,119 +933,74 @@ const GetRotationResultSchema = z
 
 const GetRotationRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the on-call rotation to retrieve information about.',
-        }),
-    ),
+    RotationId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the on-call rotation to retrieve information about.',
+    }),
   })
   .openapi({ required: ['RotationId'], title: 'GetRotationRequest' })
   .openapi('GetRotationRequest')
 
 const GetRotationOverrideResultSchema = z
   .object({
-    RotationOverrideId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the override to an on-call rotation.',
-        }),
-    ).exactOptional(),
-    RotationArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the on-call rotation that was overridden.',
-        }),
-    ).exactOptional(),
-    NewContactIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the contacts assigned to the override of the on-call rotation.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the override goes into effect.' }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the override ends.' }),
-    ).exactOptional(),
-    CreateTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time when the override was created.' }),
-    ).exactOptional(),
+    RotationOverrideId: UuidSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the override to an on-call rotation.',
+    }),
+    RotationArn: SsmContactsArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the on-call rotation that was overridden.',
+    }),
+    NewContactIds: SsmContactsArnListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the contacts assigned to the override of the on-call rotation.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the override goes into effect.',
+    }),
+    EndTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the override ends.',
+    }),
+    CreateTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time when the override was created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRotationOverrideResult')
 
 const GetRotationOverrideRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the overridden rotation to retrieve information about.',
-        }),
-    ),
-    RotationOverrideId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the on-call rotation override to retrieve information about.',
-        }),
-    ),
+    RotationId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the overridden rotation to retrieve information about.',
+    }),
+    RotationOverrideId: UuidSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the on-call rotation override to retrieve information about.',
+    }),
   })
   .openapi({ required: ['RotationId', 'RotationOverrideId'], title: 'GetRotationOverrideRequest' })
   .openapi('GetRotationOverrideRequest')
 
-const PaginationTokenSchema = z
-  .string()
-  .regex(/^[\\\/a-zA-Z0-9_+=\-]*$/)
-  .max(2048)
-  .openapi('PaginationToken')
-
 const ContactChannelSchema = z
   .object({
-    ContactChannelArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact that contains the contact channel.' }),
-    ),
-    Name: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact channel.' }),
-    ),
-    Type: ChannelTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the contact channel. Incident Manager supports three contact methods:</p> <ul> <li> <p>SMS</p> </li> <li> <p>VOICE</p> </li> <li> <p>EMAIL</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DeliveryAddress: ContactChannelAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details that Incident Manager uses when trying to engage the contact channel.',
-        }),
-    ),
-    ActivationStatus: ActivationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A Boolean value describing if the contact channel has been activated or not. If the contact channel isn't activated, Incident Manager can't engage the contact through it.",
-        }),
-    ),
+    ContactChannelArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact that contains the contact channel.',
+    }),
+    Name: ChannelNameSchema.openapi({ description: 'The name of the contact channel.' }),
+    Type: ChannelTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the contact channel. Incident Manager supports three contact methods:</p> <ul> <li> <p>SMS</p> </li> <li> <p>VOICE</p> </li> <li> <p>EMAIL</p> </li> </ul>',
+    }),
+    DeliveryAddress: ContactChannelAddressSchema.openapi({
+      description:
+        'The details that Incident Manager uses when trying to engage the contact channel.',
+    }),
+    ActivationStatus: ActivationStatusSchema.openapi({
+      description:
+        "A Boolean value describing if the contact channel has been activated or not. If the contact channel isn't activated, Incident Manager can't engage the contact through it.",
+    }),
   })
   .openapi({
     required: ['ContactChannelArn', 'ContactArn', 'Name', 'DeliveryAddress', 'ActivationStatus'],
@@ -1321,16 +1012,12 @@ const ContactChannelListSchema = z.array(ContactChannelSchema).openapi('ContactC
 
 const ListContactChannelsResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    ContactChannels: ContactChannelListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of contact channels related to the specified contact.' }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    ContactChannels: ContactChannelListSchema.openapi({
+      description: 'A list of contact channels related to the specified contact.',
+    }),
   })
   .openapi({ required: ['ContactChannels'] })
   .openapi('ListContactChannelsResult')
@@ -1339,48 +1026,34 @@ const MaxResultsSchema = z.int().min(0).max(1024).openapi('MaxResults')
 
 const ListContactChannelsRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of contact channels per page.' }),
-    ).exactOptional(),
+    ContactId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of contact channels per page.',
+    }),
   })
   .openapi({ required: ['ContactId'], title: 'ListContactChannelsRequest' })
   .openapi('ListContactChannelsRequest')
 
 const ContactSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
-    Alias: ContactAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique and identifiable alias of the contact or escalation plan.',
-        }),
-    ),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The full name of the contact or escalation plan.' }),
-    ).exactOptional(),
-    Type: ContactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Refers to the type of contact. A single contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.',
-        }),
-    ),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
+    Alias: ContactAliasSchema.openapi({
+      description: 'The unique and identifiable alias of the contact or escalation plan.',
+    }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The full name of the contact or escalation plan.',
+    }),
+    Type: ContactTypeSchema.openapi({
+      description:
+        'Refers to the type of contact. A single contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.',
+    }),
   })
   .openapi({
     required: ['ContactArn', 'Alias', 'Type'],
@@ -1393,81 +1066,53 @@ const ContactsListSchema = z.array(ContactSchema).openapi('ContactsList')
 
 const ListContactsResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    Contacts: ContactsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the contacts and escalation plans in your Incident Manager account.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    Contacts: ContactsListSchema.exactOptional().openapi({
+      description: 'A list of the contacts and escalation plans in your Incident Manager account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListContactsResult')
 
 const ListContactsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of contacts and escalation plans per page of results.',
-        }),
-    ).exactOptional(),
-    AliasPrefix: ContactAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "Used to list only contacts who's aliases start with the specified prefix.",
-        }),
-    ).exactOptional(),
-    Type: ContactTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of contact. A contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.',
-        }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of contacts and escalation plans per page of results.',
+    }),
+    AliasPrefix: ContactAliasSchema.exactOptional().openapi({
+      description: "Used to list only contacts who's aliases start with the specified prefix.",
+    }),
+    Type: ContactTypeSchema.exactOptional().openapi({
+      description:
+        'The type of contact. A contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.',
+    }),
   })
   .openapi({ title: 'ListContactsRequest', required: [] })
   .openapi('ListContactsRequest')
 
 const EngagementSchema = z
   .object({
-    EngagementArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the engagement.' }),
-    ),
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the escalation plan or contact that Incident Manager is engaging.',
-        }),
-    ),
-    Sender: SenderSchema.and(
-      z.any().openapi({ description: 'The user that started the engagement.' }),
-    ),
-    IncidentId: IncidentIdSchema.and(
-      z.any().openapi({ description: "The ARN of the incident that's engaging the contact." }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the engagement began.' }),
-    ).exactOptional(),
-    StopTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the engagement ended.' }),
-    ).exactOptional(),
+    EngagementArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement.',
+    }),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the escalation plan or contact that Incident Manager is engaging.',
+    }),
+    Sender: SenderSchema.openapi({ description: 'The user that started the engagement.' }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: "The ARN of the incident that's engaging the contact.",
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the engagement began.',
+    }),
+    StopTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the engagement ended.',
+    }),
   })
   .openapi({
     required: ['EngagementArn', 'ContactArn', 'Sender'],
@@ -1480,56 +1125,41 @@ const EngagementsListSchema = z.array(EngagementSchema).openapi('EngagementsList
 
 const ListEngagementsResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    Engagements: EngagementsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of each engagement that occurred during the specified time range of an incident.',
-        }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    Engagements: EngagementsListSchema.openapi({
+      description:
+        'A list of each engagement that occurred during the specified time range of an incident.',
+    }),
   })
   .openapi({ required: ['Engagements'] })
   .openapi('ListEngagementsResult')
 
 const TimeRangeSchema = z
   .object({
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The start of the time range.' }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The end of the time range.' }),
-    ).exactOptional(),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The start of the time range.',
+    }),
+    EndTime: DateTimeSchema.exactOptional().openapi({ description: 'The end of the time range.' }),
   })
   .openapi({ description: 'A range of between two set times', required: [] })
   .openapi('TimeRange')
 
 const ListEngagementsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z.any().openapi({ description: 'The maximum number of engagements per page of results.' }),
-    ).exactOptional(),
-    IncidentId: IncidentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the incident you're listing engagements for.",
-        }),
-    ).exactOptional(),
-    TimeRangeValue: TimeRangeSchema.and(
-      z.any().openapi({ description: 'The time range to lists engagements for an incident.' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of engagements per page of results.',
+    }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: "The Amazon Resource Name (ARN) of the incident you're listing engagements for.",
+    }),
+    TimeRangeValue: TimeRangeSchema.exactOptional().openapi({
+      description: 'The time range to lists engagements for an incident.',
+    }),
   })
   .openapi({ title: 'ListEngagementsRequest', required: [] })
   .openapi('ListEngagementsRequest')
@@ -1540,33 +1170,21 @@ const ReceiptTypeSchema = z
 
 const ReceiptSchema = z
   .object({
-    ContactChannelArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the contact channel Incident Manager engaged.',
-        }),
-    ).exactOptional(),
-    ReceiptType: ReceiptTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type follows the engagement cycle, <code>SENT</code>, <code>DELIVERED</code>, and <code>READ</code>.',
-        }),
-    ),
-    ReceiptInfo: ReceiptInfoSchema.and(
-      z.any().openapi({ description: 'Information provided during the page acknowledgement.' }),
-    ).exactOptional(),
-    ReceiptTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time receipt was <code>SENT</code>, <code>DELIVERED</code>, or <code>READ</code>.',
-        }),
-    ),
+    ContactChannelArn: SsmContactsArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the contact channel Incident Manager engaged.',
+    }),
+    ReceiptType: ReceiptTypeSchema.openapi({
+      description:
+        'The type follows the engagement cycle, <code>SENT</code>, <code>DELIVERED</code>, and <code>READ</code>.',
+    }),
+    ReceiptInfo: ReceiptInfoSchema.exactOptional().openapi({
+      description: 'Information provided during the page acknowledgement.',
+    }),
+    ReceiptTime: DateTimeSchema.openapi({
+      description:
+        'The time receipt was <code>SENT</code>, <code>DELIVERED</code>, or <code>READ</code>.',
+    }),
   })
   .openapi({
     required: ['ReceiptType', 'ReceiptTime'],
@@ -1578,38 +1196,28 @@ const ReceiptsListSchema = z.array(ReceiptSchema).openapi('ReceiptsList')
 
 const ListPageReceiptsResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    Receipts: ReceiptsListSchema.and(
-      z.any().openapi({ description: 'A list of each acknowledgement.' }),
-    ).exactOptional(),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    Receipts: ReceiptsListSchema.exactOptional().openapi({
+      description: 'A list of each acknowledgement.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPageReceiptsResult')
 
 const ListPageReceiptsRequestSchema = z
   .object({
-    PageId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the engagement to a specific contact channel.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The maximum number of acknowledgements per page of results.' }),
-    ).exactOptional(),
+    PageId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the engagement to a specific contact channel.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description: 'The maximum number of acknowledgements per page of results.',
+    }),
   })
   .openapi({ required: ['PageId'], title: 'ListPageReceiptsRequest' })
   .openapi('ListPageReceiptsRequest')
@@ -1618,24 +1226,14 @@ const StageIndexSchema = z.int().min(0).max(100).openapi('StageIndex')
 
 const ResolutionContactSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of a contact in the engagement resolution process. ',
-        }),
-    ),
-    Type: ContactTypeSchema.and(
-      z.any().openapi({ description: 'The type of contact for a resolution step.' }),
-    ),
-    StageIndex: StageIndexSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The stage in the escalation plan that resolves to this contact.',
-        }),
-    ).exactOptional(),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of a contact in the engagement resolution process. ',
+    }),
+    Type: ContactTypeSchema.openapi({ description: 'The type of contact for a resolution step.' }),
+    StageIndex: StageIndexSchema.exactOptional().openapi({
+      description: 'The stage in the escalation plan that resolves to this contact.',
+    }),
   })
   .openapi({
     required: ['ContactArn', 'Type'],
@@ -1648,79 +1246,53 @@ const ResolutionListSchema = z.array(ResolutionContactSchema).openapi('Resolutio
 
 const ListPageResolutionsResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    PageResolutions: ResolutionListSchema.and(
-      z.any().openapi({ description: 'Information about the resolution for an engagement.' }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
+    PageResolutions: ResolutionListSchema.openapi({
+      description: 'Information about the resolution for an engagement.',
+    }),
   })
   .openapi({ required: ['PageResolutions'] })
   .openapi('ListPageResolutionsResult')
 
 const ListPageResolutionsRequestSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to start the list. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    PageId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact engaged for the incident.',
-        }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. Use this token to get the next set of results.',
+    }),
+    PageId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact engaged for the incident.',
+    }),
   })
   .openapi({ required: ['PageId'], title: 'ListPageResolutionsRequest' })
   .openapi('ListPageResolutionsRequest')
 
 const PageSchema = z
   .object({
-    PageArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the page to the contact channel.',
-        }),
-    ),
-    EngagementArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the engagement that this page is part of.' }),
-    ),
-    ContactArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the contact that Incident Manager is engaging.' }),
-    ),
-    Sender: SenderSchema.and(
-      z.any().openapi({ description: 'The user that started the engagement.' }),
-    ),
-    IncidentId: IncidentIdSchema.and(
-      z
-        .any()
-        .openapi({ description: "The ARN of the incident that's engaging the contact channel." }),
-    ).exactOptional(),
-    SentTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that Incident Manager engaged the contact channel.' }),
-    ).exactOptional(),
-    DeliveryTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time the message was delivered to the contact channel.' }),
-    ).exactOptional(),
-    ReadTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The time that the contact channel acknowledged engagement.' }),
-    ).exactOptional(),
+    PageArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the page to the contact channel.',
+    }),
+    EngagementArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the engagement that this page is part of.',
+    }),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The ARN of the contact that Incident Manager is engaging.',
+    }),
+    Sender: SenderSchema.openapi({ description: 'The user that started the engagement.' }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: "The ARN of the incident that's engaging the contact channel.",
+    }),
+    SentTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that Incident Manager engaged the contact channel.',
+    }),
+    DeliveryTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the message was delivered to the contact channel.',
+    }),
+    ReadTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the contact channel acknowledged engagement.',
+    }),
   })
   .openapi({
     required: ['PageArn', 'EngagementArn', 'ContactArn', 'Sender'],
@@ -1732,77 +1304,55 @@ const PagesListSchema = z.array(PageSchema).openapi('PagesList')
 
 const ListPagesByContactResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    Pages: PagesListSchema.and(
-      z.any().openapi({ description: "The list of engagements to a contact's contact channel." }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    Pages: PagesListSchema.openapi({
+      description: "The list of engagements to a contact's contact channel.",
+    }),
   })
   .openapi({ required: ['Pages'] })
   .openapi('ListPagesByContactResult')
 
 const ListPagesByContactRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the contact you are retrieving engagements for.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of engagements to contact channels to list per page of results. ',
-        }),
-    ).exactOptional(),
+    ContactId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the contact you are retrieving engagements for.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of engagements to contact channels to list per page of results. ',
+    }),
   })
   .openapi({ required: ['ContactId'], title: 'ListPagesByContactRequest' })
   .openapi('ListPagesByContactRequest')
 
 const ListPagesByEngagementResultSchema = z
   .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    Pages: PagesListSchema.and(
-      z.any().openapi({ description: 'The list of engagements to contact channels.' }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    Pages: PagesListSchema.openapi({ description: 'The list of engagements to contact channels.' }),
   })
   .openapi({ required: ['Pages'] })
   .openapi('ListPagesByEngagementResult')
 
 const ListPagesByEngagementRequestSchema = z
   .object({
-    EngagementId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the engagement.' }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token to continue to the next page of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of engagements to contact channels to list per page of results.',
-        }),
-    ).exactOptional(),
+    EngagementId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'The pagination token to continue to the next page of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of engagements to contact channels to list per page of results.',
+    }),
   })
   .openapi({ required: ['EngagementId'], title: 'ListPagesByEngagementRequest' })
   .openapi('ListPagesByEngagementRequest')
@@ -1811,14 +1361,10 @@ const ShiftTypeSchema = z.enum(['REGULAR', 'OVERRIDDEN']).openapi('ShiftType')
 
 const ShiftDetailsSchema = z
   .object({
-    OverriddenContactIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resources Names (ARNs) of the contacts who were replaced in a shift when an override was created. If the override is deleted, these contacts are restored to the shift.',
-        }),
-    ),
+    OverriddenContactIds: SsmContactsArnListSchema.openapi({
+      description:
+        'The Amazon Resources Names (ARNs) of the contacts who were replaced in a shift when an override was created. If the override is deleted, these contacts are restored to the shift.',
+    }),
   })
   .openapi({
     required: ['OverriddenContactIds'],
@@ -1828,26 +1374,16 @@ const ShiftDetailsSchema = z
 
 const RotationShiftSchema = z
   .object({
-    ContactIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the contacts who are part of the shift rotation. ',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time a shift rotation begins.' }),
-    ),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time a shift rotation ends.' }),
-    ),
-    Type: ShiftTypeSchema.and(
-      z.any().openapi({ description: 'The type of shift rotation.' }),
-    ).exactOptional(),
-    ShiftDetails: ShiftDetailsSchema.and(
-      z.any().openapi({ description: 'Additional information about an on-call rotation shift.' }),
-    ).exactOptional(),
+    ContactIds: SsmContactsArnListSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the contacts who are part of the shift rotation. ',
+    }),
+    StartTime: DateTimeSchema.openapi({ description: 'The time a shift rotation begins.' }),
+    EndTime: DateTimeSchema.openapi({ description: 'The time a shift rotation ends.' }),
+    Type: ShiftTypeSchema.exactOptional().openapi({ description: 'The type of shift rotation.' }),
+    ShiftDetails: ShiftDetailsSchema.exactOptional().openapi({
+      description: 'Additional information about an on-call rotation shift.',
+    }),
   })
   .openapi({
     required: ['StartTime', 'EndTime'],
@@ -1859,21 +1395,13 @@ const RotationShiftsSchema = z.array(RotationShiftSchema).openapi('RotationShift
 
 const ListPreviewRotationShiftsResultSchema = z
   .object({
-    RotationShifts: RotationShiftsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details about a rotation shift, including times, types, and contacts.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. This token is used to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationShifts: RotationShiftsSchema.exactOptional().openapi({
+      description: 'Details about a rotation shift, including times, types, and contacts.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. This token is used to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPreviewRotationShiftsResult')
@@ -1899,21 +1427,15 @@ const RotationOverridePreviewMemberListSchema = z
 
 const PreviewOverrideSchema = z
   .object({
-    NewMembers: RotationOverridePreviewMemberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about contacts to add to an on-call rotation override.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the time a rotation override would begin.' }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'Information about the time a rotation override would end.' }),
-    ).exactOptional(),
+    NewMembers: RotationOverridePreviewMemberListSchema.exactOptional().openapi({
+      description: 'Information about contacts to add to an on-call rotation override.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Information about the time a rotation override would begin.',
+    }),
+    EndTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Information about the time a rotation override would end.',
+    }),
   })
   .openapi({
     description: 'Information about contacts and times that an on-call override replaces.',
@@ -1925,67 +1447,38 @@ const OverrideListSchema = z.array(PreviewOverrideSchema).openapi('OverrideList'
 
 const ListPreviewRotationShiftsRequestSchema = z
   .object({
-    RotationStartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The date and time a rotation would begin. The first shift is calculated from this date and time.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Used to filter the range of calculated shifts before sending the response back to the user. ',
-        }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time a rotation shift would end.' }),
-    ),
-    Members: RotationPreviewMemberListSchema.and(
-      z.any().openapi({ description: 'The contacts that would be assigned to a rotation.' }),
-    ),
-    TimeZoneId: TimeZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time zone the rotation’s activity would be based on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". ',
-        }),
-    ),
-    Recurrence: RecurrenceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how long a rotation would last before restarting at the beginning of the shift order.',
-        }),
-    ),
-    Overrides: OverrideListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about changes that would be made in a rotation override.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token to start the list. This token is used to get the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return for this call. The call also returns a token that can be specified in a subsequent call to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationStartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        'The date and time a rotation would begin. The first shift is calculated from this date and time.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        'Used to filter the range of calculated shifts before sending the response back to the user. ',
+    }),
+    EndTime: DateTimeSchema.openapi({
+      description: 'The date and time a rotation shift would end.',
+    }),
+    Members: RotationPreviewMemberListSchema.openapi({
+      description: 'The contacts that would be assigned to a rotation.',
+    }),
+    TimeZoneId: TimeZoneIdSchema.openapi({
+      description:
+        'The time zone the rotation’s activity would be based on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". ',
+    }),
+    Recurrence: RecurrenceSettingsSchema.openapi({
+      description:
+        'Information about how long a rotation would last before restarting at the beginning of the shift order.',
+    }),
+    Overrides: OverrideListSchema.exactOptional().openapi({
+      description: 'Information about changes that would be made in a rotation override.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. This token is used to get the next set of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return for this call. The call also returns a token that can be specified in a subsequent call to get the next set of results.',
+    }),
   })
   .openapi({
     required: ['EndTime', 'Members', 'TimeZoneId', 'Recurrence'],
@@ -1995,30 +1488,18 @@ const ListPreviewRotationShiftsRequestSchema = z
 
 const RotationOverrideSchema = z
   .object({
-    RotationOverrideId: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the override to an on-call rotation.',
-        }),
-    ),
-    NewContactIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the contacts assigned to the override of the on-call rotation.',
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time a rotation override begins.' }),
-    ),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time a rotation override ends.' }),
-    ),
-    CreateTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time a rotation override was created.' }),
-    ),
+    RotationOverrideId: UuidSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the override to an on-call rotation.',
+    }),
+    NewContactIds: SsmContactsArnListSchema.openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of the contacts assigned to the override of the on-call rotation.',
+    }),
+    StartTime: DateTimeSchema.openapi({ description: 'The time a rotation override begins.' }),
+    EndTime: DateTimeSchema.openapi({ description: 'The time a rotation override ends.' }),
+    CreateTime: DateTimeSchema.openapi({
+      description: 'The time a rotation override was created.',
+    }),
   })
   .openapi({
     required: ['RotationOverrideId', 'NewContactIds', 'StartTime', 'EndTime', 'CreateTime'],
@@ -2030,60 +1511,35 @@ const RotationOverridesSchema = z.array(RotationOverrideSchema).openapi('Rotatio
 
 const ListRotationOverridesResultSchema = z
   .object({
-    RotationOverrides: RotationOverridesSchema.and(
-      z.any().openapi({ description: 'A list of rotation overrides in the specified time range.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationOverrides: RotationOverridesSchema.exactOptional().openapi({
+      description: 'A list of rotation overrides in the specified time range.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRotationOverridesResult')
 
 const ListRotationOverridesRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the rotation to retrieve information about.',
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time for the beginning of a time range for listing overrides.',
-        }),
-    ),
-    EndTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time for the end of a time range for listing overrides.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to start the list. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the rotation to retrieve information about.',
+    }),
+    StartTime: DateTimeSchema.openapi({
+      description: 'The date and time for the beginning of a time range for listing overrides.',
+    }),
+    EndTime: DateTimeSchema.openapi({
+      description: 'The date and time for the end of a time range for listing overrides.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. Use this token to get the next set of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
+    }),
   })
   .openapi({
     required: ['RotationId', 'StartTime', 'EndTime'],
@@ -2093,159 +1549,75 @@ const ListRotationOverridesRequestSchema = z
 
 const ListRotationShiftsResultSchema = z
   .object({
-    RotationShifts: RotationShiftsSchema.and(
-      z.any().openapi({ description: 'Information about shifts that meet the filter criteria.' }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationShifts: RotationShiftsSchema.exactOptional().openapi({
+      description: 'Information about shifts that meet the filter criteria.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRotationShiftsResult')
 
 const ListRotationShiftsRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the rotation to retrieve shift information about. ',
-        }),
-    ),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time for the beginning of the time range to list shifts for.',
-        }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The date and time for the end of the time range to list shifts for.',
-        }),
-    ),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to start the list. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationId: SsmContactsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the rotation to retrieve shift information about. ',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time for the beginning of the time range to list shifts for.',
+    }),
+    EndTime: DateTimeSchema.openapi({
+      description: 'The date and time for the end of the time range to list shifts for.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. Use this token to get the next set of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
+    }),
   })
   .openapi({ required: ['RotationId', 'EndTime'], title: 'ListRotationShiftsRequest' })
   .openapi('ListRotationShiftsRequest')
 
-const RotationSchema = z
+const ListRotationsResultSchema: z.ZodType<ListRotationsResultType> = z
   .object({
-    RotationArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rotation.' }),
-    ),
-    Name: RotationNameSchema.and(z.any().openapi({ description: 'The name of the rotation.' })),
-    ContactIds: SsmContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of the contacts assigned to the rotation team.',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the rotation becomes active.' }),
-    ).exactOptional(),
-    TimeZoneId: TimeZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time zone the rotation’s activity is based on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". ',
-        }),
-    ).exactOptional(),
-    Recurrence: RecurrenceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about when an on-call rotation is in effect and how long the rotation period lasts.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['RotationArn', 'Name'],
-    description: 'Information about a rotation in an on-call schedule.',
-  })
-  .openapi('Rotation')
-
-const RotationsSchema = z.array(RotationSchema).openapi('Rotations')
-
-const ListRotationsResultSchema = z
-  .object({
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    Rotations: RotationsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about rotations that meet the filter criteria.' }),
-    ),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. Use this token to get the next set of results.',
+    }),
+    Rotations: RotationsSchema.openapi({
+      description: 'Information about rotations that meet the filter criteria.',
+    }),
   })
   .openapi({ required: ['Rotations'] })
   .openapi('ListRotationsResult')
 
 const ListRotationsRequestSchema = z
   .object({
-    RotationNamePrefix: RotationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A filter to include rotations in list results based on their common prefix. For example, entering prod returns a list of all rotation names that begin with <code>prod</code>, such as <code>production</code> and <code>prod-1</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: PaginationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A token to start the list. Use this token to get the next set of results.',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
-        }),
-    ).exactOptional(),
+    RotationNamePrefix: RotationNameSchema.exactOptional().openapi({
+      description:
+        'A filter to include rotations in list results based on their common prefix. For example, entering prod returns a list of all rotation names that begin with <code>prod</code>, such as <code>production</code> and <code>prod-1</code>.',
+    }),
+    NextToken: PaginationTokenSchema.exactOptional().openapi({
+      description: 'A token to start the list. Use this token to get the next set of results.',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.',
+    }),
   })
   .openapi({ title: 'ListRotationsRequest', required: [] })
   .openapi('ListRotationsRequest')
 
 const ListTagsForResourceResultSchema = z
   .object({
-    Tags: TagsListSchema.and(
-      z.any().openapi({ description: 'The tags related to the contact or escalation plan.' }),
-    ).exactOptional(),
+    Tags: TagsListSchema.exactOptional().openapi({
+      description: 'The tags related to the contact or escalation plan.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResult')
@@ -2254,106 +1626,72 @@ const AmazonResourceNameSchema = z.string().min(1).max(1011).openapi('AmazonReso
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
   })
   .openapi({ required: ['ResourceARN'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
-const PutContactPolicyResultSchema = z.object({}).openapi('PutContactPolicyResult')
+const PutContactPolicyResultSchema = z.looseObject({}).openapi('PutContactPolicyResult')
 
 const PutContactPolicyRequestSchema = z
   .object({
-    ContactArn: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
-    Policy: PolicySchema.and(z.any().openapi({ description: 'Details of the resource policy.' })),
+    ContactArn: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
+    Policy: PolicySchema.openapi({ description: 'Details of the resource policy.' }),
   })
   .openapi({ required: ['ContactArn', 'Policy'], title: 'PutContactPolicyRequest' })
   .openapi('PutContactPolicyRequest')
 
-const SendActivationCodeResultSchema = z.object({}).openapi('SendActivationCodeResult')
+const SendActivationCodeResultSchema = z.looseObject({}).openapi('SendActivationCodeResult')
 
 const SendActivationCodeRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the contact channel.' }),
-    ),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel.',
+    }),
   })
   .openapi({ required: ['ContactChannelId'], title: 'SendActivationCodeRequest' })
   .openapi('SendActivationCodeRequest')
 
 const StartEngagementResultSchema = z
   .object({
-    EngagementArn: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the engagement.' }),
-    ),
+    EngagementArn: SsmContactsArnSchema.openapi({ description: 'The ARN of the engagement.' }),
   })
   .openapi({ required: ['EngagementArn'] })
   .openapi('StartEngagementResult')
 
 const StartEngagementRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the contact being engaged.' }),
-    ),
-    Sender: SenderSchema.and(
-      z.any().openapi({ description: 'The user that started the engagement.' }),
-    ),
-    Subject: SubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> or <code>EMAIL</code>.',
-        }),
-    ),
-    Content: ContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> or <code>EMAIL</code>.',
-        }),
-    ),
-    PublicSubject: PublicSubjectSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    PublicContent: PublicContentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
-        }),
-    ).exactOptional(),
-    IncidentId: IncidentIdSchema.and(
-      z.any().openapi({ description: 'The ARN of the incident that the engagement is part of.' }),
-    ).exactOptional(),
-    IdempotencyToken: IdempotencyTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A token ensuring that the operation is called only once with the specified details.',
-        }),
-    ).exactOptional(),
+    ContactId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact being engaged.',
+    }),
+    Sender: SenderSchema.openapi({ description: 'The user that started the engagement.' }),
+    Subject: SubjectSchema.openapi({
+      description:
+        'The secure subject of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> or <code>EMAIL</code>.',
+    }),
+    Content: ContentSchema.openapi({
+      description:
+        'The secure content of the message that was sent to the contact. Use this field for engagements to <code>VOICE</code> or <code>EMAIL</code>.',
+    }),
+    PublicSubject: PublicSubjectSchema.exactOptional().openapi({
+      description:
+        'The insecure subject of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    PublicContent: PublicContentSchema.exactOptional().openapi({
+      description:
+        'The insecure content of the message that was sent to the contact. Use this field for engagements to <code>SMS</code>.',
+    }),
+    IncidentId: IncidentIdSchema.exactOptional().openapi({
+      description: 'The ARN of the incident that the engagement is part of.',
+    }),
+    IdempotencyToken: IdempotencyTokenSchema.exactOptional().openapi({
+      description:
+        'A token ensuring that the operation is called only once with the specified details.',
+    }),
   })
   .openapi({
     required: ['ContactId', 'Sender', 'Subject', 'Content'],
@@ -2361,7 +1699,7 @@ const StartEngagementRequestSchema = z
   })
   .openapi('StartEngagementRequest')
 
-const StopEngagementResultSchema = z.object({}).openapi('StopEngagementResult')
+const StopEngagementResultSchema = z.looseObject({}).openapi('StopEngagementResult')
 
 const StopReasonSchema = z
   .string()
@@ -2371,145 +1709,105 @@ const StopReasonSchema = z
 
 const StopEngagementRequestSchema = z
   .object({
-    EngagementId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the engagement.' }),
-    ),
-    Reason: StopReasonSchema.and(
-      z.any().openapi({ description: "The reason that you're stopping the engagement." }),
-    ).exactOptional(),
+    EngagementId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the engagement.',
+    }),
+    Reason: StopReasonSchema.exactOptional().openapi({
+      description: "The reason that you're stopping the engagement.",
+    }),
   })
   .openapi({ required: ['EngagementId'], title: 'StopEngagementRequest' })
   .openapi('StopEngagementRequest')
 
-const TagResourceResultSchema = z.object({}).openapi('TagResourceResult')
+const TagResourceResultSchema = z.looseObject({}).openapi('TagResourceResult')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
-    Tags: TagsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of tags that you are adding to the contact or escalation plan.',
-        }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
+    Tags: TagsListSchema.openapi({
+      description: 'A list of tags that you are adding to the contact or escalation plan.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResultSchema = z.object({}).openapi('UntagResourceResult')
+const UntagResourceResultSchema = z.looseObject({}).openapi('UntagResourceResult')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
-        }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The key of the tag that you want to remove.' }),
-    ),
+    ResourceARN: AmazonResourceNameSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact or escalation plan.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({
+      description: 'The key of the tag that you want to remove.',
+    }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
-const UpdateContactResultSchema = z.object({}).openapi('UpdateContactResult')
+const UpdateContactResultSchema = z.looseObject({}).openapi('UpdateContactResult')
 
 const UpdateContactRequestSchema = z
   .object({
-    ContactId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the contact or escalation plan you're updating.",
-        }),
-    ),
-    DisplayName: ContactNameSchema.and(
-      z.any().openapi({ description: 'The full name of the contact or escalation plan.' }),
-    ).exactOptional(),
-    Plan: PlanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stages. A contact has an engagement plan with stages for specified contact channels. An escalation plan uses these stages to contact specified contacts.',
-        }),
-    ).exactOptional(),
+    ContactId: SsmContactsArnSchema.openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the contact or escalation plan you're updating.",
+    }),
+    DisplayName: ContactNameSchema.exactOptional().openapi({
+      description: 'The full name of the contact or escalation plan.',
+    }),
+    Plan: PlanSchema.exactOptional().openapi({
+      description:
+        'A list of stages. A contact has an engagement plan with stages for specified contact channels. An escalation plan uses these stages to contact specified contacts.',
+    }),
   })
   .openapi({ required: ['ContactId'], title: 'UpdateContactRequest' })
   .openapi('UpdateContactRequest')
 
-const UpdateContactChannelResultSchema = z.object({}).openapi('UpdateContactChannelResult')
+const UpdateContactChannelResultSchema = z.looseObject({}).openapi('UpdateContactChannelResult')
 
 const UpdateContactChannelRequestSchema = z
   .object({
-    ContactChannelId: SsmContactsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the contact channel you want to update.',
-        }),
-    ),
-    Name: ChannelNameSchema.and(
-      z.any().openapi({ description: 'The name of the contact channel.' }),
-    ).exactOptional(),
-    DeliveryAddress: ContactChannelAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The details that Incident Manager uses when trying to engage the contact channel.',
-        }),
-    ).exactOptional(),
+    ContactChannelId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the contact channel you want to update.',
+    }),
+    Name: ChannelNameSchema.exactOptional().openapi({
+      description: 'The name of the contact channel.',
+    }),
+    DeliveryAddress: ContactChannelAddressSchema.exactOptional().openapi({
+      description:
+        'The details that Incident Manager uses when trying to engage the contact channel.',
+    }),
   })
   .openapi({ required: ['ContactChannelId'], title: 'UpdateContactChannelRequest' })
   .openapi('UpdateContactChannelRequest')
 
-const UpdateRotationResultSchema = z.object({}).openapi('UpdateRotationResult')
+const UpdateRotationResultSchema = z.looseObject({}).openapi('UpdateRotationResult')
 
 const UpdateRotationRequestSchema = z
   .object({
-    RotationId: SsmContactsArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the rotation to update.' }),
-    ),
-    ContactIds: RotationContactsArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Names (ARNs) of the contacts to include in the updated rotation. </p> <p>The order in which you list the contacts is their shift order in the rotation schedule.</p>',
-        }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time the rotation goes into effect.' }),
-    ).exactOptional(),
-    TimeZoneId: TimeZoneIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time zone to base the updated rotation’s activity on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". For more information, see the <a href="https://www.iana.org/time-zones">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time Rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), aren\'t supported.</p> </note>',
-        }),
-    ).exactOptional(),
-    Recurrence: RecurrenceSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about how long the updated rotation lasts before restarting at the beginning of the shift order.',
-        }),
-    ),
+    RotationId: SsmContactsArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the rotation to update.',
+    }),
+    ContactIds: RotationContactsArnListSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Names (ARNs) of the contacts to include in the updated rotation. </p> <p>The order in which you list the contacts is their shift order in the rotation schedule.</p>',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time the rotation goes into effect.',
+    }),
+    TimeZoneId: TimeZoneIdSchema.exactOptional().openapi({
+      description:
+        '<p>The time zone to base the updated rotation’s activity on, in Internet Assigned Numbers Authority (IANA) format. For example: "America/Los_Angeles", "UTC", or "Asia/Seoul". For more information, see the <a href="https://www.iana.org/time-zones">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time Rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), aren\'t supported.</p> </note>',
+    }),
+    Recurrence: RecurrenceSettingsSchema.openapi({
+      description:
+        'Information about how long the updated rotation lasts before restarting at the beginning of the shift order.',
+    }),
   })
   .openapi({ required: ['RotationId', 'Recurrence'], title: 'UpdateRotationRequest' })
   .openapi('UpdateRotationRequest')

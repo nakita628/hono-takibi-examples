@@ -1,69 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ActionConfirmationBodySchema = z
-  .object({
-    cancelButtonLabel: z
-      .string()
-      .openapi({ description: 'The label for the button that cancels the action.', example: null }),
-    confirmButtonLabel: z
-      .string()
-      .openapi({
-        description: 'The label for the button that confirms the action.',
-        example: null,
-      }),
-    prompt: z
-      .string()
-      .openapi({
-        description: 'The message displayed to the user to confirm the action.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['cancelButtonLabel', 'confirmButtonLabel', 'prompt'], example: null })
-  .openapi('ActionConfirmationBody')
-
-const ActionHookActionBodySchema = z
-  .object({
-    confirmation: ActionConfirmationBodySchema.exactOptional(),
-    httpMethod: z
-      .enum(['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE'])
-      .openapi({
-        description:
-          'The HTTP method to be used when making the call, which can be set to GET, POST, PUT, DELETE, or PATCH. If using GET or DELETE',
-        example: null,
-      }),
-    label: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: "The label for this property as you'd like it displayed to users.",
-        example: null,
-      }),
-    propertyNamesIncluded: z
-      .array(z.string().openapi({ example: null }))
-      .openapi({
-        description:
-          'A list of property names that will be included on the action. See the documentation for more information',
-        example: null,
-      }),
-    type: z
-      .literal('ACTION_HOOK')
-      .default('ACTION_HOOK')
-      .openapi({ description: 'The type of status.', example: null }),
-    url: z
-      .string()
-      .openapi({
-        description: 'The URL endpoint that will be called when the action is triggered.',
-        example: null,
-      }),
-  })
-  .openapi({
-    title: 'ACTION_HOOK',
-    required: ['httpMethod', 'propertyNamesIncluded', 'type', 'url'],
-    example: null,
-    'x-hubspot-sub-type-impl': true,
-  })
-  .openapi('ActionHookActionBody')
-
 const CardActionsSchema = z
   .object({
     baseUrls: z
@@ -234,6 +170,126 @@ const CardObjectTypeBodySchema = z
   })
   .openapi({ required: ['name', 'propertiesToSend'], example: null })
   .openapi('CardObjectTypeBody')
+
+const PublicCardFetchBodySchema = z
+  .object({
+    objectTypes: z
+      .array(CardObjectTypeBodySchema)
+      .openapi({
+        description:
+          'An array of CRM object types where this card should be displayed. HubSpot will call your target URL whenever a user visits a record page of the types defined here.',
+        example: null,
+      }),
+    targetUrl: z
+      .string()
+      .openapi({
+        description:
+          'URL to a service endpoint that will respond with details for this card. HubSpot will call this endpoint each time a user visits a CRM record page where this card should be displayed.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['objectTypes', 'targetUrl'], example: null })
+  .openapi('PublicCardFetchBody')
+
+const PublicCardResponseSchema = z
+  .object({
+    actions: CardActionsSchema,
+    auditHistory: z
+      .array(CardAuditResponseSchema)
+      .openapi({
+        description:
+          'A list of actions performed on the card, including creation, deletion, and updates.',
+        example: null,
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when the card was created.', example: null }),
+    display: CardDisplayBodySchema,
+    fetch: PublicCardFetchBodySchema,
+    id: z.string().openapi({ description: 'The unique id of the card.', example: null }),
+    title: z
+      .string()
+      .openapi({
+        description: 'The top-level title for this card. Displayed to users in the CRM UI.',
+        example: null,
+      }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'The date and time when the card was last updated.', example: null }),
+  })
+  .openapi({
+    required: ['actions', 'auditHistory', 'display', 'fetch', 'id', 'title'],
+    example: null,
+  })
+  .openapi('PublicCardResponse')
+
+type PublicCardListResponseType = { results: z.infer<typeof PublicCardResponseSchema>[] }
+
+const ActionConfirmationBodySchema = z
+  .object({
+    cancelButtonLabel: z
+      .string()
+      .openapi({ description: 'The label for the button that cancels the action.', example: null }),
+    confirmButtonLabel: z
+      .string()
+      .openapi({
+        description: 'The label for the button that confirms the action.',
+        example: null,
+      }),
+    prompt: z
+      .string()
+      .openapi({
+        description: 'The message displayed to the user to confirm the action.',
+        example: null,
+      }),
+  })
+  .openapi({ required: ['cancelButtonLabel', 'confirmButtonLabel', 'prompt'], example: null })
+  .openapi('ActionConfirmationBody')
+
+const ActionHookActionBodySchema = z
+  .object({
+    confirmation: ActionConfirmationBodySchema.exactOptional(),
+    httpMethod: z
+      .enum(['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE'])
+      .openapi({
+        description:
+          'The HTTP method to be used when making the call, which can be set to GET, POST, PUT, DELETE, or PATCH. If using GET or DELETE',
+        example: null,
+      }),
+    label: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: "The label for this property as you'd like it displayed to users.",
+        example: null,
+      }),
+    propertyNamesIncluded: z
+      .array(z.string().openapi({ example: null }))
+      .openapi({
+        description:
+          'A list of property names that will be included on the action. See the documentation for more information',
+        example: null,
+      }),
+    type: z
+      .literal('ACTION_HOOK')
+      .default('ACTION_HOOK')
+      .openapi({ description: 'The type of status.', example: null }),
+    url: z
+      .string()
+      .openapi({
+        description: 'The URL endpoint that will be called when the action is triggered.',
+        example: null,
+      }),
+  })
+  .openapi({
+    title: 'ACTION_HOOK',
+    required: ['httpMethod', 'propertyNamesIncluded', 'type', 'url'],
+    example: null,
+    'x-hubspot-sub-type-impl': true,
+  })
+  .openapi('ActionHookActionBody')
 
 const CardFetchBodySchema = z
   .object({
@@ -755,61 +811,7 @@ const IntegratorCardPayloadResponseSchema = z
   .openapi({ required: ['responseVersion', 'sections', 'totalCount'], example: null })
   .openapi('IntegratorCardPayloadResponse')
 
-const PublicCardFetchBodySchema = z
-  .object({
-    objectTypes: z
-      .array(CardObjectTypeBodySchema)
-      .openapi({
-        description:
-          'An array of CRM object types where this card should be displayed. HubSpot will call your target URL whenever a user visits a record page of the types defined here.',
-        example: null,
-      }),
-    targetUrl: z
-      .string()
-      .openapi({
-        description:
-          'URL to a service endpoint that will respond with details for this card. HubSpot will call this endpoint each time a user visits a CRM record page where this card should be displayed.',
-        example: null,
-      }),
-  })
-  .openapi({ required: ['objectTypes', 'targetUrl'], example: null })
-  .openapi('PublicCardFetchBody')
-
-const PublicCardResponseSchema = z
-  .object({
-    actions: CardActionsSchema,
-    auditHistory: z
-      .array(CardAuditResponseSchema)
-      .openapi({
-        description:
-          'A list of actions performed on the card, including creation, deletion, and updates.',
-        example: null,
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when the card was created.', example: null }),
-    display: CardDisplayBodySchema,
-    fetch: PublicCardFetchBodySchema,
-    id: z.string().openapi({ description: 'The unique id of the card.', example: null }),
-    title: z
-      .string()
-      .openapi({
-        description: 'The top-level title for this card. Displayed to users in the CRM UI.',
-        example: null,
-      }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date and time when the card was last updated.', example: null }),
-  })
-  .openapi({
-    required: ['actions', 'auditHistory', 'display', 'fetch', 'id', 'title'],
-    example: null,
-  })
-  .openapi('PublicCardResponse')
-
-const PublicCardListResponseSchema = z
+const PublicCardListResponseSchema: z.ZodType<PublicCardListResponseType> = z
   .object({
     results: z
       .array(PublicCardResponseSchema)
@@ -835,10 +837,6 @@ const Oauth2SecurityScheme = {
     },
   },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCrmExtensionsCardsDev202609SampleResponseRoute = createRoute({
   method: 'get',
@@ -947,18 +945,14 @@ export const postCrmExtensionsCardsDev202609AppIdRoute = createRoute({
       description: 'successful operation',
       content: { 'application/json': { schema: PublicCardResponseSchema, example: null } },
       headers: z.object({
-        Location: {
-          description: 'URL of the newly created resource',
-          style: 'simple',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'URL of the newly created resource',
-              param: { required: false },
-              example: null,
-            }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'URL of the newly created resource',
+            param: { required: false },
+            example: null,
+          }),
       }),
     },
     default: ErrorResponse,

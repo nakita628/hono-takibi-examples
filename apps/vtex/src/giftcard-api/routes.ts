@@ -44,6 +44,9 @@ const CartSchema = z
     example: {
       discounts: 0,
       grandTotal: 123.1,
+      items: [
+        { id: '1', name: 'Product Name', price: 100, productId: '1', quantity: 1, refId: '12' },
+      ],
       itemsTotal: 100,
       redemptionCode: null,
       relationName: null,
@@ -133,7 +136,32 @@ const Cart1Schema = z
     taxes: z.int32(),
   })
   .openapi({
-    example: { discounts: -7.5, grandTotal: 0, itemsTotal: 14.99, shipping: 7.27, taxes: 0 },
+    example: {
+      discounts: -7.5,
+      grandTotal: 0,
+      items: [
+        {
+          discount: -7.5,
+          id: '2001023',
+          name: 'Vaporizador Des. ColC4nia Branco',
+          price: 14.99,
+          priceTags: [
+            {
+              name: 'discount@price-discount_store_183#4911bf6f-22a2-4af1-a365-cce895c3df2c',
+              value: 0,
+            },
+          ],
+          productId: '2000492',
+          quantity: 1,
+          refId: '35994',
+          shippingDiscount: 0,
+          value: 14.99,
+        },
+      ],
+      itemsTotal: 14.99,
+      shipping: 7.27,
+      taxes: 0,
+    },
     required: ['items', 'grandTotal', 'discounts', 'shipping', 'taxes', 'itemsTotal'],
     title: 'Cart1',
   })
@@ -349,7 +377,32 @@ const CreateGiftCardTransactionRequestSchema = z
       description: 'GiftCardHub',
       operation: 'Debit',
       orderInfo: {
-        cart: { discounts: -7.5, grandTotal: 0, itemsTotal: 14.99, shipping: 7.27, taxes: 0 },
+        cart: {
+          discounts: -7.5,
+          grandTotal: 0,
+          items: [
+            {
+              discount: -7.5,
+              id: '2001023',
+              name: 'Vaporizador Des. ColC4nia Branco',
+              price: 14.99,
+              priceTags: [
+                {
+                  name: 'discount@price-discount_store_183#4911bf6f-22a2-4af1-a365-cce895c3df2c',
+                  value: 0,
+                },
+              ],
+              productId: '2000492',
+              quantity: 1,
+              refId: '35994',
+              shippingDiscount: 0,
+              value: 14.99,
+            },
+          ],
+          itemsTotal: 14.99,
+          shipping: 7.27,
+          taxes: 0,
+        },
         clientProfile: {
           birthDate: '0001-01-01T00:00:00',
           document: '02906792063',
@@ -398,6 +451,9 @@ const GetGiftCardusingJSONRequestSchema = z
       cart: {
         discounts: 0,
         grandTotal: 123.1,
+        items: [
+          { id: '1', name: 'Product Name', price: 100, productId: '1', quantity: 1, refId: '12' },
+        ],
         itemsTotal: 100,
         redemptionCode: null,
         relationName: null,
@@ -495,7 +551,15 @@ const ResponseSchema = z
 const Response2Schema = z
   .object({ items: z.array(Item1Schema).openapi({ description: '' }), paging: PagingSchema })
   .openapi({
-    example: { paging: { page: 0, pages: 1, perPage: 10, total: 4 } },
+    example: {
+      items: [
+        { _self: { href: 'cards/589' }, id: '589' },
+        { _self: { href: 'cards/590' }, id: '590' },
+        { _self: { href: 'cards/591' }, id: '591' },
+        { _self: { href: 'cards/592' }, id: '592' },
+      ],
+      paging: { page: 0, pages: 1, perPage: 10, total: 4 },
+    },
     required: ['items', 'paging'],
     title: 'response2',
   })

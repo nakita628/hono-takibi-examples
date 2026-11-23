@@ -1,34 +1,43 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const GoogleCloudPolicytroubleshooterV1AccessTupleSchema = z
+const GoogleRpcStatusSchema = z
   .object({
-    fullResourceName: z
-      .string()
+    code: z
+      .int32()
       .exactOptional()
       .openapi({
-        description:
-          'Required. The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names.',
+        description: 'The status code, which should be an enum value of google.rpc.Code.',
       }),
-    permission: z
-      .string()
+    details: z
+      .array(
+        z.record(
+          z.string(),
+          z
+            .any()
+            .openapi({
+              description: 'Properties of the object. Contains field @type with type URL.',
+            }),
+        ),
+      )
       .exactOptional()
       .openapi({
         description:
-          'Required. The IAM permission to check for the specified principal and resource. For a complete list of IAM permissions, see https://cloud.google.com/iam/help/permissions/reference. For a complete list of predefined IAM roles and the permissions in each role, see https://cloud.google.com/iam/help/roles/reference.',
+          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
       }),
-    principal: z
+    message: z
       .string()
       .exactOptional()
       .openapi({
         description:
-          'Required. The principal whose access you want to check, in the form of the email address that represents that principal. For example, `alice@example.com` or `my-service-account@my-project.iam.gserviceaccount.com`. The principal must be a Google Account or a service account. Other types of principals are not supported.',
+          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
       }),
   })
   .openapi({
-    description: 'Information about the principal, resource, and permission to check.',
+    description:
+      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
     required: [],
   })
-  .openapi('GoogleCloudPolicytroubleshooterV1AccessTuple')
+  .openapi('GoogleRpcStatus')
 
 const GoogleTypeExprSchema = z
   .object({
@@ -312,6 +321,47 @@ const GoogleCloudPolicytroubleshooterV1ExplainedPolicySchema = z
   })
   .openapi('GoogleCloudPolicytroubleshooterV1ExplainedPolicy')
 
+type GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponseType = {
+  access?:
+    | 'ACCESS_STATE_UNSPECIFIED'
+    | 'GRANTED'
+    | 'NOT_GRANTED'
+    | 'UNKNOWN_CONDITIONAL'
+    | 'UNKNOWN_INFO_DENIED'
+  errors?: z.infer<typeof GoogleRpcStatusSchema>[]
+  explainedPolicies?: z.infer<typeof GoogleCloudPolicytroubleshooterV1ExplainedPolicySchema>[]
+}
+
+const GoogleCloudPolicytroubleshooterV1AccessTupleSchema = z
+  .object({
+    fullResourceName: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The full resource name that identifies the resource. For example, `//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance`. For examples of full resource names for Google Cloud services, see https://cloud.google.com/iam/help/troubleshooter/full-resource-names.',
+      }),
+    permission: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The IAM permission to check for the specified principal and resource. For a complete list of IAM permissions, see https://cloud.google.com/iam/help/permissions/reference. For a complete list of predefined IAM roles and the permissions in each role, see https://cloud.google.com/iam/help/roles/reference.',
+      }),
+    principal: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The principal whose access you want to check, in the form of the email address that represents that principal. For example, `alice@example.com` or `my-service-account@my-project.iam.gserviceaccount.com`. The principal must be a Google Account or a service account. Other types of principals are not supported.',
+      }),
+  })
+  .openapi({
+    description: 'Information about the principal, resource, and permission to check.',
+    required: [],
+  })
+  .openapi('GoogleCloudPolicytroubleshooterV1AccessTuple')
+
 const GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequestSchema = z
   .object({
     accessTuple: GoogleCloudPolicytroubleshooterV1AccessTupleSchema.exactOptional().openapi({
@@ -322,74 +372,36 @@ const GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequestSchema = z
   .openapi({ description: 'Request for TroubleshootIamPolicy.', required: [] })
   .openapi('GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest')
 
-const GoogleRpcStatusSchema = z
-  .object({
-    code: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'The status code, which should be an enum value of google.rpc.Code.',
-      }),
-    details: z
-      .array(
-        z.record(
-          z.string(),
-          z
-            .any()
-            .openapi({
-              description: 'Properties of the object. Contains field @type with type URL.',
-            }),
-        ),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of messages that carry the error details. There is a common set of message types for APIs to use.',
-      }),
-    message: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the google.rpc.Status.details field, or localized by the client.',
-      }),
-  })
-  .openapi({
-    description:
-      'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).',
-    required: [],
-  })
-  .openapi('GoogleRpcStatus')
-
-const GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponseSchema = z
-  .object({
-    access: z
-      .enum([
-        'ACCESS_STATE_UNSPECIFIED',
-        'GRANTED',
-        'NOT_GRANTED',
-        'UNKNOWN_CONDITIONAL',
-        'UNKNOWN_INFO_DENIED',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the principal has the specified permission for the specified resource, based on evaluating all of the applicable IAM policies.',
-      }),
-    errors: z
-      .array(GoogleRpcStatusSchema)
-      .exactOptional()
-      .openapi({ description: 'The general errors contained in the troubleshooting response.' }),
-    explainedPolicies: z
-      .array(GoogleCloudPolicytroubleshooterV1ExplainedPolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          "List of IAM policies that were evaluated to check the principal's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies can include the policy for the resource itself. It can also include policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy.",
-      }),
-  })
-  .openapi({ description: 'Response for TroubleshootIamPolicy.', required: [] })
-  .openapi('GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse')
+const GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponseSchema: z.ZodType<GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponseType> =
+  z
+    .object({
+      access: z
+        .enum([
+          'ACCESS_STATE_UNSPECIFIED',
+          'GRANTED',
+          'NOT_GRANTED',
+          'UNKNOWN_CONDITIONAL',
+          'UNKNOWN_INFO_DENIED',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the principal has the specified permission for the specified resource, based on evaluating all of the applicable IAM policies.',
+        }),
+      errors: z
+        .array(GoogleRpcStatusSchema)
+        .exactOptional()
+        .openapi({ description: 'The general errors contained in the troubleshooting response.' }),
+      explainedPolicies: z
+        .array(GoogleCloudPolicytroubleshooterV1ExplainedPolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            "List of IAM policies that were evaluated to check the principal's permissions, with annotations to indicate how each policy contributed to the final result. The list of policies can include the policy for the resource itself. It can also include policies that are inherited from higher levels of the resource hierarchy, including the organization, the folder, and the project. To learn more about the resource hierarchy, see https://cloud.google.com/iam/help/resource-hierarchy.",
+        }),
+    })
+    .openapi({ description: 'Response for TroubleshootIamPolicy.', required: [] })
+    .openapi('GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse')
 
 const XgafvParamsSchema = z
   .enum(['1', '2'])

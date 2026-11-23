@@ -1,0 +1,11 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import { postXAmzTargetOvertureServiceStartBgpFailoverTestRoute } from '../routes'
+
+const app = new OpenAPIHono()
+
+export const xAmzTargetOvertureServiceStartBgpFailoverTestHandler = app.openapi(
+  postXAmzTargetOvertureServiceStartBgpFailoverTestRoute,
+  (c) => {
+    throw new Error('Not implemented')
+  },
+)

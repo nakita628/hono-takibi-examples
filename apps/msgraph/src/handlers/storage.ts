@@ -1,0 +1,1378 @@
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute,
+  deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute,
+  deleteStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  deleteStorageFileStorageRoute,
+  deleteStorageSettingsQuotaRoute,
+  deleteStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute,
+  deleteStorageSettingsRoute,
+  getStorageFileStorageContainersCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRoute,
+  getStorageFileStorageContainersFileStorageContainerIdColumnsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdColumnsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdDriveRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdPermissionsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdPermissionsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute,
+  getStorageFileStorageContainersFileStorageContainerIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  getStorageFileStorageContainersRoute,
+  getStorageFileStorageContainerTypeRegistrationsCountRoute,
+  getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsCountRoute,
+  getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute,
+  getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRoute,
+  getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute,
+  getStorageFileStorageContainerTypeRegistrationsRoute,
+  getStorageFileStorageContainerTypesCountRoute,
+  getStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute,
+  getStorageFileStorageContainerTypesRoute,
+  getStorageFileStorageDeletedContainersCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdDriveRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  getStorageFileStorageDeletedContainersRoute,
+  getStorageFileStorageRoute,
+  getStorageRoute,
+  getStorageSettingsQuotaRoute,
+  getStorageSettingsQuotaServicesCountRoute,
+  getStorageSettingsQuotaServicesRoute,
+  getStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute,
+  getStorageSettingsRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute,
+  patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute,
+  patchStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute,
+  patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute,
+  patchStorageFileStorageRoute,
+  patchStorageRoute,
+  patchStorageSettingsQuotaRoute,
+  patchStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute,
+  patchStorageSettingsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdActivateRoute,
+  postStorageFileStorageContainersFileStorageContainerIdColumnsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdLockRoute,
+  postStorageFileStorageContainersFileStorageContainerIdMigrationJobsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdPermanentDeleteRoute,
+  postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdGrantRoute,
+  postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdPermissionsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdProvisionMigrationContainersRoute,
+  postStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdRestoreRoute,
+  postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRoute,
+  postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute,
+  postStorageFileStorageContainersFileStorageContainerIdUnlockRoute,
+  postStorageFileStorageContainersRoute,
+  postStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRoute,
+  postStorageFileStorageContainerTypeRegistrationsRoute,
+  postStorageFileStorageContainerTypesRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdActivateRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdLockRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdPermanentDeleteRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdGrantRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdProvisionMigrationContainersRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdRestoreRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute,
+  postStorageFileStorageDeletedContainersFileStorageContainerIdUnlockRoute,
+  postStorageFileStorageDeletedContainersRoute,
+  postStorageSettingsQuotaServicesRoute,
+} from '../routes'
+
+export const getStorageRouteHandler: RouteHandler<typeof getStorageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageRouteHandler: RouteHandler<typeof patchStorageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageRouteHandler: RouteHandler<
+  typeof getStorageFileStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdColumnsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdColumnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdColumnsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdColumnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdColumnsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdColumnsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdDriveRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdDriveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdActivateRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdLockRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdPermanentDeleteRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdPermanentDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdProvisionMigrationContainersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdProvisionMigrationContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdRestoreRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdUnlockRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdMigrationJobsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdMigrationJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdMigrationJobsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdMigrationJobsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdPermissionsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdPermissionsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdGrantRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdGrantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdPermissionsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdPermissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinItemsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersFileStorageContainerIdSharePointGroupsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainersCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainerTypeRegistrationsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainerTypeRegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsFileStorageContainerTypeAppPermissionGrantAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsFileStorageContainerTypeRegistrationIdApplicationPermissionGrantsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypeRegistrationsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypeRegistrationsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypesRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageContainerTypesRouteHandler: RouteHandler<
+  typeof postStorageFileStorageContainerTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypesFileStorageContainerTypeIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageContainerTypesFileStorageContainerTypeIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageContainerTypesFileStorageContainerTypeIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageContainerTypesFileStorageContainerTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageContainerTypesCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageContainerTypesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdColumnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsColumnDefinitionIdSourceColumnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdColumnsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdDriveRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdDriveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdActivateRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdLockRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdPermanentDeleteRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdPermanentDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdProvisionMigrationContainersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdProvisionMigrationContainersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdRestoreRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdUnlockRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsSharePointMigrationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsSharePointMigrationJobIdProgressEventsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdMigrationJobsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdGrantRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdGrantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsPermissionIdRevokeGrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdPermissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinCreatedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdCreatedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsRecycleBinItemIdLastModifiedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinItemsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserMailboxSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdRecycleBinLastModifiedByUserServiceProvisioningErrorsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRouteHandler: RouteHandler<
+  typeof postStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof patchStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRouteHandler: RouteHandler<
+  typeof deleteStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersSharePointGroupMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsSharePointGroupIdMembersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersFileStorageContainerIdSharePointGroupsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageFileStorageDeletedContainersCountRouteHandler: RouteHandler<
+  typeof getStorageFileStorageDeletedContainersCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageSettingsRouteHandler: RouteHandler<typeof getStorageSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageSettingsRouteHandler: RouteHandler<
+  typeof patchStorageSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageSettingsRouteHandler: RouteHandler<
+  typeof deleteStorageSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageSettingsQuotaRouteHandler: RouteHandler<
+  typeof getStorageSettingsQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageSettingsQuotaRouteHandler: RouteHandler<
+  typeof patchStorageSettingsQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageSettingsQuotaRouteHandler: RouteHandler<
+  typeof deleteStorageSettingsQuotaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageSettingsQuotaServicesRouteHandler: RouteHandler<
+  typeof getStorageSettingsQuotaServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStorageSettingsQuotaServicesRouteHandler: RouteHandler<
+  typeof postStorageSettingsQuotaServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRouteHandler: RouteHandler<
+  typeof getStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRouteHandler: RouteHandler<
+  typeof patchStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRouteHandler: RouteHandler<
+  typeof deleteStorageSettingsQuotaServicesServiceStorageQuotaBreakdownIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStorageSettingsQuotaServicesCountRouteHandler: RouteHandler<
+  typeof getStorageSettingsQuotaServicesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

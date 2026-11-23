@@ -37,7 +37,26 @@ Base URLs:
 
 # Authentication
 
-- HTTP Authentication, scheme: bearer Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.
+- HTTP Authentication, scheme: bearer The Business API uses API keys for authentication.
+Each request must include an `Authorization` header with your API key in the format `Bearer <your_api_key>`.
+If your [key has signing enabled](https://developer.revolut.com/docs/guides/api-console/create-key#how-it-works), each request must also include:
+- `Revolut-Api-Timestamp`: the current Unix timestamp in **milliseconds**, for example `1783616701644`. Used to prevent replay attacks.
+- `Revolut-Api-Signature`: a Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.
+
+The scopes required by each endpoint correspond to the **Products and permissions** you select for your API key in the [API Console](https://developer.revolut.com/docs/guides/api-console/introduction).
+A key can only access the resources covered by its permissions — see the API Console documentation: [Create an API key](https://developer.revolut.com/docs/guides/api-console/create-key#2-select-products-and-permissions), [Manage API key settings](https://developer.revolut.com/docs/guides/api-console/manage-key-permissions#update-product-permissions), and [Signing requirements](https://developer.revolut.com/docs/guides/api-console/signing-requirements).
+
+:::info
+To create an API key, configure signing, and make your first authenticated request, see the [API Console guides](https://developer.revolut.com/docs/guides/api-console/introduction).
+:::
+
+- HTTP Authentication, scheme: bearer :::warning[Deprecated]
+The access token (OAuth 2.0) authentication method is deprecated.
+Use API key authentication instead.
+If you already use access tokens, switch to API keys as soon as possible — see the [API Console guides](https://developer.revolut.com/docs/guides/api-console/introduction).
+:::
+
+Each Business API request must contain an authorization header in the following format to make a call: `Bearer <your_access_token>`.
 
 The access token will be obtained the first time you set up your application and has an expiration of 40 minutes. 
 During setup, a `refresh_token` will also be obtained which allows to obtain a new `access_token`.
@@ -115,12 +134,24 @@ The page size, that is, the maximum number of accounting categories returned per
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Accounting categories | Read | `accounting-categories:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-accounting-categories-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |limit|query|integer|false|The page size, that is, the maximum number of accounting categories to return per page.<br><br>To get the next page of results, use `page_token`.|
 |page_token|query|[PageToken](#schemapagetoken)|false|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -268,7 +299,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create an accounting category
@@ -300,6 +331,15 @@ This operation is not supported for [externally managed accounting categories](h
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Accounting categories | Write | `accounting-categories:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -314,6 +354,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateAccountingCategoryRequest](#schemacreateaccountingcategoryrequest)|true|none|
 |» name|body|string|true|The full name for the accounting category.|
 |» code|body|string|true|The code name for the accounting category.|
@@ -436,7 +479,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve accounting category details
@@ -459,11 +502,23 @@ The details include the accounting category name, code, and default tax rate, as
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Accounting categories | Read | `accounting-categories:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-accounting-category-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |accounting_category_id|path|string(uuid)|true|The ID of the accounting category to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -576,7 +631,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete an accounting category
@@ -609,11 +664,23 @@ A successful response does not get any content in return.
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Accounting categories | Write | `accounting-categories:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-an-accounting-category-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |accounting_category_id|path|string(uuid)|true|The ID of the accounting category to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -724,7 +791,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update accounting category settings
@@ -756,6 +823,15 @@ This operation is not supported for [externally managed accounting categories](h
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage accounting categories](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-categories).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Accounting categories | Write | `accounting-categories:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -771,6 +847,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |accounting_category_id|path|string(uuid)|true|The ID of the accounting category to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateAccountingCategoryRequest](#schemaupdateaccountingcategoryrequest)|true|none|
 |» name|body|string|false|The new full name for the accounting category.|
 |» code|body|string|false|The new code name for the accounting category.|
@@ -896,7 +975,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of label groups
@@ -919,12 +998,24 @@ The label groups are sorted by the `created_at` date in reverse chronological or
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Read | `labels:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-label-groups-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |limit|query|integer|false|The page size, that is, the maximum number of label groups to return per page.<br><br>To get the next page of results, use `page_token`.|
 |page_token|query|[PageToken](#schemapagetoken)|false|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -1062,7 +1153,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a new label group
@@ -1125,6 +1216,15 @@ Add a new group of labels that can be applied to your financial records, such as
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -1169,6 +1269,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateLabelGroupRequest](#schemacreatelabelgrouprequest)|true|none|
 |» name|body|string|true|The name for the new label group.|
 |» labels|body|[[CreateLabelRequest](#schemacreatelabelrequest)]|true|The labels to create in the new group.<br><br>The maximum number of labels you can create for a new group is 200.<br>If you need to add more, you can add them later by [creating new labels individually](https://developer.revolut.com/docs/api/business#create-label).|
@@ -1290,7 +1393,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve label group details
@@ -1313,11 +1416,23 @@ The details include the label group name, as well as when the label group was ad
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Read | `labels:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-label-group-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -1428,7 +1543,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a label group
@@ -1461,11 +1576,23 @@ A successful response does not get any content in return.
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-label-group-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -1576,7 +1703,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update label group settings
@@ -1606,6 +1733,15 @@ This operation is not supported for [externally managed label groups](https://de
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -1619,6 +1755,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateLabelGroupRequest](#schemaupdatelabelgrouprequest)|true|none|
 |» name|body|string|true|The new name for the label group.|
 
@@ -1742,7 +1881,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of labels from a label group
@@ -1774,6 +1913,15 @@ The page size, that is, the maximum number of labels returned per page is specif
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Read | `labels:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-labels-from-a-label-group-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -1781,6 +1929,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |group_id|path|string(uuid)|true|The ID of the label group from which to retrieve labels.|
 |limit|query|integer|false|The page size, that is, the maximum number of labels to return per page.<br><br>To get the next page of results, use `page_token`.|
 |page_token|query|[PageToken](#schemapagetoken)|false|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -1918,7 +2069,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a new label
@@ -1950,6 +2101,15 @@ The labels are used for accounting and can be applied to your financial records,
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -1963,6 +2123,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to which to add the new label.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateLabelRequest](#schemacreatelabelrequest)|true|none|
 |» name|body|string|true|The name for the new label.|
 
@@ -2083,7 +2246,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a label
@@ -2116,12 +2279,24 @@ A successful response does not get any content in return.
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-label-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to which the label belongs.|
 |label_id|path|string(uuid)|true|The ID of the label to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -2232,7 +2407,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a label
@@ -2262,6 +2437,15 @@ This operation is not supported for [externally managed labels]/docs/guides/mana
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage labels and label groups](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-labels-and-label-groups).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Labels | Write | `labels:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -2276,6 +2460,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |---|---|---|---|---|
 |group_id|path|string(uuid)|true|The ID of the label group to which the label belongs.|
 |label_id|path|string(uuid)|true|The ID of the label to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateLabelRequest](#schemaupdatelabelrequest)|true|none|
 |» name|body|string|true|The new name for the label.|
 
@@ -2399,7 +2586,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of tax rates
@@ -2431,12 +2618,24 @@ The page size, that is, the maximum number of tax rates returned per page is spe
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Tax rates | Read | `tax-rates:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-tax-rates-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |limit|query|integer|false|The page size, that is, the maximum number of tax rates to return per page.<br><br>To get the next page of results, use `page_token`.|
 |page_token|query|[PageToken](#schemapagetoken)|false|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -2579,7 +2778,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a new tax rate
@@ -2610,6 +2809,15 @@ This operation is not supported for [externally managed tax rates](https://devel
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Tax rates | Write | `tax-rates:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -2623,6 +2831,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateTaxRateRequest](#schemacreatetaxraterequest)|true|none|
 |» name|body|string|true|The name of the tax.|
 |» percentage|body|number(double)|true|The tax rate percentage applied to the taxable amount. For example, `23` for 23%.|
@@ -2744,7 +2955,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve tax rate details
@@ -2767,11 +2978,23 @@ The details include the tax rate name and percentage, as well as when the tax ra
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Tax rates | Read | `tax-rates:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-tax-rate-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |tax_rate_id|path|string(uuid)|true|The ID of the tax rate to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -2883,7 +3106,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a tax rate
@@ -2916,11 +3139,23 @@ A successful response does not get any content in return.
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Tax rates | Write | `tax-rates:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-tax-rate-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |tax_rate_id|path|string(uuid)|true|The ID of the tax rate to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3031,7 +3266,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update tax rate settings
@@ -3061,6 +3296,15 @@ This operation is not supported for [externally managed tax rates](https://devel
 
 For more details, see the guides: [Manage accounting settings](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-accounting-settings) and [Manage tax rates](https://developer.revolut.com/docs/guides/manage-accounts/accounting/manage-tax-rates).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounting** | Tax rates | Write | `tax-rates:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -3074,6 +3318,9 @@ For more details, see the guides: [Manage accounting settings](https://developer
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |tax_rate_id|path|string(uuid)|true|The ID of the tax rate to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateTaxRateRequest](#schemaupdatetaxraterequest)|true|none|
 |» name|body|string|false|The new name for the tax rate.|
 
@@ -3197,7 +3444,7 @@ For more details, see the guides: [Manage accounting settings](https://developer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-accounts">Accounts</h1>
@@ -3223,6 +3470,23 @@ curl https://b2b.revolut.com/api/1.0/accounts \
 Get a list of all your accounts.
 
 For more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).
+
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounts** | Accounts | Read | `accounts:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="retrieve-all-accounts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3273,7 +3537,7 @@ For more information, see the guides: [Get your account details](https://develop
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve an account
@@ -3295,11 +3559,23 @@ Specify the account by its ID.
 
 For more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounts** | Accounts | Read | `accounts:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-an-account-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|string(uuid)|true|The ID of the account to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3337,7 +3613,7 @@ For more information, see the guides: [Get your account details](https://develop
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve account's full bank details
@@ -3359,11 +3635,23 @@ Specify the account by its ID.
 
 For more information, see the guides: [Get your account details](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/manage-your-accounts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounts** | Accounts | Read | `accounts:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-accounts-full-bank-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |account_id|path|string(uuid)|true|The ID of the account to retrieve all bank details.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3414,7 +3702,7 @@ For more information, see the guides: [Get your account details](https://develop
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-cards">Cards</h1>
@@ -3457,12 +3745,24 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Read | `cards:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-cards-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |created_before|query|string(date-time)|false|Retrieves cards with `created_at` < `created_before`.<br>The default value is the current date and time at which you are calling the endpoint.<br><br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|number(integer)|false|The maximum number of cards to return per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last card returned in the previous response as the value for `created_before`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3554,7 +3854,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a card
@@ -3622,6 +3922,15 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -3669,6 +3978,9 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|Card to create|
 |» request_id|body|string|true|A unique ID of the request that you provide.<br><br>There is no strict requirement on the format of this ID, but we suggest using v4 UUIDs.<br><br>:::warning<br>This ID is used to prevent duplicate card creation requests in case of a lost connection or client error, so make sure you use the same `request_id` for requests related to the same card.<br>The deduplication is limited to 24 hours counting from the first request using a given ID.<br>For more information, see the guides: [Manage cards - Idempotency](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#idempotency).<br>:::|
 |» holder_id|body|string(uuid)|false|The ID of the team member to assign as the holder of the card.<br><br>:::tip<br>To retrieve a team member's ID, use the [`GET /team-members` operation](https://developer.revolut.com/docs/api/business#get-team-members).<br>:::<br><br>For virtual cards (`virtual=true`), this field is optional.                    <br>If not provided, the type of the issued card depends on `contact_ids`:<br>  - `contact_ids` provided → [company card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)<br>  - `contact_ids` not specified → [auto-issued card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#different-types-of-cards)|
@@ -3830,7 +4142,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve card details
@@ -3855,11 +4167,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Read | `cards:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-card-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -3950,7 +4274,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Terminate a card
@@ -3981,11 +4305,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="terminate-a-card-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -4027,7 +4363,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update card settings
@@ -4094,6 +4430,15 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -4144,6 +4489,9 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» label|body|string|false|The label of the card.|
 |» spending_limits|body|[SpendingLimitsSchema](#schemaspendinglimitsschema)|false|All spending limits set for the card.<br><br>You can have at most 1 periodic (day/week/month/quarter/all-time) and 1 non-periodic (single transaction) limit at a time.<br>If you try to specify 2 periodic limits at a time, it will result in an error.<br><br>Use `null` as the value for a specific limit to erase that limit.<br>Use `null` as the value for the `spending_limits` object to erase all limits.<br><br>:::note<br>Updating a spending limit does not reset the spending counter.<br>For more information, see the guides: [Manage cards - Update a card](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards#update-a-card).<br>:::|
@@ -4292,7 +4640,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update card contacts
@@ -4336,6 +4684,15 @@ If you want to add new contacts for the card instead of replacing the existing o
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -4351,6 +4708,9 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card whose contacts should be updated.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CardContacts](#schemacardcontacts)|true|New contacts for the card.<br>:::warning<br>This will **override** the existing list of contacts.<br>:::|
 
 > Example responses
@@ -4413,7 +4773,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update card references
@@ -4471,6 +4831,15 @@ To delete existing references without adding new ones, simply provide an empty l
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -4491,6 +4860,9 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card whose references should be amended.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CardReferences](#schemacardreferences)|true|References for the card.<br>Up to 5 name-value pairs assigned to the card for tracking.<br>:::warning<br>This will **override** the existing references.<br>:::|
 
 > Example responses
@@ -4558,7 +4930,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Freeze a card
@@ -4587,11 +4959,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="freeze-a-card-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card to freeze.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -4643,7 +5027,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Unfreeze a card
@@ -4672,11 +5056,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="unfreeze-a-card-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card to unfreeze.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -4728,7 +5124,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Lock a card
@@ -4756,11 +5152,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="lock-a-card-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card to lock.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -4812,7 +5220,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Unlock a card
@@ -4853,11 +5261,23 @@ A successful unlock changes the card's state to `active`, and no content is retu
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Cards | Write | `cards:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="unlock-a-card-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card to unlock.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -4909,7 +5329,7 @@ For more information, see the guides: [Manage cards](https://developer.revolut.c
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve sensitive card details
@@ -4936,11 +5356,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage cards](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-cards).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card sensitive details | Read | `card-sensitive-details:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-sensitive-card-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_id|path|string(uuid)|true|The ID of the card for which to retrieve the sensitive details.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -5012,7 +5444,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-card-invitations">Card invitations</h1>
@@ -5051,6 +5483,15 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card invitations | Read | `card-invitations:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-card-invitations-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -5058,6 +5499,9 @@ For more information, see the guides: [Manage card invitations](https://develope
 |created_before|query|string(date-time)|false|Retrieves only card invitations created before this timestamp (`created_at` < `created_before`).<br>Used for pagination.<br>The default value is the current date and time at which you are calling the endpoint.<br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|number(integer)|false|The maximum number of card invitations to return per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last card invitation returned in the previous response as the value for `created_before`.|
 |state|query|[[CardInvitationState](#schemacardinvitationstate)]|false|Retrieves card invitations filtered by the specified state(s).<br>To specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`. <br>If not provided, all states are returned.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -5294,7 +5738,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a card invitation
@@ -5327,6 +5771,15 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card invitations | Write | `card-invitations:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -5341,6 +5794,9 @@ For more information, see the guides: [Manage card invitations](https://develope
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|Card to create an invitation for|
 |» request_id|body|string|true|A unique ID of the request that you provide.<br><br>There is no strict requirement on the format of this ID, but we suggest using v4 UUIDs.<br><br>:::warning<br>This ID is used to prevent duplicate card creation requests in case of a lost connection or client error, so make sure you use the same `request_id` for requests related to the same card invitation.<br>The deduplication is limited to 24 hours counting from the first request using a given ID.<br>:::<br>For more information, see the guides: [Manage card invitations - Idempotency](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations#idempotency).|
 |» expiry_period|body|string|false|The period after which the card invitation expires if it hasn't been claimed or cancelled. <br>Must be specified in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) duration format.<br>The duration is counted from the card invitation creation.<br>- **Minimum duration:** 1 day (`P1D`)<br>- **Maximum duration:** 90 days (`P90D`)<br>- **Default duration:** 90 days (`P90D`)|
@@ -5507,7 +5963,7 @@ For more information, see the guides: [Manage card invitations](https://develope
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve card invitation details
@@ -5532,11 +5988,23 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card invitations | Read | `card-invitations:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-card-invitation-details-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_invitation_id|path|string(uuid)|true|The ID of the card invitation.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -5634,7 +6102,7 @@ For more information, see the guides: [Manage card invitations](https://develope
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update card invitation settings
@@ -5702,6 +6170,15 @@ To increase your account's card limits, please contact [Revolut API Support](mai
 
 For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card invitations | Write | `card-invitations:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -5752,6 +6229,9 @@ For more information, see the guides: [Manage card invitations](https://develope
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_invitation_id|path|string(uuid)|true|The ID of the card invitation.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» label|body|string|false|The label of the card.<br><br>Cards without labels are not allowed.<br>If set to `null`, the default label will be set according to the card's type.<br><br>:::tip[Default labels]<br>For virtual cards, the default label is `Virtual`.<br>For physical cards, depending on the type, it can be, for example, `Standard` or `Metal`. <br><br>As these values depend on available card types, they are subject to change over time.<br>:::|
 |» spending_limits|body|[SpendingLimitsSchema](#schemaspendinglimitsschema)|false|All spending limits to be set for the card.<br><br>You can have at most 1 periodic (day/week/month/quarter/all-time) and 1 non-periodic (single transaction) limit at a time.<br>If you try to specify 2 periodic limits at a time, it will result in an error.<br><br>Use `null` as the value for a specific limit to erase that limit.<br>Use `null` as the value for the `spending_limits` object to erase all limits.|
@@ -5908,7 +6388,7 @@ For more information, see the guides: [Manage card invitations](https://develope
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Cancel a card invitation
@@ -5918,7 +6398,7 @@ AccessToken
 > Code samples
 
 ```bash
-curl 'https://b2b.revolut.com/api/1.0/card-invitations/{cardInvitationId}/cancel' \
+curl https://b2b.revolut.com/api/1.0/card-invitations/string/cancel \
   -X POST \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
@@ -5940,11 +6420,24 @@ A successful response does not get any content in return.
 
 For more information, see the guides: [Manage card invitations](https://developer.revolut.com/docs/guides/manage-accounts/cards/manage-card-invitations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Cards** | Card invitations | Write | `card-invitations:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="cancel-a-card-invitation-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |card_invitation_id|path|string(uuid)|true|The ID of the card invitation to cancel.|
+|cardInvitationId|path|string|true|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -6005,7 +6498,7 @@ For more information, see the guides: [Manage card invitations](https://develope
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-counterparties">Counterparties</h1>
@@ -6071,6 +6564,15 @@ These factors determine which fields you must provide and what response you get.
 - For examples, refer to the request body samples.
 - For more information, see the guides: [Validate an account name (CoP/VoP)](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/confirmation-of-payee).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Write | `counterparties:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -6088,6 +6590,9 @@ These factors determine which fields you must provide and what response you get.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[ValidateAccountNameRequest](#schemavalidateaccountnamerequest)|true|Counterparty account details|
 
 > Example responses
@@ -6178,7 +6683,7 @@ Status Code **401**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of counterparties
@@ -6205,6 +6710,15 @@ To get to the next page, make a new request and use the `created_at` date of the
 
 For more information, see the guides: [Retrieve counterparties](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/retrieve-counterparties).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Read | `counterparties:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-counterparties-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -6216,6 +6730,9 @@ For more information, see the guides: [Retrieve counterparties](https://develope
 |bic|query|string|false|The exact BIC of the counterparty to retrieve. <br>Only allowed in combination with the `iban` parameter.|
 |created_before|query|string(date-time)|false|Retrieves counterparties with `created_at` < `created_before`.<br>The default value is the current date and time at which you are calling the endpoint. <br><br>Provide it in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|integer|false|The maximum number of counterparties returned per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last counterparty returned in the previous response as the value for `created_before`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -6450,7 +6967,7 @@ For more information, see the guides: [Retrieve counterparties](https://develope
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a counterparty
@@ -6543,6 +7060,15 @@ When creating a counterparty, ensure that you use the correct field to define th
 
 For more information, see the guides: [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Write | `counterparties:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -6557,6 +7083,9 @@ For more information, see the guides: [Create a counterparty](https://developer.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateCounterpartyRequest](#schemacreatecounterpartyrequest)|true|Counterparty to add|
 |» profile_type|body|string|false|The type of the Revolut profile.<br>Indicates whether the counterparty is a personal or business account.<br>Provide it when adding a Revolut counterparty via Revtag.|
 |» revtag|body|string|false|The [Revtag](https://help.revolut.com/help/transfers/internal-transfers/username-payments/revtags/) of the counterparty to add.|
@@ -6663,7 +7192,7 @@ For more information, see the guides: [Create a counterparty](https://developer.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Check supported countries and currencies
@@ -6689,6 +7218,23 @@ This feature is not available in Sandbox.
 Use this endpoint to discover which country and currency combinations are supported before checking field requirements with the [Check counterparty field requirements endpoint](https://developer.revolut.com/docs/api/business#get-counterparty-requirements).
 
 For more details, see the guide: **Check supported counterparty countries and currencies** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-supported-counterparty-countries-and-currencies).
+
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Read | `counterparties:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="check-supported-countries-and-currencies-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -6738,7 +7284,7 @@ For more details, see the guide: **Check supported counterparty countries and cu
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Check counterparty field requirements
@@ -6769,6 +7315,15 @@ The input parameters (`country`, `currency`, and `recipient_type`) are intention
 
 For more details, see the guide: **Check counterparty field requirements** section in [Create a counterparty](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/create-a-counterparty#check-counterparty-field-requirements).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Read | `counterparties:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="check-counterparty-field-requirements-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -6777,6 +7332,9 @@ For more details, see the guide: **Check counterparty field requirements** secti
 |currency|query|[Currency](#schemacurrency)|true|The currency of the counterparty's bank account.|
 |recipient_type|query|string|true|The type of the counterparty profile.<br>Indicates whether the counterparty is a personal or business account.|
 |route|query|string|false|The routing method for the corridor. <br>When omitted, the response includes fields for the default route.<br>For example, for USD to US, the default is `ach`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -6884,7 +7442,7 @@ For more details, see the guide: **Check counterparty field requirements** secti
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a counterparty
@@ -6903,11 +7461,23 @@ curl https://b2b.revolut.com/api/1.0/counterparty/497f6eca-6276-4993-bfeb-53cbbb
 
 Get the information about a specific counterparty by ID.
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Read | `counterparties:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-counterparty-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |counterparty_id|path|string(uuid)|true|The ID of the counterparty to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -6944,7 +7514,7 @@ Get the information about a specific counterparty by ID.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a counterparty
@@ -6964,11 +7534,23 @@ curl https://b2b.revolut.com/api/1.0/counterparty/497f6eca-6276-4993-bfeb-53cbbb
 
 Delete a counterparty with the given ID. When a counterparty is deleted, you cannot make any payments to the counterparty.
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Write | `counterparties:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-counterparty-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |counterparty_id|path|string(uuid)|true|The ID of the counterparty to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -6990,7 +7572,7 @@ Delete a counterparty with the given ID. When a counterparty is deleted, you can
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a counterparty's payment method
@@ -7033,6 +7615,15 @@ Omitted optional fields will retain their existing values.
 
 For more information, see the guide: [Update a counterparty's payment method](https://developer.revolut.com/docs/guides/manage-accounts/counterparties/update-counterparty-payment-method).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Counterparties | Write | `counterparties:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -7053,6 +7644,9 @@ For more information, see the guide: [Update a counterparty's payment method](ht
 |---|---|---|---|---|
 |counterparty_id|path|string(uuid)|true|The ID of the counterparty.|
 |payment_method_id|path|string(uuid)|true|The ID of the payment method to update. To get the `payment_method_id` for the bank account, [retrieve the counterparty](https://developer.revolut.com/docs/api/business#get-counterparty) and use the `id` from the `accounts` array in the response.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateCounterpartyPaymentMethodRequest](#schemaupdatecounterpartypaymentmethodrequest)|true|The updated address details.|
 |» address|body|[UpdateCounterpartyPaymentMethodAddress](#schemaupdatecounterpartypaymentmethodaddress)|true|The updated address for the counterparty's payment method. All required fields must be provided.|
 
@@ -7077,7 +7671,7 @@ For more information, see the guide: [Update a counterparty's payment method](ht
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-expenses">Expenses</h1>
@@ -7120,6 +7714,15 @@ The data enriched by the user, for example, VAT and cost centre, is returned und
 
 For more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Expenses** | Expenses | Read | `expenses:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-expenses-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -7129,6 +7732,9 @@ For more information, see the guides: [Retrieve expenses and receipts](https://d
 |count|query|integer|false|The maximum number of the expenses to retrieve per page.<br>To get the next page of results, make a new request and use the `expense_date` value from the last item of the previous page as the value for the `to` parameter.|
 |state|query|string|false|Retrieves the expenses in the specified state.|
 |transaction_type|query|string|false|The type of the transaction related to the expense.<br>If provided, only expenses with transactions of this type are returned.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -7419,7 +8025,7 @@ For more information, see the guides: [Retrieve expenses and receipts](https://d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve an expense
@@ -7446,11 +8052,23 @@ This feature is not available in Sandbox.
 
 For more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Expenses** | Expenses | Read | `expenses:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-an-expense-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |expense_id|path|string(uuid)|true|The ID of the expense to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -7594,7 +8212,7 @@ For more information, see the guides: [Retrieve expenses and receipts](https://d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a receipt related to an expense
@@ -7619,12 +8237,24 @@ This feature is not available in Sandbox.
 
 For more information, see the guides: [Retrieve expenses and receipts](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-expenses).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Expenses** | Expenses | Read | `expenses:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-receipt-related-to-an-expense-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |expense_id|path|string(uuid)|true|The ID of the [expense](https://developer.revolut.com/docs/api/business#get-expense) to which the receipt is related.|
 |receipt_id|path|string(uuid)|true|The ID of the receipt to retrieve.<br><br>To find the ID of a receipt related to a specific expense, refer to the [expense's details](https://developer.revolut.com/docs/api/business#get-expense#response).<br>The IDs of receipts related to that expense are returned under `receipt_ids`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -7692,7 +8322,7 @@ For more information, see the guides: [Retrieve expenses and receipts](https://d
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-foreign-exchange">Foreign exchange</h1>
@@ -7722,6 +8352,15 @@ Some of these currencies might not be available in Sandbox.
 
 For more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Foreign exchange** | Exchange | Read | `exchange:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="get-an-exchange-rate-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -7729,6 +8368,9 @@ For more information, see the guides: [Exchange money](https://developer.revolut
 |from|query|[Currency](#schemacurrency)|true|The currency that you exchange from in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format.|
 |amount|query|number(double)|false|The amount of the currency to exchange **from**. The default value is `1.00`.|
 |to|query|[Currency](#schemacurrency)|true|The currency that you exchange to in [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) format.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -7781,7 +8423,7 @@ For more information, see the guides: [Exchange money](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Exchange money
@@ -7833,6 +8475,15 @@ Some of these currencies might not be available in Sandbox.
 
 For more information, see the guides: [Exchange money](https://developer.revolut.com/docs/guides/manage-accounts/exchange-money).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Foreign exchange** | Exchange | Write | `exchange:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -7855,6 +8506,9 @@ For more information, see the guides: [Exchange money](https://developer.revolut
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[ExchangeRequest](#schemaexchangerequest)|true|Specify the exchange information|
 |» from|body|[ExchangePartFrom](#schemaexchangepartfrom)|true|The details of the currency to exchange from.|
 |» to|body|[ExchangePartTo](#schemaexchangepartto)|true|The details of the currency to exchange to.|
@@ -7903,7 +8557,7 @@ For more information, see the guides: [Exchange money](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Get exchange reasons
@@ -7924,6 +8578,23 @@ Depending on the country and the amount of funds to be exchanged, you might be r
 With this endpoint, you can retrieve all exchange reasons available to your business account.
 
 After you retrieve the results, use the appropriate reason code in the `exchange_reason_code` field when [exchanging money](https://developer.revolut.com/docs/api/business#exchange-money) or [making a payment](https://developer.revolut.com/docs/api/business#create-payment) that involves foreign currency exchange.
+
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Foreign exchange** | Exchange reasons | Read | `exchange-reasons:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="get-exchange-reasons-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -8024,7 +8695,7 @@ After you retrieve the results, use the appropriate reason code in the `exchange
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-payment-drafts">Payment drafts</h1>
@@ -8060,11 +8731,23 @@ The response lists the drafts with their details, such as the number of payments
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Read | `payment-drafts:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-payment-drafts-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |source|query|string|false|Filter payment drafts by the source from which they were created.<br><br>\| Value \| Description \|<br>\| --- \| --- \|<br>\| **`api`** \| Only drafts created with the API (excluding the [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints). \|<br>\| **`integration`** \| Drafts created via integrations (e.g., Xero) and [Draft payment](https://developer.revolut.com/docs/api/open-banking#tag-draft-payment) endpoints. \|<br>\| **`email`** \| Only drafts created via email. \|<br>\| **`all`** \| All payment drafts, **including drafts created in the Revolut Business app**. \||
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -8112,7 +8795,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a payment draft
@@ -8159,6 +8842,15 @@ Before it can be processed, the business owner, administrator, or another team m
 
 For more information on use cases and other details, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -8183,6 +8875,9 @@ For more information on use cases and other details, see the guides: [Payment dr
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreatePaymentDraftRequest](#schemacreatepaymentdraftrequest)|true|The payment draft information|
 |» title|body|string|false|The title of the payment draft.|
 |» schedule_for|body|string(date)|false|The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
@@ -8228,7 +8923,7 @@ For more information on use cases and other details, see the guides: [Payment dr
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a payment draft
@@ -8253,11 +8948,23 @@ The response lists the details of the payment(s) included in the draft, as well 
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Read | `payment-drafts:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-payment-draft-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -8319,7 +9026,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a payment draft
@@ -8343,11 +9050,23 @@ You can delete a payment draft only if it hasn't been [sent for processing](http
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-payment-draft-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -8370,7 +9089,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a payment draft
@@ -8403,6 +9122,15 @@ All fields are optional — omitting a field leaves it unchanged.
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -8416,6 +9144,9 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdatePaymentDraftRequest](#schemaupdatepaymentdraftrequest)|true|The fields to update on the payment draft.|
 |» title|body|string \| null|false|The title of the payment draft. To clear the title, provide `null`.|
 |» schedule_for|body|string(date) \| null|false|The scheduled date of the payment draft in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.<br><br>:::note<br>The date must be in the future.<br>:::<br><br>To clear the scheduled date, provide `null`.|
@@ -8472,7 +9203,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Add a payment to a payment draft
@@ -8511,6 +9242,15 @@ The payment uses the same shape as the payments in the [create payment draft](#c
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -8531,6 +9271,9 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft to add the payment to.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[PaymentRequest](#schemapaymentrequest)|true|The payment to add to the draft.|
 |» account_id|body|string(uuid)|true|The ID of the account to pay from. <br><br>:::note<br>You can specify only one account ID for multiple payments in the same payment draft.<br>:::|
 |» receiver|body|[PaymentReceiver](#schemapaymentreceiver)|true|The details of the transfer recipient.<br><br>If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.|
@@ -8607,7 +9350,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a payment from a payment draft
@@ -8633,12 +9376,24 @@ You can delete payments from drafts created with the API or via the Revolut Busi
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-payment-from-a-payment-draft-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft that contains the payment.|
 |payment_id|path|string(uuid)|true|The ID of the payment to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -8681,7 +9436,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a payment in a payment draft
@@ -8713,6 +9468,15 @@ All fields are optional — omit what should not change. Other payments in the d
 
 For more information, see the guides: [Payment drafts](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payment-drafts).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payment drafts | Write | `payment-drafts:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -8727,6 +9491,9 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 |---|---|---|---|---|
 |payment_draft_id|path|string(uuid)|true|The ID of the payment draft that contains the payment.|
 |payment_id|path|string(uuid)|true|The ID of the payment to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateDraftPaymentRequest](#schemaupdatedraftpaymentrequest)|true|The fields to update on the payment.|
 |» receiver|body|[PaymentReceiver](#schemapaymentreceiver)|false|The details of the transfer recipient.<br><br>If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.|
 |» amount|body|number(double)|false|The amount of the payment.|
@@ -8794,7 +9561,7 @@ For more information, see the guides: [Payment drafts](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-payout-links">Payout links</h1>
@@ -8836,6 +9603,15 @@ This feature is available in the UK, the EEA, AU, and SG.
 
 For more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payout links | Read | `payout-links:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-payout-links-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -8843,6 +9619,9 @@ For more information, see the guides: [Send money via payout link](https://devel
 |state|query|[[PayoutLinkState](#schemapayoutlinkstate)]|false|Retrieves links in the specified state(s).<br>Use for filtering.<br><br>To specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`.|
 |created_before|query|string(date-time)|false|Retrieves links with `created_at` < `created_before`.<br>The default value is the current date and time at which you are calling the endpoint.<br><br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|integer|false|The maximum number of links returned per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last payout link returned in the previous response as the value for `created_before`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -8951,7 +9730,7 @@ For more information, see the guides: [Send money via payout link](https://devel
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a payout link
@@ -8995,6 +9774,15 @@ This feature is available in the UK, the EEA, AU, and SG.
 
 For more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payout links | Write | `payout-links:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -9020,6 +9808,9 @@ For more information, see the guides: [Send money via payout link](https://devel
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreatePayoutLinkRequest](#schemacreatepayoutlinkrequest)|true|Payout link to create|
 |» counterparty_name|body|[PayoutLinkCounterpartyName](#schemapayoutlinkcounterpartyname)|true|The name of the counterparty provided by the sender.|
 |» save_counterparty|body|boolean|false|Indicates whether to save the recipient as your counterparty upon link claim.<br>If `false` then the counterparty will not show up on your counterparties list, for example, when you retrieve your counterparties. <br>However, you will still be able to retrieve this counterparty by its ID.<br><br>If you don't choose to save the counterparty on link creation, you can do it later from your transactions list in the Business app.|
@@ -9105,7 +9896,7 @@ For more information, see the guides: [Send money via payout link](https://devel
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a payout link
@@ -9130,11 +9921,23 @@ This feature is available in the UK, the EEA, AU, and SG.
 
 For more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payout links | Read | `payout-links:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-payout-link-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payout_link_id|path|string(uuid)|true|The ID of the link to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -9184,7 +9987,7 @@ For more information, see the guides: [Send money via payout link](https://devel
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Cancel a payout link
@@ -9211,11 +10014,23 @@ This feature is available in the UK, the EEA, AU, and SG.
 
 For more information, see the guides: [Send money via payout link](https://developer.revolut.com/docs/guides/manage-accounts/transfers/payout-links).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payout links | Write | `payout-links:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="cancel-a-payout-link-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |payout_link_id|path|string(uuid)|true|The ID of the link to cancel.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -9247,7 +10062,7 @@ For more information, see the guides: [Send money via payout link](https://devel
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-simulations">Simulations</h1>
@@ -9282,12 +10097,24 @@ For example, after you make a transfer in Sandbox, you can change its state to `
 
 For more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Sandbox simulations** | Simulations | Write | `simulations:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="simulate-a-transfer-state-update-sandbox-only-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string(uuid)|true|The ID of the transfer whose state you want to update.|
 |action|path|string|true|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -9349,7 +10176,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Simulate an account top-up (Sandbox only)
@@ -9381,6 +10208,15 @@ This is useful during testing, when you run out of money in your test account an
 
 For more information, see the guides: [Test your flows with simulations (Sandbox only)](https://developer.revolut.com/docs/guides/manage-accounts/api-usage-and-testing/test-flows-with-simulations).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Sandbox simulations** | Simulations | Write | `simulations:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -9397,6 +10233,9 @@ For more information, see the guides: [Test your flows with simulations (Sandbox
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|Top-up details|
 |» account_id|body|string(uuid)|true|The ID of the account that you want to top up.|
 |» amount|body|number(double)|true|The amount with which you want to top up the account.|
@@ -9464,7 +10303,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-teams">Teams</h1>
@@ -9494,12 +10333,24 @@ The results are paginated and sorted by the `created_at` date in reverse chronol
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Read | `team-members:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-team-members-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |created_before|query|string(date-time)|false|Retrieves team members with `created_at` < `created_before`.<br>The default value is the current date and time at which you are calling the endpoint.<br><br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|number(integer)|false|The maximum number of team members returned per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last team member returned in the previous response as the value for `created_before`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -9590,7 +10441,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Invite a new member to your business
@@ -9620,6 +10471,15 @@ To join your business account, the new team member has to accept this invitation
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -9633,6 +10493,9 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» email|body|string(email)|true|The email address of the invited member.|
 |» role_id|body|string|true|The ID of the [role](https://developer.revolut.com/docs/api/business#get-roles) to assign to the new member.|
@@ -9726,7 +10589,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a team member
@@ -9747,11 +10610,23 @@ Get information about a specific team member by their ID.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Read | `team-members:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -9833,7 +10708,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a team member
@@ -9861,11 +10736,23 @@ Their user account will remain linked to any other teams and accounts it’s ass
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -9932,7 +10819,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Assign a department to a team member
@@ -9958,6 +10845,15 @@ Assign a department to a specific team member.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members) and [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -9971,6 +10867,9 @@ For more information, see the guides: [Manage team members](https://developer.re
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to assign the department to.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» department_id|body|string(uuid)|true|The ID of the department to assign to the team member.|
 
@@ -10039,7 +10938,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Remove department from a team member
@@ -10061,11 +10960,23 @@ Remove the department assignment from a specific team member.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="remove-department-from-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to remove the department from.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10121,7 +11032,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Assign a manager to a team member
@@ -10147,6 +11058,15 @@ Assign a manager to a specific team member.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -10160,6 +11080,9 @@ For more information, see the guides: [Manage team members](https://developer.re
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to assign the manager to.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» manager_id|body|string(uuid)|true|The ID of the manager to assign to the team member.|
 
@@ -10228,7 +11151,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Remove manager from a team member
@@ -10250,11 +11173,23 @@ Remove the manager assignment from a specific team member.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="remove-manager-from-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to remove the manager from.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10310,7 +11245,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a team member's role
@@ -10340,6 +11275,15 @@ You cannot modify the business owner or assign the owner role to another team me
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -10353,6 +11297,9 @@ For more information, see the guides: [Manage team members](https://developer.re
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member whose role to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» role_id|body|string|true|The ID of the role to assign to the team member.<br><br>For default roles (such as `Owner`, `Admin`, `Member`), the ID is the same as the role name.<br>For custom roles, use the UUID returned by the [`GET /roles` operation](#get-roles).|
 
@@ -10432,7 +11379,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Suspend a team member
@@ -10452,7 +11399,7 @@ curl https://b2b.revolut.com/api/1.0/team-members/76969b71-a123-42dc-b874-a34688
 
 Suspend a specific team member, preventing them from accessing the business.
 
-To restore access, use the [Unsuspend a team member](#unsuspend-a-team-member) operation.
+To restore access, use the [Unsuspend a team member](#unsuspend-team-member) operation.
 
 :::note
 You cannot suspend the business owner.
@@ -10460,11 +11407,23 @@ You cannot suspend the business owner.
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="suspend-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to suspend.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10531,7 +11490,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Unsuspend a team member
@@ -10549,7 +11508,7 @@ curl https://b2b.revolut.com/api/1.0/team-members/76969b71-a123-42dc-b874-a34688
 
 `POST /team-members/{team_member_id}/unsuspend`
 
-Unsuspend a [suspended](#suspend-a-team-member) team member, restoring their access to the business.
+Unsuspend a [suspended](#suspend-team-member) team member, restoring their access to the business.
 
 :::note
 You cannot unsuspend the business owner (the owner cannot be suspended).
@@ -10557,11 +11516,23 @@ You cannot unsuspend the business owner (the owner cannot be suspended).
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Write | `team-members:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="unsuspend-a-team-member-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |team_member_id|path|string(uuid)|true|The ID of the team member to unsuspend.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10628,7 +11599,7 @@ For more information, see the guides: [Manage team members](https://developer.re
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve team roles
@@ -10651,12 +11622,24 @@ The results are paginated and sorted by the `created_at` date in reverse chronol
 
 For more information, see the guides: [Manage team members](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-team-members).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Team members | Read | `team-members:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-team-roles-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |created_before|query|string(date-time)|false|Retrieves roles with `created_at` < `created_before`.<br>The default value is the current date and time at which you are calling the endpoint.<br><br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
 |limit|query|number(integer)|false|The maximum number of roles returned per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last role returned in the previous response as the value for `created_before`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10751,7 +11734,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of departments
@@ -10772,12 +11755,24 @@ Get a paginated list of all departments in your business.
 
 For more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Departments | Read | `departments:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-departments-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |limit|query|number(integer)|false|The maximum number of departments returned per page.<br><br>To get to the next page, use the `next_page_token` from the previous response.|
 |page_token|query|[PageToken](#schemapagetoken)|false|none|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -10864,7 +11859,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a department
@@ -10890,6 +11885,15 @@ Create a new department in your business.
 
 For more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Departments | Write | `departments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -10902,6 +11906,9 @@ For more information, see the guides: [Manage departments](https://developer.rev
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» name|body|string|true|The name of the department.|
 
@@ -10986,7 +11993,7 @@ Status Code **201**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a department
@@ -11007,11 +12014,23 @@ Get details of a specific department by its ID.
 
 For more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Departments | Read | `departments:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-department-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |department_id|path|string(uuid)|true|The ID of the department to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -11078,7 +12097,7 @@ For more information, see the guides: [Manage departments](https://developer.rev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a department
@@ -11105,11 +12124,23 @@ The department assignment is simply removed from the team members.
 
 For more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Departments | Write | `departments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-department-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |department_id|path|string(uuid)|true|The ID of the department to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -11165,7 +12196,7 @@ For more information, see the guides: [Manage departments](https://developer.rev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a department
@@ -11191,6 +12222,15 @@ Update the name of a specific department.
 
 For more information, see the guides: [Manage departments](https://developer.revolut.com/docs/guides/manage-accounts/teams/manage-departments).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Team** | Departments | Write | `departments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -11204,6 +12244,9 @@ For more information, see the guides: [Manage departments](https://developer.rev
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |department_id|path|string(uuid)|true|The ID of the department to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|object|true|none|
 |» name|body|string|true|The new name for the department.|
 
@@ -11283,7 +12326,7 @@ For more information, see the guides: [Manage departments](https://developer.rev
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-transactions">Transactions</h1>
@@ -11322,6 +12365,15 @@ The API returns a maximum of 1,000 transactions per request.
 
 For more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounts** | Transactions | Read | `transactions:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-transactions-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -11333,6 +12385,9 @@ For more details, see the guides: [Retrieve transactions](https://developer.revo
 |type|query|[TransactionType](#schematransactiontype)|false|The type of the historical transactions to retrieve.|
 |request_id|query|string|false|The request ID provided when the transaction was created.<br>Lets you filter transactions related to that ID.<br><br>When provided, the `from` query parameter is also required, and the search interval must not exceed 14 days.<br>For older transactions, adjust the `to` parameter as well.|
 |state|query|[string]|false|The transaction [state(s)](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions#transaction-states) to filter by.<br><br>To specify multiple values, follow this pattern: `state={VALUE1}&state={VALUE2}`.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -11491,7 +12546,7 @@ For more details, see the guides: [Retrieve transactions](https://developer.revo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a transaction
@@ -11519,12 +12574,24 @@ To do that, use the `GET /transactions` endpoint to [retrieve a list of transact
 
 For more details, see the guides: [Retrieve transactions](https://developer.revolut.com/docs/guides/manage-accounts/accounts-and-transactions/retrieve-transactions).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Accounts** | Transactions | Read | `transactions:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-transaction-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|The unique ID of the transaction.<br><br>:::warning [Request ID deprecation]<br>If `id_type=request_id` is provided, set this field to the request ID from payment creation instead of the transaction ID.<br><br>This behavior is deprecated and will be removed in a future release.<br>Use [`GET /transactions`](https://developer.revolut.com/docs/api/business#get-transactions) to retrieve transactions by request ID.<br>:::|
 |id_type|query|string|false|**Deprecated.** The type of ID to retrieve the transaction by.<br><br>:::warning [Deprecated]<br>This field is now deprecated and will be removed in a future release.<br><br>To retrieve transactions by their unique transaction ID, use this endpoint.<br>To retrieve transactions by request ID, use the [`GET /transactions`](https://developer.revolut.com/docs/api/business#get-transactions) endpoint instead.<br>:::|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 #### Enumerated Values
 
@@ -11587,7 +12654,7 @@ For more details, see the guides: [Retrieve transactions](https://developer.revo
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-transfers">Transfers</h1>
@@ -11632,6 +12699,15 @@ If the counterparty has multiple payment methods available, for example, 2 accou
 
 For more details, see the guides: [Send money via bank transfer](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers) and [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payments | Write | `payments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -11653,6 +12729,9 @@ For more details, see the guides: [Send money via bank transfer](https://develop
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[TransactionPaymentRequest](#schematransactionpaymentrequest)|true|Create a transfer|
 |» request_id|body|string|true|A unique identifier for the transaction, provided by you.  <br>This is used for idempotency to prevent duplicate payments. <br>There are no strict format requirements, but we recommend using UUID v4 values.<br><br>:::tip[Retrying requests safely with idempotency]<br>If you do not receive a response (for example, due to a network error or timeout), you can safely retry the request using the same `request_id`. <br><br>If a transaction with the same `request_id` was already created, the API will not create a duplicate transaction.<br><br>:::warning[Idempotency expiry]<br>Idempotency checks apply only to transactions created **within the last 2 weeks**. <br>Reusing a `request_id` **after this period** may result in a **new transaction being created**.<br>:::|
 |» account_id|body|string(uuid)|true|The ID of the account that you send the funds from.|
@@ -11714,7 +12793,7 @@ For more details, see the guides: [Send money via bank transfer](https://develop
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Get an indicative quote for a transfer
@@ -11758,6 +12837,15 @@ While **incomplete** or **invalid requests** will return production-like error r
 
 For more details, see the guides: **Check costs and delivery time before paying** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-costs-and-delivery-time-before-paying) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-costs-and-delivery-time-before-paying).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payments | Write | `payments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -11777,6 +12865,9 @@ For more details, see the guides: **Check costs and delivery time before paying*
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[IndicativeQuoteRequest](#schemaindicativequoterequest)|true|Request an indicative quote|
 |» account_id|body|string(uuid)|true|The ID of the account from which the transfer will be made.|
 |» receiver|body|[PaymentReceiver](#schemapaymentreceiver)|true|The details of the transfer recipient.<br><br>If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.|
@@ -11860,7 +12951,7 @@ For more details, see the guides: **Check costs and delivery time before paying*
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Check transfer field requirements
@@ -11904,6 +12995,15 @@ Universally required fields (such as `amount`, `account_id`, `receiver`, and `re
 
 For more details, see the guides: **Check transfer field requirements** section in [Bank transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/bank-transfers#check-transfer-field-requirements) or [Card transfers](https://developer.revolut.com/docs/guides/manage-accounts/transfers/card-transfers#check-transfer-field-requirements).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Payments | Write | `payments:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -11920,6 +13020,9 @@ For more details, see the guides: **Check transfer field requirements** section 
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[PaymentRequirementsRequest](#schemapaymentrequirementsrequest)|true|none|
 |» account_id|body|string(uuid)|true|The ID of the account from which the transfer will be made.|
 |» receiver|body|[PaymentReceiver](#schemapaymentreceiver)|true|The details of the transfer recipient.<br><br>If the counterparty has multiple payment methods available (e.g. 2 accounts, or 1 account and 1 card), you must specify the account (`account_id`) or card (`card_id`) to which you want to transfer the money.|
@@ -11996,7 +13099,7 @@ For more details, see the guides: **Check transfer field requirements** section 
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Move money between your accounts
@@ -12029,6 +13132,15 @@ The resulting transaction has the type `transfer`.
 
 For more information, see the guides: [Send money](https://developer.revolut.com/docs/guides/manage-accounts/transfers/send-money).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Transfers | Write | `transfers:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -12046,6 +13158,9 @@ For more information, see the guides: [Send money](https://developer.revolut.com
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[TransferRequest](#schematransferrequest)|true|Create a transfer|
 |» request_id|body|string|true|The ID of the request, provided by you.<br>It helps you identify the transaction in your system.<br><br>:::warning<br>To ensure that a transfer is not processed multiple times if there are network or system errors,<br>the same `request_id` should be used for requests related to the same transfer.<br>:::|
 |» source_account_id|body|string(uuid)|true|The ID of the source account that you transfer the funds from.|
@@ -12085,7 +13200,7 @@ For more information, see the guides: [Send money](https://developer.revolut.com
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Get transfer reasons
@@ -12106,6 +13221,23 @@ In order to initiate a transfer in certain currencies and countries, you must pr
 With this endpoint you can retrieve all transfer reasons available to your business account per country and currency.
 
 After you retrieve the results, use the appropriate reason code in the `transfer_reason_code` field when [making a transfer to a counterparty](https://developer.revolut.com/docs/api/business#create-payment) or [creating a payout link](https://developer.revolut.com/docs/api/business#create-payout-link).
+
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Transfers** | Transfer reasons | Read | `transfer-reasons:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="get-transfer-reasons-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -12158,7 +13290,7 @@ After you retrieve the results, use the appropriate reason code in the `transfer
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-webhooks-v1-deprecated">Webhooks (v1) (deprecated)</h1>
@@ -12199,6 +13331,23 @@ This operation is deprecated
 
 Get your webhook URL.
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Read | `webhooks:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="retrieve-a-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+
 > Example responses
 
 > 200 Response
@@ -12227,7 +13376,7 @@ Get your webhook URL.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Set a webhook
@@ -12255,6 +13404,15 @@ This operation is deprecated
 
 Set up a webhook URL so that event notifications are pushed to the specified URL. Only HTTPS URLs are supported.
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -12267,6 +13425,9 @@ Set up a webhook URL so that event notifications are pushed to the specified URL
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[Webhook-v1](#schemawebhook-v1)|true|URL to set up as a webhook|
 |» url|body|string(uri)|true|The valid webhook URL that event notifications are sent to. The supported protocol is `https`.|
 
@@ -12290,7 +13451,7 @@ Set up a webhook URL so that event notifications are pushed to the specified URL
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a webhook
@@ -12314,6 +13475,23 @@ This operation is deprecated
 
 Delete a webhook so that events are not sent to the specified URL any more.
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="delete-a-webhook-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+
 > Example responses
 
 > default Response
@@ -12334,7 +13512,7 @@ Delete a webhook so that events are not sent to the specified URL any more.
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 <h1 id="business-api-webhooks-v2">Webhooks (v2)</h1>
@@ -12375,6 +13553,23 @@ Get the list of all your existing webhooks and their details.
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-webhooks).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Read | `webhooks:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
+<h3 id="retrieve-a-list-of-webhooks-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+
 > Example responses
 
 > 200 Response
@@ -12408,7 +13603,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Create a new webhook
@@ -12439,6 +13634,15 @@ Only HTTPS URLs are supported.
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#create-a-webhook).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -12455,6 +13659,9 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[CreateWebhookRequest](#schemacreatewebhookrequest)|true|The webhook to create.|
 |» url|body|[Url](#schemaurl)|true|A valid webhook URL to which to send event notifications. The supported protocol is `https`.|
 |» events|body|[[WebhookEventType](#schemawebhookeventtype)]|false|A list of event types to subscribe to.<br>If you don't provide it, you're automatically subscribed to the [default event types](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks#default-event-types).|
@@ -12522,7 +13729,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a webhook
@@ -12543,11 +13750,23 @@ Get the information about a specific webhook by ID.
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-specific-webhook).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Read | `webhooks:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-webhook-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |webhook_id|path|string(uuid)|true|The ID of the webhook to retrieve.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -12603,7 +13822,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Delete a webhook
@@ -12627,11 +13846,23 @@ A successful response does not get any content in return.
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#delete-a-webhook).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="delete-a-webhook-1-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |webhook_id|path|string(uuid)|true|The ID of the webhook to delete.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -12663,7 +13894,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Update a webhook
@@ -12691,6 +13922,15 @@ You must specify at least one of these two. The fields that you don't specify ar
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#update-a-webhook).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -12704,6 +13944,9 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |webhook_id|path|string(uuid)|true|The ID of the webhook to update.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[UpdateWebhookRequest](#schemaupdatewebhookrequest)|true|The new webhook URL for the given webhook|
 |» url|body|[Url](#schemaurl)|false|A valid webhook URL to which to send event notifications. The supported protocol is `https`.|
 |» events|body|[[WebhookEventType](#schemawebhookeventtype)]|false|A list of event types to subscribe to.|
@@ -12760,7 +14003,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Rotate a webhook signing secret
@@ -12786,6 +14029,15 @@ Rotate a signing secret for a specific webhook.
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#rotate-a-webhook-signing-secret).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Write | `webhooks:write` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 > Body parameter
 
 ```json
@@ -12799,6 +14051,9 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |webhook_id|path|string(uuid)|true|The ID of the webhook for which to rotate the secret.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 |body|body|[WebhookSigningSecretRotateRequest](#schemawebhooksigningsecretrotaterequest)|true|Webhook signing secret rotation request|
 |» expiration_period|body|string(duration)|false|The expiration period for the signing secret in [ISO 8601 format](https://en.wikipedia.org/wiki/ISO_8601#Durations). If set, when you rotate the secret, it continues to be valid until the expiration period has passed. Otherwise, on rotation, the secret is invalidated immediately. The maximum value is 7 days.|
 
@@ -12866,7 +14121,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 ## Retrieve a list of failed webhook events
@@ -12893,6 +14148,15 @@ To get to the next page, make a new request and use the `created_at` date of the
 
 For more information, see the guides: [About webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/about-webhooks) and [Manage webhooks](https://developer.revolut.com/docs/guides/manage-accounts/webhooks/manage-webhooks#retrieve-a-list-of-failed-webhook-events).
 
+### Required API key permissions
+To call this endpoint, your API key must have the following permissions (scopes):
+
+| Product | Resource | Permission | Mapped scope |
+|---------|----------|-------------|--------------|
+| **Webhooks** | Webhooks | Read | `webhooks:read` |
+
+For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).
+
 <h3 id="retrieve-a-list-of-failed-webhook-events-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -12900,6 +14164,9 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 |webhook_id|path|string(uuid)|true|The ID of the webhook for which to get the failed events.|
 |limit|query|integer|false|The maximum number of events returned per page.<br><br>To get to the next page, make a new request and use the `created_at` date of the last event returned in the previous response as value for `created_before`.|
 |created_before|query|string(date-time or date)|false|Retrieves events with `created_at` < `created_before`. <br>Cannot be older than the current date minus 21 days. <br>The default value is the current date and time at which you are calling the endpoint.<br><br>Provided in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.|
+|Authorization|header|string|true|This parameter authorises requests with your API key, passed as a `Bearer` token in the request header.<br>If you haven't migrated to the API key yet, it accepts your access token instead (deprecated).<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Timestamp|header|string|false|The current Unix timestamp in **milliseconds**, for example `1783616701644`.<br>Required when your API key has signing enabled. Used to prevent replay attacks.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
+|Revolut-Api-Signature|header|string|false|A Base64-encoded Ed25519 [signature](https://developer.revolut.com/docs/guides/api-console/make-a-request#message-construction) of the request data.<br>Required when your API key has signing enabled.<br>For more information, see: [Authentication](https://developer.revolut.com/docs/api/business#authentication).|
 
 > Example responses
 
@@ -13002,7 +14269,7 @@ For more information, see the guides: [About webhooks](https://developer.revolut
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-AccessToken
+ApiKey, AccessToken
 </aside>
 
 # Schemas

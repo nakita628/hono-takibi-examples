@@ -8,7 +8,7 @@ API integration layer for linked biological objects.
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api">https://api.apis.guru/api</a>
+* <a href="/api">/api</a>
 
 License: BSD3
 

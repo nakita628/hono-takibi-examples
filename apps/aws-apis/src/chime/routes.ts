@@ -1,247 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AudioMuxTypeSchema = z
-  .enum(['AudioOnly', 'AudioWithActiveSpeakerVideo'])
-  .openapi('AudioMuxType')
-
-const AudioArtifactsConfigurationSchema = z
-  .object({
-    MuxType: AudioMuxTypeSchema.and(
-      z.any().openapi({ description: 'The MUX type of the audio artifact configuration object.' }),
-    ),
-  })
-  .openapi({ required: ['MuxType'], description: 'The audio artifact configuration object.' })
-  .openapi('AudioArtifactsConfiguration')
-
-const ArtifactsStateSchema = z.enum(['Enabled', 'Disabled']).openapi('ArtifactsState')
-
-const VideoMuxTypeSchema = z.literal('VideoOnly').openapi('VideoMuxType')
-
-const VideoArtifactsConfigurationSchema = z
-  .object({
-    State: ArtifactsStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the video artifact is enabled or disabled.' }),
-    ),
-    MuxType: VideoMuxTypeSchema.and(
-      z.any().openapi({ description: 'The MUX type of the video artifact configuration object.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['State'], description: 'The video artifact configuration object.' })
-  .openapi('VideoArtifactsConfiguration')
-
-const ContentMuxTypeSchema = z.literal('ContentOnly').openapi('ContentMuxType')
-
-const ContentArtifactsConfigurationSchema = z
-  .object({
-    State: ArtifactsStateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Indicates whether the content artifact is enabled or disabled.' }),
-    ),
-    MuxType: ContentMuxTypeSchema.and(
-      z.any().openapi({ description: 'The MUX type of the artifact configuration.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['State'], description: 'The content artifact object.' })
-  .openapi('ContentArtifactsConfiguration')
-
-type ArtifactsConfigurationType = {
-  Audio: z.infer<typeof AudioArtifactsConfigurationSchema> & { [key: string]: unknown }
-  Video: z.infer<typeof VideoArtifactsConfigurationSchema> & { [key: string]: unknown }
-  Content: z.infer<typeof ContentArtifactsConfigurationSchema> & { [key: string]: unknown }
-}
-
-const StringSchema = z.string().openapi('String')
-
-const E164PhoneNumberSchema = z
-  .string()
-  .regex(/^\+?[1-9]\d{1,14}$/)
-  .openapi('E164PhoneNumber')
-
-const Alpha2CountryCodeSchema = z
-  .string()
-  .regex(/[A-Z]{2}/)
-  .openapi('Alpha2CountryCode')
-
-const PhoneNumberTypeSchema = z.enum(['Local', 'TollFree']).openapi('PhoneNumberType')
-
-const PhoneNumberProductTypeSchema = z
-  .enum(['BusinessCalling', 'VoiceConnector', 'SipMediaApplicationDialIn'])
-  .openapi('PhoneNumberProductType')
-
-const PhoneNumberStatusSchema = z
-  .enum([
-    'AcquireInProgress',
-    'AcquireFailed',
-    'Unassigned',
-    'Assigned',
-    'ReleaseInProgress',
-    'DeleteInProgress',
-    'ReleaseFailed',
-    'DeleteFailed',
-  ])
-  .openapi('PhoneNumberStatus')
-
-const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
-
-const PhoneNumberCapabilitiesSchema = z
-  .object({
-    InboundCall: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies inbound calling for the specified phone number.',
-        }),
-    ).exactOptional(),
-    OutboundCall: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies outbound calling for the specified phone number.',
-        }),
-    ).exactOptional(),
-    InboundSMS: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies inbound SMS messaging for the specified phone number.',
-        }),
-    ).exactOptional(),
-    OutboundSMS: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies outbound SMS messaging for the specified phone number.',
-        }),
-    ).exactOptional(),
-    InboundMMS: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies inbound MMS messaging for the specified phone number.',
-        }),
-    ).exactOptional(),
-    OutboundMMS: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Allows or denies outbound MMS messaging for the specified phone number.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The phone number capabilities for Amazon Chime Business Calling phone numbers, such as enabled inbound and outbound calling and text messaging.',
-    required: [],
-  })
-  .openapi('PhoneNumberCapabilities')
-
-const PhoneNumberAssociationNameSchema = z
-  .enum(['AccountId', 'UserId', 'VoiceConnectorId', 'VoiceConnectorGroupId', 'SipRuleId'])
-  .openapi('PhoneNumberAssociationName')
-
-const Iso8601TimestampSchema = z.iso.datetime({ offset: true }).openapi('Iso8601Timestamp')
-
-const PhoneNumberAssociationSchema = z
-  .object({
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'Contains the ID for the entity specified in Name.' }),
-    ).exactOptional(),
-    Name: PhoneNumberAssociationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the association with an Amazon Chime account ID, user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.',
-        }),
-    ).exactOptional(),
-    AssociatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of the phone number association, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The phone number associations, such as Amazon Chime account ID, Amazon Chime user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.',
-    required: [],
-  })
-  .openapi('PhoneNumberAssociation')
-
-const PhoneNumberAssociationListSchema = z
-  .array(PhoneNumberAssociationSchema)
-  .openapi('PhoneNumberAssociationList')
-
-const CallingNameSchema = z
-  .string()
-  .regex(/^$|^[a-zA-Z0-9 ]{2,15}$/)
-  .openapi('CallingName')
-
-const CallingNameStatusSchema = z
-  .enum(['Unassigned', 'UpdateInProgress', 'UpdateSucceeded', 'UpdateFailed'])
-  .openapi('CallingNameStatus')
-
-type PhoneNumberType = {
-  PhoneNumberId?: z.infer<typeof StringSchema> & { [key: string]: unknown }
-  E164PhoneNumber?: z.infer<typeof E164PhoneNumberSchema> & { [key: string]: unknown }
-  Country?: z.infer<typeof Alpha2CountryCodeSchema> & { [key: string]: unknown }
-  Type?: z.infer<typeof PhoneNumberTypeSchema> & { [key: string]: unknown }
-  ProductType?: z.infer<typeof PhoneNumberProductTypeSchema> & { [key: string]: unknown }
-  Status?: z.infer<typeof PhoneNumberStatusSchema> & { [key: string]: unknown }
-  Capabilities?: z.infer<typeof PhoneNumberCapabilitiesSchema> & { [key: string]: unknown }
-  Associations?: z.infer<typeof PhoneNumberAssociationListSchema> & { [key: string]: unknown }
-  CallingName?: z.infer<typeof CallingNameSchema> & { [key: string]: unknown }
-  CallingNameStatus?: z.infer<typeof CallingNameStatusSchema> & { [key: string]: unknown }
-  CreatedTimestamp?: z.infer<typeof Iso8601TimestampSchema> & { [key: string]: unknown }
-  UpdatedTimestamp?: z.infer<typeof Iso8601TimestampSchema> & { [key: string]: unknown }
-  DeletionTimestamp?: z.infer<typeof Iso8601TimestampSchema> & { [key: string]: unknown }
-}
-
-const RetentionDaysSchema = z.int().min(1).max(5475).openapi('RetentionDays')
-
-const RoomRetentionSettingsSchema = z
-  .object({
-    RetentionDays: RetentionDaysSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of days for which to retain chat-room messages.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The retention settings that determine how long to retain chat-room messages for an Amazon Chime Enterprise account.',
-    required: [],
-  })
-  .openapi('RoomRetentionSettings')
-
-const ConversationRetentionSettingsSchema = z
-  .object({
-    RetentionDays: RetentionDaysSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The number of days for which to retain conversation messages.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The retention settings that determine how long to retain conversation messages for an Amazon Chime Enterprise account.',
-    required: [],
-  })
-  .openapi('ConversationRetentionSettings')
-
-type RetentionSettingsType = {
-  RoomRetentionSettings?: z.infer<typeof RoomRetentionSettingsSchema> & { [key: string]: unknown }
-  ConversationRetentionSettings?: z.infer<typeof ConversationRetentionSettingsSchema> & {
-    [key: string]: unknown
-  }
-}
-
 const AssociatePhoneNumberWithUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociatePhoneNumberWithUserResponse')
 
 const UnauthorizedClientExceptionSchema = z.any().openapi('UnauthorizedClientException')
@@ -285,17 +45,15 @@ const ErrorCodeSchema = z
   ])
   .openapi('ErrorCode')
 
+const StringSchema = z.string().openapi('String')
+
 const PhoneNumberErrorSchema = z
   .object({
-    PhoneNumberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The phone number ID for which the action failed.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    PhoneNumberId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The phone number ID for which the action failed.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description:
@@ -308,41 +66,36 @@ const PhoneNumberErrorListSchema = z.array(PhoneNumberErrorSchema).openapi('Phon
 
 const AssociatePhoneNumbersWithVoiceConnectorResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociatePhoneNumbersWithVoiceConnectorResponse')
 
+const E164PhoneNumberSchema = z
+  .string()
+  .regex(/^\+?[1-9]\d{1,14}$/)
+  .openapi('E164PhoneNumber')
+
 const AssociatePhoneNumbersWithVoiceConnectorGroupResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociatePhoneNumbersWithVoiceConnectorGroupResponse')
 
 const AssociateSigninDelegateGroupsWithAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('AssociateSigninDelegateGroupsWithAccountResponse')
 
 const SigninDelegateGroupSchema = z
   .object({
-    GroupName: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The group name.' }),
-    ).exactOptional(),
+    GroupName: NonEmptyStringSchema.exactOptional().openapi({ description: 'The group name.' }),
   })
   .openapi({
     description:
@@ -367,20 +120,16 @@ const JoinTokenStringSchema = z
 
 const AttendeeSchema = z
   .object({
-    ExternalUserId: ExternalUserIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
-        }),
-    ).exactOptional(),
-    AttendeeId: GuidStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK attendee ID.' }),
-    ).exactOptional(),
-    JoinToken: JoinTokenStringSchema.and(
-      z.any().openapi({ description: 'The join token used by the Amazon Chime SDK attendee.' }),
-    ).exactOptional(),
+    ExternalUserId: ExternalUserIdTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
+    }),
+    AttendeeId: GuidStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK attendee ID.',
+    }),
+    JoinToken: JoinTokenStringSchema.exactOptional().openapi({
+      description: 'The join token used by the Amazon Chime SDK attendee.',
+    }),
   })
   .openapi({
     description:
@@ -393,20 +142,12 @@ const AttendeeListSchema = z.array(AttendeeSchema).openapi('AttendeeList')
 
 const CreateAttendeeErrorSchema = z
   .object({
-    ExternalUserId: ExternalUserIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
-        }),
-    ).exactOptional(),
-    ErrorCode: StringSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    ExternalUserId: ExternalUserIdTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
+    }),
+    ErrorCode: StringSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description:
@@ -421,21 +162,13 @@ const BatchCreateAttendeeErrorListSchema = z
 
 const BatchCreateAttendeeResponseSchema = z
   .object({
-    Attendees: AttendeeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The attendee information, including attendees IDs and join tokens.',
-        }),
-    ).exactOptional(),
-    Errors: BatchCreateAttendeeErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    Attendees: AttendeeListSchema.exactOptional().openapi({
+      description: 'The attendee information, including attendees IDs and join tokens.',
+    }),
+    Errors: BatchCreateAttendeeErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchCreateAttendeeResponse')
@@ -446,8 +179,8 @@ const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(z.any().openapi({ description: 'The key of the tag.' })),
-    Value: TagValueSchema.and(z.any().openapi({ description: 'The value of the tag.' })),
+    Key: TagKeySchema.openapi({ description: 'The key of the tag.' }),
+    Value: TagValueSchema.openapi({ description: 'The value of the tag.' }),
   })
   .openapi({ required: ['Key', 'Value'], description: 'Describes a tag applied to a resource.' })
   .openapi('Tag')
@@ -456,17 +189,13 @@ const AttendeeTagListSchema = z.array(TagSchema).min(1).max(10).openapi('Attende
 
 const CreateAttendeeRequestItemSchema = z
   .object({
-    ExternalUserId: ExternalUserIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
-        }),
-    ),
-    Tags: AttendeeTagListSchema.and(
-      z.any().openapi({ description: 'The tag key-value pairs.' }),
-    ).exactOptional(),
+    ExternalUserId: ExternalUserIdTypeSchema.openapi({
+      description:
+        'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
+    }),
+    Tags: AttendeeTagListSchema.exactOptional().openapi({
+      description: 'The tag key-value pairs.',
+    }),
   })
   .openapi({
     required: ['ExternalUserId'],
@@ -495,12 +224,8 @@ const ResourceNameSchema = z
 
 const IdentitySchema = z
   .object({
-    Arn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN in an Identity.' }),
-    ).exactOptional(),
-    Name: ResourceNameSchema.and(
-      z.any().openapi({ description: 'The name in an Identity.' }),
-    ).exactOptional(),
+    Arn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN in an Identity.' }),
+    Name: ResourceNameSchema.exactOptional().openapi({ description: 'The name in an Identity.' }),
   })
   .openapi({ description: 'The details of a user.', required: [] })
   .openapi('Identity')
@@ -511,18 +236,18 @@ const MembersSchema = z.array(IdentitySchema).openapi('Members')
 
 const BatchChannelMembershipsSchema = z
   .object({
-    InvitedBy: IdentitySchema.and(
-      z.any().openapi({ description: 'The identifier of the member who invited another member.' }),
-    ).exactOptional(),
-    Type: ChannelMembershipTypeSchema.and(
-      z.any().openapi({ description: 'The membership types set for the channel users.' }),
-    ).exactOptional(),
-    Members: MembersSchema.and(
-      z.any().openapi({ description: 'The users successfully added to the request.' }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: "The ARN of the channel to which you're adding users." }),
-    ).exactOptional(),
+    InvitedBy: IdentitySchema.exactOptional().openapi({
+      description: 'The identifier of the member who invited another member.',
+    }),
+    Type: ChannelMembershipTypeSchema.exactOptional().openapi({
+      description: 'The membership types set for the channel users.',
+    }),
+    Members: MembersSchema.exactOptional().openapi({
+      description: 'The users successfully added to the request.',
+    }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: "The ARN of the channel to which you're adding users.",
+    }),
   })
   .openapi({
     description:
@@ -533,15 +258,11 @@ const BatchChannelMembershipsSchema = z
 
 const BatchCreateChannelMembershipErrorSchema = z
   .object({
-    MemberArn: ChimeArnSchema.and(
-      z.any().openapi({ description: "The ARN of the member that the service couldn't add." }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    MemberArn: ChimeArnSchema.exactOptional().openapi({
+      description: "The ARN of the member that the service couldn't add.",
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description: 'A list of failed member ARNs, error codes, and error messages.',
@@ -555,32 +276,22 @@ const BatchCreateChannelMembershipErrorsSchema = z
 
 const BatchCreateChannelMembershipResponseSchema = z
   .object({
-    BatchChannelMemberships: BatchChannelMembershipsSchema.and(
-      z.any().openapi({ description: 'The list of channel memberships in the response.' }),
-    ).exactOptional(),
-    Errors: BatchCreateChannelMembershipErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the memberships in the request, a list of the memberships is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    BatchChannelMemberships: BatchChannelMembershipsSchema.exactOptional().openapi({
+      description: 'The list of channel memberships in the response.',
+    }),
+    Errors: BatchCreateChannelMembershipErrorsSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the memberships in the request, a list of the memberships is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchCreateChannelMembershipResponse')
 
 const MemberErrorSchema = z
   .object({
-    MemberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The member ID.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    MemberId: NonEmptyStringSchema.exactOptional().openapi({ description: 'The member ID.' }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description: 'The list of errors returned when a member action results in an error.',
@@ -592,14 +303,10 @@ const MemberErrorListSchema = z.array(MemberErrorSchema).openapi('MemberErrorLis
 
 const BatchCreateRoomMembershipResponseSchema = z
   .object({
-    Errors: MemberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the member IDs in the request, a list of the member IDs is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    Errors: MemberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the member IDs in the request, a list of the member IDs is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchCreateRoomMembershipResponse')
@@ -608,41 +315,29 @@ const RoomMembershipRoleSchema = z.enum(['Administrator', 'Member']).openapi('Ro
 
 const MembershipItemSchema = z
   .object({
-    MemberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The member ID.' }),
-    ).exactOptional(),
-    Role: RoomMembershipRoleSchema.and(
-      z.any().openapi({ description: 'The member role.' }),
-    ).exactOptional(),
+    MemberId: NonEmptyStringSchema.exactOptional().openapi({ description: 'The member ID.' }),
+    Role: RoomMembershipRoleSchema.exactOptional().openapi({ description: 'The member role.' }),
   })
   .openapi({ description: 'Membership details, such as member ID and member role.', required: [] })
   .openapi('MembershipItem')
 
 const BatchDeletePhoneNumberResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDeletePhoneNumberResponse')
 
 const UserErrorSchema = z
   .object({
-    UserId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The user ID for which the action failed.' }),
-    ).exactOptional(),
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
+    UserId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The user ID for which the action failed.',
+    }),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'The error message.' }),
   })
   .openapi({
     description:
@@ -655,57 +350,52 @@ const UserErrorListSchema = z.array(UserErrorSchema).openapi('UserErrorList')
 
 const BatchSuspendUserResponseSchema = z
   .object({
-    UserErrors: UserErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <a>BatchSuspendUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    UserErrors: UserErrorListSchema.exactOptional().openapi({
+      description:
+        'If the <a>BatchSuspendUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchSuspendUserResponse')
 
 const BatchUnsuspendUserResponseSchema = z
   .object({
-    UserErrors: UserErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <a>BatchUnsuspendUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    UserErrors: UserErrorListSchema.exactOptional().openapi({
+      description:
+        'If the <a>BatchUnsuspendUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchUnsuspendUserResponse')
 
 const BatchUpdatePhoneNumberResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchUpdatePhoneNumberResponse')
 
+const PhoneNumberProductTypeSchema = z
+  .enum(['BusinessCalling', 'VoiceConnector', 'SipMediaApplicationDialIn'])
+  .openapi('PhoneNumberProductType')
+
+const CallingNameSchema = z
+  .string()
+  .regex(/^$|^[a-zA-Z0-9 ]{2,15}$/)
+  .openapi('CallingName')
+
 const UpdatePhoneNumberRequestItemSchema = z
   .object({
-    PhoneNumberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The phone number ID to update.' }),
-    ),
-    ProductType: PhoneNumberProductTypeSchema.and(
-      z.any().openapi({ description: 'The product type to update.' }),
-    ).exactOptional(),
-    CallingName: CallingNameSchema.and(
-      z.any().openapi({ description: 'The outbound calling name to update.' }),
-    ).exactOptional(),
+    PhoneNumberId: NonEmptyStringSchema.openapi({ description: 'The phone number ID to update.' }),
+    ProductType: PhoneNumberProductTypeSchema.exactOptional().openapi({
+      description: 'The product type to update.',
+    }),
+    CallingName: CallingNameSchema.exactOptional().openapi({
+      description: 'The outbound calling name to update.',
+    }),
   })
   .openapi({
     required: ['PhoneNumberId'],
@@ -716,14 +406,10 @@ const UpdatePhoneNumberRequestItemSchema = z
 
 const BatchUpdateUserResponseSchema = z
   .object({
-    UserErrors: UserErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <a>BatchUpdateUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    UserErrors: UserErrorListSchema.exactOptional().openapi({
+      description:
+        'If the <a>BatchUpdateUser</a> action fails for one or more of the user IDs in the request, a list of the user IDs is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchUpdateUserResponse')
@@ -738,12 +424,12 @@ const SensitiveStringSchema = z.string().openapi('SensitiveString')
 
 const AlexaForBusinessMetadataSchema = z
   .object({
-    IsAlexaForBusinessEnabled: BooleanSchema.and(
-      z.any().openapi({ description: 'Starts or stops Alexa for Business.' }),
-    ).exactOptional(),
-    AlexaForBusinessRoomArn: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The ARN of the room resource.' }),
-    ).exactOptional(),
+    IsAlexaForBusinessEnabled: BooleanSchema.exactOptional().openapi({
+      description: 'Starts or stops Alexa for Business.',
+    }),
+    AlexaForBusinessRoomArn: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The ARN of the room resource.',
+    }),
   })
   .openapi({
     description:
@@ -754,16 +440,12 @@ const AlexaForBusinessMetadataSchema = z
 
 const UpdateUserRequestItemSchema = z
   .object({
-    UserId: NonEmptyStringSchema.and(z.any().openapi({ description: 'The user ID.' })),
-    LicenseType: LicenseSchema.and(
-      z.any().openapi({ description: 'The user license type.' }),
-    ).exactOptional(),
-    UserType: UserTypeSchema.and(
-      z.any().openapi({ description: 'The user type.' }),
-    ).exactOptional(),
-    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.and(
-      z.any().openapi({ description: 'The Alexa for Business metadata.' }),
-    ).exactOptional(),
+    UserId: NonEmptyStringSchema.openapi({ description: 'The user ID.' }),
+    LicenseType: LicenseSchema.exactOptional().openapi({ description: 'The user license type.' }),
+    UserType: UserTypeSchema.exactOptional().openapi({ description: 'The user type.' }),
+    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.exactOptional().openapi({
+      description: 'The Alexa for Business metadata.',
+    }),
   })
   .openapi({
     required: ['UserId'],
@@ -776,6 +458,8 @@ const AccountTypeSchema = z
   .enum(['Team', 'EnterpriseDirectory', 'EnterpriseLWA', 'EnterpriseOIDC'])
   .openapi('AccountType')
 
+const Iso8601TimestampSchema = z.iso.datetime({ offset: true }).openapi('Iso8601Timestamp')
+
 const LicenseListSchema = z.array(LicenseSchema).openapi('LicenseList')
 
 const AccountStatusSchema = z.enum(['Suspended', 'Active']).openapi('AccountStatus')
@@ -786,36 +470,28 @@ const SigninDelegateGroupListSchema = z
 
 const AccountSchema = z
   .object({
-    AwsAccountId: StringSchema.and(z.any().openapi({ description: 'The AWS account ID.' })),
-    AccountId: StringSchema.and(z.any().openapi({ description: 'The Amazon Chime account ID.' })),
-    Name: StringSchema.and(z.any().openapi({ description: 'The Amazon Chime account name.' })),
-    AccountType: AccountTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime account type. For more information about different account types, see <a href="https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html">Managing Your Amazon Chime Accounts</a> in the <i>Amazon Chime Administration Guide</i>.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Chime account creation timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    DefaultLicense: LicenseSchema.and(
-      z.any().openapi({ description: 'The default license for the Amazon Chime account.' }),
-    ).exactOptional(),
-    SupportedLicenses: LicenseListSchema.and(
-      z.any().openapi({ description: 'Supported licenses for the Amazon Chime account.' }),
-    ).exactOptional(),
-    AccountStatus: AccountStatusSchema.and(
-      z.any().openapi({ description: 'The status of the account.' }),
-    ).exactOptional(),
-    SigninDelegateGroups: SigninDelegateGroupListSchema.and(
-      z.any().openapi({ description: 'The sign-in delegate groups associated with the account.' }),
-    ).exactOptional(),
+    AwsAccountId: StringSchema.openapi({ description: 'The AWS account ID.' }),
+    AccountId: StringSchema.openapi({ description: 'The Amazon Chime account ID.' }),
+    Name: StringSchema.openapi({ description: 'The Amazon Chime account name.' }),
+    AccountType: AccountTypeSchema.exactOptional().openapi({
+      description:
+        'The Amazon Chime account type. For more information about different account types, see <a href="https://docs.aws.amazon.com/chime/latest/ag/manage-chime-account.html">Managing Your Amazon Chime Accounts</a> in the <i>Amazon Chime Administration Guide</i>.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account creation timestamp, in ISO 8601 format.',
+    }),
+    DefaultLicense: LicenseSchema.exactOptional().openapi({
+      description: 'The default license for the Amazon Chime account.',
+    }),
+    SupportedLicenses: LicenseListSchema.exactOptional().openapi({
+      description: 'Supported licenses for the Amazon Chime account.',
+    }),
+    AccountStatus: AccountStatusSchema.exactOptional().openapi({
+      description: 'The status of the account.',
+    }),
+    SigninDelegateGroups: SigninDelegateGroupListSchema.exactOptional().openapi({
+      description: 'The sign-in delegate groups associated with the account.',
+    }),
   })
   .openapi({
     required: ['AwsAccountId', 'AccountId', 'Name'],
@@ -826,22 +502,18 @@ const AccountSchema = z
 
 const CreateAccountResponseSchema = z
   .object({
-    Account: AccountSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account details.' }),
-    ).exactOptional(),
+    Account: AccountSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAccountResponse')
 
 const CreateAppInstanceResponseSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Number (ARN) of the <code>AppInstance</code>.',
-        }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Number (ARN) of the <code>AppInstance</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAppInstanceResponse')
@@ -850,78 +522,62 @@ const ConflictExceptionSchema = z.any().openapi('ConflictException')
 
 const CreateAppInstanceAdminResponseSchema = z
   .object({
-    AppInstanceAdmin: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name and ARN of the admin for the <code>AppInstance</code>.',
-        }),
-    ).exactOptional(),
-    AppInstanceArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the of the admin for the <code>AppInstance</code>.' }),
-    ).exactOptional(),
+    AppInstanceAdmin: IdentitySchema.exactOptional().openapi({
+      description: 'The name and ARN of the admin for the <code>AppInstance</code>.',
+    }),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the of the admin for the <code>AppInstance</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAppInstanceAdminResponse')
 
 const CreateAppInstanceUserResponseSchema = z
   .object({
-    AppInstanceUserArn: ChimeArnSchema.and(
-      z.any().openapi({ description: "The user's ARN." }),
-    ).exactOptional(),
+    AppInstanceUserArn: ChimeArnSchema.exactOptional().openapi({ description: "The user's ARN." }),
   })
   .openapi({ required: [] })
   .openapi('CreateAppInstanceUserResponse')
 
 const CreateAttendeeResponseSchema = z
   .object({
-    Attendee: AttendeeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The attendee information, including attendee ID and join token.',
-        }),
-    ).exactOptional(),
+    Attendee: AttendeeSchema.exactOptional().openapi({
+      description: 'The attendee information, including attendee ID and join token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateAttendeeResponse')
 
 const BotTypeSchema = z.literal('ChatBot').openapi('BotType')
 
+const NullableBooleanSchema = z.boolean().openapi('NullableBoolean')
+
 const BotSchema = z
   .object({
-    BotId: StringSchema.and(z.any().openapi({ description: 'The bot ID.' })).exactOptional(),
-    UserId: StringSchema.and(
-      z.any().openapi({ description: 'The unique ID for the bot user.' }),
-    ).exactOptional(),
-    DisplayName: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The bot display name.' }),
-    ).exactOptional(),
-    BotType: BotTypeSchema.and(z.any().openapi({ description: 'The bot type.' })).exactOptional(),
-    Disabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'When true, the bot is stopped from running in your account.' }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The bot creation timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The updated bot timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    BotEmail: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The bot email address.' }),
-    ).exactOptional(),
-    SecurityToken: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The security token used to authenticate Amazon Chime with the outgoing event endpoint.',
-        }),
-    ).exactOptional(),
+    BotId: StringSchema.exactOptional().openapi({ description: 'The bot ID.' }),
+    UserId: StringSchema.exactOptional().openapi({
+      description: 'The unique ID for the bot user.',
+    }),
+    DisplayName: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The bot display name.',
+    }),
+    BotType: BotTypeSchema.exactOptional().openapi({ description: 'The bot type.' }),
+    Disabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'When true, the bot is stopped from running in your account.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The bot creation timestamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated bot timestamp, in ISO 8601 format.',
+    }),
+    BotEmail: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The bot email address.',
+    }),
+    SecurityToken: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The security token used to authenticate Amazon Chime with the outgoing event endpoint.',
+    }),
   })
   .openapi({
     description:
@@ -931,58 +587,46 @@ const BotSchema = z
   .openapi('Bot')
 
 const CreateBotResponseSchema = z
-  .object({
-    Bot: BotSchema.and(z.any().openapi({ description: 'The bot details.' })).exactOptional(),
-  })
+  .object({ Bot: BotSchema.exactOptional().openapi({ description: 'The bot details.' }) })
   .openapi({ required: [] })
   .openapi('CreateBotResponse')
 
 const CreateChannelResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelResponse')
 
 const CreateChannelBanResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the response to the ban request.' }),
-    ).exactOptional(),
-    Member: IdentitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ChannelArn</code> and <code>BannedIdentity</code> of the member in the ban response.',
-        }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the response to the ban request.',
+    }),
+    Member: IdentitySchema.exactOptional().openapi({
+      description:
+        'The <code>ChannelArn</code> and <code>BannedIdentity</code> of the member in the ban response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelBanResponse')
 
 const CreateChannelMembershipResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    Member: IdentitySchema.and(
-      z.any().openapi({ description: 'The ARN and metadata of the member being added.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    Member: IdentitySchema.exactOptional().openapi({
+      description: 'The ARN and metadata of the member being added.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelMembershipResponse')
 
 const CreateChannelModeratorResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    ChannelModerator: IdentitySchema.and(
-      z.any().openapi({ description: 'The ARNs of the channel and the moderator.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    ChannelModerator: IdentitySchema.exactOptional().openapi({
+      description: 'The ARNs of the channel and the moderator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateChannelModeratorResponse')
@@ -1013,21 +657,12 @@ const ExternalUserIdListSchema = z
 
 const SelectedVideoStreamsSchema = z
   .object({
-    AttendeeIds: AttendeeIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The attendee IDs of the streams selected for a media capture pipeline. ',
-        }),
-    ).exactOptional(),
-    ExternalUserIds: ExternalUserIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The external user IDs of the streams selected for a media capture pipeline.',
-        }),
-    ).exactOptional(),
+    AttendeeIds: AttendeeIdListSchema.exactOptional().openapi({
+      description: 'The attendee IDs of the streams selected for a media capture pipeline. ',
+    }),
+    ExternalUserIds: ExternalUserIdListSchema.exactOptional().openapi({
+      description: 'The external user IDs of the streams selected for a media capture pipeline.',
+    }),
   })
   .openapi({
     description:
@@ -1038,14 +673,10 @@ const SelectedVideoStreamsSchema = z
 
 const SourceConfigurationSchema = z
   .object({
-    SelectedVideoStreams: SelectedVideoStreamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The selected video streams to capture for a specified media capture pipeline. The number of video streams can't exceed 25.",
-        }),
-    ).exactOptional(),
+    SelectedVideoStreams: SelectedVideoStreamsSchema.exactOptional().openapi({
+      description:
+        "The selected video streams to capture for a specified media capture pipeline. The number of video streams can't exceed 25.",
+    }),
   })
   .openapi({
     description: 'Source configuration for a specified media capture pipeline.',
@@ -1053,43 +684,75 @@ const SourceConfigurationSchema = z
   })
   .openapi('SourceConfiguration')
 
-const ArtifactsConfigurationSchema: z.ZodType<ArtifactsConfigurationType> = z
-  .lazy(() =>
-    z
-      .object({
-        Audio: AudioArtifactsConfigurationSchema.and(
-          z.any().openapi({ description: 'The configuration for the audio artifacts.' }),
-        ),
-        Video: VideoArtifactsConfigurationSchema.and(
-          z.any().openapi({ description: 'The configuration for the video artifacts.' }),
-        ),
-        Content: ContentArtifactsConfigurationSchema.and(
-          z.any().openapi({ description: 'The configuration for the content artifacts.' }),
-        ),
-      })
-      .openapi({
-        required: ['Audio', 'Video', 'Content'],
-        description: 'The configuration for the artifacts.',
-      }),
-  )
+const AudioMuxTypeSchema = z
+  .enum(['AudioOnly', 'AudioWithActiveSpeakerVideo'])
+  .openapi('AudioMuxType')
+
+const AudioArtifactsConfigurationSchema = z
+  .object({
+    MuxType: AudioMuxTypeSchema.openapi({
+      description: 'The MUX type of the audio artifact configuration object.',
+    }),
+  })
+  .openapi({ required: ['MuxType'], description: 'The audio artifact configuration object.' })
+  .openapi('AudioArtifactsConfiguration')
+
+const ArtifactsStateSchema = z.enum(['Enabled', 'Disabled']).openapi('ArtifactsState')
+
+const VideoMuxTypeSchema = z.literal('VideoOnly').openapi('VideoMuxType')
+
+const VideoArtifactsConfigurationSchema = z
+  .object({
+    State: ArtifactsStateSchema.openapi({
+      description: 'Indicates whether the video artifact is enabled or disabled.',
+    }),
+    MuxType: VideoMuxTypeSchema.exactOptional().openapi({
+      description: 'The MUX type of the video artifact configuration object.',
+    }),
+  })
+  .openapi({ required: ['State'], description: 'The video artifact configuration object.' })
+  .openapi('VideoArtifactsConfiguration')
+
+const ContentMuxTypeSchema = z.literal('ContentOnly').openapi('ContentMuxType')
+
+const ContentArtifactsConfigurationSchema = z
+  .object({
+    State: ArtifactsStateSchema.openapi({
+      description: 'Indicates whether the content artifact is enabled or disabled.',
+    }),
+    MuxType: ContentMuxTypeSchema.exactOptional().openapi({
+      description: 'The MUX type of the artifact configuration.',
+    }),
+  })
+  .openapi({ required: ['State'], description: 'The content artifact object.' })
+  .openapi('ContentArtifactsConfiguration')
+
+const ArtifactsConfigurationSchema = z
+  .object({
+    Audio: AudioArtifactsConfigurationSchema.openapi({
+      description: 'The configuration for the audio artifacts.',
+    }),
+    Video: VideoArtifactsConfigurationSchema.openapi({
+      description: 'The configuration for the video artifacts.',
+    }),
+    Content: ContentArtifactsConfigurationSchema.openapi({
+      description: 'The configuration for the content artifacts.',
+    }),
+  })
+  .openapi({
+    required: ['Audio', 'Video', 'Content'],
+    description: 'The configuration for the artifacts.',
+  })
   .openapi('ArtifactsConfiguration')
 
 const ChimeSdkMeetingConfigurationSchema = z
   .object({
-    SourceConfiguration: SourceConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The source configuration for a specified media capture pipeline.',
-        }),
-    ).exactOptional(),
-    ArtifactsConfiguration: ArtifactsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The configuration for the artifacts in an Amazon Chime SDK meeting.',
-        }),
-    ).exactOptional(),
+    SourceConfiguration: SourceConfigurationSchema.exactOptional().openapi({
+      description: 'The source configuration for a specified media capture pipeline.',
+    }),
+    ArtifactsConfiguration: ArtifactsConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration for the artifacts in an Amazon Chime SDK meeting.',
+    }),
   })
   .openapi({
     description:
@@ -1100,62 +763,36 @@ const ChimeSdkMeetingConfigurationSchema = z
 
 const MediaCapturePipelineSchema = z
   .object({
-    MediaPipelineId: GuidStringSchema.and(
-      z.any().openapi({ description: 'The ID of a media capture pipeline.' }),
-    ).exactOptional(),
-    SourceType: MediaPipelineSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Source type from which media artifacts are saved. You must use <code>ChimeMeeting</code>.',
-        }),
-    ).exactOptional(),
-    SourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ARN of the source from which the media artifacts will be saved.',
-        }),
-    ).exactOptional(),
-    Status: MediaPipelineStatusSchema.and(
-      z.any().openapi({ description: 'The status of the media capture pipeline.' }),
-    ).exactOptional(),
-    SinkType: MediaPipelineSinkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Destination type to which the media artifacts are saved. You must use an S3 Bucket.',
-        }),
-    ).exactOptional(),
-    SinkArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'ARN of the destination to which the media artifacts are saved.' }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the capture pipeline was created, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the capture pipeline was updated, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.',
-        }),
-    ).exactOptional(),
+    MediaPipelineId: GuidStringSchema.exactOptional().openapi({
+      description: 'The ID of a media capture pipeline.',
+    }),
+    SourceType: MediaPipelineSourceTypeSchema.exactOptional().openapi({
+      description:
+        'Source type from which media artifacts are saved. You must use <code>ChimeMeeting</code>.',
+    }),
+    SourceArn: ArnSchema.exactOptional().openapi({
+      description: 'ARN of the source from which the media artifacts will be saved.',
+    }),
+    Status: MediaPipelineStatusSchema.exactOptional().openapi({
+      description: 'The status of the media capture pipeline.',
+    }),
+    SinkType: MediaPipelineSinkTypeSchema.exactOptional().openapi({
+      description:
+        'Destination type to which the media artifacts are saved. You must use an S3 Bucket.',
+    }),
+    SinkArn: ArnSchema.exactOptional().openapi({
+      description: 'ARN of the destination to which the media artifacts are saved.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the capture pipeline was created, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the capture pipeline was updated, in ISO 8601 format.',
+    }),
+    ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1166,14 +803,10 @@ const MediaCapturePipelineSchema = z
 
 const CreateMediaCapturePipelineResponseSchema = z
   .object({
-    MediaCapturePipeline: MediaCapturePipelineSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A media capture pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media capture pipeline object.',
-        }),
-    ).exactOptional(),
+    MediaCapturePipeline: MediaCapturePipelineSchema.exactOptional().openapi({
+      description:
+        'A media capture pipeline object, the ID, source type, source ARN, sink type, and sink ARN of a media capture pipeline object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMediaCapturePipelineResponse')
@@ -1184,34 +817,22 @@ const UriTypeSchema = z.string().max(4096).openapi('UriType')
 
 const MediaPlacementSchema = z
   .object({
-    AudioHostUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The audio host URL.' }),
-    ).exactOptional(),
-    AudioFallbackUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The audio fallback URL.' }),
-    ).exactOptional(),
-    ScreenDataUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The screen data URL.' }),
-    ).exactOptional(),
-    ScreenSharingUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The screen sharing URL.' }),
-    ).exactOptional(),
-    ScreenViewingUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The screen viewing URL.' }),
-    ).exactOptional(),
-    SignalingUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The signaling URL.' }),
-    ).exactOptional(),
-    TurnControlUrl: UriTypeSchema.and(
-      z.any().openapi({ description: 'The turn control URL.' }),
-    ).exactOptional(),
-    EventIngestionUrl: UriTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The event ingestion URL to which you send client meeting events.',
-        }),
-    ).exactOptional(),
+    AudioHostUrl: UriTypeSchema.exactOptional().openapi({ description: 'The audio host URL.' }),
+    AudioFallbackUrl: UriTypeSchema.exactOptional().openapi({
+      description: 'The audio fallback URL.',
+    }),
+    ScreenDataUrl: UriTypeSchema.exactOptional().openapi({ description: 'The screen data URL.' }),
+    ScreenSharingUrl: UriTypeSchema.exactOptional().openapi({
+      description: 'The screen sharing URL.',
+    }),
+    ScreenViewingUrl: UriTypeSchema.exactOptional().openapi({
+      description: 'The screen viewing URL.',
+    }),
+    SignalingUrl: UriTypeSchema.exactOptional().openapi({ description: 'The signaling URL.' }),
+    TurnControlUrl: UriTypeSchema.exactOptional().openapi({ description: 'The turn control URL.' }),
+    EventIngestionUrl: UriTypeSchema.exactOptional().openapi({
+      description: 'The event ingestion URL to which you send client meeting events.',
+    }),
   })
   .openapi({
     description:
@@ -1222,70 +843,54 @@ const MediaPlacementSchema = z
 
 const MeetingSchema = z
   .object({
-    MeetingId: GuidStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK meeting ID.' }),
-    ).exactOptional(),
-    ExternalMeetingId: ExternalMeetingIdTypeSchema.and(
-      z.any().openapi({ description: 'The external meeting ID.' }),
-    ).exactOptional(),
-    MediaPlacement: MediaPlacementSchema.and(
-      z.any().openapi({ description: 'The media placement for the meeting.' }),
-    ).exactOptional(),
-    MediaRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Region in which you create the meeting. Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>.',
-        }),
-    ).exactOptional(),
+    MeetingId: GuidStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK meeting ID.',
+    }),
+    ExternalMeetingId: ExternalMeetingIdTypeSchema.exactOptional().openapi({
+      description: 'The external meeting ID.',
+    }),
+    MediaPlacement: MediaPlacementSchema.exactOptional().openapi({
+      description: 'The media placement for the meeting.',
+    }),
+    MediaRegion: StringSchema.exactOptional().openapi({
+      description:
+        'The Region in which you create the meeting. Available values: <code>af-south-1</code>, <code>ap-northeast-1</code>, <code>ap-northeast-2</code>, <code>ap-south-1</code>, <code>ap-southeast-1</code>, <code>ap-southeast-2</code>, <code>ca-central-1</code>, <code>eu-central-1</code>, <code>eu-north-1</code>, <code>eu-south-1</code>, <code>eu-west-1</code>, <code>eu-west-2</code>, <code>eu-west-3</code>, <code>sa-east-1</code>, <code>us-east-1</code>, <code>us-east-2</code>, <code>us-west-1</code>, <code>us-west-2</code>.',
+    }),
   })
   .openapi({ description: 'A meeting created using the Amazon Chime SDK.', required: [] })
   .openapi('Meeting')
 
 const CreateMeetingResponseSchema = z
   .object({
-    Meeting: MeetingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The meeting information, including the meeting ID and <code>MediaPlacement</code> . ',
-        }),
-    ).exactOptional(),
+    Meeting: MeetingSchema.exactOptional().openapi({
+      description:
+        ' The meeting information, including the meeting ID and <code>MediaPlacement</code> . ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMeetingResponse')
 
 const CreateMeetingDialOutResponseSchema = z
   .object({
-    TransactionId: GuidStringSchema.and(
-      z.any().openapi({ description: 'Unique ID that tracks API calls.' }),
-    ).exactOptional(),
+    TransactionId: GuidStringSchema.exactOptional().openapi({
+      description: 'Unique ID that tracks API calls.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMeetingDialOutResponse')
 
 const CreateMeetingWithAttendeesResponseSchema = z
   .object({
-    Meeting: MeetingSchema.and(
-      z.any().openapi({ description: 'A meeting created using the Amazon Chime SDK.' }),
-    ).exactOptional(),
-    Attendees: AttendeeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The attendee information, including attendees IDs and join tokens.',
-        }),
-    ).exactOptional(),
-    Errors: BatchCreateAttendeeErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    Meeting: MeetingSchema.exactOptional().openapi({
+      description: 'A meeting created using the Amazon Chime SDK.',
+    }),
+    Attendees: AttendeeListSchema.exactOptional().openapi({
+      description: 'The attendee information, including attendees IDs and join tokens.',
+    }),
+    Errors: BatchCreateAttendeeErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the attendees in the request, a list of the attendees is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateMeetingWithAttendeesResponse')
@@ -1300,12 +905,12 @@ const OrderedPhoneNumberStatusSchema = z
 
 const OrderedPhoneNumberSchema = z
   .object({
-    E164PhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number, in E.164 format.' }),
-    ).exactOptional(),
-    Status: OrderedPhoneNumberStatusSchema.and(
-      z.any().openapi({ description: 'The phone number status.' }),
-    ).exactOptional(),
+    E164PhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number, in E.164 format.',
+    }),
+    Status: OrderedPhoneNumberStatusSchema.exactOptional().openapi({
+      description: 'The phone number status.',
+    }),
   })
   .openapi({ description: 'A phone number for which an order has been placed.', required: [] })
   .openapi('OrderedPhoneNumber')
@@ -1316,35 +921,25 @@ const OrderedPhoneNumberListSchema = z
 
 const PhoneNumberOrderSchema = z
   .object({
-    PhoneNumberOrderId: GuidStringSchema.and(
-      z.any().openapi({ description: 'The phone number order ID.' }),
-    ).exactOptional(),
-    ProductType: PhoneNumberProductTypeSchema.and(
-      z.any().openapi({ description: 'The phone number order product type.' }),
-    ).exactOptional(),
-    Status: PhoneNumberOrderStatusSchema.and(
-      z.any().openapi({ description: 'The status of the phone number order.' }),
-    ).exactOptional(),
-    OrderedPhoneNumbers: OrderedPhoneNumberListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ordered phone number details, such as the phone number in E.164 format and the phone number status.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The phone number order creation time stamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The updated phone number order time stamp, in ISO 8601 format.' }),
-    ).exactOptional(),
+    PhoneNumberOrderId: GuidStringSchema.exactOptional().openapi({
+      description: 'The phone number order ID.',
+    }),
+    ProductType: PhoneNumberProductTypeSchema.exactOptional().openapi({
+      description: 'The phone number order product type.',
+    }),
+    Status: PhoneNumberOrderStatusSchema.exactOptional().openapi({
+      description: 'The status of the phone number order.',
+    }),
+    OrderedPhoneNumbers: OrderedPhoneNumberListSchema.exactOptional().openapi({
+      description:
+        'The ordered phone number details, such as the phone number in E.164 format and the phone number status.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The phone number order creation time stamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated phone number order time stamp, in ISO 8601 format.',
+    }),
   })
   .openapi({
     description: 'The details of a phone number order created for Amazon Chime.',
@@ -1354,9 +949,9 @@ const PhoneNumberOrderSchema = z
 
 const CreatePhoneNumberOrderResponseSchema = z
   .object({
-    PhoneNumberOrder: PhoneNumberOrderSchema.and(
-      z.any().openapi({ description: 'The phone number order details.' }),
-    ).exactOptional(),
+    PhoneNumberOrder: PhoneNumberOrderSchema.exactOptional().openapi({
+      description: 'The phone number order details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreatePhoneNumberOrderResponse')
@@ -1382,12 +977,12 @@ const CapabilityListSchema = z.array(CapabilitySchema).openapi('CapabilityList')
 
 const ParticipantSchema = z
   .object({
-    PhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: "The participant's phone number." }),
-    ).exactOptional(),
-    ProxyPhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: "The participant's proxy phone number." }),
-    ).exactOptional(),
+    PhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: "The participant's phone number.",
+    }),
+    ProxyPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: "The participant's proxy phone number.",
+    }),
   })
   .openapi({
     description:
@@ -1416,8 +1011,8 @@ const AreaCodeSchema = z
 
 const GeoMatchParamsSchema = z
   .object({
-    Country: CountrySchema.and(z.any().openapi({ description: 'The country.' })),
-    AreaCode: AreaCodeSchema.and(z.any().openapi({ description: 'The area code.' })),
+    Country: CountrySchema.openapi({ description: 'The country.' }),
+    AreaCode: AreaCodeSchema.openapi({ description: 'The area code.' }),
   })
   .openapi({
     required: ['Country', 'AreaCode'],
@@ -1427,96 +1022,82 @@ const GeoMatchParamsSchema = z
 
 const ProxySessionSchema = z
   .object({
-    VoiceConnectorId: NonEmptyString128Schema.and(
-      z.any().openapi({ description: 'The Amazon Chime voice connector ID.' }),
-    ).exactOptional(),
-    ProxySessionId: NonEmptyString128Schema.and(
-      z.any().openapi({ description: 'The proxy session ID.' }),
-    ).exactOptional(),
-    Name: String128Schema.and(
-      z.any().openapi({ description: 'The name of the proxy session.' }),
-    ).exactOptional(),
-    Status: ProxySessionStatusSchema.and(
-      z.any().openapi({ description: 'The status of the proxy session.' }),
-    ).exactOptional(),
-    ExpiryMinutes: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The number of minutes allowed for the proxy session.' }),
-    ).exactOptional(),
-    Capabilities: CapabilityListSchema.and(
-      z.any().openapi({ description: 'The proxy session capabilities.' }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The created time stamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The updated time stamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    EndedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The ended time stamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    Participants: ParticipantsSchema.and(
-      z.any().openapi({ description: 'The proxy session participants.' }),
-    ).exactOptional(),
-    NumberSelectionBehavior: NumberSelectionBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preference for proxy phone number reuse, or stickiness, between the same participants across sessions.',
-        }),
-    ).exactOptional(),
-    GeoMatchLevel: GeoMatchLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preference for matching the country or area code of the proxy phone number with that of the first participant.',
-        }),
-    ).exactOptional(),
-    GeoMatchParams: GeoMatchParamsSchema.and(
-      z.any().openapi({ description: 'The country and area code for the proxy phone number.' }),
-    ).exactOptional(),
+    VoiceConnectorId: NonEmptyString128Schema.exactOptional().openapi({
+      description: 'The Amazon Chime voice connector ID.',
+    }),
+    ProxySessionId: NonEmptyString128Schema.exactOptional().openapi({
+      description: 'The proxy session ID.',
+    }),
+    Name: String128Schema.exactOptional().openapi({
+      description: 'The name of the proxy session.',
+    }),
+    Status: ProxySessionStatusSchema.exactOptional().openapi({
+      description: 'The status of the proxy session.',
+    }),
+    ExpiryMinutes: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The number of minutes allowed for the proxy session.',
+    }),
+    Capabilities: CapabilityListSchema.exactOptional().openapi({
+      description: 'The proxy session capabilities.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The created time stamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated time stamp, in ISO 8601 format.',
+    }),
+    EndedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The ended time stamp, in ISO 8601 format.',
+    }),
+    Participants: ParticipantsSchema.exactOptional().openapi({
+      description: 'The proxy session participants.',
+    }),
+    NumberSelectionBehavior: NumberSelectionBehaviorSchema.exactOptional().openapi({
+      description:
+        'The preference for proxy phone number reuse, or stickiness, between the same participants across sessions.',
+    }),
+    GeoMatchLevel: GeoMatchLevelSchema.exactOptional().openapi({
+      description:
+        'The preference for matching the country or area code of the proxy phone number with that of the first participant.',
+    }),
+    GeoMatchParams: GeoMatchParamsSchema.exactOptional().openapi({
+      description: 'The country and area code for the proxy phone number.',
+    }),
   })
   .openapi({ description: 'The proxy session for an Amazon Chime Voice Connector.', required: [] })
   .openapi('ProxySession')
 
 const CreateProxySessionResponseSchema = z
   .object({
-    ProxySession: ProxySessionSchema.and(
-      z.any().openapi({ description: 'The proxy session details.' }),
-    ).exactOptional(),
+    ProxySession: ProxySessionSchema.exactOptional().openapi({
+      description: 'The proxy session details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateProxySessionResponse')
 
 const RoomSchema = z
   .object({
-    RoomId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The room ID.' }),
-    ).exactOptional(),
-    Name: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The room name.' }),
-    ).exactOptional(),
-    AccountId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account ID.' }),
-    ).exactOptional(),
-    CreatedBy: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The identifier of the room creator.' }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The room creation timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The room update timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
+    RoomId: NonEmptyStringSchema.exactOptional().openapi({ description: 'The room ID.' }),
+    Name: SensitiveStringSchema.exactOptional().openapi({ description: 'The room name.' }),
+    AccountId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account ID.',
+    }),
+    CreatedBy: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The identifier of the room creator.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The room creation timestamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The room update timestamp, in ISO 8601 format.',
+    }),
   })
   .openapi({ description: 'The Amazon Chime chat room details.', required: [] })
   .openapi('Room')
 
 const CreateRoomResponseSchema = z
-  .object({
-    Room: RoomSchema.and(z.any().openapi({ description: 'The room details.' })).exactOptional(),
-  })
+  .object({ Room: RoomSchema.exactOptional().openapi({ description: 'The room details.' }) })
   .openapi({ required: [] })
   .openapi('CreateRoomResponse')
 
@@ -1524,21 +1105,17 @@ const MemberTypeSchema = z.enum(['User', 'Bot', 'Webhook']).openapi('MemberType'
 
 const MemberSchema = z
   .object({
-    MemberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The member ID (user ID or bot ID).' }),
-    ).exactOptional(),
-    MemberType: MemberTypeSchema.and(
-      z.any().openapi({ description: 'The member type.' }),
-    ).exactOptional(),
-    Email: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The member email address.' }),
-    ).exactOptional(),
-    FullName: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The member name.' }),
-    ).exactOptional(),
-    AccountId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account ID.' }),
-    ).exactOptional(),
+    MemberId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The member ID (user ID or bot ID).',
+    }),
+    MemberType: MemberTypeSchema.exactOptional().openapi({ description: 'The member type.' }),
+    Email: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The member email address.',
+    }),
+    FullName: SensitiveStringSchema.exactOptional().openapi({ description: 'The member name.' }),
+    AccountId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account ID.',
+    }),
   })
   .openapi({
     description: 'The member details, such as email address, name, member ID, and member type.',
@@ -1548,35 +1125,26 @@ const MemberSchema = z
 
 const RoomMembershipSchema = z
   .object({
-    RoomId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The room ID.' }),
-    ).exactOptional(),
-    Member: MemberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The member details, such as email address, name, member ID, and member type.',
-        }),
-    ).exactOptional(),
-    Role: RoomMembershipRoleSchema.and(
-      z.any().openapi({ description: 'The membership role.' }),
-    ).exactOptional(),
-    InvitedBy: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The identifier of the user that invited the room member.' }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The room membership update timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
+    RoomId: NonEmptyStringSchema.exactOptional().openapi({ description: 'The room ID.' }),
+    Member: MemberSchema.exactOptional().openapi({
+      description: 'The member details, such as email address, name, member ID, and member type.',
+    }),
+    Role: RoomMembershipRoleSchema.exactOptional().openapi({ description: 'The membership role.' }),
+    InvitedBy: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The identifier of the user that invited the room member.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The room membership update timestamp, in ISO 8601 format.',
+    }),
   })
   .openapi({ description: 'The room membership details.', required: [] })
   .openapi('RoomMembership')
 
 const CreateRoomMembershipResponseSchema = z
   .object({
-    RoomMembership: RoomMembershipSchema.and(
-      z.any().openapi({ description: 'The room membership details.' }),
-    ).exactOptional(),
+    RoomMembership: RoomMembershipSchema.exactOptional().openapi({
+      description: 'The room membership details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateRoomMembershipResponse')
@@ -1593,14 +1161,10 @@ const FunctionArnSchema = z
 
 const SipMediaApplicationEndpointSchema = z
   .object({
-    LambdaArn: FunctionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Valid Amazon Resource Name (ARN) of the Lambda function, version, or alias. The function must be created in the same AWS Region as the SIP media application.',
-        }),
-    ).exactOptional(),
+    LambdaArn: FunctionArnSchema.exactOptional().openapi({
+      description:
+        'Valid Amazon Resource Name (ARN) of the Lambda function, version, or alias. The function must be created in the same AWS Region as the SIP media application.',
+    }),
   })
   .openapi({ description: 'The endpoint assigned to the SIP media application.', required: [] })
   .openapi('SipMediaApplicationEndpoint')
@@ -1612,39 +1176,25 @@ const SipMediaApplicationEndpointListSchema = z
 
 const SipMediaApplicationSchema = z
   .object({
-    SipMediaApplicationId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The SIP media application ID.' }),
-    ).exactOptional(),
-    AwsRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The AWS Region in which the SIP media application is created.' }),
-    ).exactOptional(),
-    Name: SipMediaApplicationNameSchema.and(
-      z.any().openapi({ description: 'The name of the SIP media application.' }),
-    ).exactOptional(),
-    Endpoints: SipMediaApplicationEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of endpoints for SIP media application. Currently, only one endpoint per SIP media application is permitted.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SIP media application creation timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The SIP media application updated timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    SipMediaApplicationId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The SIP media application ID.',
+    }),
+    AwsRegion: StringSchema.exactOptional().openapi({
+      description: 'The AWS Region in which the SIP media application is created.',
+    }),
+    Name: SipMediaApplicationNameSchema.exactOptional().openapi({
+      description: 'The name of the SIP media application.',
+    }),
+    Endpoints: SipMediaApplicationEndpointListSchema.exactOptional().openapi({
+      description:
+        'List of endpoints for SIP media application. Currently, only one endpoint per SIP media application is permitted.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The SIP media application creation timestamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The SIP media application updated timestamp, in ISO 8601 format.',
+    }),
   })
   .openapi({
     description:
@@ -1655,18 +1205,18 @@ const SipMediaApplicationSchema = z
 
 const CreateSipMediaApplicationResponseSchema = z
   .object({
-    SipMediaApplication: SipMediaApplicationSchema.and(
-      z.any().openapi({ description: 'The SIP media application details.' }),
-    ).exactOptional(),
+    SipMediaApplication: SipMediaApplicationSchema.exactOptional().openapi({
+      description: 'The SIP media application details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSipMediaApplicationResponse')
 
 const SipMediaApplicationCallSchema = z
   .object({
-    TransactionId: GuidStringSchema.and(
-      z.any().openapi({ description: 'The transaction ID of a call.' }),
-    ).exactOptional(),
+    TransactionId: GuidStringSchema.exactOptional().openapi({
+      description: 'The transaction ID of a call.',
+    }),
   })
   .openapi({
     description: 'A <code>Call</code> instance for a SIP media application.',
@@ -1676,9 +1226,9 @@ const SipMediaApplicationCallSchema = z
 
 const CreateSipMediaApplicationCallResponseSchema = z
   .object({
-    SipMediaApplicationCall: SipMediaApplicationCallSchema.and(
-      z.any().openapi({ description: 'The actual call.' }),
-    ).exactOptional(),
+    SipMediaApplicationCall: SipMediaApplicationCallSchema.exactOptional().openapi({
+      description: 'The actual call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSipMediaApplicationCallResponse')
@@ -1693,15 +1243,15 @@ const SipApplicationPrioritySchema = z.int().min(1).openapi('SipApplicationPrior
 
 const SipRuleTargetApplicationSchema = z
   .object({
-    SipMediaApplicationId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The SIP media application ID.' }),
-    ).exactOptional(),
-    Priority: SipApplicationPrioritySchema.and(
-      z.any().openapi({ description: 'Priority of the SIP media application in the target list.' }),
-    ).exactOptional(),
-    AwsRegion: StringSchema.and(
-      z.any().openapi({ description: 'The AWS Region of the target application.' }),
-    ).exactOptional(),
+    SipMediaApplicationId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The SIP media application ID.',
+    }),
+    Priority: SipApplicationPrioritySchema.exactOptional().openapi({
+      description: 'Priority of the SIP media application in the target list.',
+    }),
+    AwsRegion: StringSchema.exactOptional().openapi({
+      description: 'The AWS Region of the target application.',
+    }),
   })
   .openapi({
     description:
@@ -1718,58 +1268,30 @@ const SipRuleTargetApplicationListSchema = z
 
 const SipRuleSchema = z
   .object({
-    SipRuleId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The SIP rule ID.' }),
-    ).exactOptional(),
-    Name: SipRuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the SIP rule.' }),
-    ).exactOptional(),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether the SIP rule is enabled or disabled. You must disable a rule before you can delete it.',
-        }),
-    ).exactOptional(),
-    TriggerType: SipRuleTriggerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of trigger assigned to the SIP rule in <code>TriggerValue</code>, currently <code>RequestUriHostname</code> or <code>ToPhoneNumber</code>.',
-        }),
-    ).exactOptional(),
-    TriggerValue: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TriggerType</code> is <code>RequestUriHostname</code>, then the value can be the outbound host name of the Amazon Chime Voice Connector. If <code>TriggerType</code> is <code>ToPhoneNumber</code>, then the value can be a customer-owned phone number in E164 format. <code>SipRule</code> is triggered when a SIP rule requests host name or <code>ToPhoneNumber</code> matches in the incoming SIP request.',
-        }),
-    ).exactOptional(),
-    TargetApplications: SipRuleTargetApplicationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Target SIP media application and other details, such as priority and AWS Region, to be specified in the SIP rule. Only one SIP rule per AWS Region can be provided.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the SIP rule was created, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the SIP rule was last updated, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    SipRuleId: NonEmptyStringSchema.exactOptional().openapi({ description: 'The SIP rule ID.' }),
+    Name: SipRuleNameSchema.exactOptional().openapi({ description: 'The name of the SIP rule.' }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether the SIP rule is enabled or disabled. You must disable a rule before you can delete it.',
+    }),
+    TriggerType: SipRuleTriggerTypeSchema.exactOptional().openapi({
+      description:
+        'The type of trigger assigned to the SIP rule in <code>TriggerValue</code>, currently <code>RequestUriHostname</code> or <code>ToPhoneNumber</code>.',
+    }),
+    TriggerValue: NonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'If <code>TriggerType</code> is <code>RequestUriHostname</code>, then the value can be the outbound host name of the Amazon Chime Voice Connector. If <code>TriggerType</code> is <code>ToPhoneNumber</code>, then the value can be a customer-owned phone number in E164 format. <code>SipRule</code> is triggered when a SIP rule requests host name or <code>ToPhoneNumber</code> matches in the incoming SIP request.',
+    }),
+    TargetApplications: SipRuleTargetApplicationListSchema.exactOptional().openapi({
+      description:
+        'Target SIP media application and other details, such as priority and AWS Region, to be specified in the SIP rule. Only one SIP rule per AWS Region can be provided.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the SIP rule was created, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the SIP rule was last updated, in ISO 8601 format.',
+    }),
   })
   .openapi({
     description:
@@ -1780,14 +1302,10 @@ const SipRuleSchema = z
 
 const CreateSipRuleResponseSchema = z
   .object({
-    SipRule: SipRuleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns the SIP rule information, including the rule ID, triggers, and target applications.',
-        }),
-    ).exactOptional(),
+    SipRule: SipRuleSchema.exactOptional().openapi({
+      description:
+        'Returns the SIP rule information, including the rule ID, triggers, and target applications.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSipRuleResponse')
@@ -1805,59 +1323,51 @@ const InviteStatusSchema = z.enum(['Pending', 'Accepted', 'Failed']).openapi('In
 
 const UserSchema = z
   .object({
-    UserId: StringSchema.and(z.any().openapi({ description: 'The user ID.' })),
-    AccountId: StringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account ID.' }),
-    ).exactOptional(),
-    PrimaryEmail: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The primary email address of the user.' }),
-    ).exactOptional(),
-    PrimaryProvisionedNumber: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The primary phone number associated with the user.' }),
-    ).exactOptional(),
-    DisplayName: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The display name of the user.' }),
-    ).exactOptional(),
-    LicenseType: LicenseSchema.and(
-      z.any().openapi({ description: 'The license type for the user.' }),
-    ).exactOptional(),
-    UserType: UserTypeSchema.and(
-      z.any().openapi({ description: 'The user type.' }),
-    ).exactOptional(),
-    UserRegistrationStatus: RegistrationStatusSchema.and(
-      z.any().openapi({ description: 'The user registration status.' }),
-    ).exactOptional(),
-    UserInvitationStatus: InviteStatusSchema.and(
-      z.any().openapi({ description: 'The user invite status.' }),
-    ).exactOptional(),
-    RegisteredOn: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Date and time when the user is registered, in ISO 8601 format.' }),
-    ).exactOptional(),
-    InvitedOn: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date and time when the user is invited to the Amazon Chime account, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.and(
-      z.any().openapi({ description: 'The Alexa for Business metadata.' }),
-    ).exactOptional(),
-    PersonalPIN: StringSchema.and(
-      z.any().openapi({ description: "The user's personal meeting PIN." }),
-    ).exactOptional(),
+    UserId: StringSchema.openapi({ description: 'The user ID.' }),
+    AccountId: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account ID.',
+    }),
+    PrimaryEmail: EmailAddressSchema.exactOptional().openapi({
+      description: 'The primary email address of the user.',
+    }),
+    PrimaryProvisionedNumber: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The primary phone number associated with the user.',
+    }),
+    DisplayName: SensitiveStringSchema.exactOptional().openapi({
+      description: 'The display name of the user.',
+    }),
+    LicenseType: LicenseSchema.exactOptional().openapi({
+      description: 'The license type for the user.',
+    }),
+    UserType: UserTypeSchema.exactOptional().openapi({ description: 'The user type.' }),
+    UserRegistrationStatus: RegistrationStatusSchema.exactOptional().openapi({
+      description: 'The user registration status.',
+    }),
+    UserInvitationStatus: InviteStatusSchema.exactOptional().openapi({
+      description: 'The user invite status.',
+    }),
+    RegisteredOn: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'Date and time when the user is registered, in ISO 8601 format.',
+    }),
+    InvitedOn: Iso8601TimestampSchema.exactOptional().openapi({
+      description:
+        'Date and time when the user is invited to the Amazon Chime account, in ISO 8601 format.',
+    }),
+    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.exactOptional().openapi({
+      description: 'The Alexa for Business metadata.',
+    }),
+    PersonalPIN: StringSchema.exactOptional().openapi({
+      description: "The user's personal meeting PIN.",
+    }),
   })
   .openapi({ required: ['UserId'], description: 'The user on the Amazon Chime account.' })
   .openapi('User')
 
 const CreateUserResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z.any().openapi({ description: 'The user on the Amazon Chime account.' }),
-    ).exactOptional(),
+    User: UserSchema.exactOptional().openapi({
+      description: 'The user on the Amazon Chime account.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateUserResponse')
@@ -1870,50 +1380,32 @@ const VoiceConnectorNameSchema = z.string().min(1).max(256).openapi('VoiceConnec
 
 const VoiceConnectorSchema = z
   .object({
-    VoiceConnectorId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector ID.' }),
-    ).exactOptional(),
-    AwsRegion: VoiceConnectorAwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS Region in which the Amazon Chime Voice Connector is created. Default: <code>us-east-1</code>. ',
-        }),
-    ).exactOptional(),
-    Name: VoiceConnectorNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector.' }),
-    ).exactOptional(),
-    OutboundHostName: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The outbound host name for the Amazon Chime Voice Connector.' }),
-    ).exactOptional(),
-    RequireEncryption: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Designates whether encryption is required for the Amazon Chime Voice Connector.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Chime Voice Connector creation timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated Amazon Chime Voice Connector timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    VoiceConnectorArn: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The ARN of the specified Amazon Chime Voice Connector.' }),
-    ).exactOptional(),
+    VoiceConnectorId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector ID.',
+    }),
+    AwsRegion: VoiceConnectorAwsRegionSchema.exactOptional().openapi({
+      description:
+        ' The AWS Region in which the Amazon Chime Voice Connector is created. Default: <code>us-east-1</code>. ',
+    }),
+    Name: VoiceConnectorNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Chime Voice Connector.',
+    }),
+    OutboundHostName: StringSchema.exactOptional().openapi({
+      description: 'The outbound host name for the Amazon Chime Voice Connector.',
+    }),
+    RequireEncryption: BooleanSchema.exactOptional().openapi({
+      description:
+        'Designates whether encryption is required for the Amazon Chime Voice Connector.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector creation timestamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated Amazon Chime Voice Connector timestamp, in ISO 8601 format.',
+    }),
+    VoiceConnectorArn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ARN of the specified Amazon Chime Voice Connector.',
+    }),
   })
   .openapi({
     description:
@@ -1924,9 +1416,9 @@ const VoiceConnectorSchema = z
 
 const CreateVoiceConnectorResponseSchema = z
   .object({
-    VoiceConnector: VoiceConnectorSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector details.' }),
-    ).exactOptional(),
+    VoiceConnector: VoiceConnectorSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVoiceConnectorResponse')
@@ -1941,17 +1433,13 @@ const VoiceConnectorItemPrioritySchema = z
 
 const VoiceConnectorItemSchema = z
   .object({
-    VoiceConnectorId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector ID.' }),
-    ),
-    Priority: VoiceConnectorItemPrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority associated with the Amazon Chime Voice Connector, with 1 being the highest priority. Higher priority Amazon Chime Voice Connectors are attempted first.',
-        }),
-    ),
+    VoiceConnectorId: NonEmptyStringSchema.openapi({
+      description: 'The Amazon Chime Voice Connector ID.',
+    }),
+    Priority: VoiceConnectorItemPrioritySchema.openapi({
+      description:
+        'The priority associated with the Amazon Chime Voice Connector, with 1 being the highest priority. Higher priority Amazon Chime Voice Connectors are attempted first.',
+    }),
   })
   .openapi({
     required: ['VoiceConnectorId', 'Priority'],
@@ -1966,40 +1454,25 @@ const VoiceConnectorItemListSchema = z
 
 const VoiceConnectorGroupSchema = z
   .object({
-    VoiceConnectorGroupId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector group ID.' }),
-    ).exactOptional(),
-    Name: VoiceConnectorGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector group.' }),
-    ).exactOptional(),
-    VoiceConnectorItems: VoiceConnectorItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Chime Voice Connectors to which to route inbound calls.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime Voice Connector group creation time stamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    UpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The updated Amazon Chime Voice Connector group time stamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
-    VoiceConnectorGroupArn: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the specified Amazon Chime Voice Connector group.' }),
-    ).exactOptional(),
+    VoiceConnectorGroupId: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector group ID.',
+    }),
+    Name: VoiceConnectorGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Chime Voice Connector group.',
+    }),
+    VoiceConnectorItems: VoiceConnectorItemListSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connectors to which to route inbound calls.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description:
+        'The Amazon Chime Voice Connector group creation time stamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated Amazon Chime Voice Connector group time stamp, in ISO 8601 format.',
+    }),
+    VoiceConnectorGroupArn: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The ARN of the specified Amazon Chime Voice Connector group.',
+    }),
   })
   .openapi({
     description:
@@ -2010,14 +1483,14 @@ const VoiceConnectorGroupSchema = z
 
 const CreateVoiceConnectorGroupResponseSchema = z
   .object({
-    VoiceConnectorGroup: VoiceConnectorGroupSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector group details.' }),
-    ).exactOptional(),
+    VoiceConnectorGroup: VoiceConnectorGroupSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector group details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVoiceConnectorGroupResponse')
 
-const DeleteAccountResponseSchema = z.object({}).openapi('DeleteAccountResponse')
+const DeleteAccountResponseSchema = z.looseObject({}).openapi('DeleteAccountResponse')
 
 const UnprocessableEntityExceptionSchema = z.any().openapi('UnprocessableEntityException')
 
@@ -2034,31 +1507,22 @@ const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
 
 const AppInstanceSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the messaging instance.' }),
-    ).exactOptional(),
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of an <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of an <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which an <code>AppInstance</code> was created. In epoch milliseconds.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time an <code>AppInstance</code> was last updated. In epoch milliseconds.',
-        }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the messaging instance.',
+    }),
+    Name: NonEmptyResourceNameSchema.exactOptional().openapi({
+      description: 'The name of an <code>AppInstance</code>.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of an <code>AppInstance</code>.',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which an <code>AppInstance</code> was created. In epoch milliseconds.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time an <code>AppInstance</code> was last updated. In epoch milliseconds.',
+    }),
   })
   .openapi({
     description:
@@ -2069,48 +1533,36 @@ const AppInstanceSchema = z
 
 const DescribeAppInstanceResponseSchema = z
   .object({
-    AppInstance: AppInstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN, metadata, created and last-updated timestamps, and the name of the <code>AppInstance</code>. All timestamps use epoch milliseconds.',
-        }),
-    ).exactOptional(),
+    AppInstance: AppInstanceSchema.exactOptional().openapi({
+      description:
+        'The ARN, metadata, created and last-updated timestamps, and the name of the <code>AppInstance</code>. All timestamps use epoch milliseconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAppInstanceResponse')
 
 const AppInstanceAdminSchema = z
   .object({
-    Admin: IdentitySchema.and(
-      z.any().openapi({ description: 'The <code>AppInstanceAdmin</code> data.' }),
-    ).exactOptional(),
-    AppInstanceArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the <code>AppInstance</code> for which the user is an administrator.',
-        }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which an administrator was created.' }),
-    ).exactOptional(),
+    Admin: IdentitySchema.exactOptional().openapi({
+      description: 'The <code>AppInstanceAdmin</code> data.',
+    }),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the <code>AppInstance</code> for which the user is an administrator.',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which an administrator was created.',
+    }),
   })
   .openapi({ description: 'The details of an <code>AppInstanceAdmin</code>.', required: [] })
   .openapi('AppInstanceAdmin')
 
 const DescribeAppInstanceAdminResponseSchema = z
   .object({
-    AppInstanceAdmin: AppInstanceAdminSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN and name of the <code>AppInstanceUser</code>, the ARN of the <code>AppInstance</code>, and the created and last-updated timestamps. All timestamps use epoch milliseconds.',
-        }),
-    ).exactOptional(),
+    AppInstanceAdmin: AppInstanceAdminSchema.exactOptional().openapi({
+      description:
+        'The ARN and name of the <code>AppInstanceUser</code>, the ARN of the <code>AppInstance</code>, and the created and last-updated timestamps. All timestamps use epoch milliseconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAppInstanceAdminResponse')
@@ -2124,38 +1576,30 @@ const UserNameSchema = z
 
 const AppInstanceUserSchema = z
   .object({
-    AppInstanceUserArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
-    Name: UserNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the <code>AppInstanceUser</code> was created.',
-        }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the <code>AppInstanceUser</code> was last updated.',
-        }),
-    ).exactOptional(),
+    AppInstanceUserArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstanceUser</code>.',
+    }),
+    Name: UserNameSchema.exactOptional().openapi({
+      description: 'The name of the <code>AppInstanceUser</code>.',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the <code>AppInstanceUser</code> was created.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the <code>AppInstanceUser</code>.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the <code>AppInstanceUser</code> was last updated.',
+    }),
   })
   .openapi({ description: 'The details of an <code>AppInstanceUser</code>.', required: [] })
   .openapi('AppInstanceUser')
 
 const DescribeAppInstanceUserResponseSchema = z
   .object({
-    AppInstanceUser: AppInstanceUserSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
+    AppInstanceUser: AppInstanceUserSchema.exactOptional().openapi({
+      description: 'The name of the <code>AppInstanceUser</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAppInstanceUserResponse')
@@ -2166,148 +1610,126 @@ const ChannelPrivacySchema = z.enum(['PUBLIC', 'PRIVATE']).openapi('ChannelPriva
 
 const ChannelSchema = z
   .object({
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    Mode: ChannelModeSchema.and(
-      z.any().openapi({ description: 'The mode of the channel.' }),
-    ).exactOptional(),
-    Privacy: ChannelPrivacySchema.and(
-      z.any().openapi({ description: "The channel's privacy setting." }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: "The channel's metadata." }),
-    ).exactOptional(),
-    CreatedBy: IdentitySchema.and(
-      z.any().openapi({ description: 'The <code>AppInstanceUser</code> who created the channel.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which the <code>AppInstanceUser</code> created the channel.',
-        }),
-    ).exactOptional(),
-    LastMessageTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time at which a member sent the last message in the channel.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a channel was last updated.' }),
-    ).exactOptional(),
+    Name: NonEmptyResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the channel.',
+    }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    Mode: ChannelModeSchema.exactOptional().openapi({ description: 'The mode of the channel.' }),
+    Privacy: ChannelPrivacySchema.exactOptional().openapi({
+      description: "The channel's privacy setting.",
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({ description: "The channel's metadata." }),
+    CreatedBy: IdentitySchema.exactOptional().openapi({
+      description: 'The <code>AppInstanceUser</code> who created the channel.',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the <code>AppInstanceUser</code> created the channel.',
+    }),
+    LastMessageTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a member sent the last message in the channel.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a channel was last updated.',
+    }),
   })
   .openapi({ description: 'The details of a channel.', required: [] })
   .openapi('Channel')
 
 const DescribeChannelResponseSchema = z
   .object({
-    Channel: ChannelSchema.and(
-      z.any().openapi({ description: 'The channel details.' }),
-    ).exactOptional(),
+    Channel: ChannelSchema.exactOptional().openapi({ description: 'The channel details.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelResponse')
 
 const ChannelBanSchema = z
   .object({
-    Member: IdentitySchema.and(
-      z.any().openapi({ description: 'The member being banned from the channel.' }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ARN of the channel from which a member is being banned.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the ban was created.' }),
-    ).exactOptional(),
-    CreatedBy: IdentitySchema.and(
-      z.any().openapi({ description: 'The <code>AppInstanceUser</code> who created the ban.' }),
-    ).exactOptional(),
+    Member: IdentitySchema.exactOptional().openapi({
+      description: 'The member being banned from the channel.',
+    }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the channel from which a member is being banned.',
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the ban was created.',
+    }),
+    CreatedBy: IdentitySchema.exactOptional().openapi({
+      description: 'The <code>AppInstanceUser</code> who created the ban.',
+    }),
   })
   .openapi({ description: 'The details of a channel ban.', required: [] })
   .openapi('ChannelBan')
 
 const DescribeChannelBanResponseSchema = z
   .object({
-    ChannelBan: ChannelBanSchema.and(
-      z.any().openapi({ description: 'The details of the ban.' }),
-    ).exactOptional(),
+    ChannelBan: ChannelBanSchema.exactOptional().openapi({
+      description: 'The details of the ban.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelBanResponse')
 
 const ChannelMembershipSchema = z
   .object({
-    InvitedBy: IdentitySchema.and(
-      z.any().openapi({ description: 'The identifier of the member who invited another member.' }),
-    ).exactOptional(),
-    Type: ChannelMembershipTypeSchema.and(
-      z.any().openapi({ description: 'The membership type set for the channel member.' }),
-    ).exactOptional(),
-    Member: IdentitySchema.and(
-      z.any().openapi({ description: 'The data of the channel member.' }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: "The ARN of the member's channel." }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the channel membership was created.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a channel membership was last updated.' }),
-    ).exactOptional(),
+    InvitedBy: IdentitySchema.exactOptional().openapi({
+      description: 'The identifier of the member who invited another member.',
+    }),
+    Type: ChannelMembershipTypeSchema.exactOptional().openapi({
+      description: 'The membership type set for the channel member.',
+    }),
+    Member: IdentitySchema.exactOptional().openapi({
+      description: 'The data of the channel member.',
+    }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: "The ARN of the member's channel.",
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the channel membership was created.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a channel membership was last updated.',
+    }),
   })
   .openapi({ description: 'The details of a channel member.', required: [] })
   .openapi('ChannelMembership')
 
 const DescribeChannelMembershipResponseSchema = z
   .object({
-    ChannelMembership: ChannelMembershipSchema.and(
-      z.any().openapi({ description: 'The details of the membership.' }),
-    ).exactOptional(),
+    ChannelMembership: ChannelMembershipSchema.exactOptional().openapi({
+      description: 'The details of the membership.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelMembershipResponse')
 
 const ChannelSummarySchema = z
   .object({
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    Mode: ChannelModeSchema.and(
-      z.any().openapi({ description: 'The mode of the channel.' }),
-    ).exactOptional(),
-    Privacy: ChannelPrivacySchema.and(
-      z.any().openapi({ description: 'The privacy setting of the channel.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the channel.' }),
-    ).exactOptional(),
-    LastMessageTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the last message in a channel was sent.' }),
-    ).exactOptional(),
+    Name: NonEmptyResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the channel.',
+    }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    Mode: ChannelModeSchema.exactOptional().openapi({ description: 'The mode of the channel.' }),
+    Privacy: ChannelPrivacySchema.exactOptional().openapi({
+      description: 'The privacy setting of the channel.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the channel.',
+    }),
+    LastMessageTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the last message in a channel was sent.',
+    }),
   })
   .openapi({ description: 'Summary of the details of a <code>Channel</code>.', required: [] })
   .openapi('ChannelSummary')
 
 const AppInstanceUserMembershipSummarySchema = z
   .object({
-    Type: ChannelMembershipTypeSchema.and(
-      z.any().openapi({ description: 'The type of <code>ChannelMembership</code>.' }),
-    ).exactOptional(),
-    ReadMarkerTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a message was last read.' }),
-    ).exactOptional(),
+    Type: ChannelMembershipTypeSchema.exactOptional().openapi({
+      description: 'The type of <code>ChannelMembership</code>.',
+    }),
+    ReadMarkerTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a message was last read.',
+    }),
   })
   .openapi({
     description: 'Summary of the membership details of an <code>AppInstanceUser</code>.',
@@ -2317,16 +1739,13 @@ const AppInstanceUserMembershipSummarySchema = z
 
 const ChannelMembershipForAppInstanceUserSummarySchema = z
   .object({
-    ChannelSummary: ChannelSummarySchema.and(
-      z.any().openapi({ description: 'Summary of the details of a <code>Channel</code>.' }),
-    ).exactOptional(),
-    AppInstanceUserMembershipSummary: AppInstanceUserMembershipSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Summary of the membership details of an <code>AppInstanceUser</code>.',
-        }),
-    ).exactOptional(),
+    ChannelSummary: ChannelSummarySchema.exactOptional().openapi({
+      description: 'Summary of the details of a <code>Channel</code>.',
+    }),
+    AppInstanceUserMembershipSummary:
+      AppInstanceUserMembershipSummarySchema.exactOptional().openapi({
+        description: 'Summary of the membership details of an <code>AppInstanceUser</code>.',
+      }),
   })
   .openapi({
     description: 'Summary of the channel membership details of an <code>AppInstanceUser</code>.',
@@ -2336,123 +1755,102 @@ const ChannelMembershipForAppInstanceUserSummarySchema = z
 
 const DescribeChannelMembershipForAppInstanceUserResponseSchema = z
   .object({
-    ChannelMembership: ChannelMembershipForAppInstanceUserSummarySchema.and(
-      z.any().openapi({ description: 'The channel to which a user belongs.' }),
-    ).exactOptional(),
+    ChannelMembership: ChannelMembershipForAppInstanceUserSummarySchema.exactOptional().openapi({
+      description: 'The channel to which a user belongs.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelMembershipForAppInstanceUserResponse')
 
 const ChannelModeratedByAppInstanceUserSummarySchema = z
   .object({
-    ChannelSummary: ChannelSummarySchema.and(
-      z.any().openapi({ description: 'Summary of the details of a <code>Channel</code>.' }),
-    ).exactOptional(),
+    ChannelSummary: ChannelSummarySchema.exactOptional().openapi({
+      description: 'Summary of the details of a <code>Channel</code>.',
+    }),
   })
   .openapi({ description: 'Summary of the details of a moderated channel.', required: [] })
   .openapi('ChannelModeratedByAppInstanceUserSummary')
 
 const DescribeChannelModeratedByAppInstanceUserResponseSchema = z
   .object({
-    Channel: ChannelModeratedByAppInstanceUserSummarySchema.and(
-      z.any().openapi({ description: 'The moderated channel.' }),
-    ).exactOptional(),
+    Channel: ChannelModeratedByAppInstanceUserSummarySchema.exactOptional().openapi({
+      description: 'The moderated channel.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelModeratedByAppInstanceUserResponse')
 
 const ChannelModeratorSchema = z
   .object({
-    Moderator: IdentitySchema.and(
-      z.any().openapi({ description: "The moderator's data." }),
-    ).exactOptional(),
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: "The ARN of the moderator's channel." }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the moderator was created.' }),
-    ).exactOptional(),
-    CreatedBy: IdentitySchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>AppInstanceUser</code> who created the moderator.' }),
-    ).exactOptional(),
+    Moderator: IdentitySchema.exactOptional().openapi({ description: "The moderator's data." }),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: "The ARN of the moderator's channel.",
+    }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the moderator was created.',
+    }),
+    CreatedBy: IdentitySchema.exactOptional().openapi({
+      description: 'The <code>AppInstanceUser</code> who created the moderator.',
+    }),
   })
   .openapi({ description: 'The details of a channel moderator.', required: [] })
   .openapi('ChannelModerator')
 
 const DescribeChannelModeratorResponseSchema = z
   .object({
-    ChannelModerator: ChannelModeratorSchema.and(
-      z.any().openapi({ description: 'The details of the channel moderator.' }),
-    ).exactOptional(),
+    ChannelModerator: ChannelModeratorSchema.exactOptional().openapi({
+      description: 'The details of the channel moderator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChannelModeratorResponse')
 
 const DisassociatePhoneNumberFromUserResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociatePhoneNumberFromUserResponse')
 
 const DisassociatePhoneNumbersFromVoiceConnectorResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociatePhoneNumbersFromVoiceConnectorResponse')
 
 const DisassociatePhoneNumbersFromVoiceConnectorGroupResponseSchema = z
   .object({
-    PhoneNumberErrors: PhoneNumberErrorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
-        }),
-    ).exactOptional(),
+    PhoneNumberErrors: PhoneNumberErrorListSchema.exactOptional().openapi({
+      description:
+        'If the action fails for one or more of the phone numbers in the request, a list of the phone numbers is returned, along with error codes and error messages.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociatePhoneNumbersFromVoiceConnectorGroupResponse')
 
 const DisassociateSigninDelegateGroupsFromAccountResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DisassociateSigninDelegateGroupsFromAccountResponse')
 
 const GetAccountResponseSchema = z
   .object({
-    Account: AccountSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account details.' }),
-    ).exactOptional(),
+    Account: AccountSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountResponse')
 
 const AccountSettingsSchema = z
   .object({
-    DisableRemoteControl: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Setting that stops or starts remote control of shared screens during meetings.',
-        }),
-    ).exactOptional(),
-    EnableDialOut: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Setting that allows meeting participants to choose the <b>Call me at a phone number</b> option. For more information, see <a href="https://docs.aws.amazon.com/chime/latest/ug/chime-join-meeting.html">Join a Meeting without the Amazon Chime App</a>.',
-        }),
-    ).exactOptional(),
+    DisableRemoteControl: BooleanSchema.exactOptional().openapi({
+      description: 'Setting that stops or starts remote control of shared screens during meetings.',
+    }),
+    EnableDialOut: BooleanSchema.exactOptional().openapi({
+      description:
+        'Setting that allows meeting participants to choose the <b>Call me at a phone number</b> option. For more information, see <a href="https://docs.aws.amazon.com/chime/latest/ug/chime-join-meeting.html">Join a Meeting without the Amazon Chime App</a>.',
+    }),
   })
   .openapi({
     description:
@@ -2463,31 +1861,29 @@ const AccountSettingsSchema = z
 
 const GetAccountSettingsResponseSchema = z
   .object({
-    AccountSettings: AccountSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account settings.' }),
-    ).exactOptional(),
+    AccountSettings: AccountSettingsSchema.exactOptional().openapi({
+      description: 'The Amazon Chime account settings.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccountSettingsResponse')
 
+const RetentionDaysSchema = z.int().min(1).max(5475).openapi('RetentionDays')
+
 const ChannelRetentionSettingsSchema = z
   .object({
-    RetentionDays: RetentionDaysSchema.and(
-      z.any().openapi({ description: 'The time in days to retain the messages in a channel.' }),
-    ).exactOptional(),
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The time in days to retain the messages in a channel.',
+    }),
   })
   .openapi({ description: 'The details of the retention settings for a channel.', required: [] })
   .openapi('ChannelRetentionSettings')
 
 const AppInstanceRetentionSettingsSchema = z
   .object({
-    ChannelRetentionSettings: ChannelRetentionSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The length of time in days to retain the messages in a channel.',
-        }),
-    ).exactOptional(),
+    ChannelRetentionSettings: ChannelRetentionSettingsSchema.exactOptional().openapi({
+      description: 'The length of time in days to retain the messages in a channel.',
+    }),
   })
   .openapi({
     description: 'The details of the data-retention settings for an <code>AppInstance</code>.',
@@ -2497,17 +1893,13 @@ const AppInstanceRetentionSettingsSchema = z
 
 const GetAppInstanceRetentionSettingsResponseSchema = z
   .object({
-    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The retention settings for the <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    InitiateDeletionTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp representing the time at which the specified items are retained, in Epoch Seconds.',
-        }),
-    ).exactOptional(),
+    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.exactOptional().openapi({
+      description: 'The retention settings for the <code>AppInstance</code>.',
+    }),
+    InitiateDeletionTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp representing the time at which the specified items are retained, in Epoch Seconds.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAppInstanceRetentionSettingsResponse')
@@ -2518,10 +1910,10 @@ const AppInstanceDataTypeSchema = z
 
 const AppInstanceStreamingConfigurationSchema = z
   .object({
-    AppInstanceDataType: AppInstanceDataTypeSchema.and(
-      z.any().openapi({ description: 'The type of data to be streamed.' }),
-    ),
-    ResourceArn: ArnSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
+    AppInstanceDataType: AppInstanceDataTypeSchema.openapi({
+      description: 'The type of data to be streamed.',
+    }),
+    ResourceArn: ArnSchema.openapi({ description: 'The resource ARN.' }),
   })
   .openapi({
     required: ['AppInstanceDataType', 'ResourceArn'],
@@ -2537,26 +1929,25 @@ const AppInstanceStreamingConfigurationListSchema = z
 
 const GetAppInstanceStreamingConfigurationsResponseSchema = z
   .object({
-    AppInstanceStreamingConfigurations: AppInstanceStreamingConfigurationListSchema.and(
-      z.any().openapi({ description: 'The streaming settings.' }),
-    ).exactOptional(),
+    AppInstanceStreamingConfigurations:
+      AppInstanceStreamingConfigurationListSchema.exactOptional().openapi({
+        description: 'The streaming settings.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetAppInstanceStreamingConfigurationsResponse')
 
 const GetAttendeeResponseSchema = z
   .object({
-    Attendee: AttendeeSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK attendee information.' }),
-    ).exactOptional(),
+    Attendee: AttendeeSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK attendee information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAttendeeResponse')
 
 const GetBotResponseSchema = z
-  .object({
-    Bot: BotSchema.and(z.any().openapi({ description: 'The chat bot details.' })).exactOptional(),
-  })
+  .object({ Bot: BotSchema.exactOptional().openapi({ description: 'The chat bot details.' }) })
   .openapi({ required: [] })
   .openapi('GetBotResponse')
 
@@ -2584,67 +1975,49 @@ const ChannelMessagePersistenceTypeSchema = z
 
 const ChannelMessageSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID of a message.' }),
-    ).exactOptional(),
-    Content: ContentSchema.and(
-      z.any().openapi({ description: 'The message content.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The message metadata.' }),
-    ).exactOptional(),
-    Type: ChannelMessageTypeSchema.and(
-      z.any().openapi({ description: 'The message type.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the message was created.' }),
-    ).exactOptional(),
-    LastEditedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a message was edited.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a message was updated.' }),
-    ).exactOptional(),
-    Sender: IdentitySchema.and(
-      z.any().openapi({ description: 'The message sender.' }),
-    ).exactOptional(),
-    Redacted: NonNullableBooleanSchema.and(
-      z.any().openapi({ description: 'Hides the content of a message.' }),
-    ).exactOptional(),
-    Persistence: ChannelMessagePersistenceTypeSchema.and(
-      z.any().openapi({ description: 'The persistence setting for a channel message.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    MessageId: MessageIdSchema.exactOptional().openapi({ description: 'The ID of a message.' }),
+    Content: ContentSchema.exactOptional().openapi({ description: 'The message content.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({ description: 'The message metadata.' }),
+    Type: ChannelMessageTypeSchema.exactOptional().openapi({ description: 'The message type.' }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the message was created.',
+    }),
+    LastEditedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a message was edited.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a message was updated.',
+    }),
+    Sender: IdentitySchema.exactOptional().openapi({ description: 'The message sender.' }),
+    Redacted: NonNullableBooleanSchema.exactOptional().openapi({
+      description: 'Hides the content of a message.',
+    }),
+    Persistence: ChannelMessagePersistenceTypeSchema.exactOptional().openapi({
+      description: 'The persistence setting for a channel message.',
+    }),
   })
   .openapi({ description: 'The details of a message in a channel.', required: [] })
   .openapi('ChannelMessage')
 
 const GetChannelMessageResponseSchema = z
   .object({
-    ChannelMessage: ChannelMessageSchema.and(
-      z.any().openapi({ description: 'The details of and content in the message.' }),
-    ).exactOptional(),
+    ChannelMessage: ChannelMessageSchema.exactOptional().openapi({
+      description: 'The details of and content in the message.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetChannelMessageResponse')
 
 const EventsConfigurationSchema = z
   .object({
-    BotId: StringSchema.and(z.any().openapi({ description: 'The bot ID.' })).exactOptional(),
-    OutboundEventsHTTPSEndpoint: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'HTTPS endpoint that allows a bot to receive outgoing events.' }),
-    ).exactOptional(),
-    LambdaFunctionArn: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lambda function ARN that allows a bot to receive outgoing events.',
-        }),
-    ).exactOptional(),
+    BotId: StringSchema.exactOptional().openapi({ description: 'The bot ID.' }),
+    OutboundEventsHTTPSEndpoint: SensitiveStringSchema.exactOptional().openapi({
+      description: 'HTTPS endpoint that allows a bot to receive outgoing events.',
+    }),
+    LambdaFunctionArn: SensitiveStringSchema.exactOptional().openapi({
+      description: 'Lambda function ARN that allows a bot to receive outgoing events.',
+    }),
   })
   .openapi({
     description:
@@ -2655,22 +2028,18 @@ const EventsConfigurationSchema = z
 
 const GetEventsConfigurationResponseSchema = z
   .object({
-    EventsConfiguration: EventsConfigurationSchema.and(
-      z.any().openapi({ description: 'The events configuration details.' }),
-    ).exactOptional(),
+    EventsConfiguration: EventsConfigurationSchema.exactOptional().openapi({
+      description: 'The events configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetEventsConfigurationResponse')
 
 const BusinessCallingSettingsSchema = z
   .object({
-    CdrBucket: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket designated for call detail record storage.',
-        }),
-    ).exactOptional(),
+    CdrBucket: StringSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket designated for call detail record storage.',
+    }),
   })
   .openapi({
     description:
@@ -2681,13 +2050,9 @@ const BusinessCallingSettingsSchema = z
 
 const VoiceConnectorSettingsSchema = z
   .object({
-    CdrBucket: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon S3 bucket designated for call detail record storage.',
-        }),
-    ).exactOptional(),
+    CdrBucket: StringSchema.exactOptional().openapi({
+      description: 'The Amazon S3 bucket designated for call detail record storage.',
+    }),
   })
   .openapi({
     description:
@@ -2698,30 +2063,30 @@ const VoiceConnectorSettingsSchema = z
 
 const GetGlobalSettingsResponseSchema = z
   .object({
-    BusinessCalling: BusinessCallingSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Business Calling settings.' }),
-    ).exactOptional(),
-    VoiceConnector: VoiceConnectorSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector settings.' }),
-    ).exactOptional(),
+    BusinessCalling: BusinessCallingSettingsSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Business Calling settings.',
+    }),
+    VoiceConnector: VoiceConnectorSettingsSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector settings.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetGlobalSettingsResponse')
 
 const GetMediaCapturePipelineResponseSchema = z
   .object({
-    MediaCapturePipeline: MediaCapturePipelineSchema.and(
-      z.any().openapi({ description: 'The media capture pipeline object.' }),
-    ).exactOptional(),
+    MediaCapturePipeline: MediaCapturePipelineSchema.exactOptional().openapi({
+      description: 'The media capture pipeline object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMediaCapturePipelineResponse')
 
 const GetMeetingResponseSchema = z
   .object({
-    Meeting: MeetingSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK meeting information.' }),
-    ).exactOptional(),
+    Meeting: MeetingSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK meeting information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMeetingResponse')
@@ -2730,11 +2095,9 @@ const UrlTypeSchema = z.string().max(4096).openapi('UrlType')
 
 const MessagingSessionEndpointSchema = z
   .object({
-    Url: UrlTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The endpoint to which you establish a websocket connection.' }),
-    ).exactOptional(),
+    Url: UrlTypeSchema.exactOptional().openapi({
+      description: 'The endpoint to which you establish a websocket connection.',
+    }),
   })
   .openapi({
     description: 'The websocket endpoint used to connect to Amazon Chime SDK messaging.',
@@ -2744,217 +2107,282 @@ const MessagingSessionEndpointSchema = z
 
 const GetMessagingSessionEndpointResponseSchema = z
   .object({
-    Endpoint: MessagingSessionEndpointSchema.and(
-      z.any().openapi({ description: 'The endpoint returned in the response.' }),
-    ).exactOptional(),
+    Endpoint: MessagingSessionEndpointSchema.exactOptional().openapi({
+      description: 'The endpoint returned in the response.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMessagingSessionEndpointResponse')
 
-const PhoneNumberSchema: z.ZodType<PhoneNumberType> = z
-  .lazy(() =>
-    z
-      .object({
-        PhoneNumberId: StringSchema.and(
-          z.any().openapi({ description: 'The phone number ID.' }),
-        ).exactOptional(),
-        E164PhoneNumber: E164PhoneNumberSchema.and(
-          z.any().openapi({ description: 'The phone number, in E.164 format.' }),
-        ).exactOptional(),
-        Country: Alpha2CountryCodeSchema.and(
-          z.any().openapi({ description: 'The phone number country. Format: ISO 3166-1 alpha-2.' }),
-        ).exactOptional(),
-        Type: PhoneNumberTypeSchema.and(
-          z.any().openapi({ description: 'The phone number type.' }),
-        ).exactOptional(),
-        ProductType: PhoneNumberProductTypeSchema.and(
-          z.any().openapi({ description: 'The phone number product type.' }),
-        ).exactOptional(),
-        Status: PhoneNumberStatusSchema.and(
-          z.any().openapi({ description: 'The phone number status.' }),
-        ).exactOptional(),
-        Capabilities: PhoneNumberCapabilitiesSchema.and(
-          z.any().openapi({ description: 'The phone number capabilities.' }),
-        ).exactOptional(),
-        Associations: PhoneNumberAssociationListSchema.and(
-          z.any().openapi({ description: 'The phone number associations.' }),
-        ).exactOptional(),
-        CallingName: CallingNameSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The outbound calling name associated with the phone number.',
-            }),
-        ).exactOptional(),
-        CallingNameStatus: CallingNameStatusSchema.and(
-          z.any().openapi({ description: 'The outbound calling name status.' }),
-        ).exactOptional(),
-        CreatedTimestamp: Iso8601TimestampSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The phone number creation timestamp, in ISO 8601 format.' }),
-        ).exactOptional(),
-        UpdatedTimestamp: Iso8601TimestampSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The updated phone number timestamp, in ISO 8601 format.' }),
-        ).exactOptional(),
-        DeletionTimestamp: Iso8601TimestampSchema.and(
-          z
-            .any()
-            .openapi({ description: 'The deleted phone number timestamp, in ISO 8601 format.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'A phone number used for Amazon Chime Business Calling or an Amazon Chime Voice Connector.',
-        required: [],
-      }),
-  )
+const Alpha2CountryCodeSchema = z
+  .string()
+  .regex(/[A-Z]{2}/)
+  .openapi('Alpha2CountryCode')
+
+const PhoneNumberTypeSchema = z.enum(['Local', 'TollFree']).openapi('PhoneNumberType')
+
+const PhoneNumberStatusSchema = z
+  .enum([
+    'AcquireInProgress',
+    'AcquireFailed',
+    'Unassigned',
+    'Assigned',
+    'ReleaseInProgress',
+    'DeleteInProgress',
+    'ReleaseFailed',
+    'DeleteFailed',
+  ])
+  .openapi('PhoneNumberStatus')
+
+const PhoneNumberCapabilitiesSchema = z
+  .object({
+    InboundCall: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies inbound calling for the specified phone number.',
+    }),
+    OutboundCall: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies outbound calling for the specified phone number.',
+    }),
+    InboundSMS: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies inbound SMS messaging for the specified phone number.',
+    }),
+    OutboundSMS: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies outbound SMS messaging for the specified phone number.',
+    }),
+    InboundMMS: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies inbound MMS messaging for the specified phone number.',
+    }),
+    OutboundMMS: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Allows or denies outbound MMS messaging for the specified phone number.',
+    }),
+  })
+  .openapi({
+    description:
+      'The phone number capabilities for Amazon Chime Business Calling phone numbers, such as enabled inbound and outbound calling and text messaging.',
+    required: [],
+  })
+  .openapi('PhoneNumberCapabilities')
+
+const PhoneNumberAssociationNameSchema = z
+  .enum(['AccountId', 'UserId', 'VoiceConnectorId', 'VoiceConnectorGroupId', 'SipRuleId'])
+  .openapi('PhoneNumberAssociationName')
+
+const PhoneNumberAssociationSchema = z
+  .object({
+    Value: StringSchema.exactOptional().openapi({
+      description: 'Contains the ID for the entity specified in Name.',
+    }),
+    Name: PhoneNumberAssociationNameSchema.exactOptional().openapi({
+      description:
+        'Defines the association with an Amazon Chime account ID, user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.',
+    }),
+    AssociatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of the phone number association, in ISO 8601 format.',
+    }),
+  })
+  .openapi({
+    description:
+      'The phone number associations, such as Amazon Chime account ID, Amazon Chime user ID, Amazon Chime Voice Connector ID, or Amazon Chime Voice Connector group ID.',
+    required: [],
+  })
+  .openapi('PhoneNumberAssociation')
+
+const PhoneNumberAssociationListSchema = z
+  .array(PhoneNumberAssociationSchema)
+  .openapi('PhoneNumberAssociationList')
+
+const CallingNameStatusSchema = z
+  .enum(['Unassigned', 'UpdateInProgress', 'UpdateSucceeded', 'UpdateFailed'])
+  .openapi('CallingNameStatus')
+
+const PhoneNumberSchema = z
+  .object({
+    PhoneNumberId: StringSchema.exactOptional().openapi({ description: 'The phone number ID.' }),
+    E164PhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number, in E.164 format.',
+    }),
+    Country: Alpha2CountryCodeSchema.exactOptional().openapi({
+      description: 'The phone number country. Format: ISO 3166-1 alpha-2.',
+    }),
+    Type: PhoneNumberTypeSchema.exactOptional().openapi({ description: 'The phone number type.' }),
+    ProductType: PhoneNumberProductTypeSchema.exactOptional().openapi({
+      description: 'The phone number product type.',
+    }),
+    Status: PhoneNumberStatusSchema.exactOptional().openapi({
+      description: 'The phone number status.',
+    }),
+    Capabilities: PhoneNumberCapabilitiesSchema.exactOptional().openapi({
+      description: 'The phone number capabilities.',
+    }),
+    Associations: PhoneNumberAssociationListSchema.exactOptional().openapi({
+      description: 'The phone number associations.',
+    }),
+    CallingName: CallingNameSchema.exactOptional().openapi({
+      description: 'The outbound calling name associated with the phone number.',
+    }),
+    CallingNameStatus: CallingNameStatusSchema.exactOptional().openapi({
+      description: 'The outbound calling name status.',
+    }),
+    CreatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The phone number creation timestamp, in ISO 8601 format.',
+    }),
+    UpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated phone number timestamp, in ISO 8601 format.',
+    }),
+    DeletionTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The deleted phone number timestamp, in ISO 8601 format.',
+    }),
+  })
+  .openapi({
+    description:
+      'A phone number used for Amazon Chime Business Calling or an Amazon Chime Voice Connector.',
+    required: [],
+  })
   .openapi('PhoneNumber')
 
 const GetPhoneNumberResponseSchema = z
   .object({
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number details.' }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPhoneNumberResponse')
 
 const GetPhoneNumberOrderResponseSchema = z
   .object({
-    PhoneNumberOrder: PhoneNumberOrderSchema.and(
-      z.any().openapi({ description: 'The phone number order details.' }),
-    ).exactOptional(),
+    PhoneNumberOrder: PhoneNumberOrderSchema.exactOptional().openapi({
+      description: 'The phone number order details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPhoneNumberOrderResponse')
 
 const GetPhoneNumberSettingsResponseSchema = z
   .object({
-    CallingName: CallingNameSchema.and(
-      z.any().openapi({ description: 'The default outbound calling name for the account.' }),
-    ).exactOptional(),
-    CallingNameUpdatedTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The updated outbound calling name timestamp, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    CallingName: CallingNameSchema.exactOptional().openapi({
+      description: 'The default outbound calling name for the account.',
+    }),
+    CallingNameUpdatedTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The updated outbound calling name timestamp, in ISO 8601 format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetPhoneNumberSettingsResponse')
 
 const GetProxySessionResponseSchema = z
   .object({
-    ProxySession: ProxySessionSchema.and(
-      z.any().openapi({ description: 'The proxy session details.' }),
-    ).exactOptional(),
+    ProxySession: ProxySessionSchema.exactOptional().openapi({
+      description: 'The proxy session details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProxySessionResponse')
 
-const RetentionSettingsSchema: z.ZodType<RetentionSettingsType> = z
-  .lazy(() =>
-    z
-      .object({
-        RoomRetentionSettings: RoomRetentionSettingsSchema.and(
-          z.any().openapi({ description: 'The chat room retention settings.' }),
-        ).exactOptional(),
-        ConversationRetentionSettings: ConversationRetentionSettingsSchema.and(
-          z.any().openapi({ description: 'The chat conversation retention settings.' }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'The retention settings for an Amazon Chime Enterprise account that determine how long to retain items such as chat-room messages and chat-conversation messages.',
-        required: [],
-      }),
-  )
+const RoomRetentionSettingsSchema = z
+  .object({
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The number of days for which to retain chat-room messages.',
+    }),
+  })
+  .openapi({
+    description:
+      'The retention settings that determine how long to retain chat-room messages for an Amazon Chime Enterprise account.',
+    required: [],
+  })
+  .openapi('RoomRetentionSettings')
+
+const ConversationRetentionSettingsSchema = z
+  .object({
+    RetentionDays: RetentionDaysSchema.exactOptional().openapi({
+      description: 'The number of days for which to retain conversation messages.',
+    }),
+  })
+  .openapi({
+    description:
+      'The retention settings that determine how long to retain conversation messages for an Amazon Chime Enterprise account.',
+    required: [],
+  })
+  .openapi('ConversationRetentionSettings')
+
+const RetentionSettingsSchema = z
+  .object({
+    RoomRetentionSettings: RoomRetentionSettingsSchema.exactOptional().openapi({
+      description: 'The chat room retention settings.',
+    }),
+    ConversationRetentionSettings: ConversationRetentionSettingsSchema.exactOptional().openapi({
+      description: 'The chat conversation retention settings.',
+    }),
+  })
+  .openapi({
+    description:
+      'The retention settings for an Amazon Chime Enterprise account that determine how long to retain items such as chat-room messages and chat-conversation messages.',
+    required: [],
+  })
   .openapi('RetentionSettings')
 
 const GetRetentionSettingsResponseSchema = z
   .object({
-    RetentionSettings: RetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The retention settings.' }),
-    ).exactOptional(),
-    InitiateDeletionTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    RetentionSettings: RetentionSettingsSchema.exactOptional().openapi({
+      description: 'The retention settings.',
+    }),
+    InitiateDeletionTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRetentionSettingsResponse')
 
 const GetRoomResponseSchema = z
-  .object({
-    Room: RoomSchema.and(z.any().openapi({ description: 'The room details.' })).exactOptional(),
-  })
+  .object({ Room: RoomSchema.exactOptional().openapi({ description: 'The room details.' }) })
   .openapi({ required: [] })
   .openapi('GetRoomResponse')
 
 const GetSipMediaApplicationResponseSchema = z
   .object({
-    SipMediaApplication: SipMediaApplicationSchema.and(
-      z.any().openapi({ description: 'The SIP media application details.' }),
-    ).exactOptional(),
+    SipMediaApplication: SipMediaApplicationSchema.exactOptional().openapi({
+      description: 'The SIP media application details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSipMediaApplicationResponse')
 
 const SipMediaApplicationLoggingConfigurationSchema = z
   .object({
-    EnableSipMediaApplicationMessageLogs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Enables application message logs for the SIP media application.',
-        }),
-    ).exactOptional(),
+    EnableSipMediaApplicationMessageLogs: BooleanSchema.exactOptional().openapi({
+      description: 'Enables application message logs for the SIP media application.',
+    }),
   })
   .openapi({ description: 'Logging configuration of the SIP media application.', required: [] })
   .openapi('SipMediaApplicationLoggingConfiguration')
 
 const GetSipMediaApplicationLoggingConfigurationResponseSchema = z
   .object({
-    SipMediaApplicationLoggingConfiguration: SipMediaApplicationLoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The actual logging configuration.' }),
-    ).exactOptional(),
+    SipMediaApplicationLoggingConfiguration:
+      SipMediaApplicationLoggingConfigurationSchema.exactOptional().openapi({
+        description: 'The actual logging configuration.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetSipMediaApplicationLoggingConfigurationResponse')
 
 const GetSipRuleResponseSchema = z
   .object({
-    SipRule: SipRuleSchema.and(
-      z.any().openapi({ description: 'The SIP rule details.' }),
-    ).exactOptional(),
+    SipRule: SipRuleSchema.exactOptional().openapi({ description: 'The SIP rule details.' }),
   })
   .openapi({ required: [] })
   .openapi('GetSipRuleResponse')
 
 const GetUserResponseSchema = z
-  .object({
-    User: UserSchema.and(z.any().openapi({ description: 'The user details.' })).exactOptional(),
-  })
+  .object({ User: UserSchema.exactOptional().openapi({ description: 'The user details.' }) })
   .openapi({ required: [] })
   .openapi('GetUserResponse')
 
 const TelephonySettingsSchema = z
   .object({
-    InboundCalling: BooleanSchema.and(
-      z.any().openapi({ description: 'Allows or denies inbound calling.' }),
-    ),
-    OutboundCalling: BooleanSchema.and(
-      z.any().openapi({ description: 'Allows or denies outbound calling.' }),
-    ),
-    SMS: BooleanSchema.and(z.any().openapi({ description: 'Allows or denies SMS messaging.' })),
+    InboundCalling: BooleanSchema.openapi({ description: 'Allows or denies inbound calling.' }),
+    OutboundCalling: BooleanSchema.openapi({ description: 'Allows or denies outbound calling.' }),
+    SMS: BooleanSchema.openapi({ description: 'Allows or denies SMS messaging.' }),
   })
   .openapi({
     required: ['InboundCalling', 'OutboundCalling', 'SMS'],
@@ -2965,9 +2393,9 @@ const TelephonySettingsSchema = z
 
 const UserSettingsSchema = z
   .object({
-    Telephony: TelephonySettingsSchema.and(
-      z.any().openapi({ description: 'The telephony settings associated with the user.' }),
-    ),
+    Telephony: TelephonySettingsSchema.openapi({
+      description: 'The telephony settings associated with the user.',
+    }),
   })
   .openapi({
     required: ['Telephony'],
@@ -2978,46 +2406,32 @@ const UserSettingsSchema = z
 
 const GetUserSettingsResponseSchema = z
   .object({
-    UserSettings: UserSettingsSchema.and(
-      z.any().openapi({ description: 'The user settings.' }),
-    ).exactOptional(),
+    UserSettings: UserSettingsSchema.exactOptional().openapi({ description: 'The user settings.' }),
   })
   .openapi({ required: [] })
   .openapi('GetUserSettingsResponse')
 
 const GetVoiceConnectorResponseSchema = z
   .object({
-    VoiceConnector: VoiceConnectorSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector details.' }),
-    ).exactOptional(),
+    VoiceConnector: VoiceConnectorSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorResponse')
 
 const DNISEmergencyCallingConfigurationSchema = z
   .object({
-    EmergencyPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The DNIS phone number to route emergency calls to, in E.164 format.',
-        }),
-    ),
-    TestPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The DNIS phone number to route test emergency calls to, in E.164 format.',
-        }),
-    ).exactOptional(),
-    CallingCountry: Alpha2CountryCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The country from which emergency calls are allowed, in ISO 3166-1 alpha-2 format.',
-        }),
-    ),
+    EmergencyPhoneNumber: E164PhoneNumberSchema.openapi({
+      description: 'The DNIS phone number to route emergency calls to, in E.164 format.',
+    }),
+    TestPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The DNIS phone number to route test emergency calls to, in E.164 format.',
+    }),
+    CallingCountry: Alpha2CountryCodeSchema.openapi({
+      description:
+        'The country from which emergency calls are allowed, in ISO 3166-1 alpha-2 format.',
+    }),
   })
   .openapi({
     required: ['EmergencyPhoneNumber', 'CallingCountry'],
@@ -3032,14 +2446,10 @@ const DNISEmergencyCallingConfigurationListSchema = z
 
 const EmergencyCallingConfigurationSchema = z
   .object({
-    DNIS: DNISEmergencyCallingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Dialed Number Identification Service (DNIS) emergency calling configuration details.',
-        }),
-    ).exactOptional(),
+    DNIS: DNISEmergencyCallingConfigurationListSchema.exactOptional().openapi({
+      description:
+        'The Dialed Number Identification Service (DNIS) emergency calling configuration details.',
+    }),
   })
   .openapi({
     description:
@@ -3050,39 +2460,31 @@ const EmergencyCallingConfigurationSchema = z
 
 const GetVoiceConnectorEmergencyCallingConfigurationResponseSchema = z
   .object({
-    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.and(
-      z.any().openapi({ description: 'The emergency calling configuration details.' }),
-    ).exactOptional(),
+    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.exactOptional().openapi({
+      description: 'The emergency calling configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorEmergencyCallingConfigurationResponse')
 
 const GetVoiceConnectorGroupResponseSchema = z
   .object({
-    VoiceConnectorGroup: VoiceConnectorGroupSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector group details.' }),
-    ).exactOptional(),
+    VoiceConnectorGroup: VoiceConnectorGroupSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector group details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorGroupResponse')
 
 const LoggingConfigurationSchema = z
   .object({
-    EnableSIPLogs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Boolean that enables SIP message logs to Amazon CloudWatch logs.',
-        }),
-    ).exactOptional(),
-    EnableMediaMetricLogs: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean that enables logging of detailed media metrics for Voice Connectors to Amazon CloudWatch logs.',
-        }),
-    ).exactOptional(),
+    EnableSIPLogs: BooleanSchema.exactOptional().openapi({
+      description: 'Boolean that enables SIP message logs to Amazon CloudWatch logs.',
+    }),
+    EnableMediaMetricLogs: BooleanSchema.exactOptional().openapi({
+      description:
+        'Boolean that enables logging of detailed media metrics for Voice Connectors to Amazon CloudWatch logs.',
+    }),
   })
   .openapi({
     description:
@@ -3093,9 +2495,9 @@ const LoggingConfigurationSchema = z
 
 const GetVoiceConnectorLoggingConfigurationResponseSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The logging configuration details.' }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: 'The logging configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorLoggingConfigurationResponse')
@@ -3110,38 +2512,24 @@ const OriginationRouteWeightSchema = z.int().min(1).max(100).openapi('Originatio
 
 const OriginationRouteSchema = z
   .object({
-    Host: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The FQDN or IP address to contact for origination traffic.' }),
-    ).exactOptional(),
-    Port: PortSchema.and(
-      z.any().openapi({ description: 'The designated origination route port. Defaults to 5060.' }),
-    ).exactOptional(),
-    Protocol: OriginationRouteProtocolSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The protocol to use for the origination route. Encryption-enabled Amazon Chime Voice Connectors use TCP protocol by default.',
-        }),
-    ).exactOptional(),
-    Priority: OriginationRoutePrioritySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The priority associated with the host, with 1 being the highest priority. Higher priority hosts are attempted first.',
-        }),
-    ).exactOptional(),
-    Weight: OriginationRouteWeightSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The weight associated with the host. If hosts are equal in priority, calls are redistributed among them based on their relative weight.',
-        }),
-    ).exactOptional(),
+    Host: StringSchema.exactOptional().openapi({
+      description: 'The FQDN or IP address to contact for origination traffic.',
+    }),
+    Port: PortSchema.exactOptional().openapi({
+      description: 'The designated origination route port. Defaults to 5060.',
+    }),
+    Protocol: OriginationRouteProtocolSchema.exactOptional().openapi({
+      description:
+        'The protocol to use for the origination route. Encryption-enabled Amazon Chime Voice Connectors use TCP protocol by default.',
+    }),
+    Priority: OriginationRoutePrioritySchema.exactOptional().openapi({
+      description:
+        'The priority associated with the host, with 1 being the highest priority. Higher priority hosts are attempted first.',
+    }),
+    Weight: OriginationRouteWeightSchema.exactOptional().openapi({
+      description:
+        'The weight associated with the host. If hosts are equal in priority, calls are redistributed among them based on their relative weight.',
+    }),
   })
   .openapi({
     description:
@@ -3154,22 +2542,14 @@ const OriginationRouteListSchema = z.array(OriginationRouteSchema).openapi('Orig
 
 const OriginationSchema = z
   .object({
-    Routes: OriginationRouteListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The call distribution properties defined for your SIP hosts. Valid range: Minimum value of 1. Maximum value of 20. This parameter is not required, but you must specify this parameter or <code>Disabled</code>.',
-        }),
-    ).exactOptional(),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When origination settings are disabled, inbound calls are not enabled for your Amazon Chime Voice Connector. This parameter is not required, but you must specify this parameter or <code>Routes</code>.',
-        }),
-    ).exactOptional(),
+    Routes: OriginationRouteListSchema.exactOptional().openapi({
+      description:
+        'The call distribution properties defined for your SIP hosts. Valid range: Minimum value of 1. Maximum value of 20. This parameter is not required, but you must specify this parameter or <code>Disabled</code>.',
+    }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'When origination settings are disabled, inbound calls are not enabled for your Amazon Chime Voice Connector. This parameter is not required, but you must specify this parameter or <code>Routes</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3180,9 +2560,9 @@ const OriginationSchema = z
 
 const GetVoiceConnectorOriginationResponseSchema = z
   .object({
-    Origination: OriginationSchema.and(
-      z.any().openapi({ description: 'The origination setting details.' }),
-    ).exactOptional(),
+    Origination: OriginationSchema.exactOptional().openapi({
+      description: 'The origination setting details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorOriginationResponse')
@@ -3193,29 +2573,19 @@ const StringListSchema = z.array(StringSchema).openapi('StringList')
 
 const ProxySchema = z
   .object({
-    DefaultSessionExpiryMinutes: IntegerSchema.and(
-      z.any().openapi({ description: 'The default number of minutes allowed for proxy sessions.' }),
-    ).exactOptional(),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, stops proxy sessions from being created on the specified Amazon Chime Voice Connector.',
-        }),
-    ).exactOptional(),
-    FallBackPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The phone number to route calls to after a proxy session expires.',
-        }),
-    ).exactOptional(),
-    PhoneNumberCountries: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The countries for proxy phone numbers to be selected from.' }),
-    ).exactOptional(),
+    DefaultSessionExpiryMinutes: IntegerSchema.exactOptional().openapi({
+      description: 'The default number of minutes allowed for proxy sessions.',
+    }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'When true, stops proxy sessions from being created on the specified Amazon Chime Voice Connector.',
+    }),
+    FallBackPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number to route calls to after a proxy session expires.',
+    }),
+    PhoneNumberCountries: StringListSchema.exactOptional().openapi({
+      description: 'The countries for proxy phone numbers to be selected from.',
+    }),
   })
   .openapi({
     description: 'The proxy configuration for an Amazon Chime Voice Connector.',
@@ -3225,9 +2595,7 @@ const ProxySchema = z
 
 const GetVoiceConnectorProxyResponseSchema = z
   .object({
-    Proxy: ProxySchema.and(
-      z.any().openapi({ description: 'The proxy configuration details.' }),
-    ).exactOptional(),
+    Proxy: ProxySchema.exactOptional().openapi({ description: 'The proxy configuration details.' }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorProxyResponse')
@@ -3238,9 +2606,9 @@ const NotificationTargetSchema = z.enum(['EventBridge', 'SNS', 'SQS']).openapi('
 
 const StreamingNotificationTargetSchema = z
   .object({
-    NotificationTarget: NotificationTargetSchema.and(
-      z.any().openapi({ description: 'The streaming notification target.' }),
-    ),
+    NotificationTarget: NotificationTargetSchema.openapi({
+      description: 'The streaming notification target.',
+    }),
   })
   .openapi({
     required: ['NotificationTarget'],
@@ -3256,19 +2624,15 @@ const StreamingNotificationTargetListSchema = z
 
 const StreamingConfigurationSchema = z
   .object({
-    DataRetentionInHours: DataRetentionInHoursSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The retention period, in hours, for the Amazon Kinesis data.' }),
-    ),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'When true, media streaming to Amazon Kinesis is turned off.' }),
-    ).exactOptional(),
-    StreamingNotificationTargets: StreamingNotificationTargetListSchema.and(
-      z.any().openapi({ description: 'The streaming notification targets.' }),
-    ).exactOptional(),
+    DataRetentionInHours: DataRetentionInHoursSchema.openapi({
+      description: 'The retention period, in hours, for the Amazon Kinesis data.',
+    }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description: 'When true, media streaming to Amazon Kinesis is turned off.',
+    }),
+    StreamingNotificationTargets: StreamingNotificationTargetListSchema.exactOptional().openapi({
+      description: 'The streaming notification targets.',
+    }),
   })
   .openapi({
     required: ['DataRetentionInHours'],
@@ -3279,9 +2643,9 @@ const StreamingConfigurationSchema = z
 
 const GetVoiceConnectorStreamingConfigurationResponseSchema = z
   .object({
-    StreamingConfiguration: StreamingConfigurationSchema.and(
-      z.any().openapi({ description: 'The streaming configuration details.' }),
-    ).exactOptional(),
+    StreamingConfiguration: StreamingConfigurationSchema.exactOptional().openapi({
+      description: 'The streaming configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorStreamingConfigurationResponse')
@@ -3294,39 +2658,23 @@ const CallingRegionListSchema = z.array(CallingRegionSchema).openapi('CallingReg
 
 const TerminationSchema = z
   .object({
-    CpsLimit: CpsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The limit on calls per second. Max value based on account service quota. Default value of 1.',
-        }),
-    ).exactOptional(),
-    DefaultPhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The default caller ID phone number.' }),
-    ).exactOptional(),
-    CallingRegions: CallingRegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The countries to which calls are allowed, in ISO 3166-1 alpha-2 format. Required.',
-        }),
-    ).exactOptional(),
-    CidrAllowedList: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The IP addresses allowed to make calls, in CIDR format. Required.',
-        }),
-    ).exactOptional(),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When termination settings are disabled, outbound calls can not be made.',
-        }),
-    ).exactOptional(),
+    CpsLimit: CpsLimitSchema.exactOptional().openapi({
+      description:
+        'The limit on calls per second. Max value based on account service quota. Default value of 1.',
+    }),
+    DefaultPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The default caller ID phone number.',
+    }),
+    CallingRegions: CallingRegionListSchema.exactOptional().openapi({
+      description:
+        'The countries to which calls are allowed, in ISO 3166-1 alpha-2 format. Required.',
+    }),
+    CidrAllowedList: StringListSchema.exactOptional().openapi({
+      description: 'The IP addresses allowed to make calls, in CIDR format. Required.',
+    }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description: 'When termination settings are disabled, outbound calls can not be made.',
+    }),
   })
   .openapi({
     description:
@@ -3337,21 +2685,19 @@ const TerminationSchema = z
 
 const GetVoiceConnectorTerminationResponseSchema = z
   .object({
-    Termination: TerminationSchema.and(
-      z.any().openapi({ description: 'The termination setting details.' }),
-    ).exactOptional(),
+    Termination: TerminationSchema.exactOptional().openapi({
+      description: 'The termination setting details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorTerminationResponse')
 
 const TerminationHealthSchema = z
   .object({
-    Timestamp: Iso8601TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp, in ISO 8601 format.' }),
-    ).exactOptional(),
-    Source: StringSchema.and(
-      z.any().openapi({ description: 'The source IP address.' }),
-    ).exactOptional(),
+    Timestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp, in ISO 8601 format.',
+    }),
+    Source: StringSchema.exactOptional().openapi({ description: 'The source IP address.' }),
   })
   .openapi({
     description:
@@ -3362,9 +2708,9 @@ const TerminationHealthSchema = z
 
 const GetVoiceConnectorTerminationHealthResponseSchema = z
   .object({
-    TerminationHealth: TerminationHealthSchema.and(
-      z.any().openapi({ description: 'The termination health details.' }),
-    ).exactOptional(),
+    TerminationHealth: TerminationHealthSchema.exactOptional().openapi({
+      description: 'The termination health details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVoiceConnectorTerminationHealthResponse')
@@ -3373,16 +2719,16 @@ const EmailStatusSchema = z.enum(['NotSent', 'Sent', 'Failed']).openapi('EmailSt
 
 const InviteSchema = z
   .object({
-    InviteId: StringSchema.and(z.any().openapi({ description: 'The invite ID.' })).exactOptional(),
-    Status: InviteStatusSchema.and(
-      z.any().openapi({ description: 'The status of the invite.' }),
-    ).exactOptional(),
-    EmailAddress: EmailAddressSchema.and(
-      z.any().openapi({ description: 'The email address to which the invite is sent.' }),
-    ).exactOptional(),
-    EmailStatus: EmailStatusSchema.and(
-      z.any().openapi({ description: 'The status of the invite email.' }),
-    ).exactOptional(),
+    InviteId: StringSchema.exactOptional().openapi({ description: 'The invite ID.' }),
+    Status: InviteStatusSchema.exactOptional().openapi({
+      description: 'The status of the invite.',
+    }),
+    EmailAddress: EmailAddressSchema.exactOptional().openapi({
+      description: 'The email address to which the invite is sent.',
+    }),
+    EmailStatus: EmailStatusSchema.exactOptional().openapi({
+      description: 'The status of the invite email.',
+    }),
   })
   .openapi({
     description:
@@ -3395,9 +2741,9 @@ const InviteListSchema = z.array(InviteSchema).openapi('InviteList')
 
 const InviteUsersResponseSchema = z
   .object({
-    Invites: InviteListSchema.and(
-      z.any().openapi({ description: 'The email invitation details.' }),
-    ).exactOptional(),
+    Invites: InviteListSchema.exactOptional().openapi({
+      description: 'The email invitation details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('InviteUsersResponse')
@@ -3406,21 +2752,21 @@ const AccountListSchema = z.array(AccountSchema).openapi('AccountList')
 
 const ListAccountsResponseSchema = z
   .object({
-    Accounts: AccountListSchema.and(
-      z.any().openapi({ description: 'List of Amazon Chime accounts and account details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description: 'List of Amazon Chime accounts and account details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountsResponse')
 
 const AppInstanceAdminSummarySchema = z
   .object({
-    Admin: IdentitySchema.and(
-      z.any().openapi({ description: 'The details of the <code>AppInstanceAdmin</code>.' }),
-    ).exactOptional(),
+    Admin: IdentitySchema.exactOptional().openapi({
+      description: 'The details of the <code>AppInstanceAdmin</code>.',
+    }),
   })
   .openapi({
     description: 'Summary of the details of an <code>AppInstanceAdmin</code>.',
@@ -3436,35 +2782,31 @@ const NextTokenSchema = z.string().regex(/.*/).min(0).max(2048).openapi('NextTok
 
 const ListAppInstanceAdminsResponseSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    AppInstanceAdmins: AppInstanceAdminListSchema.and(
-      z.any().openapi({ description: 'The information for each administrator.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned from previous API requests until the number of administrators is reached.',
-        }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstance</code>.',
+    }),
+    AppInstanceAdmins: AppInstanceAdminListSchema.exactOptional().openapi({
+      description: 'The information for each administrator.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned from previous API requests until the number of administrators is reached.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAppInstanceAdminsResponse')
 
 const AppInstanceUserSummarySchema = z
   .object({
-    AppInstanceUserArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
-    Name: UserNameSchema.and(
-      z.any().openapi({ description: 'The name of an <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
+    AppInstanceUserArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstanceUser</code>.',
+    }),
+    Name: UserNameSchema.exactOptional().openapi({
+      description: 'The name of an <code>AppInstanceUser</code>.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the <code>AppInstanceUser</code>.',
+    }),
   })
   .openapi({
     description: 'Summary of the details of an <code>AppInstanceUser</code>.',
@@ -3478,39 +2820,30 @@ const AppInstanceUserListSchema = z
 
 const ListAppInstanceUsersResponseSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    AppInstanceUsers: AppInstanceUserListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The information for each requested <code>AppInstanceUser</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested users are returned.',
-        }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstance</code>.',
+    }),
+    AppInstanceUsers: AppInstanceUserListSchema.exactOptional().openapi({
+      description: 'The information for each requested <code>AppInstanceUser</code>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token passed by previous API calls until all requested users are returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAppInstanceUsersResponse')
 
 const AppInstanceSummarySchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The <code>AppInstance</code> ARN.' }),
-    ).exactOptional(),
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the <code>AppInstance</code>.' }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The <code>AppInstance</code> ARN.',
+    }),
+    Name: NonEmptyResourceNameSchema.exactOptional().openapi({
+      description: 'The name of the <code>AppInstance</code>.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the <code>AppInstance</code>.',
+    }),
   })
   .openapi({ description: 'Summary of the data for an <code>AppInstance</code>.', required: [] })
   .openapi('AppInstanceSummary')
@@ -3519,17 +2852,13 @@ const AppInstanceListSchema = z.array(AppInstanceSummarySchema).openapi('AppInst
 
 const ListAppInstancesResponseSchema = z
   .object({
-    AppInstances: AppInstanceListSchema.and(
-      z.any().openapi({ description: 'The information for each <code>AppInstance</code>.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API requests until the maximum number of <code>AppInstance</code>s is reached.',
-        }),
-    ).exactOptional(),
+    AppInstances: AppInstanceListSchema.exactOptional().openapi({
+      description: 'The information for each <code>AppInstance</code>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token passed by previous API requests until the maximum number of <code>AppInstance</code>s is reached.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAppInstancesResponse')
@@ -3538,21 +2867,19 @@ const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 const ListAttendeeTagsResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag key-value pairs.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag key-value pairs.' }),
   })
   .openapi({ required: [] })
   .openapi('ListAttendeeTagsResponse')
 
 const ListAttendeesResponseSchema = z
   .object({
-    Attendees: AttendeeListSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK attendee information.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Attendees: AttendeeListSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK attendee information.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttendeesResponse')
@@ -3561,21 +2888,19 @@ const BotListSchema = z.array(BotSchema).openapi('BotList')
 
 const ListBotsResponseSchema = z
   .object({
-    Bots: BotListSchema.and(
-      z.any().openapi({ description: 'List of bots and bot details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Bots: BotListSchema.exactOptional().openapi({ description: 'List of bots and bot details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListBotsResponse')
 
 const ChannelBanSummarySchema = z
   .object({
-    Member: IdentitySchema.and(
-      z.any().openapi({ description: 'The member being banned from a channel.' }),
-    ).exactOptional(),
+    Member: IdentitySchema.exactOptional().openapi({
+      description: 'The member being banned from a channel.',
+    }),
   })
   .openapi({ description: 'Summary of the details of a <code>ChannelBan</code>.', required: [] })
   .openapi('ChannelBanSummary')
@@ -3586,29 +2911,20 @@ const ChannelBanSummaryListSchema = z
 
 const ListChannelBansResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested bans are returned.',
-        }),
-    ).exactOptional(),
-    ChannelBans: ChannelBanSummaryListSchema.and(
-      z.any().openapi({ description: 'The information for each requested ban.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token passed by previous API calls until all requested bans are returned.',
+    }),
+    ChannelBans: ChannelBanSummaryListSchema.exactOptional().openapi({
+      description: 'The information for each requested ban.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelBansResponse')
 
 const ChannelMembershipSummarySchema = z
   .object({
-    Member: IdentitySchema.and(
-      z.any().openapi({ description: "A member's summary data." }),
-    ).exactOptional(),
+    Member: IdentitySchema.exactOptional().openapi({ description: "A member's summary data." }),
   })
   .openapi({
     description: 'Summary of the details of a <code>ChannelMembership</code>.',
@@ -3622,20 +2938,14 @@ const ChannelMembershipSummaryListSchema = z
 
 const ListChannelMembershipsResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    ChannelMemberships: ChannelMembershipSummaryListSchema.and(
-      z.any().openapi({ description: 'The information for the requested channel memberships.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested channel memberships are returned.',
-        }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    ChannelMemberships: ChannelMembershipSummaryListSchema.exactOptional().openapi({
+      description: 'The information for the requested channel memberships.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token passed by previous API calls until all requested channel memberships are returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelMembershipsResponse')
@@ -3646,50 +2956,38 @@ const ChannelMembershipForAppInstanceUserSummaryListSchema = z
 
 const ListChannelMembershipsForAppInstanceUserResponseSchema = z
   .object({
-    ChannelMemberships: ChannelMembershipForAppInstanceUserSummaryListSchema.and(
-      z.any().openapi({ description: 'The information for the requested channel memberships.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested users are returned.',
-        }),
-    ).exactOptional(),
+    ChannelMemberships:
+      ChannelMembershipForAppInstanceUserSummaryListSchema.exactOptional().openapi({
+        description: 'The information for the requested channel memberships.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token passed by previous API calls until all requested users are returned.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelMembershipsForAppInstanceUserResponse')
 
 const ChannelMessageSummarySchema = z
   .object({
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the message.' }),
-    ).exactOptional(),
-    Content: ContentSchema.and(
-      z.any().openapi({ description: 'The content of the message.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the message.' }),
-    ).exactOptional(),
-    Type: ChannelMessageTypeSchema.and(
-      z.any().openapi({ description: 'The type of message.' }),
-    ).exactOptional(),
-    CreatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the message summary was created.' }),
-    ).exactOptional(),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a message was last updated.' }),
-    ).exactOptional(),
-    LastEditedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which a message was last edited.' }),
-    ).exactOptional(),
-    Sender: IdentitySchema.and(
-      z.any().openapi({ description: 'The message sender.' }),
-    ).exactOptional(),
-    Redacted: NonNullableBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether a message was redacted.' }),
-    ).exactOptional(),
+    MessageId: MessageIdSchema.exactOptional().openapi({ description: 'The ID of the message.' }),
+    Content: ContentSchema.exactOptional().openapi({ description: 'The content of the message.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the message.',
+    }),
+    Type: ChannelMessageTypeSchema.exactOptional().openapi({ description: 'The type of message.' }),
+    CreatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the message summary was created.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a message was last updated.',
+    }),
+    LastEditedTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which a message was last edited.',
+    }),
+    Sender: IdentitySchema.exactOptional().openapi({ description: 'The message sender.' }),
+    Redacted: NonNullableBooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether a message was redacted.',
+    }),
   })
   .openapi({ description: 'Summary of the messages in a <code>Channel</code>.', required: [] })
   .openapi('ChannelMessageSummary')
@@ -3700,31 +2998,23 @@ const ChannelMessageSummaryListSchema = z
 
 const ListChannelMessagesResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel containing the requested messages.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested messages are returned.',
-        }),
-    ).exactOptional(),
-    ChannelMessages: ChannelMessageSummaryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The information about, and content of, each requested message.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the channel containing the requested messages.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token passed by previous API calls until all requested messages are returned.',
+    }),
+    ChannelMessages: ChannelMessageSummaryListSchema.exactOptional().openapi({
+      description: 'The information about, and content of, each requested message.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelMessagesResponse')
 
 const ChannelModeratorSummarySchema = z
   .object({
-    Moderator: IdentitySchema.and(
-      z.any().openapi({ description: 'The data for a moderator.' }),
-    ).exactOptional(),
+    Moderator: IdentitySchema.exactOptional().openapi({ description: 'The data for a moderator.' }),
   })
   .openapi({
     description: 'Summary of the details of a <code>ChannelModerator</code>.',
@@ -3738,20 +3028,14 @@ const ChannelModeratorSummaryListSchema = z
 
 const ListChannelModeratorsResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token passed by previous API calls until all requested moderators are returned.',
-        }),
-    ).exactOptional(),
-    ChannelModerators: ChannelModeratorSummaryListSchema.and(
-      z.any().openapi({ description: 'The information about and names of each moderator.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token passed by previous API calls until all requested moderators are returned.',
+    }),
+    ChannelModerators: ChannelModeratorSummaryListSchema.exactOptional().openapi({
+      description: 'The information about and names of each moderator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelModeratorsResponse')
@@ -3760,17 +3044,13 @@ const ChannelSummaryListSchema = z.array(ChannelSummarySchema).openapi('ChannelS
 
 const ListChannelsResponseSchema = z
   .object({
-    Channels: ChannelSummaryListSchema.and(
-      z.any().openapi({ description: 'The information about each channel.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned from previous API requests until the number of channels is reached.',
-        }),
-    ).exactOptional(),
+    Channels: ChannelSummaryListSchema.exactOptional().openapi({
+      description: 'The information about each channel.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned from previous API requests until the number of channels is reached.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelsResponse')
@@ -3781,17 +3061,13 @@ const ChannelModeratedByAppInstanceUserSummaryListSchema = z
 
 const ListChannelsModeratedByAppInstanceUserResponseSchema = z
   .object({
-    Channels: ChannelModeratedByAppInstanceUserSummaryListSchema.and(
-      z.any().openapi({ description: 'The moderated channels in the request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token returned from previous API requests until the number of channels moderated by the user is reached.',
-        }),
-    ).exactOptional(),
+    Channels: ChannelModeratedByAppInstanceUserSummaryListSchema.exactOptional().openapi({
+      description: 'The moderated channels in the request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token returned from previous API requests until the number of channels moderated by the user is reached.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListChannelsModeratedByAppInstanceUserResponse')
@@ -3802,21 +3078,19 @@ const MediaCapturePipelineListSchema = z
 
 const ListMediaCapturePipelinesResponseSchema = z
   .object({
-    MediaCapturePipelines: MediaCapturePipelineListSchema.and(
-      z.any().openapi({ description: 'The media capture pipeline objects in the list.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token used to retrieve the next page of results. ' }),
-    ).exactOptional(),
+    MediaCapturePipelines: MediaCapturePipelineListSchema.exactOptional().openapi({
+      description: 'The media capture pipeline objects in the list.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token used to retrieve the next page of results. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMediaCapturePipelinesResponse')
 
 const ListMeetingTagsResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag key-value pairs.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag key-value pairs.' }),
   })
   .openapi({ required: [] })
   .openapi('ListMeetingTagsResponse')
@@ -3825,12 +3099,12 @@ const MeetingListSchema = z.array(MeetingSchema).openapi('MeetingList')
 
 const ListMeetingsResponseSchema = z
   .object({
-    Meetings: MeetingListSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime SDK meeting information.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Meetings: MeetingListSchema.exactOptional().openapi({
+      description: 'The Amazon Chime SDK meeting information.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListMeetingsResponse')
@@ -3839,12 +3113,12 @@ const PhoneNumberOrderListSchema = z.array(PhoneNumberOrderSchema).openapi('Phon
 
 const ListPhoneNumberOrdersResponseSchema = z
   .object({
-    PhoneNumberOrders: PhoneNumberOrderListSchema.and(
-      z.any().openapi({ description: 'The phone number order details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    PhoneNumberOrders: PhoneNumberOrderListSchema.exactOptional().openapi({
+      description: 'The phone number order details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPhoneNumberOrdersResponse')
@@ -3853,12 +3127,12 @@ const PhoneNumberListSchema = z.array(PhoneNumberSchema).openapi('PhoneNumberLis
 
 const ListPhoneNumbersResponseSchema = z
   .object({
-    PhoneNumbers: PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The phone number details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    PhoneNumbers: PhoneNumberListSchema.exactOptional().openapi({
+      description: 'The phone number details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPhoneNumbersResponse')
@@ -3869,12 +3143,12 @@ const NextTokenStringSchema = z.string().max(65535).openapi('NextTokenString')
 
 const ListProxySessionsResponseSchema = z
   .object({
-    ProxySessions: ProxySessionsSchema.and(
-      z.any().openapi({ description: 'The proxy session details.' }),
-    ).exactOptional(),
-    NextToken: NextTokenStringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    ProxySessions: ProxySessionsSchema.exactOptional().openapi({
+      description: 'The proxy session details.',
+    }),
+    NextToken: NextTokenStringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProxySessionsResponse')
@@ -3883,12 +3157,12 @@ const RoomMembershipListSchema = z.array(RoomMembershipSchema).openapi('RoomMemb
 
 const ListRoomMembershipsResponseSchema = z
   .object({
-    RoomMemberships: RoomMembershipListSchema.and(
-      z.any().openapi({ description: 'The room membership details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    RoomMemberships: RoomMembershipListSchema.exactOptional().openapi({
+      description: 'The room membership details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRoomMembershipsResponse')
@@ -3897,12 +3171,10 @@ const RoomListSchema = z.array(RoomSchema).openapi('RoomList')
 
 const ListRoomsResponseSchema = z
   .object({
-    Rooms: RoomListSchema.and(
-      z.any().openapi({ description: 'The room details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Rooms: RoomListSchema.exactOptional().openapi({ description: 'The room details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRoomsResponse')
@@ -3913,12 +3185,12 @@ const SipMediaApplicationListSchema = z
 
 const ListSipMediaApplicationsResponseSchema = z
   .object({
-    SipMediaApplications: SipMediaApplicationListSchema.and(
-      z.any().openapi({ description: 'List of SIP media applications and application details.' }),
-    ).exactOptional(),
-    NextToken: NextTokenStringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    SipMediaApplications: SipMediaApplicationListSchema.exactOptional().openapi({
+      description: 'List of SIP media applications and application details.',
+    }),
+    NextToken: NextTokenStringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSipMediaApplicationsResponse')
@@ -3927,12 +3199,12 @@ const SipRuleListSchema = z.array(SipRuleSchema).openapi('SipRuleList')
 
 const ListSipRulesResponseSchema = z
   .object({
-    SipRules: SipRuleListSchema.and(
-      z.any().openapi({ description: 'List of SIP rules and rule details.' }),
-    ).exactOptional(),
-    NextToken: NextTokenStringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    SipRules: SipRuleListSchema.exactOptional().openapi({
+      description: 'List of SIP rules and rule details.',
+    }),
+    NextToken: NextTokenStringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSipRulesResponse')
@@ -3941,14 +3213,12 @@ const PhoneNumberTypeListSchema = z.array(PhoneNumberTypeSchema).openapi('PhoneN
 
 const PhoneNumberCountrySchema = z
   .object({
-    CountryCode: Alpha2CountryCodeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The phone number country code. Format: ISO 3166-1 alpha-2.' }),
-    ).exactOptional(),
-    SupportedPhoneNumberTypes: PhoneNumberTypeListSchema.and(
-      z.any().openapi({ description: 'The supported phone number types. ' }),
-    ).exactOptional(),
+    CountryCode: Alpha2CountryCodeSchema.exactOptional().openapi({
+      description: 'The phone number country code. Format: ISO 3166-1 alpha-2.',
+    }),
+    SupportedPhoneNumberTypes: PhoneNumberTypeListSchema.exactOptional().openapi({
+      description: 'The supported phone number types. ',
+    }),
   })
   .openapi({ description: 'The phone number country.', required: [] })
   .openapi('PhoneNumberCountry')
@@ -3959,18 +3229,16 @@ const PhoneNumberCountriesListSchema = z
 
 const ListSupportedPhoneNumberCountriesResponseSchema = z
   .object({
-    PhoneNumberCountries: PhoneNumberCountriesListSchema.and(
-      z.any().openapi({ description: 'The supported phone number countries.' }),
-    ).exactOptional(),
+    PhoneNumberCountries: PhoneNumberCountriesListSchema.exactOptional().openapi({
+      description: 'The supported phone number countries.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListSupportedPhoneNumberCountriesResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'A list of tag-key value pairs.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'A list of tag-key value pairs.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -3979,12 +3247,12 @@ const UserListSchema = z.array(UserSchema).openapi('UserList')
 
 const ListUsersResponseSchema = z
   .object({
-    Users: UserListSchema.and(
-      z.any().openapi({ description: 'List of users and user details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    Users: UserListSchema.exactOptional().openapi({
+      description: 'List of users and user details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsersResponse')
@@ -3995,12 +3263,12 @@ const VoiceConnectorGroupListSchema = z
 
 const ListVoiceConnectorGroupsResponseSchema = z
   .object({
-    VoiceConnectorGroups: VoiceConnectorGroupListSchema.and(
-      z.any().openapi({ description: 'The details of the Amazon Chime Voice Connector groups.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    VoiceConnectorGroups: VoiceConnectorGroupListSchema.exactOptional().openapi({
+      description: 'The details of the Amazon Chime Voice Connector groups.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVoiceConnectorGroupsResponse')
@@ -4009,9 +3277,9 @@ const SensitiveStringListSchema = z.array(SensitiveStringSchema).openapi('Sensit
 
 const ListVoiceConnectorTerminationCredentialsResponseSchema = z
   .object({
-    Usernames: SensitiveStringListSchema.and(
-      z.any().openapi({ description: 'A list of user names.' }),
-    ).exactOptional(),
+    Usernames: SensitiveStringListSchema.exactOptional().openapi({
+      description: 'A list of user names.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVoiceConnectorTerminationCredentialsResponse')
@@ -4020,153 +3288,135 @@ const VoiceConnectorListSchema = z.array(VoiceConnectorSchema).openapi('VoiceCon
 
 const ListVoiceConnectorsResponseSchema = z
   .object({
-    VoiceConnectors: VoiceConnectorListSchema.and(
-      z.any().openapi({ description: 'The details of the Amazon Chime Voice Connectors.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'The token to use to retrieve the next page of results.' }),
-    ).exactOptional(),
+    VoiceConnectors: VoiceConnectorListSchema.exactOptional().openapi({
+      description: 'The details of the Amazon Chime Voice Connectors.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token to use to retrieve the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListVoiceConnectorsResponse')
 
-const LogoutUserResponseSchema = z.object({}).openapi('LogoutUserResponse')
+const LogoutUserResponseSchema = z.looseObject({}).openapi('LogoutUserResponse')
 
 const PutAppInstanceRetentionSettingsResponseSchema = z
   .object({
-    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The time in days to retain data. Data type: number.' }),
-    ).exactOptional(),
-    InitiateDeletionTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'The time at which the API deletes data.' }),
-    ).exactOptional(),
+    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.exactOptional().openapi({
+      description: 'The time in days to retain data. Data type: number.',
+    }),
+    InitiateDeletionTimestamp: TimestampSchema.exactOptional().openapi({
+      description: 'The time at which the API deletes data.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAppInstanceRetentionSettingsResponse')
 
 const PutAppInstanceStreamingConfigurationsResponseSchema = z
   .object({
-    AppInstanceStreamingConfigurations: AppInstanceStreamingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The streaming configurations of an <code>AppInstance</code>.' }),
-    ).exactOptional(),
+    AppInstanceStreamingConfigurations:
+      AppInstanceStreamingConfigurationListSchema.exactOptional().openapi({
+        description: 'The streaming configurations of an <code>AppInstance</code>.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('PutAppInstanceStreamingConfigurationsResponse')
 
 const PutEventsConfigurationResponseSchema = z
   .object({
-    EventsConfiguration: EventsConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that allows a bot to receive outgoing events. Can be an HTTPS endpoint or an AWS Lambda function ARN.',
-        }),
-    ).exactOptional(),
+    EventsConfiguration: EventsConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration that allows a bot to receive outgoing events. Can be an HTTPS endpoint or an AWS Lambda function ARN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutEventsConfigurationResponse')
 
 const PutRetentionSettingsResponseSchema = z
   .object({
-    RetentionSettings: RetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The retention settings.' }),
-    ).exactOptional(),
-    InitiateDeletionTimestamp: Iso8601TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.',
-        }),
-    ).exactOptional(),
+    RetentionSettings: RetentionSettingsSchema.exactOptional().openapi({
+      description: 'The retention settings.',
+    }),
+    InitiateDeletionTimestamp: Iso8601TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp representing the time at which the specified items are permanently deleted, in ISO 8601 format.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutRetentionSettingsResponse')
 
 const PutSipMediaApplicationLoggingConfigurationResponseSchema = z
   .object({
-    SipMediaApplicationLoggingConfiguration: SipMediaApplicationLoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The logging configuration of the SIP media application.' }),
-    ).exactOptional(),
+    SipMediaApplicationLoggingConfiguration:
+      SipMediaApplicationLoggingConfigurationSchema.exactOptional().openapi({
+        description: 'The logging configuration of the SIP media application.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('PutSipMediaApplicationLoggingConfigurationResponse')
 
 const PutVoiceConnectorEmergencyCallingConfigurationResponseSchema = z
   .object({
-    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.and(
-      z.any().openapi({ description: 'The emergency calling configuration details.' }),
-    ).exactOptional(),
+    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.exactOptional().openapi({
+      description: 'The emergency calling configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorEmergencyCallingConfigurationResponse')
 
 const PutVoiceConnectorLoggingConfigurationResponseSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The updated logging configuration details.' }),
-    ).exactOptional(),
+    LoggingConfiguration: LoggingConfigurationSchema.exactOptional().openapi({
+      description: 'The updated logging configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorLoggingConfigurationResponse')
 
 const PutVoiceConnectorOriginationResponseSchema = z
   .object({
-    Origination: OriginationSchema.and(
-      z.any().openapi({ description: 'The updated origination setting details.' }),
-    ).exactOptional(),
+    Origination: OriginationSchema.exactOptional().openapi({
+      description: 'The updated origination setting details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorOriginationResponse')
 
 const PutVoiceConnectorProxyResponseSchema = z
   .object({
-    Proxy: ProxySchema.and(
-      z.any().openapi({ description: 'The proxy configuration details.' }),
-    ).exactOptional(),
+    Proxy: ProxySchema.exactOptional().openapi({ description: 'The proxy configuration details.' }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorProxyResponse')
 
 const PutVoiceConnectorStreamingConfigurationResponseSchema = z
   .object({
-    StreamingConfiguration: StreamingConfigurationSchema.and(
-      z.any().openapi({ description: 'The updated streaming configuration details.' }),
-    ).exactOptional(),
+    StreamingConfiguration: StreamingConfigurationSchema.exactOptional().openapi({
+      description: 'The updated streaming configuration details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorStreamingConfigurationResponse')
 
 const PutVoiceConnectorTerminationResponseSchema = z
   .object({
-    Termination: TerminationSchema.and(
-      z.any().openapi({ description: 'The updated termination setting details.' }),
-    ).exactOptional(),
+    Termination: TerminationSchema.exactOptional().openapi({
+      description: 'The updated termination setting details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutVoiceConnectorTerminationResponse')
 
 const CredentialSchema = z
   .object({
-    Username: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RFC2617 compliant user name associated with the SIP credentials, in US-ASCII format.',
-        }),
-    ).exactOptional(),
-    Password: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RFC2617 compliant password associated with the SIP credentials, in US-ASCII format.',
-        }),
-    ).exactOptional(),
+    Username: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The RFC2617 compliant user name associated with the SIP credentials, in US-ASCII format.',
+    }),
+    Password: SensitiveStringSchema.exactOptional().openapi({
+      description:
+        'The RFC2617 compliant password associated with the SIP credentials, in US-ASCII format.',
+    }),
   })
   .openapi({
     description:
@@ -4177,54 +3427,46 @@ const CredentialSchema = z
 
 const RedactChannelMessageResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the channel containing the messages that you want to redact.',
-        }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID of the message being redacted.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the channel containing the messages that you want to redact.',
+    }),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'The ID of the message being redacted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RedactChannelMessageResponse')
 
 const RedactConversationMessageResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('RedactConversationMessageResponse')
 
-const RedactRoomMessageResponseSchema = z.object({}).openapi('RedactRoomMessageResponse')
+const RedactRoomMessageResponseSchema = z.looseObject({}).openapi('RedactRoomMessageResponse')
 
 const RegenerateSecurityTokenResponseSchema = z
   .object({
-    Bot: BotSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A resource that allows Enterprise account administrators to configure an interface that receives events from Amazon Chime.',
-        }),
-    ).exactOptional(),
+    Bot: BotSchema.exactOptional().openapi({
+      description:
+        'A resource that allows Enterprise account administrators to configure an interface that receives events from Amazon Chime.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegenerateSecurityTokenResponse')
 
 const ResetPersonalPINResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z.any().openapi({ description: 'The user details and new personal meeting PIN.' }),
-    ).exactOptional(),
+    User: UserSchema.exactOptional().openapi({
+      description: 'The user details and new personal meeting PIN.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ResetPersonalPINResponse')
 
 const RestorePhoneNumberResponseSchema = z
   .object({
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number details.' }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RestorePhoneNumberResponse')
@@ -4233,32 +3475,28 @@ const E164PhoneNumberListSchema = z.array(E164PhoneNumberSchema).openapi('E164Ph
 
 const SearchAvailablePhoneNumbersResponseSchema = z
   .object({
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The token used to retrieve the next page of search results.' }),
-    ).exactOptional(),
+    E164PhoneNumbers: E164PhoneNumberListSchema.exactOptional().openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'The token used to retrieve the next page of search results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchAvailablePhoneNumbersResponse')
 
 const SendChannelMessageResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID string assigned to each message.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'The ID string assigned to each message.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SendChannelMessageResponse')
 
 const StartMeetingTranscriptionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StartMeetingTranscriptionResponse')
 
 const TranscribeLanguageCodeSchema = z
@@ -4343,134 +3581,71 @@ const TranscribeVocabularyNamesOrFilterNamesStringSchema = z
 
 const EngineTranscribeSettingsSchema = z
   .object({
-    LanguageCode: TranscribeLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify the language code that represents the language spoken.</p> <p>If you're unsure of the language spoken in your audio, consider using <code>IdentifyLanguage</code> to enable automatic language identification.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyFilterMethod: TranscribeVocabularyFilterMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify how you want your vocabulary filter applied to your transcript.</p> <p> To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyFilterName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the name of the custom vocabulary filter that you want to use when processing your transcription. Note that vocabulary filter names are case sensitive. </p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary filter must be available in Amazon Transcribe in each Region.</p> <p>If you include <code>IdentifyLanguage</code> and want to use one or more vocabulary filters with your transcription, use the <code>VocabularyFilterNames</code> parameter instead.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the name of the custom vocabulary that you want to use when processing your transcription. Note that vocabulary names are case sensitive.</p> <p>If you use Amazon Transcribe multiple Regions, the vocabulary must be available in Amazon Transcribe in each Region.</p> <p>If you include <code>IdentifyLanguage</code> and want to use one or more custom vocabularies with your transcription, use the <code>VocabularyNames</code> parameter instead.</p>',
-        }),
-    ).exactOptional(),
-    Region: TranscribeRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The AWS Region in which to use Amazon Transcribe.</p> <p>If you don\'t specify a Region, then the <code>MediaRegion</code> parameter of the <a href="https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html">CreateMeeting.html</a> API will be used. However, if Amazon Transcribe is not available in the <code>MediaRegion</code>, then a TranscriptFailed event is sent.</p> <p>Use <code>auto</code> to use Amazon Transcribe in a Region near the meeting’s <code>MediaRegion</code>. For more information, refer to <a href="https://docs.aws.amazon.com/chime-sdk/latest/dg/transcription-options.html#choose-region">Choosing a transcription Region</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    EnablePartialResultsStabilization: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables partial result stabilization for your transcription. Partial result stabilization can reduce latency in your output, but may impact accuracy.',
-        }),
-    ).exactOptional(),
-    PartialResultsStability: TranscribePartialResultsStabilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the level of stability to use when you enable partial results stabilization (<code>EnablePartialResultsStabilization</code>).</p> <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly lower accuracy.</p>',
-        }),
-    ).exactOptional(),
-    ContentIdentificationType: TranscribeContentIdentificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Labels all personally identifiable information (PII) identified in your transcript. If you don't include <code>PiiEntityTypes</code>, all PII is identified.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
-        }),
-    ).exactOptional(),
-    ContentRedactionType: TranscribeContentRedactionTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Content redaction is performed at the segment level. If you don't include <code>PiiEntityTypes</code>, all PII is redacted.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
-        }),
-    ).exactOptional(),
-    PiiEntityTypes: TranscribePiiEntityTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code> <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>,<code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>Note that if you include <code>PiiEntityTypes</code>, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p>If you include <code>ContentRedactionType</code> or <code>ContentIdentificationType</code>, but do not include <code>PiiEntityTypes</code>, all PII is redacted or identified.</p>",
-        }),
-    ).exactOptional(),
-    LanguageModelName: TranscribeLanguageModelNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify the name of the custom language model that you want to use when processing your transcription. Note that language model names are case sensitive.</p> <p>The language of the specified language model must match the language code. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p> <p>If you use Amazon Transcribe in multiple Regions, the custom language model must be available in Amazon Transcribe in each Region.</p>",
-        }),
-    ).exactOptional(),
-    IdentifyLanguage: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Enables automatic language identification for your transcription.</p> <p>If you include <code>IdentifyLanguage</code>, you can optionally use <code>LanguageOptions</code> to include a list of language codes that you think may be present in your audio stream. Including language options can improve transcription accuracy.</p> <p>You can also use <code>PreferredLanguage</code> to include a preferred language. Doing so can help Amazon Transcribe identify the language faster.</p> <p>You must include either <code>LanguageCode</code> or <code>IdentifyLanguage</code>.</p> <p>Language identification can't be combined with custom language models or redaction.</p>",
-        }),
-    ).exactOptional(),
-    LanguageOptions: TranscribeLanguageOptionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify two or more language codes that represent the languages you think may be present in your media; including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>If you include <code>LanguageOptions</code>, you must also include <code>IdentifyLanguage</code>.</p> <important> <p>You can only include one language dialect per language. For example, you cannot include <code>en-US</code> and <code>en-AU</code>.</p> </important>",
-        }),
-    ).exactOptional(),
-    PreferredLanguage: TranscribeLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify a preferred language from the subset of languages codes you specified in <code>LanguageOptions</code>.</p> <p>You can only use this parameter if you include <code>IdentifyLanguage</code> and <code>LanguageOptions</code>.</p>',
-        }),
-    ).exactOptional(),
-    VocabularyNames: TranscribeVocabularyNamesOrFilterNamesStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify the names of the custom vocabularies that you want to use when processing your transcription. Note that vocabulary names are case sensitive.</p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary must be available in Amazon Transcribe in each Region.</p> <p>If you don't include <code>IdentifyLanguage</code> and want to use a custom vocabulary with your transcription, use the <code>VocabularyName</code> parameter instead.</p>",
-        }),
-    ).exactOptional(),
-    VocabularyFilterNames: TranscribeVocabularyNamesOrFilterNamesStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Specify the names of the custom vocabulary filters that you want to use when processing your transcription. Note that vocabulary filter names are case sensitive.</p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary filter must be available in Amazon Transcribe in each Region.</p> <p> If you're <i>not</i> including <code>IdentifyLanguage</code> and want to use a custom vocabulary filter with your transcription, use the <code>VocabularyFilterName</code> parameter instead.</p>",
-        }),
-    ).exactOptional(),
+    LanguageCode: TranscribeLanguageCodeSchema.exactOptional().openapi({
+      description:
+        "<p>Specify the language code that represents the language spoken.</p> <p>If you're unsure of the language spoken in your audio, consider using <code>IdentifyLanguage</code> to enable automatic language identification.</p>",
+    }),
+    VocabularyFilterMethod: TranscribeVocabularyFilterMethodSchema.exactOptional().openapi({
+      description:
+        '<p>Specify how you want your vocabulary filter applied to your transcript.</p> <p> To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>',
+    }),
+    VocabularyFilterName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the name of the custom vocabulary filter that you want to use when processing your transcription. Note that vocabulary filter names are case sensitive. </p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary filter must be available in Amazon Transcribe in each Region.</p> <p>If you include <code>IdentifyLanguage</code> and want to use one or more vocabulary filters with your transcription, use the <code>VocabularyFilterNames</code> parameter instead.</p>',
+    }),
+    VocabularyName: StringSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the name of the custom vocabulary that you want to use when processing your transcription. Note that vocabulary names are case sensitive.</p> <p>If you use Amazon Transcribe multiple Regions, the vocabulary must be available in Amazon Transcribe in each Region.</p> <p>If you include <code>IdentifyLanguage</code> and want to use one or more custom vocabularies with your transcription, use the <code>VocabularyNames</code> parameter instead.</p>',
+    }),
+    Region: TranscribeRegionSchema.exactOptional().openapi({
+      description:
+        '<p>The AWS Region in which to use Amazon Transcribe.</p> <p>If you don\'t specify a Region, then the <code>MediaRegion</code> parameter of the <a href="https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html">CreateMeeting.html</a> API will be used. However, if Amazon Transcribe is not available in the <code>MediaRegion</code>, then a TranscriptFailed event is sent.</p> <p>Use <code>auto</code> to use Amazon Transcribe in a Region near the meeting’s <code>MediaRegion</code>. For more information, refer to <a href="https://docs.aws.amazon.com/chime-sdk/latest/dg/transcription-options.html#choose-region">Choosing a transcription Region</a> in the <i>Amazon Chime SDK Developer Guide</i>.</p>',
+    }),
+    EnablePartialResultsStabilization: BooleanSchema.exactOptional().openapi({
+      description:
+        'Enables partial result stabilization for your transcription. Partial result stabilization can reduce latency in your output, but may impact accuracy.',
+    }),
+    PartialResultsStability: TranscribePartialResultsStabilitySchema.exactOptional().openapi({
+      description:
+        '<p>Specify the level of stability to use when you enable partial results stabilization (<code>EnablePartialResultsStabilization</code>).</p> <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly lower accuracy.</p>',
+    }),
+    ContentIdentificationType: TranscribeContentIdentificationTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Labels all personally identifiable information (PII) identified in your transcript. If you don't include <code>PiiEntityTypes</code>, all PII is identified.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
+    }),
+    ContentRedactionType: TranscribeContentRedactionTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Content redaction is performed at the segment level. If you don't include <code>PiiEntityTypes</code>, all PII is redacted.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
+    }),
+    PiiEntityTypes: TranscribePiiEntityTypesSchema.exactOptional().openapi({
+      description:
+        "<p>Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select <code>ALL</code>.</p> <p>Values must be comma-separated and can include: <code>ADDRESS</code>, <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>, <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code> <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>,<code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, <code>SSN</code>, or <code>ALL</code>.</p> <p>Note that if you include <code>PiiEntityTypes</code>, you must also include <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p> <p>If you include <code>ContentRedactionType</code> or <code>ContentIdentificationType</code>, but do not include <code>PiiEntityTypes</code>, all PII is redacted or identified.</p>",
+    }),
+    LanguageModelName: TranscribeLanguageModelNameSchema.exactOptional().openapi({
+      description:
+        "<p>Specify the name of the custom language model that you want to use when processing your transcription. Note that language model names are case sensitive.</p> <p>The language of the specified language model must match the language code. If the languages don't match, the custom language model isn't applied. There are no errors or warnings associated with a language mismatch.</p> <p>If you use Amazon Transcribe in multiple Regions, the custom language model must be available in Amazon Transcribe in each Region.</p>",
+    }),
+    IdentifyLanguage: BooleanSchema.exactOptional().openapi({
+      description:
+        "<p>Enables automatic language identification for your transcription.</p> <p>If you include <code>IdentifyLanguage</code>, you can optionally use <code>LanguageOptions</code> to include a list of language codes that you think may be present in your audio stream. Including language options can improve transcription accuracy.</p> <p>You can also use <code>PreferredLanguage</code> to include a preferred language. Doing so can help Amazon Transcribe identify the language faster.</p> <p>You must include either <code>LanguageCode</code> or <code>IdentifyLanguage</code>.</p> <p>Language identification can't be combined with custom language models or redaction.</p>",
+    }),
+    LanguageOptions: TranscribeLanguageOptionsSchema.exactOptional().openapi({
+      description:
+        "<p>Specify two or more language codes that represent the languages you think may be present in your media; including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>If you include <code>LanguageOptions</code>, you must also include <code>IdentifyLanguage</code>.</p> <important> <p>You can only include one language dialect per language. For example, you cannot include <code>en-US</code> and <code>en-AU</code>.</p> </important>",
+    }),
+    PreferredLanguage: TranscribeLanguageCodeSchema.exactOptional().openapi({
+      description:
+        '<p>Specify a preferred language from the subset of languages codes you specified in <code>LanguageOptions</code>.</p> <p>You can only use this parameter if you include <code>IdentifyLanguage</code> and <code>LanguageOptions</code>.</p>',
+    }),
+    VocabularyNames: TranscribeVocabularyNamesOrFilterNamesStringSchema.exactOptional().openapi({
+      description:
+        "<p>Specify the names of the custom vocabularies that you want to use when processing your transcription. Note that vocabulary names are case sensitive.</p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary must be available in Amazon Transcribe in each Region.</p> <p>If you don't include <code>IdentifyLanguage</code> and want to use a custom vocabulary with your transcription, use the <code>VocabularyName</code> parameter instead.</p>",
+    }),
+    VocabularyFilterNames:
+      TranscribeVocabularyNamesOrFilterNamesStringSchema.exactOptional().openapi({
+        description:
+          "<p>Specify the names of the custom vocabulary filters that you want to use when processing your transcription. Note that vocabulary filter names are case sensitive.</p> <p>If you use Amazon Transcribe in multiple Regions, the vocabulary filter must be available in Amazon Transcribe in each Region.</p> <p> If you're <i>not</i> including <code>IdentifyLanguage</code> and want to use a custom vocabulary filter with your transcription, use the <code>VocabularyFilterName</code> parameter instead.</p>",
+      }),
   })
   .openapi({
     description:
@@ -4509,46 +3684,25 @@ const TranscribeMedicalContentIdentificationTypeSchema = z
 
 const EngineTranscribeMedicalSettingsSchema = z
   .object({
-    LanguageCode: TranscribeMedicalLanguageCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The language code specified for the Amazon Transcribe Medical engine.',
-        }),
-    ),
-    Specialty: TranscribeMedicalSpecialtySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The specialty specified for the Amazon Transcribe Medical engine.',
-        }),
-    ),
-    Type: TranscribeMedicalTypeSchema.and(
-      z.any().openapi({ description: 'The type of transcription.' }),
-    ),
-    VocabularyName: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the vocabulary passed to Amazon Transcribe Medical.',
-        }),
-    ).exactOptional(),
-    Region: TranscribeMedicalRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The AWS Region passed to Amazon Transcribe Medical. If you don't specify a Region, Amazon Chime uses the meeting's Region.",
-        }),
-    ).exactOptional(),
-    ContentIdentificationType: TranscribeMedicalContentIdentificationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Labels all personally identifiable information (PII) identified in your transcript. If you don't include <code>PiiEntityTypes</code>, all PII is identified.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
-        }),
-    ).exactOptional(),
+    LanguageCode: TranscribeMedicalLanguageCodeSchema.openapi({
+      description: 'The language code specified for the Amazon Transcribe Medical engine.',
+    }),
+    Specialty: TranscribeMedicalSpecialtySchema.openapi({
+      description: 'The specialty specified for the Amazon Transcribe Medical engine.',
+    }),
+    Type: TranscribeMedicalTypeSchema.openapi({ description: 'The type of transcription.' }),
+    VocabularyName: StringSchema.exactOptional().openapi({
+      description: 'The name of the vocabulary passed to Amazon Transcribe Medical.',
+    }),
+    Region: TranscribeMedicalRegionSchema.exactOptional().openapi({
+      description:
+        "The AWS Region passed to Amazon Transcribe Medical. If you don't specify a Region, Amazon Chime uses the meeting's Region.",
+    }),
+    ContentIdentificationType:
+      TranscribeMedicalContentIdentificationTypeSchema.exactOptional().openapi({
+        description:
+          "<p>Labels all personally identifiable information (PII) identified in your transcript. If you don't include <code>PiiEntityTypes</code>, all PII is identified.</p> <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>.</p>",
+      }),
   })
   .openapi({
     required: ['LanguageCode', 'Specialty', 'Type'],
@@ -4557,161 +3711,147 @@ const EngineTranscribeMedicalSettingsSchema = z
   .openapi('EngineTranscribeMedicalSettings')
 
 const StopMeetingTranscriptionResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('StopMeetingTranscriptionResponse')
 
 const UpdateAccountResponseSchema = z
   .object({
-    Account: AccountSchema.and(
-      z.any().openapi({ description: 'The updated Amazon Chime account details.' }),
-    ).exactOptional(),
+    Account: AccountSchema.exactOptional().openapi({
+      description: 'The updated Amazon Chime account details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAccountResponse')
 
-const UpdateAccountSettingsResponseSchema = z.object({}).openapi('UpdateAccountSettingsResponse')
+const UpdateAccountSettingsResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateAccountSettingsResponse')
 
 const UpdateAppInstanceResponseSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstance</code>. ' }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstance</code>. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAppInstanceResponse')
 
 const UpdateAppInstanceUserResponseSchema = z
   .object({
-    AppInstanceUserArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
+    AppInstanceUserArn: ChimeArnSchema.exactOptional().openapi({
+      description: 'The ARN of the <code>AppInstanceUser</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateAppInstanceUserResponse')
 
 const UpdateBotResponseSchema = z
-  .object({
-    Bot: BotSchema.and(
-      z.any().openapi({ description: 'The updated bot details.' }),
-    ).exactOptional(),
-  })
+  .object({ Bot: BotSchema.exactOptional().openapi({ description: 'The updated bot details.' }) })
   .openapi({ required: [] })
   .openapi('UpdateBotResponse')
 
 const UpdateChannelResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateChannelResponse')
 
 const UpdateChannelMessageResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
-    MessageId: MessageIdSchema.and(
-      z.any().openapi({ description: 'The ID string of the message being updated.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
+    MessageId: MessageIdSchema.exactOptional().openapi({
+      description: 'The ID string of the message being updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateChannelMessageResponse')
 
 const UpdateChannelReadMarkerResponseSchema = z
   .object({
-    ChannelArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel.' }),
-    ).exactOptional(),
+    ChannelArn: ChimeArnSchema.exactOptional().openapi({ description: 'The ARN of the channel.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateChannelReadMarkerResponse')
 
 const UpdatePhoneNumberResponseSchema = z
   .object({
-    PhoneNumber: PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The updated phone number details.' }),
-    ).exactOptional(),
+    PhoneNumber: PhoneNumberSchema.exactOptional().openapi({
+      description: 'The updated phone number details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdatePhoneNumberResponse')
 
 const UpdateProxySessionResponseSchema = z
   .object({
-    ProxySession: ProxySessionSchema.and(
-      z.any().openapi({ description: 'The proxy session details.' }),
-    ).exactOptional(),
+    ProxySession: ProxySessionSchema.exactOptional().openapi({
+      description: 'The proxy session details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateProxySessionResponse')
 
 const UpdateRoomResponseSchema = z
-  .object({
-    Room: RoomSchema.and(z.any().openapi({ description: 'The room details.' })).exactOptional(),
-  })
+  .object({ Room: RoomSchema.exactOptional().openapi({ description: 'The room details.' }) })
   .openapi({ required: [] })
   .openapi('UpdateRoomResponse')
 
 const UpdateRoomMembershipResponseSchema = z
   .object({
-    RoomMembership: RoomMembershipSchema.and(
-      z.any().openapi({ description: 'The room membership details.' }),
-    ).exactOptional(),
+    RoomMembership: RoomMembershipSchema.exactOptional().openapi({
+      description: 'The room membership details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateRoomMembershipResponse')
 
 const UpdateSipMediaApplicationResponseSchema = z
   .object({
-    SipMediaApplication: SipMediaApplicationSchema.and(
-      z.any().openapi({ description: 'The updated SIP media application details.' }),
-    ).exactOptional(),
+    SipMediaApplication: SipMediaApplicationSchema.exactOptional().openapi({
+      description: 'The updated SIP media application details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSipMediaApplicationResponse')
 
 const UpdateSipMediaApplicationCallResponseSchema = z
   .object({
-    SipMediaApplicationCall: SipMediaApplicationCallSchema.and(
-      z.any().openapi({ description: 'A <code>Call</code> instance for a SIP media application.' }),
-    ).exactOptional(),
+    SipMediaApplicationCall: SipMediaApplicationCallSchema.exactOptional().openapi({
+      description: 'A <code>Call</code> instance for a SIP media application.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSipMediaApplicationCallResponse')
 
 const UpdateSipRuleResponseSchema = z
   .object({
-    SipRule: SipRuleSchema.and(
-      z.any().openapi({ description: 'Updated SIP rule details.' }),
-    ).exactOptional(),
+    SipRule: SipRuleSchema.exactOptional().openapi({ description: 'Updated SIP rule details.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSipRuleResponse')
 
 const UpdateUserResponseSchema = z
   .object({
-    User: UserSchema.and(
-      z.any().openapi({ description: 'The updated user details.' }),
-    ).exactOptional(),
+    User: UserSchema.exactOptional().openapi({ description: 'The updated user details.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateUserResponse')
 
 const UpdateVoiceConnectorResponseSchema = z
   .object({
-    VoiceConnector: VoiceConnectorSchema.and(
-      z.any().openapi({ description: 'The updated Amazon Chime Voice Connector details.' }),
-    ).exactOptional(),
+    VoiceConnector: VoiceConnectorSchema.exactOptional().openapi({
+      description: 'The updated Amazon Chime Voice Connector details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVoiceConnectorResponse')
 
 const UpdateVoiceConnectorGroupResponseSchema = z
   .object({
-    VoiceConnectorGroup: VoiceConnectorGroupSchema.and(
-      z.any().openapi({ description: 'The updated Amazon Chime Voice Connector group details.' }),
-    ).exactOptional(),
+    VoiceConnectorGroup: VoiceConnectorGroupSchema.exactOptional().openapi({
+      description: 'The updated Amazon Chime Voice Connector group details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVoiceConnectorGroupResponse')
@@ -4725,78 +3865,65 @@ const SensitiveNonEmptyStringSchema = z
 
 const AddressSchema = z
   .object({
-    streetName: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The address street, such as <code>8th Avenue</code>.' }),
-    ).exactOptional(),
-    streetSuffix: SensitiveNonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The address suffix, such as the <code>N</code> in <code>8th Avenue N</code>.',
-        }),
-    ).exactOptional(),
-    postDirectional: SensitiveNonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An address suffix location, such as the <code>S. Unit A</code> in <code>Central Park S. Unit A</code>.',
-        }),
-    ).exactOptional(),
-    preDirectional: SensitiveNonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An address prefix location, such as the <code>N</code> in <code>N. Third St.</code>.',
-        }),
-    ).exactOptional(),
-    streetNumber: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The numeric portion of an address.' }),
-    ).exactOptional(),
-    city: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The city of an address.' }),
-    ).exactOptional(),
-    state: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The state of an address.' }),
-    ).exactOptional(),
-    postalCode: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The postal code of an address.' }),
-    ).exactOptional(),
-    postalCodePlus4: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Zip + 4 or postal code + 4 of an address.' }),
-    ).exactOptional(),
-    country: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The country of an address. ' }),
-    ).exactOptional(),
+    streetName: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The address street, such as <code>8th Avenue</code>.',
+    }),
+    streetSuffix: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The address suffix, such as the <code>N</code> in <code>8th Avenue N</code>.',
+    }),
+    postDirectional: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'An address suffix location, such as the <code>S. Unit A</code> in <code>Central Park S. Unit A</code>.',
+    }),
+    preDirectional: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description:
+        'An address prefix location, such as the <code>N</code> in <code>N. Third St.</code>.',
+    }),
+    streetNumber: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The numeric portion of an address.',
+    }),
+    city: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The city of an address.',
+    }),
+    state: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The state of an address.',
+    }),
+    postalCode: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The postal code of an address.',
+    }),
+    postalCodePlus4: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Zip + 4 or postal code + 4 of an address.',
+    }),
+    country: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The country of an address. ',
+    }),
   })
   .openapi({ description: 'A validated address.', required: [] })
   .openapi('Address')
 
 const CandidateAddressSchema = z
   .object({
-    streetInfo: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The street information of a candidate address' }),
-    ).exactOptional(),
-    streetNumber: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The numeric portion of a candidate address.' }),
-    ).exactOptional(),
-    city: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The city of a candidate address.' }),
-    ).exactOptional(),
-    state: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The state of a candidate address.' }),
-    ).exactOptional(),
-    postalCode: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The postal code of a candidate address.' }),
-    ).exactOptional(),
-    postalCodePlus4: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Zip + 4 or postal code + 4 of a candidate address.' }),
-    ).exactOptional(),
-    country: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The country of a candidate address.' }),
-    ).exactOptional(),
+    streetInfo: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The street information of a candidate address',
+    }),
+    streetNumber: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The numeric portion of a candidate address.',
+    }),
+    city: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The city of a candidate address.',
+    }),
+    state: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The state of a candidate address.',
+    }),
+    postalCode: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The postal code of a candidate address.',
+    }),
+    postalCodePlus4: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The Zip + 4 or postal code + 4 of a candidate address.',
+    }),
+    country: SensitiveNonEmptyStringSchema.exactOptional().openapi({
+      description: 'The country of a candidate address.',
+    }),
   })
   .openapi({ description: 'A suggested address.', required: [] })
   .openapi('CandidateAddress')
@@ -4805,23 +3932,17 @@ const CandidateAddressListSchema = z.array(CandidateAddressSchema).openapi('Cand
 
 const ValidateE911AddressResponseSchema = z
   .object({
-    ValidationResult: ValidationResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number indicating the result of address validation. <code>0</code> means the address was perfect as is and successfully validated. <code>1</code> means the address was corrected. <code>2</code> means the address sent was not close enough and was not validated.',
-        }),
-    ).exactOptional(),
-    AddressExternalId: StringSchema.and(
-      z.any().openapi({ description: 'The ID that represents the address.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z.any().openapi({ description: 'The validated address.' }),
-    ).exactOptional(),
-    CandidateAddressList: CandidateAddressListSchema.and(
-      z.any().openapi({ description: 'The list of address suggestions.' }),
-    ).exactOptional(),
+    ValidationResult: ValidationResultSchema.exactOptional().openapi({
+      description:
+        'Number indicating the result of address validation. <code>0</code> means the address was perfect as is and successfully validated. <code>1</code> means the address was corrected. <code>2</code> means the address sent was not close enough and was not validated.',
+    }),
+    AddressExternalId: StringSchema.exactOptional().openapi({
+      description: 'The ID that represents the address.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({ description: 'The validated address.' }),
+    CandidateAddressList: CandidateAddressListSchema.exactOptional().openapi({
+      description: 'The list of address suggestions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ValidateE911AddressResponse')
@@ -4835,26 +3956,22 @@ const AccountNameSchema = z
 
 const AssociatePhoneNumberWithUserRequestSchema = z
   .object({
-    E164PhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number, in E.164 format.' }),
-    ),
+    E164PhoneNumber: E164PhoneNumberSchema.openapi({
+      description: 'The phone number, in E.164 format.',
+    }),
   })
   .openapi({ required: ['E164PhoneNumber'], title: 'AssociatePhoneNumberWithUserRequest' })
   .openapi('AssociatePhoneNumberWithUserRequest')
 
 const AssociatePhoneNumbersWithVoiceConnectorGroupRequestSchema = z
   .object({
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ),
-    ForceAssociate: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, associates the provided phone numbers with the provided Amazon Chime Voice Connector Group and removes any previously existing associations. If false, does not associate any phone numbers that have previously existing associations.',
-        }),
-    ).exactOptional(),
+    E164PhoneNumbers: E164PhoneNumberListSchema.openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
+    ForceAssociate: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'If true, associates the provided phone numbers with the provided Amazon Chime Voice Connector Group and removes any previously existing associations. If false, does not associate any phone numbers that have previously existing associations.',
+    }),
   })
   .openapi({
     required: ['E164PhoneNumbers'],
@@ -4864,17 +3981,13 @@ const AssociatePhoneNumbersWithVoiceConnectorGroupRequestSchema = z
 
 const AssociatePhoneNumbersWithVoiceConnectorRequestSchema = z
   .object({
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ),
-    ForceAssociate: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If true, associates the provided phone numbers with the provided Amazon Chime Voice Connector and removes any previously existing associations. If false, does not associate any phone numbers that have previously existing associations.',
-        }),
-    ).exactOptional(),
+    E164PhoneNumbers: E164PhoneNumberListSchema.openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
+    ForceAssociate: NullableBooleanSchema.exactOptional().openapi({
+      description:
+        'If true, associates the provided phone numbers with the provided Amazon Chime Voice Connector and removes any previously existing associations. If false, does not associate any phone numbers that have previously existing associations.',
+    }),
   })
   .openapi({
     required: ['E164PhoneNumbers'],
@@ -4884,9 +3997,9 @@ const AssociatePhoneNumbersWithVoiceConnectorRequestSchema = z
 
 const AssociateSigninDelegateGroupsWithAccountRequestSchema = z
   .object({
-    SigninDelegateGroups: SigninDelegateGroupListSchema.and(
-      z.any().openapi({ description: 'The sign-in delegate groups.' }),
-    ),
+    SigninDelegateGroups: SigninDelegateGroupListSchema.openapi({
+      description: 'The sign-in delegate groups.',
+    }),
   })
   .openapi({
     required: ['SigninDelegateGroups'],
@@ -4902,9 +4015,9 @@ const CreateAttendeeRequestItemListSchema = z
 
 const BatchCreateAttendeeRequestSchema = z
   .object({
-    Attendees: CreateAttendeeRequestItemListSchema.and(
-      z.any().openapi({ description: 'The request containing the attendees to create.' }),
-    ),
+    Attendees: CreateAttendeeRequestItemListSchema.openapi({
+      description: 'The request containing the attendees to create.',
+    }),
   })
   .openapi({ required: ['Attendees'], title: 'BatchCreateAttendeeRequest' })
   .openapi('BatchCreateAttendeeRequest')
@@ -4913,17 +4026,13 @@ const MemberArnsSchema = z.array(ChimeArnSchema).min(1).max(100).openapi('Member
 
 const BatchCreateChannelMembershipRequestSchema = z
   .object({
-    Type: ChannelMembershipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are always returned as part of <code>ListChannelMemberships</code>. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>. Otherwise hidden members are not returned. This is only supported by moderators.',
-        }),
-    ).exactOptional(),
-    MemberArns: MemberArnsSchema.and(
-      z.any().openapi({ description: 'The ARNs of the members you want to add to the channel.' }),
-    ),
+    Type: ChannelMembershipTypeSchema.exactOptional().openapi({
+      description:
+        'The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are always returned as part of <code>ListChannelMemberships</code>. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>. Otherwise hidden members are not returned. This is only supported by moderators.',
+    }),
+    MemberArns: MemberArnsSchema.openapi({
+      description: 'The ARNs of the members you want to add to the channel.',
+    }),
   })
   .openapi({ required: ['MemberArns'], title: 'BatchCreateChannelMembershipRequest' })
   .openapi('BatchCreateChannelMembershipRequest')
@@ -4932,9 +4041,9 @@ const MembershipItemListSchema = z.array(MembershipItemSchema).max(50).openapi('
 
 const BatchCreateRoomMembershipRequestSchema = z
   .object({
-    MembershipItemList: MembershipItemListSchema.and(
-      z.any().openapi({ description: 'The list of membership items.' }),
-    ),
+    MembershipItemList: MembershipItemListSchema.openapi({
+      description: 'The list of membership items.',
+    }),
   })
   .openapi({ required: ['MembershipItemList'], title: 'BatchCreateRoomMembershipRequest' })
   .openapi('BatchCreateRoomMembershipRequest')
@@ -4943,9 +4052,7 @@ const NonEmptyStringListSchema = z.array(StringSchema).min(1).openapi('NonEmptyS
 
 const BatchDeletePhoneNumberRequestSchema = z
   .object({
-    PhoneNumberIds: NonEmptyStringListSchema.and(
-      z.any().openapi({ description: 'List of phone number IDs.' }),
-    ),
+    PhoneNumberIds: NonEmptyStringListSchema.openapi({ description: 'List of phone number IDs.' }),
   })
   .openapi({ required: ['PhoneNumberIds'], title: 'BatchDeletePhoneNumberRequest' })
   .openapi('BatchDeletePhoneNumberRequest')
@@ -4954,18 +4061,18 @@ const UserIdListSchema = z.array(NonEmptyStringSchema).max(50).openapi('UserIdLi
 
 const BatchSuspendUserRequestSchema = z
   .object({
-    UserIdList: UserIdListSchema.and(
-      z.any().openapi({ description: 'The request containing the user IDs to suspend.' }),
-    ),
+    UserIdList: UserIdListSchema.openapi({
+      description: 'The request containing the user IDs to suspend.',
+    }),
   })
   .openapi({ required: ['UserIdList'], title: 'BatchSuspendUserRequest' })
   .openapi('BatchSuspendUserRequest')
 
 const BatchUnsuspendUserRequestSchema = z
   .object({
-    UserIdList: UserIdListSchema.and(
-      z.any().openapi({ description: 'The request containing the user IDs to unsuspend.' }),
-    ),
+    UserIdList: UserIdListSchema.openapi({
+      description: 'The request containing the user IDs to unsuspend.',
+    }),
   })
   .openapi({ required: ['UserIdList'], title: 'BatchUnsuspendUserRequest' })
   .openapi('BatchUnsuspendUserRequest')
@@ -4976,14 +4083,10 @@ const UpdatePhoneNumberRequestItemListSchema = z
 
 const BatchUpdatePhoneNumberRequestSchema = z
   .object({
-    UpdatePhoneNumberRequestItems: UpdatePhoneNumberRequestItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The request containing the phone number IDs and product types or calling names to update.',
-        }),
-    ),
+    UpdatePhoneNumberRequestItems: UpdatePhoneNumberRequestItemListSchema.openapi({
+      description:
+        'The request containing the phone number IDs and product types or calling names to update.',
+    }),
   })
   .openapi({ required: ['UpdatePhoneNumberRequestItems'], title: 'BatchUpdatePhoneNumberRequest' })
   .openapi('BatchUpdatePhoneNumberRequest')
@@ -4995,11 +4098,9 @@ const UpdateUserRequestItemListSchema = z
 
 const BatchUpdateUserRequestSchema = z
   .object({
-    UpdateUserRequestItems: UpdateUserRequestItemListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The request containing the user IDs and details to update.' }),
-    ),
+    UpdateUserRequestItems: UpdateUserRequestItemListSchema.openapi({
+      description: 'The request containing the user IDs and details to update.',
+    }),
   })
   .openapi({ required: ['UpdateUserRequestItems'], title: 'BatchUpdateUserRequest' })
   .openapi('BatchUpdateUserRequest')
@@ -5015,49 +4116,35 @@ const CountryListSchema = z.array(CountrySchema).min(1).max(100).openapi('Countr
 
 const CreateAccountRequestSchema = z
   .object({
-    Name: AccountNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime account.' }),
-    ),
+    Name: AccountNameSchema.openapi({ description: 'The name of the Amazon Chime account.' }),
   })
   .openapi({ required: ['Name'], title: 'CreateAccountRequest' })
   .openapi('CreateAccountRequest')
 
 const CreateAppInstanceAdminRequestSchema = z
   .object({
-    AppInstanceAdminArn: ChimeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ARN of the administrator of the current <code>AppInstance</code>.',
-        }),
-    ),
+    AppInstanceAdminArn: ChimeArnSchema.openapi({
+      description: 'The ARN of the administrator of the current <code>AppInstance</code>.',
+    }),
   })
   .openapi({ required: ['AppInstanceAdminArn'], title: 'CreateAppInstanceAdminRequest' })
   .openapi('CreateAppInstanceAdminRequest')
 
 const CreateAppInstanceRequestSchema = z
   .object({
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AppInstance</code>.' }),
-    ),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The metadata of the <code>AppInstance</code>. Limited to a 1KB string in UTF-8.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>ClientRequestToken</code> of the <code>AppInstance</code>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags assigned to the <code>AppInstance</code>.' }),
-    ).exactOptional(),
+    Name: NonEmptyResourceNameSchema.openapi({
+      description: 'The name of the <code>AppInstance</code>.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description:
+        'The metadata of the <code>AppInstance</code>. Limited to a 1KB string in UTF-8.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description: 'The <code>ClientRequestToken</code> of the <code>AppInstance</code>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags assigned to the <code>AppInstance</code>.',
+    }),
   })
   .openapi({ required: ['Name', 'ClientRequestToken'], title: 'CreateAppInstanceRequest' })
   .openapi('CreateAppInstanceRequest')
@@ -5071,26 +4158,22 @@ const UserIdSchema = z
 
 const CreateAppInstanceUserRequestSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the <code>AppInstance</code> request.' }),
-    ),
-    AppInstanceUserId: UserIdSchema.and(
-      z.any().openapi({ description: 'The user ID of the <code>AppInstance</code>.' }),
-    ),
-    Name: UserNameSchema.and(z.any().openapi({ description: "The user's name." })),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: "The request's metadata. Limited to a 1KB string in UTF-8." }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The token assigned to the user requesting an <code>AppInstance</code>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags assigned to the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.openapi({
+      description: 'The ARN of the <code>AppInstance</code> request.',
+    }),
+    AppInstanceUserId: UserIdSchema.openapi({
+      description: 'The user ID of the <code>AppInstance</code>.',
+    }),
+    Name: UserNameSchema.openapi({ description: "The user's name." }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: "The request's metadata. Limited to a 1KB string in UTF-8.",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description: 'The token assigned to the user requesting an <code>AppInstance</code>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags assigned to the <code>AppInstanceUser</code>.',
+    }),
   })
   .openapi({
     required: ['AppInstanceArn', 'AppInstanceUserId', 'Name', 'ClientRequestToken'],
@@ -5100,109 +4183,75 @@ const CreateAppInstanceUserRequestSchema = z
 
 const CreateAttendeeRequestSchema = z
   .object({
-    ExternalUserId: ExternalUserIdTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
-        }),
-    ),
-    Tags: AttendeeTagListSchema.and(
-      z.any().openapi({ description: 'The tag key-value pairs.' }),
-    ).exactOptional(),
+    ExternalUserId: ExternalUserIdTypeSchema.openapi({
+      description:
+        'The Amazon Chime SDK external user ID. An idempotency token. Links the attendee to an identity managed by a builder application.',
+    }),
+    Tags: AttendeeTagListSchema.exactOptional().openapi({
+      description: 'The tag key-value pairs.',
+    }),
   })
   .openapi({ required: ['ExternalUserId'], title: 'CreateAttendeeRequest' })
   .openapi('CreateAttendeeRequest')
 
 const CreateBotRequestSchema = z
   .object({
-    DisplayName: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The bot display name.' }),
-    ),
-    Domain: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The domain of the Amazon Chime Enterprise account.' }),
-    ).exactOptional(),
+    DisplayName: SensitiveStringSchema.openapi({ description: 'The bot display name.' }),
+    Domain: NonEmptyStringSchema.exactOptional().openapi({
+      description: 'The domain of the Amazon Chime Enterprise account.',
+    }),
   })
   .openapi({ required: ['DisplayName'], title: 'CreateBotRequest' })
   .openapi('CreateBotRequest')
 
 const CreateChannelBanRequestSchema = z
   .object({
-    MemberArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the member being banned.' }),
-    ),
+    MemberArn: ChimeArnSchema.openapi({ description: 'The ARN of the member being banned.' }),
   })
   .openapi({ required: ['MemberArn'], title: 'CreateChannelBanRequest' })
   .openapi('CreateChannelBanRequest')
 
 const CreateChannelMembershipRequestSchema = z
   .object({
-    MemberArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the member you want to add to the channel.' }),
-    ),
-    Type: ChannelMembershipTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are always returned as part of <code>ListChannelMemberships</code>. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>. Otherwise hidden members are not returned. This is only supported by moderators.',
-        }),
-    ),
+    MemberArn: ChimeArnSchema.openapi({
+      description: 'The ARN of the member you want to add to the channel.',
+    }),
+    Type: ChannelMembershipTypeSchema.openapi({
+      description:
+        'The membership type of a user, <code>DEFAULT</code> or <code>HIDDEN</code>. Default members are always returned as part of <code>ListChannelMemberships</code>. Hidden members are only returned if the type filter in <code>ListChannelMemberships</code> equals <code>HIDDEN</code>. Otherwise hidden members are not returned. This is only supported by moderators.',
+    }),
   })
   .openapi({ required: ['MemberArn', 'Type'], title: 'CreateChannelMembershipRequest' })
   .openapi('CreateChannelMembershipRequest')
 
 const CreateChannelModeratorRequestSchema = z
   .object({
-    ChannelModeratorArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the moderator.' }),
-    ),
+    ChannelModeratorArn: ChimeArnSchema.openapi({ description: 'The ARN of the moderator.' }),
   })
   .openapi({ required: ['ChannelModeratorArn'], title: 'CreateChannelModeratorRequest' })
   .openapi('CreateChannelModeratorRequest')
 
 const CreateChannelRequestSchema = z
   .object({
-    AppInstanceArn: ChimeArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the channel request.' }),
-    ),
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ),
-    Mode: ChannelModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The channel mode: <code>UNRESTRICTED</code> or <code>RESTRICTED</code>. Administrators, moderators, and channel members can add themselves and other members to unrestricted channels. Only administrators and moderators can add members to restricted channels.',
-        }),
-    ).exactOptional(),
-    Privacy: ChannelPrivacySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The channel's privacy level: <code>PUBLIC</code> or <code>PRIVATE</code>. Private channels aren't discoverable by users outside the channel. Public channels are discoverable by anyone in the <code>AppInstance</code>.",
-        }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The metadata of the creation request. Limited to 1KB and UTF-8.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The client token for the request. An <code>Idempotency</code> token.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the creation request.' }),
-    ).exactOptional(),
+    AppInstanceArn: ChimeArnSchema.openapi({ description: 'The ARN of the channel request.' }),
+    Name: NonEmptyResourceNameSchema.openapi({ description: 'The name of the channel.' }),
+    Mode: ChannelModeSchema.exactOptional().openapi({
+      description:
+        'The channel mode: <code>UNRESTRICTED</code> or <code>RESTRICTED</code>. Administrators, moderators, and channel members can add themselves and other members to unrestricted channels. Only administrators and moderators can add members to restricted channels.',
+    }),
+    Privacy: ChannelPrivacySchema.exactOptional().openapi({
+      description:
+        "The channel's privacy level: <code>PUBLIC</code> or <code>PRIVATE</code>. Private channels aren't discoverable by users outside the channel. Public channels are discoverable by anyone in the <code>AppInstance</code>.",
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the creation request. Limited to 1KB and UTF-8.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description: 'The client token for the request. An <code>Idempotency</code> token.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags for the creation request.',
+    }),
   })
   .openapi({
     required: ['AppInstanceArn', 'Name', 'ClientRequestToken'],
@@ -5212,44 +4261,26 @@ const CreateChannelRequestSchema = z
 
 const CreateMediaCapturePipelineRequestSchema = z
   .object({
-    SourceType: MediaPipelineSourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Source type from which the media artifacts will be captured. A Chime SDK Meeting is the only supported source.',
-        }),
-    ),
-    SourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({ description: 'ARN of the source from which the media artifacts are captured.' }),
-    ),
-    SinkType: MediaPipelineSinkTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Destination type to which the media artifacts are saved. You must use an S3 bucket. ',
-        }),
-    ),
-    SinkArn: ArnSchema.and(z.any().openapi({ description: 'The ARN of the sink type.' })),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the client request. The token makes the API request idempotent. Use a different token for different media pipeline requests.',
-        }),
-    ).exactOptional(),
-    ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.',
-        }),
-    ).exactOptional(),
+    SourceType: MediaPipelineSourceTypeSchema.openapi({
+      description:
+        'Source type from which the media artifacts will be captured. A Chime SDK Meeting is the only supported source.',
+    }),
+    SourceArn: ArnSchema.openapi({
+      description: 'ARN of the source from which the media artifacts are captured.',
+    }),
+    SinkType: MediaPipelineSinkTypeSchema.openapi({
+      description:
+        'Destination type to which the media artifacts are saved. You must use an S3 bucket. ',
+    }),
+    SinkArn: ArnSchema.openapi({ description: 'The ARN of the sink type.' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'The unique identifier for the client request. The token makes the API request idempotent. Use a different token for different media pipeline requests.',
+    }),
+    ChimeSdkMeetingConfiguration: ChimeSdkMeetingConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for a specified media capture pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.',
+    }),
   })
   .openapi({
     required: ['SourceType', 'SourceArn', 'SinkType', 'SinkArn'],
@@ -5259,24 +4290,16 @@ const CreateMediaCapturePipelineRequestSchema = z
 
 const CreateMeetingDialOutRequestSchema = z
   .object({
-    FromPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Phone number used as the caller ID when the remote party receives a call.',
-        }),
-    ),
-    ToPhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: 'Phone number called when inviting someone to a meeting.' }),
-    ),
-    JoinToken: JoinTokenStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token used by the Amazon Chime SDK attendee. Call the <a href="https://docs.aws.amazon.com/chime/latest/APIReference/API_CreateAttendee.html">CreateAttendee</a> action to get a join token.',
-        }),
-    ),
+    FromPhoneNumber: E164PhoneNumberSchema.openapi({
+      description: 'Phone number used as the caller ID when the remote party receives a call.',
+    }),
+    ToPhoneNumber: E164PhoneNumberSchema.openapi({
+      description: 'Phone number called when inviting someone to a meeting.',
+    }),
+    JoinToken: JoinTokenStringSchema.openapi({
+      description:
+        'Token used by the Amazon Chime SDK attendee. Call the <a href="https://docs.aws.amazon.com/chime/latest/APIReference/API_CreateAttendee.html">CreateAttendee</a> action to get a join token.',
+    }),
   })
   .openapi({
     required: ['FromPhoneNumber', 'ToPhoneNumber', 'JoinToken'],
@@ -5288,12 +4311,8 @@ const MeetingTagListSchema = z.array(TagSchema).min(1).max(50).openapi('MeetingT
 
 const MeetingNotificationConfigurationSchema = z
   .object({
-    SnsTopicArn: ArnSchema.and(
-      z.any().openapi({ description: 'The SNS topic ARN.' }),
-    ).exactOptional(),
-    SqsQueueArn: ArnSchema.and(
-      z.any().openapi({ description: 'The SQS queue ARN.' }),
-    ).exactOptional(),
+    SnsTopicArn: ArnSchema.exactOptional().openapi({ description: 'The SNS topic ARN.' }),
+    SqsQueueArn: ArnSchema.exactOptional().openapi({ description: 'The SQS queue ARN.' }),
   })
   .openapi({
     description:
@@ -5304,39 +4323,23 @@ const MeetingNotificationConfigurationSchema = z
 
 const CreateMeetingRequestSchema = z
   .object({
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the client request. Use a different token for different meetings.',
-        }),
-    ),
-    ExternalMeetingId: ExternalMeetingIdTypeSchema.and(
-      z.any().openapi({ description: 'The external meeting ID.' }),
-    ).exactOptional(),
-    MeetingHostId: ExternalUserIdTypeSchema.and(
-      z.any().openapi({ description: 'Reserved.' }),
-    ).exactOptional(),
-    MediaRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The Region in which to create the meeting. Default: <code>us-east-1</code>. </p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>',
-        }),
-    ).exactOptional(),
-    Tags: MeetingTagListSchema.and(
-      z.any().openapi({ description: 'The tag key-value pairs.' }),
-    ).exactOptional(),
-    NotificationsConfiguration: MeetingNotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for resource targets to receive notifications when meeting and attendee events occur.',
-        }),
-    ).exactOptional(),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'The unique identifier for the client request. Use a different token for different meetings.',
+    }),
+    ExternalMeetingId: ExternalMeetingIdTypeSchema.exactOptional().openapi({
+      description: 'The external meeting ID.',
+    }),
+    MeetingHostId: ExternalUserIdTypeSchema.exactOptional().openapi({ description: 'Reserved.' }),
+    MediaRegion: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The Region in which to create the meeting. Default: <code>us-east-1</code>. </p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>',
+    }),
+    Tags: MeetingTagListSchema.exactOptional().openapi({ description: 'The tag key-value pairs.' }),
+    NotificationsConfiguration: MeetingNotificationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The configuration for resource targets to receive notifications when meeting and attendee events occur.',
+    }),
   })
   .openapi({ required: ['ClientRequestToken'], title: 'CreateMeetingRequest' })
   .openapi('CreateMeetingRequest')
@@ -5349,54 +4352,38 @@ const CreateMeetingWithAttendeesRequestItemListSchema = z
 
 const CreateMeetingWithAttendeesRequestSchema = z
   .object({
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unique identifier for the client request. Use a different token for different meetings.',
-        }),
-    ),
-    ExternalMeetingId: ExternalMeetingIdTypeSchema.and(
-      z.any().openapi({ description: 'The external meeting ID.' }),
-    ).exactOptional(),
-    MeetingHostId: ExternalUserIdTypeSchema.and(
-      z.any().openapi({ description: 'Reserved.' }),
-    ).exactOptional(),
-    MediaRegion: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> The Region in which to create the meeting. Default: <code>us-east-1</code> . </p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>',
-        }),
-    ).exactOptional(),
-    Tags: MeetingTagListSchema.and(
-      z.any().openapi({ description: 'The tag key-value pairs.' }),
-    ).exactOptional(),
-    NotificationsConfiguration: MeetingNotificationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource target configurations for receiving Amazon Chime SDK meeting and attendee event notifications. The Amazon Chime SDK supports resource targets located in the US East (N. Virginia) AWS Region (us-east-1).',
-        }),
-    ).exactOptional(),
-    Attendees: CreateMeetingWithAttendeesRequestItemListSchema.and(
-      z.any().openapi({ description: 'The request containing the attendees to create.' }),
-    ).exactOptional(),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description:
+        'The unique identifier for the client request. Use a different token for different meetings.',
+    }),
+    ExternalMeetingId: ExternalMeetingIdTypeSchema.exactOptional().openapi({
+      description: 'The external meeting ID.',
+    }),
+    MeetingHostId: ExternalUserIdTypeSchema.exactOptional().openapi({ description: 'Reserved.' }),
+    MediaRegion: StringSchema.exactOptional().openapi({
+      description:
+        '<p> The Region in which to create the meeting. Default: <code>us-east-1</code> . </p> <p> Available values: <code>af-south-1</code> , <code>ap-northeast-1</code> , <code>ap-northeast-2</code> , <code>ap-south-1</code> , <code>ap-southeast-1</code> , <code>ap-southeast-2</code> , <code>ca-central-1</code> , <code>eu-central-1</code> , <code>eu-north-1</code> , <code>eu-south-1</code> , <code>eu-west-1</code> , <code>eu-west-2</code> , <code>eu-west-3</code> , <code>sa-east-1</code> , <code>us-east-1</code> , <code>us-east-2</code> , <code>us-west-1</code> , <code>us-west-2</code> . </p>',
+    }),
+    Tags: MeetingTagListSchema.exactOptional().openapi({ description: 'The tag key-value pairs.' }),
+    NotificationsConfiguration: MeetingNotificationConfigurationSchema.exactOptional().openapi({
+      description:
+        'The resource target configurations for receiving Amazon Chime SDK meeting and attendee event notifications. The Amazon Chime SDK supports resource targets located in the US East (N. Virginia) AWS Region (us-east-1).',
+    }),
+    Attendees: CreateMeetingWithAttendeesRequestItemListSchema.exactOptional().openapi({
+      description: 'The request containing the attendees to create.',
+    }),
   })
   .openapi({ required: ['ClientRequestToken'], title: 'CreateMeetingWithAttendeesRequest' })
   .openapi('CreateMeetingWithAttendeesRequest')
 
 const CreatePhoneNumberOrderRequestSchema = z
   .object({
-    ProductType: PhoneNumberProductTypeSchema.and(
-      z.any().openapi({ description: 'The phone number product type.' }),
-    ),
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ),
+    ProductType: PhoneNumberProductTypeSchema.openapi({
+      description: 'The phone number product type.',
+    }),
+    E164PhoneNumbers: E164PhoneNumberListSchema.openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
   })
   .openapi({
     required: ['ProductType', 'E164PhoneNumbers'],
@@ -5416,37 +4403,27 @@ const ProxySessionNameStringSchema = z
 
 const CreateProxySessionRequestSchema = z
   .object({
-    ParticipantPhoneNumbers: ParticipantPhoneNumberListSchema.and(
-      z.any().openapi({ description: 'The participant phone numbers.' }),
-    ),
-    Name: ProxySessionNameStringSchema.and(
-      z.any().openapi({ description: 'The name of the proxy session.' }),
-    ).exactOptional(),
-    ExpiryMinutes: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The number of minutes allowed for the proxy session.' }),
-    ).exactOptional(),
-    Capabilities: CapabilityListSchema.and(
-      z.any().openapi({ description: 'The proxy session capabilities.' }),
-    ),
-    NumberSelectionBehavior: NumberSelectionBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preference for proxy phone number reuse, or stickiness, between the same participants across sessions.',
-        }),
-    ).exactOptional(),
-    GeoMatchLevel: GeoMatchLevelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The preference for matching the country or area code of the proxy phone number with that of the first participant.',
-        }),
-    ).exactOptional(),
-    GeoMatchParams: GeoMatchParamsSchema.and(
-      z.any().openapi({ description: 'The country and area code for the proxy phone number.' }),
-    ).exactOptional(),
+    ParticipantPhoneNumbers: ParticipantPhoneNumberListSchema.openapi({
+      description: 'The participant phone numbers.',
+    }),
+    Name: ProxySessionNameStringSchema.exactOptional().openapi({
+      description: 'The name of the proxy session.',
+    }),
+    ExpiryMinutes: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The number of minutes allowed for the proxy session.',
+    }),
+    Capabilities: CapabilityListSchema.openapi({ description: 'The proxy session capabilities.' }),
+    NumberSelectionBehavior: NumberSelectionBehaviorSchema.exactOptional().openapi({
+      description:
+        'The preference for proxy phone number reuse, or stickiness, between the same participants across sessions.',
+    }),
+    GeoMatchLevel: GeoMatchLevelSchema.exactOptional().openapi({
+      description:
+        'The preference for matching the country or area code of the proxy phone number with that of the first participant.',
+    }),
+    GeoMatchParams: GeoMatchParamsSchema.exactOptional().openapi({
+      description: 'The country and area code for the proxy phone number.',
+    }),
   })
   .openapi({
     required: ['ParticipantPhoneNumbers', 'Capabilities'],
@@ -5456,22 +4433,22 @@ const CreateProxySessionRequestSchema = z
 
 const CreateRoomMembershipRequestSchema = z
   .object({
-    MemberId: NonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime member ID (user ID or bot ID).' }),
-    ),
-    Role: RoomMembershipRoleSchema.and(
-      z.any().openapi({ description: 'The role of the member.' }),
-    ).exactOptional(),
+    MemberId: NonEmptyStringSchema.openapi({
+      description: 'The Amazon Chime member ID (user ID or bot ID).',
+    }),
+    Role: RoomMembershipRoleSchema.exactOptional().openapi({
+      description: 'The role of the member.',
+    }),
   })
   .openapi({ required: ['MemberId'], title: 'CreateRoomMembershipRequest' })
   .openapi('CreateRoomMembershipRequest')
 
 const CreateRoomRequestSchema = z
   .object({
-    Name: SensitiveStringSchema.and(z.any().openapi({ description: 'The room name.' })),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The idempotency token for the request.' }),
-    ).exactOptional(),
+    Name: SensitiveStringSchema.openapi({ description: 'The room name.' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The idempotency token for the request.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateRoomRequest' })
   .openapi('CreateRoomRequest')
@@ -5484,20 +4461,16 @@ const SipHeadersMapSchema = z
 
 const CreateSipMediaApplicationCallRequestSchema = z
   .object({
-    FromPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The phone number that a user calls from. This is a phone number in your Amazon Chime phone number inventory.',
-        }),
-    ),
-    ToPhoneNumber: E164PhoneNumberSchema.and(
-      z.any().openapi({ description: 'The phone number that the service should call.' }),
-    ),
-    SipHeaders: SipHeadersMapSchema.and(
-      z.any().openapi({ description: 'The SIP headers added to an outbound call leg.' }),
-    ).exactOptional(),
+    FromPhoneNumber: E164PhoneNumberSchema.openapi({
+      description:
+        'The phone number that a user calls from. This is a phone number in your Amazon Chime phone number inventory.',
+    }),
+    ToPhoneNumber: E164PhoneNumberSchema.openapi({
+      description: 'The phone number that the service should call.',
+    }),
+    SipHeaders: SipHeadersMapSchema.exactOptional().openapi({
+      description: 'The SIP headers added to an outbound call leg.',
+    }),
   })
   .openapi({
     required: ['FromPhoneNumber', 'ToPhoneNumber'],
@@ -5507,20 +4480,14 @@ const CreateSipMediaApplicationCallRequestSchema = z
 
 const CreateSipMediaApplicationRequestSchema = z
   .object({
-    AwsRegion: StringSchema.and(
-      z.any().openapi({ description: 'The AWS Region assigned to the SIP media application.' }),
-    ),
-    Name: SipMediaApplicationNameSchema.and(
-      z.any().openapi({ description: 'The SIP media application name.' }),
-    ),
-    Endpoints: SipMediaApplicationEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of endpoints (Lambda Amazon Resource Names) specified for the SIP media application. Currently, only one endpoint is supported.',
-        }),
-    ),
+    AwsRegion: StringSchema.openapi({
+      description: 'The AWS Region assigned to the SIP media application.',
+    }),
+    Name: SipMediaApplicationNameSchema.openapi({ description: 'The SIP media application name.' }),
+    Endpoints: SipMediaApplicationEndpointListSchema.openapi({
+      description:
+        'List of endpoints (Lambda Amazon Resource Names) specified for the SIP media application. Currently, only one endpoint is supported.',
+    }),
   })
   .openapi({
     required: ['AwsRegion', 'Name', 'Endpoints'],
@@ -5530,39 +4497,22 @@ const CreateSipMediaApplicationRequestSchema = z
 
 const CreateSipRuleRequestSchema = z
   .object({
-    Name: SipRuleNameSchema.and(z.any().openapi({ description: 'The name of the SIP rule.' })),
-    TriggerType: SipRuleTriggerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of trigger assigned to the SIP rule in <code>TriggerValue</code>, currently <code>RequestUriHostname</code> or <code>ToPhoneNumber</code>.',
-        }),
-    ),
-    TriggerValue: NonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>TriggerType</code> is <code>RequestUriHostname</code>, the value can be the outbound host name of an Amazon Chime Voice Connector. If <code>TriggerType</code> is <code>ToPhoneNumber</code>, the value can be a customer-owned phone number in the E164 format. The <code>SipMediaApplication</code> specified in the <code>SipRule</code> is triggered if the request URI in an incoming SIP request matches the <code>RequestUriHostname</code>, or if the <code>To</code> header in the incoming SIP request matches the <code>ToPhoneNumber</code> value.',
-        }),
-    ),
-    Disabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Enables or disables a rule. You must disable rules before you can delete them.',
-        }),
-    ).exactOptional(),
-    TargetApplications: SipRuleTargetApplicationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List of SIP media applications with priority and AWS Region. Only one SIP application per AWS Region can be used.',
-        }),
-    ),
+    Name: SipRuleNameSchema.openapi({ description: 'The name of the SIP rule.' }),
+    TriggerType: SipRuleTriggerTypeSchema.openapi({
+      description:
+        'The type of trigger assigned to the SIP rule in <code>TriggerValue</code>, currently <code>RequestUriHostname</code> or <code>ToPhoneNumber</code>.',
+    }),
+    TriggerValue: NonEmptyStringSchema.openapi({
+      description:
+        'If <code>TriggerType</code> is <code>RequestUriHostname</code>, the value can be the outbound host name of an Amazon Chime Voice Connector. If <code>TriggerType</code> is <code>ToPhoneNumber</code>, the value can be a customer-owned phone number in the E164 format. The <code>SipMediaApplication</code> specified in the <code>SipRule</code> is triggered if the request URI in an incoming SIP request matches the <code>RequestUriHostname</code>, or if the <code>To</code> header in the incoming SIP request matches the <code>ToPhoneNumber</code> value.',
+    }),
+    Disabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'Enables or disables a rule. You must disable rules before you can delete them.',
+    }),
+    TargetApplications: SipRuleTargetApplicationListSchema.openapi({
+      description:
+        'List of SIP media applications with priority and AWS Region. Only one SIP application per AWS Region can be used.',
+    }),
   })
   .openapi({
     required: ['Name', 'TriggerType', 'TriggerValue', 'TargetApplications'],
@@ -5572,51 +4522,37 @@ const CreateSipRuleRequestSchema = z
 
 const CreateUserRequestSchema = z
   .object({
-    Username: StringSchema.and(z.any().openapi({ description: 'The user name.' })).exactOptional(),
-    Email: EmailAddressSchema.and(
-      z.any().openapi({ description: "The user's email address." }),
-    ).exactOptional(),
-    UserType: UserTypeSchema.and(
-      z.any().openapi({ description: 'The user type.' }),
-    ).exactOptional(),
+    Username: StringSchema.exactOptional().openapi({ description: 'The user name.' }),
+    Email: EmailAddressSchema.exactOptional().openapi({ description: "The user's email address." }),
+    UserType: UserTypeSchema.exactOptional().openapi({ description: 'The user type.' }),
   })
   .openapi({ title: 'CreateUserRequest', required: [] })
   .openapi('CreateUserRequest')
 
 const CreateVoiceConnectorGroupRequestSchema = z
   .object({
-    Name: VoiceConnectorGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector group.' }),
-    ),
-    VoiceConnectorItems: VoiceConnectorItemListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Chime Voice Connectors to route inbound calls to.' }),
-    ).exactOptional(),
+    Name: VoiceConnectorGroupNameSchema.openapi({
+      description: 'The name of the Amazon Chime Voice Connector group.',
+    }),
+    VoiceConnectorItems: VoiceConnectorItemListSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connectors to route inbound calls to.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'CreateVoiceConnectorGroupRequest' })
   .openapi('CreateVoiceConnectorGroupRequest')
 
 const CreateVoiceConnectorRequestSchema = z
   .object({
-    Name: VoiceConnectorNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector.' }),
-    ),
-    AwsRegion: VoiceConnectorAwsRegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' The AWS Region in which the Amazon Chime Voice Connector is created. Default value: <code>us-east-1</code> . ',
-        }),
-    ).exactOptional(),
-    RequireEncryption: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When enabled, requires encryption for the Amazon Chime Voice Connector.',
-        }),
-    ),
+    Name: VoiceConnectorNameSchema.openapi({
+      description: 'The name of the Amazon Chime Voice Connector.',
+    }),
+    AwsRegion: VoiceConnectorAwsRegionSchema.exactOptional().openapi({
+      description:
+        ' The AWS Region in which the Amazon Chime Voice Connector is created. Default value: <code>us-east-1</code> . ',
+    }),
+    RequireEncryption: BooleanSchema.openapi({
+      description: 'When enabled, requires encryption for the Amazon Chime Voice Connector.',
+    }),
   })
   .openapi({ required: ['Name', 'RequireEncryption'], title: 'CreateVoiceConnectorRequest' })
   .openapi('CreateVoiceConnectorRequest')
@@ -5624,209 +4560,205 @@ const CreateVoiceConnectorRequestSchema = z
 const CredentialListSchema = z.array(CredentialSchema).openapi('CredentialList')
 
 const DeleteAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAccountRequest' })
   .openapi('DeleteAccountRequest')
 
 const DeleteAppInstanceAdminRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAppInstanceAdminRequest' })
   .openapi('DeleteAppInstanceAdminRequest')
 
 const DeleteAppInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAppInstanceRequest' })
   .openapi('DeleteAppInstanceRequest')
 
 const DeleteAppInstanceStreamingConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAppInstanceStreamingConfigurationsRequest' })
   .openapi('DeleteAppInstanceStreamingConfigurationsRequest')
 
 const DeleteAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAppInstanceUserRequest' })
   .openapi('DeleteAppInstanceUserRequest')
 
 const DeleteAttendeeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAttendeeRequest' })
   .openapi('DeleteAttendeeRequest')
 
 const DeleteChannelBanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelBanRequest' })
   .openapi('DeleteChannelBanRequest')
 
 const DeleteChannelMembershipRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelMembershipRequest' })
   .openapi('DeleteChannelMembershipRequest')
 
 const DeleteChannelMessageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelMessageRequest' })
   .openapi('DeleteChannelMessageRequest')
 
 const DeleteChannelModeratorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelModeratorRequest' })
   .openapi('DeleteChannelModeratorRequest')
 
 const DeleteChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteChannelRequest' })
   .openapi('DeleteChannelRequest')
 
 const DeleteEventsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteEventsConfigurationRequest' })
   .openapi('DeleteEventsConfigurationRequest')
 
 const DeleteMediaCapturePipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMediaCapturePipelineRequest' })
   .openapi('DeleteMediaCapturePipelineRequest')
 
 const DeleteMeetingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteMeetingRequest' })
   .openapi('DeleteMeetingRequest')
 
 const DeletePhoneNumberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePhoneNumberRequest' })
   .openapi('DeletePhoneNumberRequest')
 
 const DeleteProxySessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProxySessionRequest' })
   .openapi('DeleteProxySessionRequest')
 
 const DeleteRoomMembershipRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRoomMembershipRequest' })
   .openapi('DeleteRoomMembershipRequest')
 
 const DeleteRoomRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteRoomRequest' })
   .openapi('DeleteRoomRequest')
 
 const DeleteSipMediaApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSipMediaApplicationRequest' })
   .openapi('DeleteSipMediaApplicationRequest')
 
 const DeleteSipRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSipRuleRequest' })
   .openapi('DeleteSipRuleRequest')
 
 const DeleteVoiceConnectorEmergencyCallingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorEmergencyCallingConfigurationRequest' })
   .openapi('DeleteVoiceConnectorEmergencyCallingConfigurationRequest')
 
 const DeleteVoiceConnectorGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorGroupRequest' })
   .openapi('DeleteVoiceConnectorGroupRequest')
 
 const DeleteVoiceConnectorOriginationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorOriginationRequest' })
   .openapi('DeleteVoiceConnectorOriginationRequest')
 
 const DeleteVoiceConnectorProxyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorProxyRequest' })
   .openapi('DeleteVoiceConnectorProxyRequest')
 
 const DeleteVoiceConnectorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorRequest' })
   .openapi('DeleteVoiceConnectorRequest')
 
 const DeleteVoiceConnectorStreamingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorStreamingConfigurationRequest' })
   .openapi('DeleteVoiceConnectorStreamingConfigurationRequest')
 
 const DeleteVoiceConnectorTerminationCredentialsRequestSchema = z
   .object({
-    Usernames: SensitiveStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The RFC2617 compliant username associated with the SIP credentials, in US-ASCII format.',
-        }),
-    ),
+    Usernames: SensitiveStringListSchema.openapi({
+      description:
+        'The RFC2617 compliant username associated with the SIP credentials, in US-ASCII format.',
+    }),
   })
   .openapi({ required: ['Usernames'], title: 'DeleteVoiceConnectorTerminationCredentialsRequest' })
   .openapi('DeleteVoiceConnectorTerminationCredentialsRequest')
 
 const DeleteVoiceConnectorTerminationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteVoiceConnectorTerminationRequest' })
   .openapi('DeleteVoiceConnectorTerminationRequest')
 
 const DescribeAppInstanceAdminRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAppInstanceAdminRequest' })
   .openapi('DescribeAppInstanceAdminRequest')
 
 const DescribeAppInstanceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAppInstanceRequest' })
   .openapi('DescribeAppInstanceRequest')
 
 const DescribeAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeAppInstanceUserRequest' })
   .openapi('DescribeAppInstanceUserRequest')
 
 const DescribeChannelBanRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelBanRequest' })
   .openapi('DescribeChannelBanRequest')
 
 const DescribeChannelMembershipForAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelMembershipForAppInstanceUserRequest' })
   .openapi('DescribeChannelMembershipForAppInstanceUserRequest')
 
 const DescribeChannelMembershipRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelMembershipRequest' })
   .openapi('DescribeChannelMembershipRequest')
 
 const DescribeChannelModeratedByAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelModeratedByAppInstanceUserRequest' })
   .openapi('DescribeChannelModeratedByAppInstanceUserRequest')
 
 const DescribeChannelModeratorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelModeratorRequest' })
   .openapi('DescribeChannelModeratorRequest')
 
 const DescribeChannelRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeChannelRequest' })
   .openapi('DescribeChannelRequest')
 
 const DisassociatePhoneNumberFromUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociatePhoneNumberFromUserRequest' })
   .openapi('DisassociatePhoneNumberFromUserRequest')
 
 const DisassociatePhoneNumbersFromVoiceConnectorGroupRequestSchema = z
   .object({
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ),
+    E164PhoneNumbers: E164PhoneNumberListSchema.openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
   })
   .openapi({
     required: ['E164PhoneNumbers'],
@@ -5836,9 +4768,9 @@ const DisassociatePhoneNumbersFromVoiceConnectorGroupRequestSchema = z
 
 const DisassociatePhoneNumbersFromVoiceConnectorRequestSchema = z
   .object({
-    E164PhoneNumbers: E164PhoneNumberListSchema.and(
-      z.any().openapi({ description: 'List of phone numbers, in E.164 format.' }),
-    ),
+    E164PhoneNumbers: E164PhoneNumberListSchema.openapi({
+      description: 'List of phone numbers, in E.164 format.',
+    }),
   })
   .openapi({
     required: ['E164PhoneNumbers'],
@@ -5848,9 +4780,9 @@ const DisassociatePhoneNumbersFromVoiceConnectorRequestSchema = z
 
 const DisassociateSigninDelegateGroupsFromAccountRequestSchema = z
   .object({
-    GroupNames: NonEmptyStringListSchema.and(
-      z.any().openapi({ description: 'The sign-in delegate group names.' }),
-    ),
+    GroupNames: NonEmptyStringListSchema.openapi({
+      description: 'The sign-in delegate group names.',
+    }),
   })
   .openapi({
     required: ['GroupNames'],
@@ -5859,152 +4791,152 @@ const DisassociateSigninDelegateGroupsFromAccountRequestSchema = z
   .openapi('DisassociateSigninDelegateGroupsFromAccountRequest')
 
 const GetAccountRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountRequest' })
   .openapi('GetAccountRequest')
 
 const GetAccountSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAccountSettingsRequest' })
   .openapi('GetAccountSettingsRequest')
 
 const GetAppInstanceRetentionSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAppInstanceRetentionSettingsRequest' })
   .openapi('GetAppInstanceRetentionSettingsRequest')
 
 const GetAppInstanceStreamingConfigurationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAppInstanceStreamingConfigurationsRequest' })
   .openapi('GetAppInstanceStreamingConfigurationsRequest')
 
 const GetAttendeeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetAttendeeRequest' })
   .openapi('GetAttendeeRequest')
 
 const GetBotRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetBotRequest' })
   .openapi('GetBotRequest')
 
 const GetChannelMessageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetChannelMessageRequest' })
   .openapi('GetChannelMessageRequest')
 
 const GetEventsConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetEventsConfigurationRequest' })
   .openapi('GetEventsConfigurationRequest')
 
 const GetMediaCapturePipelineRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMediaCapturePipelineRequest' })
   .openapi('GetMediaCapturePipelineRequest')
 
 const GetMeetingRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMeetingRequest' })
   .openapi('GetMeetingRequest')
 
 const GetMessagingSessionEndpointRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMessagingSessionEndpointRequest' })
   .openapi('GetMessagingSessionEndpointRequest')
 
 const GetPhoneNumberOrderRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPhoneNumberOrderRequest' })
   .openapi('GetPhoneNumberOrderRequest')
 
 const GetPhoneNumberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetPhoneNumberRequest' })
   .openapi('GetPhoneNumberRequest')
 
 const GetProxySessionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetProxySessionRequest' })
   .openapi('GetProxySessionRequest')
 
 const GetRetentionSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRetentionSettingsRequest' })
   .openapi('GetRetentionSettingsRequest')
 
 const GetRoomRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRoomRequest' })
   .openapi('GetRoomRequest')
 
 const GetSipMediaApplicationLoggingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSipMediaApplicationLoggingConfigurationRequest' })
   .openapi('GetSipMediaApplicationLoggingConfigurationRequest')
 
 const GetSipMediaApplicationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSipMediaApplicationRequest' })
   .openapi('GetSipMediaApplicationRequest')
 
 const GetSipRuleRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSipRuleRequest' })
   .openapi('GetSipRuleRequest')
 
 const GetUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetUserRequest' })
   .openapi('GetUserRequest')
 
 const GetUserSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetUserSettingsRequest' })
   .openapi('GetUserSettingsRequest')
 
 const GetVoiceConnectorEmergencyCallingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorEmergencyCallingConfigurationRequest' })
   .openapi('GetVoiceConnectorEmergencyCallingConfigurationRequest')
 
 const GetVoiceConnectorGroupRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorGroupRequest' })
   .openapi('GetVoiceConnectorGroupRequest')
 
 const GetVoiceConnectorLoggingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorLoggingConfigurationRequest' })
   .openapi('GetVoiceConnectorLoggingConfigurationRequest')
 
 const GetVoiceConnectorOriginationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorOriginationRequest' })
   .openapi('GetVoiceConnectorOriginationRequest')
 
 const GetVoiceConnectorProxyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorProxyRequest' })
   .openapi('GetVoiceConnectorProxyRequest')
 
 const GetVoiceConnectorRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorRequest' })
   .openapi('GetVoiceConnectorRequest')
 
 const GetVoiceConnectorStreamingConfigurationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorStreamingConfigurationRequest' })
   .openapi('GetVoiceConnectorStreamingConfigurationRequest')
 
 const GetVoiceConnectorTerminationHealthRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorTerminationHealthRequest' })
   .openapi('GetVoiceConnectorTerminationHealthRequest')
 
 const GetVoiceConnectorTerminationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVoiceConnectorTerminationRequest' })
   .openapi('GetVoiceConnectorTerminationRequest')
 
@@ -6012,16 +4944,10 @@ const UserEmailListSchema = z.array(EmailAddressSchema).max(50).openapi('UserEma
 
 const InviteUsersRequestSchema = z
   .object({
-    UserEmailList: UserEmailListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The user email addresses to which to send the email invitation.',
-        }),
-    ),
-    UserType: UserTypeSchema.and(
-      z.any().openapi({ description: 'The user type.' }),
-    ).exactOptional(),
+    UserEmailList: UserEmailListSchema.openapi({
+      description: 'The user email addresses to which to send the email invitation.',
+    }),
+    UserType: UserTypeSchema.exactOptional().openapi({ description: 'The user type.' }),
   })
   .openapi({ required: ['UserEmailList'], title: 'InviteUsersRequest' })
   .openapi('InviteUsersRequest')
@@ -6029,163 +4955,163 @@ const InviteUsersRequestSchema = z
 const ProfileServiceMaxResultsSchema = z.int().min(1).max(200).openapi('ProfileServiceMaxResults')
 
 const ListAccountsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAccountsRequest' })
   .openapi('ListAccountsRequest')
 
 const MaxResultsSchema = z.int().min(1).max(50).openapi('MaxResults')
 
 const ListAppInstanceAdminsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAppInstanceAdminsRequest' })
   .openapi('ListAppInstanceAdminsRequest')
 
 const ListAppInstanceUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAppInstanceUsersRequest' })
   .openapi('ListAppInstanceUsersRequest')
 
 const ListAppInstancesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAppInstancesRequest' })
   .openapi('ListAppInstancesRequest')
 
 const ListAttendeeTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttendeeTagsRequest' })
   .openapi('ListAttendeeTagsRequest')
 
 const ResultMaxSchema = z.int().min(1).max(99).openapi('ResultMax')
 
 const ListAttendeesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttendeesRequest' })
   .openapi('ListAttendeesRequest')
 
 const ListBotsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListBotsRequest' })
   .openapi('ListBotsRequest')
 
 const ListChannelBansRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelBansRequest' })
   .openapi('ListChannelBansRequest')
 
 const ListChannelMembershipsForAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelMembershipsForAppInstanceUserRequest' })
   .openapi('ListChannelMembershipsForAppInstanceUserRequest')
 
 const ListChannelMembershipsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelMembershipsRequest' })
   .openapi('ListChannelMembershipsRequest')
 
 const SortOrderSchema = z.enum(['ASCENDING', 'DESCENDING']).openapi('SortOrder')
 
 const ListChannelMessagesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelMessagesRequest' })
   .openapi('ListChannelMessagesRequest')
 
 const ListChannelModeratorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelModeratorsRequest' })
   .openapi('ListChannelModeratorsRequest')
 
 const ListChannelsModeratedByAppInstanceUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelsModeratedByAppInstanceUserRequest' })
   .openapi('ListChannelsModeratedByAppInstanceUserRequest')
 
 const ListChannelsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListChannelsRequest' })
   .openapi('ListChannelsRequest')
 
 const ListMediaCapturePipelinesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMediaCapturePipelinesRequest' })
   .openapi('ListMediaCapturePipelinesRequest')
 
 const ListMeetingTagsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMeetingTagsRequest' })
   .openapi('ListMeetingTagsRequest')
 
 const ListMeetingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListMeetingsRequest' })
   .openapi('ListMeetingsRequest')
 
 const ListPhoneNumberOrdersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPhoneNumberOrdersRequest' })
   .openapi('ListPhoneNumberOrdersRequest')
 
 const ListPhoneNumbersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPhoneNumbersRequest' })
   .openapi('ListPhoneNumbersRequest')
 
 const ListProxySessionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProxySessionsRequest' })
   .openapi('ListProxySessionsRequest')
 
 const ListRoomMembershipsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoomMembershipsRequest' })
   .openapi('ListRoomMembershipsRequest')
 
 const ListRoomsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRoomsRequest' })
   .openapi('ListRoomsRequest')
 
 const ListSipMediaApplicationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSipMediaApplicationsRequest' })
   .openapi('ListSipMediaApplicationsRequest')
 
 const ListSipRulesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSipRulesRequest' })
   .openapi('ListSipRulesRequest')
 
 const ListSupportedPhoneNumberCountriesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListSupportedPhoneNumberCountriesRequest' })
   .openapi('ListSupportedPhoneNumberCountriesRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListUsersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListUsersRequest' })
   .openapi('ListUsersRequest')
 
 const ListVoiceConnectorGroupsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVoiceConnectorGroupsRequest' })
   .openapi('ListVoiceConnectorGroupsRequest')
 
 const ListVoiceConnectorTerminationCredentialsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVoiceConnectorTerminationCredentialsRequest' })
   .openapi('ListVoiceConnectorTerminationCredentialsRequest')
 
 const ListVoiceConnectorsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListVoiceConnectorsRequest' })
   .openapi('ListVoiceConnectorsRequest')
 
 const LogoutUserRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'LogoutUserRequest' })
   .openapi('LogoutUserRequest')
 
@@ -6201,9 +5127,9 @@ const PhoneNumberMaxResultsSchema = z.int().min(1).max(500).openapi('PhoneNumber
 
 const PutAppInstanceRetentionSettingsRequestSchema = z
   .object({
-    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The time in days to retain data. Data type: number.' }),
-    ),
+    AppInstanceRetentionSettings: AppInstanceRetentionSettingsSchema.openapi({
+      description: 'The time in days to retain data. Data type: number.',
+    }),
   })
   .openapi({
     required: ['AppInstanceRetentionSettings'],
@@ -6213,13 +5139,9 @@ const PutAppInstanceRetentionSettingsRequestSchema = z
 
 const PutAppInstanceStreamingConfigurationsRequestSchema = z
   .object({
-    AppInstanceStreamingConfigurations: AppInstanceStreamingConfigurationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The streaming configurations set for an <code>AppInstance</code>.',
-        }),
-    ),
+    AppInstanceStreamingConfigurations: AppInstanceStreamingConfigurationListSchema.openapi({
+      description: 'The streaming configurations set for an <code>AppInstance</code>.',
+    }),
   })
   .openapi({
     required: ['AppInstanceStreamingConfigurations'],
@@ -6229,45 +5151,38 @@ const PutAppInstanceStreamingConfigurationsRequestSchema = z
 
 const PutEventsConfigurationRequestSchema = z
   .object({
-    OutboundEventsHTTPSEndpoint: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'HTTPS endpoint that allows the bot to receive outgoing events.' }),
-    ).exactOptional(),
-    LambdaFunctionArn: SensitiveStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Lambda function ARN that allows the bot to receive outgoing events.',
-        }),
-    ).exactOptional(),
+    OutboundEventsHTTPSEndpoint: SensitiveStringSchema.exactOptional().openapi({
+      description: 'HTTPS endpoint that allows the bot to receive outgoing events.',
+    }),
+    LambdaFunctionArn: SensitiveStringSchema.exactOptional().openapi({
+      description: 'Lambda function ARN that allows the bot to receive outgoing events.',
+    }),
   })
   .openapi({ title: 'PutEventsConfigurationRequest', required: [] })
   .openapi('PutEventsConfigurationRequest')
 
 const PutRetentionSettingsRequestSchema = z
   .object({
-    RetentionSettings: RetentionSettingsSchema.and(
-      z.any().openapi({ description: 'The retention settings.' }),
-    ),
+    RetentionSettings: RetentionSettingsSchema.openapi({ description: 'The retention settings.' }),
   })
   .openapi({ required: ['RetentionSettings'], title: 'PutRetentionSettingsRequest' })
   .openapi('PutRetentionSettingsRequest')
 
 const PutSipMediaApplicationLoggingConfigurationRequestSchema = z
   .object({
-    SipMediaApplicationLoggingConfiguration: SipMediaApplicationLoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The actual logging configuration.' }),
-    ).exactOptional(),
+    SipMediaApplicationLoggingConfiguration:
+      SipMediaApplicationLoggingConfigurationSchema.exactOptional().openapi({
+        description: 'The actual logging configuration.',
+      }),
   })
   .openapi({ title: 'PutSipMediaApplicationLoggingConfigurationRequest', required: [] })
   .openapi('PutSipMediaApplicationLoggingConfigurationRequest')
 
 const PutVoiceConnectorEmergencyCallingConfigurationRequestSchema = z
   .object({
-    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.and(
-      z.any().openapi({ description: 'The emergency calling configuration details.' }),
-    ),
+    EmergencyCallingConfiguration: EmergencyCallingConfigurationSchema.openapi({
+      description: 'The emergency calling configuration details.',
+    }),
   })
   .openapi({
     required: ['EmergencyCallingConfiguration'],
@@ -6277,9 +5192,9 @@ const PutVoiceConnectorEmergencyCallingConfigurationRequestSchema = z
 
 const PutVoiceConnectorLoggingConfigurationRequestSchema = z
   .object({
-    LoggingConfiguration: LoggingConfigurationSchema.and(
-      z.any().openapi({ description: 'The logging configuration details to add.' }),
-    ),
+    LoggingConfiguration: LoggingConfigurationSchema.openapi({
+      description: 'The logging configuration details to add.',
+    }),
   })
   .openapi({
     required: ['LoggingConfiguration'],
@@ -6289,38 +5204,28 @@ const PutVoiceConnectorLoggingConfigurationRequestSchema = z
 
 const PutVoiceConnectorOriginationRequestSchema = z
   .object({
-    Origination: OriginationSchema.and(
-      z.any().openapi({ description: 'The origination setting details to add.' }),
-    ),
+    Origination: OriginationSchema.openapi({
+      description: 'The origination setting details to add.',
+    }),
   })
   .openapi({ required: ['Origination'], title: 'PutVoiceConnectorOriginationRequest' })
   .openapi('PutVoiceConnectorOriginationRequest')
 
 const PutVoiceConnectorProxyRequestSchema = z
   .object({
-    DefaultSessionExpiryMinutes: IntegerSchema.and(
-      z.any().openapi({ description: 'The default number of minutes allowed for proxy sessions.' }),
-    ),
-    PhoneNumberPoolCountries: CountryListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The countries for proxy phone numbers to be selected from.' }),
-    ),
-    FallBackPhoneNumber: E164PhoneNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The phone number to route calls to after a proxy session expires.',
-        }),
-    ).exactOptional(),
-    Disabled: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When true, stops proxy sessions from being created on the specified Amazon Chime Voice Connector.',
-        }),
-    ).exactOptional(),
+    DefaultSessionExpiryMinutes: IntegerSchema.openapi({
+      description: 'The default number of minutes allowed for proxy sessions.',
+    }),
+    PhoneNumberPoolCountries: CountryListSchema.openapi({
+      description: 'The countries for proxy phone numbers to be selected from.',
+    }),
+    FallBackPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+      description: 'The phone number to route calls to after a proxy session expires.',
+    }),
+    Disabled: BooleanSchema.exactOptional().openapi({
+      description:
+        'When true, stops proxy sessions from being created on the specified Amazon Chime Voice Connector.',
+    }),
   })
   .openapi({
     required: ['DefaultSessionExpiryMinutes', 'PhoneNumberPoolCountries'],
@@ -6330,9 +5235,9 @@ const PutVoiceConnectorProxyRequestSchema = z
 
 const PutVoiceConnectorStreamingConfigurationRequestSchema = z
   .object({
-    StreamingConfiguration: StreamingConfigurationSchema.and(
-      z.any().openapi({ description: 'The streaming configuration details to add.' }),
-    ),
+    StreamingConfiguration: StreamingConfigurationSchema.openapi({
+      description: 'The streaming configuration details to add.',
+    }),
   })
   .openapi({
     required: ['StreamingConfiguration'],
@@ -6342,49 +5247,49 @@ const PutVoiceConnectorStreamingConfigurationRequestSchema = z
 
 const PutVoiceConnectorTerminationCredentialsRequestSchema = z
   .object({
-    Credentials: CredentialListSchema.and(
-      z.any().openapi({ description: 'The termination SIP credentials.' }),
-    ).exactOptional(),
+    Credentials: CredentialListSchema.exactOptional().openapi({
+      description: 'The termination SIP credentials.',
+    }),
   })
   .openapi({ title: 'PutVoiceConnectorTerminationCredentialsRequest', required: [] })
   .openapi('PutVoiceConnectorTerminationCredentialsRequest')
 
 const PutVoiceConnectorTerminationRequestSchema = z
   .object({
-    Termination: TerminationSchema.and(
-      z.any().openapi({ description: 'The termination setting details to add.' }),
-    ),
+    Termination: TerminationSchema.openapi({
+      description: 'The termination setting details to add.',
+    }),
   })
   .openapi({ required: ['Termination'], title: 'PutVoiceConnectorTerminationRequest' })
   .openapi('PutVoiceConnectorTerminationRequest')
 
 const RedactChannelMessageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RedactChannelMessageRequest' })
   .openapi('RedactChannelMessageRequest')
 
 const RedactConversationMessageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RedactConversationMessageRequest' })
   .openapi('RedactConversationMessageRequest')
 
 const RedactRoomMessageRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RedactRoomMessageRequest' })
   .openapi('RedactRoomMessageRequest')
 
 const RegenerateSecurityTokenRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RegenerateSecurityTokenRequest' })
   .openapi('RegenerateSecurityTokenRequest')
 
 const ResetPersonalPINRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ResetPersonalPINRequest' })
   .openapi('ResetPersonalPINRequest')
 
 const RestorePhoneNumberRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RestorePhoneNumberRequest' })
   .openapi('RestorePhoneNumberRequest')
 
@@ -6401,38 +5306,26 @@ const TollFreePrefixSchema = z
   .openapi('TollFreePrefix')
 
 const SearchAvailablePhoneNumbersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'SearchAvailablePhoneNumbersRequest' })
   .openapi('SearchAvailablePhoneNumbersRequest')
 
 const SendChannelMessageRequestSchema = z
   .object({
-    Content: NonEmptyContentSchema.and(
-      z.any().openapi({ description: 'The content of the message.' }),
-    ),
-    Type: ChannelMessageTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of message, <code>STANDARD</code> or <code>CONTROL</code>.',
-        }),
-    ),
-    Persistence: ChannelMessagePersistenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Boolean that controls whether the message is persisted on the back end. Required.',
-        }),
-    ),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The optional metadata for each message.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The <code>Idempotency</code> token for each client request.' }),
-    ),
+    Content: NonEmptyContentSchema.openapi({ description: 'The content of the message.' }),
+    Type: ChannelMessageTypeSchema.openapi({
+      description: 'The type of message, <code>STANDARD</code> or <code>CONTROL</code>.',
+    }),
+    Persistence: ChannelMessagePersistenceTypeSchema.openapi({
+      description:
+        'Boolean that controls whether the message is persisted on the back end. Required.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The optional metadata for each message.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.openapi({
+      description: 'The <code>Idempotency</code> token for each client request.',
+    }),
   })
   .openapi({
     required: ['Content', 'Type', 'Persistence', 'ClientRequestToken'],
@@ -6442,21 +5335,12 @@ const SendChannelMessageRequestSchema = z
 
 const TranscriptionConfigurationSchema = z
   .object({
-    EngineTranscribeSettings: EngineTranscribeSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The transcription configuration settings passed to Amazon Transcribe.',
-        }),
-    ).exactOptional(),
-    EngineTranscribeMedicalSettings: EngineTranscribeMedicalSettingsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The transcription configuration settings passed to Amazon Transcribe Medical.',
-        }),
-    ).exactOptional(),
+    EngineTranscribeSettings: EngineTranscribeSettingsSchema.exactOptional().openapi({
+      description: 'The transcription configuration settings passed to Amazon Transcribe.',
+    }),
+    EngineTranscribeMedicalSettings: EngineTranscribeMedicalSettingsSchema.exactOptional().openapi({
+      description: 'The transcription configuration settings passed to Amazon Transcribe Medical.',
+    }),
   })
   .openapi({
     description:
@@ -6467,367 +5351,295 @@ const TranscriptionConfigurationSchema = z
 
 const StartMeetingTranscriptionRequestSchema = z
   .object({
-    TranscriptionConfiguration: TranscriptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration for the current transcription operation. Must contain <code>EngineTranscribeSettings</code> or <code>EngineTranscribeMedicalSettings</code>.',
-        }),
-    ),
+    TranscriptionConfiguration: TranscriptionConfigurationSchema.openapi({
+      description:
+        'The configuration for the current transcription operation. Must contain <code>EngineTranscribeSettings</code> or <code>EngineTranscribeMedicalSettings</code>.',
+    }),
   })
   .openapi({ required: ['TranscriptionConfiguration'], title: 'StartMeetingTranscriptionRequest' })
   .openapi('StartMeetingTranscriptionRequest')
 
 const StopMeetingTranscriptionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'StopMeetingTranscriptionRequest' })
   .openapi('StopMeetingTranscriptionRequest')
 
 const TagAttendeeRequestSchema = z
-  .object({
-    Tags: AttendeeTagListSchema.and(z.any().openapi({ description: 'The tag key-value pairs.' })),
-  })
+  .object({ Tags: AttendeeTagListSchema.openapi({ description: 'The tag key-value pairs.' }) })
   .openapi({ required: ['Tags'], title: 'TagAttendeeRequest' })
   .openapi('TagAttendeeRequest')
 
 const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyList')
 
 const TagMeetingRequestSchema = z
-  .object({
-    Tags: MeetingTagListSchema.and(z.any().openapi({ description: 'The tag key-value pairs.' })),
-  })
+  .object({ Tags: MeetingTagListSchema.openapi({ description: 'The tag key-value pairs.' }) })
   .openapi({ required: ['Tags'], title: 'TagMeetingRequest' })
   .openapi('TagMeetingRequest')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceARN: ArnSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'The tag key-value pairs.' })),
+    ResourceARN: ArnSchema.openapi({ description: 'The resource ARN.' }),
+    Tags: TagListSchema.openapi({ description: 'The tag key-value pairs.' }),
   })
   .openapi({ required: ['ResourceARN', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagAttendeeRequestSchema = z
-  .object({
-    TagKeys: AttendeeTagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
-  })
+  .object({ TagKeys: AttendeeTagKeyListSchema.openapi({ description: 'The tag keys.' }) })
   .openapi({ required: ['TagKeys'], title: 'UntagAttendeeRequest' })
   .openapi('UntagAttendeeRequest')
 
 const UntagMeetingRequestSchema = z
-  .object({
-    TagKeys: MeetingTagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
-  })
+  .object({ TagKeys: MeetingTagKeyListSchema.openapi({ description: 'The tag keys.' }) })
   .openapi({ required: ['TagKeys'], title: 'UntagMeetingRequest' })
   .openapi('UntagMeetingRequest')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceARN: ArnSchema.and(z.any().openapi({ description: 'The resource ARN.' })),
-    TagKeys: TagKeyListSchema.and(z.any().openapi({ description: 'The tag keys.' })),
+    ResourceARN: ArnSchema.openapi({ description: 'The resource ARN.' }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'The tag keys.' }),
   })
   .openapi({ required: ['ResourceARN', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAccountRequestSchema = z
   .object({
-    Name: AccountNameSchema.and(
-      z.any().openapi({ description: 'The new name for the specified Amazon Chime account.' }),
-    ).exactOptional(),
-    DefaultLicense: LicenseSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default license applied when you add users to an Amazon Chime account.',
-        }),
-    ).exactOptional(),
+    Name: AccountNameSchema.exactOptional().openapi({
+      description: 'The new name for the specified Amazon Chime account.',
+    }),
+    DefaultLicense: LicenseSchema.exactOptional().openapi({
+      description: 'The default license applied when you add users to an Amazon Chime account.',
+    }),
   })
   .openapi({ title: 'UpdateAccountRequest', required: [] })
   .openapi('UpdateAccountRequest')
 
 const UpdateAccountSettingsRequestSchema = z
   .object({
-    AccountSettings: AccountSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime account settings to update.' }),
-    ),
+    AccountSettings: AccountSettingsSchema.openapi({
+      description: 'The Amazon Chime account settings to update.',
+    }),
   })
   .openapi({ required: ['AccountSettings'], title: 'UpdateAccountSettingsRequest' })
   .openapi('UpdateAccountSettingsRequest')
 
 const UpdateAppInstanceRequestSchema = z
   .object({
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name that you want to change.' }),
-    ),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata that you want to change.' }),
-    ).exactOptional(),
+    Name: NonEmptyResourceNameSchema.openapi({ description: 'The name that you want to change.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata that you want to change.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateAppInstanceRequest' })
   .openapi('UpdateAppInstanceRequest')
 
 const UpdateAppInstanceUserRequestSchema = z
   .object({
-    Name: UserNameSchema.and(
-      z.any().openapi({ description: 'The name of the <code>AppInstanceUser</code>.' }),
-    ),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the <code>AppInstanceUser</code>.' }),
-    ).exactOptional(),
+    Name: UserNameSchema.openapi({ description: 'The name of the <code>AppInstanceUser</code>.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the <code>AppInstanceUser</code>.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateAppInstanceUserRequest' })
   .openapi('UpdateAppInstanceUserRequest')
 
 const UpdateBotRequestSchema = z
   .object({
-    Disabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When true, stops the specified bot from running in your account.',
-        }),
-    ).exactOptional(),
+    Disabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'When true, stops the specified bot from running in your account.',
+    }),
   })
   .openapi({ title: 'UpdateBotRequest', required: [] })
   .openapi('UpdateBotRequest')
 
 const UpdateChannelMessageRequestSchema = z
   .object({
-    Content: ContentSchema.and(
-      z.any().openapi({ description: 'The content of the message being updated.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata of the message being updated.' }),
-    ).exactOptional(),
+    Content: ContentSchema.exactOptional().openapi({
+      description: 'The content of the message being updated.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata of the message being updated.',
+    }),
   })
   .openapi({ title: 'UpdateChannelMessageRequest', required: [] })
   .openapi('UpdateChannelMessageRequest')
 
 const UpdateChannelReadMarkerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UpdateChannelReadMarkerRequest' })
   .openapi('UpdateChannelReadMarkerRequest')
 
 const UpdateChannelRequestSchema = z
   .object({
-    Name: NonEmptyResourceNameSchema.and(
-      z.any().openapi({ description: 'The name of the channel.' }),
-    ),
-    Mode: ChannelModeSchema.and(
-      z.any().openapi({ description: 'The mode of the update request.' }),
-    ),
-    Metadata: MetadataSchema.and(
-      z.any().openapi({ description: 'The metadata for the update request.' }),
-    ).exactOptional(),
+    Name: NonEmptyResourceNameSchema.openapi({ description: 'The name of the channel.' }),
+    Mode: ChannelModeSchema.openapi({ description: 'The mode of the update request.' }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description: 'The metadata for the update request.',
+    }),
   })
   .openapi({ required: ['Name', 'Mode'], title: 'UpdateChannelRequest' })
   .openapi('UpdateChannelRequest')
 
 const UpdateGlobalSettingsRequestSchema = z
   .object({
-    BusinessCalling: BusinessCallingSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Business Calling settings.' }),
-    ).exactOptional(),
-    VoiceConnector: VoiceConnectorSettingsSchema.and(
-      z.any().openapi({ description: 'The Amazon Chime Voice Connector settings.' }),
-    ).exactOptional(),
+    BusinessCalling: BusinessCallingSettingsSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Business Calling settings.',
+    }),
+    VoiceConnector: VoiceConnectorSettingsSchema.exactOptional().openapi({
+      description: 'The Amazon Chime Voice Connector settings.',
+    }),
   })
   .openapi({ title: 'UpdateGlobalSettingsRequest', required: [] })
   .openapi('UpdateGlobalSettingsRequest')
 
 const UpdatePhoneNumberRequestSchema = z
   .object({
-    ProductType: PhoneNumberProductTypeSchema.and(
-      z.any().openapi({ description: 'The product type.' }),
-    ).exactOptional(),
-    CallingName: CallingNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The outbound calling name associated with the phone number.' }),
-    ).exactOptional(),
+    ProductType: PhoneNumberProductTypeSchema.exactOptional().openapi({
+      description: 'The product type.',
+    }),
+    CallingName: CallingNameSchema.exactOptional().openapi({
+      description: 'The outbound calling name associated with the phone number.',
+    }),
   })
   .openapi({ title: 'UpdatePhoneNumberRequest', required: [] })
   .openapi('UpdatePhoneNumberRequest')
 
 const UpdatePhoneNumberSettingsRequestSchema = z
   .object({
-    CallingName: CallingNameSchema.and(
-      z.any().openapi({ description: 'The default outbound calling name for the account.' }),
-    ),
+    CallingName: CallingNameSchema.openapi({
+      description: 'The default outbound calling name for the account.',
+    }),
   })
   .openapi({ required: ['CallingName'], title: 'UpdatePhoneNumberSettingsRequest' })
   .openapi('UpdatePhoneNumberSettingsRequest')
 
 const UpdateProxySessionRequestSchema = z
   .object({
-    Capabilities: CapabilityListSchema.and(
-      z.any().openapi({ description: 'The proxy session capabilities.' }),
-    ),
-    ExpiryMinutes: PositiveIntegerSchema.and(
-      z.any().openapi({ description: 'The number of minutes allowed for the proxy session.' }),
-    ).exactOptional(),
+    Capabilities: CapabilityListSchema.openapi({ description: 'The proxy session capabilities.' }),
+    ExpiryMinutes: PositiveIntegerSchema.exactOptional().openapi({
+      description: 'The number of minutes allowed for the proxy session.',
+    }),
   })
   .openapi({ required: ['Capabilities'], title: 'UpdateProxySessionRequest' })
   .openapi('UpdateProxySessionRequest')
 
 const UpdateRoomMembershipRequestSchema = z
   .object({
-    Role: RoomMembershipRoleSchema.and(
-      z.any().openapi({ description: 'The role of the member.' }),
-    ).exactOptional(),
+    Role: RoomMembershipRoleSchema.exactOptional().openapi({
+      description: 'The role of the member.',
+    }),
   })
   .openapi({ title: 'UpdateRoomMembershipRequest', required: [] })
   .openapi('UpdateRoomMembershipRequest')
 
 const UpdateRoomRequestSchema = z
   .object({
-    Name: SensitiveStringSchema.and(
-      z.any().openapi({ description: 'The room name.' }),
-    ).exactOptional(),
+    Name: SensitiveStringSchema.exactOptional().openapi({ description: 'The room name.' }),
   })
   .openapi({ title: 'UpdateRoomRequest', required: [] })
   .openapi('UpdateRoomRequest')
 
 const UpdateSipMediaApplicationCallRequestSchema = z
   .object({
-    Arguments: SMAUpdateCallArgumentsMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Arguments made available to the Lambda function as part of the <code>CALL_UPDATE_REQUESTED</code> event. Can contain 0-20 key-value pairs.',
-        }),
-    ),
+    Arguments: SMAUpdateCallArgumentsMapSchema.openapi({
+      description:
+        'Arguments made available to the Lambda function as part of the <code>CALL_UPDATE_REQUESTED</code> event. Can contain 0-20 key-value pairs.',
+    }),
   })
   .openapi({ required: ['Arguments'], title: 'UpdateSipMediaApplicationCallRequest' })
   .openapi('UpdateSipMediaApplicationCallRequest')
 
 const UpdateSipMediaApplicationRequestSchema = z
   .object({
-    Name: SipMediaApplicationNameSchema.and(
-      z.any().openapi({ description: 'The new name for the specified SIP media application.' }),
-    ).exactOptional(),
-    Endpoints: SipMediaApplicationEndpointListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new set of endpoints for the specified SIP media application.',
-        }),
-    ).exactOptional(),
+    Name: SipMediaApplicationNameSchema.exactOptional().openapi({
+      description: 'The new name for the specified SIP media application.',
+    }),
+    Endpoints: SipMediaApplicationEndpointListSchema.exactOptional().openapi({
+      description: 'The new set of endpoints for the specified SIP media application.',
+    }),
   })
   .openapi({ title: 'UpdateSipMediaApplicationRequest', required: [] })
   .openapi('UpdateSipMediaApplicationRequest')
 
 const UpdateSipRuleRequestSchema = z
   .object({
-    Name: SipRuleNameSchema.and(
-      z.any().openapi({ description: 'The new name for the specified SIP rule.' }),
-    ),
-    Disabled: NullableBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The new value specified to indicate whether the rule is disabled.',
-        }),
-    ).exactOptional(),
-    TargetApplications: SipRuleTargetApplicationListSchema.and(
-      z.any().openapi({ description: 'The new value of the list of target applications.' }),
-    ).exactOptional(),
+    Name: SipRuleNameSchema.openapi({ description: 'The new name for the specified SIP rule.' }),
+    Disabled: NullableBooleanSchema.exactOptional().openapi({
+      description: 'The new value specified to indicate whether the rule is disabled.',
+    }),
+    TargetApplications: SipRuleTargetApplicationListSchema.exactOptional().openapi({
+      description: 'The new value of the list of target applications.',
+    }),
   })
   .openapi({ required: ['Name'], title: 'UpdateSipRuleRequest' })
   .openapi('UpdateSipRuleRequest')
 
 const UpdateUserRequestSchema = z
   .object({
-    LicenseType: LicenseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The user license type to update. This must be a supported license type for the Amazon Chime account that the user belongs to.',
-        }),
-    ).exactOptional(),
-    UserType: UserTypeSchema.and(
-      z.any().openapi({ description: 'The user type.' }),
-    ).exactOptional(),
-    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.and(
-      z.any().openapi({ description: 'The Alexa for Business metadata.' }),
-    ).exactOptional(),
+    LicenseType: LicenseSchema.exactOptional().openapi({
+      description:
+        'The user license type to update. This must be a supported license type for the Amazon Chime account that the user belongs to.',
+    }),
+    UserType: UserTypeSchema.exactOptional().openapi({ description: 'The user type.' }),
+    AlexaForBusinessMetadata: AlexaForBusinessMetadataSchema.exactOptional().openapi({
+      description: 'The Alexa for Business metadata.',
+    }),
   })
   .openapi({ title: 'UpdateUserRequest', required: [] })
   .openapi('UpdateUserRequest')
 
 const UpdateUserSettingsRequestSchema = z
   .object({
-    UserSettings: UserSettingsSchema.and(
-      z.any().openapi({ description: 'The user settings to update.' }),
-    ),
+    UserSettings: UserSettingsSchema.openapi({ description: 'The user settings to update.' }),
   })
   .openapi({ required: ['UserSettings'], title: 'UpdateUserSettingsRequest' })
   .openapi('UpdateUserSettingsRequest')
 
 const UpdateVoiceConnectorGroupRequestSchema = z
   .object({
-    Name: VoiceConnectorGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector group.' }),
-    ),
-    VoiceConnectorItems: VoiceConnectorItemListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The <code>VoiceConnectorItems</code> to associate with the group.',
-        }),
-    ),
+    Name: VoiceConnectorGroupNameSchema.openapi({
+      description: 'The name of the Amazon Chime Voice Connector group.',
+    }),
+    VoiceConnectorItems: VoiceConnectorItemListSchema.openapi({
+      description: 'The <code>VoiceConnectorItems</code> to associate with the group.',
+    }),
   })
   .openapi({ required: ['Name', 'VoiceConnectorItems'], title: 'UpdateVoiceConnectorGroupRequest' })
   .openapi('UpdateVoiceConnectorGroupRequest')
 
 const UpdateVoiceConnectorRequestSchema = z
   .object({
-    Name: VoiceConnectorNameSchema.and(
-      z.any().openapi({ description: 'The name of the Amazon Chime Voice Connector.' }),
-    ),
-    RequireEncryption: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When enabled, requires encryption for the Amazon Chime Voice Connector.',
-        }),
-    ),
+    Name: VoiceConnectorNameSchema.openapi({
+      description: 'The name of the Amazon Chime Voice Connector.',
+    }),
+    RequireEncryption: BooleanSchema.openapi({
+      description: 'When enabled, requires encryption for the Amazon Chime Voice Connector.',
+    }),
   })
   .openapi({ required: ['Name', 'RequireEncryption'], title: 'UpdateVoiceConnectorRequest' })
   .openapi('UpdateVoiceConnectorRequest')
 
 const ValidateE911AddressRequestSchema = z
   .object({
-    AwsAccountId: NonEmptyStringSchema.and(z.any().openapi({ description: 'The AWS account ID.' })),
-    StreetNumber: SensitiveNonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The address street number, such as <code>200</code> or <code>2121</code>.',
-        }),
-    ),
-    StreetInfo: SensitiveNonEmptyStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The address street information, such as <code>8th Avenue</code>.',
-        }),
-    ),
-    City: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The address city, such as <code>Portland</code>.' }),
-    ),
-    State: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The address state, such as <code>ME</code>.' }),
-    ),
-    Country: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The address country, such as <code>US</code>. ' }),
-    ),
-    PostalCode: SensitiveNonEmptyStringSchema.and(
-      z.any().openapi({ description: 'The address postal code, such as <code>04352</code>.' }),
-    ),
+    AwsAccountId: NonEmptyStringSchema.openapi({ description: 'The AWS account ID.' }),
+    StreetNumber: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address street number, such as <code>200</code> or <code>2121</code>.',
+    }),
+    StreetInfo: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address street information, such as <code>8th Avenue</code>.',
+    }),
+    City: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address city, such as <code>Portland</code>.',
+    }),
+    State: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address state, such as <code>ME</code>.',
+    }),
+    Country: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address country, such as <code>US</code>. ',
+    }),
+    PostalCode: SensitiveNonEmptyStringSchema.openapi({
+      description: 'The address postal code, such as <code>04352</code>.',
+    }),
   })
   .openapi({
     required: [
@@ -10668,22 +9480,13 @@ export const postMediaCapturePipelinesRoute = createRoute({
                 }),
               ChimeSdkMeetingConfiguration: z
                 .object({
-                  SourceConfiguration: SourceConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The source configuration for a specified media capture pipeline.',
-                      }),
-                  ).exactOptional(),
-                  ArtifactsConfiguration: ArtifactsConfigurationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration for the artifacts in an Amazon Chime SDK meeting.',
-                      }),
-                  ).exactOptional(),
+                  SourceConfiguration: SourceConfigurationSchema.exactOptional().openapi({
+                    description: 'The source configuration for a specified media capture pipeline.',
+                  }),
+                  ArtifactsConfiguration: ArtifactsConfigurationSchema.exactOptional().openapi({
+                    description:
+                      'The configuration for the artifacts in an Amazon Chime SDK meeting.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -10898,12 +9701,12 @@ export const postMeetingsRoute = createRoute({
                 .openapi({ description: 'The tag key-value pairs.' }),
               NotificationsConfiguration: z
                 .object({
-                  SnsTopicArn: ArnSchema.and(
-                    z.any().openapi({ description: 'The SNS topic ARN.' }),
-                  ).exactOptional(),
-                  SqsQueueArn: ArnSchema.and(
-                    z.any().openapi({ description: 'The SQS queue ARN.' }),
-                  ).exactOptional(),
+                  SnsTopicArn: ArnSchema.exactOptional().openapi({
+                    description: 'The SNS topic ARN.',
+                  }),
+                  SqsQueueArn: ArnSchema.exactOptional().openapi({
+                    description: 'The SQS queue ARN.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11130,12 +9933,12 @@ export const postMeetingsOperationCreateAttendeesRoute = createRoute({
                 .openapi({ description: 'The tag key-value pairs.' }),
               NotificationsConfiguration: z
                 .object({
-                  SnsTopicArn: ArnSchema.and(
-                    z.any().openapi({ description: 'The SNS topic ARN.' }),
-                  ).exactOptional(),
-                  SqsQueueArn: ArnSchema.and(
-                    z.any().openapi({ description: 'The SQS queue ARN.' }),
-                  ).exactOptional(),
+                  SnsTopicArn: ArnSchema.exactOptional().openapi({
+                    description: 'The SNS topic ARN.',
+                  }),
+                  SqsQueueArn: ArnSchema.exactOptional().openapi({
+                    description: 'The SQS queue ARN.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -11581,12 +10384,10 @@ export const postVoiceConnectorsVoiceConnectorIdProxySessionsRoute = createRoute
                 }),
               GeoMatchParams: z
                 .object({
-                  Country: CountrySchema.and(
-                    z.any().openapi({ description: 'The country.' }),
-                  ).exactOptional(),
-                  AreaCode: AreaCodeSchema.and(
-                    z.any().openapi({ description: 'The area code.' }),
-                  ).exactOptional(),
+                  Country: CountrySchema.exactOptional().openapi({ description: 'The country.' }),
+                  AreaCode: AreaCodeSchema.exactOptional().openapi({
+                    description: 'The area code.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -18059,14 +16860,10 @@ export const putVoiceConnectorsVoiceConnectorIdEmergencyCallingConfigurationRout
             .object({
               EmergencyCallingConfiguration: z
                 .object({
-                  DNIS: DNISEmergencyCallingConfigurationListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Dialed Number Identification Service (DNIS) emergency calling configuration details.',
-                      }),
-                  ).exactOptional(),
+                  DNIS: DNISEmergencyCallingConfigurationListSchema.exactOptional().openapi({
+                    description:
+                      'The Dialed Number Identification Service (DNIS) emergency calling configuration details.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -18515,22 +17312,14 @@ export const putVoiceConnectorsVoiceConnectorIdOriginationRoute = createRoute({
             .object({
               Origination: z
                 .object({
-                  Routes: OriginationRouteListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The call distribution properties defined for your SIP hosts. Valid range: Minimum value of 1. Maximum value of 20. This parameter is not required, but you must specify this parameter or <code>Disabled</code>.',
-                      }),
-                  ).exactOptional(),
-                  Disabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'When origination settings are disabled, inbound calls are not enabled for your Amazon Chime Voice Connector. This parameter is not required, but you must specify this parameter or <code>Routes</code>.',
-                      }),
-                  ).exactOptional(),
+                  Routes: OriginationRouteListSchema.exactOptional().openapi({
+                    description:
+                      'The call distribution properties defined for your SIP hosts. Valid range: Minimum value of 1. Maximum value of 20. This parameter is not required, but you must specify this parameter or <code>Disabled</code>.',
+                  }),
+                  Disabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'When origination settings are disabled, inbound calls are not enabled for your Amazon Chime Voice Connector. This parameter is not required, but you must specify this parameter or <code>Routes</code>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -18994,23 +17783,16 @@ export const putVoiceConnectorsVoiceConnectorIdStreamingConfigurationRoute = cre
             .object({
               StreamingConfiguration: z
                 .object({
-                  DataRetentionInHours: DataRetentionInHoursSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'The retention period, in hours, for the Amazon Kinesis data.',
-                      }),
-                  ).exactOptional(),
-                  Disabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'When true, media streaming to Amazon Kinesis is turned off.',
-                      }),
-                  ).exactOptional(),
-                  StreamingNotificationTargets: StreamingNotificationTargetListSchema.and(
-                    z.any().openapi({ description: 'The streaming notification targets.' }),
-                  ).exactOptional(),
+                  DataRetentionInHours: DataRetentionInHoursSchema.exactOptional().openapi({
+                    description: 'The retention period, in hours, for the Amazon Kinesis data.',
+                  }),
+                  Disabled: BooleanSchema.exactOptional().openapi({
+                    description: 'When true, media streaming to Amazon Kinesis is turned off.',
+                  }),
+                  StreamingNotificationTargets:
+                    StreamingNotificationTargetListSchema.exactOptional().openapi({
+                      description: 'The streaming notification targets.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -19230,41 +18012,25 @@ export const putVoiceConnectorsVoiceConnectorIdTerminationRoute = createRoute({
             .object({
               Termination: z
                 .object({
-                  CpsLimit: CpsLimitSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The limit on calls per second. Max value based on account service quota. Default value of 1.',
-                      }),
-                  ).exactOptional(),
-                  DefaultPhoneNumber: E164PhoneNumberSchema.and(
-                    z.any().openapi({ description: 'The default caller ID phone number.' }),
-                  ).exactOptional(),
-                  CallingRegions: CallingRegionListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The countries to which calls are allowed, in ISO 3166-1 alpha-2 format. Required.',
-                      }),
-                  ).exactOptional(),
-                  CidrAllowedList: StringListSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The IP addresses allowed to make calls, in CIDR format. Required.',
-                      }),
-                  ).exactOptional(),
-                  Disabled: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'When termination settings are disabled, outbound calls can not be made.',
-                      }),
-                  ).exactOptional(),
+                  CpsLimit: CpsLimitSchema.exactOptional().openapi({
+                    description:
+                      'The limit on calls per second. Max value based on account service quota. Default value of 1.',
+                  }),
+                  DefaultPhoneNumber: E164PhoneNumberSchema.exactOptional().openapi({
+                    description: 'The default caller ID phone number.',
+                  }),
+                  CallingRegions: CallingRegionListSchema.exactOptional().openapi({
+                    description:
+                      'The countries to which calls are allowed, in ISO 3166-1 alpha-2 format. Required.',
+                  }),
+                  CidrAllowedList: StringListSchema.exactOptional().openapi({
+                    description:
+                      'The IP addresses allowed to make calls, in CIDR format. Required.',
+                  }),
+                  Disabled: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'When termination settings are disabled, outbound calls can not be made.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -20227,22 +18993,14 @@ export const putAccountsAccountIdSettingsRoute = createRoute({
             .object({
               AccountSettings: z
                 .object({
-                  DisableRemoteControl: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Setting that stops or starts remote control of shared screens during meetings.',
-                      }),
-                  ).exactOptional(),
-                  EnableDialOut: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Setting that allows meeting participants to choose the <b>Call me at a phone number</b> option. For more information, see <a href="https://docs.aws.amazon.com/chime/latest/ug/chime-join-meeting.html">Join a Meeting without the Amazon Chime App</a>.',
-                      }),
-                  ).exactOptional(),
+                  DisableRemoteControl: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Setting that stops or starts remote control of shared screens during meetings.',
+                  }),
+                  EnableDialOut: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Setting that allows meeting participants to choose the <b>Call me at a phone number</b> option. For more information, see <a href="https://docs.aws.amazon.com/chime/latest/ug/chime-join-meeting.html">Join a Meeting without the Amazon Chime App</a>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -20419,14 +19177,9 @@ export const putAppInstancesAppInstanceArnRetentionSettingsRoute = createRoute({
             .object({
               AppInstanceRetentionSettings: z
                 .object({
-                  ChannelRetentionSettings: ChannelRetentionSettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The length of time in days to retain the messages in a channel.',
-                      }),
-                  ).exactOptional(),
+                  ChannelRetentionSettings: ChannelRetentionSettingsSchema.exactOptional().openapi({
+                    description: 'The length of time in days to retain the messages in a channel.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -20727,14 +19480,9 @@ export const putSettingsRoute = createRoute({
             .object({
               BusinessCalling: z
                 .object({
-                  CdrBucket: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon S3 bucket designated for call detail record storage.',
-                      }),
-                  ).exactOptional(),
+                  CdrBucket: StringSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 bucket designated for call detail record storage.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -20744,14 +19492,9 @@ export const putSettingsRoute = createRoute({
                 }),
               VoiceConnector: z
                 .object({
-                  CdrBucket: StringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon S3 bucket designated for call detail record storage.',
-                      }),
-                  ).exactOptional(),
+                  CdrBucket: StringSchema.exactOptional().openapi({
+                    description: 'The Amazon S3 bucket designated for call detail record storage.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -21123,12 +19866,13 @@ export const putAccountsAccountIdRetentionSettingsRoute = createRoute({
             .object({
               RetentionSettings: z
                 .object({
-                  RoomRetentionSettings: RoomRetentionSettingsSchema.and(
-                    z.any().openapi({ description: 'The chat room retention settings.' }),
-                  ).exactOptional(),
-                  ConversationRetentionSettings: ConversationRetentionSettingsSchema.and(
-                    z.any().openapi({ description: 'The chat conversation retention settings.' }),
-                  ).exactOptional(),
+                  RoomRetentionSettings: RoomRetentionSettingsSchema.exactOptional().openapi({
+                    description: 'The chat room retention settings.',
+                  }),
+                  ConversationRetentionSettings:
+                    ConversationRetentionSettingsSchema.exactOptional().openapi({
+                      description: 'The chat conversation retention settings.',
+                    }),
                 })
                 .openapi({
                   description:
@@ -21286,14 +20030,9 @@ export const putSipMediaApplicationsSipMediaApplicationIdLoggingConfigurationRou
             .object({
               SipMediaApplicationLoggingConfiguration: z
                 .object({
-                  EnableSipMediaApplicationMessageLogs: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Enables application message logs for the SIP media application.',
-                      }),
-                  ).exactOptional(),
+                  EnableSipMediaApplicationMessageLogs: BooleanSchema.exactOptional().openapi({
+                    description: 'Enables application message logs for the SIP media application.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -21484,12 +20223,12 @@ export const postAccountsAccountIdUsersUserIdRoute = createRoute({
                 .openapi({ description: 'The user type.' }),
               AlexaForBusinessMetadata: z
                 .object({
-                  IsAlexaForBusinessEnabled: BooleanSchema.and(
-                    z.any().openapi({ description: 'Starts or stops Alexa for Business.' }),
-                  ).exactOptional(),
-                  AlexaForBusinessRoomArn: SensitiveStringSchema.and(
-                    z.any().openapi({ description: 'The ARN of the room resource.' }),
-                  ).exactOptional(),
+                  IsAlexaForBusinessEnabled: BooleanSchema.exactOptional().openapi({
+                    description: 'Starts or stops Alexa for Business.',
+                  }),
+                  AlexaForBusinessRoomArn: SensitiveStringSchema.exactOptional().openapi({
+                    description: 'The ARN of the room resource.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -21663,11 +20402,9 @@ export const putAccountsAccountIdUsersUserIdSettingsRoute = createRoute({
             .object({
               UserSettings: z
                 .object({
-                  Telephony: TelephonySettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The telephony settings associated with the user.' }),
-                  ).exactOptional(),
+                  Telephony: TelephonySettingsSchema.exactOptional().openapi({
+                    description: 'The telephony settings associated with the user.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -21820,22 +20557,13 @@ export const putVoiceConnectorsVoiceConnectorIdLoggingConfigurationRoute = creat
             .object({
               LoggingConfiguration: z
                 .object({
-                  EnableSIPLogs: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Boolean that enables SIP message logs to Amazon CloudWatch logs.',
-                      }),
-                  ).exactOptional(),
-                  EnableMediaMetricLogs: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Boolean that enables logging of detailed media metrics for Voice Connectors to Amazon CloudWatch logs.',
-                      }),
-                  ).exactOptional(),
+                  EnableSIPLogs: BooleanSchema.exactOptional().openapi({
+                    description: 'Boolean that enables SIP message logs to Amazon CloudWatch logs.',
+                  }),
+                  EnableMediaMetricLogs: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Boolean that enables logging of detailed media metrics for Voice Connectors to Amazon CloudWatch logs.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -24643,22 +23371,15 @@ export const postMeetingsMeetingIdTranscriptionOperationStartRoute = createRoute
             .object({
               TranscriptionConfiguration: z
                 .object({
-                  EngineTranscribeSettings: EngineTranscribeSettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The transcription configuration settings passed to Amazon Transcribe.',
-                      }),
-                  ).exactOptional(),
-                  EngineTranscribeMedicalSettings: EngineTranscribeMedicalSettingsSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The transcription configuration settings passed to Amazon Transcribe Medical.',
-                      }),
-                  ).exactOptional(),
+                  EngineTranscribeSettings: EngineTranscribeSettingsSchema.exactOptional().openapi({
+                    description:
+                      'The transcription configuration settings passed to Amazon Transcribe.',
+                  }),
+                  EngineTranscribeMedicalSettings:
+                    EngineTranscribeMedicalSettingsSchema.exactOptional().openapi({
+                      description:
+                        'The transcription configuration settings passed to Amazon Transcribe Medical.',
+                    }),
                 })
                 .openapi({
                   description:

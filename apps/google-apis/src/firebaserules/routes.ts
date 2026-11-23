@@ -50,8 +50,33 @@ type ExpressionReportType = {
   values?: z.infer<typeof ValueCountSchema>[]
 }
 
+const FileSchema = z
+  .object({
+    content: z.string().exactOptional().openapi({ description: 'Required. Textual Content.' }),
+    fingerprint: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Fingerprint (e.g. github sha) associated with the `File`.' }),
+    name: z.string().exactOptional().openapi({ description: 'Required. File name.' }),
+  })
+  .openapi({ description: '`File` containing source content.', required: [] })
+  .openapi('File')
+
+const SourceSchema = z
+  .object({
+    files: z
+      .array(FileSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. `File` set constituting the `Source` bundle.' }),
+  })
+  .openapi({
+    description: '`Source` is one or more `File` messages comprising a logical set of rules.',
+    required: [],
+  })
+  .openapi('Source')
+
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -70,57 +95,6 @@ const ArgSchema = z
   })
   .openapi({ description: 'Arg matchers for the mock function.', required: [] })
   .openapi('Arg')
-
-const ExpressionReportSchema: z.ZodType<ExpressionReportType> = z
-  .lazy(() =>
-    z
-      .object({
-        children: z
-          .array(ExpressionReportSchema)
-          .exactOptional()
-          .openapi({ description: 'Subexpressions' }),
-        sourcePosition: SourcePositionSchema.exactOptional().openapi({
-          description: 'Position of expression in original rules source.',
-        }),
-        values: z
-          .array(ValueCountSchema)
-          .exactOptional()
-          .openapi({ description: 'Values that this expression evaluated to when encountered.' }),
-      })
-      .openapi({
-        description:
-          'Describes where in a file an expression is found and what it was evaluated to over the course of its use.',
-        required: [],
-      }),
-  )
-  .openapi('ExpressionReport')
-
-const FileSchema = z
-  .object({
-    content: z.string().exactOptional().openapi({ description: 'Required. Textual Content.' }),
-    fingerprint: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Fingerprint (e.g. github sha) associated with the `File`.' }),
-    name: z.string().exactOptional().openapi({ description: 'Required. File name.' }),
-  })
-  .openapi({ description: '`File` containing source content.', required: [] })
-  .openapi('File')
-
-const FunctionCallSchema = z
-  .object({
-    args: z
-      .array(z.any())
-      .exactOptional()
-      .openapi({ description: 'The arguments that were provided to the function.' }),
-    function: z.string().exactOptional().openapi({ description: 'Name of the function invoked.' }),
-  })
-  .openapi({
-    description:
-      'Represents a service-defined function call that was invoked during test execution.',
-    required: [],
-  })
-  .openapi('FunctionCall')
 
 const ResultSchema = z
   .object({
@@ -167,6 +141,109 @@ const FunctionMockSchema = z
     required: [],
   })
   .openapi('FunctionMock')
+
+const TestCaseSchema = z
+  .object({
+    expectation: z
+      .enum(['EXPECTATION_UNSPECIFIED', 'ALLOW', 'DENY'])
+      .exactOptional()
+      .openapi({ description: 'Test expectation.' }),
+    expressionReportLevel: z
+      .enum(['LEVEL_UNSPECIFIED', 'NONE', 'FULL', 'VISITED'])
+      .exactOptional()
+      .openapi({ description: 'Specifies what should be included in the response.' }),
+    functionMocks: z
+      .array(FunctionMockSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional function mocks for service-defined functions. If not set, any service defined function is expected to return an error, which may or may not influence the test outcome.',
+      }),
+    pathEncoding: z
+      .enum(['ENCODING_UNSPECIFIED', 'URL_ENCODED', 'PLAIN'])
+      .exactOptional()
+      .openapi({
+        description: 'Specifies whether paths (such as request.path) are encoded and how.',
+      }),
+    request: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Request context. The exact format of the request context is service-dependent. See the appropriate service documentation for information about the supported fields and types on the request. Minimally, all services support the following fields and types: Request field | Type ---------------|----------------- auth.uid | `string` auth.token | `map` headers | `map` method | `string` params | `map` path | `string` time | `google.protobuf.Timestamp` If the request value is not well-formed for the service, the request will be rejected as an invalid argument.',
+      }),
+    resource: z
+      .any()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional resource value as it appears in persistent storage before the request is fulfilled. The resource type depends on the `request.path` value.',
+      }),
+  })
+  .openapi({
+    description:
+      '`TestCase` messages provide the request context and an expectation as to whether the given context will be allowed or denied. Test cases may specify the `request`, `resource`, and `function_mocks` to mock a function call to a service-provided function. The `request` object represents context present at request-time. The `resource` is the value of the target resource as it appears in persistent storage before the request is executed.',
+    required: [],
+  })
+  .openapi('TestCase')
+
+const TestSuiteSchema = z
+  .object({
+    testCases: z
+      .array(TestCaseSchema)
+      .exactOptional()
+      .openapi({ description: 'Collection of test cases associated with the `TestSuite`.' }),
+  })
+  .openapi({
+    description:
+      '`TestSuite` is a collection of `TestCase` instances that validate the logical correctness of a `Ruleset`. The `TestSuite` may be referenced in-line within a `TestRuleset` invocation or as part of a `Release` object as a pre-release check.',
+    required: [],
+  })
+  .openapi('TestSuite')
+
+type TestRulesetRequestType = {
+  source?: z.infer<typeof SourceSchema>
+  testSuite?: z.infer<typeof TestSuiteSchema>
+}
+
+const ExpressionReportSchema: z.ZodType<ExpressionReportType> = z
+  .lazy(() =>
+    z
+      .object({
+        children: z
+          .array(ExpressionReportSchema)
+          .exactOptional()
+          .openapi({ description: 'Subexpressions' }),
+        sourcePosition: SourcePositionSchema.exactOptional().openapi({
+          description: 'Position of expression in original rules source.',
+        }),
+        values: z
+          .array(ValueCountSchema)
+          .exactOptional()
+          .openapi({ description: 'Values that this expression evaluated to when encountered.' }),
+      })
+      .openapi({
+        description:
+          'Describes where in a file an expression is found and what it was evaluated to over the course of its use.',
+        required: [],
+      }),
+  )
+  .openapi('ExpressionReport')
+
+const FunctionCallSchema = z
+  .object({
+    args: z
+      .array(z.any())
+      .exactOptional()
+      .openapi({ description: 'The arguments that were provided to the function.' }),
+    function: z.string().exactOptional().openapi({ description: 'Name of the function invoked.' }),
+  })
+  .openapi({
+    description:
+      'Represents a service-defined function call that was invoked during test execution.',
+    required: [],
+  })
+  .openapi('FunctionCall')
 
 const GetReleaseExecutableResponseSchema = z
   .object({
@@ -284,19 +361,6 @@ const MetadataSchema = z
   .openapi({ description: 'Metadata for a Ruleset.', required: [] })
   .openapi('Metadata')
 
-const SourceSchema = z
-  .object({
-    files: z
-      .array(FileSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. `File` set constituting the `Source` bundle.' }),
-  })
-  .openapi({
-    description: '`Source` is one or more `File` messages comprising a logical set of rules.',
-    required: [],
-  })
-  .openapi('Source')
-
 const RulesetSchema = z
   .object({
     createTime: z
@@ -342,51 +406,6 @@ const ListRulesetsResponseSchema = z
   })
   .openapi({ description: 'The response for FirebaseRulesService.ListRulesets.', required: [] })
   .openapi('ListRulesetsResponse')
-
-const TestCaseSchema = z
-  .object({
-    expectation: z
-      .enum(['EXPECTATION_UNSPECIFIED', 'ALLOW', 'DENY'])
-      .exactOptional()
-      .openapi({ description: 'Test expectation.' }),
-    expressionReportLevel: z
-      .enum(['LEVEL_UNSPECIFIED', 'NONE', 'FULL', 'VISITED'])
-      .exactOptional()
-      .openapi({ description: 'Specifies what should be included in the response.' }),
-    functionMocks: z
-      .array(FunctionMockSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional function mocks for service-defined functions. If not set, any service defined function is expected to return an error, which may or may not influence the test outcome.',
-      }),
-    pathEncoding: z
-      .enum(['ENCODING_UNSPECIFIED', 'URL_ENCODED', 'PLAIN'])
-      .exactOptional()
-      .openapi({
-        description: 'Specifies whether paths (such as request.path) are encoded and how.',
-      }),
-    request: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Request context. The exact format of the request context is service-dependent. See the appropriate service documentation for information about the supported fields and types on the request. Minimally, all services support the following fields and types: Request field | Type ---------------|----------------- auth.uid | `string` auth.token | `map` headers | `map` method | `string` params | `map` path | `string` time | `google.protobuf.Timestamp` If the request value is not well-formed for the service, the request will be rejected as an invalid argument.',
-      }),
-    resource: z
-      .any()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional resource value as it appears in persistent storage before the request is fulfilled. The resource type depends on the `request.path` value.',
-      }),
-  })
-  .openapi({
-    description:
-      '`TestCase` messages provide the request context and an expectation as to whether the given context will be allowed or denied. Test cases may specify the `request`, `resource`, and `function_mocks` to mock a function call to a service-provided function. The `request` object represents context present at request-time. The `resource` is the value of the target resource as it appears in persistent storage before the request is executed.',
-    required: [],
-  })
-  .openapi('TestCase')
 
 const VisitedExpressionSchema = z
   .object({
@@ -450,21 +469,7 @@ const TestResultSchema = z
   })
   .openapi('TestResult')
 
-const TestSuiteSchema = z
-  .object({
-    testCases: z
-      .array(TestCaseSchema)
-      .exactOptional()
-      .openapi({ description: 'Collection of test cases associated with the `TestSuite`.' }),
-  })
-  .openapi({
-    description:
-      '`TestSuite` is a collection of `TestCase` instances that validate the logical correctness of a `Ruleset`. The `TestSuite` may be referenced in-line within a `TestRuleset` invocation or as part of a `Release` object as a pre-release check.',
-    required: [],
-  })
-  .openapi('TestSuite')
-
-const TestRulesetRequestSchema = z
+const TestRulesetRequestSchema: z.ZodType<TestRulesetRequestType> = z
   .object({
     source: SourceSchema.exactOptional().openapi({
       description:

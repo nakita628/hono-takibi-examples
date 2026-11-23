@@ -1,223 +1,9 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SelectOptionSchema = z
-  .strictObject({
-    value: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    order: z.int32().exactOptional(),
-    hint: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SelectOption')
-
-const PrivacyLevelSchema = z
-  .enum(['normal', 'password', 'apiKey', 'userName'])
-  .openapi('PrivacyLevel')
-
-const FieldSchema = z
-  .strictObject({
-    order: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    label: z.string().nullable().exactOptional(),
-    unit: z.string().nullable().exactOptional(),
-    helpText: z.string().nullable().exactOptional(),
-    helpTextWarning: z.string().nullable().exactOptional(),
-    helpLink: z.string().nullable().exactOptional(),
-    value: z.any().exactOptional(),
-    type: z.string().nullable().exactOptional(),
-    advanced: z.boolean().exactOptional(),
-    selectOptions: z.array(SelectOptionSchema).nullable().exactOptional(),
-    selectOptionsProviderAction: z.string().nullable().exactOptional(),
-    section: z.string().nullable().exactOptional(),
-    hidden: z.string().nullable().exactOptional(),
-    privacy: PrivacyLevelSchema.exactOptional(),
-    placeholder: z.string().nullable().exactOptional(),
-    isFloat: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Field')
-
-type CustomFormatSpecificationSchemaType = {
-  id?: number
-  name?: string | null
-  implementation?: string | null
-  implementationName?: string | null
-  infoLink?: string | null
-  negate?: boolean
-  required?: boolean
-  fields?: z.infer<typeof FieldSchema>[] | null
-  presets?: CustomFormatSpecificationSchemaType[] | null
-}
-
-const ProviderMessageTypeSchema = z
-  .enum(['info', 'warning', 'error'])
-  .openapi('ProviderMessageType')
-
-const ProviderMessageSchema = z
-  .strictObject({
-    message: z.string().nullable().exactOptional(),
-    type: ProviderMessageTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ProviderMessage')
-
-const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
-
-type DownloadClientResourceType = {
-  id?: number
-  name?: string | null
-  fields?: z.infer<typeof FieldSchema>[] | null
-  implementationName?: string | null
-  implementation?: string | null
-  configContract?: string | null
-  infoLink?: string | null
-  message?: z.infer<typeof ProviderMessageSchema>
-  tags?: number[] | null
-  presets?: DownloadClientResourceType[] | null
-  enable?: boolean
-  protocol?: z.infer<typeof DownloadProtocolSchema>
-  priority?: number
-  removeCompletedDownloads?: boolean
-  removeFailedDownloads?: boolean
-}
-
-const MonitorTypesSchema = z
-  .enum([
-    'unknown',
-    'all',
-    'future',
-    'missing',
-    'existing',
-    'firstSeason',
-    'lastSeason',
-    'latestSeason',
-    'pilot',
-    'recent',
-    'monitorSpecials',
-    'unmonitorSpecials',
-    'none',
-    'skip',
-  ])
-  .openapi('MonitorTypes')
-
-const NewItemMonitorTypesSchema = z.enum(['all', 'none']).openapi('NewItemMonitorTypes')
-
-const SeriesTypesSchema = z.enum(['standard', 'daily', 'anime']).openapi('SeriesTypes')
-
 const LanguageSchema = z
   .strictObject({ id: z.int32().exactOptional(), name: z.string().nullable().exactOptional() })
   .openapi({ required: [] })
   .openapi('Language')
-
-const ImportListTypeSchema = z
-  .enum(['program', 'plex', 'trakt', 'simkl', 'other', 'advanced'])
-  .openapi('ImportListType')
-
-const TagExistingTypeSchema = z.enum(['none', 'add', 'sync']).openapi('TagExistingType')
-
-type ImportListResourceType = {
-  id?: number
-  name?: string | null
-  fields?: z.infer<typeof FieldSchema>[] | null
-  implementationName?: string | null
-  implementation?: string | null
-  configContract?: string | null
-  infoLink?: string | null
-  message?: z.infer<typeof ProviderMessageSchema>
-  tags?: number[] | null
-  presets?: ImportListResourceType[] | null
-  enableAutomaticAdd?: boolean
-  searchForMissingEpisodes?: boolean
-  shouldMonitor?: z.infer<typeof MonitorTypesSchema>
-  monitorNewItems?: z.infer<typeof NewItemMonitorTypesSchema>
-  rootFolderPath?: string | null
-  qualityProfileId?: number
-  seriesType?: z.infer<typeof SeriesTypesSchema>
-  language?: z.infer<typeof LanguageSchema>
-  seasonFolder?: boolean
-  listType?: z.infer<typeof ImportListTypeSchema>
-  listOrder?: number
-  minRefreshInterval?: string
-  tagExisting?: z.infer<typeof TagExistingTypeSchema>
-}
-
-type IndexerResourceType = {
-  id?: number
-  name?: string | null
-  fields?: z.infer<typeof FieldSchema>[] | null
-  implementationName?: string | null
-  implementation?: string | null
-  configContract?: string | null
-  infoLink?: string | null
-  message?: z.infer<typeof ProviderMessageSchema>
-  tags?: number[] | null
-  presets?: IndexerResourceType[] | null
-  enableRss?: boolean
-  enableAutomaticSearch?: boolean
-  enableInteractiveSearch?: boolean
-  supportsRss?: boolean
-  supportsSearch?: boolean
-  protocol?: z.infer<typeof DownloadProtocolSchema>
-  priority?: number
-  seasonSearchMaximumSingleEpisodeAge?: number
-  downloadClientId?: number
-}
-
-type MetadataResourceType = {
-  id?: number
-  name?: string | null
-  fields?: z.infer<typeof FieldSchema>[] | null
-  implementationName?: string | null
-  implementation?: string | null
-  configContract?: string | null
-  infoLink?: string | null
-  message?: z.infer<typeof ProviderMessageSchema>
-  tags?: number[] | null
-  presets?: MetadataResourceType[] | null
-  enable?: boolean
-}
-
-type NotificationResourceType = {
-  id?: number
-  name?: string | null
-  fields?: z.infer<typeof FieldSchema>[] | null
-  implementationName?: string | null
-  implementation?: string | null
-  configContract?: string | null
-  infoLink?: string | null
-  message?: z.infer<typeof ProviderMessageSchema>
-  tags?: number[] | null
-  presets?: NotificationResourceType[] | null
-  link?: string | null
-  onGrab?: boolean
-  onDownload?: boolean
-  onUpgrade?: boolean
-  onImportComplete?: boolean
-  onRename?: boolean
-  onSeriesAdd?: boolean
-  onSeriesDelete?: boolean
-  onEpisodeFileDelete?: boolean
-  onEpisodeFileDeleteForUpgrade?: boolean
-  onHealthIssue?: boolean
-  includeHealthWarnings?: boolean
-  onHealthRestored?: boolean
-  onApplicationUpdate?: boolean
-  onManualInteractionRequired?: boolean
-  supportsOnGrab?: boolean
-  supportsOnDownload?: boolean
-  supportsOnUpgrade?: boolean
-  supportsOnImportComplete?: boolean
-  supportsOnRename?: boolean
-  supportsOnSeriesAdd?: boolean
-  supportsOnSeriesDelete?: boolean
-  supportsOnEpisodeFileDelete?: boolean
-  supportsOnEpisodeFileDeleteForUpgrade?: boolean
-  supportsOnHealthIssue?: boolean
-  supportsOnHealthRestored?: boolean
-  supportsOnApplicationUpdate?: boolean
-  supportsOnManualInteractionRequired?: boolean
-  testCommand?: string | null
-}
 
 const QualitySourceSchema = z
   .enum(['unknown', 'television', 'televisionRaw', 'web', 'webRip', 'dvd', 'bluray', 'blurayRaw'])
@@ -232,122 +18,6 @@ const QualitySchema = z
   })
   .openapi({ required: [] })
   .openapi('Quality')
-
-type QualityProfileQualityItemResourceType = {
-  id?: number
-  name?: string | null
-  quality?: z.infer<typeof QualitySchema>
-  items?: QualityProfileQualityItemResourceType[] | null
-  allowed?: boolean
-  minSize?: number | null
-  maxSize?: number | null
-  preferredSize?: number | null
-}
-
-const AddSeriesOptionsSchema = z
-  .strictObject({
-    ignoreEpisodesWithFiles: z.boolean().exactOptional(),
-    ignoreEpisodesWithoutFiles: z.boolean().exactOptional(),
-    monitor: MonitorTypesSchema.exactOptional(),
-    searchForMissingEpisodes: z.boolean().exactOptional(),
-    searchForCutoffUnmetEpisodes: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddSeriesOptions')
-
-const AlternateTitleResourceSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    seasonNumber: z.int32().nullable().exactOptional(),
-    sceneSeasonNumber: z.int32().nullable().exactOptional(),
-    sceneOrigin: z.string().nullable().exactOptional(),
-    comment: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AlternateTitleResource')
-
-const ApiInfoResourceSchema = z
-  .strictObject({
-    current: z.string().nullable().exactOptional(),
-    deprecated: z.array(z.string()).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ApiInfoResource')
-
-const ApplyTagsSchema = z.enum(['add', 'remove', 'replace']).openapi('ApplyTags')
-
-const AuthenticationRequiredTypeSchema = z
-  .enum(['enabled', 'disabledForLocalAddresses', 'disabledForLocalhost'])
-  .openapi('AuthenticationRequiredType')
-
-const AuthenticationTypeSchema = z
-  .enum(['none', 'basic', 'forms', 'external', 'oidc'])
-  .openapi('AuthenticationType')
-
-const AutoTaggingSpecificationSchemaSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    implementation: z.string().nullable().exactOptional(),
-    implementationName: z.string().nullable().exactOptional(),
-    negate: z.boolean().exactOptional(),
-    required: z.boolean().exactOptional(),
-    fields: z.array(FieldSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AutoTaggingSpecificationSchema')
-
-const AutoTaggingResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    removeTagsAutomatically: z.boolean().exactOptional(),
-    tags: z
-      .array(z.int32())
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .nullable()
-      .exactOptional(),
-    specifications: z.array(AutoTaggingSpecificationSchemaSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AutoTaggingResource')
-
-const BackupTypeSchema = z.enum(['scheduled', 'manual', 'update']).openapi('BackupType')
-
-const BackupResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    name: z.string().nullable().exactOptional(),
-    path: z.string().nullable().exactOptional(),
-    type: BackupTypeSchema.exactOptional(),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    time: z.iso.datetime({ offset: true }).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BackupResource')
-
-const BlocklistBulkResourceSchema = z
-  .strictObject({ ids: z.array(z.int32()).nullable().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('BlocklistBulkResource')
 
 const RevisionSchema = z
   .strictObject({
@@ -393,6 +63,19 @@ const CustomFormatResourceSchema = z
   })
   .openapi({ required: [] })
   .openapi('CustomFormatResource')
+
+const DownloadProtocolSchema = z.enum(['unknown', 'usenet', 'torrent']).openapi('DownloadProtocol')
+
+const AlternateTitleResourceSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    seasonNumber: z.int32().nullable().exactOptional(),
+    sceneSeasonNumber: z.int32().nullable().exactOptional(),
+    sceneOrigin: z.string().nullable().exactOptional(),
+    comment: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AlternateTitleResource')
 
 const SeriesStatusTypeSchema = z
   .enum(['continuing', 'ended', 'upcoming', 'deleted'])
@@ -466,6 +149,10 @@ const SeriesTranslationResourceSchema = z
   .openapi({ required: [] })
   .openapi('SeriesTranslationResource')
 
+const NewItemMonitorTypesSchema = z.enum(['all', 'none']).openapi('NewItemMonitorTypes')
+
+const SeriesTypesSchema = z.enum(['standard', 'daily', 'anime']).openapi('SeriesTypes')
+
 const SeriesFolderResourceSchema = z
   .strictObject({
     language: LanguageSchema.exactOptional(),
@@ -473,6 +160,36 @@ const SeriesFolderResourceSchema = z
   })
   .openapi({ required: [] })
   .openapi('SeriesFolderResource')
+
+const MonitorTypesSchema = z
+  .enum([
+    'unknown',
+    'all',
+    'future',
+    'missing',
+    'existing',
+    'firstSeason',
+    'lastSeason',
+    'latestSeason',
+    'pilot',
+    'recent',
+    'monitorSpecials',
+    'unmonitorSpecials',
+    'none',
+    'skip',
+  ])
+  .openapi('MonitorTypes')
+
+const AddSeriesOptionsSchema = z
+  .strictObject({
+    ignoreEpisodesWithFiles: z.boolean().exactOptional(),
+    ignoreEpisodesWithoutFiles: z.boolean().exactOptional(),
+    monitor: MonitorTypesSchema.exactOptional(),
+    searchForMissingEpisodes: z.boolean().exactOptional(),
+    searchForCutoffUnmetEpisodes: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AddSeriesOptions')
 
 const RatingsSchema = z
   .strictObject({ votes: z.int32().exactOptional(), value: z.float64().exactOptional() })
@@ -573,7 +290,24 @@ const SeriesResourceSchema = z
   .openapi({ required: [] })
   .openapi('SeriesResource')
 
-const BlocklistResourceSchema = z
+type BlocklistResourceType = {
+  id?: number
+  seriesId?: number
+  episodeIds?: number[] | null
+  sourceTitle?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  date?: string
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexer?: string | null
+  message?: string | null
+  series?: z.infer<typeof SeriesResourceSchema>
+}
+
+const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
+
+const BlocklistResourceSchema: z.ZodType<BlocklistResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     seriesId: z.int32().exactOptional(),
@@ -591,9 +325,822 @@ const BlocklistResourceSchema = z
   .openapi({ required: [] })
   .openapi('BlocklistResource')
 
-const SortDirectionSchema = z.enum(['default', 'ascending', 'descending']).openapi('SortDirection')
+type BlocklistResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof BlocklistResourceSchema>[] | null
+}
 
-const BlocklistResourcePagingResourceSchema = z
+const SelectOptionSchema = z
+  .strictObject({
+    value: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    order: z.int32().exactOptional(),
+    hint: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SelectOption')
+
+const PrivacyLevelSchema = z
+  .enum(['normal', 'password', 'apiKey', 'userName'])
+  .openapi('PrivacyLevel')
+
+const FieldSchema = z
+  .strictObject({
+    order: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    label: z.string().nullable().exactOptional(),
+    unit: z.string().nullable().exactOptional(),
+    helpText: z.string().nullable().exactOptional(),
+    helpTextWarning: z.string().nullable().exactOptional(),
+    helpLink: z.string().nullable().exactOptional(),
+    value: z.any().exactOptional(),
+    type: z.string().nullable().exactOptional(),
+    advanced: z.boolean().exactOptional(),
+    selectOptions: z.array(SelectOptionSchema).nullable().exactOptional(),
+    selectOptionsProviderAction: z.string().nullable().exactOptional(),
+    section: z.string().nullable().exactOptional(),
+    hidden: z.string().nullable().exactOptional(),
+    privacy: PrivacyLevelSchema.exactOptional(),
+    placeholder: z.string().nullable().exactOptional(),
+    isFloat: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Field')
+
+type CustomFormatSpecificationSchemaType = {
+  id?: number
+  name?: string | null
+  implementation?: string | null
+  implementationName?: string | null
+  infoLink?: string | null
+  negate?: boolean
+  required?: boolean
+  fields?: z.infer<typeof FieldSchema>[] | null
+  presets?: CustomFormatSpecificationSchemaType[] | null
+}
+
+const ProviderMessageTypeSchema = z
+  .enum(['info', 'warning', 'error'])
+  .openapi('ProviderMessageType')
+
+const ProviderMessageSchema = z
+  .strictObject({
+    message: z.string().nullable().exactOptional(),
+    type: ProviderMessageTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ProviderMessage')
+
+type DownloadClientResourceType = {
+  id?: number
+  name?: string | null
+  fields?: z.infer<typeof FieldSchema>[] | null
+  implementationName?: string | null
+  implementation?: string | null
+  configContract?: string | null
+  infoLink?: string | null
+  message?: z.infer<typeof ProviderMessageSchema>
+  tags?: number[] | null
+  presets?: DownloadClientResourceType[] | null
+  enable?: boolean
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  priority?: number
+  removeCompletedDownloads?: boolean
+  removeFailedDownloads?: boolean
+}
+
+const ReleaseTypeSchema = z
+  .enum(['unknown', 'singleEpisode', 'multiEpisode', 'seasonPack', 'multiSeasonPack'])
+  .openapi('ReleaseType')
+
+const MediaInfoResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    audioBitrate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    audioChannels: z.float64().exactOptional(),
+    audioCodec: z.string().nullable().exactOptional(),
+    audioLanguages: z.string().nullable().exactOptional(),
+    audioStreamCount: z.int32().exactOptional(),
+    videoBitDepth: z.int32().exactOptional(),
+    videoBitrate: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    videoCodec: z.string().nullable().exactOptional(),
+    videoFps: z.float64().exactOptional(),
+    videoDynamicRange: z.string().nullable().exactOptional(),
+    videoDynamicRangeType: z.string().nullable().exactOptional(),
+    resolution: z.string().nullable().exactOptional(),
+    runTime: z.string().nullable().exactOptional(),
+    scanType: z.string().nullable().exactOptional(),
+    subtitles: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('MediaInfoResource')
+
+type EpisodeFileResourceType = {
+  id?: number
+  seriesId?: number
+  seasonNumber?: number
+  relativePath?: string | null
+  path?: string | null
+  size?: bigint
+  dateAdded?: string
+  sceneName?: string | null
+  releaseGroup?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number | null
+  releaseType?: z.infer<typeof ReleaseTypeSchema>
+  mediaInfo?: z.infer<typeof MediaInfoResourceSchema>
+  qualityCutoffNotMet?: boolean
+}
+
+const EpisodeFileResourceSchema: z.ZodType<EpisodeFileResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    seriesId: z.int32().exactOptional(),
+    seasonNumber: z.int32().exactOptional(),
+    relativePath: z.string().nullable().exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
+    sceneName: z.string().nullable().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    indexerFlags: z.int32().nullable().exactOptional(),
+    releaseType: ReleaseTypeSchema.exactOptional(),
+    mediaInfo: MediaInfoResourceSchema.exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EpisodeFileResource')
+
+type EpisodeResourceType = {
+  id?: number
+  seriesId?: number
+  tvdbId?: number
+  episodeFileId?: number
+  seasonNumber?: number
+  episodeNumber?: number
+  title?: string | null
+  airDate?: string | null
+  airDateUtc?: string | null
+  lastSearchTime?: string | null
+  runtime?: number
+  finaleType?: string | null
+  overview?: string | null
+  episodeFile?: z.infer<typeof EpisodeFileResourceSchema>
+  hasFile?: boolean
+  monitored?: boolean
+  absoluteEpisodeNumber?: number | null
+  sceneAbsoluteEpisodeNumber?: number | null
+  sceneEpisodeNumber?: number | null
+  sceneSeasonNumber?: number | null
+  unverifiedSceneNumbering?: boolean
+  series?: z.infer<typeof SeriesResourceSchema>
+  images?: z.infer<typeof MediaCoverSchema>[] | null
+}
+
+const EpisodeResourceSchema: z.ZodType<EpisodeResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    seriesId: z.int32().exactOptional(),
+    tvdbId: z.int32().exactOptional(),
+    episodeFileId: z.int32().exactOptional(),
+    seasonNumber: z.int32().exactOptional(),
+    episodeNumber: z.int32().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    airDate: z.string().nullable().exactOptional(),
+    airDateUtc: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    lastSearchTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    runtime: z.int32().exactOptional(),
+    finaleType: z.string().nullable().exactOptional(),
+    overview: z.string().nullable().exactOptional(),
+    episodeFile: EpisodeFileResourceSchema.exactOptional(),
+    hasFile: z.boolean().exactOptional(),
+    monitored: z.boolean().exactOptional(),
+    absoluteEpisodeNumber: z.int32().nullable().exactOptional(),
+    sceneAbsoluteEpisodeNumber: z.int32().nullable().exactOptional(),
+    sceneEpisodeNumber: z.int32().nullable().exactOptional(),
+    sceneSeasonNumber: z.int32().nullable().exactOptional(),
+    unverifiedSceneNumbering: z.boolean().exactOptional(),
+    series: SeriesResourceSchema.exactOptional(),
+    images: z.array(MediaCoverSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('EpisodeResource')
+
+type EpisodeResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof EpisodeResourceSchema>[] | null
+}
+
+const EpisodeHistoryEventTypeSchema = z
+  .enum([
+    'unknown',
+    'grabbed',
+    'seriesFolderImported',
+    'downloadFolderImported',
+    'downloadFailed',
+    'episodeFileDeleted',
+    'episodeFileRenamed',
+    'downloadIgnored',
+  ])
+  .openapi('EpisodeHistoryEventType')
+
+type HistoryResourceType = {
+  id?: number
+  episodeId?: number
+  seriesId?: number
+  sourceTitle?: string | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  qualityCutoffNotMet?: boolean
+  date?: string
+  downloadId?: string | null
+  eventType?: z.infer<typeof EpisodeHistoryEventTypeSchema>
+  data?: { [key: string]: string | null } | null
+  episode?: z.infer<typeof EpisodeResourceSchema>
+  series?: z.infer<typeof SeriesResourceSchema>
+}
+
+const HistoryResourceSchema: z.ZodType<HistoryResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    episodeId: z.int32().exactOptional(),
+    seriesId: z.int32().exactOptional(),
+    sourceTitle: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    qualityCutoffNotMet: z.boolean().exactOptional(),
+    date: z.iso.datetime({ offset: true }).exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    eventType: EpisodeHistoryEventTypeSchema.exactOptional(),
+    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
+    episode: EpisodeResourceSchema.exactOptional(),
+    series: SeriesResourceSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('HistoryResource')
+
+type HistoryResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof HistoryResourceSchema>[] | null
+}
+
+const ImportListTypeSchema = z
+  .enum(['program', 'plex', 'trakt', 'simkl', 'tmdb', 'other', 'advanced'])
+  .openapi('ImportListType')
+
+const TagExistingTypeSchema = z.enum(['none', 'add', 'sync']).openapi('TagExistingType')
+
+type ImportListResourceType = {
+  id?: number
+  name?: string | null
+  fields?: z.infer<typeof FieldSchema>[] | null
+  implementationName?: string | null
+  implementation?: string | null
+  configContract?: string | null
+  infoLink?: string | null
+  message?: z.infer<typeof ProviderMessageSchema>
+  tags?: number[] | null
+  presets?: ImportListResourceType[] | null
+  enableAutomaticAdd?: boolean
+  searchForMissingEpisodes?: boolean
+  shouldMonitor?: z.infer<typeof MonitorTypesSchema>
+  monitorNewItems?: z.infer<typeof NewItemMonitorTypesSchema>
+  rootFolderPath?: string | null
+  qualityProfileId?: number
+  seriesType?: z.infer<typeof SeriesTypesSchema>
+  language?: z.infer<typeof LanguageSchema>
+  seasonFolder?: boolean
+  listType?: z.infer<typeof ImportListTypeSchema>
+  listOrder?: number
+  minRefreshInterval?: string
+  tagExisting?: z.infer<typeof TagExistingTypeSchema>
+}
+
+type IndexerResourceType = {
+  id?: number
+  name?: string | null
+  fields?: z.infer<typeof FieldSchema>[] | null
+  implementationName?: string | null
+  implementation?: string | null
+  configContract?: string | null
+  infoLink?: string | null
+  message?: z.infer<typeof ProviderMessageSchema>
+  tags?: number[] | null
+  presets?: IndexerResourceType[] | null
+  enableRss?: boolean
+  enableAutomaticSearch?: boolean
+  enableInteractiveSearch?: boolean
+  supportsRss?: boolean
+  supportsSearch?: boolean
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  priority?: number
+  seasonSearchMaximumSingleEpisodeAge?: number
+  downloadClientId?: number
+}
+
+const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
+
+const ImportRejectionResourceSchema = z
+  .strictObject({
+    reason: z.string().nullable().exactOptional(),
+    type: RejectionTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ImportRejectionResource')
+
+type ManualImportReprocessResourceType = {
+  id?: number
+  path?: string | null
+  seriesId?: number
+  seasonNumber?: number | null
+  episodes?: z.infer<typeof EpisodeResourceSchema>[] | null
+  episodeIds?: number[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  releaseGroup?: string | null
+  downloadId?: string | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number
+  releaseType?: z.infer<typeof ReleaseTypeSchema>
+  rejections?: z.infer<typeof ImportRejectionResourceSchema>[] | null
+}
+
+type ManualImportResourceType = {
+  id?: number
+  path?: string | null
+  relativePath?: string | null
+  folderName?: string | null
+  name?: string | null
+  size?: bigint
+  series?: z.infer<typeof SeriesResourceSchema>
+  seasonNumber?: number | null
+  episodes?: z.infer<typeof EpisodeResourceSchema>[] | null
+  episodeFileId?: number | null
+  releaseGroup?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  qualityWeight?: number
+  downloadId?: string | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  indexerFlags?: number
+  releaseType?: z.infer<typeof ReleaseTypeSchema>
+  rejections?: z.infer<typeof ImportRejectionResourceSchema>[] | null
+}
+
+type MetadataResourceType = {
+  id?: number
+  name?: string | null
+  fields?: z.infer<typeof FieldSchema>[] | null
+  implementationName?: string | null
+  implementation?: string | null
+  configContract?: string | null
+  infoLink?: string | null
+  message?: z.infer<typeof ProviderMessageSchema>
+  tags?: number[] | null
+  presets?: MetadataResourceType[] | null
+  enable?: boolean
+}
+
+type NotificationResourceType = {
+  id?: number
+  name?: string | null
+  fields?: z.infer<typeof FieldSchema>[] | null
+  implementationName?: string | null
+  implementation?: string | null
+  configContract?: string | null
+  infoLink?: string | null
+  message?: z.infer<typeof ProviderMessageSchema>
+  tags?: number[] | null
+  presets?: NotificationResourceType[] | null
+  link?: string | null
+  onGrab?: boolean
+  onDownload?: boolean
+  onUpgrade?: boolean
+  onImportComplete?: boolean
+  onRename?: boolean
+  onSeriesAdd?: boolean
+  onSeriesDelete?: boolean
+  onEpisodeFileDelete?: boolean
+  onEpisodeFileDeleteForUpgrade?: boolean
+  onHealthIssue?: boolean
+  includeHealthWarnings?: boolean
+  onHealthRestored?: boolean
+  onApplicationUpdate?: boolean
+  onManualInteractionRequired?: boolean
+  supportsOnGrab?: boolean
+  supportsOnDownload?: boolean
+  supportsOnUpgrade?: boolean
+  supportsOnImportComplete?: boolean
+  supportsOnRename?: boolean
+  supportsOnSeriesAdd?: boolean
+  supportsOnSeriesDelete?: boolean
+  supportsOnEpisodeFileDelete?: boolean
+  supportsOnEpisodeFileDeleteForUpgrade?: boolean
+  supportsOnHealthIssue?: boolean
+  supportsOnHealthRestored?: boolean
+  supportsOnApplicationUpdate?: boolean
+  supportsOnManualInteractionRequired?: boolean
+  testCommand?: string | null
+}
+
+const SeriesTitleInfoSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    titleWithoutYear: z.string().nullable().exactOptional(),
+    year: z.int32().exactOptional(),
+    allTitles: z.array(z.string()).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('SeriesTitleInfo')
+
+const ParsedEpisodeInfoResourceSchema = z
+  .strictObject({
+    releaseTitle: z.string().nullable().exactOptional(),
+    seriesTitle: z.string().nullable().exactOptional(),
+    seriesTitleInfo: SeriesTitleInfoSchema.exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    seasonNumbers: z.array(z.int32()).nullable().exactOptional(),
+    seasonNumber: z.int32().exactOptional(),
+    episodeNumbers: z.array(z.int32()).nullable().exactOptional(),
+    absoluteEpisodeNumbers: z.array(z.int32()).nullable().exactOptional(),
+    specialAbsoluteEpisodeNumbers: z.array(z.float64()).nullable().exactOptional(),
+    airDate: z.string().nullable().exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    fullSeason: z.boolean().exactOptional(),
+    isPartialSeason: z.boolean().exactOptional(),
+    isMultiSeason: z.boolean().exactOptional(),
+    isSeasonExtra: z.boolean().exactOptional(),
+    isSplitEpisode: z.boolean().exactOptional(),
+    isMiniSeries: z.boolean().exactOptional(),
+    special: z.boolean().exactOptional(),
+    releaseGroup: z.string().nullable().exactOptional(),
+    releaseHash: z.string().nullable().exactOptional(),
+    seasonPart: z.int32().exactOptional(),
+    releaseTokens: z.string().nullable().exactOptional(),
+    dailyPart: z.int32().nullable().exactOptional(),
+    isDaily: z.boolean().exactOptional(),
+    isAbsoluteNumbering: z.boolean().exactOptional(),
+    isPossibleSpecialEpisode: z.boolean().exactOptional(),
+    isPossibleSceneSeasonSpecial: z.boolean().exactOptional(),
+    releaseType: ReleaseTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ParsedEpisodeInfoResource')
+
+type ParseResourceType = {
+  id?: number
+  title?: string | null
+  parsedEpisodeInfo?: z.infer<typeof ParsedEpisodeInfoResourceSchema>
+  series?: z.infer<typeof SeriesResourceSchema>
+  episodes?: z.infer<typeof EpisodeResourceSchema>[] | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+}
+
+type QualityProfileQualityItemResourceType = {
+  id?: number
+  name?: string | null
+  quality?: z.infer<typeof QualitySchema>
+  items?: QualityProfileQualityItemResourceType[] | null
+  allowed?: boolean
+  minSize?: number | null
+  maxSize?: number | null
+  preferredSize?: number | null
+}
+
+const QueueStatusSchema = z
+  .enum([
+    'unknown',
+    'queued',
+    'paused',
+    'downloading',
+    'completed',
+    'failed',
+    'warning',
+    'delay',
+    'downloadClientUnavailable',
+    'fallback',
+  ])
+  .openapi('QueueStatus')
+
+const TrackedDownloadStatusSchema = z
+  .enum(['ok', 'warning', 'error'])
+  .openapi('TrackedDownloadStatus')
+
+const TrackedDownloadStateSchema = z
+  .enum([
+    'downloading',
+    'importBlocked',
+    'importPending',
+    'importing',
+    'imported',
+    'failedPending',
+    'failed',
+    'ignored',
+  ])
+  .openapi('TrackedDownloadState')
+
+const TrackedDownloadStatusMessageSchema = z
+  .strictObject({
+    title: z.string().nullable().exactOptional(),
+    messages: z.array(z.string()).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('TrackedDownloadStatusMessage')
+
+type QueueResourceType = {
+  id?: number
+  seriesId?: number | null
+  episodeId?: number | null
+  seasonNumber?: number | null
+  series?: z.infer<typeof SeriesResourceSchema>
+  episode?: z.infer<typeof EpisodeResourceSchema>
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  quality?: z.infer<typeof QualityModelSchema>
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  size?: number
+  title?: string | null
+  estimatedCompletionTime?: string | null
+  added?: string | null
+  status?: z.infer<typeof QueueStatusSchema>
+  trackedDownloadStatus?: z.infer<typeof TrackedDownloadStatusSchema>
+  trackedDownloadState?: z.infer<typeof TrackedDownloadStateSchema>
+  statusMessages?: z.infer<typeof TrackedDownloadStatusMessageSchema>[] | null
+  errorMessage?: string | null
+  downloadId?: string | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  downloadClient?: string | null
+  downloadClientHasPostImportCategory?: boolean
+  indexer?: string | null
+  outputPath?: string | null
+  episodeHasFile?: boolean
+  sizeleft?: number
+  timeleft?: string | null
+}
+
+const QueueResourceSchema: z.ZodType<QueueResourceType> = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    seriesId: z.int32().nullable().exactOptional(),
+    episodeId: z.int32().nullable().exactOptional(),
+    seasonNumber: z.int32().nullable().exactOptional(),
+    series: SeriesResourceSchema.exactOptional(),
+    episode: EpisodeResourceSchema.exactOptional(),
+    languages: z.array(LanguageSchema).nullable().exactOptional(),
+    quality: QualityModelSchema.exactOptional(),
+    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
+    customFormatScore: z.int32().exactOptional(),
+    size: z.float64().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
+    status: QueueStatusSchema.exactOptional(),
+    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
+    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
+    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
+    errorMessage: z.string().nullable().exactOptional(),
+    downloadId: z.string().nullable().exactOptional(),
+    protocol: DownloadProtocolSchema.exactOptional(),
+    downloadClient: z.string().nullable().exactOptional(),
+    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
+    indexer: z.string().nullable().exactOptional(),
+    outputPath: z.string().nullable().exactOptional(),
+    episodeHasFile: z.boolean().exactOptional(),
+    sizeleft: z.float64().exactOptional().openapi({ deprecated: true }),
+    timeleft: z.string().nullable().exactOptional().openapi({ deprecated: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('QueueResource')
+
+type QueueResourcePagingResourceType = {
+  page?: number
+  pageSize?: number
+  sortKey?: string | null
+  sortDirection?: z.infer<typeof SortDirectionSchema>
+  totalRecords?: number
+  records?: z.infer<typeof QueueResourceSchema>[] | null
+}
+
+const ReleaseEpisodeResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    seasonNumber: z.int32().exactOptional(),
+    episodeNumber: z.int32().exactOptional(),
+    absoluteEpisodeNumber: z.int32().nullable().exactOptional(),
+    title: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ReleaseEpisodeResource')
+
+type ReleaseResourceType = {
+  id?: number
+  guid?: string | null
+  quality?: z.infer<typeof QualityModelSchema>
+  qualityWeight?: number
+  age?: number
+  ageHours?: number
+  ageMinutes?: number
+  size?: bigint
+  indexerId?: number
+  indexer?: string | null
+  releaseGroup?: string | null
+  subGroup?: string | null
+  releaseHash?: string | null
+  title?: string | null
+  fullSeason?: boolean
+  sceneSource?: boolean
+  seasonNumber?: number
+  seasonNumbers?: number[] | null
+  languages?: z.infer<typeof LanguageSchema>[] | null
+  languageWeight?: number
+  airDate?: string | null
+  seriesTitle?: string | null
+  episodeNumbers?: number[] | null
+  absoluteEpisodeNumbers?: number[] | null
+  mappedSeasonNumber?: number | null
+  mappedEpisodeNumbers?: number[] | null
+  mappedAbsoluteEpisodeNumbers?: number[] | null
+  mappedSeriesId?: number | null
+  mappedEpisodeInfo?: z.infer<typeof ReleaseEpisodeResourceSchema>[] | null
+  approved?: boolean
+  temporarilyRejected?: boolean
+  rejected?: boolean
+  tvdbId?: number
+  tvRageId?: number
+  imdbId?: string | null
+  rejections?: string[] | null
+  publishDate?: string
+  commentUrl?: string | null
+  downloadUrl?: string | null
+  infoUrl?: string | null
+  episodeRequested?: boolean
+  downloadAllowed?: boolean
+  releaseWeight?: number
+  customFormats?: z.infer<typeof CustomFormatResourceSchema>[] | null
+  customFormatScore?: number
+  sceneMapping?: z.infer<typeof AlternateTitleResourceSchema>
+  magnetUrl?: string | null
+  infoHash?: string | null
+  seeders?: number | null
+  leechers?: number | null
+  protocol?: z.infer<typeof DownloadProtocolSchema>
+  indexerFlags?: number
+  isDaily?: boolean
+  isAbsoluteNumbering?: boolean
+  isPossibleSpecialEpisode?: boolean
+  special?: boolean
+  seriesId?: number | null
+  episodeId?: number | null
+  episodeIds?: number[] | null
+  downloadClientId?: number | null
+  downloadClient?: string | null
+  shouldOverride?: boolean | null
+}
+
+const ApiInfoResourceSchema = z
+  .strictObject({
+    current: z.string().nullable().exactOptional(),
+    deprecated: z.array(z.string()).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApiInfoResource')
+
+const ApplyTagsSchema = z.enum(['add', 'remove', 'replace']).openapi('ApplyTags')
+
+const AuthenticationRequiredTypeSchema = z
+  .enum(['enabled', 'disabledForLocalAddresses', 'disabledForLocalhost'])
+  .openapi('AuthenticationRequiredType')
+
+const AuthenticationTypeSchema = z
+  .enum(['none', 'basic', 'forms', 'external', 'oidc'])
+  .openapi('AuthenticationType')
+
+const AutoTaggingSpecificationSchemaSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    implementation: z.string().nullable().exactOptional(),
+    implementationName: z.string().nullable().exactOptional(),
+    negate: z.boolean().exactOptional(),
+    required: z.boolean().exactOptional(),
+    fields: z.array(FieldSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AutoTaggingSpecificationSchema')
+
+const AutoTaggingResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    removeTagsAutomatically: z.boolean().exactOptional(),
+    tags: z
+      .array(z.int32())
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .nullable()
+      .exactOptional(),
+    specifications: z.array(AutoTaggingSpecificationSchemaSchema).nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AutoTaggingResource')
+
+const BackupTypeSchema = z.enum(['scheduled', 'manual', 'update']).openapi('BackupType')
+
+const BackupResourceSchema = z
+  .strictObject({
+    id: z.int32().exactOptional(),
+    name: z.string().nullable().exactOptional(),
+    path: z.string().nullable().exactOptional(),
+    type: BackupTypeSchema.exactOptional(),
+    size: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    time: z.iso.datetime({ offset: true }).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BackupResource')
+
+const BlocklistBulkResourceSchema = z
+  .strictObject({ ids: z.array(z.int32()).nullable().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('BlocklistBulkResource')
+
+const BlocklistResourcePagingResourceSchema: z.ZodType<BlocklistResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -828,131 +1375,7 @@ const EpisodeFileListResourceSchema = z
   .openapi({ required: [] })
   .openapi('EpisodeFileListResource')
 
-const ReleaseTypeSchema = z
-  .enum(['unknown', 'singleEpisode', 'multiEpisode', 'seasonPack'])
-  .openapi('ReleaseType')
-
-const MediaInfoResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    audioBitrate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    audioChannels: z.float64().exactOptional(),
-    audioCodec: z.string().nullable().exactOptional(),
-    audioLanguages: z.string().nullable().exactOptional(),
-    audioStreamCount: z.int32().exactOptional(),
-    videoBitDepth: z.int32().exactOptional(),
-    videoBitrate: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    videoCodec: z.string().nullable().exactOptional(),
-    videoFps: z.float64().exactOptional(),
-    videoDynamicRange: z.string().nullable().exactOptional(),
-    videoDynamicRangeType: z.string().nullable().exactOptional(),
-    resolution: z.string().nullable().exactOptional(),
-    runTime: z.string().nullable().exactOptional(),
-    scanType: z.string().nullable().exactOptional(),
-    subtitles: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('MediaInfoResource')
-
-const EpisodeFileResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    seriesId: z.int32().exactOptional(),
-    seasonNumber: z.int32().exactOptional(),
-    relativePath: z.string().nullable().exactOptional(),
-    path: z.string().nullable().exactOptional(),
-    size: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64' }),
-    dateAdded: z.iso.datetime({ offset: true }).exactOptional(),
-    sceneName: z.string().nullable().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    indexerFlags: z.int32().nullable().exactOptional(),
-    releaseType: ReleaseTypeSchema.exactOptional(),
-    mediaInfo: MediaInfoResourceSchema.exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EpisodeFileResource')
-
-const EpisodeHistoryEventTypeSchema = z
-  .enum([
-    'unknown',
-    'grabbed',
-    'seriesFolderImported',
-    'downloadFolderImported',
-    'downloadFailed',
-    'episodeFileDeleted',
-    'episodeFileRenamed',
-    'downloadIgnored',
-  ])
-  .openapi('EpisodeHistoryEventType')
-
-const EpisodeResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    seriesId: z.int32().exactOptional(),
-    tvdbId: z.int32().exactOptional(),
-    episodeFileId: z.int32().exactOptional(),
-    seasonNumber: z.int32().exactOptional(),
-    episodeNumber: z.int32().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    airDate: z.string().nullable().exactOptional(),
-    airDateUtc: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    lastSearchTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    runtime: z.int32().exactOptional(),
-    finaleType: z.string().nullable().exactOptional(),
-    overview: z.string().nullable().exactOptional(),
-    episodeFile: EpisodeFileResourceSchema.exactOptional(),
-    hasFile: z.boolean().exactOptional(),
-    monitored: z.boolean().exactOptional(),
-    absoluteEpisodeNumber: z.int32().nullable().exactOptional(),
-    sceneAbsoluteEpisodeNumber: z.int32().nullable().exactOptional(),
-    sceneEpisodeNumber: z.int32().nullable().exactOptional(),
-    sceneSeasonNumber: z.int32().nullable().exactOptional(),
-    unverifiedSceneNumbering: z.boolean().exactOptional(),
-    series: SeriesResourceSchema.exactOptional(),
-    images: z.array(MediaCoverSchema).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('EpisodeResource')
-
-const EpisodeResourcePagingResourceSchema = z
+const EpisodeResourcePagingResourceSchema: z.ZodType<EpisodeResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -993,28 +1416,7 @@ const HealthResourceSchema = z
   .openapi({ required: [] })
   .openapi('HealthResource')
 
-const HistoryResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    episodeId: z.int32().exactOptional(),
-    seriesId: z.int32().exactOptional(),
-    sourceTitle: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    qualityCutoffNotMet: z.boolean().exactOptional(),
-    date: z.iso.datetime({ offset: true }).exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    eventType: EpisodeHistoryEventTypeSchema.exactOptional(),
-    data: z.record(z.string(), z.string().nullable()).nullable().exactOptional(),
-    episode: EpisodeResourceSchema.exactOptional(),
-    series: SeriesResourceSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('HistoryResource')
-
-const HistoryResourcePagingResourceSchema = z
+const HistoryResourcePagingResourceSchema: z.ZodType<HistoryResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1192,16 +1594,6 @@ const ImportListResourceSchema: z.ZodType<ImportListResourceType> = z
   )
   .openapi('ImportListResource')
 
-const RejectionTypeSchema = z.enum(['permanent', 'temporary']).openapi('RejectionType')
-
-const ImportRejectionResourceSchema = z
-  .strictObject({
-    reason: z.string().nullable().exactOptional(),
-    type: RejectionTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ImportRejectionResource')
-
 const IndexerBulkResourceSchema = z
   .strictObject({
     ids: z.array(z.int32()).nullable().exactOptional(),
@@ -1354,7 +1746,7 @@ const LogResourcePagingResourceSchema = z
   .openapi({ required: [] })
   .openapi('LogResourcePagingResource')
 
-const ManualImportReprocessResourceSchema = z
+const ManualImportReprocessResourceSchema: z.ZodType<ManualImportReprocessResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1375,7 +1767,7 @@ const ManualImportReprocessResourceSchema = z
   .openapi({ required: [] })
   .openapi('ManualImportReprocessResource')
 
-const ManualImportResourceSchema = z
+const ManualImportResourceSchema: z.ZodType<ManualImportResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     path: z.string().nullable().exactOptional(),
@@ -1572,51 +1964,7 @@ const NotificationResourceSchema: z.ZodType<NotificationResourceType> = z
   )
   .openapi('NotificationResource')
 
-const SeriesTitleInfoSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    titleWithoutYear: z.string().nullable().exactOptional(),
-    year: z.int32().exactOptional(),
-    allTitles: z.array(z.string()).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('SeriesTitleInfo')
-
-const ParsedEpisodeInfoResourceSchema = z
-  .strictObject({
-    releaseTitle: z.string().nullable().exactOptional(),
-    seriesTitle: z.string().nullable().exactOptional(),
-    seriesTitleInfo: SeriesTitleInfoSchema.exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    seasonNumbers: z.array(z.int32()).nullable().exactOptional(),
-    seasonNumber: z.int32().exactOptional(),
-    episodeNumbers: z.array(z.int32()).nullable().exactOptional(),
-    absoluteEpisodeNumbers: z.array(z.int32()).nullable().exactOptional(),
-    specialAbsoluteEpisodeNumbers: z.array(z.float64()).nullable().exactOptional(),
-    airDate: z.string().nullable().exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    fullSeason: z.boolean().exactOptional(),
-    isPartialSeason: z.boolean().exactOptional(),
-    isMultiSeason: z.boolean().exactOptional(),
-    isSeasonExtra: z.boolean().exactOptional(),
-    isSplitEpisode: z.boolean().exactOptional(),
-    isMiniSeries: z.boolean().exactOptional(),
-    special: z.boolean().exactOptional(),
-    releaseGroup: z.string().nullable().exactOptional(),
-    releaseHash: z.string().nullable().exactOptional(),
-    seasonPart: z.int32().exactOptional(),
-    releaseTokens: z.string().nullable().exactOptional(),
-    dailyPart: z.int32().nullable().exactOptional(),
-    isDaily: z.boolean().exactOptional(),
-    isAbsoluteNumbering: z.boolean().exactOptional(),
-    isPossibleSpecialEpisode: z.boolean().exactOptional(),
-    isPossibleSceneSeasonSpecial: z.boolean().exactOptional(),
-    releaseType: ReleaseTypeSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ParsedEpisodeInfoResource')
-
-const ParseResourceSchema = z
+const ParseResourceSchema: z.ZodType<ParseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     title: z.string().nullable().exactOptional(),
@@ -1644,6 +1992,7 @@ const ProblemDetailsSchema = z
     instance: z.string().nullable().exactOptional(),
   })
   .catchall(z.any())
+  .openapi({ required: [] })
   .openapi('ProblemDetails')
 
 const ProfileFormatItemResourceSchema = z
@@ -1711,81 +2060,7 @@ const QueueBulkResourceSchema = z
   .openapi({ required: [] })
   .openapi('QueueBulkResource')
 
-const QueueStatusSchema = z
-  .enum([
-    'unknown',
-    'queued',
-    'paused',
-    'downloading',
-    'completed',
-    'failed',
-    'warning',
-    'delay',
-    'downloadClientUnavailable',
-    'fallback',
-  ])
-  .openapi('QueueStatus')
-
-const TrackedDownloadStatusSchema = z
-  .enum(['ok', 'warning', 'error'])
-  .openapi('TrackedDownloadStatus')
-
-const TrackedDownloadStateSchema = z
-  .enum([
-    'downloading',
-    'importBlocked',
-    'importPending',
-    'importing',
-    'imported',
-    'failedPending',
-    'failed',
-    'ignored',
-  ])
-  .openapi('TrackedDownloadState')
-
-const TrackedDownloadStatusMessageSchema = z
-  .strictObject({
-    title: z.string().nullable().exactOptional(),
-    messages: z.array(z.string()).nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('TrackedDownloadStatusMessage')
-
-const QueueResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    seriesId: z.int32().nullable().exactOptional(),
-    episodeId: z.int32().nullable().exactOptional(),
-    seasonNumber: z.int32().nullable().exactOptional(),
-    series: SeriesResourceSchema.exactOptional(),
-    episode: EpisodeResourceSchema.exactOptional(),
-    languages: z.array(LanguageSchema).nullable().exactOptional(),
-    quality: QualityModelSchema.exactOptional(),
-    customFormats: z.array(CustomFormatResourceSchema).nullable().exactOptional(),
-    customFormatScore: z.int32().exactOptional(),
-    size: z.float64().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-    estimatedCompletionTime: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    added: z.iso.datetime({ offset: true }).nullable().exactOptional(),
-    status: QueueStatusSchema.exactOptional(),
-    trackedDownloadStatus: TrackedDownloadStatusSchema.exactOptional(),
-    trackedDownloadState: TrackedDownloadStateSchema.exactOptional(),
-    statusMessages: z.array(TrackedDownloadStatusMessageSchema).nullable().exactOptional(),
-    errorMessage: z.string().nullable().exactOptional(),
-    downloadId: z.string().nullable().exactOptional(),
-    protocol: DownloadProtocolSchema.exactOptional(),
-    downloadClient: z.string().nullable().exactOptional(),
-    downloadClientHasPostImportCategory: z.boolean().exactOptional(),
-    indexer: z.string().nullable().exactOptional(),
-    outputPath: z.string().nullable().exactOptional(),
-    episodeHasFile: z.boolean().exactOptional(),
-    sizeleft: z.float64().exactOptional().openapi({ deprecated: true }),
-    timeleft: z.string().nullable().exactOptional().openapi({ deprecated: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('QueueResource')
-
-const QueueResourcePagingResourceSchema = z
+const QueueResourcePagingResourceSchema: z.ZodType<QueueResourcePagingResourceType> = z
   .strictObject({
     page: z.int32().exactOptional(),
     pageSize: z.int32().exactOptional(),
@@ -1810,17 +2085,6 @@ const QueueStatusResourceSchema = z
   })
   .openapi({ required: [] })
   .openapi('QueueStatusResource')
-
-const ReleaseEpisodeResourceSchema = z
-  .strictObject({
-    id: z.int32().exactOptional(),
-    seasonNumber: z.int32().exactOptional(),
-    episodeNumber: z.int32().exactOptional(),
-    absoluteEpisodeNumber: z.int32().nullable().exactOptional(),
-    title: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ReleaseEpisodeResource')
 
 const ReleaseProfileResourceSchema = z
   .strictObject({
@@ -1861,7 +2125,7 @@ const ReleaseProfileResourceSchema = z
   .openapi({ required: [] })
   .openapi('ReleaseProfileResource')
 
-const ReleaseResourceSchema = z
+const ReleaseResourceSchema: z.ZodType<ReleaseResourceType> = z
   .strictObject({
     id: z.int32().exactOptional(),
     guid: z.string().nullable().exactOptional(),

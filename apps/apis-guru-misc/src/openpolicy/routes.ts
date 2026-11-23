@@ -1,5 +1,22 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+type _200ResultType = {
+  result?: {
+    ast?: {
+      package?: { path?: { type?: 'import' | 'package'; value?: string }[] }
+      rules?: {
+        body?: {
+          index?: number
+          terms?: { type?: string; value?: { type?: string; value?: string }[] }[]
+        }[]
+        head?: { key?: { type?: string; value?: string }; name?: string }
+      }[]
+    }
+    id?: string
+    raw?: string
+  }[]
+}
+
 const _400Schema = z
   .object({
     code: z
@@ -378,7 +395,7 @@ const _200ProvenanceSchema = z
   .openapi({ required: [] })
   .openapi('_200Provenance')
 
-const _200ResultSchema = z
+const _200ResultSchema: z.ZodType<_200ResultType> = z
   .object({
     result: z
       .array(

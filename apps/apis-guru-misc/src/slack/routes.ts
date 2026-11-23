@@ -1,5 +1,81 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const DefsUserIdSchema = z
+  .string()
+  .regex(/^[UW][A-Z0-9]{2,}$/)
+  .openapi({ title: 'User ID' })
+  .openapi('DefsUserId')
+
+const DefsChannelIdSchema = z
+  .string()
+  .regex(/^[C][A-Z0-9]{2,}$/)
+  .openapi({ title: 'Channel ID' })
+  .openapi('DefsChannelId')
+
+const DefsTsSchema = z
+  .string()
+  .regex(/^\d{10}\.\d{6}$/)
+  .openapi({ title: 'Timestamp in format 0123456789.012345' })
+  .openapi('DefsTs')
+
+const DefsTeamSchema = z
+  .string()
+  .regex(/^[T][A-Z0-9]{2,}$/)
+  .openapi({ title: 'Team ID' })
+  .openapi('DefsTeam')
+
+const DefsChannelNameSchema = z
+  .string()
+  .openapi({ title: 'Name of a channel' })
+  .openapi('DefsChannelName')
+
+const DefsTopicPurposeCreatorSchema = z
+  .string()
+  .regex(/^[UW][A-Z0-9]{8,}$|^$/)
+  .openapi({ title: 'User ID or empty string, used for topic and purpose creation' })
+  .openapi('DefsTopicPurposeCreator')
+
+type ObjsChannelType = {
+  accepted_user?: z.infer<typeof DefsUserIdSchema>
+  created: number
+  creator: z.infer<typeof DefsUserIdSchema>
+  id: z.infer<typeof DefsChannelIdSchema>
+  is_archived?: boolean
+  is_channel: boolean
+  is_frozen?: boolean
+  is_general?: boolean
+  is_member?: boolean
+  is_moved?: number
+  is_mpim: boolean
+  is_non_threadable?: boolean
+  is_org_shared: boolean
+  is_pending_ext_shared?: boolean
+  is_private: boolean
+  is_read_only?: boolean
+  is_shared: boolean
+  is_thread_only?: boolean
+  last_read?: z.infer<typeof DefsTsSchema>
+  latest?: unknown
+  members: z.infer<typeof DefsUserIdSchema>[]
+  name: string
+  name_normalized: string
+  num_members?: number
+  pending_shared?: z.infer<typeof DefsTeamSchema>[]
+  previous_names?: z.infer<typeof DefsChannelNameSchema>[]
+  priority?: number
+  purpose: {
+    creator: z.infer<typeof DefsTopicPurposeCreatorSchema>
+    last_set: number
+    value: string
+  }
+  topic: { creator: z.infer<typeof DefsTopicPurposeCreatorSchema>; last_set: number; value: string }
+  unlinked?: number
+  unread_count?: number
+  unread_count_display?: number
+}
+
+type ObjsConversationType = unknown
+
 const BlocksSchema = z
   .array(z.looseObject({ type: z.string() }).openapi({ required: ['type'] }))
   .openapi({
@@ -26,17 +102,6 @@ const DefsChannelSchema = z
   .regex(/^[CGD][A-Z0-9]{8,}$/)
   .openapi({ title: 'Channel-like conversation ID' })
   .openapi('DefsChannel')
-
-const DefsChannelIdSchema = z
-  .string()
-  .regex(/^[C][A-Z0-9]{2,}$/)
-  .openapi({ title: 'Channel ID' })
-  .openapi('DefsChannelId')
-
-const DefsChannelNameSchema = z
-  .string()
-  .openapi({ title: 'Name of a channel' })
-  .openapi('DefsChannelName')
 
 const DefsCommentIdSchema = z
   .string()
@@ -111,30 +176,6 @@ const DefsSubteamIdSchema = z
   .regex(/^S[A-Z0-9]{2,}$/)
   .openapi({ title: 'Subteam ID' })
   .openapi('DefsSubteamId')
-
-const DefsTeamSchema = z
-  .string()
-  .regex(/^[T][A-Z0-9]{2,}$/)
-  .openapi({ title: 'Team ID' })
-  .openapi('DefsTeam')
-
-const DefsTopicPurposeCreatorSchema = z
-  .string()
-  .regex(/^[UW][A-Z0-9]{8,}$|^$/)
-  .openapi({ title: 'User ID or empty string, used for topic and purpose creation' })
-  .openapi('DefsTopicPurposeCreator')
-
-const DefsTsSchema = z
-  .string()
-  .regex(/^\d{10}\.\d{6}$/)
-  .openapi({ title: 'Timestamp in format 0123456789.012345' })
-  .openapi('DefsTs')
-
-const DefsUserIdSchema = z
-  .string()
-  .regex(/^[UW][A-Z0-9]{2,}$/)
-  .openapi({ title: 'User ID' })
-  .openapi('DefsUserId')
 
 const DefsWorkspaceIdSchema = z
   .string()
@@ -437,7 +478,7 @@ const ObjsMessageSchema = z
   .openapi({ required: ['text', 'type', 'ts'], title: 'Message object' })
   .openapi('ObjsMessage')
 
-const ObjsChannelSchema = z
+const ObjsChannelSchema: z.ZodType<ObjsChannelType> = z
   .strictObject({
     accepted_user: DefsUserIdSchema.exactOptional(),
     created: z.int(),
@@ -647,7 +688,7 @@ const ObjsTeamSchema = z
   .openapi({ required: ['id', 'name', 'domain', 'email_domain', 'icon'], title: 'Team Object' })
   .openapi('ObjsTeam')
 
-const ObjsConversationSchema = z
+const ObjsConversationSchema: z.ZodType<ObjsConversationType> = z
   .unknown()
   .superRefine((val, ctx) => {
     if (Array.isArray(val)) {
@@ -1437,7 +1478,7 @@ const ObjsUserProfileSchema = z
     display_name: z.string(),
     display_name_normalized: z.string(),
     email: z.email().nullable().exactOptional(),
-    fields: z.xor([z.object({}), z.array(z.any())]).nullable(),
+    fields: z.xor([z.looseObject({}), z.array(z.any())]).nullable(),
     first_name: z.string().nullable().exactOptional(),
     guest_expiration_ts: z.int().nullable().exactOptional(),
     guest_invited_by: z.string().nullable().exactOptional(),
@@ -7255,7 +7296,7 @@ export const getApiTestRoute = createRoute({
         'application/json': {
           schema: z
             .object({ ok: DefsOkTrueSchema })
-            .catchall(z.object({}))
+            .catchall(z.looseObject({}))
             .openapi({
               description: 'Schema for successful response api.test method',
               required: ['ok'],
@@ -7271,7 +7312,7 @@ export const getApiTestRoute = createRoute({
         'application/json': {
           schema: z
             .object({ error: z.string(), ok: DefsOkFalseSchema })
-            .catchall(z.object({}))
+            .catchall(z.looseObject({}))
             .openapi({
               description: 'Schema for error response api.test method',
               required: ['ok', 'error'],
@@ -10768,8 +10809,8 @@ export const postChatUpdateRoute = createRoute({
               channel: z.string(),
               message: z
                 .object({
-                  attachments: z.array(z.object({})).exactOptional(),
-                  blocks: z.object({}).exactOptional(),
+                  attachments: z.array(z.looseObject({})).exactOptional(),
+                  blocks: z.looseObject({}).exactOptional(),
                   text: z.string(),
                 })
                 .openapi({ required: ['text'], title: 'Message object' }),
@@ -17218,7 +17259,7 @@ export const getReactionsGetRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({})
+            .looseObject({})
             .openapi({
               description: 'Schema for successful response from reactions.get method',
               title: 'reactions.get success schema',
@@ -21108,7 +21149,7 @@ export const getUsersGetPresenceRoute = createRoute({
         'application/json': {
           schema: z
             .object({ error: z.string(), ok: DefsOkFalseSchema })
-            .catchall(z.object({}))
+            .catchall(z.looseObject({}))
             .openapi({
               description: 'Schema for error response users.getPresence method',
               required: ['ok', 'error'],

@@ -18,30 +18,18 @@ const ResourceIdentifierSchema = z
 
 const AssociateKmsKeyRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the log group.</p> <p>In your <code>AssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can't specify both.</p>",
-        }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. This must be a symmetric KMS key. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms">Amazon Resource Names</a> and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Using Symmetric and Asymmetric Keys</a>.',
-        }),
-    ),
-    resourceIdentifier: ResourceIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the target for this operation. You must specify one of the following:</p> <ul> <li> <p>Specify the following ARN to have future <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html">GetQueryResults</a> operations in this account encrypt the results with the specified KMS key. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:query-result:*</code> </p> </li> <li> <p>Specify the ARN of a log group to have CloudWatch Logs use the KMS key to encrypt log events that are ingested and stored by that log group. The log group ARN must be in the following format. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:log-group:<i>LOG_GROUP_NAME</i> </code> </p> </li> </ul> <p>In your <code>AssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can\'t specify both.</p>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the log group.</p> <p>In your <code>AssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can't specify both.</p>",
+    }),
+    kmsKeyId: KmsKeyIdSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. This must be a symmetric KMS key. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms">Amazon Resource Names</a> and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html">Using Symmetric and Asymmetric Keys</a>.',
+    }),
+    resourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the target for this operation. You must specify one of the following:</p> <ul> <li> <p>Specify the following ARN to have future <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetQueryResults.html">GetQueryResults</a> operations in this account encrypt the results with the specified KMS key. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:query-result:*</code> </p> </li> <li> <p>Specify the ARN of a log group to have CloudWatch Logs use the KMS key to encrypt log events that are ingested and stored by that log group. The log group ARN must be in the following format. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:log-group:<i>LOG_GROUP_NAME</i> </code> </p> </li> </ul> <p>In your <code>AssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can\'t specify both.</p>',
+    }),
   })
   .openapi({ required: ['kmsKeyId'], title: 'AssociateKmsKeyRequest' })
   .openapi('AssociateKmsKeyRequest')
@@ -57,9 +45,7 @@ const ServiceUnavailableExceptionSchema = z.any().openapi('ServiceUnavailableExc
 const ExportTaskIdSchema = z.string().min(1).max(512).openapi('ExportTaskId')
 
 const CancelExportTaskRequestSchema = z
-  .object({
-    taskId: ExportTaskIdSchema.and(z.any().openapi({ description: 'The ID of the export task.' })),
-  })
+  .object({ taskId: ExportTaskIdSchema.openapi({ description: 'The ID of the export task.' }) })
   .openapi({ required: ['taskId'], title: 'CancelExportTaskRequest' })
   .openapi('CancelExportTaskRequest')
 
@@ -67,9 +53,9 @@ const InvalidOperationExceptionSchema = z.any().openapi('InvalidOperationExcepti
 
 const CreateExportTaskResponseSchema = z
   .object({
-    taskId: ExportTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the export task.' }),
-    ).exactOptional(),
+    taskId: ExportTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the export task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateExportTaskResponse')
@@ -91,52 +77,30 @@ const ExportDestinationPrefixSchema = z.string().openapi('ExportDestinationPrefi
 
 const CreateExportTaskRequestSchema = z
   .object({
-    taskName: ExportTaskNameSchema.and(
-      z.any().openapi({ description: 'The name of the export task.' }),
-    ).exactOptional(),
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    logStreamNamePrefix: LogStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Export only log streams that match the provided prefix. If you don't specify a value, no prefix filter is applied.",
-        }),
-    ).exactOptional(),
-    from: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time of the range for the request, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp earlier than this time are not exported.',
-        }),
-    ),
-    to: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The end time of the range for the request, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not exported.</p> <p>You must specify a time that is not earlier than when this log group was created.</p>',
-        }),
-    ),
-    destination: ExportDestinationBucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of S3 bucket for the exported log data. The bucket must be in the same Amazon Web Services Region.',
-        }),
-    ),
-    destinationPrefix: ExportDestinationPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The prefix used as the start of the key for every object exported. If you don't specify a value, the default is <code>exportedlogs</code>.",
-        }),
-    ).exactOptional(),
+    taskName: ExportTaskNameSchema.exactOptional().openapi({
+      description: 'The name of the export task.',
+    }),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    logStreamNamePrefix: LogStreamNameSchema.exactOptional().openapi({
+      description:
+        "Export only log streams that match the provided prefix. If you don't specify a value, no prefix filter is applied.",
+    }),
+    from: TimestampSchema.openapi({
+      description:
+        'The start time of the range for the request, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp earlier than this time are not exported.',
+    }),
+    to: TimestampSchema.openapi({
+      description:
+        '<p>The end time of the range for the request, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not exported.</p> <p>You must specify a time that is not earlier than when this log group was created.</p>',
+    }),
+    destination: ExportDestinationBucketSchema.openapi({
+      description:
+        'The name of S3 bucket for the exported log data. The bucket must be in the same Amazon Web Services Region.',
+    }),
+    destinationPrefix: ExportDestinationPrefixSchema.exactOptional().openapi({
+      description:
+        "The prefix used as the start of the key for every object exported. If you don't specify a value, the default is <code>exportedlogs</code>.",
+    }),
   })
   .openapi({
     required: ['logGroupName', 'from', 'to', 'destination'],
@@ -162,37 +126,23 @@ const TagsSchema = z
 
 const CreateLogGroupRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms">Amazon Resource Names</a>.',
-        }),
-    ).exactOptional(),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The key-value pairs to use for the tags.</p> <p>You can grant users access to certain log groups while preventing them from accessing other log groups. To do so, tag your groups and use IAM policies that refer to those tags. To assign tags when you create a log group, you must have either the <code>logs:TagResource</code> or <code>logs:TagLogGroup</code> permission. For more information about tagging, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a>. For more information about using tags to control access, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html">Controlling access to Amazon Web Services resources using tags</a>.</p>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data. For more information, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-kms">Amazon Resource Names</a>.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>The key-value pairs to use for the tags.</p> <p>You can grant users access to certain log groups while preventing them from accessing other log groups. To do so, tag your groups and use IAM policies that refer to those tags. To assign tags when you create a log group, you must have either the <code>logs:TagResource</code> or <code>logs:TagLogGroup</code> permission. For more information about tagging, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a>. For more information about using tags to control access, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html">Controlling access to Amazon Web Services resources using tags</a>.</p>',
+    }),
   })
   .openapi({ required: ['logGroupName'], title: 'CreateLogGroupRequest' })
   .openapi('CreateLogGroupRequest')
 
 const CreateLogStreamRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    logStreamName: LogStreamNameSchema.openapi({ description: 'The name of the log stream.' }),
   })
   .openapi({ required: ['logGroupName', 'logStreamName'], title: 'CreateLogStreamRequest' })
   .openapi('CreateLogStreamRequest')
@@ -203,17 +153,11 @@ const PolicyTypeSchema = z.literal('DATA_PROTECTION_POLICY').openapi('PolicyType
 
 const DeleteAccountPolicyRequestSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the policy to delete.' }),
-    ),
-    policyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of policy to delete. Currently, the only valid value is <code>DATA_PROTECTION_POLICY</code>.',
-        }),
-    ),
+    policyName: PolicyNameSchema.openapi({ description: 'The name of the policy to delete.' }),
+    policyType: PolicyTypeSchema.openapi({
+      description:
+        'The type of policy to delete. Currently, the only valid value is <code>DATA_PROTECTION_POLICY</code>.',
+    }),
   })
   .openapi({ required: ['policyName', 'policyType'], title: 'DeleteAccountPolicyRequest' })
   .openapi('DeleteAccountPolicyRequest')
@@ -227,14 +171,10 @@ const LogGroupIdentifierSchema = z
 
 const DeleteDataProtectionPolicyRequestSchema = z
   .object({
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the log group that you want to delete the data protection policy for.',
-        }),
-    ),
+    logGroupIdentifier: LogGroupIdentifierSchema.openapi({
+      description:
+        'The name or ARN of the log group that you want to delete the data protection policy for.',
+    }),
   })
   .openapi({ required: ['logGroupIdentifier'], title: 'DeleteDataProtectionPolicyRequest' })
   .openapi('DeleteDataProtectionPolicyRequest')
@@ -248,30 +188,22 @@ const DestinationNameSchema = z
 
 const DeleteDestinationRequestSchema = z
   .object({
-    destinationName: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination.' }),
-    ),
+    destinationName: DestinationNameSchema.openapi({ description: 'The name of the destination.' }),
   })
   .openapi({ required: ['destinationName'], title: 'DeleteDestinationRequest' })
   .openapi('DeleteDestinationRequest')
 
 const DeleteLogGroupRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
   })
   .openapi({ required: ['logGroupName'], title: 'DeleteLogGroupRequest' })
   .openapi('DeleteLogGroupRequest')
 
 const DeleteLogStreamRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    logStreamName: LogStreamNameSchema.openapi({ description: 'The name of the log stream.' }),
   })
   .openapi({ required: ['logGroupName', 'logStreamName'], title: 'DeleteLogStreamRequest' })
   .openapi('DeleteLogStreamRequest')
@@ -285,12 +217,8 @@ const FilterNameSchema = z
 
 const DeleteMetricFilterRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    filterName: FilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric filter.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    filterName: FilterNameSchema.openapi({ description: 'The name of the metric filter.' }),
   })
   .openapi({ required: ['logGroupName', 'filterName'], title: 'DeleteMetricFilterRequest' })
   .openapi('DeleteMetricFilterRequest')
@@ -299,14 +227,10 @@ const SuccessSchema = z.boolean().openapi('Success')
 
 const DeleteQueryDefinitionResponseSchema = z
   .object({
-    success: SuccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A value of TRUE indicates that the operation succeeded. FALSE indicates that the operation failed.',
-        }),
-    ).exactOptional(),
+    success: SuccessSchema.exactOptional().openapi({
+      description:
+        'A value of TRUE indicates that the operation succeeded. FALSE indicates that the operation failed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteQueryDefinitionResponse')
@@ -315,48 +239,34 @@ const QueryIdSchema = z.string().min(0).max(256).openapi('QueryId')
 
 const DeleteQueryDefinitionRequestSchema = z
   .object({
-    queryDefinitionId: QueryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the query definition that you want to delete. You can use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a> to retrieve the IDs of your saved query definitions.',
-        }),
-    ),
+    queryDefinitionId: QueryIdSchema.openapi({
+      description:
+        'The ID of the query definition that you want to delete. You can use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a> to retrieve the IDs of your saved query definitions.',
+    }),
   })
   .openapi({ required: ['queryDefinitionId'], title: 'DeleteQueryDefinitionRequest' })
   .openapi('DeleteQueryDefinitionRequest')
 
 const DeleteResourcePolicyRequestSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the policy to be revoked. This parameter is required.',
-        }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the policy to be revoked. This parameter is required.',
+    }),
   })
   .openapi({ title: 'DeleteResourcePolicyRequest', required: [] })
   .openapi('DeleteResourcePolicyRequest')
 
 const DeleteRetentionPolicyRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
   })
   .openapi({ required: ['logGroupName'], title: 'DeleteRetentionPolicyRequest' })
   .openapi('DeleteRetentionPolicyRequest')
 
 const DeleteSubscriptionFilterRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    filterName: FilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the subscription filter.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    filterName: FilterNameSchema.openapi({ description: 'The name of the subscription filter.' }),
   })
   .openapi({ required: ['logGroupName', 'filterName'], title: 'DeleteSubscriptionFilterRequest' })
   .openapi('DeleteSubscriptionFilterRequest')
@@ -373,33 +283,23 @@ const AccountIdSchema = z
 
 const AccountPolicySchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the account policy.' }),
-    ).exactOptional(),
-    policyDocument: AccountPolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The policy document for this account policy.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
-        }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that this policy was most recently updated.' }),
-    ).exactOptional(),
-    policyType: PolicyTypeSchema.and(
-      z.any().openapi({ description: 'The type of policy for this account policy.' }),
-    ).exactOptional(),
-    scope: ScopeSchema.and(
-      z.any().openapi({ description: 'The scope of the account policy.' }),
-    ).exactOptional(),
-    accountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Web Services account ID that the policy applies to.' }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the account policy.',
+    }),
+    policyDocument: AccountPolicyDocumentSchema.exactOptional().openapi({
+      description:
+        '<p>The policy document for this account policy.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that this policy was most recently updated.',
+    }),
+    policyType: PolicyTypeSchema.exactOptional().openapi({
+      description: 'The type of policy for this account policy.',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({ description: 'The scope of the account policy.' }),
+    accountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID that the policy applies to.',
+    }),
   })
   .openapi({
     description: 'A structure that contains information about one CloudWatch Logs account policy.',
@@ -411,14 +311,10 @@ const AccountPoliciesSchema = z.array(AccountPolicySchema).openapi('AccountPolic
 
 const DescribeAccountPoliciesResponseSchema = z
   .object({
-    accountPolicies: AccountPoliciesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An array of structures that contain information about the CloudWatch Logs account policies that match the specified filters.',
-        }),
-    ).exactOptional(),
+    accountPolicies: AccountPoliciesSchema.exactOptional().openapi({
+      description:
+        'An array of structures that contain information about the CloudWatch Logs account policies that match the specified filters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeAccountPoliciesResponse')
@@ -427,30 +323,18 @@ const AccountIdsSchema = z.array(AccountIdSchema).min(0).max(20).openapi('Accoun
 
 const DescribeAccountPoliciesRequestSchema = z
   .object({
-    policyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to limit the returned policies to only the policies that match the policy type that you specify. Currently, the only valid value is <code>DATA_PROTECTION_POLICY</code>.',
-        }),
-    ),
-    policyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to limit the returned policies to only the policy with the name that you specify.',
-        }),
-    ).exactOptional(),
-    accountIdentifiers: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are using an account that is set up as a monitoring account for CloudWatch unified cross-account observability, you can use this to specify the account ID of a source account. If you do, the operation returns the account policy for the specified account. Currently, you can specify only one account ID in this parameter.</p> <p>If you omit this parameter, only the policy in the current account is returned.</p>',
-        }),
-    ).exactOptional(),
+    policyType: PolicyTypeSchema.openapi({
+      description:
+        'Use this parameter to limit the returned policies to only the policies that match the policy type that you specify. Currently, the only valid value is <code>DATA_PROTECTION_POLICY</code>.',
+    }),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to limit the returned policies to only the policy with the name that you specify.',
+    }),
+    accountIdentifiers: AccountIdsSchema.exactOptional().openapi({
+      description:
+        '<p>If you are using an account that is set up as a monitoring account for CloudWatch unified cross-account observability, you can use this to specify the account ID of a source account. If you do, the operation returns the account policy for the specified account. Currently, you can specify only one account ID in this parameter.</p> <p>If you omit this parameter, only the policy in the current account is returned.</p>',
+    }),
   })
   .openapi({ required: ['policyType'], title: 'DescribeAccountPoliciesRequest' })
   .openapi('DescribeAccountPoliciesRequest')
@@ -465,43 +349,25 @@ const ArnSchema = z.string().openapi('Arn')
 
 const DestinationSchema = z
   .object({
-    destinationName: DestinationNameSchema.and(
-      z.any().openapi({ description: 'The name of the destination.' }),
-    ).exactOptional(),
-    targetArn: TargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the physical target where the log events are delivered (for example, a Kinesis stream).',
-        }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A role for impersonation, used when delivering log events to the target.',
-        }),
-    ).exactOptional(),
-    accessPolicy: AccessPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM policy document that governs which Amazon Web Services accounts can create subscription filters against this destination.',
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The ARN of this destination.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the destination, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.',
-        }),
-    ).exactOptional(),
+    destinationName: DestinationNameSchema.exactOptional().openapi({
+      description: 'The name of the destination.',
+    }),
+    targetArn: TargetArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the physical target where the log events are delivered (for example, a Kinesis stream).',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'A role for impersonation, used when delivering log events to the target.',
+    }),
+    accessPolicy: AccessPolicySchema.exactOptional().openapi({
+      description:
+        'An IAM policy document that governs which Amazon Web Services accounts can create subscription filters against this destination.',
+    }),
+    arn: ArnSchema.exactOptional().openapi({ description: 'The ARN of this destination.' }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the destination, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.',
+    }),
   })
   .openapi({
     description: 'Represents a cross-account destination that receives subscription log events.',
@@ -521,9 +387,7 @@ const NextTokenSchema = z
 
 const DescribeDestinationsResponseSchema = z
   .object({
-    destinations: DestinationsSchema.and(
-      z.any().openapi({ description: 'The destinations.' }),
-    ).exactOptional(),
+    destinations: DestinationsSchema.exactOptional().openapi({ description: 'The destinations.' }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -533,30 +397,18 @@ const DescribeLimitSchema = z.int().min(1).max(50).openapi('DescribeLimit')
 
 const DescribeDestinationsRequestSchema = z
   .object({
-    DestinationNamePrefix: DestinationNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The prefix to match. If you don't specify a value, no prefix filter is applied.",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default maximum value of 50 items is used.",
-        }),
-    ).exactOptional(),
+    DestinationNamePrefix: DestinationNameSchema.exactOptional().openapi({
+      description:
+        "The prefix to match. If you don't specify a value, no prefix filter is applied.",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default maximum value of 50 items is used.",
+    }),
   })
   .openapi({ title: 'DescribeDestinationsRequest', required: [] })
   .openapi('DescribeDestinationsRequest')
@@ -569,86 +421,62 @@ const ExportTaskStatusMessageSchema = z.string().openapi('ExportTaskStatusMessag
 
 const ExportTaskStatusSchema = z
   .object({
-    code: ExportTaskStatusCodeSchema.and(
-      z.any().openapi({ description: 'The status code of the export task.' }),
-    ).exactOptional(),
-    message: ExportTaskStatusMessageSchema.and(
-      z.any().openapi({ description: 'The status message related to the status code.' }),
-    ).exactOptional(),
+    code: ExportTaskStatusCodeSchema.exactOptional().openapi({
+      description: 'The status code of the export task.',
+    }),
+    message: ExportTaskStatusMessageSchema.exactOptional().openapi({
+      description: 'The status message related to the status code.',
+    }),
   })
   .openapi({ description: 'Represents the status of an export task.', required: [] })
   .openapi('ExportTaskStatus')
 
 const ExportTaskExecutionInfoSchema = z
   .object({
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the export task, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    completionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The completion time of the export task, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the export task, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    completionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The completion time of the export task, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
   })
   .openapi({ description: 'Represents the status of an export task.', required: [] })
   .openapi('ExportTaskExecutionInfo')
 
 const ExportTaskSchema = z
   .object({
-    taskId: ExportTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the export task.' }),
-    ).exactOptional(),
-    taskName: ExportTaskNameSchema.and(
-      z.any().openapi({ description: 'The name of the export task.' }),
-    ).exactOptional(),
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the log group from which logs data was exported.' }),
-    ).exactOptional(),
-    from: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp before this time are not exported.',
-        }),
-    ).exactOptional(),
-    to: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not exported.',
-        }),
-    ).exactOptional(),
-    destination: ExportDestinationBucketSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the S3 bucket to which the log data was exported.' }),
-    ).exactOptional(),
-    destinationPrefix: ExportDestinationPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix that was used as the start of Amazon S3 key for every object exported.',
-        }),
-    ).exactOptional(),
-    status: ExportTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the export task.' }),
-    ).exactOptional(),
-    executionInfo: ExportTaskExecutionInfoSchema.and(
-      z.any().openapi({ description: 'Execution information about the export task.' }),
-    ).exactOptional(),
+    taskId: ExportTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the export task.',
+    }),
+    taskName: ExportTaskNameSchema.exactOptional().openapi({
+      description: 'The name of the export task.',
+    }),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group from which logs data was exported.',
+    }),
+    from: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp before this time are not exported.',
+    }),
+    to: TimestampSchema.exactOptional().openapi({
+      description:
+        'The end time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not exported.',
+    }),
+    destination: ExportDestinationBucketSchema.exactOptional().openapi({
+      description: 'The name of the S3 bucket to which the log data was exported.',
+    }),
+    destinationPrefix: ExportDestinationPrefixSchema.exactOptional().openapi({
+      description:
+        'The prefix that was used as the start of Amazon S3 key for every object exported.',
+    }),
+    status: ExportTaskStatusSchema.exactOptional().openapi({
+      description: 'The status of the export task.',
+    }),
+    executionInfo: ExportTaskExecutionInfoSchema.exactOptional().openapi({
+      description: 'Execution information about the export task.',
+    }),
   })
   .openapi({ description: 'Represents an export task.', required: [] })
   .openapi('ExportTask')
@@ -657,9 +485,7 @@ const ExportTasksSchema = z.array(ExportTaskSchema).openapi('ExportTasks')
 
 const DescribeExportTasksResponseSchema = z
   .object({
-    exportTasks: ExportTasksSchema.and(
-      z.any().openapi({ description: 'The export tasks.' }),
-    ).exactOptional(),
+    exportTasks: ExportTasksSchema.exactOptional().openapi({ description: 'The export tasks.' }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -667,38 +493,22 @@ const DescribeExportTasksResponseSchema = z
 
 const DescribeExportTasksRequestSchema = z
   .object({
-    taskId: ExportTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the export task. Specifying a task ID filters the results to one or zero export tasks.',
-        }),
-    ).exactOptional(),
-    statusCode: ExportTaskStatusCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status code of the export task. Specifying a status code filters the results to zero or more export tasks.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
-        }),
-    ).exactOptional(),
+    taskId: ExportTaskIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the export task. Specifying a task ID filters the results to one or zero export tasks.',
+    }),
+    statusCode: ExportTaskStatusCodeSchema.exactOptional().openapi({
+      description:
+        'The status code of the export task. Specifying a status code filters the results to zero or more export tasks.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
+    }),
   })
   .openapi({ title: 'DescribeExportTasksRequest', required: [] })
   .openapi('DescribeExportTasksRequest')
@@ -725,51 +535,34 @@ const InheritedPropertiesSchema = z.array(InheritedPropertySchema).openapi('Inhe
 
 const LogGroupSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the log group, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the log group, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.',
+    }),
     retentionInDays: DaysSchema.exactOptional(),
-    metricFilterCount: FilterCountSchema.and(
-      z.any().openapi({ description: 'The number of metric filters.' }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the log group.' }),
-    ).exactOptional(),
-    storedBytes: StoredBytesSchema.and(
-      z.any().openapi({ description: 'The number of bytes stored.' }),
-    ).exactOptional(),
-    kmsKeyId: KmsKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data.',
-        }),
-    ).exactOptional(),
-    dataProtectionStatus: DataProtectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays whether this log group has a protection policy, or whether it had one in the past. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html">PutDataProtectionPolicy</a>.',
-        }),
-    ).exactOptional(),
-    inheritedProperties: InheritedPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Displays all the properties that this log group has inherited from account-level settings.',
-        }),
-    ).exactOptional(),
+    metricFilterCount: FilterCountSchema.exactOptional().openapi({
+      description: 'The number of metric filters.',
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the log group.',
+    }),
+    storedBytes: StoredBytesSchema.exactOptional().openapi({
+      description: 'The number of bytes stored.',
+    }),
+    kmsKeyId: KmsKeyIdSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the KMS key to use when encrypting log data.',
+    }),
+    dataProtectionStatus: DataProtectionStatusSchema.exactOptional().openapi({
+      description:
+        'Displays whether this log group has a protection policy, or whether it had one in the past. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html">PutDataProtectionPolicy</a>.',
+    }),
+    inheritedProperties: InheritedPropertiesSchema.exactOptional().openapi({
+      description:
+        'Displays all the properties that this log group has inherited from account-level settings.',
+    }),
   })
   .openapi({ description: 'Represents a log group.', required: [] })
   .openapi('LogGroup')
@@ -778,14 +571,10 @@ const LogGroupsSchema = z.array(LogGroupSchema).openapi('LogGroups')
 
 const DescribeLogGroupsResponseSchema = z
   .object({
-    logGroups: LogGroupsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The log groups.</p> <p>If the <code>retentionInDays</code> value is not included for a log group, then that log group's events do not expire.</p>",
-        }),
-    ).exactOptional(),
+    logGroups: LogGroupsSchema.exactOptional().openapi({
+      description:
+        "<p>The log groups.</p> <p>If the <code>retentionInDays</code> value is not included for a log group, then that log group's events do not expire.</p>",
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -802,54 +591,30 @@ const IncludeLinkedAccountsSchema = z.boolean().openapi('IncludeLinkedAccounts')
 
 const DescribeLogGroupsRequestSchema = z
   .object({
-    accountIdentifiers: AccountIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When <code>includeLinkedAccounts</code> is set to <code>True</code>, use this parameter to specify the list of accounts to search. You can specify as many as 20 account IDs in the array. ',
-        }),
-    ).exactOptional(),
-    logGroupNamePrefix: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix to match.</p> <note> <p> <code>logGroupNamePrefix</code> and <code>logGroupNamePattern</code> are mutually exclusive. Only one of these parameters can be passed. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupNamePattern: LogGroupNamePatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you specify a string for this parameter, the operation returns only log groups that have names that match the string based on a case-sensitive substring search. For example, if you specify <code>Foo</code>, log groups named <code>FooBar</code>, <code>aws/Foo</code>, and <code>GroupFoo</code> would match, but <code>foo</code>, <code>F/o/o</code> and <code>Froo</code> would not match.</p> <p>If you specify <code>logGroupNamePattern</code> in your request, then only <code>arn</code>, <code>creationTime</code>, and <code>logGroupName</code> are included in the response. </p> <note> <p> <code>logGroupNamePattern</code> and <code>logGroupNamePrefix</code> are mutually exclusive. Only one of these parameters can be passed. </p> </note>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
-        }),
-    ).exactOptional(),
-    includeLinkedAccounts: IncludeLinkedAccountsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are using a monitoring account, set this to <code>True</code> to have the operation return log groups in the accounts listed in <code>accountIdentifiers</code>.</p> <p>If this parameter is set to <code>true</code> and <code>accountIdentifiers</code> contains a null value, the operation returns all log groups in the monitoring account and all log groups in all source accounts that are linked to the monitoring account. </p>',
-        }),
-    ).exactOptional(),
+    accountIdentifiers: AccountIdsSchema.exactOptional().openapi({
+      description:
+        'When <code>includeLinkedAccounts</code> is set to <code>True</code>, use this parameter to specify the list of accounts to search. You can specify as many as 20 account IDs in the array. ',
+    }),
+    logGroupNamePrefix: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix to match.</p> <note> <p> <code>logGroupNamePrefix</code> and <code>logGroupNamePattern</code> are mutually exclusive. Only one of these parameters can be passed. </p> </note>',
+    }),
+    logGroupNamePattern: LogGroupNamePatternSchema.exactOptional().openapi({
+      description:
+        '<p>If you specify a string for this parameter, the operation returns only log groups that have names that match the string based on a case-sensitive substring search. For example, if you specify <code>Foo</code>, log groups named <code>FooBar</code>, <code>aws/Foo</code>, and <code>GroupFoo</code> would match, but <code>foo</code>, <code>F/o/o</code> and <code>Froo</code> would not match.</p> <p>If you specify <code>logGroupNamePattern</code> in your request, then only <code>arn</code>, <code>creationTime</code>, and <code>logGroupName</code> are included in the response. </p> <note> <p> <code>logGroupNamePattern</code> and <code>logGroupNamePrefix</code> are mutually exclusive. Only one of these parameters can be passed. </p> </note>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
+    }),
+    includeLinkedAccounts: IncludeLinkedAccountsSchema.exactOptional().openapi({
+      description:
+        '<p>If you are using a monitoring account, set this to <code>True</code> to have the operation return log groups in the accounts listed in <code>accountIdentifiers</code>.</p> <p>If this parameter is set to <code>true</code> and <code>accountIdentifiers</code> contains a null value, the operation returns all log groups in the monitoring account and all log groups in all source accounts that are linked to the monitoring account. </p>',
+    }),
   })
   .openapi({ title: 'DescribeLogGroupsRequest', required: [] })
   .openapi('DescribeLogGroupsRequest')
@@ -858,61 +623,37 @@ const SequenceTokenSchema = z.string().min(1).openapi('SequenceToken')
 
 const LogStreamSchema = z
   .object({
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the stream, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    firstEventTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the first event, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    lastEventTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. The <code>lastEventTime</code> value updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.',
-        }),
-    ).exactOptional(),
-    lastIngestionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ingestion time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code> The <code>lastIngestionTime</code> value updates on an eventual consistency basis. It typically updates in less than an hour after ingestion, but in rare situations might take longer.',
-        }),
-    ).exactOptional(),
-    uploadSequenceToken: SequenceTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The sequence token.</p> <important> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted regardless of receiving an invalid sequence token. You don't need to obtain <code>uploadSequenceToken</code> to use a <code>PutLogEvents</code> action.</p> </important>",
-        }),
-    ).exactOptional(),
-    arn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the log stream.' }),
-    ).exactOptional(),
-    storedBytes: StoredBytesSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>The number of bytes stored.</p> <p> <b>Important:</b> As of June 17, 2019, this parameter is no longer supported for log streams, and is always reported as zero. This change applies only to log streams. The <code>storedBytes</code> parameter for log groups is not affected.</p>Starting on June 17, 2019, this parameter will be deprecated for log streams, and will be reported as zero. This change applies only to log streams. The storedBytes parameter for log groups is not affected.',
-        }),
-    ).exactOptional(),
+    logStreamName: LogStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the log stream.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the stream, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    firstEventTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time of the first event, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    lastEventTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. The <code>lastEventTime</code> value updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.',
+    }),
+    lastIngestionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The ingestion time, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code> The <code>lastIngestionTime</code> value updates on an eventual consistency basis. It typically updates in less than an hour after ingestion, but in rare situations might take longer.',
+    }),
+    uploadSequenceToken: SequenceTokenSchema.exactOptional().openapi({
+      description:
+        "<p>The sequence token.</p> <important> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted regardless of receiving an invalid sequence token. You don't need to obtain <code>uploadSequenceToken</code> to use a <code>PutLogEvents</code> action.</p> </important>",
+    }),
+    arn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the log stream.',
+    }),
+    storedBytes: StoredBytesSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>The number of bytes stored.</p> <p> <b>Important:</b> As of June 17, 2019, this parameter is no longer supported for log streams, and is always reported as zero. This change applies only to log streams. The <code>storedBytes</code> parameter for log groups is not affected.</p>Starting on June 17, 2019, this parameter will be deprecated for log streams, and will be reported as zero. This change applies only to log streams. The storedBytes parameter for log groups is not affected.',
+    }),
   })
   .openapi({
     description:
@@ -925,9 +666,7 @@ const LogStreamsSchema = z.array(LogStreamSchema).openapi('LogStreams')
 
 const DescribeLogStreamsResponseSchema = z
   .object({
-    logStreams: LogStreamsSchema.and(
-      z.any().openapi({ description: 'The log streams.' }),
-    ).exactOptional(),
+    logStreams: LogStreamsSchema.exactOptional().openapi({ description: 'The log streams.' }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -939,62 +678,34 @@ const DescendingSchema = z.boolean().openapi('Descending')
 
 const DescribeLogStreamsRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the log group.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logStreamNamePrefix: LogStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The prefix to match.</p> <p>If <code>orderBy</code> is <code>LastEventTime</code>, you cannot specify this parameter.</p>',
-        }),
-    ).exactOptional(),
-    orderBy: OrderBySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the value is <code>LogStreamName</code>, the results are ordered by log stream name. If the value is <code>LastEventTime</code>, the results are ordered by the event time. The default value is <code>LogStreamName</code>.</p> <p>If you order the results by event time, you cannot specify the <code>logStreamNamePrefix</code> parameter.</p> <p> <code>lastEventTimestamp</code> represents the time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. <code>lastEventTimestamp</code> updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.</p>',
-        }),
-    ).exactOptional(),
-    descending: DescendingSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the value is true, results are returned in descending order. If the value is to false, results are returned in ascending order. The default value is false.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the log group.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logStreamNamePrefix: LogStreamNameSchema.exactOptional().openapi({
+      description:
+        '<p>The prefix to match.</p> <p>If <code>orderBy</code> is <code>LastEventTime</code>, you cannot specify this parameter.</p>',
+    }),
+    orderBy: OrderBySchema.exactOptional().openapi({
+      description:
+        '<p>If the value is <code>LogStreamName</code>, the results are ordered by log stream name. If the value is <code>LastEventTime</code>, the results are ordered by the event time. The default value is <code>LogStreamName</code>.</p> <p>If you order the results by event time, you cannot specify the <code>logStreamNamePrefix</code> parameter.</p> <p> <code>lastEventTimestamp</code> represents the time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. <code>lastEventTimestamp</code> updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.</p>',
+    }),
+    descending: DescendingSchema.exactOptional().openapi({
+      description:
+        'If the value is true, results are returned in descending order. If the value is to false, results are returned in ascending order. The default value is false.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
+    }),
   })
   .openapi({ title: 'DescribeLogStreamsRequest', required: [] })
   .openapi('DescribeLogStreamsRequest')
@@ -1074,49 +785,27 @@ const StandardUnitSchema = z
 
 const MetricTransformationSchema = z
   .object({
-    metricName: MetricNameSchema.and(
-      z.any().openapi({ description: 'The name of the CloudWatch metric.' }),
-    ),
-    metricNamespace: MetricNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A custom namespace to contain your metric in CloudWatch. Use namespaces to group together metrics that are similar. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace">Namespaces</a>.',
-        }),
-    ),
-    metricValue: MetricValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value to publish to the CloudWatch metric when a filter pattern matches a log event.',
-        }),
-    ),
-    defaultValue: DefaultValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '(Optional) The value to emit when a filter pattern does not match a log event. This value can be null.',
-        }),
-    ).exactOptional(),
-    dimensions: DimensionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The fields to use as dimensions for the metric. One metric filter can include as many as three dimensions.</p> <important> <p>Metrics extracted from log events are charged as custom metrics. To prevent unexpected high charges, do not specify high-cardinality fields such as <code>IPAddress</code> or <code>requestID</code> as dimensions. Each different value found for a dimension is treated as a separate metric and accrues charges as a separate custom metric. </p> <p>CloudWatch Logs disables a metric filter if it generates 1000 different name/value pairs for your specified dimensions within a certain amount of time. This helps to prevent accidental high charges.</p> <p>You can also set up a billing alarm to alert you if your charges are higher than expected. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/monitor_estimated_charges_with_cloudwatch.html"> Creating a Billing Alarm to Monitor Your Estimated Amazon Web Services Charges</a>. </p> </important>',
-        }),
-    ).exactOptional(),
-    unit: StandardUnitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The unit to assign to the metric. If you omit this, the unit is set as <code>None</code>.',
-        }),
-    ).exactOptional(),
+    metricName: MetricNameSchema.openapi({ description: 'The name of the CloudWatch metric.' }),
+    metricNamespace: MetricNamespaceSchema.openapi({
+      description:
+        'A custom namespace to contain your metric in CloudWatch. Use namespaces to group together metrics that are similar. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Namespace">Namespaces</a>.',
+    }),
+    metricValue: MetricValueSchema.openapi({
+      description:
+        'The value to publish to the CloudWatch metric when a filter pattern matches a log event.',
+    }),
+    defaultValue: DefaultValueSchema.exactOptional().openapi({
+      description:
+        '(Optional) The value to emit when a filter pattern does not match a log event. This value can be null.',
+    }),
+    dimensions: DimensionsSchema.exactOptional().openapi({
+      description:
+        '<p>The fields to use as dimensions for the metric. One metric filter can include as many as three dimensions.</p> <important> <p>Metrics extracted from log events are charged as custom metrics. To prevent unexpected high charges, do not specify high-cardinality fields such as <code>IPAddress</code> or <code>requestID</code> as dimensions. Each different value found for a dimension is treated as a separate metric and accrues charges as a separate custom metric. </p> <p>CloudWatch Logs disables a metric filter if it generates 1000 different name/value pairs for your specified dimensions within a certain amount of time. This helps to prevent accidental high charges.</p> <p>You can also set up a billing alarm to alert you if your charges are higher than expected. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/monitor_estimated_charges_with_cloudwatch.html"> Creating a Billing Alarm to Monitor Your Estimated Amazon Web Services Charges</a>. </p> </important>',
+    }),
+    unit: StandardUnitSchema.exactOptional().openapi({
+      description:
+        'The unit to assign to the metric. If you omit this, the unit is set as <code>None</code>.',
+    }),
   })
   .openapi({
     required: ['metricName', 'metricNamespace', 'metricValue'],
@@ -1132,24 +821,20 @@ const MetricTransformationsSchema = z
 
 const MetricFilterSchema = z
   .object({
-    filterName: FilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the metric filter.' }),
-    ).exactOptional(),
+    filterName: FilterNameSchema.exactOptional().openapi({
+      description: 'The name of the metric filter.',
+    }),
     filterPattern: FilterPatternSchema.exactOptional(),
-    metricTransformations: MetricTransformationsSchema.and(
-      z.any().openapi({ description: 'The metric transformations.' }),
-    ).exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the metric filter, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ).exactOptional(),
+    metricTransformations: MetricTransformationsSchema.exactOptional().openapi({
+      description: 'The metric transformations.',
+    }),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the metric filter, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group.',
+    }),
   })
   .openapi({
     description:
@@ -1162,9 +847,9 @@ const MetricFiltersSchema = z.array(MetricFilterSchema).openapi('MetricFilters')
 
 const DescribeMetricFiltersResponseSchema = z
   .object({
-    metricFilters: MetricFiltersSchema.and(
-      z.any().openapi({ description: 'The metric filters.' }),
-    ).exactOptional(),
+    metricFilters: MetricFiltersSchema.exactOptional().openapi({
+      description: 'The metric filters.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1172,49 +857,29 @@ const DescribeMetricFiltersResponseSchema = z
 
 const DescribeMetricFiltersRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ).exactOptional(),
-    filterNamePrefix: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The prefix to match. CloudWatch Logs uses the value that you set here only if you also include the <code>logGroupName</code> parameter in your request.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
-        }),
-    ).exactOptional(),
-    metricName: MetricNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters results to include only those with the specified metric name. If you include this parameter in your request, you must also include the <code>metricNamespace</code> parameter.',
-        }),
-    ).exactOptional(),
-    metricNamespace: MetricNamespaceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filters results to include only those in the specified namespace. If you include this parameter in your request, you must also include the <code>metricName</code> parameter.',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group.',
+    }),
+    filterNamePrefix: FilterNameSchema.exactOptional().openapi({
+      description:
+        'The prefix to match. CloudWatch Logs uses the value that you set here only if you also include the <code>logGroupName</code> parameter in your request.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
+    }),
+    metricName: MetricNameSchema.exactOptional().openapi({
+      description:
+        'Filters results to include only those with the specified metric name. If you include this parameter in your request, you must also include the <code>metricNamespace</code> parameter.',
+    }),
+    metricNamespace: MetricNamespaceSchema.exactOptional().openapi({
+      description:
+        'Filters results to include only those in the specified namespace. If you include this parameter in your request, you must also include the <code>metricName</code> parameter.',
+    }),
   })
   .openapi({ title: 'DescribeMetricFiltersRequest', required: [] })
   .openapi('DescribeMetricFiltersRequest')
@@ -1227,26 +892,22 @@ const QueryStatusSchema = z
 
 const QueryInfoSchema = z
   .object({
-    queryId: QueryIdSchema.and(
-      z.any().openapi({ description: 'The unique ID number of this query.' }),
-    ).exactOptional(),
-    queryString: QueryStringSchema.and(
-      z.any().openapi({ description: 'The query string used in this query.' }),
-    ).exactOptional(),
-    status: QueryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of this query. Possible values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, <code>Scheduled</code>, and <code>Unknown</code>.',
-        }),
-    ).exactOptional(),
-    createTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The date and time that this query was created.' }),
-    ).exactOptional(),
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group scanned by this query.' }),
-    ).exactOptional(),
+    queryId: QueryIdSchema.exactOptional().openapi({
+      description: 'The unique ID number of this query.',
+    }),
+    queryString: QueryStringSchema.exactOptional().openapi({
+      description: 'The query string used in this query.',
+    }),
+    status: QueryStatusSchema.exactOptional().openapi({
+      description:
+        'The status of this query. Possible values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, <code>Scheduled</code>, and <code>Unknown</code>.',
+    }),
+    createTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that this query was created.',
+    }),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group scanned by this query.',
+    }),
   })
   .openapi({
     description:
@@ -1259,9 +920,9 @@ const QueryInfoListSchema = z.array(QueryInfoSchema).openapi('QueryInfoList')
 
 const DescribeQueriesResponseSchema = z
   .object({
-    queries: QueryInfoListSchema.and(
-      z.any().openapi({ description: 'The list of queries that match the request.' }),
-    ).exactOptional(),
+    queries: QueryInfoListSchema.exactOptional().openapi({
+      description: 'The list of queries that match the request.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1275,26 +936,16 @@ const DescribeQueriesMaxResultsSchema = z
 
 const DescribeQueriesRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Limits the returned queries to only those for the specified log group.',
-        }),
-    ).exactOptional(),
-    status: QueryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Limits the returned queries to only those that have the specified status. Valid values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, and <code>Scheduled</code>.',
-        }),
-    ).exactOptional(),
-    maxResults: DescribeQueriesMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Limits the number of returned queries to the specified number.' }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'Limits the returned queries to only those for the specified log group.',
+    }),
+    status: QueryStatusSchema.exactOptional().openapi({
+      description:
+        'Limits the returned queries to only those that have the specified status. Valid values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, and <code>Scheduled</code>.',
+    }),
+    maxResults: DescribeQueriesMaxResultsSchema.exactOptional().openapi({
+      description: 'Limits the number of returned queries to the specified number.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ title: 'DescribeQueriesRequest', required: [] })
@@ -1308,33 +959,23 @@ const LogGroupNamesSchema = z.array(LogGroupNameSchema).openapi('LogGroupNames')
 
 const QueryDefinitionSchema = z
   .object({
-    queryDefinitionId: QueryIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query definition.' }),
-    ).exactOptional(),
-    name: QueryDefinitionNameSchema.and(
-      z.any().openapi({ description: 'The name of the query definition.' }),
-    ).exactOptional(),
-    queryString: QueryDefinitionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query string to use for this definition. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
-        }),
-    ).exactOptional(),
-    lastModified: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date that the query definition was most recently modified.' }),
-    ).exactOptional(),
-    logGroupNames: LogGroupNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If this query definition contains a list of log groups that it is limited to, that list appears here.',
-        }),
-    ).exactOptional(),
+    queryDefinitionId: QueryIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the query definition.',
+    }),
+    name: QueryDefinitionNameSchema.exactOptional().openapi({
+      description: 'The name of the query definition.',
+    }),
+    queryString: QueryDefinitionStringSchema.exactOptional().openapi({
+      description:
+        'The query string to use for this definition. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
+    }),
+    lastModified: TimestampSchema.exactOptional().openapi({
+      description: 'The date that the query definition was most recently modified.',
+    }),
+    logGroupNames: LogGroupNamesSchema.exactOptional().openapi({
+      description:
+        'If this query definition contains a list of log groups that it is limited to, that list appears here.',
+    }),
   })
   .openapi({
     description:
@@ -1347,9 +988,9 @@ const QueryDefinitionListSchema = z.array(QueryDefinitionSchema).openapi('QueryD
 
 const DescribeQueryDefinitionsResponseSchema = z
   .object({
-    queryDefinitions: QueryDefinitionListSchema.and(
-      z.any().openapi({ description: 'The list of query definitions that match your request.' }),
-    ).exactOptional(),
+    queryDefinitions: QueryDefinitionListSchema.exactOptional().openapi({
+      description: 'The list of query definitions that match your request.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1359,21 +1000,13 @@ const QueryListMaxResultsSchema = z.int().min(1).max(1000).openapi('QueryListMax
 
 const DescribeQueryDefinitionsRequestSchema = z
   .object({
-    queryDefinitionNamePrefix: QueryDefinitionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Use this parameter to filter your results to only the query definitions that have names that start with the prefix you specify.',
-        }),
-    ).exactOptional(),
-    maxResults: QueryListMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Limits the number of returned query definitions to the specified number.',
-        }),
-    ).exactOptional(),
+    queryDefinitionNamePrefix: QueryDefinitionNameSchema.exactOptional().openapi({
+      description:
+        'Use this parameter to filter your results to only the query definitions that have names that start with the prefix you specify.',
+    }),
+    maxResults: QueryListMaxResultsSchema.exactOptional().openapi({
+      description: 'Limits the number of returned query definitions to the specified number.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ title: 'DescribeQueryDefinitionsRequest', required: [] })
@@ -1383,20 +1016,16 @@ const PolicyDocumentSchema = z.string().min(1).max(5120).openapi('PolicyDocument
 
 const ResourcePolicySchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'The name of the resource policy.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The details of the policy.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Timestamp showing when this policy was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'The name of the resource policy.',
+    }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description: 'The details of the policy.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'Timestamp showing when this policy was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
   })
   .openapi({
     description:
@@ -1409,9 +1038,9 @@ const ResourcePoliciesSchema = z.array(ResourcePolicySchema).openapi('ResourcePo
 
 const DescribeResourcePoliciesResponseSchema = z
   .object({
-    resourcePolicies: ResourcePoliciesSchema.and(
-      z.any().openapi({ description: 'The resource policies that exist in this account.' }),
-    ).exactOptional(),
+    resourcePolicies: ResourcePoliciesSchema.exactOptional().openapi({
+      description: 'The resource policies that exist in this account.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1420,14 +1049,10 @@ const DescribeResourcePoliciesResponseSchema = z
 const DescribeResourcePoliciesRequestSchema = z
   .object({
     nextToken: NextTokenSchema.exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of resource policies to be displayed with one call of this API.',
-        }),
-    ).exactOptional(),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of resource policies to be displayed with one call of this API.',
+    }),
   })
   .openapi({ title: 'DescribeResourcePoliciesRequest', required: [] })
   .openapi('DescribeResourcePoliciesRequest')
@@ -1444,26 +1069,22 @@ const DistributionSchema = z
 
 const SubscriptionFilterSchema = z
   .object({
-    filterName: FilterNameSchema.and(
-      z.any().openapi({ description: 'The name of the subscription filter.' }),
-    ).exactOptional(),
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ).exactOptional(),
+    filterName: FilterNameSchema.exactOptional().openapi({
+      description: 'The name of the subscription filter.',
+    }),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description: 'The name of the log group.',
+    }),
     filterPattern: FilterPatternSchema.exactOptional(),
-    destinationArn: DestinationArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the destination.' }),
-    ).exactOptional(),
-    roleArn: RoleArnSchema.and(z.any().openapi({ description: '<p/>' })).exactOptional(),
+    destinationArn: DestinationArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the destination.',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({ description: '<p/>' }),
     distribution: DistributionSchema.exactOptional(),
-    creationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The creation time of the subscription filter, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
+    creationTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The creation time of the subscription filter, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
   })
   .openapi({ description: 'Represents a subscription filter.', required: [] })
   .openapi('SubscriptionFilter')
@@ -1472,9 +1093,9 @@ const SubscriptionFiltersSchema = z.array(SubscriptionFilterSchema).openapi('Sub
 
 const DescribeSubscriptionFiltersResponseSchema = z
   .object({
-    subscriptionFilters: SubscriptionFiltersSchema.and(
-      z.any().openapi({ description: 'The subscription filters.' }),
-    ).exactOptional(),
+    subscriptionFilters: SubscriptionFiltersSchema.exactOptional().openapi({
+      description: 'The subscription filters.',
+    }),
     nextToken: NextTokenSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -1482,55 +1103,33 @@ const DescribeSubscriptionFiltersResponseSchema = z
 
 const DescribeSubscriptionFiltersRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    filterNamePrefix: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The prefix to match. If you don't specify a value, no prefix filter is applied.",
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: DescribeLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    filterNamePrefix: FilterNameSchema.exactOptional().openapi({
+      description:
+        "The prefix to match. If you don't specify a value, no prefix filter is applied.",
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: DescribeLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of items returned. If you don't specify a value, the default is up to 50 items.",
+    }),
   })
   .openapi({ required: ['logGroupName'], title: 'DescribeSubscriptionFiltersRequest' })
   .openapi('DescribeSubscriptionFiltersRequest')
 
 const DisassociateKmsKeyRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the log group.</p> <p>In your <code>DisassociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can't specify both.</p>",
-        }),
-    ).exactOptional(),
-    resourceIdentifier: ResourceIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specifies the target for this operation. You must specify one of the following:</p> <ul> <li> <p>Specify the ARN of a log group to stop having CloudWatch Logs use the KMS key to encrypt log events that are ingested and stored by that log group. After you run this operation, CloudWatch Logs encrypts ingested log events with the default CloudWatch Logs method. The log group ARN must be in the following format. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:log-group:<i>LOG_GROUP_NAME</i> </code> </p> </li> <li> <p>Specify the following ARN to stop using this key to encrypt the results of future <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html">StartQuery</a> operations in this account. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:query-result:*</code> </p> </li> </ul> <p>In your <code>DisssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can\'t specify both.</p>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name of the log group.</p> <p>In your <code>DisassociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can't specify both.</p>",
+    }),
+    resourceIdentifier: ResourceIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specifies the target for this operation. You must specify one of the following:</p> <ul> <li> <p>Specify the ARN of a log group to stop having CloudWatch Logs use the KMS key to encrypt log events that are ingested and stored by that log group. After you run this operation, CloudWatch Logs encrypts ingested log events with the default CloudWatch Logs method. The log group ARN must be in the following format. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:log-group:<i>LOG_GROUP_NAME</i> </code> </p> </li> <li> <p>Specify the following ARN to stop using this key to encrypt the results of future <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html">StartQuery</a> operations in this account. Replace <i>REGION</i> and <i>ACCOUNT_ID</i> with your Region and account ID.</p> <p> <code>arn:aws:logs:<i>REGION</i>:<i>ACCOUNT_ID</i>:query-result:*</code> </p> </li> </ul> <p>In your <code>DisssociateKmsKey</code> operation, you must specify either the <code>resourceIdentifier</code> parameter or the <code>logGroup</code> parameter, but you can\'t specify both.</p>',
+    }),
   })
   .openapi({ title: 'DisassociateKmsKeyRequest', required: [] })
   .openapi('DisassociateKmsKeyRequest')
@@ -1541,31 +1140,21 @@ const EventIdSchema = z.string().openapi('EventId')
 
 const FilteredLogEventSchema = z
   .object({
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream to which this event belongs.' }),
-    ).exactOptional(),
-    timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    message: EventMessageSchema.and(
-      z.any().openapi({ description: 'The data contained in the log event.' }),
-    ).exactOptional(),
-    ingestionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event was ingested, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    eventId: EventIdSchema.and(
-      z.any().openapi({ description: 'The ID of the event.' }),
-    ).exactOptional(),
+    logStreamName: LogStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the log stream to which this event belongs.',
+    }),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    message: EventMessageSchema.exactOptional().openapi({
+      description: 'The data contained in the log event.',
+    }),
+    ingestionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event was ingested, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    eventId: EventIdSchema.exactOptional().openapi({ description: 'The ID of the event.' }),
   })
   .openapi({ description: 'Represents a matched event.', required: [] })
   .openapi('FilteredLogEvent')
@@ -1576,16 +1165,12 @@ const LogStreamSearchedCompletelySchema = z.boolean().openapi('LogStreamSearched
 
 const SearchedLogStreamSchema = z
   .object({
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ).exactOptional(),
-    searchedCompletely: LogStreamSearchedCompletelySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether all the events in this log stream were searched.',
-        }),
-    ).exactOptional(),
+    logStreamName: LogStreamNameSchema.exactOptional().openapi({
+      description: 'The name of the log stream.',
+    }),
+    searchedCompletely: LogStreamSearchedCompletelySchema.exactOptional().openapi({
+      description: 'Indicates whether all the events in this log stream were searched.',
+    }),
   })
   .openapi({ description: 'Represents the search status of a log stream.', required: [] })
   .openapi('SearchedLogStream')
@@ -1594,25 +1179,15 @@ const SearchedLogStreamsSchema = z.array(SearchedLogStreamSchema).openapi('Searc
 
 const FilterLogEventsResponseSchema = z
   .object({
-    events: FilteredLogEventsSchema.and(
-      z.any().openapi({ description: 'The matched events.' }),
-    ).exactOptional(),
-    searchedLogStreams: SearchedLogStreamsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p> <b>Important</b> As of May 15, 2020, this parameter is no longer supported. This parameter returns an empty list.</p> <p>Indicates which log streams have been searched and whether each has been searched completely.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token to use when requesting the next set of items. The token expires after 24 hours.',
-        }),
-    ).exactOptional(),
+    events: FilteredLogEventsSchema.exactOptional().openapi({ description: 'The matched events.' }),
+    searchedLogStreams: SearchedLogStreamsSchema.exactOptional().openapi({
+      description:
+        '<p> <b>Important</b> As of May 15, 2020, this parameter is no longer supported. This parameter returns an empty list.</p> <p>Indicates which log streams have been searched and whether each has been searched completely.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token to use when requesting the next set of items. The token expires after 24 hours.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('FilterLogEventsResponse')
@@ -1631,94 +1206,50 @@ const UnmaskSchema = z.boolean().openapi('Unmask')
 
 const FilterLogEventsRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the log group to search.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify either the name or ARN of the log group to view log events from. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logStreamNames: InputLogStreamNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results to only logs from the log streams in this list.</p> <p>If you specify a value for both <code>logStreamNamePrefix</code> and <code>logStreamNames</code>, the action returns an <code>InvalidParameterException</code> error.</p>',
-        }),
-    ).exactOptional(),
-    logStreamNamePrefix: LogStreamNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters the results to include only events from log streams that have names starting with this prefix.</p> <p>If you specify a value for both <code>logStreamNamePrefix</code> and <code>logStreamNames</code>, but the value for <code>logStreamNamePrefix</code> does not match any log stream names specified in <code>logStreamNames</code>, the action returns an <code>InvalidParameterException</code> error.</p>',
-        }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp before this time are not returned.',
-        }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not returned.',
-        }),
-    ).exactOptional(),
-    filterPattern: FilterPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The filter pattern to use. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html">Filter and Pattern Syntax</a>.</p> <p>If not provided, all the events are matched.</p>',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of events to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: EventsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The maximum number of events to return. The default is 10,000 events.',
-        }),
-    ).exactOptional(),
-    interleaved: InterleavedSchema.and(
-      z
-        .any()
-        .openapi({
-          deprecated: true,
-          description:
-            '<p>If the value is true, the operation attempts to provide responses that contain events from multiple log streams within the log group, interleaved in a single response. If the value is false, all the matched log events in the first log stream are searched first, then those in the next log stream, and so on.</p> <p> <b>Important</b> As of June 17, 2019, this parameter is ignored and the value is assumed to be true. The response from this operation always interleaves events from multiple log streams within a log group.</p>Starting on June 17, 2019, this parameter will be ignored and the value will be assumed to be true. The response from this operation will always interleave events from multiple log streams within a log group.',
-        }),
-    ).exactOptional(),
-    unmask: UnmaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the log group to search.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specify either the name or ARN of the log group to view log events from. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logStreamNames: InputLogStreamNamesSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results to only logs from the log streams in this list.</p> <p>If you specify a value for both <code>logStreamNamePrefix</code> and <code>logStreamNames</code>, the action returns an <code>InvalidParameterException</code> error.</p>',
+    }),
+    logStreamNamePrefix: LogStreamNameSchema.exactOptional().openapi({
+      description:
+        '<p>Filters the results to include only events from log streams that have names starting with this prefix.</p> <p>If you specify a value for both <code>logStreamNamePrefix</code> and <code>logStreamNames</code>, but the value for <code>logStreamNamePrefix</code> does not match any log stream names specified in <code>logStreamNames</code>, the action returns an <code>InvalidParameterException</code> error.</p>',
+    }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp before this time are not returned.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The end of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp later than this time are not returned.',
+    }),
+    filterPattern: FilterPatternSchema.exactOptional().openapi({
+      description:
+        '<p>The filter pattern to use. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html">Filter and Pattern Syntax</a>.</p> <p>If not provided, all the events are matched.</p>',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of events to return. (You received this token from a previous call.)',
+    }),
+    limit: EventsLimitSchema.exactOptional().openapi({
+      description: 'The maximum number of events to return. The default is 10,000 events.',
+    }),
+    interleaved: InterleavedSchema.exactOptional().openapi({
+      deprecated: true,
+      description:
+        '<p>If the value is true, the operation attempts to provide responses that contain events from multiple log streams within the log group, interleaved in a single response. If the value is false, all the matched log events in the first log stream are searched first, then those in the next log stream, and so on.</p> <p> <b>Important</b> As of June 17, 2019, this parameter is ignored and the value is assumed to be true. The response from this operation always interleaves events from multiple log streams within a log group.</p>Starting on June 17, 2019, this parameter will be ignored and the value will be assumed to be true. The response from this operation will always interleave events from multiple log streams within a log group.',
+    }),
+    unmask: UnmaskSchema.exactOptional().openapi({
+      description:
+        '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
+    }),
   })
   .openapi({ title: 'FilterLogEventsRequest', required: [] })
   .openapi('FilterLogEventsRequest')
@@ -1727,58 +1258,42 @@ const DataProtectionPolicyDocumentSchema = z.string().openapi('DataProtectionPol
 
 const GetDataProtectionPolicyResponseSchema = z
   .object({
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The log group name or ARN that you specified in your request.' }),
-    ).exactOptional(),
-    policyDocument: DataProtectionPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The data protection policy document for this log group.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that this policy was most recently updated.' }),
-    ).exactOptional(),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description: 'The log group name or ARN that you specified in your request.',
+    }),
+    policyDocument: DataProtectionPolicyDocumentSchema.exactOptional().openapi({
+      description: 'The data protection policy document for this log group.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that this policy was most recently updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDataProtectionPolicyResponse')
 
 const GetDataProtectionPolicyRequestSchema = z
   .object({
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or ARN of the log group that contains the data protection policy that you want to see.',
-        }),
-    ),
+    logGroupIdentifier: LogGroupIdentifierSchema.openapi({
+      description:
+        'The name or ARN of the log group that contains the data protection policy that you want to see.',
+    }),
   })
   .openapi({ required: ['logGroupIdentifier'], title: 'GetDataProtectionPolicyRequest' })
   .openapi('GetDataProtectionPolicyRequest')
 
 const OutputLogEventSchema = z
   .object({
-    timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
-    message: EventMessageSchema.and(
-      z.any().openapi({ description: 'The data contained in the log event.' }),
-    ).exactOptional(),
-    ingestionTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event was ingested, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ).exactOptional(),
+    timestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    message: EventMessageSchema.exactOptional().openapi({
+      description: 'The data contained in the log event.',
+    }),
+    ingestionTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time the event was ingested, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
   })
   .openapi({ description: 'Represents a log event.', required: [] })
   .openapi('OutputLogEvent')
@@ -1787,25 +1302,15 @@ const OutputLogEventsSchema = z.array(OutputLogEventSchema).openapi('OutputLogEv
 
 const GetLogEventsResponseSchema = z
   .object({
-    events: OutputLogEventsSchema.and(
-      z.any().openapi({ description: 'The events.' }),
-    ).exactOptional(),
-    nextForwardToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items in the forward direction. The token expires after 24 hours. If you have reached the end of the stream, it returns the same token you passed in.',
-        }),
-    ).exactOptional(),
-    nextBackwardToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items in the backward direction. The token expires after 24 hours. This token is not null. If you have reached the end of the stream, it returns the same token you passed in.',
-        }),
-    ).exactOptional(),
+    events: OutputLogEventsSchema.exactOptional().openapi({ description: 'The events.' }),
+    nextForwardToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items in the forward direction. The token expires after 24 hours. If you have reached the end of the stream, it returns the same token you passed in.',
+    }),
+    nextBackwardToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items in the backward direction. The token expires after 24 hours. This token is not null. If you have reached the end of the stream, it returns the same token you passed in.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLogEventsResponse')
@@ -1814,73 +1319,39 @@ const StartFromHeadSchema = z.boolean().openapi('StartFromHead')
 
 const GetLogEventsRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the log group.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify either the name or ARN of the log group to view events from. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The start of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp equal to this time or later than this time are included. Events with a timestamp earlier than this time are not included.',
-        }),
-    ).exactOptional(),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp equal to or later than this time are not included.',
-        }),
-    ).exactOptional(),
-    nextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The token for the next set of items to return. (You received this token from a previous call.)',
-        }),
-    ).exactOptional(),
-    limit: EventsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The maximum number of log events returned. If you don't specify a limit, the default is as many log events as can fit in a response size of 1 MB (up to 10,000 log events).",
-        }),
-    ).exactOptional(),
-    startFromHead: StartFromHeadSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If the value is true, the earliest log events are returned first. If the value is false, the latest log events are returned first. The default value is false.</p> <p>If you are using a previous <code>nextForwardToken</code> value as the <code>nextToken</code> in this operation, you must specify <code>true</code> for <code>startFromHead</code>.</p>',
-        }),
-    ).exactOptional(),
-    unmask: UnmaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the log group.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specify either the name or ARN of the log group to view events from. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    logStreamName: LogStreamNameSchema.openapi({ description: 'The name of the log stream.' }),
+    startTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The start of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp equal to this time or later than this time are included. Events with a timestamp earlier than this time are not included.',
+    }),
+    endTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The end of the time range, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. Events with a timestamp equal to or later than this time are not included.',
+    }),
+    nextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The token for the next set of items to return. (You received this token from a previous call.)',
+    }),
+    limit: EventsLimitSchema.exactOptional().openapi({
+      description:
+        "The maximum number of log events returned. If you don't specify a limit, the default is as many log events as can fit in a response size of 1 MB (up to 10,000 log events).",
+    }),
+    startFromHead: StartFromHeadSchema.exactOptional().openapi({
+      description:
+        '<p>If the value is true, the earliest log events are returned first. If the value is false, the latest log events are returned first. The default value is false.</p> <p>If you are using a previous <code>nextForwardToken</code> value as the <code>nextToken</code> in this operation, you must specify <code>true</code> for <code>startFromHead</code>.</p>',
+    }),
+    unmask: UnmaskSchema.exactOptional().openapi({
+      description:
+        '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
+    }),
   })
   .openapi({ required: ['logStreamName'], title: 'GetLogEventsRequest' })
   .openapi('GetLogEventsRequest')
@@ -1891,14 +1362,10 @@ const PercentageSchema = z.int().min(0).max(100).openapi('Percentage')
 
 const LogGroupFieldSchema = z
   .object({
-    name: FieldSchema.and(
-      z.any().openapi({ description: 'The name of a log field.' }),
-    ).exactOptional(),
-    percent: PercentageSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The percentage of log events queried that contained the field.' }),
-    ).exactOptional(),
+    name: FieldSchema.exactOptional().openapi({ description: 'The name of a log field.' }),
+    percent: PercentageSchema.exactOptional().openapi({
+      description: 'The percentage of log events queried that contained the field.',
+    }),
   })
   .openapi({
     description:
@@ -1911,44 +1378,28 @@ const LogGroupFieldListSchema = z.array(LogGroupFieldSchema).openapi('LogGroupFi
 
 const GetLogGroupFieldsResponseSchema = z
   .object({
-    logGroupFields: LogGroupFieldListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The array of fields found in the query. Each object in the array contains the name of the field, along with the percentage of time it appeared in the log events that were queried.',
-        }),
-    ).exactOptional(),
+    logGroupFields: LogGroupFieldListSchema.exactOptional().openapi({
+      description:
+        'The array of fields found in the query. Each object in the array contains the name of the field, along with the percentage of time it appeared in the log events that were queried.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLogGroupFieldsResponse')
 
 const GetLogGroupFieldsRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the log group to search.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
-    time: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The time to set as the center of the query. If you specify <code>time</code>, the 8 minutes before and 8 minutes after this time are searched. If you omit <code>time</code>, the most recent 15 minutes up to the current time are searched.</p> <p>The <code>time</code> value is specified as epoch time, which is the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.</p>',
-        }),
-    ).exactOptional(),
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must specify the ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the log group to search.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
+    time: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>The time to set as the center of the query. If you specify <code>time</code>, the 8 minutes before and 8 minutes after this time are searched. If you omit <code>time</code>, the most recent 15 minutes up to the current time are searched.</p> <p>The <code>time</code> value is specified as epoch time, which is the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.</p>',
+    }),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description:
+        '<p>Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must specify the ARN.</p> <note> <p> You must include either <code>logGroupIdentifier</code> or <code>logGroupName</code>, but not both. </p> </note>',
+    }),
   })
   .openapi({ title: 'GetLogGroupFieldsRequest', required: [] })
   .openapi('GetLogGroupFieldsRequest')
@@ -1959,9 +1410,9 @@ const LogRecordSchema = z.record(z.string(), ValueSchema).openapi('LogRecord')
 
 const GetLogRecordResponseSchema = z
   .object({
-    logRecord: LogRecordSchema.and(
-      z.any().openapi({ description: 'The requested log event, as a JSON string.' }),
-    ).exactOptional(),
+    logRecord: LogRecordSchema.exactOptional().openapi({
+      description: 'The requested log event, as a JSON string.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLogRecordResponse')
@@ -1970,34 +1421,22 @@ const LogRecordPointerSchema = z.string().openapi('LogRecordPointer')
 
 const GetLogRecordRequestSchema = z
   .object({
-    logRecordPointer: LogRecordPointerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The pointer corresponding to the log event record you want to retrieve. You get this from the response of a <code>GetQueryResults</code> operation. In that response, the value of the <code>@ptr</code> field for a log event is the value to use as <code>logRecordPointer</code> to retrieve that complete log event record.',
-        }),
-    ),
-    unmask: UnmaskSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
-        }),
-    ).exactOptional(),
+    logRecordPointer: LogRecordPointerSchema.openapi({
+      description:
+        'The pointer corresponding to the log event record you want to retrieve. You get this from the response of a <code>GetQueryResults</code> operation. In that response, the value of the <code>@ptr</code> field for a log event is the value to use as <code>logRecordPointer</code> to retrieve that complete log event record.',
+    }),
+    unmask: UnmaskSchema.exactOptional().openapi({
+      description:
+        '<p>Specify <code>true</code> to display the log event fields with all sensitive data unmasked and visible. The default is <code>false</code>.</p> <p>To use this operation with this parameter, you must be signed into an account with the <code>logs:Unmask</code> permission.</p>',
+    }),
   })
   .openapi({ required: ['logRecordPointer'], title: 'GetLogRecordRequest' })
   .openapi('GetLogRecordRequest')
 
 const ResultFieldSchema = z
   .object({
-    field: FieldSchema.and(
-      z.any().openapi({ description: 'The log event field.' }),
-    ).exactOptional(),
-    value: ValueSchema.and(
-      z.any().openapi({ description: 'The value of this field.' }),
-    ).exactOptional(),
+    field: FieldSchema.exactOptional().openapi({ description: 'The log event field.' }),
+    value: ValueSchema.exactOptional().openapi({ description: 'The value of this field.' }),
   })
   .openapi({
     description:
@@ -2014,19 +1453,15 @@ const StatsValueSchema = z.float64().openapi('StatsValue')
 
 const QueryStatisticsSchema = z
   .object({
-    recordsMatched: StatsValueSchema.and(
-      z.any().openapi({ description: 'The number of log events that matched the query string.' }),
-    ).exactOptional(),
-    recordsScanned: StatsValueSchema.and(
-      z.any().openapi({ description: 'The total number of log events scanned during the query.' }),
-    ).exactOptional(),
-    bytesScanned: StatsValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The total number of bytes in the log events scanned during the query.',
-        }),
-    ).exactOptional(),
+    recordsMatched: StatsValueSchema.exactOptional().openapi({
+      description: 'The number of log events that matched the query string.',
+    }),
+    recordsScanned: StatsValueSchema.exactOptional().openapi({
+      description: 'The total number of log events scanned during the query.',
+    }),
+    bytesScanned: StatsValueSchema.exactOptional().openapi({
+      description: 'The total number of bytes in the log events scanned during the query.',
+    }),
   })
   .openapi({
     description:
@@ -2039,56 +1474,36 @@ const EncryptionKeySchema = z.string().max(256).openapi('EncryptionKey')
 
 const GetQueryResultsResponseSchema = z
   .object({
-    results: QueryResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The log events that matched the query criteria during the most recent time it ran.</p> <p>The <code>results</code> value is an array of arrays. Each log event is one object in the top-level array. Each of these log event objects is an array of <code>field</code>/<code>value</code> pairs.</p>',
-        }),
-    ).exactOptional(),
-    statistics: QueryStatisticsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Includes the number of log events scanned by the query, the number of log events that matched the query criteria, and the total number of bytes in the scanned log events. These values reflect the full raw results of the query.',
-        }),
-    ).exactOptional(),
-    status: QueryStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the most recent running of the query. Possible values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, <code>Scheduled</code>, <code>Timeout</code>, and <code>Unknown</code>.</p> <p>Queries time out after 60 minutes of runtime. To avoid having your queries time out, reduce the time range being searched or partition your query into a number of queries.</p>',
-        }),
-    ).exactOptional(),
-    encryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you associated an KMS key with the CloudWatch Logs Insights query results in this account, this field displays the ARN of the key that\'s used to encrypt the query results when <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html">StartQuery</a> stores them.',
-        }),
-    ).exactOptional(),
+    results: QueryResultsSchema.exactOptional().openapi({
+      description:
+        '<p>The log events that matched the query criteria during the most recent time it ran.</p> <p>The <code>results</code> value is an array of arrays. Each log event is one object in the top-level array. Each of these log event objects is an array of <code>field</code>/<code>value</code> pairs.</p>',
+    }),
+    statistics: QueryStatisticsSchema.exactOptional().openapi({
+      description:
+        'Includes the number of log events scanned by the query, the number of log events that matched the query criteria, and the total number of bytes in the scanned log events. These values reflect the full raw results of the query.',
+    }),
+    status: QueryStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the most recent running of the query. Possible values are <code>Cancelled</code>, <code>Complete</code>, <code>Failed</code>, <code>Running</code>, <code>Scheduled</code>, <code>Timeout</code>, and <code>Unknown</code>.</p> <p>Queries time out after 60 minutes of runtime. To avoid having your queries time out, reduce the time range being searched or partition your query into a number of queries.</p>',
+    }),
+    encryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'If you associated an KMS key with the CloudWatch Logs Insights query results in this account, this field displays the ARN of the key that\'s used to encrypt the query results when <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html">StartQuery</a> stores them.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetQueryResultsResponse')
 
 const GetQueryResultsRequestSchema = z
-  .object({
-    queryId: QueryIdSchema.and(z.any().openapi({ description: 'The ID number of the query.' })),
-  })
+  .object({ queryId: QueryIdSchema.openapi({ description: 'The ID number of the query.' }) })
   .openapi({ required: ['queryId'], title: 'GetQueryResultsRequest' })
   .openapi('GetQueryResultsRequest')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of tags associated with the requested resource.&gt;' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({
+      description: 'The list of tags associated with the requested resource.&gt;',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
@@ -2102,23 +1517,17 @@ const AmazonResourceNameSchema = z
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the resource that you want to view tags for.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
-        }),
-    ),
+    resourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the resource that you want to view tags for.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
+    }),
   })
   .openapi({ required: ['resourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListTagsLogGroupResponseSchema = z
   .object({
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The tags for the log group.' }),
-    ).exactOptional(),
+    tags: TagsSchema.exactOptional().openapi({ description: 'The tags for the log group.' }),
   })
   .openapi({
     deprecated: true,
@@ -2130,9 +1539,7 @@ const ListTagsLogGroupResponseSchema = z
 
 const ListTagsLogGroupRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
   })
   .openapi({
     required: ['logGroupName'],
@@ -2145,44 +1552,30 @@ const ListTagsLogGroupRequestSchema = z
 
 const PutAccountPolicyResponseSchema = z
   .object({
-    accountPolicy: AccountPolicySchema.and(
-      z.any().openapi({ description: 'The account policy that you created.' }),
-    ).exactOptional(),
+    accountPolicy: AccountPolicySchema.exactOptional().openapi({
+      description: 'The account policy that you created.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutAccountPolicyResponse')
 
 const PutAccountPolicyRequestSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A name for the policy. This must be unique within the account.' }),
-    ),
-    policyDocument: AccountPolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the data protection policy, in JSON.</p> <p>This policy must include two JSON blocks:</p> <ul> <li> <p>The first block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Audit</code> action. The <code>DataIdentifer</code> array lists the types of sensitive data that you want to mask. For more information about the available options, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data-types.html">Types of data that you can mask</a>.</p> <p>The <code>Operation</code> property with an <code>Audit</code> action is required to find the sensitive data terms. This <code>Audit</code> action must contain a <code>FindingsDestination</code> object. You can optionally use that <code>FindingsDestination</code> object to list one or more destinations to send audit findings to. If you specify destinations such as log groups, Kinesis Data Firehose streams, and S3 buckets, they must already exist.</p> </li> <li> <p>The second block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Deidentify</code> action. The <code>DataIdentifer</code> array must exactly match the <code>DataIdentifer</code> array in the first block of the policy.</p> <p>The <code>Operation</code> property with the <code>Deidentify</code> action is what actually masks the data, and it must contain the <code> "MaskConfig": {}</code> object. The <code> "MaskConfig": {}</code> object must be empty.</p> </li> </ul> <p>For an example data protection policy, see the <b>Examples</b> section on this page.</p> <important> <p>The contents of the two <code>DataIdentifer</code> arrays must match exactly.</p> </important> <p>In addition to the two JSON blocks, the <code>policyDocument</code> can also include <code>Name</code>, <code>Description</code>, and <code>Version</code> fields. The <code>Name</code> is different than the operation\'s <code>policyName</code> parameter, and is used as a dimension when CloudWatch Logs reports audit findings metrics to CloudWatch.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
-        }),
-    ),
-    policyType: PolicyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Currently the only valid value for this parameter is <code>DATA_PROTECTION_POLICY</code>.',
-        }),
-    ),
-    scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Currently the only valid value for this parameter is <code>ALL</code>, which specifies that the data protection policy applies to all log groups in the account. If you omit this parameter, the default of <code>ALL</code> is used.',
-        }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.openapi({
+      description: 'A name for the policy. This must be unique within the account.',
+    }),
+    policyDocument: AccountPolicyDocumentSchema.openapi({
+      description:
+        '<p>Specify the data protection policy, in JSON.</p> <p>This policy must include two JSON blocks:</p> <ul> <li> <p>The first block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Audit</code> action. The <code>DataIdentifer</code> array lists the types of sensitive data that you want to mask. For more information about the available options, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data-types.html">Types of data that you can mask</a>.</p> <p>The <code>Operation</code> property with an <code>Audit</code> action is required to find the sensitive data terms. This <code>Audit</code> action must contain a <code>FindingsDestination</code> object. You can optionally use that <code>FindingsDestination</code> object to list one or more destinations to send audit findings to. If you specify destinations such as log groups, Kinesis Data Firehose streams, and S3 buckets, they must already exist.</p> </li> <li> <p>The second block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Deidentify</code> action. The <code>DataIdentifer</code> array must exactly match the <code>DataIdentifer</code> array in the first block of the policy.</p> <p>The <code>Operation</code> property with the <code>Deidentify</code> action is what actually masks the data, and it must contain the <code> "MaskConfig": {}</code> object. The <code> "MaskConfig": {}</code> object must be empty.</p> </li> </ul> <p>For an example data protection policy, see the <b>Examples</b> section on this page.</p> <important> <p>The contents of the two <code>DataIdentifer</code> arrays must match exactly.</p> </important> <p>In addition to the two JSON blocks, the <code>policyDocument</code> can also include <code>Name</code>, <code>Description</code>, and <code>Version</code> fields. The <code>Name</code> is different than the operation\'s <code>policyName</code> parameter, and is used as a dimension when CloudWatch Logs reports audit findings metrics to CloudWatch.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
+    }),
+    policyType: PolicyTypeSchema.openapi({
+      description:
+        'Currently the only valid value for this parameter is <code>DATA_PROTECTION_POLICY</code>.',
+    }),
+    scope: ScopeSchema.exactOptional().openapi({
+      description:
+        'Currently the only valid value for this parameter is <code>ALL</code>, which specifies that the data protection policy applies to all log groups in the account. If you omit this parameter, the default of <code>ALL</code> is used.',
+    }),
   })
   .openapi({
     required: ['policyName', 'policyDocument', 'policyType'],
@@ -2192,36 +1585,28 @@ const PutAccountPolicyRequestSchema = z
 
 const PutDataProtectionPolicyResponseSchema = z
   .object({
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The log group name or ARN that you specified in your request.' }),
-    ).exactOptional(),
-    policyDocument: DataProtectionPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The data protection policy used for this log group.' }),
-    ).exactOptional(),
-    lastUpdatedTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The date and time that this policy was most recently updated.' }),
-    ).exactOptional(),
+    logGroupIdentifier: LogGroupIdentifierSchema.exactOptional().openapi({
+      description: 'The log group name or ARN that you specified in your request.',
+    }),
+    policyDocument: DataProtectionPolicyDocumentSchema.exactOptional().openapi({
+      description: 'The data protection policy used for this log group.',
+    }),
+    lastUpdatedTime: TimestampSchema.exactOptional().openapi({
+      description: 'The date and time that this policy was most recently updated.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutDataProtectionPolicyResponse')
 
 const PutDataProtectionPolicyRequestSchema = z
   .object({
-    logGroupIdentifier: LogGroupIdentifierSchema.and(
-      z.any().openapi({ description: 'Specify either the log group name or log group ARN.' }),
-    ),
-    policyDocument: DataProtectionPolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the data protection policy, in JSON.</p> <p>This policy must include two JSON blocks:</p> <ul> <li> <p>The first block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Audit</code> action. The <code>DataIdentifer</code> array lists the types of sensitive data that you want to mask. For more information about the available options, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data-types.html">Types of data that you can mask</a>.</p> <p>The <code>Operation</code> property with an <code>Audit</code> action is required to find the sensitive data terms. This <code>Audit</code> action must contain a <code>FindingsDestination</code> object. You can optionally use that <code>FindingsDestination</code> object to list one or more destinations to send audit findings to. If you specify destinations such as log groups, Kinesis Data Firehose streams, and S3 buckets, they must already exist.</p> </li> <li> <p>The second block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Deidentify</code> action. The <code>DataIdentifer</code> array must exactly match the <code>DataIdentifer</code> array in the first block of the policy.</p> <p>The <code>Operation</code> property with the <code>Deidentify</code> action is what actually masks the data, and it must contain the <code> "MaskConfig": {}</code> object. The <code> "MaskConfig": {}</code> object must be empty.</p> </li> </ul> <p>For an example data protection policy, see the <b>Examples</b> section on this page.</p> <important> <p>The contents of the two <code>DataIdentifer</code> arrays must match exactly.</p> </important> <p>In addition to the two JSON blocks, the <code>policyDocument</code> can also include <code>Name</code>, <code>Description</code>, and <code>Version</code> fields. The <code>Name</code> is used as a dimension when CloudWatch Logs reports audit findings metrics to CloudWatch.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
-        }),
-    ),
+    logGroupIdentifier: LogGroupIdentifierSchema.openapi({
+      description: 'Specify either the log group name or log group ARN.',
+    }),
+    policyDocument: DataProtectionPolicyDocumentSchema.openapi({
+      description:
+        '<p>Specify the data protection policy, in JSON.</p> <p>This policy must include two JSON blocks:</p> <ul> <li> <p>The first block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Audit</code> action. The <code>DataIdentifer</code> array lists the types of sensitive data that you want to mask. For more information about the available options, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data-types.html">Types of data that you can mask</a>.</p> <p>The <code>Operation</code> property with an <code>Audit</code> action is required to find the sensitive data terms. This <code>Audit</code> action must contain a <code>FindingsDestination</code> object. You can optionally use that <code>FindingsDestination</code> object to list one or more destinations to send audit findings to. If you specify destinations such as log groups, Kinesis Data Firehose streams, and S3 buckets, they must already exist.</p> </li> <li> <p>The second block must include both a <code>DataIdentifer</code> array and an <code>Operation</code> property with an <code>Deidentify</code> action. The <code>DataIdentifer</code> array must exactly match the <code>DataIdentifer</code> array in the first block of the policy.</p> <p>The <code>Operation</code> property with the <code>Deidentify</code> action is what actually masks the data, and it must contain the <code> "MaskConfig": {}</code> object. The <code> "MaskConfig": {}</code> object must be empty.</p> </li> </ul> <p>For an example data protection policy, see the <b>Examples</b> section on this page.</p> <important> <p>The contents of the two <code>DataIdentifer</code> arrays must match exactly.</p> </important> <p>In addition to the two JSON blocks, the <code>policyDocument</code> can also include <code>Name</code>, <code>Description</code>, and <code>Version</code> fields. The <code>Name</code> is used as a dimension when CloudWatch Logs reports audit findings metrics to CloudWatch.</p> <p>The JSON specified in <code>policyDocument</code> can be up to 30,720 characters.</p>',
+    }),
   })
   .openapi({
     required: ['logGroupIdentifier', 'policyDocument'],
@@ -2231,42 +1616,25 @@ const PutDataProtectionPolicyRequestSchema = z
 
 const PutDestinationResponseSchema = z
   .object({
-    destination: DestinationSchema.and(
-      z.any().openapi({ description: 'The destination.' }),
-    ).exactOptional(),
+    destination: DestinationSchema.exactOptional().openapi({ description: 'The destination.' }),
   })
   .openapi({ required: [] })
   .openapi('PutDestinationResponse')
 
 const PutDestinationRequestSchema = z
   .object({
-    destinationName: DestinationNameSchema.and(
-      z.any().openapi({ description: 'A name for the destination.' }),
-    ),
-    targetArn: TargetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an Amazon Kinesis stream to which to deliver matching log events.',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of an IAM role that grants CloudWatch Logs permissions to call the Amazon Kinesis <code>PutRecord</code> operation on the destination stream.',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> </p>',
-        }),
-    ).exactOptional(),
+    destinationName: DestinationNameSchema.openapi({ description: 'A name for the destination.' }),
+    targetArn: TargetArnSchema.openapi({
+      description: 'The ARN of an Amazon Kinesis stream to which to deliver matching log events.',
+    }),
+    roleArn: RoleArnSchema.openapi({
+      description:
+        'The ARN of an IAM role that grants CloudWatch Logs permissions to call the Amazon Kinesis <code>PutRecord</code> operation on the destination stream.',
+    }),
+    tags: TagsSchema.exactOptional().openapi({
+      description:
+        '<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href="https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html">Tagging Amazon Web Services resources</a> </p>',
+    }),
   })
   .openapi({
     required: ['destinationName', 'targetArn', 'roleArn'],
@@ -2278,25 +1646,17 @@ const ForceUpdateSchema = z.boolean().openapi('ForceUpdate')
 
 const PutDestinationPolicyRequestSchema = z
   .object({
-    destinationName: DestinationNameSchema.and(
-      z.any().openapi({ description: 'A name for an existing destination.' }),
-    ),
-    accessPolicy: AccessPolicySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An IAM policy document that authorizes cross-account users to deliver their log events to the associated destination. This can be up to 5120 bytes.',
-        }),
-    ),
-    forceUpdate: ForceUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify true if you are updating an existing destination policy to grant permission to an organization ID instead of granting permission to individual Amazon Web Services accounts. Before you update a destination policy this way, you must first update the subscription filters in the accounts that send logs to this destination. If you do not, the subscription filters might stop working. By specifying <code>true</code> for <code>forceUpdate</code>, you are affirming that you have already updated the subscription filters. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Cross-Account-Log_Subscription-Update.html"> Updating an existing cross-account subscription</a> </p> <p>If you omit this parameter, the default of <code>false</code> is used.</p>',
-        }),
-    ).exactOptional(),
+    destinationName: DestinationNameSchema.openapi({
+      description: 'A name for an existing destination.',
+    }),
+    accessPolicy: AccessPolicySchema.openapi({
+      description:
+        'An IAM policy document that authorizes cross-account users to deliver their log events to the associated destination. This can be up to 5120 bytes.',
+    }),
+    forceUpdate: ForceUpdateSchema.exactOptional().openapi({
+      description:
+        '<p>Specify true if you are updating an existing destination policy to grant permission to an organization ID instead of granting permission to individual Amazon Web Services accounts. Before you update a destination policy this way, you must first update the subscription filters in the accounts that send logs to this destination. If you do not, the subscription filters might stop working. By specifying <code>true</code> for <code>forceUpdate</code>, you are affirming that you have already updated the subscription filters. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Cross-Account-Log_Subscription-Update.html"> Updating an existing cross-account subscription</a> </p> <p>If you omit this parameter, the default of <code>false</code> is used.</p>',
+    }),
   })
   .openapi({ required: ['destinationName', 'accessPolicy'], title: 'PutDestinationPolicyRequest' })
   .openapi('PutDestinationPolicyRequest')
@@ -2305,53 +1665,41 @@ const LogEventIndexSchema = z.int().openapi('LogEventIndex')
 
 const RejectedLogEventsInfoSchema = z
   .object({
-    tooNewLogEventStartIndex: LogEventIndexSchema.and(
-      z.any().openapi({ description: 'The log events that are too new.' }),
-    ).exactOptional(),
-    tooOldLogEventEndIndex: LogEventIndexSchema.and(
-      z.any().openapi({ description: 'The log events that are dated too far in the past.' }),
-    ).exactOptional(),
-    expiredLogEventEndIndex: LogEventIndexSchema.and(
-      z.any().openapi({ description: 'The expired log events.' }),
-    ).exactOptional(),
+    tooNewLogEventStartIndex: LogEventIndexSchema.exactOptional().openapi({
+      description: 'The log events that are too new.',
+    }),
+    tooOldLogEventEndIndex: LogEventIndexSchema.exactOptional().openapi({
+      description: 'The log events that are dated too far in the past.',
+    }),
+    expiredLogEventEndIndex: LogEventIndexSchema.exactOptional().openapi({
+      description: 'The expired log events.',
+    }),
   })
   .openapi({ description: 'Represents the rejected events.', required: [] })
   .openapi('RejectedLogEventsInfo')
 
 const PutLogEventsResponseSchema = z
   .object({
-    nextSequenceToken: SequenceTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The next sequence token.</p> <important> <p>This field has been deprecated.</p> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted even if the sequence token is not valid. You can use parallel <code>PutLogEvents</code> actions on the same log stream and you do not need to wait for the response of a previous <code>PutLogEvents</code> action to obtain the <code>nextSequenceToken</code> value.</p> </important>',
-        }),
-    ).exactOptional(),
-    rejectedLogEventsInfo: RejectedLogEventsInfoSchema.and(
-      z.any().openapi({ description: 'The rejected events.' }),
-    ).exactOptional(),
+    nextSequenceToken: SequenceTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The next sequence token.</p> <important> <p>This field has been deprecated.</p> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted even if the sequence token is not valid. You can use parallel <code>PutLogEvents</code> actions on the same log stream and you do not need to wait for the response of a previous <code>PutLogEvents</code> action to obtain the <code>nextSequenceToken</code> value.</p> </important>',
+    }),
+    rejectedLogEventsInfo: RejectedLogEventsInfoSchema.exactOptional().openapi({
+      description: 'The rejected events.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutLogEventsResponse')
 
 const InputLogEventSchema = z
   .object({
-    timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
-        }),
-    ),
-    message: EventMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The raw event message. Each log event can be no larger than 256 KB.',
-        }),
-    ),
+    timestamp: TimestampSchema.openapi({
+      description:
+        'The time the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.',
+    }),
+    message: EventMessageSchema.openapi({
+      description: 'The raw event message. Each log event can be no larger than 256 KB.',
+    }),
   })
   .openapi({
     required: ['timestamp', 'message'],
@@ -2368,21 +1716,13 @@ const InputLogEventsSchema = z
 
 const PutLogEventsRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    logStreamName: LogStreamNameSchema.and(
-      z.any().openapi({ description: 'The name of the log stream.' }),
-    ),
-    logEvents: InputLogEventsSchema.and(z.any().openapi({ description: 'The log events.' })),
-    sequenceToken: SequenceTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The sequence token obtained from the response of the previous <code>PutLogEvents</code> call.</p> <important> <p>The <code>sequenceToken</code> parameter is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are now accepted and never return <code>InvalidSequenceTokenException</code> or <code>DataAlreadyAcceptedException</code> even if the sequence token is not valid.</p> </important>',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    logStreamName: LogStreamNameSchema.openapi({ description: 'The name of the log stream.' }),
+    logEvents: InputLogEventsSchema.openapi({ description: 'The log events.' }),
+    sequenceToken: SequenceTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The sequence token obtained from the response of the previous <code>PutLogEvents</code> call.</p> <important> <p>The <code>sequenceToken</code> parameter is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are now accepted and never return <code>InvalidSequenceTokenException</code> or <code>DataAlreadyAcceptedException</code> even if the sequence token is not valid.</p> </important>',
+    }),
   })
   .openapi({
     required: ['logGroupName', 'logStreamName', 'logEvents'],
@@ -2398,26 +1738,14 @@ const UnrecognizedClientExceptionSchema = z.any().openapi('UnrecognizedClientExc
 
 const PutMetricFilterRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    filterName: FilterNameSchema.and(
-      z.any().openapi({ description: 'A name for the metric filter.' }),
-    ),
-    filterPattern: FilterPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A filter pattern for extracting metric data out of ingested log events.',
-        }),
-    ),
-    metricTransformations: MetricTransformationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A collection of information that defines how metric data gets emitted.',
-        }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    filterName: FilterNameSchema.openapi({ description: 'A name for the metric filter.' }),
+    filterPattern: FilterPatternSchema.openapi({
+      description: 'A filter pattern for extracting metric data out of ingested log events.',
+    }),
+    metricTransformations: MetricTransformationsSchema.openapi({
+      description: 'A collection of information that defines how metric data gets emitted.',
+    }),
   })
   .openapi({
     required: ['logGroupName', 'filterName', 'filterPattern', 'metricTransformations'],
@@ -2427,82 +1755,60 @@ const PutMetricFilterRequestSchema = z
 
 const PutQueryDefinitionResponseSchema = z
   .object({
-    queryDefinitionId: QueryIdSchema.and(
-      z.any().openapi({ description: 'The ID of the query definition.' }),
-    ).exactOptional(),
+    queryDefinitionId: QueryIdSchema.exactOptional().openapi({
+      description: 'The ID of the query definition.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutQueryDefinitionResponse')
 
 const PutQueryDefinitionRequestSchema = z
   .object({
-    name: QueryDefinitionNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the query definition. If you are saving numerous query definitions, we recommend that you name them. This way, you can find the ones you want by using the first part of the name as a filter in the <code>queryDefinitionNamePrefix</code> parameter of <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a>.',
-        }),
-    ),
-    queryDefinitionId: QueryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are updating a query definition, use this parameter to specify the ID of the query definition that you want to update. You can use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a> to retrieve the IDs of your saved query definitions.</p> <p>If you are creating a query definition, do not specify this parameter. CloudWatch generates a unique ID for the new query definition and include it in the response to this operation.</p>',
-        }),
-    ).exactOptional(),
-    logGroupNames: LogGroupNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Use this parameter to include specific log groups as part of your query definition.</p> <p>If you are updating a query definition and you omit this parameter, then the updated definition will contain no log groups.</p>',
-        }),
-    ).exactOptional(),
-    queryString: QueryDefinitionStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query string to use for this definition. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
-        }),
-    ),
+    name: QueryDefinitionNameSchema.openapi({
+      description:
+        'A name for the query definition. If you are saving numerous query definitions, we recommend that you name them. This way, you can find the ones you want by using the first part of the name as a filter in the <code>queryDefinitionNamePrefix</code> parameter of <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a>.',
+    }),
+    queryDefinitionId: QueryIdSchema.exactOptional().openapi({
+      description:
+        '<p>If you are updating a query definition, use this parameter to specify the ID of the query definition that you want to update. You can use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html">DescribeQueryDefinitions</a> to retrieve the IDs of your saved query definitions.</p> <p>If you are creating a query definition, do not specify this parameter. CloudWatch generates a unique ID for the new query definition and include it in the response to this operation.</p>',
+    }),
+    logGroupNames: LogGroupNamesSchema.exactOptional().openapi({
+      description:
+        '<p>Use this parameter to include specific log groups as part of your query definition.</p> <p>If you are updating a query definition and you omit this parameter, then the updated definition will contain no log groups.</p>',
+    }),
+    queryString: QueryDefinitionStringSchema.openapi({
+      description:
+        'The query string to use for this definition. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
+    }),
   })
   .openapi({ required: ['name', 'queryString'], title: 'PutQueryDefinitionRequest' })
   .openapi('PutQueryDefinitionRequest')
 
 const PutResourcePolicyResponseSchema = z
   .object({
-    resourcePolicy: ResourcePolicySchema.and(
-      z.any().openapi({ description: 'The new policy.' }),
-    ).exactOptional(),
+    resourcePolicy: ResourcePolicySchema.exactOptional().openapi({
+      description: 'The new policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutResourcePolicyResponse')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    policyName: PolicyNameSchema.and(
-      z.any().openapi({ description: 'Name of the new policy. This parameter is required.' }),
-    ).exactOptional(),
-    policyDocument: PolicyDocumentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Details of the new policy, including the identity of the principal that is enabled to put logs to this account. This is formatted as a JSON string. This parameter is required.</p> <p>The following example creates a resource policy enabling the Route 53 service to put DNS query logs in to the specified log group. Replace <code>"logArn"</code> with the ARN of your CloudWatch Logs resource, such as a log group or log stream.</p> <p>CloudWatch Logs also supports <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourcearn">aws:SourceArn</a> and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourceaccount">aws:SourceAccount</a> condition context keys.</p> <p>In the example resource policy, you would replace the value of <code>SourceArn</code> with the resource making the call from Route 53 to CloudWatch Logs. You would also replace the value of <code>SourceAccount</code> with the Amazon Web Services account ID making that call.</p> <p/> <p> <code>{ "Version": "2012-10-17", "Statement": [ { "Sid": "Route53LogsToCloudWatchLogs", "Effect": "Allow", "Principal": { "Service": [ "route53.amazonaws.com" ] }, "Action": "logs:PutLogEvents", "Resource": "logArn", "Condition": { "ArnLike": { "aws:SourceArn": "myRoute53ResourceArn" }, "StringEquals": { "aws:SourceAccount": "myAwsAccountId" } } } ] }</code> </p>',
-        }),
-    ).exactOptional(),
+    policyName: PolicyNameSchema.exactOptional().openapi({
+      description: 'Name of the new policy. This parameter is required.',
+    }),
+    policyDocument: PolicyDocumentSchema.exactOptional().openapi({
+      description:
+        '<p>Details of the new policy, including the identity of the principal that is enabled to put logs to this account. This is formatted as a JSON string. This parameter is required.</p> <p>The following example creates a resource policy enabling the Route 53 service to put DNS query logs in to the specified log group. Replace <code>"logArn"</code> with the ARN of your CloudWatch Logs resource, such as a log group or log stream.</p> <p>CloudWatch Logs also supports <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourcearn">aws:SourceArn</a> and <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourceaccount">aws:SourceAccount</a> condition context keys.</p> <p>In the example resource policy, you would replace the value of <code>SourceArn</code> with the resource making the call from Route 53 to CloudWatch Logs. You would also replace the value of <code>SourceAccount</code> with the Amazon Web Services account ID making that call.</p> <p/> <p> <code>{ "Version": "2012-10-17", "Statement": [ { "Sid": "Route53LogsToCloudWatchLogs", "Effect": "Allow", "Principal": { "Service": [ "route53.amazonaws.com" ] }, "Action": "logs:PutLogEvents", "Resource": "logArn", "Condition": { "ArnLike": { "aws:SourceArn": "myRoute53ResourceArn" }, "StringEquals": { "aws:SourceAccount": "myAwsAccountId" } } } ] }</code> </p>',
+    }),
   })
   .openapi({ title: 'PutResourcePolicyRequest', required: [] })
   .openapi('PutResourcePolicyRequest')
 
 const PutRetentionPolicyRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
     retentionInDays: DaysSchema,
   })
   .openapi({ required: ['logGroupName', 'retentionInDays'], title: 'PutRetentionPolicyRequest' })
@@ -2510,48 +1816,26 @@ const PutRetentionPolicyRequestSchema = z
 
 const PutSubscriptionFilterRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    filterName: FilterNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A name for the subscription filter. If you are updating an existing filter, you must specify the correct name in <code>filterName</code>. To find the name of the filter currently associated with a log group, use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeSubscriptionFilters.html">DescribeSubscriptionFilters</a>.',
-        }),
-    ),
-    filterPattern: FilterPatternSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A filter pattern for subscribing to a filtered stream of log events.',
-        }),
-    ),
-    destinationArn: DestinationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the destination to deliver matching log events to. Currently, the supported destinations are:</p> <ul> <li> <p>An Amazon Kinesis stream belonging to the same account as the subscription filter, for same-account delivery.</p> </li> <li> <p>A logical destination (specified using an ARN) belonging to a different account, for cross-account delivery.</p> <p>If you\'re setting up a cross-account subscription, the destination must have an IAM policy associated with it. The IAM policy must allow the sender to send logs to the destination. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestinationPolicy.html">PutDestinationPolicy</a>.</p> </li> <li> <p>A Kinesis Data Firehose delivery stream belonging to the same account as the subscription filter, for same-account delivery.</p> </li> <li> <p>A Lambda function belonging to the same account as the subscription filter, for same-account delivery.</p> </li> </ul>',
-        }),
-    ),
-    roleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ARN of an IAM role that grants CloudWatch Logs permissions to deliver ingested log events to the destination stream. You don't need to provide the ARN when you are working with a logical destination for cross-account delivery.",
-        }),
-    ).exactOptional(),
-    distribution: DistributionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The method used to distribute log data to the destination. By default, log data is grouped by log stream, but the grouping can be set to random for a more even distribution. This property is only applicable when the destination is an Amazon Kinesis data stream. ',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    filterName: FilterNameSchema.openapi({
+      description:
+        'A name for the subscription filter. If you are updating an existing filter, you must specify the correct name in <code>filterName</code>. To find the name of the filter currently associated with a log group, use <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeSubscriptionFilters.html">DescribeSubscriptionFilters</a>.',
+    }),
+    filterPattern: FilterPatternSchema.openapi({
+      description: 'A filter pattern for subscribing to a filtered stream of log events.',
+    }),
+    destinationArn: DestinationArnSchema.openapi({
+      description:
+        '<p>The ARN of the destination to deliver matching log events to. Currently, the supported destinations are:</p> <ul> <li> <p>An Amazon Kinesis stream belonging to the same account as the subscription filter, for same-account delivery.</p> </li> <li> <p>A logical destination (specified using an ARN) belonging to a different account, for cross-account delivery.</p> <p>If you\'re setting up a cross-account subscription, the destination must have an IAM policy associated with it. The IAM policy must allow the sender to send logs to the destination. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestinationPolicy.html">PutDestinationPolicy</a>.</p> </li> <li> <p>A Kinesis Data Firehose delivery stream belonging to the same account as the subscription filter, for same-account delivery.</p> </li> <li> <p>A Lambda function belonging to the same account as the subscription filter, for same-account delivery.</p> </li> </ul>',
+    }),
+    roleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        "The ARN of an IAM role that grants CloudWatch Logs permissions to deliver ingested log events to the destination stream. You don't need to provide the ARN when you are working with a logical destination for cross-account delivery.",
+    }),
+    distribution: DistributionSchema.exactOptional().openapi({
+      description:
+        'The method used to distribute log data to the destination. By default, log data is grouped by log stream, but the grouping can be set to random for a more even distribution. This property is only applicable when the destination is an Amazon Kinesis data stream. ',
+    }),
   })
   .openapi({
     required: ['logGroupName', 'filterName', 'filterPattern', 'destinationArn'],
@@ -2561,9 +1845,7 @@ const PutSubscriptionFilterRequestSchema = z
 
 const StartQueryResponseSchema = z
   .object({
-    queryId: QueryIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the query. ' }),
-    ).exactOptional(),
+    queryId: QueryIdSchema.exactOptional().openapi({ description: 'The unique ID of the query. ' }),
   })
   .openapi({ required: [] })
   .openapi('StartQueryResponse')
@@ -2572,62 +1854,34 @@ const LogGroupIdentifiersSchema = z.array(LogGroupIdentifierSchema).openapi('Log
 
 const StartQueryRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The log group on which to perform the query.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupNames: LogGroupNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The list of log groups to be queried. You can include up to 50 log groups.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p> </note>',
-        }),
-    ).exactOptional(),
-    logGroupIdentifiers: LogGroupIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The list of log groups to query. You can include up to 50 log groups.</p> <p>You can specify them by the log group name or ARN. If a log group that you're querying is in a source account and you're using a monitoring account, you must specify the ARN of the log group here. The query definition must also be defined in the monitoring account.</p> <p>If you specify an ARN, the ARN can't end with an asterisk (*).</p> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p>",
-        }),
-    ).exactOptional(),
-    startTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The beginning of the time range to query. The range is inclusive, so the specified start time is included in the query. Specified as epoch time, the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.',
-        }),
-    ),
-    endTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The end of the time range to query. The range is inclusive, so the specified end time is included in the query. Specified as epoch time, the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.',
-        }),
-    ),
-    queryString: QueryStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The query string to use. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
-        }),
-    ),
-    limit: EventsLimitSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of log events to return in the query. If the query string uses the <code>fields</code> command, only the specified fields and their values are returned. The default is 1000.',
-        }),
-    ).exactOptional(),
+    logGroupName: LogGroupNameSchema.exactOptional().openapi({
+      description:
+        '<p>The log group on which to perform the query.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p> </note>',
+    }),
+    logGroupNames: LogGroupNamesSchema.exactOptional().openapi({
+      description:
+        '<p>The list of log groups to be queried. You can include up to 50 log groups.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p> </note>',
+    }),
+    logGroupIdentifiers: LogGroupIdentifiersSchema.exactOptional().openapi({
+      description:
+        "<p>The list of log groups to query. You can include up to 50 log groups.</p> <p>You can specify them by the log group name or ARN. If a log group that you're querying is in a source account and you're using a monitoring account, you must specify the ARN of the log group here. The query definition must also be defined in the monitoring account.</p> <p>If you specify an ARN, the ARN can't end with an asterisk (*).</p> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p>",
+    }),
+    startTime: TimestampSchema.openapi({
+      description:
+        'The beginning of the time range to query. The range is inclusive, so the specified start time is included in the query. Specified as epoch time, the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.',
+    }),
+    endTime: TimestampSchema.openapi({
+      description:
+        'The end of the time range to query. The range is inclusive, so the specified end time is included in the query. Specified as epoch time, the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.',
+    }),
+    queryString: QueryStringSchema.openapi({
+      description:
+        'The query string to use. For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html">CloudWatch Logs Insights Query Syntax</a>.',
+    }),
+    limit: EventsLimitSchema.exactOptional().openapi({
+      description:
+        'The maximum number of log events to return in the query. If the query string uses the <code>fields</code> command, only the specified fields and their values are returned. The default is 1000.',
+    }),
   })
   .openapi({ required: ['startTime', 'endTime', 'queryString'], title: 'StartQueryRequest' })
   .openapi('StartQueryRequest')
@@ -2636,40 +1890,27 @@ const MalformedQueryExceptionSchema = z.any().openapi('MalformedQueryException')
 
 const StopQueryResponseSchema = z
   .object({
-    success: SuccessSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This is true if the query was stopped by the <code>StopQuery</code> operation.',
-        }),
-    ).exactOptional(),
+    success: SuccessSchema.exactOptional().openapi({
+      description: 'This is true if the query was stopped by the <code>StopQuery</code> operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StopQueryResponse')
 
 const StopQueryRequestSchema = z
   .object({
-    queryId: QueryIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID number of the query to stop. To find this ID number, use <code>DescribeQueries</code>.',
-        }),
-    ),
+    queryId: QueryIdSchema.openapi({
+      description:
+        'The ID number of the query to stop. To find this ID number, use <code>DescribeQueries</code>.',
+    }),
   })
   .openapi({ required: ['queryId'], title: 'StopQueryRequest' })
   .openapi('StopQueryRequest')
 
 const TagLogGroupRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    tags: TagsSchema.and(
-      z.any().openapi({ description: 'The key-value pairs to use for the tags.' }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    tags: TagsSchema.openapi({ description: 'The key-value pairs to use for the tags.' }),
   })
   .openapi({
     required: ['logGroupName', 'tags'],
@@ -2681,19 +1922,13 @@ const TagLogGroupRequestSchema = z
 
 const TagResourceRequestSchema = z
   .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the resource that you\'re adding tags to.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
-        }),
-    ),
-    tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of key-value pairs to associate with the resource.' }),
-    ),
+    resourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the resource that you\'re adding tags to.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
+    }),
+    tags: TagsSchema.openapi({
+      description: 'The list of key-value pairs to associate with the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
@@ -2706,15 +1941,13 @@ const ExtractedValuesSchema = z.record(z.string(), ValueSchema).openapi('Extract
 
 const MetricFilterMatchRecordSchema = z
   .object({
-    eventNumber: EventNumberSchema.and(
-      z.any().openapi({ description: 'The event number.' }),
-    ).exactOptional(),
-    eventMessage: EventMessageSchema.and(
-      z.any().openapi({ description: 'The raw event data.' }),
-    ).exactOptional(),
-    extractedValues: ExtractedValuesSchema.and(
-      z.any().openapi({ description: 'The values extracted from the event data by the filter.' }),
-    ).exactOptional(),
+    eventNumber: EventNumberSchema.exactOptional().openapi({ description: 'The event number.' }),
+    eventMessage: EventMessageSchema.exactOptional().openapi({
+      description: 'The raw event data.',
+    }),
+    extractedValues: ExtractedValuesSchema.exactOptional().openapi({
+      description: 'The values extracted from the event data by the filter.',
+    }),
   })
   .openapi({ description: 'Represents a matched event.', required: [] })
   .openapi('MetricFilterMatchRecord')
@@ -2725,9 +1958,9 @@ const MetricFilterMatchesSchema = z
 
 const TestMetricFilterResponseSchema = z
   .object({
-    matches: MetricFilterMatchesSchema.and(
-      z.any().openapi({ description: 'The matched events.' }),
-    ).exactOptional(),
+    matches: MetricFilterMatchesSchema.exactOptional().openapi({
+      description: 'The matched events.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestMetricFilterResponse')
@@ -2741,9 +1974,9 @@ const TestEventMessagesSchema = z
 const TestMetricFilterRequestSchema = z
   .object({
     filterPattern: FilterPatternSchema,
-    logEventMessages: TestEventMessagesSchema.and(
-      z.any().openapi({ description: 'The log event messages to test.' }),
-    ),
+    logEventMessages: TestEventMessagesSchema.openapi({
+      description: 'The log event messages to test.',
+    }),
   })
   .openapi({ required: ['filterPattern', 'logEventMessages'], title: 'TestMetricFilterRequest' })
   .openapi('TestMetricFilterRequest')
@@ -2759,16 +1992,10 @@ const TagListSchema = z.array(TagKeySchema).min(1).openapi('TagList')
 
 const UntagLogGroupRequestSchema = z
   .object({
-    logGroupName: LogGroupNameSchema.and(
-      z.any().openapi({ description: 'The name of the log group.' }),
-    ),
-    tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tag keys. The corresponding tags are removed from the log group.',
-        }),
-    ),
+    logGroupName: LogGroupNameSchema.openapi({ description: 'The name of the log group.' }),
+    tags: TagListSchema.openapi({
+      description: 'The tag keys. The corresponding tags are removed from the log group.',
+    }),
   })
   .openapi({
     required: ['logGroupName', 'tags'],
@@ -2782,17 +2009,13 @@ const TagKeyListSchema = z.array(TagKeySchema).min(0).max(50).openapi('TagKeyLis
 
 const UntagResourceRequestSchema = z
   .object({
-    resourceArn: AmazonResourceNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ARN of the CloudWatch Logs resource that you\'re removing tags from.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
-        }),
-    ),
-    tagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'The list of tag keys to remove from the resource.' }),
-    ),
+    resourceArn: AmazonResourceNameSchema.openapi({
+      description:
+        '<p>The ARN of the CloudWatch Logs resource that you\'re removing tags from.</p> <p>The ARN format of a log group is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:log-group:<i>log-group-name</i> </code> </p> <p>The ARN format of a destination is <code>arn:aws:logs:<i>Region</i>:<i>account-id</i>:destination:<i>destination-name</i> </code> </p> <p>For more information about ARN format, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/iam-access-control-overview-cwl.html">CloudWatch Logs resources and operations</a>.</p>',
+    }),
+    tagKeys: TagKeyListSchema.openapi({
+      description: 'The list of tag keys to remove from the resource.',
+    }),
   })
   .openapi({ required: ['resourceArn', 'tagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')

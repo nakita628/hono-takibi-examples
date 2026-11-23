@@ -1,5 +1,143 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const NameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_-]+$/)
+  .min(1)
+  .max(64)
+  .openapi('Name')
+
+const String1To255Schema = z.string().min(1).max(255).openapi('String1To255')
+
+const RequestValueListSchema = z.array(String1To255Schema).openapi('RequestValueList')
+
+const AddProfileKeyResponseSchema = z
+  .object({
+    KeyName: NameSchema.exactOptional().openapi({
+      description: 'A searchable identifier of a customer profile.',
+    }),
+    Values: RequestValueListSchema.exactOptional().openapi({
+      description: 'A list of key values.',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AddProfileKeyResponse')
+
+const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ExpirationDaysIntegerSchema = z.int().min(1).max(1098).openapi('ExpirationDaysInteger')
+
+const EncryptionKeySchema = z.string().min(0).max(255).openapi('EncryptionKey')
+
+const SqsQueueUrlSchema = z.string().min(0).max(255).openapi('SqsQueueUrl')
+
+const OptionalBooleanSchema = z.boolean().openapi('OptionalBoolean')
+
+const JobScheduleDayOfTheWeekSchema = z
+  .enum(['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'])
+  .openapi('JobScheduleDayOfTheWeek')
+
+const JobScheduleTimeSchema = z
+  .string()
+  .regex(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
+  .min(3)
+  .max(5)
+  .openapi('JobScheduleTime')
+
+const JobScheduleSchema = z
+  .object({
+    DayOfTheWeek: JobScheduleDayOfTheWeekSchema.openapi({
+      description: 'The day when the Identity Resolution Job should run every week.',
+    }),
+    Time: JobScheduleTimeSchema.openapi({
+      description: 'The time when the Identity Resolution Job should run every week.',
+    }),
+  })
+  .openapi({
+    required: ['DayOfTheWeek', 'Time'],
+    description:
+      'The day and time when do you want to start the Identity Resolution Job every week.',
+  })
+  .openapi('JobSchedule')
+
+const MatchingAttributesSchema = z
+  .array(String1To255Schema)
+  .min(1)
+  .max(20)
+  .openapi('MatchingAttributes')
+
+const MatchingAttributesListSchema = z
+  .array(MatchingAttributesSchema)
+  .min(1)
+  .max(10)
+  .openapi('MatchingAttributesList')
+
+const ConsolidationSchema = z
+  .object({
+    MatchingAttributesList: MatchingAttributesListSchema.openapi({
+      description: 'A list of matching criteria.',
+    }),
+  })
+  .openapi({
+    required: ['MatchingAttributesList'],
+    description: 'The matching criteria to be used during the auto-merging process. ',
+  })
+  .openapi('Consolidation')
+
+const ConflictResolvingModelSchema = z.enum(['RECENCY', 'SOURCE']).openapi('ConflictResolvingModel')
+
+const ConflictResolutionSchema = z
+  .object({
+    ConflictResolvingModel: ConflictResolvingModelSchema.openapi({
+      description:
+        '<p>How the auto-merging process should resolve conflicts between different profiles.</p> <ul> <li> <p> <code>RECENCY</code>: Uses the data that was most recently updated.</p> </li> <li> <p> <code>SOURCE</code>: Uses the data from a specific source. For example, if a company has been aquired or two departments have merged, data from the specified source is used. If two duplicate profiles are from the same source, then <code>RECENCY</code> is used again.</p> </li> </ul>',
+    }),
+    SourceName: String1To255Schema.exactOptional().openapi({
+      description:
+        'The <code>ObjectType</code> name that is used to resolve profile merging conflicts when choosing <code>SOURCE</code> as the <code>ConflictResolvingModel</code>.',
+    }),
+  })
+  .openapi({
+    required: ['ConflictResolvingModel'],
+    description:
+      'How the auto-merging process should resolve conflicts between different profiles.',
+  })
+  .openapi('ConflictResolution')
+
+const Double0To1Schema = z.float64().min(0).max(1).openapi('Double0To1')
+
+const AutoMergingSchema = z
+  .object({
+    Enabled: OptionalBooleanSchema.openapi({
+      description: 'The flag that enables the auto-merging of duplicate profiles.',
+    }),
+    Consolidation: ConsolidationSchema.exactOptional().openapi({
+      description:
+        'A list of matching attributes that represent matching criteria. If two profiles meet at least one of the requirements in the matching attributes list, they will be merged.',
+    }),
+    ConflictResolution: ConflictResolutionSchema.exactOptional().openapi({
+      description:
+        'How the auto-merging process should resolve conflicts between different profiles. For example, if Profile A and Profile B have the same <code>FirstName</code> and <code>LastName</code> (and that is the matching criteria), which <code>EmailAddress</code> should be used? ',
+    }),
+    MinAllowedConfidenceScoreForMerging: Double0To1Schema.exactOptional().openapi({
+      description:
+        'A number between 0 and 1 that represents the minimum confidence score required for profiles within a matching group to be merged during the auto-merge process. A higher score means higher similarity required to merge profiles. ',
+    }),
+  })
+  .openapi({
+    required: ['Enabled'],
+    description: 'Configuration settings for how to perform the auto-merging of profiles.',
+  })
+  .openapi('AutoMerging')
+
 const S3BucketNameSchema = z
   .string()
   .regex(/^[a-z0-9.-]+$/)
@@ -16,22 +154,13 @@ const S3KeyNameCustomerOutputConfigSchema = z
 
 const S3ExportingConfigSchema = z
   .object({
-    S3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the S3 bucket where Identity Resolution Jobs write result files.',
-        }),
-    ),
-    S3KeyName: S3KeyNameCustomerOutputConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 key name of the location where Identity Resolution Jobs write result files.',
-        }),
-    ).exactOptional(),
+    S3BucketName: S3BucketNameSchema.openapi({
+      description: 'The name of the S3 bucket where Identity Resolution Jobs write result files.',
+    }),
+    S3KeyName: S3KeyNameCustomerOutputConfigSchema.exactOptional().openapi({
+      description:
+        'The S3 key name of the location where Identity Resolution Jobs write result files.',
+    }),
   })
   .openapi({
     required: ['S3BucketName'],
@@ -40,9 +169,271 @@ const S3ExportingConfigSchema = z
   })
   .openapi('S3ExportingConfig')
 
-type ExportingConfigType = {
-  S3Exporting?: z.infer<typeof S3ExportingConfigSchema> & { [key: string]: unknown }
-}
+const ExportingConfigSchema = z
+  .object({
+    S3Exporting: S3ExportingConfigSchema.exactOptional().openapi({
+      description: 'The S3 location where Identity Resolution Jobs write result files.',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Configuration information about the S3 bucket where Identity Resolution Jobs writes result files. </p> <note> <p>You need to give Customer Profiles service principal write permission to your S3 bucket. Otherwise, you\'ll get an exception in the API response. For an example policy, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service">Amazon Connect Customer Profiles cross-service confused deputy prevention</a>. </p> </note>',
+    required: [],
+  })
+  .openapi('ExportingConfig')
+
+const MatchingResponseSchema = z
+  .object({
+    Enabled: OptionalBooleanSchema.exactOptional().openapi({
+      description: 'The flag that enables the matching process of duplicate profiles.',
+    }),
+    JobSchedule: JobScheduleSchema.exactOptional().openapi({
+      description:
+        'The day and time when do you want to start the Identity Resolution Job every week.',
+    }),
+    AutoMerging: AutoMergingSchema.exactOptional().openapi({
+      description: 'Configuration information about the auto-merging process.',
+    }),
+    ExportingConfig: ExportingConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
+    }),
+  })
+  .openapi({
+    description: 'The flag that enables the matching process of duplicate profiles.',
+    required: [],
+  })
+  .openapi('MatchingResponse')
+
+const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
+
+const TagValueSchema = z.string().max(256).openapi('TagValue')
+
+const TagMapSchema = z
+  .record(z.string(), TagValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('TagMap')
+
+const CreateDomainResponseSchema = z
+  .object({
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    DefaultExpirationDays: ExpirationDaysIntegerSchema.openapi({
+      description: 'The default number of days until the data within the domain expires.',
+    }),
+    DefaultEncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
+    }),
+    DeadLetterQueueUrl: SqsQueueUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
+    }),
+    Matching: MatchingResponseSchema.exactOptional().openapi({
+      description:
+        '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
+  })
+  .openapi({ required: ['DomainName', 'DefaultExpirationDays', 'CreatedAt', 'LastUpdatedAt'] })
+  .openapi('CreateDomainResponse')
+
+const UuidSchema = z
+  .string()
+  .regex(/[a-f0-9]{32}/)
+  .openapi('Uuid')
+
+const CreateIntegrationWorkflowResponseSchema = z
+  .object({
+    WorkflowId: UuidSchema.openapi({ description: 'Unique identifier for the workflow.' }),
+    Message: String1To255Schema.openapi({
+      description: 'A message indicating create request was received.',
+    }),
+  })
+  .openapi({ required: ['WorkflowId', 'Message'] })
+  .openapi('CreateIntegrationWorkflowResponse')
+
+const FlowDescriptionSchema = z
+  .string()
+  .regex(/[\w!@#\-.?,\s]*/)
+  .max(2048)
+  .openapi('FlowDescription')
+
+const FlowNameSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9][\w!@#.-]+/)
+  .max(256)
+  .openapi('FlowName')
+
+const KmsArnSchema = z
+  .string()
+  .regex(/arn:aws:kms:.*:[0-9]+:.*/)
+  .min(20)
+  .max(2048)
+  .openapi('KmsArn')
+
+const ConnectorProfileNameSchema = z
+  .string()
+  .regex(/[\w\/!@#+=.-]+/)
+  .max(256)
+  .openapi('ConnectorProfileName')
+
+const SourceConnectorTypeSchema = z
+  .enum(['Salesforce', 'Marketo', 'Zendesk', 'Servicenow', 'S3'])
+  .openapi('SourceConnectorType')
+
+const DatetimeTypeFieldNameSchema = z.string().regex(/.*/).max(256).openapi('DatetimeTypeFieldName')
+
+const IncrementalPullConfigSchema = z
+  .object({
+    DatetimeTypeFieldName: DatetimeTypeFieldNameSchema.exactOptional().openapi({
+      description:
+        'A field that specifies the date time or timestamp field as the criteria to use when importing incremental records from the source.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the configuration used when importing incremental records from the source.',
+    required: [],
+  })
+  .openapi('IncrementalPullConfig')
+
+const ObjectSchema = z.string().regex(/\S+/).max(512).openapi('Object')
+
+const MarketoSourcePropertiesSchema = z
+  .object({
+    Object: ObjectSchema.openapi({
+      description: 'The object specified in the Marketo flow source.',
+    }),
+  })
+  .openapi({
+    required: ['Object'],
+    description: 'The properties that are applied when Marketo is being used as a source.',
+  })
+  .openapi('MarketoSourceProperties')
+
+const BucketNameSchema = z.string().regex(/\S+/).min(3).max(63).openapi('BucketName')
+
+const BucketPrefixSchema = z.string().regex(/.*/).max(512).openapi('BucketPrefix')
+
+const S3SourcePropertiesSchema = z
+  .object({
+    BucketName: BucketNameSchema.openapi({
+      description: 'The Amazon S3 bucket name where the source files are stored.',
+    }),
+    BucketPrefix: BucketPrefixSchema.exactOptional().openapi({
+      description: 'The object key for the Amazon S3 bucket in which the source files are stored.',
+    }),
+  })
+  .openapi({
+    required: ['BucketName'],
+    description: 'The properties that are applied when Amazon S3 is being used as the flow source.',
+  })
+  .openapi('S3SourceProperties')
+
+const BooleanSchema = z.boolean().openapi('Boolean')
+
+const SalesforceSourcePropertiesSchema = z
+  .object({
+    Object: ObjectSchema.openapi({
+      description: 'The object specified in the Salesforce flow source.',
+    }),
+    EnableDynamicFieldUpdate: BooleanSchema.exactOptional().openapi({
+      description:
+        'The flag that enables dynamic fetching of new (recently added) fields in the Salesforce objects while running a flow.',
+    }),
+    IncludeDeletedRecords: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether Amazon AppFlow includes deleted files in the flow run.',
+    }),
+  })
+  .openapi({
+    required: ['Object'],
+    description: 'The properties that are applied when Salesforce is being used as a source.',
+  })
+  .openapi('SalesforceSourceProperties')
+
+const ServiceNowSourcePropertiesSchema = z
+  .object({
+    Object: ObjectSchema.openapi({
+      description: 'The object specified in the ServiceNow flow source.',
+    }),
+  })
+  .openapi({
+    required: ['Object'],
+    description: 'The properties that are applied when ServiceNow is being used as a source.',
+  })
+  .openapi('ServiceNowSourceProperties')
+
+const ZendeskSourcePropertiesSchema = z
+  .object({
+    Object: ObjectSchema.openapi({
+      description: 'The object specified in the Zendesk flow source.',
+    }),
+  })
+  .openapi({
+    required: ['Object'],
+    description: 'The properties that are applied when using Zendesk as a flow source.',
+  })
+  .openapi('ZendeskSourceProperties')
+
+const SourceConnectorPropertiesSchema = z
+  .object({
+    Marketo: MarketoSourcePropertiesSchema.exactOptional().openapi({
+      description: 'The properties that are applied when Marketo is being used as a source.',
+    }),
+    S3: S3SourcePropertiesSchema.exactOptional().openapi({
+      description:
+        'The properties that are applied when Amazon S3 is being used as the flow source.',
+    }),
+    Salesforce: SalesforceSourcePropertiesSchema.exactOptional().openapi({
+      description: 'The properties that are applied when Salesforce is being used as a source.',
+    }),
+    ServiceNow: ServiceNowSourcePropertiesSchema.exactOptional().openapi({
+      description: 'The properties that are applied when ServiceNow is being used as a source.',
+    }),
+    Zendesk: ZendeskSourcePropertiesSchema.exactOptional().openapi({
+      description: 'The properties that are applied when using Zendesk as a flow source.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the information that is required to query a particular Amazon AppFlow connector. Customer Profiles supports Salesforce, Zendesk, Marketo, ServiceNow and Amazon S3.',
+    required: [],
+  })
+  .openapi('SourceConnectorProperties')
+
+const SourceFlowConfigSchema = z
+  .object({
+    ConnectorProfileName: ConnectorProfileNameSchema.exactOptional().openapi({
+      description:
+        'The name of the AppFlow connector profile. This name must be unique for each connector profile in the AWS account.',
+    }),
+    ConnectorType: SourceConnectorTypeSchema.openapi({
+      description: 'The type of connector, such as Salesforce, Marketo, and so on.',
+    }),
+    IncrementalPullConfig: IncrementalPullConfigSchema.exactOptional().openapi({
+      description:
+        'Defines the configuration for a scheduled incremental data pull. If a valid configuration is provided, the fields specified in the configuration are used when querying for the incremental data pull.',
+    }),
+    SourceConnectorProperties: SourceConnectorPropertiesSchema.openapi({
+      description:
+        'Specifies the information that is required to query a particular source connector.',
+    }),
+  })
+  .openapi({
+    required: ['ConnectorType', 'SourceConnectorProperties'],
+    description:
+      'Contains information about the configuration of the source connector used in the flow.',
+  })
+  .openapi('SourceFlowConfig')
 
 const MarketoConnectorOperatorSchema = z
   .enum([
@@ -161,770 +552,28 @@ const ZendeskConnectorOperatorSchema = z
   ])
   .openapi('ZendeskConnectorOperator')
 
-type ConnectorOperatorType = {
-  Marketo?: z.infer<typeof MarketoConnectorOperatorSchema> & { [key: string]: unknown }
-  S3?: z.infer<typeof S3ConnectorOperatorSchema> & { [key: string]: unknown }
-  Salesforce?: z.infer<typeof SalesforceConnectorOperatorSchema> & { [key: string]: unknown }
-  ServiceNow?: z.infer<typeof ServiceNowConnectorOperatorSchema> & { [key: string]: unknown }
-  Zendesk?: z.infer<typeof ZendeskConnectorOperatorSchema> & { [key: string]: unknown }
-}
-
-const S3KeyNameSchema = z.string().regex(/.*/).min(1).max(1024).openapi('S3KeyName')
-
-const S3ExportingLocationSchema = z
+const ConnectorOperatorSchema = z
   .object({
-    S3BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the S3 bucket name where Identity Resolution Jobs write result files.',
-        }),
-    ).exactOptional(),
-    S3KeyName: S3KeyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 key name of the location where Identity Resolution Jobs write result files.',
-        }),
-    ).exactOptional(),
+    Marketo: MarketoConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided Marketo source fields.',
+    }),
+    S3: S3ConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided Amazon S3 source fields.',
+    }),
+    Salesforce: SalesforceConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided Salesforce source fields.',
+    }),
+    ServiceNow: ServiceNowConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided ServiceNow source fields.',
+    }),
+    Zendesk: ZendeskConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided Zendesk source fields.',
+    }),
   })
   .openapi({
-    description: 'The S3 location where Identity Resolution Jobs write result files.',
+    description: 'The operation to be performed on the provided source fields.',
     required: [],
   })
-  .openapi('S3ExportingLocation')
-
-type ExportingLocationType = {
-  S3Exporting?: z.infer<typeof S3ExportingLocationSchema> & { [key: string]: unknown }
-}
-
-const SourceConnectorTypeSchema = z
-  .enum(['Salesforce', 'Marketo', 'Zendesk', 'Servicenow', 'S3'])
-  .openapi('SourceConnectorType')
-
-const ConnectorProfileNameSchema = z
-  .string()
-  .regex(/[\w\/!@#+=.-]+/)
-  .max(256)
-  .openapi('ConnectorProfileName')
-
-const String1To255Schema = z.string().min(1).max(255).openapi('String1To255')
-
-const AppflowIntegrationWorkflowAttributesSchema = z
-  .object({
-    SourceConnectorType: SourceConnectorTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the source connector type, such as Salesforce, ServiceNow, and Marketo. Indicates source of ingestion.',
-        }),
-    ),
-    ConnectorProfileName: ConnectorProfileNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the AppFlow connector profile used for ingestion.' }),
-    ),
-    RoleArn: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['SourceConnectorType', 'ConnectorProfileName'],
-    description:
-      'Structure holding all <code>APPFLOW_INTEGRATION</code> specific workflow attributes.',
-  })
-  .openapi('AppflowIntegrationWorkflowAttributes')
-
-type WorkflowAttributesType = {
-  AppflowIntegration?: z.infer<typeof AppflowIntegrationWorkflowAttributesSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const LongSchema = z.int().openapi('Long')
-
-const AppflowIntegrationWorkflowMetricsSchema = z
-  .object({
-    RecordsProcessed: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Number of records processed in <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    StepsCompleted: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Total steps completed in <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    TotalSteps: LongSchema.and(
-      z.any().openapi({ description: 'Total steps in <code>APPFLOW_INTEGRATION</code> workflow.' }),
-    ),
-  })
-  .openapi({
-    required: ['RecordsProcessed', 'StepsCompleted', 'TotalSteps'],
-    description:
-      'Workflow specific execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.',
-  })
-  .openapi('AppflowIntegrationWorkflowMetrics')
-
-type WorkflowMetricsType = {
-  AppflowIntegration?: z.infer<typeof AppflowIntegrationWorkflowMetricsSchema> & {
-    [key: string]: unknown
-  }
-}
-
-const ScheduleExpressionSchema = z.string().regex(/.*/).max(256).openapi('ScheduleExpression')
-
-const DataPullModeSchema = z.enum(['Incremental', 'Complete']).openapi('DataPullMode')
-
-const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
-
-const TimezoneSchema = z.string().regex(/.*/).max(256).openapi('Timezone')
-
-const ScheduleOffsetSchema = z.int().min(0).max(36000).openapi('ScheduleOffset')
-
-const ScheduledTriggerPropertiesSchema = z
-  .object({
-    ScheduleExpression: ScheduleExpressionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The scheduling expression that determines the rate at which the schedule will run, for example rate (5 minutes).',
-        }),
-    ),
-    DataPullMode: DataPullModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies whether a scheduled flow has an incremental data transfer or a complete data transfer for each flow run.',
-        }),
-    ).exactOptional(),
-    ScheduleStartTime: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the scheduled start time for a scheduled-trigger flow.',
-        }),
-    ).exactOptional(),
-    ScheduleEndTime: DateSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies the scheduled end time for a scheduled-trigger flow.' }),
-    ).exactOptional(),
-    Timezone: TimezoneSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the time zone used when referring to the date and time of a scheduled-triggered flow, such as America/New_York.',
-        }),
-    ).exactOptional(),
-    ScheduleOffset: ScheduleOffsetSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the optional offset that is added to the time interval for a schedule-triggered flow.',
-        }),
-    ).exactOptional(),
-    FirstExecutionFrom: DateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the date range for the records to import from the connector in the first flow run.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ScheduleExpression'],
-    description:
-      'Specifies the configuration details of a scheduled-trigger flow that you define. Currently, these settings only apply to the scheduled-trigger type.',
-  })
-  .openapi('ScheduledTriggerProperties')
-
-type TriggerPropertiesType = {
-  Scheduled?: z.infer<typeof ScheduledTriggerPropertiesSchema> & { [key: string]: unknown }
-}
-
-const NameSchema = z
-  .string()
-  .regex(/^[a-zA-Z0-9_-]+$/)
-  .min(1)
-  .max(64)
-  .openapi('Name')
-
-const RequestValueListSchema = z.array(String1To255Schema).openapi('RequestValueList')
-
-const AddProfileKeyResponseSchema = z
-  .object({
-    KeyName: NameSchema.and(
-      z.any().openapi({ description: 'A searchable identifier of a customer profile.' }),
-    ).exactOptional(),
-    Values: RequestValueListSchema.and(
-      z.any().openapi({ description: 'A list of key values.' }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AddProfileKeyResponse')
-
-const BadRequestExceptionSchema = z.any().openapi('BadRequestException')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ExpirationDaysIntegerSchema = z.int().min(1).max(1098).openapi('ExpirationDaysInteger')
-
-const EncryptionKeySchema = z.string().min(0).max(255).openapi('EncryptionKey')
-
-const SqsQueueUrlSchema = z.string().min(0).max(255).openapi('SqsQueueUrl')
-
-const OptionalBooleanSchema = z.boolean().openapi('OptionalBoolean')
-
-const JobScheduleDayOfTheWeekSchema = z
-  .enum(['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'])
-  .openapi('JobScheduleDayOfTheWeek')
-
-const JobScheduleTimeSchema = z
-  .string()
-  .regex(/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
-  .min(3)
-  .max(5)
-  .openapi('JobScheduleTime')
-
-const JobScheduleSchema = z
-  .object({
-    DayOfTheWeek: JobScheduleDayOfTheWeekSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The day when the Identity Resolution Job should run every week.',
-        }),
-    ),
-    Time: JobScheduleTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time when the Identity Resolution Job should run every week.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['DayOfTheWeek', 'Time'],
-    description:
-      'The day and time when do you want to start the Identity Resolution Job every week.',
-  })
-  .openapi('JobSchedule')
-
-const MatchingAttributesSchema = z
-  .array(String1To255Schema)
-  .min(1)
-  .max(20)
-  .openapi('MatchingAttributes')
-
-const MatchingAttributesListSchema = z
-  .array(MatchingAttributesSchema)
-  .min(1)
-  .max(10)
-  .openapi('MatchingAttributesList')
-
-const ConsolidationSchema = z
-  .object({
-    MatchingAttributesList: MatchingAttributesListSchema.and(
-      z.any().openapi({ description: 'A list of matching criteria.' }),
-    ),
-  })
-  .openapi({
-    required: ['MatchingAttributesList'],
-    description: 'The matching criteria to be used during the auto-merging process. ',
-  })
-  .openapi('Consolidation')
-
-const ConflictResolvingModelSchema = z.enum(['RECENCY', 'SOURCE']).openapi('ConflictResolvingModel')
-
-const ConflictResolutionSchema = z
-  .object({
-    ConflictResolvingModel: ConflictResolvingModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>How the auto-merging process should resolve conflicts between different profiles.</p> <ul> <li> <p> <code>RECENCY</code>: Uses the data that was most recently updated.</p> </li> <li> <p> <code>SOURCE</code>: Uses the data from a specific source. For example, if a company has been aquired or two departments have merged, data from the specified source is used. If two duplicate profiles are from the same source, then <code>RECENCY</code> is used again.</p> </li> </ul>',
-        }),
-    ),
-    SourceName: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>ObjectType</code> name that is used to resolve profile merging conflicts when choosing <code>SOURCE</code> as the <code>ConflictResolvingModel</code>.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['ConflictResolvingModel'],
-    description:
-      'How the auto-merging process should resolve conflicts between different profiles.',
-  })
-  .openapi('ConflictResolution')
-
-const Double0To1Schema = z.float64().min(0).max(1).openapi('Double0To1')
-
-const AutoMergingSchema = z
-  .object({
-    Enabled: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The flag that enables the auto-merging of duplicate profiles.' }),
-    ),
-    Consolidation: ConsolidationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of matching attributes that represent matching criteria. If two profiles meet at least one of the requirements in the matching attributes list, they will be merged.',
-        }),
-    ).exactOptional(),
-    ConflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How the auto-merging process should resolve conflicts between different profiles. For example, if Profile A and Profile B have the same <code>FirstName</code> and <code>LastName</code> (and that is the matching criteria), which <code>EmailAddress</code> should be used? ',
-        }),
-    ).exactOptional(),
-    MinAllowedConfidenceScoreForMerging: Double0To1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number between 0 and 1 that represents the minimum confidence score required for profiles within a matching group to be merged during the auto-merge process. A higher score means higher similarity required to merge profiles. ',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Enabled'],
-    description: 'Configuration settings for how to perform the auto-merging of profiles.',
-  })
-  .openapi('AutoMerging')
-
-const ExportingConfigSchema: z.ZodType<ExportingConfigType> = z
-  .lazy(() =>
-    z
-      .object({
-        S3Exporting: S3ExportingConfigSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The S3 location where Identity Resolution Jobs write result files.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          '<p>Configuration information about the S3 bucket where Identity Resolution Jobs writes result files. </p> <note> <p>You need to give Customer Profiles service principal write permission to your S3 bucket. Otherwise, you\'ll get an exception in the API response. For an example policy, see <a href="https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service">Amazon Connect Customer Profiles cross-service confused deputy prevention</a>. </p> </note>',
-        required: [],
-      }),
-  )
-  .openapi('ExportingConfig')
-
-const MatchingResponseSchema = z
-  .object({
-    Enabled: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The flag that enables the matching process of duplicate profiles.',
-        }),
-    ).exactOptional(),
-    JobSchedule: JobScheduleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day and time when do you want to start the Identity Resolution Job every week.',
-        }),
-    ).exactOptional(),
-    AutoMerging: AutoMergingSchema.and(
-      z.any().openapi({ description: 'Configuration information about the auto-merging process.' }),
-    ).exactOptional(),
-    ExportingConfig: ExportingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description: 'The flag that enables the matching process of duplicate profiles.',
-    required: [],
-  })
-  .openapi('MatchingResponse')
-
-const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
-
-const TagValueSchema = z.string().max(256).openapi('TagValue')
-
-const TagMapSchema = z
-  .record(z.string(), TagValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('TagMap')
-
-const CreateDomainResponseSchema = z
-  .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    DefaultExpirationDays: ExpirationDaysIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default number of days until the data within the domain expires.',
-        }),
-    ),
-    DefaultEncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
-        }),
-    ).exactOptional(),
-    DeadLetterQueueUrl: SqsQueueUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
-        }),
-    ).exactOptional(),
-    Matching: MatchingResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: ['DomainName', 'DefaultExpirationDays', 'CreatedAt', 'LastUpdatedAt'] })
-  .openapi('CreateDomainResponse')
-
-const UuidSchema = z
-  .string()
-  .regex(/[a-f0-9]{32}/)
-  .openapi('Uuid')
-
-const CreateIntegrationWorkflowResponseSchema = z
-  .object({
-    WorkflowId: UuidSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ),
-    Message: String1To255Schema.and(
-      z.any().openapi({ description: 'A message indicating create request was received.' }),
-    ),
-  })
-  .openapi({ required: ['WorkflowId', 'Message'] })
-  .openapi('CreateIntegrationWorkflowResponse')
-
-const FlowDescriptionSchema = z
-  .string()
-  .regex(/[\w!@#\-.?,\s]*/)
-  .max(2048)
-  .openapi('FlowDescription')
-
-const FlowNameSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9][\w!@#.-]+/)
-  .max(256)
-  .openapi('FlowName')
-
-const KmsArnSchema = z
-  .string()
-  .regex(/arn:aws:kms:.*:[0-9]+:.*/)
-  .min(20)
-  .max(2048)
-  .openapi('KmsArn')
-
-const DatetimeTypeFieldNameSchema = z.string().regex(/.*/).max(256).openapi('DatetimeTypeFieldName')
-
-const IncrementalPullConfigSchema = z
-  .object({
-    DatetimeTypeFieldName: DatetimeTypeFieldNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A field that specifies the date time or timestamp field as the criteria to use when importing incremental records from the source.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies the configuration used when importing incremental records from the source.',
-    required: [],
-  })
-  .openapi('IncrementalPullConfig')
-
-const ObjectSchema = z.string().regex(/\S+/).max(512).openapi('Object')
-
-const MarketoSourcePropertiesSchema = z
-  .object({
-    Object: ObjectSchema.and(
-      z.any().openapi({ description: 'The object specified in the Marketo flow source.' }),
-    ),
-  })
-  .openapi({
-    required: ['Object'],
-    description: 'The properties that are applied when Marketo is being used as a source.',
-  })
-  .openapi('MarketoSourceProperties')
-
-const BucketNameSchema = z.string().regex(/\S+/).min(3).max(63).openapi('BucketName')
-
-const BucketPrefixSchema = z.string().regex(/.*/).max(512).openapi('BucketPrefix')
-
-const S3SourcePropertiesSchema = z
-  .object({
-    BucketName: BucketNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon S3 bucket name where the source files are stored.' }),
-    ),
-    BucketPrefix: BucketPrefixSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The object key for the Amazon S3 bucket in which the source files are stored.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['BucketName'],
-    description: 'The properties that are applied when Amazon S3 is being used as the flow source.',
-  })
-  .openapi('S3SourceProperties')
-
-const BooleanSchema = z.boolean().openapi('Boolean')
-
-const SalesforceSourcePropertiesSchema = z
-  .object({
-    Object: ObjectSchema.and(
-      z.any().openapi({ description: 'The object specified in the Salesforce flow source.' }),
-    ),
-    EnableDynamicFieldUpdate: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The flag that enables dynamic fetching of new (recently added) fields in the Salesforce objects while running a flow.',
-        }),
-    ).exactOptional(),
-    IncludeDeletedRecords: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Indicates whether Amazon AppFlow includes deleted files in the flow run.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    required: ['Object'],
-    description: 'The properties that are applied when Salesforce is being used as a source.',
-  })
-  .openapi('SalesforceSourceProperties')
-
-const ServiceNowSourcePropertiesSchema = z
-  .object({
-    Object: ObjectSchema.and(
-      z.any().openapi({ description: 'The object specified in the ServiceNow flow source.' }),
-    ),
-  })
-  .openapi({
-    required: ['Object'],
-    description: 'The properties that are applied when ServiceNow is being used as a source.',
-  })
-  .openapi('ServiceNowSourceProperties')
-
-const ZendeskSourcePropertiesSchema = z
-  .object({
-    Object: ObjectSchema.and(
-      z.any().openapi({ description: 'The object specified in the Zendesk flow source.' }),
-    ),
-  })
-  .openapi({
-    required: ['Object'],
-    description: 'The properties that are applied when using Zendesk as a flow source.',
-  })
-  .openapi('ZendeskSourceProperties')
-
-const SourceConnectorPropertiesSchema = z
-  .object({
-    Marketo: MarketoSourcePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties that are applied when Marketo is being used as a source.',
-        }),
-    ).exactOptional(),
-    S3: S3SourcePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The properties that are applied when Amazon S3 is being used as the flow source.',
-        }),
-    ).exactOptional(),
-    Salesforce: SalesforceSourcePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties that are applied when Salesforce is being used as a source.',
-        }),
-    ).exactOptional(),
-    ServiceNow: ServiceNowSourcePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties that are applied when ServiceNow is being used as a source.',
-        }),
-    ).exactOptional(),
-    Zendesk: ZendeskSourcePropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The properties that are applied when using Zendesk as a flow source.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'Specifies the information that is required to query a particular Amazon AppFlow connector. Customer Profiles supports Salesforce, Zendesk, Marketo, ServiceNow and Amazon S3.',
-    required: [],
-  })
-  .openapi('SourceConnectorProperties')
-
-const SourceFlowConfigSchema = z
-  .object({
-    ConnectorProfileName: ConnectorProfileNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the AppFlow connector profile. This name must be unique for each connector profile in the AWS account.',
-        }),
-    ).exactOptional(),
-    ConnectorType: SourceConnectorTypeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The type of connector, such as Salesforce, Marketo, and so on.' }),
-    ),
-    IncrementalPullConfig: IncrementalPullConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Defines the configuration for a scheduled incremental data pull. If a valid configuration is provided, the fields specified in the configuration are used when querying for the incremental data pull.',
-        }),
-    ).exactOptional(),
-    SourceConnectorProperties: SourceConnectorPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the information that is required to query a particular source connector.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ConnectorType', 'SourceConnectorProperties'],
-    description:
-      'Contains information about the configuration of the source connector used in the flow.',
-  })
-  .openapi('SourceFlowConfig')
-
-const ConnectorOperatorSchema: z.ZodType<ConnectorOperatorType> = z
-  .lazy(() =>
-    z
-      .object({
-        Marketo: MarketoConnectorOperatorSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The operation to be performed on the provided Marketo source fields.',
-            }),
-        ).exactOptional(),
-        S3: S3ConnectorOperatorSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The operation to be performed on the provided Amazon S3 source fields.',
-            }),
-        ).exactOptional(),
-        Salesforce: SalesforceConnectorOperatorSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The operation to be performed on the provided Salesforce source fields.',
-            }),
-        ).exactOptional(),
-        ServiceNow: ServiceNowConnectorOperatorSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The operation to be performed on the provided ServiceNow source fields.',
-            }),
-        ).exactOptional(),
-        Zendesk: ZendeskConnectorOperatorSchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'The operation to be performed on the provided Zendesk source fields.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'The operation to be performed on the provided source fields.',
-        required: [],
-      }),
-  )
   .openapi('ConnectorOperator')
 
 const DestinationFieldSchema = z.string().regex(/.*/).max(256).openapi('DestinationField')
@@ -943,37 +592,23 @@ const TaskTypeSchema = z
 
 const TaskSchema = z
   .object({
-    ConnectorOperator: ConnectorOperatorSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The operation to be performed on the provided source fields.' }),
-    ).exactOptional(),
-    DestinationField: DestinationFieldSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A field in a destination connector, or a field value against which Amazon AppFlow validates a source field.',
-        }),
-    ).exactOptional(),
-    SourceFields: SourceFieldsSchema.and(
-      z.any().openapi({ description: 'The source fields to which a particular task is applied.' }),
-    ),
-    TaskProperties: TaskPropertiesMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map used to store task-related information. The service looks for particular information based on the TaskType.',
-        }),
-    ).exactOptional(),
-    TaskType: TaskTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the particular task implementation that Amazon AppFlow performs.',
-        }),
-    ),
+    ConnectorOperator: ConnectorOperatorSchema.exactOptional().openapi({
+      description: 'The operation to be performed on the provided source fields.',
+    }),
+    DestinationField: DestinationFieldSchema.exactOptional().openapi({
+      description:
+        'A field in a destination connector, or a field value against which Amazon AppFlow validates a source field.',
+    }),
+    SourceFields: SourceFieldsSchema.openapi({
+      description: 'The source fields to which a particular task is applied.',
+    }),
+    TaskProperties: TaskPropertiesMapSchema.exactOptional().openapi({
+      description:
+        'A map used to store task-related information. The service looks for particular information based on the TaskType.',
+    }),
+    TaskType: TaskTypeSchema.openapi({
+      description: 'Specifies the particular task implementation that Amazon AppFlow performs.',
+    }),
   })
   .openapi({
     required: ['SourceFields', 'TaskType'],
@@ -986,45 +621,75 @@ const TasksSchema = z.array(TaskSchema).openapi('Tasks')
 
 const TriggerTypeSchema = z.enum(['Scheduled', 'Event', 'OnDemand']).openapi('TriggerType')
 
-const TriggerPropertiesSchema: z.ZodType<TriggerPropertiesType> = z
-  .lazy(() =>
-    z
-      .object({
-        Scheduled: ScheduledTriggerPropertiesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Specifies the configuration details of a schedule-triggered flow that you define.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'Specifies the configuration details that control the trigger for a flow. Currently, these settings only apply to the Scheduled trigger type.',
-        required: [],
-      }),
-  )
+const ScheduleExpressionSchema = z.string().regex(/.*/).max(256).openapi('ScheduleExpression')
+
+const DataPullModeSchema = z.enum(['Incremental', 'Complete']).openapi('DataPullMode')
+
+const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
+
+const TimezoneSchema = z.string().regex(/.*/).max(256).openapi('Timezone')
+
+const ScheduleOffsetSchema = z.int().min(0).max(36000).openapi('ScheduleOffset')
+
+const ScheduledTriggerPropertiesSchema = z
+  .object({
+    ScheduleExpression: ScheduleExpressionSchema.openapi({
+      description:
+        'The scheduling expression that determines the rate at which the schedule will run, for example rate (5 minutes).',
+    }),
+    DataPullMode: DataPullModeSchema.exactOptional().openapi({
+      description:
+        'Specifies whether a scheduled flow has an incremental data transfer or a complete data transfer for each flow run.',
+    }),
+    ScheduleStartTime: DateSchema.exactOptional().openapi({
+      description: 'Specifies the scheduled start time for a scheduled-trigger flow.',
+    }),
+    ScheduleEndTime: DateSchema.exactOptional().openapi({
+      description: 'Specifies the scheduled end time for a scheduled-trigger flow.',
+    }),
+    Timezone: TimezoneSchema.exactOptional().openapi({
+      description:
+        'Specifies the time zone used when referring to the date and time of a scheduled-triggered flow, such as America/New_York.',
+    }),
+    ScheduleOffset: ScheduleOffsetSchema.exactOptional().openapi({
+      description:
+        'Specifies the optional offset that is added to the time interval for a schedule-triggered flow.',
+    }),
+    FirstExecutionFrom: DateSchema.exactOptional().openapi({
+      description:
+        'Specifies the date range for the records to import from the connector in the first flow run.',
+    }),
+  })
+  .openapi({
+    required: ['ScheduleExpression'],
+    description:
+      'Specifies the configuration details of a scheduled-trigger flow that you define. Currently, these settings only apply to the scheduled-trigger type.',
+  })
+  .openapi('ScheduledTriggerProperties')
+
+const TriggerPropertiesSchema = z
+  .object({
+    Scheduled: ScheduledTriggerPropertiesSchema.exactOptional().openapi({
+      description:
+        'Specifies the configuration details of a schedule-triggered flow that you define.',
+    }),
+  })
+  .openapi({
+    description:
+      'Specifies the configuration details that control the trigger for a flow. Currently, these settings only apply to the Scheduled trigger type.',
+    required: [],
+  })
   .openapi('TriggerProperties')
 
 const TriggerConfigSchema = z
   .object({
-    TriggerType: TriggerTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the type of flow trigger. It can be OnDemand, Scheduled, or Event.',
-        }),
-    ),
-    TriggerProperties: TriggerPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the configuration details of a schedule-triggered flow that you define. Currently, these settings only apply to the Scheduled trigger type.',
-        }),
-    ).exactOptional(),
+    TriggerType: TriggerTypeSchema.openapi({
+      description: 'Specifies the type of flow trigger. It can be OnDemand, Scheduled, or Event.',
+    }),
+    TriggerProperties: TriggerPropertiesSchema.exactOptional().openapi({
+      description:
+        'Specifies the configuration details of a schedule-triggered flow that you define. Currently, these settings only apply to the Scheduled trigger type.',
+    }),
   })
   .openapi({
     required: ['TriggerType'],
@@ -1035,48 +700,28 @@ const TriggerConfigSchema = z
 
 const FlowDefinitionSchema = z
   .object({
-    Description: FlowDescriptionSchema.and(
-      z.any().openapi({ description: 'A description of the flow you want to create.' }),
-    ).exactOptional(),
-    FlowName: FlowNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The specified name of the flow. Use underscores (_) or hyphens (-) only. Spaces are not allowed.',
-        }),
-    ),
-    KmsArn: KmsArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name of the AWS Key Management Service (KMS) key you provide for encryption.',
-        }),
-    ),
-    SourceFlowConfig: SourceFlowConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that controls how Customer Profiles retrieves data from the source.',
-        }),
-    ),
-    Tasks: TasksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tasks that Customer Profiles performs while transferring the data in the flow run.',
-        }),
-    ),
-    TriggerConfig: TriggerConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The trigger settings that determine how and when the flow runs.',
-        }),
-    ),
+    Description: FlowDescriptionSchema.exactOptional().openapi({
+      description: 'A description of the flow you want to create.',
+    }),
+    FlowName: FlowNameSchema.openapi({
+      description:
+        'The specified name of the flow. Use underscores (_) or hyphens (-) only. Spaces are not allowed.',
+    }),
+    KmsArn: KmsArnSchema.openapi({
+      description:
+        'The Amazon Resource Name of the AWS Key Management Service (KMS) key you provide for encryption.',
+    }),
+    SourceFlowConfig: SourceFlowConfigSchema.openapi({
+      description:
+        'The configuration that controls how Customer Profiles retrieves data from the source.',
+    }),
+    Tasks: TasksSchema.openapi({
+      description:
+        'A list of tasks that Customer Profiles performs while transferring the data in the flow run.',
+    }),
+    TriggerConfig: TriggerConfigSchema.openapi({
+      description: 'The trigger settings that determine how and when the flow runs.',
+    }),
   })
   .openapi({
     required: ['FlowName', 'KmsArn', 'SourceFlowConfig', 'Tasks', 'TriggerConfig'],
@@ -1087,12 +732,8 @@ const FlowDefinitionSchema = z
 
 const BatchSchema = z
   .object({
-    StartTime: TimestampSchema.and(
-      z.any().openapi({ description: 'Start time of batch to split ingestion.' }),
-    ),
-    EndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'End time of batch to split ingestion.' }),
-    ),
+    StartTime: TimestampSchema.openapi({ description: 'Start time of batch to split ingestion.' }),
+    EndTime: TimestampSchema.openapi({ description: 'End time of batch to split ingestion.' }),
   })
   .openapi({
     required: ['StartTime', 'EndTime'],
@@ -1106,11 +747,9 @@ const BatchesSchema = z.array(BatchSchema).openapi('Batches')
 const AppflowIntegrationSchema = z
   .object({
     FlowDefinition: FlowDefinitionSchema,
-    Batches: BatchesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Batches in workflow of type <code>APPFLOW_INTEGRATION</code>.' }),
-    ).exactOptional(),
+    Batches: BatchesSchema.exactOptional().openapi({
+      description: 'Batches in workflow of type <code>APPFLOW_INTEGRATION</code>.',
+    }),
   })
   .openapi({
     required: ['FlowDefinition'],
@@ -1120,9 +759,7 @@ const AppflowIntegrationSchema = z
 
 const CreateProfileResponseSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
   })
   .openapi({ required: ['ProfileId'] })
   .openapi('CreateProfileResponse')
@@ -1131,161 +768,128 @@ const MessageSchema = z.string().openapi('Message')
 
 const DeleteDomainResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ),
+    Message: MessageSchema.openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: ['Message'] })
   .openapi('DeleteDomainResponse')
 
 const DeleteIntegrationResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ),
+    Message: MessageSchema.openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: ['Message'] })
   .openapi('DeleteIntegrationResponse')
 
 const DeleteProfileResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteProfileResponse')
 
 const DeleteProfileKeyResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteProfileKeyResponse')
 
 const DeleteProfileObjectResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteProfileObjectResponse')
 
 const DeleteProfileObjectTypeResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the delete request is done.' }),
-    ),
+    Message: MessageSchema.openapi({
+      description: 'A message that indicates the delete request is done.',
+    }),
   })
   .openapi({ required: ['Message'] })
   .openapi('DeleteProfileObjectTypeResponse')
 
-const DeleteWorkflowResponseSchema = z.object({}).openapi('DeleteWorkflowResponse')
+const DeleteWorkflowResponseSchema = z.looseObject({}).openapi('DeleteWorkflowResponse')
+
+const LongSchema = z.int().openapi('Long')
 
 const GetAutoMergingPreviewResponseSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    NumberOfMatchesInSample: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of match groups in the domain that have been reviewed in this preview dry run.',
-        }),
-    ).exactOptional(),
-    NumberOfProfilesInSample: LongSchema.and(
-      z.any().openapi({ description: 'The number of profiles found in this preview dry run.' }),
-    ).exactOptional(),
-    NumberOfProfilesWillBeMerged: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of profiles that would be merged if this wasn't a preview dry run.",
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    NumberOfMatchesInSample: LongSchema.exactOptional().openapi({
+      description:
+        'The number of match groups in the domain that have been reviewed in this preview dry run.',
+    }),
+    NumberOfProfilesInSample: LongSchema.exactOptional().openapi({
+      description: 'The number of profiles found in this preview dry run.',
+    }),
+    NumberOfProfilesWillBeMerged: LongSchema.exactOptional().openapi({
+      description: "The number of profiles that would be merged if this wasn't a preview dry run.",
+    }),
   })
   .openapi({ required: ['DomainName'] })
   .openapi('GetAutoMergingPreviewResponse')
 
 const DomainStatsSchema = z
   .object({
-    ProfileCount: LongSchema.and(
-      z.any().openapi({ description: 'The total number of profiles currently in the domain.' }),
-    ).exactOptional(),
-    MeteringProfileCount: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of profiles that you are currently paying for in the domain. If you have more than 100 objects associated with a single profile, that profile counts as two profiles. If you have more than 200 objects, that profile counts as three, and so on.',
-        }),
-    ).exactOptional(),
-    ObjectCount: LongSchema.and(
-      z.any().openapi({ description: 'The total number of objects in domain.' }),
-    ).exactOptional(),
-    TotalSize: LongSchema.and(
-      z.any().openapi({ description: 'The total size, in bytes, of all objects in the domain.' }),
-    ).exactOptional(),
+    ProfileCount: LongSchema.exactOptional().openapi({
+      description: 'The total number of profiles currently in the domain.',
+    }),
+    MeteringProfileCount: LongSchema.exactOptional().openapi({
+      description:
+        'The number of profiles that you are currently paying for in the domain. If you have more than 100 objects associated with a single profile, that profile counts as two profiles. If you have more than 200 objects, that profile counts as three, and so on.',
+    }),
+    ObjectCount: LongSchema.exactOptional().openapi({
+      description: 'The total number of objects in domain.',
+    }),
+    TotalSize: LongSchema.exactOptional().openapi({
+      description: 'The total size, in bytes, of all objects in the domain.',
+    }),
   })
   .openapi({ description: 'Usage-specific statistics about the domain.', required: [] })
   .openapi('DomainStats')
 
 const GetDomainResponseSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    DefaultExpirationDays: ExpirationDaysIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default number of days until the data within the domain expires.',
-        }),
-    ).exactOptional(),
-    DefaultEncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
-        }),
-    ).exactOptional(),
-    DeadLetterQueueUrl: SqsQueueUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
-        }),
-    ).exactOptional(),
-    Stats: DomainStatsSchema.and(
-      z.any().openapi({ description: 'Usage-specific statistics about the domain.' }),
-    ).exactOptional(),
-    Matching: MatchingResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    DefaultExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The default number of days until the data within the domain expires.',
+    }),
+    DefaultEncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
+    }),
+    DeadLetterQueueUrl: SqsQueueUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
+    }),
+    Stats: DomainStatsSchema.exactOptional().openapi({
+      description: 'Usage-specific statistics about the domain.',
+    }),
+    Matching: MatchingResponseSchema.exactOptional().openapi({
+      description:
+        '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['DomainName', 'CreatedAt', 'LastUpdatedAt'] })
   .openapi('GetDomainResponse')
@@ -1302,110 +906,90 @@ const IdentityResolutionJobStatusSchema = z
   ])
   .openapi('IdentityResolutionJobStatus')
 
-const ExportingLocationSchema: z.ZodType<ExportingLocationType> = z
-  .lazy(() =>
-    z
-      .object({
-        S3Exporting: S3ExportingLocationSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about the S3 location where Identity Resolution Jobs write result files.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'The S3 location where Identity Resolution Jobs write result files.',
-        required: [],
-      }),
-  )
+const S3KeyNameSchema = z.string().regex(/.*/).min(1).max(1024).openapi('S3KeyName')
+
+const S3ExportingLocationSchema = z
+  .object({
+    S3BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description:
+        'The name of the S3 bucket name where Identity Resolution Jobs write result files.',
+    }),
+    S3KeyName: S3KeyNameSchema.exactOptional().openapi({
+      description:
+        'The S3 key name of the location where Identity Resolution Jobs write result files.',
+    }),
+  })
+  .openapi({
+    description: 'The S3 location where Identity Resolution Jobs write result files.',
+    required: [],
+  })
+  .openapi('S3ExportingLocation')
+
+const ExportingLocationSchema = z
+  .object({
+    S3Exporting: S3ExportingLocationSchema.exactOptional().openapi({
+      description:
+        'Information about the S3 location where Identity Resolution Jobs write result files.',
+    }),
+  })
+  .openapi({
+    description: 'The S3 location where Identity Resolution Jobs write result files.',
+    required: [],
+  })
   .openapi('ExportingLocation')
 
 const JobStatsSchema = z
   .object({
-    NumberOfProfilesReviewed: LongSchema.and(
-      z.any().openapi({ description: 'The number of profiles reviewed.' }),
-    ).exactOptional(),
-    NumberOfMatchesFound: LongSchema.and(
-      z.any().openapi({ description: 'The number of matches found.' }),
-    ).exactOptional(),
-    NumberOfMergesDone: LongSchema.and(
-      z.any().openapi({ description: 'The number of merges completed.' }),
-    ).exactOptional(),
+    NumberOfProfilesReviewed: LongSchema.exactOptional().openapi({
+      description: 'The number of profiles reviewed.',
+    }),
+    NumberOfMatchesFound: LongSchema.exactOptional().openapi({
+      description: 'The number of matches found.',
+    }),
+    NumberOfMergesDone: LongSchema.exactOptional().openapi({
+      description: 'The number of merges completed.',
+    }),
   })
   .openapi({ description: 'Statistics about the Identity Resolution Job.', required: [] })
   .openapi('JobStats')
 
 const GetIdentityResolutionJobResponseSchema = z
   .object({
-    DomainName: NameSchema.and(
-      z.any().openapi({ description: 'The unique name of the domain.' }),
-    ).exactOptional(),
-    JobId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the Identity Resolution Job.' }),
-    ).exactOptional(),
-    Status: IdentityResolutionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the Identity Resolution Job.</p> <ul> <li> <p> <code>PENDING</code>: The Identity Resolution Job is scheduled but has not started yet. If you turn off the Identity Resolution feature in your domain, jobs in the <code>PENDING</code> state are deleted.</p> </li> <li> <p> <code>PREPROCESSING</code>: The Identity Resolution Job is loading your data.</p> </li> <li> <p> <code>FIND_MATCHING</code>: The Identity Resolution Job is using the machine learning model to identify profiles that belong to the same matching group.</p> </li> <li> <p> <code>MERGING</code>: The Identity Resolution Job is merging duplicate profiles.</p> </li> <li> <p> <code>COMPLETED</code>: The Identity Resolution Job completed successfully.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: There's a system error and not all of the data is merged. The Identity Resolution Job writes a message indicating the source of the problem.</p> </li> <li> <p> <code>FAILED</code>: The Identity Resolution Job did not merge any data. It writes a message indicating the source of the problem.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    Message: StringTo2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error messages that are generated when the Identity Resolution Job runs.',
-        }),
-    ).exactOptional(),
-    JobStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the Identity Resolution Job was started or will be started.',
-        }),
-    ).exactOptional(),
-    JobEndTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp of when the Identity Resolution Job was completed.',
-        }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The timestamp of when the Identity Resolution Job was most recently edited.',
-        }),
-    ).exactOptional(),
-    JobExpirationTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the Identity Resolution Job will expire.' }),
-    ).exactOptional(),
-    AutoMerging: AutoMergingSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration settings for how to perform the auto-merging of profiles.',
-        }),
-    ).exactOptional(),
-    ExportingLocation: ExportingLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The S3 location where the Identity Resolution Job writes result files.',
-        }),
-    ).exactOptional(),
-    JobStats: JobStatsSchema.and(
-      z.any().openapi({ description: 'Statistics about the Identity Resolution Job.' }),
-    ).exactOptional(),
+    DomainName: NameSchema.exactOptional().openapi({
+      description: 'The unique name of the domain.',
+    }),
+    JobId: UuidSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Identity Resolution Job.',
+    }),
+    Status: IdentityResolutionJobStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the Identity Resolution Job.</p> <ul> <li> <p> <code>PENDING</code>: The Identity Resolution Job is scheduled but has not started yet. If you turn off the Identity Resolution feature in your domain, jobs in the <code>PENDING</code> state are deleted.</p> </li> <li> <p> <code>PREPROCESSING</code>: The Identity Resolution Job is loading your data.</p> </li> <li> <p> <code>FIND_MATCHING</code>: The Identity Resolution Job is using the machine learning model to identify profiles that belong to the same matching group.</p> </li> <li> <p> <code>MERGING</code>: The Identity Resolution Job is merging duplicate profiles.</p> </li> <li> <p> <code>COMPLETED</code>: The Identity Resolution Job completed successfully.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: There's a system error and not all of the data is merged. The Identity Resolution Job writes a message indicating the source of the problem.</p> </li> <li> <p> <code>FAILED</code>: The Identity Resolution Job did not merge any data. It writes a message indicating the source of the problem.</p> </li> </ul>",
+    }),
+    Message: StringTo2048Schema.exactOptional().openapi({
+      description: 'The error messages that are generated when the Identity Resolution Job runs.',
+    }),
+    JobStartTime: TimestampSchema.exactOptional().openapi({
+      description:
+        'The timestamp of when the Identity Resolution Job was started or will be started.',
+    }),
+    JobEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the Identity Resolution Job was completed.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the Identity Resolution Job was most recently edited.',
+    }),
+    JobExpirationTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the Identity Resolution Job will expire.',
+    }),
+    AutoMerging: AutoMergingSchema.exactOptional().openapi({
+      description: 'Configuration settings for how to perform the auto-merging of profiles.',
+    }),
+    ExportingLocation: ExportingLocationSchema.exactOptional().openapi({
+      description: 'The S3 location where the Identity Resolution Job writes result files.',
+    }),
+    JobStats: JobStatsSchema.exactOptional().openapi({
+      description: 'Statistics about the Identity Resolution Job.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetIdentityResolutionJobResponse')
@@ -1421,49 +1005,33 @@ const ObjectTypeNamesSchema = z.record(z.string(), TypeNameSchema).openapi('Obje
 
 const GetIntegrationResponseSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
-    ObjectTypeNames: ObjectTypeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
-        }),
-    ).exactOptional(),
-    WorkflowId: String1To255Schema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ).exactOptional(),
-    IsUnstructured: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
+    ObjectTypeName: TypeNameSchema.exactOptional().openapi({
+      description: 'The name of the profile object type.',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
+    ObjectTypeNames: ObjectTypeNamesSchema.exactOptional().openapi({
+      description:
+        'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
+    }),
+    WorkflowId: String1To255Schema.exactOptional().openapi({
+      description: 'Unique identifier for the workflow.',
+    }),
+    IsUnstructured: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
+    }),
   })
   .openapi({ required: ['DomainName', 'Uri', 'CreatedAt', 'LastUpdatedAt'] })
   .openapi('GetIntegrationResponse')
@@ -1478,22 +1046,16 @@ const DoubleSchema = z.float64().openapi('Double')
 
 const MatchItemSchema = z
   .object({
-    MatchId: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The unique identifiers for this group of profiles that match.' }),
-    ).exactOptional(),
-    ProfileIds: ProfileIdListSchema.and(
-      z.any().openapi({ description: 'A list of identifiers for profiles that match.' }),
-    ).exactOptional(),
-    ConfidenceScore: DoubleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A number between 0 and 1, where a higher score means higher similarity. Examining match confidence scores lets you distinguish between groups of similar records in which the system is highly confident (which you may decide to merge), groups of similar records about which the system is uncertain (which you may decide to have reviewed by a human), and groups of similar records that the system deems to be unlikely (which you may decide to reject). Given confidence scores vary as per the data input, it should not be used an absolute measure of matching quality.',
-        }),
-    ).exactOptional(),
+    MatchId: String1To255Schema.exactOptional().openapi({
+      description: 'The unique identifiers for this group of profiles that match.',
+    }),
+    ProfileIds: ProfileIdListSchema.exactOptional().openapi({
+      description: 'A list of identifiers for profiles that match.',
+    }),
+    ConfidenceScore: DoubleSchema.exactOptional().openapi({
+      description:
+        'A number between 0 and 1, where a higher score means higher similarity. Examining match confidence scores lets you distinguish between groups of similar records in which the system is highly confident (which you may decide to merge), groups of similar records about which the system is uncertain (which you may decide to have reviewed by a human), and groups of similar records that the system deems to be unlikely (which you may decide to reject). Given confidence scores vary as per the data input, it should not be used an absolute measure of matching quality.',
+    }),
   })
   .openapi({ description: 'The Match group object.', required: [] })
   .openapi('MatchItem')
@@ -1502,23 +1064,19 @@ const MatchesListSchema = z.array(MatchItemSchema).openapi('MatchesList')
 
 const GetMatchesResponseSchema = z
   .object({
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
-    MatchGenerationDate: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp this version of Match Result generated.' }),
-    ).exactOptional(),
-    PotentialMatches: MatchesNumberSchema.and(
-      z.any().openapi({ description: 'The number of potential matches found.' }),
-    ).exactOptional(),
-    Matches: MatchesListSchema.and(
-      z.any().openapi({ description: 'The list of matched profiles for this instance.' }),
-    ).exactOptional(),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
+    MatchGenerationDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp this version of Match Result generated.',
+    }),
+    PotentialMatches: MatchesNumberSchema.exactOptional().openapi({
+      description: 'The number of potential matches found.',
+    }),
+    Matches: MatchesListSchema.exactOptional().openapi({
+      description: 'The list of matched profiles for this instance.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetMatchesResponse')
@@ -1531,30 +1089,17 @@ const FieldContentTypeSchema = z
 
 const ObjectTypeFieldSchema = z
   .object({
-    Source: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A field of a ProfileObject. For example: _source.FirstName, where “_source” is a ProfileObjectType of a Zendesk user and “FirstName” is a field in that ObjectType.',
-        }),
-    ).exactOptional(),
-    Target: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode.',
-        }),
-    ).exactOptional(),
-    ContentType: FieldContentTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content type of the field. Used for determining equality when searching.',
-        }),
-    ).exactOptional(),
+    Source: TextSchema.exactOptional().openapi({
+      description:
+        'A field of a ProfileObject. For example: _source.FirstName, where “_source” is a ProfileObjectType of a Zendesk user and “FirstName” is a field in that ObjectType.',
+    }),
+    Target: TextSchema.exactOptional().openapi({
+      description:
+        'The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode.',
+    }),
+    ContentType: FieldContentTypeSchema.exactOptional().openapi({
+      description: 'The content type of the field. Used for determining equality when searching.',
+    }),
   })
   .openapi({ description: 'Represents a field in a ProfileObjectType.', required: [] })
   .openapi('ObjectTypeField')
@@ -1573,17 +1118,13 @@ const FieldNameListSchema = z.array(NameSchema).openapi('FieldNameList')
 
 const ObjectTypeKeySchema = z
   .object({
-    StandardIdentifiers: StandardIdentifierListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of keys that a ProfileObject can have. Each ProfileObject can have only 1 UNIQUE key but multiple PROFILE keys. PROFILE, ASSET, CASE, or ORDER means that this key can be used to tie an object to a PROFILE, ASSET, CASE, or ORDER respectively. UNIQUE means that it can be used to uniquely identify an object. If a key a is marked as SECONDARY, it will be used to search for profiles after all other PROFILE keys have been searched. A LOOKUP_ONLY key is only used to match a profile but is not persisted to be used for searching of the profile. A NEW_ONLY key is only used if the profile does not already exist before the object is ingested, otherwise it is only used for matching objects to profiles.',
-        }),
-    ).exactOptional(),
-    FieldNames: FieldNameListSchema.and(
-      z.any().openapi({ description: 'The reference for the key name of the fields map.' }),
-    ).exactOptional(),
+    StandardIdentifiers: StandardIdentifierListSchema.exactOptional().openapi({
+      description:
+        'The types of keys that a ProfileObject can have. Each ProfileObject can have only 1 UNIQUE key but multiple PROFILE keys. PROFILE, ASSET, CASE, or ORDER means that this key can be used to tie an object to a PROFILE, ASSET, CASE, or ORDER respectively. UNIQUE means that it can be used to uniquely identify an object. If a key a is marked as SECONDARY, it will be used to search for profiles after all other PROFILE keys have been searched. A LOOKUP_ONLY key is only used to match a profile but is not persisted to be used for searching of the profile. A NEW_ONLY key is only used if the profile does not already exist before the object is ingested, otherwise it is only used for matching objects to profiles.',
+    }),
+    FieldNames: FieldNameListSchema.exactOptional().openapi({
+      description: 'The reference for the key name of the fields map.',
+    }),
   })
   .openapi({
     description:
@@ -1598,108 +1139,70 @@ const KeyMapSchema = z.record(z.string(), ObjectTypeKeyListSchema).openapi('KeyM
 
 const GetProfileObjectTypeResponseSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    Description: TextSchema.and(
-      z.any().openapi({ description: 'The description of the profile object type.' }),
-    ),
-    TemplateId: NameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the object template.' }),
-    ).exactOptional(),
-    ExpirationDays: ExpirationDaysIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days until the data in the object expires.' }),
-    ).exactOptional(),
-    EncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
-        }),
-    ).exactOptional(),
-    AllowProfileCreation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
-        }),
-    ).exactOptional(),
-    SourceLastUpdatedTimestampFormat: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up.',
-        }),
-    ).exactOptional(),
-    Fields: FieldMapSchema.and(
-      z.any().openapi({ description: 'A map of the name and ObjectType field.' }),
-    ).exactOptional(),
-    Keys: KeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of unique keys that can be used to map data to the profile.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    Description: TextSchema.openapi({ description: 'The description of the profile object type.' }),
+    TemplateId: NameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the object template.',
+    }),
+    ExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The number of days until the data in the object expires.',
+    }),
+    EncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
+    }),
+    AllowProfileCreation: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
+    }),
+    SourceLastUpdatedTimestampFormat: String1To255Schema.exactOptional().openapi({
+      description:
+        'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up.',
+    }),
+    Fields: FieldMapSchema.exactOptional().openapi({
+      description: 'A map of the name and ObjectType field.',
+    }),
+    Keys: KeyMapSchema.exactOptional().openapi({
+      description: 'A list of unique keys that can be used to map data to the profile.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['ObjectTypeName', 'Description'] })
   .openapi('GetProfileObjectTypeResponse')
 
 const GetProfileObjectTypeTemplateResponseSchema = z
   .object({
-    TemplateId: NameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the object template.' }),
-    ).exactOptional(),
-    SourceName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the source of the object template.' }),
-    ).exactOptional(),
-    SourceObject: NameSchema.and(
-      z.any().openapi({ description: 'The source of the object template.' }),
-    ).exactOptional(),
-    AllowProfileCreation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
-        }),
-    ).exactOptional(),
-    SourceLastUpdatedTimestampFormat: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up.',
-        }),
-    ).exactOptional(),
-    Fields: FieldMapSchema.and(
-      z.any().openapi({ description: 'A map of the name and ObjectType field.' }),
-    ).exactOptional(),
-    Keys: KeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of unique keys that can be used to map data to the profile.',
-        }),
-    ).exactOptional(),
+    TemplateId: NameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the object template.',
+    }),
+    SourceName: NameSchema.exactOptional().openapi({
+      description: 'The name of the source of the object template.',
+    }),
+    SourceObject: NameSchema.exactOptional().openapi({
+      description: 'The source of the object template.',
+    }),
+    AllowProfileCreation: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
+    }),
+    SourceLastUpdatedTimestampFormat: String1To255Schema.exactOptional().openapi({
+      description:
+        'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up.',
+    }),
+    Fields: FieldMapSchema.exactOptional().openapi({
+      description: 'A map of the name and ObjectType field.',
+    }),
+    Keys: KeyMapSchema.exactOptional().openapi({
+      description: 'A list of unique keys that can be used to map data to the profile.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetProfileObjectTypeTemplateResponse')
@@ -1710,148 +1213,125 @@ const StatusSchema = z
   .enum(['NOT_STARTED', 'IN_PROGRESS', 'COMPLETE', 'FAILED', 'SPLIT', 'RETRY', 'CANCELLED'])
   .openapi('Status')
 
-const WorkflowAttributesSchema: z.ZodType<WorkflowAttributesType> = z
-  .lazy(() =>
-    z
-      .object({
-        AppflowIntegration: AppflowIntegrationWorkflowAttributesSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Workflow attributes specific to <code>APPFLOW_INTEGRATION</code> workflow.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({ description: 'Structure to hold workflow attributes.', required: [] }),
-  )
+const AppflowIntegrationWorkflowAttributesSchema = z
+  .object({
+    SourceConnectorType: SourceConnectorTypeSchema.openapi({
+      description:
+        'Specifies the source connector type, such as Salesforce, ServiceNow, and Marketo. Indicates source of ingestion.',
+    }),
+    ConnectorProfileName: ConnectorProfileNameSchema.openapi({
+      description: 'The name of the AppFlow connector profile used for ingestion.',
+    }),
+    RoleArn: String1To255Schema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.',
+    }),
+  })
+  .openapi({
+    required: ['SourceConnectorType', 'ConnectorProfileName'],
+    description:
+      'Structure holding all <code>APPFLOW_INTEGRATION</code> specific workflow attributes.',
+  })
+  .openapi('AppflowIntegrationWorkflowAttributes')
+
+const WorkflowAttributesSchema = z
+  .object({
+    AppflowIntegration: AppflowIntegrationWorkflowAttributesSchema.exactOptional().openapi({
+      description: 'Workflow attributes specific to <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+  })
+  .openapi({ description: 'Structure to hold workflow attributes.', required: [] })
   .openapi('WorkflowAttributes')
 
-const WorkflowMetricsSchema: z.ZodType<WorkflowMetricsType> = z
-  .lazy(() =>
-    z
-      .object({
-        AppflowIntegration: AppflowIntegrationWorkflowMetricsSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Workflow execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Generic object containing workflow execution metrics.',
-        required: [],
-      }),
-  )
+const AppflowIntegrationWorkflowMetricsSchema = z
+  .object({
+    RecordsProcessed: LongSchema.openapi({
+      description: 'Number of records processed in <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    StepsCompleted: LongSchema.openapi({
+      description: 'Total steps completed in <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    TotalSteps: LongSchema.openapi({
+      description: 'Total steps in <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+  })
+  .openapi({
+    required: ['RecordsProcessed', 'StepsCompleted', 'TotalSteps'],
+    description:
+      'Workflow specific execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.',
+  })
+  .openapi('AppflowIntegrationWorkflowMetrics')
+
+const WorkflowMetricsSchema = z
+  .object({
+    AppflowIntegration: AppflowIntegrationWorkflowMetricsSchema.exactOptional().openapi({
+      description: 'Workflow execution metrics for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+  })
+  .openapi({ description: 'Generic object containing workflow execution metrics.', required: [] })
   .openapi('WorkflowMetrics')
 
 const GetWorkflowResponseSchema = z
   .object({
-    WorkflowId: UuidSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ).exactOptional(),
-    WorkflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'Status of workflow execution.' }),
-    ).exactOptional(),
-    ErrorDescription: String1To255Schema.and(
-      z.any().openapi({ description: 'Workflow error messages during execution (if any).' }),
-    ).exactOptional(),
-    StartDate: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp that represents when workflow execution started.' }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The timestamp that represents when workflow execution last updated.',
-        }),
-    ).exactOptional(),
-    Attributes: WorkflowAttributesSchema.and(
-      z.any().openapi({ description: 'Attributes provided for workflow execution.' }),
-    ).exactOptional(),
-    Metrics: WorkflowMetricsSchema.and(
-      z.any().openapi({ description: 'Workflow specific execution metrics.' }),
-    ).exactOptional(),
+    WorkflowId: UuidSchema.exactOptional().openapi({
+      description: 'Unique identifier for the workflow.',
+    }),
+    WorkflowType: WorkflowTypeSchema.exactOptional().openapi({
+      description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'Status of workflow execution.' }),
+    ErrorDescription: String1To255Schema.exactOptional().openapi({
+      description: 'Workflow error messages during execution (if any).',
+    }),
+    StartDate: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp that represents when workflow execution started.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp that represents when workflow execution last updated.',
+    }),
+    Attributes: WorkflowAttributesSchema.exactOptional().openapi({
+      description: 'Attributes provided for workflow execution.',
+    }),
+    Metrics: WorkflowMetricsSchema.exactOptional().openapi({
+      description: 'Workflow specific execution metrics.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWorkflowResponse')
 
 const AppflowIntegrationWorkflowStepSchema = z
   .object({
-    FlowName: FlowNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Name of the flow created during execution of workflow step. <code>APPFLOW_INTEGRATION</code> workflow type creates an appflow flow during workflow step execution on the customers behalf.',
-        }),
-    ),
-    Status: StatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Workflow step status for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    ExecutionMessage: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Message indicating execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    RecordsProcessed: LongSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total number of records processed during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    BatchRecordsStartTime: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Start datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    BatchRecordsEndTime: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'End datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    CreatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Creation timestamp of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Last updated timestamp for workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ),
+    FlowName: FlowNameSchema.openapi({
+      description:
+        'Name of the flow created during execution of workflow step. <code>APPFLOW_INTEGRATION</code> workflow type creates an appflow flow during workflow step execution on the customers behalf.',
+    }),
+    Status: StatusSchema.openapi({
+      description: 'Workflow step status for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    ExecutionMessage: String1To255Schema.openapi({
+      description:
+        'Message indicating execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    RecordsProcessed: LongSchema.openapi({
+      description:
+        'Total number of records processed during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    BatchRecordsStartTime: String1To255Schema.openapi({
+      description:
+        'Start datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    BatchRecordsEndTime: String1To255Schema.openapi({
+      description:
+        'End datetime of records pulled in batch during execution of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description:
+        'Creation timestamp of workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description:
+        'Last updated timestamp for workflow step for <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
   })
   .openapi({
     required: [
@@ -1870,14 +1350,10 @@ const AppflowIntegrationWorkflowStepSchema = z
 
 const WorkflowStepItemSchema = z
   .object({
-    AppflowIntegration: AppflowIntegrationWorkflowStepSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Workflow step information specific to <code>APPFLOW_INTEGRATION</code> workflow.',
-        }),
-    ).exactOptional(),
+    AppflowIntegration: AppflowIntegrationWorkflowStepSchema.exactOptional().openapi({
+      description:
+        'Workflow step information specific to <code>APPFLOW_INTEGRATION</code> workflow.',
+    }),
   })
   .openapi({ description: 'List containing steps in workflow.', required: [] })
   .openapi('WorkflowStepItem')
@@ -1886,76 +1362,52 @@ const WorkflowStepsListSchema = z.array(WorkflowStepItemSchema).openapi('Workflo
 
 const GetWorkflowStepsResponseSchema = z
   .object({
-    WorkflowId: UuidSchema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ).exactOptional(),
-    WorkflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
-        }),
-    ).exactOptional(),
-    Items: WorkflowStepsListSchema.and(
-      z.any().openapi({ description: 'List containing workflow step details.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    WorkflowId: UuidSchema.exactOptional().openapi({
+      description: 'Unique identifier for the workflow.',
+    }),
+    WorkflowType: WorkflowTypeSchema.exactOptional().openapi({
+      description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
+    }),
+    Items: WorkflowStepsListSchema.exactOptional().openapi({
+      description: 'List containing workflow step details.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetWorkflowStepsResponse')
 
 const ListIntegrationItemSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
-    ObjectTypeNames: ObjectTypeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
-        }),
-    ).exactOptional(),
-    WorkflowId: String1To255Schema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ).exactOptional(),
-    IsUnstructured: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
+    ObjectTypeName: TypeNameSchema.exactOptional().openapi({
+      description: 'The name of the profile object type.',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
+    ObjectTypeNames: ObjectTypeNamesSchema.exactOptional().openapi({
+      description:
+        'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
+    }),
+    WorkflowId: String1To255Schema.exactOptional().openapi({
+      description: 'Unique identifier for the workflow.',
+    }),
+    IsUnstructured: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
+    }),
   })
   .openapi({
     required: ['DomainName', 'Uri', 'CreatedAt', 'LastUpdatedAt'],
@@ -1967,38 +1419,28 @@ const IntegrationListSchema = z.array(ListIntegrationItemSchema).openapi('Integr
 
 const ListAccountIntegrationsResponseSchema = z
   .object({
-    Items: IntegrationListSchema.and(
-      z.any().openapi({ description: 'The list of ListAccountIntegration instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token from the previous ListAccountIntegrations API call.',
-        }),
-    ).exactOptional(),
+    Items: IntegrationListSchema.exactOptional().openapi({
+      description: 'The list of ListAccountIntegration instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous ListAccountIntegrations API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAccountIntegrationsResponse')
 
 const ListDomainItemSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({
     required: ['DomainName', 'CreatedAt', 'LastUpdatedAt'],
@@ -2010,60 +1452,43 @@ const DomainListSchema = z.array(ListDomainItemSchema).openapi('DomainList')
 
 const ListDomainsResponseSchema = z
   .object({
-    Items: DomainListSchema.and(
-      z.any().openapi({ description: 'The list of ListDomains instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The pagination token from the previous ListDomains API call.' }),
-    ).exactOptional(),
+    Items: DomainListSchema.exactOptional().openapi({
+      description: 'The list of ListDomains instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous ListDomains API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDomainsResponse')
 
 const IdentityResolutionJobSchema = z
   .object({
-    DomainName: NameSchema.and(
-      z.any().openapi({ description: 'The unique name of the domain.' }),
-    ).exactOptional(),
-    JobId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of the Identity Resolution Job.' }),
-    ).exactOptional(),
-    Status: IdentityResolutionJobStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the Identity Resolution Job.</p> <ul> <li> <p> <code>PENDING</code>: The Identity Resolution Job is scheduled but has not started yet. If you turn off the Identity Resolution feature in your domain, jobs in the <code>PENDING</code> state are deleted.</p> </li> <li> <p> <code>PREPROCESSING</code>: The Identity Resolution Job is loading your data.</p> </li> <li> <p> <code>FIND_MATCHING</code>: The Identity Resolution Job is using the machine learning model to identify profiles that belong to the same matching group.</p> </li> <li> <p> <code>MERGING</code>: The Identity Resolution Job is merging duplicate profiles.</p> </li> <li> <p> <code>COMPLETED</code>: The Identity Resolution Job completed successfully.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: There's a system error and not all of the data is merged. The Identity Resolution Job writes a message indicating the source of the problem.</p> </li> <li> <p> <code>FAILED</code>: The Identity Resolution Job did not merge any data. It writes a message indicating the source of the problem.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    JobStartTime: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the job was started or will be started.' }),
-    ).exactOptional(),
-    JobEndTime: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the job was completed.' }),
-    ).exactOptional(),
-    JobStats: JobStatsSchema.and(
-      z.any().openapi({ description: 'Statistics about an Identity Resolution Job.' }),
-    ).exactOptional(),
-    ExportingLocation: ExportingLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The S3 location where the Identity Resolution Job writes result files.',
-        }),
-    ).exactOptional(),
-    Message: StringTo2048Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The error messages that are generated when the Identity Resolution Job runs.',
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.exactOptional().openapi({
+      description: 'The unique name of the domain.',
+    }),
+    JobId: UuidSchema.exactOptional().openapi({
+      description: 'The unique identifier of the Identity Resolution Job.',
+    }),
+    Status: IdentityResolutionJobStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the Identity Resolution Job.</p> <ul> <li> <p> <code>PENDING</code>: The Identity Resolution Job is scheduled but has not started yet. If you turn off the Identity Resolution feature in your domain, jobs in the <code>PENDING</code> state are deleted.</p> </li> <li> <p> <code>PREPROCESSING</code>: The Identity Resolution Job is loading your data.</p> </li> <li> <p> <code>FIND_MATCHING</code>: The Identity Resolution Job is using the machine learning model to identify profiles that belong to the same matching group.</p> </li> <li> <p> <code>MERGING</code>: The Identity Resolution Job is merging duplicate profiles.</p> </li> <li> <p> <code>COMPLETED</code>: The Identity Resolution Job completed successfully.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: There's a system error and not all of the data is merged. The Identity Resolution Job writes a message indicating the source of the problem.</p> </li> <li> <p> <code>FAILED</code>: The Identity Resolution Job did not merge any data. It writes a message indicating the source of the problem.</p> </li> </ul>",
+    }),
+    JobStartTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the job was started or will be started.',
+    }),
+    JobEndTime: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the job was completed.',
+    }),
+    JobStats: JobStatsSchema.exactOptional().openapi({
+      description: 'Statistics about an Identity Resolution Job.',
+    }),
+    ExportingLocation: ExportingLocationSchema.exactOptional().openapi({
+      description: 'The S3 location where the Identity Resolution Job writes result files.',
+    }),
+    Message: StringTo2048Schema.exactOptional().openapi({
+      description: 'The error messages that are generated when the Identity Resolution Job runs.',
+    }),
   })
   .openapi({ description: 'Information about the Identity Resolution Job.', required: [] })
   .openapi('IdentityResolutionJob')
@@ -2074,48 +1499,40 @@ const IdentityResolutionJobsListSchema = z
 
 const ListIdentityResolutionJobsResponseSchema = z
   .object({
-    IdentityResolutionJobsList: IdentityResolutionJobsListSchema.and(
-      z.any().openapi({ description: 'A list of Identity Resolution Jobs.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    IdentityResolutionJobsList: IdentityResolutionJobsListSchema.exactOptional().openapi({
+      description: 'A list of Identity Resolution Jobs.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIdentityResolutionJobsResponse')
 
 const ListIntegrationsResponseSchema = z
   .object({
-    Items: IntegrationListSchema.and(
-      z.any().openapi({ description: 'The list of ListIntegrations instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token from the previous ListIntegrations API call.',
-        }),
-    ).exactOptional(),
+    Items: IntegrationListSchema.exactOptional().openapi({
+      description: 'The list of ListIntegrations instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous ListIntegrations API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListIntegrationsResponse')
 
 const ListProfileObjectTypeTemplateItemSchema = z
   .object({
-    TemplateId: NameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the object template.' }),
-    ).exactOptional(),
-    SourceName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the source of the object template.' }),
-    ).exactOptional(),
-    SourceObject: NameSchema.and(
-      z.any().openapi({ description: 'The source of the object template.' }),
-    ).exactOptional(),
+    TemplateId: NameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the object template.',
+    }),
+    SourceName: NameSchema.exactOptional().openapi({
+      description: 'The name of the source of the object template.',
+    }),
+    SourceObject: NameSchema.exactOptional().openapi({
+      description: 'The source of the object template.',
+    }),
   })
   .openapi({
     description: 'A ProfileObjectTypeTemplate in a list of ProfileObjectTypeTemplates.',
@@ -2129,43 +1546,29 @@ const ProfileObjectTypeTemplateListSchema = z
 
 const ListProfileObjectTypeTemplatesResponseSchema = z
   .object({
-    Items: ProfileObjectTypeTemplateListSchema.and(
-      z.any().openapi({ description: 'The list of ListProfileObjectType template instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token from the previous ListObjectTypeTemplates API call. ',
-        }),
-    ).exactOptional(),
+    Items: ProfileObjectTypeTemplateListSchema.exactOptional().openapi({
+      description: 'The list of ListProfileObjectType template instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous ListObjectTypeTemplates API call. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProfileObjectTypeTemplatesResponse')
 
 const ListProfileObjectTypeItemSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    Description: TextSchema.and(
-      z.any().openapi({ description: 'Description of the profile object type.' }),
-    ),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    Description: TextSchema.openapi({ description: 'Description of the profile object type.' }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({
     required: ['ObjectTypeName', 'Description'],
@@ -2179,12 +1582,12 @@ const ProfileObjectTypeListSchema = z
 
 const ListProfileObjectTypesResponseSchema = z
   .object({
-    Items: ProfileObjectTypeListSchema.and(
-      z.any().openapi({ description: 'The list of ListProfileObjectTypes instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z.any().openapi({ description: 'Identifies the next page of results to return.' }),
-    ).exactOptional(),
+    Items: ProfileObjectTypeListSchema.exactOptional().openapi({
+      description: 'The list of ListProfileObjectTypes instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'Identifies the next page of results to return.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProfileObjectTypesResponse')
@@ -2193,28 +1596,16 @@ const StringifiedJsonSchema = z.string().min(1).max(256000).openapi('Stringified
 
 const ListProfileObjectsItemSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the kind of object being added to a profile, such as "Salesforce-Account."',
-        }),
-    ).exactOptional(),
-    ProfileObjectUniqueKey: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the ProfileObject generated by the service.',
-        }),
-    ).exactOptional(),
-    Object: StringifiedJsonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A JSON representation of a ProfileObject that belongs to a profile.',
-        }),
-    ).exactOptional(),
+    ObjectTypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        'Specifies the kind of object being added to a profile, such as "Salesforce-Account."',
+    }),
+    ProfileObjectUniqueKey: String1To255Schema.exactOptional().openapi({
+      description: 'The unique identifier of the ProfileObject generated by the service.',
+    }),
+    Object: StringifiedJsonSchema.exactOptional().openapi({
+      description: 'A JSON representation of a ProfileObject that belongs to a profile.',
+    }),
   })
   .openapi({ description: 'A ProfileObject in a list of ProfileObjects.', required: [] })
   .openapi('ListProfileObjectsItem')
@@ -2223,55 +1614,37 @@ const ProfileObjectListSchema = z.array(ListProfileObjectsItemSchema).openapi('P
 
 const ListProfileObjectsResponseSchema = z
   .object({
-    Items: ProfileObjectListSchema.and(
-      z.any().openapi({ description: 'The list of ListProfileObject instances.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token from the previous call to ListProfileObjects.',
-        }),
-    ).exactOptional(),
+    Items: ProfileObjectListSchema.exactOptional().openapi({
+      description: 'The list of ListProfileObject instances.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous call to ListProfileObjects.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListProfileObjectsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListWorkflowsItemSchema = z
   .object({
-    WorkflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
-        }),
-    ),
-    WorkflowId: String1To255Schema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ),
-    Status: StatusSchema.and(z.any().openapi({ description: 'Status of workflow execution.' })),
-    StatusDescription: String1To255Schema.and(
-      z.any().openapi({ description: 'Description for workflow execution status.' }),
-    ),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Creation timestamp for workflow.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'Last updated timestamp for workflow.' }),
-    ),
+    WorkflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
+    }),
+    WorkflowId: String1To255Schema.openapi({ description: 'Unique identifier for the workflow.' }),
+    Status: StatusSchema.openapi({ description: 'Status of workflow execution.' }),
+    StatusDescription: String1To255Schema.openapi({
+      description: 'Description for workflow execution status.',
+    }),
+    CreatedAt: TimestampSchema.openapi({ description: 'Creation timestamp for workflow.' }),
+    LastUpdatedAt: TimestampSchema.openapi({ description: 'Last updated timestamp for workflow.' }),
   })
   .openapi({
     required: [
@@ -2290,26 +1663,22 @@ const WorkflowListSchema = z.array(ListWorkflowsItemSchema).openapi('WorkflowLis
 
 const ListWorkflowsResponseSchema = z
   .object({
-    Items: WorkflowListSchema.and(
-      z.any().openapi({ description: 'List containing workflow details.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If there are additional results, this is the token for the next set of results.',
-        }),
-    ).exactOptional(),
+    Items: WorkflowListSchema.exactOptional().openapi({
+      description: 'List containing workflow details.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description:
+        'If there are additional results, this is the token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListWorkflowsResponse')
 
 const MergeProfilesResponseSchema = z
   .object({
-    Message: MessageSchema.and(
-      z.any().openapi({ description: 'A message that indicates the merge request is complete.' }),
-    ).exactOptional(),
+    Message: MessageSchema.exactOptional().openapi({
+      description: 'A message that indicates the merge request is complete.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('MergeProfilesResponse')
@@ -2318,129 +1687,83 @@ const AttributeSourceIdMapSchema = z.record(z.string(), UuidSchema).openapi('Att
 
 const PutIntegrationResponseSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
-    ObjectTypeNames: ObjectTypeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
-        }),
-    ).exactOptional(),
-    WorkflowId: String1To255Schema.and(
-      z.any().openapi({ description: 'Unique identifier for the workflow.' }),
-    ).exactOptional(),
-    IsUnstructured: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
+    ObjectTypeName: TypeNameSchema.exactOptional().openapi({
+      description: 'The name of the profile object type.',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
+    ObjectTypeNames: ObjectTypeNamesSchema.exactOptional().openapi({
+      description:
+        'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
+    }),
+    WorkflowId: String1To255Schema.exactOptional().openapi({
+      description: 'Unique identifier for the workflow.',
+    }),
+    IsUnstructured: OptionalBooleanSchema.exactOptional().openapi({
+      description:
+        "Boolean that shows if the Flow that's associated with the Integration is created in Amazon Appflow, or with ObjectTypeName equals _unstructured via API/CLI in flowDefinition.",
+    }),
   })
   .openapi({ required: ['DomainName', 'Uri', 'CreatedAt', 'LastUpdatedAt'] })
   .openapi('PutIntegrationResponse')
 
 const PutProfileObjectResponseSchema = z
   .object({
-    ProfileObjectUniqueKey: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the profile object generated by the service.',
-        }),
-    ).exactOptional(),
+    ProfileObjectUniqueKey: String1To255Schema.exactOptional().openapi({
+      description: 'The unique identifier of the profile object generated by the service.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutProfileObjectResponse')
 
 const PutProfileObjectTypeResponseSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    Description: TextSchema.and(
-      z.any().openapi({ description: 'Description of the profile object type.' }),
-    ),
-    TemplateId: NameSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the object template.' }),
-    ).exactOptional(),
-    ExpirationDays: ExpirationDaysIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days until the data in the object expires.' }),
-    ).exactOptional(),
-    EncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
-        }),
-    ).exactOptional(),
-    AllowProfileCreation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
-        }),
-    ).exactOptional(),
-    SourceLastUpdatedTimestampFormat: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up in fields that were parsed using <a href="https://docs.oracle.com/javase/10/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>. If you have <code>sourceLastUpdatedTimestamp</code> in your field, you must set up <code>sourceLastUpdatedTimestampFormat</code>.',
-        }),
-    ).exactOptional(),
-    Fields: FieldMapSchema.and(
-      z.any().openapi({ description: 'A map of the name and ObjectType field.' }),
-    ).exactOptional(),
-    Keys: KeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of unique keys that can be used to map data to the profile.',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ).exactOptional(),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    Description: TextSchema.openapi({ description: 'Description of the profile object type.' }),
+    TemplateId: NameSchema.exactOptional().openapi({
+      description: 'A unique identifier for the object template.',
+    }),
+    ExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The number of days until the data in the object expires.',
+    }),
+    EncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
+    }),
+    AllowProfileCreation: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
+    }),
+    SourceLastUpdatedTimestampFormat: String1To255Schema.exactOptional().openapi({
+      description:
+        'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up in fields that were parsed using <a href="https://docs.oracle.com/javase/10/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>. If you have <code>sourceLastUpdatedTimestamp</code> in your field, you must set up <code>sourceLastUpdatedTimestampFormat</code>.',
+    }),
+    Fields: FieldMapSchema.exactOptional().openapi({
+      description: 'A map of the name and ObjectType field.',
+    }),
+    Keys: KeyMapSchema.exactOptional().openapi({
+      description: 'A list of unique keys that can be used to map data to the profile.',
+    }),
+    CreatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.exactOptional().openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['ObjectTypeName', 'Description'] })
   .openapi('PutProfileObjectTypeResponse')
@@ -2459,36 +1782,36 @@ const GenderSchema = z
 
 const AddressSchema = z
   .object({
-    Address1: String1To255Schema.and(
-      z.any().openapi({ description: 'The first line of a customer address.' }),
-    ).exactOptional(),
-    Address2: String1To255Schema.and(
-      z.any().openapi({ description: 'The second line of a customer address.' }),
-    ).exactOptional(),
-    Address3: String1To255Schema.and(
-      z.any().openapi({ description: 'The third line of a customer address.' }),
-    ).exactOptional(),
-    Address4: String1To255Schema.and(
-      z.any().openapi({ description: 'The fourth line of a customer address.' }),
-    ).exactOptional(),
-    City: String1To255Schema.and(
-      z.any().openapi({ description: 'The city in which a customer lives.' }),
-    ).exactOptional(),
-    County: String1To255Schema.and(
-      z.any().openapi({ description: 'The county in which a customer lives.' }),
-    ).exactOptional(),
-    State: String1To255Schema.and(
-      z.any().openapi({ description: 'The state in which a customer lives.' }),
-    ).exactOptional(),
-    Province: String1To255Schema.and(
-      z.any().openapi({ description: 'The province in which a customer lives.' }),
-    ).exactOptional(),
-    Country: String1To255Schema.and(
-      z.any().openapi({ description: 'The country in which a customer lives.' }),
-    ).exactOptional(),
-    PostalCode: String1To255Schema.and(
-      z.any().openapi({ description: 'The postal code of a customer address.' }),
-    ).exactOptional(),
+    Address1: String1To255Schema.exactOptional().openapi({
+      description: 'The first line of a customer address.',
+    }),
+    Address2: String1To255Schema.exactOptional().openapi({
+      description: 'The second line of a customer address.',
+    }),
+    Address3: String1To255Schema.exactOptional().openapi({
+      description: 'The third line of a customer address.',
+    }),
+    Address4: String1To255Schema.exactOptional().openapi({
+      description: 'The fourth line of a customer address.',
+    }),
+    City: String1To255Schema.exactOptional().openapi({
+      description: 'The city in which a customer lives.',
+    }),
+    County: String1To255Schema.exactOptional().openapi({
+      description: 'The county in which a customer lives.',
+    }),
+    State: String1To255Schema.exactOptional().openapi({
+      description: 'The state in which a customer lives.',
+    }),
+    Province: String1To255Schema.exactOptional().openapi({
+      description: 'The province in which a customer lives.',
+    }),
+    Country: String1To255Schema.exactOptional().openapi({
+      description: 'The country in which a customer lives.',
+    }),
+    PostalCode: String1To255Schema.exactOptional().openapi({
+      description: 'The postal code of a customer address.',
+    }),
   })
   .openapi({
     description:
@@ -2501,12 +1824,12 @@ const AttributesSchema = z.record(z.string(), String1To255Schema).openapi('Attri
 
 const FoundByKeyValueSchema = z
   .object({
-    KeyName: NameSchema.and(
-      z.any().openapi({ description: 'A searchable identifier of a customer profile.' }),
-    ).exactOptional(),
-    Values: RequestValueListSchema.and(
-      z.any().openapi({ description: 'A list of key values.' }),
-    ).exactOptional(),
+    KeyName: NameSchema.exactOptional().openapi({
+      description: 'A searchable identifier of a customer profile.',
+    }),
+    Values: RequestValueListSchema.exactOptional().openapi({
+      description: 'A list of key values.',
+    }),
   })
   .openapi({
     description:
@@ -2519,109 +1842,85 @@ const FoundByListSchema = z.array(FoundByKeyValueSchema).min(1).max(5).openapi('
 
 const ProfileSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ).exactOptional(),
-    AccountNumber: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique account number that you have given to the customer.' }),
-    ).exactOptional(),
-    AdditionalInformation: String1To1000Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Any additional information relevant to the customer’s profile.' }),
-    ).exactOptional(),
-    PartyType: PartyTypeSchema.and(
-      z.any().openapi({ description: 'The type of profile used to describe the customer.' }),
-    ).exactOptional(),
-    BusinessName: String1To255Schema.and(
-      z.any().openapi({ description: 'The name of the customer’s business.' }),
-    ).exactOptional(),
-    FirstName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s first name.' }),
-    ).exactOptional(),
-    MiddleName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s middle name.' }),
-    ).exactOptional(),
-    LastName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s last name.' }),
-    ).exactOptional(),
-    BirthDate: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s birth date. ' }),
-    ).exactOptional(),
-    Gender: GenderSchema.and(
-      z.any().openapi({ description: 'The gender with which the customer identifies. ' }),
-    ).exactOptional(),
-    PhoneNumber: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The customer's phone number, which has not been specified as a mobile, home, or business number.",
-        }),
-    ).exactOptional(),
-    MobilePhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s mobile phone number.' }),
-    ).exactOptional(),
-    HomePhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s home phone number.' }),
-    ).exactOptional(),
-    BusinessPhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s home phone number.' }),
-    ).exactOptional(),
-    EmailAddress: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer’s email address, which has not been specified as a personal or business address. ',
-        }),
-    ).exactOptional(),
-    PersonalEmailAddress: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s personal email address.' }),
-    ).exactOptional(),
-    BusinessEmailAddress: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s business email address.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A generic address associated with the customer that is not mailing, shipping, or billing.',
-        }),
-    ).exactOptional(),
-    ShippingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s shipping address.' }),
-    ).exactOptional(),
-    MailingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s mailing address.' }),
-    ).exactOptional(),
-    BillingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s billing address.' }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'A key value pair of attributes of a customer profile.' }),
-    ).exactOptional(),
-    FoundByItems: FoundByListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of items used to find a profile returned in a <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> response. An item is a key-value(s) pair that matches an attribute in the profile.</p> <p>If the optional <code>AdditionalSearchKeys</code> parameter was included in the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> request, the <code>FoundByItems</code> list should be interpreted based on the <code>LogicalOperator</code> used in the request:</p> <ul> <li> <p> <code>AND</code> - The profile included in the response matched all of the search keys specified in the request. The <code>FoundByItems</code> will include all of the key-value(s) pairs that were specified in the request (as this is a requirement of <code>AND</code> search logic).</p> </li> <li> <p> <code>OR</code> - The profile included in the response matched at least one of the search keys specified in the request. The <code>FoundByItems</code> will include each of the key-value(s) pairs that the profile was found by.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if the <code>LogicalOperator</code> parameter is not included in the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> request.</p>',
-        }),
-    ).exactOptional(),
-    PartyTypeString: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'An alternative to PartyType which accepts any string as input.' }),
-    ).exactOptional(),
-    GenderString: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'An alternative to Gender which accepts any string as input.' }),
-    ).exactOptional(),
+    ProfileId: UuidSchema.exactOptional().openapi({
+      description: 'The unique identifier of a customer profile.',
+    }),
+    AccountNumber: String1To255Schema.exactOptional().openapi({
+      description: 'A unique account number that you have given to the customer.',
+    }),
+    AdditionalInformation: String1To1000Schema.exactOptional().openapi({
+      description: 'Any additional information relevant to the customer’s profile.',
+    }),
+    PartyType: PartyTypeSchema.exactOptional().openapi({
+      description: 'The type of profile used to describe the customer.',
+    }),
+    BusinessName: String1To255Schema.exactOptional().openapi({
+      description: 'The name of the customer’s business.',
+    }),
+    FirstName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s first name.',
+    }),
+    MiddleName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s middle name.',
+    }),
+    LastName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s last name.',
+    }),
+    BirthDate: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s birth date. ',
+    }),
+    Gender: GenderSchema.exactOptional().openapi({
+      description: 'The gender with which the customer identifies. ',
+    }),
+    PhoneNumber: String1To255Schema.exactOptional().openapi({
+      description:
+        "The customer's phone number, which has not been specified as a mobile, home, or business number.",
+    }),
+    MobilePhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s mobile phone number.',
+    }),
+    HomePhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s home phone number.',
+    }),
+    BusinessPhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s home phone number.',
+    }),
+    EmailAddress: String1To255Schema.exactOptional().openapi({
+      description:
+        'The customer’s email address, which has not been specified as a personal or business address. ',
+    }),
+    PersonalEmailAddress: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s personal email address.',
+    }),
+    BusinessEmailAddress: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s business email address.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description:
+        'A generic address associated with the customer that is not mailing, shipping, or billing.',
+    }),
+    ShippingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s shipping address.',
+    }),
+    MailingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s mailing address.',
+    }),
+    BillingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s billing address.',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description: 'A key value pair of attributes of a customer profile.',
+    }),
+    FoundByItems: FoundByListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of items used to find a profile returned in a <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> response. An item is a key-value(s) pair that matches an attribute in the profile.</p> <p>If the optional <code>AdditionalSearchKeys</code> parameter was included in the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> request, the <code>FoundByItems</code> list should be interpreted based on the <code>LogicalOperator</code> used in the request:</p> <ul> <li> <p> <code>AND</code> - The profile included in the response matched all of the search keys specified in the request. The <code>FoundByItems</code> will include all of the key-value(s) pairs that were specified in the request (as this is a requirement of <code>AND</code> search logic).</p> </li> <li> <p> <code>OR</code> - The profile included in the response matched at least one of the search keys specified in the request. The <code>FoundByItems</code> will include each of the key-value(s) pairs that the profile was found by.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if the <code>LogicalOperator</code> parameter is not included in the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html">SearchProfiles</a> request.</p>',
+    }),
+    PartyTypeString: String1To255Schema.exactOptional().openapi({
+      description: 'An alternative to PartyType which accepts any string as input.',
+    }),
+    GenderString: String1To255Schema.exactOptional().openapi({
+      description: 'An alternative to Gender which accepts any string as input.',
+    }),
   })
   .openapi({ description: 'The standard profile of a customer.', required: [] })
   .openapi('Profile')
@@ -2630,26 +1929,20 @@ const ProfileListSchema = z.array(ProfileSchema).openapi('ProfileList')
 
 const SearchProfilesResponseSchema = z
   .object({
-    Items: ProfileListSchema.and(
-      z.any().openapi({ description: 'The list of Profiles matching the search criteria.' }),
-    ).exactOptional(),
-    NextToken: TokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The pagination token from the previous SearchProfiles API call.',
-        }),
-    ).exactOptional(),
+    Items: ProfileListSchema.exactOptional().openapi({
+      description: 'The list of Profiles matching the search criteria.',
+    }),
+    NextToken: TokenSchema.exactOptional().openapi({
+      description: 'The pagination token from the previous SearchProfiles API call.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SearchProfilesResponse')
 
 const AdditionalSearchKeySchema = z
   .object({
-    KeyName: NameSchema.and(
-      z.any().openapi({ description: 'A searchable identifier of a customer profile.' }),
-    ),
-    Values: RequestValueListSchema.and(z.any().openapi({ description: 'A list of key values.' })),
+    KeyName: NameSchema.openapi({ description: 'A searchable identifier of a customer profile.' }),
+    Values: RequestValueListSchema.openapi({ description: 'A list of key values.' }),
   })
   .openapi({
     required: ['KeyName', 'Values'],
@@ -2658,9 +1951,9 @@ const AdditionalSearchKeySchema = z
   })
   .openapi('AdditionalSearchKey')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z
   .string()
@@ -2671,62 +1964,38 @@ const TagKeySchema = z
 
 const UpdateDomainResponseSchema = z
   .object({
-    DomainName: NameSchema.and(z.any().openapi({ description: 'The unique name of the domain.' })),
-    DefaultExpirationDays: ExpirationDaysIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default number of days until the data within the domain expires.',
-        }),
-    ).exactOptional(),
-    DefaultEncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
-        }),
-    ).exactOptional(),
-    DeadLetterQueueUrl: SqsQueueUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
-        }),
-    ).exactOptional(),
-    Matching: MatchingResponseSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
-        }),
-    ).exactOptional(),
-    CreatedAt: TimestampSchema.and(
-      z.any().openapi({ description: 'The timestamp of when the domain was created.' }),
-    ),
-    LastUpdatedAt: TimestampSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp of when the domain was most recently edited.' }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    DomainName: NameSchema.openapi({ description: 'The unique name of the domain.' }),
+    DefaultExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The default number of days until the data within the domain expires.',
+    }),
+    DefaultEncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
+    }),
+    DeadLetterQueueUrl: SqsQueueUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications.',
+    }),
+    Matching: MatchingResponseSchema.exactOptional().openapi({
+      description:
+        '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
+    }),
+    CreatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was created.',
+    }),
+    LastUpdatedAt: TimestampSchema.openapi({
+      description: 'The timestamp of when the domain was most recently edited.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['DomainName', 'CreatedAt', 'LastUpdatedAt'] })
   .openapi('UpdateDomainResponse')
 
 const UpdateProfileResponseSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
   })
   .openapi({ required: ['ProfileId'] })
   .openapi('UpdateProfileResponse')
@@ -2735,50 +2004,32 @@ const String0To255Schema = z.string().min(0).max(255).openapi('String0To255')
 
 const AddProfileKeyRequestSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
-    KeyName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A searchable identifier of a customer profile. The predefined keys you can use include: _account, _profileId, _assetId, _caseId, _orderId, _fullName, _phone, _email, _ctrContactId, _marketoLeadId, _salesforceAccountId, _salesforceContactId, _salesforceAssetId, _zendeskUserId, _zendeskExternalId, _zendeskTicketId, _serviceNowSystemId, _serviceNowIncidentId, _segmentUserId, _shopifyCustomerId, _shopifyOrderId.',
-        }),
-    ),
-    Values: RequestValueListSchema.and(z.any().openapi({ description: 'A list of key values.' })),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
+    KeyName: NameSchema.openapi({
+      description:
+        'A searchable identifier of a customer profile. The predefined keys you can use include: _account, _profileId, _assetId, _caseId, _orderId, _fullName, _phone, _email, _ctrContactId, _marketoLeadId, _salesforceAccountId, _salesforceContactId, _salesforceAssetId, _zendeskUserId, _zendeskExternalId, _zendeskTicketId, _serviceNowSystemId, _serviceNowIncidentId, _segmentUserId, _shopifyCustomerId, _shopifyOrderId.',
+    }),
+    Values: RequestValueListSchema.openapi({ description: 'A list of key values.' }),
   })
   .openapi({ required: ['ProfileId', 'KeyName', 'Values'], title: 'AddProfileKeyRequest' })
   .openapi('AddProfileKeyRequest')
 
 const MatchingRequestSchema = z
   .object({
-    Enabled: OptionalBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The flag that enables the matching process of duplicate profiles.',
-        }),
-    ),
-    JobSchedule: JobScheduleSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The day and time when do you want to start the Identity Resolution Job every week.',
-        }),
-    ).exactOptional(),
-    AutoMerging: AutoMergingSchema.and(
-      z.any().openapi({ description: 'Configuration information about the auto-merging process.' }),
-    ).exactOptional(),
-    ExportingConfig: ExportingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
-        }),
-    ).exactOptional(),
+    Enabled: OptionalBooleanSchema.openapi({
+      description: 'The flag that enables the matching process of duplicate profiles.',
+    }),
+    JobSchedule: JobScheduleSchema.exactOptional().openapi({
+      description:
+        'The day and time when do you want to start the Identity Resolution Job every week.',
+    }),
+    AutoMerging: AutoMergingSchema.exactOptional().openapi({
+      description: 'Configuration information about the auto-merging process.',
+    }),
+    ExportingConfig: ExportingConfigSchema.exactOptional().openapi({
+      description:
+        'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
+    }),
   })
   .openapi({
     required: ['Enabled'],
@@ -2788,57 +2039,33 @@ const MatchingRequestSchema = z
 
 const CreateDomainRequestSchema = z
   .object({
-    DefaultExpirationDays: ExpirationDaysIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default number of days until the data within the domain expires.',
-        }),
-    ),
-    DefaultEncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
-        }),
-    ).exactOptional(),
-    DeadLetterQueueUrl: SqsQueueUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.',
-        }),
-    ).exactOptional(),
-    Matching: MatchingRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    DefaultExpirationDays: ExpirationDaysIntegerSchema.openapi({
+      description: 'The default number of days until the data within the domain expires.',
+    }),
+    DefaultEncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage.',
+    }),
+    DeadLetterQueueUrl: SqsQueueUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.',
+    }),
+    Matching: MatchingRequestSchema.exactOptional().openapi({
+      description:
+        '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['DefaultExpirationDays'], title: 'CreateDomainRequest' })
   .openapi('CreateDomainRequest')
 
 const IntegrationConfigSchema = z
   .object({
-    AppflowIntegration: AppflowIntegrationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Configuration data for <code>APPFLOW_INTEGRATION</code> workflow type.',
-        }),
-    ).exactOptional(),
+    AppflowIntegration: AppflowIntegrationSchema.exactOptional().openapi({
+      description: 'Configuration data for <code>APPFLOW_INTEGRATION</code> workflow type.',
+    }),
   })
   .openapi({ description: 'Configuration data for integration workflow.', required: [] })
   .openapi('IntegrationConfig')
@@ -2851,34 +2078,20 @@ const RoleArnSchema = z
 
 const CreateIntegrationWorkflowRequestSchema = z
   .object({
-    WorkflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
-        }),
-    ),
-    IntegrationConfig: IntegrationConfigSchema.and(
-      z.any().openapi({ description: 'Configuration data for integration workflow.' }),
-    ),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    RoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.',
-        }),
-    ),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    WorkflowType: WorkflowTypeSchema.openapi({
+      description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
+    }),
+    IntegrationConfig: IntegrationConfigSchema.openapi({
+      description: 'Configuration data for integration workflow.',
+    }),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    RoleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the IAM role. Customer Profiles assumes this role to create resources on your behalf as part of workflow execution.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({
     required: ['WorkflowType', 'IntegrationConfig', 'ObjectTypeName', 'RoleArn'],
@@ -2888,151 +2101,112 @@ const CreateIntegrationWorkflowRequestSchema = z
 
 const CreateProfileRequestSchema = z
   .object({
-    AccountNumber: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique account number that you have given to the customer.' }),
-    ).exactOptional(),
-    AdditionalInformation: String1To1000Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Any additional information relevant to the customer’s profile.' }),
-    ).exactOptional(),
-    PartyType: PartyTypeSchema.and(
-      z.any().openapi({ description: 'The type of profile used to describe the customer.' }),
-    ).exactOptional(),
-    BusinessName: String1To255Schema.and(
-      z.any().openapi({ description: 'The name of the customer’s business.' }),
-    ).exactOptional(),
-    FirstName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s first name.' }),
-    ).exactOptional(),
-    MiddleName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s middle name.' }),
-    ).exactOptional(),
-    LastName: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s last name.' }),
-    ).exactOptional(),
-    BirthDate: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s birth date. ' }),
-    ).exactOptional(),
-    Gender: GenderSchema.and(
-      z.any().openapi({ description: 'The gender with which the customer identifies. ' }),
-    ).exactOptional(),
-    PhoneNumber: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer’s phone number, which has not been specified as a mobile, home, or business number. ',
-        }),
-    ).exactOptional(),
-    MobilePhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s mobile phone number.' }),
-    ).exactOptional(),
-    HomePhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s home phone number.' }),
-    ).exactOptional(),
-    BusinessPhoneNumber: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s business phone number.' }),
-    ).exactOptional(),
-    EmailAddress: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer’s email address, which has not been specified as a personal or business address. ',
-        }),
-    ).exactOptional(),
-    PersonalEmailAddress: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s personal email address.' }),
-    ).exactOptional(),
-    BusinessEmailAddress: String1To255Schema.and(
-      z.any().openapi({ description: 'The customer’s business email address.' }),
-    ).exactOptional(),
-    Address: AddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A generic address associated with the customer that is not mailing, shipping, or billing.',
-        }),
-    ).exactOptional(),
-    ShippingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s shipping address.' }),
-    ).exactOptional(),
-    MailingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s mailing address.' }),
-    ).exactOptional(),
-    BillingAddress: AddressSchema.and(
-      z.any().openapi({ description: 'The customer’s billing address.' }),
-    ).exactOptional(),
-    Attributes: AttributesSchema.and(
-      z.any().openapi({ description: 'A key value pair of attributes of a customer profile.' }),
-    ).exactOptional(),
-    PartyTypeString: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An alternative to <code>PartyType</code> which accepts any string as input.',
-        }),
-    ).exactOptional(),
-    GenderString: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An alternative to <code>Gender</code> which accepts any string as input.',
-        }),
-    ).exactOptional(),
+    AccountNumber: String1To255Schema.exactOptional().openapi({
+      description: 'A unique account number that you have given to the customer.',
+    }),
+    AdditionalInformation: String1To1000Schema.exactOptional().openapi({
+      description: 'Any additional information relevant to the customer’s profile.',
+    }),
+    PartyType: PartyTypeSchema.exactOptional().openapi({
+      description: 'The type of profile used to describe the customer.',
+    }),
+    BusinessName: String1To255Schema.exactOptional().openapi({
+      description: 'The name of the customer’s business.',
+    }),
+    FirstName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s first name.',
+    }),
+    MiddleName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s middle name.',
+    }),
+    LastName: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s last name.',
+    }),
+    BirthDate: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s birth date. ',
+    }),
+    Gender: GenderSchema.exactOptional().openapi({
+      description: 'The gender with which the customer identifies. ',
+    }),
+    PhoneNumber: String1To255Schema.exactOptional().openapi({
+      description:
+        'The customer’s phone number, which has not been specified as a mobile, home, or business number. ',
+    }),
+    MobilePhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s mobile phone number.',
+    }),
+    HomePhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s home phone number.',
+    }),
+    BusinessPhoneNumber: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s business phone number.',
+    }),
+    EmailAddress: String1To255Schema.exactOptional().openapi({
+      description:
+        'The customer’s email address, which has not been specified as a personal or business address. ',
+    }),
+    PersonalEmailAddress: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s personal email address.',
+    }),
+    BusinessEmailAddress: String1To255Schema.exactOptional().openapi({
+      description: 'The customer’s business email address.',
+    }),
+    Address: AddressSchema.exactOptional().openapi({
+      description:
+        'A generic address associated with the customer that is not mailing, shipping, or billing.',
+    }),
+    ShippingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s shipping address.',
+    }),
+    MailingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s mailing address.',
+    }),
+    BillingAddress: AddressSchema.exactOptional().openapi({
+      description: 'The customer’s billing address.',
+    }),
+    Attributes: AttributesSchema.exactOptional().openapi({
+      description: 'A key value pair of attributes of a customer profile.',
+    }),
+    PartyTypeString: String1To255Schema.exactOptional().openapi({
+      description: 'An alternative to <code>PartyType</code> which accepts any string as input.',
+    }),
+    GenderString: String1To255Schema.exactOptional().openapi({
+      description: 'An alternative to <code>Gender</code> which accepts any string as input.',
+    }),
   })
   .openapi({ title: 'CreateProfileRequest', required: [] })
   .openapi('CreateProfileRequest')
 
 const DeleteDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDomainRequest' })
   .openapi('DeleteDomainRequest')
 
 const DeleteIntegrationRequestSchema = z
   .object({
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
   })
   .openapi({ required: ['Uri'], title: 'DeleteIntegrationRequest' })
   .openapi('DeleteIntegrationRequest')
 
 const DeleteProfileKeyRequestSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
-    KeyName: NameSchema.and(
-      z.any().openapi({ description: 'A searchable identifier of a customer profile.' }),
-    ),
-    Values: RequestValueListSchema.and(z.any().openapi({ description: 'A list of key values.' })),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
+    KeyName: NameSchema.openapi({ description: 'A searchable identifier of a customer profile.' }),
+    Values: RequestValueListSchema.openapi({ description: 'A list of key values.' }),
   })
   .openapi({ required: ['ProfileId', 'KeyName', 'Values'], title: 'DeleteProfileKeyRequest' })
   .openapi('DeleteProfileKeyRequest')
 
 const DeleteProfileObjectRequestSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
-    ProfileObjectUniqueKey: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The unique identifier of the profile object generated by the service.',
-        }),
-    ),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
+    ProfileObjectUniqueKey: String1To255Schema.openapi({
+      description: 'The unique identifier of the profile object generated by the service.',
+    }),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
   })
   .openapi({
     required: ['ProfileId', 'ProfileObjectUniqueKey', 'ObjectTypeName'],
@@ -3041,141 +2215,87 @@ const DeleteProfileObjectRequestSchema = z
   .openapi('DeleteProfileObjectRequest')
 
 const DeleteProfileObjectTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteProfileObjectTypeRequest' })
   .openapi('DeleteProfileObjectTypeRequest')
 
 const DeleteProfileRequestSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
   })
   .openapi({ required: ['ProfileId'], title: 'DeleteProfileRequest' })
   .openapi('DeleteProfileRequest')
 
 const DeleteWorkflowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteWorkflowRequest' })
   .openapi('DeleteWorkflowRequest')
 
 const FieldSourceProfileIdsSchema = z
   .object({
-    AccountNumber: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the account number field to be merged. ',
-        }),
-    ).exactOptional(),
-    AdditionalInformation: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the additional information field to be merged.',
-        }),
-    ).exactOptional(),
-    PartyType: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the party type field to be merged.' }),
-    ).exactOptional(),
-    BusinessName: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the business name field to be merged.' }),
-    ).exactOptional(),
-    FirstName: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the first name field to be merged.' }),
-    ).exactOptional(),
-    MiddleName: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the middle name field to be merged.' }),
-    ).exactOptional(),
-    LastName: UuidSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the last name field to be merged.' }),
-    ).exactOptional(),
-    BirthDate: UuidSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the birthdate field to be merged.' }),
-    ).exactOptional(),
-    Gender: UuidSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the gender field to be merged.' }),
-    ).exactOptional(),
-    PhoneNumber: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the phone number field to be merged.' }),
-    ).exactOptional(),
-    MobilePhoneNumber: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the mobile phone number field to be merged.',
-        }),
-    ).exactOptional(),
-    HomePhoneNumber: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the home phone number field to be merged.',
-        }),
-    ).exactOptional(),
-    BusinessPhoneNumber: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the business phone number field to be merged.',
-        }),
-    ).exactOptional(),
-    EmailAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the email address field to be merged.' }),
-    ).exactOptional(),
-    PersonalEmailAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the personal email address field to be merged.',
-        }),
-    ).exactOptional(),
-    BusinessEmailAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the party type field to be merged.' }),
-    ).exactOptional(),
-    Address: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the party type field to be merged.' }),
-    ).exactOptional(),
-    ShippingAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the shipping address field to be merged.',
-        }),
-    ).exactOptional(),
-    MailingAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for the mailing address field to be merged.',
-        }),
-    ).exactOptional(),
-    BillingAddress: UuidSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the billing type field to be merged.' }),
-    ).exactOptional(),
-    Attributes: AttributeSourceIdMapSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique identifier for the attributes field to be merged.' }),
-    ).exactOptional(),
+    AccountNumber: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the account number field to be merged. ',
+    }),
+    AdditionalInformation: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the additional information field to be merged.',
+    }),
+    PartyType: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the party type field to be merged.',
+    }),
+    BusinessName: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the business name field to be merged.',
+    }),
+    FirstName: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the first name field to be merged.',
+    }),
+    MiddleName: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the middle name field to be merged.',
+    }),
+    LastName: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the last name field to be merged.',
+    }),
+    BirthDate: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the birthdate field to be merged.',
+    }),
+    Gender: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the gender field to be merged.',
+    }),
+    PhoneNumber: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the phone number field to be merged.',
+    }),
+    MobilePhoneNumber: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the mobile phone number field to be merged.',
+    }),
+    HomePhoneNumber: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the home phone number field to be merged.',
+    }),
+    BusinessPhoneNumber: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the business phone number field to be merged.',
+    }),
+    EmailAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the email address field to be merged.',
+    }),
+    PersonalEmailAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the personal email address field to be merged.',
+    }),
+    BusinessEmailAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the party type field to be merged.',
+    }),
+    Address: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the party type field to be merged.',
+    }),
+    ShippingAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the shipping address field to be merged.',
+    }),
+    MailingAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the mailing address field to be merged.',
+    }),
+    BillingAddress: UuidSchema.exactOptional().openapi({
+      description: 'A unique identifier for the billing type field to be merged.',
+    }),
+    Attributes: AttributeSourceIdMapSchema.exactOptional().openapi({
+      description: 'A unique identifier for the attributes field to be merged.',
+    }),
   })
   .openapi({
     description: 'A duplicate customer profile that is to be merged into a main profile. ',
@@ -3185,29 +2305,17 @@ const FieldSourceProfileIdsSchema = z
 
 const GetAutoMergingPreviewRequestSchema = z
   .object({
-    Consolidation: ConsolidationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of matching attributes that represent matching criteria.',
-        }),
-    ),
-    ConflictResolution: ConflictResolutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'How the auto-merging process should resolve conflicts between different profiles.',
-        }),
-    ),
-    MinAllowedConfidenceScoreForMerging: Double0To1Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Minimum confidence score required for profiles within a matching group to be merged during the auto-merge process.',
-        }),
-    ).exactOptional(),
+    Consolidation: ConsolidationSchema.openapi({
+      description: 'A list of matching attributes that represent matching criteria.',
+    }),
+    ConflictResolution: ConflictResolutionSchema.openapi({
+      description:
+        'How the auto-merging process should resolve conflicts between different profiles.',
+    }),
+    MinAllowedConfidenceScoreForMerging: Double0To1Schema.exactOptional().openapi({
+      description:
+        'Minimum confidence score required for profiles within a matching group to be merged during the auto-merge process.',
+    }),
   })
   .openapi({
     required: ['Consolidation', 'ConflictResolution'],
@@ -3216,22 +2324,20 @@ const GetAutoMergingPreviewRequestSchema = z
   .openapi('GetAutoMergingPreviewRequest')
 
 const GetDomainRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDomainRequest' })
   .openapi('GetDomainRequest')
 
 const GetIdentityResolutionJobRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetIdentityResolutionJobRequest' })
   .openapi('GetIdentityResolutionJobRequest')
 
 const GetIntegrationRequestSchema = z
   .object({
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
   })
   .openapi({ required: ['Uri'], title: 'GetIntegrationRequest' })
   .openapi('GetIntegrationRequest')
@@ -3239,77 +2345,71 @@ const GetIntegrationRequestSchema = z
 const MaxSize100Schema = z.int().min(1).max(100).openapi('MaxSize100')
 
 const GetMatchesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetMatchesRequest' })
   .openapi('GetMatchesRequest')
 
 const GetProfileObjectTypeRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetProfileObjectTypeRequest' })
   .openapi('GetProfileObjectTypeRequest')
 
 const GetProfileObjectTypeTemplateRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetProfileObjectTypeTemplateRequest' })
   .openapi('GetProfileObjectTypeTemplateRequest')
 
 const GetWorkflowRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWorkflowRequest' })
   .openapi('GetWorkflowRequest')
 
 const GetWorkflowStepsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetWorkflowStepsRequest' })
   .openapi('GetWorkflowStepsRequest')
 
 const ListAccountIntegrationsRequestSchema = z
   .object({
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ),
+    Uri: String1To255Schema.openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
   })
   .openapi({ required: ['Uri'], title: 'ListAccountIntegrationsRequest' })
   .openapi('ListAccountIntegrationsRequest')
 
 const ListDomainsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListDomainsRequest' })
   .openapi('ListDomainsRequest')
 
 const ListIdentityResolutionJobsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListIdentityResolutionJobsRequest' })
   .openapi('ListIdentityResolutionJobsRequest')
 
 const ListIntegrationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListIntegrationsRequest' })
   .openapi('ListIntegrationsRequest')
 
 const ListProfileObjectTypeTemplatesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProfileObjectTypeTemplatesRequest' })
   .openapi('ListProfileObjectTypeTemplatesRequest')
 
 const ListProfileObjectTypesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListProfileObjectTypesRequest' })
   .openapi('ListProfileObjectTypesRequest')
 
 const ObjectFilterSchema = z
   .object({
-    KeyName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A searchable identifier of a standard profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.',
-        }),
-    ),
-    Values: RequestValueListSchema.and(z.any().openapi({ description: 'A list of key values.' })),
+    KeyName: NameSchema.openapi({
+      description:
+        'A searchable identifier of a standard profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.',
+    }),
+    Values: RequestValueListSchema.openapi({ description: 'A list of key values.' }),
   })
   .openapi({
     required: ['KeyName', 'Values'],
@@ -3320,20 +2420,12 @@ const ObjectFilterSchema = z
 
 const ListProfileObjectsRequestSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
-    ObjectFilter: ObjectFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Applies a filter to the response to include profile objects with the specified index values. This filter is only supported for ObjectTypeName _asset, _case and _order.',
-        }),
-    ).exactOptional(),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
+    ObjectFilter: ObjectFilterSchema.exactOptional().openapi({
+      description:
+        'Applies a filter to the response to include profile objects with the specified index values. This filter is only supported for ObjectTypeName _asset, _case and _order.',
+    }),
   })
   .openapi({ required: ['ObjectTypeName', 'ProfileId'], title: 'ListProfileObjectsRequest' })
   .openapi('ListProfileObjectsRequest')
@@ -3345,28 +2437,22 @@ const TagArnSchema = z
   .openapi('TagArn')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const ListWorkflowsRequestSchema = z
   .object({
-    WorkflowType: WorkflowTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
-        }),
-    ).exactOptional(),
-    Status: StatusSchema.and(
-      z.any().openapi({ description: 'Status of workflow execution.' }),
-    ).exactOptional(),
-    QueryStartDate: TimestampSchema.and(
-      z.any().openapi({ description: 'Retrieve workflows started after timestamp.' }),
-    ).exactOptional(),
-    QueryEndDate: TimestampSchema.and(
-      z.any().openapi({ description: 'Retrieve workflows ended after timestamp.' }),
-    ).exactOptional(),
+    WorkflowType: WorkflowTypeSchema.exactOptional().openapi({
+      description: 'The type of workflow. The only supported value is APPFLOW_INTEGRATION.',
+    }),
+    Status: StatusSchema.exactOptional().openapi({ description: 'Status of workflow execution.' }),
+    QueryStartDate: TimestampSchema.exactOptional().openapi({
+      description: 'Retrieve workflows started after timestamp.',
+    }),
+    QueryEndDate: TimestampSchema.exactOptional().openapi({
+      description: 'Retrieve workflows ended after timestamp.',
+    }),
   })
   .openapi({ title: 'ListWorkflowsRequest', required: [] })
   .openapi('ListWorkflowsRequest')
@@ -3379,22 +2465,16 @@ const ProfileIdToBeMergedListSchema = z
 
 const MergeProfilesRequestSchema = z
   .object({
-    MainProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The identifier of the profile to be taken.' }),
-    ),
-    ProfileIdsToBeMerged: ProfileIdToBeMergedListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The identifier of the profile to be merged into MainProfileId.' }),
-    ),
-    FieldSourceProfileIds: FieldSourceProfileIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The identifiers of the fields in the profile that has the information you want to apply to the merge. For example, say you want to merge EmailAddress from Profile1 into MainProfile. This would be the identifier of the EmailAddress field in Profile1. ',
-        }),
-    ).exactOptional(),
+    MainProfileId: UuidSchema.openapi({
+      description: 'The identifier of the profile to be taken.',
+    }),
+    ProfileIdsToBeMerged: ProfileIdToBeMergedListSchema.openapi({
+      description: 'The identifier of the profile to be merged into MainProfileId.',
+    }),
+    FieldSourceProfileIds: FieldSourceProfileIdsSchema.exactOptional().openapi({
+      description:
+        'The identifiers of the fields in the profile that has the information you want to apply to the merge. For example, say you want to merge EmailAddress from Profile1 into MainProfile. This would be the identifier of the EmailAddress field in Profile1. ',
+    }),
   })
   .openapi({ required: ['MainProfileId', 'ProfileIdsToBeMerged'], title: 'MergeProfilesRequest' })
   .openapi('MergeProfilesRequest')
@@ -3420,110 +2500,68 @@ const OperatorPropertiesKeysSchema = z
 
 const PutIntegrationRequestSchema = z
   .object({
-    Uri: String1To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'The URI of the S3 bucket or any other type of data source.' }),
-    ).exactOptional(),
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
-    FlowDefinition: FlowDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The configuration that controls how Customer Profiles retrieves data from the source.',
-        }),
-    ).exactOptional(),
-    ObjectTypeNames: ObjectTypeNamesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
-        }),
-    ).exactOptional(),
+    Uri: String1To255Schema.exactOptional().openapi({
+      description: 'The URI of the S3 bucket or any other type of data source.',
+    }),
+    ObjectTypeName: TypeNameSchema.exactOptional().openapi({
+      description: 'The name of the profile object type.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
+    FlowDefinition: FlowDefinitionSchema.exactOptional().openapi({
+      description:
+        'The configuration that controls how Customer Profiles retrieves data from the source.',
+    }),
+    ObjectTypeNames: ObjectTypeNamesSchema.exactOptional().openapi({
+      description:
+        'A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.',
+    }),
   })
   .openapi({ title: 'PutIntegrationRequest', required: [] })
   .openapi('PutIntegrationRequest')
 
 const PutProfileObjectRequestSchema = z
   .object({
-    ObjectTypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the profile object type.' }),
-    ),
-    Object: StringifiedJsonSchema.and(
-      z.any().openapi({ description: 'A string that is serialized from a JSON object.' }),
-    ),
+    ObjectTypeName: TypeNameSchema.openapi({ description: 'The name of the profile object type.' }),
+    Object: StringifiedJsonSchema.openapi({
+      description: 'A string that is serialized from a JSON object.',
+    }),
   })
   .openapi({ required: ['ObjectTypeName', 'Object'], title: 'PutProfileObjectRequest' })
   .openapi('PutProfileObjectRequest')
 
 const PutProfileObjectTypeRequestSchema = z
   .object({
-    Description: TextSchema.and(
-      z.any().openapi({ description: 'Description of the profile object type.' }),
-    ),
-    TemplateId: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier for the object template. For some attributes in the request, the service will use the default value from the object template when TemplateId is present. If these attributes are present in the request, the service may return a <code>BadRequestException</code>. These attributes include: AllowProfileCreation, SourceLastUpdatedTimestampFormat, Fields, and Keys. For example, if AllowProfileCreation is set to true when TemplateId is set, the service may return a <code>BadRequestException</code>.',
-        }),
-    ).exactOptional(),
-    ExpirationDays: ExpirationDaysIntegerSchema.and(
-      z.any().openapi({ description: 'The number of days until the data in the object expires.' }),
-    ).exactOptional(),
-    EncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
-        }),
-    ).exactOptional(),
-    AllowProfileCreation: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
-        }),
-    ).exactOptional(),
-    SourceLastUpdatedTimestampFormat: String1To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up. ',
-        }),
-    ).exactOptional(),
-    Fields: FieldMapSchema.and(
-      z.any().openapi({ description: 'A map of the name and ObjectType field.' }),
-    ).exactOptional(),
-    Keys: KeyMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of unique keys that can be used to map data to the profile.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    Description: TextSchema.openapi({ description: 'Description of the profile object type.' }),
+    TemplateId: NameSchema.exactOptional().openapi({
+      description:
+        'A unique identifier for the object template. For some attributes in the request, the service will use the default value from the object template when TemplateId is present. If these attributes are present in the request, the service may return a <code>BadRequestException</code>. These attributes include: AllowProfileCreation, SourceLastUpdatedTimestampFormat, Fields, and Keys. For example, if AllowProfileCreation is set to true when TemplateId is set, the service may return a <code>BadRequestException</code>.',
+    }),
+    ExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The number of days until the data in the object expires.',
+    }),
+    EncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The customer-provided key to encrypt the profile object that will be created in this profile object type.',
+    }),
+    AllowProfileCreation: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether a profile should be created when data is received if one doesn’t exist for an object of this type. The default is <code>FALSE</code>. If the AllowProfileCreation flag is set to <code>FALSE</code>, then the service tries to fetch a standard profile and associate this object with the profile. If it is set to <code>TRUE</code>, and if no match is found, then the service creates a new standard profile.',
+    }),
+    SourceLastUpdatedTimestampFormat: String1To255Schema.exactOptional().openapi({
+      description:
+        'The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up. ',
+    }),
+    Fields: FieldMapSchema.exactOptional().openapi({
+      description: 'A map of the name and ObjectType field.',
+    }),
+    Keys: KeyMapSchema.exactOptional().openapi({
+      description: 'A list of unique keys that can be used to map data to the profile.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['Description'], title: 'PutProfileObjectTypeRequest' })
   .openapi('PutProfileObjectTypeRequest')
@@ -3538,31 +2576,19 @@ const LogicalOperatorSchema = z.enum(['AND', 'OR']).openapi('LogicalOperator')
 
 const SearchProfilesRequestSchema = z
   .object({
-    KeyName: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A searchable identifier of a customer profile. The predefined keys you can use to search include: _account, _profileId, _assetId, _caseId, _orderId, _fullName, _phone, _email, _ctrContactId, _marketoLeadId, _salesforceAccountId, _salesforceContactId, _salesforceAssetId, _zendeskUserId, _zendeskExternalId, _zendeskTicketId, _serviceNowSystemId, _serviceNowIncidentId, _segmentUserId, _shopifyCustomerId, _shopifyOrderId.',
-        }),
-    ),
-    Values: RequestValueListSchema.and(z.any().openapi({ description: 'A list of key values.' })),
-    AdditionalSearchKeys: AdditionalSearchKeysListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>AdditionalSearchKey</code> objects that are each searchable identifiers of a profile. Each <code>AdditionalSearchKey</code> object contains a <code>KeyName</code> and a list of <code>Values</code> associated with that specific key (i.e., a key-value(s) pair). These additional search keys will be used in conjunction with the <code>LogicalOperator</code> and the required <code>KeyName</code> and <code>Values</code> parameters to search for profiles that satisfy the search criteria. ',
-        }),
-    ).exactOptional(),
-    LogicalOperator: LogicalOperatorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Relationship between all specified search keys that will be used to search for profiles. This includes the required <code>KeyName</code> and <code>Values</code> parameters as well as any key-value(s) pairs specified in the <code>AdditionalSearchKeys</code> list.</p> <p>This parameter influences which profiles will be returned in the response in the following manner:</p> <ul> <li> <p> <code>AND</code> - The response only includes profiles that match all of the search keys.</p> </li> <li> <p> <code>OR</code> - The response includes profiles that match at least one of the search keys.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if this parameter is not included in the request.</p>',
-        }),
-    ).exactOptional(),
+    KeyName: NameSchema.openapi({
+      description:
+        'A searchable identifier of a customer profile. The predefined keys you can use to search include: _account, _profileId, _assetId, _caseId, _orderId, _fullName, _phone, _email, _ctrContactId, _marketoLeadId, _salesforceAccountId, _salesforceContactId, _salesforceAssetId, _zendeskUserId, _zendeskExternalId, _zendeskTicketId, _serviceNowSystemId, _serviceNowIncidentId, _segmentUserId, _shopifyCustomerId, _shopifyOrderId.',
+    }),
+    Values: RequestValueListSchema.openapi({ description: 'A list of key values.' }),
+    AdditionalSearchKeys: AdditionalSearchKeysListSchema.exactOptional().openapi({
+      description:
+        'A list of <code>AdditionalSearchKey</code> objects that are each searchable identifiers of a profile. Each <code>AdditionalSearchKey</code> object contains a <code>KeyName</code> and a list of <code>Values</code> associated with that specific key (i.e., a key-value(s) pair). These additional search keys will be used in conjunction with the <code>LogicalOperator</code> and the required <code>KeyName</code> and <code>Values</code> parameters to search for profiles that satisfy the search criteria. ',
+    }),
+    LogicalOperator: LogicalOperatorSchema.exactOptional().openapi({
+      description:
+        '<p>Relationship between all specified search keys that will be used to search for profiles. This includes the required <code>KeyName</code> and <code>Values</code> parameters as well as any key-value(s) pairs specified in the <code>AdditionalSearchKeys</code> list.</p> <p>This parameter influences which profiles will be returned in the response in the following manner:</p> <ul> <li> <p> <code>AND</code> - The response only includes profiles that match all of the search keys.</p> </li> <li> <p> <code>OR</code> - The response includes profiles that match at least one of the search keys.</p> </li> </ul> <p>The <code>OR</code> relationship is the default behavior if this parameter is not included in the request.</p>',
+    }),
   })
   .openapi({ required: ['KeyName', 'Values'], title: 'SearchProfilesRequest' })
   .openapi('SearchProfilesRequest')
@@ -3571,54 +2597,50 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ),
+    tags: TagMapSchema.openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ required: ['tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateAddressSchema = z
   .object({
-    Address1: String0To255Schema.and(
-      z.any().openapi({ description: 'The first line of a customer address.' }),
-    ).exactOptional(),
-    Address2: String0To255Schema.and(
-      z.any().openapi({ description: 'The second line of a customer address.' }),
-    ).exactOptional(),
-    Address3: String0To255Schema.and(
-      z.any().openapi({ description: 'The third line of a customer address.' }),
-    ).exactOptional(),
-    Address4: String0To255Schema.and(
-      z.any().openapi({ description: 'The fourth line of a customer address.' }),
-    ).exactOptional(),
-    City: String0To255Schema.and(
-      z.any().openapi({ description: 'The city in which a customer lives.' }),
-    ).exactOptional(),
-    County: String0To255Schema.and(
-      z.any().openapi({ description: 'The county in which a customer lives.' }),
-    ).exactOptional(),
-    State: String0To255Schema.and(
-      z.any().openapi({ description: 'The state in which a customer lives.' }),
-    ).exactOptional(),
-    Province: String0To255Schema.and(
-      z.any().openapi({ description: 'The province in which a customer lives.' }),
-    ).exactOptional(),
-    Country: String0To255Schema.and(
-      z.any().openapi({ description: 'The country in which a customer lives.' }),
-    ).exactOptional(),
-    PostalCode: String0To255Schema.and(
-      z.any().openapi({ description: 'The postal code of a customer address.' }),
-    ).exactOptional(),
+    Address1: String0To255Schema.exactOptional().openapi({
+      description: 'The first line of a customer address.',
+    }),
+    Address2: String0To255Schema.exactOptional().openapi({
+      description: 'The second line of a customer address.',
+    }),
+    Address3: String0To255Schema.exactOptional().openapi({
+      description: 'The third line of a customer address.',
+    }),
+    Address4: String0To255Schema.exactOptional().openapi({
+      description: 'The fourth line of a customer address.',
+    }),
+    City: String0To255Schema.exactOptional().openapi({
+      description: 'The city in which a customer lives.',
+    }),
+    County: String0To255Schema.exactOptional().openapi({
+      description: 'The county in which a customer lives.',
+    }),
+    State: String0To255Schema.exactOptional().openapi({
+      description: 'The state in which a customer lives.',
+    }),
+    Province: String0To255Schema.exactOptional().openapi({
+      description: 'The province in which a customer lives.',
+    }),
+    Country: String0To255Schema.exactOptional().openapi({
+      description: 'The country in which a customer lives.',
+    }),
+    PostalCode: String0To255Schema.exactOptional().openapi({
+      description: 'The postal code of a customer address.',
+    }),
   })
   .openapi({
     description: 'Updates associated with the address properties of a customer profile.',
@@ -3630,44 +2652,24 @@ const UpdateAttributesSchema = z.record(z.string(), String0To255Schema).openapi(
 
 const UpdateDomainRequestSchema = z
   .object({
-    DefaultExpirationDays: ExpirationDaysIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The default number of days until the data within the domain expires.',
-        }),
-    ).exactOptional(),
-    DefaultEncryptionKey: EncryptionKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage. If specified as an empty string, it will clear any existing value.',
-        }),
-    ).exactOptional(),
-    DeadLetterQueueUrl: SqsQueueUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. If specified as an empty string, it will clear any existing value. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.',
-        }),
-    ).exactOptional(),
-    Matching: MatchingRequestSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The tags used to organize, track, or control access for this resource.',
-        }),
-    ).exactOptional(),
+    DefaultExpirationDays: ExpirationDaysIntegerSchema.exactOptional().openapi({
+      description: 'The default number of days until the data within the domain expires.',
+    }),
+    DefaultEncryptionKey: EncryptionKeySchema.exactOptional().openapi({
+      description:
+        'The default encryption key, which is an AWS managed key, is used when no specific type of encryption key is specified. It is used to encrypt all data before it is placed in permanent or semi-permanent storage. If specified as an empty string, it will clear any existing value.',
+    }),
+    DeadLetterQueueUrl: SqsQueueUrlSchema.exactOptional().openapi({
+      description:
+        'The URL of the SQS dead letter queue, which is used for reporting errors associated with ingesting data from third party applications. If specified as an empty string, it will clear any existing value. You must set up a policy on the DeadLetterQueue for the SendMessage operation to enable Amazon Connect Customer Profiles to send messages to the DeadLetterQueue.',
+    }),
+    Matching: MatchingRequestSchema.exactOptional().openapi({
+      description:
+        '<p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href="https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p>',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description: 'The tags used to organize, track, or control access for this resource.',
+    }),
   })
   .openapi({ title: 'UpdateDomainRequest', required: [] })
   .openapi('UpdateDomainRequest')
@@ -3676,106 +2678,79 @@ const String0To1000Schema = z.string().min(0).max(1000).openapi('String0To1000')
 
 const UpdateProfileRequestSchema = z
   .object({
-    ProfileId: UuidSchema.and(
-      z.any().openapi({ description: 'The unique identifier of a customer profile.' }),
-    ),
-    AdditionalInformation: String0To1000Schema.and(
-      z
-        .any()
-        .openapi({ description: 'Any additional information relevant to the customer’s profile.' }),
-    ).exactOptional(),
-    AccountNumber: String0To255Schema.and(
-      z
-        .any()
-        .openapi({ description: 'A unique account number that you have given to the customer.' }),
-    ).exactOptional(),
-    PartyType: PartyTypeSchema.and(
-      z.any().openapi({ description: 'The type of profile used to describe the customer.' }),
-    ).exactOptional(),
-    BusinessName: String0To255Schema.and(
-      z.any().openapi({ description: 'The name of the customer’s business.' }),
-    ).exactOptional(),
-    FirstName: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s first name.' }),
-    ).exactOptional(),
-    MiddleName: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s middle name.' }),
-    ).exactOptional(),
-    LastName: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s last name.' }),
-    ).exactOptional(),
-    BirthDate: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s birth date. ' }),
-    ).exactOptional(),
-    Gender: GenderSchema.and(
-      z.any().openapi({ description: 'The gender with which the customer identifies. ' }),
-    ).exactOptional(),
-    PhoneNumber: String0To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer’s phone number, which has not been specified as a mobile, home, or business number. ',
-        }),
-    ).exactOptional(),
-    MobilePhoneNumber: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s mobile phone number.' }),
-    ).exactOptional(),
-    HomePhoneNumber: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s home phone number.' }),
-    ).exactOptional(),
-    BusinessPhoneNumber: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s business phone number.' }),
-    ).exactOptional(),
-    EmailAddress: String0To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The customer’s email address, which has not been specified as a personal or business address. ',
-        }),
-    ).exactOptional(),
-    PersonalEmailAddress: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s personal email address.' }),
-    ).exactOptional(),
-    BusinessEmailAddress: String0To255Schema.and(
-      z.any().openapi({ description: 'The customer’s business email address.' }),
-    ).exactOptional(),
-    Address: UpdateAddressSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A generic address associated with the customer that is not mailing, shipping, or billing.',
-        }),
-    ).exactOptional(),
-    ShippingAddress: UpdateAddressSchema.and(
-      z.any().openapi({ description: 'The customer’s shipping address.' }),
-    ).exactOptional(),
-    MailingAddress: UpdateAddressSchema.and(
-      z.any().openapi({ description: 'The customer’s mailing address.' }),
-    ).exactOptional(),
-    BillingAddress: UpdateAddressSchema.and(
-      z.any().openapi({ description: 'The customer’s billing address.' }),
-    ).exactOptional(),
-    Attributes: UpdateAttributesSchema.and(
-      z.any().openapi({ description: 'A key value pair of attributes of a customer profile.' }),
-    ).exactOptional(),
-    PartyTypeString: String0To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An alternative to <code>PartyType</code> which accepts any string as input.',
-        }),
-    ).exactOptional(),
-    GenderString: String0To255Schema.and(
-      z
-        .any()
-        .openapi({
-          description: 'An alternative to <code>Gender</code> which accepts any string as input.',
-        }),
-    ).exactOptional(),
+    ProfileId: UuidSchema.openapi({ description: 'The unique identifier of a customer profile.' }),
+    AdditionalInformation: String0To1000Schema.exactOptional().openapi({
+      description: 'Any additional information relevant to the customer’s profile.',
+    }),
+    AccountNumber: String0To255Schema.exactOptional().openapi({
+      description: 'A unique account number that you have given to the customer.',
+    }),
+    PartyType: PartyTypeSchema.exactOptional().openapi({
+      description: 'The type of profile used to describe the customer.',
+    }),
+    BusinessName: String0To255Schema.exactOptional().openapi({
+      description: 'The name of the customer’s business.',
+    }),
+    FirstName: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s first name.',
+    }),
+    MiddleName: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s middle name.',
+    }),
+    LastName: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s last name.',
+    }),
+    BirthDate: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s birth date. ',
+    }),
+    Gender: GenderSchema.exactOptional().openapi({
+      description: 'The gender with which the customer identifies. ',
+    }),
+    PhoneNumber: String0To255Schema.exactOptional().openapi({
+      description:
+        'The customer’s phone number, which has not been specified as a mobile, home, or business number. ',
+    }),
+    MobilePhoneNumber: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s mobile phone number.',
+    }),
+    HomePhoneNumber: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s home phone number.',
+    }),
+    BusinessPhoneNumber: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s business phone number.',
+    }),
+    EmailAddress: String0To255Schema.exactOptional().openapi({
+      description:
+        'The customer’s email address, which has not been specified as a personal or business address. ',
+    }),
+    PersonalEmailAddress: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s personal email address.',
+    }),
+    BusinessEmailAddress: String0To255Schema.exactOptional().openapi({
+      description: 'The customer’s business email address.',
+    }),
+    Address: UpdateAddressSchema.exactOptional().openapi({
+      description:
+        'A generic address associated with the customer that is not mailing, shipping, or billing.',
+    }),
+    ShippingAddress: UpdateAddressSchema.exactOptional().openapi({
+      description: 'The customer’s shipping address.',
+    }),
+    MailingAddress: UpdateAddressSchema.exactOptional().openapi({
+      description: 'The customer’s mailing address.',
+    }),
+    BillingAddress: UpdateAddressSchema.exactOptional().openapi({
+      description: 'The customer’s billing address.',
+    }),
+    Attributes: UpdateAttributesSchema.exactOptional().openapi({
+      description: 'A key value pair of attributes of a customer profile.',
+    }),
+    PartyTypeString: String0To255Schema.exactOptional().openapi({
+      description: 'An alternative to <code>PartyType</code> which accepts any string as input.',
+    }),
+    GenderString: String0To255Schema.exactOptional().openapi({
+      description: 'An alternative to <code>Gender</code> which accepts any string as input.',
+    }),
   })
   .openapi({ required: ['ProfileId'], title: 'UpdateProfileRequest' })
   .openapi('UpdateProfileRequest')
@@ -4064,37 +3039,21 @@ export const putDomainsDomainNameRoute = createRoute({
                 }),
               Matching: z
                 .object({
-                  Enabled: OptionalBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The flag that enables the matching process of duplicate profiles.',
-                      }),
-                  ).exactOptional(),
-                  JobSchedule: JobScheduleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The day and time when do you want to start the Identity Resolution Job every week.',
-                      }),
-                  ).exactOptional(),
-                  AutoMerging: AutoMergingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Configuration information about the auto-merging process.',
-                      }),
-                  ).exactOptional(),
-                  ExportingConfig: ExportingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: OptionalBooleanSchema.exactOptional().openapi({
+                    description:
+                      'The flag that enables the matching process of duplicate profiles.',
+                  }),
+                  JobSchedule: JobScheduleSchema.exactOptional().openapi({
+                    description:
+                      'The day and time when do you want to start the Identity Resolution Job every week.',
+                  }),
+                  AutoMerging: AutoMergingSchema.exactOptional().openapi({
+                    description: 'Configuration information about the auto-merging process.',
+                  }),
+                  ExportingConfig: ExportingConfigSchema.exactOptional().openapi({
+                    description:
+                      'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4210,37 +3169,21 @@ export const postDomainsDomainNameRoute = createRoute({
                 }),
               Matching: z
                 .object({
-                  Enabled: OptionalBooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The flag that enables the matching process of duplicate profiles.',
-                      }),
-                  ).exactOptional(),
-                  JobSchedule: JobScheduleSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The day and time when do you want to start the Identity Resolution Job every week.',
-                      }),
-                  ).exactOptional(),
-                  AutoMerging: AutoMergingSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Configuration information about the auto-merging process.',
-                      }),
-                  ).exactOptional(),
-                  ExportingConfig: ExportingConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
-                      }),
-                  ).exactOptional(),
+                  Enabled: OptionalBooleanSchema.exactOptional().openapi({
+                    description:
+                      'The flag that enables the matching process of duplicate profiles.',
+                  }),
+                  JobSchedule: JobScheduleSchema.exactOptional().openapi({
+                    description:
+                      'The day and time when do you want to start the Identity Resolution Job every week.',
+                  }),
+                  AutoMerging: AutoMergingSchema.exactOptional().openapi({
+                    description: 'Configuration information about the auto-merging process.',
+                  }),
+                  ExportingConfig: ExportingConfigSchema.exactOptional().openapi({
+                    description:
+                      'Configuration information for exporting Identity Resolution results, for example, to an S3 bucket.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4397,14 +3340,10 @@ export const postDomainsDomainNameWorkflowsIntegrationsRoute = createRoute({
                 }),
               IntegrationConfig: z
                 .object({
-                  AppflowIntegration: AppflowIntegrationSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Configuration data for <code>APPFLOW_INTEGRATION</code> workflow type.',
-                      }),
-                  ).exactOptional(),
+                  AppflowIntegration: AppflowIntegrationSchema.exactOptional().openapi({
+                    description:
+                      'Configuration data for <code>APPFLOW_INTEGRATION</code> workflow type.',
+                  }),
                 })
                 .openapi({
                   description: 'Configuration data for integration workflow.',
@@ -4621,36 +3560,36 @@ export const putDomainsDomainNameProfilesRoute = createRoute({
                 .openapi({ description: 'The customer’s business email address.' }),
               Address: z
                 .object({
-                  Address1: String0To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String0To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String0To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String0To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String0To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String0To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String0To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String0To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String0To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String0To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String0To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String0To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String0To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String0To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String0To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String0To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String0To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String0To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String0To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String0To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4660,36 +3599,36 @@ export const putDomainsDomainNameProfilesRoute = createRoute({
                 }),
               ShippingAddress: z
                 .object({
-                  Address1: String0To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String0To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String0To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String0To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String0To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String0To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String0To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String0To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String0To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String0To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String0To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String0To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String0To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String0To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String0To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String0To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String0To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String0To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String0To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String0To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4699,36 +3638,36 @@ export const putDomainsDomainNameProfilesRoute = createRoute({
                 }),
               MailingAddress: z
                 .object({
-                  Address1: String0To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String0To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String0To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String0To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String0To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String0To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String0To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String0To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String0To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String0To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String0To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String0To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String0To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String0To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String0To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String0To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String0To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String0To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String0To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String0To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4738,36 +3677,36 @@ export const putDomainsDomainNameProfilesRoute = createRoute({
                 }),
               BillingAddress: z
                 .object({
-                  Address1: String0To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String0To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String0To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String0To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String0To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String0To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String0To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String0To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String0To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String0To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String0To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String0To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String0To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String0To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String0To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String0To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String0To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String0To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String0To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String0To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -4979,36 +3918,36 @@ export const postDomainsDomainNameProfilesRoute = createRoute({
                 .openapi({ description: 'The customer’s business email address.' }),
               Address: z
                 .object({
-                  Address1: String1To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String1To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String1To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String1To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String1To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String1To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String1To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String1To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String1To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String1To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String1To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String1To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String1To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String1To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String1To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String1To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String1To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String1To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String1To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String1To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5018,36 +3957,36 @@ export const postDomainsDomainNameProfilesRoute = createRoute({
                 }),
               ShippingAddress: z
                 .object({
-                  Address1: String1To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String1To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String1To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String1To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String1To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String1To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String1To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String1To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String1To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String1To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String1To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String1To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String1To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String1To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String1To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String1To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String1To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String1To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String1To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String1To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5057,36 +3996,36 @@ export const postDomainsDomainNameProfilesRoute = createRoute({
                 }),
               MailingAddress: z
                 .object({
-                  Address1: String1To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String1To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String1To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String1To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String1To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String1To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String1To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String1To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String1To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String1To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String1To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String1To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String1To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String1To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String1To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String1To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String1To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String1To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String1To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String1To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -5096,36 +4035,36 @@ export const postDomainsDomainNameProfilesRoute = createRoute({
                 }),
               BillingAddress: z
                 .object({
-                  Address1: String1To255Schema.and(
-                    z.any().openapi({ description: 'The first line of a customer address.' }),
-                  ).exactOptional(),
-                  Address2: String1To255Schema.and(
-                    z.any().openapi({ description: 'The second line of a customer address.' }),
-                  ).exactOptional(),
-                  Address3: String1To255Schema.and(
-                    z.any().openapi({ description: 'The third line of a customer address.' }),
-                  ).exactOptional(),
-                  Address4: String1To255Schema.and(
-                    z.any().openapi({ description: 'The fourth line of a customer address.' }),
-                  ).exactOptional(),
-                  City: String1To255Schema.and(
-                    z.any().openapi({ description: 'The city in which a customer lives.' }),
-                  ).exactOptional(),
-                  County: String1To255Schema.and(
-                    z.any().openapi({ description: 'The county in which a customer lives.' }),
-                  ).exactOptional(),
-                  State: String1To255Schema.and(
-                    z.any().openapi({ description: 'The state in which a customer lives.' }),
-                  ).exactOptional(),
-                  Province: String1To255Schema.and(
-                    z.any().openapi({ description: 'The province in which a customer lives.' }),
-                  ).exactOptional(),
-                  Country: String1To255Schema.and(
-                    z.any().openapi({ description: 'The country in which a customer lives.' }),
-                  ).exactOptional(),
-                  PostalCode: String1To255Schema.and(
-                    z.any().openapi({ description: 'The postal code of a customer address.' }),
-                  ).exactOptional(),
+                  Address1: String1To255Schema.exactOptional().openapi({
+                    description: 'The first line of a customer address.',
+                  }),
+                  Address2: String1To255Schema.exactOptional().openapi({
+                    description: 'The second line of a customer address.',
+                  }),
+                  Address3: String1To255Schema.exactOptional().openapi({
+                    description: 'The third line of a customer address.',
+                  }),
+                  Address4: String1To255Schema.exactOptional().openapi({
+                    description: 'The fourth line of a customer address.',
+                  }),
+                  City: String1To255Schema.exactOptional().openapi({
+                    description: 'The city in which a customer lives.',
+                  }),
+                  County: String1To255Schema.exactOptional().openapi({
+                    description: 'The county in which a customer lives.',
+                  }),
+                  State: String1To255Schema.exactOptional().openapi({
+                    description: 'The state in which a customer lives.',
+                  }),
+                  Province: String1To255Schema.exactOptional().openapi({
+                    description: 'The province in which a customer lives.',
+                  }),
+                  Country: String1To255Schema.exactOptional().openapi({
+                    description: 'The country in which a customer lives.',
+                  }),
+                  PostalCode: String1To255Schema.exactOptional().openapi({
+                    description: 'The postal code of a customer address.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6016,9 +4955,9 @@ export const postDomainsDomainNameIdentityResolutionJobsAutoMergingPreviewRoute 
             .object({
               Consolidation: z
                 .object({
-                  MatchingAttributesList: MatchingAttributesListSchema.and(
-                    z.any().openapi({ description: 'A list of matching criteria.' }),
-                  ).exactOptional(),
+                  MatchingAttributesList: MatchingAttributesListSchema.exactOptional().openapi({
+                    description: 'A list of matching criteria.',
+                  }),
                 })
                 .openapi({
                   description: 'The matching criteria to be used during the auto-merging process. ',
@@ -6026,22 +4965,14 @@ export const postDomainsDomainNameIdentityResolutionJobsAutoMergingPreviewRoute 
                 }),
               ConflictResolution: z
                 .object({
-                  ConflictResolvingModel: ConflictResolvingModelSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          '<p>How the auto-merging process should resolve conflicts between different profiles.</p> <ul> <li> <p> <code>RECENCY</code>: Uses the data that was most recently updated.</p> </li> <li> <p> <code>SOURCE</code>: Uses the data from a specific source. For example, if a company has been aquired or two departments have merged, data from the specified source is used. If two duplicate profiles are from the same source, then <code>RECENCY</code> is used again.</p> </li> </ul>',
-                      }),
-                  ).exactOptional(),
-                  SourceName: String1To255Schema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The <code>ObjectType</code> name that is used to resolve profile merging conflicts when choosing <code>SOURCE</code> as the <code>ConflictResolvingModel</code>.',
-                      }),
-                  ).exactOptional(),
+                  ConflictResolvingModel: ConflictResolvingModelSchema.exactOptional().openapi({
+                    description:
+                      '<p>How the auto-merging process should resolve conflicts between different profiles.</p> <ul> <li> <p> <code>RECENCY</code>: Uses the data that was most recently updated.</p> </li> <li> <p> <code>SOURCE</code>: Uses the data from a specific source. For example, if a company has been aquired or two departments have merged, data from the specified source is used. If two duplicate profiles are from the same source, then <code>RECENCY</code> is used again.</p> </li> </ul>',
+                  }),
+                  SourceName: String1To255Schema.exactOptional().openapi({
+                    description:
+                      'The <code>ObjectType</code> name that is used to resolve profile merging conflicts when choosing <code>SOURCE</code> as the <code>ConflictResolvingModel</code>.',
+                  }),
                 })
                 .openapi({
                   description:
@@ -6337,51 +5268,28 @@ export const putDomainsDomainNameIntegrationsRoute = createRoute({
                 }),
               FlowDefinition: z
                 .object({
-                  Description: FlowDescriptionSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'A description of the flow you want to create.' }),
-                  ).exactOptional(),
-                  FlowName: FlowNameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The specified name of the flow. Use underscores (_) or hyphens (-) only. Spaces are not allowed.',
-                      }),
-                  ).exactOptional(),
-                  KmsArn: KmsArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name of the AWS Key Management Service (KMS) key you provide for encryption.',
-                      }),
-                  ).exactOptional(),
-                  SourceFlowConfig: SourceFlowConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The configuration that controls how Customer Profiles retrieves data from the source.',
-                      }),
-                  ).exactOptional(),
-                  Tasks: TasksSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A list of tasks that Customer Profiles performs while transferring the data in the flow run.',
-                      }),
-                  ).exactOptional(),
-                  TriggerConfig: TriggerConfigSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The trigger settings that determine how and when the flow runs.',
-                      }),
-                  ).exactOptional(),
+                  Description: FlowDescriptionSchema.exactOptional().openapi({
+                    description: 'A description of the flow you want to create.',
+                  }),
+                  FlowName: FlowNameSchema.exactOptional().openapi({
+                    description:
+                      'The specified name of the flow. Use underscores (_) or hyphens (-) only. Spaces are not allowed.',
+                  }),
+                  KmsArn: KmsArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name of the AWS Key Management Service (KMS) key you provide for encryption.',
+                  }),
+                  SourceFlowConfig: SourceFlowConfigSchema.exactOptional().openapi({
+                    description:
+                      'The configuration that controls how Customer Profiles retrieves data from the source.',
+                  }),
+                  Tasks: TasksSchema.exactOptional().openapi({
+                    description:
+                      'A list of tasks that Customer Profiles performs while transferring the data in the flow run.',
+                  }),
+                  TriggerConfig: TriggerConfigSchema.exactOptional().openapi({
+                    description: 'The trigger settings that determine how and when the flow runs.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7409,17 +6317,13 @@ export const postDomainsDomainNameProfilesObjectsRoute = createRoute({
                 .openapi({ description: 'The unique identifier of a customer profile.' }),
               ObjectFilter: z
                 .object({
-                  KeyName: NameSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A searchable identifier of a standard profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.',
-                      }),
-                  ).exactOptional(),
-                  Values: RequestValueListSchema.and(
-                    z.any().openapi({ description: 'A list of key values.' }),
-                  ).exactOptional(),
+                  KeyName: NameSchema.exactOptional().openapi({
+                    description:
+                      'A searchable identifier of a standard profile object. The predefined keys you can use to search for _asset include: _assetId, _assetName, _serialNumber. The predefined keys you can use to search for _case include: _caseId. The predefined keys you can use to search for _order include: _orderId.',
+                  }),
+                  Values: RequestValueListSchema.exactOptional().openapi({
+                    description: 'A list of key values.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -7770,163 +6674,74 @@ export const postDomainsDomainNameProfilesObjectsMergeRoute = createRoute({
                 }),
               FieldSourceProfileIds: z
                 .object({
-                  AccountNumber: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the account number field to be merged. ',
-                      }),
-                  ).exactOptional(),
-                  AdditionalInformation: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the additional information field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  PartyType: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the party type field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  BusinessName: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the business name field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  FirstName: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the first name field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  MiddleName: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the middle name field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  LastName: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the last name field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  BirthDate: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the birthdate field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  Gender: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the gender field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  PhoneNumber: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the phone number field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  MobilePhoneNumber: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the mobile phone number field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  HomePhoneNumber: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the home phone number field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  BusinessPhoneNumber: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the business phone number field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  EmailAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the email address field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  PersonalEmailAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the personal email address field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  BusinessEmailAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the party type field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  Address: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the party type field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  ShippingAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the shipping address field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  MailingAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A unique identifier for the mailing address field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  BillingAddress: UuidSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the billing type field to be merged.',
-                      }),
-                  ).exactOptional(),
-                  Attributes: AttributeSourceIdMapSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'A unique identifier for the attributes field to be merged.',
-                      }),
-                  ).exactOptional(),
+                  AccountNumber: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the account number field to be merged. ',
+                  }),
+                  AdditionalInformation: UuidSchema.exactOptional().openapi({
+                    description:
+                      'A unique identifier for the additional information field to be merged.',
+                  }),
+                  PartyType: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the party type field to be merged.',
+                  }),
+                  BusinessName: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the business name field to be merged.',
+                  }),
+                  FirstName: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the first name field to be merged.',
+                  }),
+                  MiddleName: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the middle name field to be merged.',
+                  }),
+                  LastName: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the last name field to be merged.',
+                  }),
+                  BirthDate: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the birthdate field to be merged.',
+                  }),
+                  Gender: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the gender field to be merged.',
+                  }),
+                  PhoneNumber: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the phone number field to be merged.',
+                  }),
+                  MobilePhoneNumber: UuidSchema.exactOptional().openapi({
+                    description:
+                      'A unique identifier for the mobile phone number field to be merged.',
+                  }),
+                  HomePhoneNumber: UuidSchema.exactOptional().openapi({
+                    description:
+                      'A unique identifier for the home phone number field to be merged.',
+                  }),
+                  BusinessPhoneNumber: UuidSchema.exactOptional().openapi({
+                    description:
+                      'A unique identifier for the business phone number field to be merged.',
+                  }),
+                  EmailAddress: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the email address field to be merged.',
+                  }),
+                  PersonalEmailAddress: UuidSchema.exactOptional().openapi({
+                    description:
+                      'A unique identifier for the personal email address field to be merged.',
+                  }),
+                  BusinessEmailAddress: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the party type field to be merged.',
+                  }),
+                  Address: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the party type field to be merged.',
+                  }),
+                  ShippingAddress: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the shipping address field to be merged.',
+                  }),
+                  MailingAddress: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the mailing address field to be merged.',
+                  }),
+                  BillingAddress: UuidSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the billing type field to be merged.',
+                  }),
+                  Attributes: AttributeSourceIdMapSchema.exactOptional().openapi({
+                    description: 'A unique identifier for the attributes field to be merged.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({

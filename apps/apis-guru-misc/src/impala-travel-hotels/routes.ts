@@ -365,6 +365,58 @@ type BookedRoomType = {
   sellerToImpalaPayment?: z.infer<typeof MoneySchema>
 }
 
+const BookedRoomSchema: z.ZodType<BookedRoomType> = z
+  .object({
+    adults: z
+      .number()
+      .min(1)
+      .exactOptional()
+      .openapi({ description: 'Number of adult guests booked for this room type.' }),
+    notes: NotesBookedRoomSchema,
+    rate: BookedRateSchema,
+    roomType: z
+      .object({
+        name: z
+          .string()
+          .openapi({
+            description: "The hotel's name for this room type.",
+            example: 'Penthouse Suite',
+          }),
+        roomTypeId: z
+          .uuid()
+          .openapi({
+            description: 'Unique identifier of this room type within the Impala platform.',
+            example: 'd5b192ce-c45f-46da-abf5-3880b429b7cc',
+          }),
+      })
+      .openapi({ description: 'Booked room', required: ['roomTypeId', 'name'] }),
+    sellerToImpalaPayment: MoneySchema.exactOptional(),
+  })
+  .openapi({
+    description: '',
+    required: ['roomType', 'rate', 'notes'],
+    title: 'Booked room',
+    'x-examples': {},
+  })
+  .openapi('BookedRoom')
+
+const PersonInfoSchema = z
+  .object({
+    email: z
+      .string()
+      .openapi({ description: 'Email address.', example: 'jocelin.carreon.crespo@example.com' }),
+    firstName: z.string().openapi({ description: 'First name.', example: 'Jocelín' }),
+    lastName: z
+      .string()
+      .openapi({ description: 'Family name or surname.', example: 'Carreón Sample' }),
+  })
+  .openapi({
+    description: 'Information on a person and their contact details.',
+    required: ['firstName', 'lastName', 'email'],
+    title: 'Person',
+  })
+  .openapi('PersonInfo')
+
 const AddressSchema = z
   .object({
     city: z.string().openapi({ example: 'Impalaland' }),
@@ -394,124 +446,6 @@ const AddressSchema = z
     title: 'Address',
   })
   .openapi('Address')
-
-const AdjustmentConditionLengthOfStayRuleSchema = z
-  .object({
-    rules: z
-      .object({
-        bookableDateRange: z
-          .object({
-            end: z.string().openapi({ example: '2021-08-23' }),
-            start: z.string().openapi({ example: '2021-05-15' }),
-          })
-          .openapi({
-            description: 'The date range the adjustment applies to, inclusive.',
-            required: ['start', 'end'],
-          }),
-        nightsRange: z
-          .object({
-            max: z.number().openapi({ example: 5 }),
-            min: z.number().min(1).openapi({ example: 3 }),
-          })
-          .openapi({
-            description: 'The number of nights the adjustment applies to, inclusive.',
-            required: ['min', 'max'],
-          }),
-      })
-      .openapi({ required: ['bookableDateRange', 'nightsRange'] }),
-    type: z
-      .literal('LENGTH_OF_STAY')
-      .openapi({
-        description:
-          'The type of the condition. Currently we only support conditions based on length of stay.',
-      }),
-  })
-  .openapi({ required: ['type', 'rules'], title: 'Adjustment: Conditions' })
-  .openapi('AdjustmentConditionLengthOfStayRule')
-
-const AdjustmentConditionsSchema =
-  AdjustmentConditionLengthOfStayRuleSchema.openapi('AdjustmentConditions')
-
-const AmenitySchema = z
-  .object({
-    code: z
-      .number()
-      .openapi({
-        description:
-          'Unique identifier of this amenity according to the Open Travel Alliance HAC (Hotel Amenity Code) standard for hotels and RAC (Room Amenity Code) standard for rooms.',
-        example: 1234,
-      }),
-    formatted: z
-      .string()
-      .openapi({
-        description: 'A human-readable English description of the amenity.',
-        example: 'WiFi',
-      }),
-  })
-  .openapi({
-    description:
-      '<!--\ntype: tab\ntitle: Description\n-->\nFeature or facility available in the hotel or room type. For the full list of property and room amenity codes, you can click on the "Room Amenities" and "Property Amenities" tab.\n\n<!--\ntype: tab\ntitle: Room Amenities\n-->\nBelow you will find a list of all room amenities in JSON format.\n```json\n{\n  "2": "Air conditioning",\n  "3": "Alarm clock",\n  "5": "AM/FM radio",\n  "8": "Barbeque grills",\n  "9": "Bath tub with spray jets",\n  "10": "Bathrobe",\n  "11": "Bathroom amenities (free toiletries)",\n  "13": "Bathtub",\n  "14": "Bathtub only",\n  "15": "Bath or Shower",\n  "16": "Bidet",\n  "18": "Cable television",\n  "19": "Coffee/Tea maker",\n  "20": "Color television",\n  "21": "Computer",\n  "22": "Connecting rooms",\n  "25": "Cordless phone",\n  "28": "Desk",\n  "29": "Desk with lamp",\n  "32": "Dishwasher",\n  "38": "Fax machine",\n  "41": "Fireplace",\n  "46": "Free movies/video",\n  "47": "Full kitchen",\n  "49": "Grecian tub",\n  "50": "Hairdryer",\n  "54": "Internet access",\n  "55": "Iron (ironing facilities)",\n  "56": "Ironing board",\n  "57": "Whirpool",\n  "59": "Kitchen",\n  "60": "Kitchen supplies",\n  "61": "Kitchenette",\n  "63": "Laptop",\n  "64": "Large desk",\n  "68": "Microwave",\n  "69": "Minibar",\n  "72": "Multi-line phone",\n  "77": "Oven",\n  "78": "Pay per view movies on TV",\n  "80": "Phone in bathroom",\n  "81": "Plates and bowls",\n  "85": "Private bathroom",\n  "88": "Refrigerator",\n  "89": "Refrigerator with ice maker",\n  "92": "Safe",\n  "94": "Separate closet",\n  "97": "Shower only",\n  "98": "Silverware/utensils",\n  "99": "Sitting area",\n  "103": "Speaker phone",\n  "105": "Stove",\n  "108": "Telephone for hearing impaired",\n  "115": "VCR movies",\n  "117": "Video games",\n  "119": "Wake-up calls",\n  "123": "Wireless internet connection",\n  "126": "Air conditioning individually controlled in room",\n  "127": "Bathtub & whirlpool separate",\n  "129": "CD  player",\n  "133": "Desk with electrical outlet",\n  "138": "Marble bathroom",\n  "139": "List of movie channels available",\n  "141": "Oversized bathtub",\n  "142": "Shower",\n  "144": "Soundproofed room",\n  "146": "Tables and chairs",\n  "147": "Two-line phone",\n  "149": "Washer/dryer",\n  "155": "Separate tub and shower",\n  "157": "Ceiling fan",\n  "158": "CNN available",\n  "162": "Closets in room",\n  "163": "DVD player",\n  "164": "Mini-refrigerator",\n  "166": "Self-controlled heating/cooling system",\n  "167": "Toaster",\n  "193": "Shared bathroom",\n  "194": "Telephone TDD/Textphone",\n  "210": "Satellite television",\n  "214": "iPod docking station",\n  "217": "Satellite radio",\n  "218": "Video on demand",\n  "220": "Gulf view",\n  "223": "Mountain view",\n  "224": "Ocean view",\n  "228": "Slippers",\n  "230": "Chair provided with desk",\n  "234": "Luxury linen type",\n  "245": "Private pool",\n  "246": "High Definition (HD) Flat Panel Television  - 32 inches or greater",\n  "251": "TV",\n  "254": "Video game player:",\n  "256": "Dining room seats",\n  "258": "Mobile/cellular phones",\n  "259": "Movies",\n  "260": "Multiple closets",\n  "262": "Safe large enough to accommodate a laptop",\n  "265": "Bluray player",\n  "268": "Non-allergenic room",\n  "270": "Seating area with sofa/chair",\n  "271": "Separate toilet area",\n  "273": "Widescreen TV",\n  "276": "Separate tub or shower",\n  "249": "Double (Bed)",\n  "200": "Futon Mat",\n  "58": "Extra large Double",\n  "86": "Large Double",\n  "102": "Sofa Bed",\n  "113": "Twin (bed)",\n  "203": "Single (bed)",\n  "4001": "Bunk bed",\n  "5001": "Coffee/Tea maker",\n  "5002": "Internet facilities",\n  "5003": "Mini-bar",\n  "5004": "Shower",\n  "5005": "Bath",\n  "5006": "Safe Deposit Box",\n  "5007": "Pay-per-view Channels",\n  "5008": "TV",\n  "5009": "Telephone",\n  "5010": "Fax",\n  "5011": "Airconditioning",\n  "5012": "Hair Dryer",\n  "5013": "Wake Up Service/Alarm-clock",\n  "5014": "Hot Tub",\n  "5015": "Clothing Iron",\n  "5016": "Kitchenette",\n  "5017": "Balcony",\n  "5018": "Trouser Press",\n  "5019": "Bath-robe",\n  "5020": "Spa Bath",\n  "5021": "Radio",\n  "5022": "Refrigerator",\n  "5023": "Desk",\n  "5024": "Shared Bathroom",\n  "5025": "Ironing facilities",\n  "5026": "Seating area",\n  "5027": "Free Toiletries",\n  "5028": "DVD-Player",\n  "5029": "CD-Player",\n  "5030": "Fan",\n  "5031": "Toilet",\n  "5032": "Microwave",\n  "5033": "Dishwasher",\n  "5034": "Washing machine",\n  "5035": "Video",\n  "5036": "Video Games",\n  "5037": "Patio",\n  "5038": "Bathroom",\n  "5039": "Extra long beds (> 2 meter)",\n  "5040": "Heating",\n  "5041": "Dressing room",\n  "5042": "Guest toilet",\n  "5043": "Slippers",\n  "5044": "Satellite Channels",\n  "5045": "Kitchen",\n  "5046": "Wireless internet",\n  "5068": "Cable channels",\n  "5069": "Bath or Shower",\n  "5070": "Carpeted Floor",\n  "5071": "Fireplace",\n  "5072": "Additional Toilet",\n  "5073": "Interconnecting Room(s) available",\n  "5074": "Laptop Safe Box",\n  "5075": "Flat-screen TV",\n  "5076": "Private Entrance",\n  "5077": "Sofa",\n  "5079": "Soundproofing",\n  "5080": "Tiled / Marble floor",\n  "5081": "View",\n  "5082": "Wooden / Parquet floor",\n  "5083": "Wake Up Service",\n  "5084": "Alarm Clock",\n  "5085": "Dining Area",\n  "5086": "Electric Kettle",\n  "5087": "Executive Lounge Access",\n  "5088": "iPod Docking Station",\n  "5089": "Kitchenware",\n  "5090": "Mosquito Net",\n  "5091": "Towels/Linens at surcharge",\n  "5092": "Sauna",\n  "5093": "Private Pool",\n  "5094": "Tumble dryer (machine)",\n  "5095": "Wardrobe/Closet",\n  "5096": "Oven",\n  "5097": "Stove",\n  "5098": "Toaster",\n  "5099": "Barbecue",\n  "5100": "Bidet",\n  "5101": "Computer",\n  "5102": "iPad",\n  "5103": "Game Console",\n  "5104": "Game Console - Xbox 360",\n  "5105": "Game Console - PS2",\n  "5106": "Game Console - PS3",\n  "5107": "Game Console - Nintendo Wii",\n  "5108": "Sea View",\n  "5109": "Lake View",\n  "5110": "Garden View",\n  "5111": "Pool View",\n  "5112": "Mountain View",\n  "5113": "Landmark View",\n  "5114": "Laptop",\n  "5115": "Allergy-Free",\n  "5116": "Cleaning products",\n  "5117": "Electric blankets",\n  "5118": "Additional Bathroom",\n  "5119": "Blu-ray player",\n  "5120": "Coffee Machine",\n  "5121": "City View",\n  "5122": "River View",\n  "5123": "Terrace",\n  "5124": "Towels",\n  "5125": "Linen",\n  "5126": "Dining table",\n  "5127": "Children highchair",\n  "5129": "Outdoor furniture",\n  "5130": "Outdoor dining area",\n  "5131": "Entire property on ground floor",\n  "5132": "Upper floor reachable by lift",\n  "5133": "Upper floor reachable by stairs only",\n  "5134": "Entire unit wheelchair accessible",\n  "5135": "Detached",\n  "5136": "Semi-detached",\n  "5137": "Private flat in block of flats",\n  "5138": "Clothes Rack",\n  "5139": "Rollaway bed",\n  "5140": "Clothes drying rack",\n  "5141": "Toilet paper",\n  "5142": "Child safety socket covers",\n  "5143": "Board games/puzzles",\n  "5144": "Book/DVD/Music library for children",\n  "5145": "Baby safety gates",\n  "5146": "Sofa bed",\n  "5147": "toilet with grab rails",\n  "5148": "adapted bath",\n  "5149": "roll in shower",\n  "5150": "walk in shower",\n  "5151": "higher level toilet",\n  "5152": "low bathroom sink",\n  "5153": "bathroom emergency pull cord",\n  "5154": "shower chair",\n  "5157": "rooftop pool",\n  "5158": "infinity pool",\n  "5159": "pool with view",\n  "5160": "heated pool",\n  "5161": "salt-water pool",\n  "5162": "plunge pool",\n  "5163": "pool towels",\n  "5164": "shallow end",\n  "5165": "pool cover",\n  "5166": "wine/champagne",\n  "5167": "bottle of water",\n  "5168": "fruits",\n  "5169": "chocolate/cookies",\n  "5170": "Trash cans",\n  "5171": "Wine glasses",\n  "5172": "Game console - Xbox One",\n  "5173": "Game console - Wii U",\n  "5174": "Game console - PS4",\n  "5175": "Children crib/cots",\n  "5176": "toothbrush",\n  "5177": "shampoo",\n  "5178": "conditioner",\n  "5179": "body soap",\n  "5180": "shower cap",\n  "5181": "pajamas",\n  "5182": "yukata",\n  "5184": "socket near the bed",\n  "5185": "adapter",\n  "5186": "feather pillow",\n  "5187": "non-feather pillow",\n  "5188": "hypoallergenic pillow",\n  "5189": "Accessible by Lift",\n  "5190": "Inner courtyard view",\n  "5191": "Quiet street view",\n  "5196": "Portable Wifi",\n  "5198": "Smartphone",\n  "5199": "Streaming service (such as Netflix)",\n  "5200": "Lockers",\n  "5201": "Fire alarms or smoke detectors",\n  "5202": "Fire extinguishers",\n  "5203": "Metal keys access",\n  "5204": "Electronic key card access",\n  "5205": "Reading light",\n  "5206": "Earplugs",\n  "5207": "Private curtain",\n  "5211": "Carbon monoxide detector",\n  "5212": "Carbon monoxide source"\n}\n\n```\n\n\n<!--\ntype: tab\ntitle: Property Amenities\n-->\nBelow you will find a list of all property amenities in JSON format.\n```JSON\n{\n  "1": "24-hour front desk",\n  "5": "Air conditioning",\n  "7": "ATM on site",\n  "8": "Baby sitting",\n  "9": "BBQ/Picnic area",\n  "14": "Library",\n  "15": "Car rental",\n  "16": "Casino",\n  "22": "Concierge desk",\n  "26": "Currency exchange",\n  "33": "Elevators",\n  "35": "Fitness Center",\n  "36": "Express Check-in/Check-out",\n  "41": "Airport shuttle (free)",\n  "44": "Game room",\n  "45": "Souvenir/Gift Shop",\n  "49": "Heated pool",\n  "50": "Housekeeping - daily",\n  "53": "Indoor parking",\n  "54": "Indoor pool",\n  "55": "Jacuzzi (Hot Tub)",\n  "60": "Evening Entertainment",\n  "61": "Massage",\n  "62": "Nightclub/DJ",\n  "66": "Outdoor pool",\n  "76": "Restaurant",\n  "77": "Room service",\n  "78": "Safe",\n  "79": "Sauna",\n  "81": "Shoeshine",\n  "83": "Solarium",\n  "86": "Turkish/ Steam Bath",\n  "91": "Tour Desk",\n  "96": "Dry cleaning",\n  "97": "Valet parking",\n  "98": "Vending Machine(snacks)",\n  "116": "Accessible parking",\n  "122": "Shops (on site)",\n  "149": "Grocery shopping service available",\n  "165": "Bar",\n  "168": "Laundry",\n  "173": "Breakfast",\n  "186": "Street parking",\n  "193": "Playground",\n  "197": "Lockers",\n  "198": "Non-smoking rooms",\n  "202": "Bicycle rentals",\n  "228": "Business center",\n  "230": "Secured parking",\n  "233": "Tennis court",\n  "234": "Water Sport Facilities (on site)",\n  "236": "Golf Course (within 2 miles)",\n  "237": "Horseback riding",\n  "239": "Beachfront",\n  "242": "Heating",\n  "262": "Shared Kitchen",\n  "269": "Meeting/Banquet Facilities",\n  "272": "Skiing",\n  "282": "Airport shuttle service (surcharge)",\n  "283": "Baggage Storage",\n  "292": "Newspaper",\n  "310": "Hypoallergenic room available",\n  "312": "All Spaces Non-Smoking (public and private)",\n  "316": "Electric vehicle charging station",\n  "327": "Events ticket service",\n  "342": "Snack bar",\n  "5154": "Swimming pool",\n  "5044": "Spa and wellness centre",\n  "5041": "Family Rooms",\n  "5123": "Airport shuttle with surcharge",\n  "5086": "Fitness centre",\n  "5006": "Terrace",\n  "5005": "Garden",\n  "5056": "Water park",\n  "5054": "Kids\' club",\n  "5000": "Breakfast in the room",\n  "5001": "Public transport tickets",\n  "5002": "Bikes available (free)",\n  "5003": "Outdoor furniture",\n  "5004": "Outdoor fireplace",\n  "5007": "Sun terrace",\n  "5008": "Chapel/shrine",\n  "5009": "Shared lounge/TV area",\n  "5010": "Ironing service",\n  "5011": "Trouser press",\n  "5012": "Designated smoking area",\n  "5013": "Pet basket",\n  "5014": "Pet bowls",\n  "5015": "Beach",\n  "5016": "Bowling",\n  "5017": "Darts",\n  "5018": "Fishing",\n  "5020": "Hiking",\n  "5021": "Minigolf",\n  "5022": "Snorkeling",\n  "5023": "Squash",\n  "5024": "Windsurfing",\n  "5025": "Billiard",\n  "5026": "Table tennis",\n  "5027": "Canoeing",\n  "5028": "Ski-to-door access",\n  "5029": "Diving",\n  "5030": "Tennis equipment",\n  "5031": "Badminton equipment",\n  "5032": "Cycling",\n  "5033": "Ski storage",\n  "5034": "Ski school",\n  "5035": "Ski equipment hire (on site)",\n  "5036": "Ski pass vendor",\n  "5037": "Private beach area",\n  "5039": "Rooms/Facilities for Disabled",\n  "5040": "Hair dresser-beautician",\n  "5042": "Viproom facilities",\n  "5043": "Bridal Suite",\n  "5045": "Karaoke",\n  "5046": "Soundproof-rooms",\n  "5047": "Packed Lunches",\n  "5048": "Ticket service",\n  "5049": "Entertainment Staff",\n  "5050": "Private Check-in/Check-out",\n  "5051": "Special Diet Menus (on request)",\n  "5052": "Vending Machine (drinks)",\n  "5053": "Hot Spring Bath",\n  "5055": "Minimarket on site",\n  "5057": "Adult only",\n  "5058": "Open-air bath",\n  "5059": "Public bath",\n  "5060": "Water slide",\n  "5061": "Board games/puzzles",\n  "5062": "Book/DVD/Music library for children",\n  "5063": "Indoor play area",\n  "5064": "Kids\' outdoor play equipment",\n  "5065": "Baby safety gates",\n  "5066": "Children television networks",\n  "5067": "Kid meals",\n  "5068": "Kid-friendly buffet",\n  "5069": "Pool towels",\n  "5070": "Wine/Champagne",\n  "5071": "Bottle of water",\n  "5072": "Fruits",\n  "5073": "Chocolate/Cookies",\n  "5074": "Strollers",\n  "5075": "On-site coffee house",\n  "5076": "Sun loungers or beach chairs",\n  "5077": "Sun umbrellas",\n  "5078": "Picnic area",\n  "5079": "Beauty Services",\n  "5080": "Spa Facilities",\n  "5081": "Steam room",\n  "5082": "Spa lounge/relaxation area",\n  "5083": "Foot bath",\n  "5084": "Spa/wellness packages",\n  "5085": "Massage chair",\n  "5087": "Yoga classes",\n  "5088": "Fitness classes",\n  "5089": "Personal trainer",\n  "5090": "Fitness/spa locker rooms",\n  "5091": "Kids pool",\n  "5092": "Shuttle Service",\n  "5093": "Temporary art galleries",\n  "5094": "Pub crawls",\n  "5095": "Stand-up comedy",\n  "5096": "Movie nights",\n  "5097": "Walking tours",\n  "5098": "Bike tours",\n  "5099": "Themed dinner nights",\n  "5100": "Happy hour",\n  "5101": "Tour or class about local culture",\n  "5102": "Cooking class",\n  "5103": "Live music/performance",\n  "5104": "Live sports events (broadcast)",\n  "5105": "Archery",\n  "5106": "Aerobics",\n  "5107": "Bingo",\n  "5108": "Ski Shuttle",\n  "5109": "Outdoor Swimming Pool (all year)",\n  "5110": "Outdoor Swimming Pool (seasonal)",\n  "5111": "Indoor Swimming Pool (all year)",\n  "5112": "Indoor Swimming Pool (seasonal)",\n  "5113": "Swimming pool toys",\n  "5114": "Rooftop pool",\n  "5115": "Infinity pool",\n  "5116": "Pool with view",\n  "5117": "Salt-water pool",\n  "5118": "Plunge pool",\n  "5119": "Pool bar",\n  "5120": "Shallow end pool",\n  "5121": "Pool cover",\n  "5122": "Fence around pool",\n  "5124": "Property is wheel chair accessible",\n  "5125": "Toilet with grab rails",\n  "5126": "Higher level toilet",\n  "5127": "Low bathroom sink",\n  "5128": "Bathroom emergency pull cord",\n  "5129": "Visual aids: Braille",\n  "5130": "Visual aids: Tactile Signs",\n  "5131": "Auditory Guidance",\n  "5132": "Back massage",\n  "5133": "Neck massage",\n  "5134": "Foot massage",\n  "5135": "Couples massage",\n  "5136": "Head massage",\n  "5137": "Hand massage",\n  "5138": "Full body massage",\n  "5139": "Facial treatments",\n  "5140": "Waxing services",\n  "5141": "Make up services",\n  "5142": "Hair treatments",\n  "5143": "Manicure",\n  "5144": "Pedicure",\n  "5145": "Hair cut",\n  "5146": "Hair colouring",\n  "5147": "Hair styling",\n  "5148": "Body Treatments",\n  "5149": "Body scrub",\n  "5150": "Body wrap",\n  "5151": "Light therapy",\n  "5152": "Shuttle Service (free)",\n  "5153": "Shuttle Service (surcharge)",\n  "5156": "No Single-Use Toiletries",\n  "5157": "Towels Changed Upon Request",\n  "5158": "24-hour security",\n  "5159": "Security alarm",\n  "5160": "Smoke alarms",\n  "5161": "CCTV in common areas",\n  "5162": "CCTV outside property",\n  "5163": "Fire extinguishers",\n  "5164": "Key access",\n  "5165": "Key card access",\n  "5166": "Carbon monoxide detector",\n  "5167": "Carbon monoxide source",\n  "5168": "No plastic stirrers",\n  "5169": "No plastic straws",\n  "5170": "No plastic cups",\n  "5171": "No plastic bottles for water",\n  "5172": "No plastic bottles for non-water",\n  "5173": "No plastic cutlery",\n  "5174": "Keycard for room electricity",\n  "5175": "Opt-out from daily room cleaning",\n  "5176": "Refillable water stations",\n  "5177": "Bike rental",\n  "5178": "Bike parking",\n  "6000": "Lunch",\n  "6001": "Dinner"\n}\n```\n\n<!-- type: tab-end -->',
-    required: ['code', 'formatted'],
-    title: 'Amenity',
-    'x-examples': {},
-    'x-internal': false,
-  })
-  .openapi('Amenity')
-
-const BookedRoomSchema: z.ZodType<BookedRoomType> = z
-  .lazy(() =>
-    z
-      .object({
-        adults: z
-          .number()
-          .min(1)
-          .exactOptional()
-          .openapi({ description: 'Number of adult guests booked for this room type.' }),
-        notes: NotesBookedRoomSchema,
-        rate: BookedRateSchema,
-        roomType: z
-          .object({
-            name: z
-              .string()
-              .openapi({
-                description: "The hotel's name for this room type.",
-                example: 'Penthouse Suite',
-              }),
-            roomTypeId: z
-              .uuid()
-              .openapi({
-                description: 'Unique identifier of this room type within the Impala platform.',
-                example: 'd5b192ce-c45f-46da-abf5-3880b429b7cc',
-              }),
-          })
-          .openapi({ description: 'Booked room', required: ['roomTypeId', 'name'] }),
-        sellerToImpalaPayment: MoneySchema.exactOptional(),
-      })
-      .openapi({
-        description: '',
-        required: ['roomType', 'rate', 'notes'],
-        title: 'Booked room',
-        'x-examples': {},
-      }),
-  )
-  .openapi('BookedRoom')
-
-const PersonInfoSchema = z
-  .object({
-    email: z
-      .string()
-      .openapi({ description: 'Email address.', example: 'jocelin.carreon.crespo@example.com' }),
-    firstName: z.string().openapi({ description: 'First name.', example: 'Jocelín' }),
-    lastName: z
-      .string()
-      .openapi({ description: 'Family name or surname.', example: 'Carreón Sample' }),
-  })
-  .openapi({
-    description: 'Information on a person and their contact details.',
-    required: ['firstName', 'lastName', 'email'],
-    title: 'Person',
-  })
-  .openapi('PersonInfo')
 
 const TimeRangeSchema = z
   .object({
@@ -619,7 +553,498 @@ const HotelStubSchema = z
   })
   .openapi('HotelStub')
 
-const BookingSchema = z
+type BookingType = {
+  bookedRooms: z.infer<typeof BookedRoomSchema>[]
+  bookingId: string
+  cancellation?: { fee: z.infer<typeof CancellationFeeSchema> } | null
+  contact: z.infer<typeof PersonInfoSchema> & { contactId: string }
+  createdAt: string
+  end: string
+  hotel: z.infer<typeof HotelStubSchema>
+  hotelConfirmationCode?: string | null
+  notes: { fromGuest: string | null; fromSeller: string | null }
+  paymentBearerToken?: string | null
+  paymentClientSecret?: string | null
+  start: string
+  status: 'CANCELLED' | 'PENDING' | 'ACCEPTED' | 'PAYMENT_REQUIRED' | 'PAYMENT_ABANDONED'
+  updatedAt: string
+}
+
+const AmenitySchema = z
+  .object({
+    code: z
+      .number()
+      .openapi({
+        description:
+          'Unique identifier of this amenity according to the Open Travel Alliance HAC (Hotel Amenity Code) standard for hotels and RAC (Room Amenity Code) standard for rooms.',
+        example: 1234,
+      }),
+    formatted: z
+      .string()
+      .openapi({
+        description: 'A human-readable English description of the amenity.',
+        example: 'WiFi',
+      }),
+  })
+  .openapi({
+    description:
+      '<!--\ntype: tab\ntitle: Description\n-->\nFeature or facility available in the hotel or room type. For the full list of property and room amenity codes, you can click on the "Room Amenities" and "Property Amenities" tab.\n\n<!--\ntype: tab\ntitle: Room Amenities\n-->\nBelow you will find a list of all room amenities in JSON format.\n```json\n{\n  "2": "Air conditioning",\n  "3": "Alarm clock",\n  "5": "AM/FM radio",\n  "8": "Barbeque grills",\n  "9": "Bath tub with spray jets",\n  "10": "Bathrobe",\n  "11": "Bathroom amenities (free toiletries)",\n  "13": "Bathtub",\n  "14": "Bathtub only",\n  "15": "Bath or Shower",\n  "16": "Bidet",\n  "18": "Cable television",\n  "19": "Coffee/Tea maker",\n  "20": "Color television",\n  "21": "Computer",\n  "22": "Connecting rooms",\n  "25": "Cordless phone",\n  "28": "Desk",\n  "29": "Desk with lamp",\n  "32": "Dishwasher",\n  "38": "Fax machine",\n  "41": "Fireplace",\n  "46": "Free movies/video",\n  "47": "Full kitchen",\n  "49": "Grecian tub",\n  "50": "Hairdryer",\n  "54": "Internet access",\n  "55": "Iron (ironing facilities)",\n  "56": "Ironing board",\n  "57": "Whirpool",\n  "59": "Kitchen",\n  "60": "Kitchen supplies",\n  "61": "Kitchenette",\n  "63": "Laptop",\n  "64": "Large desk",\n  "68": "Microwave",\n  "69": "Minibar",\n  "72": "Multi-line phone",\n  "77": "Oven",\n  "78": "Pay per view movies on TV",\n  "80": "Phone in bathroom",\n  "81": "Plates and bowls",\n  "85": "Private bathroom",\n  "88": "Refrigerator",\n  "89": "Refrigerator with ice maker",\n  "92": "Safe",\n  "94": "Separate closet",\n  "97": "Shower only",\n  "98": "Silverware/utensils",\n  "99": "Sitting area",\n  "103": "Speaker phone",\n  "105": "Stove",\n  "108": "Telephone for hearing impaired",\n  "115": "VCR movies",\n  "117": "Video games",\n  "119": "Wake-up calls",\n  "123": "Wireless internet connection",\n  "126": "Air conditioning individually controlled in room",\n  "127": "Bathtub & whirlpool separate",\n  "129": "CD  player",\n  "133": "Desk with electrical outlet",\n  "138": "Marble bathroom",\n  "139": "List of movie channels available",\n  "141": "Oversized bathtub",\n  "142": "Shower",\n  "144": "Soundproofed room",\n  "146": "Tables and chairs",\n  "147": "Two-line phone",\n  "149": "Washer/dryer",\n  "155": "Separate tub and shower",\n  "157": "Ceiling fan",\n  "158": "CNN available",\n  "162": "Closets in room",\n  "163": "DVD player",\n  "164": "Mini-refrigerator",\n  "166": "Self-controlled heating/cooling system",\n  "167": "Toaster",\n  "193": "Shared bathroom",\n  "194": "Telephone TDD/Textphone",\n  "210": "Satellite television",\n  "214": "iPod docking station",\n  "217": "Satellite radio",\n  "218": "Video on demand",\n  "220": "Gulf view",\n  "223": "Mountain view",\n  "224": "Ocean view",\n  "228": "Slippers",\n  "230": "Chair provided with desk",\n  "234": "Luxury linen type",\n  "245": "Private pool",\n  "246": "High Definition (HD) Flat Panel Television  - 32 inches or greater",\n  "251": "TV",\n  "254": "Video game player:",\n  "256": "Dining room seats",\n  "258": "Mobile/cellular phones",\n  "259": "Movies",\n  "260": "Multiple closets",\n  "262": "Safe large enough to accommodate a laptop",\n  "265": "Bluray player",\n  "268": "Non-allergenic room",\n  "270": "Seating area with sofa/chair",\n  "271": "Separate toilet area",\n  "273": "Widescreen TV",\n  "276": "Separate tub or shower",\n  "249": "Double (Bed)",\n  "200": "Futon Mat",\n  "58": "Extra large Double",\n  "86": "Large Double",\n  "102": "Sofa Bed",\n  "113": "Twin (bed)",\n  "203": "Single (bed)",\n  "4001": "Bunk bed",\n  "5001": "Coffee/Tea maker",\n  "5002": "Internet facilities",\n  "5003": "Mini-bar",\n  "5004": "Shower",\n  "5005": "Bath",\n  "5006": "Safe Deposit Box",\n  "5007": "Pay-per-view Channels",\n  "5008": "TV",\n  "5009": "Telephone",\n  "5010": "Fax",\n  "5011": "Airconditioning",\n  "5012": "Hair Dryer",\n  "5013": "Wake Up Service/Alarm-clock",\n  "5014": "Hot Tub",\n  "5015": "Clothing Iron",\n  "5016": "Kitchenette",\n  "5017": "Balcony",\n  "5018": "Trouser Press",\n  "5019": "Bath-robe",\n  "5020": "Spa Bath",\n  "5021": "Radio",\n  "5022": "Refrigerator",\n  "5023": "Desk",\n  "5024": "Shared Bathroom",\n  "5025": "Ironing facilities",\n  "5026": "Seating area",\n  "5027": "Free Toiletries",\n  "5028": "DVD-Player",\n  "5029": "CD-Player",\n  "5030": "Fan",\n  "5031": "Toilet",\n  "5032": "Microwave",\n  "5033": "Dishwasher",\n  "5034": "Washing machine",\n  "5035": "Video",\n  "5036": "Video Games",\n  "5037": "Patio",\n  "5038": "Bathroom",\n  "5039": "Extra long beds (> 2 meter)",\n  "5040": "Heating",\n  "5041": "Dressing room",\n  "5042": "Guest toilet",\n  "5043": "Slippers",\n  "5044": "Satellite Channels",\n  "5045": "Kitchen",\n  "5046": "Wireless internet",\n  "5068": "Cable channels",\n  "5069": "Bath or Shower",\n  "5070": "Carpeted Floor",\n  "5071": "Fireplace",\n  "5072": "Additional Toilet",\n  "5073": "Interconnecting Room(s) available",\n  "5074": "Laptop Safe Box",\n  "5075": "Flat-screen TV",\n  "5076": "Private Entrance",\n  "5077": "Sofa",\n  "5079": "Soundproofing",\n  "5080": "Tiled / Marble floor",\n  "5081": "View",\n  "5082": "Wooden / Parquet floor",\n  "5083": "Wake Up Service",\n  "5084": "Alarm Clock",\n  "5085": "Dining Area",\n  "5086": "Electric Kettle",\n  "5087": "Executive Lounge Access",\n  "5088": "iPod Docking Station",\n  "5089": "Kitchenware",\n  "5090": "Mosquito Net",\n  "5091": "Towels/Linens at surcharge",\n  "5092": "Sauna",\n  "5093": "Private Pool",\n  "5094": "Tumble dryer (machine)",\n  "5095": "Wardrobe/Closet",\n  "5096": "Oven",\n  "5097": "Stove",\n  "5098": "Toaster",\n  "5099": "Barbecue",\n  "5100": "Bidet",\n  "5101": "Computer",\n  "5102": "iPad",\n  "5103": "Game Console",\n  "5104": "Game Console - Xbox 360",\n  "5105": "Game Console - PS2",\n  "5106": "Game Console - PS3",\n  "5107": "Game Console - Nintendo Wii",\n  "5108": "Sea View",\n  "5109": "Lake View",\n  "5110": "Garden View",\n  "5111": "Pool View",\n  "5112": "Mountain View",\n  "5113": "Landmark View",\n  "5114": "Laptop",\n  "5115": "Allergy-Free",\n  "5116": "Cleaning products",\n  "5117": "Electric blankets",\n  "5118": "Additional Bathroom",\n  "5119": "Blu-ray player",\n  "5120": "Coffee Machine",\n  "5121": "City View",\n  "5122": "River View",\n  "5123": "Terrace",\n  "5124": "Towels",\n  "5125": "Linen",\n  "5126": "Dining table",\n  "5127": "Children highchair",\n  "5129": "Outdoor furniture",\n  "5130": "Outdoor dining area",\n  "5131": "Entire property on ground floor",\n  "5132": "Upper floor reachable by lift",\n  "5133": "Upper floor reachable by stairs only",\n  "5134": "Entire unit wheelchair accessible",\n  "5135": "Detached",\n  "5136": "Semi-detached",\n  "5137": "Private flat in block of flats",\n  "5138": "Clothes Rack",\n  "5139": "Rollaway bed",\n  "5140": "Clothes drying rack",\n  "5141": "Toilet paper",\n  "5142": "Child safety socket covers",\n  "5143": "Board games/puzzles",\n  "5144": "Book/DVD/Music library for children",\n  "5145": "Baby safety gates",\n  "5146": "Sofa bed",\n  "5147": "toilet with grab rails",\n  "5148": "adapted bath",\n  "5149": "roll in shower",\n  "5150": "walk in shower",\n  "5151": "higher level toilet",\n  "5152": "low bathroom sink",\n  "5153": "bathroom emergency pull cord",\n  "5154": "shower chair",\n  "5157": "rooftop pool",\n  "5158": "infinity pool",\n  "5159": "pool with view",\n  "5160": "heated pool",\n  "5161": "salt-water pool",\n  "5162": "plunge pool",\n  "5163": "pool towels",\n  "5164": "shallow end",\n  "5165": "pool cover",\n  "5166": "wine/champagne",\n  "5167": "bottle of water",\n  "5168": "fruits",\n  "5169": "chocolate/cookies",\n  "5170": "Trash cans",\n  "5171": "Wine glasses",\n  "5172": "Game console - Xbox One",\n  "5173": "Game console - Wii U",\n  "5174": "Game console - PS4",\n  "5175": "Children crib/cots",\n  "5176": "toothbrush",\n  "5177": "shampoo",\n  "5178": "conditioner",\n  "5179": "body soap",\n  "5180": "shower cap",\n  "5181": "pajamas",\n  "5182": "yukata",\n  "5184": "socket near the bed",\n  "5185": "adapter",\n  "5186": "feather pillow",\n  "5187": "non-feather pillow",\n  "5188": "hypoallergenic pillow",\n  "5189": "Accessible by Lift",\n  "5190": "Inner courtyard view",\n  "5191": "Quiet street view",\n  "5196": "Portable Wifi",\n  "5198": "Smartphone",\n  "5199": "Streaming service (such as Netflix)",\n  "5200": "Lockers",\n  "5201": "Fire alarms or smoke detectors",\n  "5202": "Fire extinguishers",\n  "5203": "Metal keys access",\n  "5204": "Electronic key card access",\n  "5205": "Reading light",\n  "5206": "Earplugs",\n  "5207": "Private curtain",\n  "5211": "Carbon monoxide detector",\n  "5212": "Carbon monoxide source"\n}\n\n```\n\n\n<!--\ntype: tab\ntitle: Property Amenities\n-->\nBelow you will find a list of all property amenities in JSON format.\n```JSON\n{\n  "1": "24-hour front desk",\n  "5": "Air conditioning",\n  "7": "ATM on site",\n  "8": "Baby sitting",\n  "9": "BBQ/Picnic area",\n  "14": "Library",\n  "15": "Car rental",\n  "16": "Casino",\n  "22": "Concierge desk",\n  "26": "Currency exchange",\n  "33": "Elevators",\n  "35": "Fitness Center",\n  "36": "Express Check-in/Check-out",\n  "41": "Airport shuttle (free)",\n  "44": "Game room",\n  "45": "Souvenir/Gift Shop",\n  "49": "Heated pool",\n  "50": "Housekeeping - daily",\n  "53": "Indoor parking",\n  "54": "Indoor pool",\n  "55": "Jacuzzi (Hot Tub)",\n  "60": "Evening Entertainment",\n  "61": "Massage",\n  "62": "Nightclub/DJ",\n  "66": "Outdoor pool",\n  "76": "Restaurant",\n  "77": "Room service",\n  "78": "Safe",\n  "79": "Sauna",\n  "81": "Shoeshine",\n  "83": "Solarium",\n  "86": "Turkish/ Steam Bath",\n  "91": "Tour Desk",\n  "96": "Dry cleaning",\n  "97": "Valet parking",\n  "98": "Vending Machine(snacks)",\n  "116": "Accessible parking",\n  "122": "Shops (on site)",\n  "149": "Grocery shopping service available",\n  "165": "Bar",\n  "168": "Laundry",\n  "173": "Breakfast",\n  "186": "Street parking",\n  "193": "Playground",\n  "197": "Lockers",\n  "198": "Non-smoking rooms",\n  "202": "Bicycle rentals",\n  "228": "Business center",\n  "230": "Secured parking",\n  "233": "Tennis court",\n  "234": "Water Sport Facilities (on site)",\n  "236": "Golf Course (within 2 miles)",\n  "237": "Horseback riding",\n  "239": "Beachfront",\n  "242": "Heating",\n  "262": "Shared Kitchen",\n  "269": "Meeting/Banquet Facilities",\n  "272": "Skiing",\n  "282": "Airport shuttle service (surcharge)",\n  "283": "Baggage Storage",\n  "292": "Newspaper",\n  "310": "Hypoallergenic room available",\n  "312": "All Spaces Non-Smoking (public and private)",\n  "316": "Electric vehicle charging station",\n  "327": "Events ticket service",\n  "342": "Snack bar",\n  "5154": "Swimming pool",\n  "5044": "Spa and wellness centre",\n  "5041": "Family Rooms",\n  "5123": "Airport shuttle with surcharge",\n  "5086": "Fitness centre",\n  "5006": "Terrace",\n  "5005": "Garden",\n  "5056": "Water park",\n  "5054": "Kids\' club",\n  "5000": "Breakfast in the room",\n  "5001": "Public transport tickets",\n  "5002": "Bikes available (free)",\n  "5003": "Outdoor furniture",\n  "5004": "Outdoor fireplace",\n  "5007": "Sun terrace",\n  "5008": "Chapel/shrine",\n  "5009": "Shared lounge/TV area",\n  "5010": "Ironing service",\n  "5011": "Trouser press",\n  "5012": "Designated smoking area",\n  "5013": "Pet basket",\n  "5014": "Pet bowls",\n  "5015": "Beach",\n  "5016": "Bowling",\n  "5017": "Darts",\n  "5018": "Fishing",\n  "5020": "Hiking",\n  "5021": "Minigolf",\n  "5022": "Snorkeling",\n  "5023": "Squash",\n  "5024": "Windsurfing",\n  "5025": "Billiard",\n  "5026": "Table tennis",\n  "5027": "Canoeing",\n  "5028": "Ski-to-door access",\n  "5029": "Diving",\n  "5030": "Tennis equipment",\n  "5031": "Badminton equipment",\n  "5032": "Cycling",\n  "5033": "Ski storage",\n  "5034": "Ski school",\n  "5035": "Ski equipment hire (on site)",\n  "5036": "Ski pass vendor",\n  "5037": "Private beach area",\n  "5039": "Rooms/Facilities for Disabled",\n  "5040": "Hair dresser-beautician",\n  "5042": "Viproom facilities",\n  "5043": "Bridal Suite",\n  "5045": "Karaoke",\n  "5046": "Soundproof-rooms",\n  "5047": "Packed Lunches",\n  "5048": "Ticket service",\n  "5049": "Entertainment Staff",\n  "5050": "Private Check-in/Check-out",\n  "5051": "Special Diet Menus (on request)",\n  "5052": "Vending Machine (drinks)",\n  "5053": "Hot Spring Bath",\n  "5055": "Minimarket on site",\n  "5057": "Adult only",\n  "5058": "Open-air bath",\n  "5059": "Public bath",\n  "5060": "Water slide",\n  "5061": "Board games/puzzles",\n  "5062": "Book/DVD/Music library for children",\n  "5063": "Indoor play area",\n  "5064": "Kids\' outdoor play equipment",\n  "5065": "Baby safety gates",\n  "5066": "Children television networks",\n  "5067": "Kid meals",\n  "5068": "Kid-friendly buffet",\n  "5069": "Pool towels",\n  "5070": "Wine/Champagne",\n  "5071": "Bottle of water",\n  "5072": "Fruits",\n  "5073": "Chocolate/Cookies",\n  "5074": "Strollers",\n  "5075": "On-site coffee house",\n  "5076": "Sun loungers or beach chairs",\n  "5077": "Sun umbrellas",\n  "5078": "Picnic area",\n  "5079": "Beauty Services",\n  "5080": "Spa Facilities",\n  "5081": "Steam room",\n  "5082": "Spa lounge/relaxation area",\n  "5083": "Foot bath",\n  "5084": "Spa/wellness packages",\n  "5085": "Massage chair",\n  "5087": "Yoga classes",\n  "5088": "Fitness classes",\n  "5089": "Personal trainer",\n  "5090": "Fitness/spa locker rooms",\n  "5091": "Kids pool",\n  "5092": "Shuttle Service",\n  "5093": "Temporary art galleries",\n  "5094": "Pub crawls",\n  "5095": "Stand-up comedy",\n  "5096": "Movie nights",\n  "5097": "Walking tours",\n  "5098": "Bike tours",\n  "5099": "Themed dinner nights",\n  "5100": "Happy hour",\n  "5101": "Tour or class about local culture",\n  "5102": "Cooking class",\n  "5103": "Live music/performance",\n  "5104": "Live sports events (broadcast)",\n  "5105": "Archery",\n  "5106": "Aerobics",\n  "5107": "Bingo",\n  "5108": "Ski Shuttle",\n  "5109": "Outdoor Swimming Pool (all year)",\n  "5110": "Outdoor Swimming Pool (seasonal)",\n  "5111": "Indoor Swimming Pool (all year)",\n  "5112": "Indoor Swimming Pool (seasonal)",\n  "5113": "Swimming pool toys",\n  "5114": "Rooftop pool",\n  "5115": "Infinity pool",\n  "5116": "Pool with view",\n  "5117": "Salt-water pool",\n  "5118": "Plunge pool",\n  "5119": "Pool bar",\n  "5120": "Shallow end pool",\n  "5121": "Pool cover",\n  "5122": "Fence around pool",\n  "5124": "Property is wheel chair accessible",\n  "5125": "Toilet with grab rails",\n  "5126": "Higher level toilet",\n  "5127": "Low bathroom sink",\n  "5128": "Bathroom emergency pull cord",\n  "5129": "Visual aids: Braille",\n  "5130": "Visual aids: Tactile Signs",\n  "5131": "Auditory Guidance",\n  "5132": "Back massage",\n  "5133": "Neck massage",\n  "5134": "Foot massage",\n  "5135": "Couples massage",\n  "5136": "Head massage",\n  "5137": "Hand massage",\n  "5138": "Full body massage",\n  "5139": "Facial treatments",\n  "5140": "Waxing services",\n  "5141": "Make up services",\n  "5142": "Hair treatments",\n  "5143": "Manicure",\n  "5144": "Pedicure",\n  "5145": "Hair cut",\n  "5146": "Hair colouring",\n  "5147": "Hair styling",\n  "5148": "Body Treatments",\n  "5149": "Body scrub",\n  "5150": "Body wrap",\n  "5151": "Light therapy",\n  "5152": "Shuttle Service (free)",\n  "5153": "Shuttle Service (surcharge)",\n  "5156": "No Single-Use Toiletries",\n  "5157": "Towels Changed Upon Request",\n  "5158": "24-hour security",\n  "5159": "Security alarm",\n  "5160": "Smoke alarms",\n  "5161": "CCTV in common areas",\n  "5162": "CCTV outside property",\n  "5163": "Fire extinguishers",\n  "5164": "Key access",\n  "5165": "Key card access",\n  "5166": "Carbon monoxide detector",\n  "5167": "Carbon monoxide source",\n  "5168": "No plastic stirrers",\n  "5169": "No plastic straws",\n  "5170": "No plastic cups",\n  "5171": "No plastic bottles for water",\n  "5172": "No plastic bottles for non-water",\n  "5173": "No plastic cutlery",\n  "5174": "Keycard for room electricity",\n  "5175": "Opt-out from daily room cleaning",\n  "5176": "Refillable water stations",\n  "5177": "Bike rental",\n  "5178": "Bike parking",\n  "6000": "Lunch",\n  "6001": "Dinner"\n}\n```\n\n<!-- type: tab-end -->',
+    required: ['code', 'formatted'],
+    title: 'Amenity',
+    'x-examples': {},
+    'x-internal': false,
+  })
+  .openapi('Amenity')
+
+const ExternalUrlSchema = z
+  .object({
+    name: z
+      .enum(['BOOKING.COM', 'HOTELS.COM'])
+      .exactOptional()
+      .openapi({ description: 'Destination of the external url' }),
+    url: z.string().exactOptional().openapi({ description: 'Value of the external url' }),
+  })
+  .openapi({ required: [] })
+  .openapi('ExternalUrl')
+
+const RateSchema = z
+  .object({
+    cancellationPolicies: z
+      .array(CancellationPolicySchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+    components: z
+      .array(RateComponentSchema)
+      .min(0)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      }),
+    end: z.iso.date().min(1).openapi({ example: '2021-11-23' }),
+    hotelAgreement: HotelAgreementStubSchema,
+    maxOccupancy: z
+      .int()
+      .openapi({ description: 'Maximum number of adults included in the rate.', example: 2 }),
+    rateId: z
+      .string()
+      .min(1)
+      .openapi({
+        example: '3rX3IaqkpJaPlttxoFoM3uDcHJEZCAuByqfBSLUPMvkBGyu7IAlhbxl3rZ7cVmVj6TbXL4EfiHlTA',
+      }),
+    ratePlanId: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rate plan ID that is attached to this rate. Each rate plan ID can specify a unique combination of a cancellation policy and a meal plan.',
+        example: 1,
+      }),
+    retailRate: z
+      .object({
+        taxesAndFees: z
+          .object({
+            includedInRate: z
+              .array(TaxOrFeeSchema)
+              .min(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  'Taxes and fees that are included in the `retailRate.total` price paid at the time of booking.',
+              }),
+            payAtHotel: z
+              .array(TaxOrFeeSchema)
+              .min(0)
+              .exactOptional()
+              .openapi({
+                description:
+                  'Taxes and fees that need to be payed at the hotel (often upon arrival or departure). This frequently happens for fees that only need to be collected based on certain conditions (e.g. a guest coming from abroad or being older than a certain age).',
+              }),
+          })
+          .openapi({
+            description:
+              'Breakdown of taxes (e.g. VAT, city tax) and fees (e.g. cleaning or resort fees).',
+            required: [],
+          }),
+        total: MoneySchema,
+      })
+      .openapi({
+        description:
+          "The public retail rate you should quote and charge your guest. You're not allowed to quote or charge an amount lower than this if your website or app is publicly accessible.",
+        required: ['total', 'taxesAndFees'],
+      }),
+    roomsSellable: z
+      .number()
+      .exactOptional()
+      .openapi({
+        description:
+          'Amount of rooms which can be sold for this occupancy level and room type at this rate price.',
+      }),
+    sellerCommissionPercentage: z
+      .float32()
+      .openapi({
+        description:
+          'The commission percentage you as a seller will earn from this booking, based on `retailRate.total`.',
+        example: 9.5,
+      }),
+    sellerToImpalaPayment: MoneySchema.exactOptional().openapi({
+      description:
+        "This is the amount payable to the hotel, which Impala will collect from you on the hotel's behalf. The Impala fee will be requested in addition to this, and also documented in a VAT invoice.",
+    }),
+    start: z.iso.date().min(1).openapi({ example: '2021-11-20' }),
+  })
+  .openapi({
+    description:
+      'Information on the price of the room, other components of the room (such as breakfast, lunch or a welcome drink) and the cancellation policies that apply.',
+    required: [
+      'rateId',
+      'start',
+      'end',
+      'hotelAgreement',
+      'maxOccupancy',
+      'retailRate',
+      'sellerCommissionPercentage',
+      'components',
+      'cancellationPolicies',
+    ],
+    title: 'Room rate',
+    'x-examples': {
+      Example: {
+        cancellationPolicies: [
+          {
+            end: '2020-12-17 23:59:59.999',
+            fee: {
+              count: 100,
+              price: { amount: 9500, currency: { code: 'EUR' } },
+              type: 'PERCENTAGE',
+            },
+            formatted: 'Non-refundable after October 19, 2021 00:00',
+            start: '2020-12-15 23:59:59.999',
+          },
+        ],
+        components: [{ formatted: 'Breakfast', includedInRate: true, type: 'BREAKFAST' }],
+        end: '2021-11-23',
+        rateId: 'dBFo',
+        ratePlanId: 1,
+        retailRate: { total: { amount: 9500, currency: { code: 'EUR' } } },
+        roomsSellable: 100,
+        sellerCommissionPercentage: 9.5,
+        sellerToImpalaPayment: { amount: 8598, currency: { code: 'EUR' } },
+        start: '2021-11-20',
+      },
+    },
+  })
+  .openapi('Rate')
+
+type RoomTypeType = {
+  amenities: z.infer<typeof AmenitySchema>[]
+  description: string
+  images: z.infer<typeof ImageSchema>[]
+  maxOccupancy: number
+  name: string
+  rates?: z.infer<typeof RateSchema>[]
+  roomTypeId: string
+}
+
+const RoomTypeSchema: z.ZodType<RoomTypeType> = z
+  .object({
+    amenities: z.array(AmenitySchema),
+    description: z
+      .string()
+      .openapi({
+        description: 'Description',
+        example: 'Modern room with plenty of natural light and modern furniture.',
+      }),
+    images: z.array(ImageSchema).openapi({ description: 'Lists photos of this room type' }),
+    maxOccupancy: z
+      .int()
+      .openapi({ description: 'Maximum number of adults that can occupy the room.', example: 4 }),
+    name: z.string().openapi({ description: 'Name', example: 'Standard Room' }),
+    rates: z
+      .array(RateSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Bookable rates for this room type and the start and end dates of your availability search.',
+      }),
+    roomTypeId: z
+      .uuid()
+      .openapi({
+        description: 'Unique identifier of the room type within the Impala platform.',
+        example: 'd5b192ce-c45f-46da-abf5-3880b429b7cc',
+      }),
+  })
+  .openapi({
+    description: 'Bookable category of bookable rooms within a hotel',
+    required: ['roomTypeId', 'name', 'description', 'maxOccupancy', 'amenities', 'images'],
+    title: 'Room type',
+  })
+  .openapi('RoomType')
+
+type HotelFullDetailType = {
+  address: z.infer<typeof AddressSchema>
+  amenities: z.infer<typeof AmenitySchema>[]
+  checkIn: z.infer<typeof TimeRangeSchema>
+  checkOut: z.infer<typeof TimeRangeSchema>
+  contractable: boolean
+  createdAt?: string
+  currency: string
+  description?: { short?: string }
+  emails: string[]
+  externalUrls: z.infer<typeof ExternalUrlSchema>[]
+  hotelId: string
+  images: z.infer<typeof ImageSchema>[]
+  location: z.infer<typeof LocationSchema>
+  name: string
+  phoneNumbers: string[]
+  roomCount: number
+  roomTypes: z.infer<typeof RoomTypeSchema>[]
+  starRating: number | null
+  termsAndConditions: string
+  timezone?: string
+  updatedAt?: string
+  websiteUrl: string | null
+}
+
+const AdjustmentConditionLengthOfStayRuleSchema = z
+  .object({
+    rules: z
+      .object({
+        bookableDateRange: z
+          .object({
+            end: z.string().openapi({ example: '2021-08-23' }),
+            start: z.string().openapi({ example: '2021-05-15' }),
+          })
+          .openapi({
+            description: 'The date range the adjustment applies to, inclusive.',
+            required: ['start', 'end'],
+          }),
+        nightsRange: z
+          .object({
+            max: z.number().openapi({ example: 5 }),
+            min: z.number().min(1).openapi({ example: 3 }),
+          })
+          .openapi({
+            description: 'The number of nights the adjustment applies to, inclusive.',
+            required: ['min', 'max'],
+          }),
+      })
+      .openapi({ required: ['bookableDateRange', 'nightsRange'] }),
+    type: z
+      .literal('LENGTH_OF_STAY')
+      .openapi({
+        description:
+          'The type of the condition. Currently we only support conditions based on length of stay.',
+      }),
+  })
+  .openapi({ required: ['type', 'rules'], title: 'Adjustment: Conditions' })
+  .openapi('AdjustmentConditionLengthOfStayRule')
+
+const RateAdjustmentSchema = z
+  .object({
+    adjustmentId: z
+      .uuid()
+      .exactOptional()
+      .openapi({ description: 'Unique identifier of this rate adjustment.' }),
+    amount: z
+      .number()
+      .min(0)
+      .max(100)
+      .openapi({ description: 'The percentage discount between 0 and 100.', example: 5 }),
+    conditions: z
+      .array(AdjustmentConditionLengthOfStayRuleSchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({ description: 'A list of conditions for the adjustment to apply.' }),
+    type: z.literal('PERCENTAGE').openapi({ description: 'The adjustment type.' }),
+  })
+  .openapi({ required: ['amount', 'type', 'conditions'], title: 'Adjustment' })
+  .openapi('RateAdjustment')
+
+const ConditionsSchema = z
+  .object({
+    cancellationDeadline: z.number().nullable(),
+    cancellationPolicy: z
+      .union([
+        z.literal('FREE_CANCELLATION'),
+        z.literal('FREE_CANCELLATION_24'),
+        z.literal('FREE_CANCELLATION_48'),
+        z.literal('FREE_CANCELLATION_WEEK'),
+        z.literal('NON_REFUNDABLE'),
+        z.literal(null),
+      ])
+      .nullable()
+      .openapi({ description: 'Type of cancellation policy applicable to the rate' }),
+  })
+  .openapi({
+    description: 'Conditions described by the rate plan.',
+    required: ['cancellationPolicy', 'cancellationDeadline'],
+    title: 'Conditions',
+  })
+  .openapi('Conditions')
+
+const RatePlanRestrictionsSchema = z
+  .object({
+    lengthOfStay: z
+      .object({
+        max: z
+          .number()
+          .exactOptional()
+          .openapi({
+            description:
+              'The maximum number of nights (inclusive) a guest can stay to be eligible for this rate plan.',
+          }),
+        min: z
+          .number()
+          .openapi({
+            description:
+              'The minimum number of nights (inclusive) a guest has to stay to be eligible for this rate plan.',
+          }),
+      })
+      .openapi({
+        description:
+          'Determines the length of stay in nights for which this rate plan can be booked.',
+        required: ['min'],
+      }),
+  })
+  .openapi({
+    description: 'Restrictions that apply to this rate plan.',
+    required: ['lengthOfStay'],
+    title: 'Rate plan restrictions',
+    'x-examples': {},
+  })
+  .openapi('RatePlanRestrictions')
+
+const RatePlanRateSchema = z
+  .object({
+    adults: z
+      .number()
+      .min(1)
+      .openapi({ description: 'The number of adults in the room for which this price applies.' }),
+    retailRate: MoneySchema,
+    roomsSellable: z
+      .number()
+      .openapi({
+        description:
+          'Amount of room which can be sold for this occupancy level and room type at this rate price.',
+      }),
+  })
+  .openapi({
+    required: ['adults', 'roomsSellable', 'retailRate'],
+    title: 'Rate plans: rate price for date',
+  })
+  .openapi('RatePlanRate')
+
+const RatesPerDateSchema = z
+  .object({
+    closed: z
+      .boolean()
+      .openapi({
+        description: 'Determines whether the rate is available for a stay including this date.',
+      }),
+    closedToArrival: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'Determines whether the rate is available if the arrival falls on this date.',
+      }),
+    closedToDeparture: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines whether the rate is available if the departure falls on this date.',
+      }),
+    date: z.string().min(1).openapi({ description: '' }),
+    rates: z
+      .array(RatePlanRateSchema)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({ description: 'Rate prices for each occupancy the room can accommodate.' }),
+    staythrough: z
+      .object({ min: z.number().openapi({ description: 'Expressed in minimum value.' }) })
+      .exactOptional()
+      .openapi({
+        description:
+          'The minimum number of nights (inclusive) that the guest has to book which include the date to be eligible for this rate.',
+        required: ['min'],
+      }),
+  })
+  .openapi({
+    required: ['date', 'rates', 'closed'],
+    title: 'Rate plans: Rates available for a date',
+    'x-examples': {},
+  })
+  .openapi('RatesPerDate')
+
+const RatePlanRoomTypeSchema = z
+  .object({
+    dates: z
+      .array(RatesPerDateSchema)
+      .min(1)
+      .superRefine((items, ctx) => {
+        const seen = new Map()
+        for (const [i, val] of items.entries()) {
+          const key = JSON.stringify(val)
+          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+          else seen.set(key, i)
+        }
+      })
+      .openapi({
+        description:
+          'A list of future dates and their rate prices for this rate plan and room type.',
+      }),
+    maxOccupancy: z
+      .number()
+      .min(1)
+      .openapi({ description: 'Number of adults that the room can accommodate.' }),
+    name: z
+      .string()
+      .min(1)
+      .openapi({ description: 'Formatted room type name.', example: 'Junior Suite' }),
+    roomTypeId: z.uuid().min(1).openapi({ description: 'Unique identifier of this room type.' }),
+  })
+  .openapi({ required: ['roomTypeId', 'name', 'maxOccupancy', 'dates'], title: 'RoomType' })
+  .openapi('RatePlanRoomType')
+
+type RatePlanType = {
+  adjustments?: z.infer<typeof RateAdjustmentSchema>[]
+  components?: z.infer<typeof RateComponentSchema>[]
+  conditions: z.infer<typeof ConditionsSchema>
+  description: string
+  hotelId: string
+  ratePlanId: number
+  restrictions: z.infer<typeof RatePlanRestrictionsSchema>
+  roomTypes: z.infer<typeof RatePlanRoomTypeSchema>[]
+}
+
+const AdjustmentConditionsSchema =
+  AdjustmentConditionLengthOfStayRuleSchema.openapi('AdjustmentConditions')
+
+const BookingSchema: z.ZodType<BookingType> = z
   .object({
     bookedRooms: z.array(BookedRoomSchema).openapi({ description: 'List of rooms booked' }),
     bookingId: z
@@ -915,14 +1340,10 @@ const RatePlanRoomSchema = z
   .object({
     adults: z.number().openapi({ description: 'number of adult guests' }),
     notes: NotesBookedRoomSchema.exactOptional(),
-    price: MoneySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Sum of rates taken from rate-plans endpoint between start and end dates',
-          title: 'RatePlanSum',
-        }),
-    ),
+    price: MoneySchema.openapi({
+      description: 'Sum of rates taken from rate-plans endpoint between start and end dates',
+      title: 'RatePlanSum',
+    }),
     ratePlanId: z.number(),
     roomTypeId: z.uuid(),
   })
@@ -983,28 +1404,6 @@ const BookingRequestWithRatePlansSchema = z
     required: ['start', 'end', 'rooms', 'bookingContact'],
   })
   .openapi('BookingRequestWithRatePlans')
-
-const ConditionsSchema = z
-  .object({
-    cancellationDeadline: z.number().nullable(),
-    cancellationPolicy: z
-      .union([
-        z.literal('FREE_CANCELLATION'),
-        z.literal('FREE_CANCELLATION_24'),
-        z.literal('FREE_CANCELLATION_48'),
-        z.literal('FREE_CANCELLATION_WEEK'),
-        z.literal('NON_REFUNDABLE'),
-        z.literal(null),
-      ])
-      .nullable()
-      .openapi({ description: 'Type of cancellation policy applicable to the rate' }),
-  })
-  .openapi({
-    description: 'Conditions described by the rate plan.',
-    required: ['cancellationPolicy', 'cancellationDeadline'],
-    title: 'Conditions',
-  })
-  .openapi('Conditions')
 
 const DealRequestSchema = z
   .object({
@@ -1263,17 +1662,6 @@ const DealRequestSchema = z
     },
   })
   .openapi('DealRequest')
-
-const ExternalUrlSchema = z
-  .object({
-    name: z
-      .enum(['BOOKING.COM', 'HOTELS.COM'])
-      .exactOptional()
-      .openapi({ description: 'Destination of the external url' }),
-    url: z.string().exactOptional().openapi({ description: 'Value of the external url' }),
-  })
-  .openapi({ required: [] })
-  .openapi('ExternalUrl')
 
 const GenericErrorSchema = z
   .object({
@@ -1547,181 +1935,7 @@ const HotelAgreementSchema = z
   })
   .openapi('HotelAgreement')
 
-const RateSchema = z
-  .object({
-    cancellationPolicies: z
-      .array(CancellationPolicySchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      }),
-    components: z
-      .array(RateComponentSchema)
-      .min(0)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      }),
-    end: z.iso.date().min(1).openapi({ example: '2021-11-23' }),
-    hotelAgreement: HotelAgreementStubSchema,
-    maxOccupancy: z
-      .int()
-      .openapi({ description: 'Maximum number of adults included in the rate.', example: 2 }),
-    rateId: z
-      .string()
-      .min(1)
-      .openapi({
-        example: '3rX3IaqkpJaPlttxoFoM3uDcHJEZCAuByqfBSLUPMvkBGyu7IAlhbxl3rZ7cVmVj6TbXL4EfiHlTA',
-      }),
-    ratePlanId: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rate plan ID that is attached to this rate. Each rate plan ID can specify a unique combination of a cancellation policy and a meal plan.',
-        example: 1,
-      }),
-    retailRate: z
-      .object({
-        taxesAndFees: z
-          .object({
-            includedInRate: z
-              .array(TaxOrFeeSchema)
-              .min(0)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Taxes and fees that are included in the `retailRate.total` price paid at the time of booking.',
-              }),
-            payAtHotel: z
-              .array(TaxOrFeeSchema)
-              .min(0)
-              .exactOptional()
-              .openapi({
-                description:
-                  'Taxes and fees that need to be payed at the hotel (often upon arrival or departure). This frequently happens for fees that only need to be collected based on certain conditions (e.g. a guest coming from abroad or being older than a certain age).',
-              }),
-          })
-          .openapi({
-            description:
-              'Breakdown of taxes (e.g. VAT, city tax) and fees (e.g. cleaning or resort fees).',
-            required: [],
-          }),
-        total: MoneySchema,
-      })
-      .openapi({
-        description:
-          "The public retail rate you should quote and charge your guest. You're not allowed to quote or charge an amount lower than this if your website or app is publicly accessible.",
-        required: ['total', 'taxesAndFees'],
-      }),
-    roomsSellable: z
-      .number()
-      .exactOptional()
-      .openapi({
-        description:
-          'Amount of rooms which can be sold for this occupancy level and room type at this rate price.',
-      }),
-    sellerCommissionPercentage: z
-      .float32()
-      .openapi({
-        description:
-          'The commission percentage you as a seller will earn from this booking, based on `retailRate.total`.',
-        example: 9.5,
-      }),
-    sellerToImpalaPayment: MoneySchema.exactOptional().openapi({
-      description:
-        "This is the amount payable to the hotel, which Impala will collect from you on the hotel's behalf. The Impala fee will be requested in addition to this, and also documented in a VAT invoice.",
-    }),
-    start: z.iso.date().min(1).openapi({ example: '2021-11-20' }),
-  })
-  .openapi({
-    description:
-      'Information on the price of the room, other components of the room (such as breakfast, lunch or a welcome drink) and the cancellation policies that apply.',
-    required: [
-      'rateId',
-      'start',
-      'end',
-      'hotelAgreement',
-      'maxOccupancy',
-      'retailRate',
-      'sellerCommissionPercentage',
-      'components',
-      'cancellationPolicies',
-    ],
-    title: 'Room rate',
-    'x-examples': {
-      Example: {
-        cancellationPolicies: [
-          {
-            end: '2020-12-17 23:59:59.999',
-            fee: {
-              count: 100,
-              price: { amount: 9500, currency: { code: 'EUR' } },
-              type: 'PERCENTAGE',
-            },
-            formatted: 'Non-refundable after October 19, 2021 00:00',
-            start: '2020-12-15 23:59:59.999',
-          },
-        ],
-        components: [{ formatted: 'Breakfast', includedInRate: true, type: 'BREAKFAST' }],
-        end: '2021-11-23',
-        rateId: 'dBFo',
-        ratePlanId: 1,
-        retailRate: { total: { amount: 9500, currency: { code: 'EUR' } } },
-        roomsSellable: 100,
-        sellerCommissionPercentage: 9.5,
-        sellerToImpalaPayment: { amount: 8598, currency: { code: 'EUR' } },
-        start: '2021-11-20',
-      },
-    },
-  })
-  .openapi('Rate')
-
-const RoomTypeSchema = z
-  .object({
-    amenities: z.array(AmenitySchema),
-    description: z
-      .string()
-      .openapi({
-        description: 'Description',
-        example: 'Modern room with plenty of natural light and modern furniture.',
-      }),
-    images: z.array(ImageSchema).openapi({ description: 'Lists photos of this room type' }),
-    maxOccupancy: z
-      .int()
-      .openapi({ description: 'Maximum number of adults that can occupy the room.', example: 4 }),
-    name: z.string().openapi({ description: 'Name', example: 'Standard Room' }),
-    rates: z
-      .array(RateSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Bookable rates for this room type and the start and end dates of your availability search.',
-      }),
-    roomTypeId: z
-      .uuid()
-      .openapi({
-        description: 'Unique identifier of the room type within the Impala platform.',
-        example: 'd5b192ce-c45f-46da-abf5-3880b429b7cc',
-      }),
-  })
-  .openapi({
-    description: 'Bookable category of bookable rooms within a hotel',
-    required: ['roomTypeId', 'name', 'description', 'maxOccupancy', 'amenities', 'images'],
-    title: 'Room type',
-  })
-  .openapi('RoomType')
-
-const HotelFullDetailSchema = z
+const HotelFullDetailSchema: z.ZodType<HotelFullDetailType> = z
   .object({
     address: AddressSchema,
     amenities: z.array(AmenitySchema),
@@ -1870,165 +2084,7 @@ const PaginationSchema = z
   })
   .openapi('Pagination')
 
-const RateAdjustmentSchema = z
-  .object({
-    adjustmentId: z
-      .uuid()
-      .exactOptional()
-      .openapi({ description: 'Unique identifier of this rate adjustment.' }),
-    amount: z
-      .number()
-      .min(0)
-      .max(100)
-      .openapi({ description: 'The percentage discount between 0 and 100.', example: 5 }),
-    conditions: z
-      .array(AdjustmentConditionLengthOfStayRuleSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({ description: 'A list of conditions for the adjustment to apply.' }),
-    type: z.literal('PERCENTAGE').openapi({ description: 'The adjustment type.' }),
-  })
-  .openapi({ required: ['amount', 'type', 'conditions'], title: 'Adjustment' })
-  .openapi('RateAdjustment')
-
-const RatePlanRestrictionsSchema = z
-  .object({
-    lengthOfStay: z
-      .object({
-        max: z
-          .number()
-          .exactOptional()
-          .openapi({
-            description:
-              'The maximum number of nights (inclusive) a guest can stay to be eligible for this rate plan.',
-          }),
-        min: z
-          .number()
-          .openapi({
-            description:
-              'The minimum number of nights (inclusive) a guest has to stay to be eligible for this rate plan.',
-          }),
-      })
-      .openapi({
-        description:
-          'Determines the length of stay in nights for which this rate plan can be booked.',
-        required: ['min'],
-      }),
-  })
-  .openapi({
-    description: 'Restrictions that apply to this rate plan.',
-    required: ['lengthOfStay'],
-    title: 'Rate plan restrictions',
-    'x-examples': {},
-  })
-  .openapi('RatePlanRestrictions')
-
-const RatePlanRateSchema = z
-  .object({
-    adults: z
-      .number()
-      .min(1)
-      .openapi({ description: 'The number of adults in the room for which this price applies.' }),
-    retailRate: MoneySchema,
-    roomsSellable: z
-      .number()
-      .openapi({
-        description:
-          'Amount of room which can be sold for this occupancy level and room type at this rate price.',
-      }),
-  })
-  .openapi({
-    required: ['adults', 'roomsSellable', 'retailRate'],
-    title: 'Rate plans: rate price for date',
-  })
-  .openapi('RatePlanRate')
-
-const RatesPerDateSchema = z
-  .object({
-    closed: z
-      .boolean()
-      .openapi({
-        description: 'Determines whether the rate is available for a stay including this date.',
-      }),
-    closedToArrival: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Determines whether the rate is available if the arrival falls on this date.',
-      }),
-    closedToDeparture: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines whether the rate is available if the departure falls on this date.',
-      }),
-    date: z.string().min(1).openapi({ description: '' }),
-    rates: z
-      .array(RatePlanRateSchema)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({ description: 'Rate prices for each occupancy the room can accommodate.' }),
-    staythrough: z
-      .object({ min: z.number().openapi({ description: 'Expressed in minimum value.' }) })
-      .exactOptional()
-      .openapi({
-        description:
-          'The minimum number of nights (inclusive) that the guest has to book which include the date to be eligible for this rate.',
-        required: ['min'],
-      }),
-  })
-  .openapi({
-    required: ['date', 'rates', 'closed'],
-    title: 'Rate plans: Rates available for a date',
-    'x-examples': {},
-  })
-  .openapi('RatesPerDate')
-
-const RatePlanRoomTypeSchema = z
-  .object({
-    dates: z
-      .array(RatesPerDateSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({
-        description:
-          'A list of future dates and their rate prices for this rate plan and room type.',
-      }),
-    maxOccupancy: z
-      .number()
-      .min(1)
-      .openapi({ description: 'Number of adults that the room can accommodate.' }),
-    name: z
-      .string()
-      .min(1)
-      .openapi({ description: 'Formatted room type name.', example: 'Junior Suite' }),
-    roomTypeId: z.uuid().min(1).openapi({ description: 'Unique identifier of this room type.' }),
-  })
-  .openapi({ required: ['roomTypeId', 'name', 'maxOccupancy', 'dates'], title: 'RoomType' })
-  .openapi('RatePlanRoomType')
-
-const RatePlanSchema = z
+const RatePlanSchema: z.ZodType<RatePlanType> = z
   .object({
     adjustments: z
       .array(RateAdjustmentSchema)
@@ -6797,7 +6853,7 @@ export const getBookingsRoute = createRoute({
       .pipe(
         z.object({
           start: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -6819,7 +6875,7 @@ export const getBookingsRoute = createRoute({
               },
             }),
           end: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -6841,7 +6897,7 @@ export const getBookingsRoute = createRoute({
               },
             }),
           created: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -6863,7 +6919,7 @@ export const getBookingsRoute = createRoute({
               },
             }),
           updated: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -7869,7 +7925,7 @@ export const getHotelsRoute = createRoute({
       .pipe(
         z.object({
           name: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -7885,7 +7941,7 @@ export const getHotelsRoute = createRoute({
               },
             }),
           starRating: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -7901,7 +7957,7 @@ export const getHotelsRoute = createRoute({
               },
             }),
           country: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -8055,7 +8111,7 @@ export const getHotelsRoute = createRoute({
               ],
             }),
           created: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -8077,7 +8133,7 @@ export const getHotelsRoute = createRoute({
               },
             }),
           updated: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -8520,7 +8576,7 @@ export const getHotelsHotelIdRatePlansRoute = createRoute({
       .pipe(
         z.object({
           updatedAt: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {
@@ -8797,7 +8853,7 @@ export const getHotelsHotelIdRatePlansRatePlanIdRoute = createRoute({
       .pipe(
         z.object({
           updatedAt: z
-            .object({})
+            .looseObject({})
             .exactOptional()
             .openapi({
               param: {

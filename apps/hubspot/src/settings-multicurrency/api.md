@@ -28,12 +28,6 @@ Base URLs:
 |settings.currencies.read||
 |settings.currencies.write||
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
-
 <h1 id="settings-multicurrency-basic">Basic</h1>
 
 ## Get all currency codes

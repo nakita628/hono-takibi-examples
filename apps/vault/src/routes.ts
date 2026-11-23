@@ -317,7 +317,7 @@ const AppRoleLookUpSecretIdByAccessorResponseSchema = z
     creation_time: z.iso.datetime({ offset: true }).exactOptional(),
     expiration_time: z.iso.datetime({ offset: true }).exactOptional(),
     last_updated_time: z.iso.datetime({ offset: true }).exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     secret_id_accessor: z
       .string()
       .exactOptional()
@@ -366,7 +366,7 @@ const AppRoleLookUpSecretIdResponseSchema = z
     creation_time: z.iso.datetime({ offset: true }).exactOptional(),
     expiration_time: z.iso.datetime({ offset: true }).exactOptional(),
     last_updated_time: z.iso.datetime({ offset: true }).exactOptional(),
-    metadata: z.object({}).exactOptional(),
+    metadata: z.looseObject({}).exactOptional(),
     secret_id_accessor: z
       .string()
       .exactOptional()
@@ -1140,7 +1140,7 @@ const AuditingEnableDeviceRequestSchema = z
           'Mark the mount as a local mount, which is not replicated and is unaffected by replication.',
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Configuration options for the audit backend.' }),
     type: z
@@ -1157,14 +1157,14 @@ const AuditingEnableRequestHeaderRequestSchema = z
   .openapi('AuditingEnableRequestHeaderRequest')
 
 const AuditingListRequestHeadersResponseSchema = z
-  .object({ headers: z.object({}).exactOptional() })
+  .object({ headers: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('AuditingListRequestHeadersResponse')
 
 const AuthEnableMethodRequestSchema = z
   .object({
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Configuration for this mount, such as plugin_name.' }),
     description: z
@@ -1185,7 +1185,7 @@ const AuthEnableMethodRequestSchema = z
           'Mark the mount as a local mount, which is not replicated and is unaffected by replication.',
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1220,12 +1220,12 @@ const AuthEnableMethodRequestSchema = z
 const AuthReadConfigurationResponseSchema = z
   .object({
     accessor: z.string().exactOptional(),
-    config: z.object({}).exactOptional(),
+    config: z.looseObject({}).exactOptional(),
     deprecation_status: z.string().exactOptional(),
     description: z.string().exactOptional(),
     external_entropy_access: z.boolean().exactOptional(),
     local: z.boolean().exactOptional(),
-    options: z.object({}).exactOptional(),
+    options: z.looseObject({}).exactOptional(),
     plugin_version: z.string().exactOptional(),
     running_plugin_version: z.string().exactOptional(),
     running_sha256: z.string().exactOptional(),
@@ -1248,7 +1248,7 @@ const AuthReadTuningInformationResponseSchema = z
     force_no_cache: z.boolean().exactOptional(),
     listing_visibility: z.string().exactOptional(),
     max_lease_ttl: z.int().exactOptional(),
-    options: z.object({}).exactOptional(),
+    options: z.looseObject({}).exactOptional(),
     passthrough_request_headers: z.array(z.string()).exactOptional(),
     plugin_version: z.string().exactOptional(),
     token_type: z.string().exactOptional(),
@@ -1335,7 +1335,7 @@ const AuthTuneConfigurationParametersRequestSchema = z
       .exactOptional()
       .openapi({ description: 'The max lease TTL for this mount.' }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -1359,7 +1359,7 @@ const AuthTuneConfigurationParametersRequestSchema = z
       .exactOptional()
       .openapi({ description: 'The type of token to issue (service or batch).' }),
     user_lockout_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -2089,7 +2089,7 @@ const AwsWriteRoleRequestSchema = z
         'x-vault-displayAttrs': { name: 'IAM Groups', value: 'group1,group2' },
       }),
     iam_tags: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3379,11 +3379,11 @@ const CloudFoundryWriteRoleRequestSchema = z
 
 const CollectHostInformationResponseSchema = z
   .object({
-    cpu: z.array(z.object({})).exactOptional(),
-    cpu_times: z.array(z.object({})).exactOptional(),
-    disk: z.array(z.object({})).exactOptional(),
-    host: z.object({}).exactOptional(),
-    memory: z.object({}).exactOptional(),
+    cpu: z.array(z.looseObject({})).exactOptional(),
+    cpu_times: z.array(z.looseObject({})).exactOptional(),
+    disk: z.array(z.looseObject({})).exactOptional(),
+    host: z.looseObject({}).exactOptional(),
+    memory: z.looseObject({}).exactOptional(),
     timestamp: z.iso.datetime({ offset: true }).exactOptional(),
   })
   .openapi({ required: [] })
@@ -3597,7 +3597,7 @@ const DatabaseWriteRoleRequestSchema = z
           "Specifies the database statements executed to create and configure a user. See the plugin's API page for more information on support and formatting for this parameter.",
       }),
     credential_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The configuration for the given credential_type.' }),
     credential_type: z
@@ -3645,7 +3645,7 @@ const DatabaseWriteRoleRequestSchema = z
 const DatabaseWriteStaticRoleRequestSchema = z
   .object({
     credential_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'The configuration for the given credential_type.' }),
     credential_type: z
@@ -3781,7 +3781,7 @@ const EntityCreateAliasRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Entity ID to which this alias belongs' }),
     custom_metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'User provided key-value pairs' }),
     entity_id: z
@@ -3827,7 +3827,7 @@ const EntityCreateRequestSchema = z
         description: 'ID of the entity. If set, updates the corresponding existing entity.',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3900,7 +3900,7 @@ const EntityUpdateAliasByIdRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Entity ID to which this alias should be tied to' }),
     custom_metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'User provided key-value pairs' }),
     entity_id: z
@@ -3926,7 +3926,7 @@ const EntityUpdateByIdRequestSchema = z
           'If set true, tokens tied to this identity will not be able to be used (but will not be revoked).',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -3957,7 +3957,7 @@ const EntityUpdateByNameRequestSchema = z
         description: 'ID of the entity. If set, updates the corresponding existing entity.',
       }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4286,7 +4286,7 @@ const GoogleCloudConfigureAuthRequestSchema = z
         'x-vault-displayAttrs': { name: 'Credentials' },
       }),
     custom_endpoint: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -4679,7 +4679,7 @@ const GoogleCloudKmsWriteKeyRequestSchema = z
           'Full Google Cloud resource ID of the key ring with the project and location (e.g. projects/my-project/locations/global/keyRings/my-keyring). If the given key ring does not exist, Vault will try to create it during a create operation.',
       }),
     labels: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5045,7 +5045,7 @@ const GroupCreateRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Group IDs to be assigned as group members.' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5115,7 +5115,7 @@ const GroupUpdateByIdRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Group IDs to be assigned as group members.' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5153,7 +5153,7 @@ const GroupUpdateByNameRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Group IDs to be assigned as group members.' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -5174,7 +5174,7 @@ const GroupUpdateByNameRequestSchema = z
   .openapi('GroupUpdateByNameRequest')
 
 const HaStatusResponseSchema = z
-  .object({ nodes: z.array(z.object({})).exactOptional() })
+  .object({ nodes: z.array(z.looseObject({})).exactOptional() })
   .openapi({ required: [] })
   .openapi('HaStatusResponse')
 
@@ -5261,12 +5261,12 @@ const InternalClientActivityConfigureRequestSchema = z
   .openapi('InternalClientActivityConfigureRequest')
 
 const InternalCountEntitiesResponseSchema = z
-  .object({ counters: z.object({}).exactOptional() })
+  .object({ counters: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('InternalCountEntitiesResponse')
 
 const InternalCountTokensResponseSchema = z
-  .object({ counters: z.object({}).exactOptional() })
+  .object({ counters: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('InternalCountTokensResponse')
 
@@ -5292,8 +5292,8 @@ const InternalUiListEnabledFeatureFlagsResponseSchema = z
 
 const InternalUiListEnabledVisibleMountsResponseSchema = z
   .object({
-    auth: z.object({}).exactOptional().openapi({ description: 'auth mounts' }),
-    secret: z.object({}).exactOptional().openapi({ description: 'secret mounts' }),
+    auth: z.looseObject({}).exactOptional().openapi({ description: 'auth mounts' }),
+    secret: z.looseObject({}).exactOptional().openapi({ description: 'secret mounts' }),
   })
   .openapi({ required: [] })
   .openapi('InternalUiListEnabledVisibleMountsResponse')
@@ -5311,11 +5311,11 @@ const InternalUiListNamespacesResponseSchema = z
 const InternalUiReadMountInformationResponseSchema = z
   .object({
     accessor: z.string().exactOptional(),
-    config: z.object({}).exactOptional(),
+    config: z.looseObject({}).exactOptional(),
     description: z.string().exactOptional(),
     external_entropy_access: z.boolean().exactOptional(),
     local: z.boolean().exactOptional(),
-    options: z.object({}).exactOptional(),
+    options: z.looseObject({}).exactOptional(),
     path: z.string().exactOptional(),
     plugin_version: z.string().exactOptional(),
     running_plugin_version: z.string().exactOptional(),
@@ -5329,8 +5329,8 @@ const InternalUiReadMountInformationResponseSchema = z
 
 const InternalUiReadResultantAclResponseSchema = z
   .object({
-    exact_paths: z.object({}).exactOptional(),
-    glob_paths: z.object({}).exactOptional(),
+    exact_paths: z.looseObject({}).exactOptional(),
+    glob_paths: z.looseObject({}).exactOptional(),
     root: z.boolean().exactOptional(),
   })
   .openapi({ required: [] })
@@ -5424,7 +5424,7 @@ const JwtConfigureRequestSchema = z
           "The response types to request. Allowed values are 'code' and 'id_token'. Defaults to 'code'.",
       }),
     provider_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Provider-specific configuration. Optional.',
@@ -5494,7 +5494,7 @@ const JwtWriteRoleRequestSchema = z
         deprecated: true,
       }),
     bound_claims: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Map of claims/values which must match for login' }),
     bound_claims_type: z
@@ -5510,7 +5510,7 @@ const JwtWriteRoleRequestSchema = z
       .exactOptional()
       .openapi({ description: "The 'sub' claim that is valid for login. Optional." }),
     claim_mappings: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Mappings of claims (key) that will be copied to a metadata field (value)',
@@ -6379,13 +6379,13 @@ const KubernetesWriteRoleRequestSchema = z
           'A list of the Kubernetes namespaces in which credentials can be generated. If set to "*" all namespaces are allowed.',
       }),
     extra_annotations: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Additional annotations to apply to all generated Kubernetes objects.',
       }),
     extra_labels: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Additional labels to apply to all generated Kubernetes objects.' }),
     generated_role_rules: z
@@ -6495,7 +6495,7 @@ const KvV2DestroyVersionsRequestSchema = z
 const KvV2PatchResponseSchema = z
   .object({
     created_time: z.iso.datetime({ offset: true }).exactOptional(),
-    custom_metadata: z.object({}).exactOptional(),
+    custom_metadata: z.looseObject({}).exactOptional(),
     deletion_time: z.string().exactOptional(),
     destroyed: z.boolean().exactOptional(),
     version: z
@@ -6551,7 +6551,7 @@ const KvV2ReadMetadataResponseSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     custom_metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -6586,18 +6586,21 @@ const KvV2ReadMetadataResponseSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64' }),
     updated_time: z.iso.datetime({ offset: true }).exactOptional(),
-    versions: z.object({}).exactOptional(),
+    versions: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('KvV2ReadMetadataResponse')
 
 const KvV2ReadResponseSchema = z
-  .object({ data: z.object({}).exactOptional(), metadata: z.object({}).exactOptional() })
+  .object({ data: z.looseObject({}).exactOptional(), metadata: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('KvV2ReadResponse')
 
 const KvV2ReadSubkeysResponseSchema = z
-  .object({ metadata: z.object({}).exactOptional(), subkeys: z.object({}).exactOptional() })
+  .object({
+    metadata: z.looseObject({}).exactOptional(),
+    subkeys: z.looseObject({}).exactOptional(),
+  })
   .openapi({ required: [] })
   .openapi('KvV2ReadSubkeysResponse')
 
@@ -6624,7 +6627,7 @@ const KvV2WriteMetadataRequestSchema = z
           'If true the key will require the cas parameter to be set on all write requests. If false, the backend’s configuration will be used.',
       }),
     custom_metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -6651,13 +6654,13 @@ const KvV2WriteMetadataRequestSchema = z
 const KvV2WriteRequestSchema = z
   .object({
     data: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'The contents of the data map will be stored and returned on read.',
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -6676,7 +6679,7 @@ const KvV2WriteRequestSchema = z
 const KvV2WriteResponseSchema = z
   .object({
     created_time: z.iso.datetime({ offset: true }).exactOptional(),
-    custom_metadata: z.object({}).exactOptional(),
+    custom_metadata: z.looseObject({}).exactOptional(),
     deletion_time: z.string().exactOptional(),
     destroyed: z.boolean().exactOptional(),
     version: z
@@ -8049,7 +8052,7 @@ const MfaUpdateTotpMethodRequestSchema = z
 const MfaValidateRequestSchema = z
   .object({
     mfa_payload: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'A map from MFA method ID to a slice of passcodes or an empty slice if the method does not use passcodes',
@@ -8153,7 +8156,7 @@ const MongoDbAtlasWriteRoleRequestSchema = z
 const MountsEnableSecretsEngineRequestSchema = z
   .object({
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Configuration for this mount, such as default_lease_ttl and max_lease_ttl.',
@@ -8176,7 +8179,7 @@ const MountsEnableSecretsEngineRequestSchema = z
           'Mark the mount as a local mount, which is not replicated and is unaffected by replication.',
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -8213,7 +8216,7 @@ const MountsReadConfigurationResponseSchema = z
   .object({
     accessor: z.string().exactOptional(),
     config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'Configuration for this mount, such as default_lease_ttl and max_lease_ttl.',
@@ -8233,7 +8236,7 @@ const MountsReadConfigurationResponseSchema = z
           'Mark the mount as a local mount, which is not replicated and is unaffected by replication.',
       }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -8289,7 +8292,7 @@ const MountsReadTuningInformationResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The max lease TTL for this mount.' }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -8391,7 +8394,7 @@ const MountsTuneConfigurationParametersRequestSchema = z
       .exactOptional()
       .openapi({ description: 'The max lease TTL for this mount.' }),
     options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -8415,7 +8418,7 @@ const MountsTuneConfigurationParametersRequestSchema = z
       .exactOptional()
       .openapi({ description: 'The type of token to issue (service or batch).' }),
     user_lockout_config: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -9081,7 +9084,7 @@ const PersonaCreateRequestSchema = z
       .openapi({ description: 'Entity ID to which this persona belongs to' }),
     id: z.string().exactOptional().openapi({ description: 'ID of the persona' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -9103,7 +9106,7 @@ const PersonaUpdateByIdRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Entity ID to which this persona should be tied to' }),
     metadata: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -9407,7 +9410,7 @@ const PkiConfigureCaResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Net-new keys imported as a part of this request' }),
     mapping: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A mapping of issuer_id to key_id for all issuers included in this request',
@@ -11321,7 +11324,7 @@ const PkiIssuerSignRevocationListRequestSchema = z
           'Using a zero or greater value specifies the base CRL revision number to encode within a Delta CRL indicator extension, otherwise the extension will not be added.',
       }),
     extensions: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -11343,7 +11346,7 @@ const PkiIssuerSignRevocationListRequestSchema = z
         description: 'The amount of time the generated CRL should be valid; defaults to 72 hours.',
       }),
     revoked_certs: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -12411,7 +12414,7 @@ const PkiIssuersImportBundleResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Net-new keys imported as a part of this request' }),
     mapping: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A mapping of issuer_id to key_id for all issuers included in this request',
@@ -12455,7 +12458,7 @@ const PkiIssuersImportCertResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Net-new keys imported as a part of this request' }),
     mapping: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A mapping of issuer_id to key_id for all issuers included in this request',
@@ -12467,7 +12470,7 @@ const PkiIssuersImportCertResponseSchema = z
 const PkiListEabKeysResponseSchema = z
   .object({
     key_info: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'EAB details keyed by the eab key id' }),
     keys: z.array(z.string()).exactOptional().openapi({ description: 'A list of unused eab keys' }),
@@ -12477,7 +12480,10 @@ const PkiListEabKeysResponseSchema = z
 
 const PkiListIssuersResponseSchema = z
   .object({
-    key_info: z.object({}).exactOptional().openapi({ description: 'Key info with issuer name' }),
+    key_info: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Key info with issuer name' }),
     keys: z.array(z.string()).exactOptional().openapi({ description: 'A list of keys' }),
   })
   .openapi({ required: [] })
@@ -12485,7 +12491,10 @@ const PkiListIssuersResponseSchema = z
 
 const PkiListKeysResponseSchema = z
   .object({
-    key_info: z.object({}).exactOptional().openapi({ description: 'Key info with issuer name' }),
+    key_info: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Key info with issuer name' }),
     keys: z.array(z.string()).exactOptional().openapi({ description: 'A list of keys' }),
   })
   .openapi({ required: [] })
@@ -14621,7 +14630,7 @@ const PkiSetSignedIntermediateResponseSchema = z
       .exactOptional()
       .openapi({ description: 'Net-new keys imported as a part of this request' }),
     mapping: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A mapping of issuer_id to key_id for all issuers included in this request',
@@ -16906,7 +16915,7 @@ const PkiWriteRolesRoleAcmeRevokeCertRequestSchema = z
   .openapi('PkiWriteRolesRoleAcmeRevokeCertRequest')
 
 const PluginsCatalogListPluginsResponseSchema = z
-  .object({ detailed: z.object({}).exactOptional() })
+  .object({ detailed: z.looseObject({}).exactOptional() })
   .openapi({ required: [] })
   .openapi('PluginsCatalogListPluginsResponse')
 
@@ -17117,7 +17126,7 @@ const PluginsReloadBackendsResponseSchema = z
 const PluginsRuntimesCatalogListPluginsRuntimesResponseSchema = z
   .object({
     runtimes: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({ description: 'List of all plugin runtimes in the catalog' }),
   })
@@ -17836,8 +17845,8 @@ const RekeyAttemptUpdateResponseSchema = z
 
 const RekeyReadBackupKeyResponseSchema = z
   .object({
-    keys: z.object({}).exactOptional(),
-    keys_base64: z.object({}).exactOptional(),
+    keys: z.looseObject({}).exactOptional(),
+    keys_base64: z.looseObject({}).exactOptional(),
     nonce: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -17845,8 +17854,8 @@ const RekeyReadBackupKeyResponseSchema = z
 
 const RekeyReadBackupRecoveryKeyResponseSchema = z
   .object({
-    keys: z.object({}).exactOptional(),
-    keys_base64: z.object({}).exactOptional(),
+    keys: z.looseObject({}).exactOptional(),
+    keys_base64: z.looseObject({}).exactOptional(),
     nonce: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -17909,7 +17918,7 @@ const RemountResponseSchema = z
 const RemountStatusResponseSchema = z
   .object({
     migration_id: z.string().exactOptional(),
-    migration_info: z.object({}).exactOptional(),
+    migration_info: z.looseObject({}).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('RemountStatusResponse')
@@ -18129,11 +18138,11 @@ const SshIssueCertificateRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Type of certificate to be created; either "user" or "host".' }),
     critical_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Critical options that the certificate should be signed for.' }),
     extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Extensions that the certificate should be signed for.' }),
     key_bits: z
@@ -18186,11 +18195,11 @@ const SshSignCertificateRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Type of certificate to be created; either "user" or "host".' }),
     critical_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Critical options that the certificate should be signed for.' }),
     extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Extensions that the certificate should be signed for.' }),
     key_id: z
@@ -18310,7 +18319,7 @@ const SshWriteRoleRequestSchema = z
           "[Not applicable for OTP type] [Optional for CA type] A comma-separated list of extensions that certificates can have when signed. An empty list means that no extension overrides are allowed by an end-user; explicitly specify '*' to allow any extensions to be set.",
       }),
     allowed_user_key_lengths: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -18340,14 +18349,14 @@ const SshWriteRoleRequestSchema = z
         'x-vault-displayAttrs': { name: 'CIDR List' },
       }),
     default_critical_options: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           '[Not applicable for OTP type] [Optional for CA type] Critical options certificates should have if none are provided when signing. This field takes in key value pairs in JSON format. Note that these are not restricted by "allowed_critical_options". Defaults to none.',
       }),
     default_extensions: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -18527,7 +18536,7 @@ const TokenCreateAgainstRoleRequestSchema = z
       .exactOptional()
       .openapi({ description: "Use 'ttl' instead", deprecated: true }),
     meta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Arbitrary key=value metadata to associate with the token' }),
     no_default_policy: z
@@ -18578,7 +18587,7 @@ const TokenCreateOrphanRequestSchema = z
       .exactOptional()
       .openapi({ description: "Use 'ttl' instead", deprecated: true }),
     meta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Arbitrary key=value metadata to associate with the token' }),
     no_default_policy: z
@@ -18629,7 +18638,7 @@ const TokenCreateRequestSchema = z
       .exactOptional()
       .openapi({ description: "Use 'ttl' instead", deprecated: true }),
     meta: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'Arbitrary key=value metadata to associate with the token' }),
     no_default_policy: z
@@ -19134,7 +19143,7 @@ const TransitDecryptRequestSchema = z
           'When using an AEAD cipher mode, such as AES-GCM, this parameter allows passing associated data (AD/AAD) into the encryption function; this data must be passed on subsequent decryption requests but can be transited in plaintext. On successful decryption, both the ciphertext and the associated data are attested not to have been tampered with.',
       }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19179,7 +19188,7 @@ const TransitEncryptRequestSchema = z
           'When using an AEAD cipher mode, such as AES-GCM, this parameter allows passing associated data (AD/AAD) into the encryption function; this data must be passed on subsequent decryption requests but can be transited in plaintext. On successful decryption, both the ciphertext and the associated data are attested not to have been tampered with.',
       }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19295,7 +19304,7 @@ const TransitGenerateHmacRequestSchema = z
           'Algorithm to use (POST body parameter). Valid values are: * sha2-224 * sha2-256 * sha2-384 * sha2-512 * sha3-224 * sha3-256 * sha3-384 * sha3-512 Defaults to "sha2-256".',
       }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19324,7 +19333,7 @@ const TransitGenerateHmacWithAlgorithmRequestSchema = z
           'Algorithm to use (POST body parameter). Valid values are: * sha2-224 * sha2-256 * sha2-384 * sha2-512 * sha3-224 * sha3-256 * sha3-384 * sha3-512 Defaults to "sha2-256".',
       }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19628,7 +19637,7 @@ const TransitRestoreKeyRequestSchema = z
 const TransitRewrapRequestSchema = z
   .object({
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19698,7 +19707,7 @@ const TransitSignRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Deprecated: use "hash_algorithm" instead.' }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19769,7 +19778,7 @@ const TransitSignWithAlgorithmRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Deprecated: use "hash_algorithm" instead.' }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19853,7 +19862,7 @@ const TransitVerifyRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Deprecated: use "hash_algorithm" instead.' }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -19928,7 +19937,7 @@ const TransitVerifyWithAlgorithmRequestSchema = z
       .exactOptional()
       .openapi({ description: 'Deprecated: use "hash_algorithm" instead.' }),
     batch_input: z
-      .array(z.object({}))
+      .array(z.looseObject({}))
       .exactOptional()
       .openapi({
         description:
@@ -20247,7 +20256,10 @@ const UserpassWriteUserRequestSchema = z
   .openapi('UserpassWriteUserRequest')
 
 const VersionHistoryResponseSchema = z
-  .object({ key_info: z.object({}).exactOptional(), keys: z.array(z.string()).exactOptional() })
+  .object({
+    key_info: z.looseObject({}).exactOptional(),
+    keys: z.array(z.string()).exactOptional(),
+  })
   .openapi({ required: [] })
   .openapi('VersionHistoryResponse')
 

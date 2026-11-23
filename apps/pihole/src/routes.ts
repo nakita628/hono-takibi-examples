@@ -868,6 +868,72 @@ export const deleteAuthSessionIdRoute = createRoute({
         },
       },
     },
+    403: {
+      description: 'Forbidden (app session without `webserver.api.app_sudo`, or CLI session)',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .object({
+                  key: z
+                    .string()
+                    .exactOptional()
+                    .openapi({ description: 'Machine-readable error type', example: 'forbidden' }),
+                  message: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Human-readable error message',
+                      example: 'Unable to change configuration (read-only)',
+                    }),
+                  hint: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Further details',
+                      example:
+                        'The current CLI session is not allowed to modify Pi-hole config settings',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({
+              description:
+                'Forbidden (the session is authenticated but not allowed to perform this action)',
+              required: [],
+            })
+            .and(
+              z
+                .object({
+                  took: z
+                    .number()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Time in seconds it took to process the request',
+                      example: 0.003,
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
+          examples: {
+            limited_session: {
+              summary: 'Forbidden (limited session)',
+              value: {
+                error: {
+                  key: 'forbidden',
+                  message: 'Unable to delete session',
+                  hint: 'App sessions without webserver.api.app_sudo and CLI sessions cannot delete sessions',
+                },
+                took: 0.003,
+              },
+            },
+          },
+        },
+      },
+    },
     404: {
       description: 'Not Found (session not found)',
       content: {
@@ -1074,6 +1140,72 @@ export const getAuthSessionsRoute = createRoute({
                 })
                 .openapi({ required: [] }),
             ),
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden (app session without `webserver.api.app_sudo`, or CLI session)',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .object({
+                  key: z
+                    .string()
+                    .exactOptional()
+                    .openapi({ description: 'Machine-readable error type', example: 'forbidden' }),
+                  message: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Human-readable error message',
+                      example: 'Unable to change configuration (read-only)',
+                    }),
+                  hint: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Further details',
+                      example:
+                        'The current CLI session is not allowed to modify Pi-hole config settings',
+                    }),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({
+              description:
+                'Forbidden (the session is authenticated but not allowed to perform this action)',
+              required: [],
+            })
+            .and(
+              z
+                .object({
+                  took: z
+                    .number()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Time in seconds it took to process the request',
+                      example: 0.003,
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
+          examples: {
+            limited_session: {
+              summary: 'Forbidden (limited session)',
+              value: {
+                error: {
+                  key: 'forbidden',
+                  message: 'Unable to list sessions',
+                  hint: 'App sessions without webserver.api.app_sudo and CLI sessions cannot list sessions',
+                },
+                took: 0.003,
+              },
+            },
+          },
         },
       },
     },
@@ -5793,13 +5925,10 @@ export const postDomainsTypeKindRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'Location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created resource', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created resource', param: { required: false } }),
       }),
     },
     400: {
@@ -6500,13 +6629,10 @@ export const putGroupsNameRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'Location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created resource', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created resource', param: { required: false } }),
       }),
     },
     400: {
@@ -7164,13 +7290,10 @@ export const postGroupsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'Location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created resource', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created resource', param: { required: false } }),
       }),
     },
     400: {
@@ -8588,13 +8711,10 @@ export const postClientsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'Location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created resource', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created resource', param: { required: false } }),
       }),
     },
     400: {
@@ -10448,13 +10568,10 @@ export const postListsRoute = createRoute({
         },
       },
       headers: z.object({
-        Location: {
-          description: 'Location of created resource',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ description: 'Location of created resource', param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Location of created resource', param: { required: false } }),
       }),
     },
     400: {
@@ -10921,17 +11038,11 @@ export const getInfoSystemRoute = createRoute({
                           raw: z
                             .array(z.number())
                             .exactOptional()
-                            .openapi({
-                              description: 'raw values',
-                              example: [0.58837890625, 0.64990234375, 0.66748046875],
-                            }),
+                            .openapi({ description: 'raw values', example: [0.58, 0.65, 0.67] }),
                           percent: z
                             .array(z.number())
                             .exactOptional()
-                            .openapi({
-                              description: 'raw values',
-                              example: [4.903157711029053, 5.415853023529053, 5.562337398529053],
-                            }),
+                            .openapi({ description: 'raw values', example: [7.25, 8.125, 8.375] }),
                         })
                         .exactOptional()
                         .openapi({
@@ -19072,6 +19183,67 @@ export const deleteDhcpLeasesIpRoute = createRoute({
         },
       },
     },
+    503: {
+      description: 'The resolver did not remove the lease in time, the request can be repeated',
+      content: {
+        'application/json': {
+          schema: z
+            .object({
+              error: z
+                .object({
+                  key: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Machine-readable error type',
+                      example: 'service_unavailable',
+                    }),
+                  message: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Human-readable error message',
+                      example: 'Failed to delete DHCP lease',
+                    }),
+                  hint: z
+                    .string()
+                    .nullable()
+                    .exactOptional()
+                    .openapi({ description: 'Further details' }),
+                })
+                .exactOptional()
+                .openapi({ required: [] }),
+            })
+            .openapi({ description: 'Service unavailable (temporarily, try again)', required: [] })
+            .and(
+              z
+                .object({
+                  took: z
+                    .number()
+                    .exactOptional()
+                    .openapi({
+                      description: 'Time in seconds it took to process the request',
+                      example: 0.003,
+                    }),
+                })
+                .openapi({ required: [] }),
+            ),
+          examples: {
+            timeout: {
+              summary: 'The resolver did not remove the lease in time',
+              value: {
+                error: {
+                  key: 'service_unavailable',
+                  message: 'Failed to delete DHCP lease',
+                  hint: 'timed out waiting for the resolver to remove the lease',
+                },
+                took: 5.002,
+              },
+            },
+          },
+        },
+      },
+    },
   },
 })
 
@@ -19081,7 +19253,7 @@ export const getSearchDomainRoute = createRoute({
   tags: ['List management'],
   summary: "Search domains in Pi-hole's lists",
   description:
-    "Search for domains in Pi-hole's list. The specified domain is automatically converted to lowercase.\nThe optional parameters `N` and `partial` limit the maximum number of returned records and whether partial matches should be returned, respectively.\nThere is a hard upper limit of `N` defined in FTL (currently set to 10,000) to ensure that the response is not too large.\nABP matches are not returned when partial matching is requested.\nInternational domains names (IDNs) are internally converted to punycode before matching.\n",
+    "Search for domains in Pi-hole's list. The specified domain is automatically converted to lowercase.\nThe optional parameters `N` and `partial` limit the maximum number of returned records and whether partial matches should be returned, respectively.\nThere is a hard upper limit of `N` defined in FTL (currently set to 10,000) to ensure that the response is not too large.\nABP-style entries (`||domain^`) are matched against every parent domain of the search term, for partial and exact searches alike.\nInternational domains names (IDNs) are internally converted to punycode before matching.\n",
   operationId: 'get_search',
   request: {
     params: z.object({
@@ -19860,16 +20032,14 @@ export const getPaddRoute = createRoute({
                                 .exactOptional()
                                 .openapi({
                                   description: 'raw values',
-                                  example: [0.58837890625, 0.64990234375, 0.66748046875],
+                                  example: [0.58, 0.65, 0.67],
                                 }),
                               percent: z
                                 .array(z.number())
                                 .exactOptional()
                                 .openapi({
                                   description: 'raw values',
-                                  example: [
-                                    4.903157711029053, 5.415853023529053, 5.562337398529053,
-                                  ],
+                                  example: [7.25, 8.125, 8.375],
                                 }),
                             })
                             .exactOptional()

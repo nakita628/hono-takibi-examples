@@ -1,91 +1,35 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const AplicativosDeTVSchema = z
-  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
-  .openapi({
-    example: {
-      Link: '/eletronicos/tv/Crackle?map=c,c,specificationFilter_1517',
-      Name: 'Crackle',
-      Quantity: 4,
-    },
-    required: ['Quantity', 'Name', 'Link'],
-    title: 'AplicativosDeTV',
-  })
-  .openapi('AplicativosDeTV')
-
-const BrandSchema = z
-  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
-  .openapi({
-    example: { Link: '/eletronicos/tv/Philips', Name: 'Philips', Quantity: 1 },
-    required: ['Quantity', 'Name', 'Link'],
-    title: 'Brand',
-  })
-  .openapi('Brand')
-
-const Child1Schema = z
+const ImageSchema = z
   .object({
-    Children: z.array(z.string()).openapi({ description: '' }),
-    Link: z.string(),
-    Name: z.string(),
-    Quantity: z.int32(),
-  })
-  .openapi({
-    example: { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
-    required: ['Quantity', 'Name', 'Link', 'Children'],
-    title: 'Child1',
-  })
-  .openapi('Child1')
-
-const ChildSchema = z
-  .object({
-    Children: z.array(Child1Schema).openapi({ description: '' }),
-    Link: z.string(),
-    Name: z.string(),
-    Quantity: z.int32(),
+    imageId: z.string(),
+    imageLabel: z.string(),
+    imageTag: z.string(),
+    imageText: z.string().nullable(),
+    imageUrl: z.string(),
   })
   .openapi({
     example: {
-      Children: [
-        { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
-        { Children: [], Link: '/Eletronicos/TV/Smart-TV', Name: 'Smart TV', Quantity: 14 },
-      ],
-      Link: '/Eletronicos/TV',
-      Name: 'TV',
-      Quantity: 20,
+      imageId: '168969',
+      imageLabel: '',
+      imageTag:
+        '<img src="~/arquivos/ids/168969-#width#-#height#/geladeira.jpg" width="#width#" height="#height#" alt="geladeira" id="" />',
+      imageText: 'geladeira',
+      imageUrl: 'http://ambienteqa.vteximg.com.br/arquivos/ids/168969/geladeira.jpg',
     },
-    required: ['Quantity', 'Name', 'Link', 'Children'],
-    title: 'Child',
+    required: ['imageId', 'imageLabel', 'imageTag', 'imageUrl', 'imageText'],
+    title: 'Image',
   })
-  .openapi('Child')
+  .openapi('Image')
 
-const CategoriesTreeSchema = z
-  .object({
-    Children: z.array(ChildSchema).openapi({ description: '' }),
-    Link: z.string(),
-    Name: z.string(),
-    Quantity: z.int32(),
-  })
+const ReferenceIdSchema = z
+  .object({ Key: z.string(), Value: z.string() })
   .openapi({
-    example: {
-      Children: [
-        {
-          Children: [
-            { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
-            { Children: [], Link: '/Eletronicos/TV/Smart-TV', Name: 'Smart TV', Quantity: 14 },
-          ],
-          Link: '/Eletronicos/TV',
-          Name: 'TV',
-          Quantity: 20,
-        },
-      ],
-      Link: '/Eletronicos',
-      Name: 'Eletrônicos',
-      Quantity: 20,
-    },
-    required: ['Quantity', 'Name', 'Link', 'Children'],
-    title: 'CategoriesTree',
+    example: { Key: 'RefId', Value: '969697' },
+    required: ['Key', 'Value'],
+    title: 'ReferenceId',
   })
-  .openapi('CategoriesTree')
+  .openapi('ReferenceId')
 
 const DeliverySlaPerType2Schema = z
   .object({
@@ -264,46 +208,6 @@ const CommertialOfferSchema = z
   })
   .openapi('CommertialOffer')
 
-const DepartmentSchema = z
-  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
-  .openapi({
-    example: { Link: '/Eletro-Eletronicos', Name: 'Eletro-Eletronicos', Quantity: 20 },
-    required: ['Quantity', 'Name', 'Link'],
-    title: 'Department',
-  })
-  .openapi('Department')
-
-const ImageSchema = z
-  .object({
-    imageId: z.string(),
-    imageLabel: z.string(),
-    imageTag: z.string(),
-    imageText: z.string().nullable(),
-    imageUrl: z.string(),
-  })
-  .openapi({
-    example: {
-      imageId: '168969',
-      imageLabel: '',
-      imageTag:
-        '<img src="~/arquivos/ids/168969-#width#-#height#/geladeira.jpg" width="#width#" height="#height#" alt="geladeira" id="" />',
-      imageText: 'geladeira',
-      imageUrl: 'http://ambienteqa.vteximg.com.br/arquivos/ids/168969/geladeira.jpg',
-    },
-    required: ['imageId', 'imageLabel', 'imageTag', 'imageUrl', 'imageText'],
-    title: 'Image',
-  })
-  .openapi('Image')
-
-const ReferenceIdSchema = z
-  .object({ Key: z.string(), Value: z.string() })
-  .openapi({
-    example: { Key: 'RefId', Value: '969697' },
-    required: ['Key', 'Value'],
-    title: 'ReferenceId',
-  })
-  .openapi('ReferenceId')
-
 const SellerSchema = z
   .object({
     addToCartLink: z.string(),
@@ -318,7 +222,23 @@ const SellerSchema = z
   })
   .openapi('Seller')
 
-const ItemSchema = z
+type ItemType = {
+  COR?: string[]
+  TAMANHO?: string[]
+  complementName: string
+  ean: string
+  images: z.infer<typeof ImageSchema>[]
+  itemId: string
+  measurementUnit: string
+  name: string
+  nameComplete: string
+  referenceId?: z.infer<typeof ReferenceIdSchema>[]
+  sellers: z.infer<typeof SellerSchema>[]
+  unitMultiplier: number
+  variations?: string[]
+}
+
+const ItemSchema: z.ZodType<ItemType> = z
   .object({
     COR: z.array(z.string()).exactOptional().openapi({ description: '' }),
     TAMANHO: z.array(z.string()).exactOptional().openapi({ description: '' }),
@@ -350,33 +270,113 @@ const ItemSchema = z
   })
   .openapi('Item')
 
-const ExampleSchema = z
+type ExampleType = {
+  brand: string
+  categories: string[]
+  description: string | null
+  items: z.infer<typeof ItemSchema>[]
+  link: string
+  linkText: string
+  productId: string
+  productName: string
+  productReference: string
+}
+
+const BrandSchema = z
+  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
+  .openapi({
+    example: { Link: '/eletronicos/tv/Philips', Name: 'Philips', Quantity: 1 },
+    required: ['Quantity', 'Name', 'Link'],
+    title: 'Brand',
+  })
+  .openapi('Brand')
+
+const Child1Schema = z
   .object({
-    brand: z.string(),
-    categories: z.array(z.string()).openapi({ description: '' }),
-    description: z.string().nullable(),
-    items: z.array(ItemSchema).openapi({ description: '' }),
-    link: z.string(),
-    linkText: z.string(),
-    productId: z.string(),
-    productName: z.string(),
-    productReference: z.string(),
+    Children: z.array(z.string()).openapi({ description: '' }),
+    Link: z.string(),
+    Name: z.string(),
+    Quantity: z.int32(),
   })
   .openapi({
-    required: [
-      'productId',
-      'productName',
-      'brand',
-      'linkText',
-      'productReference',
-      'categories',
-      'link',
-      'description',
-      'items',
-    ],
-    title: 'Example',
+    example: { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
+    required: ['Quantity', 'Name', 'Link', 'Children'],
+    title: 'Child1',
   })
-  .openapi('Example')
+  .openapi('Child1')
+
+const ChildSchema = z
+  .object({
+    Children: z.array(Child1Schema).openapi({ description: '' }),
+    Link: z.string(),
+    Name: z.string(),
+    Quantity: z.int32(),
+  })
+  .openapi({
+    example: {
+      Children: [
+        { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
+        { Children: [], Link: '/Eletronicos/TV/Smart-TV', Name: 'Smart TV', Quantity: 14 },
+      ],
+      Link: '/Eletronicos/TV',
+      Name: 'TV',
+      Quantity: 20,
+    },
+    required: ['Quantity', 'Name', 'Link', 'Children'],
+    title: 'Child',
+  })
+  .openapi('Child')
+
+const CategoriesTreeSchema = z
+  .object({
+    Children: z.array(ChildSchema).openapi({ description: '' }),
+    Link: z.string(),
+    Name: z.string(),
+    Quantity: z.int32(),
+  })
+  .openapi({
+    example: {
+      Children: [
+        {
+          Children: [
+            { Children: [], Link: '/Eletronicos/TV/TV-LED', Name: 'TV LED', Quantity: 6 },
+            { Children: [], Link: '/Eletronicos/TV/Smart-TV', Name: 'Smart TV', Quantity: 14 },
+          ],
+          Link: '/Eletronicos/TV',
+          Name: 'TV',
+          Quantity: 20,
+        },
+      ],
+      Link: '/Eletronicos',
+      Name: 'Eletrônicos',
+      Quantity: 20,
+    },
+    required: ['Quantity', 'Name', 'Link', 'Children'],
+    title: 'CategoriesTree',
+  })
+  .openapi('CategoriesTree')
+
+const DepartmentSchema = z
+  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
+  .openapi({
+    example: { Link: '/Eletro-Eletronicos', Name: 'Eletro-Eletronicos', Quantity: 20 },
+    required: ['Quantity', 'Name', 'Link'],
+    title: 'Department',
+  })
+  .openapi('Department')
+
+const AplicativosDeTVSchema = z
+  .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
+  .openapi({
+    example: {
+      Link: '/eletronicos/tv/Crackle?map=c,c,specificationFilter_1517',
+      Name: 'Crackle',
+      Quantity: 4,
+    },
+    required: ['Quantity', 'Name', 'Link'],
+    title: 'AplicativosDeTV',
+  })
+  .openapi('AplicativosDeTV')
 
 const ResoluOSchema = z
   .object({ Link: z.string(), Name: z.string(), Quantity: z.int32() })
@@ -489,7 +489,42 @@ const SpecificationFiltersSchema = z
   })
   .openapi('SpecificationFilters')
 
-const Example2Schema = z
+type Example2Type = {
+  Brands: z.infer<typeof BrandSchema>[]
+  CategoriesTrees: z.infer<typeof CategoriesTreeSchema>[]
+  Departments: z.infer<typeof DepartmentSchema>[]
+  SpecificationFilters: z.infer<typeof SpecificationFiltersSchema>
+}
+
+const ExampleSchema: z.ZodType<ExampleType> = z
+  .object({
+    brand: z.string(),
+    categories: z.array(z.string()).openapi({ description: '' }),
+    description: z.string().nullable(),
+    items: z.array(ItemSchema).openapi({ description: '' }),
+    link: z.string(),
+    linkText: z.string(),
+    productId: z.string(),
+    productName: z.string(),
+    productReference: z.string(),
+  })
+  .openapi({
+    required: [
+      'productId',
+      'productName',
+      'brand',
+      'linkText',
+      'productReference',
+      'categories',
+      'link',
+      'description',
+      'items',
+    ],
+    title: 'Example',
+  })
+  .openapi('Example')
+
+const Example2Schema: z.ZodType<Example2Type> = z
   .object({
     Brands: z.array(BrandSchema).openapi({ description: '' }),
     CategoriesTrees: z.array(CategoriesTreeSchema).openapi({ description: '' }),
@@ -1354,7 +1389,7 @@ export const getApiCatalogSystemPubFacetsSearchTermRoute = createRoute({
                   title: 'PriceRanges',
                 }),
               SpecificationFilters: z
-                .object({})
+                .looseObject({})
                 .openapi({
                   description: 'Object with general information of specifications.',
                   example: {},
@@ -1455,7 +1490,7 @@ export const getApiCatalogSystemPubFacetsSearchTermRoute = createRoute({
                       title: 'PriceRanges',
                     }),
                   SpecificationFilters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: "Specification filters' quantity of displayed and total items.",
                       example: {},
@@ -2240,7 +2275,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhoboughtalsoboughtProduc
                         title: 'categoryId',
                       }),
                     clusterHighlights: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: 'Cluster highlight ID and name.',
                         example: { '138': 'teste2' },
@@ -4845,7 +4880,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhoboughtalsoboughtProduc
                         title: 'metaTagDescription',
                       }),
                     productClusters: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: "Product clusters' IDs and names.",
                         example: {
@@ -4901,7 +4936,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhoboughtalsoboughtProduc
                         title: 'releaseDate',
                       }),
                     searchableClusters: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: 'Searchable clusters IDs and names',
                         example: { '138': 'teste2' },
@@ -5381,7 +5416,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsoboughtProductId
                         title: 'categoryId',
                       }),
                     clusterHighlights: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: 'Cluster highlight ID and name.',
                         example: { '138': 'teste2' },
@@ -7986,7 +8021,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsoboughtProductId
                         title: 'metaTagDescription',
                       }),
                     productClusters: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: "Product clusters' IDs and names.",
                         example: {
@@ -8042,7 +8077,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsoboughtProductId
                         title: 'releaseDate',
                       }),
                     searchableClusters: z
-                      .object({})
+                      .looseObject({})
                       .openapi({
                         description: 'Searchable clusters IDs and names',
                         example: { '138': 'teste2' },
@@ -8526,7 +8561,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsosawProductIdRou
                       title: 'categoryId',
                     }),
                   clusterHighlights: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Cluster highlight ID and name.',
                       example: { '138': 'teste2' },
@@ -11121,7 +11156,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsosawProductIdRou
                       title: 'metaTagDescription',
                     }),
                   productClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: "Product clusters' IDs and names.",
                       example: {
@@ -11177,7 +11212,7 @@ export const getApiCatalogSystemPubProductsCrosssellingWhosawalsosawProductIdRou
                       title: 'releaseDate',
                     }),
                   searchableClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Searchable clusters IDs and names',
                       example: { '138': 'teste2' },
@@ -12797,7 +12832,7 @@ export const getApiCatalogSystemPubProductsSearchRoute = createRoute({
                       title: 'categoryId',
                     }),
                   clusterHighlights: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Cluster highlight ID and name.',
                       example: { '138': 'teste2' },
@@ -15392,7 +15427,7 @@ export const getApiCatalogSystemPubProductsSearchRoute = createRoute({
                       title: 'metaTagDescription',
                     }),
                   productClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: "Product clusters' IDs and names.",
                       example: {
@@ -15448,7 +15483,7 @@ export const getApiCatalogSystemPubProductsSearchRoute = createRoute({
                       title: 'releaseDate',
                     }),
                   searchableClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Searchable clusters IDs and names',
                       example: { '138': 'teste2' },
@@ -15921,7 +15956,7 @@ export const getApiCatalogSystemPubProductsSearchProductTextLinkPRoute = createR
                       title: 'categoryId',
                     }),
                   clusterHighlights: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Cluster highlight ID and name.',
                       example: { '138': 'teste2' },
@@ -18516,7 +18551,7 @@ export const getApiCatalogSystemPubProductsSearchProductTextLinkPRoute = createR
                       title: 'metaTagDescription',
                     }),
                   productClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: "Product clusters' IDs and names.",
                       example: {
@@ -18572,7 +18607,7 @@ export const getApiCatalogSystemPubProductsSearchProductTextLinkPRoute = createR
                       title: 'releaseDate',
                     }),
                   searchableClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Searchable clusters IDs and names',
                       example: { '138': 'teste2' },
@@ -19047,7 +19082,7 @@ export const getApiCatalogSystemPubProductsSearchSearchRoute = createRoute({
                       title: 'categoryId',
                     }),
                   clusterHighlights: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Cluster highlight ID and name.',
                       example: { '138': 'teste2' },
@@ -21642,7 +21677,7 @@ export const getApiCatalogSystemPubProductsSearchSearchRoute = createRoute({
                       title: 'metaTagDescription',
                     }),
                   productClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: "Product clusters' IDs and names.",
                       example: {
@@ -21698,7 +21733,7 @@ export const getApiCatalogSystemPubProductsSearchSearchRoute = createRoute({
                       title: 'releaseDate',
                     }),
                   searchableClusters: z
-                    .object({})
+                    .looseObject({})
                     .openapi({
                       description: 'Searchable clusters IDs and names',
                       example: { '138': 'teste2' },
@@ -22121,45 +22156,7 @@ export const getBuscaautocompleteRoute = createRoute({
                           title: 'href',
                         }),
                       items: z
-                        .object({
-                          imageUrl: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Product image URL.',
-                              example:
-                                'https://merch.vteximg.com.br/arquivos/ids/172754-25-25/Diablo.jpg?v=637521970448770000',
-                              title: 'imageUrl',
-                            }),
-                          itemId: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'Item ID.', example: '3', title: 'itemId' }),
-                          name: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Product name.',
-                              example: 'Llf',
-                              title: 'name',
-                            }),
-                          nameComplete: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Complete product name.',
-                              example: 'Cacilds Llf',
-                              title: 'nameComplete',
-                            }),
-                          productId: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description: 'Product ID.',
-                              example: '1',
-                              title: 'productId',
-                            }),
-                        })
+                        .array(z.any())
                         .openapi({
                           description: 'Array of products.',
                           example: [
@@ -22173,7 +22170,6 @@ export const getBuscaautocompleteRoute = createRoute({
                             },
                           ],
                           title: 'items',
-                          required: [],
                         }),
                       name: z
                         .string()
@@ -22204,6 +22200,7 @@ export const getBuscaautocompleteRoute = createRoute({
                       example: {
                         criteria: '£Cacilds in Coronas¢/coronas/Cacilds',
                         href: 'https://merch.vtexcommercestable.com.br/coronas/Cacilds',
+                        items: [],
                         name: 'Cacilds in Coronas',
                         thumb: '',
                         thumbUrl: null,
@@ -22217,6 +22214,7 @@ export const getBuscaautocompleteRoute = createRoute({
                     {
                       criteria: '£Cacilds in Coronas¢/coronas/Cacilds',
                       href: 'https://merch.vtexcommercestable.com.br/coronas/Cacilds',
+                      items: [],
                       name: 'Cacilds in Coronas',
                       thumb: '',
                       thumbUrl: null,
@@ -22224,6 +22222,16 @@ export const getBuscaautocompleteRoute = createRoute({
                     {
                       criteria: null,
                       href: 'https://merch.vtexcommercestable.com.br/bay-max-3/p',
+                      items: [
+                        {
+                          imageUrl:
+                            'https://merch.vteximg.com.br/arquivos/ids/172754-25-25/Diablo.jpg?v=637521970448770000',
+                          itemId: '5',
+                          name: 'Llf',
+                          nameComplete: 'Cacilds Llf',
+                          productId: '3',
+                        },
+                      ],
                       name: 'cacilds - llf',
                       thumb:
                         '<img src="https://merch.vteximg.com.br/arquivos/ids/155400-25-25/image-433ec3e72d7e4b94964481e843c9dd88.jpg?v=637172099619830000" width="25" height="25" alt="image-433ec3e72d7e4b94964481e843c9dd88" id="" />',
@@ -22241,6 +22249,7 @@ export const getBuscaautocompleteRoute = createRoute({
                   {
                     criteria: '£Cacilds in Coronas¢/coronas/Cacilds',
                     href: 'https://merch.vtexcommercestable.com.br/coronas/Cacilds',
+                    items: [],
                     name: 'Cacilds in Coronas',
                     thumb: '',
                     thumbUrl: null,
@@ -22248,6 +22257,16 @@ export const getBuscaautocompleteRoute = createRoute({
                   {
                     criteria: null,
                     href: 'https://merch.vtexcommercestable.com.br/bay-max-3/p',
+                    items: [
+                      {
+                        imageUrl:
+                          'https://merch.vteximg.com.br/arquivos/ids/172754-25-25/Diablo.jpg?v=637521970448770000',
+                        itemId: '5',
+                        name: 'Llf',
+                        nameComplete: 'Cacilds Llf',
+                        productId: '3',
+                      },
+                    ],
                     name: 'cacilds - llf',
                     thumb:
                       '<img src="https://merch.vteximg.com.br/arquivos/ids/155400-25-25/image-433ec3e72d7e4b94964481e843c9dd88.jpg?v=637172099619830000" width="25" height="25" alt="image-433ec3e72d7e4b94964481e843c9dd88" id="" />',

@@ -1,5 +1,539 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const OsUpdateStatusSchema = z
+  .object({
+    rebootTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date and time of the last reboot.' }),
+    state: z
+      .enum([
+        'updateStateUnspecified',
+        'updateStateNotStarted',
+        'updateStateDownloadInProgress',
+        'updateStateNeedReboot',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The update state of an OS update.' }),
+    targetKioskAppVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'New required platform version from the pending updated kiosk app.',
+      }),
+    targetOsVersion: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'New platform version of the OS image being downloaded and applied. It is only set when update status is UPDATE_STATUS_DOWNLOAD_IN_PROGRESS or UPDATE_STATUS_NEED_REBOOT. Note this could be a dummy "0.0.0.0" for UPDATE_STATUS_NEED_REBOOT for some edge cases, e.g. update engine is restarted without a reboot.',
+      }),
+    updateCheckTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date and time of the last update check.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date and time of the last successful OS update.' }),
+  })
+  .openapi({
+    description: 'Contains information regarding the current OS update status.',
+    required: [],
+  })
+  .openapi('OsUpdateStatus')
+
+const ChromeOsDeviceSchema = z
+  .object({
+    activeTimeRanges: z
+      .array(
+        z
+          .object({
+            activeTime: z
+              .int32()
+              .exactOptional()
+              .openapi({ description: 'Duration of usage in milliseconds.' }),
+            date: z.iso.date().exactOptional().openapi({ description: 'Date of usage' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'A list of active time ranges (Read-only).' }),
+    annotatedAssetId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The asset identifier as noted by an administrator or specified during enrollment.',
+      }),
+    annotatedLocation: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The address or location of the device as noted by the administrator. Maximum length is `200` characters. Empty values are allowed.',
+      }),
+    annotatedUser: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The user of the device as noted by the administrator. Maximum length is 100 characters. Empty values are allowed.',
+      }),
+    autoUpdateExpiration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '(Read-only) The timestamp after which the device will stop receiving Chrome updates or support',
+      }),
+    bootMode: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The boot mode for the device. The possible values are: * `Verified`: The device is running a valid version of the Chrome OS. * `Dev`: The devices's developer hardware switch is enabled. When booted, the device has a command line shell. For an example of a developer switch, see the [Chromebook developer information](https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/samsung-series-5-chromebook#TOC-Developer-switch).",
+      }),
+    cpuInfo: z
+      .array(
+        z
+          .object({
+            architecture: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The CPU architecture.' }),
+            logicalCpus: z
+              .array(
+                z
+                  .object({
+                    cStates: z
+                      .array(
+                        z
+                          .object({
+                            displayName: z
+                              .string()
+                              .exactOptional()
+                              .openapi({ description: 'Name of the state.' }),
+                            sessionDuration: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'Time spent in the state since the last reboot.',
+                              }),
+                          })
+                          .openapi({
+                            description:
+                              'Status of a single C-state. C-states are various modes the CPU can transition to in order to use more or less power.',
+                            required: [],
+                          }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'C-States indicate the power consumption state of the CPU. For more information look at documentation published by the CPU maker.',
+                      }),
+                    currentScalingFrequencyKhz: z
+                      .int32()
+                      .exactOptional()
+                      .openapi({ description: 'Current frequency the CPU is running at.' }),
+                    idleDuration: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Idle time since last boot.' }),
+                    maxScalingFrequencyKhz: z
+                      .int32()
+                      .exactOptional()
+                      .openapi({
+                        description: 'Maximum frequency the CPU is allowed to run at, by policy.',
+                      }),
+                  })
+                  .openapi({ description: 'Status of a single logical CPU.', required: [] }),
+              )
+              .exactOptional()
+              .openapi({ description: 'Information for the Logical CPUs' }),
+            maxClockSpeedKhz: z
+              .int32()
+              .exactOptional()
+              .openapi({ description: 'The max CPU clock speed in kHz.' }),
+            model: z.string().exactOptional().openapi({ description: 'The CPU model name.' }),
+          })
+          .openapi({ description: 'CPU specs for a CPU.', required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Information regarding CPU specs in the device.' }),
+    cpuStatusReports: z
+      .array(
+        z
+          .object({
+            cpuTemperatureInfo: z
+              .array(
+                z
+                  .object({
+                    label: z.string().exactOptional().openapi({ description: 'CPU label' }),
+                    temperature: z
+                      .int32()
+                      .exactOptional()
+                      .openapi({ description: 'Temperature in Celsius degrees.' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({ description: 'A list of CPU temperature samples.' }),
+            cpuUtilizationPercentageInfo: z.array(z.int32()).exactOptional(),
+            reportTime: z.iso
+              .datetime({ offset: true })
+              .exactOptional()
+              .openapi({ description: 'Date and time the report was received.' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Reports of CPU utilization and temperature (Read-only)' }),
+    deprovisionReason: z
+      .enum([
+        'DEPROVISION_REASON_UNSPECIFIED',
+        'DEPROVISION_REASON_SAME_MODEL_REPLACEMENT',
+        'DEPROVISION_REASON_UPGRADE',
+        'DEPROVISION_REASON_DOMAIN_MOVE',
+        'DEPROVISION_REASON_SERVICE_EXPIRATION',
+        'DEPROVISION_REASON_OTHER',
+        'DEPROVISION_REASON_DIFFERENT_MODEL_REPLACEMENT',
+        'DEPROVISION_REASON_RETIRING_DEVICE',
+        'DEPROVISION_REASON_UPGRADE_TRANSFER',
+        'DEPROVISION_REASON_NOT_REQUIRED',
+        'DEPROVISION_REASON_REPAIR_CENTER',
+      ])
+      .exactOptional()
+      .openapi({
+        description: '(Read-only) Deprovision reason.',
+        'x-enumDeprecated': [
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ],
+      }),
+    deviceFiles: z
+      .array(
+        z
+          .object({
+            createTime: z.iso
+              .datetime({ offset: true })
+              .exactOptional()
+              .openapi({ description: 'Date and time the file was created' }),
+            downloadUrl: z.string().exactOptional().openapi({ description: 'File download URL' }),
+            name: z.string().exactOptional().openapi({ description: 'File name' }),
+            type: z.string().exactOptional().openapi({ description: 'File type' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'A list of device files to download (Read-only)' }),
+    deviceId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The unique ID of the Chrome device.' }),
+    deviceLicenseType: z
+      .enum([
+        'deviceLicenseTypeUnspecified',
+        'enterprise',
+        'enterpriseUpgrade',
+        'educationUpgrade',
+        'education',
+        'kioskUpgrade',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Output only. Device license type.', readOnly: true }),
+    diskVolumeReports: z
+      .array(
+        z
+          .object({
+            volumeInfo: z
+              .array(
+                z
+                  .object({
+                    storageFree: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Free disk space [in bytes]' }),
+                    storageTotal: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Total disk space [in bytes]' }),
+                    volumeId: z.string().exactOptional().openapi({ description: 'Volume id' }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({ description: 'Disk volumes' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Reports of disk space and other info about mounted/connected volumes.',
+      }),
+    dockMacAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '(Read-only) Built-in MAC address for the docking station that the device connected to. Factory sets Media access control address (MAC address) assigned for use by a dock. It is reserved specifically for MAC pass through device policy. The format is twelve (12) hexadecimal digits without any delimiter (uppercase letters). This is only relevant for some devices.',
+      }),
+    etag: z.string().exactOptional().openapi({ description: 'ETag of the resource.' }),
+    ethernetMacAddress: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The device's MAC address on the ethernet network interface." }),
+    ethernetMacAddress0: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          '(Read-only) MAC address used by the Chromebook’s internal ethernet port, and for onboard network (ethernet) interface. The format is twelve (12) hexadecimal digits without any delimiter (uppercase letters). This is only relevant for some devices.',
+      }),
+    firmwareVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The Chrome device's firmware version." }),
+    firstEnrollmentTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Date and time for the first time the device was enrolled.' }),
+    kind: z
+      .string()
+      .default('admin#directory#chromeosdevice')
+      .exactOptional()
+      .openapi({
+        description:
+          'The type of resource. For the Chromeosdevices resource, the value is `admin#directory#chromeosdevice`.',
+      }),
+    lastDeprovisionTimestamp: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '(Read-only) Date and time for the last deprovision of the device.',
+      }),
+    lastEnrollmentTime: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Date and time the device was last enrolled (Read-only)' }),
+    lastKnownNetwork: z
+      .array(
+        z
+          .object({
+            ipAddress: z.string().exactOptional().openapi({ description: 'The IP address.' }),
+            wanIpAddress: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The WAN IP address.' }),
+          })
+          .openapi({ description: 'Information for an ip address.', required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Contains last known network (Read-only)' }),
+    lastSync: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'Date and time the device was last synchronized with the policy settings in the G Suite administrator control panel (Read-only)',
+      }),
+    macAddress: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The device's wireless MAC address. If the device does not have this information, it is not included in the response.",
+      }),
+    manufactureDate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: '(Read-only) The date the device was manufactured in yyyy-mm-dd format.',
+      }),
+    meid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The Mobile Equipment Identifier (MEID) or the International Mobile Equipment Identity (IMEI) for the 3G mobile card in a mobile device. A MEID/IMEI is typically used when adding a device to a wireless carrier's post-pay service plan. If the device does not have this information, this property is not included in the response. For more information on how to export a MEID/IMEI list, see the [Developer's Guide](/admin-sdk/directory/v1/guides/manage-chrome-devices.html#export_meid).",
+      }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The device's model information. If the device does not have this information, this property is not included in the response.",
+      }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Notes about this device added by the administrator. This property can be [searched](https://support.google.com/chrome/a/answer/1698333) with the [list](/admin-sdk/directory/v1/reference/chromeosdevices/list) method's `query` parameter. Maximum length is 500 characters. Empty values are allowed.",
+      }),
+    orderNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The device's order number. Only devices directly purchased from Google have an order number.",
+      }),
+    orgUnitId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The unique ID of the organizational unit. orgUnitPath is the human readable version of orgUnitId. While orgUnitPath may change by renaming an organizational unit within the path, orgUnitId is unchangeable for one organizational unit. This property can be [updated](/admin-sdk/directory/v1/guides/manage-chrome-devices#move_chrome_devices_to_ou) using the API. For more information about how to create an organizational structure for your device, see the [administration help center](https://support.google.com/a/answer/182433).',
+      }),
+    orgUnitPath: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The full parent path with the organizational unit's name associated with the device. Path names are case insensitive. If the parent organizational unit is the top-level organization, it is represented as a forward slash, `/`. This property can be [updated](/admin-sdk/directory/v1/guides/manage-chrome-devices#move_chrome_devices_to_ou) using the API. For more information about how to create an organizational structure for your device, see the [administration help center](https://support.google.com/a/answer/182433).",
+      }),
+    osUpdateStatus: OsUpdateStatusSchema.exactOptional().openapi({
+      description: 'The status of the OS updates for the device.',
+    }),
+    osVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The Chrome device's operating system version." }),
+    platformVersion: z
+      .string()
+      .exactOptional()
+      .openapi({ description: "The Chrome device's platform version." }),
+    recentUsers: z
+      .array(
+        z
+          .object({
+            email: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  "The user's email address. This is only present if the user type is `USER_TYPE_MANAGED`.",
+              }),
+            type: z.string().exactOptional().openapi({ description: 'The type of the user.' }),
+          })
+          .openapi({
+            description: 'A list of recent device users, in descending order, by last login time.',
+            required: [],
+          }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'A list of recent device users, in descending order, by last login time.',
+      }),
+    screenshotFiles: z
+      .array(
+        z
+          .object({
+            createTime: z.iso
+              .datetime({ offset: true })
+              .exactOptional()
+              .openapi({ description: 'Date and time the file was created' }),
+            downloadUrl: z.string().exactOptional().openapi({ description: 'File download URL' }),
+            name: z.string().exactOptional().openapi({ description: 'File name' }),
+            type: z.string().exactOptional().openapi({ description: 'File type' }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of screenshot files to download. Type is always "SCREENSHOT_FILE". (Read-only)',
+      }),
+    serialNumber: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The Chrome device serial number entered when the device was enabled. This value is the same as the Admin console's *Serial Number* in the *Chrome OS Devices* tab.",
+      }),
+    status: z.string().exactOptional().openapi({ description: 'The status of the device.' }),
+    supportEndDate: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ description: 'Final date the device will be supported (Read-only)' }),
+    systemRamFreeReports: z
+      .array(
+        z
+          .object({
+            reportTime: z.iso
+              .datetime({ offset: true })
+              .exactOptional()
+              .openapi({ description: 'Date and time the report was received.' }),
+            systemRamFreeInfo: z.array(z.string()).exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Reports of amounts of available RAM memory (Read-only)' }),
+    systemRamTotal: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Total RAM on the device [in bytes] (Read-only)' }),
+    tpmVersionInfo: z
+      .object({
+        family: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'TPM family. We use the TPM 2.0 style encoding, e.g.: TPM 1.2: "1.2" -> 312e3200 TPM 2.0: "2.0" -> 322e3000',
+          }),
+        firmwareVersion: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'TPM firmware version.' }),
+        manufacturer: z.string().exactOptional().openapi({ description: 'TPM manufacturer code.' }),
+        specLevel: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'TPM specification level. See Library Specification for TPM 2.0 and Main Specification for TPM 1.2.',
+          }),
+        tpmModel: z.string().exactOptional().openapi({ description: 'TPM model number.' }),
+        vendorSpecific: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Vendor-specific information such as Vendor ID.' }),
+      })
+      .exactOptional()
+      .openapi({ description: 'Trusted Platform Module (TPM) (Read-only)', required: [] }),
+    willAutoRenew: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Determines if the device will auto renew its support after the support end date. This is a read-only property.',
+      }),
+  })
+  .openapi({
+    description:
+      "Google Chrome devices run on the [Chrome OS](https://support.google.com/chromeos). For more information about common API tasks, see the [Developer's Guide](/admin-sdk/directory/v1/guides/manage-chrome-devices).",
+    required: [],
+  })
+  .openapi('ChromeOsDevice')
+
+type ChromeOsDevicesType = {
+  chromeosdevices?: z.infer<typeof ChromeOsDeviceSchema>[]
+  etag?: string
+  kind?: string
+  nextPageToken?: string
+}
+
 type PrivilegeType = {
   childPrivileges?: PrivilegeType[]
   etag?: string
@@ -216,7 +750,7 @@ const StatusSchema = z
   .openapi('Status')
 
 const ChangeChromeOsDeviceStatusSucceededSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response for a successful ChromeOS device status change.' })
   .openapi('ChangeChromeOsDeviceStatusSucceeded')
 
@@ -861,533 +1395,6 @@ const ChannelSchema = z
   })
   .openapi('Channel')
 
-const OsUpdateStatusSchema = z
-  .object({
-    rebootTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date and time of the last reboot.' }),
-    state: z
-      .enum([
-        'updateStateUnspecified',
-        'updateStateNotStarted',
-        'updateStateDownloadInProgress',
-        'updateStateNeedReboot',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The update state of an OS update.' }),
-    targetKioskAppVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'New required platform version from the pending updated kiosk app.',
-      }),
-    targetOsVersion: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'New platform version of the OS image being downloaded and applied. It is only set when update status is UPDATE_STATUS_DOWNLOAD_IN_PROGRESS or UPDATE_STATUS_NEED_REBOOT. Note this could be a dummy "0.0.0.0" for UPDATE_STATUS_NEED_REBOOT for some edge cases, e.g. update engine is restarted without a reboot.',
-      }),
-    updateCheckTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date and time of the last update check.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date and time of the last successful OS update.' }),
-  })
-  .openapi({
-    description: 'Contains information regarding the current OS update status.',
-    required: [],
-  })
-  .openapi('OsUpdateStatus')
-
-const ChromeOsDeviceSchema = z
-  .object({
-    activeTimeRanges: z
-      .array(
-        z
-          .object({
-            activeTime: z
-              .int32()
-              .exactOptional()
-              .openapi({ description: 'Duration of usage in milliseconds.' }),
-            date: z.iso.date().exactOptional().openapi({ description: 'Date of usage' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'A list of active time ranges (Read-only).' }),
-    annotatedAssetId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The asset identifier as noted by an administrator or specified during enrollment.',
-      }),
-    annotatedLocation: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The address or location of the device as noted by the administrator. Maximum length is `200` characters. Empty values are allowed.',
-      }),
-    annotatedUser: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The user of the device as noted by the administrator. Maximum length is 100 characters. Empty values are allowed.',
-      }),
-    autoUpdateExpiration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '(Read-only) The timestamp after which the device will stop receiving Chrome updates or support',
-      }),
-    bootMode: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The boot mode for the device. The possible values are: * `Verified`: The device is running a valid version of the Chrome OS. * `Dev`: The devices's developer hardware switch is enabled. When booted, the device has a command line shell. For an example of a developer switch, see the [Chromebook developer information](https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/samsung-series-5-chromebook#TOC-Developer-switch).",
-      }),
-    cpuInfo: z
-      .array(
-        z
-          .object({
-            architecture: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The CPU architecture.' }),
-            logicalCpus: z
-              .array(
-                z
-                  .object({
-                    cStates: z
-                      .array(
-                        z
-                          .object({
-                            displayName: z
-                              .string()
-                              .exactOptional()
-                              .openapi({ description: 'Name of the state.' }),
-                            sessionDuration: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Time spent in the state since the last reboot.',
-                              }),
-                          })
-                          .openapi({
-                            description:
-                              'Status of a single C-state. C-states are various modes the CPU can transition to in order to use more or less power.',
-                            required: [],
-                          }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'C-States indicate the power consumption state of the CPU. For more information look at documentation published by the CPU maker.',
-                      }),
-                    currentScalingFrequencyKhz: z
-                      .int32()
-                      .exactOptional()
-                      .openapi({ description: 'Current frequency the CPU is running at.' }),
-                    idleDuration: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Idle time since last boot.' }),
-                    maxScalingFrequencyKhz: z
-                      .int32()
-                      .exactOptional()
-                      .openapi({
-                        description: 'Maximum frequency the CPU is allowed to run at, by policy.',
-                      }),
-                  })
-                  .openapi({ description: 'Status of a single logical CPU.', required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Information for the Logical CPUs' }),
-            maxClockSpeedKhz: z
-              .int32()
-              .exactOptional()
-              .openapi({ description: 'The max CPU clock speed in kHz.' }),
-            model: z.string().exactOptional().openapi({ description: 'The CPU model name.' }),
-          })
-          .openapi({ description: 'CPU specs for a CPU.', required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Information regarding CPU specs in the device.' }),
-    cpuStatusReports: z
-      .array(
-        z
-          .object({
-            cpuTemperatureInfo: z
-              .array(
-                z
-                  .object({
-                    label: z.string().exactOptional().openapi({ description: 'CPU label' }),
-                    temperature: z
-                      .int32()
-                      .exactOptional()
-                      .openapi({ description: 'Temperature in Celsius degrees.' }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'A list of CPU temperature samples.' }),
-            cpuUtilizationPercentageInfo: z.array(z.int32()).exactOptional(),
-            reportTime: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({ description: 'Date and time the report was received.' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Reports of CPU utilization and temperature (Read-only)' }),
-    deprovisionReason: z
-      .enum([
-        'DEPROVISION_REASON_UNSPECIFIED',
-        'DEPROVISION_REASON_SAME_MODEL_REPLACEMENT',
-        'DEPROVISION_REASON_UPGRADE',
-        'DEPROVISION_REASON_DOMAIN_MOVE',
-        'DEPROVISION_REASON_SERVICE_EXPIRATION',
-        'DEPROVISION_REASON_OTHER',
-        'DEPROVISION_REASON_DIFFERENT_MODEL_REPLACEMENT',
-        'DEPROVISION_REASON_RETIRING_DEVICE',
-        'DEPROVISION_REASON_UPGRADE_TRANSFER',
-        'DEPROVISION_REASON_NOT_REQUIRED',
-        'DEPROVISION_REASON_REPAIR_CENTER',
-      ])
-      .exactOptional()
-      .openapi({
-        description: '(Read-only) Deprovision reason.',
-        'x-enumDeprecated': [
-          false,
-          false,
-          true,
-          true,
-          true,
-          true,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ],
-      }),
-    deviceFiles: z
-      .array(
-        z
-          .object({
-            createTime: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({ description: 'Date and time the file was created' }),
-            downloadUrl: z.string().exactOptional().openapi({ description: 'File download URL' }),
-            name: z.string().exactOptional().openapi({ description: 'File name' }),
-            type: z.string().exactOptional().openapi({ description: 'File type' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'A list of device files to download (Read-only)' }),
-    deviceId: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The unique ID of the Chrome device.' }),
-    deviceLicenseType: z
-      .enum([
-        'deviceLicenseTypeUnspecified',
-        'enterprise',
-        'enterpriseUpgrade',
-        'educationUpgrade',
-        'education',
-        'kioskUpgrade',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Output only. Device license type.', readOnly: true }),
-    diskVolumeReports: z
-      .array(
-        z
-          .object({
-            volumeInfo: z
-              .array(
-                z
-                  .object({
-                    storageFree: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Free disk space [in bytes]' }),
-                    storageTotal: z
-                      .string()
-                      .exactOptional()
-                      .openapi({ description: 'Total disk space [in bytes]' }),
-                    volumeId: z.string().exactOptional().openapi({ description: 'Volume id' }),
-                  })
-                  .openapi({ required: [] }),
-              )
-              .exactOptional()
-              .openapi({ description: 'Disk volumes' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'Reports of disk space and other info about mounted/connected volumes.',
-      }),
-    dockMacAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '(Read-only) Built-in MAC address for the docking station that the device connected to. Factory sets Media access control address (MAC address) assigned for use by a dock. It is reserved specifically for MAC pass through device policy. The format is twelve (12) hexadecimal digits without any delimiter (uppercase letters). This is only relevant for some devices.',
-      }),
-    etag: z.string().exactOptional().openapi({ description: 'ETag of the resource.' }),
-    ethernetMacAddress: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The device's MAC address on the ethernet network interface." }),
-    ethernetMacAddress0: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          '(Read-only) MAC address used by the Chromebook’s internal ethernet port, and for onboard network (ethernet) interface. The format is twelve (12) hexadecimal digits without any delimiter (uppercase letters). This is only relevant for some devices.',
-      }),
-    firmwareVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The Chrome device's firmware version." }),
-    firstEnrollmentTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Date and time for the first time the device was enrolled.' }),
-    kind: z
-      .string()
-      .default('admin#directory#chromeosdevice')
-      .exactOptional()
-      .openapi({
-        description:
-          'The type of resource. For the Chromeosdevices resource, the value is `admin#directory#chromeosdevice`.',
-      }),
-    lastDeprovisionTimestamp: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: '(Read-only) Date and time for the last deprovision of the device.',
-      }),
-    lastEnrollmentTime: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Date and time the device was last enrolled (Read-only)' }),
-    lastKnownNetwork: z
-      .array(
-        z
-          .object({
-            ipAddress: z.string().exactOptional().openapi({ description: 'The IP address.' }),
-            wanIpAddress: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The WAN IP address.' }),
-          })
-          .openapi({ description: 'Information for an ip address.', required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Contains last known network (Read-only)' }),
-    lastSync: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'Date and time the device was last synchronized with the policy settings in the G Suite administrator control panel (Read-only)',
-      }),
-    macAddress: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The device's wireless MAC address. If the device does not have this information, it is not included in the response.",
-      }),
-    manufactureDate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: '(Read-only) The date the device was manufactured in yyyy-mm-dd format.',
-      }),
-    meid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Mobile Equipment Identifier (MEID) or the International Mobile Equipment Identity (IMEI) for the 3G mobile card in a mobile device. A MEID/IMEI is typically used when adding a device to a wireless carrier's post-pay service plan. If the device does not have this information, this property is not included in the response. For more information on how to export a MEID/IMEI list, see the [Developer's Guide](/admin-sdk/directory/v1/guides/manage-chrome-devices.html#export_meid).",
-      }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The device's model information. If the device does not have this information, this property is not included in the response.",
-      }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Notes about this device added by the administrator. This property can be [searched](https://support.google.com/chrome/a/answer/1698333) with the [list](/admin-sdk/directory/v1/reference/chromeosdevices/list) method's `query` parameter. Maximum length is 500 characters. Empty values are allowed.",
-      }),
-    orderNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The device's order number. Only devices directly purchased from Google have an order number.",
-      }),
-    orgUnitId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The unique ID of the organizational unit. orgUnitPath is the human readable version of orgUnitId. While orgUnitPath may change by renaming an organizational unit within the path, orgUnitId is unchangeable for one organizational unit. This property can be [updated](/admin-sdk/directory/v1/guides/manage-chrome-devices#move_chrome_devices_to_ou) using the API. For more information about how to create an organizational structure for your device, see the [administration help center](https://support.google.com/a/answer/182433).',
-      }),
-    orgUnitPath: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The full parent path with the organizational unit's name associated with the device. Path names are case insensitive. If the parent organizational unit is the top-level organization, it is represented as a forward slash, `/`. This property can be [updated](/admin-sdk/directory/v1/guides/manage-chrome-devices#move_chrome_devices_to_ou) using the API. For more information about how to create an organizational structure for your device, see the [administration help center](https://support.google.com/a/answer/182433).",
-      }),
-    osUpdateStatus: OsUpdateStatusSchema.exactOptional().openapi({
-      description: 'The status of the OS updates for the device.',
-    }),
-    osVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The Chrome device's operating system version." }),
-    platformVersion: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "The Chrome device's platform version." }),
-    recentUsers: z
-      .array(
-        z
-          .object({
-            email: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  "The user's email address. This is only present if the user type is `USER_TYPE_MANAGED`.",
-              }),
-            type: z.string().exactOptional().openapi({ description: 'The type of the user.' }),
-          })
-          .openapi({
-            description: 'A list of recent device users, in descending order, by last login time.',
-            required: [],
-          }),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'A list of recent device users, in descending order, by last login time.',
-      }),
-    screenshotFiles: z
-      .array(
-        z
-          .object({
-            createTime: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({ description: 'Date and time the file was created' }),
-            downloadUrl: z.string().exactOptional().openapi({ description: 'File download URL' }),
-            name: z.string().exactOptional().openapi({ description: 'File name' }),
-            type: z.string().exactOptional().openapi({ description: 'File type' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of screenshot files to download. Type is always "SCREENSHOT_FILE". (Read-only)',
-      }),
-    serialNumber: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The Chrome device serial number entered when the device was enabled. This value is the same as the Admin console's *Serial Number* in the *Chrome OS Devices* tab.",
-      }),
-    status: z.string().exactOptional().openapi({ description: 'The status of the device.' }),
-    supportEndDate: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'Final date the device will be supported (Read-only)' }),
-    systemRamFreeReports: z
-      .array(
-        z
-          .object({
-            reportTime: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({ description: 'Date and time the report was received.' }),
-            systemRamFreeInfo: z.array(z.string()).exactOptional(),
-          })
-          .openapi({ required: [] }),
-      )
-      .exactOptional()
-      .openapi({ description: 'Reports of amounts of available RAM memory (Read-only)' }),
-    systemRamTotal: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Total RAM on the device [in bytes] (Read-only)' }),
-    tpmVersionInfo: z
-      .object({
-        family: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'TPM family. We use the TPM 2.0 style encoding, e.g.: TPM 1.2: "1.2" -> 312e3200 TPM 2.0: "2.0" -> 322e3000',
-          }),
-        firmwareVersion: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'TPM firmware version.' }),
-        manufacturer: z.string().exactOptional().openapi({ description: 'TPM manufacturer code.' }),
-        specLevel: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'TPM specification level. See Library Specification for TPM 2.0 and Main Specification for TPM 1.2.',
-          }),
-        tpmModel: z.string().exactOptional().openapi({ description: 'TPM model number.' }),
-        vendorSpecific: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Vendor-specific information such as Vendor ID.' }),
-      })
-      .exactOptional()
-      .openapi({ description: 'Trusted Platform Module (TPM) (Read-only)', required: [] }),
-    willAutoRenew: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Determines if the device will auto renew its support after the support end date. This is a read-only property.',
-      }),
-  })
-  .openapi({
-    description:
-      "Google Chrome devices run on the [Chrome OS](https://support.google.com/chromeos). For more information about common API tasks, see the [Developer's Guide](/admin-sdk/directory/v1/guides/manage-chrome-devices).",
-    required: [],
-  })
-  .openapi('ChromeOsDevice')
-
 const ChromeOsDeviceActionSchema = z
   .object({
     action: z
@@ -1408,7 +1415,7 @@ const ChromeOsDeviceActionSchema = z
   })
   .openapi('ChromeOsDeviceAction')
 
-const ChromeOsDevicesSchema = z
+const ChromeOsDevicesSchema: z.ZodType<ChromeOsDevicesType> = z
   .object({
     chromeosdevices: z
       .array(ChromeOsDeviceSchema)
@@ -1773,7 +1780,7 @@ const Domains2Schema = z
   .openapi('Domains2')
 
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',

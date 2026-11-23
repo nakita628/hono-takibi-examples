@@ -406,7 +406,14 @@ const WordSchema = z
   .openapi({ description: 'A word representation.', required: [] })
   .openapi('Word')
 
-const ParagraphSchema = z
+type ParagraphType = {
+  boundingBox?: z.infer<typeof BoundingPolySchema>
+  confidence?: number
+  property?: z.infer<typeof TextPropertySchema>
+  words?: z.infer<typeof WordSchema>[]
+}
+
+const ParagraphSchema: z.ZodType<ParagraphType> = z
   .object({
     boundingBox: BoundingPolySchema.exactOptional().openapi({
       description:
@@ -430,7 +437,15 @@ const ParagraphSchema = z
   })
   .openapi('Paragraph')
 
-const BlockSchema = z
+type BlockType = {
+  blockType?: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE'
+  boundingBox?: z.infer<typeof BoundingPolySchema>
+  confidence?: number
+  paragraphs?: z.infer<typeof ParagraphSchema>[]
+  property?: z.infer<typeof TextPropertySchema>
+}
+
+const BlockSchema: z.ZodType<BlockType> = z
   .object({
     blockType: z
       .enum(['UNKNOWN', 'TEXT', 'TABLE', 'PICTURE', 'RULER', 'BARCODE'])
@@ -457,7 +472,15 @@ const BlockSchema = z
   .openapi({ description: 'Logical element on the page.', required: [] })
   .openapi('Block')
 
-const PageSchema = z
+type PageType = {
+  blocks?: z.infer<typeof BlockSchema>[]
+  confidence?: number
+  height?: number
+  property?: z.infer<typeof TextPropertySchema>
+  width?: number
+}
+
+const PageSchema: z.ZodType<PageType> = z
   .object({
     blocks: z
       .array(BlockSchema)
@@ -488,7 +511,9 @@ const PageSchema = z
   .openapi({ description: 'Detected page from OCR.', required: [] })
   .openapi('Page')
 
-const TextAnnotationSchema = z
+type TextAnnotationType = { pages?: z.infer<typeof PageSchema>[]; text?: string }
+
+const TextAnnotationSchema: z.ZodType<TextAnnotationType> = z
   .object({
     pages: z
       .array(PageSchema)
@@ -837,7 +862,13 @@ const GroupedResultSchema = z
   })
   .openapi('GroupedResult')
 
-const ProductSearchResultsSchema = z
+type ProductSearchResultsType = {
+  indexTime?: string
+  productGroupedResults?: z.infer<typeof GroupedResultSchema>[]
+  results?: z.infer<typeof ResultSchema>[]
+}
+
+const ProductSearchResultsSchema: z.ZodType<ProductSearchResultsType> = z
   .object({
     indexTime: z
       .string()
@@ -1014,7 +1045,24 @@ const WebDetectionSchema = z
   .openapi({ description: 'Relevant information for the image from the Internet.', required: [] })
   .openapi('WebDetection')
 
-const AnnotateImageResponseSchema = z
+type AnnotateImageResponseType = {
+  context?: z.infer<typeof ImageAnnotationContextSchema>
+  cropHintsAnnotation?: z.infer<typeof CropHintsAnnotationSchema>
+  error?: z.infer<typeof StatusSchema>
+  faceAnnotations?: z.infer<typeof FaceAnnotationSchema>[]
+  fullTextAnnotation?: z.infer<typeof TextAnnotationSchema>
+  imagePropertiesAnnotation?: z.infer<typeof ImagePropertiesSchema>
+  labelAnnotations?: z.infer<typeof EntityAnnotationSchema>[]
+  landmarkAnnotations?: z.infer<typeof EntityAnnotationSchema>[]
+  localizedObjectAnnotations?: z.infer<typeof LocalizedObjectAnnotationSchema>[]
+  logoAnnotations?: z.infer<typeof EntityAnnotationSchema>[]
+  productSearchResults?: z.infer<typeof ProductSearchResultsSchema>
+  safeSearchAnnotation?: z.infer<typeof SafeSearchAnnotationSchema>
+  textAnnotations?: z.infer<typeof EntityAnnotationSchema>[]
+  webDetection?: z.infer<typeof WebDetectionSchema>
+}
+
+const AnnotateImageResponseSchema: z.ZodType<AnnotateImageResponseType> = z
   .object({
     context: ImageAnnotationContextSchema.exactOptional().openapi({
       description:
@@ -1074,7 +1122,14 @@ const AnnotateImageResponseSchema = z
   .openapi({ description: 'Response to an image annotation request.', required: [] })
   .openapi('AnnotateImageResponse')
 
-const AnnotateFileResponseSchema = z
+type AnnotateFileResponseType = {
+  error?: z.infer<typeof StatusSchema>
+  inputConfig?: z.infer<typeof InputConfigSchema>
+  responses?: z.infer<typeof AnnotateImageResponseSchema>[]
+  totalPages?: number
+}
+
+const AnnotateFileResponseSchema: z.ZodType<AnnotateFileResponseType> = z
   .object({
     error: StatusSchema.exactOptional().openapi({
       description:
@@ -1102,305 +1157,7 @@ const AnnotateFileResponseSchema = z
   })
   .openapi('AnnotateFileResponse')
 
-const GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
-      }),
-  })
-  .openapi({
-    description: 'The Google Cloud Storage location where the output will be written to.',
-    required: [],
-  })
-  .openapi('GcsDestination')
-
-const OutputConfigSchema = z
-  .object({
-    batchSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
-      }),
-    gcsDestination: GcsDestinationSchema.exactOptional().openapi({
-      description: 'The Google Cloud Storage location to write the output(s) to.',
-    }),
-  })
-  .openapi({ description: 'The desired output location and metadata.', required: [] })
-  .openapi('OutputConfig')
-
-const AsyncAnnotateFileResponseSchema = z
-  .object({
-    outputConfig: OutputConfigSchema.exactOptional().openapi({
-      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
-    }),
-  })
-  .openapi({
-    description: 'The response for a single offline file annotation request.',
-    required: [],
-  })
-  .openapi('AsyncAnnotateFileResponse')
-
-const AsyncBatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(AsyncAnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
-  .openapi('AsyncBatchAnnotateFilesResponse')
-
-const AsyncBatchAnnotateImagesResponseSchema = z
-  .object({
-    outputConfig: OutputConfigSchema.exactOptional().openapi({
-      description: 'The output location and metadata from AsyncBatchAnnotateImagesRequest.',
-    }),
-  })
-  .openapi({ description: 'Response to an async batch image annotation request.', required: [] })
-  .openapi('AsyncBatchAnnotateImagesResponse')
-
-const BatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(AnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'A list of file annotation responses.', required: [] })
-  .openapi('BatchAnnotateFilesResponse')
-
-const BatchOperationMetadataSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the batch request is finished and google.longrunning.Operation.done is set to true.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PROCESSING', 'SUCCESSFUL', 'FAILED', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: 'The current state of the batch operation.' }),
-    submitTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the batch request was submitted to the server.' }),
-  })
-  .openapi({
-    description:
-      'Metadata for the batch operations such as the current state. This is included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('BatchOperationMetadata')
-
-const GoogleCloudVisionV1p1beta1FeatureSchema = z
-  .object({
-    maxResults: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Maximum number of results of this type. Does not apply to `TEXT_DETECTION`, `DOCUMENT_TEXT_DETECTION`, or `CROP_HINTS`.',
-      }),
-    model: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Model to use for the feature. Supported values: "builtin/stable" (the default if unset) and "builtin/latest". `DOCUMENT_TEXT_DETECTION` and `TEXT_DETECTION` also support "builtin/weekly" for the bleeding edge release updated weekly.',
-      }),
-    type: z
-      .enum([
-        'TYPE_UNSPECIFIED',
-        'FACE_DETECTION',
-        'LANDMARK_DETECTION',
-        'LOGO_DETECTION',
-        'LABEL_DETECTION',
-        'TEXT_DETECTION',
-        'DOCUMENT_TEXT_DETECTION',
-        'SAFE_SEARCH_DETECTION',
-        'IMAGE_PROPERTIES',
-        'CROP_HINTS',
-        'WEB_DETECTION',
-        'PRODUCT_SEARCH',
-        'OBJECT_LOCALIZATION',
-      ])
-      .exactOptional()
-      .openapi({ description: 'The feature type.' }),
-  })
-  .openapi({
-    description:
-      'The type of Google Cloud Vision API detection to perform, and the maximum number of results to return for that type. Multiple `Feature` objects can be specified in the `features` list.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1Feature')
-
-const GoogleCloudVisionV1p1beta1CropHintsParamsSchema = z
-  .object({
-    aspectRatios: z
-      .array(z.float32())
-      .exactOptional()
-      .openapi({
-        description:
-          'Aspect ratios in floats, representing the ratio of the width to the height of the image. For example, if the desired aspect ratio is 4/3, the corresponding float value should be 1.33333. If not specified, the best possible crop is returned. The number of provided aspect ratios is limited to a maximum of 16; any aspect ratios provided after the 16th are ignored.',
-      }),
-  })
-  .openapi({ description: 'Parameters for crop hints annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1CropHintsParams')
-
-const GoogleCloudVisionV1p1beta1LatLongRectSchema = z
-  .object({
-    maxLatLng: LatLngSchema.exactOptional().openapi({ description: 'Max lat/long pair.' }),
-    minLatLng: LatLngSchema.exactOptional().openapi({ description: 'Min lat/long pair.' }),
-  })
-  .openapi({ description: 'Rectangle determined by min and max `LatLng` pairs.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1LatLongRect')
-
-const GoogleCloudVisionV1p1beta1NormalizedVertexSchema = z
-  .object({
-    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
-    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1NormalizedVertex')
-
-const GoogleCloudVisionV1p1beta1VertexSchema = z
-  .object({
-    x: z.int32().exactOptional().openapi({ description: 'X coordinate.' }),
-    y: z.int32().exactOptional().openapi({ description: 'Y coordinate.' }),
-  })
-  .openapi({
-    description:
-      'A vertex represents a 2D point in the image. NOTE: the vertex coordinates are in the same scale as the original image.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1Vertex')
-
-const GoogleCloudVisionV1p1beta1BoundingPolySchema = z
-  .object({
-    normalizedVertices: z
-      .array(GoogleCloudVisionV1p1beta1NormalizedVertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The bounding polygon normalized vertices.' }),
-    vertices: z
-      .array(GoogleCloudVisionV1p1beta1VertexSchema)
-      .exactOptional()
-      .openapi({ description: 'The bounding polygon vertices.' }),
-  })
-  .openapi({ description: 'A bounding polygon for the detected image annotation.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1BoundingPoly')
-
-const GoogleCloudVisionV1p1beta1ProductSearchParamsSchema = z
-  .object({
-    boundingPoly: GoogleCloudVisionV1p1beta1BoundingPolySchema.exactOptional().openapi({
-      description:
-        'The bounding polygon around the area of interest in the image. If it is not specified, system discretion will be applied.',
-    }),
-    filter: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The filtering expression. This can be used to restrict search results based on Product labels. We currently support an AND of OR of key-value expressions, where each expression within an OR must have the same key. An \'=\' should be used to connect the key and value. For example, "(color = red OR color = blue) AND brand = Google" is acceptable, but "(color = red OR brand = Google)" is not acceptable. "color: red" is not acceptable because it uses a \':\' instead of an \'=\'.',
-      }),
-    productCategories: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of product categories to search in. Currently, we only consider the first category, and either "homegoods-v2", "apparel-v2", "toys-v2", "packagedgoods-v1", or "general-v1" should be specified. The legacy categories "homegoods", "apparel", and "toys" are still supported but will be deprecated. For new products, please use "homegoods-v2", "apparel-v2", or "toys-v2" for better product search accuracy. It is recommended to migrate existing products to these categories as well.',
-      }),
-    productSet: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of a ProductSet to be searched for similar images. Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`.',
-      }),
-  })
-  .openapi({ description: 'Parameters for a product search request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1ProductSearchParams')
-
-const GoogleCloudVisionV1p1beta1TextDetectionParamsSchema = z
-  .object({
-    advancedOcrOptions: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'A list of advanced OCR options to further fine-tune OCR behavior. Current valid values are: - `legacy_layout`: a heuristics layout detection algorithm, which serves as an alternative to the current ML-based layout detection algorithm. Customers can choose the best suitable layout algorithm based on their situation.',
-      }),
-    enableTextDetectionConfidenceScore: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'By default, Cloud Vision API only includes confidence score for DOCUMENT_TEXT_DETECTION result. Set the flag to true to include confidence score for TEXT_DETECTION as well.',
-      }),
-  })
-  .openapi({
-    description:
-      'Parameters for text detections. This is used to control TEXT_DETECTION and DOCUMENT_TEXT_DETECTION features.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1TextDetectionParams')
-
-const GoogleCloudVisionV1p1beta1WebDetectionParamsSchema = z
-  .object({
-    includeGeoResults: z
-      .boolean()
-      .exactOptional()
-      .openapi({ deprecated: true, description: 'This field has no effect on results.' }),
-  })
-  .openapi({ description: 'Parameters for web detection request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1WebDetectionParams')
-
-const GoogleCloudVisionV1p1beta1ImageContextSchema = z
-  .object({
-    cropHintsParams: GoogleCloudVisionV1p1beta1CropHintsParamsSchema.exactOptional().openapi({
-      description: 'Parameters for crop hints annotation request.',
-    }),
-    languageHints: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'List of languages to use for TEXT_DETECTION. In most cases, an empty value yields the best results since it enables automatic language detection. For languages based on the Latin alphabet, setting `language_hints` is not needed. In rare cases, when the language of the text in the image is known, setting a hint will help get better results (although it will be a significant hindrance if the hint is wrong). Text detection returns an error if one or more of the specified languages is not one of the [supported languages](https://cloud.google.com/vision/docs/languages).',
-      }),
-    latLongRect: GoogleCloudVisionV1p1beta1LatLongRectSchema.exactOptional().openapi({
-      description: 'Not used.',
-    }),
-    productSearchParams:
-      GoogleCloudVisionV1p1beta1ProductSearchParamsSchema.exactOptional().openapi({
-        description: 'Parameters for product search.',
-      }),
-    textDetectionParams:
-      GoogleCloudVisionV1p1beta1TextDetectionParamsSchema.exactOptional().openapi({
-        description: 'Parameters for text detection and document text detection.',
-      }),
-    webDetectionParams: GoogleCloudVisionV1p1beta1WebDetectionParamsSchema.exactOptional().openapi({
-      description: 'Parameters for web detection.',
-    }),
-  })
-  .openapi({ description: 'Image context and/or feature-specific parameters.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1ImageContext')
+type BatchAnnotateFilesResponseType = { responses?: z.infer<typeof AnnotateFileResponseSchema>[] }
 
 const GoogleCloudVisionV1p1beta1GcsSourceSchema = z
   .object({
@@ -1441,32 +1198,6 @@ const GoogleCloudVisionV1p1beta1InputConfigSchema = z
   .openapi({ description: 'The desired input location and metadata.', required: [] })
   .openapi('GoogleCloudVisionV1p1beta1InputConfig')
 
-const GoogleCloudVisionV1p1beta1AnnotateFileRequestSchema = z
-  .object({
-    features: z
-      .array(GoogleCloudVisionV1p1beta1FeatureSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. Requested features.' }),
-    imageContext: GoogleCloudVisionV1p1beta1ImageContextSchema.exactOptional().openapi({
-      description: 'Additional context that may accompany the image(s) in the file.',
-    }),
-    inputConfig: GoogleCloudVisionV1p1beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Required. Information about the input file.',
-    }),
-    pages: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        description:
-          'Pages of the file to perform image annotation. Pages starts from 1, we assume the first page of the file is page 1. At most 5 pages are supported per request. Pages can be negative. Page 1 means the first page. Page 2 means the second page. Page -1 means the last page. Page -2 means the second to the last page. If the file is GIF instead of PDF or TIFF, page refers to GIF frames. If this field is empty, by default the service performs image annotation for the first 5 pages of the file.',
-      }),
-  })
-  .openapi({
-    description: 'A request to annotate one single file, e.g. a PDF, TIFF or GIF file.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1AnnotateFileRequest')
-
 const GoogleCloudVisionV1p1beta1ImageAnnotationContextSchema = z
   .object({
     pageNumber: z
@@ -1487,6 +1218,44 @@ const GoogleCloudVisionV1p1beta1ImageAnnotationContextSchema = z
     required: [],
   })
   .openapi('GoogleCloudVisionV1p1beta1ImageAnnotationContext')
+
+const GoogleCloudVisionV1p1beta1NormalizedVertexSchema = z
+  .object({
+    x: z.float32().exactOptional().openapi({ description: 'X coordinate.' }),
+    y: z.float32().exactOptional().openapi({ description: 'Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'A vertex represents a 2D point in the image. NOTE: the normalized vertex coordinates are relative to the original image and range from 0 to 1.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1NormalizedVertex')
+
+const GoogleCloudVisionV1p1beta1VertexSchema = z
+  .object({
+    x: z.int32().exactOptional().openapi({ description: 'X coordinate.' }),
+    y: z.int32().exactOptional().openapi({ description: 'Y coordinate.' }),
+  })
+  .openapi({
+    description:
+      'A vertex represents a 2D point in the image. NOTE: the vertex coordinates are in the same scale as the original image.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1Vertex')
+
+const GoogleCloudVisionV1p1beta1BoundingPolySchema = z
+  .object({
+    normalizedVertices: z
+      .array(GoogleCloudVisionV1p1beta1NormalizedVertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The bounding polygon normalized vertices.' }),
+    vertices: z
+      .array(GoogleCloudVisionV1p1beta1VertexSchema)
+      .exactOptional()
+      .openapi({ description: 'The bounding polygon vertices.' }),
+  })
+  .openapi({ description: 'A bounding polygon for the detected image annotation.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1BoundingPoly')
 
 const GoogleCloudVisionV1p1beta1CropHintSchema = z
   .object({
@@ -1760,31 +1529,47 @@ const GoogleCloudVisionV1p1beta1WordSchema = z
   .openapi({ description: 'A word representation.', required: [] })
   .openapi('GoogleCloudVisionV1p1beta1Word')
 
-const GoogleCloudVisionV1p1beta1ParagraphSchema = z
-  .object({
-    boundingBox: GoogleCloudVisionV1p1beta1BoundingPolySchema.exactOptional().openapi({
-      description:
-        "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
-    }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
-    property: GoogleCloudVisionV1p1beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
-      description: 'Additional information detected for the paragraph.',
-    }),
-    words: z
-      .array(GoogleCloudVisionV1p1beta1WordSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all words in this paragraph.' }),
-  })
-  .openapi({
-    description: 'Structural unit of text representing a number of words in certain order.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1Paragraph')
+type GoogleCloudVisionV1p1beta1ParagraphType = {
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p1beta1BoundingPolySchema>
+  confidence?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p1beta1TextAnnotationTextPropertySchema>
+  words?: z.infer<typeof GoogleCloudVisionV1p1beta1WordSchema>[]
+}
 
-const GoogleCloudVisionV1p1beta1BlockSchema = z
+const GoogleCloudVisionV1p1beta1ParagraphSchema: z.ZodType<GoogleCloudVisionV1p1beta1ParagraphType> =
+  z
+    .object({
+      boundingBox: GoogleCloudVisionV1p1beta1BoundingPolySchema.exactOptional().openapi({
+        description:
+          "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
+      }),
+      confidence: z
+        .float32()
+        .exactOptional()
+        .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
+      property: GoogleCloudVisionV1p1beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
+        description: 'Additional information detected for the paragraph.',
+      }),
+      words: z
+        .array(GoogleCloudVisionV1p1beta1WordSchema)
+        .exactOptional()
+        .openapi({ description: 'List of all words in this paragraph.' }),
+    })
+    .openapi({
+      description: 'Structural unit of text representing a number of words in certain order.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1Paragraph')
+
+type GoogleCloudVisionV1p1beta1BlockType = {
+  blockType?: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE'
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p1beta1BoundingPolySchema>
+  confidence?: number
+  paragraphs?: z.infer<typeof GoogleCloudVisionV1p1beta1ParagraphSchema>[]
+  property?: z.infer<typeof GoogleCloudVisionV1p1beta1TextAnnotationTextPropertySchema>
+}
+
+const GoogleCloudVisionV1p1beta1BlockSchema: z.ZodType<GoogleCloudVisionV1p1beta1BlockType> = z
   .object({
     blockType: z
       .enum(['UNKNOWN', 'TEXT', 'TABLE', 'PICTURE', 'RULER', 'BARCODE'])
@@ -1811,7 +1596,15 @@ const GoogleCloudVisionV1p1beta1BlockSchema = z
   .openapi({ description: 'Logical element on the page.', required: [] })
   .openapi('GoogleCloudVisionV1p1beta1Block')
 
-const GoogleCloudVisionV1p1beta1PageSchema = z
+type GoogleCloudVisionV1p1beta1PageType = {
+  blocks?: z.infer<typeof GoogleCloudVisionV1p1beta1BlockSchema>[]
+  confidence?: number
+  height?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p1beta1TextAnnotationTextPropertySchema>
+  width?: number
+}
+
+const GoogleCloudVisionV1p1beta1PageSchema: z.ZodType<GoogleCloudVisionV1p1beta1PageType> = z
   .object({
     blocks: z
       .array(GoogleCloudVisionV1p1beta1BlockSchema)
@@ -1842,20 +1635,29 @@ const GoogleCloudVisionV1p1beta1PageSchema = z
   .openapi({ description: 'Detected page from OCR.', required: [] })
   .openapi('GoogleCloudVisionV1p1beta1Page')
 
-const GoogleCloudVisionV1p1beta1TextAnnotationSchema = z
-  .object({
-    pages: z
-      .array(GoogleCloudVisionV1p1beta1PageSchema)
-      .exactOptional()
-      .openapi({ description: 'List of pages detected by OCR.' }),
-    text: z.string().exactOptional().openapi({ description: 'UTF-8 text detected on the pages.' }),
-  })
-  .openapi({
-    description:
-      'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1TextAnnotation')
+type GoogleCloudVisionV1p1beta1TextAnnotationType = {
+  pages?: z.infer<typeof GoogleCloudVisionV1p1beta1PageSchema>[]
+  text?: string
+}
+
+const GoogleCloudVisionV1p1beta1TextAnnotationSchema: z.ZodType<GoogleCloudVisionV1p1beta1TextAnnotationType> =
+  z
+    .object({
+      pages: z
+        .array(GoogleCloudVisionV1p1beta1PageSchema)
+        .exactOptional()
+        .openapi({ description: 'List of pages detected by OCR.' }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'UTF-8 text detected on the pages.' }),
+    })
+    .openapi({
+      description:
+        'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1TextAnnotation')
 
 const GoogleCloudVisionV1p1beta1ColorInfoSchema = z
   .object({
@@ -2139,29 +1941,38 @@ const GoogleCloudVisionV1p1beta1ProductSearchResultsGroupedResultSchema = z
   })
   .openapi('GoogleCloudVisionV1p1beta1ProductSearchResultsGroupedResult')
 
-const GoogleCloudVisionV1p1beta1ProductSearchResultsSchema = z
-  .object({
-    indexTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
-      }),
-    productGroupedResults: z
-      .array(GoogleCloudVisionV1p1beta1ProductSearchResultsGroupedResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
-      }),
-    results: z
-      .array(GoogleCloudVisionV1p1beta1ProductSearchResultsResultSchema)
-      .exactOptional()
-      .openapi({ description: 'List of results, one for each product match.' }),
-  })
-  .openapi({ description: 'Results for a product search request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1ProductSearchResults')
+type GoogleCloudVisionV1p1beta1ProductSearchResultsType = {
+  indexTime?: string
+  productGroupedResults?: z.infer<
+    typeof GoogleCloudVisionV1p1beta1ProductSearchResultsGroupedResultSchema
+  >[]
+  results?: z.infer<typeof GoogleCloudVisionV1p1beta1ProductSearchResultsResultSchema>[]
+}
+
+const GoogleCloudVisionV1p1beta1ProductSearchResultsSchema: z.ZodType<GoogleCloudVisionV1p1beta1ProductSearchResultsType> =
+  z
+    .object({
+      indexTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
+        }),
+      productGroupedResults: z
+        .array(GoogleCloudVisionV1p1beta1ProductSearchResultsGroupedResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
+        }),
+      results: z
+        .array(GoogleCloudVisionV1p1beta1ProductSearchResultsResultSchema)
+        .exactOptional()
+        .openapi({ description: 'List of results, one for each product match.' }),
+    })
+    .openapi({ description: 'Results for a product search request.', required: [] })
+    .openapi('GoogleCloudVisionV1p1beta1ProductSearchResults')
 
 const GoogleCloudVisionV1p1beta1SafeSearchAnnotationSchema = z
   .object({
@@ -2316,97 +2127,311 @@ const GoogleCloudVisionV1p1beta1WebDetectionSchema = z
   .openapi({ description: 'Relevant information for the image from the Internet.', required: [] })
   .openapi('GoogleCloudVisionV1p1beta1WebDetection')
 
-const GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema = z
-  .object({
-    context: GoogleCloudVisionV1p1beta1ImageAnnotationContextSchema.exactOptional().openapi({
-      description:
-        'If present, contextual information is needed to understand where this image comes from.',
-    }),
-    cropHintsAnnotation:
-      GoogleCloudVisionV1p1beta1CropHintsAnnotationSchema.exactOptional().openapi({
-        description: 'If present, crop hints have completed successfully.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
-    }),
-    faceAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, face detection has completed successfully.' }),
-    fullTextAnnotation: GoogleCloudVisionV1p1beta1TextAnnotationSchema.exactOptional().openapi({
-      description:
-        'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
-    }),
-    imagePropertiesAnnotation:
-      GoogleCloudVisionV1p1beta1ImagePropertiesSchema.exactOptional().openapi({
-        description: 'If present, image properties were extracted successfully.',
-      }),
-    labelAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, label detection has completed successfully.' }),
-    landmarkAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, landmark detection has completed successfully.' }),
-    localizedObjectAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1LocalizedObjectAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
-      }),
-    logoAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, logo detection has completed successfully.' }),
-    productSearchResults:
-      GoogleCloudVisionV1p1beta1ProductSearchResultsSchema.exactOptional().openapi({
-        description: 'If present, product search has completed successfully.',
-      }),
-    safeSearchAnnotation:
-      GoogleCloudVisionV1p1beta1SafeSearchAnnotationSchema.exactOptional().openapi({
-        description: 'If present, safe-search annotation has completed successfully.',
-      }),
-    textAnnotations: z
-      .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
-    webDetection: GoogleCloudVisionV1p1beta1WebDetectionSchema.exactOptional().openapi({
-      description: 'If present, web detection has completed successfully.',
-    }),
-  })
-  .openapi({ description: 'Response to an image annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1AnnotateImageResponse')
+type GoogleCloudVisionV1p1beta1AnnotateImageResponseType = {
+  context?: z.infer<typeof GoogleCloudVisionV1p1beta1ImageAnnotationContextSchema>
+  cropHintsAnnotation?: z.infer<typeof GoogleCloudVisionV1p1beta1CropHintsAnnotationSchema>
+  error?: z.infer<typeof StatusSchema>
+  faceAnnotations?: z.infer<typeof GoogleCloudVisionV1p1beta1FaceAnnotationSchema>[]
+  fullTextAnnotation?: z.infer<typeof GoogleCloudVisionV1p1beta1TextAnnotationSchema>
+  imagePropertiesAnnotation?: z.infer<typeof GoogleCloudVisionV1p1beta1ImagePropertiesSchema>
+  labelAnnotations?: z.infer<typeof GoogleCloudVisionV1p1beta1EntityAnnotationSchema>[]
+  landmarkAnnotations?: z.infer<typeof GoogleCloudVisionV1p1beta1EntityAnnotationSchema>[]
+  localizedObjectAnnotations?: z.infer<
+    typeof GoogleCloudVisionV1p1beta1LocalizedObjectAnnotationSchema
+  >[]
+  logoAnnotations?: z.infer<typeof GoogleCloudVisionV1p1beta1EntityAnnotationSchema>[]
+  productSearchResults?: z.infer<typeof GoogleCloudVisionV1p1beta1ProductSearchResultsSchema>
+  safeSearchAnnotation?: z.infer<typeof GoogleCloudVisionV1p1beta1SafeSearchAnnotationSchema>
+  textAnnotations?: z.infer<typeof GoogleCloudVisionV1p1beta1EntityAnnotationSchema>[]
+  webDetection?: z.infer<typeof GoogleCloudVisionV1p1beta1WebDetectionSchema>
+}
 
-const GoogleCloudVisionV1p1beta1AnnotateFileResponseSchema = z
-  .object({
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
-    }),
-    inputConfig: GoogleCloudVisionV1p1beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Information about the file for which this response is generated.',
-    }),
-    responses: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema)
-      .exactOptional()
-      .openapi({
+const GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema: z.ZodType<GoogleCloudVisionV1p1beta1AnnotateImageResponseType> =
+  z
+    .object({
+      context: GoogleCloudVisionV1p1beta1ImageAnnotationContextSchema.exactOptional().openapi({
         description:
-          'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+          'If present, contextual information is needed to understand where this image comes from.',
       }),
-    totalPages: z
+      cropHintsAnnotation:
+        GoogleCloudVisionV1p1beta1CropHintsAnnotationSchema.exactOptional().openapi({
+          description: 'If present, crop hints have completed successfully.',
+        }),
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
+      }),
+      faceAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, face detection has completed successfully.' }),
+      fullTextAnnotation: GoogleCloudVisionV1p1beta1TextAnnotationSchema.exactOptional().openapi({
+        description:
+          'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
+      }),
+      imagePropertiesAnnotation:
+        GoogleCloudVisionV1p1beta1ImagePropertiesSchema.exactOptional().openapi({
+          description: 'If present, image properties were extracted successfully.',
+        }),
+      labelAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, label detection has completed successfully.' }),
+      landmarkAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, landmark detection has completed successfully.' }),
+      localizedObjectAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1LocalizedObjectAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
+        }),
+      logoAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, logo detection has completed successfully.' }),
+      productSearchResults:
+        GoogleCloudVisionV1p1beta1ProductSearchResultsSchema.exactOptional().openapi({
+          description: 'If present, product search has completed successfully.',
+        }),
+      safeSearchAnnotation:
+        GoogleCloudVisionV1p1beta1SafeSearchAnnotationSchema.exactOptional().openapi({
+          description: 'If present, safe-search annotation has completed successfully.',
+        }),
+      textAnnotations: z
+        .array(GoogleCloudVisionV1p1beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
+      webDetection: GoogleCloudVisionV1p1beta1WebDetectionSchema.exactOptional().openapi({
+        description: 'If present, web detection has completed successfully.',
+      }),
+    })
+    .openapi({ description: 'Response to an image annotation request.', required: [] })
+    .openapi('GoogleCloudVisionV1p1beta1AnnotateImageResponse')
+
+type GoogleCloudVisionV1p1beta1AnnotateFileResponseType = {
+  error?: z.infer<typeof StatusSchema>
+  inputConfig?: z.infer<typeof GoogleCloudVisionV1p1beta1InputConfigSchema>
+  responses?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema>[]
+  totalPages?: number
+}
+
+const GoogleCloudVisionV1p1beta1FeatureSchema = z
+  .object({
+    maxResults: z
       .int32()
       .exactOptional()
-      .openapi({ description: 'This field gives the total number of pages in the file.' }),
+      .openapi({
+        description:
+          'Maximum number of results of this type. Does not apply to `TEXT_DETECTION`, `DOCUMENT_TEXT_DETECTION`, or `CROP_HINTS`.',
+      }),
+    model: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Model to use for the feature. Supported values: "builtin/stable" (the default if unset) and "builtin/latest". `DOCUMENT_TEXT_DETECTION` and `TEXT_DETECTION` also support "builtin/weekly" for the bleeding edge release updated weekly.',
+      }),
+    type: z
+      .enum([
+        'TYPE_UNSPECIFIED',
+        'FACE_DETECTION',
+        'LANDMARK_DETECTION',
+        'LOGO_DETECTION',
+        'LABEL_DETECTION',
+        'TEXT_DETECTION',
+        'DOCUMENT_TEXT_DETECTION',
+        'SAFE_SEARCH_DETECTION',
+        'IMAGE_PROPERTIES',
+        'CROP_HINTS',
+        'WEB_DETECTION',
+        'PRODUCT_SEARCH',
+        'OBJECT_LOCALIZATION',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The feature type.' }),
   })
   .openapi({
     description:
-      'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      'The type of Google Cloud Vision API detection to perform, and the maximum number of results to return for that type. Multiple `Feature` objects can be specified in the `features` list.',
     required: [],
   })
-  .openapi('GoogleCloudVisionV1p1beta1AnnotateFileResponse')
+  .openapi('GoogleCloudVisionV1p1beta1Feature')
+
+const GoogleCloudVisionV1p1beta1CropHintsParamsSchema = z
+  .object({
+    aspectRatios: z
+      .array(z.float32())
+      .exactOptional()
+      .openapi({
+        description:
+          'Aspect ratios in floats, representing the ratio of the width to the height of the image. For example, if the desired aspect ratio is 4/3, the corresponding float value should be 1.33333. If not specified, the best possible crop is returned. The number of provided aspect ratios is limited to a maximum of 16; any aspect ratios provided after the 16th are ignored.',
+      }),
+  })
+  .openapi({ description: 'Parameters for crop hints annotation request.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1CropHintsParams')
+
+const GoogleCloudVisionV1p1beta1LatLongRectSchema = z
+  .object({
+    maxLatLng: LatLngSchema.exactOptional().openapi({ description: 'Max lat/long pair.' }),
+    minLatLng: LatLngSchema.exactOptional().openapi({ description: 'Min lat/long pair.' }),
+  })
+  .openapi({ description: 'Rectangle determined by min and max `LatLng` pairs.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1LatLongRect')
+
+const GoogleCloudVisionV1p1beta1ProductSearchParamsSchema = z
+  .object({
+    boundingPoly: GoogleCloudVisionV1p1beta1BoundingPolySchema.exactOptional().openapi({
+      description:
+        'The bounding polygon around the area of interest in the image. If it is not specified, system discretion will be applied.',
+    }),
+    filter: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The filtering expression. This can be used to restrict search results based on Product labels. We currently support an AND of OR of key-value expressions, where each expression within an OR must have the same key. An \'=\' should be used to connect the key and value. For example, "(color = red OR color = blue) AND brand = Google" is acceptable, but "(color = red OR brand = Google)" is not acceptable. "color: red" is not acceptable because it uses a \':\' instead of an \'=\'.',
+      }),
+    productCategories: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of product categories to search in. Currently, we only consider the first category, and either "homegoods-v2", "apparel-v2", "toys-v2", "packagedgoods-v1", or "general-v1" should be specified. The legacy categories "homegoods", "apparel", and "toys" are still supported but will be deprecated. For new products, please use "homegoods-v2", "apparel-v2", or "toys-v2" for better product search accuracy. It is recommended to migrate existing products to these categories as well.',
+      }),
+    productSet: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of a ProductSet to be searched for similar images. Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`.',
+      }),
+  })
+  .openapi({ description: 'Parameters for a product search request.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1ProductSearchParams')
+
+const GoogleCloudVisionV1p1beta1TextDetectionParamsSchema = z
+  .object({
+    advancedOcrOptions: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'A list of advanced OCR options to further fine-tune OCR behavior. Current valid values are: - `legacy_layout`: a heuristics layout detection algorithm, which serves as an alternative to the current ML-based layout detection algorithm. Customers can choose the best suitable layout algorithm based on their situation.',
+      }),
+    enableTextDetectionConfidenceScore: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'By default, Cloud Vision API only includes confidence score for DOCUMENT_TEXT_DETECTION result. Set the flag to true to include confidence score for TEXT_DETECTION as well.',
+      }),
+  })
+  .openapi({
+    description:
+      'Parameters for text detections. This is used to control TEXT_DETECTION and DOCUMENT_TEXT_DETECTION features.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1TextDetectionParams')
+
+const GoogleCloudVisionV1p1beta1WebDetectionParamsSchema = z
+  .object({
+    includeGeoResults: z
+      .boolean()
+      .exactOptional()
+      .openapi({ deprecated: true, description: 'This field has no effect on results.' }),
+  })
+  .openapi({ description: 'Parameters for web detection request.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1WebDetectionParams')
+
+const GoogleCloudVisionV1p1beta1ImageContextSchema = z
+  .object({
+    cropHintsParams: GoogleCloudVisionV1p1beta1CropHintsParamsSchema.exactOptional().openapi({
+      description: 'Parameters for crop hints annotation request.',
+    }),
+    languageHints: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'List of languages to use for TEXT_DETECTION. In most cases, an empty value yields the best results since it enables automatic language detection. For languages based on the Latin alphabet, setting `language_hints` is not needed. In rare cases, when the language of the text in the image is known, setting a hint will help get better results (although it will be a significant hindrance if the hint is wrong). Text detection returns an error if one or more of the specified languages is not one of the [supported languages](https://cloud.google.com/vision/docs/languages).',
+      }),
+    latLongRect: GoogleCloudVisionV1p1beta1LatLongRectSchema.exactOptional().openapi({
+      description: 'Not used.',
+    }),
+    productSearchParams:
+      GoogleCloudVisionV1p1beta1ProductSearchParamsSchema.exactOptional().openapi({
+        description: 'Parameters for product search.',
+      }),
+    textDetectionParams:
+      GoogleCloudVisionV1p1beta1TextDetectionParamsSchema.exactOptional().openapi({
+        description: 'Parameters for text detection and document text detection.',
+      }),
+    webDetectionParams: GoogleCloudVisionV1p1beta1WebDetectionParamsSchema.exactOptional().openapi({
+      description: 'Parameters for web detection.',
+    }),
+  })
+  .openapi({ description: 'Image context and/or feature-specific parameters.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1ImageContext')
+
+const GoogleCloudVisionV1p1beta1GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
+      }),
+  })
+  .openapi({
+    description: 'The Google Cloud Storage location where the output will be written to.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1GcsDestination')
+
+const GoogleCloudVisionV1p1beta1OutputConfigSchema = z
+  .object({
+    batchSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
+      }),
+    gcsDestination: GoogleCloudVisionV1p1beta1GcsDestinationSchema.exactOptional().openapi({
+      description: 'The Google Cloud Storage location to write the output(s) to.',
+    }),
+  })
+  .openapi({ description: 'The desired output location and metadata.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1OutputConfig')
+
+const GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema = z
+  .object({
+    features: z
+      .array(GoogleCloudVisionV1p1beta1FeatureSchema)
+      .exactOptional()
+      .openapi({ description: 'Required. Requested features.' }),
+    imageContext: GoogleCloudVisionV1p1beta1ImageContextSchema.exactOptional().openapi({
+      description: 'Additional context that may accompany the image(s) in the file.',
+    }),
+    inputConfig: GoogleCloudVisionV1p1beta1InputConfigSchema.exactOptional().openapi({
+      description: 'Required. Information about the input file.',
+    }),
+    outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
+      description: 'Required. The desired output location and metadata (e.g. format).',
+    }),
+  })
+  .openapi({ description: 'An offline file annotation request.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequest')
+
+type GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequestType = {
+  labels?: { [key: string]: string }
+  parent?: string
+  requests?: z.infer<typeof GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema>[]
+}
 
 const GoogleCloudVisionV1p1beta1ImageSourceSchema = z
   .object({
@@ -2471,39 +2496,14 @@ const GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema = z
   })
   .openapi('GoogleCloudVisionV1p1beta1AnnotateImageRequest')
 
-const GoogleCloudVisionV1p1beta1GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
-      }),
-  })
-  .openapi({
-    description: 'The Google Cloud Storage location where the output will be written to.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1GcsDestination')
+type GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequestType = {
+  labels?: { [key: string]: string }
+  outputConfig?: z.infer<typeof GoogleCloudVisionV1p1beta1OutputConfigSchema>
+  parent?: string
+  requests?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema>[]
+}
 
-const GoogleCloudVisionV1p1beta1OutputConfigSchema = z
-  .object({
-    batchSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
-      }),
-    gcsDestination: GoogleCloudVisionV1p1beta1GcsDestinationSchema.exactOptional().openapi({
-      description: 'The Google Cloud Storage location to write the output(s) to.',
-    }),
-  })
-  .openapi({ description: 'The desired output location and metadata.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1OutputConfig')
-
-const GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema = z
+const GoogleCloudVisionV1p1beta1AnnotateFileRequestSchema = z
   .object({
     features: z
       .array(GoogleCloudVisionV1p1beta1FeatureSchema)
@@ -2515,199 +2515,68 @@ const GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema = z
     inputConfig: GoogleCloudVisionV1p1beta1InputConfigSchema.exactOptional().openapi({
       description: 'Required. Information about the input file.',
     }),
-    outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
-      description: 'Required. The desired output location and metadata (e.g. format).',
-    }),
-  })
-  .openapi({ description: 'An offline file annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequest')
-
-const GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponseSchema = z
-  .object({
-    outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
-      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
-    }),
-  })
-  .openapi({
-    description: 'The response for a single offline file annotation request.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponse')
-
-const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequestSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
+    pages: z
+      .array(z.int32())
       .exactOptional()
       .openapi({
         description:
-          'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
-      }),
-    requests: z
-      .array(GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Required. Individual async file annotation requests for this batch.',
+          'Pages of the file to perform image annotation. Pages starts from 1, we assume the first page of the file is page 1. At most 5 pages are supported per request. Pages can be negative. Page 1 means the first page. Page 2 means the second page. Page -1 means the last page. Page -2 means the second to the last page. If the file is GIF instead of PDF or TIFF, page refers to GIF frames. If this field is empty, by default the service performs image annotation for the first 5 pages of the file.',
       }),
   })
   .openapi({
-    description: 'Multiple async file annotation requests are batched into a single service call.',
+    description: 'A request to annotate one single file, e.g. a PDF, TIFF or GIF file.',
     required: [],
   })
-  .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequest')
+  .openapi('GoogleCloudVisionV1p1beta1AnnotateFileRequest')
 
-const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesResponse')
+type GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequestType = {
+  labels?: { [key: string]: string }
+  parent?: string
+  requests?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateFileRequestSchema>[]
+}
 
-const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequestSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
+const GoogleCloudVisionV1p1beta1AnnotateFileResponseSchema: z.ZodType<GoogleCloudVisionV1p1beta1AnnotateFileResponseType> =
+  z
+    .object({
+      error: StatusSchema.exactOptional().openapi({
         description:
-          'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
+          'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
       }),
-    outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
-      description: 'Required. The desired output location and metadata (e.g. format).',
-    }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
+      inputConfig: GoogleCloudVisionV1p1beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Information about the file for which this response is generated.',
       }),
-    requests: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. Individual image annotation requests for this batch.' }),
-  })
-  .openapi({
-    description: 'Request for async image annotation for a list of images.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequest')
+      responses: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+        }),
+      totalPages: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'This field gives the total number of pages in the file.' }),
+    })
+    .openapi({
+      description:
+        'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1AnnotateFileResponse')
 
-const GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequestSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
-      }),
-    requests: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateFileRequestSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The list of file annotation requests. Right now we support only one AnnotateFileRequest in BatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({
-    description: 'A list of requests to annotate files using the BatchAnnotateFiles API.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequest')
+type GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponseType = {
+  responses?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateFileResponseSchema>[]
+}
 
-const GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'A list of file annotation responses.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponse')
+type GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequestType = {
+  labels?: { [key: string]: string }
+  parent?: string
+  requests?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema>[]
+}
 
-const GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequestSchema = z
-  .object({
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
-      }),
-    parent: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
-      }),
-    requests: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema)
-      .exactOptional()
-      .openapi({ description: 'Required. Individual image annotation requests for this batch.' }),
-  })
-  .openapi({
-    description: 'Multiple image annotation requests are batched into a single service call.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequest')
-
-const GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema)
-      .exactOptional()
-      .openapi({
-        description: 'Individual responses to image annotation requests within the batch.',
-      }),
-  })
-  .openapi({ description: 'Response to a batch image annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponse')
-
-const GoogleCloudVisionV1p1beta1OperationMetadataSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the batch request was received.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the batch operation.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the operation result was last updated.' }),
-  })
-  .openapi({
-    description: 'Contains metadata for the BatchAnnotateImages operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p1beta1OperationMetadata')
+type GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponseType = {
+  responses?: z.infer<typeof GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema>[]
+}
 
 const GoogleCloudVisionV1p2beta1GcsSourceSchema = z
   .object({
@@ -3079,31 +2948,47 @@ const GoogleCloudVisionV1p2beta1WordSchema = z
   .openapi({ description: 'A word representation.', required: [] })
   .openapi('GoogleCloudVisionV1p2beta1Word')
 
-const GoogleCloudVisionV1p2beta1ParagraphSchema = z
-  .object({
-    boundingBox: GoogleCloudVisionV1p2beta1BoundingPolySchema.exactOptional().openapi({
-      description:
-        "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
-    }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
-    property: GoogleCloudVisionV1p2beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
-      description: 'Additional information detected for the paragraph.',
-    }),
-    words: z
-      .array(GoogleCloudVisionV1p2beta1WordSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all words in this paragraph.' }),
-  })
-  .openapi({
-    description: 'Structural unit of text representing a number of words in certain order.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1Paragraph')
+type GoogleCloudVisionV1p2beta1ParagraphType = {
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p2beta1BoundingPolySchema>
+  confidence?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p2beta1TextAnnotationTextPropertySchema>
+  words?: z.infer<typeof GoogleCloudVisionV1p2beta1WordSchema>[]
+}
 
-const GoogleCloudVisionV1p2beta1BlockSchema = z
+const GoogleCloudVisionV1p2beta1ParagraphSchema: z.ZodType<GoogleCloudVisionV1p2beta1ParagraphType> =
+  z
+    .object({
+      boundingBox: GoogleCloudVisionV1p2beta1BoundingPolySchema.exactOptional().openapi({
+        description:
+          "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
+      }),
+      confidence: z
+        .float32()
+        .exactOptional()
+        .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
+      property: GoogleCloudVisionV1p2beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
+        description: 'Additional information detected for the paragraph.',
+      }),
+      words: z
+        .array(GoogleCloudVisionV1p2beta1WordSchema)
+        .exactOptional()
+        .openapi({ description: 'List of all words in this paragraph.' }),
+    })
+    .openapi({
+      description: 'Structural unit of text representing a number of words in certain order.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p2beta1Paragraph')
+
+type GoogleCloudVisionV1p2beta1BlockType = {
+  blockType?: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE'
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p2beta1BoundingPolySchema>
+  confidence?: number
+  paragraphs?: z.infer<typeof GoogleCloudVisionV1p2beta1ParagraphSchema>[]
+  property?: z.infer<typeof GoogleCloudVisionV1p2beta1TextAnnotationTextPropertySchema>
+}
+
+const GoogleCloudVisionV1p2beta1BlockSchema: z.ZodType<GoogleCloudVisionV1p2beta1BlockType> = z
   .object({
     blockType: z
       .enum(['UNKNOWN', 'TEXT', 'TABLE', 'PICTURE', 'RULER', 'BARCODE'])
@@ -3130,7 +3015,15 @@ const GoogleCloudVisionV1p2beta1BlockSchema = z
   .openapi({ description: 'Logical element on the page.', required: [] })
   .openapi('GoogleCloudVisionV1p2beta1Block')
 
-const GoogleCloudVisionV1p2beta1PageSchema = z
+type GoogleCloudVisionV1p2beta1PageType = {
+  blocks?: z.infer<typeof GoogleCloudVisionV1p2beta1BlockSchema>[]
+  confidence?: number
+  height?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p2beta1TextAnnotationTextPropertySchema>
+  width?: number
+}
+
+const GoogleCloudVisionV1p2beta1PageSchema: z.ZodType<GoogleCloudVisionV1p2beta1PageType> = z
   .object({
     blocks: z
       .array(GoogleCloudVisionV1p2beta1BlockSchema)
@@ -3161,20 +3054,29 @@ const GoogleCloudVisionV1p2beta1PageSchema = z
   .openapi({ description: 'Detected page from OCR.', required: [] })
   .openapi('GoogleCloudVisionV1p2beta1Page')
 
-const GoogleCloudVisionV1p2beta1TextAnnotationSchema = z
-  .object({
-    pages: z
-      .array(GoogleCloudVisionV1p2beta1PageSchema)
-      .exactOptional()
-      .openapi({ description: 'List of pages detected by OCR.' }),
-    text: z.string().exactOptional().openapi({ description: 'UTF-8 text detected on the pages.' }),
-  })
-  .openapi({
-    description:
-      'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1TextAnnotation')
+type GoogleCloudVisionV1p2beta1TextAnnotationType = {
+  pages?: z.infer<typeof GoogleCloudVisionV1p2beta1PageSchema>[]
+  text?: string
+}
+
+const GoogleCloudVisionV1p2beta1TextAnnotationSchema: z.ZodType<GoogleCloudVisionV1p2beta1TextAnnotationType> =
+  z
+    .object({
+      pages: z
+        .array(GoogleCloudVisionV1p2beta1PageSchema)
+        .exactOptional()
+        .openapi({ description: 'List of pages detected by OCR.' }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'UTF-8 text detected on the pages.' }),
+    })
+    .openapi({
+      description:
+        'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p2beta1TextAnnotation')
 
 const GoogleCloudVisionV1p2beta1ColorInfoSchema = z
   .object({
@@ -3458,29 +3360,38 @@ const GoogleCloudVisionV1p2beta1ProductSearchResultsGroupedResultSchema = z
   })
   .openapi('GoogleCloudVisionV1p2beta1ProductSearchResultsGroupedResult')
 
-const GoogleCloudVisionV1p2beta1ProductSearchResultsSchema = z
-  .object({
-    indexTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
-      }),
-    productGroupedResults: z
-      .array(GoogleCloudVisionV1p2beta1ProductSearchResultsGroupedResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
-      }),
-    results: z
-      .array(GoogleCloudVisionV1p2beta1ProductSearchResultsResultSchema)
-      .exactOptional()
-      .openapi({ description: 'List of results, one for each product match.' }),
-  })
-  .openapi({ description: 'Results for a product search request.', required: [] })
-  .openapi('GoogleCloudVisionV1p2beta1ProductSearchResults')
+type GoogleCloudVisionV1p2beta1ProductSearchResultsType = {
+  indexTime?: string
+  productGroupedResults?: z.infer<
+    typeof GoogleCloudVisionV1p2beta1ProductSearchResultsGroupedResultSchema
+  >[]
+  results?: z.infer<typeof GoogleCloudVisionV1p2beta1ProductSearchResultsResultSchema>[]
+}
+
+const GoogleCloudVisionV1p2beta1ProductSearchResultsSchema: z.ZodType<GoogleCloudVisionV1p2beta1ProductSearchResultsType> =
+  z
+    .object({
+      indexTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
+        }),
+      productGroupedResults: z
+        .array(GoogleCloudVisionV1p2beta1ProductSearchResultsGroupedResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
+        }),
+      results: z
+        .array(GoogleCloudVisionV1p2beta1ProductSearchResultsResultSchema)
+        .exactOptional()
+        .openapi({ description: 'List of results, one for each product match.' }),
+    })
+    .openapi({ description: 'Results for a product search request.', required: [] })
+    .openapi('GoogleCloudVisionV1p2beta1ProductSearchResults')
 
 const GoogleCloudVisionV1p2beta1SafeSearchAnnotationSchema = z
   .object({
@@ -3635,175 +3546,96 @@ const GoogleCloudVisionV1p2beta1WebDetectionSchema = z
   .openapi({ description: 'Relevant information for the image from the Internet.', required: [] })
   .openapi('GoogleCloudVisionV1p2beta1WebDetection')
 
-const GoogleCloudVisionV1p2beta1AnnotateImageResponseSchema = z
-  .object({
-    context: GoogleCloudVisionV1p2beta1ImageAnnotationContextSchema.exactOptional().openapi({
-      description:
-        'If present, contextual information is needed to understand where this image comes from.',
-    }),
-    cropHintsAnnotation:
-      GoogleCloudVisionV1p2beta1CropHintsAnnotationSchema.exactOptional().openapi({
-        description: 'If present, crop hints have completed successfully.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
-    }),
-    faceAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, face detection has completed successfully.' }),
-    fullTextAnnotation: GoogleCloudVisionV1p2beta1TextAnnotationSchema.exactOptional().openapi({
-      description:
-        'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
-    }),
-    imagePropertiesAnnotation:
-      GoogleCloudVisionV1p2beta1ImagePropertiesSchema.exactOptional().openapi({
-        description: 'If present, image properties were extracted successfully.',
-      }),
-    labelAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, label detection has completed successfully.' }),
-    landmarkAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, landmark detection has completed successfully.' }),
-    localizedObjectAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1LocalizedObjectAnnotationSchema)
-      .exactOptional()
-      .openapi({
+type GoogleCloudVisionV1p2beta1AnnotateImageResponseType = {
+  context?: z.infer<typeof GoogleCloudVisionV1p2beta1ImageAnnotationContextSchema>
+  cropHintsAnnotation?: z.infer<typeof GoogleCloudVisionV1p2beta1CropHintsAnnotationSchema>
+  error?: z.infer<typeof StatusSchema>
+  faceAnnotations?: z.infer<typeof GoogleCloudVisionV1p2beta1FaceAnnotationSchema>[]
+  fullTextAnnotation?: z.infer<typeof GoogleCloudVisionV1p2beta1TextAnnotationSchema>
+  imagePropertiesAnnotation?: z.infer<typeof GoogleCloudVisionV1p2beta1ImagePropertiesSchema>
+  labelAnnotations?: z.infer<typeof GoogleCloudVisionV1p2beta1EntityAnnotationSchema>[]
+  landmarkAnnotations?: z.infer<typeof GoogleCloudVisionV1p2beta1EntityAnnotationSchema>[]
+  localizedObjectAnnotations?: z.infer<
+    typeof GoogleCloudVisionV1p2beta1LocalizedObjectAnnotationSchema
+  >[]
+  logoAnnotations?: z.infer<typeof GoogleCloudVisionV1p2beta1EntityAnnotationSchema>[]
+  productSearchResults?: z.infer<typeof GoogleCloudVisionV1p2beta1ProductSearchResultsSchema>
+  safeSearchAnnotation?: z.infer<typeof GoogleCloudVisionV1p2beta1SafeSearchAnnotationSchema>
+  textAnnotations?: z.infer<typeof GoogleCloudVisionV1p2beta1EntityAnnotationSchema>[]
+  webDetection?: z.infer<typeof GoogleCloudVisionV1p2beta1WebDetectionSchema>
+}
+
+const GoogleCloudVisionV1p2beta1AnnotateImageResponseSchema: z.ZodType<GoogleCloudVisionV1p2beta1AnnotateImageResponseType> =
+  z
+    .object({
+      context: GoogleCloudVisionV1p2beta1ImageAnnotationContextSchema.exactOptional().openapi({
         description:
-          'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
+          'If present, contextual information is needed to understand where this image comes from.',
       }),
-    logoAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, logo detection has completed successfully.' }),
-    productSearchResults:
-      GoogleCloudVisionV1p2beta1ProductSearchResultsSchema.exactOptional().openapi({
-        description: 'If present, product search has completed successfully.',
-      }),
-    safeSearchAnnotation:
-      GoogleCloudVisionV1p2beta1SafeSearchAnnotationSchema.exactOptional().openapi({
-        description: 'If present, safe-search annotation has completed successfully.',
-      }),
-    textAnnotations: z
-      .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
-    webDetection: GoogleCloudVisionV1p2beta1WebDetectionSchema.exactOptional().openapi({
-      description: 'If present, web detection has completed successfully.',
-    }),
-  })
-  .openapi({ description: 'Response to an image annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p2beta1AnnotateImageResponse')
-
-const GoogleCloudVisionV1p2beta1AnnotateFileResponseSchema = z
-  .object({
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
-    }),
-    inputConfig: GoogleCloudVisionV1p2beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Information about the file for which this response is generated.',
-    }),
-    responses: z
-      .array(GoogleCloudVisionV1p2beta1AnnotateImageResponseSchema)
-      .exactOptional()
-      .openapi({
+      cropHintsAnnotation:
+        GoogleCloudVisionV1p2beta1CropHintsAnnotationSchema.exactOptional().openapi({
+          description: 'If present, crop hints have completed successfully.',
+        }),
+      error: StatusSchema.exactOptional().openapi({
         description:
-          'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+          'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
       }),
-    totalPages: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'This field gives the total number of pages in the file.' }),
-  })
-  .openapi({
-    description:
-      'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1AnnotateFileResponse')
-
-const GoogleCloudVisionV1p2beta1GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
+      faceAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, face detection has completed successfully.' }),
+      fullTextAnnotation: GoogleCloudVisionV1p2beta1TextAnnotationSchema.exactOptional().openapi({
         description:
-          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
+          'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
       }),
-  })
-  .openapi({
-    description: 'The Google Cloud Storage location where the output will be written to.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1GcsDestination')
-
-const GoogleCloudVisionV1p2beta1OutputConfigSchema = z
-  .object({
-    batchSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
+      imagePropertiesAnnotation:
+        GoogleCloudVisionV1p2beta1ImagePropertiesSchema.exactOptional().openapi({
+          description: 'If present, image properties were extracted successfully.',
+        }),
+      labelAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, label detection has completed successfully.' }),
+      landmarkAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, landmark detection has completed successfully.' }),
+      localizedObjectAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1LocalizedObjectAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
+        }),
+      logoAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, logo detection has completed successfully.' }),
+      productSearchResults:
+        GoogleCloudVisionV1p2beta1ProductSearchResultsSchema.exactOptional().openapi({
+          description: 'If present, product search has completed successfully.',
+        }),
+      safeSearchAnnotation:
+        GoogleCloudVisionV1p2beta1SafeSearchAnnotationSchema.exactOptional().openapi({
+          description: 'If present, safe-search annotation has completed successfully.',
+        }),
+      textAnnotations: z
+        .array(GoogleCloudVisionV1p2beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
+      webDetection: GoogleCloudVisionV1p2beta1WebDetectionSchema.exactOptional().openapi({
+        description: 'If present, web detection has completed successfully.',
       }),
-    gcsDestination: GoogleCloudVisionV1p2beta1GcsDestinationSchema.exactOptional().openapi({
-      description: 'The Google Cloud Storage location to write the output(s) to.',
-    }),
-  })
-  .openapi({ description: 'The desired output location and metadata.', required: [] })
-  .openapi('GoogleCloudVisionV1p2beta1OutputConfig')
+    })
+    .openapi({ description: 'Response to an image annotation request.', required: [] })
+    .openapi('GoogleCloudVisionV1p2beta1AnnotateImageResponse')
 
-const GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponseSchema = z
-  .object({
-    outputConfig: GoogleCloudVisionV1p2beta1OutputConfigSchema.exactOptional().openapi({
-      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
-    }),
-  })
-  .openapi({
-    description: 'The response for a single offline file annotation request.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponse')
-
-const GoogleCloudVisionV1p2beta1AsyncBatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p2beta1AsyncBatchAnnotateFilesResponse')
-
-const GoogleCloudVisionV1p2beta1OperationMetadataSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the batch request was received.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the batch operation.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the operation result was last updated.' }),
-  })
-  .openapi({
-    description: 'Contains metadata for the BatchAnnotateImages operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p2beta1OperationMetadata')
+type GoogleCloudVisionV1p2beta1AnnotateFileResponseType = {
+  error?: z.infer<typeof StatusSchema>
+  inputConfig?: z.infer<typeof GoogleCloudVisionV1p2beta1InputConfigSchema>
+  responses?: z.infer<typeof GoogleCloudVisionV1p2beta1AnnotateImageResponseSchema>[]
+  totalPages?: number
+}
 
 const GoogleCloudVisionV1p3beta1GcsSourceSchema = z
   .object({
@@ -4175,31 +4007,47 @@ const GoogleCloudVisionV1p3beta1WordSchema = z
   .openapi({ description: 'A word representation.', required: [] })
   .openapi('GoogleCloudVisionV1p3beta1Word')
 
-const GoogleCloudVisionV1p3beta1ParagraphSchema = z
-  .object({
-    boundingBox: GoogleCloudVisionV1p3beta1BoundingPolySchema.exactOptional().openapi({
-      description:
-        "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
-    }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
-    property: GoogleCloudVisionV1p3beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
-      description: 'Additional information detected for the paragraph.',
-    }),
-    words: z
-      .array(GoogleCloudVisionV1p3beta1WordSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all words in this paragraph.' }),
-  })
-  .openapi({
-    description: 'Structural unit of text representing a number of words in certain order.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1Paragraph')
+type GoogleCloudVisionV1p3beta1ParagraphType = {
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p3beta1BoundingPolySchema>
+  confidence?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p3beta1TextAnnotationTextPropertySchema>
+  words?: z.infer<typeof GoogleCloudVisionV1p3beta1WordSchema>[]
+}
 
-const GoogleCloudVisionV1p3beta1BlockSchema = z
+const GoogleCloudVisionV1p3beta1ParagraphSchema: z.ZodType<GoogleCloudVisionV1p3beta1ParagraphType> =
+  z
+    .object({
+      boundingBox: GoogleCloudVisionV1p3beta1BoundingPolySchema.exactOptional().openapi({
+        description:
+          "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
+      }),
+      confidence: z
+        .float32()
+        .exactOptional()
+        .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
+      property: GoogleCloudVisionV1p3beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
+        description: 'Additional information detected for the paragraph.',
+      }),
+      words: z
+        .array(GoogleCloudVisionV1p3beta1WordSchema)
+        .exactOptional()
+        .openapi({ description: 'List of all words in this paragraph.' }),
+    })
+    .openapi({
+      description: 'Structural unit of text representing a number of words in certain order.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p3beta1Paragraph')
+
+type GoogleCloudVisionV1p3beta1BlockType = {
+  blockType?: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE'
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p3beta1BoundingPolySchema>
+  confidence?: number
+  paragraphs?: z.infer<typeof GoogleCloudVisionV1p3beta1ParagraphSchema>[]
+  property?: z.infer<typeof GoogleCloudVisionV1p3beta1TextAnnotationTextPropertySchema>
+}
+
+const GoogleCloudVisionV1p3beta1BlockSchema: z.ZodType<GoogleCloudVisionV1p3beta1BlockType> = z
   .object({
     blockType: z
       .enum(['UNKNOWN', 'TEXT', 'TABLE', 'PICTURE', 'RULER', 'BARCODE'])
@@ -4226,7 +4074,15 @@ const GoogleCloudVisionV1p3beta1BlockSchema = z
   .openapi({ description: 'Logical element on the page.', required: [] })
   .openapi('GoogleCloudVisionV1p3beta1Block')
 
-const GoogleCloudVisionV1p3beta1PageSchema = z
+type GoogleCloudVisionV1p3beta1PageType = {
+  blocks?: z.infer<typeof GoogleCloudVisionV1p3beta1BlockSchema>[]
+  confidence?: number
+  height?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p3beta1TextAnnotationTextPropertySchema>
+  width?: number
+}
+
+const GoogleCloudVisionV1p3beta1PageSchema: z.ZodType<GoogleCloudVisionV1p3beta1PageType> = z
   .object({
     blocks: z
       .array(GoogleCloudVisionV1p3beta1BlockSchema)
@@ -4257,20 +4113,29 @@ const GoogleCloudVisionV1p3beta1PageSchema = z
   .openapi({ description: 'Detected page from OCR.', required: [] })
   .openapi('GoogleCloudVisionV1p3beta1Page')
 
-const GoogleCloudVisionV1p3beta1TextAnnotationSchema = z
-  .object({
-    pages: z
-      .array(GoogleCloudVisionV1p3beta1PageSchema)
-      .exactOptional()
-      .openapi({ description: 'List of pages detected by OCR.' }),
-    text: z.string().exactOptional().openapi({ description: 'UTF-8 text detected on the pages.' }),
-  })
-  .openapi({
-    description:
-      'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1TextAnnotation')
+type GoogleCloudVisionV1p3beta1TextAnnotationType = {
+  pages?: z.infer<typeof GoogleCloudVisionV1p3beta1PageSchema>[]
+  text?: string
+}
+
+const GoogleCloudVisionV1p3beta1TextAnnotationSchema: z.ZodType<GoogleCloudVisionV1p3beta1TextAnnotationType> =
+  z
+    .object({
+      pages: z
+        .array(GoogleCloudVisionV1p3beta1PageSchema)
+        .exactOptional()
+        .openapi({ description: 'List of pages detected by OCR.' }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'UTF-8 text detected on the pages.' }),
+    })
+    .openapi({
+      description:
+        'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p3beta1TextAnnotation')
 
 const GoogleCloudVisionV1p3beta1ColorInfoSchema = z
   .object({
@@ -4554,29 +4419,38 @@ const GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResultSchema = z
   })
   .openapi('GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResult')
 
-const GoogleCloudVisionV1p3beta1ProductSearchResultsSchema = z
-  .object({
-    indexTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
-      }),
-    productGroupedResults: z
-      .array(GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
-      }),
-    results: z
-      .array(GoogleCloudVisionV1p3beta1ProductSearchResultsResultSchema)
-      .exactOptional()
-      .openapi({ description: 'List of results, one for each product match.' }),
-  })
-  .openapi({ description: 'Results for a product search request.', required: [] })
-  .openapi('GoogleCloudVisionV1p3beta1ProductSearchResults')
+type GoogleCloudVisionV1p3beta1ProductSearchResultsType = {
+  indexTime?: string
+  productGroupedResults?: z.infer<
+    typeof GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResultSchema
+  >[]
+  results?: z.infer<typeof GoogleCloudVisionV1p3beta1ProductSearchResultsResultSchema>[]
+}
+
+const GoogleCloudVisionV1p3beta1ProductSearchResultsSchema: z.ZodType<GoogleCloudVisionV1p3beta1ProductSearchResultsType> =
+  z
+    .object({
+      indexTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
+        }),
+      productGroupedResults: z
+        .array(GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
+        }),
+      results: z
+        .array(GoogleCloudVisionV1p3beta1ProductSearchResultsResultSchema)
+        .exactOptional()
+        .openapi({ description: 'List of results, one for each product match.' }),
+    })
+    .openapi({ description: 'Results for a product search request.', required: [] })
+    .openapi('GoogleCloudVisionV1p3beta1ProductSearchResults')
 
 const GoogleCloudVisionV1p3beta1SafeSearchAnnotationSchema = z
   .object({
@@ -4731,252 +4605,96 @@ const GoogleCloudVisionV1p3beta1WebDetectionSchema = z
   .openapi({ description: 'Relevant information for the image from the Internet.', required: [] })
   .openapi('GoogleCloudVisionV1p3beta1WebDetection')
 
-const GoogleCloudVisionV1p3beta1AnnotateImageResponseSchema = z
-  .object({
-    context: GoogleCloudVisionV1p3beta1ImageAnnotationContextSchema.exactOptional().openapi({
-      description:
-        'If present, contextual information is needed to understand where this image comes from.',
-    }),
-    cropHintsAnnotation:
-      GoogleCloudVisionV1p3beta1CropHintsAnnotationSchema.exactOptional().openapi({
-        description: 'If present, crop hints have completed successfully.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
-    }),
-    faceAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, face detection has completed successfully.' }),
-    fullTextAnnotation: GoogleCloudVisionV1p3beta1TextAnnotationSchema.exactOptional().openapi({
-      description:
-        'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
-    }),
-    imagePropertiesAnnotation:
-      GoogleCloudVisionV1p3beta1ImagePropertiesSchema.exactOptional().openapi({
-        description: 'If present, image properties were extracted successfully.',
-      }),
-    labelAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, label detection has completed successfully.' }),
-    landmarkAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, landmark detection has completed successfully.' }),
-    localizedObjectAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1LocalizedObjectAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
-      }),
-    logoAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, logo detection has completed successfully.' }),
-    productSearchResults:
-      GoogleCloudVisionV1p3beta1ProductSearchResultsSchema.exactOptional().openapi({
-        description: 'If present, product search has completed successfully.',
-      }),
-    safeSearchAnnotation:
-      GoogleCloudVisionV1p3beta1SafeSearchAnnotationSchema.exactOptional().openapi({
-        description: 'If present, safe-search annotation has completed successfully.',
-      }),
-    textAnnotations: z
-      .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
-    webDetection: GoogleCloudVisionV1p3beta1WebDetectionSchema.exactOptional().openapi({
-      description: 'If present, web detection has completed successfully.',
-    }),
-  })
-  .openapi({ description: 'Response to an image annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p3beta1AnnotateImageResponse')
+type GoogleCloudVisionV1p3beta1AnnotateImageResponseType = {
+  context?: z.infer<typeof GoogleCloudVisionV1p3beta1ImageAnnotationContextSchema>
+  cropHintsAnnotation?: z.infer<typeof GoogleCloudVisionV1p3beta1CropHintsAnnotationSchema>
+  error?: z.infer<typeof StatusSchema>
+  faceAnnotations?: z.infer<typeof GoogleCloudVisionV1p3beta1FaceAnnotationSchema>[]
+  fullTextAnnotation?: z.infer<typeof GoogleCloudVisionV1p3beta1TextAnnotationSchema>
+  imagePropertiesAnnotation?: z.infer<typeof GoogleCloudVisionV1p3beta1ImagePropertiesSchema>
+  labelAnnotations?: z.infer<typeof GoogleCloudVisionV1p3beta1EntityAnnotationSchema>[]
+  landmarkAnnotations?: z.infer<typeof GoogleCloudVisionV1p3beta1EntityAnnotationSchema>[]
+  localizedObjectAnnotations?: z.infer<
+    typeof GoogleCloudVisionV1p3beta1LocalizedObjectAnnotationSchema
+  >[]
+  logoAnnotations?: z.infer<typeof GoogleCloudVisionV1p3beta1EntityAnnotationSchema>[]
+  productSearchResults?: z.infer<typeof GoogleCloudVisionV1p3beta1ProductSearchResultsSchema>
+  safeSearchAnnotation?: z.infer<typeof GoogleCloudVisionV1p3beta1SafeSearchAnnotationSchema>
+  textAnnotations?: z.infer<typeof GoogleCloudVisionV1p3beta1EntityAnnotationSchema>[]
+  webDetection?: z.infer<typeof GoogleCloudVisionV1p3beta1WebDetectionSchema>
+}
 
-const GoogleCloudVisionV1p3beta1AnnotateFileResponseSchema = z
-  .object({
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
-    }),
-    inputConfig: GoogleCloudVisionV1p3beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Information about the file for which this response is generated.',
-    }),
-    responses: z
-      .array(GoogleCloudVisionV1p3beta1AnnotateImageResponseSchema)
-      .exactOptional()
-      .openapi({
+const GoogleCloudVisionV1p3beta1AnnotateImageResponseSchema: z.ZodType<GoogleCloudVisionV1p3beta1AnnotateImageResponseType> =
+  z
+    .object({
+      context: GoogleCloudVisionV1p3beta1ImageAnnotationContextSchema.exactOptional().openapi({
         description:
-          'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+          'If present, contextual information is needed to understand where this image comes from.',
       }),
-    totalPages: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'This field gives the total number of pages in the file.' }),
-  })
-  .openapi({
-    description:
-      'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1AnnotateFileResponse')
+      cropHintsAnnotation:
+        GoogleCloudVisionV1p3beta1CropHintsAnnotationSchema.exactOptional().openapi({
+          description: 'If present, crop hints have completed successfully.',
+        }),
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
+      }),
+      faceAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, face detection has completed successfully.' }),
+      fullTextAnnotation: GoogleCloudVisionV1p3beta1TextAnnotationSchema.exactOptional().openapi({
+        description:
+          'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
+      }),
+      imagePropertiesAnnotation:
+        GoogleCloudVisionV1p3beta1ImagePropertiesSchema.exactOptional().openapi({
+          description: 'If present, image properties were extracted successfully.',
+        }),
+      labelAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, label detection has completed successfully.' }),
+      landmarkAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, landmark detection has completed successfully.' }),
+      localizedObjectAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1LocalizedObjectAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
+        }),
+      logoAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, logo detection has completed successfully.' }),
+      productSearchResults:
+        GoogleCloudVisionV1p3beta1ProductSearchResultsSchema.exactOptional().openapi({
+          description: 'If present, product search has completed successfully.',
+        }),
+      safeSearchAnnotation:
+        GoogleCloudVisionV1p3beta1SafeSearchAnnotationSchema.exactOptional().openapi({
+          description: 'If present, safe-search annotation has completed successfully.',
+        }),
+      textAnnotations: z
+        .array(GoogleCloudVisionV1p3beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
+      webDetection: GoogleCloudVisionV1p3beta1WebDetectionSchema.exactOptional().openapi({
+        description: 'If present, web detection has completed successfully.',
+      }),
+    })
+    .openapi({ description: 'Response to an image annotation request.', required: [] })
+    .openapi('GoogleCloudVisionV1p3beta1AnnotateImageResponse')
 
-const GoogleCloudVisionV1p3beta1GcsDestinationSchema = z
-  .object({
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
-      }),
-  })
-  .openapi({
-    description: 'The Google Cloud Storage location where the output will be written to.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1GcsDestination')
-
-const GoogleCloudVisionV1p3beta1OutputConfigSchema = z
-  .object({
-    batchSize: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
-      }),
-    gcsDestination: GoogleCloudVisionV1p3beta1GcsDestinationSchema.exactOptional().openapi({
-      description: 'The Google Cloud Storage location to write the output(s) to.',
-    }),
-  })
-  .openapi({ description: 'The desired output location and metadata.', required: [] })
-  .openapi('GoogleCloudVisionV1p3beta1OutputConfig')
-
-const GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponseSchema = z
-  .object({
-    outputConfig: GoogleCloudVisionV1p3beta1OutputConfigSchema.exactOptional().openapi({
-      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
-    }),
-  })
-  .openapi({
-    description: 'The response for a single offline file annotation request.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponse')
-
-const GoogleCloudVisionV1p3beta1AsyncBatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p3beta1AsyncBatchAnnotateFilesResponse')
-
-const GoogleCloudVisionV1p3beta1BatchOperationMetadataSchema = z
-  .object({
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The time when the batch request is finished and google.longrunning.Operation.done is set to true.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'PROCESSING', 'SUCCESSFUL', 'FAILED', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: 'The current state of the batch operation.' }),
-    submitTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the batch request was submitted to the server.' }),
-  })
-  .openapi({
-    description:
-      'Metadata for the batch operations such as the current state. This is included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1BatchOperationMetadata')
-
-const GoogleCloudVisionV1p3beta1ReferenceImageSchema = z
-  .object({
-    boundingPolys: z
-      .array(GoogleCloudVisionV1p3beta1BoundingPolySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Bounding polygons around the areas of interest in the reference image. If this field is empty, the system will try to detect regions of interest. At most 10 bounding polygons will be used. The provided shape is converted into a non-rotated rectangle. Once converted, the small edge of the rectangle must be greater than or equal to 300 pixels. The aspect ratio must be 1:4 or less (i.e. 1:3 is ok; 1:5 is not).',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The resource name of the reference image. Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`. This field is ignored when creating a reference image.',
-      }),
-    uri: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. The Google Cloud Storage URI of the reference image. The URI must start with `gs://`.',
-      }),
-  })
-  .openapi({
-    description:
-      'A `ReferenceImage` represents a product image and its associated metadata, such as bounding boxes.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1ReferenceImage')
-
-const GoogleCloudVisionV1p3beta1ImportProductSetsResponseSchema = z
-  .object({
-    referenceImages: z
-      .array(GoogleCloudVisionV1p3beta1ReferenceImageSchema)
-      .exactOptional()
-      .openapi({ description: 'The list of reference_images that are imported successfully.' }),
-    statuses: z
-      .array(StatusSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The rpc status for each ImportProductSet request, including both successes and errors. The number of statuses here matches the number of lines in the csv file, and statuses[i] stores the success or failure status of processing the i-th line of the csv, starting from line 0.',
-      }),
-  })
-  .openapi({
-    description:
-      'Response message for the `ImportProductSets` method. This message is returned by the google.longrunning.Operations.GetOperation method in the returned google.longrunning.Operation.response field.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1ImportProductSetsResponse')
-
-const GoogleCloudVisionV1p3beta1OperationMetadataSchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the batch request was received.' }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
-      .exactOptional()
-      .openapi({ description: 'Current state of the batch operation.' }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The time when the operation result was last updated.' }),
-  })
-  .openapi({
-    description: 'Contains metadata for the BatchAnnotateImages operation.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p3beta1OperationMetadata')
+type GoogleCloudVisionV1p3beta1AnnotateFileResponseType = {
+  error?: z.infer<typeof StatusSchema>
+  inputConfig?: z.infer<typeof GoogleCloudVisionV1p3beta1InputConfigSchema>
+  responses?: z.infer<typeof GoogleCloudVisionV1p3beta1AnnotateImageResponseSchema>[]
+  totalPages?: number
+}
 
 const GoogleCloudVisionV1p4beta1GcsSourceSchema = z
   .object({
@@ -5389,31 +5107,47 @@ const GoogleCloudVisionV1p4beta1WordSchema = z
   .openapi({ description: 'A word representation.', required: [] })
   .openapi('GoogleCloudVisionV1p4beta1Word')
 
-const GoogleCloudVisionV1p4beta1ParagraphSchema = z
-  .object({
-    boundingBox: GoogleCloudVisionV1p4beta1BoundingPolySchema.exactOptional().openapi({
-      description:
-        "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
-    }),
-    confidence: z
-      .float32()
-      .exactOptional()
-      .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
-    property: GoogleCloudVisionV1p4beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
-      description: 'Additional information detected for the paragraph.',
-    }),
-    words: z
-      .array(GoogleCloudVisionV1p4beta1WordSchema)
-      .exactOptional()
-      .openapi({ description: 'List of all words in this paragraph.' }),
-  })
-  .openapi({
-    description: 'Structural unit of text representing a number of words in certain order.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p4beta1Paragraph')
+type GoogleCloudVisionV1p4beta1ParagraphType = {
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p4beta1BoundingPolySchema>
+  confidence?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p4beta1TextAnnotationTextPropertySchema>
+  words?: z.infer<typeof GoogleCloudVisionV1p4beta1WordSchema>[]
+}
 
-const GoogleCloudVisionV1p4beta1BlockSchema = z
+const GoogleCloudVisionV1p4beta1ParagraphSchema: z.ZodType<GoogleCloudVisionV1p4beta1ParagraphType> =
+  z
+    .object({
+      boundingBox: GoogleCloudVisionV1p4beta1BoundingPolySchema.exactOptional().openapi({
+        description:
+          "The bounding box for the paragraph. The vertices are in the order of top-left, top-right, bottom-right, bottom-left. When a rotation of the bounding box is detected the rotation is represented as around the top-left corner as defined when the text is read in the 'natural' orientation. For example: * when the text is horizontal it might look like: 0----1 | | 3----2 * when it's rotated 180 degrees around the top-left corner it becomes: 2----3 | | 1----0 and the vertex order will still be (0, 1, 2, 3).",
+      }),
+      confidence: z
+        .float32()
+        .exactOptional()
+        .openapi({ description: 'Confidence of the OCR results for the paragraph. Range [0, 1].' }),
+      property: GoogleCloudVisionV1p4beta1TextAnnotationTextPropertySchema.exactOptional().openapi({
+        description: 'Additional information detected for the paragraph.',
+      }),
+      words: z
+        .array(GoogleCloudVisionV1p4beta1WordSchema)
+        .exactOptional()
+        .openapi({ description: 'List of all words in this paragraph.' }),
+    })
+    .openapi({
+      description: 'Structural unit of text representing a number of words in certain order.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p4beta1Paragraph')
+
+type GoogleCloudVisionV1p4beta1BlockType = {
+  blockType?: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE'
+  boundingBox?: z.infer<typeof GoogleCloudVisionV1p4beta1BoundingPolySchema>
+  confidence?: number
+  paragraphs?: z.infer<typeof GoogleCloudVisionV1p4beta1ParagraphSchema>[]
+  property?: z.infer<typeof GoogleCloudVisionV1p4beta1TextAnnotationTextPropertySchema>
+}
+
+const GoogleCloudVisionV1p4beta1BlockSchema: z.ZodType<GoogleCloudVisionV1p4beta1BlockType> = z
   .object({
     blockType: z
       .enum(['UNKNOWN', 'TEXT', 'TABLE', 'PICTURE', 'RULER', 'BARCODE'])
@@ -5440,7 +5174,15 @@ const GoogleCloudVisionV1p4beta1BlockSchema = z
   .openapi({ description: 'Logical element on the page.', required: [] })
   .openapi('GoogleCloudVisionV1p4beta1Block')
 
-const GoogleCloudVisionV1p4beta1PageSchema = z
+type GoogleCloudVisionV1p4beta1PageType = {
+  blocks?: z.infer<typeof GoogleCloudVisionV1p4beta1BlockSchema>[]
+  confidence?: number
+  height?: number
+  property?: z.infer<typeof GoogleCloudVisionV1p4beta1TextAnnotationTextPropertySchema>
+  width?: number
+}
+
+const GoogleCloudVisionV1p4beta1PageSchema: z.ZodType<GoogleCloudVisionV1p4beta1PageType> = z
   .object({
     blocks: z
       .array(GoogleCloudVisionV1p4beta1BlockSchema)
@@ -5471,20 +5213,29 @@ const GoogleCloudVisionV1p4beta1PageSchema = z
   .openapi({ description: 'Detected page from OCR.', required: [] })
   .openapi('GoogleCloudVisionV1p4beta1Page')
 
-const GoogleCloudVisionV1p4beta1TextAnnotationSchema = z
-  .object({
-    pages: z
-      .array(GoogleCloudVisionV1p4beta1PageSchema)
-      .exactOptional()
-      .openapi({ description: 'List of pages detected by OCR.' }),
-    text: z.string().exactOptional().openapi({ description: 'UTF-8 text detected on the pages.' }),
-  })
-  .openapi({
-    description:
-      'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
-    required: [],
-  })
-  .openapi('GoogleCloudVisionV1p4beta1TextAnnotation')
+type GoogleCloudVisionV1p4beta1TextAnnotationType = {
+  pages?: z.infer<typeof GoogleCloudVisionV1p4beta1PageSchema>[]
+  text?: string
+}
+
+const GoogleCloudVisionV1p4beta1TextAnnotationSchema: z.ZodType<GoogleCloudVisionV1p4beta1TextAnnotationType> =
+  z
+    .object({
+      pages: z
+        .array(GoogleCloudVisionV1p4beta1PageSchema)
+        .exactOptional()
+        .openapi({ description: 'List of pages detected by OCR.' }),
+      text: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'UTF-8 text detected on the pages.' }),
+    })
+    .openapi({
+      description:
+        'TextAnnotation contains a structured representation of OCR extracted text. The hierarchy of an OCR extracted text structure is like this: TextAnnotation -> Page -> Block -> Paragraph -> Word -> Symbol Each structural component, starting from Page, may further have their own properties. Properties describe detected languages, breaks etc.. Please refer to the TextAnnotation.TextProperty message definition below for more detail.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p4beta1TextAnnotation')
 
 const GoogleCloudVisionV1p4beta1ColorInfoSchema = z
   .object({
@@ -5768,29 +5519,38 @@ const GoogleCloudVisionV1p4beta1ProductSearchResultsGroupedResultSchema = z
   })
   .openapi('GoogleCloudVisionV1p4beta1ProductSearchResultsGroupedResult')
 
-const GoogleCloudVisionV1p4beta1ProductSearchResultsSchema = z
-  .object({
-    indexTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
-      }),
-    productGroupedResults: z
-      .array(GoogleCloudVisionV1p4beta1ProductSearchResultsGroupedResultSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
-      }),
-    results: z
-      .array(GoogleCloudVisionV1p4beta1ProductSearchResultsResultSchema)
-      .exactOptional()
-      .openapi({ description: 'List of results, one for each product match.' }),
-  })
-  .openapi({ description: 'Results for a product search request.', required: [] })
-  .openapi('GoogleCloudVisionV1p4beta1ProductSearchResults')
+type GoogleCloudVisionV1p4beta1ProductSearchResultsType = {
+  indexTime?: string
+  productGroupedResults?: z.infer<
+    typeof GoogleCloudVisionV1p4beta1ProductSearchResultsGroupedResultSchema
+  >[]
+  results?: z.infer<typeof GoogleCloudVisionV1p4beta1ProductSearchResultsResultSchema>[]
+}
+
+const GoogleCloudVisionV1p4beta1ProductSearchResultsSchema: z.ZodType<GoogleCloudVisionV1p4beta1ProductSearchResultsType> =
+  z
+    .object({
+      indexTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Timestamp of the index which provided these results. Products added to the product set and products removed from the product set after this time are not reflected in the current results.',
+        }),
+      productGroupedResults: z
+        .array(GoogleCloudVisionV1p4beta1ProductSearchResultsGroupedResultSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of results grouped by products detected in the query image. Each entry corresponds to one bounding polygon in the query image, and contains the matching products specific to that region. There may be duplicate product matches in the union of all the per-product results.',
+        }),
+      results: z
+        .array(GoogleCloudVisionV1p4beta1ProductSearchResultsResultSchema)
+        .exactOptional()
+        .openapi({ description: 'List of results, one for each product match.' }),
+    })
+    .openapi({ description: 'Results for a product search request.', required: [] })
+    .openapi('GoogleCloudVisionV1p4beta1ProductSearchResults')
 
 const GoogleCloudVisionV1p4beta1SafeSearchAnnotationSchema = z
   .object({
@@ -5945,97 +5705,718 @@ const GoogleCloudVisionV1p4beta1WebDetectionSchema = z
   .openapi({ description: 'Relevant information for the image from the Internet.', required: [] })
   .openapi('GoogleCloudVisionV1p4beta1WebDetection')
 
-const GoogleCloudVisionV1p4beta1AnnotateImageResponseSchema = z
-  .object({
-    context: GoogleCloudVisionV1p4beta1ImageAnnotationContextSchema.exactOptional().openapi({
-      description:
-        'If present, contextual information is needed to understand where this image comes from.',
-    }),
-    cropHintsAnnotation:
-      GoogleCloudVisionV1p4beta1CropHintsAnnotationSchema.exactOptional().openapi({
-        description: 'If present, crop hints have completed successfully.',
-      }),
-    error: StatusSchema.exactOptional().openapi({
-      description:
-        'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
-    }),
-    faceAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1FaceAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, face detection has completed successfully.' }),
-    fullTextAnnotation: GoogleCloudVisionV1p4beta1TextAnnotationSchema.exactOptional().openapi({
-      description:
-        'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
-    }),
-    imagePropertiesAnnotation:
-      GoogleCloudVisionV1p4beta1ImagePropertiesSchema.exactOptional().openapi({
-        description: 'If present, image properties were extracted successfully.',
-      }),
-    labelAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, label detection has completed successfully.' }),
-    landmarkAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, landmark detection has completed successfully.' }),
-    localizedObjectAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1LocalizedObjectAnnotationSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
-      }),
-    logoAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, logo detection has completed successfully.' }),
-    productSearchResults:
-      GoogleCloudVisionV1p4beta1ProductSearchResultsSchema.exactOptional().openapi({
-        description: 'If present, product search has completed successfully.',
-      }),
-    safeSearchAnnotation:
-      GoogleCloudVisionV1p4beta1SafeSearchAnnotationSchema.exactOptional().openapi({
-        description: 'If present, safe-search annotation has completed successfully.',
-      }),
-    textAnnotations: z
-      .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
-      .exactOptional()
-      .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
-    webDetection: GoogleCloudVisionV1p4beta1WebDetectionSchema.exactOptional().openapi({
-      description: 'If present, web detection has completed successfully.',
-    }),
-  })
-  .openapi({ description: 'Response to an image annotation request.', required: [] })
-  .openapi('GoogleCloudVisionV1p4beta1AnnotateImageResponse')
+type GoogleCloudVisionV1p4beta1AnnotateImageResponseType = {
+  context?: z.infer<typeof GoogleCloudVisionV1p4beta1ImageAnnotationContextSchema>
+  cropHintsAnnotation?: z.infer<typeof GoogleCloudVisionV1p4beta1CropHintsAnnotationSchema>
+  error?: z.infer<typeof StatusSchema>
+  faceAnnotations?: z.infer<typeof GoogleCloudVisionV1p4beta1FaceAnnotationSchema>[]
+  fullTextAnnotation?: z.infer<typeof GoogleCloudVisionV1p4beta1TextAnnotationSchema>
+  imagePropertiesAnnotation?: z.infer<typeof GoogleCloudVisionV1p4beta1ImagePropertiesSchema>
+  labelAnnotations?: z.infer<typeof GoogleCloudVisionV1p4beta1EntityAnnotationSchema>[]
+  landmarkAnnotations?: z.infer<typeof GoogleCloudVisionV1p4beta1EntityAnnotationSchema>[]
+  localizedObjectAnnotations?: z.infer<
+    typeof GoogleCloudVisionV1p4beta1LocalizedObjectAnnotationSchema
+  >[]
+  logoAnnotations?: z.infer<typeof GoogleCloudVisionV1p4beta1EntityAnnotationSchema>[]
+  productSearchResults?: z.infer<typeof GoogleCloudVisionV1p4beta1ProductSearchResultsSchema>
+  safeSearchAnnotation?: z.infer<typeof GoogleCloudVisionV1p4beta1SafeSearchAnnotationSchema>
+  textAnnotations?: z.infer<typeof GoogleCloudVisionV1p4beta1EntityAnnotationSchema>[]
+  webDetection?: z.infer<typeof GoogleCloudVisionV1p4beta1WebDetectionSchema>
+}
 
-const GoogleCloudVisionV1p4beta1AnnotateFileResponseSchema = z
-  .object({
-    error: StatusSchema.exactOptional().openapi({
+const GoogleCloudVisionV1p4beta1AnnotateImageResponseSchema: z.ZodType<GoogleCloudVisionV1p4beta1AnnotateImageResponseType> =
+  z
+    .object({
+      context: GoogleCloudVisionV1p4beta1ImageAnnotationContextSchema.exactOptional().openapi({
+        description:
+          'If present, contextual information is needed to understand where this image comes from.',
+      }),
+      cropHintsAnnotation:
+        GoogleCloudVisionV1p4beta1CropHintsAnnotationSchema.exactOptional().openapi({
+          description: 'If present, crop hints have completed successfully.',
+        }),
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the operation. Note that filled-in image annotations are guaranteed to be correct, even when `error` is set.',
+      }),
+      faceAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1FaceAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, face detection has completed successfully.' }),
+      fullTextAnnotation: GoogleCloudVisionV1p4beta1TextAnnotationSchema.exactOptional().openapi({
+        description:
+          'If present, text (OCR) detection or document (OCR) text detection has completed successfully. This annotation provides the structural hierarchy for the OCR detected text.',
+      }),
+      imagePropertiesAnnotation:
+        GoogleCloudVisionV1p4beta1ImagePropertiesSchema.exactOptional().openapi({
+          description: 'If present, image properties were extracted successfully.',
+        }),
+      labelAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, label detection has completed successfully.' }),
+      landmarkAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, landmark detection has completed successfully.' }),
+      localizedObjectAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1LocalizedObjectAnnotationSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'If present, localized object detection has completed successfully. This will be sorted descending by confidence score.',
+        }),
+      logoAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, logo detection has completed successfully.' }),
+      productSearchResults:
+        GoogleCloudVisionV1p4beta1ProductSearchResultsSchema.exactOptional().openapi({
+          description: 'If present, product search has completed successfully.',
+        }),
+      safeSearchAnnotation:
+        GoogleCloudVisionV1p4beta1SafeSearchAnnotationSchema.exactOptional().openapi({
+          description: 'If present, safe-search annotation has completed successfully.',
+        }),
+      textAnnotations: z
+        .array(GoogleCloudVisionV1p4beta1EntityAnnotationSchema)
+        .exactOptional()
+        .openapi({ description: 'If present, text (OCR) detection has completed successfully.' }),
+      webDetection: GoogleCloudVisionV1p4beta1WebDetectionSchema.exactOptional().openapi({
+        description: 'If present, web detection has completed successfully.',
+      }),
+    })
+    .openapi({ description: 'Response to an image annotation request.', required: [] })
+    .openapi('GoogleCloudVisionV1p4beta1AnnotateImageResponse')
+
+type GoogleCloudVisionV1p4beta1AnnotateFileResponseType = {
+  error?: z.infer<typeof StatusSchema>
+  inputConfig?: z.infer<typeof GoogleCloudVisionV1p4beta1InputConfigSchema>
+  responses?: z.infer<typeof GoogleCloudVisionV1p4beta1AnnotateImageResponseSchema>[]
+  totalPages?: number
+}
+
+const GoogleCloudVisionV1p4beta1AnnotateFileResponseSchema: z.ZodType<GoogleCloudVisionV1p4beta1AnnotateFileResponseType> =
+  z
+    .object({
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
+      }),
+      inputConfig: GoogleCloudVisionV1p4beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Information about the file for which this response is generated.',
+      }),
+      responses: z
+        .array(GoogleCloudVisionV1p4beta1AnnotateImageResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+        }),
+      totalPages: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'This field gives the total number of pages in the file.' }),
+    })
+    .openapi({
       description:
-        'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
-    }),
-    inputConfig: GoogleCloudVisionV1p4beta1InputConfigSchema.exactOptional().openapi({
-      description: 'Information about the file for which this response is generated.',
-    }),
-    responses: z
-      .array(GoogleCloudVisionV1p4beta1AnnotateImageResponseSchema)
+        'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p4beta1AnnotateFileResponse')
+
+type GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponseType = {
+  responses?: z.infer<typeof GoogleCloudVisionV1p4beta1AnnotateFileResponseSchema>[]
+}
+
+const GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
       .exactOptional()
       .openapi({
         description:
-          'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
       }),
-    totalPages: z
+  })
+  .openapi({
+    description: 'The Google Cloud Storage location where the output will be written to.',
+    required: [],
+  })
+  .openapi('GcsDestination')
+
+const OutputConfigSchema = z
+  .object({
+    batchSize: z
       .int32()
       .exactOptional()
-      .openapi({ description: 'This field gives the total number of pages in the file.' }),
+      .openapi({
+        description:
+          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
+      }),
+    gcsDestination: GcsDestinationSchema.exactOptional().openapi({
+      description: 'The Google Cloud Storage location to write the output(s) to.',
+    }),
+  })
+  .openapi({ description: 'The desired output location and metadata.', required: [] })
+  .openapi('OutputConfig')
+
+const AsyncAnnotateFileResponseSchema = z
+  .object({
+    outputConfig: OutputConfigSchema.exactOptional().openapi({
+      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
+    }),
+  })
+  .openapi({
+    description: 'The response for a single offline file annotation request.',
+    required: [],
+  })
+  .openapi('AsyncAnnotateFileResponse')
+
+const AsyncBatchAnnotateFilesResponseSchema = z
+  .object({
+    responses: z
+      .array(AsyncAnnotateFileResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
+      }),
+  })
+  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
+  .openapi('AsyncBatchAnnotateFilesResponse')
+
+const AsyncBatchAnnotateImagesResponseSchema = z
+  .object({
+    outputConfig: OutputConfigSchema.exactOptional().openapi({
+      description: 'The output location and metadata from AsyncBatchAnnotateImagesRequest.',
+    }),
+  })
+  .openapi({ description: 'Response to an async batch image annotation request.', required: [] })
+  .openapi('AsyncBatchAnnotateImagesResponse')
+
+const BatchAnnotateFilesResponseSchema: z.ZodType<BatchAnnotateFilesResponseType> = z
+  .object({
+    responses: z
+      .array(AnnotateFileResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
+      }),
+  })
+  .openapi({ description: 'A list of file annotation responses.', required: [] })
+  .openapi('BatchAnnotateFilesResponse')
+
+const BatchOperationMetadataSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the batch request is finished and google.longrunning.Operation.done is set to true.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PROCESSING', 'SUCCESSFUL', 'FAILED', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: 'The current state of the batch operation.' }),
+    submitTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the batch request was submitted to the server.' }),
   })
   .openapi({
     description:
-      'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      'Metadata for the batch operations such as the current state. This is included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
     required: [],
   })
-  .openapi('GoogleCloudVisionV1p4beta1AnnotateFileResponse')
+  .openapi('BatchOperationMetadata')
+
+const GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponseSchema = z
+  .object({
+    outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
+      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
+    }),
+  })
+  .openapi({
+    description: 'The response for a single offline file annotation request.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponse')
+
+const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequestSchema: z.ZodType<GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequestType> =
+  z
+    .object({
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
+        }),
+      parent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
+        }),
+      requests: z
+        .array(GoogleCloudVisionV1p1beta1AsyncAnnotateFileRequestSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Required. Individual async file annotation requests for this batch.',
+        }),
+    })
+    .openapi({
+      description:
+        'Multiple async file annotation requests are batched into a single service call.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesRequest')
+
+const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesResponseSchema = z
+  .object({
+    responses: z
+      .array(GoogleCloudVisionV1p1beta1AsyncAnnotateFileResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
+      }),
+  })
+  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
+  .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateFilesResponse')
+
+const GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequestSchema: z.ZodType<GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequestType> =
+  z
+    .object({
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
+        }),
+      outputConfig: GoogleCloudVisionV1p1beta1OutputConfigSchema.exactOptional().openapi({
+        description: 'Required. The desired output location and metadata (e.g. format).',
+      }),
+      parent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
+        }),
+      requests: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema)
+        .exactOptional()
+        .openapi({ description: 'Required. Individual image annotation requests for this batch.' }),
+    })
+    .openapi({
+      description: 'Request for async image annotation for a list of images.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1AsyncBatchAnnotateImagesRequest')
+
+const GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequestSchema: z.ZodType<GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequestType> =
+  z
+    .object({
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
+        }),
+      parent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
+        }),
+      requests: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateFileRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Required. The list of file annotation requests. Right now we support only one AnnotateFileRequest in BatchAnnotateFilesRequest.',
+        }),
+    })
+    .openapi({
+      description: 'A list of requests to annotate files using the BatchAnnotateFiles API.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateFilesRequest')
+
+const GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponseSchema: z.ZodType<GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponseType> =
+  z
+    .object({
+      responses: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateFileResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
+        }),
+    })
+    .openapi({ description: 'A list of file annotation responses.', required: [] })
+    .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateFilesResponse')
+
+const GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequestSchema: z.ZodType<GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequestType> =
+  z
+    .object({
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The labels with user-defined metadata for the request. Label keys and values can be no longer than 63 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. Label values are optional. Label keys must start with a letter.',
+        }),
+      parent: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Target project and location to make a call. Format: `projects/{project-id}/locations/{location-id}`. If no parent is specified, a region will be chosen automatically. Supported location-ids: `us`: USA country only, `asia`: East asia areas, like Japan, Taiwan, `eu`: The European Union. Example: `projects/project-A/locations/eu`.',
+        }),
+      requests: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateImageRequestSchema)
+        .exactOptional()
+        .openapi({ description: 'Required. Individual image annotation requests for this batch.' }),
+    })
+    .openapi({
+      description: 'Multiple image annotation requests are batched into a single service call.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateImagesRequest')
+
+const GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponseSchema: z.ZodType<GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponseType> =
+  z
+    .object({
+      responses: z
+        .array(GoogleCloudVisionV1p1beta1AnnotateImageResponseSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Individual responses to image annotation requests within the batch.',
+        }),
+    })
+    .openapi({ description: 'Response to a batch image annotation request.', required: [] })
+    .openapi('GoogleCloudVisionV1p1beta1BatchAnnotateImagesResponse')
+
+const GoogleCloudVisionV1p1beta1OperationMetadataSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the batch request was received.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: 'Current state of the batch operation.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the operation result was last updated.' }),
+  })
+  .openapi({
+    description: 'Contains metadata for the BatchAnnotateImages operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p1beta1OperationMetadata')
+
+const GoogleCloudVisionV1p2beta1AnnotateFileResponseSchema: z.ZodType<GoogleCloudVisionV1p2beta1AnnotateFileResponseType> =
+  z
+    .object({
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
+      }),
+      inputConfig: GoogleCloudVisionV1p2beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Information about the file for which this response is generated.',
+      }),
+      responses: z
+        .array(GoogleCloudVisionV1p2beta1AnnotateImageResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+        }),
+      totalPages: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'This field gives the total number of pages in the file.' }),
+    })
+    .openapi({
+      description:
+        'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p2beta1AnnotateFileResponse')
+
+const GoogleCloudVisionV1p2beta1GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
+      }),
+  })
+  .openapi({
+    description: 'The Google Cloud Storage location where the output will be written to.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p2beta1GcsDestination')
+
+const GoogleCloudVisionV1p2beta1OutputConfigSchema = z
+  .object({
+    batchSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
+      }),
+    gcsDestination: GoogleCloudVisionV1p2beta1GcsDestinationSchema.exactOptional().openapi({
+      description: 'The Google Cloud Storage location to write the output(s) to.',
+    }),
+  })
+  .openapi({ description: 'The desired output location and metadata.', required: [] })
+  .openapi('GoogleCloudVisionV1p2beta1OutputConfig')
+
+const GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponseSchema = z
+  .object({
+    outputConfig: GoogleCloudVisionV1p2beta1OutputConfigSchema.exactOptional().openapi({
+      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
+    }),
+  })
+  .openapi({
+    description: 'The response for a single offline file annotation request.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponse')
+
+const GoogleCloudVisionV1p2beta1AsyncBatchAnnotateFilesResponseSchema = z
+  .object({
+    responses: z
+      .array(GoogleCloudVisionV1p2beta1AsyncAnnotateFileResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
+      }),
+  })
+  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
+  .openapi('GoogleCloudVisionV1p2beta1AsyncBatchAnnotateFilesResponse')
+
+const GoogleCloudVisionV1p2beta1OperationMetadataSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the batch request was received.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: 'Current state of the batch operation.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the operation result was last updated.' }),
+  })
+  .openapi({
+    description: 'Contains metadata for the BatchAnnotateImages operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p2beta1OperationMetadata')
+
+const GoogleCloudVisionV1p3beta1AnnotateFileResponseSchema: z.ZodType<GoogleCloudVisionV1p3beta1AnnotateFileResponseType> =
+  z
+    .object({
+      error: StatusSchema.exactOptional().openapi({
+        description:
+          'If set, represents the error message for the failed request. The `responses` field will not be set in this case.',
+      }),
+      inputConfig: GoogleCloudVisionV1p3beta1InputConfigSchema.exactOptional().openapi({
+        description: 'Information about the file for which this response is generated.',
+      }),
+      responses: z
+        .array(GoogleCloudVisionV1p3beta1AnnotateImageResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Individual responses to images found within the file. This field will be empty if the `error` field is set.',
+        }),
+      totalPages: z
+        .int32()
+        .exactOptional()
+        .openapi({ description: 'This field gives the total number of pages in the file.' }),
+    })
+    .openapi({
+      description:
+        'Response to a single file annotation request. A file may contain one or more images, which individually have their own responses.',
+      required: [],
+    })
+    .openapi('GoogleCloudVisionV1p3beta1AnnotateFileResponse')
+
+const GoogleCloudVisionV1p3beta1GcsDestinationSchema = z
+  .object({
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Google Cloud Storage URI prefix where the results will be stored. Results will be in JSON format and preceded by its corresponding input URI prefix. This field can either represent a gcs file prefix or gcs directory. In either case, the uri should be unique because in order to get all of the output files, you will need to do a wildcard gcs search on the uri prefix you provide. Examples: * File Prefix: gs://bucket-name/here/filenameprefix The output files will be created in gs://bucket-name/here/ and the names of the output files will begin with "filenameprefix". * Directory Prefix: gs://bucket-name/some/location/ The output files will be created in gs://bucket-name/some/location/ and the names of the output files could be anything because there was no filename prefix specified. If multiple outputs, each response is still AnnotateFileResponse, each of which contains some subset of the full list of AnnotateImageResponse. Multiple outputs can happen if, for example, the output JSON is too large and overflows into multiple sharded files.',
+      }),
+  })
+  .openapi({
+    description: 'The Google Cloud Storage location where the output will be written to.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1GcsDestination')
+
+const GoogleCloudVisionV1p3beta1OutputConfigSchema = z
+  .object({
+    batchSize: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'The max number of response protos to put into each output JSON file on Google Cloud Storage. The valid range is [1, 100]. If not specified, the default value is 20. For example, for one pdf file with 100 pages, 100 response protos will be generated. If `batch_size` = 20, then 5 json files each containing 20 response protos will be written under the prefix `gcs_destination`.`uri`. Currently, batch_size only applies to GcsDestination, with potential future support for other output configurations.',
+      }),
+    gcsDestination: GoogleCloudVisionV1p3beta1GcsDestinationSchema.exactOptional().openapi({
+      description: 'The Google Cloud Storage location to write the output(s) to.',
+    }),
+  })
+  .openapi({ description: 'The desired output location and metadata.', required: [] })
+  .openapi('GoogleCloudVisionV1p3beta1OutputConfig')
+
+const GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponseSchema = z
+  .object({
+    outputConfig: GoogleCloudVisionV1p3beta1OutputConfigSchema.exactOptional().openapi({
+      description: 'The output location and metadata from AsyncAnnotateFileRequest.',
+    }),
+  })
+  .openapi({
+    description: 'The response for a single offline file annotation request.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponse')
+
+const GoogleCloudVisionV1p3beta1AsyncBatchAnnotateFilesResponseSchema = z
+  .object({
+    responses: z
+      .array(GoogleCloudVisionV1p3beta1AsyncAnnotateFileResponseSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The list of file annotation responses, one for each request in AsyncBatchAnnotateFilesRequest.',
+      }),
+  })
+  .openapi({ description: 'Response to an async batch file annotation request.', required: [] })
+  .openapi('GoogleCloudVisionV1p3beta1AsyncBatchAnnotateFilesResponse')
+
+const GoogleCloudVisionV1p3beta1BatchOperationMetadataSchema = z
+  .object({
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The time when the batch request is finished and google.longrunning.Operation.done is set to true.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'PROCESSING', 'SUCCESSFUL', 'FAILED', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: 'The current state of the batch operation.' }),
+    submitTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the batch request was submitted to the server.' }),
+  })
+  .openapi({
+    description:
+      'Metadata for the batch operations such as the current state. This is included in the `metadata` field of the `Operation` returned by the `GetOperation` call of the `google::longrunning::Operations` service.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1BatchOperationMetadata')
+
+const GoogleCloudVisionV1p3beta1ReferenceImageSchema = z
+  .object({
+    boundingPolys: z
+      .array(GoogleCloudVisionV1p3beta1BoundingPolySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Bounding polygons around the areas of interest in the reference image. If this field is empty, the system will try to detect regions of interest. At most 10 bounding polygons will be used. The provided shape is converted into a non-rotated rectangle. Once converted, the small edge of the rectangle must be greater than or equal to 300 pixels. The aspect ratio must be 1:4 or less (i.e. 1:3 is ok; 1:5 is not).',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The resource name of the reference image. Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`. This field is ignored when creating a reference image.',
+      }),
+    uri: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. The Google Cloud Storage URI of the reference image. The URI must start with `gs://`.',
+      }),
+  })
+  .openapi({
+    description:
+      'A `ReferenceImage` represents a product image and its associated metadata, such as bounding boxes.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1ReferenceImage')
+
+const GoogleCloudVisionV1p3beta1ImportProductSetsResponseSchema = z
+  .object({
+    referenceImages: z
+      .array(GoogleCloudVisionV1p3beta1ReferenceImageSchema)
+      .exactOptional()
+      .openapi({ description: 'The list of reference_images that are imported successfully.' }),
+    statuses: z
+      .array(StatusSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The rpc status for each ImportProductSet request, including both successes and errors. The number of statuses here matches the number of lines in the csv file, and statuses[i] stores the success or failure status of processing the i-th line of the csv, starting from line 0.',
+      }),
+  })
+  .openapi({
+    description:
+      'Response message for the `ImportProductSets` method. This message is returned by the google.longrunning.Operations.GetOperation method in the returned google.longrunning.Operation.response field.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1ImportProductSetsResponse')
+
+const GoogleCloudVisionV1p3beta1OperationMetadataSchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the batch request was received.' }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'CREATED', 'RUNNING', 'DONE', 'CANCELLED'])
+      .exactOptional()
+      .openapi({ description: 'Current state of the batch operation.' }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The time when the operation result was last updated.' }),
+  })
+  .openapi({
+    description: 'Contains metadata for the BatchAnnotateImages operation.',
+    required: [],
+  })
+  .openapi('GoogleCloudVisionV1p3beta1OperationMetadata')
 
 const GoogleCloudVisionV1p4beta1GcsDestinationSchema = z
   .object({
@@ -6103,18 +6484,19 @@ const GoogleCloudVisionV1p4beta1AsyncBatchAnnotateImagesResponseSchema = z
   .openapi({ description: 'Response to an async batch image annotation request.', required: [] })
   .openapi('GoogleCloudVisionV1p4beta1AsyncBatchAnnotateImagesResponse')
 
-const GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponseSchema = z
-  .object({
-    responses: z
-      .array(GoogleCloudVisionV1p4beta1AnnotateFileResponseSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
-      }),
-  })
-  .openapi({ description: 'A list of file annotation responses.', required: [] })
-  .openapi('GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponse')
+const GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponseSchema: z.ZodType<GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponseType> =
+  z
+    .object({
+      responses: z
+        .array(GoogleCloudVisionV1p4beta1AnnotateFileResponseSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The list of file annotation responses, each response corresponding to each AnnotateFileRequest in BatchAnnotateFilesRequest.',
+        }),
+    })
+    .openapi({ description: 'A list of file annotation responses.', required: [] })
+    .openapi('GoogleCloudVisionV1p4beta1BatchAnnotateFilesResponse')
 
 const GoogleCloudVisionV1p4beta1BatchOperationMetadataSchema = z
   .object({

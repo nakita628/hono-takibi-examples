@@ -5,29 +5,23 @@ const NewPetSchema = z
   .openapi({ required: ['name'] })
   .openapi('NewPet')
 
-type PetType = z.infer<typeof NewPetSchema> & { id: bigint }
-
-const PetSchema: z.ZodType<PetType> = z
-  .lazy(() =>
-    NewPetSchema.and(
-      z
-        .object({
-          id: z
-            .preprocess(
-              (val) =>
-                typeof val === 'number' && Number.isSafeInteger(val)
-                  ? BigInt(val)
-                  : typeof val === 'string' && /^-?\d+$/.test(val)
-                    ? BigInt(val)
-                    : val,
-              z.int64(),
-            )
-            .openapi({ type: 'integer', format: 'int64' }),
-        })
-        .openapi({ required: ['id'] }),
-    ),
-  )
-  .openapi('Pet')
+const PetSchema = NewPetSchema.and(
+  z
+    .object({
+      id: z
+        .preprocess(
+          (val) =>
+            typeof val === 'number' && Number.isSafeInteger(val)
+              ? BigInt(val)
+              : typeof val === 'string' && /^-?\d+$/.test(val)
+                ? BigInt(val)
+                : val,
+          z.int64(),
+        )
+        .openapi({ type: 'integer', format: 'int64' }),
+    })
+    .openapi({ required: ['id'] }),
+).openapi('Pet')
 
 const ErrorSchema = z
   .object({ code: z.int32(), message: z.string() })

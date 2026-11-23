@@ -1,5 +1,168 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const StringSchema = z.string().openapi('String')
+
+const LicenseCountingTypeSchema = z
+  .enum(['vCPU', 'Instance', 'Core', 'Socket'])
+  .openapi('LicenseCountingType')
+
+const StringListSchema = z.array(StringSchema).openapi('StringList')
+
+const BoxLongSchema = z.int().openapi('BoxLong')
+
+const BoxBooleanSchema = z.boolean().openapi('BoxBoolean')
+
+const ResourceTypeSchema = z
+  .enum(['EC2_INSTANCE', 'EC2_HOST', 'EC2_AMI', 'RDS', 'SYSTEMS_MANAGER_MANAGED_INSTANCE'])
+  .openapi('ResourceType')
+
+const ConsumedLicenseSummarySchema = z
+  .object({
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'Resource type of the resource consuming a license.',
+    }),
+    ConsumedLicenses: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses consumed by the resource.',
+    }),
+  })
+  .openapi({ description: 'Details about license consumption.', required: [] })
+  .openapi('ConsumedLicenseSummary')
+
+const ConsumedLicenseSummaryListSchema = z
+  .array(ConsumedLicenseSummarySchema)
+  .openapi('ConsumedLicenseSummaryList')
+
+const ManagedResourceSummarySchema = z
+  .object({
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'Type of resource associated with a license.',
+    }),
+    AssociationCount: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of resources associated with licenses.',
+    }),
+  })
+  .openapi({ description: 'Summary information about a managed resource.', required: [] })
+  .openapi('ManagedResourceSummary')
+
+const ManagedResourceSummaryListSchema = z
+  .array(ManagedResourceSummarySchema)
+  .openapi('ManagedResourceSummaryList')
+
+const ProductInformationFilterSchema = z
+  .object({
+    ProductInformationFilterName: StringSchema.openapi({ description: 'Filter name.' }),
+    ProductInformationFilterValue: StringListSchema.exactOptional().openapi({
+      description: 'Filter value.',
+    }),
+    ProductInformationFilterComparator: StringSchema.openapi({ description: 'Logical operator.' }),
+  })
+  .openapi({
+    required: ['ProductInformationFilterName', 'ProductInformationFilterComparator'],
+    description: 'Describes product information filters.',
+  })
+  .openapi('ProductInformationFilter')
+
+const ProductInformationFilterListSchema = z
+  .array(ProductInformationFilterSchema)
+  .openapi('ProductInformationFilterList')
+
+const ProductInformationSchema = z
+  .object({
+    ResourceType: StringSchema.openapi({
+      description:
+        'Resource type. The possible values are <code>SSM_MANAGED</code> | <code>RDS</code>.',
+    }),
+    ProductInformationFilterList: ProductInformationFilterListSchema.openapi({
+      description:
+        '<p>A Product information filter consists of a <code>ProductInformationFilterComparator</code> which is a logical operator, a <code>ProductInformationFilterName</code> which specifies the type of filter being declared, and a <code>ProductInformationFilterValue</code> that specifies the value to filter on. </p> <p>Accepted values for <code>ProductInformationFilterName</code> are listed here along with descriptions and valid options for <code>ProductInformationFilterComparator</code>. </p> <p>The following filters and are supported when the resource type is <code>SSM_MANAGED</code>:</p> <ul> <li> <p> <code>Application Name</code> - The name of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Application Publisher</code> - The publisher of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Application Version</code> - The version of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Platform Name</code> - The name of the platform. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Platform Type</code> - The platform type. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Tag:key</code> - The key of a tag attached to an Amazon Web Services resource you wish to exclude from automated discovery. Logical operator is <code>NOT_EQUALS</code>. The key for your tag must be appended to <code>Tag:</code> following the example: <code>Tag:name-of-your-key</code>. <code>ProductInformationFilterValue</code> is optional if you are not using values for the key. </p> </li> <li> <p> <code>AccountId</code> - The 12-digit ID of an Amazon Web Services account you wish to exclude from automated discovery. Logical operator is <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>License Included</code> - The type of license included. Logical operators are <code>EQUALS</code> and <code>NOT_EQUALS</code>. Possible values are: <code>sql-server-enterprise</code> | <code>sql-server-standard</code> | <code>sql-server-web</code> | <code>windows-server-datacenter</code>.</p> </li> </ul> <p>The following filters and logical operators are supported when the resource type is <code>RDS</code>:</p> <ul> <li> <p> <code>Engine Edition</code> - The edition of the database engine. Logical operator is <code>EQUALS</code>. Possible values are: <code>oracle-ee</code> | <code>oracle-se</code> | <code>oracle-se1</code> | <code>oracle-se2</code>.</p> </li> <li> <p> <code>License Pack</code> - The license pack. Logical operator is <code>EQUALS</code>. Possible values are: <code>data guard</code> | <code>diagnostic pack sqlt</code> | <code>tuning pack sqlt</code> | <code>ols</code> | <code>olap</code>.</p> </li> </ul>',
+    }),
+  })
+  .openapi({
+    required: ['ResourceType', 'ProductInformationFilterList'],
+    description: 'Describes product information for a license configuration.',
+  })
+  .openapi('ProductInformation')
+
+const ProductInformationListSchema = z
+  .array(ProductInformationSchema)
+  .openapi('ProductInformationList')
+
+const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
+
+const AutomatedDiscoveryInformationSchema = z
+  .object({
+    LastRunTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Time that automated discovery last ran.',
+    }),
+  })
+  .openapi({ description: 'Describes automated discovery.', required: [] })
+  .openapi('AutomatedDiscoveryInformation')
+
+const LicenseConfigurationSchema = z
+  .object({
+    LicenseConfigurationId: StringSchema.exactOptional().openapi({
+      description: 'Unique ID of the license configuration.',
+    }),
+    LicenseConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'Name of the license configuration.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the license configuration.',
+    }),
+    LicenseCountingType: LicenseCountingTypeSchema.exactOptional().openapi({
+      description: 'Dimension to use to track the license inventory.',
+    }),
+    LicenseRules: StringListSchema.exactOptional().openapi({ description: 'License rules.' }),
+    LicenseCount: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses managed by the license configuration.',
+    }),
+    LicenseCountHardLimit: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Number of available licenses as a hard limit.',
+    }),
+    DisassociateWhenNotFound: BoxBooleanSchema.exactOptional().openapi({
+      description: 'When true, disassociates a resource when software is uninstalled.',
+    }),
+    ConsumedLicenses: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses consumed. ',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description: 'Status of the license configuration.',
+    }),
+    OwnerAccountId: StringSchema.exactOptional().openapi({
+      description: "Account ID of the license configuration's owner.",
+    }),
+    ConsumedLicenseSummaryList: ConsumedLicenseSummaryListSchema.exactOptional().openapi({
+      description: 'Summaries for licenses consumed by various resources.',
+    }),
+    ManagedResourceSummaryList: ManagedResourceSummaryListSchema.exactOptional().openapi({
+      description: 'Summaries for managed resources.',
+    }),
+    ProductInformationList: ProductInformationListSchema.exactOptional().openapi({
+      description: 'Product information.',
+    }),
+    AutomatedDiscoveryInformation: AutomatedDiscoveryInformationSchema.exactOptional().openapi({
+      description: 'Automated discovery information.',
+    }),
+  })
+  .openapi({
+    description:
+      'A license configuration is an abstraction of a customer license agreement that can be consumed and enforced by License Manager. Components include specifications for the license type (licensing by instance, socket, CPU, or vCPU), allowed tenancy (shared tenancy, Dedicated Instance, Dedicated Host, or all of these), host affinity (how long a VM must be associated with a host), and the number of licenses purchased and used.',
+    required: [],
+  })
+  .openapi('LicenseConfiguration')
+
+const LicenseConfigurationsSchema = z
+  .array(LicenseConfigurationSchema)
+  .openapi('LicenseConfigurations')
+
+type ListLicenseConfigurationsResponseType = {
+  LicenseConfigurations?: z.infer<typeof LicenseConfigurationsSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema> & unknown
+}
+
 const ArnSchema = z
   .string()
   .regex(
@@ -22,24 +185,18 @@ const GrantStatusSchema = z
   ])
   .openapi('GrantStatus')
 
-const StringSchema = z.string().openapi('String')
-
 const AcceptGrantResponseSchema = z
   .object({
-    GrantArn: ArnSchema.and(z.any().openapi({ description: 'Grant ARN.' })).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })).exactOptional(),
+    GrantArn: ArnSchema.exactOptional().openapi({ description: 'Grant ARN.' }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'Grant version.' }),
   })
   .openapi({ required: [] })
   .openapi('AcceptGrantResponse')
 
 const AcceptGrantRequestSchema = z
   .object({
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
   })
   .openapi({ required: ['GrantArn'], title: 'AcceptGrantRequest' })
   .openapi('AcceptGrantRequest')
@@ -58,16 +215,12 @@ const ResourceLimitExceededExceptionSchema = z.any().openapi('ResourceLimitExcee
 
 const ServerInternalExceptionSchema = z.any().openapi('ServerInternalException')
 
-const CheckInLicenseResponseSchema = z.object({}).openapi('CheckInLicenseResponse')
+const CheckInLicenseResponseSchema = z.looseObject({}).openapi('CheckInLicenseResponse')
 
 const CheckInLicenseRequestSchema = z
   .object({
-    LicenseConsumptionToken: StringSchema.and(
-      z.any().openapi({ description: 'License consumption token.' }),
-    ),
-    Beneficiary: StringSchema.and(
-      z.any().openapi({ description: 'License beneficiary.' }),
-    ).exactOptional(),
+    LicenseConsumptionToken: StringSchema.openapi({ description: 'License consumption token.' }),
+    Beneficiary: StringSchema.exactOptional().openapi({ description: 'License beneficiary.' }),
   })
   .openapi({ required: ['LicenseConsumptionToken'], title: 'CheckInLicenseRequest' })
   .openapi('CheckInLicenseRequest')
@@ -110,11 +263,9 @@ const EntitlementDataUnitSchema = z
 
 const EntitlementDataSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Entitlement data name.' })),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'Entitlement data value.' }),
-    ).exactOptional(),
-    Unit: EntitlementDataUnitSchema.and(z.any().openapi({ description: 'Entitlement data unit.' })),
+    Name: StringSchema.openapi({ description: 'Entitlement data name.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'Entitlement data value.' }),
+    Unit: EntitlementDataUnitSchema.openapi({ description: 'Entitlement data unit.' }),
   })
   .openapi({
     required: ['Name', 'Unit'],
@@ -136,8 +287,8 @@ const ISO8601DateTimeSchema = z
 
 const MetadataSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'The key name.' })).exactOptional(),
-    Value: StringSchema.and(z.any().openapi({ description: 'The value.' })).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'The key name.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'The value.' }),
   })
   .openapi({ description: 'Describes key/value pairs.', required: [] })
   .openapi('Metadata')
@@ -146,28 +297,26 @@ const MetadataListSchema = z.array(MetadataSchema).openapi('MetadataList')
 
 const CheckoutBorrowLicenseResponseSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ).exactOptional(),
-    LicenseConsumptionToken: StringSchema.and(
-      z.any().openapi({ description: 'License consumption token.' }),
-    ).exactOptional(),
-    EntitlementsAllowed: EntitlementDataListSchema.and(
-      z.any().openapi({ description: 'Allowed license entitlements.' }),
-    ).exactOptional(),
-    NodeId: StringSchema.and(z.any().openapi({ description: 'Node ID.' })).exactOptional(),
-    SignedToken: SignedTokenSchema.and(
-      z.any().openapi({ description: 'Signed token.' }),
-    ).exactOptional(),
-    IssuedAt: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time at which the license checkout is issued.' }),
-    ).exactOptional(),
-    Expiration: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time at which the license checkout expires.' }),
-    ).exactOptional(),
-    CheckoutMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'Information about constraints.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license.',
+    }),
+    LicenseConsumptionToken: StringSchema.exactOptional().openapi({
+      description: 'License consumption token.',
+    }),
+    EntitlementsAllowed: EntitlementDataListSchema.exactOptional().openapi({
+      description: 'Allowed license entitlements.',
+    }),
+    NodeId: StringSchema.exactOptional().openapi({ description: 'Node ID.' }),
+    SignedToken: SignedTokenSchema.exactOptional().openapi({ description: 'Signed token.' }),
+    IssuedAt: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time at which the license checkout is issued.',
+    }),
+    Expiration: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time at which the license checkout expires.',
+    }),
+    CheckoutMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'Information about constraints.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CheckoutBorrowLicenseResponse')
@@ -178,39 +327,25 @@ const ClientTokenSchema = z.string().regex(/\S+/).max(2048).openapi('ClientToken
 
 const CheckoutBorrowLicenseRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the license. The license must use the borrow consumption configuration.',
-        }),
-    ),
-    Entitlements: EntitlementDataListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'License entitlements. Partial checkouts are not supported.' }),
-    ),
-    DigitalSignatureMethod: DigitalSignatureMethodSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Digital signature method. The possible value is JSON Web Signature (JWS) algorithm PS384. For more information, see <a href="https://tools.ietf.org/html/rfc7518#section-3.5">RFC 7518 Digital Signature with RSASSA-PSS</a>.',
-        }),
-    ),
-    NodeId: StringSchema.and(z.any().openapi({ description: 'Node ID.' })).exactOptional(),
-    CheckoutMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'Information about constraints.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
+    LicenseArn: ArnSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of the license. The license must use the borrow consumption configuration.',
+    }),
+    Entitlements: EntitlementDataListSchema.openapi({
+      description: 'License entitlements. Partial checkouts are not supported.',
+    }),
+    DigitalSignatureMethod: DigitalSignatureMethodSchema.openapi({
+      description:
+        'Digital signature method. The possible value is JSON Web Signature (JWS) algorithm PS384. For more information, see <a href="https://tools.ietf.org/html/rfc7518#section-3.5">RFC 7518 Digital Signature with RSASSA-PSS</a>.',
+    }),
+    NodeId: StringSchema.exactOptional().openapi({ description: 'Node ID.' }),
+    CheckoutMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'Information about constraints.',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
   })
   .openapi({
     required: ['LicenseArn', 'Entitlements', 'DigitalSignatureMethod', 'ClientToken'],
@@ -232,54 +367,42 @@ const CheckoutTypeSchema = z.enum(['PROVISIONAL', 'PERPETUAL']).openapi('Checkou
 
 const CheckoutLicenseResponseSchema = z
   .object({
-    CheckoutType: CheckoutTypeSchema.and(
-      z.any().openapi({ description: 'Checkout type.' }),
-    ).exactOptional(),
-    LicenseConsumptionToken: StringSchema.and(
-      z.any().openapi({ description: 'License consumption token.' }),
-    ).exactOptional(),
-    EntitlementsAllowed: EntitlementDataListSchema.and(
-      z.any().openapi({ description: 'Allowed license entitlements.' }),
-    ).exactOptional(),
-    SignedToken: SignedTokenSchema.and(
-      z.any().openapi({ description: 'Signed token.' }),
-    ).exactOptional(),
-    NodeId: StringSchema.and(z.any().openapi({ description: 'Node ID.' })).exactOptional(),
-    IssuedAt: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time at which the license checkout is issued.' }),
-    ).exactOptional(),
-    Expiration: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time at which the license checkout expires.' }),
-    ).exactOptional(),
-    LicenseArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the checkout license.' }),
-    ).exactOptional(),
+    CheckoutType: CheckoutTypeSchema.exactOptional().openapi({ description: 'Checkout type.' }),
+    LicenseConsumptionToken: StringSchema.exactOptional().openapi({
+      description: 'License consumption token.',
+    }),
+    EntitlementsAllowed: EntitlementDataListSchema.exactOptional().openapi({
+      description: 'Allowed license entitlements.',
+    }),
+    SignedToken: SignedTokenSchema.exactOptional().openapi({ description: 'Signed token.' }),
+    NodeId: StringSchema.exactOptional().openapi({ description: 'Node ID.' }),
+    IssuedAt: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time at which the license checkout is issued.',
+    }),
+    Expiration: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time at which the license checkout expires.',
+    }),
+    LicenseArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the checkout license.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CheckoutLicenseResponse')
 
 const CheckoutLicenseRequestSchema = z
   .object({
-    ProductSKU: StringSchema.and(z.any().openapi({ description: 'Product SKU.' })),
-    CheckoutType: CheckoutTypeSchema.and(z.any().openapi({ description: 'Checkout type.' })),
-    KeyFingerprint: StringSchema.and(
-      z.any().openapi({ description: 'Key fingerprint identifying the license.' }),
-    ),
-    Entitlements: EntitlementDataListSchema.and(
-      z.any().openapi({ description: 'License entitlements.' }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    Beneficiary: StringSchema.and(
-      z.any().openapi({ description: 'License beneficiary.' }),
-    ).exactOptional(),
-    NodeId: StringSchema.and(z.any().openapi({ description: 'Node ID.' })).exactOptional(),
+    ProductSKU: StringSchema.openapi({ description: 'Product SKU.' }),
+    CheckoutType: CheckoutTypeSchema.openapi({ description: 'Checkout type.' }),
+    KeyFingerprint: StringSchema.openapi({
+      description: 'Key fingerprint identifying the license.',
+    }),
+    Entitlements: EntitlementDataListSchema.openapi({ description: 'License entitlements.' }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    Beneficiary: StringSchema.exactOptional().openapi({ description: 'License beneficiary.' }),
+    NodeId: StringSchema.exactOptional().openapi({ description: 'Node ID.' }),
   })
   .openapi({
     required: ['ProductSKU', 'CheckoutType', 'KeyFingerprint', 'Entitlements', 'ClientToken'],
@@ -289,11 +412,9 @@ const CheckoutLicenseRequestSchema = z
 
 const CreateGrantResponseSchema = z
   .object({
-    GrantArn: ArnSchema.and(z.any().openapi({ description: 'Grant ARN.' })).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })).exactOptional(),
+    GrantArn: ArnSchema.exactOptional().openapi({ description: 'Grant ARN.' }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'Grant version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateGrantResponse')
@@ -320,30 +441,20 @@ const AllowedOperationListSchema = z
 
 const CreateGrantRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    GrantName: StringSchema.and(z.any().openapi({ description: 'Grant name.' })),
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
-    Principals: PrincipalArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The grant principals. You can specify one of the following as an Amazon Resource Name (ARN):</p> <ul> <li> <p>An Amazon Web Services account, which includes only the account specified.</p> </li> </ul> <ul> <li> <p>An organizational unit (OU), which includes all accounts in the OU.</p> </li> </ul> <ul> <li> <p>An organization, which will include all accounts across your organization.</p> </li> </ul>',
-        }),
-    ),
-    HomeRegion: StringSchema.and(z.any().openapi({ description: 'Home Region of the grant.' })),
-    AllowedOperations: AllowedOperationListSchema.and(
-      z.any().openapi({ description: 'Allowed operations for the grant.' }),
-    ),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    GrantName: StringSchema.openapi({ description: 'Grant name.' }),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
+    Principals: PrincipalArnListSchema.openapi({
+      description:
+        '<p>The grant principals. You can specify one of the following as an Amazon Resource Name (ARN):</p> <ul> <li> <p>An Amazon Web Services account, which includes only the account specified.</p> </li> </ul> <ul> <li> <p>An organizational unit (OU), which includes all accounts in the OU.</p> </li> </ul> <ul> <li> <p>An organization, which will include all accounts across your organization.</p> </li> </ul>',
+    }),
+    HomeRegion: StringSchema.openapi({ description: 'Home Region of the grant.' }),
+    AllowedOperations: AllowedOperationListSchema.openapi({
+      description: 'Allowed operations for the grant.',
+    }),
   })
   .openapi({
     required: [
@@ -360,13 +471,9 @@ const CreateGrantRequestSchema = z
 
 const CreateGrantVersionResponseSchema = z
   .object({
-    GrantArn: ArnSchema.and(z.any().openapi({ description: 'Grant ARN.' })).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'New version of the grant.' }),
-    ).exactOptional(),
+    GrantArn: ArnSchema.exactOptional().openapi({ description: 'Grant ARN.' }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'New version of the grant.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateGrantVersionResponse')
@@ -383,14 +490,10 @@ const ActivationOverrideBehaviorSchema = z
 
 const OptionsSchema = z
   .object({
-    ActivationOverrideBehavior: ActivationOverrideBehaviorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An activation option for your grant that determines the behavior of activating a grant. Activation options can only be used with granted licenses sourced from the Amazon Web Services Marketplace. Additionally, the operation must specify the value of <code>ACTIVE</code> for the <code>Status</code> parameter.</p> <ul> <li> <p>As a license administrator, you can optionally specify an <code>ActivationOverrideBehavior</code> when activating a grant.</p> </li> <li> <p>As a grantor, you can optionally specify an <code>ActivationOverrideBehavior</code> when you activate a grant for a grantee account in your organization.</p> </li> <li> <p>As a grantee, if the grantor creating the distributed grant doesn’t specify an <code>ActivationOverrideBehavior</code>, you can optionally specify one when you are activating the grant.</p> </li> </ul> <dl> <dt>DISTRIBUTED_GRANTS_ONLY</dt> <dd> <p>Use this value to activate a grant without replacing any member account’s active grants for the same product.</p> </dd> <dt>ALL_GRANTS_PERMITTED_BY_ISSUER</dt> <dd> <p>Use this value to activate a grant and disable other active grants in any member accounts for the same product. This action will also replace their previously activated grants with this activated grant.</p> </dd> </dl>',
-        }),
-    ).exactOptional(),
+    ActivationOverrideBehavior: ActivationOverrideBehaviorSchema.exactOptional().openapi({
+      description:
+        '<p>An activation option for your grant that determines the behavior of activating a grant. Activation options can only be used with granted licenses sourced from the Amazon Web Services Marketplace. Additionally, the operation must specify the value of <code>ACTIVE</code> for the <code>Status</code> parameter.</p> <ul> <li> <p>As a license administrator, you can optionally specify an <code>ActivationOverrideBehavior</code> when activating a grant.</p> </li> <li> <p>As a grantor, you can optionally specify an <code>ActivationOverrideBehavior</code> when you activate a grant for a grantee account in your organization.</p> </li> <li> <p>As a grantee, if the grantor creating the distributed grant doesn’t specify an <code>ActivationOverrideBehavior</code>, you can optionally specify one when you are activating the grant.</p> </li> </ul> <dl> <dt>DISTRIBUTED_GRANTS_ONLY</dt> <dd> <p>Use this value to activate a grant without replacing any member account’s active grants for the same product.</p> </dd> <dt>ALL_GRANTS_PERMITTED_BY_ISSUER</dt> <dd> <p>Use this value to activate a grant and disable other active grants in any member accounts for the same product. This action will also replace their previously activated grants with this activated grant.</p> </dd> </dl>',
+    }),
   })
   .openapi({
     description:
@@ -401,33 +504,25 @@ const OptionsSchema = z
 
 const CreateGrantVersionRequestSchema = z
   .object({
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
-    GrantName: StringSchema.and(z.any().openapi({ description: 'Grant name.' })).exactOptional(),
-    AllowedOperations: AllowedOperationListSchema.and(
-      z.any().openapi({ description: 'Allowed operations for the grant.' }),
-    ).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    StatusReason: StatusReasonMessageSchema.and(
-      z.any().openapi({ description: 'Grant status reason.' }),
-    ).exactOptional(),
-    SourceVersion: StringSchema.and(
-      z.any().openapi({ description: 'Current version of the grant.' }),
-    ).exactOptional(),
-    Options: OptionsSchema.and(
-      z.any().openapi({ description: 'The options specified for the grant.' }),
-    ).exactOptional(),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
+    GrantName: StringSchema.exactOptional().openapi({ description: 'Grant name.' }),
+    AllowedOperations: AllowedOperationListSchema.exactOptional().openapi({
+      description: 'Allowed operations for the grant.',
+    }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    StatusReason: StatusReasonMessageSchema.exactOptional().openapi({
+      description: 'Grant status reason.',
+    }),
+    SourceVersion: StringSchema.exactOptional().openapi({
+      description: 'Current version of the grant.',
+    }),
+    Options: OptionsSchema.exactOptional().openapi({
+      description: 'The options specified for the grant.',
+    }),
   })
   .openapi({ required: ['ClientToken', 'GrantArn'], title: 'CreateGrantVersionRequest' })
   .openapi('CreateGrantVersionRequest')
@@ -446,45 +541,35 @@ const LicenseStatusSchema = z
 
 const CreateLicenseResponseSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ).exactOptional(),
-    Status: LicenseStatusSchema.and(
-      z.any().openapi({ description: 'License status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'License version.' })).exactOptional(),
+    LicenseArn: ArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license.',
+    }),
+    Status: LicenseStatusSchema.exactOptional().openapi({ description: 'License status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'License version.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateLicenseResponse')
 
 const IssuerSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Issuer name.' })),
-    SignKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Asymmetric KMS key from Key Management Service. The KMS key must have a key usage of sign and verify, and support the RSASSA-PSS SHA-256 signing algorithm.',
-        }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'Issuer name.' }),
+    SignKey: StringSchema.exactOptional().openapi({
+      description:
+        'Asymmetric KMS key from Key Management Service. The KMS key must have a key usage of sign and verify, and support the RSASSA-PSS SHA-256 signing algorithm.',
+    }),
   })
   .openapi({ required: ['Name'], description: 'Details about the issuer of a license.' })
   .openapi('Issuer')
 
 const DatetimeRangeSchema = z
   .object({
-    Begin: ISO8601DateTimeSchema.and(z.any().openapi({ description: 'Start of the time range.' })),
-    End: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'End of the time range.' }),
-    ).exactOptional(),
+    Begin: ISO8601DateTimeSchema.openapi({ description: 'Start of the time range.' }),
+    End: ISO8601DateTimeSchema.exactOptional().openapi({ description: 'End of the time range.' }),
   })
   .openapi({ required: ['Begin'], description: 'Describes a time range, in ISO8601-UTC format.' })
   .openapi('DatetimeRange')
 
 const LongSchema = z.int().openapi('Long')
-
-const BoxBooleanSchema = z.boolean().openapi('BoxBoolean')
 
 const EntitlementUnitSchema = z
   .enum([
@@ -520,20 +605,20 @@ const EntitlementUnitSchema = z
 
 const EntitlementSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Entitlement name.' })),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'Entitlement resource. Use only if the unit is None.' }),
-    ).exactOptional(),
-    MaxCount: LongSchema.and(
-      z.any().openapi({ description: 'Maximum entitlement count. Use if the unit is not None.' }),
-    ).exactOptional(),
-    Overage: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether overages are allowed.' }),
-    ).exactOptional(),
-    Unit: EntitlementUnitSchema.and(z.any().openapi({ description: 'Entitlement unit.' })),
-    AllowCheckIn: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether check-ins are allowed.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'Entitlement name.' }),
+    Value: StringSchema.exactOptional().openapi({
+      description: 'Entitlement resource. Use only if the unit is None.',
+    }),
+    MaxCount: LongSchema.exactOptional().openapi({
+      description: 'Maximum entitlement count. Use if the unit is not None.',
+    }),
+    Overage: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether overages are allowed.',
+    }),
+    Unit: EntitlementUnitSchema.openapi({ description: 'Entitlement unit.' }),
+    AllowCheckIn: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether check-ins are allowed.',
+    }),
   })
   .openapi({
     required: ['Name', 'Unit'],
@@ -549,11 +634,9 @@ const BoxIntegerSchema = z.int().openapi('BoxInteger')
 
 const ProvisionalConfigurationSchema = z
   .object({
-    MaxTimeToLiveInMinutes: BoxIntegerSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Maximum time for the provisional configuration, in minutes.' }),
-    ),
+    MaxTimeToLiveInMinutes: BoxIntegerSchema.openapi({
+      description: 'Maximum time for the provisional configuration, in minutes.',
+    }),
   })
   .openapi({
     required: ['MaxTimeToLiveInMinutes'],
@@ -563,12 +646,12 @@ const ProvisionalConfigurationSchema = z
 
 const BorrowConfigurationSchema = z
   .object({
-    AllowEarlyCheckIn: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether early check-ins are allowed.' }),
-    ),
-    MaxTimeToLiveInMinutes: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum time for the borrow configuration, in minutes.' }),
-    ),
+    AllowEarlyCheckIn: BoxBooleanSchema.openapi({
+      description: 'Indicates whether early check-ins are allowed.',
+    }),
+    MaxTimeToLiveInMinutes: BoxIntegerSchema.openapi({
+      description: 'Maximum time for the borrow configuration, in minutes.',
+    }),
   })
   .openapi({
     required: ['AllowEarlyCheckIn', 'MaxTimeToLiveInMinutes'],
@@ -578,57 +661,40 @@ const BorrowConfigurationSchema = z
 
 const ConsumptionConfigurationSchema = z
   .object({
-    RenewType: RenewTypeSchema.and(
-      z.any().openapi({ description: 'Renewal frequency.' }),
-    ).exactOptional(),
-    ProvisionalConfiguration: ProvisionalConfigurationSchema.and(
-      z.any().openapi({ description: 'Details about a provisional configuration.' }),
-    ).exactOptional(),
-    BorrowConfiguration: BorrowConfigurationSchema.and(
-      z.any().openapi({ description: 'Details about a borrow configuration.' }),
-    ).exactOptional(),
+    RenewType: RenewTypeSchema.exactOptional().openapi({ description: 'Renewal frequency.' }),
+    ProvisionalConfiguration: ProvisionalConfigurationSchema.exactOptional().openapi({
+      description: 'Details about a provisional configuration.',
+    }),
+    BorrowConfiguration: BorrowConfigurationSchema.exactOptional().openapi({
+      description: 'Details about a borrow configuration.',
+    }),
   })
   .openapi({ description: 'Details about a consumption configuration.', required: [] })
   .openapi('ConsumptionConfiguration')
 
 const CreateLicenseRequestSchema = z
   .object({
-    LicenseName: StringSchema.and(z.any().openapi({ description: 'License name.' })),
-    ProductName: StringSchema.and(z.any().openapi({ description: 'Product name.' })),
-    ProductSKU: StringSchema.and(z.any().openapi({ description: 'Product SKU.' })),
-    Issuer: IssuerSchema.and(z.any().openapi({ description: 'License issuer.' })),
-    HomeRegion: StringSchema.and(z.any().openapi({ description: 'Home Region for the license.' })),
-    Validity: DatetimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date and time range during which the license is valid, in ISO8601-UTC format.',
-        }),
-    ),
-    Entitlements: EntitlementListSchema.and(
-      z.any().openapi({ description: 'License entitlements.' }),
-    ),
-    Beneficiary: StringSchema.and(z.any().openapi({ description: 'License beneficiary.' })),
-    ConsumptionConfiguration: ConsumptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for consumption of the license. Choose a provisional configuration for workloads running with continuous connectivity. Choose a borrow configuration for workloads with offline usage.',
-        }),
-    ),
-    LicenseMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'Information about the license.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
+    LicenseName: StringSchema.openapi({ description: 'License name.' }),
+    ProductName: StringSchema.openapi({ description: 'Product name.' }),
+    ProductSKU: StringSchema.openapi({ description: 'Product SKU.' }),
+    Issuer: IssuerSchema.openapi({ description: 'License issuer.' }),
+    HomeRegion: StringSchema.openapi({ description: 'Home Region for the license.' }),
+    Validity: DatetimeRangeSchema.openapi({
+      description: 'Date and time range during which the license is valid, in ISO8601-UTC format.',
+    }),
+    Entitlements: EntitlementListSchema.openapi({ description: 'License entitlements.' }),
+    Beneficiary: StringSchema.openapi({ description: 'License beneficiary.' }),
+    ConsumptionConfiguration: ConsumptionConfigurationSchema.openapi({
+      description:
+        'Configuration for consumption of the license. Choose a provisional configuration for workloads running with continuous connectivity. Choose a borrow configuration for workloads with offline usage.',
+    }),
+    LicenseMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'Information about the license.',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
   })
   .openapi({
     required: [
@@ -649,123 +715,52 @@ const CreateLicenseRequestSchema = z
 
 const CreateLicenseConfigurationResponseSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLicenseConfigurationResponse')
 
-const LicenseCountingTypeSchema = z
-  .enum(['vCPU', 'Instance', 'Core', 'Socket'])
-  .openapi('LicenseCountingType')
-
-const BoxLongSchema = z.int().openapi('BoxLong')
-
-const StringListSchema = z.array(StringSchema).openapi('StringList')
-
 const TagSchema = z
   .object({
-    Key: StringSchema.and(z.any().openapi({ description: 'Tag key.' })).exactOptional(),
-    Value: StringSchema.and(z.any().openapi({ description: 'Tag value.' })).exactOptional(),
+    Key: StringSchema.exactOptional().openapi({ description: 'Tag key.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'Tag value.' }),
   })
   .openapi({ description: 'Details about a tag for a license configuration.', required: [] })
   .openapi('Tag')
 
 const TagListSchema = z.array(TagSchema).openapi('TagList')
 
-const ProductInformationFilterSchema = z
-  .object({
-    ProductInformationFilterName: StringSchema.and(
-      z.any().openapi({ description: 'Filter name.' }),
-    ),
-    ProductInformationFilterValue: StringListSchema.and(
-      z.any().openapi({ description: 'Filter value.' }),
-    ).exactOptional(),
-    ProductInformationFilterComparator: StringSchema.and(
-      z.any().openapi({ description: 'Logical operator.' }),
-    ),
-  })
-  .openapi({
-    required: ['ProductInformationFilterName', 'ProductInformationFilterComparator'],
-    description: 'Describes product information filters.',
-  })
-  .openapi('ProductInformationFilter')
-
-const ProductInformationFilterListSchema = z
-  .array(ProductInformationFilterSchema)
-  .openapi('ProductInformationFilterList')
-
-const ProductInformationSchema = z
-  .object({
-    ResourceType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Resource type. The possible values are <code>SSM_MANAGED</code> | <code>RDS</code>.',
-        }),
-    ),
-    ProductInformationFilterList: ProductInformationFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A Product information filter consists of a <code>ProductInformationFilterComparator</code> which is a logical operator, a <code>ProductInformationFilterName</code> which specifies the type of filter being declared, and a <code>ProductInformationFilterValue</code> that specifies the value to filter on. </p> <p>Accepted values for <code>ProductInformationFilterName</code> are listed here along with descriptions and valid options for <code>ProductInformationFilterComparator</code>. </p> <p>The following filters and are supported when the resource type is <code>SSM_MANAGED</code>:</p> <ul> <li> <p> <code>Application Name</code> - The name of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Application Publisher</code> - The publisher of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Application Version</code> - The version of the application. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Platform Name</code> - The name of the platform. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Platform Type</code> - The platform type. Logical operator is <code>EQUALS</code>.</p> </li> <li> <p> <code>Tag:key</code> - The key of a tag attached to an Amazon Web Services resource you wish to exclude from automated discovery. Logical operator is <code>NOT_EQUALS</code>. The key for your tag must be appended to <code>Tag:</code> following the example: <code>Tag:name-of-your-key</code>. <code>ProductInformationFilterValue</code> is optional if you are not using values for the key. </p> </li> <li> <p> <code>AccountId</code> - The 12-digit ID of an Amazon Web Services account you wish to exclude from automated discovery. Logical operator is <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>License Included</code> - The type of license included. Logical operators are <code>EQUALS</code> and <code>NOT_EQUALS</code>. Possible values are: <code>sql-server-enterprise</code> | <code>sql-server-standard</code> | <code>sql-server-web</code> | <code>windows-server-datacenter</code>.</p> </li> </ul> <p>The following filters and logical operators are supported when the resource type is <code>RDS</code>:</p> <ul> <li> <p> <code>Engine Edition</code> - The edition of the database engine. Logical operator is <code>EQUALS</code>. Possible values are: <code>oracle-ee</code> | <code>oracle-se</code> | <code>oracle-se1</code> | <code>oracle-se2</code>.</p> </li> <li> <p> <code>License Pack</code> - The license pack. Logical operator is <code>EQUALS</code>. Possible values are: <code>data guard</code> | <code>diagnostic pack sqlt</code> | <code>tuning pack sqlt</code> | <code>ols</code> | <code>olap</code>.</p> </li> </ul>',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['ResourceType', 'ProductInformationFilterList'],
-    description: 'Describes product information for a license configuration.',
-  })
-  .openapi('ProductInformation')
-
-const ProductInformationListSchema = z
-  .array(ProductInformationSchema)
-  .openapi('ProductInformationList')
-
 const CreateLicenseConfigurationRequestSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Name of the license configuration.' })),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountingType: LicenseCountingTypeSchema.and(
-      z.any().openapi({ description: 'Dimension used to track the license inventory.' }),
-    ),
-    LicenseCount: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses managed by the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountHardLimit: BoxBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether hard or soft license enforcement is used. Exceeding a hard limit blocks the launch of new instances.',
-        }),
-    ).exactOptional(),
-    LicenseRules: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>License rules. The syntax is #name=value (for example, #allowedTenancy=EC2-DedicatedHost). The available rules vary by dimension, as follows.</p> <ul> <li> <p> <code>Cores</code> dimension: <code>allowedTenancy</code> | <code>licenseAffinityToHost</code> | <code>maximumCores</code> | <code>minimumCores</code> </p> </li> <li> <p> <code>Instances</code> dimension: <code>allowedTenancy</code> | <code>maximumCores</code> | <code>minimumCores</code> | <code>maximumSockets</code> | <code>minimumSockets</code> | <code>maximumVcpus</code> | <code>minimumVcpus</code> </p> </li> <li> <p> <code>Sockets</code> dimension: <code>allowedTenancy</code> | <code>licenseAffinityToHost</code> | <code>maximumSockets</code> | <code>minimumSockets</code> </p> </li> <li> <p> <code>vCPUs</code> dimension: <code>allowedTenancy</code> | <code>honorVcpuOptimization</code> | <code>maximumVcpus</code> | <code>minimumVcpus</code> </p> </li> </ul> <p>The unit for <code>licenseAffinityToHost</code> is days and the range is 1 to 180. The possible values for <code>allowedTenancy</code> are <code>EC2-Default</code>, <code>EC2-DedicatedHost</code>, and <code>EC2-DedicatedInstance</code>. The possible values for <code>honorVcpuOptimization</code> are <code>True</code> and <code>False</code>.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags to add to the license configuration.' }),
-    ).exactOptional(),
-    DisassociateWhenNotFound: BoxBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When true, disassociates a resource when software is uninstalled.',
-        }),
-    ).exactOptional(),
-    ProductInformationList: ProductInformationListSchema.and(
-      z.any().openapi({ description: 'Product information.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'Name of the license configuration.' }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the license configuration.',
+    }),
+    LicenseCountingType: LicenseCountingTypeSchema.openapi({
+      description: 'Dimension used to track the license inventory.',
+    }),
+    LicenseCount: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses managed by the license configuration.',
+    }),
+    LicenseCountHardLimit: BoxBooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether hard or soft license enforcement is used. Exceeding a hard limit blocks the launch of new instances.',
+    }),
+    LicenseRules: StringListSchema.exactOptional().openapi({
+      description:
+        '<p>License rules. The syntax is #name=value (for example, #allowedTenancy=EC2-DedicatedHost). The available rules vary by dimension, as follows.</p> <ul> <li> <p> <code>Cores</code> dimension: <code>allowedTenancy</code> | <code>licenseAffinityToHost</code> | <code>maximumCores</code> | <code>minimumCores</code> </p> </li> <li> <p> <code>Instances</code> dimension: <code>allowedTenancy</code> | <code>maximumCores</code> | <code>minimumCores</code> | <code>maximumSockets</code> | <code>minimumSockets</code> | <code>maximumVcpus</code> | <code>minimumVcpus</code> </p> </li> <li> <p> <code>Sockets</code> dimension: <code>allowedTenancy</code> | <code>licenseAffinityToHost</code> | <code>maximumSockets</code> | <code>minimumSockets</code> </p> </li> <li> <p> <code>vCPUs</code> dimension: <code>allowedTenancy</code> | <code>honorVcpuOptimization</code> | <code>maximumVcpus</code> | <code>minimumVcpus</code> </p> </li> </ul> <p>The unit for <code>licenseAffinityToHost</code> is days and the range is 1 to 180. The possible values for <code>allowedTenancy</code> are <code>EC2-Default</code>, <code>EC2-DedicatedHost</code>, and <code>EC2-DedicatedInstance</code>. The possible values for <code>honorVcpuOptimization</code> are <code>True</code> and <code>False</code>.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags to add to the license configuration.',
+    }),
+    DisassociateWhenNotFound: BoxBooleanSchema.exactOptional().openapi({
+      description: 'When true, disassociates a resource when software is uninstalled.',
+    }),
+    ProductInformationList: ProductInformationListSchema.exactOptional().openapi({
+      description: 'Product information.',
+    }),
   })
   .openapi({
     required: ['Name', 'LicenseCountingType'],
@@ -781,9 +776,9 @@ const LicenseConversionTaskIdSchema = z
 
 const CreateLicenseConversionTaskForResourceResponseSchema = z
   .object({
-    LicenseConversionTaskId: LicenseConversionTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the created license type conversion task.' }),
-    ).exactOptional(),
+    LicenseConversionTaskId: LicenseConversionTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the created license type conversion task.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLicenseConversionTaskForResourceResponse')
@@ -792,44 +787,28 @@ const UsageOperationSchema = z.string().max(50).openapi('UsageOperation')
 
 const LicenseConversionContextSchema = z
   .object({
-    UsageOperation: UsageOperationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Usage operation value that corresponds to the license type you are converting your resource from. For more information about which platforms correspond to which usage operation values see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/billing-info-fields.html#billing-info">Sample data: usage operation by platform </a> ',
-        }),
-    ).exactOptional(),
+    UsageOperation: UsageOperationSchema.exactOptional().openapi({
+      description:
+        'The Usage operation value that corresponds to the license type you are converting your resource from. For more information about which platforms correspond to which usage operation values see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/billing-info-fields.html#billing-info">Sample data: usage operation by platform </a> ',
+    }),
   })
   .openapi({ description: 'Information about a license type conversion task.', required: [] })
   .openapi('LicenseConversionContext')
 
 const CreateLicenseConversionTaskForResourceRequestSchema = z
   .object({
-    ResourceArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the resource you are converting the license type for.',
-        }),
-    ),
-    SourceLicenseContext: LicenseConversionContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information that identifies the license type you are converting from. For the structure of the source license, see <a href="https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli">Convert a license type using the CLI </a> in the <i>License Manager User Guide</i>.',
-        }),
-    ),
-    DestinationLicenseContext: LicenseConversionContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information that identifies the license type you are converting to. For the structure of the destination license, see <a href="https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli">Convert a license type using the CLI </a> in the <i>License Manager User Guide</i>.',
-        }),
-    ),
+    ResourceArn: ArnSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of the resource you are converting the license type for.',
+    }),
+    SourceLicenseContext: LicenseConversionContextSchema.openapi({
+      description:
+        'Information that identifies the license type you are converting from. For the structure of the source license, see <a href="https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli">Convert a license type using the CLI </a> in the <i>License Manager User Guide</i>.',
+    }),
+    DestinationLicenseContext: LicenseConversionContextSchema.openapi({
+      description:
+        'Information that identifies the license type you are converting to. For the structure of the destination license, see <a href="https://docs.aws.amazon.com/license-manager/latest/userguide/conversion-procedures.html#conversion-cli">Convert a license type using the CLI </a> in the <i>License Manager User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['ResourceArn', 'SourceLicenseContext', 'DestinationLicenseContext'],
@@ -839,11 +818,9 @@ const CreateLicenseConversionTaskForResourceRequestSchema = z
 
 const CreateLicenseManagerReportGeneratorResponseSchema = z
   .object({
-    LicenseManagerReportGeneratorArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The Amazon Resource Name (ARN) of the new report generator.' }),
-    ).exactOptional(),
+    LicenseManagerReportGeneratorArn: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the new report generator.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateLicenseManagerReportGeneratorResponse')
@@ -860,14 +837,10 @@ const ArnListSchema = z.array(ArnSchema).openapi('ArnList')
 
 const ReportContextSchema = z
   .object({
-    licenseConfigurationArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the license configuration that this generator reports on.',
-        }),
-    ),
+    licenseConfigurationArns: ArnListSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of the license configuration that this generator reports on.',
+    }),
   })
   .openapi({
     required: ['licenseConfigurationArns'],
@@ -881,22 +854,13 @@ const ReportFrequencyTypeSchema = z.enum(['DAY', 'WEEK', 'MONTH']).openapi('Repo
 
 const ReportFrequencySchema = z
   .object({
-    value: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Number of times within the frequency period that a report is generated. The only supported value is <code>1</code>.',
-        }),
-    ).exactOptional(),
-    period: ReportFrequencyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time period between each report. The period can be daily, weekly, or monthly.',
-        }),
-    ).exactOptional(),
+    value: IntegerSchema.exactOptional().openapi({
+      description:
+        'Number of times within the frequency period that a report is generated. The only supported value is <code>1</code>.',
+    }),
+    period: ReportFrequencyTypeSchema.exactOptional().openapi({
+      description: 'Time period between each report. The period can be daily, weekly, or monthly.',
+    }),
   })
   .openapi({ description: 'Details about how frequently reports are generated.', required: [] })
   .openapi('ReportFrequency')
@@ -905,46 +869,30 @@ const ClientRequestTokenSchema = z.string().min(1).max(36).openapi('ClientReques
 
 const CreateLicenseManagerReportGeneratorRequestSchema = z
   .object({
-    ReportGeneratorName: ReportGeneratorNameSchema.and(
-      z.any().openapi({ description: 'Name of the report generator.' }),
-    ),
-    Type: ReportTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Type of reports to generate. The following report types an be generated:</p> <ul> <li> <p>License configuration report - Reports the number and details of consumed licenses for a license configuration.</p> </li> <li> <p>Resource report - Reports the tracked licenses and resource consumption for a license configuration.</p> </li> </ul>',
-        }),
-    ),
-    ReportContext: ReportContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Defines the type of license configuration the report generator tracks.',
-        }),
-    ),
-    ReportFrequency: ReportFrequencySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Frequency by which reports are generated. Reports can be generated daily, monthly, or weekly.',
-        }),
-    ),
-    ClientToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the report generator.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags to add to the report generator.' }),
-    ).exactOptional(),
+    ReportGeneratorName: ReportGeneratorNameSchema.openapi({
+      description: 'Name of the report generator.',
+    }),
+    Type: ReportTypeListSchema.openapi({
+      description:
+        '<p>Type of reports to generate. The following report types an be generated:</p> <ul> <li> <p>License configuration report - Reports the number and details of consumed licenses for a license configuration.</p> </li> <li> <p>Resource report - Reports the tracked licenses and resource consumption for a license configuration.</p> </li> </ul>',
+    }),
+    ReportContext: ReportContextSchema.openapi({
+      description: 'Defines the type of license configuration the report generator tracks.',
+    }),
+    ReportFrequency: ReportFrequencySchema.openapi({
+      description:
+        'Frequency by which reports are generated. Reports can be generated daily, monthly, or weekly.',
+    }),
+    ClientToken: ClientRequestTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the report generator.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags to add to the report generator.',
+    }),
   })
   .openapi({
     required: ['ReportGeneratorName', 'Type', 'ReportContext', 'ReportFrequency', 'ClientToken'],
@@ -954,60 +902,39 @@ const CreateLicenseManagerReportGeneratorRequestSchema = z
 
 const CreateLicenseVersionResponseSchema = z
   .object({
-    LicenseArn: ArnSchema.and(z.any().openapi({ description: 'License ARN.' })).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'New version of the license.' }),
-    ).exactOptional(),
-    Status: LicenseStatusSchema.and(
-      z.any().openapi({ description: 'License status.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.exactOptional().openapi({ description: 'License ARN.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'New version of the license.' }),
+    Status: LicenseStatusSchema.exactOptional().openapi({ description: 'License status.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateLicenseVersionResponse')
 
 const CreateLicenseVersionRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
-    LicenseName: StringSchema.and(z.any().openapi({ description: 'License name.' })),
-    ProductName: StringSchema.and(z.any().openapi({ description: 'Product name.' })),
-    Issuer: IssuerSchema.and(z.any().openapi({ description: 'License issuer.' })),
-    HomeRegion: StringSchema.and(z.any().openapi({ description: 'Home Region of the license.' })),
-    Validity: DatetimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date and time range during which the license is valid, in ISO8601-UTC format.',
-        }),
-    ),
-    LicenseMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'Information about the license.' }),
-    ).exactOptional(),
-    Entitlements: EntitlementListSchema.and(
-      z.any().openapi({ description: 'License entitlements.' }),
-    ),
-    ConsumptionConfiguration: ConsumptionConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Configuration for consumption of the license. Choose a provisional configuration for workloads running with continuous connectivity. Choose a borrow configuration for workloads with offline usage.',
-        }),
-    ),
-    Status: LicenseStatusSchema.and(z.any().openapi({ description: 'License status.' })),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    SourceVersion: StringSchema.and(
-      z.any().openapi({ description: 'Current version of the license.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
+    LicenseName: StringSchema.openapi({ description: 'License name.' }),
+    ProductName: StringSchema.openapi({ description: 'Product name.' }),
+    Issuer: IssuerSchema.openapi({ description: 'License issuer.' }),
+    HomeRegion: StringSchema.openapi({ description: 'Home Region of the license.' }),
+    Validity: DatetimeRangeSchema.openapi({
+      description: 'Date and time range during which the license is valid, in ISO8601-UTC format.',
+    }),
+    LicenseMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'Information about the license.',
+    }),
+    Entitlements: EntitlementListSchema.openapi({ description: 'License entitlements.' }),
+    ConsumptionConfiguration: ConsumptionConfigurationSchema.openapi({
+      description:
+        'Configuration for consumption of the license. Choose a provisional configuration for workloads running with continuous connectivity. Choose a borrow configuration for workloads with offline usage.',
+    }),
+    Status: LicenseStatusSchema.openapi({ description: 'License status.' }),
+    ClientToken: ClientTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    SourceVersion: StringSchema.exactOptional().openapi({
+      description: 'Current version of the license.',
+    }),
   })
   .openapi({
     required: [
@@ -1032,11 +959,11 @@ const TokenStringSchema = z.string().regex(/\S+/).max(4096).openapi('TokenString
 
 const CreateTokenResponseSchema = z
   .object({
-    TokenId: StringSchema.and(z.any().openapi({ description: 'Token ID.' })).exactOptional(),
-    TokenType: TokenTypeSchema.and(z.any().openapi({ description: 'Token type.' })).exactOptional(),
-    Token: TokenStringSchema.and(
-      z.any().openapi({ description: 'Refresh token, encoded as a JWT token.' }),
-    ).exactOptional(),
+    TokenId: StringSchema.exactOptional().openapi({ description: 'Token ID.' }),
+    TokenType: TokenTypeSchema.exactOptional().openapi({ description: 'Token type.' }),
+    Token: TokenStringSchema.exactOptional().openapi({
+      description: 'Refresh token, encoded as a JWT token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTokenResponse')
@@ -1045,65 +972,45 @@ const MaxSize3StringListSchema = z.array(StringSchema).max(3).openapi('MaxSize3S
 
 const CreateTokenRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the license. The ARN is mapped to the aud claim of the JWT token.',
-        }),
-    ),
-    RoleArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the IAM roles to embed in the token. License Manager does not check whether the roles are in use.',
-        }),
-    ).exactOptional(),
-    ExpirationInDays: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token expiration, in days, counted from token creation. The default is 365 days.',
-        }),
-    ).exactOptional(),
-    TokenProperties: MaxSize3StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Data specified by the caller to be included in the JWT token. The data is mapped to the amr claim of the JWT token.',
-        }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'Idempotency token, valid for 10 minutes.' }),
-    ),
+    LicenseArn: ArnSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of the license. The ARN is mapped to the aud claim of the JWT token.',
+    }),
+    RoleArns: ArnListSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the IAM roles to embed in the token. License Manager does not check whether the roles are in use.',
+    }),
+    ExpirationInDays: IntegerSchema.exactOptional().openapi({
+      description:
+        'Token expiration, in days, counted from token creation. The default is 365 days.',
+    }),
+    TokenProperties: MaxSize3StringListSchema.exactOptional().openapi({
+      description:
+        'Data specified by the caller to be included in the JWT token. The data is mapped to the amr claim of the JWT token.',
+    }),
+    ClientToken: ClientTokenSchema.openapi({
+      description: 'Idempotency token, valid for 10 minutes.',
+    }),
   })
   .openapi({ required: ['LicenseArn', 'ClientToken'], title: 'CreateTokenRequest' })
   .openapi('CreateTokenRequest')
 
 const DeleteGrantResponseSchema = z
   .object({
-    GrantArn: ArnSchema.and(z.any().openapi({ description: 'Grant ARN.' })).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })).exactOptional(),
+    GrantArn: ArnSchema.exactOptional().openapi({ description: 'Grant ARN.' }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'Grant version.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGrantResponse')
 
 const DeleteGrantRequestSchema = z
   .object({
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
-    StatusReason: StatusReasonMessageSchema.and(
-      z.any().openapi({ description: 'The Status reason for the delete request.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Current version of the grant.' })),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
+    StatusReason: StatusReasonMessageSchema.exactOptional().openapi({
+      description: 'The Status reason for the delete request.',
+    }),
+    Version: StringSchema.openapi({ description: 'Current version of the grant.' }),
   })
   .openapi({ required: ['GrantArn', 'Version'], title: 'DeleteGrantRequest' })
   .openapi('DeleteGrantRequest')
@@ -1114,54 +1021,44 @@ const LicenseDeletionStatusSchema = z
 
 const DeleteLicenseResponseSchema = z
   .object({
-    Status: LicenseDeletionStatusSchema.and(
-      z.any().openapi({ description: 'License status.' }),
-    ).exactOptional(),
-    DeletionDate: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date when the license is deleted.' }),
-    ).exactOptional(),
+    Status: LicenseDeletionStatusSchema.exactOptional().openapi({ description: 'License status.' }),
+    DeletionDate: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date when the license is deleted.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteLicenseResponse')
 
 const DeleteLicenseRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
-    SourceVersion: StringSchema.and(
-      z.any().openapi({ description: 'Current version of the license.' }),
-    ),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
+    SourceVersion: StringSchema.openapi({ description: 'Current version of the license.' }),
   })
   .openapi({ required: ['LicenseArn', 'SourceVersion'], title: 'DeleteLicenseRequest' })
   .openapi('DeleteLicenseRequest')
 
 const DeleteLicenseConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteLicenseConfigurationResponse')
 
 const DeleteLicenseConfigurationRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'ID of the license configuration.' }),
-    ),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'ID of the license configuration.',
+    }),
   })
   .openapi({ required: ['LicenseConfigurationArn'], title: 'DeleteLicenseConfigurationRequest' })
   .openapi('DeleteLicenseConfigurationRequest')
 
 const DeleteLicenseManagerReportGeneratorResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeleteLicenseManagerReportGeneratorResponse')
 
 const DeleteLicenseManagerReportGeneratorRequestSchema = z
   .object({
-    LicenseManagerReportGeneratorArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon Resource Name (ARN) of the report generator to be deleted.',
-        }),
-    ),
+    LicenseManagerReportGeneratorArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the report generator to be deleted.',
+    }),
   })
   .openapi({
     required: ['LicenseManagerReportGeneratorArn'],
@@ -1169,21 +1066,21 @@ const DeleteLicenseManagerReportGeneratorRequestSchema = z
   })
   .openapi('DeleteLicenseManagerReportGeneratorRequest')
 
-const DeleteTokenResponseSchema = z.object({}).openapi('DeleteTokenResponse')
+const DeleteTokenResponseSchema = z.looseObject({}).openapi('DeleteTokenResponse')
 
 const DeleteTokenRequestSchema = z
-  .object({ TokenId: StringSchema.and(z.any().openapi({ description: 'Token ID.' })) })
+  .object({ TokenId: StringSchema.openapi({ description: 'Token ID.' }) })
   .openapi({ required: ['TokenId'], title: 'DeleteTokenRequest' })
   .openapi('DeleteTokenRequest')
 
 const ExtendLicenseConsumptionResponseSchema = z
   .object({
-    LicenseConsumptionToken: StringSchema.and(
-      z.any().openapi({ description: 'License consumption token.' }),
-    ).exactOptional(),
-    Expiration: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Date and time at which the license consumption expires.' }),
-    ).exactOptional(),
+    LicenseConsumptionToken: StringSchema.exactOptional().openapi({
+      description: 'License consumption token.',
+    }),
+    Expiration: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Date and time at which the license consumption expires.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ExtendLicenseConsumptionResponse')
@@ -1192,69 +1089,51 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const ExtendLicenseConsumptionRequestSchema = z
   .object({
-    LicenseConsumptionToken: StringSchema.and(
-      z.any().openapi({ description: 'License consumption token.' }),
-    ),
-    DryRun: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Checks whether you have the required permissions for the action, without actually making the request. Provides an error response if you do not have the required permissions.',
-        }),
-    ).exactOptional(),
+    LicenseConsumptionToken: StringSchema.openapi({ description: 'License consumption token.' }),
+    DryRun: BooleanSchema.exactOptional().openapi({
+      description:
+        'Checks whether you have the required permissions for the action, without actually making the request. Provides an error response if you do not have the required permissions.',
+    }),
   })
   .openapi({ required: ['LicenseConsumptionToken'], title: 'ExtendLicenseConsumptionRequest' })
   .openapi('ExtendLicenseConsumptionRequest')
 
 const GetAccessTokenResponseSchema = z
   .object({
-    AccessToken: TokenStringSchema.and(
-      z.any().openapi({ description: 'Temporary access token.' }),
-    ).exactOptional(),
+    AccessToken: TokenStringSchema.exactOptional().openapi({
+      description: 'Temporary access token.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetAccessTokenResponse')
 
 const GetAccessTokenRequestSchema = z
   .object({
-    Token: TokenStringSchema.and(
-      z.any().openapi({ description: 'Refresh token, encoded as a JWT token.' }),
-    ),
-    TokenProperties: MaxSize3StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Token properties to validate against those present in the JWT token.',
-        }),
-    ).exactOptional(),
+    Token: TokenStringSchema.openapi({ description: 'Refresh token, encoded as a JWT token.' }),
+    TokenProperties: MaxSize3StringListSchema.exactOptional().openapi({
+      description: 'Token properties to validate against those present in the JWT token.',
+    }),
   })
   .openapi({ required: ['Token'], title: 'GetAccessTokenRequest' })
   .openapi('GetAccessTokenRequest')
 
 const GrantSchema = z
   .object({
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
-    GrantName: StringSchema.and(z.any().openapi({ description: 'Grant name.' })),
-    ParentArn: ArnSchema.and(z.any().openapi({ description: 'Parent ARN.' })),
-    LicenseArn: ArnSchema.and(z.any().openapi({ description: 'License ARN.' })),
-    GranteePrincipalArn: ArnSchema.and(
-      z.any().openapi({ description: 'The grantee principal ARN.' }),
-    ),
-    HomeRegion: StringSchema.and(z.any().openapi({ description: 'Home Region of the grant.' })),
-    GrantStatus: GrantStatusSchema.and(z.any().openapi({ description: 'Grant status.' })),
-    StatusReason: StatusReasonMessageSchema.and(
-      z.any().openapi({ description: 'Grant status reason.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })),
-    GrantedOperations: AllowedOperationListSchema.and(
-      z.any().openapi({ description: 'Granted operations.' }),
-    ),
-    Options: OptionsSchema.and(
-      z.any().openapi({ description: 'The options specified for the grant.' }),
-    ).exactOptional(),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
+    GrantName: StringSchema.openapi({ description: 'Grant name.' }),
+    ParentArn: ArnSchema.openapi({ description: 'Parent ARN.' }),
+    LicenseArn: ArnSchema.openapi({ description: 'License ARN.' }),
+    GranteePrincipalArn: ArnSchema.openapi({ description: 'The grantee principal ARN.' }),
+    HomeRegion: StringSchema.openapi({ description: 'Home Region of the grant.' }),
+    GrantStatus: GrantStatusSchema.openapi({ description: 'Grant status.' }),
+    StatusReason: StatusReasonMessageSchema.exactOptional().openapi({
+      description: 'Grant status reason.',
+    }),
+    Version: StringSchema.openapi({ description: 'Grant version.' }),
+    GrantedOperations: AllowedOperationListSchema.openapi({ description: 'Granted operations.' }),
+    Options: OptionsSchema.exactOptional().openapi({
+      description: 'The options specified for the grant.',
+    }),
   })
   .openapi({
     required: [
@@ -1273,221 +1152,137 @@ const GrantSchema = z
   .openapi('Grant')
 
 const GetGrantResponseSchema = z
-  .object({
-    Grant: GrantSchema.and(z.any().openapi({ description: 'Grant details.' })).exactOptional(),
-  })
+  .object({ Grant: GrantSchema.exactOptional().openapi({ description: 'Grant details.' }) })
   .openapi({ required: [] })
   .openapi('GetGrantResponse')
 
 const GetGrantRequestSchema = z
   .object({
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })).exactOptional(),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'Grant version.' }),
   })
   .openapi({ required: ['GrantArn'], title: 'GetGrantRequest' })
   .openapi('GetGrantRequest')
 
 const IssuerDetailsSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Issuer name.' })).exactOptional(),
-    SignKey: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Asymmetric KMS key from Key Management Service. The KMS key must have a key usage of sign and verify, and support the RSASSA-PSS SHA-256 signing algorithm.',
-        }),
-    ).exactOptional(),
-    KeyFingerprint: StringSchema.and(
-      z.any().openapi({ description: 'Issuer key fingerprint.' }),
-    ).exactOptional(),
+    Name: StringSchema.exactOptional().openapi({ description: 'Issuer name.' }),
+    SignKey: StringSchema.exactOptional().openapi({
+      description:
+        'Asymmetric KMS key from Key Management Service. The KMS key must have a key usage of sign and verify, and support the RSASSA-PSS SHA-256 signing algorithm.',
+    }),
+    KeyFingerprint: StringSchema.exactOptional().openapi({
+      description: 'Issuer key fingerprint.',
+    }),
   })
   .openapi({ description: 'Details associated with the issuer of a license.', required: [] })
   .openapi('IssuerDetails')
 
 const LicenseSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ).exactOptional(),
-    LicenseName: StringSchema.and(
-      z.any().openapi({ description: 'License name.' }),
-    ).exactOptional(),
-    ProductName: StringSchema.and(
-      z.any().openapi({ description: 'Product name.' }),
-    ).exactOptional(),
-    ProductSKU: StringSchema.and(z.any().openapi({ description: 'Product SKU.' })).exactOptional(),
-    Issuer: IssuerDetailsSchema.and(
-      z.any().openapi({ description: 'License issuer.' }),
-    ).exactOptional(),
-    HomeRegion: StringSchema.and(
-      z.any().openapi({ description: 'Home Region of the license.' }),
-    ).exactOptional(),
-    Status: LicenseStatusSchema.and(
-      z.any().openapi({ description: 'License status.' }),
-    ).exactOptional(),
-    Validity: DatetimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date and time range during which the license is valid, in ISO8601-UTC format.',
-        }),
-    ).exactOptional(),
-    Beneficiary: StringSchema.and(
-      z.any().openapi({ description: 'License beneficiary.' }),
-    ).exactOptional(),
-    Entitlements: EntitlementListSchema.and(
-      z.any().openapi({ description: 'License entitlements.' }),
-    ).exactOptional(),
-    ConsumptionConfiguration: ConsumptionConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration for consumption of the license.' }),
-    ).exactOptional(),
-    LicenseMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'License metadata.' }),
-    ).exactOptional(),
-    CreateTime: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'License creation time.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'License version.' })).exactOptional(),
+    LicenseArn: ArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license.',
+    }),
+    LicenseName: StringSchema.exactOptional().openapi({ description: 'License name.' }),
+    ProductName: StringSchema.exactOptional().openapi({ description: 'Product name.' }),
+    ProductSKU: StringSchema.exactOptional().openapi({ description: 'Product SKU.' }),
+    Issuer: IssuerDetailsSchema.exactOptional().openapi({ description: 'License issuer.' }),
+    HomeRegion: StringSchema.exactOptional().openapi({
+      description: 'Home Region of the license.',
+    }),
+    Status: LicenseStatusSchema.exactOptional().openapi({ description: 'License status.' }),
+    Validity: DatetimeRangeSchema.exactOptional().openapi({
+      description: 'Date and time range during which the license is valid, in ISO8601-UTC format.',
+    }),
+    Beneficiary: StringSchema.exactOptional().openapi({ description: 'License beneficiary.' }),
+    Entitlements: EntitlementListSchema.exactOptional().openapi({
+      description: 'License entitlements.',
+    }),
+    ConsumptionConfiguration: ConsumptionConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for consumption of the license.',
+    }),
+    LicenseMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'License metadata.',
+    }),
+    CreateTime: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'License creation time.',
+    }),
+    Version: StringSchema.exactOptional().openapi({ description: 'License version.' }),
   })
   .openapi({ description: 'Software license that is managed in License Manager.', required: [] })
   .openapi('License')
 
 const GetLicenseResponseSchema = z
-  .object({
-    License: LicenseSchema.and(
-      z.any().openapi({ description: 'License details.' }),
-    ).exactOptional(),
-  })
+  .object({ License: LicenseSchema.exactOptional().openapi({ description: 'License details.' }) })
   .openapi({ required: [] })
   .openapi('GetLicenseResponse')
 
 const GetLicenseRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
-    Version: StringSchema.and(z.any().openapi({ description: 'License version.' })).exactOptional(),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'License version.' }),
   })
   .openapi({ required: ['LicenseArn'], title: 'GetLicenseRequest' })
   .openapi('GetLicenseRequest')
 
-const ResourceTypeSchema = z
-  .enum(['EC2_INSTANCE', 'EC2_HOST', 'EC2_AMI', 'RDS', 'SYSTEMS_MANAGER_MANAGED_INSTANCE'])
-  .openapi('ResourceType')
-
-const ConsumedLicenseSummarySchema = z
-  .object({
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Resource type of the resource consuming a license.' }),
-    ).exactOptional(),
-    ConsumedLicenses: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses consumed by the resource.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Details about license consumption.', required: [] })
-  .openapi('ConsumedLicenseSummary')
-
-const ConsumedLicenseSummaryListSchema = z
-  .array(ConsumedLicenseSummarySchema)
-  .openapi('ConsumedLicenseSummaryList')
-
-const ManagedResourceSummarySchema = z
-  .object({
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Type of resource associated with a license.' }),
-    ).exactOptional(),
-    AssociationCount: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of resources associated with licenses.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Summary information about a managed resource.', required: [] })
-  .openapi('ManagedResourceSummary')
-
-const ManagedResourceSummaryListSchema = z
-  .array(ManagedResourceSummarySchema)
-  .openapi('ManagedResourceSummaryList')
-
-const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
-
-const AutomatedDiscoveryInformationSchema = z
-  .object({
-    LastRunTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'Time that automated discovery last ran.' }),
-    ).exactOptional(),
-  })
-  .openapi({ description: 'Describes automated discovery.', required: [] })
-  .openapi('AutomatedDiscoveryInformation')
-
 const GetLicenseConfigurationResponseSchema = z
   .object({
-    LicenseConfigurationId: StringSchema.and(
-      z.any().openapi({ description: 'Unique ID for the license configuration.' }),
-    ).exactOptional(),
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'Name of the license configuration.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountingType: LicenseCountingTypeSchema.and(
-      z.any().openapi({ description: 'Dimension for which the licenses are counted.' }),
-    ).exactOptional(),
-    LicenseRules: StringListSchema.and(
-      z.any().openapi({ description: 'License rules.' }),
-    ).exactOptional(),
-    LicenseCount: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of available licenses.' }),
-    ).exactOptional(),
-    LicenseCountHardLimit: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Sets the number of available licenses as a hard limit.' }),
-    ).exactOptional(),
-    ConsumedLicenses: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses assigned to resources.' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'License configuration status.' }),
-    ).exactOptional(),
-    OwnerAccountId: StringSchema.and(
-      z.any().openapi({ description: 'Account ID of the owner of the license configuration.' }),
-    ).exactOptional(),
-    ConsumedLicenseSummaryList: ConsumedLicenseSummaryListSchema.and(
-      z.any().openapi({ description: 'Summaries of the licenses consumed by resources.' }),
-    ).exactOptional(),
-    ManagedResourceSummaryList: ManagedResourceSummaryListSchema.and(
-      z.any().openapi({ description: 'Summaries of the managed resources.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags for the license configuration.' }),
-    ).exactOptional(),
-    ProductInformationList: ProductInformationListSchema.and(
-      z.any().openapi({ description: 'Product information.' }),
-    ).exactOptional(),
-    AutomatedDiscoveryInformation: AutomatedDiscoveryInformationSchema.and(
-      z.any().openapi({ description: 'Automated discovery information.' }),
-    ).exactOptional(),
-    DisassociateWhenNotFound: BoxBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When true, disassociates a resource when software is uninstalled.',
-        }),
-    ).exactOptional(),
+    LicenseConfigurationId: StringSchema.exactOptional().openapi({
+      description: 'Unique ID for the license configuration.',
+    }),
+    LicenseConfigurationArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'Name of the license configuration.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the license configuration.',
+    }),
+    LicenseCountingType: LicenseCountingTypeSchema.exactOptional().openapi({
+      description: 'Dimension for which the licenses are counted.',
+    }),
+    LicenseRules: StringListSchema.exactOptional().openapi({ description: 'License rules.' }),
+    LicenseCount: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of available licenses.',
+    }),
+    LicenseCountHardLimit: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Sets the number of available licenses as a hard limit.',
+    }),
+    ConsumedLicenses: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses assigned to resources.',
+    }),
+    Status: StringSchema.exactOptional().openapi({ description: 'License configuration status.' }),
+    OwnerAccountId: StringSchema.exactOptional().openapi({
+      description: 'Account ID of the owner of the license configuration.',
+    }),
+    ConsumedLicenseSummaryList: ConsumedLicenseSummaryListSchema.exactOptional().openapi({
+      description: 'Summaries of the licenses consumed by resources.',
+    }),
+    ManagedResourceSummaryList: ManagedResourceSummaryListSchema.exactOptional().openapi({
+      description: 'Summaries of the managed resources.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags for the license configuration.',
+    }),
+    ProductInformationList: ProductInformationListSchema.exactOptional().openapi({
+      description: 'Product information.',
+    }),
+    AutomatedDiscoveryInformation: AutomatedDiscoveryInformationSchema.exactOptional().openapi({
+      description: 'Automated discovery information.',
+    }),
+    DisassociateWhenNotFound: BoxBooleanSchema.exactOptional().openapi({
+      description: 'When true, disassociates a resource when software is uninstalled.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLicenseConfigurationResponse')
 
 const GetLicenseConfigurationRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
   })
   .openapi({ required: ['LicenseConfigurationArn'], title: 'GetLicenseConfigurationRequest' })
   .openapi('GetLicenseConfigurationRequest')
@@ -1498,67 +1293,55 @@ const LicenseConversionTaskStatusSchema = z
 
 const GetLicenseConversionTaskResponseSchema = z
   .object({
-    LicenseConversionTaskId: LicenseConversionTaskIdSchema.and(
-      z.any().openapi({ description: 'ID of the license type conversion task.' }),
-    ).exactOptional(),
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Names (ARN) of the resources the license conversion task is associated with.',
-        }),
-    ).exactOptional(),
-    SourceLicenseContext: LicenseConversionContextSchema.and(
-      z.any().openapi({ description: 'Information about the license type converted from.' }),
-    ).exactOptional(),
-    DestinationLicenseContext: LicenseConversionContextSchema.and(
-      z.any().openapi({ description: 'Information about the license type converted to.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the conversion task.' }),
-    ).exactOptional(),
-    Status: LicenseConversionTaskStatusSchema.and(
-      z.any().openapi({ description: 'Status of the license type conversion task.' }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Time at which the license type conversion task was started .' }),
-    ).exactOptional(),
-    LicenseConversionTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'Amount of time to complete the license type conversion.' }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Time at which the license type conversion task was completed.' }),
-    ).exactOptional(),
+    LicenseConversionTaskId: LicenseConversionTaskIdSchema.exactOptional().openapi({
+      description: 'ID of the license type conversion task.',
+    }),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Names (ARN) of the resources the license conversion task is associated with.',
+    }),
+    SourceLicenseContext: LicenseConversionContextSchema.exactOptional().openapi({
+      description: 'Information about the license type converted from.',
+    }),
+    DestinationLicenseContext: LicenseConversionContextSchema.exactOptional().openapi({
+      description: 'Information about the license type converted to.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the conversion task.',
+    }),
+    Status: LicenseConversionTaskStatusSchema.exactOptional().openapi({
+      description: 'Status of the license type conversion task.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Time at which the license type conversion task was started .',
+    }),
+    LicenseConversionTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Amount of time to complete the license type conversion.',
+    }),
+    EndTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Time at which the license type conversion task was completed.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLicenseConversionTaskResponse')
 
 const GetLicenseConversionTaskRequestSchema = z
   .object({
-    LicenseConversionTaskId: LicenseConversionTaskIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'ID of the license type conversion task to retrieve information on.',
-        }),
-    ),
+    LicenseConversionTaskId: LicenseConversionTaskIdSchema.openapi({
+      description: 'ID of the license type conversion task to retrieve information on.',
+    }),
   })
   .openapi({ required: ['LicenseConversionTaskId'], title: 'GetLicenseConversionTaskRequest' })
   .openapi('GetLicenseConversionTaskRequest')
 
 const S3LocationSchema = z
   .object({
-    bucket: StringSchema.and(
-      z.any().openapi({ description: 'Name of the S3 bucket reports are published to.' }),
-    ).exactOptional(),
-    keyPrefix: StringSchema.and(
-      z.any().openapi({ description: 'Prefix of the S3 bucket reports are published to.' }),
-    ).exactOptional(),
+    bucket: StringSchema.exactOptional().openapi({
+      description: 'Name of the S3 bucket reports are published to.',
+    }),
+    keyPrefix: StringSchema.exactOptional().openapi({
+      description: 'Prefix of the S3 bucket reports are published to.',
+    }),
   })
   .openapi({
     description: 'Details of the S3 bucket that report generator reports are published to.',
@@ -1568,76 +1351,64 @@ const S3LocationSchema = z
 
 const ReportGeneratorSchema = z
   .object({
-    ReportGeneratorName: StringSchema.and(
-      z.any().openapi({ description: 'Name of the report generator.' }),
-    ).exactOptional(),
-    ReportType: ReportTypeListSchema.and(
-      z.any().openapi({ description: 'Type of reports that are generated.' }),
-    ).exactOptional(),
-    ReportContext: ReportContextSchema.and(
-      z.any().openapi({ description: 'License configuration type for this generator.' }),
-    ).exactOptional(),
-    ReportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'Details about how frequently reports are generated.' }),
-    ).exactOptional(),
-    LicenseManagerReportGeneratorArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the report generator.' }),
-    ).exactOptional(),
-    LastRunStatus: StringSchema.and(
-      z.any().openapi({ description: 'Status of the last report generation attempt.' }),
-    ).exactOptional(),
-    LastRunFailureReason: StringSchema.and(
-      z.any().openapi({ description: 'Failure message for the last report generation attempt.' }),
-    ).exactOptional(),
-    LastReportGenerationTime: StringSchema.and(
-      z.any().openapi({ description: 'Time the last report was generated at.' }),
-    ).exactOptional(),
-    ReportCreatorAccount: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Web Services account ID used to create the report generator.',
-        }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the report generator.' }),
-    ).exactOptional(),
-    S3Location: S3LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Details of the S3 bucket that report generator reports are published to.',
-        }),
-    ).exactOptional(),
-    CreateTime: StringSchema.and(
-      z.any().openapi({ description: 'Time the report was created.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Tags associated with the report generator.' }),
-    ).exactOptional(),
+    ReportGeneratorName: StringSchema.exactOptional().openapi({
+      description: 'Name of the report generator.',
+    }),
+    ReportType: ReportTypeListSchema.exactOptional().openapi({
+      description: 'Type of reports that are generated.',
+    }),
+    ReportContext: ReportContextSchema.exactOptional().openapi({
+      description: 'License configuration type for this generator.',
+    }),
+    ReportFrequency: ReportFrequencySchema.exactOptional().openapi({
+      description: 'Details about how frequently reports are generated.',
+    }),
+    LicenseManagerReportGeneratorArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the report generator.',
+    }),
+    LastRunStatus: StringSchema.exactOptional().openapi({
+      description: 'Status of the last report generation attempt.',
+    }),
+    LastRunFailureReason: StringSchema.exactOptional().openapi({
+      description: 'Failure message for the last report generation attempt.',
+    }),
+    LastReportGenerationTime: StringSchema.exactOptional().openapi({
+      description: 'Time the last report was generated at.',
+    }),
+    ReportCreatorAccount: StringSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID used to create the report generator.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the report generator.',
+    }),
+    S3Location: S3LocationSchema.exactOptional().openapi({
+      description: 'Details of the S3 bucket that report generator reports are published to.',
+    }),
+    CreateTime: StringSchema.exactOptional().openapi({
+      description: 'Time the report was created.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Tags associated with the report generator.',
+    }),
   })
   .openapi({ description: 'Describe the details of a report generator.', required: [] })
   .openapi('ReportGenerator')
 
 const GetLicenseManagerReportGeneratorResponseSchema = z
   .object({
-    ReportGenerator: ReportGeneratorSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A report generator that creates periodic reports about your license configurations.',
-        }),
-    ).exactOptional(),
+    ReportGenerator: ReportGeneratorSchema.exactOptional().openapi({
+      description:
+        'A report generator that creates periodic reports about your license configurations.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLicenseManagerReportGeneratorResponse')
 
 const GetLicenseManagerReportGeneratorRequestSchema = z
   .object({
-    LicenseManagerReportGeneratorArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the report generator.' }),
-    ),
+    LicenseManagerReportGeneratorArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the report generator.',
+    }),
   })
   .openapi({
     required: ['LicenseManagerReportGeneratorArn'],
@@ -1647,14 +1418,12 @@ const GetLicenseManagerReportGeneratorRequestSchema = z
 
 const EntitlementUsageSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Entitlement usage name.' })),
-    ConsumedValue: StringSchema.and(z.any().openapi({ description: 'Resource usage consumed.' })),
-    MaxCount: StringSchema.and(
-      z.any().openapi({ description: 'Maximum entitlement usage count.' }),
-    ).exactOptional(),
-    Unit: EntitlementDataUnitSchema.and(
-      z.any().openapi({ description: 'Entitlement usage unit.' }),
-    ),
+    Name: StringSchema.openapi({ description: 'Entitlement usage name.' }),
+    ConsumedValue: StringSchema.openapi({ description: 'Resource usage consumed.' }),
+    MaxCount: StringSchema.exactOptional().openapi({
+      description: 'Maximum entitlement usage count.',
+    }),
+    Unit: EntitlementDataUnitSchema.openapi({ description: 'Entitlement usage unit.' }),
   })
   .openapi({
     required: ['Name', 'ConsumedValue', 'Unit'],
@@ -1666,9 +1435,9 @@ const EntitlementUsageListSchema = z.array(EntitlementUsageSchema).openapi('Enti
 
 const LicenseUsageSchema = z
   .object({
-    EntitlementUsages: EntitlementUsageListSchema.and(
-      z.any().openapi({ description: 'License entitlement usages.' }),
-    ).exactOptional(),
+    EntitlementUsages: EntitlementUsageListSchema.exactOptional().openapi({
+      description: 'License entitlement usages.',
+    }),
   })
   .openapi({
     description: 'Describes the entitlement usage associated with a license.',
@@ -1678,27 +1447,23 @@ const LicenseUsageSchema = z
 
 const GetLicenseUsageResponseSchema = z
   .object({
-    LicenseUsage: LicenseUsageSchema.and(
-      z.any().openapi({ description: 'License usage details.' }),
-    ).exactOptional(),
+    LicenseUsage: LicenseUsageSchema.exactOptional().openapi({
+      description: 'License usage details.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLicenseUsageResponse')
 
 const GetLicenseUsageRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
   })
   .openapi({ required: ['LicenseArn'], title: 'GetLicenseUsageRequest' })
   .openapi('GetLicenseUsageRequest')
 
 const OrganizationConfigurationSchema = z
   .object({
-    EnableIntegration: BooleanSchema.and(
-      z.any().openapi({ description: 'Enables Organizations integration.' }),
-    ),
+    EnableIntegration: BooleanSchema.openapi({ description: 'Enables Organizations integration.' }),
   })
   .openapi({
     required: ['EnableIntegration'],
@@ -1708,80 +1473,51 @@ const OrganizationConfigurationSchema = z
 
 const GetServiceSettingsResponseSchema = z
   .object({
-    S3BucketArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Regional S3 bucket path for storing reports, license trail event data, discovery data, and so on.',
-        }),
-    ).exactOptional(),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'SNS topic configured to receive notifications from License Manager.',
-        }),
-    ).exactOptional(),
-    OrganizationConfiguration: OrganizationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether Organizations is integrated with License Manager for cross-account discovery.',
-        }),
-    ).exactOptional(),
-    EnableCrossAccountsDiscovery: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether cross-account discovery is enabled.' }),
-    ).exactOptional(),
-    LicenseManagerResourceShareArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the resource share. The License Manager management account provides member accounts with access to this share.',
-        }),
-    ).exactOptional(),
+    S3BucketArn: StringSchema.exactOptional().openapi({
+      description:
+        'Regional S3 bucket path for storing reports, license trail event data, discovery data, and so on.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description: 'SNS topic configured to receive notifications from License Manager.',
+    }),
+    OrganizationConfiguration: OrganizationConfigurationSchema.exactOptional().openapi({
+      description:
+        'Indicates whether Organizations is integrated with License Manager for cross-account discovery.',
+    }),
+    EnableCrossAccountsDiscovery: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether cross-account discovery is enabled.',
+    }),
+    LicenseManagerResourceShareArn: StringSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the resource share. The License Manager management account provides member accounts with access to this share.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetServiceSettingsResponse')
 
 const GetServiceSettingsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetServiceSettingsRequest' })
   .openapi('GetServiceSettingsRequest')
 
 const LicenseConfigurationAssociationSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Type of server resource.' }),
-    ).exactOptional(),
-    ResourceOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'ID of the Amazon Web Services account that owns the resource consuming licenses.',
-        }),
-    ).exactOptional(),
-    AssociationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Time when the license configuration was associated with the resource.',
-        }),
-    ).exactOptional(),
-    AmiAssociationScope: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Scope of AMI associations. The possible value is <code>cross-account</code>.',
-        }),
-    ).exactOptional(),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'Type of server resource.',
+    }),
+    ResourceOwnerId: StringSchema.exactOptional().openapi({
+      description:
+        'ID of the Amazon Web Services account that owns the resource consuming licenses.',
+    }),
+    AssociationTime: DateTimeSchema.exactOptional().openapi({
+      description: 'Time when the license configuration was associated with the resource.',
+    }),
+    AmiAssociationScope: StringSchema.exactOptional().openapi({
+      description: 'Scope of AMI associations. The possible value is <code>cross-account</code>.',
+    }),
   })
   .openapi({ description: 'Describes an association with a license configuration.', required: [] })
   .openapi('LicenseConfigurationAssociation')
@@ -1792,31 +1528,28 @@ const LicenseConfigurationAssociationsSchema = z
 
 const ListAssociationsForLicenseConfigurationResponseSchema = z
   .object({
-    LicenseConfigurationAssociations: LicenseConfigurationAssociationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the associations for the license configuration.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConfigurationAssociations:
+      LicenseConfigurationAssociationsSchema.exactOptional().openapi({
+        description: 'Information about the associations for the license configuration.',
+      }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAssociationsForLicenseConfigurationResponse')
 
 const ListAssociationsForLicenseConfigurationRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of a license configuration.' }),
-    ),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of a license configuration.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({
     required: ['LicenseConfigurationArn'],
@@ -1830,12 +1563,10 @@ const GrantListSchema = z.array(GrantSchema).openapi('GrantList')
 
 const ListDistributedGrantsResponseSchema = z
   .object({
-    Grants: GrantListSchema.and(
-      z.any().openapi({ description: 'Distributed grant details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Grants: GrantListSchema.exactOptional().openapi({ description: 'Distributed grant details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListDistributedGrantsResponse')
@@ -1848,17 +1579,13 @@ const FilterValuesSchema = z.array(FilterValueSchema).openapi('FilterValues')
 
 const FilterSchema = z
   .object({
-    Name: FilterNameSchema.and(
-      z.any().openapi({ description: 'Name of the filter. Filter names are case-sensitive.' }),
-    ).exactOptional(),
-    Values: FilterValuesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The value of the filter, which is case-sensitive. You can only specify one value for the filter.',
-        }),
-    ).exactOptional(),
+    Name: FilterNameSchema.exactOptional().openapi({
+      description: 'Name of the filter. Filter names are case-sensitive.',
+    }),
+    Values: FilterValuesSchema.exactOptional().openapi({
+      description:
+        'The value of the filter, which is case-sensitive. You can only specify one value for the filter.',
+    }),
   })
   .openapi({
     description:
@@ -1873,55 +1600,39 @@ const MaxSize100Schema = z.int().min(1).max(100).openapi('MaxSize100')
 
 const ListDistributedGrantsRequestSchema = z
   .object({
-    GrantArns: ArnListSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Names (ARNs) of the grants.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>LicenseArn</code> </p> </li> <li> <p> <code>GrantStatus</code> </p> </li> <li> <p> <code>GranteePrincipalARN</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>LicenseIssuerName</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    GrantArns: ArnListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARNs) of the grants.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>LicenseArn</code> </p> </li> <li> <p> <code>GrantStatus</code> </p> </li> <li> <p> <code>GranteePrincipalARN</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>LicenseIssuerName</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListDistributedGrantsRequest', required: [] })
   .openapi('ListDistributedGrantsRequest')
 
 const LicenseOperationFailureSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Resource type.' }),
-    ).exactOptional(),
-    ErrorMessage: StringSchema.and(
-      z.any().openapi({ description: 'Error message.' }),
-    ).exactOptional(),
-    FailureTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'Failure time.' }),
-    ).exactOptional(),
-    OperationName: StringSchema.and(
-      z.any().openapi({ description: 'Name of the operation.' }),
-    ).exactOptional(),
-    ResourceOwnerId: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'ID of the Amazon Web Services account that owns the resource.' }),
-    ).exactOptional(),
-    OperationRequestedBy: StringSchema.and(
-      z.any().openapi({ description: 'The requester is "License Manager Automated Discovery".' }),
-    ).exactOptional(),
-    MetadataList: MetadataListSchema.and(
-      z.any().openapi({ description: 'Reserved.' }),
-    ).exactOptional(),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({ description: 'Resource type.' }),
+    ErrorMessage: StringSchema.exactOptional().openapi({ description: 'Error message.' }),
+    FailureTime: DateTimeSchema.exactOptional().openapi({ description: 'Failure time.' }),
+    OperationName: StringSchema.exactOptional().openapi({ description: 'Name of the operation.' }),
+    ResourceOwnerId: StringSchema.exactOptional().openapi({
+      description: 'ID of the Amazon Web Services account that owns the resource.',
+    }),
+    OperationRequestedBy: StringSchema.exactOptional().openapi({
+      description: 'The requester is "License Manager Automated Discovery".',
+    }),
+    MetadataList: MetadataListSchema.exactOptional().openapi({ description: 'Reserved.' }),
   })
   .openapi({ description: 'Describes the failure of a license operation.', required: [] })
   .openapi('LicenseOperationFailure')
@@ -1932,27 +1643,27 @@ const LicenseOperationFailureListSchema = z
 
 const ListFailuresForLicenseConfigurationOperationsResponseSchema = z
   .object({
-    LicenseOperationFailureList: LicenseOperationFailureListSchema.and(
-      z.any().openapi({ description: 'License configuration operations that failed.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseOperationFailureList: LicenseOperationFailureListSchema.exactOptional().openapi({
+      description: 'License configuration operations that failed.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListFailuresForLicenseConfigurationOperationsResponse')
 
 const ListFailuresForLicenseConfigurationOperationsRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name of the license configuration.' }),
-    ),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name of the license configuration.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({
     required: ['LicenseConfigurationArn'],
@@ -1960,80 +1671,14 @@ const ListFailuresForLicenseConfigurationOperationsRequestSchema = z
   })
   .openapi('ListFailuresForLicenseConfigurationOperationsRequest')
 
-const LicenseConfigurationSchema = z
+const ListLicenseConfigurationsResponseSchema: z.ZodType<ListLicenseConfigurationsResponseType> = z
   .object({
-    LicenseConfigurationId: StringSchema.and(
-      z.any().openapi({ description: 'Unique ID of the license configuration.' }),
-    ).exactOptional(),
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'Name of the license configuration.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountingType: LicenseCountingTypeSchema.and(
-      z.any().openapi({ description: 'Dimension to use to track the license inventory.' }),
-    ).exactOptional(),
-    LicenseRules: StringListSchema.and(
-      z.any().openapi({ description: 'License rules.' }),
-    ).exactOptional(),
-    LicenseCount: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses managed by the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountHardLimit: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Number of available licenses as a hard limit.' }),
-    ).exactOptional(),
-    DisassociateWhenNotFound: BoxBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When true, disassociates a resource when software is uninstalled.',
-        }),
-    ).exactOptional(),
-    ConsumedLicenses: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses consumed. ' }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z.any().openapi({ description: 'Status of the license configuration.' }),
-    ).exactOptional(),
-    OwnerAccountId: StringSchema.and(
-      z.any().openapi({ description: "Account ID of the license configuration's owner." }),
-    ).exactOptional(),
-    ConsumedLicenseSummaryList: ConsumedLicenseSummaryListSchema.and(
-      z.any().openapi({ description: 'Summaries for licenses consumed by various resources.' }),
-    ).exactOptional(),
-    ManagedResourceSummaryList: ManagedResourceSummaryListSchema.and(
-      z.any().openapi({ description: 'Summaries for managed resources.' }),
-    ).exactOptional(),
-    ProductInformationList: ProductInformationListSchema.and(
-      z.any().openapi({ description: 'Product information.' }),
-    ).exactOptional(),
-    AutomatedDiscoveryInformation: AutomatedDiscoveryInformationSchema.and(
-      z.any().openapi({ description: 'Automated discovery information.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A license configuration is an abstraction of a customer license agreement that can be consumed and enforced by License Manager. Components include specifications for the license type (licensing by instance, socket, CPU, or vCPU), allowed tenancy (shared tenancy, Dedicated Instance, Dedicated Host, or all of these), host affinity (how long a VM must be associated with a host), and the number of licenses purchased and used.',
-    required: [],
-  })
-  .openapi('LicenseConfiguration')
-
-const LicenseConfigurationsSchema = z
-  .array(LicenseConfigurationSchema)
-  .openapi('LicenseConfigurations')
-
-const ListLicenseConfigurationsResponseSchema = z
-  .object({
-    LicenseConfigurations: LicenseConfigurationsSchema.and(
-      z.any().openapi({ description: 'Information about the license configurations.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConfigurations: LicenseConfigurationsSchema.exactOptional().openapi({
+      description: 'Information about the license configurations.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicenseConfigurationsResponse')
@@ -2042,75 +1687,53 @@ const FiltersSchema = z.array(FilterSchema).openapi('Filters')
 
 const ListLicenseConfigurationsRequestSchema = z
   .object({
-    LicenseConfigurationArns: StringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon Resource Names (ARN) of the license configurations.' }),
-    ).exactOptional(),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>licenseCountingType</code> - The dimension for which licenses are counted. Possible values are <code>vCPU</code> | <code>Instance</code> | <code>Core</code> | <code>Socket</code>. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>enforceLicenseCount</code> - A Boolean value that indicates whether hard license enforcement is used. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>usagelimitExceeded</code> - A Boolean value that indicates whether the available licenses have been exceeded. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    LicenseConfigurationArns: StringListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARN) of the license configurations.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>licenseCountingType</code> - The dimension for which licenses are counted. Possible values are <code>vCPU</code> | <code>Instance</code> | <code>Core</code> | <code>Socket</code>. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>enforceLicenseCount</code> - A Boolean value that indicates whether hard license enforcement is used. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>usagelimitExceeded</code> - A Boolean value that indicates whether the available licenses have been exceeded. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListLicenseConfigurationsRequest', required: [] })
   .openapi('ListLicenseConfigurationsRequest')
 
 const LicenseConversionTaskSchema = z
   .object({
-    LicenseConversionTaskId: LicenseConversionTaskIdSchema.and(
-      z.any().openapi({ description: 'The ID of the license type conversion task.' }),
-    ).exactOptional(),
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the resource associated with the license type conversion task.',
-        }),
-    ).exactOptional(),
-    SourceLicenseContext: LicenseConversionContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the license type this conversion task converted from.',
-        }),
-    ).exactOptional(),
-    DestinationLicenseContext: LicenseConversionContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the license type this conversion task converted to.',
-        }),
-    ).exactOptional(),
-    Status: LicenseConversionTaskStatusSchema.and(
-      z.any().openapi({ description: 'The status of the conversion task.' }),
-    ).exactOptional(),
-    StatusMessage: StringSchema.and(
-      z.any().openapi({ description: 'The status message for the conversion task.' }),
-    ).exactOptional(),
-    StartTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the conversion task was started at.' }),
-    ).exactOptional(),
-    LicenseConversionTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The time the usage operation value of the resource was changed.',
-        }),
-    ).exactOptional(),
-    EndTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the conversion task was completed.' }),
-    ).exactOptional(),
+    LicenseConversionTaskId: LicenseConversionTaskIdSchema.exactOptional().openapi({
+      description: 'The ID of the license type conversion task.',
+    }),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the resource associated with the license type conversion task.',
+    }),
+    SourceLicenseContext: LicenseConversionContextSchema.exactOptional().openapi({
+      description: 'Information about the license type this conversion task converted from.',
+    }),
+    DestinationLicenseContext: LicenseConversionContextSchema.exactOptional().openapi({
+      description: 'Information about the license type this conversion task converted to.',
+    }),
+    Status: LicenseConversionTaskStatusSchema.exactOptional().openapi({
+      description: 'The status of the conversion task.',
+    }),
+    StatusMessage: StringSchema.exactOptional().openapi({
+      description: 'The status message for the conversion task.',
+    }),
+    StartTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the conversion task was started at.',
+    }),
+    LicenseConversionTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the usage operation value of the resource was changed.',
+    }),
+    EndTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the conversion task was completed.',
+    }),
   })
   .openapi({ description: 'Information about a license type conversion task.', required: [] })
   .openapi('LicenseConversionTask')
@@ -2121,36 +1744,28 @@ const LicenseConversionTasksSchema = z
 
 const ListLicenseConversionTasksResponseSchema = z
   .object({
-    LicenseConversionTasks: LicenseConversionTasksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the license configuration tasks for your account.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConversionTasks: LicenseConversionTasksSchema.exactOptional().openapi({
+      description: 'Information about the license configuration tasks for your account.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicenseConversionTasksResponse')
 
 const ListLicenseConversionTasksRequestSchema = z
   .object({
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' Filters to scope the results. Valid filters are <code>ResourceArns</code> and <code>Status</code>. ',
-        }),
-    ).exactOptional(),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        ' Filters to scope the results. Valid filters are <code>ResourceArns</code> and <code>Status</code>. ',
+    }),
   })
   .openapi({ title: 'ListLicenseConversionTasksRequest', required: [] })
   .openapi('ListLicenseConversionTasksRequest')
@@ -2159,54 +1774,41 @@ const ReportGeneratorListSchema = z.array(ReportGeneratorSchema).openapi('Report
 
 const ListLicenseManagerReportGeneratorsResponseSchema = z
   .object({
-    ReportGenerators: ReportGeneratorListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A report generator that creates periodic reports about your license configurations.',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    ReportGenerators: ReportGeneratorListSchema.exactOptional().openapi({
+      description:
+        'A report generator that creates periodic reports about your license configurations.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicenseManagerReportGeneratorsResponse')
 
 const ListLicenseManagerReportGeneratorsRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported: </p> <ul> <li> <p> <code>LicenseConfigurationArn</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported: </p> <ul> <li> <p> <code>LicenseConfigurationArn</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListLicenseManagerReportGeneratorsRequest', required: [] })
   .openapi('ListLicenseManagerReportGeneratorsRequest')
 
 const LicenseSpecificationSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
-    AmiAssociationScope: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Scope of AMI associations. The possible value is <code>cross-account</code>.',
-        }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    AmiAssociationScope: StringSchema.exactOptional().openapi({
+      description: 'Scope of AMI associations. The possible value is <code>cross-account</code>.',
+    }),
   })
   .openapi({
     required: ['LicenseConfigurationArn'],
@@ -2220,32 +1822,28 @@ const LicenseSpecificationsSchema = z
 
 const ListLicenseSpecificationsForResourceResponseSchema = z
   .object({
-    LicenseSpecifications: LicenseSpecificationsSchema.and(
-      z.any().openapi({ description: 'License configurations associated with a resource.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseSpecifications: LicenseSpecificationsSchema.exactOptional().openapi({
+      description: 'License configurations associated with a resource.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicenseSpecificationsForResourceResponse')
 
 const ListLicenseSpecificationsForResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of a resource that has an associated license configuration.',
-        }),
-    ),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    ResourceArn: StringSchema.openapi({
+      description:
+        'Amazon Resource Name (ARN) of a resource that has an associated license configuration.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListLicenseSpecificationsForResourceRequest' })
   .openapi('ListLicenseSpecificationsForResourceRequest')
@@ -2254,132 +1852,112 @@ const LicenseListSchema = z.array(LicenseSchema).openapi('LicenseList')
 
 const ListLicenseVersionsResponseSchema = z
   .object({
-    Licenses: LicenseListSchema.and(
-      z.any().openapi({ description: 'License details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Licenses: LicenseListSchema.exactOptional().openapi({ description: 'License details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicenseVersionsResponse')
 
 const ListLicenseVersionsRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['LicenseArn'], title: 'ListLicenseVersionsRequest' })
   .openapi('ListLicenseVersionsRequest')
 
 const ListLicensesResponseSchema = z
   .object({
-    Licenses: LicenseListSchema.and(
-      z.any().openapi({ description: 'License details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Licenses: LicenseListSchema.exactOptional().openapi({ description: 'License details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListLicensesResponse')
 
 const ListLicensesRequestSchema = z
   .object({
-    LicenseArns: ArnListSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Names (ARNs) of the licenses.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>Beneficiary</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>Fingerprint</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    LicenseArns: ArnListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARNs) of the licenses.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>Beneficiary</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>Fingerprint</code> </p> </li> <li> <p> <code>Status</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListLicensesRequest', required: [] })
   .openapi('ListLicensesRequest')
 
 const ListReceivedGrantsResponseSchema = z
   .object({
-    Grants: GrantListSchema.and(
-      z.any().openapi({ description: 'Received grant details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Grants: GrantListSchema.exactOptional().openapi({ description: 'Received grant details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReceivedGrantsResponse')
 
 const ListReceivedGrantsRequestSchema = z
   .object({
-    GrantArns: ArnListSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Names (ARNs) of the grants.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>LicenseIssuerName</code> </p> </li> <li> <p> <code>LicenseArn</code> </p> </li> <li> <p> <code>GrantStatus</code> </p> </li> <li> <p> <code>GranterAccountId</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    GrantArns: ArnListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARNs) of the grants.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>LicenseIssuerName</code> </p> </li> <li> <p> <code>LicenseArn</code> </p> </li> <li> <p> <code>GrantStatus</code> </p> </li> <li> <p> <code>GranterAccountId</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListReceivedGrantsRequest', required: [] })
   .openapi('ListReceivedGrantsRequest')
 
 const ListReceivedGrantsForOrganizationResponseSchema = z
   .object({
-    Grants: GrantListSchema.and(
-      z.any().openapi({ description: 'Lists the grants the organization has received.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Grants: GrantListSchema.exactOptional().openapi({
+      description: 'Lists the grants the organization has received.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReceivedGrantsForOrganizationResponse')
 
 const ListReceivedGrantsForOrganizationRequestSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the received license.' }),
-    ),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ParentArn</code> </p> </li> <li> <p> <code>GranteePrincipalArn</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the received license.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ParentArn</code> </p> </li> <li> <p> <code>GranteePrincipalArn</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ required: ['LicenseArn'], title: 'ListReceivedGrantsForOrganizationRequest' })
   .openapi('ListReceivedGrantsForOrganizationRequest')
@@ -2399,69 +1977,57 @@ const ReceivedStatusSchema = z
 
 const ReceivedMetadataSchema = z
   .object({
-    ReceivedStatus: ReceivedStatusSchema.and(
-      z.any().openapi({ description: 'Received status.' }),
-    ).exactOptional(),
-    ReceivedStatusReason: StatusReasonMessageSchema.and(
-      z.any().openapi({ description: 'Received status reason.' }),
-    ).exactOptional(),
-    AllowedOperations: AllowedOperationListSchema.and(
-      z.any().openapi({ description: 'Allowed operations.' }),
-    ).exactOptional(),
+    ReceivedStatus: ReceivedStatusSchema.exactOptional().openapi({
+      description: 'Received status.',
+    }),
+    ReceivedStatusReason: StatusReasonMessageSchema.exactOptional().openapi({
+      description: 'Received status reason.',
+    }),
+    AllowedOperations: AllowedOperationListSchema.exactOptional().openapi({
+      description: 'Allowed operations.',
+    }),
   })
   .openapi({ description: 'Metadata associated with received licenses and grants.', required: [] })
   .openapi('ReceivedMetadata')
 
 const GrantedLicenseSchema = z
   .object({
-    LicenseArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ).exactOptional(),
-    LicenseName: StringSchema.and(
-      z.any().openapi({ description: 'License name.' }),
-    ).exactOptional(),
-    ProductName: StringSchema.and(
-      z.any().openapi({ description: 'Product name.' }),
-    ).exactOptional(),
-    ProductSKU: StringSchema.and(z.any().openapi({ description: 'Product SKU.' })).exactOptional(),
-    Issuer: IssuerDetailsSchema.and(
-      z.any().openapi({ description: 'Granted license issuer.' }),
-    ).exactOptional(),
-    HomeRegion: StringSchema.and(
-      z.any().openapi({ description: 'Home Region of the granted license.' }),
-    ).exactOptional(),
-    Status: LicenseStatusSchema.and(
-      z.any().openapi({ description: 'Granted license status.' }),
-    ).exactOptional(),
-    Validity: DatetimeRangeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Date and time range during which the granted license is valid, in ISO8601-UTC format.',
-        }),
-    ).exactOptional(),
-    Beneficiary: StringSchema.and(
-      z.any().openapi({ description: 'Granted license beneficiary.' }),
-    ).exactOptional(),
-    Entitlements: EntitlementListSchema.and(
-      z.any().openapi({ description: 'License entitlements.' }),
-    ).exactOptional(),
-    ConsumptionConfiguration: ConsumptionConfigurationSchema.and(
-      z.any().openapi({ description: 'Configuration for consumption of the license.' }),
-    ).exactOptional(),
-    LicenseMetadata: MetadataListSchema.and(
-      z.any().openapi({ description: 'Granted license metadata.' }),
-    ).exactOptional(),
-    CreateTime: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Creation time of the granted license.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(
-      z.any().openapi({ description: 'Version of the granted license.' }),
-    ).exactOptional(),
-    ReceivedMetadata: ReceivedMetadataSchema.and(
-      z.any().openapi({ description: 'Granted license received metadata.' }),
-    ).exactOptional(),
+    LicenseArn: ArnSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license.',
+    }),
+    LicenseName: StringSchema.exactOptional().openapi({ description: 'License name.' }),
+    ProductName: StringSchema.exactOptional().openapi({ description: 'Product name.' }),
+    ProductSKU: StringSchema.exactOptional().openapi({ description: 'Product SKU.' }),
+    Issuer: IssuerDetailsSchema.exactOptional().openapi({ description: 'Granted license issuer.' }),
+    HomeRegion: StringSchema.exactOptional().openapi({
+      description: 'Home Region of the granted license.',
+    }),
+    Status: LicenseStatusSchema.exactOptional().openapi({ description: 'Granted license status.' }),
+    Validity: DatetimeRangeSchema.exactOptional().openapi({
+      description:
+        'Date and time range during which the granted license is valid, in ISO8601-UTC format.',
+    }),
+    Beneficiary: StringSchema.exactOptional().openapi({
+      description: 'Granted license beneficiary.',
+    }),
+    Entitlements: EntitlementListSchema.exactOptional().openapi({
+      description: 'License entitlements.',
+    }),
+    ConsumptionConfiguration: ConsumptionConfigurationSchema.exactOptional().openapi({
+      description: 'Configuration for consumption of the license.',
+    }),
+    LicenseMetadata: MetadataListSchema.exactOptional().openapi({
+      description: 'Granted license metadata.',
+    }),
+    CreateTime: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Creation time of the granted license.',
+    }),
+    Version: StringSchema.exactOptional().openapi({
+      description: 'Version of the granted license.',
+    }),
+    ReceivedMetadata: ReceivedMetadataSchema.exactOptional().openapi({
+      description: 'Granted license received metadata.',
+    }),
   })
   .openapi({ description: 'Describes a license that is granted to a grantee.', required: [] })
   .openapi('GrantedLicense')
@@ -2470,91 +2036,77 @@ const GrantedLicenseListSchema = z.array(GrantedLicenseSchema).openapi('GrantedL
 
 const ListReceivedLicensesResponseSchema = z
   .object({
-    Licenses: GrantedLicenseListSchema.and(
-      z.any().openapi({ description: 'Received license details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Licenses: GrantedLicenseListSchema.exactOptional().openapi({
+      description: 'Received license details.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReceivedLicensesResponse')
 
 const ListReceivedLicensesRequestSchema = z
   .object({
-    LicenseArns: ArnListSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Names (ARNs) of the licenses.' }),
-    ).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Fingerprint</code> </p> </li> <li> <p> <code>IssuerName</code> </p> </li> <li> <p> <code>Beneficiary</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    LicenseArns: ArnListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARNs) of the licenses.',
+    }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>ProductSKU</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>Fingerprint</code> </p> </li> <li> <p> <code>IssuerName</code> </p> </li> <li> <p> <code>Beneficiary</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListReceivedLicensesRequest', required: [] })
   .openapi('ListReceivedLicensesRequest')
 
 const ListReceivedLicensesForOrganizationResponseSchema = z
   .object({
-    Licenses: GrantedLicenseListSchema.and(
-      z.any().openapi({ description: 'Lists the licenses the organization has received.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Licenses: GrantedLicenseListSchema.exactOptional().openapi({
+      description: 'Lists the licenses the organization has received.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListReceivedLicensesForOrganizationResponse')
 
 const ListReceivedLicensesForOrganizationRequestSchema = z
   .object({
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>Beneficiary</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>Beneficiary</code> </p> </li> <li> <p> <code>ProductSKU</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListReceivedLicensesForOrganizationRequest', required: [] })
   .openapi('ListReceivedLicensesForOrganizationRequest')
 
 const ResourceInventorySchema = z
   .object({
-    ResourceId: StringSchema.and(
-      z.any().openapi({ description: 'ID of the resource.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Type of resource.' }),
-    ).exactOptional(),
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    Platform: StringSchema.and(
-      z.any().openapi({ description: 'Platform of the resource.' }),
-    ).exactOptional(),
-    PlatformVersion: StringSchema.and(
-      z.any().openapi({ description: 'Platform version of the resource in the inventory.' }),
-    ).exactOptional(),
-    ResourceOwningAccountId: StringSchema.and(
-      z.any().openapi({ description: 'ID of the account that owns the resource.' }),
-    ).exactOptional(),
+    ResourceId: StringSchema.exactOptional().openapi({ description: 'ID of the resource.' }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({ description: 'Type of resource.' }),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the resource.',
+    }),
+    Platform: StringSchema.exactOptional().openapi({ description: 'Platform of the resource.' }),
+    PlatformVersion: StringSchema.exactOptional().openapi({
+      description: 'Platform version of the resource in the inventory.',
+    }),
+    ResourceOwningAccountId: StringSchema.exactOptional().openapi({
+      description: 'ID of the account that owns the resource.',
+    }),
   })
   .openapi({ description: 'Details about a resource.', required: [] })
   .openapi('ResourceInventory')
@@ -2565,12 +2117,12 @@ const ResourceInventoryListSchema = z
 
 const ListResourceInventoryResponseSchema = z
   .object({
-    ResourceInventoryList: ResourceInventoryListSchema.and(
-      z.any().openapi({ description: 'Information about the resources.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    ResourceInventoryList: ResourceInventoryListSchema.exactOptional().openapi({
+      description: 'Information about the resources.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListResourceInventoryResponse')
@@ -2581,13 +2133,9 @@ const InventoryFilterConditionSchema = z
 
 const InventoryFilterSchema = z
   .object({
-    Name: StringSchema.and(z.any().openapi({ description: 'Name of the filter.' })),
-    Condition: InventoryFilterConditionSchema.and(
-      z.any().openapi({ description: 'Condition of the filter.' }),
-    ),
-    Value: StringSchema.and(
-      z.any().openapi({ description: 'Value of the filter.' }),
-    ).exactOptional(),
+    Name: StringSchema.openapi({ description: 'Name of the filter.' }),
+    Condition: InventoryFilterConditionSchema.openapi({ description: 'Condition of the filter.' }),
+    Value: StringSchema.exactOptional().openapi({ description: 'Value of the filter.' }),
   })
   .openapi({ required: ['Name', 'Condition'], description: 'An inventory filter.' })
   .openapi('InventoryFilter')
@@ -2596,20 +2144,16 @@ const InventoryFilterListSchema = z.array(InventoryFilterSchema).openapi('Invent
 
 const ListResourceInventoryRequestSchema = z
   .object({
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    Filters: InventoryFilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>account_id</code> - The ID of the Amazon Web Services account that owns the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>application_name</code> - The name of the application. Logical operators are <code>EQUALS</code> | <code>BEGINS_WITH</code>.</p> </li> <li> <p> <code>license_included</code> - The type of license included. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>. Possible values are <code>sql-server-enterprise</code> | <code>sql-server-standard</code> | <code>sql-server-web</code> | <code>windows-server-datacenter</code>.</p> </li> <li> <p> <code>platform</code> - The platform of the resource. Logical operators are <code>EQUALS</code> | <code>BEGINS_WITH</code>.</p> </li> <li> <p> <code>resource_id</code> - The ID of the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Logical operators are <code>EQUALS</code> (single account) or <code>EQUALS</code> | <code>NOT_EQUALS</code> (cross account).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    Filters: InventoryFilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>account_id</code> - The ID of the Amazon Web Services account that owns the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>application_name</code> - The name of the application. Logical operators are <code>EQUALS</code> | <code>BEGINS_WITH</code>.</p> </li> <li> <p> <code>license_included</code> - The type of license included. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>. Possible values are <code>sql-server-enterprise</code> | <code>sql-server-standard</code> | <code>sql-server-web</code> | <code>windows-server-datacenter</code>.</p> </li> <li> <p> <code>platform</code> - The platform of the resource. Logical operators are <code>EQUALS</code> | <code>BEGINS_WITH</code>.</p> </li> <li> <p> <code>resource_id</code> - The ID of the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Logical operators are <code>EQUALS</code> (single account) or <code>EQUALS</code> | <code>NOT_EQUALS</code> (cross account).</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListResourceInventoryRequest', required: [] })
   .openapi('ListResourceInventoryRequest')
@@ -2618,57 +2162,42 @@ const FailedDependencyExceptionSchema = z.any().openapi('FailedDependencyExcepti
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Information about the tags.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'Information about the tags.' }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const ListTagsForResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
+    ResourceArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const TokenDataSchema = z
   .object({
-    TokenId: StringSchema.and(z.any().openapi({ description: 'Token ID.' })).exactOptional(),
-    TokenType: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of token generated. The supported value is <code>REFRESH_TOKEN</code>.',
-        }),
-    ).exactOptional(),
-    LicenseArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license.' }),
-    ).exactOptional(),
-    ExpirationTime: ISO8601DateTimeSchema.and(
-      z.any().openapi({ description: 'Token expiration time, in ISO8601-UTC format.' }),
-    ).exactOptional(),
-    TokenProperties: MaxSize3StringListSchema.and(
-      z.any().openapi({ description: 'Data specified by the caller.' }),
-    ).exactOptional(),
-    RoleArns: ArnListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon Resource Names (ARN) of the roles included in the token.',
-        }),
-    ).exactOptional(),
-    Status: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Token status. The possible values are <code>AVAILABLE</code> and <code>DELETED</code>.',
-        }),
-    ).exactOptional(),
+    TokenId: StringSchema.exactOptional().openapi({ description: 'Token ID.' }),
+    TokenType: StringSchema.exactOptional().openapi({
+      description: 'Type of token generated. The supported value is <code>REFRESH_TOKEN</code>.',
+    }),
+    LicenseArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the license.',
+    }),
+    ExpirationTime: ISO8601DateTimeSchema.exactOptional().openapi({
+      description: 'Token expiration time, in ISO8601-UTC format.',
+    }),
+    TokenProperties: MaxSize3StringListSchema.exactOptional().openapi({
+      description: 'Data specified by the caller.',
+    }),
+    RoleArns: ArnListSchema.exactOptional().openapi({
+      description: 'Amazon Resource Names (ARN) of the roles included in the token.',
+    }),
+    Status: StringSchema.exactOptional().openapi({
+      description:
+        'Token status. The possible values are <code>AVAILABLE</code> and <code>DELETED</code>.',
+    }),
   })
   .openapi({ description: 'Describes a token.', required: [] })
   .openapi('TokenData')
@@ -2677,62 +2206,50 @@ const TokenListSchema = z.array(TokenDataSchema).openapi('TokenList')
 
 const ListTokensResponseSchema = z
   .object({
-    Tokens: TokenListSchema.and(
-      z.any().openapi({ description: 'Received token details.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    Tokens: TokenListSchema.exactOptional().openapi({ description: 'Received token details.' }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTokensResponse')
 
 const ListTokensRequestSchema = z
   .object({
-    TokenIds: StringListSchema.and(z.any().openapi({ description: 'Token IDs.' })).exactOptional(),
-    Filters: FilterListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filter is supported:</p> <ul> <li> <p> <code>LicenseArns</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    MaxResults: MaxSize100Schema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
+    TokenIds: StringListSchema.exactOptional().openapi({ description: 'Token IDs.' }),
+    Filters: FilterListSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filter is supported:</p> <ul> <li> <p> <code>LicenseArns</code> </p> </li> </ul>',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    MaxResults: MaxSize100Schema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
   })
   .openapi({ title: 'ListTokensRequest', required: [] })
   .openapi('ListTokensRequest')
 
 const LicenseConfigurationUsageSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the resource.' }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'Type of resource.' }),
-    ).exactOptional(),
-    ResourceStatus: StringSchema.and(
-      z.any().openapi({ description: 'Status of the resource.' }),
-    ).exactOptional(),
-    ResourceOwnerId: StringSchema.and(
-      z.any().openapi({ description: 'ID of the account that owns the resource.' }),
-    ).exactOptional(),
-    AssociationTime: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time when the license configuration was initially associated with the resource.',
-        }),
-    ).exactOptional(),
-    ConsumedLicenses: BoxLongSchema.and(
-      z.any().openapi({ description: 'Number of licenses consumed by the resource.' }),
-    ).exactOptional(),
+    ResourceArn: StringSchema.exactOptional().openapi({
+      description: 'Amazon Resource Name (ARN) of the resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({ description: 'Type of resource.' }),
+    ResourceStatus: StringSchema.exactOptional().openapi({
+      description: 'Status of the resource.',
+    }),
+    ResourceOwnerId: StringSchema.exactOptional().openapi({
+      description: 'ID of the account that owns the resource.',
+    }),
+    AssociationTime: DateTimeSchema.exactOptional().openapi({
+      description:
+        'Time when the license configuration was initially associated with the resource.',
+    }),
+    ConsumedLicenses: BoxLongSchema.exactOptional().openapi({
+      description: 'Number of licenses consumed by the resource.',
+    }),
   })
   .openapi({
     description: 'Details about the usage of a resource associated with a license configuration.',
@@ -2746,35 +2263,31 @@ const LicenseConfigurationUsageListSchema = z
 
 const ListUsageForLicenseConfigurationResponseSchema = z
   .object({
-    LicenseConfigurationUsageList: LicenseConfigurationUsageListSchema.and(
-      z.any().openapi({ description: 'Information about the license configurations.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
+    LicenseConfigurationUsageList: LicenseConfigurationUsageListSchema.exactOptional().openapi({
+      description: 'Information about the license configurations.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListUsageForLicenseConfigurationResponse')
 
 const ListUsageForLicenseConfigurationRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
-    MaxResults: BoxIntegerSchema.and(
-      z.any().openapi({ description: 'Maximum number of results to return in a single call.' }),
-    ).exactOptional(),
-    NextToken: StringSchema.and(
-      z.any().openapi({ description: 'Token for the next set of results.' }),
-    ).exactOptional(),
-    Filters: FiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>resourceArn</code> - The ARN of the license configuration resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>resourceType</code> - The resource type (<code>EC2_INSTANCE</code> | <code>EC2_HOST</code> | <code>EC2_AMI</code> | <code>SYSTEMS_MANAGER_MANAGED_INSTANCE</code>). Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>resourceAccount</code> - The ID of the account that owns the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    MaxResults: BoxIntegerSchema.exactOptional().openapi({
+      description: 'Maximum number of results to return in a single call.',
+    }),
+    NextToken: StringSchema.exactOptional().openapi({
+      description: 'Token for the next set of results.',
+    }),
+    Filters: FiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Filters to scope the results. The following filters and logical operators are supported:</p> <ul> <li> <p> <code>resourceArn</code> - The ARN of the license configuration resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>resourceType</code> - The resource type (<code>EC2_INSTANCE</code> | <code>EC2_HOST</code> | <code>EC2_AMI</code> | <code>SYSTEMS_MANAGER_MANAGED_INSTANCE</code>). Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> <li> <p> <code>resourceAccount</code> - The ID of the account that owns the resource. Logical operators are <code>EQUALS</code> | <code>NOT_EQUALS</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['LicenseConfigurationArn'],
@@ -2784,54 +2297,48 @@ const ListUsageForLicenseConfigurationRequestSchema = z
 
 const RejectGrantResponseSchema = z
   .object({
-    GrantArn: ArnSchema.and(z.any().openapi({ description: 'Grant ARN.' })).exactOptional(),
-    Status: GrantStatusSchema.and(
-      z.any().openapi({ description: 'Grant status.' }),
-    ).exactOptional(),
-    Version: StringSchema.and(z.any().openapi({ description: 'Grant version.' })).exactOptional(),
+    GrantArn: ArnSchema.exactOptional().openapi({ description: 'Grant ARN.' }),
+    Status: GrantStatusSchema.exactOptional().openapi({ description: 'Grant status.' }),
+    Version: StringSchema.exactOptional().openapi({ description: 'Grant version.' }),
   })
   .openapi({ required: [] })
   .openapi('RejectGrantResponse')
 
 const RejectGrantRequestSchema = z
   .object({
-    GrantArn: ArnSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
-    ),
+    GrantArn: ArnSchema.openapi({ description: 'Amazon Resource Name (ARN) of the grant.' }),
   })
   .openapi({ required: ['GrantArn'], title: 'RejectGrantRequest' })
   .openapi('RejectGrantRequest')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
 const TagResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'One or more tags.' })),
+    ResourceArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    Tags: TagListSchema.openapi({ description: 'One or more tags.' }),
   })
   .openapi({ required: ['ResourceArn', 'Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeyListSchema = z.array(StringSchema).openapi('TagKeyList')
 
 const UntagResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
-    TagKeys: TagKeyListSchema.and(
-      z.any().openapi({ description: 'Keys identifying the tags to remove.' }),
-    ),
+    ResourceArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    TagKeys: TagKeyListSchema.openapi({ description: 'Keys identifying the tags to remove.' }),
   })
   .openapi({ required: ['ResourceArn', 'TagKeys'], title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateLicenseConfigurationResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateLicenseConfigurationResponse')
 
 const LicenseConfigurationStatusSchema = z
@@ -2840,85 +2347,65 @@ const LicenseConfigurationStatusSchema = z
 
 const UpdateLicenseConfigurationRequestSchema = z
   .object({
-    LicenseConfigurationArn: StringSchema.and(
-      z.any().openapi({ description: 'Amazon Resource Name (ARN) of the license configuration.' }),
-    ),
-    LicenseConfigurationStatus: LicenseConfigurationStatusSchema.and(
-      z.any().openapi({ description: 'New status of the license configuration.' }),
-    ).exactOptional(),
-    LicenseRules: StringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'New license rule. The only rule that you can add after you create a license configuration is licenseAffinityToHost.',
-        }),
-    ).exactOptional(),
-    LicenseCount: BoxLongSchema.and(
-      z
-        .any()
-        .openapi({ description: 'New number of licenses managed by the license configuration.' }),
-    ).exactOptional(),
-    LicenseCountHardLimit: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'New hard limit of the number of available licenses.' }),
-    ).exactOptional(),
-    Name: StringSchema.and(
-      z.any().openapi({ description: 'New name of the license configuration.' }),
-    ).exactOptional(),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'New description of the license configuration.' }),
-    ).exactOptional(),
-    ProductInformationList: ProductInformationListSchema.and(
-      z.any().openapi({ description: 'New product information.' }),
-    ).exactOptional(),
-    DisassociateWhenNotFound: BoxBooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'When true, disassociates a resource when software is uninstalled.',
-        }),
-    ).exactOptional(),
+    LicenseConfigurationArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the license configuration.',
+    }),
+    LicenseConfigurationStatus: LicenseConfigurationStatusSchema.exactOptional().openapi({
+      description: 'New status of the license configuration.',
+    }),
+    LicenseRules: StringListSchema.exactOptional().openapi({
+      description:
+        'New license rule. The only rule that you can add after you create a license configuration is licenseAffinityToHost.',
+    }),
+    LicenseCount: BoxLongSchema.exactOptional().openapi({
+      description: 'New number of licenses managed by the license configuration.',
+    }),
+    LicenseCountHardLimit: BoxBooleanSchema.exactOptional().openapi({
+      description: 'New hard limit of the number of available licenses.',
+    }),
+    Name: StringSchema.exactOptional().openapi({
+      description: 'New name of the license configuration.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'New description of the license configuration.',
+    }),
+    ProductInformationList: ProductInformationListSchema.exactOptional().openapi({
+      description: 'New product information.',
+    }),
+    DisassociateWhenNotFound: BoxBooleanSchema.exactOptional().openapi({
+      description: 'When true, disassociates a resource when software is uninstalled.',
+    }),
   })
   .openapi({ required: ['LicenseConfigurationArn'], title: 'UpdateLicenseConfigurationRequest' })
   .openapi('UpdateLicenseConfigurationRequest')
 
 const UpdateLicenseManagerReportGeneratorResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateLicenseManagerReportGeneratorResponse')
 
 const UpdateLicenseManagerReportGeneratorRequestSchema = z
   .object({
-    LicenseManagerReportGeneratorArn: StringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Amazon Resource Name (ARN) of the report generator to update.' }),
-    ),
-    ReportGeneratorName: ReportGeneratorNameSchema.and(
-      z.any().openapi({ description: 'Name of the report generator.' }),
-    ),
-    Type: ReportTypeListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Type of reports to generate. The following report types are supported:</p> <ul> <li> <p>License configuration report - Reports the number and details of consumed licenses for a license configuration.</p> </li> <li> <p>Resource report - Reports the tracked licenses and resource consumption for a license configuration.</p> </li> </ul>',
-        }),
-    ),
-    ReportContext: ReportContextSchema.and(z.any().openapi({ description: 'The report context.' })),
-    ReportFrequency: ReportFrequencySchema.and(
-      z.any().openapi({ description: 'Frequency by which reports are generated.' }),
-    ),
-    ClientToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
-        }),
-    ),
-    Description: StringSchema.and(
-      z.any().openapi({ description: 'Description of the report generator.' }),
-    ).exactOptional(),
+    LicenseManagerReportGeneratorArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the report generator to update.',
+    }),
+    ReportGeneratorName: ReportGeneratorNameSchema.openapi({
+      description: 'Name of the report generator.',
+    }),
+    Type: ReportTypeListSchema.openapi({
+      description:
+        '<p>Type of reports to generate. The following report types are supported:</p> <ul> <li> <p>License configuration report - Reports the number and details of consumed licenses for a license configuration.</p> </li> <li> <p>Resource report - Reports the tracked licenses and resource consumption for a license configuration.</p> </li> </ul>',
+    }),
+    ReportContext: ReportContextSchema.openapi({ description: 'The report context.' }),
+    ReportFrequency: ReportFrequencySchema.openapi({
+      description: 'Frequency by which reports are generated.',
+    }),
+    ClientToken: ClientRequestTokenSchema.openapi({
+      description:
+        'Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.',
+    }),
+    Description: StringSchema.exactOptional().openapi({
+      description: 'Description of the report generator.',
+    }),
   })
   .openapi({
     required: [
@@ -2934,24 +2421,20 @@ const UpdateLicenseManagerReportGeneratorRequestSchema = z
   .openapi('UpdateLicenseManagerReportGeneratorRequest')
 
 const UpdateLicenseSpecificationsForResourceResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('UpdateLicenseSpecificationsForResourceResponse')
 
 const UpdateLicenseSpecificationsForResourceRequestSchema = z
   .object({
-    ResourceArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Amazon Resource Name (ARN) of the Amazon Web Services resource.',
-        }),
-    ),
-    AddLicenseSpecifications: LicenseSpecificationsSchema.and(
-      z.any().openapi({ description: 'ARNs of the license configurations to add.' }),
-    ).exactOptional(),
-    RemoveLicenseSpecifications: LicenseSpecificationsSchema.and(
-      z.any().openapi({ description: 'ARNs of the license configurations to remove.' }),
-    ).exactOptional(),
+    ResourceArn: StringSchema.openapi({
+      description: 'Amazon Resource Name (ARN) of the Amazon Web Services resource.',
+    }),
+    AddLicenseSpecifications: LicenseSpecificationsSchema.exactOptional().openapi({
+      description: 'ARNs of the license configurations to add.',
+    }),
+    RemoveLicenseSpecifications: LicenseSpecificationsSchema.exactOptional().openapi({
+      description: 'ARNs of the license configurations to remove.',
+    }),
   })
   .openapi({ required: ['ResourceArn'], title: 'UpdateLicenseSpecificationsForResourceRequest' })
   .openapi('UpdateLicenseSpecificationsForResourceRequest')
@@ -2960,36 +2443,26 @@ const InvalidResourceStateExceptionSchema = z.any().openapi('InvalidResourceStat
 
 const LicenseUsageExceptionSchema = z.any().openapi('LicenseUsageException')
 
-const UpdateServiceSettingsResponseSchema = z.object({}).openapi('UpdateServiceSettingsResponse')
+const UpdateServiceSettingsResponseSchema = z
+  .looseObject({})
+  .openapi('UpdateServiceSettingsResponse')
 
 const UpdateServiceSettingsRequestSchema = z
   .object({
-    S3BucketArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the Amazon S3 bucket where the License Manager information is stored.',
-        }),
-    ).exactOptional(),
-    SnsTopicArn: StringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Resource Name (ARN) of the Amazon SNS topic used for License Manager alerts.',
-        }),
-    ).exactOptional(),
-    OrganizationConfiguration: OrganizationConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Enables integration with Organizations for cross-account discovery.',
-        }),
-    ).exactOptional(),
-    EnableCrossAccountsDiscovery: BoxBooleanSchema.and(
-      z.any().openapi({ description: 'Activates cross-account discovery.' }),
-    ).exactOptional(),
+    S3BucketArn: StringSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the Amazon S3 bucket where the License Manager information is stored.',
+    }),
+    SnsTopicArn: StringSchema.exactOptional().openapi({
+      description:
+        'Amazon Resource Name (ARN) of the Amazon SNS topic used for License Manager alerts.',
+    }),
+    OrganizationConfiguration: OrganizationConfigurationSchema.exactOptional().openapi({
+      description: 'Enables integration with Organizations for cross-account discovery.',
+    }),
+    EnableCrossAccountsDiscovery: BoxBooleanSchema.exactOptional().openapi({
+      description: 'Activates cross-account discovery.',
+    }),
   })
   .openapi({ title: 'UpdateServiceSettingsRequest', required: [] })
   .openapi('UpdateServiceSettingsRequest')

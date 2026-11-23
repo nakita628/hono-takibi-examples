@@ -35,7 +35,7 @@ const DistributionsResponseSchema = z
             z
               .object({
                 createdDate: z.string(),
-                customHeaders: z.object({}),
+                customHeaders: z.looseObject({}),
                 embeddedData: z.any(),
                 headers: z
                   .object({
@@ -236,7 +236,7 @@ const SubscribeToEventBodySchema = z
   .openapi({ required: ['topics', 'publicationUrl'] })
   .openapi('SubscribeToEventBody')
 
-const SurveyResponseSchema = z.object({}).openapi('SurveyResponse')
+const SurveyResponseSchema = z.looseObject({}).openapi('SurveyResponse')
 
 const SubscribeToEventBodyRequestBody = {
   description: 'This is the request body of the webhook',

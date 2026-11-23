@@ -520,7 +520,19 @@ const ActivitySchema = z
   .openapi({ required: [] })
   .openapi('Activity')
 
-const ActivityFeedSchema = z
+type ActivityFeedType = {
+  etag?: string
+  id?: string
+  items?: z.infer<typeof ActivitySchema>[]
+  kind?: string
+  nextLink?: string
+  nextPageToken?: string
+  selfLink?: string
+  title?: string
+  updated?: string
+}
+
+const ActivityFeedSchema: z.ZodType<ActivityFeedType> = z
   .object({
     etag: z
       .string()

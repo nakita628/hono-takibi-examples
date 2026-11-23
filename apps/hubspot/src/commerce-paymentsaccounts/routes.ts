@@ -203,14 +203,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { 'cpq.quotes.write': '' },
+      scopes: { 'commerce.payment_accounts.read': '', 'cpq.quotes.write': '' },
     },
   },
+  'x-hubspot-app-availability': {
+    'commerce.payment_accounts.read': { portal: ['public'], developer: false },
+    'cpq.quotes.write': { portal: ['public'], user: ['public'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getCommercePaymentAccounts202609StatusRoute = createRoute({
   method: 'get',
@@ -227,5 +227,5 @@ export const getCommercePaymentAccounts202609StatusRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['cpq.quotes.write'] }],
+  security: [{ oauth2: ['cpq.quotes.write'] }, { oauth2: ['commerce.payment_accounts.read'] }],
 })

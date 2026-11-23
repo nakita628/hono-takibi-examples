@@ -214,14 +214,22 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: {},
+      scopes: { 'crm.objects.forecasts.read': '', 'crm.schemas.forecasts.read': '' },
+    },
+  },
+  'x-hubspot-app-availability': {
+    'crm.objects.forecasts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'crm.schemas.forecasts.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
     },
   },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getForecastSubmissions202609EventsRoute = createRoute({
   method: 'get',
@@ -332,5 +340,8 @@ export const getForecastSubmissions202609EventsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [],
+  security: [
+    { oauth2: ['crm.schemas.forecasts.read'] },
+    { oauth2: ['crm.objects.forecasts.read'] },
+  ],
 })

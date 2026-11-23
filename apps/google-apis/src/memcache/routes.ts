@@ -1,5 +1,464 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema = z
+  .object({
+    canReschedule: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'This field is deprecated, and will be always set to true since reschedule can happen multiple times now. This field should not be removed until all service producers remove this for their customers.',
+      }),
+    endTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scheduled end time for the maintenance.' }),
+    rolloutManagementPolicy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The rollout management policy this maintenance schedule is associated with. When doing reschedule update request, the reschedule should be against this given policy.',
+      }),
+    scheduleDeadlineTime: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "schedule_deadline_time is the time deadline any schedule start time cannot go beyond, including reschedule. It's normally the initial schedule start time plus maintenance window length (1 day or 1 week). Maintenance cannot be scheduled to start beyond this deadline.",
+      }),
+    startTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The scheduled start time for the maintenance.' }),
+  })
+  .openapi({
+    description:
+      'Maintenance schedule which is exposed to customer and potentially end user, indicating published upcoming future maintenance schedule',
+    required: [],
+  })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSchedule')
+
+const DateSchema = z
+  .object({
+    day: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
+      }),
+    month: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
+      }),
+    year: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
+    required: [],
+  })
+  .openapi('Date')
+
+const TimeOfDaySchema = z
+  .object({
+    hours: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
+      }),
+    minutes: z
+      .int32()
+      .exactOptional()
+      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
+    nanos: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
+      }),
+    seconds: z
+      .int32()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
+      }),
+  })
+  .openapi({
+    description:
+      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
+    required: [],
+  })
+  .openapi('TimeOfDay')
+
+const DenyMaintenancePeriodSchema = z
+  .object({
+    endDate: DateSchema.exactOptional().openapi({
+      description:
+        'Deny period end date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be before the end.',
+    }),
+    startDate: DateSchema.exactOptional().openapi({
+      description:
+        'Deny period start date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be the same or after the start.',
+    }),
+    time: TimeOfDaySchema.exactOptional().openapi({
+      description:
+        'Time in UTC when the Blackout period starts on start_date and ends on end_date. This can be: * Full time. * All zeros for 00:00:00 UTC',
+    }),
+  })
+  .openapi({
+    description:
+      'DenyMaintenancePeriod definition. Maintenance is forbidden within the deny period. The start_date must be less than the end_date.',
+    required: [],
+  })
+  .openapi('DenyMaintenancePeriod')
+
+const DailyCycleSchema = z
+  .object({
+    duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Duration of the time window, set by service producer.',
+      }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description: 'Time within the day to start the operations.',
+    }),
+  })
+  .openapi({ description: 'Time window specified for daily operations.', required: [] })
+  .openapi('DailyCycle')
+
+const ScheduleSchema = z
+  .object({
+    day: z
+      .enum([
+        'DAY_OF_WEEK_UNSPECIFIED',
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY',
+      ])
+      .exactOptional()
+      .openapi({ description: 'Allows to define schedule that runs specified day of the week.' }),
+    duration: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Output only. Duration of the time window, set by service producer.',
+      }),
+    startTime: TimeOfDaySchema.exactOptional().openapi({
+      description: 'Time within the window to start the operations.',
+    }),
+  })
+  .openapi({ description: 'Configure the schedule.', required: [] })
+  .openapi('Schedule')
+
+const WeeklyCycleSchema = z
+  .object({
+    schedule: z
+      .array(ScheduleSchema)
+      .exactOptional()
+      .openapi({
+        description: 'User can specify multiple windows in a week. Minimum of 1 window.',
+      }),
+  })
+  .openapi({ description: 'Time window specified for weekly operations.', required: [] })
+  .openapi('WeeklyCycle')
+
+const MaintenanceWindowSchema = z
+  .object({
+    dailyCycle: DailyCycleSchema.exactOptional().openapi({ description: 'Daily cycle.' }),
+    weeklyCycle: WeeklyCycleSchema.exactOptional().openapi({ description: 'Weekly cycle.' }),
+  })
+  .openapi({ description: 'MaintenanceWindow definition.', required: [] })
+  .openapi('MaintenanceWindow')
+
+const UpdatePolicySchema = z
+  .object({
+    channel: z
+      .enum(['UPDATE_CHANNEL_UNSPECIFIED', 'EARLIER', 'LATER', 'WEEK1', 'WEEK2', 'WEEK5'])
+      .exactOptional()
+      .openapi({ description: 'Optional. Relative scheduling channel applied to resource.' }),
+    denyMaintenancePeriods: z
+      .array(DenyMaintenancePeriodSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Deny Maintenance Period that is applied to resource to indicate when maintenance is forbidden. User can specify zero or more non-overlapping deny periods. Maximum number of deny_maintenance_periods expected is one.',
+      }),
+    window: MaintenanceWindowSchema.exactOptional().openapi({
+      description:
+        'Optional. Maintenance window that is applied to resources covered by this policy.',
+    }),
+  })
+  .openapi({ description: 'Maintenance policy applicable to instance updates.', required: [] })
+  .openapi('UpdatePolicy')
+
+const MaintenancePolicySchema = z
+  .object({
+    createTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time when the resource was created.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Description of what this policy is for. Create/Update methods return INVALID_ARGUMENT if the length is greater than 512.',
+      }),
+    labels: z
+      .record(z.string(), z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required. MaintenancePolicy name using the form: `projects/{project_id}/locations/{location_id}/maintenancePolicies/{maintenance_policy_id}` where {project_id} refers to a GCP consumer project ID, {location_id} refers to a GCP region/zone, {maintenance_policy_id} must be 1-63 characters long and match the regular expression `[a-z0-9]([-a-z0-9]*[a-z0-9])?`.',
+      }),
+    state: z
+      .enum(['STATE_UNSPECIFIED', 'READY', 'DELETING'])
+      .exactOptional()
+      .openapi({ description: 'Optional. The state of the policy.' }),
+    updatePolicy: UpdatePolicySchema.exactOptional().openapi({
+      description: 'Maintenance policy applicable to instance update.',
+    }),
+    updateTime: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Output only. The time when the resource was updated.' }),
+  })
+  .openapi({
+    description: 'LINT.IfChange Defines policies to service maintenance events.',
+    required: [],
+  })
+  .openapi('MaintenancePolicy')
+
+type GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsType = {
+  exclude?: boolean
+  isRollback?: boolean
+  maintenancePolicies?: { [key: string]: z.infer<typeof MaintenancePolicySchema> }
+}
+
+const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema: z.ZodType<GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsType> =
+  z
+    .object({
+      exclude: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Exclude instance from maintenance. When true, rollout service will not attempt maintenance on the instance. Rollout service will include the instance in reported rollout progress as not attempted.',
+        }),
+      isRollback: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. If the update call is triggered from rollback, set the value as true.',
+        }),
+      maintenancePolicies: z
+        .record(z.string(), MaintenancePolicySchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name.',
+        }),
+    })
+    .openapi({
+      description:
+        'Maintenance settings associated with instance. Allows service producers and end users to assign settings that controls maintenance on this instance.',
+      required: [],
+    })
+    .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettings')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema = z
+  .object({
+    values: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description: "Optional. Array of string values. e.g. instance's replica information.",
+      }),
+  })
+  .openapi({ description: 'Contains notification related data.', required: [] })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameter')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema = z
+  .object({
+    resourceType: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "Type of the resource. This can be either a GCP resource or a custom one (e.g. another cloud provider's VM). For GCP compute resources use singular form of the names listed in GCP compute API documentation (https://cloud.google.com/compute/docs/reference/rest/v1/), prefixed with 'compute-', for example: 'compute-instance', 'compute-disk', 'compute-autoscaler'.",
+      }),
+    resourceUrl: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'URL identifying the resource, e.g. "https://www.googleapis.com/compute/v1/projects/...)".',
+      }),
+  })
+  .openapi({ description: 'Describes provisioned dataplane resources.', required: [] })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResource')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1SloEligibilitySchema = z
+  .object({
+    eligible: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether an instance is eligible or ineligible.' }),
+    reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User-defined reason for the current value of instance eligibility. Usually, this can be directly mapped to the internal state. An empty reason is allowed.',
+      }),
+  })
+  .openapi({
+    description:
+      'SloEligibility is a tuple containing eligibility value: true if an instance is eligible for SLO calculation or false if it should be excluded from all SLO-related calculations along with a user-defined reason.',
+    required: [],
+  })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1SloEligibility')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema = z
+  .object({
+    eligibilities: z
+      .record(z.string(), GoogleCloudSaasacceleratorManagementProvidersV1SloEligibilitySchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'An entry in the eligibilities map specifies an eligibility for a particular SLI for the given instance. The SLI key in the name must be a valid SLI name specified in the Eligibility Exporter binary flags otherwise an error will be emitted by Eligibility Exporter and the oncaller will be alerted. If an SLI has been defined in the binary flags but the eligibilities map does not contain it, the corresponding SLI time series will not be emitted by the Eligibility Exporter. This ensures a smooth rollout and compatibility between the data produced by different versions of the Eligibility Exporters. If eligibilities map contains a key for an SLI which has not been declared in the binary flags, there will be an error message emitted in the Eligibility Exporter log and the metric for the SLI in question will not be emitted.',
+      }),
+  })
+  .openapi({
+    description: 'PerSliSloEligibility is a mapping from an SLI name to eligibility.',
+    required: [],
+  })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadataSchema = z
+  .object({
+    location: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The location of the node, if different from instance location.' }),
+    nodeId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The id of the node. This should be equal to SaasInstanceNode.node_id.',
+      }),
+    perSliEligibility:
+      GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema.exactOptional().openapi(
+        {
+          description:
+            'If present, this will override eligibility for the node coming from instance or exclusions for specified SLIs.',
+        },
+      ),
+  })
+  .openapi({
+    description:
+      'Node information for custom per-node SLO implementations. SSA does not support per-node SLO, but producers can populate per-node information in SloMetadata for custom precomputations. SSA Eligibility Exporter will emit per-node metric based on this information.',
+    required: [],
+  })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadata')
+
+const GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema = z
+  .object({
+    nodes: z
+      .array(GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadataSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional. List of nodes. Some producers need to use per-node metadata to calculate SLO. This field allows such producers to publish per-node SLO meta data, which will be consumed by SSA Eligibility Exporter and published in the form of per node metric to Monarch.',
+      }),
+    perSliEligibility:
+      GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema.exactOptional().openapi(
+        {
+          description:
+            'Optional. Multiple per-instance SLI eligibilities which apply for individual SLIs.',
+        },
+      ),
+    tier: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Name of the SLO tier the Instance belongs to. This name will be expected to match the tiers specified in the service SLO configuration. Field is mandatory and must not be empty.',
+      }),
+  })
+  .openapi({
+    description:
+      'SloMetadata contains resources required for proper SLO classification of the instance.',
+    required: [],
+  })
+  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata')
+
+type GoogleCloudSaasacceleratorManagementProvidersV1InstanceType = {
+  consumerDefinedName?: string
+  createTime?: string
+  instanceType?: string
+  labels?: { [key: string]: string }
+  maintenancePolicyNames?: { [key: string]: string }
+  maintenanceSchedules?: {
+    [key: string]: z.infer<
+      typeof GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema
+    >
+  }
+  maintenanceSettings?: z.infer<
+    typeof GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema
+  >
+  name?: string
+  notificationParameters?: {
+    [key: string]: z.infer<
+      typeof GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema
+    >
+  }
+  producerMetadata?: { [key: string]: string }
+  provisionedResources?: z.infer<
+    typeof GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema
+  >[]
+  slmInstanceTemplate?: string
+  sloMetadata?: z.infer<typeof GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema>
+  softwareVersions?: { [key: string]: string }
+  state?:
+    | 'STATE_UNSPECIFIED'
+    | 'CREATING'
+    | 'READY'
+    | 'UPDATING'
+    | 'REPAIRING'
+    | 'DELETING'
+    | 'ERROR'
+  tenantProjectId?: string
+  updateTime?: string
+}
+
 const ApplyParametersRequestSchema = z
   .object({
     applyAll: z
@@ -38,114 +497,12 @@ const ApplySoftwareUpdateRequestSchema = z
   .openapi('ApplySoftwareUpdateRequest')
 
 const CancelOperationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The request message for Operations.CancelOperation.' })
   .openapi('CancelOperationRequest')
 
-const TimeOfDaySchema = z
-  .object({
-    hours: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Hours of day in 24 hour format. Should be from 0 to 23. An API may choose to allow the value "24:00:00" for scenarios like business closing time.',
-      }),
-    minutes: z
-      .int32()
-      .exactOptional()
-      .openapi({ description: 'Minutes of hour of day. Must be from 0 to 59.' }),
-    nanos: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description: 'Fractions of seconds in nanoseconds. Must be from 0 to 999,999,999.',
-      }),
-    seconds: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Seconds of minutes of the time. Must normally be from 0 to 59. An API may allow the value 60 if it allows leap-seconds.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a time of day. The date and time zone are either not significant or are specified elsewhere. An API may choose to allow leap seconds. Related types are google.type.Date and `google.protobuf.Timestamp`.',
-    required: [],
-  })
-  .openapi('TimeOfDay')
-
-const DailyCycleSchema = z
-  .object({
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Duration of the time window, set by service producer.',
-      }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description: 'Time within the day to start the operations.',
-    }),
-  })
-  .openapi({ description: 'Time window specified for daily operations.', required: [] })
-  .openapi('DailyCycle')
-
-const DateSchema = z
-  .object({
-    day: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          "Day of a month. Must be from 1 to 31 and valid for the year and month, or 0 to specify a year by itself or a year and month where the day isn't significant.",
-      }),
-    month: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Month of a year. Must be from 1 to 12, or 0 to specify a year without a month and day.',
-      }),
-    year: z
-      .int32()
-      .exactOptional()
-      .openapi({
-        description:
-          'Year of the date. Must be from 1 to 9999, or 0 to specify a date without a year.',
-      }),
-  })
-  .openapi({
-    description:
-      'Represents a whole or partial calendar date, such as a birthday. The time of day and time zone are either specified elsewhere or are insignificant. The date is relative to the Gregorian Calendar. This can represent one of the following: * A full date, with non-zero year, month, and day values. * A month and day, with a zero year (for example, an anniversary). * A year on its own, with a zero month and a zero day. * A year and month, with a zero day (for example, a credit card expiration date). Related types: * google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp',
-    required: [],
-  })
-  .openapi('Date')
-
-const DenyMaintenancePeriodSchema = z
-  .object({
-    endDate: DateSchema.exactOptional().openapi({
-      description:
-        'Deny period end date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be before the end.',
-    }),
-    startDate: DateSchema.exactOptional().openapi({
-      description:
-        'Deny period start date. This can be: * A full date, with non-zero year, month and day values. * A month and day value, with a zero year. Allows recurring deny periods each year. Date matching this period will have to be the same or after the start.',
-    }),
-    time: TimeOfDaySchema.exactOptional().openapi({
-      description:
-        'Time in UTC when the Blackout period starts on start_date and ends on end_date. This can be: * Full time. * All zeros for 00:00:00 UTC',
-    }),
-  })
-  .openapi({
-    description:
-      'DenyMaintenancePeriod definition. Maintenance is forbidden within the deny period. The start_date must be less than the end_date.',
-    required: [],
-  })
-  .openapi('DenyMaintenancePeriod')
-
 const EmptySchema = z
-  .object({})
+  .looseObject({})
   .openapi({
     description:
       'A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }',
@@ -153,7 +510,7 @@ const EmptySchema = z
   .openapi('Empty')
 
 const GoogleCloudMemcacheV1beta2ZoneMetadataSchema = z
-  .object({})
+  .looseObject({})
   .openapi('GoogleCloudMemcacheV1beta2ZoneMetadata')
 
 const GoogleCloudMemcacheV1beta2LocationMetadataSchema = z
@@ -288,456 +645,149 @@ const GoogleCloudMemcacheV1beta2OperationMetadataSchema = z
   .openapi({ description: 'Represents the metadata of a long-running operation.', required: [] })
   .openapi('GoogleCloudMemcacheV1beta2OperationMetadata')
 
-const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema = z
-  .object({
-    canReschedule: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'This field is deprecated, and will be always set to true since reschedule can happen multiple times now. This field should not be removed until all service producers remove this for their customers.',
-      }),
-    endTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The scheduled end time for the maintenance.' }),
-    rolloutManagementPolicy: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The rollout management policy this maintenance schedule is associated with. When doing reschedule update request, the reschedule should be against this given policy.',
-      }),
-    scheduleDeadlineTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "schedule_deadline_time is the time deadline any schedule start time cannot go beyond, including reschedule. It's normally the initial schedule start time plus maintenance window length (1 day or 1 week). Maintenance cannot be scheduled to start beyond this deadline.",
-      }),
-    startTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The scheduled start time for the maintenance.' }),
-  })
-  .openapi({
-    description:
-      'Maintenance schedule which is exposed to customer and potentially end user, indicating published upcoming future maintenance schedule',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSchedule')
-
-const ScheduleSchema = z
-  .object({
-    day: z
-      .enum([
-        'DAY_OF_WEEK_UNSPECIFIED',
-        'MONDAY',
-        'TUESDAY',
-        'WEDNESDAY',
-        'THURSDAY',
-        'FRIDAY',
-        'SATURDAY',
-        'SUNDAY',
-      ])
-      .exactOptional()
-      .openapi({ description: 'Allows to define schedule that runs specified day of the week.' }),
-    duration: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Duration of the time window, set by service producer.',
-      }),
-    startTime: TimeOfDaySchema.exactOptional().openapi({
-      description: 'Time within the window to start the operations.',
-    }),
-  })
-  .openapi({ description: 'Configure the schedule.', required: [] })
-  .openapi('Schedule')
-
-const WeeklyCycleSchema = z
-  .object({
-    schedule: z
-      .array(ScheduleSchema)
-      .exactOptional()
-      .openapi({
-        description: 'User can specify multiple windows in a week. Minimum of 1 window.',
-      }),
-  })
-  .openapi({ description: 'Time window specified for weekly operations.', required: [] })
-  .openapi('WeeklyCycle')
-
-const MaintenanceWindowSchema = z
-  .object({
-    dailyCycle: DailyCycleSchema.exactOptional().openapi({ description: 'Daily cycle.' }),
-    weeklyCycle: WeeklyCycleSchema.exactOptional().openapi({ description: 'Weekly cycle.' }),
-  })
-  .openapi({ description: 'MaintenanceWindow definition.', required: [] })
-  .openapi('MaintenanceWindow')
-
-const UpdatePolicySchema = z
-  .object({
-    channel: z
-      .enum(['UPDATE_CHANNEL_UNSPECIFIED', 'EARLIER', 'LATER', 'WEEK1', 'WEEK2', 'WEEK5'])
-      .exactOptional()
-      .openapi({ description: 'Optional. Relative scheduling channel applied to resource.' }),
-    denyMaintenancePeriods: z
-      .array(DenyMaintenancePeriodSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Deny Maintenance Period that is applied to resource to indicate when maintenance is forbidden. User can specify zero or more non-overlapping deny periods. Maximum number of deny_maintenance_periods expected is one.',
-      }),
-    window: MaintenanceWindowSchema.exactOptional().openapi({
+const GoogleCloudSaasacceleratorManagementProvidersV1InstanceSchema: z.ZodType<GoogleCloudSaasacceleratorManagementProvidersV1InstanceType> =
+  z
+    .object({
+      consumerDefinedName: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications (go/slm-rollout-maintenance-policies#prerequisites).',
+        }),
+      createTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Timestamp when the resource was created.',
+          readOnly: true,
+        }),
+      instanceType: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Optional. The instance_type of this instance of format: projects/{project_number}/locations/{location_id}/instanceTypes/{instance_type_id}. Instance Type represents a high-level tier or SKU of the service that this instance belong to. When enabled(eg: Maintenance Rollout), Rollout uses 'instance_type' along with 'software_versions' to determine whether instance needs an update or not.",
+        }),
+      labels: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
+        }),
+      maintenancePolicyNames: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_settings.maintenance_policies is set.',
+        }),
+      maintenanceSchedules: z
+        .record(
+          z.string(),
+          GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema,
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The MaintenanceSchedule contains the scheduling information of published maintenance schedule with same key as software_versions.',
+        }),
+      maintenanceSettings:
+        GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema.exactOptional().openapi(
+          { description: 'Optional. The MaintenanceSettings associated with instance.' },
+        ),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout (go/wipeout) compliance. See go/elysium/project_ids#storage-guidance for more details.',
+        }),
+      notificationParameters: z
+        .record(
+          z.string(),
+          GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema,
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'Optional. notification_parameter are information that service producers may like to include that is not relevant to Rollout. This parameter will only be passed to Gamma and Cloud Logging for notification/logging purpose.',
+        }),
+      producerMetadata: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      provisionedResources: z
+        .array(GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      slmInstanceTemplate: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions.",
+        }),
+      sloMetadata:
+        GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema.exactOptional().openapi({
+          description:
+            'Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See go/cloud-ssa-standard-slo for feature description.',
+          readOnly: true,
+        }),
+      softwareVersions: z
+        .record(z.string(), z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Software versions that are used to deploy this instance. This can be mutated by rollout services.',
+        }),
+      state: z
+        .enum([
+          'STATE_UNSPECIFIED',
+          'CREATING',
+          'READY',
+          'UPDATING',
+          'REPAIRING',
+          'DELETING',
+          'ERROR',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            "Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use).",
+          readOnly: true,
+        }),
+      tenantProjectId: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Output only. ID of the associated GCP tenant project. See go/get-instance-metadata.',
+          readOnly: true,
+        }),
+      updateTime: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'Output only. Timestamp when the resource was last modified.',
+          readOnly: true,
+        }),
+    })
+    .openapi({
       description:
-        'Optional. Maintenance window that is applied to resources covered by this policy.',
-    }),
-  })
-  .openapi({ description: 'Maintenance policy applicable to instance updates.', required: [] })
-  .openapi('UpdatePolicy')
-
-const MaintenancePolicySchema = z
-  .object({
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time when the resource was created.' }),
-    description: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Description of what this policy is for. Create/Update methods return INVALID_ARGUMENT if the length is greater than 512.',
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Required. MaintenancePolicy name using the form: `projects/{project_id}/locations/{location_id}/maintenancePolicies/{maintenance_policy_id}` where {project_id} refers to a GCP consumer project ID, {location_id} refers to a GCP region/zone, {maintenance_policy_id} must be 1-63 characters long and match the regular expression `[a-z0-9]([-a-z0-9]*[a-z0-9])?`.',
-      }),
-    state: z
-      .enum(['STATE_UNSPECIFIED', 'READY', 'DELETING'])
-      .exactOptional()
-      .openapi({ description: 'Optional. The state of the policy.' }),
-    updatePolicy: UpdatePolicySchema.exactOptional().openapi({
-      description: 'Maintenance policy applicable to instance update.',
-    }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Output only. The time when the resource was updated.' }),
-  })
-  .openapi({
-    description: 'LINT.IfChange Defines policies to service maintenance events.',
-    required: [],
-  })
-  .openapi('MaintenancePolicy')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema = z
-  .object({
-    exclude: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Exclude instance from maintenance. When true, rollout service will not attempt maintenance on the instance. Rollout service will include the instance in reported rollout progress as not attempted.',
-      }),
-    isRollback: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. If the update call is triggered from rollback, set the value as true.',
-      }),
-    maintenancePolicies: z
-      .record(z.string(), MaintenancePolicySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the embedded policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_policy_names is set. If only the name is needed, then only populate MaintenancePolicy.name.',
-      }),
-  })
-  .openapi({
-    description:
-      'Maintenance settings associated with instance. Allows service producers and end users to assign settings that controls maintenance on this instance.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettings')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema = z
-  .object({
-    values: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description: "Optional. Array of string values. e.g. instance's replica information.",
-      }),
-  })
-  .openapi({ description: 'Contains notification related data.', required: [] })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameter')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema = z
-  .object({
-    resourceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Type of the resource. This can be either a GCP resource or a custom one (e.g. another cloud provider's VM). For GCP compute resources use singular form of the names listed in GCP compute API documentation (https://cloud.google.com/compute/docs/reference/rest/v1/), prefixed with 'compute-', for example: 'compute-instance', 'compute-disk', 'compute-autoscaler'.",
-      }),
-    resourceUrl: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'URL identifying the resource, e.g. "https://www.googleapis.com/compute/v1/projects/...)".',
-      }),
-  })
-  .openapi({ description: 'Describes provisioned dataplane resources.', required: [] })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResource')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1SloEligibilitySchema = z
-  .object({
-    eligible: z
-      .boolean()
-      .exactOptional()
-      .openapi({ description: 'Whether an instance is eligible or ineligible.' }),
-    reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User-defined reason for the current value of instance eligibility. Usually, this can be directly mapped to the internal state. An empty reason is allowed.',
-      }),
-  })
-  .openapi({
-    description:
-      'SloEligibility is a tuple containing eligibility value: true if an instance is eligible for SLO calculation or false if it should be excluded from all SLO-related calculations along with a user-defined reason.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1SloEligibility')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema = z
-  .object({
-    eligibilities: z
-      .record(z.string(), GoogleCloudSaasacceleratorManagementProvidersV1SloEligibilitySchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'An entry in the eligibilities map specifies an eligibility for a particular SLI for the given instance. The SLI key in the name must be a valid SLI name specified in the Eligibility Exporter binary flags otherwise an error will be emitted by Eligibility Exporter and the oncaller will be alerted. If an SLI has been defined in the binary flags but the eligibilities map does not contain it, the corresponding SLI time series will not be emitted by the Eligibility Exporter. This ensures a smooth rollout and compatibility between the data produced by different versions of the Eligibility Exporters. If eligibilities map contains a key for an SLI which has not been declared in the binary flags, there will be an error message emitted in the Eligibility Exporter log and the metric for the SLI in question will not be emitted.',
-      }),
-  })
-  .openapi({
-    description: 'PerSliSloEligibility is a mapping from an SLI name to eligibility.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadataSchema = z
-  .object({
-    location: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The location of the node, if different from instance location.' }),
-    nodeId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The id of the node. This should be equal to SaasInstanceNode.node_id.',
-      }),
-    perSliEligibility:
-      GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema.exactOptional().openapi(
-        {
-          description:
-            'If present, this will override eligibility for the node coming from instance or exclusions for specified SLIs.',
-        },
-      ),
-  })
-  .openapi({
-    description:
-      'Node information for custom per-node SLO implementations. SSA does not support per-node SLO, but producers can populate per-node information in SloMetadata for custom precomputations. SSA Eligibility Exporter will emit per-node metric based on this information.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadata')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema = z
-  .object({
-    nodes: z
-      .array(GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadataSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. List of nodes. Some producers need to use per-node metadata to calculate SLO. This field allows such producers to publish per-node SLO meta data, which will be consumed by SSA Eligibility Exporter and published in the form of per node metric to Monarch.',
-      }),
-    perSliEligibility:
-      GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibilitySchema.exactOptional().openapi(
-        {
-          description:
-            'Optional. Multiple per-instance SLI eligibilities which apply for individual SLIs.',
-        },
-      ),
-    tier: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Name of the SLO tier the Instance belongs to. This name will be expected to match the tiers specified in the service SLO configuration. Field is mandatory and must not be empty.',
-      }),
-  })
-  .openapi({
-    description:
-      'SloMetadata contains resources required for proper SLO classification of the instance.',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1SloMetadata')
-
-const GoogleCloudSaasacceleratorManagementProvidersV1InstanceSchema = z
-  .object({
-    consumerDefinedName: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'consumer_defined_name is the name of the instance set by the service consumers. Generally this is different from the `name` field which reperesents the system-assigned id of the instance which the service consumers do not recognize. This is a required field for tenants onboarding to Maintenance Window notifications (go/slm-rollout-maintenance-policies#prerequisites).',
-      }),
-    createTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp when the resource was created.',
-        readOnly: true,
-      }),
-    instanceType: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Optional. The instance_type of this instance of format: projects/{project_number}/locations/{location_id}/instanceTypes/{instance_type_id}. Instance Type represents a high-level tier or SKU of the service that this instance belong to. When enabled(eg: Maintenance Rollout), Rollout uses 'instance_type' along with 'software_versions' to determine whether instance needs an update or not.",
-      }),
-    labels: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. Resource labels to represent user provided metadata. Each label is a key-value pair, where both the key and the value are arbitrary strings provided by the user.',
-      }),
-    maintenancePolicyNames: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. The MaintenancePolicies that have been attached to the instance. The key must be of the type name of the oneof policy name defined in MaintenancePolicy, and the referenced policy must define the same policy type. For details, please refer to go/cloud-saas-mw-ug. Should not be set if maintenance_settings.maintenance_policies is set.',
-      }),
-    maintenanceSchedules: z
-      .record(z.string(), GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceScheduleSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'The MaintenanceSchedule contains the scheduling information of published maintenance schedule with same key as software_versions.',
-      }),
-    maintenanceSettings:
-      GoogleCloudSaasacceleratorManagementProvidersV1MaintenanceSettingsSchema.exactOptional().openapi(
-        { description: 'Optional. The MaintenanceSettings associated with instance.' },
-      ),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Unique name of the resource. It uses the form: `projects/{project_number}/locations/{location_id}/instances/{instance_id}` Note: This name is passed, stored and logged across the rollout system. So use of consumer project_id or any other consumer PII in the name is strongly discouraged for wipeout (go/wipeout) compliance. See go/elysium/project_ids#storage-guidance for more details.',
-      }),
-    notificationParameters: z
-      .record(
-        z.string(),
-        GoogleCloudSaasacceleratorManagementProvidersV1NotificationParameterSchema,
-      )
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional. notification_parameter are information that service producers may like to include that is not relevant to Rollout. This parameter will only be passed to Gamma and Cloud Logging for notification/logging purpose.',
-      }),
-    producerMetadata: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. Custom string attributes used primarily to expose producer-specific information in monitoring dashboards. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    provisionedResources: z
-      .array(GoogleCloudSaasacceleratorManagementProvidersV1ProvisionedResourceSchema)
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. The list of data plane resources provisioned for this instance, e.g. compute VMs. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    slmInstanceTemplate: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "Link to the SLM instance template. Only populated when updating SLM instances via SSA's Actuation service adaptor. Service producers with custom control plane (e.g. Cloud SQL) doesn't need to populate this field. Instead they should use software_versions.",
-      }),
-    sloMetadata:
-      GoogleCloudSaasacceleratorManagementProvidersV1SloMetadataSchema.exactOptional().openapi({
-        description:
-          'Output only. SLO metadata for instance classification in the Standardized dataplane SLO platform. See go/cloud-ssa-standard-slo for feature description.',
-        readOnly: true,
-      }),
-    softwareVersions: z
-      .record(z.string(), z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Software versions that are used to deploy this instance. This can be mutated by rollout services.',
-      }),
-    state: z
-      .enum([
-        'STATE_UNSPECIFIED',
-        'CREATING',
-        'READY',
-        'UPDATING',
-        'REPAIRING',
-        'DELETING',
-        'ERROR',
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          "Output only. Current lifecycle state of the resource (e.g. if it's being created or ready to use).",
-        readOnly: true,
-      }),
-    tenantProjectId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Output only. ID of the associated GCP tenant project. See go/get-instance-metadata.',
-        readOnly: true,
-      }),
-    updateTime: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Output only. Timestamp when the resource was last modified.',
-        readOnly: true,
-      }),
-  })
-  .openapi({
-    description:
-      'Instance represents the interface for SLM services to actuate the state of control plane resources. Example Instance in JSON, where consumer-project-number=123456, producer-project-id=cloud-sql: ```json Instance: { "name": "projects/123456/locations/us-east1/instances/prod-instance", "create_time": { "seconds": 1526406431, }, "labels": { "env": "prod", "foo": "bar" }, "state": READY, "software_versions": { "software_update": "cloud-sql-09-28-2018", }, "maintenance_policy_names": { "UpdatePolicy": "projects/123456/locations/us-east1/maintenancePolicies/prod-update-policy", } "tenant_project_id": "cloud-sql-test-tenant", "producer_metadata": { "cloud-sql-tier": "basic", "cloud-sql-instance-size": "1G", }, "provisioned_resources": [ { "resource-type": "compute-instance", "resource-url": "https://www.googleapis.com/compute/v1/projects/cloud-sql/zones/us-east1-b/instances/vm-1", } ], "maintenance_schedules": { "csa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, }, "ncsa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, } }, "consumer_defined_name": "my-sql-instance1", } ``` LINT.IfChange',
-    required: [],
-  })
-  .openapi('GoogleCloudSaasacceleratorManagementProvidersV1Instance')
+        'Instance represents the interface for SLM services to actuate the state of control plane resources. Example Instance in JSON, where consumer-project-number=123456, producer-project-id=cloud-sql: ```json Instance: { "name": "projects/123456/locations/us-east1/instances/prod-instance", "create_time": { "seconds": 1526406431, }, "labels": { "env": "prod", "foo": "bar" }, "state": READY, "software_versions": { "software_update": "cloud-sql-09-28-2018", }, "maintenance_policy_names": { "UpdatePolicy": "projects/123456/locations/us-east1/maintenancePolicies/prod-update-policy", } "tenant_project_id": "cloud-sql-test-tenant", "producer_metadata": { "cloud-sql-tier": "basic", "cloud-sql-instance-size": "1G", }, "provisioned_resources": [ { "resource-type": "compute-instance", "resource-url": "https://www.googleapis.com/compute/v1/projects/cloud-sql/zones/us-east1-b/instances/vm-1", } ], "maintenance_schedules": { "csa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, }, "ncsa_rollout": { "start_time": { "seconds": 1526406431, }, "end_time": { "seconds": 1535406431, }, } }, "consumer_defined_name": "my-sql-instance1", } ``` LINT.IfChange',
+      required: [],
+    })
+    .openapi('GoogleCloudSaasacceleratorManagementProvidersV1Instance')
 
 const InstanceMessageSchema = z
   .object({
@@ -1187,7 +1237,7 @@ const ListOperationsResponseSchema = z
   .openapi({ description: 'The response message for Operations.ListOperations.', required: [] })
   .openapi('ListOperationsResponse')
 
-const ZoneMetadataSchema = z.object({}).openapi('ZoneMetadata')
+const ZoneMetadataSchema = z.looseObject({}).openapi('ZoneMetadata')
 
 const LocationMetadataSchema = z
   .object({

@@ -19,11 +19,11 @@ Base URLs:
     - Authorization URL = [https://app.hubspot.com/oauth/authorize](https://app.hubspot.com/oauth/authorize)
     - Token URL = [https://api.hubapi.com/oauth/v1/token](https://api.hubapi.com/oauth/v1/token)
 
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|Scope|Scope Description|
+|---|---|
+|commerce.payment_links.delete||
+|commerce.payment_links.read||
+|commerce.payment_links.write||
 
 <h1 id="commerce-payment-links-basic">Basic</h1>
 
@@ -35,7 +35,8 @@ Base URLs:
 
 ```bash
 curl https://api.hubapi.com/commerce/payment-links/2026-09/payment-links \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/payment-links/2026-09/payment-links`
@@ -78,8 +79,9 @@ null
 |200|OK|successful operation|[CollectionResponsePaymentLinkResponseForwardPaging](#schemacollectionresponsepaymentlinkresponseforwardpaging)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: commerce.payment_links.read )
 </aside>
 
 ## Create a payment link
@@ -93,6 +95,7 @@ curl https://api.hubapi.com/commerce/payment-links/2026-09/payment-links \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -184,8 +187,9 @@ null
 |---|---|---|---|---|
 |201|Location|string||URL of the newly created resource|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: commerce.payment_links.write )
 </aside>
 
 ## Retrieve payment link
@@ -196,7 +200,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/payment-links/2026-09/payment-links/{paymentLinkId}' \
-  -H 'Accept: application/json'
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `GET /commerce/payment-links/2026-09/payment-links/{paymentLinkId}`
@@ -231,8 +236,9 @@ null
 |200|OK|successful operation|[PaymentLinkResponse](#schemapaymentlinkresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: commerce.payment_links.read )
 </aside>
 
 ## Delete a payment link
@@ -243,7 +249,8 @@ This operation does not require authentication
 
 ```bash
 curl 'https://api.hubapi.com/commerce/payment-links/2026-09/payment-links/{paymentLinkId}' \
-  -X DELETE
+  -X DELETE \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 `DELETE /commerce/payment-links/2026-09/payment-links/{paymentLinkId}`
@@ -271,8 +278,9 @@ null
 |204|No Content|No content|None|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: commerce.payment_links.delete )
 </aside>
 
 ## Update a payment link
@@ -286,6 +294,7 @@ curl 'https://api.hubapi.com/commerce/payment-links/2026-09/payment-links/{payme
   -X PATCH \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d 'null'
 ```
 
@@ -372,8 +381,9 @@ null
 |200|OK|successful operation|[PaymentLinkResponse](#schemapaymentlinkresponse)|
 |default|Default|An error occurred.|[Error](#schemaerror)|
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+oauth2 ( Scopes: commerce.payment_links.write )
 </aside>
 
 # Schemas

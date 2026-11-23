@@ -1,0 +1,2903 @@
+import { useQuery, useMutation, mutationOptions } from '@tanstack/vue-query'
+import type {
+  UseQueryOptions,
+  QueryFunctionContext,
+  UseMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/vue-query'
+import { computed, toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getV1Key() {
+  return ['v1'] as const
+}
+
+export function getV1ProjectsProjectIdRegionsRegionClustersQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+    >
+  >,
+) {
+  return ['v1', '/v1/projects/:projectId/regions/:region/clusters', toValue(args)] as const
+}
+
+export function getV1ProjectsProjectIdRegionsRegionClustersQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionClustersQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ProjectsProjectIdRegionsRegionClusters<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ProjectsProjectIdRegionsRegionClustersQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ProjectsProjectIdRegionsRegionClustersQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionClustersQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.projects[':projectId'].regions[':region'].clusters.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/clusters', 'POST'] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionClustersMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters.$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionClusters<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ProjectsProjectIdRegionsRegionClustersMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+    >
+  >,
+) {
+  return [
+    'v1',
+    '/v1/projects/:projectId/regions/:region/clusters/:clusterName',
+    toValue(args),
+  ] as const
+}
+
+export function getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName'].$get(
+          toValue(args),
+          { ...options, init: { ...options?.init, signal } },
+        ),
+      )
+    },
+  }
+}
+
+export function useV1ProjectsProjectIdRegionsRegionClustersClusterName<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() =>
+        getV1ProjectsProjectIdRegionsRegionClustersClusterNameQueryKey(args),
+      ),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/clusters/:clusterName', 'DELETE'] as const
+}
+
+export function getDeleteV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName'].$delete(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function useDeleteV1ProjectsProjectIdRegionsRegionClustersClusterName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getDeleteV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/clusters/:clusterName', 'PATCH'] as const
+}
+
+export function getPatchV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName'].$patch(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePatchV1ProjectsProjectIdRegionsRegionClustersClusterName<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPatchV1ProjectsProjectIdRegionsRegionClustersClusterNameMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseMutationKey() {
+  return [
+    'v1',
+    '/v1/projects/:projectId/regions/:region/clusters/:clusterName:diagnose',
+    'POST',
+  ] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:diagnose']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:diagnose']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:diagnose']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName:diagnose'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnose<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:diagnose']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:diagnose']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairMutationKey() {
+  return [
+    'v1',
+    '/v1/projects/:projectId/regions/:region/clusters/:clusterName:repair',
+    'POST',
+  ] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:repair']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:repair']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:repair']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName:repair'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionClustersClusterNameRepair<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:repair']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:repair']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStartMutationKey() {
+  return [
+    'v1',
+    '/v1/projects/:projectId/regions/:region/clusters/:clusterName:start',
+    'POST',
+  ] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStartMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:start']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:start']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStartMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:start']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName:start'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionClustersClusterNameStart<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:start']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:start']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStartMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStopMutationKey() {
+  return [
+    'v1',
+    '/v1/projects/:projectId/regions/:region/clusters/:clusterName:stop',
+    'POST',
+  ] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStopMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:stop']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:stop']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStopMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:stop']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].clusters[':clusterName:stop'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionClustersClusterNameStop<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:stop']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['clusters'][':clusterName:stop']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostV1ProjectsProjectIdRegionsRegionClustersClusterNameStopMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ProjectsProjectIdRegionsRegionJobsQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+    >
+  >,
+) {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs', toValue(args)] as const
+}
+
+export function getV1ProjectsProjectIdRegionsRegionJobsQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionJobsQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].jobs.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ProjectsProjectIdRegionsRegionJobs<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ProjectsProjectIdRegionsRegionJobsQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ProjectsProjectIdRegionsRegionJobsQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionJobsQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.projects[':projectId'].regions[':region'].jobs.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+    >
+  >,
+) {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs/:jobId', toValue(args)] as const
+}
+
+export function getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+    >
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].jobs[':jobId'].$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ProjectsProjectIdRegionsRegionJobsJobId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+    >
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+                  >
+                >
+              >
+            >
+          >,
+          ReturnType<typeof getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ProjectsProjectIdRegionsRegionJobsJobIdQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1.projects[':projectId'].regions[':region'].jobs[':jobId'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1ProjectsProjectIdRegionsRegionJobsJobIdMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs/:jobId', 'DELETE'] as const
+}
+
+export function getDeleteV1ProjectsProjectIdRegionsRegionJobsJobIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$delete']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1ProjectsProjectIdRegionsRegionJobsJobIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].jobs[':jobId'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function useDeleteV1ProjectsProjectIdRegionsRegionJobsJobId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$delete']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$delete']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteV1ProjectsProjectIdRegionsRegionJobsJobIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPatchV1ProjectsProjectIdRegionsRegionJobsJobIdMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs/:jobId', 'PATCH'] as const
+}
+
+export function getPatchV1ProjectsProjectIdRegionsRegionJobsJobIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchV1ProjectsProjectIdRegionsRegionJobsJobIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].jobs[':jobId'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function usePatchV1ProjectsProjectIdRegionsRegionJobsJobId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$patch']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId']['$patch']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPatchV1ProjectsProjectIdRegionsRegionJobsJobIdMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsJobIdCancelMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs/:jobId:cancel', 'POST'] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsJobIdCancelMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId:cancel']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId:cancel']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionJobsJobIdCancelMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId:cancel']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region'].jobs[':jobId:cancel'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionJobsJobIdCancel<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId:cancel']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs'][':jobId:cancel']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ProjectsProjectIdRegionsRegionJobsJobIdCancelMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsSubmitMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs:submit', 'POST'] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsSubmitMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submit']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submit']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionJobsSubmitMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submit']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region']['jobs:submit'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionJobsSubmit<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submit']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submit']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ProjectsProjectIdRegionsRegionJobsSubmitMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationMutationKey() {
+  return ['v1', '/v1/projects/:projectId/regions/:region/jobs:submitAsOperation', 'POST'] as const
+}
+
+export function getPostV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submitAsOperation']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submitAsOperation']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submitAsOperation']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1.projects[':projectId'].regions[':region']['jobs:submitAsOperation'].$post(
+          args,
+          options,
+        ),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperation<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submitAsOperation']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1.projects)[':projectId']['regions'][':region']['jobs:submitAsOperation']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults =
+    getPostV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1NameQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+) {
+  return ['v1', '/v1/:name', toValue(args)] as const
+}
+
+export function getV1NameQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1NameQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':name'].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  }
+}
+
+export function useV1Name<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':name']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>
+            >
+          >,
+          ReturnType<typeof getV1NameQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$get']>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1NameQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1NameQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':name'].$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPutV1NameMutationKey() {
+  return ['v1', '/v1/:name', 'PUT'] as const
+}
+
+export function getPutV1NameMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$put']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name']['$put']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPutV1NameMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name']['$put']>) {
+      return parseResponse(client.v1[':name'].$put(args, options))
+    },
+  })
+}
+
+export function usePutV1Name<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$put']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name']['$put']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPutV1NameMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getDeleteV1NameMutationKey() {
+  return ['v1', '/v1/:name', 'DELETE'] as const
+}
+
+export function getDeleteV1NameMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$delete']>>>>
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteV1NameMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name']['$delete']>) {
+      return parseResponse(client.v1[':name'].$delete(args, options))
+    },
+  })
+}
+
+export function useDeleteV1Name<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name']['$delete']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name']['$delete']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getDeleteV1NameMutationOptions<TError, TOnMutateResult>(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameCancelMutationKey() {
+  return ['v1', '/v1/:name:cancel', 'POST'] as const
+}
+
+export function getPostV1NameCancelMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:cancel']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:cancel']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameCancelMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:cancel']['$post']>) {
+      return parseResponse(client.v1[':name:cancel'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameCancel<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:cancel']['$post']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:cancel']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameCancelMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameInstantiateMutationKey() {
+  return ['v1', '/v1/:name:instantiate', 'POST'] as const
+}
+
+export function getPostV1NameInstantiateMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:instantiate']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:instantiate']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameInstantiateMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:instantiate']['$post']>) {
+      return parseResponse(client.v1[':name:instantiate'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameInstantiate<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':name:instantiate']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:instantiate']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameInstantiateMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1NameResizeMutationKey() {
+  return ['v1', '/v1/:name:resize', 'POST'] as const
+}
+
+export function getPostV1NameResizeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:resize']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':name:resize']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1NameResizeMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':name:resize']['$post']>) {
+      return parseResponse(client.v1[':name:resize'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1NameResize<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':name:resize']['$post']>>>
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':name:resize']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1NameResizeMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentAutoscalingPoliciesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent/autoscalingPolicies', toValue(args)] as const
+}
+
+export function getV1ParentAutoscalingPoliciesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentAutoscalingPoliciesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].autoscalingPolicies.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentAutoscalingPolicies<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentAutoscalingPoliciesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentAutoscalingPoliciesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentAutoscalingPoliciesQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].autoscalingPolicies.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentAutoscalingPoliciesMutationKey() {
+  return ['v1', '/v1/:parent/autoscalingPolicies', 'POST'] as const
+}
+
+export function getPostV1ParentAutoscalingPoliciesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentAutoscalingPoliciesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent'].autoscalingPolicies.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentAutoscalingPolicies<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['autoscalingPolicies']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['autoscalingPolicies']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentAutoscalingPoliciesMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentBatchesQueryKey(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['batches']['$get']>>,
+) {
+  return ['v1', '/v1/:parent/batches', toValue(args)] as const
+}
+
+export function getV1ParentBatchesQueryOptions(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['batches']['$get']>>,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentBatchesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].batches.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentBatches<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.v1)[':parent']['batches']['$get']>>,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentBatchesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentBatchesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentBatchesQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].batches.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentBatchesMutationKey() {
+  return ['v1', '/v1/:parent/batches', 'POST'] as const
+}
+
+export function getPostV1ParentBatchesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$post']>>>
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['batches']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentBatchesMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':parent']['batches']['$post']>) {
+      return parseResponse(client.v1[':parent'].batches.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentBatches<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['batches']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['batches']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentBatchesMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentNodeGroupsMutationKey() {
+  return ['v1', '/v1/:parent/nodeGroups', 'POST'] as const
+}
+
+export function getPostV1ParentNodeGroupsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['nodeGroups']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['nodeGroups']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentNodeGroupsMutationKey(),
+    async mutationFn(args: InferRequestType<(typeof client.v1)[':parent']['nodeGroups']['$post']>) {
+      return parseResponse(client.v1[':parent'].nodeGroups.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentNodeGroups<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['nodeGroups']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['nodeGroups']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentNodeGroupsMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getV1ParentWorkflowTemplatesQueryKey(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>
+  >,
+) {
+  return ['v1', '/v1/:parent/workflowTemplates', toValue(args)] as const
+}
+
+export function getV1ParentWorkflowTemplatesQueryOptions(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>
+  >,
+  options?: ClientRequestOptions,
+) {
+  return {
+    queryKey: computed(() => getV1ParentWorkflowTemplatesQueryKey(args)),
+    queryFn({ signal }: QueryFunctionContext) {
+      return parseResponse(
+        client.v1[':parent'].workflowTemplates.$get(toValue(args), {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  }
+}
+
+export function useV1ParentWorkflowTemplates<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>>
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>
+  >,
+  options?: {
+    query?: Omit<
+      Extract<
+        UseQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>>
+              >
+            >
+          >,
+          TError,
+          TData,
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>>
+              >
+            >
+          >,
+          ReturnType<typeof getV1ParentWorkflowTemplatesQueryKey>
+        >,
+        { queryKey: unknown }
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { query: queryOptions, options: clientOptions } = options ?? {}
+  return useQuery<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$get']>>
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getV1ParentWorkflowTemplatesQueryKey>
+  >(
+    {
+      ...queryOptions,
+      queryKey: computed(() => getV1ParentWorkflowTemplatesQueryKey(args)),
+      queryFn({ signal }) {
+        return parseResponse(
+          client.v1[':parent'].workflowTemplates.$get(toValue(args), {
+            ...clientOptions,
+            init: { ...clientOptions?.init, signal },
+          }),
+        )
+      },
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentWorkflowTemplatesMutationKey() {
+  return ['v1', '/v1/:parent/workflowTemplates', 'POST'] as const
+}
+
+export function getPostV1ParentWorkflowTemplatesMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentWorkflowTemplatesMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$post']>,
+    ) {
+      return parseResponse(client.v1[':parent'].workflowTemplates.$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ParentWorkflowTemplates<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':parent']['workflowTemplates']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':parent']['workflowTemplates']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentWorkflowTemplatesMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ParentWorkflowTemplatesInstantiateInlineMutationKey() {
+  return ['v1', '/v1/:parent/workflowTemplates:instantiateInline', 'POST'] as const
+}
+
+export function getPostV1ParentWorkflowTemplatesInstantiateInlineMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1)[':parent']['workflowTemplates:instantiateInline']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':parent']['workflowTemplates:instantiateInline']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ParentWorkflowTemplatesInstantiateInlineMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1)[':parent']['workflowTemplates:instantiateInline']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1[':parent']['workflowTemplates:instantiateInline'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostV1ParentWorkflowTemplatesInstantiateInline<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1)[':parent']['workflowTemplates:instantiateInline']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1)[':parent']['workflowTemplates:instantiateInline']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ParentWorkflowTemplatesInstantiateInlineMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ProjectRegionClusterInjectCredentialsMutationKey() {
+  return ['v1', '/v1/:project/:region/:cluster:injectCredentials', 'POST'] as const
+}
+
+export function getPostV1ProjectRegionClusterInjectCredentialsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.v1)[':project'][':region'][':cluster:injectCredentials']['$post']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.v1)[':project'][':region'][':cluster:injectCredentials']['$post']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ProjectRegionClusterInjectCredentialsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.v1)[':project'][':region'][':cluster:injectCredentials']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.v1[':project'][':region'][':cluster:injectCredentials'].$post(args, options),
+      )
+    },
+  })
+}
+
+export function usePostV1ProjectRegionClusterInjectCredentials<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.v1)[':project'][':region'][':cluster:injectCredentials']['$post']
+                  >
+                >
+              >
+            >
+          >,
+          TError,
+          InferRequestType<
+            (typeof client.v1)[':project'][':region'][':cluster:injectCredentials']['$post']
+          >,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ProjectRegionClusterInjectCredentialsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ResourceGetIamPolicyMutationKey() {
+  return ['v1', '/v1/:resource:getIamPolicy', 'POST'] as const
+}
+
+export function getPostV1ResourceGetIamPolicyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':resource:getIamPolicy']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':resource:getIamPolicy']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ResourceGetIamPolicyMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':resource:getIamPolicy']['$post']>,
+    ) {
+      return parseResponse(client.v1[':resource:getIamPolicy'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ResourceGetIamPolicy<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':resource:getIamPolicy']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':resource:getIamPolicy']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ResourceGetIamPolicyMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ResourceSetIamPolicyMutationKey() {
+  return ['v1', '/v1/:resource:setIamPolicy', 'POST'] as const
+}
+
+export function getPostV1ResourceSetIamPolicyMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':resource:setIamPolicy']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':resource:setIamPolicy']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ResourceSetIamPolicyMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':resource:setIamPolicy']['$post']>,
+    ) {
+      return parseResponse(client.v1[':resource:setIamPolicy'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ResourceSetIamPolicy<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':resource:setIamPolicy']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':resource:setIamPolicy']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ResourceSetIamPolicyMutationOptions<TError, TOnMutateResult>(
+    clientOptions,
+  )
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}
+
+export function getPostV1ResourceTestIamPermissionsMutationKey() {
+  return ['v1', '/v1/:resource:testIamPermissions', 'POST'] as const
+}
+
+export function getPostV1ResourceTestIamPermissionsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.v1)[':resource:testIamPermissions']['$post']>>
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.v1)[':resource:testIamPermissions']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostV1ResourceTestIamPermissionsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.v1)[':resource:testIamPermissions']['$post']>,
+    ) {
+      return parseResponse(client.v1[':resource:testIamPermissions'].$post(args, options))
+    },
+  })
+}
+
+export function usePostV1ResourceTestIamPermissions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: {
+    mutation?: Omit<
+      Extract<
+        UseMutationOptions<
+          Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.v1)[':resource:testIamPermissions']['$post']>>
+              >
+            >
+          >,
+          TError,
+          InferRequestType<(typeof client.v1)[':resource:testIamPermissions']['$post']>,
+          TOnMutateResult
+        >,
+        { mutationFn?: unknown }
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: QueryClient,
+) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const mutationDefaults = getPostV1ResourceTestIamPermissionsMutationOptions<
+    TError,
+    TOnMutateResult
+  >(clientOptions)
+  return useMutation(
+    {
+      ...mutationOptions,
+      ...mutationDefaults,
+      mutationKey: mutationOptions?.mutationKey ?? mutationDefaults.mutationKey,
+    },
+    queryClient,
+  )
+}

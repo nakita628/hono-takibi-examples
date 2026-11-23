@@ -1,246 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ChangeTypeSchema = z.literal('Resource').openapi('ChangeType')
-
-const HookInvocationCountSchema = z.int().min(1).max(100).openapi('HookInvocationCount')
-
-const ChangeActionSchema = z
-  .enum(['Add', 'Modify', 'Remove', 'Import', 'Dynamic'])
-  .openapi('ChangeAction')
-
-const LogicalResourceIdSchema = z.string().openapi('LogicalResourceId')
-
-const PhysicalResourceIdSchema = z.string().openapi('PhysicalResourceId')
-
-const ResourceTypeSchema = z.string().min(1).max(256).openapi('ResourceType')
-
-const ReplacementSchema = z.enum(['True', 'False', 'Conditional']).openapi('Replacement')
-
-const ResourceAttributeSchema = z
-  .enum(['Properties', 'Metadata', 'CreationPolicy', 'UpdatePolicy', 'DeletionPolicy', 'Tags'])
-  .openapi('ResourceAttribute')
-
-const ScopeSchema = z.array(ResourceAttributeSchema).openapi('Scope')
-
-const PropertyNameSchema = z.string().openapi('PropertyName')
-
-const RequiresRecreationSchema = z
-  .enum(['Never', 'Conditionally', 'Always'])
-  .openapi('RequiresRecreation')
-
-const ResourceTargetDefinitionSchema = z
-  .object({
-    Attribute: ResourceAttributeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.",
-        }),
-    ).exactOptional(),
-    Name: PropertyNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>Attribute</code> value is <code>Properties</code>, the name of the property. For all other attributes, the value is null.',
-        }),
-    ).exactOptional(),
-    RequiresRecreation: RequiresRecreationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the <code>Attribute</code> value is <code>Properties</code>, indicates whether a change to this property causes the resource to be recreated. The value can be <code>Never</code>, <code>Always</code>, or <code>Conditionally</code>. To determine the conditions for a <code>Conditionally</code> recreation, see the update behavior for that <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">property</a> in the CloudFormation User Guide.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      "The field that CloudFormation will change, such as the name of a resource's property, and whether the resource will be recreated.",
-    required: [],
-  })
-  .openapi('ResourceTargetDefinition')
-
-const EvaluationTypeSchema = z.enum(['Static', 'Dynamic']).openapi('EvaluationType')
-
-const ChangeSourceSchema = z
-  .enum([
-    'ResourceReference',
-    'ParameterReference',
-    'ResourceAttribute',
-    'DirectModification',
-    'Automatic',
-  ])
-  .openapi('ChangeSource')
-
-const CausingEntitySchema = z.string().openapi('CausingEntity')
-
-const ResourceChangeDetailSchema = z
-  .object({
-    Target: ResourceTargetDefinitionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>ResourceTargetDefinition</code> structure that describes the field that CloudFormation will change and whether the resource will be recreated.',
-        }),
-    ).exactOptional(),
-    Evaluation: EvaluationTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Indicates whether CloudFormation can determine the target value, and whether the target value will change before you execute a change set.</p> <p>For <code>Static</code> evaluations, CloudFormation can determine that the target value will change, and its value. For example, if you directly modify the <code>InstanceType</code> property of an EC2 instance, CloudFormation knows that this property value will change, and its value, so this is a <code>Static</code> evaluation.</p> <p>For <code>Dynamic</code> evaluations, can't determine the target value because it depends on the result of an intrinsic function, such as a <code>Ref</code> or <code>Fn::GetAtt</code> intrinsic function, when the stack is updated. For example, if your template includes a reference to a resource that's conditionally recreated, the value of the reference (the physical ID of the resource) might change, depending on if the resource is recreated. If the resource is recreated, it will have a new physical ID, so all references to that resource will also be updated.</p>",
-        }),
-    ).exactOptional(),
-    ChangeSource: ChangeSourceSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ "Ref" : "MyEC2InstanceResource" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ "Ref" : "MyPasswordParameter" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ "Fn::GetAtt" : [ "MyEC2InstanceResource", "PublicDnsName" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack\'s template might have changed. Changes to a nested stack\'s template aren\'t visible to CloudFormation until you run an update on the parent stack.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CausingEntity: CausingEntitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The identity of the entity that triggered this change. This entity is a member of the group that's specified by the <code>ChangeSource</code> field. For example, if you modified the value of the <code>KeyPairName</code> parameter, the <code>CausingEntity</code> is the name of the parameter (<code>KeyPairName</code>).</p> <p>If the <code>ChangeSource</code> value is <code>DirectModification</code>, no value is given for <code>CausingEntity</code>.</p>",
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'For a resource with <code>Modify</code> as the action, the <code>ResourceChange</code> structure describes the changes CloudFormation will make to that resource.',
-    required: [],
-  })
-  .openapi('ResourceChangeDetail')
-
-const ResourceChangeDetailsSchema = z
-  .array(ResourceChangeDetailSchema)
-  .openapi('ResourceChangeDetails')
-
-const ChangeSetIdSchema = z
-  .string()
-  .regex(/arn:[-a-zA-Z0-9:\/]*/)
-  .min(1)
-  .openapi('ChangeSetId')
-
-const TypeHierarchySchema = z.string().openapi('TypeHierarchy')
-
-const LogicalIdHierarchySchema = z.string().openapi('LogicalIdHierarchy')
-
-const ModuleInfoSchema = z
-  .object({
-    TypeHierarchy: TypeHierarchySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A concatenated list of the module type or types containing the resource. Module types are listed starting with the inner-most nested module, and separated by <code>/</code>.</p> <p>In the following example, the resource was created from a module of type <code>AWS::First::Example::MODULE</code>, that's nested inside a parent module of type <code>AWS::Second::Example::MODULE</code>.</p> <p> <code>AWS::First::Example::MODULE/AWS::Second::Example::MODULE</code> </p>",
-        }),
-    ).exactOptional(),
-    LogicalIdHierarchy: LogicalIdHierarchySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A concatenated list of the logical IDs of the module or modules containing the resource. Modules are listed starting with the inner-most nested module, and separated by <code>/</code>.</p> <p>In the following example, the resource was created from a module, <code>moduleA</code>, that\'s nested inside a parent module, <code>moduleB</code>.</p> <p> <code>moduleA/moduleB</code> </p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/modules.html#module-ref-resources">Referencing resources in a module</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      '<p>Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.</p> <p>For more information about modules, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/modules.html">Using modules to encapsulate and reuse resource configurations</a> in the <i>CloudFormation User Guide</i>.</p>',
-    required: [],
-  })
-  .openapi('ModuleInfo')
-
-const ResourceChangeSchema = z
-  .object({
-    Action: ChangeActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), or <code>Dynamic</code> (exact action for the resource can't be determined).",
-        }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The resource's logical ID, which is defined in the stack's template.",
-        }),
-    ).exactOptional(),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The resource's physical ID (resource name). Resources that you are adding don't have physical IDs because they haven't been created.",
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of CloudFormation resource, such as <code>AWS::S3::Bucket</code>.',
-        }),
-    ).exactOptional(),
-    Replacement: ReplacementSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For the <code>Modify</code> action, indicates whether CloudFormation will replace the resource by creating a new one and deleting the old one. This value depends on the value of the <code>RequiresRecreation</code> property in the <code>ResourceTargetDefinition</code> structure. For example, if the <code>RequiresRecreation</code> field is <code>Always</code> and the <code>Evaluation</code> field is <code>Static</code>, <code>Replacement</code> is <code>True</code>. If the <code>RequiresRecreation</code> field is <code>Always</code> and the <code>Evaluation</code> field is <code>Dynamic</code>, <code>Replacement</code> is <code>Conditionally</code>.</p> <p>If you have multiple changes with different <code>RequiresRecreation</code> values, the <code>Replacement</code> value depends on the change with the most impact. A <code>RequiresRecreation</code> value of <code>Always</code> has the most impact, followed by <code>Conditionally</code>, and then <code>Never</code>.</p>',
-        }),
-    ).exactOptional(),
-    Scope: ScopeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "For the <code>Modify</code> action, indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.",
-        }),
-    ).exactOptional(),
-    Details: ResourceChangeDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For the <code>Modify</code> action, a list of <code>ResourceChangeDetail</code> structures that describes the changes that CloudFormation will make to the resource.',
-        }),
-    ).exactOptional(),
-    ChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The change set ID of the nested change set.' }),
-    ).exactOptional(),
-    ModuleInfo: ModuleInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'The <code>ResourceChange</code> structure describes the resource and the action that CloudFormation will perform on it if you execute this change set.',
-    required: [],
-  })
-  .openapi('ResourceChange')
-
-type ChangeType = {
-  Type?: z.infer<typeof ChangeTypeSchema> & { [key: string]: unknown }
-  HookInvocationCount?: z.infer<typeof HookInvocationCountSchema> & { [key: string]: unknown }
-  ResourceChange?: z.infer<typeof ResourceChangeSchema> & { [key: string]: unknown }
-}
-
 const ActivateOrganizationsAccessOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ActivateOrganizationsAccessOutput')
 
 const InvalidOperationExceptionSchema = z.any().openapi('InvalidOperationException')
@@ -255,14 +16,10 @@ const PrivateTypeArnSchema = z
 
 const ActivateTypeOutputSchema = z
   .object({
-    Arn: PrivateTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the activated extension, in this account and Region.',
-        }),
-    ).exactOptional(),
+    Arn: PrivateTypeArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the activated extension, in this account and Region.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ActivateTypeOutput')
@@ -321,40 +78,22 @@ const TypeNameSchema = z
 
 const TypeConfigurationIdentifierSchema = z
   .object({
-    TypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p>',
-        }),
-    ).exactOptional(),
-    TypeConfigurationAlias: TypeConfigurationAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias specified for this configuration, if one was specified when the configuration was set.',
-        }),
-    ).exactOptional(),
-    TypeConfigurationArn: TypeConfigurationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the configuration, in this account and Region.',
-        }),
-    ).exactOptional(),
-    Type: ThirdPartyTypeSchema.and(
-      z.any().openapi({ description: 'The type of extension.' }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the extension type to which this configuration applies.',
-        }),
-    ).exactOptional(),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p>',
+    }),
+    TypeConfigurationAlias: TypeConfigurationAliasSchema.exactOptional().openapi({
+      description:
+        'The alias specified for this configuration, if one was specified when the configuration was set.',
+    }),
+    TypeConfigurationArn: TypeConfigurationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the configuration, in this account and Region.',
+    }),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({ description: 'The type of extension.' }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description: 'The name of the extension type to which this configuration applies.',
+    }),
   })
   .openapi({
     description: 'Identifying information for the configuration of a CloudFormation extension.',
@@ -364,20 +103,11 @@ const TypeConfigurationIdentifierSchema = z
 
 const BatchDescribeTypeConfigurationsErrorSchema = z
   .object({
-    ErrorCode: ErrorCodeSchema.and(
-      z.any().openapi({ description: 'The error code.' }),
-    ).exactOptional(),
-    ErrorMessage: ErrorMessageSchema.and(
-      z.any().openapi({ description: 'The error message.' }),
-    ).exactOptional(),
-    TypeConfigurationIdentifier: TypeConfigurationIdentifierSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Identifying information for the configuration of a CloudFormation extension.',
-        }),
-    ).exactOptional(),
+    ErrorCode: ErrorCodeSchema.exactOptional().openapi({ description: 'The error code.' }),
+    ErrorMessage: ErrorMessageSchema.exactOptional().openapi({ description: 'The error message.' }),
+    TypeConfigurationIdentifier: TypeConfigurationIdentifierSchema.exactOptional().openapi({
+      description: 'Identifying information for the configuration of a CloudFormation extension.',
+    }),
   })
   .openapi({
     description:
@@ -407,57 +137,31 @@ const IsDefaultConfigurationSchema = z.boolean().openapi('IsDefaultConfiguration
 
 const TypeConfigurationDetailsSchema = z
   .object({
-    Arn: TypeConfigurationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) for the configuration data, in this account and Region.',
-        }),
-    ).exactOptional(),
-    Alias: TypeConfigurationAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The alias specified for this configuration, if one was specified when the configuration was set.',
-        }),
-    ).exactOptional(),
-    Configuration: TypeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A JSON string specifying the configuration data for the extension, in this account and Region.</p> <p>If a configuration hasn't been set for a specified extension, CloudFormation returns <code>{}</code>.</p>",
-        }),
-    ).exactOptional(),
-    LastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When the configuration data was last updated for this extension.</p> <p>If a configuration hasn't been set for a specified extension, CloudFormation returns <code>null</code>.</p>",
-        }),
-    ).exactOptional(),
-    TypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the extension.' }),
-    ).exactOptional(),
-    IsDefaultConfiguration: IsDefaultConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether this configuration data is the default configuration for the extension.',
-        }),
-    ).exactOptional(),
+    Arn: TypeConfigurationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) for the configuration data, in this account and Region.',
+    }),
+    Alias: TypeConfigurationAliasSchema.exactOptional().openapi({
+      description:
+        'The alias specified for this configuration, if one was specified when the configuration was set.',
+    }),
+    Configuration: TypeConfigurationSchema.exactOptional().openapi({
+      description:
+        "<p>A JSON string specifying the configuration data for the extension, in this account and Region.</p> <p>If a configuration hasn't been set for a specified extension, CloudFormation returns <code>{}</code>.</p>",
+    }),
+    LastUpdated: TimestampSchema.exactOptional().openapi({
+      description:
+        "<p>When the configuration data was last updated for this extension.</p> <p>If a configuration hasn't been set for a specified extension, CloudFormation returns <code>null</code>.</p>",
+    }),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({ description: 'The name of the extension.' }),
+    IsDefaultConfiguration: IsDefaultConfigurationSchema.exactOptional().openapi({
+      description:
+        'Whether this configuration data is the default configuration for the extension.',
+    }),
   })
   .openapi({
     description:
@@ -472,30 +176,18 @@ const TypeConfigurationDetailsListSchema = z
 
 const BatchDescribeTypeConfigurationsOutputSchema = z
   .object({
-    Errors: BatchDescribeTypeConfigurationsErrorsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of information concerning any errors generated during the setting of the specified configurations.',
-        }),
-    ).exactOptional(),
-    UnprocessedTypeConfigurations: UnprocessedTypeConfigurationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any of the specified extension configurations that CloudFormation could not process for any reason.',
-        }),
-    ).exactOptional(),
-    TypeConfigurations: TypeConfigurationDetailsListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of any of the specified extension configurations from the CloudFormation registry.',
-        }),
-    ).exactOptional(),
+    Errors: BatchDescribeTypeConfigurationsErrorsSchema.exactOptional().openapi({
+      description:
+        'A list of information concerning any errors generated during the setting of the specified configurations.',
+    }),
+    UnprocessedTypeConfigurations: UnprocessedTypeConfigurationsSchema.exactOptional().openapi({
+      description:
+        'A list of any of the specified extension configurations that CloudFormation could not process for any reason.',
+    }),
+    TypeConfigurations: TypeConfigurationDetailsListSchema.exactOptional().openapi({
+      description:
+        'A list of any of the specified extension configurations from the CloudFormation registry.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('BatchDescribeTypeConfigurationsOutput')
@@ -507,7 +199,7 @@ const TypeConfigurationNotFoundExceptionSchema = z
 const TokenAlreadyExistsExceptionSchema = z.any().openapi('TokenAlreadyExistsException')
 
 const ContinueUpdateRollbackOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for a <a>ContinueUpdateRollback</a> operation.' })
   .openapi('ContinueUpdateRollbackOutput')
 
@@ -516,16 +208,20 @@ const ResourceToSkipSchema = z
   .regex(/[a-zA-Z0-9]+|[a-zA-Z][-a-zA-Z0-9]*\.[a-zA-Z0-9]+/)
   .openapi('ResourceToSkip')
 
+const ChangeSetIdSchema = z
+  .string()
+  .regex(/arn:[-a-zA-Z0-9:\/]*/)
+  .min(1)
+  .openapi('ChangeSetId')
+
 const StackIdSchema = z.string().openapi('StackId')
 
 const CreateChangeSetOutputSchema = z
   .object({
-    Id: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the change set.' }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the stack.' }),
-    ).exactOptional(),
+    Id: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the change set.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({ description: 'The unique ID of the stack.' }),
   })
   .openapi({ description: 'The output for the <a>CreateChangeSet</a> action.', required: [] })
   .openapi('CreateChangeSetOutput')
@@ -538,33 +234,21 @@ const UsePreviousValueSchema = z.boolean().openapi('UsePreviousValue')
 
 const ParameterSchema = z
   .object({
-    ParameterKey: ParameterKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-        }),
-    ).exactOptional(),
-    ParameterValue: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The input value associated with the parameter.' }),
-    ).exactOptional(),
-    UsePreviousValue: UsePreviousValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-        }),
-    ).exactOptional(),
-    ResolvedValue: ParameterValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-        }),
-    ).exactOptional(),
+    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+      description:
+        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+    }),
+    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+      description: 'The input value associated with the parameter.',
+    }),
+    UsePreviousValue: UsePreviousValueSchema.exactOptional().openapi({
+      description:
+        'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+    }),
+    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+      description:
+        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+    }),
   })
   .openapi({ description: 'The Parameter data type.', required: [] })
   .openapi('Parameter')
@@ -573,28 +257,22 @@ const CapabilitySchema = z
   .enum(['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM', 'CAPABILITY_AUTO_EXPAND'])
   .openapi('Capability')
 
+const ResourceTypeSchema = z.string().min(1).max(256).openapi('ResourceType')
+
 const ArnSchema = z.string().openapi('Arn')
 
 const TypeSchema = z.string().openapi('Type')
 
 const RollbackTriggerSchema = z
   .object({
-    Arn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the rollback trigger.</p> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>',
-        }),
-    ),
-    Type: TypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource type of the rollback trigger. Specify either <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html">AWS::CloudWatch::Alarm</a> or <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudwatch-compositealarm.html">AWS::CloudWatch::CompositeAlarm</a> resource types.',
-        }),
-    ),
+    Arn: ArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the rollback trigger.</p> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>',
+    }),
+    Type: TypeSchema.openapi({
+      description:
+        'The resource type of the rollback trigger. Specify either <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html">AWS::CloudWatch::Alarm</a> or <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudwatch-compositealarm.html">AWS::CloudWatch::CompositeAlarm</a> resource types.',
+    }),
   })
   .openapi({
     required: ['Arn', 'Type'],
@@ -615,22 +293,14 @@ const TagValueSchema = z.string().min(1).max(256).openapi('TagValue')
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>Required</i>. A string used to identify this tag. You can specify a maximum of 128 characters for a tag key. Tags owned by Amazon Web Services (Amazon Web Services) have the reserved prefix: <code>aws:</code>.',
-        }),
-    ),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <i>Required</i>. A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value.',
-        }),
-    ),
+    Key: TagKeySchema.openapi({
+      description:
+        ' <i>Required</i>. A string used to identify this tag. You can specify a maximum of 128 characters for a tag key. Tags owned by Amazon Web Services (Amazon Web Services) have the reserved prefix: <code>aws:</code>.',
+    }),
+    Value: TagValueSchema.openapi({
+      description:
+        ' <i>Required</i>. A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value.',
+    }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -638,6 +308,8 @@ const TagSchema = z
       'The Tag type enables you to specify a key-value pair that can be used to store information about an CloudFormation stack.',
   })
   .openapi('Tag')
+
+const LogicalResourceIdSchema = z.string().openapi('LogicalResourceId')
 
 const ResourceIdentifierPropertyValueSchema = z
   .string()
@@ -653,29 +325,17 @@ const ResourceIdentifierPropertiesSchema = z
 
 const ResourceToImportSchema = z
   .object({
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of resource to import into your stack, such as <code>AWS::S3::Bucket</code>. For a list of supported resource types, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html">Resources that support import operations</a> in the CloudFormation User Guide.',
-        }),
-    ),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The logical ID of the target resource as specified in the template.',
-        }),
-    ),
-    ResourceIdentifier: ResourceIdentifierPropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A key-value pair that identifies the target resource. The key is an identifier property (for example, <code>BucketName</code> for <code>AWS::S3::Bucket</code> resources) and the value is the actual property value (for example, <code>MyS3Bucket</code>).',
-        }),
-    ),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'The type of resource to import into your stack, such as <code>AWS::S3::Bucket</code>. For a list of supported resource types, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html">Resources that support import operations</a> in the CloudFormation User Guide.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical ID of the target resource as specified in the template.',
+    }),
+    ResourceIdentifier: ResourceIdentifierPropertiesSchema.openapi({
+      description:
+        'A key-value pair that identifies the target resource. The key is an identifier property (for example, <code>BucketName</code> for <code>AWS::S3::Bucket</code> resources) and the value is the actual property value (for example, <code>MyS3Bucket</code>).',
+    }),
   })
   .openapi({
     required: ['ResourceType', 'LogicalResourceId', 'ResourceIdentifier'],
@@ -691,9 +351,9 @@ const LimitExceededExceptionSchema = z.any().openapi('LimitExceededException')
 
 const CreateStackOutputSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
   })
   .openapi({ description: 'The output for a <a>CreateStack</a> action.', required: [] })
   .openapi('CreateStackOutput')
@@ -707,9 +367,9 @@ const ClientRequestTokenSchema = z
 
 const CreateStackInstancesOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique identifier for this stack set operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique identifier for this stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStackInstancesOutput')
@@ -776,9 +436,9 @@ const StackSetIdSchema = z.string().openapi('StackSetId')
 
 const CreateStackSetOutputSchema = z
   .object({
-    StackSetId: StackSetIdSchema.and(
-      z.any().openapi({ description: "The ID of the stack set that you're creating." }),
-    ).exactOptional(),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description: "The ID of the stack set that you're creating.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateStackSetOutput')
@@ -796,13 +456,13 @@ const NameAlreadyExistsExceptionSchema = z.any().openapi('NameAlreadyExistsExcep
 const CreatedButModifiedExceptionSchema = z.any().openapi('CreatedButModifiedException')
 
 const DeactivateOrganizationsAccessOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi('DeactivateOrganizationsAccessOutput')
 
-const DeactivateTypeOutputSchema = z.object({}).openapi('DeactivateTypeOutput')
+const DeactivateTypeOutputSchema = z.looseObject({}).openapi('DeactivateTypeOutput')
 
 const DeleteChangeSetOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the <a>DeleteChangeSet</a> action.' })
   .openapi('DeleteChangeSetOutput')
 
@@ -810,18 +470,18 @@ const InvalidChangeSetStatusExceptionSchema = z.any().openapi('InvalidChangeSetS
 
 const DeleteStackInstancesOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique identifier for this stack set operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique identifier for this stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteStackInstancesOutput')
 
-const DeleteStackSetOutputSchema = z.object({}).openapi('DeleteStackSetOutput')
+const DeleteStackSetOutputSchema = z.looseObject({}).openapi('DeleteStackSetOutput')
 
 const StackSetNotEmptyExceptionSchema = z.any().openapi('StackSetNotEmptyException')
 
-const DeregisterTypeOutputSchema = z.object({}).openapi('DeregisterTypeOutput')
+const DeregisterTypeOutputSchema = z.looseObject({}).openapi('DeregisterTypeOutput')
 
 const LimitNameSchema = z.string().openapi('LimitName')
 
@@ -829,17 +489,13 @@ const LimitValueSchema = z.int().openapi('LimitValue')
 
 const AccountLimitSchema = z
   .object({
-    Name: LimitNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the account limit.</p> <p>Values: <code>ConcurrentResourcesLimit</code> | <code>StackLimit</code> | <code>StackOutputsLimit</code> </p>',
-        }),
-    ).exactOptional(),
-    Value: LimitValueSchema.and(
-      z.any().openapi({ description: "The value that's associated with the account limit name." }),
-    ).exactOptional(),
+    Name: LimitNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the account limit.</p> <p>Values: <code>ConcurrentResourcesLimit</code> | <code>StackLimit</code> | <code>StackOutputsLimit</code> </p>',
+    }),
+    Value: LimitValueSchema.exactOptional().openapi({
+      description: "The value that's associated with the account limit name.",
+    }),
   })
   .openapi({
     description:
@@ -854,22 +510,14 @@ const NextTokenSchema = z.string().min(1).max(1024).openapi('NextToken')
 
 const DescribeAccountLimitsOutputSchema = z
   .object({
-    AccountLimits: AccountLimitListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An account limit structure that contain a list of CloudFormation account limits and their values.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB in size, a string that identifies the next page of limits. If no additional page exists, this value is null.',
-        }),
-    ).exactOptional(),
+    AccountLimits: AccountLimitListSchema.exactOptional().openapi({
+      description:
+        'An account limit structure that contain a list of CloudFormation account limits and their values.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB in size, a string that identifies the next page of limits. If no additional page exists, this value is null.',
+    }),
   })
   .openapi({ description: 'The output for the <a>DescribeAccountLimits</a> action.', required: [] })
   .openapi('DescribeAccountLimitsOutput')
@@ -919,22 +567,14 @@ const NotificationARNsSchema = z.array(NotificationARNSchema).max(5).openapi('No
 
 const RollbackConfigurationSchema = z
   .object({
-    RollbackTriggers: RollbackTriggersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
-        }),
-    ).exactOptional(),
-    MonitoringTimeInMinutes: MonitoringTimeInMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
-        }),
-    ).exactOptional(),
+    RollbackTriggers: RollbackTriggersSchema.exactOptional().openapi({
+      description:
+        "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
+    }),
+    MonitoringTimeInMinutes: MonitoringTimeInMinutesSchema.exactOptional().openapi({
+      description:
+        '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
+    }),
   })
   .openapi({
     description:
@@ -947,41 +587,181 @@ const CapabilitiesSchema = z.array(CapabilitySchema).openapi('Capabilities')
 
 const TagsSchema = z.array(TagSchema).max(50).openapi('Tags')
 
-const ChangeSchema: z.ZodType<ChangeType> = z
-  .lazy(() =>
-    z
-      .object({
-        Type: ChangeTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'The type of entity that CloudFormation changes. Currently, the only entity type is <code>Resource</code>.',
-            }),
-        ).exactOptional(),
-        HookInvocationCount: HookInvocationCountSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Is either <code>null</code>, if no hooks invoke for the resource, or contains the number of hooks that will invoke for the resource.',
-            }),
-        ).exactOptional(),
-        ResourceChange: ResourceChangeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A <code>ResourceChange</code> structure that describes the resource and action that CloudFormation will perform.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description:
-          'The <code>Change</code> structure describes the changes CloudFormation will perform if you execute the change set.',
-        required: [],
-      }),
-  )
+const ChangeTypeSchema = z.literal('Resource').openapi('ChangeType')
+
+const HookInvocationCountSchema = z.int().min(1).max(100).openapi('HookInvocationCount')
+
+const ChangeActionSchema = z
+  .enum(['Add', 'Modify', 'Remove', 'Import', 'Dynamic'])
+  .openapi('ChangeAction')
+
+const PhysicalResourceIdSchema = z.string().openapi('PhysicalResourceId')
+
+const ReplacementSchema = z.enum(['True', 'False', 'Conditional']).openapi('Replacement')
+
+const ResourceAttributeSchema = z
+  .enum(['Properties', 'Metadata', 'CreationPolicy', 'UpdatePolicy', 'DeletionPolicy', 'Tags'])
+  .openapi('ResourceAttribute')
+
+const ScopeSchema = z.array(ResourceAttributeSchema).openapi('Scope')
+
+const PropertyNameSchema = z.string().openapi('PropertyName')
+
+const RequiresRecreationSchema = z
+  .enum(['Never', 'Conditionally', 'Always'])
+  .openapi('RequiresRecreation')
+
+const ResourceTargetDefinitionSchema = z
+  .object({
+    Attribute: ResourceAttributeSchema.exactOptional().openapi({
+      description:
+        "Indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.",
+    }),
+    Name: PropertyNameSchema.exactOptional().openapi({
+      description:
+        'If the <code>Attribute</code> value is <code>Properties</code>, the name of the property. For all other attributes, the value is null.',
+    }),
+    RequiresRecreation: RequiresRecreationSchema.exactOptional().openapi({
+      description:
+        'If the <code>Attribute</code> value is <code>Properties</code>, indicates whether a change to this property causes the resource to be recreated. The value can be <code>Never</code>, <code>Always</code>, or <code>Conditionally</code>. To determine the conditions for a <code>Conditionally</code> recreation, see the update behavior for that <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">property</a> in the CloudFormation User Guide.',
+    }),
+  })
+  .openapi({
+    description:
+      "The field that CloudFormation will change, such as the name of a resource's property, and whether the resource will be recreated.",
+    required: [],
+  })
+  .openapi('ResourceTargetDefinition')
+
+const EvaluationTypeSchema = z.enum(['Static', 'Dynamic']).openapi('EvaluationType')
+
+const ChangeSourceSchema = z
+  .enum([
+    'ResourceReference',
+    'ParameterReference',
+    'ResourceAttribute',
+    'DirectModification',
+    'Automatic',
+  ])
+  .openapi('ChangeSource')
+
+const CausingEntitySchema = z.string().openapi('CausingEntity')
+
+const ResourceChangeDetailSchema = z
+  .object({
+    Target: ResourceTargetDefinitionSchema.exactOptional().openapi({
+      description:
+        'A <code>ResourceTargetDefinition</code> structure that describes the field that CloudFormation will change and whether the resource will be recreated.',
+    }),
+    Evaluation: EvaluationTypeSchema.exactOptional().openapi({
+      description:
+        "<p>Indicates whether CloudFormation can determine the target value, and whether the target value will change before you execute a change set.</p> <p>For <code>Static</code> evaluations, CloudFormation can determine that the target value will change, and its value. For example, if you directly modify the <code>InstanceType</code> property of an EC2 instance, CloudFormation knows that this property value will change, and its value, so this is a <code>Static</code> evaluation.</p> <p>For <code>Dynamic</code> evaluations, can't determine the target value because it depends on the result of an intrinsic function, such as a <code>Ref</code> or <code>Fn::GetAtt</code> intrinsic function, when the stack is updated. For example, if your template includes a reference to a resource that's conditionally recreated, the value of the reference (the physical ID of the resource) might change, depending on if the resource is recreated. If the resource is recreated, it will have a new physical ID, so all references to that resource will also be updated.</p>",
+    }),
+    ChangeSource: ChangeSourceSchema.exactOptional().openapi({
+      description:
+        '<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ "Ref" : "MyEC2InstanceResource" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ "Ref" : "MyPasswordParameter" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ "Fn::GetAtt" : [ "MyEC2InstanceResource", "PublicDnsName" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack\'s template might have changed. Changes to a nested stack\'s template aren\'t visible to CloudFormation until you run an update on the parent stack.</p> </li> </ul>',
+    }),
+    CausingEntity: CausingEntitySchema.exactOptional().openapi({
+      description:
+        "<p>The identity of the entity that triggered this change. This entity is a member of the group that's specified by the <code>ChangeSource</code> field. For example, if you modified the value of the <code>KeyPairName</code> parameter, the <code>CausingEntity</code> is the name of the parameter (<code>KeyPairName</code>).</p> <p>If the <code>ChangeSource</code> value is <code>DirectModification</code>, no value is given for <code>CausingEntity</code>.</p>",
+    }),
+  })
+  .openapi({
+    description:
+      'For a resource with <code>Modify</code> as the action, the <code>ResourceChange</code> structure describes the changes CloudFormation will make to that resource.',
+    required: [],
+  })
+  .openapi('ResourceChangeDetail')
+
+const ResourceChangeDetailsSchema = z
+  .array(ResourceChangeDetailSchema)
+  .openapi('ResourceChangeDetails')
+
+const TypeHierarchySchema = z.string().openapi('TypeHierarchy')
+
+const LogicalIdHierarchySchema = z.string().openapi('LogicalIdHierarchy')
+
+const ModuleInfoSchema = z
+  .object({
+    TypeHierarchy: TypeHierarchySchema.exactOptional().openapi({
+      description:
+        "<p>A concatenated list of the module type or types containing the resource. Module types are listed starting with the inner-most nested module, and separated by <code>/</code>.</p> <p>In the following example, the resource was created from a module of type <code>AWS::First::Example::MODULE</code>, that's nested inside a parent module of type <code>AWS::Second::Example::MODULE</code>.</p> <p> <code>AWS::First::Example::MODULE/AWS::Second::Example::MODULE</code> </p>",
+    }),
+    LogicalIdHierarchy: LogicalIdHierarchySchema.exactOptional().openapi({
+      description:
+        '<p>A concatenated list of the logical IDs of the module or modules containing the resource. Modules are listed starting with the inner-most nested module, and separated by <code>/</code>.</p> <p>In the following example, the resource was created from a module, <code>moduleA</code>, that\'s nested inside a parent module, <code>moduleB</code>.</p> <p> <code>moduleA/moduleB</code> </p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/modules.html#module-ref-resources">Referencing resources in a module</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+  })
+  .openapi({
+    description:
+      '<p>Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.</p> <p>For more information about modules, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/modules.html">Using modules to encapsulate and reuse resource configurations</a> in the <i>CloudFormation User Guide</i>.</p>',
+    required: [],
+  })
+  .openapi('ModuleInfo')
+
+const ResourceChangeSchema = z
+  .object({
+    Action: ChangeActionSchema.exactOptional().openapi({
+      description:
+        "The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), or <code>Dynamic</code> (exact action for the resource can't be determined).",
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description: "The resource's logical ID, which is defined in the stack's template.",
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        "The resource's physical ID (resource name). Resources that you are adding don't have physical IDs because they haven't been created.",
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description: 'The type of CloudFormation resource, such as <code>AWS::S3::Bucket</code>.',
+    }),
+    Replacement: ReplacementSchema.exactOptional().openapi({
+      description:
+        '<p>For the <code>Modify</code> action, indicates whether CloudFormation will replace the resource by creating a new one and deleting the old one. This value depends on the value of the <code>RequiresRecreation</code> property in the <code>ResourceTargetDefinition</code> structure. For example, if the <code>RequiresRecreation</code> field is <code>Always</code> and the <code>Evaluation</code> field is <code>Static</code>, <code>Replacement</code> is <code>True</code>. If the <code>RequiresRecreation</code> field is <code>Always</code> and the <code>Evaluation</code> field is <code>Dynamic</code>, <code>Replacement</code> is <code>Conditionally</code>.</p> <p>If you have multiple changes with different <code>RequiresRecreation</code> values, the <code>Replacement</code> value depends on the change with the most impact. A <code>RequiresRecreation</code> value of <code>Always</code> has the most impact, followed by <code>Conditionally</code>, and then <code>Never</code>.</p>',
+    }),
+    Scope: ScopeSchema.exactOptional().openapi({
+      description:
+        "For the <code>Modify</code> action, indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.",
+    }),
+    Details: ResourceChangeDetailsSchema.exactOptional().openapi({
+      description:
+        'For the <code>Modify</code> action, a list of <code>ResourceChangeDetail</code> structures that describes the changes that CloudFormation will make to the resource.',
+    }),
+    ChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The change set ID of the nested change set.',
+    }),
+    ModuleInfo: ModuleInfoSchema.exactOptional().openapi({
+      description:
+        'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
+    }),
+  })
+  .openapi({
+    description:
+      'The <code>ResourceChange</code> structure describes the resource and the action that CloudFormation will perform on it if you execute this change set.',
+    required: [],
+  })
+  .openapi('ResourceChange')
+
+const ChangeSchema = z
+  .object({
+    Type: ChangeTypeSchema.exactOptional().openapi({
+      description:
+        'The type of entity that CloudFormation changes. Currently, the only entity type is <code>Resource</code>.',
+    }),
+    HookInvocationCount: HookInvocationCountSchema.exactOptional().openapi({
+      description:
+        'Is either <code>null</code>, if no hooks invoke for the resource, or contains the number of hooks that will invoke for the resource.',
+    }),
+    ResourceChange: ResourceChangeSchema.exactOptional().openapi({
+      description:
+        'A <code>ResourceChange</code> structure that describes the resource and action that CloudFormation will perform.',
+    }),
+  })
+  .openapi({
+    description:
+      'The <code>Change</code> structure describes the changes CloudFormation will perform if you execute the change set.',
+    required: [],
+  })
   .openapi('Change')
 
 const ChangesSchema = z.array(ChangeSchema).openapi('Changes')
@@ -992,142 +772,80 @@ const OnStackFailureSchema = z.enum(['DO_NOTHING', 'ROLLBACK', 'DELETE']).openap
 
 const DescribeChangeSetOutputSchema = z
   .object({
-    ChangeSetName: ChangeSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the change set.' }),
-    ).exactOptional(),
-    ChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the change set.' }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of the stack that's associated with the change set.",
-        }),
-    ).exactOptional(),
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: "The name of the stack that's associated with the change set." }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Information about the change set.' }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Parameter</code> structures that describes the input parameters and their values used to create the change set. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
-        }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The start time when the change set was created, in UTC.' }),
-    ).exactOptional(),
-    ExecutionStatus: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the change set execution status is <code>AVAILABLE</code>, you can execute the change set. If you can't execute the change set, the status indicates why. For example, a change set might be in an <code>UNAVAILABLE</code> state because CloudFormation is still creating it or in an <code>OBSOLETE</code> state because the stack was already updated.",
-        }),
-    ).exactOptional(),
-    Status: ChangeSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The current status of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.',
-        }),
-    ).exactOptional(),
-    StatusReason: ChangeSetStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the change set's status. For example, if your attempt to create a change set failed, CloudFormation shows the error message.",
-        }),
-    ).exactOptional(),
-    NotificationARNs: NotificationARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARNs of the Amazon Simple Notification Service (Amazon SNS) topics that will be associated with the stack if you execute the change set.',
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you execute the change set, the list of capabilities that were explicitly acknowledged when the change set was created.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you execute the change set, the tags that will be associated with the stack.',
-        }),
-    ).exactOptional(),
-    Changes: ChangesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Change</code> structures that describes the resources CloudFormation changes if you execute the change set.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB, a string that identifies the next page of changes. If there is no additional page, this value is null.',
-        }),
-    ).exactOptional(),
-    IncludeNestedStacks: IncludeNestedStacksSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Verifies if <code>IncludeNestedStacks</code> is set to <code>True</code>.',
-        }),
-    ).exactOptional(),
-    ParentChangeSetId: ChangeSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the change set ID of the parent change set in the current nested change set hierarchy.',
-        }),
-    ).exactOptional(),
-    RootChangeSetId: ChangeSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the change set ID of the root change set in the current nested change set hierarchy.',
-        }),
-    ).exactOptional(),
-    OnStackFailure: OnStackFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines what action will be taken if stack creation fails. When this parameter is specified, the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    ChangeSetName: ChangeSetNameSchema.exactOptional().openapi({
+      description: 'The name of the change set.',
+    }),
+    ChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the change set.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of the stack that's associated with the change set.",
+    }),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description: "The name of the stack that's associated with the change set.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Information about the change set.',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Parameter</code> structures that describes the input parameters and their values used to create the change set. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
+    }),
+    CreationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The start time when the change set was created, in UTC.',
+    }),
+    ExecutionStatus: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "If the change set execution status is <code>AVAILABLE</code>, you can execute the change set. If you can't execute the change set, the status indicates why. For example, a change set might be in an <code>UNAVAILABLE</code> state because CloudFormation is still creating it or in an <code>OBSOLETE</code> state because the stack was already updated.",
+    }),
+    Status: ChangeSetStatusSchema.exactOptional().openapi({
+      description:
+        'The current status of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.',
+    }),
+    StatusReason: ChangeSetStatusReasonSchema.exactOptional().openapi({
+      description:
+        "A description of the change set's status. For example, if your attempt to create a change set failed, CloudFormation shows the error message.",
+    }),
+    NotificationARNs: NotificationARNsSchema.exactOptional().openapi({
+      description:
+        'The ARNs of the Amazon Simple Notification Service (Amazon SNS) topics that will be associated with the stack if you execute the change set.',
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        'If you execute the change set, the list of capabilities that were explicitly acknowledged when the change set was created.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'If you execute the change set, the tags that will be associated with the stack.',
+    }),
+    Changes: ChangesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Change</code> structures that describes the resources CloudFormation changes if you execute the change set.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB, a string that identifies the next page of changes. If there is no additional page, this value is null.',
+    }),
+    IncludeNestedStacks: IncludeNestedStacksSchema.exactOptional().openapi({
+      description: 'Verifies if <code>IncludeNestedStacks</code> is set to <code>True</code>.',
+    }),
+    ParentChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description:
+        'Specifies the change set ID of the parent change set in the current nested change set hierarchy.',
+    }),
+    RootChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description:
+        'Specifies the change set ID of the root change set in the current nested change set hierarchy.',
+    }),
+    OnStackFailure: OnStackFailureSchema.exactOptional().openapi({
+      description:
+        '<p>Determines what action will be taken if stack creation fails. When this parameter is specified, the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'The output for the <a>DescribeChangeSet</a> action.', required: [] })
   .openapi('DescribeChangeSetOutput')
@@ -1165,23 +883,15 @@ const HookTargetTypeNameSchema = z
 
 const ChangeSetHookResourceTargetDetailsSchema = z
   .object({
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The resource's logical ID, which is defined in the stack's template.",
-        }),
-    ).exactOptional(),
-    ResourceType: HookTargetTypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of CloudFormation resource, such as <code>AWS::S3::Bucket</code>.',
-        }),
-    ).exactOptional(),
-    ResourceAction: ChangeActionSchema.and(
-      z.any().openapi({ description: 'Specifies the action of the resource.' }),
-    ).exactOptional(),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description: "The resource's logical ID, which is defined in the stack's template.",
+    }),
+    ResourceType: HookTargetTypeNameSchema.exactOptional().openapi({
+      description: 'The type of CloudFormation resource, such as <code>AWS::S3::Bucket</code>.',
+    }),
+    ResourceAction: ChangeActionSchema.exactOptional().openapi({
+      description: 'Specifies the action of the resource.',
+    }),
   })
   .openapi({
     description: 'Specifies <code>RESOURCE</code> type target details for activated hooks.',
@@ -1191,56 +901,38 @@ const ChangeSetHookResourceTargetDetailsSchema = z
 
 const ChangeSetHookTargetDetailsSchema = z
   .object({
-    TargetType: HookTargetTypeSchema.and(
-      z.any().openapi({ description: 'The name of the type.' }),
-    ).exactOptional(),
-    ResourceTargetDetails: ChangeSetHookResourceTargetDetailsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Required if <code>TargetType</code> is <code>RESOURCE</code>.' }),
-    ).exactOptional(),
+    TargetType: HookTargetTypeSchema.exactOptional().openapi({
+      description: 'The name of the type.',
+    }),
+    ResourceTargetDetails: ChangeSetHookResourceTargetDetailsSchema.exactOptional().openapi({
+      description: 'Required if <code>TargetType</code> is <code>RESOURCE</code>.',
+    }),
   })
   .openapi({ description: 'Specifies target details for an activated hook.', required: [] })
   .openapi('ChangeSetHookTargetDetails')
 
 const ChangeSetHookSchema = z
   .object({
-    InvocationPoint: HookInvocationPointSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies the points in provisioning logic where a hook is invoked.',
-        }),
-    ).exactOptional(),
-    FailureMode: HookFailureModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the hook failure mode for non-compliant resources in the followings ways.</p> <ul> <li> <p> <code>FAIL</code> Stops provisioning resources.</p> </li> <li> <p> <code>WARN</code> Allows provisioning to continue with a warning message.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TypeName: HookTypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique name for your hook. Specifies a three-part namespace for your hook, with a recommended pattern of <code>Organization::Service::Hook</code>.</p> <note> <p>The following organization namespaces are reserved and can't be used in your hook type names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>ASK</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>",
-        }),
-    ).exactOptional(),
-    TypeVersionId: HookTypeVersionIdSchema.and(
-      z.any().openapi({ description: 'The version ID of the type specified.' }),
-    ).exactOptional(),
-    TypeConfigurationVersionId: HookTypeConfigurationVersionIdSchema.and(
-      z.any().openapi({ description: 'The version ID of the type configuration.' }),
-    ).exactOptional(),
-    TargetDetails: ChangeSetHookTargetDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies details about the target that the hook will run against.',
-        }),
-    ).exactOptional(),
+    InvocationPoint: HookInvocationPointSchema.exactOptional().openapi({
+      description: 'Specifies the points in provisioning logic where a hook is invoked.',
+    }),
+    FailureMode: HookFailureModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the hook failure mode for non-compliant resources in the followings ways.</p> <ul> <li> <p> <code>FAIL</code> Stops provisioning resources.</p> </li> <li> <p> <code>WARN</code> Allows provisioning to continue with a warning message.</p> </li> </ul>',
+    }),
+    TypeName: HookTypeNameSchema.exactOptional().openapi({
+      description:
+        "<p>The unique name for your hook. Specifies a three-part namespace for your hook, with a recommended pattern of <code>Organization::Service::Hook</code>.</p> <note> <p>The following organization namespaces are reserved and can't be used in your hook type names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>ASK</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>",
+    }),
+    TypeVersionId: HookTypeVersionIdSchema.exactOptional().openapi({
+      description: 'The version ID of the type specified.',
+    }),
+    TypeConfigurationVersionId: HookTypeConfigurationVersionIdSchema.exactOptional().openapi({
+      description: 'The version ID of the type configuration.',
+    }),
+    TargetDetails: ChangeSetHookTargetDetailsSchema.exactOptional().openapi({
+      description: 'Specifies details about the target that the hook will run against.',
+    }),
   })
   .openapi({
     description: 'Specifies the resource, the hook, and the hook version to be invoked.',
@@ -1256,31 +948,23 @@ const ChangeSetHooksStatusSchema = z
 
 const DescribeChangeSetHooksOutputSchema = z
   .object({
-    ChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The change set identifier (stack ID).' }),
-    ).exactOptional(),
-    ChangeSetName: ChangeSetNameSchema.and(
-      z.any().openapi({ description: 'The change set name.' }),
-    ).exactOptional(),
-    Hooks: ChangeSetHooksSchema.and(
-      z.any().openapi({ description: 'List of hook objects.' }),
-    ).exactOptional(),
-    Status: ChangeSetHooksStatusSchema.and(
-      z.any().openapi({ description: 'Provides the status of the change set hook.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Pagination token, <code>null</code> or empty if no more results.',
-        }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The stack identifier (stack ID).' }),
-    ).exactOptional(),
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The stack name.' }),
-    ).exactOptional(),
+    ChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The change set identifier (stack ID).',
+    }),
+    ChangeSetName: ChangeSetNameSchema.exactOptional().openapi({
+      description: 'The change set name.',
+    }),
+    Hooks: ChangeSetHooksSchema.exactOptional().openapi({ description: 'List of hook objects.' }),
+    Status: ChangeSetHooksStatusSchema.exactOptional().openapi({
+      description: 'Provides the status of the change set hook.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'Pagination token, <code>null</code> or empty if no more results.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'The stack identifier (stack ID).',
+    }),
+    StackName: StackNameSchema.exactOptional().openapi({ description: 'The stack name.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeChangeSetHooksOutput')
@@ -1291,11 +975,9 @@ const OrganizationStatusSchema = z
 
 const DescribeOrganizationsAccessOutputSchema = z
   .object({
-    Status: OrganizationStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Presents the status of the <code>OrganizationAccess</code>.' }),
-    ).exactOptional(),
+    Status: OrganizationStatusSchema.exactOptional().openapi({
+      description: 'Presents the status of the <code>OrganizationAccess</code>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeOrganizationsAccessOutput')
@@ -1321,30 +1003,20 @@ const PublisherProfileSchema = z
 
 const DescribePublisherOutputSchema = z
   .object({
-    PublisherId: PublisherIdSchema.and(
-      z.any().openapi({ description: 'The ID of the extension publisher.' }),
-    ).exactOptional(),
-    PublisherStatus: PublisherStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether the publisher is verified. Currently, all registered publishers are verified.',
-        }),
-    ).exactOptional(),
-    IdentityProvider: IdentityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of account used as the identity provider when registering this publisher with CloudFormation.',
-        }),
-    ).exactOptional(),
-    PublisherProfile: PublisherProfileSchema.and(
-      z
-        .any()
-        .openapi({ description: "The URL to the publisher's profile with the identity provider." }),
-    ).exactOptional(),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description: 'The ID of the extension publisher.',
+    }),
+    PublisherStatus: PublisherStatusSchema.exactOptional().openapi({
+      description:
+        'Whether the publisher is verified. Currently, all registered publishers are verified.',
+    }),
+    IdentityProvider: IdentityProviderSchema.exactOptional().openapi({
+      description:
+        'The type of account used as the identity provider when registering this publisher with CloudFormation.',
+    }),
+    PublisherProfile: PublisherProfileSchema.exactOptional().openapi({
+      description: "The URL to the publisher's profile with the identity provider.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribePublisherOutput')
@@ -1365,53 +1037,29 @@ const BoxedIntegerSchema = z.int().openapi('BoxedInteger')
 
 const DescribeStackDriftDetectionStatusOutputSchema = z
   .object({
-    StackId: StackIdSchema.and(z.any().openapi({ description: 'The ID of the stack.' })),
-    StackDriftDetectionId: StackDriftDetectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of reports CloudFormation retains for any given stack, and for how long, may vary.</p>',
-        }),
-    ),
-    StackDriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DetectionStatus: StackDriftDetectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the stack drift detection operation.</p> <ul> <li> <p> <code>DETECTION_COMPLETE</code>: The stack drift detection operation has successfully completed for all resources in the stack that support drift detection. (Resources that don't currently support stack detection remain unchecked.)</p> <p>If you specified logical resource IDs for CloudFormation to use as a filter for the stack drift detection operation, only the resources with those logical IDs are checked for drift.</p> </li> <li> <p> <code>DETECTION_FAILED</code>: The stack drift detection operation has failed for at least one resource in the stack. Results will be available for resources on which CloudFormation successfully completed drift detection.</p> </li> <li> <p> <code>DETECTION_IN_PROGRESS</code>: The stack drift detection operation is currently in progress.</p> </li> </ul>",
-        }),
-    ),
-    DetectionStatusReason: StackDriftDetectionStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The reason the stack drift detection operation has its current status.',
-        }),
-    ).exactOptional(),
-    DriftedStackResourceCount: BoxedIntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Total number of stack resources that have drifted. This is NULL until the drift detection operation reaches a status of <code>DETECTION_COMPLETE</code>. This value will be 0 for stacks whose drift status is <code>IN_SYNC</code>.',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Time at which the stack drift detection operation was initiated.',
-        }),
-    ),
+    StackId: StackIdSchema.openapi({ description: 'The ID of the stack.' }),
+    StackDriftDetectionId: StackDriftDetectionIdSchema.openapi({
+      description:
+        '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of reports CloudFormation retains for any given stack, and for how long, may vary.</p>',
+    }),
+    StackDriftStatus: StackDriftStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Status of the stack's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    DetectionStatus: StackDriftDetectionStatusSchema.openapi({
+      description:
+        "<p>The status of the stack drift detection operation.</p> <ul> <li> <p> <code>DETECTION_COMPLETE</code>: The stack drift detection operation has successfully completed for all resources in the stack that support drift detection. (Resources that don't currently support stack detection remain unchecked.)</p> <p>If you specified logical resource IDs for CloudFormation to use as a filter for the stack drift detection operation, only the resources with those logical IDs are checked for drift.</p> </li> <li> <p> <code>DETECTION_FAILED</code>: The stack drift detection operation has failed for at least one resource in the stack. Results will be available for resources on which CloudFormation successfully completed drift detection.</p> </li> <li> <p> <code>DETECTION_IN_PROGRESS</code>: The stack drift detection operation is currently in progress.</p> </li> </ul>",
+    }),
+    DetectionStatusReason: StackDriftDetectionStatusReasonSchema.exactOptional().openapi({
+      description: 'The reason the stack drift detection operation has its current status.',
+    }),
+    DriftedStackResourceCount: BoxedIntegerSchema.exactOptional().openapi({
+      description:
+        'Total number of stack resources that have drifted. This is NULL until the drift detection operation reaches a status of <code>DETECTION_COMPLETE</code>. This value will be 0 for stacks whose drift status is <code>IN_SYNC</code>.',
+    }),
+    Timestamp: TimestampSchema.openapi({
+      description: 'Time at which the stack drift detection operation was initiated.',
+    }),
   })
   .openapi({ required: ['StackId', 'StackDriftDetectionId', 'DetectionStatus', 'Timestamp'] })
   .openapi('DescribeStackDriftDetectionStatusOutput')
@@ -1459,79 +1107,50 @@ const HookStatusReasonSchema = z.string().min(1).max(1024).openapi('HookStatusRe
 
 const StackEventSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The unique ID name of the instance of the stack.' }),
-    ),
-    EventId: EventIdSchema.and(z.any().openapi({ description: 'The unique ID of this event.' })),
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name associated with a stack.' }),
-    ),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ).exactOptional(),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier associated with the physical instance of the resource.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of resource. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.)',
-        }),
-    ).exactOptional(),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Time the status was updated.' }),
-    ),
-    ResourceStatus: ResourceStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the resource.' }),
-    ).exactOptional(),
-    ResourceStatusReason: ResourceStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/failure message associated with the resource.' }),
-    ).exactOptional(),
-    ResourceProperties: ResourcePropertiesSchema.and(
-      z.any().openapi({ description: 'BLOB of the properties used to create the resource.' }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The token passed to the operation that generated this event.</p> <p>All events triggered by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>',
-        }),
-    ).exactOptional(),
-    HookType: HookTypeSchema.and(
-      z.any().openapi({ description: 'The name of the hook.' }),
-    ).exactOptional(),
-    HookStatus: HookStatusSchema.and(
-      z.any().openapi({ description: 'Provides the status of the change set hook.' }),
-    ).exactOptional(),
-    HookStatusReason: HookStatusReasonSchema.and(
-      z.any().openapi({ description: 'Provides the reason for the hook status.' }),
-    ).exactOptional(),
-    HookInvocationPoint: HookInvocationPointSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Invocation points are points in provisioning logic where hooks are initiated.',
-        }),
-    ).exactOptional(),
-    HookFailureMode: HookFailureModeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Specify the hook failure mode for non-compliant resources in the followings ways.</p> <ul> <li> <p> <code>FAIL</code> Stops provisioning resources.</p> </li> <li> <p> <code>WARN</code> Allows provisioning to continue with a warning message.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackId: StackIdSchema.openapi({
+      description: 'The unique ID name of the instance of the stack.',
+    }),
+    EventId: EventIdSchema.openapi({ description: 'The unique ID of this event.' }),
+    StackName: StackNameSchema.openapi({ description: 'The name associated with a stack.' }),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier associated with the physical instance of the resource.',
+    }),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'Type of resource. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.)',
+    }),
+    Timestamp: TimestampSchema.openapi({ description: 'Time the status was updated.' }),
+    ResourceStatus: ResourceStatusSchema.exactOptional().openapi({
+      description: 'Current status of the resource.',
+    }),
+    ResourceStatusReason: ResourceStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/failure message associated with the resource.',
+    }),
+    ResourceProperties: ResourcePropertiesSchema.exactOptional().openapi({
+      description: 'BLOB of the properties used to create the resource.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The token passed to the operation that generated this event.</p> <p>All events triggered by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>',
+    }),
+    HookType: HookTypeSchema.exactOptional().openapi({ description: 'The name of the hook.' }),
+    HookStatus: HookStatusSchema.exactOptional().openapi({
+      description: 'Provides the status of the change set hook.',
+    }),
+    HookStatusReason: HookStatusReasonSchema.exactOptional().openapi({
+      description: 'Provides the reason for the hook status.',
+    }),
+    HookInvocationPoint: HookInvocationPointSchema.exactOptional().openapi({
+      description: 'Invocation points are points in provisioning logic where hooks are initiated.',
+    }),
+    HookFailureMode: HookFailureModeSchema.exactOptional().openapi({
+      description:
+        '<p>Specify the hook failure mode for non-compliant resources in the followings ways.</p> <ul> <li> <p> <code>FAIL</code> Stops provisioning resources.</p> </li> <li> <p> <code>WARN</code> Allows provisioning to continue with a warning message.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['StackId', 'EventId', 'StackName', 'Timestamp'],
@@ -1543,17 +1162,13 @@ const StackEventsSchema = z.array(StackEventSchema).openapi('StackEvents')
 
 const DescribeStackEventsOutputSchema = z
   .object({
-    StackEvents: StackEventsSchema.and(
-      z.any().openapi({ description: 'A list of <code>StackEvents</code> structures.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB in size, a string that identifies the next page of events. If no additional page exists, this value is null.',
-        }),
-    ).exactOptional(),
+    StackEvents: StackEventsSchema.exactOptional().openapi({
+      description: 'A list of <code>StackEvents</code> structures.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB in size, a string that identifies the next page of events. If no additional page exists, this value is null.',
+    }),
   })
   .openapi({ description: 'The output for a <a>DescribeStackEvents</a> action.', required: [] })
   .openapi('DescribeStackEventsOutput')
@@ -1576,14 +1191,10 @@ const StackInstanceDetailedStatusSchema = z
 
 const StackInstanceComprehensiveStatusSchema = z
   .object({
-    DetailedStatus: StackInstanceDetailedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<ul> <li> <p> <code>CANCELLED</code>: The operation in the specified account and Region has been canceled. This is either because a user has stopped the stack set operation, or because the failure tolerance of the stack set operation has been exceeded.</p> </li> <li> <p> <code>FAILED</code>: The operation in the specified account and Region failed. If the stack set operation fails in enough accounts within a Region, the failure tolerance for the stack set operation as a whole might be exceeded.</p> </li> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>PENDING</code>: The operation in the specified account and Region has yet to start.</p> </li> <li> <p> <code>RUNNING</code>: The operation in the specified account and Region is currently in progress.</p> </li> <li> <p> <code>SKIPPED_SUSPENDED_ACCOUNT</code>: The operation in the specified account and Region has been skipped because the account was suspended at the time of the operation.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation in the specified account and Region completed successfully.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    DetailedStatus: StackInstanceDetailedStatusSchema.exactOptional().openapi({
+      description:
+        '<ul> <li> <p> <code>CANCELLED</code>: The operation in the specified account and Region has been canceled. This is either because a user has stopped the stack set operation, or because the failure tolerance of the stack set operation has been exceeded.</p> </li> <li> <p> <code>FAILED</code>: The operation in the specified account and Region failed. If the stack set operation fails in enough accounts within a Region, the failure tolerance for the stack set operation as a whole might be exceeded.</p> </li> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>PENDING</code>: The operation in the specified account and Region has yet to start.</p> </li> <li> <p> <code>RUNNING</code>: The operation in the specified account and Region is currently in progress.</p> </li> <li> <p> <code>SKIPPED_SUSPENDED_ACCOUNT</code>: The operation in the specified account and Region has been skipped because the account was suspended at the time of the operation.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation in the specified account and Region completed successfully.</p> </li> </ul>',
+    }),
   })
   .openapi({ description: 'The detailed status of the stack instance.', required: [] })
   .openapi('StackInstanceComprehensiveStatus')
@@ -1592,91 +1203,51 @@ const ReasonSchema = z.string().openapi('Reason')
 
 const StackInstanceSchema = z
   .object({
-    StackSetId: StackSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services Region that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    Account: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Self-managed permissions] The name of the Amazon Web Services account that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The ID of the stack instance.' }),
-    ).exactOptional(),
-    ParameterOverrides: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameters from the stack set template whose values have been overridden in this stack instance.',
-        }),
-    ).exactOptional(),
-    Status: StackInstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the stack instance, in terms of its synchronization with its associated stack set.</p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because:</p> <ul> <li> <p>The associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation.</p> </li> <li> <p>The stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> </ul> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StackInstanceStatus: StackInstanceComprehensiveStatusSchema.and(
-      z.any().openapi({ description: 'The detailed status of the stack instance.' }),
-    ).exactOptional(),
-    StatusReason: ReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The explanation for the specific status code that's assigned to this stack instance.",
-        }),
-    ).exactOptional(),
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
-        }),
-    ).exactOptional(),
-    DriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack instance's actual configuration compared to the expected template and parameter configuration of the stack set to which it belongs.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from the expected template and parameter configuration of the stack set to which it belongs. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack instance differs from its expected stack set configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack instance's actual configuration matches its expected stack set configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    LastDriftCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.",
-        }),
-    ).exactOptional(),
-    LastOperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last unique ID of a StackSet operation performed on a stack instance.',
-        }),
-    ).exactOptional(),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique ID of the stack set that the stack instance is associated with.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Web Services Region that the stack instance is associated with.',
+    }),
+    Account: AccountSchema.exactOptional().openapi({
+      description:
+        '[Self-managed permissions] The name of the Amazon Web Services account that the stack instance is associated with.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack instance.',
+    }),
+    ParameterOverrides: ParametersSchema.exactOptional().openapi({
+      description:
+        'A list of parameters from the stack set template whose values have been overridden in this stack instance.',
+    }),
+    Status: StackInstanceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the stack instance, in terms of its synchronization with its associated stack set.</p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because:</p> <ul> <li> <p>The associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation.</p> </li> <li> <p>The stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> </ul> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
+    }),
+    StackInstanceStatus: StackInstanceComprehensiveStatusSchema.exactOptional().openapi({
+      description: 'The detailed status of the stack instance.',
+    }),
+    StatusReason: ReasonSchema.exactOptional().openapi({
+      description:
+        "The explanation for the specific status code that's assigned to this stack instance.",
+    }),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
+    }),
+    DriftStatus: StackDriftStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Status of the stack instance's actual configuration compared to the expected template and parameter configuration of the stack set to which it belongs.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from the expected template and parameter configuration of the stack set to which it belongs. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack instance differs from its expected stack set configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack instance's actual configuration matches its expected stack set configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    LastDriftCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.",
+    }),
+    LastOperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The last unique ID of a StackSet operation performed on a stack instance.',
+    }),
   })
   .openapi({
     description:
@@ -1687,13 +1258,9 @@ const StackInstanceSchema = z
 
 const DescribeStackInstanceOutputSchema = z
   .object({
-    StackInstance: StackInstanceSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The stack instance that matches the specified request parameters.',
-        }),
-    ).exactOptional(),
+    StackInstance: StackInstanceSchema.exactOptional().openapi({
+      description: 'The stack instance that matches the specified request parameters.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStackInstanceOutput')
@@ -1708,22 +1275,14 @@ const StackResourceDriftStatusSchema = z
 
 const StackResourceDriftInformationSchema = z
   .object({
-    StackResourceDriftStatus: StackResourceDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status of the resource\'s actual configuration compared to its expected configuration</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation has not checked if the resource differs from its expected configuration.</p> <p>Any resources that do not currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html">Resources that Support Drift Detection</a>.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource\'s actual configuration matches its expected configuration.</p> </li> </ul>',
-        }),
-    ),
-    LastCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When CloudFormation last checked if the resource had drifted from its expected configuration.',
-        }),
-    ).exactOptional(),
+    StackResourceDriftStatus: StackResourceDriftStatusSchema.openapi({
+      description:
+        '<p>Status of the resource\'s actual configuration compared to its expected configuration</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation has not checked if the resource differs from its expected configuration.</p> <p>Any resources that do not currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html">Resources that Support Drift Detection</a>.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource\'s actual configuration matches its expected configuration.</p> </li> </ul>',
+    }),
+    LastCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'When CloudFormation last checked if the resource had drifted from its expected configuration.',
+    }),
   })
   .openapi({
     required: ['StackResourceDriftStatus'],
@@ -1734,69 +1293,45 @@ const StackResourceDriftInformationSchema = z
 
 const StackResourceDetailSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name associated with the stack.' }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
-        }),
-    ),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Time the status was updated.' }),
-    ),
-    ResourceStatus: ResourceStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the resource.' }),
-    ),
-    ResourceStatusReason: ResourceStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/failure message associated with the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'User defined description associated with the resource.' }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The content of the <code>Metadata</code> attribute declared for the resource. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-metadata.html">Metadata Attribute</a> in the CloudFormation User Guide.',
-        }),
-    ).exactOptional(),
-    DriftInformation: StackResourceDriftInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
-        }),
-    ).exactOptional(),
-    ModuleInfo: ModuleInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description: 'The name associated with the stack.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.openapi({ description: 'Time the status was updated.' }),
+    ResourceStatus: ResourceStatusSchema.openapi({
+      description: 'Current status of the resource.',
+    }),
+    ResourceStatusReason: ResourceStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/failure message associated with the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'User defined description associated with the resource.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description:
+        'The content of the <code>Metadata</code> attribute declared for the resource. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-metadata.html">Metadata Attribute</a> in the CloudFormation User Guide.',
+    }),
+    DriftInformation: StackResourceDriftInformationSchema.exactOptional().openapi({
+      description:
+        'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
+    }),
+    ModuleInfo: ModuleInfoSchema.exactOptional().openapi({
+      description:
+        'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
+    }),
   })
   .openapi({
     required: ['LogicalResourceId', 'ResourceType', 'LastUpdatedTimestamp', 'ResourceStatus'],
@@ -1806,14 +1341,10 @@ const StackResourceDetailSchema = z
 
 const DescribeStackResourceOutputSchema = z
   .object({
-    StackResourceDetail: StackResourceDetailSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>StackResourceDetail</code> structure containing the description of the specified resource in the specified stack.',
-        }),
-    ).exactOptional(),
+    StackResourceDetail: StackResourceDetailSchema.exactOptional().openapi({
+      description:
+        'A <code>StackResourceDetail</code> structure containing the description of the specified resource in the specified stack.',
+    }),
   })
   .openapi({ description: 'The output for a <a>DescribeStackResource</a> action.', required: [] })
   .openapi('DescribeStackResourceOutput')
@@ -1824,8 +1355,8 @@ const ValueSchema = z.string().openapi('Value')
 
 const PhysicalResourceIdContextKeyValuePairSchema = z
   .object({
-    Key: KeySchema.and(z.any().openapi({ description: 'The resource context key.' })),
-    Value: ValueSchema.and(z.any().openapi({ description: 'The resource context value.' })),
+    Key: KeySchema.openapi({ description: 'The resource context key.' }),
+    Value: ValueSchema.openapi({ description: 'The resource context value.' }),
   })
   .openapi({
     required: ['Key', 'Value'],
@@ -1849,28 +1380,20 @@ const DifferenceTypeSchema = z.enum(['ADD', 'REMOVE', 'NOT_EQUAL']).openapi('Dif
 
 const PropertyDifferenceSchema = z
   .object({
-    PropertyPath: PropertyPathSchema.and(
-      z.any().openapi({ description: 'The fully-qualified path to the resource property.' }),
-    ),
-    ExpectedValue: PropertyValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The expected property value of the resource property, as defined in the stack template and any values specified as template parameters.',
-        }),
-    ),
-    ActualValue: PropertyValueSchema.and(
-      z.any().openapi({ description: 'The actual property value of the resource property.' }),
-    ),
-    DifferenceType: DifferenceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The type of property difference.</p> <ul> <li> <p> <code>ADD</code>: A value has been added to a resource property that's an array or list data type.</p> </li> <li> <p> <code>REMOVE</code>: The property has been removed from the current resource configuration.</p> </li> <li> <p> <code>NOT_EQUAL</code>: The current property value differs from its expected value (as defined in the stack template and any values specified as template parameters).</p> </li> </ul>",
-        }),
-    ),
+    PropertyPath: PropertyPathSchema.openapi({
+      description: 'The fully-qualified path to the resource property.',
+    }),
+    ExpectedValue: PropertyValueSchema.openapi({
+      description:
+        'The expected property value of the resource property, as defined in the stack template and any values specified as template parameters.',
+    }),
+    ActualValue: PropertyValueSchema.openapi({
+      description: 'The actual property value of the resource property.',
+    }),
+    DifferenceType: DifferenceTypeSchema.openapi({
+      description:
+        "<p>The type of property difference.</p> <ul> <li> <p> <code>ADD</code>: A value has been added to a resource property that's an array or list data type.</p> </li> <li> <p> <code>REMOVE</code>: The property has been removed from the current resource configuration.</p> </li> <li> <p> <code>NOT_EQUAL</code>: The current property value differs from its expected value (as defined in the stack template and any values specified as template parameters).</p> </li> </ul>",
+    }),
   })
   .openapi({
     required: ['PropertyPath', 'ExpectedValue', 'ActualValue', 'DifferenceType'],
@@ -1883,79 +1406,42 @@ const PropertyDifferencesSchema = z.array(PropertyDifferenceSchema).openapi('Pro
 
 const StackResourceDriftSchema = z
   .object({
-    StackId: StackIdSchema.and(z.any().openapi({ description: 'The ID of the stack.' })),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
-        }),
-    ).exactOptional(),
-    PhysicalResourceIdContext: PhysicalResourceIdContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Context information that enables CloudFormation to uniquely identify a resource. CloudFormation uses context key-value pairs in cases where a resource's logical and physical IDs aren't enough to uniquely identify that resource. Each context key-value pair specifies a unique resource that contains the targeted resource.",
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z.any().openapi({ description: 'The type of the resource.' }),
-    ),
-    ExpectedProperties: PropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON structure containing the expected property values of the stack resource, as defined in the stack template and any values specified as template parameters.</p> <p>For resources whose <code>StackResourceDriftStatus</code> is <code>DELETED</code>, this structure will not be present.</p>',
-        }),
-    ).exactOptional(),
-    ActualProperties: PropertiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON structure containing the actual property values of the stack resource.</p> <p>For resources whose <code>StackResourceDriftStatus</code> is <code>DELETED</code>, this structure will not be present.</p>',
-        }),
-    ).exactOptional(),
-    PropertyDifferences: PropertyDifferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A collection of the resource properties whose actual values differ from their expected values. These will be present only for resources whose <code>StackResourceDriftStatus</code> is <code>MODIFIED</code>.',
-        }),
-    ).exactOptional(),
-    StackResourceDriftStatus: StackResourceDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the resource's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration because the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected values (as defined in the stack template and any values specified as template parameters).</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation does not currently return this value.</p> </li> </ul>",
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Time at which CloudFormation performed drift detection on the stack resource.',
-        }),
-    ),
-    ModuleInfo: ModuleInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
-        }),
-    ).exactOptional(),
+    StackId: StackIdSchema.openapi({ description: 'The ID of the stack.' }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
+    }),
+    PhysicalResourceIdContext: PhysicalResourceIdContextSchema.exactOptional().openapi({
+      description:
+        "Context information that enables CloudFormation to uniquely identify a resource. CloudFormation uses context key-value pairs in cases where a resource's logical and physical IDs aren't enough to uniquely identify that resource. Each context key-value pair specifies a unique resource that contains the targeted resource.",
+    }),
+    ResourceType: ResourceTypeSchema.openapi({ description: 'The type of the resource.' }),
+    ExpectedProperties: PropertiesSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON structure containing the expected property values of the stack resource, as defined in the stack template and any values specified as template parameters.</p> <p>For resources whose <code>StackResourceDriftStatus</code> is <code>DELETED</code>, this structure will not be present.</p>',
+    }),
+    ActualProperties: PropertiesSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON structure containing the actual property values of the stack resource.</p> <p>For resources whose <code>StackResourceDriftStatus</code> is <code>DELETED</code>, this structure will not be present.</p>',
+    }),
+    PropertyDifferences: PropertyDifferencesSchema.exactOptional().openapi({
+      description:
+        'A collection of the resource properties whose actual values differ from their expected values. These will be present only for resources whose <code>StackResourceDriftStatus</code> is <code>MODIFIED</code>.',
+    }),
+    StackResourceDriftStatus: StackResourceDriftStatusSchema.openapi({
+      description:
+        "<p>Status of the resource's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration because the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected values (as defined in the stack template and any values specified as template parameters).</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation does not currently return this value.</p> </li> </ul>",
+    }),
+    Timestamp: TimestampSchema.openapi({
+      description: 'Time at which CloudFormation performed drift detection on the stack resource.',
+    }),
+    ModuleInfo: ModuleInfoSchema.exactOptional().openapi({
+      description:
+        'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
+    }),
   })
   .openapi({
     required: [
@@ -1974,83 +1460,55 @@ const StackResourceDriftsSchema = z.array(StackResourceDriftSchema).openapi('Sta
 
 const DescribeStackResourceDriftsOutputSchema = z
   .object({
-    StackResourceDrifts: StackResourceDriftsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Drift information for the resources that have been checked for drift in the specified stack. This includes actual and expected configuration values for resources where CloudFormation detects drift.</p> <p>For a given stack, there will be one <code>StackResourceDrift</code> for each stack resource that has been checked for drift. Resources that haven't yet been checked for drift aren't included. Resources that do not currently support drift detection aren't checked, and so not included. For a list of resources that support drift detection, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html\">Resources that Support Drift Detection</a>.</p>",
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>DescribeStackResourceDrifts</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    StackResourceDrifts: StackResourceDriftsSchema.openapi({
+      description:
+        "<p>Drift information for the resources that have been checked for drift in the specified stack. This includes actual and expected configuration values for resources where CloudFormation detects drift.</p> <p>For a given stack, there will be one <code>StackResourceDrift</code> for each stack resource that has been checked for drift. Resources that haven't yet been checked for drift aren't included. Resources that do not currently support drift detection aren't checked, and so not included. For a list of resources that support drift detection, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html\">Resources that Support Drift Detection</a>.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>DescribeStackResourceDrifts</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: ['StackResourceDrifts'] })
   .openapi('DescribeStackResourceDriftsOutput')
 
 const StackResourceSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name associated with the stack.' }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Time the status was updated.' }),
-    ),
-    ResourceStatus: ResourceStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the resource.' }),
-    ),
-    ResourceStatusReason: ResourceStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/failure message associated with the resource.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'User defined description associated with the resource.' }),
-    ).exactOptional(),
-    DriftInformation: StackResourceDriftInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
-        }),
-    ).exactOptional(),
-    ModuleInfo: ModuleInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description: 'The name associated with the stack.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
+    }),
+    Timestamp: TimestampSchema.openapi({ description: 'Time the status was updated.' }),
+    ResourceStatus: ResourceStatusSchema.openapi({
+      description: 'Current status of the resource.',
+    }),
+    ResourceStatusReason: ResourceStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/failure message associated with the resource.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'User defined description associated with the resource.',
+    }),
+    DriftInformation: StackResourceDriftInformationSchema.exactOptional().openapi({
+      description:
+        'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
+    }),
+    ModuleInfo: ModuleInfoSchema.exactOptional().openapi({
+      description:
+        'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
+    }),
   })
   .openapi({
     required: ['LogicalResourceId', 'ResourceType', 'Timestamp', 'ResourceStatus'],
@@ -2062,9 +1520,9 @@ const StackResourcesSchema = z.array(StackResourceSchema).openapi('StackResource
 
 const DescribeStackResourcesOutputSchema = z
   .object({
-    StackResources: StackResourcesSchema.and(
-      z.any().openapi({ description: 'A list of <code>StackResource</code> structures.' }),
-    ).exactOptional(),
+    StackResources: StackResourcesSchema.exactOptional().openapi({
+      description: 'A list of <code>StackResource</code> structures.',
+    }),
   })
   .openapi({ description: 'The output for a <a>DescribeStackResources</a> action.', required: [] })
   .openapi('DescribeStackResourcesOutput')
@@ -2106,69 +1564,36 @@ const FailedStackInstancesCountSchema = z.int().min(0).openapi('FailedStackInsta
 
 const StackSetDriftDetectionDetailsSchema = z
   .object({
-    DriftStatus: StackSetDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack set's actual configuration compared to its expected template and parameter configuration. A stack set is considered to have drifted if one or more of its stack instances have drifted from their expected template and parameter configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: One or more of the stack instances belonging to the stack set stack differs from the expected template and parameter configuration. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked the stack set for drift.</p> </li> <li> <p> <code>IN_SYNC</code>: All of the stack instances belonging to the stack set stack match from the expected template and parameter configuration.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DriftDetectionStatus: StackSetDriftDetectionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the stack set drift detection operation.</p> <ul> <li> <p> <code>COMPLETED</code>: The drift detection operation completed without failing on any stack instances.</p> </li> <li> <p> <code>FAILED</code>: The drift detection operation exceeded the specified failure tolerance.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: The drift detection operation completed without exceeding the failure tolerance for the operation.</p> </li> <li> <p> <code>IN_PROGRESS</code>: The drift detection operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the drift detection operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    LastDriftCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Most recent time when CloudFormation performed a drift detection operation on the stack set. This value will be <code>NULL</code> for any stack set on which drift detection hasn't yet been performed.",
-        }),
-    ).exactOptional(),
-    TotalStackInstancesCount: TotalStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The total number of stack instances belonging to this stack set.</p> <p>The total number of stack instances is equal to the total of:</p> <ul> <li> <p>Stack instances that match the stack set configuration.</p> </li> <li> <p>Stack instances that have drifted from the stack set configuration.</p> </li> <li> <p>Stack instances where the drift detection operation has failed.</p> </li> <li> <p>Stack instances currently being checked for drift.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DriftedStackInstancesCount: DriftedStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The number of stack instances that have drifted from the expected template and parameter configuration of the stack set. A stack instance is considered to have drifted if one or more of the resources in the associated stack don't match their expected configuration.",
-        }),
-    ).exactOptional(),
-    InSyncStackInstancesCount: InSyncStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of stack instances which match the expected template and parameter configuration of the stack set.',
-        }),
-    ).exactOptional(),
-    InProgressStackInstancesCount: InProgressStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of stack instances that are currently being checked for drift.',
-        }),
-    ).exactOptional(),
-    FailedStackInstancesCount: FailedStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The number of stack instances for which the drift detection operation failed.',
-        }),
-    ).exactOptional(),
+    DriftStatus: StackSetDriftStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Status of the stack set's actual configuration compared to its expected template and parameter configuration. A stack set is considered to have drifted if one or more of its stack instances have drifted from their expected template and parameter configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: One or more of the stack instances belonging to the stack set stack differs from the expected template and parameter configuration. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked the stack set for drift.</p> </li> <li> <p> <code>IN_SYNC</code>: All of the stack instances belonging to the stack set stack match from the expected template and parameter configuration.</p> </li> </ul>",
+    }),
+    DriftDetectionStatus: StackSetDriftDetectionStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the stack set drift detection operation.</p> <ul> <li> <p> <code>COMPLETED</code>: The drift detection operation completed without failing on any stack instances.</p> </li> <li> <p> <code>FAILED</code>: The drift detection operation exceeded the specified failure tolerance.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: The drift detection operation completed without exceeding the failure tolerance for the operation.</p> </li> <li> <p> <code>IN_PROGRESS</code>: The drift detection operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the drift detection operation.</p> </li> </ul>',
+    }),
+    LastDriftCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "Most recent time when CloudFormation performed a drift detection operation on the stack set. This value will be <code>NULL</code> for any stack set on which drift detection hasn't yet been performed.",
+    }),
+    TotalStackInstancesCount: TotalStackInstancesCountSchema.exactOptional().openapi({
+      description:
+        '<p>The total number of stack instances belonging to this stack set.</p> <p>The total number of stack instances is equal to the total of:</p> <ul> <li> <p>Stack instances that match the stack set configuration.</p> </li> <li> <p>Stack instances that have drifted from the stack set configuration.</p> </li> <li> <p>Stack instances where the drift detection operation has failed.</p> </li> <li> <p>Stack instances currently being checked for drift.</p> </li> </ul>',
+    }),
+    DriftedStackInstancesCount: DriftedStackInstancesCountSchema.exactOptional().openapi({
+      description:
+        "The number of stack instances that have drifted from the expected template and parameter configuration of the stack set. A stack instance is considered to have drifted if one or more of the resources in the associated stack don't match their expected configuration.",
+    }),
+    InSyncStackInstancesCount: InSyncStackInstancesCountSchema.exactOptional().openapi({
+      description:
+        'The number of stack instances which match the expected template and parameter configuration of the stack set.',
+    }),
+    InProgressStackInstancesCount: InProgressStackInstancesCountSchema.exactOptional().openapi({
+      description: 'The number of stack instances that are currently being checked for drift.',
+    }),
+    FailedStackInstancesCount: FailedStackInstancesCountSchema.exactOptional().openapi({
+      description: 'The number of stack instances for which the drift detection operation failed.',
+    }),
   })
   .openapi({
     description:
@@ -2179,22 +1604,15 @@ const StackSetDriftDetectionDetailsSchema = z
 
 const AutoDeploymentSchema = z
   .object({
-    Enabled: AutoDeploymentNullableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
-        }),
-    ).exactOptional(),
-    RetainStacksOnAccountRemoval: RetainStacksOnAccountRemovalNullableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
-        }),
-    ).exactOptional(),
+    Enabled: AutoDeploymentNullableSchema.exactOptional().openapi({
+      description:
+        'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
+    }),
+    RetainStacksOnAccountRemoval:
+      RetainStacksOnAccountRemovalNullableSchema.exactOptional().openapi({
+        description:
+          'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
+      }),
   })
   .openapi({
     description:
@@ -2209,14 +1627,10 @@ const PermissionModelsSchema = z
 
 const ManagedExecutionSchema = z
   .object({
-    Active: ManagedExecutionNullableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
-        }),
-    ).exactOptional(),
+    Active: ManagedExecutionNullableSchema.exactOptional().openapi({
+      description:
+        "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
+    }),
   })
   .openapi({
     description:
@@ -2227,117 +1641,69 @@ const ManagedExecutionSchema = z
 
 const StackSetSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z.any().openapi({ description: "The name that's associated with the stack set." }),
-    ).exactOptional(),
-    StackSetId: StackSetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the stack set.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the stack set that you specify when the stack set is created or updated.',
-        }),
-    ).exactOptional(),
-    Status: StackSetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the stack set.' }),
-    ).exactOptional(),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The structure that contains the body of the template that was used to create or update the stack set.',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z.any().openapi({ description: 'A list of input parameters for a stack set.' }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The capabilities that are allowed in the stack set. Some stack set templates might include resources that can affect permissions in your Amazon Web Services account—for example, by creating new Identity and Access Management (IAM) users. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates.</a> ',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of tags that specify information about the stack set. A maximum number of 50 tags can be specified.',
-        }),
-    ).exactOptional(),
-    StackSetARN: StackSetARNSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the stack set.' }),
-    ).exactOptional(),
-    AdministrationRoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role used to create or update the stack set.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ExecutionRoleName: ExecutionRoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM execution role used to create or update the stack set.</p> <p>Use customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
-        }),
-    ).exactOptional(),
-    StackSetDriftDetectionDetails: StackSetDriftDetectionDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Detailed information about the drift status of the stack set.</p> <p>For stack sets, contains information about the last <i>completed</i> drift operation performed on the stack set. Information about drift operations currently in progress isn't included.</p>",
-        }),
-    ).exactOptional(),
-    AutoDeployment: AutoDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU).',
-        }),
-    ).exactOptional(),
-    PermissionModel: PermissionModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
-        }),
-    ).exactOptional(),
-    ManagedExecution: ManagedExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
-        }),
-    ).exactOptional(),
-    Regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Returns a list of all Amazon Web Services Regions the given StackSet has stack instances deployed in. The Amazon Web Services Regions list output is in no particular order.',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.exactOptional().openapi({
+      description: "The name that's associated with the stack set.",
+    }),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack set.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of the stack set that you specify when the stack set is created or updated.',
+    }),
+    Status: StackSetStatusSchema.exactOptional().openapi({
+      description: 'The status of the stack set.',
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        'The structure that contains the body of the template that was used to create or update the stack set.',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'A list of input parameters for a stack set.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        'The capabilities that are allowed in the stack set. Some stack set templates might include resources that can affect permissions in your Amazon Web Services account—for example, by creating new Identity and Access Management (IAM) users. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates.</a> ',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'A list of tags that specify information about the stack set. A maximum number of 50 tags can be specified.',
+    }),
+    StackSetARN: StackSetARNSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the stack set.',
+    }),
+    AdministrationRoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role used to create or update the stack set.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    ExecutionRoleName: ExecutionRoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM execution role used to create or update the stack set.</p> <p>Use customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
+    }),
+    StackSetDriftDetectionDetails: StackSetDriftDetectionDetailsSchema.exactOptional().openapi({
+      description:
+        "<p>Detailed information about the drift status of the stack set.</p> <p>For stack sets, contains information about the last <i>completed</i> drift operation performed on the stack set. Information about drift operations currently in progress isn't included.</p>",
+    }),
+    AutoDeployment: AutoDeploymentSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU).',
+    }),
+    PermissionModel: PermissionModelsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
+    }),
+    ManagedExecution: ManagedExecutionSchema.exactOptional().openapi({
+      description:
+        'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
+    }),
+    Regions: RegionListSchema.exactOptional().openapi({
+      description:
+        'Returns a list of all Amazon Web Services Regions the given StackSet has stack instances deployed in. The Amazon Web Services Regions list output is in no particular order.',
+    }),
   })
   .openapi({
     description:
@@ -2348,9 +1714,7 @@ const StackSetSchema = z
 
 const DescribeStackSetOutputSchema = z
   .object({
-    StackSet: StackSetSchema.and(
-      z.any().openapi({ description: 'The specified stack set.' }),
-    ).exactOptional(),
+    StackSet: StackSetSchema.exactOptional().openapi({ description: 'The specified stack set.' }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStackSetOutput')
@@ -2365,53 +1729,29 @@ const StackSetOperationStatusSchema = z
 
 const StackSetOperationPreferencesSchema = z
   .object({
-    RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-        }),
-    ).exactOptional(),
-    RegionOrder: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The order of the Regions where you want to perform the stack operation.',
-        }),
-    ).exactOptional(),
-    FailureToleranceCount: FailureToleranceCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-        }),
-    ).exactOptional(),
-    FailureTolerancePercentage: FailureTolerancePercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-        }),
-    ).exactOptional(),
-    MaxConcurrentCount: MaxConcurrentCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-        }),
-    ).exactOptional(),
-    MaxConcurrentPercentage: MaxConcurrentPercentageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-        }),
-    ).exactOptional(),
+    RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+      description:
+        'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+    }),
+    RegionOrder: RegionListSchema.exactOptional().openapi({
+      description: 'The order of the Regions where you want to perform the stack operation.',
+    }),
+    FailureToleranceCount: FailureToleranceCountSchema.exactOptional().openapi({
+      description:
+        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+    }),
+    FailureTolerancePercentage: FailureTolerancePercentageSchema.exactOptional().openapi({
+      description:
+        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+    }),
+    MaxConcurrentCount: MaxConcurrentCountSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+    }),
+    MaxConcurrentPercentage: MaxConcurrentPercentageSchema.exactOptional().openapi({
+      description:
+        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+    }),
   })
   .openapi({
     description:
@@ -2424,35 +1764,21 @@ const RetainStacksNullableSchema = z.boolean().openapi('RetainStacksNullable')
 
 const DeploymentTargetsSchema = z
   .object({
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
-        }),
-    ).exactOptional(),
-    AccountsUrl: AccountsUrlSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Returns the value of the <code>AccountsUrl</code> property.' }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
-        }),
-    ).exactOptional(),
-    AccountFilterType: AccountFilterTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description:
+        'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
+    }),
+    AccountsUrl: AccountsUrlSchema.exactOptional().openapi({
+      description: 'Returns the value of the <code>AccountsUrl</code> property.',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description:
+        'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
+    }),
+    AccountFilterType: AccountFilterTypeSchema.exactOptional().openapi({
+      description:
+        '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -2465,110 +1791,66 @@ const StackSetOperationStatusReasonSchema = z.string().openapi('StackSetOperatio
 
 const StackSetOperationStatusDetailsSchema = z
   .object({
-    FailedStackInstancesCount: FailedStackInstancesCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The number of stack instances for which the StackSet operation failed.',
-        }),
-    ).exactOptional(),
+    FailedStackInstancesCount: FailedStackInstancesCountSchema.exactOptional().openapi({
+      description: 'The number of stack instances for which the StackSet operation failed.',
+    }),
   })
   .openapi({ description: 'Detailed information about the StackSet operation.', required: [] })
   .openapi('StackSetOperationStatusDetails')
 
 const StackSetOperationSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique ID of a stack set operation.' }),
-    ).exactOptional(),
-    StackSetId: StackSetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the stack set.' }),
-    ).exactOptional(),
-    Action: StackSetOperationActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of stack set operation: <code>CREATE</code>, <code>UPDATE</code>, or <code>DELETE</code>. Create and delete operations affect only the specified stack set instances that are associated with the specified stack set. Update operations affect both the stack set itself, in addition to <i>all</i> associated stack set instances.',
-        }),
-    ).exactOptional(),
-    Status: StackSetOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you\'ve set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-status-codes">stack set operation status codes</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The preferences for how CloudFormation performs this stack set operation.',
-        }),
-    ).exactOptional(),
-    RetainStacks: RetainStacksNullableSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "For stack set operations of action type <code>DELETE</code>, specifies whether to remove the stack instances from the specified stack set, but doesn't delete the stacks. You can't re-associate a retained stack, or add an existing, saved stack to a new stack set.",
-        }),
-    ).exactOptional(),
-    AdministrationRoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role used to perform this stack set operation.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Define Permissions for Multiple Administrators</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ExecutionRoleName: ExecutionRoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM execution role used to create or update the stack set.</p> <p>Use customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
-        }),
-    ).exactOptional(),
-    CreationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the operation was initiated. Note that the creation times for the stack set operation might differ from the creation time of the individual stacks themselves. This is because CloudFormation needs to perform preparatory work for the operation, such as dispatching the work to the requested Regions, before actually creating the first stacks.',
-        }),
-    ).exactOptional(),
-    EndTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time at which the stack set operation ended, across all accounts and Regions specified. Note that this doesn't necessarily mean that the stack set operation was successful, or even attempted, in each account or Region.",
-        }),
-    ).exactOptional(),
-    DeploymentTargets: DeploymentTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] The Organizations accounts affected by the stack operation.',
-        }),
-    ).exactOptional(),
-    StackSetDriftDetectionDetails: StackSetDriftDetectionDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Detailed information about the drift status of the stack set. This includes information about drift operations currently being performed on the stack set.</p> <p>This information will only be present for stack set operations whose <code>Action</code> type is <code>DETECT_DRIFT</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html">Detecting Unmanaged Changes in Stack Sets</a> in the CloudFormation User Guide.</p>',
-        }),
-    ).exactOptional(),
-    StatusReason: StackSetOperationStatusReasonSchema.and(
-      z.any().openapi({ description: 'The status of the operation in details.' }),
-    ).exactOptional(),
-    StatusDetails: StackSetOperationStatusDetailsSchema.and(
-      z.any().openapi({ description: 'Detailed information about the StackSet operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique ID of a stack set operation.',
+    }),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack set.',
+    }),
+    Action: StackSetOperationActionSchema.exactOptional().openapi({
+      description:
+        'The type of stack set operation: <code>CREATE</code>, <code>UPDATE</code>, or <code>DELETE</code>. Create and delete operations affect only the specified stack set instances that are associated with the specified stack set. Update operations affect both the stack set itself, in addition to <i>all</i> associated stack set instances.',
+    }),
+    Status: StackSetOperationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you\'ve set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-status-codes">stack set operation status codes</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>',
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description: 'The preferences for how CloudFormation performs this stack set operation.',
+    }),
+    RetainStacks: RetainStacksNullableSchema.exactOptional().openapi({
+      description:
+        "For stack set operations of action type <code>DELETE</code>, specifies whether to remove the stack instances from the specified stack set, but doesn't delete the stacks. You can't re-associate a retained stack, or add an existing, saved stack to a new stack set.",
+    }),
+    AdministrationRoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role used to perform this stack set operation.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Define Permissions for Multiple Administrators</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    ExecutionRoleName: ExecutionRoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM execution role used to create or update the stack set.</p> <p>Use customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
+    }),
+    CreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which the operation was initiated. Note that the creation times for the stack set operation might differ from the creation time of the individual stacks themselves. This is because CloudFormation needs to perform preparatory work for the operation, such as dispatching the work to the requested Regions, before actually creating the first stacks.',
+    }),
+    EndTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time at which the stack set operation ended, across all accounts and Regions specified. Note that this doesn't necessarily mean that the stack set operation was successful, or even attempted, in each account or Region.",
+    }),
+    DeploymentTargets: DeploymentTargetsSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] The Organizations accounts affected by the stack operation.',
+    }),
+    StackSetDriftDetectionDetails: StackSetDriftDetectionDetailsSchema.exactOptional().openapi({
+      description:
+        '<p>Detailed information about the drift status of the stack set. This includes information about drift operations currently being performed on the stack set.</p> <p>This information will only be present for stack set operations whose <code>Action</code> type is <code>DETECT_DRIFT</code>.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html">Detecting Unmanaged Changes in Stack Sets</a> in the CloudFormation User Guide.</p>',
+    }),
+    StatusReason: StackSetOperationStatusReasonSchema.exactOptional().openapi({
+      description: 'The status of the operation in details.',
+    }),
+    StatusDetails: StackSetOperationStatusDetailsSchema.exactOptional().openapi({
+      description: 'Detailed information about the StackSet operation.',
+    }),
   })
   .openapi({
     description: 'The structure that contains information about a stack set operation.',
@@ -2578,9 +1860,9 @@ const StackSetOperationSchema = z
 
 const DescribeStackSetOperationOutputSchema = z
   .object({
-    StackSetOperation: StackSetOperationSchema.and(
-      z.any().openapi({ description: 'The specified stack set operation.' }),
-    ).exactOptional(),
+    StackSetOperation: StackSetOperationSchema.exactOptional().openapi({
+      description: 'The specified stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeStackSetOperationOutput')
@@ -2631,18 +1913,18 @@ const ExportNameSchema = z.string().openapi('ExportName')
 
 const OutputSchema = z
   .object({
-    OutputKey: OutputKeySchema.and(
-      z.any().openapi({ description: 'The key associated with the output.' }),
-    ).exactOptional(),
-    OutputValue: OutputValueSchema.and(
-      z.any().openapi({ description: 'The value associated with the output.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'User defined description associated with the output.' }),
-    ).exactOptional(),
-    ExportName: ExportNameSchema.and(
-      z.any().openapi({ description: 'The name of the export associated with the output.' }),
-    ).exactOptional(),
+    OutputKey: OutputKeySchema.exactOptional().openapi({
+      description: 'The key associated with the output.',
+    }),
+    OutputValue: OutputValueSchema.exactOptional().openapi({
+      description: 'The value associated with the output.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'User defined description associated with the output.',
+    }),
+    ExportName: ExportNameSchema.exactOptional().openapi({
+      description: 'The name of the export associated with the output.',
+    }),
   })
   .openapi({ description: 'The Output data type.', required: [] })
   .openapi('Output')
@@ -2653,22 +1935,14 @@ const EnableTerminationProtectionSchema = z.boolean().openapi('EnableTermination
 
 const StackDriftInformationSchema = z
   .object({
-    StackDriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack's actual configuration compared to its expected template configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ),
-    LastCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Most recent time when a drift detection operation was initiated on the stack, or any of its individual resources that support drift detection.',
-        }),
-    ).exactOptional(),
+    StackDriftStatus: StackDriftStatusSchema.openapi({
+      description:
+        "<p>Status of the stack's actual configuration compared to its expected template configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    LastCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'Most recent time when a drift detection operation was initiated on the stack, or any of its individual resources that support drift detection.',
+    }),
   })
   .openapi({
     required: ['StackDriftStatus'],
@@ -2681,133 +1955,79 @@ const RetainExceptOnCreateSchema = z.boolean().openapi('RetainExceptOnCreate')
 
 const StackSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name associated with the stack.' }),
-    ),
-    ChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the change set.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A user-defined description associated with the stack.' }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z.any().openapi({ description: 'A list of <code>Parameter</code> structures.' }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time at which the stack was created.' }),
-    ),
-    DeletionTime: DeletionTimeSchema.and(
-      z.any().openapi({ description: 'The time the stack was deleted.' }),
-    ).exactOptional(),
-    LastUpdatedTime: LastUpdatedTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the stack was last updated. This field will only be returned if the stack has been updated at least once.',
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
-        }),
-    ).exactOptional(),
-    StackStatus: StackStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the stack.' }),
-    ),
-    StackStatusReason: StackStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/failure message associated with the stack status.' }),
-    ).exactOptional(),
-    DisableRollback: DisableRollbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Boolean to enable or disable rollback on stack creation failures:</p> <ul> <li> <p> <code>true</code>: disable rollback.</p> </li> <li> <p> <code>false</code>: enable rollback.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    NotificationARNs: NotificationARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon SNS topic Amazon Resource Names (ARNs) to which stack related events are published.',
-        }),
-    ).exactOptional(),
-    TimeoutInMinutes: TimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The amount of time within which stack creation should complete.',
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z.any().openapi({ description: 'The capabilities allowed in the stack.' }),
-    ).exactOptional(),
-    Outputs: OutputsSchema.and(
-      z.any().openapi({ description: 'A list of output structures.' }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that's associated with the stack. During a stack operation, CloudFormation uses this role's credentials to make calls on your behalf.",
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>Tag</code>s that specify information about the stack.',
-        }),
-    ).exactOptional(),
-    EnableTerminationProtection: EnableTerminationProtectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether termination protection is enabled for the stack.</p> <p>For <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">nested stacks</a>, termination protection is set on the root stack and can\'t be changed directly on the nested stack. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-protect-stacks.html">Protecting a Stack From Being Deleted</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ParentId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the direct parent of this stack. For the first level of nested stacks, the root stack is also the parent stack.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    RootId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the top-level stack to which the nested stack ultimately belongs.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    DriftInformation: StackDriftInformationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether a stack\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
-        }),
-    ).exactOptional(),
-    RetainExceptOnCreate: RetainExceptOnCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
-        }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
+    StackName: StackNameSchema.openapi({ description: 'The name associated with the stack.' }),
+    ChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The unique ID of the change set.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A user-defined description associated with the stack.',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>Parameter</code> structures.',
+    }),
+    CreationTime: CreationTimeSchema.openapi({
+      description: 'The time at which the stack was created.',
+    }),
+    DeletionTime: DeletionTimeSchema.exactOptional().openapi({
+      description: 'The time the stack was deleted.',
+    }),
+    LastUpdatedTime: LastUpdatedTimeSchema.exactOptional().openapi({
+      description:
+        'The time the stack was last updated. This field will only be returned if the stack has been updated at least once.',
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
+    }),
+    StackStatus: StackStatusSchema.openapi({ description: 'Current status of the stack.' }),
+    StackStatusReason: StackStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/failure message associated with the stack status.',
+    }),
+    DisableRollback: DisableRollbackSchema.exactOptional().openapi({
+      description:
+        '<p>Boolean to enable or disable rollback on stack creation failures:</p> <ul> <li> <p> <code>true</code>: disable rollback.</p> </li> <li> <p> <code>false</code>: enable rollback.</p> </li> </ul>',
+    }),
+    NotificationARNs: NotificationARNsSchema.exactOptional().openapi({
+      description:
+        'Amazon SNS topic Amazon Resource Names (ARNs) to which stack related events are published.',
+    }),
+    TimeoutInMinutes: TimeoutMinutesSchema.exactOptional().openapi({
+      description: 'The amount of time within which stack creation should complete.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description: 'The capabilities allowed in the stack.',
+    }),
+    Outputs: OutputsSchema.exactOptional().openapi({ description: 'A list of output structures.' }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that's associated with the stack. During a stack operation, CloudFormation uses this role's credentials to make calls on your behalf.",
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description: 'A list of <code>Tag</code>s that specify information about the stack.',
+    }),
+    EnableTerminationProtection: EnableTerminationProtectionSchema.exactOptional().openapi({
+      description:
+        '<p>Whether termination protection is enabled for the stack.</p> <p>For <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">nested stacks</a>, termination protection is set on the root stack and can\'t be changed directly on the nested stack. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-protect-stacks.html">Protecting a Stack From Being Deleted</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    ParentId: StackIdSchema.exactOptional().openapi({
+      description:
+        '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the direct parent of this stack. For the first level of nested stacks, the root stack is also the parent stack.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    RootId: StackIdSchema.exactOptional().openapi({
+      description:
+        '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the top-level stack to which the nested stack ultimately belongs.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    DriftInformation: StackDriftInformationSchema.exactOptional().openapi({
+      description:
+        'Information about whether a stack\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
+    }),
+    RetainExceptOnCreate: RetainExceptOnCreateSchema.exactOptional().openapi({
+      description:
+        'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
+    }),
   })
   .openapi({
     required: ['StackName', 'CreationTime', 'StackStatus'],
@@ -2819,17 +2039,11 @@ const StacksSchema = z.array(StackSchema).openapi('Stacks')
 
 const DescribeStacksOutputSchema = z
   .object({
-    Stacks: StacksSchema.and(
-      z.any().openapi({ description: 'A list of stack structures.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB in size, a string that identifies the next page of stacks. If no additional page exists, this value is null.',
-        }),
-    ).exactOptional(),
+    Stacks: StacksSchema.exactOptional().openapi({ description: 'A list of stack structures.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB in size, a string that identifies the next page of stacks. If no additional page exists, this value is null.',
+    }),
   })
   .openapi({ description: 'The output for a <a>DescribeStacks</a> action.', required: [] })
   .openapi('DescribeStacksOutput')
@@ -2866,22 +2080,14 @@ const DeprecatedStatusSchema = z.enum(['LIVE', 'DEPRECATED']).openapi('Deprecate
 
 const LoggingConfigSchema = z
   .object({
-    LogRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
-        }),
-    ),
-    LogGroupName: LogGroupNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
-        }),
-    ),
+    LogRoleArn: RoleArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
+    }),
+    LogGroupName: LogGroupNameSchema.openapi({
+      description:
+        "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
+    }),
   })
   .openapi({
     required: ['LogRoleArn', 'LogGroupName'],
@@ -2897,33 +2103,20 @@ const SupportedMajorVersionsSchema = z
 
 const RequiredActivatedTypeSchema = z
   .object({
-    TypeNameAlias: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An alias assigned to the public extension, in this account and Region. If you specify an alias for the extension, CloudFormation treats the alias as the extension type name within this account and Region. You must use the alias to refer to the extension in your templates, API calls, and CloudFormation console.',
-        }),
-    ).exactOptional(),
-    OriginalTypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z.any().openapi({ description: 'The publisher ID of the extension publisher.' }),
-    ).exactOptional(),
-    SupportedMajorVersions: SupportedMajorVersionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of the major versions of the extension type that the macro supports.',
-        }),
-    ).exactOptional(),
+    TypeNameAlias: TypeNameSchema.exactOptional().openapi({
+      description:
+        'An alias assigned to the public extension, in this account and Region. If you specify an alias for the extension, CloudFormation treats the alias as the extension type name within this account and Region. You must use the alias to refer to the extension in your templates, API calls, and CloudFormation console.',
+    }),
+    OriginalTypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description: 'The publisher ID of the extension publisher.',
+    }),
+    SupportedMajorVersions: SupportedMajorVersionsSchema.exactOptional().openapi({
+      description: 'A list of the major versions of the extension type that the macro supports.',
+    }),
   })
   .openapi({
     description:
@@ -2959,201 +2152,107 @@ const AutoUpdateSchema = z.boolean().openapi('AutoUpdate')
 
 const DescribeTypeOutputSchema = z
   .object({
-    Arn: TypeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the extension.' }),
-    ).exactOptional(),
-    Type: RegistryTypeSchema.and(
-      z.any().openapi({ description: 'The kind of extension.' }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>If the extension is a public third-party type you have activated with a type name alias, CloudFormation returns the type name alias. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p>',
-        }),
-    ).exactOptional(),
-    DefaultVersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the default version of the extension. The default version is used when the extension version isn\'t specified.</p> <p>This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon Web Services and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>To set the default version of an extension, use <a>SetTypeDefaultVersion</a>.</p>',
-        }),
-    ).exactOptional(),
-    IsDefaultVersion: IsDefaultVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether the specified extension version is set as the default version.</p> <p>This applies only to private extensions you have registered in your account, and extensions published by Amazon Web Services. For public third-party extensions, whether they are activated in your account, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeTestsStatus: TypeTestsStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The contract test status of the registered extension version. To return the extension test status of a specific extension version, you must specify <code>VersionId</code>.</p> <p>This applies only to registered private extension versions. CloudFormation doesn\'t return this information for public extensions, whether they are activated in your account.</p> <ul> <li> <p> <code>PASSED</code>: The extension has passed all its contract tests.</p> <p>An extension must have a test status of <code>PASSED</code> before it can be published. For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-publish.html">Publishing extensions to make them available for public use</a> in the <i>CloudFormation Command Line Interface User Guide</i>.</p> </li> <li> <p> <code>FAILED</code>: The extension has failed one or more contract tests.</p> </li> <li> <p> <code>IN_PROGRESS</code>: Contract tests are currently being performed on the extension.</p> </li> <li> <p> <code>NOT_TESTED</code>: Contract tests haven\'t been performed on the extension.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TypeTestsStatusDescription: TypeTestsStatusDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The description of the test status. To return the extension test status of a specific extension version, you must specify <code>VersionId</code>.</p> <p>This applies only to registered private extension versions. CloudFormation doesn't return this information for public extensions, whether they are activated in your account.</p>",
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the extension.' }),
-    ).exactOptional(),
-    Schema: TypeSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The schema that defines the extension.</p> <p>For more information about extension schemas, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html">Resource Provider Schema</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ProvisioningType: ProvisioningTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For resource type extensions, the provisioning behavior of the resource type. CloudFormation determines the provisioning type during registration, based on the types of handlers in the schema handler package submitted.</p> <p>Valid values include:</p> <ul> <li> <p> <code>FULLY_MUTABLE</code>: The resource type includes an update handler to process updates to the type during stack update operations.</p> </li> <li> <p> <code>IMMUTABLE</code>: The resource type doesn't include an update handler, so the type can't be updated and must instead be replaced during stack update operations.</p> </li> <li> <p> <code>NON_PROVISIONABLE</code>: The resource type doesn't include all the following handlers, and therefore can't actually be provisioned.</p> <ul> <li> <p>create</p> </li> <li> <p>read</p> </li> <li> <p>delete</p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    DeprecatedStatus: DeprecatedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deprecation status of the extension version.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension is activated or registered and can be used in CloudFormation operations, dependent on its provisioning behavior and visibility scope.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension has been deactivated or deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul> <p>For public third-party extensions, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    LoggingConfig: LoggingConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains logging configuration information for private extensions. This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon Web Services and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.',
-        }),
-    ).exactOptional(),
-    RequiredActivatedTypes: RequiredActivatedTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For extensions that are modules, the public third-party extensions that must be activated in your account in order for the module itself to be activated.',
-        }),
-    ).exactOptional(),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM execution role used to register the extension. This applies only to private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>If the registered extension calls any Amazon Web Services APIs, you must create an <i> <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM execution role</a> </i> that includes the necessary permissions to call those Amazon Web Services APIs, and provision that execution role in your account. CloudFormation then assumes that execution role to provide your extension with the appropriate credentials.</p>',
-        }),
-    ).exactOptional(),
-    Visibility: VisibilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scope at which the extension is visible and usable in CloudFormation operations.</p> <p>Valid values include:</p> <ul> <li> <p> <code>PRIVATE</code>: The extension is only visible and usable within the account in which it is registered. CloudFormation marks any extensions you register as <code>PRIVATE</code>.</p> </li> <li> <p> <code>PUBLIC</code>: The extension is publicly visible and usable within any Amazon Web Services account.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    SourceUrl: OptionalSecureUrlSchema.and(
-      z.any().openapi({ description: 'The URL of the source code for the extension.' }),
-    ).exactOptional(),
-    DocumentationUrl: OptionalSecureUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The URL of a page providing detailed documentation for this extension.',
-        }),
-    ).exactOptional(),
-    LastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the specified extension version was registered. This applies only to:</p> <ul> <li> <p>Private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> </li> <li> <p>Public extensions you have activated in your account with auto-update specified. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TimeCreated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When the specified private extension version was registered or activated in your account.',
-        }),
-    ).exactOptional(),
-    ConfigurationSchema: ConfigurationSchemaSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A JSON string that represent the current configuration data for the extension in this account and Region.</p> <p>To set the configuration data for an extension, use <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetTypeConfiguration.html">SetTypeConfiguration</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-register.html#registry-set-configuration">Configuring extensions at the account level</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The publisher ID of the extension publisher.</p> <p>This applies only to public third-party extensions. For private registered extensions, and extensions provided by Amazon Web Services, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    OriginalTypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For public extensions that have been activated for this account and Region, the type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    OriginalTypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'For public extensions that have been activated for this account and Region, the Amazon Resource Name (ARN) of the public extension.',
-        }),
-    ).exactOptional(),
-    PublicVersionNumber: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number of a public third-party extension.</p> <p>This applies only if you specify a public extension you have activated in your account, or specify a public extension without specifying a version. For all other extensions, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    LatestPublicVersion: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The latest version of a public extension <i>that is available</i> for use.</p> <p>This only applies if you specify a public extension, and you don't specify a version. For all other requests, CloudFormation returns <code>null</code>.</p>",
-        }),
-    ).exactOptional(),
-    IsActivated: IsActivatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether the extension is activated in the account and Region.</p> <p>This only applies to public third-party extensions. For all other extensions, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    AutoUpdate: AutoUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether CloudFormation automatically updates the extension in this account and Region when a new <i>minor</i> version is published by the extension publisher. Major versions released by the publisher must be manually updated. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable">Activating public extensions for use in your account</a> in the <i>CloudFormation User Guide</i>.',
-        }),
-    ).exactOptional(),
+    Arn: TypeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the extension.',
+    }),
+    Type: RegistryTypeSchema.exactOptional().openapi({ description: 'The kind of extension.' }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>If the extension is a public third-party type you have activated with a type name alias, CloudFormation returns the type name alias. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p>',
+    }),
+    DefaultVersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the default version of the extension. The default version is used when the extension version isn\'t specified.</p> <p>This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon Web Services and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>To set the default version of an extension, use <a>SetTypeDefaultVersion</a>.</p>',
+    }),
+    IsDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description:
+        '<p>Whether the specified extension version is set as the default version.</p> <p>This applies only to private extensions you have registered in your account, and extensions published by Amazon Web Services. For public third-party extensions, whether they are activated in your account, CloudFormation returns <code>null</code>.</p>',
+    }),
+    TypeTestsStatus: TypeTestsStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The contract test status of the registered extension version. To return the extension test status of a specific extension version, you must specify <code>VersionId</code>.</p> <p>This applies only to registered private extension versions. CloudFormation doesn\'t return this information for public extensions, whether they are activated in your account.</p> <ul> <li> <p> <code>PASSED</code>: The extension has passed all its contract tests.</p> <p>An extension must have a test status of <code>PASSED</code> before it can be published. For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-publish.html">Publishing extensions to make them available for public use</a> in the <i>CloudFormation Command Line Interface User Guide</i>.</p> </li> <li> <p> <code>FAILED</code>: The extension has failed one or more contract tests.</p> </li> <li> <p> <code>IN_PROGRESS</code>: Contract tests are currently being performed on the extension.</p> </li> <li> <p> <code>NOT_TESTED</code>: Contract tests haven\'t been performed on the extension.</p> </li> </ul>',
+    }),
+    TypeTestsStatusDescription: TypeTestsStatusDescriptionSchema.exactOptional().openapi({
+      description:
+        "<p>The description of the test status. To return the extension test status of a specific extension version, you must specify <code>VersionId</code>.</p> <p>This applies only to registered private extension versions. CloudFormation doesn't return this information for public extensions, whether they are activated in your account.</p>",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the extension.',
+    }),
+    Schema: TypeSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>The schema that defines the extension.</p> <p>For more information about extension schemas, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html">Resource Provider Schema</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
+    }),
+    ProvisioningType: ProvisioningTypeSchema.exactOptional().openapi({
+      description:
+        "<p>For resource type extensions, the provisioning behavior of the resource type. CloudFormation determines the provisioning type during registration, based on the types of handlers in the schema handler package submitted.</p> <p>Valid values include:</p> <ul> <li> <p> <code>FULLY_MUTABLE</code>: The resource type includes an update handler to process updates to the type during stack update operations.</p> </li> <li> <p> <code>IMMUTABLE</code>: The resource type doesn't include an update handler, so the type can't be updated and must instead be replaced during stack update operations.</p> </li> <li> <p> <code>NON_PROVISIONABLE</code>: The resource type doesn't include all the following handlers, and therefore can't actually be provisioned.</p> <ul> <li> <p>create</p> </li> <li> <p>read</p> </li> <li> <p>delete</p> </li> </ul> </li> </ul>",
+    }),
+    DeprecatedStatus: DeprecatedStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The deprecation status of the extension version.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension is activated or registered and can be used in CloudFormation operations, dependent on its provisioning behavior and visibility scope.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension has been deactivated or deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul> <p>For public third-party extensions, CloudFormation returns <code>null</code>.</p>',
+    }),
+    LoggingConfig: LoggingConfigSchema.exactOptional().openapi({
+      description:
+        'Contains logging configuration information for private extensions. This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon Web Services and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.',
+    }),
+    RequiredActivatedTypes: RequiredActivatedTypesSchema.exactOptional().openapi({
+      description:
+        'For extensions that are modules, the public third-party extensions that must be activated in your account in order for the module itself to be activated.',
+    }),
+    ExecutionRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM execution role used to register the extension. This applies only to private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>If the registered extension calls any Amazon Web Services APIs, you must create an <i> <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM execution role</a> </i> that includes the necessary permissions to call those Amazon Web Services APIs, and provision that execution role in your account. CloudFormation then assumes that execution role to provide your extension with the appropriate credentials.</p>',
+    }),
+    Visibility: VisibilitySchema.exactOptional().openapi({
+      description:
+        '<p>The scope at which the extension is visible and usable in CloudFormation operations.</p> <p>Valid values include:</p> <ul> <li> <p> <code>PRIVATE</code>: The extension is only visible and usable within the account in which it is registered. CloudFormation marks any extensions you register as <code>PRIVATE</code>.</p> </li> <li> <p> <code>PUBLIC</code>: The extension is publicly visible and usable within any Amazon Web Services account.</p> </li> </ul>',
+    }),
+    SourceUrl: OptionalSecureUrlSchema.exactOptional().openapi({
+      description: 'The URL of the source code for the extension.',
+    }),
+    DocumentationUrl: OptionalSecureUrlSchema.exactOptional().openapi({
+      description: 'The URL of a page providing detailed documentation for this extension.',
+    }),
+    LastUpdated: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>When the specified extension version was registered. This applies only to:</p> <ul> <li> <p>Private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> </li> <li> <p>Public extensions you have activated in your account with auto-update specified. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p> </li> </ul>',
+    }),
+    TimeCreated: TimestampSchema.exactOptional().openapi({
+      description:
+        'When the specified private extension version was registered or activated in your account.',
+    }),
+    ConfigurationSchema: ConfigurationSchemaSchema.exactOptional().openapi({
+      description:
+        '<p>A JSON string that represent the current configuration data for the extension in this account and Region.</p> <p>To set the configuration data for an extension, use <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetTypeConfiguration.html">SetTypeConfiguration</a>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-register.html#registry-set-configuration">Configuring extensions at the account level</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        '<p>The publisher ID of the extension publisher.</p> <p>This applies only to public third-party extensions. For private registered extensions, and extensions provided by Amazon Web Services, CloudFormation returns <code>null</code>.</p>',
+    }),
+    OriginalTypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>For public extensions that have been activated for this account and Region, the type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    OriginalTypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        'For public extensions that have been activated for this account and Region, the Amazon Resource Name (ARN) of the public extension.',
+    }),
+    PublicVersionNumber: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The version number of a public third-party extension.</p> <p>This applies only if you specify a public extension you have activated in your account, or specify a public extension without specifying a version. For all other extensions, CloudFormation returns <code>null</code>.</p>',
+    }),
+    LatestPublicVersion: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        "<p>The latest version of a public extension <i>that is available</i> for use.</p> <p>This only applies if you specify a public extension, and you don't specify a version. For all other requests, CloudFormation returns <code>null</code>.</p>",
+    }),
+    IsActivated: IsActivatedSchema.exactOptional().openapi({
+      description:
+        '<p>Whether the extension is activated in the account and Region.</p> <p>This only applies to public third-party extensions. For all other extensions, CloudFormation returns <code>null</code>.</p>',
+    }),
+    AutoUpdate: AutoUpdateSchema.exactOptional().openapi({
+      description:
+        'Whether CloudFormation automatically updates the extension in this account and Region when a new <i>minor</i> version is published by the extension publisher. Major versions released by the publisher must be manually updated. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable">Activating public extensions for use in your account</a> in the <i>CloudFormation User Guide</i>.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTypeOutput')
@@ -3164,70 +2263,50 @@ const RegistrationStatusSchema = z
 
 const DescribeTypeRegistrationOutputSchema = z
   .object({
-    ProgressStatus: RegistrationStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the extension registration request.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the extension registration request.' }),
-    ).exactOptional(),
-    TypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension being registered.</p> <p>For registration requests with a <code>ProgressStatus</code> of other than <code>COMPLETE</code>, this will be <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeVersionArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of this specific version of the extension being registered.</p> <p>For registration requests with a <code>ProgressStatus</code> of other than <code>COMPLETE</code>, this will be <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
+    ProgressStatus: RegistrationStatusSchema.exactOptional().openapi({
+      description: 'The current status of the extension registration request.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the extension registration request.',
+    }),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension being registered.</p> <p>For registration requests with a <code>ProgressStatus</code> of other than <code>COMPLETE</code>, this will be <code>null</code>.</p>',
+    }),
+    TypeVersionArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of this specific version of the extension being registered.</p> <p>For registration requests with a <code>ProgressStatus</code> of other than <code>COMPLETE</code>, this will be <code>null</code>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeTypeRegistrationOutput')
 
 const DetectStackDriftOutputSchema = z
   .object({
-    StackDriftDetectionId: StackDriftDetectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of drift results CloudFormation retains for any given stack, and for how long, may vary.</p>',
-        }),
-    ),
+    StackDriftDetectionId: StackDriftDetectionIdSchema.openapi({
+      description:
+        '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of drift results CloudFormation retains for any given stack, and for how long, may vary.</p>',
+    }),
   })
   .openapi({ required: ['StackDriftDetectionId'] })
   .openapi('DetectStackDriftOutput')
 
 const DetectStackResourceDriftOutputSchema = z
   .object({
-    StackResourceDrift: StackResourceDriftSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Information about whether the resource's actual configuration has drifted from its expected template configuration, including actual and expected property values and any differences detected.",
-        }),
-    ),
+    StackResourceDrift: StackResourceDriftSchema.openapi({
+      description:
+        "Information about whether the resource's actual configuration has drifted from its expected template configuration, including actual and expected property values and any differences detected.",
+    }),
   })
   .openapi({ required: ['StackResourceDrift'] })
   .openapi('DetectStackResourceDriftOutput')
 
 const DetectStackSetDriftOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the drift detection stack set operation.</p> <p>You can use this operation ID with <a>DescribeStackSetOperation</a> to monitor the progress of the drift detection operation.</p>',
-        }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the drift detection stack set operation.</p> <p>You can use this operation ID with <a>DescribeStackSetOperation</a> to monitor the progress of the drift detection operation.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DetectStackSetDriftOutput')
@@ -3236,20 +2315,16 @@ const UrlSchema = z.string().openapi('Url')
 
 const EstimateTemplateCostOutputSchema = z
   .object({
-    Url: UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An Amazon Web Services Simple Monthly Calculator URL with a query string that describes the resources required to run the template.',
-        }),
-    ).exactOptional(),
+    Url: UrlSchema.exactOptional().openapi({
+      description:
+        'An Amazon Web Services Simple Monthly Calculator URL with a query string that describes the resources required to run the template.',
+    }),
   })
   .openapi({ description: 'The output for a <a>EstimateTemplateCost</a> action.', required: [] })
   .openapi('EstimateTemplateCostOutput')
 
 const ExecuteChangeSetOutputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'The output for the <a>ExecuteChangeSet</a> action.' })
   .openapi('ExecuteChangeSetOutput')
 
@@ -3257,14 +2332,10 @@ const StackPolicyBodySchema = z.string().min(1).max(16384).openapi('StackPolicyB
 
 const GetStackPolicyOutputSchema = z
   .object({
-    StackPolicyBody: StackPolicyBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Structure containing the stack policy body. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent Updates to Stack Resources</a> in the CloudFormation User Guide.)',
-        }),
-    ).exactOptional(),
+    StackPolicyBody: StackPolicyBodySchema.exactOptional().openapi({
+      description:
+        'Structure containing the stack policy body. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent Updates to Stack Resources</a> in the CloudFormation User Guide.)',
+    }),
   })
   .openapi({ description: 'The output for the <a>GetStackPolicy</a> action.', required: [] })
   .openapi('GetStackPolicyOutput')
@@ -3275,22 +2346,14 @@ const StageListSchema = z.array(TemplateStageSchema).openapi('StageList')
 
 const GetTemplateOutputSchema = z
   .object({
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>CloudFormation returns the same template that was used when the stack was created.</p>',
-        }),
-    ).exactOptional(),
-    StagesAvailable: StageListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stage of the template that you can retrieve. For stacks, the <code>Original</code> and <code>Processed</code> templates are always available. For change sets, the <code>Original</code> template is always available. After CloudFormation finishes creating the change set, the <code>Processed</code> template becomes available.',
-        }),
-    ).exactOptional(),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>CloudFormation returns the same template that was used when the stack was created.</p>',
+    }),
+    StagesAvailable: StageListSchema.exactOptional().openapi({
+      description:
+        'The stage of the template that you can retrieve. For stacks, the <code>Original</code> and <code>Processed</code> templates are always available. For change sets, the <code>Original</code> template is always available. After CloudFormation finishes creating the change set, the <code>Processed</code> template becomes available.',
+    }),
   })
   .openapi({ description: 'The output for <a>GetTemplate</a> action.', required: [] })
   .openapi('GetTemplateOutput')
@@ -3305,9 +2368,9 @@ const AllowedValuesSchema = z.array(AllowedValueSchema).openapi('AllowedValues')
 
 const ParameterConstraintsSchema = z
   .object({
-    AllowedValues: AllowedValuesSchema.and(
-      z.any().openapi({ description: 'A list of values that are permitted for a parameter.' }),
-    ).exactOptional(),
+    AllowedValues: AllowedValuesSchema.exactOptional().openapi({
+      description: 'A list of values that are permitted for a parameter.',
+    }),
   })
   .openapi({
     description:
@@ -3318,33 +2381,25 @@ const ParameterConstraintsSchema = z
 
 const ParameterDeclarationSchema = z
   .object({
-    ParameterKey: ParameterKeySchema.and(
-      z.any().openapi({ description: "The name that's associated with the parameter." }),
-    ).exactOptional(),
-    DefaultValue: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The default value of the parameter.' }),
-    ).exactOptional(),
-    ParameterType: ParameterTypeSchema.and(
-      z.any().openapi({ description: 'The type of parameter.' }),
-    ).exactOptional(),
-    NoEcho: NoEchoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag that indicates whether the parameter value is shown as plain text in logs and in the Amazon Web Services Management Console.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: "The description that's associate with the parameter." }),
-    ).exactOptional(),
-    ParameterConstraints: ParameterConstraintsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The criteria that CloudFormation uses to validate parameter values.',
-        }),
-    ).exactOptional(),
+    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+      description: "The name that's associated with the parameter.",
+    }),
+    DefaultValue: ParameterValueSchema.exactOptional().openapi({
+      description: 'The default value of the parameter.',
+    }),
+    ParameterType: ParameterTypeSchema.exactOptional().openapi({
+      description: 'The type of parameter.',
+    }),
+    NoEcho: NoEchoSchema.exactOptional().openapi({
+      description:
+        'Flag that indicates whether the parameter value is shown as plain text in logs and in the Amazon Web Services Management Console.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: "The description that's associate with the parameter.",
+    }),
+    ParameterConstraints: ParameterConstraintsSchema.exactOptional().openapi({
+      description: 'The criteria that CloudFormation uses to validate parameter values.',
+    }),
   })
   .openapi({ description: 'The ParameterDeclaration data type.', required: [] })
   .openapi('ParameterDeclaration')
@@ -3381,30 +2436,18 @@ const ResourceIdentifiersSchema = z
 
 const ResourceIdentifierSummarySchema = z
   .object({
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The template resource type of the target resources, such as <code>AWS::S3::Bucket</code>.',
-        }),
-    ).exactOptional(),
-    LogicalResourceIds: LogicalResourceIdsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logical IDs of the target resources of the specified <code>ResourceType</code>, as defined in the import template.',
-        }),
-    ).exactOptional(),
-    ResourceIdentifiers: ResourceIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The resource properties you can provide during the import to identify your target resources. For example, <code>BucketName</code> is a possible identifier property for <code>AWS::S3::Bucket</code> resources.',
-        }),
-    ).exactOptional(),
+    ResourceType: ResourceTypeSchema.exactOptional().openapi({
+      description:
+        'The template resource type of the target resources, such as <code>AWS::S3::Bucket</code>.',
+    }),
+    LogicalResourceIds: LogicalResourceIdsSchema.exactOptional().openapi({
+      description:
+        'The logical IDs of the target resources of the specified <code>ResourceType</code>, as defined in the import template.',
+    }),
+    ResourceIdentifiers: ResourceIdentifiersSchema.exactOptional().openapi({
+      description:
+        'The resource properties you can provide during the import to identify your target resources. For example, <code>BucketName</code> is a possible identifier property for <code>AWS::S3::Bucket</code> resources.',
+    }),
   })
   .openapi({
     description:
@@ -3419,14 +2462,10 @@ const ResourceIdentifierSummariesSchema = z
 
 const WarningsSchema = z
   .object({
-    UnrecognizedResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of all of the unrecognized resource types. This is only returned if the <code>TemplateSummaryConfig</code> parameter has the <code>TreatUnrecognizedResourceTypesAsWarning</code> configuration set to <code>True</code>.',
-        }),
-    ).exactOptional(),
+    UnrecognizedResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        'A list of all of the unrecognized resource types. This is only returned if the <code>TemplateSummaryConfig</code> parameter has the <code>TreatUnrecognizedResourceTypesAsWarning</code> configuration set to <code>True</code>.',
+    }),
   })
   .openapi({
     description:
@@ -3437,78 +2476,44 @@ const WarningsSchema = z
 
 const GetTemplateSummaryOutputSchema = z
   .object({
-    Parameters: ParameterDeclarationsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of parameter declarations that describe various properties for each parameter.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value that's defined in the <code>Description</code> property of the template.",
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The capabilities found within the template. If your template contains IAM resources, you must specify the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an <code>InsufficientCapabilities</code> error.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    CapabilitiesReason: CapabilitiesReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of resources that generated the values in the <code>Capabilities</code> response element.',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of all the template resource types that are defined in the template, such as <code>AWS::EC2::Instance</code>, <code>AWS::Dynamo::Table</code>, and <code>Custom::MyCustomInstance</code>.',
-        }),
-    ).exactOptional(),
-    Version: VersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services template format version, which identifies the capabilities of the template.',
-        }),
-    ).exactOptional(),
-    Metadata: MetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value that's defined for the <code>Metadata</code> property of the template.",
-        }),
-    ).exactOptional(),
-    DeclaredTransforms: TransformsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of the transforms that are declared in the template.' }),
-    ).exactOptional(),
-    ResourceIdentifierSummaries: ResourceIdentifierSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of resource identifier summaries that describe the target resources of an import operation and the properties you can provide during the import to identify the target resources. For example, <code>BucketName</code> is a possible identifier property for an <code>AWS::S3::Bucket</code> resource.',
-        }),
-    ).exactOptional(),
-    Warnings: WarningsSchema.and(
-      z.any().openapi({ description: 'An object containing any warnings returned.' }),
-    ).exactOptional(),
+    Parameters: ParameterDeclarationsSchema.exactOptional().openapi({
+      description:
+        'A list of parameter declarations that describe various properties for each parameter.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        "The value that's defined in the <code>Description</code> property of the template.",
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>The capabilities found within the template. If your template contains IAM resources, you must specify the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an <code>InsufficientCapabilities</code> error.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p>',
+    }),
+    CapabilitiesReason: CapabilitiesReasonSchema.exactOptional().openapi({
+      description:
+        'The list of resources that generated the values in the <code>Capabilities</code> response element.',
+    }),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        'A list of all the template resource types that are defined in the template, such as <code>AWS::EC2::Instance</code>, <code>AWS::Dynamo::Table</code>, and <code>Custom::MyCustomInstance</code>.',
+    }),
+    Version: VersionSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services template format version, which identifies the capabilities of the template.',
+    }),
+    Metadata: MetadataSchema.exactOptional().openapi({
+      description:
+        "The value that's defined for the <code>Metadata</code> property of the template.",
+    }),
+    DeclaredTransforms: TransformsListSchema.exactOptional().openapi({
+      description: 'A list of the transforms that are declared in the template.',
+    }),
+    ResourceIdentifierSummaries: ResourceIdentifierSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of resource identifier summaries that describe the target resources of an import operation and the properties you can provide during the import to identify the target resources. For example, <code>BucketName</code> is a possible identifier property for an <code>AWS::S3::Bucket</code> resource.',
+    }),
+    Warnings: WarningsSchema.exactOptional().openapi({
+      description: 'An object containing any warnings returned.',
+    }),
   })
   .openapi({ description: 'The output for the <a>GetTemplateSummary</a> action.', required: [] })
   .openapi('GetTemplateSummaryOutput')
@@ -3519,9 +2524,9 @@ const TreatUnrecognizedResourceTypesAsWarningsSchema = z
 
 const ImportStacksToStackSetOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique identifier for the stack set operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique identifier for the stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ImportStacksToStackSetOutput')
@@ -3530,66 +2535,46 @@ const StackNotFoundExceptionSchema = z.any().openapi('StackNotFoundException')
 
 const ChangeSetSummarySchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the stack with which the change set is associated.' }),
-    ).exactOptional(),
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the stack with which the change set is associated.' }),
-    ).exactOptional(),
-    ChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the change set.' }),
-    ).exactOptional(),
-    ChangeSetName: ChangeSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the change set.' }),
-    ).exactOptional(),
-    ExecutionStatus: ExecutionStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the change set execution status is <code>AVAILABLE</code>, you can execute the change set. If you can't execute the change set, the status indicates why. For example, a change set might be in an <code>UNAVAILABLE</code> state because CloudFormation is still creating it or in an <code>OBSOLETE</code> state because the stack was already updated.",
-        }),
-    ).exactOptional(),
-    Status: ChangeSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The state of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.',
-        }),
-    ).exactOptional(),
-    StatusReason: ChangeSetStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the change set's status. For example, if your change set is in the <code>FAILED</code> state, CloudFormation shows the error message.",
-        }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The start time when the change set was created, in UTC.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'Descriptive information about the change set.' }),
-    ).exactOptional(),
-    IncludeNestedStacks: IncludeNestedStacksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Specifies the current setting of <code>IncludeNestedStacks</code> for the change set.',
-        }),
-    ).exactOptional(),
-    ParentChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The parent change set ID.' }),
-    ).exactOptional(),
-    RootChangeSetId: ChangeSetIdSchema.and(
-      z.any().openapi({ description: 'The root change set ID.' }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack with which the change set is associated.',
+    }),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description: 'The name of the stack with which the change set is associated.',
+    }),
+    ChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The ID of the change set.',
+    }),
+    ChangeSetName: ChangeSetNameSchema.exactOptional().openapi({
+      description: 'The name of the change set.',
+    }),
+    ExecutionStatus: ExecutionStatusSchema.exactOptional().openapi({
+      description:
+        "If the change set execution status is <code>AVAILABLE</code>, you can execute the change set. If you can't execute the change set, the status indicates why. For example, a change set might be in an <code>UNAVAILABLE</code> state because CloudFormation is still creating it or in an <code>OBSOLETE</code> state because the stack was already updated.",
+    }),
+    Status: ChangeSetStatusSchema.exactOptional().openapi({
+      description:
+        'The state of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.',
+    }),
+    StatusReason: ChangeSetStatusReasonSchema.exactOptional().openapi({
+      description:
+        "A description of the change set's status. For example, if your change set is in the <code>FAILED</code> state, CloudFormation shows the error message.",
+    }),
+    CreationTime: CreationTimeSchema.exactOptional().openapi({
+      description: 'The start time when the change set was created, in UTC.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'Descriptive information about the change set.',
+    }),
+    IncludeNestedStacks: IncludeNestedStacksSchema.exactOptional().openapi({
+      description:
+        'Specifies the current setting of <code>IncludeNestedStacks</code> for the change set.',
+    }),
+    ParentChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The parent change set ID.',
+    }),
+    RootChangeSetId: ChangeSetIdSchema.exactOptional().openapi({
+      description: 'The root change set ID.',
+    }),
   })
   .openapi({
     description:
@@ -3602,22 +2587,14 @@ const ChangeSetSummariesSchema = z.array(ChangeSetSummarySchema).openapi('Change
 
 const ListChangeSetsOutputSchema = z
   .object({
-    Summaries: ChangeSetSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>ChangeSetSummary</code> structures that provides the ID and status of each change set for the specified stack.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB, a string that identifies the next page of change sets. If there is no additional page, this value is <code>null</code>.',
-        }),
-    ).exactOptional(),
+    Summaries: ChangeSetSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>ChangeSetSummary</code> structures that provides the ID and status of each change set for the specified stack.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB, a string that identifies the next page of change sets. If there is no additional page, this value is <code>null</code>.',
+    }),
   })
   .openapi({ description: 'The output for the <a>ListChangeSets</a> action.', required: [] })
   .openapi('ListChangeSetsOutput')
@@ -3626,27 +2603,17 @@ const ExportValueSchema = z.string().openapi('ExportValue')
 
 const ExportSchema = z
   .object({
-    ExportingStackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The stack that contains the exported output name and value.' }),
-    ).exactOptional(),
-    Name: ExportNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name of exported output value. Use this name and the <code>Fn::ImportValue</code> function to import the associated value into other stacks. The name is defined in the <code>Export</code> field in the associated stack's <code>Outputs</code> section.",
-        }),
-    ).exactOptional(),
-    Value: ExportValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The value of the exported output, such as a resource physical ID. This value is defined in the <code>Export</code> field in the associated stack's <code>Outputs</code> section.",
-        }),
-    ).exactOptional(),
+    ExportingStackId: StackIdSchema.exactOptional().openapi({
+      description: 'The stack that contains the exported output name and value.',
+    }),
+    Name: ExportNameSchema.exactOptional().openapi({
+      description:
+        "The name of exported output value. Use this name and the <code>Fn::ImportValue</code> function to import the associated value into other stacks. The name is defined in the <code>Export</code> field in the associated stack's <code>Outputs</code> section.",
+    }),
+    Value: ExportValueSchema.exactOptional().openapi({
+      description:
+        "The value of the exported output, such as a resource physical ID. This value is defined in the <code>Export</code> field in the associated stack's <code>Outputs</code> section.",
+    }),
   })
   .openapi({
     description:
@@ -3659,17 +2626,13 @@ const ExportsSchema = z.array(ExportSchema).openapi('Exports')
 
 const ListExportsOutputSchema = z
   .object({
-    Exports: ExportsSchema.and(
-      z.any().openapi({ description: 'The output for the <a>ListExports</a> action.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 100 exported output values, a string that identifies the next page of exports. If there is no additional page, this value is null.',
-        }),
-    ).exactOptional(),
+    Exports: ExportsSchema.exactOptional().openapi({
+      description: 'The output for the <a>ListExports</a> action.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 100 exported output values, a string that identifies the next page of exports. If there is no additional page, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListExportsOutput')
@@ -3678,81 +2641,46 @@ const ImportsSchema = z.array(StackNameSchema).openapi('Imports')
 
 const ListImportsOutputSchema = z
   .object({
-    Imports: ImportsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of stack names that are importing the specified exported output value.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of exports. If there is no additional page, this value is null.',
-        }),
-    ).exactOptional(),
+    Imports: ImportsSchema.exactOptional().openapi({
+      description: 'A list of stack names that are importing the specified exported output value.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string that identifies the next page of exports. If there is no additional page, this value is null.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListImportsOutput')
 
 const StackInstanceResourceDriftsSummarySchema = z
   .object({
-    StackId: StackIdSchema.and(z.any().openapi({ description: 'The ID of the stack instance.' })),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
-        }),
-    ).exactOptional(),
-    PhysicalResourceIdContext: PhysicalResourceIdContextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Context information that enables CloudFormation to uniquely identify a resource. CloudFormation uses context key-value pairs in cases where a resource's logical and physical IDs aren't enough to uniquely identify that resource. Each context key-value pair specifies a unique resource that contains the targeted resource.",
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
-        }),
-    ),
-    PropertyDifferences: PropertyDifferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Status of the actual configuration of the resource compared to its expected configuration. These will be present only for resources whose <code>StackInstanceResourceDriftStatus</code> is <code>MODIFIED</code>. ',
-        }),
-    ).exactOptional(),
-    StackResourceDriftStatus: StackResourceDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The drift status of the resource in a stack instance.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
-        }),
-    ),
-    Timestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Time at which the stack instance drift detection operation was initiated.',
-        }),
-    ),
+    StackId: StackIdSchema.openapi({ description: 'The ID of the stack instance.' }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.',
+    }),
+    PhysicalResourceIdContext: PhysicalResourceIdContextSchema.exactOptional().openapi({
+      description:
+        "Context information that enables CloudFormation to uniquely identify a resource. CloudFormation uses context key-value pairs in cases where a resource's logical and physical IDs aren't enough to uniquely identify that resource. Each context key-value pair specifies a unique resource that contains the targeted resource.",
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'Type of resource. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.',
+    }),
+    PropertyDifferences: PropertyDifferencesSchema.exactOptional().openapi({
+      description:
+        'Status of the actual configuration of the resource compared to its expected configuration. These will be present only for resources whose <code>StackInstanceResourceDriftStatus</code> is <code>MODIFIED</code>. ',
+    }),
+    StackResourceDriftStatus: StackResourceDriftStatusSchema.openapi({
+      description:
+        "<p>The drift status of the resource in a stack instance.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
+    }),
+    Timestamp: TimestampSchema.openapi({
+      description: 'Time at which the stack instance drift detection operation was initiated.',
+    }),
   })
   .openapi({
     required: [
@@ -3773,105 +2701,60 @@ const StackInstanceResourceDriftsSummariesSchema = z
 
 const ListStackInstanceResourceDriftsOutputSchema = z
   .object({
-    Summaries: StackInstanceResourceDriftsSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>StackInstanceResourceDriftSummary</code> structures that contain information about the specified stack instances.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Summaries: StackInstanceResourceDriftsSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>StackInstanceResourceDriftSummary</code> structures that contain information about the specified stack instances.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackInstanceResourceDriftsOutput')
 
 const StackInstanceSummarySchema = z
   .object({
-    StackSetId: StackSetIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services Region that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    Account: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Self-managed permissions] The name of the Amazon Web Services account that the stack instance is associated with.',
-        }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The ID of the stack instance.' }),
-    ).exactOptional(),
-    Status: StackInstanceStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the stack instance, in terms of its synchronization with its associated stack set.</p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because:</p> <ul> <li> <p>The associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation.</p> </li> <li> <p>The stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> </ul> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StatusReason: ReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The explanation for the specific status code assigned to this stack instance.',
-        }),
-    ).exactOptional(),
-    StackInstanceStatus: StackInstanceComprehensiveStatusSchema.and(
-      z.any().openapi({ description: 'The detailed status of the stack instance.' }),
-    ).exactOptional(),
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
-        }),
-    ).exactOptional(),
-    DriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack instance's actual configuration compared to the expected template and parameter configuration of the stack set to which it belongs.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from the expected template and parameter configuration of the stack set to which it belongs. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack instance differs from its expected stack set configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack instance's actual configuration matches its expected stack set configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    LastDriftCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.",
-        }),
-    ).exactOptional(),
-    LastOperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The last unique ID of a StackSet operation performed on a stack instance.',
-        }),
-    ).exactOptional(),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique ID of the stack set that the stack instance is associated with.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Web Services Region that the stack instance is associated with.',
+    }),
+    Account: AccountSchema.exactOptional().openapi({
+      description:
+        '[Self-managed permissions] The name of the Amazon Web Services account that the stack instance is associated with.',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack instance.',
+    }),
+    Status: StackInstanceStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the stack instance, in terms of its synchronization with its associated stack set.</p> <ul> <li> <p> <code>INOPERABLE</code>: A <code>DeleteStackInstances</code> operation has failed and left the stack in an unstable state. Stacks in this state are excluded from further <code>UpdateStackSet</code> operations. You might need to perform a <code>DeleteStackInstances</code> operation, with <code>RetainStacks</code> set to <code>true</code>, to delete the stack instance, and then delete the stack manually.</p> </li> <li> <p> <code>OUTDATED</code>: The stack isn't currently up to date with the stack set because:</p> <ul> <li> <p>The associated stack failed during a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation.</p> </li> <li> <p>The stack was part of a <code>CreateStackSet</code> or <code>UpdateStackSet</code> operation that failed or was stopped before the stack was created or updated.</p> </li> </ul> </li> <li> <p> <code>CURRENT</code>: The stack is currently up to date with the stack set.</p> </li> </ul>",
+    }),
+    StatusReason: ReasonSchema.exactOptional().openapi({
+      description: 'The explanation for the specific status code assigned to this stack instance.',
+    }),
+    StackInstanceStatus: StackInstanceComprehensiveStatusSchema.exactOptional().openapi({
+      description: 'The detailed status of the stack instance.',
+    }),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
+    }),
+    DriftStatus: StackDriftStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Status of the stack instance's actual configuration compared to the expected template and parameter configuration of the stack set to which it belongs.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from the expected template and parameter configuration of the stack set to which it belongs. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack instance differs from its expected stack set configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack instance's actual configuration matches its expected stack set configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    LastDriftCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "Most recent time when CloudFormation performed a drift detection operation on the stack instance. This value will be <code>NULL</code> for any stack instance on which drift detection hasn't yet been performed.",
+    }),
+    LastOperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The last unique ID of a StackSet operation performed on a stack instance.',
+    }),
   })
   .openapi({
     description: 'The structure that contains summary information about a stack instance.',
@@ -3885,22 +2768,14 @@ const StackInstanceSummariesSchema = z
 
 const ListStackInstancesOutputSchema = z
   .object({
-    Summaries: StackInstanceSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>StackInstanceSummary</code> structures that contain information about the specified stack instances.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Summaries: StackInstanceSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>StackInstanceSummary</code> structures that contain information about the specified stack instances.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackInstancesOutput')
@@ -3918,34 +2793,26 @@ const StackInstanceFilterValuesSchema = z
 
 const StackInstanceFilterSchema = z
   .object({
-    Name: StackInstanceFilterNameSchema.and(
-      z.any().openapi({ description: 'The type of filter to apply.' }),
-    ).exactOptional(),
-    Values: StackInstanceFilterValuesSchema.and(
-      z.any().openapi({ description: 'The status to filter by.' }),
-    ).exactOptional(),
+    Name: StackInstanceFilterNameSchema.exactOptional().openapi({
+      description: 'The type of filter to apply.',
+    }),
+    Values: StackInstanceFilterValuesSchema.exactOptional().openapi({
+      description: 'The status to filter by.',
+    }),
   })
   .openapi({ description: 'The filter to apply to stack instances', required: [] })
   .openapi('StackInstanceFilter')
 
 const StackResourceDriftInformationSummarySchema = z
   .object({
-    StackResourceDriftStatus: StackResourceDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Status of the resource\'s actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn\'t checked if the resource differs from its expected configuration.</p> <p>Any resources that don\'t currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html">Resources that Support Drift Detection</a>. If you performed an <a>ContinueUpdateRollback</a> operation on a stack, any resources included in <code>ResourcesToSkip</code> will also have a status of <code>NOT_CHECKED</code>. For more information about skipping resources during rollback operations, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html">Continue Rolling Back an Update</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource\'s actual configuration matches its expected configuration.</p> </li> </ul>',
-        }),
-    ),
-    LastCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'When CloudFormation last checked if the resource had drifted from its expected configuration.',
-        }),
-    ).exactOptional(),
+    StackResourceDriftStatus: StackResourceDriftStatusSchema.openapi({
+      description:
+        '<p>Status of the resource\'s actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn\'t checked if the resource differs from its expected configuration.</p> <p>Any resources that don\'t currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html">Resources that Support Drift Detection</a>. If you performed an <a>ContinueUpdateRollback</a> operation on a stack, any resources included in <code>ResourcesToSkip</code> will also have a status of <code>NOT_CHECKED</code>. For more information about skipping resources during rollback operations, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html">Continue Rolling Back an Update</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource\'s actual configuration matches its expected configuration.</p> </li> </ul>',
+    }),
+    LastCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'When CloudFormation last checked if the resource had drifted from its expected configuration.',
+    }),
   })
   .openapi({
     required: ['StackResourceDriftStatus'],
@@ -3956,52 +2823,32 @@ const StackResourceDriftInformationSummarySchema = z
 
 const StackResourceSummarySchema = z
   .object({
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical name of the resource specified in the template.' }),
-    ),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique identifier that corresponds to a physical instance ID of the resource.',
-        }),
-    ).exactOptional(),
-    ResourceType: ResourceTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Type of resource. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.)',
-        }),
-    ),
-    LastUpdatedTimestamp: TimestampSchema.and(
-      z.any().openapi({ description: 'Time the status was updated.' }),
-    ),
-    ResourceStatus: ResourceStatusSchema.and(
-      z.any().openapi({ description: 'Current status of the resource.' }),
-    ),
-    ResourceStatusReason: ResourceStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/failure message associated with the resource.' }),
-    ).exactOptional(),
-    DriftInformation: StackResourceDriftInformationSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
-        }),
-    ).exactOptional(),
-    ModuleInfo: ModuleInfoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
-        }),
-    ).exactOptional(),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource specified in the template.',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'The name or unique identifier that corresponds to a physical instance ID of the resource.',
+    }),
+    ResourceType: ResourceTypeSchema.openapi({
+      description:
+        'Type of resource. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html">Amazon Web Services Resource Types Reference</a> in the CloudFormation User Guide.)',
+    }),
+    LastUpdatedTimestamp: TimestampSchema.openapi({ description: 'Time the status was updated.' }),
+    ResourceStatus: ResourceStatusSchema.openapi({
+      description: 'Current status of the resource.',
+    }),
+    ResourceStatusReason: ResourceStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/failure message associated with the resource.',
+    }),
+    DriftInformation: StackResourceDriftInformationSummarySchema.exactOptional().openapi({
+      description:
+        'Information about whether the resource\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
+    }),
+    ModuleInfo: ModuleInfoSchema.exactOptional().openapi({
+      description:
+        'Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.',
+    }),
   })
   .openapi({
     required: ['LogicalResourceId', 'ResourceType', 'LastUpdatedTimestamp', 'ResourceStatus'],
@@ -4015,17 +2862,13 @@ const StackResourceSummariesSchema = z
 
 const ListStackResourcesOutputSchema = z
   .object({
-    StackResourceSummaries: StackResourceSummariesSchema.and(
-      z.any().openapi({ description: 'A list of <code>StackResourceSummary</code> structures.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB, a string that identifies the next page of stack resources. If no additional page exists, this value is null.',
-        }),
-    ).exactOptional(),
+    StackResourceSummaries: StackResourceSummariesSchema.exactOptional().openapi({
+      description: 'A list of <code>StackResourceSummary</code> structures.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB, a string that identifies the next page of stack resources. If no additional page exists, this value is null.',
+    }),
   })
   .openapi({ description: 'The output for a <a>ListStackResources</a> action.', required: [] })
   .openapi('ListStackResourcesOutput')
@@ -4042,22 +2885,14 @@ const AccountGateStatusReasonSchema = z.string().openapi('AccountGateStatusReaso
 
 const AccountGateResultSchema = z
   .object({
-    Status: AccountGateStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The status of the account gate function.</p> <ul> <li> <p> <code>SUCCEEDED</code>: The account gate function has determined that the account and Region passes any requirements for a stack set operation to occur. CloudFormation proceeds with the stack operation in that account and Region.</p> </li> <li> <p> <code>FAILED</code>: The account gate function has determined that the account and Region doesn't meet the requirements for a stack set operation to occur. CloudFormation cancels the stack set operation in that account and Region, and sets the stack set operation result status for that account and Region to <code>FAILED</code>.</p> </li> <li> <p> <code>SKIPPED</code>: CloudFormation has skipped calling the account gate function for this account and Region, for one of the following reasons:</p> <ul> <li> <p>An account gate function hasn't been specified for the account and Region. CloudFormation proceeds with the stack set operation in this account and Region.</p> </li> <li> <p>The <code>AWSCloudFormationStackSetExecutionRole</code> of the stack set administration account lacks permissions to invoke the function. CloudFormation proceeds with the stack set operation in this account and Region.</p> </li> <li> <p>Either no action is necessary, or no action is possible, on the stack. CloudFormation skips the stack set operation in this account and Region.</p> </li> </ul> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StatusReason: AccountGateStatusReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The reason for the account gate status assigned to this account and Region for the stack set operation.',
-        }),
-    ).exactOptional(),
+    Status: AccountGateStatusSchema.exactOptional().openapi({
+      description:
+        "<p>The status of the account gate function.</p> <ul> <li> <p> <code>SUCCEEDED</code>: The account gate function has determined that the account and Region passes any requirements for a stack set operation to occur. CloudFormation proceeds with the stack operation in that account and Region.</p> </li> <li> <p> <code>FAILED</code>: The account gate function has determined that the account and Region doesn't meet the requirements for a stack set operation to occur. CloudFormation cancels the stack set operation in that account and Region, and sets the stack set operation result status for that account and Region to <code>FAILED</code>.</p> </li> <li> <p> <code>SKIPPED</code>: CloudFormation has skipped calling the account gate function for this account and Region, for one of the following reasons:</p> <ul> <li> <p>An account gate function hasn't been specified for the account and Region. CloudFormation proceeds with the stack set operation in this account and Region.</p> </li> <li> <p>The <code>AWSCloudFormationStackSetExecutionRole</code> of the stack set administration account lacks permissions to invoke the function. CloudFormation proceeds with the stack set operation in this account and Region.</p> </li> <li> <p>Either no action is necessary, or no action is possible, on the stack. CloudFormation skips the stack set operation in this account and Region.</p> </li> </ul> </li> </ul>",
+    }),
+    StatusReason: AccountGateStatusReasonSchema.exactOptional().openapi({
+      description:
+        'The reason for the account gate status assigned to this account and Region for the stack set operation.',
+    }),
   })
   .openapi({
     description:
@@ -4068,48 +2903,28 @@ const AccountGateResultSchema = z
 
 const StackSetOperationResultSummarySchema = z
   .object({
-    Account: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Self-managed permissions] The name of the Amazon Web Services account for this operation result.',
-        }),
-    ).exactOptional(),
-    Region: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the Amazon Web Services Region for this operation result.',
-        }),
-    ).exactOptional(),
-    Status: StackSetOperationResultStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The result status of the stack set operation for the given account in the given Region.</p> <ul> <li> <p> <code>CANCELLED</code>: The operation in the specified account and Region has been canceled. This is either because a user has stopped the stack set operation, or because the failure tolerance of the stack set operation has been exceeded.</p> </li> <li> <p> <code>FAILED</code>: The operation in the specified account and Region failed.</p> <p>If the stack set operation fails in enough accounts within a Region, the failure tolerance for the stack set operation as a whole might be exceeded.</p> </li> <li> <p> <code>RUNNING</code>: The operation in the specified account and Region is currently in progress.</p> </li> <li> <p> <code>PENDING</code>: The operation in the specified account and Region has yet to start.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation in the specified account and Region completed successfully.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StatusReason: ReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the assigned result status.' }),
-    ).exactOptional(),
-    AccountGateResult: AccountGateResultSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The results of the account gate function CloudFormation invokes, if present, before proceeding with stack set operations in an account.',
-        }),
-    ).exactOptional(),
-    OrganizationalUnitId: OrganizationalUnitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
-        }),
-    ).exactOptional(),
+    Account: AccountSchema.exactOptional().openapi({
+      description:
+        '[Self-managed permissions] The name of the Amazon Web Services account for this operation result.',
+    }),
+    Region: RegionSchema.exactOptional().openapi({
+      description: 'The name of the Amazon Web Services Region for this operation result.',
+    }),
+    Status: StackSetOperationResultStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The result status of the stack set operation for the given account in the given Region.</p> <ul> <li> <p> <code>CANCELLED</code>: The operation in the specified account and Region has been canceled. This is either because a user has stopped the stack set operation, or because the failure tolerance of the stack set operation has been exceeded.</p> </li> <li> <p> <code>FAILED</code>: The operation in the specified account and Region failed.</p> <p>If the stack set operation fails in enough accounts within a Region, the failure tolerance for the stack set operation as a whole might be exceeded.</p> </li> <li> <p> <code>RUNNING</code>: The operation in the specified account and Region is currently in progress.</p> </li> <li> <p> <code>PENDING</code>: The operation in the specified account and Region has yet to start.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation in the specified account and Region completed successfully.</p> </li> </ul>',
+    }),
+    StatusReason: ReasonSchema.exactOptional().openapi({
+      description: 'The reason for the assigned result status.',
+    }),
+    AccountGateResult: AccountGateResultSchema.exactOptional().openapi({
+      description:
+        'The results of the account gate function CloudFormation invokes, if present, before proceeding with stack set operations in an account.',
+    }),
+    OrganizationalUnitId: OrganizationalUnitIdSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] The organization root ID or organizational unit (OU) IDs that you specified for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeploymentTargets.html">DeploymentTargets</a>.',
+    }),
   })
   .openapi({
     description:
@@ -4124,22 +2939,14 @@ const StackSetOperationResultSummariesSchema = z
 
 const ListStackSetOperationResultsOutputSchema = z
   .object({
-    Summaries: StackSetOperationResultSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>StackSetOperationResultSummary</code> structures that contain information about the specified operation results, for accounts and Amazon Web Services Regions that are included in the operation.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Summaries: StackSetOperationResultSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>StackSetOperationResultSummary</code> structures that contain information about the specified operation results, for accounts and Amazon Web Services Regions that are included in the operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackSetOperationResultsOutput')
@@ -4157,67 +2964,47 @@ const OperationResultFilterValuesSchema = z
 
 const OperationResultFilterSchema = z
   .object({
-    Name: OperationResultFilterNameSchema.and(
-      z.any().openapi({ description: 'The type of filter to apply.' }),
-    ).exactOptional(),
-    Values: OperationResultFilterValuesSchema.and(
-      z.any().openapi({ description: 'The value to filter by.' }),
-    ).exactOptional(),
+    Name: OperationResultFilterNameSchema.exactOptional().openapi({
+      description: 'The type of filter to apply.',
+    }),
+    Values: OperationResultFilterValuesSchema.exactOptional().openapi({
+      description: 'The value to filter by.',
+    }),
   })
   .openapi({ description: 'The status that operation results are filtered by.', required: [] })
   .openapi('OperationResultFilter')
 
 const StackSetOperationSummarySchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique ID of the stack set operation.' }),
-    ).exactOptional(),
-    Action: StackSetOperationActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of operation: <code>CREATE</code>, <code>UPDATE</code>, or <code>DELETE</code>. Create and delete operations affect only the specified stack instances that are associated with the specified stack set. Update operations affect both the stack set itself and <i>all</i> associated stack set instances.',
-        }),
-    ).exactOptional(),
-    Status: StackSetOperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The overall status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you\'ve set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-status-codes">stack set operation status codes</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreationTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time at which the operation was initiated. Note that the creation times for the stack set operation might differ from the creation time of the individual stacks themselves. This is because CloudFormation needs to perform preparatory work for the operation, such as dispatching the work to the requested Regions, before actually creating the first stacks.',
-        }),
-    ).exactOptional(),
-    EndTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The time at which the stack set operation ended, across all accounts and Regions specified. Note that this doesn't necessarily mean that the stack set operation was successful, or even attempted, in each account or Region.",
-        }),
-    ).exactOptional(),
-    StatusReason: StackSetOperationStatusReasonSchema.and(
-      z.any().openapi({ description: 'The status of the operation in details.' }),
-    ).exactOptional(),
-    StatusDetails: StackSetOperationStatusDetailsSchema.and(
-      z.any().openapi({ description: 'Detailed information about the stack set operation.' }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
-        }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique ID of the stack set operation.',
+    }),
+    Action: StackSetOperationActionSchema.exactOptional().openapi({
+      description:
+        'The type of operation: <code>CREATE</code>, <code>UPDATE</code>, or <code>DELETE</code>. Create and delete operations affect only the specified stack instances that are associated with the specified stack set. Update operations affect both the stack set itself and <i>all</i> associated stack set instances.',
+    }),
+    Status: StackSetOperationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The overall status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you\'ve set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-status-codes">stack set operation status codes</a> in the CloudFormation User Guide.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>',
+    }),
+    CreationTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'The time at which the operation was initiated. Note that the creation times for the stack set operation might differ from the creation time of the individual stacks themselves. This is because CloudFormation needs to perform preparatory work for the operation, such as dispatching the work to the requested Regions, before actually creating the first stacks.',
+    }),
+    EndTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "The time at which the stack set operation ended, across all accounts and Regions specified. Note that this doesn't necessarily mean that the stack set operation was successful, or even attempted, in each account or Region.",
+    }),
+    StatusReason: StackSetOperationStatusReasonSchema.exactOptional().openapi({
+      description: 'The status of the operation in details.',
+    }),
+    StatusDetails: StackSetOperationStatusDetailsSchema.exactOptional().openapi({
+      description: 'Detailed information about the stack set operation.',
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description:
+        '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
+    }),
   })
   .openapi({
     description: 'The structures that contain summary information about the specified operation.',
@@ -4231,85 +3018,53 @@ const StackSetOperationSummariesSchema = z
 
 const ListStackSetOperationsOutputSchema = z
   .object({
-    Summaries: StackSetOperationSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>StackSetOperationSummary</code> structures that contain summary information about operations for the specified stack set.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Summaries: StackSetOperationSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>StackSetOperationSummary</code> structures that contain summary information about operations for the specified stack set.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackSetOperationsOutput')
 
 const StackSetSummarySchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z.any().openapi({ description: 'The name of the stack set.' }),
-    ).exactOptional(),
-    StackSetId: StackSetIdSchema.and(
-      z.any().openapi({ description: 'The ID of the stack set.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the stack set that you specify when the stack set is created or updated.',
-        }),
-    ).exactOptional(),
-    Status: StackSetStatusSchema.and(
-      z.any().openapi({ description: 'The status of the stack set.' }),
-    ).exactOptional(),
-    AutoDeployment: AutoDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organizational unit (OU).',
-        }),
-    ).exactOptional(),
-    PermissionModel: PermissionModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    DriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack set's actual configuration compared to its expected template and parameter configuration. A stack set is considered to have drifted if one or more of its stack instances have drifted from their expected template and parameter configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: One or more of the stack instances belonging to the stack set stack differs from the expected template and parameter configuration. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked the stack set for drift.</p> </li> <li> <p> <code>IN_SYNC</code>: All the stack instances belonging to the stack set stack match from the expected template and parameter configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    LastDriftCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Most recent time when CloudFormation performed a drift detection operation on the stack set. This value will be <code>NULL</code> for any stack set on which drift detection hasn't yet been performed.",
-        }),
-    ).exactOptional(),
-    ManagedExecution: ManagedExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.exactOptional().openapi({
+      description: 'The name of the stack set.',
+    }),
+    StackSetId: StackSetIdSchema.exactOptional().openapi({
+      description: 'The ID of the stack set.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        'A description of the stack set that you specify when the stack set is created or updated.',
+    }),
+    Status: StackSetStatusSchema.exactOptional().openapi({
+      description: 'The status of the stack set.',
+    }),
+    AutoDeployment: AutoDeploymentSchema.exactOptional().openapi({
+      description:
+        '[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organizational unit (OU).',
+    }),
+    PermissionModel: PermissionModelsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
+    }),
+    DriftStatus: StackDriftStatusSchema.exactOptional().openapi({
+      description:
+        "<p>Status of the stack set's actual configuration compared to its expected template and parameter configuration. A stack set is considered to have drifted if one or more of its stack instances have drifted from their expected template and parameter configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: One or more of the stack instances belonging to the stack set stack differs from the expected template and parameter configuration. A stack instance is considered to have drifted if one or more of the resources in the associated stack have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked the stack set for drift.</p> </li> <li> <p> <code>IN_SYNC</code>: All the stack instances belonging to the stack set stack match from the expected template and parameter configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    LastDriftCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        "Most recent time when CloudFormation performed a drift detection operation on the stack set. This value will be <code>NULL</code> for any stack set on which drift detection hasn't yet been performed.",
+    }),
+    ManagedExecution: ManagedExecutionSchema.exactOptional().openapi({
+      description:
+        'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
+    }),
   })
   .openapi({
     description: 'The structures that contain summary information about the specified stack set.',
@@ -4321,22 +3076,14 @@ const StackSetSummariesSchema = z.array(StackSetSummarySchema).openapi('StackSet
 
 const ListStackSetsOutputSchema = z
   .object({
-    Summaries: StackSetSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of <code>StackSetSummary</code> structures that contain information about the user's stack sets.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all of the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Summaries: StackSetSummariesSchema.exactOptional().openapi({
+      description:
+        "A list of <code>StackSetSummary</code> structures that contain information about the user's stack sets.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all of the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListStackSetsOutput')
@@ -4345,22 +3092,14 @@ const TemplateDescriptionSchema = z.string().openapi('TemplateDescription')
 
 const StackDriftInformationSummarySchema = z
   .object({
-    StackDriftStatus: StackDriftStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Status of the stack's actual configuration compared to its expected template configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
-        }),
-    ),
-    LastCheckTimestamp: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Most recent time when a drift detection operation was initiated on the stack, or any of its individual resources that support drift detection.',
-        }),
-    ).exactOptional(),
+    StackDriftStatus: StackDriftStatusSchema.openapi({
+      description:
+        "<p>Status of the stack's actual configuration compared to its expected template configuration.</p> <ul> <li> <p> <code>DRIFTED</code>: The stack differs from its expected template configuration. A stack is considered to have drifted if one or more of its resources have drifted.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the stack differs from its expected template configuration.</p> </li> <li> <p> <code>IN_SYNC</code>: The stack's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>UNKNOWN</code>: This value is reserved for future use.</p> </li> </ul>",
+    }),
+    LastCheckTimestamp: TimestampSchema.exactOptional().openapi({
+      description:
+        'Most recent time when a drift detection operation was initiated on the stack, or any of its individual resources that support drift detection.',
+    }),
   })
   .openapi({
     required: ['StackDriftStatus'],
@@ -4371,63 +3110,35 @@ const StackDriftInformationSummarySchema = z
 
 const StackSummarySchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique stack identifier.' }),
-    ).exactOptional(),
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name associated with the stack.' }),
-    ),
-    TemplateDescription: TemplateDescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The template description of the template used to create the stack.',
-        }),
-    ).exactOptional(),
-    CreationTime: CreationTimeSchema.and(
-      z.any().openapi({ description: 'The time the stack was created.' }),
-    ),
-    LastUpdatedTime: LastUpdatedTimeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time the stack was last updated. This field will only be returned if the stack has been updated at least once.',
-        }),
-    ).exactOptional(),
-    DeletionTime: DeletionTimeSchema.and(
-      z.any().openapi({ description: 'The time the stack was deleted.' }),
-    ).exactOptional(),
-    StackStatus: StackStatusSchema.and(
-      z.any().openapi({ description: 'The current status of the stack.' }),
-    ),
-    StackStatusReason: StackStatusReasonSchema.and(
-      z.any().openapi({ description: 'Success/Failure message associated with the stack status.' }),
-    ).exactOptional(),
-    ParentId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the direct parent of this stack. For the first level of nested stacks, the root stack is also the parent stack.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    RootId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the top-level stack to which the nested stack ultimately belongs.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    DriftInformation: StackDriftInformationSummarySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Summarizes information about whether a stack\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
-        }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({ description: 'Unique stack identifier.' }),
+    StackName: StackNameSchema.openapi({ description: 'The name associated with the stack.' }),
+    TemplateDescription: TemplateDescriptionSchema.exactOptional().openapi({
+      description: 'The template description of the template used to create the stack.',
+    }),
+    CreationTime: CreationTimeSchema.openapi({ description: 'The time the stack was created.' }),
+    LastUpdatedTime: LastUpdatedTimeSchema.exactOptional().openapi({
+      description:
+        'The time the stack was last updated. This field will only be returned if the stack has been updated at least once.',
+    }),
+    DeletionTime: DeletionTimeSchema.exactOptional().openapi({
+      description: 'The time the stack was deleted.',
+    }),
+    StackStatus: StackStatusSchema.openapi({ description: 'The current status of the stack.' }),
+    StackStatusReason: StackStatusReasonSchema.exactOptional().openapi({
+      description: 'Success/Failure message associated with the stack status.',
+    }),
+    ParentId: StackIdSchema.exactOptional().openapi({
+      description:
+        '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the direct parent of this stack. For the first level of nested stacks, the root stack is also the parent stack.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    RootId: StackIdSchema.exactOptional().openapi({
+      description:
+        '<p>For nested stacks--stacks created as resources for another stack--the stack ID of the top-level stack to which the nested stack ultimately belongs.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">Working with Nested Stacks</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    DriftInformation: StackDriftInformationSummarySchema.exactOptional().openapi({
+      description:
+        'Summarizes information about whether a stack\'s actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Detecting Unregulated Configuration Changes to Stacks and Resources</a>.',
+    }),
   })
   .openapi({
     required: ['StackName', 'CreationTime', 'StackStatus'],
@@ -4439,22 +3150,14 @@ const StackSummariesSchema = z.array(StackSummarySchema).openapi('StackSummaries
 
 const ListStacksOutputSchema = z
   .object({
-    StackSummaries: StackSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>StackSummary</code> structures containing information about the specified stacks.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If the output exceeds 1 MB in size, a string that identifies the next page of stacks. If no additional page exists, this value is null.',
-        }),
-    ).exactOptional(),
+    StackSummaries: StackSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>StackSummary</code> structures containing information about the specified stacks.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If the output exceeds 1 MB in size, a string that identifies the next page of stacks. If no additional page exists, this value is null.',
+    }),
   })
   .openapi({ description: 'The output for <a>ListStacks</a> action.', required: [] })
   .openapi('ListStacksOutput')
@@ -4472,67 +3175,43 @@ const RegistrationTokenListSchema = z
 
 const ListTypeRegistrationsOutputSchema = z
   .object({
-    RegistrationTokenList: RegistrationTokenListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A list of extension registration tokens.</p> <p>Use <a>DescribeTypeRegistration</a> to return detailed information about a type registration request.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    RegistrationTokenList: RegistrationTokenListSchema.exactOptional().openapi({
+      description:
+        '<p>A list of extension registration tokens.</p> <p>Use <a>DescribeTypeRegistration</a> to return detailed information about a type registration request.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTypeRegistrationsOutput')
 
 const TypeVersionSummarySchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z.any().openapi({ description: 'The kind of extension.' }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z.any().openapi({ description: 'The name of the extension.' }),
-    ).exactOptional(),
-    VersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it's registered.",
-        }),
-    ).exactOptional(),
-    IsDefaultVersion: IsDefaultVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether the specified extension version is set as the default version.</p> <p>This applies only to private extensions you have registered in your account, and extensions published by Amazon. For public third-party extensions, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: TypeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the extension version.' }),
-    ).exactOptional(),
-    TimeCreated: TimestampSchema.and(
-      z.any().openapi({ description: 'When the version was registered.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the extension version.' }),
-    ).exactOptional(),
-    PublicVersionNumber: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For public extensions that have been activated for this account and Region, the version of the public extension to be used for CloudFormation operations in this account and Region. For any extensions other than activated third-arty extensions, CloudFormation returns <code>null</code>.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({ description: 'The kind of extension.' }),
+    TypeName: TypeNameSchema.exactOptional().openapi({ description: 'The name of the extension.' }),
+    VersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        "The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it's registered.",
+    }),
+    IsDefaultVersion: IsDefaultVersionSchema.exactOptional().openapi({
+      description:
+        '<p>Whether the specified extension version is set as the default version.</p> <p>This applies only to private extensions you have registered in your account, and extensions published by Amazon. For public third-party extensions, CloudFormation returns <code>null</code>.</p>',
+    }),
+    Arn: TypeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the extension version.',
+    }),
+    TimeCreated: TimestampSchema.exactOptional().openapi({
+      description: 'When the version was registered.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the extension version.',
+    }),
+    PublicVersionNumber: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        '<p>For public extensions that have been activated for this account and Region, the version of the public extension to be used for CloudFormation operations in this account and Region. For any extensions other than activated third-arty extensions, CloudFormation returns <code>null</code>.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
   })
   .openapi({
     description:
@@ -4545,22 +3224,14 @@ const TypeVersionSummariesSchema = z.array(TypeVersionSummarySchema).openapi('Ty
 
 const ListTypeVersionsOutputSchema = z
   .object({
-    TypeVersionSummaries: TypeVersionSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A list of <code>TypeVersionSummary</code> structures that contain information about the specified extension's versions.",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all of the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    TypeVersionSummaries: TypeVersionSummariesSchema.exactOptional().openapi({
+      description:
+        "A list of <code>TypeVersionSummary</code> structures that contain information about the specified extension's versions.",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all of the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTypeVersionsOutput')
@@ -4574,95 +3245,53 @@ const PublisherNameSchema = z
 
 const TypeSummarySchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z.any().openapi({ description: 'The kind of extension.' }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>If you specified a <code>TypeNameAlias</code> when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate this extension</a> in your account and Region, CloudFormation considers that alias as the type name.</p>',
-        }),
-    ).exactOptional(),
-    DefaultVersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the default version of the extension. The default version is used when the extension version isn\'t specified.</p> <p>This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>To set the default version of an extension, use <a>SetTypeDefaultVersion</a>.</p>',
-        }),
-    ).exactOptional(),
-    TypeArn: TypeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the extension.' }),
-    ).exactOptional(),
-    LastUpdated: TimestampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>When the specified extension version was registered. This applies only to:</p> <ul> <li> <p>Private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> </li> <li> <p>Public extensions you have activated in your account with auto-update specified. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p> </li> </ul> <p>For all other extension types, CloudFormation returns <code>null</code>.</p>',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description of the extension.' }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of the extension publisher, if the extension is published by a third party. Extensions published by Amazon don't return a publisher ID.",
-        }),
-    ).exactOptional(),
-    OriginalTypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For public extensions that have been activated for this account and Region, the type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    PublicVersionNumber: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For public extensions that have been activated for this account and Region, the version of the public extension to be used for CloudFormation operations in this account and Region.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    LatestPublicVersion: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>For public extensions that have been activated for this account and Region, the latest version of the public extension <i>that is available</i>. For any extensions other than activated third-arty extensions, CloudFormation returns <code>null</code>.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherIdentity: IdentityProviderSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The service used to verify the publisher identity.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html">Registering your account to publish CloudFormation extensions</a> in the <i> CFN-CLI User Guide for Extension Development</i>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherName: PublisherNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The publisher name, as defined in the public profile for that publisher in the service used to verify the publisher identity.',
-        }),
-    ).exactOptional(),
-    IsActivated: IsActivatedSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether the extension is activated for this account and Region.</p> <p>This applies only to third-party public extensions. Extensions published by Amazon are activated by default.</p>',
-        }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({ description: 'The kind of extension.' }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>If you specified a <code>TypeNameAlias</code> when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate this extension</a> in your account and Region, CloudFormation considers that alias as the type name.</p>',
+    }),
+    DefaultVersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the default version of the extension. The default version is used when the extension version isn\'t specified.</p> <p>This applies only to private extensions you have registered in your account. For public extensions, both those provided by Amazon and published by third parties, CloudFormation returns <code>null</code>. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> <p>To set the default version of an extension, use <a>SetTypeDefaultVersion</a>.</p>',
+    }),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the extension.',
+    }),
+    LastUpdated: TimestampSchema.exactOptional().openapi({
+      description:
+        '<p>When the specified extension version was registered. This applies only to:</p> <ul> <li> <p>Private extensions you have registered in your account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">RegisterType</a>.</p> </li> <li> <p>Public extensions you have activated in your account with auto-update specified. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">ActivateType</a>.</p> </li> </ul> <p>For all other extension types, CloudFormation returns <code>null</code>.</p>',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description of the extension.',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        "The ID of the extension publisher, if the extension is published by a third party. Extensions published by Amazon don't return a publisher ID.",
+    }),
+    OriginalTypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>For public extensions that have been activated for this account and Region, the type name of the public extension.</p> <p>If you specified a <code>TypeNameAlias</code> when enabling the extension in this account and Region, CloudFormation treats that alias as the extension\'s type name within the account and Region, not the type name of the public extension. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-alias">Specifying aliases to refer to extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    PublicVersionNumber: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        '<p>For public extensions that have been activated for this account and Region, the version of the public extension to be used for CloudFormation operations in this account and Region.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    LatestPublicVersion: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        '<p>For public extensions that have been activated for this account and Region, the latest version of the public extension <i>that is available</i>. For any extensions other than activated third-arty extensions, CloudFormation returns <code>null</code>.</p> <p>How you specified <code>AutoUpdate</code> when enabling the extension affects whether CloudFormation automatically updates the extension in this account and Region when a new version is released. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry-public.html#registry-public-enable-auto">Setting CloudFormation to automatically use new versions of extensions</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    PublisherIdentity: IdentityProviderSchema.exactOptional().openapi({
+      description:
+        '<p>The service used to verify the publisher identity.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html">Registering your account to publish CloudFormation extensions</a> in the <i> CFN-CLI User Guide for Extension Development</i>.</p>',
+    }),
+    PublisherName: PublisherNameSchema.exactOptional().openapi({
+      description:
+        'The publisher name, as defined in the public profile for that publisher in the service used to verify the publisher identity.',
+    }),
+    IsActivated: IsActivatedSchema.exactOptional().openapi({
+      description:
+        '<p>Whether the extension is activated for this account and Region.</p> <p>This applies only to third-party public extensions. Extensions published by Amazon are activated by default.</p>',
+    }),
   })
   .openapi({
     description: 'Contains summary information about the specified CloudFormation extension.',
@@ -4674,22 +3303,14 @@ const TypeSummariesSchema = z.array(TypeSummarySchema).openapi('TypeSummaries')
 
 const ListTypesOutputSchema = z
   .object({
-    TypeSummaries: TypeSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>TypeSummary</code> structures that contain information about the specified extensions.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    TypeSummaries: TypeSummariesSchema.exactOptional().openapi({
+      description:
+        'A list of <code>TypeSummary</code> structures that contain information about the specified extensions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.",
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTypesOutput')
@@ -4707,19 +3328,15 @@ const TypeNamePrefixSchema = z
 
 const PublishTypeOutputSchema = z
   .object({
-    PublicTypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) assigned to the public extension upon publication.',
-        }),
-    ).exactOptional(),
+    PublicTypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) assigned to the public extension upon publication.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PublishTypeOutput')
 
-const RecordHandlerProgressOutputSchema = z.object({}).openapi('RecordHandlerProgressOutput')
+const RecordHandlerProgressOutputSchema = z.looseObject({}).openapi('RecordHandlerProgressOutput')
 
 const InvalidStateTransitionExceptionSchema = z.any().openapi('InvalidStateTransitionException')
 
@@ -4729,122 +3346,104 @@ const OperationStatusCheckFailedExceptionSchema = z
 
 const RegisterPublisherOutputSchema = z
   .object({
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID assigned this account by CloudFormation for publishing extensions.',
-        }),
-    ).exactOptional(),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description: 'The ID assigned this account by CloudFormation for publishing extensions.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterPublisherOutput')
 
 const RegisterTypeOutputSchema = z
   .object({
-    RegistrationToken: RegistrationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for this registration request.</p> <p>Use this registration token when calling <a>DescribeTypeRegistration</a>, which returns information about the status and IDs of the extension registration.</p>',
-        }),
-    ).exactOptional(),
+    RegistrationToken: RegistrationTokenSchema.exactOptional().openapi({
+      description:
+        '<p>The identifier for this registration request.</p> <p>Use this registration token when calling <a>DescribeTypeRegistration</a>, which returns information about the status and IDs of the extension registration.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterTypeOutput')
 
 const RollbackStackOutputSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RollbackStackOutput')
 
 const SetTypeConfigurationOutputSchema = z
   .object({
-    ConfigurationArn: TypeConfigurationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the configuration data, in this account and Region.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
-        }),
-    ).exactOptional(),
+    ConfigurationArn: TypeConfigurationArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the configuration data, in this account and Region.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('SetTypeConfigurationOutput')
 
-const SetTypeDefaultVersionOutputSchema = z.object({}).openapi('SetTypeDefaultVersionOutput')
+const SetTypeDefaultVersionOutputSchema = z.looseObject({}).openapi('SetTypeDefaultVersionOutput')
 
-const StopStackSetOperationOutputSchema = z.object({}).openapi('StopStackSetOperationOutput')
+const StopStackSetOperationOutputSchema = z.looseObject({}).openapi('StopStackSetOperationOutput')
 
 const TestTypeOutputSchema = z
   .object({
-    TypeVersionArn: TypeArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the extension.' }),
-    ).exactOptional(),
+    TypeVersionArn: TypeArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the extension.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('TestTypeOutput')
 
 const UpdateStackOutputSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'Unique identifier of the stack.' }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description: 'Unique identifier of the stack.',
+    }),
   })
   .openapi({ description: 'The output for an <a>UpdateStack</a> action.', required: [] })
   .openapi('UpdateStackOutput')
 
 const UpdateStackInstancesOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique identifier for this stack set operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique identifier for this stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStackInstancesOutput')
 
 const UpdateStackSetOutputSchema = z
   .object({
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique ID for this stack set operation.' }),
-    ).exactOptional(),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'The unique ID for this stack set operation.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateStackSetOutput')
 
 const UpdateTerminationProtectionOutputSchema = z
   .object({
-    StackId: StackIdSchema.and(
-      z.any().openapi({ description: 'The unique ID of the stack.' }),
-    ).exactOptional(),
+    StackId: StackIdSchema.exactOptional().openapi({ description: 'The unique ID of the stack.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateTerminationProtectionOutput')
 
 const TemplateParameterSchema = z
   .object({
-    ParameterKey: ParameterKeySchema.and(
-      z.any().openapi({ description: 'The name associated with the parameter.' }),
-    ).exactOptional(),
-    DefaultValue: ParameterValueSchema.and(
-      z.any().openapi({ description: 'The default value associated with the parameter.' }),
-    ).exactOptional(),
-    NoEcho: NoEchoSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Flag indicating whether the parameter should be displayed as plain text in logs and UIs.',
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'User defined description associated with the parameter.' }),
-    ).exactOptional(),
+    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+      description: 'The name associated with the parameter.',
+    }),
+    DefaultValue: ParameterValueSchema.exactOptional().openapi({
+      description: 'The default value associated with the parameter.',
+    }),
+    NoEcho: NoEchoSchema.exactOptional().openapi({
+      description:
+        'Flag indicating whether the parameter should be displayed as plain text in logs and UIs.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'User defined description associated with the parameter.',
+    }),
   })
   .openapi({ description: 'The TemplateParameter data type.', required: [] })
   .openapi('TemplateParameter')
@@ -4853,33 +3452,23 @@ const TemplateParametersSchema = z.array(TemplateParameterSchema).openapi('Templ
 
 const ValidateTemplateOutputSchema = z
   .object({
-    Parameters: TemplateParametersSchema.and(
-      z.any().openapi({ description: 'A list of <code>TemplateParameter</code> structures.' }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'The description found within the template.' }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The capabilities found within the template. If your template contains IAM resources, you must specify the CAPABILITY_IAM or CAPABILITY_NAMED_IAM value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an InsufficientCapabilities error.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p>',
-        }),
-    ).exactOptional(),
-    CapabilitiesReason: CapabilitiesReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The list of resources that generated the values in the <code>Capabilities</code> response element.',
-        }),
-    ).exactOptional(),
-    DeclaredTransforms: TransformsListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of the transforms that are declared in the template.' }),
-    ).exactOptional(),
+    Parameters: TemplateParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>TemplateParameter</code> structures.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'The description found within the template.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>The capabilities found within the template. If your template contains IAM resources, you must specify the CAPABILITY_IAM or CAPABILITY_NAMED_IAM value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an InsufficientCapabilities error.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p>',
+    }),
+    CapabilitiesReason: CapabilitiesReasonSchema.exactOptional().openapi({
+      description:
+        'The list of resources that generated the values in the <code>Capabilities</code> response element.',
+    }),
+    DeclaredTransforms: TransformsListSchema.exactOptional().openapi({
+      description: 'A list of the transforms that are declared in the template.',
+    }),
   })
   .openapi({ description: 'The output for <a>ValidateTemplate</a> action.', required: [] })
   .openapi('ValidateTemplateOutput')
@@ -4887,7 +3476,7 @@ const ValidateTemplateOutputSchema = z
 const AcceptTermsAndConditionsSchema = z.boolean().openapi('AcceptTermsAndConditions')
 
 const ActivateOrganizationsAccessInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ActivateOrganizationsAccessInput' })
   .openapi('ActivateOrganizationsAccessInput')
 
@@ -4905,82 +3494,44 @@ const MajorVersionSchema = z.int().min(1).max(100000).openapi('MajorVersion')
 
 const ActivateTypeInputSchema = z
   .object({
-    Type: ThirdPartyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The extension type.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
-        }),
-    ).exactOptional(),
-    PublicTypeArn: ThirdPartyTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the public extension.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the extension publisher.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeNameAlias: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alias to assign to the public extension, in this account and Region. If you specify an alias for the extension, CloudFormation treats the alias as the extension type name within this account and Region. You must use the alias to refer to the extension in your templates, API calls, and CloudFormation console.</p> <p>An extension alias must be unique within a given account and Region. You can activate the same public resource multiple times in the same account and Region, using different type name aliases.</p>',
-        }),
-    ).exactOptional(),
-    AutoUpdate: AutoUpdateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to automatically update the extension in this account and Region when a new <i>minor</i> version is published by the extension publisher. Major versions released by the publisher must be manually updated.</p> <p>The default is <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    LoggingConfig: LoggingConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Contains logging configuration information for an extension.' }),
-    ).exactOptional(),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name of the IAM execution role to use to activate the extension.',
-        }),
-    ).exactOptional(),
-    VersionBump: VersionBumpSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Manually updates a previously-activated type to a new major or minor version, if available. You can also use this parameter to update the value of <code>AutoUpdate</code>.</p> <ul> <li> <p> <code>MAJOR</code>: CloudFormation updates the extension to the newest major version, if one is available.</p> </li> <li> <p> <code>MINOR</code>: CloudFormation updates the extension to the newest minor version, if one is available.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    MajorVersion: MajorVersionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The major version of this extension you want to activate, if multiple major versions are available. The default is the latest major version. CloudFormation uses the latest available <i>minor</i> version of the major version selected.</p> <p>You can specify <code>MajorVersion</code> or <code>VersionBump</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The extension type.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
+    }),
+    PublicTypeArn: ThirdPartyTypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the public extension.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the extension publisher.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify <code>PublicTypeArn</code>, or <code>TypeName</code>, <code>Type</code>, and <code>PublisherId</code>.</p>',
+    }),
+    TypeNameAlias: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>An alias to assign to the public extension, in this account and Region. If you specify an alias for the extension, CloudFormation treats the alias as the extension type name within this account and Region. You must use the alias to refer to the extension in your templates, API calls, and CloudFormation console.</p> <p>An extension alias must be unique within a given account and Region. You can activate the same public resource multiple times in the same account and Region, using different type name aliases.</p>',
+    }),
+    AutoUpdate: AutoUpdateSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to automatically update the extension in this account and Region when a new <i>minor</i> version is published by the extension publisher. Major versions released by the publisher must be manually updated.</p> <p>The default is <code>true</code>.</p>',
+    }),
+    LoggingConfig: LoggingConfigSchema.exactOptional().openapi({
+      description: 'Contains logging configuration information for an extension.',
+    }),
+    ExecutionRoleArn: RoleArnSchema.exactOptional().openapi({
+      description: 'The name of the IAM execution role to use to activate the extension.',
+    }),
+    VersionBump: VersionBumpSchema.exactOptional().openapi({
+      description:
+        '<p>Manually updates a previously-activated type to a new major or minor version, if available. You can also use this parameter to update the value of <code>AutoUpdate</code>.</p> <ul> <li> <p> <code>MAJOR</code>: CloudFormation updates the extension to the newest major version, if one is available.</p> </li> <li> <p> <code>MINOR</code>: CloudFormation updates the extension to the newest minor version, if one is available.</p> </li> </ul>',
+    }),
+    MajorVersion: MajorVersionSchema.exactOptional().openapi({
+      description:
+        '<p>The major version of this extension you want to activate, if multiple major versions are available. The default is the latest major version. CloudFormation uses the latest available <i>minor</i> version of the major version selected.</p> <p>You can specify <code>MajorVersion</code> or <code>VersionBump</code>, but not both.</p>',
+    }),
   })
   .openapi({ title: 'ActivateTypeInput', required: [] })
   .openapi('ActivateTypeInput')
@@ -4992,13 +3543,9 @@ const TypeConfigurationIdentifiersSchema = z
 
 const BatchDescribeTypeConfigurationsInputSchema = z
   .object({
-    TypeConfigurationIdentifiers: TypeConfigurationIdentifiersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of identifiers for the desired extension configurations.',
-        }),
-    ),
+    TypeConfigurationIdentifiers: TypeConfigurationIdentifiersSchema.openapi({
+      description: 'The list of identifiers for the desired extension configurations.',
+    }),
   })
   .openapi({
     required: ['TypeConfigurationIdentifiers'],
@@ -5012,22 +3559,14 @@ const CallAsSchema = z.enum(['SELF', 'DELEGATED_ADMIN']).openapi('CallAs')
 
 const CancelUpdateStackInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>If you don\'t pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p> <code>{ "Version": "2012-10-17", "Statement": [{ "Effect": "Deny", "Action": "cloudformation:DescribeStacks", "NotResource": "arn:aws:cloudformation:*:*:stack/*/*" }] }</code> </p> </note> <p>The name or the unique stack ID that\'s associated with the stack.</p>',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for this <code>CancelUpdateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to cancel an update on a stack with the same name. You might retry <code>CancelUpdateStack</code> requests to ensure that CloudFormation successfully received them.",
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description:
+        '<note> <p>If you don\'t pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p> <code>{ "Version": "2012-10-17", "Statement": [{ "Effect": "Deny", "Action": "cloudformation:DescribeStacks", "NotResource": "arn:aws:cloudformation:*:*:stack/*/*" }] }</code> </p> </note> <p>The name or the unique stack ID that\'s associated with the stack.</p>',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for this <code>CancelUpdateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to cancel an update on a stack with the same name. You might retry <code>CancelUpdateStack</code> requests to ensure that CloudFormation successfully received them.",
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -5064,38 +3603,22 @@ const ResourcesToSkipSchema = z.array(ResourceToSkipSchema).openapi('ResourcesTo
 
 const ContinueUpdateRollbackInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique ID of the stack that you want to continue rolling back.</p> <note> <p>Don't specify the name of a nested stack (a stack that was created by using the <code>AWS::CloudFormation::Stack</code> resource). Instead, use this operation on the parent stack (the stack that contains the <code>AWS::CloudFormation::Stack</code> resource).</p> </note>",
-        }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to roll back the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least permission.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
-        }),
-    ).exactOptional(),
-    ResourcesToSkip: ResourcesToSkipSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of the logical IDs of the resources that CloudFormation skips during the continue update rollback operation. You can specify only resources that are in the <code>UPDATE_FAILED</code> state because a rollback failed. You can't specify resources that are in the <code>UPDATE_FAILED</code> state for other reasons, for example, because an update was canceled. To check why a resource update failed, use the <a>DescribeStackResources</a> action, and view the resource status reason.</p> <important> <p>Specify this property to skip rolling back resources that CloudFormation can't successfully roll back. We recommend that you <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\"> troubleshoot</a> resources before skipping them. CloudFormation sets the status of the specified resources to <code>UPDATE_COMPLETE</code> and continues to roll back the stack. After the rollback is complete, the state of the skipped resources will be inconsistent with the state of the resources in the stack template. Before performing another stack update, you must update the stack or resources to be consistent with each other. If you don't, subsequent stack updates might fail, and the stack will become unrecoverable.</p> </important> <p>Specify the minimum number of resources required to successfully roll back your stack. For example, a failed resource update might cause dependent resources to fail. In this case, it might not be necessary to skip the dependent resources.</p> <p>To skip resources that are part of nested stacks, use the following format: <code>NestedStackName.ResourceLogicalID</code>. If you want to specify the logical ID of a stack resource (<code>Type: AWS::CloudFormation::Stack</code>) in the <code>ResourcesToSkip</code> list, then its corresponding embedded stack must be in one of the following states: <code>DELETE_IN_PROGRESS</code>, <code>DELETE_COMPLETE</code>, or <code>DELETE_FAILED</code>.</p> <note> <p>Don't confuse a child stack's name with its corresponding logical ID defined in the parent stack. For an example of a continue update rollback operation with nested stacks, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html#nested-stacks\">Using ResourcesToSkip to recover a nested stacks hierarchy</a>.</p> </note>",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for this <code>ContinueUpdateRollback</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to continue the rollback to a stack with the same name. You might retry <code>ContinueUpdateRollback</code> requests to ensure that CloudFormation successfully received them.",
-        }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description:
+        "<p>The name or the unique ID of the stack that you want to continue rolling back.</p> <note> <p>Don't specify the name of a nested stack (a stack that was created by using the <code>AWS::CloudFormation::Stack</code> resource). Instead, use this operation on the parent stack (the stack that contains the <code>AWS::CloudFormation::Stack</code> resource).</p> </note>",
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to roll back the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least permission.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
+    }),
+    ResourcesToSkip: ResourcesToSkipSchema.exactOptional().openapi({
+      description:
+        "<p>A list of the logical IDs of the resources that CloudFormation skips during the continue update rollback operation. You can specify only resources that are in the <code>UPDATE_FAILED</code> state because a rollback failed. You can't specify resources that are in the <code>UPDATE_FAILED</code> state for other reasons, for example, because an update was canceled. To check why a resource update failed, use the <a>DescribeStackResources</a> action, and view the resource status reason.</p> <important> <p>Specify this property to skip rolling back resources that CloudFormation can't successfully roll back. We recommend that you <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\"> troubleshoot</a> resources before skipping them. CloudFormation sets the status of the specified resources to <code>UPDATE_COMPLETE</code> and continues to roll back the stack. After the rollback is complete, the state of the skipped resources will be inconsistent with the state of the resources in the stack template. Before performing another stack update, you must update the stack or resources to be consistent with each other. If you don't, subsequent stack updates might fail, and the stack will become unrecoverable.</p> </important> <p>Specify the minimum number of resources required to successfully roll back your stack. For example, a failed resource update might cause dependent resources to fail. In this case, it might not be necessary to skip the dependent resources.</p> <p>To skip resources that are part of nested stacks, use the following format: <code>NestedStackName.ResourceLogicalID</code>. If you want to specify the logical ID of a stack resource (<code>Type: AWS::CloudFormation::Stack</code>) in the <code>ResourcesToSkip</code> list, then its corresponding embedded stack must be in one of the following states: <code>DELETE_IN_PROGRESS</code>, <code>DELETE_COMPLETE</code>, or <code>DELETE_FAILED</code>.</p> <note> <p>Don't confuse a child stack's name with its corresponding logical ID defined in the parent stack. For an example of a continue update rollback operation with nested stacks, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html#nested-stacks\">Using ResourcesToSkip to recover a nested stacks hierarchy</a>.</p> </note>",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for this <code>ContinueUpdateRollback</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to continue the rollback to a stack with the same name. You might retry <code>ContinueUpdateRollback</code> requests to ensure that CloudFormation successfully received them.",
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -5115,140 +3638,76 @@ const ResourcesToImportSchema = z
 
 const CreateChangeSetInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name or the unique ID of the stack for which you are creating a change set. CloudFormation generates the change set by comparing this stack's information with the information that you submit, such as a modified template or different parameter input values.",
-        }),
-    ),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A structure that contains the body of the revised template, with a minimum length of 1 byte and a maximum length of 51,200 bytes. CloudFormation generates the change set by comparing this template with the template of the stack that you specified.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The location of the file that contains the revised template. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>",
-        }),
-    ).exactOptional(),
-    UsePreviousTemplate: UsePreviousTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Whether to reuse the template that's associated with the stack to create the change set.",
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Parameter</code> structures that specify input parameters for the change set. For more information, see the <a>Parameter</a> data type.',
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn\'t apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation macros to perform custom processing on templates</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn\'t include a resource type that you\'re updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling access with Identity and Access Management</a> in the CloudFormation User Guide.</p>',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes when executing the change set. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least permission.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that is generated from your user credentials.</p>",
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
-        }),
-    ).exactOptional(),
-    NotificationARNs: NotificationARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Names (ARNs) of Amazon Simple Notification Service (Amazon SNS) topics that CloudFormation associates with the stack. To remove all associated notification topics, specify an empty list.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Key-value pairs to associate with this stack. CloudFormation also propagates these tags to resources in the stack. You can specify a maximum of 50 tags.',
-        }),
-    ).exactOptional(),
-    ChangeSetName: ChangeSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the change set. The name must be unique among all change sets that are associated with the specified stack.</p> <p>A change set name can contain only alphanumeric, case sensitive characters, and hyphens. It must start with an alphabetical character and can't exceed 128 characters.</p>",
-        }),
-    ),
-    ClientToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for this <code>CreateChangeSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create another change set with the same name. You might retry <code>CreateChangeSet</code> requests to ensure that CloudFormation successfully received them.",
-        }),
-    ).exactOptional(),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A description to help you identify this change set.' }),
-    ).exactOptional(),
-    ChangeSetType: ChangeSetTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of change set operation. To create a change set for a new stack, specify <code>CREATE</code>. To create a change set for an existing stack, specify <code>UPDATE</code>. To create a change set for an import operation, specify <code>IMPORT</code>.</p> <p>If you create a change set for a new stack, CloudFormation creates a stack with a unique stack ID, but no template or resources. The stack will be in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-describing-stacks.html#d0e11995">REVIEW_IN_PROGRESS</a> state until you execute the change set.</p> <p>By default, CloudFormation specifies <code>UPDATE</code>. You can\'t use the <code>UPDATE</code> type to create a change set for a new stack or the <code>CREATE</code> type to create a change set for an existing stack.</p>',
-        }),
-    ).exactOptional(),
-    ResourcesToImport: ResourcesToImportSchema.and(
-      z.any().openapi({ description: 'The resources to import into your stack.' }),
-    ).exactOptional(),
-    IncludeNestedStacks: IncludeNestedStacksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Creates a change set for the all nested stacks specified in the template. The default behavior of this action is set to <code>False</code>. To include nested sets in a change set, specify <code>True</code>.',
-        }),
-    ).exactOptional(),
-    OnStackFailure: OnStackFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines what action will be taken if stack creation fails. If this parameter is specified, the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> </ul> <p>For nested stacks, when the <code>OnStackFailure</code> parameter is set to <code>DELETE</code> for the change set for the parent stack, any failure in a child stack will cause the parent stack creation to fail and all stacks to be deleted.</p>',
-        }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description:
+        "The name or the unique ID of the stack for which you are creating a change set. CloudFormation generates the change set by comparing this stack's information with the information that you submit, such as a modified template or different parameter input values.",
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>A structure that contains the body of the revised template, with a minimum length of 1 byte and a maximum length of 51,200 bytes. CloudFormation generates the change set by comparing this template with the template of the stack that you specified.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        "<p>The location of the file that contains the revised template. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>",
+    }),
+    UsePreviousTemplate: UsePreviousTemplateSchema.exactOptional().openapi({
+      description:
+        "Whether to reuse the template that's associated with the stack to create the change set.",
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Parameter</code> structures that specify input parameters for the change set. For more information, see the <a>Parameter</a> data type.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn\'t apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation macros to perform custom processing on templates</a>.</p> </li> </ul>',
+    }),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn\'t include a resource type that you\'re updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling access with Identity and Access Management</a> in the CloudFormation User Guide.</p>',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes when executing the change set. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least permission.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that is generated from your user credentials.</p>",
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
+    }),
+    NotificationARNs: NotificationARNsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Names (ARNs) of Amazon Simple Notification Service (Amazon SNS) topics that CloudFormation associates with the stack. To remove all associated notification topics, specify an empty list.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'Key-value pairs to associate with this stack. CloudFormation also propagates these tags to resources in the stack. You can specify a maximum of 50 tags.',
+    }),
+    ChangeSetName: ChangeSetNameSchema.openapi({
+      description:
+        "<p>The name of the change set. The name must be unique among all change sets that are associated with the specified stack.</p> <p>A change set name can contain only alphanumeric, case sensitive characters, and hyphens. It must start with an alphabetical character and can't exceed 128 characters.</p>",
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for this <code>CreateChangeSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create another change set with the same name. You might retry <code>CreateChangeSet</code> requests to ensure that CloudFormation successfully received them.",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A description to help you identify this change set.',
+    }),
+    ChangeSetType: ChangeSetTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of change set operation. To create a change set for a new stack, specify <code>CREATE</code>. To create a change set for an existing stack, specify <code>UPDATE</code>. To create a change set for an import operation, specify <code>IMPORT</code>.</p> <p>If you create a change set for a new stack, CloudFormation creates a stack with a unique stack ID, but no template or resources. The stack will be in the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-describing-stacks.html#d0e11995">REVIEW_IN_PROGRESS</a> state until you execute the change set.</p> <p>By default, CloudFormation specifies <code>UPDATE</code>. You can\'t use the <code>UPDATE</code> type to create a change set for a new stack or the <code>CREATE</code> type to create a change set for an existing stack.</p>',
+    }),
+    ResourcesToImport: ResourcesToImportSchema.exactOptional().openapi({
+      description: 'The resources to import into your stack.',
+    }),
+    IncludeNestedStacks: IncludeNestedStacksSchema.exactOptional().openapi({
+      description:
+        'Creates a change set for the all nested stacks specified in the template. The default behavior of this action is set to <code>False</code>. To include nested sets in a change set, specify <code>True</code>.',
+    }),
+    OnStackFailure: OnStackFailureSchema.exactOptional().openapi({
+      description:
+        '<p>Determines what action will be taken if stack creation fails. If this parameter is specified, the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html">ExecuteChangeSet</a> API operation.</p> </li> </ul> <p>For nested stacks, when the <code>OnStackFailure</code> parameter is set to <code>DELETE</code> for the change set for the parent stack, any failure in a child stack will cause the parent stack creation to fail and all stacks to be deleted.</p>',
+    }),
   })
   .openapi({
     required: ['StackName', 'ChangeSetName'],
@@ -5263,150 +3722,78 @@ const StackPolicyURLSchema = z.string().min(1).max(1350).openapi('StackPolicyURL
 
 const CreateStackInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name that's associated with the stack. The name must be unique in the Region in which you are creating the stack.</p> <note> <p>A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetical character and can't be longer than 128 characters.</p> </note>",
-        }),
-    ),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Parameter</code> structures that specify input parameters for the stack. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
-        }),
-    ).exactOptional(),
-    DisableRollback: DisableRollbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Set to <code>true</code> to disable rollback of the stack if stack creation failed. You can specify either <code>DisableRollback</code> or <code>OnFailure</code>, but not both.</p> <p>Default: <code>false</code> </p>',
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
-        }),
-    ).exactOptional(),
-    TimeoutInMinutes: TimeoutMinutesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.',
-        }),
-    ).exactOptional(),
-    NotificationARNs: NotificationARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Simple Notification Service (Amazon SNS) topic ARNs to publish stack related events. You can find your Amazon SNS topic ARNs using the Amazon SNS console or your Command Line Interface (CLI).',
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create the stack directly from the template using this capability.</p> <important> <p>You should only create stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation macros to perform custom processing on templates</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The template resource types that you have permissions to work with for this create stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>. Use the following syntax to describe template resource types: <code>AWS::*</code> (for all Amazon Web Services resources), <code>Custom::*</code> (for all custom resources), <code>Custom::<i>logical_ID</i> </code> (for a specific custom resource), <code>AWS::<i>service_name</i>::*</code> (for all resources of a particular Amazon Web Services service), and <code>AWS::<i>service_name</i>::<i>resource_logical_ID</i> </code> (for a specific Amazon Web Services resource).</p> <p>If the list of resource types doesn\'t include a resource that you\'re creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling Access with Identity and Access Management</a>.</p>',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to create the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least privilege.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
-        }),
-    ).exactOptional(),
-    OnFailure: OnFailureSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Determines what action will be taken if stack creation fails. This must be one of: <code>DO_NOTHING</code>, <code>ROLLBACK</code>, or <code>DELETE</code>. You can specify either <code>OnFailure</code> or <code>DisableRollback</code>, but not both.</p> <p>Default: <code>ROLLBACK</code> </p>',
-        }),
-    ).exactOptional(),
-    StackPolicyBody: StackPolicyBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Structure containing the stack policy body. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent Updates to Stack Resources</a> in the <i>CloudFormation User Guide</i>. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
-        }),
-    ).exactOptional(),
-    StackPolicyURL: StackPolicyURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location of a file containing the stack policy. The URL must point to a policy (maximum size: 16 KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Key-value pairs to associate with this stack. CloudFormation also propagates these tags to the resources created in the stack. A maximum number of 50 tags can be specified.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for this <code>CreateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create a stack with the same name. You might retry <code>CreateStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events initiated by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
-        }),
-    ).exactOptional(),
-    EnableTerminationProtection: EnableTerminationProtectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether to enable termination protection on the specified stack. If a user attempts to delete a stack with termination protection enabled, the operation fails and the stack remains unchanged. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-protect-stacks.html">Protecting a Stack From Being Deleted</a> in the <i>CloudFormation User Guide</i>. Termination protection is deactivated on stacks by default.</p> <p>For <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">nested stacks</a>, termination protection is set on the root stack and can\'t be changed directly on the nested stack.</p>',
-        }),
-    ).exactOptional(),
-    RetainExceptOnCreate: RetainExceptOnCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description:
+        "<p>The name that's associated with the stack. The name must be unique in the Region in which you are creating the stack.</p> <note> <p>A stack name can contain only alphanumeric characters (case sensitive) and hyphens. It must start with an alphabetical character and can't be longer than 128 characters.</p> </note>",
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Parameter</code> structures that specify input parameters for the stack. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
+    }),
+    DisableRollback: DisableRollbackSchema.exactOptional().openapi({
+      description:
+        '<p>Set to <code>true</code> to disable rollback of the stack if stack creation failed. You can specify either <code>DisableRollback</code> or <code>OnFailure</code>, but not both.</p> <p>Default: <code>false</code> </p>',
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
+    }),
+    TimeoutInMinutes: TimeoutMinutesSchema.exactOptional().openapi({
+      description:
+        'The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.',
+    }),
+    NotificationARNs: NotificationARNsSchema.exactOptional().openapi({
+      description:
+        'The Amazon Simple Notification Service (Amazon SNS) topic ARNs to publish stack related events. You can find your Amazon SNS topic ARNs using the Amazon SNS console or your Command Line Interface (CLI).',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create the stack directly from the template using this capability.</p> <important> <p>You should only create stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation macros to perform custom processing on templates</a>.</p> </li> </ul>',
+    }),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The template resource types that you have permissions to work with for this create stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>. Use the following syntax to describe template resource types: <code>AWS::*</code> (for all Amazon Web Services resources), <code>Custom::*</code> (for all custom resources), <code>Custom::<i>logical_ID</i> </code> (for a specific custom resource), <code>AWS::<i>service_name</i>::*</code> (for all resources of a particular Amazon Web Services service), and <code>AWS::<i>service_name</i>::<i>resource_logical_ID</i> </code> (for a specific Amazon Web Services resource).</p> <p>If the list of resource types doesn\'t include a resource that you\'re creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling Access with Identity and Access Management</a>.</p>',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to create the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least privilege.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
+    }),
+    OnFailure: OnFailureSchema.exactOptional().openapi({
+      description:
+        '<p>Determines what action will be taken if stack creation fails. This must be one of: <code>DO_NOTHING</code>, <code>ROLLBACK</code>, or <code>DELETE</code>. You can specify either <code>OnFailure</code> or <code>DisableRollback</code>, but not both.</p> <p>Default: <code>ROLLBACK</code> </p>',
+    }),
+    StackPolicyBody: StackPolicyBodySchema.exactOptional().openapi({
+      description:
+        'Structure containing the stack policy body. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent Updates to Stack Resources</a> in the <i>CloudFormation User Guide</i>. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
+    }),
+    StackPolicyURL: StackPolicyURLSchema.exactOptional().openapi({
+      description:
+        'Location of a file containing the stack policy. The URL must point to a policy (maximum size: 16 KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        'Key-value pairs to associate with this stack. CloudFormation also propagates these tags to the resources created in the stack. A maximum number of 50 tags can be specified.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for this <code>CreateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create a stack with the same name. You might retry <code>CreateStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events initiated by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
+    }),
+    EnableTerminationProtection: EnableTerminationProtectionSchema.exactOptional().openapi({
+      description:
+        '<p>Whether to enable termination protection on the specified stack. If a user attempts to delete a stack with termination protection enabled, the operation fails and the stack remains unchanged. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-protect-stacks.html">Protecting a Stack From Being Deleted</a> in the <i>CloudFormation User Guide</i>. Termination protection is deactivated on stacks by default.</p> <p>For <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">nested stacks</a>, termination protection is set on the root stack and can\'t be changed directly on the nested stack.</p>',
+    }),
+    RetainExceptOnCreate: RetainExceptOnCreateSchema.exactOptional().openapi({
+      description:
+        'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -5417,247 +3804,139 @@ const CreateStackInputSchema = z
 
 const CreateStackInstancesInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to create stack instances from.',
-        }),
-    ),
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts that you want to create stack instances in the specified Region(s) for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    DeploymentTargets: DeploymentTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] The Organizations accounts for which to create stack instances in the specified Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    Regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of one or more Amazon Web Services Regions where you want to create stack instances using the specified Amazon Web Services accounts.',
-        }),
-    ),
-    ParameterOverrides: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of stack set parameters whose values you want to override in the selected stack instances.</p> <p>Any overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions. When specifying parameters and their values, be aware of how CloudFormation sets parameter values during stack instance operations:</p> <ul> <li> <p>To override the current value for a parameter, include the parameter and specify its value.</p> </li> <li> <p>To leave an overridden parameter set to its present value, include the parameter and specify <code>UsePreviousValue</code> as <code>true</code>. (You can't specify both a value and set <code>UsePreviousValue</code> to <code>true</code>.)</p> </li> <li> <p>To set an overridden parameter back to the value specified in the stack set, specify a parameter list but don't include the parameter in the list.</p> </li> <li> <p>To leave all parameters set to their present values, don't specify this property at all.</p> </li> </ul> <p>During stack set updates, any parameter values overridden for a stack instance aren't updated, but retain their overridden value.</p> <p>You can only override the parameter <i>values</i> that are specified in the stack set; to add or delete a parameter itself, use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStackSet.html\">UpdateStackSet</a> to update the stack set template.</p>",
-        }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Preferences for how CloudFormation performs this stack set operation.',
-        }),
-    ).exactOptional(),
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique identifier for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to create stack instances from.',
+    }),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description:
+        '<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts that you want to create stack instances in the specified Region(s) for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
+    }),
+    DeploymentTargets: DeploymentTargetsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] The Organizations accounts for which to create stack instances in the specified Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
+    }),
+    Regions: RegionListSchema.openapi({
+      description:
+        'The names of one or more Amazon Web Services Regions where you want to create stack instances using the specified Amazon Web Services accounts.',
+    }),
+    ParameterOverrides: ParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of stack set parameters whose values you want to override in the selected stack instances.</p> <p>Any overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions. When specifying parameters and their values, be aware of how CloudFormation sets parameter values during stack instance operations:</p> <ul> <li> <p>To override the current value for a parameter, include the parameter and specify its value.</p> </li> <li> <p>To leave an overridden parameter set to its present value, include the parameter and specify <code>UsePreviousValue</code> as <code>true</code>. (You can't specify both a value and set <code>UsePreviousValue</code> to <code>true</code>.)</p> </li> <li> <p>To set an overridden parameter back to the value specified in the stack set, specify a parameter list but don't include the parameter in the list.</p> </li> <li> <p>To leave all parameters set to their present values, don't specify this property at all.</p> </li> </ul> <p>During stack set updates, any parameter values overridden for a stack instance aren't updated, but retain their overridden value.</p> <p>You can only override the parameter <i>values</i> that are specified in the stack set; to add or delete a parameter itself, use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStackSet.html\">UpdateStackSet</a> to update the stack set template.</p>",
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description: 'Preferences for how CloudFormation performs this stack set operation.',
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>The unique identifier for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName', 'Regions'], title: 'CreateStackInstancesInput' })
   .openapi('CreateStackInstancesInput')
 
 const CreateStackSetInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name to associate with the stack set. The name must be unique in the Region where you create your stack set.</p> <note> <p>A stack name can contain only alphanumeric characters (case-sensitive) and hyphens. It must start with an alphabetic character and can't be longer than 128 characters.</p> </note>",
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A description of the stack set. You can use the description to identify the stack set's purpose or other important information.",
-        }),
-    ).exactOptional(),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>',
-        }),
-    ).exactOptional(),
-    StackId: StackIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack ID you are importing into a new stack set. Specify the Amazon Resource Name (ARN) of the stack.',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z.any().openapi({ description: 'The input parameters for the stack set template.' }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>In some cases, you must explicitly acknowledge that your stack set template contains certain capabilities in order for CloudFormation to create the stack set and related stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stack sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must create the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To create the stack set directly, you must acknowledge this capability. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions don\'t currently support the use of macros in templates. (This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The key-value pairs to associate with this stack set and the stacks created from it. CloudFormation also propagates these tags to supported resources that are created in the stacks. A maximum number of 50 tags can be specified.</p> <p>If you specify tags as part of a <code>CreateStackSet</code> action, CloudFormation checks to see if you have the required IAM permission to tag resources. If you don't, the entire <code>CreateStackSet</code> action fails with an <code>access denied</code> error, and the stack set is not created.</p>",
-        }),
-    ).exactOptional(),
-    AdministrationRoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    ExecutionRoleName: ExecutionRoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
-        }),
-    ).exactOptional(),
-    PermissionModel: PermissionModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes how the IAM roles required for stack set operations are created. By default, <code>SELF-MANAGED</code> is specified.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AutoDeployment: AutoDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether StackSets automatically deploys to Organizations accounts that are added to the target organization or organizational unit (OU). Specify only if <code>PermissionModel</code> is <code>SERVICE_MANAGED</code>.',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>To create a stack set with service-managed permissions while signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>To create a stack set with service-managed permissions while signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated admin in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul> <p>Stack sets with service-managed permissions are created in the management account, including stack sets that are created by delegated administrators.</p>',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for this <code>CreateStackSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create another stack set with the same name. You might retry <code>CreateStackSet</code> requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p>",
-        }),
-    ).exactOptional(),
-    ManagedExecution: ManagedExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        "<p>The name to associate with the stack set. The name must be unique in the Region where you create your stack set.</p> <note> <p>A stack name can contain only alphanumeric characters (case-sensitive) and hyphens. It must start with an alphabetic character and can't be longer than 128 characters.</p> </note>",
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description:
+        "A description of the stack set. You can use the description to identify the stack set's purpose or other important information.",
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>',
+    }),
+    StackId: StackIdSchema.exactOptional().openapi({
+      description:
+        'The stack ID you are importing into a new stack set. Specify the Amazon Resource Name (ARN) of the stack.',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'The input parameters for the stack set template.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>In some cases, you must explicitly acknowledge that your stack set template contains certain capabilities in order for CloudFormation to create the stack set and related stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stack sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must create the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To create the stack set directly, you must acknowledge this capability. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions don\'t currently support the use of macros in templates. (This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>The key-value pairs to associate with this stack set and the stacks created from it. CloudFormation also propagates these tags to supported resources that are created in the stacks. A maximum number of 50 tags can be specified.</p> <p>If you specify tags as part of a <code>CreateStackSet</code> action, CloudFormation checks to see if you have the required IAM permission to tag resources. If you don't, the entire <code>CreateStackSet</code> action fails with an <code>access denied</code> error, and the stack set is not created.</p>",
+    }),
+    AdministrationRoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>',
+    }),
+    ExecutionRoleName: ExecutionRoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p>',
+    }),
+    PermissionModel: PermissionModelsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes how the IAM roles required for stack set operations are created. By default, <code>SELF-MANAGED</code> is specified.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
+    }),
+    AutoDeployment: AutoDeploymentSchema.exactOptional().openapi({
+      description:
+        'Describes whether StackSets automatically deploys to Organizations accounts that are added to the target organization or organizational unit (OU). Specify only if <code>PermissionModel</code> is <code>SERVICE_MANAGED</code>.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>To create a stack set with service-managed permissions while signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>To create a stack set with service-managed permissions while signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated admin in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul> <p>Stack sets with service-managed permissions are created in the management account, including stack sets that are created by delegated administrators.</p>',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for this <code>CreateStackSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to create another stack set with the same name. You might retry <code>CreateStackSet</code> requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p>",
+    }),
+    ManagedExecution: ManagedExecutionSchema.exactOptional().openapi({
+      description:
+        'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'CreateStackSetInput' })
   .openapi('CreateStackSetInput')
 
 const DeactivateOrganizationsAccessInputSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeactivateOrganizationsAccessInput' })
   .openapi('DeactivateOrganizationsAccessInput')
 
 const DeactivateTypeInputSchema = z
   .object({
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type name of the extension, in this account and Region. If you specified a type name alias when enabling the extension, use the type name alias.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: ThirdPartyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The extension type.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: PrivateTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The type name of the extension, in this account and Region. If you specified a type name alias when enabling the extension, use the type name alias.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The extension type.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    Arn: PrivateTypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>Conditional: You must specify either <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
   })
   .openapi({ title: 'DeactivateTypeInput', required: [] })
   .openapi('DeactivateTypeInput')
 
 const DeleteChangeSetInputSchema = z
   .object({
-    ChangeSetName: ChangeSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of the change set that you want to delete.',
-        }),
-    ),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you specified the name of a change set to delete, specify the stack name or Amazon Resource Name (ARN) that's associated with it.",
-        }),
-    ).exactOptional(),
+    ChangeSetName: ChangeSetNameOrIdSchema.openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of the change set that you want to delete.',
+    }),
+    StackName: StackNameOrIdSchema.exactOptional().openapi({
+      description:
+        "If you specified the name of a change set to delete, specify the stack name or Amazon Resource Name (ARN) that's associated with it.",
+    }),
   })
   .openapi({
     required: ['ChangeSetName'],
@@ -5670,37 +3949,21 @@ const RetainResourcesSchema = z.array(LogicalResourceIdSchema).openapi('RetainRe
 
 const DeleteStackInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name or the unique stack ID that's associated with the stack.",
-        }),
-    ),
-    RetainResources: RetainResourcesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For stacks in the <code>DELETE_FAILED</code> state, a list of resource logical IDs that are associated with the resources you want to retain. During deletion, CloudFormation deletes the stack but doesn't delete the retained resources.</p> <p>Retaining resources is useful when you can't delete a resource, such as a non-empty S3 bucket, but you want to delete the stack.</p>",
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to delete the stack. CloudFormation uses the role's credentials to make calls on your behalf.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for this <code>DeleteStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to delete a stack with the same name. You might retry <code>DeleteStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events initiated by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description: "The name or the unique stack ID that's associated with the stack.",
+    }),
+    RetainResources: RetainResourcesSchema.exactOptional().openapi({
+      description:
+        "<p>For stacks in the <code>DELETE_FAILED</code> state, a list of resource logical IDs that are associated with the resources you want to retain. During deletion, CloudFormation deletes the stack but doesn't delete the retained resources.</p> <p>Retaining resources is useful when you can't delete a resource, such as a non-empty S3 bucket, but you want to delete the stack.</p>",
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to delete the stack. CloudFormation uses the role's credentials to make calls on your behalf.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that's generated from your user credentials.</p>",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for this <code>DeleteStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to delete a stack with the same name. You might retry <code>DeleteStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events initiated by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -5713,69 +3976,36 @@ const RetainStacksSchema = z.boolean().openapi('RetainStacks')
 
 const DeleteStackInstancesInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to delete stack instances for.',
-        }),
-    ),
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Self-managed permissions] The names of the Amazon Web Services accounts that you want to delete stack instances for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    DeploymentTargets: DeploymentTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] The Organizations accounts from which to delete stack instances.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    Regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services Regions where you want to delete stack set instances.',
-        }),
-    ),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Preferences for how CloudFormation performs this stack set operation.',
-        }),
-    ).exactOptional(),
-    RetainStacks: RetainStacksSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Removes the stack instances from the specified stack set, but doesn\'t delete the stacks. You can\'t reassociate a retained stack or add an existing, saved stack to a new stack set.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
-        }),
-    ),
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique identifier for this stack set operation.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You can retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to delete stack instances for.',
+    }),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description:
+        '<p>[Self-managed permissions] The names of the Amazon Web Services accounts that you want to delete stack instances for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
+    }),
+    DeploymentTargets: DeploymentTargetsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] The Organizations accounts from which to delete stack instances.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
+    }),
+    Regions: RegionListSchema.openapi({
+      description: 'The Amazon Web Services Regions where you want to delete stack set instances.',
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description: 'Preferences for how CloudFormation performs this stack set operation.',
+    }),
+    RetainStacks: RetainStacksSchema.openapi({
+      description:
+        '<p>Removes the stack instances from the specified stack set, but doesn\'t delete the stacks. You can\'t reassociate a retained stack or add an existing, saved stack to a new stack set.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>The unique identifier for this stack set operation.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You can retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['StackSetName', 'Regions', 'RetainStacks'],
@@ -5785,74 +4015,45 @@ const DeleteStackInstancesInputSchema = z
 
 const DeleteStackSetInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name or unique ID of the stack set that you're deleting. You can obtain this value by running <a>ListStackSets</a>.",
-        }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        "The name or unique ID of the stack set that you're deleting. You can obtain this value by running <a>ListStackSets</a>.",
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'DeleteStackSetInput' })
   .openapi('DeleteStackSetInput')
 
 const DeregisterTypeInputSchema = z
   .object({
-    Arn: PrivateTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: RegistryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    VersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.',
-        }),
-    ).exactOptional(),
+    Arn: PrivateTypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    Type: RegistryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    VersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        'The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.',
+    }),
   })
   .openapi({ title: 'DeregisterTypeInput', required: [] })
   .openapi('DeregisterTypeInput')
 
 const DescribeAccountLimitsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of limits that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A string that identifies the next page of limits that you want to retrieve.',
+    }),
   })
   .openapi({
     title: 'DescribeAccountLimitsInput',
@@ -5863,68 +4064,40 @@ const DescribeAccountLimitsInputSchema = z
 
 const DescribeChangeSetHooksInputSchema = z
   .object({
-    ChangeSetName: ChangeSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of the change set that you want to describe.',
-        }),
-    ),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specified the name of a change set, specify the stack name or stack ID (ARN) of the change set you want to describe.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string, provided by the <code>DescribeChangeSetHooks</code> response output, that identifies the next page of information that you want to retrieve.',
-        }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If specified, lists only the hooks related to the specified <code>LogicalResourceId</code>.',
-        }),
-    ).exactOptional(),
+    ChangeSetName: ChangeSetNameOrIdSchema.openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of the change set that you want to describe.',
+    }),
+    StackName: StackNameOrIdSchema.exactOptional().openapi({
+      description:
+        'If you specified the name of a change set, specify the stack name or stack ID (ARN) of the change set you want to describe.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string, provided by the <code>DescribeChangeSetHooks</code> response output, that identifies the next page of information that you want to retrieve.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description:
+        'If specified, lists only the hooks related to the specified <code>LogicalResourceId</code>.',
+    }),
   })
   .openapi({ required: ['ChangeSetName'], title: 'DescribeChangeSetHooksInput' })
   .openapi('DescribeChangeSetHooksInput')
 
 const DescribeChangeSetInputSchema = z
   .object({
-    ChangeSetName: ChangeSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of the change set that you want to describe.',
-        }),
-    ),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If you specified the name of a change set, specify the stack name or ID (ARN) of the change set you want to describe.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (provided by the <a>DescribeChangeSet</a> response output) that identifies the next page of information that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    ChangeSetName: ChangeSetNameOrIdSchema.openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of the change set that you want to describe.',
+    }),
+    StackName: StackNameOrIdSchema.exactOptional().openapi({
+      description:
+        'If you specified the name of a change set, specify the stack name or ID (ARN) of the change set you want to describe.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string (provided by the <a>DescribeChangeSet</a> response output) that identifies the next page of information that you want to retrieve.',
+    }),
   })
   .openapi({
     required: ['ChangeSetName'],
@@ -5935,64 +4108,43 @@ const DescribeChangeSetInputSchema = z
 
 const DescribeOrganizationsAccessInputSchema = z
   .object({
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'DescribeOrganizationsAccessInput', required: [] })
   .openapi('DescribeOrganizationsAccessInput')
 
 const DescribePublisherInputSchema = z
   .object({
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The ID of the extension publisher.</p> <p>If you don't supply a <code>PublisherId</code>, and you have registered as an extension publisher, <code>DescribePublisher</code> returns information about your own publisher account.</p>",
-        }),
-    ).exactOptional(),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        "<p>The ID of the extension publisher.</p> <p>If you don't supply a <code>PublisherId</code>, and you have registered as an extension publisher, <code>DescribePublisher</code> returns information about your own publisher account.</p>",
+    }),
   })
   .openapi({ title: 'DescribePublisherInput', required: [] })
   .openapi('DescribePublisherInput')
 
 const DescribeStackDriftDetectionStatusInputSchema = z
   .object({
-    StackDriftDetectionId: StackDriftDetectionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of drift results CloudFormation retains for any given stack, and for how long, may vary.</p>',
-        }),
-    ),
+    StackDriftDetectionId: StackDriftDetectionIdSchema.openapi({
+      description:
+        '<p>The ID of the drift detection results of this operation.</p> <p>CloudFormation generates new results, with a new drift detection ID, each time this operation is run. However, the number of drift results CloudFormation retains for any given stack, and for how long, may vary.</p>',
+    }),
   })
   .openapi({ required: ['StackDriftDetectionId'], title: 'DescribeStackDriftDetectionStatusInput' })
   .openapi('DescribeStackDriftDetectionStatusInput')
 
 const DescribeStackEventsInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of events that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A string that identifies the next page of events that you want to retrieve.',
+    }),
   })
   .openapi({
     title: 'DescribeStackEventsInput',
@@ -6003,37 +4155,21 @@ const DescribeStackEventsInputSchema = z
 
 const DescribeStackInstanceInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or the unique stack ID of the stack set that you want to get stack instance information for.',
-        }),
-    ),
-    StackInstanceAccount: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of an Amazon Web Services account that's associated with this stack instance.",
-        }),
-    ),
-    StackInstanceRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: "The name of a Region that's associated with this stack instance.",
-        }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or the unique stack ID of the stack set that you want to get stack instance information for.',
+    }),
+    StackInstanceAccount: AccountSchema.openapi({
+      description:
+        "The ID of an Amazon Web Services account that's associated with this stack instance.",
+    }),
+    StackInstanceRegion: RegionSchema.openapi({
+      description: "The name of a Region that's associated with this stack instance.",
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['StackSetName', 'StackInstanceAccount', 'StackInstanceRegion'],
@@ -6049,56 +4185,34 @@ const StackResourceDriftStatusFiltersSchema = z
 
 const DescribeStackResourceDriftsInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the stack for which you want drift information.' }),
-    ),
-    StackResourceDriftStatusFilters: StackResourceDriftStatusFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The resource drift status values to use as filters for the resource drift results returned.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A string that identifies the next page of stack resource drift results.',
-        }),
-    ).exactOptional(),
-    MaxResults: BoxedMaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description: 'The name of the stack for which you want drift information.',
+    }),
+    StackResourceDriftStatusFilters: StackResourceDriftStatusFiltersSchema.exactOptional().openapi({
+      description:
+        "<p>The resource drift status values to use as filters for the resource drift results returned.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A string that identifies the next page of stack resource drift results.',
+    }),
+    MaxResults: BoxedMaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'DescribeStackResourceDriftsInput' })
   .openapi('DescribeStackResourceDriftsInput')
 
 const DescribeStackResourceInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
-        }),
-    ),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>',
-        }),
-    ),
+    StackName: StackNameSchema.openapi({
+      description:
+        "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description:
+        '<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>',
+    }),
   })
   .openapi({
     required: ['StackName', 'LogicalResourceId'],
@@ -6109,30 +4223,18 @@ const DescribeStackResourceInputSchema = z
 
 const DescribeStackResourcesInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p> <p>Required: Conditional. If you don't specify <code>StackName</code>, you must specify <code>PhysicalResourceId</code>.</p>",
-        }),
-    ).exactOptional(),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>',
-        }),
-    ).exactOptional(),
-    PhysicalResourceId: PhysicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.</p> <p>For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack.</p> <p>Required: Conditional. If you don't specify <code>PhysicalResourceId</code>, you must specify <code>StackName</code>.</p> <p>Default: There is no default value.</p>",
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p> <p>Required: Conditional. If you don't specify <code>StackName</code>, you must specify <code>PhysicalResourceId</code>.</p>",
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.exactOptional().openapi({
+      description:
+        '<p>The logical name of the resource as specified in the template.</p> <p>Default: There is no default value.</p>',
+    }),
+    PhysicalResourceId: PhysicalResourceIdSchema.exactOptional().openapi({
+      description:
+        "<p>The name or unique identifier that corresponds to a physical instance ID of a resource supported by CloudFormation.</p> <p>For example, for an Amazon Elastic Compute Cloud (EC2) instance, <code>PhysicalResourceId</code> corresponds to the <code>InstanceId</code>. You can pass the EC2 <code>InstanceId</code> to <code>DescribeStackResources</code> to find which stack the instance belongs to and what other resources are part of the stack.</p> <p>Required: Conditional. If you don't specify <code>PhysicalResourceId</code>, you must specify <code>StackName</code>.</p> <p>Default: There is no default value.</p>",
+    }),
   })
   .openapi({
     title: 'DescribeStackResourcesInput',
@@ -6143,67 +4245,42 @@ const DescribeStackResourcesInputSchema = z
 
 const DescribeStackSetInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or unique ID of the stack set whose description you want.',
-        }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description: 'The name or unique ID of the stack set whose description you want.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'DescribeStackSetInput' })
   .openapi('DescribeStackSetInput')
 
 const DescribeStackSetOperationInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or the unique stack ID of the stack set for the stack operation.',
-        }),
-    ),
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique ID of the stack set operation.' }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description: 'The name or the unique stack ID of the stack set for the stack operation.',
+    }),
+    OperationId: ClientRequestTokenSchema.openapi({
+      description: 'The unique ID of the stack set operation.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName', 'OperationId'], title: 'DescribeStackSetOperationInput' })
   .openapi('DescribeStackSetOperationInput')
 
 const DescribeStacksInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<note> <p>If you don\'t pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account. This requires <code>ListStacks</code> and <code>DescribeStacks</code> permissions.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p>{ "Version": "2012-10-17", "Statement": [{ "Effect": "Deny", "Action": "cloudformation:DescribeStacks", "NotResource": "arn:aws:cloudformation:*:*:stack/*/*" }] }</p> </note> <p>The name or the unique stack ID that\'s associated with the stack, which aren\'t always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack\'s name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of stacks that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description:
+        '<note> <p>If you don\'t pass a parameter to <code>StackName</code>, the API returns a response that describes all resources in the account. This requires <code>ListStacks</code> and <code>DescribeStacks</code> permissions.</p> <p>The IAM policy below can be added to IAM policies when you want to limit resource-level permissions and avoid returning a response when no parameter is sent in the request:</p> <p>{ "Version": "2012-10-17", "Statement": [{ "Effect": "Deny", "Action": "cloudformation:DescribeStacks", "NotResource": "arn:aws:cloudformation:*:*:stack/*/*" }] }</p> </note> <p>The name or the unique stack ID that\'s associated with the stack, which aren\'t always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack\'s name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A string that identifies the next page of stacks that you want to retrieve.',
+    }),
   })
   .openapi({
     title: 'DescribeStacksInput',
@@ -6214,93 +4291,63 @@ const DescribeStacksInputSchema = z
 
 const DescribeTypeInputSchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    VersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.</p> <p>If you specify a <code>VersionId</code>, <code>DescribeType</code> returns information about that specific extension version. Otherwise, it returns information about the default extension version.</p>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The publisher ID of the extension publisher.</p> <p>Extensions provided by Amazon Web Services are not assigned a publisher ID.</p>',
-        }),
-    ).exactOptional(),
-    PublicVersionNumber: PublicVersionNumberSchema.and(
-      z.any().openapi({ description: 'The version number of a public third-party extension.' }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    Arn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    VersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.</p> <p>If you specify a <code>VersionId</code>, <code>DescribeType</code> returns information about that specific extension version. Otherwise, it returns information about the default extension version.</p>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        '<p>The publisher ID of the extension publisher.</p> <p>Extensions provided by Amazon Web Services are not assigned a publisher ID.</p>',
+    }),
+    PublicVersionNumber: PublicVersionNumberSchema.exactOptional().openapi({
+      description: 'The version number of a public third-party extension.',
+    }),
   })
   .openapi({ title: 'DescribeTypeInput', required: [] })
   .openapi('DescribeTypeInput')
 
 const DescribeTypeRegistrationInputSchema = z
   .object({
-    RegistrationToken: RegistrationTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The identifier for this registration request.</p> <p>This registration token is generated by CloudFormation when you initiate a registration request using <a>RegisterType</a>.</p>',
-        }),
-    ),
+    RegistrationToken: RegistrationTokenSchema.openapi({
+      description:
+        '<p>The identifier for this registration request.</p> <p>This registration token is generated by CloudFormation when you initiate a registration request using <a>RegisterType</a>.</p>',
+    }),
   })
   .openapi({ required: ['RegistrationToken'], title: 'DescribeTypeRegistrationInput' })
   .openapi('DescribeTypeRegistrationInput')
 
 const DetectStackDriftInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z.any().openapi({ description: 'The name of the stack for which you want to detect drift.' }),
-    ),
-    LogicalResourceIds: LogicalResourceIdsSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The logical names of any resources you want to use as filters.' }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description: 'The name of the stack for which you want to detect drift.',
+    }),
+    LogicalResourceIds: LogicalResourceIdsSchema.exactOptional().openapi({
+      description: 'The logical names of any resources you want to use as filters.',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'DetectStackDriftInput' })
   .openapi('DetectStackDriftInput')
 
 const DetectStackResourceDriftInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z.any().openapi({ description: 'The name of the stack to which the resource belongs.' }),
-    ),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The logical name of the resource for which to return drift information.',
-        }),
-    ),
+    StackName: StackNameOrIdSchema.openapi({
+      description: 'The name of the stack to which the resource belongs.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description: 'The logical name of the resource for which to return drift information.',
+    }),
   })
   .openapi({ required: ['StackName', 'LogicalResourceId'], title: 'DetectStackResourceDriftInput' })
   .openapi('DetectStackResourceDriftInput')
@@ -6314,62 +4361,37 @@ const StackSetNameOrIdSchema = z
 
 const DetectStackSetDriftInputSchema = z
   .object({
-    StackSetName: StackSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stack set on which to perform the drift detection operation.',
-        }),
-    ),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
-        }),
-    ).exactOptional(),
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: ' <i>The ID of the stack set operation.</i> ' }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameOrIdSchema.openapi({
+      description: 'The name of the stack set on which to perform the drift detection operation.',
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description:
+        '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: ' <i>The ID of the stack set operation.</i> ',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'DetectStackSetDriftInput' })
   .openapi('DetectStackSetDriftInput')
 
 const EstimateTemplateCostInputSchema = z
   .object({
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The URL must point to a template that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of <code>Parameter</code> structures that specify input parameters.',
-        }),
-    ).exactOptional(),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The URL must point to a template that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'A list of <code>Parameter</code> structures that specify input parameters.',
+    }),
   })
   .openapi({
     title: 'EstimateTemplateCostInput',
@@ -6380,46 +4402,26 @@ const EstimateTemplateCostInputSchema = z
 
 const ExecuteChangeSetInputSchema = z
   .object({
-    ChangeSetName: ChangeSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of the change set that you want use to update the specified stack.',
-        }),
-    ),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If you specified the name of a change set, specify the stack name or Amazon Resource Name (ARN) that's associated with the change set you want to execute.",
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "A unique identifier for this <code>ExecuteChangeSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to execute a change set to update a stack with the same name. You might retry <code>ExecuteChangeSet</code> requests to ensure that CloudFormation successfully received them.",
-        }),
-    ).exactOptional(),
-    DisableRollback: DisableRollbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Preserves the state of previously provisioned resources when an operation fails. This parameter can\'t be specified when the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation was specified.</p> <ul> <li> <p> <code>True</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>DO_NOTHING</code> for the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation.</p> </li> <li> <p> <code>False</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>ROLLBACK</code> for the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation.</p> </li> </ul> <p>Default: <code>True</code> </p>',
-        }),
-    ).exactOptional(),
-    RetainExceptOnCreate: RetainExceptOnCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
-        }),
-    ).exactOptional(),
+    ChangeSetName: ChangeSetNameOrIdSchema.openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of the change set that you want use to update the specified stack.',
+    }),
+    StackName: StackNameOrIdSchema.exactOptional().openapi({
+      description:
+        "If you specified the name of a change set, specify the stack name or Amazon Resource Name (ARN) that's associated with the change set you want to execute.",
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "A unique identifier for this <code>ExecuteChangeSet</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to execute a change set to update a stack with the same name. You might retry <code>ExecuteChangeSet</code> requests to ensure that CloudFormation successfully received them.",
+    }),
+    DisableRollback: DisableRollbackSchema.exactOptional().openapi({
+      description:
+        '<p>Preserves the state of previously provisioned resources when an operation fails. This parameter can\'t be specified when the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation was specified.</p> <ul> <li> <p> <code>True</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>DO_NOTHING</code> for the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation.</p> </li> <li> <p> <code>False</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>ROLLBACK</code> for the <code>OnStackFailure</code> parameter to the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html">CreateChangeSet</a> API operation.</p> </li> </ul> <p>Default: <code>True</code> </p>',
+    }),
+    RetainExceptOnCreate: RetainExceptOnCreateSchema.exactOptional().openapi({
+      description:
+        'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
+    }),
   })
   .openapi({
     required: ['ChangeSetName'],
@@ -6430,14 +4432,10 @@ const ExecuteChangeSetInputSchema = z
 
 const GetStackPolicyInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The name or unique stack ID that's associated with the stack whose policy you want to get.",
-        }),
-    ),
+    StackName: StackNameSchema.openapi({
+      description:
+        "The name or unique stack ID that's associated with the stack whose policy you want to get.",
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -6448,30 +4446,18 @@ const GetStackPolicyInputSchema = z
 
 const GetTemplateInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
-        }),
-    ).exactOptional(),
-    ChangeSetName: ChangeSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or Amazon Resource Name (ARN) of a change set for which CloudFormation returns the associated template. If you specify a name, you must also specify the <code>StackName</code>.',
-        }),
-    ).exactOptional(),
-    TemplateStage: TemplateStageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For templates that include transforms, the stage of the template that CloudFormation returns. To get the user-submitted template, specify <code>Original</code>. To get the template after CloudFormation has processed all transforms, specify <code>Processed</code>.</p> <p>If the template doesn't include transforms, <code>Original</code> and <code>Processed</code> return the same template. By default, CloudFormation specifies <code>Processed</code>.</p>",
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.exactOptional().openapi({
+      description:
+        "<p>The name or the unique stack ID that's associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
+    }),
+    ChangeSetName: ChangeSetNameOrIdSchema.exactOptional().openapi({
+      description:
+        'The name or Amazon Resource Name (ARN) of a change set for which CloudFormation returns the associated template. If you specify a name, you must also specify the <code>StackName</code>.',
+    }),
+    TemplateStage: TemplateStageSchema.exactOptional().openapi({
+      description:
+        "<p>For templates that include transforms, the stage of the template that CloudFormation returns. To get the user-submitted template, specify <code>Original</code>. To get the template after CloudFormation has processed all transforms, specify <code>Processed</code>.</p> <p>If the template doesn't include transforms, <code>Original</code> and <code>Processed</code> return the same template. By default, CloudFormation specifies <code>Processed</code>.</p>",
+    }),
   })
   .openapi({
     title: 'GetTemplateInput',
@@ -6482,14 +4468,11 @@ const GetTemplateInputSchema = z
 
 const TemplateSummaryConfigSchema = z
   .object({
-    TreatUnrecognizedResourceTypesAsWarnings: TreatUnrecognizedResourceTypesAsWarningsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If set to <code>True</code>, any unrecognized resource types generate warnings and not an error. Any unrecognized resource types are returned in the <code>Warnings</code> output parameter.',
-        }),
-    ).exactOptional(),
+    TreatUnrecognizedResourceTypesAsWarnings:
+      TreatUnrecognizedResourceTypesAsWarningsSchema.exactOptional().openapi({
+        description:
+          'If set to <code>True</code>, any unrecognized resource types generate warnings and not an error. Any unrecognized resource types are returned in the <code>Warnings</code> output parameter.',
+      }),
   })
   .openapi({
     description: 'Options for the <code>GetTemplateSummary</code> API action.',
@@ -6499,53 +4482,29 @@ const TemplateSummaryConfigSchema = z
 
 const GetTemplateSummaryInputSchema = z
   .object({
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information about templates, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information about templates, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
-        }),
-    ).exactOptional(),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the stack ID that's associated with the stack, which aren't always interchangeable. For running stacks, you can specify either the stack's name or its unique stack ID. For deleted stack, you must specify the unique stack ID.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>",
-        }),
-    ).exactOptional(),
-    StackSetName: StackSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name or unique ID of the stack set from which the stack was created.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    TemplateSummaryConfig: TemplateSummaryConfigSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Specifies options for the <code>GetTemplateSummary</code> API action.',
-        }),
-    ).exactOptional(),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information about templates, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information about templates, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
+    }),
+    StackName: StackNameOrIdSchema.exactOptional().openapi({
+      description:
+        "<p>The name or the stack ID that's associated with the stack, which aren't always interchangeable. For running stacks, you can specify either the stack's name or its unique stack ID. For deleted stack, you must specify the unique stack ID.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>",
+    }),
+    StackSetName: StackSetNameOrIdSchema.exactOptional().openapi({
+      description:
+        '<p>The name or unique ID of the stack set from which the stack was created.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
+    TemplateSummaryConfig: TemplateSummaryConfigSchema.exactOptional().openapi({
+      description: 'Specifies options for the <code>GetTemplateSummary</code> API action.',
+    }),
   })
   .openapi({
     title: 'GetTemplateSummaryInput',
@@ -6589,83 +4548,47 @@ const StackIdsUrlSchema = z
 
 const ImportStacksToStackSetInputSchema = z
   .object({
-    StackSetName: StackSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the stack set. The name must be unique in the Region where you create your stack set.',
-        }),
-    ),
-    StackIds: StackIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The IDs of the stacks you are importing into a stack set. You import up to 10 stacks per stack set at a time.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>',
-        }),
-    ).exactOptional(),
-    StackIdsUrl: StackIdsUrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon S3 URL which contains list of stack ids to be inputted.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>',
-        }),
-    ).exactOptional(),
-    OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The list of OU ID's to which the stacks being imported has to be mapped as deployment target.",
-        }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
-        }),
-    ).exactOptional(),
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique, user defined, identifier for the stack set operation.',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>For service managed stack sets, specify <code>DELEGATED_ADMIN</code>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameOrIdSchema.openapi({
+      description:
+        'The name of the stack set. The name must be unique in the Region where you create your stack set.',
+    }),
+    StackIds: StackIdListSchema.exactOptional().openapi({
+      description:
+        '<p>The IDs of the stacks you are importing into a stack set. You import up to 10 stacks per stack set at a time.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>',
+    }),
+    StackIdsUrl: StackIdsUrlSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon S3 URL which contains list of stack ids to be inputted.</p> <p>Specify either <code>StackIds</code> or <code>StackIdsUrl</code>.</p>',
+    }),
+    OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+      description:
+        "The list of OU ID's to which the stacks being imported has to be mapped as deployment target.",
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description:
+        '<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options">Stack set operation options</a>.</p>',
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'A unique, user defined, identifier for the stack set operation.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>For service managed stack sets, specify <code>DELEGATED_ADMIN</code>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'ImportStacksToStackSetInput' })
   .openapi('ImportStacksToStackSetInput')
 
 const ListChangeSetsInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or the Amazon Resource Name (ARN) of the stack for which you want to list change sets.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (provided by the <a>ListChangeSets</a> response output) that identifies the next page of change sets that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description:
+        'The name or the Amazon Resource Name (ARN) of the stack for which you want to list change sets.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string (provided by the <a>ListChangeSets</a> response output) that identifies the next page of change sets that you want to retrieve.',
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -6676,36 +4599,24 @@ const ListChangeSetsInputSchema = z
 
 const ListExportsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (provided by the <a>ListExports</a> response output) that identifies the next page of exported output values that you asked to retrieve.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string (provided by the <a>ListExports</a> response output) that identifies the next page of exported output values that you asked to retrieve.',
+    }),
   })
   .openapi({ title: 'ListExportsInput', required: [] })
   .openapi('ListExportsInput')
 
 const ListImportsInputSchema = z
   .object({
-    ExportName: ExportNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the exported output value. CloudFormation returns the stack names that are importing this value.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string (provided by the <a>ListImports</a> response output) that identifies the next page of stacks that are importing the specified exported output value.',
-        }),
-    ).exactOptional(),
+    ExportName: ExportNameSchema.openapi({
+      description:
+        'The name of the exported output value. CloudFormation returns the stack names that are importing this value.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string (provided by the <a>ListImports</a> response output) that identifies the next page of stacks that are importing the specified exported output value.',
+    }),
   })
   .openapi({ required: ['ExportName'], title: 'ListImportsInput' })
   .openapi('ListImportsInput')
@@ -6714,62 +4625,37 @@ const MaxResultsSchema = z.int().min(1).max(100).openapi('MaxResults')
 
 const ListStackInstanceResourceDriftsInputSchema = z
   .object({
-    StackSetName: StackSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to list drifted resources for.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    StackInstanceResourceDriftStatuses: StackResourceDriftStatusFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The resource drift status of the stack instance. </p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
-        }),
-    ).exactOptional(),
-    StackInstanceAccount: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services account that you want to list resource drifts for.',
-        }),
-    ),
-    StackInstanceRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Region where you want to list resource drifts.' }),
-    ),
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The unique ID of the drift operation.' }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameOrIdSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to list drifted resources for.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    StackInstanceResourceDriftStatuses:
+      StackResourceDriftStatusFiltersSchema.exactOptional().openapi({
+        description:
+          "<p>The resource drift status of the stack instance. </p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected template configuration in that the resource has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: One or more resource properties differ from their expected template values.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected template configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation doesn't currently return this value.</p> </li> </ul>",
+      }),
+    StackInstanceAccount: AccountSchema.openapi({
+      description:
+        'The name of the Amazon Web Services account that you want to list resource drifts for.',
+    }),
+    StackInstanceRegion: RegionSchema.openapi({
+      description: 'The name of the Region where you want to list resource drifts.',
+    }),
+    OperationId: ClientRequestTokenSchema.openapi({
+      description: 'The unique ID of the drift operation.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     required: ['StackSetName', 'StackInstanceAccount', 'StackInstanceRegion', 'OperationId'],
@@ -6784,76 +4670,46 @@ const StackInstanceFiltersSchema = z
 
 const ListStackInstancesInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to list stack instances for.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous request didn't return all the remaining results, the response's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    Filters: StackInstanceFiltersSchema.and(
-      z.any().openapi({ description: 'The filter to apply to stack instances' }),
-    ).exactOptional(),
-    StackInstanceAccount: AccountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services account that you want to list stack instances for.',
-        }),
-    ).exactOptional(),
-    StackInstanceRegion: RegionSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The name of the Region where you want to list stack instances.' }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to list stack instances for.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous request didn't return all the remaining results, the response's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    Filters: StackInstanceFiltersSchema.exactOptional().openapi({
+      description: 'The filter to apply to stack instances',
+    }),
+    StackInstanceAccount: AccountSchema.exactOptional().openapi({
+      description:
+        'The name of the Amazon Web Services account that you want to list stack instances for.',
+    }),
+    StackInstanceRegion: RegionSchema.exactOptional().openapi({
+      description: 'The name of the Region where you want to list stack instances.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'ListStackInstancesInput' })
   .openapi('ListStackInstancesInput')
 
 const ListStackResourcesInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of stack resources that you want to retrieve.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description:
+        "<p>The name or the unique stack ID that is associated with the stack, which aren't always interchangeable:</p> <ul> <li> <p>Running stacks: You can specify either the stack's name or its unique stack ID.</p> </li> <li> <p>Deleted stacks: You must specify the unique stack ID.</p> </li> </ul> <p>Default: There is no default value.</p>",
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'A string that identifies the next page of stack resources that you want to retrieve.',
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -6869,44 +4725,28 @@ const OperationResultFiltersSchema = z
 
 const ListStackSetOperationResultsInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to get operation results for.',
-        }),
-    ),
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The ID of the stack set operation.' }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Filters: OperationResultFiltersSchema.and(
-      z.any().openapi({ description: 'The filter to apply to operation results.' }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to get operation results for.',
+    }),
+    OperationId: ClientRequestTokenSchema.openapi({
+      description: 'The ID of the stack set operation.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
+    Filters: OperationResultFiltersSchema.exactOptional().openapi({
+      description: 'The filter to apply to operation results.',
+    }),
   })
   .openapi({
     required: ['StackSetName', 'OperationId'],
@@ -6916,76 +4756,43 @@ const ListStackSetOperationResultsInputSchema = z
 
 const ListStackSetOperationsInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to get operation summaries for.',
-        }),
-    ),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperations</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to get operation summaries for.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperations</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'ListStackSetOperationsInput' })
   .openapi('ListStackSetOperationsInput')
 
 const ListStackSetsInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSets</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    Status: StackSetStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the stack sets that you want to get summary information about.',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSets</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    Status: StackSetStatusSchema.exactOptional().openapi({
+      description: 'The status of the stack sets that you want to get summary information about.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'ListStackSetsInput', required: [] })
   .openapi('ListStackSetsInput')
@@ -6994,22 +4801,13 @@ const StackStatusFilterSchema = z.array(StackStatusSchema).openapi('StackStatusF
 
 const ListStacksInputSchema = z
   .object({
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A string that identifies the next page of stacks that you want to retrieve.',
-        }),
-    ).exactOptional(),
-    StackStatusFilter: StackStatusFilterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Stack status to use as a filter. Specify one or more stack status codes to list only stacks with the specified status codes. For a complete list of stack status codes, see the <code>StackStatus</code> parameter of the <a>Stack</a> data type.',
-        }),
-    ).exactOptional(),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'A string that identifies the next page of stacks that you want to retrieve.',
+    }),
+    StackStatusFilter: StackStatusFilterSchema.exactOptional().openapi({
+      description:
+        'Stack status to use as a filter. Specify one or more stack status codes to list only stacks with the specified status codes. For a complete list of stack status codes, see the <code>StackStatus</code> parameter of the <a>Stack</a> data type.',
+    }),
   })
   .openapi({
     title: 'ListStacksInput',
@@ -7020,141 +4818,81 @@ const ListStacksInputSchema = z
 
 const ListTypeRegistrationsInputSchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    RegistrationStatusFilter: RegistrationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The current status of the extension registration request.</p> <p>The default is <code>IN_PROGRESS</code>.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    RegistrationStatusFilter: RegistrationStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The current status of the extension registration request.</p> <p>The default is <code>IN_PROGRESS</code>.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
   })
   .openapi({ title: 'ListTypeRegistrationsInput', required: [] })
   .openapi('ListTypeRegistrationsInput')
 
 const ListTypeVersionsInputSchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The kind of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
-    DeprecatedStatus: DeprecatedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deprecation status of the extension versions that you want to get summary information about.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension version is registered and can be used in CloudFormation operations, dependent on its provisioning behavior and visibility scope.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension version has been deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul> <p>The default is <code>LIVE</code>.</p>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The publisher ID of the extension publisher.</p> <p>Extensions published by Amazon aren't assigned a publisher ID.</p>",
-        }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The kind of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    Arn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
+    DeprecatedStatus: DeprecatedStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The deprecation status of the extension versions that you want to get summary information about.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension version is registered and can be used in CloudFormation operations, dependent on its provisioning behavior and visibility scope.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension version has been deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul> <p>The default is <code>LIVE</code>.</p>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        "<p>The publisher ID of the extension publisher.</p> <p>Extensions published by Amazon aren't assigned a publisher ID.</p>",
+    }),
   })
   .openapi({ title: 'ListTypeVersionsInput', required: [] })
   .openapi('ListTypeVersionsInput')
 
 const TypeFiltersSchema = z
   .object({
-    Category: CategorySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and Region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and Region.</p> </li> <li> <p> <code>THIRD_PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS_TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    PublisherId: PublisherIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The id of the publisher of the extension.</p> <p>Extensions published by Amazon aren't assigned a publisher ID. Use the <code>AWS_TYPES</code> category to specify a list of types published by Amazon.</p>",
-        }),
-    ).exactOptional(),
-    TypeNamePrefix: TypeNamePrefixSchema.and(
-      z.any().openapi({ description: 'A prefix to use as a filter for results.' }),
-    ).exactOptional(),
+    Category: CategorySchema.exactOptional().openapi({
+      description:
+        '<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and Region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and Region.</p> </li> <li> <p> <code>THIRD_PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS_TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>',
+    }),
+    PublisherId: PublisherIdSchema.exactOptional().openapi({
+      description:
+        "<p>The id of the publisher of the extension.</p> <p>Extensions published by Amazon aren't assigned a publisher ID. Use the <code>AWS_TYPES</code> category to specify a list of types published by Amazon.</p>",
+    }),
+    TypeNamePrefix: TypeNamePrefixSchema.exactOptional().openapi({
+      description: 'A prefix to use as a filter for results.',
+    }),
   })
   .openapi({
     description: 'Filter criteria to use in determining which extensions to return.',
@@ -7164,57 +4902,31 @@ const TypeFiltersSchema = z
 
 const ListTypesInputSchema = z
   .object({
-    Visibility: VisibilitySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The scope at which the extensions are visible and usable in CloudFormation operations.</p> <p>Valid values include:</p> <ul> <li> <p> <code>PRIVATE</code>: Extensions that are visible and usable within this account and Region. This includes:</p> <ul> <li> <p>Private extensions you have registered in this account and Region.</p> </li> <li> <p>Public extensions that you have activated in this account and Region.</p> </li> </ul> </li> <li> <p> <code>PUBLIC</code>: Extensions that are publicly visible and available to be activated within any Amazon Web Services account. This includes extensions from Amazon Web Services, in addition to third-party publishers.</p> </li> </ul> <p>The default is <code>PRIVATE</code>.</p>',
-        }),
-    ).exactOptional(),
-    ProvisioningType: ProvisioningTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>For resource types, the provisioning behavior of the resource type. CloudFormation determines the provisioning type during registration, based on the types of handlers in the schema handler package submitted.</p> <p>Valid values include:</p> <ul> <li> <p> <code>FULLY_MUTABLE</code>: The resource type includes an update handler to process updates to the type during stack update operations.</p> </li> <li> <p> <code>IMMUTABLE</code>: The resource type doesn't include an update handler, so the type can't be updated and must instead be replaced during stack update operations.</p> </li> <li> <p> <code>NON_PROVISIONABLE</code>: The resource type doesn't include create, read, and delete handlers, and therefore can't actually be provisioned.</p> </li> </ul> <p>The default is <code>FULLY_MUTABLE</code>.</p>",
-        }),
-    ).exactOptional(),
-    DeprecatedStatus: DeprecatedStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The deprecation status of the extension that you want to get summary information about.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension is registered for use in CloudFormation operations.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension has been deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Type: RegistryTypeSchema.and(
-      z.any().openapi({ description: 'The type of extension.' }),
-    ).exactOptional(),
-    Filters: TypeFiltersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Filter criteria to use in determining which extensions to return.</p> <p>Filters must be compatible with <code>Visibility</code> to return valid results. For example, specifying <code>AWS_TYPES</code> for <code>Category</code> and <code>PRIVATE</code> for <code>Visibility</code> returns an empty list of types, but specifying <code>PUBLIC</code> for <code>Visibility</code> returns the desired list.</p>',
-        }),
-    ).exactOptional(),
-    MaxResults: MaxResultsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
-        }),
-    ).exactOptional(),
+    Visibility: VisibilitySchema.exactOptional().openapi({
+      description:
+        '<p>The scope at which the extensions are visible and usable in CloudFormation operations.</p> <p>Valid values include:</p> <ul> <li> <p> <code>PRIVATE</code>: Extensions that are visible and usable within this account and Region. This includes:</p> <ul> <li> <p>Private extensions you have registered in this account and Region.</p> </li> <li> <p>Public extensions that you have activated in this account and Region.</p> </li> </ul> </li> <li> <p> <code>PUBLIC</code>: Extensions that are publicly visible and available to be activated within any Amazon Web Services account. This includes extensions from Amazon Web Services, in addition to third-party publishers.</p> </li> </ul> <p>The default is <code>PRIVATE</code>.</p>',
+    }),
+    ProvisioningType: ProvisioningTypeSchema.exactOptional().openapi({
+      description:
+        "<p>For resource types, the provisioning behavior of the resource type. CloudFormation determines the provisioning type during registration, based on the types of handlers in the schema handler package submitted.</p> <p>Valid values include:</p> <ul> <li> <p> <code>FULLY_MUTABLE</code>: The resource type includes an update handler to process updates to the type during stack update operations.</p> </li> <li> <p> <code>IMMUTABLE</code>: The resource type doesn't include an update handler, so the type can't be updated and must instead be replaced during stack update operations.</p> </li> <li> <p> <code>NON_PROVISIONABLE</code>: The resource type doesn't include create, read, and delete handlers, and therefore can't actually be provisioned.</p> </li> </ul> <p>The default is <code>FULLY_MUTABLE</code>.</p>",
+    }),
+    DeprecatedStatus: DeprecatedStatusSchema.exactOptional().openapi({
+      description:
+        '<p>The deprecation status of the extension that you want to get summary information about.</p> <p>Valid values include:</p> <ul> <li> <p> <code>LIVE</code>: The extension is registered for use in CloudFormation operations.</p> </li> <li> <p> <code>DEPRECATED</code>: The extension has been deregistered and can no longer be used in CloudFormation operations.</p> </li> </ul>',
+    }),
+    Type: RegistryTypeSchema.exactOptional().openapi({ description: 'The type of extension.' }),
+    Filters: TypeFiltersSchema.exactOptional().openapi({
+      description:
+        '<p>Filter criteria to use in determining which extensions to return.</p> <p>Filters must be compatible with <code>Visibility</code> to return valid results. For example, specifying <code>AWS_TYPES</code> for <code>Category</code> and <code>PRIVATE</code> for <code>Visibility</code> returns an empty list of types, but specifying <code>PUBLIC</code> for <code>Visibility</code> returns the desired list.</p>',
+    }),
+    MaxResults: MaxResultsSchema.exactOptional().openapi({
+      description:
+        'The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        "If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.",
+    }),
   })
   .openapi({ title: 'ListTypesInput', required: [] })
   .openapi('ListTypesInput')
@@ -7225,38 +4937,22 @@ const OperationStatusSchema = z
 
 const PublishTypeInputSchema = z
   .object({
-    Type: ThirdPartyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    Arn: PrivateTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    PublicVersionNumber: PublicVersionNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The version number to assign to this version of the extension.</p> <p>Use the following format, and adhere to semantic versioning when assigning a version number to your extension:</p> <p> <code>MAJOR.MINOR.PATCH</code> </p> <p>For more information, see <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.</p> <p>If you don\'t specify a version number, CloudFormation increments the version number by one minor version release.</p> <p>You cannot specify a version number the first time you publish a type. CloudFormation automatically sets the first version number to be <code>1.0.0</code>.</p>',
-        }),
-    ).exactOptional(),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    Arn: PrivateTypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    PublicVersionNumber: PublicVersionNumberSchema.exactOptional().openapi({
+      description:
+        '<p>The version number to assign to this version of the extension.</p> <p>Use the following format, and adhere to semantic versioning when assigning a version number to your extension:</p> <p> <code>MAJOR.MINOR.PATCH</code> </p> <p>For more information, see <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.</p> <p>If you don\'t specify a version number, CloudFormation increments the version number by one minor version release.</p> <p>You cannot specify a version number the first time you publish a type. CloudFormation automatically sets the first version number to be <code>1.0.0</code>.</p>',
+    }),
   })
   .openapi({ title: 'PublishTypeInput', required: [] })
   .openapi('PublishTypeInput')
@@ -7267,84 +4963,48 @@ const ResourceModelSchema = z.string().min(1).max(16384).openapi('ResourceModel'
 
 const RecordHandlerProgressInputSchema = z
   .object({
-    BearerToken: ClientTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ),
-    OperationStatus: OperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ),
-    CurrentOperationStatus: OperationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ).exactOptional(),
-    StatusMessage: StatusMessageSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ).exactOptional(),
-    ErrorCode: HandlerErrorCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ).exactOptional(),
-    ResourceModel: ResourceModelSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
-        }),
-    ).exactOptional(),
+    BearerToken: ClientTokenSchema.openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    OperationStatus: OperationStatusSchema.openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    CurrentOperationStatus: OperationStatusSchema.exactOptional().openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    StatusMessage: StatusMessageSchema.exactOptional().openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    ErrorCode: HandlerErrorCodeSchema.exactOptional().openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    ResourceModel: ResourceModelSchema.exactOptional().openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Reserved for use by the <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html">CloudFormation CLI</a>.',
+    }),
   })
   .openapi({ required: ['BearerToken', 'OperationStatus'], title: 'RecordHandlerProgressInput' })
   .openapi('RecordHandlerProgressInput')
 
 const RegisterPublisherInputSchema = z
   .object({
-    AcceptTermsAndConditions: AcceptTermsAndConditionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Whether you accept the <a href="https://cloudformation-registry-documents.s3.amazonaws.com/Terms_and_Conditions_for_AWS_CloudFormation_Registry_Publishers.pdf">Terms and Conditions</a> for publishing extensions in the CloudFormation registry. You must accept the terms and conditions in order to register to publish public extensions to the CloudFormation registry.</p> <p>The default is <code>false</code>.</p>',
-        }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>If you are using a Bitbucket or GitHub account for identity verification, the Amazon Resource Name (ARN) for your connection to that account.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html#publish-extension-prereqs">Registering your account to publish CloudFormation extensions</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    AcceptTermsAndConditions: AcceptTermsAndConditionsSchema.exactOptional().openapi({
+      description:
+        '<p>Whether you accept the <a href="https://cloudformation-registry-documents.s3.amazonaws.com/Terms_and_Conditions_for_AWS_CloudFormation_Registry_Publishers.pdf">Terms and Conditions</a> for publishing extensions in the CloudFormation registry. You must accept the terms and conditions in order to register to publish public extensions to the CloudFormation registry.</p> <p>The default is <code>false</code>.</p>',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description:
+        '<p>If you are using a Bitbucket or GitHub account for identity verification, the Amazon Resource Name (ARN) for your connection to that account.</p> <p>For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html#publish-extension-prereqs">Registering your account to publish CloudFormation extensions</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
+    }),
   })
   .openapi({ title: 'RegisterPublisherInput', required: [] })
   .openapi('RegisterPublisherInput')
@@ -7360,46 +5020,26 @@ const RequestTokenSchema = z
 
 const RegisterTypeInputSchema = z
   .object({
-    Type: RegistryTypeSchema.and(
-      z.any().openapi({ description: 'The kind of extension.' }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The name of the extension being registered.</p> <p>We suggest that extension names adhere to the following patterns:</p> <ul> <li> <p>For resource types, <i>company_or_organization</i>::<i>service</i>::<i>type</i>.</p> </li> <li> <p>For modules, <i>company_or_organization</i>::<i>service</i>::<i>type</i>::MODULE.</p> </li> <li> <p>For hooks, <i>MyCompany</i>::<i>Testing</i>::<i>MyTestHook</i>.</p> </li> </ul> <note> <p>The following organization namespaces are reserved and can't be used in your extension names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>",
-        }),
-    ),
-    SchemaHandlerPackage: S3UrlSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A URL to the S3 bucket containing the extension project package that contains the necessary files for the extension you want to register.</p> <p>For information about generating a schema handler package for the extension you want to register, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-cli-submit.html">submit</a> in the <i>CloudFormation CLI User Guide</i>.</p> <note> <p>The user registering the extension must be able to access the package in the S3 bucket. That\'s, the user needs to have <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html">GetObject</a> permissions for the schema handler package. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazons3.html">Actions, Resources, and Condition Keys for Amazon S3</a> in the <i>Identity and Access Management User Guide</i>.</p> </note>',
-        }),
-    ),
-    LoggingConfig: LoggingConfigSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Specifies logging configuration information for an extension.' }),
-    ).exactOptional(),
-    ExecutionRoleArn: RoleArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role for CloudFormation to assume when invoking the extension.</p> <p>For CloudFormation to assume the specified execution role, the role must contain a trust relationship with the CloudFormation service principle (<code>resources.cloudformation.amazonaws.com</code>). For more information about adding trust relationships, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-console.html#roles-managingrole_edit-trust-policy">Modifying a role trust policy</a> in the <i>Identity and Access Management User Guide</i>.</p> <p>If your extension calls Amazon Web Services APIs in any of its handlers, you must create an <i> <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM execution role</a> </i> that includes the necessary permissions to call those Amazon Web Services APIs, and provision that execution role in your account. When CloudFormation needs to invoke the resource type handler, CloudFormation assumes this execution role to create a temporary session token, which it then passes to the resource type handler, thereby supplying your resource type with the appropriate credentials.</p>',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: RequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique identifier that acts as an idempotency key for this registration request. Specifying a client request token prevents CloudFormation from generating more than one version of an extension from the same registration request, even if the request is submitted multiple times.',
-        }),
-    ).exactOptional(),
+    Type: RegistryTypeSchema.exactOptional().openapi({ description: 'The kind of extension.' }),
+    TypeName: TypeNameSchema.openapi({
+      description:
+        "<p>The name of the extension being registered.</p> <p>We suggest that extension names adhere to the following patterns:</p> <ul> <li> <p>For resource types, <i>company_or_organization</i>::<i>service</i>::<i>type</i>.</p> </li> <li> <p>For modules, <i>company_or_organization</i>::<i>service</i>::<i>type</i>::MODULE.</p> </li> <li> <p>For hooks, <i>MyCompany</i>::<i>Testing</i>::<i>MyTestHook</i>.</p> </li> </ul> <note> <p>The following organization namespaces are reserved and can't be used in your extension names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>",
+    }),
+    SchemaHandlerPackage: S3UrlSchema.openapi({
+      description:
+        '<p>A URL to the S3 bucket containing the extension project package that contains the necessary files for the extension you want to register.</p> <p>For information about generating a schema handler package for the extension you want to register, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-cli-submit.html">submit</a> in the <i>CloudFormation CLI User Guide</i>.</p> <note> <p>The user registering the extension must be able to access the package in the S3 bucket. That\'s, the user needs to have <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html">GetObject</a> permissions for the schema handler package. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazons3.html">Actions, Resources, and Condition Keys for Amazon S3</a> in the <i>Identity and Access Management User Guide</i>.</p> </note>',
+    }),
+    LoggingConfig: LoggingConfigSchema.exactOptional().openapi({
+      description: 'Specifies logging configuration information for an extension.',
+    }),
+    ExecutionRoleArn: RoleArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role for CloudFormation to assume when invoking the extension.</p> <p>For CloudFormation to assume the specified execution role, the role must contain a trust relationship with the CloudFormation service principle (<code>resources.cloudformation.amazonaws.com</code>). For more information about adding trust relationships, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-console.html#roles-managingrole_edit-trust-policy">Modifying a role trust policy</a> in the <i>Identity and Access Management User Guide</i>.</p> <p>If your extension calls Amazon Web Services APIs in any of its handlers, you must create an <i> <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM execution role</a> </i> that includes the necessary permissions to call those Amazon Web Services APIs, and provision that execution role in your account. When CloudFormation needs to invoke the resource type handler, CloudFormation assumes this execution role to create a temporary session token, which it then passes to the resource type handler, thereby supplying your resource type with the appropriate credentials.</p>',
+    }),
+    ClientRequestToken: RequestTokenSchema.exactOptional().openapi({
+      description:
+        'A unique identifier that acts as an idempotency key for this registration request. Specifying a client request token prevents CloudFormation from generating more than one version of an extension from the same registration request, even if the request is submitted multiple times.',
+    }),
   })
   .openapi({ required: ['TypeName', 'SchemaHandlerPackage'], title: 'RegisterTypeInput' })
   .openapi('RegisterTypeInput')
@@ -7410,32 +5050,20 @@ const ResourceSignalUniqueIdSchema = z.string().min(1).max(64).openapi('Resource
 
 const RollbackStackInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z.any().openapi({ description: "The name that's associated with the stack." }),
-    ),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Identity and Access Management role that CloudFormation assumes to rollback the stack.',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A unique identifier for this <code>RollbackStack</code> request.',
-        }),
-    ).exactOptional(),
-    RetainExceptOnCreate: RetainExceptOnCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameOrIdSchema.openapi({
+      description: "The name that's associated with the stack.",
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Identity and Access Management role that CloudFormation assumes to rollback the stack.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description: 'A unique identifier for this <code>RollbackStack</code> request.',
+    }),
+    RetainExceptOnCreate: RetainExceptOnCreateSchema.exactOptional().openapi({
+      description:
+        'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
+    }),
   })
   .openapi({ required: ['StackName'], title: 'RollbackStackInput' })
   .openapi('RollbackStackInput')
@@ -7449,29 +5077,17 @@ const S3BucketSchema = z
 
 const SetStackPolicyInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or unique stack ID that you want to associate a policy with.',
-        }),
-    ),
-    StackPolicyBody: StackPolicyBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Structure containing the stack policy body. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent updates to stack resources</a> in the CloudFormation User Guide. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
-        }),
-    ).exactOptional(),
-    StackPolicyURL: StackPolicyURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Location of a file containing the stack policy. The URL must point to a policy (maximum size: 16 KB) located in an Amazon S3 bucket in the same Amazon Web Services Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description: 'The name or unique stack ID that you want to associate a policy with.',
+    }),
+    StackPolicyBody: StackPolicyBodySchema.exactOptional().openapi({
+      description:
+        'Structure containing the stack policy body. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"> Prevent updates to stack resources</a> in the CloudFormation User Guide. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
+    }),
+    StackPolicyURL: StackPolicyURLSchema.exactOptional().openapi({
+      description:
+        'Location of a file containing the stack policy. The URL must point to a policy (maximum size: 16 KB) located in an Amazon S3 bucket in the same Amazon Web Services Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.',
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -7482,122 +5098,70 @@ const SetStackPolicyInputSchema = z
 
 const SetTypeConfigurationInputSchema = z
   .object({
-    TypeArn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p> <p>Do not include the extension versions suffix at the end of the ARN. You can set the configuration for an extension, but not for a specific extension version.</p>',
-        }),
-    ).exactOptional(),
-    Configuration: TypeConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The configuration data for the extension, in this account and Region.</p> <p>The configuration data must be formatted as JSON, and validate against the schema returned in the <code>ConfigurationSchema</code> response element of <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DescribeType.html">DescribeType</a>. For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-model.html#resource-type-howto-configuration">Defining account-level configuration data for an extension</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
-        }),
-    ),
-    ConfigurationAlias: TypeConfigurationAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An alias by which to refer to this extension configuration data.</p> <p>Conditional: Specifying a configuration alias is required when setting a configuration for a resource type extension.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: ThirdPartyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of extension.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
-        }),
-    ).exactOptional(),
+    TypeArn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) for the extension, in this account and Region.</p> <p>For public extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ActivateType.html">activate the type</a> in this account and Region. For private extensions, this will be the ARN assigned when you <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html">register the type</a> in this account and Region.</p> <p>Do not include the extension versions suffix at the end of the ARN. You can set the configuration for an extension, but not for a specific extension version.</p>',
+    }),
+    Configuration: TypeConfigurationSchema.openapi({
+      description:
+        '<p>The configuration data for the extension, in this account and Region.</p> <p>The configuration data must be formatted as JSON, and validate against the schema returned in the <code>ConfigurationSchema</code> response element of <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DescribeType.html">DescribeType</a>. For more information, see <a href="https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-model.html#resource-type-howto-configuration">Defining account-level configuration data for an extension</a> in the <i>CloudFormation CLI User Guide</i>.</p>',
+    }),
+    ConfigurationAlias: TypeConfigurationAliasSchema.exactOptional().openapi({
+      description:
+        '<p>An alias by which to refer to this extension configuration data.</p> <p>Conditional: Specifying a configuration alias is required when setting a configuration for a resource type extension.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
+    }),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of extension.</p> <p>Conditional: You must specify <code>ConfigurationArn</code>, or <code>Type</code> and <code>TypeName</code>.</p>',
+    }),
   })
   .openapi({ required: ['Configuration'], title: 'SetTypeConfigurationInput' })
   .openapi('SetTypeConfigurationInput')
 
 const SetTypeDefaultVersionInputSchema = z
   .object({
-    Arn: PrivateTypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: RegistryTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
-        }),
-    ).exactOptional(),
-    VersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.',
-        }),
-    ).exactOptional(),
+    Arn: PrivateTypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension for which you want version summary information.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    Type: RegistryTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The kind of extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension.</p> <p>Conditional: You must specify either <code>TypeName</code> and <code>Type</code>, or <code>Arn</code>.</p>',
+    }),
+    VersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        'The ID of a specific version of the extension. The version ID is the value at the end of the Amazon Resource Name (ARN) assigned to the extension version when it is registered.',
+    }),
   })
   .openapi({ title: 'SetTypeDefaultVersionInput', required: [] })
   .openapi('SetTypeDefaultVersionInput')
 
 const SignalResourceInputSchema = z
   .object({
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The stack name or unique stack ID that includes the resource that you want to signal.',
-        }),
-    ),
-    LogicalResourceId: LogicalResourceIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The logical ID of the resource that you want to signal. The logical ID is the name of the resource that given in the template.',
-        }),
-    ),
-    UniqueId: ResourceSignalUniqueIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A unique ID of the signal. When you signal Amazon EC2 instances or Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.',
-        }),
-    ),
-    Status: ResourceSignalStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the signal, which is either success or failure. A failure signal causes CloudFormation to immediately fail the stack creation or update.',
-        }),
-    ),
+    StackName: StackNameOrIdSchema.openapi({
+      description:
+        'The stack name or unique stack ID that includes the resource that you want to signal.',
+    }),
+    LogicalResourceId: LogicalResourceIdSchema.openapi({
+      description:
+        'The logical ID of the resource that you want to signal. The logical ID is the name of the resource that given in the template.',
+    }),
+    UniqueId: ResourceSignalUniqueIdSchema.openapi({
+      description:
+        'A unique ID of the signal. When you signal Amazon EC2 instances or Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.',
+    }),
+    Status: ResourceSignalStatusSchema.openapi({
+      description:
+        'The status of the signal, which is either success or failure. A failure signal causes CloudFormation to immediately fail the stack creation or update.',
+    }),
   })
   .openapi({
     required: ['StackName', 'LogicalResourceId', 'UniqueId', 'Status'],
@@ -7620,216 +5184,120 @@ const StackPolicyDuringUpdateURLSchema = z
 
 const StopStackSetOperationInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set that you want to stop the operation for.',
-        }),
-    ),
-    OperationId: ClientRequestTokenSchema.and(
-      z.any().openapi({ description: 'The ID of the stack operation.' }),
-    ),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description:
+        'The name or unique ID of the stack set that you want to stop the operation for.',
+    }),
+    OperationId: ClientRequestTokenSchema.openapi({
+      description: 'The ID of the stack operation.',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName', 'OperationId'], title: 'StopStackSetOperationInput' })
   .openapi('StopStackSetOperationInput')
 
 const TestTypeInputSchema = z
   .object({
-    Arn: TypeArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    Type: ThirdPartyTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the extension to test.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    TypeName: TypeNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the extension to test.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
-        }),
-    ).exactOptional(),
-    VersionId: TypeVersionIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The version of the extension to test.</p> <p>You can specify the version id with either <code>Arn</code>, or with <code>TypeName</code> and <code>Type</code>.</p> <p>If you don't specify a version, CloudFormation uses the default version of the extension in this account and Region for testing.</p>",
-        }),
-    ).exactOptional(),
-    LogDeliveryBucket: S3BucketSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The S3 bucket to which CloudFormation delivers the contract test execution logs.</p> <p>CloudFormation delivers the logs by the time contract testing has completed and the extension has been assigned a test type status of <code>PASSED</code> or <code>FAILED</code>.</p> <p>The user calling <code>TestType</code> must be able to access items in the specified S3 bucket. Specifically, the user needs the following permissions:</p> <ul> <li> <p> <code>GetObject</code> </p> </li> <li> <p> <code>PutObject</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html">Actions, Resources, and Condition Keys for Amazon S3</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    Arn: TypeArnSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the extension.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    Type: ThirdPartyTypeSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the extension to test.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    TypeName: TypeNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the extension to test.</p> <p>Conditional: You must specify <code>Arn</code>, or <code>TypeName</code> and <code>Type</code>.</p>',
+    }),
+    VersionId: TypeVersionIdSchema.exactOptional().openapi({
+      description:
+        "<p>The version of the extension to test.</p> <p>You can specify the version id with either <code>Arn</code>, or with <code>TypeName</code> and <code>Type</code>.</p> <p>If you don't specify a version, CloudFormation uses the default version of the extension in this account and Region for testing.</p>",
+    }),
+    LogDeliveryBucket: S3BucketSchema.exactOptional().openapi({
+      description:
+        '<p>The S3 bucket to which CloudFormation delivers the contract test execution logs.</p> <p>CloudFormation delivers the logs by the time contract testing has completed and the extension has been assigned a test type status of <code>PASSED</code> or <code>FAILED</code>.</p> <p>The user calling <code>TestType</code> must be able to access items in the specified S3 bucket. Specifically, the user needs the following permissions:</p> <ul> <li> <p> <code>GetObject</code> </p> </li> <li> <p> <code>PutObject</code> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html">Actions, Resources, and Condition Keys for Amazon S3</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
+    }),
   })
   .openapi({ title: 'TestTypeInput', required: [] })
   .openapi('TestTypeInput')
 
 const UpdateStackInputSchema = z
   .object({
-    StackName: StackNameSchema.and(
-      z.any().openapi({ description: 'The name or unique stack ID of the stack to update.' }),
-    ),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The URL must point to a template that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    UsePreviousTemplate: UsePreviousTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Reuse the existing template that is associated with the stack that you are updating.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
-        }),
-    ).exactOptional(),
-    StackPolicyDuringUpdateBody: StackPolicyDuringUpdateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Structure containing the temporary overriding stack policy body. You can specify either the <code>StackPolicyDuringUpdateBody</code> or the <code>StackPolicyDuringUpdateURL</code> parameter, but not both.</p> <p>If you want to update protected resources, specify a temporary overriding stack policy during this update. If you don't specify a stack policy, the current policy that is associated with the stack will be used.</p>",
-        }),
-    ).exactOptional(),
-    StackPolicyDuringUpdateURL: StackPolicyDuringUpdateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Location of a file containing the temporary overriding stack policy. The URL must point to a policy (max size: 16KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyDuringUpdateBody</code> or the <code>StackPolicyDuringUpdateURL</code> parameter, but not both.</p> <p>If you want to update protected resources, specify a temporary overriding stack policy during this update. If you don't specify a stack policy, the current policy that is associated with the stack will be used.</p>",
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A list of <code>Parameter</code> structures that specify input parameters for the stack. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
-        }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually updating the stack. If your stack template contains one or more macros, and you choose to update a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to update a stack from a stack template that contains macros <i>and</i> nested stacks, you must update the stack directly from the template using this capability.</p> <important> <p>You should only update stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceTypes: ResourceTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The template resource types that you have permissions to work with for this update stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn\'t include a resource that you\'re updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling Access with Identity and Access Management</a>.</p>',
-        }),
-    ).exactOptional(),
-    RoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to update the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least privilege.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that is generated from your user credentials.</p>",
-        }),
-    ).exactOptional(),
-    RollbackConfiguration: RollbackConfigurationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
-        }),
-    ).exactOptional(),
-    StackPolicyBody: StackPolicyBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Structure containing a new stack policy body. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p> <p>You might update the stack policy, for example, in order to protect a new resource that you created during a stack update. If you don't specify a stack policy, the current policy that is associated with the stack is unchanged.</p>",
-        }),
-    ).exactOptional(),
-    StackPolicyURL: StackPolicyURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Location of a file containing the updated stack policy. The URL must point to a policy (max size: 16KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p> <p>You might update the stack policy, for example, in order to protect a new resource that you created during a stack update. If you don't specify a stack policy, the current policy that is associated with the stack is unchanged.</p>",
-        }),
-    ).exactOptional(),
-    NotificationARNs: NotificationARNsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon Simple Notification Service topic Amazon Resource Names (ARNs) that CloudFormation associates with the stack. Specify an empty list to remove all notification topics.',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Key-value pairs to associate with this stack. CloudFormation also propagates these tags to supported resources in the stack. You can specify a maximum number of 50 tags.</p> <p>If you don't specify this parameter, CloudFormation doesn't modify the stack's tags. If you specify an empty value, CloudFormation removes all associated tags.</p>",
-        }),
-    ).exactOptional(),
-    DisableRollback: DisableRollbackSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Preserve the state of previously provisioned resources when an operation fails.</p> <p>Default: <code>False</code> </p>',
-        }),
-    ).exactOptional(),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A unique identifier for this <code>UpdateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to update a stack with the same name. You might retry <code>UpdateStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events triggered by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
-        }),
-    ).exactOptional(),
-    RetainExceptOnCreate: RetainExceptOnCreateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
-        }),
-    ).exactOptional(),
+    StackName: StackNameSchema.openapi({
+      description: 'The name or unique stack ID of the stack to update.',
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The URL must point to a template that\'s located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
+    }),
+    UsePreviousTemplate: UsePreviousTemplateSchema.exactOptional().openapi({
+      description:
+        '<p>Reuse the existing template that is associated with the stack that you are updating.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>',
+    }),
+    StackPolicyDuringUpdateBody: StackPolicyDuringUpdateBodySchema.exactOptional().openapi({
+      description:
+        "<p>Structure containing the temporary overriding stack policy body. You can specify either the <code>StackPolicyDuringUpdateBody</code> or the <code>StackPolicyDuringUpdateURL</code> parameter, but not both.</p> <p>If you want to update protected resources, specify a temporary overriding stack policy during this update. If you don't specify a stack policy, the current policy that is associated with the stack will be used.</p>",
+    }),
+    StackPolicyDuringUpdateURL: StackPolicyDuringUpdateURLSchema.exactOptional().openapi({
+      description:
+        "<p>Location of a file containing the temporary overriding stack policy. The URL must point to a policy (max size: 16KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyDuringUpdateBody</code> or the <code>StackPolicyDuringUpdateURL</code> parameter, but not both.</p> <p>If you want to update protected resources, specify a temporary overriding stack policy during this update. If you don't specify a stack policy, the current policy that is associated with the stack will be used.</p>",
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description:
+        'A list of <code>Parameter</code> structures that specify input parameters for the stack. For more information, see the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_Parameter.html">Parameter</a> data type.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually updating the stack. If your stack template contains one or more macros, and you choose to update a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to update a stack from a stack template that contains macros <i>and</i> nested stacks, you must update the stack directly from the template using this capability.</p> <important> <p>You should only update stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> </li> </ul>',
+    }),
+    ResourceTypes: ResourceTypesSchema.exactOptional().openapi({
+      description:
+        '<p>The template resource types that you have permissions to work with for this update stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn\'t include a resource that you\'re updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html">Controlling Access with Identity and Access Management</a>.</p>',
+    }),
+    RoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        "<p>The Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that CloudFormation assumes to update the stack. CloudFormation uses the role's credentials to make calls on your behalf. CloudFormation always uses this role for all future operations on the stack. Provided that users have permission to operate on the stack, CloudFormation uses this role even if the users don't have permission to pass it. Ensure that the role grants least privilege.</p> <p>If you don't specify a value, CloudFormation uses the role that was previously associated with the stack. If no role is available, CloudFormation uses a temporary session that is generated from your user credentials.</p>",
+    }),
+    RollbackConfiguration: RollbackConfigurationSchema.exactOptional().openapi({
+      description:
+        'The rollback triggers for CloudFormation to monitor during stack creation and updating operations, and for the specified monitoring period afterwards.',
+    }),
+    StackPolicyBody: StackPolicyBodySchema.exactOptional().openapi({
+      description:
+        "<p>Structure containing a new stack policy body. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p> <p>You might update the stack policy, for example, in order to protect a new resource that you created during a stack update. If you don't specify a stack policy, the current policy that is associated with the stack is unchanged.</p>",
+    }),
+    StackPolicyURL: StackPolicyURLSchema.exactOptional().openapi({
+      description:
+        "<p>Location of a file containing the updated stack policy. The URL must point to a policy (max size: 16KB) located in an S3 bucket in the same Region as the stack. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p> <p>You might update the stack policy, for example, in order to protect a new resource that you created during a stack update. If you don't specify a stack policy, the current policy that is associated with the stack is unchanged.</p>",
+    }),
+    NotificationARNs: NotificationARNsSchema.exactOptional().openapi({
+      description:
+        'Amazon Simple Notification Service topic Amazon Resource Names (ARNs) that CloudFormation associates with the stack. Specify an empty list to remove all notification topics.',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>Key-value pairs to associate with this stack. CloudFormation also propagates these tags to supported resources in the stack. You can specify a maximum number of 50 tags.</p> <p>If you don't specify this parameter, CloudFormation doesn't modify the stack's tags. If you specify an empty value, CloudFormation removes all associated tags.</p>",
+    }),
+    DisableRollback: DisableRollbackSchema.exactOptional().openapi({
+      description:
+        '<p>Preserve the state of previously provisioned resources when an operation fails.</p> <p>Default: <code>False</code> </p>',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>A unique identifier for this <code>UpdateStack</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to update a stack with the same name. You might retry <code>UpdateStack</code> requests to ensure that CloudFormation successfully received them.</p> <p>All events triggered by a given stack operation are assigned the same client request token, which you can use to track operations. For example, if you execute a <code>CreateStack</code> operation with the token <code>token1</code>, then all the <code>StackEvents</code> generated by that operation will have <code>ClientRequestToken</code> set as <code>token1</code>.</p> <p>In the console, stack operations display the client request token on the Events tab. Stack operations that are initiated from the console use the token format <i>Console-StackOperation-ID</i>, which helps you easily identify the stack operation . For example, if you create a stack using the console, each stack event would be assigned the same token in the following format: <code>Console-CreateStack-7f59c3cf-00d2-40c7-b2ff-e75db0987002</code>.</p>",
+    }),
+    RetainExceptOnCreate: RetainExceptOnCreateSchema.exactOptional().openapi({
+      description:
+        'This deletion policy deletes newly created resources, but retains existing resources, when a stack operation is rolled back. This ensures new, empty, and unused resources are deleted, while critical resources and their data are retained. <code>RetainExceptOnCreate</code> can be specified for any resource that supports the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html"> DeletionPolicy</a> attribute.',
+    }),
   })
   .openapi({
     required: ['StackName'],
@@ -7840,236 +5308,127 @@ const UpdateStackInputSchema = z
 
 const UpdateStackInstancesInputSchema = z
   .object({
-    StackSetName: StackSetNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack set associated with the stack instances.',
-        }),
-    ),
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts for which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
-        }),
-    ).exactOptional(),
-    DeploymentTargets: DeploymentTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>[Service-managed permissions] The Organizations accounts for which you want to update parameter values for stack instances. If your update targets OUs, the overridden parameter values only apply to the accounts that are currently in the target OUs and their child OUs. Accounts added to the target OUs and their child OUs in the future won't use the overridden values.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>",
-        }),
-    ).exactOptional(),
-    Regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The names of one or more Amazon Web Services Regions in which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.',
-        }),
-    ),
-    ParameterOverrides: ParametersSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>A list of input parameters whose values you want to update for the specified stack instances.</p> <p>Any overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions. When specifying parameters and their values, be aware of how CloudFormation sets parameter values during stack instance update operations:</p> <ul> <li> <p>To override the current value for a parameter, include the parameter and specify its value.</p> </li> <li> <p>To leave an overridden parameter set to its present value, include the parameter and specify <code>UsePreviousValue</code> as <code>true</code>. (You can't specify both a value and set <code>UsePreviousValue</code> to <code>true</code>.)</p> </li> <li> <p>To set an overridden parameter back to the value specified in the stack set, specify a parameter list but don't include the parameter in the list.</p> </li> <li> <p>To leave all parameters set to their present values, don't specify this property at all.</p> </li> </ul> <p>During stack set updates, any parameter values overridden for a stack instance aren't updated, but retain their overridden value.</p> <p>You can only override the parameter <i>values</i> that are specified in the stack set; to add or delete a parameter itself, use <code>UpdateStackSet</code> to update the stack set template. If you add a parameter to a template, before you can override the parameter value specified in the stack set you must first use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStackSet.html\">UpdateStackSet</a> to update all stack instances with the updated template and parameter value specified in the stack set. Once a stack instance has been updated with the new parameter, you can then override the parameter value using <code>UpdateStackInstances</code>.</p>",
-        }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Preferences for how CloudFormation performs this stack set operation.',
-        }),
-    ).exactOptional(),
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique identifier for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p>",
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameOrIdSchema.openapi({
+      description: 'The name or unique ID of the stack set associated with the stack instances.',
+    }),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description:
+        '<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts for which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>',
+    }),
+    DeploymentTargets: DeploymentTargetsSchema.exactOptional().openapi({
+      description:
+        "<p>[Service-managed permissions] The Organizations accounts for which you want to update parameter values for stack instances. If your update targets OUs, the overridden parameter values only apply to the accounts that are currently in the target OUs and their child OUs. Accounts added to the target OUs and their child OUs in the future won't use the overridden values.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>",
+    }),
+    Regions: RegionListSchema.openapi({
+      description:
+        'The names of one or more Amazon Web Services Regions in which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.',
+    }),
+    ParameterOverrides: ParametersSchema.exactOptional().openapi({
+      description:
+        "<p>A list of input parameters whose values you want to update for the specified stack instances.</p> <p>Any overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions. When specifying parameters and their values, be aware of how CloudFormation sets parameter values during stack instance update operations:</p> <ul> <li> <p>To override the current value for a parameter, include the parameter and specify its value.</p> </li> <li> <p>To leave an overridden parameter set to its present value, include the parameter and specify <code>UsePreviousValue</code> as <code>true</code>. (You can't specify both a value and set <code>UsePreviousValue</code> to <code>true</code>.)</p> </li> <li> <p>To set an overridden parameter back to the value specified in the stack set, specify a parameter list but don't include the parameter in the list.</p> </li> <li> <p>To leave all parameters set to their present values, don't specify this property at all.</p> </li> </ul> <p>During stack set updates, any parameter values overridden for a stack instance aren't updated, but retain their overridden value.</p> <p>You can only override the parameter <i>values</i> that are specified in the stack set; to add or delete a parameter itself, use <code>UpdateStackSet</code> to update the stack set template. If you add a parameter to a template, before you can override the parameter value specified in the stack set you must first use <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStackSet.html\">UpdateStackSet</a> to update all stack instances with the updated template and parameter value specified in the stack set. Once a stack instance has been updated with the new parameter, you can then override the parameter value using <code>UpdateStackInstances</code>.</p>",
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description: 'Preferences for how CloudFormation performs this stack set operation.',
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>The unique identifier for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, the SDK generates one automatically.</p>",
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['StackSetName', 'Regions'], title: 'UpdateStackInstancesInput' })
   .openapi('UpdateStackInstancesInput')
 
 const UpdateStackSetInputSchema = z
   .object({
-    StackSetName: StackSetNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The name or unique ID of the stack set that you want to update.',
-        }),
-    ),
-    Description: DescriptionSchema.and(
-      z.any().openapi({ description: 'A brief description of updates that you are making.' }),
-    ).exactOptional(),
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>',
-        }),
-    ).exactOptional(),
-    UsePreviousTemplate: UsePreviousTemplateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>Use the existing template that's associated with the stack set that you're updating.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>",
-        }),
-    ).exactOptional(),
-    Parameters: ParametersSchema.and(
-      z.any().openapi({ description: 'A list of input parameters for the stack set template.' }),
-    ).exactOptional(),
-    Capabilities: CapabilitiesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack set and its associated stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html"> AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html"> AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must update the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To update the stack set directly, you must acknowledge this capability. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions do not currently support the use of macros in templates. (This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The key-value pairs to associate with this stack set and the stacks created from it. CloudFormation also propagates these tags to supported resources that are created in the stacks. You can specify a maximum number of 50 tags.</p> <p>If you specify tags for this parameter, those tags replace any list of tags that are currently associated with this stack set. This means:</p> <ul> <li> <p>If you don't specify this parameter, CloudFormation doesn't modify the stack's tags.</p> </li> <li> <p>If you specify <i>any</i> tags using this parameter, you must specify <i>all</i> the tags that you want associated with this stack set, even tags you've specified before (for example, when creating the stack set or during a previous update of the stack set.). Any tags that you don't include in the updated list of tags are removed from the stack set, and therefore from the stacks and resources as well.</p> </li> <li> <p>If you specify an empty value, CloudFormation removes all currently associated tags.</p> </li> </ul> <p>If you specify new tags as part of an <code>UpdateStackSet</code> action, CloudFormation checks to see if you have the required IAM permission to tag resources. If you omit tags that are currently associated with the stack set from the list of tags you specify, CloudFormation assumes that you want to remove those tags from the stack set, and checks to see if you have permission to untag resources. If you don't have the necessary permission(s), the entire <code>UpdateStackSet</code> action fails with an <code>access denied</code> error, and the stack set is not updated.</p>",
-        }),
-    ).exactOptional(),
-    OperationPreferences: StackSetOperationPreferencesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Preferences for how CloudFormation performs this stack set operation.',
-        }),
-    ).exactOptional(),
-    AdministrationRoleARN: RoleARNSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>',
-        }),
-    ).exactOptional(),
-    ExecutionRoleName: ExecutionRoleNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The name of the IAM execution role to use to update the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p> <p>If you specify a customized execution role, CloudFormation uses that role to update the stack. If you do not specify a customized execution role, CloudFormation performs the update using the role previously associated with the stack set, so long as you have permissions to perform operations on the stack set.</p>',
-        }),
-    ).exactOptional(),
-    DeploymentTargets: DeploymentTargetsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>[Service-managed permissions] The Organizations accounts in which to update associated stack instances.</p> <p>To update all the stack instances associated with this stack set, do not specify <code>DeploymentTargets</code> or <code>Regions</code>.</p> <p>If the stack set update includes changes to the template (that is, if <code>TemplateBody</code> or <code>TemplateURL</code> is specified), or the <code>Parameters</code>, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Amazon Web Services Regions. If the stack set update doesn't include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Regions, while leaving all other stack instances with their existing stack instance status.</p>",
-        }),
-    ).exactOptional(),
-    PermissionModel: PermissionModelsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Describes how the IAM roles required for stack set operations are created. You cannot modify <code>PermissionModel</code> if there are stack instances associated with your stack set.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    AutoDeployment: AutoDeploymentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU).</p> <p>If you specify <code>AutoDeployment</code>, don't specify <code>DeploymentTargets</code> or <code>Regions</code>.</p>",
-        }),
-    ).exactOptional(),
-    OperationId: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>The unique ID for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, CloudFormation generates one automatically.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
-        }),
-    ).exactOptional(),
-    Accounts: AccountListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "<p>[Self-managed permissions] The accounts in which to update associated stack instances. If you specify accounts, you must also specify the Amazon Web Services Regions in which to update stack set instances.</p> <p>To update <i>all</i> the stack instances associated with this stack set, don't specify the <code>Accounts</code> or <code>Regions</code> properties.</p> <p>If the stack set update includes changes to the template (that is, if the <code>TemplateBody</code> or <code>TemplateURL</code> properties are specified), or the <code>Parameters</code> property, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Amazon Web Services Regions. If the stack set update does not include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Amazon Web Services Regions, while leaving all other stack instances with their existing stack instance status.</p>",
-        }),
-    ).exactOptional(),
-    Regions: RegionListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Web Services Regions in which to update associated stack instances. If you specify Regions, you must also specify accounts in which to update stack set instances.</p> <p>To update <i>all</i> the stack instances associated with this stack set, do not specify the <code>Accounts</code> or <code>Regions</code> properties.</p> <p>If the stack set update includes changes to the template (that is, if the <code>TemplateBody</code> or <code>TemplateURL</code> properties are specified), or the <code>Parameters</code> property, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Regions. If the stack set update does not include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Regions, while leaving all other stack instances with their existing stack instance status.</p>',
-        }),
-    ).exactOptional(),
-    CallAs: CallAsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ManagedExecution: ManagedExecutionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
-        }),
-    ).exactOptional(),
+    StackSetName: StackSetNameSchema.openapi({
+      description: 'The name or unique ID of the stack set that you want to update.',
+    }),
+    Description: DescriptionSchema.exactOptional().openapi({
+      description: 'A brief description of updates that you are making.',
+    }),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>',
+    }),
+    UsePreviousTemplate: UsePreviousTemplateSchema.exactOptional().openapi({
+      description:
+        "<p>Use the existing template that's associated with the stack set that you're updating.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>",
+    }),
+    Parameters: ParametersSchema.exactOptional().openapi({
+      description: 'A list of input parameters for the stack set template.',
+    }),
+    Capabilities: CapabilitiesSchema.exactOptional().openapi({
+      description:
+        '<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack set and its associated stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new Identity and Access Management (IAM) users. For those stacks sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don\'t specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html"> AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html"> AWS::IAM::User</a> </p> </li> <li> <p> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html"> AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/using-iam-template.html#capabilities">Acknowledging IAM Resources in CloudFormation Templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must update the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To update the stack set directly, you must acknowledge this capability. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/template-macros.html">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions do not currently support the use of macros in templates. (This includes the <a href="https://docs.aws.amazon.com/AWSCloudFormation/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html">AWS::Include</a> and <a href="https://docs.aws.amazon.com/AWSCloudFormation/transform-aws-serverless.html">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>',
+    }),
+    Tags: TagsSchema.exactOptional().openapi({
+      description:
+        "<p>The key-value pairs to associate with this stack set and the stacks created from it. CloudFormation also propagates these tags to supported resources that are created in the stacks. You can specify a maximum number of 50 tags.</p> <p>If you specify tags for this parameter, those tags replace any list of tags that are currently associated with this stack set. This means:</p> <ul> <li> <p>If you don't specify this parameter, CloudFormation doesn't modify the stack's tags.</p> </li> <li> <p>If you specify <i>any</i> tags using this parameter, you must specify <i>all</i> the tags that you want associated with this stack set, even tags you've specified before (for example, when creating the stack set or during a previous update of the stack set.). Any tags that you don't include in the updated list of tags are removed from the stack set, and therefore from the stacks and resources as well.</p> </li> <li> <p>If you specify an empty value, CloudFormation removes all currently associated tags.</p> </li> </ul> <p>If you specify new tags as part of an <code>UpdateStackSet</code> action, CloudFormation checks to see if you have the required IAM permission to tag resources. If you omit tags that are currently associated with the stack set from the list of tags you specify, CloudFormation assumes that you want to remove those tags from the stack set, and checks to see if you have permission to untag resources. If you don't have the necessary permission(s), the entire <code>UpdateStackSet</code> action fails with an <code>access denied</code> error, and the stack set is not updated.</p>",
+    }),
+    OperationPreferences: StackSetOperationPreferencesSchema.exactOptional().openapi({
+      description: 'Preferences for how CloudFormation performs this stack set operation.',
+    }),
+    AdministrationRoleARN: RoleARNSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/stacksets-prereqs.html">Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>',
+    }),
+    ExecutionRoleName: ExecutionRoleNameSchema.exactOptional().openapi({
+      description:
+        '<p>The name of the IAM execution role to use to update the stack set. If you do not specify an execution role, CloudFormation uses the <code>AWSCloudFormationStackSetExecutionRole</code> role for the stack set operation.</p> <p>Specify an IAM role only if you are using customized execution roles to control which stack resources users and groups can include in their stack sets.</p> <p>If you specify a customized execution role, CloudFormation uses that role to update the stack. If you do not specify a customized execution role, CloudFormation performs the update using the role previously associated with the stack set, so long as you have permissions to perform operations on the stack set.</p>',
+    }),
+    DeploymentTargets: DeploymentTargetsSchema.exactOptional().openapi({
+      description:
+        "<p>[Service-managed permissions] The Organizations accounts in which to update associated stack instances.</p> <p>To update all the stack instances associated with this stack set, do not specify <code>DeploymentTargets</code> or <code>Regions</code>.</p> <p>If the stack set update includes changes to the template (that is, if <code>TemplateBody</code> or <code>TemplateURL</code> is specified), or the <code>Parameters</code>, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Amazon Web Services Regions. If the stack set update doesn't include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Regions, while leaving all other stack instances with their existing stack instance status.</p>",
+    }),
+    PermissionModel: PermissionModelsSchema.exactOptional().openapi({
+      description:
+        '<p>Describes how the IAM roles required for stack set operations are created. You cannot modify <code>PermissionModel</code> if there are stack instances associated with your stack set.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>',
+    }),
+    AutoDeployment: AutoDeploymentSchema.exactOptional().openapi({
+      description:
+        "<p>[Service-managed permissions] Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU).</p> <p>If you specify <code>AutoDeployment</code>, don't specify <code>DeploymentTargets</code> or <code>Regions</code>.</p>",
+    }),
+    OperationId: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        "<p>The unique ID for this stack set operation.</p> <p>The operation ID also functions as an idempotency token, to ensure that CloudFormation performs the stack set operation only once, even if you retry the request multiple times. You might retry stack set operation requests to ensure that CloudFormation successfully received them.</p> <p>If you don't specify an operation ID, CloudFormation generates one automatically.</p> <p>Repeating this stack set operation with a new operation ID retries all stack instances whose status is <code>OUTDATED</code>.</p>",
+    }),
+    Accounts: AccountListSchema.exactOptional().openapi({
+      description:
+        "<p>[Self-managed permissions] The accounts in which to update associated stack instances. If you specify accounts, you must also specify the Amazon Web Services Regions in which to update stack set instances.</p> <p>To update <i>all</i> the stack instances associated with this stack set, don't specify the <code>Accounts</code> or <code>Regions</code> properties.</p> <p>If the stack set update includes changes to the template (that is, if the <code>TemplateBody</code> or <code>TemplateURL</code> properties are specified), or the <code>Parameters</code> property, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Amazon Web Services Regions. If the stack set update does not include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Amazon Web Services Regions, while leaving all other stack instances with their existing stack instance status.</p>",
+    }),
+    Regions: RegionListSchema.exactOptional().openapi({
+      description:
+        '<p>The Amazon Web Services Regions in which to update associated stack instances. If you specify Regions, you must also specify accounts in which to update stack set instances.</p> <p>To update <i>all</i> the stack instances associated with this stack set, do not specify the <code>Accounts</code> or <code>Regions</code> properties.</p> <p>If the stack set update includes changes to the template (that is, if the <code>TemplateBody</code> or <code>TemplateURL</code> properties are specified), or the <code>Parameters</code> property, CloudFormation marks all stack instances with a status of <code>OUTDATED</code> prior to updating the stack instances in the specified accounts and Regions. If the stack set update does not include changes to the template or parameters, CloudFormation updates the stack instances in the specified accounts and Regions, while leaving all other stack instances with their existing stack instance status.</p>',
+    }),
+    CallAs: CallAsSchema.exactOptional().openapi({
+      description:
+        '<p>[Service-managed permissions] Specifies whether you are acting as an account administrator in the organization\'s management account or as a delegated administrator in a member account.</p> <p>By default, <code>SELF</code> is specified. Use <code>SELF</code> for stack sets with self-managed permissions.</p> <ul> <li> <p>If you are signed in to the management account, specify <code>SELF</code>.</p> </li> <li> <p>If you are signed in to a delegated administrator account, specify <code>DELEGATED_ADMIN</code>.</p> <p>Your Amazon Web Services account must be registered as a delegated administrator in the management account. For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-delegated-admin.html">Register a delegated administrator</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul>',
+    }),
+    ManagedExecution: ManagedExecutionSchema.exactOptional().openapi({
+      description:
+        'Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.',
+    }),
   })
   .openapi({ required: ['StackSetName'], title: 'UpdateStackSetInput' })
   .openapi('UpdateStackSetInput')
 
 const UpdateTerminationProtectionInputSchema = z
   .object({
-    EnableTerminationProtection: EnableTerminationProtectionSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Whether to enable termination protection on the specified stack.',
-        }),
-    ),
-    StackName: StackNameOrIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name or unique ID of the stack for which you want to set termination protection.',
-        }),
-    ),
+    EnableTerminationProtection: EnableTerminationProtectionSchema.openapi({
+      description: 'Whether to enable termination protection on the specified stack.',
+    }),
+    StackName: StackNameOrIdSchema.openapi({
+      description:
+        'The name or unique ID of the stack for which you want to set termination protection.',
+    }),
   })
   .openapi({
     required: ['EnableTerminationProtection', 'StackName'],
@@ -8079,22 +5438,14 @@ const UpdateTerminationProtectionInputSchema = z
 
 const ValidateTemplateInputSchema = z
   .object({
-    TemplateBody: TemplateBodySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
-        }),
-    ).exactOptional(),
-    TemplateURL: TemplateURLSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
-        }),
-    ).exactOptional(),
+    TemplateBody: TemplateBodySchema.exactOptional().openapi({
+      description:
+        '<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
+    }),
+    TemplateURL: TemplateURLSchema.exactOptional().openapi({
+      description:
+        '<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>',
+    }),
   })
   .openapi({
     title: 'ValidateTemplateInput',
@@ -8445,22 +5796,14 @@ export const getActionActivateTypeRoute = createRoute({
             }),
           LoggingConfig: z
             .object({
-              LogRoleArn: RoleArnSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
-                  }),
-              ),
-              LogGroupName: LogGroupNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
-                  }),
-              ),
+              LogRoleArn: RoleArnSchema.openapi({
+                description:
+                  'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
+              }),
+              LogGroupName: LogGroupNameSchema.openapi({
+                description:
+                  "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
+              }),
             })
             .exactOptional()
             .openapi({
@@ -9187,19 +6530,13 @@ export const getActionCreateChangeSetRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -9208,23 +6545,15 @@ export const getActionCreateChangeSetRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -9330,14 +6659,10 @@ export const getActionCreateChangeSetRoute = createRoute({
             }),
           RollbackConfiguration: z
             .object({
-              RollbackTriggers: RollbackTriggersSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
-                  }),
-              ).exactOptional(),
+              RollbackTriggers: RollbackTriggersSchema.exactOptional().openapi({
+                description:
+                  "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
+              }),
               MonitoringTimeInMinutes: z
                 .preprocess(
                   (val) =>
@@ -9348,15 +6673,11 @@ export const getActionCreateChangeSetRoute = createRoute({
                       : val,
                   MonitoringTimeInMinutesSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -9739,19 +7060,13 @@ export const getActionCreateStackRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -9760,23 +7075,15 @@ export const getActionCreateStackRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -9848,14 +7155,10 @@ export const getActionCreateStackRoute = createRoute({
             }),
           RollbackConfiguration: z
             .object({
-              RollbackTriggers: RollbackTriggersSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
-                  }),
-              ).exactOptional(),
+              RollbackTriggers: RollbackTriggersSchema.exactOptional().openapi({
+                description:
+                  "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
+              }),
               MonitoringTimeInMinutes: z
                 .preprocess(
                   (val) =>
@@ -9866,15 +7169,11 @@ export const getActionCreateStackRoute = createRoute({
                       : val,
                   MonitoringTimeInMinutesSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -10300,37 +7599,21 @@ export const getActionCreateStackInstancesRoute = createRoute({
             }),
           DeploymentTargets: z
             .object({
-              Accounts: AccountListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
-                  }),
-              ).exactOptional(),
-              AccountsUrl: AccountsUrlSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'Returns the value of the <code>AccountsUrl</code> property.',
-                  }),
-              ).exactOptional(),
-              OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
-                  }),
-              ).exactOptional(),
-              AccountFilterType: AccountFilterTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
-                  }),
-              ).exactOptional(),
+              Accounts: AccountListSchema.exactOptional().openapi({
+                description:
+                  'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
+              }),
+              AccountsUrl: AccountsUrlSchema.exactOptional().openapi({
+                description: 'Returns the value of the <code>AccountsUrl</code> property.',
+              }),
+              OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+                description:
+                  'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
+              }),
+              AccountFilterType: AccountFilterTypeSchema.exactOptional().openapi({
+                description:
+                  '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -10409,19 +7692,13 @@ export const getActionCreateStackInstancesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -10430,23 +7707,15 @@ export const getActionCreateStackInstancesRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -10505,22 +7774,14 @@ export const getActionCreateStackInstancesRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -10531,15 +7792,11 @@ export const getActionCreateStackInstancesRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -10550,15 +7807,11 @@ export const getActionCreateStackInstancesRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -10569,15 +7822,11 @@ export const getActionCreateStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -10588,15 +7837,11 @@ export const getActionCreateStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -10954,19 +8199,13 @@ export const getActionCreateStackSetRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -10975,23 +8214,15 @@ export const getActionCreateStackSetRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -11142,15 +8373,11 @@ export const getActionCreateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   AutoDeploymentNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
+                }),
               RetainStacksOnAccountRemoval: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -11159,15 +8386,11 @@ export const getActionCreateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   RetainStacksOnAccountRemovalNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -11251,15 +8474,11 @@ export const getActionCreateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   ManagedExecutionNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
+                }),
             })
             .exactOptional()
             .openapi({
@@ -12054,37 +9273,21 @@ export const getActionDeleteStackInstancesRoute = createRoute({
             }),
           DeploymentTargets: z
             .object({
-              Accounts: AccountListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
-                  }),
-              ).exactOptional(),
-              AccountsUrl: AccountsUrlSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'Returns the value of the <code>AccountsUrl</code> property.',
-                  }),
-              ).exactOptional(),
-              OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
-                  }),
-              ).exactOptional(),
-              AccountFilterType: AccountFilterTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
-                  }),
-              ).exactOptional(),
+              Accounts: AccountListSchema.exactOptional().openapi({
+                description:
+                  'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
+              }),
+              AccountsUrl: AccountsUrlSchema.exactOptional().openapi({
+                description: 'Returns the value of the <code>AccountsUrl</code> property.',
+              }),
+              OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+                description:
+                  'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
+              }),
+              AccountFilterType: AccountFilterTypeSchema.exactOptional().openapi({
+                description:
+                  '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -12159,22 +9362,14 @@ export const getActionDeleteStackInstancesRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -12185,15 +9380,11 @@ export const getActionDeleteStackInstancesRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -12204,15 +9395,11 @@ export const getActionDeleteStackInstancesRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -12223,15 +9410,11 @@ export const getActionDeleteStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -12242,15 +9425,11 @@ export const getActionDeleteStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -15426,22 +12605,14 @@ export const getActionDetectStackSetDriftRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -15452,15 +12623,11 @@ export const getActionDetectStackSetDriftRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -15471,15 +12638,11 @@ export const getActionDetectStackSetDriftRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -15490,15 +12653,11 @@ export const getActionDetectStackSetDriftRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -15509,15 +12668,11 @@ export const getActionDetectStackSetDriftRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -15781,19 +12936,13 @@ export const getActionEstimateTemplateCostRoute = createRoute({
           z.array(
             z
               .object({
-                ParameterKey: ParameterKeySchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                    }),
-                ).exactOptional(),
-                ParameterValue: ParameterValueSchema.and(
-                  z
-                    .any()
-                    .openapi({ description: 'The input value associated with the parameter.' }),
-                ).exactOptional(),
+                ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                  description:
+                    "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                }),
+                ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                  description: 'The input value associated with the parameter.',
+                }),
                 UsePreviousValue: z
                   .preprocess(
                     ((read) => (val: unknown) => {
@@ -15802,23 +12951,15 @@ export const getActionEstimateTemplateCostRoute = createRoute({
                     })(z.stringbool()),
                     UsePreviousValueSchema,
                   )
-                  .and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                      }),
-                  )
-                  .exactOptional(),
-                ResolvedValue: ParameterValueSchema.and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                    }),
-                ).exactOptional(),
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                  }),
+                ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                  description:
+                    'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                }),
               })
               .openapi({ description: 'The Parameter data type.', required: [] }),
           ),
@@ -16555,15 +13696,11 @@ export const getActionGetTemplateSummaryRoute = createRoute({
                   })(z.stringbool()),
                   TreatUnrecognizedResourceTypesAsWarningsSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If set to <code>True</code>, any unrecognized resource types generate warnings and not an error. Any unrecognized resource types are returned in the <code>Warnings</code> output parameter.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If set to <code>True</code>, any unrecognized resource types generate warnings and not an error. Any unrecognized resource types are returned in the <code>Warnings</code> output parameter.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -16806,22 +13943,14 @@ export const getActionImportStacksToStackSetRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -16832,15 +13961,11 @@ export const getActionImportStacksToStackSetRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -16851,15 +13976,11 @@ export const getActionImportStacksToStackSetRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -16870,15 +13991,11 @@ export const getActionImportStacksToStackSetRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -16889,15 +14006,11 @@ export const getActionImportStacksToStackSetRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -19446,25 +16559,17 @@ export const getActionListTypesRoute = createRoute({
             }),
           Filters: z
             .object({
-              Category: CategorySchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and Region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and Region.</p> </li> <li> <p> <code>THIRD_PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS_TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>',
-                  }),
-              ).exactOptional(),
-              PublisherId: PublisherIdSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The id of the publisher of the extension.</p> <p>Extensions published by Amazon aren't assigned a publisher ID. Use the <code>AWS_TYPES</code> category to specify a list of types published by Amazon.</p>",
-                  }),
-              ).exactOptional(),
-              TypeNamePrefix: TypeNamePrefixSchema.and(
-                z.any().openapi({ description: 'A prefix to use as a filter for results.' }),
-              ).exactOptional(),
+              Category: CategorySchema.exactOptional().openapi({
+                description:
+                  '<p>The category of extensions to return.</p> <ul> <li> <p> <code>REGISTERED</code>: Private extensions that have been registered for this account and Region.</p> </li> <li> <p> <code>ACTIVATED</code>: Public extensions that have been activated for this account and Region.</p> </li> <li> <p> <code>THIRD_PARTY</code>: Extensions available for use from publishers other than Amazon. This includes:</p> <ul> <li> <p>Private extensions registered in the account.</p> </li> <li> <p>Public extensions from publishers other than Amazon, whether activated or not.</p> </li> </ul> </li> <li> <p> <code>AWS_TYPES</code>: Extensions available for use from Amazon.</p> </li> </ul>',
+              }),
+              PublisherId: PublisherIdSchema.exactOptional().openapi({
+                description:
+                  "<p>The id of the publisher of the extension.</p> <p>Extensions published by Amazon aren't assigned a publisher ID. Use the <code>AWS_TYPES</code> category to specify a list of types published by Amazon.</p>",
+              }),
+              TypeNamePrefix: TypeNamePrefixSchema.exactOptional().openapi({
+                description: 'A prefix to use as a filter for results.',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -20314,22 +17419,14 @@ export const getActionRegisterTypeRoute = createRoute({
             }),
           LoggingConfig: z
             .object({
-              LogRoleArn: RoleArnSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
-                  }),
-              ),
-              LogGroupName: LogGroupNameSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
-                  }),
-              ),
+              LogRoleArn: RoleArnSchema.openapi({
+                description:
+                  'The Amazon Resource Name (ARN) of the role that CloudFormation should assume when sending log entries to CloudWatch Logs.',
+              }),
+              LogGroupName: LogGroupNameSchema.openapi({
+                description:
+                  "The Amazon CloudWatch Logs group to which CloudFormation sends error logging information when invoking the extension's handlers.",
+              }),
             })
             .exactOptional()
             .openapi({
@@ -21790,19 +18887,13 @@ export const getActionUpdateStackRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -21811,23 +18902,15 @@ export const getActionUpdateStackRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -21933,14 +19016,10 @@ export const getActionUpdateStackRoute = createRoute({
             }),
           RollbackConfiguration: z
             .object({
-              RollbackTriggers: RollbackTriggersSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
-                  }),
-              ).exactOptional(),
+              RollbackTriggers: RollbackTriggersSchema.exactOptional().openapi({
+                description:
+                  "<p>The triggers to monitor during stack creation or update actions.</p> <p>By default, CloudFormation saves the rollback triggers specified for a stack and applies them to any subsequent update operations for the stack, unless you specify otherwise. If you do specify rollback triggers for this parameter, those triggers replace any list of triggers previously specified for the stack. This means:</p> <ul> <li> <p>To use the rollback triggers previously specified for this stack, if any, don't specify this parameter.</p> </li> <li> <p>To specify new or updated rollback triggers, you must specify <i>all</i> the triggers that you want used for this stack, even triggers you've specified before (for example, when creating the stack or during a previous stack update). Any triggers that you don't include in the updated list of triggers are no longer applied to the stack.</p> </li> <li> <p>To remove all currently specified triggers, specify an empty list for this parameter.</p> </li> </ul> <p>If a specified trigger is missing, the entire stack operation fails and is rolled back.</p>",
+              }),
               MonitoringTimeInMinutes: z
                 .preprocess(
                   (val) =>
@@ -21951,15 +19030,11 @@ export const getActionUpdateStackRoute = createRoute({
                       : val,
                   MonitoringTimeInMinutesSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The amount of time, in minutes, during which CloudFormation should monitor all the rollback triggers after the stack creation or update operation deploys all necessary resources.</p> <p>The default is 0 minutes.</p> <p>If you specify a monitoring period but don\'t specify any rollback triggers, CloudFormation still waits the specified period of time before cleaning up old resources after update operations. You can use this monitoring period to perform any manual stack validation desired, and manually cancel the stack creation or update (using <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CancelUpdateStack.html">CancelUpdateStack</a>, for example) as necessary.</p> <p>If you specify 0 for this parameter, CloudFormation still monitors the specified rollback triggers during stack creation and update operations. Then, for update operations, it begins disposing of old resources immediately once the operation completes.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -22295,37 +19370,21 @@ export const getActionUpdateStackInstancesRoute = createRoute({
             }),
           DeploymentTargets: z
             .object({
-              Accounts: AccountListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
-                  }),
-              ).exactOptional(),
-              AccountsUrl: AccountsUrlSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'Returns the value of the <code>AccountsUrl</code> property.',
-                  }),
-              ).exactOptional(),
-              OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
-                  }),
-              ).exactOptional(),
-              AccountFilterType: AccountFilterTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
-                  }),
-              ).exactOptional(),
+              Accounts: AccountListSchema.exactOptional().openapi({
+                description:
+                  'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
+              }),
+              AccountsUrl: AccountsUrlSchema.exactOptional().openapi({
+                description: 'Returns the value of the <code>AccountsUrl</code> property.',
+              }),
+              OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+                description:
+                  'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
+              }),
+              AccountFilterType: AccountFilterTypeSchema.exactOptional().openapi({
+                description:
+                  '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -22404,19 +19463,13 @@ export const getActionUpdateStackInstancesRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -22425,23 +19478,15 @@ export const getActionUpdateStackInstancesRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -22500,22 +19545,14 @@ export const getActionUpdateStackInstancesRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -22526,15 +19563,11 @@ export const getActionUpdateStackInstancesRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -22545,15 +19578,11 @@ export const getActionUpdateStackInstancesRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -22564,15 +19593,11 @@ export const getActionUpdateStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -22583,15 +19608,11 @@ export const getActionUpdateStackInstancesRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -22957,19 +19978,13 @@ export const getActionUpdateStackSetRoute = createRoute({
               z.array(
                 z
                   .object({
-                    ParameterKey: ParameterKeySchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
-                        }),
-                    ).exactOptional(),
-                    ParameterValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({ description: 'The input value associated with the parameter.' }),
-                    ).exactOptional(),
+                    ParameterKey: ParameterKeySchema.exactOptional().openapi({
+                      description:
+                        "The key associated with the parameter. If you don't specify a key and value for a particular parameter, CloudFormation uses the default value that's specified in your template.",
+                    }),
+                    ParameterValue: ParameterValueSchema.exactOptional().openapi({
+                      description: 'The input value associated with the parameter.',
+                    }),
                     UsePreviousValue: z
                       .preprocess(
                         ((read) => (val: unknown) => {
@@ -22978,23 +19993,15 @@ export const getActionUpdateStackSetRoute = createRoute({
                         })(z.stringbool()),
                         UsePreviousValueSchema,
                       )
-                      .and(
-                        z
-                          .any()
-                          .openapi({
-                            description:
-                              'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
-                          }),
-                      )
-                      .exactOptional(),
-                    ResolvedValue: ParameterValueSchema.and(
-                      z
-                        .any()
-                        .openapi({
-                          description:
-                            'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
-                        }),
-                    ).exactOptional(),
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'During a stack update, use the existing parameter value that the stack is using for a given parameter key. If you specify <code>true</code>, do not specify a parameter value.',
+                      }),
+                    ResolvedValue: ParameterValueSchema.exactOptional().openapi({
+                      description:
+                        'Read-only. The value that corresponds to a SSM parameter key. This field is returned only for <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#aws-ssm-parameter-types"> SSM</a> parameter types in the template.',
+                    }),
                   })
                   .openapi({ description: 'The Parameter data type.', required: [] }),
               ),
@@ -23088,22 +20095,14 @@ export const getActionUpdateStackSetRoute = createRoute({
             }),
           OperationPreferences: z
             .object({
-              RegionConcurrencyType: RegionConcurrencyTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
-                  }),
-              ).exactOptional(),
-              RegionOrder: RegionListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The order of the Regions where you want to perform the stack operation.',
-                  }),
-              ).exactOptional(),
+              RegionConcurrencyType: RegionConcurrencyTypeSchema.exactOptional().openapi({
+                description:
+                  'The concurrency type of deploying StackSets operations in Regions, could be in parallel or one Region at a time.',
+              }),
+              RegionOrder: RegionListSchema.exactOptional().openapi({
+                description:
+                  'The order of the Regions where you want to perform the stack operation.',
+              }),
               FailureToleranceCount: z
                 .preprocess(
                   (val) =>
@@ -23114,15 +20113,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                       : val,
                   FailureToleranceCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The number of accounts, per Region, for which this operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code> (but not both).</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               FailureTolerancePercentage: z
                 .preprocess(
                   (val) =>
@@ -23133,15 +20128,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                       : val,
                   FailureTolerancePercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>The percentage of accounts, per Region, for which this stack operation can fail before CloudFormation stops the operation in that Region. If the operation is stopped in a Region, CloudFormation doesn't attempt the operation in any subsequent Regions.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds <i>down</i> to the next whole number.</p> <p>Conditional: You must specify either <code>FailureToleranceCount</code> or <code>FailureTolerancePercentage</code>, but not both.</p> <p>By default, <code>0</code> is specified.</p>",
+                }),
               MaxConcurrentCount: z
                 .preprocess(
                   (val) =>
@@ -23152,15 +20143,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                       : val,
                   MaxConcurrentCountSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum number of accounts in which to perform this operation at one time. This is dependent on the value of <code>FailureToleranceCount</code>.<code>MaxConcurrentCount</code> is at most one more than the <code>FailureToleranceCount</code>.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
               MaxConcurrentPercentage: z
                 .preprocess(
                   (val) =>
@@ -23171,15 +20158,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                       : val,
                   MaxConcurrentPercentageSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    '<p>The maximum percentage of accounts in which to perform this operation at one time.</p> <p>When calculating the number of accounts based on the specified percentage, CloudFormation rounds down to the next whole number. This is true except in cases where rounding down would result is zero. In this case, CloudFormation sets the number as one instead.</p> <p>Note that this setting lets you specify the <i>maximum</i> for operations. For large deployments, under certain circumstances the actual number of accounts acted upon concurrently may be lower due to service throttling.</p> <p>Conditional: You must specify either <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, but not both.</p> <p>By default, <code>1</code> is specified.</p>',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -23293,37 +20276,21 @@ export const getActionUpdateStackSetRoute = createRoute({
             }),
           DeploymentTargets: z
             .object({
-              Accounts: AccountListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
-                  }),
-              ).exactOptional(),
-              AccountsUrl: AccountsUrlSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description: 'Returns the value of the <code>AccountsUrl</code> property.',
-                  }),
-              ).exactOptional(),
-              OrganizationalUnitIds: OrganizationalUnitIdListSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
-                  }),
-              ).exactOptional(),
-              AccountFilterType: AccountFilterTypeSchema.and(
-                z
-                  .any()
-                  .openapi({
-                    description:
-                      '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
-                  }),
-              ).exactOptional(),
+              Accounts: AccountListSchema.exactOptional().openapi({
+                description:
+                  'The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.',
+              }),
+              AccountsUrl: AccountsUrlSchema.exactOptional().openapi({
+                description: 'Returns the value of the <code>AccountsUrl</code> property.',
+              }),
+              OrganizationalUnitIds: OrganizationalUnitIdListSchema.exactOptional().openapi({
+                description:
+                  'The organization root ID or organizational unit (OU) IDs to which StackSets deploys.',
+              }),
+              AccountFilterType: AccountFilterTypeSchema.exactOptional().openapi({
+                description:
+                  '<p>Limit deployment targets to individual accounts or include additional accounts with provided OUs.</p> <p>The following is a list of possible values for the <code>AccountFilterType</code> operation.</p> <ul> <li> <p> <code>INTERSECTION</code>: StackSets deploys to the accounts specified in <code>Accounts</code> parameter. </p> </li> <li> <p> <code>DIFFERENCE</code>: StackSets excludes the accounts specified in <code>Accounts</code> parameter. This enables user to avoid certain accounts within an OU such as suspended accounts.</p> </li> <li> <p> <code>UNION</code>: StackSets includes additional accounts deployment targets. </p> <p>This is the default value if <code>AccountFilterType</code> is not provided. This enables user to update an entire OU and individual accounts from a different OU in one request, which used to be two separate requests.</p> </li> <li> <p> <code>NONE</code>: Deploys to all the accounts in specified organizational units (OU).</p> </li> </ul>',
+              }),
             })
             .exactOptional()
             .openapi({
@@ -23404,15 +20371,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   AutoDeploymentNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If set to <code>true</code>, StackSets automatically deploys additional stack instances to Organizations accounts that are added to a target organization or organizational unit (OU) in the specified Regions. If an account is removed from a target organization or OU, StackSets deletes stack instances from the account in the specified Regions.',
+                }),
               RetainStacksOnAccountRemoval: z
                 .preprocess(
                   ((read) => (val: unknown) => {
@@ -23421,15 +20384,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   RetainStacksOnAccountRemovalNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    'If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.',
+                }),
             })
             .exactOptional()
             .openapi({
@@ -23545,15 +20504,11 @@ export const getActionUpdateStackSetRoute = createRoute({
                   })(z.stringbool()),
                   ManagedExecutionNullableSchema,
                 )
-                .and(
-                  z
-                    .any()
-                    .openapi({
-                      description:
-                        "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
-                    }),
-                )
-                .exactOptional(),
+                .exactOptional()
+                .openapi({
+                  description:
+                    "<p>When <code>true</code>, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.</p> <note> <p>If there are already running or queued operations, StackSets queues all incoming operations even if they are non-conflicting.</p> <p>You can't modify your stack set's execution configuration while there are running or queued operations for that stack set.</p> </note> <p>When <code>false</code> (default), StackSets performs one operation at a time in request order.</p>",
+                }),
             })
             .exactOptional()
             .openapi({

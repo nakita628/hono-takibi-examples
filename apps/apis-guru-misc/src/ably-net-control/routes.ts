@@ -761,11 +761,11 @@ const AwsKinesisRulePatchSchema = z
           .exactOptional()
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -835,11 +835,11 @@ const AwsKinesisRulePostSchema = z
           .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -921,11 +921,11 @@ const AwsKinesisRuleResponseSchema = z
           .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys_response',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -993,11 +993,11 @@ const AwsLambdaRulePatchSchema = z
           .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -1051,11 +1051,11 @@ const AwsLambdaRulePostSchema = z
           .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -1130,11 +1130,11 @@ const AwsLambdaRuleResponseSchema = z
           .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys_response',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         enveloped: z
@@ -1199,11 +1199,11 @@ const AwsSqsRulePatchSchema = z
           .exactOptional()
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         awsAccountId: z.string().exactOptional().openapi({ description: 'Your AWS account ID.' }),
@@ -1261,11 +1261,11 @@ const AwsSqsRulePostSchema = z
           .xor([AwsAccessKeysSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
@@ -1342,11 +1342,11 @@ const AwsSqsRuleResponseSchema = z
           .xor([AwsAccessKeysResponseSchema, AwsAssumeRoleSchema])
           .openapi({
             discriminator: {
+              propertyName: 'authenticationMode',
               mapping: {
                 assumeRole: '#/components/schemas/aws_assume_role',
                 credentials: '#/components/schemas/aws_access_keys_response',
               },
-              propertyName: 'authenticationMode',
             },
           }),
         awsAccountId: z.string().openapi({ description: 'Your AWS account ID.' }),
@@ -3179,6 +3179,7 @@ const RulePatchSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'ruleType',
       mapping: {
         amqp: '#/components/schemas/amqp_rule_patch',
         'amqp/external': '#/components/schemas/amqp_external_rule_patch',
@@ -3192,7 +3193,6 @@ const RulePatchSchema = z
         'http/ifttt': '#/components/schemas/ifttt_rule_patch',
         'http/zapier': '#/components/schemas/zapier_rule_patch',
       },
-      propertyName: 'ruleType',
     },
   })
   .openapi('RulePatch')
@@ -3327,6 +3327,7 @@ const RulePostSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'ruleType',
       mapping: {
         amqp: '#/components/schemas/amqp_rule_post',
         'amqp/external': '#/components/schemas/amqp_external_rule_post',
@@ -3341,7 +3342,6 @@ const RulePostSchema = z
         'http/zapier': '#/components/schemas/zapier_rule_post',
         unsupported: '#/components/schemas/unsupported_rule_response',
       },
-      propertyName: 'ruleType',
     },
   })
   .openapi('RulePost')
@@ -3450,6 +3450,7 @@ const RuleResponseSchema = z
   ])
   .openapi({
     discriminator: {
+      propertyName: 'ruleType',
       mapping: {
         amqp: '#/components/schemas/amqp_rule_response',
         'amqp/external': '#/components/schemas/amqp_external_rule_response',
@@ -3463,7 +3464,6 @@ const RuleResponseSchema = z
         'http/ifttt': '#/components/schemas/ifttt_rule_response',
         'http/zapier': '#/components/schemas/zapier_rule_response',
       },
-      propertyName: 'ruleType',
     },
   })
   .openapi('RuleResponse')

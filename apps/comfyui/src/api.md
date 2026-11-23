@@ -1398,6 +1398,10 @@ Returns the server's feature capabilities
 
 ```json
 {
+  "agent": {
+    "reason": "string",
+    "state": "starting"
+  },
   "deploy_to_cloud": true,
   "free_tier_balance": {
     "allowance": 0,
@@ -1405,6 +1409,7 @@ Returns the server's feature capabilities
     "used": 0
   },
   "max_upload_size": 0,
+  "server_boot_id": "string",
   "supports_preview_metadata": true
 }
 ```
@@ -1421,13 +1426,25 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|agent|object|false|none|Local ComfyUI only: lifecycle of the optional local agent host. Present only when the agent is enabled.|
+|» reason|string|false|none|Why the host failed or crashed. Present whenever set, in any state (including starting after a crash).|
+|» state|string|true|none|none|
 |deploy_to_cloud|boolean|false|none|Local ComfyUI only: whether the UI should offer Deploy to Cloud. True when the server is not --offline and this installation has ever had a prompt queued by a non-browser client (a persistent marker in the user directory). A discovery hint only: it grants nothing, and the /api/deploy/* routes do not check it. Not settable with --feature-flag.|
 |free_tier_balance|object|false|none|Free-tier job allowance for an authenticated non-paid (FREE-tier) user in the rollout. Absent for paid users and unauthenticated requests. Synthesized from config before a grant row exists so a brand-new user still sees their full allowance.|
 |» allowance|integer|true|none|Total free jobs granted for the current period|
 |» remaining|integer|true|none|Free jobs remaining (allowance - used, floored at 0)|
 |» used|integer|true|none|Free jobs consumed so far|
 |max_upload_size|integer|false|none|Maximum upload size in bytes|
+|server_boot_id|string|false|none|Local ComfyUI only: a random id that is new on every server start. A client that reconnects and gets a different value knows the server restarted, so node definitions it loaded earlier may be stale. Not settable with --feature-flag.|
 |supports_preview_metadata|boolean|false|none|Whether the server supports preview metadata|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|» state|starting|
+|» state|ready|
+|» state|failed|
 
 ### Response Headers
 
@@ -3013,7 +3030,8 @@ authenticated, and vice versa.
 [
   {
     "name": "model.safetensors",
-    "pathIndex": 0
+    "pathIndex": 0,
+    "size": 1048576
   }
 ]
 ```
@@ -8303,7 +8321,8 @@ Paginated list of available asset tags.
 ```json
 {
   "name": "model.safetensors",
-  "pathIndex": 0
+  "pathIndex": 0,
+  "size": 1048576
 }
 ```
 
@@ -8315,6 +8334,7 @@ Represents a model file with metadata
 |---|---|---|---|---|
 |name|string|true|none|The filename of the model|
 |pathIndex|integer|true|none|Index of the path where this model is located|
+|size|integer|true|none|File size in bytes|
 
 <h2 id="tocS_ModelFolder">ModelFolder</h2>
 <!-- backwards compatibility -->

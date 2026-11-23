@@ -250,7 +250,19 @@ const SeasonSchema = z
   .openapi({ required: [] })
   .openapi('Season')
 
-const CompetitionSchema = z
+type CompetitionType = {
+  AreaId?: number
+  AreaName?: string | null
+  CompetitionId?: number
+  Format?: string | null
+  Gender?: string | null
+  Key?: string | null
+  Name?: string | null
+  Seasons?: z.infer<typeof SeasonSchema>[]
+  Type?: string | null
+}
+
+const CompetitionSchema: z.ZodType<CompetitionType> = z
   .object({
     AreaId: z.int().exactOptional(),
     AreaName: z.string().nullable().exactOptional(),
@@ -265,26 +277,12 @@ const CompetitionSchema = z
   .openapi({ required: [] })
   .openapi('Competition')
 
-const AreaSchema = z
-  .object({
-    AreaId: z.int().exactOptional(),
-    Competitions: z.array(CompetitionSchema).exactOptional(),
-    CountryCode: z.string().nullable().exactOptional(),
-    Name: z.string().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Area')
-
-const CanceledMembershipSchema = z
-  .object({
-    CanceledMembershipId: z.int().exactOptional(),
-    Created: z.string().nullable().exactOptional(),
-    MembershipId: z.int().exactOptional(),
-    PlayerID: z.int().exactOptional(),
-    TeamId: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('CanceledMembership')
+type AreaType = {
+  AreaId?: number
+  Competitions?: z.infer<typeof CompetitionSchema>[]
+  CountryCode?: string | null
+  Name?: string | null
+}
 
 const PlayerSchema = z
   .object({
@@ -356,7 +354,43 @@ const TeamDetailSchema = z
   .openapi({ required: [] })
   .openapi('TeamDetail')
 
-const CompetitionDetailSchema = z
+type CompetitionDetailType = {
+  AreaId?: number
+  AreaName?: string | null
+  CompetitionId?: number
+  CurrentSeason?: z.infer<typeof SeasonSchema>
+  Format?: string | null
+  Games?: z.infer<typeof GameSchema>[]
+  Gender?: string | null
+  Key?: string | null
+  Name?: string | null
+  Seasons?: z.infer<typeof SeasonSchema>[]
+  Teams?: z.infer<typeof TeamDetailSchema>[]
+  Type?: string | null
+}
+
+const AreaSchema: z.ZodType<AreaType> = z
+  .object({
+    AreaId: z.int().exactOptional(),
+    Competitions: z.array(CompetitionSchema).exactOptional(),
+    CountryCode: z.string().nullable().exactOptional(),
+    Name: z.string().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Area')
+
+const CanceledMembershipSchema = z
+  .object({
+    CanceledMembershipId: z.int().exactOptional(),
+    Created: z.string().nullable().exactOptional(),
+    MembershipId: z.int().exactOptional(),
+    PlayerID: z.int().exactOptional(),
+    TeamId: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CanceledMembership')
+
+const CompetitionDetailSchema: z.ZodType<CompetitionDetailType> = z
   .object({
     AreaId: z.int().exactOptional(),
     AreaName: z.string().nullable().exactOptional(),

@@ -25,13 +25,8 @@ Base URLs:
 |marketing-email||
 |marketing.email.read||
 |marketing.email.write||
+|marketplace_validation||
 |transactional-email||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
 
 <h1 id="marketing-emails-basic">Basic</h1>
 
@@ -137,7 +132,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create Email
@@ -1227,7 +1222,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get aggregated statistic intervals
@@ -1292,7 +1287,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get aggregated statistics
@@ -1343,7 +1338,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 <h1 id="marketing-emails-emails">Emails</h1>
@@ -1410,7 +1405,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Clone a marketing email
@@ -1470,7 +1465,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get the details of a specified marketing email
@@ -1524,7 +1519,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Delete a marketing email
@@ -1567,7 +1562,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Update a marketing email
@@ -2652,7 +2647,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get the variation of a an A/B marketing email
@@ -2706,7 +2701,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get draft version of a marketing email
@@ -2754,7 +2749,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Create or update draft version
@@ -3838,7 +3833,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Reset the draft version
@@ -3880,7 +3875,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Publish or send a marketing email
@@ -3973,7 +3968,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Get a revision of a marketing email
@@ -4022,7 +4017,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a revision of a marketing email
@@ -4065,7 +4060,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Restore a revision of a marketing email to DRAFT state
@@ -4115,7 +4110,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: content )
+oauth2 ( Scopes: marketing.email.read ), oauth2 ( Scopes: marketing.email.write ), oauth2 ( Scopes: marketplace_validation ), oauth2 ( Scopes: content )
 </aside>
 
 ## Unpublish or cancel a marketing email

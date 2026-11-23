@@ -73,8 +73,8 @@ export const postIndexPhpOcmSharesRoute = createRoute({
               protocol: z
                 .object({
                   name: z.string(),
-                  options: z.record(z.string(), z.object({})).exactOptional(),
-                  webdav: z.record(z.string(), z.object({})).exactOptional(),
+                  options: z.record(z.string(), z.looseObject({})).exactOptional(),
+                  webdav: z.record(z.string(), z.looseObject({})).exactOptional(),
                 })
                 .openapi({
                   description:
@@ -141,7 +141,7 @@ export const postIndexPhpOcmNotificationsRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'ID of the share' }),
               notification: z
-                .record(z.string(), z.object({}))
+                .record(z.string(), z.looseObject({}))
                 .nullable()
                 .exactOptional()
                 .openapi({ description: 'The actual payload of the notification' }),
@@ -155,7 +155,7 @@ export const postIndexPhpOcmNotificationsRoute = createRoute({
   responses: {
     201: {
       description: 'The notification was successfully received',
-      content: { 'application/json': { schema: z.record(z.string(), z.object({})) } },
+      content: { 'application/json': { schema: z.record(z.string(), z.looseObject({})) } },
     },
     400: {
       description: 'Bad request due to invalid parameters, e.g. when `type` is invalid or missing',

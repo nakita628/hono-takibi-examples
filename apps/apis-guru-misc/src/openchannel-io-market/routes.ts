@@ -1,22 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const DataTotalSchema = z
-  .object({ $field: z.int().exactOptional().openapi({ description: 'The totals for the field' }) })
-  .openapi({ description: 'The totals for the field', required: ['$appId'] })
-  .openapi('DataTotal')
-
-const AppTotalSchema = z
-  .object({ $appId: DataTotalSchema })
-  .openapi({ description: 'The totals for the app', required: ['$appId'] })
-  .openapi('AppTotal')
-
-type TotalType = {
-  apps: z.infer<typeof AppTotalSchema>
-  end?: bigint
-  start?: bigint
-  totals: z.infer<typeof DataTotalSchema>
-}
-
 const AccessSchema = z
   .object({
     access: z
@@ -82,14 +65,14 @@ const AccountsSchema = z
 const RestrictionsSchema = z
   .object({
     own: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
           "A custom object containing fields paired with an array value of restrictions. Restricts the users that may own this app. Example: {'country':['Canada','Mexico']}",
       }),
     view: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -123,7 +106,7 @@ const ModelSchema = z
       }),
     currency: z.string().openapi({ description: 'The ISO 4217 currency code for this price' }),
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -164,7 +147,7 @@ const OwnershipSchema = z
   .object({
     appId: z.string().openapi({ description: 'The id of the app that is owned' }),
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -277,7 +260,9 @@ const AppSchema = z
       .openapi({ description: 'A custom defined list of access requirements' }),
     allow: RestrictionsSchema,
     appId: z.string().openapi({ description: 'The id of this app' }),
-    attributes: z.object({}).openapi({ description: 'A custom defined list of app attributes' }),
+    attributes: z
+      .looseObject({})
+      .openapi({ description: 'A custom defined list of app attributes' }),
     created: z
       .preprocess(
         (val) =>
@@ -294,7 +279,7 @@ const AppSchema = z
         description: 'The date (in millis) that this app was created',
       }),
     customData: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
       }),
@@ -346,7 +331,7 @@ const AppSchema = z
           'URL safe aliases that can be used to identify this app even after name changes. The current alias is always at position 0.',
       }),
     statistics: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description:
@@ -411,6 +396,16 @@ const AppPagesSchema = z
   .openapi({ description: 'Pages of app results', required: ['count', 'list'] })
   .openapi('AppPages')
 
+const DataTotalSchema = z
+  .object({ $field: z.int().exactOptional().openapi({ description: 'The totals for the field' }) })
+  .openapi({ description: 'The totals for the field', required: ['$appId'] })
+  .openapi('DataTotal')
+
+const AppTotalSchema = z
+  .object({ $appId: DataTotalSchema })
+  .openapi({ description: 'The totals for the app', required: ['$appId'] })
+  .openapi('AppTotal')
+
 const ParentSchema = z
   .object({ status: StatusSchema.exactOptional() })
   .openapi({ description: 'Details of the live version of this app', required: [] })
@@ -425,7 +420,7 @@ const AppVersionSchema = z
     allow: RestrictionsSchema,
     appId: z.string().openapi({ description: 'The id of this app' }),
     attributes: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({ description: 'A custom defined list of app attributes' }),
     created: z
@@ -444,7 +439,7 @@ const AppVersionSchema = z
         description: 'The date (in millis) that this app was created',
       }),
     customData: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
       }),
@@ -632,7 +627,7 @@ const DeveloperSchema = z
       .int()
       .openapi({ description: 'The time (in millis) of when this developer was created' }),
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -648,7 +643,7 @@ const DeveloperSchema = z
 const DeveloperAccountSchema = z
   .object({
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -744,7 +739,7 @@ const UserSchema = z
         description: 'The date (in millis) of when this user was created',
       }),
     customData: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
       }),
@@ -759,7 +754,7 @@ const UserSchema = z
 const UserAccountSchema = z
   .object({
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -839,7 +834,7 @@ const TransactionSchema = z
     amount: z.int().openapi({ description: 'The total amount paid in cents' }),
     appId: z.string().openapi({ description: 'The id of the app involved with this transaction' }),
     customData: z
-      .object({})
+      .looseObject({})
       .exactOptional()
       .openapi({
         description: 'A custom JSON object that you can create and attach to this record',
@@ -1245,50 +1240,47 @@ const StatSchema = z
   .openapi({ description: 'The statistic value', required: ['value'] })
   .openapi('Stat')
 
-const TotalSchema: z.ZodType<TotalType> = z
-  .lazy(() =>
-    z
-      .object({
-        apps: AppTotalSchema,
-        end: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The end date for this total (in millis)',
-          }),
-        start: z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .exactOptional()
-          .openapi({
-            type: 'integer',
-            format: 'int64',
-            description: 'The start date for this total (in millis)',
-          }),
-        totals: DataTotalSchema,
-      })
+const TotalSchema = z
+  .object({
+    apps: AppTotalSchema,
+    end: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
       .openapi({
-        description: 'The total number of events for a particular field',
-        required: ['apps', 'totals'],
+        type: 'integer',
+        format: 'int64',
+        description: 'The end date for this total (in millis)',
       }),
-  )
+    start: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description: 'The start date for this total (in millis)',
+      }),
+    totals: DataTotalSchema,
+  })
+  .openapi({
+    description: 'The total number of events for a particular field',
+    required: ['apps', 'totals'],
+  })
   .openapi('Total')
 
 const TransactionPagesSchema = z
@@ -5053,7 +5045,10 @@ export const getStatsSeriesPeriodFieldsRoute = createRoute({
     }),
   },
   responses: {
-    default: { description: 'OK', content: { '*/*': { schema: z.array(z.array(z.object({}))) } } },
+    default: {
+      description: 'OK',
+      content: { '*/*': { schema: z.array(z.array(z.looseObject({}))) } },
+    },
   },
 })
 

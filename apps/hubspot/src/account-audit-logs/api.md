@@ -22,12 +22,7 @@ Base URLs:
 |Scope|Scope Description|
 |---|---|
 |account-info.security.read||
-
-* API Key (private_apps)
-    - Parameter Name: **private-app**, in: header.
-
-* API Key (private_apps_legacy)
-    - Parameter Name: **private-app-legacy**, in: header.
+|oauth||
 
 <h1 id="audit-logs-basic">Basic</h1>
 

@@ -1,29 +1,13 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const NameSchema = z
-  .string()
-  .regex(/^\S[\w.-]*$/)
-  .min(1)
-  .max(100)
-  .openapi('Name')
+const AssociationIdSchema = z.string().min(1).max(64).openapi('AssociationId')
 
-const CodeCommitRepositorySchema = z
-  .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the Amazon Web Services CodeCommit repository. For more information, see <a href="https://docs.aws.amazon.com/codecommit/latest/APIReference/API_GetRepository.html#CodeCommit-GetRepository-request-repositoryName">repositoryName</a> in the <i>Amazon Web Services CodeCommit API Reference</i>.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Name'],
-    description:
-      'Information about an Amazon Web Services CodeCommit repository. The CodeCommit repository must be in the same Amazon Web Services Region and Amazon Web Services account where its CodeGuru Reviewer code reviews are configured.',
-  })
-  .openapi('CodeCommitRepository')
+const ArnSchema = z
+  .string()
+  .regex(/^arn:aws[^:\s]*:codeguru-reviewer:[^:\s]+:[\d]{12}:[a-z-]+:[\w-]+$/)
+  .min(1)
+  .max(1600)
+  .openapi('Arn')
 
 const ConnectionArnSchema = z
   .string()
@@ -32,6 +16,13 @@ const ConnectionArnSchema = z
   .max(256)
   .openapi('ConnectionArn')
 
+const NameSchema = z
+  .string()
+  .regex(/^\S[\w.-]*$/)
+  .min(1)
+  .max(100)
+  .openapi('Name')
+
 const OwnerSchema = z
   .string()
   .regex(/^\S(.*\S)?$/)
@@ -39,34 +30,46 @@ const OwnerSchema = z
   .max(100)
   .openapi('Owner')
 
-const ThirdPartySourceRepositorySchema = z
+const ProviderTypeSchema = z
+  .enum(['CodeCommit', 'GitHub', 'Bitbucket', 'GitHubEnterpriseServer', 'S3Bucket'])
+  .openapi('ProviderType')
+
+const RepositoryAssociationStateSchema = z
+  .enum(['Associated', 'Associating', 'Failed', 'Disassociating', 'Disassociated'])
+  .openapi('RepositoryAssociationState')
+
+const StateReasonSchema = z.string().min(0).max(256).openapi('StateReason')
+
+const TimeStampSchema = z.iso.datetime({ offset: true }).openapi('TimeStamp')
+
+const KMSKeyIdSchema = z
+  .string()
+  .regex(/[a-zA-Z0-9-]+/)
+  .min(1)
+  .max(2048)
+  .openapi('KMSKeyId')
+
+const EncryptionOptionSchema = z
+  .enum(['AWS_OWNED_CMK', 'CUSTOMER_MANAGED_CMK'])
+  .openapi('EncryptionOption')
+
+const KMSKeyDetailsSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the third party source repository.' }),
-    ),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
-        }),
-    ),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the repository. For a GitHub, GitHub Enterprise, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, this can be the username or Amazon Web Services account ID ',
-        }),
-    ),
+    KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the Amazon Web Services KMS key that is associated with a repository association.',
+    }),
+    EncryptionOption: EncryptionOptionSchema.exactOptional().openapi({
+      description:
+        'The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).',
+    }),
   })
   .openapi({
-    required: ['Name', 'ConnectionArn', 'Owner'],
     description:
-      'Information about a third-party source repository connected to CodeGuru Reviewer.',
+      '<p>An object that contains:</p> <ul> <li> <p>The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with a repository association.</p> </li> </ul>',
+    required: [],
   })
-  .openapi('ThirdPartySourceRepository')
+  .openapi('KMSKeyDetails')
 
 const S3BucketNameSchema = z
   .string()
@@ -74,104 +77,6 @@ const S3BucketNameSchema = z
   .min(3)
   .max(63)
   .openapi('S3BucketName')
-
-const S3RepositorySchema = z
-  .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the repository in the S3 bucket.' }),
-    ),
-    BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the S3 bucket used for associating a new S3 repository. It must begin with <code>codeguru-reviewer-</code>. ',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['Name', 'BucketName'],
-    description: 'Information about a repository in an S3 bucket.',
-  })
-  .openapi('S3Repository')
-
-type RepositoryType = {
-  CodeCommit?: z.infer<typeof CodeCommitRepositorySchema> & { [key: string]: unknown }
-  Bitbucket?: z.infer<typeof ThirdPartySourceRepositorySchema> & { [key: string]: unknown }
-  GitHubEnterpriseServer?: z.infer<typeof ThirdPartySourceRepositorySchema> & {
-    [key: string]: unknown
-  }
-  S3Bucket?: z.infer<typeof S3RepositorySchema>
-}
-
-const CommitIdSchema = z.string().min(6).max(64).openapi('CommitId')
-
-const CommitDiffSourceCodeTypeSchema = z
-  .object({
-    SourceCommit: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA of the source commit used to generate a commit diff. This field is required for a pull request code review.',
-        }),
-    ).exactOptional(),
-    DestinationCommit: CommitIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The SHA of the destination commit used to generate a commit diff. This field is required for a pull request code review.',
-        }),
-    ).exactOptional(),
-    MergeBaseCommit: CommitIdSchema.and(
-      z.any().openapi({ description: 'The SHA of the merge base of a commit.' }),
-    ).exactOptional(),
-  })
-  .openapi({
-    description:
-      'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the commit diff for a pull request on an associated repository. The <code>SourceCommit</code> and <code>DestinationCommit</code> fields are required to do a pull request code review.',
-    required: [],
-  })
-  .openapi('CommitDiffSourceCodeType')
-
-const BranchNameSchema = z.string().min(1).max(256).openapi('BranchName')
-
-const RepositoryHeadSourceCodeTypeSchema = z
-  .object({
-    BranchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the branch in an associated repository. The <code>RepositoryHeadSourceCodeType</code> specifies the tip of this branch.',
-        }),
-    ),
-  })
-  .openapi({
-    required: ['BranchName'],
-    description:
-      'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the tip of a branch in an associated repository.',
-  })
-  .openapi('RepositoryHeadSourceCodeType')
-
-const BranchDiffSourceCodeTypeSchema = z
-  .object({
-    SourceBranchName: BranchNameSchema.and(
-      z.any().openapi({ description: 'The source branch for a diff in an associated repository.' }),
-    ),
-    DestinationBranchName: BranchNameSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The destination branch for a diff in an associated repository.' }),
-    ),
-  })
-  .openapi({
-    required: ['SourceBranchName', 'DestinationBranchName'],
-    description:
-      'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a code diff between a source and destination branch in an associated repository.',
-  })
-  .openapi('BranchDiffSourceCodeType')
 
 const SourceCodeArtifactsObjectKeySchema = z
   .string()
@@ -189,22 +94,14 @@ const BuildArtifactsObjectKeySchema = z
 
 const CodeArtifactsSchema = z
   .object({
-    SourceCodeArtifactsObjectKey: SourceCodeArtifactsObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 object key for a source code .zip file. This is required for all code reviews.',
-        }),
-    ),
-    BuildArtifactsObjectKey: BuildArtifactsObjectKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The S3 object key for a build artifacts .zip file that contains .jar or .class files. This is required for a code review with security analysis. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/working-with-cicd.html">Create code reviews with GitHub Actions</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.',
-        }),
-    ).exactOptional(),
+    SourceCodeArtifactsObjectKey: SourceCodeArtifactsObjectKeySchema.openapi({
+      description:
+        'The S3 object key for a source code .zip file. This is required for all code reviews.',
+    }),
+    BuildArtifactsObjectKey: BuildArtifactsObjectKeySchema.exactOptional().openapi({
+      description:
+        'The S3 object key for a build artifacts .zip file that contains .jar or .class files. This is required for a code review with security analysis. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/working-with-cicd.html">Create code reviews with GitHub Actions</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.',
+    }),
   })
   .openapi({
     required: ['SourceCodeArtifactsObjectKey'],
@@ -215,22 +112,14 @@ const CodeArtifactsSchema = z
 
 const S3RepositoryDetailsSchema = z
   .object({
-    BucketName: S3BucketNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the S3 bucket used for associating a new S3 repository. It must begin with <code>codeguru-reviewer-</code>. ',
-        }),
-    ).exactOptional(),
-    CodeArtifacts: CodeArtifactsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <code>CodeArtifacts</code> object. The <code>CodeArtifacts</code> object includes the S3 object key for a source code .zip file and for a build artifacts .zip file that contains .jar or .class files.',
-        }),
-    ).exactOptional(),
+    BucketName: S3BucketNameSchema.exactOptional().openapi({
+      description:
+        'The name of the S3 bucket used for associating a new S3 repository. It must begin with <code>codeguru-reviewer-</code>. ',
+    }),
+    CodeArtifacts: CodeArtifactsSchema.exactOptional().openapi({
+      description:
+        'A <code>CodeArtifacts</code> object. The <code>CodeArtifacts</code> object includes the S3 object key for a source code .zip file and for a build artifacts .zip file that contains .jar or .class files.',
+    }),
   })
   .openapi({
     description:
@@ -239,24 +128,203 @@ const S3RepositoryDetailsSchema = z
   })
   .openapi('S3RepositoryDetails')
 
+const RepositoryAssociationSchema = z
+  .object({
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description: 'The ID of the repository association.',
+    }),
+    AssociationArn: ArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) identifying the repository association.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
+    }),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the repository.' }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The provider type of the repository association.',
+    }),
+    State: RepositoryAssociationStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the repository association.</p> <p>The valid repository association states are:</p> <ul> <li> <p> <b>Associated</b>: The repository association is complete.</p> </li> <li> <p> <b>Associating</b>: CodeGuru Reviewer is:</p> <ul> <li> <p>Setting up pull request notifications. This is required for pull requests to trigger a CodeGuru Reviewer review.</p> <note> <p>If your repository <code>ProviderType</code> is <code>GitHub</code>, <code>GitHub Enterprise Server</code>, or <code>Bitbucket</code>, CodeGuru Reviewer creates webhooks in your repository to trigger CodeGuru Reviewer reviews. If you delete these webhooks, reviews of code in your repository cannot be triggered.</p> </note> </li> <li> <p>Setting up source code access. This is required for CodeGuru Reviewer to securely clone code in your repository.</p> </li> </ul> </li> <li> <p> <b>Failed</b>: The repository failed to associate or disassociate.</p> </li> <li> <p> <b>Disassociating</b>: CodeGuru Reviewer is removing the repository\'s pull request notifications and source code access.</p> </li> <li> <p> <b>Disassociated</b>: CodeGuru Reviewer successfully disassociated the repository. You can create a new association with this repository if you want to review source code in it later. You can control access to code reviews created in anassociated repository with tags after it has been disassociated. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/auth-and-access-control-using-tags.html">Using tags to control access to associated repositories</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.</p> </li> </ul>',
+    }),
+    StateReason: StateReasonSchema.exactOptional().openapi({
+      description: 'A description of why the repository association is in the current state.',
+    }),
+    LastUpdatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the repository association was last updated.',
+    }),
+    CreatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the repository association was created.',
+    }),
+    KMSKeyDetails: KMSKeyDetailsSchema.exactOptional().openapi({
+      description:
+        '<p>A <code>KMSKeyDetails</code> object that contains:</p> <ul> <li> <p>The encryption option for this repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with this repository association.</p> </li> </ul>',
+    }),
+    S3RepositoryDetails: S3RepositoryDetailsSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Information about a repository association. The <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRepositoryAssociation.html">DescribeRepositoryAssociation</a> operation returns a <code>RepositoryAssociation</code> object.',
+    required: [],
+  })
+  .openapi('RepositoryAssociation')
+
+const TagValueSchema = z.string().max(256).openapi('TagValue')
+
+const TagMapSchema = z
+  .record(z.string(), TagValueSchema)
+  .refine((val) => Object.keys(val).length >= 1)
+  .refine((val) => Object.keys(val).length <= 50)
+  .openapi('TagMap')
+
+const AssociateRepositoryResponseSchema = z
+  .object({
+    RepositoryAssociation: RepositoryAssociationSchema.exactOptional().openapi({
+      description: 'Information about the repository association.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
+  })
+  .openapi({ required: [] })
+  .openapi('AssociateRepositoryResponse')
+
+const CodeCommitRepositorySchema = z
+  .object({
+    Name: NameSchema.openapi({
+      description:
+        'The name of the Amazon Web Services CodeCommit repository. For more information, see <a href="https://docs.aws.amazon.com/codecommit/latest/APIReference/API_GetRepository.html#CodeCommit-GetRepository-request-repositoryName">repositoryName</a> in the <i>Amazon Web Services CodeCommit API Reference</i>.',
+    }),
+  })
+  .openapi({
+    required: ['Name'],
+    description:
+      'Information about an Amazon Web Services CodeCommit repository. The CodeCommit repository must be in the same Amazon Web Services Region and Amazon Web Services account where its CodeGuru Reviewer code reviews are configured.',
+  })
+  .openapi('CodeCommitRepository')
+
+const ThirdPartySourceRepositorySchema = z
+  .object({
+    Name: NameSchema.openapi({ description: 'The name of the third party source repository.' }),
+    ConnectionArn: ConnectionArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
+    }),
+    Owner: OwnerSchema.openapi({
+      description:
+        'The owner of the repository. For a GitHub, GitHub Enterprise, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, this can be the username or Amazon Web Services account ID ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'ConnectionArn', 'Owner'],
+    description:
+      'Information about a third-party source repository connected to CodeGuru Reviewer.',
+  })
+  .openapi('ThirdPartySourceRepository')
+
+const S3RepositorySchema = z
+  .object({
+    Name: NameSchema.openapi({ description: 'The name of the repository in the S3 bucket.' }),
+    BucketName: S3BucketNameSchema.openapi({
+      description:
+        'The name of the S3 bucket used for associating a new S3 repository. It must begin with <code>codeguru-reviewer-</code>. ',
+    }),
+  })
+  .openapi({
+    required: ['Name', 'BucketName'],
+    description: 'Information about a repository in an S3 bucket.',
+  })
+  .openapi('S3Repository')
+
+const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
+
+const ValidationExceptionSchema = z.any().openapi('ValidationException')
+
+const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
+
+const ConflictExceptionSchema = z.any().openapi('ConflictException')
+
+const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
+
+const JobStateSchema = z.enum(['Completed', 'Pending', 'Failed', 'Deleting']).openapi('JobState')
+
+const TypeSchema = z.enum(['PullRequest', 'RepositoryAnalysis']).openapi('Type')
+
+const PullRequestIdSchema = z.string().min(1).max(64).openapi('PullRequestId')
+
+const CommitIdSchema = z.string().min(6).max(64).openapi('CommitId')
+
+const CommitDiffSourceCodeTypeSchema = z
+  .object({
+    SourceCommit: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The SHA of the source commit used to generate a commit diff. This field is required for a pull request code review.',
+    }),
+    DestinationCommit: CommitIdSchema.exactOptional().openapi({
+      description:
+        'The SHA of the destination commit used to generate a commit diff. This field is required for a pull request code review.',
+    }),
+    MergeBaseCommit: CommitIdSchema.exactOptional().openapi({
+      description: 'The SHA of the merge base of a commit.',
+    }),
+  })
+  .openapi({
+    description:
+      'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the commit diff for a pull request on an associated repository. The <code>SourceCommit</code> and <code>DestinationCommit</code> fields are required to do a pull request code review.',
+    required: [],
+  })
+  .openapi('CommitDiffSourceCodeType')
+
+const BranchNameSchema = z.string().min(1).max(256).openapi('BranchName')
+
+const RepositoryHeadSourceCodeTypeSchema = z
+  .object({
+    BranchName: BranchNameSchema.openapi({
+      description:
+        'The name of the branch in an associated repository. The <code>RepositoryHeadSourceCodeType</code> specifies the tip of this branch.',
+    }),
+  })
+  .openapi({
+    required: ['BranchName'],
+    description:
+      'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the tip of a branch in an associated repository.',
+  })
+  .openapi('RepositoryHeadSourceCodeType')
+
+const BranchDiffSourceCodeTypeSchema = z
+  .object({
+    SourceBranchName: BranchNameSchema.openapi({
+      description: 'The source branch for a diff in an associated repository.',
+    }),
+    DestinationBranchName: BranchNameSchema.openapi({
+      description: 'The destination branch for a diff in an associated repository.',
+    }),
+  })
+  .openapi({
+    required: ['SourceBranchName', 'DestinationBranchName'],
+    description:
+      'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a code diff between a source and destination branch in an associated repository.',
+  })
+  .openapi('BranchDiffSourceCodeType')
+
 const S3BucketRepositorySchema = z
   .object({
-    Name: NameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository when the <code>ProviderType</code> is <code>S3Bucket</code>.',
-        }),
-    ),
-    Details: S3RepositoryDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An <code>S3RepositoryDetails</code> object that specifies the name of an S3 bucket and a <code>CodeArtifacts</code> object. The <code>CodeArtifacts</code> object includes the S3 object keys for a source code .zip file and for a build artifacts .zip file.',
-        }),
-    ).exactOptional(),
+    Name: NameSchema.openapi({
+      description:
+        'The name of the repository when the <code>ProviderType</code> is <code>S3Bucket</code>.',
+    }),
+    Details: S3RepositoryDetailsSchema.exactOptional().openapi({
+      description:
+        'An <code>S3RepositoryDetails</code> object that specifies the name of an S3 bucket and a <code>CodeArtifacts</code> object. The <code>CodeArtifacts</code> object includes the S3 object keys for a source code .zip file and for a build artifacts .zip file.',
+    }),
   })
   .openapi({
     required: ['Name'],
@@ -290,21 +358,13 @@ const EventStateSchema = z
 
 const EventInfoSchema = z
   .object({
-    Name: EventNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the event. The possible names are <code>pull_request</code>, <code>workflow_dispatch</code>, <code>schedule</code>, and <code>push</code> ',
-        }),
-    ).exactOptional(),
-    State: EventStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The state of an event. The state might be open, closed, or another state.',
-        }),
-    ).exactOptional(),
+    Name: EventNameSchema.exactOptional().openapi({
+      description:
+        'The name of the event. The possible names are <code>pull_request</code>, <code>workflow_dispatch</code>, <code>schedule</code>, and <code>push</code> ',
+    }),
+    State: EventStateSchema.exactOptional().openapi({
+      description: 'The state of an event. The state might be open, closed, or another state.',
+    }),
   })
   .openapi({
     description:
@@ -317,34 +377,20 @@ const VendorNameSchema = z.enum(['GitHub', 'GitLab', 'NativeS3']).openapi('Vendo
 
 const RequestMetadataSchema = z
   .object({
-    RequestId: RequestIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the request. This is required for a pull request code review.',
-        }),
-    ).exactOptional(),
-    Requester: RequesterSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'An identifier, such as a name or account ID, that is associated with the requester. The <code>Requester</code> is used to capture the <code>author/actor</code> name of the event request.',
-        }),
-    ).exactOptional(),
-    EventInfo: EventInfoSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Information about the event associated with a code review.' }),
-    ).exactOptional(),
-    VendorName: VendorNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the repository vendor used to upload code to an S3 bucket for a CI/CD code review. For example, if code and artifacts are uploaded to an S3 bucket for a CI/CD code review by GitHub scripts from a GitHub repository, then the repository association\'s <code>ProviderType</code> is <code>S3Bucket</code> and the CI/CD repository vendor name is GitHub. For more information, see the definition for <code>ProviderType</code> in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a>.',
-        }),
-    ).exactOptional(),
+    RequestId: RequestIdSchema.exactOptional().openapi({
+      description: 'The ID of the request. This is required for a pull request code review.',
+    }),
+    Requester: RequesterSchema.exactOptional().openapi({
+      description:
+        'An identifier, such as a name or account ID, that is associated with the requester. The <code>Requester</code> is used to capture the <code>author/actor</code> name of the event request.',
+    }),
+    EventInfo: EventInfoSchema.exactOptional().openapi({
+      description: 'Information about the event associated with a code review.',
+    }),
+    VendorName: VendorNameSchema.exactOptional().openapi({
+      description:
+        'The name of the repository vendor used to upload code to an S3 bucket for a CI/CD code review. For example, if code and artifacts are uploaded to an S3 bucket for a CI/CD code review by GitHub scripts from a GitHub repository, then the repository association\'s <code>ProviderType</code> is <code>S3Bucket</code> and the CI/CD repository vendor name is GitHub. For more information, see the definition for <code>ProviderType</code> in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a>.',
+    }),
   })
   .openapi({
     description:
@@ -353,238 +399,30 @@ const RequestMetadataSchema = z
   })
   .openapi('RequestMetadata')
 
-type SourceCodeTypeType = {
-  CommitDiff?: z.infer<typeof CommitDiffSourceCodeTypeSchema> & { [key: string]: unknown }
-  RepositoryHead?: z.infer<typeof RepositoryHeadSourceCodeTypeSchema>
-  BranchDiff?: z.infer<typeof BranchDiffSourceCodeTypeSchema> & { [key: string]: unknown }
-  S3BucketRepository?: z.infer<typeof S3BucketRepositorySchema> & { [key: string]: unknown }
-  RequestMetadata?: z.infer<typeof RequestMetadataSchema> & { [key: string]: unknown }
-}
-
-const AssociationIdSchema = z.string().min(1).max(64).openapi('AssociationId')
-
-const ArnSchema = z
-  .string()
-  .regex(/^arn:aws[^:\s]*:codeguru-reviewer:[^:\s]+:[\d]{12}:[a-z-]+:[\w-]+$/)
-  .min(1)
-  .max(1600)
-  .openapi('Arn')
-
-const ProviderTypeSchema = z
-  .enum(['CodeCommit', 'GitHub', 'Bitbucket', 'GitHubEnterpriseServer', 'S3Bucket'])
-  .openapi('ProviderType')
-
-const RepositoryAssociationStateSchema = z
-  .enum(['Associated', 'Associating', 'Failed', 'Disassociating', 'Disassociated'])
-  .openapi('RepositoryAssociationState')
-
-const StateReasonSchema = z.string().min(0).max(256).openapi('StateReason')
-
-const TimeStampSchema = z.iso.datetime({ offset: true }).openapi('TimeStamp')
-
-const KMSKeyIdSchema = z
-  .string()
-  .regex(/[a-zA-Z0-9-]+/)
-  .min(1)
-  .max(2048)
-  .openapi('KMSKeyId')
-
-const EncryptionOptionSchema = z
-  .enum(['AWS_OWNED_CMK', 'CUSTOMER_MANAGED_CMK'])
-  .openapi('EncryptionOption')
-
-const KMSKeyDetailsSchema = z
+const SourceCodeTypeSchema = z
   .object({
-    KMSKeyId: KMSKeyIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the Amazon Web Services KMS key that is associated with a repository association.',
-        }),
-    ).exactOptional(),
-    EncryptionOption: EncryptionOptionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).',
-        }),
-    ).exactOptional(),
+    CommitDiff: CommitDiffSourceCodeTypeSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a commit diff created by a pull request on an associated repository.',
+    }),
+    RepositoryHead: RepositoryHeadSourceCodeTypeSchema.exactOptional(),
+    BranchDiff: BranchDiffSourceCodeTypeSchema.exactOptional().openapi({
+      description:
+        'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a source branch name and a destination branch name in an associated repository.',
+    }),
+    S3BucketRepository: S3BucketRepositorySchema.exactOptional().openapi({
+      description:
+        'Information about an associated repository in an S3 bucket that includes its name and an <code>S3RepositoryDetails</code> object. The <code>S3RepositoryDetails</code> object includes the name of an S3 bucket, an S3 key for a source code .zip file, and an S3 key for a build artifacts .zip file. <code>S3BucketRepository</code> is required in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> for <code>S3BucketRepository</code> based code reviews.',
+    }),
+    RequestMetadata: RequestMetadataSchema.exactOptional().openapi({
+      description:
+        'Metadata that is associated with a code review. This applies to any type of code review supported by CodeGuru Reviewer. The <code>RequestMetadaa</code> field captures any event metadata. For example, it might capture metadata associated with an event trigger, such as a push or a pull request.',
+    }),
   })
   .openapi({
-    description:
-      '<p>An object that contains:</p> <ul> <li> <p>The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with a repository association.</p> </li> </ul>',
+    description: 'Specifies the source code that is analyzed in a code review.',
     required: [],
   })
-  .openapi('KMSKeyDetails')
-
-const RepositoryAssociationSchema = z
-  .object({
-    AssociationId: AssociationIdSchema.and(
-      z.any().openapi({ description: 'The ID of the repository association.' }),
-    ).exactOptional(),
-    AssociationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) identifying the repository association.',
-        }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
-        }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
-        }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The provider type of the repository association.' }),
-    ).exactOptional(),
-    State: RepositoryAssociationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the repository association.</p> <p>The valid repository association states are:</p> <ul> <li> <p> <b>Associated</b>: The repository association is complete.</p> </li> <li> <p> <b>Associating</b>: CodeGuru Reviewer is:</p> <ul> <li> <p>Setting up pull request notifications. This is required for pull requests to trigger a CodeGuru Reviewer review.</p> <note> <p>If your repository <code>ProviderType</code> is <code>GitHub</code>, <code>GitHub Enterprise Server</code>, or <code>Bitbucket</code>, CodeGuru Reviewer creates webhooks in your repository to trigger CodeGuru Reviewer reviews. If you delete these webhooks, reviews of code in your repository cannot be triggered.</p> </note> </li> <li> <p>Setting up source code access. This is required for CodeGuru Reviewer to securely clone code in your repository.</p> </li> </ul> </li> <li> <p> <b>Failed</b>: The repository failed to associate or disassociate.</p> </li> <li> <p> <b>Disassociating</b>: CodeGuru Reviewer is removing the repository\'s pull request notifications and source code access.</p> </li> <li> <p> <b>Disassociated</b>: CodeGuru Reviewer successfully disassociated the repository. You can create a new association with this repository if you want to review source code in it later. You can control access to code reviews created in anassociated repository with tags after it has been disassociated. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/auth-and-access-control-using-tags.html">Using tags to control access to associated repositories</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StateReason: StateReasonSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A description of why the repository association is in the current state.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the repository association was last updated.',
-        }),
-    ).exactOptional(),
-    CreatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the repository association was created.',
-        }),
-    ).exactOptional(),
-    KMSKeyDetails: KMSKeyDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A <code>KMSKeyDetails</code> object that contains:</p> <ul> <li> <p>The encryption option for this repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with this repository association.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    S3RepositoryDetails: S3RepositoryDetailsSchema.exactOptional(),
-  })
-  .openapi({
-    description:
-      'Information about a repository association. The <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_DescribeRepositoryAssociation.html">DescribeRepositoryAssociation</a> operation returns a <code>RepositoryAssociation</code> object.',
-    required: [],
-  })
-  .openapi('RepositoryAssociation')
-
-const TagValueSchema = z.string().max(256).openapi('TagValue')
-
-const TagMapSchema = z
-  .record(z.string(), TagValueSchema)
-  .refine((val) => Object.keys(val).length >= 1)
-  .refine((val) => Object.keys(val).length <= 50)
-  .openapi('TagMap')
-
-const AssociateRepositoryResponseSchema = z
-  .object({
-    RepositoryAssociation: RepositoryAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the repository association.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AssociateRepositoryResponse')
-
-const InternalServerExceptionSchema = z.any().openapi('InternalServerException')
-
-const ValidationExceptionSchema = z.any().openapi('ValidationException')
-
-const AccessDeniedExceptionSchema = z.any().openapi('AccessDeniedException')
-
-const ConflictExceptionSchema = z.any().openapi('ConflictException')
-
-const ThrottlingExceptionSchema = z.any().openapi('ThrottlingException')
-
-const JobStateSchema = z.enum(['Completed', 'Pending', 'Failed', 'Deleting']).openapi('JobState')
-
-const TypeSchema = z.enum(['PullRequest', 'RepositoryAnalysis']).openapi('Type')
-
-const PullRequestIdSchema = z.string().min(1).max(64).openapi('PullRequestId')
-
-const SourceCodeTypeSchema: z.ZodType<SourceCodeTypeType> = z
-  .lazy(() =>
-    z
-      .object({
-        CommitDiff: CommitDiffSourceCodeTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a commit diff created by a pull request on an associated repository.',
-            }),
-        ).exactOptional(),
-        RepositoryHead: RepositoryHeadSourceCodeTypeSchema.exactOptional(),
-        BranchDiff: BranchDiffSourceCodeTypeSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'A type of <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies a source branch name and a destination branch name in an associated repository.',
-            }),
-        ).exactOptional(),
-        S3BucketRepository: S3BucketRepositorySchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Information about an associated repository in an S3 bucket that includes its name and an <code>S3RepositoryDetails</code> object. The <code>S3RepositoryDetails</code> object includes the name of an S3 bucket, an S3 key for a source code .zip file, and an S3 key for a build artifacts .zip file. <code>S3BucketRepository</code> is required in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> for <code>S3BucketRepository</code> based code reviews.',
-            }),
-        ).exactOptional(),
-        RequestMetadata: RequestMetadataSchema.and(
-          z
-            .any()
-            .openapi({
-              description:
-                'Metadata that is associated with a code review. This applies to any type of code review supported by CodeGuru Reviewer. The <code>RequestMetadaa</code> field captures any event metadata. For example, it might capture metadata associated with an event trigger, such as a push or a pull request.',
-            }),
-        ).exactOptional(),
-      })
-      .openapi({
-        description: 'Specifies the source code that is analyzed in a code review.',
-        required: [],
-      }),
-  )
   .openapi('SourceCodeType')
 
 const AssociationArnSchema = z
@@ -602,25 +440,17 @@ const FindingsCountSchema = z.int().openapi('FindingsCount')
 
 const MetricsSchema = z
   .object({
-    MeteredLinesOfCodeCount: LinesOfCodeCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>MeteredLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened. This does not include non-code lines such as comments and blank lines.',
-        }),
-    ).exactOptional(),
-    SuppressedLinesOfCodeCount: LinesOfCodeCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            ' <code>SuppressedLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened that CodeGuru Reviewer did not analyze. The lines suppressed in the analysis is based on the <code>excludeFiles</code> variable in the <code>aws-codeguru-reviewer.yml</code> file. This number does not include non-code lines such as comments and blank lines. ',
-        }),
-    ).exactOptional(),
-    FindingsCount: FindingsCountSchema.and(
-      z.any().openapi({ description: 'Total number of recommendations found in the code review.' }),
-    ).exactOptional(),
+    MeteredLinesOfCodeCount: LinesOfCodeCountSchema.exactOptional().openapi({
+      description:
+        ' <code>MeteredLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened. This does not include non-code lines such as comments and blank lines.',
+    }),
+    SuppressedLinesOfCodeCount: LinesOfCodeCountSchema.exactOptional().openapi({
+      description:
+        ' <code>SuppressedLinesOfCodeCount</code> is the number of lines of code in the repository where the code review happened that CodeGuru Reviewer did not analyze. The lines suppressed in the analysis is based on the <code>excludeFiles</code> variable in the <code>aws-codeguru-reviewer.yml</code> file. This number does not include non-code lines such as comments and blank lines. ',
+    }),
+    FindingsCount: FindingsCountSchema.exactOptional().openapi({
+      description: 'Total number of recommendations found in the code review.',
+    }),
   })
   .openapi({ description: 'Information about the statistics from the code review.', required: [] })
   .openapi('Metrics')
@@ -635,99 +465,58 @@ const ConfigFileStateSchema = z
 
 const CodeReviewSchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the code review.' }),
-    ).exactOptional(),
-    CodeReviewArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
-        }),
-    ).exactOptional(),
-    RepositoryName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
-        }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of repository that contains the reviewed code (for example, GitHub or Bitbucket).',
-        }),
-    ).exactOptional(),
-    State: JobStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The valid code review states are:</p> <ul> <li> <p> <code>Completed</code>: The code review is complete.</p> </li> <li> <p> <code>Pending</code>: The code review started and has not completed or failed.</p> </li> <li> <p> <code>Failed</code>: The code review failed.</p> </li> <li> <p> <code>Deleting</code>: The code review is being deleted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    StateReason: StateReasonSchema.and(
-      z.any().openapi({ description: 'The reason for the state of the code review.' }),
-    ).exactOptional(),
-    CreatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the code review was created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the code review was last updated.',
-        }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z.any().openapi({ description: 'The type of code review.' }),
-    ).exactOptional(),
-    PullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The pull request ID for the code review.' }),
-    ).exactOptional(),
-    SourceCodeType: SourceCodeTypeSchema.and(
-      z.any().openapi({ description: 'The type of the source code for the code review.' }),
-    ).exactOptional(),
-    AssociationArn: AssociationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> that contains the reviewed source code. You can retrieve associated repository ARNs by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.',
-        }),
-    ).exactOptional(),
-    Metrics: MetricsSchema.and(
-      z.any().openapi({ description: 'The statistics from the code review.' }),
-    ).exactOptional(),
-    AnalysisTypes: AnalysisTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
-        }),
-    ).exactOptional(),
-    ConfigFileState: ConfigFileStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The state of the <code>aws-codeguru-reviewer.yml</code> configuration file that allows the configuration of the CodeGuru Reviewer analysis. The file either exists, doesn't exist, or exists with errors at the root directory of your repository.",
-        }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the code review.' }),
+    CodeReviewArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
+    }),
+    RepositoryName: NameSchema.exactOptional().openapi({
+      description: 'The name of the repository.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description:
+        'The type of repository that contains the reviewed code (for example, GitHub or Bitbucket).',
+    }),
+    State: JobStateSchema.exactOptional().openapi({
+      description:
+        '<p>The valid code review states are:</p> <ul> <li> <p> <code>Completed</code>: The code review is complete.</p> </li> <li> <p> <code>Pending</code>: The code review started and has not completed or failed.</p> </li> <li> <p> <code>Failed</code>: The code review failed.</p> </li> <li> <p> <code>Deleting</code>: The code review is being deleted.</p> </li> </ul>',
+    }),
+    StateReason: StateReasonSchema.exactOptional().openapi({
+      description: 'The reason for the state of the code review.',
+    }),
+    CreatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the code review was created.',
+    }),
+    LastUpdatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the code review was last updated.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({ description: 'The type of code review.' }),
+    PullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The pull request ID for the code review.',
+    }),
+    SourceCodeType: SourceCodeTypeSchema.exactOptional().openapi({
+      description: 'The type of the source code for the code review.',
+    }),
+    AssociationArn: AssociationArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> that contains the reviewed source code. You can retrieve associated repository ARNs by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.',
+    }),
+    Metrics: MetricsSchema.exactOptional().openapi({
+      description: 'The statistics from the code review.',
+    }),
+    AnalysisTypes: AnalysisTypesSchema.exactOptional().openapi({
+      description:
+        'The types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
+    }),
+    ConfigFileState: ConfigFileStateSchema.exactOptional().openapi({
+      description:
+        "The state of the <code>aws-codeguru-reviewer.yml</code> configuration file that allows the configuration of the CodeGuru Reviewer analysis. The file either exists, doesn't exist, or exists with errors at the root directory of your repository.",
+    }),
   })
   .openapi({
     description:
@@ -743,14 +532,10 @@ const CreateCodeReviewResponseSchema = z
 
 const RepositoryAnalysisSchema = z
   .object({
-    RepositoryHead: RepositoryHeadSourceCodeTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the tip of a branch in an associated repository.',
-        }),
-    ).exactOptional(),
+    RepositoryHead: RepositoryHeadSourceCodeTypeSchema.exactOptional().openapi({
+      description:
+        'A <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_SourceCodeType">SourceCodeType</a> that specifies the tip of a branch in an associated repository.',
+    }),
     SourceCodeType: SourceCodeTypeSchema.exactOptional(),
   })
   .openapi({
@@ -764,9 +549,9 @@ const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundExcepti
 
 const DescribeCodeReviewResponseSchema = z
   .object({
-    CodeReview: CodeReviewSchema.and(
-      z.any().openapi({ description: 'Information about the code review.' }),
-    ).exactOptional(),
+    CodeReview: CodeReviewSchema.exactOptional().openapi({
+      description: 'Information about the code review.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeCodeReviewResponse')
@@ -781,70 +566,50 @@ const UserIdSchema = z.string().min(1).max(256).openapi('UserId')
 
 const RecommendationFeedbackSchema = z
   .object({
-    CodeReviewArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
-        }),
-    ).exactOptional(),
-    RecommendationId: RecommendationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
-        }),
-    ).exactOptional(),
-    Reactions: ReactionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List for storing reactions. Reactions are utf-8 text code for emojis. You can send an empty list to clear off all your feedback.',
-        }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the user that made the API call.</p> <p> The <code>UserId</code> is an IAM principal that can be specified as an Amazon Web Services account ID or an Amazon Resource Name (ARN). For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying"> Specifying a Principal</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
-    CreatedTimeStamp: TimeStampSchema.and(
-      z.any().openapi({ description: 'The time at which the feedback was created.' }),
-    ).exactOptional(),
-    LastUpdatedTimeStamp: TimeStampSchema.and(
-      z.any().openapi({ description: 'The time at which the feedback was last updated.' }),
-    ).exactOptional(),
+    CodeReviewArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
+    }),
+    RecommendationId: RecommendationIdSchema.exactOptional().openapi({
+      description:
+        'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
+    }),
+    Reactions: ReactionsSchema.exactOptional().openapi({
+      description:
+        'List for storing reactions. Reactions are utf-8 text code for emojis. You can send an empty list to clear off all your feedback.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the user that made the API call.</p> <p> The <code>UserId</code> is an IAM principal that can be specified as an Amazon Web Services account ID or an Amazon Resource Name (ARN). For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying"> Specifying a Principal</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
+    }),
+    CreatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description: 'The time at which the feedback was created.',
+    }),
+    LastUpdatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description: 'The time at which the feedback was last updated.',
+    }),
   })
   .openapi({ description: 'Information about the recommendation feedback.', required: [] })
   .openapi('RecommendationFeedback')
 
 const DescribeRecommendationFeedbackResponseSchema = z
   .object({
-    RecommendationFeedback: RecommendationFeedbackSchema.and(
-      z.any().openapi({ description: 'The recommendation feedback given by the user.' }),
-    ).exactOptional(),
+    RecommendationFeedback: RecommendationFeedbackSchema.exactOptional().openapi({
+      description: 'The recommendation feedback given by the user.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRecommendationFeedbackResponse')
 
 const DescribeRepositoryAssociationResponseSchema = z
   .object({
-    RepositoryAssociation: RepositoryAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the repository association.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    RepositoryAssociation: RepositoryAssociationSchema.exactOptional().openapi({
+      description: 'Information about the repository association.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeRepositoryAssociationResponse')
@@ -853,106 +618,69 @@ const NotFoundExceptionSchema = z.any().openapi('NotFoundException')
 
 const DisassociateRepositoryResponseSchema = z
   .object({
-    RepositoryAssociation: RepositoryAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the disassociated repository.' }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    RepositoryAssociation: RepositoryAssociationSchema.exactOptional().openapi({
+      description: 'Information about the disassociated repository.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateRepositoryResponse')
 
 const MetricsSummarySchema = z
   .object({
-    MeteredLinesOfCodeCount: LinesOfCodeCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lines of code metered in the code review. For the initial code review pull request and all subsequent revisions, this includes all lines of code in the files added to the pull request. In subsequent revisions, for files that already existed in the pull request, this includes only the changed lines of code. In both cases, this does not include non-code lines such as comments and import statements. For example, if you submit a pull request containing 5 files, each with 500 lines of code, and in a subsequent revision you added a new file with 200 lines of code, and also modified a total of 25 lines across the initial 5 files, <code>MeteredLinesOfCodeCount</code> includes the first 5 files (5 * 500 = 2,500 lines), the new file (200 lines) and the 25 changed lines of code for a total of 2,725 lines of code.',
-        }),
-    ).exactOptional(),
-    SuppressedLinesOfCodeCount: LinesOfCodeCountSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lines of code suppressed in the code review based on the <code>excludeFiles</code> element in the <code>aws-codeguru-reviewer.yml</code> file. For full repository analyses, this number includes all lines of code in the files that are suppressed. For pull requests, this number only includes the <i>changed</i> lines of code that are suppressed. In both cases, this number does not include non-code lines such as comments and import statements. For example, if you initiate a full repository analysis on a repository containing 5 files, each file with 100 lines of code, and 2 files are listed as excluded in the <code>aws-codeguru-reviewer.yml</code> file, then <code>SuppressedLinesOfCodeCount</code> returns 200 (2 * 100) as the total number of lines of code suppressed. However, if you submit a pull request for the same repository, then <code>SuppressedLinesOfCodeCount</code> only includes the lines in the 2 files that changed. If only 1 of the 2 files changed in the pull request, then <code>SuppressedLinesOfCodeCount</code> returns 100 (1 * 100) as the total number of lines of code suppressed.',
-        }),
-    ).exactOptional(),
-    FindingsCount: FindingsCountSchema.and(
-      z.any().openapi({ description: 'Total number of recommendations found in the code review.' }),
-    ).exactOptional(),
+    MeteredLinesOfCodeCount: LinesOfCodeCountSchema.exactOptional().openapi({
+      description:
+        'Lines of code metered in the code review. For the initial code review pull request and all subsequent revisions, this includes all lines of code in the files added to the pull request. In subsequent revisions, for files that already existed in the pull request, this includes only the changed lines of code. In both cases, this does not include non-code lines such as comments and import statements. For example, if you submit a pull request containing 5 files, each with 500 lines of code, and in a subsequent revision you added a new file with 200 lines of code, and also modified a total of 25 lines across the initial 5 files, <code>MeteredLinesOfCodeCount</code> includes the first 5 files (5 * 500 = 2,500 lines), the new file (200 lines) and the 25 changed lines of code for a total of 2,725 lines of code.',
+    }),
+    SuppressedLinesOfCodeCount: LinesOfCodeCountSchema.exactOptional().openapi({
+      description:
+        'Lines of code suppressed in the code review based on the <code>excludeFiles</code> element in the <code>aws-codeguru-reviewer.yml</code> file. For full repository analyses, this number includes all lines of code in the files that are suppressed. For pull requests, this number only includes the <i>changed</i> lines of code that are suppressed. In both cases, this number does not include non-code lines such as comments and import statements. For example, if you initiate a full repository analysis on a repository containing 5 files, each file with 100 lines of code, and 2 files are listed as excluded in the <code>aws-codeguru-reviewer.yml</code> file, then <code>SuppressedLinesOfCodeCount</code> returns 200 (2 * 100) as the total number of lines of code suppressed. However, if you submit a pull request for the same repository, then <code>SuppressedLinesOfCodeCount</code> only includes the lines in the 2 files that changed. If only 1 of the 2 files changed in the pull request, then <code>SuppressedLinesOfCodeCount</code> returns 100 (1 * 100) as the total number of lines of code suppressed.',
+    }),
+    FindingsCount: FindingsCountSchema.exactOptional().openapi({
+      description: 'Total number of recommendations found in the code review.',
+    }),
   })
   .openapi({ description: 'Information about metrics summaries.', required: [] })
   .openapi('MetricsSummary')
 
 const CodeReviewSummarySchema = z
   .object({
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the code review.' }),
-    ).exactOptional(),
-    CodeReviewArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
-        }),
-    ).exactOptional(),
-    RepositoryName: NameSchema.and(
-      z.any().openapi({ description: 'The name of the repository.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
-        }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The provider type of the repository association.' }),
-    ).exactOptional(),
-    State: JobStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the code review.</p> <p>The valid code review states are:</p> <ul> <li> <p> <code>Completed</code>: The code review is complete.</p> </li> <li> <p> <code>Pending</code>: The code review started and has not completed or failed.</p> </li> <li> <p> <code>Failed</code>: The code review failed.</p> </li> <li> <p> <code>Deleting</code>: The code review is being deleted.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    CreatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the code review was created.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, when the code review was last updated.',
-        }),
-    ).exactOptional(),
-    Type: TypeSchema.and(
-      z.any().openapi({ description: 'The type of the code review.' }),
-    ).exactOptional(),
-    PullRequestId: PullRequestIdSchema.and(
-      z.any().openapi({ description: 'The pull request ID for the code review.' }),
-    ).exactOptional(),
-    MetricsSummary: MetricsSummarySchema.and(
-      z.any().openapi({ description: 'The statistics from the code review.' }),
-    ).exactOptional(),
+    Name: NameSchema.exactOptional().openapi({ description: 'The name of the code review.' }),
+    CodeReviewArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
+    }),
+    RepositoryName: NameSchema.exactOptional().openapi({
+      description: 'The name of the repository.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The provider type of the repository association.',
+    }),
+    State: JobStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the code review.</p> <p>The valid code review states are:</p> <ul> <li> <p> <code>Completed</code>: The code review is complete.</p> </li> <li> <p> <code>Pending</code>: The code review started and has not completed or failed.</p> </li> <li> <p> <code>Failed</code>: The code review failed.</p> </li> <li> <p> <code>Deleting</code>: The code review is being deleted.</p> </li> </ul>',
+    }),
+    CreatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description: 'The time, in milliseconds since the epoch, when the code review was created.',
+    }),
+    LastUpdatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, when the code review was last updated.',
+    }),
+    Type: TypeSchema.exactOptional().openapi({ description: 'The type of the code review.' }),
+    PullRequestId: PullRequestIdSchema.exactOptional().openapi({
+      description: 'The pull request ID for the code review.',
+    }),
+    MetricsSummary: MetricsSummarySchema.exactOptional().openapi({
+      description: 'The statistics from the code review.',
+    }),
     SourceCodeType: SourceCodeTypeSchema.exactOptional(),
   })
   .openapi({ description: 'Information about the summary of the code review.', required: [] })
@@ -964,43 +692,27 @@ const NextTokenSchema = z.string().min(1).max(2048).openapi('NextToken')
 
 const ListCodeReviewsResponseSchema = z
   .object({
-    CodeReviewSummaries: CodeReviewSummariesSchema.and(
-      z
-        .any()
-        .openapi({ description: 'A list of code reviews that meet the criteria of the request.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    CodeReviewSummaries: CodeReviewSummariesSchema.exactOptional().openapi({
+      description: 'A list of code reviews that meet the criteria of the request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListCodeReviewsResponse')
 
 const RecommendationFeedbackSummarySchema = z
   .object({
-    RecommendationId: RecommendationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
-        }),
-    ).exactOptional(),
-    Reactions: ReactionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'List for storing reactions. Reactions are utf-8 text code for emojis.',
-        }),
-    ).exactOptional(),
-    UserId: UserIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The ID of the user that gave the feedback.</p> <p> The <code>UserId</code> is an IAM principal that can be specified as an Amazon Web Services account ID or an Amazon Resource Name (ARN). For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying"> Specifying a Principal</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
-        }),
-    ).exactOptional(),
+    RecommendationId: RecommendationIdSchema.exactOptional().openapi({
+      description:
+        'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
+    }),
+    Reactions: ReactionsSchema.exactOptional().openapi({
+      description: 'List for storing reactions. Reactions are utf-8 text code for emojis.',
+    }),
+    UserId: UserIdSchema.exactOptional().openapi({
+      description:
+        '<p>The ID of the user that gave the feedback.</p> <p> The <code>UserId</code> is an IAM principal that can be specified as an Amazon Web Services account ID or an Amazon Resource Name (ARN). For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying"> Specifying a Principal</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>',
+    }),
   })
   .openapi({ description: 'Information about recommendation feedback summaries.', required: [] })
   .openapi('RecommendationFeedbackSummary')
@@ -1011,21 +723,13 @@ const RecommendationFeedbackSummariesSchema = z
 
 const ListRecommendationFeedbackResponseSchema = z
   .object({
-    RecommendationFeedbackSummaries: RecommendationFeedbackSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Recommendation feedback summaries corresponding to the code review ARN.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.',
-        }),
-    ).exactOptional(),
+    RecommendationFeedbackSummaries: RecommendationFeedbackSummariesSchema.exactOptional().openapi({
+      description: 'Recommendation feedback summaries corresponding to the code review ARN.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRecommendationFeedbackResponse')
@@ -1091,21 +795,17 @@ const RuleTagsSchema = z.array(RuleTagSchema).min(1).max(20).openapi('RuleTags')
 
 const RuleMetadataSchema = z
   .object({
-    RuleId: RuleIdSchema.and(
-      z.any().openapi({ description: 'The ID of the rule.' }),
-    ).exactOptional(),
-    RuleName: RuleNameSchema.and(
-      z.any().openapi({ description: 'The name of the rule.' }),
-    ).exactOptional(),
-    ShortDescription: ShortDescriptionSchema.and(
-      z.any().openapi({ description: 'A short description of the rule.' }),
-    ).exactOptional(),
-    LongDescription: LongDescriptionSchema.and(
-      z.any().openapi({ description: 'A long description of the rule.' }),
-    ).exactOptional(),
-    RuleTags: RuleTagsSchema.and(
-      z.any().openapi({ description: 'Tags that are associated with the rule.' }),
-    ).exactOptional(),
+    RuleId: RuleIdSchema.exactOptional().openapi({ description: 'The ID of the rule.' }),
+    RuleName: RuleNameSchema.exactOptional().openapi({ description: 'The name of the rule.' }),
+    ShortDescription: ShortDescriptionSchema.exactOptional().openapi({
+      description: 'A short description of the rule.',
+    }),
+    LongDescription: LongDescriptionSchema.exactOptional().openapi({
+      description: 'A long description of the rule.',
+    }),
+    RuleTags: RuleTagsSchema.exactOptional().openapi({
+      description: 'Tags that are associated with the rule.',
+    }),
   })
   .openapi({
     description:
@@ -1118,59 +818,35 @@ const SeveritySchema = z.enum(['Info', 'Low', 'Medium', 'High', 'Critical']).ope
 
 const RecommendationSummarySchema = z
   .object({
-    FilePath: FilePathSchema.and(
-      z.any().openapi({ description: 'Name of the file on which a recommendation is provided.' }),
-    ).exactOptional(),
-    RecommendationId: RecommendationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
-        }),
-    ).exactOptional(),
-    StartLine: LineNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Start line from where the recommendation is applicable in the source commit or source branch.',
-        }),
-    ).exactOptional(),
-    EndLine: LineNumberSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Last line where the recommendation is applicable in the source commit or source branch. For a single line comment the start line and end line values are the same.',
-        }),
-    ).exactOptional(),
-    Description: TextSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A description of the recommendation generated by CodeGuru Reviewer for the lines of code between the start line and the end line.',
-        }),
-    ).exactOptional(),
-    RecommendationCategory: RecommendationCategorySchema.and(
-      z.any().openapi({ description: 'The type of a recommendation.' }),
-    ).exactOptional(),
-    RuleMetadata: RuleMetadataSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "Metadata about a rule. Rule metadata includes an ID, a name, a list of tags, and a short and long description. CodeGuru Reviewer uses rules to analyze code. A rule's recommendation is included in analysis results if code is detected that violates the rule.",
-        }),
-    ).exactOptional(),
-    Severity: SeveritySchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The severity of the issue in the code that generated this recommendation.',
-        }),
-    ).exactOptional(),
+    FilePath: FilePathSchema.exactOptional().openapi({
+      description: 'Name of the file on which a recommendation is provided.',
+    }),
+    RecommendationId: RecommendationIdSchema.exactOptional().openapi({
+      description:
+        'The recommendation ID that can be used to track the provided recommendations. Later on it can be used to collect the feedback.',
+    }),
+    StartLine: LineNumberSchema.exactOptional().openapi({
+      description:
+        'Start line from where the recommendation is applicable in the source commit or source branch.',
+    }),
+    EndLine: LineNumberSchema.exactOptional().openapi({
+      description:
+        'Last line where the recommendation is applicable in the source commit or source branch. For a single line comment the start line and end line values are the same.',
+    }),
+    Description: TextSchema.exactOptional().openapi({
+      description:
+        'A description of the recommendation generated by CodeGuru Reviewer for the lines of code between the start line and the end line.',
+    }),
+    RecommendationCategory: RecommendationCategorySchema.exactOptional().openapi({
+      description: 'The type of a recommendation.',
+    }),
+    RuleMetadata: RuleMetadataSchema.exactOptional().openapi({
+      description:
+        "Metadata about a rule. Rule metadata includes an ID, a name, a list of tags, and a short and long description. CodeGuru Reviewer uses rules to analyze code. A rule's recommendation is included in analysis results if code is detected that violates the rule.",
+    }),
+    Severity: SeveritySchema.exactOptional().openapi({
+      description: 'The severity of the issue in the code that generated this recommendation.',
+    }),
   })
   .openapi({ description: 'Information about recommendations.', required: [] })
   .openapi('RecommendationSummary')
@@ -1181,67 +857,45 @@ const RecommendationSummariesSchema = z
 
 const ListRecommendationsResponseSchema = z
   .object({
-    RecommendationSummaries: RecommendationSummariesSchema.and(
-      z.any().openapi({ description: 'List of recommendations for the requested code review.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'Pagination token.' }),
-    ).exactOptional(),
+    RecommendationSummaries: RecommendationSummariesSchema.exactOptional().openapi({
+      description: 'List of recommendations for the requested code review.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({ description: 'Pagination token.' }),
   })
   .openapi({ required: [] })
   .openapi('ListRecommendationsResponse')
 
 const RepositoryAssociationSummarySchema = z
   .object({
-    AssociationArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> object. You can retrieve this ARN by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.',
-        }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
-        }),
-    ).exactOptional(),
-    LastUpdatedTimeStamp: TimeStampSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The time, in milliseconds since the epoch, since the repository association was last updated.',
-        }),
-    ).exactOptional(),
-    AssociationId: AssociationIdSchema.and(
-      z.any().openapi({ description: 'The repository association ID.' }),
-    ).exactOptional(),
-    Name: NameSchema.and(
-      z.any().openapi({ description: 'The name of the repository association.' }),
-    ).exactOptional(),
-    Owner: OwnerSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
-        }),
-    ).exactOptional(),
-    ProviderType: ProviderTypeSchema.and(
-      z.any().openapi({ description: 'The provider type of the repository association.' }),
-    ).exactOptional(),
-    State: RepositoryAssociationStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The state of the repository association.</p> <p>The valid repository association states are:</p> <ul> <li> <p> <b>Associated</b>: The repository association is complete.</p> </li> <li> <p> <b>Associating</b>: CodeGuru Reviewer is:</p> <ul> <li> <p>Setting up pull request notifications. This is required for pull requests to trigger a CodeGuru Reviewer review.</p> <note> <p>If your repository <code>ProviderType</code> is <code>GitHub</code>, <code>GitHub Enterprise Server</code>, or <code>Bitbucket</code>, CodeGuru Reviewer creates webhooks in your repository to trigger CodeGuru Reviewer reviews. If you delete these webhooks, reviews of code in your repository cannot be triggered.</p> </note> </li> <li> <p>Setting up source code access. This is required for CodeGuru Reviewer to securely clone code in your repository.</p> </li> </ul> </li> <li> <p> <b>Failed</b>: The repository failed to associate or disassociate.</p> </li> <li> <p> <b>Disassociating</b>: CodeGuru Reviewer is removing the repository\'s pull request notifications and source code access.</p> </li> <li> <p> <b>Disassociated</b>: CodeGuru Reviewer successfully disassociated the repository. You can create a new association with this repository if you want to review source code in it later. You can control access to code reviews created in anassociated repository with tags after it has been disassociated. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/auth-and-access-control-using-tags.html">Using tags to control access to associated repositories</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    AssociationArn: ArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> object. You can retrieve this ARN by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description:
+        'The Amazon Resource Name (ARN) of an Amazon Web Services CodeStar Connections connection. Its format is <code>arn:aws:codestar-connections:region-id:aws-account_id:connection/connection-id</code>. For more information, see <a href="https://docs.aws.amazon.com/codestar-connections/latest/APIReference/API_Connection.html">Connection</a> in the <i>Amazon Web Services CodeStar Connections API Reference</i>.',
+    }),
+    LastUpdatedTimeStamp: TimeStampSchema.exactOptional().openapi({
+      description:
+        'The time, in milliseconds since the epoch, since the repository association was last updated.',
+    }),
+    AssociationId: AssociationIdSchema.exactOptional().openapi({
+      description: 'The repository association ID.',
+    }),
+    Name: NameSchema.exactOptional().openapi({
+      description: 'The name of the repository association.',
+    }),
+    Owner: OwnerSchema.exactOptional().openapi({
+      description:
+        'The owner of the repository. For an Amazon Web Services CodeCommit repository, this is the Amazon Web Services account ID of the account that owns the repository. For a GitHub, GitHub Enterprise Server, or Bitbucket repository, this is the username for the account that owns the repository. For an S3 repository, it can be the username or Amazon Web Services account ID.',
+    }),
+    ProviderType: ProviderTypeSchema.exactOptional().openapi({
+      description: 'The provider type of the repository association.',
+    }),
+    State: RepositoryAssociationStateSchema.exactOptional().openapi({
+      description:
+        '<p>The state of the repository association.</p> <p>The valid repository association states are:</p> <ul> <li> <p> <b>Associated</b>: The repository association is complete.</p> </li> <li> <p> <b>Associating</b>: CodeGuru Reviewer is:</p> <ul> <li> <p>Setting up pull request notifications. This is required for pull requests to trigger a CodeGuru Reviewer review.</p> <note> <p>If your repository <code>ProviderType</code> is <code>GitHub</code>, <code>GitHub Enterprise Server</code>, or <code>Bitbucket</code>, CodeGuru Reviewer creates webhooks in your repository to trigger CodeGuru Reviewer reviews. If you delete these webhooks, reviews of code in your repository cannot be triggered.</p> </note> </li> <li> <p>Setting up source code access. This is required for CodeGuru Reviewer to securely clone code in your repository.</p> </li> </ul> </li> <li> <p> <b>Failed</b>: The repository failed to associate or disassociate.</p> </li> <li> <p> <b>Disassociating</b>: CodeGuru Reviewer is removing the repository\'s pull request notifications and source code access.</p> </li> <li> <p> <b>Disassociated</b>: CodeGuru Reviewer successfully disassociated the repository. You can create a new association with this repository if you want to review source code in it later. You can control access to code reviews created in anassociated repository with tags after it has been disassociated. For more information, see <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-ug/auth-and-access-control-using-tags.html">Using tags to control access to associated repositories</a> in the <i>Amazon CodeGuru Reviewer User Guide</i>.</p> </li> </ul>',
+    }),
   })
   .openapi({
     description:
@@ -1256,76 +910,55 @@ const RepositoryAssociationSummariesSchema = z
 
 const ListRepositoryAssociationsResponseSchema = z
   .object({
-    RepositoryAssociationSummaries: RepositoryAssociationSummariesSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'A list of repository associations that meet the criteria of the request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The <code>nextToken</code> value to include in a future <code>ListRecommendations</code> request. When the results of a <code>ListRecommendations</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
-        }),
-    ).exactOptional(),
+    RepositoryAssociationSummaries: RepositoryAssociationSummariesSchema.exactOptional().openapi({
+      description: 'A list of repository associations that meet the criteria of the request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description:
+        'The <code>nextToken</code> value to include in a future <code>ListRecommendations</code> request. When the results of a <code>ListRecommendations</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListRepositoryAssociationsResponse')
 
 const ListTagsForResourceResponseSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PutRecommendationFeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('PutRecommendationFeedbackResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const TagKeySchema = z.string().min(1).max(128).openapi('TagKey')
 
-const RepositorySchema: z.ZodType<RepositoryType> = z
-  .lazy(() =>
-    z
-      .object({
-        CodeCommit: CodeCommitRepositorySchema.and(
-          z
-            .any()
-            .openapi({
-              description: 'Information about an Amazon Web Services CodeCommit repository.',
-            }),
-        ).exactOptional(),
-        Bitbucket: ThirdPartySourceRepositorySchema.and(
-          z.any().openapi({ description: ' Information about a Bitbucket repository. ' }),
-        ).exactOptional(),
-        GitHubEnterpriseServer: ThirdPartySourceRepositorySchema.and(
-          z
-            .any()
-            .openapi({ description: 'Information about a GitHub Enterprise Server repository.' }),
-        ).exactOptional(),
-        S3Bucket: S3RepositorySchema.exactOptional(),
-      })
-      .openapi({
-        description:
-          'Information about an associated Amazon Web Services CodeCommit repository or an associated repository that is managed by Amazon Web Services CodeStar Connections (for example, Bitbucket). This <code>Repository</code> object is not used if your source code is in an associated GitHub repository.',
-        required: [],
-      }),
-  )
+const RepositorySchema = z
+  .object({
+    CodeCommit: CodeCommitRepositorySchema.exactOptional().openapi({
+      description: 'Information about an Amazon Web Services CodeCommit repository.',
+    }),
+    Bitbucket: ThirdPartySourceRepositorySchema.exactOptional().openapi({
+      description: ' Information about a Bitbucket repository. ',
+    }),
+    GitHubEnterpriseServer: ThirdPartySourceRepositorySchema.exactOptional().openapi({
+      description: 'Information about a GitHub Enterprise Server repository.',
+    }),
+    S3Bucket: S3RepositorySchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'Information about an associated Amazon Web Services CodeCommit repository or an associated repository that is managed by Amazon Web Services CodeStar Connections (for example, Bitbucket). This <code>Repository</code> object is not used if your source code is in an associated GitHub repository.',
+    required: [],
+  })
   .openapi('Repository')
 
 const ClientRequestTokenSchema = z
@@ -1337,33 +970,19 @@ const ClientRequestTokenSchema = z
 
 const AssociateRepositoryRequestSchema = z
   .object({
-    Repository: RepositorySchema.and(
-      z.any().openapi({ description: 'The repository to associate.' }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon CodeGuru Reviewer uses this value to prevent the accidental creation of duplicate repository associations if there are failures and retries.',
-        }),
-    ).exactOptional(),
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    KMSKeyDetails: KMSKeyDetailsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A <code>KMSKeyDetails</code> object that contains:</p> <ul> <li> <p>The encryption option for this repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with this repository association.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Repository: RepositorySchema.openapi({ description: 'The repository to associate.' }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Amazon CodeGuru Reviewer uses this value to prevent the accidental creation of duplicate repository associations if there are failures and retries.',
+    }),
+    Tags: TagMapSchema.exactOptional().openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
+    KMSKeyDetails: KMSKeyDetailsSchema.exactOptional().openapi({
+      description:
+        '<p>A <code>KMSKeyDetails</code> object that contains:</p> <ul> <li> <p>The encryption option for this repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).</p> </li> <li> <p>The ID of the Amazon Web Services KMS key that is associated with this repository association.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Repository'], title: 'AssociateRepositoryRequest' })
   .openapi('AssociateRepositoryRequest')
@@ -1377,22 +996,14 @@ const CodeReviewNameSchema = z
 
 const CodeReviewTypeSchema = z
   .object({
-    RepositoryAnalysis: RepositoryAnalysisSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'A code review that analyzes all code under a specified branch in an associated repository. The associated repository is specified using its ARN in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CreateCodeReview">CreateCodeReview</a>.',
-        }),
-    ),
-    AnalysisTypes: AnalysisTypesSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'They types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
-        }),
-    ).exactOptional(),
+    RepositoryAnalysis: RepositoryAnalysisSchema.openapi({
+      description:
+        'A code review that analyzes all code under a specified branch in an associated repository. The associated repository is specified using its ARN in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CreateCodeReview">CreateCodeReview</a>.',
+    }),
+    AnalysisTypes: AnalysisTypesSchema.exactOptional().openapi({
+      description:
+        'They types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
+    }),
   })
   .openapi({
     required: ['RepositoryAnalysis'],
@@ -1403,38 +1014,22 @@ const CodeReviewTypeSchema = z
 
 const CreateCodeReviewRequestSchema = z
   .object({
-    Name: CodeReviewNameSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The name of the code review. The name of each code review in your Amazon Web Services account must be unique.',
-        }),
-    ),
-    RepositoryAssociationArn: AssociationArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> object. You can retrieve this ARN by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.</p> <p>A code review can only be created on an associated repository. This is the ARN of the associated repository.</p>',
-        }),
-    ),
-    Type: CodeReviewTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The type of code review to create. This is specified using a <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReviewType.html">CodeReviewType</a> object. You can create a code review only of type <code>RepositoryAnalysis</code>.',
-        }),
-    ),
-    ClientRequestToken: ClientRequestTokenSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Amazon CodeGuru Reviewer uses this value to prevent the accidental creation of duplicate code reviews if there are failures and retries.',
-        }),
-    ).exactOptional(),
+    Name: CodeReviewNameSchema.openapi({
+      description:
+        'The name of the code review. The name of each code review in your Amazon Web Services account must be unique.',
+    }),
+    RepositoryAssociationArn: AssociationArnSchema.openapi({
+      description:
+        '<p>The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_RepositoryAssociation.html">RepositoryAssociation</a> object. You can retrieve this ARN by calling <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_ListRepositoryAssociations.html">ListRepositoryAssociations</a>.</p> <p>A code review can only be created on an associated repository. This is the ARN of the associated repository.</p>',
+    }),
+    Type: CodeReviewTypeSchema.openapi({
+      description:
+        'The type of code review to create. This is specified using a <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReviewType.html">CodeReviewType</a> object. You can create a code review only of type <code>RepositoryAnalysis</code>.',
+    }),
+    ClientRequestToken: ClientRequestTokenSchema.exactOptional().openapi({
+      description:
+        'Amazon CodeGuru Reviewer uses this value to prevent the accidental creation of duplicate code reviews if there are failures and retries.',
+    }),
   })
   .openapi({
     required: ['Name', 'RepositoryAssociationArn', 'Type'],
@@ -1443,22 +1038,22 @@ const CreateCodeReviewRequestSchema = z
   .openapi('CreateCodeReviewRequest')
 
 const DescribeCodeReviewRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeCodeReviewRequest' })
   .openapi('DescribeCodeReviewRequest')
 
 const DescribeRecommendationFeedbackRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRecommendationFeedbackRequest' })
   .openapi('DescribeRecommendationFeedbackRequest')
 
 const DescribeRepositoryAssociationRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeRepositoryAssociationRequest' })
   .openapi('DescribeRepositoryAssociationRequest')
 
 const DisassociateRepositoryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateRepositoryRequest' })
   .openapi('DisassociateRepositoryRequest')
 
@@ -1471,7 +1066,7 @@ const ProviderTypesSchema = z.array(ProviderTypeSchema).min(1).max(3).openapi('P
 const RepositoryNamesSchema = z.array(NameSchema).min(1).max(100).openapi('RepositoryNames')
 
 const ListCodeReviewsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCodeReviewsRequest' })
   .openapi('ListCodeReviewsRequest')
 
@@ -1486,7 +1081,7 @@ const RecommendationIdsSchema = z
   .openapi('RecommendationIds')
 
 const ListRecommendationFeedbackRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecommendationFeedbackRequest' })
   .openapi('ListRecommendationFeedbackRequest')
 
@@ -1497,7 +1092,7 @@ const ListRecommendationsMaxResultsSchema = z
   .openapi('ListRecommendationsMaxResults')
 
 const ListRecommendationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRecommendationsRequest' })
   .openapi('ListRecommendationsRequest')
 
@@ -1512,41 +1107,29 @@ const NamesSchema = z.array(NameSchema).min(1).max(3).openapi('Names')
 const OwnersSchema = z.array(OwnerSchema).min(1).max(3).openapi('Owners')
 
 const ListRepositoryAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListRepositoryAssociationsRequest' })
   .openapi('ListRepositoryAssociationsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutRecommendationFeedbackRequestSchema = z
   .object({
-    CodeReviewArn: ArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
-        }),
-    ),
-    RecommendationId: RecommendationIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The recommendation ID that can be used to track the provided recommendations and then to collect the feedback.',
-        }),
-    ),
-    Reactions: ReactionsSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'List for storing reactions. Reactions are utf-8 text code for emojis. If you send an empty list it clears all your feedback.',
-        }),
-    ),
+    CodeReviewArn: ArnSchema.openapi({
+      description:
+        'The Amazon Resource Name (ARN) of the <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CodeReview.html">CodeReview</a> object. ',
+    }),
+    RecommendationId: RecommendationIdSchema.openapi({
+      description:
+        'The recommendation ID that can be used to track the provided recommendations and then to collect the feedback.',
+    }),
+    Reactions: ReactionsSchema.openapi({
+      description:
+        'List for storing reactions. Reactions are utf-8 text code for emojis. If you send an empty list it clears all your feedback.',
+    }),
   })
   .openapi({
     required: ['CodeReviewArn', 'RecommendationId', 'Reactions'],
@@ -1558,20 +1141,16 @@ const TagKeyListSchema = z.array(TagKeySchema).min(1).max(50).openapi('TagKeyLis
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
-        }),
-    ),
+    Tags: TagMapSchema.openapi({
+      description:
+        '<p>An array of key-value pairs used to tag an associated repository. A tag is a custom attribute label with two parts:</p> <ul> <li> <p>A <i>tag key</i> (for example, <code>CostCenter</code>, <code>Environment</code>, <code>Project</code>, or <code>Secret</code>). Tag keys are case sensitive.</p> </li> <li> <p>An optional field known as a <i>tag value</i> (for example, <code>111122223333</code>, <code>Production</code>, or a team name). Omitting the tag value is the same as using an empty string. Like tag keys, tag values are case sensitive.</p> </li> </ul>',
+    }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
@@ -1827,24 +1406,15 @@ export const postAssociationsRoute = createRoute({
             .object({
               Repository: z
                 .object({
-                  CodeCommit: CodeCommitRepositorySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Information about an Amazon Web Services CodeCommit repository.',
-                      }),
-                  ).exactOptional(),
-                  Bitbucket: ThirdPartySourceRepositorySchema.and(
-                    z.any().openapi({ description: ' Information about a Bitbucket repository. ' }),
-                  ).exactOptional(),
-                  GitHubEnterpriseServer: ThirdPartySourceRepositorySchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description: 'Information about a GitHub Enterprise Server repository.',
-                      }),
-                  ).exactOptional(),
+                  CodeCommit: CodeCommitRepositorySchema.exactOptional().openapi({
+                    description: 'Information about an Amazon Web Services CodeCommit repository.',
+                  }),
+                  Bitbucket: ThirdPartySourceRepositorySchema.exactOptional().openapi({
+                    description: ' Information about a Bitbucket repository. ',
+                  }),
+                  GitHubEnterpriseServer: ThirdPartySourceRepositorySchema.exactOptional().openapi({
+                    description: 'Information about a GitHub Enterprise Server repository.',
+                  }),
                   S3Bucket: S3RepositorySchema.exactOptional(),
                 })
                 .openapi({
@@ -1873,22 +1443,14 @@ export const postAssociationsRoute = createRoute({
                 }),
               KMSKeyDetails: z
                 .object({
-                  KMSKeyId: KMSKeyIdSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The ID of the Amazon Web Services KMS key that is associated with a repository association.',
-                      }),
-                  ).exactOptional(),
-                  EncryptionOption: EncryptionOptionSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).',
-                      }),
-                  ).exactOptional(),
+                  KMSKeyId: KMSKeyIdSchema.exactOptional().openapi({
+                    description:
+                      'The ID of the Amazon Web Services KMS key that is associated with a repository association.',
+                  }),
+                  EncryptionOption: EncryptionOptionSchema.exactOptional().openapi({
+                    description:
+                      'The encryption option for a repository association. It is either owned by Amazon Web Services Key Management Service (KMS) (<code>AWS_OWNED_CMK</code>) or customer managed (<code>CUSTOMER_MANAGED_CMK</code>).',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -1974,22 +1536,14 @@ export const postCodereviewsRoute = createRoute({
                 }),
               Type: z
                 .object({
-                  RepositoryAnalysis: RepositoryAnalysisSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'A code review that analyzes all code under a specified branch in an associated repository. The associated repository is specified using its ARN in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CreateCodeReview">CreateCodeReview</a>.',
-                      }),
-                  ).exactOptional(),
-                  AnalysisTypes: AnalysisTypesSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'They types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
-                      }),
-                  ).exactOptional(),
+                  RepositoryAnalysis: RepositoryAnalysisSchema.exactOptional().openapi({
+                    description:
+                      'A code review that analyzes all code under a specified branch in an associated repository. The associated repository is specified using its ARN in <a href="https://docs.aws.amazon.com/codeguru/latest/reviewer-api/API_CreateCodeReview">CreateCodeReview</a>.',
+                  }),
+                  AnalysisTypes: AnalysisTypesSchema.exactOptional().openapi({
+                    description:
+                      'They types of analysis performed during a repository analysis or a pull request review. You can specify either <code>Security</code>, <code>CodeQuality</code>, or both.',
+                  }),
                 })
                 .openapi({
                   description:

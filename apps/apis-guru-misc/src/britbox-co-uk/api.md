@@ -10,7 +10,7 @@ best suits the application they are developing.
 
 Base URLs:
 
-* <a href="https://api.apis.guru/api">https://api.apis.guru/api</a>
+* <a href="/api">/api</a>
 
 # Authentication
 

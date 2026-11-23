@@ -351,7 +351,7 @@ const FeedbackRequestSchema = z
   .openapi('FeedbackRequest')
 
 const FeedbackResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ description: 'Response after submitting feedback' })
   .openapi('FeedbackResponse')
 
@@ -1055,10 +1055,11 @@ const ModelFileSchema = z
     pathIndex: z
       .int()
       .openapi({ description: 'Index of the path where this model is located', example: 0 }),
+    size: z.int().min(0).openapi({ description: 'File size in bytes', example: 1048576 }),
   })
   .openapi({
     description: 'Represents a model file with metadata',
-    required: ['name', 'pathIndex'],
+    required: ['name', 'pathIndex', 'size'],
   })
   .openapi('ModelFile')
 
@@ -2226,38 +2227,28 @@ export const getApiAssetsIdContentRoute = createRoute({
     302: {
       description: 'Redirect to a signed storage URL (cloud runtime)',
       headers: z.object({
-        'Cache-Control': {
-          description: 'Private caching directive scoped to the signed URL lifetime',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Private caching directive scoped to the signed URL lifetime',
-              param: { required: false },
-            }),
-        },
-        Location: {
-          description: 'Short-lived signed URL to the asset content in storage',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Short-lived signed URL to the asset content in storage',
-              param: { required: false },
-            }),
-        },
-        Vary: {
-          description:
-            'Partitions any cached redirect by auth credentials so a private redirect is not reused across users',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Partitions any cached redirect by auth credentials so a private redirect is not reused across users',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Private caching directive scoped to the signed URL lifetime',
+            param: { required: false },
+          }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Short-lived signed URL to the asset content in storage',
+            param: { required: false },
+          }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Partitions any cached redirect by auth credentials so a private redirect is not reused across users',
+            param: { required: false },
+          }),
       }),
     },
     404: {
@@ -2974,16 +2965,13 @@ export const postApiDeployBundleRoute = createRoute({
         'The builder is busy (`builder_busy`); retry after Retry-After seconds when present.',
       content: { 'application/json': { schema: DeployToCloudErrorSchema } },
       headers: z.object({
-        'Retry-After': {
-          description: 'Seconds to wait, when the builder sent one.',
-          schema: z
-            .int()
-            .exactOptional()
-            .openapi({
-              description: 'Seconds to wait, when the builder sent one.',
-              param: { required: false },
-            }),
-        },
+        'Retry-After': z
+          .int()
+          .exactOptional()
+          .openapi({
+            description: 'Seconds to wait, when the builder sent one.',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -3138,6 +3126,24 @@ export const getApiFeaturesRoute = createRoute({
         'application/json': {
           schema: z
             .looseObject({
+              agent: z
+                .object({
+                  reason: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Why the host failed or crashed. Present whenever set, in any state (including starting after a crash).',
+                    }),
+                  state: z.enum(['starting', 'ready', 'failed']),
+                })
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Local ComfyUI only: lifecycle of the optional local agent host. Present only when the agent is enabled.',
+                  required: ['state'],
+                  'x-runtime': ['local'],
+                }),
               deploy_to_cloud: z
                 .boolean()
                 .exactOptional()
@@ -3168,6 +3174,14 @@ export const getApiFeaturesRoute = createRoute({
                 .int()
                 .exactOptional()
                 .openapi({ description: 'Maximum upload size in bytes' }),
+              server_boot_id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Local ComfyUI only: a random id that is new on every server start. A client that reconnects and gets a different value knows the server restarted, so node definitions it loaded earlier may be stale. Not settable with --feature-flag.',
+                  'x-runtime': ['local'],
+                }),
               supports_preview_metadata: z
                 .boolean()
                 .exactOptional()
@@ -3177,30 +3191,22 @@ export const getApiFeaturesRoute = createRoute({
         },
       },
       headers: z.object({
-        'Cache-Control': {
-          description:
-            'Short-lived private cache to deduplicate rapid-fire calls from the frontend',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Short-lived private cache to deduplicate rapid-fire calls from the frontend',
-              param: { required: false },
-            }),
-        },
-        Vary: {
-          description:
-            'Cache key includes auth headers so anonymous and authenticated responses are stored separately',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description:
-                'Cache key includes auth headers so anonymous and authenticated responses are stored separately',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Short-lived private cache to deduplicate rapid-fire calls from the frontend',
+            param: { required: false },
+          }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Cache key includes auth headers so anonymous and authenticated responses are stored separately',
+            param: { required: false },
+          }),
       }),
     },
   },
@@ -5562,36 +5568,27 @@ export const getApiViewRoute = createRoute({
     302: {
       description: 'Redirect to GCS signed URL',
       headers: z.object({
-        'Cache-Control': {
-          description: 'Cache directive for the redirect response',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Cache directive for the redirect response',
-              param: { required: false },
-            }),
-        },
-        Location: {
-          description: 'Signed URL to access the file in GCS',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Signed URL to access the file in GCS',
-              param: { required: false },
-            }),
-        },
-        Vary: {
-          description: 'Headers that affect response caching',
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({
-              description: 'Headers that affect response caching',
-              param: { required: false },
-            }),
-        },
+        'Cache-Control': z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Cache directive for the redirect response',
+            param: { required: false },
+          }),
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Signed URL to access the file in GCS',
+            param: { required: false },
+          }),
+        Vary: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description: 'Headers that affect response caching',
+            param: { required: false },
+          }),
       }),
     },
     400: {
@@ -5622,7 +5619,7 @@ export const getApiWorkflowTemplatesRoute = createRoute({
       description: 'Success',
       content: {
         'application/json': {
-          schema: z.object({}).openapi({ description: 'Empty object for workflow templates' }),
+          schema: z.looseObject({}).openapi({ description: 'Empty object for workflow templates' }),
         },
       },
     },

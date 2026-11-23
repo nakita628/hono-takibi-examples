@@ -1,133 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const EvntIdSchema = z
-  .string()
-  .regex(/^evnt_[a-zA-Z0-9]+$/)
-  .openapi({ description: 'Unique identifier prefixed with `evnt_`.' })
-  .openapi('EvntId')
-
-const DateCreatedSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({ description: 'A timestamp in ISO 8601 format of the date the resource was created.' })
-  .openapi('DateCreated')
-
-const DateModifiedSchema = z.iso
-  .datetime({ offset: true })
-  .openapi({
-    description: 'A timestamp in ISO 8601 format of the date the resource was last modified.',
-  })
-  .openapi('DateModified')
-
-const ObjectSchema = z
-  .string()
-  .openapi({ description: 'Value is resource type.' })
-  .openapi('Object')
-
-const TrackingEventBaseSchema = z
-  .object({
-    id: EvntIdSchema,
-    time: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'A timestamp in ISO 8601 format of the date USPS registered the event.',
-      }),
-    date_created: DateCreatedSchema,
-    date_modified: DateModifiedSchema,
-    object: ObjectSchema.and(z.literal('tracking_event').default('tracking_event')),
-  })
-  .openapi({
-    description:
-      'As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.',
-    required: ['id', 'date_created', 'date_modified', 'object'],
-  })
-  .openapi('TrackingEventBase')
-
-const TrackingEventDetailsSchema = z
-  .object({
-    event: z
-      .enum([
-        'package_accepted',
-        'package_arrived',
-        'package_departed',
-        'package_processing',
-        'package_processed',
-        'package_in_local_area',
-        'delivery_scheduled',
-        'out_for_delivery',
-        'pickup_available',
-        'delivered',
-        'package_forwarded',
-        'returned_to_sender',
-        'address_issue',
-        'contact_carrier',
-        'delayed',
-        'delivery_attempted',
-        'delivery_rescheduled',
-        'location_inaccessible',
-        'notice_left',
-        'package_damaged',
-        'package_disposed',
-        'package_held',
-        'package_lost',
-        'package_unclaimed',
-        'package_undeliverable',
-        'reschedule_delivery',
-        'other',
-      ])
-      .openapi({
-        description:
-          'Find the full table [here](#tag/Tracking-Events). A detailed substatus about the event:\n* `package_accepted` - Package has been accepted into the carrier network for delivery.\n* `package_arrived` - Package has arrived at an intermediate location in the carrier network.\n* `package_departed` - Package has departed from an intermediate location in the carrier network.\n* `package_processing` - Package is processing at an intermediate location in the carrier network.\n* `package_processed` - Package has been processed at an intermediate location.\n* `package_in_local_area` - Package is at a location near the end destination.\n* `delivery_scheduled` - Package is scheduled for delivery.\n* `out_for_delivery` - Package is out for delivery.\n* `pickup_available` - Package is available for pickup at carrier location.\n* `delivered` - Package has been delivered.\n* `package_forwarded` - Package has been forwarded.\n* `returned_to_sender` - Package is to be returned to sender.\n* `address_issue` - Address information is incorrect. Contact carrier to ensure delivery.\n* `contact_carrier` - Contact the carrier for more information.\n* `delayed` - Delivery of package is delayed.\n* `delivery_attempted` - Delivery of package has been attempted. Contact carrier to ensure delivery.\n* `delivery_rescheduled` - Delivery of package has been rescheduled.\n* `location_inaccessible` - Delivery location inaccessible to carrier. Contact carrier to ensure delivery.\n* `notice_left` - Carrier left notice during attempted delivery. Follow carrier instructions on notice.\n* `package_damaged` - Package has been damaged. Contact carrier for more details.\n* `package_disposed` - Package has been disposed.\n* `package_held` - Package held at carrier location. Contact carrier for more details.\n* `package_lost` - Package has been lost. Contact carrier for more details.\n* `package_unclaimed` - Package is unclaimed.\n* `package_undeliverable` - Package is not able to be delivered.\n* `reschedule_delivery` - Contact carrier to reschedule delivery.\n* `other` - Unrecognized carrier status.\n',
-      }),
-    description: z
-      .string()
-      .openapi({ description: 'The description as listed in the description for event.' }),
-    notes: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Event-specific notes from USPS about the tracking event.' }),
-    action_required: z
-      .boolean()
-      .openapi({
-        description: '`true` if action is required by the end recipient, `false` otherwise.\n',
-      }),
-  })
-  .openapi({ required: ['event', 'description', 'action_required'] })
-  .openapi('TrackingEventDetails')
-
-const TrackingEventCertifiedSchema = TrackingEventBaseSchema.and(
-  z
-    .object({
-      type: z.literal('certified').openapi({ description: 'a Certified letter tracking event' }),
-      name: z
-        .enum([
-          'Mailed',
-          'In Transit',
-          'In Local Area',
-          'Processed for Delivery',
-          'Pickup Available',
-          'Delivered',
-          'Re-Routed',
-          'Returned to Sender',
-          'Issue',
-        ])
-        .openapi({
-          description:
-            'Name of tracking event for Certified letters. Letters sent with USPS Certified Mail are fully tracked by USPS, therefore their tracking events have an additional details object with more detailed information about the tracking event. Some certified tracking event names have multiple meanings, noted in the list here. See the description of the details object for the full set of combined certified tracking event name meanings.\n\n  * `Mailed` - Package has been accepted into the carrier network for delivery.\n\n  * `In Transit` - Maps to four distinct stages of transit.\n\n  * `In Local Area` - Package is at a location near the end destination.\n\n  * `Processed for Delivery` - Maps to two distinct stages of delivery.\n\n  * `Pickup Available` - Package is available for pickup at carrier location.\n\n  * `Delivered` - Package has been delivered.\n\n  * `Re-Routed` - Package has been forwarded.\n\n  * `Returned to Sender` - Package is to be returned to sender.\n\n  * `Issue` - Maps to (at least) 15 possible issues, some of which are actionable.\n',
-        }),
-      details: TrackingEventDetailsSchema.exactOptional(),
-      location: z
-        .string()
-        .nullable()
-        .exactOptional()
-        .openapi({
-          description:
-            'The zip code in which the event occurred if it exists, otherwise will be the name of a Regional Distribution Center if it exists, otherwise will be null.\n',
-        }),
-    })
-    .openapi({ required: ['type', 'name'] }),
-).openapi('TrackingEventCertified')
-
 const AdrIdSchema = z
   .string()
   .regex(/^adr_[a-zA-Z0-9]+$/)
@@ -250,7 +122,7 @@ const AddressEditableUsSchema = AddressFieldsUsSchema.and(
 
 const InlineAddressUsSchema = AddressEditableUsSchema.and(
   z
-    .object({})
+    .looseObject({})
     .openapi({ required: ['address_line1', 'address_city', 'address_state', 'address_zip'] }),
 ).openapi('InlineAddressUs')
 
@@ -564,33 +436,37 @@ const AddressEditableIntlSchema = AddressFieldsIntlSchema.and(
 ).openapi('AddressEditableIntl')
 
 const InlineAddressIntlSchema = AddressEditableIntlSchema.and(
-  z.object({}).openapi({ required: ['address_line1', 'address_country'] }),
+  z.looseObject({}).openapi({ required: ['address_line1', 'address_country'] }),
 )
   .and(
     z.xor([
-      z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'address_city')) {
-              ctx.addIssue({ code: 'custom' })
+      z.looseObject({}).and(
+        z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'address_city')) {
+                ctx.addIssue({ code: 'custom' })
+              }
+              if (!Object.hasOwn(val, 'address_state')) {
+                ctx.addIssue({ code: 'custom' })
+              }
             }
-            if (!Object.hasOwn(val, 'address_state')) {
-              ctx.addIssue({ code: 'custom' })
+          })
+          .openapi({ required: ['address_city', 'address_state'] }),
+      ),
+      z.looseObject({}).and(
+        z
+          .unknown()
+          .superRefine((val, ctx) => {
+            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+              if (!Object.hasOwn(val, 'address_zip')) {
+                ctx.addIssue({ code: 'custom' })
+              }
             }
-          }
-        })
-        .openapi({ required: ['address_city', 'address_state'] }),
-      z
-        .unknown()
-        .superRefine((val, ctx) => {
-          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-            if (!Object.hasOwn(val, 'address_zip')) {
-              ctx.addIssue({ code: 'custom' })
-            }
-          }
-        })
-        .openapi({ required: ['address_zip'] }),
+          })
+          .openapi({ required: ['address_zip'] }),
+      ),
     ]),
   )
   .openapi('InlineAddressIntl')
@@ -599,16 +475,43 @@ const InlineAddressSchema = z
   .xor([InlineAddressUsSchema, InlineAddressIntlSchema])
   .openapi('InlineAddress')
 
-const ReturnAddressSchema = z
-  .xor([AdrIdSchema, InlineAddressSchema])
+const InputToSchema = z
+  .object({
+    to: z
+      .xor([AdrIdSchema, InlineAddressSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'Must either be an address ID or an inline object with correct address parameters. If an object is used, an address will be created, corrected, and standardized for free whenever possible using our US Address Verification engine (if it is a US address), and returned back with an ID. Depending on your <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a>, US addresses may also be run through <a href="#tag/National-Change-of-Address">National Change of Address Linkage(NCOALink)</a>. Non-US addresses will be standardized into uppercase only. If a US address used does not meet your account’s <a href="https://dashboard.lob.com/#/settings/account" target="_blank">US Mail strictness setting</a>, the request will fail. <a href="https://help.lob.com/print-and-mail/all-about-addresses" target="_blank">Lob Guide: Verification of Mailing Addresses</a>',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InputTo')
+
+const InputFromUsSchema = z
+  .object({
+    from: z
+      .xor([AdrIdSchema, InlineAddressUsSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          '*Required* if `to` address is international. Must either be an address ID or an inline object with correct address parameters. Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InputFromUs')
+
+const PostcardSizeSchema = z
+  .enum(['4x6', '6x9', '6x11'])
+  .default('4x6')
   .openapi({
     description:
-      'Specifies the address the return envelope will be sent back to. This is an optional argument that is available if an account is signed up for the return envelope tracking beta, and has `return_envelope`, and `perforated_page` fields populated in the API request.',
+      'Specifies the size of the postcard. Only `4x6` postcards can be sent to international destinations.\n',
   })
-  .openapi('ReturnAddress')
+  .openapi('PostcardSize')
 
 const MergeVariablesSchema = z
-  .object({})
+  .looseObject({})
   .nullable()
   .openapi({
     description:
@@ -616,22 +519,107 @@ const MergeVariablesSchema = z
   })
   .openapi('MergeVariables')
 
-const SendDateSchema = z
-  .union([z.any(), z.any()])
-  .openapi({
-    description:
-      'A timestamp in ISO 8601 format which specifies a date after the current time and up to 180 days in the future to send the letter off for production. Setting a send date overrides the default [cancellation window](#section/Cancellation-Windows) applied to the mailpiece. Until the `send_date` has passed, the mailpiece can be canceled. If a date in the format `2017-11-01` is passed, it will evaluate to midnight UTC of that date (`2017-11-01T00:00:00.000Z`). If a datetime is passed, that exact time will be used. A `send_date` passed with no time zone will default to UTC, while a `send_date` passed with a time zone will be converted to UTC.',
-  })
-  .openapi('SendDate')
+const HtmlStringSchema = z
+  .string()
+  .regex(/</)
+  .max(10000)
+  .openapi({ description: 'An HTML string of under 10,000 characters.' })
+  .openapi('HtmlString')
 
-const MailTypeSchema = z
-  .enum(['usps_first_class', 'usps_standard'])
-  .default('usps_first_class')
+const TmplIdSchema = z
+  .string()
+  .regex(/^tmpl_[a-zA-Z0-9]+$/)
   .openapi({
     description:
-      'A string designating the mail postage type:\n* `usps_first_class` - (default)\n* `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is\nless predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`\npostcards or for any postcards sent outside of the United States.\n',
+      'Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).',
   })
-  .openapi('MailType')
+  .openapi('TmplId')
+
+const RemoteFileUrlSchema = z
+  .string()
+  .regex(/^https:\/\/[-a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf|png|jpg)$/)
+  .openapi({
+    description:
+      'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.\n',
+  })
+  .openapi('RemoteFileUrl')
+
+const LocalFilePathSchema = z
+  .string()
+  .regex(/^(?!https:\/\/)[a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf|png|jpg)$/)
+  .openapi({ description: 'The path to a local file.' })
+  .openapi('LocalFilePath')
+
+const PscFrontSchema = z
+  .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
+  .openapi({
+    description:
+      'The artwork to use as the front of your postcard.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 4.25"x6.25", 6.25"x9.25", or 6.25"x11.25" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
+  })
+  .openapi('PscFront')
+
+const PscBackSchema = z
+  .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
+  .openapi({
+    description:
+      'The artwork to use as the back of your postcard.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 4.25"x6.25", 6.25"x9.25", or 6.25"x11.25" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/4x6_postcard.pdf" target="_blank">4x6 template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf" target="_blank">6x9 template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x11_postcard.pdf" target="_blank">6x11 template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
+  })
+  .openapi('PscBack')
+
+const PostcardResourceParametersSchema = InputToSchema.and(InputFromUsSchema)
+  .and(
+    z
+      .object({
+        size: PostcardSizeSchema.exactOptional(),
+        merge_variables: MergeVariablesSchema.exactOptional(),
+        front: PscFrontSchema,
+        back: PscBackSchema,
+      })
+      .openapi({ required: ['to', 'front', 'back'] }),
+  )
+  .openapi('PostcardResourceParameters')
+
+const _0Schema = z
+  .object({
+    template_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The template ID to associate with the resource proof.' }),
+    resource_type: z
+      .literal('postcard')
+      .exactOptional()
+      .openapi({ description: 'The type of resource to generate a proof for.' }),
+    resource_parameters: PostcardResourceParametersSchema.exactOptional(),
+  })
+  .openapi({ title: 'Postcard Resource Proof', required: [] })
+  .openapi('_0')
+
+const InputFromSchema = z
+  .object({
+    from: z
+      .xor([AdrIdSchema, InlineAddressSchema])
+      .exactOptional()
+      .openapi({
+        description:
+          'Must either be an address ID or an inline object with correct address parameters. Must be a US address unless using a `custom_envelope`. All addresses will be standardized into uppercase without being modified by verification.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('InputFrom')
+
+const LtrFileSchema = z
+  .xor([
+    HtmlStringSchema,
+    TmplIdSchema,
+    RemoteFileUrlSchema,
+    z.string().regex(/^(?!https:\/\/)[a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf)$/),
+  ])
+  .openapi({
+    description:
+      'Notes:\n- HTML merge variables should not include delimiting whitespace.\n- All pages of a supplied PDF file must be sized at 8.5"x11", while supplied HTML will be rendered and trimmed to as many 8.5"x11" pages as necessary.\n- For design specifications, please see our <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_template.pdf" target="_blank">PDF</a> and [HTML](#section/HTML-Examples) templates.\n- If a `custom_envelope` is used, follow <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_custom_envelope.pdf" target="_blank">this template</a>.\n- For domestic destinations, the file limit is 60 pages single-sided or 120 pages double-sided. For international destinations, the file limit is 6 pages single-sided or 12 pages double-sided. PDFs that surpass the file limit will error, while HTML that renders more pages than the file limit will be trimmed.\n- Any letters over 6 pages single-sided or 12 pages double-sided will be placed in a <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_flat_template.pdf" target="_blank">flat envelope</a> instead of the standard double window envelope.\n\nSee <a href="https://lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred.',
+  })
+  .openapi('LtrFile')
 
 const ColorSchema = z
   .boolean()
@@ -659,24 +647,253 @@ const AddressPlacementSchema = z
   })
   .openapi('AddressPlacement')
 
-const Returned_5Schema = z.xor([z.boolean(), z.object({})]).openapi('Returned_5')
-
-const Returned_2Schema = z
-  .object({
-    id: z
-      .string()
-      .max(40)
-      .openapi({ description: 'The unique identifier of the custom envelope used.' }),
-    url: z.string().openapi({ description: 'The url of the envelope asset used.' }),
-    object: z.literal('envelope').default('envelope'),
-  })
-  .nullable()
+const LtrSizeSchema = z
+  .enum(['us_letter', 'us_legal'])
+  .default('us_letter')
   .openapi({
     description:
-      'A nested custom envelope object containing more information about the custom envelope used or `null` if a custom envelope was not used.',
-    required: ['id', 'url', 'object'],
+      'Specifies the size of the letter. It accepts two values `us_letter` and `us_legal`. If the [Lob-Version header](#tag/Versioning-and-Changelog) in the request is set to `2024-01-01` and above, the `size` property is automatically included with the default value of `us_letter`, unless explicitly specified.\n\nPlease note that attempting to include the `size` property in the request with the `Lob-Version` header predating to `2024-01-01` will result in an error.\n',
   })
-  .openapi('Returned_2')
+  .openapi('LtrSize')
+
+const LetterResourceParametersSchema = InputToSchema.and(InputFromSchema)
+  .and(
+    z
+      .object({
+        merge_variables: MergeVariablesSchema.exactOptional(),
+        file: LtrFileSchema,
+        color: ColorSchema.default(false),
+        double_sided: DoubleSidedSchema.exactOptional(),
+        address_placement: AddressPlacementSchema.exactOptional(),
+        size: LtrSizeSchema.exactOptional(),
+      })
+      .openapi({ required: ['to', 'from', 'file', 'color'] }),
+  )
+  .openapi('LetterResourceParameters')
+
+const _1Schema = z
+  .object({
+    template_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The template ID to associate with the resource proof.' }),
+    resource_type: z
+      .literal('letter')
+      .exactOptional()
+      .openapi({ description: 'The type of resource to generate a proof for.' }),
+    resource_parameters: LetterResourceParametersSchema.exactOptional(),
+  })
+  .openapi({ title: 'Letter Resource Proof', required: [] })
+  .openapi('_1')
+
+const SelfMailerSizeSchema = z
+  .enum(['6x18_bifold', '11x9_bifold', '12x9_bifold', '17.75x9_trifold'])
+  .default('6x18_bifold')
+  .openapi({
+    description:
+      'Specifies the size of the self mailer. The `17.75x9_trifold` size is in beta. Contact support@lob.com or your account contact to learn more.',
+  })
+  .openapi('SelfMailerSize')
+
+const SelfMailerResourceParametersSchema = InputToSchema.and(InputFromUsSchema)
+  .and(
+    z
+      .object({
+        size: SelfMailerSizeSchema.exactOptional(),
+        merge_variables: MergeVariablesSchema.exactOptional(),
+        inside: z
+          .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
+          .openapi({
+            description:
+              'The artwork to use as the inside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf" target="_blank">6x18 bifold template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf" target="_blank">12x9 bifold template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/17_75x9_trifold_sfm_template.pdf" target="_blank">17.75x9 trifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
+          }),
+        outside: z
+          .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
+          .openapi({
+            description:
+              'The artwork to use as the outside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
+          }),
+      })
+      .openapi({ required: ['to', 'inside', 'outside'] }),
+  )
+  .openapi('SelfMailerResourceParameters')
+
+const _2Schema = z
+  .object({
+    template_id: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The template ID to associate with the resource proof.' }),
+    resource_type: z
+      .literal('self_mailer')
+      .exactOptional()
+      .openapi({ description: 'The type of resource to generate a proof for.' }),
+    resource_parameters: SelfMailerResourceParametersSchema.exactOptional(),
+  })
+  .openapi({ title: 'Self Mailer Resource Proof', required: [] })
+  .openapi('_2')
+
+const LobCreditsBalanceSchema = z
+  .object({
+    balance: z
+      .number()
+      .openapi({
+        description:
+          "Account's current balance of Lob Credits. Can be positive, negative, or zero.",
+        example: 1000,
+      }),
+  })
+  .openapi({ required: ['balance'] })
+  .openapi('LobCreditsBalance')
+
+const DateFilterSchema = z
+  .record(z.string(), z.string())
+  .openapi({
+    description:
+      'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.',
+  })
+  .openapi('DateFilter')
+
+const FailureStatusCodeSchema = z
+  .union([
+    z.literal(401),
+    z.literal(403),
+    z.literal(404),
+    z.literal(413),
+    z.literal(422),
+    z.literal(429),
+    z.literal(500),
+  ])
+  .openapi({
+    description:
+      'A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n',
+  })
+  .openapi('FailureStatusCode')
+
+const ErrorSchema = z
+  .object({
+    error: z
+      .object({
+        message: z
+          .string()
+          .openapi({
+            description: 'A human-readable message with more details about the error',
+            example: 'Rate limit exceeded. Please wait 5 seconds and try your request again.',
+          }),
+        status_code: FailureStatusCodeSchema,
+        code: z
+          .enum([
+            'bad_request',
+            'conflict',
+            'feature_limit_reached',
+            'internal_server_error',
+            'invalid',
+            'not_deletable',
+            'not_found',
+            'request_timeout',
+            'service_unavailable',
+            'unrecognized_endpoint',
+            'unsupported_lob_version',
+            'address_length_exceeds_limit',
+            'bank_account_already_verified',
+            'bank_error',
+            'billing_address_required',
+            'custom_envelope_inventory_depleted',
+            'deleted_bank_account',
+            'failed_deliverability_strictness',
+            'file_pages_below_min',
+            'file_pages_exceed_max',
+            'file_size_exceeds_limit',
+            'foreign_return_address',
+            'inconsistent_page_dimensions',
+            'invalid_bank_account',
+            'invalid_bank_account_verification',
+            'invalid_check_international',
+            'invalid_country_covid',
+            'invalid_file',
+            'invalid_file_dimensions',
+            'invalid_file_download_time',
+            'invalid_file_url',
+            'invalid_image_dpi',
+            'invalid_international_feature',
+            'invalid_perforation_return_envelope',
+            'invalid_template_html',
+            'mail_use_type_can_not_be_null',
+            'merge_variable_required',
+            'merge_variable_whitespace',
+            'payment_method_unverified',
+            'pdf_encrypted',
+            'special_characters_restricted',
+            'unembedded_fonts',
+            'email_required',
+            'invalid_api_key',
+            'publishable_key_not_allowed',
+            'rate_limit_exceeded',
+            'unauthorized',
+            'unauthorized_token',
+          ])
+          .openapi({
+            description:
+              'A pre-defined string identifying an error. Error codes fall into three categories:\n\n**GENERIC**\n* `bad_request` - 422: an invalid request was made. See error message for details.\n* `conflict` - 409/422: this operation would leave data in a conflicted state.\n* `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.\n* `internal_server_error` - 500: an error has occured on Lob\'s servers. Please try request again.\n* `invalid` - 422: an invalid request was made. See error message for details.\n* `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.\n* `not_found` - 404: the requested resource was not found.\n* `request_timeout` - 408: the request took too long. Please try again.\n* `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.\n* `unrecognized_endpoint` - 404: the requested endpoint doesn\'t exist.\n* `unsupported_lob_version` - 422: an unsupported Lob API version was requested.\n\n**ADVANCED**\n* `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.\n* `bank_account_already_verified` - 422: the bank account has already been verified.\n* `bank_error` - 422: there\'s an issue with the bank account.\n* `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.\n* `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.\n* `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.\n* `failed_deliverability_strictness` - 422: the `to` address doesn\'t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.\n* `file_pages_below_min` - 422: not enough pages.\n* `file_pages_exceed_max` - 422: too many pages.\n* `file_size_exceeds_limit` - 422: the file size is too large. See description for details.\n* `foreign_return_address` - 422: the `from` address must be a US address.\n* `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.\n* `invalid_bank_account` - 422: the provided bank routing number is invalid.\n* `invalid_bank_account_verification` - 422: verification amounts do not match.\n* `invalid_check_international` - 422: checks cannot be sent internationally.\n* `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.\n* `invalid_file` - 422: the file is invalid.\n* `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.\n* `invalid_file_download_time` - 422: file download from remote server took too long.\n* `invalid_file_url` - 422: the file URL when creating a resource is invalid.\n* `invalid_image_dpi` - 422: DPI must be at least 300.\n* `invalid_international_feature` - 422: the specified product cannot be sent to the destination.\n* `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.\n* `invalid_template_html` - 422: the provided HTML is invalid.\n* `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.\n* `merge_variable_required` - 422: a required merge variable is missing.\n* `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.\n* `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.\n* `pdf_encrypted` - 422: an encrypted PDF was provided.\n* `special_characters_restricted` - 422: cannot use special characters for merge variable names.\n* `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.\n\n**AUTHENTICATION**\n* `email_required` - 401: account must have a verified email address before creating live resources.\n* `invalid_api_key` - 401/403: the API key is invalid.\n* `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.\n* `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.\n* `unauthorized` - 401: the request isn\'t authorized.\n* `unauthorized_token` - 401: token isn\'t authorized.\n',
+          }),
+      })
+      .openapi({ required: ['message', 'status_code', 'code'] }),
+  })
+  .openapi({
+    description:
+      "Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.",
+    required: ['error'],
+  })
+  .openapi('Error')
+
+const ObjectSchema = z
+  .string()
+  .openapi({ description: 'Value is resource type.' })
+  .openapi('Object')
+
+const CountSchema = z
+  .int()
+  .openapi({ description: 'number of resources in a set' })
+  .openapi('Count')
+
+const ListSchema = z
+  .object({
+    object: ObjectSchema.exactOptional(),
+    next_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Url of next page of items in list.' }),
+    previous_url: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Url of previous page of items in list.' }),
+    count: CountSchema.exactOptional(),
+    total_count: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Indicates the total number of records. Provided when the request specifies an "include" query parameter',
+      }),
+  })
+  .openapi({ description: 'Multiple items returned in order', required: [] })
+  .openapi('List')
+
+const DateCreatedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({ description: 'A timestamp in ISO 8601 format of the date the resource was created.' })
+  .openapi('DateCreated')
+
+const DateModifiedSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({
+    description: 'A timestamp in ISO 8601 format of the date the resource was last modified.',
+  })
+  .openapi('DateModified')
 
 const DeletedSchema = z
   .boolean()
@@ -1145,559 +1362,6 @@ const AddressIntlSchema = LobBaseSchema.and(
 
 const AddressSchema = z.xor([AddressUsSchema, AddressIntlSchema]).openapi('Address')
 
-const SignedLinkSchema = z
-  .string()
-  .regex(
-    /^https:\/\/lob-assets.com\/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)\/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+/,
-  )
-  .openapi({
-    description:
-      'A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.',
-  })
-  .openapi('SignedLink')
-
-const ThumbnailSchema = z
-  .object({
-    small: SignedLinkSchema.exactOptional(),
-    medium: SignedLinkSchema.exactOptional(),
-    large: SignedLinkSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Thumbnail')
-
-const ExpectedDeliveryDateSchema = z.iso
-  .date()
-  .openapi({
-    description:
-      "A date in YYYY-MM-DD format of the mailpiece's expected delivery date based on its `send_date`.",
-  })
-  .openapi('ExpectedDeliveryDate')
-
-const GeneratedSchema = z
-  .object({
-    to: AddressSchema,
-    carrier: z.literal('USPS').default('USPS'),
-    thumbnails: z.array(ThumbnailSchema).exactOptional(),
-    expected_delivery_date: ExpectedDeliveryDateSchema.exactOptional(),
-    date_created: DateCreatedSchema.exactOptional(),
-    date_modified: DateModifiedSchema.exactOptional(),
-    deleted: DeletedSchema.exactOptional(),
-  })
-  .openapi({ required: ['to', 'carrier'] })
-  .openapi('Generated')
-
-const FromSchema = z
-  .object({ from: AddressSchema.exactOptional() })
-  .openapi({ required: [] })
-  .openapi('From')
-
-const LtrIdSchema = z
-  .string()
-  .regex(/^ltr_[a-zA-Z0-9]+$/)
-  .openapi({ description: 'Unique identifier prefixed with `ltr_`.' })
-  .openapi('LtrId')
-
-const TmplIdSchema = z
-  .string()
-  .regex(/^tmpl_[a-zA-Z0-9]+$/)
-  .openapi({
-    description:
-      'Unique identifier prefixed with `tmpl_`. ID of a saved [HTML template](#section/HTML-Templates).',
-  })
-  .openapi('TmplId')
-
-const VrsnIdSchema = z
-  .string()
-  .regex(/^vrsn_[a-zA-Z0-9]+$/)
-  .openapi({ description: 'Unique identifier prefixed with `vrsn_`.' })
-  .openapi('VrsnId')
-
-const CampaignIdSchema = z
-  .string()
-  .regex(/^(cmp|camp)_[a-zA-Z0-9]+$/)
-  .nullable()
-  .openapi({
-    title: 'campaign_id',
-    description:
-      'Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.',
-  })
-  .openapi('CampaignId')
-
-const LtrUseTypeSchema = z
-  .union([z.literal('marketing'), z.literal('operational'), z.literal(null)])
-  .nullable()
-  .openapi({
-    description:
-      'The use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).',
-  })
-  .openapi('LtrUseType')
-
-const StatusSchema = z
-  .enum(['processed', 'rendered', 'failed'])
-  .openapi({
-    description:
-      'A string describing the PDF render status:\n* `processed` - the rendering process is currently in progress.\n* `rendered` - a PDF has been successfully rendered of the mailpiece.\n* `failed` - one or more issues has caused the rendering process to fail.\n',
-  })
-  .openapi('Status')
-
-const FailureReasonErrorSchema = z
-  .object({
-    url: z.string().nullable().exactOptional().openapi({ description: 'Failed URL of asset' }),
-    host: z.string().nullable().exactOptional().openapi({ description: 'URL host' }),
-    path: z.string().nullable().exactOptional().openapi({ description: 'URL path' }),
-    protocol: z.string().nullable().exactOptional().openapi({ description: 'Network protocol' }),
-    remediation: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Instructions on how to resolve the error' }),
-    error_type: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'HTTP response status code message or service defined error' }),
-    status_code: z
-      .number()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'HTTP response status codes if the error is asset related' }),
-  })
-  .openapi({ description: 'Failure error details', required: [] })
-  .openapi('FailureReasonError')
-
-const FailureReasonSchema = z
-  .object({
-    remediation: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Instructions on how to resolve the error' }),
-    failure_reason: z.string().exactOptional().openapi({ description: 'Reason failure occurred' }),
-    errors: z.array(FailureReasonErrorSchema).nullable().exactOptional(),
-  })
-  .openapi({
-    description: 'An object describing the reason for failure if the resource failed to render.',
-    required: [],
-  })
-  .openapi('FailureReason')
-
-const LetterGeneratedBaseSchema = GeneratedSchema.and(FromSchema)
-  .and(
-    z
-      .object({
-        url: SignedLinkSchema.exactOptional(),
-        id: LtrIdSchema,
-        template_id: z
-          .any()
-          .openapi({ description: 'The unique ID of the HTML template used for the letter.' })
-          .and(TmplIdSchema)
-          .exactOptional(),
-        template_version_id: z
-          .string()
-          .openapi({
-            description:
-              'The unique ID of the specific version of the HTML template used for the letter.',
-          })
-          .and(VrsnIdSchema)
-          .exactOptional(),
-        campaign_id: CampaignIdSchema.exactOptional(),
-        use_type: LtrUseTypeSchema,
-        fsc: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description:
-              'This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `A4` letter size.',
-          }),
-        status: StatusSchema.exactOptional(),
-        failure_reason: FailureReasonSchema.nullable().exactOptional(),
-        object: z
-          .literal('letter')
-          .default('letter')
-          .exactOptional()
-          .openapi({ description: 'Value is resource type.' }),
-      })
-      .openapi({ required: ['id', 'from', 'use_type'] }),
-  )
-  .openapi('LetterGeneratedBase')
-
-type CertifiedType = {
-  extra_service: 'certified' | 'certified_return_receipt'
-  tracking_number?: string | null
-  tracking_events: z.infer<typeof TrackingEventCertifiedSchema>[]
-  return_address?: z.infer<typeof ReturnAddressSchema>
-  description?: z.infer<typeof ResourceDescriptionSchema>
-  metadata?: z.infer<typeof MetadataSchema>
-  merge_variables?: z.infer<typeof MergeVariablesSchema>
-  send_date?: z.infer<typeof SendDateSchema>
-  mail_type?: z.infer<typeof MailTypeSchema>
-  color: z.infer<typeof ColorSchema>
-  double_sided?: z.infer<typeof DoubleSidedSchema>
-  address_placement?: z.infer<typeof AddressPlacementSchema>
-  return_envelope?: z.infer<typeof Returned_5Schema>
-  perforated_page?: number | null
-  custom_envelope?: z.infer<typeof Returned_2Schema>
-} & z.infer<typeof LetterGeneratedBaseSchema>
-
-const InputToSchema = z
-  .object({
-    to: z
-      .xor([AdrIdSchema, InlineAddressSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'Must either be an address ID or an inline object with correct address parameters. If an object is used, an address will be created, corrected, and standardized for free whenever possible using our US Address Verification engine (if it is a US address), and returned back with an ID. Depending on your <a href="https://dashboard.lob.com/#/settings/editions" target="_blank">Print & Mail Edition</a>, US addresses may also be run through <a href="#tag/National-Change-of-Address">National Change of Address Linkage(NCOALink)</a>. Non-US addresses will be standardized into uppercase only. If a US address used does not meet your account’s <a href="https://dashboard.lob.com/#/settings/account" target="_blank">US Mail strictness setting</a>, the request will fail. <a href="https://help.lob.com/print-and-mail/all-about-addresses" target="_blank">Lob Guide: Verification of Mailing Addresses</a>',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InputTo')
-
-const InputFromUsSchema = z
-  .object({
-    from: z
-      .xor([AdrIdSchema, InlineAddressUsSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          '*Required* if `to` address is international. Must either be an address ID or an inline object with correct address parameters. Must either be an address ID or an inline object with correct address parameters. All addresses will be standardized into uppercase without being modified by verification.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InputFromUs')
-
-const PostcardSizeSchema = z
-  .enum(['4x6', '6x9', '6x11'])
-  .default('4x6')
-  .openapi({
-    description:
-      'Specifies the size of the postcard. Only `4x6` postcards can be sent to international destinations.\n',
-  })
-  .openapi('PostcardSize')
-
-const HtmlStringSchema = z
-  .string()
-  .regex(/</)
-  .max(10000)
-  .openapi({ description: 'An HTML string of under 10,000 characters.' })
-  .openapi('HtmlString')
-
-const RemoteFileUrlSchema = z
-  .string()
-  .regex(/^https:\/\/[-a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf|png|jpg)$/)
-  .openapi({
-    description:
-      'The location of a remote file. Remote URLs have a 5 MB file size limit and must be downloaded within 40 seconds.\n',
-  })
-  .openapi('RemoteFileUrl')
-
-const LocalFilePathSchema = z
-  .string()
-  .regex(/^(?!https:\/\/)[a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf|png|jpg)$/)
-  .openapi({ description: 'The path to a local file.' })
-  .openapi('LocalFilePath')
-
-const PscFrontSchema = z
-  .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
-  .openapi({
-    description:
-      'The artwork to use as the front of your postcard.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 4.25"x6.25", 6.25"x9.25", or 6.25"x11.25" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
-  })
-  .openapi('PscFront')
-
-const PscBackSchema = z
-  .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
-  .openapi({
-    description:
-      'The artwork to use as the back of your postcard.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 4.25"x6.25", 6.25"x9.25", or 6.25"x11.25" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/4x6_postcard.pdf" target="_blank">4x6 template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x9_postcard.pdf" target="_blank">6x9 template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/postcards/6x11_postcard.pdf" target="_blank">6x11 template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
-  })
-  .openapi('PscBack')
-
-const PostcardResourceParametersSchema = InputToSchema.and(InputFromUsSchema)
-  .and(
-    z
-      .object({
-        size: PostcardSizeSchema.exactOptional(),
-        merge_variables: MergeVariablesSchema.exactOptional(),
-        front: PscFrontSchema,
-        back: PscBackSchema,
-      })
-      .openapi({ required: ['to', 'front', 'back'] }),
-  )
-  .openapi('PostcardResourceParameters')
-
-const _0Schema = z
-  .object({
-    template_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The template ID to associate with the resource proof.' }),
-    resource_type: z
-      .literal('postcard')
-      .exactOptional()
-      .openapi({ description: 'The type of resource to generate a proof for.' }),
-    resource_parameters: PostcardResourceParametersSchema.exactOptional(),
-  })
-  .openapi({ title: 'Postcard Resource Proof', required: [] })
-  .openapi('_0')
-
-const InputFromSchema = z
-  .object({
-    from: z
-      .xor([AdrIdSchema, InlineAddressSchema])
-      .exactOptional()
-      .openapi({
-        description:
-          'Must either be an address ID or an inline object with correct address parameters. Must be a US address unless using a `custom_envelope`. All addresses will be standardized into uppercase without being modified by verification.',
-      }),
-  })
-  .openapi({ required: [] })
-  .openapi('InputFrom')
-
-const LtrFileSchema = z
-  .xor([
-    HtmlStringSchema,
-    TmplIdSchema,
-    RemoteFileUrlSchema,
-    z.string().regex(/^(?!https:\/\/)[a-zA-Z0-9@:%._+~#=\/]{1,256}.(html?|pdf)$/),
-  ])
-  .openapi({
-    description:
-      'Notes:\n- HTML merge variables should not include delimiting whitespace.\n- All pages of a supplied PDF file must be sized at 8.5"x11", while supplied HTML will be rendered and trimmed to as many 8.5"x11" pages as necessary.\n- For design specifications, please see our <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_template.pdf" target="_blank">PDF</a> and [HTML](#section/HTML-Examples) templates.\n- If a `custom_envelope` is used, follow <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_custom_envelope.pdf" target="_blank">this template</a>.\n- For domestic destinations, the file limit is 60 pages single-sided or 120 pages double-sided. For international destinations, the file limit is 6 pages single-sided or 12 pages double-sided. PDFs that surpass the file limit will error, while HTML that renders more pages than the file limit will be trimmed.\n- Any letters over 6 pages single-sided or 12 pages double-sided will be placed in a <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_flat_template.pdf" target="_blank">flat envelope</a> instead of the standard double window envelope.\n\nSee <a href="https://lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred.',
-  })
-  .openapi('LtrFile')
-
-const LtrSizeSchema = z
-  .enum(['us_letter', 'us_legal'])
-  .default('us_letter')
-  .openapi({
-    description:
-      'Specifies the size of the letter. It accepts two values `us_letter` and `us_legal`. If the [Lob-Version header](#tag/Versioning-and-Changelog) in the request is set to `2024-01-01` and above, the `size` property is automatically included with the default value of `us_letter`, unless explicitly specified.\n\nPlease note that attempting to include the `size` property in the request with the `Lob-Version` header predating to `2024-01-01` will result in an error.\n',
-  })
-  .openapi('LtrSize')
-
-const LetterResourceParametersSchema = InputToSchema.and(InputFromSchema)
-  .and(
-    z
-      .object({
-        merge_variables: MergeVariablesSchema.exactOptional(),
-        file: LtrFileSchema,
-        color: ColorSchema.and(z.any().default(false)),
-        double_sided: DoubleSidedSchema.exactOptional(),
-        address_placement: AddressPlacementSchema.exactOptional(),
-        size: LtrSizeSchema.exactOptional(),
-      })
-      .openapi({ required: ['to', 'from', 'file', 'color'] }),
-  )
-  .openapi('LetterResourceParameters')
-
-const _1Schema = z
-  .object({
-    template_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The template ID to associate with the resource proof.' }),
-    resource_type: z
-      .literal('letter')
-      .exactOptional()
-      .openapi({ description: 'The type of resource to generate a proof for.' }),
-    resource_parameters: LetterResourceParametersSchema.exactOptional(),
-  })
-  .openapi({ title: 'Letter Resource Proof', required: [] })
-  .openapi('_1')
-
-const SelfMailerSizeSchema = z
-  .enum(['6x18_bifold', '11x9_bifold', '12x9_bifold', '17.75x9_trifold'])
-  .default('6x18_bifold')
-  .openapi({
-    description:
-      'Specifies the size of the self mailer. The `17.75x9_trifold` size is in beta. Contact support@lob.com or your account contact to learn more.',
-  })
-  .openapi('SelfMailerSize')
-
-const SelfMailerResourceParametersSchema = InputToSchema.and(InputFromUsSchema)
-  .and(
-    z
-      .object({
-        size: SelfMailerSizeSchema.exactOptional(),
-        merge_variables: MergeVariablesSchema.exactOptional(),
-        inside: z
-          .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
-          .openapi({
-            description:
-              'The artwork to use as the inside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n- Be sure to leave room for address and postage information by following the templates provided here:\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/6x18_sfm_bifold_template.pdf" target="_blank">6x18 bifold template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/12x9_sfm_bifold_template.pdf" target="_blank">12x9 bifold template</a>\n  - <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/self_mailers/17_75x9_trifold_sfm_template.pdf" target="_blank">17.75x9 trifold template</a>\n\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
-          }),
-        outside: z
-          .xor([HtmlStringSchema, TmplIdSchema, RemoteFileUrlSchema, LocalFilePathSchema])
-          .openapi({
-            description:
-              'The artwork to use as the outside of your self mailer.\n\nNotes:\n- HTML merge variables should not include delimiting whitespace.\n- PDF, PNG, and JPGs must be sized at 6"x18" at 300 DPI, while supplied HTML will be rendered to the specified `size`.\n\nSee [here](#section/HTML-Examples) for HTML examples.\n',
-          }),
-      })
-      .openapi({ required: ['to', 'inside', 'outside'] }),
-  )
-  .openapi('SelfMailerResourceParameters')
-
-const _2Schema = z
-  .object({
-    template_id: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The template ID to associate with the resource proof.' }),
-    resource_type: z
-      .literal('self_mailer')
-      .exactOptional()
-      .openapi({ description: 'The type of resource to generate a proof for.' }),
-    resource_parameters: SelfMailerResourceParametersSchema.exactOptional(),
-  })
-  .openapi({ title: 'Self Mailer Resource Proof', required: [] })
-  .openapi('_2')
-
-const LobCreditsBalanceSchema = z
-  .object({
-    balance: z
-      .number()
-      .openapi({
-        description:
-          "Account's current balance of Lob Credits. Can be positive, negative, or zero.",
-        example: 1000,
-      }),
-  })
-  .openapi({ required: ['balance'] })
-  .openapi('LobCreditsBalance')
-
-const DateFilterSchema = z
-  .record(z.string(), z.string())
-  .openapi({
-    description:
-      'Filter by ISO-8601 date or datetime, e.g. `{ "gt": "2012-01-01", "lt": "2012-01-31T12:34:56Z" }` where `gt` is >, `lt` is <, `gte` is ≥, and `lte` is ≤.',
-  })
-  .openapi('DateFilter')
-
-const FailureStatusCodeSchema = z
-  .union([
-    z.literal(401),
-    z.literal(403),
-    z.literal(404),
-    z.literal(413),
-    z.literal(422),
-    z.literal(429),
-    z.literal(500),
-  ])
-  .openapi({
-    description:
-      'A conventional HTTP status code:\n  * `401` - Authorization error with your API key or account\n  * `403` - Forbidden error with your API key or account\n  * `404` - The requested item does not exist\n  * `413` - Payload too large\n  * `422` - The query or body parameters did not pass validation\n  * `429` - Too many requests have been sent with an API key in a given amount of time\n  * `500` - An internal server error occurred, please contact support@lob.com\n',
-  })
-  .openapi('FailureStatusCode')
-
-const ErrorSchema = z
-  .object({
-    error: z
-      .object({
-        message: z
-          .string()
-          .openapi({
-            description: 'A human-readable message with more details about the error',
-            example: 'Rate limit exceeded. Please wait 5 seconds and try your request again.',
-          }),
-        status_code: FailureStatusCodeSchema,
-        code: z
-          .enum([
-            'bad_request',
-            'conflict',
-            'feature_limit_reached',
-            'internal_server_error',
-            'invalid',
-            'not_deletable',
-            'not_found',
-            'request_timeout',
-            'service_unavailable',
-            'unrecognized_endpoint',
-            'unsupported_lob_version',
-            'address_length_exceeds_limit',
-            'bank_account_already_verified',
-            'bank_error',
-            'billing_address_required',
-            'custom_envelope_inventory_depleted',
-            'deleted_bank_account',
-            'failed_deliverability_strictness',
-            'file_pages_below_min',
-            'file_pages_exceed_max',
-            'file_size_exceeds_limit',
-            'foreign_return_address',
-            'inconsistent_page_dimensions',
-            'invalid_bank_account',
-            'invalid_bank_account_verification',
-            'invalid_check_international',
-            'invalid_country_covid',
-            'invalid_file',
-            'invalid_file_dimensions',
-            'invalid_file_download_time',
-            'invalid_file_url',
-            'invalid_image_dpi',
-            'invalid_international_feature',
-            'invalid_perforation_return_envelope',
-            'invalid_template_html',
-            'mail_use_type_can_not_be_null',
-            'merge_variable_required',
-            'merge_variable_whitespace',
-            'payment_method_unverified',
-            'pdf_encrypted',
-            'special_characters_restricted',
-            'unembedded_fonts',
-            'email_required',
-            'invalid_api_key',
-            'publishable_key_not_allowed',
-            'rate_limit_exceeded',
-            'unauthorized',
-            'unauthorized_token',
-          ])
-          .openapi({
-            description:
-              'A pre-defined string identifying an error. Error codes fall into three categories:\n\n**GENERIC**\n* `bad_request` - 422: an invalid request was made. See error message for details.\n* `conflict` - 409/422: this operation would leave data in a conflicted state.\n* `feature_limit_reached` - 403: the account has reached its resource limit and requires upgrading to add more.\n* `internal_server_error` - 500: an error has occured on Lob\'s servers. Please try request again.\n* `invalid` - 422: an invalid request was made. See error message for details.\n* `not_deletable` - 422: an attempt was made to delete a resource, but the resource cannot be deleted.\n* `not_found` - 404: the requested resource was not found.\n* `request_timeout` - 408: the request took too long. Please try again.\n* `service_unavailable` - 503: the Lob servers are temporarily unavailable. Please try agian.\n* `unrecognized_endpoint` - 404: the requested endpoint doesn\'t exist.\n* `unsupported_lob_version` - 422: an unsupported Lob API version was requested.\n\n**ADVANCED**\n* `address_length_exceeds_limit` - 422: the sum of to.address_line1 and to.address_line2 cannot surpass 50 characters.\n* `bank_account_already_verified` - 422: the bank account has already been verified.\n* `bank_error` - 422: there\'s an issue with the bank account.\n* `billing_address_required` - 403: in order to create a live mail piece, your account needs to set up a billing address.\n* `custom_envelope_inventory_depleted` - 422: custom envelope inventory is depleted, and more will need to be ordered.\n* `deleted_bank_account` - 404: checks cannot be created with a deleted bank account.\n* `failed_deliverability_strictness` - 422: the `to` address doesn\'t meet strictness requirements. See <a href="https://dashboard.lob.com/#/settings/account" target="_blank">Account Settings</a> to configure strictness.\n* `file_pages_below_min` - 422: not enough pages.\n* `file_pages_exceed_max` - 422: too many pages.\n* `file_size_exceeds_limit` - 422: the file size is too large. See description for details.\n* `foreign_return_address` - 422: the `from` address must be a US address.\n* `inconsistent_page_dimensions` - 422: all pages of the input file must have the same dimensions.\n* `invalid_bank_account` - 422: the provided bank routing number is invalid.\n* `invalid_bank_account_verification` - 422: verification amounts do not match.\n* `invalid_check_international` - 422: checks cannot be sent internationally.\n* `invalid_country_covid` - 422: the postal service in the specified country is currently unable to process the request due to COVID-19 restrictions.\n* `invalid_file` - 422: the file is invalid.\n* `invalid_file_dimensions` - 422: file dimensions are incorrect for the selected mail type.\n* `invalid_file_download_time` - 422: file download from remote server took too long.\n* `invalid_file_url` - 422: the file URL when creating a resource is invalid.\n* `invalid_image_dpi` - 422: DPI must be at least 300.\n* `invalid_international_feature` - 422: the specified product cannot be sent to the destination.\n* `invalid_perforation_return_envelope` - 422: both `return_envelope` and `perforation` must be used together.\n* `invalid_template_html` - 422: the provided HTML is invalid.\n* `mail_use_type_can_not_be_null` - 422: use_type must be one of "marketing" or "operational". Alternatively, an admin can set the account default use type in Account Settings.\n* `merge_variable_required` - 422: a required merge variable is missing.\n* `merge_variable_whitespace` - 422: merge variable names cannot contain whitespace.\n* `payment_method_unverified` - 401: you must have a verified bank account or credit card to submit live requests.\n* `pdf_encrypted` - 422: an encrypted PDF was provided.\n* `special_characters_restricted` - 422: cannot use special characters for merge variable names.\n* `unembedded_fonts` - 422: the provided PDF contains non-standard unembedded fonts. See description for details.\n\n**AUTHENTICATION**\n* `email_required` - 401: account must have a verified email address before creating live resources.\n* `invalid_api_key` - 401/403: the API key is invalid.\n* `publishable_key_not_allowed` - 403: the requested operation needs a secret key, not a publishable key. See [API Keys](#section/API-Keys) for more information.\n* `rate_limit_exceeded` - 429: requests were sent too quickly and must be slowed down.\n* `unauthorized` - 401: the request isn\'t authorized.\n* `unauthorized_token` - 401: token isn\'t authorized.\n',
-          }),
-      })
-      .openapi({ required: ['message', 'status_code', 'code'] }),
-  })
-  .openapi({
-    description:
-      "Lob uses RESTful HTTP response codes to indicate success or failure of an API request. In general, 2xx indicates success, 4xx indicate an input error, and 5xx indicates an error on Lob's end.",
-    required: ['error'],
-  })
-  .openapi('Error')
-
-const CountSchema = z
-  .int()
-  .openapi({ description: 'number of resources in a set' })
-  .openapi('Count')
-
-const ListSchema = z
-  .object({
-    object: ObjectSchema.exactOptional(),
-    next_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Url of next page of items in list.' }),
-    previous_url: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Url of previous page of items in list.' }),
-    count: CountSchema.exactOptional(),
-    total_count: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates the total number of records. Provided when the request specifies an "include" query parameter',
-      }),
-  })
-  .openapi({ description: 'Multiple items returned in order', required: [] })
-  .openapi('List')
-
 const AddressEditableSchema = z
   .xor([AddressEditableUsSchema, AddressEditableIntlSchema])
   .openapi('AddressEditable')
@@ -1810,6 +1474,17 @@ const BankAccountBaseSchema = z
   })
   .openapi({ required: ['routing_number', 'account_number', 'account_type', 'signatory'] })
   .openapi('BankAccountBase')
+
+const SignedLinkSchema = z
+  .string()
+  .regex(
+    /^https:\/\/lob-assets.com\/(letters|postcards|bank-accounts|checks|self-mailers|cards|order-creatives)\/([a-z]{3,4}_[a-z0-9]{15,16}|[a-z]{3}_[a-z0-9]{26}_[a-z]{4}_[a-z0-9]{26})('|_signature)(.pdf|_thumb_[a-z]+_[0-9]+.png|.png)?(version=[a-z0-9]*&)expires=[0-9]{10}&signature=[a-zA-Z0-9-_]+/,
+  )
+  .openapi({
+    description:
+      'A [signed link](#section/Asset-URLs) served over HTTPS. The link returned will expire in 30 days to prevent mis-sharing. Each time a GET request is initiated, a new signed URL will be generated.',
+  })
+  .openapi('SignedLink')
 
 const BankAccountSchema = BankAccountBaseSchema.and(LobBaseSchema)
   .and(
@@ -1940,6 +1615,32 @@ const BookletIdSchema = z
   .openapi({ description: 'Unique identifier prefixed with `ord_`.' })
   .openapi('BookletId')
 
+const EvntIdSchema = z
+  .string()
+  .regex(/^evnt_[a-zA-Z0-9]+$/)
+  .openapi({ description: 'Unique identifier prefixed with `evnt_`.' })
+  .openapi('EvntId')
+
+const TrackingEventBaseSchema = z
+  .object({
+    id: EvntIdSchema,
+    time: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'A timestamp in ISO 8601 format of the date USPS registered the event.',
+      }),
+    date_created: DateCreatedSchema,
+    date_modified: DateModifiedSchema,
+    object: ObjectSchema.and(z.literal('tracking_event').default('tracking_event')),
+  })
+  .openapi({
+    description:
+      'As mail pieces travel through the mail stream, USPS scans their unique barcodes, and Lob processes these mail scans to generate tracking events.',
+    required: ['id', 'date_created', 'date_modified', 'object'],
+  })
+  .openapi('TrackingEventBase')
+
 const TrackingEventNormalSchema = TrackingEventBaseSchema.and(
   z
     .object({
@@ -1979,6 +1680,75 @@ const TrackingEventNormalSchema = TrackingEventBaseSchema.and(
     .openapi({ required: ['type', 'name'] }),
 ).openapi('TrackingEventNormal')
 
+const SendDateSchema = z
+  .union([z.string().and(z.any()), z.string().and(z.any())])
+  .openapi({
+    description:
+      'A timestamp in ISO 8601 format which specifies a date after the current time and up to 180 days in the future to send the letter off for production. Setting a send date overrides the default [cancellation window](#section/Cancellation-Windows) applied to the mailpiece. Until the `send_date` has passed, the mailpiece can be canceled. If a date in the format `2017-11-01` is passed, it will evaluate to midnight UTC of that date (`2017-11-01T00:00:00.000Z`). If a datetime is passed, that exact time will be used. A `send_date` passed with no time zone will default to UTC, while a `send_date` passed with a time zone will be converted to UTC.',
+  })
+  .openapi('SendDate')
+
+const MailTypeSchema = z
+  .enum(['usps_first_class', 'usps_standard'])
+  .default('usps_first_class')
+  .openapi({
+    description:
+      'A string designating the mail postage type:\n* `usps_first_class` - (default)\n* `usps_standard` - a <a href="https://lob.com/pricing/print-mail#compare" target="_blank">cheaper option</a> which is\nless predictable and takes longer to deliver. `usps_standard` cannot be used with `4x6`\npostcards or for any postcards sent outside of the United States.\n',
+  })
+  .openapi('MailType')
+
+const ThumbnailSchema = z
+  .object({
+    small: SignedLinkSchema.exactOptional(),
+    medium: SignedLinkSchema.exactOptional(),
+    large: SignedLinkSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Thumbnail')
+
+const ExpectedDeliveryDateSchema = z.iso
+  .date()
+  .openapi({
+    description:
+      "A date in YYYY-MM-DD format of the mailpiece's expected delivery date based on its `send_date`.",
+  })
+  .openapi('ExpectedDeliveryDate')
+
+const GeneratedSchema = z
+  .object({
+    to: AddressSchema,
+    carrier: z.literal('USPS').default('USPS'),
+    thumbnails: z.array(ThumbnailSchema).exactOptional(),
+    expected_delivery_date: ExpectedDeliveryDateSchema.exactOptional(),
+    date_created: DateCreatedSchema.exactOptional(),
+    date_modified: DateModifiedSchema.exactOptional(),
+    deleted: DeletedSchema.exactOptional(),
+  })
+  .openapi({ required: ['to', 'carrier'] })
+  .openapi('Generated')
+
+const FromSchema = z
+  .object({ from: AddressSchema.exactOptional() })
+  .openapi({ required: [] })
+  .openapi('From')
+
+const VrsnIdSchema = z
+  .string()
+  .regex(/^vrsn_[a-zA-Z0-9]+$/)
+  .openapi({ description: 'Unique identifier prefixed with `vrsn_`.' })
+  .openapi('VrsnId')
+
+const CampaignIdSchema = z
+  .string()
+  .regex(/^(cmp|camp)_[a-zA-Z0-9]+$/)
+  .nullable()
+  .openapi({
+    title: 'campaign_id',
+    description:
+      'Denotes resources created by the provided campaign id, prefixed with `cmp_`. In the case of snap packs, booklets, and letters with size `us_legal`, however, the campaign id is prefixed with `camp_` instead of `cmp_`.',
+  })
+  .openapi('CampaignId')
+
 const BookletUseTypeSchema = z
   .union([z.literal('marketing'), z.literal('operational'), z.literal(null)])
   .nullable()
@@ -2002,6 +1772,14 @@ const BookletPagesSchema = z
   })
   .openapi('BookletPages')
 
+const StatusSchema = z
+  .enum(['processed', 'rendered', 'failed'])
+  .openapi({
+    description:
+      'A string describing the PDF render status:\n* `processed` - the rendering process is currently in progress.\n* `rendered` - a PDF has been successfully rendered of the mailpiece.\n* `failed` - one or more issues has caused the rendering process to fail.\n',
+  })
+  .openapi('Status')
+
 const BookletSourceMaterialSchema = z
   .literal('60# Gloss Text')
   .default('60# Gloss Text')
@@ -2011,17 +1789,55 @@ const BookletSourceMaterialSchema = z
   })
   .openapi('BookletSourceMaterial')
 
+const FailureReasonErrorSchema = z
+  .object({
+    url: z.string().nullable().exactOptional().openapi({ description: 'Failed URL of asset' }),
+    host: z.string().nullable().exactOptional().openapi({ description: 'URL host' }),
+    path: z.string().nullable().exactOptional().openapi({ description: 'URL path' }),
+    protocol: z.string().nullable().exactOptional().openapi({ description: 'Network protocol' }),
+    remediation: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Instructions on how to resolve the error' }),
+    error_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'HTTP response status code message or service defined error' }),
+    status_code: z
+      .number()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'HTTP response status codes if the error is asset related' }),
+  })
+  .openapi({ description: 'Failure error details', required: [] })
+  .openapi('FailureReasonError')
+
+const FailureReasonSchema = z
+  .object({
+    remediation: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Instructions on how to resolve the error' }),
+    failure_reason: z.string().exactOptional().openapi({ description: 'Reason failure occurred' }),
+    errors: z.array(FailureReasonErrorSchema).nullable().exactOptional(),
+  })
+  .openapi({
+    description: 'An object describing the reason for failure if the resource failed to render.',
+    required: [],
+  })
+  .openapi('FailureReason')
+
 const BookletGeneratedBaseSchema = GeneratedSchema.and(FromSchema)
   .and(
     z
       .object({
         url: SignedLinkSchema.exactOptional(),
         id: BookletIdSchema,
-        template_id: z
-          .any()
-          .openapi({ description: 'The unique ID of the HTML template used for the booklet.' })
-          .and(TmplIdSchema)
-          .exactOptional(),
+        template_id: TmplIdSchema.exactOptional().openapi({
+          description: 'The unique ID of the HTML template used for the booklet.',
+        }),
         template_version_id: z
           .string()
           .openapi({
@@ -2573,14 +2389,10 @@ const MultipleComponentsSchema = z
             description:
               'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.',
           }),
-        zip_code: z
-          .any()
-          .openapi({
-            description:
-              'Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).',
-          })
-          .and(ZipCodeSchema)
-          .exactOptional(),
+        zip_code: ZipCodeSchema.exactOptional().openapi({
+          description:
+            'Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).',
+        }),
       })
       .openapi({ required: ['primary_line'] }),
   )
@@ -2709,10 +2521,7 @@ const UsComponentsSchema = z
       .string()
       .regex(/^\d{5}$/)
       .openapi({ description: 'The 5-digit ZIP code' }),
-    zip_code_plus_4: z
-      .any()
-      .openapi({ description: 'The 4-digit ZIP add-on code' })
-      .and(ZipCodePlus_4Schema),
+    zip_code_plus_4: ZipCodePlus_4Schema.openapi({ description: 'The 4-digit ZIP add-on code' }),
     zip_code_type: ZipCodeTypeSchema,
     delivery_point_barcode: z
       .string()
@@ -3264,6 +3073,23 @@ const CardIdSchema = z
   .openapi({ description: 'Unique identifier prefixed with `card_`.' })
   .openapi('CardId')
 
+const Returned_2Schema = z
+  .object({
+    id: z
+      .string()
+      .max(40)
+      .openapi({ description: 'The unique identifier of the custom envelope used.' }),
+    url: z.string().openapi({ description: 'The url of the envelope asset used.' }),
+    object: z.literal('envelope').default('envelope'),
+  })
+  .nullable()
+  .openapi({
+    description:
+      'A nested custom envelope object containing more information about the custom envelope used or `null` if a custom envelope was not used.',
+    required: ['id', 'url', 'object'],
+  })
+  .openapi('Returned_2')
+
 const ExtraServiceSchema = z
   .union([
     z.literal('certified'),
@@ -3465,14 +3291,14 @@ const CreativeSchema = LobBaseSchema.and(ReturnedResourceSchema)
         deleted: z.boolean().openapi({ description: 'Whether the resource has been deleted.' }),
         id: CrvIdSchema,
         template_preview_urls: z
-          .object({})
+          .looseObject({})
           .openapi({
             title: 'Template Preview URLs',
             description:
               "Preview URLs associated with a creative's artwork asset(s) if the creative uses HTML templates as assets. An empty object will be returned if no `template_preview`s have been generated.",
           }),
         template_previews: z
-          .array(z.object({}))
+          .array(z.looseObject({}))
           .openapi({
             title: 'Template Previews',
             description:
@@ -3619,7 +3445,7 @@ const UploadsMetadataSchema = z
   .openapi('UploadsMetadata')
 
 const MergeVariableColumnMappingSchema = z
-  .object({})
+  .looseObject({})
   .nullable()
   .default(null)
   .openapi({
@@ -4269,16 +4095,12 @@ const CheckSchema = CheckBaseSchema.and(FromUsSchema)
           .multipleOf(0.01)
           .openapi({ description: 'The payment amount to be sent in US dollars.' }),
         bank_account: BankAccountSchema,
-        check_bottom_template_id: z
-          .any()
-          .openapi({ description: 'The unique ID of the HTML template used for the check bottom.' })
-          .and(TmplIdSchema)
-          .exactOptional(),
-        attachment_template_id: z
-          .any()
-          .openapi({ description: 'The unique ID of the HTML template used for the attachment.' })
-          .and(TmplIdSchema)
-          .exactOptional(),
+        check_bottom_template_id: TmplIdSchema.exactOptional().openapi({
+          description: 'The unique ID of the HTML template used for the check bottom.',
+        }),
+        attachment_template_id: TmplIdSchema.exactOptional().openapi({
+          description: 'The unique ID of the HTML template used for the attachment.',
+        }),
         check_bottom_template_version_id: z
           .string()
           .openapi({
@@ -4822,14 +4644,10 @@ const RecipientInputSchema = z
             description:
               'The <a href="https://en.wikipedia.org/wiki/ISO_3166-2:US" target="_blank">ISO 3166-2</a> two letter code or subdivision name for the state. `city` and `state` are required if no `zip_code` is passed.',
           }),
-        zip_code: z
-          .any()
-          .openapi({
-            description:
-              'Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).',
-          })
-          .and(ZipCodeSchema)
-          .exactOptional(),
+        zip_code: ZipCodeSchema.exactOptional().openapi({
+          description:
+            'Required if `city` and `state` are not passed in. If included, must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).',
+        }),
       })
       .openapi({ required: ['recipient', 'primary_line'] }),
   )
@@ -5164,14 +4982,14 @@ const WritableBaseSchema = CommonSchema.and(
   z
     .object({
       ride_along_image: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description:
             'JPG Image. Maximum file size is 200 KBs. Maximum pixel size is 300 pixels wide x 200 pixels high',
         }),
       representative_image: z
-        .object({})
+        .looseObject({})
         .exactOptional()
         .openapi({
           description:
@@ -5225,6 +5043,95 @@ const SingleLineAddressIntlSchema = z
 const IntlVerificationWritableSchema = z
   .xor([MultipleComponentsIntlSchema, SingleLineAddressIntlSchema])
   .openapi('IntlVerificationWritable')
+
+const LtrIdSchema = z
+  .string()
+  .regex(/^ltr_[a-zA-Z0-9]+$/)
+  .openapi({ description: 'Unique identifier prefixed with `ltr_`.' })
+  .openapi('LtrId')
+
+const ReturnAddressSchema = z
+  .xor([AdrIdSchema, InlineAddressSchema])
+  .openapi({
+    description:
+      'Specifies the address the return envelope will be sent back to. This is an optional argument that is available if an account is signed up for the return envelope tracking beta, and has `return_envelope`, and `perforated_page` fields populated in the API request.',
+  })
+  .openapi('ReturnAddress')
+
+const Returned_5Schema = z
+  .xor([
+    z.boolean(),
+    z
+      .looseObject({})
+      .and(
+        z
+          .object({
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The unique ID of the Return Envelope.' }),
+            alias: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'A quick reference name for the Return Envelope.' }),
+            url: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The url of the return envelope.' }),
+            object: z.string().exactOptional().openapi({ description: 'Value is resource type.' }),
+          })
+          .openapi({ required: [] }),
+      ),
+  ])
+  .openapi('Returned_5')
+
+const LtrUseTypeSchema = z
+  .union([z.literal('marketing'), z.literal('operational'), z.literal(null)])
+  .nullable()
+  .openapi({
+    description:
+      'The use type for each mailpiece. Can be one of marketing, operational, or null. Null use_type is only allowed if an account default use_type is selected in Account Settings. For more information on use_type, see our  [Help Center article](https://help.lob.com/print-and-mail/building-a-mail-strategy/managing-mail-settings/declaring-mail-use-type).',
+  })
+  .openapi('LtrUseType')
+
+const LetterGeneratedBaseSchema = GeneratedSchema.and(FromSchema)
+  .and(
+    z
+      .object({
+        url: SignedLinkSchema.exactOptional(),
+        id: LtrIdSchema,
+        template_id: TmplIdSchema.exactOptional().openapi({
+          description: 'The unique ID of the HTML template used for the letter.',
+        }),
+        template_version_id: z
+          .string()
+          .openapi({
+            description:
+              'The unique ID of the specific version of the HTML template used for the letter.',
+          })
+          .and(VrsnIdSchema)
+          .exactOptional(),
+        campaign_id: CampaignIdSchema.exactOptional(),
+        use_type: LtrUseTypeSchema,
+        fsc: z
+          .boolean()
+          .default(false)
+          .exactOptional()
+          .openapi({
+            description:
+              'This is in beta. Contact support@lob.com or your account contact to learn more. Not available for `A4` letter size.',
+          }),
+        status: StatusSchema.exactOptional(),
+        failure_reason: FailureReasonSchema.nullable().exactOptional(),
+        object: z
+          .literal('letter')
+          .default('letter')
+          .exactOptional()
+          .openapi({ description: 'Value is resource type.' }),
+      })
+      .openapi({ required: ['id', 'from', 'use_type'] }),
+  )
+  .openapi('LetterGeneratedBase')
 
 const NoExtraServiceSchema = z
   .object({
@@ -5311,60 +5218,142 @@ const RegisteredSchema = z
   .and(LetterGeneratedBaseSchema)
   .openapi('Registered')
 
-const CertifiedSchema: z.ZodType<CertifiedType> = z
-  .lazy(() =>
-    z
-      .object({
-        extra_service: z
-          .enum(['certified', 'certified_return_receipt'])
-          .openapi({
-            description:
-              'Add an extra service to your letter. See <a href="https://www.lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred.\n  * `certified` - track and confirm delivery for domestic destinations. An extra sheet (1 PDF page single-sided or 2 PDF pages double-sided) is added to the beginning of your letter for address and barcode information. See here for templates: <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_template.pdf" target="_blank">#10 envelope</a> and <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_flat_template.pdf" target="_blank">flat envelope</a> (used for letters over 6 pages single-sided or 12 pages double-sided). You will not be charged for this extra sheet.\n  * `certified_return_receipt` - request an electronic copy of the recipient\'s signature to prove delivery of your certified letter\n',
-          }),
-        tracking_number: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'The tracking number will be here immediately upon creation.\nDummy tracking numbers are created in test mode.',
-          }),
-        tracking_events: z
-          .array(TrackingEventCertifiedSchema)
-          .openapi({
-            description:
-              'An array of certified tracking events ordered by ascending `time`. Not populated in test mode.',
-          }),
-        return_address: ReturnAddressSchema.exactOptional(),
-        description: ResourceDescriptionSchema.exactOptional(),
-        metadata: MetadataSchema.exactOptional(),
-        merge_variables: MergeVariablesSchema.exactOptional(),
-        send_date: SendDateSchema.exactOptional(),
-        mail_type: MailTypeSchema.exactOptional(),
-        color: ColorSchema,
-        double_sided: DoubleSidedSchema.exactOptional(),
-        address_placement: AddressPlacementSchema.exactOptional(),
-        return_envelope: Returned_5Schema.exactOptional(),
-        perforated_page: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'Required if `return_envelope` is `true`. The number of the page that should be perforated for use with the return envelope. Must be greater than or equal to `1`. The blank page added by `address_placement=insert_blank_page` will be ignored when considering the perforated page number. To see how perforation will impact your letter design, view our <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_perf_template.pdf" target="_blank">perforation guide</a>.',
-          }),
-        custom_envelope: Returned_2Schema.exactOptional(),
-      })
-      .openapi({ required: ['extra_service', 'tracking_events', 'color'] })
-      .and(LetterGeneratedBaseSchema),
-  )
+const TrackingEventDetailsSchema = z
+  .object({
+    event: z
+      .enum([
+        'package_accepted',
+        'package_arrived',
+        'package_departed',
+        'package_processing',
+        'package_processed',
+        'package_in_local_area',
+        'delivery_scheduled',
+        'out_for_delivery',
+        'pickup_available',
+        'delivered',
+        'package_forwarded',
+        'returned_to_sender',
+        'address_issue',
+        'contact_carrier',
+        'delayed',
+        'delivery_attempted',
+        'delivery_rescheduled',
+        'location_inaccessible',
+        'notice_left',
+        'package_damaged',
+        'package_disposed',
+        'package_held',
+        'package_lost',
+        'package_unclaimed',
+        'package_undeliverable',
+        'reschedule_delivery',
+        'other',
+      ])
+      .openapi({
+        description:
+          'Find the full table [here](#tag/Tracking-Events). A detailed substatus about the event:\n* `package_accepted` - Package has been accepted into the carrier network for delivery.\n* `package_arrived` - Package has arrived at an intermediate location in the carrier network.\n* `package_departed` - Package has departed from an intermediate location in the carrier network.\n* `package_processing` - Package is processing at an intermediate location in the carrier network.\n* `package_processed` - Package has been processed at an intermediate location.\n* `package_in_local_area` - Package is at a location near the end destination.\n* `delivery_scheduled` - Package is scheduled for delivery.\n* `out_for_delivery` - Package is out for delivery.\n* `pickup_available` - Package is available for pickup at carrier location.\n* `delivered` - Package has been delivered.\n* `package_forwarded` - Package has been forwarded.\n* `returned_to_sender` - Package is to be returned to sender.\n* `address_issue` - Address information is incorrect. Contact carrier to ensure delivery.\n* `contact_carrier` - Contact the carrier for more information.\n* `delayed` - Delivery of package is delayed.\n* `delivery_attempted` - Delivery of package has been attempted. Contact carrier to ensure delivery.\n* `delivery_rescheduled` - Delivery of package has been rescheduled.\n* `location_inaccessible` - Delivery location inaccessible to carrier. Contact carrier to ensure delivery.\n* `notice_left` - Carrier left notice during attempted delivery. Follow carrier instructions on notice.\n* `package_damaged` - Package has been damaged. Contact carrier for more details.\n* `package_disposed` - Package has been disposed.\n* `package_held` - Package held at carrier location. Contact carrier for more details.\n* `package_lost` - Package has been lost. Contact carrier for more details.\n* `package_unclaimed` - Package is unclaimed.\n* `package_undeliverable` - Package is not able to be delivered.\n* `reschedule_delivery` - Contact carrier to reschedule delivery.\n* `other` - Unrecognized carrier status.\n',
+      }),
+    description: z
+      .string()
+      .openapi({ description: 'The description as listed in the description for event.' }),
+    notes: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Event-specific notes from USPS about the tracking event.' }),
+    action_required: z
+      .boolean()
+      .openapi({
+        description: '`true` if action is required by the end recipient, `false` otherwise.\n',
+      }),
+  })
+  .openapi({ required: ['event', 'description', 'action_required'] })
+  .openapi('TrackingEventDetails')
+
+const TrackingEventCertifiedSchema = TrackingEventBaseSchema.and(
+  z
+    .object({
+      type: z.literal('certified').openapi({ description: 'a Certified letter tracking event' }),
+      name: z
+        .enum([
+          'Mailed',
+          'In Transit',
+          'In Local Area',
+          'Processed for Delivery',
+          'Pickup Available',
+          'Delivered',
+          'Re-Routed',
+          'Returned to Sender',
+          'Issue',
+        ])
+        .openapi({
+          description:
+            'Name of tracking event for Certified letters. Letters sent with USPS Certified Mail are fully tracked by USPS, therefore their tracking events have an additional details object with more detailed information about the tracking event. Some certified tracking event names have multiple meanings, noted in the list here. See the description of the details object for the full set of combined certified tracking event name meanings.\n\n  * `Mailed` - Package has been accepted into the carrier network for delivery.\n\n  * `In Transit` - Maps to four distinct stages of transit.\n\n  * `In Local Area` - Package is at a location near the end destination.\n\n  * `Processed for Delivery` - Maps to two distinct stages of delivery.\n\n  * `Pickup Available` - Package is available for pickup at carrier location.\n\n  * `Delivered` - Package has been delivered.\n\n  * `Re-Routed` - Package has been forwarded.\n\n  * `Returned to Sender` - Package is to be returned to sender.\n\n  * `Issue` - Maps to (at least) 15 possible issues, some of which are actionable.\n',
+        }),
+      details: TrackingEventDetailsSchema.exactOptional(),
+      location: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'The zip code in which the event occurred if it exists, otherwise will be the name of a Regional Distribution Center if it exists, otherwise will be null.\n',
+        }),
+    })
+    .openapi({ required: ['type', 'name'] }),
+).openapi('TrackingEventCertified')
+
+const CertifiedSchema = z
+  .object({
+    extra_service: z
+      .enum(['certified', 'certified_return_receipt'])
+      .openapi({
+        description:
+          'Add an extra service to your letter. See <a href="https://www.lob.com/pricing/print-mail#compare" target="_blank">pricing</a> for extra costs incurred.\n  * `certified` - track and confirm delivery for domestic destinations. An extra sheet (1 PDF page single-sided or 2 PDF pages double-sided) is added to the beginning of your letter for address and barcode information. See here for templates: <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_template.pdf" target="_blank">#10 envelope</a> and <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_certified_flat_template.pdf" target="_blank">flat envelope</a> (used for letters over 6 pages single-sided or 12 pages double-sided). You will not be charged for this extra sheet.\n  * `certified_return_receipt` - request an electronic copy of the recipient\'s signature to prove delivery of your certified letter\n',
+      }),
+    tracking_number: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The tracking number will be here immediately upon creation.\nDummy tracking numbers are created in test mode.',
+      }),
+    tracking_events: z
+      .array(TrackingEventCertifiedSchema)
+      .openapi({
+        description:
+          'An array of certified tracking events ordered by ascending `time`. Not populated in test mode.',
+      }),
+    return_address: ReturnAddressSchema.exactOptional(),
+    description: ResourceDescriptionSchema.exactOptional(),
+    metadata: MetadataSchema.exactOptional(),
+    merge_variables: MergeVariablesSchema.exactOptional(),
+    send_date: SendDateSchema.exactOptional(),
+    mail_type: MailTypeSchema.exactOptional(),
+    color: ColorSchema,
+    double_sided: DoubleSidedSchema.exactOptional(),
+    address_placement: AddressPlacementSchema.exactOptional(),
+    return_envelope: Returned_5Schema.exactOptional(),
+    perforated_page: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Required if `return_envelope` is `true`. The number of the page that should be perforated for use with the return envelope. Must be greater than or equal to `1`. The blank page added by `address_placement=insert_blank_page` will be ignored when considering the perforated page number. To see how perforation will impact your letter design, view our <a href="https://s3-us-west-2.amazonaws.com/public.lob.com/assets/templates/letter_perf_template.pdf" target="_blank">perforation guide</a>.',
+      }),
+    custom_envelope: Returned_2Schema.exactOptional(),
+  })
+  .openapi({ required: ['extra_service', 'tracking_events', 'color'] })
+  .and(LetterGeneratedBaseSchema)
   .openapi('Certified')
 
 const LetterSchema = z
   .xor([
-    z.any().openapi({ title: 'regular' }).and(NoExtraServiceSchema),
-    z.any().openapi({ title: 'registered' }).and(RegisteredSchema),
-    z.any().openapi({ title: 'certified' }).and(CertifiedSchema),
+    NoExtraServiceSchema.openapi({ title: 'regular' }),
+    RegisteredSchema.openapi({ title: 'registered' }),
+    CertifiedSchema.openapi({ title: 'certified' }),
   ])
   .openapi('Letter')
 
@@ -5404,7 +5393,7 @@ const LetterEditableSchema = InputToSchema.and(InputFromSchema)
               'A single-element array containing an existing card id in a string format. See [cards](#tag/Cards) for more information. Not available for `us_legal` letter size.',
           }),
         mail_type: MailTypeSchema.exactOptional(),
-        color: ColorSchema.and(z.any().default(false)),
+        color: ColorSchema.default(false),
         double_sided: DoubleSidedSchema.exactOptional(),
         address_placement: AddressPlacementSchema.exactOptional(),
         return_envelope: UserProvided_2Schema.exactOptional(),
@@ -5819,51 +5808,68 @@ const ResourceProofUpdatableSchema = z
   .openapi({ required: [] })
   .openapi('ResourceProofUpdatable')
 
-const ResourceProofEditableSchema = z
-  .xor([
-    z
-      .object({
-        template_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The template ID to associate with the resource proof.' }),
-        resource_type: z
-          .literal('postcard')
-          .exactOptional()
-          .openapi({ description: 'The type of resource to generate a proof for.' }),
-        resource_parameters: PostcardResourceParametersSchema.exactOptional(),
-      })
-      .openapi({ title: 'Postcard Resource Proof', required: [] }),
-    z
-      .object({
-        template_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The template ID to associate with the resource proof.' }),
-        resource_type: z
-          .literal('letter')
-          .exactOptional()
-          .openapi({ description: 'The type of resource to generate a proof for.' }),
-        resource_parameters: LetterResourceParametersSchema.exactOptional(),
-      })
-      .openapi({ title: 'Letter Resource Proof', required: [] }),
-    z
-      .object({
-        template_id: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: 'The template ID to associate with the resource proof.' }),
-        resource_type: z
-          .literal('self_mailer')
-          .exactOptional()
-          .openapi({ description: 'The type of resource to generate a proof for.' }),
-        resource_parameters: SelfMailerResourceParametersSchema.exactOptional(),
-      })
-      .openapi({ title: 'Self Mailer Resource Proof', required: [] }),
-  ])
+const ResourceProofEditableSchema = (() => {
+  const Schema = z
+    .xor([
+      z
+        .object({
+          template_id: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'The template ID to associate with the resource proof.' }),
+          resource_type: z
+            .literal('postcard')
+            .exactOptional()
+            .openapi({ description: 'The type of resource to generate a proof for.' }),
+          resource_parameters: PostcardResourceParametersSchema.exactOptional(),
+        })
+        .openapi({ title: 'Postcard Resource Proof', required: [] }),
+      z
+        .object({
+          template_id: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'The template ID to associate with the resource proof.' }),
+          resource_type: z
+            .literal('letter')
+            .exactOptional()
+            .openapi({ description: 'The type of resource to generate a proof for.' }),
+          resource_parameters: LetterResourceParametersSchema.exactOptional(),
+        })
+        .openapi({ title: 'Letter Resource Proof', required: [] }),
+      z
+        .object({
+          template_id: z
+            .string()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'The template ID to associate with the resource proof.' }),
+          resource_type: z
+            .literal('self_mailer')
+            .exactOptional()
+            .openapi({ description: 'The type of resource to generate a proof for.' }),
+          resource_parameters: SelfMailerResourceParametersSchema.exactOptional(),
+        })
+        .openapi({ title: 'Self Mailer Resource Proof', required: [] }),
+    ])
+    .and(z.looseObject({}).openapi({ required: ['resource_type', 'resource_parameters'] }))
+  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+    ;((ctx) => {
+      const val = ctx.value
+      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+        if (!Object.hasOwn(val, 'resource_type')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+        if (!Object.hasOwn(val, 'resource_parameters')) {
+          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+        }
+      }
+    })(ctx)
+    return val
+  }, Schema)
+})()
   .openapi({
     required: ['resource_type', 'resource_parameters'],
     discriminator: {
@@ -6113,7 +6119,7 @@ const SnapPackEditableSchema = SnapPackBaseSchema.and(InputToSchema)
           }),
         billing_group_id: BillingGroupIdSchema.exactOptional(),
         use_type: SnapPackUseTypeSchema,
-        color: ColorSchema.and(z.any().default(false)).exactOptional(),
+        color: ColorSchema.default(false).exactOptional(),
         qr_code: QrCodeSchema.exactOptional(),
         print_speed: PrintSpeedSchema.exactOptional(),
       })
@@ -6170,7 +6176,7 @@ const TemplateVersionSchema = TemplateVersionWritableSchema.and(LobBaseSchema)
             description: 'Used by frontend, true if the template uses advanced features.\n',
           }),
         merge_variables: z
-          .object({})
+          .looseObject({})
           .exactOptional()
           .openapi({
             description:
@@ -6214,13 +6220,10 @@ const TemplateSchema = z
         description:
           'An array of all non-deleted [version objects](#tag/Template-Versions) associated with the template.',
       }),
-    published_version: z
-      .any()
-      .openapi({
-        description:
-          "The template's currently published version. This version will be used in any Print & Mail API requests that reference the specified template.",
-      })
-      .and(TemplateVersionSchema),
+    published_version: TemplateVersionSchema.openapi({
+      description:
+        "The template's currently published version. This version will be used in any Print & Mail API requests that reference the specified template.",
+    }),
     object: z
       .literal('template')
       .default('template')
@@ -6369,13 +6372,10 @@ const SuggestionsSchema = z
       }),
     city: CitySchema,
     state: StateSchema,
-    zip_code: z
-      .any()
-      .openapi({
-        description:
-          'Must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).\n',
-      })
-      .and(ZipCodeSchema),
+    zip_code: ZipCodeSchema.openapi({
+      description:
+        'Must be formatted as a US ZIP or ZIP+4 (e.g. `94107`, `941072282`, `94107-2282`).\n',
+    }),
     object: z
       .literal('us_autocompletion')
       .default('us_autocompletion')
@@ -6439,10 +6439,7 @@ const ComponentsSchema = z
       .string()
       .regex(/^\d{5}$/)
       .openapi({ description: 'The 5-digit ZIP code' }),
-    zip_code_plus_4: z
-      .any()
-      .openapi({ description: 'A 4-digit ZIP add-on code' })
-      .and(ZipCodePlus_4Schema),
+    zip_code_plus_4: ZipCodePlus_4Schema.openapi({ description: 'A 4-digit ZIP add-on code' }),
   })
   .openapi({
     description:
@@ -6726,7 +6723,7 @@ const EventsSchema = z
       .regex(/^evt_[a-zA-Z0-9_]+$/)
       .openapi({ description: 'Unique identifier prefixed with `evt_`.' }),
     body: z
-      .object({})
+      .looseObject({})
       .openapi({
         description:
           'The body of the associated resource as they were at the time of the event, i.e. the [postcard object](#operation/postcard_retrieve), [the letter object](#operation/letter_retrieve), [the check object](#operation/check_retrieve), [the address object](#operation/address_retrieve), or [the bank account object](#operation/bank_account_retrieve). For `.deleted` events, the body matches the response for the corresponding delete endpoint for that resource (e.g. the [postcard delete response](#operation/postcard_delete)).',
@@ -14257,14 +14254,14 @@ export const postInformedDeliveryCampaignsRoute = createRoute({
               z
                 .object({
                   ride_along_image: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'JPG Image. Maximum file size is 200 KBs. Maximum pixel size is 300 pixels wide x 200 pixels high',
                     }),
                   representative_image: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -14416,14 +14413,14 @@ export const patchInformedDeliveryCampaignsUspsCampaignIdRoute = createRoute({
               z
                 .object({
                   ride_along_image: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
                         'JPG Image. Maximum file size is 200 KBs. Maximum pixel size is 300 pixels wide x 200 pixels high',
                     }),
                   representative_image: z
-                    .object({})
+                    .looseObject({})
                     .exactOptional()
                     .openapi({
                       description:
@@ -14860,7 +14857,7 @@ export const postLettersRoute = createRoute({
                       })(z.stringbool()),
                       ColorSchema,
                     )
-                    .and(z.any().default(false)),
+                    .default(false),
                   double_sided: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -15166,7 +15163,7 @@ export const postLettersRoute = createRoute({
                       })(z.stringbool()),
                       ColorSchema,
                     )
-                    .and(z.any().default(false)),
+                    .default(false),
                   double_sided: z
                     .preprocess(
                       ((read) => (val: unknown) => {
@@ -17733,7 +17730,7 @@ export const postSnapPacksRoute = createRoute({
                       })(z.stringbool()),
                       ColorSchema,
                     )
-                    .and(z.any().default(false))
+                    .default(false)
                     .exactOptional(),
                   qr_code: z
                     .object({
@@ -18794,7 +18791,7 @@ export const getUploadsUplIdReportRoute = createRoute({
                           'The mailpiece id created from the line item when it was validated.',
                       }),
                     originalData: z
-                      .object({})
+                      .looseObject({})
                       .exactOptional()
                       .openapi({
                         description:

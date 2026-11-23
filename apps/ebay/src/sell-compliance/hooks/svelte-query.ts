@@ -1,0 +1,224 @@
+import { createQuery, createMutation, queryOptions, mutationOptions } from '@tanstack/svelte-query'
+import type {
+  CreateQueryOptions,
+  CreateMutationOptions,
+  DefaultError,
+  QueryClient,
+} from '@tanstack/svelte-query'
+import type { ClientRequestOptions, InferRequestType } from 'hono/client'
+import { parseResponse } from 'hono/client'
+import { client } from '../client'
+
+export function getListingViolationKey() {
+  return ['listing_violation'] as const
+}
+
+export function getListingViolationSummaryKey() {
+  return ['listing_violation_summary'] as const
+}
+
+export function getSuppressListingViolationKey() {
+  return ['suppress_listing_violation'] as const
+}
+
+export function getListingViolationQueryKey(
+  args: InferRequestType<typeof client.listing_violation.$get>,
+) {
+  const { header: _, ...keyArgs } = args
+  return ['listing_violation', '/listing_violation', keyArgs] as const
+}
+
+export function getListingViolationQueryOptions<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation.$get>>>>
+  >,
+  TError = DefaultError,
+>(args: InferRequestType<typeof client.listing_violation.$get>, options?: ClientRequestOptions) {
+  return queryOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation.$get>>>>
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getListingViolationQueryKey>
+  >({
+    queryKey: getListingViolationQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.listing_violation.$get(args, { ...options, init: { ...options?.init, signal } }),
+      )
+    },
+  })
+}
+
+export function createListingViolation<
+  TData = Awaited<
+    ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation.$get>>>>
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.listing_violation.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation.$get>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getListingViolationQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getListingViolationQueryOptions<TData, TError>(args(), clientOptions), ...query }
+  }, queryClient)
+}
+
+export function getListingViolationSummaryQueryKey(
+  args: InferRequestType<typeof client.listing_violation_summary.$get>,
+) {
+  const { header: _, ...keyArgs } = args
+  return ['listing_violation_summary', '/listing_violation_summary', keyArgs] as const
+}
+
+export function getListingViolationSummaryQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation_summary.$get>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<typeof client.listing_violation_summary.$get>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation_summary.$get>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getListingViolationSummaryQueryKey>
+  >({
+    queryKey: getListingViolationSummaryQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.listing_violation_summary.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createListingViolationSummary<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation_summary.$get>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<typeof client.listing_violation_summary.$get>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<Awaited<ReturnType<typeof client.listing_violation_summary.$get>>>
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getListingViolationSummaryQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getListingViolationSummaryQueryOptions<TData, TError>(args(), clientOptions),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostSuppressListingViolationMutationKey() {
+  return ['suppress_listing_violation', '/suppress_listing_violation', 'POST'] as const
+}
+
+export function getPostSuppressListingViolationMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<typeof client.suppress_listing_violation.$post>>>
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<typeof client.suppress_listing_violation.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostSuppressListingViolationMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.suppress_listing_violation.$post>) {
+      return parseResponse(client.suppress_listing_violation.$post(args, options))
+    },
+  })
+}
+
+export function createPostSuppressListingViolation<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<typeof client.suppress_listing_violation.$post>>
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<typeof client.suppress_listing_violation.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostSuppressListingViolationMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}

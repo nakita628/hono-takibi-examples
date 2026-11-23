@@ -2043,17 +2043,32 @@ const Oauth2SecurityScheme = {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
       scopes: {
+        'automation.sequences.create': '',
+        'automation.sequences.delete': '',
+        'automation.sequences.edit': '',
         'automation.sequences.enrollments.write': '',
         'automation.sequences.read': '',
         'automation.sequences.write': '',
       },
     },
   },
+  'x-hubspot-app-availability': {
+    'automation.sequences.create': { user: ['public', 'private'], developer: false },
+    'automation.sequences.delete': { user: ['public', 'private'], developer: false },
+    'automation.sequences.edit': { user: ['public', 'private'], developer: false },
+    'automation.sequences.enrollments.write': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'automation.sequences.read': {
+      portal: ['public', 'private'],
+      user: ['public', 'private'],
+      developer: false,
+    },
+    'automation.sequences.write': { portal: ['public', 'private'], developer: false },
+  },
 }
-
-const PrivateAppsSecurityScheme = { type: 'apiKey', name: 'private-app', in: 'header' }
-
-const PrivateAppsLegacySecurityScheme = { type: 'apiKey', name: 'private-app-legacy', in: 'header' }
 
 export const getAutomationSequences202609Route = createRoute({
   method: 'get',

@@ -56,6 +56,7 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 44 },
             required: false,
           },
+          default: 44,
         }),
       y: z
         .preprocess((val) => {
@@ -75,6 +76,7 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
             schema: { type: 'integer', format: 'int64', default: 44 },
             required: false,
           },
+          default: 44,
         }),
       version: z
         .string()
@@ -112,12 +114,10 @@ export const getIndexPhpAppsFilesVersionsPreviewRoute = createRoute({
     303: {
       description: 'Redirect to the mime icon url if mimeFallback is true',
       headers: z.object({
-        Location: {
-          schema: z
-            .string()
-            .exactOptional()
-            .openapi({ param: { required: false } }),
-        },
+        Location: z
+          .string()
+          .exactOptional()
+          .openapi({ param: { required: false } }),
       }),
     },
     400: {

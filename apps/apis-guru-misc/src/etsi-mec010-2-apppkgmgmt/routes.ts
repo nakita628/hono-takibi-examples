@@ -74,7 +74,7 @@ const VirtualNetworkInterfaceRequirementsSchema = z
 const AppExternalCpdSchema = z
   .object({
     inherited_attributes: z
-      .object({})
+      .looseObject({})
       .openapi({
         description: 'All attributes inherited from Cpd.',
         'x-etsi-mec-cardinality': '1',

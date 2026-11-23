@@ -1,0 +1,27 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getChannelsChannelBroadcastsRoute,
+  getChannelsChannelHighlightsRoute,
+  getChannelsChannelProgrammesRoute,
+  getChannelsChannelScheduleDateRoute,
+  getChannelsRoute,
+} from '../routes'
+
+const app = new OpenAPIHono()
+
+export const channelsHandler = app
+  .openapi(getChannelsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getChannelsChannelBroadcastsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getChannelsChannelHighlightsRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getChannelsChannelProgrammesRoute, (c) => {
+    throw new Error('Not implemented')
+  })
+  .openapi(getChannelsChannelScheduleDateRoute, (c) => {
+    throw new Error('Not implemented')
+  })

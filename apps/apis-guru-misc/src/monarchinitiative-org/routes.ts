@@ -1,17 +1,66 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const APageOfResultsSchema = z
+const EdgeSchema = z
   .object({
-    page: z.int().exactOptional().openapi({ description: 'Number of this page of results' }),
-    pages: z.int().exactOptional().openapi({ description: 'Total number of pages of results' }),
-    per_page: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'Number of items per page of results' }),
-    total: z.int().exactOptional().openapi({ description: 'Total number of results' }),
+    meta: z.looseObject({}).exactOptional().openapi({ description: 'metadata about the Edge' }),
+    obj: z.string().exactOptional().openapi({ description: 'Object (target) Node ID' }),
+    pred: z.string().exactOptional().openapi({ description: 'Predicate (relation) ID' }),
+    sub: z.string().exactOptional().openapi({ description: 'Subject (source) Node ID' }),
   })
   .openapi({ required: [] })
-  .openapi('APageOfResults')
+  .openapi('Edge')
+
+const NodeSchema = z
+  .object({
+    id: z.string().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
+    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('Node')
+
+const GraphSchema = z
+  .object({
+    edges: z.array(EdgeSchema).exactOptional().openapi({ description: 'All edges in graph' }),
+    nodes: z.array(NodeSchema).exactOptional().openapi({ description: 'All nodes in graph' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Graph')
+
+const EntityReferenceSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
+    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
+  })
+  .openapi({ required: [] })
+  .openapi('EntityReference')
+
+const NamedObjectCoreSchema = z
+  .object({
+    category: z.array(z.string().openapi({ description: 'Type of object' })).exactOptional(),
+    id: z.string().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
+    iri: z.string().exactOptional().openapi({ description: 'IRI' }),
+    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
+  })
+  .openapi({ required: ['id'] })
+  .openapi('NamedObjectCore')
+
+const TaxonSchema = z
+  .object({
+    id: z.string().exactOptional().openapi({ description: 'CURIE ID, e.g. NCBITaxon:9606' }),
+    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
+  })
+  .openapi({ required: [] })
+  .openapi('Taxon')
+
+const BioObjectCoreSchema = NamedObjectCoreSchema.and(
+  z
+    .object({
+      taxon: TaxonSchema.exactOptional().openapi({
+        description: 'Taxon to which the object belongs',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('BioObjectCore')
 
 const AbstractPropertyValueSchema = z
   .object({
@@ -25,17 +74,7 @@ const AbstractPropertyValueSchema = z
   .openapi({ required: [] })
   .openapi('AbstractPropertyValue')
 
-const NamedObjectCoreSchema = z
-  .object({
-    category: z.array(z.string().openapi({ description: 'Type of object' })).exactOptional(),
-    id: z.string().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
-    iri: z.string().exactOptional().openapi({ description: 'IRI' }),
-    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('NamedObjectCore')
-
-const SynonymPropertyValueSchema = AbstractPropertyValueSchema.and(z.object({})).openapi(
+const SynonymPropertyValueSchema = AbstractPropertyValueSchema.and(z.looseObject({})).openapi(
   'SynonymPropertyValue',
 )
 
@@ -80,7 +119,7 @@ const NamedObjectSchema = NamedObjectCoreSchema.and(
     .openapi({ required: [] }),
 ).openapi('NamedObject')
 
-const RelationSchema = NamedObjectSchema.and(z.object({})).openapi('Relation')
+const RelationSchema = NamedObjectSchema.and(z.looseObject({})).openapi('Relation')
 
 const AnnotationExtensionSchema = z
   .object({
@@ -95,58 +134,6 @@ const AnnotationExtensionSchema = z
   .openapi({ required: [] })
   .openapi('AnnotationExtension')
 
-const EdgeSchema = z
-  .object({
-    meta: z.object({}).exactOptional().openapi({ description: 'metadata about the Edge' }),
-    obj: z.string().exactOptional().openapi({ description: 'Object (target) Node ID' }),
-    pred: z.string().exactOptional().openapi({ description: 'Predicate (relation) ID' }),
-    sub: z.string().exactOptional().openapi({ description: 'Subject (source) Node ID' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Edge')
-
-const NodeSchema = z
-  .object({
-    id: z.string().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
-    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
-  })
-  .openapi({ required: ['id'] })
-  .openapi('Node')
-
-const GraphSchema = z
-  .object({
-    edges: z.array(EdgeSchema).exactOptional().openapi({ description: 'All edges in graph' }),
-    nodes: z.array(NodeSchema).exactOptional().openapi({ description: 'All nodes in graph' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Graph')
-
-const EntityReferenceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'ID or CURIE e.g. MGI:1201606' }),
-    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
-  })
-  .openapi({ required: [] })
-  .openapi('EntityReference')
-
-const TaxonSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ description: 'CURIE ID, e.g. NCBITaxon:9606' }),
-    label: z.string().exactOptional().openapi({ description: 'RDFS Label' }),
-  })
-  .openapi({ required: [] })
-  .openapi('Taxon')
-
-const BioObjectCoreSchema = NamedObjectCoreSchema.and(
-  z
-    .object({
-      taxon: TaxonSchema.exactOptional().openapi({
-        description: 'Taxon to which the object belongs',
-      }),
-    })
-    .openapi({ required: [] }),
-).openapi('BioObjectCore')
-
 const RelationRefSchema = NamedObjectCoreSchema.and(
   z
     .object({
@@ -159,7 +146,45 @@ const RelationRefSchema = NamedObjectCoreSchema.and(
     .openapi({ required: [] }),
 ).openapi('RelationRef')
 
-const AssociationSchema = z
+type AssociationType = {
+  evidence_graph?: z.infer<typeof GraphSchema>
+  evidence_types?: z.infer<typeof EntityReferenceSchema>[]
+  id: string
+  negated?: boolean
+  object: z.infer<typeof BioObjectCoreSchema>
+  object_eq?: string[]
+  object_extensions?: z.infer<typeof AnnotationExtensionSchema>[]
+  provided_by?: string[]
+  publications?: z.infer<typeof EntityReferenceSchema>[]
+  qualifiers?: string[]
+  relation: z.infer<typeof RelationRefSchema>
+  slim?: string[]
+  subject: z.infer<typeof BioObjectCoreSchema>
+  subject_eq?: string[]
+  subject_extensions?: z.infer<typeof AnnotationExtensionSchema>[]
+  type?: string
+}
+
+const SearchResultSchema = z
+  .object({
+    docs: z.array(z.looseObject({})).exactOptional().openapi({ description: 'solr docs' }),
+    facet_counts: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Mapping between field names and association counts' }),
+    highlighting: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({ description: 'Mapping between id and solr highlight' }),
+    numFound: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'total number of associations matching query' }),
+  })
+  .openapi({ required: [] })
+  .openapi('SearchResult')
+
+const AssociationSchema: z.ZodType<AssociationType> = z
   .object({
     evidence_graph: GraphSchema.exactOptional().openapi({
       description:
@@ -226,25 +251,6 @@ const AssociationSchema = z
   .openapi({ required: ['id', 'object', 'relation', 'subject'] })
   .openapi('Association')
 
-const SearchResultSchema = z
-  .object({
-    docs: z.array(z.object({})).exactOptional().openapi({ description: 'solr docs' }),
-    facet_counts: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Mapping between field names and association counts' }),
-    highlighting: z
-      .object({})
-      .exactOptional()
-      .openapi({ description: 'Mapping between id and solr highlight' }),
-    numFound: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'total number of associations matching query' }),
-  })
-  .openapi({ required: [] })
-  .openapi('SearchResult')
-
 const CompactAssociationSetSchema = z
   .object({
     objects: z
@@ -263,7 +269,111 @@ const CompactAssociationSetSchema = z
   .openapi({ required: ['objects', 'relation', 'subject'] })
   .openapi('CompactAssociationSet')
 
-const AssociationResultsSchema = SearchResultSchema.and(
+type AssociationResultsType = z.infer<typeof SearchResultSchema> & {
+  associations?: z.infer<typeof AssociationSchema>[]
+  compact_associations?: z.infer<typeof CompactAssociationSetSchema>[]
+  objects?: string[]
+}
+
+type D2PAssociationType = z.infer<typeof AssociationSchema> & {
+  frequency?: z.infer<typeof EntityReferenceSchema>
+  onset?: z.infer<typeof EntityReferenceSchema>
+}
+
+const D2PAssociationSchema: z.ZodType<D2PAssociationType> = AssociationSchema.and(
+  z
+    .object({
+      frequency: EntityReferenceSchema.exactOptional().openapi({
+        description: 'Frequency of phenotype in patients with disease',
+      }),
+      onset: EntityReferenceSchema.exactOptional().openapi({
+        description: 'Onset of phenotype in disease process',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('D2PAssociation')
+
+type D2PAssociationResultsType = z.infer<typeof SearchResultSchema> & {
+  associations?: z.infer<typeof D2PAssociationSchema>[]
+  compact_associations?: z.infer<typeof CompactAssociationSetSchema>[]
+  objects?: string[]
+}
+
+const BioObjectSchema = NamedObjectSchema.and(
+  z
+    .object({
+      association_counts: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({ description: 'association counts' }),
+      taxon: TaxonSchema.exactOptional().openapi({
+        description: 'Taxon to which the object belongs',
+      }),
+      xrefs: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'Database cross-references. These are usually CURIEs, but may also be URLs. E.g. ENSEMBL:ENSG00000099940 ',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('BioObject')
+
+const SequencePositionSchema = z
+  .object({ position: z.int().exactOptional(), reference: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('SequencePosition')
+
+const SequenceLocationSchema = BioObjectSchema.and(
+  z
+    .object({
+      end: SequencePositionSchema.exactOptional(),
+      phase: z.int().exactOptional(),
+      score: z.int().exactOptional(),
+      start: SequencePositionSchema.exactOptional(),
+      strand: z
+        .int()
+        .exactOptional()
+        .openapi({ description: "Strand direction: 1=='+', -1=='-', 0 or null infers unknown." }),
+    })
+    .openapi({ required: [] }),
+).openapi('SequenceLocation')
+
+const SeqSchema = BioObjectSchema.and(
+  z
+    .object({
+      alphabet: z.string().exactOptional().openapi({ description: 'one of: DNA, RNA or AA' }),
+      md5checksum: z.string().exactOptional().openapi({ description: 'checksum' }),
+      residues: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'string representing sequence of residues' }),
+      seqlen: z.string().exactOptional().openapi({ description: 'length of sequence' }),
+    })
+    .openapi({ required: [] }),
+).openapi('Seq')
+
+type SequenceFeatureType = z.infer<typeof BioObjectSchema> & {
+  homology_associations?: z.infer<typeof AssociationSchema>[]
+  locations?: z.infer<typeof SequenceLocationSchema>[]
+  seq?: z.infer<typeof SeqSchema>
+}
+
+const APageOfResultsSchema = z
+  .object({
+    page: z.int().exactOptional().openapi({ description: 'Number of this page of results' }),
+    pages: z.int().exactOptional().openapi({ description: 'Total number of pages of results' }),
+    per_page: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of items per page of results' }),
+    total: z.int().exactOptional().openapi({ description: 'Total number of results' }),
+  })
+  .openapi({ required: [] })
+  .openapi('APageOfResults')
+
+const AssociationResultsSchema: z.ZodType<AssociationResultsType> = SearchResultSchema.and(
   z
     .object({
       associations: z
@@ -323,27 +433,6 @@ const AutocompleteResultsSchema = z
   .openapi({ required: [] })
   .openapi('AutocompleteResults')
 
-const BioObjectSchema = NamedObjectSchema.and(
-  z
-    .object({
-      association_counts: z
-        .object({})
-        .exactOptional()
-        .openapi({ description: 'association counts' }),
-      taxon: TaxonSchema.exactOptional().openapi({
-        description: 'Taxon to which the object belongs',
-      }),
-      xrefs: z
-        .array(z.string())
-        .exactOptional()
-        .openapi({
-          description:
-            'Database cross-references. These are usually CURIEs, but may also be URLs. E.g. ENSEMBL:ENSG00000099940 ',
-        }),
-    })
-    .openapi({ required: [] }),
-).openapi('BioObject')
-
 const CompareInputSchema = z
   .object({
     query_ids: z
@@ -362,20 +451,7 @@ const CompareInputSchema = z
   .openapi({ required: [] })
   .openapi('CompareInput')
 
-const D2PAssociationSchema = AssociationSchema.and(
-  z
-    .object({
-      frequency: EntityReferenceSchema.exactOptional().openapi({
-        description: 'Frequency of phenotype in patients with disease',
-      }),
-      onset: EntityReferenceSchema.exactOptional().openapi({
-        description: 'Onset of phenotype in disease process',
-      }),
-    })
-    .openapi({ required: [] }),
-).openapi('D2PAssociation')
-
-const D2PAssociationResultsSchema = SearchResultSchema.and(
+const D2PAssociationResultsSchema: z.ZodType<D2PAssociationResultsType> = SearchResultSchema.and(
   z
     .object({
       associations: z
@@ -500,41 +576,7 @@ const PairwiseMatchSchema = z
   .openapi({ required: [] })
   .openapi('PairwiseMatch')
 
-const SeqSchema = BioObjectSchema.and(
-  z
-    .object({
-      alphabet: z.string().exactOptional().openapi({ description: 'one of: DNA, RNA or AA' }),
-      md5checksum: z.string().exactOptional().openapi({ description: 'checksum' }),
-      residues: z
-        .string()
-        .exactOptional()
-        .openapi({ description: 'string representing sequence of residues' }),
-      seqlen: z.string().exactOptional().openapi({ description: 'length of sequence' }),
-    })
-    .openapi({ required: [] }),
-).openapi('Seq')
-
-const SequencePositionSchema = z
-  .object({ position: z.int().exactOptional(), reference: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('SequencePosition')
-
-const SequenceLocationSchema = BioObjectSchema.and(
-  z
-    .object({
-      end: SequencePositionSchema.exactOptional(),
-      phase: z.int().exactOptional(),
-      score: z.int().exactOptional(),
-      start: SequencePositionSchema.exactOptional(),
-      strand: z
-        .int()
-        .exactOptional()
-        .openapi({ description: "Strand direction: 1=='+', -1=='-', 0 or null infers unknown." }),
-    })
-    .openapi({ required: [] }),
-).openapi('SequenceLocation')
-
-const SequenceFeatureSchema = BioObjectSchema.and(
+const SequenceFeatureSchema: z.ZodType<SequenceFeatureType> = BioObjectSchema.and(
   z
     .object({
       homology_associations: z.array(AssociationSchema).exactOptional(),
@@ -616,7 +658,7 @@ const SufficiencyPostInputSchema = z
   .openapi({ required: [] })
   .openapi('SufficiencyPostInput')
 
-const MmeSchema = z.object({}).openapi('Mme')
+const MmeSchema = z.looseObject({}).openapi('Mme')
 
 const AmbiguousPrefixResponse = { description: 'Error handler to handle AmbiguousPrefix' }
 

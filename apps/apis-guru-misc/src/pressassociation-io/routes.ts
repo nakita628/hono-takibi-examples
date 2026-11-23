@@ -66,7 +66,7 @@ export const getAssetRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -123,7 +123,7 @@ export const getAssetAssetIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -180,7 +180,7 @@ export const getAssetAssetIdContributorRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -206,7 +206,7 @@ export const getCatalogueRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -247,7 +247,7 @@ export const getCatalogueCatalogueIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -378,7 +378,7 @@ export const getCatalogueCatalogueIdAssetRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -430,7 +430,7 @@ export const getCatalogueCatalogueIdAssetAssetIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -558,7 +558,7 @@ export const getChannelRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -614,7 +614,7 @@ export const getChannelChannelIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -692,7 +692,7 @@ export const getContributorRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -748,7 +748,7 @@ export const getContributorContributorIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -833,7 +833,7 @@ export const getFeatureRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -859,7 +859,7 @@ export const getFeatureTypeRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -900,7 +900,7 @@ export const getFeatureFeatureIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -943,7 +943,7 @@ export const getPlatformRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -985,7 +985,7 @@ export const getPlatformPlatformIdRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -1042,7 +1042,7 @@ export const getPlatformPlatformIdRegionRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:
@@ -1124,7 +1124,7 @@ export const getScheduleRoute = createRoute({
       description: '',
       content: {
         'application/json': {
-          schema: z.object({}),
+          schema: z.looseObject({}),
           examples: {
             response: {
               value:

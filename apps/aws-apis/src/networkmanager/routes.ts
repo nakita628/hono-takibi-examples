@@ -84,21 +84,12 @@ const TagValueSchema = z
 
 const TagSchema = z
   .object({
-    Key: TagKeySchema.and(
-      z
-        .any()
-        .openapi({
-          description: '<p>The tag key.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    Value: TagValueSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The tag value.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
+    Key: TagKeySchema.exactOptional().openapi({
+      description: '<p>The tag key.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    Value: TagValueSchema.exactOptional().openapi({
+      description: '<p>The tag value.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
   })
   .openapi({ description: 'Describes a tag.', required: [] })
   .openapi('Tag')
@@ -107,19 +98,15 @@ const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 const ProposedSegmentChangeSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value tags that changed for the segment.' }),
-    ).exactOptional(),
-    AttachmentPolicyRuleNumber: IntegerSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The rule number in the policy document that applies to this change.',
-        }),
-    ).exactOptional(),
-    SegmentName: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The name of the segment to change.' }),
-    ).exactOptional(),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags that changed for the segment.',
+    }),
+    AttachmentPolicyRuleNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The rule number in the policy document that applies to this change.',
+    }),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The name of the segment to change.',
+    }),
   })
   .openapi({
     description:
@@ -132,57 +119,57 @@ const DateTimeSchema = z.iso.datetime({ offset: true }).openapi('DateTime')
 
 const AttachmentSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    CoreNetworkArn: CoreNetworkArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a core network.' }),
-    ).exactOptional(),
-    AttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the attachment.' }),
-    ).exactOptional(),
-    OwnerAccountId: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the attachment account owner.' }),
-    ).exactOptional(),
-    AttachmentType: AttachmentTypeSchema.and(
-      z.any().openapi({ description: 'The type of attachment.' }),
-    ).exactOptional(),
-    State: AttachmentStateSchema.and(
-      z.any().openapi({ description: 'The state of the attachment.' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Region where the edge is located.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The attachment resource ARN.' }),
-    ).exactOptional(),
-    AttachmentPolicyRuleNumber: IntegerSchema.and(
-      z.any().openapi({ description: 'The policy rule number associated with the attachment.' }),
-    ).exactOptional(),
-    SegmentName: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The name of the segment attachment.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the attachment.' }),
-    ).exactOptional(),
-    ProposedSegmentChange: ProposedSegmentChangeSchema.and(
-      z.any().openapi({ description: 'The attachment to move from one segment to another.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the attachment was created.' }),
-    ).exactOptional(),
-    UpdatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the attachment was last updated.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    CoreNetworkArn: CoreNetworkArnSchema.exactOptional().openapi({
+      description: 'The ARN of a core network.',
+    }),
+    AttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the attachment.',
+    }),
+    OwnerAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the attachment account owner.',
+    }),
+    AttachmentType: AttachmentTypeSchema.exactOptional().openapi({
+      description: 'The type of attachment.',
+    }),
+    State: AttachmentStateSchema.exactOptional().openapi({
+      description: 'The state of the attachment.',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Region where the edge is located.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The attachment resource ARN.',
+    }),
+    AttachmentPolicyRuleNumber: IntegerSchema.exactOptional().openapi({
+      description: 'The policy rule number associated with the attachment.',
+    }),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The name of the segment attachment.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the attachment.',
+    }),
+    ProposedSegmentChange: ProposedSegmentChangeSchema.exactOptional().openapi({
+      description: 'The attachment to move from one segment to another.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the attachment was created.',
+    }),
+    UpdatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the attachment was last updated.',
+    }),
   })
   .openapi({ description: 'Describes a core network attachment.', required: [] })
   .openapi('Attachment')
 
 const AcceptAttachmentResponseSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'The response to the attachment request. ' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'The response to the attachment request. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AcceptAttachmentResponse')
@@ -233,30 +220,28 @@ const ConnectPeerAssociationStateSchema = z
 
 const ConnectPeerAssociationSchema = z
   .object({
-    ConnectPeerId: ConnectPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Connect peer.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device to connect to.' }),
-    ).exactOptional(),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
-    State: ConnectPeerAssociationStateSchema.and(
-      z.any().openapi({ description: 'The state of the Connect peer association.' }),
-    ).exactOptional(),
+    ConnectPeerId: ConnectPeerIdSchema.exactOptional().openapi({
+      description: 'The ID of the Connect peer.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the device to connect to.',
+    }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
+    State: ConnectPeerAssociationStateSchema.exactOptional().openapi({
+      description: 'The state of the Connect peer association.',
+    }),
   })
   .openapi({ description: 'Describes a core network Connect peer association.', required: [] })
   .openapi('ConnectPeerAssociation')
 
 const AssociateConnectPeerResponseSchema = z
   .object({
-    ConnectPeerAssociation: ConnectPeerAssociationSchema.and(
-      z.any().openapi({ description: 'The response to the Connect peer request.' }),
-    ).exactOptional(),
+    ConnectPeerAssociation: ConnectPeerAssociationSchema.exactOptional().openapi({
+      description: 'The response to the Connect peer request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateConnectPeerResponse')
@@ -276,21 +261,17 @@ const CustomerGatewayAssociationStateSchema = z
 
 const CustomerGatewayAssociationSchema = z
   .object({
-    CustomerGatewayArn: CustomerGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the customer gateway.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device.' }),
-    ).exactOptional(),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
-    State: CustomerGatewayAssociationStateSchema.and(
-      z.any().openapi({ description: 'The association state.' }),
-    ).exactOptional(),
+    CustomerGatewayArn: CustomerGatewayArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the customer gateway.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
+    State: CustomerGatewayAssociationStateSchema.exactOptional().openapi({
+      description: 'The association state.',
+    }),
   })
   .openapi({
     description: 'Describes the association between a customer gateway, a device, and a link.',
@@ -300,9 +281,9 @@ const CustomerGatewayAssociationSchema = z
 
 const AssociateCustomerGatewayResponseSchema = z
   .object({
-    CustomerGatewayAssociation: CustomerGatewayAssociationSchema.and(
-      z.any().openapi({ description: 'The customer gateway association.' }),
-    ).exactOptional(),
+    CustomerGatewayAssociation: CustomerGatewayAssociationSchema.exactOptional().openapi({
+      description: 'The customer gateway association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateCustomerGatewayResponse')
@@ -313,27 +294,25 @@ const LinkAssociationStateSchema = z
 
 const LinkAssociationSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The device ID for the link association.' }),
-    ).exactOptional(),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
-    LinkAssociationState: LinkAssociationStateSchema.and(
-      z.any().openapi({ description: 'The state of the association.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The device ID for the link association.',
+    }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
+    LinkAssociationState: LinkAssociationStateSchema.exactOptional().openapi({
+      description: 'The state of the association.',
+    }),
   })
   .openapi({ description: 'Describes the association between a device and a link.', required: [] })
   .openapi('LinkAssociation')
 
 const AssociateLinkResponseSchema = z
   .object({
-    LinkAssociation: LinkAssociationSchema.and(
-      z.any().openapi({ description: 'The link association.' }),
-    ).exactOptional(),
+    LinkAssociation: LinkAssociationSchema.exactOptional().openapi({
+      description: 'The link association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('AssociateLinkResponse')
@@ -351,34 +330,27 @@ const TransitGatewayConnectPeerAssociationStateSchema = z
 
 const TransitGatewayConnectPeerAssociationSchema = z
   .object({
-    TransitGatewayConnectPeerArn: TransitGatewayConnectPeerArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The Amazon Resource Name (ARN) of the transit gateway Connect peer.',
-        }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device.' }),
-    ).exactOptional(),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
-    State: TransitGatewayConnectPeerAssociationStateSchema.and(
-      z.any().openapi({ description: 'The state of the association.' }),
-    ).exactOptional(),
+    TransitGatewayConnectPeerArn: TransitGatewayConnectPeerArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the transit gateway Connect peer.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
+    State: TransitGatewayConnectPeerAssociationStateSchema.exactOptional().openapi({
+      description: 'The state of the association.',
+    }),
   })
   .openapi({ description: 'Describes a transit gateway Connect peer association.', required: [] })
   .openapi('TransitGatewayConnectPeerAssociation')
 
 const AssociateTransitGatewayConnectPeerResponseSchema = z
   .object({
-    TransitGatewayConnectPeerAssociation: TransitGatewayConnectPeerAssociationSchema.and(
-      z.any().openapi({ description: 'The transit gateway Connect peer association.' }),
-    ).exactOptional(),
+    TransitGatewayConnectPeerAssociation:
+      TransitGatewayConnectPeerAssociationSchema.exactOptional().openapi({
+        description: 'The transit gateway Connect peer association.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('AssociateTransitGatewayConnectPeerResponse')
@@ -387,33 +359,33 @@ const TunnelProtocolSchema = z.literal('GRE').openapi('TunnelProtocol')
 
 const ConnectAttachmentOptionsSchema = z
   .object({
-    Protocol: TunnelProtocolSchema.and(
-      z.any().openapi({ description: 'The protocol used for the attachment connection.' }),
-    ).exactOptional(),
+    Protocol: TunnelProtocolSchema.exactOptional().openapi({
+      description: 'The protocol used for the attachment connection.',
+    }),
   })
   .openapi({ description: 'Describes a core network Connect attachment options.', required: [] })
   .openapi('ConnectAttachmentOptions')
 
 const ConnectAttachmentSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'The attachment details.' }),
-    ).exactOptional(),
-    TransportAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the transport attachment.' }),
-    ).exactOptional(),
-    Options: ConnectAttachmentOptionsSchema.and(
-      z.any().openapi({ description: 'Options for connecting an attachment.' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'The attachment details.',
+    }),
+    TransportAttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the transport attachment.',
+    }),
+    Options: ConnectAttachmentOptionsSchema.exactOptional().openapi({
+      description: 'Options for connecting an attachment.',
+    }),
   })
   .openapi({ description: 'Describes a core network Connect attachment.', required: [] })
   .openapi('ConnectAttachment')
 
 const CreateConnectAttachmentResponseSchema = z
   .object({
-    ConnectAttachment: ConnectAttachmentSchema.and(
-      z.any().openapi({ description: 'The response to a Connect attachment request.' }),
-    ).exactOptional(),
+    ConnectAttachment: ConnectAttachmentSchema.exactOptional().openapi({
+      description: 'The response to a Connect attachment request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectAttachmentResponse')
@@ -437,18 +409,16 @@ const LongSchema = z.int().openapi('Long')
 
 const ConnectPeerBgpConfigurationSchema = z
   .object({
-    CoreNetworkAsn: LongSchema.and(
-      z.any().openapi({ description: 'The ASN of the Coret Network.' }),
-    ).exactOptional(),
-    PeerAsn: LongSchema.and(
-      z.any().openapi({ description: 'The ASN of the Connect peer.' }),
-    ).exactOptional(),
-    CoreNetworkAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The address of a core network.' }),
-    ).exactOptional(),
-    PeerAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The address of a core network Connect peer.' }),
-    ).exactOptional(),
+    CoreNetworkAsn: LongSchema.exactOptional().openapi({
+      description: 'The ASN of the Coret Network.',
+    }),
+    PeerAsn: LongSchema.exactOptional().openapi({ description: 'The ASN of the Connect peer.' }),
+    CoreNetworkAddress: IPAddressSchema.exactOptional().openapi({
+      description: 'The address of a core network.',
+    }),
+    PeerAddress: IPAddressSchema.exactOptional().openapi({
+      description: 'The address of a core network Connect peer.',
+    }),
   })
   .openapi({ description: 'Describes a core network BGP configuration.', required: [] })
   .openapi('ConnectPeerBgpConfiguration')
@@ -459,64 +429,60 @@ const ConnectPeerBgpConfigurationListSchema = z
 
 const ConnectPeerConfigurationSchema = z
   .object({
-    CoreNetworkAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The IP address of a core network.' }),
-    ).exactOptional(),
-    PeerAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The IP address of the Connect peer.' }),
-    ).exactOptional(),
-    InsideCidrBlocks: ConstrainedStringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The inside IP addresses used for a Connect peer configuration.' }),
-    ).exactOptional(),
-    Protocol: TunnelProtocolSchema.and(
-      z.any().openapi({ description: 'The protocol used for a Connect peer configuration.' }),
-    ).exactOptional(),
-    BgpConfigurations: ConnectPeerBgpConfigurationListSchema.and(
-      z.any().openapi({ description: 'The Connect peer BGP configurations.' }),
-    ).exactOptional(),
+    CoreNetworkAddress: IPAddressSchema.exactOptional().openapi({
+      description: 'The IP address of a core network.',
+    }),
+    PeerAddress: IPAddressSchema.exactOptional().openapi({
+      description: 'The IP address of the Connect peer.',
+    }),
+    InsideCidrBlocks: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The inside IP addresses used for a Connect peer configuration.',
+    }),
+    Protocol: TunnelProtocolSchema.exactOptional().openapi({
+      description: 'The protocol used for a Connect peer configuration.',
+    }),
+    BgpConfigurations: ConnectPeerBgpConfigurationListSchema.exactOptional().openapi({
+      description: 'The Connect peer BGP configurations.',
+    }),
   })
   .openapi({ description: 'Describes a core network Connect peer configuration.', required: [] })
   .openapi('ConnectPeerConfiguration')
 
 const ConnectPeerSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    ConnectAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the attachment to connect.' }),
-    ).exactOptional(),
-    ConnectPeerId: ConnectPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Connect peer.' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Connect peer Regions where edges are located.' }),
-    ).exactOptional(),
-    State: ConnectPeerStateSchema.and(
-      z.any().openapi({ description: 'The state of the Connect peer.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the Connect peer was created.' }),
-    ).exactOptional(),
-    Configuration: ConnectPeerConfigurationSchema.and(
-      z.any().openapi({ description: 'The configuration of the Connect peer.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of key-value tags associated with the Connect peer.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    ConnectAttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the attachment to connect.',
+    }),
+    ConnectPeerId: ConnectPeerIdSchema.exactOptional().openapi({
+      description: 'The ID of the Connect peer.',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Connect peer Regions where edges are located.',
+    }),
+    State: ConnectPeerStateSchema.exactOptional().openapi({
+      description: 'The state of the Connect peer.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the Connect peer was created.',
+    }),
+    Configuration: ConnectPeerConfigurationSchema.exactOptional().openapi({
+      description: 'The configuration of the Connect peer.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the Connect peer.',
+    }),
   })
   .openapi({ description: 'Describes a core network Connect peer.', required: [] })
   .openapi('ConnectPeer')
 
 const CreateConnectPeerResponseSchema = z
   .object({
-    ConnectPeer: ConnectPeerSchema.and(
-      z.any().openapi({ description: 'The response to the request.' }),
-    ).exactOptional(),
+    ConnectPeer: ConnectPeerSchema.exactOptional().openapi({
+      description: 'The response to the request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectPeerResponse')
@@ -541,52 +507,46 @@ const ConnectionStateSchema = z
 
 const ConnectionSchema = z
   .object({
-    ConnectionId: ConnectionIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection.' }),
-    ).exactOptional(),
-    ConnectionArn: ConnectionArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the connection.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the first device in the connection.' }),
-    ).exactOptional(),
-    ConnectedDeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the second device in the connection.' }),
-    ).exactOptional(),
-    LinkId: LinkIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the link for the first device in the connection.' }),
-    ).exactOptional(),
-    ConnectedLinkId: LinkIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the link for the second device in the connection.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the connection.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the connection was created.' }),
-    ).exactOptional(),
-    State: ConnectionStateSchema.and(
-      z.any().openapi({ description: 'The state of the connection.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the connection.' }),
-    ).exactOptional(),
+    ConnectionId: ConnectionIdSchema.exactOptional().openapi({
+      description: 'The ID of the connection.',
+    }),
+    ConnectionArn: ConnectionArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the connection.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the first device in the connection.',
+    }),
+    ConnectedDeviceId: DeviceIdSchema.exactOptional().openapi({
+      description: 'The ID of the second device in the connection.',
+    }),
+    LinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the first device in the connection.',
+    }),
+    ConnectedLinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the second device in the connection.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the connection.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the connection was created.',
+    }),
+    State: ConnectionStateSchema.exactOptional().openapi({
+      description: 'The state of the connection.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the connection.' }),
   })
   .openapi({ description: 'Describes a connection.', required: [] })
   .openapi('Connection')
 
 const CreateConnectionResponseSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z.any().openapi({ description: 'Information about the connection.' }),
-    ).exactOptional(),
+    Connection: ConnectionSchema.exactOptional().openapi({
+      description: 'Information about the connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateConnectionResponse')
@@ -601,15 +561,15 @@ const ExternalRegionCodeListSchema = z
 
 const CoreNetworkSegmentSchema = z
   .object({
-    Name: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The name of a core network segment.' }),
-    ).exactOptional(),
-    EdgeLocations: ExternalRegionCodeListSchema.and(
-      z.any().openapi({ description: 'The Regions where the edges are located.' }),
-    ).exactOptional(),
-    SharedSegments: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'The shared segments of a core network.' }),
-    ).exactOptional(),
+    Name: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The name of a core network segment.',
+    }),
+    EdgeLocations: ExternalRegionCodeListSchema.exactOptional().openapi({
+      description: 'The Regions where the edges are located.',
+    }),
+    SharedSegments: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The shared segments of a core network.',
+    }),
   })
   .openapi({
     description:
@@ -624,15 +584,13 @@ const CoreNetworkSegmentListSchema = z
 
 const CoreNetworkEdgeSchema = z
   .object({
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Region where a core network edge is located.' }),
-    ).exactOptional(),
-    Asn: LongSchema.and(
-      z.any().openapi({ description: 'The ASN of a core network edge.' }),
-    ).exactOptional(),
-    InsideCidrBlocks: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'The inside IP addresses used for core network edges.' }),
-    ).exactOptional(),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Region where a core network edge is located.',
+    }),
+    Asn: LongSchema.exactOptional().openapi({ description: 'The ASN of a core network edge.' }),
+    InsideCidrBlocks: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The inside IP addresses used for core network edges.',
+    }),
   })
   .openapi({ description: 'Describes a core network edge.', required: [] })
   .openapi('CoreNetworkEdge')
@@ -641,48 +599,42 @@ const CoreNetworkEdgeListSchema = z.array(CoreNetworkEdgeSchema).openapi('CoreNe
 
 const CoreNetworkSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the global network that your core network is a part of. ',
-        }),
-    ).exactOptional(),
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    CoreNetworkArn: CoreNetworkArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a core network.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of a core network.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when a core network was created.' }),
-    ).exactOptional(),
-    State: CoreNetworkStateSchema.and(
-      z.any().openapi({ description: 'The current state of a core network.' }),
-    ).exactOptional(),
-    Segments: CoreNetworkSegmentListSchema.and(
-      z.any().openapi({ description: 'The segments within a core network.' }),
-    ).exactOptional(),
-    Edges: CoreNetworkEdgeListSchema.and(
-      z.any().openapi({ description: 'The edges within a core network.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The list of key-value tags associated with a core network.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network that your core network is a part of. ',
+    }),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    CoreNetworkArn: CoreNetworkArnSchema.exactOptional().openapi({
+      description: 'The ARN of a core network.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of a core network.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when a core network was created.',
+    }),
+    State: CoreNetworkStateSchema.exactOptional().openapi({
+      description: 'The current state of a core network.',
+    }),
+    Segments: CoreNetworkSegmentListSchema.exactOptional().openapi({
+      description: 'The segments within a core network.',
+    }),
+    Edges: CoreNetworkEdgeListSchema.exactOptional().openapi({
+      description: 'The edges within a core network.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with a core network.',
+    }),
   })
   .openapi({ description: 'Describes a core network.', required: [] })
   .openapi('CoreNetwork')
 
 const CreateCoreNetworkResponseSchema = z
   .object({
-    CoreNetwork: CoreNetworkSchema.and(
-      z.any().openapi({ description: 'Returns details about a core network.' }),
-    ).exactOptional(),
+    CoreNetwork: CoreNetworkSchema.exactOptional().openapi({
+      description: 'Returns details about a core network.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateCoreNetworkResponse')
@@ -705,37 +657,24 @@ const SubnetArnSchema = z
 
 const AWSLocationSchema = z
   .object({
-    Zone: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
-        }),
-    ).exactOptional(),
-    SubnetArn: SubnetArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
-        }),
-    ).exactOptional(),
+    Zone: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
+    }),
+    SubnetArn: SubnetArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
+    }),
   })
   .openapi({ description: 'Specifies a location in Amazon Web Services.', required: [] })
   .openapi('AWSLocation')
 
 const LocationSchema = z
   .object({
-    Address: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The physical address.' }),
-    ).exactOptional(),
-    Latitude: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The latitude.' }),
-    ).exactOptional(),
-    Longitude: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The longitude.' }),
-    ).exactOptional(),
+    Address: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The physical address.',
+    }),
+    Latitude: ConstrainedStringSchema.exactOptional().openapi({ description: 'The latitude.' }),
+    Longitude: ConstrainedStringSchema.exactOptional().openapi({ description: 'The longitude.' }),
   })
   .openapi({ description: 'Describes a location.', required: [] })
   .openapi('Location')
@@ -753,55 +692,39 @@ const DeviceStateSchema = z
 
 const DeviceSchema = z
   .object({
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the device.' }),
-    ).exactOptional(),
-    DeviceArn: DeviceArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the device.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    AWSLocation: AWSLocationSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services location of the device.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the device.' }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The device type.' }),
-    ).exactOptional(),
-    Vendor: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The device vendor.' }),
-    ).exactOptional(),
-    Model: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The device model.' }),
-    ).exactOptional(),
-    SerialNumber: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The device serial number.' }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z.any().openapi({ description: 'The site location.' }),
-    ).exactOptional(),
-    SiteId: SiteIdSchema.and(z.any().openapi({ description: 'The site ID.' })).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the site was created.' }),
-    ).exactOptional(),
-    State: DeviceStateSchema.and(
-      z.any().openapi({ description: 'The device state.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the device.' }),
-    ).exactOptional(),
+    DeviceId: DeviceIdSchema.exactOptional().openapi({ description: 'The ID of the device.' }),
+    DeviceArn: DeviceArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the device.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    AWSLocation: AWSLocationSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services location of the device.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the device.',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({ description: 'The device type.' }),
+    Vendor: ConstrainedStringSchema.exactOptional().openapi({ description: 'The device vendor.' }),
+    Model: ConstrainedStringSchema.exactOptional().openapi({ description: 'The device model.' }),
+    SerialNumber: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The device serial number.',
+    }),
+    Location: LocationSchema.exactOptional().openapi({ description: 'The site location.' }),
+    SiteId: SiteIdSchema.exactOptional().openapi({ description: 'The site ID.' }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the site was created.',
+    }),
+    State: DeviceStateSchema.exactOptional().openapi({ description: 'The device state.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the device.' }),
   })
   .openapi({ description: 'Describes a device.', required: [] })
   .openapi('Device')
 
 const CreateDeviceResponseSchema = z
   .object({
-    Device: DeviceSchema.and(
-      z.any().openapi({ description: 'Information about the device.' }),
-    ).exactOptional(),
+    Device: DeviceSchema.exactOptional().openapi({ description: 'Information about the device.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateDeviceResponse')
@@ -819,24 +742,24 @@ const GlobalNetworkStateSchema = z
 
 const GlobalNetworkSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    GlobalNetworkArn: GlobalNetworkArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the global network.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the global network.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the global network was created.' }),
-    ).exactOptional(),
-    State: GlobalNetworkStateSchema.and(
-      z.any().openapi({ description: 'The state of the global network.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the global network.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    GlobalNetworkArn: GlobalNetworkArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the global network.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the global network.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the global network was created.',
+    }),
+    State: GlobalNetworkStateSchema.exactOptional().openapi({
+      description: 'The state of the global network.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags for the global network.',
+    }),
   })
   .openapi({
     description:
@@ -847,9 +770,9 @@ const GlobalNetworkSchema = z
 
 const CreateGlobalNetworkResponseSchema = z
   .object({
-    GlobalNetwork: GlobalNetworkSchema.and(
-      z.any().openapi({ description: 'Information about the global network object.' }),
-    ).exactOptional(),
+    GlobalNetwork: GlobalNetworkSchema.exactOptional().openapi({
+      description: 'Information about the global network object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateGlobalNetworkResponse')
@@ -863,12 +786,10 @@ const LinkArnSchema = z
 
 const BandwidthSchema = z
   .object({
-    UploadSpeed: IntegerSchema.and(
-      z.any().openapi({ description: 'Upload speed in Mbps.' }),
-    ).exactOptional(),
-    DownloadSpeed: IntegerSchema.and(
-      z.any().openapi({ description: 'Download speed in Mbps.' }),
-    ).exactOptional(),
+    UploadSpeed: IntegerSchema.exactOptional().openapi({ description: 'Upload speed in Mbps.' }),
+    DownloadSpeed: IntegerSchema.exactOptional().openapi({
+      description: 'Download speed in Mbps.',
+    }),
   })
   .openapi({ description: 'Describes bandwidth information.', required: [] })
   .openapi('Bandwidth')
@@ -879,48 +800,36 @@ const LinkStateSchema = z
 
 const LinkSchema = z
   .object({
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
-    LinkArn: LinkArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the link.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    SiteId: SiteIdSchema.and(
-      z.any().openapi({ description: 'The ID of the site.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the link.' }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The type of the link.' }),
-    ).exactOptional(),
-    Bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: 'The bandwidth for the link.' }),
-    ).exactOptional(),
-    Provider: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The provider of the link.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the link was created.' }),
-    ).exactOptional(),
-    State: LinkStateSchema.and(
-      z.any().openapi({ description: 'The state of the link.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the link.' }),
-    ).exactOptional(),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
+    LinkArn: LinkArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the link.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    SiteId: SiteIdSchema.exactOptional().openapi({ description: 'The ID of the site.' }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the link.',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({ description: 'The type of the link.' }),
+    Bandwidth: BandwidthSchema.exactOptional().openapi({
+      description: 'The bandwidth for the link.',
+    }),
+    Provider: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The provider of the link.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the link was created.',
+    }),
+    State: LinkStateSchema.exactOptional().openapi({ description: 'The state of the link.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the link.' }),
   })
   .openapi({ description: 'Describes a link.', required: [] })
   .openapi('Link')
 
 const CreateLinkResponseSchema = z
   .object({
-    Link: LinkSchema.and(
-      z.any().openapi({ description: 'Information about the link.' }),
-    ).exactOptional(),
+    Link: LinkSchema.exactOptional().openapi({ description: 'Information about the link.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateLinkResponse')
@@ -938,39 +847,29 @@ const SiteStateSchema = z
 
 const SiteSchema = z
   .object({
-    SiteId: SiteIdSchema.and(
-      z.any().openapi({ description: 'The ID of the site.' }),
-    ).exactOptional(),
-    SiteArn: SiteArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the site.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the site.' }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z.any().openapi({ description: 'The location of the site.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The date and time that the site was created.' }),
-    ).exactOptional(),
-    State: SiteStateSchema.and(
-      z.any().openapi({ description: 'The state of the site.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags for the site.' }),
-    ).exactOptional(),
+    SiteId: SiteIdSchema.exactOptional().openapi({ description: 'The ID of the site.' }),
+    SiteArn: SiteArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the site.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the site.',
+    }),
+    Location: LocationSchema.exactOptional().openapi({ description: 'The location of the site.' }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The date and time that the site was created.',
+    }),
+    State: SiteStateSchema.exactOptional().openapi({ description: 'The state of the site.' }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags for the site.' }),
   })
   .openapi({ description: 'Describes a site.', required: [] })
   .openapi('Site')
 
 const CreateSiteResponseSchema = z
   .object({
-    Site: SiteSchema.and(
-      z.any().openapi({ description: 'Information about the site.' }),
-    ).exactOptional(),
+    Site: SiteSchema.exactOptional().openapi({ description: 'Information about the site.' }),
   })
   .openapi({ required: [] })
   .openapi('CreateSiteResponse')
@@ -984,21 +883,21 @@ const VpnConnectionArnSchema = z
 
 const SiteToSiteVpnAttachmentSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'Provides details about a site-to-site VPN attachment.' }),
-    ).exactOptional(),
-    VpnConnectionArn: VpnConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the site-to-site VPN attachment. ' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'Provides details about a site-to-site VPN attachment.',
+    }),
+    VpnConnectionArn: VpnConnectionArnSchema.exactOptional().openapi({
+      description: 'The ARN of the site-to-site VPN attachment. ',
+    }),
   })
   .openapi({ description: 'Creates a site-to-site VPN attachment.', required: [] })
   .openapi('SiteToSiteVpnAttachment')
 
 const CreateSiteToSiteVpnAttachmentResponseSchema = z
   .object({
-    SiteToSiteVpnAttachment: SiteToSiteVpnAttachmentSchema.and(
-      z.any().openapi({ description: 'Details about a site-to-site VPN attachment.' }),
-    ).exactOptional(),
+    SiteToSiteVpnAttachment: SiteToSiteVpnAttachmentSchema.exactOptional().openapi({
+      description: 'Details about a site-to-site VPN attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateSiteToSiteVpnAttachmentResponse')
@@ -1018,40 +917,36 @@ const PeeringStateSchema = z
 
 const PeeringSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the core network for the peering request.' }),
-    ).exactOptional(),
-    CoreNetworkArn: CoreNetworkArnSchema.and(
-      z.any().openapi({ description: 'The ARN of a core network.' }),
-    ).exactOptional(),
-    PeeringId: PeeringIdSchema.and(
-      z.any().openapi({ description: 'The ID of the peering attachment. ' }),
-    ).exactOptional(),
-    OwnerAccountId: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the account owner.' }),
-    ).exactOptional(),
-    PeeringType: PeeringTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The type of peering. This will be <code>TRANSIT_GATEWAY</code>.',
-        }),
-    ).exactOptional(),
-    State: PeeringStateSchema.and(
-      z.any().openapi({ description: 'The current state of the peering connection. ' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The edge location for the peer.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The resource ARN of the peer.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value tags associated with the peering.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when the attachment peer was created.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the core network for the peering request.',
+    }),
+    CoreNetworkArn: CoreNetworkArnSchema.exactOptional().openapi({
+      description: 'The ARN of a core network.',
+    }),
+    PeeringId: PeeringIdSchema.exactOptional().openapi({
+      description: 'The ID of the peering attachment. ',
+    }),
+    OwnerAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the account owner.',
+    }),
+    PeeringType: PeeringTypeSchema.exactOptional().openapi({
+      description: 'The type of peering. This will be <code>TRANSIT_GATEWAY</code>.',
+    }),
+    State: PeeringStateSchema.exactOptional().openapi({
+      description: 'The current state of the peering connection. ',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The edge location for the peer.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The resource ARN of the peer.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the peering.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when the attachment peer was created.',
+    }),
   })
   .openapi({ description: 'Describes a peering connection.', required: [] })
   .openapi('Peering')
@@ -1072,28 +967,25 @@ const TransitGatewayPeeringAttachmentIdSchema = z
 
 const TransitGatewayPeeringSchema = z
   .object({
-    Peering: PeeringSchema.and(
-      z.any().openapi({ description: 'Describes a transit gateway peer connection.' }),
-    ).exactOptional(),
-    TransitGatewayArn: TransitGatewayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway.' }),
-    ).exactOptional(),
-    TransitGatewayPeeringAttachmentId: TransitGatewayPeeringAttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the transit gateway peering attachment.' }),
-    ).exactOptional(),
+    Peering: PeeringSchema.exactOptional().openapi({
+      description: 'Describes a transit gateway peer connection.',
+    }),
+    TransitGatewayArn: TransitGatewayArnSchema.exactOptional().openapi({
+      description: 'The ARN of the transit gateway.',
+    }),
+    TransitGatewayPeeringAttachmentId:
+      TransitGatewayPeeringAttachmentIdSchema.exactOptional().openapi({
+        description: 'The ID of the transit gateway peering attachment.',
+      }),
   })
   .openapi({ description: 'Describes a transit gateway peering attachment.', required: [] })
   .openapi('TransitGatewayPeering')
 
 const CreateTransitGatewayPeeringResponseSchema = z
   .object({
-    TransitGatewayPeering: TransitGatewayPeeringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns information about the transit gateway peering connection request.',
-        }),
-    ).exactOptional(),
+    TransitGatewayPeering: TransitGatewayPeeringSchema.exactOptional().openapi({
+      description: 'Returns information about the transit gateway peering connection request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateTransitGatewayPeeringResponse')
@@ -1108,31 +1000,24 @@ const TransitGatewayRouteTableArnSchema = z
 const TransitGatewayRouteTableAttachmentSchema = z
   .object({
     Attachment: AttachmentSchema.exactOptional(),
-    PeeringId: PeeringIdSchema.and(
-      z.any().openapi({ description: 'The ID of the peering attachment.' }),
-    ).exactOptional(),
-    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the transit gateway attachment route table. For example, <code>"TransitGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-9876543210123456"</code>.',
-        }),
-    ).exactOptional(),
+    PeeringId: PeeringIdSchema.exactOptional().openapi({
+      description: 'The ID of the peering attachment.',
+    }),
+    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.exactOptional().openapi({
+      description:
+        'The ARN of the transit gateway attachment route table. For example, <code>"TransitGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-9876543210123456"</code>.',
+    }),
   })
   .openapi({ description: 'Describes a transit gateway route table attachment.', required: [] })
   .openapi('TransitGatewayRouteTableAttachment')
 
 const CreateTransitGatewayRouteTableAttachmentResponseSchema = z
   .object({
-    TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The route table associated with the create transit gateway route table attachment request.',
-        }),
-    ).exactOptional(),
+    TransitGatewayRouteTableAttachment:
+      TransitGatewayRouteTableAttachmentSchema.exactOptional().openapi({
+        description:
+          'The route table associated with the create transit gateway route table attachment request.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('CreateTransitGatewayRouteTableAttachmentResponse')
@@ -1143,77 +1028,71 @@ const BooleanSchema = z.boolean().openapi('Boolean')
 
 const VpcOptionsSchema = z
   .object({
-    Ipv6Support: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether IPv6 is supported.' }),
-    ).exactOptional(),
-    ApplianceModeSupport: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
-        }),
-    ).exactOptional(),
+    Ipv6Support: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether IPv6 is supported.',
+    }),
+    ApplianceModeSupport: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
+    }),
   })
   .openapi({ description: 'Describes the VPC options.', required: [] })
   .openapi('VpcOptions')
 
 const VpcAttachmentSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'Provides details about the VPC attachment.' }),
-    ).exactOptional(),
-    SubnetArns: SubnetArnListSchema.and(
-      z.any().openapi({ description: 'The subnet ARNs.' }),
-    ).exactOptional(),
-    Options: VpcOptionsSchema.and(
-      z.any().openapi({ description: 'Provides details about the VPC attachment.' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'Provides details about the VPC attachment.',
+    }),
+    SubnetArns: SubnetArnListSchema.exactOptional().openapi({ description: 'The subnet ARNs.' }),
+    Options: VpcOptionsSchema.exactOptional().openapi({
+      description: 'Provides details about the VPC attachment.',
+    }),
   })
   .openapi({ description: 'Describes a VPC attachment.', required: [] })
   .openapi('VpcAttachment')
 
 const CreateVpcAttachmentResponseSchema = z
   .object({
-    VpcAttachment: VpcAttachmentSchema.and(
-      z.any().openapi({ description: 'Provides details about the VPC attachment.' }),
-    ).exactOptional(),
+    VpcAttachment: VpcAttachmentSchema.exactOptional().openapi({
+      description: 'Provides details about the VPC attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('CreateVpcAttachmentResponse')
 
 const DeleteAttachmentResponseSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'Information about the deleted attachment.' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'Information about the deleted attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteAttachmentResponse')
 
 const DeleteConnectPeerResponseSchema = z
   .object({
-    ConnectPeer: ConnectPeerSchema.and(
-      z.any().openapi({ description: 'Information about the deleted Connect peer.' }),
-    ).exactOptional(),
+    ConnectPeer: ConnectPeerSchema.exactOptional().openapi({
+      description: 'Information about the deleted Connect peer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteConnectPeerResponse')
 
 const DeleteConnectionResponseSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z.any().openapi({ description: 'Information about the connection.' }),
-    ).exactOptional(),
+    Connection: ConnectionSchema.exactOptional().openapi({
+      description: 'Information about the connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteConnectionResponse')
 
 const DeleteCoreNetworkResponseSchema = z
   .object({
-    CoreNetwork: CoreNetworkSchema.and(
-      z.any().openapi({ description: 'Information about the deleted core network.' }),
-    ).exactOptional(),
+    CoreNetwork: CoreNetworkSchema.exactOptional().openapi({
+      description: 'Information about the deleted core network.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteCoreNetworkResponse')
@@ -1240,23 +1119,15 @@ const ServerSideStringSchema = z
 
 const CoreNetworkPolicyErrorSchema = z
   .object({
-    ErrorCode: ServerSideStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The error code associated with a core network policy error.' }),
-    ),
-    Message: ServerSideStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The message associated with a core network policy error code.' }),
-    ),
-    Path: ServerSideStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The JSON path where the error was discovered in the policy document.',
-        }),
-    ).exactOptional(),
+    ErrorCode: ServerSideStringSchema.openapi({
+      description: 'The error code associated with a core network policy error.',
+    }),
+    Message: ServerSideStringSchema.openapi({
+      description: 'The message associated with a core network policy error code.',
+    }),
+    Path: ServerSideStringSchema.exactOptional().openapi({
+      description: 'The JSON path where the error was discovered in the policy document.',
+    }),
   })
   .openapi({
     required: ['ErrorCode', 'Message'],
@@ -1277,35 +1148,31 @@ const CoreNetworkPolicyDocumentSchema = z
 
 const CoreNetworkPolicySchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    PolicyVersionId: IntegerSchema.and(
-      z.any().openapi({ description: 'The ID of the policy version.' }),
-    ).exactOptional(),
-    Alias: CoreNetworkPolicyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether a core network policy is the current LIVE policy or the most recently submitted policy.',
-        }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of a core network policy.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when a core network policy was created.' }),
-    ).exactOptional(),
-    ChangeSetState: ChangeSetStateSchema.and(
-      z.any().openapi({ description: 'The state of a core network policy.' }),
-    ).exactOptional(),
-    PolicyErrors: CoreNetworkPolicyErrorListSchema.and(
-      z.any().openapi({ description: 'Describes any errors in a core network policy.' }),
-    ).exactOptional(),
-    PolicyDocument: CoreNetworkPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'Describes a core network policy.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    PolicyVersionId: IntegerSchema.exactOptional().openapi({
+      description: 'The ID of the policy version.',
+    }),
+    Alias: CoreNetworkPolicyAliasSchema.exactOptional().openapi({
+      description:
+        'Whether a core network policy is the current LIVE policy or the most recently submitted policy.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of a core network policy.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when a core network policy was created.',
+    }),
+    ChangeSetState: ChangeSetStateSchema.exactOptional().openapi({
+      description: 'The state of a core network policy.',
+    }),
+    PolicyErrors: CoreNetworkPolicyErrorListSchema.exactOptional().openapi({
+      description: 'Describes any errors in a core network policy.',
+    }),
+    PolicyDocument: CoreNetworkPolicyDocumentSchema.exactOptional().openapi({
+      description: 'Describes a core network policy.',
+    }),
   })
   .openapi({
     description: 'Describes a core network policy. You can have only one LIVE Core Policy.',
@@ -1315,56 +1182,50 @@ const CoreNetworkPolicySchema = z
 
 const DeleteCoreNetworkPolicyVersionResponseSchema = z
   .object({
-    CoreNetworkPolicy: CoreNetworkPolicySchema.and(
-      z.any().openapi({ description: 'Returns information about the deleted policy version. ' }),
-    ).exactOptional(),
+    CoreNetworkPolicy: CoreNetworkPolicySchema.exactOptional().openapi({
+      description: 'Returns information about the deleted policy version. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteCoreNetworkPolicyVersionResponse')
 
 const DeleteDeviceResponseSchema = z
   .object({
-    Device: DeviceSchema.and(
-      z.any().openapi({ description: 'Information about the device.' }),
-    ).exactOptional(),
+    Device: DeviceSchema.exactOptional().openapi({ description: 'Information about the device.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteDeviceResponse')
 
 const DeleteGlobalNetworkResponseSchema = z
   .object({
-    GlobalNetwork: GlobalNetworkSchema.and(
-      z.any().openapi({ description: 'Information about the global network.' }),
-    ).exactOptional(),
+    GlobalNetwork: GlobalNetworkSchema.exactOptional().openapi({
+      description: 'Information about the global network.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeleteGlobalNetworkResponse')
 
 const DeleteLinkResponseSchema = z
   .object({
-    Link: LinkSchema.and(
-      z.any().openapi({ description: 'Information about the link.' }),
-    ).exactOptional(),
+    Link: LinkSchema.exactOptional().openapi({ description: 'Information about the link.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteLinkResponse')
 
 const DeletePeeringResponseSchema = z
   .object({
-    Peering: PeeringSchema.and(
-      z.any().openapi({ description: 'Information about a deleted peering connection.' }),
-    ).exactOptional(),
+    Peering: PeeringSchema.exactOptional().openapi({
+      description: 'Information about a deleted peering connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeletePeeringResponse')
 
-const DeleteResourcePolicyResponseSchema = z.object({}).openapi('DeleteResourcePolicyResponse')
+const DeleteResourcePolicyResponseSchema = z.looseObject({}).openapi('DeleteResourcePolicyResponse')
 
 const DeleteSiteResponseSchema = z
   .object({
-    Site: SiteSchema.and(
-      z.any().openapi({ description: 'Information about the site.' }),
-    ).exactOptional(),
+    Site: SiteSchema.exactOptional().openapi({ description: 'Information about the site.' }),
   })
   .openapi({ required: [] })
   .openapi('DeleteSiteResponse')
@@ -1375,27 +1236,27 @@ const TransitGatewayRegistrationStateSchema = z
 
 const TransitGatewayRegistrationStateReasonSchema = z
   .object({
-    Code: TransitGatewayRegistrationStateSchema.and(
-      z.any().openapi({ description: 'The code for the state reason.' }),
-    ).exactOptional(),
-    Message: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The message for the state reason.' }),
-    ).exactOptional(),
+    Code: TransitGatewayRegistrationStateSchema.exactOptional().openapi({
+      description: 'The code for the state reason.',
+    }),
+    Message: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The message for the state reason.',
+    }),
   })
   .openapi({ description: 'Describes the status of a transit gateway registration.', required: [] })
   .openapi('TransitGatewayRegistrationStateReason')
 
 const TransitGatewayRegistrationSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    TransitGatewayArn: TransitGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the transit gateway.' }),
-    ).exactOptional(),
-    State: TransitGatewayRegistrationStateReasonSchema.and(
-      z.any().openapi({ description: 'The state of the transit gateway registration.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    TransitGatewayArn: TransitGatewayArnSchema.exactOptional().openapi({
+      description: 'The Amazon Resource Name (ARN) of the transit gateway.',
+    }),
+    State: TransitGatewayRegistrationStateReasonSchema.exactOptional().openapi({
+      description: 'The state of the transit gateway registration.',
+    }),
   })
   .openapi({
     description: 'Describes the registration of a transit gateway to a global network.',
@@ -1405,9 +1266,9 @@ const TransitGatewayRegistrationSchema = z
 
 const DeregisterTransitGatewayResponseSchema = z
   .object({
-    TransitGatewayRegistration: TransitGatewayRegistrationSchema.and(
-      z.any().openapi({ description: 'The transit gateway registration information.' }),
-    ).exactOptional(),
+    TransitGatewayRegistration: TransitGatewayRegistrationSchema.exactOptional().openapi({
+      description: 'The transit gateway registration information.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DeregisterTransitGatewayResponse')
@@ -1423,70 +1284,71 @@ const NextTokenSchema = z
 
 const DescribeGlobalNetworksResponseSchema = z
   .object({
-    GlobalNetworks: GlobalNetworkListSchema.and(
-      z.any().openapi({ description: 'Information about the global networks.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    GlobalNetworks: GlobalNetworkListSchema.exactOptional().openapi({
+      description: 'Information about the global networks.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DescribeGlobalNetworksResponse')
 
 const DisassociateConnectPeerResponseSchema = z
   .object({
-    ConnectPeerAssociation: ConnectPeerAssociationSchema.and(
-      z.any().openapi({ description: 'Describes the Connect peer association.' }),
-    ).exactOptional(),
+    ConnectPeerAssociation: ConnectPeerAssociationSchema.exactOptional().openapi({
+      description: 'Describes the Connect peer association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateConnectPeerResponse')
 
 const DisassociateCustomerGatewayResponseSchema = z
   .object({
-    CustomerGatewayAssociation: CustomerGatewayAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the customer gateway association.' }),
-    ).exactOptional(),
+    CustomerGatewayAssociation: CustomerGatewayAssociationSchema.exactOptional().openapi({
+      description: 'Information about the customer gateway association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateCustomerGatewayResponse')
 
 const DisassociateLinkResponseSchema = z
   .object({
-    LinkAssociation: LinkAssociationSchema.and(
-      z.any().openapi({ description: 'Information about the link association.' }),
-    ).exactOptional(),
+    LinkAssociation: LinkAssociationSchema.exactOptional().openapi({
+      description: 'Information about the link association.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateLinkResponse')
 
 const DisassociateTransitGatewayConnectPeerResponseSchema = z
   .object({
-    TransitGatewayConnectPeerAssociation: TransitGatewayConnectPeerAssociationSchema.and(
-      z.any().openapi({ description: 'The transit gateway Connect peer association.' }),
-    ).exactOptional(),
+    TransitGatewayConnectPeerAssociation:
+      TransitGatewayConnectPeerAssociationSchema.exactOptional().openapi({
+        description: 'The transit gateway Connect peer association.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('DisassociateTransitGatewayConnectPeerResponse')
 
 const ExecuteCoreNetworkChangeSetResponseSchema = z
-  .object({})
+  .looseObject({})
   .openapi('ExecuteCoreNetworkChangeSetResponse')
 
 const GetConnectAttachmentResponseSchema = z
   .object({
-    ConnectAttachment: ConnectAttachmentSchema.and(
-      z.any().openapi({ description: 'Details about the Connect attachment.' }),
-    ).exactOptional(),
+    ConnectAttachment: ConnectAttachmentSchema.exactOptional().openapi({
+      description: 'Details about the Connect attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectAttachmentResponse')
 
 const GetConnectPeerResponseSchema = z
   .object({
-    ConnectPeer: ConnectPeerSchema.and(
-      z.any().openapi({ description: 'Returns information about a core network Connect peer.' }),
-    ).exactOptional(),
+    ConnectPeer: ConnectPeerSchema.exactOptional().openapi({
+      description: 'Returns information about a core network Connect peer.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectPeerResponse')
@@ -1497,12 +1359,12 @@ const ConnectPeerAssociationListSchema = z
 
 const GetConnectPeerAssociationsResponseSchema = z
   .object({
-    ConnectPeerAssociations: ConnectPeerAssociationListSchema.and(
-      z.any().openapi({ description: 'Displays a list of Connect peer associations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    ConnectPeerAssociations: ConnectPeerAssociationListSchema.exactOptional().openapi({
+      description: 'Displays a list of Connect peer associations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectPeerAssociationsResponse')
@@ -1511,21 +1373,21 @@ const ConnectionListSchema = z.array(ConnectionSchema).openapi('ConnectionList')
 
 const GetConnectionsResponseSchema = z
   .object({
-    Connections: ConnectionListSchema.and(
-      z.any().openapi({ description: 'Information about the connections.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to use for the next page of results.' }),
-    ).exactOptional(),
+    Connections: ConnectionListSchema.exactOptional().openapi({
+      description: 'Information about the connections.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetConnectionsResponse')
 
 const GetCoreNetworkResponseSchema = z
   .object({
-    CoreNetwork: CoreNetworkSchema.and(
-      z.any().openapi({ description: 'Details about a core network.' }),
-    ).exactOptional(),
+    CoreNetwork: CoreNetworkSchema.exactOptional().openapi({
+      description: 'Details about a core network.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreNetworkResponse')
@@ -1552,58 +1414,44 @@ const ChangeStatusSchema = z
 
 const CoreNetworkChangeEventValuesSchema = z
   .object({
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The edge location for the core network change event.' }),
-    ).exactOptional(),
-    SegmentName: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The segment name if the change event is associated with a segment.',
-        }),
-    ).exactOptional(),
-    AttachmentId: AttachmentIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ID of the attachment if the change event is associated with an attachment. ',
-        }),
-    ).exactOptional(),
-    Cidr: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({ description: 'For a <code>STATIC_ROUTE</code> event, this is the IP address.' }),
-    ).exactOptional(),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The edge location for the core network change event.',
+    }),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The segment name if the change event is associated with a segment.',
+    }),
+    AttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description:
+        'The ID of the attachment if the change event is associated with an attachment. ',
+    }),
+    Cidr: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'For a <code>STATIC_ROUTE</code> event, this is the IP address.',
+    }),
   })
   .openapi({ description: 'Describes a core network change event.', required: [] })
   .openapi('CoreNetworkChangeEventValues')
 
 const CoreNetworkChangeEventSchema = z
   .object({
-    Type: ChangeTypeSchema.and(
-      z.any().openapi({ description: 'Describes the type of change event. ' }),
-    ).exactOptional(),
-    Action: ChangeActionSchema.and(
-      z.any().openapi({ description: 'The action taken for the change event.' }),
-    ).exactOptional(),
-    IdentifierPath: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>"CORE_NETWORK_SEGMENT/us-east-1/devsegment"</code>.',
-        }),
-    ).exactOptional(),
-    EventTime: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp for an event change in status.' }),
-    ).exactOptional(),
-    Status: ChangeStatusSchema.and(
-      z.any().openapi({ description: 'The status of the core network change event.' }),
-    ).exactOptional(),
-    Values: CoreNetworkChangeEventValuesSchema.and(
-      z.any().openapi({ description: 'Details of the change event.' }),
-    ).exactOptional(),
+    Type: ChangeTypeSchema.exactOptional().openapi({
+      description: 'Describes the type of change event. ',
+    }),
+    Action: ChangeActionSchema.exactOptional().openapi({
+      description: 'The action taken for the change event.',
+    }),
+    IdentifierPath: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>"CORE_NETWORK_SEGMENT/us-east-1/devsegment"</code>.',
+    }),
+    EventTime: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp for an event change in status.',
+    }),
+    Status: ChangeStatusSchema.exactOptional().openapi({
+      description: 'The status of the core network change event.',
+    }),
+    Values: CoreNetworkChangeEventValuesSchema.exactOptional().openapi({
+      description: 'Details of the change event.',
+    }),
   })
   .openapi({
     description:
@@ -1618,74 +1466,60 @@ const CoreNetworkChangeEventListSchema = z
 
 const GetCoreNetworkChangeEventsResponseSchema = z
   .object({
-    CoreNetworkChangeEvents: CoreNetworkChangeEventListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The response to <code>GetCoreNetworkChangeEventsRequest</code>.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    CoreNetworkChangeEvents: CoreNetworkChangeEventListSchema.exactOptional().openapi({
+      description: 'The response to <code>GetCoreNetworkChangeEventsRequest</code>.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreNetworkChangeEventsResponse')
 
 const CoreNetworkChangeValuesSchema = z
   .object({
-    SegmentName: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The names of the segments in a core network.' }),
-    ).exactOptional(),
-    EdgeLocations: ExternalRegionCodeListSchema.and(
-      z.any().openapi({ description: 'The Regions where edges are located in a core network. ' }),
-    ).exactOptional(),
-    Asn: LongSchema.and(
-      z.any().openapi({ description: 'The ASN of a core network.' }),
-    ).exactOptional(),
-    Cidr: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The IP addresses used for a core network.' }),
-    ).exactOptional(),
-    DestinationIdentifier: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the destination.' }),
-    ).exactOptional(),
-    InsideCidrBlocks: ConstrainedStringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The inside IP addresses used for core network change values.' }),
-    ).exactOptional(),
-    SharedSegments: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'The shared segments for a core network change value. ' }),
-    ).exactOptional(),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The names of the segments in a core network.',
+    }),
+    EdgeLocations: ExternalRegionCodeListSchema.exactOptional().openapi({
+      description: 'The Regions where edges are located in a core network. ',
+    }),
+    Asn: LongSchema.exactOptional().openapi({ description: 'The ASN of a core network.' }),
+    Cidr: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The IP addresses used for a core network.',
+    }),
+    DestinationIdentifier: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the destination.',
+    }),
+    InsideCidrBlocks: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The inside IP addresses used for core network change values.',
+    }),
+    SharedSegments: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The shared segments for a core network change value. ',
+    }),
   })
   .openapi({ description: 'Describes a core network change.', required: [] })
   .openapi('CoreNetworkChangeValues')
 
 const CoreNetworkChangeSchema = z
   .object({
-    Type: ChangeTypeSchema.and(
-      z.any().openapi({ description: 'The type of change.' }),
-    ).exactOptional(),
-    Action: ChangeActionSchema.and(
-      z.any().openapi({ description: 'The action to take for a core network.' }),
-    ).exactOptional(),
-    Identifier: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The resource identifier.' }),
-    ).exactOptional(),
-    PreviousValues: CoreNetworkChangeValuesSchema.and(
-      z.any().openapi({ description: 'The previous values for a core network.' }),
-    ).exactOptional(),
-    NewValues: CoreNetworkChangeValuesSchema.and(
-      z.any().openapi({ description: 'The new value for a core network' }),
-    ).exactOptional(),
-    IdentifierPath: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>"CORE_NETWORK_SEGMENT/us-east-1/devsegment"</code>.',
-        }),
-    ).exactOptional(),
+    Type: ChangeTypeSchema.exactOptional().openapi({ description: 'The type of change.' }),
+    Action: ChangeActionSchema.exactOptional().openapi({
+      description: 'The action to take for a core network.',
+    }),
+    Identifier: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The resource identifier.',
+    }),
+    PreviousValues: CoreNetworkChangeValuesSchema.exactOptional().openapi({
+      description: 'The previous values for a core network.',
+    }),
+    NewValues: CoreNetworkChangeValuesSchema.exactOptional().openapi({
+      description: 'The new value for a core network',
+    }),
+    IdentifierPath: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        'Uniquely identifies the path for a change within the changeset. For example, the <code>IdentifierPath</code> for a core network segment change might be <code>"CORE_NETWORK_SEGMENT/us-east-1/devsegment"</code>.',
+    }),
   })
   .openapi({ description: 'Details describing a core network change.', required: [] })
   .openapi('CoreNetworkChange')
@@ -1696,21 +1530,21 @@ const CoreNetworkChangeListSchema = z
 
 const GetCoreNetworkChangeSetResponseSchema = z
   .object({
-    CoreNetworkChanges: CoreNetworkChangeListSchema.and(
-      z.any().openapi({ description: 'Describes a core network changes.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    CoreNetworkChanges: CoreNetworkChangeListSchema.exactOptional().openapi({
+      description: 'Describes a core network changes.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreNetworkChangeSetResponse')
 
 const GetCoreNetworkPolicyResponseSchema = z
   .object({
-    CoreNetworkPolicy: CoreNetworkPolicySchema.and(
-      z.any().openapi({ description: 'The details about a core network policy.' }),
-    ).exactOptional(),
+    CoreNetworkPolicy: CoreNetworkPolicySchema.exactOptional().openapi({
+      description: 'The details about a core network policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCoreNetworkPolicyResponse')
@@ -1721,12 +1555,12 @@ const CustomerGatewayAssociationListSchema = z
 
 const GetCustomerGatewayAssociationsResponseSchema = z
   .object({
-    CustomerGatewayAssociations: CustomerGatewayAssociationListSchema.and(
-      z.any().openapi({ description: 'The customer gateway associations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    CustomerGatewayAssociations: CustomerGatewayAssociationListSchema.exactOptional().openapi({
+      description: 'The customer gateway associations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetCustomerGatewayAssociationsResponse')
@@ -1735,10 +1569,10 @@ const DeviceListSchema = z.array(DeviceSchema).openapi('DeviceList')
 
 const GetDevicesResponseSchema = z
   .object({
-    Devices: DeviceListSchema.and(z.any().openapi({ description: 'The devices.' })).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Devices: DeviceListSchema.exactOptional().openapi({ description: 'The devices.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetDevicesResponse')
@@ -1747,12 +1581,12 @@ const LinkAssociationListSchema = z.array(LinkAssociationSchema).openapi('LinkAs
 
 const GetLinkAssociationsResponseSchema = z
   .object({
-    LinkAssociations: LinkAssociationListSchema.and(
-      z.any().openapi({ description: 'The link associations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    LinkAssociations: LinkAssociationListSchema.exactOptional().openapi({
+      description: 'The link associations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLinkAssociationsResponse')
@@ -1761,22 +1595,20 @@ const LinkListSchema = z.array(LinkSchema).openapi('LinkList')
 
 const GetLinksResponseSchema = z
   .object({
-    Links: LinkListSchema.and(z.any().openapi({ description: 'The links.' })).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Links: LinkListSchema.exactOptional().openapi({ description: 'The links.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetLinksResponse')
 
 const NetworkResourceCountSchema = z
   .object({
-    ResourceType: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    Count: IntegerSchema.and(
-      z.any().openapi({ description: 'The resource count.' }),
-    ).exactOptional(),
+    ResourceType: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    Count: IntegerSchema.exactOptional().openapi({ description: 'The resource count.' }),
   })
   .openapi({ description: 'Describes a resource count.', required: [] })
   .openapi('NetworkResourceCount')
@@ -1787,24 +1619,24 @@ const NetworkResourceCountListSchema = z
 
 const GetNetworkResourceCountsResponseSchema = z
   .object({
-    NetworkResourceCounts: NetworkResourceCountListSchema.and(
-      z.any().openapi({ description: 'The count of resources.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    NetworkResourceCounts: NetworkResourceCountListSchema.exactOptional().openapi({
+      description: 'The count of resources.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkResourceCountsResponse')
 
 const RelationshipSchema = z
   .object({
-    From: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    To: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
+    From: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    To: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
   })
   .openapi({ description: 'Describes a resource relationship.', required: [] })
   .openapi('Relationship')
@@ -1813,12 +1645,12 @@ const RelationshipListSchema = z.array(RelationshipSchema).openapi('Relationship
 
 const GetNetworkResourceRelationshipsResponseSchema = z
   .object({
-    Relationships: RelationshipListSchema.and(
-      z.any().openapi({ description: 'The resource relationships.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Relationships: RelationshipListSchema.exactOptional().openapi({
+      description: 'The resource relationships.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkResourceRelationshipsResponse')
@@ -1829,47 +1661,39 @@ const NetworkResourceMetadataMapSchema = z
 
 const NetworkResourceSchema = z
   .object({
-    RegisteredGatewayArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway.' }),
-    ).exactOptional(),
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    AwsRegion: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region.' }),
-    ).exactOptional(),
-    AccountId: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID.' }),
-    ).exactOptional(),
-    ResourceType: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The resource type.</p> <p>The following are the supported resource types for Direct Connect:</p> <ul> <li> <p> <code>dxcon</code> </p> </li> <li> <p> <code>dx-gateway</code> </p> </li> <li> <p> <code>dx-vif</code> </p> </li> </ul> <p>The following are the supported resource types for Network Manager:</p> <ul> <li> <p> <code>connection</code> </p> </li> <li> <p> <code>device</code> </p> </li> <li> <p> <code>link</code> </p> </li> <li> <p> <code>site</code> </p> </li> </ul> <p>The following are the supported resource types for Amazon VPC:</p> <ul> <li> <p> <code>customer-gateway</code> </p> </li> <li> <p> <code>transit-gateway</code> </p> </li> <li> <p> <code>transit-gateway-attachment</code> </p> </li> <li> <p> <code>transit-gateway-connect-peer</code> </p> </li> <li> <p> <code>transit-gateway-route-table</code> </p> </li> <li> <p> <code>vpn-connection</code> </p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ResourceId: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    Definition: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the resource, in JSON format. Network Manager gets this information by describing the resource using its Describe API call.',
-        }),
-    ).exactOptional(),
-    DefinitionTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the resource definition was retrieved.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(z.any().openapi({ description: 'The tags.' })).exactOptional(),
-    Metadata: NetworkResourceMetadataMapSchema.and(
-      z.any().openapi({ description: 'The resource metadata.' }),
-    ).exactOptional(),
+    RegisteredGatewayArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the gateway.',
+    }),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    AwsRegion: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region.',
+    }),
+    AccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID.',
+    }),
+    ResourceType: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The resource type.</p> <p>The following are the supported resource types for Direct Connect:</p> <ul> <li> <p> <code>dxcon</code> </p> </li> <li> <p> <code>dx-gateway</code> </p> </li> <li> <p> <code>dx-vif</code> </p> </li> </ul> <p>The following are the supported resource types for Network Manager:</p> <ul> <li> <p> <code>connection</code> </p> </li> <li> <p> <code>device</code> </p> </li> <li> <p> <code>link</code> </p> </li> <li> <p> <code>site</code> </p> </li> </ul> <p>The following are the supported resource types for Amazon VPC:</p> <ul> <li> <p> <code>customer-gateway</code> </p> </li> <li> <p> <code>transit-gateway</code> </p> </li> <li> <p> <code>transit-gateway-attachment</code> </p> </li> <li> <p> <code>transit-gateway-connect-peer</code> </p> </li> <li> <p> <code>transit-gateway-route-table</code> </p> </li> <li> <p> <code>vpn-connection</code> </p> </li> </ul>',
+    }),
+    ResourceId: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the resource.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    Definition: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        'Information about the resource, in JSON format. Network Manager gets this information by describing the resource using its Describe API call.',
+    }),
+    DefinitionTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the resource definition was retrieved.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({ description: 'The tags.' }),
+    Metadata: NetworkResourceMetadataMapSchema.exactOptional().openapi({
+      description: 'The resource metadata.',
+    }),
   })
   .openapi({ description: 'Describes a network resource.', required: [] })
   .openapi('NetworkResource')
@@ -1878,27 +1702,27 @@ const NetworkResourceListSchema = z.array(NetworkResourceSchema).openapi('Networ
 
 const GetNetworkResourcesResponseSchema = z
   .object({
-    NetworkResources: NetworkResourceListSchema.and(
-      z.any().openapi({ description: 'The network resources.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    NetworkResources: NetworkResourceListSchema.exactOptional().openapi({
+      description: 'The network resources.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkResourcesResponse')
 
 const CoreNetworkSegmentEdgeIdentifierSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    SegmentName: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The name of the segment edge.' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Region where the segment edge is located.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The name of the segment edge.',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Region where the segment edge is located.',
+    }),
   })
   .openapi({ description: 'Returns details about a core network edge.', required: [] })
   .openapi('CoreNetworkSegmentEdgeIdentifier')
@@ -1916,24 +1740,24 @@ const TransitGatewayAttachmentIdSchema = z
 
 const NetworkRouteDestinationSchema = z
   .object({
-    CoreNetworkAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network attachment.' }),
-    ).exactOptional(),
-    TransitGatewayAttachmentId: TransitGatewayAttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the transit gateway attachment.' }),
-    ).exactOptional(),
-    SegmentName: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The name of the segment.' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The edge location for the network destination.' }),
-    ).exactOptional(),
-    ResourceType: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    ResourceId: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
+    CoreNetworkAttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network attachment.',
+    }),
+    TransitGatewayAttachmentId: TransitGatewayAttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of the transit gateway attachment.',
+    }),
+    SegmentName: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The name of the segment.',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The edge location for the network destination.',
+    }),
+    ResourceType: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    ResourceId: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the resource.',
+    }),
   })
   .openapi({ description: 'Describes the destination of a network route.', required: [] })
   .openapi('NetworkRouteDestination')
@@ -1948,31 +1772,23 @@ const RouteTypeSchema = z.enum(['PROPAGATED', 'STATIC']).openapi('RouteType')
 
 const NetworkRouteSchema = z
   .object({
-    DestinationCidrBlock: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'A unique identifier for the route, such as a CIDR block.' }),
-    ).exactOptional(),
-    Destinations: NetworkRouteDestinationListSchema.and(
-      z.any().openapi({ description: 'The destinations.' }),
-    ).exactOptional(),
-    PrefixListId: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the prefix list.' }),
-    ).exactOptional(),
-    State: RouteStateSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The route state. The possible values are <code>active</code> and <code>blackhole</code>.',
-        }),
-    ).exactOptional(),
-    Type: RouteTypeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The route type. The possible values are <code>propagated</code> and <code>static</code>.',
-        }),
-    ).exactOptional(),
+    DestinationCidrBlock: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'A unique identifier for the route, such as a CIDR block.',
+    }),
+    Destinations: NetworkRouteDestinationListSchema.exactOptional().openapi({
+      description: 'The destinations.',
+    }),
+    PrefixListId: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the prefix list.',
+    }),
+    State: RouteStateSchema.exactOptional().openapi({
+      description:
+        'The route state. The possible values are <code>active</code> and <code>blackhole</code>.',
+    }),
+    Type: RouteTypeSchema.exactOptional().openapi({
+      description:
+        'The route type. The possible values are <code>propagated</code> and <code>static</code>.',
+    }),
   })
   .openapi({ description: 'Describes a network route.', required: [] })
   .openapi('NetworkRoute')
@@ -1981,21 +1797,21 @@ const NetworkRouteListSchema = z.array(NetworkRouteSchema).openapi('NetworkRoute
 
 const GetNetworkRoutesResponseSchema = z
   .object({
-    RouteTableArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the route table.' }),
-    ).exactOptional(),
-    CoreNetworkSegmentEdge: CoreNetworkSegmentEdgeIdentifierSchema.and(
-      z.any().openapi({ description: 'Describes a core network segment edge.' }),
-    ).exactOptional(),
-    RouteTableType: RouteTableTypeSchema.and(
-      z.any().openapi({ description: 'The route table type.' }),
-    ).exactOptional(),
-    RouteTableTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The route table creation time.' }),
-    ).exactOptional(),
-    NetworkRoutes: NetworkRouteListSchema.and(
-      z.any().openapi({ description: 'The network routes.' }),
-    ).exactOptional(),
+    RouteTableArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the route table.',
+    }),
+    CoreNetworkSegmentEdge: CoreNetworkSegmentEdgeIdentifierSchema.exactOptional().openapi({
+      description: 'Describes a core network segment edge.',
+    }),
+    RouteTableType: RouteTableTypeSchema.exactOptional().openapi({
+      description: 'The route table type.',
+    }),
+    RouteTableTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The route table creation time.',
+    }),
+    NetworkRoutes: NetworkRouteListSchema.exactOptional().openapi({
+      description: 'The network routes.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkRoutesResponse')
@@ -2014,48 +1830,44 @@ const ConnectionStatusSchema = z.enum(['UP', 'DOWN']).openapi('ConnectionStatus'
 
 const ConnectionHealthSchema = z
   .object({
-    Type: ConnectionTypeSchema.and(
-      z.any().openapi({ description: 'The connection type.' }),
-    ).exactOptional(),
-    Status: ConnectionStatusSchema.and(
-      z.any().openapi({ description: 'The connection status.' }),
-    ).exactOptional(),
-    Timestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time the status was last updated.' }),
-    ).exactOptional(),
+    Type: ConnectionTypeSchema.exactOptional().openapi({ description: 'The connection type.' }),
+    Status: ConnectionStatusSchema.exactOptional().openapi({
+      description: 'The connection status.',
+    }),
+    Timestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The time the status was last updated.',
+    }),
   })
   .openapi({ description: 'Describes connection health.', required: [] })
   .openapi('ConnectionHealth')
 
 const NetworkTelemetrySchema = z
   .object({
-    RegisteredGatewayArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway.' }),
-    ).exactOptional(),
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    AwsRegion: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services Region.' }),
-    ).exactOptional(),
-    AccountId: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The Amazon Web Services account ID.' }),
-    ).exactOptional(),
-    ResourceType: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    ResourceId: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the resource.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    Address: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The address.' }),
-    ).exactOptional(),
-    Health: ConnectionHealthSchema.and(
-      z.any().openapi({ description: 'The connection health.' }),
-    ).exactOptional(),
+    RegisteredGatewayArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the gateway.',
+    }),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    AwsRegion: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services Region.',
+    }),
+    AccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The Amazon Web Services account ID.',
+    }),
+    ResourceType: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    ResourceId: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the resource.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    Address: ConstrainedStringSchema.exactOptional().openapi({ description: 'The address.' }),
+    Health: ConnectionHealthSchema.exactOptional().openapi({
+      description: 'The connection health.',
+    }),
   })
   .openapi({ description: 'Describes the telemetry information for a resource.', required: [] })
   .openapi('NetworkTelemetry')
@@ -2064,12 +1876,12 @@ const NetworkTelemetryListSchema = z.array(NetworkTelemetrySchema).openapi('Netw
 
 const GetNetworkTelemetryResponseSchema = z
   .object({
-    NetworkTelemetry: NetworkTelemetryListSchema.and(
-      z.any().openapi({ description: 'The network telemetry.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    NetworkTelemetry: NetworkTelemetryListSchema.exactOptional().openapi({
+      description: 'The network telemetry.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetNetworkTelemetryResponse')
@@ -2083,9 +1895,9 @@ const ResourcePolicyDocumentSchema = z
 
 const GetResourcePolicyResponseSchema = z
   .object({
-    PolicyDocument: ResourcePolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The resource policy document.' }),
-    ).exactOptional(),
+    PolicyDocument: ResourcePolicyDocumentSchema.exactOptional().openapi({
+      description: 'The resource policy document.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetResourcePolicyResponse')
@@ -2103,15 +1915,13 @@ const TransitGatewayAttachmentArnSchema = z
 
 const RouteAnalysisEndpointOptionsSchema = z
   .object({
-    TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway attachment.' }),
-    ).exactOptional(),
-    TransitGatewayArn: TransitGatewayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway.' }),
-    ).exactOptional(),
-    IpAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The IP address.' }),
-    ).exactOptional(),
+    TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.exactOptional().openapi({
+      description: 'The ARN of the transit gateway attachment.',
+    }),
+    TransitGatewayArn: TransitGatewayArnSchema.exactOptional().openapi({
+      description: 'The ARN of the transit gateway.',
+    }),
+    IpAddress: IPAddressSchema.exactOptional().openapi({ description: 'The IP address.' }),
   })
   .openapi({ description: 'Describes a source or a destination.', required: [] })
   .openapi('RouteAnalysisEndpointOptions')
@@ -2149,74 +1959,58 @@ const ReasonContextMapSchema = z
 
 const RouteAnalysisCompletionSchema = z
   .object({
-    ResultCode: RouteAnalysisCompletionResultCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The result of the analysis. If the status is <code>NOT_CONNECTED</code>, check the reason code.',
-        }),
-    ).exactOptional(),
-    ReasonCode: RouteAnalysisCompletionReasonCodeSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The reason code. Available only if a connection is not found.</p> <ul> <li> <p> <code>BLACKHOLE_ROUTE_FOR_DESTINATION_FOUND</code> - Found a black hole route with the destination CIDR block.</p> </li> <li> <p> <code>CYCLIC_PATH_DETECTED</code> - Found the same resource multiple times while traversing the path.</p> </li> <li> <p> <code>INACTIVE_ROUTE_FOR_DESTINATION_FOUND</code> - Found an inactive route with the destination CIDR block.</p> </li> <li> <p> <code>MAX_HOPS_EXCEEDED</code> - Analysis exceeded 64 hops without finding the destination.</p> </li> <li> <p> <code>ROUTE_NOT_FOUND</code> - Cannot find a route table with the destination CIDR block.</p> </li> <li> <p> <code>TGW_ATTACH_ARN_NO_MATCH</code> - Found an attachment, but not with the correct destination ARN.</p> </li> <li> <p> <code>TGW_ATTACH_NOT_FOUND</code> - Cannot find an attachment.</p> </li> <li> <p> <code>TGW_ATTACH_NOT_IN_TGW</code> - Found an attachment, but not to the correct transit gateway.</p> </li> <li> <p> <code>TGW_ATTACH_STABLE_ROUTE_TABLE_NOT_FOUND</code> - The state of the route table association is not associated.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    ReasonContext: ReasonContextMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Additional information about the path. Available only if a connection is not found.',
-        }),
-    ).exactOptional(),
+    ResultCode: RouteAnalysisCompletionResultCodeSchema.exactOptional().openapi({
+      description:
+        'The result of the analysis. If the status is <code>NOT_CONNECTED</code>, check the reason code.',
+    }),
+    ReasonCode: RouteAnalysisCompletionReasonCodeSchema.exactOptional().openapi({
+      description:
+        '<p>The reason code. Available only if a connection is not found.</p> <ul> <li> <p> <code>BLACKHOLE_ROUTE_FOR_DESTINATION_FOUND</code> - Found a black hole route with the destination CIDR block.</p> </li> <li> <p> <code>CYCLIC_PATH_DETECTED</code> - Found the same resource multiple times while traversing the path.</p> </li> <li> <p> <code>INACTIVE_ROUTE_FOR_DESTINATION_FOUND</code> - Found an inactive route with the destination CIDR block.</p> </li> <li> <p> <code>MAX_HOPS_EXCEEDED</code> - Analysis exceeded 64 hops without finding the destination.</p> </li> <li> <p> <code>ROUTE_NOT_FOUND</code> - Cannot find a route table with the destination CIDR block.</p> </li> <li> <p> <code>TGW_ATTACH_ARN_NO_MATCH</code> - Found an attachment, but not with the correct destination ARN.</p> </li> <li> <p> <code>TGW_ATTACH_NOT_FOUND</code> - Cannot find an attachment.</p> </li> <li> <p> <code>TGW_ATTACH_NOT_IN_TGW</code> - Found an attachment, but not to the correct transit gateway.</p> </li> <li> <p> <code>TGW_ATTACH_STABLE_ROUTE_TABLE_NOT_FOUND</code> - The state of the route table association is not associated.</p> </li> </ul>',
+    }),
+    ReasonContext: ReasonContextMapSchema.exactOptional().openapi({
+      description:
+        'Additional information about the path. Available only if a connection is not found.',
+    }),
   })
   .openapi({ description: 'Describes the status of an analysis at completion.', required: [] })
   .openapi('RouteAnalysisCompletion')
 
 const NetworkResourceSummarySchema = z
   .object({
-    RegisteredGatewayArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the gateway.' }),
-    ).exactOptional(),
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    ResourceType: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The resource type.' }),
-    ).exactOptional(),
-    Definition: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Information about the resource, in JSON format. Network Manager gets this information by describing the resource using its Describe API call.',
-        }),
-    ).exactOptional(),
-    NameTag: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The value for the Name tag.' }),
-    ).exactOptional(),
-    IsMiddlebox: BooleanSchema.and(
-      z.any().openapi({ description: 'Indicates whether this is a middlebox appliance.' }),
-    ).exactOptional(),
+    RegisteredGatewayArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the gateway.',
+    }),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    ResourceType: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The resource type.',
+    }),
+    Definition: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        'Information about the resource, in JSON format. Network Manager gets this information by describing the resource using its Describe API call.',
+    }),
+    NameTag: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The value for the Name tag.',
+    }),
+    IsMiddlebox: BooleanSchema.exactOptional().openapi({
+      description: 'Indicates whether this is a middlebox appliance.',
+    }),
   })
   .openapi({ description: 'Describes a network resource.', required: [] })
   .openapi('NetworkResourceSummary')
 
 const PathComponentSchema = z
   .object({
-    Sequence: IntegerSchema.and(
-      z.any().openapi({ description: 'The sequence number in the path. The destination is 0.' }),
-    ).exactOptional(),
-    Resource: NetworkResourceSummarySchema.and(
-      z.any().openapi({ description: 'The resource.' }),
-    ).exactOptional(),
-    DestinationCidrBlock: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The destination CIDR block in the route table.' }),
-    ).exactOptional(),
+    Sequence: IntegerSchema.exactOptional().openapi({
+      description: 'The sequence number in the path. The destination is 0.',
+    }),
+    Resource: NetworkResourceSummarySchema.exactOptional().openapi({
+      description: 'The resource.',
+    }),
+    DestinationCidrBlock: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The destination CIDR block in the route table.',
+    }),
   })
   .openapi({ description: 'Describes a path component.', required: [] })
   .openapi('PathComponent')
@@ -2225,81 +2019,71 @@ const PathComponentListSchema = z.array(PathComponentSchema).openapi('PathCompon
 
 const RouteAnalysisPathSchema = z
   .object({
-    CompletionStatus: RouteAnalysisCompletionSchema.and(
-      z.any().openapi({ description: 'The status of the analysis at completion.' }),
-    ).exactOptional(),
-    Path: PathComponentListSchema.and(
-      z.any().openapi({ description: 'The route analysis path.' }),
-    ).exactOptional(),
+    CompletionStatus: RouteAnalysisCompletionSchema.exactOptional().openapi({
+      description: 'The status of the analysis at completion.',
+    }),
+    Path: PathComponentListSchema.exactOptional().openapi({
+      description: 'The route analysis path.',
+    }),
   })
   .openapi({ description: 'Describes a route analysis path.', required: [] })
   .openapi('RouteAnalysisPath')
 
 const RouteAnalysisSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the global network.' }),
-    ).exactOptional(),
-    OwnerAccountId: AWSAccountIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the AWS account that created the route analysis.' }),
-    ).exactOptional(),
-    RouteAnalysisId: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The ID of the route analysis.' }),
-    ).exactOptional(),
-    StartTimestamp: DateTimeSchema.and(
-      z.any().openapi({ description: 'The time that the analysis started.' }),
-    ).exactOptional(),
-    Status: RouteAnalysisStatusSchema.and(
-      z.any().openapi({ description: 'The status of the route analysis.' }),
-    ).exactOptional(),
-    Source: RouteAnalysisEndpointOptionsSchema.and(
-      z.any().openapi({ description: 'The source.' }),
-    ).exactOptional(),
-    Destination: RouteAnalysisEndpointOptionsSchema.and(
-      z.any().openapi({ description: 'The destination.' }),
-    ).exactOptional(),
-    IncludeReturnPath: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to analyze the return path. The return path is not analyzed if the forward path analysis does not succeed.',
-        }),
-    ).exactOptional(),
-    UseMiddleboxes: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to include the location of middlebox appliances in the route analysis.',
-        }),
-    ).exactOptional(),
-    ForwardPath: RouteAnalysisPathSchema.and(
-      z.any().openapi({ description: 'The forward path.' }),
-    ).exactOptional(),
-    ReturnPath: RouteAnalysisPathSchema.and(
-      z.any().openapi({ description: 'The return path.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of the global network.',
+    }),
+    OwnerAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the AWS account that created the route analysis.',
+    }),
+    RouteAnalysisId: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The ID of the route analysis.',
+    }),
+    StartTimestamp: DateTimeSchema.exactOptional().openapi({
+      description: 'The time that the analysis started.',
+    }),
+    Status: RouteAnalysisStatusSchema.exactOptional().openapi({
+      description: 'The status of the route analysis.',
+    }),
+    Source: RouteAnalysisEndpointOptionsSchema.exactOptional().openapi({
+      description: 'The source.',
+    }),
+    Destination: RouteAnalysisEndpointOptionsSchema.exactOptional().openapi({
+      description: 'The destination.',
+    }),
+    IncludeReturnPath: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to analyze the return path. The return path is not analyzed if the forward path analysis does not succeed.',
+    }),
+    UseMiddleboxes: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to include the location of middlebox appliances in the route analysis.',
+    }),
+    ForwardPath: RouteAnalysisPathSchema.exactOptional().openapi({
+      description: 'The forward path.',
+    }),
+    ReturnPath: RouteAnalysisPathSchema.exactOptional().openapi({
+      description: 'The return path.',
+    }),
   })
   .openapi({ description: 'Describes a route analysis.', required: [] })
   .openapi('RouteAnalysis')
 
 const GetRouteAnalysisResponseSchema = z
   .object({
-    RouteAnalysis: RouteAnalysisSchema.and(
-      z.any().openapi({ description: 'The route analysis.' }),
-    ).exactOptional(),
+    RouteAnalysis: RouteAnalysisSchema.exactOptional().openapi({
+      description: 'The route analysis.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetRouteAnalysisResponse')
 
 const GetSiteToSiteVpnAttachmentResponseSchema = z
   .object({
-    SiteToSiteVpnAttachment: SiteToSiteVpnAttachmentSchema.and(
-      z.any().openapi({ description: 'Describes the site-to-site attachment.' }),
-    ).exactOptional(),
+    SiteToSiteVpnAttachment: SiteToSiteVpnAttachmentSchema.exactOptional().openapi({
+      description: 'Describes the site-to-site attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSiteToSiteVpnAttachmentResponse')
@@ -2308,10 +2092,10 @@ const SiteListSchema = z.array(SiteSchema).openapi('SiteList')
 
 const GetSitesResponseSchema = z
   .object({
-    Sites: SiteListSchema.and(z.any().openapi({ description: 'The sites.' })).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Sites: SiteListSchema.exactOptional().openapi({ description: 'The sites.' }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetSitesResponse')
@@ -2322,25 +2106,22 @@ const TransitGatewayConnectPeerAssociationListSchema = z
 
 const GetTransitGatewayConnectPeerAssociationsResponseSchema = z
   .object({
-    TransitGatewayConnectPeerAssociations: TransitGatewayConnectPeerAssociationListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Information about the transit gateway Connect peer associations.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token to use for the next page of results.' }),
-    ).exactOptional(),
+    TransitGatewayConnectPeerAssociations:
+      TransitGatewayConnectPeerAssociationListSchema.exactOptional().openapi({
+        description: 'Information about the transit gateway Connect peer associations.',
+      }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token to use for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTransitGatewayConnectPeerAssociationsResponse')
 
 const GetTransitGatewayPeeringResponseSchema = z
   .object({
-    TransitGatewayPeering: TransitGatewayPeeringSchema.and(
-      z.any().openapi({ description: 'Returns information about a transit gateway peering. ' }),
-    ).exactOptional(),
+    TransitGatewayPeering: TransitGatewayPeeringSchema.exactOptional().openapi({
+      description: 'Returns information about a transit gateway peering. ',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTransitGatewayPeeringResponse')
@@ -2351,34 +2132,31 @@ const TransitGatewayRegistrationListSchema = z
 
 const GetTransitGatewayRegistrationsResponseSchema = z
   .object({
-    TransitGatewayRegistrations: TransitGatewayRegistrationListSchema.and(
-      z.any().openapi({ description: 'The transit gateway registrations.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    TransitGatewayRegistrations: TransitGatewayRegistrationListSchema.exactOptional().openapi({
+      description: 'The transit gateway registrations.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetTransitGatewayRegistrationsResponse')
 
 const GetTransitGatewayRouteTableAttachmentResponseSchema = z
   .object({
-    TransitGatewayRouteTableAttachment: TransitGatewayRouteTableAttachmentSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'Returns information about the transit gateway route table attachment.',
-        }),
-    ).exactOptional(),
+    TransitGatewayRouteTableAttachment:
+      TransitGatewayRouteTableAttachmentSchema.exactOptional().openapi({
+        description: 'Returns information about the transit gateway route table attachment.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('GetTransitGatewayRouteTableAttachmentResponse')
 
 const GetVpcAttachmentResponseSchema = z
   .object({
-    VpcAttachment: VpcAttachmentSchema.and(
-      z.any().openapi({ description: 'Returns details about a VPC attachment.' }),
-    ).exactOptional(),
+    VpcAttachment: VpcAttachmentSchema.exactOptional().openapi({
+      description: 'Returns details about a VPC attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('GetVpcAttachmentResponse')
@@ -2387,43 +2165,39 @@ const AttachmentListSchema = z.array(AttachmentSchema).openapi('AttachmentList')
 
 const ListAttachmentsResponseSchema = z
   .object({
-    Attachments: AttachmentListSchema.and(
-      z.any().openapi({ description: 'Describes the list of attachments.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Attachments: AttachmentListSchema.exactOptional().openapi({
+      description: 'Describes the list of attachments.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListAttachmentsResponse')
 
 const ConnectPeerSummarySchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    ConnectAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of a Connect peer attachment.' }),
-    ).exactOptional(),
-    ConnectPeerId: ConnectPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of a Connect peer.' }),
-    ).exactOptional(),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Region where the edge is located.' }),
-    ).exactOptional(),
-    ConnectPeerState: ConnectPeerStateSchema.and(
-      z.any().openapi({ description: 'The state of a Connect peer.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z.any().openapi({ description: 'The timestamp when a Connect peer was created.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The list of key-value tags associated with the Connect peer summary.',
-        }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    ConnectAttachmentId: AttachmentIdSchema.exactOptional().openapi({
+      description: 'The ID of a Connect peer attachment.',
+    }),
+    ConnectPeerId: ConnectPeerIdSchema.exactOptional().openapi({
+      description: 'The ID of a Connect peer.',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.exactOptional().openapi({
+      description: 'The Region where the edge is located.',
+    }),
+    ConnectPeerState: ConnectPeerStateSchema.exactOptional().openapi({
+      description: 'The state of a Connect peer.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when a Connect peer was created.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the Connect peer summary.',
+    }),
   })
   .openapi({ description: 'Summary description of a Connect peer.', required: [] })
   .openapi('ConnectPeerSummary')
@@ -2434,43 +2208,37 @@ const ConnectPeerSummaryListSchema = z
 
 const ListConnectPeersResponseSchema = z
   .object({
-    ConnectPeers: ConnectPeerSummaryListSchema.and(
-      z.any().openapi({ description: 'Describes the Connect peers.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    ConnectPeers: ConnectPeerSummaryListSchema.exactOptional().openapi({
+      description: 'Describes the Connect peers.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListConnectPeersResponse')
 
 const CoreNetworkPolicyVersionSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    PolicyVersionId: IntegerSchema.and(
-      z.any().openapi({ description: 'The ID of the policy version.' }),
-    ).exactOptional(),
-    Alias: CoreNetworkPolicyAliasSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Whether a core network policy is the current policy or the most recently submitted policy.',
-        }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of a core network policy version.' }),
-    ).exactOptional(),
-    CreatedAt: DateTimeSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The timestamp when a core network policy version was created.' }),
-    ).exactOptional(),
-    ChangeSetState: ChangeSetStateSchema.and(
-      z.any().openapi({ description: 'The status of the policy version change set.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    PolicyVersionId: IntegerSchema.exactOptional().openapi({
+      description: 'The ID of the policy version.',
+    }),
+    Alias: CoreNetworkPolicyAliasSchema.exactOptional().openapi({
+      description:
+        'Whether a core network policy is the current policy or the most recently submitted policy.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of a core network policy version.',
+    }),
+    CreatedAt: DateTimeSchema.exactOptional().openapi({
+      description: 'The timestamp when a core network policy version was created.',
+    }),
+    ChangeSetState: ChangeSetStateSchema.exactOptional().openapi({
+      description: 'The status of the policy version change set.',
+    }),
   })
   .openapi({ description: 'Describes a core network policy version.', required: [] })
   .openapi('CoreNetworkPolicyVersion')
@@ -2481,41 +2249,39 @@ const CoreNetworkPolicyVersionListSchema = z
 
 const ListCoreNetworkPolicyVersionsResponseSchema = z
   .object({
-    CoreNetworkPolicyVersions: CoreNetworkPolicyVersionListSchema.and(
-      z.any().openapi({ description: 'Describes core network policy versions.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    CoreNetworkPolicyVersions: CoreNetworkPolicyVersionListSchema.exactOptional().openapi({
+      description: 'Describes core network policy versions.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCoreNetworkPolicyVersionsResponse')
 
 const CoreNetworkSummarySchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ).exactOptional(),
-    CoreNetworkArn: CoreNetworkArnSchema.and(
-      z.any().openapi({ description: 'a core network ARN.' }),
-    ).exactOptional(),
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z.any().openapi({ description: 'The global network ID.' }),
-    ).exactOptional(),
-    OwnerAccountId: AWSAccountIdSchema.and(
-      z.any().openapi({ description: 'The ID of the account owner.' }),
-    ).exactOptional(),
-    State: CoreNetworkStateSchema.and(
-      z.any().openapi({ description: 'The state of a core network.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of a core network.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The key-value tags associated with a core network summary.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.exactOptional().openapi({
+      description: 'The ID of a core network.',
+    }),
+    CoreNetworkArn: CoreNetworkArnSchema.exactOptional().openapi({
+      description: 'a core network ARN.',
+    }),
+    GlobalNetworkId: GlobalNetworkIdSchema.exactOptional().openapi({
+      description: 'The global network ID.',
+    }),
+    OwnerAccountId: AWSAccountIdSchema.exactOptional().openapi({
+      description: 'The ID of the account owner.',
+    }),
+    State: CoreNetworkStateSchema.exactOptional().openapi({
+      description: 'The state of a core network.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of a core network.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The key-value tags associated with a core network summary.',
+    }),
   })
   .openapi({ description: 'Returns summary information about a core network.', required: [] })
   .openapi('CoreNetworkSummary')
@@ -2526,12 +2292,12 @@ const CoreNetworkSummaryListSchema = z
 
 const ListCoreNetworksResponseSchema = z
   .object({
-    CoreNetworks: CoreNetworkSummaryListSchema.and(
-      z.any().openapi({ description: 'Describes the list of core networks.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    CoreNetworks: CoreNetworkSummaryListSchema.exactOptional().openapi({
+      description: 'Describes the list of core networks.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListCoreNetworksResponse')
@@ -2555,16 +2321,12 @@ const AccountIdSchema = z.string().min(0).max(50).openapi('AccountId')
 
 const AccountStatusSchema = z
   .object({
-    AccountId: AccountIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of an account within the Amazon Web Services Organization.',
-        }),
-    ).exactOptional(),
-    SLRDeploymentStatus: SLRDeploymentStatusSchema.and(
-      z.any().openapi({ description: 'The status of SLR deployment for the account.' }),
-    ).exactOptional(),
+    AccountId: AccountIdSchema.exactOptional().openapi({
+      description: 'The ID of an account within the Amazon Web Services Organization.',
+    }),
+    SLRDeploymentStatus: SLRDeploymentStatusSchema.exactOptional().openapi({
+      description: 'The status of SLR deployment for the account.',
+    }),
   })
   .openapi({
     description:
@@ -2577,33 +2339,22 @@ const AccountStatusListSchema = z.array(AccountStatusSchema).openapi('AccountSta
 
 const OrganizationStatusSchema = z
   .object({
-    OrganizationId: OrganizationIdSchema.and(
-      z.any().openapi({ description: 'The ID of an Amazon Web Services Organization.' }),
-    ).exactOptional(),
-    OrganizationAwsServiceAccessStatus: OrganizationAwsServiceAccessStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The status of the organization's AWS service access. This will be <code>ENABLED</code> or <code>DISABLED</code>.",
-        }),
-    ).exactOptional(),
-    SLRDeploymentStatus: SLRDeploymentStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the SLR deployment for the account. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.',
-        }),
-    ).exactOptional(),
-    AccountStatusList: AccountStatusListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The current service-linked role (SLR) deployment status for an Amazon Web Services Organization's accounts. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.",
-        }),
-    ).exactOptional(),
+    OrganizationId: OrganizationIdSchema.exactOptional().openapi({
+      description: 'The ID of an Amazon Web Services Organization.',
+    }),
+    OrganizationAwsServiceAccessStatus:
+      OrganizationAwsServiceAccessStatusSchema.exactOptional().openapi({
+        description:
+          "The status of the organization's AWS service access. This will be <code>ENABLED</code> or <code>DISABLED</code>.",
+      }),
+    SLRDeploymentStatus: SLRDeploymentStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the SLR deployment for the account. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.',
+    }),
+    AccountStatusList: AccountStatusListSchema.exactOptional().openapi({
+      description:
+        "The current service-linked role (SLR) deployment status for an Amazon Web Services Organization's accounts. This will be either <code>SUCCEEDED</code> or <code>IN_PROGRESS</code>.",
+    }),
   })
   .openapi({
     description:
@@ -2614,14 +2365,12 @@ const OrganizationStatusSchema = z
 
 const ListOrganizationServiceAccessStatusResponseSchema = z
   .object({
-    OrganizationStatus: OrganizationStatusSchema.and(
-      z
-        .any()
-        .openapi({ description: 'Displays the status of an Amazon Web Services Organization.' }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    OrganizationStatus: OrganizationStatusSchema.exactOptional().openapi({
+      description: 'Displays the status of an Amazon Web Services Organization.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListOrganizationServiceAccessStatusResponse')
@@ -2630,172 +2379,153 @@ const PeeringListSchema = z.array(PeeringSchema).openapi('PeeringList')
 
 const ListPeeringsResponseSchema = z
   .object({
-    Peerings: PeeringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Lists the transit gateway peerings for the <code>ListPeerings</code> request.',
-        }),
-    ).exactOptional(),
-    NextToken: NextTokenSchema.and(
-      z.any().openapi({ description: 'The token for the next page of results.' }),
-    ).exactOptional(),
+    Peerings: PeeringListSchema.exactOptional().openapi({
+      description: 'Lists the transit gateway peerings for the <code>ListPeerings</code> request.',
+    }),
+    NextToken: NextTokenSchema.exactOptional().openapi({
+      description: 'The token for the next page of results.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('ListPeeringsResponse')
 
 const ListTagsForResourceResponseSchema = z
-  .object({
-    TagList: TagListSchema.and(
-      z.any().openapi({ description: 'The list of tags.' }),
-    ).exactOptional(),
-  })
+  .object({ TagList: TagListSchema.exactOptional().openapi({ description: 'The list of tags.' }) })
   .openapi({ required: [] })
   .openapi('ListTagsForResourceResponse')
 
 const PutCoreNetworkPolicyResponseSchema = z
   .object({
-    CoreNetworkPolicy: CoreNetworkPolicySchema.and(
-      z.any().openapi({ description: 'Describes the changed core network policy.' }),
-    ).exactOptional(),
+    CoreNetworkPolicy: CoreNetworkPolicySchema.exactOptional().openapi({
+      description: 'Describes the changed core network policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('PutCoreNetworkPolicyResponse')
 
-const PutResourcePolicyResponseSchema = z.object({}).openapi('PutResourcePolicyResponse')
+const PutResourcePolicyResponseSchema = z.looseObject({}).openapi('PutResourcePolicyResponse')
 
 const RegisterTransitGatewayResponseSchema = z
   .object({
-    TransitGatewayRegistration: TransitGatewayRegistrationSchema.and(
-      z.any().openapi({ description: 'Information about the transit gateway registration.' }),
-    ).exactOptional(),
+    TransitGatewayRegistration: TransitGatewayRegistrationSchema.exactOptional().openapi({
+      description: 'Information about the transit gateway registration.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RegisterTransitGatewayResponse')
 
 const RejectAttachmentResponseSchema = z
   .object({
-    Attachment: AttachmentSchema.and(
-      z.any().openapi({ description: 'Describes the rejected attachment request.' }),
-    ).exactOptional(),
+    Attachment: AttachmentSchema.exactOptional().openapi({
+      description: 'Describes the rejected attachment request.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RejectAttachmentResponse')
 
 const RestoreCoreNetworkPolicyVersionResponseSchema = z
   .object({
-    CoreNetworkPolicy: CoreNetworkPolicySchema.and(
-      z.any().openapi({ description: 'Describes the restored core network policy.' }),
-    ).exactOptional(),
+    CoreNetworkPolicy: CoreNetworkPolicySchema.exactOptional().openapi({
+      description: 'Describes the restored core network policy.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('RestoreCoreNetworkPolicyVersionResponse')
 
 const StartOrganizationServiceAccessUpdateResponseSchema = z
   .object({
-    OrganizationStatus: OrganizationStatusSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The status of the service access update request for an Amazon Web Services Organization.',
-        }),
-    ).exactOptional(),
+    OrganizationStatus: OrganizationStatusSchema.exactOptional().openapi({
+      description:
+        'The status of the service access update request for an Amazon Web Services Organization.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartOrganizationServiceAccessUpdateResponse')
 
 const StartRouteAnalysisResponseSchema = z
   .object({
-    RouteAnalysis: RouteAnalysisSchema.and(
-      z.any().openapi({ description: 'The route analysis.' }),
-    ).exactOptional(),
+    RouteAnalysis: RouteAnalysisSchema.exactOptional().openapi({
+      description: 'The route analysis.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('StartRouteAnalysisResponse')
 
-const TagResourceResponseSchema = z.object({}).openapi('TagResourceResponse')
+const TagResourceResponseSchema = z.looseObject({}).openapi('TagResourceResponse')
 
-const UntagResourceResponseSchema = z.object({}).openapi('UntagResourceResponse')
+const UntagResourceResponseSchema = z.looseObject({}).openapi('UntagResourceResponse')
 
 const UpdateConnectionResponseSchema = z
   .object({
-    Connection: ConnectionSchema.and(
-      z.any().openapi({ description: 'Information about the connection.' }),
-    ).exactOptional(),
+    Connection: ConnectionSchema.exactOptional().openapi({
+      description: 'Information about the connection.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateConnectionResponse')
 
 const UpdateCoreNetworkResponseSchema = z
   .object({
-    CoreNetwork: CoreNetworkSchema.and(
-      z.any().openapi({ description: 'Returns information about a core network update.' }),
-    ).exactOptional(),
+    CoreNetwork: CoreNetworkSchema.exactOptional().openapi({
+      description: 'Returns information about a core network update.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateCoreNetworkResponse')
 
 const UpdateDeviceResponseSchema = z
   .object({
-    Device: DeviceSchema.and(
-      z.any().openapi({ description: 'Information about the device.' }),
-    ).exactOptional(),
+    Device: DeviceSchema.exactOptional().openapi({ description: 'Information about the device.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateDeviceResponse')
 
 const UpdateGlobalNetworkResponseSchema = z
   .object({
-    GlobalNetwork: GlobalNetworkSchema.and(
-      z.any().openapi({ description: 'Information about the global network object.' }),
-    ).exactOptional(),
+    GlobalNetwork: GlobalNetworkSchema.exactOptional().openapi({
+      description: 'Information about the global network object.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateGlobalNetworkResponse')
 
 const UpdateLinkResponseSchema = z
   .object({
-    Link: LinkSchema.and(
-      z.any().openapi({ description: 'Information about the link.' }),
-    ).exactOptional(),
+    Link: LinkSchema.exactOptional().openapi({ description: 'Information about the link.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateLinkResponse')
 
 const UpdateNetworkResourceMetadataResponseSchema = z
   .object({
-    ResourceArn: ResourceArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the resource.' }),
-    ).exactOptional(),
-    Metadata: NetworkResourceMetadataMapSchema.and(
-      z.any().openapi({ description: 'The updated resource metadata.' }),
-    ).exactOptional(),
+    ResourceArn: ResourceArnSchema.exactOptional().openapi({
+      description: 'The ARN of the resource.',
+    }),
+    Metadata: NetworkResourceMetadataMapSchema.exactOptional().openapi({
+      description: 'The updated resource metadata.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateNetworkResourceMetadataResponse')
 
 const UpdateSiteResponseSchema = z
   .object({
-    Site: SiteSchema.and(
-      z.any().openapi({ description: 'Information about the site.' }),
-    ).exactOptional(),
+    Site: SiteSchema.exactOptional().openapi({ description: 'Information about the site.' }),
   })
   .openapi({ required: [] })
   .openapi('UpdateSiteResponse')
 
 const UpdateVpcAttachmentResponseSchema = z
   .object({
-    VpcAttachment: VpcAttachmentSchema.and(
-      z.any().openapi({ description: 'Describes the updated VPC attachment.' }),
-    ).exactOptional(),
+    VpcAttachment: VpcAttachmentSchema.exactOptional().openapi({
+      description: 'Describes the updated VPC attachment.',
+    }),
   })
   .openapi({ required: [] })
   .openapi('UpdateVpcAttachmentResponse')
 
 const AcceptAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'AcceptAttachmentRequest' })
   .openapi('AcceptAttachmentRequest')
 
@@ -2803,26 +2533,20 @@ const ActionSchema = z.string().min(0).max(50).openapi('Action')
 
 const AssociateConnectPeerRequestSchema = z
   .object({
-    ConnectPeerId: ConnectPeerIdSchema.and(
-      z.any().openapi({ description: 'The ID of the Connect peer.' }),
-    ),
-    DeviceId: DeviceIdSchema.and(z.any().openapi({ description: 'The ID of the device.' })),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
+    ConnectPeerId: ConnectPeerIdSchema.openapi({ description: 'The ID of the Connect peer.' }),
+    DeviceId: DeviceIdSchema.openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
   })
   .openapi({ required: ['ConnectPeerId', 'DeviceId'], title: 'AssociateConnectPeerRequest' })
   .openapi('AssociateConnectPeerRequest')
 
 const AssociateCustomerGatewayRequestSchema = z
   .object({
-    CustomerGatewayArn: CustomerGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the customer gateway.' }),
-    ),
-    DeviceId: DeviceIdSchema.and(z.any().openapi({ description: 'The ID of the device.' })),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
+    CustomerGatewayArn: CustomerGatewayArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the customer gateway.',
+    }),
+    DeviceId: DeviceIdSchema.openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
   })
   .openapi({
     required: ['CustomerGatewayArn', 'DeviceId'],
@@ -2832,21 +2556,19 @@ const AssociateCustomerGatewayRequestSchema = z
 
 const AssociateLinkRequestSchema = z
   .object({
-    DeviceId: DeviceIdSchema.and(z.any().openapi({ description: 'The ID of the device.' })),
-    LinkId: LinkIdSchema.and(z.any().openapi({ description: 'The ID of the link.' })),
+    DeviceId: DeviceIdSchema.openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.openapi({ description: 'The ID of the link.' }),
   })
   .openapi({ required: ['DeviceId', 'LinkId'], title: 'AssociateLinkRequest' })
   .openapi('AssociateLinkRequest')
 
 const AssociateTransitGatewayConnectPeerRequestSchema = z
   .object({
-    TransitGatewayConnectPeerArn: TransitGatewayConnectPeerArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the Connect peer.' }),
-    ),
-    DeviceId: DeviceIdSchema.and(z.any().openapi({ description: 'The ID of the device.' })),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link.' }),
-    ).exactOptional(),
+    TransitGatewayConnectPeerArn: TransitGatewayConnectPeerArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the Connect peer.',
+    }),
+    DeviceId: DeviceIdSchema.openapi({ description: 'The ID of the device.' }),
+    LinkId: LinkIdSchema.exactOptional().openapi({ description: 'The ID of the link.' }),
   })
   .openapi({
     required: ['TransitGatewayConnectPeerArn', 'DeviceId'],
@@ -2856,9 +2578,7 @@ const AssociateTransitGatewayConnectPeerRequestSchema = z
 
 const BgpOptionsSchema = z
   .object({
-    PeerAsn: LongSchema.and(
-      z.any().openapi({ description: 'The Peer ASN of the BGP.' }),
-    ).exactOptional(),
+    PeerAsn: LongSchema.exactOptional().openapi({ description: 'The Peer ASN of the BGP.' }),
   })
   .openapi({ description: 'Describes the BGP options.', required: [] })
   .openapi('BgpOptions')
@@ -2876,28 +2596,24 @@ const ConnectionIdListSchema = z.array(ConnectionIdSchema).openapi('ConnectionId
 
 const CreateConnectAttachmentRequestSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of a core network where you want to create the attachment. ',
-        }),
-    ),
-    EdgeLocation: ExternalRegionCodeSchema.and(
-      z.any().openapi({ description: 'The Region where the edge is located.' }),
-    ),
-    TransportAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the attachment between the two connections.' }),
-    ),
-    Options: ConnectAttachmentOptionsSchema.and(
-      z.any().openapi({ description: 'Options for creating an attachment.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value tags associated with the request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.openapi({
+      description: 'The ID of a core network where you want to create the attachment. ',
+    }),
+    EdgeLocation: ExternalRegionCodeSchema.openapi({
+      description: 'The Region where the edge is located.',
+    }),
+    TransportAttachmentId: AttachmentIdSchema.openapi({
+      description: 'The ID of the attachment between the two connections.',
+    }),
+    Options: ConnectAttachmentOptionsSchema.openapi({
+      description: 'Options for creating an attachment.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['CoreNetworkId', 'EdgeLocation', 'TransportAttachmentId', 'Options'],
@@ -2907,25 +2623,25 @@ const CreateConnectAttachmentRequestSchema = z
 
 const CreateConnectPeerRequestSchema = z
   .object({
-    ConnectAttachmentId: AttachmentIdSchema.and(
-      z.any().openapi({ description: 'The ID of the connection attachment.' }),
-    ),
-    CoreNetworkAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'A Connect peer core network address.' }),
-    ).exactOptional(),
-    PeerAddress: IPAddressSchema.and(z.any().openapi({ description: 'The Connect peer address.' })),
-    BgpOptions: BgpOptionsSchema.and(
-      z.any().openapi({ description: 'The Connect peer BGP options.' }),
-    ).exactOptional(),
-    InsideCidrBlocks: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'The inside IP addresses used for BGP peering.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the peer request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    ConnectAttachmentId: AttachmentIdSchema.openapi({
+      description: 'The ID of the connection attachment.',
+    }),
+    CoreNetworkAddress: IPAddressSchema.exactOptional().openapi({
+      description: 'A Connect peer core network address.',
+    }),
+    PeerAddress: IPAddressSchema.openapi({ description: 'The Connect peer address.' }),
+    BgpOptions: BgpOptionsSchema.exactOptional().openapi({
+      description: 'The Connect peer BGP options.',
+    }),
+    InsideCidrBlocks: ConstrainedStringListSchema.openapi({
+      description: 'The inside IP addresses used for BGP peering.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the peer request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['ConnectAttachmentId', 'PeerAddress', 'InsideCidrBlocks'],
@@ -2935,214 +2651,155 @@ const CreateConnectPeerRequestSchema = z
 
 const CreateConnectionRequestSchema = z
   .object({
-    DeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the first device in the connection.' }),
-    ),
-    ConnectedDeviceId: DeviceIdSchema.and(
-      z.any().openapi({ description: 'The ID of the second device in the connection.' }),
-    ),
-    LinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link for the first device.' }),
-    ).exactOptional(),
-    ConnectedLinkId: LinkIdSchema.and(
-      z.any().openapi({ description: 'The ID of the link for the second device.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the connection.</p> <p>Length Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the resource during creation.' }),
-    ).exactOptional(),
+    DeviceId: DeviceIdSchema.openapi({
+      description: 'The ID of the first device in the connection.',
+    }),
+    ConnectedDeviceId: DeviceIdSchema.openapi({
+      description: 'The ID of the second device in the connection.',
+    }),
+    LinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the first device.',
+    }),
+    ConnectedLinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the second device.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the connection.</p> <p>Length Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to apply to the resource during creation.',
+    }),
   })
   .openapi({ required: ['DeviceId', 'ConnectedDeviceId'], title: 'CreateConnectionRequest' })
   .openapi('CreateConnectionRequest')
 
 const CreateCoreNetworkRequestSchema = z
   .object({
-    GlobalNetworkId: GlobalNetworkIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The ID of the global network that a core network will be a part of. ',
-        }),
-    ),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of a core network.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'Key-value tags associated with a core network request.' }),
-    ).exactOptional(),
-    PolicyDocument: CoreNetworkPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The policy document for creating a core network.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with a core network request.' }),
-    ).exactOptional(),
+    GlobalNetworkId: GlobalNetworkIdSchema.openapi({
+      description: 'The ID of the global network that a core network will be a part of. ',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of a core network.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'Key-value tags associated with a core network request.',
+    }),
+    PolicyDocument: CoreNetworkPolicyDocumentSchema.exactOptional().openapi({
+      description: 'The policy document for creating a core network.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with a core network request.',
+    }),
   })
   .openapi({ required: ['GlobalNetworkId'], title: 'CreateCoreNetworkRequest' })
   .openapi('CreateCoreNetworkRequest')
 
 const CreateDeviceRequestSchema = z
   .object({
-    AWSLocation: AWSLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.',
-        }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the device.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The type of the device.' }),
-    ).exactOptional(),
-    Vendor: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The vendor of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    Model: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The model of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    SerialNumber: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial number of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z.any().openapi({ description: 'The location of the device.' }),
-    ).exactOptional(),
-    SiteId: SiteIdSchema.and(
-      z.any().openapi({ description: 'The ID of the site.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the resource during creation.' }),
-    ).exactOptional(),
+    AWSLocation: AWSLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the device.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The type of the device.',
+    }),
+    Vendor: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The vendor of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    Model: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The model of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    SerialNumber: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The serial number of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    Location: LocationSchema.exactOptional().openapi({
+      description: 'The location of the device.',
+    }),
+    SiteId: SiteIdSchema.exactOptional().openapi({ description: 'The ID of the site.' }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to apply to the resource during creation.',
+    }),
   })
   .openapi({ title: 'CreateDeviceRequest', required: [] })
   .openapi('CreateDeviceRequest')
 
 const CreateGlobalNetworkRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the global network.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the resource during creation.' }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the global network.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to apply to the resource during creation.',
+    }),
   })
   .openapi({ title: 'CreateGlobalNetworkRequest', required: [] })
   .openapi('CreateGlobalNetworkRequest')
 
 const CreateLinkRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the link.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the link.</p> <p>Constraints: Maximum length of 128 characters. Cannot include the following characters: | \\ ^</p>',
-        }),
-    ).exactOptional(),
-    Bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: ' The upload speed and download speed in Mbps. ' }),
-    ),
-    Provider: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The provider of the link.</p> <p>Constraints: Maximum length of 128 characters. Cannot include the following characters: | \\ ^</p>',
-        }),
-    ).exactOptional(),
-    SiteId: SiteIdSchema.and(z.any().openapi({ description: 'The ID of the site.' })),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the resource during creation.' }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the link.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the link.</p> <p>Constraints: Maximum length of 128 characters. Cannot include the following characters: | \\ ^</p>',
+    }),
+    Bandwidth: BandwidthSchema.openapi({
+      description: ' The upload speed and download speed in Mbps. ',
+    }),
+    Provider: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The provider of the link.</p> <p>Constraints: Maximum length of 128 characters. Cannot include the following characters: | \\ ^</p>',
+    }),
+    SiteId: SiteIdSchema.openapi({ description: 'The ID of the site.' }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to apply to the resource during creation.',
+    }),
   })
   .openapi({ required: ['Bandwidth', 'SiteId'], title: 'CreateLinkRequest' })
   .openapi('CreateLinkRequest')
 
 const CreateSiteRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of your site.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The site location. This information is used for visualization in the Network Manager console. If you specify the address, the latitude and longitude are automatically calculated.</p> <ul> <li> <p> <code>Address</code>: The physical address of the site.</p> </li> <li> <p> <code>Latitude</code>: The latitude of the site. </p> </li> <li> <p> <code>Longitude</code>: The longitude of the site.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the resource during creation.' }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of your site.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Location: LocationSchema.exactOptional().openapi({
+      description:
+        '<p>The site location. This information is used for visualization in the Network Manager console. If you specify the address, the latitude and longitude are automatically calculated.</p> <ul> <li> <p> <code>Address</code>: The physical address of the site.</p> </li> <li> <p> <code>Latitude</code>: The latitude of the site. </p> </li> <li> <p> <code>Longitude</code>: The longitude of the site.</p> </li> </ul>',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags to apply to the resource during creation.',
+    }),
   })
   .openapi({ title: 'CreateSiteRequest', required: [] })
   .openapi('CreateSiteRequest')
 
 const CreateSiteToSiteVpnAttachmentRequestSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            "The ID of a core network where you're creating a site-to-site VPN attachment.",
-        }),
-    ),
-    VpnConnectionArn: VpnConnectionArnSchema.and(
-      z.any().openapi({ description: 'The ARN identifying the VPN attachment.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags associated with the request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.openapi({
+      description: "The ID of a core network where you're creating a site-to-site VPN attachment.",
+    }),
+    VpnConnectionArn: VpnConnectionArnSchema.openapi({
+      description: 'The ARN identifying the VPN attachment.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The tags associated with the request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['CoreNetworkId', 'VpnConnectionArn'],
@@ -3152,18 +2809,16 @@ const CreateSiteToSiteVpnAttachmentRequestSchema = z
 
 const CreateTransitGatewayPeeringRequestSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network.' }),
-    ),
-    TransitGatewayArn: TransitGatewayArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway for the peering request.' }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value tags associated with the request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.openapi({ description: 'The ID of a core network.' }),
+    TransitGatewayArn: TransitGatewayArnSchema.openapi({
+      description: 'The ARN of the transit gateway for the peering request.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['CoreNetworkId', 'TransitGatewayArn'],
@@ -3173,21 +2828,17 @@ const CreateTransitGatewayPeeringRequestSchema = z
 
 const CreateTransitGatewayRouteTableAttachmentRequestSchema = z
   .object({
-    PeeringId: PeeringIdSchema.and(z.any().openapi({ description: 'The ID of the peer for the ' })),
-    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The ARN of the transit gateway route table for the attachment request. For example, <code>"TransitGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-9876543210123456"</code>.',
-        }),
-    ),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The list of key-value tags associated with the request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    PeeringId: PeeringIdSchema.openapi({ description: 'The ID of the peer for the ' }),
+    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.openapi({
+      description:
+        'The ARN of the transit gateway route table for the attachment request. For example, <code>"TransitGatewayRouteTableArn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-9876543210123456"</code>.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The list of key-value tags associated with the request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['PeeringId', 'TransitGatewayRouteTableArn'],
@@ -3204,22 +2855,22 @@ const VpcArnSchema = z
 
 const CreateVpcAttachmentRequestSchema = z
   .object({
-    CoreNetworkId: CoreNetworkIdSchema.and(
-      z.any().openapi({ description: 'The ID of a core network for the VPC attachment.' }),
-    ),
-    VpcArn: VpcArnSchema.and(z.any().openapi({ description: 'The ARN of the VPC.' })),
-    SubnetArns: SubnetArnListSchema.and(
-      z.any().openapi({ description: 'The subnet ARN of the VPC attachment.' }),
-    ),
-    Options: VpcOptionsSchema.and(
-      z.any().openapi({ description: 'Options for the VPC attachment.' }),
-    ).exactOptional(),
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The key-value tags associated with the request.' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    CoreNetworkId: CoreNetworkIdSchema.openapi({
+      description: 'The ID of a core network for the VPC attachment.',
+    }),
+    VpcArn: VpcArnSchema.openapi({ description: 'The ARN of the VPC.' }),
+    SubnetArns: SubnetArnListSchema.openapi({
+      description: 'The subnet ARN of the VPC attachment.',
+    }),
+    Options: VpcOptionsSchema.exactOptional().openapi({
+      description: 'Options for the VPC attachment.',
+    }),
+    Tags: TagListSchema.exactOptional().openapi({
+      description: 'The key-value tags associated with the request.',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({
     required: ['CoreNetworkId', 'VpcArn', 'SubnetArns'],
@@ -3232,62 +2883,62 @@ const CustomerGatewayArnListSchema = z
   .openapi('CustomerGatewayArnList')
 
 const DeleteAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteAttachmentRequest' })
   .openapi('DeleteAttachmentRequest')
 
 const DeleteConnectPeerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConnectPeerRequest' })
   .openapi('DeleteConnectPeerRequest')
 
 const DeleteConnectionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteConnectionRequest' })
   .openapi('DeleteConnectionRequest')
 
 const DeleteCoreNetworkPolicyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCoreNetworkPolicyVersionRequest' })
   .openapi('DeleteCoreNetworkPolicyVersionRequest')
 
 const DeleteCoreNetworkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteCoreNetworkRequest' })
   .openapi('DeleteCoreNetworkRequest')
 
 const DeleteDeviceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteDeviceRequest' })
   .openapi('DeleteDeviceRequest')
 
 const DeleteGlobalNetworkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteGlobalNetworkRequest' })
   .openapi('DeleteGlobalNetworkRequest')
 
 const DeleteLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteLinkRequest' })
   .openapi('DeleteLinkRequest')
 
 const DeletePeeringRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeletePeeringRequest' })
   .openapi('DeletePeeringRequest')
 
 const DeleteResourcePolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteResourcePolicyRequest' })
   .openapi('DeleteResourcePolicyRequest')
 
 const DeleteSiteRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeleteSiteRequest' })
   .openapi('DeleteSiteRequest')
 
 const DeregisterTransitGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DeregisterTransitGatewayRequest' })
   .openapi('DeregisterTransitGatewayRequest')
 
@@ -3296,34 +2947,34 @@ const GlobalNetworkIdListSchema = z.array(GlobalNetworkIdSchema).openapi('Global
 const MaxResultsSchema = z.int().min(1).max(500).openapi('MaxResults')
 
 const DescribeGlobalNetworksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DescribeGlobalNetworksRequest' })
   .openapi('DescribeGlobalNetworksRequest')
 
 const DeviceIdListSchema = z.array(DeviceIdSchema).openapi('DeviceIdList')
 
 const DisassociateConnectPeerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateConnectPeerRequest' })
   .openapi('DisassociateConnectPeerRequest')
 
 const DisassociateCustomerGatewayRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateCustomerGatewayRequest' })
   .openapi('DisassociateCustomerGatewayRequest')
 
 const DisassociateLinkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateLinkRequest' })
   .openapi('DisassociateLinkRequest')
 
 const DisassociateTransitGatewayConnectPeerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'DisassociateTransitGatewayConnectPeerRequest' })
   .openapi('DisassociateTransitGatewayConnectPeerRequest')
 
 const ExecuteCoreNetworkChangeSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ExecuteCoreNetworkChangeSetRequest' })
   .openapi('ExecuteCoreNetworkChangeSetRequest')
 
@@ -3336,90 +2987,90 @@ const FilterNameSchema = z
   .openapi('FilterName')
 
 const GetConnectAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectAttachmentRequest' })
   .openapi('GetConnectAttachmentRequest')
 
 const GetConnectPeerAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectPeerAssociationsRequest' })
   .openapi('GetConnectPeerAssociationsRequest')
 
 const GetConnectPeerRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectPeerRequest' })
   .openapi('GetConnectPeerRequest')
 
 const GetConnectionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetConnectionsRequest' })
   .openapi('GetConnectionsRequest')
 
 const GetCoreNetworkChangeEventsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreNetworkChangeEventsRequest' })
   .openapi('GetCoreNetworkChangeEventsRequest')
 
 const GetCoreNetworkChangeSetRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreNetworkChangeSetRequest' })
   .openapi('GetCoreNetworkChangeSetRequest')
 
 const GetCoreNetworkPolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreNetworkPolicyRequest' })
   .openapi('GetCoreNetworkPolicyRequest')
 
 const GetCoreNetworkRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCoreNetworkRequest' })
   .openapi('GetCoreNetworkRequest')
 
 const GetCustomerGatewayAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetCustomerGatewayAssociationsRequest' })
   .openapi('GetCustomerGatewayAssociationsRequest')
 
 const GetDevicesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetDevicesRequest' })
   .openapi('GetDevicesRequest')
 
 const GetLinkAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLinkAssociationsRequest' })
   .openapi('GetLinkAssociationsRequest')
 
 const LinkIdListSchema = z.array(LinkIdSchema).openapi('LinkIdList')
 
 const GetLinksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetLinksRequest' })
   .openapi('GetLinksRequest')
 
 const GetNetworkResourceCountsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNetworkResourceCountsRequest' })
   .openapi('GetNetworkResourceCountsRequest')
 
 const GetNetworkResourceRelationshipsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNetworkResourceRelationshipsRequest' })
   .openapi('GetNetworkResourceRelationshipsRequest')
 
 const GetNetworkResourcesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNetworkResourcesRequest' })
   .openapi('GetNetworkResourcesRequest')
 
 const RouteTableIdentifierSchema = z
   .object({
-    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway route table.' }),
-    ).exactOptional(),
-    CoreNetworkSegmentEdge: CoreNetworkSegmentEdgeIdentifierSchema.and(
-      z.any().openapi({ description: 'The segment edge in a core network.' }),
-    ).exactOptional(),
+    TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.exactOptional().openapi({
+      description: 'The ARN of the transit gateway route table.',
+    }),
+    CoreNetworkSegmentEdge: CoreNetworkSegmentEdgeIdentifierSchema.exactOptional().openapi({
+      description: 'The segment edge in a core network.',
+    }),
   })
   .openapi({ description: 'Describes a route table.', required: [] })
   .openapi('RouteTableIdentifier')
@@ -3430,77 +3081,59 @@ const RouteTypeListSchema = z.array(RouteTypeSchema).openapi('RouteTypeList')
 
 const GetNetworkRoutesRequestSchema = z
   .object({
-    RouteTableIdentifier: RouteTableIdentifierSchema.and(
-      z.any().openapi({ description: 'The ID of the route table.' }),
-    ),
-    ExactCidrMatches: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'An exact CIDR block.' }),
-    ).exactOptional(),
-    LongestPrefixMatches: ConstrainedStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description: 'The most specific route that matches the traffic (longest prefix match).',
-        }),
-    ).exactOptional(),
-    SubnetOfMatches: ConstrainedStringListSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The routes with a subnet that match the specified CIDR filter.' }),
-    ).exactOptional(),
-    SupernetOfMatches: ConstrainedStringListSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The routes with a CIDR that encompasses the CIDR filter. Example: If you specify 10.0.1.0/30, then the result returns 10.0.1.0/29.',
-        }),
-    ).exactOptional(),
-    PrefixListIds: ConstrainedStringListSchema.and(
-      z.any().openapi({ description: 'The IDs of the prefix lists.' }),
-    ).exactOptional(),
-    States: RouteStateListSchema.and(
-      z.any().openapi({ description: 'The route states.' }),
-    ).exactOptional(),
-    Types: RouteTypeListSchema.and(
-      z.any().openapi({ description: 'The route types.' }),
-    ).exactOptional(),
-    DestinationFilters: FilterMapSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Filter by route table destination. Possible Values: TRANSIT_GATEWAY_ATTACHMENT_ID, RESOURCE_ID, or RESOURCE_TYPE.',
-        }),
-    ).exactOptional(),
+    RouteTableIdentifier: RouteTableIdentifierSchema.openapi({
+      description: 'The ID of the route table.',
+    }),
+    ExactCidrMatches: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'An exact CIDR block.',
+    }),
+    LongestPrefixMatches: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The most specific route that matches the traffic (longest prefix match).',
+    }),
+    SubnetOfMatches: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The routes with a subnet that match the specified CIDR filter.',
+    }),
+    SupernetOfMatches: ConstrainedStringListSchema.exactOptional().openapi({
+      description:
+        'The routes with a CIDR that encompasses the CIDR filter. Example: If you specify 10.0.1.0/30, then the result returns 10.0.1.0/29.',
+    }),
+    PrefixListIds: ConstrainedStringListSchema.exactOptional().openapi({
+      description: 'The IDs of the prefix lists.',
+    }),
+    States: RouteStateListSchema.exactOptional().openapi({ description: 'The route states.' }),
+    Types: RouteTypeListSchema.exactOptional().openapi({ description: 'The route types.' }),
+    DestinationFilters: FilterMapSchema.exactOptional().openapi({
+      description:
+        'Filter by route table destination. Possible Values: TRANSIT_GATEWAY_ATTACHMENT_ID, RESOURCE_ID, or RESOURCE_TYPE.',
+    }),
   })
   .openapi({ required: ['RouteTableIdentifier'], title: 'GetNetworkRoutesRequest' })
   .openapi('GetNetworkRoutesRequest')
 
 const GetNetworkTelemetryRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetNetworkTelemetryRequest' })
   .openapi('GetNetworkTelemetryRequest')
 
 const GetResourcePolicyRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetResourcePolicyRequest' })
   .openapi('GetResourcePolicyRequest')
 
 const GetRouteAnalysisRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetRouteAnalysisRequest' })
   .openapi('GetRouteAnalysisRequest')
 
 const GetSiteToSiteVpnAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSiteToSiteVpnAttachmentRequest' })
   .openapi('GetSiteToSiteVpnAttachmentRequest')
 
 const SiteIdListSchema = z.array(SiteIdSchema).openapi('SiteIdList')
 
 const GetSitesRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetSitesRequest' })
   .openapi('GetSitesRequest')
 
@@ -3509,12 +3142,12 @@ const TransitGatewayConnectPeerArnListSchema = z
   .openapi('TransitGatewayConnectPeerArnList')
 
 const GetTransitGatewayConnectPeerAssociationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTransitGatewayConnectPeerAssociationsRequest' })
   .openapi('GetTransitGatewayConnectPeerAssociationsRequest')
 
 const GetTransitGatewayPeeringRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTransitGatewayPeeringRequest' })
   .openapi('GetTransitGatewayPeeringRequest')
 
@@ -3523,78 +3156,78 @@ const TransitGatewayArnListSchema = z
   .openapi('TransitGatewayArnList')
 
 const GetTransitGatewayRegistrationsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTransitGatewayRegistrationsRequest' })
   .openapi('GetTransitGatewayRegistrationsRequest')
 
 const GetTransitGatewayRouteTableAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetTransitGatewayRouteTableAttachmentRequest' })
   .openapi('GetTransitGatewayRouteTableAttachmentRequest')
 
 const GetVpcAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'GetVpcAttachmentRequest' })
   .openapi('GetVpcAttachmentRequest')
 
 const ListAttachmentsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListAttachmentsRequest' })
   .openapi('ListAttachmentsRequest')
 
 const ListConnectPeersRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListConnectPeersRequest' })
   .openapi('ListConnectPeersRequest')
 
 const ListCoreNetworkPolicyVersionsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCoreNetworkPolicyVersionsRequest' })
   .openapi('ListCoreNetworkPolicyVersionsRequest')
 
 const ListCoreNetworksRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListCoreNetworksRequest' })
   .openapi('ListCoreNetworksRequest')
 
 const ListOrganizationServiceAccessStatusRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListOrganizationServiceAccessStatusRequest' })
   .openapi('ListOrganizationServiceAccessStatusRequest')
 
 const ListPeeringsRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListPeeringsRequest' })
   .openapi('ListPeeringsRequest')
 
 const ListTagsForResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'ListTagsForResourceRequest' })
   .openapi('ListTagsForResourceRequest')
 
 const PutCoreNetworkPolicyRequestSchema = z
   .object({
-    PolicyDocument: CoreNetworkPolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The policy document.' }),
-    ),
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'a core network policy description.' }),
-    ).exactOptional(),
-    LatestVersionId: IntegerSchema.and(
-      z.any().openapi({ description: 'The ID of a core network policy. ' }),
-    ).exactOptional(),
-    ClientToken: ClientTokenSchema.and(
-      z.any().openapi({ description: 'The client token associated with the request.' }),
-    ).exactOptional(),
+    PolicyDocument: CoreNetworkPolicyDocumentSchema.openapi({
+      description: 'The policy document.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'a core network policy description.',
+    }),
+    LatestVersionId: IntegerSchema.exactOptional().openapi({
+      description: 'The ID of a core network policy. ',
+    }),
+    ClientToken: ClientTokenSchema.exactOptional().openapi({
+      description: 'The client token associated with the request.',
+    }),
   })
   .openapi({ required: ['PolicyDocument'], title: 'PutCoreNetworkPolicyRequest' })
   .openapi('PutCoreNetworkPolicyRequest')
 
 const PutResourcePolicyRequestSchema = z
   .object({
-    PolicyDocument: ResourcePolicyDocumentSchema.and(
-      z.any().openapi({ description: 'The JSON resource policy document.' }),
-    ),
+    PolicyDocument: ResourcePolicyDocumentSchema.openapi({
+      description: 'The JSON resource policy document.',
+    }),
   })
   .openapi({ required: ['PolicyDocument'], title: 'PutResourcePolicyRequest' })
   .openapi('PutResourcePolicyRequest')
@@ -3608,73 +3241,59 @@ const ReasonContextKeySchema = z
 
 const RegisterTransitGatewayRequestSchema = z
   .object({
-    TransitGatewayArn: TransitGatewayArnSchema.and(
-      z.any().openapi({ description: 'The Amazon Resource Name (ARN) of the transit gateway.' }),
-    ),
+    TransitGatewayArn: TransitGatewayArnSchema.openapi({
+      description: 'The Amazon Resource Name (ARN) of the transit gateway.',
+    }),
   })
   .openapi({ required: ['TransitGatewayArn'], title: 'RegisterTransitGatewayRequest' })
   .openapi('RegisterTransitGatewayRequest')
 
 const RejectAttachmentRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RejectAttachmentRequest' })
   .openapi('RejectAttachmentRequest')
 
 const RestoreCoreNetworkPolicyVersionRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'RestoreCoreNetworkPolicyVersionRequest' })
   .openapi('RestoreCoreNetworkPolicyVersionRequest')
 
 const RouteAnalysisEndpointOptionsSpecificationSchema = z
   .object({
-    TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.and(
-      z.any().openapi({ description: 'The ARN of the transit gateway attachment.' }),
-    ).exactOptional(),
-    IpAddress: IPAddressSchema.and(
-      z.any().openapi({ description: 'The IP address.' }),
-    ).exactOptional(),
+    TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.exactOptional().openapi({
+      description: 'The ARN of the transit gateway attachment.',
+    }),
+    IpAddress: IPAddressSchema.exactOptional().openapi({ description: 'The IP address.' }),
   })
   .openapi({ description: 'Describes a source or a destination.', required: [] })
   .openapi('RouteAnalysisEndpointOptionsSpecification')
 
 const StartOrganizationServiceAccessUpdateRequestSchema = z
   .object({
-    Action: ActionSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The action to take for the update request. This can be either <code>ENABLE</code> or <code>DISABLE</code>.',
-        }),
-    ),
+    Action: ActionSchema.openapi({
+      description:
+        'The action to take for the update request. This can be either <code>ENABLE</code> or <code>DISABLE</code>.',
+    }),
   })
   .openapi({ required: ['Action'], title: 'StartOrganizationServiceAccessUpdateRequest' })
   .openapi('StartOrganizationServiceAccessUpdateRequest')
 
 const StartRouteAnalysisRequestSchema = z
   .object({
-    Source: RouteAnalysisEndpointOptionsSpecificationSchema.and(
-      z.any().openapi({ description: 'The source from which traffic originates.' }),
-    ),
-    Destination: RouteAnalysisEndpointOptionsSpecificationSchema.and(
-      z.any().openapi({ description: 'The destination.' }),
-    ),
-    IncludeReturnPath: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to analyze the return path. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
-    UseMiddleboxes: BooleanSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'Indicates whether to include the location of middlebox appliances in the route analysis. The default is <code>false</code>.',
-        }),
-    ).exactOptional(),
+    Source: RouteAnalysisEndpointOptionsSpecificationSchema.openapi({
+      description: 'The source from which traffic originates.',
+    }),
+    Destination: RouteAnalysisEndpointOptionsSpecificationSchema.openapi({
+      description: 'The destination.',
+    }),
+    IncludeReturnPath: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to analyze the return path. The default is <code>false</code>.',
+    }),
+    UseMiddleboxes: BooleanSchema.exactOptional().openapi({
+      description:
+        'Indicates whether to include the location of middlebox appliances in the route analysis. The default is <code>false</code>.',
+    }),
   })
   .openapi({ required: ['Source', 'Destination'], title: 'StartRouteAnalysisRequest' })
   .openapi('StartRouteAnalysisRequest')
@@ -3683,193 +3302,135 @@ const TagKeyListSchema = z.array(TagKeySchema).openapi('TagKeyList')
 
 const TagResourceRequestSchema = z
   .object({
-    Tags: TagListSchema.and(
-      z.any().openapi({ description: 'The tags to apply to the specified resource.' }),
-    ),
+    Tags: TagListSchema.openapi({ description: 'The tags to apply to the specified resource.' }),
   })
   .openapi({ required: ['Tags'], title: 'TagResourceRequest' })
   .openapi('TagResourceRequest')
 
 const UntagResourceRequestSchema = z
-  .object({})
+  .looseObject({})
   .openapi({ title: 'UntagResourceRequest' })
   .openapi('UntagResourceRequest')
 
 const UpdateConnectionRequestSchema = z
   .object({
-    LinkId: LinkIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the link for the first device in the connection.' }),
-    ).exactOptional(),
-    ConnectedLinkId: LinkIdSchema.and(
-      z
-        .any()
-        .openapi({ description: 'The ID of the link for the second device in the connection.' }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the connection.</p> <p>Length Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
+    LinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the first device in the connection.',
+    }),
+    ConnectedLinkId: LinkIdSchema.exactOptional().openapi({
+      description: 'The ID of the link for the second device in the connection.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the connection.</p> <p>Length Constraints: Maximum length of 256 characters.</p>',
+    }),
   })
   .openapi({ title: 'UpdateConnectionRequest', required: [] })
   .openapi('UpdateConnectionRequest')
 
 const UpdateCoreNetworkRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The description of the update.' }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The description of the update.',
+    }),
   })
   .openapi({ title: 'UpdateCoreNetworkRequest', required: [] })
   .openapi('UpdateCoreNetworkRequest')
 
 const UpdateDeviceRequestSchema = z
   .object({
-    AWSLocation: AWSLocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            'The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.',
-        }),
-    ).exactOptional(),
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the device.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z.any().openapi({ description: 'The type of the device.' }),
-    ).exactOptional(),
-    Vendor: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The vendor of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    Model: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The model of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    SerialNumber: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The serial number of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
+    AWSLocation: AWSLocationSchema.exactOptional().openapi({
+      description:
+        'The Amazon Web Services location of the device, if applicable. For an on-premises device, you can omit this parameter.',
+    }),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the device.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({
+      description: 'The type of the device.',
+    }),
+    Vendor: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The vendor of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    Model: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The model of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    SerialNumber: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The serial number of the device.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
     Location: LocationSchema.exactOptional(),
-    SiteId: SiteIdSchema.and(
-      z.any().openapi({ description: 'The ID of the site.' }),
-    ).exactOptional(),
+    SiteId: SiteIdSchema.exactOptional().openapi({ description: 'The ID of the site.' }),
   })
   .openapi({ title: 'UpdateDeviceRequest', required: [] })
   .openapi('UpdateDeviceRequest')
 
 const UpdateGlobalNetworkRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the global network.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the global network.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
   })
   .openapi({ title: 'UpdateGlobalNetworkRequest', required: [] })
   .openapi('UpdateGlobalNetworkRequest')
 
 const UpdateLinkRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of the link.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Type: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The type of the link.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
-    Bandwidth: BandwidthSchema.and(
-      z.any().openapi({ description: 'The upload and download speed in Mbps. ' }),
-    ).exactOptional(),
-    Provider: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The provider of the link.</p> <p>Constraints: Maximum length of 128 characters.</p>',
-        }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of the link.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Type: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The type of the link.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
+    Bandwidth: BandwidthSchema.exactOptional().openapi({
+      description: 'The upload and download speed in Mbps. ',
+    }),
+    Provider: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>The provider of the link.</p> <p>Constraints: Maximum length of 128 characters.</p>',
+    }),
   })
   .openapi({ title: 'UpdateLinkRequest', required: [] })
   .openapi('UpdateLinkRequest')
 
 const UpdateNetworkResourceMetadataRequestSchema = z
   .object({
-    Metadata: NetworkResourceMetadataMapSchema.and(
-      z.any().openapi({ description: 'The resource metadata.' }),
-    ),
+    Metadata: NetworkResourceMetadataMapSchema.openapi({ description: 'The resource metadata.' }),
   })
   .openapi({ required: ['Metadata'], title: 'UpdateNetworkResourceMetadataRequest' })
   .openapi('UpdateNetworkResourceMetadataRequest')
 
 const UpdateSiteRequestSchema = z
   .object({
-    Description: ConstrainedStringSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>A description of your site.</p> <p>Constraints: Maximum length of 256 characters.</p>',
-        }),
-    ).exactOptional(),
-    Location: LocationSchema.and(
-      z
-        .any()
-        .openapi({
-          description:
-            '<p>The site location:</p> <ul> <li> <p> <code>Address</code>: The physical address of the site.</p> </li> <li> <p> <code>Latitude</code>: The latitude of the site. </p> </li> <li> <p> <code>Longitude</code>: The longitude of the site.</p> </li> </ul>',
-        }),
-    ).exactOptional(),
+    Description: ConstrainedStringSchema.exactOptional().openapi({
+      description:
+        '<p>A description of your site.</p> <p>Constraints: Maximum length of 256 characters.</p>',
+    }),
+    Location: LocationSchema.exactOptional().openapi({
+      description:
+        '<p>The site location:</p> <ul> <li> <p> <code>Address</code>: The physical address of the site.</p> </li> <li> <p> <code>Latitude</code>: The latitude of the site. </p> </li> <li> <p> <code>Longitude</code>: The longitude of the site.</p> </li> </ul>',
+    }),
   })
   .openapi({ title: 'UpdateSiteRequest', required: [] })
   .openapi('UpdateSiteRequest')
 
 const UpdateVpcAttachmentRequestSchema = z
   .object({
-    AddSubnetArns: SubnetArnListSchema.and(
-      z.any().openapi({ description: 'Adds a subnet ARN to the VPC attachment.' }),
-    ).exactOptional(),
-    RemoveSubnetArns: SubnetArnListSchema.and(
-      z.any().openapi({ description: 'Removes a subnet ARN from the attachment.' }),
-    ).exactOptional(),
-    Options: VpcOptionsSchema.and(
-      z.any().openapi({ description: 'Additional options for updating the VPC attachment. ' }),
-    ).exactOptional(),
+    AddSubnetArns: SubnetArnListSchema.exactOptional().openapi({
+      description: 'Adds a subnet ARN to the VPC attachment.',
+    }),
+    RemoveSubnetArns: SubnetArnListSchema.exactOptional().openapi({
+      description: 'Removes a subnet ARN from the attachment.',
+    }),
+    Options: VpcOptionsSchema.exactOptional().openapi({
+      description: 'Additional options for updating the VPC attachment. ',
+    }),
   })
   .openapi({ title: 'UpdateVpcAttachmentRequest', required: [] })
   .openapi('UpdateVpcAttachmentRequest')
@@ -5034,11 +4595,9 @@ export const postConnectAttachmentsRoute = createRoute({
                 .openapi({ description: 'The ID of the attachment between the two connections.' }),
               Options: z
                 .object({
-                  Protocol: TunnelProtocolSchema.and(
-                    z
-                      .any()
-                      .openapi({ description: 'The protocol used for the attachment connection.' }),
-                  ).exactOptional(),
+                  Protocol: TunnelProtocolSchema.exactOptional().openapi({
+                    description: 'The protocol used for the attachment connection.',
+                  }),
                 })
                 .openapi({
                   description: 'Describes a core network Connect attachment options.',
@@ -5281,9 +4840,9 @@ export const postConnectPeersRoute = createRoute({
                 .openapi({ description: 'The Connect peer address.' }),
               BgpOptions: z
                 .object({
-                  PeerAsn: LongSchema.and(
-                    z.any().openapi({ description: 'The Peer ASN of the BGP.' }),
-                  ).exactOptional(),
+                  PeerAsn: LongSchema.exactOptional().openapi({
+                    description: 'The Peer ASN of the BGP.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes the BGP options.', required: [] }),
@@ -5998,22 +5557,14 @@ export const postGlobalNetworksGlobalNetworkIdDevicesRoute = createRoute({
             .object({
               AWSLocation: z
                 .object({
-                  Zone: ConstrainedStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
-                      }),
-                  ).exactOptional(),
-                  SubnetArn: SubnetArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
-                      }),
-                  ).exactOptional(),
+                  Zone: ConstrainedStringSchema.exactOptional().openapi({
+                    description:
+                      'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
+                  }),
+                  SubnetArn: SubnetArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -6069,15 +5620,15 @@ export const postGlobalNetworksGlobalNetworkIdDevicesRoute = createRoute({
                 }),
               Location: z
                 .object({
-                  Address: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The physical address.' }),
-                  ).exactOptional(),
-                  Latitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The latitude.' }),
-                  ).exactOptional(),
-                  Longitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The longitude.' }),
-                  ).exactOptional(),
+                  Address: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The physical address.',
+                  }),
+                  Latitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The latitude.',
+                  }),
+                  Longitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The longitude.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes a location.', required: [] }),
@@ -6569,12 +6120,12 @@ export const postGlobalNetworksGlobalNetworkIdLinksRoute = createRoute({
                 }),
               Bandwidth: z
                 .object({
-                  UploadSpeed: IntegerSchema.and(
-                    z.any().openapi({ description: 'Upload speed in Mbps.' }),
-                  ).exactOptional(),
-                  DownloadSpeed: IntegerSchema.and(
-                    z.any().openapi({ description: 'Download speed in Mbps.' }),
-                  ).exactOptional(),
+                  UploadSpeed: IntegerSchema.exactOptional().openapi({
+                    description: 'Upload speed in Mbps.',
+                  }),
+                  DownloadSpeed: IntegerSchema.exactOptional().openapi({
+                    description: 'Download speed in Mbps.',
+                  }),
                 })
                 .openapi({ description: 'Describes bandwidth information.', required: [] }),
               Provider: z
@@ -6824,15 +6375,15 @@ export const postGlobalNetworksGlobalNetworkIdSitesRoute = createRoute({
                 }),
               Location: z
                 .object({
-                  Address: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The physical address.' }),
-                  ).exactOptional(),
-                  Latitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The latitude.' }),
-                  ).exactOptional(),
-                  Longitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The longitude.' }),
-                  ).exactOptional(),
+                  Address: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The physical address.',
+                  }),
+                  Latitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The latitude.',
+                  }),
+                  Longitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The longitude.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes a location.', required: [] }),
@@ -7183,17 +6734,13 @@ export const postVpcAttachmentsRoute = createRoute({
                 .openapi({ description: 'The subnet ARN of the VPC attachment.' }),
               Options: z
                 .object({
-                  Ipv6Support: BooleanSchema.and(
-                    z.any().openapi({ description: 'Indicates whether IPv6 is supported.' }),
-                  ).exactOptional(),
-                  ApplianceModeSupport: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
-                      }),
-                  ).exactOptional(),
+                  Ipv6Support: BooleanSchema.exactOptional().openapi({
+                    description: 'Indicates whether IPv6 is supported.',
+                  }),
+                  ApplianceModeSupport: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes the VPC options.', required: [] }),
@@ -8090,22 +7637,14 @@ export const patchGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute = createRout
             .object({
               AWSLocation: z
                 .object({
-                  Zone: ConstrainedStringSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
-                      }),
-                  ).exactOptional(),
-                  SubnetArn: SubnetArnSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
-                      }),
-                  ).exactOptional(),
+                  Zone: ConstrainedStringSchema.exactOptional().openapi({
+                    description:
+                      'The Zone that the device is located in. Specify the ID of an Availability Zone, Local Zone, Wavelength Zone, or an Outpost.',
+                  }),
+                  SubnetArn: SubnetArnSchema.exactOptional().openapi({
+                    description:
+                      'The Amazon Resource Name (ARN) of the subnet that the device is located in.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({
@@ -8161,15 +7700,15 @@ export const patchGlobalNetworksGlobalNetworkIdDevicesDeviceIdRoute = createRout
                 }),
               Location: z
                 .object({
-                  Address: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The physical address.' }),
-                  ).exactOptional(),
-                  Latitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The latitude.' }),
-                  ).exactOptional(),
-                  Longitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The longitude.' }),
-                  ).exactOptional(),
+                  Address: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The physical address.',
+                  }),
+                  Latitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The latitude.',
+                  }),
+                  Longitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The longitude.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes a location.', required: [] }),
@@ -8522,12 +8061,12 @@ export const patchGlobalNetworksGlobalNetworkIdLinksLinkIdRoute = createRoute({
                 }),
               Bandwidth: z
                 .object({
-                  UploadSpeed: IntegerSchema.and(
-                    z.any().openapi({ description: 'Upload speed in Mbps.' }),
-                  ).exactOptional(),
-                  DownloadSpeed: IntegerSchema.and(
-                    z.any().openapi({ description: 'Download speed in Mbps.' }),
-                  ).exactOptional(),
+                  UploadSpeed: IntegerSchema.exactOptional().openapi({
+                    description: 'Upload speed in Mbps.',
+                  }),
+                  DownloadSpeed: IntegerSchema.exactOptional().openapi({
+                    description: 'Download speed in Mbps.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes bandwidth information.', required: [] }),
@@ -8992,15 +8531,15 @@ export const patchGlobalNetworksGlobalNetworkIdSitesSiteIdRoute = createRoute({
                 }),
               Location: z
                 .object({
-                  Address: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The physical address.' }),
-                  ).exactOptional(),
-                  Latitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The latitude.' }),
-                  ).exactOptional(),
-                  Longitude: ConstrainedStringSchema.and(
-                    z.any().openapi({ description: 'The longitude.' }),
-                  ).exactOptional(),
+                  Address: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The physical address.',
+                  }),
+                  Latitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The latitude.',
+                  }),
+                  Longitude: ConstrainedStringSchema.exactOptional().openapi({
+                    description: 'The longitude.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes a location.', required: [] }),
@@ -10721,12 +10260,14 @@ export const postGlobalNetworksGlobalNetworkIdNetworkRoutesRoute = createRoute({
             .object({
               RouteTableIdentifier: z
                 .object({
-                  TransitGatewayRouteTableArn: TransitGatewayRouteTableArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the transit gateway route table.' }),
-                  ).exactOptional(),
-                  CoreNetworkSegmentEdge: CoreNetworkSegmentEdgeIdentifierSchema.and(
-                    z.any().openapi({ description: 'The segment edge in a core network.' }),
-                  ).exactOptional(),
+                  TransitGatewayRouteTableArn:
+                    TransitGatewayRouteTableArnSchema.exactOptional().openapi({
+                      description: 'The ARN of the transit gateway route table.',
+                    }),
+                  CoreNetworkSegmentEdge:
+                    CoreNetworkSegmentEdgeIdentifierSchema.exactOptional().openapi({
+                      description: 'The segment edge in a core network.',
+                    }),
                 })
                 .openapi({ description: 'Describes a route table.', required: [] }),
               ExactCidrMatches: z
@@ -11630,17 +11171,13 @@ export const patchVpcAttachmentsAttachmentIdRoute = createRoute({
                 .openapi({ description: 'Removes a subnet ARN from the attachment.' }),
               Options: z
                 .object({
-                  Ipv6Support: BooleanSchema.and(
-                    z.any().openapi({ description: 'Indicates whether IPv6 is supported.' }),
-                  ).exactOptional(),
-                  ApplianceModeSupport: BooleanSchema.and(
-                    z
-                      .any()
-                      .openapi({
-                        description:
-                          'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
-                      }),
-                  ).exactOptional(),
+                  Ipv6Support: BooleanSchema.exactOptional().openapi({
+                    description: 'Indicates whether IPv6 is supported.',
+                  }),
+                  ApplianceModeSupport: BooleanSchema.exactOptional().openapi({
+                    description:
+                      'Indicates whether appliance mode is supported. If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is <code>false</code>.',
+                  }),
                 })
                 .exactOptional()
                 .openapi({ description: 'Describes the VPC options.', required: [] }),
@@ -12629,22 +12166,24 @@ export const postGlobalNetworksGlobalNetworkIdRouteAnalysesRoute = createRoute({
             .object({
               Source: z
                 .object({
-                  TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the transit gateway attachment.' }),
-                  ).exactOptional(),
-                  IpAddress: IPAddressSchema.and(
-                    z.any().openapi({ description: 'The IP address.' }),
-                  ).exactOptional(),
+                  TransitGatewayAttachmentArn:
+                    TransitGatewayAttachmentArnSchema.exactOptional().openapi({
+                      description: 'The ARN of the transit gateway attachment.',
+                    }),
+                  IpAddress: IPAddressSchema.exactOptional().openapi({
+                    description: 'The IP address.',
+                  }),
                 })
                 .openapi({ description: 'Describes a source or a destination.', required: [] }),
               Destination: z
                 .object({
-                  TransitGatewayAttachmentArn: TransitGatewayAttachmentArnSchema.and(
-                    z.any().openapi({ description: 'The ARN of the transit gateway attachment.' }),
-                  ).exactOptional(),
-                  IpAddress: IPAddressSchema.and(
-                    z.any().openapi({ description: 'The IP address.' }),
-                  ).exactOptional(),
+                  TransitGatewayAttachmentArn:
+                    TransitGatewayAttachmentArnSchema.exactOptional().openapi({
+                      description: 'The ARN of the transit gateway attachment.',
+                    }),
+                  IpAddress: IPAddressSchema.exactOptional().openapi({
+                    description: 'The IP address.',
+                  }),
                 })
                 .openapi({ description: 'Describes a source or a destination.', required: [] }),
               IncludeReturnPath: z

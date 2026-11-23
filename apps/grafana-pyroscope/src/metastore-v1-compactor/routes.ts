@@ -1,5 +1,423 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const MetastoreV1BlockTombstonesSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ title: 'name' }),
+    shard: z.int().exactOptional().openapi({ title: 'shard' }),
+    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
+    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
+    blocks: z.array(z.string()).exactOptional().openapi({ title: 'blocks' }),
+  })
+  .openapi({ title: 'BlockTombstones', required: [] })
+  .openapi('MetastoreV1BlockTombstones')
+
+const MetastoreV1ShardTombstoneSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ title: 'name' }),
+    timestamp: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'timestamp',
+        description: 'Lower time boundary. Unix epoch in nanoseconds.',
+      }),
+    duration: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'duration' }),
+    shard: z.int().exactOptional().openapi({ title: 'shard' }),
+    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
+  })
+  .openapi({ title: 'ShardTombstone', required: [] })
+  .openapi('MetastoreV1ShardTombstone')
+
+const MetastoreV1TombstonesSchema = z
+  .strictObject({
+    blocks: MetastoreV1BlockTombstonesSchema.exactOptional().openapi({ title: 'blocks' }),
+    shard: MetastoreV1ShardTombstoneSchema.exactOptional().openapi({ title: 'shard' }),
+  })
+  .openapi({
+    title: 'Tombstones',
+    description: 'Tombstones represent objects removed from the index but still stored.',
+    required: [],
+  })
+  .openapi('MetastoreV1Tombstones')
+
+const MetastoreV1DeleteFilterSchema = z
+  .strictObject({
+    serviceNameRegex: z.string().exactOptional().openapi({ title: 'service_name_regex' }),
+  })
+  .openapi({
+    title: 'DeleteFilter',
+    description:
+      'Go/RE2 regular expression, matched against the entire dataset service_name.\n An empty regex matches only an empty service name, not all services.\n Use ".*" to match all services. Datasets without a service name are skipped.',
+    required: [],
+  })
+  .openapi('MetastoreV1DeleteFilter')
+
+const MetastoreV1CompactionJobSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ title: 'name' }),
+    shard: z.int().exactOptional().openapi({ title: 'shard' }),
+    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
+    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
+    sourceBlocks: z.array(z.string()).exactOptional().openapi({ title: 'source_blocks' }),
+    tombstones: z
+      .array(MetastoreV1TombstonesSchema)
+      .exactOptional()
+      .openapi({ title: 'tombstones' }),
+    deleteFilter: MetastoreV1DeleteFilterSchema.exactOptional().openapi({ title: 'delete_filter' }),
+  })
+  .openapi({ title: 'CompactionJob', required: [] })
+  .openapi('MetastoreV1CompactionJob')
+
+const MetastoreV1CompactionJobStatusSchema = z
+  .enum([
+    'COMPACTION_STATUS_UNSPECIFIED',
+    'COMPACTION_STATUS_IN_PROGRESS',
+    'COMPACTION_STATUS_SUCCESS',
+  ])
+  .openapi({ title: 'CompactionJobStatus' })
+  .openapi('MetastoreV1CompactionJobStatus')
+
+const MetastoreV1CompactionJobInfoSchema = z
+  .strictObject({
+    job: MetastoreV1CompactionJobSchema.exactOptional().openapi({ title: 'job' }),
+    status: MetastoreV1CompactionJobStatusSchema.exactOptional().openapi({ title: 'status' }),
+    addedAt: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'added_at',
+        description: 'Unix nanoseconds.',
+      }),
+    leaseExpiresAt: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'lease_expires_at',
+        description: 'Unix nanoseconds; zero when not leased.',
+      }),
+    failures: z.int().exactOptional().openapi({ title: 'failures' }),
+  })
+  .openapi({ title: 'CompactionJobInfo', required: [] })
+  .openapi('MetastoreV1CompactionJobInfo')
+
+type MetastoreV1ListCompactionJobsResponseType = {
+  jobs?: z.infer<typeof MetastoreV1CompactionJobInfoSchema>[]
+}
+
+const MetastoreV1BlockListSchema = z
+  .strictObject({
+    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
+    shard: z.int().exactOptional().openapi({ title: 'shard' }),
+    blocks: z.array(z.string()).exactOptional().openapi({ title: 'blocks' }),
+  })
+  .openapi({ title: 'BlockList', required: [] })
+  .openapi('MetastoreV1BlockList')
+
+const MetastoreV1DatasetSchema = z
+  .strictObject({
+    format: z.int().exactOptional().openapi({ title: 'format' }),
+    tenant: z.int32().exactOptional().openapi({ title: 'tenant' }),
+    name: z.int32().exactOptional().openapi({ title: 'name' }),
+    minTime: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'min_time' }),
+    maxTime: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'max_time' }),
+    tableOfContents: z
+      .array(
+        z
+          .union([
+            z
+              .preprocess(
+                (val) =>
+                  typeof val === 'number' && Number.isSafeInteger(val)
+                    ? BigInt(val)
+                    : typeof val === 'string' && /^-?\d+$/.test(val)
+                      ? BigInt(val)
+                      : val,
+                z.int64(),
+              )
+              .openapi({ type: 'integer', format: 'int64' }),
+            z.string(),
+          ])
+          .openapi({ type: 'integer', format: 'int64' }),
+      )
+      .exactOptional()
+      .openapi({
+        title: 'table_of_contents',
+        description:
+          'Table of contents lists data sections within the tenant\n service region. The offsets are absolute.\n\n The interpretation of the table of contents is specific\n to the format.\n\n By default (format 0), the sections are:\n  - 0: profiles.parquet\n  - 1: index.tsdb\n  - 2: symbols.symdb\n\n Format 1 corresponds to the tenant-wide index:\n  - 0: index.tsdb (dataset index)',
+      }),
+    size: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        title: 'size',
+        description: 'Size of the dataset in bytes.',
+      }),
+    labels: z
+      .array(z.int32())
+      .exactOptional()
+      .openapi({
+        title: 'labels',
+        description:
+          "Length prefixed label key-value pairs.\n\n Multiple label sets can be associated with a dataset to denote relationships\n across multiple dimensions. For example, each dataset currently stores data\n for multiple profile types:\n   - service_name=A, profile_type=cpu\n   - service_name=A, profile_type=memory\n\n Labels are primarily used to filter datasets based on their attributes.\n For instance, labels can be used to select datasets containing a specific\n service.\n\n The set of attributes is extensible and can grow over time. For example, a\n namespace attribute could be added to datasets:\n   - service_name=A, profile_type=cpu\n   - service_name=A, profile_type=memory\n   - service_name=B, namespace=N, profile_type=cpu\n   - service_name=B, namespace=N, profile_type=memory\n   - service_name=C, namespace=N, profile_type=cpu\n   - service_name=C, namespace=N, profile_type=memory\n\n This organization enables querying datasets by namespace without accessing\n the block contents, which significantly improves performance.\n\n Metadata labels are not required to be included in the block's TSDB index\n and may be orthogonal to the data dimensions. Generally, attributes serve\n two primary purposes:\n   - To create data scopes that span multiple service, reducing the need to\n     scan the entire set of block satisfying the query expression, i.e.,\n     the time range and tenant ID.\n   - To provide additional information about datasets without altering the\n     storage schema or access methods.\n\n For example, this approach can support cost attribution or similar breakdown\n analyses. It can also handle data dependencies (e.g., links to external data)\n using labels.\n\n The cardinality of the labels is expected to remain relatively low (fewer\n than a million unique combinations globally). However, this depends on the\n metadata storage system.\n\n Metadata labels are represented as a slice of `int32` values that refer to\n strings in the metadata entry's string table. The slice is a sequence of\n length-prefixed key-value (KV) pairs:\n\n len(2) | k1 | v1 | k2 | v2 | len(3) | k1 | v3 | k2 | v4 | k3 | v5\n\n The order of KV pairs is not defined. The format is optimized for indexing\n rather than querying, and it is not intended to be the most space-efficient\n representation. Since entries are supposed to be indexed, the redundancy of\n denormalized relationships is not a concern.",
+      }),
+  })
+  .openapi({ title: 'Dataset', required: [] })
+  .openapi('MetastoreV1Dataset')
+
+const MetastoreV1BlockMetaSchema = z
+  .strictObject({
+    formatVersion: z.int().exactOptional().openapi({ title: 'format_version' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        title: 'id',
+        description:
+          'Block ID is a unique identifier for the block.\n This is the only field that is not included into\n the string table.',
+      }),
+    tenant: z
+      .int32()
+      .exactOptional()
+      .openapi({ title: 'tenant', description: 'If empty, datasets belong to distinct tenants.' }),
+    shard: z.int().exactOptional().openapi({ title: 'shard' }),
+    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
+    minTime: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'min_time' }),
+    maxTime: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'max_time' }),
+    createdBy: z.int32().exactOptional().openapi({ title: 'created_by' }),
+    metadataOffset: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'metadata_offset' }),
+    size: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'size' }),
+    datasets: z.array(MetastoreV1DatasetSchema).exactOptional().openapi({ title: 'datasets' }),
+    stringTable: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        title: 'string_table',
+        description:
+          'String table contains strings of the block.\n By convention, the first string is always an empty string.',
+      }),
+  })
+  .openapi({
+    title: 'BlockMeta',
+    description:
+      "BlockMeta is a metadata entry that describes the block's contents. A block\n is a collection of datasets that share certain properties, such as shard ID,\n compaction level, tenant ID, time range, creation time, and more.\n\n The block content's format denotes the binary format of the datasets and the\n metadata entry (to address logical dependencies). Each dataset has its own\n table of contents that lists the sections within the dataset. Each dataset\n has its own set of attributes (labels) that describe its specific contents.",
+    required: [],
+  })
+  .openapi('MetastoreV1BlockMeta')
+
+const MetastoreV1CompactedBlocksSchema = z
+  .strictObject({
+    sourceBlocks: MetastoreV1BlockListSchema.exactOptional().openapi({ title: 'source_blocks' }),
+    newBlocks: z.array(MetastoreV1BlockMetaSchema).exactOptional().openapi({ title: 'new_blocks' }),
+  })
+  .openapi({ title: 'CompactedBlocks', required: [] })
+  .openapi('MetastoreV1CompactedBlocks')
+
+const MetastoreV1CompactionJobStatusUpdateSchema = z
+  .strictObject({
+    name: z.string().exactOptional().openapi({ title: 'name' }),
+    token: z
+      .union([
+        z
+          .preprocess(
+            (val) =>
+              typeof val === 'number' && Number.isSafeInteger(val)
+                ? BigInt(val)
+                : typeof val === 'string' && /^-?\d+$/.test(val)
+                  ? BigInt(val)
+                  : val,
+            z.int64(),
+          )
+          .openapi({ type: 'integer', format: 'int64' }),
+        z.string(),
+      ])
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', title: 'token' }),
+    status: MetastoreV1CompactionJobStatusSchema.exactOptional().openapi({ title: 'status' }),
+    compactedBlocks: MetastoreV1CompactedBlocksSchema.exactOptional().openapi({
+      title: 'compacted_blocks',
+      description: 'Only present if the job completed successfully.',
+    }),
+  })
+  .openapi({ title: 'CompactionJobStatusUpdate', required: [] })
+  .openapi('MetastoreV1CompactionJobStatusUpdate')
+
+type MetastoreV1PollCompactionJobsRequestType = {
+  statusUpdates?: z.infer<typeof MetastoreV1CompactionJobStatusUpdateSchema>[]
+  jobCapacity?: number
+}
+
 const ConnectProtocolVersionSchema = z
   .literal(1)
   .openapi({
@@ -220,324 +638,6 @@ const MetastoreV1BlockDeletionSummarySchema = z
   .openapi({ title: 'BlockDeletionSummary', required: [] })
   .openapi('MetastoreV1BlockDeletionSummary')
 
-const MetastoreV1BlockListSchema = z
-  .strictObject({
-    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
-    shard: z.int().exactOptional().openapi({ title: 'shard' }),
-    blocks: z.array(z.string()).exactOptional().openapi({ title: 'blocks' }),
-  })
-  .openapi({ title: 'BlockList', required: [] })
-  .openapi('MetastoreV1BlockList')
-
-const MetastoreV1DatasetSchema = z
-  .strictObject({
-    format: z.int().exactOptional().openapi({ title: 'format' }),
-    tenant: z.int32().exactOptional().openapi({ title: 'tenant' }),
-    name: z.int32().exactOptional().openapi({ title: 'name' }),
-    minTime: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'min_time' }),
-    maxTime: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'max_time' }),
-    tableOfContents: z
-      .array(
-        z
-          .union([
-            z
-              .preprocess(
-                (val) =>
-                  typeof val === 'number' && Number.isSafeInteger(val)
-                    ? BigInt(val)
-                    : typeof val === 'string' && /^-?\d+$/.test(val)
-                      ? BigInt(val)
-                      : val,
-                z.int64(),
-              )
-              .openapi({ type: 'integer', format: 'int64' }),
-            z.string(),
-          ])
-          .openapi({ type: 'integer', format: 'int64' }),
-      )
-      .exactOptional()
-      .openapi({
-        title: 'table_of_contents',
-        description:
-          'Table of contents lists data sections within the tenant\n service region. The offsets are absolute.\n\n The interpretation of the table of contents is specific\n to the format.\n\n By default (format 0), the sections are:\n  - 0: profiles.parquet\n  - 1: index.tsdb\n  - 2: symbols.symdb\n\n Format 1 corresponds to the tenant-wide index:\n  - 0: index.tsdb (dataset index)',
-      }),
-    size: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'size',
-        description: 'Size of the dataset in bytes.',
-      }),
-    labels: z
-      .array(z.int32())
-      .exactOptional()
-      .openapi({
-        title: 'labels',
-        description:
-          "Length prefixed label key-value pairs.\n\n Multiple label sets can be associated with a dataset to denote relationships\n across multiple dimensions. For example, each dataset currently stores data\n for multiple profile types:\n   - service_name=A, profile_type=cpu\n   - service_name=A, profile_type=memory\n\n Labels are primarily used to filter datasets based on their attributes.\n For instance, labels can be used to select datasets containing a specific\n service.\n\n The set of attributes is extensible and can grow over time. For example, a\n namespace attribute could be added to datasets:\n   - service_name=A, profile_type=cpu\n   - service_name=A, profile_type=memory\n   - service_name=B, namespace=N, profile_type=cpu\n   - service_name=B, namespace=N, profile_type=memory\n   - service_name=C, namespace=N, profile_type=cpu\n   - service_name=C, namespace=N, profile_type=memory\n\n This organization enables querying datasets by namespace without accessing\n the block contents, which significantly improves performance.\n\n Metadata labels are not required to be included in the block's TSDB index\n and may be orthogonal to the data dimensions. Generally, attributes serve\n two primary purposes:\n   - To create data scopes that span multiple service, reducing the need to\n     scan the entire set of block satisfying the query expression, i.e.,\n     the time range and tenant ID.\n   - To provide additional information about datasets without altering the\n     storage schema or access methods.\n\n For example, this approach can support cost attribution or similar breakdown\n analyses. It can also handle data dependencies (e.g., links to external data)\n using labels.\n\n The cardinality of the labels is expected to remain relatively low (fewer\n than a million unique combinations globally). However, this depends on the\n metadata storage system.\n\n Metadata labels are represented as a slice of `int32` values that refer to\n strings in the metadata entry's string table. The slice is a sequence of\n length-prefixed key-value (KV) pairs:\n\n len(2) | k1 | v1 | k2 | v2 | len(3) | k1 | v3 | k2 | v4 | k3 | v5\n\n The order of KV pairs is not defined. The format is optimized for indexing\n rather than querying, and it is not intended to be the most space-efficient\n representation. Since entries are supposed to be indexed, the redundancy of\n denormalized relationships is not a concern.",
-      }),
-  })
-  .openapi({ title: 'Dataset', required: [] })
-  .openapi('MetastoreV1Dataset')
-
-const MetastoreV1BlockMetaSchema = z
-  .strictObject({
-    formatVersion: z.int().exactOptional().openapi({ title: 'format_version' }),
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        title: 'id',
-        description:
-          'Block ID is a unique identifier for the block.\n This is the only field that is not included into\n the string table.',
-      }),
-    tenant: z
-      .int32()
-      .exactOptional()
-      .openapi({ title: 'tenant', description: 'If empty, datasets belong to distinct tenants.' }),
-    shard: z.int().exactOptional().openapi({ title: 'shard' }),
-    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
-    minTime: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'min_time' }),
-    maxTime: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'max_time' }),
-    createdBy: z.int32().exactOptional().openapi({ title: 'created_by' }),
-    metadataOffset: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'metadata_offset' }),
-    size: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'size' }),
-    datasets: z.array(MetastoreV1DatasetSchema).exactOptional().openapi({ title: 'datasets' }),
-    stringTable: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        title: 'string_table',
-        description:
-          'String table contains strings of the block.\n By convention, the first string is always an empty string.',
-      }),
-  })
-  .openapi({
-    title: 'BlockMeta',
-    description:
-      "BlockMeta is a metadata entry that describes the block's contents. A block\n is a collection of datasets that share certain properties, such as shard ID,\n compaction level, tenant ID, time range, creation time, and more.\n\n The block content's format denotes the binary format of the datasets and the\n metadata entry (to address logical dependencies). Each dataset has its own\n table of contents that lists the sections within the dataset. Each dataset\n has its own set of attributes (labels) that describe its specific contents.",
-    required: [],
-  })
-  .openapi('MetastoreV1BlockMeta')
-
-const MetastoreV1BlockTombstonesSchema = z
-  .strictObject({
-    name: z.string().exactOptional().openapi({ title: 'name' }),
-    shard: z.int().exactOptional().openapi({ title: 'shard' }),
-    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
-    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
-    blocks: z.array(z.string()).exactOptional().openapi({ title: 'blocks' }),
-  })
-  .openapi({ title: 'BlockTombstones', required: [] })
-  .openapi('MetastoreV1BlockTombstones')
-
-const MetastoreV1CompactedBlocksSchema = z
-  .strictObject({
-    sourceBlocks: MetastoreV1BlockListSchema.exactOptional().openapi({ title: 'source_blocks' }),
-    newBlocks: z.array(MetastoreV1BlockMetaSchema).exactOptional().openapi({ title: 'new_blocks' }),
-  })
-  .openapi({ title: 'CompactedBlocks', required: [] })
-  .openapi('MetastoreV1CompactedBlocks')
-
-const MetastoreV1ShardTombstoneSchema = z
-  .strictObject({
-    name: z.string().exactOptional().openapi({ title: 'name' }),
-    timestamp: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'timestamp',
-        description: 'Lower time boundary. Unix epoch in nanoseconds.',
-      }),
-    duration: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'duration' }),
-    shard: z.int().exactOptional().openapi({ title: 'shard' }),
-    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
-  })
-  .openapi({ title: 'ShardTombstone', required: [] })
-  .openapi('MetastoreV1ShardTombstone')
-
-const MetastoreV1TombstonesSchema = z
-  .strictObject({
-    blocks: MetastoreV1BlockTombstonesSchema.exactOptional().openapi({ title: 'blocks' }),
-    shard: MetastoreV1ShardTombstoneSchema.exactOptional().openapi({ title: 'shard' }),
-  })
-  .openapi({
-    title: 'Tombstones',
-    description: 'Tombstones represent objects removed from the index but still stored.',
-    required: [],
-  })
-  .openapi('MetastoreV1Tombstones')
-
-const MetastoreV1DeleteFilterSchema = z
-  .strictObject({
-    serviceNameRegex: z.string().exactOptional().openapi({ title: 'service_name_regex' }),
-  })
-  .openapi({
-    title: 'DeleteFilter',
-    description:
-      'Go/RE2 regular expression, matched against the entire dataset service_name.\n An empty regex matches only an empty service name, not all services.\n Use ".*" to match all services. Datasets without a service name are skipped.',
-    required: [],
-  })
-  .openapi('MetastoreV1DeleteFilter')
-
-const MetastoreV1CompactionJobSchema = z
-  .strictObject({
-    name: z.string().exactOptional().openapi({ title: 'name' }),
-    shard: z.int().exactOptional().openapi({ title: 'shard' }),
-    tenant: z.string().exactOptional().openapi({ title: 'tenant' }),
-    compactionLevel: z.int().exactOptional().openapi({ title: 'compaction_level' }),
-    sourceBlocks: z.array(z.string()).exactOptional().openapi({ title: 'source_blocks' }),
-    tombstones: z
-      .array(MetastoreV1TombstonesSchema)
-      .exactOptional()
-      .openapi({ title: 'tombstones' }),
-    deleteFilter: MetastoreV1DeleteFilterSchema.exactOptional().openapi({ title: 'delete_filter' }),
-  })
-  .openapi({ title: 'CompactionJob', required: [] })
-  .openapi('MetastoreV1CompactionJob')
-
 const MetastoreV1CompactionJobAssignmentSchema = z
   .strictObject({
     name: z.string().exactOptional().openapi({ title: 'name' }),
@@ -578,97 +678,6 @@ const MetastoreV1CompactionJobAssignmentSchema = z
   })
   .openapi({ title: 'CompactionJobAssignment', required: [] })
   .openapi('MetastoreV1CompactionJobAssignment')
-
-const MetastoreV1CompactionJobStatusSchema = z
-  .enum([
-    'COMPACTION_STATUS_UNSPECIFIED',
-    'COMPACTION_STATUS_IN_PROGRESS',
-    'COMPACTION_STATUS_SUCCESS',
-  ])
-  .openapi({ title: 'CompactionJobStatus' })
-  .openapi('MetastoreV1CompactionJobStatus')
-
-const MetastoreV1CompactionJobInfoSchema = z
-  .strictObject({
-    job: MetastoreV1CompactionJobSchema.exactOptional().openapi({ title: 'job' }),
-    status: MetastoreV1CompactionJobStatusSchema.exactOptional().openapi({ title: 'status' }),
-    addedAt: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'added_at',
-        description: 'Unix nanoseconds.',
-      }),
-    leaseExpiresAt: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        title: 'lease_expires_at',
-        description: 'Unix nanoseconds; zero when not leased.',
-      }),
-    failures: z.int().exactOptional().openapi({ title: 'failures' }),
-  })
-  .openapi({ title: 'CompactionJobInfo', required: [] })
-  .openapi('MetastoreV1CompactionJobInfo')
-
-const MetastoreV1CompactionJobStatusUpdateSchema = z
-  .strictObject({
-    name: z.string().exactOptional().openapi({ title: 'name' }),
-    token: z
-      .union([
-        z
-          .preprocess(
-            (val) =>
-              typeof val === 'number' && Number.isSafeInteger(val)
-                ? BigInt(val)
-                : typeof val === 'string' && /^-?\d+$/.test(val)
-                  ? BigInt(val)
-                  : val,
-            z.int64(),
-          )
-          .openapi({ type: 'integer', format: 'int64' }),
-        z.string(),
-      ])
-      .exactOptional()
-      .openapi({ type: 'integer', format: 'int64', title: 'token' }),
-    status: MetastoreV1CompactionJobStatusSchema.exactOptional().openapi({ title: 'status' }),
-    compactedBlocks: MetastoreV1CompactedBlocksSchema.exactOptional().openapi({
-      title: 'compacted_blocks',
-      description: 'Only present if the job completed successfully.',
-    }),
-  })
-  .openapi({ title: 'CompactionJobStatusUpdate', required: [] })
-  .openapi('MetastoreV1CompactionJobStatusUpdate')
 
 const MetastoreV1DeleteDatasetsRequestSchema = z
   .strictObject({
@@ -846,29 +855,31 @@ const MetastoreV1ListCompactionJobsRequestSchema = z
   .openapi({ title: 'ListCompactionJobsRequest', required: [] })
   .openapi('MetastoreV1ListCompactionJobsRequest')
 
-const MetastoreV1ListCompactionJobsResponseSchema = z
-  .strictObject({
-    jobs: z.array(MetastoreV1CompactionJobInfoSchema).exactOptional().openapi({ title: 'jobs' }),
-  })
-  .openapi({ title: 'ListCompactionJobsResponse', required: [] })
-  .openapi('MetastoreV1ListCompactionJobsResponse')
+const MetastoreV1ListCompactionJobsResponseSchema: z.ZodType<MetastoreV1ListCompactionJobsResponseType> =
+  z
+    .strictObject({
+      jobs: z.array(MetastoreV1CompactionJobInfoSchema).exactOptional().openapi({ title: 'jobs' }),
+    })
+    .openapi({ title: 'ListCompactionJobsResponse', required: [] })
+    .openapi('MetastoreV1ListCompactionJobsResponse')
 
-const MetastoreV1PollCompactionJobsRequestSchema = z
-  .strictObject({
-    statusUpdates: z
-      .array(MetastoreV1CompactionJobStatusUpdateSchema)
-      .exactOptional()
-      .openapi({ title: 'status_updates' }),
-    jobCapacity: z
-      .int()
-      .exactOptional()
-      .openapi({
-        title: 'job_capacity',
-        description: 'How many new jobs a worker can be assigned to.',
-      }),
-  })
-  .openapi({ title: 'PollCompactionJobsRequest', required: [] })
-  .openapi('MetastoreV1PollCompactionJobsRequest')
+const MetastoreV1PollCompactionJobsRequestSchema: z.ZodType<MetastoreV1PollCompactionJobsRequestType> =
+  z
+    .strictObject({
+      statusUpdates: z
+        .array(MetastoreV1CompactionJobStatusUpdateSchema)
+        .exactOptional()
+        .openapi({ title: 'status_updates' }),
+      jobCapacity: z
+        .int()
+        .exactOptional()
+        .openapi({
+          title: 'job_capacity',
+          description: 'How many new jobs a worker can be assigned to.',
+        }),
+    })
+    .openapi({ title: 'PollCompactionJobsRequest', required: [] })
+    .openapi('MetastoreV1PollCompactionJobsRequest')
 
 const MetastoreV1PollCompactionJobsResponseSchema = z
   .strictObject({
